@@ -25,9 +25,6 @@
     <script src="js/core.html.js"></script>
     
     <style>
-        /* ==========================================================================
-           🛠️ حل هندسي جذري ومثالي لعلاج ثغرة اختفاء شريط الماركي العلوي 🛠️
-           ========================================================================== */
         .bose-top-marquee-bar {
             background-color: var(--bose-cream);
             border-bottom: 1px solid rgba(255, 145, 164, 0.15);
@@ -38,14 +35,14 @@
             width: 100%;
             position: relative;
             z-index: 1010;
-            direction: ltr !important; /* فرض الاتجاه الأيسر لمنع تداخل الترجمة السالبة في وضع RTL */
+            direction: ltr !important;
         }
         .marquee-track-container {
             display: flex;
             width: max-content;
-            animation: marqueeContinuous 64.3s linear infinite; /* تم تقليل السرعة بنسبة 30% من 45 ثانية إلى 64.3 ثانية لتسهيل قراءة النص بوضوح وراحة */
+            animation: marqueeContinuous 64.3s linear infinite;
             will-change: transform;
-            direction: ltr !important; /* توحيد تدفق الحركة لليسار لمنع التلاشي */
+            direction: ltr !important;
         }
         .marquee-message-node {
             font-size: 0.88rem;
@@ -55,7 +52,7 @@
             white-space: nowrap;
             display: flex;
             align-items: center;
-            direction: rtl !important; /* إعادة المحاذاة الداخلية لليمين لقراءة النصوص العربية والرموز بشكل سليم */
+            direction: rtl !important;
         }
         @keyframes marqueeContinuous {
             0% { transform: translate3d(0, 0, 0); }
@@ -153,7 +150,6 @@
             max-width: 480px;
             flex: 1;
         }
-        /* تم تقليل سرعة حركة الشلال بنسبة 10% بزيادة زمن الحركة الإجمالي من 28 ثانية إلى 31.1 ثانية لراحة بصرية وهدوء تفاعلي */
         .waterfall-down { animation: waterfall-scroll-down 31.1s linear infinite; }
         .waterfall-up { animation: waterfall-scroll-up 31.1s linear infinite; }
         .waterfall-item {
@@ -571,11 +567,31 @@
             color: var(--bose-white);
             box-shadow: var(--bose-shadow-glow);
         }
+        .slider-dots-container {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 20px;
+        }
+        .dot-btn {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            border: none;
+            background-color: rgba(255, 145, 164, 0.3);
+            cursor: pointer;
+            transition: var(--bose-transition-smooth);
+            padding: 0;
+        }
+        .dot-btn.active {
+            background-color: var(--bose-pink);
+            width: 24px;
+            border-radius: 12px;
+        }
     </style>
 </head>
 <body>
 
-    <!-- الشريط العلوي المتحرك (تم قفله وحمايته ميكانيكياً لضمان المحاذاة والانسيابية وعدم الفراغ) -->
     <div class="bose-top-marquee-bar">
         <div class="marquee-track-container" id="top-marquee-track">
             <div class="marquee-message-node">✨ طعم أصلي وخامات طبيعية 100% طازجة يومياً من مطبخنا إليكم مباشرة فرع الكفاح 🌸</div>
@@ -584,7 +600,7 @@
             <div class="marquee-message-node">🎁 صمم تورتتك المخصصة وبوكيه الورد خطوة بخطوة عبر محاكياتنا التفاعلية المتطورة 🌹</div>
             <div class="marquee-message-node">🍓 الفراولة الطازجة والمانجو الطبيعي يزينان أطباقنا يومياً لنسعد قلوبكم الكريمة ✨</div>
             <div class="marquee-message-node">🧁 كب كيك هبط من جنة المذاق، غني بالزبدة الطبيعية الفاخرة ومحشو بنهر من الشوكولاتة السائلة 🍫</div>
-            <div class="marquee-message-node">🍩 دوناتس هشة وخفيفة كالسحاب تذوب في الفم مع توبنج البيستاشيو والنوتيلا البلجيكية الأصيلة 👑</div>
+            <div class="marquee-message-node">🍩 دوناتس هشة وخفيفة كالسحاب تذوب in الفم مع توبنج البيستاشيو والنوتيلا البلجيكية الأصيلة 👑</div>
             <div class="marquee-message-node">🍯 قشطوطة ريانة غنية بالحليب ومغطاة بأجود أنواع المكسرات واللوتس المتميز لتجربة تذوق ساحرة ✨</div>
             <div class="marquee-message-node">🍫 ديسباسيتو غنية بموس الشوكولاتة البلجيكية وصوصاتنا الخاصة لتناسب ذوقكم الرفيع 🍰</div>
             <div class="marquee-message-node">🌹 بوكيهات ورد طبيعي وصناعي وستان منسقة يدوياً لتكون الهدية الأجمل التي تليق بأحبابكم 🎁</div>
@@ -646,7 +662,6 @@
         <div class="search-results-container"></div>
     </div>
 
-    <!-- SECTION 01: عقد من التميز -->
     <section id="hero-section">
         <div class="bose-section-header-block">
             <h1>عقد من <span class="hero-title-highlight">التميز</span> في صناعة الحلويات</h1>
@@ -657,7 +672,6 @@
         </div>
     </section>
 
-    <!-- WATERFALL: الشلال البصري التفاعلي -->
     <section id="waterfall-section">
         <div class="waterfall-container">
             <div class="waterfall-column waterfall-up" id="waterfall-left-col"></div>
@@ -667,7 +681,6 @@
         <div class="waterfall-overlay-bottom"></div>
     </section>
 
-    <!-- SECTION 02: عقد من الإتقان -->
     <section id="excellence-section">
         <div class="bose-section-header-block">
             <h2>عقد من الإتقان</h2>
@@ -679,7 +692,6 @@
         <div class="slider-dots-container" id="excellence-carousel-dots"></div>
     </section>
 
-    <!-- SECTION 03: الأكثر مبيعاً -->
     <section id="most-selling-section">
         <div class="bose-section-header-block">
             <h2>الأكثر مبيعاً</h2>
@@ -691,11 +703,10 @@
         <div class="slider-dots-container" id="most-selling-carousel-dots"></div>
     </section>
 
-    <!-- SECTION 06: منتجاتنا -->
     <section id="our-products-section">
         <div class="bose-section-header-block">
             <h2>منتجاتنا</h2>
-            <p>التشكيلة الكاملة والفاخرة من إبداعات حلويات بوسي المتاحة لطلباتكم الفورية والمجهة بأعلى معايير الجودة العالية.</p>
+            <p>التشكيلة الكاملة والفاخرة من إبداعات حلويات بوسي المتاحة لطلباتكم الفورية والمجهزة بأعلى معايير الجودة العالية.</p>
         </div>
         <div class="products-grid-wrapper">
             <div id="our-products-grid"></div>
@@ -705,7 +716,6 @@
         </div>
     </section>
 
-    <!-- SECTION 04: محاكي التورت البصري -->
     <section id="cake-preview-section">
         <div class="bose-section-header-block">
             <h2>محاكي التورت</h2>
@@ -713,7 +723,6 @@
         </div>
         <div class="cake-banner-container">
             <div class="cake-banner-image-box">
-                <!-- إدراج رابط يوجه مباشرة لمحاكي التورت لتدعيم شبكة الترابط الداخلي -->
                 <a href="cake-builder.html" style="display:block; width:100%; height:100%;" aria-label="الذهاب لمحاكي التورت التفاعلي">
                     <img id="cake-preview-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="محاكي التورت الفاخر التفاعلي">
                 </a>
@@ -727,7 +736,6 @@
         </div>
     </section>
 
-    <!-- SECTION 05: وصل حديثاً -->
     <section id="new-arrivals-section">
         <div class="bose-section-header-block">
             <h2>وصل حديثاً</h2>
@@ -739,7 +747,6 @@
         <div class="slider-dots-container" id="new-arrivals-carousel-dots"></div>
     </section>
 
-    <!-- SECTION 07: محاكي الورد البصري -->
     <section id="flower-preview-section">
         <div class="bose-section-header-block">
             <h2>محاكي الورد</h2>
@@ -747,7 +754,6 @@
         </div>
         <div class="flower-banner-container">
             <div class="flower-banner-image-box">
-                <!-- إدراج رابط يوجه مباشرة لمحاكي الورد لتدعيم شبكة الترابط الداخلي -->
                 <a href="flower-builder.html" style="display:block; width:100%; height:100%;" aria-label="الذهاب لمحاكي الورد التفاعلي">
                     <img id="flower-preview-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="محاكي الورد الطبيعي والستان الفاخر">
                 </a>
@@ -761,7 +767,6 @@
         </div>
     </section>
 
-    <!-- SECTION 08: الفخر والاعتزاز -->
     <section id="pride-section">
         <div class="bose-section-header-block">
             <h2>الفخر والاعتزاز</h2>
@@ -790,10 +795,9 @@
         </div>
     </section>
 
-    <!-- SECTION 09: تسوق حسب الفئة -->
     <section id="categories-slider-section">
         <div class="bose-section-header-block">
-            <h2>تسوق حسب الفئه</h2>
+            <h2>تسوق حسب الفئة</h2>
             <p>اختر فئتك المفضلة من بين 12 فئة هيكلية معتمدة واستكشف تشكيلاتنا الواسعة والمعدة خصيصاً لتناسب أرقى الأذواق الفاخرة.</p>
         </div>
         <div class="slider-wrapper" id="categories-wrapper">
@@ -802,7 +806,6 @@
         <div class="slider-dots-container" id="categories-carousel-dots"></div>
     </section>
 
-    <!-- FOOTER: الفوتر الفاخر -->
     <footer class="bose-footer">
         <div class="footer-container">
             <div class="footer-about-block">
@@ -843,12 +846,10 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            // حل المشكلة الجذري: ننتظر بث حدث اكتمال قراءة وحقن البيانات من محرك الأنوية قبل تكرار عناصر الشريط
             window.addEventListener('bose_data_ready', () => {
                 initializeMarqueeStreaming();
             });
 
-            // تأمين ارتدادي: إذا كانت البيانات قد حُملت بالفعل قبل رصد الحدث، ننعش شريط التمرير فوراً
             if (window.BoseStoreData && window.BoseStoreData.store) {
                 initializeMarqueeStreaming();
             }
@@ -859,7 +860,6 @@
                     const items = Array.from(track.children);
                     items.forEach(item => track.appendChild(item.cloneNode(true)));
                     track.setAttribute('data-cloned', 'true');
-                    // إجبار محرك المعالجة على إعادة رسم الحاوية لمنع الانهيار البصري للحجم
                     track.style.display = 'none';
                     track.offsetHeight; 
                     track.style.display = 'flex';
@@ -956,7 +956,6 @@
                 registerDynamicStepperDelegators();
             }
 
-            // توليد كروت المنتجات مع دعم كامل لشبكة الروابط الداخلية المتقاطعة (صور المنتجات والعناوين كلها روابط نشطة)
             function generateBlueprintProductCard(product) {
                 const finalCalculatedPrice = window.calculateBosePrice ? window.calculateBosePrice(product.price, "all") : product.price;
                 const flavorDisplay = product.flavorName ? `<div class="product-card-flavor">${product.flavorName}</div>` : '';
@@ -972,7 +971,7 @@
                         </a>
                         <div class="product-card-info">
                             <h3 class="product-card-title">
-                                <a href="${productUrl}" style="text-decoration:none; color:inherit; transition:color 0.25s ease;" onmouseover="this.style.color='var(--bose-pink)'" onmouseout="this.style.color='var(--bose-black)'">
+                                <a href="${productUrl}" style="text-decoration:none; color:inherit; transition:color 0.25s ease;">
                                     ${product.title}
                                 </a>
                             </h3>
@@ -1079,7 +1078,6 @@
                 });
             }
 
-            // محرك التحديث التفاعلي الفوري لربط السعر بالكمية المختارة على البطاقة
             function updateCardPriceDisplay(triggerElement, quantity) {
                 const card = triggerElement.closest('.product-card');
                 if (!card) return;

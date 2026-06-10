@@ -470,11 +470,6 @@
             display: block;
         }
 
-        @keyframes fadeInTab {
-            from { opacity: 0; transform: translateY(5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
         .related-products-section {
             background-color: var(--bose-cream);
             padding: 60px 0;
@@ -499,6 +494,92 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
             gap: 25px;
+        }
+
+        .product-card-node {
+            background-color: var(--bose-white);
+            border: var(--bose-border-pink);
+            border-radius: 20px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: var(--bose-shadow-glow);
+            transition: var(--bose-transition-smooth);
+        }
+
+        .product-card-image-wrapper {
+            width: 100%;
+            aspect-ratio: 1/1;
+            border-radius: 14px;
+            overflow: hidden;
+            background-color: var(--bose-cream);
+            position: relative;
+        }
+
+        .product-card-image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-card-tag {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background-color: var(--bose-pink);
+            color: var(--bose-white);
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 12px;
+        }
+
+        .product-card-node .product-card-info {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            text-align: center;
+        }
+
+        .product-card-node .product-card-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .product-card-node .product-card-title a {
+            text-decoration: none;
+            color: var(--bose-black);
+            transition: var(--bose-transition-smooth);
+        }
+
+        .product-card-node .product-card-title a:hover {
+            color: var(--bose-pink);
+        }
+
+        .product-card-node .product-card-flavor {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--bose-pink);
+            background-color: var(--bose-cream);
+            padding: 2px 8px;
+            border-radius: 6px;
+            width: max-content;
+            margin: 0 auto;
+        }
+
+        .product-card-node .product-card-desc {
+            font-size: 0.85rem;
+            color: var(--bose-black);
+            opacity: 0.75;
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        @keyframes fadeInTab {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         @media (max-width: 991px) {
@@ -610,7 +691,7 @@
 
         <section class="product-content-column">
             <span class="product-tag" id="product-detail-flavor-name">فاخر 🌸</span>
-            <h1 class="product-title" id="product-detail-title">تورتة الشوكولاتة والكرز الفاخرة</h1>
+            <h1 class="product-title" id="product-detail-title">جاري التحميل...</h1>
             <p class="product-price" id="product-detail-price">-- EGP</p>
             <p class="product-description-text" id="product-detail-desc">
                 جاري سحب تفاصيل المذاق الاستثنائي الذي أعده لكم طهاتنا بكل حب وعناية...
@@ -727,7 +808,8 @@
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const urlParams = new URLSearchParams(window.location.search);
-            const productSlug = urlParams.get('slug');
+            // 🛡️ الحارس المعياري لضمان دقة مطابقة الـ slug ومنع الارتداد الخاطئ
+            const productSlug = urlParams.get('slug') || urlParams.get('id');
 
             if (!productSlug) {
                 window.location.href = 'menu.html';
@@ -739,7 +821,7 @@
 
             const coreDatabaseGuard = setInterval(() => {
                 checkAttempts++;
-                if (window.BoseStoreData && (window.BoseStoreData.store || window.BoseStoreData.products || window.BoseStoreData.categories)) {
+                if (window.BoseStoreData && (window.BoseStoreData.store || window.BoseStoreData.products)) {
                     clearInterval(coreDatabaseGuard);
                     initProductDetailEngine();
                 } else if (checkAttempts >= maxCheckAttempts) {
@@ -766,29 +848,22 @@
                 let matchProduct = null;
                 let matchCategory = null;
 
-                if (data.categories && Array.isArray(data.categories)) {
-                    for (const cat of data.categories) {
-                        if (cat.products && Array.isArray(cat.products)) {
-                            const found = cat.products.find(p => p.slug === productSlug);
-                            if (found) {
-                                matchProduct = found;
-                                matchCategory = cat;
-                                break;
-                            }
+                if (data.products && Array.isArray(data.products)) {
+                    // الفحص المزدوج بالـ slug والـ id لمنع انهيار الروابط الممررة
+                    matchProduct = data.products.find(p => p.slug === productSlug || p.id === productSlug);
+                    if (matchProduct) {
+                        const catId = matchProduct.category || 'general';
+                        
+                        if (data.homepage && data.homepage.categoriesSlider) {
+                            matchCategory = data.homepage.categoriesSlider.find(c => c.id === catId);
                         }
-                    }
-                }
-
-                if (!matchProduct && data.products && Array.isArray(data.products)) {
-                    const found = data.products.find(p => p.slug === productSlug);
-                    if (found) {
-                        matchProduct = found;
-                        const catId = found.category || 'general';
-                        matchCategory = (data.categories && Array.isArray(data.categories)) ? 
-                            data.categories.find(c => c.id === catId) : null;
                         
                         if (!matchCategory) {
-                            matchCategory = { id: catId, name: found.categoryName || 'أصنافنا الفاخرة', products: data.products.filter(p => p.category === catId) };
+                            matchCategory = { 
+                                id: catId, 
+                                title: 'أصنافنا الفاخرة', 
+                                products: data.products.filter(p => p.category === catId) 
+                            };
                         }
                     }
                 }
@@ -835,7 +910,7 @@
                 
                 const breadcrumbCat = document.getElementById('breadcrumb-category-link');
                 if (breadcrumbCat && matchCategory) {
-                    breadcrumbCat.textContent = matchCategory.name;
+                    breadcrumbCat.textContent = matchCategory.title || 'أصنافنا الفاخرة';
                     breadcrumbCat.href = `category.html?id=${matchCategory.id}`;
                 }
 
@@ -876,11 +951,10 @@
                 let extraPrintingPrice = 0;
 
                 function resolveFinalPrice(basePrice) {
-                    let finalPrice = basePrice;
-                    if (data.store && data.store.priceIncrease && data.store.priceIncrease.enabled) {
-                        finalPrice = finalPrice + (finalPrice * (data.store.priceIncrease.percent / 100));
+                    if (window.calculateBosePrice) {
+                        return window.calculateBosePrice(basePrice, "all");
                     }
-                    return Math.round(finalPrice);
+                    return Math.round(basePrice);
                 }
 
                 function getCustomTotalBasePrice() {
@@ -899,7 +973,29 @@
                 const sizesContainer = document.getElementById('sizes-options-container');
                 const sizesSection = document.getElementById('product-sizes-section');
                 if (sizesSection && sizesContainer) {
-                    if (matchProduct.sizes && matchProduct.sizes.length > 0) {
+                    if (matchProduct.prices && typeof matchProduct.prices === 'object' && !Array.isArray(matchProduct.prices)) {
+                        sizesSection.style.display = 'block';
+                        sizesContainer.innerHTML = '';
+                        Object.keys(matchProduct.prices).forEach((key, idx) => {
+                            const pPrice = matchProduct.prices[key];
+                            const btn = document.createElement('button');
+                            btn.className = `option-select-btn ${idx === 0 ? 'active' : ''}`;
+                            btn.textContent = `${key} (${resolveFinalPrice(pPrice)} ${currencyToken})`;
+                            if (idx === 0) {
+                                activeSizePrice = pPrice;
+                                activeSizeName = key;
+                                updateDisplayedPrice();
+                            }
+                            btn.addEventListener('click', () => {
+                                document.querySelectorAll('#sizes-options-container .option-select-btn').forEach(b => b.classList.remove('active'));
+                                btn.classList.add('active');
+                                activeSizePrice = pPrice;
+                                activeSizeName = key;
+                                updateDisplayedPrice();
+                            });
+                            sizesContainer.appendChild(btn);
+                        });
+                    } else if (matchProduct.sizes && matchProduct.sizes.length > 0) {
                         sizesSection.style.display = 'block';
                         sizesContainer.innerHTML = '';
                         matchProduct.sizes.forEach((sz, idx) => {
@@ -951,8 +1047,9 @@
                 }
 
                 const cakeCustomizationSection = document.getElementById('cake-customization-options');
-                if (cakeCustomizationSection && matchCategory) {
-                    if (matchCategory.id === 'taswaq-turt' || matchCategory.id === 'taswaq-mini-turt' || matchProduct.category === 'taswaq-turt' || matchProduct.category === 'taswaq-mini-turt') {
+                if (cakeCustomizationSection && matchProduct) {
+                    const cId = matchProduct.category || '';
+                    if (cId === 'taswaq-toort' || cId === 'taswaq-mini-cake') {
                         cakeCustomizationSection.style.display = 'block';
                     } else {
                         cakeCustomizationSection.style.display = 'none';
@@ -1044,19 +1141,14 @@
                                 window.updateGlobalCartCounter();
                             }
                         }
-
-                        if (window.showBoseToast) {
-                            window.showBoseToast(`تمت إضافة ${currentQty} قطعة إلى السلة بنجاح 🌸`);
-                        } else {
-                            alert(`تمت إضافة ${currentQty} قطعة إلى السلة بنجاح 🌸`);
-                        }
                     });
                 }
 
                 const relatedTrack = document.getElementById('related-products-track');
-                if (relatedTrack && matchCategory && matchCategory.products) {
+                if (relatedTrack && data.products) {
                     relatedTrack.innerHTML = '';
-                    const filteredRelated = matchCategory.products.filter(p => p.slug !== matchProduct.slug).slice(0, 4);
+                    const cId = matchProduct.category || '';
+                    const filteredRelated = data.products.filter(p => p.category === cId && p.id !== matchProduct.id).slice(0, 4);
                     
                     if (filteredRelated.length === 0) {
                         const relatedSec = document.querySelector('.related-products-section');

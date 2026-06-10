@@ -19,9 +19,6 @@
     <script src="js/core.html.js"></script>
     
     <style>
-        /* ==========================================================================
-           🛠️ حل هندسي جذري ومثالي لعلاج ثغرة اختفاء شريط الماركي العلوي 🛠️
-           ========================================================================== */
         .bose-top-marquee-bar {
             background-color: var(--bose-cream);
             border-bottom: 1px solid rgba(255, 145, 164, 0.15);
@@ -82,7 +79,6 @@
             gap: 16px;
         }
 
-        /* كتل المنيو وتنسيقات التبويب الفريدة لشبكة الفئات الشاملة */
         .menu-main-container {
             padding: 40px 16px 60px 16px;
             max-width: 1400px;
@@ -163,22 +159,22 @@
 
         .full-menu-grid {
             display: grid;
-            grid-template-columns: repeat(1, 1fr) !important;
-            gap: 20px;
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 12px;
             width: 100%;
             transition: var(--bose-transition-smooth);
         }
 
         @media (min-width: 768px) {
             .full-menu-grid {
-                grid-template-columns: repeat(2, 1fr) !important;
+                grid-template-columns: repeat(3, 1fr) !important;
                 gap: 24px;
             }
         }
 
         @media (min-width: 1024px) {
             .full-menu-grid {
-                grid-template-columns: repeat(3, 1fr) !important;
+                grid-template-columns: repeat(4, 1fr) !important;
                 gap: 32px;
             }
         }
@@ -189,7 +185,7 @@
             border-radius: 24px;
             overflow: hidden;
             width: 100%;
-            height: 360px !important;
+            height: 290px !important;
             box-shadow: var(--bose-shadow-glow);
             display: flex;
             flex-direction: column;
@@ -200,13 +196,13 @@
 
         @media (min-width: 768px) {
             .menu-category-block {
-                height: 420px !important;
+                height: 360px !important;
             }
         }
 
         @media (min-width: 1024px) {
             .menu-category-block {
-                height: 520px !important;
+                height: 440px !important;
             }
         }
 
@@ -222,7 +218,7 @@
         .category-clickable-wrapper {
             display: block;
             width: 100%;
-            height: 280px !important;
+            height: 210px !important;
             overflow: hidden;
             position: relative;
             background-color: var(--bose-cream);
@@ -231,13 +227,13 @@
 
         @media (min-width: 768px) {
             .category-clickable-wrapper {
-                height: 330px !important;
+                height: 270px !important;
             }
         }
 
         @media (min-width: 1024px) {
             .category-clickable-wrapper {
-                height: 420px !important;
+                height: 340px !important;
             }
         }
 
@@ -260,7 +256,7 @@
         }
 
         .category-block-footer {
-            padding: 16px;
+            padding: 12px;
             text-align: center;
             display: flex;
             flex-direction: column;
@@ -274,7 +270,7 @@
         .category-title-link {
             text-decoration: none;
             color: var(--bose-black);
-            font-size: 1.15rem;
+            font-size: 1.05rem;
             font-weight: 700;
             line-height: 1.4;
             transition: var(--bose-transition-smooth);
@@ -287,16 +283,12 @@
         .category-action-btn {
             text-decoration: none;
             color: var(--bose-pink);
-            font-size: 0.88rem;
+            font-size: 0.82rem;
             font-weight: 600;
             display: inline-flex;
             align-items: center;
             gap: 4px;
             transition: var(--bose-transition-smooth);
-        }
-
-        .menu-category-block:hover .category-action-btn {
-            letter-spacing: 0.5px;
         }
     </style>
     
@@ -326,7 +318,6 @@
 </head>
 <body>
 
-    <!-- الشريط العلوي المتحرك (متطابق تماماً مع الصفحة الرئيسية) -->
     <div class="bose-top-marquee-bar">
         <div class="marquee-track-container" id="top-marquee-track">
             <div class="marquee-message-node">✨ طعم أصلي وخامات طبيعية 100% طازجة يومياً من مطبخنا إليكم مباشرة فرع الكفاح 🌸</div>
@@ -344,7 +335,6 @@
         </div>
     </div>
 
-    <!-- الهيدر الثابت الموحد (متطابق 100% مع الصفحة الرئيسية) -->
     <header class="bose-navbar">
         <div class="nav-right-side">
             <button class="nav-menu-toggle" id="sidebar-open-btn" aria-label="فتح القائمة الجانبية"></button>
@@ -361,7 +351,6 @@
         </div>
     </header>
 
-    <!-- القائمة الجانبية الموحدة وشاشات الحماية (متطابقة 100% مع الصفحة الرئيسية) -->
     <div class="drawer-overlay" id="drawer-shield"></div>
     <aside class="bose-drawer-menu" id="sidebar-drawer">
         <div class="drawer-premium-header">
@@ -387,7 +376,6 @@
         </div>
     </aside>
 
-    <!-- شاشة البحث الفوري (متطابقة 100% مع الصفحة الرئيسية) -->
     <div class="bose-search-modal" id="search-container">
         <div class="search-header">
             <h3>البحث الفوري السريع</h3>
@@ -400,7 +388,6 @@
         <div class="search-results-container"></div>
     </div>
 
-    <!-- محتوى صفحة المنيو الرئيسي -->
     <main class="menu-main-container">
         <section class="menu-page-header">
             <h1 class="menu-page-title">المنيو الشامل</h1>
@@ -410,7 +397,7 @@
         <div class="tabs-outer-wrapper">
             <div class="tabs-container" id="menu-tabs">
                 <button class="tab-filter-btn active" data-category="all">الكل 🌸</button>
-                <button class="tab-filter-btn" data-category="taswaq-toort">التورت</button>
+                <button class="tab-filter-btn" data-category="taswaq-turt">التورت</button>
                 <button class="tab-filter-btn" data-category="taswaq-gatowat">الجاتوهات</button>
                 <button class="tab-filter-btn" data-category="taswaq-qashtota">القشطوطة</button>
                 <button class="tab-filter-btn" data-category="taswaq-despacito">الديسباسيتو</button>
@@ -418,7 +405,7 @@
                 <button class="tab-filter-btn" data-category="taswaq-donuts">الدوناتس</button>
                 <button class="tab-filter-btn" data-category="taswaq-red-velvet">الريدڤيلڤت</button>
                 <button class="tab-filter-btn" data-category="taswaq-cupcake">الكب كيك</button>
-                <button class="tab-filter-btn" data-category="taswaq-mini-cake">الميني تورت</button>
+                <button class="tab-filter-btn" data-category="taswaq-mini-turt">الميني تورت</button>
                 <button class="tab-filter-btn" data-category="taswaq-flowers">الورد</button>
                 <button class="tab-filter-btn" data-category="taswaq-happiness-cups">كبات السعادة</button>
                 <button class="tab-filter-btn" data-category="taswaq-relax-box">بوكس الروقان</button>
@@ -428,13 +415,13 @@
         <div class="full-menu-wrapper">
             <div class="full-menu-grid" id="full-menu-wrapper">
                 
-                <div class="menu-category-block" data-category-id="taswaq-toort">
-                    <a href="category.html?id=taswaq-toort" class="category-clickable-wrapper">
+                <div class="menu-category-block" data-category-id="taswaq-turt">
+                    <a href="category.html?id=taswaq-turt" class="category-clickable-wrapper">
                         <img class="category-block-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="التورت">
                     </a>
                     <div class="category-block-footer">
-                        <a href="category.html?id=taswaq-toort" class="category-title-link">التورت</a>
-                        <a href="category.html?id=taswaq-toort" class="category-action-btn">استعرض المنتجات 🌸</a>
+                        <a href="category.html?id=taswaq-turt" class="category-title-link">التورت</a>
+                        <a href="category.html?id=taswaq-turt" class="category-action-btn">استعرض المنتجات 🌸</a>
                     </div>
                 </div>
 
@@ -508,13 +495,13 @@
                     </div>
                 </div>
 
-                <div class="menu-category-block" data-category-id="taswaq-mini-cake">
-                    <a href="category.html?id=taswaq-mini-cake" class="category-clickable-wrapper">
+                <div class="menu-category-block" data-category-id="taswaq-mini-turt">
+                    <a href="category.html?id=taswaq-mini-turt" class="category-clickable-wrapper">
                         <img class="category-block-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="الميني تورت">
                     </a>
                     <div class="category-block-footer">
-                        <a href="category.html?id=taswaq-mini-cake" class="category-title-link">الميني تورت</a>
-                        <a href="category.html?id=taswaq-mini-cake" class="category-action-btn">استعرض المنتجات 🌸</a>
+                        <a href="category.html?id=taswaq-mini-turt" class="category-title-link">الميني تورت</a>
+                        <a href="category.html?id=taswaq-mini-turt" class="category-action-btn">استعرض المنتجات 🌸</a>
                     </div>
                 </div>
 
@@ -552,7 +539,6 @@
         </div>
     </main>
 
-    <!-- الفوتر الفاخر الموحد (متطابق 100% مع الصفحة الرئيسية) -->
     <footer class="bose-footer">
         <div class="footer-container">
             <div class="footer-about-block">
@@ -593,13 +579,11 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            // حل المشكلة الجذري: ننتظر بث حدث اكتمال قراءة وحقن البيانات من محرك الأنوية قبل تكرار عناصر الشريط
             window.addEventListener('bose_data_ready', () => {
                 initializeMarqueeStreaming();
                 hydrateCategoryImages();
             });
 
-            // تأمين ارتدادي: إذا كانت البيانات قد حُملت بالفعل قبل رصد الحدث، ننعش شريط التمرير فوراً
             if (window.BoseStoreData && window.BoseStoreData.store) {
                 initializeMarqueeStreaming();
                 hydrateCategoryImages();
@@ -617,7 +601,6 @@
                 }
             }
 
-            // سحب صور الفئات بشكل ديناميكي من ملف JSON لضمان عدم وجود روابط معطلة
             function hydrateCategoryImages() {
                 if (window.BoseStoreData && window.BoseStoreData.homepage && window.BoseStoreData.homepage.categoriesSlider) {
                     const categories = window.BoseStoreData.homepage.categoriesSlider;
@@ -630,7 +613,6 @@
                 }
             }
 
-            // محرك فرز الفئات والأزرار للمنيو الشامل
             const tabs = document.querySelectorAll(".tab-filter-btn");
             const cards = document.querySelectorAll(".menu-category-block");
 
@@ -660,4 +642,3 @@
     </script>
 </body>
 </html>
-
