@@ -1,33 +1,82 @@
 ```css
 /**
- * 👑 ملف التصميم المركزي للأقسام والمنيو - حلويات بوسي V6.5 👑
- * النسخة الهندسية القياسية الكاملة والمطورة بنسبة 100% 
- * خالي تماماً من المشاكل البصرية وثغرات تداخل الخطوط ومتوافق مطلقاً مع الهوية البصرية الحاكمة
- * يدير أقسام الصفحة الرئيسية العشرة وفئات المنيو الـ 12 المعتمدة وصفحات المنتجات الديناميكية
- * [تصميم Mobile-First بالكامل مع تسريع عتاد الرسوميات للحصول على 60 إطار بالثانية]
+ * 👑 ملف التصميم المركزي للأقسام والمنيو - حلويات بوسي V17.0 👑
+ * النسخة الهندسية القياسية الكاملة بنسبة 100% - خالية تماماً من الثغرات والمشاكل البصرية
+ * متوافقة بشكل مطلق ومتبادل مع: global.css، core-engine.js، cart-engine.js، وقاعدة البيانات site-data-final.json
+ * [تغطية شاملة للصفحة الرئيسية، المنيو الشامل، صفحة الفئة الديناميكية، وصفحة المنتج الفردي مع تأمين التجاوب واللمس على الموبايل]
  */
 
 /* ==========================================================================\
-   1. حارس الأيقونات وتأمين عائلة الخطوط (Font Awesome Icon Guard)
+   1. حارس بيئة العمل والألوان الحاكمة الاحتياطية (Core Palette Fallbacks)
    ========================================================================== */
 
-/* منع تداخل الخطوط: خط Cairo يمنع تماماً من السيطرة على خطوط الأيقونات لضمان ظهورها الفوري */
-.fa, .fas, .fab, .far, .fa-solid, .fa-regular, .fa-brands, [class*=\"fa-\"] {
+:root {
+    /* تفعيل القيم والرموز الافتراضية لمنع انهيار التصميم في حال تأخر تحميل global.css */
+    --bose-pink: #FF91A4;       /* نبض الحياة: للحدود، الأسعار الديناميكية، وتأثيرات Hover */
+    --bose-white: #FFFFFF;      /* المسيطر تماماً: للخلفيات لمنع التكديس وتحقيق التنفس البصري */
+    --bose-black: #111111;      /* معزول تماماً: للنصوص والعناوين فقط، محظور استخدامه في الظلال والخلفيات */
+    --bose-gold: #D4AF37;       /* الفخامة الرمزية الناعمة: لنجوم التقييم وتفاصيل التخصيص الفاخرة */
+    --bose-cream: #FFF5F6;      /* خلفية دافئة ناعمة للفواصل والمقاطع التفاعلية */
+}
+
+/* ==========================================================================\
+   2. حارس الأيقونات الذكي ومنع اختفائها (Strict Icon Weight Guard)
+   ========================================================================== */
+
+/* تأمين استدعاء خط الأيقونات ومنع Cairo من السيطرة عليها دون فرض أوزان خاطئة تدمر ظهورها */
+.fa, .fas, .fab, .far, .fa-solid, .fa-regular, .fa-brands, [class*="fa-"] {
     font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free', 'FontAwesome', sans-serif !important;
-    font-weight: 900 !important; /* الوزن الصارم لظهور الأيقونات الصلبة */
     display: inline-block !important;
     font-style: normal !important;
     font-variant: normal !important;
     text-rendering: auto !important;
     -webkit-font-smoothing: antialiased !important;
-    -moz-osx-font-smoothing: grayscale !important;
+    word-spacing: normal !important;
+    letter-spacing: normal !important;
+}
+
+/* توزيع الأوزان الهندسية الصحيحة لكل فئة أيقونات لمنع ظهور المربعات الفارغة */
+.fa-solid, .fas {
+    font-weight: 900 !important;
+}
+
+.fa-regular, .far, .fa-brands, .fab {
+    font-weight: 400 !important;
 }
 
 /* ==========================================================================\
-   2. قسم الهيرو الفاخر وسلايدر العروض التفاعلي (Hero Section & Slider)
+   3. تسريع الرسوميات ومنع تداخل اللمس على الموبايل (GPU & Mobile Touch Guards)
    ========================================================================== */
 
-.hero-slider-section {
+/* فئة تأمين التمرير للجسم عند فتح النوافذ المنبثقة لمنع تسريب التمرير */
+body.bose-no-scroll {
+    overflow: hidden !important;
+    touch-action: none !important;
+    height: 100vh !important;
+}
+
+/* تسريع عمليات التنقل والحركة على الهواتف */
+.bose-hardware-accelerated {
+    will-change: transform, opacity;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+}
+
+/* حماية نصوص اللغة العربية من التقطيع والتشويه البصري */
+.bose-arabic-text {
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    hyphens: none;
+    line-height: 1.5;
+}
+
+/* ==========================================================================\
+   4. قسم الهيرو وبانر العروض المتزلق (Hardware-Accelerated Hero Slider)
+   ========================================================================== */
+
+.bose-hero-section {
     position: relative;
     width: 100%;
     overflow: hidden;
@@ -36,1135 +85,1072 @@
     margin: 0;
 }
 
-.hero-slider-container {
+.bose-hero-slider {
     position: relative;
     width: 100%;
-    height: 65vh;
-    min-height: 400px;
-    max-height: 720px;
+    height: 55vh; /* توازن مثالي على شاشات الموبايل */
     overflow: hidden;
 }
 
-.hero-slides-wrapper {
+.bose-hero-wrapper {
     display: flex;
     width: 100%;
     height: 100%;
     transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     will-change: transform;
+    transform: translate3d(0, 0, 0);
 }
 
-.hero-slide-item {
-    min-width: 100%;
-    height: 100%;
-    position: relative;
+.bose-hero-slide {
     flex-shrink: 0;
-}
-
-.hero-slide-image-wrapper {
     width: 100%;
     height: 100%;
     position: relative;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
-.hero-slide-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    transform: scale(1);
-    transition: transform 8s ease;
-}
-
-.hero-slide-item.active .hero-slide-image {
-    transform: scale(1.06);
-}
-
-/* تدرج بصري فاخر لحماية وضوح النصوص يدمج تدريجياً إلى الأبيض بدلاً من الأسود الداكن */
-.hero-slide-overlay {
+/* تدرج معتم فاخر يضمن وضوح النصوص البيضاء دون تشويه صورة المنتج */
+.bose-hero-slide-overlay {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(to top, rgba(255, 255, 255, 0.95) 15%, rgba(255, 255, 255, 0.4) 60%, rgba(255, 255, 255, 0) 100%);
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to top, rgba(17, 17, 17, 0.8) 0%, rgba(17, 17, 17, 0.25) 100%);
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    align-items: center;
-    padding: 40px 20px 60px 20px;
-    text-align: center;
-    box-sizing: border-box;
-    z-index: 2;
+    padding: 35px 20px;
+    direction: rtl;
 }
 
-.hero-slide-content {
-    max-width: 800px;
-    opacity: 0;
-    transform: translateY(25px);
-    transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-    transition-delay: 0.2s;
-}
-
-.hero-slide-item.active .hero-slide-content {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.hero-slide-tag {
-    display: inline-block;
-    background-color: var(--bose-pink);
+.bose-hero-title {
     color: var(--bose-white);
-    padding: 6px 16px;
-    border-radius: 50px;
-    font-size: 0.85rem;
-    font-weight: 700; /* مغلق عند 700 كحد أقصى للتناسق الموحد */
-    margin-bottom: 12px;
-    letter-spacing: 0.5px;
-    box-shadow: 0 4px 10px rgba(255, 145, 164, 0.2);
-}
-
-.hero-slide-title {
-    font-size: 2rem;
-    font-weight: 700; /* مغلق عند 700 كحد أقصى للتناسق الموحد */
-    color: var(--bose-black);
-    margin-bottom: 12px;
+    font-size: 1.85rem;
+    font-weight: 700;
     line-height: 1.3;
+    margin-bottom: 8px;
+    text-shadow: 0 2px 8px rgba(255, 145, 164, 0.35);
 }
 
-.hero-slide-desc {
-    font-size: 1rem;
-    color: var(--bose-black);
-    opacity: 0.85;
-    margin-bottom: 24px;
-    line-height: 1.6;
+.bose-hero-desc {
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 0.95rem;
+    font-weight: 400;
+    line-height: 1.5;
+    margin-bottom: 18px;
+    max-width: 95%;
+    word-wrap: break-word;
 }
 
-/* أزرار التنقل الدائرية الفاخرة */
-.hero-slider-nav-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background-color: var(--bose-white);
-    border: 1px solid rgba(255, 145, 164, 0.2);
-    color: var(--bose-pink);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 5;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 0 4px 15px rgba(255, 145, 164, 0.15); /* ظل بمبي فاخر بديل للأسود */
-}
-
-.hero-slider-nav-btn:hover {
+.bose-hero-btn {
+    align-self: flex-start;
     background-color: var(--bose-pink);
     color: var(--bose-white);
-    box-shadow: 0 6px 20px rgba(255, 145, 164, 0.3);
+    font-weight: 700;
+    font-size: 0.9rem;
+    padding: 10px 24px;
+    border-radius: 50px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 10px rgba(255, 145, 164, 0.35);
 }
 
-.hero-slider-prev {
-    right: 20px;
+/* عزل تأثير الـ Hover على الأجهزة المكتبية فقط لتفادي تعليق الموبايل */
+@media (hover: hover) {
+    .bose-hero-btn:hover {
+        background-color: var(--bose-white);
+        color: var(--bose-pink);
+        border-color: var(--bose-pink);
+        box-shadow: 0 6px 14px rgba(255, 145, 164, 0.5);
+    }
 }
 
-.hero-slider-next {
-    left: 20px;
+.bose-hero-btn:active {
+    transform: scale(0.96);
 }
 
-/* مؤشرات التنقل السفلية */
-.hero-slider-dots {
+.bose-hero-dots {
     position: absolute;
-    bottom: 20px;
+    bottom: 12px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
     gap: 8px;
-    z-index: 5;
+    z-index: 10;
 }
 
-.hero-slider-dot {
+.bose-hero-dot {
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background-color: rgba(255, 145, 164, 0.3);
+    background-color: rgba(255, 255, 255, 0.5);
+    border: none;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all 0.3s ease;
+    padding: 0;
 }
 
-.hero-slider-dot.active {
-    width: 28px;
-    border-radius: 5px;
+.bose-hero-dot.active {
     background-color: var(--bose-pink);
+    width: 24px;
+    border-radius: 5px;
 }
 
 /* ==========================================================================\
-   3. قسم قصة العلامة التجارية (Story Section)
+   5. حاويات وأقسام الفئات الـ 12 المعتمدة (Flexible Categories Viewport)
    ========================================================================== */
 
-.bose-story-section {
-    padding: 60px 20px;
-    background-color: var(--bose-white);
-    text-align: center;
-}
-
-.bose-story-container {
-    max-width: 800px;
+.bose-section-container {
+    width: 100%;
+    max-width: 1200px;
     margin: 0 auto;
+    padding: 40px 16px;
+    direction: rtl;
 }
 
-.bose-story-subtitle {
-    color: var(--bose-gold);
-    font-size: 1.1rem;
-    font-weight: 700;
-    margin-bottom: 8px;
-    letter-spacing: 1px;
+.bose-section-header {
+    text-align: center;
+    margin-bottom: 30px;
 }
 
-.bose-story-title {
-    font-size: 2.2rem;
-    font-weight: 700;
+.bose-section-title {
     color: var(--bose-black);
-    margin-bottom: 20px;
+    font-size: 1.75rem;
+    font-weight: 700;
+    position: relative;
+    display: inline-block;
+    padding-bottom: 10px;
+    margin-bottom: 8px;
 }
 
-.bose-story-divider {
+.bose-section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
     width: 60px;
     height: 3px;
     background-color: var(--bose-pink);
-    margin: 0 auto 24px auto;
     border-radius: 2px;
 }
 
-.bose-story-text {
-    font-size: 1.1rem;
-    color: var(--bose-black);
-    line-height: 1.8;
-    opacity: 0.9;
+.bose-section-subtitle {
+    color: #4D4D4D; /* زيادة التباين اللوني للمقروئية الفاخرة */
+    font-size: 0.95rem;
+    font-weight: 400;
+    margin-top: 5px;
 }
 
-/* ==========================================================================\
-   4. فئات المنيو والـ Slider الدائري الفاخر (Category Slider)
-   ========================================================================== */
-
-.bose-categories-section {
-    padding: 40px 0 60px 0;
-    background-color: var(--bose-cream);
-    overflow: hidden;
+/* شبكة عرض فئات الصفحة الرئيسية الـ 12 المعتمدة */
+.bose-categories-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 فئات متجاورة لتسهيل الاستخدام على الموبايل */
+    gap: 12px;
+    justify-content: center;
 }
 
-.section-header-centered {
-    text-align: center;
-    padding: 0 20px;
-    margin-bottom: 40px;
-}
-
-.section-label {
-    font-size: 0.9rem;
-    color: var(--bose-pink);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    margin-bottom: 6px;
-    display: block;
-}
-
-.section-main-title {
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--bose-black);
-    margin-bottom: 12px;
-}
-
-.section-desc-text {
-    font-size: 1rem;
-    color: var(--bose-black);
-    opacity: 0.8;
-    max-width: 600px;
-    margin: 0 auto;
-    line-height: 1.5;
-}
-
-/* غلاف شلال الكروت الدائرية */
-.category-slider-wrapper {
-    position: relative;
-    width: 100%;
-    padding: 10px 0 20px 0;
-}
-
-.category-slider-track {
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scroll-behavior: smooth;
-    padding: 10px 20px 25px 20px;
-    gap: 20px;
-    -webkit-overflow-scrolling: touch;
-}
-
-.category-slider-track::-webkit-scrollbar {
-    display: none; /* إخفاء سكرولبار المتصفح لمنع تشويه الهوية */
-}
-
-/* كارت الفئة الفاخر والمطور */
-.category-slider-card {
-    flex: 0 0 auto;
-    width: 82vw;
-    max-width: 300px;
+.bose-category-card {
     background-color: var(--bose-white);
-    border-radius: 16px;
     border: 1px solid rgba(255, 145, 164, 0.15);
-    overflow: hidden;
-    scroll-snap-align: center;
-    box-shadow: 0 6px 20px rgba(255, 145, 164, 0.05); /* ظل بمبي خفيف جداً */
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    will-change: transform;
+    border-radius: 14px;
+    padding: 12px 6px;
+    text-align: center;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(255, 145, 164, 0.03);
 }
 
-.category-slider-card:hover {
-    transform: translateY(-8px) translateZ(0);
-    box-shadow: 0 12px 30px rgba(255, 145, 164, 0.15); /* هالة بمبية عند الهوفر */
-    border-color: var(--bose-pink);
+@media (hover: hover) {
+    .bose-category-card:hover {
+        transform: translateY(-4px);
+        border-color: var(--bose-pink);
+        box-shadow: 0 8px 22px rgba(255, 145, 164, 0.12);
+    }
 }
 
-.category-card-image-box {
-    width: 100%;
-    height: 240px;
-    position: relative;
-    overflow: hidden;
+.bose-category-card:active {
+    transform: scale(0.97);
 }
 
-.category-card-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+.bose-category-icon-wrapper {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: var(--bose-cream);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+    transition: background-color 0.3s ease;
 }
 
-.category-slider-card:hover .category-card-img {
-    transform: scale(1.08);
+.bose-category-card:hover .bose-category-icon-wrapper {
+    background-color: var(--bose-pink);
 }
 
-.category-card-body {
-    padding: 20px;
+.bose-category-icon-wrapper i {
+    color: var(--bose-pink);
+    font-size: 1.35rem;
+    transition: color 0.3s ease;
+}
+
+.bose-category-card:hover .bose-category-icon-wrapper i {
+    color: var(--bose-white);
+}
+
+.bose-category-name {
+    color: var(--bose-black);
+    font-size: 0.85rem;
+    font-weight: 700;
+    line-height: 1.3;
+    word-wrap: break-word;
     text-align: center;
 }
 
-.category-card-title {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--bose-black);
-    margin-bottom: 8px;
-}
-
-.category-card-desc {
-    font-size: 0.9rem;
-    color: var(--bose-black);
-    opacity: 0.75;
-    line-height: 1.5;
-    margin-bottom: 16px;
-    min-height: 40px;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
 /* ==========================================================================\
-   5. كروت المنتجات والشبكة الذكية (Product Grid & Cards)
+   6. كروت عرض المنتجات وتأمين الأسعار والبادجات (Dynamic Product Grid)
    ========================================================================== */
-
-.bose-products-section {
-    padding: 60px 20px;
-    background-color: var(--bose-white);
-}
 
 .bose-products-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Mobile First افتراضي */
-    gap: 16px;
-    max-width: 1200px;
-    margin: 0 auto;
+    grid-template-columns: repeat(2, 1fr); /* كارتين متجاورين بالمحاذاة التامة لمنع التراص العمودي */
+    gap: 12px;
 }
 
-/* كارت المنتج المطور والفاخر */
 .bose-product-card {
     background-color: var(--bose-white);
+    border: 1px solid rgba(255, 145, 164, 0.15);
     border-radius: 16px;
-    border: 1px solid rgba(255, 145, 164, 0.12);
     overflow: hidden;
     position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 0 4px 15px rgba(255, 145, 164, 0.04);
-    will-change: transform;
-}
-
-.bose-product-card:hover {
-    transform: translateY(-6px) translateZ(0);
-    border-color: var(--bose-pink);
-    box-shadow: 0 10px 25px rgba(255, 145, 164, 0.15);
-}
-
-.product-card-media {
-    position: relative;
-    width: 100%;
-    padding-top: 100%; /* نسبة عرض إلى ارتفاع 1:1 مربع مثالي */
-    overflow: hidden;
-    background-color: var(--bose-cream);
-}
-
-.product-card-img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 4px 12px rgba(255, 145, 164, 0.04);
     height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.bose-product-card:hover .product-card-img {
-    transform: scale(1.06);
+@media (hover: hover) {
+    .bose-product-card:hover {
+        transform: translateY(-5px);
+        border-color: var(--bose-pink);
+        box-shadow: 0 10px 25px rgba(255, 145, 164, 0.15);
+    }
 }
 
-/* شارات المنتجات */
-.product-badge-premium {
+.bose-product-badge {
     position: absolute;
     top: 10px;
     right: 10px;
-    background-color: var(--bose-pink);
-    color: var(--bose-white);
-    font-size: 0.75rem;
-    font-weight: 700;
-    padding: 4px 10px;
-    border-radius: 50px;
-    z-index: 2;
-    box-shadow: 0 3px 8px rgba(255, 145, 164, 0.25);
-}
-
-.product-badge-customizable {
-    position: absolute;
-    top: 10px;
-    left: 10px;
     background-color: var(--bose-gold);
     color: var(--bose-white);
     font-size: 0.75rem;
     font-weight: 700;
     padding: 4px 10px;
-    border-radius: 50px;
+    border-radius: 20px;
     z-index: 2;
     box-shadow: 0 3px 8px rgba(212, 175, 55, 0.25);
 }
 
-.product-card-details {
-    padding: 12px 12px 16px 12px;
+.bose-product-image-container {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background-color: var(--bose-cream);
+    position: relative;
+}
+
+.bose-product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+    display: block;
+}
+
+.bose-product-card:hover .bose-product-image {
+    transform: scale(1.05);
+}
+
+.bose-product-info {
+    padding: 12px;
     display: flex;
     flex-direction: column;
     flex-grow: 1;
+    justify-content: space-between;
 }
 
-.product-card-meta {
-    font-size: 0.78rem;
-    color: var(--bose-gold);
-    font-weight: 700;
-    margin-bottom: 4px;
-}
-
-.product-card-title {
+/* حماية العناوين من البتر مع الحفاظ على تناسق التصميم */
+.bose-product-title {
+    color: var(--bose-black);
     font-size: 0.95rem;
     font-weight: 700;
-    color: var(--bose-black);
-    margin-bottom: 8px;
     line-height: 1.4;
+    margin-bottom: 6px;
+    word-wrap: break-word;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    min-height: 38px;
+    min-height: 2.8em;
 }
 
-.product-card-pricing {
+.bose-product-rating {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    margin-top: auto;
-    padding-top: 8px;
-}
-
-.product-card-price {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--bose-pink); /* نبض الحياة */
-}
-
-.product-card-old-price {
-    font-size: 0.85rem;
-    color: var(--bose-black);
-    opacity: 0.4;
-    text-decoration: line-through;
-    margin-right: 6px;
-}
-
-/* ==========================================================================\
-   6. قسم عناصر التميز والثقة الشامل (Trust Features Section)
-   ========================================================================== */
-
-.bose-trust-features-section {
-    padding: 60px 20px;
-    background-color: var(--bose-cream);
-}
-
-.bose-trust-features-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 30px;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.bose-trust-card {
-    background-color: var(--bose-white);
-    padding: 30px 20px;
-    border-radius: 16px;
-    text-align: center;
-    border: 1px solid rgba(255, 145, 164, 0.1);
-    box-shadow: 0 4px 15px rgba(255, 145, 164, 0.03);
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    will-change: transform;
-}
-
-.bose-trust-card:hover {
-    transform: translateY(-5px) translateZ(0);
-    box-shadow: 0 10px 25px rgba(255, 145, 164, 0.12);
-}
-
-.bose-trust-icon-box {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    background-color: var(--bose-cream);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 20px auto;
-    color: var(--bose-pink);
-    font-size: 1.6rem;
-    border: 1px solid rgba(255, 145, 164, 0.15);
-}
-
-.bose-trust-card-title {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: var(--bose-black);
-    margin-bottom: 10px;
-}
-
-.bose-trust-card-desc {
-    font-size: 0.95rem;
-    color: var(--bose-black);
-    opacity: 0.8;
-    line-height: 1.6;
-}
-
-/* ==========================================================================\
-   7. تقييمات العملاء الفاخرة وسلايدر الآراء (Premium Testimonials)
-   ========================================================================== */
-
-.bose-reviews-section {
-    padding: 60px 20px;
-    background-color: var(--bose-white);
-    overflow: hidden;
-}
-
-.reviews-carousel-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    position: relative;
-}
-
-.reviews-carousel-track {
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scroll-behavior: smooth;
-    gap: 20px;
-    padding: 15px 10px 25px 10px;
-    -webkit-overflow-scrolling: touch;
-}
-
-.reviews-carousel-track::-webkit-scrollbar {
-    display: none;
-}
-
-/* كارت التقييم الفاخر */
-.review-card-premium {
-    flex: 0 0 auto;
-    width: 85vw;
-    max-width: 360px;
-    background-color: var(--bose-white);
-    border-radius: 16px;
-    border: 1px solid rgba(255, 145, 164, 0.12);
-    padding: 24px;
-    scroll-snap-align: center;
-    box-shadow: 0 4px 15px rgba(255, 145, 164, 0.04);
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    will-change: transform;
-}
-
-.review-card-premium:hover {
-    transform: translateY(-5px) translateZ(0);
-    border-color: var(--bose-pink);
-    box-shadow: 0 10px 25px rgba(255, 145, 164, 0.12);
-}
-
-.review-stars-row {
-    color: var(--bose-gold);
-    font-size: 0.95rem;
-    margin-bottom: 12px;
-    display: flex;
     gap: 4px;
+    margin-bottom: 8px;
 }
 
-.review-comment-text {
-    font-size: 0.95rem;
-    color: var(--bose-black);
-    opacity: 0.85;
-    line-height: 1.6;
-    margin-bottom: 20px;
-    min-height: 72px;
-}
-
-.reviewer-profile-info {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.reviewer-avatar-box {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    overflow: hidden;
-    background-color: var(--bose-cream);
-    border: 1.5px solid var(--bose-pink);
-}
-
-.reviewer-avatar-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.reviewer-meta-details {
-    display: flex;
-    flex-direction: column;
-}
-
-.reviewer-display-name {
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: var(--bose-black);
-}
-
-.reviewer-verified-badge {
-    font-size: 0.75rem;
-    color: var(--bose-pink);
-    font-weight: 700;
-}
-
-/* ==========================================================================\
-   8. قسم الأسئلة الشائعة الأكورديون (FAQ Accordion)
-   ========================================================================== */
-
-.bose-faq-section {
-    padding: 60px 20px;
-    background-color: var(--bose-cream);
-}
-
-.bose-faq-container {
-    max-width: 800px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-/* كارت السؤال الفردي المطور */
-.faq-accordion-item {
-    background-color: var(--bose-white);
-    border-radius: 12px;
-    border: 1px solid rgba(255, 145, 164, 0.1);
-    overflow: hidden;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.faq-accordion-header {
-    width: 100%;
-    padding: 18px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: none;
-    border: none;
-    cursor: pointer;
-    text-align: right;
-    font-family: inherit;
-    outline: none;
-}
-
-.faq-question-text {
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: var(--bose-black);
-}
-
-.faq-toggle-icon {
-    font-size: 1rem;
-    color: var(--bose-pink);
-    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.faq-accordion-item.active {
-    border-color: var(--bose-pink);
-    box-shadow: 0 4px 15px rgba(255, 145, 164, 0.08);
-}
-
-.faq-accordion-item.active .faq-toggle-icon {
-    transform: rotate(180deg);
-}
-
-.faq-accordion-content {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.faq-answer-inner {
-    padding: 0 20px 20px 20px;
-    font-size: 0.95rem;
-    color: var(--bose-black);
-    opacity: 0.8;
-    line-height: 1.6;
-}
-
-/* ==========================================================================\
-   9. معرض انستجرام ومواقع التواصل الاجتماعي (Instagram Gallery Section)
-   ========================================================================== */
-
-.bose-social-gallery-section {
-    padding: 60px 20px;
-    background-color: var(--bose-white);
-}
-
-.social-gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Mobile First */
-    gap: 12px;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.social-gallery-item {
-    position: relative;
-    padding-top: 100%; /* نسبة 1:1 */
-    border-radius: 12px;
-    overflow: hidden;
-    background-color: var(--bose-cream);
-    box-shadow: 0 4px 12px rgba(255, 145, 164, 0.03);
-}
-
-.social-gallery-img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* الطبقة التفاعلية الفاخرة للإنستجرام مع دمج تدرج دافئ خفيف بديل للأسود المعتم */
-.social-gallery-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(255, 145, 164, 0.85); /* تظليل بمبي حالم */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    z-index: 2;
-    color: var(--bose-white);
-    font-size: 1.5rem;
-}
-
-.social-gallery-item:hover .social-gallery-img {
-    transform: scale(1.08);
-}
-
-.social-gallery-item:hover .social-gallery-overlay {
-    opacity: 1;
-}
-
-/* ==========================================================================\
-   10. فروع الموقع وخرائط جوجل المدمجة (Contact & Map Section)
-   ========================================================================== */
-
-.bose-contact-map-section {
-    padding: 60px 20px;
-    background-color: var(--bose-cream);
-}
-
-.bose-contact-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-}
-
-.contact-details-box {
-    background-color: var(--bose-white);
-    padding: 30px 20px;
-    border-radius: 16px;
-    border: 1px solid rgba(255, 145, 164, 0.12);
-    box-shadow: 0 4px 15px rgba(255, 145, 164, 0.04);
-}
-
-.contact-info-list {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    margin-top: 24px;
-}
-
-.contact-info-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 14px;
-}
-
-.contact-info-icon-box {
-    font-size: 1.2rem;
-    color: var(--bose-pink);
-    margin-top: 3px;
-}
-
-.contact-info-text-box {
-    display: flex;
-    flex-direction: column;
-}
-
-.contact-info-label {
-    font-size: 0.85rem;
+.bose-product-rating i {
     color: var(--bose-gold);
-    font-weight: 700;
+    font-size: 0.75rem;
 }
 
-.contact-info-value {
-    font-size: 1rem;
-    color: var(--bose-black);
-    line-height: 1.5;
+.bose-product-rating span {
+    color: #555555; /* تباين مرتفع متوافق مع معايير الـ WCAG */
+    font-size: 0.75rem;
+    margin-right: 4px;
 }
 
-/* حاوية الخريطة التفاعلية */
-.google-map-iframe-container {
-    width: 100%;
-    height: 320px;
-    border-radius: 16px;
-    overflow: hidden;
-    border: 1px solid rgba(255, 145, 164, 0.15);
-    box-shadow: 0 4px 15px rgba(255, 145, 164, 0.06);
-}
-
-.google-map-iframe-container iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-}
-
-/* ==========================================================================\
-   11. صفحة المنتج الفردي وتفاصيل المنتج (Product Detail Page)
-   ========================================================================== */
-
-.bose-product-detail-section {
-    padding: 40px 20px;
-    background-color: var(--bose-white);
-}
-
-.bose-product-detail-container {
-    max-width: 1200px;
-    margin: 0 auto;
+.bose-product-price-wrapper {
     display: flex;
-    flex-direction: column;
-    gap: 30px;
-}
-
-.product-detail-gallery {
-    width: 100%;
-}
-
-.product-main-image-box {
-    width: 100%;
-    aspect-ratio: 1;
-    border-radius: 16px;
-    overflow: hidden;
-    border: 1px solid rgba(255, 145, 164, 0.12);
-    box-shadow: 0 6px 20px rgba(255, 145, 164, 0.05);
-    background-color: var(--bose-cream);
-}
-
-.product-main-image-box img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.product-detail-info {
-    display: flex;
-    flex-direction: column;
-}
-
-.product-detail-title {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: var(--bose-black);
+    align-items: baseline;
+    gap: 6px;
     margin-bottom: 12px;
 }
 
-.product-detail-price-row {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: 20px;
-}
-
-.product-detail-current-price {
-    font-size: 1.6rem;
-    font-weight: 700;
+.bose-product-price {
     color: var(--bose-pink);
+    font-size: 1.15rem;
+    font-weight: 700;
 }
 
-.product-detail-old-price {
-    font-size: 1.1rem;
-    color: var(--bose-black);
-    opacity: 0.4;
+.bose-product-price-old {
+    color: #7A7A7A; /* تباين مرتفع للنص المشطوب */
+    font-size: 0.85rem;
     text-decoration: line-through;
 }
 
-.product-detail-description {
-    font-size: 1rem;
-    color: var(--bose-black);
-    opacity: 0.85;
-    line-height: 1.7;
-    margin-bottom: 24px;
-}
-
-.product-action-controls {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    margin-top: auto;
-}
-
-/* عداد الكمية المطوّر */
-.quantity-stepper-box {
-    display: flex;
-    align-items: center;
-    border: 1px solid rgba(255, 145, 164, 0.3);
-    border-radius: 8px;
-    width: fit-content;
-    overflow: hidden;
-    background-color: var(--bose-white);
-}
-
-.quantity-stepper-btn {
-    width: 44px;
-    height: 44px;
-    background: none;
-    border: none;
-    font-size: 1.2rem;
-    color: var(--bose-pink);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.2s ease;
-}
-
-.quantity-stepper-btn:hover {
-    background-color: var(--bose-cream);
-}
-
-.quantity-stepper-input {
-    width: 50px;
-    height: 44px;
-    border: none;
-    border-left: 1px solid rgba(255, 145, 164, 0.2);
-    border-right: 1px solid rgba(255, 145, 164, 0.2);
-    text-align: center;
-    font-family: inherit;
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: var(--bose-black);
-    outline: none;
-}
-
-/* ==========================================================================\
-   12. كتل التصميم المشتركة والأزرار الفاخرة (Shared Buttons & Utilities)
-   ========================================================================== */
-
-/* الزر الأساسي الفاخر لعلامة حلويات بوسي */
-.btn-bose-primary {
+.bose-product-action-btn {
+    width: 100%;
     background-color: var(--bose-pink);
     color: var(--bose-white);
     border: none;
     border-radius: 8px;
-    padding: 14px 28px;
-    font-family: inherit;
-    font-size: 1rem;
+    padding: 10px;
+    font-size: 0.85rem;
     font-weight: 700;
     cursor: pointer;
-    display: inline-flex;
+    transition: all 0.3s ease;
+    display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 0 4px 15px rgba(255, 145, 164, 0.25);
-    text-decoration: none;
-    text-align: center;
+    gap: 8px;
 }
 
-.btn-bose-primary:hover {
-    transform: translateY(-2px) translateZ(0);
-    box-shadow: 0 8px 25px rgba(255, 145, 164, 0.4);
-}
-
-.btn-bose-primary:active {
-    transform: translateY(1px);
-}
-
-/* الزر الثانوي الفاخر */
-.btn-bose-secondary {
-    background-color: var(--bose-white);
-    color: var(--bose-pink);
-    border: 1px solid var(--bose-pink);
-    border-radius: 8px;
-    padding: 14px 28px;
-    font-family: inherit;
-    font-size: 1rem;
-    font-weight: 700;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    text-decoration: none;
-    text-align: center;
-}
-
-.btn-bose-secondary:hover {
-    background-color: var(--bose-cream);
-    transform: translateY(-2px) translateZ(0);
+.bose-product-action-btn:hover {
+    background-color: var(--bose-black);
+    color: var(--bose-white);
 }
 
 /* ==========================================================================\
-   13. محددات الشاشات الفاخرة والتجاوب الكامل (Responsive Breakpoints)
+   7. تصميم صفحة المنيو الشامل والفلاتر الذكية (Menu & Filters Layout)
    ========================================================================== */
 
-/* شاشات الموبايل المتوسطة والصغيرة جداً */
-@media (max-width: 576px) {
-    .bose-products-grid {
-        gap: 12px;
+.menu-layout-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px 16px;
+    direction: rtl;
+}
+
+/* شريط تصفح الفئات الأفقي والسلس للموبايل */
+.menu-categories-scroll {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding: 4px 4px 12px 4px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+}
+
+.menu-categories-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+/* كبسولات فلترة الفئات المعتمدة */
+.menu-category-filter-pill {
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    background-color: var(--bose-white);
+    border: 1px solid rgba(255, 145, 164, 0.25);
+    color: var(--bose-black);
+    font-family: 'Cairo', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 8px 16px;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.menu-category-filter-pill.active {
+    background-color: var(--bose-pink);
+    color: var(--bose-white);
+    border-color: var(--bose-pink);
+    box-shadow: 0 4px 12px rgba(255, 145, 164, 0.3);
+}
+
+/* حاوية محددات الترتيب والفرز */
+.menu-sort-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 145, 164, 0.15);
+    padding-bottom: 12px;
+    margin-bottom: 8px;
+}
+
+.menu-results-count {
+    font-size: 0.9rem;
+    color: #4D4D4D;
+    font-weight: 600;
+}
+
+.menu-sort-dropdown {
+    font-family: 'Cairo', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--bose-black);
+    border: 1px solid rgba(255, 145, 164, 0.25);
+    background-color: var(--bose-white);
+    padding: 6px 12px;
+    border-radius: 8px;
+    outline: none;
+    cursor: pointer;
+}
+
+.menu-sort-dropdown:focus {
+    border-color: var(--bose-pink);
+}
+
+/* ==========================================================================\
+   8. صفحة تفاصيل المنتج والمقاسات والملاحظات (Single Product Detail Page)
+   ========================================================================== */
+
+.product-detail-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 20px 16px;
+    direction: rtl;
+}
+
+.product-gallery-wrapper {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 145, 164, 0.15);
+    background-color: var(--bose-cream);
+}
+
+.product-gallery-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.product-options-card {
+    background-color: var(--bose-white);
+    border: 1px solid rgba(255, 145, 164, 0.15);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(255, 145, 164, 0.04);
+}
+
+.product-option-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--bose-black);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.product-option-title i {
+    color: var(--bose-pink);
+}
+
+/* خيارات المقاسات أو الإضافات */
+.product-size-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.product-size-radio {
+    display: none;
+}
+
+.product-size-label {
+    border: 1px solid rgba(255, 145, 164, 0.25);
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--bose-black);
+    transition: all 0.3s ease;
+}
+
+.product-size-radio:checked + .product-size-label {
+    background-color: var(--bose-pink);
+    color: var(--bose-white);
+    border-color: var(--bose-pink);
+    box-shadow: 0 4px 10px rgba(255, 145, 164, 0.2);
+}
+
+/* مدخلات الكتابة على التورتة والملاحظات */
+.product-custom-input {
+    width: 100%;
+    font-family: 'Cairo', sans-serif;
+    font-size: 0.9rem;
+    padding: 10px 12px;
+    border: 1px solid rgba(255, 145, 164, 0.25);
+    background-color: var(--bose-cream);
+    border-radius: 10px;
+    color: var(--bose-black);
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-custom-input:focus {
+    border-color: var(--bose-pink);
+    background-color: var(--bose-white);
+    box-shadow: 0 0 8px rgba(255, 145, 164, 0.25);
+}
+
+/* متحكم الكمية الاحترافي واللمسي */
+.quantity-selector-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin: 20px 0;
+}
+
+.qty-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 145, 164, 0.3);
+    background-color: var(--bose-white);
+    color: var(--bose-pink);
+    font-size: 1.2rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.qty-btn:active {
+    transform: scale(0.9);
+    background-color: var(--bose-pink);
+    color: var(--bose-white);
+}
+
+.qty-val {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--bose-black);
+    min-width: 30px;
+    text-align: center;
+}
+
+/* ==========================================================================\
+   9. بانرات العروض الهدايا وكروت التسويق (Promo Campaign Blocks)
+   ========================================================================== */
+
+.bose-promo-section {
+    background-color: var(--bose-cream);
+    width: 100%;
+}
+
+.bose-promo-cards-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.bose-promo-card {
+    background-color: var(--bose-white);
+    border: 1px solid rgba(255, 145, 164, 0.15);
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 180px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(255, 145, 164, 0.04);
+}
+
+.bose-promo-card-tag {
+    align-self: flex-start;
+    background-color: var(--bose-cream);
+    color: var(--bose-pink);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+}
+
+.bose-promo-card-title {
+    color: var(--bose-black);
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    line-height: 1.3;
+}
+
+.bose-promo-card-desc {
+    color: #4D4D4D;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 16px;
+    max-width: 85%;
+    word-wrap: break-word;
+}
+
+.bose-promo-card-btn {
+    align-self: flex-start;
+    color: var(--bose-pink);
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: transform 0.3s ease;
+}
+
+.bose-promo-card-btn:hover {
+    transform: translateX(-6px);
+}
+
+/* ==========================================================================\
+   10. آراء العملاء وقنوات التقييم الفاخرة (Reviews Touch Slider)
+   ========================================================================== */
+
+.bose-reviews-slider {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding: 10px 4px 20px 4px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+}
+
+.bose-reviews-slider::-webkit-scrollbar {
+    display: none;
+}
+
+.bose-review-card {
+    flex: 0 0 85%;
+    scroll-snap-align: start;
+    background-color: var(--bose-white);
+    border: 1px solid rgba(255, 145, 164, 0.12);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 6px 15px rgba(255, 145, 164, 0.04);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.bose-review-text {
+    color: #444444;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 16px;
+    font-style: italic;
+    word-wrap: break-word;
+}
+
+.bose-review-user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.bose-review-user-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: var(--bose-cream);
+    color: var(--bose-pink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border: 1px solid rgba(255, 145, 164, 0.2);
+}
+
+.bose-review-user-name {
+    color: var(--bose-black);
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.bose-review-user-date {
+    color: #7A7A7A;
+    font-size: 0.75rem;
+    margin-top: 2px;
+}
+
+/* ==========================================================================\
+   11. معرض السوشيال ميديا وتغطيات العمل الفعلي (Live Social Gallery)
+   ========================================================================== */
+
+.social-gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.gallery-item {
+    position: relative;
+    aspect-ratio: 1/1;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 145, 164, 0.15);
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.gallery-item:hover img {
+    transform: scale(1.08);
+}
+
+.gallery-overlay-icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 145, 164, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.gallery-item:hover .gallery-overlay-icon {
+    opacity: 1;
+}
+
+.gallery-overlay-icon i {
+    color: var(--bose-white);
+    font-size: 1.8rem;
+}
+
+/* ==========================================================================\
+   12. الأسئلة الشائعة وتسهيل الاستخدام (Accordion System)
+   ========================================================================== */
+
+.bose-faq-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.bose-faq-item {
+    background-color: var(--bose-white);
+    border: 1px solid rgba(255, 145, 164, 0.15);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.bose-faq-trigger {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    text-align: right;
+    font-family: 'Cairo', sans-serif;
+    font-weight: 700;
+    color: var(--bose-black);
+    font-size: 0.95rem;
+}
+
+.bose-faq-trigger i {
+    color: var(--bose-pink);
+    transition: transform 0.3s ease;
+}
+
+.bose-faq-item.active .bose-faq-trigger i {
+    transform: rotate(180deg);
+}
+
+.bose-faq-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+    background-color: var(--bose-cream);
+}
+
+.bose-faq-inner {
+    padding: 16px;
+    color: #4D4D4D;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    border-top: 1px solid rgba(255, 145, 164, 0.1);
+    word-wrap: break-word;
+}
+
+/* ==========================================================================\
+   13. موديل البحث السريع وتأمين الفلاتر (Search Modal & Popups)
+   ========================================================================== */
+
+.bose-search-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(17, 17, 17, 0.65); /* حماية من التعتيم الأسود التام */
+    backdrop-filter: blur(5px);
+    z-index: 2000;
+    display: none;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 12vh;
+}
+
+.bose-search-card {
+    background-color: var(--bose-white);
+    border-radius: 18px;
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 0 10px 30px rgba(255, 145, 164, 0.2);
+    overflow: hidden;
+    animation: slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
     }
-    .bose-product-card {
-        border-radius: 12px;
-    }
-    .product-card-title {
-        font-size: 0.88rem;
-    }
-    .hero-slider-container {
-        height: 50vh;
-        min-height: 320px;
-    }
-    .hero-slide-title {
-        font-size: 1.45rem;
-    }
-    .hero-slide-desc {
-        font-size: 0.9rem;
-    }
-    .category-slider-card {
-        width: 76vw !important;
-        min-height: 340px !important;
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 
-/* شاشات التابلت والأجهزة المتوسطة */
+.bose-search-header {
+    padding: 16px;
+    border-bottom: 1px solid rgba(255, 145, 164, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.bose-search-input-wrapper {
+    flex-grow: 1;
+    position: relative;
+}
+
+.bose-search-input-wrapper i {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--bose-pink);
+}
+
+.bose-search-input {
+    width: 100%;
+    border: 1px solid rgba(255, 145, 164, 0.25);
+    background-color: var(--bose-cream);
+    border-radius: 30px;
+    padding: 10px 38px 10px 16px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 0.95rem;
+    color: var(--bose-black);
+    outline: none;
+}
+
+.bose-search-input:focus {
+    border-color: var(--bose-pink);
+    background-color: var(--bose-white);
+}
+
+.bose-search-close-btn {
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    color: #555555;
+    cursor: pointer;
+}
+
+.bose-search-results {
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 12px;
+}
+
+.bose-category-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.bose-product-details-container {
+    background-color: var(--bose-white);
+    border: 1px solid rgba(255, 145, 164, 0.15);
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 8px 24px rgba(255, 145, 164, 0.05);
+}
+
+/* ==========================================================================\
+   14. محددات التجاوب والشبكات للشاشات المتوسطة والكبيرة (Responsive Breakpoints)
+   ========================================================================== */
+
+/* شاشات الموبايل المتوسطة والصغيرة (شاشات حتى 360px وأقل) */
+@media (max-width: 360px) {
+    .bose-hero-title {
+        font-size: 1.5rem;
+    }
+    .bose-categories-grid {
+        grid-template-columns: repeat(2, 1fr); /* فئتين لمنع حشر الأيقونات وضغط النصوص */
+    }
+    .bose-products-grid {
+        grid-template-columns: 1fr; /* عرض منتج واحد في السطر للتصفح السهل */
+    }
+    .product-size-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* أجهزة التابلت والمتوسطة (Tablet Devices - 768px فأكبر) */
 @media (min-width: 768px) {
-    .category-slider-card {
-        width: 42vw !important;
-        max-width: 340px !important;
-        min-height: 430px !important;
+    .bose-hero-slider {
+        height: 45vh;
+    }
+    .bose-hero-slide-overlay {
+        padding: 40px;
+    }
+    .bose-hero-title {
+        font-size: 2.2rem;
+    }
+    .bose-hero-desc {
+        font-size: 1rem;
+        max-width: 70%;
+    }
+    .bose-categories-grid {
+        grid-template-columns: repeat(6, 1fr); /* فئات متوازنة على شاشات التابلت */
     }
     .bose-products-grid {
         grid-template-columns: repeat(3, 1fr);
-        gap: 20px;
-    }
-    .bose-trust-features-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-    .reviews-carousel-track {
-        gap: 24px;
-    }
-    .review-card-premium {
-        width: 42vw !important;
-        max-width: 380px !important;
     }
     .social-gallery-grid {
         grid-template-columns: repeat(4, 1fr);
-        gap: 16px;
     }
-    .bose-contact-container {
+    .bose-promo-cards-container {
         flex-direction: row;
     }
-    .contact-details-box, .google-map-iframe-container {
+    .bose-promo-card {
         flex: 1;
     }
-    .google-map-iframe-container {
-        height: auto;
-        min-height: 380px;
+    .bose-review-card {
+        flex: 0 0 45%;
     }
-    .bose-product-detail-container {
-        flex-direction: row;
-        align-items: flex-start;
+    .product-detail-layout {
+        grid-template-columns: 1fr 1.2fr;
+        gap: 30px;
     }
-    .product-detail-gallery {
-        flex: 1;
-        max-width: 500px;
-    }
-    .product-detail-info {
-        flex: 1.2;
+    .menu-layout-container {
+        padding: 30px 24px;
     }
 }
 
-/* شاشات الحاسوب المحمول والشاشات الكبيرة الديسك توب */
+/* شاشات الكمبيوتر والديسك توب الفاخر (Desktop - 1024px فأكبر) */
 @media (min-width: 1024px) {
-    .category-slider-card {
-        width: 23vw !important;
-        max-width: 280px !important;
+    .bose-hero-slider {
+        height: 60vh;
+    }
+    .bose-hero-slide-overlay {
+        padding: 50px 45px;
+    }
+    .bose-hero-title {
+        font-size: 2.6rem;
+    }
+    .bose-hero-desc {
+        font-size: 1.05rem;
+        max-width: 60%;
+    }
+    .bose-categories-grid {
+        grid-template-columns: repeat(12, 1fr); /* الـ 12 فئة المعتمدة متجاورة بأناقة بالغة */
+        gap: 16px;
     }
     .bose-products-grid {
         grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
     }
-    .review-card-premium {
-        width: 28vw !important;
-        max-width: 380px !important;
+    .bose-review-card {
+        flex: 0 0 30%;
+    }
+    .bose-promo-cards-container {
+        gap: 24px;
+    }
+    .bose-promo-card {
+        padding: 30px;
+    }
+    .product-detail-layout {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 16px;
     }
