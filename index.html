@@ -38,7 +38,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 
-    <!-- 🛠️ تصحيح مسارات ملفات التصميم الـ CSS الموحدة لمنع انهيار الهوية البصرية -->
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/simulators.css">
@@ -48,18 +47,18 @@
         /* تأمين إضافي لمنع تضخم الخطوط أو تداخل الأقسام على الموبايل والكمبيوتر لراحة العميل النفسية */
         .hero-title, .section-main-title, .simulator-title {
             font-family: 'Cairo', sans-serif !important;
-            font-weight: 700 !important;
+            font-weight: 700 !important; /* قفل وزن الخط عند 700 كحد أقصى لأضخم العناوين */
             max-width: 100% !important;
             word-wrap: break-word !important;
             overflow-wrap: break-word !important;
         }
         /* الألوان الحاكمة الصارمة لمنع الوميض البصري أثناء تحميل الاستضافات المجانية */
         body {
-            background-color: #FFFFFF !important;
-            color: #111111 !important;
+            background-color: #FFFFFF !important; /* الأبيض مسيطر تماماً لمنع التكديس وخلق تنفس بصري */
+            color: #111111 !important; /* الأسود معزول تماماً ومكانه الشرعي الوحيد هو النصوص والعناوين لضمان وضوح كامل */
         }
         .highlight-pink {
-            color: #Ff91a4 !important;
+            color: #Ff91a4 !important; /* اللون البمبي نبض الحياة */
         }
     </style>
 </head>
@@ -131,7 +130,7 @@
             <div class="section-header-block text-center">
                 <h1 id="hero-title" class="hero-title">عقد من <span class="highlight-pink">التميز</span> في صناعة الحلويات</h1>
                 <p id="hero-description" class="hero-description">جودة تفوق التوقعات، نصنعها بشغف المحترفين وخبرة السنين لتبهر حواسك وتزين أوقاتك الفريدة.</p>
-                <a href="menu.html" id="hero-cta-btn" class="bose-btn-primary">استعرض المنيو</a>
+                <a href="menu.html" id="hero-cta-btn" class="bose-btn-primary">تصفح المنيو</a>
             </div>
         </section>
 
@@ -192,7 +191,7 @@
             </div>
             <div id="our-products-grid" class="products-grid grid-2x2-initial"></div>
             <div class="text-center view-more-container">
-                <button id="load-more-products-btn" class="bose-btn-outline" data-action="load-more">إظهار المزيد</button>
+                <button id="load-more-products-btn" class="bose-btn-outline" data-action="load-more">استعرض المزيد</button>
             </div>
         </section>
 
@@ -312,7 +311,6 @@
         </div>
     </footer>
 
-    <!-- 🛠️ تصحيح مسارات المحركات البرمجية الـ JS لتطابق المجلد الفرعي الجديد -->
     <script src="js/core-engine.js" defer></script>
     <script src="js/cart-engine.js" defer></script>
     
