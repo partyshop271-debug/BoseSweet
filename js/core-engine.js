@@ -1,7 +1,7 @@
 ```javascript
 /**
  * 👑 المحرك المركزي العالمي وعمليات الفحص المالي - حلويات بوسي 👑
- * النسخة الهندسية القياسية والمطورة بنسبة 100% - الإصدار الذهبي المصحح بالكامل والخالي من الثغرات V6.0
+ * النسخة الهندسية القياسية والمطورة بنسبة 100% - الإصدار الذهبي المصحح بالكامل والخالي من الثغرات V6.5
  * يتوافق بشكل مطلق مع: cart-engine.js وقاعدة البيانات site-data-final.json ومعايير الأداء والموبايل أولاً
  * [تم حل ثغرات التزامن اللامتناهي، وحالات السباق، وحماية الهوية البصرية، وتأمين الأداء على الموبايل والاستضافات المجانية]
  */
@@ -41,8 +41,7 @@
     ];
 
     // ==========================================================================
-    // [🔐 حل هندسي حاسم للثغرة المعمارية 1]: منع حالات السباق (Race Conditions)
-    // بتهيئة الـ Promise فوراً عند تحميل الملف لمنع تكرار الإنشاء اللامتزامن عند الاستدعاءات المتعددة
+    // منع حالات السباق (Race Conditions) بتهيئة الـ Promise فوراً لمنع تكرار الإنشاء اللامتزامن
     // ==========================================================================
     window.boseDbPromise = window.boseDbPromise || new Promise((resolve) => {
         if (window.BoseStoreData) {
@@ -212,7 +211,7 @@
     };
 
     // ==========================================================================
-    // 2. دوال معالجة وتطهير وحسابات البيانات وحل الثغرات الحاكمة
+    // 2. دوال معالجة وتطهير وحسابات البيانات وحل الثغرات الحاكمة والمالية
     // ==========================================================================
 
     /**
@@ -322,9 +321,7 @@
     };
 
     /**
-     * [🔐 حل هندسي حاسم للثغرة المالية 1]: الحسبة الهندسية الصحيحة والمحمية لأسعار محاكي التورتة المخصصة
-     * تطرح الزيادة دائماً بناءً على الفوارق نسبةً إلى سقف الأفراد المغطى بالسعر الأساسي (4 أفراد)
-     * مما يضمن تسعير التورت المستطيلة والمربعة لـ 20 فرداً بقيمتها الحقيقية السليمة (2900 جنيه) ويمنع الخسارة نهائياً.
+     * الحسبة الهندسية الصحيحة والمحمية لأسعار محاكي التورتة المخصصة لمنع الخسارة نهائياً
      */
     window.calculateCustomCakePrice = function(persons, options = {}) {
         const config = window.BoseStoreData?.cakeBuilder;
@@ -742,7 +739,7 @@
 
     /**
      * حقن الأنماط والسمات الأساسية الحاكمة لتفادي وميض الألوان غير المرغوب فيه (FOUC)
-     * [🔐 حل هندسي حاسم للثغرة المعمارية 2]: الالتزام الكامل بقوانين Cairo ووزن خط 700 كحد أقصى لمنع التشويه
+     * الالتزام الكامل بقوانين Cairo ووزن خط 700 كحد أقصى لمنع التشويه
      */
     function injectCoreStyles() {
         if (document.getElementById("bose-core-injected-styles")) return;
@@ -1222,8 +1219,7 @@
     }
 
     /**
-     * [🔐 الهيكل الموحد الملتزم بالـ DOM هندسياً]: حقن مكونات الهيدر والفوتر والدرج الجانبي
-     * يسحب الصور ديناميكياً 100% من دالة window.getBoseLogo() لسلامة المزامنة
+     * الهيكل الموحد الملتزم بالـ DOM هندسياً لحقن مكونات الهيدر والفوتر والدرج الجانبي
      */
     function injectUniversalLayout() {
         let pathPrefix = "";
@@ -1239,7 +1235,7 @@
 
         const dynamicLogo = window.getBoseLogo();
 
-        // 1. الهيدر الموحد والملتزم بالـ DOM هندسياً (Sticky)
+        // 1. الهيدر الموحد والملتزم بالـ DOM هندسياً
         const existingNavbar = document.querySelector(".bose-navbar");
         if (existingNavbar && !existingNavbar.hasAttribute("data-dynamic-injected")) {
             existingNavbar.setAttribute("data-dynamic-injected", "true");
@@ -1362,7 +1358,6 @@
 
     /**
      * جلب وتحميل قاعدة البيانات مع حماية المزامنة الزمنية وفحص المسارات البديلة
-     * يطبق معيار الارتداد الأسي المتتالي (Exponential Backoff) لمنع الفشل
      */
     async function loadStoreDatabase() {
         if (window.boseDatabaseLoading) return;
@@ -1420,13 +1415,13 @@
                     return; 
 
                 } catch (error) {
-                    // الانتقال التلقائي للتحقق من المسار البديل التالي
+                    // الانتقال التلقائي للمسار البديل التالي
                 }
             }
 
             if (successfulFetch) return;
 
-            // في حال كان التشغيل محلياً من ملف (file://) أو فشلت جميع المحاولات نقوم بتحميل البيانات الاحتياطية
+            // التحميل الاحتياطي لقاعدة البيانات الفورية عند حدوث خطأ
             if (attempt === 5 || window.location.protocol === 'file:') {
                 console.warn("⚠️ تم تفعيل بواب الأمان والتحميل الاحتياطي لقاعدة البيانات لتأمين التشغيل الفوري.");
                 window.BoseStoreData = BOSE_FALLBACK_DATABASE;
@@ -1453,8 +1448,7 @@
     }
 
     /**
-     * [🔐 الهيكل الموحد للكارت بالمسطرة]: رندرة وإنتاج كارت كروت المنتجات بدقة هندسية ومظهر ناعم
-     * يدعم تبويبات الأحجام التفاعلية بشكل مرن وأنيق لمنع التشتت وعرض الأسعار الدقيقة
+     * رندرة وإنتاج كروت المنتجات بدقة هندسية ومظهر ناعم ومرتّب تماماً
      */
     function generateStrictProductCardHTML(product, currency) {
         const defaultImage = window.getBoseLogo();
@@ -1483,37 +1477,29 @@
 
         return `
             <div class="product-card" data-slug="${product.slug}" data-selected-size="${defaultSize}" style="border: var(--bose-border-pink); border-radius: 20px; background: var(--bose-white); overflow: hidden; padding: 16px; display: flex; flex-direction: column; gap: 10px; box-shadow: var(--bose-shadow-glow); transition: 0.3s ease; text-align: right; direction: rtl;">
-                <!-- صورة المنتج كاملة بدون قطع وتأثير تلاشي ناعم -->
                 <a href="product.html?slug=${product.slug}" style="text-decoration: none; display: block; overflow: hidden; border-radius: 12px; height: 220px;" aria-label="عرض تفاصيل ${cleanTitle}">
                     <img class="product-card-img bose-fade-in-img" src="${cleanImg}" alt="${cleanTitle}" style="width: 100%; height: 100%; object-fit: cover; display: block; transition: 0.3s;" onload="this.classList.add('loaded')" onerror="this.onerror=null; this.src='${defaultImage}';" loading="lazy">
                 </a>
                 
-                <!-- اسم الصنف الرئيسي -->
                 <h3 class="product-card-title" style="margin: 4px 0 0 0; font-size: 1.05rem; font-weight: 700; color: var(--bose-black); line-height: 1.4;">${cleanTitle}</h3>
                 
-                <!-- اسم النكهة الصريح -->
                 <span class="product-card-flavor-name" style="display: block; font-size: 0.85rem; font-weight: 700; color: var(--bose-pink); margin-top: -2px;">${cleanFlavor}</span>
                 
-                <!-- وصف النكهة أو المنتج التفصيلي -->
                 <p class="product-card-desc" style="margin: 4px 0 8px 0; font-size: 0.8rem; font-weight: 400; color: var(--bose-black); opacity: 0.8; line-height: 1.5; min-height: 60px; max-height: 60px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;">${cleanDesc}</p>
                 
-                <!-- تبويبات الأحجام المحقونة ديناميكياً -->
                 ${sizeSelectorHTML}
 
                 <div style="margin-top: auto; display: flex; flex-direction: column; gap: 12px;">
-                    <!-- عداد الكمية المرن لمنع القيم السالبة -->
                     <div class="qty-counter-row" style="display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--bose-pink); border-radius: 50px; background: var(--bose-white); padding: 2px 8px; direction: rtl;">
                         <button class="btn-qty-plus" style="background: none; border: none; color: var(--bose-black); font-size: 18px; font-weight: 700; width: 32px; height: 32px; cursor: pointer; display: flex; align-items: center; justify-content: center;" aria-label="زيادة الكمية">+</button>
                         <input type="number" class="input-qty-value" value="1" min="1" readonly style="width: 35px; text-align: center; border: none; font-size: 14px; font-weight: 700; color: var(--bose-black); background: transparent; outline: none;" aria-label="الكمية الحالية">
                         <button class="btn-qty-minus" style="background: none; border: none; color: var(--bose-black); font-size: 18px; font-weight: 700; width: 32px; height: 32px; cursor: pointer; display: flex; align-items: center; justify-content: center;" aria-label="نقص الكمية">-</button>
                     </div>
 
-                    <!-- عارض السعر اللحظي الدقيق المحدث -->
                     <div class="product-card-price" style="font-size: 1.1rem; font-weight: 700; color: var(--bose-pink); text-align: right;" data-base-price="${finalPrice}">
                         ${finalPrice} ${currency}
                     </div>
 
-                    <!-- زر إضافة للسلة الفاخر ناعم الملمس -->
                     <button class="btn-add-to-cart" style="background: var(--bose-pink); color: var(--bose-white); border: none; padding: 12px; border-radius: 50px; font-weight: 700; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; box-shadow: 0 4px 12px rgba(255, 145, 164, 0.15); width: 100%;">
                         <i class="fas fa-shopping-bag" style="font-size: 0.9rem;"></i> إضافة للسلة
                     </button>
@@ -1524,7 +1510,7 @@
     window.generateStrictProductCardHTML = generateStrictProductCardHTML;
 
     /**
-     * ربط أحداث كروت المنتجات القياسية لضمان تشغيل العدادات والإضافة للسلة والأحجام التفاعلية
+     * ربط أحداث كروت المنتجات لضمان تفعيل العدادات وإضافة السلة التفاعلية بدقة
      */
     function attachProductCardEvents(container, productsList, currency) {
         if (!container) return;
@@ -1647,12 +1633,12 @@
     }
 
     /**
-     * الأتمتة الديناميكية لجميع أقسام الهيكل الرئيسي لضمان دقة الرندرة بدون أي أخطاء
+     * الأتمتة والملء الكامل لجميع أقسام الصفحة الرئيسية لعلامة حلويات بوسي
      */
     function autoPopulateHomepageComponents(data) {
         if (!data) return;
 
-        // صمام الأمان البنيوي الحارس: الخروج الفوري والصامت إذا كنا نتصفح صفحة داخلية لمنع إرهاق المعالجات
+        // صمام الأمان البنيوي لمنع إرهاق الصفحة والعمل فقط بالواجهة الرئيسية
         if (!document.getElementById('hero-section') && !document.getElementById('waterfall-section')) {
             const marqueeTrack = document.getElementById('top-bar-marquee');
             if (marqueeTrack && data.navigation && data.navigation.topBarMessages) {
@@ -1664,13 +1650,13 @@
         const currency = data.store.currency || "EGP";
         const productsList = data.products || [];
 
-        // 0. أتمتة شريط الإعلانات التسويقية العلوي اللانهائي (#top-bar-marquee)
+        // 0. شريط الإعلانات التسويقية العلوي اللانهائي
         const marqueeTrack = document.getElementById('top-bar-marquee');
         if (marqueeTrack && data.navigation && data.navigation.topBarMessages) {
             renderTopMarquee(marqueeTrack, data.navigation.topBarMessages);
         }
 
-        // 1. أتمتة القسم الأول: عقد من التميز (#hero-section) ومطابقة مواصفة كلمة "التميز" بالبمبي
+        // 1. أتمتة القسم الأول: عقد من التميز
         const heroSection = document.getElementById('hero-section');
         if (heroSection && data.homepage.hero) {
             const heroData = data.homepage.hero;
@@ -1698,7 +1684,7 @@
             }
         }
 
-        // 2. أتمتة عمودي شلال المنتجات البصري المتعاكس (#waterfall-section)
+        // 2. أتمتة عمودي شلال المنتجات البصري المتعاكس
         const leftCol = document.getElementById('waterfall-left-col');
         const rightCol = document.getElementById('waterfall-right-col');
         const waterfallContainer = document.querySelector('.waterfall-container') || document.getElementById('waterfall-section');
@@ -1747,7 +1733,7 @@
             }
         }
 
-        // 3. أتمتة مسار الإتقان الفاخر التلقائي (#excellence-section) ومؤشراتها النقطية المتزامنة
+        // 3. أتمتة مسار الإتقان الفاخر التلقائي ومؤشراتها النقطية المتزامنة
         const excellenceSection = document.getElementById('excellence-section');
         const excellenceTrack = document.getElementById('excellence-images-track');
         const excellenceConfig = data.homepage.excellence;
@@ -1829,7 +1815,7 @@
             }
         }
 
-        // ج. منتجاتنا التفاعلية مع زر إظهار المزيد
+        // ج. منتجاتنا مع زر عرض المزيد لزيادة راحة تصفح العميل
         const ourProductsGrid = document.getElementById('our-products-grid');
         const showMoreBtn = document.getElementById('btn-show-more-products') || document.querySelector('.btn-show-more-node');
         
@@ -1868,7 +1854,7 @@
             }
         }
 
-        // د. أتمتة كتلة محاكي التورت للقسم 04 (#cake-preview-section)
+        // د. أتمتة كتلة محاكي التورت للقسم الفرعي
         const cakePreviewSec = document.getElementById('cake-preview-section');
         if (cakePreviewSec && data.homepage.cakePreview) {
             const previewData = data.homepage.cakePreview;
@@ -1889,7 +1875,7 @@
             }
         }
 
-        // هـ. أتمتة كتلة محاكي الورد للقسم 07 (#flower-preview-section)
+        // هـ. أتمتة كتلة محاكي الورد للقسم الفرعي
         const flowerPreviewSec = document.getElementById('flower-preview-section');
         if (flowerPreviewSec && data.homepage.flowerPreview) {
             const previewData = data.homepage.flowerPreview;
@@ -1910,7 +1896,7 @@
             }
         }
 
-        // 5. أتمتة سلايدر الفئات الـ 12 ومؤشراتها النقطية (#categories-slider-section)
+        // 5. أتمتة سلايدر الفئات الـ 12 ومؤشراتها النقطية التفاعلية
         const categoriesSliderSec = document.getElementById('categories-slider-section');
         const categoriesTrack = document.getElementById('categories-track');
         const categoriesData = data.homepage.categoriesSlider;
@@ -1966,7 +1952,7 @@
             }
         }
 
-        // 6. تشغيل العدادات التصاعدية لقسم الفخر والاعتزاز
+        // 6. تشغيل العدادات التصاعدية لقسم الفخر والاعتزاز لثقة العملاء
         initBosePrideCounters(data);
     }
 
@@ -2214,7 +2200,7 @@
     };
 
     /**
-     * تحديث عداد السلة الصغير بالهيدر وفقاً للقاعدة التشغيلية
+     * تحديث عداد السلة الصغير بالهيدر وفقاً للكميات
      */
     window.updateGlobalCartCounter = function () {
         if (!domCache.cartCounts) {
@@ -2280,7 +2266,7 @@
     }
 
     /**
-     * إعداد وربط أحداث الواجهات التفاعلية (البحث السريع والدرج الجانبي للموبايل)
+     * إعداد وربط أحداث الواجهات التفاعلية (البحث السريع والدرج الجانبي للموبايل والكمبيوتر)
      */
     function initializeGlobalUIEvents() {
         const menuToggleButtons = document.querySelectorAll("#mobile-menu-toggle, .nav-menu-toggle, #menu-toggle-btn");
@@ -2494,7 +2480,7 @@
     };
 
     /**
-     * تطبيق الإعدادات الفنية للـ SEO وتأمين الهوية البصرية الحاكمة
+     * تطبيق الإعدادات الفنية للـ SEO وتأمين الهوية البصرية الحاكمة لـ حلويات بوسي
      */
     function applyGlobalSEOAndBranding() {
         if (!window.BoseStoreData) return;
