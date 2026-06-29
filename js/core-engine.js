@@ -1,4 +1,3 @@
-```javascript
 /**
  * 👑 المحرك المركزي العالمي وعمليات الفحص المالي - حلويات بوسي 👑
  * النسخة الهندسية القياسية والمطورة بنسبة 100% - الإصدار الذهبي المصحح بالكامل والخالي من الثغرات V6.5
@@ -377,7 +376,7 @@
     };
 
     /**
-     * الحسبة الهندسية لمحاكاة أسعار بوكيهات الورد الفاخرة ورسوم خدمة دمج الكاش بمرونة فائقة
+     * الحسبة الهندسية لمحاكاة أسعار بوكيهات الورد الفاخرة ورسوم خدمة ددمج الكاش بمرونة فائقة
      */
     window.calculateCustomFlowerPrice = function(flowerType, flowerCount, options = {}) {
         const config = window.BoseStoreData?.flowerBuilder;
@@ -2023,7 +2022,7 @@
                 });
             }, { threshold: 0.1 });
 
-            observer.observe(element);
+            observer.observe(entry.target);
         });
     }
     window.initBosePrideCounters = initBosePrideCounters;
