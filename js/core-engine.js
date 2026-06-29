@@ -1,6 +1,6 @@
 /**
  * 👑 المحرك المركزي العالمي وعمليات الفحص المالي - حلويات بوسي 👑
- * النسخة الهندسية القياسية والمطورة بنسبة 100% - الإصدار الذهبي المصحح بالكامل والخالي من الثغرات V6.5
+ * النسخة الهندسية القياسية والمطورة بنسبة 100% - الإصدار الذهبي المصحح بالكامل والخالي من الثغرات V7.0
  * يتوافق بشكل مطلق مع: cart-engine.js وقاعدة البيانات site-data-final.json ومعايير الأداء والموبايل أولاً
  * [تم حل ثغرات التزامن اللامتناهي، وحالات السباق، وحماية الهوية البصرية، وتأمين الأداء على الموبايل والاستضافات المجانية]
  */
@@ -1227,6 +1227,17 @@
             return;
         }
 
+        // [🛡️ إصلاح مسارات الروابط الفاخرة لبيئة الاستضافات المجانية وهواتف العملاء]
+        const segments = currentPath.split('/');
+        if (segments.length > 2) {
+            const depth = segments.length - 2;
+            for(let d=0; d < depth; d++) {
+                if (segments[d+1] !== "" && !segments[d+1].includes('.html')) {
+                    pathPrefix += "../";
+                }
+            }
+        }
+
         let pageFileName = currentPath.substring(currentPath.lastIndexOf('/') + 1) || 'index.html';
         if (pageFileName === '/' || pageFileName === '') {
             pageFileName = 'index.html';
@@ -1317,7 +1328,7 @@
             existingFooter.innerHTML = `
                 <div class="footer-inner-wrapper" style="width: 100%; max-width: 1200px; margin: 0 auto; padding: 40px 16px; display: flex; flex-direction: column; align-items: center; gap: 24px; text-align: center;">
                     <div class="footer-logo-container">
-                        <a href="index.html">
+                        <a href="${pathPrefix}index.html">
                             <img id="bose-store-logo" src="${dynamicLogo}" alt="شعار حلويات بوسي" style="height: 60px; object-fit: contain;">
                         </a>
                     </div>
@@ -1325,7 +1336,7 @@
                     <span class="brand-name-display footer-brand-name" style="font-size: 1.4rem; font-weight: 700; color: var(--bose-black);">حلويات بوسي</span>
 
                     <div class="footer-about-block" style="max-width: 600px;">
-                        <p id="footer-about-text" style="font-size: 0.95rem; color: #555; line-height: 1.6; margin: 0;">صنعناها بحب لتهديها لمن تحب. خبرة أكثر من 10 سنوات في صناعة الحلويات الفاخرة وتنسيق الهدايا والورد لنوثق أسعد لحظاتكم بتميز واحترافية كاملة من فرع الكفاح.</p>
+                        <p id="footer-about-text" style="font-size: 0.95rem; color: #555; line-height: 1.6; margin: 0;">صنعناها بحب لتهديها لمن تحب. خبرة أكثر من 10 سنوات في صناعة الحلويات الفاخرة وتنسيق الهدايا والورد لنوثق أسعد لحظاتكم بتميز وااحترافية كاملة من فرع الكفاح.</p>
                     </div>
                     
                     <div id="footer-social-links" style="display: flex; gap: 16px; justify-content: center; margin: 8px 0;">
@@ -1637,7 +1648,6 @@
     function autoPopulateHomepageComponents(data) {
         if (!data) return;
 
-        // صمام الأمان البنيوي لمنع إرهاق الصفحة والعمل فقط بالواجهة الرئيسية
         if (!document.getElementById('hero-section') && !document.getElementById('waterfall-section')) {
             const marqueeTrack = document.getElementById('top-bar-marquee');
             if (marqueeTrack && data.navigation && data.navigation.topBarMessages) {
@@ -1782,24 +1792,19 @@
         }
 
         // 4. أتمتة رندرة الأقسام الحيوية الثلاثة بالصفحة الرئيسية
-        
-        // أ. الأكثر مبيعاً
         const mostSellingGrid = document.getElementById('most-selling-grid');
         if (mostSellingGrid && data.homepage.mostSelling) {
             mostSellingGrid.innerHTML = '';
             const matchedMSProducts = data.homepage.mostSelling.map(slug => productsList.find(p => p.slug === slug)).filter(Boolean);
-            
             mostSellingGrid.innerHTML = matchedMSProducts.map(prod => generateStrictProductCardHTML(prod, currency)).join('');
             attachProductCardEvents(mostSellingGrid, productsList, currency);
         }
 
-        // ب. وصل حديثاً ومؤشراتها النقطية
         const newArrivalsSection = document.getElementById('new-arrivals-section');
         const newArrivalsGrid = document.getElementById('new-arrivals-grid');
         if (newArrivalsGrid && data.homepage.newArrivals) {
             newArrivalsGrid.innerHTML = '';
             const matchedNAProducts = data.homepage.newArrivals.map(slug => productsList.find(p => p.slug === slug)).filter(Boolean);
-            
             newArrivalsGrid.innerHTML = matchedNAProducts.map(prod => generateStrictProductCardHTML(prod, currency)).join('');
             attachProductCardEvents(newArrivalsGrid, productsList, currency);
 
@@ -1814,14 +1819,11 @@
             }
         }
 
-        // ج. منتجاتنا مع زر عرض المزيد لزيادة راحة تصفح العميل
         const ourProductsGrid = document.getElementById('our-products-grid');
         const showMoreBtn = document.getElementById('btn-show-more-products') || document.querySelector('.btn-show-more-node');
-        
         if (ourProductsGrid && data.homepage.ourProducts) {
             ourProductsGrid.innerHTML = '';
             const matchedOPProducts = data.homepage.ourProducts.map(slug => productsList.find(p => p.slug === slug)).filter(Boolean);
-
             const initialProducts = matchedOPProducts.slice(0, 4);
             const remainingProducts = matchedOPProducts.slice(4);
 
@@ -1830,21 +1832,16 @@
 
             if (showMoreBtn) {
                 showMoreBtn.style.display = remainingProducts.length > 0 ? 'inline-flex' : 'none';
-                
                 if (!showMoreBtn.dataset.boseListener) {
                     showMoreBtn.addEventListener('click', (e) => {
                         e.preventDefault();
-                        
                         const tempDiv = document.createElement('div');
                         tempDiv.innerHTML = remainingProducts.map(prod => generateStrictProductCardHTML(prod, currency)).join('');
-                        
                         while (tempDiv.firstChild) {
                             ourProductsGrid.appendChild(tempDiv.firstChild);
                         }
-
                         attachProductCardEvents(ourProductsGrid, productsList, currency);
                         showMoreBtn.style.display = 'none'; 
-                        
                         window.dispatchEvent(new Event('bose_products_injected'));
                         window.showBoseToast("تم استعراض التشكيلة العامة الفاخرة بالكامل 🌸");
                     });
@@ -1853,7 +1850,6 @@
             }
         }
 
-        // د. أتمتة كتلة محاكي التورت للقسم الفرعي
         const cakePreviewSec = document.getElementById('cake-preview-section');
         if (cakePreviewSec && data.homepage.cakePreview) {
             const previewData = data.homepage.cakePreview;
@@ -1874,7 +1870,6 @@
             }
         }
 
-        // هـ. أتمتة كتلة محاكي الورد للقسم الفرعي
         const flowerPreviewSec = document.getElementById('flower-preview-section');
         if (flowerPreviewSec && data.homepage.flowerPreview) {
             const previewData = data.homepage.flowerPreview;
@@ -1951,7 +1946,6 @@
             }
         }
 
-        // 6. تشغيل العدادات التصاعدية لقسم الفخر والاعتزاز لثقة العملاء
         initBosePrideCounters(data);
     }
 
@@ -2022,7 +2016,7 @@
                 });
             }, { threshold: 0.1 });
 
-            observer.observe(entry.target);
+            observer.observe(element);
         });
     }
     window.initBosePrideCounters = initBosePrideCounters;
@@ -2089,9 +2083,7 @@
             
             try {
                 localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
-            } catch (storageEx) {
-                // Fallback لوضع التصفح الخاص
-            }
+            } catch (storageEx) {}
             window.boseInMemoryCart = cart;
             window.updateGlobalCartCounter();
             window.dispatchEvent(new Event('bose_cart_updated'));
@@ -2306,13 +2298,22 @@
         });
 
         const searchTriggerButtons = document.querySelectorAll("#nav-search-btn, .nav-search-trigger, #search-trigger-btn");
-        
         searchTriggerButtons.forEach(btn => {
             btn.addEventListener("click", (e) => {
                 e.preventDefault();
                 const searchModal = ensureSearchModalExists();
                 toggleSearchModal(searchModal, true);
             });
+        });
+
+        // [🔄 ربط مستمع الأحداث لحظياً لمزامنة العداد الفردي والذكي بالهيدر فوراً]
+        window.addEventListener('storage', (e) => {
+            if (e.key === CART_STORAGE_KEY) {
+                window.updateGlobalCartCounter();
+            }
+        });
+        window.addEventListener('bose_cart_updated', () => {
+            window.updateGlobalCartCounter();
         });
     }
 
@@ -2395,7 +2396,6 @@
         }
 
         const data = window.BoseStoreData;
-        
         if (!data || !data.products) {
             resultsContainer.innerHTML = `
                 <div class="search-no-results">
@@ -2406,7 +2406,6 @@
         }
 
         const lowerCaseQuery = query.toLowerCase();
-
         const matchedProducts = data.products.filter(product => {
             const inTitle = product.title.toLowerCase().includes(lowerCaseQuery);
             const inFlavor = (product.flavorName || "").toLowerCase().includes(lowerCaseQuery);
@@ -2427,7 +2426,6 @@
         }
 
         let htmlResults = `<div class="search-results-grid">`;
-        
         matchedProducts.forEach(product => {
             const finalPrice = window.calculateBosePrice(product.price, "menu-only");
             const sanitizedTitle = escapeHTML(product.title);
@@ -2616,13 +2614,6 @@
             document.head.appendChild(faLink);
         }
     }
-
-    window.addEventListener('storage', (e) => {
-        if (e.key === CART_STORAGE_KEY) {
-            window.updateGlobalCartCounter();
-            window.dispatchEvent(new Event('bose_cart_updated'));
-        }
-    });
 
     if (document.readyState === "loading") {
         document.addEventListener("DOMContentLoaded", loadStoreDatabase);
