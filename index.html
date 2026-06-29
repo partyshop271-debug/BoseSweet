@@ -307,6 +307,81 @@
     <!-- المحركات البرمجية والربط المتزامن لحماية الشاشة وقاعدة البيانات -->
     <script src="js/core-engine.js"></script>
     <script>
+        // تعريف دالة الإطلاق المركزية التي يبحث عنها حارس التمهيد في core-engine.js لملء الكروت هندسياً
+        window.startEngineLogic = function() {
+            try {
+                if (window.BoseStoreData) {
+                    const data = window.BoseStoreData;
+                    const currency = data.store.currency || "EGP";
+                    const productsList = data.products || [];
+
+                    // 1. الأكثر مبيعاً
+                    const mostSellingGrid = document.getElementById('most-selling-grid');
+                    if (mostSellingGrid && data.homepage.mostSelling && typeof window.generateStrictProductCardHTML === "function") {
+                        mostSellingGrid.innerHTML = '';
+                        const matchedMSProducts = data.homepage.mostSelling.map(slug => productsList.find(p => p.slug === slug)).filter(Boolean);
+                        mostSellingGrid.innerHTML = matchedMSProducts.map(prod => window.generateStrictProductCardHTML(prod, currency)).join('');
+                        if (typeof window.attachProductCardEvents === "function") {
+                            window.attachProductCardEvents(mostSellingGrid, productsList, currency);
+                        }
+                    }
+
+                    // 2. وصل حديثاً
+                    const newArrivalsGrid = document.getElementById('new-arrivals-grid');
+                    if (newArrivalsGrid && data.homepage.newArrivals && typeof window.generateStrictProductCardHTML === "function") {
+                        newArrivalsGrid.innerHTML = '';
+                        const matchedNAProducts = data.homepage.newArrivals.map(slug => productsList.find(p => p.slug === slug)).filter(Boolean);
+                        newArrivalsGrid.innerHTML = matchedNAProducts.map(prod => window.generateStrictProductCardHTML(prod, currency)).join('');
+                        if (typeof window.attachProductCardEvents === "function") {
+                            window.attachProductCardEvents(newArrivalsGrid, productsList, currency);
+                        }
+                    }
+
+                    // 3. تشكيلتنا العامة الفاخرة
+                    const ourProductsGrid = document.getElementById('our-products-grid');
+                    const showMoreBtn = document.getElementById('btn-show-more-products');
+                    if (ourProductsGrid && data.homepage.ourProducts && typeof window.generateStrictProductCardHTML === "function") {
+                        ourProductsGrid.innerHTML = '';
+                        const matchedOPProducts = data.homepage.ourProducts.map(slug => productsList.find(p => p.slug === slug)).filter(Boolean);
+                        const initialProducts = matchedOPProducts.slice(0, 4);
+                        const remainingProducts = matchedOPProducts.slice(4);
+
+                        ourProductsGrid.innerHTML = initialProducts.map(prod => window.generateStrictProductCardHTML(prod, currency)).join('');
+                        if (typeof window.attachProductCardEvents === "function") {
+                            window.attachProductCardEvents(ourProductsGrid, productsList, currency);
+                        }
+
+                        if (showMoreBtn) {
+                            showMoreBtn.style.display = remainingProducts.length > 0 ? 'inline-flex' : 'none';
+                            if (!showMoreBtn.dataset.boseListener) {
+                                showMoreBtn.addEventListener('click', (e) => {
+                                    e.preventDefault();
+                                    const tempDiv = document.createElement('div');
+                                    tempDiv.innerHTML = remainingProducts.map(prod => window.generateStrictProductCardHTML(prod, currency)).join('');
+                                    while (tempDiv.firstChild) {
+                                        ourProductsGrid.appendChild(tempDiv.firstChild);
+                                    }
+                                    if (typeof window.attachProductCardEvents === "function") {
+                                        window.attachProductCardEvents(ourProductsGrid, productsList, currency);
+                                    }
+                                    showMoreBtn.style.display = 'none';
+                                });
+                                showMoreBtn.dataset.boseListener = "true";
+                            }
+                        }
+                    }
+
+                    // تحديث شارة عداد السلة بالهيدر فوراً
+                    if (typeof window.updateGlobalCartCounter === "function") {
+                        window.updateGlobalCartCounter();
+                    }
+                    console.log("👑 تم إطلاق محرك حلويات بوسي بنجاح وحقن كروت المنتجات والعدادات كاملة.");
+                }
+            } catch (e) {
+                console.error("❌ خطأ أثناء تشغيل منطق الصفحة الرئيسية الحتمية:", e);
+            }
+        };
+
         document.addEventListener("DOMContentLoaded", () => {
             let initializationAttempts = 0;
             const maxAttempts = 100;
@@ -315,10 +390,9 @@
                 initializationAttempts++;
                 if (window.BoseStoreData && window.BoseStoreData.store) {
                     try {
-                        if (window.updateGlobalCartCounter) {
-                            window.updateGlobalCartCounter();
+                        if (typeof window.startEngineLogic === "function") {
+                            window.startEngineLogic();
                         }
-                        console.log("👑 تم تهيئة واستقرار الصفحة الرئيسية بنجاح هندسي كامل.");
                     } catch (e) {
                         console.error("BoseCartEngine Initialisation Error:", e);
                     }
