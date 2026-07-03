@@ -188,9 +188,19 @@
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
+
+        /* انسيابية حركة القائمة الجانبية الفاخرة */
+        #side-menu {
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
     </style>
 </head>
 <body class="antialiased text-right">
+
+    <!-- لافتة التنبيهات التشخيصية الذكية - تظهر فقط في حال وجود مشكلة في جلب الـ JSON لمساعدة المطور دون إزعاج العميل -->
+    <div id="diagnostic-banner" class="bg-amber-50 border-b border-amber-200 text-amber-900 py-3 px-4 text-xs font-semibold text-center hidden">
+        ⚠️ عذراً، لم نتمكن من قراءة ملف قاعدة البيانات الخارجي <code class="bg-amber-100 px-1 py-0.5 rounded">site-data-final.json</code>. يرجى التأكد من رفعه في نفس مسار الموقع لضمان عرض المنتجات والشلال بالكامل.
+    </div>
 
     <!-- نافذة التنبيهات المخصصة الفاخرة لمنع النوافذ المنبثقة المزعجة للعميل -->
     <div id="custom-alert" class="fixed top-24 left-1/2 transform -translate-x-1/2 z-50 bg-white border border-[#FF91A4] px-6 py-4 rounded-2xl shadow-xl hidden smooth-transition opacity-0 max-w-sm w-11/12 text-center">
@@ -210,7 +220,7 @@
         <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between flex-row">
             <!-- 1. زر القائمة الجانبية (يمين) -->
             <div class="flex items-center">
-                <button id="mobile-menu-toggle" aria-label="القائمة الجانبية" class="p-2 text-[#111111] hover:text-[#FF91A4] smooth-transition rounded-xl hover:bg-[#FF91A4]/10">
+                <button id="mobile-menu-toggle" aria-label="القائمة الجانبية" class="p-2 text-[#111111] hover:text-[#FF91A4] smooth-transition rounded-xl hover:bg-[#FF91A4]/10 focus:outline-none">
                     <svg class="w-6 h-6 text-[#111111]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
@@ -308,7 +318,7 @@
             </div>
         </div>
     </div>
-    <div id="side-menu-overlay" class="fixed inset-0 bg-black/25 z-40 hidden smooth-transition"></div>
+    <div id="side-menu-overlay" class="fixed inset-0 bg-black/25 z-40 hidden backdrop-blur-sm smooth-transition"></div>
 
     <main class="min-h-screen">
         
@@ -979,7 +989,7 @@
     </footer>
 
     <script>
-        // درع الحماية البرمجي (Fallback Shield): قاعدة بيانات محلية مدمجة ذكية لضمان تشغيل الموقع في حال انقطاع الشبكة
+        // درع الحماية البرمجي (Fallback Shield): قاعدة بيانات مدمجة ذكية لمنع تعليق أو توقف الـ JS
         let siteData = {
             "store": {
                 "id": "bose-sweets",
@@ -997,6 +1007,18 @@
             "orderRules": {
                 "minPreparationTimeHours": 24,
                 "preparationTimeMessage": "نحتاج إلى وقت كافٍ لتجهيز طلبك بأفضل جودة ممكنة، لذلك لا يمكن اختيار موعد قبل 24 ساعة من وقت تأكيد الطلب."
+            },
+            "social": {
+                "facebook": "https://www.facebook.com/share/1H1vVMHyu9/",
+                "instagram": "https://www.instagram.com/bose_sweets?igsh=amdkMmhxMXJyanYy",
+                "tiktok": "https://www.tiktok.com/@bosesweets1?_r=1&_t=ZS-96lRDDHq9QK",
+                "whatsapp": "01097238441"
+            },
+            "footer": {
+                "about": "صنعناها بحب لتهديها لمن تحب. خبرة أكثر من 10 سنوات في صناعة الحلويات الفاخرة وتنسيق الهدايا والورد لنوثق أسعد لحظاتكم.",
+                "links": ["الرئيسية", "المنيو الشامل", "السلة"],
+                "policies": ["سياسة الخصوصية", "سياسة الاسترجاع", "سياسة الطلبات", "الشروط والأحكام"],
+                "socialLinks": ["facebook", "instagram", "tiktok", "whatsapp"]
             },
             "coupons": [
                 { "code": "BOSE10", "type": "percent", "value": 10 },
@@ -1123,18 +1145,20 @@
         function showCustomAlert(msg) {
             const box = document.getElementById('custom-alert');
             const p = document.getElementById('alert-message');
-            p.innerText = msg;
-            box.classList.remove('hidden');
-            setTimeout(() => {
-                box.classList.remove('opacity-0');
-                box.classList.add('opacity-100');
-            }, 50);
+            if (box && p) {
+                p.innerText = msg;
+                box.classList.remove('hidden');
+                setTimeout(() => {
+                    box.classList.remove('opacity-0');
+                    box.classList.add('opacity-100');
+                }, 50);
 
-            setTimeout(() => {
-                box.classList.remove('opacity-100');
-                box.classList.add('opacity-0');
-                setTimeout(() => box.classList.add('hidden'), 300);
-            }, 3000);
+                setTimeout(() => {
+                    box.classList.remove('opacity-100');
+                    box.classList.add('opacity-0');
+                    setTimeout(() => box.classList.add('hidden'), 300);
+                }, 3000);
+            }
         }
 
         window.addEventListener('DOMContentLoaded', async () => {
@@ -1144,18 +1168,20 @@
             }
             updateCartBadge();
 
-            // آلية جلب البيانات ديناميكياً وحصرياً من ملف الـ JSON الخارجي
+            // محرك جلب البيانات الذكي والمعالج للأخطاء
             try {
-                const response = await fetch('site-data-final.json');
+                const response = await fetch('./site-data-final.json');
                 if (response.ok) {
                     const fetchedData = await response.json();
                     siteData = mergeDeep(siteData, fetchedData);
                     console.log("تم تحميل قاعدة بيانات المنتجات الخارجية بنجاح 🌸");
                 } else {
-                    console.warn("فشل تحميل الملف الخارجي، تم الاعتماد على حزمة الحماية المضمنة.");
+                    document.getElementById('diagnostic-banner').classList.remove('hidden');
+                    console.warn("استجابة الخادم غير صالحة. تم تشغيل نظام الأمان الاحتياطي لضمان عمل الواجهات.");
                 }
             } catch (error) {
-                console.warn("تم التحميل بنمط الحماية المحلي لعدم توفر ملف الـ JSON.");
+                document.getElementById('diagnostic-banner').classList.remove('hidden');
+                console.warn("تنبيه أمني: جاري العمل بنظام المحاكاة المدمج لمنع تعليق التصفح.");
             }
 
             initGlobalUI();
@@ -1164,54 +1190,76 @@
         });
 
         function initGlobalUI() {
-            // تزيين وتكرار شريط الحركة العلوي لمنع الفراغات البصرية نهائياً
-            const marqueeContainer = document.getElementById('marquee-container');
-            const marqueeClone = document.getElementById('marquee-container-clone');
-            
-            let marqueeHTML = "";
-            siteData.homepage.topBarMessages.forEach(msg => {
-                marqueeHTML += `<span class="flex items-center gap-2 px-4 whitespace-nowrap">🌸 ${msg} 🌸</span>`;
-            });
-            marqueeContainer.innerHTML = marqueeHTML;
-            marqueeClone.innerHTML = marqueeHTML;
+            try {
+                // تزيين وتكرار شريط الحركة العلوي لمنع الفراغات البصرية نهائياً
+                const marqueeContainer = document.getElementById('marquee-container');
+                const marqueeClone = document.getElementById('marquee-container-clone');
+                
+                let marqueeHTML = "";
+                const messages = siteData.homepage?.topBarMessages || siteData.navigation?.topBarMessages || [];
+                messages.forEach(msg => {
+                    marqueeHTML += `<span class="flex items-center gap-2 px-4 whitespace-nowrap">🌸 ${msg} 🌸</span>`;
+                });
+                if (marqueeContainer) marqueeContainer.innerHTML = marqueeHTML;
+                if (marqueeClone) marqueeClone.innerHTML = marqueeHTML;
 
-            // إعداد الفوتر الرسمي والنبذة التعريفية الفخمة
-            document.getElementById('footer-about-text').innerText = siteData.store.slogan + ". " + siteData.footer.about;
+                // إعداد الفوتر والنبذة التعريفية الفخمة بنظام الأمان
+                const footerAbout = document.getElementById('footer-about-text');
+                if (footerAbout) {
+                    footerAbout.innerText = (siteData.store?.slogan || "صنعناها بحب لتهديها لمن تحب") + ". " + (siteData.footer?.about || "");
+                }
 
-            const policyList = document.getElementById('footer-policies-list');
-            policyList.innerHTML = siteData.footer.policies.map(p => `<li><a href="javascript:void(0)" onclick="showPolicyNote('${p}')" class="hover:text-[#FF91A4] smooth-transition cursor-pointer text-xs block text-right">${p}</a></li>`).join('');
+                const policyList = document.getElementById('footer-policies-list');
+                if (policyList && siteData.footer?.policies) {
+                    policyList.innerHTML = siteData.footer.policies.map(p => `<li><a href="javascript:void(0)" onclick="showPolicyNote('${p}')" class="hover:text-[#FF91A4] transition-all cursor-pointer text-xs block text-right">${p}</a></li>`).join('');
+                }
 
-            // قنوات التواصل الاجتماعي الرسمية بأيقونات SVG الفاخرة والصريحة
-            const socialWrap = document.getElementById('footer-social-links');
-            socialWrap.innerHTML = `
-                <a href="${siteData.social.facebook}" target="_blank" class="p-2 bg-gray-50 rounded-xl hover:bg-[#FF91A4]/10 transition hover:-translate-y-1 smooth-transition text-xs font-bold text-[#1877F2]" aria-label="فيسبوك">
-                    فيسبوك
-                </a>
-                <a href="${siteData.social.instagram}" target="_blank" class="p-2 bg-gray-50 rounded-xl hover:bg-[#FF91A4]/10 transition hover:-translate-y-1 smooth-transition text-xs font-bold text-[#E1306C]" aria-label="انستجرام">
-                    انستجرام
-                </a>
-                <a href="${siteData.social.tiktok}" target="_blank" class="p-2 bg-gray-50 rounded-xl hover:bg-[#FF91A4]/10 transition hover:-translate-y-1 smooth-transition text-xs font-bold text-[#000000]" aria-label="تيك توك">
-                    تيك توك
-                </a>
-                <a href="https://wa.me/20${siteData.social.whatsapp}" target="_blank" class="p-2 bg-gray-50 rounded-xl hover:bg-[#FF91A4]/10 transition hover:-translate-y-1 smooth-transition text-xs font-bold text-[#25D366]" aria-label="واتساب">
-                    واتساب
-                </a>
-            `;
+                // قنوات التواصل الاجتماعي الرسمية بأيقونات SVG الفاخرة والصريحة
+                const socialWrap = document.getElementById('footer-social-links');
+                if (socialWrap && siteData.social) {
+                    socialWrap.innerHTML = `
+                        <a href="${siteData.social.facebook || '#'}" target="_blank" class="p-2.5 bg-gray-50 rounded-xl hover:bg-[#FF91A4]/10 transition-all hover:-translate-y-1 text-xs font-bold text-[#1877F2]" aria-label="فيسبوك">
+                            فيسبوك
+                        </a>
+                        <a href="${siteData.social.instagram || '#'}" target="_blank" class="p-2.5 bg-gray-50 rounded-xl hover:bg-[#FF91A4]/10 transition-all hover:-translate-y-1 text-xs font-bold text-[#E1306C]" aria-label="انستجرام">
+                            انستجرام
+                        </a>
+                        <a href="${siteData.social.tiktok || '#'}" target="_blank" class="p-2.5 bg-gray-50 rounded-xl hover:bg-[#FF91A4]/10 transition-all hover:-translate-y-1 text-xs font-bold text-[#000000]" aria-label="تيك توك">
+                            تيك توك
+                        </a>
+                        <a href="https://wa.me/20${siteData.social.whatsapp || '01097238441'}" target="_blank" class="p-2.5 bg-gray-50 rounded-xl hover:bg-[#FF91A4]/10 transition-all hover:-translate-y-1 text-xs font-bold text-[#25D366]" aria-label="واتساب">
+                            واتساب
+                        </a>
+                    `;
+                }
 
-            // بناء فئات التسوق الـ 12 بداخل القائمة الجانبية المحدثة
-            const sideCategories = document.getElementById('side-menu-categories');
-            sideCategories.innerHTML = siteData.homepage.categoriesSlider.map(cat => `
-                <a href="javascript:void(0)" onclick="navigateTo('category', '${cat.id}'); closeMenu();" class="py-2.5 px-3 bg-gray-50 rounded-xl hover:bg-[#FF91A4]/10 hover:text-[#FF91A4] text-center border border-gray-100 transition truncate text-xs font-bold text-gray-700 hover:scale-95 smooth-transition">${cat.title}</a>
-            `).join('');
+                // بناء فئات التسوق الـ 12 بداخل القائمة الجانبية المحدثة
+                const sideCategories = document.getElementById('side-menu-categories');
+                if (sideCategories && siteData.homepage?.categoriesSlider) {
+                    sideCategories.innerHTML = siteData.homepage.categoriesSlider.map(cat => `
+                        <a href="javascript:void(0)" onclick="navigateTo('category', '${cat.id}'); closeMenu();" class="py-2.5 px-3 bg-gray-50 rounded-xl hover:bg-[#FF91A4]/10 hover:text-[#FF91A4] text-center border border-gray-100 transition truncate text-xs font-bold text-gray-700 hover:scale-95 smooth-transition">${cat.title}</a>
+                    `).join('');
+                }
 
-            // ربط أزرار التحكم بالقائمة والبحث
-            document.getElementById('mobile-menu-toggle').addEventListener('click', openMenu);
-            document.getElementById('close-menu-btn').addEventListener('click', closeMenu);
-            document.getElementById('side-menu-overlay').addEventListener('click', closeMenu);
+                // ربط أزرار التحكم بالقائمة والبحث
+                const menuToggle = document.getElementById('mobile-menu-toggle');
+                const closeMenuBtn = document.getElementById('close-menu-btn');
+                const overlay = document.getElementById('side-menu-overlay');
 
-            document.getElementById('nav-search-btn').addEventListener('click', openSearch);
-            document.getElementById('close-search-btn').addEventListener('click', closeSearch);
-            document.getElementById('search-input').addEventListener('input', runLiveSearch);
+                if (menuToggle) menuToggle.onclick = openMenu;
+                if (closeMenuBtn) closeMenuBtn.onclick = closeMenu;
+                if (overlay) overlay.onclick = closeMenu;
+
+                const searchBtn = document.getElementById('nav-search-btn');
+                const closeSearchBtn = document.getElementById('close-search-btn');
+                const searchInput = document.getElementById('search-input');
+
+                if (searchBtn) searchBtn.onclick = openSearch;
+                if (closeSearchBtn) closeSearchBtn.onclick = closeSearch;
+                if (searchInput) searchInput.oninput = runLiveSearch;
+            } catch (err) {
+                console.error("خطأ أثناء تهيئة واجهة المستخدم:", err);
+            }
         }
 
         function showPolicyNote(policy) {
@@ -1219,28 +1267,42 @@
         }
 
         function openMenu() {
-            document.getElementById('side-menu').classList.remove('translate-x-full');
-            document.getElementById('side-menu-overlay').classList.remove('hidden');
+            const sideMenu = document.getElementById('side-menu');
+            const overlay = document.getElementById('side-menu-overlay');
+            if (sideMenu && overlay) {
+                sideMenu.classList.remove('translate-x-full');
+                overlay.classList.remove('hidden');
+            }
         }
         function closeMenu() {
-            document.getElementById('side-menu').classList.add('translate-x-full');
-            document.getElementById('side-menu-overlay').classList.add('hidden');
+            const sideMenu = document.getElementById('side-menu');
+            const overlay = document.getElementById('side-menu-overlay');
+            if (sideMenu && overlay) {
+                sideMenu.classList.add('translate-x-full');
+                overlay.classList.add('hidden');
+            }
         }
 
         function openSearch() {
             const search = document.getElementById('search-overlay');
-            search.classList.remove('hidden');
-            setTimeout(() => search.classList.remove('translate-y-full'), 50);
+            if (search) {
+                search.classList.remove('hidden');
+                setTimeout(() => search.classList.remove('translate-y-full'), 50);
+            }
         }
         function closeSearch() {
             const search = document.getElementById('search-overlay');
-            search.classList.add('translate-y-full');
-            setTimeout(() => search.classList.add('hidden'), 300);
+            if (search) {
+                search.classList.add('translate-y-full');
+                setTimeout(() => search.classList.add('hidden'), 300);
+            }
         }
 
-        // إيماءات اللمس الذكية للموبايل (Mobile First Swipe Gestures) لغلق القائمة الجانبية بسلاسة
+        // إيماءات اللمس الذكية للموبايل لغلق القائمة الجانبية بسلاسة
         function initTouchGestures() {
             const sideMenu = document.getElementById('side-menu');
+            if (!sideMenu) return;
+
             let startX = 0;
             let currentX = 0;
 
@@ -1296,12 +1358,14 @@
         function runLiveSearch() {
             const query = document.getElementById('search-input').value.trim().toLowerCase();
             const resultsBox = document.getElementById('search-results');
+            if (!resultsBox) return;
+
             if (query.length < 2) {
                 resultsBox.innerHTML = "";
                 return;
             }
 
-            const matched = siteData.products.filter(p => 
+            const matched = (siteData.products || []).filter(p => 
                 p.title.toLowerCase().includes(query) || 
                 p.flavorName.toLowerCase().includes(query) || 
                 p.flavorDesc.toLowerCase().includes(query)
@@ -1314,7 +1378,7 @@
 
             resultsBox.innerHTML = matched.map(p => `
                 <div class="flex items-center gap-4 bg-gray-50 p-3 rounded-xl border border-gray-100 cursor-pointer hover:border-[#FF91A4] smooth-transition" onclick="closeSearch(); navigateTo('product', null, '${p.id}');">
-                    <img src="${p.image}" class="w-12 h-12 object-contain rounded-lg">
+                    <img src="${p.images?.[0] || p.image || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png'}" class="w-12 h-12 object-contain rounded-lg">
                     <div class="text-right ml-auto">
                         <h4 class="font-bold text-xs text-[#111111]">${p.title}</h4>
                         <span class="text-xs text-[#D4AF37] font-semibold">${p.flavorName}</span>
@@ -1326,7 +1390,7 @@
 
         function getAdjustedPrice(product) {
             let price = product.price;
-            if (siteData.store.priceIncrease && siteData.store.priceIncrease.enabled) {
+            if (siteData.store?.priceIncrease && siteData.store.priceIncrease.enabled) {
                 const factor = 1 + (siteData.store.priceIncrease.percent / 100);
                 price = price * factor;
             }
@@ -1335,8 +1399,10 @@
 
         function updateCartBadge() {
             const badge = document.getElementById('cart-badge');
-            const totalItems = state.cart.reduce((sum, item) => sum + item.qty, 0);
-            badge.innerText = totalItems;
+            if (badge) {
+                const totalItems = state.cart.reduce((sum, item) => sum + item.qty, 0);
+                badge.innerText = totalItems;
+            }
             localStorage.setItem('bose_cart', JSON.stringify(state.cart));
 
             const emptyBtn = document.getElementById('btn-empty-cart');
@@ -1350,66 +1416,80 @@
             const leftCol = document.getElementById('waterfall-left-col');
             const rightCol = document.getElementById('waterfall-right-col');
             
-            const leftImgs = [...siteData.homepage.waterfall.leftColumnImages, ...siteData.homepage.waterfall.leftColumnImages];
-            const rightImgs = [...siteData.homepage.waterfall.rightColumnImages, ...siteData.homepage.waterfall.rightColumnImages];
+            const leftImgs = [...(siteData.homepage?.waterfall?.leftColumnImages || []), ...(siteData.homepage?.waterfall?.leftColumnImages || [])];
+            const rightImgs = [...(siteData.homepage?.waterfall?.rightColumnImages || []), ...(siteData.homepage?.waterfall?.rightColumnImages || [])];
 
-            leftCol.innerHTML = leftImgs.map(img => `
-                <div class="relative w-full aspect-square bg-gray-50 rounded-2xl overflow-hidden border border-[#FF91A4]/10">
-                    <img src="${img}" alt="حلويات بوسي" class="w-full h-full object-contain" onerror="this.src='https://placehold.co/320x320?text=Bose+Sweets'">
-                </div>
-            `).join('');
+            if (leftCol) {
+                leftCol.innerHTML = leftImgs.map(img => `
+                    <div class="relative w-full aspect-square bg-gray-50 rounded-2xl overflow-hidden border border-[#FF91A4]/10">
+                        <img src="${img}" alt="حلويات بوسي" class="w-full h-full object-contain" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png'">
+                    </div>
+                `).join('');
+            }
 
-            rightCol.innerHTML = rightImgs.map(img => `
-                <div class="relative w-full aspect-square bg-gray-50 rounded-2xl overflow-hidden border border-[#FF91A4]/10">
-                    <img src="${img}" alt="حلويات بوسي" class="w-full h-full object-contain" onerror="this.src='https://placehold.co/320x320?text=Bose+Sweets'">
-                </div>
-            `).join('');
+            if (rightCol) {
+                rightCol.innerHTML = rightImgs.map(img => `
+                    <div class="relative w-full aspect-square bg-gray-50 rounded-2xl overflow-hidden border border-[#FF91A4]/10">
+                        <img src="${img}" alt="حلويات بوسي" class="w-full h-full object-contain" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png'">
+                    </div>
+                `).join('');
+            }
 
             const excelTrack = document.getElementById('excellence-images-track');
-            const doubleEx = [...siteData.homepage.excellence.images, ...siteData.homepage.excellence.images];
-            excelTrack.innerHTML = doubleEx.map(img => `
-                <div class="w-1/3 flex-shrink-0 px-2 h-64 md:h-96">
-                    <img src="${img}" class="w-full h-full object-contain rounded-2xl border border-[#FF91A4]/20 cursor-pointer" onclick="navigateTo('menu')">
-                </div>
-            `).join('');
+            if (excelTrack) {
+                const doubleEx = [...(siteData.homepage?.excellence?.images || []), ...(siteData.homepage?.excellence?.images || [])];
+                excelTrack.innerHTML = doubleEx.map(img => `
+                    <div class="w-1/3 flex-shrink-0 px-2 h-64 md:h-96">
+                        <img src="${img}" class="w-full h-full object-contain rounded-2xl border border-[#FF91A4]/20 cursor-pointer" onclick="navigateTo('menu')">
+                    </div>
+                `).join('');
+            }
 
             // حقن منتجات الأكثر مبيعاً
             const mostSellingGrid = document.getElementById('most-selling-grid');
-            const msProducts = siteData.products.filter(p => siteData.homepage.mostSelling.includes(p.id));
-            mostSellingGrid.innerHTML = msProducts.map(p => renderProductCardDOM(p, true)).join('');
+            if (mostSellingGrid && siteData.homepage?.mostSelling) {
+                const msProducts = (siteData.products || []).filter(p => siteData.homepage.mostSelling.includes(p.id));
+                mostSellingGrid.innerHTML = msProducts.map(p => renderProductCardDOM(p, true)).join('');
+            }
 
             // حقن منتجات وصل حديثاً
             const newGrid = document.getElementById('new-arrivals-grid');
-            const naProducts = siteData.products.filter(p => siteData.homepage.newArrivals.includes(p.id));
-            newGrid.innerHTML = naProducts.map(p => renderProductCardDOM(p, true)).join('');
+            if (newGrid && siteData.homepage?.newArrivals) {
+                const naProducts = (siteData.products || []).filter(p => siteData.homepage.newArrivals.includes(p.id));
+                newGrid.innerHTML = naProducts.map(p => renderProductCardDOM(p, true)).join('');
+            }
 
             renderOurProductsHomeGrid();
 
             // حقن الأرقام التصاعدية بقسم الفخر والاعتزاز
             const statsGrid = document.getElementById('stats-container');
-            statsGrid.innerHTML = Object.keys(siteData.homepage.pride.stats).map(key => {
-                const stat = siteData.homepage.pride.stats[key];
-                return `
-                    <div class="space-y-2 p-4 bg-white rounded-2xl border border-[#FF91A4]/10 shadow-sm flex flex-col justify-between">
-                        <span class="block text-gray-400 text-[10px] text-center font-bold">${stat.label}</span>
-                        <div class="text-2xl md:text-3xl font-extrabold text-[#FF91A4] text-center">
-                            <span class="count-up" data-target="${stat.value}">0</span>${stat.suffix}
+            if (statsGrid && siteData.homepage?.pride?.stats) {
+                statsGrid.innerHTML = Object.keys(siteData.homepage.pride.stats).map(key => {
+                    const stat = siteData.homepage.pride.stats[key];
+                    return `
+                        <div class="space-y-2 p-4 bg-white rounded-2xl border border-[#FF91A4]/10 shadow-sm flex flex-col justify-between">
+                            <span class="block text-gray-400 text-[10px] text-center font-bold">${stat.label}</span>
+                            <div class="text-2xl md:text-3xl font-extrabold text-[#FF91A4] text-center">
+                                <span class="count-up" data-target="${stat.value}">0</span>${stat.suffix}
+                            </div>
                         </div>
-                    </div>
-                `;
-            }).join('');
-            runStatsCounter();
+                    `;
+                }).join('');
+                runStatsCounter();
+            }
 
             // فئات التسوق المعتمدة الـ 12 بالترتيب الهندسي الموحد
             const catTrack = document.getElementById('categories-track');
-            catTrack.innerHTML = siteData.homepage.categoriesSlider.map(cat => `
-                <div class="category-card bg-white border border-[#FF91A4]/20 overflow-hidden shadow-sm hover:shadow-md smooth-transition cursor-pointer flex flex-col justify-between text-center" onclick="navigateTo('category', '${cat.id}')">
-                    <div class="w-full aspect-square overflow-hidden bg-gray-50 rounded-2xl">
-                        <img src="${cat.image}" alt="${cat.title}" class="category-card-img">
+            if (catTrack && siteData.homepage?.categoriesSlider) {
+                catTrack.innerHTML = siteData.homepage.categoriesSlider.map(cat => `
+                    <div class="category-card bg-white border border-[#FF91A4]/20 overflow-hidden shadow-sm hover:shadow-md smooth-transition cursor-pointer flex flex-col justify-between text-center" onclick="navigateTo('category', '${cat.id}')">
+                        <div class="w-full aspect-square overflow-hidden bg-gray-50 rounded-2xl">
+                            <img src="${cat.image}" alt="${cat.title}" class="category-card-img">
+                        </div>
+                        <h3 class="font-bold text-xl text-[#111111] mt-4">${cat.title}</h3>
                     </div>
-                    <h3 class="font-bold text-xl text-[#111111] mt-4">${cat.title}</h3>
-                </div>
-            `).join('');
+                `).join('');
+            }
         }
 
         function runStatsCounter() {
@@ -1434,15 +1514,19 @@
 
         function renderOurProductsHomeGrid() {
             const grid = document.getElementById('our-products-grid');
-            const ourProds = siteData.products.filter(p => siteData.homepage.ourProducts.includes(p.id));
+            if (!grid) return;
+
+            const ourProds = (siteData.products || []).filter(p => siteData.homepage?.ourProducts?.includes(p.id));
             const visibleSlice = ourProds.slice(0, state.visibleOurProducts);
             grid.innerHTML = visibleSlice.map(p => renderProductCardDOM(p, false)).join('');
 
             const showMoreBtn = document.getElementById('show-more-btn');
-            if (state.visibleOurProducts >= ourProds.length) {
-                showMoreBtn.classList.add('hidden');
-            } else {
-                showMoreBtn.classList.remove('hidden');
+            if (showMoreBtn) {
+                if (state.visibleOurProducts >= ourProds.length) {
+                    showMoreBtn.classList.add('hidden');
+                } else {
+                    showMoreBtn.classList.remove('hidden');
+                }
             }
         }
 
@@ -1462,7 +1546,7 @@
             return `
                 <div class="product-card ${sizeClass} p-4 smooth-transition">
                     <div class="relative w-full aspect-square bg-gray-50 rounded-2xl overflow-hidden cursor-pointer mb-4" onclick="navigateTo('product', null, '${product.id}')">
-                        <img src="${product.image}" alt="${product.title}" class="product-card-img" onerror="this.src='https://placehold.co/220x220?text=Logo'">
+                        <img src="${product.images?.[0] || product.image || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png'}" alt="${product.title}" class="product-card-img" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png'">
                     </div>
                     <div class="space-y-1 text-right mb-4 flex-grow">
                         <h3 class="product-card-title font-bold text-[#111111] text-xs md:text-sm truncate">${product.title}</h3>
@@ -1495,6 +1579,8 @@
         function adjustCardQty(prodId, delta) {
             const display = document.getElementById(`qty-val-${prodId}`);
             const priceDisp = document.getElementById(`price-val-${prodId}`);
+            if (!display || !priceDisp) return;
+
             let currentVal = parseInt(display.innerText);
             
             currentVal += delta;
@@ -1525,7 +1611,7 @@
                     title: product.title,
                     flavorName: product.flavorName,
                     price: price,
-                    image: product.image,
+                    image: product.images?.[0] || product.image,
                     qty: chosenQty,
                     isCustom: false
                 });
@@ -1537,25 +1623,27 @@
 
         function renderMenuView() {
             const grid = document.getElementById('menu-grid');
-            grid.innerHTML = siteData.homepage.categoriesSlider.map(cat => `
-                <div class="bg-white rounded-3xl border border-[#FF91A4]/20 overflow-hidden shadow-sm hover:shadow-md smooth-transition flex flex-col justify-between p-6 text-center">
-                    <div class="w-full aspect-square overflow-hidden bg-gray-50 rounded-2xl cursor-pointer" onclick="navigateTo('category', '${cat.id}')">
-                        <img src="${cat.image}" alt="${cat.title}" class="w-full h-full object-contain">
+            if (grid && siteData.homepage?.categoriesSlider) {
+                grid.innerHTML = siteData.homepage.categoriesSlider.map(cat => `
+                    <div class="bg-white rounded-3xl border border-[#FF91A4]/20 overflow-hidden shadow-sm hover:shadow-md smooth-transition flex flex-col justify-between p-6 text-center">
+                        <div class="w-full aspect-square overflow-hidden bg-gray-50 rounded-2xl cursor-pointer" onclick="navigateTo('category', '${cat.id}')">
+                            <img src="${cat.image}" alt="${cat.title}" class="w-full h-full object-contain">
+                        </div>
+                        <h3 class="font-bold text-lg text-[#111111] mt-6">${cat.title}</h3>
+                        <button onclick="navigateTo('category', '${cat.id}')" class="mt-6 w-full bg-[#FF91A4] hover:bg-[#ff7b92] text-white font-bold py-3 rounded-full text-xs smooth-transition shadow-sm">
+                            استعرض المنتجات
+                        </button>
                     </div>
-                    <h3 class="font-bold text-lg text-[#111111] mt-6">${cat.title}</h3>
-                    <button onclick="navigateTo('category', '${cat.id}')" class="mt-6 w-full bg-[#FF91A4] hover:bg-[#ff7b92] text-white font-bold py-3 rounded-full text-xs smooth-transition shadow-sm">
-                        استعرض المنتجات
-                    </button>
-                </div>
-            `).join('');
+                `).join('');
+            }
         }
 
         function renderCategoryView(catId) {
-            const category = siteData.homepage.categoriesSlider.find(c => c.id === catId);
+            const category = siteData.homepage?.categoriesSlider?.find(c => c.id === catId);
             if (!category) return;
 
             document.getElementById('category-title').innerText = category.title;
-            const categoryProds = siteData.products.filter(p => p.category === catId);
+            const categoryProds = (siteData.products || []).filter(p => p.category === catId);
             const grid = document.getElementById('category-products-grid');
             const tabsContainer = document.getElementById('category-tabs-container');
 
@@ -1589,7 +1677,7 @@
             event.target.className = "bg-[#FF91A4] text-white font-bold px-4 py-1.5 rounded-full text-[10px]";
 
             const grid = document.getElementById('category-products-grid');
-            let prods = siteData.products.filter(p => p.category === 'taswaq-despacito');
+            let prods = (siteData.products || []).filter(p => p.category === 'taswaq-despacito');
             
             if (size !== 'all') {
                 prods = prods.filter(p => p.prices && p.prices[size] !== undefined);
@@ -1604,7 +1692,7 @@
             state.detailQty = 1;
             document.getElementById('detail-qty-input').value = 1;
 
-            document.getElementById('detail-img').src = product.image;
+            document.getElementById('detail-img').src = product.images?.[0] || product.image;
             document.getElementById('detail-title').innerText = product.title;
             document.getElementById('detail-flavor').innerText = product.flavorName;
             
@@ -1612,7 +1700,7 @@
             document.getElementById('detail-price').innerHTML = `<span>${adjustedPrice}</span> جنيه`;
             document.getElementById('detail-desc').innerText = product.description;
 
-            const categoryName = siteData.homepage.categoriesSlider.find(c => c.id === product.category)?.title || "صنف فاخر";
+            const categoryName = siteData.homepage?.categoriesSlider?.find(c => c.id === product.category)?.title || "صنف فاخر";
             document.getElementById('detail-category').innerText = categoryName;
 
             const optionsPanel = document.getElementById('detail-custom-options');
@@ -1640,7 +1728,7 @@
             }
 
             const reviewsBox = document.getElementById('detail-reviews');
-            reviewsBox.innerHTML = product.reviews.map(r => `
+            reviewsBox.innerHTML = (product.reviews || []).map(r => `
                 <div class="bg-gray-50 p-4 rounded-2xl border border-gray-100 text-right">
                     <div class="flex justify-between items-center mb-1 flex-row-reverse">
                         <span class="font-bold text-xs text-[#111111]">${r.user}</span>
@@ -1683,7 +1771,7 @@
                 title: product.title,
                 flavorName: product.flavorName + (customNote ? ` - ${customNote}` : ''),
                 price: getAdjustedPrice(product) + extraPrice,
-                image: product.image,
+                image: product.images?.[0] || product.image,
                 qty: state.detailQty,
                 isCustom: false
             });
@@ -1695,33 +1783,39 @@
 
         function initCakeBuilder() {
             const shapeWrap = document.getElementById('cake-shapes-container');
-            shapeWrap.innerHTML = siteData.cakeBuilder.shapes.map((s, idx) => `
-                <button onclick="selectCakeShape('${s.id}')" id="shape-${s.id}" class="cake-shape-btn border ${idx === 0 ? 'border-[#FF91A4] bg-[#FF91A4]/5 text-[#FF91A4]' : 'border-gray-200 text-gray-500'} font-bold py-2.5 rounded-xl text-xs transition">
-                    ${s.name}
-                </button>
-            `).join('');
-            state.cakeShape = siteData.cakeBuilder.shapes[0].id;
+            if (shapeWrap && siteData.cakeBuilder?.shapes) {
+                shapeWrap.innerHTML = siteData.cakeBuilder.shapes.map((s, idx) => `
+                    <button onclick="selectCakeShape('${s.id}')" id="shape-${s.id}" class="cake-shape-btn border ${idx === 0 ? 'border-[#FF91A4] bg-[#FF91A4]/5 text-[#FF91A4]' : 'border-gray-200 text-gray-500'} font-bold py-2.5 rounded-xl text-xs transition">
+                        ${s.name}
+                    </button>
+                `).join('');
+                state.cakeShape = siteData.cakeBuilder.shapes[0]?.id || 'circle';
+            }
 
             const typeWrap = document.getElementById('cake-types-container');
-            typeWrap.innerHTML = siteData.cakeBuilder.cakeTypes.map((t, idx) => `
-                <button onclick="selectCakeType('${t.id}')" id="type-${t.id}" class="cake-type-btn border ${idx === 0 ? 'border-[#FF91A4] bg-[#FF91A4]/5 text-[#FF91A4]' : 'border-gray-200 text-gray-500'} font-bold py-2.5 rounded-xl text-xs transition">
-                    ${t.name}
-                </button>
-            `).join('');
-            state.cakeType = siteData.cakeBuilder.cakeTypes[0].id;
+            if (typeWrap && siteData.cakeBuilder?.cakeTypes) {
+                typeWrap.innerHTML = siteData.cakeBuilder.cakeTypes.map((t, idx) => `
+                    <button onclick="selectCakeType('${t.id}')" id="type-${t.id}" class="cake-type-btn border ${idx === 0 ? 'border-[#FF91A4] bg-[#FF91A4]/5 text-[#FF91A4]' : 'border-gray-200 text-gray-500'} font-bold py-2.5 rounded-xl text-xs transition">
+                        ${t.name}
+                    </button>
+                `).join('');
+                state.cakeType = siteData.cakeBuilder.cakeTypes[0]?.id || 'vanilla';
+            }
 
             const printWrap = document.getElementById('cake-printing-container');
-            printWrap.innerHTML = `
-                <label class="flex items-center gap-2 text-xs cursor-pointer justify-end flex-row-reverse">
-                    <span>بدون إضافة صورة</span>
-                    <input type="radio" name="cake-print" value="0" checked onchange="calculateCakePrice()" class="accent-[#FF91A4]">
-                </label>
-            ` + siteData.cakeBuilder.printingOptions.map(p => `
-                <label class="flex items-center gap-2 text-xs cursor-pointer justify-end flex-row-reverse">
-                    <span>${p.name} (+${p.price} جنيه)</span>
-                    <input type="radio" name="cake-print" value="${p.price}" onchange="calculateCakePrice()" class="accent-[#FF91A4]" data-name="${p.name}">
-                </label>
-            `).join('');
+            if (printWrap && siteData.cakeBuilder?.printingOptions) {
+                printWrap.innerHTML = `
+                    <label class="flex items-center gap-2 text-xs cursor-pointer justify-end flex-row-reverse">
+                        <span>بدون إضافة صورة</span>
+                        <input type="radio" name="cake-print" value="0" checked onchange="calculateCakePrice()" class="accent-[#FF91A4]">
+                    </label>
+                ` + siteData.cakeBuilder.printingOptions.map(p => `
+                    <label class="flex items-center gap-2 text-xs cursor-pointer justify-end flex-row-reverse">
+                        <span>${p.name} (+${p.price} جنيه)</span>
+                        <input type="radio" name="cake-print" value="${p.price}" onchange="calculateCakePrice()" class="accent-[#FF91A4]" data-name="${p.name}">
+                    </label>
+                `).join('');
+            }
 
             calculateCakePrice();
         }
@@ -1730,7 +1824,10 @@
             document.querySelectorAll('.cake-shape-btn').forEach(b => {
                 b.className = "cake-shape-btn border border-gray-200 text-gray-500 font-bold py-2.5 rounded-xl text-xs transition";
             });
-            document.getElementById(`shape-${shapeId}`).className = "cake-shape-btn border border-[#FF91A4] bg-[#FF91A4]/5 text-[#FF91A4] font-bold py-2.5 rounded-xl text-xs transition";
+            const selectedBtn = document.getElementById(`shape-${shapeId}`);
+            if (selectedBtn) {
+                selectedBtn.className = "cake-shape-btn border border-[#FF91A4] bg-[#FF91A4]/5 text-[#FF91A4] font-bold py-2.5 rounded-xl text-xs transition";
+            }
             state.cakeShape = shapeId;
             calculateCakePrice();
         }
@@ -1739,29 +1836,36 @@
             document.querySelectorAll('.cake-type-btn').forEach(b => {
                 b.className = "cake-type-btn border border-gray-200 text-gray-500 font-bold py-2.5 rounded-xl text-xs transition";
             });
-            document.getElementById(`type-${typeId}`).className = "cake-type-btn border border-[#FF91A4] bg-[#FF91A4]/5 text-[#FF91A4] font-bold py-2.5 rounded-xl text-xs transition";
+            const selectedBtn = document.getElementById(`type-${typeId}`);
+            if (selectedBtn) {
+                selectedBtn.className = "cake-type-btn border border-[#FF91A4] bg-[#FF91A4]/5 text-[#FF91A4] font-bold py-2.5 rounded-xl text-xs transition";
+            }
             state.cakeType = typeId;
         }
 
         function calculateCakePrice() {
             const personsInput = document.getElementById('cake-persons');
+            if (!personsInput) return;
+
             let persons = parseInt(personsInput.value);
 
             if (persons < 4) persons = 4;
             if (persons > 250) persons = 250;
             personsInput.value = persons;
 
-            const shapeObj = siteData.cakeBuilder.shapes.find(s => s.id === state.cakeShape);
+            const shapeObj = siteData.cakeBuilder?.shapes?.find(s => s.id === state.cakeShape);
             const errBox = document.getElementById('cake-shape-error');
-            if (persons < shapeObj.minimumPersons) {
-                errBox.innerText = `عذراً، تصميم الشكل الـ [${shapeObj.name}] الفاخر يتطلب حداً أدنى ${shapeObj.minimumPersons} فرد ليظهر بجماله الكامل.`;
-                errBox.classList.remove('hidden');
-            } else {
-                errBox.classList.add('hidden');
+            if (shapeObj && errBox) {
+                if (persons < shapeObj.minimumPersons) {
+                    errBox.innerText = `عذراً، تصميم الشكل الـ [${shapeObj.name}] الفاخر يتطلب حداً أدنى ${shapeObj.minimumPersons} فرد ليظهر بجماله الكامل.`;
+                    errBox.classList.remove('hidden');
+                } else {
+                    errBox.classList.add('hidden');
+                }
             }
 
-            let basePrice = siteData.cakeBuilder.basePrice;
-            let scaleCost = persons * siteData.cakeBuilder.pricePerPerson;
+            let basePrice = siteData.cakeBuilder?.basePrice || 580;
+            let scaleCost = persons * (siteData.cakeBuilder?.pricePerPerson || 145);
 
             let printCost = 0;
             document.getElementsByName('cake-print').forEach(r => {
@@ -1770,21 +1874,23 @@
 
             const total = basePrice + scaleCost + printCost;
             state.calculatedCakePrice = total;
-            document.getElementById('cake-builder-price').innerText = `${total} جنيه`;
+            const priceBox = document.getElementById('cake-builder-price');
+            if (priceBox) priceBox.innerText = `${total} جنيه`;
         }
 
         function addCustomCakeToCart() {
             calculateCakePrice();
 
             const persons = parseInt(document.getElementById('cake-persons').value);
-            const shapeObj = siteData.cakeBuilder.shapes.find(s => s.id === state.cakeShape);
-            if (persons < shapeObj.minimumPersons) {
+            const shapeObj = siteData.cakeBuilder?.shapes?.find(s => s.id === state.cakeShape);
+            if (shapeObj && persons < shapeObj.minimumPersons) {
                 showCustomAlert(`الرجاء تعديل عدد الأفراد ليتوافق مع تصميم الـ [${shapeObj.name}] المطلوب 🌸`);
                 return;
             }
 
-            const shapeName = shapeObj.name;
-            const typeName = siteData.cakeBuilder.cakeTypes.find(t => t.id === state.cakeType).name;
+            const shapeName = shapeObj ? shapeObj.name : "دائري";
+            const cakeTypeObj = siteData.cakeBuilder?.cakeTypes?.find(t => t.id === state.cakeType);
+            const typeName = cakeTypeObj ? cakeTypeObj.name : "فانيليا";
             
             let printName = "بدون صورة مطبوعة";
             document.getElementsByName('cake-print').forEach(r => {
@@ -1820,39 +1926,47 @@
 
         function initFlowerBuilder() {
             const typeWrap = document.getElementById('flower-types-container');
-            typeWrap.innerHTML = siteData.flowerBuilder.flowerTypes.map((t, idx) => `
-                <button onclick="selectFlowerType('${t.id}')" id="fl-type-${t.id}" class="flower-type-btn border ${idx === 0 ? 'border-[#FF91A4] bg-[#FF91A4]/5 text-[#FF91A4]' : 'border-gray-200 text-gray-500'} font-bold py-2.5 rounded-xl text-xs transition">
-                    ${t.name}
-                </button>
-            `).join('');
-            state.flowerType = siteData.flowerBuilder.flowerTypes[0].id;
+            if (typeWrap && siteData.flowerBuilder?.flowerTypes) {
+                typeWrap.innerHTML = siteData.flowerBuilder.flowerTypes.map((t, idx) => `
+                    <button onclick="selectFlowerType('${t.id}')" id="fl-type-${t.id}" class="flower-type-btn border ${idx === 0 ? 'border-[#FF91A4] bg-[#FF91A4]/5 text-[#FF91A4]' : 'border-gray-200 text-gray-500'} font-bold py-2.5 rounded-xl text-xs transition">
+                        ${t.name}
+                    </button>
+                `).join('');
+                state.flowerType = siteData.flowerBuilder.flowerTypes[0]?.id || 'natural';
+            }
 
             const wrapBox = document.getElementById('flower-wrapping-container');
-            wrapBox.innerHTML = siteData.flowerBuilder.wrappingTypes.map((w, idx) => `
-                <label class="flex items-center justify-between bg-white border border-gray-100 p-3 rounded-xl cursor-pointer hover:border-[#FF91A4] smooth-transition text-xs flex-row-reverse">
-                    <span class="flex items-center gap-2 flex-row-reverse">
-                        <input type="radio" name="flower-wrap" value="${w.price}" ${idx === 0 ? 'checked' : ''} onchange="calculateFlowerPrice()" class="accent-[#FF91A4]" data-name="${w.name}">
-                        <span>${w.name}</span>
-                    </span>
-                    <span class="font-bold text-gray-400">+${w.price} جنيه</span>
-                </label>
-            `).join('');
+            if (wrapBox && siteData.flowerBuilder?.wrappingTypes) {
+                wrapBox.innerHTML = siteData.flowerBuilder.wrappingTypes.map((w, idx) => `
+                    <label class="flex items-center justify-between bg-white border border-gray-100 p-3 rounded-xl cursor-pointer hover:border-[#FF91A4] smooth-transition text-xs flex-row-reverse">
+                        <span class="flex items-center gap-2 flex-row-reverse">
+                            <input type="radio" name="flower-wrap" value="${w.price}" ${idx === 0 ? 'checked' : ''} onchange="calculateFlowerPrice()" class="accent-[#FF91A4]" data-name="${w.name}">
+                            <span>${w.name}</span>
+                        </span>
+                        <span class="font-bold text-gray-400">+${w.price} جنيه</span>
+                    </label>
+                `).join('');
+            }
 
             const cashBox = document.getElementById('flower-cash-container');
-            cashBox.innerHTML = siteData.flowerBuilder.moneyCategories.map(c => `
-                <label class="flex items-center justify-between bg-white border border-gray-100 p-2.5 rounded-xl cursor-pointer hover:border-[#FF91A4] smooth-transition text-xs flex-row-reverse">
-                    <span class="flex items-center gap-2 flex-row-reverse">
-                        <input type="checkbox" name="flower-cash" value="${c.amount + c.fee}" onchange="calculateFlowerPrice()" class="accent-[#FF91A4]" data-amount="${c.amount}">
-                        <span>كاش فئة ${c.amount} جنيه</span>
-                    </span>
-                    <span class="text-[10px] text-gray-400 font-semibold">رسوم: +${c.fee}ج</span>
-                </label>
-            `).join('');
+            if (cashBox && siteData.flowerBuilder?.moneyCategories) {
+                cashBox.innerHTML = siteData.flowerBuilder.moneyCategories.map(c => `
+                    <label class="flex items-center justify-between bg-white border border-gray-100 p-2.5 rounded-xl cursor-pointer hover:border-[#FF91A4] smooth-transition text-xs flex-row-reverse">
+                        <span class="flex items-center gap-2 flex-row-reverse">
+                            <input type="checkbox" name="flower-cash" value="${c.amount + c.fee}" onchange="calculateFlowerPrice()" class="accent-[#FF91A4]" data-amount="${c.amount}">
+                            <span>كاش فئة ${c.amount} جنيه</span>
+                        </span>
+                        <span class="text-[10px] text-gray-400 font-semibold">رسوم: +${c.fee}ج</span>
+                    </label>
+                `).join('');
+            }
 
             const chocSelect = document.getElementById('flower-chocolate');
-            chocSelect.innerHTML = `<option value="0" data-name="بدون شوكولاتة">بدون شوكولاتة مضافة</option>` + siteData.flowerBuilder.chocolateTypes.map(c => `
-                <option value="${c.price}" data-name="${c.name}">${c.name} (+${c.price} جنيه للقطعة)</option>
-            `).join('');
+            if (chocSelect && siteData.flowerBuilder?.chocolateTypes) {
+                chocSelect.innerHTML = `<option value="0" data-name="بدون شوكولاتة">بدون شوكولاتة مضافة</option>` + siteData.flowerBuilder.chocolateTypes.map(c => `
+                    <option value="${c.price}" data-name="${c.name}">${c.name} (+${c.price} جنيه للقطعة)</option>
+                `).join('');
+            }
 
             calculateFlowerPrice();
         }
@@ -1861,17 +1975,24 @@
             document.querySelectorAll('.flower-type-btn').forEach(b => {
                 b.className = "flower-type-btn border border-gray-200 text-gray-500 font-bold py-2.5 rounded-xl text-xs transition";
             });
-            document.getElementById(`fl-type-${typeId}`).className = "flower-type-btn border border-[#FF91A4] bg-[#FF91A4]/5 text-[#FF91A4] font-bold py-2.5 rounded-xl text-xs transition";
+            const selectedBtn = document.getElementById(`fl-type-${typeId}`);
+            if (selectedBtn) {
+                selectedBtn.className = "flower-type-btn border border-[#FF91A4] bg-[#FF91A4]/5 text-[#FF91A4] font-bold py-2.5 rounded-xl text-xs transition";
+            }
             state.flowerType = typeId;
         }
 
         function calculateFlowerPrice() {
-            const stems = parseInt(document.getElementById('flower-count').value);
-            document.getElementById('flower-count-display').innerText = `${stems} وردة`;
+            const rangeInput = document.getElementById('flower-count');
+            if (!rangeInput) return;
 
-            let baseCost = siteData.flowerBuilder.basePrice;
-            let extraStems = stems - siteData.flowerBuilder.baseFlowers;
-            let stemsCost = extraStems * siteData.flowerBuilder.extraFlowerPrice;
+            const stems = parseInt(rangeInput.value);
+            const countDisplay = document.getElementById('flower-count-display');
+            if (countDisplay) countDisplay.innerText = `${stems} وردة`;
+
+            let baseCost = siteData.flowerBuilder?.basePrice || 400;
+            let extraStems = stems - (siteData.flowerBuilder?.baseFlowers || 15);
+            let stemsCost = extraStems * (siteData.flowerBuilder?.extraFlowerPrice || 35);
 
             let wrapCost = 0;
             document.getElementsByName('flower-wrap').forEach(r => {
@@ -1883,27 +2004,31 @@
                 if (c.checked) cashCost += parseInt(c.value);
             });
 
-            const chocPrice = parseInt(document.getElementById('flower-chocolate').value);
-            const chocQty = parseInt(document.getElementById('flower-chocolate-qty').value) || 0;
+            const chocPrice = parseInt(document.getElementById('flower-chocolate')?.value || 0);
+            const chocQty = parseInt(document.getElementById('flower-chocolate-qty')?.value || 0);
             let chocolateCost = chocPrice * chocQty;
 
             let photoCost = 0;
-            if (document.getElementById('flower-print').checked) {
-                photoCost = siteData.flowerBuilder.photoPrintPrice;
+            const printCheck = document.getElementById('flower-print');
+            if (printCheck && printCheck.checked) {
+                photoCost = siteData.flowerBuilder?.photoPrintPrice || 15;
             }
 
             const total = baseCost + stemsCost + wrapCost + cashCost + chocolateCost + photoCost;
             state.calculatedFlowerPrice = total;
-            document.getElementById('flower-builder-price').innerText = `${total} جنيه`;
+            const priceBox = document.getElementById('flower-builder-price');
+            if (priceBox) priceBox.innerText = `${total} جنيه`;
         }
 
         function addCustomFlowerToCart() {
             calculateFlowerPrice();
 
-            const stems = parseInt(document.getElementById('flower-count').value);
-            const typeName = siteData.flowerBuilder.flowerTypes.find(t => t.id === state.flowerType).name;
+            const rangeInput = document.getElementById('flower-count');
+            const stems = rangeInput ? parseInt(rangeInput.value) : 15;
+            const flowerTypeObj = siteData.flowerBuilder?.flowerTypes?.find(t => t.id === state.flowerType);
+            const typeName = flowerTypeObj ? flowerTypeObj.name : "ورد طبيعي";
             
-            let wrapName = "";
+            let wrapName = "تغليف ستان";
             document.getElementsByName('flower-wrap').forEach(r => {
                 if (r.checked) wrapName = r.getAttribute('data-name');
             });
@@ -1914,10 +2039,12 @@
             });
 
             const chocSelect = document.getElementById('flower-chocolate');
-            const chocName = chocSelect.options[chocSelect.selectedIndex].getAttribute('data-name');
-            const chocQty = parseInt(document.getElementById('flower-chocolate-qty').value) || 0;
+            const chocName = chocSelect ? chocSelect.options[chocSelect.selectedIndex].getAttribute('data-name') : "بدون شوكولاتة";
+            const chocQtyInput = document.getElementById('flower-chocolate-qty');
+            const chocQty = chocQtyInput ? (parseInt(chocQtyInput.value) || 0) : 0;
 
-            const photoPrinted = document.getElementById('flower-print').checked ? "نعم، تمت الإضافة" : "لا";
+            const printCheck = document.getElementById('flower-print');
+            const photoPrinted = printCheck && printCheck.checked ? "نعم، تمت الإضافة" : "لا";
             const cardMsg = document.getElementById('flower-card-text').value.trim();
 
             const customProduct = {
@@ -1947,6 +2074,8 @@
 
         function renderCartView() {
             const wrapper = document.getElementById('cart-items-wrapper');
+            if (!wrapper) return;
+
             if (state.cart.length === 0) {
                 wrapper.innerHTML = `
                     <div class="text-center py-12 space-y-4">
@@ -2011,17 +2140,19 @@
 
             // المقترحات الذكية (كارتين بحد أقصى على الموبايل لمنع التكدس)
             const suggestBox = document.getElementById('cart-suggestions');
-            const suggestions = siteData.products.filter(p => siteData.homepage.mostSelling.includes(p.id) && !state.cart.some(c => c.id === p.id)).slice(0, 2);
-            suggestBox.innerHTML = suggestions.map(p => `
-                <div class="flex-shrink-0 bg-white border border-[#FF91A4]/15 rounded-2xl p-3 flex items-center gap-3 w-72 shadow-sm flex-row-reverse">
-                    <img src="${p.image}" class="w-12 h-12 object-contain rounded-lg">
-                    <div class="text-right flex-grow">
-                        <h4 class="font-bold text-xs truncate w-36">${p.title}</h4>
-                        <span class="text-xs font-bold text-[#FF91A4]">${getAdjustedPrice(p)} جنيه</span>
+            if (suggestBox && siteData.homepage?.mostSelling) {
+                const suggestions = (siteData.products || []).filter(p => siteData.homepage.mostSelling.includes(p.id) && !state.cart.some(c => c.id === p.id)).slice(0, 2);
+                suggestBox.innerHTML = suggestions.map(p => `
+                    <div class="flex-shrink-0 bg-white border border-[#FF91A4]/15 rounded-2xl p-3 flex items-center gap-3 w-72 shadow-sm flex-row-reverse">
+                        <img src="${p.images?.[0] || p.image}" class="w-12 h-12 object-contain rounded-lg">
+                        <div class="text-right flex-grow">
+                            <h4 class="font-bold text-xs truncate w-36">${p.title}</h4>
+                            <span class="text-xs font-bold text-[#FF91A4]">${getAdjustedPrice(p)} جنيه</span>
+                        </div>
+                        <button onclick="addSuggestionToCart('${p.id}')" class="bg-[#FF91A4] text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs hover:bg-[#ff7b92] smooth-transition">+</button>
                     </div>
-                    <button onclick="addSuggestionToCart('${p.id}')" class="bg-[#FF91A4] text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs hover:bg-[#ff7b92] smooth-transition">+</button>
-                </div>
-            `).join('');
+                `).join('');
+            }
         }
 
         function adjustCartItemQty(idx, delta) {
@@ -2056,7 +2187,7 @@
                 title: product.title,
                 flavorName: product.flavorName,
                 price: getAdjustedPrice(product),
-                image: product.image,
+                image: product.images?.[0] || product.image,
                 qty: 1,
                 isCustom: false
             });
@@ -2067,10 +2198,11 @@
         }
 
         function applyDiscountCoupon() {
-            const code = document.getElementById('cart-coupon-input').value.trim().toUpperCase();
+            const codeInput = document.getElementById('cart-coupon-input');
+            const code = codeInput ? codeInput.value.trim().toUpperCase() : "";
             if (!code) return;
 
-            const coupon = siteData.coupons.find(c => c.code === code);
+            const coupon = (siteData.coupons || []).find(c => c.code === code);
             if (!coupon) {
                 showCustomAlert("عذراً، هذا الكوبون غير صحيح أو منتهي الصلاحية ❌");
                 return;
@@ -2095,47 +2227,61 @@
 
             const grandTotal = subtotal - discount;
 
-            document.getElementById('cart-qty-total').innerText = `${state.cart.reduce((s, i) => s + i.qty, 0)} قطع`;
-            document.getElementById('cart-subtotal-value').innerText = `${subtotal} جنيه`;
+            const qtyTotal = document.getElementById('cart-qty-total');
+            const subTotalVal = document.getElementById('cart-subtotal-value');
+            const grandTotalBox = document.getElementById('cart-grand-total');
+
+            if (qtyTotal) qtyTotal.innerText = `${state.cart.reduce((s, i) => s + i.qty, 0)} قطع`;
+            if (subTotalVal) subTotalVal.innerText = `${subtotal} جنيه`;
             
             const couponRow = document.getElementById('coupon-row');
-            if (discount > 0) {
-                couponRow.style.display = 'flex';
-                document.getElementById('coupon-value-display').innerText = `-${discount} جنيه`;
-            } else {
-                couponRow.style.display = 'none';
+            const couponValDisp = document.getElementById('coupon-value-display');
+            if (couponRow && couponValDisp) {
+                if (discount > 0) {
+                    couponRow.style.display = 'flex';
+                    couponValDisp.innerText = `-${discount} جنيه`;
+                } else {
+                    couponRow.style.display = 'none';
+                }
             }
 
-            document.getElementById('cart-grand-total').innerText = `${Math.round(grandTotal)} جنيه`;
+            if (grandTotalBox) grandTotalBox.innerText = `${Math.round(grandTotal)} جنيه`;
         }
 
         function renderCheckoutView() {
-            document.getElementById('pickup-address-text').innerText = siteData.store.pickup.address;
-            document.getElementById('preparation-notice').innerText = siteData.orderRules.preparationTimeMessage;
+            const addressText = document.getElementById('pickup-address-text');
+            const noticeText = document.getElementById('preparation-notice');
+
+            if (addressText) addressText.innerText = siteData.store?.pickup?.address || "";
+            if (noticeText) noticeText.innerText = siteData.orderRules?.preparationTimeMessage || "";
 
             const zoneSelect = document.getElementById('checkout-zone-select');
-            zoneSelect.innerHTML = siteData.shippingZones.map(z => `
-                <option value="${z.id}" data-price="${z.price}">${z.area} (شحن: ${z.price} جنيه)</option>
-            `).join('');
+            if (zoneSelect && siteData.shippingZones) {
+                zoneSelect.innerHTML = siteData.shippingZones.map(z => `
+                    <option value="${z.id}" data-price="${z.price}">${z.area} (شحن: ${z.price} جنيه)</option>
+                `).join('');
+            }
 
-            state.selectedZone = siteData.shippingZones[0];
+            state.selectedZone = siteData.shippingZones?.[0] || null;
             setShippingMethod(state.shippingMethod);
 
             const dateInput = document.getElementById('checkout-delivery-date');
             const timeInput = document.getElementById('checkout-delivery-time');
 
-            // تأمين حارس الوقت ليكون الموعد الافتراضي هو اللحظة الحالية + 24 ساعة بدقة كاملة
-            const futureDate = new Date(Date.now() + 24 * 60 * 60 * 1000);
-            const yyyy = futureDate.getFullYear();
-            const mm = String(futureDate.getMonth() + 1).padStart(2, '0');
-            const dd = String(futureDate.getDate()).padStart(2, '0');
-            
-            dateInput.min = `${yyyy}-${mm}-${dd}`;
-            dateInput.value = `${yyyy}-${mm}-${dd}`;
+            if (dateInput && timeInput) {
+                // تأمين حارس الوقت ليكون الموعد الافتراضي هو اللحظة الحالية + 24 ساعة بدقة كاملة
+                const futureDate = new Date(Date.now() + 24 * 60 * 60 * 1000);
+                const yyyy = futureDate.getFullYear();
+                const mm = String(futureDate.getMonth() + 1).padStart(2, '0');
+                const dd = String(futureDate.getDate()).padStart(2, '0');
+                
+                dateInput.min = `${yyyy}-${mm}-${dd}`;
+                dateInput.value = `${yyyy}-${mm}-${dd}`;
 
-            const hh = String(futureDate.getHours()).padStart(2, '0');
-            const min = String(futureDate.getMinutes()).padStart(2, '0');
-            timeInput.value = `${hh}:${min}`;
+                const hh = String(futureDate.getHours()).padStart(2, '0');
+                const min = String(futureDate.getMinutes()).padStart(2, '0');
+                timeInput.value = `${hh}:${min}`;
+            }
 
             calculateShippingAndGrandTotal();
         }
@@ -2148,18 +2294,20 @@
             const pickupPanel = document.getElementById('pickup-location-panel');
             const deliveryPanel = document.getElementById('shipping-details-panel');
 
-            if (method === 'pickup') {
-                btnPickup.className = "border-2 border-[#FF91A4] bg-[#FF91A4]/5 text-[#FF91A4] font-bold py-3.5 rounded-xl smooth-transition text-xs md:text-sm";
-                btnDelivery.className = "border-2 border-gray-200 text-gray-500 font-bold py-3.5 rounded-xl smooth-transition text-xs md:text-sm";
-                
-                pickupPanel.classList.remove('hidden');
-                deliveryPanel.classList.add('hidden');
-            } else {
-                btnPickup.className = "border-2 border-gray-200 text-gray-500 font-bold py-3.5 rounded-xl smooth-transition text-xs md:text-sm";
-                btnDelivery.className = "border-2 border-[#FF91A4] bg-[#FF91A4]/5 text-[#FF91A4] font-bold py-3.5 rounded-xl smooth-transition text-xs md:text-sm";
-                
-                pickupPanel.classList.add('hidden');
-                deliveryPanel.classList.remove('hidden');
+            if (btnPickup && btnDelivery && pickupPanel && deliveryPanel) {
+                if (method === 'pickup') {
+                    btnPickup.className = "border-2 border-[#FF91A4] bg-[#FF91A4]/5 text-[#FF91A4] font-bold py-3.5 rounded-xl smooth-transition text-xs md:text-sm";
+                    btnDelivery.className = "border-2 border-gray-200 text-gray-500 font-bold py-3.5 rounded-xl smooth-transition text-xs md:text-sm";
+                    
+                    pickupPanel.classList.remove('hidden');
+                    deliveryPanel.classList.add('hidden');
+                } else {
+                    btnPickup.className = "border-2 border-gray-200 text-gray-500 font-bold py-3.5 rounded-xl smooth-transition text-xs md:text-sm";
+                    btnDelivery.className = "border-2 border-[#FF91A4] bg-[#FF91A4]/5 text-[#FF91A4] font-bold py-3.5 rounded-xl smooth-transition text-xs md:text-sm";
+                    
+                    pickupPanel.classList.add('hidden');
+                    deliveryPanel.classList.remove('hidden');
+                }
             }
 
             calculateShippingAndGrandTotal();
@@ -2183,7 +2331,7 @@
                 if (zoneSelect && zoneSelect.options.length > 0) {
                     const selectedOpt = zoneSelect.options[zoneSelect.selectedIndex];
                     shippingFee = parseInt(selectedOpt.getAttribute('data-price')) || 0;
-                    state.selectedZone = siteData.shippingZones.find(z => z.id === zoneSelect.value);
+                    state.selectedZone = (siteData.shippingZones || []).find(z => z.id === zoneSelect.value);
                 }
             } else {
                 state.selectedZone = null;
@@ -2192,25 +2340,37 @@
             // تطبيق دالة التقريب الكلي الصارم (Math.round) لمرة واحدة وحصرياً لمنع ثغرات الحسابات
             const grandTotal = Math.round(subtotal - discount + shippingFee);
 
-            document.getElementById('summary-subtotal').innerText = `${subtotal} جنيه`;
-            document.getElementById('summary-shipping-fee').innerText = `${shippingFee} جنيه`;
+            const summarySub = document.getElementById('summary-subtotal');
+            const summaryShip = document.getElementById('summary-shipping-fee');
+            const summaryGrand = document.getElementById('summary-grand-total');
+
+            if (summarySub) summarySub.innerText = `${subtotal} جنيه`;
+            if (summaryShip) summaryShip.innerText = `${shippingFee} جنيه`;
             
             const summaryCouponRow = document.getElementById('summary-coupon-row');
-            if (discount > 0) {
-                summaryCouponRow.style.display = 'flex';
-                document.getElementById('summary-coupon-value').innerText = `-${discount} جنيه`;
-            } else {
-                summaryCouponRow.style.display = 'none';
+            const summaryCouponVal = document.getElementById('summary-coupon-value');
+            if (summaryCouponRow && summaryCouponVal) {
+                if (discount > 0) {
+                    summaryCouponRow.style.display = 'flex';
+                    summaryCouponVal.innerText = `-${discount} جنيه`;
+                } else {
+                    summaryCouponRow.style.display = 'none';
+                }
             }
 
-            document.getElementById('summary-grand-total').innerText = `${grandTotal} جنيه`;
+            if (summaryGrand) summaryGrand.innerText = `${grandTotal} جنيه`;
             state.calculatedCheckoutTotal = grandTotal;
         }
 
         function validateDateTimeRules() {
-            const dateVal = document.getElementById('checkout-delivery-date').value;
-            const timeVal = document.getElementById('checkout-delivery-time').value;
+            const dateInput = document.getElementById('checkout-delivery-date');
+            const timeInput = document.getElementById('checkout-delivery-time');
             const warning = document.getElementById('preparation-warning-text');
+
+            if (!dateInput || !timeInput || !warning) return true;
+
+            const dateVal = dateInput.value;
+            const timeVal = timeInput.value;
 
             if (!dateVal || !timeVal) return true;
 
@@ -2239,29 +2399,31 @@
 
         function submitFinalOrder() {
             const nameInput = document.getElementById('checkout-customer-name');
-            const name = nameInput.value.trim();
+            const name = nameInput ? nameInput.value.trim() : "";
             if (name.length < 5) {
                 showCustomAlert("الرجاء كتابة الاسم بالكامل (ثنائي كحد أدنى) لتأكيد الحجز 🌸");
-                nameInput.focus();
+                if (nameInput) nameInput.focus();
                 return;
             }
 
             const phoneInput = document.getElementById('checkout-customer-phone');
-            const phone = phoneInput.value.trim();
+            const phone = phoneInput ? phoneInput.value.trim() : "";
             const phoneRegex = /^01[0125][0-9]{8}$/;
             if (!phoneRegex.test(phone)) {
                 showCustomAlert("الرجاء إدخال رقم هاتف مصري صحيح يبدأ بـ (01...) ومكون من 11 رقم 🌸");
-                phoneInput.focus();
+                if (phoneInput) phoneInput.focus();
                 return;
             }
 
-            const phone2 = document.getElementById('checkout-customer-phone-2').value.trim();
+            const phone2Val = document.getElementById('checkout-customer-phone-2');
+            const phone2 = phone2Val ? phone2Val.value.trim() : "";
 
             if (state.shippingMethod === 'delivery') {
-                const addressDetails = document.getElementById('checkout-address-details').value.trim();
+                const addressDetailsInput = document.getElementById('checkout-address-details');
+                const addressDetails = addressDetailsInput ? addressDetailsInput.value.trim() : "";
                 if (addressDetails.length < 10) {
                     showCustomAlert("يرجى كتابة عنوان التوصيل بالتفصيل لتجنب تأخير وصول المندوب 🌸");
-                    document.getElementById('checkout-address-details').focus();
+                    if (addressDetailsInput) addressDetailsInput.focus();
                     return;
                 }
             }
@@ -2271,12 +2433,12 @@
                 return;
             }
 
-            const dateVal = document.getElementById('checkout-delivery-date').value;
-            const timeVal = document.getElementById('checkout-delivery-time').value;
+            const dateVal = document.getElementById('checkout-delivery-date')?.value || "";
+            const timeVal = document.getElementById('checkout-delivery-time')?.value || "";
 
             const orderId = `B-${Math.floor(100000 + Math.random() * 900000)}`;
-            const cartNotes = document.getElementById('cart-notes').value.trim() || "لا توجد ملاحظات إضافية في السلة";
-            const checkoutNotes = document.getElementById('checkout-delivery-notes').value.trim() || "لا توجد ملاحظات تسليم";
+            const cartNotes = document.getElementById('cart-notes')?.value.trim() || "لا توجد ملاحظات إضافية في السلة";
+            const checkoutNotes = document.getElementById('checkout-delivery-notes')?.value.trim() || "لا توجد ملاحظات تسليم";
 
             const combinedNotes = `السلة: ${cartNotes} | التسليم: ${checkoutNotes}`;
 
@@ -2286,7 +2448,7 @@
                 phone: phone,
                 phone2: phone2 || "لا يوجد",
                 method: state.shippingMethod === 'pickup' ? "استلام من الفرع" : "توصيل للمنزل",
-                address: state.shippingMethod === 'delivery' ? `الفرافرة - ${state.selectedZone.area} - ${document.getElementById('checkout-address-details').value.trim()}` : siteData.store.pickup.address,
+                address: state.shippingMethod === 'delivery' ? `الفرافرة - ${state.selectedZone?.area || 'شحن منزلي'} - ${document.getElementById('checkout-address-details')?.value.trim()}` : (siteData.store?.pickup?.address || ""),
                 dateTime: `${dateVal} في تمام الساعة ${timeVal}`,
                 notes: combinedNotes,
                 items: state.cart.map(item => {
@@ -2299,14 +2461,22 @@
                 grandTotal: state.calculatedCheckoutTotal
             };
 
-            document.getElementById('success-customer-welcome').innerText = `أهلاً بك، ${name}`;
-            document.getElementById('success-order-id-display').innerText = orderId;
+            const welcome = document.getElementById('success-customer-welcome');
+            const displayId = document.getElementById('success-order-id-display');
+            const recName = document.getElementById('success-receipt-name');
+            const recPhone = document.getElementById('success-receipt-phone');
+            const recMethod = document.getElementById('success-receipt-method');
+            const recDate = document.getElementById('success-receipt-date');
+            const recTotal = document.getElementById('success-receipt-total');
 
-            document.getElementById('success-receipt-name').innerText = name;
-            document.getElementById('success-receipt-phone').innerText = phone;
-            document.getElementById('success-receipt-method').innerText = state.shippingMethod === 'pickup' ? "استلام من الفرع" : `توصيل للمنزل (${state.selectedZone.area})`;
-            document.getElementById('success-receipt-date').innerText = `${dateVal} - ${timeVal}`;
-            document.getElementById('success-receipt-total').innerText = `${state.calculatedCheckoutTotal} جنيه`;
+            if (welcome) welcome.innerText = `أهلاً بك، ${name}`;
+            if (displayId) displayId.innerText = orderId;
+
+            if (recName) recName.innerText = name;
+            if (recPhone) recPhone.innerText = phone;
+            if (recMethod) recMethod.innerText = state.shippingMethod === 'pickup' ? "استلام من الفرع" : `توصيل للمنزل (${state.selectedZone?.area || 'الفرافرة'})`;
+            if (recDate) recDate.innerText = `${dateVal} - ${timeVal}`;
+            if (recTotal) recTotal.innerText = `${state.calculatedCheckoutTotal} جنيه`;
 
             // تفريغ وتصفير محتويات السلة من الذاكرة المحلية والواجهة فور نجاح العملية
             state.cart = [];
@@ -2338,7 +2508,7 @@ ${inv.items}
 تم إنشاء الطلب آلياً بكل حب من منصة حلويات بوسي 🌸`;
 
             const encodedText = encodeURIComponent(whatsappMsg);
-            const link = `https://wa.me/20${siteData.store.phone}?text=${encodedText}`;
+            const link = `https://wa.me/20${siteData.store?.phone || '01097238441'}?text=${encodedText}`;
             window.open(link, '_blank');
         }
 
@@ -2362,4 +2532,3 @@ ${inv.items}
     </script>
 </body>
 </html>
-
