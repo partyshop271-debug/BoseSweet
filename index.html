@@ -25,6 +25,7 @@
             --bose-gold: #D4AF37;
             --bose-dark: #111111;
             --bose-light: #FFFFFF;
+            --bose-gray-bg: #FAFAFA;
         }
 
         body {
@@ -35,9 +36,12 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* قفل وزن الخطوط هندسياً عند 700 كحد أقصى لمنع التشويه البصري */
-        h1, h2, h3, h4, h5, h6 {
+        /* قفل أوزان الخطوط هندسياً عند 700 كحد أقصى لمنع التشويه البصري */
+        h1, h2 {
             font-weight: 700 !important;
+        }
+        h3, h4, h5, h6 {
+            font-weight: 600 !important;
         }
 
         /* تخصيص شريط التمرير */
@@ -81,10 +85,10 @@
             100% { transform: translateY(0); }
         }
         .waterfall-up {
-            animation: scrollUp 30s linear infinite;
+            animation: scrollUp 35s linear infinite;
         }
         .waterfall-down {
-            animation: scrollDown 30s linear infinite;
+            animation: scrollDown 35s linear infinite;
         }
 
         /* مجرى حركة تلقائي انسيابي مستمر بدون أي توقف لراحة العميل */
@@ -244,6 +248,21 @@
         /* انسيابية حركة القائمة الجانبية الفاخرة */
         #side-menu {
             transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* تفاصيل الخطوات الفاخرة للمحاكيات */
+        .step-pill {
+            transition: all 0.3s ease;
+        }
+        .step-pill.active {
+            background-color: var(--bose-pink);
+            color: white;
+            border-color: var(--bose-pink);
+        }
+        .step-pill.completed {
+            background-color: #DEF7EC;
+            color: #03543F;
+            border-color: #84E1BC;
         }
     </style>
 </head>
@@ -594,144 +613,233 @@
             </div>
         </section>
 
-        <!-- ==================== محاكي التورت التفاعلي ==================== -->
-        <section id="cake-builder-view" class="app-view hidden py-12 max-w-4xl mx-auto px-4">
+        <!-- ==================== محاكي التورت التفاعلي - نظام الخطوات الفاخر ==================== -->
+        <section id="cake-builder-view" class="app-view hidden py-12 max-w-5xl mx-auto px-4">
             <div class="bg-white rounded-3xl border border-[#FF91A4]/20 p-6 md:p-10 shadow-lg space-y-8">
                 <div class="text-center">
                     <h1 class="text-3xl font-bold text-[#111111] mb-2">محاكي التورت التفاعلي</h1>
-                    <p class="text-gray-500 text-xs">صمم تحفتك الفنية الخاصة بالمقاس، الشكل، والنكهة التي تروق لمناسبتك الفخمة</p>
+                    <p class="text-gray-500 text-xs">صمم تحفتك الفنية الخاصة بالمقاس، الشكل، والنكهة التي تروق لمناسبتك الفخمة خطوة بخطوة</p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
-                    <div class="bg-[#FF91A4]/5 rounded-2xl p-6 border border-[#FF91A4]/20 text-center space-y-6 md:sticky md:top-24">
-                        <div class="aspect-square max-h-[300px] mx-auto flex items-center justify-center bg-white rounded-2xl p-4 border border-[#FF91A4]/10">
-                            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="تجهيز التورتة" class="w-full h-full object-contain rounded-xl">
+                <!-- شريط مؤشرات الخطوات لتسهيل تجربة التخصيص ومنع الأخطاء -->
+                <div class="flex items-center justify-between max-w-md mx-auto mb-8 relative px-4 flex-row-reverse text-xs">
+                    <div class="absolute inset-x-0 top-1/2 h-0.5 bg-gray-100 -z-10"></div>
+                    <button onclick="setCakeStep(1)" id="cake-step-1" class="step-pill active w-10 h-10 rounded-full border-2 border-gray-200 bg-white font-bold flex items-center justify-center">1</button>
+                    <button onclick="setCakeStep(2)" id="cake-step-2" class="step-pill w-10 h-10 rounded-full border-2 border-gray-200 bg-white font-bold flex items-center justify-center">2</button>
+                    <button onclick="setCakeStep(3)" id="cake-step-3" class="step-pill w-10 h-10 rounded-full border-2 border-gray-200 bg-white font-bold flex items-center justify-center">3</button>
+                    <button onclick="setCakeStep(4)" id="cake-step-4" class="step-pill w-10 h-10 rounded-full border-2 border-gray-200 bg-white font-bold flex items-center justify-center">4</button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-10 items-start">
+                    <!-- لوحة العرض الحية التفاعلية (Real-time Cake Preview SVG) -->
+                    <div class="md:col-span-5 bg-[#FF91A4]/5 rounded-2xl p-6 border border-[#FF91A4]/20 text-center space-y-6 md:sticky md:top-24">
+                        <div class="w-full aspect-square mx-auto flex items-center justify-center bg-white rounded-2xl p-4 border border-[#FF91A4]/10 shadow-inner relative">
+                            <!-- محرك رسم التورتة الحية التفاعلية -->
+                            <div id="cake-svg-preview-wrap" class="w-full h-full"></div>
                         </div>
                         <div>
-                            <span class="text-xs text-gray-400">سعر التصميم الفعلي والمؤكد:</span>
+                            <span class="text-xs text-gray-400 font-semibold">سعر التصميم الفعلي والمؤكد:</span>
                             <div id="cake-builder-price" class="text-3xl font-extrabold text-[#FF91A4] mt-1">580 جنيه</div>
                         </div>
-                        <div class="text-xs text-gray-500 leading-relaxed text-right bg-white p-4 rounded-xl border border-[#FF91A4]/10">
-                            💡 الحسبة هنا قايمة على خامات طبيعية ممتازة ومضمونة 100% لتقديم تورتة تشرّفك قدام ضيوفك وتسعد قلوبهم.
+                        <div class="text-[10px] text-gray-500 leading-relaxed text-right bg-white p-4 rounded-xl border border-[#FF91A4]/10 space-y-1">
+                            <span class="font-bold text-[#FF91A4] block">💡 معلومات الموثوقية والجودة:</span>
+                            <span>الحسبة هنا قايمة على خامات طبيعية ممتازة ومضمونة 100% لتجهيز تورتة تشرّفك قدام ضيوفك وتسعد قلوبهم.</span>
                         </div>
                     </div>
 
-                    <div class="space-y-6 text-right">
-                        <div class="space-y-2">
-                            <label class="block font-bold text-xs">عدد الأفراد المطلوبين (من 4 إلى 250 فرد):</label>
-                            <div class="flex items-center gap-3">
-                                <span class="text-xs font-semibold whitespace-nowrap">فرد</span>
-                                <input type="number" id="cake-persons" min="4" max="250" step="2" value="4" onchange="calculateCakePrice()" class="w-full border border-gray-200 rounded-xl py-2.5 px-4 focus:outline-none focus:border-[#FF91A4] text-right">
+                    <!-- حقول وخيارات الخطوات المخصصة -->
+                    <div class="md:col-span-7 space-y-6 text-right">
+                        
+                        <!-- الخطوة 1: المقاس والشكل -->
+                        <div id="cake-step-panel-1" class="cake-step-panel space-y-6">
+                            <h3 class="font-bold text-base text-[#111111] border-b border-gray-100 pb-2">الخطوة 1: المقاس والشكل الهندسي المفضل</h3>
+                            <div class="space-y-2">
+                                <label class="block font-bold text-xs">الشكل الهندسي المفضل:</label>
+                                <div class="grid grid-cols-2 gap-3" id="cake-shapes-container"></div>
+                                <p id="cake-shape-error" class="text-[10px] text-red-500 hidden font-bold"></p>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block font-bold text-xs">عدد الأفراد المطلوبين (من 4 إلى 250 فرد):</label>
+                                <div class="flex items-center gap-3">
+                                    <span class="text-xs font-semibold whitespace-nowrap">فرد</span>
+                                    <input type="number" id="cake-persons" min="4" max="250" step="2" value="4" onchange="calculateCakePrice()" class="w-full border border-gray-200 rounded-xl py-2.5 px-4 focus:outline-none focus:border-[#FF91A4] text-right">
+                                </div>
+                                <p class="text-[9px] text-gray-400">ملحوظة: سعر التخصيص الأساسي يتضمن حد أدنى للأفراد مع زيادة مدروسة بقيمة 145 جنيه للفرد الإضافي.</p>
                             </div>
                         </div>
 
-                        <div class="space-y-2">
-                            <label class="block font-bold text-xs">الشكل الهندسي المفضل:</label>
-                            <div class="grid grid-cols-2 gap-3" id="cake-shapes-container"></div>
-                            <p id="cake-shape-error" class="text-[10px] text-red-500 hidden font-bold"></p>
+                        <!-- الخطوة 2: النكهات والحشوات -->
+                        <div id="cake-step-panel-2" class="cake-step-panel hidden space-y-6">
+                            <h3 class="font-bold text-base text-[#111111] border-b border-gray-100 pb-2">الخطوة 2: طعم الكيك والنكهات الداخلية</h3>
+                            <div class="space-y-2">
+                                <label class="block font-bold text-xs">طعم الكيك الأساسي:</label>
+                                <div class="grid grid-cols-3 gap-3" id="cake-types-container"></div>
+                            </div>
+                            <div class="space-y-2 bg-[#FF91A4]/5 p-4 rounded-xl border border-[#FF91A4]/15">
+                                <span class="font-bold text-[#FF91A4] text-xs block mb-1">المكونات الطازجة:</span>
+                                <span class="text-[10px] text-gray-500 leading-relaxed block">جميع تورتاتنا تحضر باستخدام زبدة نيوزيلندية طبيعية، كريمة لباني غنية، كيك إسفنجي مروى بالحب، مع حشوات الموس والراسبيري الطازجة.</span>
+                            </div>
                         </div>
 
-                        <div class="space-y-2">
-                            <label class="block font-bold text-xs">طعم الكيك الأساسي:</label>
-                            <div class="grid grid-cols-3 gap-3" id="cake-types-container"></div>
+                        <!-- الخطوة 3: التخصيص والصور -->
+                        <div id="cake-step-panel-3" class="cake-step-panel hidden space-y-6">
+                            <h3 class="font-bold text-base text-[#111111] border-b border-gray-100 pb-2">الخطوة 3: طباعة الصور المخصصة والتزيين</h3>
+                            <div class="space-y-2">
+                                <label class="block font-bold text-xs">إضافة طباعة صور شخصية مخصصة؟</label>
+                                <div class="space-y-2" id="cake-printing-container"></div>
+                            </div>
+                            <div class="space-y-2 text-[10px] text-gray-400">
+                                <span>* في حال اختيار صورة قابلة للأكل، نستخدم رقائق النشا الألمانية وألوان غذائية آمنة 100%.</span>
+                            </div>
                         </div>
 
-                        <div class="space-y-2">
-                            <label class="block font-bold text-xs">إضافة طباعة صور شخصية مخصصة؟</label>
-                            <div class="space-y-2" id="cake-printing-container"></div>
+                        <!-- الخطوة 4: الرسالة والملاحظات الطبية -->
+                        <div id="cake-step-panel-4" class="cake-step-panel hidden space-y-6">
+                            <h3 class="font-bold text-base text-[#111111] border-b border-gray-100 pb-2">الخطوة 4: الرسائل والاعتبارات الصحية والطبية</h3>
+                            <div class="space-y-2">
+                                <label class="block font-bold text-xs">الرسالة المكتوبة بدقة فوق التورتة:</label>
+                                <input type="text" id="cake-message" oninput="updateCakePreviewSVG()" placeholder="مثال: عيد ميلاد سعيد يا بوسي" class="w-full border border-gray-200 rounded-xl py-2.5 px-4 focus:outline-none focus:border-[#FF91A4] text-right">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block font-bold text-xs">هل يعاني متلقي التورتة من أي حساسية غذائية؟ (مهم جداً لسلامته الطبية):</label>
+                                <textarea id="cake-allergy" rows="3" placeholder="اكتب أي ملاحظة طبية بخصوص المكونات والمكسرات هنا، أو اطلب منع استخدام منتجات الألبان أو المكسرات..." class="w-full border border-gray-200 rounded-xl py-2 px-4 focus:outline-none focus:border-[#FF91A4] text-right text-xs"></textarea>
+                            </div>
                         </div>
 
-                        <div class="space-y-2">
-                            <label class="block font-bold text-xs">الرسالة المكتوبة بدقة فوق التورتة:</label>
-                            <input type="text" id="cake-message" placeholder="مثال: عيد ميلاد سعيد يا بوسي" class="w-full border border-gray-200 rounded-xl py-2.5 px-4 focus:outline-none focus:border-[#FF91A4] text-right">
+                        <!-- أزرار التحكم بالخطوات والمحاكي -->
+                        <div class="flex items-center gap-4 pt-6 justify-between flex-row-reverse border-t border-gray-100 mt-8">
+                            <button id="cake-btn-next" onclick="nextCakeStep()" class="bg-[#FF91A4] hover:bg-[#ff7b92] text-white font-bold px-8 py-3 rounded-full text-xs smooth-transition shadow-sm">
+                                الخطوة التالية
+                            </button>
+                            <button id="cake-btn-prev" onclick="prevCakeStep()" class="border border-gray-300 hover:bg-gray-50 text-gray-500 font-bold px-8 py-3 rounded-full text-xs smooth-transition hidden">
+                                الخطوة السابقة
+                            </button>
                         </div>
-
-                        <div class="space-y-2">
-                            <label class="block font-bold text-xs">هل تعاني من أي حساسية غذائية؟ (هام لسلامتكم):</label>
-                            <textarea id="cake-allergy" rows="2" placeholder="اكتب أي ملاحظة طبية بخصوص المكونات والمكسرات هنا..." class="w-full border border-gray-200 rounded-xl py-2 px-4 focus:outline-none focus:border-[#FF91A4] text-right"></textarea>
-                        </div>
-
-                        <button onclick="addCustomCakeToCart()" class="w-full bg-[#FF91A4] hover:bg-[#ff7b92] text-white font-bold py-4 rounded-full smooth-transition shadow-md">
-                            تأكيد وإضافة للسلة
-                        </button>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- ==================== محاكي الورد والتنسيقات الفاخرة ==================== -->
-        <section id="flower-builder-view" class="app-view hidden py-12 max-w-4xl mx-auto px-4">
+        <!-- ==================== محاكي الورد والتنسيقات الفاخرة - نظام الخطوات المتقدم ==================== -->
+        <section id="flower-builder-view" class="app-view hidden py-12 max-w-5xl mx-auto px-4">
             <div class="bg-white rounded-3xl border border-[#FF91A4]/20 p-6 md:p-10 shadow-lg space-y-8">
                 <div class="text-center">
                     <h1 class="text-3xl font-bold text-[#111111] mb-2">محاكي الورد والهدايا</h1>
-                    <p class="text-gray-500 text-xs">نسّق باقة زهورك المفضلة، وأضف إليها لمساتك الخاصة وهدايا كاش دافئة لقلب أحبابك</p>
+                    <p class="text-gray-500 text-xs">نسّق باقة زهورك المفضلة، وأضف إليها لمساتك الخاصة ومفاجآت الكاش والهدايا الدافئة خطوة بخطوة</p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
-                    <div class="bg-[#FF91A4]/5 rounded-2xl p-6 border border-[#FF91A4]/20 text-center space-y-6 md:sticky md:top-24">
-                        <div class="aspect-square max-h-[300px] mx-auto flex items-center justify-center bg-white rounded-2xl p-4 border border-[#FF91A4]/10">
-                            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="تجهيز الورد" class="w-full h-full object-contain rounded-xl">
+                <!-- شريط مؤشرات خطوات الورد -->
+                <div class="flex items-center justify-between max-w-md mx-auto mb-8 relative px-4 flex-row-reverse text-xs">
+                    <div class="absolute inset-x-0 top-1/2 h-0.5 bg-gray-100 -z-10"></div>
+                    <button onclick="setFlowerStep(1)" id="flower-step-1" class="step-pill active w-10 h-10 rounded-full border-2 border-gray-200 bg-white font-bold flex items-center justify-center">1</button>
+                    <button onclick="setFlowerStep(2)" id="flower-step-2" class="step-pill w-10 h-10 rounded-full border-2 border-gray-200 bg-white font-bold flex items-center justify-center">2</button>
+                    <button onclick="setFlowerStep(3)" id="flower-step-3" class="step-pill w-10 h-10 rounded-full border-2 border-gray-200 bg-white font-bold flex items-center justify-center">3</button>
+                    <button onclick="setFlowerStep(4)" id="flower-step-4" class="step-pill w-10 h-10 rounded-full border-2 border-gray-200 bg-white font-bold flex items-center justify-center">4</button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-10 items-start">
+                    <!-- لوحة العرض الحية التفاعلية لباقة الورد والهدايا (Real-time Flower Preview SVG) -->
+                    <div class="md:col-span-5 bg-[#FF91A4]/5 rounded-2xl p-6 border border-[#FF91A4]/20 text-center space-y-6 md:sticky md:top-24">
+                        <div class="w-full aspect-square mx-auto flex items-center justify-center bg-white rounded-2xl p-4 border border-[#FF91A4]/10 shadow-inner">
+                            <!-- محرك رسم باقة الورد الحية التفاعلية -->
+                            <div id="flower-svg-preview-wrap" class="w-full h-full"></div>
                         </div>
                         <div>
-                            <span class="text-xs text-gray-400">الإجمالي الشامل للتنسيق المنسق:</span>
+                            <span class="text-xs text-gray-400 font-semibold">الإجمالي الشامل للتنسيق والهدايا:</span>
                             <div id="flower-builder-price" class="text-3xl font-extrabold text-[#FF91A4] mt-1">400 جنيه</div>
                         </div>
+                        <div id="flower-breakdown-notice" class="text-[9px] text-[#D4AF37] leading-relaxed text-right bg-white p-3 rounded-xl border border-[#FF91A4]/10 hidden"></div>
                     </div>
 
-                    <div class="space-y-6 text-right">
-                        <div class="space-y-2">
-                            <label class="block font-bold text-xs">نوع الورد المفضل:</label>
-                            <div class="grid grid-cols-3 gap-3" id="flower-types-container"></div>
-                        </div>
-
-                        <div class="space-y-2">
-                            <div class="flex justify-between font-bold text-xs flex-row-reverse">
-                                <label>عدد الورد الإضافي (الأساسي يتضمن 15 وردة):</label>
-                                <span class="text-[#FF91A4]" id="flower-count-display">15 وردة</span>
+                    <!-- حقول وخيارات خطوات الورد -->
+                    <div class="md:col-span-7 space-y-6 text-right">
+                        
+                        <!-- الخطوة 1: الورد والعدد -->
+                        <div id="flower-step-panel-1" class="flower-step-panel space-y-6">
+                            <h3 class="font-bold text-base text-[#111111] border-b border-gray-100 pb-2">الخطوة 1: نوع الزهور والعدد المفضل</h3>
+                            <div class="space-y-2">
+                                <label class="block font-bold text-xs">نوع الورد المفضل:</label>
+                                <div class="grid grid-cols-3 gap-3" id="flower-types-container"></div>
                             </div>
-                            <input type="range" id="flower-count" min="15" max="100" value="15" oninput="calculateFlowerPrice()" class="w-full accent-[#FF91A4]">
-                            <p class="text-[9px] text-gray-400 mt-1">سعر الوردة الإضافية فوق العدد الأساسي هو 35 جنيه للوردة.</p>
-                        </div>
-
-                        <div class="space-y-2">
-                            <label class="block font-bold text-xs">تغليف البوكيه المفضل:</label>
-                            <div class="space-y-2" id="flower-wrapping-container"></div>
-                        </div>
-
-                        <div class="space-y-2">
-                            <label class="block font-bold text-xs">إدراج هدايا مالية مدمجة بالبوكيه (كاش)؟</label>
-                            <div class="grid grid-cols-2 gap-3" id="flower-cash-container"></div>
-                        </div>
-
-                        <div class="space-y-2">
-                            <label class="block font-bold text-xs">إضافة قطع شوكولاتة مدمجة مع التنسيق؟</label>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div class="space-y-2">
-                                    <span class="text-[10px] text-gray-500 block">عدد القطع المطلوبة:</span>
-                                    <input type="number" id="flower-chocolate-qty" min="0" value="0" onchange="calculateFlowerPrice()" class="w-full border border-gray-200 rounded-xl py-2 px-3 focus:outline-none focus:border-[#FF91A4] text-xs text-right">
+                            <div class="space-y-2">
+                                <div class="flex justify-between font-bold text-xs flex-row-reverse">
+                                    <label>عدد الورد الإضافي (الباقة القياسية تبدأ من 15 وردة):</label>
+                                    <span class="text-[#FF91A4]" id="flower-count-display">15 وردة</span>
                                 </div>
-                                <div class="space-y-2">
-                                    <span class="text-[10px] text-gray-500 block">نوع الشوكولاتة:</span>
-                                    <select id="flower-chocolate" onchange="calculateFlowerPrice()" class="w-full border border-gray-200 bg-white rounded-xl py-2 px-3 focus:outline-none focus:border-[#FF91A4] text-xs text-right">
-                                        <option value="none" selected>بدون شوكولاتة مضافة</option>
-                                    </select>
-                                </div>
+                                <input type="range" id="flower-count" min="15" max="100" value="15" oninput="calculateFlowerPrice()" class="w-full accent-[#FF91A4]">
+                                <p class="text-[9px] text-gray-400 mt-1">معلومة: سعر الوردة الإضافية فوق العدد القياسي المشمول بالسعر الأساسي هو 35 جنيه للوردة.</p>
                             </div>
                         </div>
 
-                        <div class="flex items-center gap-3 bg-gray-50 p-3 rounded-xl border border-gray-100 justify-end">
-                            <label for="flower-print" class="text-xs font-bold cursor-pointer">إضافة طباعة صور خاصة مدمجة (+15 جنيه)</label>
-                            <input type="checkbox" id="flower-print" onchange="calculateFlowerPrice()" class="w-4 h-4 accent-[#FF91A4]">
+                        <!-- الخطوة 2: التغليف والشريط -->
+                        <div id="flower-step-panel-2" class="flower-step-panel hidden space-y-6">
+                            <h3 class="font-bold text-base text-[#111111] border-b border-gray-100 pb-2">الخطوة 2: التغليف الفاخر والملحقات البصرية</h3>
+                            <div class="space-y-2">
+                                <label class="block font-bold text-xs">تغليف البوكيه المفضل:</label>
+                                <div class="space-y-2" id="flower-wrapping-container"></div>
+                            </div>
                         </div>
 
-                        <div class="space-y-2">
-                            <label class="block font-bold text-xs">الرسالة المكتوبة بداخل كارت الإهداء:</label>
-                            <input type="text" id="flower-card-text" placeholder="اكتب الكلمات الصادقة المرافقة للورد هنا..." class="w-full border border-gray-200 rounded-xl py-2.5 px-4 focus:outline-none focus:border-[#FF91A4] text-right">
+                        <!-- الخطوة 3: مفاجآت الكاش والشوكولاتة الفاخرة -->
+                        <div id="flower-step-panel-3" class="flower-step-panel hidden space-y-6">
+                            <h3 class="font-bold text-base text-[#111111] border-b border-gray-100 pb-2">الخطوة 3: مفاجآت المبالغ النقدية المدمجة (الكاش) والشوكولاتة الفاخرة</h3>
+                            
+                            <div class="space-y-4 bg-gray-50 p-4 rounded-2xl border border-gray-200">
+                                <span class="font-bold text-xs text-[#111111] block mb-2">🎁 قسم دمج الكاش (مفاجأة مذهلة للأحباب):</span>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="space-y-1">
+                                        <label class="text-[10px] text-gray-500 block">المبلغ الإجمالي المراد لفه (بالجنيه):</label>
+                                        <input type="number" id="flower-cash-net" min="0" value="0" step="50" onchange="calculateFlowerPrice()" class="w-full border border-gray-200 rounded-xl py-2 px-3 text-xs text-right focus:border-[#FF91A4] focus:outline-none">
+                                    </div>
+                                    <div class="space-y-1">
+                                        <label class="text-[10px] text-gray-500 block">فئة الأوراق النقدية المفضلة:</label>
+                                        <select id="flower-cash-category" onchange="calculateFlowerPrice()" class="w-full border border-gray-200 bg-white rounded-xl py-2 px-3 text-xs text-right focus:border-[#FF91A4] focus:outline-none">
+                                            <!-- ستبنى الخيارات تلقائياً من الـ JSON -->
+                                        </select>
+                                    </div>
+                                </div>
+                                <div id="cash-breakdown-display" class="text-[10px] text-gray-500 leading-relaxed text-right space-y-1 pt-2 border-t border-gray-200 hidden"></div>
+                            </div>
+
+                            <div class="space-y-3">
+                                <span class="font-bold text-xs text-[#111111] block mb-2">🍫 دمج الشوكولاتة الفاخرة بالبوكيه:</span>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="space-y-1">
+                                        <span class="text-[10px] text-gray-500 block">عدد قطع الشوكولاتة المطلوبة:</span>
+                                        <input type="number" id="flower-chocolate-qty" min="0" value="0" onchange="calculateFlowerPrice()" class="w-full border border-gray-200 rounded-xl py-2 px-3 focus:outline-none focus:border-[#FF91A4] text-xs text-right">
+                                    </div>
+                                    <div class="space-y-1">
+                                        <span class="text-[10px] text-gray-500 block">نوع الشوكولاتة:</span>
+                                        <select id="flower-chocolate" onchange="calculateFlowerPrice()" class="w-full border border-gray-200 bg-white rounded-xl py-2 px-3 focus:outline-none focus:border-[#FF91A4] text-xs text-right">
+                                            <option value="none" selected>بدون شوكولاتة مضافة</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
-                        <button onclick="addCustomFlowerToCart()" class="w-full bg-[#FF91A4] hover:bg-[#ff7b92] text-white font-bold py-4 rounded-full smooth-transition shadow-md">
-                            تأكيد وإضافة للسلة
-                        </button>
+                        <!-- الخطوة 4: كروت الإهداء والصور المطبوعة -->
+                        <div id="flower-step-panel-4" class="flower-step-panel hidden space-y-6">
+                            <h3 class="font-bold text-base text-[#111111] border-b border-gray-100 pb-2">الخطوة 4: الرسائل وكروت الإهداء والصور المطبوعة المدمجة</h3>
+                            <div class="flex items-center gap-3 bg-gray-50 p-3 rounded-xl border border-gray-100 justify-end flex-row-reverse">
+                                <label for="flower-print" class="text-xs font-bold cursor-pointer">إضافة طباعة صور شخصية مخصصة مدمجة بالباقة (+15 جنيه للصور)</label>
+                                <input type="checkbox" id="flower-print" onchange="calculateFlowerPrice()" class="w-4 h-4 accent-[#FF91A4]">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block font-bold text-xs">الرسالة المكتوبة بداخل كارت الإهداء:</label>
+                                <input type="text" id="flower-card-text" oninput="updateFlowerPreviewSVG()" placeholder="اكتب الكلمات الصادقة والتهنئة الراقية المرافقة للورد هنا..." class="w-full border border-gray-200 rounded-xl py-2.5 px-4 focus:outline-none focus:border-[#FF91A4] text-right">
+                            </div>
+                        </div>
+
+                        <!-- أزرار التحكم بالخطوات والمحاكي -->
+                        <div class="flex items-center gap-4 pt-6 justify-between flex-row-reverse border-t border-gray-100 mt-8">
+                            <button id="flower-btn-next" onclick="nextFlowerStep()" class="bg-[#FF91A4] hover:bg-[#ff7b92] text-white font-bold px-8 py-3 rounded-full text-xs smooth-transition shadow-sm">
+                                الخطوة التالية
+                            </button>
+                            <button id="flower-btn-prev" onclick="prevFlowerStep()" class="border border-gray-300 hover:bg-gray-50 text-gray-500 font-bold px-8 py-3 rounded-full text-xs smooth-transition hidden">
+                                الخطوة السابقة
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -754,8 +862,8 @@
                 <div id="cart-items-wrapper" class="space-y-6"></div>
 
                 <div class="space-y-3 text-right">
-                    <label class="block font-bold text-xs">هل تود كتابة ملاحظات إضافية بخصوص التحضير أو التوصيل؟</label>
-                    <textarea id="cart-notes" rows="3" placeholder="مثال: يرجى عدم استخدام المكسرات أو الفول السوداني نهائياً في الحشوات، أو الاتصال بي قبل التوصيل..." class="w-full border border-gray-200 rounded-2xl p-4 focus:outline-none focus:border-[#FF91A4] text-right text-xs"></textarea>
+                    <label class="block font-bold text-xs">هل تود كتابة ملاحظات إضافية بخصوص التحضير أو الحساسية أو التوصيل؟</label>
+                    <textarea id="cart-notes" rows="3" placeholder="مثال: يرجى عدم استخدام المكسرات أو الفول السوداني نهائياً في الحشوات، أو الاتصال بي قبل التوصيل هاتفياً..." class="w-full border border-gray-200 rounded-2xl p-4 focus:outline-none focus:border-[#FF91A4] text-right text-xs"></textarea>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center bg-gray-50 p-6 rounded-2xl border border-gray-100">
@@ -909,10 +1017,10 @@
                     <p id="preparation-warning-text" class="text-[10px] text-red-500 hidden font-bold leading-relaxed text-right"></p>
                     <p id="preparation-notice" class="text-[10px] text-gray-500 leading-relaxed bg-[#FF91A4]/5 p-4 rounded-xl border border-[#FF91A4]/10 text-right font-semibold"></p>
 
-                    <h3 class="font-bold text-base text-[#111111] border-b border-gray-100 pb-2 text-right">4. ملاحظات الطلب الحرة بصفحة إتمام الطلب</h3>
+                    <h3 class="font-bold text-base text-[#111111] border-b border-gray-100 pb-2 text-right">4. ملاحظات التوصيل الإضافية</h3>
                     <div class="space-y-2 text-right">
-                        <label class="block font-bold text-xs">ملاحظات تسليم لوجستية أو طيبة (اختياري)</label>
-                        <textarea id="checkout-delivery-notes" rows="2" placeholder="مثال: يرجى الاتصال بي هاتفياً قبل التوصيل، أو تسليم الطلب لشخص آخر كهدية..." class="w-full border border-gray-200 rounded-xl py-2 px-3 text-xs focus:outline-none focus:border-[#FF91A4] text-right"></textarea>
+                        <label class="block font-bold text-xs">ملاحظات تسليم لوجستية أو طبية (اختياري)</label>
+                        <textarea id="checkout-delivery-notes" rows="2" placeholder="مثال: يرجى الاتصال بي هاتفياً قبل التوصيل، أو تسليم الطلب لشخص آخر كهدية ومفاجأة..." class="w-full border border-gray-200 rounded-xl py-2 px-3 text-xs focus:outline-none focus:border-[#FF91A4] text-right"></textarea>
                     </div>
 
                     <h3 class="font-bold text-base text-[#111111] border-b border-gray-100 pb-2 text-right">5. ملخص الفاتورة النهائي</h3>
@@ -1093,18 +1201,18 @@
                 ],
                 "waterfall": {
                     "leftColumnImages": [
-                        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
-                        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+                        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=wl1",
+                        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=wl2"
                     ],
                     "rightColumnImages": [
-                        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
-                        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+                        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=wr1",
+                        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=wr2"
                     ]
                 },
                 "excellence": {
                     "images": [
-                        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
-                        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+                        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=ex1",
+                        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=ex2"
                     ]
                 },
                 "mostSelling": [],
@@ -1154,7 +1262,10 @@
             calculatedFlowerPrice: 400,
             cakeShape: 'circle',
             cakeType: 'vanilla',
-            flowerType: 'natural'
+            flowerType: 'natural',
+            cakeStep: 1,
+            flowerStep: 1,
+            selectedWrapping: 'satin'
         };
 
         function navigateTo(tabName, categoryId = null, productId = null) {
@@ -1229,7 +1340,7 @@
             }
             updateCartBadge();
 
-            // محرك جلب البيانات الذكي والمعالج للأخطاء
+            // جلب البيانات من JSON
             try {
                 const response = await fetch('./site-data-final.json');
                 if (response.ok) {
@@ -1238,11 +1349,9 @@
                     console.log("تم تحميل قاعدة بيانات المنتجات الخارجية بنجاح 🌸");
                 } else {
                     document.getElementById('diagnostic-banner').classList.remove('hidden');
-                    console.warn("استجابة الخادم غير صالحة. تم تشغيل نظام الأمان الاحتياطي لضمان عمل الواجهات.");
                 }
             } catch (error) {
                 document.getElementById('diagnostic-banner').classList.remove('hidden');
-                console.warn("تنبيه أمني: جاري العمل بنظام المحاكاة المدمج لمنع تعليق التصفح.");
             }
 
             initGlobalUI();
@@ -1252,7 +1361,6 @@
 
         function initGlobalUI() {
             try {
-                // تزيين وتكرار شريط الحركة العلوي لمنع الفراغات البصرية نهائياً
                 const marqueeContainer = document.getElementById('marquee-container');
                 const marqueeClone = document.getElementById('marquee-container-clone');
                 
@@ -1264,7 +1372,6 @@
                 if (marqueeContainer) marqueeContainer.innerHTML = marqueeHTML;
                 if (marqueeClone) marqueeClone.innerHTML = marqueeHTML;
 
-                // إعداد الفوتر والنبذة التعريفية الفخمة بنظام الأمان
                 const footerAbout = document.getElementById('footer-about-text');
                 if (footerAbout) {
                     footerAbout.innerText = (siteData.store?.slogan || "صنعناها بحب لتهديها لمن تحب") + ". " + (siteData.footer?.about || "");
@@ -1275,26 +1382,16 @@
                     policyList.innerHTML = siteData.footer.policies.map(p => `<li><a href="javascript:void(0)" onclick="showPolicyNote('${p}')" class="hover:text-[#FF91A4] transition-all cursor-pointer text-xs block text-right">${p}</a></li>`).join('');
                 }
 
-                // قنوات التواصل الاجتماعي الرسمية بأيقوناتها الملونة والـ SVGs الصريحة لسرعة الأداء
                 const socialWrap = document.getElementById('footer-social-links');
                 if (socialWrap && siteData.social) {
                     socialWrap.innerHTML = `
-                        <a href="${siteData.social.facebook || '#'}" target="_blank" class="p-2.5 bg-[#1877F2]/10 rounded-xl hover:bg-[#1877F2]/20 transition-all hover:-translate-y-1 text-xs font-bold text-[#1877F2]" aria-label="فيسبوك">
-                            فيسبوك
-                        </a>
-                        <a href="${siteData.social.instagram || '#'}" target="_blank" class="p-2.5 bg-[#E1306C]/10 rounded-xl hover:bg-[#E1306C]/20 transition-all hover:-translate-y-1 text-xs font-bold text-[#E1306C]" aria-label="انستجرام">
-                            انستجرام
-                        </a>
-                        <a href="${siteData.social.tiktok || '#'}" target="_blank" class="p-2.5 bg-gray-100 rounded-xl hover:bg-gray-200 transition-all hover:-translate-y-1 text-xs font-bold text-[#000000]" aria-label="تيك توك">
-                            تيك توك
-                        </a>
-                        <a href="https://wa.me/20${siteData.social.whatsapp || '01097238441'}" target="_blank" class="p-2.5 bg-[#25D366]/10 rounded-xl hover:bg-[#25D366]/20 transition-all hover:-translate-y-1 text-xs font-bold text-[#25D366]" aria-label="واتساب">
-                            واتساب
-                        </a>
+                        <a href="${siteData.social.facebook || '#'}" target="_blank" class="p-2.5 bg-[#1877F2]/10 rounded-xl hover:bg-[#1877F2]/20 transition-all hover:-translate-y-1 text-xs font-bold text-[#1877F2]">فيسبوك</a>
+                        <a href="${siteData.social.instagram || '#'}" target="_blank" class="p-2.5 bg-[#E1306C]/10 rounded-xl hover:bg-[#E1306C]/20 transition-all hover:-translate-y-1 text-xs font-bold text-[#E1306C]">انستجرام</a>
+                        <a href="${siteData.social.tiktok || '#'}" target="_blank" class="p-2.5 bg-gray-100 rounded-xl hover:bg-gray-200 transition-all hover:-translate-y-1 text-xs font-bold text-[#000000]">تيك توك</a>
+                        <a href="https://wa.me/20${siteData.social.whatsapp || '01097238441'}" target="_blank" class="p-2.5 bg-[#25D366]/10 rounded-xl hover:bg-[#25D366]/20 transition-all hover:-translate-y-1 text-xs font-bold text-[#25D366]">واتساب</a>
                     `;
                 }
 
-                // بناء فئات التسوق الـ 12 بداخل القائمة الجانبية المحدثة
                 const sideCategories = document.getElementById('side-menu-categories');
                 if (sideCategories && siteData.homepage?.categoriesSlider) {
                     sideCategories.innerHTML = siteData.homepage.categoriesSlider.map(cat => `
@@ -1302,22 +1399,13 @@
                     `).join('');
                 }
 
-                // ربط أزرار التحكم بالقائمة والبحث
-                const menuToggle = document.getElementById('mobile-menu-toggle');
-                const closeMenuBtn = document.getElementById('close-menu-btn');
-                const overlay = document.getElementById('side-menu-overlay');
+                document.getElementById('mobile-menu-toggle').onclick = openMenu;
+                document.getElementById('close-menu-btn').onclick = closeMenu;
+                document.getElementById('side-menu-overlay').onclick = closeMenu;
 
-                if (menuToggle) menuToggle.onclick = openMenu;
-                if (closeMenuBtn) closeMenuBtn.onclick = closeMenu;
-                if (overlay) overlay.onclick = closeMenu;
-
-                const searchBtn = document.getElementById('nav-search-btn');
-                const closeSearchBtn = document.getElementById('close-search-btn');
-                const searchInput = document.getElementById('search-input');
-
-                if (searchBtn) searchBtn.onclick = openSearch;
-                if (closeSearchBtn) closeSearchBtn.onclick = closeSearch;
-                if (searchInput) searchInput.oninput = runLiveSearch;
+                document.getElementById('nav-search-btn').onclick = openSearch;
+                document.getElementById('close-search-btn').onclick = closeSearch;
+                document.getElementById('search-input').oninput = runLiveSearch;
             } catch (err) {
                 console.error("خطأ أثناء تهيئة واجهة المستخدم:", err);
             }
@@ -1328,20 +1416,12 @@
         }
 
         function openMenu() {
-            const sideMenu = document.getElementById('side-menu');
-            const overlay = document.getElementById('side-menu-overlay');
-            if (sideMenu && overlay) {
-                sideMenu.classList.remove('translate-x-full');
-                overlay.classList.remove('hidden');
-            }
+            document.getElementById('side-menu').classList.remove('translate-x-full');
+            document.getElementById('side-menu-overlay').classList.remove('hidden');
         }
         function closeMenu() {
-            const sideMenu = document.getElementById('side-menu');
-            const overlay = document.getElementById('side-menu-overlay');
-            if (sideMenu && overlay) {
-                sideMenu.classList.add('translate-x-full');
-                overlay.classList.add('hidden');
-            }
+            document.getElementById('side-menu').classList.add('translate-x-full');
+            document.getElementById('side-menu-overlay').classList.add('hidden');
         }
 
         function openSearch() {
@@ -1359,7 +1439,6 @@
             }
         }
 
-        // إيماءات اللمس الذكية للموبايل لغلق القائمة الجانبية بسلاسة
         function initTouchGestures() {
             const sideMenu = document.getElementById('side-menu');
             if (!sideMenu) return;
@@ -1386,34 +1465,6 @@
                     closeMenu();
                 }
             }, { passive: true });
-
-            const enableSwipeScroll = (elementId) => {
-                const el = document.getElementById(elementId);
-                if (!el) return;
-                let isDown = false;
-                let startXPos;
-                let scrollLeftPos;
-
-                el.addEventListener('mousedown', (e) => {
-                    isDown = true;
-                    startXPos = e.pageX - el.offsetLeft;
-                    scrollLeftPos = el.scrollLeft;
-                });
-                el.addEventListener('mouseleave', () => isDown = false);
-                el.addEventListener('mouseup', () => isDown = false);
-                el.addEventListener('mousemove', (e) => {
-                    if (!isDown) return;
-                    e.preventDefault();
-                    const x = e.pageX - el.offsetLeft;
-                    const walk = (x - startXPos) * 2;
-                    el.scrollLeft = scrollLeftPos - walk;
-                });
-            };
-
-            enableSwipeScroll('most-selling-scroll');
-            enableSwipeScroll('new-arrivals-scroll');
-            enableSwipeScroll('categories-scroll');
-            enableSwipeScroll('cart-suggestions-scroll');
         }
 
         function runLiveSearch() {
@@ -1506,14 +1557,12 @@
                 `).join('');
             }
 
-            // حقن منتجات الأكثر مبيعاً
             const mostSellingGrid = document.getElementById('most-selling-grid');
             if (mostSellingGrid && siteData.homepage?.mostSelling) {
                 const msProducts = (siteData.products || []).filter(p => siteData.homepage.mostSelling.includes(p.id));
                 mostSellingGrid.innerHTML = msProducts.map(p => renderProductCardDOM(p, true)).join('');
             }
 
-            // حقن منتجات وصل حديثاً
             const newGrid = document.getElementById('new-arrivals-grid');
             if (newGrid && siteData.homepage?.newArrivals) {
                 const naProducts = (siteData.products || []).filter(p => siteData.homepage.newArrivals.includes(p.id));
@@ -1522,7 +1571,6 @@
 
             renderOurProductsHomeGrid();
 
-            // حقن الأرقام التصاعدية بقسم الفخر والاعتزاز
             const statsGrid = document.getElementById('stats-container');
             if (statsGrid && siteData.homepage?.pride?.stats) {
                 statsGrid.innerHTML = Object.keys(siteData.homepage.pride.stats).map(key => {
@@ -1539,15 +1587,14 @@
                 runStatsCounter();
             }
 
-            // فئات التسوق المعتمدة الـ 12 بالترتيب الهندسي الموحد
             const catTrack = document.getElementById('categories-track');
             if (catTrack && siteData.homepage?.categoriesSlider) {
                 catTrack.innerHTML = siteData.homepage.categoriesSlider.map(cat => `
-                    <div class="category-card" onclick="navigateTo('category', '${cat.id}')">
+                    <div class="category-card cursor-pointer" onclick="navigateTo('category', '${cat.id}')">
                         <div class="category-card-img-wrap">
                             <img src="${cat.image}" alt="${cat.title}" class="category-card-img">
                         </div>
-                        <h3 class="category-card-title">${cat.title}</h3>
+                        <h3 class="category-card-title text-center mt-4 text-[#111111] font-bold text-lg">${cat.title}</h3>
                     </div>
                 `).join('');
             }
@@ -1601,8 +1648,6 @@
             const cartItem = state.cart.find(i => i.id === product.id);
             const qty = cartItem ? cartItem.qty : 1;
             const adjustedSinglePrice = getAdjustedPrice(product);
-
-            // تفعيل فئات الأحجام الصارمة المذكورة بالمواصفة لمنع التكديس البصري
             const sizeClass = isFeaturedSize ? 'featured-card' : 'w-full';
 
             return `
@@ -1686,7 +1731,6 @@
         function renderMenuView() {
             const grid = document.getElementById('menu-grid');
             if (grid && siteData.homepage?.categoriesSlider) {
-                // تصفح المنيو الشامل يعرض الـ 12 كارت المعتمد strictly بالمواصفة بدون أي أسعار أو عدادات كمية لتفادي تشتيت العميل
                 grid.innerHTML = siteData.homepage.categoriesSlider.map(cat => `
                     <div class="menu-card">
                         <div class="w-full overflow-hidden bg-gray-50 rounded-2xl cursor-pointer" onclick="navigateTo('category', '${cat.id}')">
@@ -1710,7 +1754,6 @@
             const grid = document.getElementById('category-products-grid');
             const tabsContainer = document.getElementById('category-tabs-container');
 
-            // حقن الأوصاف الرسمية والصارمة المعتمدة strictly لراحة عين العميل وفهمه للقيمة
             let desc = "مكونات طازجة ومعدة بكل دقة في معاملنا الخاصة يومياً.";
             if (catId === 'taswaq-toort') desc = "التورت عندنا مش مجرد حلوى للمناسبة، لكنها قطعة مصممة خصيصاً لصاحب المناسبة. نحن نصمم كل تورتة بشكل يعبر عن شخصية صاحبها وذوقه وتفاصيل يومه المميز.";
             else if (catId === 'taswaq-flowers') desc = "ننفرد بتقديم بوكيهات الورد الطبيعي والصناعي وورد الستان بأعلى مستوى من العناية والاهتمام بالتفاصيل.";
@@ -1780,7 +1823,6 @@
 
             const optionsPanel = document.getElementById('detail-custom-options');
             
-            // حقن الخيارات التفصيلية للكب كيك أو الميني تورتة
             if (product.id === 'cupcake-mix-new' || product.id === 'cupcake-chocolate' || product.id === 'cupcake-vanilla') {
                 optionsPanel.classList.remove('hidden');
                 optionsPanel.innerHTML = `
@@ -1837,7 +1879,6 @@
                 </div>
             `).join('');
 
-            // قسم قد يعجبك أيضاً بالصفحات الداخلية
             const suggestionsBox = document.getElementById('detail-suggestions');
             if (suggestionsBox) {
                 const related = (siteData.products || []).filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
@@ -1901,7 +1942,7 @@
             }
 
             state.cart.push({
-                id: product.id + (Date.now()), // توليد معرف فريد لمنع تشابه كروت السلة المخصصة
+                id: product.id + (Date.now()), 
                 title: product.title,
                 flavorName: product.flavorName + (customNote ? ` - ${customNote}` : ''),
                 price: getAdjustedPrice(product) + extraPrice,
@@ -1916,12 +1957,53 @@
             navigateTo('cart');
         }
 
+        // ==================== محركات محاكي التورتة المتقدمة ====================
+        function setCakeStep(stepNum) {
+            state.cakeStep = stepNum;
+            document.querySelectorAll('.cake-step-panel').forEach(p => p.classList.add('hidden'));
+            document.getElementById(`cake-step-panel-${stepNum}`).classList.remove('hidden');
+
+            for (let i = 1; i <= 4; i++) {
+                const btn = document.getElementById(`cake-step-${i}`);
+                if (btn) {
+                    btn.className = "step-pill w-10 h-10 rounded-full border-2 border-gray-200 bg-white font-bold flex items-center justify-center smooth-transition";
+                    if (i < stepNum) {
+                        btn.classList.add('completed');
+                    } else if (i === stepNum) {
+                        btn.classList.add('active');
+                    }
+                }
+            }
+
+            const nextBtn = document.getElementById('cake-btn-next');
+            const prevBtn = document.getElementById('cake-btn-prev');
+
+            if (stepNum === 1) {
+                prevBtn.classList.add('hidden');
+                nextBtn.innerText = "الخطوة التالية";
+                nextBtn.onclick = () => setCakeStep(2);
+            } else if (stepNum === 4) {
+                prevBtn.classList.remove('hidden');
+                prevBtn.onclick = () => setCakeStep(3);
+                nextBtn.innerText = "تأكيد وإضافة للسلة 🎂";
+                nextBtn.onclick = addCustomCakeToCart;
+            } else {
+                prevBtn.classList.remove('hidden');
+                prevBtn.onclick = () => setCakeStep(stepNum - 1);
+                nextBtn.innerText = "الخطوة التالية";
+                nextBtn.onclick = () => setCakeStep(stepNum + 1);
+            }
+
+            updateCakePreviewSVG();
+        }
+
         function initCakeBuilder() {
             const shapeWrap = document.getElementById('cake-shapes-container');
             if (shapeWrap && siteData.cakeBuilder?.shapes) {
                 shapeWrap.innerHTML = siteData.cakeBuilder.shapes.map((s, idx) => `
-                    <button onclick="selectCakeShape('${s.id}')" id="shape-${s.id}" class="cake-shape-btn border ${idx === 0 ? 'border-[#FF91A4] bg-[#FF91A4]/5 text-[#FF91A4]' : 'border-gray-200 text-gray-500'} font-bold py-2.5 rounded-xl text-xs transition">
-                        ${s.name}
+                    <button onclick="selectCakeShape('${s.id}')" id="shape-${s.id}" class="cake-shape-btn border ${idx === 0 ? 'border-[#FF91A4] bg-[#FF91A4]/5 text-[#FF91A4]' : 'border-gray-200 text-gray-500'} font-bold py-2.5 rounded-xl text-xs transition flex flex-col items-center justify-center gap-1">
+                        <span class="text-lg">${s.id === 'circle' ? '⭕' : s.id === 'heart' ? '💖' : s.id === 'square' ? '🟦' : '🟧'}</span>
+                        <span>${s.name}</span>
                     </button>
                 `).join('');
                 state.cakeShape = siteData.cakeBuilder.shapes[0]?.id || 'circle';
@@ -1940,28 +2022,35 @@
             const printWrap = document.getElementById('cake-printing-container');
             if (printWrap && siteData.cakeBuilder?.printingOptions) {
                 printWrap.innerHTML = `
-                    <label class="flex items-center gap-2 text-xs cursor-pointer justify-end flex-row-reverse">
-                        <span>بدون إضافة صورة</span>
-                        <input type="radio" name="cake-print" value="0" checked onchange="calculateCakePrice()" class="accent-[#FF91A4]">
+                    <label class="flex items-center justify-between bg-white border border-gray-100 p-3 rounded-xl cursor-pointer hover:border-[#FF91A4] smooth-transition text-xs flex-row-reverse">
+                        <span class="flex items-center gap-2 flex-row-reverse">
+                            <input type="radio" name="cake-print" value="0" checked onchange="calculateCakePrice()" class="accent-[#FF91A4]">
+                            <span>بدون إضافة صورة</span>
+                        </span>
+                        <span class="font-bold text-gray-400">0 جنيه</span>
                     </label>
                 ` + siteData.cakeBuilder.printingOptions.map(p => `
-                    <label class="flex items-center gap-2 text-xs cursor-pointer justify-end flex-row-reverse">
-                        <span>${p.name} (+${p.price} جنيه)</span>
-                        <input type="radio" name="cake-print" value="${p.price}" onchange="calculateCakePrice()" class="accent-[#FF91A4]" data-name="${p.name}">
+                    <label class="flex items-center justify-between bg-white border border-gray-100 p-3 rounded-xl cursor-pointer hover:border-[#FF91A4] smooth-transition text-xs flex-row-reverse">
+                        <span class="flex items-center gap-2 flex-row-reverse">
+                            <input type="radio" name="cake-print" value="${p.price}" onchange="calculateCakePrice()" class="accent-[#FF91A4]" data-name="${p.name}">
+                            <span>${p.name}</span>
+                        </span>
+                        <span class="font-bold text-[#FF91A4]">+${p.price} جنيه</span>
                     </label>
                 `).join('');
             }
 
+            setCakeStep(1);
             calculateCakePrice();
         }
 
         function selectCakeShape(shapeId) {
             document.querySelectorAll('.cake-shape-btn').forEach(b => {
-                b.className = "cake-shape-btn border border-gray-200 text-gray-500 font-bold py-2.5 rounded-xl text-xs transition";
+                b.className = "cake-shape-btn border border-gray-200 text-gray-500 font-bold py-2.5 rounded-xl text-xs transition flex flex-col items-center justify-center gap-1";
             });
             const selectedBtn = document.getElementById(`shape-${shapeId}`);
             if (selectedBtn) {
-                selectedBtn.className = "cake-shape-btn border border-[#FF91A4] bg-[#FF91A4]/5 text-[#FF91A4] font-bold py-2.5 rounded-xl text-xs transition";
+                selectedBtn.className = "cake-shape-btn border border-[#FF91A4] bg-[#FF91A4]/5 text-[#FF91A4] font-bold py-2.5 rounded-xl text-xs transition flex flex-col items-center justify-center gap-1";
             }
             state.cakeShape = shapeId;
             calculateCakePrice();
@@ -1976,6 +2065,7 @@
                 selectedBtn.className = "cake-type-btn border border-[#FF91A4] bg-[#FF91A4]/5 text-[#FF91A4] font-bold py-2.5 rounded-xl text-xs transition";
             }
             state.cakeType = typeId;
+            updateCakePreviewSVG();
         }
 
         function calculateCakePrice() {
@@ -2011,6 +2101,78 @@
             state.calculatedCakePrice = total;
             const priceBox = document.getElementById('cake-builder-price');
             if (priceBox) priceBox.innerText = `${total} جنيه`;
+
+            updateCakePreviewSVG();
+        }
+
+        // لوحة رسم التورتة الحية التفاعلية بـ SVG (لا تنقطع، لا تتشوه، وتتحرك بسلاسة)
+        function updateCakePreviewSVG() {
+            const wrap = document.getElementById('cake-svg-preview-wrap');
+            if (!wrap) return;
+
+            let shapePath = "";
+            let shapeName = state.cakeShape;
+
+            // تغيير لون طبقات الكيك التفاعلية بحسب النكهة المحددة
+            let cakeColor = "#FFF5F6"; // فانيليا
+            let creamColor = "#FFB2C1"; 
+            if (state.cakeType === 'chocolate') {
+                cakeColor = "#5C3A21"; // شوكولاتة
+                creamColor = "#3D2514";
+            } else if (state.cakeType === 'half-half') {
+                cakeColor = "#EAD1DC"; // نصف ونصف
+                creamColor = "#8C542E";
+            }
+
+            // تعديل أبعاد ومسار رسم الـ SVG بحسب الشكل الهندسي
+            if (shapeName === 'circle') {
+                shapePath = `<ellipse cx="150" cy="170" rx="90" ry="50" fill="${cakeColor}" stroke="#FF91A4" stroke-width="2"/>
+                             <ellipse cx="150" cy="130" rx="90" ry="50" fill="${creamColor}" stroke="#FF91A4" stroke-width="2"/>
+                             <ellipse cx="150" cy="90" rx="90" ry="50" fill="${cakeColor}" stroke="#FF91A4" stroke-width="2"/>`;
+            } else if (shapeName === 'heart') {
+                shapePath = `<path d="M 150,110 C 110,60 50,90 50,140 C 50,190 150,230 150,230 C 150,230 250,190 250,140 C 250,90 190,60 150,110 Z" fill="${creamColor}" stroke="#FF91A4" stroke-width="3"/>`;
+            } else if (shapeName === 'square') {
+                shapePath = `<rect x="70" y="80" width="160" height="120" rx="10" fill="${cakeColor}" stroke="#FF91A4" stroke-width="3"/>
+                             <rect x="70" y="110" width="160" height="20" fill="${creamColor}"/>`;
+            } else {
+                shapePath = `<rect x="50" y="90" width="200" height="110" rx="15" fill="${cakeColor}" stroke="#FF91A4" stroke-width="3"/>
+                             <rect x="50" y="120" width="200" height="25" fill="${creamColor}"/>`;
+            }
+
+            const writtenMsg = document.getElementById('cake-message')?.value.trim() || "";
+
+            wrap.innerHTML = `
+                <svg viewBox="0 0 300 300" class="w-full h-full">
+                    <!-- خلفية فخمة ومريحة للعين -->
+                    <defs>
+                        <radialGradient id="cakeGrad" cx="50%" cy="50%" r="50%">
+                            <stop offset="0%" stop-color="#FFF0F2" />
+                            <stop offset="100%" stop-color="#FFFFFF" />
+                        </radialGradient>
+                    </defs>
+                    <circle cx="150" cy="150" r="140" fill="url(#cakeGrad)" />
+                    
+                    <!-- قاعدة التورتة الدائرية الكبيرة -->
+                    <ellipse cx="150" cy="230" rx="110" ry="20" fill="rgba(255, 145, 164, 0.15)"/>
+                    <ellipse cx="150" cy="225" rx="105" ry="15" fill="#FFFFFF" stroke="#FF91A4" stroke-width="1.5"/>
+
+                    <!-- طبقات الكيك والشكل واللون -->
+                    <g id="cake-layers-svg">
+                        ${shapePath}
+                    </g>
+
+                    <!-- الزهور والكرز التزييني اللذيذ -->
+                    <circle cx="150" cy="80" r="10" fill="#FF4D6D" />
+                    <circle cx="110" cy="95" r="8" fill="#FF4D6D" />
+                    <circle cx="190" cy="95" r="8" fill="#FF4D6D" />
+                    <circle cx="150" cy="50" r="3" fill="#FFE5E9" />
+
+                    <!-- النص المكتوب فوق الكيك بخط ناعم وجميل -->
+                    <text x="150" y="150" text-anchor="middle" font-size="10px" font-weight="bold" fill="#3D2514" font-family="'Cairo', sans-serif">
+                        ${writtenMsg ? writtenMsg : "حلويات بوسي 🌸"}
+                    </text>
+                </svg>
+            `;
         }
 
         function addCustomCakeToCart() {
@@ -2049,7 +2211,7 @@
                     "طعم الكيك": typeName,
                     "طباعة الصورة": printName,
                     "الرسالة المكتوبة": message || "لا توجد",
-                    "ملاحظة الحساسية": allergy || "لا توجد"
+                    "ملاحظة الحساسية الصحية": allergy || "لا توجد"
                 }
             };
 
@@ -2059,12 +2221,53 @@
             navigateTo('cart');
         }
 
+        // ==================== محركات محاكي الورد والتنسيقات الفاخرة ====================
+        function setFlowerStep(stepNum) {
+            state.flowerStep = stepNum;
+            document.querySelectorAll('.flower-step-panel').forEach(p => p.classList.add('hidden'));
+            document.getElementById(`flower-step-panel-${stepNum}`).classList.remove('hidden');
+
+            for (let i = 1; i <= 4; i++) {
+                const btn = document.getElementById(`flower-step-${i}`);
+                if (btn) {
+                    btn.className = "step-pill w-10 h-10 rounded-full border-2 border-gray-200 bg-white font-bold flex items-center justify-center smooth-transition";
+                    if (i < stepNum) {
+                        btn.classList.add('completed');
+                    } else if (i === stepNum) {
+                        btn.classList.add('active');
+                    }
+                }
+            }
+
+            const nextBtn = document.getElementById('flower-btn-next');
+            const prevBtn = document.getElementById('flower-btn-prev');
+
+            if (stepNum === 1) {
+                prevBtn.classList.add('hidden');
+                nextBtn.innerText = "الخطوة التالية";
+                nextBtn.onclick = () => setFlowerStep(2);
+            } else if (stepNum === 4) {
+                prevBtn.classList.remove('hidden');
+                prevBtn.onclick = () => setFlowerStep(3);
+                nextBtn.innerText = "تأكيد وإضافة للسلة 💐";
+                nextBtn.onclick = addCustomFlowerToCart;
+            } else {
+                prevBtn.classList.remove('hidden');
+                prevBtn.onclick = () => setFlowerStep(stepNum - 1);
+                nextBtn.innerText = "الخطوة التالية";
+                nextBtn.onclick = () => setFlowerStep(stepNum + 1);
+            }
+
+            updateFlowerPreviewSVG();
+        }
+
         function initFlowerBuilder() {
             const typeWrap = document.getElementById('flower-types-container');
             if (typeWrap && siteData.flowerBuilder?.flowerTypes) {
                 typeWrap.innerHTML = siteData.flowerBuilder.flowerTypes.map((t, idx) => `
-                    <button onclick="selectFlowerType('${t.id}')" id="fl-type-${t.id}" class="flower-type-btn border ${idx === 0 ? 'border-[#FF91A4] bg-[#FF91A4]/5 text-[#FF91A4]' : 'border-gray-200 text-gray-500'} font-bold py-2.5 rounded-xl text-xs transition">
-                        ${t.name}
+                    <button onclick="selectFlowerType('${t.id}')" id="fl-type-${t.id}" class="flower-type-btn border ${idx === 0 ? 'border-[#FF91A4] bg-[#FF91A4]/5 text-[#FF91A4]' : 'border-gray-200 text-gray-500'} font-bold py-2.5 rounded-xl text-xs transition flex flex-col items-center justify-center gap-1">
+                        <span class="text-lg">${t.id === 'natural' ? '🌹' : t.id === 'artificial' ? '🌸' : '🎀'}</span>
+                        <span>${t.name}</span>
                     </button>
                 `).join('');
                 state.flowerType = siteData.flowerBuilder.flowerTypes[0]?.id || 'natural';
@@ -2075,24 +2278,20 @@
                 wrapBox.innerHTML = siteData.flowerBuilder.wrappingTypes.map((w, idx) => `
                     <label class="flex items-center justify-between bg-white border border-gray-100 p-3 rounded-xl cursor-pointer hover:border-[#FF91A4] smooth-transition text-xs flex-row-reverse">
                         <span class="flex items-center gap-2 flex-row-reverse">
-                            <input type="radio" name="flower-wrap" value="${w.price}" ${idx === 0 ? 'checked' : ''} onchange="calculateFlowerPrice()" class="accent-[#FF91A4]" data-name="${w.name}">
+                            <input type="radio" name="flower-wrap" value="${w.price}" ${idx === 0 ? 'checked' : ''} onchange="setFlowerWrapping('${w.id}')" class="accent-[#FF91A4]" data-name="${w.name}">
                             <span>${w.name}</span>
                         </span>
-                        <span class="font-bold text-gray-400">+${w.price} جنيه</span>
+                        <span class="font-bold text-[#FF91A4]">+${w.price} جنيه</span>
                     </label>
                 `).join('');
+                state.selectedWrapping = siteData.flowerBuilder.wrappingTypes[0]?.id || 'satin';
             }
 
-            const cashBox = document.getElementById('flower-cash-container');
-            if (cashBox && siteData.flowerBuilder?.moneyCategories) {
-                cashBox.innerHTML = siteData.flowerBuilder.moneyCategories.map(c => `
-                    <label class="flex items-center justify-between bg-white border border-gray-100 p-2.5 rounded-xl cursor-pointer hover:border-[#FF91A4] smooth-transition text-xs flex-row-reverse">
-                        <span class="flex items-center gap-2 flex-row-reverse">
-                            <input type="checkbox" name="flower-cash" value="${c.amount + c.fee}" onchange="calculateFlowerPrice()" class="accent-[#FF91A4]" data-amount="${c.amount}">
-                            <span>كاش فئة ${c.amount} جنيه</span>
-                        </span>
-                        <span class="text-[10px] text-gray-400 font-semibold">رسوم: +${c.fee}ج</span>
-                    </label>
+            // حقن خيارات دمج الكاش المتقدمة من قاعدة بيانات الـ JSON
+            const cashCategorySelect = document.getElementById('flower-cash-category');
+            if (cashCategorySelect && siteData.flowerBuilder?.moneyCategories) {
+                cashCategorySelect.innerHTML = siteData.flowerBuilder.moneyCategories.map(c => `
+                    <option value="${c.amount}" data-fee="${c.fee}">أوراق فئة ${c.amount} جنيه (رسوم: +${c.fee}ج للورقة)</option>
                 `).join('');
             }
 
@@ -2103,18 +2302,25 @@
                 `).join('');
             }
 
+            setFlowerStep(1);
             calculateFlowerPrice();
         }
 
         function selectFlowerType(typeId) {
             document.querySelectorAll('.flower-type-btn').forEach(b => {
-                b.className = "flower-type-btn border border-gray-200 text-gray-500 font-bold py-2.5 rounded-xl text-xs transition";
+                b.className = "flower-type-btn border border-gray-200 text-gray-500 font-bold py-2.5 rounded-xl text-xs transition flex flex-col items-center justify-center gap-1";
             });
             const selectedBtn = document.getElementById(`fl-type-${typeId}`);
             if (selectedBtn) {
-                selectedBtn.className = "flower-type-btn border border-[#FF91A4] bg-[#FF91A4]/5 text-[#FF91A4] font-bold py-2.5 rounded-xl text-xs transition";
+                selectedBtn.className = "flower-type-btn border border-[#FF91A4] bg-[#FF91A4]/5 text-[#FF91A4] font-bold py-2.5 rounded-xl text-xs transition flex flex-col items-center justify-center gap-1";
             }
             state.flowerType = typeId;
+            updateFlowerPreviewSVG();
+        }
+
+        function setFlowerWrapping(wrapId) {
+            state.selectedWrapping = wrapId;
+            calculateFlowerPrice();
         }
 
         function calculateFlowerPrice() {
@@ -2134,10 +2340,49 @@
                 if (r.checked) wrapCost = parseInt(r.value);
             });
 
-            let cashCost = 0;
-            document.getElementsByName('flower-cash').forEach(c => {
-                if (c.checked) cashCost += parseInt(c.value);
-            });
+            // الحسبة الهندسية والمتقدمة لرسوم خدمة دمج الكاش وسد الثغرات المالية
+            const cashNetInput = document.getElementById('flower-cash-net');
+            const cashNet = cashNetInput ? (parseInt(cashNetInput.value) || 0) : 0;
+            const cashCategorySelect = document.getElementById('flower-cash-category');
+            
+            let cashHandlingFee = 0;
+            let totalCashPart = 0;
+
+            if (cashNet > 0 && cashCategorySelect) {
+                const selectedDenomination = parseInt(cashCategorySelect.value) || 50;
+                const billOpt = siteData.flowerBuilder?.moneyCategories?.find(c => c.amount === selectedDenomination);
+                const feePerBill = billOpt ? billOpt.fee : 15;
+
+                // حساب الأوراق المطلوبة لتمثيل المبلغ بالمليم
+                const billCount = Math.floor(cashNet / selectedDenomination);
+                cashHandlingFee = billCount * feePerBill;
+
+                // حساب رسوم المتبقي من الكاش
+                const remainder = cashNet % selectedDenomination;
+                if (remainder > 0) {
+                    const remainderOpt = siteData.flowerBuilder?.moneyCategories
+                        .filter(cat => cat.amount <= remainder)
+                        .sort((a, b) => b.amount - a.amount)[0] || siteData.flowerBuilder.moneyCategories[0];
+                    if (remainderOpt) {
+                        cashHandlingFee += remainderOpt.fee;
+                    }
+                }
+
+                totalCashPart = cashNet + cashHandlingFee;
+
+                const breakdownBox = document.getElementById('cash-breakdown-display');
+                if (breakdownBox) {
+                    breakdownBox.innerHTML = `
+                        <div>• عدد الأوراق النقدية المطلوبة: <strong class="text-gray-700">${billCount} ورقة</strong></div>
+                        <div>• رسوم خدمة دمج وتغليف الكاش: <strong class="text-[#FF91A4]">${cashHandlingFee} جنيه</strong></div>
+                        <div>• صافي المبلغ النقدي بالباقة: <strong class="text-gray-700">${cashNet} جنيه</strong></div>
+                    `;
+                    breakdownBox.classList.remove('hidden');
+                }
+            } else {
+                const breakdownBox = document.getElementById('cash-breakdown-display');
+                if (breakdownBox) breakdownBox.classList.add('hidden');
+            }
 
             const chocPrice = parseInt(document.getElementById('flower-chocolate')?.value || 0);
             const chocQty = parseInt(document.getElementById('flower-chocolate-qty')?.value || 0);
@@ -2149,10 +2394,122 @@
                 photoCost = siteData.flowerBuilder?.photoPrintPrice || 15;
             }
 
-            const total = baseCost + stemsCost + wrapCost + cashCost + chocolateCost + photoCost;
+            // الإجمالي النهائي المعتمد
+            const total = baseCost + stemsCost + wrapCost + totalCashPart + chocolateCost + photoCost;
             state.calculatedFlowerPrice = total;
+
             const priceBox = document.getElementById('flower-builder-price');
             if (priceBox) priceBox.innerText = `${total} جنيه`;
+
+            const noticeBox = document.getElementById('flower-breakdown-notice');
+            if (noticeBox) {
+                if (cashNet > 0) {
+                    noticeBox.innerText = `💡 التكلفة تشمل: ${baseCost + stemsCost + wrapCost + chocolateCost + photoCost + cashHandlingFee}ج للتنسيق والخامات والرسوم + ${cashNet}ج كاش حقيقي داخل البوكيه.`;
+                    noticeBox.classList.remove('hidden');
+                } else {
+                    noticeBox.classList.add('hidden');
+                }
+            }
+
+            updateFlowerPreviewSVG();
+        }
+
+        // لوحة رسم باقة الورد الحية التفاعلية بـ SVG (أنيقة، دقيقة، وبدون أي قص أو فراغات)
+        function updateFlowerPreviewSVG() {
+            const wrap = document.getElementById('flower-svg-preview-wrap');
+            if (!wrap) return;
+
+            let roseColor = "#FF4D6D"; // طبيعي أحمر
+            if (state.flowerType === 'artificial') {
+                roseColor = "#FFB2C1"; // صناعي بمبي ناعم
+            } else if (state.flowerType === 'satin') {
+                roseColor = "#D4AF37"; // ستان ذهبي فخم
+            }
+
+            let wrapColor = "#F3D1D6"; // تغليف ستان بمبي
+            if (state.selectedWrapping === 'classic') {
+                wrapColor = "#D7B58B"; // كلاسيك كرافت بني
+            } else if (state.selectedWrapping === 'box') {
+                wrapColor = "#111111"; // بوكس أسود فخم
+            }
+
+            const rangeInput = document.getElementById('flower-count');
+            const count = rangeInput ? parseInt(rangeInput.value) : 15;
+
+            // توليد باقة من الورود ديناميكياً بـ SVG بناءً على العدد لراحة عين العميل
+            let rosesSVG = "";
+            const centerX = 150;
+            const centerY = 130;
+            
+            for (let i = 0; i < Math.min(count, 35); i++) {
+                const angle = (i * (360 / Math.min(count, 35))) * (Math.PI / 180);
+                const radius = (i % 3 === 0) ? 20 : (i % 3 === 1) ? 40 : 55;
+                const rx = centerX + radius * Math.cos(angle);
+                const ry = centerY + radius * Math.sin(angle) * 0.7; // شكل مسطح للباقة
+                
+                rosesSVG += `
+                    <!-- وردة فردية مرسومة هندسياً -->
+                    <g transform="translate(${rx}, ${ry})">
+                        <circle cx="0" cy="0" r="14" fill="${roseColor}" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+                        <circle cx="-3" cy="-3" r="8" fill="rgba(255,255,255,0.15)"/>
+                        <path d="M-6,0 C-3,-6 3,-6 6,0 C3,6 -3,6 -6,0 Z" fill="rgba(0,0,0,0.05)" />
+                    </g>
+                `;
+            }
+
+            // محاكاة إدراج الكاش بالباقة مرئياً
+            const cashNetInput = document.getElementById('flower-cash-net');
+            const cashNet = cashNetInput ? (parseInt(cashNetInput.value) || 0) : 0;
+            let cashBillsSVG = "";
+            if (cashNet > 0) {
+                cashBillsSVG = `
+                    <!-- أوراق الكاش النقدية المدمجة -->
+                    <rect x="75" y="60" width="50" height="25" rx="3" fill="#A4C2A5" stroke="#2D5A27" stroke-width="1" transform="rotate(-25 75 60)" />
+                    <rect x="180" y="55" width="50" height="25" rx="3" fill="#A4C2A5" stroke="#2D5A27" stroke-width="1" transform="rotate(30 180 55)" />
+                    <text x="90" y="65" font-size="7" fill="#1C3F18" font-weight="bold" transform="rotate(-25 75 60)">EGP</text>
+                    <text x="195" y="60" font-size="7" fill="#1C3F18" font-weight="bold" transform="rotate(30 180 55)">EGP</text>
+                `;
+            }
+
+            const cardMsg = document.getElementById('flower-card-text')?.value.trim() || "";
+
+            wrap.innerHTML = `
+                <svg viewBox="0 0 300 300" class="w-full h-full">
+                    <defs>
+                        <radialGradient id="flGrad" cx="50%" cy="50%" r="50%">
+                            <stop offset="0%" stop-color="#FFF5F6" />
+                            <stop offset="100%" stop-color="#FFFFFF" />
+                        </radialGradient>
+                    </defs>
+                    <circle cx="150" cy="150" r="140" fill="url(#flGrad)" />
+
+                    <!-- غلاف الباقة الخلفي الكبير -->
+                    <path d="M 50,150 L 150,260 L 250,150 Q 200,90 150,90 Q 100,90 50,150 Z" fill="${wrapColor}" opacity="0.9" stroke="rgba(0,0,0,0.05)" stroke-width="2"/>
+
+                    <!-- الورود التفاعلية المولدة -->
+                    <g id="svg-roses-cluster">
+                        ${rosesSVG}
+                    </g>
+
+                    <!-- الكاش المدمج -->
+                    ${cashBillsSVG}
+
+                    <!-- غلاف الباقة الأمامي والشريط الستان المربوط -->
+                    <path d="M 90,200 L 150,265 L 210,200 Q 150,180 90,200 Z" fill="${wrapColor}" />
+                    <circle cx="150" cy="225" r="12" fill="#FF91A4" />
+                    <!-- شريط فيونكة ستان مذهل -->
+                    <path d="M 130,220 Q 110,210 135,230 Z" fill="#FF91A4" />
+                    <path d="M 170,220 Q 190,210 165,230 Z" fill="#FF91A4" />
+
+                    <!-- كارت الإهداء النصي -->
+                    <g transform="translate(100, 245)">
+                        <rect x="0" y="0" width="100" height="40" rx="6" fill="#FFFFFF" stroke="#FF91A4" stroke-width="1.5" />
+                        <text x="50" y="24" text-anchor="middle" font-size="7px" font-weight="bold" fill="#111111" font-family="'Cairo', sans-serif">
+                            ${cardMsg ? cardMsg : "صنعناها بحب لتهديها 🌸"}
+                        </text>
+                    </g>
+                </svg>
+            `;
         }
 
         function addCustomFlowerToCart() {
@@ -2168,10 +2525,10 @@
                 if (r.checked) wrapName = r.getAttribute('data-name');
             });
 
-            let cashDetail = [];
-            document.getElementsByName('flower-cash').forEach(c => {
-                if (c.checked) cashDetail.push(`${c.getAttribute('data-amount')} جنيه`);
-            });
+            const cashNetInput = document.getElementById('flower-cash-net');
+            const cashNet = cashNetInput ? (parseInt(cashNetInput.value) || 0) : 0;
+            const cashCategorySelect = document.getElementById('flower-cash-category');
+            const denomination = cashCategorySelect ? parseInt(cashCategorySelect.value) : 50;
 
             const chocSelect = document.getElementById('flower-chocolate');
             const chocName = chocSelect ? chocSelect.options[chocSelect.selectedIndex].getAttribute('data-name') : "بدون شوكولاتة";
@@ -2194,7 +2551,7 @@
                     "نوع الورد": typeName,
                     "عدد الورد الإجمالي": `${stems} وردة`,
                     "تغليف البوكيه": wrapName,
-                    "كاش مدمج": cashDetail.join(' + ') || "لا يوجد",
+                    "مفاجأة كاش مدمج": cashNet > 0 ? `${cashNet} جنيه (فئة أوراق ${denomination}ج)` : "لا يوجد",
                     "الشوكولاتة المضافة": chocQty > 0 ? `${chocName} (${chocQty} قطع)` : "لا يوجد",
                     "طباعة صور خاصة": photoPrinted,
                     "رسالة كارت الإهداء": cardMsg || "لا توجد"
@@ -2207,6 +2564,7 @@
             navigateTo('cart');
         }
 
+        // ==================== سلة المشتريات المحدثة ====================
         function renderCartView() {
             const wrapper = document.getElementById('cart-items-wrapper');
             if (!wrapper) return;
@@ -2226,7 +2584,6 @@
                 return;
             }
 
-            // تطبيق الـ Strict Cart Card DOM المعتمد strictly بالمواصفة (كروت أفقية خالية تماماً من الجداول التقليدية الجافة)
             wrapper.innerHTML = state.cart.map((item, idx) => {
                 let detailsHTML = "";
                 if (item.isCustom && item.details) {
@@ -2239,12 +2596,12 @@
 
                 return `
                     <div class="relative flex items-center gap-4 bg-white border border-[#FF91A4]/15 p-4 rounded-2xl shadow-sm flex-row-reverse min-h-[140px] smooth-transition">
-                        <!-- أيقونة حذف ذكية وسلسة الملمس تقع وتتمركز بدقة في أعلى يسار الكارت الأفقي لسهولة الوصول -->
+                        <!-- زر حذف ذكي ومستقر لتسهيل الاستخدام ومنع الأخطاء العشوائية للعميل -->
                         <button onclick="removeCartItem(${idx})" class="btn-remove-item absolute top-3 left-3 text-red-400 hover:text-red-600 smooth-transition" aria-label="حذف">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                         </button>
 
-                        <!-- صورة مخصصة بقياس 120x120px strictly لمنع التشويه البصري -->
+                        <!-- صورة مخصصة بالقياس المحدد strictly -->
                         <div class="w-[120px] h-[120px] flex-shrink-0 bg-gray-50 rounded-xl overflow-hidden border border-gray-100 flex items-center justify-center">
                             <img src="${item.image}" class="w-full h-full object-contain">
                         </div>
@@ -2274,7 +2631,7 @@
 
             calculateCartFinancialTotals();
 
-            // المقترحات الذكية (كارتين بحد أقصى على الموبايل لمنع التكدس)
+            // قسم المقترحات الذكية والخيارات البديلة
             const suggestBox = document.getElementById('cart-suggestions');
             if (suggestBox && siteData.homepage?.mostSelling) {
                 const suggestions = (siteData.products || []).filter(p => siteData.homepage.mostSelling.includes(p.id) && !state.cart.some(c => c.id === p.id)).slice(0, 2);
@@ -2384,6 +2741,7 @@
             if (grandTotalBox) grandTotalBox.innerText = `${Math.round(grandTotal)} جنيه`;
         }
 
+        // ==================== صفحة إتمام الطلب وحارس الوقت ====================
         function renderCheckoutView() {
             const addressText = document.getElementById('pickup-address-text');
             const noticeText = document.getElementById('preparation-notice');
@@ -2405,7 +2763,7 @@
             const timeInput = document.getElementById('checkout-delivery-time');
 
             if (dateInput && timeInput) {
-                // تأمين حارس الوقت ليكون الموعد الافتراضي هو اللحظة الحالية + 24 ساعة بدقة كاملة
+                // تفعيل حارس الـ 24 ساعة بدقة كاملة بناءً على الوقت المتزامن
                 const futureDate = new Date(Date.now() + 24 * 60 * 60 * 1000);
                 const yyyy = futureDate.getFullYear();
                 const mm = String(futureDate.getMonth() + 1).padStart(2, '0');
@@ -2473,7 +2831,7 @@
                 state.selectedZone = null;
             }
 
-            // تطبيق دالة التقريب الكلي الصارم (Math.round) لمرة واحدة وحصرياً لمنع ثغرات الحسابات
+            // تطبيق دالة التقريب الكلي الصارم Math.round لمرة واحدة وحصرياً لمنع ثغرات الحسابات
             const grandTotal = Math.round(subtotal - discount + shippingFee);
 
             const summarySub = document.getElementById('summary-subtotal');
@@ -2510,7 +2868,6 @@
 
             if (!dateVal || !timeVal) return true;
 
-            // حل ثغرة التواريخ على متصفحات Safari/iOS يدوياً وبدون مخاطر
             const dateParts = dateVal.split('-');
             const timeParts = timeVal.split(':');
             const selectedDateTime = new Date(
@@ -2614,12 +2971,10 @@
             if (recDate) recDate.innerText = `${dateVal} - ${timeVal}`;
             if (recTotal) recTotal.innerText = `${state.calculatedCheckoutTotal} جنيه`;
 
-            // تفريغ وتصفير محتويات السلة من الذاكرة المحلية والواجهة فور نجاح العملية
             state.cart = [];
             state.coupon = null;
             updateCartBadge();
 
-            // منع العميل من الرجوع للخلف لصفحة الشراء لعدم تكرار سحب نفس رقم الطلب مرتين
             history.pushState(null, "", location.href);
             window.onpopstate = function () {
                 history.go(1);
@@ -2654,6 +3009,7 @@ ${inv.items}
             window.open(link, '_blank');
         }
 
+        // دالة المزامنة ودمج الـ JSON
         function mergeDeep(target, source) {
             if (typeof target !== 'object' || target === null) return source;
             if (typeof source !== 'object' || source === null) return target;
