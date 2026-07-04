@@ -3,303 +3,618 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>حلويات بوسي | صنعناها بحب لتهديها لمن تحب</title>
-    <!-- الخط الرسمي المعتمد -->
+    <title>حلويات بوسي - صنعت بكل حب لتهديها لمن تحب</title>
+    
+    <!-- وسوم الميتا الفاخرة لمحركات البحث وشبكات التواصل الاجتماعي (SEO & OpenGraph) -->
+    <meta name="description" content="استمتع بأرقى وأفخر الحلويات الشرقية والغربية والتورت المصممة خصيصاً لمناسباتك السعيدة من حلويات بوسي. خامات طبيعية 100% بلمسة فنية مميزة.">
+    <meta property="og:title" content="حلويات بوسي - صنعت بكل حب لتهديها لمن تحب">
+    <meta property="og:description" content="بوابة الحلويات الفاخرة والتورتات التفاعلية المبتكرة في مصر. خامات ممتازة ونعومة طعم تفوق الخيال.">
+    <meta property="og:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+    <meta property="og:type" content="website">
+
+    <!-- الملفات الأسلوبية الموحدة لضمان الفخامة البصرية واستقرار الأداء -->
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/simulators.css">
+    
+    <!-- استدعاء خط Cairo العربي المعتمد والفاخر من جوجل لضمان الجمال البصري للنصوص مع استراتيجية تلافي الفراغات البصرية (swap) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- مكتبة الأيقونات الفاخرة FontAwesome لضمان تكامل الرموز التفاعلية -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
+<body class="bose-premium-body">
 
-    <!-- 1. Marquee Top Bar (شريط الإعلانات اللانهائي) -->
-    <div class="bose-top-marquee-bar" id="bose-marquee-container">
-        <div class="marquee-wrapper">
-            <div class="marquee-content" id="bose-marquee-text">
-                ✨ جودة طبيعية 100% بدون أي مواد حافظة ✨ توصيل طازج ومبرد لباب البيت ✨ نحتاج إلى 24 ساعة للتحضير بكل حب ✨ حلويات بوسي - طعم يشرفك قدام ضيوفك ✨
-            </div>
-        </div>
-    </div>
-
-    <!-- 2. Sticky Header (الهيدر الموحد بأزراره وعازل السلوغان والمفضلة) -->
-    <header class="bose-navbar sticky-header">
-        <div class="header-container">
-            <!-- اليمين: القائمة الجانبية للموبايل -->
-            <button id="mobile-menu-toggle" class="header-action-btn" aria-label="القائمة">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+    <!-- ==========================================================================
+       👑 القسم 1: الهيدر الرئيسي الموحد والمتجاوب (Premium Sticky Header)
+       ========================================================================== -->
+    <header class="bose-header-premium">
+        <div class="bose-navbar">
+            
+            <!-- زر القائمة الجانبية للشاشات الصغيرة (Mobile Menu Trigger) -->
+            <button id="mobile-menu-toggle" aria-label="افتح القائمة الجانبية" class="nav-icon-btn">
+                <i class="fa-solid fa-bars-staggered"></i>
             </button>
 
-            <!-- الوسط: اللوجو وعازل السلوغان الفاخر -->
-            <a href="index.html" class="bose-logo-brand-block">
-                <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="لوجو حلويات بوسي" id="bose-store-logo">
-                <div class="brand-text-wrapper">
-                    <span class="brand-name-display">حلويات بوسي</span>
-                    <span class="brand-slogan-display">صنعناها بحب لتهديها لمن تحب</span>
-                </div>
+            <!-- حاوية اللوجو الفاخر واسم البراند بالهوية البصرية الرسمية -->
+            <a href="index.html" class="bose-brand-wrapper">
+                <img id="bose-store-logo" 
+                     src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" 
+                     alt="لوجو حلويات بوسي" 
+                     onerror="this.onerror=null; this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png';">
+                <span class="brand-name-display">حلويات بوسي</span>
             </a>
 
-            <!-- الكمبيوتر: القائمة الرئيسية للنوافذ الكبيرة -->
-            <nav id="bose-nav-menu" class="desktop-navigation">
+            <!-- القائمة الملاحية الموحدة للكمبيوتر (Desktop Navigation Menu) -->
+            <nav id="bose-nav-menu">
                 <ul class="nav-links-list">
-                    <li><a href="index.html" class="nav-link active">الرئيسية</a></li>
-                    <li><a href="menu.html" class="nav-link">كل المنيو</a></li>
-                    <li><a href="cake-builder.html" class="nav-link">محاكي التورت</a></li>
-                    <li><a href="flower-builder.html" class="nav-link">محاكي الورد</a></li>
+                    <li><a href="index.html" class="nav-link-item active">الرئيسية</a></li>
+                    <li><a href="menu.html" class="nav-link-item">المنيو الشامل</a></li>
+                    <li><a href="cake-builder.html" class="nav-link-item">محاكي التورت</a></li>
+                    <li><a href="flower-builder.html" class="nav-link-item">محاكي الورد</a></li>
                 </ul>
             </nav>
 
-            <!-- اليسار: المفضلة والأيقونات التفاعلية وسلة المشتريات الديناميكية -->
-            <div class="header-left-actions">
-                <a href="menu.html?filter=favorites" class="header-action-btn id-bose-favorites-trigger" aria-label="المفضلة">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-                </a>
-                <a href="cart.html" class="header-action-btn bose-cart-badge-container" aria-label="سلة المشتريات">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-                    <span class="bose-cart-counter-badge" id="bose-cart-counter">0</span>
+            <!-- أدوات التفاعل السريع: البحث الذكي وسلة المشتريات المراقبة -->
+            <div class="bose-nav-actions">
+                <button id="search-trigger-btn" aria-label="ابحث في المتجر" class="nav-icon-btn">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+                <a href="cart.html" id="cart-nav-trigger" aria-label="سلة المشتريات" class="nav-icon-btn cart-relative-wrapper">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                    <span id="cart-count" class="cart-badge-indicator animate-badge">0</span>
                 </a>
             </div>
+
         </div>
     </header>
 
-    <!-- الجانبية للموبايل Mobile Drawer Section -->
-    <div id="mobile-menu-drawer" class="bose-drawer-overlay">
-        <div class="drawer-content">
-            <div class="drawer-header">
-                <span class="drawer-title">تصفح الأقسام</span>
-                <button id="close-mobile-menu" class="drawer-close-btn">&times;</button>
+    <!-- القائمة الجانبية الذكية للهواتف (Dynamic Drawer Menu) -->
+    <div id="mobile-sidebar-drawer" class="sidebar-drawer-overlay">
+        <div class="drawer-content-body">
+            <div class="drawer-header-section">
+                <span class="drawer-title-brand">قائمة المأكولات</span>
+                <button id="close-drawer-btn" aria-label="أغلق القائمة" class="close-drawer-icon">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
             </div>
-            <ul class="drawer-links">
-                <li><a href="index.html" class="active">الرئيسية</a></li>
-                <li><a href="menu.html">كل المنيو</a></li>
-                <li><a href="cake-builder.html">محاكي التورت الفاخر</a></li>
-                <li><a href="flower-builder.html">محاكي الورد الطبيعي</a></li>
-                <li><a href="cart.html">سلة المشتريات</a></li>
+            <ul class="drawer-links-list">
+                <li><a href="index.html" class="drawer-link-item active"><i class="fa-solid fa-house-chimney"></i> الرئيسية</a></li>
+                <li><a href="menu.html" class="drawer-link-item"><i class="fa-solid fa-cookie-bite"></i> المنيو الشامل</a></li>
+                <li><a href="cake-builder.html" class="drawer-link-item"><i class="fa-solid fa-cake-candles"></i> محاكي التورت التفاعلي</a></li>
+                <li><a href="flower-builder.html" class="drawer-link-item"><i class="fa-solid fa-clover"></i> محاكي الورد التفاعلي</a></li>
+                <li><a href="cart.html" class="drawer-link-item"><i class="fa-solid fa-basket-shopping"></i> سلة المشتريات</a></li>
             </ul>
         </div>
     </div>
 
-    <!-- 3. Hero Section (عقد من التميز وزر CTA المباشر "اطلب الآن") -->
-    <section class="bose-hero-slider" id="home-hero-section">
-        <div class="bose-hero-wrapper" id="hero-slider-wrapper">
-            <!-- يتم جلب السلايدرات ديناميكياً من الـ JSON مع خلفيات واضحة ومبهرة ونصوص مصرية راقية -->
+    <!-- نافذة البحث التفاعلية الشاملة (Universal Search Overlay Modal) -->
+    <div id="bose-search-modal" class="search-overlay-modal">
+        <div class="search-modal-container">
+            <div class="search-input-wrapper-row">
+                <i class="fa-solid fa-magnifying-glass search-field-icon"></i>
+                <input type="text" id="store-search-field" placeholder="ابحث عن التورتة، السينابون، أو فئة معينة..." autocomplete="off">
+                <button id="close-search-modal-btn" aria-label="إغلاق البحث" class="close-search-btn">
+                    <i class="fa-solid fa-circle-xmark"></i>
+                </button>
+            </div>
+            <div id="search-results-viewport" class="search-results-scroller">
+                <!-- يتم توليد نتائج البحث برمجياً بدقة وأمان عبر المحرك العام -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+       👑 القسم 2: سلايدر العروض والافتتاح التفاعلي (Interactive Hero Slider)
+       ========================================================================== -->
+    <section class="bose-hero-section">
+        <div class="bose-hero-slider" id="main-hero-carousel">
+            
+            <!-- الشريحة الأولى: تورت حسب الطلب -->
             <div class="bose-hero-slide active">
+                <div class="hero-slide-image-bg" style="background-image: linear-gradient(rgba(17,17,17,0.2), rgba(17,17,17,0.25)), url('https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png');"></div>
                 <div class="bose-hero-slide-overlay">
-                    <h1 class="bose-hero-title">عقد من التميز الفاخر</h1>
-                    <p class="bose-hero-desc">كل قطعة بنقدمها لكم مجهزة بأفضل خامات طبيعية 100% بدون أي إضافات صناعية، لتناسب تجمعاتكم الفخمة ومناسباتكم السعيدة.</p>
-                    <a href="menu.html" class="bose-hero-cta-btn">تصفح المنيو واطلب الآن</a>
+                    <span class="slide-mini-badge"><i class="fa-solid fa-wand-magic-sparkles"></i> تجربة فريدة بالكامل</span>
+                    <h1 class="bose-hero-title">صمِّم تورتة أحلامك بنفسك</h1>
+                    <p class="bose-hero-desc">ادخل عالم التخصيص الفاخر، اختر الأدوار، الحشوات، والمجسمات وشاهد إبداعك لحظة بلحظة وبأسعار صادقة 100%.</p>
+                    <div class="hero-action-buttons">
+                        <a href="cake-builder.html" class="hero-primary-btn">ابدأ المحاكاة الآن <i class="fa-solid fa-chevron-left"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- الشريحة الثانية: باقات الورد والهدايا -->
+            <div class="bose-hero-slide">
+                <div class="hero-slide-image-bg" style="background-image: linear-gradient(rgba(17,17,17,0.2), rgba(17,17,17,0.25)), url('https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png');"></div>
+                <div class="bose-hero-slide-overlay">
+                    <span class="slide-mini-badge"><i class="fa-solid fa-gift"></i> هدايا من القلب</span>
+                    <h2 class="bose-hero-title">نسِّق باقة الورد الفاخرة</h2>
+                    <p class="bose-hero-desc">اجمع بين روعة الورد الطبيعي أو الستان وعذوبة الشوكولاتة والفلوس في باقة متناسقة تليق بمن تحب.</p>
+                    <div class="hero-action-buttons">
+                        <a href="flower-builder.html" class="hero-primary-btn">صمم باقتك المتميزة <i class="fa-solid fa-chevron-left"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- الشريحة الثالثة: المنيو الشامل والجودة الفاخرة -->
+            <div class="bose-hero-slide">
+                <div class="hero-slide-image-bg" style="background-image: linear-gradient(rgba(17,17,17,0.2), rgba(17,17,17,0.25)), url('https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png');"></div>
+                <div class="bose-hero-slide-overlay">
+                    <span class="slide-mini-badge"><i class="fa-solid fa-cookie-bite"></i> جودة تستحقها</span>
+                    <h2 class="bose-hero-title">قائمة مأكولات بنقاء وطعم حقيقي</h2>
+                    <p class="bose-hero-desc">خاماتنا طبيعية ومختارة بعناية كاملة بدون أي مبالغات؛ نصنعها لك بكل حب وشغف لتتذوق جودة تفتخر بتقديمها.</p>
+                    <div class="hero-action-buttons">
+                        <a href="menu.html" class="hero-primary-btn">تصفح المنيو الشامل <i class="fa-solid fa-chevron-left"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- مؤشرات التنقل النقاطية الذكية لسلايدر العروض -->
+            <div class="hero-carousel-dots-wrapper" id="hero-carousel-dots">
+                <button class="hero-carousel-dot active" aria-label="الشريحة الأولى"></button>
+                <button class="hero-carousel-dot" aria-label="الشريحة الثانية"></button>
+                <button class="hero-carousel-dot" aria-label="الشريحة الثالثة"></button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+       👑 القسم 3: شريط المميزات الفاخرة الحاكمة (The Trust & Features Bar)
+       ========================================================================== -->
+    <section class="bose-features-trust-bar">
+        <div class="shared-trust-bar">
+            
+            <div class="trust-card-item">
+                <div class="trust-card-icon-wrapper">
+                    <i class="fa-solid fa-truck-ramp-box"></i>
+                </div>
+                <div class="trust-card-texts">
+                    <h3 class="trust-card-headline">مرونة استلام ذكية</h3>
+                    <p class="trust-card-subtext">توصيل آمن لباب البيت أو استلام مباشر من الفرع بدون أي رسوم شحن إضافية.</p>
+                </div>
+            </div>
+
+            <div class="trust-card-item">
+                <div class="trust-card-icon-wrapper">
+                    <i class="fa-solid fa-award"></i>
+                </div>
+                <div class="trust-card-texts">
+                    <h3 class="trust-card-headline">جودة وخامات ممتازة</h3>
+                    <p class="trust-card-subtext">نعتمد بالكامل على مكونات وخامات طبيعية ومضمونة 100% لنقدم طعماً رائعاً وصادقاً.</p>
+                </div>
+            </div>
+
+            <div class="trust-card-item">
+                <div class="trust-card-icon-wrapper">
+                    <i class="fa-solid fa-business-time"></i>
+                </div>
+                <div class="trust-card-texts">
+                    <h3 class="trust-card-headline">تحضير طازج ومتقن</h3>
+                    <p class="trust-card-subtext">نحتاج إلى 24 ساعة كحد أدنى لنجهز طلبك يدوياً لضمان جودة استثنائية ونضارة تامة.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+       👑 القسم 4: الفئات والتقسيمات الدائرية السريعة (Circular Categories Showcase)
+       ========================================================================== -->
+    <section class="bose-categories-showcase">
+        <div class="section-headline-container">
+            <span class="section-tagline"><i class="fa-solid fa-heart"></i> اختر فئتك المفضلة</span>
+            <h2 class="section-main-title">عالم من المخبوزات والحلويات الراقية</h2>
+            <p class="section-sub-desc">تصفح أقسامنا الدافئة والمنسقة بعناية لتجد رغبتك بكل سهولة وراحة نفسية تامة.</p>
+        </div>
+
+        <div class="bose-categories-grid-wrapper">
+            <div class="bose-categories-grid" id="homepage-categories-injector">
+                <!-- سيقوم المحرك العام core-engine.js بجلب وضخ فئات المنتجات الدائرية من الـ JSON هنا بشكل فائق التجاوب -->
+                <div class="bose-category-placeholder-card animate-pulse-light">
+                    <div class="circle-image-fallback"></div>
+                    <span class="fallback-text-holder">جاري التحميل...</span>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 4. Waterfall Section (شلال المنتجات البصري المانع للفراغات والـ Flicker) -->
-    <section class="bose-waterfall-section global-section-padding">
-        <div class="bose-section-header">
-            <h2 class="bose-section-title">شلال الفخامة البصري</h2>
-            <p class="bose-section-subtitle">تشكيلة حصرية تم تنسيقها بعناية لتخطف الأنظار وتمنحكم تنفساً بصرياً مريحاً للعين.</p>
+    <!-- ==========================================================================
+       👑 القسم 5: المنتجات المميزة والأكثر مبيعاً (Best Sellers Grid)
+       ========================================================================== -->
+    <section class="bose-bestsellers-section">
+        <div class="section-headline-container">
+            <span class="section-tagline"><i class="fa-solid fa-crown"></i> نوصي بها بشدة</span>
+            <h2 class="section-main-title">الأكثر مبيعاً وإعجاباً لدى عملائنا</h2>
+            <p class="section-sub-desc">مجموعة متميزة نالت إعجاب عشاق الجودة الأصلية، جاهزة لتكون نجمة مناسبتك القادمة.</p>
         </div>
-        <div class="bose-waterfall-container" id="bose-waterfall-grid">
-            <!-- المحرك core-engine.js يملأ هذه الحاوية ديناميكياً بهندسة الـ Waterfall دون فراغات أو Flicker -->
+
+        <div class="products-grid-viewport">
+            <div class="bose-products-grid" id="homepage-featured-products-injector">
+                <!-- يتم ضخ كروت المنتجات المميزة برمجياً بأمان تام مع أزرار الإضافة السريعة والتفاصيل هنا -->
+                <div class="bose-product-fallback-shimmer">
+                    <div class="shimmer-img"></div>
+                    <div class="shimmer-title"></div>
+                    <div class="shimmer-price"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="view-all-products-footer-action">
+            <a href="menu.html" class="premium-outline-nav-btn">استكشف المنيو الكامل والأسعار <i class="fa-solid fa-arrow-left"></i></a>
         </div>
     </section>
 
-    <!-- 5. Excellence Section (عقد من الإتقان بمجرى حركته الأفقي التلقائي) -->
-    <section class="bose-excellence-section global-section-padding grey-bg-accent">
-        <div class="bose-section-header">
-            <h2 class="bose-section-title">عقد من الإتقان والجودة</h2>
-            <p class="bose-section-subtitle">فلسفة عملنا قايمة على الاهتمام بأدق التفاصيل من أجل تقديم تجربة تليق بكم وبضيوفكم.</p>
+    <!-- ==========================================================================
+       👑 القسم 6: بوابة المحاكيات التفاعلية الفاخرة (Interactive Simulators Portal)
+       ========================================================================== -->
+    <section class="bose-simulators-portal">
+        <div class="section-headline-container">
+            <span class="section-tagline"><i class="fa-solid fa-cubes"></i> ابتكار مخصص من أجلك</span>
+            <h2 class="section-main-title">بوابتك الخاصة للتخصيص والابتكار الفاخر</h2>
+            <p class="section-sub-desc">استمتع بتجربة محاكاة تفاعلية وحسابية ذكية لتصاميم وهدايا تعبر عن مشاعرك بصدق.</p>
         </div>
-        <div class="bose-excellence-ticker-container">
-            <div class="bose-excellence-marquee" id="bose-excellence-ticker">
-                <!-- المحرك يضخ هنا مميزات الجودة الحقيقية (خامات طبيعية 100%، سمن بلدي نيوزيلندي، شيكولاتة بلجيكية فاخرة) -->
+
+        <div class="simulators-portal-grid">
+            
+            <!-- كارت بوابة محاكي التورتة الفاخر -->
+            <div class="simulator-portal-card-item">
+                <div class="portal-card-image-holder" style="background-image: url('https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png');"></div>
+                <div class="portal-card-text-details">
+                    <span class="portal-card-badge-tag">تورت حسب الطلب</span>
+                    <h3 class="portal-card-title">محاكي التورتة التفاعلي ثلاثي الأبعاد</h3>
+                    <p class="portal-card-desc">تحكم بشكل تورتة مناسبتك؛ اختر عدد الأدوار، الأشكال (دائري، مربع، مستطيل)، النكهات، الإضافات، واعرف السعر النهائي والمنطقي مباشرة.</p>
+                    <a href="cake-builder.html" class="portal-card-action-trigger">ابدأ التخصيص الآن <i class="fa-solid fa-circle-arrow-left"></i></a>
+                </div>
+            </div>
+
+            <!-- كارت بوابة محاكي بوكيهات الورد والشوكولاتة -->
+            <div class="simulator-portal-card-item">
+                <div class="portal-card-image-holder" style="background-image: url('https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png');"></div>
+                <div class="portal-card-text-details">
+                    <span class="portal-card-badge-tag">هدايا وتنسيق راقٍ</span>
+                    <h3 class="portal-card-title">محاكي بوكيهات الورد والشوكولاتة الذكي</h3>
+                    <p class="portal-card-desc">اختر فئة الورد المفضل (طبيعي، ستان، صناعي)، ونسِّق معه قطع الشوكولاتة الفاخرة وبطاقات التهنئة لتصنع هدية راقية تسر العين.</p>
+                    <a href="flower-builder.html" class="portal-card-action-trigger">نسق باقتك الفاخرة <i class="fa-solid fa-circle-arrow-left"></i></a>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+       👑 القسم 7: آراء وشهادات عملاء حلويات بوسي (Customer Testimonials & Reviews)
+       ========================================================================== -->
+    <section class="bose-testimonials-section">
+        <div class="section-headline-container">
+            <span class="section-tagline"><i class="fa-solid fa-star" style="color: var(--bose-gold);"></i> عائلتنا الكبيرة وعملاؤنا</span>
+            <h2 class="section-main-title">آراء وكلمات من نتشرف بخدمتهم</h2>
+            <p class="section-sub-desc">شهادات صادقة وكلمات دافئة من قلوب عملائنا المخلصين، وهي المحرك الأساسي لشغفنا وتطويرنا المستمر.</p>
+        </div>
+
+        <div class="testimonials-carousel-wrapper" id="testimonials-scroller-container">
+            <div class="testimonials-slider-track" id="testimonials-track">
+                
+                <div class="bose-review-card">
+                    <div class="review-stars-wrapper">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="review-customer-feedback">"تورتة عيد ميلاد بنتي كانت تحفة فنية وطعمها في منتهى النعومة والجمال! كل تفصيلة طلبناها في المحاكي اتنفذت بالملي والشوكولاتة طعمها طبيعي وممتاز بجد."</p>
+                    <div class="review-customer-info">
+                        <span class="customer-author-name">أستاذ أحمد متولي</span>
+                        <span class="customer-purchase-type">عميل دائم - تورتة مخصصة</span>
+                    </div>
+                </div>
+
+                <div class="bose-review-card">
+                    <div class="review-stars-wrapper">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="review-customer-feedback">"طلبت بوكيه ورد ستان مع شوكولاتة وهدية لزوجتي في عيد زواجنا. التنسيق كان فخم وراقي جداً والتوصيل كان في ميعاده بالملي. تجربة الشراء بجد مريحة ومحترمة."</p>
+                    <div class="review-customer-info">
+                        <span class="customer-author-name">مهندس كريم الشافعي</span>
+                        <span class="customer-purchase-type">عميل متميز - باقة هدايا</span>
+                    </div>
+                </div>
+
+                <div class="bose-review-card">
+                    <div class="review-stars-wrapper">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="review-customer-feedback">"السينابون والدوناتس عندهم طعمهم يوديك عالم تاني، العجينة خفيفة وهشة والصوصات غنية وطبيعية مش مسكرة زيادة عن اللزوم وتتعب. بوسي Sweets بقت إدمان لعيلتي كلها."</p>
+                    <div class="review-customer-info">
+                        <span class="customer-author-name">دكتورة منى عبد الرحمن</span>
+                        <span class="customer-purchase-type">عميلة عاشقة للمخبوزات</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="slider-manual-navigation-controls">
+            <button class="nav-control-btn prev-testimonial-btn" aria-label="التقييم السابق" id="prev-test-btn"><i class="fa-solid fa-chevron-right"></i></button>
+            <button class="nav-control-btn next-testimonial-btn" aria-label="التقييم التالي" id="next-test-btn"><i class="fa-solid fa-chevron-left"></i></button>
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+       👑 القسم 8: بطاقات وبانرات العروض الكبرى التفاعلية (Dynamic Promo Cards)
+       ========================================================================== -->
+    <section class="bose-promotions-section">
+        <div class="bose-promo-cards-container">
+            
+            <!-- كارت العرض الأول: نهاية الأسبوع -->
+            <div class="bose-promo-card">
+                <div class="promo-card-background-mask" style="background-image: linear-gradient(rgba(17,17,17,0.35), rgba(17,17,17,0.4)), url('https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png');"></div>
+                <div class="promo-card-inner-details">
+                    <span class="promo-badge-tag">عروض محدودة الوقت</span>
+                    <h3 class="promo-card-main-title">عروض التجمعات واللمة السعيدة</h3>
+                    <p class="promo-card-subdesc">اطلب صواني المشكل الفاخرة وسينابون البوكسات الكبرى لجمعة العيلة واقضوا أمتع اللحظات مع طعم حقيقي غني بالحب.</p>
+                    <a href="menu.html?category=boxes" class="promo-action-btn">تصفح البوكسات المتكاملة <i class="fa-solid fa-arrow-left"></i></a>
+                </div>
+            </div>
+
+            <!-- كارت العرض الثاني: التوصيل المجاني للفرع -->
+            <div class="bose-promo-card">
+                <div class="promo-card-background-mask" style="background-image: linear-gradient(rgba(17,17,17,0.35), rgba(17,17,17,0.4)), url('https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png');"></div>
+                <div class="promo-card-inner-details">
+                    <span class="promo-badge-tag">توفير ذكي وصادق</span>
+                    <h3 class="promo-card-main-title">استلم بنفسك من فرعنا مجاناً</h3>
+                    <p class="promo-card-subdesc">حدد طريقة الاستلام "من الفرع" أثناء إتمام الطلب ووفر قيمة رسوم التوصيل الجغرافية بالكامل لتستلم طلبك طازجاً في ميعادك المناسب.</p>
+                    <a href="menu.html" class="promo-action-btn">استعرض منتجاتنا الآن <i class="fa-solid fa-arrow-left"></i></a>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+       👑 القسم 9: معرض صور منصات التواصل الاجتماعي (Premium Social Media Grid)
+       ========================================================================== -->
+    <section class="bose-social-gallery-showcase">
+        <div class="section-headline-container">
+            <span class="section-tagline"><i class="fa-brands fa-instagram" style="color: var(--bose-pink);"></i> تابعنا وتواصل معنا</span>
+            <h2 class="section-main-title">نبض عائلتنا على مواقع التواصل الاجتماعي</h2>
+            <p class="section-sub-desc">انضم إلى مجتمعنا وشاركنا لقطات من مناسباتك السعيدة بمنتجاتنا المميزة لتكتمل الفرحة.</p>
+        </div>
+
+        <div class="social-gallery-grid-viewport">
+            <div class="social-gallery-grid">
+                
+                <div class="social-gallery-card-item">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="منشور بوسي 1" onerror="this.onerror=null; this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png';">
+                    <div class="social-card-hover-overlay">
+                        <i class="fa-brands fa-instagram"></i>
+                        <span class="hover-view-likes"><i class="fa-solid fa-heart"></i> 142</span>
+                    </div>
+                </div>
+
+                <div class="social-gallery-card-item">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="منشور بوسي 2" onerror="this.onerror=null; this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png';">
+                    <div class="social-card-hover-overlay">
+                        <i class="fa-brands fa-instagram"></i>
+                        <span class="hover-view-likes"><i class="fa-solid fa-heart"></i> 98</span>
+                    </div>
+                </div>
+
+                <div class="social-gallery-card-item">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="منشور بوسي 3" onerror="this.onerror=null; this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png';">
+                    <div class="social-card-hover-overlay">
+                        <i class="fa-brands fa-instagram"></i>
+                        <span class="hover-view-likes"><i class="fa-solid fa-heart"></i> 210</span>
+                    </div>
+                </div>
+
+                <div class="social-gallery-card-item">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="منشور بوسي 4" onerror="this.onerror=null; this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png';">
+                    <div class="social-card-hover-overlay">
+                        <i class="fa-brands fa-instagram"></i>
+                        <span class="hover-view-likes"><i class="fa-solid fa-heart"></i> 175</span>
+                    </div>
+                </div>
+
             </div>
         </div>
     </section>
 
-    <!-- 6. Most Selling Section (الأكثر مبيعاً - السلايدر الجانبي الملمسي لملء الشاشة) -->
-    <section class="bose-carousel-section global-section-padding" id="section-best-sellers">
-        <div class="bose-section-header">
-            <h2 class="bose-section-title">الأكثر مبيعاً وطهواً</h2>
-            <p class="bose-section-subtitle">المنتجات اللي اختارها عملاؤنا ووثقوا في جودتها العالية لجميع تجمعاتهم.</p>
-        </div>
-        <div class="bose-carousel-outer-wrapper">
-            <button class="carousel-arrow prev-arrow" id="best-sellers-prev" aria-label="السابق">&#10095;</button>
-            <div class="bose-carousel-touch-zone" id="bose-best-sellers-slider">
-                <!-- كروت المنتجات تتحرك أفقياً بشكل ملمسي رائع للموبايل والكمبيوتر -->
+    <!-- ==========================================================================
+       👑 القسم 10: الفوتر الفاخر الموحد (The Premium Unified Footer)
+       ========================================================================== -->
+    <footer class="bose-premium-footer">
+        <div class="footer-upper-layout-row">
+            
+            <div class="footer-column-item brand-column-data">
+                <a href="index.html" class="footer-logo-anchor">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="شعار بوسي الفاخر" class="footer-brand-logo" onerror="this.onerror=null; this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png';">
+                    <span class="footer-brand-title">حلويات بوسي</span>
+                </a>
+                <p class="footer-brand-bio">صنعناها بكل حب وشغف لتهديها لمن تحب. علامة مصرية راقية تقدم أشهى وأفخر الحلويات المخصصة والمخبوزات الطازجة بالخامات الطبيعية المتميزة.</p>
+                <div class="footer-social-media-channels">
+                    <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="رابط إنستجرام حلويات بوسي" class="social-channel-link"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="https://facebook.com" target="_blank" rel="noopener" aria-label="رابط فيسبوك حلويات بوسي" class="social-channel-link"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="https://wa.me/201097238441" target="_blank" rel="noopener" aria-label="رابط واتساب حلويات بوسي" class="social-channel-link"><i class="fa-brands fa-whatsapp"></i></a>
+                </div>
             </div>
-            <button class="carousel-arrow next-arrow" id="best-sellers-next" aria-label="التالي">&#10094;</button>
-        </div>
-    </section>
 
-    <!-- 7. Cake Preview Section (محاكي التورت كبلوك عريض مستقل بخلفيته البمبية) -->
-    <section class="bose-simulator-preview-block cake-preview-bg global-section-padding">
-        <div class="simulator-preview-container">
-            <div class="simulator-preview-text">
-                <span class="badge-tag">جديد ومطور بالكامل</span>
-                <h2 class="block-title">اصنع تورتتك بنفسك على مقاس مناسبتك</h2>
-                <p class="block-desc">تقدر دلوقتي تختار الحجم، الحشو، التزيين، وعدد الأفراد اللي بتناسب حفلتك بكل سهولة وبأعلى جودة طبيعية تشرفك.</p>
-                <a href="cake-builder.html" class="bose-secondary-cta-btn">ابدأ تصميم تورتتك الآن</a>
-            </div>
-            <div class="simulator-preview-visual">
-                <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="محاكي التورت الفاخر" class="simulator-promo-img">
-            </div>
-        </div>
-    </section>
-
-    <!-- 8. New Arrivals Section (وصل حديثاً - السلايدر الجانبي الملمسي لملء الشاشة) -->
-    <section class="bose-carousel-section global-section-padding" id="section-recently-added">
-        <div class="bose-section-header">
-            <h2 class="bose-section-title">وصل حديثاً من الفرن</h2>
-            <p class="bose-section-subtitle">أحدث ابتكارات شيفات حلويات بوسي الفاخرة الطازجة لتذوق فريد.</p>
-        </div>
-        <div class="bose-carousel-outer-wrapper">
-            <button class="carousel-arrow prev-arrow" id="new-arrivals-prev" aria-label="السابق">&#10095;</button>
-            <div class="bose-carousel-touch-zone" id="bose-recently-added-slider">
-                <!-- كروت المنتجات الجديدة من قاعدة البيانات مباشرة -->
-            </div>
-            <button class="carousel-arrow next-arrow" id="new-arrivals-next" aria-label="التالي">&#10094;</button>
-        </div>
-    </section>
-
-    <!-- 9. Our Products Section (منتجاتنا - كارتين جانب بعض بحد أقصى 8 كروت وإظهار المزيد) -->
-    <section class="bose-grid-section global-section-padding">
-        <div class="bose-section-header">
-            <h2 class="bose-section-title">تشكيلة منتجاتنا الفاخرة</h2>
-            <p class="bose-section-subtitle">يمكنكم استعراض أرقى الحلويات والمخبوزات الطازجة المجهزة خصيصاً لكم.</p>
-        </div>
-        <div class="bose-products-grid" id="bose-main-products-grid">
-            <!-- يعرض كارتين جانب بعض على الموبايل بحد أقصى 8 كروت قياسية للراحة النفسية -->
-        </div>
-        <div class="bose-view-more-container">
-            <a href="menu.html" class="bose-outline-load-btn" id="load-more-products-btn">استعرض كامل المنيو الفاخر</a>
-        </div>
-    </section>
-
-    <!-- 10. Flower Preview Section (محاكي الورد كبلوك مستقل عريض مالي الشاشة بمميزاته التنافسية) -->
-    <section class="bose-simulator-preview-block flower-preview-bg global-section-padding">
-        <div class="simulator-preview-container reversed-layout">
-            <div class="simulator-preview-text">
-                <span class="badge-tag-gold">تنسيق وتخصيص هدايا</span>
-                <h2 class="block-title">نسّق بوكيه ورد طبيعي فاخر مع حلوياتك</h2>
-                <p class="block-desc">عشان هديتك تطلع كاملة وتوصّل مشاعرك الصادقة، بنوفر لك محاكي لتنسيق باقات الورد الطبيعي والستان الفاخر لتقدمها مع طلبك.</p>
-                <a href="flower-builder.html" class="bose-secondary-cta-btn gold-accent-btn">صمم باقة الورد الآن</a>
-            </div>
-            <div class="simulator-preview-visual">
-                <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="محاكي الورد الفاخر" class="simulator-promo-img">
-            </div>
-        </div>
-    </section>
-
-    <!-- 11. Pride Section (الفخر والاعتزاز وعداداته التصاعدية المأخوذة من الـ JSON) -->
-    <section class="bose-pride-counters-section global-section-padding">
-        <div class="bose-section-header">
-            <h2 class="bose-section-title">أرقام نفخر بها ونعتز بوجودها</h2>
-            <p class="bose-section-subtitle">ثقة عملائنا هي القيمة الحقيقية ورأس مالنا المحرك للتطوير الدائم.</p>
-        </div>
-        <div class="bose-counters-layout-grid" id="bose-pride-counters-container">
-            <!-- العدادات التصاعدية تتحرك ديناميكياً من محرك core-engine لتسجيل الإنجازات -->
-            <div class="counter-card-item">
-                <div class="counter-number-value" data-target="5000">0</div>
-                <div class="counter-label-desc">عميل سعيد وثق بنا</div>
-            </div>
-            <div class="counter-card-item">
-                <div class="counter-number-value" data-target="150">0</div>
-                <div class="counter-label-desc">صنف وحلوى فاخرة</div>
-            </div>
-            <div class="counter-card-item">
-                <div class="counter-number-value" data-target="24">0</div>
-                <div class="counter-label-desc">ساعة تحضير وتأمين</div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 12. Categories Slider Section (تسوق حسب الفئة كآخر قسم حركي انسيابي الـ 12 فئة) -->
-    <section class="bose-categories-slider-section global-section-padding grey-bg-accent">
-        <div class="bose-section-header">
-            <h2 class="bose-section-title">تسوق حسب الفئة الفاخرة</h2>
-            <p class="bose-section-subtitle">اختر تصنيفك المفضل لتصل إلى طلبك بسرعة وسهولة مطلقة.</p>
-        </div>
-        <div class="categories-carousel-outer">
-            <div class="bose-categories-strip-scroll" id="bose-categories-grid">
-                <!-- الـ 12 فئة المعتمدة تظهر هنا كشريط حركي انسيابي متجاوب بالكامل -->
-            </div>
-        </div>
-    </section>
-
-    <!-- 13. Trust Bar Section (شريط عناصر الثقة والضمان الأربعة القياسية) -->
-    <section class="shared-trust-bar global-section-padding">
-        <div class="trust-item-block">
-            <div class="trust-icon-wrapper">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FF91A4" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-            </div>
-            <h3 class="trust-item-title">خامات طبيعية 100%</h3>
-            <p class="trust-item-desc">بدون أي إضافات صناعية أو زيوت مهدرجة لضمان الطعم البيتي الأصلي.</p>
-        </div>
-        <div class="trust-item-block">
-            <div class="trust-icon-wrapper">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FF91A4" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-            </div>
-            <h3 class="trust-item-title">التزام دقيق بالمواعيد</h3>
-            <p class="trust-item-desc">نلتزم بالـ 24 ساعة المحددة لتحضير وتجهيز طلبكم وتوصيله طازجاً بالكامل.</p>
-        </div>
-        <div class="trust-item-block">
-            <div class="trust-icon-wrapper">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FF91A4" stroke-width="2"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
-            </div>
-            <h3 class="trust-item-title">توصيل مبرد وآمن</h3>
-            <p class="trust-item-desc">سيارات مخصصة ومبردة للحفاظ على جودة الشيكولاتة والكريمة الطبيعية.</p>
-        </div>
-        <div class="trust-item-block">
-            <div class="trust-icon-wrapper">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FF91A4" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
-            </div>
-            <h3 class="trust-item-title">دعم متواصل ومحترم</h3>
-            <p class="trust-item-desc">نتواصل معكم بكل احترام مهني متبادل لمتابعة طلبكم خطوة بخطوة.</p>
-        </div>
-    </section>
-
-    <!-- 14. Universal Footer (الفوتر الرسمي ناصع البياض لخلق التنفس البصري ومنع التكديس) -->
-    <footer class="bose-universal-footer">
-        <div class="footer-main-content-area">
-            <div class="footer-column-brand">
-                <h3 class="footer-heading-title">حلويات بوسي</h3>
-                <p class="footer-brand-about">موقع متخصص في صناعة أرقى الحلويات الشرقية، الغربية، التورت والمخبوزات الطبيعية الفاخرة، المصنوعة بكل حب وشغف لتليق بجميع مناسباتكم السعيدة وتجمعاتكم العائلية الراقية.</p>
-            </div>
-            <div class="footer-column-links">
-                <h4 class="footer-heading-title">روابط سريعة</h4>
-                <ul class="footer-links-list">
-                    <li><a href="menu.html">استعرض المنيو</a></li>
-                    <li><a href="cake-builder.html">محاكي التورت</a></li>
-                    <li><a href="flower-builder.html">محاكي الورد</a></li>
-                    <li><a href="cart.html">سلة المشتريات</a></li>
+            <div class="footer-column-item links-column-data">
+                <h4 class="footer-column-headline">أقسام ومحركات متجرنا</h4>
+                <ul class="footer-links-navigation-list">
+                    <li><a href="index.html" class="footer-nav-link-item">الرئيسية</a></li>
+                    <li><a href="menu.html" class="footer-nav-link-item">المنيو الشامل والأسعار</a></li>
+                    <li><a href="cake-builder.html" class="footer-nav-link-item">محاكي التورتة التفاعلي</a></li>
+                    <li><a href="flower-builder.html" class="footer-nav-link-item">محاكي بوكيهات الورد</a></li>
+                    <li><a href="cart.html" class="footer-nav-link-item">سلة المشتريات</a></li>
                 </ul>
             </div>
-            <div class="footer-column-contact">
-                <h4 class="footer-heading-title">تواصل معنا المباشر</h4>
-                <p class="footer-contact-info" id="footer-store-phone">الهاتف: 01097238441</p>
-                <p class="footer-contact-info" id="footer-store-address">العنوان: الكفاح شارع الوحدة المحلية بجوار صيدلية الدكتور أحمد مجدي</p>
+
+            <div class="footer-column-item contact-column-data">
+                <h4 class="footer-column-headline">تواصل معنا واستلم طلبك</h4>
+                <p class="contact-detail-line"><i class="fa-solid fa-phone contact-icon"></i> <a href="tel:01097238441" class="tel-number-bold">01097238441</a></p>
+                <p class="contact-detail-line"><i class="fa-solid fa-map-location-dot contact-icon"></i> الكفاح شارع الوحدة المحلية بجوار صيدلية الدكتور أحمد مجدي وبجوار عيادة الدكتور علي</p>
+                <p class="contact-detail-line"><i class="fa-solid fa-clock contact-icon"></i> التجهيز يتم خلال 24 ساعة لضمان الجودة الطازجة الممتازة.</p>
             </div>
+
         </div>
-        <div class="footer-bottom-copyright-strip">
-            <p class="copyright-text">&copy; 2026 جميع الحقوق محفوظة لعلامة حلويات بوسي (BoseSweets) - بكل حب وفخامة.</p>
+
+        <div class="footer-bottom-copyrights-row">
+            <p class="copyrights-text">جميع الحقوق محفوظة © <span id="current-year-placeholder">2026</span> لعلامة <strong class="brand-name-gold">حلويات بوسي (BoseSweets)</strong> - صُنعت بكل حب في مصر 🇪🇬</p>
         </div>
     </footer>
 
-    <!-- استدعاء المحرك العام المركزي لربط قاعدة البيانات وبناء وتغذية العناصر الديناميكية بالكامل -->
-    <script src="js/core-engine.js"></script>
+    <!-- ==========================================================================
+       👑 برمجيات ومحركات التشغيل المتطورة (Engines & Core Scripts Integration)
+       ========================================================================== -->
+    <!-- استدعاء المحرك المركزي العام لتشغيل قاعدة البيانات والسلة التفاعلية وهندسة الـ DOM الشاملة -->
+    <script src="js/core-engine.js" defer></script>
+    
+    <!-- كود التحكم البرمجي الفوري والتفاعل في الصفحة الرئيسية (Home Page Local Controller) -->
     <script>
-        // كود تشغيل القائمة الجانبية للموبايل محلياً لتأمين أقصى سرعة استجابة
-        document.addEventListener('DOMContentLoaded', () => {
-            const toggleBtn = document.getElementById('mobile-menu-toggle');
-            const closeBtn = document.getElementById('close-mobile-menu');
-            const drawer = document.getElementById('mobile-menu-drawer');
+        document.addEventListener("DOMContentLoaded", () => {
+            
+            // ---------------------------------------------------------
+            // 1. تشغيل سلايدر العروض التفاعلي (Interactive Hero Slider)
+            // ---------------------------------------------------------
+            const slides = document.querySelectorAll(".bose-hero-slide");
+            const dots = document.querySelectorAll(".hero-carousel-dot");
+            let currentSlideIndex = 0;
+            let slideIntervalTimer = null;
 
-            if (toggleBtn && drawer) {
-                toggleBtn.addEventListener('click', () => drawer.classList.add('open'));
+            function showSlide(index) {
+                if (slides.length === 0) return;
+                
+                // تصفير وتهيئة الفئات النشطة
+                slides.forEach(slide => slide.classList.remove("active"));
+                dots.forEach(dot => dot.classList.remove("active"));
+                
+                // ضمان بقاء المؤشر ضمن نطاق المصفوفة بشكل دائري
+                currentSlideIndex = (index + slides.length) % slides.length;
+                
+                slides[currentSlideIndex].classList.add("active");
+                if (dots[currentSlideIndex]) {
+                    dots[currentSlideIndex].classList.add("active");
+                }
             }
-            if (closeBtn && drawer) {
-                closeBtn.addEventListener('click', () => drawer.classList.remove('open'));
+
+            function nextSlide() {
+                showSlide(currentSlideIndex + 1);
+            }
+
+            function startSlideShow() {
+                stopSlideShow(); // تلافي تكرار عدادات التايمر لتأمين ذاكرة الموبايل
+                slideIntervalTimer = setInterval(nextSlide, 6000); // الانتقال كل 6 ثوانٍ لنعومة وحرية تامة في القراءة
+            }
+
+            function stopSlideShow() {
+                if (slideIntervalTimer) {
+                    clearInterval(slideIntervalTimer);
+                }
+            }
+
+            // تفعيل مستمعات النقر لمؤشرات السلايدر التفاعلي
+            dots.forEach((dot, dotIndex) => {
+                dot.addEventListener("click", () => {
+                    showSlide(dotIndex);
+                    startSlideShow(); // إعادة ضبط توقيت الحركة التلقائية عند الضغط اليدوي
+                });
+            });
+
+            // بدء التمرير التلقائي الفاخر
+            startSlideShow();
+
+            // ---------------------------------------------------------
+            // 2. تشغيل التمرير التلقائي لآراء العملاء (Testimonials Scroller)
+            // ---------------------------------------------------------
+            const track = document.getElementById("testimonials-track");
+            const prevBtn = document.getElementById("prev-test-btn");
+            const nextBtn = document.getElementById("next-test-btn");
+            const container = document.getElementById("testimonials-scroller-container");
+
+            if (track && prevBtn && nextBtn && container) {
+                
+                const getScrollAmount = () => {
+                    const firstCard = track.querySelector(".bose-review-card");
+                    if (firstCard) {
+                        return firstCard.offsetWidth + 24; // عرض الكارت شاملاً المسافة الفاصلة (Gap)
+                    }
+                    return 320;
+                };
+
+                // التنقل التفاعلي اليدوي لليمين واليسار بسلاسة مطلقة
+                nextBtn.addEventListener("click", () => {
+                    container.scrollBy({
+                        left: -getScrollAmount(), // RTL الاتجاه لليسار سالب
+                        behavior: 'smooth'
+                    });
+                });
+
+                prevBtn.addEventListener("click", () => {
+                    container.scrollBy({
+                        left: getScrollAmount(), // RTL الاتجاه لليمين موجب
+                        behavior: 'smooth'
+                    });
+                });
+
+                // تأمين التوافق المطلق مع السحب واللمس المباشر على الشاشات الذكية (Touch Gestures)
+                // قمنا بتمرير { passive: true } لتحقيق أقصى استقرار وأداء وسرعة تصفح على الموبايل
+                let isDown = false;
+                let startX;
+                let scrollLeft;
+
+                container.addEventListener('mousedown', (e) => {
+                    isDown = true;
+                    container.classList.add('active-dragging');
+                    startX = e.pageX - container.offsetLeft;
+                    scrollLeft = container.scrollLeft;
+                }, { passive: true });
+
+                container.addEventListener('mouseleave', () => {
+                    isDown = false;
+                    container.classList.remove('active-dragging');
+                }, { passive: true });
+
+                container.addEventListener('mouseup', () => {
+                    isDown = false;
+                    container.classList.remove('active-dragging');
+                }, { passive: true });
+
+                container.addEventListener('mousemove', (e) => {
+                    if (!isDown) return;
+                    const x = e.pageX - container.offsetLeft;
+                    const walk = (x - startX) * 1.5; // سرعة سحب وضبط معامل الاستجابة
+                    container.scrollLeft = scrollLeft - walk;
+                }, { passive: true });
+                
+                // دعم تصفح اللمس الفاخر لأجهزة الموبايل (Touch Events)
+                let touchStartX = 0;
+                let touchEndX = 0;
+
+                container.addEventListener('touchstart', (e) => {
+                    touchStartX = e.changedTouches[0].screenX;
+                }, { passive: true });
+
+                container.addEventListener('touchend', (e) => {
+                    touchEndX = e.changedTouches[0].screenX;
+                    const swipeThreshold = 50;
+                    if (touchStartX - touchEndX > swipeThreshold) {
+                        // سحب لليمين RTL
+                        container.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' });
+                    } else if (touchEndX - touchStartX > swipeThreshold) {
+                        // سحب لليسار RTL
+                        container.scrollBy({ left: getScrollAmount(), behavior: 'smooth' });
+                    }
+                }, { passive: true });
+            }
+
+            // ---------------------------------------------------------
+            // 3. تحديث العام الحالي في حقوق النشر والتأليف تلقائياً
+            // ---------------------------------------------------------
+            const yearPlaceholder = document.getElementById("current-year-placeholder");
+            if (yearPlaceholder) {
+                yearPlaceholder.textContent = new Date().getFullYear();
             }
         });
     </script>
+
 </body>
 </html>
+
