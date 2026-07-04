@@ -3,409 +3,303 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    
-    <!-- معايير الأرشفة العالمية (SEO) والتوافق الكامل مع محركات البحث -->
-    <title>حلويات بوسي | عقد من التميز في صناعة الحلويات</title>
-    <meta name="description" content="منصة بيع إلكترونية متكاملة لعلامة حلويات بوسي الفاخرة. استمتع بتجربة تسوق فريدة، صمم تورتتك الخاصة وبوكيه الورد المخصص عبر محاكياتنا التفاعلية الفريدة.">
-    <meta name="keywords" content="حلويات, تورت, بوكس هدايا, كاب كيك, سينابون, ورد, دوناتس, حلويات بوسي">
-    
-    <!-- علامات Open Graph الكاملة لمشاركة احترافية على منصات التواصل الاجتماعي -->
-    <meta property="og:title" content="حلويات بوسي | صنعناها بحب لتهديها لمن تحب">
-    <meta property="og:description" content="منصة بيع إلكترونية متكاملة لعلامة حلويات بوسي الفاخرة. استمتع بتجربة تسوق فريدة، صمم تورتتك الخاصة وبوكيه الورد المخصص عبر محاكياتنا التفاعلية الفريدة.">
-    <meta property="og:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
-    <meta property="og:url" content="https://bosesweets.com">
-    <meta property="og:type" content="website">
-    
-    <!-- الأنماط القياسية الموحدة لمنع تضخم الملفات وتأخر التحميل وحماية معالجات الموبايل -->
+    <title>حلويات بوسي | صنعناها بحب لتهديها لمن تحب</title>
+    <!-- الخط الرسمي المعتمد -->
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/main.css">
-    
-    <!-- المحرك المركزي العالمي: مستدعى في الرأس لحظر الوميض ومزامنة البيانات الزمنية فورا -->
-    <script src="js/core-engine.js"></script>
-    
-    <style>
-        /* صمام الأمان وتأمين أبعاد التصميم للموبايل أولاً والكمبيوتر لضمان الفخامة والتنفس البصري */
-        :root {
-            --bose-pink: #FF91A4;
-            --bose-white: #FFFFFF;
-            --bose-black: #111111;
-            --bose-gold: #D4AF37;
-            --bose-shadow-glow: 0 8px 32px rgba(255, 145, 164, 0.12);
-            --bose-shadow-hover: 0 16px 40px rgba(255, 145, 164, 0.22);
-            --bose-border-pink: 1px solid rgba(255, 145, 164, 0.3);
-            --bose-border-thick: 2px solid #FF91A4;
-        }
-
-        body {
-            font-family: 'Cairo', sans-serif !important;
-            background-color: var(--bose-white) !important;
-            color: var(--bose-black) !important;
-            margin: 0;
-            padding: 0;
-            overflow-x: hidden;
-        }
-
-        /* هندسة السلايدر الجانبي الملمسي لملء الشاشة بمرونة فائقة (85vw للموبايل و380px للديسك توب) */
-        .bose-viewport-slider-container {
-            position: relative;
-            width: 100%;
-            overflow: hidden;
-            padding: 10px 0;
-        }
-        
-        .bose-viewport-slider-track {
-            display: flex;
-            gap: 16px;
-            overflow-x: auto;
-            scroll-snap-type: x mandatory;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-            -webkit-overflow-scrolling: touch;
-            padding: 0 16px;
-        }
-        
-        .bose-viewport-slider-track::-webkit-scrollbar {
-            display: none !important;
-        }
-        
-        .bose-viewport-slider-track > .product-card {
-            flex: 0 0 85vw;
-            width: 85vw;
-            scroll-snap-align: start;
-            box-sizing: border-box;
-        }
-
-        @media (min-width: 1024px) {
-            .bose-viewport-slider-track > .product-card {
-                flex: 0 0 380px;
-                width: 380px;
-            }
-        }
-
-        /* قفل التوزيع الشبكي الهندسي الملتزم للتشكيلة العامة: كارتين بجوار بعضهما لمنع التكدس البصري */
-        .bose-twin-columns-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr) !important;
-            gap: 16px !important;
-            width: 100%;
-            box-sizing: border-box;
-            padding: 0 16px;
-        }
-
-        @media (min-width: 768px) {
-            .bose-twin-columns-grid {
-                grid-template-columns: repeat(4, 1fr) !important;
-            }
-        }
-    </style>
-    
-    <!-- تعريف البيانات المهيكلة (Schema.org) لمحركات البحث بدقة متناهية -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Bakery",
-      "name": "حلويات بوسي",
-      "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
-      "telephony": "01097238441",
-      "priceRange": "$$",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "شارع الوحدة المحلية بجوار صيدلية الدكتور أحمد مجدي",
-        "addressLocality": "الفرافرة - الكفاح",
-        "addressRegion": "الوادي الجديد",
-        "addressCountry": "EG"
-      }
-    }
-    </script>
+    <link rel="stylesheet" href="css/simulators.css">
 </head>
 <body>
 
-    <!-- MARQUEE TOP BAR (شريط الإعلانات اللانهائي المانع للفراغات) -->
-    <div id="top-bar-marquee" style="background-color: var(--bose-pink); padding: 10px 0; overflow: hidden; width: 100%; z-index: 999;">
-        <!-- يتم حقن الرسائل التسويقية ديناميكياً من الـ JSON عبر المحرك لمنع المساحات الفارغة ومراعاة التنفس البصري -->
+    <!-- 1. Marquee Top Bar (شريط الإعلانات اللانهائي) -->
+    <div class="bose-top-marquee-bar" id="bose-marquee-container">
+        <div class="marquee-wrapper">
+            <div class="marquee-content" id="bose-marquee-text">
+                ✨ جودة طبيعية 100% بدون أي مواد حافظة ✨ توصيل طازج ومبرد لباب البيت ✨ نحتاج إلى 24 ساعة للتحضير بكل حب ✨ حلويات بوسي - طعم يشرفك قدام ضيوفك ✨
+            </div>
+        </div>
     </div>
 
-    <!-- STICKY HEADER (الهيدر الموحد بأزراره وعازل السلوغان والمفضلة من اليمين لليسار) -->
-    <header class="bose-navbar">
-        <div class="navbar-mobile-wrapper" style="display: flex; width: 100%; justify-content: space-between; align-items: center; height: 100%;">
-            <!-- 1. زر القائمة الجانبية -->
-            <button id="mobile-menu-toggle" class="nav-icon-btn" aria-label="فتح قائمة التصفح">
-                <i class="fas fa-bars"></i>
+    <!-- 2. Sticky Header (الهيدر الموحد بأزراره وعازل السلوغان والمفضلة) -->
+    <header class="bose-navbar sticky-header">
+        <div class="header-container">
+            <!-- اليمين: القائمة الجانبية للموبايل -->
+            <button id="mobile-menu-toggle" class="header-action-btn" aria-label="القائمة">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
             </button>
-            
-            <!-- 2. حاوية اللوجو -->
-            <div class="brand-logo-container">
-                <a href="index.html">
-                    <img id="bose-store-logo" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="شعار حلويات بوسي">
-                </a>
-            </div>
-            
-            <!-- 3. اسم العلامة الصريح والثابت (محظور وضع سلوغان أو مفضلة هنا) -->
-            <span class="brand-name-display">حلويات بوسي</span>
-            
-            <nav id="bose-nav-menu" style="display: none;">
-                <ul class="nav-list">
-                    <!-- يتحكم بها الموتور المركزي بمرونة لتوحيد المسارات تكنولوجياً -->
+
+            <!-- الوسط: اللوجو وعازل السلوغان الفاخر -->
+            <a href="index.html" class="bose-logo-brand-block">
+                <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="لوجو حلويات بوسي" id="bose-store-logo">
+                <div class="brand-text-wrapper">
+                    <span class="brand-name-display">حلويات بوسي</span>
+                    <span class="brand-slogan-display">صنعناها بحب لتهديها لمن تحب</span>
+                </div>
+            </a>
+
+            <!-- الكمبيوتر: القائمة الرئيسية للنوافذ الكبيرة -->
+            <nav id="bose-nav-menu" class="desktop-navigation">
+                <ul class="nav-links-list">
+                    <li><a href="index.html" class="nav-link active">الرئيسية</a></li>
+                    <li><a href="menu.html" class="nav-link">كل المنيو</a></li>
+                    <li><a href="cake-builder.html" class="nav-link">محاكي التورت</a></li>
+                    <li><a href="flower-builder.html" class="nav-link">محاكي الورد</a></li>
                 </ul>
             </nav>
-            
-            <div class="nav-actions" style="display: flex; align-items: center; gap: 14px;">
-                <!-- 4. زر البحث النشط -->
-                <button id="nav-search-btn" class="nav-icon-btn" aria-label="البحث في المنتجات">
-                    <i class="fas fa-search"></i>
-                </button>
-                
-                <!-- 5. زر السلة الموحد مع شارة العدد اللحظي المحدث برمجياً لمنع القيم السالبة -->
-                <a href="cart.html" class="nav-cart-icon-wrapper" aria-label="عرض سلة التسوق">
-                    <i class="fas fa-shopping-bag"></i>
-                    <span id="nav-cart-count">0</span>
+
+            <!-- اليسار: المفضلة والأيقونات التفاعلية وسلة المشتريات الديناميكية -->
+            <div class="header-left-actions">
+                <a href="menu.html?filter=favorites" class="header-action-btn id-bose-favorites-trigger" aria-label="المفضلة">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                </a>
+                <a href="cart.html" class="header-action-btn bose-cart-badge-container" aria-label="سلة المشتريات">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                    <span class="bose-cart-counter-badge" id="bose-cart-counter">0</span>
                 </a>
             </div>
         </div>
     </header>
 
-    <!-- الدرج الجانبي الفاخر الموحد للتصفح لسهولة الوصول (Universal Shared Drawer Menu) -->
-    <div id="sidebar-drawer" class="bose-drawer-menu">
-        <!-- يتم حقنه وتأمينه بالكامل برمجياً عبر المحرك المركزي لتأمين الأداء على الاستضافات المجانية -->
+    <!-- الجانبية للموبايل Mobile Drawer Section -->
+    <div id="mobile-menu-drawer" class="bose-drawer-overlay">
+        <div class="drawer-content">
+            <div class="drawer-header">
+                <span class="drawer-title">تصفح الأقسام</span>
+                <button id="close-mobile-menu" class="drawer-close-btn">&times;</button>
+            </div>
+            <ul class="drawer-links">
+                <li><a href="index.html" class="active">الرئيسية</a></li>
+                <li><a href="menu.html">كل المنيو</a></li>
+                <li><a href="cake-builder.html">محاكي التورت الفاخر</a></li>
+                <li><a href="flower-builder.html">محاكي الورد الطبيعي</a></li>
+                <li><a href="cart.html">سلة المشتريات</a></li>
+            </ul>
+        </div>
     </div>
 
-    <!-- تدفق محتوى الأقسام العشرة الرئيسية الكبرى بالترتيب الهندسي الملتزم بالمواصفة القياسية -->
-    <main class="bose-main-content-flow">
-
-        <!-- 1️⃣ HERO SECTION: عقد من التميز (#hero-section) مع زر الـ CTA المباشر "اطلب الآن" -->
-        <section id="hero-section" style="padding: 60px 16px; background: linear-gradient(135deg, var(--bose-cream) 0%, #FFFFFF 100%); text-align: center; border-bottom: var(--bose-border-pink);">
-            <div class="bose-section-container" style="padding: 20px 16px;">
-                <h1 id="hero-title" style="font-size: 2.2rem; line-height: 1.4; margin-bottom: 12px; color: var(--bose-black); font-weight: 700;">
-                    عقد من <span style="color: var(--bose-pink); font-weight: 700;">التميز</span> في صناعة الحلويات
-                </h1>
-                <p id="hero-description" style="font-size: 1.05rem; max-width: 700px; margin: 0 auto 24px auto; color: var(--bose-black); opacity: 0.85; line-height: 1.6;">
-                    تم اختيار المكونات بعناية فائقة للحصول على أفضل جودة تليق بمناسباتكم السعيدة وتضمن ثقتكم الدائمة.
-                </p>
-                <a href="#" id="hero-cta-btn" style="display: inline-block; background-color: var(--bose-pink); color: var(--bose-white); padding: 12px 36px; border-radius: 50px; font-weight: 700; text-decoration: none; box-shadow: 0 4px 14px rgba(255,145,164,0.3); transition: var(--bose-transition-smooth);">
-                    اطلب الآن
-                </a>
-            </div>
-        </section>
-
-        <!-- 2️⃣ WATERFALL SECTION: شلال المنتجات البصري المانع للفراغات والـ Flicker (يأتي مباشرة بعد الهيرو) -->
-        <section id="waterfall-section" style="padding: 40px 0; background-color: var(--bose-white); position: relative; overflow: hidden;">
-            <!-- حاوية كاملة (الارتفاع الثابت هندسياً: 700px للموبايل و1000px للديسك توب) -->
-            <div class="waterfall-container" style="position: relative; overflow: hidden; display: flex; gap: 16px; width: 100%;">
-                <!-- عمود صاعد يسحب الصور ديناميكياً بدون قص أنصاف صور -->
-                <div id="waterfall-left-col" class="waterfall-col" style="flex: 1; display: flex; flex-direction: column; gap: 16px;"></div>
-                <!-- عمود هابط يتحرك عكس العمود الآخر آلياً وانسيابياً -->
-                <div id="waterfall-right-col" class="waterfall-col" style="flex: 1; display: flex; flex-direction: column; gap: 16px;"></div>
-            </div>
-            <!-- تأثير ضبابية خفيفة (Blur Overlay) أعلى وأسفل الشلال لمنع الحدود الحادة وراحة عين العميل النفسية -->
-            <div class="waterfall-overlay-top" style="position: absolute; top: 0; left: 0; width: 100%; height: 100px; background: linear-gradient(to bottom, var(--bose-white) 0%, rgba(255,255,255,0) 100%); pointer-events: none; z-index: 5;"></div>
-            <div class="waterfall-overlay-bottom" style="position: absolute; bottom: 0; left: 0; width: 100%; height: 100px; background: linear-gradient(to top, var(--bose-white) 0%, rgba(255,255,255,0) 100%); pointer-events: none; z-index: 5;"></div>
-        </section>
-
-        <!-- 3️⃣ EXCELLENCE SECTION: عقد من الإتقان (#excellence-section) بمجرى حركته الأفقي التلقائي لملء الشاشة -->
-        <section id="excellence-section" style="padding: 40px 0; background-color: var(--bose-white);">
-            <div style="text-align: center; margin-bottom: 30px; padding: 0 16px;">
-                <h2 style="font-size: 1.75rem; font-weight: 700; color: var(--bose-black);">عقد من الإتقان</h2>
-                <p style="color: #4D4D4D; font-size: 0.95rem; line-height: 1.5;">خلف كل قطعة حكاية شغف وتفاصيل محفورة بالدقة والمهارة الفائقة لتقديم تجربة تذوق ساحرة تأخذكم لعالم من الفخامة والروقان.</p>
-            </div>
-            <!-- مجرى حركة أفقي تلقائي متصل بدون انقطاع يحتوي على 3 صور متصلة بالكامل بدون أي فواصل بصرية -->
-            <div id="excellence-images-track" class="animate-marquee">
-                <!-- يتم توليد ومضاعفة الـ 3 صور الذكية كرابط توجيهي عبر الجافا سكريبت لمنع المساحات الفارغة -->
-            </div>
-            <!-- مؤشرات التصفح النقطية الذكية (Dots) أسفل مجرى الحركة -->
-            <div class="bose-dots-container"></div>
-        </section>
-
-        <!-- 4️⃣ MOST SELLING SECTION: الأكثر مبيعاً (#most-selling-section) - السلايدر الجانبي الملمسي لملء الشاشة -->
-        <section id="most-selling-section" style="padding: 40px 0; background-color: var(--bose-white);">
-            <div style="text-align: center; margin-bottom: 30px; padding: 0 16px;">
-                <h2 style="font-size: 1.75rem; font-weight: 700; color: var(--bose-black);">الأكثر مبيعاً</h2>
-                <p style="color: #4D4D4D; font-size: 0.95rem;">وصف يبرز فخامة الاختيارات المعتمدة والمستدعاة ديناميكياً عبر مصفوفة mostSelling المكونة من 8 منتجات.</p>
-            </div>
-            <div class="bose-viewport-slider-container">
-                <!-- شبكة منتجات موزعة بدقة هندسية كاملة، كل كارت يستقر بالهيكل الموحد الصارم للمواصفة بالمسطرة -->
-                <div id="most-selling-grid" class="bose-viewport-slider-track bose-manual-scroll-active products-grid">
-                    <!-- يحقن برمجياً بالترتيب: صورة المنتج، الصنف، اسم النكهة، وصف النكهة، عداد الكمية (+ / -)، عارض السعر، وزر الإضافة الفاخر -->
+    <!-- 3. Hero Section (عقد من التميز وزر CTA المباشر "اطلب الآن") -->
+    <section class="bose-hero-slider" id="home-hero-section">
+        <div class="bose-hero-wrapper" id="hero-slider-wrapper">
+            <!-- يتم جلب السلايدرات ديناميكياً من الـ JSON مع خلفيات واضحة ومبهرة ونصوص مصرية راقية -->
+            <div class="bose-hero-slide active">
+                <div class="bose-hero-slide-overlay">
+                    <h1 class="bose-hero-title">عقد من التميز الفاخر</h1>
+                    <p class="bose-hero-desc">كل قطعة بنقدمها لكم مجهزة بأفضل خامات طبيعية 100% بدون أي إضافات صناعية، لتناسب تجمعاتكم الفخمة ومناسباتكم السعيدة.</p>
+                    <a href="menu.html" class="bose-hero-cta-btn">تصفح المنيو واطلب الآن</a>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- 5️⃣ CAKE PREVIEW SECTION: محاكي التورت كبلوك عريض مستقل بخلفيته البمبية الناعمة ومميزاته التنافسية -->
-        <section id="cake-preview-section" style="background-color: var(--bose-pink); padding: 60px 16px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; box-sizing: border-box;">
-            <!-- البلوك الفاخر المتكامل مالي عرض الشاشة بمرونة كاملة وحركات ناعمة تمنع تداخل النصوص -->
-            <div style="background: var(--bose-white); border: var(--bose-border-pink); border-radius: 24px; padding: 32px 20px; max-width: 550px; width: 100%; box-shadow: var(--bose-shadow-glow);">
-                <img id="cake-preview-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="محاكي تخصيص التورت الأصيل" style="width: 100%; height: 260px; object-fit: cover; border-radius: 16px; margin-bottom: 16px;">
-                <h2 id="cake-preview-title" style="font-size: 1.4rem; font-weight: 700; margin-bottom: 8px; color: var(--bose-black);">محاكي التورت</h2>
-                <p id="cake-preview-desc" style="font-size: 0.95rem; opacity: 0.85; margin-bottom: 20px; min-height: 48px; color: var(--bose-black); line-height: 1.6;">
-                    حلويات بوسي تتيح لكم تصميم التورتة الفريدة بنفسكم واختيار الحجم والأشكال والنكهات وطباعة الصور والرسائل الخاصة حسب الطلب.
-                </p>
-                <!-- زر إجراء CTA واضح وحاسم للانتقال المباشر لصفحة cake-builder.html مبرزاً ميزة التخصيص الاستثنائية للبراند -->
-                <a href="cake-builder.html" id="cake-preview-cta" style="display: inline-block; background: var(--bose-pink); color: var(--bose-white); padding: 12px 32px; border-radius: 50px; font-weight: 700; text-decoration: none; box-shadow: 0 4px 12px rgba(255,145,164,0.25);">تصميم التورتة الآن</a>
-            </div>
-        </section>
+    <!-- 4. Waterfall Section (شلال المنتجات البصري المانع للفراغات والـ Flicker) -->
+    <section class="bose-waterfall-section global-section-padding">
+        <div class="bose-section-header">
+            <h2 class="bose-section-title">شلال الفخامة البصري</h2>
+            <p class="bose-section-subtitle">تشكيلة حصرية تم تنسيقها بعناية لتخطف الأنظار وتمنحكم تنفساً بصرياً مريحاً للعين.</p>
+        </div>
+        <div class="bose-waterfall-container" id="bose-waterfall-grid">
+            <!-- المحرك core-engine.js يملأ هذه الحاوية ديناميكياً بهندسة الـ Waterfall دون فراغات أو Flicker -->
+        </div>
+    </section>
 
-        <!-- 6️⃣ NEW ARRIVALS SECTION: وصل حديثاً (#new-arrivals-section) - السلايدر الجانبي الملمسي لملء الشاشة -->
-        <section id="new-arrivals-section" style="padding: 40px 0; background-color: var(--bose-white);">
-            <div style="text-align: center; margin-bottom: 30px; padding: 0 16px;">
-                <h2 style="font-size: 1.75rem; font-weight: 700; color: var(--bose-black);">وصل حديثاً</h2>
-                <p style="color: #4D4D4D; font-size: 0.95rem;">نكهات وتوليفات جديدة وحصرية تحمل بصمة العلامة التجارية ومستدعاة من مصفوفة newArrivals (6 عناصر مضافة حديثاً).</p>
+    <!-- 5. Excellence Section (عقد من الإتقان بمجرى حركته الأفقي التلقائي) -->
+    <section class="bose-excellence-section global-section-padding grey-bg-accent">
+        <div class="bose-section-header">
+            <h2 class="bose-section-title">عقد من الإتقان والجودة</h2>
+            <p class="bose-section-subtitle">فلسفة عملنا قايمة على الاهتمام بأدق التفاصيل من أجل تقديم تجربة تليق بكم وبضيوفكم.</p>
+        </div>
+        <div class="bose-excellence-ticker-container">
+            <div class="bose-excellence-marquee" id="bose-excellence-ticker">
+                <!-- المحرك يضخ هنا مميزات الجودة الحقيقية (خامات طبيعية 100%، سمن بلدي نيوزيلندي، شيكولاتة بلجيكية فاخرة) -->
             </div>
-            <div class="bose-viewport-slider-container">
-                <!-- شبكة مستقرة وموزعة هندسياً تستخدم الهيكل الموحد للكارت بالكامل بدون أي استثناءات هندسية وتحتها مؤشرات النقاط Dots -->
-                <div id="new-arrivals-grid" class="bose-viewport-slider-track bose-manual-scroll-active products-grid">
-                    <!-- يحقن برمجياً بتوليفات حصرية مثل بستاشيو من الديسباسيتو لوتس من القشطوطة وهكذا -->
-                </div>
-            </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- 7️⃣ OUR PRODUCTS SECTION: منتجاتنا (#our-products-section) - كارتين بجوار بعضهما بحد أقصى 4 وعرض الباقي ديناميكياً -->
-        <section id="our-products-section" style="padding: 40px 0; background-color: var(--bose-white);">
-            <div style="text-align: center; margin-bottom: 30px; padding: 0 16px;">
-                <h2 style="font-size: 1.75rem; font-weight: 700; color: var(--bose-black);">منتجاتنا</h2>
-                <p style="color: #4D4D4D; font-size: 0.95rem;">وصف شامل للتكشيلة العامة الفاخرة يركز كلياً على القيمة والجودة العالية للمكونات الطازجة يومياً.</p>
+    <!-- 6. Most Selling Section (الأكثر مبيعاً - السلايدر الجانبي الملمسي لملء الشاشة) -->
+    <section class="bose-carousel-section global-section-padding" id="section-best-sellers">
+        <div class="bose-section-header">
+            <h2 class="bose-section-title">الأكثر مبيعاً وطهواً</h2>
+            <p class="bose-section-subtitle">المنتجات اللي اختارها عملاؤنا ووثقوا في جودتها العالية لجميع تجمعاتهم.</p>
+        </div>
+        <div class="bose-carousel-outer-wrapper">
+            <button class="carousel-arrow prev-arrow" id="best-sellers-prev" aria-label="السابق">&#10095;</button>
+            <div class="bose-carousel-touch-zone" id="bose-best-sellers-slider">
+                <!-- كروت المنتجات تتحرك أفقياً بشكل ملمسي رائع للموبايل والكمبيوتر -->
             </div>
-            <!-- كروت ثنائية متوازنة العرض تماماً في الصف (محظور تماماً ومطلقاً استخدام سلايدر أو شريط حركة في هذا القسم العام) -->
-            <div id="our-products-grid" class="bose-twin-columns-grid">
-                <!-- المعروض للعميل أولاً 4 كروت فقط لضمان التنفس البصري ومنع التكديس لراحة العميل النفسية -->
-            </div>
-            <!-- زر تحكم ديناميكي تفاعلي واضح (إظهار المزيد) لحقن وفتح الـ 4 كروت الإضافية المتبقية ديناميكياً وسلاسة تامة لتكتمل الـ 8 كروت -->
-            <div style="text-align: center; margin-top: 32px;">
-                <button id="btn-show-more-products" class="bose-btn-primary btn-pink-glow" style="background: var(--bose-white); color: var(--bose-black); border: var(--bose-border-thick); padding: 12px 32px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: var(--bose-transition-smooth);">
-                    إظهار المزيد
-                </button>
-            </div>
-        </section>
+            <button class="carousel-arrow next-arrow" id="best-sellers-next" aria-label="التالي">&#10094;</button>
+        </div>
+    </section>
 
-        <!-- 8️⃣ FLOWER PREVIEW SECTION: محاكي الورد كبلوك مستقل عريض مالي الشاشة بمميزاته التنافسية الفخمة -->
-        <section id="flower-preview-section" style="padding: 60px 16px; background-color: var(--bose-white); text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; box-sizing: border-box; border-top: var(--bose-border-pink); border-bottom: var(--bose-border-pink);">
-            <div style="background: var(--bose-white); border: var(--bose-border-pink); border-radius: 24px; padding: 32px 20px; max-width: 550px; width: 100%; box-shadow: var(--bose-shadow-glow);">
-                <img id="flower-preview-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="محاكي تنسيق بوكيهات الورد الفاخرة" style="width: 100%; height: 260px; object-fit: cover; border-radius: 16px; margin-bottom: 16px;">
-                <h2 id="flower-preview-title" style="font-size: 1.4rem; font-weight: 700; margin-bottom: 8px; color: var(--bose-black);">محاكي الورد</h2>
-                <p id="flower-preview-desc" style="font-size: 0.95rem; opacity: 0.85; margin-bottom: 20px; min-height: 48px; color: var(--bose-black); line-height: 1.6;">
-                    تخصيص وتنسيق البوكيه بالكامل واختيار الورد الطبيعي النضر، الصناعي الفاخر، أو ورد الستان مع دمج وإضافة الهدايا ومفاجآت الكاش بدقة تامة وطباعة كروت الإهداء والرسائل الصادقة.
-                </p>
-                <!-- زر CTA مباشر وحاسم موجه لصفحة flower-builder.html يبرز تفاصيل التخصيص الاستثنائية كميزة تنافسية صريحة للعلامة الفاخرة -->
-                <a href="flower-builder.html" id="flower-preview-cta" style="display: inline-block; background: var(--bose-pink); color: var(--bose-white); padding: 12px 32px; border-radius: 50px; font-weight: 700; text-decoration: none; box-shadow: 0 4px 12px rgba(255,145,164,0.25);">تصميم البوكيه الآن</a>
+    <!-- 7. Cake Preview Section (محاكي التورت كبلوك عريض مستقل بخلفيته البمبية) -->
+    <section class="bose-simulator-preview-block cake-preview-bg global-section-padding">
+        <div class="simulator-preview-container">
+            <div class="simulator-preview-text">
+                <span class="badge-tag">جديد ومطور بالكامل</span>
+                <h2 class="block-title">اصنع تورتتك بنفسك على مقاس مناسبتك</h2>
+                <p class="block-desc">تقدر دلوقتي تختار الحجم، الحشو، التزيين، وعدد الأفراد اللي بتناسب حفلتك بكل سهولة وبأعلى جودة طبيعية تشرفك.</p>
+                <a href="cake-builder.html" class="bose-secondary-cta-btn">ابدأ تصميم تورتتك الآن</a>
             </div>
-        </section>
+            <div class="simulator-preview-visual">
+                <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="محاكي التورت الفاخر" class="simulator-promo-img">
+            </div>
+        </div>
+    </section>
 
-        <!-- 9️⃣ PRIDE SECTION: الفخر والاعتزاز وعداداته التصاعدية المأخوذة كأرقام صريحة مجردة من الـ JSON منعا لأخطاء NaN -->
-        <section id="pride-section" style="padding: 60px 16px; background-color: var(--bose-cream); text-align: center; border-bottom: var(--bose-border-pink);">
-            <div class="bose-section-container">
-                <h2 style="font-size: 1.75rem; font-weight: 700; color: var(--bose-black); margin-bottom: 32px;">الفخر والاعتزاز 👑</h2>
-                <!-- حاوية البيانات الرقمية والكلمات الراقية الموزعة هندسياً لتعبر بصدق عن رحلة نجاح حلويات بوسي الأصيلة وثقة عملائها -->
-                <div class="stats-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 24px; justify-content: center; direction: rtl;">
-                    <div>
-                        <span id="stat-years-value" class="stat-years-val" style="display:block; font-size: 2.2rem; font-weight: 700; color: var(--bose-pink);">0+</span>
-                        <span style="font-size: 0.9rem; font-weight: 700; opacity: 0.8; color: var(--bose-black);">سنوات خبرة طويلة</span>
-                    </div>
-                    <div>
-                        <span id="stat-customers-value" class="stat-customers-val" style="display:block; font-size: 2.2rem; font-weight: 700; color: var(--bose-pink);">0+</span>
-                        <span style="font-size: 0.9rem; font-weight: 700; opacity: 0.8; color: var(--bose-black);">عميل سعيد فخور بنا</span>
-                    </div>
-                    <div>
-                        <span id="stat-orders-value" class="stat-orders-val" style="display:block; font-size: 2.2rem; font-weight: 700; color: var(--bose-pink);">0+</span>
-                        <span style="font-size: 0.9rem; font-weight: 700; opacity: 0.8; color: var(--bose-black);">طلب ناجح ومؤمن كلياً</span>
-                    </div>
-                    <div>
-                        <span id="stat-cakes-value" class="stat-cakes-val" style="display:block; font-size: 2.2rem; font-weight: 700; color: var(--bose-pink);">0+</span>
-                        <span style="font-size: 0.9rem; font-weight: 700; opacity: 0.8; color: var(--bose-black);">التورت المصممة بحب</span>
-                    </div>
-                </div>
+    <!-- 8. New Arrivals Section (وصل حديثاً - السلايدر الجانبي الملمسي لملء الشاشة) -->
+    <section class="bose-carousel-section global-section-padding" id="section-recently-added">
+        <div class="bose-section-header">
+            <h2 class="bose-section-title">وصل حديثاً من الفرن</h2>
+            <p class="bose-section-subtitle">أحدث ابتكارات شيفات حلويات بوسي الفاخرة الطازجة لتذوق فريد.</p>
+        </div>
+        <div class="bose-carousel-outer-wrapper">
+            <button class="carousel-arrow prev-arrow" id="new-arrivals-prev" aria-label="السابق">&#10095;</button>
+            <div class="bose-carousel-touch-zone" id="bose-recently-added-slider">
+                <!-- كروت المنتجات الجديدة من قاعدة البيانات مباشرة -->
             </div>
-        </section>
+            <button class="carousel-arrow next-arrow" id="new-arrivals-next" aria-label="التالي">&#10094;</button>
+        </div>
+    </section>
 
-        <!-- 🔟 CATEGORIES SLIDER SECTION: تسوق حسب الفئة كآخر قسم حركي انسيابي لـ 12 فئة معتمدة رسمياً بوزن بصري أكبر 30% -->
-        <section id="categories-slider-section" style="max-width: 100%; padding: 40px 0; background-color: var(--bose-white);">
-            <div style="text-align: center; margin-bottom: 30px; padding: 0 16px;">
-                <h2 style="font-size: 1.75rem; font-weight: 700; color: var(--bose-black);">تسوق حسب الفئة</h2>
-                <p style="color: #4D4D4D; font-size: 0.95rem;">الوصف يعبر عن سهولة الانتقال المباشر لأي صنف يفضله العميل من الفئات الـ 12 المعتمدة في المنيو الشامل لراحة تصفحه.</p>
-            </div>
-            <!-- مجرى حركة تلقائي انسيابي مستمر ومنتظم بدون فراغات بصرية مقاس كروته أكبر بنسبة 30% لإعطاء تأثيراً لافتاً -->
-            <div id="categories-track" class="categories-track-loop">
-                <!-- يتم حقن الـ 12 فئة بالترتيب والأسماء الصريحة المعتمدة بقاعدة البيانات (التورت، الجاتوهات، القشطوطة، الديسباسيتو، السينابون، الدوناتس، الريدڤيلڤت، الكب كيك، الميني تورت، الورد، كبات السعادة، بوكس الروقان) وتحتها نقاط Dots -->
-            </div>
-        </section>
+    <!-- 9. Our Products Section (منتجاتنا - كارتين جانب بعض بحد أقصى 8 كروت وإظهار المزيد) -->
+    <section class="bose-grid-section global-section-padding">
+        <div class="bose-section-header">
+            <h2 class="bose-section-title">تشكيلة منتجاتنا الفاخرة</h2>
+            <p class="bose-section-subtitle">يمكنكم استعراض أرقى الحلويات والمخبوزات الطازجة المجهزة خصيصاً لكم.</p>
+        </div>
+        <div class="bose-products-grid" id="bose-main-products-grid">
+            <!-- يعرض كارتين جانب بعض على الموبايل بحد أقصى 8 كروت قياسية للراحة النفسية -->
+        </div>
+        <div class="bose-view-more-container">
+            <a href="menu.html" class="bose-outline-load-btn" id="load-more-products-btn">استعرض كامل المنيو الفاخر</a>
+        </div>
+    </section>
 
-        <!-- 1️⃣1️⃣ TRUST BAR SECTION: شريط عناصر الثقة والضمان الأربعة القياسية الموزعة هندسياً بدقة لعرض قيم المبادئ -->
-        <section id="trust-bar-section" class="bose-section-container" style="border-top: 1px dashed rgba(255, 145, 164, 0.25); padding-top: 40px;">
-            <div class="shared-trust-bar">
-                <div class="trust-item-node">
-                    <div class="trust-icon-box"><i class="fas fa-certificate"></i></div>
-                    <div class="trust-info-pane">
-                        <h4>منتجات طازجة يومياً بمكونات طبيعية 100%</h4>
-                        <p>نصنع كل قطعة بكل حب وشغف باستخدام خامات ممتازة طازجة يومياً للحصول على الطعم الأصلي الفاخر لراحة العميل.</p>
-                    </div>
-                </div>
-                <div class="trust-item-node">
-                    <div class="trust-icon-box"><i class="fas fa-truck"></i></div>
-                    <div class="trust-info-pane">
-                        <h4>tوصيل سريع وآمن يحافظ على نضارة وشكل المنتج</h4>
-                        <p>سيارات ومندوبين مجهزين يحافظون على حرارة وتفاصيل طلبك لضمان وصوله الفاخر والمبهر لمناسبتكم السعيدة.</p>
-                    </div>
-                </div>
-                <div class="trust-item-node">
-                    <div class="trust-icon-box"><i class="fas fa-shield-heart"></i></div>
-                    <div class="trust-info-pane">
-                        <h4>دعم العملاء والاهتمام بالتقدير والاحترام المتبادل</h4>
-                        <p>نتحدث مع العميل دائمًا بلغة راقية ونشرح له المنتج كما هو ونعرض القيمة الحقيقية ولا نبيع بالقوة نهائياً.</p>
-                    </div>
-                </div>
-                <div class="trust-item-node">
-                    <div class="trust-icon-box"><i class="fas fa-clock"></i></div>
-                    <div class="trust-info-pane">
-                        <h4>دفع آمن وتأكيد مباشر للفواتير عبر الواتساب</h4>
-                        <p>تأكيد فوري ودقيق للمواعيد وحسابات مقربة كلياً لتفادي تفاوت الكسور الكبيرة وحماية مناسباتكم الفاخرة بثقة كاملة.</p>
-                    </div>
-                </div>
+    <!-- 10. Flower Preview Section (محاكي الورد كبلوك مستقل عريض مالي الشاشة بمميزاته التنافسية) -->
+    <section class="bose-simulator-preview-block flower-preview-bg global-section-padding">
+        <div class="simulator-preview-container reversed-layout">
+            <div class="simulator-preview-text">
+                <span class="badge-tag-gold">تنسيق وتخصيص هدايا</span>
+                <h2 class="block-title">نسّق بوكيه ورد طبيعي فاخر مع حلوياتك</h2>
+                <p class="block-desc">عشان هديتك تطلع كاملة وتوصّل مشاعرك الصادقة، بنوفر لك محاكي لتنسيق باقات الورد الطبيعي والستان الفاخر لتقدمها مع طلبك.</p>
+                <a href="flower-builder.html" class="bose-secondary-cta-btn gold-accent-btn">صمم باقة الورد الآن</a>
             </div>
-        </section>
-
-    </main>
-
-    <!-- UNIVERSAL FOOTER (الفوتر الرسمي ناصع البياض لخلق التنفس البصري الكامل ومنع التكديس ومحظور استخدام الأسود في أي خلفيات أو ظلال) -->
-    <footer class="bose-footer">
-        <div class="footer-inner-wrapper">
-            <!-- 1. حاوية اللوجو لعلامة بوسي الفاخرة -->
-            <div class="footer-logo-container">
-                <a href="index.html">
-                    <img id="bose-store-logo" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="شعار حلويات بوسي">
-                </a>
+            <div class="simulator-preview-visual">
+                <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="محاكي الورد الفاخر" class="simulator-promo-img">
             </div>
-            
-            <!-- 2. اسم حلويات بوسي الصريح والثابت بوصفه هوية صلبة للعلامة -->
-            <span class="brand-name-display footer-brand-name">حلويات بوسي</span>
+        </div>
+    </section>
 
-            <!-- 3. نبذة قصيرة وصادقة مستدعاة من حقل الفوتر للتعبير عن الجودة والرحلة والأصالة والخبرة الفاخرة -->
-            <div class="footer-about-block">
-                <p id="footer-about-text"></p>
+    <!-- 11. Pride Section (الفخر والاعتزاز وعداداته التصاعدية المأخوذة من الـ JSON) -->
+    <section class="bose-pride-counters-section global-section-padding">
+        <div class="bose-section-header">
+            <h2 class="bose-section-title">أرقام نفخر بها ونعتز بوجودها</h2>
+            <p class="bose-section-subtitle">ثقة عملائنا هي القيمة الحقيقية ورأس مالنا المحرك للتطوير الدائم.</p>
+        </div>
+        <div class="bose-counters-layout-grid" id="bose-pride-counters-container">
+            <!-- العدادات التصاعدية تتحرك ديناميكياً من محرك core-engine لتسجيل الإنجازات -->
+            <div class="counter-card-item">
+                <div class="counter-number-value" data-target="5000">0</div>
+                <div class="counter-label-desc">عميل سعيد وثق بنا</div>
             </div>
-            
-            <!-- 4 & 7. الروابط المساعدة والصفحات الرئيسية للتنقل السريع والذكى بالموقع لسهولة التصفح والوصول -->
-            <div class="footer-policies-container">
+            <div class="counter-card-item">
+                <div class="counter-number-value" data-target="150">0</div>
+                <div class="counter-label-desc">صنف وحلوى فاخرة</div>
+            </div>
+            <div class="counter-card-item">
+                <div class="counter-number-value" data-target="24">0</div>
+                <div class="counter-label-desc">ساعة تحضير وتأمين</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 12. Categories Slider Section (تسوق حسب الفئة كآخر قسم حركي انسيابي الـ 12 فئة) -->
+    <section class="bose-categories-slider-section global-section-padding grey-bg-accent">
+        <div class="bose-section-header">
+            <h2 class="bose-section-title">تسوق حسب الفئة الفاخرة</h2>
+            <p class="bose-section-subtitle">اختر تصنيفك المفضل لتصل إلى طلبك بسرعة وسهولة مطلقة.</p>
+        </div>
+        <div class="categories-carousel-outer">
+            <div class="bose-categories-strip-scroll" id="bose-categories-grid">
+                <!-- الـ 12 فئة المعتمدة تظهر هنا كشريط حركي انسيابي متجاوب بالكامل -->
+            </div>
+        </div>
+    </section>
+
+    <!-- 13. Trust Bar Section (شريط عناصر الثقة والضمان الأربعة القياسية) -->
+    <section class="shared-trust-bar global-section-padding">
+        <div class="trust-item-block">
+            <div class="trust-icon-wrapper">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FF91A4" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            </div>
+            <h3 class="trust-item-title">خامات طبيعية 100%</h3>
+            <p class="trust-item-desc">بدون أي إضافات صناعية أو زيوت مهدرجة لضمان الطعم البيتي الأصلي.</p>
+        </div>
+        <div class="trust-item-block">
+            <div class="trust-icon-wrapper">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FF91A4" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            </div>
+            <h3 class="trust-item-title">التزام دقيق بالمواعيد</h3>
+            <p class="trust-item-desc">نلتزم بالـ 24 ساعة المحددة لتحضير وتجهيز طلبكم وتوصيله طازجاً بالكامل.</p>
+        </div>
+        <div class="trust-item-block">
+            <div class="trust-icon-wrapper">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FF91A4" stroke-width="2"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+            </div>
+            <h3 class="trust-item-title">توصيل مبرد وآمن</h3>
+            <p class="trust-item-desc">سيارات مخصصة ومبردة للحفاظ على جودة الشيكولاتة والكريمة الطبيعية.</p>
+        </div>
+        <div class="trust-item-block">
+            <div class="trust-icon-wrapper">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FF91A4" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+            </div>
+            <h3 class="trust-item-title">دعم متواصل ومحترم</h3>
+            <p class="trust-item-desc">نتواصل معكم بكل احترام مهني متبادل لمتابعة طلبكم خطوة بخطوة.</p>
+        </div>
+    </section>
+
+    <!-- 14. Universal Footer (الفوتر الرسمي ناصع البياض لخلق التنفس البصري ومنع التكديس) -->
+    <footer class="bose-universal-footer">
+        <div class="footer-main-content-area">
+            <div class="footer-column-brand">
+                <h3 class="footer-heading-title">حلويات بوسي</h3>
+                <p class="footer-brand-about">موقع متخصص في صناعة أرقى الحلويات الشرقية، الغربية، التورت والمخبوزات الطبيعية الفاخرة، المصنوعة بكل حب وشغف لتليق بجميع مناسباتكم السعيدة وتجمعاتكم العائلية الراقية.</p>
+            </div>
+            <div class="footer-column-links">
+                <h4 class="footer-heading-title">روابط سريعة</h4>
                 <ul class="footer-links-list">
-                    <!-- 5. روابط وثائق السياسات الرسمية لتعزيز مصداقية وثقة العميل (سياسة الخصوصية، الشروط والأحكام، سياسة الطلبات والتوصيل، سياسة الاستبدال والاسترجاع) تبنى ديناميكياً من الـ JSON -->
+                    <li><a href="menu.html">استعرض المنيو</a></li>
+                    <li><a href="cake-builder.html">محاكي التورت</a></li>
+                    <li><a href="flower-builder.html">محاكي الورد</a></li>
+                    <li><a href="cart.html">سلة المشتريات</a></li>
                 </ul>
             </div>
-            
-            <!-- 6. قنوات التواصل الاجتماعي الرسمية والمباشرة للعلامة بأيقوناتها المعتمدة وألوانها الأصلية بدون أي تغيير (فيسبوك، انستجرام، تيك توك، واتساب) -->
-            <div id="footer-social-links">
-                <a href="https://www.facebook.com/share/1H1vVMHyu9/" class="social-link-facebook" target="_blank" aria-label="فيسبوك حلويات بوسي"><i class="fab fa-facebook-f"></i></a>
-                <a href="https://www.instagram.com/bose_sweets?igsh=amdkMmhxMXJyanYy" class="social-link-instagram" target="_blank" aria-label="انستجرام حلويات بوسي"><i class="fab fa-instagram"></i></a>
-                <a href="https://www.tiktok.com/@bosesweets1?_r=1&_t=ZS-96lRDDHq9QK" class="social-link-tiktok" target="_blank" aria-label="تيك توك حلويات بوسي"><i class="fab fa-tiktok"></i></a>
-                <a href="https://wa.me/201097238441" class="social-link-whatsapp" target="_blank" aria-label="واتساب حلويات بوسي"><i class="fab fa-whatsapp"></i></a>
+            <div class="footer-column-contact">
+                <h4 class="footer-heading-title">تواصل معنا المباشر</h4>
+                <p class="footer-contact-info" id="footer-store-phone">الهاتف: 01097238441</p>
+                <p class="footer-contact-info" id="footer-store-address">العنوان: الكفاح شارع الوحدة المحلية بجوار صيدلية الدكتور أحمد مجدي</p>
             </div>
-            
-            <!-- 8. بيانات النشاط وعنوان الاستلام الواضح فرع الكفاح لسلامة وصول العميل -->
-            <div style="font-size: 0.85rem; opacity: 0.8; margin-top: 8px; color: var(--bose-black); font-weight: 600;">
-                📍 الكفاح - شارع الوحدة المحلية - بجوار صيدلية الدكتور أحمد مجدي وبجوار عيادة الدكتور علي
-            </div>
-            
-            <!-- 9. كتلة حقوق النشر والتأريخ التلقائي للعام الحالي 2026 لضمان التوثيق البرمجي النهائي -->
-            <div class="footer-copyright-block">
-                <p>© <span id="copyright-year">2026</span> جميع الحقوق محفوظة لعلامة حلويات بوسي التجارية الفاخرة</p>
-            </div>
+        </div>
+        <div class="footer-bottom-copyright-strip">
+            <p class="copyright-text">&copy; 2026 جميع الحقوق محفوظة لعلامة حلويات بوسي (BoseSweets) - بكل حب وفخامة.</p>
         </div>
     </footer>
 
+    <!-- استدعاء المحرك العام المركزي لربط قاعدة البيانات وبناء وتغذية العناصر الديناميكية بالكامل -->
+    <script src="js/core-engine.js"></script>
+    <script>
+        // كود تشغيل القائمة الجانبية للموبايل محلياً لتأمين أقصى سرعة استجابة
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggleBtn = document.getElementById('mobile-menu-toggle');
+            const closeBtn = document.getElementById('close-mobile-menu');
+            const drawer = document.getElementById('mobile-menu-drawer');
+
+            if (toggleBtn && drawer) {
+                toggleBtn.addEventListener('click', () => drawer.classList.add('open'));
+            }
+            if (closeBtn && drawer) {
+                closeBtn.addEventListener('click', () => drawer.classList.remove('open'));
+            }
+        });
+    </script>
 </body>
 </html>
