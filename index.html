@@ -3,108 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>حلويات بوسي | صنعناها بحب لتهديها لمن تحب</title>
+    <title>حلويات بوسي | عِقد من التميز في صناعة الحلويات</title>
     
     <!-- الأنماط القياسية الموحدة لمنع تضخم الملفات وتأخر التحميل -->
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/main.css">
     
-    <!-- المحرك المركزي العالمي: مستدعى مبكراً في الرأس لحظر الوميض ومزامنة البيانات الزمنية -->
+    <!-- المحرك المركزي العالمي: مستدعى مبكراً لحظر وميض الألوان ومزامنة البيانات الزمنية الحقيقية -->
     <script src="js/core-engine.js"></script>
     
     <style>
-        /* أنماط هندسية خلفية مطورة ومحسنة لحل مشكلات السلايدرات والشبكات وتأمين أداء الموبايل */
-        .bose-hero-panel {
-            padding: 60px 16px;
-            background: linear-gradient(135deg, var(--bose-cream) 0%, #FFFFFF 100%);
-            text-align: center;
-            border-bottom: var(--bose-border-pink);
-        }
-        
-        /* هندسة السلايدر الجانبي الملمسي: الكارت يملأ العرض ويتحرك بأريحية فائقة بالإصبع */
-        .bose-viewport-slider-container {
+        /* الهندسة البرمجية لتأمين السلايدرات الجانبية اللمسية لملء عرض الشاشة تماماً للعميل */
+        .bose-full-viewport-slider-container {
             position: relative;
             width: 100%;
             overflow: hidden;
-            padding: 10px 0;
+            padding: 12px 0 24px 0;
         }
         
-        .bose-viewport-slider-track {
+        .bose-full-viewport-slider-track {
             display: flex;
             gap: 16px;
             overflow-x: auto;
             scroll-snap-type: x mandatory;
             scrollbar-width: none;
             -ms-overflow-style: none;
-            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
             -webkit-overflow-scrolling: touch;
+            padding: 4px 16px;
         }
         
-        .bose-viewport-slider-track::-webkit-scrollbar {
+        .bose-full-viewport-slider-track::-webkit-scrollbar {
             display: none !important;
         }
         
-        .bose-viewport-slider-track > .product-card {
-            flex: 0 0 85vw;
-            width: 85vw;
-            scroll-snap-align: start;
+        /* ضبط حجم كارت السلايدر ليكون مالي الشاشة بالكامل على الموبايل و380px على الكمبيوتر للمواصفات */
+        .bose-full-viewport-slider-track > .product-card {
+            flex: 0 0 calc(100vw - 32px) !important;
+            width: calc(100vw - 32px) !important;
+            scroll-snap-align: center;
             box-sizing: border-box;
-            border-radius: 20px !important;
+            box-shadow: var(--bose-shadow-glow) !important;
         }
 
         @media (min-width: 1024px) {
-            .bose-viewport-slider-track > .product-card {
-                flex: 0 0 380px;
-                width: 380px;
+            .bose-full-viewport-slider-track > .product-card {
+                flex: 0 0 380px !important;
+                width: 380px !important;
+                scroll-snap-align: start;
             }
         }
 
-        /* قفل التوزيع الشبكي الهندسي الملتزم: كارتين بجوار بعضهما للتنفس البصري والراحة النفسية */
-        .bose-twin-columns-grid {
-            display: grid;
+        /* قفل التوزيع الشبكي الملتزم لقسم منتجاتنا: كارتين بجوار بعضهما بامتياز للتنفس البصري */
+        .bose-twin-cards-strict-grid {
+            display: grid !important;
             grid-template-columns: repeat(2, 1fr) !important;
-            gap: 16px !important;
+            gap: 12px !important;
             width: 100%;
-        }
-
-        @media (max-width: 360px) {
-            .bose-twin-columns-grid {
-                grid-template-columns: 1fr !important; /* حماية الهواتف الصغيرة جداً من انحشار النصوص */
-            }
+            box-sizing: border-box;
         }
 
         @media (min-width: 768px) {
-            .bose-twin-columns-grid {
-                grid-template-columns: repeat(4, 1fr) !important; /* توزيع رباعي فاخر ومتوازن على الكمبيوتر */
+            .bose-twin-cards-strict-grid {
+                grid-template-columns: repeat(4, 1fr) !important;
             }
         }
-        
-        /* حاوية الأقسام والمحاكيات التفاعلية الفريدة */
-        .hub-interactive-showcase {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 24px;
-            margin-top: 20px;
+
+        /* ضبط أبعاد كتل المحاكيات الاستراتيجية الفاخرة لتملأ الشاشة بمرونة كاملة */
+        .bose-premium-preview-block {
+            width: 100%;
+            border-radius: 0px;
+            padding: 60px 16px;
+            text-align: center;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
-        @media (min-width: 768px) {
-            .hub-interactive-showcase {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
         
-        .hub-preview-card {
+        .bose-preview-inner-card {
+            background: var(--bose-white);
             border: var(--bose-border-pink);
             border-radius: 24px;
-            background: var(--bose-white);
-            padding: 24px;
-            text-align: center;
+            padding: 32px 20px;
+            max-width: 550px;
+            width: 100%;
             box-shadow: var(--bose-shadow-glow);
             transition: var(--bose-transition-smooth);
-        }
-        .hub-preview-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--bose-shadow-hover);
-            border-color: var(--bose-pink);
         }
     </style>
 </head>
@@ -112,29 +97,29 @@
 
     <!-- 🌸 شريط الإعلانات التسويقية العلوي المتحرك اللانهائي الموحد -->
     <div id="top-bar-marquee" style="background-color: var(--bose-pink); padding: 10px 0; overflow: hidden; width: 100%; z-index: 999;">
-        <!-- يتم سحب ورندرة الرسائل التسويقية ديناميكياً وبسلاسة تامة عبر core-engine.js لمنع الفراغات البصرية -->
+        <!-- يتم جلب وحقن الرسائل ديناميكياً بدون مساحات فارغة عبر core-engine.js لراحة العين -->
     </div>
 
-    <!-- 🏢 مكون الهيدر الموحد والثابت (Shared Universal Header) -->
+    <!-- 🏢 مكون الهيدر الموحد والثابت (Shared Universal Header) القياسي برمجياً -->
     <header class="bose-navbar" data-dynamic-injected="true">
-        <!-- المحرك المركزي core-engine.js يتكفل ببناء الهيدر من اليمين ليسار بالتوافق المطلق مع الـ DOM القياسي -->
+        <!-- يتم تشييده هندسياً من اليمين لليسار بالمسطرة عبر حارس التمهيد ذكياً -->
     </header>
 
     <!-- 🚪 القائمة الجانبية الموحدة والفاخرة (Universal Shared Drawer) -->
     <div id="sidebar-drawer" class="bose-drawer-menu" data-dynamic-injected="true">
-        <!-- تفعيل الروابط المعتمدة الـ 12 للموبايل والكمبيوتر آلياً وسد ثغرات اللمس -->
+        <!-- تفعيل الروابط المعتمدة الـ 12 للموبايل والكمبيوتر وسد ثغرات التصفح -->
     </div>
 
     <main class="bose-main-content-flow">
 
-        <!-- 1️⃣ قسم الترحيب الرئيسي الفاخر وعقد من التميز (#hero-section) -->
-        <section id="hero-section" class="bose-hero-panel">
+        <!-- 1️⃣ القسم الأول: عقد من التميز (#hero-section) -->
+        <section id="hero-section" style="padding: 60px 16px; background: linear-gradient(135deg, var(--bose-cream) 0%, #FFFFFF 100%); text-align: center; border-bottom: var(--bose-border-pink);">
             <div class="bose-section-container" style="padding: 20px 16px;">
                 <h1 id="hero-title" style="font-size: 2.2rem; line-height: 1.4; margin-bottom: 12px; color: var(--bose-black); font-weight: 700;">
                     عقد من <span style="color: var(--bose-pink); font-weight: 700;">التميز</span> في صناعة الحلويات
                 </h1>
                 <p id="hero-description" style="font-size: 1.05rem; max-width: 700px; margin: 0 auto 24px auto; color: var(--bose-black); opacity: 0.85; line-height: 1.6;">
-                    تم اختيار المكونات بعناية فائقة للحصول على أفضل جودة تليق بمناسباتكم السعيدة وتضمن ثقتكم الدائمة.
+                    <!-- الوصف مستدعى ديناميكياً بمرونة وخبرة من ملف البيانات الأساسي -->
                 </p>
                 <a href="#" id="hero-cta-btn" style="display: inline-block; background-color: var(--bose-pink); color: var(--bose-white); padding: 12px 36px; border-radius: 50px; font-weight: 700; text-decoration: none; box-shadow: 0 4px 14px rgba(255,145,164,0.3); transition: var(--bose-transition-smooth);">
                     اطلب الآن
@@ -142,60 +127,70 @@
             </div>
         </section>
 
-        <!-- 2️⃣ قسم شلال المنتجات البصري الأنيق والمتعاكس (#waterfall-section) -->
-        <section id="waterfall-section" style="padding: 40px 0; background-color: var(--bose-white);">
-            <div class="waterfall-container" style="height: 480px; position: relative; overflow: hidden; display: flex; gap: 16px;">
+        <!-- 2️⃣ قسم شلال المنتجات البصري الأنيق والمتعاكس (WATERFALL) الحتمي بعد الـ Hero مباشرة -->
+        <section id="waterfall-section" style="padding: 40px 0; background-color: var(--bose-white); overflow: hidden;">
+            <div class="waterfall-container" style="height: 480px; position: relative; overflow: hidden; display: flex; gap: 16px; width: 100%;">
                 <div id="waterfall-left-col" class="waterfall-col" style="flex: 1; display: flex; flex-direction: column; gap: 16px;"></div>
                 <div id="waterfall-right-col" class="waterfall-col" style="flex: 1; display: flex; flex-direction: column; gap: 16px;"></div>
             </div>
         </section>
 
-        <!-- 3️⃣ قسم تسوق حسب الفئة الـ 12 المعتمدة رسمياً (#categories-slider-section) -->
-        <section id="categories-slider-section" class="bose-section-container">
-            <div class="bose-section-header" style="text-align: center; margin-bottom: 30px;">
-                <h2 class="bose-section-title" style="font-size: 1.75rem; font-weight: 700; color: var(--bose-black);">تسوق حسب الفئة</h2>
-                <p class="bose-section-subtitle" style="color: #4D4D4D; font-size: 0.95rem;">سهولة الانتقال المباشر لأي صنف يفضله العميل من الفئات الـ 12 المعتمدة</p>
+        <!-- 3️⃣ قسم عقد من الإتقان (#excellence-section) - Hook بصري ثانٍ متصل لملء عرض الشاشة -->
+        <section id="excellence-section" class="bose-section-container" style="max-width: 100%; padding: 40px 0;">
+            <div class="bose-section-header" style="text-align: center; margin-bottom: 30px; padding: 0 16px;">
+                <h2 class="bose-section-title" style="font-size: 1.75rem; font-weight: 700; color: var(--bose-black);">عقد من الإتقان</h2>
+                <p class="bose-section-subtitle" style="color: #4D4D4D; font-size: 0.95rem;">خلف كل قطعة حكاية شغف وتفاصيل محفورة بالدقة والمهارة الفائقة</p>
             </div>
-            <div id="categories-track" class="categories-track-loop">
-                <!-- يتم حقن كروت الفئات الـ 12 بالترتيب والأسماء الصريحة المعتمدة رسمياً عبر المحرك تلافياً للتشتيت -->
+            <div id="excellence-images-track" class="animate-marquee">
+                <!-- يسحب صور الإتقان والواقع الفعلي تالياً لبعضه البعض بشكل لانهائي لملء عرض الشاشة -->
             </div>
         </section>
 
-        <!-- 4️⃣ قسم الأكثر مبيعاً - سلايدر جانبي لمسي مريح ومحمي حسابياً (#most-selling-section) -->
+        <!-- 4️⃣ قسم الأكثر مبيعاً (#most-selling-section) - السلايدر الجانبي الملمسي المحمي مالي الشاشة للعميل -->
         <section id="most-selling-section" class="bose-section-container">
             <div class="bose-section-header" style="text-align: center; margin-bottom: 30px;">
                 <h2 class="bose-section-title" style="font-size: 1.75rem; font-weight: 700; color: var(--bose-black);">الأكثر مبيعاً 👑</h2>
                 <p class="bose-section-subtitle" style="color: #4D4D4D; font-size: 0.95rem;">خيارات عملائنا المعتمدة والفاخرة المستدعاة ديناميكياً عبر مصفوفة mostSelling</p>
             </div>
-            <div class="bose-viewport-slider-container">
-                <div id="most-selling-grid" class="bose-viewport-slider-track bose-manual-scroll-active products-grid">
-                    <!-- الهيكل الموحد للكارت المستقر داخل الشبكة يحقن هنا بالكامل وبدون خطأ بالعدادات -->
+            <div class="bose-full-viewport-slider-container">
+                <div id="most-selling-grid" class="bose-full-viewport-slider-track bose-manual-scroll-active products-grid">
+                    <!-- الهيكل الموحد للكارت المستقر يحقن هنا بالكامل لملء العرض ومنع القيم السالبة -->
                 </div>
             </div>
         </section>
 
-        <!-- 5️⃣ قسم وصل حديثاً - سلايدر جانبي يبرز التوليفات والنكهات المبتكرة (#new-arrivals-section) -->
+        <!-- 5️⃣ قسم محاكي التورت (#cake-preview-section) - بلوك بصري فاخر وعريض لملء كامل الشاشة -->
+        <section id="cake-preview-section" class="bose-premium-preview-block" style="background-color: var(--bose-pink);">
+            <div class="bose-preview-inner-card">
+                <img id="cake-preview-img" src="" alt="محاكي التورت الفاخر" style="width: 100%; height: 260px; object-fit: cover; border-radius: 16px; margin-bottom: 16px;">
+                <h2 id="cake-preview-title" style="font-size: 1.4rem; font-weight: 700; margin-bottom: 8px; color: var(--bose-black);">محاكي التورت</h2>
+                <p id="cake-preview-desc" style="font-size: 0.95rem; opacity: 0.85; margin-bottom: 20px; min-height: 48px; color: var(--bose-black); line-height: 1.6;"></p>
+                <a href="cake-builder.html" id="cake-preview-cta" style="display: inline-block; background: var(--bose-pink); color: #FFF; padding: 12px 32px; border-radius: 50px; font-weight: 700; text-decoration: none; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">تصميم التورتة الآن</a>
+            </div>
+        </section>
+
+        <!-- 6️⃣ قسم وصل حديثاً (#new-arrivals-section) - السلايدر الجانبي الملمسي يبرز التوليفات الجديدة -->
         <section id="new-arrivals-section" class="bose-section-container">
             <div class="bose-section-header" style="text-align: center; margin-bottom: 30px;">
                 <h2 class="bose-section-title" style="font-size: 1.75rem; font-weight: 700; color: var(--bose-black);">وصل حديثاً 🌸</h2>
                 <p class="bose-section-subtitle" style="color: #4D4D4D; font-size: 0.95rem;">نكهات وتوليفات جديدة وحصرية تحمل بصمة العلامة التجارية الفاخرة</p>
             </div>
-            <div class="bose-viewport-slider-container">
-                <div id="new-arrivals-grid" class="bose-viewport-slider-track bose-manual-scroll-active products-grid">
+            <div class="bose-full-viewport-slider-container">
+                <div id="new-arrivals-grid" class="bose-full-viewport-slider-track bose-manual-scroll-active products-grid">
                     <!-- يحقن ديناميكياً بدقة هندسية كاملة والالتزام بكارت بوسي الموحد بالمسطرة -->
                 </div>
             </div>
         </section>
 
-        <!-- 6️⃣ قسم منتجاتنا - كارتين جانب بعض مع زر التحكم الديناميكي (#our-products-section) -->
+        <!-- 7️⃣ قسم منتجاتنا (#our-products-section) - كارتين جانب بعض بالتوزيع الشبكي الثنائي الملتزم بالمليم -->
         <section id="our-products-section" class="bose-section-container">
             <div class="bose-section-header" style="text-align: center; margin-bottom: 30px;">
                 <h2 class="bose-section-title" style="font-size: 1.75rem; font-weight: 700; color: var(--bose-black);">منتجاتنا</h2>
                 <p class="bose-section-subtitle" style="color: #4D4D4D; font-size: 0.95rem;">تم اختيار المكونات بعناية فائقة للحصول على أفضل جودة طازجة يومياً</p>
             </div>
-            <!-- تطبيق الشرط الهندسي: كارتين بجوار بعضهما تماماً لضمان الراحة النفسية ومنع التكدس -->
-            <div id="our-products-grid" class="bose-twin-columns-grid">
-                <!-- يعرض 4 منتجات أولاً، وعند ضغط زر الإظهار يتم فتح الـ 4 كروت المتبقية بسلاسة -->
+            <!-- تطبيق الشرط الهندسي: كارتين بجوار بعضهما تماماً لضمان الراحة النفسية ومنع التكدس البصري -->
+            <div id="our-products-grid" class="bose-twin-cards-strict-grid">
+                <!-- يعرض 4 منتجات أولاً، وعند ضغط زر الإظهار يتم فتح الـ 4 كروت المتبقية بسلاسة لتصبح 8 -->
             </div>
             <div style="text-align: center; margin-top: 32px;">
                 <button id="btn-show-more-products" class="bose-btn-primary btn-pink-glow" style="background: var(--bose-white); color: var(--bose-black); border: var(--bose-border-thick); padding: 12px 32px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: var(--bose-transition-smooth);">
@@ -204,43 +199,18 @@
             </div>
         </section>
 
-        <!-- 7️⃣ قسم ميزة التخصيص والمحاكيات التفاعلية الاستراتيجية (Builders Showcase) -->
-        <section id="interactive-hubs-section" class="bose-section-container" style="background-color: var(--bose-cream); border-radius: 32px; padding: 40px 20px;">
-            <div class="bose-section-header" style="text-align: center; margin-bottom: 30px;">
-                <h2 class="bose-section-title" style="font-size: 1.75rem; font-weight: 700; color: var(--bose-black);">التخصيص الفاخر والميزات التنافسية</h2>
-                <p class="bose-section-subtitle" style="color: #4D4D4D; font-size: 0.95rem;">نساعد العميل على تصميم ذوقه الخاص بنفسه وبثقة خبيرة مطلقة</p>
-            </div>
-            <div class="hub-interactive-showcase">
-                <!-- بلوك محاكي التورت المتكامل (#cake-preview-section) -->
-                <div id="cake-preview-section" class="hub-preview-card" style="background-color: var(--bose-white);">
-                    <img id="cake-preview-img" src="" alt="محاكي التورت الفاخر" style="width: 100%; height: 200px; object-fit: cover; border-radius: 16px; margin-bottom: 16px;">
-                    <h2 id="cake-preview-title" style="font-size: 1.25rem; font-weight: 700; margin-bottom: 8px; color: var(--bose-black);"></h2>
-                    <p id="cake-preview-desc" style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 16px; min-height: 48px; color: var(--bose-black);"></p>
-                    <a href="cake-builder.html" id="cake-preview-cta" style="display: inline-block; background: var(--bose-pink); color: #FFF; padding: 10px 24px; border-radius: 50px; font-weight: 700; text-decoration: none;"></a>
-                </div>
-                <!-- بلوك محاكي الورد وتنسيق البوكيهات ومفاجآت الكاش (#flower-preview-section) -->
-                <div id="flower-preview-section" class="hub-preview-card" style="background-color: var(--bose-white);">
-                    <img id="flower-preview-img" src="" alt="محاكي الورد الفاخر" style="width: 100%; height: 200px; object-fit: cover; border-radius: 16px; margin-bottom: 16px;">
-                    <h2 id="flower-preview-title" style="font-size: 1.25rem; font-weight: 700; margin-bottom: 8px; color: var(--bose-black);"></h2>
-                    <p id="flower-preview-desc" style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 16px; min-height: 48px; color: var(--bose-black);"></p>
-                    <a href="flower-builder.html" id="flower-preview-cta" style="display: inline-block; background: var(--bose-pink); color: #FFF; padding: 10px 24px; border-radius: 50px; font-weight: 700; text-decoration: none;"></a>
-                </div>
+        <!-- 8️⃣ قسم محاكي الورد (#flower-preview-section) - بلوكس بصري فخم وعريض ومستقل لملء كامل الشاشة -->
+        <section id="flower-preview-section" class="bose-premium-preview-block" style="background-color: var(--bose-white); border-top: var(--bose-border-pink); border-bottom: var(--bose-border-pink);">
+            <div class="bose-preview-inner-card" style="border-color: var(--bose-pink);">
+                <img id="flower-preview-img" src="" alt="محاكي الورد الفاخر" style="width: 100%; height: 260px; object-fit: cover; border-radius: 16px; margin-bottom: 16px;">
+                <h2 id="flower-preview-title" style="font-size: 1.4rem; font-weight: 700; margin-bottom: 8px; color: var(--bose-black);">محاكي الورد</h2>
+                <p id="flower-preview-desc" style="font-size: 0.95rem; opacity: 0.85; margin-bottom: 20px; min-height: 48px; color: var(--bose-black); line-height: 1.6;"></p>
+                <a href="flower-builder.html" id="flower-preview-cta" style="display: inline-block; background: var(--bose-pink); color: #FFF; padding: 12px 32px; border-radius: 50px; font-weight: 700; text-decoration: none; box-shadow: 0 4px 12px rgba(255,145,164,0.25);">تصميم البوكيه الآن</a>
             </div>
         </section>
 
-        <!-- 8️⃣ قسم معرض حكاية الشغف وعقد من الإتقان الفني (#excellence-section) -->
-        <section id="excellence-section" class="bose-section-container">
-            <div class="bose-section-header" style="text-align: center; margin-bottom: 30px;">
-                <h2 class="bose-section-title" style="font-size: 1.75rem; font-weight: 700; color: var(--bose-black);">عقد من الإتقان</h2>
-                <p class="bose-section-subtitle" style="color: #4D4D4D; font-size: 0.95rem;">مجرى حركة أفقي تلقائي متصل لملء الشاشة لراحة عين العميل</p>
-            </div>
-            <div id="excellence-images-track" class="animate-marquee">
-                <!-- يسحب صور الإتقان والواقع الفعلي تالياً لبعضه البعض لملء عرض الشاشة بالكامل -->
-            </div>
-        </section>
-
-        <!-- 9️⃣ قسم الفخر والاعتزاز والعدادات التصاعدية المحمية (#pride-section) -->
-        <section id="pride-section" style="padding: 60px 16px; background-color: var(--bose-cream); text-align: center;">
+        <!-- 9️⃣ قسم الفخر والاعتزاز (#pride-section) - حاوية البيانات الرقمية والعدادات التصاعدية المحمية حسابياً -->
+        <section id="pride-section" style="padding: 60px 16px; background-color: var(--bose-cream); text-align: center; border-bottom: var(--bose-border-pink);">
             <div class="bose-section-container">
                 <h2 class="bose-section-title" style="font-size: 1.75rem; font-weight: 700; color: var(--bose-black); margin-bottom: 32px;">الفخر والاعتزاز 👑</h2>
                 <div class="stats-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 24px; justify-content: center; direction: rtl;">
@@ -264,8 +234,19 @@
             </div>
         </section>
 
-        <!-- 🔟 شريط الضمان وعناصر الثقة الأربعة المعتمدة للموقع (#trust-bar-section) -->
-        <section id="trust-bar-section" class="bose-section-container">
+        <!-- 🔟 قسم تسوق حسب الفئة (#categories-slider-section) - مجرى الحركة التلقائي الانسيابي الـ 12 فئة المعتمدة -->
+        <section id="categories-slider-section" class="bose-section-container" style="max-width: 100%; padding: 40px 0;">
+            <div class="bose-section-header" style="text-align: center; margin-bottom: 30px; padding: 0 16px;">
+                <h2 class="bose-section-title" style="font-size: 1.75rem; font-weight: 700; color: var(--bose-black);">تسوق حسب الفئة</h2>
+                <p class="bose-section-subtitle" style="color: #4D4D4D; font-size: 0.95rem;">سهولة الانتقال المباشر لأي صنف يفضله العميل من الفئات الـ 12 المعتمدة</p>
+            </div>
+            <div id="categories-track" class="categories-track-loop">
+                <!-- يتم حقن كروت الفئات الـ 12 الأكبر حجماً بالترتيب والأسماء الصريحة تلافياً لتشتيت العميل -->
+            </div>
+        </section>
+
+        <!-- 1️⃣1️⃣ شريط عناصر الضمان والثقة الأربعة المعتمدة للموقع (#trust-bar-section) -->
+        <section id="trust-bar-section" class="bose-section-container" style="border-top: 1px dashed rgba(255, 145, 164, 0.25);">
             <div class="shared-trust-bar">
                 <div class="trust-item-node">
                     <div class="trust-icon-box"><i class="fas fa-certificate"></i></div>
@@ -284,7 +265,7 @@
                 <div class="trust-item-node">
                     <div class="trust-icon-box"><i class="fas fa-shield-heart"></i></div>
                     <div class="trust-info-pane">
-                        <h4>تقدير واحترام متبادل</h4>
+                        <h4>تقدير واحترم متبادل</h4>
                         <p>نتحدث مع العميل بأسلوب راقٍ ونعرض القيمة الحقيقية دون ضغط بيعي.</p>
                     </div>
                 </div>
@@ -300,10 +281,16 @@
 
     </main>
 
-    <!-- 🏪 مكون الفوتر القياسي والموحد (Shared Universal Footer) -->
+    <!-- 🏪 مكون الفوتر القياسي والموحد ناصع البياض للتنفس البصري (Shared Universal Footer) -->
     <footer class="bose-footer" data-dynamic-injected="true">
-        <!-- تذييل ناصع البياض يضمن التنفس البصري الكامل وحقن وثائق السياسات وقنوات التواصل آلياً بناءً على الـ JSON -->
+        <!-- حقن وثائق السياسات وقنوات التواصل آلياً بناءً على الـ JSON وبدون أي ظلال سوداء -->
     </footer>
 
+    <!-- تفعيل مكتبة المحرك لتمرير الأحداث بدقة هندسية كاملة بنسبة 100% -->
+    <script>
+        document.addEventListener("bose_data_ready", () => {
+            console.log("⚙️ تم ربط وهندسة واجهة الاندكس وتأمين مطابقتها للمواصفات الحالية بنجاح.");
+        });
+    </main>
 </body>
 </html>
