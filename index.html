@@ -35,9 +35,15 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* تخصيص شريط التمرير ليتوافق مع الهوية الفخمة */
+        /* قفل وزن الخطوط هندسياً عند 700 كحد أقصى لمنع التشويه البصري */
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 700 !important;
+        }
+
+        /* تخصيص شريط التمرير */
         ::-webkit-scrollbar {
             width: 6px;
+            height: 6px;
         }
         ::-webkit-scrollbar-track {
             background: var(--bose-light);
@@ -95,92 +101,138 @@
             animation-play-state: paused;
         }
 
-        /* كارت منتج موحد مع الالتزام التام بقفل الحواف ومنع التكديس البصري */
+        /* ==================== مقاسات الكروت الإلزامية الصارمة ==================== */
+        
+        /* 1. كارت المنتج الموحد (Strict Product Card DOM) */
         .product-card {
-            border: 1px solid var(--bose-pink-soft);
-            background-color: var(--bose-light);
-            border-radius: 20px;
+            border: 1px solid var(--bose-pink-soft) !important;
+            background-color: var(--bose-light) !important;
+            border-radius: 20px !important;
+            padding: 16px !important;
             box-shadow: 0 10px 30px -15px rgba(255, 145, 164, 0.12);
-            height: auto;
+            height: auto !important;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .product-card:hover {
             box-shadow: 0 15px 35px -10px rgba(255, 145, 164, 0.22);
             transform: translateY(-4px);
         }
-
-        /* الأبعاد الصارمة للصور والبطاقات بناءً على وثيقة المقاسات الإلزامية */
+        
+        /* أبعاد صور الكارت الموحد بناءً على نوع الشاشة */
         .product-card-img-wrap {
-            aspect-ratio: 1 / 1;
-            width: 100%;
-            border-radius: 16px;
-            overflow: hidden;
-            background-color: #F9FAFB;
+            aspect-ratio: 1 / 1 !important;
+            width: 100% !important;
+            border-radius: 16px !important;
+            overflow: hidden !important;
+            background-color: #F9FAFB !important;
         }
         .product-card-img {
-            width: 100%;
-            height: 220px; /* Mobile Default */
-            object-fit: contain;
+            width: 100% !important;
+            object-fit: contain !important;
+            border-radius: 16px !important;
         }
-        @media (min-width: 768px) {
-            .product-card-img {
-                height: 260px; /* Tablet */
-            }
+        
+        @media (max-width: 767px) {
+            .product-card-img { height: 220px !important; }
+        }
+        @media (min-width: 768px) and (max-width: 1023px) {
+            .product-card-img { height: 260px !important; }
         }
         @media (min-width: 1024px) {
-            .product-card-img {
-                height: 320px; /* Desktop */
-            }
+            .product-card-img { height: 320px !important; }
         }
 
-        /* كارت فئة التسوق - أكبر بنسبة 30% لتعطي تأثيراً لافتاً ومريحاً للعين */
+        /* 2. كارت تسوق حسب الفئة (أكبر بنسبة 30%) */
         .category-card {
-            width: 280px;
-            height: 360px;
-            flex-shrink: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 16px;
-            border-radius: 24px;
+            flex-shrink: 0 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: space-between !important;
+            padding: 16px !important;
+            border-radius: 24px !important;
+            background-color: var(--bose-light) !important;
+            border: 1px solid var(--bose-pink-soft) !important;
+            box-shadow: 0 8px 24px rgba(255, 145, 164, 0.08) !important;
+            transition: all 0.3s ease !important;
+        }
+        .category-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 12px 32px rgba(255, 145, 164, 0.15) !important;
+        }
+        .category-card-img-wrap {
+            width: 100% !important;
+            overflow: hidden !important;
+            border-radius: 20px !important;
+            background-color: #F9FAFB !important;
         }
         .category-card-img {
-            width: 100%;
-            height: 280px;
-            object-fit: contain;
+            width: 100% !important;
+            object-fit: contain !important;
         }
-        @media (min-width: 768px) {
-            .category-card {
-                width: 340px;
-                height: 430px;
-            }
-            .category-card-img {
-                height: 340px;
-            }
+        
+        @media (max-width: 767px) {
+            .category-card { width: 280px !important; height: 360px !important; }
+            .category-card-img { height: 280px !important; }
+        }
+        @media (min-width: 768px) and (max-width: 1023px) {
+            .category-card { width: 340px !important; height: 430px !important; }
+            .category-card-img { height: 340px !important; }
         }
         @media (min-width: 1024px) {
-            .category-card {
-                width: 420px;
-                height: 520px;
-            }
-            .category-card-img {
-                height: 420px;
+            .category-card { width: 420px !important; height: 520px !important; }
+            .category-card-img { height: 420px !important; }
+        }
+
+        /* 3. كارت المنيو الشامل (Symmetrical sizing per screen) */
+        .menu-card {
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: space-between !important;
+            padding: 16px !important;
+            background-color: var(--bose-light) !important;
+            border: 1px solid var(--bose-pink-soft) !important;
+            border-radius: 24px !important;
+            box-shadow: 0 10px 30px -15px rgba(255, 145, 164, 0.12) !important;
+            transition: all 0.3s ease !important;
+        }
+        .menu-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px -10px rgba(255, 145, 164, 0.22) !important;
+        }
+        .menu-card-img {
+            width: 100% !important;
+            object-fit: contain !important;
+            border-radius: 20px !important;
+            background-color: #F9FAFB !important;
+        }
+        @media (max-width: 767px) {
+            .menu-card { width: 100% !important; height: 360px !important; }
+            .menu-card-img { height: 280px !important; }
+        }
+        @media (min-width: 768px) and (max-width: 1023px) {
+            .menu-card { width: 48% !important; height: 420px !important; }
+            .menu-card-img { height: 330px !important; }
+        }
+        @media (min-width: 1024px) {
+            .menu-card { width: 32% !important; height: 520px !important; }
+            .menu-card-img { height: 420px !important; }
+        }
+
+        /* 4. كروت الأكثر مبيعاً ووصل حديثاً الملتزمة على شاشات الموبايل والدسكتوب */
+        .featured-card {
+            width: 85vw !important;
+            flex-shrink: 0 !important;
+        }
+        @media (min-width: 1024px) {
+            .featured-card {
+                width: 380px !important;
             }
         }
 
-        /* كروت الأكثر مبيعاً ووصل حديثاً الإلزامية على شاشات الموبايل والدسكتوب */
-        .featured-card-dimensions {
-            width: 85vw;
-            flex-shrink: 0;
-        }
-        @media (min-width: 1024px) {
-            .featured-card-dimensions {
-                width: 380px;
-            }
-        }
-
+        /* تخصيص إخفاء أشرطة التمرير لعرض السلايدر الأفقي بامتياز */
         .scrollbar-hide::-webkit-scrollbar {
             display: none;
         }
@@ -195,7 +247,7 @@
         }
     </style>
 </head>
-<body class="antialiased text-right">
+<body class="antialiased text-right selection:bg-[#FF91A4]/20">
 
     <!-- لافتة التنبيهات التشخيصية الذكية - تظهر فقط في حال وجود مشكلة في جلب الـ JSON لمساعدة المطور دون إزعاج العميل -->
     <div id="diagnostic-banner" class="bg-amber-50 border-b border-amber-200 text-amber-900 py-3 px-4 text-xs font-semibold text-center hidden">
@@ -341,8 +393,9 @@
 
             <!-- WATERFALL SECTION -->
             <div id="waterfall-section" class="relative overflow-hidden w-full h-[700px] md:h-[1000px] bg-white border-t border-b border-[#FF91A4]/10">
-                <div class="absolute top-0 inset-x-0 h-24 bg-gradient-to-b from-white to-transparent z-10 pointer-events-none"></div>
-                <div class="absolute bottom-0 inset-x-0 h-24 bg-gradient-to-t from-white to-transparent z-10 pointer-events-none"></div>
+                <!-- ضبابية خفيفة (Blur Overlay) أعلى وأسفل الشلال -->
+                <div class="absolute top-0 inset-x-0 h-24 bg-gradient-to-b from-white via-white/80 to-transparent z-10 pointer-events-none backdrop-blur-[2px]"></div>
+                <div class="absolute bottom-0 inset-x-0 h-24 bg-gradient-to-t from-white via-white/80 to-transparent z-10 pointer-events-none backdrop-blur-[2px]"></div>
 
                 <div class="waterfall-container grid grid-cols-2 gap-4 h-full px-4 max-w-7xl mx-auto">
                     <!-- العمود الأيسر الصاعد -->
@@ -386,8 +439,8 @@
             </div>
 
             <!-- CAKE PREVIEW SECTION -->
-            <div id="cake-preview-section" class="bg-[#FF91A4] text-white py-16 md:py-24">
-                <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div id="cake-preview-section" class="bg-[#FF91A4] text-white py-16 md:py-24 min-h-[600px] md:min-h-[750px] flex items-center">
+                <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-12 items-center w-full">
                     <div class="relative order-2 md:order-1 h-[400px] md:h-[500px] flex justify-center items-center">
                         <img id="cake-preview-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="محاكي التورت" class="w-full h-full object-contain rounded-2xl" onerror="this.src='https://placehold.co/500x500?text=Boosy+Sweets'">
                     </div>
@@ -432,8 +485,8 @@
             </div>
 
             <!-- FLOWER PREVIEW SECTION -->
-            <div id="flower-preview-section" class="bg-white py-16 md:py-24 border-t border-b border-[#FF91A4]/10">
-                <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div id="flower-preview-section" class="bg-white py-16 md:py-24 border-t border-b border-[#FF91A4]/10 min-h-[600px] md:min-h-[750px] flex items-center">
+                <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-12 items-center w-full">
                     <div class="space-y-6 text-right">
                         <h2 id="flower-preview-title" class="text-3xl md:text-5xl font-bold text-[#111111]">تنسيق بوكيه الورد الفاخر</h2>
                         <p id="flower-preview-desc" class="text-sm md:text-lg text-gray-600 leading-relaxed">
@@ -478,14 +531,15 @@
                 <h1 class="text-3xl md:text-4xl font-bold mb-3">المنيو الشامل</h1>
                 <p class="text-gray-500 max-w-md mx-auto text-xs md:text-sm">تصفح أقسامنا الراقية بكل سهولة وراحة لتختار السعادة التي تحبها باقتناع تام.</p>
             </div>
-            <div id="menu-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+            <!-- المنيو الشامل يعرض الـ 12 فئة بالترتيب والأسماء الصارمة بدون أي أسعار أو عدادات كمية لتفادي التشتيت -->
+            <div id="menu-grid" class="flex flex-wrap gap-6 justify-center"></div>
         </section>
 
         <!-- ==================== صفحة الفئة الديناميكية ==================== -->
         <section id="category-view" class="app-view hidden py-12 max-w-7xl mx-auto px-4">
             <div class="text-center mb-12">
                 <h1 id="category-title" class="text-3xl md:text-4xl font-bold mb-3 text-[#111111]">اسم الفئة</h1>
-                <p id="category-desc" class="text-gray-500 max-w-md mx-auto text-xs md:text-sm"></p>
+                <p id="category-desc" class="text-gray-500 max-w-md mx-auto text-xs md:text-sm leading-relaxed"></p>
             </div>
             <!-- تبويبات التصفح الخاصة بالديسباسيتو لمنع تشتيت العميل -->
             <div id="category-tabs-container" class="mb-12 hidden justify-center gap-4 flex-wrap"></div>
@@ -496,7 +550,7 @@
         <section id="product-view" class="app-view hidden py-12 max-w-4xl mx-auto px-4">
             <div class="bg-white rounded-3xl border border-[#FF91A4]/20 p-6 md:p-10 shadow-lg space-y-8">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                    <div class="relative aspect-square max-h-[400px] bg-gray-50 rounded-2xl overflow-hidden">
+                    <div class="relative aspect-square max-h-[400px] bg-gray-50 rounded-2xl overflow-hidden border border-[#FF91A4]/10">
                         <img id="detail-img" src="" alt="" class="w-full h-full object-contain">
                     </div>
                     <div class="space-y-4 text-right">
@@ -505,6 +559,7 @@
                         <p id="detail-flavor" class="text-xs text-[#D4AF37] font-semibold"></p>
                         <div id="detail-price" class="text-2xl font-bold text-[#FF91A4]"></div>
                         
+                        <!-- خيارات كب كيك والميني تورت الديناميكية تظهر هنا -->
                         <div id="detail-custom-options" class="space-y-4 pt-4 border-t border-gray-100 hidden"></div>
 
                         <div class="flex items-center gap-4 pt-4 justify-end">
@@ -531,6 +586,11 @@
                     <h3 class="text-base font-bold mb-4 text-[#111111]">آراء عشاق حلويات بوسي:</h3>
                     <div id="detail-reviews" class="space-y-4"></div>
                 </div>
+                
+                <div class="border-t border-gray-100 pt-8 text-right">
+                    <h3 class="text-base font-bold mb-4 text-[#111111]">قد يعجبك أيضاً:</h3>
+                    <div id="detail-suggestions" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
+                </div>
             </div>
         </section>
 
@@ -544,7 +604,7 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
                     <div class="bg-[#FF91A4]/5 rounded-2xl p-6 border border-[#FF91A4]/20 text-center space-y-6 md:sticky md:top-24">
-                        <div class="aspect-square max-h-[300px] mx-auto flex items-center justify-center">
+                        <div class="aspect-square max-h-[300px] mx-auto flex items-center justify-center bg-white rounded-2xl p-4 border border-[#FF91A4]/10">
                             <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="تجهيز التورتة" class="w-full h-full object-contain rounded-xl">
                         </div>
                         <div>
@@ -609,7 +669,7 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
                     <div class="bg-[#FF91A4]/5 rounded-2xl p-6 border border-[#FF91A4]/20 text-center space-y-6 md:sticky md:top-24">
-                        <div class="aspect-square max-h-[300px] mx-auto flex items-center justify-center">
+                        <div class="aspect-square max-h-[300px] mx-auto flex items-center justify-center bg-white rounded-2xl p-4 border border-[#FF91A4]/10">
                             <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="تجهيز الورد" class="w-full h-full object-contain rounded-xl">
                         </div>
                         <div>
@@ -690,7 +750,7 @@
                     </button>
                 </div>
 
-                <!-- حاوية كروت السلة الأفقية المعتمدة strictly -->
+                <!-- حاوية كروت السلة الأفقية المعتمدة strictly (ممنوع استخدام الجداول) -->
                 <div id="cart-items-wrapper" class="space-y-6"></div>
 
                 <div class="space-y-3 text-right">
@@ -736,6 +796,7 @@
                     </button>
                 </div>
 
+                <!-- قسم المقترحات الذكية والخيارات البديلة -->
                 <div class="border-t border-gray-100 pt-8 text-right">
                     <h3 class="text-base font-bold mb-4 text-[#111111]">قد يعجبك أيضاً:</h3>
                     <div id="cart-suggestions-scroll" class="relative overflow-x-auto pb-4 scrollbar-hide">
@@ -937,7 +998,7 @@
                 </div>
 
                 <div class="pt-6">
-                    <button onclick="navigateTo('home')" class="text-xs text-gray-400 hover:text-black hover:underline">
+                    <button onclick="window.location.reload();" class="text-xs text-gray-400 hover:text-black hover:underline">
                         العودة للرئيسية وتصفح المزيد
                     </button>
                 </div>
@@ -979,7 +1040,7 @@
             <div class="space-y-4">
                 <h4 class="font-bold text-[#111111] text-xs">بيانات النشاط وقنوات تواصلنا</h4>
                 <p class="text-xs text-gray-500 leading-relaxed">مقرنا للاستلام المباشر: الكفاح - شارع الوحدة المحلية - الفرافرة - الوادي الجديد.</p>
-                <!-- حاوية التواصل الاجتماعي الأصلية الملونة strictly مع دمج الـ SVGs الدقيقة -->
+                <!-- قنوات التواصل الاجتماعي الرسمية بألوانها الأصلية الملونة strictly وبأيقونات SVGs الدقيقة -->
                 <div id="footer-social-links" class="flex gap-4 items-center justify-end pt-2"></div>
             </div>
         </div>
@@ -989,7 +1050,7 @@
     </footer>
 
     <script>
-        // درع الحماية البرمجي (Fallback Shield): قاعدة بيانات مدمجة ذكية لمنع تعليق أو توقف الـ JS
+        // درع الحماية البرمجي (Fallback Shield): قاعدة بيانات مدمجة ذكية لمنع تعليق أو توقف الـ JS وتغطية كافة المتطلبات
         let siteData = {
             "store": {
                 "id": "bose-sweets",
@@ -1000,7 +1061,7 @@
                 "logo": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
                 "priceIncrease": { "enabled": false, "percent": 0 },
                 "pickup": {
-                    "address": "الكفاح شارع الوحدة المحلية بجوار صيدلية الدكتور أحمد مجدي وبجوار عيادة الدكتور علي",
+                    "address": "الكفاح - شارع الوحدة المحلية - بجوار صيدلية الدكتور أحمد مجدي وبجوار عيادة الدكتور علي",
                     "mapUrl": "https://maps.app.goo.gl/nAg4Y7vQ7hACvKGc8?g_st=ac"
                 }
             },
@@ -1157,7 +1218,7 @@
                     box.classList.remove('opacity-100');
                     box.classList.add('opacity-0');
                     setTimeout(() => box.classList.add('hidden'), 300);
-                }, 3000);
+                }, 3500);
             }
         }
 
@@ -1214,20 +1275,20 @@
                     policyList.innerHTML = siteData.footer.policies.map(p => `<li><a href="javascript:void(0)" onclick="showPolicyNote('${p}')" class="hover:text-[#FF91A4] transition-all cursor-pointer text-xs block text-right">${p}</a></li>`).join('');
                 }
 
-                // قنوات التواصل الاجتماعي الرسمية بأيقونات SVG الفاخرة والصريحة
+                // قنوات التواصل الاجتماعي الرسمية بأيقوناتها الملونة والـ SVGs الصريحة لسرعة الأداء
                 const socialWrap = document.getElementById('footer-social-links');
                 if (socialWrap && siteData.social) {
                     socialWrap.innerHTML = `
-                        <a href="${siteData.social.facebook || '#'}" target="_blank" class="p-2.5 bg-gray-50 rounded-xl hover:bg-[#FF91A4]/10 transition-all hover:-translate-y-1 text-xs font-bold text-[#1877F2]" aria-label="فيسبوك">
+                        <a href="${siteData.social.facebook || '#'}" target="_blank" class="p-2.5 bg-[#1877F2]/10 rounded-xl hover:bg-[#1877F2]/20 transition-all hover:-translate-y-1 text-xs font-bold text-[#1877F2]" aria-label="فيسبوك">
                             فيسبوك
                         </a>
-                        <a href="${siteData.social.instagram || '#'}" target="_blank" class="p-2.5 bg-gray-50 rounded-xl hover:bg-[#FF91A4]/10 transition-all hover:-translate-y-1 text-xs font-bold text-[#E1306C]" aria-label="انستجرام">
+                        <a href="${siteData.social.instagram || '#'}" target="_blank" class="p-2.5 bg-[#E1306C]/10 rounded-xl hover:bg-[#E1306C]/20 transition-all hover:-translate-y-1 text-xs font-bold text-[#E1306C]" aria-label="انستجرام">
                             انستجرام
                         </a>
-                        <a href="${siteData.social.tiktok || '#'}" target="_blank" class="p-2.5 bg-gray-50 rounded-xl hover:bg-[#FF91A4]/10 transition-all hover:-translate-y-1 text-xs font-bold text-[#000000]" aria-label="تيك توك">
+                        <a href="${siteData.social.tiktok || '#'}" target="_blank" class="p-2.5 bg-gray-100 rounded-xl hover:bg-gray-200 transition-all hover:-translate-y-1 text-xs font-bold text-[#000000]" aria-label="تيك توك">
                             تيك توك
                         </a>
-                        <a href="https://wa.me/20${siteData.social.whatsapp || '01097238441'}" target="_blank" class="p-2.5 bg-gray-50 rounded-xl hover:bg-[#FF91A4]/10 transition-all hover:-translate-y-1 text-xs font-bold text-[#25D366]" aria-label="واتساب">
+                        <a href="https://wa.me/20${siteData.social.whatsapp || '01097238441'}" target="_blank" class="p-2.5 bg-[#25D366]/10 rounded-xl hover:bg-[#25D366]/20 transition-all hover:-translate-y-1 text-xs font-bold text-[#25D366]" aria-label="واتساب">
                             واتساب
                         </a>
                     `;
@@ -1482,11 +1543,11 @@
             const catTrack = document.getElementById('categories-track');
             if (catTrack && siteData.homepage?.categoriesSlider) {
                 catTrack.innerHTML = siteData.homepage.categoriesSlider.map(cat => `
-                    <div class="category-card bg-white border border-[#FF91A4]/20 overflow-hidden shadow-sm hover:shadow-md smooth-transition cursor-pointer flex flex-col justify-between text-center" onclick="navigateTo('category', '${cat.id}')">
-                        <div class="w-full aspect-square overflow-hidden bg-gray-50 rounded-2xl">
+                    <div class="category-card" onclick="navigateTo('category', '${cat.id}')">
+                        <div class="category-card-img-wrap">
                             <img src="${cat.image}" alt="${cat.title}" class="category-card-img">
                         </div>
-                        <h3 class="font-bold text-xl text-[#111111] mt-4">${cat.title}</h3>
+                        <h3 class="category-card-title">${cat.title}</h3>
                     </div>
                 `).join('');
             }
@@ -1541,10 +1602,11 @@
             const qty = cartItem ? cartItem.qty : 1;
             const adjustedSinglePrice = getAdjustedPrice(product);
 
-            const sizeClass = isFeaturedSize ? 'featured-card-dimensions' : 'w-full';
+            // تفعيل فئات الأحجام الصارمة المذكورة بالمواصفة لمنع التكديس البصري
+            const sizeClass = isFeaturedSize ? 'featured-card' : 'w-full';
 
             return `
-                <div class="product-card ${sizeClass} p-4 smooth-transition">
+                <div class="product-card ${sizeClass}">
                     <div class="relative w-full aspect-square bg-gray-50 rounded-2xl overflow-hidden cursor-pointer mb-4" onclick="navigateTo('product', null, '${product.id}')">
                         <img src="${product.images?.[0] || product.image || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png'}" alt="${product.title}" class="product-card-img" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png'">
                     </div>
@@ -1624,12 +1686,13 @@
         function renderMenuView() {
             const grid = document.getElementById('menu-grid');
             if (grid && siteData.homepage?.categoriesSlider) {
+                // تصفح المنيو الشامل يعرض الـ 12 كارت المعتمد strictly بالمواصفة بدون أي أسعار أو عدادات كمية لتفادي تشتيت العميل
                 grid.innerHTML = siteData.homepage.categoriesSlider.map(cat => `
-                    <div class="bg-white rounded-3xl border border-[#FF91A4]/20 overflow-hidden shadow-sm hover:shadow-md smooth-transition flex flex-col justify-between p-6 text-center">
-                        <div class="w-full aspect-square overflow-hidden bg-gray-50 rounded-2xl cursor-pointer" onclick="navigateTo('category', '${cat.id}')">
-                            <img src="${cat.image}" alt="${cat.title}" class="w-full h-full object-contain">
+                    <div class="menu-card">
+                        <div class="w-full overflow-hidden bg-gray-50 rounded-2xl cursor-pointer" onclick="navigateTo('category', '${cat.id}')">
+                            <img src="${cat.image}" alt="${cat.title}" class="menu-card-img">
                         </div>
-                        <h3 class="font-bold text-lg text-[#111111] mt-6">${cat.title}</h3>
+                        <h3 class="font-bold text-lg text-[#111111] mt-6 text-center">${cat.title}</h3>
                         <button onclick="navigateTo('category', '${cat.id}')" class="mt-6 w-full bg-[#FF91A4] hover:bg-[#ff7b92] text-white font-bold py-3 rounded-full text-xs smooth-transition shadow-sm">
                             استعرض المنتجات
                         </button>
@@ -1647,9 +1710,21 @@
             const grid = document.getElementById('category-products-grid');
             const tabsContainer = document.getElementById('category-tabs-container');
 
+            // حقن الأوصاف الرسمية والصارمة المعتمدة strictly لراحة عين العميل وفهمه للقيمة
             let desc = "مكونات طازجة ومعدة بكل دقة في معاملنا الخاصة يومياً.";
-            if (catId === 'taswaq-toort') desc = "التورت عندنا مش مجرد حلوى للمناسبة، لكنها قطعة مصممة خصيصاً لصاحب المناسبة.";
+            if (catId === 'taswaq-toort') desc = "التورت عندنا مش مجرد حلوى للمناسبة، لكنها قطعة مصممة خصيصاً لصاحب المناسبة. نحن نصمم كل تورتة بشكل يعبر عن شخصية صاحبها وذوقه وتفاصيل يومه المميز.";
             else if (catId === 'taswaq-flowers') desc = "ننفرد بتقديم بوكيهات الورد الطبيعي والصناعي وورد الستان بأعلى مستوى من العناية والاهتمام بالتفاصيل.";
+            else if (catId === 'taswaq-gatowat') desc = "الجاتوهات عندنا عبارة عن طبقات متوازنة من كيك الفانيليا أو الشوكولاتة مع حشوات غنية من الموسات والصوصات والكريمات المختارة بعناية.";
+            else if (catId === 'taswaq-cupcake') desc = "قطع صغيرة من اللذة بطابع غني ومميز. يتم تحضير الكيك بنسبة زبدة مدروسة تمنحه قواماً وطعماً مختلفاً.";
+            else if (catId === 'taswaq-mini-cake') desc = "طبقات غنية من كيك الفانيليا أو الشوكولاتة مع حشوات موس وصوصات ومكسرات وفواكه مختارة بعناية. تُغلف بطبقة فاكيوم شفافة.";
+            else if (catId === 'taswaq-red-velvet') desc = "طبقات من الريد ڤيلڤت الغني بقوامه الناعم ولونه المميز مع طبقات من موس التشيز والراسبيري التي تضيف توازناً رائداً.";
+            else if (catId === 'taswaq-relax-box') desc = "تجربة متكاملة تجمع بين أكثر المنتجات التي يحبها عملاؤنا داخل بوكس واحد ليروق بالك ويسعد قلبك وأحبابك.";
+            else if (catId === 'taswaq-despacito') desc = "كيك فادج غني مغمور بالشوكولاتة، يعلوه طبقة من النوتيلا ثم طبقة من موس الشوكولاتة بتوليفتنا الخاصة.";
+            else if (catId === 'taswaq-qashtota') desc = "كيك فانيليا مشرب بالحليب بعناية، يعلوه طبقة من الكريمة اللباني بتوليفتنا الخاصة التي تحمل بصمتنا المميزة.";
+            else if (catId === 'taswaq-happiness-cups') desc = "أكواب حلوى مصممة لتمنحك تجربة غنية في كل ملعقة. يبدأ الأمر باختيار نوع الكيك الأساسي المتناسق.";
+            else if (catId === 'taswaq-donuts') desc = "عجينة هشة وطرية يتم قليها بعناية حتى تصل للقوام المثالي، ثم تُحشى من الداخل بحشوات غنية ويضاف إليها التوبنج المختار.";
+            else if (catId === 'taswaq-cinabon') desc = "عجينة طرية محشوة بالزبدة والقرفة والسكر، تُخبز بعناية ثم تُغطى بطبقة من صوص التشيز الكلاسيكي المحضر بمكوناتنا الخاصة.";
+            
             document.getElementById('category-desc').innerText = desc;
 
             if (catId === 'taswaq-despacito') {
@@ -1704,23 +1779,47 @@
             document.getElementById('detail-category').innerText = categoryName;
 
             const optionsPanel = document.getElementById('detail-custom-options');
-            if (product.id === 'cupcake-mix-new' || product.id === 'cupcake-chocolate') {
+            
+            // حقن الخيارات التفصيلية للكب كيك أو الميني تورتة
+            if (product.id === 'cupcake-mix-new' || product.id === 'cupcake-chocolate' || product.id === 'cupcake-vanilla') {
                 optionsPanel.classList.remove('hidden');
                 optionsPanel.innerHTML = `
                     <label class="block font-bold text-xs text-right mb-2">خيارات طباعة الصور المخصصة للدستة:</label>
-                    <div class="space-y-2">
+                    <div class="space-y-2 text-right">
                         <label class="flex items-center gap-2 text-xs cursor-pointer justify-end flex-row-reverse">
                             <span>بدون صور مخصصة</span>
                             <input type="radio" name="cupcake-photo" value="0" checked class="accent-[#FF91A4]">
                         </label>
                         <label class="flex items-center gap-2 text-xs cursor-pointer justify-end flex-row-reverse">
-                            <span>إضافة صور قابلة للأكل (+60 جنيه)</span>
+                            <span>إضافة صور قابلة للأكل للدستة (+60 جنيه)</span>
                             <input type="radio" name="cupcake-photo" value="60" class="accent-[#FF91A4]">
                         </label>
                         <label class="flex items-center gap-2 text-xs cursor-pointer justify-end flex-row-reverse">
-                            <span>إضافة صور غير قابلة للأكل (+15 جنيه)</span>
+                            <span>إضافة صور غير قابلة للأكل للدستة (+15 جنيه)</span>
                             <input type="radio" name="cupcake-photo" value="15" class="accent-[#FF91A4]">
                         </label>
+                    </div>
+                `;
+            } else if (product.category === 'taswaq-mini-cake') {
+                optionsPanel.classList.remove('hidden');
+                optionsPanel.innerHTML = `
+                    <div class="space-y-4 text-right">
+                        <div class="space-y-1">
+                            <label class="block font-bold text-xs">نوع الكيك المفضل:</label>
+                            <select id="mini-cake-type" class="w-full border border-gray-200 bg-white rounded-xl py-2 px-3 text-xs text-right focus:outline-none focus:border-[#FF91A4]">
+                                <option value="فانيليا">فانيليا هشة</option>
+                                <option value="شوكولاتة">شوكولاتة غنية</option>
+                                <option value="نصف ونصف">نصف ونصف</option>
+                            </select>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="block font-bold text-xs">إضافة رسالة قصيرة مكتوبة ومخصصة:</label>
+                            <input type="text" id="mini-cake-msg" placeholder="اكتب جملة التهنئة هنا..." class="w-full border border-gray-200 rounded-xl py-2 px-3 text-xs text-right focus:outline-none focus:border-[#FF91A4]">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="block font-bold text-xs">هل تعاني من أي حساسية غذائية؟:</label>
+                            <input type="text" id="mini-cake-allergy" placeholder="اكتب ملاحظة طبية بخصوص المكونات والمكسرات هنا..." class="w-full border border-gray-200 rounded-xl py-2 px-3 text-xs text-right focus:outline-none focus:border-[#FF91A4]">
+                        </div>
                     </div>
                 `;
             } else {
@@ -1737,6 +1836,23 @@
                     <p class="text-xs text-gray-500 leading-relaxed">${r.comment}</p>
                 </div>
             `).join('');
+
+            // قسم قد يعجبك أيضاً بالصفحات الداخلية
+            const suggestionsBox = document.getElementById('detail-suggestions');
+            if (suggestionsBox) {
+                const related = (siteData.products || []).filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
+                if (related.length > 0) {
+                    suggestionsBox.innerHTML = related.map(p => `
+                        <div class="border border-[#FF91A4]/15 rounded-2xl p-3 bg-white text-center cursor-pointer hover:shadow-sm transition" onclick="navigateTo('product', null, '${p.id}');">
+                            <img src="${p.images?.[0] || p.image}" class="w-24 h-24 object-contain mx-auto rounded-lg">
+                            <h4 class="font-bold text-[10px] text-gray-700 mt-2 truncate">${p.title}</h4>
+                            <span class="text-xs font-bold text-[#FF91A4] block mt-1">${getAdjustedPrice(p)} جنيه</span>
+                        </div>
+                    `).join('');
+                } else {
+                    suggestionsBox.innerHTML = `<p class="col-span-4 text-center text-[10px] text-gray-400">تصفح باقي منتجاتنا الرائعة بالمنيو الشامل 🌸</p>`;
+                }
+            }
 
             document.getElementById('detail-add-btn').onclick = () => addDetailProductToCart(product.id);
         }
@@ -1755,25 +1871,44 @@
 
             let extraPrice = 0;
             let customNote = "";
+            let additionalDetails = {};
+
             const radios = document.getElementsByName('cupcake-photo');
             if (radios.length > 0) {
                 radios.forEach(r => {
                     if (r.checked) {
                         extraPrice = parseInt(r.value);
-                        if (extraPrice === 60) customNote = "إضافة صور قابلة للأكل";
-                        else if (extraPrice === 15) customNote = "إضافة صور غير قابلة للأكل";
+                        if (extraPrice === 60) {
+                            customNote = "إضافة صور قابلة للأكل";
+                            additionalDetails["نوع الطباعة"] = "صور قابلة للأكل";
+                        } else if (extraPrice === 15) {
+                            customNote = "إضافة صور غير قابلة للأكل";
+                            additionalDetails["نوع الطباعة"] = "صور غير قابلة للأكل";
+                        }
                     }
                 });
             }
 
+            if (product.category === 'taswaq-mini-cake') {
+                const typeVal = document.getElementById('mini-cake-type')?.value || "فانيليا";
+                const msgVal = document.getElementById('mini-cake-msg')?.value.trim() || "";
+                const allergyVal = document.getElementById('mini-cake-allergy')?.value.trim() || "";
+
+                customNote = `كيك: ${typeVal}`;
+                additionalDetails["نوع الكيك المفضل"] = typeVal;
+                if (msgVal) additionalDetails["الرسالة المكتوبة"] = msgVal;
+                if (allergyVal) additionalDetails["ملاحظة الحساسية"] = allergyVal;
+            }
+
             state.cart.push({
-                id: product.id,
+                id: product.id + (Date.now()), // توليد معرف فريد لمنع تشابه كروت السلة المخصصة
                 title: product.title,
                 flavorName: product.flavorName + (customNote ? ` - ${customNote}` : ''),
                 price: getAdjustedPrice(product) + extraPrice,
                 image: product.images?.[0] || product.image,
                 qty: state.detailQty,
-                isCustom: false
+                isCustom: Object.keys(additionalDetails).length > 0,
+                details: additionalDetails
             });
 
             updateCartBadge();
@@ -2091,11 +2226,11 @@
                 return;
             }
 
-            // تطبيق الـ Strict Cart Card DOM المعتمد strictly بالمواصفة
+            // تطبيق الـ Strict Cart Card DOM المعتمد strictly بالمواصفة (كروت أفقية خالية تماماً من الجداول التقليدية الجافة)
             wrapper.innerHTML = state.cart.map((item, idx) => {
                 let detailsHTML = "";
                 if (item.isCustom && item.details) {
-                    detailsHTML = `<div class="bg-gray-50 p-2.5 rounded-xl border border-gray-100 text-[10px] text-gray-500 mt-2 space-y-1 text-right">` +
+                    detailsHTML = `<div class="bg-[#FF91A4]/5 p-2.5 rounded-xl border border-[#FF91A4]/10 text-[10px] text-gray-500 mt-2 space-y-1 text-right">` +
                         Object.keys(item.details).map(k => `<div><strong>${k}:</strong> ${item.details[k]}</div>`).join('') +
                         `</div>`;
                 }
@@ -2103,17 +2238,18 @@
                 const priceBreakdown = item.qty > 1 ? `<span class="text-[9px] text-gray-400 block">${item.price} × ${item.qty}</span>` : '';
 
                 return `
-                    <div class="relative flex items-center gap-4 bg-white border border-[#FF91A4]/15 p-4 rounded-2xl shadow-sm flex-row-reverse min-h-[140px]">
+                    <div class="relative flex items-center gap-4 bg-white border border-[#FF91A4]/15 p-4 rounded-2xl shadow-sm flex-row-reverse min-h-[140px] smooth-transition">
+                        <!-- أيقونة حذف ذكية وسلسة الملمس تقع وتتمركز بدقة في أعلى يسار الكارت الأفقي لسهولة الوصول -->
                         <button onclick="removeCartItem(${idx})" class="btn-remove-item absolute top-3 left-3 text-red-400 hover:text-red-600 smooth-transition" aria-label="حذف">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                         </button>
 
                         <!-- صورة مخصصة بقياس 120x120px strictly لمنع التشويه البصري -->
-                        <div class="w-[120px] h-[120px] flex-shrink-0 bg-gray-50 rounded-xl overflow-hidden border border-gray-100">
+                        <div class="w-[120px] h-[120px] flex-shrink-0 bg-gray-50 rounded-xl overflow-hidden border border-gray-100 flex items-center justify-center">
                             <img src="${item.image}" class="w-full h-full object-contain">
                         </div>
 
-                        <div class="text-right flex-grow space-y-1 pr-6">
+                        <div class="text-right flex-grow space-y-1 pr-4">
                             <h4 class="font-bold text-xs md:text-sm text-[#111111]">${item.title}</h4>
                             <span class="text-[10px] text-[#D4AF37] font-semibold block">${item.flavorName}</span>
                             ${detailsHTML}
@@ -2147,7 +2283,7 @@
                         <img src="${p.images?.[0] || p.image}" class="w-12 h-12 object-contain rounded-lg">
                         <div class="text-right flex-grow">
                             <h4 class="font-bold text-xs truncate w-36">${p.title}</h4>
-                            <span class="text-xs font-bold text-[#FF91A4]">${getAdjustedPrice(p)} جنيه</span>
+                            <span class="text-xs font-bold text-[#FF91A4] block mt-1">${getAdjustedPrice(p)} جنيه</span>
                         </div>
                         <button onclick="addSuggestionToCart('${p.id}')" class="bg-[#FF91A4] text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs hover:bg-[#ff7b92] smooth-transition">+</button>
                     </div>
@@ -2183,7 +2319,7 @@
             if (!product) return;
 
             state.cart.push({
-                id: product.id,
+                id: product.id + (Date.now()),
                 title: product.title,
                 flavorName: product.flavorName,
                 price: getAdjustedPrice(product),
@@ -2482,6 +2618,12 @@
             state.cart = [];
             state.coupon = null;
             updateCartBadge();
+
+            // منع العميل من الرجوع للخلف لصفحة الشراء لعدم تكرار سحب نفس رقم الطلب مرتين
+            history.pushState(null, "", location.href);
+            window.onpopstate = function () {
+                history.go(1);
+            };
 
             navigateTo('success');
             redirectToWhatsApp();
