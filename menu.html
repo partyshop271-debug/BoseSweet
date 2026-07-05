@@ -268,7 +268,7 @@
 
     <!-- 👑 المحرك البرمجي الدفاعي المعدل بالكامل لضمان التشغيل المتزامن 👑 -->
     <script>
-        // 1. مصفوفة البيانات الثابتة والاحتياطية المطابقة حرفياً للـ JSON لمنع شلل الصفحة[span_4](start_span)[span_4](end_span)
+        // 1. مصفوفة البيانات الثابتة والاحتياطية المطابقة حرفياً للـ JSON لمنع شلل الصفحة[span_3](start_span)[span_3](end_span)
         const boseFallbackCategories = [
             { "id": "taswaq-toort", "title": "التورت", "builderType": "cake-customizer", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" },
             { "id": "taswaq-gatowat", "title": "الجاتوهات", "builderType": "standard", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" },
@@ -284,7 +284,7 @@
             { "id": "taswaq-relax-box", "title": "بوكس الروقان", "builderType": "standard", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" }
         ];
 
-        // 2. دالة بناء وحقن الكروت بالوزن البصري المطلوب والأبعاد الصارمة[span_5](start_span)[span_5](end_span)
+        // 2. دالة بناء وحقن الكروت بالوزن البصري المطلوب والأبعاد الصارمة[span_4](start_span)[span_4](end_span)
         function renderBoseMenuGrid(categoriesList) {
             const grid = document.getElementById("bose-menu-categories-grid");
             if (!grid || !categoriesList || categoriesList.length === 0) return;
@@ -313,13 +313,13 @@
                 grid.appendChild(card);
             });
 
-            // تحديث عداد السلة بالهيدر لضمان المزامنة[span_6](start_span)[span_6](end_span)
+            // تحديث عداد السلة بالهيدر لضمان المزامنة[span_5](start_span)[span_5](end_span)
             if (typeof window.updateGlobalCartCounter === 'function') {
                 window.updateGlobalCartCounter();
             }
         }
 
-        // 3. حارس التشغيل الفوري والتحميل المتتابع الآمن لمنع التعارض[span_7](start_span)[span_7](end_span)
+        // 3. حارس التشغيل الفوري والتحميل المتتابع الآمن لمنع التعارض[span_6](start_span)[span_6](end_span)
         document.addEventListener("DOMContentLoaded", () => {
             // رندرة مبدئية فورية بالبيانات الاحتياطية المضمنة لحل مشكلة تأخر السيرفر أو الاستضافة
             renderBoseMenuGrid(boseFallbackCategories);
@@ -335,22 +335,8 @@
                 });
             }
 
-            // 📥 تفعيل ميكانيكية الـ Drawer الجانبي وحل مشاكل اللمس والتمرير
-            const menuToggle = document.getElementById("mobile-menu-toggle");
-            const closeToggle = document.getElementById("sidebar-close-panel-btn");
-            const drawerShield = document.getElementById("drawer-shield");
-            const sidebar = document.getElementById("sidebar-drawer");
-            
-            const toggleSidebar = (state) => {
-                if(!sidebar) return;
-                sidebar.classList.toggle("active", state);
-                if(drawerShield) drawerShield.classList.toggle("active", state);
-                document.body.classList.toggle("bose-no-scroll", state);
-            };
-            
-            if(menuToggle) menuToggle.addEventListener("click", () => toggleSidebar(true));
-            if(closeToggle) closeToggle.addEventListener("click", () => toggleSidebar(false));
-            if(drawerShield) drawerShield.addEventListener("click", () => toggleSidebar(false));
+            // 📥 [تم التحديث]: ترك مسار تفعيل القائمة الجانبية وحركات اللمس كلياً لمحرك core-engine.js المشترك
+            // قمنا بإلغاء التكرار البرمجي الذي كان يعطل تنفيذ الأحداث ويسبب شلل الصفحة
         });
     </script>
 </body>
