@@ -2520,4 +2520,3 @@ document.addEventListener("DOMContentLoaded", () => {
 function verifyAndInitializeEngine() {
     console.log("🚀 تم التحقق من مطابقة المحرك المخصص وتوافقه مع قاعدة بيانات حلويات بوسي.");
 }
-})(); // 🌸 تم تثبيت القوس هنا ومنع كسر الدالة اللامتزامنة بنجاح
