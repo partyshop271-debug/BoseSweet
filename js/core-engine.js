@@ -178,21 +178,7 @@
                 { "id": "taswaq-flowers", "title": "الورد", "builderType": "flower-customizer", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" },
                 { "id": "taswaq-happiness-cups", "title": "كبات السعادة", "builderType": "standard", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" },
                 { "id": "taswaq-relax-box", "title": "بوكس الروقان", "builderType": "standard", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" }
-            ],
-            "cakePreview": {
-                "title": "محاكي التورت",
-                "description": "حلويات بوسي تتيح تصميم التورت حسب الطلب واختيار كافة التفاصيل التي تناسب ذوقكم ومناسباتكم الفريدة.",
-                "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
-                "cta": "تصميم التورتة الآن",
-                "target": "cake-builder.html"
-            },
-            "flowerPreview": {
-                "title": "محاكي الورد",
-                "description": "تخصيص البوكيه واختيار الورد الطبيعي, الصناعي, أو الستان مع إضافة الهدايا والرسائل والصور الخاصة.",
-                "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
-                "cta": "تصميم البوكيه الآن",
-                "target": "flower-builder.html"
-            }
+            ]
         },
         "shippingZones": [
             { "id": "elkefah", "governorate": "الوادي الجديد", "city": "الفرافرة", "area": "الكفاح", "price": 30 },
@@ -935,7 +921,7 @@
                 align-items: center;
                 text-decoration: none;
                 color: inherit;
-                box-shadow: 0 4px 15px rgba(255, 145, 164, 0.06);
+                box-shadow: var(--bose-shadow-hover);
             }
             .search-result-card:hover {
                 transform: translateY(-2px);
@@ -1576,7 +1562,7 @@
             const heroCtaNode = document.getElementById('hero-cta-btn') || heroSection.querySelector('a');
 
             if (heroTitleNode) {
-                const rawTitle = heroData.title || "عقد من التميز في صناعة الحلويات";
+                const rawTitle = heroData.title || "عقد من التميز in صناعة الحلويات";
                 const formattedTitle = rawTitle.replace("التميز", `<span style="color: var(--bose-pink); font-weight: 700;">التميز</span>`);
                 heroTitleNode.innerHTML = formattedTitle;
             }
@@ -1798,58 +1784,54 @@
             }
         }
 
+        // ==========================================================================
+        // 🌸 [تحديث هندسي قياسي]: ربط السحب اللحظي الحر للفئات الـ 12 مع الـ Dots النشطة
+        // ==========================================================================
         const categoriesSliderSec = document.getElementById('categories-slider-section');
         const categoriesTrack = document.getElementById('categories-track');
         const categoriesData = data.homepage.categoriesSlider;
+
         if (categoriesTrack && categoriesData) {
             categoriesTrack.innerHTML = '';
-            categoriesTrack.className = 'categories-track-loop';
-            const categoriesLoopList = [...categoriesData, ...categoriesData];
+            // إلغاء تفعيل كلاس الأنيميشن التلقائي المتعارض لمنع الشلل والقفز العشوائي كلياً
+            categoriesTrack.className = ''; 
+            categoriesTrack.style.animation = 'none';
             
-            categoriesTrack.innerHTML = categoriesLoopList.map(cat => {
+            // رندرة الفئات الـ 12 المعتمدة بالترتيب الرسمي دون تكرار مشوه يعطل اللمس
+            categoriesTrack.innerHTML = categoriesData.map(cat => {
                 const targetUrl = cat.builderType === 'cake-customizer' ? 'cake-builder.html'
                                 : (cat.builderType === 'flower-customizer' ? 'flower-builder.html'
                                 : `category.html?category=${cat.id}`);
                 return `
-                    <a href="${targetUrl}" class="category-slide-card" style="display: flex; flex-direction: column; align-items: center; width: 280px; flex-shrink: 0; padding: 12px; box-sizing: border-box; text-decoration: none;">
-                        <img src="${cat.image}" class="bose-fade-in-img" alt="${escapeHTML(cat.title)}" style="width: 250px; height: 250px; object-fit: cover; border-radius: 20px; border: var(--bose-border-pink); box-shadow: var(--bose-shadow-glow);" onload="this.classList.add('loaded')" onerror="this.onerror=null; this.src='${window.getBoseLogo()}';" loading="lazy">
-                        <span style="display: block; text-align: center; margin-top: 12px; font-size: 20px; font-weight: 700; color: var(--bose-black); line-height: 1.4;">${escapeHTML(cat.title)}</span>
+                    <a href="${targetUrl}" class="category-slide-card" style="display: flex; flex-direction: column; align-items: center; width: 280px; flex: 0 0 auto !important; scroll-snap-align: start !important; padding: 12px; box-sizing: border-box; text-decoration: none; -webkit-user-drag: none;">
+                        <img src="${cat.image}" class="bose-fade-in-img" alt="${escapeHTML(cat.title)}" style="width: 250px; height: 250px; object-fit: cover; border-radius: 20px; border: var(--bose-border-pink); box-shadow: var(--bose-shadow-glow); pointer-events: none;" onload="this.classList.add('loaded')" onerror="this.onerror=null; this.src='${window.getBoseLogo()}';" loading="lazy">
+                        <span style="display: block; text-align: center; margin-top: 12px; font-size: 20px; font-weight: 700; color: var(--bose-black); line-height: 1.4; pointer-events: none;">${escapeHTML(cat.title)}</span>
                     </a>
                 `;
             }).join('');
 
-            categoriesTrack.addEventListener('mouseenter', () => { categoriesTrack.style.animationPlayState = 'paused'; });
-            categoriesTrack.addEventListener('mouseleave', () => { categoriesTrack.style.animationPlayState = 'running'; });
-            categoriesTrack.addEventListener('touchstart', () => { categoriesTrack.style.animationPlayState = 'paused'; }, {passive: true});
-            categoriesTrack.addEventListener('touchend', () => { categoriesTrack.style.animationPlayState = 'running'; }, {passive: true});
-            enableMarqueeDragScrolling(categoriesTrack);
-
+            // ربط وعزل أحداث السحب الحر بالفأرة أو اللمس للتصفح المريح والآمن
             if (categoriesSliderSec) {
-                let categoryDotIndex = 0;
-                generateBoseDots(categoriesSliderSec, categoriesData.length, categoryDotIndex, (idx) => {
+                generateBoseDots(categoriesSliderSec, categoriesData.length, 0, (idx) => {
                     const slides = categoriesTrack.querySelectorAll('.category-slide-card');
                     if (slides[idx]) {
-                        const targetOffset = slides[idx].offsetLeft - (categoriesTrack.offsetWidth - slides[idx].offsetWidth) / 2;
-                        categoriesTrack.scrollTo({
-                            left: targetOffset,
-                            behavior: 'smooth'
-                        });
+                        slides[idx].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
                     }
                 });
 
-                setupScrollToDotsBinding(categoriesTrack, categoriesSliderSec, categoriesData.length);
-
-                setInterval(() => {
-                    if (categoriesTrack.style.animationPlayState !== 'paused') {
-                        categoryDotIndex = (categoryDotIndex + 1) % categoriesData.length;
-                        const dotsWrapper = categoriesSliderSec.querySelector('.bose-dots-container');
-                        if (dotsWrapper) {
-                            dotsWrapper.querySelectorAll('.bose-dot').forEach((dot, idx) => {
-                                dot.classList.toggle('active', idx === categoryDotIndex);
-                            });
-                        }
+                // تحديث وضعية النقط النشطة تلقائياً بمجرد انتهاء سحب إصبع العميل
+                categoriesTrack.addEventListener('scroll', () => {
+                    const scrollLeftAbs = Math.abs(categoriesTrack.scrollLeft);
+                    const cardWidth = categoriesTrack.scrollWidth / categoriesData.length;
+                    const currentIdx = Math.min(categoriesData.length - 1, Math.round(scrollLeftAbs / cardWidth));
+                    
+                    const dotsWrapper = categoriesSliderSec.querySelector('.bose-dots-container');
+                    if (dotsWrapper) {
+                        dotsWrapper.querySelectorAll('.bose-dot').forEach((dot, idx) => {
+                            dot.classList.toggle('active', idx === currentIdx);
+                        });
                     }
-                }, 6000);
+                }, { passive: true });
             }
         }
 
