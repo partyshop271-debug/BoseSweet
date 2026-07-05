@@ -55,6 +55,7 @@
             gap: 32px;
             align-items: start;
             width: 100%;
+            margin-bottom: 50px;
         }
 
         @media (min-width: 768px) {
@@ -95,7 +96,7 @@
 
         .product-headline {
             font-size: 2rem;
-            font-weight: 700 !important; /* مقفول هندسياً عند 700 */
+            font-weight: 700 !important; /* مقفول هندسياً عند 700 للأقسام الرئيسية */
             color: var(--bose-black, #111111) !important;
             margin: 0 0 12px 0;
             line-height: 1.4;
@@ -212,13 +213,6 @@
             font-weight: 700 !important;
             color: var(--bose-black, #111111);
             background: transparent;
-            -moz-appearance: textfield;
-        }
-
-        .qty-numeric-input::-webkit-outer-spin-button,
-        .qty-numeric-input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
         }
 
         .bose-add-to-cart-action {
@@ -242,6 +236,22 @@
         .bose-add-to-cart-action:hover {
             background-color: var(--bose-black, #111111);
             box-shadow: 0 6px 20px rgba(17, 17, 17, 0.15);
+        }
+
+        /* 🚨 قسم التقييمات الحرة والمراجعات الفخمة */
+        .bose-reviews-section {
+            border-top: 1px dashed rgba(255, 145, 164, 0.3);
+            padding-top: 40px;
+            margin-bottom: 50px;
+            text-align: right;
+        }
+
+        .review-row-card {
+            background: #FFF5F6;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(255, 145, 164, 0.15);
         }
 
         /* هيكل التحميل الهيكلي الـ Skeleton الفائق لخلق تجربة أداء فورية */
@@ -281,62 +291,14 @@
 </head>
 <body class="bose-hardware-accelerated bose-arabic-text">
 
-    <!-- 🏢 مكون الهيدر الموحد والثابت الصريح (Shared Universal Header) الملتزم بالـ DOM القياسي -->
-    <header class="bose-navbar loaded" data-dynamic-injected="true">
-        <div class="navbar-mobile-wrapper" style="display: flex; width: 100%; justify-content: space-between; align-items: center; padding: 0 16px;">
-            <button id="mobile-menu-toggle" class="nav-icon-btn" aria-label="فتح قائمة التصفح" style="background: none; border: none; font-size: 1.4rem; color: var(--bose-black); cursor: pointer;">
-                <i class="fas fa-bars"></i>
-            </button>
-            
-            <div class="brand-logo-container" style="display: flex; align-items: center; gap: 8px;">
-                <a href="index.html" style="display: flex; align-items: center;">
-                    <img id="bose-store-logo" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="شعار حلويات بوسي" style="height: 44px; width: 44px; object-fit: contain;">
-                </a>
-            </div>
-            
-            <span class="brand-name-display" style="font-size: 1.15rem; font-weight: 700; color: var(--bose-black);">حلويات بوسي</span>
-            
-            <nav id="bose-nav-menu" style="display: none;">
-                <ul class="nav-list">
-                    <li><a href="index.html">الرئيسية</a></li>
-                    <li><a href="menu.html" class="active">المنيو الشامل</a></li>
-                    <li><a href="cake-builder.html">محاكي التورت</a></li>
-                    <li><a href="flower-builder.html">محاكي الورد</a></li>
-                </ul>
-            </nav>
-            
-            <div class="nav-actions" style="display: flex; align-items: center; gap: 14px;">
-                <button id="nav-search-btn" class="nav-icon-btn" aria-label="البحث في المنتجات" style="background: none; border: none; font-size: 1.25rem; color: var(--bose-black); cursor: pointer;">
-                    <i class="fas fa-search"></i>
-                </button>
-                
-                <a href="cart.html" class="nav-cart-icon-wrapper" aria-label="عرض سلة التسوق" style="position: relative; font-size: 1.3rem; color: var(--bose-black); text-decoration: none;">
-                    <i class="fas fa-shopping-bag"></i>
-                    <span id="nav-cart-count" style="position: absolute; top: -8px; left: -10px; background: var(--bose-pink); color: #FFF; font-size: 0.75rem; font-weight: 700; padding: 2px 6px; border-radius: 50%; min-width: 14px; text-align: center; line-height: 1.2;">0</span>
-                </a>
-            </div>
-        </div>
-    </header>
+    <!-- 🏢 مكون الهيدر الموحد والثابت الصريح (Shared Universal Header) الملتزم بالـ DOM القياسي الموحد -->
+    <header class="bose-navbar"></header>
 
     <!-- 📥 القائمة الجانبية المشتركة للموبايل (Universal Drawer Menu) -->
     <div class="drawer-overlay" id="drawer-shield"></div>
-    <aside class="bose-drawer-menu loaded" id="sidebar-drawer" data-dynamic-injected="true">
-        <div class="drawer-premium-header" style="padding: 24px 20px; background: rgba(255,145,164,0.08); border-bottom: 1px solid rgba(255,145,164,0.3); position: relative;">
-            <button id="sidebar-close-panel-btn" class="drawer-close-btn" aria-label="إغلاق القائمة">×</button>
-            <h3 style="margin: 0; font-size: 1.15rem; font-weight: 700; color: var(--bose-black);">قائمة التصفح الفاخرة</h3>
-            <p style="margin: 4px 0 0 0; font-size: 0.85rem; color: var(--bose-pink); font-weight: 600;">حلويات بوسي - فرع الكفاح 🌸</p>
-        </div>
-        <div class="drawer-links-scrollable" style="padding: 16px 20px; flex-grow: 1;">
-            <span class="drawer-divider-label" style="display: block; font-size: 0.75rem; font-weight: 700; color: #777; margin-bottom: 12px; letter-spacing: 0.5px;">الأقسام الرئيسية</span>
-            <ul class="drawer-links-list" style="list-style: none; padding: 0; margin: 0 0 24px 0; display: flex; flex-direction: column; gap: 14px;">
-                <li class="drawer-link-item"><a href="index.html" style="text-decoration: none; color: var(--bose-black); font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 10px;"><i class="fas fa-home" style="color: var(--bose-pink);"></i> الواجهة الرئيسية</a></li>
-                <li class="drawer-link-item"><a href="menu.html" class="active" style="text-decoration: none; color: var(--bose-black); font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 10px;"><i class="fas fa-utensils" style="color: var(--bose-pink);"></i> المنيو الشامل</a></li>
-                <li class="drawer-link-item"><a href="cart.html" style="text-decoration: none; color: var(--bose-black); font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 10px;"><i class="fas fa-shopping-basket" style="color: var(--bose-pink);"></i> سلة التسوق</a></li>
-            </ul>
-        </div>
-    </aside>
+    <aside class="bose-drawer-menu" id="sidebar-drawer"></aside>
 
-    <!-- منطقة تفاصيل المنتج الديناميكية المتوافقة بالمليم مع المحرك وقاعدة البيانات -->
+    <!-- منطقة تفاصيل المنتج الديناميكية المتوافقة بالمليم مع المحرك وقعادة البيانات -->
     <main id="bose-product-root-view" class="product-internal-wrapper">
         <!-- الهيكل المؤقت Skeleton المتجاوب ريثما يتم فك حزم بيانات الـ JSON -->
         <div class="product-master-grid">
@@ -350,81 +312,58 @@
         </div>
     </main>
 
-    <!-- 🤝 شريط عناصر الثقة والضمان الأربعة المعتمدة (Shared Trust Bar) -->
-    <section class="product-internal-wrapper" style="padding-top: 0; padding-bottom: 0;">
-        <div class="shared-trust-bar" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; padding: 40px 0; border-top: 1px dashed rgba(255, 145, 164, 0.25);">
-            <div class="trust-item-node" style="display: flex; gap: 16px; align-items: flex-start;">
-                <div class="trust-icon-box" style="width: 50px; height: 50px; border-radius: 16px; background-color: #FFF5F6; color: #FF91A4; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; border: 1px solid rgba(255, 145, 164, 0.3);"><i class="fas fa-ice-cream"></i></div>
-                <div class="trust-info-pane"><h4 style="font-size: 0.95rem; font-weight: 700; margin: 0 0 4px 0;">طبيعي 100%</h4><p style="font-size: 0.8rem; opacity: 0.8; margin: 0;">مكونات طازجة يومياً للحصول على الطعم الأصلي الفاخر.</p></div>
-            </div>
-            <div class="trust-item-node" style="display: flex; gap: 16px; align-items: flex-start;">
-                <div class="trust-icon-box" style="width: 50px; height: 50px; border-radius: 16px; background-color: #FFF5F6; color: #FF91A4; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; border: 1px solid rgba(255, 145, 164, 0.3);"><i class="fas fa-shipping-fast"></i></div>
-                <div class="trust-info-pane"><h4 style="font-size: 0.95rem; font-weight: 700; margin: 0 0 4px 0;">توصيل آمن وسريع</h4><p style="font-size: 0.8rem; opacity: 0.8; margin: 0;">نحافظ على نضارة وشكل وموعد طلبك الفخم بالمليم.</p></div>
-            </div>
-        </div>
-    </section>
-
     <!-- 🏪 مكون الفوتر الموحد والثابت الفاتح الصريح (Shared Universal Footer) -->
-    <footer class="bose-footer loaded" data-dynamic-injected="true">
-        <div class="footer-inner-wrapper" style="width: 100%; max-width: 1200px; margin: 0 auto; padding: 40px 16px; display: flex; flex-direction: column; align-items: center; gap: 24px;">
-            <div class="footer-logo-container">
-                <a href="index.html">
-                    <img id="bose-store-logo" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="شعار حلويات بوسي" style="height: 60px !important; width: auto !important; object-fit: contain;">
-                </a>
-            </div>
-            <span class="brand-name-display footer-brand-name" style="font-size: 1.4rem; font-weight: 700; color: var(--bose-black);">حلويات بوسي</span>
-            <div class="footer-copyright-block" style="margin-top: 16px; border-top: 1px solid rgba(255, 145, 164, 0.15); padding-top: 20px; width: 100%;">
-                <p>© <span>2026</span> جميع الحقوق محفوظة لعلامة حلويات بوسي التجارية الفاخرة</p>
-            </div>
-        </div>
-    </footer>
+    <footer class="bose-footer"></footer>
 
     <!-- 👑 المحرك البرمجي المتكامل والمتوافق بالمليم مع core-engine.js وقاعدة البيانات 👑 -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // 🚨 [حل الثغرة]: استخراج الـ slug النصي بدلاً من الـ ID الرقمي لتأمين مطابقة الـ JSON
+            // استخراج الـ slug النصي الموحد كمعرف فريد لمنع التصادم البرمجي لبيانات الموقع
             const urlParams = new URLSearchParams(window.location.search);
-            const productSlug = urlParams.get('slug') || urlParams.get('id'); // سماحية آمنة لكلا المتغيرين
+            const productSlug = urlParams.get('slug') || urlParams.get('id'); 
 
             const viewContainer = document.getElementById('bose-product-root-view');
 
             if (!productSlug) {
-                renderErrorPanel("لم نتمكن من تحديد الصنف المطلوب.");
+                renderErrorPanel("لم نتمكن من تحديد الصنف المطلوب لتصفح تفاصيله الفاخرة.");
                 return;
             }
 
-            // الاستماع اللحظي والآمن لجهوزية قاعدة البيانات المشتركة بالموقع
-            if (window.BoseStoreData) {
-                processProductExtraction(window.BoseStoreData);
-            } else {
+            // الاستماع اللحظي والآمن لجهوزية قاعدة البيانات المشتركة بالموقع عبر بروميس المحرك المركزي
+            window.getBoseDatabase().then(siteData => {
+                processProductExtraction(siteData);
+            }).catch(err => {
                 document.addEventListener("BoseDatabaseLoaded", function(e) {
                     processProductExtraction(e.detail);
                 });
-            }
+            });
 
             function processProductExtraction(siteData) {
-                let matchedProduct = null;
-                
-                // فحص شامل وتفصيلي للمصفوفة الموحدة داخل قاعدة البيانات لبراند بوسي
-                if (siteData && siteData.products && Array.isArray(siteData.products)) {
-                    matchedProduct = siteData.products.find(p => String(p.slug) === String(productSlug) || String(p.id) === String(productSlug));
+                if (!siteData || !siteData.products) {
+                    renderErrorPanel("عذراً، واجهنا صعوبة في جلب المنيو الفاخر حالياً.");
+                    return;
                 }
 
+                // فحص ومطابقة الصنف المطلوب بناءً على الـ slug النصي الصارم
+                const matchedProduct = siteData.products.find(p => String(p.slug) === String(productSlug) || String(p.id) === String(productSlug));
+
                 if (matchedProduct) {
-                    renderActiveProductDOM(matchedProduct, siteData.store.currency || "جنيه");
+                    renderActiveProductDOM(matchedProduct, siteData);
                 } else {
-                    renderErrorPanel("عذراً، الصنف غير موجود ضمن تشكيلتنا الحالية.");
+                    renderErrorPanel("عذراً، الصنف غير موجود ضمن تشكيلتنا الحالية الفاخرة.");
                 }
             }
 
-            function renderActiveProductDOM(product, currency) {
+            function renderActiveProductDOM(product, siteData) {
+                const currency = siteData.store.currency || "EGP";
                 const rating = product.rating || 5;
+                
                 let stars = "";
                 for (let i = 1; i <= 5; i++) {
                     stars += i <= Math.floor(rating) ? "★" : "☆";
                 }
 
-                // هندسة خيارات المقاسات والأحجام المنسدلة ديناميكياً لتفادي حقول الـ Select المشتتة
+                // هندسة خيارات المقاسات والأحجام المنسدلة ديناميكياً لتفادي خيارات الـ Select المشتتة
                 let sizeSelectorHTML = "";
                 const defaultSize = product.defaultSize || 'triangle';
                 const initialPrice = (product.prices && product.prices[defaultSize]) ? product.prices[defaultSize] : product.price;
@@ -444,7 +383,36 @@
                     sizeSelectorHTML += `</div></div>`;
                 }
 
-                // ضخ البيانات والمحتوى الموثق والصادق لبراند بوسي لمنع التكديس البصري
+                // بناء كتل المراجعات والتقييمات الفاخرة بنجومها الناعمة بناءً على المواصفة
+                let reviewsHTML = `<div class="bose-reviews-section"><h3 class="bose-section-title" style="font-size:1.3rem; font-weight:700; margin-bottom:20px; color:var(--bose-black);">🌟 مراجعات وتقييمات العملاء المحترمين</h3>`;
+                if (product.reviews && product.reviews.length > 0) {
+                    product.reviews.forEach(rev => {
+                        let rStars = "";
+                        for (let i = 1; i <= 5; i++) rStars += i <= rev.rating ? "★" : "☆";
+                        reviewsHTML += `
+                            <div class="review-row-card">
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                                    <strong style="font-size:14px; font-weight:700; color:var(--bose-black);">${escapeHTML(rev.user)}</strong>
+                                    <span style="color:var(--bose-gold); font-size: 1rem;">${rStars}</span>
+                                </div>
+                                <p style="margin:0; font-size:13.5px; opacity:0.9; color:var(--bose-black);">"${escapeHTML(rev.comment)}"</p>
+                            </div>
+                        `;
+                    });
+                } else {
+                    reviewsHTML += `<p style="font-size:14px; opacity:0.7; color:var(--bose-black);">طعم حلوياتنا الفاخرة بيتحدث عن نفسه مباشرة في كل مناسبة سعيدة! 🌸</p>`;
+                }
+                reviewsHTML += `</div>`;
+
+                // بناء قسم المقترحات الذكية والبدائل (قد يعجبك أيضاً) لتسهيل تصفح منتجات ذات صلة
+                let recommendationsHTML = `
+                    <div class="bose-recommendations-section" style="border-top: 1px dashed rgba(255, 145, 164, 0.3); padding-top: 40px; margin-bottom: 20px;">
+                        <h3 class="bose-section-title" style="font-size:1.3rem; font-weight:700; margin-bottom:24px; text-align:center; color:var(--bose-black);">🍰 قد يعجبك أيضاً تشكيلة متميزة</h3>
+                        <div id="product-page-suggestions-grid" style="display:grid; grid-template-columns: repeat(2, 1fr); gap:12px; width:100%;"></div>
+                    </div>
+                `;
+
+                // ضخ البيانات والمحتوى الموثق والصادق لبراند بوسي لمنع التكديس البصري وحظر الكتابة فوق الصور
                 viewContainer.innerHTML = `
                     <nav class="bose-breadcrumb-nav" aria-label="مسار التنقل">
                         <a href="index.html">الرئيسية</a>
@@ -479,8 +447,8 @@
                             <table class="product-specs-table">
                                 <tbody>
                                     ${product.size ? `<tr><td class="spec-title-bold">الحجم القياسي</td><td>${product.size}</td></tr>` : ''}
-                                    <tr><td class="spec-title-bold">حالة المكونات</td><td>طازجة وطبيعية 100% يومياً بالفرع</td></tr>
-                                    <tr><td class="spec-title-bold">شرط التحضير</td><td>يخبز ويحضر بحب خصيصاً لمناسبتكم السعيدة</td></tr>
+                                    <tr><td class="spec-title-bold">حالة المكونات</td><td>طازجة وطبيعية 100% يومياً بالفرع بدون حافظة</td></tr>
+                                    <tr><td class="spec-title-bold">شرط التحضير</td><td>يُخبز ويُحضر بكل حب خصيصاً لمناسبتكم السعيدة</td></tr>
                                 </tbody>
                             </table>
 
@@ -496,15 +464,27 @@
                             </div>
                         </div>
                     </div>
+
+                    ${reviewsHTML}
+                    
+                    ${recommendationsHTML}
                 `;
 
-                // تفعيل عداد التحكم بالكمية اللمسية المرنة لمنع القيم السالبة
+                // رندرة المقترحات الفرعية ديناميكياً (2 كارت فقط على شاشات الموبايل لتأمين الراحة الكاملة للعين)
+                const suggestionsGrid = document.getElementById('product-page-suggestions-grid');
+                if (suggestionsGrid) {
+                    const recProducts = siteData.products.filter(p => p.slug !== product.slug && p.slug !== "toort-custom-master" && p.slug !== "flowers-master").slice(0, 2);
+                    suggestionsGrid.innerHTML = recProducts.map(p => window.generateStrictProductCardHTML(p, currency)).join('');
+                    window.attachProductCardEvents(suggestionsGrid, siteData.products, currency);
+                }
+
+                // تفعيل عداد التحكم بالكمية اللمسية المرنة لمنع القيم السالبة والمزامنة مع الحسابات الكسرية
                 setupStepperMechanics(product, currency);
                 
-                // ربط خيارات المقاسات وتغيير عارض السعر اللحظي الدقيق
+                // ربط خيارات المقاسات وتغيير عارض السعر اللحظي الدقيق الشامل للتخصيص والزيادة
                 setupSizeTabsEvents(product, currency);
 
-                // ربط زر الإضافة الفاخر بالمحرك الموحد
+                // ربط زر الإضافة الفاخر بالمحرك الموحد لضمان التحديث اللحظي لعداد الهيدر
                 setupCartIntegration(product);
             }
 
@@ -522,7 +502,8 @@
                     priceNode.textContent = `${base * qty} ${currency}`;
                 };
 
-                btnDec.addEventListener('click', function() {
+                btnDec.addEventListener('click', function(e) {
+                    e.preventDefault();
                     let val = parseInt(qtyInput.value, 10) || 1;
                     if (val > 1) {
                         qtyInput.value = val - 1;
@@ -530,7 +511,8 @@
                     }
                 });
 
-                btnInc.addEventListener('click', function() {
+                btnInc.addEventListener('click', function(e) {
+                    e.preventDefault();
                     let val = parseInt(qtyInput.value, 10) || 1;
                     if (val < 99) {
                         qtyInput.value = val + 1;
@@ -562,7 +544,8 @@
                 const triggerBtn = document.getElementById('btn-add-to-cart-trigger');
                 if (!triggerBtn) return;
 
-                triggerBtn.addEventListener('click', function() {
+                triggerBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
                     const qtyInput = document.getElementById('input-bose-qty-val');
                     const quantity = parseInt(qtyInput.value, 10) || 1;
                     
@@ -577,23 +560,16 @@
                         options.flavorName = product.flavorName || "كلاسيك";
                     }
 
-                    // صياغة وإرسال كائن السلة القياسي الموحد المانع للتصادم البرمجي
+                    // صياغة وإرسال كائن السلة القياسي الموحد المانع للتصادم البرمجي لـ localStorage
                     const cartItem = window.createCartItem ? window.createCartItem(product, options, quantity) : null;
 
                     if (cartItem) {
                         if (typeof window.addBoseCartItem === 'function') {
                             window.addBoseCartItem(cartItem);
-                        } else {
-                            // حل احتياطي دفاعي في حال عدم اكتمال تحميل كود المحرك الفرعي
-                            let cart = JSON.parse(localStorage.getItem('bose_cart')) || [];
-                            cart.push(cartItem);
-                            localStorage.setItem('bose_cart', JSON.stringify(cart));
-                            if (typeof window.updateGlobalCartCounter === 'function') window.updateGlobalCartCounter();
-                            if (typeof window.showBoseToast === 'function') window.showBoseToast(`تمت إضافة ${product.title} إلى السلة 🌸`);
-                        }
-                    } else {
-                        // كود بديل احتياطي فائق لخلق تجربة معالجة فورية
-                        if (typeof window.addBoseItemToCart === 'function') {
+                            qtyInput.value = 1;
+                            const currentBase = parseFloat(document.getElementById('product-price-node').dataset.unitBase);
+                            document.getElementById('product-price-node').textContent = `${currentBase} ${currency}`;
+                        } else if (typeof window.addBoseItemToCart === 'function') {
                             window.addBoseItemToCart(product, quantity, options);
                         }
                     }
@@ -602,9 +578,9 @@
 
             function renderErrorPanel(message) {
                 viewContainer.innerHTML = `
-                    <div class="error-state-box">
-                        <h2 style="font-size:1.4rem; font-weight:700; margin-bottom:14px;">${message}</h2>
-                        <a href="menu.html" class="error-return-link">العودة لتصفح المنيو الشامل بالكامل</a>
+                    <div class="error-state-box" style="text-align: center; padding: 60px 20px; color: var(--bose-black);">
+                        <h2 style="font-size:1.4rem; font-weight:700; margin-bottom:14px; font-family:'Cairo', sans-serif;">${message}</h2>
+                        <a href="menu.html" style="display: inline-block; margin-top: 20px; color: var(--bose-pink); text-decoration: none; font-weight: 700; font-family:'Cairo', sans-serif;">العودة لتصفح المنيو الشامل بالكامل</a>
                     </div>
                 `;
             }
