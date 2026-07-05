@@ -633,26 +633,30 @@ input:focus, select:focus, textarea:focus {
     100% { transform: translate3d(-50%, 0, 0); }
 }
 
-.animate-marquee {
-    display: flex;
-    width: max-content;
-    animation: boseMarquee 28s linear infinite;
-    transform: translate3d(0, 0, 0);
-    will-change: transform;
-}
+
 
 @keyframes boseCategoriesLoop {
     0% { transform: translate3d(0, 0, 0); }
     100% { transform: translate3d(-50%, 0, 0); }
 }
 
-.categories-track-loop {
-    display: flex;
-    width: max-content;
-    animation: boseCategoriesLoop 32s linear infinite;
+/* 👑 كتل الحركة اللانهائية الموحدة والمحدثة لمنع الشلل والتعارض على الموبايل 👑 */
+.animate-marquee, .categories-track-loop {
+    display: flex !important;
+    width: max-content !important;
     transform: translate3d(0, 0, 0);
     will-change: transform;
 }
+
+.animate-marquee {
+    animation: boseMarquee 28s linear infinite;
+}
+
+.categories-track-loop {
+    animation: boseCategoriesLoop 32s linear infinite;
+}
+
+
 
 /* ==========================================================================
    🏪 الفوتر الموحد والثابت (Shared Universal Footer) بياض ناصع لتأمين التنفس البصري
