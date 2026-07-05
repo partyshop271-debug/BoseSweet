@@ -7,7 +7,7 @@
     <!-- 🔍 إعدادات تحسين محركات البحث المتكاملة والأرشفة الفاخرة SEO -->
     <title>حلويات بوسي | صنعناها بحب لتهديها لمن تحب</title>
     <meta name="description" content="منصة بيع إلكترونية متكاملة لعلامة حلويات بوسي الفاخرة. استمتع بتجربة تسوق فريدة، صمم تورتتك الخاصة وبوكيه الورد المخصص عبر محاكياتنا التفاعلية الفريدة من فرع الكفاح.">
-    <meta name="keywords" content="حلويات، تورت، بوكس هدايا، كاب كيك، سينابون، ورد، دوناتس airborne، حلويات بوسي sabotage، الفرافرة">
+    <meta name="keywords" content="حلويات، تورت، بوكس هدايا، كاب كيك، سينابون.. ورد، دوناتس، الفرافرة، حلويات بوسي">
     <link rel="canonical" href="https://bosesweets.com">
     
     <!-- 📱 علامات Open Graph الكاملة لمشاركات فخمة واحترافية -->
@@ -25,39 +25,83 @@
     <!-- 👑 استدعاء المحرك المركزي العالمي في رأس الصفحة لمنع وميض الألوان وتأمين الـ DOM -->
     <script src="js/core-engine.js"></script>
 
-    <!-- 🎨 إصلاح فوري وحاسم لثغرات العصر البصري بداخل الصفحة من غير تعديل المحركات الخلفية -->
+    <!-- 🎨 معالجة وتأمين استجابة السحب الكامل للسلايدرات والمجرى اللانهائي لمنع الشلل -->
     <style>
-        /* 🚨 منع عصر الكروت نهائياً داخل سلايدر الأكثر مبيعاً ووصل حديثاً */
+        /* 🚨 حل مشكلة الشلل الميكانيكي لقسم تسوق حسب الفئة */
+        #categories-track {
+            display: flex !important;
+            flex-direction: row !important;
+            overflow-x: auto !important; /* تفعيل السحب الحر الفوري بصباع العميل */
+            scroll-snap-type: x mandatory !important;
+            -webkit-overflow-scrolling: touch !important; /* نعومة فائقة لهواتف الآيفون والأندرويد */
+            scrollbar-width: none !important; /* إخفاء شريط التمرير المشوه */
+            padding-bottom: 20px !important;
+            gap: 16px !important;
+            width: 100% !important;
+        }
+        #categories-track::-webkit-scrollbar {
+            display: none !important;
+        }
+        #categories-track .category-slide-card {
+            flex: 0 0 280px !important; /* أبعاد كارت الفئة القياسية الصارمة للمواصفات */
+            max-width: 280px !important;
+            scroll-snap-align: start !important;
+            box-sizing: border-box !important;
+        }
+
+        /* 🚨 حل مشكلة تجمد وعرض صورة واحدة في قسم عقد من الإتقان */
+        #excellence-images-track {
+            display: flex !important;
+            flex-direction: row !important;
+            overflow-x: auto !important; /* تفعيل سحب العميل بمرونة متناهية السلاسة */
+            scroll-snap-type: x mandatory !important;
+            -webkit-overflow-scrolling: touch !important;
+            scrollbar-width: none !important;
+            gap: 16px !important;
+            width: 100% !important;
+            padding-bottom: 15px !important;
+        }
+        #excellence-images-track::-webkit-scrollbar {
+            display: none !important;
+        }
+        #excellence-images-track .excellence-track-link {
+            flex: 0 0 85vw !important; /* العرض الهندسي المتناسق للموبايل */
+            max-width: 85vw !important;
+            scroll-snap-align: start !important;
+            box-sizing: border-box !important;
+        }
+
+        /* تنسيق الكروت على الديسك توب لضمان التوزيع الشبكي والانسيابي الفاخر */
+        @media (min-width: 1024px) {
+            #categories-track .category-slide-card {
+                flex: 0 0 420px !important; /* التكبير بنسبة 30% لراحة العين ومنع التكديس */
+                max-width: 420px !important;
+            }
+            #excellence-images-track .excellence-track-link {
+                flex: 0 0 380px !important;
+                max-width: 380px !important;
+            }
+        }
+
+        /* منع انضغاط أو عصر صور كروت المنتجات */
         #most-selling-grid .product-card, 
         #new-arrivals-grid .product-card {
-            flex: 0 0 85vw !important; /* تثبيت العرض تماماً على الموبايل لمنع الانعصار */
+            flex: 0 0 85vw !important;
             max-width: 85vw !important;
             box-sizing: border-box !important;
         }
-
-        /* 🚨 منع عصر الكروت نهائياً داخل مجرى الفئات */
-        #categories-track .category-slide-card {
-            flex: 0 0 280px !important; /* تثبيت العرض القياسي للكارت تماماً */
-            max-width: 280px !important;
-            box-sizing: border-box !important;
-        }
-
         @media (min-width: 1024px) {
             #most-selling-grid .product-card, 
             #new-arrivals-grid .product-card {
-                flex: 0 0 380px !important; /* الحجم الثابت للديسك توب */
+                flex: 0 0 380px !important;
                 max-width: 380px !important;
-            }
-            #categories-track .category-slide-card {
-                flex: 0 0 420px !important; /* التكبير بنسبة 30% على الديسك توب */
-                max-width: 420px !important;
             }
         }
     </style>
 </head>
 <body class="bose-hardware-accelerated bose-arabic-text">
 
-    <!-- 🏪 1. شريط الإعلانات التسويقية العلوي اللانهائي (#top-bar-marquee) هو رأس الصفحة -->
+    <!-- 🏪 1. شريط الإعلانات التسويقية العلوي اللانهائي (#top-bar-marquee) -->
     <div id="top-bar-marquee" style="background-color: var(--bose-pink, #FF91A4); height: 40px; overflow: hidden; display: flex; align-items: center; width: 100%; position: relative; z-index: 1001; direction: rtl;">
         <div class="animate-marquee" style="display: flex; width: max-content; gap: 40px; animation: boseMarquee 28s linear infinite; will-change: transform;">
             <span style="white-space: nowrap; font-size: 0.85rem; font-weight: 700; color: var(--bose-white, #FFFFFF);">🌸 كل قطعة من حلويات بوسي صنعت يدوياً بحب وشغف لتليق بمناسباتكم السعيدة</span>
@@ -66,7 +110,7 @@
         </div>
     </div>
 
-    <!-- 🏢 2. مكون الهيدر الرسمي الموحد والثابت Sticky ( Shared Universal Header ) -->
+    <!-- 🏢 2. مكون الهيدر الرسمي الموحد والثابت Sticky (Shared Universal Header) -->
     <header class="bose-navbar" style="position: sticky; top: 0; z-index: 1000; background-color: rgba(255, 255, 255, 0.99); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 2px solid rgba(255, 145, 164, 0.25); display: flex; justify-content: space-between; align-items: center; padding: 0 16px; height: 70px; width: 100%; box-shadow: var(--bose-shadow-glow, 0 8px 32px rgba(255, 145, 164, 0.12)); direction: rtl;">
         <div class="navbar-mobile-wrapper" style="display: flex; width: 100%; justify-content: space-between; align-items: center; height: 100%;">
             <button id="mobile-menu-toggle" class="nav-icon-btn" aria-label="فتح قائمة التصفح" style="background: none; border: none; font-size: 1.4rem; color: var(--bose-black, #111111); cursor: pointer;">
@@ -128,20 +172,20 @@
 
         <!-- 🌊 4. قسم شلال المنتجات البصري الأنيق المتعاكس السلس (#waterfall-section) -->
         <section id="waterfall-section" style="position: relative; overflow: hidden; width: 100%; background-color: #FFFFFF;">
-            <div class="waterfall-overlay-top" style="position: absolute; top: 0; left: 0; width: 100%; height: 120px; background: linear-gradient(to bottom, #FFFFFF 0%, rgba(255,255,255,0) 100%); z-index: 5; pointer-events: none;"></div>
+            <div class="waterfall-overlay-top"></div>
             <div class="waterfall-container" style="display: flex; gap: 16px; width: 100%; height: 700px; overflow: hidden; position: relative;">
-                <div id="waterfall-left-col" class="waterfall-col waterfall-up" style="flex: 1; display: flex; flex-direction: column; gap: 16px; animation: boseWaterfallUp 35s linear infinite; will-change: transform;">
+                <div id="waterfall-left-col" class="waterfall-col waterfall-up">
                     <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=wl1" alt="حلويات بوسي" style="width: 100%; height: 320px; object-fit: cover; border-radius: 16px; display: block;" loading="lazy">
                     <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=wl2" alt="حلويات بوسي" style="width: 100%; height: 320px; object-fit: cover; border-radius: 16px; display: block;" loading="lazy">
                     <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=wl3" alt="حلويات بوسي" style="width: 100%; height: 320px; object-fit: cover; border-radius: 16px; display: block;" loading="lazy">
                 </div>
-                <div id="waterfall-right-col" class="waterfall-col waterfall-down" style="flex: 1; display: flex; flex-direction: column; gap: 16px; animation: boseWaterfallDown 35s linear infinite; will-change: transform;">
+                <div id="waterfall-right-col" class="waterfall-col waterfall-down">
                     <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=wr1" alt="حلويات بوسي" style="width: 100%; height: 320px; object-fit: cover; border-radius: 16px; display: block;" loading="lazy">
                     <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=wr2" alt="حلويات بوسي" style="width: 100%; height: 320px; object-fit: cover; border-radius: 16px; display: block;" loading="lazy">
                     <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=wr3" alt="حلويات بوسي" style="width: 100%; height: 320px; object-fit: cover; border-radius: 16px; display: block;" loading="lazy">
                 </div>
             </div>
-            <div class="waterfall-overlay-bottom" style="position: absolute; bottom: 0; left: 0; width: 100%; height: 120px; background: linear-gradient(to top, #FFFFFF 0%, rgba(255,255,255,0) 100%); z-index: 5; pointer-events: none;"></div>
+            <div class="waterfall-overlay-bottom"></div>
         </section>
 
         <!-- 🏆 5. القسم الثاني: عقد من الإتقان (#excellence-section) -->
@@ -150,23 +194,19 @@
                 <h2 class="bose-section-title" style="font-size: 1.75rem; font-weight: 700; color: #111111; position: relative; display: inline-block; padding-bottom: 10px;">عقد من الإتقان</h2>
                 <p class="bose-section-subtitle" style="color: #4D4D4D; font-size: 0.95rem; font-weight: 400; margin-top: 5px;">خلف كل قطعة حكاية شغف وتفاصيل محفورة بالدقة والمهارة الفائقة لتقديم تجربة تذوق ساحرة.</p>
             </div>
-            <!-- 🌸 [تأمين وحل ثغرة الصور الفارغة المبدئية في الـ HTML]: حقن الـ 3 صور الاحتياطية المضمونة المختلفة كلياً لمنع أي فراغ بصري -->
-            <div id="excellence-images-track" class="animate-marquee" style="display: flex; width: max-content; animation: boseMarquee 28s linear infinite; will-change: transform;">
-                <a href="menu.html" style="display: block; width: 33.33vw; min-width: 280px; padding: 0 8px; box-sizing: border-box;">
-                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=ex1" alt="إتقان بوسي 1" style="width: 100%; height: 350px; object-fit: cover; border-radius: 24px; border: 1px solid rgba(255, 145, 164, 0.3);" loading="lazy">
+            <!-- 🌸 [تم الحل الميكانيكي]: تفعيل السحب المرن الحر بصباع العميل لمنع شلل العرض أو التوقف على صورة واحدة -->
+            <div id="excellence-images-track">
+                <a href="menu.html" class="excellence-track-link">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=ex1" alt="إتقان بوسي 1" loading="lazy">
                 </a>
-                <a href="menu.html" style="display: block; width: 33.33vw; min-width: 280px; padding: 0 8px; box-sizing: border-box;">
-                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=ex2" alt="إتقان بوسي 2" style="width: 100%; height: 350px; object-fit: cover; border-radius: 24px; border: 1px solid rgba(255, 145, 164, 0.3);" loading="lazy">
+                <a href="menu.html" class="excellence-track-link">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=ex2" alt="إتقان بوسي 2" loading="lazy">
                 </a>
-                <a href="menu.html" style="display: block; width: 33.33vw; min-width: 280px; padding: 0 8px; box-sizing: border-box;">
-                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=ex3" alt="إتقان بوسي 3" style="width: 100%; height: 350px; object-fit: cover; border-radius: 24px; border: 1px solid rgba(255, 145, 164, 0.3);" loading="lazy">
+                <a href="menu.html" class="excellence-track-link">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=ex3" alt="إتقان بوسي 3" loading="lazy">
                 </a>
             </div>
-            <div class="bose-dots-container" style="display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 16px; width: 100%;">
-                <button class="bose-dot active" aria-label="الحقل رقم 1"></button>
-                <button class="bose-dot" aria-label="الحقل رقم 2"></button>
-                <button class="bose-dot" aria-label="الحقل رقم 3"></button>
-            </div>
+            <div class="bose-dots-container"></div>
         </section>
 
         <!-- 🔥 6. القسم الثالث: الأكثر مبيعاً السلايدر الجانبي التفاعلي (#most-selling-section) -->
@@ -176,7 +216,6 @@
                 <p class="bose-section-subtitle" style="color: #4D4D4D; font-size: 0.95rem; font-weight: 400; margin-top: 5px;">استكشف فخامة الاختيارات المعتمدة التي يفضلها عملاؤنا الأصلاء دائماً.</p>
             </div>
             
-            <!-- مجرى الحركة الأفقي السلايدر السلس للمحرك ( Horizontal Touch Slider ) -->
             <div id="most-selling-grid" class="bose-manual-scroll-active" style="display: flex; flex-direction: row; gap: 16px; overflow-x: auto; width: 100%; padding-bottom: 16px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; scrollbar-width: none;">
                 <div style="text-align: center; width: 100%; color: #FF91A4; font-weight: 700; padding: 20px 0;">⏳ جاري جلب أصناف الأكثر مبيعاً الفاخرة...</div>
             </div>
@@ -186,7 +225,6 @@
         <!-- 🎂 7. القسم الرابع: بلوك محاكي التورت البصري الفخم المتكامل العريض المطور (#cake-preview-section) -->
         <section id="cake-preview-section" style="width: 100%; min-height: 600px; background-color: var(--bose-pink, #FF91A4); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 24px; text-align: center; direction: rtl; box-sizing: border-box; position: relative;">
             <div style="max-width: 800px; display: flex; flex-direction: column; align-items: center; gap: 24px;">
-                <!-- 🖼️ تكبير حجم الصورة المخصصة لتصبح الهوك البصري الرئيسي المفتوح -->
                 <img id="cake-preview-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="محاكي التورت" style="width: 280px; height: 280px; object-fit: cover; border-radius: 28px; box-shadow: 0 16px 40px rgba(17,17,17,0.2);" loading="lazy">
                 <h2 id="cake-preview-title" style="font-size: 1.85rem; font-weight: 700; color: #111111; line-height: 1.3; margin: 0;">محاكي التورت التفاعلي</h2>
                 <p id="cake-preview-desc" style="color: #111111; opacity: 0.95; font-size: 1rem; font-weight: 400; line-height: 1.6; max-width: 650px; margin: 0;">حلويات بوسي تتيح لك تصميم تورتتك الفريدة بنفسك واختيار كافة التفاصيل والحشوات والطبقات والرسائل الخاصة حسب الطلب كميزة تنافسية صريحة لرحلتنا.</p>
@@ -201,7 +239,6 @@
                 <p class="bose-section-subtitle" style="color: #4D4D4D; font-size: 0.95rem; font-weight: 400; margin-top: 5px;">اكتشف أحدث النكهات والتوليفات الجديدة والمبتكرة الحصرية التي تحمل بصمة البراند المحترفة.</p>
             </div>
             
-            <!-- مجرى الحركة الأفقي السلايدر لـ 6 عناصر مع مؤشرات التنقل ( Horizontal Touch Slider ) -->
             <div id="new-arrivals-grid" class="bose-manual-scroll-active" style="display: flex; flex-direction: row; gap: 16px; overflow-x: auto; width: 100%; padding-bottom: 16px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; scrollbar-width: none;">
                 <div style="text-align: center; width: 100%; color: #FF91A4; font-weight: 700; padding: 20px 0;">⏳ جاري جلب توليفات وصل حديثاً المبتكرة...</div>
             </div>
@@ -215,20 +252,18 @@
                 <p class="bose-section-subtitle" style="color: #4D4D4D; font-size: 0.95rem; font-weight: 400; margin-top: 5px;">التشكيلة العامة الفاخرة التي تم تحضير مكوناتها الطازجة يومياً بأعلى جودة تضمن راحتكم النفسية.</p>
             </div>
             
-            <!-- شبكة التوزيع المستقرة دقيقة الأبعاد (كروت ثنائية متوازنة العرض تماماً لمنع ظهور كارت ونص) -->
             <div id="our-products-grid" class="bose-products-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; justify-content: center; width: 100%; box-sizing: border-box;">
                 <div style="text-align: center; grid-column: span 2; color: #FF91A4; font-weight: 700; padding: 20px 0;">⏳ جاري جلب التشكيلة العامة المستقرة...</div>
             </div>
             
             <div style="margin-top: 32px; width: 100%; text-align: center;">
-                <button id="btn-show-more-products" class="bose-hero-btn" style="background-color: #FF91A4; color: #FFFFFF; font-weight: 700; font-size: 0.9rem; padding: 12px 32px; border-radius: 50px; cursor: pointer; transition: 0.2s; border: none; display: inline-flex; items-center: center; box-shadow: 0 4px 12px rgba(255,145,164,0.15);">إظهار المزيد</button>
+                <button id="btn-show-more-products" class="bose-hero-btn" style="background-color: #FF91A4; color: #FFFFFF; font-weight: 700; font-size: 0.9rem; padding: 12px 32px; border-radius: 50px; cursor: pointer; transition: 0.2s; border: none; display: inline-flex; align-items: center; box-shadow: 0 4px 12px rgba(255,145,164,0.15);">إظهار المزيد</button>
             </div>
         </section>
 
-        <!-- 💐 10. القسم السابع: بلوك محاكي الورد البصري الفخم المتكامل العريض المطور والمطابق التام للخلفية (#flower-preview-section) -->
+        <!-- 👑 10. القسم السابع: محاكي الورد وتنسيق الهدايا (#flower-preview-section) -->
         <section id="flower-preview-section" style="width: 100%; min-height: 600px; background-color: var(--bose-pink, #FF91A4); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 24px; text-align: center; direction: rtl; box-sizing: border-box; position: relative;">
             <div style="max-width: 800px; display: flex; flex-direction: column; align-items: center; gap: 24px;">
-                <!-- 🖼️ تكبير حجم الصورة وتوحيد خلفية البلوك للون البمبي الحاكم تماماً من غير اختلاف -->
                 <img id="flower-preview-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="محاكي الورد" style="width: 280px; height: 280px; object-fit: cover; border-radius: 28px; box-shadow: 0 16px 40px rgba(17,17,17,0.2);" loading="lazy">
                 <h2 id="flower-preview-title" style="font-size: 1.85rem; font-weight: 700; color: #111111; line-height: 1.3; margin: 0;">محاكي الورد وتنسيق الهدايا</h2>
                 <p id="flower-preview-desc" style="color: #111111; opacity: 0.95; font-size: 1rem; font-weight: 400; line-height: 1.6; max-width: 650px; margin: 0;">خدمة تصميم بوكيهات الورد المخصصة (طبيعي، صناعي، أو ستان) مع ميزات دمج مفاجآت الكاش النقدية الدقيقة والشوكولاتة الفاخرة وطباعة الصور وكروت الرسائل الصادقة بحرية كاملة.</p>
@@ -274,8 +309,8 @@
                 <p class="bose-section-subtitle" style="color: #4D4D4D; font-size: 0.95rem; font-weight: 400; margin-top: 5px;">تسهيل وتأمين انتقالك المباشر والذكي لأي صنف تفضله باقتناع وثقة كاملة.</p>
             </div>
             
-            <!-- مجرى الحركة الدائري المستمر ذو المثلث البرمجي المانع للشلل ( Flexible Track Loop ) -->
-            <div id="categories-track" class="categories-track-loop" style="display: flex; width: max-content; animation: boseCategoriesLoop 32s linear infinite; will-change: transform;">
+            <!-- 🌸 [تم فك الشلل بنجاح]: تفعيل مسار التمرير الأفقي الحر المباشر بلمس الموبايل مع إخفاء الأشرطة المشوهة -->
+            <div id="categories-track">
                 <div style="text-align: center; width: 100%; color: #FF91A4; font-weight: 700; padding: 20px 0;">⏳ جاري جلب الفئات الـ 12 المعتمدة رسمياً...</div>
             </div>
             <div class="bose-dots-container"></div>
@@ -304,7 +339,7 @@
         </div>
     </section>
 
-    <!-- 🏪 13. مكون الفوتر الرسمي الموحد والثابت الفاتح ( Shared Universal Footer ) لخلق تنفس بصري صريح -->
+    <!-- 🏪 13. مكون الفوتر الرسمي الموحد والثابت الفاتح (Shared Universal Footer) -->
     <footer class="bose-footer" style="background-color: #FFFFFF !important; border-top: 1px solid rgba(255, 145, 164, 0.3) !important; padding: 0 !important; width: 100%; margin-top: auto; position: relative; z-index: 10; direction: rtl; text-align: center !important; box-shadow: 0 -8px 32px rgba(255, 145, 164, 0.04);">
         <div class="footer-inner-wrapper" style="width: 100%; max-width: 1200px; margin: 0 auto; padding: 40px 16px; display: flex; flex-direction: column; align-items: center; gap: 24px;">
             <div class="footer-logo-container">
