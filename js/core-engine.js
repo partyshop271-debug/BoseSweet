@@ -1,8 +1,8 @@
 /**
  * 👑 المحرك المركزي العالمي وعمليات الفحص المالي والمزامنة الزمنية المتقدمة - حلويات بوسي 👑
- * النسخة الهندسية القياسية والمطورة بنسبة 100% - الإصدار الذهبي الشامل والخالي تماماً من الثغرات V12.5
+ * النسخة الهندسية القياسية والمطورة بنسبة 100% - الإصدار الذهبي الشامل والخالي تماماً من الثغرات V12.6
  * يتوافق بشكل مطلق ومتبادل مع: cart-engine.js وقاعدة البيانات site-data-final.json ومعايير الأداء والموبايل أولاً
- * [🔐 تم حل مشكلة إزاحة الصور، وعطل توجيه الأزرار، وحماية الهوية البصرية الفاخرة للبراند]
+ * [🔐 تم حل مشكلة شلل الحركة التلقائية اللانهائية لسلايدر الإتقان مع حماية ميزة السحب اليدوي]
  */
 
 (function () {
@@ -78,7 +78,7 @@
         },
         "orderRules": {
             "minPreparationTimeHours": 24,
-            "preparationTimeMessage": "نحتاج إلى وقت كافٍ لتجهيز طلبك بأفضل جودة ممكنة، لذلك لا يمكن اختيار موعد قبل 24 ساعة من وقت تأكيد الطلب."
+            "preparationTimeMessage": "نحتاج إلى وقت كافٍ لتجهيزطلبك بأفضل جودة ممكنة، لذلك لا يمكن اختيار موعد قبل 24 ساعة من وقت تأكيد الطلب."
         },
         "seo": {
             "title": "حلويات بوسي | صنعناها بحب لتهديها لمن تحب",
@@ -1050,6 +1050,21 @@
             .animate-marquee::-webkit-scrollbar, .categories-track-loop::-webkit-scrollbar {
                 display: none !important;
             }
+
+            /* 👑 أنماط الحركة التلقائية الفاخرة لسلايدر الإتقان دون إحداث إزاحة عشوائية */
+            @keyframes boseExcellenceScroll {
+                0% { transform: translate3d(0, 0, 0); }
+                100% { transform: translate3d(-50%, 0, 0); }
+            }
+            .excellence-track-auto-loop {
+                display: flex !important;
+                width: max-content !important;
+                animation: boseExcellenceScroll 30s linear infinite !important;
+                will-change: transform;
+            }
+            .excellence-track-auto-loop:hover {
+                animation-play-state: paused !important;
+            }
         `;
         document.head.appendChild(styleTag);
     }
@@ -1119,6 +1134,7 @@
         if (!trackElement || !sectionContainer) return;
         
         trackElement.addEventListener('scroll', () => {
+            if (trackElement.classList.contains('excellence-track-auto-loop')) return;
             const width = trackElement.scrollWidth / itemsCount;
             const currentIdx = Math.round(trackElement.scrollLeft / width);
             
@@ -1572,7 +1588,6 @@
             }
             if (heroCtaNode) {
                 heroCtaNode.textContent = heroData.cta || "اطلب الآن";
-                // 🌸 [حل الثغرة]: تم إلغاء منع السلوك الافتراضي لتمكين التوجيه الميكانيكي الصحيح لصفحة المنيو
             }
         }
 
@@ -1585,7 +1600,6 @@
             leftCol.innerHTML = '';
             rightCol.innerHTML = '';
 
-            // 🌸 [حل الثغرة]: إحاطة صور الشلال بروابط حقيقية بدقة تامة للتوجيه الداخلي للمنيو
             leftCol.innerHTML = waterfallConfig.leftColumnImages.map(img => `
                 <a href="menu.html" style="display: block; margin-bottom: 16px;">
                     <img src="${img}" class="waterfall-img bose-fade-in-img" alt="حلويات بوسي" style="width: 100%; height: ${waterfallConfig.imageSize || '320px'}; object-fit: cover; border-radius: 16px;" onload="this.classList.add('loaded')" onerror="this.onerror=null; this.src='${window.getBoseLogo()}';" loading="lazy">
@@ -1640,9 +1654,14 @@
                     "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=ex3"
                   ];
 
-            // 🌸 [حل الثغرة]: تدمير وحذف الكلاس التلقائي وحقن الصور كروابط حرة لبدء العرض من أقصى اليمين بشكل هندسي
-            excellenceTrack.innerHTML = slideImages.map((img, i) => `
-                <a href="menu.html" class="excellence-track-link">
+            // 👑 [تحديث الحركة التلقائية]: إضافة كلاس الأنيميشن الجديد النقي لمنع الإزاحة وتشغيل التمرير التلقائي اللانهائي الفخم
+            excellenceTrack.className = 'excellence-track-auto-loop';
+            
+            // مضاعفة مصفوفة الصور لبناء شريط متصل هندسياً بنسبة 100% بدون أي فراغات بصرية تماشياً مع معايير الأداء لراحة العين
+            const loopedImages = [...slideImages, ...slideImages, ...slideImages];
+            
+            excellenceTrack.innerHTML = loopedImages.map((img, i) => `
+                <a href="menu.html" class="excellence-track-link" style="display: block; width: 33.33vw; min-width: 280px; flex-shrink: 0; padding: 0 8px; box-sizing: border-box;">
                     <img src="${img}" class="bose-fade-in-img" alt="إتقان بوسي رقم ${i+1}" style="width: 100%; height: 350px; object-fit: cover; border-radius: 24px; border: var(--bose-border-pink);" onload="this.classList.add('loaded')" onerror="this.onerror=null; this.src='${window.getBoseLogo()}';" loading="lazy">
                 </a>
             `).join('');
@@ -1656,6 +1675,9 @@
                 });
                 setupScrollToDotsBinding(excellenceTrack, excellenceSection, slideImages.length);
             }
+            
+            // ربط السحب واللمس لإيقاف الحركة التلقائية مؤقتاً لراحة العميل النفسية
+            enableMarqueeDragScrolling(excellenceTrack);
         }
 
         const mostSellingGrid = document.getElementById('most-selling-grid');
@@ -1697,7 +1719,7 @@
             attachProductCardEvents(ourProductsGrid, productsList, currency);
 
             if (showMoreBtn) {
-                showMoreBtn.style.display = remainingProducts.length > 0 ? 'inline-flex' : 'none';
+                showMoreBtn.style.display = remainingProducts.length > 4 ? 'inline-flex' : 'none';
                 if (!showMoreBtn.dataset.boseListener) {
                     showMoreBtn.addEventListener('click', (e) => {
                         e.preventDefault();
