@@ -7,7 +7,7 @@
     <!-- 🔍 إعدادات تحسين محركات البحث المتكاملة والأرشفة الفاخرة SEO -->
     <title>حلويات بوسي | صنعناها بحب لتهديها لمن تحب</title>
     <meta name="description" content="منصة بيع إلكترونية متكاملة لعلامة حلويات بوسي الفاخرة. استمتع بتجربة تسوق فريدة، صمم تورتتك الخاصة وبوكيه الورد المخصص عبر محاكياتنا التفاعلية الفريدة من فرع الكفاح.">
-    <meta name="keywords" content="حلويات، تورت، بوكس هدايا، كاب كيك، سينابون، ورد، دوناتس، الفرافرة، حلويات بوسي">
+    <meta name="keywords" content="حلويات، تورت، بوكس هدايا، كاب كيك، سينابون.. ورد، دوناتس، الفرافرة، حلويات بوسي">
     <link rel="canonical" href="https://bosesweets.com">
     
     <!-- 📱 علامات Open Graph الكاملة لمشاركات فخمة واحترافية -->
@@ -18,49 +18,42 @@
     <meta property="og:type" content="website">
 
     <!-- 🎨 ربط ملفات التصميم الموزعة هندسياً لمنع تضخم الأكواد وتأخر التحميل -->
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/simulators.css">
     
     <!-- 👑 استدعاء المحرك المركزي العالمي في رأس الصفحة لمنع وميض الألوان وتأمين الـ DOM -->
-    <script src="app.js"></script>
+    <script src="js/core-engine.js"></script>
 
-    <!-- 🎨 معالجة وتأمين استجابة السحب الكامل للسلايدرات والمجرى اللانهائي لمنع الشلل البصري -->
+    <!-- 🎨 معالجة وتأمين استجابة السحب الكامل للسلايدرات والمجرى اللانهائي لمنع الشلل -->
     <style>
-        /* 🚨 هندسة الارتداد والتثبيت الفاخر لقسم تسوق حسب الفئة */
+        /* 🚨 حل مشكلة الشلل الميكانيكي لقسم تسوق حسب الفئة */
         #categories-track {
             display: flex !important;
             flex-direction: row !important;
-            overflow-x: auto !important; 
+            overflow-x: auto !important; /* تفعيل السحب الحر الفوري بصباع العميل */
             scroll-snap-type: x mandatory !important;
-            -webkit-overflow-scrolling: touch !important; 
-            scrollbar-width: none !important; 
-            gap: 20px !important;
+            -webkit-overflow-scrolling: touch !important; /* نعومة فائقة لهواتف الآيفون والأندرويد */
+            scrollbar-width: none !important; /* إخفاء شريط التمرير المشوه */
+            padding-bottom: 20px !important;
+            gap: 16px !important;
             width: 100% !important;
-            padding: 10px 4px 24px 4px !important;
-            box-sizing: border-box !important;
         }
         #categories-track::-webkit-scrollbar {
             display: none !important;
         }
         #categories-track .category-slide-card {
-            flex: 0 0 280px !important; 
+            flex: 0 0 280px !important; /* أبعاد كارت الفئة القياسية الصارمة للمواصفات */
             max-width: 280px !important;
-            height: 360px !important;
             scroll-snap-align: start !important;
             box-sizing: border-box !important;
-            transition: transform 0.3s ease;
-        }
-        #categories-track .category-slide-card img {
-            width: 250px !important;
-            height: 250px !important;
-            object-fit: cover !important;
-            border-radius: 20px !important;
         }
 
-        /* 🚨 تأمين أبعاد كروت قسم "عقد من الإتقان" لتعمل بالتمرير الحر المرن دون تجمد */
+        /* 🚨 حل مشكلة تجمد وعرض صورة واحدة في قسم عقد من الإتقان */
         #excellence-images-track {
             display: flex !important;
             flex-direction: row !important;
-            overflow-x: auto !important; 
+            overflow-x: auto !important; /* تفعيل سحب العميل بمرونة متناهية السلاسة */
             scroll-snap-type: x mandatory !important;
             -webkit-overflow-scrolling: touch !important;
             scrollbar-width: none !important;
@@ -72,38 +65,17 @@
             display: none !important;
         }
         #excellence-images-track .excellence-track-link {
-            flex: 0 0 85vw !important; 
+            flex: 0 0 85vw !important; /* العرض الهندسي المتناسق للموبايل */
             max-width: 85vw !important;
             scroll-snap-align: start !important;
             box-sizing: border-box !important;
         }
 
-        /* 📐 التجاوب الفاخر للأبعاد الضخمة (زيادة 30%) للكروت على شاشات الديسك توب للكمبيوتر */
-        @media (min-width: 768px) {
-            #categories-track .category-slide-card {
-                flex: 0 0 340px !important;
-                max-width: 340px !important;
-                height: 430px !important;
-            }
-            #categories-track .category-slide-card img {
-                width: 340px !important;
-                height: 340px !important;
-            }
-            #excellence-images-track .excellence-track-link {
-                flex: 0 0 340px !important;
-                max-width: 340px !important;
-            }
-        }
-
+        /* تنسيق الكروت على الديسك توب لضمان التوزيع الشبكي والانسيابي الفاخر */
         @media (min-width: 1024px) {
             #categories-track .category-slide-card {
-                flex: 0 0 420px !important; 
+                flex: 0 0 420px !important; /* التكبير بنسبة 30% لراحة العين ومنع التكديس */
                 max-width: 420px !important;
-                height: 520px !important;
-            }
-            #categories-track .category-slide-card img {
-                width: 420px !important;
-                height: 420px !important;
             }
             #excellence-images-track .excellence-track-link {
                 flex: 0 0 380px !important;
@@ -111,7 +83,7 @@
             }
         }
 
-        /* تأمين أبعاد كروت المنتجات القياسية لمنع انضغاطها على الموبايل */
+        /* منع انضغاط أو عصر صور كروت المنتجات */
         #most-selling-grid .product-card, 
         #new-arrivals-grid .product-card {
             flex: 0 0 85vw !important;
@@ -222,7 +194,7 @@
                 <h2 class="bose-section-title" style="font-size: 1.75rem; font-weight: 700; color: #111111; position: relative; display: inline-block; padding-bottom: 10px;">عقد من الإتقان</h2>
                 <p class="bose-section-subtitle" style="color: #4D4D4D; font-size: 0.95rem; font-weight: 400; margin-top: 5px;">خلف كل قطعة حكاية شغف وتفاصيل محفورة بالدقة والمهارة الفائقة لتقديم تجربة تذوق ساحرة.</p>
             </div>
-            <!-- 🌸 [تم الحل المنطقي]: تفعيل السحب المرن الحر بصباع العميل لمنع شلل العرض أو التوقف على صورة واحدة -->
+            <!-- 🌸 [تم الحل الميكانيكي]: تفعيل السحب المرن الحر بصباع العميل لمنع شلل العرض أو التوقف على صورة واحدة -->
             <div id="excellence-images-track">
                 <a href="menu.html" class="excellence-track-link">
                     <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=ex1" alt="إتقان بوسي 1" loading="lazy">
@@ -255,7 +227,7 @@
             <div style="max-width: 800px; display: flex; flex-direction: column; align-items: center; gap: 24px;">
                 <img id="cake-preview-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="محاكي التورت" style="width: 280px; height: 280px; object-fit: cover; border-radius: 28px; box-shadow: 0 16px 40px rgba(17,17,17,0.2);" loading="lazy">
                 <h2 id="cake-preview-title" style="font-size: 1.85rem; font-weight: 700; color: #111111; line-height: 1.3; margin: 0;">محاكي التورت التفاعلي</h2>
-                <p id="cake-preview-desc" style="color: #111111; opacity: 0.95; font-size: 1rem; font-weight: 400; line-height: 1.6; max-width: 650px; margin: 0;">العلامة التجارية الفاخرة تتيح لك تصميم تورتتك الفريدة بنفسك واختيار كافة التفاصيل والحشوات والطبقات والرسائل الخاصة حسب الطلب كميزة تنافسية صريحة لرحلتنا.</p>
+                <p id="cake-preview-desc" style="color: #111111; opacity: 0.95; font-size: 1rem; font-weight: 400; line-height: 1.6; max-width: 650px; margin: 0;">حلويات بوسي تتيح لك تصميم تورتتك الفريدة بنفسك واختيار كافة التفاصيل والحشوات والطبقات والرسائل الخاصة حسب الطلب كميزة تنافسية صريحة لرحلتنا.</p>
                 <a id="cake-preview-cta" href="cake-builder.html" style="background-color: #FFFFFF; color: #FF91A4; font-weight: 700; font-size: 1rem; padding: 14px 44px; border-radius: 50px; text-decoration: none; box-shadow: 0 12px 32px rgba(17,17,17,0.15); transition: 0.3s; display: inline-block;">تصميم التورتة الآن</a>
             </div>
         </section>
@@ -294,7 +266,7 @@
             <div style="max-width: 800px; display: flex; flex-direction: column; align-items: center; gap: 24px;">
                 <img id="flower-preview-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="محاكي الورد" style="width: 280px; height: 280px; object-fit: cover; border-radius: 28px; box-shadow: 0 16px 40px rgba(17,17,17,0.2);" loading="lazy">
                 <h2 id="flower-preview-title" style="font-size: 1.85rem; font-weight: 700; color: #111111; line-height: 1.3; margin: 0;">محاكي الورد وتنسيق الهدايا</h2>
-                <p id="flower-preview-desc" style="color: #111111; opacity: 0.95; font-size: 1rem; font-weight: 400; line-height: 1.6; max-width: 650px; margin: 0;">خدمة تصميم بوكيهات الورد حسب الطلب (طبيعي، صناعي، أو ستان) مع ميزات دمج مفاجآت الكاش النقدية الدقيقة والشوكولاتة الفاخرة وطباعة الصور وكروت الرسائل الصادقة بحرية كاملة.</p>
+                <p id="flower-preview-desc" style="color: #111111; opacity: 0.95; font-size: 1rem; font-weight: 400; line-height: 1.6; max-width: 650px; margin: 0;">خدمة تصميم بوكيهات الورد المخصصة (طبيعي، صناعي، أو ستان) مع ميزات دمج مفاجآت الكاش النقدية الدقيقة والشوكولاتة الفاخرة وطباعة الصور وكروت الرسائل الصادقة بحرية كاملة.</p>
                 <a id="flower-preview-cta" href="flower-builder.html" style="background-color: #FFFFFF; color: #FF91A4; font-weight: 700; font-size: 1rem; padding: 14px 44px; border-radius: 50px; text-decoration: none; box-shadow: 0 12px 32px rgba(17,17,17,0.15); transition: 0.3s; display: inline-block;">تصميم البوكيه الآن</a>
             </div>
         </section>
@@ -330,18 +302,18 @@
             </div>
         </section>
 
-        <!-- 🏪 12. القسم التاسع: تسوق حسب الفئة مع تأمين السحب الحر والارتداد الموزون (#categories-slider-section) -->
+        <!-- 🏪 12. القسم التاسع: تسوق حسب الفئة المجرى اللانهائي لـ 12 فئة معتمدة (#categories-slider-section) -->
         <section id="categories-slider-section" class="bose-section-container" style="width: 100%; max-width: 1200px; margin: 40px auto; padding: 40px 16px; text-align: center; direction: rtl; overflow: hidden; position: relative;">
             <div class="bose-section-header" style="margin-bottom: 30px;">
                 <h2 class="bose-section-title" style="font-size: 1.75rem; font-weight: 700; color: #111111; position: relative; display: inline-block; padding-bottom: 10px;">تسوق حسب الفئة</h2>
                 <p class="bose-section-subtitle" style="color: #4D4D4D; font-size: 0.95rem; font-weight: 400; margin-top: 5px;">تسهيل وتأمين انتقالك المباشر والذكي لأي صنف تفضله باقتناع وثقة كاملة.</p>
             </div>
             
-            <!-- 🌸 تفعيل التمرير الأفقي الحر المدعوم بالارتداد السلس (Scroll Snapping) لراحة أصابع العميل ومنع القفز العشوائي -->
-            <div id="categories-track" style="display: flex !important; flex-direction: row !important; overflow-x: auto !important; scroll-snap-type: x mandatory !important; -webkit-overflow-scrolling: touch !important; scrollbar-width: none !important; gap: 20px !important; width: 100% !important; padding: 10px 4px 24px 4px !important; box-sizing: border-box !important; cursor: grab;">
+            <!-- 🌸 [تم فك الشلل بنجاح]: تفعيل مسار التمرير الأفقي الحر المباشر بلمس الموبايل مع إخفاء الأشرطة المشوهة -->
+            <div id="categories-track">
                 <div style="text-align: center; width: 100%; color: #FF91A4; font-weight: 700; padding: 20px 0;">⏳ جاري جلب الفئات الـ 12 المعتمدة رسمياً...</div>
             </div>
-            <div class="bose-dots-container" style="display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 16px; width: 100%;"></div>
+            <div class="bose-dots-container"></div>
         </section>
     </main>
 
@@ -350,7 +322,7 @@
         <div class="shared-trust-bar" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; padding: 40px 0; border-top: 1px dashed rgba(255, 145, 164, 0.25); direction: rtl; text-align: right;">
             <div class="trust-item-node" style="display: flex; gap: 16px; align-items: flex-start;">
                 <div class="trust-icon-box" style="width: 50px; height: 50px; border-radius: 16px; background-color: #FFF5F6; color: #FF91A4; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; border: 1px solid rgba(255, 145, 164, 0.3);"><i class="fas fa-seedling"></i></div>
-                <div class="trust-info-pane"><h4 style="font-size: 0.95rem; font-weight: 700; margin: 0 0 4px 0;">منتجات طازجة يومياً</h4><p style="font-size: 0.8rem; opacity: 0.8; margin: 0;">بمكونات طبيعية 100% وبدون أي مواد حافظة.</p></div>
+                <div class="trust-info-pane"><h4 style="font-size: 0.95rem; font-weight: 700; margin: 0 0 4px 0;">منتجات طازجة يومياً</h4><p style="font-size: 0.8rem; opacity: 0.8; margin: 0;">بمكونات طبيعية 100% بدون أي مواد حافظة.</p></div>
             </div>
             <div class="trust-item-node" style="display: flex; gap: 16px; align-items: flex-start;">
                 <div class="trust-icon-box" style="width: 50px; height: 50px; border-radius: 16px; background-color: #FFF5F6; color: #FF91A4; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; border: 1px solid rgba(255, 145, 164, 0.3);"><i class="fas fa-shipping-fast"></i></div>
