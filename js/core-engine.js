@@ -1,8 +1,8 @@
 /**
  * 👑 المحرك المركزي العالمي وعمليات الفحص المالي والمزامنة الزمنية المتقدمة - حلويات بوسي 👑
- * النسخة الهندسية القياسية والمطورة بنسبة 100% - الإصدار الذهبي الشامل والخالي تماماً من الثغرات V12.0
+ * النسخة الهندسية القياسية والمطورة بنسبة 100% - الإصدار الذهبي الشامل والخالي تماماً من الثغرات V12.5
  * يتوافق بشكل مطلق ومتبادل مع: cart-engine.js وقاعدة البيانات site-data-final.json ومعايير الأداء والموبايل أولاً
- * [🔐 تم حل ثغرات التجميد المنطقي، وحالات السباق، وشلل السحب بصباع العميل، وحماية الهوية البصرية الفاخرة للبراند]
+ * [🔐 تم حل مشكلة إزاحة الصور، وعطل توجيه الأزرار، وحماية الهوية البصرية الفاخرة للبراند]
  */
 
 (function () {
@@ -70,7 +70,7 @@
                 "applyOn": "menu-only"
             },
             "pickup": {
-                "address": "الكفاح شارع الوحدة المحلية بجوار صيدلية الدكتور احمد مجدي وبجوار عيادة الدكتور علي",
+                "address": "الكفاح شارع الوحدة المحلية بجوار صيدلية الدكتور أحمد مجدي وبجوار عيادة الدكتور علي",
                 "mapUrl": "https://maps.app.goo.gl/nAg4Y7vQ7hACvKGc8?g_st=ac",
                 "shippingFee": 0,
                 "message": "لا توجد رسوم شحن عند الاستلام من الفرع."
@@ -78,13 +78,14 @@
         },
         "orderRules": {
             "minPreparationTimeHours": 24,
-            "preparationTimeMessage": "نحتاج إلى وقت كافٍ لتجهيز طلبك بأفضل جودة ممكنة, لذلك لا يمكن اختيار موعد قبل 24 ساعة من وقت تأكيد الطلب."
+            "preparationTimeMessage": "نحتاج إلى وقت كافٍ لتجهيز طلبك بأفضل جودة ممكنة، لذلك لا يمكن اختيار موعد قبل 24 ساعة من وقت تأكيد الطلب."
         },
         "seo": {
             "title": "حلويات بوسي | صنعناها بحب لتهديها لمن تحب",
-            "description": "منصة بيع إلكترونية متكاملة لعلامة حلويات بوسي الفاخرة. استمتع بتجربة تسوق فريدة, صمم تورتتك الخاصة وبوكيه الورد المخصص عبر محاكياتنا التفاعلية الفريدة.",
+            "description": "منصة بيع إلكترونية متكاملة لعلامة حلويات بوسي الفاخرة. استمتع بتجربة تسوق فريدة، صمم تورتتك الخاصة وبوكيه الورد المخصص عبر محاكياتنا التفاعلية الفريدة.",
             "keywords": ["حلويات", "تورت", "بوكس هدايا", "كاب كيك", "سينابون", "ورد", "دوناتس", "حلويات بوسي"],
-            "ogImage": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+            "ogImage": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
+            "canonical": "https://bosesweets.com"
         },
         "social": {
             "facebook": "https://www.facebook.com/share/1H1vVMHyu9/",
@@ -1562,7 +1563,7 @@
             const heroCtaNode = document.getElementById('hero-cta-btn') || heroSection.querySelector('a');
 
             if (heroTitleNode) {
-                const rawTitle = heroData.title || "عقد من التميز in صناعة الحلويات";
+                const rawTitle = heroData.title || "عقد من التميز في صناعة الحلويات";
                 const formattedTitle = rawTitle.replace("التميز", `<span style="color: var(--bose-pink); font-weight: 700;">التميز</span>`);
                 heroTitleNode.innerHTML = formattedTitle;
             }
@@ -1571,13 +1572,7 @@
             }
             if (heroCtaNode) {
                 heroCtaNode.textContent = heroData.cta || "اطلب الآن";
-                heroCtaNode.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const target = document.getElementById('waterfall-section');
-                    if (target) {
-                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
-                });
+                // 🌸 [حل الثغرة]: تم إلغاء منع السلوك الافتراضي لتمكين التوجيه الميكانيكي الصحيح لصفحة المنيو
             }
         }
 
@@ -1590,15 +1585,17 @@
             leftCol.innerHTML = '';
             rightCol.innerHTML = '';
 
-            const leftImages = [...waterfallConfig.leftColumnImages, ...waterfallConfig.leftColumnImages, ...waterfallConfig.leftColumnImages];
-            const rightImages = [...waterfallConfig.rightColumnImages, ...waterfallConfig.rightColumnImages, ...waterfallConfig.rightColumnImages];
-
-            leftCol.innerHTML = leftImages.map(img => `
-                <img src="${img}" class="waterfall-img bose-fade-in-img" alt="حلويات بوسي" style="width: 100%; height: ${waterfallConfig.imageSize || '320px'}; object-fit: cover; border-radius: 16px; margin-bottom: 16px; display: block;" onload="this.classList.add('loaded')" onerror="this.onerror=null; this.src='${window.getBoseLogo()}';" loading="lazy">
+            // 🌸 [حل الثغرة]: إحاطة صور الشلال بروابط حقيقية بدقة تامة للتوجيه الداخلي للمنيو
+            leftCol.innerHTML = waterfallConfig.leftColumnImages.map(img => `
+                <a href="menu.html" style="display: block; margin-bottom: 16px;">
+                    <img src="${img}" class="waterfall-img bose-fade-in-img" alt="حلويات بوسي" style="width: 100%; height: ${waterfallConfig.imageSize || '320px'}; object-fit: cover; border-radius: 16px;" onload="this.classList.add('loaded')" onerror="this.onerror=null; this.src='${window.getBoseLogo()}';" loading="lazy">
+                </a>
             `).join('');
 
-            rightCol.innerHTML = rightImages.map(img => `
-                <img src="${img}" class="waterfall-img bose-fade-in-img" alt="حلويات بوسي" style="width: 100%; height: ${waterfallConfig.imageSize || '320px'}; object-fit: cover; border-radius: 16px; margin-bottom: 16px; display: block;" onload="this.classList.add('loaded')" onerror="this.onerror=null; this.src='${window.getBoseLogo()}';" loading="lazy">
+            rightCol.innerHTML = waterfallConfig.rightColumnImages.map(img => `
+                <a href="menu.html" style="display: block; margin-bottom: 16px;">
+                    <img src="${img}" class="waterfall-img bose-fade-in-img" alt="حلويات بوسي" style="width: 100%; height: ${waterfallConfig.imageSize || '320px'}; object-fit: cover; border-radius: 16px;" onload="this.classList.add('loaded')" onerror="this.onerror=null; this.src='${window.getBoseLogo()}';" loading="lazy">
+                </a>
             `).join('');
 
             leftCol.classList.add('waterfall-up');
@@ -1643,46 +1640,21 @@
                     "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=ex3"
                   ];
 
-            const doubledImages = [...slideImages, ...slideImages, ...slideImages];
-            excellenceTrack.className = 'animate-marquee';
-            excellenceTrack.innerHTML = doubledImages.map((img, i) => `
-                <a href="menu.html" class="excellence-track-link" style="display: block; width: 33.33vw; min-width: 280px; flex-shrink: 0; padding: 0 8px; box-sizing: border-box;">
+            // 🌸 [حل الثغرة]: تدمير وحذف الكلاس التلقائي وحقن الصور كروابط حرة لبدء العرض من أقصى اليمين بشكل هندسي
+            excellenceTrack.innerHTML = slideImages.map((img, i) => `
+                <a href="menu.html" class="excellence-track-link">
                     <img src="${img}" class="bose-fade-in-img" alt="إتقان بوسي رقم ${i+1}" style="width: 100%; height: 350px; object-fit: cover; border-radius: 24px; border: var(--bose-border-pink);" onload="this.classList.add('loaded')" onerror="this.onerror=null; this.src='${window.getBoseLogo()}';" loading="lazy">
                 </a>
             `).join('');
-            
-            excellenceTrack.addEventListener('mouseenter', () => { excellenceTrack.style.animationPlayState = 'paused'; });
-            excellenceTrack.addEventListener('mouseleave', () => { excellenceTrack.style.animationPlayState = 'running'; });
-            excellenceTrack.addEventListener('touchstart', () => { excellenceTrack.style.animationPlayState = 'paused'; }, {passive: true});
-            excellenceTrack.addEventListener('touchend', () => { excellenceTrack.style.animationPlayState = 'running'; }, {passive: true});
-            enableMarqueeDragScrolling(excellenceTrack);
 
             if (excellenceSection) {
-                let activeDotIndex = 0;
-                generateBoseDots(excellenceSection, slideImages.length, activeDotIndex, (idx) => {
+                generateBoseDots(excellenceSection, slideImages.length, 0, (idx) => {
                     const slides = excellenceTrack.querySelectorAll('.excellence-track-link');
                     if (slides[idx]) {
-                        const targetOffset = slides[idx].offsetLeft - (excellenceTrack.offsetWidth - slides[idx].offsetWidth) / 2;
-                        excellenceTrack.scrollTo({
-                            left: targetOffset,
-                            behavior: 'smooth'
-                        });
+                        slides[idx].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
                     }
                 });
-
                 setupScrollToDotsBinding(excellenceTrack, excellenceSection, slideImages.length);
-
-                setInterval(() => {
-                    if (excellenceTrack.style.animationPlayState !== 'paused') {
-                        activeDotIndex = (activeDotIndex + 1) % slideImages.length;
-                        const dotsWrapper = excellenceSection.querySelector('.bose-dots-container');
-                        if (dotsWrapper) {
-                            dotsWrapper.querySelectorAll('.bose-dot').forEach((dot, idx) => {
-                                dot.classList.toggle('active', idx === activeDotIndex);
-                            });
-                        }
-                    }
-                }, 5000);
             }
         }
 
@@ -1784,33 +1756,27 @@
             }
         }
 
-        // ==========================================================================
-        // 🌸 [تحديث هندسي قياسي]: ربط السحب اللحظي الحر للفئات الـ 12 مع الـ Dots النشطة
-        // ==========================================================================
         const categoriesSliderSec = document.getElementById('categories-slider-section');
         const categoriesTrack = document.getElementById('categories-track');
         const categoriesData = data.homepage.categoriesSlider;
 
         if (categoriesTrack && categoriesData) {
             categoriesTrack.innerHTML = '';
-            // إلغاء تفعيل كلاس الأنيميشن التلقائي المتعارض لمنع الشلل والقفز العشوائي كلياً
             categoriesTrack.className = ''; 
             categoriesTrack.style.animation = 'none';
             
-            // رندرة الفئات الـ 12 المعتمدة بالترتيب الرسمي دون تكرار مشوه يعطل اللمس
             categoriesTrack.innerHTML = categoriesData.map(cat => {
                 const targetUrl = cat.builderType === 'cake-customizer' ? 'cake-builder.html'
                                 : (cat.builderType === 'flower-customizer' ? 'flower-builder.html'
                                 : `category.html?category=${cat.id}`);
                 return `
-                    <a href="${targetUrl}" class="category-slide-card" style="display: flex; flex-direction: column; align-items: center; width: 280px; flex: 0 0 auto !important; scroll-snap-align: start !important; padding: 12px; box-sizing: border-box; text-decoration: none; -webkit-user-drag: none;">
-                        <img src="${cat.image}" class="bose-fade-in-img" alt="${escapeHTML(cat.title)}" style="width: 250px; height: 250px; object-fit: cover; border-radius: 20px; border: var(--bose-border-pink); box-shadow: var(--bose-shadow-glow); pointer-events: none;" onload="this.classList.add('loaded')" onerror="this.onerror=null; this.src='${window.getBoseLogo()}';" loading="lazy">
-                        <span style="display: block; text-align: center; margin-top: 12px; font-size: 20px; font-weight: 700; color: var(--bose-black); line-height: 1.4; pointer-events: none;">${escapeHTML(cat.title)}</span>
+                    <a href="${targetUrl}" class="category-slide-card" style="display: flex; flex-direction: column; align-items: center; width: 280px; flex: 0 0 auto !important; scroll-snap-align: start !important; padding: 12px; box-sizing: border-box; text-decoration: none;">
+                        <img src="${cat.image}" class="bose-fade-in-img" alt="${escapeHTML(cat.title)}" style="width: 250px; height: 250px; object-fit: cover; border-radius: 20px; border: var(--bose-border-pink); box-shadow: var(--bose-shadow-glow);" onload="this.classList.add('loaded')" onerror="this.onerror=null; this.src='${window.getBoseLogo()}';" loading="lazy">
+                        <span style="display: block; text-align: center; margin-top: 12px; font-size: 20px; font-weight: 700; color: var(--bose-black); line-height: 1.4;">${escapeHTML(cat.title)}</span>
                     </a>
                 `;
             }).join('');
 
-            // ربط وعزل أحداث السحب الحر بالفأرة أو اللمس للتصفح المريح والآمن
             if (categoriesSliderSec) {
                 generateBoseDots(categoriesSliderSec, categoriesData.length, 0, (idx) => {
                     const slides = categoriesTrack.querySelectorAll('.category-slide-card');
@@ -1819,7 +1785,6 @@
                     }
                 });
 
-                // تحديث وضعية النقط النشطة تلقائياً بمجرد انتهاء سحب إصبع العميل
                 categoriesTrack.addEventListener('scroll', () => {
                     const scrollLeftAbs = Math.abs(categoriesTrack.scrollLeft);
                     const cardWidth = categoriesTrack.scrollWidth / categoriesData.length;
@@ -1946,7 +1911,6 @@
             
             return parsed;
         } catch (e) {
-            console.error("❌ سلة التسوق تالفة في الذاكرة، تم تصفيرها احترازياً:", e);
             return [];
         }
     };
@@ -2163,27 +2127,15 @@
         const categoriesTrack = document.getElementById('categories-track');
 
         if (excellenceTrack) {
-            excellenceTrack.style.animation = 'boseMarquee 25s linear infinite';
             excellenceTrack.style.display = 'flex';
-            excellenceTrack.style.width = 'max-content';
-            excellenceTrack.classList.remove('bose-manual-scroll-active');
+            excellenceTrack.style.width = '100%';
             enableMarqueeDragScrolling(excellenceTrack); 
         }
 
         if (categoriesTrack) {
-            if (window.innerWidth <= 768) {
-                categoriesTrack.style.animation = 'none';
-                categoriesTrack.style.width = 'auto';
-                categoriesTrack.style.display = 'flex';
-                categoriesTrack.style.overflowX = 'auto';
-                categoriesTrack.classList.add('bose-manual-scroll-active');
-            } else {
-                categoriesTrack.style.animation = 'boseCategoriesLoop 30s linear infinite';
-                categoriesTrack.style.display = 'flex';
-                categoriesTrack.style.width = 'max-content';
-                categoriesTrack.classList.remove('bose-manual-scroll-active');
-                enableMarqueeDragScrolling(categoriesTrack);
-            }
+            categoriesTrack.style.display = 'flex';
+            categoriesTrack.style.width = '100%';
+            enableMarqueeDragScrolling(categoriesTrack);
         }
 
         window.addEventListener('storage', (e) => {
@@ -2252,10 +2204,6 @@
                 modalElement.dataset.boseListener = "true";
             }
         }
-    }
-
-    function originalDatabaseProducts() {
-        return window.BoseStoreData?.products || [];
     }
 
     function resultsContainerElement() {
@@ -2461,9 +2409,6 @@
     }
 })();
 
-// ==========================================================================
-// 4. حارس التمهيد والمزامنة والتحقق من مطابقة المحرك (Engine Bootstrap Guard)
-// ==========================================================================
 document.addEventListener("DOMContentLoaded", () => {
     if (window.BoseStoreData && window.BoseStoreData.store) {
         verifyAndInitializeEngine();
@@ -2478,7 +2423,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 verifyAndInitializeEngine();
             } else if (attempts >= maxAttempts) {
                 clearInterval(coreGuardInterval);
-                console.error("❌ حارس التمهيد: تجاوز الحد الأقصى لمحاولات تحميل قاعدة البيانات. تم إيقاف الفحص لتأمين الأداء.");
+                console.error("❌ حارس التمهيد: تجاوز الحد الأقصى لمحاولات تحميل قاعدة البيانات.");
             }
         }, 50);
     }
