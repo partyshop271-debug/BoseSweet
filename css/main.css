@@ -1154,3 +1154,15 @@ body.bose-no-scroll {
         margin: 0 auto;
         padding: 40px 16px;
     }
+
+
+/* 🛡️ حارس العزل السلس وحماية التحكم الذكي بالجافا سكريبت لمنع تصادم الأبعاد 🛡️ */
+.animate-marquee, .categories-track-loop {
+    overflow-x: hidden; /* تم التعديل لحذف !important ومنع تجمد السحب بصباع العميل */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.animate-marquee::-webkit-scrollbar, .categories-track-loop::-webkit-scrollbar {
+    display: none !important;
+}
