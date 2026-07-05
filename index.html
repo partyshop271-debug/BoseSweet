@@ -25,9 +25,9 @@
     <!-- 👑 استدعاء المحرك المركزي العالمي في رأس الصفحة لمنع وميض الألوان وتأمين الـ DOM -->
     <script src="js/core-engine.js"></script>
 
-    <!-- 🎨 معالجة وتأمين استجابة السحب الكامل للسلايدرات والمجرى اللانهائي لمنع الشلل -->
+    <!-- 🎨 معالجة وتأمين استجابة السحب الكامل للسلايدرات والمجرى اللانهائي لمنع الشلل والقفز -->
     <style>
-        /* 🚨 حل مشكلة الشلل الميكانيكي لقسم تسوق حسب الفئة */
+        /* 🚨 حل مشكلة الشلل الميكانيكي والقفز لقسم تسوق حسب الفئة */
         #categories-track {
             display: flex !important;
             flex-direction: row !important;
@@ -35,18 +35,25 @@
             scroll-snap-type: x mandatory !important;
             -webkit-overflow-scrolling: touch !important; /* نعومة فائقة لهواتف الآيفون والأندرويد */
             scrollbar-width: none !important; /* إخفاء شريط التمرير المشوه */
-            padding-bottom: 20px !important;
-            gap: 16px !important;
+            padding: 10px 4px 24px 4px !important;
+            gap: 20px !important;
             width: 100% !important;
+            box-sizing: border-box !important;
+            cursor: grab;
         }
         #categories-track::-webkit-scrollbar {
             display: none !important;
         }
         #categories-track .category-slide-card {
-            flex: 0 0 280px !important; /* أبعاد كارت الفئة القياسية الصارمة للمواصفات */
+            flex: 0 0 280px !important; /* أبعاد كارت الفئة القياسية أكبر بنسبة 30% */
+            width: 280px !important;
             max-width: 280px !important;
             scroll-snap-align: start !important;
             box-sizing: border-box !important;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         /* 🚨 حل مشكلة تجمد وعرض صورة واحدة في قسم عقد من الإتقان */
@@ -60,6 +67,7 @@
             gap: 16px !important;
             width: 100% !important;
             padding-bottom: 15px !important;
+            cursor: grab;
         }
         #excellence-images-track::-webkit-scrollbar {
             display: none !important;
@@ -75,6 +83,7 @@
         @media (min-width: 1024px) {
             #categories-track .category-slide-card {
                 flex: 0 0 420px !important; /* التكبير بنسبة 30% لراحة العين ومنع التكديس */
+                width: 420px !important;
                 max-width: 420px !important;
             }
             #excellence-images-track .excellence-track-link {
@@ -83,7 +92,7 @@
             }
         }
 
-        /* منع انضغاط أو عصر صور كروت المنتجات */
+        /* منع انضغاط أو عصر صور كروت المنتجات الجانبية التفاعلية */
         #most-selling-grid .product-card, 
         #new-arrivals-grid .product-card {
             flex: 0 0 85vw !important;
@@ -161,7 +170,7 @@
     </aside>
 
     <main>
-        <!-- 🌸 3. القسم الأول: عقد من التميز (#hero-section) -->
+        <!-- 🌸 3. SECTION 01: عقد من التميز (#hero-section) -->
         <section id="hero-section" class="bose-section-container" style="width: 100%; max-width: 1200px; margin: 0 auto; padding: 40px 16px; text-align: center; direction: rtl;">
             <div class="bose-section-header" style="margin-bottom: 24px;">
                 <h1 id="hero-title" style="font-size: 1.85rem; font-weight: 700; color: #111111; line-height: 1.3;">عقد من <span style="color: #FF91A4;">التميز</span> في صناعة الحلويات</h1>
@@ -170,46 +179,46 @@
             <a id="hero-cta-btn" class="bose-hero-btn" href="#waterfall-section" style="background-color: #FF91A4; color: #FFFFFF; font-weight: 700; font-size: 0.9rem; padding: 12px 32px; border-radius: 50px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 10px rgba(255, 145, 164, 0.35); border: none; transition: 0.3s; cursor: pointer;">اطلب الآن</a>
         </section>
 
-        <!-- 🌊 4. قسم شلال المنتجات البصري الأنيق المتعاكس السلس (#waterfall-section) -->
+        <!-- 🌊 4. WATERFALL: قسم شلال المنتجات البصري الأنيق المتعاكس السلس (#waterfall-section) -->
         <section id="waterfall-section" style="position: relative; overflow: hidden; width: 100%; background-color: #FFFFFF;">
-            <div class="waterfall-overlay-top"></div>
+            <div class="waterfall-overlay-top" style="position: absolute; top: 0; left: 0; width: 100%; height: 120px; background: linear-gradient(to bottom, #FFFFFF 0%, rgba(255,255,255,0) 100%); z-index: 5; pointer-events: none; backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);"></div>
             <div class="waterfall-container" style="display: flex; gap: 16px; width: 100%; height: 700px; overflow: hidden; position: relative;">
-                <div id="waterfall-left-col" class="waterfall-col waterfall-up">
+                <div id="waterfall-left-col" class="waterfall-col waterfall-up" style="flex: 1; display: flex; flex-direction: column; gap: 16px; animation: boseWaterfallUp 40s linear infinite; will-change: transform;">
                     <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=wl1" alt="حلويات بوسي" style="width: 100%; height: 320px; object-fit: cover; border-radius: 16px; display: block;" loading="lazy">
                     <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=wl2" alt="حلويات بوسي" style="width: 100%; height: 320px; object-fit: cover; border-radius: 16px; display: block;" loading="lazy">
                     <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=wl3" alt="حلويات بوسي" style="width: 100%; height: 320px; object-fit: cover; border-radius: 16px; display: block;" loading="lazy">
                 </div>
-                <div id="waterfall-right-col" class="waterfall-col waterfall-down">
+                <div id="waterfall-right-col" class="waterfall-col waterfall-down" style="flex: 1; display: flex; flex-direction: column; gap: 16px; animation: boseWaterfallDown 40s linear infinite; will-change: transform;">
                     <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=wr1" alt="حلويات بوسي" style="width: 100%; height: 320px; object-fit: cover; border-radius: 16px; display: block;" loading="lazy">
                     <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=wr2" alt="حلويات بوسي" style="width: 100%; height: 320px; object-fit: cover; border-radius: 16px; display: block;" loading="lazy">
                     <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=wr3" alt="حلويات بوسي" style="width: 100%; height: 320px; object-fit: cover; border-radius: 16px; display: block;" loading="lazy">
                 </div>
             </div>
-            <div class="waterfall-overlay-bottom"></div>
+            <div class="waterfall-overlay-bottom" style="position: absolute; bottom: 0; left: 0; width: 100%; height: 120px; background: linear-gradient(to top, #FFFFFF 0%, rgba(255,255,255,0) 100%); z-index: 5; pointer-events: none; backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);"></div>
         </section>
 
-        <!-- 🏆 5. القسم الثاني: عقد من الإتقان (#excellence-section) -->
+        <!-- 🏆 5. SECTION 02: عقد من الإتقان (#excellence-section) -->
         <section id="excellence-section" class="bose-section-container" style="width: 100%; max-width: 1200px; margin: 40px auto; padding: 40px 16px; text-align: center; direction: rtl; overflow: hidden; position: relative;">
             <div class="bose-section-header" style="margin-bottom: 30px;">
                 <h2 class="bose-section-title" style="font-size: 1.75rem; font-weight: 700; color: #111111; position: relative; display: inline-block; padding-bottom: 10px;">عقد من الإتقان</h2>
                 <p class="bose-section-subtitle" style="color: #4D4D4D; font-size: 0.95rem; font-weight: 400; margin-top: 5px;">خلف كل قطعة حكاية شغف وتفاصيل محفورة بالدقة والمهارة الفائقة لتقديم تجربة تذوق ساحرة.</p>
             </div>
-            <!-- 🌸 [تم الحل الميكانيكي]: تفعيل السحب المرن الحر بصباع العميل لمنع شلل العرض أو التوقف على صورة واحدة -->
+            <!-- 🌸 تفعيل السحب المرن والمحاذاة المريحة للعين لمنع تداخل الأحداث البصرية وبتر الصور -->
             <div id="excellence-images-track">
                 <a href="menu.html" class="excellence-track-link">
-                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=ex1" alt="إتقان بوسي 1" loading="lazy">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=ex1" alt="إتقان بوسي 1" style="width: 100%; height: 350px; object-fit: cover; border-radius: 24px; border: 1px solid rgba(255, 145, 164, 0.3);" loading="lazy">
                 </a>
                 <a href="menu.html" class="excellence-track-link">
-                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=ex2" alt="إتقان بوسي 2" loading="lazy">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=ex2" alt="إتقان بوسي 2" style="width: 100%; height: 350px; object-fit: cover; border-radius: 24px; border: 1px solid rgba(255, 145, 164, 0.3);" loading="lazy">
                 </a>
                 <a href="menu.html" class="excellence-track-link">
-                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=ex3" alt="إتقان بوسي 3" loading="lazy">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=ex3" alt="إتقان بوسي 3" style="width: 100%; height: 350px; object-fit: cover; border-radius: 24px; border: 1px solid rgba(255, 145, 164, 0.3);" loading="lazy">
                 </a>
             </div>
             <div class="bose-dots-container"></div>
         </section>
 
-        <!-- 🔥 6. القسم الثالث: الأكثر مبيعاً السلايدر الجانبي التفاعلي (#most-selling-section) -->
+        <!-- 🔥 6. SECTION 03: الأكثر مبيعاً السلايدر الجانبي التفاعلي (#most-selling-section) -->
         <section id="most-selling-section" class="bose-section-container" style="width: 100%; max-width: 1200px; margin: 40px auto; padding: 40px 16px; text-align: center; direction: rtl; overflow: hidden; position: relative;">
             <div class="bose-section-header" style="margin-bottom: 30px;">
                 <h2 class="bose-section-title" style="font-size: 1.75rem; font-weight: 700; color: #111111; position: relative; display: inline-block; padding-bottom: 10px;">الأكثر مبيعاً</h2>
@@ -222,17 +231,17 @@
             <div class="bose-dots-container"></div>
         </section>
 
-        <!-- 🎂 7. القسم الرابع: بلوك محاكي التورت البصري الفخم المتكامل العريض المطور (#cake-preview-section) -->
+        <!-- 🎂 7. SECTION 04: بلوك محاكي التورت البصري الفخم المتكامل العريض (#cake-preview-section) -->
         <section id="cake-preview-section" style="width: 100%; min-height: 600px; background-color: var(--bose-pink, #FF91A4); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 24px; text-align: center; direction: rtl; box-sizing: border-box; position: relative;">
             <div style="max-width: 800px; display: flex; flex-direction: column; align-items: center; gap: 24px;">
                 <img id="cake-preview-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="محاكي التورت" style="width: 280px; height: 280px; object-fit: cover; border-radius: 28px; box-shadow: 0 16px 40px rgba(17,17,17,0.2);" loading="lazy">
                 <h2 id="cake-preview-title" style="font-size: 1.85rem; font-weight: 700; color: #111111; line-height: 1.3; margin: 0;">محاكي التورت التفاعلي</h2>
-                <p id="cake-preview-desc" style="color: #111111; opacity: 0.95; font-size: 1rem; font-weight: 400; line-height: 1.6; max-width: 650px; margin: 0;">حلويات بوسي تتيح لك تصميم تورتتك الفريدة بنفسك واختيار كافة التفاصيل والحشوات والطبقات والرسائل الخاصة حسب الطلب كميزة تنافسية صريحة لرحلتنا.</p>
+                <p id="cake-preview-desc" style="color: #111111; opacity: 0.95; font-size: 1rem; font-weight: 400; line-height: 1.6; max-width: 650px; margin: 0;">%حجم كبير عريض يملأ الشاشة: حلويات بوسي تتيح لك تصميم تورتتك الفريدة بنفسك واختيار كافة التفاصيل والحشوات والطبقات والرسائل الخاصة حسب الطلب كميزة تنافسية صريحة لرحلتنا.</p>
                 <a id="cake-preview-cta" href="cake-builder.html" style="background-color: #FFFFFF; color: #FF91A4; font-weight: 700; font-size: 1rem; padding: 14px 44px; border-radius: 50px; text-decoration: none; box-shadow: 0 12px 32px rgba(17,17,17,0.15); transition: 0.3s; display: inline-block;">تصميم التورتة الآن</a>
             </div>
         </section>
 
-        <!-- 🌟 8. القسم الخامس: وصل حديثاً السلايدر الجانبي التفاعلي (#new-arrivals-section) -->
+        <!-- 🌟 8. SECTION 05: وصل حديثاً السلايدر الجانبي التفاعلي (#new-arrivals-section) -->
         <section id="new-arrivals-section" class="bose-section-container" style="width: 100%; max-width: 1200px; margin: 40px auto; padding: 40px 16px; text-align: center; direction: rtl; overflow: hidden; position: relative;">
             <div class="bose-section-header" style="margin-bottom: 30px;">
                 <h2 class="bose-section-title" style="font-size: 1.75rem; font-weight: 700; color: #111111; position: relative; display: inline-block; padding-bottom: 10px;">وصل حديثاً</h2>
@@ -245,7 +254,7 @@
             <div class="bose-dots-container"></div>
         </section>
 
-        <!-- 📦 9. القسم السادس: منتجاتنا شبكة هندسية مستقرة كارتين بجوار بعضهما البعض (#our-products-section) -->
+        <!-- 📦 9. SECTION 06: منتجاتنا شبكة هندسية مستقرة كارتين بجوار بعضهما البعض (#our-products-section) -->
         <section id="our-products-section" class="bose-section-container" style="width: 100%; max-width: 1200px; margin: 40px auto; padding: 40px 16px; text-align: center; direction: rtl; position: relative;">
             <div class="bose-section-header" style="margin-bottom: 30px;">
                 <h2 class="bose-section-title" style="font-size: 1.75rem; font-weight: 700; color: #111111; position: relative; display: inline-block; padding-bottom: 10px;">منتجاتنا</h2>
@@ -261,7 +270,7 @@
             </div>
         </section>
 
-        <!-- 👑 10. القسم السابع: محاكي الورد وتنسيق الهدايا (#flower-preview-section) -->
+        <!-- 💐 10. SECTION 07: بلوك محاكي الورد البصري الفخم المتكامل العريض (#flower-preview-section) -->
         <section id="flower-preview-section" style="width: 100%; min-height: 600px; background-color: var(--bose-pink, #FF91A4); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 24px; text-align: center; direction: rtl; box-sizing: border-box; position: relative;">
             <div style="max-width: 800px; display: flex; flex-direction: column; align-items: center; gap: 24px;">
                 <img id="flower-preview-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="محاكي الورد" style="width: 280px; height: 280px; object-fit: cover; border-radius: 28px; box-shadow: 0 16px 40px rgba(17,17,17,0.2);" loading="lazy">
@@ -271,7 +280,7 @@
             </div>
         </section>
 
-        <!-- 👑 11. القسم الثامن: الفخر والاعتزاز العدادات التصاعدية المحمية (#pride-section) -->
+        <!-- 👑 11. SECTION 08: الفخر والاعتزاز العدادات التصاعدية المحمية (#pride-section) -->
         <section id="pride-section" style="width: 100%; min-height: 550px; background-color: #FFF5F6; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 16px; box-sizing: border-box; direction: rtl; text-align: center; position: relative;">
             <div class="bose-section-header" style="margin-bottom: 40px; max-width: 700px; margin-left: auto; margin-right: auto;">
                 <h2 style="font-size: 1.75rem; font-weight: 700; color: #111111; position: relative; display: inline-block; padding-bottom: 10px;">الفخر والاعتزاز</h2>
@@ -302,14 +311,14 @@
             </div>
         </section>
 
-        <!-- 🏪 12. القسم التاسع: تسوق حسب الفئة المجرى اللانهائي لـ 12 فئة معتمدة (#categories-slider-section) -->
+        <!-- 🏪 12. SECTION 09: تسوق حسب الفئة المجرى اللانهائي لـ 12 فئة معتمدة (#categories-slider-section) -->
         <section id="categories-slider-section" class="bose-section-container" style="width: 100%; max-width: 1200px; margin: 40px auto; padding: 40px 16px; text-align: center; direction: rtl; overflow: hidden; position: relative;">
             <div class="bose-section-header" style="margin-bottom: 30px;">
                 <h2 class="bose-section-title" style="font-size: 1.75rem; font-weight: 700; color: #111111; position: relative; display: inline-block; padding-bottom: 10px;">تسوق حسب الفئة</h2>
                 <p class="bose-section-subtitle" style="color: #4D4D4D; font-size: 0.95rem; font-weight: 400; margin-top: 5px;">تسهيل وتأمين انتقالك المباشر والذكي لأي صنف تفضله باقتناع وثقة كاملة.</p>
             </div>
             
-            <!-- 🌸 [تم فك الشلل بنجاح]: تفعيل مسار التمرير الأفقي الحر المباشر بلمس الموبايل مع إخفاء الأشرطة المشوهة -->
+            <!-- 🌸 [تم فك الشلل بنجاح]: تفعيل مسار التمرير الأفقي الحر المباشر بلمس الموبايل مع إخفاء الأشرطة المشوهة والتثبيت الفاخر للـ Scroll Snap -->
             <div id="categories-track">
                 <div style="text-align: center; width: 100%; color: #FF91A4; font-weight: 700; padding: 20px 0;">⏳ جاري جلب الفئات الـ 12 المعتمدة رسمياً...</div>
             </div>
@@ -349,7 +358,7 @@
             </div>
             <span class="brand-name-display footer-brand-name" style="font-size: 1.4rem; font-weight: 700; color: #111111;">حلويات بوسي</span>
             <div class="footer-about-block" style="max-width: 600px;">
-                <p id="footer-about-text" style="font-size: 0.95rem; color: #111111; opacity: 0.8; line-height: 1.6; margin: 0;">صنعناها بحب لتهديها لمن تحب. خبرة أكثر من 10 سنوات في صناعة الحلويات الفاخرة وتنسيق الهدايا والورد لنوثق أسعد لحظاتكم بتميز واحترافية كاملة من فرع الكفاح.</p>
+                <p id="footer-about-text" style="font-size: 0.95rem; color: #111111; opacity: 0.8; line-height: 1.6; margin: 0;">صنعناها بحب لتهديها لمن تحب. خبرة أكثر من 10 سنوات in صناعة الحلويات الفاخرة وتنسيق الهدايا والورد لنوثق أسعد لحظاتكم بتميز واحترافية كاملة من فرع الكفاح.</p>
             </div>
             <div id="footer-social-links" style="display: flex; gap: 16px; justify-content: center; margin: 8px 0;">
                 <a href="https://www.facebook.com/share/1H1vVMHyu9/" class="social-link-facebook" target="_blank" aria-label="فيسبوك حلويات بوسي" style="width: 40px; height: 40px; border-radius: 50%; background: #3b5998; color: #FFF; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 1.1rem;"><i class="fab fa-facebook-f"></i></a>
