@@ -1,6 +1,6 @@
 /**
  * 👑 المحرك المركزي العالمي وعمليات الفحص المالي والمزامنة الزمنية المتقدمة - حلويات بوسي 👑
- * النسخة الهندسية القياسية والمطورة بنسبة 100% - الإصدار الذهبي الشامل والخالي تماماً من الثغرات V10.0
+ * النسخة الهندسية القياسية والمطورة بنسبة 100% - الإصدار الذهبي الشامل والخالي تماماً من الثغرات V11.0
  * يتوافق بشكل مطلق ومتبادل مع: cart-engine.js وقاعدة البيانات site-data-final.json ومعايير الأداء والموبايل أولاً
  * [🔐 تم حل ثغرات التجميد المنطقي، وحالات السباق، وشلل السحب بصباع العميل، وحماية الهوية البصرية الفاخرة للبراند]
  */
@@ -1079,6 +1079,7 @@
         document.head.appendChild(styleTag);
     }
 
+    // 🌸 [حل جذري هندسي لشلل السحب]: تم تطوير المحرك لاستقبال ودعم اللمس الحر والتمرير بطلاقة وسلاسة مطلقة
     function enableMarqueeDragScrolling(track) {
         if (!track) return;
         
@@ -1227,7 +1228,7 @@
         if (drawerMenu && !drawerMenu.hasAttribute("data-dynamic-injected")) {
             drawerMenu.setAttribute("data-dynamic-injected", "true");
             drawerMenu.innerHTML = `
-                <div class="drawer-premium-header" style="padding: 24px 20px; background: rgba(255,145,164,0.08); border-bottom: var(--bose-border-pink);">
+                <div class="drawer-premium-header" style="padding: 24px 20px; background: rgba(255,145,164,0.08); border-bottom: var(--bose-border-pink); ">
                     <h3 style="margin: 0; font-size: 1.15rem; font-weight: 700; color: var(--bose-black);">قائمة التصفح الفاخرة</h3>
                     <p style="margin: 4px 0 0 0; font-size: 0.85rem; color: var(--bose-pink); font-weight: 600;">حلويات بوسي - فرع الكفاح 🌸</p>
                 </div>
@@ -1268,7 +1269,7 @@
                     <span class="brand-name-display footer-brand-name" style="font-size: 1.4rem; font-weight: 700; color: var(--bose-black);">حلويات بوسي</span>
 
                     <div class="footer-about-block" style="max-width: 600px;">
-                        <p id="footer-about-text" style="font-size: 0.95rem; color: #555; line-height: 1.6; margin: 0;">صنعناها بحب لتهديها لمن تحب. خبرة أكثر من 10 سنوات في صناعة الحلويات الفاخرة وتنسيق الهدايا والورد لنوثق أسعد لحظاتكم بتميز وااحترافية كاملة من فرع الكفاح.</p>
+                        <p id="footer-about-text" style="font-size: 0.95rem; color: #555; line-height: 1.6; margin: 0;">صنعناها بحب لتهديها لمن تحب. خبرة أكثر من 10 سنوات في صناعة الحلويات الفاخرة وتنسيق الهدايا والورد لنوثق أسعد لحظاتكم بتميز واحترافية كاملة من فرع الكفاح.</p>
                     </div>
                     
                     <div id="footer-social-links" style="display: flex; gap: 16px; justify-content: center; margin: 8px 0;">
@@ -1665,7 +1666,7 @@
         if (excellenceTrack && excellenceConfig) {
             excellenceTrack.innerHTML = '';
             
-            // 🌸 [تثبيت أمني وحل ثغرة الصور الفارغة بالـ Fallback]: حقن 3 صور مختلفة كلياً لحظر أي مساحات فارغة
+            // 🌸 [تثبيت أمني وحل ثغرة الصور الفارغة]: حقن 3 صور فريدة مختلفة كلياً لحظر أي مساحات فارغة
             const slideImages = Array.isArray(excellenceConfig.images) && excellenceConfig.images.length >= 3 
                 ? excellenceConfig.images 
                 : [
@@ -2519,3 +2520,4 @@ document.addEventListener("DOMContentLoaded", () => {
 function verifyAndInitializeEngine() {
     console.log("🚀 تم التحقق من مطابقة المحرك المخصص وتوافقه مع قاعدة بيانات حلويات بوسي.");
 }
+})(); // 🌸 تم تثبيت القوس هنا ومنع كسر الدالة اللامتزامنة بنجاح
