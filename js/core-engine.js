@@ -1,6 +1,6 @@
 /**
  * 👑 المحرك المركزي العالمي وعمليات الفحص المالي والمزامنة الزمنية المتقدمة - حلويات بوسي 👑
- * النسخة الهندسية القياسية والمطورة بنسبة 100% - الإصدار الذهبي الشامل والخالي تماماً من الثغرات V11.0
+ * النسخة الهندسية القياسية والمطورة بنسبة 100% - الإصدار الذهبي الشامل والخالي تماماً من الثغرات V12.0
  * يتوافق بشكل مطلق ومتبادل مع: cart-engine.js وقاعدة البيانات site-data-final.json ومعايير الأداء والموبايل أولاً
  * [🔐 تم حل ثغرات التجميد المنطقي، وحالات السباق، وشلل السحب بصباع العميل، وحماية الهوية البصرية الفاخرة للبراند]
  */
@@ -582,18 +582,6 @@
         return window.boseDbPromise;
     };
 
-    window.onBoseDatabaseReady = function(callback) {
-        if (window.BoseStoreData && window.BoseStoreData.store) {
-            callback(window.BoseStoreData);
-        } else {
-            const handleLoaded = (e) => {
-                callback(e.detail);
-                document.removeEventListener('BoseDatabaseLoaded', handleLoaded);
-            };
-            document.addEventListener('BoseDatabaseLoaded', handleLoaded);
-        }
-    };
-
     window.showBoseToast = function(message, duration = 3500, focusElement = null) {
         let container = document.querySelector('.bose-toast-container');
         if (!container) {
@@ -1079,7 +1067,6 @@
         document.head.appendChild(styleTag);
     }
 
-    // 🌸 [حل جذري هندسي لشلل السحب]: تم تطوير المحرك لاستقبال ودعم اللمس الحر والتمرير بطلاقة وسلاسة مطلقة
     function enableMarqueeDragScrolling(track) {
         if (!track) return;
         
@@ -1269,7 +1256,7 @@
                     <span class="brand-name-display footer-brand-name" style="font-size: 1.4rem; font-weight: 700; color: var(--bose-black);">حلويات بوسي</span>
 
                     <div class="footer-about-block" style="max-width: 600px;">
-                        <p id="footer-about-text" style="font-size: 0.95rem; color: #555; line-height: 1.6; margin: 0;">صنعناها بحب لتهديها لمن تحب. خبرة أكثر من 10 سنوات في صناعة الحلويات الفاخرة وتنسيق الهدايا والورد لنوثق أسعد لحظاتكم بتميز واحترافية كاملة من فرع الكفاح.</p>
+                        <p id="footer-about-text" style="font-size: 0.95rem; color: #555; line-height: 1.6; margin: 0;">صنعناها بحب لتهديها لمن تحب. خبرة أكثر من 10 سنوات في صناعة الحلويات الفاخرة وتنسيق الهدايا والورد لنوثق أسعد لحظاتكم بتميز وااحترافية كاملة من فرع الكفاح.</p>
                     </div>
                     
                     <div id="footer-social-links" style="display: flex; gap: 16px; justify-content: center; margin: 8px 0;">
@@ -1299,9 +1286,6 @@
         }
     }
 
-    /**
-     * جلب وتحميل قاعدة البيانات مع حماية المزامنة الزمنية وحل مشكلة الـ Async race
-     */
     async function loadStoreDatabase() {
         if (window.boseDatabaseLoading) return;
         window.boseDatabaseLoading = true;
@@ -1364,7 +1348,6 @@
 
             if (successfulFetch) return;
 
-            // التحميل الاحتياطي لقاعدة البيانات الفورية الفاخرة المحدثة والممتلئة بالصور المضمونة
             if (attempt === 5 || window.location.protocol === 'file:') {
                 console.warn("⚠️ تم تفعيل بواب الأمان والتحميل الاحتياطي لقاعدة البيانات لتأمين التشغيل الفوري.");
                 window.BoseStoreData = BOSE_FALLBACK_DATABASE;
@@ -1666,7 +1649,6 @@
         if (excellenceTrack && excellenceConfig) {
             excellenceTrack.innerHTML = '';
             
-            // 🌸 [تثبيت أمني وحل ثغرة الصور الفارغة]: حقن 3 صور فريدة مختلفة كلياً لحظر أي مساحات فارغة
             const slideImages = Array.isArray(excellenceConfig.images) && excellenceConfig.images.length >= 3 
                 ? excellenceConfig.images 
                 : [
@@ -2497,6 +2479,9 @@
     }
 })();
 
+// ==========================================================================
+// 4. حارس التمهيد والمزامنة والتحقق من مطابقة المحرك (Engine Bootstrap Guard)
+// ==========================================================================
 document.addEventListener("DOMContentLoaded", () => {
     if (window.BoseStoreData && window.BoseStoreData.store) {
         verifyAndInitializeEngine();
@@ -2518,5 +2503,8 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function verifyAndInitializeEngine() {
-    console.log("🚀 تم التحقق من مطابقة المحرك المخصص وتوافقه مع قاعدة بيانات حلويات بوسي.");
+    console.log("🚀 تم التحقق من مطابقة المحرك المخصص وتوافقه مع قاعدة بيانات حلويات بوسي بنجاح.");
+    if (typeof startEngineLogic === "function") {
+        startEngineLogic();
+    }
 }
