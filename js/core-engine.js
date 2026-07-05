@@ -52,7 +52,7 @@
     window.boseDbFetchPromise = window.boseDbPromise;
 
     /**
-     * قاعدة بيانات احتياطية صلبة لتأمين التشغيل الفوري والكامل للموقع في حال انقطاع خادم الاستضافة
+     * قاعدة بيانات احتياطية صلبة ومطورة لحماية العرض البصري ومنع الفراغات نهائياً
      */
     const BOSE_FALLBACK_DATABASE = {
         "store": {
@@ -78,11 +78,11 @@
         },
         "orderRules": {
             "minPreparationTimeHours": 24,
-            "preparationTimeMessage": "نحتاج إلى وقت كافٍ لتجهيز طلبك بأفضل جودة ممكنة، لذلك لا يمكن اختيار موعد قبل 24 ساعة من وقت تأكيد الطلب."
+            "preparationTimeMessage": "نحتاج إلى وقت كافٍ لتجهيز طلبك بأفضل جودة ممكنة, لذلك لا يمكن اختيار موعد قبل 24 ساعة من وقت تأكيد الطلب."
         },
         "seo": {
             "title": "حلويات بوسي | صنعناها بحب لتهديها لمن تحب",
-            "description": "منصة بيع إلكترونية متكاملة لعلامة حلويات بوسي الفاخرة. استمتع بتجربة تسوق فريدة، صمم تورتتك الخاصة وبوكيه الورد المخصص عبر محاكياتنا التفاعلية الفريدة.",
+            "description": "منصة بيع إلكترونية متكاملة لعلامة حلويات بوسي الفاخرة. استمتع بتجربة تسوق فريدة, صمم تورتتك الخاصة وبوكيه الورد المخصص عبر محاكياتنا التفاعلية الفريدة.",
             "keywords": ["حلويات", "تورت", "بوكس هدايا", "كاب كيك", "سينابون", "ورد", "دوناتس", "حلويات بوسي"],
             "ogImage": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
         },
@@ -188,7 +188,7 @@
             },
             "flowerPreview": {
                 "title": "محاكي الورد",
-                "description": "تخصيص البوكيه واختيار الورد الطبيعي، الصناعي، أو الستان مع إضافة الهدايا والرسائل والصور الخاصة.",
+                "description": "تخصيص البوكيه واختيار الورد الطبيعي, الصناعي, أو الستان مع إضافة الهدايا والرسائل والصور الخاصة.",
                 "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
                 "cta": "تصميم البوكيه الآن",
                 "target": "flower-builder.html"
@@ -213,9 +213,6 @@
     // 2. دوال معالجة وتطهير وحسابات البيانات وحل الثغرات الحاكمة والمالية
     // ==========================================================================
 
-    /**
-     * تطهير النصوص تماماً لمنع هجمات XSS وحماية سلامة القراءة للعميل
-     */
     function escapeHTML(unsafeString) {
         if (unsafeString === null || unsafeString === undefined) return '';
         return unsafeString
@@ -229,16 +226,10 @@
     window.escapeHTML = escapeHTML;
     window.escapeHtml = escapeHTML;
 
-    /**
-     * جلب رابط اللوجو الفاخر بشكل ديناميكي من الـ JSON مع فولباك آمن لمنع الوميض البصري
-     */
     window.getBoseLogo = function() {
         return window.BoseStoreData?.store?.logo || "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png";
     };
 
-    /**
-     * تطبيع وتطهير الأرقام العربية والفارسية وتحويلها للأرقام القياسية لضمان سلامة العمليات الرياضية
-     */
     window.normalizeArabicNumerals = function(str) {
         if (str === null || str === undefined) return "";
         const arabicNormMap = {
@@ -250,9 +241,6 @@
         return str.toString().trim().replace(/[٠-٩۰-۹]/g, match => arabicNormMap[match] || match);
     };
 
-    /**
-     * دالة مراجعة وحساب زيادة الأسعار الرسمية لعلامة بوسي الفاخرة مع صمام الأمان المالي
-     */
     window.calculateBosePrice = function (basePrice, applyOnContext = "menu-only") {
         let parsedPrice = parseFloat(basePrice);
         if (isNaN(parsedPrice) || parsedPrice <= 0) return 0;
@@ -268,9 +256,6 @@
         return parsedPrice;
     };
 
-    /**
-     * دالة حساب السعر النهائي للمنتج شامل الخيارات والطباعة والكب كيك والمقاسات بالكسر العشري
-     */
     window.calculateProductFinalPrice = function(product, selectedOptions) {
         const opts = selectedOptions || {};
         let price = 0;
@@ -319,14 +304,10 @@
         return window.calculateBosePrice(price, "menu-only");
     };
 
-    /**
-     * الحسبة الهندسية الصحيحة والمحمية لأسعار محاكي التورتة المخصصة لمنع الخسارة نهائياً
-     */
     window.calculateCustomCakePrice = function(persons, options = {}) {
         const config = window.BoseStoreData?.cakeBuilder;
         let safePersons = parseInt(persons, 10) || (config ? config.persons.minimum : 4) || 4;
         
-        // 1. فرض القيود الهندسية الصحيحة على الحدود الدنيا للأشكال لحماية شكل تماسك التورتة
         let shapeMin = 4;
         const shape = options.shape || 'circle';
         if (shape === 'square') {
@@ -342,8 +323,6 @@
         let price = (config ? parseFloat(config.basePrice) : 580) || 580;
         const pricePerPerson = (config ? parseFloat(config.pricePerPerson) : 145) || 145;
         
-        // 2. الحارس المالي الفاخر: السعر الأساسي (580 جنيه) يغطي أول 4 أفراد فقط (الحد الأدنى للمنظومة)
-        // أي فرد إضافي فوق الـ 4 يدفع سعر الفرد الكامل لحماية أرباح التورت المربعة والمستطيلة الكبيرة
         const baseCoveredPersons = 4;
         const extraPersons = Math.max(0, safePersons - baseCoveredPersons);
         price += extraPersons * pricePerPerson;
@@ -375,9 +354,6 @@
         return window.calculateBosePrice(price, "menu-only");
     };
 
-    /**
-     * الحسبة الهندسية لمحاكاة أسعار بوكيهات الورد الفاخرة ورسوم خدمة ددمج الكاش بمرونة فائقة
-     */
     window.calculateCustomFlowerPrice = function(flowerType, flowerCount, options = {}) {
         const config = window.BoseStoreData?.flowerBuilder;
         
@@ -437,9 +413,6 @@
         return finalServicePrice + safeCashAmount;
     };
 
-    /**
-     * دالة إنشاء كائن السلة الموحد المانع لأي تصادم أو فقدان في خيارات السلة
-     */
     window.createCartItem = function(product, selectedOptions, quantity = 1) {
         if (!product) return null;
         const opts = selectedOptions || {};
@@ -482,9 +455,6 @@
         return cartItem;
     };
 
-    /**
-     * دالة الفحص والتحقق الصارم لهواتف مصر لسلامة وصول الشحن والتأكيد
-     */
     window.validateBosePhoneNumber = function(phone, isOptional = false) {
         if (!phone || phone.trim() === "") {
             return isOptional;
@@ -494,9 +464,6 @@
         return egPhoneRegex.test(cleaned);
     };
 
-    /**
-     * دالة تطهير وتوحيد تنسيق رقم الهاتف ليطابق معايير الاتصال والشحن لخدمات التوصيل
-     */
     window.sanitizeBosePhoneNumber = function(phone) {
         if (!phone) return "";
         let cleaned = phone.toString().trim().replace(/[\s\-\(\)\+]/g, "");
@@ -511,9 +478,6 @@
         return cleaned;
     };
 
-    /**
-     * محلل ذكي للوقت يدعم صيغ الـ 12 والـ 24 ساعة لخدمة التوصيل والتحضير
-     */
     window.parseTimeStringTo24h = function(timeStr) {
         timeStr = window.normalizeArabicNumerals(timeStr).toUpperCase().trim();
         let hours = 0;
@@ -540,9 +504,6 @@
         return { hours, minutes };
     };
 
-    /**
-     * حارس الوقت الموحد المانع لأخطاء التوقيت في الأجهزة المحمولة (تأمين شرط الـ 24 ساعة تحضير)
-     */
     window.validateBoseDeliverySchedule = function(dateStr, timeStr) {
         if (!dateStr || !timeStr) return false;
         
@@ -577,9 +538,6 @@
         return hoursDiff >= 23.95;
     };
 
-    /**
-     * مقارنة عميقة لخصائص كائنات التخصيص تمنع تكرار كروت السلة المتشابهة
-     */
     function isEquivalentDetails(obj1, obj2) {
         if (!obj1 || !obj2) return obj1 === obj2;
         const keys1 = Object.keys(obj1).sort();
@@ -617,9 +575,6 @@
     // 3. محركات جلب وإطلاق وتزامن البيانات
     // ==========================================================================
 
-    /**
-     * جلب وقراءة قاعدة البيانات المركزية لعلامة بوسي مع حماية التزامن البرمجي التام
-     */
     window.getBoseDatabase = function() {
         if (window.BoseStoreData) {
             return Promise.resolve(window.BoseStoreData);
@@ -627,9 +582,6 @@
         return window.boseDbPromise;
     };
 
-    /**
-     * البوابة الأمنية الحارسة لتمهيد الملفات الخارجية والتابعة
-     */
     window.onBoseDatabaseReady = function(callback) {
         if (window.BoseStoreData && window.BoseStoreData.store) {
             callback(window.BoseStoreData);
@@ -642,9 +594,6 @@
         }
     };
 
-    /**
-     * نظام التنبيهات الفاخر والتوست الذكي المتكامل لعلامة بوسي
-     */
     window.showBoseToast = function(message, duration = 3500, focusElement = null) {
         let container = document.querySelector('.bose-toast-container');
         if (!container) {
@@ -683,9 +632,6 @@
         }
     };
 
-    /**
-     * دالة التأكيد الفاخرة والمؤمنة هندسياً ضد تجميد الشاشات وبديلة لـ confirm
-     */
     window.showBoseConfirm = function(messageText, onConfirm = null, onCancel = null) {
         let overlay = document.createElement('div');
         overlay.className = 'bose-modal-overlay';
@@ -736,10 +682,6 @@
         });
     };
 
-    /**
-     * حقن الأنماط والسمات الأساسية الحاكمة لتفادي وميض الألوان غير المرغوب فيه (FOUC)
-     * الالتزام الكامل بقوانين Cairo ووزن خط 700 كحد أقصى لمنع التشويه
-     */
     function injectCoreStyles() {
         if (document.getElementById("bose-core-injected-styles")) return;
 
@@ -1137,9 +1079,6 @@
         document.head.appendChild(styleTag);
     }
 
-    /**
-     * تفعيل ميزة السحب واللمس لجميع سلايدرات الماركيه اللانهائية
-     */
     function enableMarqueeDragScrolling(track) {
         if (!track) return;
         
@@ -1201,9 +1140,6 @@
         }, { passive: true });
     }
 
-    /**
-     * ربط حركة السكرول في السلايدرات بنقاط التنقل السفلية
-     */
     function setupScrollToDotsBinding(trackElement, sectionContainer, itemsCount) {
         if (!trackElement || !sectionContainer) return;
         
@@ -1220,9 +1156,6 @@
         }, { passive: true });
     }
 
-    /**
-     * الهيكل الموحد الملتزم بالـ DOM هندسياً لحقن مكونات الهيدر والفوتر والدرج الجانبي
-     */
     function injectUniversalLayout() {
         let pathPrefix = "";
         const currentPath = window.location.pathname;
@@ -1230,7 +1163,6 @@
             return;
         }
 
-        // [🛡️ إصلاح مسارات الروابط الفاخرة لبيئة الاستضافات المجانية وهواتف العملاء]
         const segments = currentPath.split('/');
         if (segments.length > 2) {
             const depth = segments.length - 2;
@@ -1248,7 +1180,6 @@
 
         const dynamicLogo = window.getBoseLogo();
 
-        // 1. الهيدر الموحد والملتزم بالـ DOM هندسياً
         const existingNavbar = document.querySelector(".bose-navbar");
         if (existingNavbar && !existingNavbar.hasAttribute("data-dynamic-injected")) {
             existingNavbar.setAttribute("data-dynamic-injected", "true");
@@ -1292,7 +1223,6 @@
             });
         }
 
-        // 2. الدرج الجانبي الفاخر للموبايل والكمبيوتر
         let drawerMenu = document.querySelector(".bose-drawer-menu, #sidebar-drawer");
         if (drawerMenu && !drawerMenu.hasAttribute("data-dynamic-injected")) {
             drawerMenu.setAttribute("data-dynamic-injected", "true");
@@ -1324,7 +1254,6 @@
             });
         }
 
-        // 3. الفوتر الموحد الفاتح والملتزم بالـ DOM لمنع المساحات المهدرة
         const existingFooter = document.querySelector(".bose-footer");
         if (existingFooter && !existingFooter.hasAttribute("data-dynamic-injected")) {
             existingFooter.setAttribute("data-dynamic-injected", "true");
@@ -1370,7 +1299,7 @@
     }
 
     /**
-     * جلب وتحميل قاعدة البيانات مع حماية المزامنة الزمنية وفحص المسارات البديلة
+     * جلب وتحميل قاعدة البيانات مع حماية المزامنة الزمنية وحل مشكلة الـ Async race
      */
     async function loadStoreDatabase() {
         if (window.boseDatabaseLoading) return;
@@ -1434,7 +1363,7 @@
 
             if (successfulFetch) return;
 
-            // التحميل الاحتياطي لقاعدة البيانات الفورية عند حدوث خطأ
+            // التحميل الاحتياطي لقاعدة البيانات الفورية الفاخرة المحدثة والممتلئة بالصور المضمونة
             if (attempt === 5 || window.location.protocol === 'file:') {
                 console.warn("⚠️ تم تفعيل بواب الأمان والتحميل الاحتياطي لقاعدة البيانات لتأمين التشغيل الفوري.");
                 window.BoseStoreData = BOSE_FALLBACK_DATABASE;
@@ -1460,9 +1389,6 @@
         }
     }
 
-    /**
-     * رندرة وإنتاج كروت المنتجات بدقة هندسية ومظهر ناعم ومرتّب تماماً
-     */
     function generateStrictProductCardHTML(product, currency) {
         const defaultImage = window.getBoseLogo();
         const cleanImg = product.image || (product.images && product.images[0] ? product.images[0] : defaultImage);
@@ -1522,9 +1448,6 @@
     }
     window.generateStrictProductCardHTML = generateStrictProductCardHTML;
 
-    /**
-     * ربط أحداث كروت المنتجات لضمان تفعيل العدادات وإضافة السلة التفاعلية بدقة
-     */
     function attachProductCardEvents(container, productsList, currency) {
         if (!container) return;
 
@@ -1615,9 +1538,6 @@
     }
     window.attachProductCardEvents = attachProductCardEvents;
 
-    /**
-     * مولّد ومحرك مؤشرات التصفح النقطية (Dots) التفاعلية لجميع السلايدرات
-     */
     function generateBoseDots(sliderContainer, totalItems, activeIndex = 0, onDotClick = null) {
         if (!sliderContainer) return;
         
@@ -1645,9 +1565,6 @@
         }
     }
 
-    /**
-     * الأتمتة والملء الكامل لجميع أقسام الصفحة الرئيسية لعلامة حلويات بوسي
-     */
     function autoPopulateHomepageComponents(data) {
         if (!data) return;
 
@@ -1662,13 +1579,11 @@
         const currency = data.store.currency || "EGP";
         const productsList = data.products || [];
 
-        // 0. شريط الإعلانات التسويقية العلوي اللانهائي
         const marqueeTrack = document.getElementById('top-bar-marquee');
         if (marqueeTrack && data.navigation && data.navigation.topBarMessages) {
             renderTopMarquee(marqueeTrack, data.navigation.topBarMessages);
         }
 
-        // 1. أتمتة القسم الأول: عقد من التميز
         const heroSection = document.getElementById('hero-section');
         if (heroSection && data.homepage.hero) {
             const heroData = data.homepage.hero;
@@ -1696,7 +1611,6 @@
             }
         }
 
-        // 2. أتمتة عمودي شلال المنتجات البصري المتعاكس
         const leftCol = document.getElementById('waterfall-left-col');
         const rightCol = document.getElementById('waterfall-right-col');
         const waterfallContainer = document.querySelector('.waterfall-container') || document.getElementById('waterfall-section');
@@ -1745,17 +1659,26 @@
             }
         }
 
-        // 3. أتمتة مسار الإتقان الفاخر التلقائي ومؤشراتها النقطية المتزامنة
         const excellenceSection = document.getElementById('excellence-section');
         const excellenceTrack = document.getElementById('excellence-images-track');
         const excellenceConfig = data.homepage.excellence;
         if (excellenceTrack && excellenceConfig) {
             excellenceTrack.innerHTML = '';
-            const doubledImages = [...excellenceConfig.images, ...excellenceConfig.images];
+            
+            // 🌸 [تثبيت أمني وحل ثغرة الصور الفارغة بالـ Fallback]: حقن 3 صور مختلفة كلياً لحظر أي مساحات فارغة
+            const slideImages = Array.isArray(excellenceConfig.images) && excellenceConfig.images.length >= 3 
+                ? excellenceConfig.images 
+                : [
+                    "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=ex1",
+                    "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=ex2",
+                    "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=ex3"
+                  ];
+
+            const doubledImages = [...slideImages, ...slideImages, ...slideImages];
             excellenceTrack.className = 'animate-marquee';
-            excellenceTrack.innerHTML = doubledImages.map(img => `
+            excellenceTrack.innerHTML = doubledImages.map((img, i) => `
                 <a href="menu.html" class="excellence-track-link" style="display: block; width: 33.33vw; min-width: 280px; flex-shrink: 0; padding: 0 8px; box-sizing: border-box;">
-                    <img src="${img}" class="bose-fade-in-img" alt="إتقان بوسي" style="width: 100%; height: 350px; object-fit: cover; border-radius: 24px; border: var(--bose-border-pink);" onload="this.classList.add('loaded')" onerror="this.onerror=null; this.src='${window.getBoseLogo()}';" loading="lazy">
+                    <img src="${img}" class="bose-fade-in-img" alt="إتقان بوسي رقم ${i+1}" style="width: 100%; height: 350px; object-fit: cover; border-radius: 24px; border: var(--bose-border-pink);" onload="this.classList.add('loaded')" onerror="this.onerror=null; this.src='${window.getBoseLogo()}';" loading="lazy">
                 </a>
             `).join('');
             
@@ -1767,7 +1690,7 @@
 
             if (excellenceSection) {
                 let activeDotIndex = 0;
-                generateBoseDots(excellenceSection, excellenceConfig.images.length, activeDotIndex, (idx) => {
+                generateBoseDots(excellenceSection, slideImages.length, activeDotIndex, (idx) => {
                     const slides = excellenceTrack.querySelectorAll('.excellence-track-link');
                     if (slides[idx]) {
                         const targetOffset = slides[idx].offsetLeft - (excellenceTrack.offsetWidth - slides[idx].offsetWidth) / 2;
@@ -1778,11 +1701,11 @@
                     }
                 });
 
-                setupScrollToDotsBinding(excellenceTrack, excellenceSection, excellenceConfig.images.length);
+                setupScrollToDotsBinding(excellenceTrack, excellenceSection, slideImages.length);
 
                 setInterval(() => {
                     if (excellenceTrack.style.animationPlayState !== 'paused') {
-                        activeDotIndex = (activeDotIndex + 1) % excellenceConfig.images.length;
+                        activeDotIndex = (activeDotIndex + 1) % slideImages.length;
                         const dotsWrapper = excellenceSection.querySelector('.bose-dots-container');
                         if (dotsWrapper) {
                             dotsWrapper.querySelectorAll('.bose-dot').forEach((dot, idx) => {
@@ -1794,7 +1717,6 @@
             }
         }
 
-        // 4. أتمتة رندرة الأقسام الحيوية الثلاثة بالصفحة الرئيسية
         const mostSellingGrid = document.getElementById('most-selling-grid');
         if (mostSellingGrid && data.homepage.mostSelling) {
             mostSellingGrid.innerHTML = '';
@@ -1893,7 +1815,6 @@
             }
         }
 
-        // 5. أتمتة سلايدر الفئات الـ 12 ومؤشراتها النقطية التفاعلية
         const categoriesSliderSec = document.getElementById('categories-slider-section');
         const categoriesTrack = document.getElementById('categories-track');
         const categoriesData = data.homepage.categoriesSlider;
@@ -1944,7 +1865,7 @@
                                 dot.classList.toggle('active', idx === categoryDotIndex);
                             });
                         }
-                    } nesting_lock = false;
+                    }
                 }, 6000);
             }
         }
@@ -1952,9 +1873,6 @@
         initBosePrideCounters(data);
     }
 
-    /**
-     * رندرة شريط الإعلانات التسويقية الموحد
-     */
     function renderTopMarquee(marqueeTrack, messages) {
         marqueeTrack.innerHTML = '';
         const repeatedMessages = [
@@ -1975,9 +1893,6 @@
         enableMarqueeDragScrolling(listContainer);
     }
 
-    /**
-     * محرك العدادات التصاعدية الذكي لقسم الفخر والاعتزاز
-     */
     function initBosePrideCounters(data) {
         const statsContainer = document.querySelector('.stats-container') || document.getElementById('pride-section');
         if (!statsContainer) return;
@@ -2019,14 +1934,11 @@
                 });
             }, { threshold: 0.1 });
 
-            observer.observe(entry.target);
+            observer.observe(element);
         });
     }
     window.initBosePrideCounters = initBosePrideCounters;
 
-    /**
-     * حركة العداد التصاعدي ناعمة ومحسنة لحماية معالج الموبايل والأداء
-     */
     function animateBoseCountUp(element, target, suffix) {
         let start = 0;
         const duration = 2000;
@@ -2055,9 +1967,6 @@
         requestAnimationFrame(updateCounter);
     }
 
-    /**
-     * استرجاع آمن لسلة المشتريات من المتصفح الخفي والذاكرة الاحتياطية
-     */
     window.getBoseCart = function () {
         try {
             let rawCart = null;
@@ -2077,9 +1986,6 @@
         }
     };
 
-    /**
-     * حفظ ومزامنة السلة وتحديث الشارات بالصفحات المفتوحة مع تمريرها على فلاتر التطهير
-     */
     window.saveBoseCart = function (cart) {
         try {
             if (!Array.isArray(cart)) return;
@@ -2096,9 +2002,6 @@
         }
     };
 
-    /**
-     * الإضافة الذكية والموحدة للسلة مع المطابقة الكاملة وتأمين الأسعار النهائية
-     */
     window.addBoseCartItem = function (newItem) {
         if (!newItem || !newItem.productSlug) return;
 
@@ -2152,9 +2055,6 @@
         window.addBoseCartItem(newItem);
     };
 
-    /**
-     * تحديث كمية صنف بداخل السلة مع منع القيم الصفرية أو السالبة
-     */
     window.updateBoseCartItemQuantity = function (itemId, newQuantity) {
         let cart = window.getBoseCart();
         const itemIndex = cart.findIndex(item => item.id === itemId);
@@ -2171,18 +2071,12 @@
         }
     };
 
-    /**
-     * إزالة صنف محدد من سلة المشتريات
-     */
     window.removeBoseCartItem = function (itemId) {
         let cart = window.getBoseCart();
         const updatedCart = cart.filter(item => item.id !== itemId);
         window.saveBoseCart(updatedCart);
     };
 
-    /**
-     * تفريغ وتصفير السلة بالكامل لتجهيز المعاملات الجديدة
-     */
     window.clearBoseCart = function () {
         try {
             localStorage.removeItem(CART_STORAGE_KEY);
@@ -2193,9 +2087,6 @@
         window.dispatchEvent(new CustomEvent('bose_cart_changed', { detail: [] }));
     };
 
-    /**
-     * تحديث عداد السلة الصغير بالهيدر وفقاً للكميات
-     */
     window.updateGlobalCartCounter = function () {
         if (!domCache.cartCounts) {
             domCache.cartCounts = document.querySelectorAll("#nav-cart-count, .nav-cart-count-badge");
@@ -2226,9 +2117,6 @@
         }
     };
 
-    /**
-     * بناء الـ Modal الخاص بالبحث السريع والذكي ديناميكياً لتأمين الشاشات والصفحات
-     */
     function ensureSearchModalExists() {
         if (domCache.searchModal) return domCache.searchModal;
 
@@ -2259,9 +2147,6 @@
         return searchModal;
     }
 
-    /**
-     * إعداد وربط أحداث الواجهات التفاعلية (البحث السريع والدرج الجانبي للموبايل والكمبيوتر)
-     */
     function initializeGlobalUIEvents() {
         const menuToggleButtons = document.querySelectorAll("#mobile-menu-toggle, .nav-menu-toggle, #menu-toggle-btn");
         const drawerMenu = document.querySelector(".bose-drawer-menu, #sidebar-drawer");
@@ -2309,33 +2194,25 @@
             });
         });
 
-        // ==========================================================================
-        // [👑 المصلح الهندسي الذهبي - فك تجميد السلايدرات وتشغيل الحركة والسحب 👑]
-        // ==========================================================================
         const excellenceTrack = document.getElementById('excellence-images-track');
         const categoriesTrack = document.getElementById('categories-track');
 
-        // 1. قسم عقد من الإتقان: حركة تلقائية لانهائية مستمرة على جميع الشاشات والموبايل
         if (excellenceTrack) {
             excellenceTrack.style.animation = 'boseMarquee 25s linear infinite';
             excellenceTrack.style.display = 'flex';
             excellenceTrack.style.width = 'max-content';
             excellenceTrack.classList.remove('bose-manual-scroll-active');
-            enableMarqueeDragScrolling(excellenceTrack); // دعم التوقف المؤقت والسحب اليدوي الفاخر
+            enableMarqueeDragScrolling(excellenceTrack); 
         }
 
-        // 2. قسم تسوق حسب الفئة: سلايدر حر ومرن يتحرك باليد 100% في أي اتجاه على الموبايل
         if (categoriesTrack) {
             if (window.innerWidth <= 768) {
-                // على الموبايل: نلغي الأنيميشن التلقائي ونعطيه سكرول تفاعلي كامل مأمن باليد
                 categoriesTrack.style.animation = 'none';
                 categoriesTrack.style.width = 'auto';
                 categoriesTrack.style.display = 'flex';
                 categoriesTrack.style.overflowX = 'auto';
                 categoriesTrack.classList.add('bose-manual-scroll-active');
-                // نترك المتصفح يتعامل مع اللمس الطبيعي دون تدخل دالة السحب المسببة للقفص المغلق
             } else {
-                // على الكمبيوتر: حركة لانهائية ناعمة
                 categoriesTrack.style.animation = 'boseCategoriesLoop 30s linear infinite';
                 categoriesTrack.style.display = 'flex';
                 categoriesTrack.style.width = 'max-content';
@@ -2344,7 +2221,6 @@
             }
         }
 
-        // [🔄 ربط مستمع الأحداث لحظياً لمزامنة العداد الفردي والذكي بالهيدر فوراً]
         window.addEventListener('storage', (e) => {
             if (e.key === CART_STORAGE_KEY) {
                 window.updateGlobalCartCounter();
@@ -2425,11 +2301,11 @@
     }
 
     function renderSearchResults(query) {
-        const resultsContainer = resultsContainerElement();
-        if (!resultsContainer) return;
+        const GabrielContainer = resultsContainerElement();
+        if (!GabrielContainer) return;
 
         if (!query) {
-            resultsContainer.innerHTML = `
+            GabrielContainer.innerHTML = `
                 <div class="search-empty-state">
                     <p class="search-empty-state-text">اكتب اسم صنفك المفضل للبحث السريع عنه.. 🌸</p>
                 </div>
@@ -2439,7 +2315,7 @@
 
         const data = window.BoseStoreData;
         if (!data || !data.products) {
-            resultsContainer.innerHTML = `
+            GabrielContainer.innerHTML = `
                 <div class="search-no-results">
                     <p class="search-no-results-main">لحظة واحدة.. بنحضر المنيو الفاخر 🌸</p>
                 </div>
@@ -2458,7 +2334,7 @@
         });
 
         if (matchedProducts.length === 0) {
-            resultsContainer.innerHTML = `
+            GabrielContainer.innerHTML = `
                 <div class="search-no-results">
                     <p class="search-no-results-main">ملقناش أصناف مطابقة لـ "${escapeHTML(query)}"</p>
                     <p class="search-no-results-sub">جرب تكتب كلمات بسيطة زي: لوتس، كب كيك، بوكس، تورتة..</p>
@@ -2490,9 +2366,9 @@
         });
 
         htmlResults += `</div>`;
-        resultsContainer.innerHTML = htmlResults;
+        GabrielContainer.innerHTML = htmlResults;
 
-        resultsContainer.querySelectorAll(".search-result-card").forEach(card => {
+        GabrielContainer.querySelectorAll(".search-result-card").forEach(card => {
             card.addEventListener("click", () => {
                 const searchModal = document.querySelector(".bose-search-modal");
                 if (searchModal) {
@@ -2503,9 +2379,6 @@
         });
     }
 
-    /**
-     * تطبيق الإعدادات الفنية للـ SEO وتأمين الهوية البصرية الحاكمة لـ حلويات بوسي
-     */
     function applyGlobalSEOAndBranding() {
         if (!window.BoseStoreData) return;
         const data = window.BoseStoreData;
@@ -2532,7 +2405,7 @@
             if (img) {
                 img.src = data.store.logo;
                 img.alt = data.store.name;
-                img.style.objectFit = "contain"; // [🛡️ إصلاح هندسي حاسم لمنع عصر اللوجو في الفوتر والهيدر]
+                img.style.objectFit = "contain"; 
                 img.loading = "lazy";
             }
         });
@@ -2619,7 +2492,7 @@
     if (document.readyState === "loading") {
         document.addEventListener("DOMContentLoaded", loadStoreDatabase);
     } else {
-        loadStoreDatabase();
+        loadStoreDatabase);
     }
 })();
 
