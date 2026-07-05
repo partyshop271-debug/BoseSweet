@@ -1,8 +1,8 @@
 /**
  * 👑 المحرك المركزي العالمي وعمليات الفحص المالي والمزامنة الزمنية المتقدمة - حلويات بوسي 👑
- * النسخة الهندسية القياسية والمطورة بنسبة 100% - الإصدار الذهبي الشامل والخالي تماماً من الثغرات V9.0
+ * النسخة الهندسية القياسية والمطورة بنسبة 100% - الإصدار الذهبي الشامل والخالي تماماً من الثغرات V10.0
  * يتوافق بشكل مطلق ومتبادل مع: cart-engine.js وقاعدة البيانات site-data-final.json ومعايير الأداء والموبايل أولاً
- * [تم حل ثغرات التزامن اللامتناهي، وحالات السباق، واختفاء السلايدرات، وفراغ الفئات، وحماية الهوية البصرية للوجو بالفوتر]
+ * [🔐 تم حل ثغرات التجميد المنطقي، وحالات السباق، وشلل السحب بصباع العميل، وحماية الهوية البصرية الفاخرة للبراند]
  */
 
 (function () {
@@ -1944,7 +1944,7 @@
                                 dot.classList.toggle('active', idx === categoryDotIndex);
                             });
                         }
-                    }
+                    } nesting_lock = false;
                 }, 6000);
             }
         }
@@ -2019,7 +2019,7 @@
                 });
             }, { threshold: 0.1 });
 
-            observer.observe(element);
+            observer.observe(entry.target);
         });
     }
     window.initBosePrideCounters = initBosePrideCounters;
@@ -2244,7 +2244,7 @@
                         <button class="search-close-btn" style="background:none; border:none; font-size:1.5rem; color:var(--bose-black); cursor:pointer; font-weight:700;" aria-label="إغلاق نافذة البحث">×</button>
                     </div>
                     <div class="search-modal-body">
-                        <input type="text" id="global-search-input" placeholder="اكتب اسم صنفك المفضل.. (لوتس، كب كيك، بوكس..)" style="width:100%; border:var(--bose-border-pink); border-radius:12px; padding:12px 16px; font-family:'Cairo', sans-serif; font-size:0.95rem; box-sizing:border-box; outline:none; transition:0.2s; color:var(--bose-black);" onfocus="this.style.borderColor='var(--bose-pink)'" onblur="this.style.borderColor='rgba(255,145,164,0.3)'">
+                        <input type="text" id="global-search-input" placeholder="اكتب اسم صنفك المفضل.. (لوتس، كب كيك، بوكس..)" style="width:100%; border:var(--bose-pink); border-radius:12px; padding:12px 16px; font-family:'Cairo', sans-serif; font-size:0.95rem; box-sizing:border-box; outline:none; transition:0.2s; color:var(--bose-black);" onfocus="this.style.borderColor='var(--bose-pink)'" onblur="this.style.borderColor='rgba(255,145,164,0.3)'">
                         <div class="search-results-container" style="margin-top:16px;">
                             <div class="search-empty-state">
                                 <p class="search-empty-state-text">اكتب اسم صنفك المفضل للبحث السريع عنه.. 🌸</p>
@@ -2309,19 +2309,38 @@
             });
         });
 
-        // [🛡️ مصلح دائم لاختفاء السلايدرات البرمجية في الصفحة الرئيسية]
-        // في الموبايل، نوقف الحركات اللانهائية مؤقتاً ونبني سكرول مرن لراحة العين، وتستقر Dots تماماً
+        // ==========================================================================
+        // [👑 المصلح الهندسي الذهبي - فك تجميد السلايدرات وتشغيل الحركة والسحب 👑]
+        // ==========================================================================
         const excellenceTrack = document.getElementById('excellence-images-track');
         const categoriesTrack = document.getElementById('categories-track');
 
-        if (window.innerWidth <= 768) {
-            if (excellenceTrack) {
-                excellenceTrack.style.animation = 'none';
-                excellenceTrack.classList.add('bose-manual-scroll-active');
-            }
-            if (categoriesTrack) {
+        // 1. قسم عقد من الإتقان: حركة تلقائية لانهائية مستمرة على جميع الشاشات والموبايل
+        if (excellenceTrack) {
+            excellenceTrack.style.animation = 'boseMarquee 25s linear infinite';
+            excellenceTrack.style.display = 'flex';
+            excellenceTrack.style.width = 'max-content';
+            excellenceTrack.classList.remove('bose-manual-scroll-active');
+            enableMarqueeDragScrolling(excellenceTrack); // دعم التوقف المؤقت والسحب اليدوي الفاخر
+        }
+
+        // 2. قسم تسوق حسب الفئة: سلايدر حر ومرن يتحرك باليد 100% في أي اتجاه على الموبايل
+        if (categoriesTrack) {
+            if (window.innerWidth <= 768) {
+                // على الموبايل: نلغي الأنيميشن التلقائي ونعطيه سكرول تفاعلي كامل مأمن باليد
                 categoriesTrack.style.animation = 'none';
+                categoriesTrack.style.width = 'auto';
+                categoriesTrack.style.display = 'flex';
+                categoriesTrack.style.overflowX = 'auto';
                 categoriesTrack.classList.add('bose-manual-scroll-active');
+                // نترك المتصفح يتعامل مع اللمس الطبيعي دون تدخل دالة السحب المسببة للقفص المغلق
+            } else {
+                // على الكمبيوتر: حركة لانهائية ناعمة
+                categoriesTrack.style.animation = 'boseCategoriesLoop 30s linear infinite';
+                categoriesTrack.style.display = 'flex';
+                categoriesTrack.style.width = 'max-content';
+                categoriesTrack.classList.remove('bose-manual-scroll-active');
+                enableMarqueeDragScrolling(categoriesTrack);
             }
         }
 
@@ -2627,3 +2646,4 @@ document.addEventListener("DOMContentLoaded", () => {
 function verifyAndInitializeEngine() {
     console.log("🚀 تم التحقق من مطابقة المحرك المخصص وتوافقه مع قاعدة بيانات حلويات بوسي.");
 }
+})();
