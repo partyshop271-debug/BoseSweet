@@ -359,6 +359,18 @@
             border-color: var(--bose-pink, #FF91A4);
             box-shadow: 0 4px 10px rgba(255, 145, 164, 0.15);
         }
+
+        /* 🛠️ [إصلاح هندسي حاسم وتدمير كامل لعصر وانضغاط لوجو الفوتر] */
+        .footer-logo-container img, 
+        .bose-footer #bose-store-logo {
+            height: 60px !important;        /* تثبيت الارتفاع للحفاظ على الهيكل القياسي الموحد للفوتر[span_6](start_span)[span_6](end_span)[span_7](start_span)[span_7](end_span) */
+            width: auto !important;         /* فك العصر الجانبي: السماح للعرض بالتناسب تلقائياً بنسبته الطبيعية[span_8](start_span)[span_8](end_span)[span_9](start_span)[span_9](end_span) */
+            max-width: 100% !important;     /* تأمين عدم تجاوز الحاوية المرنة لراحة العميل النفسية[span_10](start_span)[span_10](end_span)[span_11](start_span)[span_11](end_span) */
+            object-fit: contain !important; /* حظر السحق والبتر للحفاظ على فخامة اللوجو الأصلي الفاخر[span_12](start_span)[span_12](end_span)[span_13](start_span)[span_13](end_span)[span_14](start_span)[span_14](end_span) */
+            aspect-ratio: auto !important;  /* إجبار المتصفح على تطبيق النسبة التلقائية المتناسقة للشعار */
+            display: block !important;
+            margin: 0 auto !important;      /* التمركز التام في منتصف حاوية الفوتر[span_15](start_span)[span_15](end_span) */
+        }
     </style>
 </head>
 <body class="bose-hardware-accelerated bose-arabic-text">
@@ -395,14 +407,14 @@
             }
 
             window.getBoseDatabase().then(siteData => {
-                processProductExtraction(siteData);
+                initProductRendering(siteData);
             }).catch(() => {
                 document.addEventListener("BoseDatabaseLoaded", function(e) {
-                    processProductExtraction(e.detail);
+                    initProductRendering(e.detail);
                 });
             });
 
-            function processProductExtraction(siteData) {
+            function initProductRendering(siteData) {
                 if (!siteData || !siteData.products) {
                     renderErrorPanel("عذراً، واجهنا صعوبة في جلب المنيو الفاخر حالياً.");
                     return;
@@ -498,7 +510,9 @@
                 if (product.reviews && product.reviews.length > 0) {
                     product.reviews.forEach(rev => {
                         let rStars = "";
-                        for (let i = 1; i <= 5; i++) rStars += i <= rev.rating ? "★" : "☆";
+                        for (let i = 1; i <= 5; i++) {
+                            rStars += i <= Math.floor(rev.rating) ? "★" : "☆";
+                        }
                         reviewsHTML += `
                             <div class="review-row-card">
                                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
@@ -528,7 +542,7 @@
                         <span>/</span>
                         <a href="menu.html">المنيو الشامل</a>
                         <span>/</span>
-                        <span aria-current="page">${window.escapeHTML ? window.escapeHTML(product.title) : product.title}</span>
+                        <span id="breadcrumb-active-category" aria-current="page">${window.escapeHTML ? window.escapeHTML(product.title) : product.title}</span>
                     </nav>
 
                     <div class="product-master-grid">
@@ -551,7 +565,7 @@
 
                             <!-- 👑 حقن حقل وصف النكهة الإعلاني المخصص الفاخر لمنع التكرار -->
                             <div class="product-flavor-exclusive-desc">
-                                ${product.flavorDesc || "توليفة مميزة ومجهزة بعناية فائقة لتناسب ذوقكم الرفيع."}
+                                ${product.flavorDesc || product.description || "توليفة مميزة ومجهزة بعناية فائقة لتناسب ذوقكم الرفيع."}
                             </div>
 
                             ${sizeSelectorHTML}
@@ -572,7 +586,7 @@
                                     <button type="button" id="btn-increment-bose" aria-label="زيادة الكمية">+</button>
                                 </div>
                                 <button type="button" id="btn-add-to-cart-trigger" class="bose-add-to-cart-action">
-                                    <i class="fas fa-shopping-bag"></i> إضافة للسلة
+                                    <i class="fas fa-shopping-bag" style="font-size: 0.9rem;"></i> إضافة للسلة
                                 </button>
                             </div>
                         </div>
@@ -590,7 +604,9 @@
                     const finalRecs = recProducts.length >= 2 ? recProducts : siteData.products.filter(p => p.slug !== product.slug && p.slug !== "toort-custom-master" && p.slug !== "flowers-master").slice(0, 2);
                     
                     suggestionsGrid.innerHTML = finalRecs.map(p => window.generateStrictProductCardHTML(p, currency)).join('');
-                    window.attachProductCardEvents(suggestionsGrid, siteData.products, currency);
+                    if (typeof window.attachProductCardEvents === 'function') {
+                        window.attachProductCardEvents(suggestionsGrid, siteData.products, currency);
+                    }
                 }
 
                 setupStepperMechanics(currency);
