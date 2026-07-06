@@ -2461,9 +2461,74 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 50);
     }
 });
+// ==========================================================================
+    // 👑 نظام التتبع السلوكي المطور وتخصيص المقترحات عبر الـ LocalStorage 👑
+    // ==========================================================================
 
+    window.trackBoseUserBehavior = function (productSlug, scoreValue = 2) {
+        try {
+            let behaviorData = localStorage.getItem('bose_user_behavior');
+            let behaviorLog = behaviorData ? JSON.parse(behaviorData) : {};
+
+            if (!behaviorLog[productSlug]) {
+                behaviorLog[productSlug] = { score: 0, lastVisited: Date.now() };
+            }
+
+            behaviorLog[productSlug].score += scoreValue;
+            behaviorLog[productSlug].lastVisited = Date.now();
+
+            localStorage.setItem('bose_user_behavior', JSON.stringify(behaviorLog));
+        } catch (e) {
+            console.warn("⚠️ فشل تسجيل السلوك المحلي للعميل.");
+        }
+    };
+
+    window.getBosePersonalizedSuggestions = function (dbProducts, limit = 4) {
+        if (!dbProducts || !Array.isArray(dbProducts)) return [];
+
+        try {
+            const rawCart = localStorage.getItem('bose_cart');
+            const cartSlugs = rawCart ? JSON.parse(rawCart).map(item => item.productSlug) : [];
+
+            let behaviorData = localStorage.getItem('bose_user_behavior');
+            let behaviorLog = behaviorData ? JSON.parse(behaviorData) : {};
+
+            let availableProducts = dbProducts.filter(p => 
+                !cartSlugs.includes(p.slug) && 
+                p.slug !== "toort-custom-master" && 
+                p.slug !== "flowers-master"
+            );
+
+            availableProducts.sort((a, b) => {
+                let scoreA = behaviorLog[a.slug] ? behaviorLog[a.slug].score : 0;
+                let scoreB = behaviorLog[b.slug] ? behaviorLog[b.slug].score : 0;
+                
+                if (scoreB === scoreA) {
+                    let timeA = behaviorLog[a.slug] ? behaviorLog[a.slug].lastVisited : 0;
+                    let timeB = behaviorLog[b.slug] ? behaviorLog[b.slug].lastVisited : 0;
+                    return timeB - timeA;
+                }
+                return scoreB - scoreA;
+            });
+
+            return availableProducts.slice(0, limit);
+        } catch (e) {
+            return dbProducts.slice(0, limit);
+        }
+    };
 function verifyAndInitializeEngine() {
     console.log("🚀 تم التحقق من مطابقة المحرك المخصص وتوافقه مع قاعدة بيانات حلويات بوسي بنجاح.");
+    
+    // 👑 [بداية زراعة محرك تتبع السلوك اللحظي] 👑
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentSlug = urlParams.get('slug');
+    if (currentSlug && window.location.pathname.includes('product.html')) {
+        if (typeof window.trackBoseUserBehavior === "function") {
+            window.trackBoseUserBehavior(currentSlug, 2); 
+        }
+    }
+    // 👑 [نهاية زراعة محرك تتبع السلوك اللحظي] 👑
+
     if (typeof startEngineLogic === "function") {
         startEngineLogic();
     }
