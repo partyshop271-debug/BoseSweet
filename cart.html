@@ -218,7 +218,7 @@
                 );
 
                 // جلب المنتجات المتاحة للعرض داخل السلايدر الأفقي المريح (نعرض حتى 5 أصناف ليتصفحها العميل بحرية)
-                const finalSuggestions = filteredProducts.length > 0 ? filteredProducts.slice(0, 5) : dbData.products.slice(0, 5);
+                const finalSuggestions = window.getBosePersonalizedSuggestions(dbData.products, 4);
                 const currency = dbData.store?.currency || "EGP";
 
                 if (finalSuggestions.length === 0) {
