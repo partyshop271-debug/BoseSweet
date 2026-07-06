@@ -2483,7 +2483,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    window.getBosePersonalizedSuggestions = function (dbProducts, limit = 4) {
+window.getBosePersonalizedSuggestions = function (dbProducts, currentProductSlug = "", limit = 5) {
         if (!dbProducts || !Array.isArray(dbProducts)) return [];
 
         try {
@@ -2495,6 +2495,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             let availableProducts = dbProducts.filter(p => 
                 !cartSlugs.includes(p.slug) && 
+                p.slug !== currentProductSlug && 
                 p.slug !== "toort-custom-master" && 
                 p.slug !== "flowers-master"
             );
