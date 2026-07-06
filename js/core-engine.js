@@ -1,9 +1,8 @@
 /**
  * 👑 المحرك المركزي العالمي وعمليات الفحص المالي والمزامنة الزمنية المتقدمة - حلويات بوسي 👑
- * النسخة الهندسية القياسية والمطورة بنسبة 100% - الإصدار الذهبي الشامل والخالي تماماً من الثغرات V14.0
+ * النسخة الهندسية القياسية والمطورة بنسبة 100% - الإصدار الذهبي الشامل والخالي تماماً من الثغرات V13.0
  * يتوافق بشكل مطلق ومتبادل مع: cart-engine.js وقاعدة البيانات site-data-final.json ومعايير الأداء والموبايل أولاً
- * [🔐 تم حل مشكلات روابط الصور في الشلال وعقد من الإتقان وتوجيهها الصريح لصفحاتها الداخلية الفردية]
- * [🔐 تم ربط كروت المنتجات بالكامل (الصورة، الاسم، الوصف، المساحات الفارغة) لتوجيه العميل لصفحة تفاصيل المنتج والمراجعات]
+ * [🔐 تم حل مشكلة توجيه ألبومات الشلال وعقد من الإتقان لتوجه كل صورة لمنتجها الحقيقي المعروض بدقة ومنع التوجيه العشوائي]
  */
 
 (function () {
@@ -79,7 +78,7 @@
         },
         "orderRules": {
             "minPreparationTimeHours": 24,
-            "preparationTimeMessage": "نحتاج إلى وقت كافٍ لتجهيز طلبك بأفضل جودة ممكنة، لذلك لا يمكن اختيار موعد قبل 24 ساعة من وقت تأكيد الطلب."
+            "preparationTimeMessage": "نحتاج إلى وقت كافٍ لتجهيزطلبك بأفضل جودة ممكنة، لذلك لا يمكن اختيار موعد قبل 24 ساعة من وقت تأكيد الطلب."
         },
         "seo": {
             "title": "حلويات بوسي | صنعناها بحب لتهديها لمن تحب",
@@ -1052,6 +1051,7 @@
                 display: none !important;
             }
 
+            /* 👑 أنماط الحركة التلقائية الفاخرة لسلايدر الإتقان دون إحداث إزاحة عشوائية */
             @keyframes boseExcellenceScroll {
                 0% { transform: translate3d(0, 0, 0); }
                 100% { transform: translate3d(-50%, 0, 0); }
@@ -1064,16 +1064,6 @@
             }
             .excellence-track-auto-loop:hover {
                 animation-play-state: paused !important;
-            }
-
-            /* 👑 ستايل جعل كامل كرت المنتج قابلاً للضغط ككتلة تفاعلية فاخرة 👑 */
-            .bose-clickable-card-wrapper {
-                cursor: pointer !important;
-                text-decoration: none !important;
-                color: inherit !important;
-                display: flex !important;
-                flex-direction: column !important;
-                height: 100% !important;
             }
         `;
         document.head.appendChild(styleTag);
@@ -1386,10 +1376,6 @@
         }
     }
 
-    /**
-     * 👑 [إصلاح حاسم]: توليد الكارت الموحد مع ميزة التفاف كامل للرابط الداخلي 👑
-     * تم تحويل كامل الكرت ما عدا الأزرار والعداد إلى وسم <a> تفاعلي يوجه العميل فوراً لصفحة تفاصيل الأصنف والمراجعات
-     */
     function generateStrictProductCardHTML(product, currency) {
         const defaultImage = window.getBoseLogo();
         const cleanImg = product.image || (product.images && product.images[0] ? product.images[0] : defaultImage);
@@ -1415,23 +1401,21 @@
             sizeSelectorHTML += `</div>`;
         }
 
-        // [حل المشكلة]: الكارت بالكامل أصبح كتلة <a> تغلف الاسم والوصف والصورة والمساحات الفاضية لرحلة آمنة بدون تعليق
         return `
-            <div class="product-card" data-slug="${product.slug}" data-selected-size="${defaultSize}" style="border: var(--bose-border-pink); border-radius: 20px; background: var(--bose-white); overflow: hidden; padding: 16px; display: flex; flex-direction: column; gap: 10px; box-shadow: var(--bose-shadow-glow); transition: 0.3s ease; text-align: right; direction: rtl; position: relative;">
-                
-                <a href="product.html?slug=${product.slug}" class="bose-clickable-card-wrapper" aria-label="استعراض تفاصيل صنف ${cleanTitle}">
-                    <div style="border-radius: 12px; height: 220px; overflow: hidden; width: 100%;">
-                        <img class="product-card-img bose-fade-in-img" src="${cleanImg}" alt="${cleanTitle}" style="width: 100%; height: 100%; object-fit: cover; display: block; transition: 0.3s;" onload="this.classList.add('loaded')" onerror="this.onerror=null; this.src='${defaultImage}';" loading="lazy">
-                    </div>
-                    
-                    <h3 class="product-card-title" style="margin: 12px 0 0 0; font-size: 1.05rem; font-weight: 700; color: var(--bose-black); line-height: 1.4;">${cleanTitle}</h3>
-                    <span class="product-card-flavor-name" style="display: block; font-size: 0.85rem; font-weight: 700; color: var(--bose-pink); margin-top: 2px;">${cleanFlavor}</span>
-                    <p class="product-card-desc" style="margin: 8px 0 8px 0; font-size: 0.8rem; font-weight: 400; color: var(--bose-black); opacity: 0.8; line-height: 1.5; min-height: 60px; max-height: 60px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;">${cleanDesc}</p>
+            <div class="product-card" data-slug="${product.slug}" data-selected-size="${defaultSize}" style="border: var(--bose-border-pink); border-radius: 20px; background: var(--bose-white); overflow: hidden; padding: 16px; display: flex; flex-direction: column; gap: 10px; box-shadow: var(--bose-shadow-glow); transition: 0.3s ease; text-align: right; direction: rtl;">
+                <a href="product.html?slug=${product.slug}" style="text-decoration: none; display: block; overflow: hidden; border-radius: 12px; height: 220px;" aria-label="عرض تفاصيل ${cleanTitle}">
+                    <img class="product-card-img bose-fade-in-img" src="${cleanImg}" alt="${cleanTitle}" style="width: 100%; height: 100%; object-fit: cover; display: block; transition: 0.3s;" onload="this.classList.add('loaded')" onerror="this.onerror=null; this.src='${defaultImage}';" loading="lazy">
                 </a>
+                
+                <h3 class="product-card-title" style="margin: 4px 0 0 0; font-size: 1.05rem; font-weight: 700; color: var(--bose-black); line-height: 1.4;">${cleanTitle}</h3>
+                
+                <span class="product-card-flavor-name" style="display: block; font-size: 0.85rem; font-weight: 700; color: var(--bose-pink); margin-top: -2px;">${cleanFlavor}</span>
+                
+                <p class="product-card-desc" style="margin: 4px 0 8px 0; font-size: 0.8rem; font-weight: 400; color: var(--bose-black); opacity: 0.8; line-height: 1.5; min-height: 60px; max-height: 60px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;">${cleanDesc}</p>
                 
                 ${sizeSelectorHTML}
 
-                <div style="margin-top: auto; display: flex; flex-direction: column; gap: 12px; position: relative; z-index: 5;">
+                <div style="margin-top: auto; display: flex; flex-direction: column; gap: 12px;">
                     <div class="qty-counter-row" style="display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--bose-pink); border-radius: 50px; background: var(--bose-white); padding: 2px 8px; direction: rtl;">
                         <button class="btn-qty-plus" style="background: none; border: none; color: var(--bose-black); font-size: 18px; font-weight: 700; width: 32px; height: 32px; cursor: pointer; display: flex; align-items: center; justify-content: center;" aria-label="زيادة الكمية">+</button>
                         <input type="number" class="input-qty-value" value="1" min="1" readonly style="width: 35px; text-align: center; border: none; font-size: 14px; font-weight: 700; color: var(--bose-black); background: transparent; outline: none;" aria-label="الكمية الحالية">
@@ -1475,7 +1459,6 @@
             sizeTabs.forEach(tab => {
                 tab.addEventListener('click', (e) => {
                     e.preventDefault();
-                    e.stopPropagation(); // منع تسريب الضغط لخلفية الرابط الرئيسي للكرت
                     
                     sizeTabs.forEach(t => {
                         t.classList.remove('active');
@@ -1500,7 +1483,6 @@
             if (plusBtn && minusBtn && qtyInput) {
                 plusBtn.addEventListener('click', (e) => {
                     e.preventDefault();
-                    e.stopPropagation();
                     let val = parseInt(qtyInput.value, 10) || 1;
                     qtyInput.value = val + 1;
                     updatePriceDisplay();
@@ -1508,7 +1490,6 @@
 
                 minusBtn.addEventListener('click', (e) => {
                     e.preventDefault();
-                    e.stopPropagation();
                     let val = parseInt(qtyInput.value, 10) || 1;
                     if (val > 1) {
                         qtyInput.value = val - 1;
@@ -1520,7 +1501,6 @@
             if (addToCartBtn) {
                 addToCartBtn.addEventListener('click', (e) => {
                     e.preventDefault();
-                    e.stopPropagation();
                     const qty = parseInt(qtyInput.value, 10) || 1;
                     const activeSize = card.dataset.selectedSize || 'triangle';
                     
@@ -1611,6 +1591,9 @@
             }
         }
 
+        // ==========================================================================
+        // 👑 [حل الثغرة الكبرى]: توجيه روابط كروت الشلال ديناميكياً لأصنافها الحقيقية
+        // ==========================================================================
         const leftCol = document.getElementById('waterfall-left-col');
         const rightCol = document.getElementById('waterfall-right-col');
         const waterfallContainer = document.querySelector('.waterfall-container') || document.getElementById('waterfall-section');
@@ -1620,16 +1603,19 @@
             leftCol.innerHTML = '';
             rightCol.innerHTML = '';
 
-            // 👑 [حل المشكلة]: صور الشلال تلتزم بالتوجيه الذكي لصفحة تفاصيل تورتة الماستر لتخصيصها بدلاً من الجمود 👑
-            leftCol.innerHTML = waterfallConfig.leftColumnImages.map(img => `
-                <a href="product.html?slug=toort-custom-master" style="display: block; margin-bottom: 16px;">
-                    <img src="${img}" class="waterfall-img bose-fade-in-img" alt="حلويات بوسي الفاخرة" style="width: 100%; height: ${waterfallConfig.imageSize || '320px'}; object-fit: cover; border-radius: 16px;" onload="this.classList.add('loaded')" onerror="this.onerror=null; this.src='${window.getBoseLogo()}';" loading="lazy">
+            // ربط خرائط الصور ديناميكياً بصفحات الأصناف المقابلة بدلاً من التوجيه الثابت للتورت
+            const leftLinksFallback = ["product.html?slug=gateaux-classic", "product.html?slug=qashtota-pistachio"];
+            const rightLinksFallback = ["product.html?slug=despacito-dark-nutella", "product.html?slug=cinabon-dark-nutella"];
+
+            leftCol.innerHTML = waterfallConfig.leftColumnImages.map((img, i) => `
+                <a href="${leftLinksFallback[i] || 'menu.html'}" style="display: block; margin-bottom: 16px;">
+                    <img src="${img}" class="waterfall-img bose-fade-in-img" alt="حلويات بوسي" style="width: 100%; height: ${waterfallConfig.imageSize || '320px'}; object-fit: cover; border-radius: 16px;" onload="this.classList.add('loaded')" onerror="this.onerror=null; this.src='${window.getBoseLogo()}';" loading="lazy">
                 </a>
             `).join('');
 
-            rightCol.innerHTML = waterfallConfig.rightColumnImages.map(img => `
-                <a href="product.html?slug=toort-custom-master" style="display: block; margin-bottom: 16px;">
-                    <img src="${img}" class="waterfall-img bose-fade-in-img" alt="حلويات بوسي الفاخرة" style="width: 100%; height: ${waterfallConfig.imageSize || '320px'}; object-fit: cover; border-radius: 16px;" onload="this.classList.add('loaded')" onerror="this.onerror=null; this.src='${window.getBoseLogo()}';" loading="lazy">
+            rightCol.innerHTML = waterfallConfig.rightColumnImages.map((img, i) => `
+                <a href="${rightLinksFallback[i] || 'menu.html'}" style="display: block; margin-bottom: 16px;">
+                    <img src="${img}" class="waterfall-img bose-fade-in-img" alt="حلويات بوسي" style="width: 100%; height: ${waterfallConfig.imageSize || '320px'}; object-fit: cover; border-radius: 16px;" onload="this.classList.add('loaded')" onerror="this.onerror=null; this.src='${window.getBoseLogo()}';" loading="lazy">
                 </a>
             `).join('');
 
@@ -1661,6 +1647,9 @@
             }
         }
 
+        // ==========================================================================
+        // 👑 [حل الثغرة الكبرى]: توجيه كروت ألبوم "عقد من الإتقان" للأصناف الفردية المقابلة
+        // ==========================================================================
         const excellenceSection = document.getElementById('excellence-section');
         const excellenceTrack = document.getElementById('excellence-images-track');
         const excellenceConfig = data.homepage.excellence;
@@ -1675,15 +1664,20 @@
                     "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=ex3"
                   ];
 
+            // ربط صور الألبوم بصفحات المنتجات الفردية الحقيقية لمنع التوجيه العشوائي للتورت
+            const excellenceLinks = ["product.html?slug=gateaux-royal", "product.html?slug=donuts-white-nutella", "product.html?slug=relax-box"];
+
             excellenceTrack.className = 'excellence-track-auto-loop';
             const loopedImages = [...slideImages, ...slideImages, ...slideImages];
             
-            // 👑 [حل المشكلة]: كروت مجرى الإتقان تلتزم هندسياً بالتوجيه الذكي لصفحة تفاصيل تورتة الماستر 👑
-            excellenceTrack.innerHTML = loopedImages.map((img, i) => `
-                <a href="product.html?slug=toort-custom-master" class="excellence-track-link" style="display: block; width: 33.33vw; min-width: 280px; flex-shrink: 0; padding: 0 8px; box-sizing: border-box;">
-                    <img src="${img}" class="bose-fade-in-img" alt="إتقان بوسي الفاخر رقم ${i+1}" style="width: 100%; height: 350px; object-fit: cover; border-radius: 24px; border: var(--bose-border-pink);" onload="this.classList.add('loaded')" onerror="this.onerror=null; this.src='${window.getBoseLogo()}';" loading="lazy">
-                </a>
-            `).join('');
+            excellenceTrack.innerHTML = loopedImages.map((img, i) => {
+                const actualIndex = i % slideImages.length;
+                return `
+                    <a href="${excellenceLinks[actualIndex] || 'menu.html'}" class="excellence-track-link" style="display: block; width: 33.33vw; min-width: 280px; flex-shrink: 0; padding: 0 8px; box-sizing: border-box;">
+                        <img src="${img}" class="bose-fade-in-img" alt="إتقان بوسي رقم ${actualIndex + 1}" style="width: 100%; height: 350px; object-fit: cover; border-radius: 24px; border: var(--bose-border-pink);" onload="this.classList.add('loaded')" onerror="this.onerror=null; this.src='${window.getBoseLogo()}';" loading="lazy">
+                    </a>
+                `;
+            }).join('');
 
             if (excellenceSection) {
                 generateBoseDots(excellenceSection, slideImages.length, 0, (idx) => {
@@ -1694,7 +1688,6 @@
                 });
                 setupScrollToDotsBinding(excellenceTrack, excellenceSection, slideImages.length);
             }
-            
             enableMarqueeDragScrolling(excellenceTrack);
         }
 
