@@ -194,7 +194,7 @@
             font-size: 1.3rem;
             font-weight: 700 !important;
             cursor: pointer;
-            color: var(--bose-black);
+            color: var(--bose-black, #111111);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -214,7 +214,7 @@
             text-align: center;
             font-size: 1.1rem;
             font-weight: 700 !important;
-            color: var(--bose-black);
+            color: var(--bose-black, #111111);
             background: transparent;
         }
 
@@ -295,6 +295,14 @@
             border-color: var(--bose-pink, #FF91A4);
             box-shadow: 0 4px 10px rgba(255, 145, 164, 0.15);
         }
+
+        /* 🛠️ [إصلاح هندسي حاسم لحل مشكلة الصورة المضغوطة بالفوتر] */
+        .bose-footer .footer-logo-container img {
+            height: 60px !important;
+            width: auto !important;
+            max-width: 100% !important;
+            object-fit: contain !important;
+        }
     </style>
 </head>
 <body class="bose-hardware-accelerated bose-arabic-text">
@@ -325,7 +333,6 @@
     <!-- 👑 المحرك البرمجي المتكامل والمتوافق بالمليم مع core-engine.js وحسابات السلة 👑 -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // استخراج الـ slug النصي الموحد كمعرف فريد لمنع التصادم أو الفقد العشوائي أثناء التصفح الخفي
             const urlParams = new URLSearchParams(window.location.search);
             const productSlug = urlParams.get('slug') || urlParams.get('id'); 
 
@@ -336,7 +343,6 @@
                 return;
             }
 
-            // الاستماع اللحظي والآمن لجهوزية قاعدة البيانات المشتركة بالموقع عبر بروميس المحرك المركزي المشترك
             window.getBoseDatabase().then(siteData => {
                 processProductExtraction(siteData);
             }).catch(() => {
@@ -351,7 +357,6 @@
                     return;
                 }
 
-                // فحص ومطابقة الصنف المطلوب بناءً على الـ slug النصي أو المعرف الصارم
                 const matchedProduct = siteData.products.find(p => String(p.slug) === String(productSlug) || String(p.id) === String(productSlug));
 
                 if (matchedProduct) {
@@ -370,7 +375,6 @@
                     stars += i <= Math.floor(rating) ? "★" : "☆";
                 }
 
-                // هندسة خيارات المقاسات والأحجام المنسدلة ديناميكياً لتفادي خيارات الـ Select المشتتة لراحة العميل
                 let sizeSelectorHTML = "";
                 const defaultSize = product.defaultSize || 'triangle';
                 const initialPrice = (product.prices && product.prices[defaultSize]) ? product.prices[defaultSize] : product.price;
@@ -390,7 +394,6 @@
                     sizeSelectorHTML += `</div></div>`;
                 }
 
-                // بناء كتل المراجعات والتقييمات الفاخرة بنجومها الناعمة بناءً على مستند المواصفات القياسية لسد الثغرة
                 let reviewsHTML = `<div class="bose-reviews-section"><h3 class="bose-section-title" style="font-size:1.3rem; font-weight:700; margin-bottom:20px; color:var(--bose-black);">🌟 مراجعات وتقييمات العملاء المحترمين</h3>`;
                 if (product.reviews && product.reviews.length > 0) {
                     product.reviews.forEach(rev => {
@@ -411,7 +414,6 @@
                 }
                 reviewsHTML += `</div>`;
 
-                // بناء قسم المقترحات الذكية والبدائل (قد يعجبك أيضاً) لمنع التكدس وتأمين الراحة الكاملة لعين العميل
                 let recommendationsHTML = `
                     <div class="bose-recommendations-section">
                         <h3 class="bose-section-title" style="font-size:1.3rem; font-weight:700; margin-bottom:24px; text-align:center; color:var(--bose-black);">🍰 قد يعجبك أيضاً تشكيلة متميزة</h3>
@@ -419,7 +421,7 @@
                     </div>
                 `;
 
-                // 👑 [إصلاح حاسم]: حقن الهيكلية الحرفية الأصلية للملف داخل الـ Grid بالمليم لمنع التشويه البصري
+                // 👑 حقن الهيكلية الحرفية الأصلية للملف داخل الـ Grid بالمليم لمنع التشويه البصري وحفظ الوصف في القمة كـ Hook
                 viewContainer.innerHTML = `
                     <nav class="bose-breadcrumb-nav" aria-label="مسار التنقل">
                         <a href="index.html">الرئيسية</a>
@@ -477,7 +479,6 @@
                     ${recommendationsHTML}
                 `;
 
-                // رندرة المقترحات الفرعية ديناميكياً (2 كارت فقط على شاشات الموبايل لتأمين التنفس البصري الكامل للعين)
                 const suggestionsGrid = document.getElementById('product-page-suggestions-grid');
                 if (suggestionsGrid) {
                     const recProducts = siteData.products.filter(p => p.slug !== product.slug && p.slug !== "toort-custom-master" && p.slug !== "flowers-master").slice(0, 2);
@@ -485,13 +486,8 @@
                     window.attachProductCardEvents(suggestionsGrid, siteData.products, currency);
                 }
 
-                // تفعيل عداد التحكم بالكمية اللمسية المرنة لمنع القيم السالبة والمزامنة مع الحسابات الكسرية للمحرك
                 setupStepperMechanics(currency);
-                
-                // ربط خيارات المقاسات وتغيير عارض السعر اللحظي الدقيق الشامل للتخصيص والزيادة التضخمية
                 setupSizeTabsEvents(currency);
-
-                // ربط زر الإضافة الفاخر بالمحرك الموحد لضمان التحديث اللحظي لعداد الهيدر بالسلة
                 setupCartIntegration();
             }
 
@@ -509,39 +505,22 @@
                     priceNode.textContent = `${base * qty} ${currency}`;
                 };
 
-                btnDec.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    let val = parseInt(qtyInput.value, 10) || 1;
-                    if (val > 1) {
-                        qtyInput.value = val - 1;
-                        refreshPriceLabel();
-                    }
-                });
-
-                btnInc.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    let val = parseInt(qtyInput.value, 10) || 1;
-                    if (val < 99) {
-                        qtyInput.value = val + 1;
-                        refreshPriceLabel();
-                    }
-                });
+                btnDec.addEventListener('click', function(e) { e.preventDefault(); let val = parseInt(qtyInput.value, 10) || 1; if (val > 1) { qtyInput.value = val - 1; refreshPriceLabel(); } });
+                btnInc.addEventListener('click', function(e) { e.preventDefault(); let val = parseInt(qtyInput.value, 10) || 1; if (val < 99) { qtyInput.value = val + 1; refreshPriceLabel(); } });
             }
 
+            // ربط فلاتر الراديو المخصصة للأحجام
             function setupSizeTabsEvents(currency) {
                 const priceNode = document.getElementById('product-price-node');
                 const qtyInput = document.getElementById('input-bose-qty-val');
-                const radios = document.querySelectorAll('.size-radio-node');
-
-                radios.forEach(radio => {
+                document.querySelectorAll('.size-radio-node').forEach(radio => {
                     radio.addEventListener('change', function() {
                         if (this.checked) {
                             const rawPrice = parseFloat(this.dataset.price);
                             const updatedUnitPrice = window.calculateBosePrice ? window.calculateBosePrice(rawPrice, "menu-only") : rawPrice;
                             
                             priceNode.dataset.unitBase = updatedUnitPrice;
-                            const qty = parseInt(qtyInput.value, 10) || 1;
-                            priceNode.textContent = `${updatedUnitPrice * qty} ${currency}`;
+                            priceNode.textContent = `${updatedUnitPrice * (parseInt(qtyInput.value, 10) || 1)} ${currency}`;
                         }
                     });
                 });
@@ -555,7 +534,6 @@
                     e.preventDefault();
                     const qtyInput = document.getElementById('input-bose-qty-val');
                     const quantity = parseInt(qtyInput.value, 10) || 1;
-                    
                     const checkedRadio = document.querySelector('.size-radio-node:checked');
                     const activeSize = checkedRadio ? checkedRadio.value : 'triangle';
 
@@ -571,23 +549,18 @@
                             options.flavorName = matchedProduct.flavorName || "كلاسيك";
                         }
 
-                        // صياغة وإرسال كائن السلة القياسي الموحد المانع للتصادم البرمجي لـ localStorage
                         const cartItem = window.createCartItem ? window.createCartItem(matchedProduct, options, quantity) : null;
-
-                        if (cartItem) {
-                            if (typeof window.addBoseCartItem === 'function') {
-                                window.addBoseCartItem(cartItem);
-                                qtyInput.value = 1;
-                                const currentBase = parseFloat(document.getElementById('product-price-node').dataset.unitBase);
-                                const currency = siteData.store.currency || "EGP";
-                                document.getElementById('product-price-node').textContent = `${currentBase} ${currency}`;
-                            }
+                        if (cartItem && typeof window.addBoseCartItem === 'function') {
+                            window.addBoseCartItem(cartItem);
+                            qtyInput.value = 1;
+                            const currentBase = parseFloat(document.getElementById('product-price-node').dataset.unitBase);
+                            const currency = siteData.store.currency || "EGP";
+                            document.getElementById('product-price-node').textContent = `${currentBase} ${currency}`;
                         }
                     });
                 });
             }
 
-            // لو واجهنا مشكلة في جلب المعرف نعرّف لوحة الخطأ
             function renderErrorPanel(message) {
                 viewContainer.innerHTML = `
                     <div class="error-state-box" style="text-align: center; padding: 60px 20px; color: var(--bose-black);">

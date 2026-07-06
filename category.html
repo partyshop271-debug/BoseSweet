@@ -77,14 +77,12 @@
         }
 
         .category-desc-text {
-            color: #111111;
-            font-size: 1.1rem;
+            color: #4D4D4D;
+            font-size: 0.95rem;
             font-weight: 400;
-            max-width: 800px;
+            max-width: 700px;
             margin: 0 auto;
-            line-height: 1.8;
-            text-align: center;
-            opacity: 0.95;
+            line-height: 1.6;
         }
 
         /* 📐 محرك التوزيع الشبكي المرن المتوافق مع محددات الأبعاد القياسية الصارمة للمواصفة */
@@ -182,6 +180,14 @@
             0% { background-position: 200% 0; }
             100% { background-position: -200% 0; }
         }
+        
+        /* 🛠️ [إصلاح هندسي حاسم لحل مشكلة الصورة المضغوطة بالفوتر] */
+        .bose-footer .footer-logo-container img {
+            height: 60px !important;
+            width: auto !important;
+            max-width: 100% !important;
+            object-fit: contain !important;
+        }
     </style>
 </head>
 <body class="bose-hardware-accelerated bose-arabic-text">
@@ -205,7 +211,6 @@
 
         <div class="category-hero-header">
             <h1 id="bose-category-headline" class="category-title-text">تصفح الأصناف</h1>
-            <!-- 🌟 هنا يتم حقن الوصف التفصيلي الحرفي للفئة بالكامل لمنع العبث البصري -->
             <p id="bose-category-description" class="category-desc-text">جاري جلب تفاصيل صنف حلويات بوسي الفاخر...</p>
         </div>
 
@@ -261,7 +266,6 @@
 
                 const filteredProducts = siteData.products.filter(p => p.category === categoryId);
                 
-                // 👑 [إصلاح حاسم]: جلب أول منتج في الفئة لاستخلاص وصفها الحرفي الشامل والثابت المكتوب بالمواصفة
                 if (filteredProducts.length > 0 && filteredProducts[0].description) {
                     descNode.textContent = filteredProducts[0].description;
                 }
