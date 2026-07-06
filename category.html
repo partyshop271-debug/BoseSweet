@@ -85,7 +85,7 @@
             line-height: 1.6;
         }
 
-        /* 📐 محرك التوزيع الشبكي المرن المتوافق مع محددات الأبعاد القياسية الصارمة */
+        /* 📐 محرك التوزيع الشبكي المرن المتوافق مع محددات الأبعاد القياسية الصارمة للمواصفة */
         .category-products-grid {
             display: grid;
             gap: 16px;
@@ -93,13 +93,13 @@
             box-sizing: border-box;
         }
 
-        /* لقطة عزل التكديس: النمط الافتراضي للشبكة هو كارتين بجوار بعضهما للموبايل */
+        /* لقطة عزل التكديس البصري تماشياً مع تخطيطات الـ Layout بالـ JSON */
         .category-products-grid.layout-two-cards, 
         .category-products-grid.layout-tabs {
             grid-template-columns: repeat(2, 1fr);
         }
 
-        /* النمط المخصص للجاتوهات وبوكس الروقان كارت واحد مالي الشاشة على الموبايل */
+        /* النمط المخصص للجاتوهات وبوكس الروقان كارت واحد مالي الشاشة على الموبايل لمنع الحشر البصري */
         .category-products-grid.layout-full-card {
             grid-template-columns: 1fr;
         }
@@ -128,7 +128,7 @@
             }
         }
 
-        /* 🚨 التبويبات الفرعية الفاخرة المخصصة حصرياً لأحجام فئة الديسباسيتو */
+        /* 🚨 التبويبات الفرعية الفاخرة المخصصة حصرياً لأحجام فئة الديسباسيتو لمنع تشتيت العميل */
         .bose-size-tabs-filter {
             display: flex;
             justify-content: center;
@@ -157,7 +157,7 @@
             box-shadow: 0 4px 12px rgba(255, 145, 164, 0.2);
         }
 
-        /* 🚨 هيكل التحميل الهيكلي الـ Skeleton لسرعة وخفة تجربة الأداء */
+        /* 🚨 هيكل التحميل الهيكلي الـ Skeleton لسرعة وخفة تجربة الأداء وموازنة معالجات الموبايل */
         .skeleton-card-loader {
             background: #FFFFFF;
             border: 1px solid rgba(255, 145, 164, 0.15);
@@ -203,7 +203,7 @@
 </head>
 <body class="bose-hardware-accelerated bose-arabic-text">
 
-    <!-- 🏢 مكون الهيدر الموحد والثابت الصريح (Shared Universal Header) -->
+    <!-- 🏢 مكون الهيدر الموحد والثابت الصريح (Shared Universal Header) الملتزم بالـ DOM القياسي الموحد -->
     <header class="bose-navbar"></header>
 
     <!-- 📥 القائمة الجانبية المشتركة للموبايل (Universal Drawer Menu) -->
@@ -225,14 +225,14 @@
             <p id="bose-category-description" class="category-desc-text">جاري جلب قائمة الحلويات الفاخرة الطازجة المحضرة بكل حب وعناية...</p>
         </div>
 
-        <!-- تبويبات التصفح للأحجام والأبعاد (تظهر وتخفي برمجياً وحصرياً لأصناف الديسباسيتو) -->
+        <!-- تبويبات التصفح للأحجام والأبعاد (تظهر وتخفي برمجياً وحصرياً لأصناف الديسباسيتو بناءً على دليل التشغيل) -->
         <div id="bose-size-filter-row" class="bose-size-tabs-filter" style="display: none;">
             <button class="bose-filter-tab-pill active" data-filter-size="triangle">مثلث فردي</button>
             <button class="bose-filter-tab-pill" data-filter-size="medium">وسط تشارك ممتع</button>
             <button class="bose-filter-tab-pill" data-filter-size="large">كبير جمعات فاخرة</button>
         </div>
 
-        <!-- حاوية الشبكة الهندسية للمنتجات -->
+        <!-- حاوية الشبكة الهندسية للمنتجات المعزولة التكديس البصري -->
         <div id="bose-category-products-grid" class="category-products-grid layout-two-cards">
             <div class="skeleton-card-loader"><div class="skeleton-pulse-node" style="height:220px;"></div><div class="skeleton-pulse-node" style="height:24px; width:70%;"></div><div class="skeleton-pulse-node" style="height:20px; width:40%;"></div><div class="skeleton-pulse-node" style="height:45px; margin-top:auto;"></div></div>
             <div class="skeleton-card-loader"><div class="skeleton-pulse-node" style="height:220px;"></div><div class="skeleton-pulse-node" style="height:24px; width:70%;"></div><div class="skeleton-pulse-node" style="height:20px; width:40%;"></div><div class="skeleton-pulse-node" style="height:45px; margin-top:auto;"></div></div>
@@ -242,9 +242,10 @@
     <!-- 🏪 مكون الفوتر الموحد والثابت الفاتح الصريح (Shared Universal Footer) -->
     <footer class="bose-footer"></footer>
 
-    <!-- 👑 المحرك البرمجي لصفحة الفئة والمطابق لحسابات السلة والـ JSON 👑 -->
+    <!-- 👑 المحرك البرمجي المتكامل لصفحة الفئة والمطابق لحسابات السلة والـ JSON 👑 -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
+            // استخراج معرف الفئة النشط من الرابط URL بكل أمان وبدء فك الحزم
             const urlParams = new URLSearchParams(window.location.search);
             const categoryId = urlParams.get('category');
 
@@ -254,20 +255,21 @@
             const breadcrumbNode = document.getElementById('breadcrumb-active-category');
             const sizeFilterRow = document.getElementById('bose-size-filter-row');
             
-            let activeSizeTab = "triangle";
+            let activeSizeTab = "triangle"; // الحجم الافتراضي لفلترة الديسباسيتو
 
             if (!categoryId) {
                 renderErrorState("لم نتمكن من تحديد الفئة المطلوبة لتصفح منتجاتها.");
                 return;
             }
 
-            if (window.BoseStoreData) {
-                initCategoryRendering(window.BoseStoreData);
-            } else {
+            // الإنصات والربط والتمهيد الآمن لبيانات موقع بوسي الموحد المشترك عبر البروميس المركزي
+            window.getBoseDatabase().then(siteData => {
+                initCategoryRendering(siteData);
+            }).catch(() => {
                 document.addEventListener("BoseDatabaseLoaded", function(e) {
                     initCategoryRendering(e.detail);
                 });
-            }
+            });
 
             function initCategoryRendering(siteData) {
                 if (!siteData || !siteData.homepage || !siteData.products) {
@@ -275,6 +277,7 @@
                     return;
                 }
 
+                // البحث عن اسم وتفاصيل الفئة في قائمة الفئات الـ 12 المعتمدة بالـ JSON لتوثيق الهوية
                 const categoryObj = siteData.homepage.categoriesSlider.find(cat => cat.id === categoryId);
                 
                 if (!categoryObj) {
@@ -282,19 +285,21 @@
                     return;
                 }
 
+                // تحديث نصوص الترويسة والمسار لإصلاح الأرشفة والـ SEO لراحة الزائر النفسية
                 if (headlineNode) headlineNode.textContent = categoryObj.title;
                 if (breadcrumbNode) breadcrumbNode.textContent = categoryObj.title;
                 if (descNode) {
-                    descNode.textContent = `تم تصميم هذه التشكيلة الفاخرة من ${categoryObj.title} بعناية فائقة لتناسب ذوقكم الرفيع ومناسباتكم السعيدة وتضمن راحتكم النفسية.`;
+                    descNode.textContent = `تم تصميم هذه التشكيلة الفاخرة من ${categoryObj.title} بعناية فائقة لتناسب ذوقكم الرفيع ومناسباتكم السعيدة وتضمن راحتكم النفسية وبدون أي وعود مبالغ فيها.`;
                 }
 
+                // عزل وفلترة المنتجات التابعة حصرياً لهذه الفئة المستدعاة من الرابط
                 const filteredProducts = siteData.products.filter(p => p.category === categoryId);
                 const currency = siteData.store.currency || "EGP";
 
                 if (filteredProducts.length === 0) {
                     productsGrid.innerHTML = `
                         <div style="grid-column: 1 / -1; text-align: center; padding: 60px 12px; color: var(--bose-pink);">
-                            <p style="font-size:1.1rem; font-weight:700; font-family:'Cairo', sans-serif;">⏳ جاري تحضير وتجهيز أصناف ${categoryObj.title} الطازجة والمخبوزة بحب لظهر لكم قريباً بالمليم!</p>
+                            <p style="font-size:1.1rem; font-weight:700; font-family:'Cairo', sans-serif;">⏳ جاري تحضير وتجهيز أصناف ${categoryObj.title} الطازجة والمخبوزة بحب لتظهر لكم قريباً بالمليم!</p>
                         </div>
                     `;
                     return;
@@ -302,8 +307,11 @@
 
                 const firstProduct = filteredProducts[0];
 
+                // 📐 تطبيق صيانة توزيع الأشكال والتنسيق الشبكي بناءً على نمط الـ layout المعرف لكل صنف بالـ JSON منعا للتكديس
                 if (firstProduct && firstProduct.layout) {
                     productsGrid.className = `category-products-grid layout-${firstProduct.layout}`;
+                    
+                    // إذا كان الصنف يعتمد على التبويبات (مثل الديسباسيتو) نكشف شريط الأحجام فوراً لحظر التشتيت
                     if (firstProduct.layout === "tabs") {
                         sizeFilterRow.style.display = "flex";
                     } else {
@@ -314,15 +322,18 @@
                 const renderProductsByLayoutConfig = () => {
                     productsGrid.innerHTML = "";
                     filteredProducts.forEach(product => {
+                        // مزامنة الحجم المختار للتبويبات قبل تمرير كائن الصنف على محرك البناء الصارم
                         if (firstProduct.layout === "tabs" && product.prices) {
                             product.defaultSize = activeSizeTab; 
                         }
                         
+                        // استدعاء دالة بناء كارت المنتج الهندسية القياسية والمثبتة بـ core-engine.js منعاً للتعارض والتكرار
                         if (typeof window.generateStrictProductCardHTML === 'function') {
                             const cardHTML = window.generateStrictProductCardHTML(product, currency);
                             const tempDiv = document.createElement('div');
                             tempDiv.innerHTML = cardHTML;
                             
+                            // معالجة وحقن الرابط الذكي ممرراً الـ slug النصي لرحلة العميل بصفحة المنتج الفردي
                             const cardLink = tempDiv.querySelector('a');
                             if (cardLink) {
                                 cardLink.href = `product.html?slug=${product.slug}`;
@@ -334,19 +345,24 @@
                         }
                     });
 
+                    // تفعيل وربط أحداث العدادات (زائد / ناقص) وأزرار الإضافة للسلة عبر دالة المحرك المركزي الموحدة
                     if (typeof window.attachProductCardEvents === 'function') {
                         window.attachProductCardEvents(productsGrid, siteData.products, currency);
                     }
                 };
 
+                // التشغيل الأولي للرندرة الشاملة للفئة
                 renderProductsByLayoutConfig();
 
+                // تفعيل تبويبات الأحجام التفاعلية والفرز اللحظي لحسابات وتوبنج الديسباسيتو
                 sizeFilterRow.querySelectorAll('.bose-filter-tab-pill').forEach(pill => {
                     pill.addEventListener('click', function(e) {
                         e.preventDefault();
                         sizeFilterRow.querySelectorAll('.bose-filter-tab-pill').forEach(p => p.classList.remove('active'));
                         this.classList.add('active');
                         activeSizeTab = this.getAttribute('data-filter-size');
+                        
+                        // إعادة تشغيل محرك الرندرة بالأسعار والأبعاد المحدثة للحجم المختار فوراً
                         renderProductsByLayoutConfig();
                     });
                 });

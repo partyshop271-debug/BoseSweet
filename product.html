@@ -5,18 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>تفاصيل المنتج الفاخر | حلويات بوسي</title>
     
-    <!-- 🔍 إعدادات تحسين محركات البحث والأرشفة الفاخرة SEO الملتزمة -->
-    <meta name="description" content="استمتع بتذوق القيمة والجودة العالية لأصناف حلويات بوسي الفاخرة المحضرة بمكونات طبيعية 100% طازجة يومياً.">
+    <!-- 🔍 إعدادات تحسين محركات البحث والأرشفة الفاخرة SEO الملتزمة بمواصفة البراند -->
+    <meta name="description" content="استمتع بتذوق القيمة والجودة العالية لأصناف حلويات بوسي الفاخرة المحضرة بمكونات طبيعية 100% طازجة يومياً تليق بمناسباتكم الفخمة.">
     
-    <!-- 🎨 ربط ملفات التصميم الموزعة هندسياً لمنع تضخم الأكواد وتأخر التحميل -->
+    <!-- 🎨 ربط ملفات التصميم الموزعة هندسياً لمنع تضخم الأكواد وتأخر التحميل البصري -->
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/main.css">
     
-    <!-- 👑 استدعاء المحرك المركزي العالمي في رأس الصفحة لتأمين الـ DOM ومنع وميض الألوان -->
+    <!-- 👑 استدعاء المحرك المركزي العالمي في رأس الصفحة لتأمين الـ DOM ومنع وميض الألوان وتأمين الكاش -->
     <script src="js/core-engine.js"></script>
 
     <style>
-        /* 🎨 الهندسة البصرية الخاصة بصفحة المنتج الفردي تماشياً مع الهوية المقدسة */
+        /* 🎨 الهندسة البصرية الخاصة بصفحة المنتج الفردي تماشياً مع الهوية المقدسة لعدم التكديس */
         .product-internal-wrapper {
             width: 100%;
             max-width: 1200px;
@@ -65,6 +65,7 @@
             }
         }
 
+        /* حظر الكتابة والخطوط الجافة فوق صور المنتجات نهائياً لضمان فخامة إضاءة النهار الطبيعية */
         .product-visual-gallery {
             position: relative;
             background-color: var(--bose-white, #FFFFFF);
@@ -96,7 +97,7 @@
 
         .product-headline {
             font-size: 2rem;
-            font-weight: 700 !important;
+            font-weight: 700 !important; /* مقفول هندسياً عند 700 للأقسام الرئيسية وتأكيد الفخامة */
             color: var(--bose-black, #111111) !important;
             margin: 0 0 12px 0;
             line-height: 1.4;
@@ -145,6 +146,7 @@
             text-align: justify;
         }
 
+        /* 📐 جدول البيانات الفنية الموحد المستدعى لإبراز جودة وقيمة الخامات الطبيعية */
         .product-specs-table {
             width: 100%;
             border-collapse: collapse;
@@ -172,6 +174,7 @@
             width: 100%;
         }
 
+        /* متحكم عداد الكمية اللمسي المرن لمنع القيم السالبة وتسهيل الضغط بصباع العميل */
         .qty-stepper-container {
             display: flex;
             align-items: center;
@@ -238,7 +241,7 @@
             box-shadow: 0 6px 20px rgba(17, 17, 17, 0.15);
         }
 
-        /* 🚨 قسم التقييمات والمراجعات المعتمد بالمواصفات */
+        /* 🚨 قسم التقييمات والمراجعات الفاخرة بنجومها الناعمة لراحة العميل */
         .bose-reviews-section {
             border-top: 1px dashed rgba(255, 145, 164, 0.3);
             padding-top: 40px;
@@ -254,7 +257,7 @@
             border: 1px solid rgba(255, 145, 164, 0.15);
         }
 
-        /* 🚨 قسم التوصيات الذكية (قد يعجبك أيضاً) */
+        /* 🚨 قسم التوصيات والبدائل الذكية "قد يعجبك أيضاً" لمنع التشتيت البصري */
         .bose-recommendations-section {
             border-top: 1px dashed rgba(255, 145, 164, 0.3);
             padding-top: 40px;
@@ -296,14 +299,14 @@
 </head>
 <body class="bose-hardware-accelerated bose-arabic-text">
 
-    <!-- 🏢 مكون الهيدر الموحد والثابت الصريح (Shared Universal Header) -->
+    <!-- 🏢 مكون الهيدر الموحد والثابت الصريح (Shared Universal Header) المتطابق برمجياً -->
     <header class="bose-navbar"></header>
 
     <!-- 📥 القائمة الجانبية المشتركة للموبايل (Universal Drawer Menu) -->
     <div class="drawer-overlay" id="drawer-shield"></div>
     <aside class="bose-drawer-menu" id="sidebar-drawer"></aside>
 
-    <!-- منطقة تفاصيل المنتج الديناميكية المتوافقة بالمليم مع المحرك وقعادة البيانات -->
+    <!-- منطقة تفاصيل المنتج الديناميكية المتوافقة بالمليم مع خريطة الـ DOM والمحرك المركزي -->
     <main id="bose-product-root-view" class="product-internal-wrapper">
         <div class="product-master-grid">
             <div class="product-visual-gallery skeleton-block-loader"></div>
@@ -319,9 +322,10 @@
     <!-- 🏪 مكون الفوتر الموحد والثابت الفاتح الصريح (Shared Universal Footer) -->
     <footer class="bose-footer"></footer>
 
-    <!-- 👑 المحرك البرمجي المتكامل والمتوافق بالمليم مع core-engine.js وقاعدة البيانات 👑 -->
+    <!-- 👑 المحرك البرمجي المتكامل والمتوافق بالمليم مع core-engine.js وحسابات السلة 👑 -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
+            // استخراج الـ slug النصي الموحد كمعرف فريد لمنع التصادم أو الفقد العشوائي أثناء التصفح الخفي
             const urlParams = new URLSearchParams(window.location.search);
             const productSlug = urlParams.get('slug') || urlParams.get('id'); 
 
@@ -332,9 +336,10 @@
                 return;
             }
 
+            // الاستماع اللحظي والآمن لجهوزية قاعدة البيانات المشتركة بالموقع عبر بروميس المحرك المركزي المشترك
             window.getBoseDatabase().then(siteData => {
                 processProductExtraction(siteData);
-            }).catch(err => {
+            }).catch(() => {
                 document.addEventListener("BoseDatabaseLoaded", function(e) {
                     processProductExtraction(e.detail);
                 });
@@ -346,6 +351,7 @@
                     return;
                 }
 
+                // فحص ومطابقة الصنف المطلوب بناءً على الـ slug النصي أو المعرف الصارم
                 const matchedProduct = siteData.products.find(p => String(p.slug) === String(productSlug) || String(p.id) === String(productSlug));
 
                 if (matchedProduct) {
@@ -364,6 +370,7 @@
                     stars += i <= Math.floor(rating) ? "★" : "☆";
                 }
 
+                // هندسة خيارات المقاسات والأحجام المنسدلة ديناميكياً لتفادي خيارات الـ Select المشتتة لراحة العميل
                 let sizeSelectorHTML = "";
                 const defaultSize = product.defaultSize || 'triangle';
                 const initialPrice = (product.prices && product.prices[defaultSize]) ? product.prices[defaultSize] : product.price;
@@ -383,7 +390,7 @@
                     sizeSelectorHTML += `</div></div>`;
                 }
 
-                /* 📝 تفكيك وحقن نظام المراجعات القياسي الفاخر */
+                // بناء كتل المراجعات والتقييمات الفاخرة بنجومها الناعمة بناءً على مستند المواصفات القياسية لسد الثغرة
                 let reviewsHTML = `<div class="bose-reviews-section"><h3 class="bose-section-title" style="font-size:1.3rem; font-weight:700; margin-bottom:20px; color:var(--bose-black);">🌟 مراجعات وتقييمات العملاء المحترمين</h3>`;
                 if (product.reviews && product.reviews.length > 0) {
                     product.reviews.forEach(rev => {
@@ -404,7 +411,7 @@
                 }
                 reviewsHTML += `</div>`;
 
-                /* 🍰 حقن وتوليد قسم "قد يعجبك أيضاً" للمقترحات الفردية */
+                // بناء قسم المقترحات الذكية والبدائل (قد يعجبك أيضاً) لمنع التكدس وتأمين الراحة الكاملة لعين العميل
                 let recommendationsHTML = `
                     <div class="bose-recommendations-section">
                         <h3 class="bose-section-title" style="font-size:1.3rem; font-weight:700; margin-bottom:24px; text-align:center; color:var(--bose-black);">🍰 قد يعجبك أيضاً تشكيلة متميزة</h3>
@@ -412,6 +419,7 @@
                     </div>
                 `;
 
+                // ضخ البيانات والمحتوى المعتمد والصادق لبراند بوسي لمنع قطع نصوص الوصف المريحة للعين
                 viewContainer.innerHTML = `
                     <nav class="bose-breadcrumb-nav" aria-label="مسار التنقل">
                         <a href="index.html">الرئيسية</a>
@@ -447,7 +455,7 @@
                                 <tbody>
                                     ${product.size ? `<tr><td class="spec-title-bold">الحجم القياسي</td><td>${product.size}</td></tr>` : ''}
                                     <tr><td class="spec-title-bold">حالة المكونات</td><td>طازجة وطبيعية 100% يومياً بالفرع بدون حافظة</td></tr>
-                                    <tr><td class="spec-title-bold">شرط التحضير</td><td>يُخبز ويُحضر بكل حب خصيصاً لمناسبتكم السعيدة</td></tr>
+                                    <tr><td class="spec-title-bold">شرط التحضير</td><td>يُخبز ويُحضر بكل حب خصيصاً لمناسبتكم السعيدة تماشياً مع معايير الإتقان</td></tr>
                                 </tbody>
                             </table>
 
@@ -468,6 +476,7 @@
                     ${recommendationsHTML}
                 `;
 
+                // رندرة المقترحات الفرعية ديناميكياً (2 كارت فقط على شاشات الموبايل لتأمين التنفس البصري الكامل للعين)
                 const suggestionsGrid = document.getElementById('product-page-suggestions-grid');
                 if (suggestionsGrid) {
                     const recProducts = siteData.products.filter(p => p.slug !== product.slug && p.slug !== "toort-custom-master" && p.slug !== "flowers-master").slice(0, 2);
@@ -475,8 +484,13 @@
                     window.attachProductCardEvents(suggestionsGrid, siteData.products, currency);
                 }
 
+                // تفعيل عداد التحكم بالكمية اللمسية المرنة لمنع القيم السالبة والمزامنة مع الحسابات الكسرية للمحرك
                 setupStepperMechanics(currency);
+                
+                // ربط خيارات المقاسات وتغيير عارض السعر اللحظي الدقيق الشامل للتخصيص والزيادة التضخمية
                 setupSizeTabsEvents(currency);
+
+                // ربط زر الإضافة الفاخر بالمحرك الموحد لضمان التحديث اللحظي لعداد الهيدر بالسلة
                 setupCartIntegration();
             }
 
@@ -556,6 +570,7 @@
                             options.flavorName = matchedProduct.flavorName || "كلاسيك";
                         }
 
+                        // صياغة وإرسال كائن السلة القياسي الموحد المانع للتصادم البرمجي لـ localStorage
                         const cartItem = window.createCartItem ? window.createCartItem(matchedProduct, options, quantity) : null;
 
                         if (cartItem) {
