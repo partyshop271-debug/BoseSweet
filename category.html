@@ -77,12 +77,14 @@
         }
 
         .category-desc-text {
-            color: #4D4D4D;
-            font-size: 0.95rem;
+            color: #111111;
+            font-size: 1.1rem;
             font-weight: 400;
-            max-width: 700px;
+            max-width: 800px;
             margin: 0 auto;
-            line-height: 1.6;
+            line-height: 1.8;
+            text-align: center;
+            opacity: 0.95;
         }
 
         /* 📐 محرك التوزيع الشبكي المرن المتوافق مع محددات الأبعاد القياسية الصارمة للمواصفة */
@@ -180,25 +182,6 @@
             0% { background-position: 200% 0; }
             100% { background-position: -200% 0; }
         }
-
-        .error-state-panel {
-            text-align: center;
-            padding: 80px 24px;
-            color: var(--bose-black, #111111);
-        }
-
-        .error-btn-redirect {
-            display: inline-block;
-            margin-top: 24px;
-            background-color: var(--bose-pink, #FF91A4);
-            color: var(--bose-white, #FFFFFF);
-            padding: 12px 32px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 700 !important;
-            box-shadow: 0 4px 12px rgba(255, 145, 164, 0.2);
-            transition: 0.2s ease;
-        }
     </style>
 </head>
 <body class="bose-hardware-accelerated bose-arabic-text">
@@ -222,7 +205,8 @@
 
         <div class="category-hero-header">
             <h1 id="bose-category-headline" class="category-title-text">تصفح الأصناف</h1>
-            <p id="bose-category-description" class="category-desc-text">جاري جلب قائمة الحلويات الفاخرة الطازجة المحضرة بكل حب وعناية...</p>
+            <!-- 🌟 هنا يتم حقن الوصف التفصيلي الحرفي للفئة بالكامل لمنع العبث البصري -->
+            <p id="bose-category-description" class="category-desc-text">جاري جلب تفاصيل صنف حلويات بوسي الفاخر...</p>
         </div>
 
         <!-- تبويبات التصفح للأحجام والأبعاد (تظهر وتخفي برمجياً وحصرياً لأصناف الديسباسيتو بناءً على دليل التشغيل) -->
@@ -245,7 +229,6 @@
     <!-- 👑 المحرك البرمجي المتكامل لصفحة الفئة والمطابق لحسابات السلة والـ JSON 👑 -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // استخراج معرف الفئة النشط من الرابط URL بكل أمان وبدء فك الحزم
             const urlParams = new URLSearchParams(window.location.search);
             const categoryId = urlParams.get('category');
 
@@ -255,14 +238,10 @@
             const breadcrumbNode = document.getElementById('breadcrumb-active-category');
             const sizeFilterRow = document.getElementById('bose-size-filter-row');
             
-            let activeSizeTab = "triangle"; // الحجم الافتراضي لفلترة الديسباسيتو
+            let activeSizeTab = "triangle";
 
-            if (!categoryId) {
-                renderErrorState("لم نتمكن من تحديد الفئة المطلوبة لتصفح منتجاتها.");
-                return;
-            }
+            if (!categoryId) return;
 
-            // الإنصات والربط والتمهيد الآمن لبيانات موقع بوسي الموحد المشترك عبر البروميس المركزي
             window.getBoseDatabase().then(siteData => {
                 initCategoryRendering(siteData);
             }).catch(() => {
@@ -272,46 +251,26 @@
             });
 
             function initCategoryRendering(siteData) {
-                if (!siteData || !siteData.homepage || !siteData.products) {
-                    renderErrorState("عذراً، قاعدة البيانات غير متوفرة حالياً.");
-                    return;
-                }
+                if (!siteData || !siteData.homepage || !siteData.products) return;
 
-                // البحث عن اسم وتفاصيل الفئة في قائمة الفئات الـ 12 المعتمدة بالـ JSON لتوثيق الهوية
                 const categoryObj = siteData.homepage.categoriesSlider.find(cat => cat.id === categoryId);
-                
-                if (!categoryObj) {
-                    renderErrorState("عذراً، الفئة المطلوبة غير موجودة ضمن تشكيلتنا المعتمدة.");
-                    return;
-                }
+                if (!categoryObj) return;
 
-                // تحديث نصوص الترويسة والمسار لإصلاح الأرشفة والـ SEO لراحة الزائر النفسية
-                if (headlineNode) headlineNode.textContent = categoryObj.title;
-                if (breadcrumbNode) breadcrumbNode.textContent = categoryObj.title;
-                if (descNode) {
-                    descNode.textContent = `تم تصميم هذه التشكيلة الفاخرة من ${categoryObj.title} بعناية فائقة لتناسب ذوقكم الرفيع ومناسباتكم السعيدة وتضمن راحتكم النفسية وبدون أي وعود مبالغ فيها.`;
-                }
+                headlineNode.textContent = categoryObj.title;
+                breadcrumbNode.textContent = categoryObj.title;
 
-                // عزل وفلترة المنتجات التابعة حصرياً لهذه الفئة المستدعاة من الرابط
                 const filteredProducts = siteData.products.filter(p => p.category === categoryId);
-                const currency = siteData.store.currency || "EGP";
-
-                if (filteredProducts.length === 0) {
-                    productsGrid.innerHTML = `
-                        <div style="grid-column: 1 / -1; text-align: center; padding: 60px 12px; color: var(--bose-pink);">
-                            <p style="font-size:1.1rem; font-weight:700; font-family:'Cairo', sans-serif;">⏳ جاري تحضير وتجهيز أصناف ${categoryObj.title} الطازجة والمخبوزة بحب لتظهر لكم قريباً بالمليم!</p>
-                        </div>
-                    `;
-                    return;
+                
+                // 👑 [إصلاح حاسم]: جلب أول منتج في الفئة لاستخلاص وصفها الحرفي الشامل والثابت المكتوب بالمواصفة
+                if (filteredProducts.length > 0 && filteredProducts[0].description) {
+                    descNode.textContent = filteredProducts[0].description;
                 }
 
+                const currency = siteData.store.currency || "EGP";
                 const firstProduct = filteredProducts[0];
 
-                // 📐 تطبيق صيانة توزيع الأشكال والتنسيق الشبكي بناءً على نمط الـ layout المعرف لكل صنف بالـ JSON منعا للتكديس
                 if (firstProduct && firstProduct.layout) {
                     productsGrid.className = `category-products-grid layout-${firstProduct.layout}`;
-                    
-                    // إذا كان الصنف يعتمد على التبويبات (مثل الديسباسيتو) نكشف شريط الأحجام فوراً لحظر التشتيت
                     if (firstProduct.layout === "tabs") {
                         sizeFilterRow.style.display = "flex";
                     } else {
@@ -322,60 +281,37 @@
                 const renderProductsByLayoutConfig = () => {
                     productsGrid.innerHTML = "";
                     filteredProducts.forEach(product => {
-                        // مزامنة الحجم المختار للتبويبات قبل تمرير كائن الصنف على محرك البناء الصارم
                         if (firstProduct.layout === "tabs" && product.prices) {
                             product.defaultSize = activeSizeTab; 
                         }
-                        
-                        // استدعاء دالة بناء كارت المنتج الهندسية القياسية والمثبتة بـ core-engine.js منعاً للتعارض والتكرار
                         if (typeof window.generateStrictProductCardHTML === 'function') {
                             const cardHTML = window.generateStrictProductCardHTML(product, currency);
                             const tempDiv = document.createElement('div');
                             tempDiv.innerHTML = cardHTML;
-                            
-                            // معالجة وحقن الرابط الذكي ممرراً الـ slug النصي لرحلة العميل بصفحة المنتج الفردي
                             const cardLink = tempDiv.querySelector('a');
-                            if (cardLink) {
-                                cardLink.href = `product.html?slug=${product.slug}`;
-                            }
-                            
+                            if (cardLink) cardLink.href = `product.html?slug=${product.slug}`;
                             while (tempDiv.firstChild) {
                                 productsGrid.appendChild(tempDiv.firstChild);
                             }
                         }
                     });
 
-                    // تفعيل وربط أحداث العدادات (زائد / ناقص) وأزرار الإضافة للسلة عبر دالة المحرك المركزي الموحدة
                     if (typeof window.attachProductCardEvents === 'function') {
                         window.attachProductCardEvents(productsGrid, siteData.products, currency);
                     }
                 };
 
-                // التشغيل الأولي للرندرة الشاملة للفئة
                 renderProductsByLayoutConfig();
 
-                // تفعيل تبويبات الأحجام التفاعلية والفرز اللحظي لحسابات وتوبنج الديسباسيتو
                 sizeFilterRow.querySelectorAll('.bose-filter-tab-pill').forEach(pill => {
                     pill.addEventListener('click', function(e) {
                         e.preventDefault();
                         sizeFilterRow.querySelectorAll('.bose-filter-tab-pill').forEach(p => p.classList.remove('active'));
                         this.classList.add('active');
                         activeSizeTab = this.getAttribute('data-filter-size');
-                        
-                        // إعادة تشغيل محرك الرندرة بالأسعار والأبعاد المحدثة للحجم المختار فوراً
                         renderProductsByLayoutConfig();
                     });
                 });
-            }
-
-            function renderErrorState(message) {
-                productsGrid.className = "category-products-grid layout-full-card";
-                productsGrid.innerHTML = `
-                    <div class="error-state-panel" style="grid-column: 1 / -1;">
-                        <h2 style="font-size:1.3rem; font-weight:700; font-family:'Cairo', sans-serif;">${message}</h2>
-                        <a href="menu.html" class="error-btn-redirect">العودة لتصفح المنيو الشامل</a>
-                    </div>
-                `;
             }
         });
     </script>
