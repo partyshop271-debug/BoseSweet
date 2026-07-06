@@ -14,6 +14,31 @@
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/cart-checkout.css">
     
+    <!-- 📐 حارس الأنماط الصارم لحل مشكلة القائمة الجانبية وتأمين طبقات العرض 📐 -->
+    <style>
+        /* تأمين ظهور القائمة الجانبية فوق طبقة التمويه تماماً لمنع الصفحة البيضاء الممسوحة */
+        .bose-drawer-menu, #sidebar-drawer {
+            z-index: 1000500 !important;
+        }
+        .drawer-overlay, #drawer-shield {
+            z-index: 1000100 !important;
+        }
+        /* كارد المقترحات الذكية القياسي المطابق للمواصفات */
+        .bose-suggestion-card-node {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: var(--bose-white, #FFFFFF);
+            border: var(--bose-border-pink, 1px solid rgba(255, 145, 164, 0.3));
+            border-radius: 16px;
+            padding: 12px;
+            min-width: 280px;
+            flex: 0 0 auto;
+            direction: rtl;
+            box-shadow: 0 8px 24px rgba(255, 145, 164, 0.04);
+        }
+    </style>
+
     <!-- المحرك العام (يُستدعى أولاً في كل الصفحات لقراءة الـ JSON وإدارة العداد الصغير بالسلة بالهيدر) -->
     <script src="js/core-engine.js"></script>
 </head>
@@ -82,6 +107,9 @@
         </div>
     </div>
 
+    <!-- الوعاء الحاحب لتأثيرات الخلفية عند فتح القائمة -->
+    <div id="drawer-shield" class="drawer-overlay"></div>
+
     <!-- 🧱 المحتوى الرئيسي لصفحة السلة الشاملة 🧱 -->
     <main class="bose-cart-page-section" id="cart-main-container">
         <div class="cart-page-header">
@@ -149,9 +177,9 @@
                     </div>
                 </div>
 
-                <!-- زر الإجراء الحاسم والانتقال المباشر لصفحة إتمام المشتريات -->
+                <!-- زر الإجراء الحاسم والانتقال المباشر لخطوة إتمام الطلب والبيانات -->
                 <a href="checkout.html" id="btn-proceed-to-checkout" class="bose-primary-checkout-btn">
-                    <i class="fas fa-credit-card"></i> الانتقال لتأكيد وموعد الاستلام
+                    <i class="fas fa-shopping-bag"></i> الانتقال لإتمام الطلب
                 </a>
                 
                 <a href="menu.html" class="bose-continue-shopping-anchor">
@@ -168,8 +196,8 @@
             </div>
             
             <!-- مجرى الحركة المخصص والمنظم لعرض قطعتين فقط على الموبايل لمنع التشتيت البصري والتكديس -->
-            <div id="cart-suggestions-container">
-                <!-- يتم حقن المقترحات التلقائية بواسطة الجافا سكريبت باستثناء الأصناف المصممة مسبقاً بالسلة -->
+            <div id="cart-suggestions-container" style="display: flex; flex-direction: row; overflow-x: auto; gap: 16px; padding: 8px 4px 16px 4px; width: 100%; scrollbar-width: none; -ms-overflow-style: none;">
+                <!-- يتم الحقن المتزامن للمنتجات هنا تلقائياً عبر السكريبت الأسفل -->
             </div>
         </section>
 
@@ -216,7 +244,7 @@
             </div>
             <span class="brand-name-display footer-brand-name">حلويات بوسي</span>
             <div class="footer-about-block">
-                <p id="footer-about-text">صنعناها بحب لتهديها لمن تحب. خبرة أكثر من 10 سنوات in صناعة الحلويات الفاخرة وتنسيق الهدايا والورد لنوثق أسعد لحظاتكم بتميز واحترافية كاملة من فرع الكفاح.</p>
+                <p id="footer-about-text">صنعناها بحب لتهديها لمن تحب. خبرة أكثر من 10 سنوات في صناعة الحلويات الفاخرة وتنسيق الهدايا والورد لنوثق أسعد لحظاتكم بتميز واحترافية كاملة من فرع الكفاح.</p>
             </div>
             <div id="footer-social-links">
                 <a href="https://www.facebook.com/share/1H1vVMHyu9/" class="social-link-facebook" target="_blank" aria-label="فيسبوك حلويات بوسي"><i class="fab fa-facebook-f"></i></a>
@@ -244,26 +272,111 @@
     <!-- حارس تأمين الأحداث وربط حقول الملاحظات ومحركات الحذف المباشر لـ bose_cart -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            const notesTextarea = document.getElementById("checkout-order-notes-textarea");
-            const checkoutBtn = document.getElementById("btn-proceed-to-checkout");
+            // [🔐 حل مشكلة القائمة الجانبية يدوياً لحين استدعاء المحرك بالكامل]
+            const menuToggle = document.getElementById("mobile-menu-toggle");
+            const drawerMenu = document.getElementById("sidebar-drawer");
+            const drawerShield = document.getElementById("drawer-shield");
+            const closeDrawerBtn = document.getElementById("sidebar-close-panel-btn");
 
+            if (menuToggle && drawerMenu && drawerShield) {
+                const openDrawerProcedure = (e) => {
+                    e.preventDefault();
+                    drawerMenu.classList.add("active");
+                    drawerShield.classList.add("active");
+                    document.body.style.overflow = "hidden";
+                };
+
+                const closeDrawerProcedure = () => {
+                    drawerMenu.classList.remove("active");
+                    drawerShield.classList.remove("active");
+                    document.body.style.overflow = "";
+                };
+
+                menuToggle.addEventListener("click", openDrawerProcedure);
+                drawerShield.addEventListener("click", closeDrawerProcedure);
+                if (closeDrawerBtn) closeDrawerBtn.addEventListener("click", closeDrawerProcedure);
+            }
+
+            // [🔐 حل ثغرة التزامن اللامتناهي وعرض المقترحات الذكية فور تحميل البيانات]
+            const injectPremiumSuggestionsLive = (dbData) => {
+                const container = document.getElementById("cart-suggestions-container");
+                if (!container || !dbData || !dbData.products) return;
+
+                const rawCart = localStorage.getItem("bose_cart");
+                const currentCart = rawCart ? JSON.parse(rawCart) : [];
+                const cartSlugs = currentCart.map(item => item.productSlug);
+
+                // تصفية الأصناف المقترحة (استبعاد المضاف مسبقاً للسلة واستبعاد الماستر للمحاكيات)
+                let suggestions = dbData.products.filter(p => !cartSlugs.includes(p.slug) && p.slug !== "toort-custom-master" && p.slug !== "flowers-master");
+                if (suggestions.length === 0) {
+                    suggestions = dbData.products.filter(p => p.slug !== "toort-custom-master" && p.slug !== "flowers-master");
+                }
+
+                // عرض قطعتين فقط متوافقتين مع معايير الأداء والموبايل
+                const displayItems = suggestions.slice(0, 2);
+                const storeCurrency = dbData.store?.currency || "EGP";
+                const fallbackLogo = dbData.store?.logo || "";
+
+                container.innerHTML = "";
+                displayItems.forEach(prod => {
+                    const finalPrice = window.calculateBosePrice ? window.calculateBosePrice(prod.price, "menu-only") : prod.price;
+                    const itemImg = prod.image || (prod.images && prod.images[0] ? prod.images[0] : fallbackLogo);
+
+                    const card = document.createElement("div");
+                    card.className = "bose-suggestion-card-node";
+                    card.innerHTML = `
+                        <div style="display:flex; align-items:center; gap:12px; text-align:right; flex:1; overflow:hidden;">
+                            <img src="${itemImg}" onerror="this.src='${fallbackLogo}'" alt="${prod.title}" style="width:60px; height:60px; object-fit:cover; border-radius:10px; flex-shrink: 0;" loading="lazy">
+                            <div style="overflow:hidden;">
+                                <h4 style="margin:0 0 4px 0; font-size:14px; font-weight:700; color:var(--bose-black); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-family:'Cairo', sans-serif !important;">${prod.title}</h4>
+                                <span style="font-size:13px; font-weight:700; color:var(--bose-pink); font-family:'Cairo', sans-serif !important;">${finalPrice} ${storeCurrency}</span>
+                            </div>
+                        </div>
+                        <button class="btn-quick-add-suggestion" data-slug="${prod.slug}" style="background:var(--bose-pink); color:var(--bose-white); border:none; width:35px; height:35px; border-radius:50%; font-size:20px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.2s;">+</button>
+                    `;
+
+                    card.querySelector(".btn-quick-add-suggestion").addEventListener("click", function(e) {
+                        e.preventDefault();
+                        if (window.createCartItem && window.addBoseCartItem) {
+                            const standardItem = window.createCartItem(prod, { flavorName: prod.flavorName || "كلاسيك" }, 1);
+                            if (standardItem) {
+                                window.addBoseCartItem(standardItem);
+                                // إعادة الرندرة اللحظية للسلة بالكامل لتحديث القيم وشاشات العرض
+                                if (typeof window.location.reload === "function") {
+                                    window.location.reload();
+                                }
+                            }
+                        }
+                    });
+
+                    container.appendChild(card);
+                });
+            };
+
+            // تفعيل التحقق التلقائي لضمان تشغيل المقترحات فور تحميل قاعدة البيانات
+            if (window.BoseStoreData) {
+                injectPremiumSuggestionsLive(window.BoseStoreData);
+            }
+            document.addEventListener("BoseDatabaseLoaded", (e) => {
+                injectPremiumSuggestionsLive(e.detail);
+            });
+
+            // ربط حقل الملاحظات النصية
+            const notesTextarea = document.getElementById("checkout-order-notes-textarea");
             if (notesTextarea) {
                 const savedLastOrder = localStorage.getItem("bose_last_order");
                 if (savedLastOrder) {
                     try {
                         const parsed = JSON.parse(savedLastOrder);
-                        if (parsed && parsed.notes) {
-                            notesTextarea.value = parsed.notes;
-                        }
-                    } catch(e) { console.warn("Initialization notes safe bypass."); }
+                        if (parsed && parsed.notes) notesTextarea.value = parsed.notes;
+                    } catch(e) {}
                 }
-
                 if (checkoutBtn) {
                     checkoutBtn.addEventListener("click", () => {
                         let currentOrderObj = {};
                         const lastOrderRaw = localStorage.getItem("bose_last_order");
                         if (lastOrderRaw) {
-                            try { currentOrderObj = JSON.parse(lastOrderRaw); } catch(e) { currentOrderObj = {}; }
+                            try { currentOrderObj = JSON.parse(lastOrderRaw); } catch(e) {}
                         }
                         currentOrderObj.notes = notesTextarea.value.trim();
                         localStorage.setItem("bose_last_order", JSON.stringify(currentOrderObj));
