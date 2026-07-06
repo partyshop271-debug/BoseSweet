@@ -384,17 +384,28 @@
                 const initialPrice = (product.prices && product.prices[defaultSize]) ? product.prices[defaultSize] : product.price;
                 const finalCalculatedPrice = window.calculateBosePrice ? window.calculateBosePrice(initialPrice, "menu-only") : initialPrice;
 
-                if (product.sizes && product.prices) {
+                if (product.prices) {
                     sizeSelectorHTML = `<div style="margin: 0 0 24px 0;"><span style="display:block; font-size:0.95rem; font-weight:700; margin-bottom:10px;">اختر الحجم / المقاس المفضل:</span><div style="display:flex; gap:10px; flex-wrap:wrap;">`;
-                    product.sizes.forEach(sz => {
-                        const isChecked = sz.id === defaultSize;
+                    
+                    if (product.sizes) {
+                        product.sizes.forEach(sz => {
+                            const isChecked = sz.id === defaultSize;
+                            sizeSelectorHTML += `
+                                <label style="display:block; position:relative;">
+                                    <input type="radio" name="product-size-option" class="size-radio-node" value="${sz.id}" data-price="${product.prices[sz.id]}" ${isChecked ? 'checked' : ''}>
+                                    <div class="size-label-node">${sz.name}</div>
+                                </label>
+                            `;
+                        });
+                    } else {
+                        // دعم افتراضي للأحجام الثابتة لتطابق معايير رندرة التبويبات بالمواصفات
                         sizeSelectorHTML += `
                             <label style="display:block; position:relative;">
-                                <input type="radio" name="product-size-option" class="size-radio-node" value="${sz.id}" data-price="${product.prices[sz.id]}" ${isChecked ? 'checked' : ''}>
-                                <div class="size-label-node">${sz.name}</div>
+                                <input type="radio" name="product-size-option" class="size-radio-node" value="triangle" data-price="${product.price}" checked>
+                                <div class="size-label-node">حجم قياسي فاخر</div>
                             </label>
                         `;
-                    });
+                    }
                     sizeSelectorHTML += `</div></div>`;
                 }
 
@@ -439,7 +450,7 @@
 
                     <div class="product-master-grid">
                         <div class="product-visual-gallery">
-                            <img src="${product.image || product.images[0]}" alt="${window.escapeHTML ? window.escapeHTML(product.title) : product.title}" class="product-display-img" loading="eager" />
+                            <img src="${product.image || (product.images && product.images[0])}" alt="${window.escapeHTML ? window.escapeHTML(product.title) : product.title}" class="product-display-img" loading="eager" />
                         </div>
 
                         <div class="product-details-panel">
@@ -550,7 +561,7 @@
                         if (!matchedProduct) return;
 
                         const options = { size: activeSize };
-                        if (matchedProduct.sizes) {
+                        if (matchedProduct.prices && matchedProduct.sizes) {
                             const matchedSize = matchedProduct.sizes.find(s => s.id === activeSize);
                             options.flavorName = `${matchedProduct.flavorName || "كلاسيك"} (${matchedSize ? matchedSize.name : ""})`;
                         } else {

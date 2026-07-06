@@ -294,8 +294,8 @@
                             tempDiv.innerHTML = cardHTML;
                             
                             // 👑 [إصلاح حاسم للرابط البرمجي]: توجيه العميل فوراً لصفحة تفاصيل الصنف الفردية ليرى المراجعات والبدائل الذكية
-                            const cardLink = tempDiv.querySelectorAll('a');
-                            cardLink.forEach(link => {
+                            const cardLinks = tempDiv.querySelectorAll('a');
+                            cardLinks.forEach(link => {
                                 link.href = `product.html?slug=${product.slug}`;
                             });
                             
@@ -307,6 +307,15 @@
 
                     if (typeof window.attachProductCardEvents === 'function') {
                         window.attachProductCardEvents(productsGrid, siteData.products, currency);
+                        
+                        // إعادة تطبيق تعديل الروابط بعد تفعيل الأحداث للتأكيد الكامل
+                        productsGrid.querySelectorAll('.product-card').forEach(card => {
+                            const slug = card.dataset.slug;
+                            const cardLinks = card.querySelectorAll('a');
+                            cardLinks.forEach(link => {
+                                link.href = `product.html?slug=${slug}`;
+                            });
+                        });
                     }
                 };
 
