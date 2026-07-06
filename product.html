@@ -6,7 +6,7 @@
     <title>تفاصيل المنتج الفاخر | حلويات بوسي</title>
     
     <!-- 🔍 إعدادات تحسين محركات البحث والأرشفة الفاخرة SEO الملتزمة بمواصفة البراند -->
-    <meta name="description" content="استمتع بتذوق القيمة والجودة العالية لأصناف حلويات بوسي الفاخرة المحضرة بمكونات طبيعية 100% طازجة يومياً تليق بمناسباتكم الفخمة.">
+    <meta name="description" content="استمتع بتذوق القيمة والجودة العالية لأصناف حلويات بوسي الفاخرة المجهزة يومياً بمكونات طبيعية 100% طازجة تليق بمناسباتكم السعيدة.">
     
     <!-- 🎨 ربط ملفات التصميم الموزعة هندسياً لمنع تضخم الأكواد وتأخر التحميل البصري -->
     <link rel="stylesheet" href="css/global.css">
@@ -16,7 +16,7 @@
     <script src="js/core-engine.js"></script>
 
     <style>
-        /* 🎨 الهندسة البصرية الخاصة بصفحة المنتج الفردي تماشياً مع الهوية المقدسة لعدم التكديس */
+        /* 🎨 الهندسة البصرية الخاصة بصفحة المنتج الفردي لمنع التكديس البصري */
         .product-internal-wrapper {
             width: 100%;
             max-width: 1200px;
@@ -98,15 +98,15 @@
             font-size: 2rem;
             font-weight: 700 !important;
             color: var(--bose-black, #111111) !important;
-            margin: 0 0 12px 0;
+            margin: 0 0 4px 0;
             line-height: 1.4;
         }
 
         .product-flavor-badge {
-            font-size: 1rem;
+            font-size: 1.15rem;
             font-weight: 700 !important;
             color: var(--bose-pink, #FF91A4);
-            margin-bottom: 16px;
+            margin-bottom: 12px;
             display: block;
         }
 
@@ -114,7 +114,7 @@
             display: flex;
             align-items: center;
             gap: 6px;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         .stars-gold-track {
@@ -133,16 +133,17 @@
             font-size: 1.85rem;
             font-weight: 700 !important;
             color: var(--bose-pink, #FF91A4);
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             display: inline-block;
         }
 
-        .product-editorial-desc {
-            font-size: 1.05rem;
+        /* ستايل وصف النكهة الإعلاني الفريد */
+        .product-flavor-exclusive-desc {
+            font-size: 1.1rem;
             color: var(--bose-black, #111111);
-            line-height: 1.8;
-            margin-bottom: 30px;
-            text-align: justify;
+            line-height: 1.6;
+            margin-bottom: 24px;
+            font-weight: 400;
         }
 
         .product-specs-table {
@@ -156,6 +157,7 @@
             border-bottom: 1px solid rgba(255, 145, 164, 0.1);
             font-size: 0.95rem;
             color: var(--bose-black, #111111);
+            line-height: 1.6;
         }
 
         .product-specs-table td.spec-title-bold {
@@ -238,7 +240,6 @@
             box-shadow: 0 6px 20px rgba(17, 17, 17, 0.15);
         }
 
-        /* 🚨 قسم التقييمات والمراجعات الفاخرة بنجومها الناعمة لراحة العميل */
         .bose-reviews-section {
             border-top: 1px dashed rgba(255, 145, 164, 0.3);
             padding-top: 40px;
@@ -254,7 +255,6 @@
             border: 1px solid rgba(255, 145, 164, 0.15);
         }
 
-        /* 👑 استايلات محرك التقييم التفاعلي الجديد */
         .bose-review-toggle-btn {
             background: transparent;
             border: 1px solid var(--bose-pink, #FF91A4);
@@ -293,10 +293,7 @@
             margin-bottom: 16px;
         }
 
-        .bose-star-rating-interactive input {
-            display: none;
-        }
-
+        .bose-star-rating-interactive input { display: none; }
         .bose-star-rating-interactive label {
             font-size: 1.8rem;
             color: #DDD;
@@ -362,25 +359,15 @@
             border-color: var(--bose-pink, #FF91A4);
             box-shadow: 0 4px 10px rgba(255, 145, 164, 0.15);
         }
-
-        .bose-footer .footer-logo-container img {
-            height: 60px !important;
-            width: auto !important;
-            max-width: 100% !important;
-            object-fit: contain !important;
-        }
     </style>
 </head>
 <body class="bose-hardware-accelerated bose-arabic-text">
 
-    <!-- 🏢 مكون الهيدر الموحد والثابت الصريح (Shared Universal Header) المتطابق برمجياً -->
     <header class="bose-navbar"></header>
 
-    <!-- 📥 القائمة الجانبية المشتركة للموبايل (Universal Drawer Menu) -->
     <div class="drawer-overlay" id="drawer-shield"></div>
     <aside class="bose-drawer-menu" id="sidebar-drawer"></aside>
 
-    <!-- منطقة تفاصيل المنتج الديناميكية المتوافقة بالمليم مع خريطة الـ DOM والمحرك المركزي -->
     <main id="bose-product-root-view" class="product-internal-wrapper">
         <div class="product-master-grid">
             <div class="product-visual-gallery skeleton-block-loader"></div>
@@ -393,10 +380,8 @@
         </div>
     </main>
 
-    <!-- 🏪 مكون الفوتر الموحد والثابت الفاتح الصريح (Shared Universal Footer) -->
     <footer class="bose-footer"></footer>
 
-    <!-- 👑 المحرك البرمجي المتكامل والمتوافق بالمليم مع core-engine.js وحسابات السلة 👑 -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -470,7 +455,6 @@
                     sizeSelectorHTML += `</div></div>`;
                 }
 
-                // 👑 [بناء هيكل التقييمات التفاعلي بالكامل والتحفيزي للعميل]
                 let reviewsHTML = `
                     <div class="bose-reviews-section">
                         <h3 class="bose-section-title" style="font-size:1.3rem; font-weight:700; margin-bottom:12px; color:var(--bose-black);">🌟 مراجعات وتقييمات العملاء المحترمين</h3>
@@ -511,7 +495,6 @@
                         <div id="bose-active-reviews-list-container">
                 `;
 
-                // حقن المراجعات الافتراضية
                 if (product.reviews && product.reviews.length > 0) {
                     product.reviews.forEach(rev => {
                         let rStars = "";
@@ -538,6 +521,7 @@
                     </div>
                 `;
 
+                // 👑 [التطبيق الهندسي لمنع التضارب]: حقن flavorDesc تحت السعر مباشرة، وحفظ الـ product.description لجدول البيانات
                 viewContainer.innerHTML = `
                     <nav class="bose-breadcrumb-nav" aria-label="مسار التنقل">
                         <a href="index.html">الرئيسية</a>
@@ -565,12 +549,16 @@
                                 ${finalCalculatedPrice} ${currency}
                             </div>
 
-                            <p class="product-editorial-desc">${product.description}</p>
+                            <!-- 👑 حقن حقل وصف النكهة الإعلاني المخصص الفاخر لمنع التكرار -->
+                            <div class="product-flavor-exclusive-desc">
+                                ${product.flavorDesc || "توليفة مميزة ومجهزة بعناية فائقة لتناسب ذوقكم الرفيع."}
+                            </div>
 
                             ${sizeSelectorHTML}
 
                             <table class="product-specs-table">
                                 <tbody>
+                                    <tr><td class="spec-title-bold">المفهوم والأساس</td><td>${product.description}</td></tr>
                                     ${product.size ? `<tr><td class="spec-title-bold">الحجم القياسي</td><td>${product.size}</td></tr>` : ''}
                                     <tr><td class="spec-title-bold">حالة المكونات</td><td>طازجة وطبيعية 100% يومياً بالفرع بدون حافظة</td></tr>
                                     <tr><td class="spec-title-bold">شرط التحضير</td><td>يُخبز ويُحضر بكل حب خصيصاً لمناسبتكم السعيدة تماشياً مع معايير الإتقان</td></tr>
@@ -596,15 +584,19 @@
 
                 const suggestionsGrid = document.getElementById('product-page-suggestions-grid');
                 if (suggestionsGrid) {
-                    const recProducts = siteData.products.filter(p => p.slug !== product.slug && p.slug !== "toort-custom-master" && p.slug !== "flowers-master").slice(0, 2);
-                    suggestionsGrid.innerHTML = recProducts.map(p => window.generateStrictProductCardHTML(p, currency)).join('');
+                    // 👑 [إصلاح ذكي للبدائل]: ترشيح أصناف من نفس الفئة لعدم تشتيت العميل بالجاتوهات داخل القشطوطة
+                    const recProducts = siteData.products.filter(p => p.category === product.category && p.slug !== product.slug).slice(0, 2);
+                    // فولباك احتياطي في حال عدم وجود أصناف كافية في نفس الفئة
+                    const finalRecs = recProducts.length >= 2 ? recProducts : siteData.products.filter(p => p.slug !== product.slug && p.slug !== "toort-custom-master" && p.slug !== "flowers-master").slice(0, 2);
+                    
+                    suggestionsGrid.innerHTML = finalRecs.map(p => window.generateStrictProductCardHTML(p, currency)).join('');
                     window.attachProductCardEvents(suggestionsGrid, siteData.products, currency);
                 }
 
                 setupStepperMechanics(currency);
                 setupSizeTabsEvents(currency);
                 setupCartIntegration();
-                setupInteractiveReviewsEngine(); // تشغيل محرك التقييم التفاعلي اللحظي
+                setupInteractiveReviewsEngine();
             }
 
             function setupStepperMechanics(currency) {
@@ -679,7 +671,6 @@
                 });
             }
 
-            // 👑 [محرك التقييم التفاعلي الحركي المطور لموقع حلويات بوسي]
             function setupInteractiveReviewsEngine() {
                 const toggleFormBtn = document.getElementById('bose-toggle-review-form-btn');
                 const formWrapper = document.getElementById('bose-review-form-wrapper');
@@ -693,7 +684,6 @@
 
                 if (!toggleFormBtn || !formWrapper || !submitReviewBtn) return;
 
-                // فتح وإغلاق الفورم بنعومة
                 toggleFormBtn.addEventListener('click', function(e) {
                     e.preventDefault();
                     if (formWrapper.style.display === 'none') {
@@ -705,7 +695,6 @@
                     }
                 });
 
-                // معالجة وإرفاق الصور اختيارياً بصباع العميل
                 if (fileInput && previewContainer) {
                     fileInput.addEventListener('change', function() {
                         previewContainer.innerHTML = "";
@@ -726,7 +715,6 @@
                     });
                 }
 
-                // حفظ ونشر المراجعة ديناميكياً ولحظياً في الـ DOM والذاكرة
                 submitReviewBtn.addEventListener('click', function(e) {
                     e.preventDefault();
                     const name = document.getElementById('bose-review-user-name').value.trim();
@@ -743,10 +731,8 @@
                         return;
                     }
 
-                    // إخفاء رسالة الفولباك إذا كانت موجودة
                     if (fallbackMsg) fallbackMsg.style.display = 'none';
 
-                    // بناء كارت المراجعة الجديد هندسياً
                     let rStars = "";
                     for (let i = 1; i <= 5; i++) rStars += i <= ratingValue ? "★" : "☆";
 
@@ -771,10 +757,8 @@
                         ${attachedImagesHTML}
                     `;
 
-                    // حقن الكارت الجديد في أول القائمة
                     reviewsList.insertBefore(newReviewCard, reviewsList.firstChild);
 
-                    // تصفير وتهيئة الحقول وإغلاق الفورم
                     document.getElementById('bose-review-user-name').value = "";
                     document.getElementById('bose-review-comment').value = "";
                     if (checkedRadio) checkedRadio.checked = false;
