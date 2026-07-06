@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>تفاصيل المنتج | حلويات بوسي</title>
+    <title>تفاصيل المنتج الفاخر | حلويات بوسي</title>
     
     <!-- 🔍 إعدادات تحسين محركات البحث والأرشفة الفاخرة SEO الملتزمة -->
     <meta name="description" content="استمتع بتذوق القيمة والجودة العالية لأصناف حلويات بوسي الفاخرة المحضرة بمكونات طبيعية 100% طازجة يومياً.">
@@ -96,7 +96,7 @@
 
         .product-headline {
             font-size: 2rem;
-            font-weight: 700 !important; /* مقفول هندسياً عند 700 للأقسام الرئيسية */
+            font-weight: 700 !important;
             color: var(--bose-black, #111111) !important;
             margin: 0 0 12px 0;
             line-height: 1.4;
@@ -238,7 +238,7 @@
             box-shadow: 0 6px 20px rgba(17, 17, 17, 0.15);
         }
 
-        /* 🚨 قسم التقييمات الحرة والمراجعات الفخمة */
+        /* 🚨 قسم التقييمات والمراجعات المعتمد بالمواصفات */
         .bose-reviews-section {
             border-top: 1px dashed rgba(255, 145, 164, 0.3);
             padding-top: 40px;
@@ -254,7 +254,13 @@
             border: 1px solid rgba(255, 145, 164, 0.15);
         }
 
-        /* هيكل التحميل الهيكلي الـ Skeleton الفائق لخلق تجربة أداء فورية */
+        /* 🚨 قسم التوصيات الذكية (قد يعجبك أيضاً) */
+        .bose-recommendations-section {
+            border-top: 1px dashed rgba(255, 145, 164, 0.3);
+            padding-top: 40px;
+            margin-bottom: 20px;
+        }
+
         .skeleton-block-loader {
             background: linear-gradient(90deg, #f7f7f7 25%, #eeeeee 50%, #f7f7f7 75%);
             background-size: 200% 100%;
@@ -267,7 +273,6 @@
             100% { background-position: -200% 0; }
         }
 
-        /* تخصيصات كروت وأحجام النكهات المنسدلة التفاعلية */
         .size-radio-node { display: none; }
         .size-label-node {
             border: 1px solid rgba(255, 145, 164, 0.3);
@@ -291,7 +296,7 @@
 </head>
 <body class="bose-hardware-accelerated bose-arabic-text">
 
-    <!-- 🏢 مكون الهيدر الموحد والثابت الصريح (Shared Universal Header) الملتزم بالـ DOM القياسي الموحد -->
+    <!-- 🏢 مكون الهيدر الموحد والثابت الصريح (Shared Universal Header) -->
     <header class="bose-navbar"></header>
 
     <!-- 📥 القائمة الجانبية المشتركة للموبايل (Universal Drawer Menu) -->
@@ -300,7 +305,6 @@
 
     <!-- منطقة تفاصيل المنتج الديناميكية المتوافقة بالمليم مع المحرك وقعادة البيانات -->
     <main id="bose-product-root-view" class="product-internal-wrapper">
-        <!-- الهيكل المؤقت Skeleton المتجاوب ريثما يتم فك حزم بيانات الـ JSON -->
         <div class="product-master-grid">
             <div class="product-visual-gallery skeleton-block-loader"></div>
             <div class="product-details-panel">
@@ -318,7 +322,6 @@
     <!-- 👑 المحرك البرمجي المتكامل والمتوافق بالمليم مع core-engine.js وقاعدة البيانات 👑 -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // استخراج الـ slug النصي الموحد كمعرف فريد لمنع التصادم البرمجي لبيانات الموقع
             const urlParams = new URLSearchParams(window.location.search);
             const productSlug = urlParams.get('slug') || urlParams.get('id'); 
 
@@ -329,7 +332,6 @@
                 return;
             }
 
-            // الاستماع اللحظي والآمن لجهوزية قاعدة البيانات المشتركة بالموقع عبر بروميس المحرك المركزي
             window.getBoseDatabase().then(siteData => {
                 processProductExtraction(siteData);
             }).catch(err => {
@@ -344,7 +346,6 @@
                     return;
                 }
 
-                // فحص ومطابقة الصنف المطلوب بناءً على الـ slug النصي الصارم
                 const matchedProduct = siteData.products.find(p => String(p.slug) === String(productSlug) || String(p.id) === String(productSlug));
 
                 if (matchedProduct) {
@@ -363,7 +364,6 @@
                     stars += i <= Math.floor(rating) ? "★" : "☆";
                 }
 
-                // هندسة خيارات المقاسات والأحجام المنسدلة ديناميكياً لتفادي خيارات الـ Select المشتتة
                 let sizeSelectorHTML = "";
                 const defaultSize = product.defaultSize || 'triangle';
                 const initialPrice = (product.prices && product.prices[defaultSize]) ? product.prices[defaultSize] : product.price;
@@ -383,7 +383,7 @@
                     sizeSelectorHTML += `</div></div>`;
                 }
 
-                // بناء كتل المراجعات والتقييمات الفاخرة بنجومها الناعمة بناءً على المواصفة
+                /* 📝 تفكيك وحقن نظام المراجعات القياسي الفاخر */
                 let reviewsHTML = `<div class="bose-reviews-section"><h3 class="bose-section-title" style="font-size:1.3rem; font-weight:700; margin-bottom:20px; color:var(--bose-black);">🌟 مراجعات وتقييمات العملاء المحترمين</h3>`;
                 if (product.reviews && product.reviews.length > 0) {
                     product.reviews.forEach(rev => {
@@ -392,44 +392,43 @@
                         reviewsHTML += `
                             <div class="review-row-card">
                                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-                                    <strong style="font-size:14px; font-weight:700; color:var(--bose-black);">${escapeHTML(rev.user)}</strong>
+                                    <strong style="font-size:14px; font-weight:700; color:var(--bose-black);">${window.escapeHTML ? window.escapeHTML(rev.user) : rev.user}</strong>
                                     <span style="color:var(--bose-gold); font-size: 1rem;">${rStars}</span>
                                 </div>
-                                <p style="margin:0; font-size:13.5px; opacity:0.9; color:var(--bose-black);">"${escapeHTML(rev.comment)}"</p>
+                                <p style="margin:0; font-size:13.5px; opacity:0.9; color:var(--bose-black);">"${window.escapeHTML ? window.escapeHTML(rev.comment) : rev.comment}"</p>
                             </div>
                         `;
                     });
                 } else {
-                    reviewsHTML += `<p style="font-size:14px; opacity:0.7; color:var(--bose-black);">طعم حلوياتنا الفاخرة بيتحدث عن نفسه مباشرة في كل مناسبة سعيدة! 🌸</p>`;
+                    reviewsHTML += `<p style="font-size:14px; opacity:0.7; color:var(--bose-black);">طعم حلوياتنا الفاخرة يتحدث عن نفسه مباشرة في كل مناسبة سعيدة! 🌸</p>`;
                 }
                 reviewsHTML += `</div>`;
 
-                // بناء قسم المقترحات الذكية والبدائل (قد يعجبك أيضاً) لتسهيل تصفح منتجات ذات صلة
+                /* 🍰 حقن وتوليد قسم "قد يعجبك أيضاً" للمقترحات الفردية */
                 let recommendationsHTML = `
-                    <div class="bose-recommendations-section" style="border-top: 1px dashed rgba(255, 145, 164, 0.3); padding-top: 40px; margin-bottom: 20px;">
+                    <div class="bose-recommendations-section">
                         <h3 class="bose-section-title" style="font-size:1.3rem; font-weight:700; margin-bottom:24px; text-align:center; color:var(--bose-black);">🍰 قد يعجبك أيضاً تشكيلة متميزة</h3>
                         <div id="product-page-suggestions-grid" style="display:grid; grid-template-columns: repeat(2, 1fr); gap:12px; width:100%;"></div>
                     </div>
                 `;
 
-                // ضخ البيانات والمحتوى الموثق والصادق لبراند بوسي لمنع التكديس البصري وحظر الكتابة فوق الصور
                 viewContainer.innerHTML = `
                     <nav class="bose-breadcrumb-nav" aria-label="مسار التنقل">
                         <a href="index.html">الرئيسية</a>
                         <span>/</span>
                         <a href="menu.html">المنيو الشامل</a>
                         <span>/</span>
-                        <span aria-current="page">${escapeHTML(product.title)}</span>
+                        <span aria-current="page">${window.escapeHTML ? window.escapeHTML(product.title) : product.title}</span>
                     </nav>
 
                     <div class="product-master-grid">
                         <div class="product-visual-gallery">
-                            <img src="${product.image || product.images[0]}" alt="${escapeHTML(product.title)}" class="product-display-img" loading="eager" />
+                            <img src="${product.image || product.images[0]}" alt="${window.escapeHTML ? window.escapeHTML(product.title) : product.title}" class="product-display-img" loading="eager" />
                         </div>
 
                         <div class="product-details-panel">
-                            <h1 class="product-headline">${escapeHTML(product.title)}</h1>
-                            <span class="product-flavor-badge">${escapeHTML(product.flavorName || "طعم أصلي فاخر")}</span>
+                            <h1 class="product-headline">${window.escapeHTML ? window.escapeHTML(product.title) : product.title}</h1>
+                            <span class="product-flavor-badge">${window.escapeHTML ? window.escapeHTML(product.flavorName || "طعم أصلي فاخر") : (product.flavorName || "طعم أصلي فاخر")}</span>
                             
                             <div class="product-stars-box">
                                 <div class="stars-gold-track" aria-label="تقييم ${rating} من 5">${stars}</div>
@@ -466,11 +465,9 @@
                     </div>
 
                     ${reviewsHTML}
-                    
                     ${recommendationsHTML}
                 `;
 
-                // رندرة المقترحات الفرعية ديناميكياً (2 كارت فقط على شاشات الموبايل لتأمين الراحة الكاملة للعين)
                 const suggestionsGrid = document.getElementById('product-page-suggestions-grid');
                 if (suggestionsGrid) {
                     const recProducts = siteData.products.filter(p => p.slug !== product.slug && p.slug !== "toort-custom-master" && p.slug !== "flowers-master").slice(0, 2);
@@ -478,17 +475,12 @@
                     window.attachProductCardEvents(suggestionsGrid, siteData.products, currency);
                 }
 
-                // تفعيل عداد التحكم بالكمية اللمسية المرنة لمنع القيم السالبة والمزامنة مع الحسابات الكسرية
-                setupStepperMechanics(product, currency);
-                
-                // ربط خيارات المقاسات وتغيير عارض السعر اللحظي الدقيق الشامل للتخصيص والزيادة
-                setupSizeTabsEvents(product, currency);
-
-                // ربط زر الإضافة الفاخر بالمحرك الموحد لضمان التحديث اللحظي لعداد الهيدر
-                setupCartIntegration(product);
+                setupStepperMechanics(currency);
+                setupSizeTabsEvents(currency);
+                setupCartIntegration();
             }
 
-            function setupStepperMechanics(product, currency) {
+            function setupStepperMechanics(currency) {
                 const btnDec = document.getElementById('btn-decrement-bose');
                 const btnInc = document.getElementById('btn-increment-bose');
                 const qtyInput = document.getElementById('input-bose-qty-val');
@@ -521,7 +513,7 @@
                 });
             }
 
-            function setupSizeTabsEvents(product, currency) {
+            function setupSizeTabsEvents(currency) {
                 const priceNode = document.getElementById('product-price-node');
                 const qtyInput = document.getElementById('input-bose-qty-val');
                 const radios = document.querySelectorAll('.size-radio-node');
@@ -540,7 +532,7 @@
                 });
             }
 
-            function setupCartIntegration(product) {
+            function setupCartIntegration() {
                 const triggerBtn = document.getElementById('btn-add-to-cart-trigger');
                 if (!triggerBtn) return;
 
@@ -550,29 +542,32 @@
                     const quantity = parseInt(qtyInput.value, 10) || 1;
                     
                     const checkedRadio = document.querySelector('.size-radio-node:checked');
-                    const activeSize = checkedRadio ? checkedRadio.value : (product.defaultSize || 'triangle');
+                    const activeSize = checkedRadio ? checkedRadio.value : 'triangle';
 
-                    const options = { size: activeSize };
-                    if (product.sizes) {
-                        const matchedSize = product.sizes.find(s => s.id === activeSize);
-                        options.flavorName = `${product.flavorName || "كلاسيك"} (${matchedSize ? matchedSize.name : ""})`;
-                    } else {
-                        options.flavorName = product.flavorName || "كلاسيك";
-                    }
+                    window.getBoseDatabase().then(siteData => {
+                        const matchedProduct = siteData.products.find(p => String(p.slug) === String(productSlug) || String(p.id) === String(productSlug));
+                        if (!matchedProduct) return;
 
-                    // صياغة وإرسال كائن السلة القياسي الموحد المانع للتصادم البرمجي لـ localStorage
-                    const cartItem = window.createCartItem ? window.createCartItem(product, options, quantity) : null;
-
-                    if (cartItem) {
-                        if (typeof window.addBoseCartItem === 'function') {
-                            window.addBoseCartItem(cartItem);
-                            qtyInput.value = 1;
-                            const currentBase = parseFloat(document.getElementById('product-price-node').dataset.unitBase);
-                            document.getElementById('product-price-node').textContent = `${currentBase} ${currency}`;
-                        } else if (typeof window.addBoseItemToCart === 'function') {
-                            window.addBoseItemToCart(product, quantity, options);
+                        const options = { size: activeSize };
+                        if (matchedProduct.sizes) {
+                            const matchedSize = matchedProduct.sizes.find(s => s.id === activeSize);
+                            options.flavorName = `${matchedProduct.flavorName || "كلاسيك"} (${matchedSize ? matchedSize.name : ""})`;
+                        } else {
+                            options.flavorName = matchedProduct.flavorName || "كلاسيك";
                         }
-                    }
+
+                        const cartItem = window.createCartItem ? window.createCartItem(matchedProduct, options, quantity) : null;
+
+                        if (cartItem) {
+                            if (typeof window.addBoseCartItem === 'function') {
+                                window.addBoseCartItem(cartItem);
+                                qtyInput.value = 1;
+                                const currentBase = parseFloat(document.getElementById('product-price-node').dataset.unitBase);
+                                const currency = siteData.store.currency || "EGP";
+                                document.getElementById('product-price-node').textContent = `${currentBase} ${currency}`;
+                            }
+                        }
+                    });
                 });
             }
 

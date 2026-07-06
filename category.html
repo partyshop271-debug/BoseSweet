@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>تصفح المنتجات | حلويات بوسي</title>
+    <title>تصفح الأصناف الفاخرة | حلويات بوسي</title>
     
     <!-- 🔍 إعدادات تحسين محركات البحث والأرشفة الفاخرة SEO المتطابقة -->
-    <meta name="description" content="استمتع بتصفح تشكيلة حلويات بوسي الفاخرة المجهزة يومياً بمكونات طبيعية 100% طازجة تليق بمناسباتكم السعيدة.">
+    <meta name="description" content="استمتع بتصفح تشكيلة حلويات بوسي الفاخرة المجهزة يومياً بمكونات طبيعية 100% طازجة تليق بمناسباتكم السعيدة وتضمن راحتكم النفسية.">
     
     <!-- 🎨 ربط ملفات التصميم الموزعة هندسياً لمنع تضخم الأكواد وتأخر التحميل -->
     <link rel="stylesheet" href="css/global.css">
@@ -203,7 +203,7 @@
 </head>
 <body class="bose-hardware-accelerated bose-arabic-text">
 
-    <!-- 🏢 مكون الهيدر الموحد والثابت الصريح (Shared Universal Header) الملتزم بالـ DOM القياسي الموحد -->
+    <!-- 🏢 مكون الهيدر الموحد والثابت الصريح (Shared Universal Header) -->
     <header class="bose-navbar"></header>
 
     <!-- 📥 القائمة الجانبية المشتركة للموبايل (Universal Drawer Menu) -->
@@ -242,10 +242,9 @@
     <!-- 🏪 مكون الفوتر الموحد والثابت الفاتح الصريح (Shared Universal Footer) -->
     <footer class="bose-footer"></footer>
 
-    <!-- 👑 المحرك البرمجي المتكامل لصفحة الفئة والمطابق لحسابات السلة والـ JSON 👑 -->
+    <!-- 👑 المحرك البرمجي لصفحة الفئة والمطابق لحسابات السلة والـ JSON 👑 -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // استخراج معرف الفئة النشط من الرابط URL بكل أمان وبداية فك الحزم
             const urlParams = new URLSearchParams(window.location.search);
             const categoryId = urlParams.get('category');
 
@@ -255,14 +254,13 @@
             const breadcrumbNode = document.getElementById('breadcrumb-active-category');
             const sizeFilterRow = document.getElementById('bose-size-filter-row');
             
-            let activeSizeTab = "triangle"; // الحجم الافتراضي لفلترة الديسباسيتو
+            let activeSizeTab = "triangle";
 
             if (!categoryId) {
                 renderErrorState("لم نتمكن من تحديد الفئة المطلوبة لتصفح منتجاتها.");
                 return;
             }
 
-            // الإنصات والربط والتمهيد الآمن لبيانات موقع بوسي الموحد المشترك
             if (window.BoseStoreData) {
                 initCategoryRendering(window.BoseStoreData);
             } else {
@@ -277,7 +275,6 @@
                     return;
                 }
 
-                // البحث عن اسم وتفاصيل الفئة في قائمة الفئات الـ 12 المعتمدة بالـ JSON لتوثيق الهوية
                 const categoryObj = siteData.homepage.categoriesSlider.find(cat => cat.id === categoryId);
                 
                 if (!categoryObj) {
@@ -285,14 +282,12 @@
                     return;
                 }
 
-                // تحديث نصوص الترويسة والمسار لإصلاح الأرشفة والـ SEO لراحة الزائر النفسية
                 if (headlineNode) headlineNode.textContent = categoryObj.title;
                 if (breadcrumbNode) breadcrumbNode.textContent = categoryObj.title;
                 if (descNode) {
                     descNode.textContent = `تم تصميم هذه التشكيلة الفاخرة من ${categoryObj.title} بعناية فائقة لتناسب ذوقكم الرفيع ومناسباتكم السعيدة وتضمن راحتكم النفسية.`;
                 }
 
-                // عزل وفلترة المنتجات التابعة حصرياً لهذه الفئة المستدعاة من الرابط
                 const filteredProducts = siteData.products.filter(p => p.category === categoryId);
                 const currency = siteData.store.currency || "EGP";
 
@@ -307,11 +302,8 @@
 
                 const firstProduct = filteredProducts[0];
 
-                // 📐 تطبيق صيانة توزيع الأشكال والتنسيق الشبكي بناءً على نمط الـ layout المعرف لكل صنف بالـ JSON
                 if (firstProduct && firstProduct.layout) {
                     productsGrid.className = `category-products-grid layout-${firstProduct.layout}`;
-                    
-                    // إذا كان الصنف يعتمد على التبويبات (مثل الديسباسيتو) نكشف شريط الأحجام فوراً لحظر التشتيت
                     if (firstProduct.layout === "tabs") {
                         sizeFilterRow.style.display = "flex";
                     } else {
@@ -322,18 +314,15 @@
                 const renderProductsByLayoutConfig = () => {
                     productsGrid.innerHTML = "";
                     filteredProducts.forEach(product => {
-                        // مزامنة الحجم المختار للتبويبات قبل تمرير كائن الصنف على محرك البناء الصارم
                         if (firstProduct.layout === "tabs" && product.prices) {
                             product.defaultSize = activeSizeTab; 
                         }
                         
-                        // استدعاء دالة بناء كارت المنتج الهندسية القياسية والمثبتة بـ core-engine.js منعاً للتعارض
                         if (typeof window.generateStrictProductCardHTML === 'function') {
                             const cardHTML = window.generateStrictProductCardHTML(product, currency);
                             const tempDiv = document.createElement('div');
                             tempDiv.innerHTML = cardHTML;
                             
-                            // معالجة وحقن الرابط الذكي ممرراً الـ slug النصي لرحلة العميل بصفحة المنتج الفردي
                             const cardLink = tempDiv.querySelector('a');
                             if (cardLink) {
                                 cardLink.href = `product.html?slug=${product.slug}`;
@@ -345,24 +334,19 @@
                         }
                     });
 
-                    // تفعيل وربط أحداث العدادات (زائد / ناقص) وأزرار الإضافة للسلة عبر دالة المحرك المركزي الموحدة
                     if (typeof window.attachProductCardEvents === 'function') {
                         window.attachProductCardEvents(productsGrid, siteData.products, currency);
                     }
                 };
 
-                // التشغيل الأولي للرندرة
                 renderProductsByLayoutConfig();
 
-                // تفعيل تبويبات الأحجام التفاعلية والفرز اللحظي للديسباسيتو
                 sizeFilterRow.querySelectorAll('.bose-filter-tab-pill').forEach(pill => {
                     pill.addEventListener('click', function(e) {
                         e.preventDefault();
                         sizeFilterRow.querySelectorAll('.bose-filter-tab-pill').forEach(p => p.classList.remove('active'));
                         this.classList.add('active');
                         activeSizeTab = this.getAttribute('data-filter-size');
-                        
-                        // إعادة تشغيل محرك الرندرة بالأسعار والأبعاد المحدثة للحجم المختار فوراً
                         renderProductsByLayoutConfig();
                     });
                 });
