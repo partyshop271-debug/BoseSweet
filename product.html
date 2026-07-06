@@ -65,7 +65,6 @@
             }
         }
 
-        /* حظر الكتابة والخطوط الجافة فوق صور المنتجات نهائياً لضمان فخامة إضاءة النهار الطبيعية */
         .product-visual-gallery {
             position: relative;
             background-color: var(--bose-white);
@@ -97,7 +96,7 @@
 
         .product-headline {
             font-size: 2rem;
-            font-weight: 700 !important; /* مقفول هندسياً عند 700 للأقسام الرئيسية وتأكيد الفخامة */
+            font-weight: 700 !important;
             color: var(--bose-black, #111111) !important;
             margin: 0 0 12px 0;
             line-height: 1.4;
@@ -146,7 +145,6 @@
             text-align: justify;
         }
 
-        /* 📐 جدول البيانات الفنية الموحد المستدعى لإبراز جودة وقيمة الخامات الطبيعية */
         .product-specs-table {
             width: 100%;
             border-collapse: collapse;
@@ -174,7 +172,6 @@
             width: 100%;
         }
 
-        /* متحكم عداد الكمية اللمسي المرن لمنع القيم السالبة وتسهيل الضغط بصباع العميل */
         .qty-stepper-container {
             display: flex;
             align-items: center;
@@ -257,7 +254,77 @@
             border: 1px solid rgba(255, 145, 164, 0.15);
         }
 
-        /* 🚨 قسم التوصيات والبدائل الذكية "قد يعجبك أيضاً" لمنع التشتيت البصري */
+        /* 👑 استايلات محرك التقييم التفاعلي الجديد */
+        .bose-review-toggle-btn {
+            background: transparent;
+            border: 1px solid var(--bose-pink, #FF91A4);
+            color: var(--bose-black, #111111);
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .bose-review-toggle-btn:hover {
+            background-color: var(--bose-pink, #FF91A4);
+            color: #FFFFFF;
+        }
+
+        .bose-interactive-review-form {
+            background: #FFFFFF;
+            border: 1px solid rgba(255, 145, 164, 0.25);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 30px;
+            box-shadow: var(--bose-shadow-glow);
+        }
+
+        .bose-star-rating-interactive {
+            display: flex;
+            gap: 8px;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+            margin-bottom: 16px;
+        }
+
+        .bose-star-rating-interactive input {
+            display: none;
+        }
+
+        .bose-star-rating-interactive label {
+            font-size: 1.8rem;
+            color: #DDD;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .bose-star-rating-interactive input:checked ~ label,
+        .bose-star-rating-interactive label:hover,
+        .bose-star-rating-interactive label:hover ~ label {
+            color: var(--bose-gold, #D4AF37);
+        }
+
+        .review-image-preview-container {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+
+        .review-preview-thumb {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 145, 164, 0.3);
+        }
+
         .bose-recommendations-section {
             border-top: 1px dashed rgba(255, 145, 164, 0.3);
             padding-top: 40px;
@@ -296,7 +363,6 @@
             box-shadow: 0 4px 10px rgba(255, 145, 164, 0.15);
         }
 
-        /* 🛠️ [إصلاح هندسي حاسم لحل مشكلة الصورة المضغوطة بالفوتر] */
         .bose-footer .footer-logo-container img {
             height: 60px !important;
             width: auto !important;
@@ -333,7 +399,6 @@
     <!-- 👑 المحرك البرمجي المتكامل والمتوافق بالمليم مع core-engine.js وحسابات السلة 👑 -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // استخراج الـ slug النصي الموحد كمعرف فريد لمنع التصادم أو الفقد العشوائي أثناء التصفح الخفي
             const urlParams = new URLSearchParams(window.location.search);
             const productSlug = urlParams.get('slug') || urlParams.get('id'); 
 
@@ -344,7 +409,6 @@
                 return;
             }
 
-            // الاستماع اللحظي والآمن لجهوزية قاعدة البيانات المشتركة بالموقع عبر بروميس المحرك المركزي المشترك
             window.getBoseDatabase().then(siteData => {
                 processProductExtraction(siteData);
             }).catch(() => {
@@ -359,7 +423,6 @@
                     return;
                 }
 
-                // فحص ومطابقة الصنف المطلوب بناءً على الـ slug النصي أو المعرف الصارم
                 const matchedProduct = siteData.products.find(p => String(p.slug) === String(productSlug) || String(p.id) === String(productSlug));
 
                 if (matchedProduct) {
@@ -378,7 +441,6 @@
                     stars += i <= Math.floor(rating) ? "★" : "☆";
                 }
 
-                // هندسة خيارات المقاسات والأحجام المنسدلة ديناميكياً لتفادي خيارات الـ Select المشتتة لراحة العميل
                 let sizeSelectorHTML = "";
                 const defaultSize = product.defaultSize || 'triangle';
                 const initialPrice = (product.prices && product.prices[defaultSize]) ? product.prices[defaultSize] : product.price;
@@ -398,7 +460,6 @@
                             `;
                         });
                     } else {
-                        // دعم افتراضي للأحجام الثابتة لتطابق معايير رندرة التبويبات بالمواصفات
                         sizeSelectorHTML += `
                             <label style="display:block; position:relative;">
                                 <input type="radio" name="product-size-option" class="size-radio-node" value="triangle" data-price="${product.price}" checked>
@@ -409,8 +470,48 @@
                     sizeSelectorHTML += `</div></div>`;
                 }
 
-                // 👑 [حل الثغرة]: بناء المراجعات والتقييمات ديناميكياً لتصبح جزءًا لا يتجزأ من دالة حقن الـ DOM
-                let reviewsHTML = `<div class="bose-reviews-section"><h3 class="bose-section-title" style="font-size:1.3rem; font-weight:700; margin-bottom:20px; color:var(--bose-black);">🌟 مراجعات وتقييمات العملاء المحترمين</h3>`;
+                // 👑 [بناء هيكل التقييمات التفاعلي بالكامل والتحفيزي للعميل]
+                let reviewsHTML = `
+                    <div class="bose-reviews-section">
+                        <h3 class="bose-section-title" style="font-size:1.3rem; font-weight:700; margin-bottom:12px; color:var(--bose-black);">🌟 مراجعات وتقييمات العملاء المحترمين</h3>
+                        <p style="font-size:0.9rem; opacity:0.8; margin-bottom:20px;">رأيك وتجربتك هما سر نجاحنا وإتقاننا الطازج يومياً بالفرع 🌸</p>
+                        
+                        <button id="bose-toggle-review-form-btn" class="bose-review-toggle-btn">
+                            <i class="fas fa-pen"></i> شاركنا تجربتك وتقييمك الفاخر
+                        </button>
+
+                        <div id="bose-review-form-wrapper" class="bose-interactive-review-form" style="display:none;">
+                            <h4 style="font-size:1rem; font-weight:700; margin-bottom:16px;">✍️ أضف مراجعتك الشخصية:</h4>
+                            
+                            <div class="bose-star-rating-interactive">
+                                <input type="radio" id="star5" name="interactive-rating" value="5" /><label for="star5" title="ممتاز">★</label>
+                                <input type="radio" id="star4" name="interactive-rating" value="4" /><label for="star4" title="جيد جداً">★</label>
+                                <input type="radio" id="star3" name="interactive-rating" value="3" /><label for="star3" title="متوسط">★</label>
+                                <input type="radio" id="star2" name="interactive-rating" value="2" /><label for="star2" title="مقبول">★</label>
+                                <input type="radio" id="star1" name="interactive-rating" value="1" /><label for="star1" title="ضعيف">★</label>
+                            </div>
+
+                            <div style="display:flex; gap:12px; margin-bottom:12px;">
+                                <input type="text" id="bose-review-user-name" placeholder="اكتب اسمك الكريم هنا.." style="flex:1;" />
+                            </div>
+
+                            <textarea id="bose-review-comment" placeholder="احكيلنا عن رأيك في جودة الطعم والتغليف والتجربة مع حلويات بوسي الشغوفة.." rows="3" style="margin-bottom:12px; resize:none;"></textarea>
+                            
+                            <div style="margin-bottom:16px;">
+                                <label for="bose-review-file-input" style="display:inline-flex; align-items:center; gap:8px; background:#FFF5F6; border:1px dashed var(--bose-pink); padding:8px 16px; border-radius:8px; cursor:pointer; font-size:0.85rem; font-weight:700;">
+                                    <i class="fas fa-camera" style="color:var(--bose-pink);"></i> أضف صور تجربتك الحقيقية (اختياري)
+                                </label>
+                                <input type="file" id="bose-review-file-input" accept="image/*" multiple style="display:none;" />
+                                <div id="review-images-preview" class="review-image-preview-container"></div>
+                            </div>
+
+                            <button type="button" id="bose-submit-review-btn" style="background:var(--bose-pink); color:#FFF; font-weight:700; padding:10px 24px; border-radius:50px; cursor:pointer; width:100%; box-shadow:0 4px 12px rgba(255,145,164,0.25);">نشر المراجعة الآن</button>
+                        </div>
+
+                        <div id="bose-active-reviews-list-container">
+                `;
+
+                // حقن المراجعات الافتراضية
                 if (product.reviews && product.reviews.length > 0) {
                     product.reviews.forEach(rev => {
                         let rStars = "";
@@ -426,11 +527,10 @@
                         `;
                     });
                 } else {
-                    reviewsHTML += `<p style="font-size:14px; opacity:0.7; color:var(--bose-black);">طعم حلوياتنا الفاخرة يتحدث عن نفسه مباشرة في كل مناسبة سعيدة! 🌸</p>`;
+                    reviewsHTML += `<p id="bose-no-reviews-fallback" style="font-size:14px; opacity:0.7; color:var(--bose-black);">طعم حلوياتنا الفاخرة يتحدث عن نفسه مباشرة في كل مناسبة سعيدة! شاركنا تقييمك لتكون أول من ينشر هنا 🌸</p>`;
                 }
-                reviewsHTML += `</div>`;
+                reviewsHTML += `</div></div>`;
 
-                // 👑 [حل الثغرة]: بناء قسم "قد يعجبك أيضاً" للمقترحات وحقنه ديناميكياً داخل الـ DOM لمنع اختفائه نهائياً
                 let recommendationsHTML = `
                     <div class="bose-recommendations-section">
                         <h3 class="bose-section-title" style="font-size:1.3rem; font-weight:700; margin-bottom:24px; text-align:center; color:var(--bose-black);">🍰 قد يعجبك أيضاً تشكيلة متميزة</h3>
@@ -438,7 +538,6 @@
                     </div>
                 `;
 
-                // ضخ البيانات والمحتوى المعتمد بالكامل وحفظ الوصف في قيمته جغرافياً داخل الـ Grid لمنع التشويه البصري
                 viewContainer.innerHTML = `
                     <nav class="bose-breadcrumb-nav" aria-label="مسار التنقل">
                         <a href="index.html">الرئيسية</a>
@@ -495,7 +594,6 @@
                     ${recommendationsHTML}
                 `;
 
-                // تشغيل السحب وحقن كروت المقترحات الذكية بعد اكتمال ضخ الـ DOM الموحد لمنع الفراغات والضياع البصري
                 const suggestionsGrid = document.getElementById('product-page-suggestions-grid');
                 if (suggestionsGrid) {
                     const recProducts = siteData.products.filter(p => p.slug !== product.slug && p.slug !== "toort-custom-master" && p.slug !== "flowers-master").slice(0, 2);
@@ -506,6 +604,7 @@
                 setupStepperMechanics(currency);
                 setupSizeTabsEvents(currency);
                 setupCartIntegration();
+                setupInteractiveReviewsEngine(); // تشغيل محرك التقييم التفاعلي اللحظي
             }
 
             function setupStepperMechanics(currency) {
@@ -577,6 +676,115 @@
                             document.getElementById('product-price-node').textContent = `${currentBase} ${currency}`;
                         }
                     });
+                });
+            }
+
+            // 👑 [محرك التقييم التفاعلي الحركي المطور لموقع حلويات بوسي]
+            function setupInteractiveReviewsEngine() {
+                const toggleFormBtn = document.getElementById('bose-toggle-review-form-btn');
+                const formWrapper = document.getElementById('bose-review-form-wrapper');
+                const submitReviewBtn = document.getElementById('bose-submit-review-btn');
+                const fileInput = document.getElementById('bose-review-file-input');
+                const previewContainer = document.getElementById('review-images-preview');
+                const reviewsList = document.getElementById('bose-active-reviews-list-container');
+                const fallbackMsg = document.getElementById('bose-no-reviews-fallback');
+
+                let uploadedImagesBase64 = [];
+
+                if (!toggleFormBtn || !formWrapper || !submitReviewBtn) return;
+
+                // فتح وإغلاق الفورم بنعومة
+                toggleFormBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    if (formWrapper.style.display === 'none') {
+                        formWrapper.style.display = 'block';
+                        this.innerHTML = `<i class="fas fa-times"></i> تراجع عن كتابة المراجعة`;
+                    } else {
+                        formWrapper.style.display = 'none';
+                        this.innerHTML = `<i class="fas fa-pen"></i> شاركنا تجربتك وتقييمك الفاخر`;
+                    }
+                });
+
+                // معالجة وإرفاق الصور اختيارياً بصباع العميل
+                if (fileInput && previewContainer) {
+                    fileInput.addEventListener('change', function() {
+                        previewContainer.innerHTML = "";
+                        uploadedImagesBase64 = [];
+                        
+                        const files = Array.from(this.files);
+                        files.forEach(file => {
+                            const reader = new FileReader();
+                            reader.onload = function(e) {
+                                uploadedImagesBase64.push(e.target.result);
+                                const img = document.createElement('img');
+                                img.src = e.target.result;
+                                img.className = 'review-preview-thumb';
+                                previewContainer.appendChild(img);
+                            };
+                            reader.readAsDataURL(file);
+                        });
+                    });
+                }
+
+                // حفظ ونشر المراجعة ديناميكياً ولحظياً في الـ DOM والذاكرة
+                submitReviewBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const name = document.getElementById('bose-review-user-name').value.trim();
+                    const comment = document.getElementById('bose-review-comment').value.trim();
+                    const checkedRadio = document.querySelector('input[name="interactive-rating"]:checked');
+                    const ratingValue = checkedRadio ? parseInt(checkedRadio.value, 10) : 5;
+
+                    if (!name) {
+                        if (typeof window.showBoseToast === 'function') window.showBoseToast("ياريت تكتب اسمك الكريم أولاً علشان ننشر مراجعتك الفاخرة 🌸");
+                        return;
+                    }
+                    if (!comment) {
+                        if (typeof window.showBoseToast === 'function') window.showBoseToast("من فضلك اكتب رأيك أو تجربتك الصادقة داخل خانة التعليق ✨");
+                        return;
+                    }
+
+                    // إخفاء رسالة الفولباك إذا كانت موجودة
+                    if (fallbackMsg) fallbackMsg.style.display = 'none';
+
+                    // بناء كارت المراجعة الجديد هندسياً
+                    let rStars = "";
+                    for (let i = 1; i <= 5; i++) rStars += i <= ratingValue ? "★" : "☆";
+
+                    let attachedImagesHTML = "";
+                    if (uploadedImagesBase64.length > 0) {
+                        attachedImagesHTML = `<div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;">`;
+                        uploadedImagesBase64.forEach(base64 => {
+                            attachedImagesHTML += `<img src="${base64}" style="width:70px; height:70px; object-fit:cover; border-radius:8px; border:1px solid rgba(255,145,164,0.2);" />`;
+                        });
+                        attachedImagesHTML += `</div>`;
+                    }
+
+                    const newReviewCard = document.createElement('div');
+                    newReviewCard.className = 'review-row-card';
+                    newReviewCard.style.animation = 'fadeIn 0.4s ease forwards';
+                    newReviewCard.innerHTML = `
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                            <strong style="font-size:14px; font-weight:700; color:var(--bose-black);">${window.escapeHTML ? window.escapeHTML(name) : name} <span style="font-size:11px; font-weight:400; opacity:0.6; margin-right:6px;">(مراجعة مؤكدة لحظياً)</span></strong>
+                            <span style="color:var(--bose-gold); font-size: 1rem;">${rStars}</span>
+                        </div>
+                        <p style="margin:0; font-size:13.5px; opacity:0.9; color:var(--bose-black);">"${window.escapeHTML ? window.escapeHTML(comment) : comment}"</p>
+                        ${attachedImagesHTML}
+                    `;
+
+                    // حقن الكارت الجديد في أول القائمة
+                    reviewsList.insertBefore(newReviewCard, reviewsList.firstChild);
+
+                    // تصفير وتهيئة الحقول وإغلاق الفورم
+                    document.getElementById('bose-review-user-name').value = "";
+                    document.getElementById('bose-review-comment').value = "";
+                    if (checkedRadio) checkedRadio.checked = false;
+                    if (previewContainer) previewContainer.innerHTML = "";
+                    uploadedImagesBase64 = [];
+                    
+                    formWrapper.style.display = 'none';
+                    toggleFormBtn.innerHTML = `<i class="fas fa-pen"></i> شاركنا تجربتك وتقييمك الفاخر`;
+
+                    if (typeof window.showBoseToast === 'function') window.showBoseToast("تم نشر مراجعتك الفاخرة بنجاح، شكراً لمشاركتنا تجربتك السعيدة! 🌸");
                 });
             }
 
