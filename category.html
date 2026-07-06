@@ -292,8 +292,13 @@
                             const cardHTML = window.generateStrictProductCardHTML(product, currency);
                             const tempDiv = document.createElement('div');
                             tempDiv.innerHTML = cardHTML;
-                            const cardLink = tempDiv.querySelector('a');
-                            if (cardLink) cardLink.href = `product.html?slug=${product.slug}`;
+                            
+                            // 👑 [إصلاح حاسم للرابط البرمجي]: توجيه العميل فوراً لصفحة تفاصيل الصنف الفردية ليرى المراجعات والبدائل الذكية
+                            const cardLink = tempDiv.querySelectorAll('a');
+                            cardLink.forEach(link => {
+                                link.href = `product.html?slug=${product.slug}`;
+                            });
+                            
                             while (tempDiv.firstChild) {
                                 productsGrid.appendChild(tempDiv.firstChild);
                             }
