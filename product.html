@@ -333,6 +333,7 @@
     <!-- 👑 المحرك البرمجي المتكامل والمتوافق بالمليم مع core-engine.js وحسابات السلة 👑 -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
+            // استخراج الـ slug النصي الموحد كمعرف فريد لمنع التصادم أو الفقد العشوائي أثناء التصفح الخفي
             const urlParams = new URLSearchParams(window.location.search);
             const productSlug = urlParams.get('slug') || urlParams.get('id'); 
 
@@ -343,6 +344,7 @@
                 return;
             }
 
+            // الاستماع اللحظي والآمن لجهوزية قاعدة البيانات المشتركة بالموقع عبر بروميس المحرك المركزي المشترك
             window.getBoseDatabase().then(siteData => {
                 processProductExtraction(siteData);
             }).catch(() => {
@@ -357,6 +359,7 @@
                     return;
                 }
 
+                // فحص ومطابقة الصنف المطلوب بناءً على الـ slug النصي أو المعرف الصارم
                 const matchedProduct = siteData.products.find(p => String(p.slug) === String(productSlug) || String(p.id) === String(productSlug));
 
                 if (matchedProduct) {
@@ -375,6 +378,7 @@
                     stars += i <= Math.floor(rating) ? "★" : "☆";
                 }
 
+                // هندسة خيارات المقاسات والأحجام المنسدلة ديناميكياً لتفادي خيارات الـ Select المشتتة لراحة العميل
                 let sizeSelectorHTML = "";
                 const defaultSize = product.defaultSize || 'triangle';
                 const initialPrice = (product.prices && product.prices[defaultSize]) ? product.prices[defaultSize] : product.price;
@@ -394,6 +398,7 @@
                     sizeSelectorHTML += `</div></div>`;
                 }
 
+                // 👑 [حل الثغرة]: بناء المراجعات والتقييمات ديناميكياً لتصبح جزءًا لا يتجزأ من دالة حقن الـ DOM
                 let reviewsHTML = `<div class="bose-reviews-section"><h3 class="bose-section-title" style="font-size:1.3rem; font-weight:700; margin-bottom:20px; color:var(--bose-black);">🌟 مراجعات وتقييمات العملاء المحترمين</h3>`;
                 if (product.reviews && product.reviews.length > 0) {
                     product.reviews.forEach(rev => {
@@ -414,6 +419,7 @@
                 }
                 reviewsHTML += `</div>`;
 
+                // 👑 [حل الثغرة]: بناء قسم "قد يعجبك أيضاً" للمقترحات وحقنه ديناميكياً داخل الـ DOM لمنع اختفائه نهائياً
                 let recommendationsHTML = `
                     <div class="bose-recommendations-section">
                         <h3 class="bose-section-title" style="font-size:1.3rem; font-weight:700; margin-bottom:24px; text-align:center; color:var(--bose-black);">🍰 قد يعجبك أيضاً تشكيلة متميزة</h3>
@@ -421,7 +427,7 @@
                     </div>
                 `;
 
-                // 👑 حقن الهيكلية الحرفية الأصلية للملف داخل الـ Grid بالمليم لمنع التشويه البصري وحفظ الوصف في القمة كـ Hook
+                // ضخ البيانات والمحتوى المعتمد بالكامل وحفظ الوصف في قيمته جغرافياً داخل الـ Grid لمنع التشويه البصري
                 viewContainer.innerHTML = `
                     <nav class="bose-breadcrumb-nav" aria-label="مسار التنقل">
                         <a href="index.html">الرئيسية</a>
@@ -449,7 +455,6 @@
                                 ${finalCalculatedPrice} ${currency}
                             </div>
 
-                            <!-- 🌟 هنا يتم حقن وصف المنتج التفصيلي الحرفي ليفهمه العميل أولاً وبأعلى أداء تفاعلي -->
                             <p class="product-editorial-desc">${product.description}</p>
 
                             ${sizeSelectorHTML}
@@ -479,6 +484,7 @@
                     ${recommendationsHTML}
                 `;
 
+                // تشغيل السحب وحقن كروت المقترحات الذكية بعد اكتمال ضخ الـ DOM الموحد لمنع الفراغات والضياع البصري
                 const suggestionsGrid = document.getElementById('product-page-suggestions-grid');
                 if (suggestionsGrid) {
                     const recProducts = siteData.products.filter(p => p.slug !== product.slug && p.slug !== "toort-custom-master" && p.slug !== "flowers-master").slice(0, 2);
@@ -509,18 +515,20 @@
                 btnInc.addEventListener('click', function(e) { e.preventDefault(); let val = parseInt(qtyInput.value, 10) || 1; if (val < 99) { qtyInput.value = val + 1; refreshPriceLabel(); } });
             }
 
-            // ربط فلاتر الراديو المخصصة للأحجام
             function setupSizeTabsEvents(currency) {
                 const priceNode = document.getElementById('product-price-node');
                 const qtyInput = document.getElementById('input-bose-qty-val');
-                document.querySelectorAll('.size-radio-node').forEach(radio => {
+                const radios = document.querySelectorAll('.size-radio-node');
+
+                radios.forEach(radio => {
                     radio.addEventListener('change', function() {
                         if (this.checked) {
                             const rawPrice = parseFloat(this.dataset.price);
                             const updatedUnitPrice = window.calculateBosePrice ? window.calculateBosePrice(rawPrice, "menu-only") : rawPrice;
                             
                             priceNode.dataset.unitBase = updatedUnitPrice;
-                            priceNode.textContent = `${updatedUnitPrice * (parseInt(qtyInput.value, 10) || 1)} ${currency}`;
+                            const qty = parseInt(qtyInput.value, 10) || 1;
+                            priceNode.textContent = `${updatedUnitPrice * qty} ${currency}`;
                         }
                     });
                 });
