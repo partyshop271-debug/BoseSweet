@@ -1,7 +1,8 @@
 /**
  * 👑 المحرك المركزي العالمي وعمليات الفحص المالي والمزامنة الزمنية المتقدمة - حلويات بوسي 👑
- * النسخة الهندسية القياسية والمطورة بنسبة 100% - الإصدار الذهبي الشامل والخالي تماماً من الثغرات V15.4
+ * النسخة الهندسية القياسية والمطورة بنسبة 100% - الإصدار الذهبي الشامل والخالي تماماً من الثغرات V16.0
  * يتوافق بشكل مطلق ومتبادل مع: cart-engine.js وقاعدة البيانات site-data-final.json ومعايير الأداء والموبايل أولاً
+ * [تم دمج نظام التفاعل الراقي ونبضات العداد اللحظية وتحولات الأزرار بنعومة متناهية]
  */
 
 (function () {
@@ -214,7 +215,7 @@
             '٠': '0', '١': '1', '٢': '2', '٣': '3', '٤': '4',
             '٥': '5', '٦': '6', '٧': '7', '٨': '8', '٩': '9',
             '۴': '4', '۵': '5', '۶': '6',
-            '۰': '0', '۱': '1', '۲': '2', '۳': '3', '۴': '4', '۵': '5', '۶': '6', '۷': '7', '۸': '8', '۹': '9'
+            '۰': '0', '۱': '1', '۲': '2', '۳': '3', '۴': '4', '۵': '5', '۶': '6', '۷': '7', '٨': '8', '٩': '9'
         };
         return str.toString().trim().replace(/[٠-٩۰-۹]/g, match => arabicNormMap[match] || match);
     };
@@ -550,7 +551,7 @@
     window.isEquivalentDetails = isEquivalentDetails;
 
     // ==========================================================================
-    // 3. محركات جلب وإطلاق وتزامن البيانات
+    // 3. محركات جلب وإطلاق وتزامن البيانات والـ Toasts المطورة التفاعلية
     // ==========================================================================
 
     window.getBoseDatabase = function() {
@@ -650,6 +651,16 @@
         });
     };
 
+    function triggerBoseCartPulse() {
+        const targetElements = document.querySelectorAll("#nav-cart-count, .nav-cart-icon-wrapper, .nav-cart-count-badge");
+        targetElements.forEach(element => {
+            if (!element) return;
+            element.classList.remove("bose-cart-pulse");
+            void element.offsetWidth; // إعادة بناء الـ DOM لإطلاق الأنيميشن مجدداً
+            element.classList.add("bose-cart-pulse");
+        });
+    }
+
     function injectCoreStyles() {
         if (document.getElementById("bose-core-injected-styles")) return;
 
@@ -689,6 +700,15 @@
             }
             p, span, a, button, input, select, textarea {
                 font-family: 'Cairo', sans-serif !important;
+            }
+
+            @keyframes boseCartPulseAnim {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.25); border-color: var(--bose-pink); }
+                100% { transform: scale(1); }
+            }
+            .bose-cart-pulse {
+                animation: boseCartPulseAnim 0.35s cubic-bezier(0.25, 1, 0.5, 1) 1 !important;
             }
 
             .bose-fade-in-img {
@@ -1265,7 +1285,7 @@
                 </div>
                 <div class="drawer-links-scrollable" style="padding: 16px 20px; flex-grow: 1; overflow-y: auto;">
                     <span class="drawer-divider-label" style="display: block; font-size: 0.75rem; font-weight: 700; color: #777; margin-bottom: 12px; letter-spacing: 0.5px;">التنقل السريع</span>
-                    <ul class="drawer-links-list" style="list-style: none; padding: 0; margin: 0 0 20px 0; display: flex; flex-direction: column; gap: 10px;">
+                    <ul class="drawer-links-list" style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px;">
                         <li class="drawer-link-item"><a href="${pathPrefix}index.html" class="${pageFileName.includes('index.html') ? 'active' : ''}" style="text-decoration: none; color: var(--bose-black); font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 10px;"><i class="fas fa-home" style="color: var(--bose-pink); width: 16px;"></i> الواجهة الرئيسية</a></li>
                         <li class="drawer-link-item"><a href="${pathPrefix}menu.html" class="${pageFileName.includes('menu.html') && !currentPath.includes('category=') ? 'active' : ''}" style="text-decoration: none; color: var(--bose-black); font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 10px;"><i class="fas fa-utensils" style="color: var(--bose-pink); width: 16px;"></i> المنيو الشامل</a></li>
                     </ul>
@@ -1591,9 +1611,21 @@
 
                     const standardItem = window.createCartItem(product, options, qty);
                     if (standardItem) {
+                        // تحويل الأزرار الفوري التفاعلي لـ حلويات بوسي
+                        const originalContent = addToCartBtn.innerHTML;
+                        addToCartBtn.innerHTML = `<i class="fas fa-check" style="color:var(--bose-gold);"></i> تمت الإضافة للسلة`;
+                        addToCartBtn.style.backgroundColor = 'var(--bose-black)';
+                        addToCartBtn.style.pointerEvents = 'none';
+
                         window.addBoseCartItem(standardItem);
                         qtyInput.value = 1;
                         updatePriceDisplay();
+
+                        setTimeout(() => {
+                            addToCartBtn.innerHTML = originalContent;
+                            addToCartBtn.style.backgroundColor = 'var(--bose-pink)';
+                            addToCartBtn.style.pointerEvents = 'auto';
+                        }, 1200);
                     }
                 });
             }
@@ -2025,6 +2057,7 @@
             } catch (storageEx) {}
             window.boseInMemoryCart = cart;
             window.updateGlobalCartCounter();
+            triggerBoseCartPulse(); // إطلاق نبضة العداد اللحظية التفاعلية
             window.dispatchEvent(new Event('bose_cart_updated'));
             window.dispatchEvent(new CustomEvent('bose_cart_changed', { detail: cart }));
         } catch (e) {
@@ -2065,7 +2098,8 @@
         }
 
         window.saveBoseCart(cart);
-        window.showBoseToast(`تمت إضافة ${newItem.title} إلى السلة بنجاح 🌸`);
+        // نصوص تفاعل راقية وناعمة للـ Toast الموحد
+        window.showBoseToast(`تمت إضافة ${newItem.title} إلى السلة الفاخرة 🌸`);
     };
 
     window.addBoseItemToCart = function(product, quantity = 1, customDetails = null, customPrice = null) {
@@ -2091,13 +2125,16 @@
 
         if (itemIndex > -1) {
             const qty = parseInt(newQuantity);
+            const itemTitle = cart[itemIndex].title;
             if (isNaN(qty) || qty <= 0) {
                 cart.splice(itemIndex, 1);
-                window.showBoseToast("تمت إزالة الصنف من السلة 🌸");
+                window.saveBoseCart(cart);
+                window.showBoseToast("تمت إزالة الصنف من سلتك 🌸");
             } else {
                 cart[itemIndex].quantity = qty;
+                window.saveBoseCart(cart);
+                window.showBoseToast(`تم تحديث كمية ${itemTitle} بالسلة 🌸`);
             }
-            window.saveBoseCart(cart);
         }
     };
 
@@ -2108,6 +2145,8 @@
             localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(updatedCart));
             window.boseInMemoryCart = updatedCart;
             window.updateGlobalCartCounter();
+            triggerBoseCartPulse();
+            window.showBoseToast("تمت إزالة الصنف من سلتك 🌸");
             window.dispatchEvent(new Event('storage'));
             window.dispatchEvent(new Event('bose_cart_updated'));
         } catch (e) {
@@ -2121,6 +2160,7 @@
         } catch (ex) {}
         window.boseInMemoryCart = [];
         window.updateGlobalCartCounter();
+        triggerBoseCartPulse();
         window.dispatchEvent(new Event('bose_cart_updated'));
         window.dispatchEvent(new CustomEvent('bose_cart_changed', { detail: [] }));
     };
