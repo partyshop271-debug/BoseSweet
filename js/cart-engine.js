@@ -1,6 +1,6 @@
 /**
  * 👑 محرك السلة وإتمام الطلب الموحد الفاخر والمطور - حلويات بوسي 👑
- * النسخة الهندسية القياسية الكاملة بنسبة 100% - خالية تماماً من الثغرات المالية والبرمجية V17.5 الشاملة
+ * النسخة الهندسية القياسية الكاملة بنسبة 100% - خالية تماماً من الثغرات المالية والبرمجية V18.0 الشاملة
  * متوافقة بشكل مطلق مع: core-engine.js وقاعدة البيانات site-data-final.json ومعايير الأداء والموبايل أولاً
  * [إصلاح برمي حاسم لحظر تعليق قناع التحميل والتعتيم العشوائي أثناء دورة حياة حذف الأصناف]
  * [تأمين وحل ثغرة حالة السباق اللامتزامنة لضمان عدم حدوث فجوة بيضاء أو اختفاء عشوائي للمنتجات]
@@ -42,8 +42,8 @@
 
         try {
             let cart = window.getBoseCart();
-            // التصفية الحقيقية بناء على المعرف الفريد للصنف
-            cart = cart.filter(item => item.id !== itemId);
+            // التصفية الحقيقية بناء على المعرف الفريد للصنف مع تأمين تحويل الأنواع لنصوص منعا للتصادم
+            cart = cart.filter(item => String(item.id) !== String(itemId));
             
             // الحفظ الصارم المشترك في الذاكرة المحلية والذاكرة المؤقتة
             localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
@@ -83,7 +83,7 @@
     window.updateBoseCartItemQuantity = function (itemId, newQty) {
         try {
             let cart = window.getBoseCart();
-            const item = cart.find(i => i.id === itemId);
+            const item = cart.find(i => String(i.id) === String(itemId));
             if (item) {
                 item.quantity = parseInt(newQty, 10) || 1;
                 
@@ -133,7 +133,7 @@
             .replace(/&/g, "&")
             .replace(/</g, "<")
             .replace(/>/g, ">")
-            .replace(/"/g, """)
+            .replace(/"/g, '"')
             .replace(/'/g, "'");
     };
 
@@ -256,9 +256,9 @@
         },
         removeItem: function (key) {
             try { 
-                localStorage.removeItem(key); 
-            } catch (e) { 
                 delete boseMemoryStore[key]; 
+            } catch (e) { 
+                localStorage.removeItem(key); 
             }
         }
     };
@@ -319,138 +319,143 @@
         });
     }
 
-    function renderCartItems() {
-        const itemsWrapper = document.getElementById('cart-items-wrapper');
-        if (!itemsWrapper) return;
+    window.renderCartItems = function renderCartItems() {
+        try {
+            const itemsWrapper = document.getElementById('cart-items-wrapper');
+            if (!itemsWrapper) return;
 
-        const cart = window.getBoseCart();
-        const clearCartBtn = document.getElementById('btn-clear-cart') || document.querySelector('button.btn-clear-cart-node');
-        
-        const storeLogoFallback = window.getBoseLogo ? window.getBoseLogo() : (window.BoseStoreData?.store?.logo || "");
-        const storeCurrency = window.BoseStoreData?.store?.currency || "EGP";
+            const cart = window.getBoseCart();
+            const clearCartBtn = document.getElementById('btn-clear-cart') || document.querySelector('button.btn-clear-cart-node');
+            
+            const storeLogoFallback = window.getBoseLogo ? window.getBoseLogo() : (window.BoseStoreData?.store?.logo || "");
+            const storeCurrency = window.BoseStoreData?.store?.currency || "EGP";
 
-        if (cart.length === 0) {
-            itemsWrapper.innerHTML = `
-                <div class="empty-cart-message-container" style="text-align:center; padding:60px 24px; background:var(--bose-white, #FFFFFF); border:var(--bose-border-pink); border-radius:24px; box-shadow:var(--bose-shadow-glow); direction:rtl;">
-                    <div style="font-size:48px; margin-bottom:16px;">🌸</div>
-                    <h3 style="font-size:18px; font-weight:700; color:var(--bose-black, #111111); margin:0 0 8px 0; font-family:'Cairo', sans-serif !important;">سلة المشتريات فارغة حالياً</h3>
-                    <p style="font-size:14px; font-weight:400; color:var(--bose-black, #111111); opacity:0.8; margin:0 0 24px 0; line-height:1.6; font-family:'Cairo', sans-serif !important;">تصفح المنيو الشامل واستمتع بأشهى قطع الجاتوهات والحلويات والتورت المصنوعة بحب خصيصاً لمناسباتكم السعيدة.</p>
-                    <a href="menu.html" style="display:inline-block; background:var(--bose-pink, #FF91A4); color:var(--bose-white, #FFFFFF); padding:12px 32px; border-radius:50px; text-decoration:none; font-weight:700; font-size:14px; transition:0.2s; box-shadow: 0 4px 14px rgba(255,145,164,0.25); font-family:'Cairo', sans-serif !important;">استعرض المنيو الشامل</a>
-                </div>
-            `;
-            if (clearCartBtn) clearCartBtn.style.display = 'none';
-            updateCartSummaryTotals(0);
-            renderSuggestionsSlider([]);
-            return;
-        }
-
-        if (clearCartBtn) clearCartBtn.style.display = '';
-        itemsWrapper.innerHTML = '';
-        let subtotal = 0;
-
-        cart.forEach(item => {
-            const priceUnit = parseFloat(item.finalPrice) || parseFloat(item.price) || parseFloat(item.basePrice) || 0;
-            const itemTotal = priceUnit * (parseInt(item.quantity, 10) || 1);
-            subtotal += itemTotal;
-
-            const card = document.createElement('div');
-            card.className = 'cart-item-card';
-            card.style.cssText = `
-                position: relative;
-                display: flex;
-                align-items: center;
-                background-color: var(--bose-white, #FFFFFF);
-                border: var(--bose-border-pink);
-                box-shadow: var(--bose-shadow-glow);
-                border-radius: 20px;
-                padding: 16px;
-                margin-bottom: 16px;
-                direction: rtl;
-            `;
-
-            let customDetailsHTML = '';
-            if (item.customDetails && item.type !== 'standard') {
-                const details = item.customDetails;
-                const excludedKeys = ['extraToppingPrice', 'printingPrice', 'moneyCategoryAmount', 'moneyFee', 'photoCount', 'wrappingPrice'];
-                
-                Object.keys(details).forEach(key => {
-                    if (excludedKeys.includes(key)) return;
-                    
-                    const cleanKey = translateDetailKey(key);
-                    const rawVal = formatDetailValue(key, details[key]);
-                    const cleanVal = escapeHtml(rawVal);
-                    
-                    if (cleanVal && cleanVal !== "لا" && cleanVal !== "none" && cleanVal !== "لا يوجد" && cleanVal !== "0" && cleanVal !== "0 وردة" && cleanVal !== "0 جنيه" && cleanVal !== "0 قطعة" && cleanVal !== "0 فرد" && cleanVal !== "بدون إضافة صور") {
-                        customDetailsHTML += `<span style="display: block; font-size: 13px; line-height: 1.5; opacity: 0.9; font-family:'Cairo', sans-serif !important; word-break: break-word;">${cleanKey}: <strong style="color:var(--bose-black); font-weight:700;">${cleanVal}</strong></span>`;
-                    }
-                });
-            } else if (item.flavorName) {
-                customDetailsHTML += `<span style="display: block; font-size: 13px; line-height: 1.5; opacity: 0.9; font-family:'Cairo', sans-serif !important;">النكهة المحددة: <strong style="color:var(--bose-black); font-weight:700;">${escapeHtml(item.flavorName)}</strong></span>`;
-            }
-
-            const isBespoke = item.type === "custom-cake" || item.type === "custom-flower" || item.type === "mini-cake" || item.id.includes("-");
-            let qtyControlHTML = "";
-
-            if (isBespoke) {
-                qtyControlHTML = `
-                    <div class="quantity-counter-block bespoke-locked" style="display:flex; align-items:center; border:1px solid rgba(255, 145, 164, 0.2); border-radius:50px; background:#FFF0F2; padding:4px 16px;">
-                        <span style="font-size:12px; font-weight:700; color:var(--bose-pink, #FF91A4); font-family:'Cairo', sans-serif !important;">✨ قطعة فريدة صممت لكم</span>
+            if (cart.length === 0) {
+                itemsWrapper.innerHTML = `
+                    <div class="empty-cart-message-container" style="text-align:center; padding:60px 24px; background:var(--bose-white, #FFFFFF); border:var(--bose-border-pink); border-radius:24px; box-shadow:var(--bose-shadow-glow); direction:rtl;">
+                        <div style="font-size:48px; margin-bottom:16px;">🌸</div>
+                        <h3 style="font-size:18px; font-weight:700; color:var(--bose-black, #111111); margin:0 0 8px 0; font-family:'Cairo', sans-serif !important;">سلة المشتريات فارغة حالياً</h3>
+                        <p style="font-size:14px; font-weight:400; color:var(--bose-black, #111111); opacity:0.8; margin:0 0 24px 0; line-height:1.6; font-family:'Cairo', sans-serif !important;">تصفح المنيو الشامل واستمتع بأشهى قطع الجاتوهات والحلويات والتورت المصنوعة بحب خصيصاً لمناسباتكم السعيدة.</p>
+                        <a href="menu.html" style="display:inline-block; background:var(--bose-pink, #FF91A4); color:var(--bose-white, #FFFFFF); padding:12px 32px; border-radius:50px; text-decoration:none; font-weight:700; font-size:14px; transition:0.2s; box-shadow: 0 4px 14px rgba(255,145,164,0.25); font-family:'Cairo', sans-serif !important;">استعرض المنيو الشامل</a>
                     </div>
                 `;
-            } else {
-                qtyControlHTML = `
-                    <div class="quantity-counter-block" style="display:flex; align-items:center; border:1px solid var(--bose-pink, #FF91A4); border-radius:50px; background:var(--bose-white, #FFFFFF); padding:2px 8px;">
-                        <button class="btn-qty-minus" style="background:none; border:none; color:var(--bose-black); font-size:18px; font-weight:700; width:30px; height:30px; cursor:pointer;">-</button>
-                        <input type="number" class="input-qty-value" value="${item.quantity}" min="1" readonly style="width:35px; text-align:center; border:none; font-size:15px; font-weight:700; color:var(--bose-black); background:transparent; font-family:'Cairo', sans-serif !important;">
-                        <button class="btn-qty-plus" style="background:none; border:none; color:var(--bose-black); font-size:18px; font-weight:700; width:30px; height:30px; cursor:pointer;">+</button>
-                    </div>
-                `;
+                if (clearCartBtn) clearCartBtn.style.display = 'none';
+                updateCartSummaryTotals(0);
+                renderSuggestionsSlider([]);
+                return;
             }
 
-            card.innerHTML = `
-                <button class="btn-remove-item" style="position:absolute; top:12px; left:12px; background:none; border:none; color:var(--bose-black); font-size:22px; cursor:pointer; font-weight:700; line-height:1; transition:0.2s; z-index:10; font-family:'Cairo', sans-serif !important;" aria-label="حذف الصنف">×</button>
-                <div class="cart-item-img-container" style="margin-left:16px; flex-shrink: 0;">
-                    <img src="${escapeHtml(item.image || storeLogoFallback)}" onerror="this.src='${storeLogoFallback}'" class="cart-item-img" alt="${escapeHtml(item.title)}" style="width:120px; height:120px; object-fit:cover; border-radius:20px; display:block;" loading="lazy">
-                </div>
-                <div class="cart-item-info" style="flex:1; display:flex; flex-direction:column; gap:4px; text-align:right; overflow:hidden;">
-                    <h3 class="cart-item-title" style="margin:0 0 4px 0; font-size:16px; font-weight:700; color:var(--bose-black); font-family:'Cairo', sans-serif !important; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(item.title)}</h3>
-                    <div class="cart-item-meta" style="color:var(--bose-black); opacity:0.8;">${customDetailsHTML}</div>
-                    <div class="cart-item-price-quantity-row" style="display:flex; align-items:center; justify-content:space-between; margin-top:8px; flex-wrap:wrap; gap:10px;">
-                        ${qtyControlHTML}
-                        <div class="cart-item-price-display" style="text-align:left; direction:rtl;">
-                            <span class="cart-item-price-single" style="font-size:12px; font-weight:400; color:var(--bose-black); opacity:0.7; display:block; font-family:'Cairo', sans-serif !important;">${item.quantity > 1 ? `${priceUnit} × ${item.quantity}` : ''}</span>
-                            <span class="cart-item-price-total" style="font-size:15px; font-weight:700; color:var(--bose-pink, #FF91A4); font-family:'Cairo', sans-serif !important;">${itemTotal} ${storeCurrency}</span>
+            if (clearCartBtn) clearCartBtn.style.display = '';
+            itemsWrapper.innerHTML = '';
+            let subtotal = 0;
+
+            cart.forEach(item => {
+                const priceUnit = parseFloat(item.finalPrice) || parseFloat(item.price) || parseFloat(item.basePrice) || 0;
+                const itemTotal = priceUnit * (parseInt(item.quantity, 10) || 1);
+                subtotal += itemTotal;
+
+                const card = document.createElement('div');
+                card.className = 'cart-item-card';
+                card.style.cssText = `
+                    position: relative;
+                    display: flex;
+                    align-items: center;
+                    background-color: var(--bose-white, #FFFFFF);
+                    border: var(--bose-border-pink);
+                    box-shadow: var(--bose-shadow-glow);
+                    border-radius: 20px;
+                    padding: 16px;
+                    margin-bottom: 16px;
+                    direction: rtl;
+                `;
+
+                let customDetailsHTML = '';
+                if (item.customDetails && item.type !== 'standard') {
+                    const details = item.customDetails;
+                    const excludedKeys = ['extraToppingPrice', 'printingPrice', 'moneyCategoryAmount', 'moneyFee', 'photoCount', 'wrappingPrice'];
+                    
+                    Object.keys(details).forEach(key => {
+                        if (excludedKeys.includes(key)) return;
+                        
+                        const cleanKey = translateDetailKey(key);
+                        const rawVal = formatDetailValue(key, details[key]);
+                        const cleanVal = escapeHtml(rawVal);
+                        
+                        if (cleanVal && cleanVal !== "لا" && cleanVal !== "none" && cleanVal !== "لا يوجد" && cleanVal !== "0" && cleanVal !== "0 وردة" && cleanVal !== "0 جنيه" && cleanVal !== "0 قطعة" && cleanVal !== "0 فرد" && cleanVal !== "بدون إضافة صور") {
+                            customDetailsHTML += `<span style="display: block; font-size: 13px; line-height: 1.5; opacity: 0.9; font-family:'Cairo', sans-serif !important; word-break: break-word;">${cleanKey}: <strong style="color:var(--bose-black); font-weight:700;">${cleanVal}</strong></span>`;
+                        }
+                    });
+                } else if (item.flavorName) {
+                    customDetailsHTML += `<span style="display: block; font-size: 13px; line-height: 1.5; opacity: 0.9; font-family:'Cairo', sans-serif !important;">النكهة المحددة: <strong style="color:var(--bose-black); font-weight:700;">${escapeHtml(item.flavorName)}</strong></span>`;
+                }
+
+                // تأمين كامل ضد انهيار الدالة إذا كان المعرف غير نصي
+                const isBespoke = item.type === "custom-cake" || item.type === "custom-flower" || item.type === "mini-cake" || String(item.id).includes("-");
+                let qtyControlHTML = "";
+
+                if (isBespoke) {
+                    qtyControlHTML = `
+                        <div class="quantity-counter-block bespoke-locked" style="display:flex; align-items:center; border:1px solid rgba(255, 145, 164, 0.2); border-radius:50px; background:#FFF0F2; padding:4px 16px;">
+                            <span style="font-size:12px; font-weight:700; color:var(--bose-pink, #FF91A4); font-family:'Cairo', sans-serif !important;">✨ قطعة فريدة صممت لكم</span>
+                        </div>
+                    `;
+                } else {
+                    qtyControlHTML = `
+                        <div class="quantity-counter-block" style="display:flex; align-items:center; border:1px solid var(--bose-pink, #FF91A4); border-radius:50px; background:var(--bose-white, #FFFFFF); padding:2px 8px;">
+                            <button class="btn-qty-minus" style="background:none; border:none; color:var(--bose-black); font-size:18px; font-weight:700; width:30px; height:30px; cursor:pointer;">-</button>
+                            <input type="number" class="input-qty-value" value="${item.quantity}" min="1" readonly style="width:35px; text-align:center; border:none; font-size:15px; font-weight:700; color:var(--bose-black); background:transparent; font-family:'Cairo', sans-serif !important;">
+                            <button class="btn-qty-plus" style="background:none; border:none; color:var(--bose-black); font-size:18px; font-weight:700; width:30px; height:30px; cursor:pointer;">+</button>
+                        </div>
+                    `;
+                }
+
+                card.innerHTML = `
+                    <button class="btn-remove-item" style="position:absolute; top:12px; left:12px; background:none; border:none; color:var(--bose-black); font-size:22px; cursor:pointer; font-weight:700; line-height:1; transition:0.2s; z-index:10; font-family:'Cairo', sans-serif !important;" aria-label="حذف الصنف">×</button>
+                    <div class="cart-item-img-container" style="margin-left:16px; flex-shrink: 0;">
+                        <img src="${escapeHtml(item.image || storeLogoFallback)}" onerror="this.src='${storeLogoFallback}'" class="cart-item-img" alt="${escapeHtml(item.title)}" style="width:120px; height:120px; object-fit:cover; border-radius:20px; display:block;" loading="lazy">
+                    </div>
+                    <div class="cart-item-info" style="flex:1; display:flex; flex-direction:column; gap:4px; text-align:right; overflow:hidden;">
+                        <h3 class="cart-item-title" style="margin:0 0 4px 0; font-size:16px; font-weight:700; color:var(--bose-black); font-family:'Cairo', sans-serif !important; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(item.title)}</h3>
+                        <div class="cart-item-meta" style="color:var(--bose-black); opacity:0.8;">${customDetailsHTML}</div>
+                        <div class="cart-item-price-quantity-row" style="display:flex; align-items:center; justify-content:space-between; margin-top:8px; flex-wrap:wrap; gap:10px;">
+                            ${qtyControlHTML}
+                            <div class="cart-item-price-display" style="text-align:left; direction:rtl;">
+                                <span class="cart-item-price-single" style="font-size:12px; font-weight:400; color:var(--bose-black); opacity:0.7; display:block; font-family:'Cairo', sans-serif !important;">${item.quantity > 1 ? `${priceUnit} × ${item.quantity}` : ''}</span>
+                                <span class="cart-item-price-total" style="font-size:15px; font-weight:700; color:var(--bose-pink, #FF91A4); font-family:'Cairo', sans-serif !important;">${itemTotal} ${storeCurrency}</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-            `;
+                `;
 
-            if (!isBespoke) {
-                card.querySelector('.btn-qty-minus').addEventListener('click', () => {
-                    if (item.quantity > 1) {
-                        window.updateBoseCartItemQuantity(item.id, item.quantity - 1);
-                    }
+                if (!isBespoke) {
+                    card.querySelector('.btn-qty-minus').addEventListener('click', () => {
+                        if (item.quantity > 1) {
+                            window.updateBoseCartItemQuantity(item.id, item.quantity - 1);
+                        }
+                    });
+
+                    card.querySelector('.btn-qty-plus').addEventListener('click', () => {
+                        window.updateBoseCartItemQuantity(item.id, item.quantity + 1);
+                    });
+                }
+
+                // تفعيل مستمع الحذف الصارم والمباشر دون إخفاء عشوائي
+                card.querySelector('.btn-remove-item').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    safeConfirm("هل حابب تشيل الصنف ده من سلة المشتريات؟ 🌸", () => {
+                        window.removeBoseCartItem(item.id);
+                    });
                 });
 
-                card.querySelector('.btn-qty-plus').addEventListener('click', () => {
-                    window.updateBoseCartItemQuantity(item.id, item.quantity + 1);
-                });
-            }
-
-            // تفعيل مستمع الحذف الصارم والمباشر دون إخفاء عشوائي
-            card.querySelector('.btn-remove-item').addEventListener('click', (e) => {
-                e.preventDefault();
-                safeConfirm("هل حابب تشيل الصنف ده من سلة المشتريات؟ 🌸", () => {
-                    window.removeBoseCartItem(item.id);
-                });
+                itemsWrapper.appendChild(card);
             });
 
-            itemsWrapper.appendChild(card);
-        });
-
-        updateCartSummaryTotals(subtotal);
-        renderSuggestionsSlider(cart);
-    }
+            updateCartSummaryTotals(subtotal);
+            renderSuggestionsSlider(cart);
+        } catch (error) {
+            console.error("❌ خطأ أثناء رندر السلة الفاخرة:", error);
+        }
+    };
 
     function updateCartSummaryTotals(subtotal) {
         const storeCurrency = window.BoseStoreData?.store?.currency || "EGP";
