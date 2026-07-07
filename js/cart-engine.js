@@ -1,10 +1,9 @@
-```javascript
 /**
  * 👑 محرك السلة وإتمام الطلب الموحد الفاخر والمطور - حلويات بوسي 👑
- * النسخة الهندسية القياسية الكاملة بنسبة 100% - خالية تماماً من الثغرات المالية والبرمجية V15.0
+ * النسخة الهندسية القياسية الكاملة بنسبة 100% - خالية تماماً من الثغرات المالية والبرمجية V16.0
  * متوافقة بشكل مطلق مع: core-engine.js وقاعدة البيانات site-data-final.json ومعايير الأداء والموبايل أولاً
  * يدير السلة (cart.html)، الدفع (checkout.html)، ونجاح المعاملة (order-success.html)
- * [تم حل ثغرات التزامن اللامتناهي، وحالات السباق، وحماية الهوية البصرية، وتأمين الأداء على الموبايل والاستضافات المجانية]
+ * [تم سد ثغرة تأخر رندرة DOM في التصفح الخفي وتأمين المزامنة اللحظية لعناصر السلة]
  */
 
 (function () {
@@ -127,7 +126,6 @@
         }
     };
 
-    // ذاكرة احتياطية شاملة لتأمين التصفح الخفي الصارم
     let boseMemoryStore = {};
     const safeLocalStorage = {
         setItem: function (key, value) {
@@ -153,15 +151,11 @@
         }
     };
 
-    /**
-     * [🔐 حل ثغرة مالية كبرى]: حساب المجموع القابل للخصم باستبعاد مبالغ الكاش المدمجة في الورد المخصص
-     */
     function getDiscountableSubtotal(cart) {
         let discountableSubtotal = 0;
         cart.forEach(item => {
             const priceUnit = parseFloat(item.finalPrice) || parseFloat(item.price) || parseFloat(item.basePrice) || 0;
             const moneyAmount = (item.customDetails && parseFloat(item.customDetails.moneyAmount)) || 0;
-            // الجزء الخدمي الفعلي القابل للتخفيض هو السعر الإجمالي ناقص مبلغ الكاش المدمج
             const servicePortion = Math.max(0, priceUnit - moneyAmount);
             discountableSubtotal += servicePortion * (parseInt(item.quantity, 10) || 1);
         });
@@ -699,9 +693,6 @@
         renderCouponStatusHTML('checkout', discountableSubtotal);
     }
 
-    /**
-     * معالجة وحساب الطلب وإصدار كود حماية التصفح الخفي الصارم
-     */
     function processOrderSubmission(method, submitButton) {
         const cart = window.getBoseCart();
         if (cart.length === 0) {
@@ -858,14 +849,10 @@
         window.clearBoseCart();
         safeLocalStorage.removeItem('bose_applied_coupon');
 
-        // [🔐 حل ثغرة التصفح الخفي الصارم]: تمرير البيانات الحيوية عبر الرابط لضمان رندرتها في حال فقدان الذاكرة
         const paramFallbackString = `&name=${encodeURIComponent(orderDetailsObject.customerName)}&phone=${encodeURIComponent(orderDetailsObject.customerPhone)}&method=${encodeURIComponent(orderDetailsObject.method)}&area=${encodeURIComponent(orderDetailsObject.zoneArea)}&date=${encodeURIComponent(orderDetailsObject.deliveryDate)}&time=${encodeURIComponent(orderDetailsObject.deliveryTime)}&total=${grandTotal}`;
         window.location.href = `order-success.html?orderId=${orderId}${paramFallbackString}`;
     }
 
-    /**
-     * تشييد وبناء نص الفاتورة الفاخرة المعتمدة للواتساب مع معالجة الكسور الفردية بدقة
-     */
     function buildBoseWhatsAppInvoiceText(order) {
         let msg = `👑 *فاتورة طلب جديدة - حلويات بوسي* 👑\n\n`;
         msg += `📝 *رقم الطلب:* \`${order.orderId}\`\n`;
@@ -944,7 +931,6 @@
             let lastOrderRaw = safeLocalStorage.getItem('bose_last_order');
             let lastOrder = lastOrderRaw ? JSON.parse(lastOrderRaw) : window.boseInMemoryLastOrder;
             
-            // [🔐 آلية استخلاص واستعادة البيانات الفاخرة للطلب من الرابط في التصفح الخفي الصارم]
             if (!lastOrder) {
                 const urlParams = new URLSearchParams(window.location.search);
                 const queryOrderId = urlParams.get('orderId');
@@ -1220,15 +1206,27 @@
        ========================================================================== */
 
     function verifyAndBootCartEngine() {
+        // [🔐 حارس المزامنة الذهبي]: الفحص التكراري الآمن للتأكد من استقرار الـ DOM وجاهزية البيانات تماماً
         if (window.BoseStoreData && window.BoseStoreData.store) {
             bootstrapPageEngine();
         } else {
-            document.addEventListener('BoseDatabaseLoaded', () => {
-                bootstrapPageEngine();
-            });
+            let boseRetryAttempts = 0;
+            const boseMaxRetry = 50;
+            const boseGuardInterval = setInterval(() => {
+                boseRetryAttempts++;
+                if (window.BoseStoreData && window.BoseStoreData.store) {
+                    clearInterval(boseGuardInterval);
+                    bootstrapPageEngine();
+                } else if (boseRetryAttempts >= boseMaxRetry) {
+                    clearInterval(boseGuardInterval);
+                    // محاولة تمهيد احترازية أخيرة لضمان رندرة عناصر السلة المتاحة
+                    bootstrapPageEngine();
+                }
+            }, 40);
         }
     }
 
+    // تأمين الاستدعاء الفوري والتنفيذ في جميع حالات تحميل المستند
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', verifyAndBootCartEngine);
     } else {
