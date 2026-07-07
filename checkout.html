@@ -6,7 +6,7 @@
     
     <!-- 🔍 إعدادات تحسين محركات البحث والأرشفة الفاخرة SEO الملتزمة بمواصفة البراند 🔍 -->
     <title>إتمام الطلب الفاخر | حلويات بوسي</title>
-    <meta name="description" content="أدخل بياناتك اللوجستية لمراجعة وتأكيد فاتورتك الملكية وتنسيق التوصيل الفوري لطلبك من فرع الكفاح لحلويات بوسي.">
+    <meta name="description" content="أدخل بياناتك اللوجستية لمراجعة وتأكيد فاتورتك الملكية وتنسيق التوصيل الفوري لطلبك من حلويات بوسي.">
     <meta name="robots" content="noindex, follow">
     
     <!-- 🎨 ربط ملفات التصميم الموزعة هندسياً لمنع تضخم الأكواد وتأخر التحميل البصري 🎨 -->
@@ -236,7 +236,7 @@
     <main class="checkout-page-section">
         <div class="cart-page-header">
             <h1 class="cart-page-title">إتمام الطلب</h1>
-            <p class="cart-page-subtitle bose-arabic-text">من فضلك اكتب بياناتك اللوجستية بدقة ليقوم خبراء فرع الكفاح بتأمين وتجهيز طلبك الفاخر في موعده القياسي المعتمد 🌸</p>
+            <p class="cart-page-subtitle bose-arabic-text">يمكنك كتابة بياناتك اللوجستية بدقة علشان حلويات بوسي هتجهز طلبك الفاخر في موعده القياسي المعتمد 🌸</p>
         </div>
 
         <div class="checkout-grid-layout">
@@ -267,7 +267,7 @@
 
                     <!-- قسم تحديد طريقة ومسار الاستلام التفاعلي لبراند حلويات بوسي -->
                     <div class="input-group-node">
-                        <label>كيف ترغب في استلام الطلب؟ <span class="required-indicator">*</span></label>
+                        <label>كيف ترغب في استلام الطلب? <span class="required-indicator">*</span></label>
                         <div class="fulfillment-methods-flex">
                             <button type="button" id="method-delivery" class="btn-fulfillment-node active">
                                 <i class="fas fa-shipping-fast"></i> أرغب في التوصيل للمنزل
@@ -385,6 +385,7 @@
             const methodDeliveryBtn = document.getElementById("method-delivery");
             const methodPickupBtn = document.getElementById("method-pickup");
             const datePicker = document.getElementById("checkout-delivery-date");
+            const zoneSelect = document.getElementById("checkout-zone-select");
 
             // 1. حقن رندرة الأصناف داخل الإيصال الصغير لضمان فخامة المظهر قبل لقط المحرك
             const rawCart = localStorage.getItem("bose_cart");
@@ -399,19 +400,61 @@
                 `).join("");
             }
 
+            // [🔐 هندسة فك شلل القائمة المنسدلة]: تهيئة الحقل ديناميكياً فوراً لضمان عدم حدوث سباق بيانات مع الملف الخارجي
+            function populateZonesDropdown(zones) {
+                if (zoneSelect && zones && zones.length > 0 && !zoneSelect.dataset.populated) {
+                    zoneSelect.innerHTML = '<option value="" disabled selected>اختر المنطقة السكنية للتوصيل</option>';
+                    zones.forEach(zone => {
+                        const opt = document.createElement('option');
+                        opt.value = zone.id;
+                        opt.textContent = `${zone.area} (+${zone.price} EGP)`;
+                        zoneSelect.appendChild(opt);
+                    });
+                    zoneSelect.dataset.populated = "true";
+                }
+            }
+
             // 2. المزامنة والربط اللحظي مع قاعدة بيانات متجر حلويات بوسي
             window.getBoseDatabase().then(siteData => {
+                if (siteData && siteData.shippingZones) {
+                    populateZonesLive(siteData.shippingZones);
+                }
                 syncFulfillmentConfig(siteData);
             }).catch(() => {
                 document.addEventListener("BoseDatabaseLoaded", (e) => {
+                    if (e.detail && e.detail.shippingZones) {
+                        populateZonesLive(e.detail.shippingZones);
+                    }
                     syncFulfillmentConfig(e.detail);
                 });
             });
 
+            function populateZonesLive(zones) {
+                if (zoneSelect && zones && !zoneSelect.dataset.populated) {
+                    zoneSelect.innerHTML = '<option value="" disabled selected>اختر المنطقة السكنية للتوصيل</option>';
+                    zones.forEach(zone => {
+                        const opt = document.createElement('option');
+                        opt.value = zone.id;
+                        opt.textContent = `${zone.area} (+${zone.price} EGP)`;
+                        zoneSelect.appendChild(opt);
+                    });
+                    zoneSelect.dataset.populated = "true";
+                    zoneSelect.addEventListener('change', () => {
+                        if (typeof recalculateCheckoutTotals === "function") {
+                            recalculateCheckoutTotals('delivery');
+                        }
+                    });
+                }
+            }
+
             function syncFulfillmentConfig(siteData) {
                 if (!siteData) return;
 
-                // شحن نص رسالة حارس الوقت اللوجستي من الـ JSON الشفاف لتعريف العميل برحلة الإتقان
+                if (siteData.shippingZones && zoneSelect) {
+                    populateZonesDropdown(siteData.shippingZones);
+                }
+
+                // شحن نص رسالة حارس الوقت اللوجستي لتعريف العميل برحلة الإتقان الصادقة
                 const prepMsgNode = document.getElementById("checkout-preparation-message");
                 if (prepMsgNode) {
                     prepMsgNode.textContent = siteData.orderRules?.preparationTimeMessage || "نحتاج إلى وقت كافٍ لتجهيز طلبك بأفضل جودة ممكنة، لذلك لا يمكن اختيار موعد قبل 24 ساعة من وقت تأكيد الطلب.";
@@ -430,6 +473,19 @@
                 const mm = String(minDateObj.getMonth() + 1).padStart(2, '0');
                 const yyyy = minDateObj.getFullYear();
                 if (datePicker) datePicker.min = `${yyyy}-${mm}-${dd}`;
+            }
+
+            function populateZonesDropdown(zones) {
+                if (zoneSelect && zones && !zoneSelect.dataset.populated) {
+                    zoneSelect.innerHTML = '<option value="" disabled selected>اختر المنطقة السكنية للتوصيل</option>';
+                    zones.forEach(zone => {
+                        const opt = document.createElement('option');
+                        opt.value = zone.id;
+                        opt.textContent = `${zone.area} (+${zone.price} EGP)`;
+                        zoneSelect.appendChild(opt);
+                    });
+                    zoneSelect.dataset.populated = "true";
+                }
             }
 
             // 3. عزل وإدارة كبسات التبديل التفاعلي لخيارات الشحن والاستلام لراحة العميل
@@ -461,7 +517,6 @@
                         addressInput.placeholder = "مثال: هعدي استلم تورتة عيد الميلاد بنفسي في تمام الساعة 5 مساءً بالظبط...";
                         addressInput.required = false;
                     }
-                    const zoneSelect = document.getElementById("checkout-zone-select");
                     if (zoneSelect) zoneSelect.value = "";
                     if (typeof recalculateCheckoutTotals === "function") recalculateCheckoutTotals('pickup');
                 });
