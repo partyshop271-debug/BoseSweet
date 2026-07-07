@@ -2,6 +2,7 @@
  * 👑 محرك السلة وإتمام الطلب الموحد الفاخر والمطور - حلويات بوسي 👑
  * النسخة الهندسية القياسية الكاملة بنسبة 100% - خالية تماماً من الثغرات المالية والبرمجية V17.4 الشاملة
  * متوافقة بشكل مطلق مع: core-engine.js وقاعدة البيانات site-data-final.json ومعايير الأداء والموبايل أولاً
+ * [إصلاح برمي حاسم لحظر تعليق قناع التحميل والتعتيم العشوائي أثناء دورة حياة حذف الأصناف]
  */
 
 (function () {
@@ -9,10 +10,19 @@
 
     const CART_STORAGE_KEY = 'bose_cart';
 
-    // ==========================================================================
-    // [🔐 الحارس البرمجي - دوال إدارة السلة الذاتية لتأمين عمليات الحذف والتحديث الفوري]
-    // ==========================================================================
-    window.getBoseCart = window.getBoseCart || function () {
+    // دالة تحكم مساعدة لإخفاء أو إظهار واجهة التحميل والتعتيم (Overlay Control Pane) بأمان لمنع شلل الشاشة
+    function toggleBoseCartOverlay(show) {
+        const overlay = document.getElementById('bose-cart-global-overlay');
+        if (overlay) {
+            if (show) {
+                overlay.classList.add('active');
+            } else {
+                overlay.classList.remove('active');
+            }
+        }
+    }
+
+    // ==========================================================================\n    // [🔐 الحارس البرمجي - دوال إدارة السلة الذاتية لتأمين عمليات الحذف والتحديث الفوري]\n    // ==========================================================================\n    window.getBoseCart = window.getBoseCart || function () {
         try {
             const raw = localStorage.getItem(CART_STORAGE_KEY);
             return raw ? JSON.parse(raw) : [];
@@ -21,7 +31,11 @@
         }
     };
 
+    // [🛠️ تعديل هندسي مطور جذرياً]: معالجة الحذف بأمان كامل لصد أي Race Condition أو شلل مع التعتيم العلق
     window.removeBoseCartItem = function (itemId) {
+        // 1. تفعيل واجهة التعتيم فوراً لحماية تماسك البيانات والـ State الحية
+        toggleBoseCartOverlay(true);
+
         try {
             let cart = window.getBoseCart();
             cart = cart.filter(item => item.id !== itemId);
@@ -30,16 +44,32 @@
                 window.saveBoseCart(cart);
             } else {
                 localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
-                window.updateGlobalCartCounter();
+                if (typeof window.updateGlobalCartCounter === 'function') {
+                    window.updateGlobalCartCounter();
+                }
             }
             
             window.dispatchEvent(new Event('storage'));
             window.dispatchEvent(new Event('bose_cart_updated'));
+
+            console.log(`[Bose Engine] تم حذف المنتج المخصص ذو المعرف (${itemId}) بنجاح.`);
             return true;
         } catch (e) {
             console.error("❌ فشل حذف الصنف من السلة:", e);
             return false;
+        } finally {
+            // 2. [صمام الأمان الحاسم]: إزالة قناع التعتيم فوراً وتحديث الرندر مهما حدث لحظر تجميد شاشات الموبايل والكمبيوتر
+            setTimeout(() => {
+                toggleBoseCartOverlay(false);
+                // إعادة رندر محتويات السلة حياً لمزامنة البيانات فورا أمام العميل
+                renderCartItems();
+            }, 150);
         }
+    };
+
+    // ربط الدالة بالأسماء البديلة لضمان عدم حدوث أي تصادم لغوي أو تداخل مع الأزرار والمحاكيات
+    window.removeItem = function(itemId) {
+        window.removeBoseCartItem(itemId);
     };
 
     window.updateBoseCartItemQuantity = function (itemId, newQty) {
@@ -82,10 +112,7 @@
         }
     };
 
-    // ==========================================================================
-    // [🔐 صمام الأمان لمنع هجمات XSS وتطهير نصوص العملاء بالتوافق مع المحرك العام]
-    // ==========================================================================
-    const escapeHtml = window.escapeHtml || window.escapeHTML || function (unsafeString) {
+    // ==========================================================================\n    // [🔐 صمام الأمان لمنع هجمات XSS وتطهير نصوص العملاء بالتوافق مع المحرك العام]\n    // ==========================================================================\n    const escapeHtml = window.escapeHtml || window.escapeHTML || function (unsafeString) {
         if (unsafeString === null || unsafeString === undefined) return '';
         return unsafeString
             .toString()
@@ -130,10 +157,7 @@
         return egPhoneRegex.test(cleaned);
     };
 
-    // ==========================================================================
-    // [🔐 حارس الواجهة الفاخر - بديل آمن تماماً لـ alert() و confirm() بأسلوب البراند الجمالي]
-    // ==========================================================================
-    const safeToast = function (message) {
+    // ==========================================================================\n    // [🔐 حارس الواجهة الفاخر - بديل آمن تماماً لـ alert() و confirm() بأسلوب البراند الجمالي]\n    // ==========================================================================\n    const safeToast = function (message) {
         if (typeof window.showBoseToast === 'function') {
             window.showBoseToast(message);
         } else {
@@ -368,7 +392,7 @@
             }
 
             card.innerHTML = `
-                <button class="btn-remove-item" style="position:absolute; top:12px; left:12px; background:none; border:none; color:var(--bose-black); font-size:22px; cursor:pointer; font-weight:700; line-height:1; transition:0.2s; z-index:10; font-family:'Cairo', sans-serif !important;" aria-label="حذف الصنف">×</button>
+                <button class="btn-remove-item" style="position:absolute; top:12px; left:12px; background:none; border:none; color:var(--bose-black); font-size:22px; cursor:pointer; font-weight:700; line-height:1; transition:0.2s; z-index:10; font-family:'Cairo', sans-serif !important;" onclick="window.removeBoseCartItem('${item.id}')" aria-label="حذف الصنف">×</button>
                 <div class="cart-item-img-container" style="margin-left:16px; flex-shrink: 0;">
                     <img src="${escapeHtml(item.image || storeLogoFallback)}" onerror="this.src='${storeLogoFallback}'" class="cart-item-img" alt="${escapeHtml(item.title)}" style="width:120px; height:120px; object-fit:cover; border-radius:20px; display:block;" loading="lazy">
                 </div>
@@ -397,7 +421,8 @@
                 });
             }
 
-            card.querySelector('.btn-remove-item').addEventListener('click', () => {
+            card.querySelector('.btn-remove-item').addEventListener('click', (e) => {
+                e.preventDefault();
                 safeConfirm("هل حابب تشيل الصنف ده من سلة المشتريات؟ 🌸", () => {
                     card.style.transform = 'scale(0.9)';
                     card.style.opacity = '0';
@@ -860,7 +885,7 @@
 
         const isValidSchedule = window.validateBoseDeliverySchedule ? window.validateBoseDeliverySchedule(deliveryDateInput.value, deliveryTimeInput.value) : true;
         if (!isValidSchedule) {
-            safeToast("لأننا بنصنع كل قطعة يدوياً وبكل حب وعناية فائقة، بنحتاج 24 ساعة على الأقل لتجهيز طلبك الفاخر بأعلى جودة تليق بمناسبتك السعيدة. نرجو اختيار موعد بيبدأ بعد 24 ساعة من دلوقتي ✨");
+            safeToast("لأننا بنصنع كل قطعة يدوياً وبكل حب وعناية فائقة، بنحتاج 24 ساعة على الأثل لتجهيز طلبك الفاخر بأعلى جودة تليق بمناسبتك السعيدة. نرجو اختيار موعد بيبدأ بعد 24 ساعة من دلوقتي ✨");
             if (deliveryDateInput) deliveryDateInput.focus();
             return;
         }
