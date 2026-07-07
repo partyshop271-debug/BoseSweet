@@ -47,6 +47,18 @@
             box-sizing: border-box !important;
             scroll-snap-align: start;
         }
+
+        /* 🛠️ [إصلاح برمجى حاسم لحظر عصر وتشويه لوجو الفوتر نهائياً] 🛠️ */
+        .footer-logo-container img, 
+        .bose-footer #bose-store-logo {
+            height: 60px !important;
+            width: auto !important;
+            max-width: 100% !important;
+            object-fit: contain !important;
+            aspect-ratio: auto !important;
+            display: block !important;
+            margin: 0 auto !important;
+        }
     </style>
 
     <!-- المحرك العام (يُستدعى أولاً في كل الصفحات لقراءة الـ JSON وإدارة العداد الصغير بالسلة بالهيدر) -->
@@ -64,7 +76,7 @@
         <!-- يتم إدارتها وتفعيل أحداث الإغلاق بواسطة المحرك العام للموقع لمنع أي شلل برمجى -->
     </div>
 
-    <!-- الوعاء الحاحب لتأثيرات الخلفية والتمويه الموحد عند فتح القائمة -->
+    <!-- الوعاء الحاجب لتأثيرات الخلفية والتمويه الموحد عند فتح القائمة -->
     <div id="drawer-shield" class="drawer-overlay"></div>
 
     <!-- 🧱 المحتوى الرئيسي لصفحة السلة الشاملة 🧱 -->
@@ -203,6 +215,12 @@
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             
+            // صمام الأمان وتأمين حماية الهروب لمنع الـ Syntax Error في حال انعدام تعريف الدالة محلياً
+            const secureEscape = window.escapeHtml || window.escapeHTML || function(str) {
+                if (!str) return '';
+                return str.toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            };
+
             // دالة حقن وبناء كروت المنتجات المقترحة بالهيكل الكامل الموحد والمطابق تماماً للمواصفات والأبعاد الحتمية للمقترحات
             const renderStrictSuggestionsGrid = (dbData) => {
                 const targetGrid = document.getElementById("bose-cart-premium-suggestions-grid");
@@ -212,7 +230,7 @@
                 const currentCart = rawCart ? JSON.parse(rawCart) : [];
                 const cartSlugs = currentCart.map(item => item.productSlug);
 
-                // [🔐 حل جذري لثغرة التكرار السلوكي]: استدعاء الدالة المعتمدة مع تمرير المعاملات لحظر تكرار المنتجات النشطة داخل السلة
+                // [🔐 حل جذري لثغرة التكرار السلوكي]: استدعاء الدالة ممرراً مصفوفة المنتجات لضمان عزل النكهات المكررة بالكامل
                 const finalSuggestions = window.getBosePersonalizedSuggestions ? window.getBosePersonalizedSuggestions(dbData.products, "", 5) : dbData.products.slice(0, 5);
                 const currency = dbData.store?.currency || "EGP";
 
@@ -230,13 +248,13 @@
                     return `
                         <div class="bose-suggestion-micro-card" data-slug="${prod.slug}" style="border: var(--bose-border-pink); border-radius: 20px; background: var(--bose-white); overflow: hidden; padding: 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px; box-shadow: 0 4px 16px rgba(255,145,164,0.04); direction: rtl; text-align: right;">
                             <div style="display: flex; align-items: center; gap: 12px; overflow: hidden; flex: 1;">
-                                <img src="${imgUrl}" alt="${prod.title}" style="width: 65px; height: 60px; object-fit: cover; border-radius: 12px; flex-shrink: 0;" onerror="this.src='${defaultLogo}';">
+                                <img src="${imgUrl}" alt="${secureEscape(prod.title)}" style="width: 65px; height: 60px; object-fit: cover; border-radius: 12px; flex-shrink: 0;" onerror="this.src='${defaultLogo}';">
                                 <div style="overflow: hidden;">
-                                    <h4 style="margin: 0 0 4px 0; font-size: 0.92rem; font-weight: 700; color: var(--bose-black); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${prod.title}</h4>
+                                    <h4 style="margin: 0 0 4px 0; font-size: 0.92rem; font-weight: 700; color: var(--bose-black); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${secureEscape(prod.title)}</h4>
                                     <span style="font-size: 0.95rem; font-weight: 700; color: var(--bose-pink); display: block;">${calculatedPrice} ${currency}</span>
                                 </div>
                             </div>
-                            <button class="btn-quick-add-to-cart" style="background: var(--bose-pink); color: var(--bose-white); border: none; width: 36px; height: 36px; border-radius: 50%; font-size: 1.3rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; flex-shrink: 0;" aria-label="إضافة سريعة صنف ${prod.title}">+</button>
+                            <button class="btn-quick-add-to-cart" style="background: var(--bose-pink); color: var(--bose-white); border: none; width: 36px; height: 36px; border-radius: 50%; font-size: 1.3rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; flex-shrink: 0;" aria-label="إضافة سريعة صنف ${secureEscape(prod.title)}">+</button>
                         </div>
                     `;
                 }).join("");
@@ -255,6 +273,7 @@
                                 const standardItem = window.createCartItem(product, { flavorName: product.flavorName || "كلاسيك" }, 1);
                                 if (standardItem) {
                                     window.addBoseCartItem(standardItem);
+                                    // [🔐 إعادة تمهيد رندرة السلة الحية فوراً دون حدوث فجوة بيضاء تصفيرية للأسعار]
                                     if (typeof renderCartItems === "function") {
                                         renderCartItems();
                                     } else {
