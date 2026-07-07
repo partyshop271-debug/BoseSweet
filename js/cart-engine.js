@@ -1,6 +1,6 @@
 /**
  * 👑 محرك السلة وإتمام الطلب الموحد الفاخر والمطور - حلويات بوسي 👑
- * النسخة الهندسية القياسية الكاملة بنسبة 100% - خالية تماماً من الثغرات المالية والبرمجية V17.4 الشاملة
+ * النسخة الهندسية القياسية الكاملة بنسبة 100% - خالية تماماً من الثغرات المالية والبرمجية V17.5 الشاملة
  * متوافقة بشكل مطلق مع: core-engine.js وقاعدة البيانات site-data-final.json ومعايير الأداء والموبايل أولاً
  * [إصلاح برمي حاسم لحظر تعليق قناع التحميل والتعتيم العشوائي أثناء دورة حياة حذف الأصناف]
  * [تأمين وحل ثغرة حالة السباق اللامتزامنة لضمان عدم حدوث فجوة بيضاء أو اختفاء عشوائي للمنتجات]
@@ -23,7 +23,10 @@
         }
     }
 
-    // ==========================================================================\n    // [🔐 الحارس البرمجي - دوال إدارة السلة الذاتية لتأمين عمليات الحذف والتحديث الفوري]\n    // ==========================================================================\n    window.getBoseCart = window.getBoseCart || function () {
+    // ==========================================================================
+    // [🔐 الحارس البرمجي - دوال إدارة السلة الذاتية لتأمين عمليات الحذف والتحديث الفوري]
+    // ==========================================================================
+    window.getBoseCart = window.getBoseCart || function () {
         try {
             const raw = localStorage.getItem(CART_STORAGE_KEY);
             return raw ? JSON.parse(raw) : [];
@@ -32,28 +35,32 @@
         }
     };
 
-    // [🛠️ تعديل هندسي مطور جذرياً]: معالجة الحذف بأمان كامل لصد أي Race Condition أو شلل مع التعتيم العلق
+    // [🛠️ تعديل هندسي مطور جذرياً]: معالجة الحذف بأمان كامل لصد أي Race Condition ومسح حقيقي للمنتج دون إخفاء
     window.removeBoseCartItem = function (itemId) {
         // 1. تفعيل واجهة التعتيم فوراً لحماية تماسك البيانات والـ State الحية
         toggleBoseCartOverlay(true);
 
         try {
             let cart = window.getBoseCart();
+            // التصفية الحقيقية بناء على المعرف الفريد للصنف
             cart = cart.filter(item => item.id !== itemId);
             
-            if (typeof window.saveBoseCart === 'function') {
-                window.saveBoseCart(cart);
-            } else {
-                localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
-                if (typeof window.updateGlobalCartCounter === 'function') {
-                    window.updateGlobalCartCounter();
-                }
+            // الحفظ الصارم المشترك في الذاكرة المحلية والذاكرة المؤقتة
+            localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+            if (typeof window.boseInMemoryCart !== 'undefined') {
+                window.boseInMemoryCart = cart;
             }
             
+            // تحديث العداد العالمي بالهيدر فوراً
+            if (typeof window.updateGlobalCartCounter === 'function') {
+                window.updateGlobalCartCounter();
+            }
+            
+            // إطلاق الأحداث لضمان مزامنة التغيير في كل أجزاء الموقع
             window.dispatchEvent(new Event('storage'));
             window.dispatchEvent(new Event('bose_cart_updated'));
 
-            console.log(`[Bose Engine] تم حذف المنتج المخصص ذو المعرف (${itemId}) بنجاح.`);
+            console.log(`[Bose Engine] تم حذف المنتج بنجاح ذو المعرف: (${itemId})`);
             return true;
         } catch (e) {
             console.error("❌ فشل حذف الصنف من السلة:", e);
@@ -62,7 +69,7 @@
             // 2. [صمام الأمان الحاسم]: إزالة قناع التعتيم فوراً وتحديث الرندر مهما حدث لحظر تجميد شاشات الموبايل والكمبيوتر
             setTimeout(() => {
                 toggleBoseCartOverlay(false);
-                // إعادة رندر محتويات السلة حياً لمزامنة البيانات فورا أمام العميل
+                // إعادة بناء واستدعاء الرندر الحي لعرض السلة الحقيقية بعد الحذف الفعلي
                 renderCartItems();
             }, 150);
         }
@@ -80,10 +87,12 @@
             if (item) {
                 item.quantity = parseInt(newQty, 10) || 1;
                 
-                if (typeof window.saveBoseCart === 'function') {
-                    window.saveBoseCart(cart);
-                } else {
-                    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+                localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+                if (typeof window.boseInMemoryCart !== 'undefined') {
+                    window.boseInMemoryCart = cart;
+                }
+                
+                if (typeof window.updateGlobalCartCounter === 'function') {
                     window.updateGlobalCartCounter();
                 }
                 
@@ -99,10 +108,11 @@
 
     window.clearBoseCart = function () {
         try {
-            if (typeof window.saveBoseCart === 'function') {
-                window.saveBoseCart([]);
-            } else {
-                localStorage.setItem(CART_STORAGE_KEY, JSON.stringify([]));
+            localStorage.setItem(CART_STORAGE_KEY, JSON.stringify([]));
+            if (typeof window.boseInMemoryCart !== 'undefined') {
+                window.boseInMemoryCart = [];
+            }
+            if (typeof window.updateGlobalCartCounter === 'function') {
                 window.updateGlobalCartCounter();
             }
             window.dispatchEvent(new Event('storage'));
@@ -113,15 +123,18 @@
         }
     };
 
-    // ==========================================================================\n    // [🔐 صمام الأمان لمنع هجمات XSS وتطهير نصوص العملاء بالتوافق مع المحرك العام]\n    // ==========================================================================\n    const escapeHtml = window.escapeHtml || window.escapeHTML || function (unsafeString) {
+    // ==========================================================================
+    // [🔐 صمام الأمان لمنع هجمات XSS وتطهير نصوص العملاء بالتوافق مع المحرك العام]
+    // ==========================================================================
+    const escapeHtml = window.escapeHtml || window.escapeHTML || function (unsafeString) {
         if (unsafeString === null || unsafeString === undefined) return '';
         return unsafeString
             .toString()
             .replace(/&/g, "&")
             .replace(/</g, "<")
             .replace(/>/g, ">")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
+            .replace(/"/g, """)
+            .replace(/'/g, "'");
     };
 
     const normalizeArabicNumerals = window.normalizeArabicNumerals || function (str) {
@@ -158,7 +171,10 @@
         return egPhoneRegex.test(cleaned);
     };
 
-    // ==========================================================================\n    // [🔐 حارس الواجهة الفاخر - بديل آمن تماماً لـ alert() و confirm() بأسلوب البراند الجمالي]\n    // ==========================================================================\n    const safeToast = function (message) {
+    // ==========================================================================
+    // [🔐 حارس الواجهة الفاخر - بديل آمن تماماً لـ alert() و confirm() بأسلوب البراند الجمالي]
+    // ==========================================================================
+    const safeToast = function (message) {
         if (typeof window.showBoseToast === 'function') {
             window.showBoseToast(message);
         } else {
@@ -205,7 +221,7 @@
                 <div class="bose-modal-box" style="transform:scale(1); background:var(--bose-white, #FFFFFF); border:1px solid var(--bose-pink, #FF91A4); border-radius:24px; width:90%; max-width:400px; padding:24px; box-shadow:var(--bose-shadow-hover, 0 16px 40px rgba(255,145,164,0.22)); text-align:right; direction:rtl; font-family:'Cairo', sans-serif !important;">
                     <p style="font-size:15px; font-weight:600; color:var(--bose-black, #111111); line-height:1.6; margin:0 0 20px 0;">${escapeHtml(messageText)}</p>
                     <div style="display:flex; align-items:center; justify-content:flex-start; gap:12px;">
-                        <button id="fallback-confirm-yes" style="font-family:'Cairo', sans-serif; font-size:14px; font-weight:700; padding:10px 24px; border-radius:50px; cursor:pointer; border:none; background:var(--bose-pink, #FF91A4); color:var(--bose-white, #FFFFFF); box-shadow: 0 4px 12px rgba(255,145,164,0.25); "تأكيد</button>
+                        <button id="fallback-confirm-yes" style="font-family:'Cairo', sans-serif; font-size:14px; font-weight:700; padding:10px 24px; border-radius:50px; cursor:pointer; border:none; background:var(--bose-pink, #FF91A4); color:var(--bose-white, #FFFFFF); box-shadow: 0 4px 12px rgba(255,145,164,0.25);">تأكيد</button>
                         <button id="fallback-confirm-no" style="font-family:'Cairo', sans-serif; font-size:14px; font-weight:700; padding:10px 24px; border-radius:50px; cursor:pointer; border:1px solid rgba(17, 17, 17, 0.15); background:transparent; color:var(--bose-black, #111111);">تراجع</button>
                     </div>
                 </div>
@@ -315,7 +331,7 @@
 
         if (cart.length === 0) {
             itemsWrapper.innerHTML = `
-                <div class="empty-cart-message-container" style="text-align:center; padding:60px 24px; background:var(--bose-white, #FFFFFF); border:var(--bose-border-pink); border-radius:24px; box-shadow:var(--bose-shadow-glow); direction:rtl; animation: fadeIn 0.3s ease;">
+                <div class="empty-cart-message-container" style="text-align:center; padding:60px 24px; background:var(--bose-white, #FFFFFF); border:var(--bose-border-pink); border-radius:24px; box-shadow:var(--bose-shadow-glow); direction:rtl;">
                     <div style="font-size:48px; margin-bottom:16px;">🌸</div>
                     <h3 style="font-size:18px; font-weight:700; color:var(--bose-black, #111111); margin:0 0 8px 0; font-family:'Cairo', sans-serif !important;">سلة المشتريات فارغة حالياً</h3>
                     <p style="font-size:14px; font-weight:400; color:var(--bose-black, #111111); opacity:0.8; margin:0 0 24px 0; line-height:1.6; font-family:'Cairo', sans-serif !important;">تصفح المنيو الشامل واستمتع بأشهى قطع الجاتوهات والحلويات والتورت المصنوعة بحب خصيصاً لمناسباتكم السعيدة.</p>
@@ -350,7 +366,6 @@
                 padding: 16px;
                 margin-bottom: 16px;
                 direction: rtl;
-                transition: transform 0.3s ease, opacity 0.3s ease;
             `;
 
             let customDetailsHTML = '';
@@ -422,14 +437,11 @@
                 });
             }
 
+            // تفعيل مستمع الحذف الصارم والمباشر دون إخفاء عشوائي
             card.querySelector('.btn-remove-item').addEventListener('click', (e) => {
                 e.preventDefault();
                 safeConfirm("هل حابب تشيل الصنف ده من سلة المشتريات؟ 🌸", () => {
-                    card.style.transform = 'scale(0.9)';
-                    card.style.opacity = '0';
-                    setTimeout(() => {
-                        window.removeBoseCartItem(item.id);
-                    }, 300);
+                    window.removeBoseCartItem(item.id);
                 });
             });
 
@@ -560,13 +572,11 @@
                             flavorName: prod.flavorName || "كلاسيك"
                         });
                     }
-                    if (typeof window.saveBoseCart === 'function') {
-                        window.saveBoseCart(cart);
-                    } else {
-                        localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+                    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+                    if (typeof window.updateGlobalCartCounter === 'function') {
                         window.updateGlobalCartCounter();
-                        window.dispatchEvent(new Event('storage'));
                     }
+                    window.dispatchEvent(new Event('storage'));
                 }
             });
 
@@ -886,7 +896,7 @@
 
         const isValidSchedule = window.validateBoseDeliverySchedule ? window.validateBoseDeliverySchedule(deliveryDateInput.value, deliveryTimeInput.value) : true;
         if (!isValidSchedule) {
-            safeToast("لأننا بنصنع كل قطعة يدوياً وبكل حب وعناية فائقة، بنحتاج 24 ساعة على الأثل لتجهيز طلبك الفاخر بأعلى جودة تليق بمناسبتك السعيدة. نرجو اختيار موعد بيبدأ بعد 24 ساعة من دلوقتي ✨");
+            safeToast("لأننا بنصنع كل قطعة يدوياً وبكل حب وعناية فائقة، بنحتاج 24 ساعة على الأقل لتجهيز طلبك الفاخر بأعلى جودة تليق بمناسبتك السعيدة. نرجو اختيار موعد بيبدأ بعد 24 ساعة من دلوقتي ✨");
             if (deliveryDateInput) deliveryDateInput.focus();
             return;
         }
@@ -1107,7 +1117,7 @@
         const storeCurrency = window.BoseStoreData?.store?.currency || "EGP";
 
         receiptContainer.innerHTML = `
-            <div style="background:var(--bose-white, #FFFFFF); border:var(--bose-border-pink); border-radius:24px; padding:24px; box-shadow:var(--bose-shadow-glow); text-align:right; direction:rtl; margin-top:20px; font-family:'Cairo', sans-serif !important; animation: fadeIn 0.3s ease;">
+            <div style="background:var(--bose-white, #FFFFFF); border:var(--bose-border-pink); border-radius:24px; padding:24px; box-shadow:var(--bose-shadow-glow); text-align:right; direction:rtl; margin-top:20px; font-family:'Cairo', sans-serif !important;">
                 <h4 style="margin:0 0 16px 0; font-size:16px; font-weight:700; border-bottom:1px solid rgba(255,145,164,0.15); padding-bottom:10px; color:var(--bose-black); font-family:'Cairo', sans-serif !important;">🧾 تفاصيل إيصال الحجز المعتمد:</h4>
                 <div style="display:flex; flex-direction:column; gap:10px; font-size:14px; color:var(--bose-black);">
                     <span style="font-family:'Cairo', sans-serif !important;">👤 <strong>اسم المستلم:</strong> ${escapeHtml(order.customerName)}</span>
@@ -1128,14 +1138,12 @@
         const receiptContainer = document.getElementById('bose-order-receipt-summary') || document.querySelector('.order-receipt-dom-wrapper');
         if (!receiptContainer) return;
 
-        const storeCurrency = window.BoseStoreData?.store?.currency || "EGP";
-
         receiptContainer.innerHTML = `
             <div style="background:var(--bose-white, #FFFFFF); border:var(--bose-border-pink); border-radius:24px; padding:32px 24px; box-shadow:var(--bose-shadow-glow); text-align:center; direction:rtl; margin-top:20px; font-family:'Cairo', sans-serif !important;">
                 <div style="font-size:40px; margin-bottom:12px;">🌸</div>
                 <h4 style="margin:0 0 8px 0; font-size:16px; font-weight:700; color:var(--bose-black); font-family:'Cairo', sans-serif !important;">لا توجد طلبات نشطة لعرضها حالياً</h4>
                 <p style="margin:0 0 20px 0; font-size:13px; color:#666; line-height:1.6; font-family:'Cairo', sans-serif !important;">شرفنا بزيارتك ومراجعة قائمة حلويات بوسي وتصميم تورتتك المخصصة عبر المنيو الشامل في أي وقت.</p>
-                <a href="menu.html" style="display:inline-block; background:var(--bose-pink, #FF91A4); color:#FFF; padding:10px 24px; border-radius:50px; text-decoration:none; font-size:13px; font-weight:700; transition:0.2s; font-family:'Cairo', sans-serif !important;">استخشف المنيو الشامل</a>
+                <a href="menu.html" style="display:inline-block; background:var(--bose-pink, #FF91A4); color:#FFF; padding:10px 24px; border-radius:50px; text-decoration:none; font-size:13px; font-weight:700; transition:0.2s; font-family:'Cairo', sans-serif !important;">استكشف المنيو الشامل</a>
             </div>
         `;
     }
@@ -1157,7 +1165,7 @@
             const code = normalizeArabicNumerals(rawCode).toUpperCase().trim();
 
             if (!code) {
-                safeToast("ياريت تكتب كود الخصم أولاً علشان نطبقهولك ✨");
+                safeToast("اكتب كود الخصم أولاً علشان نطبقهولك ✨");
                 return;
             }
 

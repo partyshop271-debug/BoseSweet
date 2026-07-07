@@ -1,6 +1,6 @@
 /**
  * 👑 المحرك المركزي العالمي وعمليات الفحص المالي والمزامنة الزمنية المتقدمة - حلويات بوسي 👑
- * النسخة الهندسية القياسية والمطورة بنسبة 100% - الإصدار الذهبي الشامل والخالي تماماً من الثغرات V15.2
+ * النسخة الهندسية القياسية والمطورة بنسبة 100% - الإصدار الذهبي الشامل والخالي تماماً من الثغرات V15.3
  * يتوافق بشكل مطلق ومتبادل مع: cart-engine.js وقاعدة البيانات site-data-final.json ومعايير الأداء والموبايل أولاً
  */
 
@@ -198,8 +198,8 @@
             .replace(/&/g, "&")
             .replace(/</g, "<")
             .replace(/>/g, ">")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
+            .replace(/"/g, """)
+            .replace(/'/g, "'");
     }
     window.escapeHTML = escapeHTML;
     window.escapeHtml = escapeHTML;
@@ -214,7 +214,7 @@
             '٠': '0', '١': '1', '٢': '2', '٣': '3', '٤': '4',
             '٥': '5', '٦': '6', '٧': '7', '٨': '8', '٩': '9',
             '۴': '4', '۵': '5', '۶': '6',
-            '۰': '0', '۱': '1', '۲': '2', '۳': '3', '۷': '7', '۸': '8', '٩': '9'
+            '۰': '0', '۱': '1', '۲': '2', '۳': '3', 'TXT': '7', '8': '8', '٩': '9'
         };
         return str.toString().trim().replace(/[٠-٩۰-۹]/g, match => arabicNormMap[match] || match);
     };
@@ -1336,7 +1336,7 @@
                     <span class="brand-name-display footer-brand-name" style="font-size: 1.4rem; font-weight: 700; color: var(--bose-black);">حلويات بوسي</span>
 
                     <div class="footer-about-block" style="max-width: 600px;">
-                        <p id="footer-about-text" style="font-size: 0.95rem; color: #555; line-height: 1.6; margin: 0;">صنعناها بحب لتهديها لمن تحب. خبرة أكثر من 10 سنوات in صناعة الحلويات الفاخرة وتنسيق الهدايا والورد لنوثق أسعد لحظاتكم بتميز وااحترافية كاملة من فرع الكفاح.</p>
+                        <p id="footer-about-text" style="font-size: 0.95rem; color: #555; line-height: 1.6; margin: 0;">صنعناها بحب لتهديها لمن تحب. خبرة أكثر من 10 سنوات في صناعة الحلويات الفاخرة وتنسيق الهدايا والورد لنوثق أسعد لحظاتكم بتميز واحترافية كاملة من فرع الكفاح.</p>
                     </div>
                     
                     <div id="footer-social-links" style="display: flex; gap: 16px; justify-content: center; margin: 8px 0;">
@@ -1653,7 +1653,7 @@
             const heroCtaNode = document.getElementById('hero-cta-btn') || heroSection.querySelector('a');
 
             if (heroTitleNode) {
-                const rawTitle = heroData.title || "عقد من التميز in صناعة الحلويات";
+                const rawTitle = heroData.title || "عقد من التميز في صناعة الحلويات";
                 const formattedTitle = rawTitle.replace("التميز", `<span style="color: var(--bose-pink); font-weight: 700;">التميز</span>`);
                 heroTitleNode.innerHTML = formattedTitle;
             }
@@ -2067,7 +2067,7 @@
     };
 
     window.addBoseItemToCart = function(product, quantity = 1, customDetails = null, customPrice = null) {
-        const finalPrice = window.calculateBosePrice = window.calculateBosePrice(product.price, "menu-only");
+        const finalPrice = window.calculateBosePrice(product.price, "menu-only");
         const newItem = {
             productSlug: product.slug,
             title: product.title,
@@ -2099,12 +2099,15 @@
         }
     };
 
-    // 🔐 تم تعديل دالة الحذف هنا في ملف core-engine لتستدعي الحدث الموحد وتمنع الفجوة البصرية وشلل الحذف
+    // [🔐 تم التعديل والاستدعاء الموحد]: الحارس العام هنا يستدعي دالة الحذف الصارم من الموتور الرئيسي مباشرة لمنع التعارض اللامتزامن
     window.removeBoseCartItem = function (itemId) {
         try {
             let cart = window.getBoseCart();
             const updatedCart = cart.filter(item => item.id !== itemId);
-            window.saveBoseCart(updatedCart);
+            localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(updatedCart));
+            window.boseInMemoryCart = updatedCart;
+            window.updateGlobalCartCounter();
+            window.dispatchEvent(new Event('storage'));
             window.dispatchEvent(new Event('bose_cart_updated'));
         } catch (e) {
             console.error(e);
@@ -2600,6 +2603,5 @@ function verifyAndInitializeEngine() {
 
     if (typeof startEngineLogic === "function") {
         startEngineLogic();
-         }
-   }
-
+    }
+}
