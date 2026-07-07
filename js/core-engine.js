@@ -1,8 +1,8 @@
 /**
  * 👑 المحرك المركزي العالمي وعمليات الفحص المالي والمزامنة الزمنية المتقدمة - حلويات بوسي 👑
- * النسخة الهندسية القياسية والمطورة بنسبة 100% - الإصدار الذهبي الشامل والخالي تماماً من الثغرات V13.0
+ * النسخة الهندسية القياسية والمطورة بنسبة 100% - الإصدار الذهبي الشامل والخالي تماماً من الثغرات V14.0
  * يتوافق بشكل مطلق ومتبادل مع: cart-engine.js وقاعدة البيانات site-data-final.json ومعايير الأداء والموبايل أولاً
- * [🔐 تم حل مشكلة توجيه ألبومات الشلال وعقد من الإتقان لتوجه كل صورة لمنتجها الحقيقي المعروض بدقة ومنع التوجيه العشوائي]
+ * [🔐 تم حل ثغرة شلل نافذة التأكيد وإضافة ربط متزامن لكلاس active لتفعيل pointer-events ودعم الحذف الفوري]
  */
 
 (function () {
@@ -78,7 +78,7 @@
         },
         "orderRules": {
             "minPreparationTimeHours": 24,
-            "preparationTimeMessage": "نحتاج إلى وقت كافٍ لتجهيزطلبك بأفضل جودة ممكنة، لذلك لا يمكن اختيار موعد قبل 24 ساعة من وقت تأكيد الطلب."
+            "preparationTimeMessage": "نحتاج إلى وقت كافٍ لتجهيز طلبك بأفضل جودة ممكنة، لذلك لا يمكن اختيار موعد قبل 24 ساعة من وقت تأكيد الطلب."
         },
         "seo": {
             "title": "حلويات بوسي | صنعناها بحب لتهديها لمن تحب",
@@ -624,6 +624,7 @@
 
         requestAnimationFrame(() => {
             requestAnimationFrame(() => {
+                overlay.classList.add('active'); // 🔐 حل مشكلة شلل الحذف: تفعيل الفئة التفاعلية النشطة فوراً لتمكين pointer-events
                 overlay.style.opacity = '1';
                 const box = overlay.querySelector('.bose-modal-box');
                 if (box) box.style.transform = 'scale(1) translateY(0)';
@@ -631,6 +632,7 @@
         });
 
         const closeBoxProcedure = () => {
+            overlay.classList.remove('active'); // 🔐 سحب الفئة التفاعلية للتصفير البرمجي
             overlay.style.opacity = '0';
             const box = overlay.querySelector('.bose-modal-box');
             if (box) box.style.transform = 'scale(0.9) translateY(10px)';
@@ -775,11 +777,11 @@
                 z-index: 100100;
                 opacity: 0;
                 transition: opacity 0.3s ease;
-                pointer-events: auto;
+                pointer-events: none;
             }
             .bose-modal-overlay.active {
-                opacity: 1;
-                pointer-events: auto;
+                opacity: 1 !important;
+                pointer-events: auto !important;
             }
             .bose-modal-box {
                 background: var(--bose-white, #FFFFFF);
@@ -937,7 +939,7 @@
                 flex-shrink: 0;
             }
             .search-card-info-pane {
-                flex-grow: 1;
+                flex: 1;
                 display: flex;
                 flex-direction: column;
                 gap: 4px;
@@ -1051,7 +1053,6 @@
                 display: none !important;
             }
 
-            /* 👑 أنماط الحركة التلقائية الفاخرة لسلايدر الإتقان دون إحداث إزاحة عشوائية */
             @keyframes boseExcellenceScroll {
                 0% { transform: translate3d(0, 0, 0); }
                 100% { transform: translate3d(-50%, 0, 0); }
@@ -1591,9 +1592,6 @@
             }
         }
 
-        // ==========================================================================
-        // 👑 [حل الثغرة الكبرى]: توجيه روابط كروت الشلال ديناميكياً لأصنافها الحقيقية
-        // ==========================================================================
         const leftCol = document.getElementById('waterfall-left-col');
         const rightCol = document.getElementById('waterfall-right-col');
         const waterfallContainer = document.querySelector('.waterfall-container') || document.getElementById('waterfall-section');
@@ -1603,7 +1601,6 @@
             leftCol.innerHTML = '';
             rightCol.innerHTML = '';
 
-            // ربط خرائط الصور ديناميكياً بصفحات الأصناف المقابلة بدلاً من التوجيه الثابت للتورت
             const leftLinksFallback = ["product.html?slug=gateaux-classic", "product.html?slug=qashtota-pistachio"];
             const rightLinksFallback = ["product.html?slug=despacito-dark-nutella", "product.html?slug=cinabon-dark-nutella"];
 
@@ -1647,9 +1644,6 @@
             }
         }
 
-        // ==========================================================================
-        // 👑 [حل الثغرة الكبرى]: توجيه كروت ألبوم "عقد من الإتقان" للأصناف الفردية المقابلة
-        // ==========================================================================
         const excellenceSection = document.getElementById('excellence-section');
         const excellenceTrack = document.getElementById('excellence-images-track');
         const excellenceConfig = data.homepage.excellence;
@@ -1664,7 +1658,6 @@
                     "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=ex3"
                   ];
 
-            // ربط صور الألبوم بصفحات المنتجات الفردية الحقيقية لمنع التوجيه العشوائي للتورت
             const excellenceLinks = ["product.html?slug=gateaux-royal", "product.html?slug=donuts-white-nutella", "product.html?slug=relax-box"];
 
             excellenceTrack.className = 'excellence-track-auto-loop';
@@ -2091,7 +2084,7 @@
                 <div class="search-modal-box">
                     <div class="search-modal-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; border-bottom:1px solid rgba(255,145,164,0.15); padding-bottom:12px;">
                         <h3 style="margin:0; font-size:1.15rem; font-weight:700; color:var(--bose-black);">البحث السريع في الأصناف</h3>
-                        <button class="search-close-btn" style="background:none; border:none; font-size:1.5rem; color:var(--bose-black); cursor:pointer; font-weight:700;" aria-label="إغلاق نافذة البحث">×</button>
+                        <button class="search-close-btn" style="background:none; border:none; font-size:1.5rem; color:var(--bose-black); cursor:pointer; font-weight:700;" aria-label="إغلاقُ نافذة البحث">×</button>
                     </div>
                     <div class="search-modal-body">
                         <input type="text" id="global-search-input" placeholder="اكتب اسم صنفك المفضل.. (لوتس، كب كيك، بوكس..)" style="width:100%; border:var(--bose-pink); border-radius:12px; padding:12px 16px; font-family:'Cairo', sans-serif; font-size:0.95rem; box-sizing:border-box; outline:none; transition:0.2s; color:var(--bose-black);" onfocus="this.style.borderColor='var(--bose-pink)'" onblur="this.style.borderColor='rgba(255,145,164,0.3)'">
@@ -2461,66 +2454,63 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 50);
     }
 });
-// ==========================================================================
-    // 👑 نظام التتبع السلوكي المطور وتخصيص المقترحات عبر الـ LocalStorage 👑
-    // ==========================================================================
 
-    window.trackBoseUserBehavior = function (productSlug, scoreValue = 2) {
-        try {
-            let behaviorData = localStorage.getItem('bose_user_behavior');
-            let behaviorLog = behaviorData ? JSON.parse(behaviorData) : {};
+window.trackBoseUserBehavior = function (productSlug, scoreValue = 2) {
+    try {
+        let behaviorData = localStorage.getItem('bose_user_behavior');
+        let behaviorLog = behaviorData ? JSON.parse(behaviorData) : {};
 
-            if (!behaviorLog[productSlug]) {
-                behaviorLog[productSlug] = { score: 0, lastVisited: Date.now() };
-            }
-
-            behaviorLog[productSlug].score += scoreValue;
-            behaviorLog[productSlug].lastVisited = Date.now();
-
-            localStorage.setItem('bose_user_behavior', JSON.stringify(behaviorLog));
-        } catch (e) {
-            console.warn("⚠️ فشل تسجيل السلوك المحلي للعميل.");
+        if (!behaviorLog[productSlug]) {
+            behaviorLog[productSlug] = { score: 0, lastVisited: Date.now() };
         }
-    };
+
+        behaviorLog[productSlug].score += scoreValue;
+        behaviorLog[productSlug].lastVisited = Date.now();
+
+        localStorage.setItem('bose_user_behavior', JSON.stringify(behaviorLog));
+    } catch (e) {
+        console.warn("⚠️ فشل تسجيل السلوك المحلي للعميل.");
+    }
+};
 
 window.getBosePersonalizedSuggestions = function (dbProducts, currentProductSlug = "", limit = 5) {
-        if (!dbProducts || !Array.isArray(dbProducts)) return [];
+    if (!dbProducts || !Array.isArray(dbProducts)) return [];
 
-        try {
-            const rawCart = localStorage.getItem('bose_cart');
-            const cartSlugs = rawCart ? JSON.parse(rawCart).map(item => item.productSlug) : [];
+    try {
+        const rawCart = localStorage.getItem('bose_cart');
+        const cartSlugs = rawCart ? JSON.parse(rawCart).map(item => item.productSlug) : [];
 
-            let behaviorData = localStorage.getItem('bose_user_behavior');
-            let behaviorLog = behaviorData ? JSON.parse(behaviorData) : {};
+        let behaviorData = localStorage.getItem('bose_user_behavior');
+        let behaviorLog = behaviorData ? JSON.parse(behaviorData) : {};
 
-            let availableProducts = dbProducts.filter(p => 
-                !cartSlugs.includes(p.slug) && 
-                p.slug !== currentProductSlug && 
-                p.slug !== "toort-custom-master" && 
-                p.slug !== "flowers-master"
-            );
+        let availableProducts = dbProducts.filter(p => 
+            !cartSlugs.includes(p.slug) && 
+            p.slug !== currentProductSlug && 
+            p.slug !== "toort-custom-master" && 
+            p.slug !== "flowers-master"
+        );
 
-            availableProducts.sort((a, b) => {
-                let scoreA = behaviorLog[a.slug] ? behaviorLog[a.slug].score : 0;
-                let scoreB = behaviorLog[b.slug] ? behaviorLog[b.slug].score : 0;
-                
-                if (scoreB === scoreA) {
-                    let timeA = behaviorLog[a.slug] ? behaviorLog[a.slug].lastVisited : 0;
-                    let timeB = behaviorLog[b.slug] ? behaviorLog[b.slug].lastVisited : 0;
-                    return timeB - timeA;
-                }
-                return scoreB - scoreA;
-            });
+        availableProducts.sort((a, b) => {
+            let scoreA = behaviorLog[a.slug] ? behaviorLog[a.slug].score : 0;
+            let scoreB = behaviorLog[b.slug] ? behaviorLog[b.slug].score : 0;
+            
+            if (scoreB === scoreA) {
+                let timeA = behaviorLog[a.slug] ? behaviorLog[a.slug].lastVisited : 0;
+                let timeB = behaviorLog[b.slug] ? behaviorLog[b.slug].lastVisited : 0;
+                return timeB - timeA;
+            }
+            return scoreB - scoreA;
+        });
 
-            return availableProducts.slice(0, limit);
-        } catch (e) {
-            return dbProducts.slice(0, limit);
-        }
-    };
+        return availableProducts.slice(0, limit);
+    } catch (e) {
+        return dbProducts.slice(0, limit);
+    }
+};
+
 function verifyAndInitializeEngine() {
     console.log("🚀 تم التحقق من مطابقة المحرك المخصص وتوافقه مع قاعدة بيانات حلويات بوسي بنجاح.");
     
-    // 👑 [بداية زراعة محرك تتبع السلوك اللحظي] 👑
     const urlParams = new URLSearchParams(window.location.search);
     const currentSlug = urlParams.get('slug');
     if (currentSlug && window.location.pathname.includes('product.html')) {
@@ -2528,9 +2518,9 @@ function verifyAndInitializeEngine() {
             window.trackBoseUserBehavior(currentSlug, 2); 
         }
     }
-    // 👑 [نهاية زراعة محرك تتبع السلوك اللحظي] 👑
 
     if (typeof startEngineLogic === "function") {
         startEngineLogic();
     }
 }
+})();
