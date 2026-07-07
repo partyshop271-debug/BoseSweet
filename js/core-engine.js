@@ -624,7 +624,7 @@
 
         requestAnimationFrame(() => {
             requestAnimationFrame(() => {
-                overlay.classList.add('active'); // 🔐 حارس التفاعل: تأمين تفعيل كلاس active فوراً لحل ثغرة تجميد أزرار Confirm الحذف
+                overlay.classList.add('active');
                 overlay.style.opacity = '1';
                 const box = overlay.querySelector('.bose-modal-box');
                 if (box) box.style.transform = 'scale(1) translateY(0)';
@@ -1295,10 +1295,10 @@
                             <a href="${pathPrefix}category.html?category=taswaq-cinabon" class="bose-drawer-sublink">🥮 قطع السينابون الدافئة</a>
                             <a href="${pathPrefix}category.html?category=taswaq-donuts" class="bose-drawer-sublink">🍩 الدوناتس الهشة حشو غني</a>
                             <a href="${pathPrefix}category.html?category=taswaq-red-velvet" class="bose-drawer-sublink">🌹 نكهات الريدڤيلڤت</a>
-                            <a href="${pathPrefix}category.html?category=taswaq-cupcake", class="bose-drawer-sublink">🧁 كب كيك الحفلات</a>
-                            <a href="${pathPrefix}category.html?category=taswaq-mini-cake", class="bose-drawer-sublink">🍰 الميني تورت الفاخرة</a>
-                            <a href="${pathPrefix}category.html?category=taswaq-happiness-cups", class="bose-drawer-sublink">🍧 كبات السعادة الغنية</a>
-                            <a href="${pathPrefix}category.html?category=taswaq-relax-box", class="bose-drawer-sublink">🎁 بوكس الروقان المتكامل</a>
+                            <a href="${pathPrefix}category.html?category=taswaq-cupcake" class="bose-drawer-sublink">🧁 كب كيك الحفلات</a>
+                            <a href="${pathPrefix}category.html?category=taswaq-mini-cake" class="bose-drawer-sublink">🍰 الميني تورت الفاخرة</a>
+                            <a href="${pathPrefix}category.html?category=taswaq-happiness-cups" class="bose-drawer-sublink">🍧 كبات السعادة الغنية</a>
+                            <a href="${pathPrefix}category.html?category=taswaq-relax-box" class="bose-drawer-sublink">🎁 بوكس الروقان المتكامل</a>
                         </div>
                     </div>
 
@@ -2537,7 +2537,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 verifyAndInitializeEngine();
             } else if (attempts >= maxAttempts) {
                 clearInterval(coreGuardInterval);
-                console.error("❌ حارس التمهيد: تجاوز الحد الأقصى لمحاولات تحميل قاعدة البيانات.");
+                console.error("❌ خطأ حرج في تحميل قاعدة البيانات.");
             }
         }, 50);
     }
