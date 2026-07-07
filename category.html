@@ -294,7 +294,12 @@
                 const currency = siteData.store.currency || "EGP";
                 const firstProduct = filteredProducts[0];
 
-                if (firstProduct && firstProduct.layout) {
+                // 👑 [تحسين وتعديل تخطيط الكب كيك سلوكياً وبصرياً]:
+                // إذا كان المعرّف يخص فئة الكب كيك، نجبر الكلاس على أخذ النمط الفردي مالي الشاشة لمنع الحشر والتكديس
+                if (categoryId === "taswaq-cupcake") {
+                    productsGrid.className = "category-products-grid layout-full-card";
+                    sizeFilterRow.style.display = "none";
+                } else if (firstProduct && firstProduct.layout) {
                     productsGrid.className = `category-products-grid layout-${firstProduct.layout}`;
                     if (firstProduct.layout === "tabs") {
                         sizeFilterRow.style.display = "flex";
@@ -306,7 +311,7 @@
                 const renderProductsByLayoutConfig = () => {
                     productsGrid.innerHTML = "";
                     filteredProducts.forEach(product => {
-                        if (firstProduct.layout === "tabs" && product.prices) {
+                        if (categoryId !== "taswaq-cupcake" && firstProduct && firstProduct.layout === "tabs" && product.prices) {
                             product.defaultSize = activeSizeTab; 
                         }
                         if (typeof window.generateStrictProductCardHTML === 'function') {
