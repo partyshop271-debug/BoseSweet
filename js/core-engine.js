@@ -1,7 +1,6 @@
-```javascript
 /**
 * 👑 المحرك المركزي العالمي وعمليات الفحص المالي والمزامنة الزمنية المتقدمة - حلويات بوسي 👑
-* النسخة الهندسية القياسية والمطورة بنسبة 100% - الإصدار الذهبي الشامل والخالي تماماً من الثغرات V18.5
+* النسخة الهندسية القياسية والمطورة بنسبة 100% - الإصدار الذهبي الشامل والخالي تماماً من الثغرات V18.6
 * يتوافق بشكل مطلق ومتبادل مع: cart-engine.js وقاعدة البيانات site-data-final.json ومعايير الأداء والموبايل أولاً
 */
 
@@ -200,7 +199,7 @@
          .replace(/</g, "&lt;")
          .replace(/>/g, "&gt;")
          .replace(/"/g, "&quot;")
-         .replace(/'/g, "&#39;");
+         .replace(/'/g, "&#039;");
  }
  window.escapeHTML = escapeHTML;
  window.escapeHtml = escapeHTML;
@@ -1756,24 +1755,21 @@
  function autoPopulateHomepageComponents(data) {
      if (!data) return;
 
-     if (!document.getElementById('hero-section') && !document.getElementById('waterfall-section')) {
-         const marqueeTrack = document.getElementById('top-bar-marquee');
-         if (marqueeTrack && data.navigation && data.navigation.topBarMessages) {
-             renderTopMarquee(marqueeTrack, data.navigation.topBarMessages);
-         }
-         return;
-     }
-
      const currency = data.store.currency || "EGP";
      const productsList = data.products || [];
 
+     // نقوم بضخ الماركي العلوي في كافة الصفحات إن وجد
      const marqueeTrack = document.getElementById('top-bar-marquee');
      if (marqueeTrack && data.navigation && data.navigation.topBarMessages) {
          renderTopMarquee(marqueeTrack, data.navigation.topBarMessages);
      }
 
+     // ==========================================
+     // فحص وحقن العناصر بذكاء لمنع التوقف في الصفحات الداخلية
+     // ==========================================
+
      const heroSection = document.getElementById('hero-section');
-     if (heroSection && data.homepage.hero) {
+     if (heroSection && data.homepage && data.homepage.hero) {
          const heroData = data.homepage.hero;
          const heroTitleNode = document.getElementById('hero-title') || heroSection.querySelector('h1');
          const heroDescNode = document.getElementById('hero-description') || heroSection.querySelector('p');
@@ -1795,9 +1791,9 @@
      const leftCol = document.getElementById('waterfall-left-col');
      const rightCol = document.getElementById('waterfall-right-col');
      const waterfallContainer = document.querySelector('.waterfall-container') || document.getElementById('waterfall-section');
-     const waterfallConfig = data.homepage.waterfall;
-
-     if (leftCol && rightCol && waterfallConfig && waterfallContainer) {
+     
+     if (leftCol && rightCol && data.homepage && data.homepage.waterfall && waterfallContainer) {
+         const waterfallConfig = data.homepage.waterfall;
          leftCol.innerHTML = '';
          rightCol.innerHTML = '';
 
@@ -1846,8 +1842,8 @@
 
      const excellenceSection = document.getElementById('excellence-section');
      const excellenceTrack = document.getElementById('excellence-images-track');
-     const excellenceConfig = data.homepage.excellence;
-     if (excellenceTrack && excellenceConfig) {
+     if (excellenceTrack && data.homepage && data.homepage.excellence) {
+         const excellenceConfig = data.homepage.excellence;
          excellenceTrack.innerHTML = '';
          
          const slideImages = Array.isArray(excellenceConfig.images) && excellenceConfig.images.length >= 3 
@@ -1885,7 +1881,7 @@
      }
 
      const mostSellingGrid = document.getElementById('most-selling-grid');
-     if (mostSellingGrid && data.homepage.mostSelling) {
+     if (mostSellingGrid && data.homepage && data.homepage.mostSelling) {
          mostSellingGrid.innerHTML = '';
          const matchedMSProducts = data.homepage.mostSelling.map(slug => productsList.find(p => p.slug === slug)).filter(Boolean);
          mostSellingGrid.innerHTML = matchedMSProducts.map(prod => generateStrictProductCardHTML(prod, currency)).join('');
@@ -1894,7 +1890,7 @@
 
      const newArrivalsSection = document.getElementById('new-arrivals-section');
      const newArrivalsGrid = document.getElementById('new-arrivals-grid');
-     if (newArrivalsGrid && data.homepage.newArrivals) {
+     if (newArrivalsGrid && data.homepage && data.homepage.newArrivals) {
          newArrivalsGrid.innerHTML = '';
          const matchedNAProducts = data.homepage.newArrivals.map(slug => productsList.find(p => p.slug === slug)).filter(Boolean);
          newArrivalsGrid.innerHTML = matchedNAProducts.map(prod => generateStrictProductCardHTML(prod, currency)).join('');
@@ -1913,7 +1909,7 @@
 
      const ourProductsGrid = document.getElementById('our-products-grid');
      const showMoreBtn = document.getElementById('btn-show-more-products') || document.querySelector('.btn-show-more-node');
-     if (ourProductsGrid && data.homepage.ourProducts) {
+     if (ourProductsGrid && data.homepage && data.homepage.ourProducts) {
          ourProductsGrid.innerHTML = '';
          const matchedOPProducts = data.homepage.ourProducts.map(slug => productsList.find(p => p.slug === slug)).filter(Boolean);
          const initialProducts = matchedOPProducts.slice(0, 4);
@@ -1943,7 +1939,7 @@
      }
 
      const cakePreviewSec = document.getElementById('cake-preview-section');
-     if (cakePreviewSec && data.homepage.cakePreview) {
+     if (cakePreviewSec && data.homepage && data.homepage.cakePreview) {
          const previewData = data.homepage.cakePreview;
          const previewImg = document.getElementById('cake-preview-img') || cakePreviewSec.querySelector('img#cake-preview-img');
          const previewTitle = document.getElementById('cake-preview-title') || cakePreviewSec.querySelector('#cake-preview-title');
@@ -1963,7 +1959,7 @@
      }
 
      const flowerPreviewSec = document.getElementById('flower-preview-section');
-     if (flowerPreviewSec && data.homepage.flowerPreview) {
+     if (flowerPreviewSec && data.homepage && data.homepage.flowerPreview) {
          const previewData = data.homepage.flowerPreview;
          const previewImg = document.getElementById('flower-preview-img') || flowerPreviewSec.querySelector('img#flower-preview-img');
          const previewTitle = document.getElementById('flower-preview-title') || flowerPreviewSec.querySelector('#flower-preview-title');
@@ -1984,9 +1980,8 @@
 
      const categoriesSliderSec = document.getElementById('categories-slider-section');
      const categoriesTrack = document.getElementById('categories-track');
-     const categoriesData = data.homepage.categoriesSlider;
-
-     if (categoriesTrack && categoriesData) {
+     if (categoriesTrack && data.homepage && data.homepage.categoriesSlider) {
+         const categoriesData = data.homepage.categoriesSlider;
          categoriesTrack.innerHTML = '';
          categoriesTrack.className = ''; 
          categoriesTrack.style.animation = 'none';
@@ -2753,5 +2748,5 @@
                  verifyAndInitializeEngine();
              }
          }, 50);
-     }
- });
+     });
+ })();
