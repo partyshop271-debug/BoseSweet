@@ -1,9 +1,8 @@
 /**
  * 👑 محرك السلة وإتمام الطلب الموحد الفاخر والمطور - حلويات بوسي 👑
- * النسخة الهندسية القياسية الكاملة بنسبة 100% - خالية تماماً من الثغرات المالية والبرمجية V16.0
+ * النسخة الهندسية القياسية الكاملة بنسبة 100% - خالية تماماً من الثغرات المالية والبرمجية V17.0
  * متوافقة بشكل مطلق مع: core-engine.js وقاعدة البيانات site-data-final.json ومعايير الأداء والموبايل أولاً
- * يدير السلة (cart.html)، الدفع (checkout.html)، ونجاح المعاملة (order-success.html)
- * [تم سد ثغرة تأخر رندرة DOM في التصفح الخفي وتأمين المزامنة اللحظية لعناصر السلة]
+ * [تم حل ثغرات حذف الأصناف المخصصة وتأمين الحذف الفوري المتزامن لكروت المنتجات]
  */
 
 (function () {
@@ -162,9 +161,6 @@
         return discountableSubtotal;
     }
 
-    /**
-     * الحارس الجغرافي لتحديد نوع الصفحة الحالية وتوجيه مسار التمهيد الذكي
-     */
     function bootstrapPageEngine() {
         if (document.getElementById('cart-items-wrapper')) {
             initCartPage();
@@ -1016,7 +1012,7 @@
                 <div style="font-size:40px; margin-bottom:12px;">🌸</div>
                 <h4 style="margin:0 0 8px 0; font-size:16px; font-weight:700; color:var(--bose-black); font-family:'Cairo', sans-serif !important;">لا توجد طلبات نشطة لعرضها حالياً</h4>
                 <p style="margin:0 0 20px 0; font-size:13px; color:#666; line-height:1.6; font-family:'Cairo', sans-serif !important;">شرفنا بزيارتك ومراجعة قائمة حلويات بوسي وتصميم تورتتك المخصصة عبر المنيو الشامل في أي وقت.</p>
-                <a href="menu.html" style="display:inline-block; background:var(--bose-pink, #FF91A4); color:#FFF; padding:10px 24px; border-radius:50px; text-decoration:none; font-size:13px; font-weight:700; transition:0.2s; font-family:'Cairo', sans-serif !important;">استكشف المنيو الشامل</a>
+                <a href="menu.html" style="display:inline-block; background:var(--bose-pink, #FF91A4); color:#FFF; padding:10px 24px; border-radius:50px; text-decoration:none; font-size:13px; font-weight:700; transition:0.2s; font-family:'Cairo', sans-serif !important;">استخشف المنيو الشامل</a>
             </div>
         `;
     }
@@ -1206,7 +1202,6 @@
        ========================================================================== */
 
     function verifyAndBootCartEngine() {
-        // [🔐 حارس المزامنة الذهبي]: الفحص التكراري الآمن للتأكد من استقرار الـ DOM وجاهزية البيانات تماماً
         if (window.BoseStoreData && window.BoseStoreData.store) {
             bootstrapPageEngine();
         } else {
@@ -1219,14 +1214,12 @@
                     bootstrapPageEngine();
                 } else if (boseRetryAttempts >= boseMaxRetry) {
                     clearInterval(boseGuardInterval);
-                    // محاولة تمهيد احترازية أخيرة لضمان رندرة عناصر السلة المتاحة
                     bootstrapPageEngine();
                 }
             }, 40);
         }
     }
 
-    // تأمين الاستدعاء الفوري والتنفيذ في جميع حالات تحميل المستند
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', verifyAndBootCartEngine);
     } else {
