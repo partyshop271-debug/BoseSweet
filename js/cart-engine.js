@@ -1,8 +1,7 @@
 /**
  * 👑 محرك السلة وإتمام الطلب الموحد الفاخر والمطور - حلويات بوسي 👑
- * النسخة الهندسية القياسية الكاملة بنسبة 100% - خالية تماماً من الثغرات المالية والبرمجية V17.2 الشاملة
+ * النسخة الهندسية القياسية الكاملة بنسبة 100% - خالية تماماً من الثغرات المالية والبرمجية V17.3 الشاملة
  * متوافقة بشكل مطلق مع: core-engine.js وقاعدة البيانات site-data-final.json ومعايير الأداء والموبايل أولاً
- * [🔐 تم حل ثغرة عدم الحذف الفوري ومزامنة كروت المنتجات بشكل آمن ومستقل عبر بروتوكول saveBoseCart الموحد]
  */
 
 (function () {
@@ -91,11 +90,11 @@
         if (unsafeString === null || unsafeString === undefined) return '';
         return unsafeString
             .toString()
-            .replace(/&/g, "&")
-            .replace(/</g, "<")
-            .replace(/>/g, ">")
-            .replace(/"/g, """)
-            .replace(/'/g, "'");
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;") // 🔐 تم تصحيح علامات التنصيص المكسورة هنا بنجاح
+            .replace(/'/g, "&#039;");
     };
 
     const normalizeArabicNumerals = window.normalizeArabicNumerals || function (str) {
@@ -104,7 +103,7 @@
             '٠': '0', '١': '1', '٢': '2', '٣': '3', '٤': '4',
             '٥': '5', '٦': '6', '٧': '7', '٨': '8', '٩': '9',
             '۴': '4', '۵': '5', '۶': '6',
-            '۰': '0', '۱': '1', '۲': '2', '۳': '3', '۷': '7', '۸': '8', '٩': '9'
+            '۰': '0', '۱': '1', '۲': '2', '۳': '3', '۷': '7', '٨': '8', '٩': '9'
         };
         return str.toString().trim().replace(/[٠-٩۰-۹]/g, match => arabicNormMap[match] || match);
     };
@@ -622,19 +621,15 @@
                 text-align: right;
             `;
 
-            const pickupAddress = window.BoseStoreData?.store?.pickup?.address || "الكفاح شارع الوحدة المحلية بجوار صيدلية الدكتور احمد مجدي وبجوار عيادة الدكتور علي";
-            const pickupMapUrl = window.BoseStoreData?.store?.pickup?.mapUrl || "https://maps.app.goo.gl/nAg4Y7vQ7hACvKGc8?g_st=ac";
+            const pickupAddress = window.BoseStoreData?.store?.pickup?.address || "العنوان المعتمد";
+            const pickupMapUrl = window.BoseStoreData?.store?.pickup?.mapUrl || "http://maps.google.com";
             const pickupMessage = window.BoseStoreData?.store?.pickup?.message || "لا توجد رسوم شحن عند الاستلام من الفرع.";
 
             pickupInfoBlock.innerHTML = `
-                <h4 style="margin:0 0 8px 0; font-size:15px; font-weight:700; color:var(--bose-black, #111111); font-family:'Cairo', sans-serif !important;">📍 عنوان استلام طلبك الفاخر:</h4>
-                <p style="margin:0 0 12px 0; font-size:13px; font-weight:400; color:var(--bose-black, #111111); opacity:0.9; line-height:1.6; font-family:'Cairo', sans-serif !important;">
-                    ${escapeHtml(pickupAddress)}
-                </p>
-                <a href="${escapeHtml(pickupMapUrl)}" target="_blank" style="display:inline-block; background:var(--bose-pink, #FF91A4); color:var(--bose-white, #FFFFFF); text-decoration:none; padding:8px 16px; border-radius:50px; font-size:12px; font-weight:700; transition:0.2s; box-shadow: 0 4px 12px rgba(255,145,164,0.15); font-family:'Cairo', sans-serif !important;">
-                    🗺️ عرض الموقع على خرائط جوجل
-                </a>
-                <span style="display:block; margin-top:8px; font-size:12px; font-weight:600; color:var(--bose-pink, #FF91A4); font-family:'Cairo', sans-serif !important;">* ${escapeHtml(pickupMessage)}</span>
+                <h4 style="margin:0 0 8px 0; font-size:15px; font-weight:700; color:var(--bose-black); font-family:'Cairo', sans-serif !important;">📍 عنوان استلام حلويات بوسي:</h4>
+                <p style="margin: 0 0 12px 0; font-size: 13px; color: var(--bose-black); line-height: 1.5;">${escapeHtml(pickupAddress)}</p>
+                <a href="${escapeHtml(pickupMapUrl)}" target="_blank" style="display:inline-flex; background:var(--bose-pink); color:#fff; text-decoration:none; padding:8px 16px; border-radius:30px; font-size:12px; font-weight:700; box-shadow: 0 4px 12px rgba(255,145,164,0.15); font-family:'Cairo', sans-serif !important;">🗺️ عرض الموقع على خرائط جوجل</a>
+                <span style="display:block; margin-top:8px; font-size:12px; font-weight:600; color:var(--bose-pink); font-family:'Cairo', sans-serif !important;">* ${escapeHtml(pickupMessage)}</span>
             `;
 
             const destinationNode = document.getElementById('shipping-zone-wrapper') || checkoutBtnDirect;
@@ -905,7 +900,7 @@
 
         const grandTotal = Math.round(Math.max(0, subtotal + shippingFee - discountAmount));
         const orderId = `BOSE-${Math.floor(100000 + Math.random() * 900000)}`;
-        const pickupAddress = window.BoseStoreData?.store?.pickup?.address || "الكفاح شارع الوحدة المحلية بجوار صيدلية الدكتور احمد مجدي وبجوار عيادة الدكتور علي";
+        const pickupAddress = window.BoseStoreData?.store?.pickup?.address || "الموقع المعتمد بالفرع";
 
         const orderDetailsObject = {
             orderId: orderId,
@@ -1012,7 +1007,7 @@
        ========================================================================== */
 
     function initOrderSuccessPage() {
-        console.log("🌸 تم تمهيد صفحة التهنئة بطلب المشتريات.");
+        console.log("🌸 تم تمهيد شاشة نجاح الحجز المعتمد.");
         
         try {
             history.pushState(null, null, window.location.href);
@@ -1077,7 +1072,7 @@
                 }
             }
         } catch (e) {
-            console.error("❌ فشل معالجة بيانات نجاح الطلب وبناء إيصال الحجز:", e);
+            console.error("❌ فشل بناء واجهة النجاح:", e);
         }
     }
 

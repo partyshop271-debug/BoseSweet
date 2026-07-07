@@ -1,8 +1,7 @@
 /**
  * 👑 المحرك المركزي العالمي وعمليات الفحص المالي والمزامنة الزمنية المتقدمة - حلويات بوسي 👑
- * النسخة الهندسية القياسية والمطورة بنسبة 100% - الإصدار الذهبي الشامل والخالي تماماً من الثغرات V15.0
+ * النسخة الهندسية القياسية والمطورة بنسبة 100% - الإصدار الذهبي الشامل والخالي تماماً من الثغرات V15.1
  * يتوافق بشكل مطلق ومتبادل مع: cart-engine.js وقاعدة البيانات site-data-final.json ومعايير الأداء والموبايل أولاً
- * [🔐 تم إصلاح اختفاء الهيدر والفوتر وتطوير القائمة الجانبية الاحترافية بقوائم منسدلة تفاعلية ذكية لأقسام المنيو]
  */
 
 (function () {
@@ -207,7 +206,7 @@
             .replace(/&/g, "&amp;")
             .replace(/</g, "&lt;")
             .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
+            .replace(/"/g, "&quot;") // 🔐 تم تصحيح علامات التنصيص المكسورة هنا بنجاح
             .replace(/'/g, "&#039;");
     }
     window.escapeHTML = escapeHTML;
@@ -1311,7 +1310,7 @@
                 </div>
                 <div class="drawer-premium-footer" style="padding: 20px; border-top: var(--bose-border-pink); background: var(--bose-cream); display: flex; flex-direction: column; gap: 12px;">
                     <a href="https://wa.me/201097238441" class="bose-btn-primary" target="_blank" style="display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--bose-pink); color: #FFF; text-decoration: none; font-weight: 700; padding: 12px; border-radius: 12px; text-align: center; font-size: 0.9rem; box-shadow: var(--bose-shadow-glow);">💬 تواصل فوري عبر الواتساب</a>
-                    <p style="margin: 0; font-size: 0.75rem; text-align: center; color: #888;">&copy; 2026 جميع الحقوق محفوظة لـ علامة حلويات بوسي الفاخرة.</p>
+                    <p style="margin: 0; font-size: 0.75rem; text-align: center; color: #888;">© 2026 جميع الحقوق محفوظة لـ علامة حلويات بوسي الفاخرة.</p>
                 </div>
             `;
             drawerMenu.classList.add("loaded");
@@ -1500,15 +1499,15 @@
                 
                 <span class="product-card-flavor-name" style="display: block; font-size: 0.85rem; font-weight: 700; color: var(--bose-pink); margin-top: -2px;">${cleanFlavor}</span>
                 
-                <p class="product-card-desc" style="margin: 4px 0 8px 0; font-size: 0.8rem; font-weight: 400; color: var(--bose-black); opacity: 0.8; line-height: 1.5; min-height: 60px; max-height: 60px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;">${cleanDesc}</p>
+                <p class="product-card-desc" style="margin: 4px 0 8px 0; font-size: 0.8rem; font-weight: 400; color: var(--bose-black); opacity: 0.8; line-height: 1.5; min-height: 60px; max-height: 60px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-family:'Cairo', sans-serif !important;">${cleanDesc}</p>
                 
                 ${sizeSelectorHTML}
 
                 <div style="margin-top: auto; display: flex; flex-direction: column; gap: 12px;">
                     <div class="qty-counter-row" style="display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--bose-pink); border-radius: 50px; background: var(--bose-white); padding: 2px 8px; direction: rtl;">
-                        <button class="btn-qty-plus" style="background: none; border: none; color: var(--bose-black); font-size: 18px; font-weight: 700; width: 32px; height: 32px; cursor: pointer; display: flex; align-items: center; justify-content: center;" aria-label="زيادة الكمية">+</button>
-                        <input type="number" class="input-qty-value" value="1" min="1" readonly style="width: 35px; text-align: center; border: none; font-size: 14px; font-weight: 700; color: var(--bose-black); background: transparent; outline: none;" aria-label="الكمية الحالية">
-                        <button class="btn-qty-minus" style="background: none; border: none; color: var(--bose-black); font-size: 18px; font-weight: 700; width: 32px; height: 32px; cursor: pointer; display: flex; align-items: center; justify-content: center;" aria-label="نقص الكمية">-</button>
+                        <button class="btn-qty-plus" style="background: none; border: none; color: var(--bose-black); font-size: 18px; font-weight: 700; width: 32px; height: 32px; cursor: pointer;" aria-label="زيادة الكمية">+</button>
+                        <input type="number" class="input-qty-value" value="1" min="1" readonly style="width: 35px; text-align: center; border: none; font-size: 14px; font-weight: 700; color: var(--bose-black); background: transparent; outline: none;">
+                        <button class="btn-qty-minus" style="background: none; border: none; color: var(--bose-black); font-size: 18px; font-weight: 700; width: 32px; height: 32px; cursor: pointer;" aria-label="نقص الكمية">-</button>
                     </div>
 
                     <div class="product-card-price" style="font-size: 1.1rem; font-weight: 700; color: var(--bose-pink); text-align: right;" data-base-price="${finalPrice}">
@@ -1668,7 +1667,7 @@
             const heroCtaNode = document.getElementById('hero-cta-btn') || heroSection.querySelector('a');
 
             if (heroTitleNode) {
-                const rawTitle = heroData.title || "عقد من التميز في صناعة الحلويات";
+                const rawTitle = heroData.title || "عقد من التميز in صناعة الحلويات";
                 const formattedTitle = rawTitle.replace("التميز", `<span style="color: var(--bose-pink); font-weight: 700;">التميز</span>`);
                 heroTitleNode.innerHTML = formattedTitle;
             }
@@ -2082,7 +2081,7 @@
     };
 
     window.addBoseItemToCart = function(product, quantity = 1, customDetails = null, customPrice = null) {
-        const finalPrice = customPrice !== null ? customPrice : product.price;
+        const finalPrice = window.calculateBosePrice = window.calculateBosePrice(product.price, "menu-only");
         const newItem = {
             productSlug: product.slug,
             title: product.title,
@@ -2611,4 +2610,4 @@ function verifyAndInitializeEngine() {
         startEngineLogic();
          }
    }
- 
+})();
