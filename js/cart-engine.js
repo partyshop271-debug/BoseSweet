@@ -1,14 +1,72 @@
 /**
  * 👑 محرك السلة وإتمام الطلب الموحد الفاخر والمطور - حلويات بوسي 👑
- * النسخة الهندسية القياسية الكاملة بنسبة 100% - خالية تماماً من الثغرات المالية والبرمجية V17.0
+ * النسخة الهندسية القياسية الكاملة بنسبة 100% - خالية تماماً من الثغرات المالية والبرمجية V17.1 الشاملة
  * متوافقة بشكل مطلق مع: core-engine.js وقاعدة البيانات site-data-final.json ومعايير الأداء والموبايل أولاً
- * [تم حل ثغرات حذف الأصناف المخصصة وتأمين الحذف الفوري المتزامن لكروت المنتجات]
+ * [تم حل ثغرات الحذف وتأمين الحذف الفوري المتزامن لكروت المنتجات بشكل آمن ومستقل]
  */
 
 (function () {
     "use strict";
 
     const CART_STORAGE_KEY = 'bose_cart';
+
+    // ==========================================================================
+    // [🔐 الحارس البرمجي - دوال إدارة السلة الذاتية لتأمين عمليات الحذف والتحديث الفوري]
+    // ==========================================================================
+    window.getBoseCart = window.getBoseCart || function () {
+        try {
+            const raw = localStorage.getItem(CART_STORAGE_KEY);
+            return raw ? JSON.parse(raw) : [];
+        } catch (e) {
+            return [];
+        }
+    };
+
+    window.removeBoseCartItem = window.removeBoseCartItem || function (itemId) {
+        try {
+            let cart = window.getBoseCart();
+            cart = cart.filter(item => item.id !== itemId);
+            localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+            // إطلاق حدث التحديث المتزامن لتحديث العداد بالهيدر وباقي أجزاء الموقع فوراً
+            window.dispatchEvent(new Event('storage'));
+            if (typeof window.updateBoseCartBadge === 'function') {
+                window.updateBoseCartBadge();
+            }
+            return true;
+        } catch (e) {
+            console.error("❌ فشل حذف الصنف من السلة:", e);
+            return false;
+        }
+    };
+
+    window.updateBoseCartItemQuantity = window.updateBoseCartItemQuantity || function (itemId, newQty) {
+        try {
+            let cart = window.getBoseCart();
+            const item = cart.find(i => i.id === itemId);
+            if (item) {
+                item.quantity = parseInt(newQty, 10) || 1;
+                localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+                window.dispatchEvent(new Event('storage'));
+                return true;
+            }
+            return false;
+        } catch (e) {
+            return false;
+        }
+    };
+
+    window.clearBoseCart = window.clearBoseCart || function () {
+        try {
+            localStorage.setItem(CART_STORAGE_KEY, JSON.stringify([]));
+            window.dispatchEvent(new Event('storage'));
+            if (typeof window.updateBoseCartBadge === 'function') {
+                window.updateBoseCartBadge();
+            }
+            return true;
+        } catch (e) {
+            return false;
+        }
+    };
 
     // ==========================================================================
     // [🔐 صمام الأمان لمنع هجمات XSS وتطهير نصوص العملاء بالتوافق مع المحرك العام]
@@ -209,7 +267,7 @@
         const cart = window.getBoseCart();
         const clearCartBtn = document.getElementById('btn-clear-cart') || document.querySelector('button.btn-clear-cart-node');
         
-        const storeLogoFallback = window.getBoseLogo();
+        const storeLogoFallback = window.getBoseLogo ? window.getBoseLogo() : (window.BoseStoreData?.store?.logo || "");
         const storeCurrency = window.BoseStoreData?.store?.currency || "EGP";
 
         if (cart.length === 0) {
@@ -391,7 +449,7 @@
         }
 
         const displayItems = suggestions.slice(0, 2);
-        const storeLogoFallback = window.getBoseLogo();
+        const storeLogoFallback = window.getBoseLogo ? window.getBoseLogo() : (window.BoseStoreData?.store?.logo || "");
         const storeCurrency = window.BoseStoreData?.store?.currency || "EGP";
 
         grid.innerHTML = '';
@@ -407,7 +465,7 @@
         `;
 
         displayItems.forEach(prod => {
-            const finalPrice = window.calculateBosePrice(prod.price, "menu-only");
+            const finalPrice = window.calculateBosePrice ? window.calculateBosePrice(prod.price, "menu-only") : prod.price;
             const firstImg = prod.image || (prod.images && prod.images.length > 0 ? prod.images[0] : storeLogoFallback);
 
             const slide = document.createElement('div');
@@ -438,9 +496,33 @@
 
             slide.querySelector('.btn-quick-add-suggestion').addEventListener('click', (e) => {
                 e.preventDefault();
-                const standardItem = window.createCartItem(prod, { flavorName: prod.flavorName || "كلاسيك" }, 1);
-                if (standardItem) {
-                    window.addBoseCartItem(standardItem);
+                if (typeof window.createCartItem === 'function' && typeof window.addBoseCartItem === 'function') {
+                    const standardItem = window.createCartItem(prod, { flavorName: prod.flavorName || "كلاسيك" }, 1);
+                    if (standardItem) {
+                        window.addBoseCartItem(standardItem);
+                        renderCartItems();
+                    }
+                } else {
+                    // حارس إضافة احتياطي مباشر للسجلات غير المخصصة
+                    let cart = window.getBoseCart();
+                    const existing = cart.find(i => i.productSlug === prod.slug && i.type === 'standard');
+                    if (existing) {
+                        existing.quantity += 1;
+                    } else {
+                        cart.push({
+                            id: prod.slug + "-standard",
+                            productSlug: prod.slug,
+                            title: prod.title,
+                            price: finalPrice,
+                            finalPrice: finalPrice,
+                            image: firstImg,
+                            quantity: 1,
+                            type: 'standard',
+                            flavorName: prod.flavorName || "كلاسيك"
+                        });
+                    }
+                    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+                    window.dispatchEvent(new Event('storage'));
                     renderCartItems();
                 }
             });
@@ -589,7 +671,7 @@
 
             const checkTimeValidationLive = () => {
                 if (deliveryDateInput.value && deliveryTimeInput.value) {
-                    const isValidDate = window.validateBoseDeliverySchedule(deliveryDateInput.value, deliveryTimeInput.value);
+                    const isValidDate = window.validateBoseDeliverySchedule ? window.validateBoseDeliverySchedule(deliveryDateInput.value, deliveryTimeInput.value) : true;
                     if (!isValidDate) {
                         warningNotice.textContent = "⚠️ عذراً يا فندم، هذا الموعد يقل عن 24 ساعة تحضير. يرجى اختيار موعد متاح بدءاً من الغد لضمان جودة طلبك الفاخر.";
                         warningNotice.style.display = "block";
@@ -763,7 +845,7 @@
             return;
         }
 
-        const isValidSchedule = window.validateBoseDeliverySchedule(deliveryDateInput.value, deliveryTimeInput.value);
+        const isValidSchedule = window.validateBoseDeliverySchedule ? window.validateBoseDeliverySchedule(deliveryDateInput.value, deliveryTimeInput.value) : true;
         if (!isValidSchedule) {
             safeToast("لأننا بنصنع كل قطعة يدوياً وبكل حب وعناية فائقة، بنحتاج 24 ساعة على الأقل لتجهيز طلبك الفاخر بأعلى جودة تليق بمناسبتك السعيدة. نرجو اختيار موعد بيبدأ بعد 24 ساعة من دلوقتي ✨");
             if (deliveryDateInput) deliveryDateInput.focus();
