@@ -1,8 +1,7 @@
 /**
  * 👑 المحرك المركزي العالمي وعمليات الفحص المالي والمزامنة الزمنية المتقدمة - حلويات بوسي 👑
- * النسخة الهندسية القياسية والمطورة بنسبة 100% - الإصدار الذهبي الشامل والخالي تماماً من الثغرات V18.0
+ * النسخة الهندسية القياسية والمطورة بنسبة 100% - الإصدار الذهبي الشامل والخالي تماماً من الثغرات V18.5
  * يتوافق بشكل مطلق ومتبادل مع: cart-engine.js وقاعدة البيانات site-data-final.json ومعايير الأداء والموبايل أولاً
- * [تحديث حرج: علاج انقطاع تجربة المستخدم عبر زراعة الإشعارات الفورية وزر السلة العائم المتحرك مع العميل]
  */
 
 (function () {
@@ -193,17 +192,17 @@
     // ==========================================================================
 
     function escapeHTML(unsafeString) {
-    if (unsafeString === null || unsafeString === undefined) return '';
-    return unsafeString
-        .toString()
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#39;");
-}
-window.escapeHTML = escapeHTML;
-window.escapeHtml = escapeHTML;
+        if (unsafeString === null || unsafeString === undefined) return '';
+        return unsafeString
+            .toString()
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#39;");
+    }
+    window.escapeHTML = escapeHTML;
+    window.escapeHtml = escapeHTML;
 
     window.getBoseLogo = function() {
         return window.BoseStoreData?.store?.logo || "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png";
@@ -356,7 +355,7 @@ window.escapeHtml = escapeHTML;
         }
         
         if (options.chocolateType && safeChocolatePieces > 0 && config) {
-            const chocOpt = config.chocolateTypes.find(opt => opt.id === options.chocolateType);
+            const chocOpt = config.chocolateTypes.find(opt => opt.id === options.wrappingType);
             if (chocOpt) servicePrice += parseFloat(chocOpt.price) * safeChocolatePieces;
         }
         
@@ -2690,26 +2689,6 @@ window.escapeHtml = escapeHTML;
     }
 })();
 
-document.addEventListener("DOMContentLoaded", () => {
-    if (window.BoseStoreData && window.BoseStoreData.store) {
-        verifyAndInitializeEngine();
-    } else {
-        let attempts = 0;
-        const maxAttempts = 100;
-        
-        const coreGuardInterval = setInterval(() => {
-            attempts++;
-            if (window.BoseStoreData && window.BoseStoreData.store) {
-                clearInterval(coreGuardInterval);
-                verifyAndInitializeEngine();
-            } else if (attempts >= maxAttempts) {
-                clearInterval(coreGuardInterval);
-                console.error("❌ خطأ حرج في تحميل قاعدة البيانات.");
-            }
-        }, 50);
-    }
-});
-
 window.trackBoseUserBehavior = function (productSlug, scoreValue = 2) {
     try {
         let behaviorData = localStorage.getItem('bose_user_behavior');
@@ -2763,6 +2742,26 @@ window.getBosePersonalizedSuggestions = function (dbProducts, currentProductSlug
     }
 };
 
+document.addEventListener("DOMContentLoaded", () => {
+    if (window.BoseStoreData && window.BoseStoreData.store) {
+        verifyAndInitializeEngine();
+    } else {
+        let attempts = 0;
+        const maxAttempts = 100;
+        
+        const coreGuardInterval = setInterval(() => {
+            attempts++;
+            if (window.BoseStoreData && window.BoseStoreData.store) {
+                clearInterval(coreGuardInterval);
+                verifyAndInitializeEngine();
+            } else if (attempts >= maxAttempts) {
+                clearInterval(coreGuardInterval);
+                console.error("❌ خطأ حرج في تحميل قاعدة البيانات.");
+            }
+        }, 50);
+    }
+});
+
 function verifyAndInitializeEngine() {
     console.log("🚀 تم التحقق من مطابقة المحرك المخصص وتوافقه مع قاعدة بيانات حلويات بوسي بنجاح.");
     
@@ -2777,3 +2776,4 @@ function verifyAndInitializeEngine() {
     if (typeof startEngineLogic === "function") {
         startEngineLogic();
     }
+}
