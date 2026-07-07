@@ -3,6 +3,7 @@
  * النسخة الهندسية القياسية الكاملة بنسبة 100% - خالية تماماً من الثغرات المالية والبرمجية V17.4 الشاملة
  * متوافقة بشكل مطلق مع: core-engine.js وقاعدة البيانات site-data-final.json ومعايير الأداء والموبايل أولاً
  * [إصلاح برمي حاسم لحظر تعليق قناع التحميل والتعتيم العشوائي أثناء دورة حياة حذف الأصناف]
+ * [تأمين وحل ثغرة حالة السباق اللامتزامنة لضمان عدم حدوث فجوة بيضاء أو اختفاء عشوائي للمنتجات]
  */
 
 (function () {
@@ -204,7 +205,7 @@
                 <div class="bose-modal-box" style="transform:scale(1); background:var(--bose-white, #FFFFFF); border:1px solid var(--bose-pink, #FF91A4); border-radius:24px; width:90%; max-width:400px; padding:24px; box-shadow:var(--bose-shadow-hover, 0 16px 40px rgba(255,145,164,0.22)); text-align:right; direction:rtl; font-family:'Cairo', sans-serif !important;">
                     <p style="font-size:15px; font-weight:600; color:var(--bose-black, #111111); line-height:1.6; margin:0 0 20px 0;">${escapeHtml(messageText)}</p>
                     <div style="display:flex; align-items:center; justify-content:flex-start; gap:12px;">
-                        <button id="fallback-confirm-yes" style="font-family:'Cairo', sans-serif; font-size:14px; font-weight:700; padding:10px 24px; border-radius:50px; cursor:pointer; border:none; background:var(--bose-pink, #FF91A4); color:var(--bose-white, #FFFFFF); box-shadow: 0 4px 12px rgba(255,145,164,0.25);">تأكيد</button>
+                        <button id="fallback-confirm-yes" style="font-family:'Cairo', sans-serif; font-size:14px; font-weight:700; padding:10px 24px; border-radius:50px; cursor:pointer; border:none; background:var(--bose-pink, #FF91A4); color:var(--bose-white, #FFFFFF); box-shadow: 0 4px 12px rgba(255,145,164,0.25); "تأكيد</button>
                         <button id="fallback-confirm-no" style="font-family:'Cairo', sans-serif; font-size:14px; font-weight:700; padding:10px 24px; border-radius:50px; cursor:pointer; border:1px solid rgba(17, 17, 17, 0.15); background:transparent; color:var(--bose-black, #111111);">تراجع</button>
                     </div>
                 </div>
@@ -392,7 +393,7 @@
             }
 
             card.innerHTML = `
-                <button class="btn-remove-item" style="position:absolute; top:12px; left:12px; background:none; border:none; color:var(--bose-black); font-size:22px; cursor:pointer; font-weight:700; line-height:1; transition:0.2s; z-index:10; font-family:'Cairo', sans-serif !important;" onclick="window.removeBoseCartItem('${item.id}')" aria-label="حذف الصنف">×</button>
+                <button class="btn-remove-item" style="position:absolute; top:12px; left:12px; background:none; border:none; color:var(--bose-black); font-size:22px; cursor:pointer; font-weight:700; line-height:1; transition:0.2s; z-index:10; font-family:'Cairo', sans-serif !important;" aria-label="حذف الصنف">×</button>
                 <div class="cart-item-img-container" style="margin-left:16px; flex-shrink: 0;">
                     <img src="${escapeHtml(item.image || storeLogoFallback)}" onerror="this.src='${storeLogoFallback}'" class="cart-item-img" alt="${escapeHtml(item.title)}" style="width:120px; height:120px; object-fit:cover; border-radius:20px; display:block;" loading="lazy">
                 </div>
