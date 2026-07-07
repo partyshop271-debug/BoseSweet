@@ -1,8 +1,8 @@
 /**
  * 👑 المحرك المركزي العالمي وعمليات الفحص المالي والمزامنة الزمنية المتقدمة - حلويات بوسي 👑
- * النسخة الهندسية القياسية والمطورة بنسبة 100% - الإصدار الذهبي الشامل والخالي تماماً من الثغرات V17.0
+ * النسخة الهندسية القياسية والمطورة بنسبة 100% - الإصدار الذهبي الشامل والخالي تماماً من الثغرات V18.0
  * يتوافق بشكل مطلق ومتبادل مع: cart-engine.js وقاعدة البيانات site-data-final.json ومعايير الأداء والموبايل أولاً
- * [تحديث حرج: إصلاح تزامن الـ Toasts، وزراعة زر السلة الفاخر العائم المتنقل مع العميل في كل الصفحات]
+ * [تحديث حرج: علاج انقطاع تجربة المستخدم عبر زراعة الإشعارات الفورية وزر السلة العائم المتحرك مع العميل]
  */
 
 (function () {
@@ -217,7 +217,7 @@
             '۴': '4', '۵': '5', '۶': '6',
             '۰': '0', '۱': '1', '۲': '2', '۳': '3', '۴': '4', '۵': '5', '۶': '6', '۷': '7', '۸': '8', '۹': '9'
         };
-        return str.toString().trim().replace(/[٠-٩۰-۹]/g, match => arabicNormMap[match] || match);
+        return str.toString().trim().replace(/[٠-٩۰-٩]/g, match => arabicNormMap[match] || match);
     };
 
     window.calculateBosePrice = function (basePrice, applyOnContext = "menu-only") {
@@ -551,7 +551,7 @@
     window.isEquivalentDetails = isEquivalentDetails;
 
     // ==========================================================================
-    // 3. محركات جلب وإطلاق وتزامن البيانات والـ Toasts المطورة التفاعلية
+    // 3. محركات جلب وإطلق وتزامن البيانات والـ Toasts المطورة التفاعلية
     // ==========================================================================
 
     window.getBoseDatabase = function() {
@@ -666,7 +666,7 @@
         if (!floatingBtn) return;
         
         const cart = window.getBoseCart();
-        if (window.scrollY > 150 && cart.length > 0 && !window.location.pathname.includes("cart.html") && !window.location.pathname.includes("checkout.html")) {
+        if (window.scrollY > 150 && cart.length > 0 && !window.location.pathname.includes("cart.html") && !window.location.pathname.includes("checkout.html") && !window.location.pathname.includes("order-success.html")) {
             floatingBtn.classList.add("visible");
         } else {
             floatingBtn.classList.remove("visible");
@@ -674,7 +674,7 @@
     }
 
     function ensureFloatingCartExists() {
-        if (document.getElementById("bose-floating-cart-btn") || window.location.pathname.includes("cart.html") || window.location.pathname.includes("checkout.html")) return;
+        if (document.getElementById("bose-floating-cart-btn") || window.location.pathname.includes("cart.html") || window.location.pathname.includes("checkout.html") || window.location.pathname.includes("order-success.html")) return;
         
         let pathPrefix = "";
         const currentPath = window.location.pathname;
@@ -1110,7 +1110,6 @@
                 border-radius: 50%;
                 background-color: rgba(255, 145, 164, 0.3);
                 transition: all 0.3s ease;
-                cursor: pointer;
                 border: none;
                 padding: 0;
             }
@@ -1191,10 +1190,14 @@
             .bose-drawer-accordion-btn.active i.fa-chevron-down {
                 transform: rotate(180deg);
             }
+            .bose-drawer-accordion-btn {
+                overflow-x: hidden;
+            }
             .bose-drawer-accordion-content {
                 max-height: 0;
                 overflow: hidden;
                 transition: max-height 0.3s ease-out;
+                background: rgba(255,145,164,0.02);
                 padding-right: 16px;
                 display: flex;
                 flex-direction: column;
@@ -1515,7 +1518,7 @@
                     injectUniversalLayout();
                     applyGlobalSEOAndBranding();
                     window.updateGlobalCartCounter();
-                    ensureFloatingCartExists(); // تهيئة وبناء زر السلة العائم في الخلفية
+                    ensureFloatingCartExists(); 
                     initializeGlobalUIEvents();
                     
                     autoPopulateHomepageComponents(rawData);
