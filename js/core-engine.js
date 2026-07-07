@@ -1,8 +1,8 @@
 /**
  * 👑 المحرك المركزي العالمي وعمليات الفحص المالي والمزامنة الزمنية المتقدمة - حلويات بوسي 👑
- * النسخة الهندسية القياسية والمطورة بنسبة 100% - الإصدار الذهبي الشامل والخالي تماماً من الثغرات V14.0
+ * النسخة الهندسية القياسية والمطورة بنسبة 100% - الإصدار الذهبي الشامل والخالي تماماً من الثغرات V15.0
  * يتوافق بشكل مطلق ومتبادل مع: cart-engine.js وقاعدة البيانات site-data-final.json ومعايير الأداء والموبايل أولاً
- * [🔐 تم حل ثغرة شلل نافذة التأكيد وإضافة ربط متزامن لكلاس active لتفعيل pointer-events ودعم الحذف الفوري]
+ * [🔐 تم إصلاح اختفاء الهيدر والفوتر وتطوير القائمة الجانبية الاحترافية بقوائم منسدلة تفاعلية ذكية لأقسام المنيو]
  */
 
 (function () {
@@ -624,7 +624,7 @@
 
         requestAnimationFrame(() => {
             requestAnimationFrame(() => {
-                overlay.classList.add('active'); // 🔐 حل مشكلة شلل الحذف: تفعيل الفئة التفاعلية النشطة فوراً لتمكين pointer-events
+                overlay.classList.add('active'); // 🔐 حارس التفاعل: تأمين تفعيل كلاس active فوراً لحل ثغرة تجميد أزرار Confirm الحذف
                 overlay.style.opacity = '1';
                 const box = overlay.querySelector('.bose-modal-box');
                 if (box) box.style.transform = 'scale(1) translateY(0)';
@@ -632,7 +632,7 @@
         });
 
         const closeBoxProcedure = () => {
-            overlay.classList.remove('active'); // 🔐 سحب الفئة التفاعلية للتصفير البرمجي
+            overlay.classList.remove('active');
             overlay.style.opacity = '0';
             const box = overlay.querySelector('.bose-modal-box');
             if (box) box.style.transform = 'scale(0.9) translateY(10px)';
@@ -845,14 +845,14 @@
                 height: 100vh;
                 background: rgba(17, 17, 17, 0.4);
                 backdrop-filter: blur(4px);
-                z-index: 9999;
+                z-index: 1000100;
                 opacity: 0;
                 pointer-events: none;
                 transition: opacity 0.3s ease;
             }
             .drawer-overlay.active {
-                opacity: 1;
-                pointer-events: auto;
+                opacity: 1 !important;
+                pointer-events: auto !important;
             }
             .bose-search-modal {
                 position: fixed;
@@ -987,11 +987,8 @@
             }
             
             .bose-navbar, .bose-footer, .bose-drawer-menu {
-                opacity: 0;
+                opacity: 1 !important;
                 transition: opacity 0.35s ease-in-out;
-            }
-            .bose-navbar.loaded, .bose-footer.loaded, .bose-drawer-menu.loaded {
-                opacity: 1;
             }
             
             @keyframes bose-spin {
@@ -1065,6 +1062,61 @@
             }
             .excellence-track-auto-loop:hover {
                 animation-play-state: paused !important;
+            }
+
+            /* 👑 أنماط وتنسيقات القوائم المنسدلة الاحترافية الفعالة داخل القائمة الجانبية 👑 */
+            .bose-drawer-accordion-btn {
+                width: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 12px 14px;
+                font-size: 0.95rem;
+                font-weight: 700 !important;
+                color: var(--bose-black);
+                background: transparent;
+                border-radius: 12px;
+                cursor: pointer;
+                transition: background 0.2s ease;
+                text-align: right;
+            }
+            .bose-drawer-accordion-btn:hover {
+                background: rgba(255, 145, 164, 0.05);
+            }
+            .bose-drawer-accordion-btn i.fa-chevron-down {
+                font-size: 0.8rem;
+                transition: transform 0.3s ease;
+                color: var(--bose-pink);
+            }
+            .bose-drawer-accordion-btn.active i.fa-chevron-down {
+                transform: rotate(180deg);
+            }
+            .bose-drawer-accordion-content {
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease-out;
+                padding-right: 16px;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+            }
+            .bose-drawer-sublink {
+                display: flex !important;
+                align-items: center;
+                gap: 8px;
+                padding: 8px 12px !important;
+                font-size: 0.88rem !important;
+                font-weight: 600 !important;
+                color: var(--bose-black);
+                opacity: 0.85;
+                text-decoration: none;
+                transition: all 0.2s ease;
+                border-radius: 8px;
+            }
+            .bose-drawer-sublink:hover {
+                color: var(--bose-pink) !important;
+                background: var(--bose-cream);
+                opacity: 1;
             }
         `;
         document.head.appendChild(styleTag);
@@ -1172,9 +1224,9 @@
 
         const dynamicLogo = window.getBoseLogo();
 
-        const existingNavbar = document.querySelector(".bose-navbar");
-        if (existingNavbar && !existingNavbar.hasAttribute("data-dynamic-injected")) {
-            existingNavbar.setAttribute("data-dynamic-injected", "true");
+        // 🏢 [تأمين حقن الهيدر المركزي الشامل]
+        const existingNavbar = document.querySelector(".bose-navbar") || document.getElementById("universal-header-node");
+        if (existingNavbar) {
             existingNavbar.innerHTML = `
                 <div class="navbar-mobile-wrapper" style="display: flex; width: 100%; justify-content: space-between; align-items: center; padding: 0 16px;">
                     <button id="mobile-menu-toggle" class="nav-icon-btn" aria-label="فتح قائمة التصفح" style="background: none; border: none; font-size: 1.4rem; color: var(--bose-black); cursor: pointer;">
@@ -1210,45 +1262,83 @@
                     </div>
                 </div>
             `;
-            requestAnimationFrame(() => {
-                existingNavbar.classList.add("loaded");
-            });
+            existingNavbar.classList.add("loaded");
         }
 
-        let drawerMenu = document.querySelector(".bose-drawer-menu, #sidebar-drawer");
-        if (drawerMenu && !drawerMenu.hasAttribute("data-dynamic-injected")) {
-            drawerMenu.setAttribute("data-dynamic-injected", "true");
+        // 🚪 [تطوير وهندسة القائمة الجانبية الفاخرة المنسدلة الاحترافية والفعالة]
+        let drawerMenu = document.querySelector(".bose-drawer-menu") || document.getElementById("sidebar-drawer");
+        if (drawerMenu) {
             drawerMenu.innerHTML = `
-                <div class="drawer-premium-header" style="padding: 24px 20px; background: rgba(255,145,164,0.08); border-bottom: var(--bose-border-pink); ">
+                <div class="drawer-premium-header" style="padding: 24px 20px; background: rgba(255,145,164,0.08); border-bottom: var(--bose-border-pink); position: relative;">
                     <h3 style="margin: 0; font-size: 1.15rem; font-weight: 700; color: var(--bose-black);">قائمة التصفح الفاخرة</h3>
                     <p style="margin: 4px 0 0 0; font-size: 0.85rem; color: var(--bose-pink); font-weight: 600;">حلويات بوسي - فرع الكفاح 🌸</p>
+                    <button id="sidebar-close-panel-btn" class="drawer-close-btn" aria-label="إغلاق القائمة" style="position: absolute; left: 16px; top: 24px; background: none; border: 1px solid rgba(255,145,164,0.3); border-radius: 50%; width: 30px; height: 30px; cursor: pointer;">×</button>
                 </div>
-                <div class="drawer-links-scrollable" style="padding: 16px 20px; flex-grow: 1;">
-                    <span class="drawer-divider-label" style="display: block; font-size: 0.75rem; font-weight: 700; color: #777; margin-bottom: 12px; letter-spacing: 0.5px;">الأقسام الرئيسية</span>
-                    <ul class="drawer-links-list" style="list-style: none; padding: 0; margin: 0 0 24px 0; display: flex; flex-direction: column; gap: 14px;">
-                        <li class="drawer-link-item"><a href="${pathPrefix}index.html" class="${pageFileName.includes('index.html') ? 'active' : ''}" style="text-decoration: none; color: var(--bose-black); font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 10px;"><i class="fas fa-home" style="color: var(--bose-pink);"></i> الواجهة الرئيسية</a></li>
-                        <li class="drawer-link-item"><a href="${pathPrefix}menu.html" class="${pageFileName.includes('menu.html') || pageFileName.includes('category.html') ? 'active' : ''}" style="text-decoration: none; color: var(--bose-black); font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 10px;"><i class="fas fa-utensils" style="color: var(--bose-pink);"></i> المنيو الشامل</a></li>
-                        <li class="drawer-link-item"><a href="${pathPrefix}cart.html" class="${pageFileName.includes('cart.html') ? 'active' : ''}" style="text-decoration: none; color: var(--bose-black); font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 10px;"><i class="fas fa-shopping-basket" style="color: var(--bose-pink);"></i> سلة التسوق</a></li>
+                <div class="drawer-links-scrollable" style="padding: 16px 20px; flex-grow: 1; overflow-y: auto;">
+                    <span class="drawer-divider-label" style="display: block; font-size: 0.75rem; font-weight: 700; color: #777; margin-bottom: 12px; letter-spacing: 0.5px;">التنقل السريع</span>
+                    <ul class="drawer-links-list" style="list-style: none; padding: 0; margin: 0 0 20px 0; display: flex; flex-direction: column; gap: 10px;">
+                        <li class="drawer-link-item"><a href="${pathPrefix}index.html" class="${pageFileName.includes('index.html') ? 'active' : ''}" style="text-decoration: none; color: var(--bose-black); font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 10px;"><i class="fas fa-home" style="color: var(--bose-pink); width: 16px;"></i> الواجهة الرئيسية</a></li>
+                        <li class="drawer-link-item"><a href="${pathPrefix}menu.html" class="${pageFileName.includes('menu.html') && !currentPath.includes('category=') ? 'active' : ''}" style="text-decoration: none; color: var(--bose-black); font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 10px;"><i class="fas fa-utensils" style="color: var(--bose-pink); width: 16px;"></i> المنيو الشامل</a></li>
                     </ul>
-                    <span class="drawer-divider-label" style="display: block; font-size: 0.75rem; font-weight: 700; color: #777; margin-bottom: 12px; letter-spacing: 0.5px;">المحاكيات الحصرية</span>
-                    <ul class="drawer-links-list" style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 14px;">
-                        <li class="drawer-link-item featured-hub"><a href="${pathPrefix}cake-builder.html" class="${pageFileName.includes('cake-builder.html') ? 'active' : ''}" style="text-decoration: none; color: var(--bose-black); font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 10px;"><i class="fas fa-birthday-cake" style="color: var(--bose-gold);"></i> محاكي التورت التفاعلي</a></li>
-                        <li class="drawer-link-item featured-hub"><a href="${pathPrefix}flower-builder.html" class="${pageFileName.includes('flower-builder.html') ? 'active' : ''}" style="text-decoration: none; color: var(--bose-black); font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 10px;"><i class="fas fa-spa" style="color: var(--bose-gold);"></i> محاكي الورد التفاعلي</a></li>
+
+                    <span class="drawer-divider-label" style="display: block; font-size: 0.75rem; font-weight: 700; color: #777; margin-bottom: 12px; letter-spacing: 0.5px;">تصفح الأصناف (قائمة منسدلة)</span>
+                    <div class="bose-drawer-accordion-container" style="margin-bottom: 20px;">
+                        <button class="bose-drawer-accordion-btn" id="drawer-menu-accordion">
+                            <span style="display:flex; align-items:center; gap:10px;"><i class="fas fa-tags" style="color:var(--bose-pink); width:16px;"></i> تصنيفات الحلويات</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="bose-drawer-accordion-content" id="drawer-menu-accordion-content">
+                            <a href="${pathPrefix}category.html?category=taswaq-toort" class="bose-drawer-sublink">🎂 قسم التورت الفاخرة</a>
+                            <a href="${pathPrefix}category.html?category=taswaq-gatowat" class="bose-drawer-sublink">🍰 قطع الجاتوه الملكي</a>
+                            <a href="${pathPrefix}category.html?category=taswaq-qashtota" class="bose-drawer-sublink">🥛 القشطوطة الأصلية</a>
+                            <a href="${pathPrefix}category.html?category=taswaq-despacito" class="bose-drawer-sublink">🍫 قوالب الديسباسيتو</a>
+                            <a href="${pathPrefix}category.html?category=taswaq-cinabon" class="bose-drawer-sublink">🥮 قطع السينابون الدافئة</a>
+                            <a href="${pathPrefix}category.html?category=taswaq-donuts" class="bose-drawer-sublink">🍩 الدوناتس الهشة حشو غني</a>
+                            <a href="${pathPrefix}category.html?category=taswaq-red-velvet" class="bose-drawer-sublink">🌹 نكهات الريدڤيلڤت</a>
+                            <a href="${pathPrefix}category.html?category=taswaq-cupcake", class="bose-drawer-sublink">🧁 كب كيك الحفلات</a>
+                            <a href="${pathPrefix}category.html?category=taswaq-mini-cake", class="bose-drawer-sublink">🍰 الميني تورت الفاخرة</a>
+                            <a href="${pathPrefix}category.html?category=taswaq-happiness-cups", class="bose-drawer-sublink">🍧 كبات السعادة الغنية</a>
+                            <a href="${pathPrefix}category.html?category=taswaq-relax-box", class="bose-drawer-sublink">🎁 بوكس الروقان المتكامل</a>
+                        </div>
+                    </div>
+
+                    <span class="drawer-divider-label" style="display: block; font-size: 0.75rem; font-weight: 700; color: #777; margin-bottom: 12px; letter-spacing: 0.5px;">المحاكيات والمشتريات</span>
+                    <ul class="drawer-links-list" style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px;">
+                        <li class="drawer-link-item featured-hub"><a href="${pathPrefix}cake-builder.html" class="${pageFileName.includes('cake-builder.html') ? 'active' : ''}" style="text-decoration: none; color: var(--bose-black); font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 10px;"><i class="fas fa-birthday-cake" style="color: var(--bose-gold); width: 16px;"></i> محاكي التورت التفاعلي</a></li>
+                        <li class="drawer-link-item featured-hub"><a href="${pathPrefix}flower-builder.html" class="${pageFileName.includes('flower-builder.html') ? 'active' : ''}" style="text-decoration: none; color: var(--bose-black); font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 10px;"><i class="fas fa-spa" style="color: var(--bose-gold); width: 16px;"></i> محاكي الورد التفاعلي</a></li>
+                        <li class="drawer-link-item"><a href="${pathPrefix}cart.html" class="${pageFileName.includes('cart.html') ? 'active' : ''}" style="text-decoration: none; color: var(--bose-black); font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 10px;"><i class="fas fa-shopping-basket" style="color: var(--bose-pink); width: 16px;"></i> سلة مشترياتك الفاخرة</a></li>
                     </ul>
                 </div>
-                <div class="drawer-premium-footer" style="padding: 20px; border-top: var(--bose-border-pink); display: flex; flex-direction: column; gap: 12px;">
-                    <a href="tel:01097238441" class="bose-btn-primary" style="display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--bose-pink); color: #FFF; text-decoration: none; font-weight: 700; padding: 12px; border-radius: 12px; text-align: center; font-size: 0.9rem; box-shadow: var(--bose-shadow-glow);">اتصال فوري بالفرع</a>
+                <div class="drawer-premium-footer" style="padding: 20px; border-top: var(--bose-border-pink); background: var(--bose-cream); display: flex; flex-direction: column; gap: 12px;">
+                    <a href="https://wa.me/201097238441" class="bose-btn-primary" target="_blank" style="display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--bose-pink); color: #FFF; text-decoration: none; font-weight: 700; padding: 12px; border-radius: 12px; text-align: center; font-size: 0.9rem; box-shadow: var(--bose-shadow-glow);">💬 تواصل فوري عبر الواتساب</a>
                     <p style="margin: 0; font-size: 0.75rem; text-align: center; color: #888;">&copy; 2026 جميع الحقوق محفوظة لـ علامة حلويات بوسي الفاخرة.</p>
                 </div>
             `;
-            requestAnimationFrame(() => {
-                drawerMenu.classList.add("loaded");
-            });
+            drawerMenu.classList.add("loaded");
+
+            // تفعيل حركة القائمة المنسدلة الاحترافية داخل الـ Drawer لمنع السطحية
+            const accBtn = drawerMenu.querySelector('#drawer-menu-accordion');
+            const accContent = drawerMenu.querySelector('#drawer-menu-accordion-content');
+            if (accBtn && accContent) {
+                accBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    accBtn.classList.toggle('active');
+                    if (accContent.style.maxHeight) {
+                        accContent.style.maxHeight = null;
+                        accContent.style.paddingTop = "0px";
+                        accContent.style.paddingBottom = "0px";
+                    } else {
+                        accContent.style.maxHeight = accContent.scrollHeight + "px";
+                        accContent.style.paddingTop = "8px";
+                        accContent.style.paddingBottom = "8px";
+                    }
+                });
+            }
         }
 
-        const existingFooter = document.querySelector(".bose-footer");
-        if (existingFooter && !existingFooter.hasAttribute("data-dynamic-injected")) {
-            existingFooter.setAttribute("data-dynamic-injected", "true");
+        // 🏪 [تأمين حقن الفوتر الموحد الثابت بلونه الفاتح]
+        const existingFooter = document.querySelector(".bose-footer") || document.getElementById("universal-footer-node");
+        if (existingFooter) {
             existingFooter.innerHTML = `
                 <div class="footer-inner-wrapper" style="width: 100%; max-width: 1200px; margin: 0 auto; padding: 40px 16px; display: flex; flex-direction: column; align-items: center; gap: 24px; text-align: center;">
                     <div class="footer-logo-container">
@@ -1284,9 +1374,7 @@
                     </div>
                 </div>
             `;
-            requestAnimationFrame(() => {
-                existingFooter.classList.add("loaded");
-            });
+            existingFooter.classList.add("loaded");
         }
     }
 
@@ -2084,7 +2172,7 @@
                 <div class="search-modal-box">
                     <div class="search-modal-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; border-bottom:1px solid rgba(255,145,164,0.15); padding-bottom:12px;">
                         <h3 style="margin:0; font-size:1.15rem; font-weight:700; color:var(--bose-black);">البحث السريع في الأصناف</h3>
-                        <button class="search-close-btn" style="background:none; border:none; font-size:1.5rem; color:var(--bose-black); cursor:pointer; font-weight:700;" aria-label="إغلاقُ نافذة البحث">×</button>
+                        <button class="search-close-btn" style="background:none; border:none; font-size:1.5rem; color:var(--bose-black); cursor:pointer; font-weight:700;" aria-label="إغلاق نافذة البحث">×</button>
                     </div>
                     <div class="search-modal-body">
                         <input type="text" id="global-search-input" placeholder="اكتب اسم صنفك المفضل.. (لوتس، كب كيك، بوكس..)" style="width:100%; border:var(--bose-pink); border-radius:12px; padding:12px 16px; font-family:'Cairo', sans-serif; font-size:0.95rem; box-sizing:border-box; outline:none; transition:0.2s; color:var(--bose-black);" onfocus="this.style.borderColor='var(--bose-pink)'" onblur="this.style.borderColor='rgba(255,145,164,0.3)'">
@@ -2104,7 +2192,7 @@
 
     function initializeGlobalUIEvents() {
         const menuToggleButtons = document.querySelectorAll("#mobile-menu-toggle, .nav-menu-toggle, #menu-toggle-btn");
-        const drawerMenu = document.querySelector(".bose-drawer-menu, #sidebar-drawer");
+        const drawerMenu = document.querySelector(".bose-drawer-menu") || document.getElementById("sidebar-drawer");
         const closeDrawerButtons = document.querySelectorAll("#sidebar-close-panel-btn, #drawer-shield");
         
         let drawerOverlay = document.querySelector(".drawer-overlay, #drawer-shield");
