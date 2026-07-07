@@ -4,10 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
+    <!-- 👑 علامات الأرشفة وهندسة الـ SEO الفاخرة المعتمدة لبراند حلويات بوسي 👑 -->
     <title>إتمام الطلب الفاخر | حلويات بوسي</title>
     <meta name="description" content="أدخل بياناتك اللوجستية لمراجعة وتأكيد فاتورتك الملكية وتنسيق التوصيل الفوري لطلبك من فرع الكفاح لحلويات بوسي.">
     <meta name="robots" content="noindex, follow">
     
+    <!-- الروابط الموحدة للتصميم لمنع تضخم الملفات وتأخر التحميل البصري -->
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/cart-checkout.css">
@@ -92,7 +94,7 @@
             box-shadow: 0 0 8px rgba(255, 145, 164, 0.15);
         }
 
-        /* تنسيق بطاقات خيارات الاستلام التفاعلية الملكية */
+        /* تنسيق أزرار خيارات مسار الاستلام التفاعلية */
         .fulfillment-methods-flex {
             display: flex;
             gap: 12px;
@@ -100,35 +102,31 @@
             margin-bottom: 8px;
         }
 
-        .fulfillment-radio-custom {
-            display: none;
-        }
-
-        .fulfillment-selectable-label {
+        .btn-fulfillment-node {
             flex: 1;
             min-width: 140px;
-            background: var(--bose-white);
-            border: 1px solid rgba(17, 17, 17, 0.1);
-            border-radius: 14px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
             padding: 14px;
+            border-radius: 14px;
+            border: 1px solid rgba(17, 17, 17, 0.1);
+            background: var(--bose-white);
+            color: var(--bose-black);
             cursor: pointer;
             transition: 0.2s ease;
-            text-align: center;
             display: flex;
             flex-direction: column;
+            align-items: center;
+            justify-content: center;
             gap: 4px;
         }
 
-        .fulfillment-radio-custom:checked + .fulfillment-selectable-label {
+        .btn-fulfillment-node.active {
             border-color: var(--bose-pink);
             background: rgba(255, 145, 164, 0.04);
             box-shadow: 0 4px 12px rgba(255, 145, 164, 0.08);
-        }
-
-        .fulfillment-selectable-label .method-title {
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: var(--bose-black);
+            color: var(--bose-pink);
         }
 
         /* مراجعة الفاتورة الجانبية الثابتة */
@@ -146,7 +144,7 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
-            max-height: 240px;
+            max-height: 200px;
             overflow-y: auto;
             margin-bottom: 16px;
             padding-left: 4px;
@@ -164,31 +162,6 @@
             padding-bottom: 8px;
         }
 
-        .btn-confirm-final-order {
-            width: 100%;
-            background-color: var(--bose-pink, #FF91A4);
-            color: var(--bose-white, #FFFFFF);
-            border: none;
-            padding: 14px;
-            border-radius: 50px;
-            font-size: 1rem;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            box-shadow: 0 6px 20px rgba(255, 145, 164, 0.2);
-            transition: 0.2s ease;
-            font-family: 'Cairo', sans-serif;
-            margin-top: 20px;
-        }
-
-        .btn-confirm-final-order:hover {
-            background-color: var(--bose-black, #111111);
-            box-shadow: 0 6px 20px rgba(17, 17, 17, 0.15);
-        }
-
         /* حظر حاسم لعصر وانضغاط لوجو الفوتر */
         .footer-logo-container img, 
         .bose-footer #bose-store-logo {
@@ -202,74 +175,74 @@
         }
     </style>
 
+    <!-- المحرك العام (يُستدعى أولاً في كل الصفحات لقراءة الـ JSON) -->
     <script src="js/core-engine.js"></script>
 </head>
 <body class="bose-hardware-accelerated">
 
+    <!-- 🏢 مكون الهيدر الموحد والثابت (Shared Universal Header) 🏢 -->
     <header class="bose-navbar"></header>
     <div id="sidebar-drawer" class="bose-drawer-menu"></div>
     <div id="drawer-shield" class="drawer-overlay"></div>
 
+    <!-- 🧱 المحتوى الرئيسي لصفحة التجهيز اللوجستي الفاخرة 🧱 -->
     <main class="checkout-page-section">
         <div class="cart-page-header">
-            <h1 class="cart-page-title">إتمام وحجز الطلب</h1>
-            <p class="cart-page-subtitle bose-arabic-text">من فضلك اكتب بياناتك اللوجستية بدقة ليقوم خبراء فرع الكفاح بتنسيق الفاتورة وتأمين تحضير طلبك الطازج بكل حب 🌸</p>
+            <h1 class="cart-page-title">إتمام الطلب</h1>
+            <p class="cart-page-subtitle bose-arabic-text">من فضلك اكتب بياناتك اللوجستية بدقة ليقوم خبراء فرع الكفاح بتجهيز طلبك الفاخر في موعده القياسي المعتمد 🌸</p>
         </div>
 
         <div class="checkout-grid-layout">
             
+            <!-- الجانب الأيمن: استمارة حصد البيانات الملتزمة بمعرفات المحرك المشترك بالمليم -->
             <div class="checkout-form-panel">
                 <h3 class="checkout-pane-title"><i class="fas fa-truck-ramp-box" style="color:var(--bose-pink);"></i> البيانات اللوجستية وموعد الاستلام</h3>
                 
-                <form id="bose-checkout-form" class="form-inputs-stack">
+                <form id="bose-checkout-fields-form" class="form-inputs-stack">
                     <div class="input-group-node">
-                        <label for="checkout-user-name">الاسم الكريم بالكامل</label>
-                        <input type="text" id="checkout-user-name" class="bose-field-capture" placeholder="اكتب اسمك الثلاثي لتوثيق الفاتورة..." required>
+                        <label for="checkout-customer-name">الاسم الكريم بالكامل</label>
+                        <input type="text" id="checkout-customer-name" class="bose-field-capture" placeholder="اكتب اسمك الثلاثي لتوثيق الفاتورة الفاخرة..." required>
                     </div>
 
                     <div class="input-group-node">
-                        <label for="checkout-user-phone">رقم الهاتف الفعلي (الواتساب)</label>
-                        <input type="tel" id="checkout-user-phone" class="bose-field-capture" placeholder="مثال: 01097238441..." required>
+                        <label for="checkout-customer-phone">رقم الهاتف الفعلي (الواتساب الأساسي)</label>
+                        <input type="tel" id="checkout-customer-phone" class="bose-field-capture" placeholder="مثال: 01097238441..." required>
                     </div>
 
                     <div class="input-group-node">
-                        <label>طريقة الاستلام المفضلة لك</label>
+                        <label for="checkout-customer-phone-2">رقم هاتف إضافي بديل (اختياري لسلامة الشحن)</label>
+                        <input type="tel" id="checkout-customer-phone-2" class="bose-field-capture" placeholder="اكتب رقم موبايل إضافي إن وجد لحمايتك من مشاكل الشبكة...">
+                    </div>
+
+                    <div class="input-group-node">
+                        <label>كيف ترغب في استلام الطلب؟</label>
                         <div class="fulfillment-methods-flex">
-                            <label style="flex:1;">
-                                <input type="radio" name="bose-fulfillment-type" value="delivery" class="fulfillment-radio-custom" checked>
-                                <div class="fulfillment-selectable-label">
-                                    <span class="method-title"><i class="fas fa-shipping-fast" style="color:var(--bose-pink);"></i> توصيل للمنزل</span>
-                                </div>
-                            </label>
-                            <label style="flex:1;">
-                                <input type="radio" name="bose-fulfillment-type" value="pickup" class="fulfillment-radio-custom">
-                                <div class="fulfillment-selectable-label">
-                                    <span class="method-title"><i class="fas fa-store" style="color:var(--bose-pink);"></i> استلام بنفسي من الفرع</span>
-                                </div>
-                            </label>
+                            <button type="button" id="method-delivery" class="btn-fulfillment-node active">
+                                <span><i class="fas fa-shipping-fast"></i> أرغب في التوصيل للمنزل</span>
+                            </button>
+                            <button type="button" id="method-pickup" class="btn-fulfillment-node">
+                                <span><i class="fas fa-store"></i> سأستلم الطلب بنفسي من الفرع</span>
+                            </button>
                         </div>
                     </div>
 
-                    <div id="bose-shipping-zone-wrapper" class="input-group-node">
-                        <label for="checkout-shipping-zone">منطقة التوصيل الجغرافية</label>
-                        <select id="checkout-shipping-zone" class="bose-field-capture">
-                            </select>
-                    </div>
-
-                    <div id="bose-pickup-location-info" class="input-group-node" style="display: none; background: rgba(212, 175, 55, 0.05); border: 1px dashed var(--bose-gold); border-radius: 14px; padding: 16px;">
-                        <label style="color: var(--bose-gold); margin-bottom: 4px;"><i class="fas fa-map-marker-alt"></i> عنوان لوكيشن الاستلام الرسمي لبراند بوسي:</label>
-                        <p id="bose-pickup-address-text" style="font-size: 0.88rem; line-height: 1.5; color: var(--bose-black); margin: 0 0 10px 0;"></p>
-                        <a id="bose-pickup-map-link" href="#" target="_blank" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; font-weight: 700; color: var(--bose-pink); text-decoration: none;"><i class="fas fa-directions"></i> فتح المكان على خرائط جوجل (Google Maps)</a>
+                    <!-- 🗺️ [فك الشلل]: وعاء المنطقة السكنية بالمعرف المعتمد تماماً في كود المحرك الحاكم ليعمل السحب آلياً -->
+                    <div id="shipping-zone-wrapper" class="input-group-node">
+                        <label for="checkout-zone-select">المنطقة السكنية للتوصيل</label>
+                        <select id="checkout-zone-select" class="bose-field-capture" required>
+                            <!-- يتم حقن فئات مناطق الشحن الـ 10 وأسعارها بالمسطرة بواسطة cart-engine.js عند القراءة -->
+                        </select>
                     </div>
 
                     <div class="input-group-node">
-                        <label for="checkout-user-address" id="bose-address-field-label">العنوان الفعلي بالتفصيل</label>
-                        <input type="text" id="checkout-user-address" class="bose-field-capture" placeholder="اكتب الشارع، رقم المنزل أو كود المعلم المميز لك..." required>
+                        <label for="checkout-address-details">العنوان الفعلي بالتفصيل</label>
+                        <textarea id="checkout-address-details" class="bose-field-capture" placeholder="اكتب الشارع، رقم المنزل، أو علامة مميزة جمبك لراحة مندوب الشحن..." style="height: 80px; resize: none;" required></textarea>
                     </div>
 
+                    <!-- ⏱️ حقول الجدولة والزمن الصارمة الملتزمة بحارس الـ 24 ساعة للتحضير والإتقان -->
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%;">
                         <div class="input-group-node">
-                            <label for="checkout-delivery-date">تاريخ الاستلام</label>
+                            <label for="checkout-delivery-date">تاريخ الاستلام المطلوب</label>
                             <input type="date" id="checkout-delivery-date" class="bose-field-capture" required>
                         </div>
                         <div class="input-group-node">
@@ -277,261 +250,80 @@
                             <input type="time" id="checkout-delivery-time" class="bose-field-capture" required>
                         </div>
                     </div>
+                    
+                    <p id="checkout-preparation-message" style="font-size: 0.8rem; color: var(--bose-pink); font-weight: 600; margin: 4px 0 0 0; line-height: 1.4; text-align: right;">
+                        <!-- جاري جلب نص حارس الوقت من الـ JSON الشفاف لمنع التشتيت -->
+                    </p>
                 </form>
             </div>
 
+            <!-- الجانب الأيسر: مراجعة وملخص الفاتورة المالية الثابتة الملتزمة بمعرفات الحساب الموحدة -->
             <div class="invoice-sticky-preview">
                 <h3 class="checkout-pane-title"><i class="fas fa-receipt" style="color:var(--bose-pink);"></i> مراجعة بنود الفاتورة المالية</h3>
                 
-                <div id="checkout-invoice-items-hook" class="invoice-items-compact-list">
-                    </div>
+                <!-- وسم حقن الأصناف المدمج محلياً بالسلة الفائقة -->
+                <div id="bose-invoice-compact-items-list" class="invoice-items-compact-list">
+                    <!-- يتم استدعاء الكروت الفرعية محلياً هنا تلقائياً -->
+                </div>
 
+                <!-- 🎫 حقل وتطبييق نظام كوبونات الخصم والربط المالي الآمن -->
+                <div class="coupon-form-container">
+                    <input type="text" id="checkout-coupon-input" class="coupon-input-field" placeholder="اكتب كود الخصم الفاخر هنا...">
+                    <button type="button" id="btn-submit-coupon" class="coupon-apply-trigger">تطبيق</button>
+                </div>
+                <div id="coupon-status-text" class="coupon-status-toast"></div>
+
+                <!-- جدول تفاصيل الحسابات المالية الملتزم بالمعرفات الحاكمة تماماً لمنع أي تفاوت حسابي -->
                 <div class="summary-pricing-table" style="margin: 0; padding: 0; border: none;">
                     <div class="pricing-row-node">
                         <span class="pricing-label-text">صافي قيمة الأصناف:</span>
-                        <span id="invoice-subtotal-val" class="pricing-value-text">0 EGP</span>
+                        <span id="summary-subtotal" class="pricing-value-text">0 EGP</span>
                     </div>
                     <div class="pricing-row-node">
                         <span class="pricing-label-text">الخصم المطبق (الكوبون):</span>
-                        <span id="invoice-discount-val" class="pricing-value-text" style="color:var(--bose-success-text);">0 EGP</span>
+                        <span id="summary-discount" class="pricing-value-text" style="color:var(--bose-success-text); font-weight:700;">0 EGP</span>
                     </div>
                     <div class="pricing-row-node">
                         <span class="pricing-label-text">رسوم ومصاريف التوصيل:</span>
-                        <span id="invoice-shipping-val" class="pricing-value-text">0 EGP</span>
+                        <span id="summary-shipping-fee" class="pricing-value-text">0 EGP</span>
                     </div>
                     
-                    <div class="receipt-footer-total">
-                        <span>الإجمالي المالي النهائي:</span>
-                        <span id="invoice-grand-total-val" class="receipt-total-val">0 EGP</span>
+                    <div class="summary-grand-total-row">
+                        <span class="grand-total-label">الإجمالي المالي النهائي:</span>
+                        <span id="summary-grand-total" class="total-value-display">0 EGP</span>
                     </div>
                 </div>
 
-                <button type="submit" form="bose-checkout-form" class="btn-confirm-final-order">
+                <!-- زر الإجراء الحاسم والمعتمد بالمعرف الصريح لفك الشلل وبدء صياغة رسالة الواتساب وتطهير الذاكرة -->
+                <button type="button" id="btn-submit-order-final" class="bose-primary-checkout-btn">
                     <i class="fas fa-lock"></i> حجز وتأكيد الفاتورة الملكية
                 </button>
             </div>
         </div>
     </main>
 
+    <!-- 🏪 مكون الفوتر الموحد والثابت الفاتح الصريح (Shared Universal Footer) -->
     <footer class="bose-footer"></footer>
 
+    <!-- ⚡ استدعاء محرك السلة المشترك والذكي الحاكم لكافة العمليات اللوجستية محلياً وسحابياً (js/cart-engine.js) ⚡ -->
+    <script src="js/cart-engine.js"></script>
+
+    <!-- سكريبت التعبئة الاحتياطية للأصناف داخل المراجعة كصمام أمان إضافي -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            const itemsHook = document.getElementById("checkout-invoice-items-hook");
-            const subtotalLbl = document.getElementById("invoice-subtotal-val");
-            const discountLbl = document.getElementById("invoice-discount-val");
-            const shippingLbl = document.getElementById("invoice-shipping-val");
-            const grandTotalLbl = document.getElementById("invoice-grand-total-val");
-            const checkoutForm = document.getElementById("bose-checkout-form");
-            
-            const fulfillmentRadios = document.querySelectorAll('input[name="bose-fulfillment-type"]');
-            const shippingZoneWrapper = document.getElementById("bose-shipping-zone-wrapper");
-            const shippingZoneSelect = document.getElementById("checkout-shipping-zone");
-            const pickupLocationInfo = document.getElementById("bose-pickup-location-info");
-            const addressInput = document.getElementById("checkout-user-address");
-            const addressLabel = document.getElementById("bose-address-field-label");
+            const compactContainer = document.getElementById("bose-invoice-compact-items-list");
+            if (!compactContainer) return;
 
-            const datePicker = document.getElementById("checkout-delivery-date");
-            const timePicker = document.getElementById("checkout-delivery-time");
-
-            let storeDatabase = null;
-            let currentShippingFee = 0;
-
-            // 1. استرجاع بيانات الكاش الحسابي من الـ LocalStorage الموحد
             const rawCart = localStorage.getItem("bose_cart");
-            const cartItems = rawCart ? JSON.parse(rawCart) : [];
+            const cart = rawCart ? JSON.parse(rawCart) : [];
 
-            if (cartItems.length === 0) {
-                renderEmptyCheckoutFallback();
-                return;
-            }
-
-            let itemsSubtotal = 0;
-            cartItems.forEach(item => { itemsSubtotal += (item.finalPrice * item.quantity); });
-            let savedDiscount = parseFloat(localStorage.getItem("bose_cart_discount_value")) || 0;
-
-            // دالة تحديث الحساب المالي النهائي حياً بالواجهة
-            const refreshInvoiceTotals = () => {
-                subtotalLbl.textContent = `${itemsSubtotal} EGP`;
-                discountLbl.textContent = `${savedDiscount} EGP`;
-                shippingLbl.textContent = `${currentShippingFee} EGP`;
-                
-                const finalGrandTotal = Math.max(0, (itemsSubtotal - savedDiscount) + currentShippingFee);
-                grandTotalLbl.textContent = `${Math.round(finalGrandTotal)} EGP`;
-            };
-
-            // رندرة وحقن البنود والأصناف داخل المراجعة
-            itemsHook.innerHTML = cartItems.map(item => `
-                <div class="invoice-item-compact-node">
-                    <span>${window.escapeHTML ? window.escapeHTML(item.title) : item.title} <span style="opacity:0.6;">(×${item.quantity})</span><span style="display:block; font-size:0.75rem; color:var(--bose-pink); font-weight:700;">${item.flavorName || 'كلاسيك'}</span></span>
-                    <span class="receipt-item-price">${item.finalPrice * item.quantity} EGP</span>
-                </div>
-            `).join("");
-
-            // 2. سحب مناطق الشحن وبيانات التوصيل تلقائياً وحياً من الـ JSON المركزي الموحد
-            window.getBoseDatabase().then(siteData => {
-                storeDatabase = siteData;
-                hydrateFulfillmentData();
-            }).catch(() => {
-                document.addEventListener("BoseDatabaseLoaded", (e) => {
-                    storeDatabase = e.detail;
-                    hydrateFulfillmentData();
-                });
-            });
-
-            function hydrateFulfillmentData() {
-                if (!storeDatabase) return;
-
-                // إعداد حامي التاريخ الصارم: قفل الـ min date ليكون بكرة (بعد 24 ساعة من اللحظة)
-                const minDate = new Date();
-                minDate.setDate(minDate.getDate() + 1); // إضافة يوم كامل (24 ساعة تحضير)
-                const dd = String(minDate.getDate()).padStart(2, '0');
-                const mm = String(minDate.getMonth() + 1).padStart(2, '0');
-                const yyyy = minDate.getFullYear();
-                datePicker.min = `${yyyy}-${mm}-${dd}`;
-
-                // شحن وتوليد مصفوفة الشحن الجغرافي بالكامل من الـ JSON
-                if (storeDatabase.shipping && Array.isArray(storeDatabase.shipping.zones)) {
-                    shippingZoneSelect.innerHTML = storeDatabase.shipping.zones.map(zone => `
-                        <option value="${zone.name}" data-fee="${zone.fee}">${zone.name} (رسوم: ${zone.fee} EGP)</option>
-                    `).join("");
-                }
-
-                // سحب وتأمين بيانات استلام الفرع
-                if (storeDatabase.store && storeDatabase.store.pickup) {
-                    document.getElementById("bose-pickup-address-text").textContent = storeDatabase.store.pickup.address;
-                    document.getElementById("bose-pickup-map-link").href = storeDatabase.store.pickup.mapUrl;
-                }
-
-                // تعيين القيمة الافتراضية للتوصيل
-                updateFulfillmentUI("delivery");
-            }
-
-            function updateFulfillmentUI(type) {
-                if (type === "pickup") {
-                    shippingZoneWrapper.style.display = "none";
-                    pickupLocationInfo.style.display = "block";
-                    addressLabel.textContent = "ملاحظات إضافية لموقع استلامك الشخصي (اختياري)";
-                    addressInput.placeholder = "مثال: هعدي استلمها الساعة 5 بالظبط مع بوكيه الورد المخصص...";
-                    addressInput.required = false;
-                    currentShippingFee = 0;
-                } else {
-                    shippingZoneWrapper.style.display = "block";
-                    pickupLocationInfo.style.display = "none";
-                    addressLabel.textContent = "العنوان الفعلي بالتفصيل";
-                    addressInput.placeholder = "اكتب الشارع، رقم المنزل أو كود المعلم المميز لك...";
-                    addressInput.required = true;
-                    
-                    const selectedOpt = shippingZoneSelect.options[shippingZoneSelect.selectedIndex];
-                    currentShippingFee = selectedOpt ? parseFloat(selectedOpt.dataset.fee) : 0;
-                }
-                refreshInvoiceTotals();
-            }
-
-            // الاستماع لتغيير الراديو التفاعلي لنوع الاستلام
-            fulfillmentRadios.forEach(radio => {
-                radio.addEventListener("change", function() {
-                    if (this.checked) updateFulfillmentUI(this.value);
-                });
-            });
-
-            // الاستماع لتغيير تحديد المنطقة الجغرافية
-            shippingZoneSelect.addEventListener("change", function() {
-                const selectedOpt = this.options[this.selectedIndex];
-                currentShippingFee = selectedOpt ? parseFloat(selectedOpt.dataset.fee) : 0;
-                refreshInvoiceTotals();
-            });
-
-            // 3. كبس مفتاح تجميع الفاتورة وصياغة رسالة المقصد اللوجستي وتأكيد شرط الـ 24 ساعة
-            checkoutForm.addEventListener("submit", (e) => {
-                e.preventDefault();
-
-                const fulfillmentType = document.querySelector('input[name="bose-fulfillment-type"]:checked').value;
-                const userName = document.getElementById("checkout-user-name").value.trim();
-                const userPhone = document.getElementById("checkout-user-phone").value.trim();
-                const userAddress = addressInput.value.trim();
-
-                const inputDate = datePicker.value;
-                const inputTime = timePicker.value;
-
-                // [🔐 فحص حارس الوقت الصارم 🔐]: التأكد منطقياً أن الموعد يتجاوز الـ 24 ساعة بالمليم منعاً للحرج
-                const selectedDateTime = new Date(`${inputDate}T${inputTime}`);
-                const nowDateTime = new Date();
-                const hoursDiff = (selectedDateTime - nowDateTime) / (1000 * 60 * 60);
-
-                if (hoursDiff < 24) {
-                    if (typeof window.showBoseToast === 'function') {
-                        window.showBoseToast("⚠️ يرجى العلم أن تحضير الأصناف الفاخرة يحتاج 24 ساعة كحد أدنى للإتقان، فضلاً اختر موعداً مناسباً.");
-                    } else {
-                        alert(storeDatabase?.orderRules?.preparationTimeMessage || "نحتاج إلى وقت كافٍ لتجهيز طلبك بأفضل جودة ممكنة (24 ساعة على الأقل).");
-                    }
-                    return;
-                }
-
-                let shippingZoneName = "استلام شخصي من الفرع";
-                if (fulfillmentType === "delivery") {
-                    shippingZoneName = shippingZoneSelect.value;
-                }
-
-                const finalGrandTotal = Math.max(0, (itemsSubtotal - savedDiscount) + currentShippingFee);
-                const orderNumber = Math.floor(1000 + Math.random() * 9000);
-                
-                const dateParts = inputDate.split('-');
-                const formattedDeliveryDate = `${dateParts[2]} / ${dateParts[1]} / ${dateParts[0]}`;
-
-                // 👑 صياغة نص رسالة الواتساب الرسمية الفاخرة الخالية من التكرار 👑
-                let waMessage = `👑 *طلب حجز فاتورة ملكية جديدة - حلويات بوسي* 👑\n\n`;
-                waMessage += `📌 *رقم الفاتورة الموثقة:* #${orderNumber}\n`;
-                waMessage += `👤 *الاسم الكريم:* ${userName}\n`;
-                waMessage += `📞 *رقم الهاتف الفعلي:* ${userPhone}\n\n`;
-                
-                if (fulfillmentType === "delivery") {
-                    waMessage += `🛵 *نوع الاستلام:* توصيل للمنزل\n`;
-                    waMessage += `📍 *منطقة ومسار التوصيل:* [${shippingZoneName}]\n`;
-                    waMessage += `🏠 *العنوان الفعلي بالتفصيل:* ${userAddress}\n`;
-                } else {
-                    waMessage += `🏪 *نوع الاستلام:* استلام شخصي من الفرع الرئيسي\n`;
-                    if (userAddress) waMessage += `📝 *ملاحظات المستلم:* ${userAddress}\n`;
-                }
-                
-                waMessage += `⏱️ *موعد وساعة الاستلام المحددة:* ${formattedDeliveryDate} في تمام الساعة [${inputTime}]\n\n`;
-                waMessage += `📋 *مراجعة البنود والأصناف المطلوبة:* \n`;
-                
-                cartItems.forEach((item, idx) => {
-                    waMessage += `${idx + 1}. *${item.title}* (×${item.quantity}) - [نكهة: ${item.flavorName || 'كلاسيك'}] -> ${item.finalPrice * item.quantity} EGP\n`;
-                });
-
-                waMessage += `\n💰 *صافي قيمة الأصناف:* ${itemsSubtotal} EGP\n`;
-                if (savedDiscount > 0) waMessage += `🎁 *الخصم المطبق بالفاتورة:* -${savedDiscount} EGP\n`;
-                waMessage += `🛵 *رسوم ومصاريف الشحن:* ${currentShippingFee} EGP\n`;
-                waMessage += `⭐ *الإجمالي المالي النهائي للطلب:* *${Math.round(finalGrandTotal)} EGP*\n\n`;
-                waMessage += `🌸 *شكراً لاختياركم الراقي. صنعناها بحب لتهديها لمن تحب.*`;
-
-                // حفظ كائن الفاتورة بالكامل لتمريره لصفحة النجاح الفاخرة المطهّرة
-                const boseLastOrderObj = {
-                    orderNumber: orderNumber,
-                    date: formattedDeliveryDate,
-                    grandTotal: `${Math.round(finalGrandTotal)} EGP`,
-                    items: cartItems,
-                    whatsappMessage: waMessage
-                };
-
-                localStorage.setItem("bose_last_order", JSON.stringify(boseLastOrderObj));
-                localStorage.removeItem("bose_cart_discount_value");
-
-                // الانتقال الفوري لصفحة النجاح المكتملة
-                window.location.href = "order-success.html";
-            });
-
-            function renderEmptyCheckoutFallback() {
-                const mainContainer = document.querySelector(".checkout-page-section");
-                mainContainer.innerHTML = `
-                    <div class="error-state-box" style="text-align: center; padding: 100px 20px; color: var(--bose-black);">
-                        <h2 style="font-size:1.4rem; font-weight:700; margin-bottom:14px;">سلة المشتريات فارغة تماماً حالياً!</h2>
-                        <p style="font-size:0.95rem; opacity:0.8; max-width:500px; margin:0 auto 24px auto;">يرجى إضافة بعض الأصناف والتوليفات الفاخرة من المنيو أولاً قبل محاولة إتمام الفاتورة اللوجستية.</p>
-                        <a href="menu.html" style="display: inline-block; background-color:var(--bose-pink); color:#fff; text-decoration:none; padding:12px 32px; border-radius:50px; font-weight: 700;">الذهاب للمنيو واستعراض المنتجات</a>
+            if (cart.length > 0) {
+                compactContainer.innerHTML = cart.map(item => `
+                    <div class="invoice-item-compact-node">
+                        <span><strong>${window.escapeHTML ? window.escapeHTML(item.title) : item.title}</strong> <span style="opacity:0.6;">(×${item.quantity})</span><span style="display:block; font-size:0.75rem; color:var(--bose-pink); font-weight:700;">${item.flavorName || 'كلاسيك'}</span></span>
+                        <span style="font-weight:700; color:var(--bose-pink);">${item.finalPrice * item.quantity} EGP</span>
                     </div>
-                `;
+                `).join("");
             }
         });
     </script>
