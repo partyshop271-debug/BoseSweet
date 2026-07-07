@@ -1,6 +1,6 @@
 /**
  * 👑 المحرك المركزي العالمي وعمليات الفحص المالي والمزامنة الزمنية المتقدمة - حلويات بوسي 👑
- * النسخة الهندسية القياسية والمطورة بنسبة 100% - الإصدار الذهبي الشامل والخالي تماماً من الثغرات V15.3
+ * النسخة الهندسية القياسية والمطورة بنسبة 100% - الإصدار الذهبي الشامل والخالي تماماً من الثغرات V15.4
  * يتوافق بشكل مطلق ومتبادل مع: cart-engine.js وقاعدة البيانات site-data-final.json ومعايير الأداء والموبايل أولاً
  */
 
@@ -106,8 +106,8 @@
                     "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=wl2"
                 ],
                 "rightColumnImages": [
-                    "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=wr1",
-                    "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=wr2"
+                    "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=wl1",
+                    "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=wl2"
                 ]
             },
             "excellence": {
@@ -195,11 +195,11 @@
         if (unsafeString === null || unsafeString === undefined) return '';
         return unsafeString
             .toString()
-            .replace(/&/g, "&")
-            .replace(/</g, "<")
-            .replace(/>/g, ">")
-            .replace(/"/g, """)
-            .replace(/'/g, "'");
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
     }
     window.escapeHTML = escapeHTML;
     window.escapeHtml = escapeHTML;
@@ -214,7 +214,7 @@
             '٠': '0', '١': '1', '٢': '2', '٣': '3', '٤': '4',
             '٥': '5', '٦': '6', '٧': '7', '٨': '8', '٩': '9',
             '۴': '4', '۵': '5', '۶': '6',
-            '۰': '0', '۱': '1', '۲': '2', '۳': '3', 'TXT': '7', '8': '8', '٩': '9'
+            '۰': '0', '۱': '1', '۲': '2', '۳': '3', '۴': '4', '۵': '5', '۶': '6', '۷': '7', '۸': '8', '۹': '9'
         };
         return str.toString().trim().replace(/[٠-٩۰-۹]/g, match => arabicNormMap[match] || match);
     };
@@ -915,7 +915,7 @@
                 align-items: center;
                 text-decoration: none;
                 color: inherit;
-                box-shadow: var(--bose-shadow-hover);
+                box-shadow: var(--bose-shadow-glow);
             }
             .search-result-card:hover {
                 transform: translateY(-2px);
@@ -1069,6 +1069,7 @@
                 cursor: pointer;
                 transition: background 0.2s ease;
                 text-align: right;
+                border: none;
             }
             .bose-drawer-accordion-btn:hover {
                 background: rgba(255, 145, 164, 0.05);
@@ -1105,7 +1106,7 @@
             }
             .bose-drawer-sublink:hover {
                 color: var(--bose-pink) !important;
-                background: var(--bose-cream);
+                background: rgba(255,145,164,0.05);
                 opacity: 1;
             }
         `;
@@ -1297,7 +1298,7 @@
                         <li class="drawer-link-item"><a href="${pathPrefix}cart.html" class="${pageFileName.includes('cart.html') ? 'active' : ''}" style="text-decoration: none; color: var(--bose-black); font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 10px;"><i class="fas fa-shopping-basket" style="color: var(--bose-pink); width: 16px;"></i> سلة مشترياتك الفاخرة</a></li>
                     </ul>
                 </div>
-                <div class="drawer-premium-footer" style="padding: 20px; border-top: var(--bose-border-pink); background: var(--bose-cream); display: flex; flex-direction: column; gap: 12px;">
+                <div class="drawer-premium-footer" style="padding: 20px; border-top: var(--bose-border-pink); background: rgba(255,145,164,0.02); display: flex; flex-direction: column; gap: 12px;">
                     <a href="https://wa.me/201097238441" class="bose-btn-primary" target="_blank" style="display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--bose-pink); color: #FFF; text-decoration: none; font-weight: 700; padding: 12px; border-radius: 12px; text-align: center; font-size: 0.9rem; box-shadow: var(--bose-shadow-glow);">💬 تواصل فوري عبر الواتساب</a>
                     <p style="margin: 0; font-size: 0.75rem; text-align: center; color: #888;">© 2026 جميع الحقوق محفوظة لـ علامة حلويات بوسي الفاخرة.</p>
                 </div>
@@ -1336,7 +1337,7 @@
                     <span class="brand-name-display footer-brand-name" style="font-size: 1.4rem; font-weight: 700; color: var(--bose-black);">حلويات بوسي</span>
 
                     <div class="footer-about-block" style="max-width: 600px;">
-                        <p id="footer-about-text" style="font-size: 0.95rem; color: #555; line-height: 1.6; margin: 0;">صنعناها بحب لتهديها لمن تحب. خبرة أكثر من 10 سنوات في صناعة الحلويات الفاخرة وتنسيق الهدايا والورد لنوثق أسعد لحظاتكم بتميز واحترافية كاملة من فرع الكفاح.</p>
+                        <p id="footer-about-text" style="font-size: 0.95rem; color: #555; line-height: 1.6; margin: 0;">صنعناها بحب لتهديها لمن تحب. خبرة أكثر من 10 سنوات في صناعة الحلويات الفاخرة وتنسيق الهدايا والورد لنوثق أسعد لحظاتكم بتميز وااحترافية كاملة من فرع الكفاح.</p>
                     </div>
                     
                     <div id="footer-social-links" style="display: flex; gap: 16px; justify-content: center; margin: 8px 0;">
@@ -1420,6 +1421,7 @@
                     return;
 
                 } catch (error) {
+                    // فشل محاولة الفحص للمسار الحالي، الانتقال للمسار التالي
                 }
             }
 
@@ -1485,7 +1487,7 @@
                 
                 <span class="product-card-flavor-name" style="display: block; font-size: 0.85rem; font-weight: 700; color: var(--bose-pink); margin-top: -2px;">${cleanFlavor}</span>
                 
-                <p class="product-card-desc" style="margin: 4px 0 8px 0; font-size: 0.8rem; font-weight: 400; color: var(--bose-black); opacity: 0.8; line-height: 1.5; min-height: 60px; max-height: 60px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-family:'Cairo', sans-serif !important;">${cleanDesc}</p>
+                <p class="product-card-desc" style="margin: 4px 0 8px 0; font-size: 0.8rem; font-weight: 400; color: var(--bose-black); opacity: 0.8; line-height: 1.5; min-height: 60px; max-height: 60px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-family:'Cairo', sans-serif !important;">${cleanDesc}</p>
                 
                 ${sizeSelectorHTML}
 
@@ -2099,7 +2101,6 @@
         }
     };
 
-    // [🔐 تم التعديل والاستدعاء الموحد]: الحارس العام هنا يستدعي دالة الحذف الصارم من الموتور الرئيسي مباشرة لمنع التعارض اللامتزامن
     window.removeBoseCartItem = function (itemId) {
         try {
             let cart = window.getBoseCart();
@@ -2169,7 +2170,7 @@
                         <button class="search-close-btn" style="background:none; border:none; font-size:1.5rem; color:var(--bose-black); cursor:pointer; font-weight:700;" aria-label="إغلاق نافذة البحث">×</button>
                     </div>
                     <div class="search-modal-body">
-                        <input type="text" id="global-search-input" placeholder="اكتب اسم صنفك المفضل.. (لوتس، كب كيك، بوكس..)" style="width:100%; border:var(--bose-pink); border-radius:12px; padding:12px 16px; font-family:'Cairo', sans-serif; font-size:0.95rem; box-sizing:border-box; outline:none; transition:0.2s; color:var(--bose-black);" onfocus="this.style.borderColor='var(--bose-pink)'" onblur="this.style.borderColor='rgba(255,145,164,0.3)'">
+                        <input type="text" id="global-search-input" placeholder="اكتب اسم صنفك المفضل.. (لوتس، كب كيك، بوكس..)" style="width:100%; border:var(--bose-pink); border-radius:12px; padding:12px 16px; font-family:'Cairo', sans-serif; font-size:0.95rem; box-sizing:border-box; outline:none; transition:0.2s; color:var(--bose-black);">
                         <div class="search-results-container" style="margin-top:16px;">
                             <div class="search-empty-state">
                                 <p class="search-empty-state-text">اكتب اسم صنفك المفضل للبحث السريع عنه.. 🌸</p>
@@ -2433,7 +2434,7 @@
 
         const footerAbout = document.getElementById("footer-about-text");
         if (footerAbout) {
-            footerAbout.textContent = data.footer.about;
+            footerAbout.textContent = data.store.slogan;
         }
 
         const copyrightYearSpan = document.getElementById("copyright-year");
@@ -2604,3 +2605,4 @@ function verifyAndInitializeEngine() {
     if (typeof startEngineLogic === "function") {
         startEngineLogic();
     }
+}
