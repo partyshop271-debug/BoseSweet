@@ -1,8 +1,8 @@
 /**
  * 👑 محرك السلة وإتمام الطلب الموحد الفاخر والمطور - حلويات بوسي 👑
- * النسخة الهندسية القياسية الكاملة بنسبة 100% - خالية تماماً من الثغرات المالية والبرمجية V17.1 الشاملة
+ * النسخة الهندسية القياسية الكاملة بنسبة 100% - خالية تماماً من الثغرات المالية والبرمجية V17.2 الشاملة
  * متوافقة بشكل مطلق مع: core-engine.js وقاعدة البيانات site-data-final.json ومعايير الأداء والموبايل أولاً
- * [تم حل ثغرات الحذف وتأمين الحذف الفوري المتزامن لكروت المنتجات بشكل آمن ومستقل]
+ * [🔐 تم حل ثغرة عدم الحذف الفوري ومزامنة كروت المنتجات بشكل آمن ومستقل عبر بروتوكول saveBoseCart الموحد]
  */
 
 (function () {
@@ -22,16 +22,21 @@
         }
     };
 
-    window.removeBoseCartItem = window.removeBoseCartItem || function (itemId) {
+    window.removeBoseCartItem = function (itemId) {
         try {
             let cart = window.getBoseCart();
             cart = cart.filter(item => item.id !== itemId);
-            localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
-            // إطلاق حدث التحديث المتزامن لتحديث العداد بالهيدر وباقي أجزاء الموقع فوراً
-            window.dispatchEvent(new Event('storage'));
-            if (typeof window.updateBoseCartBadge === 'function') {
-                window.updateBoseCartBadge();
+            
+            // الامتثال للمحرك المركزي العام لحفظ وتحديث العداد وإطلاق الأحداث الهندسية الصحيحة
+            if (typeof window.saveBoseCart === 'function') {
+                window.saveBoseCart(cart);
+            } else {
+                localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+                window.updateGlobalCartCounter();
             }
+            
+            window.dispatchEvent(new Event('storage'));
+            window.dispatchEvent(new Event('bose_cart_updated'));
             return true;
         } catch (e) {
             console.error("❌ فشل حذف الصنف من السلة:", e);
@@ -39,14 +44,22 @@
         }
     };
 
-    window.updateBoseCartItemQuantity = window.updateBoseCartItemQuantity || function (itemId, newQty) {
+    window.updateBoseCartItemQuantity = function (itemId, newQty) {
         try {
             let cart = window.getBoseCart();
             const item = cart.find(i => i.id === itemId);
             if (item) {
                 item.quantity = parseInt(newQty, 10) || 1;
-                localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+                
+                if (typeof window.saveBoseCart === 'function') {
+                    window.saveBoseCart(cart);
+                } else {
+                    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+                    window.updateGlobalCartCounter();
+                }
+                
                 window.dispatchEvent(new Event('storage'));
+                window.dispatchEvent(new Event('bose_cart_updated'));
                 return true;
             }
             return false;
@@ -55,13 +68,16 @@
         }
     };
 
-    window.clearBoseCart = window.clearBoseCart || function () {
+    window.clearBoseCart = function () {
         try {
-            localStorage.setItem(CART_STORAGE_KEY, JSON.stringify([]));
-            window.dispatchEvent(new Event('storage'));
-            if (typeof window.updateBoseCartBadge === 'function') {
-                window.updateBoseCartBadge();
+            if (typeof window.saveBoseCart === 'function') {
+                window.saveBoseCart([]);
+            } else {
+                localStorage.setItem(CART_STORAGE_KEY, JSON.stringify([]));
+                window.updateGlobalCartCounter();
             }
+            window.dispatchEvent(new Event('storage'));
+            window.dispatchEvent(new Event('bose_cart_updated'));
             return true;
         } catch (e) {
             return false;
@@ -75,11 +91,11 @@
         if (unsafeString === null || unsafeString === undefined) return '';
         return unsafeString
             .toString()
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
+            .replace(/&/g, "&")
+            .replace(/</g, "<")
+            .replace(/>/g, ">")
+            .replace(/"/g, """)
+            .replace(/'/g, "'");
     };
 
     const normalizeArabicNumerals = window.normalizeArabicNumerals || function (str) {
@@ -167,7 +183,7 @@
                     <p style="font-size:15px; font-weight:600; color:var(--bose-black, #111111); line-height:1.6; margin:0 0 20px 0;">${escapeHtml(messageText)}</p>
                     <div style="display:flex; align-items:center; justify-content:flex-start; gap:12px;">
                         <button id="fallback-confirm-yes" style="font-family:'Cairo', sans-serif; font-size:14px; font-weight:700; padding:10px 24px; border-radius:50px; cursor:pointer; border:none; background:var(--bose-pink, #FF91A4); color:var(--bose-white, #FFFFFF); box-shadow: 0 4px 12px rgba(255,145,164,0.25);">تأكيد</button>
-                        <button id="fallback-confirm-no" style="font-family:'Cairo', sans-serif; font-size:14px; font-weight:700; padding:10px 24px; border-radius:50px; cursor:pointer; border:1px solid rgba(17,17,17,0.15); background:transparent; color:var(--bose-black, #111111);">تراجع</button>
+                        <button id="fallback-confirm-no" style="font-family:'Cairo', sans-serif; font-size:14px; font-weight:700; padding:10px 24px; border-radius:50px; cursor:pointer; border:1px solid rgba(17, 17, 17, 0.15); background:transparent; color:var(--bose-black, #111111);">تراجع</button>
                     </div>
                 </div>
             `;
@@ -258,6 +274,11 @@
                 renderCartItems();
             }
         });
+
+        // الاستماع لحدث التحديث المركزي لضمان إعادة بناء الكروت فوراً عند أي تعديل
+        window.addEventListener('bose_cart_updated', () => {
+            renderCartItems();
+        });
     }
 
     function renderCartItems() {
@@ -342,25 +363,25 @@
             } else {
                 qtyControlHTML = `
                     <div class="quantity-counter-block" style="display:flex; align-items:center; border:1px solid var(--bose-pink, #FF91A4); border-radius:50px; background:var(--bose-white, #FFFFFF); padding:2px 8px;">
-                        <button class="btn-qty-minus" style="background:none; border:none; color:var(--bose-black, #111111); font-size:18px; font-weight:700; width:30px; height:30px; cursor:pointer;">-</button>
-                        <input type="number" class="input-qty-value" value="${item.quantity}" min="1" readonly style="width:35px; text-align:center; border:none; font-size:15px; font-weight:700; color:var(--bose-black, #111111); background:transparent; font-family:'Cairo', sans-serif !important;">
-                        <button class="btn-qty-plus" style="background:none; border:none; color:var(--bose-black, #111111); font-size:18px; font-weight:700; width:30px; height:30px; cursor:pointer;">+</button>
+                        <button class="btn-qty-minus" style="background:none; border:none; color:var(--bose-black); font-size:18px; font-weight:700; width:30px; height:30px; cursor:pointer;">-</button>
+                        <input type="number" class="input-qty-value" value="${item.quantity}" min="1" readonly style="width:35px; text-align:center; border:none; font-size:15px; font-weight:700; color:var(--bose-black); background:transparent; font-family:'Cairo', sans-serif !important;">
+                        <button class="btn-qty-plus" style="background:none; border:none; color:var(--bose-black); font-size:18px; font-weight:700; width:30px; height:30px; cursor:pointer;">+</button>
                     </div>
                 `;
             }
 
             card.innerHTML = `
-                <button class="btn-remove-item" style="position:absolute; top:12px; left:12px; background:none; border:none; color:var(--bose-black, #111111); font-size:22px; cursor:pointer; font-weight:700; line-height:1; transition:0.2s; z-index:10; font-family:'Cairo', sans-serif !important;" aria-label="حذف الصنف">×</button>
+                <button class="btn-remove-item" style="position:absolute; top:12px; left:12px; background:none; border:none; color:var(--bose-black); font-size:22px; cursor:pointer; font-weight:700; line-height:1; transition:0.2s; z-index:10; font-family:'Cairo', sans-serif !important;" aria-label="حذف الصنف">×</button>
                 <div class="cart-item-img-container" style="margin-left:16px; flex-shrink: 0;">
                     <img src="${escapeHtml(item.image || storeLogoFallback)}" onerror="this.src='${storeLogoFallback}'" class="cart-item-img" alt="${escapeHtml(item.title)}" style="width:120px; height:120px; object-fit:cover; border-radius:20px; display:block;" loading="lazy">
                 </div>
                 <div class="cart-item-info" style="flex:1; display:flex; flex-direction:column; gap:4px; text-align:right; overflow:hidden;">
-                    <h3 class="cart-item-title" style="margin:0 0 4px 0; font-size:16px; font-weight:700; color:var(--bose-black, #111111); font-family:'Cairo', sans-serif !important; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(item.title)}</h3>
-                    <div class="cart-item-meta" style="color:var(--bose-black, #111111); opacity:0.8;">${customDetailsHTML}</div>
+                    <h3 class="cart-item-title" style="margin:0 0 4px 0; font-size:16px; font-weight:700; color:var(--bose-black); font-family:'Cairo', sans-serif !important; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(item.title)}</h3>
+                    <div class="cart-item-meta" style="color:var(--bose-black); opacity:0.8;">${customDetailsHTML}</div>
                     <div class="cart-item-price-quantity-row" style="display:flex; align-items:center; justify-content:space-between; margin-top:8px; flex-wrap:wrap; gap:10px;">
                         ${qtyControlHTML}
                         <div class="cart-item-price-display" style="text-align:left; direction:rtl;">
-                            <span class="cart-item-price-single" style="font-size:12px; font-weight:400; color:var(--bose-black, #111111); opacity:0.7; display:block; font-family:'Cairo', sans-serif !important;">${item.quantity > 1 ? `${priceUnit} × ${item.quantity}` : ''}</span>
+                            <span class="cart-item-price-single" style="font-size:12px; font-weight:400; color:var(--bose-black); opacity:0.7; display:block; font-family:'Cairo', sans-serif !important;">${item.quantity > 1 ? `${priceUnit} × ${item.quantity}` : ''}</span>
                             <span class="cart-item-price-total" style="font-size:15px; font-weight:700; color:var(--bose-pink, #FF91A4); font-family:'Cairo', sans-serif !important;">${itemTotal} ${storeCurrency}</span>
                         </div>
                     </div>
@@ -371,13 +392,11 @@
                 card.querySelector('.btn-qty-minus').addEventListener('click', () => {
                     if (item.quantity > 1) {
                         window.updateBoseCartItemQuantity(item.id, item.quantity - 1);
-                        renderCartItems();
                     }
                 });
 
                 card.querySelector('.btn-qty-plus').addEventListener('click', () => {
                     window.updateBoseCartItemQuantity(item.id, item.quantity + 1);
-                    renderCartItems();
                 });
             }
 
@@ -387,7 +406,6 @@
                     card.style.opacity = '0';
                     setTimeout(() => {
                         window.removeBoseCartItem(item.id);
-                        renderCartItems();
                     }, 300);
                 });
             });
@@ -500,10 +518,8 @@
                     const standardItem = window.createCartItem(prod, { flavorName: prod.flavorName || "كلاسيك" }, 1);
                     if (standardItem) {
                         window.addBoseCartItem(standardItem);
-                        renderCartItems();
                     }
                 } else {
-                    // حارس إضافة احتياطي مباشر للسجلات غير المخصصة
                     let cart = window.getBoseCart();
                     const existing = cart.find(i => i.productSlug === prod.slug && i.type === 'standard');
                     if (existing) {
@@ -521,9 +537,13 @@
                             flavorName: prod.flavorName || "كلاسيك"
                         });
                     }
-                    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
-                    window.dispatchEvent(new Event('storage'));
-                    renderCartItems();
+                    if (typeof window.saveBoseCart === 'function') {
+                        window.saveBoseCart(cart);
+                    } else {
+                        localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+                        window.updateGlobalCartCounter();
+                        window.dispatchEvent(new Event('storage'));
+                    }
                 }
             });
 
@@ -1088,6 +1108,8 @@
     function renderEmptySuccessCard() {
         const receiptContainer = document.getElementById('bose-order-receipt-summary') || document.querySelector('.order-receipt-dom-wrapper');
         if (!receiptContainer) return;
+
+        const storeCurrency = window.BoseStoreData?.store?.currency || "EGP";
 
         receiptContainer.innerHTML = `
             <div style="background:var(--bose-white, #FFFFFF); border:var(--bose-border-pink); border-radius:24px; padding:32px 24px; box-shadow:var(--bose-shadow-glow); text-align:center; direction:rtl; margin-top:20px; font-family:'Cairo', sans-serif !important;">
