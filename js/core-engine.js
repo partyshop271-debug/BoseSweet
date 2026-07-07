@@ -193,17 +193,17 @@
     // ==========================================================================
 
     function escapeHTML(unsafeString) {
-        if (unsafeString === null || unsafeString === undefined) return '';
-        return unsafeString
-            .toString()
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
-    }
-    window.escapeHTML = escapeHTML;
-    window.escapeHtml = escapeHTML;
+    if (unsafeString === null || unsafeString === undefined) return '';
+    return unsafeString
+        .toString()
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+}
+window.escapeHTML = escapeHTML;
+window.escapeHtml = escapeHTML;
 
     window.getBoseLogo = function() {
         return window.BoseStoreData?.store?.logo || "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png";
@@ -2777,4 +2777,3 @@ function verifyAndInitializeEngine() {
     if (typeof startEngineLogic === "function") {
         startEngineLogic();
     }
-}
