@@ -42,7 +42,7 @@
 
         try {
             let cart = window.getBoseCart();
-            // التصفية الحقيقية بناء على المعرف الفريد للصنف مع تأمين تحويل الأنواع لنصوص منعا للتصادم
+            // [🔐 إصلاح الجذر]: التصفية الحقيقية بناء على المعرف الفريد للصنف مع تأمين تحويل الأنواع لنصوص منعا للتصادم
             cart = cart.filter(item => String(item.id) !== String(itemId));
             
             // الحفظ الصارم المشترك في الذاكرة المحلية والذاكرة المؤقتة
@@ -389,7 +389,7 @@
                     customDetailsHTML += `<span style="display: block; font-size: 13px; line-height: 1.5; opacity: 0.9; font-family:'Cairo', sans-serif !important;">النكهة المحددة: <strong style="color:var(--bose-black); font-weight:700;">${escapeHtml(item.flavorName)}</strong></span>`;
                 }
 
-                // تأمين كامل ضد انهيار الدالة إذا كان المعرف غير نصي
+                // [🔐 طوق الحماية]: تأمين كامل ضد انهيار الدالة بتحويل كافة أنواع المعرفات لنصوص صريحة منعا للخلط
                 const isBespoke = item.type === "custom-cake" || item.type === "custom-flower" || item.type === "mini-cake" || String(item.id).includes("-");
                 let qtyControlHTML = "";
 
@@ -901,7 +901,7 @@
 
         const isValidSchedule = window.validateBoseDeliverySchedule ? window.validateBoseDeliverySchedule(deliveryDateInput.value, deliveryTimeInput.value) : true;
         if (!isValidSchedule) {
-            safeToast("لأننا بنصنع كل قطعة يدوياً وبكل حب وعناية فائقة، بنحتاج 24 ساعة على الأقل لتجهيز طلبك الفاخر بأعلى جودة تليق بمناسبتك السعيدة. نرجو اختيار موعد بيبدأ بعد 24 ساعة من دلوقتي ✨");
+            safeToast("لأننا بنصنع كل قطعة يدوياً وبكل حب وعناية فائقة، بنحتاج 24 ساعة على الألق لتجهيز طلبك الفاخر بأعلى جودة تليق بمناسبتك السعيدة. نرجو اختيار موعد بيبدأ بعد 24 ساعة من دلوقتي ✨");
             if (deliveryDateInput) deliveryDateInput.focus();
             return;
         }
@@ -1127,7 +1127,7 @@
                 <div style="display:flex; flex-direction:column; gap:10px; font-size:14px; color:var(--bose-black);">
                     <span style="font-family:'Cairo', sans-serif !important;">👤 <strong>اسم المستلم:</strong> ${escapeHtml(order.customerName)}</span>
                     <span style="font-family:'Cairo', sans-serif !important;">📞 <strong>رقم الموبايل للتأكيد:</strong> ${escapeHtml(order.customerPhone)}</span>
-                    <span style="font-family:'Cairo', sans-serif !important;">📍 <strong>نوع وتفاصيل الاستلام:</strong> ${order.method === 'pickup' ? 'سأستلم بنفسي من الفرع' : `توصيل منزلي - ${escapeHtml(order.zoneArea)}`}</span>
+                    <span style="font-family:'Cairo', sans-serif !important;">📍 <strong>نوع وتفاصيل الاستلام:</strong> ${order.method === 'pickup' ? 'سأستلم بنفسي من الفرع' : `توصيل للمنزل - ${escapeHtml(order.zoneArea)}`}</span>
                     <span style="font-family:'Cairo', sans-serif !important;">🗓 <strong>موعد الاستلام المحدد:</strong> <strong style="color:var(--bose-pink); font-weight:700;">${escapeHtml(order.deliveryDate)} في تمام الساعة ${escapeHtml(order.deliveryTime)}</strong></span>
                     <hr style="border:none; border-top:1px dashed rgba(255,145,164,0.25); margin:8px 0;">
                     <div style="display:flex; justify-content:space-between; align-items:center; font-weight:700; font-size:16px; font-family:'Cairo', sans-serif !important;">
@@ -1148,7 +1148,7 @@
                 <div style="font-size:40px; margin-bottom:12px;">🌸</div>
                 <h4 style="margin:0 0 8px 0; font-size:16px; font-weight:700; color:var(--bose-black); font-family:'Cairo', sans-serif !important;">لا توجد طلبات نشطة لعرضها حالياً</h4>
                 <p style="margin:0 0 20px 0; font-size:13px; color:#666; line-height:1.6; font-family:'Cairo', sans-serif !important;">شرفنا بزيارتك ومراجعة قائمة حلويات بوسي وتصميم تورتتك المخصصة عبر المنيو الشامل في أي وقت.</p>
-                <a href="menu.html" style="display:inline-block; background:var(--bose-pink, #FF91A4); color:#FFF; padding:10px 24px; border-radius:50px; text-decoration:none; font-size:13px; font-weight:700; transition:0.2s; font-family:'Cairo', sans-serif !important;">استكشف المنيو الشامل</a>
+                <a href="menu.html" style="display:inline-block; background:var(--bose-pink, #FF91A4); color:#FFF; padding:10px 24px; border-radius:50px; text-decoration:none; font-size:13px; font-weight:700; transition:0.2s; font-family:'Cairo', sans-serif !important;">استexplore المنيو الشامل</a>
             </div>
         `;
     }
