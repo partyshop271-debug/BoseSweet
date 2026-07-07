@@ -2683,28 +2683,8 @@
     }
 
     if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", loadStoreDatabase);
-    } else {
-        loadStoreDatabase();
-    }
-})();
-
-window.trackBoseUserBehavior = function (productSlug, scoreValue = 2) {
-    try {
-        let behaviorData = localStorage.getItem('bose_user_behavior');
-        let behaviorLog = behaviorData ? JSON.parse(behaviorData) : {};
-
-        if (!behaviorLog[productSlug]) {
-            behaviorLog[productSlug] = { score: 0, lastVisited: Date.now() };
-        }
-
-        behaviorLog[productSlug].score += scoreValue;
-        behaviorLog[productSlug].lastVisited = Date.now();
-
-        localStorage.setItem('bose_user_behavior', JSON.stringify(behaviorLog));
-    } catch (e) {
-        console.warn("⚠️ فشل تسجيل السلوك المحلي للعميل.");
-    }
+                console.warn("⚠️ فشل تسجيل السلوك المحلي للعميل.");
+9
 };
 
 window.getBosePersonalizedSuggestions = function (dbProducts, currentProductSlug = "", limit = 5) {
@@ -2741,13 +2721,14 @@ window.getBosePersonalizedSuggestions = function (dbProducts, currentProductSlug
         return dbProducts.slice(0, limit);
     }
 };
-
 document.addEventListener("DOMContentLoaded", () => {
+    // التحقق من جاهزية قاعدة البيانات الأساسية لضمان عمل الهيدر والفوتر والمنتجات
     if (window.BoseStoreData && window.BoseStoreData.store) {
         verifyAndInitializeEngine();
     } else {
+        // آلية الحماية لضمان التشغيل حتى لو تأخر تحميل ملف الـ JSON
         let attempts = 0;
-        const maxAttempts = 100;
+        const maxAttempts = 200; 
         
         const coreGuardInterval = setInterval(() => {
             attempts++;
@@ -2756,15 +2737,17 @@ document.addEventListener("DOMContentLoaded", () => {
                 verifyAndInitializeEngine();
             } else if (attempts >= maxAttempts) {
                 clearInterval(coreGuardInterval);
-                console.error("❌ خطأ حرج في تحميل قاعدة البيانات.");
+                // تفعيل قسري للمحرك إذا تأخرت البيانات لتجنب ظهور صفحة بيضاء
+                verifyAndInitializeEngine();
             }
         }, 50);
     }
 });
 
 function verifyAndInitializeEngine() {
-    console.log("🚀 تم التحقق من مطابقة المحرك المخصص وتوافقه مع قاعدة بيانات حلويات بوسي بنجاح.");
+    console.log("🚀 تم تشغيل محرك حلويات بوسي بنجاح.");
     
+    // ربط المحاكيات وإدارة الصفحات
     const urlParams = new URLSearchParams(window.location.search);
     const currentSlug = urlParams.get('slug');
     if (currentSlug && window.location.pathname.includes('product.html')) {
@@ -2773,6 +2756,7 @@ function verifyAndInitializeEngine() {
         }
     }
 
+    // التنفيذ النهائي للمحرك لبناء الهيدر والفوتر والمنتجات
     if (typeof startEngineLogic === "function") {
         startEngineLogic();
     }
