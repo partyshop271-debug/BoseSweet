@@ -2609,6 +2609,6 @@ function verifyAndInitializeEngine() {
 
     if (typeof startEngineLogic === "function") {
         startEngineLogic();
-    }
- }
- 
+         }
+   }
+ })();
