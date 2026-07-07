@@ -1,8 +1,8 @@
 /**
  * 👑 المحرك المركزي العالمي وعمليات الفحص المالي والمزامنة الزمنية المتقدمة - حلويات بوسي 👑
- * النسخة الهندسية القياسية والمطورة بنسبة 100% - الإصدار الذهبي الشامل والخالي تماماً من الثغرات V16.0
+ * النسخة الهندسية القياسية والمطورة بنسبة 100% - الإصدار الذهبي الشامل والخالي تماماً من الثغرات V17.0
  * يتوافق بشكل مطلق ومتبادل مع: cart-engine.js وقاعدة البيانات site-data-final.json ومعايير الأداء والموبايل أولاً
- * [تم دمج نظام التفاعل الراقي ونبضات العداد اللحظية وتحولات الأزرار بنعومة متناهية]
+ * [تحديث حرج: إصلاح تزامن الـ Toasts، وزراعة زر السلة الفاخر العائم المتنقل مع العميل في كل الصفحات]
  */
 
 (function () {
@@ -215,7 +215,7 @@
             '٠': '0', '١': '1', '٢': '2', '٣': '3', '٤': '4',
             '٥': '5', '٦': '6', '٧': '7', '٨': '8', '٩': '9',
             '۴': '4', '۵': '5', '۶': '6',
-            '۰': '0', '۱': '1', '۲': '2', '۳': '3', '۴': '4', '۵': '5', '۶': '6', '۷': '7', '٨': '8', '٩': '9'
+            '۰': '0', '۱': '1', '۲': '2', '۳': '3', '۴': '4', '۵': '5', '۶': '6', '۷': '7', '۸': '8', '۹': '9'
         };
         return str.toString().trim().replace(/[٠-٩۰-۹]/g, match => arabicNormMap[match] || match);
     };
@@ -652,13 +652,53 @@
     };
 
     function triggerBoseCartPulse() {
-        const targetElements = document.querySelectorAll("#nav-cart-count, .nav-cart-icon-wrapper, .nav-cart-count-badge");
+        const targetElements = document.querySelectorAll("#nav-cart-count, .nav-cart-icon-wrapper, .nav-cart-count-badge, #bose-floating-cart-btn");
         targetElements.forEach(element => {
             if (!element) return;
             element.classList.remove("bose-cart-pulse");
-            void element.offsetWidth; // إعادة بناء الـ DOM لإطلاق الأنيميشن مجدداً
+            void element.offsetWidth; 
             element.classList.add("bose-cart-pulse");
         });
+    }
+
+    function updateFloatingCartVisibility() {
+        const floatingBtn = document.getElementById("bose-floating-cart-btn");
+        if (!floatingBtn) return;
+        
+        const cart = window.getBoseCart();
+        if (window.scrollY > 150 && cart.length > 0 && !window.location.pathname.includes("cart.html") && !window.location.pathname.includes("checkout.html")) {
+            floatingBtn.classList.add("visible");
+        } else {
+            floatingBtn.classList.remove("visible");
+        }
+    }
+
+    function ensureFloatingCartExists() {
+        if (document.getElementById("bose-floating-cart-btn") || window.location.pathname.includes("cart.html") || window.location.pathname.includes("checkout.html")) return;
+        
+        let pathPrefix = "";
+        const currentPath = window.location.pathname;
+        const segments = currentPath.split('/');
+        if (segments.length > 2) {
+            const depth = segments.length - 2;
+            for(let d=0; d < depth; d++) {
+                if (segments[d+1] !== "" && !segments[d+1].includes('.html')) {
+                    pathPrefix += "../";
+                }
+            }
+        }
+
+        const floatingBtn = document.createElement("a");
+        floatingBtn.id = "bose-floating-cart-btn";
+        floatingBtn.href = `${pathPrefix}cart.html`;
+        floatingBtn.setAttribute("aria-label", "سلة مشترياتك الفاخرة العائمة");
+        floatingBtn.innerHTML = `
+            <i class="fas fa-shopping-bag"></i>
+            <span id="bose-floating-cart-count">0</span>
+        `;
+        document.body.appendChild(floatingBtn);
+
+        window.addEventListener("scroll", updateFloatingCartVisibility, { passive: true });
     }
 
     function injectCoreStyles() {
@@ -704,11 +744,60 @@
 
             @keyframes boseCartPulseAnim {
                 0% { transform: scale(1); }
-                50% { transform: scale(1.25); border-color: var(--bose-pink); }
+                50% { transform: scale(1.25); }
                 100% { transform: scale(1); }
             }
             .bose-cart-pulse {
                 animation: boseCartPulseAnim 0.35s cubic-bezier(0.25, 1, 0.5, 1) 1 !important;
+            }
+
+            #bose-floating-cart-btn {
+                position: fixed;
+                bottom: 30px;
+                left: 30px;
+                width: 60px;
+                height: 60px;
+                background-color: var(--bose-white);
+                border: var(--bose-border-thick);
+                color: var(--bose-black);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.5rem;
+                box-shadow: var(--bose-shadow-hover);
+                z-index: 9999;
+                text-decoration: none;
+                opacity: 0;
+                visibility: hidden;
+                transform: translateY(20px) scale(0.8);
+                transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease, visibility 0.3s ease;
+            }
+            #bose-floating-cart-btn.visible {
+                opacity: 1;
+                visibility: visible;
+                transform: translateY(0) scale(1);
+            }
+            #bose-floating-cart-btn:hover {
+                background-color: var(--bose-cream);
+                color: var(--bose-pink);
+            }
+            #bose-floating-cart-count {
+                position: absolute;
+                top: -6px;
+                right: -6px;
+                background-color: var(--bose-pink);
+                color: var(--bose-white);
+                font-size: 0.75rem;
+                font-weight: 700;
+                min-width: 20px;
+                height: 20px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border: 1.5px solid var(--bose-white);
+                line-height: 1;
             }
 
             .bose-fade-in-img {
@@ -1285,7 +1374,7 @@
                 </div>
                 <div class="drawer-links-scrollable" style="padding: 16px 20px; flex-grow: 1; overflow-y: auto;">
                     <span class="drawer-divider-label" style="display: block; font-size: 0.75rem; font-weight: 700; color: #777; margin-bottom: 12px; letter-spacing: 0.5px;">التنقل السريع</span>
-                    <ul class="drawer-links-list" style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px;">
+                    <ul class="drawer-links-list" style="list-style: none; padding: 0; margin: 0 0 20px 0; display: flex; flex-direction: column; gap: 10px;">
                         <li class="drawer-link-item"><a href="${pathPrefix}index.html" class="${pageFileName.includes('index.html') ? 'active' : ''}" style="text-decoration: none; color: var(--bose-black); font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 10px;"><i class="fas fa-home" style="color: var(--bose-pink); width: 16px;"></i> الواجهة الرئيسية</a></li>
                         <li class="drawer-link-item"><a href="${pathPrefix}menu.html" class="${pageFileName.includes('menu.html') && !currentPath.includes('category=') ? 'active' : ''}" style="text-decoration: none; color: var(--bose-black); font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 10px;"><i class="fas fa-utensils" style="color: var(--bose-pink); width: 16px;"></i> المنيو الشامل</a></li>
                     </ul>
@@ -1426,6 +1515,7 @@
                     injectUniversalLayout();
                     applyGlobalSEOAndBranding();
                     window.updateGlobalCartCounter();
+                    ensureFloatingCartExists(); // تهيئة وبناء زر السلة العائم في الخلفية
                     initializeGlobalUIEvents();
                     
                     autoPopulateHomepageComponents(rawData);
@@ -1441,20 +1531,21 @@
                     return;
 
                 } catch (error) {
-                    // فشل محاولة الفحص للمسار الحالي، الانتقال للمسار التالي
+                    // فشل محاولة الفحص
                 }
             }
 
             if (successfulFetch) return;
 
             if (attempt === 5 || window.location.protocol === 'file:') {
-                console.warn("⚠️ تم تفعيل بواب الأمان والتحميل الاحتياطي لقاعدة البيانات لتأمين التشغيل الفوري.");
+                console.warn("⚠️ تم تفعيل بواب الأمان لقاعدة البيانات.");
                 window.BoseStoreData = BOSE_FALLBACK_DATABASE;
                 window.boseDatabaseLoading = false;
                 
                 injectUniversalLayout();
                 applyGlobalSEOAndBranding();
                 window.updateGlobalCartCounter();
+                ensureFloatingCartExists();
                 initializeGlobalUIEvents();
                 autoPopulateHomepageComponents(BOSE_FALLBACK_DATABASE);
                 
@@ -1611,7 +1702,6 @@
 
                     const standardItem = window.createCartItem(product, options, qty);
                     if (standardItem) {
-                        // تحويل الأزرار الفوري التفاعلي لـ حلويات بوسي
                         const originalContent = addToCartBtn.innerHTML;
                         addToCartBtn.innerHTML = `<i class="fas fa-check" style="color:var(--bose-gold);"></i> تمت الإضافة للسلة`;
                         addToCartBtn.style.backgroundColor = 'var(--bose-black)';
@@ -2057,7 +2147,23 @@
             } catch (storageEx) {}
             window.boseInMemoryCart = cart;
             window.updateGlobalCartCounter();
-            triggerBoseCartPulse(); // إطلاق نبضة العداد اللحظية التفاعلية
+            
+            const floatingCounter = document.getElementById("bose-floating-cart-count");
+            if (floatingCounter) {
+                let totalDisplayItems = 0;
+                cart.forEach(item => {
+                    const isBespokeOrCustom = item.type === "custom-cake" ||
+                                              item.type === "custom-flower" ||
+                                              item.type === "mini-cake" ||
+                                              (item.id && item.id.includes("-"));
+                    if (isBespokeOrCustom) totalDisplayItems += 1;
+                    else totalDisplayItems += (parseInt(item.quantity, 10) || 1);
+                });
+                floatingCounter.textContent = totalDisplayItems;
+            }
+            
+            updateFloatingCartVisibility();
+            triggerBoseCartPulse();
             window.dispatchEvent(new Event('bose_cart_updated'));
             window.dispatchEvent(new CustomEvent('bose_cart_changed', { detail: cart }));
         } catch (e) {
@@ -2089,7 +2195,7 @@
         } else {
             if (!newItem.id) {
                 if (newItem.type !== "standard") {
-                    newItem.id = `${newItem.productSlug}-${Date.now()}`;
+                    newItem.id = `${newItem.productSlug}-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
                 } else {
                     newItem.id = newItem.productSlug;
                 }
@@ -2098,7 +2204,6 @@
         }
 
         window.saveBoseCart(cart);
-        // نصوص تفاعل راقية وناعمة للـ Toast الموحد
         window.showBoseToast(`تمت إضافة ${newItem.title} إلى السلة الفاخرة 🌸`);
     };
 
@@ -2145,6 +2250,22 @@
             localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(updatedCart));
             window.boseInMemoryCart = updatedCart;
             window.updateGlobalCartCounter();
+            
+            const floatingCounter = document.getElementById("bose-floating-cart-count");
+            if (floatingCounter) {
+                let totalDisplayItems = 0;
+                updatedCart.forEach(item => {
+                    const isBespokeOrCustom = item.type === "custom-cake" ||
+                                              item.type === "custom-flower" ||
+                                              item.type === "mini-cake" ||
+                                              (item.id && item.id.includes("-"));
+                    if (isBespokeOrCustom) totalDisplayItems += 1;
+                    else totalDisplayItems += (parseInt(item.quantity, 10) || 1);
+                });
+                floatingCounter.textContent = totalDisplayItems;
+            }
+            
+            updateFloatingCartVisibility();
             triggerBoseCartPulse();
             window.showBoseToast("تمت إزالة الصنف من سلتك 🌸");
             window.dispatchEvent(new Event('storage'));
@@ -2160,6 +2281,7 @@
         } catch (ex) {}
         window.boseInMemoryCart = [];
         window.updateGlobalCartCounter();
+        updateFloatingCartVisibility();
         triggerBoseCartPulse();
         window.dispatchEvent(new Event('bose_cart_updated'));
         window.dispatchEvent(new CustomEvent('bose_cart_changed', { detail: [] }));
@@ -2190,6 +2312,11 @@
             domCache.cartCounts.forEach(badge => {
                 badge.textContent = totalDisplayItems;
             });
+
+            const floatingCounter = document.getElementById("bose-floating-cart-count");
+            if (floatingCounter) {
+                floatingCounter.textContent = totalDisplayItems;
+            }
         } catch (e) {
             console.error("❌ فشل تحديث شارة العداد بالسلة:", e);
         }
@@ -2290,10 +2417,12 @@
         window.addEventListener('storage', (e) => {
             if (e.key === CART_STORAGE_KEY) {
                 window.updateGlobalCartCounter();
+                updateFloatingCartVisibility();
             }
         });
         window.addEventListener('bose_cart_updated', () => {
             window.updateGlobalCartCounter();
+            updateFloatingCartVisibility();
         });
     }
 
