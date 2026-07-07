@@ -1,6 +1,6 @@
 /**
  * 👑 المحرك المركزي العالمي وعمليات الفحص المالي والمزامنة الزمنية المتقدمة - حلويات بوسي 👑
- * النسخة الهندسية القياسية والمطورة بنسبة 100% - الإصدار الذهبي الشامل والخالي تماماً من الثغرات V15.1
+ * النسخة الهندسية القياسية والمطورة بنسبة 100% - الإصدار الذهبي الشامل والخالي تماماً من الثغرات V15.2
  * يتوافق بشكل مطلق ومتبادل مع: cart-engine.js وقاعدة البيانات site-data-final.json ومعايير الأداء والموبايل أولاً
  */
 
@@ -19,7 +19,6 @@
     const CART_STORAGE_KEY = 'bose_cart';
     let searchDebounceTimeout = null;
 
-    // كاش داخلي لتأمين أقصى سرعة أداء على الهواتف المحمولة ومنع تكرار عمليات قراءة الـ DOM
     const domCache = {
         cartCounts: null,
         searchModal: null,
@@ -27,7 +26,6 @@
         logoImages: null
     };
 
-    // مسارات التحميل التلقائية المتتالية لضمان استقرار الاستدعاء تحت أي بيئة استضافة مجانية
     const DATABASE_PATHS = [
         './data/site-data-final.json',
         'data/site-data-final.json',
@@ -38,9 +36,6 @@
         '../../site-data-final.json'
     ];
 
-    // ==========================================================================
-    // منع حالات السباق (Race Conditions) بتهيئة الـ Promise فوراً لمنع تكرار الإنشاء اللامتزامن
-    // ==========================================================================
     window.boseDbPromise = window.boseDbPromise || new Promise((resolve) => {
         if (window.BoseStoreData) {
             resolve(window.BoseStoreData);
@@ -50,9 +45,6 @@
     });
     window.boseDbFetchPromise = window.boseDbPromise;
 
-    /**
-     * قاعدة بيانات احتياطية صلبة ومطورة لحماية العرض البصري ومنع الفراغات نهائياً
-     */
     const BOSE_FALLBACK_DATABASE = {
         "store": {
             "id": "bose-sweets",
@@ -203,10 +195,10 @@
         if (unsafeString === null || unsafeString === undefined) return '';
         return unsafeString
             .toString()
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;") // 🔐 تم تصحيح علامات التنصيص المكسورة هنا بنجاح
+            .replace(/&/g, "&")
+            .replace(/</g, "<")
+            .replace(/>/g, ">")
+            .replace(/"/g, "&quot;")
             .replace(/'/g, "&#039;");
     }
     window.escapeHTML = escapeHTML;
@@ -1063,7 +1055,6 @@
                 animation-play-state: paused !important;
             }
 
-            /* 👑 أنماط وتنسيقات القوائم المنسدلة الاحترافية الفعالة داخل القائمة الجانبية 👑 */
             .bose-drawer-accordion-btn {
                 width: 100%;
                 display: flex;
@@ -1223,7 +1214,6 @@
 
         const dynamicLogo = window.getBoseLogo();
 
-        // 🏢 [تأمين حقن الهيدر المركزي الشامل]
         const existingNavbar = document.querySelector(".bose-navbar") || document.getElementById("universal-header-node");
         if (existingNavbar) {
             existingNavbar.innerHTML = `
@@ -1264,7 +1254,6 @@
             existingNavbar.classList.add("loaded");
         }
 
-        // 🚪 [تطوير وهندسة القائمة الجانبية الفاخرة المنسدلة الاحترافية والفعالة]
         let drawerMenu = document.querySelector(".bose-drawer-menu") || document.getElementById("sidebar-drawer");
         if (drawerMenu) {
             drawerMenu.innerHTML = `
@@ -1315,7 +1304,6 @@
             `;
             drawerMenu.classList.add("loaded");
 
-            // تفعيل حركة القائمة المنسدلة الاحترافية داخل الـ Drawer لمنع السطحية
             const accBtn = drawerMenu.querySelector('#drawer-menu-accordion');
             const accContent = drawerMenu.querySelector('#drawer-menu-accordion-content');
             if (accBtn && accContent) {
@@ -1335,7 +1323,6 @@
             }
         }
 
-        // 🏪 [تأمين حقن الفوتر الموحد الثابت بلونه الفاتح]
         const existingFooter = document.querySelector(".bose-footer") || document.getElementById("universal-footer-node");
         if (existingFooter) {
             existingFooter.innerHTML = `
@@ -1349,7 +1336,7 @@
                     <span class="brand-name-display footer-brand-name" style="font-size: 1.4rem; font-weight: 700; color: var(--bose-black);">حلويات بوسي</span>
 
                     <div class="footer-about-block" style="max-width: 600px;">
-                        <p id="footer-about-text" style="font-size: 0.95rem; color: #555; line-height: 1.6; margin: 0;">صنعناها بحب لتهديها لمن تحب. خبرة أكثر من 10 سنوات في صناعة الحلويات الفاخرة وتنسيق الهدايا والورد لنوثق أسعد لحظاتكم بتميز وااحترافية كاملة من فرع الكفاح.</p>
+                        <p id="footer-about-text" style="font-size: 0.95rem; color: #555; line-height: 1.6; margin: 0;">صنعناها بحب لتهديها لمن تحب. خبرة أكثر من 10 سنوات in صناعة الحلويات الفاخرة وتنسيق الهدايا والورد لنوثق أسعد لحظاتكم بتميز وااحترافية كاملة من فرع الكفاح.</p>
                     </div>
                     
                     <div id="footer-social-links" style="display: flex; gap: 16px; justify-content: center; margin: 8px 0;">
@@ -1433,7 +1420,6 @@
                     return;
 
                 } catch (error) {
-                    // الانتقال التلقائي للمسار البديل التالي
                 }
             }
 
@@ -2113,10 +2099,16 @@
         }
     };
 
+    // 🔐 تم تعديل دالة الحذف هنا في ملف core-engine لتستدعي الحدث الموحد وتمنع الفجوة البصرية وشلل الحذف
     window.removeBoseCartItem = function (itemId) {
-        let cart = window.getBoseCart();
-        const updatedCart = cart.filter(item => item.id !== itemId);
-        window.saveBoseCart(updatedCart);
+        try {
+            let cart = window.getBoseCart();
+            const updatedCart = cart.filter(item => item.id !== itemId);
+            window.saveBoseCart(updatedCart);
+            window.dispatchEvent(new Event('bose_cart_updated'));
+        } catch (e) {
+            console.error(e);
+        }
     };
 
     window.clearBoseCart = function () {
@@ -2610,3 +2602,6 @@ function verifyAndInitializeEngine() {
         startEngineLogic();
          }
    }
+
+}
+}

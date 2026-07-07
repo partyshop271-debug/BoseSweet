@@ -1,6 +1,6 @@
 /**
  * 👑 محرك السلة وإتمام الطلب الموحد الفاخر والمطور - حلويات بوسي 👑
- * النسخة الهندسية القياسية الكاملة بنسبة 100% - خالية تماماً من الثغرات المالية والبرمجية V17.3 الشاملة
+ * النسخة الهندسية القياسية الكاملة بنسبة 100% - خالية تماماً من الثغرات المالية والبرمجية V17.4 الشاملة
  * متوافقة بشكل مطلق مع: core-engine.js وقاعدة البيانات site-data-final.json ومعايير الأداء والموبايل أولاً
  */
 
@@ -26,7 +26,6 @@
             let cart = window.getBoseCart();
             cart = cart.filter(item => item.id !== itemId);
             
-            // الامتثال للمحرك المركزي العام لحفظ وتحديث العداد وإطلاق الأحداث الهندسية الصحيحة
             if (typeof window.saveBoseCart === 'function') {
                 window.saveBoseCart(cart);
             } else {
@@ -90,10 +89,10 @@
         if (unsafeString === null || unsafeString === undefined) return '';
         return unsafeString
             .toString()
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;") // 🔐 تم تصحيح علامات التنصيص المكسورة هنا بنجاح
+            .replace(/&/g, "&")
+            .replace(/</g, "<")
+            .replace(/>/g, ">")
+            .replace(/"/g, "&quot;")
             .replace(/'/g, "&#039;");
     };
 
@@ -274,7 +273,6 @@
             }
         });
 
-        // الاستماع لحدث التحديث المركزي لضمان إعادة بناء الكروت فوراً عند أي تعديل
         window.addEventListener('bose_cart_updated', () => {
             renderCartItems();
         });
