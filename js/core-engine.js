@@ -2603,5 +2603,3 @@ function verifyAndInitializeEngine() {
          }
    }
 
-}
-}
