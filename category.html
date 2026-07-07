@@ -265,6 +265,27 @@
                 breadcrumbNode.textContent = categoryObj.title;
 
                 const filteredProducts = siteData.products.filter(p => p.category === categoryId);
+                // 👑 [بداية زراعة الترتيب السلوكي الذكي داخل الفئة] 👑
+                try {
+                    const behaviorData = localStorage.getItem('bose_user_behavior');
+                    const behaviorLog = behaviorData ? JSON.parse(behaviorData) : {};
+                    
+                    filteredProducts.sort((a, b) => {
+                        let scoreA = behaviorLog[a.slug] ? behaviorLog[a.slug].score : 0;
+                        let scoreB = behaviorLog[b.slug] ? behaviorLog[b.slug].score : 0;
+                        
+                        // لو النقاط متساوية، رتّب على حسب الأحدث زيارة للعميل
+                        if (scoreB === scoreA) {
+                            let timeA = behaviorLog[a.slug] ? behaviorLog[a.slug].lastVisited : 0;
+                            let timeB = behaviorLog[b.slug] ? behaviorLog[b.slug].lastVisited : 0;
+                            return timeB - timeA;
+                        }
+                        return scoreB - scoreA;
+                    });
+                } catch (e) {
+                    console.warn("⚠️ فشل فرز المنتجات سلوكياً داخل الفئة.");
+                }
+                // 👑 [نهاية زراعة الترتيب السلوكي الذكي داخل الفئة] 👑
                 
                 if (filteredProducts.length > 0 && filteredProducts[0].description) {
                     descNode.textContent = filteredProducts[0].description;
