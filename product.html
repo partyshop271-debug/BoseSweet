@@ -541,7 +541,9 @@
                 }
                 
                 document.getElementById("bose-product-flavor-text").textContent = currentProduct.flavorName || "كلاسيك فاخر";
-                document.getElementById("bose-product-desc-text").textContent = currentProduct.description || currentProduct.flavorDesc || "";
+                
+                // 🚨 [الحل الهندسي]: إجبار نظام القراءة على إظهار وصف النكهة الفردية أولاً ومنع خلطه مع الوصف العام للصنف
+                document.getElementById("bose-product-desc-text").textContent = currentProduct.flavorDesc || currentProduct.description || "";
 
                 const defaultLogo = "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png";
                 const masterImg = currentProduct.image || (currentProduct.images && currentProduct.images[0] ? currentProduct.images[0] : defaultLogo);
