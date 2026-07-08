@@ -1,8 +1,8 @@
 /**
  * 👑 المحرك المركزي العام والنهائي للموقع والنافذة العائمة - حلويات بوسي 👑
- * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية ومشاكل التداخل V54.0
+ * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية ومشاكل التداخل V55.0
  * متوافق بشكل مطلق وثنائي الاتجاه مع كافة ملفات css/ وجافا سكريبت الموقع وقاعدة البيانات data/site-data-final.json
- * [تم التحديث برمجياً: معالجة جغرافية المسارات المطلقة وتفجير كاش المتصفح الحتمي لملف البيانات]
+ * [تم التحديث: توحيد السلة بالكامل وتحويل الزر العائم لواجهة تتبع ذكية توجه لصفحة السلة الرسمية مباشرة لمنع التشتيت]
  */
 
 (function () {
@@ -29,9 +29,7 @@
        ========================================================================== */
     async function loadBoseAbsoluteDatabase() {
         try {
-            // 👑 التطوير الذهبي: بناء مسار مطلق وديناميكي لملف البيانات ليعمل بكفاءة من أي مجلد فرعي أو رئيسي
             const boseLocation = window.location;
-            const boseOrigin = boseLocation.origin + boseLocation.pathname.substring(0, boseLocation.pathname.lastIndexOf('/') + 1);
             
             // فحص إذا كنا داخل مجلد فرعي لإرجاع المسار للجذر
             let baseRootPath = "";
@@ -47,7 +45,6 @@
             
             const response = await fetch(jsonPath + cacheBuster);
             if (!response.ok) {
-                // محاولة المسار البديل الذكي كخط دفاع ثانٍ
                 const alternativePath = `${baseRootPath}site-data-final.json${cacheBuster}`;
                 const fallbackResponse = await fetch(alternativePath);
                 if (!fallbackResponse.ok) throw new Error(`فشل جلب البيانات من كافة المسارات القياسية: ${fallbackResponse.status}`);
@@ -264,7 +261,7 @@
                     <a href="cake-builder.html" style="display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border: 1px solid rgba(255,145,164,0.22); border-radius: 12px; color: ${BRAND_COLORS.black}; font-weight: 700; font-size: 13px; text-decoration: none; background: #FFFFFF; font-family: 'Cairo'; transition: 0.2s; box-shadow: 0 4px 12px rgba(255,145,164,0.03);"><span style="display: flex; align-items: center; gap: 12px;"><i class="fas fa-birthday-cake" style="color: ${BRAND_COLORS.gold}; font-size: 16px;"></i> محاكي وتصميم التورت الحصري</span> <i class="fas fa-chevron-left" style="font-size: 11px; color: ${BRAND_COLORS.pink};"></i></a>
                     <a href="flower-builder.html" style="display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border: 1px solid rgba(255,145,164,0.22); border-radius: 12px; color: ${BRAND_COLORS.black}; font-weight: 700; font-size: 13px; text-decoration: none; background: #FFFFFF; font-family: 'Cairo'; transition: 0.2s; box-shadow: 0 4px 12px rgba(255,145,164,0.03);"><span style="display: flex; align-items: center; gap: 12px;"><i class="fas fa-seedling" style="color: ${BRAND_COLORS.gold}; font-size: 16px;"></i> تنسيق بوكيهات الورد والمال الفاخرة</span> <i class="fas fa-chevron-left" style="font-size: 11px; color: ${BRAND_COLORS.pink};"></i></a>
                     
-                    <div style="getInTouch: true; margin-top: auto; padding-top: 30px; text-align: center;">
+                    <div style="margin-top: auto; padding-top: 30px; text-align: center;">
                         <span style="font-size: 11px; font-weight: 600; color: #999; font-family: 'Cairo'; display: block; line-height: 1.5;">فرع الكفاح - بجوار صيدلية د. أحمد مجدي 🌸</span>
                         <span style="font-size: 10px; color: #BBB; font-family: 'Cairo'; margin-top: 4px; display: block;">جميع الحقوق محفوظة © ٢٠٢٦</span>
                     </div>
@@ -618,96 +615,44 @@
         });
     }
 
+    /* ==========================================================================\
+       2. نظام الزر العائم الذكي والموحد (Floating Action Hub) للتوجيه إلى السلة الأصلية
+       ========================================================================== */
     function injectFloatingCartSystem() {
         if (document.getElementById('bose-floating-cart-wrapper')) return;
 
-        const triggerButton = document.createElement('button');
-        triggerButton.id = 'bose-floating-cart-trigger';
-        triggerButton.setAttribute('aria-label', 'استعراض سلة المشتريات العائمة');
-        triggerButton.innerHTML = `
+        // بناء وعاء الزر العائم ليكون رابطاً مباشراً يقود إلى صفحة السلة الرسمية cart.html
+        const container = document.createElement('div');
+        container.id = 'bose-floating-cart-wrapper';
+
+        const triggerLink = document.createElement('a');
+        triggerLink.id = 'bose-floating-cart-trigger';
+        triggerLink.href = 'cart.html';
+        triggerLink.setAttribute('aria-label', 'الانتقال إلى صفحة سلة المشتريات الموحدة');
+        triggerLink.innerHTML = `
             <div class="bose-trigger-icon-box">
                 <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
                 <span id="bose-floating-badge-counter">0</span>
             </div>
         `;
 
-        const cartDrawer = document.createElement('div');
-        cartDrawer.id = 'bose-floating-cart-drawer';
-        cartDrawer.innerHTML = `
-            <div class="bose-drawer-header">
-                <div class="bose-drawer-title-box">
-                    <h3>سلة المشتريات العائمة</h3>
-                    <span id="bose-drawer-items-count">(0 منتجات)</span>
-                </div>
-                <button id="bose-close-drawer-trigger" aria-label="إغلاق السلة">&times;</button>
-            </div>
-            <div id="bose-drawer-items-body" class="bose-drawer-body-scroll"></div>
-            <div class="bose-drawer-footer">
-                <div class="bose-drawer-summary-row">
-                    <span>إجمالي السلة التقريبي:</span>
-                    <strong id="bose-drawer-subtotal-value">0 EGP</strong>
-                </div>
-                <div class="bose-drawer-actions-grid">
-                    <a href="cart.html" class="bose-btn-secondary-drawer">معاينة السلة كاملة</a>
-                    <a href="checkout.html" class="bose-btn-primary-drawer">إتمام الشراء فوراً</a>
-                </div>
-                <p class="bose-drawer-footer-notice">✨ خاماتنا طبيعية 100% وصُنعت بحب خصيصاً لأجلك.</p>
-            </div>
-        `;
-
-        const overlay = document.createElement('div');
-        overlay.id = 'bose-floating-cart-overlay';
-
-        const container = document.createElement('div');
-        container.id = 'bose-floating-cart-wrapper';
-        container.appendChild(triggerButton);
-        container.appendChild(cartDrawer);
-        container.appendChild(overlay);
+        container.appendChild(triggerLink);
         document.body.appendChild(container);
 
         injectFloatingCartStyles();
-
-        triggerButton.addEventListener('click', openBoseCartDrawer);
-        document.getElementById('bose-close-drawer-trigger').addEventListener('click', closeBoseCartDrawer);
-        overlay.addEventListener('click', closeBoseCartDrawer);
-        
-        applySychologicalBlinking();
+        applyPsychologicalBlinking();
     }
 
-    function applySychologicalBlinking() {
+    function applyPsychologicalBlinking() {
         const cart = getInMemoryCart();
         const trigger = document.getElementById('bose-floating-cart-trigger');
         if (!trigger) return;
 
+        // تفعيل النبض البصري في حال كانت السلة فارغة لتنبيه العميل بلطف للتصفح
         if (cart.length === 0) {
             trigger.classList.add('bose-pulse-blinking-active');
         } else {
             trigger.classList.remove('bose-pulse-blinking-active');
-        }
-    }
-
-    function openBoseCartDrawer() {
-        const drawer = document.getElementById('bose-floating-cart-drawer');
-        const overlay = document.getElementById('bose-floating-cart-overlay');
-        if (drawer && overlay) {
-            renderFloatingCartItems();
-            drawer.style.left = '0px';
-            overlay.style.display = 'block';
-            setTimeout(() => overlay.style.opacity = '1', 10);
-            document.body.style.overflow = 'hidden';
-        }
-    }
-
-    function closeBoseCartDrawer() {
-        const drawer = document.getElementById('bose-floating-cart-drawer');
-        const overlay = document.getElementById('bose-floating-cart-overlay');
-        if (drawer && overlay) {
-            drawer.style.left = '-420px';
-            overlay.style.opacity = '0';
-            setTimeout(() => {
-                overlay.style.display = 'none';
-                document.body.style.overflow = '';
-            }, 300);
         }
     }
 
@@ -722,129 +667,7 @@
     function saveInMemoryCart(cart) {
         localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
         document.dispatchEvent(new CustomEvent('BoseCartUpdated'));
-        applySychologicalBlinking();
-    }
-
-    function renderFloatingCartItems() {
-        const bodyContainer = document.getElementById('bose-drawer-items-body');
-        const subtotalDisplay = document.getElementById('bose-drawer-subtotal-value');
-        const countDisplay = document.getElementById('bose-drawer-items-count');
-        
-        if (!bodyContainer) return;
-
-        const cart = getInMemoryCart();
-        countDisplay.textContent = `(${cart.length} منتجات)`;
-
-        if (cart.length === 0) {
-            bodyContainer.innerHTML = `
-                <div class="bose-drawer-empty-state">
-                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#FF91A4" stroke-width="1.5"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-                    <p>سلتك فاضية دلوقتي.. تصفح المنيو واستمتع بأجود الحلويات الفاخرة 🌸</p>
-                    <button class="bose-btn-primary-drawer" onclick="document.getElementById('bose-close-drawer-trigger').click();">ابدأ التسوق</button>
-                </div>
-            `;
-            subtotalDisplay.textContent = "0 EGP";
-            return;
-        }
-
-        let totalSum = 0;
-        bodyContainer.innerHTML = cart.map((item, index) => {
-            const price = Math.round(Number(item.finalPrice || item.price || 0));
-            const qty = Number(item.quantity || 1);
-            const itemTotal = price * qty;
-            totalSum += itemTotal;
-
-            let customizationHTML = '';
-            if (item.customDetails) {
-                const cd = item.customDetails;
-                const specs = [];
-                if (cd.cakeType && cd.cakeType !== "none" && cd.cakeType !== "افتراضي") specs.push(`الطعم: ${cd.cakeType}`);
-                if (cd.persons && cd.persons > 0) specs.push(`الأفراد: ${cd.persons}`);
-                if (cd.flowerCount && cd.flowerCount > 0) specs.push(`الورد: ${cd.flowerCount}`);
-                if (specs.length > 0) {
-                    customizationHTML = `<div class="bose-drawer-item-specs">${specs.join(' | ')}</div>`;
-                }
-            }
-
-            const imgUrl = item.image || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png';
-
-            return `
-                <div class="bose-drawer-card" data-index="${index}">
-                    <img src="${imgUrl}" alt="${item.title || 'منتج حلويات بوسي'}" class="bose-drawer-card-img">
-                    <div class="bose-drawer-card-info">
-                        <h4>${item.title || 'منتج فاخر'}</h4>
-                        ${customizationHTML}
-                        <div class="bose-drawer-card-pricing">
-                            <span class="bose-drawer-card-price">${price} EGP</span>
-                            <div class="bose-drawer-qty-control">
-                                <button class="bose-drawer-qty-btn minus" data-index="${index}">&minus;</button>
-                                <span class="bose-drawer-qty-value">${qty}</span>
-                                <button class="bose-drawer-qty-btn plus" data-index="${index}">&plus;</button>
-                            </div>
-                        </div>
-                    </div>
-                    <button class="bose-drawer-card-remove" data-index="${index}" aria-label="حذف المنتج">&times;</button>
-                </div>
-            `;
-        }).join('');
-
-        subtotalDisplay.textContent = `${Math.round(totalSum)} EGP`;
-        bindFloatingCartActions();
-    }
-
-    function bindFloatingCartActions() {
-        document.querySelectorAll('.bose-drawer-qty-btn.plus').forEach(btn => {
-            btn.replaceWith(btn.cloneNode(true));
-        });
-        document.querySelectorAll('.bose-drawer-qty-btn.minus').forEach(btn => {
-            btn.replaceWith(btn.cloneNode(true));
-        });
-        document.querySelectorAll('.bose-drawer-card-remove').forEach(btn => {
-            btn.replaceWith(btn.cloneNode(true));
-        });
-
-        document.querySelectorAll('.bose-drawer-qty-btn.plus').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const index = e.currentTarget.dataset.index;
-                const cart = getInMemoryCart();
-                if (cart[index]) {
-                    cart[index].quantity = (Number(cart[index].quantity) || 1) + 1;
-                    saveInMemoryCart(cart);
-                    renderFloatingCartItems();
-                }
-            });
-        });
-
-        document.querySelectorAll('.bose-drawer-qty-btn.minus').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const index = e.currentTarget.dataset.index;
-                const cart = getInMemoryCart();
-                if (cart[index]) {
-                    const currentQty = (Number(cart[index].quantity) || 1);
-                    if (currentQty > 1) {
-                        cart[index].quantity = currentQty - 1;
-                        saveInMemoryCart(cart);
-                        renderFloatingCartItems();
-                    } else {
-                        cart.splice(index, 1);
-                        saveInMemoryCart(cart);
-                        renderFloatingCartItems();
-                        window.showBoseToast("تم تحديث السلة وحذف القطعة برفق 🌸");
-                    }
-                }
-            });
-        });
-
-        document.querySelectorAll('.bose-drawer-card-remove').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const index = e.currentTarget.dataset.index;
-                const cart = getInMemoryCart();
-                cart.splice(index, 1);
-                saveInMemoryCart(cart);
-                renderFloatingCartItems();
-                window.showBoseToast("تم إزالة المنتج من السلة العائمة 🌸");
-            });
-        });
+        applyPsychologicalBlinking();
     }
 
     window.showBoseToast = function (message, type = 'success') {
@@ -898,8 +721,7 @@
         }
         
         saveInMemoryCart(cart);
-        window.showBoseToast(`تمت إضافة ${productObject.title} إلى السلة العائمة بنجاح 🌸`);
-        openBoseCartDrawer();
+        window.showBoseToast(`تمت إضافة ${productObject.title} إلى السلة بنجاح 🌸`);
     };
 
     window.generateStrictProductCardHTML = function (product, currency = 'EGP') {
@@ -1029,10 +851,6 @@
 
                     window.showBoseToast(`تمت إضافة ${selectedQuantity} من ${matchedProduct.title} بنجاح لراحتك 🌸`);
                     if (qtyInput) qtyInput.value = 1;
-                    
-                    setTimeout(() => {
-                        openBoseCartDrawer();
-                    }, 400);
                 }
             };
         });
@@ -1056,11 +874,7 @@
             counter.textContent = totalItems;
         });
 
-        const drawer = document.getElementById('bose-floating-cart-drawer');
-        if (drawer && drawer.style.left === '0px') {
-            renderFloatingCartItems();
-        }
-        applySychologicalBlinking();
+        applyPsychologicalBlinking();
     }
 
     function initializeGlobalFeatures() {
@@ -1115,6 +929,7 @@
                 align-items: center;
                 justify-content: center;
                 padding: 0;
+                text-decoration: none;
                 transition: transform 0.2s ease, box-shadow 0.2s ease;
             }
             #bose-floating-cart-trigger:hover {
@@ -1146,209 +961,6 @@
                 padding: 0 4px;
                 box-sizing: border-box;
                 border: 2px solid ${BRAND_COLORS.white};
-            }
-            #bose-floating-cart-drawer {
-                position: fixed;
-                top: 0;
-                left: -420px;
-                width: 100%;
-                max-width: 400px;
-                height: 100%;
-                background-color: ${BRAND_COLORS.white};
-                box-shadow: 25px 0 50px rgba(0,0,0,0.15);
-                z-index: 999999;
-                display: flex;
-                flex-direction: column;
-                transition: left 0.35s cubic-bezier(0.25, 1, 0.5, 1);
-                direction: rtl;
-                font-family: 'Cairo', sans-serif;
-            }
-            #bose-floating-cart-overlay {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background-color: rgba(17, 17, 17, 0.3);
-                backdrop-filter: blur(3px);
-                z-index: 999997;
-                display: none;
-                opacity: 0;
-                transition: opacity 0.3s ease;
-            }
-            .bose-drawer-header {
-                padding: 20px;
-                border-bottom: 1px solid ${BRAND_COLORS.cream};
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-            .bose-drawer-title-box h3 {
-                margin: 0;
-                font-size: 18px;
-                color: ${BRAND_COLORS.black};
-                font-weight: 700;
-            }
-            #bose-drawer-items-count {
-                font-size: 13px;
-                color: ${BRAND_COLORS.pink};
-                font-weight: 600;
-            }
-            #bose-close-drawer-trigger {
-                background: none;
-                border: none;
-                font-size: 32px;
-                color: ${BRAND_COLORS.black};
-                cursor: pointer;
-                padding: 0;
-                line-height: 1;
-            }
-            .bose-drawer-body-scroll {
-                flex: 1;
-                overflow-y: auto;
-                padding: 20px;
-                background-color: ${BRAND_COLORS.cream};
-            }
-            .bose-drawer-empty-state {
-                text-align: center;
-                padding: 40px 10px;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                gap: 16px;
-            }
-            .bose-drawer-empty-state p {
-                font-size: 14px;
-                color: ${BRAND_COLORS.black};
-                line-height: 1.6;
-                margin: 0;
-            }
-            .bose-drawer-card {
-                background: ${BRAND_COLORS.white};
-                border-radius: 12px;
-                padding: 12px;
-                margin-bottom: 14px;
-                display: flex;
-                gap: 12px;
-                position: relative;
-                border: 1px solid rgba(255,145,164,0.15);
-                box-shadow: 0 4px 12px rgba(255,145,164,0.04);
-            }
-            .bose-drawer-card-img {
-                width: 70px;
-                height: 70px;
-                border-radius: 8px;
-                object-fit: cover;
-            }
-            .bose-drawer-card-info {
-                flex: 1;
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
-            }
-            .bose-drawer-card-info h4 {
-                margin: 0;
-                font-size: 14px;
-                color: ${BRAND_COLORS.black};
-                font-weight: 700;
-            }
-            .bose-drawer-item-specs {
-                font-size: 11px;
-                color: #666;
-                margin-top: 4px;
-                line-height: 1.4;
-            }
-            .bose-drawer-card-pricing {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-top: 8px;
-            }
-            .bose-drawer-card-price {
-                font-size: 14px;
-                color: ${BRAND_COLORS.pink};
-                font-weight: 700;
-            }
-            .bose-drawer-qty-control {
-                display: flex;
-                align-items: center;
-                border: 1px solid ${BRAND_COLORS.pink};
-                border-radius: 20px;
-                background: ${BRAND_COLORS.white};
-                overflow: hidden;
-            }
-            .bose-drawer-qty-btn {
-                background: none;
-                border: none;
-                width: 28px;
-                height: 24px;
-                cursor: pointer;
-                font-weight: 700;
-                font-size: 14px;
-                color: ${BRAND_COLORS.black};
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-            .bose-drawer-qty-value {
-                padding: 0 8px;
-                font-size: 13px;
-                font-weight: 700;
-                min-width: 16px;
-                text-align: center;
-            }
-            .bose-drawer-card-remove {
-                position: absolute;
-                top: 8px;
-                left: 8px;
-                background: none;
-                border: none;
-                font-size: 20px;
-                color: #aaa;
-                cursor: pointer;
-            }
-            .bose-drawer-footer {
-                padding: 20px;
-                border-top: 1px solid ${BRAND_COLORS.cream};
-                background: ${BRAND_COLORS.white};
-            }
-            .bose-drawer-summary-row {
-                display: flex;
-                justify-content: space-between;
-                font-size: 15px;
-                margin-bottom: 16px;
-                color: ${BRAND_COLORS.black};
-            }
-            .bose-drawer-summary-row strong {
-                color: ${BRAND_COLORS.pink};
-                font-size: 18px;
-                font-weight: 700;
-            }
-            .bose-drawer-actions-grid {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 12px;
-            }
-            .bose-btn-primary-drawer, .bose-btn-secondary-drawer {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                height: 46px;
-                border-radius: 23px;
-                font-size: 14px;
-                font-weight: 700;
-                text-decoration: none;
-                cursor: pointer;
-                font-family: 'Cairo', sans-serif;
-            }
-            .bose-btn-primary-drawer {
-                background-color: ${BRAND_COLORS.pink};
-                color: ${BRAND_COLORS.white};
-            }
-            .bose-btn-secondary-drawer {
-                background-color: ${BRAND_COLORS.white};
-                color: ${BRAND_COLORS.black};
-                border: 1px solid ${BRAND_COLORS.black};
             }
             
             #bose-toast-central-container {
