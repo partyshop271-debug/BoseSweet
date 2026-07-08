@@ -1,6 +1,6 @@
 /**
  * 👑 المحرك المركزي العام والنهائي للموقع والنافذة العائمة - حلويات بوسي 👑
- * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية ومشاكل التداخل V40.0
+ * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية ومشاكل التداخل V45.0
  * متوافق بشكل مطلق وثنائي الاتجاه مع كافة ملفات css/ وجافا سكريبت الموقع وقاعدة البيانات site-data-final.json
  */
 
@@ -97,7 +97,105 @@
     }
 
     /* ==========================================================================\
-       2. هيكلة وبناء نظام السلة العائمة التفاعلية الفاخرة ديناميكياً (Floating Cart Drawer)
+       2. تفعيل وربط القائمة الجانبية الهندسية وعناصر الـ DOM التفاعلية
+       ========================================================================== */
+    function initializeSidebarDrawer() {
+        const toggleBtn = document.getElementById('mobile-menu-toggle');
+        const closeBtn = document.getElementById('sidebar-close-panel-btn');
+        const drawer = document.getElementById('sidebar-drawer');
+        const shield = document.getElementById('drawer-shield');
+
+        if (toggleBtn && drawer && shield) {
+            toggleBtn.addEventListener('click', () => {
+                drawer.classList.add('active');
+                shield.classList.add('active');
+                document.body.classList.add('bose-no-scroll');
+            });
+        }
+
+        const closeDrawerMenu = () => {
+            if (drawer && shield) {
+                drawer.classList.remove('active');
+                shield.classList.remove('active');
+                document.body.classList.remove('bose-no-scroll');
+            }
+        };
+
+        if (closeBtn) closeBtn.addEventListener('click', closeDrawerMenu);
+        if (shield) shield.addEventListener('click', closeDrawerMenu);
+    }
+
+    /* ==========================================================================\
+       3. محرك العدادات التصاعدية الذكي لقسم الفخر والاعتزاز
+       ========================================================================== */
+    function runBoseStatsCounter(storeData) {
+        if (!storeData?.homepage?.pride?.stats) return;
+        const statsConfig = storeData.homepage.pride.stats;
+
+        const targets = [
+            { id: 'stat-years-value', val: statsConfig.years.value, suf: statsConfig.years.suffix },
+            { id: 'stat-customers-value', val: statsConfig.customers.value, suf: statsConfig.customers.suffix },
+            { id: 'stat-orders-value', val: statsConfig.orders.value, suf: statsConfig.orders.suffix },
+            { id: 'stat-cakes-value', val: statsConfig.cakes.value, suf: statsConfig.cakes.suffix },
+            { id: 'stat-bouquets-value', val: statsConfig.bouquets.value, suf: statsConfig.bouquets.suffix }
+        ];
+
+        const animateNode = (item) => {
+            const el = document.getElementById(item.id);
+            if (!el || el.getAttribute('data-animated') === 'true') return;
+            el.setAttribute('data-animated', 'true');
+
+            let start = 0;
+            const end = parseInt(item.val, 10);
+            if (end === 0) return;
+            
+            const duration = 2000;
+            const stepTime = Math.max(Math.floor(duration / end), 15);
+            
+            const timer = setInterval(() => {
+                start += Math.ceil(end / 100);
+                if (start >= end) {
+                    start = end;
+                    clearInterval(timer);
+                }
+                el.textContent = start + item.suf;
+            }, stepTime);
+        };
+
+        const prideSection = document.getElementById('pride-section');
+        if (prideSection && 'IntersectionObserver' in window) {
+            const observer = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting) {
+                    targets.forEach(animateNode);
+                    observer.unobserve(prideSection);
+                }
+            }, { threshold: 0.15 });
+            observer.observe(prideSection);
+        } else {
+            targets.forEach(animateNode);
+        }
+    }
+
+    /* ==========================================================================\
+       4. رندرة وتعبئة قسم "تسوق حسب الفئة" الـ 12 المعتمدة رسمياً هندسياً
+       ========================================================================== */
+    function renderBoseCategoriesSlider(storeData) {
+        const track = document.getElementById('categories-track');
+        if (!track || !storeData?.homepage?.categoriesSlider) return;
+
+        const cats = storeData.homepage.categoriesSlider;
+        track.innerHTML = cats.map(cat => `
+            <a href="category.html?id=${cat.id}" class="category-slide-card">
+                <div style="width: 100%; aspect-ratio: 1/1; overflow: hidden; border-radius: 20px; border: 1px solid rgba(255, 145, 164, 0.2); background: var(--bose-cream);">
+                    <img src="${cat.image}" alt="${cat.title}" style="width: 100%; height: 100%; object-fit: cover; display: block;" loading="lazy">
+                </div>
+                <h3 style="margin-top: 12px; font-size: 20px; font-weight: 700; color: #111111; text-align: center;">${cat.title}</h3>
+            </a>
+        `).join('');
+    }
+
+    /* ==========================================================================\
+       5. هيكلة وبناء نظام السلة العائمة التفاعلية الفاخرة ديناميكياً (Floating Cart Drawer)
        ========================================================================== */
     function injectFloatingCartSystem() {
         if (document.getElementById('bose-floating-cart-wrapper')) return;
@@ -178,9 +276,6 @@
         }
     }
 
-    /* ==========================================================================\
-       3. رندرة وإدارة بيانات عناصر السلة العائمة والمزامنة المطلقة
-       ========================================================================== */
     function getInMemoryCart() {
         try {
             return JSON.parse(localStorage.getItem(CART_STORAGE_KEY)) || [];
@@ -239,7 +334,7 @@
 
             return `
                 <div class="bose-drawer-card" data-index="${index}">
-                    <img src="${imgUrl}" alt="${item.title || 'منتجحلويات بوسي'}" class="bose-drawer-card-img">
+                    <img src="${imgUrl}" alt="${item.title || 'منتج حلويات بوسي'}" class="bose-drawer-card-img">
                     <div class="bose-drawer-card-info">
                         <h4>${item.title || 'منتج فاخر'}</h4>
                         ${customizationHTML}
@@ -258,7 +353,6 @@
         }).join('');
 
         subtotalDisplay.textContent = `${Math.round(totalSum)} EGP`;
-
         bindFloatingCartActions();
     }
 
@@ -308,7 +402,7 @@
     }
 
     /* ==========================================================================\
-       4. المايسترو العالمي لإدارة وعرض التنبيهات الراقية الفاخرة (Toast System)
+       6. المايسترو العالمي لإدارة وعرض التنبيهات الراقية الفاخرة (Toast System)
        ========================================================================== */
     window.showBoseToast = function (message, type = 'success') {
         let container = document.getElementById('bose-toast-central-container');
@@ -366,7 +460,7 @@
     };
 
     /* ==========================================================================\
-       5. مهندس ومولد كروت المنتجات الصارم (تم حل ثغرة undefined بقراءة title)
+       7. مهندس ومولد كروت المنتجات الصارم والتحكم بعدادات الكمية الحية
        ========================================================================== */
     window.generateStrictProductCardHTML = function (product, currency = 'EGP') {
         if (!product) return '';
@@ -377,18 +471,25 @@
         const displayDesc = product.flavorDesc || product.description || '';
         
         return `
-            <div class="product-card" data-slug="${product.slug}" style="background: ${BRAND_COLORS.white}; border: 1px solid rgba(255,145,164,0.2); border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 10px; justify-content: space-between; position: relative; box-shadow: 0 4px 16px rgba(255,145,164,0.03); direction: rtl; text-align: right; min-width: 260px;">
-                <div class="product-card-top" style="position: relative; overflow: hidden; border-radius: 12px; height: 180px; width: 100%;">
+            <div class="product-card" data-slug="${product.slug}" style="background: ${BRAND_COLORS.white}; border: 1px solid rgba(255,145,164,0.18); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 12px; justify-content: space-between; position: relative; box-shadow: var(--bose-shadow-glow, 0 8px 32px rgba(255,145,164,0.04)); direction: rtl; text-align: right; width: 100%; box-sizing: border-box;">
+                <div class="product-card-top" style="position: relative; overflow: hidden; border-radius: 14px; height: 220px; width: 100%;">
                     <img src="${imgUrl}" alt="${displayTitle}" style="width: 100%; height: 100%; object-fit: cover; transition: 0.3s;" loading="lazy">
                 </div>
                 <div class="product-card-info" style="flex-grow: 1; display: flex; flex-direction: column; gap: 4px;">
-                    <h3 style="margin: 0; font-size: 0.95rem; font-weight: 700; color: ${BRAND_COLORS.black};">${displayTitle}</h3>
-                    <span style="font-size: 0.8rem; font-weight: 700; color: ${BRAND_COLORS.pink};">${displayFlavor}</span>
-                    <p style="margin: 0; font-size: 0.75rem; color: #666; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 34px;">${displayDesc}</p>
+                    <h3 style="margin: 0; font-size: 15px; font-weight: 700; color: ${BRAND_COLORS.black};">${displayTitle}</h3>
+                    <span style="font-size: 13px; font-weight: 700; color: ${BRAND_COLORS.pink};">${displayFlavor}</span>
+                    <p style="margin: 0; font-size: 12px; color: #555; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 36px;">${displayDesc}</p>
                 </div>
-                <div class="product-card-bottom" style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px;">
-                    <span style="font-size: 1rem; font-weight: 700; color: ${BRAND_COLORS.pink};">${price} ${currency}</span>
-                    <button class="bose-add-to-cart-btn" data-id="${product.id}" style="background-color: ${BRAND_COLORS.pink}; color: ${BRAND_COLORS.white}; border: none; padding: 8px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: 0.2s;">إضافة للسلة</button>
+                
+                <div class="bose-qty-controller-box" style="display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255, 145, 164, 0.2); border-radius: 10px; width: 100%; background: #FFFFFF; height: 36px; padding: 2px; box-sizing: border-box; margin: 4px 0;">
+                    <button class="btn-qty-card-plus" style="border: none; background: transparent; width: 33%; height: 100%; font-weight: 700; font-size: 16px; color: ${BRAND_COLORS.black}; cursor: pointer;">+</button>
+                    <input type="text" readonly class="input-qty-card-val" value="1" style="width: 34%; text-align: center; border: none; font-size: 14px; font-weight: 700; color: ${BRAND_COLORS.black}; background: transparent; padding:0;">
+                    <button class="btn-qty-card-minus" style="border: none; background: transparent; width: 33%; height: 100%; font-weight: 700; font-size: 16px; color: ${BRAND_COLORS.black}; cursor: pointer;">-</button>
+                </div>
+
+                <div class="product-card-bottom" style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px; width:100%;">
+                    <div class="product-card-price" style="font-size: 16px; font-weight: 700; color: ${BRAND_COLORS.pink}; white-space: nowrap;">${price} <span style="font-size: 11px; font-weight:400; color:#111;">EGP</span></div>
+                    <button class="bose-add-to-cart-btn" data-id="${product.id}" style="background-color: ${BRAND_COLORS.pink}; color: ${BRAND_COLORS.white}; border: none; padding: 8px 16px; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; transition: 0.2s;">إضافة للسلة</button>
                 </div>
             </div>
         `;
@@ -397,21 +498,72 @@
     window.attachProductCardEvents = function (containerElement, productsList, currency) {
         if (!containerElement || !productsList) return;
         
+        // ربط أحداث عداد كرت المنيو الفرعي الصغير
+        containerElement.querySelectorAll('.product-card').forEach(card => {
+            const plusBtn = card.querySelector('.btn-qty-card-plus');
+            const minusBtn = card.querySelector('.btn-qty-card-minus');
+            const qtyInput = card.querySelector('.input-qty-card-val');
+
+            if (plusBtn && minusBtn && qtyInput) {
+                plusBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    let currentVal = parseInt(qtyInput.value, 10) || 1;
+                    qtyInput.value = currentVal + 1;
+                });
+
+                minusBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    let currentVal = parseInt(qtyInput.value, 10) || 1;
+                    if (currentVal > 1) {
+                        qtyInput.value = currentVal - 1;
+                    }
+                });
+            }
+        });
+
+        // ربط حدث زر الإضافة الحقيقي للسلة مع الكمية المحددة بالعداد
         containerElement.querySelectorAll('.bose-add-to-cart-btn').forEach(btn => {
             btn.addEventListener('click', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
                 const prodId = this.dataset.id;
                 const matchedProduct = productsList.find(p => String(p.id) === String(prodId));
+                const cardNode = this.closest('.product-card');
+                const qtyInput = cardNode ? cardNode.querySelector('.input-qty-card-val') : null;
+                const selectedQuantity = qtyInput ? (parseInt(qtyInput.value, 10) || 1) : 1;
+
                 if (matchedProduct) {
-                    window.addAbsoluteProductToCart(matchedProduct);
+                    const cart = getInMemoryCart();
+                    const existingIndex = cart.findIndex(item => item.id === matchedProduct.id && !item.customDetails?.isCustomized);
+                    
+                    if (existingIndex > -1) {
+                        cart[existingIndex].quantity = (Number(cart[existingIndex].quantity) || 1) + selectedQuantity;
+                    } else {
+                        cart.push({
+                            id: matchedProduct.id,
+                            productSlug: matchedProduct.slug,
+                            title: matchedProduct.title,
+                            flavorName: matchedProduct.flavorName || "افتراضي",
+                            price: matchedProduct.price,
+                            finalPrice: matchedProduct.price,
+                            image: matchedProduct.images ? matchedProduct.images[0] : matchedProduct.image,
+                            quantity: selectedQuantity,
+                            type: matchedProduct.type || "standard",
+                            customDetails: {}
+                        });
+                    }
+                    
+                    saveInMemoryCart(cart);
+                    window.showBoseToast(`تمت إضافة ${selectedQuantity} من ${matchedProduct.title} بنجاح 🌸`);
+                    if (qtyInput) qtyInput.value = 1; // تصفير العداد لعملية مريحة تالية
+                    openBoseCartDrawer();
                 }
             });
         });
     };
 
     /* ==========================================================================\
-       6. تحديث عدادات السلة في كامل الهيكل العلوي للموقع (Sync Counters)
+       8. موازنة وتحديث عدادات شارات الهيدر الموحدة (Sync Header Badges)
        ========================================================================== */
     function updateGlobalCartCounters() {
         const cart = getInMemoryCart();
@@ -438,7 +590,10 @@
     }
 
     function initializeGlobalFeatures() {
+        initializeSidebarDrawer();
         injectFloatingCartSystem();
+        renderBoseCategoriesSlider(boseGlobalStoreData);
+        runBoseStatsCounter(boseGlobalStoreData);
         updateGlobalCartCounters();
     }
 
