@@ -292,7 +292,7 @@
     }
 
     /* ==========================================================================\
-       4. رندرة وتعبئة قسم "تسوق حسب الفئة" الـ 12 المعتمدة بالدوتس والأسهم الحية
+       4. رندرة وتعبئة قسم "تسوق حسب الفئة" الـ 12 المعتمدة بالـ Transform الفخم والأسهم الحية
        ========================================================================== */
     function renderBoseCategoriesSlider(storeData) {
         const wrapper = document.getElementById('categories-slider-wrapper');
@@ -302,8 +302,8 @@
         const cats = storeData.homepage.categoriesSlider;
         
         track.innerHTML = cats.map(cat => `
-            <a href="category.html?id=${cat.id}" class="category-slide-card" style="flex: 0 0 200px; text-decoration: none; display: flex; flex-direction: column; align-items: center; transition: 0.3s;">
-                <div style="width: 100%; aspect-ratio: 1/1; overflow: hidden; border-radius: 20px; border: 1px solid rgba(255, 145, 164, 0.2); background: var(--bose-cream); position: relative;">
+            <a href="category.html?id=${cat.id}" class="category-slide-card">
+                <div style="width: 100%; aspect-ratio: 1/1; overflow: hidden; border-radius: 20px; border: 1px solid rgba(255, 145, 164, 0.2); background: ${BRAND_COLORS.cream}; position: relative;">
                     <img src="${cat.image}" alt="${cat.title}" style="width: 100%; height: 100%; object-fit: cover; display: block;" loading="lazy">
                 </div>
                 <h3 style="margin-top: 12px; font-size: 16px; font-weight: 700; color: #111111; text-align: center; font-family: 'Cairo';">${cat.title}</h3>
@@ -334,49 +334,53 @@
             controlsContainer.appendChild(dotsRow);
             wrapper.appendChild(controlsContainer);
 
+            let currentCatInx = 0;
+            const cardWidth = 260; // عرض الكارد الفعلي بالإضافة للـ Gap المخصص له
+
+            function updateCatSliderPosition() {
+                // التحريك السلس عبر معالج الرسوميات GPU لمنع مشاكل الـ overflow
+                track.style.transform = `translate3d(${currentCatInx * cardWidth}px, 0px, 0px)`;
+                
+                // تحديث المظهر الفخم للدوتس النشطة
+                document.querySelectorAll('.cat-dot').forEach((d, i) => {
+                    if (i === currentCatInx) {
+                        d.style.background = BRAND_COLORS.pink;
+                        d.style.width = '24px';
+                        d.style.borderRadius = '6px';
+                        d.classList.add('active');
+                    } else {
+                        d.style.background = 'rgba(255,145,164,0.3)';
+                        d.style.width = '8px';
+                        d.style.borderRadius = '50%';
+                        d.classList.remove('active');
+                    }
+                });
+            }
+
             const prevBtn = document.getElementById('cat-arrow-prev');
             const nextBtn = document.getElementById('cat-arrow-next');
             
             if (prevBtn && nextBtn) {
                 prevBtn.onclick = () => {
-                    track.scrollBy({ left: 220, behavior: 'smooth' });
-                    updateActiveDotDelay();
+                    if (currentCatInx > 0) {
+                        currentCatInx--;
+                        updateCatSliderPosition();
+                    }
                 };
                 nextBtn.onclick = () => {
-                    track.scrollBy({ left: -220, behavior: 'smooth' });
-                    updateActiveDotDelay();
+                    if (currentCatInx < cats.length - 1) {
+                        currentCatInx++;
+                        updateCatSliderPosition();
+                    }
                 };
             }
 
             document.querySelectorAll('.cat-dot').forEach(dot => {
                 dot.onclick = function() {
-                    const idx = parseInt(this.dataset.index, 10);
-                    track.scrollTo({ left: idx * 220, behavior: 'smooth' });
-                    document.querySelectorAll('.cat-dot').forEach(d => {
-                        d.style.background = 'rgba(255,145,164,0.3)';
-                        d.classList.remove('active');
-                    });
-                    this.style.background = BRAND_COLORS.pink;
-                    this.classList.add('active');
+                    currentCatInx = parseInt(this.dataset.index, 10);
+                    updateCatSliderPosition();
                 };
             });
-
-            function updateActiveDotDelay() {
-                setTimeout(() => {
-                    const currentScroll = Math.abs(track.scrollLeft);
-                    const activeIndex = Math.min(Math.round(currentScroll / 220), cats.length - 1);
-                    document.querySelectorAll('.cat-dot').forEach((d, i) => {
-                        if (i === activeIndex) {
-                            d.style.background = BRAND_COLORS.pink;
-                            d.classList.add('active');
-                        } else {
-                            d.style.background = 'rgba(255,145,164,0.3)';
-                            d.classList.remove('active');
-                        }
-                    });
-                }, 300);
-            }
-            track.addEventListener('scroll', updateActiveDotDelay);
         }
     }
 
@@ -509,7 +513,7 @@
         prideTrack.addEventListener('touchstart', () => clearInterval(slideInterval), {passive: true});
         prideTrack.addEventListener('touchend', startAutoPlay, {passive: true});
         
-        // إعادة حساب الأبعاد بدقة متناهية عند تغيير حجم الشاشة أو تدوير الهاتف المجمول
+        // إعادة حساب الأبعاد بدقة متناهية عند تغيير حجم الشاشة أو تدوير الهاتف المحمول
         window.addEventListener('resize', () => {
             scrollPrideToEach(false);
         });
@@ -748,7 +752,7 @@
     }
 
     /* ==========================================================================\
-       6. المايسترو العالمي لإدارة وعرض التنبيهات الراقية الفاخرة (Toast System)
+       6. Tنظام التنبيهات الراقية الفاخرة (Toast System)
        ========================================================================== */
     window.showBoseToast = function (message, type = 'success') {
         let container = document.getElementById('bose-toast-central-container');
