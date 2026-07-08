@@ -1,8 +1,8 @@
 /**
  * 👑 المحرك المركزي العام والنهائي للموقع والنافذة العائمة - حلويات بوسي 👑
- * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية ومشاكل التداخل V59.0
+ * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية ومشاكل التداخل V60.0
  * متوافق بشكل مطلق وثنائي الاتجاه مع كافة ملفات css/ وجافا سكريبت الموقع وقاعدة البيانات data/site-data-final.json
- * [تم التحديث: تثبيت حقيقي ومطلق للسلة العائمة وتعديل نظام الإشعارات ليكون بالأسفل في مواجهة عين العميل مباشرة]
+ * [تم التحديث والتطوير الشامل: تثبيت حقيقي ومطلق للسلة العائمة وتعديل نظام الإشعارات ليكون بالأسفل في مواجهة عين العميل مباشرة]
  */
 
 (function () {
@@ -50,7 +50,7 @@
             if (!response.ok) {
                 const alternativePath = `${baseRootPath}site-data-final.json${cacheBuster}`;
                 const fallbackResponse = await fetch(alternativePath);
-                if (!fallbackResponse.ok) throw new Error(`Fشل جلب البيانات من كافة المسارات القياسية: ${fallbackResponse.status}`);
+                if (!fallbackResponse.ok) throw new Error(`فشل جلب البيانات من كافة المسارات القياسية: ${fallbackResponse.status}`);
                 boseGlobalStoreData = await fallbackResponse.json();
             } else {
                 boseGlobalStoreData = await response.json();
@@ -660,7 +660,7 @@
         triggerLink.id = 'bose-floating-cart-trigger';
         triggerLink.href = 'cart.html';
         triggerLink.className = 'bose-floating-cart-trigger';
-        triggerLink.setAttribute('aria-label', 'Anتقال إلى صفحة سلة المشتريات الموحدة');
+        triggerLink.setAttribute('aria-label', 'الانتقال إلى صفحة سلة المشتريات الموحدة');
         triggerLink.innerHTML = `
             <div class="bose-trigger-icon-box">
                 <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
@@ -755,7 +755,7 @@
         }
         
         saveInMemoryCart(cart);
-        window.showBoseToast(`تمت إضافة ${productObject.title} إلى السلة بنجاح 🌸`);
+        window.showBoseToast(`تمت إضافة ${productObject.title} إلى السلة 🌸`);
     };
 
     window.generateStrictProductCardHTML = function (product, currency = 'EGP') {
@@ -764,7 +764,6 @@
         const imgUrl = product.images ? product.images[0] : (product.image || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png');
         const displayTitle = product.title || product.name || 'منتج فاخر';
         const displayFlavor = product.flavorName || 'نكهة بوسي المميزة';
-        const displayDesc = product.flavorDesc || product.description || '';
         
         return `
             <div class="product-card" data-slug="${product.slug}" style="background: ${BRAND_COLORS.white}; border: 1px solid rgba(255,145,164,0.18); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 12px; justify-content: space-between; position: relative; box-shadow: 0 8px 32px rgba(255,145,164,0.04); direction: rtl; text-align: right; width: 100%; box-sizing: border-box; transition: transform 0.3s ease;">
@@ -862,7 +861,7 @@
                         currentButton.style.backgroundColor = BRAND_COLORS.pink;
                     }, 2000);
 
-                    window.showBoseToast(`تمت إضافة المنتج إلى السلة`);
+                    window.showBoseToast(`تمت إضافة المنتج إلى السلة 🌸`);
                     if (qtyInput) qtyInput.value = 1;
                 }
             };
@@ -996,7 +995,7 @@
                 left: -4px !important;
                 right: auto !important;
                 background-color: ${BRAND_COLORS.pink} !important;
-                color: ${BRAND_COLORS.black} !important;
+                color: ${BRAND_COLORS.white} !important;
                 font-family: 'Cairo', sans-serif !important;
                 font-weight: 700 !important;
                 font-size: 12px !important;
