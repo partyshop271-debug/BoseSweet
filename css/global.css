@@ -1,7 +1,8 @@
 /* ==========================================================================
-   👑 ملف التنسيق الموحد والهوية البصرية لعلامة حلويات بوسي الفاخرة V5.0 👑
+   👑 ملف التنسيق الموحد والهوية البصرية لعلامة حلويات بوسي الفاخرة V5.1 👑
    المطابق بالمليم لكافة محركات الموقع وقاعدة البيانات site-data-final.json
    المطور والمحدث بالكامل لسد الثغرات وحل تعارضات الأنيميشن والموديلز والأيقونات
+   تم حل مشكلة ثبات الهيدر الحتمي وتثبيت الزر العائم فوق الفوتر بكفاءة مطلقة
    ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap');
@@ -26,11 +27,11 @@
     --bose-transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     
     /* 🛡️ تأمين طبقات العرض لمنع تداخل المحاكي والسلة والمودالز */
-    --z-index-navbar: 1000;
-    --z-index-overlay: 2000;
-    --z-index-drawer: 3000;
-    --z-index-modal: 4000;
-    --z-index-toast: 5000;
+    --z-index-navbar: 9999;     /* تم رفعه لضمان البقاء فوق كافة عناصر الأقسام والشلال البصري */
+    --z-index-overlay: 20000;
+    --z-index-drawer: 30000;
+    --z-index-modal: 40000;
+    --z-index-toast: 50000;
 }
 
 /* 🧱 إعادة تعيين الأنماط القياسية وحظر التشويه البصري */
@@ -64,6 +65,13 @@ body {
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    padding-top: 70px; /* ثغرة تغطية المنتجات: مساحة أمان هندسية مكافئة تماماً لارتفاع الهيدر الثابت الموحد */
+}
+
+@media (min-width: 1024px) {
+    body {
+        padding-top: 80px; /* مساحة أمان متجاوبة متوافقة مع شاشات الكمبيوتر الكبيرة */
+    }
 }
 
 /* 📐 فرض أوزان خط Cairo الصارمة ومنع أي تباين باهت */
@@ -134,8 +142,9 @@ input:focus, select:focus, textarea:focus {
    🏢 الهيدر الثابت الموحد المطور بالتوافق المطلق مع الـ DOM الهندسي الموحد
    ========================================================================== */
 .bose-navbar {
-    position: sticky;
+    position: fixed !important; /* تم تصحيحه هندسياً ليكون ثابتاً حقيقياً مستقلاً عن تعارض المقاطع */
     top: 0;
+    left: 0;
     z-index: var(--z-index-navbar);
     background-color: rgba(255, 255, 255, 0.99) !important;
     backdrop-filter: blur(12px);
@@ -388,7 +397,7 @@ input:focus, select:focus, textarea:focus {
     flex-direction: column;
     gap: 8px;
     padding: 0;
-    margin: 0 0 24px 0;
+    margin: 0;
 }
 
 .drawer-link-item a {
@@ -594,7 +603,6 @@ input:focus, select:focus, textarea:focus {
     100% { transform: translate3d(0, 0, 0); }
 }
 
-/* إضافة تهيئة التسريع العتادي الآمن لمنع الاهتزاز بالكامل على الشاشات الذكية */
 .waterfall-up {
     animation: boseWaterfallUp 35s linear infinite;
     will-change: transform;
@@ -633,14 +641,11 @@ input:focus, select:focus, textarea:focus {
     100% { transform: translate3d(-50%, 0, 0); }
 }
 
-
-
 @keyframes boseCategoriesLoop {
     0% { transform: translate3d(0, 0, 0); }
     100% { transform: translate3d(-50%, 0, 0); }
 }
 
-/* 👑 كتل الحركة اللانهائية الموحدة والمحدثة لمنع الشلل والتعارض على الموبايل 👑 */
 .animate-marquee, .categories-track-loop {
     display: flex !important;
     width: max-content !important;
@@ -655,8 +660,6 @@ input:focus, select:focus, textarea:focus {
 .categories-track-loop {
     animation: boseCategoriesLoop 32s linear infinite;
 }
-
-
 
 /* ==========================================================================
    🏪 الفوتر الموحد والثابت (Shared Universal Footer) بياض ناصع لتأمين التنفس البصري
@@ -863,7 +866,7 @@ input:focus, select:focus, textarea:focus {
 }
 
 /* ==========================================================================
-   التنبيهات المخصصة وحفظ بواب الحماية (Custom Dialogues & Toasts) المحدثة
+   التنببهات المخصصة وحفظ بواب الحماية (Custom Dialogues & Toasts)
    ========================================================================== */
 .bose-toast-container {
     position: fixed;
@@ -987,11 +990,6 @@ input:focus, select:focus, textarea:focus {
     background: rgba(17, 17, 17, 0.03);
 }
 
-/* ==========================================================================
-   🖼️ فئات ومساعدات إضافية موحدة (النجوم الذهبية، الجداول، التحميل الناعم)
-   ========================================================================== */
-
-/* فئة نجوم التقييم الموحدة لضمان الفخامة الرمزية الناعمة للذهبي */
 .bose-star-rating {
     color: var(--bose-gold) !important;
     font-size: 0.95rem;
@@ -1015,7 +1013,6 @@ body.drawer-active {
     display: none !important;
 }
 
-/* 💅 شريط التمرير المخصص المتكامل مع الهوية الفاخرة للبراند */
 ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -1036,60 +1033,135 @@ body.drawer-active {
 }
 
 /* ==========================================================================
-   📐 محددات الشاشات الفاخرة والتجاوب الكامل (Responsive Breakpoints)
+   🚨 التحديث الخاص بالزر العائم ونظام الإشعارات المباشر لعين العميل 🚨
    ========================================================================== */
 
-/* شاشات الموبايل والشاشات العمودية الصغيرة */
+#bose-floating-cart-wrapper {
+    position: fixed !important;
+    bottom: 30px !important;
+    right: 30px !important;
+    left: auto !important;
+    width: 64px !important;
+    height: 64px !important;
+    z-index: var(--z-index-navbar) !important; /* مرتبط بطبقة تضمن الظهور فوق شلالات الصور والفوتر تماماً */
+    pointer-events: auto !important;
+}
+
+.bose-floating-cart-trigger {
+    display: flex !important;
+    width: 100% !important;
+    height: 100% !important;
+    background-color: var(--bose-white) !important;
+    border: 2px solid var(--bose-pink) !important;
+    border-radius: 50% !important;
+    box-shadow: 0 8px 24px rgba(255, 145, 164, 0.25) !important;
+    cursor: pointer !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    text-decoration: none !important;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease, border-color 0.3s ease !important;
+}
+
+.bose-floating-cart-trigger:hover {
+    transform: scale(1.1) translateY(-5px) !important;
+    box-shadow: 0 12px 28px rgba(255, 145, 164, 0.4) !important;
+    border-color: var(--bose-black) !important;
+}
+
+.bose-trigger-icon-box {
+    position: relative !important;
+    color: var(--bose-black) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.bose-trigger-icon-box svg {
+    width: 28px !important;
+    height: 28px !important;
+    stroke: var(--bose-black) !important;
+}
+
+#bose-floating-badge-counter {
+    position: absolute !important;
+    top: -4px !important;
+    left: -4px !important;
+    background-color: var(--bose-pink) !important;
+    color: var(--bose-white) !important;
+    font-weight: 700 !important;
+    font-size: 12px !important;
+    min-width: 22px !important;
+    height: 22px !important;
+    border-radius: 11px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border: 2px solid var(--bose-white) !important;
+}
+
+/* هندسة حاوية الإشعارات المركزية لتبث في منتصف أسفل الشاشة تماماً لراحة العميل */
+#bose-toast-central-container {
+    position: fixed !important;
+    bottom: 110px !important; /* يرتفع بأناقة ملحوظة فوق السلة العائمة ليكون بمركز الانتباه */
+    left: 50% !important;
+    transform: translate3d(-50%, 0, 0) !important;
+    z-index: var(--z-index-toast) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    pointer-events: none !important;
+    width: 90% !important;
+    max-width: 360px !important;
+    align-items: center !important;
+}
+
+.bose-toast-card {
+    background: var(--bose-white) !important;
+    border: 1px solid rgba(255,145,164,0.3) !important;
+    border-bottom: 4px solid var(--bose-pink) !important;
+    border-radius: 16px !important;
+    padding: 14px 24px !important;
+    box-shadow: 0 12px 32px rgba(255,145,164,0.15) !important;
+    width: 100% !important;
+    opacity: 0;
+    transform: translate3d(0, 30px, 0) scale(0.95);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease !important;
+}
+
+.bose-toast-card.bose-toast-active {
+    opacity: 1 !important;
+    transform: translate3d(0, 0, 0) scale(1) !important;
+}
+
+.bose-toast-content {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 10px !important;
+}
+
+.bose-toast-text {
+    margin: 0 !important;
+    font-size: 14px !important;
+    color: var(--bose-black) !important;
+    font-weight: 700 !important;
+}
+
 @media (max-width: 576px) {
-    .bose-navbar {
-        padding: 0 12px;
-    }
-    .brand-name-display {
-        font-size: 1.05rem;
-    }
-    #bose-store-logo {
-        width: 38px;
-        height: 38px;
-    }
-    .waterfall-col {
-        gap: 12px;
-    }
+    .bose-navbar { padding: 0 12px; }
+    .brand-name-display { font-size: 1.05rem; }
+    #bose-store-logo { width: 38px; height: 38px; }
+    #bose-floating-cart-wrapper { bottom: 25px !important; right: 25px !important; width: 58px !important; height: 58px !important; }
 }
-
-/* شاشات التابلت والشاشات الأفقية المتوسطة */
-@media (min-width: 768px) {
-    .brand-name-display {
-        font-size: 1.3rem;
-    }
-    .shared-trust-bar {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-/* شاشات الكومبيوتر الكبيرة والديسك توب الفاخرة */
+@media (min-width: 768px) { .shared-trust-bar { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 1024px) {
-    #mobile-menu-toggle {
-        display: none !important; /* يختفي زر الموبايل هنا فقط ويظهر بالكامل في الشاشات الأصغر */
-    }
-    #bose-nav-menu {
-        display: block !important;
-    }
-    .bose-navbar {
-        padding: 0 40px;
-        height: 80px;
-    }
-    #bose-store-logo {
-        width: 52px;
-        height: 52px;
-    }
-    .brand-name-display {
-        font-size: 1.4rem;
-    }
-    .shared-trust-bar {
-        grid-template-columns: repeat(4, 1fr);
-        padding: 60px 0;
-    }
-    .footer-inner-wrapper {
-        padding: 60px 24px;
-        gap: 32px;
-    }
+    #mobile-menu-toggle { display: none !important; }
+    #bose-nav-menu { display: block !important; }
+    .bose-navbar { padding: 0 40px; height: 80px; }
+    #bose-store-logo { width: 52px; height: 52px; }
+    .brand-name-display { font-size: 1.4rem; }
+    .shared-trust-bar { grid-template-columns: repeat(4, 1fr); padding: 60px 0; }
+}
