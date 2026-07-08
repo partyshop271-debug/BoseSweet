@@ -1,20 +1,18 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
-    <!-- 👑 علامات الأرشفة وهندسة الـ SEO الفاخرة المعتمدة لبراند حلويات بوسي 👑 -->
     <title>سلة المشتريات الفاخرة | حلويات بوسي</title>
     <meta name="description" content="راجع منتجاتك وأصنافك المفضلة وتورتك المصممة بحب عبر سلة المشتريات الذكية لحلويات بوسي قبل تأكيد الطلب السريع.">
     <meta name="keywords" content="سلة التسوق, حلويات بوسي, مراجعة الطلب, تورت مخصصة, الفرافرة, الكفاح">
     
-    <!-- الروابط الموحدة للتصميم لمنع تضخم الملفات وتأخر التحميل -->
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/cart-checkout.css">
     
-    <!-- 📐 حارس الأنماط الصارم لتأمين طبقات العرض وبناء السلايدر الأفقي الفاخر 📐 -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
         
@@ -190,12 +188,10 @@
         }
     </style>
 
-    <!-- المحرك العام (يُستدعى أولاً في كل الصفحات لقراءة الـ JSON وإدارة العداد الصغير بالسلة بالهيدر) -->
     <script src="js/core-engine.js"></script>
 </head>
 <body class="bose-hardware-accelerated">
 
-    <!-- قناع التحميل والتحديث المركزي الذكي المانع لشلل الشاشة والوميض المفاجئ -->
     <div id="bose-cart-global-overlay" class="bose-processing-overlay">
         <div style="text-align: center;">
             <div class="bose-spinner-loader"></div>
@@ -203,40 +199,30 @@
         </div>
     </div>
 
-    <!-- 🏢 مكون الهيدر الموحد والثابت (Shared Universal Header) المتوافق بالمليم مع خريطة الـ DOM الهندسية الموحدة 🏢 -->
     <header class="bose-navbar" id="bose-global-header">
-        <!-- يتم التحكم في حقن وتنشيط هذا الوعاء بالكامل بواسطة محرك الموقع المركزي core-engine.js أو كود الحماية المدمج بالأسفل -->
-    </header>
+        </header>
 
-    <!-- 🚪 القائمة الجانبية الفاخرة للتصفح على الموبايل (Universal Drawer Menu) 🚪 -->
     <div id="sidebar-drawer" class="bose-drawer-menu"></div>
 
-    <!-- الوعاء الحاجب لتأثيرات الخلفية والتمويه الموحد عند فتح القائمة -->
     <div id="drawer-shield" class="drawer-overlay"></div>
 
-    <!-- 🧱 المحتوى الرئيسي لصفحة السلة الشاملة 🧱 -->
     <main class="bose-cart-page-section" id="cart-main-container">
         <div class="cart-page-header">
             <h1 class="cart-page-title" style="font-weight: 700; max-width: 700px;">سلة التسوق</h1>
             <p class="cart-page-subtitle bose-arabic-text">راجع منتجاتك وأصنافك المفضلة براحة تامة قبل الانتقال لخطوة إرسال وتأكيد الفاتورة الملكية عبر الواتساب الفوري.</p>
         </div>
 
-        <!-- تخطيط السلة الموزع ذكياً (كروت المنتجات يميناً، ملخص الحسابات يساراً) لراحة العميل النفسية ومنع التكديس البصري -->
         <div class="cart-checkout-grid">
             
-            <!-- الجانب الأيمن: قائمة كروت المشتريات المحقونة ديناميكياً عبر مصفوفة bose_cart -->
             <div class="cart-items-list-wrapper">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; direction: rtl;">
                     <h3 style="font-size: 1.15rem; font-weight: 700; color: #111111;">الأصناف المحددة للطلب</h3>
                     <button id="btn-clear-cart" class="btn-clear-cart-node" style="font-family: 'Cairo', sans-serif; font-size: 0.88rem; font-weight: 700; color: #777; border: 1px solid rgba(17,17,17,0.12); padding: 6px 14px; border-radius: 30px; cursor: pointer; transition: 0.2s;">إفراغ السلة</button>
                 </div>
                 
-                <!-- حاوية الحقن المركزي للكروت الأفقية القياسية خالية تماماً من ثغرات ومشاكل التكديس وبتر النصوص -->
                 <div id="cart-items-wrapper" class="cart-items-collection">
-                    <!-- جاري مراجعة وفحص كروت المنتجات من الذاكرة المحلية وحقنها آلياً بواسطة محرك السلة cart-engine.js -->
-                </div>
+                    </div>
 
-                <!-- حقل ملاحظات العميل الحرة الاختيارية لضمان الدعم وتلافي المشاكل اللوجستية والطبية -->
                 <div class="checkout-details-card" style="margin-top: 24px; padding: 20px;">
                     <h4 class="product-option-title" style="margin-bottom: 12px; font-weight: 700; color: #111111;">
                         <i class="fas fa-pen-fancy"></i> توصيات أو ملاحظات خاصة بالطلب (اختياري)
@@ -245,18 +231,15 @@
                 </div>
             </div>
 
-            <!-- الجانب الأيسر: ملخص الفاتورة وحقل الكوبونات التفاعلي الصارم المطبق لمعادلة التقريب الكلي الصارم -->
             <div class="bose-summary-sticky-card">
                 <h3 class="summary-section-title" style="font-weight: 700; color: #111111;">ملخص الطلب المالي</h3>
                 
-                <!-- نظام كوبونات الخصم والربط المالي الآمن -->
                 <div class="coupon-form-container">
                     <input type="text" id="coupon-input" class="coupon-input-field" placeholder="اكتب كود الخصم هنا (مثل BOOSY)...">
                     <button type="button" id="btn-apply-coupon" class="coupon-apply-trigger">تطبيق</button>
                 </div>
                 <div id="coupon-message" class="coupon-status-toast"></div>
 
-                <!-- جدول تفاصيل الحسابات المالية قبل الحساب النهائي للشحن والتوصيل في خطوة اتمام الطلب -->
                 <div class="summary-pricing-table">
                     <div class="pricing-row-node">
                         <span class="pricing-label-text">عدد الأصناف بالسلة:</span>
@@ -281,7 +264,6 @@
                     </div>
                 </div>
 
-                <!-- زر الإجراء الحاسم والانتقال المباشر لصفحة إتمام المشتريات والبيانات اللوجستية -->
                 <a href="checkout.html" id="btn-proceed-to-checkout" class="bose-primary-checkout-btn" style="font-weight: 700;">
                     <i class="fas fa-shopping-bag"></i> الانتقال لإتمام الطلب
                 </a>
@@ -292,20 +274,16 @@
             </div>
         </div>
 
-        <!-- 🌸 قسم المقترحات الذكية والخيارات البديلة (قد يعجبك أيضاً) - المطور ليعمل كسلايدر أفقي سلس وحقن كروت فاخرة مستقلة 🌸 -->
         <section class="bose-section-container" style="padding: 40px 0 0 0; margin-top: 40px; border-top: 1px dashed #FF91A4;">
             <div class="bose-section-header" style="text-align: right; margin-bottom: 20px; direction: rtl;">
                 <h2 class="bose-section-title" style="font-size: 1.5rem; font-weight: 700; color: #111111; padding-bottom: 6px;">قد يعجبك أيضاً</h2>
                 <p class="bose-section-subtitle" style="font-size: 0.95rem; color: #777; margin-top: 2px;">أصناف فاخرة ومميزة يوصي بها خبراؤنا لتكمل بها روعة اختيارك اليوم وتتحرك بشكل جانبي مريح للعين.</p>
             </div>
             
-            <!-- مجرى الحركة المخصص والمنظم لعرض المنتجات ككروت كاملة ومستقلة تتحرك أفقياً بحرية تامة وبدون أي تكديس رأسي -->
             <div id="bose-cart-premium-suggestions-grid" class="bose-cart-horizontal-slider">
-                <!-- يتم توليد وحقن كروت المنتجات الفاخرة هنا ديناميكياً عبر الموتور المدمج بالأسفل عند تحميل قاعدة البيانات بنجاح -->
-            </div>
+                </div>
         </section>
 
-        <!-- 🛡️ شريط عناصر الثقة والضمان الأربعة القياسي الموحد لعلامة حلويات بوسي الفاخرة 🛡️ -->
         <div class="shared-trust-bar">
             <div class="trust-item-node">
                 <div class="trust-icon-box" style="color: #FF91A4;"><i class="fas fa-birthday-cake"></i></div>
@@ -338,43 +316,14 @@
         </div>
     </main>
 
-    <!-- 🏪 الفوتر الموحد والثابت (Shared Universal Footer) بياض ناصع مريح للعين 🏪 -->
     <footer class="bose-footer" id="bose-global-footer">
-        <!-- يتم إدارته وحقنه ديناميكياً بكامل وثائق السياسات وقنوات التواصل الاجتماعي عبر محرك الموقع المركزي core-engine.js -->
-    </footer>
+        </footer>
 
-    <!-- ⚡ محرك السلة وإتمام عمليات الحساب والدفع والشامل (js/cart-engine.js) ⚡ -->
     <script src="js/cart-engine.js"></script>
 
-    <!-- 🔮 سكريبت معالجة التزامن وحقن كروت المنتجات القياسية الفاخرة بالهيكل الموحد والمطابق للمواصفات بالمسطرة 🔮 -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             
-            // 🔐 [حارس حماية وحقن اضطراري للهيدر والفوتر في حال توقف المحرك الخارجي]
-            const ensureHeaderFooterFallback = () => {
-                const headerBox = document.getElementById("bose-global-header");
-                const footerBox = document.getElementById("bose-global-footer");
-                
-                if (headerBox && headerBox.innerHTML.trim() === "") {
-                    headerBox.innerHTML = `
-                        <div style="display:flex; justify-content:space-between; align-items:center; width:100%; max-width:1200px; margin:0 auto; padding:10px 20px; direction:rtl;">
-                            <a href="index.html" style="text-decoration:none; font-weight:700; font-size:1.4rem; color:#111111;">حلويات بوسي</a>
-                            <nav style="display:flex; gap:20px;">
-                                <a href="menu.html" style="text-decoration:none; color:#111111; font-weight:700;">تصفح المنيو</a>
-                                <a href="index.html" style="text-decoration:none; color:#111111; font-weight:700;">الرئيسية</a>
-                            </nav>
-                        </div>`;
-                }
-                if (footerBox && footerBox.innerHTML.trim() === "") {
-                    footerBox.innerHTML = `
-                        <div style="text-align:center; padding:20px; background:#FFFFFF; border-top:1px solid rgba(17,17,17,0.06); direction:rtl;">
-                            <p style="margin:0; font-size:0.9rem; color:#111111; font-weight:700;">&copy; 2026 حلويات بوسي - جميع الحقوق محفوظة.</p>
-                        </div>`;
-                }
-            };
-            // تشغيل فحص الأمان بعد ثانية واحدة للتأكد من الحقن الفوري والآمن
-            setTimeout(ensureHeaderFooterFallback, 1000);
-
             // صمام الأمان وتأمين حماية الهروب لمنع الـ Syntax Error في حال انعدام تعريف الدالة محلياً
             const secureEscape = window.escapeHtml || window.escapeHTML || function(str) {
                 if (!str) return '';
@@ -390,7 +339,7 @@
                 const currentCart = rawCart ? JSON.parse(rawCart) : [];
                 const cartSlugs = currentCart.map(item => item.productSlug);
 
-                // [🔐 حل جذري لثغرة التكرار السلوكي]: استدعاء الدالة ممرراً مصفوفة المنتجات لضمان عزل النكهات المكررة بالكامل
+                // استدعاء مصفوفة المنتجات لضمان عزل النكهات المكررة بالكامل
                 const finalSuggestions = window.getBosePersonalizedSuggestions ? window.getBosePersonalizedSuggestions(dbData.products, "", 5) : dbData.products.slice(0, 5);
                 const currency = dbData.store?.currency || "EGP";
 
@@ -399,7 +348,7 @@
                     return;
                 }
 
-                // [🔐 حل جذري لثغرة حشو وتشتيت كروت السلايدر]: بناء الكارت العمودي الفاخر الملتزم بالمعايير الجمالية للبراند
+                // بناء الكارت العمودي الفاخر الملتزم بالمعايير الجمالية للبراند
                 targetGrid.innerHTML = finalSuggestions.map(prod => {
                     const defaultLogo = "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png";
                     const imgUrl = prod.image || (prod.images && prod.images[0] ? prod.images[0] : defaultLogo);
@@ -460,7 +409,7 @@
                 renderStrictSuggestionsGrid(e.detail);
             });
 
-            // [🔐 حامى شلل التمرير باللمس]: تمكين سحب الشريط الأفقي بالماوس والموبايل بسلاسة لمنع تجمده
+            // تمكين سحب الشريط الأفقي بالماوس والموبايل بسلاسة لمنع تجمده
             const horizontalTrack = document.getElementById("bose-cart-premium-suggestions-grid");
             if (horizontalTrack && window.enableMarqueeDragScrolling) {
                 window.enableMarqueeDragScrolling(horizontalTrack);
