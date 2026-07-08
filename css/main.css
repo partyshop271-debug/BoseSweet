@@ -110,7 +110,7 @@ body.bose-no-scroll {
     perspective: 1000px;
 }
 
-/* hماية نصوص اللغة العربية من التقطيع والتشويه البصري */
+/* حماية نصوص اللغة العربية من التقطيع والتشويه البصري */
 .bose-arabic-text {
     word-break: keep-all;
     overflow-wrap: break-word;
@@ -250,7 +250,136 @@ body.bose-no-scroll {
 }
 
 /* ==========================================================================\
-   5. حاويات وأقسام الفئات الـ 12 المعتمدة (Flexible Categories Viewport)
+   6. قسم شلال المنتجات البصري الأنيق المستمر الحركة (Waterfall Section)
+   ========================================================================== */
+
+#waterfall-section {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+}
+
+.waterfall-container {
+    display: flex;
+    gap: 16px;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+.waterfall-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transform: translate3d(0, 0, 0);
+}
+
+@keyframes boseWaterfallUp {
+    0% { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(0, -50%, 0); }
+}
+
+@keyframes boseWaterfallDown {
+    0% { transform: translate3d(0, -50%, 0); }
+    100% { transform: translate3d(0, 0, 0); }
+}
+
+.waterfall-up {
+    animation: boseWaterfallUp 35s linear infinite;
+    will-change: transform;
+}
+
+.waterfall-down {
+    animation: boseWaterfallDown 35s linear infinite;
+    will-change: transform;
+}
+
+.waterfall-overlay-top {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 120px;
+    background: linear-gradient(to bottom, var(--bose-white) 0%, rgba(255,255,255,0) 100%);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    z-index: 5;
+    pointer-events: none;
+}
+
+.waterfall-overlay-bottom {
+    position: absolute;
+    bottom: 0; left: 0; width: 100%; height: 120px;
+    background: linear-gradient(to top, var(--bose-white) 0%, rgba(255,255,255,0) 100%);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    z-index: 5;
+    pointer-events: none;
+}
+
+/* ==========================================================================\
+   7. قسم عقد من الإتقان ومجرى الحركة الدائري (Decade of Perfection Carousel)
+   ========================================================================== */
+
+.bose-perfection-section {
+    padding: 40px 16px;
+    background-color: var(--bose-white);
+}
+
+.bose-perfection-carousel-wrapper {
+    overflow: hidden;
+    width: 100%;
+    position: relative;
+}
+
+.bose-perfection-track {
+    display: flex;
+    gap: 20px;
+    width: max-content;
+    will-change: transform;
+}
+
+.bose-perfection-card {
+    width: 240px;
+    background-color: var(--bose-white);
+    border: 1px solid rgba(255, 145, 164, 0.2);
+    border-radius: 16px;
+    overflow: hidden;
+    display: block;
+    text-decoration: none;
+    box-shadow: 0 8px 24px rgba(255, 145, 164, 0.05);
+}
+
+.perfection-card-img-holder {
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+}
+
+.perfection-card-img-holder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.perfection-card-info {
+    padding: 14px;
+    text-align: center;
+}
+
+.perfection-card-info h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--bose-black);
+    margin-bottom: 6px;
+}
+
+.perfection-card-price {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--bose-pink);
+}
+
+/* ==========================================================================\
+   8. حاويات وأقسام الفئات الـ 12 المعتمدة (Flexible Categories Viewport)
    ========================================================================== */
 
 .bose-section-container {
@@ -364,7 +493,7 @@ body.bose-no-scroll {
 }
 
 /* ==========================================================================\
-   6. كروت عرض المنتجات وتأمين الأسعار والبادجات (Dynamic Product Grid)
+   9. كروت عرض المنتجات الموحدة وتأمين الأسعار والبادجات (Strict Product Card DOM)
    ========================================================================== */
 
 .bose-products-grid {
@@ -510,7 +639,7 @@ body.bose-no-scroll {
 }
 
 /* ==========================================================================\
-   7. تصميم صفحة المنيو الشامل والفلاتر الذكية (Menu & Filters Layout)
+   10. تصميم صفحة المنيو الشامل والفلاتر الذكية (Menu & Filters Layout)
    ========================================================================== */
 
 .menu-layout-container {
@@ -593,7 +722,167 @@ body.bose-no-scroll {
 }
 
 /* ==========================================================================\
-   8. صفحة تفاصيل المنتج والمقاسات والملاحظات (Single Product Detail Page)
+   11. هندسة بلوكات ومحاكيات الورد والتورت الكبيرة والفاخرة بالكامل
+   ========================================================================== */
+
+.bose-simulator-promo-section {
+    padding: 50px 16px;
+    background-color: var(--bose-white);
+}
+
+.bose-simulator-card-block {
+    max-width: 1100px;
+    margin: 0 auto;
+    background-color: var(--bose-white);
+    border: 3px solid var(--bose-pink);
+    border-radius: 24px;
+    padding: 40px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    align-items: center;
+    box-shadow: 0 12px 32px rgba(255, 145, 164, 0.05); /* حظر الظلال السوداء ومحاكاة الفخامة بالبمبي المعتمد */
+}
+
+.simulator-text-content .simulator-badge {
+    background-color: var(--bose-cream);
+    color: var(--bose-pink);
+    padding: 6px 16px;
+    border-radius: 50px;
+    font-size: 13px;
+    font-weight: 700;
+    display: inline-block;
+    margin-bottom: 16px;
+    border: 1px solid var(--bose-pink);
+}
+
+.simulator-text-content .gold-badge {
+    color: var(--bose-gold);
+    border-color: var(--bose-gold);
+}
+
+.simulator-text-content h2 {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--bose-black);
+    margin-bottom: 16px;
+}
+
+.simulator-text-content p {
+    font-size: 15px;
+    color: #444444;
+    line-height: 1.8;
+    margin-bottom: 24px;
+}
+
+.bose-simulator-action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background-color: var(--bose-pink);
+    color: var(--bose-white);
+    padding: 14px 32px;
+    border-radius: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 8px 20px rgba(255, 145, 164, 0.15);
+    transition: all 0.3s ease;
+}
+
+.bose-simulator-action-btn:hover {
+    transform: translateY(-3px);
+}
+
+.simulator-visual-content img {
+    width: 100%;
+    max-height: 350px;
+    object-fit: contain;
+}
+
+/* ==========================================================================\
+   12. هندسة كتلة البصريات الفاخرة لقسم الفخر والاعتزاز والعدادات الذكية
+   ========================================================================== */
+
+.bose-pride-statistics-section {
+    padding: 60px 16px;
+    background-color: var(--bose-cream);
+    border-top: 1px solid rgba(255, 145, 164, 0.15);
+    border-bottom: 1px solid rgba(255, 145, 164, 0.15);
+}
+
+.bose-pride-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.2fr 1.8fr;
+    gap: 40px;
+    align-items: center;
+}
+
+.bose-pride-text-block .pride-mini-tag {
+    color: var(--bose-gold);
+    font-size: 15px;
+    font-weight: 700;
+    display: block;
+    margin-bottom: 12px;
+}
+
+.bose-pride-text-block h2 {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--bose-black);
+    margin-bottom: 18px;
+}
+
+.bose-pride-text-block p {
+    font-size: 15px;
+    color: #444444;
+    line-height: 1.8;
+}
+
+.bose-statistics-grid-block {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.bose-stat-card {
+    background-color: var(--bose-white);
+    border: 1px solid rgba(255, 145, 164, 0.2);
+    border-radius: 20px;
+    padding: 24px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(255, 145, 164, 0.04);
+}
+
+.stat-icon-wrapper {
+    width: 50px;
+    height: 50px;
+    background-color: var(--bose-cream);
+    color: var(--bose-pink);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 14px auto;
+    font-size: 20px;
+}
+
+.stat-number {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--bose-black);
+    margin-bottom: 6px;
+}
+
+.stat-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #666666;
+}
+
+/* ==========================================================================\
+   13. صفحة تفاصيل المنتج والمقاسات والملاحظات (Single Product Detail Page)
    ========================================================================== */
 
 .product-detail-layout {
@@ -729,7 +1018,7 @@ body.bose-no-scroll {
 }
 
 /* ==========================================================================\
-   9. بانرات العروض الهدايا وكروت التسويق (Promo Campaign Blocks)
+   14. بانرات العروض الهدايا وكروت التسويق (Promo Campaign Blocks)
    ========================================================================== */
 
 .bose-promo-section {
@@ -802,7 +1091,7 @@ body.bose-no-scroll {
 }
 
 /* ==========================================================================\
-   10. آراء العملاء وقنوات التقييم الفاخرة (Reviews Touch Slider)
+   15. آراء العملاء وقنوات التقييم الفاخرة (Reviews Touch Slider)
    ========================================================================== */
 
 .bose-reviews-slider {
@@ -874,7 +1163,7 @@ body.bose-no-scroll {
 }
 
 /* ==========================================================================\
-   11. معرض السوشيال ميديا وتغطيات العمل الفعلي (Live Social Gallery)
+   16. معرض السوشيال ميديا وتغطيات العمل الفعلي (Live Social Gallery)
    ========================================================================== */
 
 .social-gallery-grid {
@@ -926,7 +1215,7 @@ body.bose-no-scroll {
 }
 
 /* ==========================================================================\
-   12. الأسئلة الشائعة وتسهيل الاستخدام (Accordion System)
+   17. الأسئلة الشائعة وتسهيل الاستخدام (Accordion System)
    ========================================================================== */
 
 .bose-faq-container {
@@ -985,7 +1274,7 @@ body.bose-no-scroll {
 }
 
 /* ==========================================================================\
-   13. موديل البحث السريع وتأمين الفلاتر (Search Modal & Popups)
+   18. موديل البحث السريع وتأمين الفلاتر (Search Modal & Popups)
    ========================================================================== */
 
 .bose-search-modal {
@@ -1094,7 +1383,7 @@ body.bose-no-scroll {
 }
 
 /* ==========================================================================\
-   14. محددات التجاوب والشبكات للشاشات المتوسطة والكبيرة (Responsive Breakpoints)
+   19. محددات التجاوب والشبكات للشاشات المتوسطة والكبيرة (Responsive Breakpoints)
    ========================================================================== */
 
 @media (max-width: 360px) {
