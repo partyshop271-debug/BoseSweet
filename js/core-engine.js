@@ -1,6 +1,6 @@
 /**
  * 👑 المحرك المركزي العام والنهائي للموقع والنافذة العائمة - حلويات بوسي 👑
- * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية ومشاكل التداخل V57.0
+ * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية ومشاكل التداخل V58.0
  * متوافق بشكل مطلق وثنائي الاتجاه مع كافة ملفات css/ وجافا سكريبت الموقع وقاعدة البيانات data/site-data-final.json
  * [تم التحديث: جعل السلة العائمة طافية ومتحركة بشكل مطلق فوق كافة العناصر وحل مشكلة اختفاء الهيدر والفوتر تلقائياً]
  */
@@ -652,12 +652,19 @@
     function injectFloatingCartSystem() {
         if (document.getElementById('bose-floating-cart-wrapper')) return;
 
+        // لا داعي لإظهار السلة الطافية داخل صفحات السلة والدفع لضمان التركيز البصري والراحة النفسية
+        const currentPath = window.location.pathname.toLowerCase();
+        if (currentPath.includes("cart.html") || currentPath.includes("checkout.html")) {
+            return;
+        }
+
         const container = document.createElement('div');
         container.id = 'bose-floating-cart-wrapper';
 
         const triggerLink = document.createElement('a');
         triggerLink.id = 'bose-floating-cart-trigger';
         triggerLink.href = 'cart.html';
+        triggerLink.className = 'bose-floating-cart-trigger';
         triggerLink.setAttribute('aria-label', 'الانتقال إلى صفحة سلة المشتريات الموحدة');
         triggerLink.innerHTML = `
             <div class="bose-trigger-icon-box">
@@ -906,6 +913,13 @@
         applyPsychologicalBlinking();
     }
 
+    /**
+     * 🤝 آلية الاستماع وتحديث العدادات فورياً عند قيام أي محرك فرعي آخر بتعديل السلة
+     */
+    window.refreshBoseGlobalCartUI = function () {
+        updateGlobalCartCounters();
+    };
+
     function initializeGlobalFeatures() {
         injectFloatingCartSystem();
         
@@ -942,49 +956,73 @@
                 animation: bosePulseBlinking 2.2s infinite ease-in-out;
             }
 
-            /* 👑 [تثبيت وحماية السلة العائمة لتطفو مطلقاً فوق قاع الفوتر وكافة العناصر] */
+            /* 👑 [تثبيت وحماية السلة العائمة الديناميكية الفاخرة لتطفو مطلقاً فوق قاع الفوتر وكافة العناصر] */
             #bose-floating-cart-wrapper {
                 position: fixed !important;
                 bottom: 30px !important;
-                left: 30px !important;
-                width: 66px !important;
-                height: 66px !important;
-                z-index: 9999999 !important;
+                right: 30px !important; /* تعديل هندسي للتموضع الصحيح بالكامل */
+                left: auto !important;
+                width: 64px !important;
+                height: 64px !important;
+                z-index: 2147483647 !important; /* أقصى طبقة ظهور برمجية ممكنة لتطفو فوق الفوتر والهيدر وكافة الكروت دائمًا */
                 pointer-events: auto !important;
+                -webkit-tap-highlight-color: transparent;
             }
 
-            #bose-floating-cart-trigger {
+            .bose-floating-cart-trigger {
                 display: flex !important;
                 width: 100% !important;
                 height: 100% !important;
                 background-color: ${BRAND_COLORS.white} !important;
                 border: 2px solid ${BRAND_COLORS.pink} !important;
                 border-radius: 50% !important;
-                box-shadow: 0 8px 32px rgba(255,145,164,0.35) !important;
+                box-shadow: 0 8px 24px rgba(255, 145, 164, 0.25) !important;
                 cursor: pointer !important;
                 align-items: center !important;
                 justify-content: center !important;
                 padding: 0 !important;
                 text-decoration: none !important;
-                transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+                transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease, border-color 0.3s ease !important;
             }
-            #bose-floating-cart-trigger:hover {
-                transform: scale(1.1) !important;
-                box-shadow: 0 12px 40px rgba(255,145,164,0.5) !important;
+            
+            .bose-floating-cart-trigger:hover {
+                transform: scale(1.1) translateY(-5px) !important;
+                box-shadow: 0 12px 28px rgba(255, 145, 164, 0.4) !important;
+                border-color: ${BRAND_COLORS.black} !important;
             }
+            
+            .bose-floating-cart-trigger:active {
+                transform: scale(0.95) !important;
+            }
+
             .bose-trigger-icon-box {
                 position: relative !important;
                 color: ${BRAND_COLORS.black} !important;
                 display: flex !important;
                 align-items: center !important;
                 justify-content: center !important;
+                width: 100% !important;
+                height: 100% !important;
             }
+            
+            .bose-trigger-icon-box svg {
+                width: 28px !important;
+                height: 28px !important;
+                stroke: ${BRAND_COLORS.black} !important;
+                transition: stroke 0.3s ease;
+            }
+            
+            .bose-floating-cart-trigger:hover .bose-trigger-icon-box svg {
+                stroke: ${BRAND_COLORS.pink} !important;
+            }
+
             #bose-floating-badge-counter {
                 position: absolute !important;
-                top: -12px !important;
-                right: -12px !important;
+                top: -4px !important;
+                left: -4px !important;
+                right: auto !important;
                 background-color: ${BRAND_COLORS.pink} !important;
-                color: ${BRAND_COLORS.white} !important;
+                color: ${BRAND_COLORS.black} !important;
                 font-family: 'Cairo', sans-serif !important;
                 font-weight: 700 !important;
                 font-size: 12px !important;
@@ -997,14 +1035,34 @@
                 padding: 0 4px !important;
                 box-sizing: border-box !important;
                 border: 2px solid ${BRAND_COLORS.white} !important;
-                z-index: 10000000 !important;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
+                z-index: 2147483647 !important;
+            }
+
+            /* التجاوب الفاخر والمثالي مع شاشات الهواتف المحمولة والموبايل أولاً */
+            @media (max-width: 576px) {
+                #bose-floating-cart-wrapper {
+                    bottom: 20px !important;
+                    right: 20px !important;
+                    width: 56px !important;
+                    height: 56px !important;
+                }
+                .bose-trigger-icon-box svg {
+                    width: 24px !important;
+                    height: 24px !important;
+                }
+                #bose-floating-badge-counter {
+                    min-width: 20px !important;
+                    height: 20px !important;
+                    font-size: 11px !important;
+                }
             }
             
             #bose-toast-central-container {
                 position: fixed;
                 top: 24px;
                 right: 24px;
-                z-index: 9999999;
+                z-index: 2147483646;
                 display: flex;
                 flex-direction: column;
                 gap: 12px;
@@ -1047,7 +1105,7 @@
         if (document.getElementById('bose-db-fallback-error')) return;
         const errorDiv = document.createElement('div');
         errorDiv.id = "bose-db-fallback-error";
-        errorDiv.style.cssText = `position:fixed; bottom:16px; right:16px; background-color:${BRAND_COLORS.cream}; border:1px solid ${BRAND_COLORS.pink}; padding:12px 20px; border-radius:8px; z-index:999999; direction:rtl; font-size:14px; font-family:Cairo;`;
+        errorDiv.style.cssText = `position:fixed; bottom:16px; right:16px; background-color:${BRAND_COLORS.cream}; border:1px solid ${BRAND_COLORS.pink}; padding:12px 20px; border-radius:8px; z-index:2147483647; direction:rtl; font-size:14px; font-family:Cairo, sans-serif; font-weight: 600; color:${BRAND_COLORS.black};`;
         errorDiv.textContent = 'عذراً، هناك صعوبة في الاتصال بالخادم حالياً. يرجى إعادة محاولة تحميل الصفحة لراحتك.';
         document.body.appendChild(errorDiv);
     }
