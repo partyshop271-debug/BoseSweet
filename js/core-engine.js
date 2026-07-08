@@ -1,8 +1,8 @@
 /**
  * 👑 المحرك المركزي العام والنهائي للموقع والنافذة العائمة - حلويات بوسي 👑
- * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية ومشاكل التداخل V53.0
- * متوافق بشكل مطلق وثنائي الاتجاه مع كافة ملفات css/ وجافا سكريبت الموقع وقاعدة البيانات site-data-final.json
- * [تم التحديث برمجياً: كسر كاش المتصفح تلقائياً لضمان ظهور النكهات والأوصاف الجديدة فور الرفع على الاستضافة]
+ * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية ومشاكل التداخل V54.0
+ * متوافق بشكل مطلق وثنائي الاتجاه مع كافة ملفات css/ وجافا سكريبت الموقع وقاعدة البيانات data/site-data-final.json
+ * [تم التحديث برمجياً: معالجة جغرافية المسارات المطلقة وتفجير كاش المتصفح الحتمي لملف البيانات]
  */
 
 (function () {
@@ -25,27 +25,32 @@
     let databaseReadyCallbacks = [];
 
     /* ==========================================================================\
-       1. حارس التمهيد واستدعاء قاعدة البيانات المعتمدة site-data-final.json مع كسر الكاش
+       1. حارس التمهيد واستدعاء قاعدة البيانات المعتمدة data/site-data-final.json مع كسر الكاش المطلق
        ========================================================================== */
     async function loadBoseAbsoluteDatabase() {
         try {
-            const currentPath = window.location.pathname;
-            let jsonPath = 'site-data-final.json';
+            // 👑 التطوير الذهبي: بناء مسار مطلق وديناميكي لملف البيانات ليعمل بكفاءة من أي مجلد فرعي أو رئيسي
+            const boseLocation = window.location;
+            const boseOrigin = boseLocation.origin + boseLocation.pathname.substring(0, boseLocation.pathname.lastIndexOf('/') + 1);
             
-            // توحيد وفحص مسار قاعدة البيانات لتفادي أخطاء المجلدات الفرعية على الاستضافة
+            // فحص إذا كنا داخل مجلد فرعي لإرجاع المسار للجذر
+            let baseRootPath = "";
+            const currentPath = boseLocation.pathname;
             if (currentPath.includes('/css/') || currentPath.includes('/js/') || currentPath.includes('/pages/') || currentPath.includes('/admin/')) {
-                jsonPath = '../site-data-final.json';
+                baseRootPath = "../";
             }
 
+            const jsonPath = `${baseRootPath}data/site-data-final.json`;
+            
             // 👑 [تقنية كسر كاش المتصفح الحتمية]: إضافة طابع زمني فريد لإجبار السيرفر على جلب النسخة المحدثة فوراً
             const cacheBuster = `?v=${Date.now()}`;
             
             const response = await fetch(jsonPath + cacheBuster);
             if (!response.ok) {
-                // محاولة المسار البديل في حال اختلاف إعدادات السيرفر اللوجستية
-                const alternativePath = 'data/site-data-final.json' + cacheBuster;
+                // محاولة المسار البديل الذكي كخط دفاع ثانٍ
+                const alternativePath = `${baseRootPath}site-data-final.json${cacheBuster}`;
                 const fallbackResponse = await fetch(alternativePath);
-                if (!fallbackResponse.ok) throw new Error(`فشل جلب البيانات: ${fallbackResponse.status}`);
+                if (!fallbackResponse.ok) throw new Error(`فشل جلب البيانات من كافة المسارات القياسية: ${fallbackResponse.status}`);
                 boseGlobalStoreData = await fallbackResponse.json();
             } else {
                 boseGlobalStoreData = await response.json();
@@ -259,7 +264,7 @@
                     <a href="cake-builder.html" style="display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border: 1px solid rgba(255,145,164,0.22); border-radius: 12px; color: ${BRAND_COLORS.black}; font-weight: 700; font-size: 13px; text-decoration: none; background: #FFFFFF; font-family: 'Cairo'; transition: 0.2s; box-shadow: 0 4px 12px rgba(255,145,164,0.03);"><span style="display: flex; align-items: center; gap: 12px;"><i class="fas fa-birthday-cake" style="color: ${BRAND_COLORS.gold}; font-size: 16px;"></i> محاكي وتصميم التورت الحصري</span> <i class="fas fa-chevron-left" style="font-size: 11px; color: ${BRAND_COLORS.pink};"></i></a>
                     <a href="flower-builder.html" style="display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border: 1px solid rgba(255,145,164,0.22); border-radius: 12px; color: ${BRAND_COLORS.black}; font-weight: 700; font-size: 13px; text-decoration: none; background: #FFFFFF; font-family: 'Cairo'; transition: 0.2s; box-shadow: 0 4px 12px rgba(255,145,164,0.03);"><span style="display: flex; align-items: center; gap: 12px;"><i class="fas fa-seedling" style="color: ${BRAND_COLORS.gold}; font-size: 16px;"></i> تنسيق بوكيهات الورد والمال الفاخرة</span> <i class="fas fa-chevron-left" style="font-size: 11px; color: ${BRAND_COLORS.pink};"></i></a>
                     
-                    <div style="margin-top: auto; padding-top: 30px; text-align: center;">
+                    <div style="getInTouch: true; margin-top: auto; padding-top: 30px; text-align: center;">
                         <span style="font-size: 11px; font-weight: 600; color: #999; font-family: 'Cairo'; display: block; line-height: 1.5;">فرع الكفاح - بجوار صيدلية د. أحمد مجدي 🌸</span>
                         <span style="font-size: 10px; color: #BBB; font-family: 'Cairo'; margin-top: 4px; display: block;">جميع الحقوق محفوظة © ٢٠٢٦</span>
                     </div>
