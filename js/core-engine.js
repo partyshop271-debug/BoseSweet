@@ -1,7 +1,7 @@
 /**
  * 👑 المحرك المركزي العام والنهائي للموقع والنافذة العائمة - حلويات بوسي 👑
  * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية ومشاكل التداخل
- * [يقوم بإدارة: قاعدة البيانات JSON، العدادات، التنبيهات الراقية، والسلة العائمة التفاعلية الفاخرة]
+ * [يقوم بإدارة: قاعدة البيانات JSON، العدادات، التنبيهات الراقية، والسلة العائمة التفاعلية الفاخرة، وضخ الكروت]
  * متوافق بشكل مطلق وثنائي الاتجاه مع كافة ملفات css/ وجافا سكريبت الموقع وقاعدة البيانات site-data-final.json
  */
 
@@ -29,14 +29,21 @@
        ========================================================================== */
     async function loadBoseAbsoluteDatabase() {
         try {
-            // جلب قاعدة البيانات المعتمدة والوحيدة لكل الموقع
-            const response = await fetch('data/site-data-final.json');
+            // صمام أمان لتحديد المسار الصحيح للملف سواء كنا في الصفحة الرئيسية أو صفحة فرعية
+            const isSubPage = window.location.pathname.includes('/css/') || window.location.pathname.includes('/js/');
+            const jsonPath = isSubPage ? '../data/site-data-final.json' : 'data/site-data-final.json';
+
+            const response = await fetch(jsonPath);
             if (!response.ok) {
-                throw new Error(`فشل جلب البيانات: ${response.status}`);
+                // محاولة دفاعية ثانية بالمسار البديل إذا فشل الأول
+                const fallbackResponse = await fetch('data/site-data-final.json');
+                if (!fallbackResponse.ok) throw new Error(`فشل جلب البيانات: ${fallbackResponse.status}`);
+                boseGlobalStoreData = await fallbackResponse.json();
+            } else {
+                boseGlobalStoreData = await response.json();
             }
-            boseGlobalStoreData = await response.json();
             
-            // إطلاق الحدث العالمي لإعلام كافة المحركات الفرعية (سلة، كيك، ورد) بنجاح التحميل الآمن
+            // إطلاق الحدث العالمي لإعلام كافة المحركات الفرعية بنجاح التحميل الآمن
             window.BoseStoreData = boseGlobalStoreData;
             document.dispatchEvent(new CustomEvent('BoseDatabaseLoaded', { detail: boseGlobalStoreData }));
             
@@ -68,7 +75,7 @@
     function injectFloatingCartSystem() {
         if (document.getElementById('bose-floating-cart-wrapper')) return;
 
-        // إنشاء زر السلة العائم السحري الذي يرافق العميل في كافة الأقسام والصفحات لراحة تامة في التصفح
+        // إنشاء زر السلة العائم السحري الذي يرافق العميل لراحة تامة في التصفح
         const triggerButton = document.createElement('button');
         triggerButton.id = 'bose-floating-cart-trigger';
         triggerButton.setAttribute('aria-label', 'استعراض سلة المشتريات العائمة');
@@ -90,8 +97,7 @@
                 </div>
                 <button id="bose-close-drawer-trigger" aria-label="إغلاق السلة">&times;</button>
             </div>
-            <div id="bose-drawer-items-body" class="bose-drawer-body-scroll">
-                </div>
+            <div id="bose-drawer-items-body" class="bose-drawer-body-scroll"></div>
             <div class="bose-drawer-footer">
                 <div class="bose-drawer-summary-row">
                     <span>إجمالي السلة التقريبي:</span>
@@ -117,10 +123,10 @@
         container.appendChild(overlay);
         document.body.appendChild(container);
 
-        // حقن كود التنسيق الحاكم والمقدس الخاص بالسلة العائمة هيدروليكياً لحمايتها من الفقدان
+        // حقن كود التنسيق الحاكم والمقدس الخاص بالسلة العائمة
         injectFloatingCartStyles();
 
-        // ربط أحداث فتح وإغلاق السلة العائمة بسلاسة مطلقة وبحركات Smooth
+        // ربط أحداث فتح وإغلاق السلة العائمة بسلاسة مطلقة
         triggerButton.addEventListener('click', openBoseCartDrawer);
         document.getElementById('bose-close-drawer-trigger').addEventListener('click', closeBoseCartDrawer);
         overlay.addEventListener('click', closeBoseCartDrawer);
@@ -197,7 +203,6 @@
             const itemTotal = price * qty;
             totalSum += itemTotal;
 
-            // استخراج وتنسيق التخصيصات الفاخرة للمنتج (مثل التورت المخصصة وبوكسات الورد)
             let customizationHTML = '';
             if (item.customizations) {
                 if (Array.isArray(item.customizations)) {
@@ -237,12 +242,10 @@
 
         subtotalDisplay.textContent = `${Math.round(totalSum)} EGP`;
 
-        // ربط الأحداث الداخلية للسلة العائمة بدقة متناهية ودون تكرار
         bindFloatingCartActions();
     }
 
     function bindFloatingCartActions() {
-        // أزرار زيادة الكمية
         document.querySelectorAll('.bose-drawer-qty-btn.plus').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const index = e.currentTarget.dataset.index;
@@ -255,7 +258,6 @@
             });
         });
 
-        // أزرار تقليل الكمية
         document.querySelectorAll('.bose-drawer-qty-btn.minus').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const index = e.currentTarget.dataset.index;
@@ -267,7 +269,6 @@
                         saveInMemoryCart(cart);
                         renderFloatingCartItems();
                     } else {
-                        // حذف تلقائي راقٍ عند النزول عن كمية 1
                         cart.splice(index, 1);
                         saveInMemoryCart(cart);
                         renderFloatingCartItems();
@@ -277,7 +278,6 @@
             });
         });
 
-        // أزرار الحذف المباشر للقطع
         document.querySelectorAll('.bose-drawer-card-remove').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const index = e.currentTarget.dataset.index;
@@ -312,7 +312,6 @@
 
         container.appendChild(toast);
 
-        // تحريك ناعم للدخول والخروج لحماية تجربة المستخدم وعين المستهلك (منع علامات الترقيم الحادة)
         setTimeout(() => toast.classList.add('bose-toast-active'), 10);
         
         setTimeout(() => {
@@ -322,7 +321,6 @@
         }, 3500);
     };
 
-    // دالة إدراج وتوصيل المنتجات بالسلة العائمة مباشرة من كروت الأقسام الـ 10 في index.html
     window.addAbsoluteProductToCart = function (productObject) {
         if (!productObject || !productObject.id) return;
         
@@ -348,7 +346,48 @@
     };
 
     /* ==========================================================================\
-       5. تحديث عدادات السلة في كامل الهيكل العلوي للموقع (Sync Counters)
+       5. [مطور ومضاف] مهندس ومولد كروت المنتجات الصارم لمنع مشاكل الشلل والانضغاط
+       ========================================================================== */
+    window.generateStrictProductCardHTML = function (product, currency = 'EGP') {
+        if (!product) return '';
+        const price = Math.round(Number(product.price || 0));
+        const imgUrl = product.image || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png';
+        
+        return `
+            <div class="product-card" data-slug="${product.slug}" style="background: ${BRAND_COLORS.white}; border: 1px solid rgba(255,145,164,0.2); border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 10px; justify-content: space-between; position: relative; box-shadow: 0 4px 16px rgba(255,145,164,0.03); direction: rtl; text-align: right;">
+                <div class="product-card-top" style="position: relative; overflow: hidden; border-radius: 12px; height: 180px; width: 100%;">
+                    <img src="${imgUrl}" alt="${product.name}" style="width: 100%; height: 100%; object-fit: cover; transition: 0.3s;" loading="lazy">
+                </div>
+                <div class="product-card-info" style="flex-grow: 1; display: flex; flex-direction: column; gap: 4px;">
+                    <h3 style="margin: 0; font-size: 0.95rem; font-weight: 700; color: ${BRAND_COLORS.black};">${product.name}</h3>
+                    <p style="margin: 0; font-size: 0.75rem; color: #666; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${product.description || ''}</p>
+                </div>
+                <div class="product-card-bottom" style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px;">
+                    <span style="font-size: 1rem; font-weight: 700; color: ${BRAND_COLORS.pink};">${price} ${currency}</span>
+                    <button class="bose-add-to-cart-btn" data-id="${product.id}" style="background-color: ${BRAND_COLORS.pink}; color: ${BRAND_COLORS.white}; border: none; padding: 8px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: 0.2s;">إضافة للسلة</button>
+                </div>
+            </div>
+        `;
+    };
+
+    window.attachProductCardEvents = function (containerElement, productsList, currency) {
+        if (!containerElement || !productsList) return;
+        
+        containerElement.querySelectorAll('.bose-add-to-cart-btn').forEach(btn => {
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const prodId = this.dataset.id;
+                const matchedProduct = productsList.find(p => String(p.id) === String(prodId));
+                if (matchedProduct) {
+                    window.addAbsoluteProductToCart(matchedProduct);
+                }
+            });
+        });
+    };
+
+    /* ==========================================================================\
+       6. تحديث عدادات السلة في كامل الهيكل العلوي للموقع (Sync Counters)
        ========================================================================== */
     function updateGlobalCartCounters() {
         const cart = getInMemoryCart();
@@ -357,20 +396,17 @@
             totalItems += (Number(item.quantity) || 1);
         });
 
-        // تحديث شارة زر السلة العائمة
         const floatingBadge = document.getElementById('bose-floating-badge-counter');
         if (floatingBadge) {
             floatingBadge.textContent = totalItems;
             floatingBadge.style.display = totalItems > 0 ? 'flex' : 'none';
         }
 
-        // تحديث أي عدادات كلاسيكية متواجدة داخل الهيدر الأساسي للموقع لمنع التعارض الهيكلي
-        const headerCounters = document.querySelectorAll('.cart-count, #cart-badge-count, .bose-cart-counter-global');
+        const headerCounters = document.querySelectorAll('.cart-count, #cart-badge-count, .bose-cart-counter-global, #nav-cart-count');
         headerCounters.forEach(counter => {
             counter.textContent = totalItems;
         });
 
-        // إذا كانت لوحة السلة العائمة مفتوحة، نعيد رندرة محتوياتها فوراً لمواكبة التغيير الحي
         const drawer = document.getElementById('bose-floating-cart-drawer');
         if (drawer && drawer.style.left === '0px') {
             renderFloatingCartItems();
@@ -378,28 +414,21 @@
     }
 
     /* ==========================================================================\
-       6. دالة التهيئة والربط المركزي الكامل للواجهات (Global Central Boot)
+       7. دالة التهيئة والربط المركزي الكامل للواجهات (Global Central Boot)
        ========================================================================== */
     function initializeGlobalFeatures() {
-        // حقن نظام السلة العائمة والنافذة الجانبية فوراً في الصفحة
         injectFloatingCartSystem();
-        
-        // تحديث العدادات بناءً على البيانات المخزنة الحالية
         updateGlobalCartCounters();
-
-        // الاستماع لأي تحديث في السلة لإعادة مزامنة الشاشة والعدادات تلقائياً ومباشرة
-        document.addEventListener('BoseCartUpdated', updateGlobalCartCounters);
-        
-        // تأمين التحديث ثنائي الاتجاه عبر التصفح المتعدد أو التغيير من الـ Storage
-        window.addEventListener('storage', (e) => {
-            if (e.key === CART_STORAGE_KEY) {
-                updateGlobalCartCounters();
-            }
-        });
     }
 
+    // ربط مضاف ومطور: الاستماع لأحداث التحديث وتوصيل الأحداث المباشرة فور استدعاء الملف
+    document.addEventListener('BoseCartUpdated', updateGlobalCartCounters);
+    window.addEventListener('storage', (e) => {
+        if (e.key === CART_STORAGE_KEY) updateGlobalCartCounters();
+    });
+
     /* ==========================================================================\
-       7. محددات الأداء والتنسيق البرمجي والجمالي الصارم للسلة العائمة (Dynamic Styles)
+       8. محددات الأداء والتنسيق البرمجي والجمالي الصارم للسلة العائمة (Dynamic Styles)
        ========================================================================== */
     function injectFloatingCartStyles() {
         if (document.getElementById('bose-floating-styles-block')) return;
@@ -407,7 +436,6 @@
         const styleBlock = document.createElement('style');
         styleBlock.id = 'bose-floating-styles-block';
         styleBlock.textContent = `
-            /* 👑 التنسيق الهيكلي والجمالي الصارم للسلة العائمة والتنبيهات 👑 */
             #bose-floating-cart-trigger {
                 position: fixed;
                 bottom: 24px;
@@ -684,7 +712,6 @@
                 margin: 12px 0 0 0;
             }
             
-            /* 🌸 نظام التنبيهات الراقية الفاخرة Toast System 🌸 */
             #bose-toast-central-container {
                 position: fixed;
                 top: 24px;
@@ -754,6 +781,7 @@
     }
 
     function injectFallbackErrorDisplay() {
+        if (document.getElementById('bose-db-fallback-error')) return;
         const errorDiv = document.createElement('div');
         errorDiv.id = "bose-db-fallback-error";
         errorDiv.style.position = 'fixed';
@@ -771,7 +799,9 @@
         document.body.appendChild(errorDiv);
     }
 
-    // إطلاق جلب قاعدة البيانات وبدء تشغيل حارس التمهيد الفاخر فوراً
+    // تشغيل فوري تحديث العدادات من ذاكرة التخزين المحلية قبل اكتمال تحميل الـ JSON لتجنب الصفر المؤقت
+    updateGlobalCartCounters();
+
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', loadBoseAbsoluteDatabase);
     } else {
