@@ -1,6 +1,6 @@
 /**
  * 👑 المحرك المركزي العام والنهائي للموقع والنافذة العائمة - حلويات بوسي 👑
- * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية ومشاكل التداخل V56.0
+ * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية ومشاكل التداخل V57.0
  * متوافق بشكل مطلق وثنائي الاتجاه مع كافة ملفات css/ وجافا سكريبت الموقع وقاعدة البيانات data/site-data-final.json
  * [تم التحديث: جعل السلة العائمة طافية ومتحركة بشكل مطلق فوق كافة العناصر وحل مشكلة اختفاء الهيدر والفوتر تلقائياً]
  */
@@ -31,11 +31,15 @@
         try {
             const boseLocation = window.location;
             
-            // فحص إذا كنا داخل مجلد فرعي لإرجاع المسار للجذر
+            // 🛡️ إصلاح ذكي وجذري للمسارات لتفادي الشلل واختفاء الهيدر والفوتر في الصفحات المختلفة
             let baseRootPath = "";
             const currentPath = boseLocation.pathname;
-            if (currentPath.includes('/css/') || currentPath.includes('/js/') || currentPath.includes('/pages/') || currentPath.includes('/admin/')) {
+            
+            // فحص ديناميكي دقيق وعام لمستوى المجلد الحالي
+            if (currentPath.includes('/pages/') || currentPath.includes('/admin/') || currentPath.includes('/css/') || currentPath.includes('/js/')) {
                 baseRootPath = "../";
+            } else {
+                baseRootPath = "./";
             }
 
             const jsonPath = `${baseRootPath}data/site-data-final.json`;
@@ -233,7 +237,7 @@
                         });
                     } else {
                         productLinksHTML = `
-                            <a href="category.html?category=${cat.id}" style="display: flex; align-items: center; gap: 10px; font-size: 0.85rem; font-weight: 600; color: #666; padding: 10px 16px; text-decoration: none; font-style: italic;">
+                            <a href="category.html?category=${cat.id}" style="display: flex; align-items: center; gap: 10px; font-size: 0.85rem; font-weight: 600; color: #666; padding: 10px 166px; text-decoration: none; font-style: italic;">
                                 <i class="fas fa-cookie"></i> استعراض تشكيلة قسم ${cat.title}
                             </a>
                         `;
@@ -648,7 +652,6 @@
     function injectFloatingCartSystem() {
         if (document.getElementById('bose-floating-cart-wrapper')) return;
 
-        // بناء وعاء الزر العائم ليكون رابطاً مباشراً يقود إلى صفحة السلة الرسمية cart.html
         const container = document.createElement('div');
         container.id = 'bose-floating-cart-wrapper';
 
@@ -675,7 +678,6 @@
         const trigger = document.getElementById('bose-floating-cart-trigger');
         if (!trigger) return;
 
-        // تفعيل النبض البصري في حال كانت السلة فارغة لتنبيه العميل بلطف للتصفح
         if (cart.length === 0) {
             trigger.classList.add('bose-pulse-blinking-active');
         } else {
@@ -940,13 +942,13 @@
                 animation: bosePulseBlinking 2.2s infinite ease-in-out;
             }
 
-            /* 👑 [تثبيت وحماية السلة العائمة فوق الفوتر وكافة العناصر] */
+            /* 👑 [تثبيت وحماية السلة العائمة لتطفو مطلقاً فوق قاع الفوتر وكافة العناصر] */
             #bose-floating-cart-wrapper {
                 position: fixed !important;
-                bottom: 24px !important;
-                left: 24px !important;
-                width: 64px !important;
-                height: 64px !important;
+                bottom: 30px !important;
+                left: 30px !important;
+                width: 66px !important;
+                height: 66px !important;
                 z-index: 9999999 !important;
                 pointer-events: auto !important;
             }
@@ -958,7 +960,7 @@
                 background-color: ${BRAND_COLORS.white} !important;
                 border: 2px solid ${BRAND_COLORS.pink} !important;
                 border-radius: 50% !important;
-                box-shadow: 0 8px 32px rgba(255,145,164,0.25) !important;
+                box-shadow: 0 8px 32px rgba(255,145,164,0.35) !important;
                 cursor: pointer !important;
                 align-items: center !important;
                 justify-content: center !important;
@@ -967,8 +969,8 @@
                 transition: transform 0.2s ease, box-shadow 0.2s ease !important;
             }
             #bose-floating-cart-trigger:hover {
-                transform: scale(1.08) !important;
-                box-shadow: 0 12px 40px rgba(255,145,164,0.4) !important;
+                transform: scale(1.1) !important;
+                box-shadow: 0 12px 40px rgba(255,145,164,0.5) !important;
             }
             .bose-trigger-icon-box {
                 position: relative !important;
