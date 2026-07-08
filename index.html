@@ -28,12 +28,13 @@
 </head>
 <body class="bose-hardware-accelerated">
 
+    <!-- 👑 الشريط العلوي المتحرك المنفصل تماماً أعلى الهيدر -->
     <div id="top-bar-marquee" style="background-color: #FFF5F6; border-bottom: 1px solid rgba(255, 145, 164, 0.25); height: 40px; overflow: hidden; display: flex; align-items: center; width: 100%; position: fixed; top: 0; left: 0; z-index: 10000;">
-        <div class="animate-marquee" id="marquee-text-container" style="display: flex; white-space: nowrap; gap: 50px; padding-right: 20px;">
-            </div>
+        <div class="animate-marquee" id="marquee-text-container" style="display: flex; white-space: nowrap; gap: 50px; padding-right: 20px;"></div>
     </div>
 
-    <header class="bose-navbar">
+    <!-- الهيدر الموحد القياسي الثابت -->
+    <header class="bose-navbar" style="position: fixed !important; top: 40px !important;">
         <div class="navbar-mobile-wrapper">
             <button id="mobile-menu-toggle" class="nav-icon-btn" aria-label="فتح قائمة التصفح">
                 <i class="fas fa-bars"></i>
@@ -65,8 +66,9 @@
         </div>
     </header>
 
-    <main>
+    <main style="margin-top: 40px;">
 
+        <!-- قسم التميز البصري الهيرو -->
         <section id="hero-section" class="bose-hero-section" style="padding: 60px 16px; text-align: center; background-color: var(--bose-white);">
             <div class="bose-section-container" style="max-width: 800px; margin: 0 auto;">
                 <h1 id="hero-title" style="font-size: 2.5rem; margin-bottom: 20px; line-height: 1.3;">
@@ -81,155 +83,158 @@
             </div>
         </section>
 
-        <section id="waterfall-section" class="waterfall-block" style="position: relative; overflow: hidden; width: 100%; height: 450px; background: var(--bose-white); margin-bottom: 40px;">
+        <!-- 🌸 قسم شلال المنتجات البصري المعدل ليمتد بملء الشاشة بدون فراغات -->
+        <section id="waterfall-section" class="waterfall-block" style="position: relative; overflow: hidden; width: 100vw; margin-right: calc(-50vw + 50%); margin-left: calc(-50vw + 50%); height: 500px; background: var(--bose-white); margin-bottom: 40px;">
             <div class="waterfall-overlay-top"></div>
-            <div class="waterfall-container" style="display: flex; gap: 16px; width: 100%; height: 100%; overflow: hidden; justify-content: center; padding: 0 10px;">
-                <div id="waterfall-left-col" class="waterfall-col waterfall-up" style="display: flex; flex-direction: column; gap: 16px;">
-                    </div>
-                <div id="waterfall-right-col" class="waterfall-col waterfall-down" style="display: flex; flex-direction: column; gap: 16px;">
-                    </div>
+            <div class="waterfall-container" style="display: flex; gap: 0px; width: 100%; height: 100%; overflow: hidden; justify-content: center; padding: 0;">
+                <div id="waterfall-left-col" class="waterfall-col waterfall-up" style="display: flex; flex-direction: column; gap: 0px; flex: 1;"></div>
+                <div id="waterfall-right-col" class="waterfall-col waterfall-down" style="display: flex; flex-direction: column; gap: 0px; flex: 1;"></div>
             </div>
             <div class="waterfall-overlay-bottom"></div>
         </section>
 
-        <section id="excellence-section" class="bose-perfection-section" style="padding: 40px 16px; background-color: var(--bose-white);">
-            <div class="bose-section-header">
+        <!-- 👑 قسم عقد من الإتقان المعدل بحركة سموزي ناعمة وقابليته للسحب بالأصابع -->
+        <section id="excellence-section" class="bose-perfection-section" style="padding: 40px 16px; background-color: var(--bose-white); overflow: hidden; width: 100vw; margin-right: calc(-50vw + 50%); margin-left: calc(-50vw + 50%);">
+            <div class="bose-section-header" style="text-align: center; max-width: 700px; margin: 0 auto 20px auto; padding: 0 16px;">
                 <h2 class="bose-section-title">عقد من الإتقان</h2>
                 <p class="bose-section-subtitle">خلف كل قطعة حكاية شغف وتفاصيل محفورة بالدقة والمهارة الفائقة لتقديم تجربة تذوق ساحرة تأخذكم لعالم من الفخامة والروقان.</p>
             </div>
-            <div id="pride-slider-wrapper" class="bose-perfection-carousel-wrapper" style="width: 100%; overflow: hidden; position: relative; padding: 20px 0;">
-                <div id="excellence-images-track" class="bose-perfection-track" style="display: flex; gap: 20px; transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1); will-change: transform;">
-                    </div>
+            <div id="pride-slider-wrapper" class="bose-perfection-carousel-wrapper" style="width: 100%; overflow-x: auto; scroll-snap-type: x mandatory; display: flex; padding: 20px 0; scrollbar-width: none; -webkit-overflow-scrolling: touch;">
+                <div id="excellence-images-track" class="bose-perfection-track" style="display: flex; gap: 0px; width: max-content; transition: none; will-change: transform;"></div>
             </div>
+            <div id="pride-dots-container" style="display: flex; gap: 8px; justify-content: center; align-items: center; margin-top: 16px;"></div>
         </section>
 
-        <section id="most-selling-section" class="bose-section-container">
-            <div class="bose-section-header">
+        <!-- 🛒 قسم الأكثر مبيعاً المعدل بالكامل ليصبح سلايدر جانبي متجاوب مع السحب -->
+        <section id="most-selling-section" class="bose-section-container" style="padding: 40px 16px; overflow: hidden;">
+            <div class="bose-section-header" style="text-align: center; margin-bottom: 25px;">
                 <h2 class="bose-section-title">الأكثر مبيعاً</h2>
                 <p class="bose-section-subtitle">خياراتنا المعتمدة التي نالت ثقة ومحبة عملائنا لفخامتها المطلقة وقيمتها الصادقة العالية.</p>
             </div>
-            <div id="most-selling-grid" class="bose-products-grid">
-                </div>
+            <div id="most-selling-grid" class="bose-horizontal-scroll-slider" style="display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 10px 4px; scrollbar-width: none; -webkit-overflow-scrolling: touch; direction: rtl;"></div>
+            <div id="most-selling-dots" class="bose-dots-container" style="display: flex; justify-content: center; gap: 8px; margin-top: 16px;"></div>
         </section>
 
-        <section id="cake-preview-section" class="preview-builder-block" style="background-color: var(--bose-pink); padding: 50px 16px; margin: 40px 0; border-radius: 0;">
+        <!-- 🎂 قسم محاكي التورت الفاخر الموحد -->
+        <section id="cake-preview-section" class="preview-builder-block" style="background-color: var(--bose-pink); padding: 50px 16px; margin: 40px 0; border-radius: 0; width: 100vw; margin-right: calc(-50vw + 50%); margin-left: calc(-50vw + 50%);">
             <div style="max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 24px;">
-                <div class="builder-preview-image-box" style="width: 100%; max-width: 320px; aspect-ratio: 1/1; overflow: hidden; border-radius: 24px; box-shadow: 0 12px 32px rgba(17,17,17,0.1);">
+                <div class="builder-preview-image-box" style="width: 100%; max-width: 420px; aspect-ratio: 1/1; overflow: hidden; border-radius: 24px; box-shadow: 0 12px 32px rgba(17,17,17,0.15);">
                     <img id="cake-preview-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="محاكي التورت حلويات بوسي" style="width: 100%; height: 100%; object-fit: cover;">
                 </div>
                 <div class="builder-preview-text-box" style="color: var(--bose-white);">
-                    <h2 id="cake-preview-title" style="font-size: 2rem; color: var(--bose-white) !important; margin-bottom: 12px;">محاكي التورت التفاعلي</h2>
-                    <p id="cake-preview-desc" style="font-size: 1rem; color: var(--bose-white); opacity: 0.95; line-height: 1.7; max-width: 700px; margin: 0 auto 20px auto;">
+                    <h2 id="cake-preview-title" style="font-size: 2.2rem; color: var(--bose-white) !important; margin-bottom: 12px; font-weight: 700;">محاكي التورت التفاعلي</h2>
+                    <p id="cake-preview-desc" style="font-size: 1.1rem; color: var(--bose-white); opacity: 0.95; line-height: 1.7; max-width: 750px; margin: 0 auto 20px auto;">
                         يمكنك اختيار التصميم المناسب لك وتخصيص حجم التورتة ونكهات الطبقات ورسائل الإهداء خطوة بخطوة وحساب السعر لحظياً لراحة تامة وتجربة فريدة تشرفك أمام أحبابك.
                     </p>
-                    <a href="cake-builder.html" id="cake-preview-cta" style="display: inline-block; background: transparent; color: var(--bose-white); font-weight: 700; padding: 12px 32px; border-radius: 50px; border: 2px solid var(--bose-white); text-decoration: none; transition: var(--bose-transition-smooth);">
+                    <a href="cake-builder.html" id="cake-preview-cta" style="display: inline-block; background: var(--bose-white); color: var(--bose-pink); font-weight: 700; padding: 14px 40px; border-radius: 50px; text-decoration: none; transition: var(--bose-transition-smooth); box-shadow: 0 8px 24px rgba(0,0,0,0.1);">
                         استعرض المحاكي
                     </a>
                 </div>
             </div>
         </section>
 
-        <section id="new-arrivals-section" class="bose-section-container">
-            <div class="bose-section-header">
+        <!-- 🛒 قسم وصل حديثاً المعدل بالكامل ليصبح سلايدر جانبي متجاوب مع السحب -->
+        <section id="new-arrivals-section" class="bose-section-container" style="padding: 40px 16px; overflow: hidden;">
+            <div class="bose-section-header" style="text-align: center; margin-bottom: 25px;">
                 <h2 class="bose-section-title">وصل حديثاً</h2>
                 <p class="bose-section-subtitle">استكشف توليفاتنا ونكهاتنا الجديدة الحصرية التي تحمل بصمة الابتكار والجمال وراحة النفس الكاملة.</p>
             </div>
-            <div id="new-arrivals-grid" class="bose-products-grid">
-                </div>
-            <div id="new-arrivals-dots" class="bose-dots-container" style="margin-top: 24px;"></div>
+            <div id="new-arrivals-grid" class="bose-hardware-accelerated bose-horizontal-scroll-slider" style="display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 10px 4px; scrollbar-width: none; -webkit-overflow-scrolling: touch; direction: rtl;"></div>
+            <div id="new-arrivals-dots" class="bose-dots-container" style="display: flex; justify-content: center; gap: 8px; margin-top: 16px;"></div>
         </section>
 
-        <section id="our-products-section" class="bose-section-container">
-            <div class="bose-section-header">
+        <!-- 👑 قسم منتجاتنا المعزز والمقيد بكارتين متوازيين بدقة وعرض 4 كروت مع زر استعرض المزيد -->
+        <section id="our-products-section" class="bose-section-container" style="padding: 40px 16px;">
+            <div class="bose-section-header" style="text-align: center; margin-bottom: 30px;">
                 <h2 class="bose-section-title">منتجاتنا</h2>
                 <p class="bose-section-subtitle">تم اختيار المكونات بعناية فائقة وبأعلى معايير النظافة للحصول على أفضل جودة طازجة تشرفك دائماً.</p>
             </div>
             
-            <div id="our-products-grid" class="bose-products-grid">
-                </div>
+            <div id="our-products-grid" class="bose-products-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; width: 100%; box-sizing: border-box;"></div>
             
             <div class="action-trigger-container" style="text-align: center; margin-top: 30px;">
-                <button id="btn-load-more-products" class="bose-product-action-btn" style="display: inline-flex; width: auto; min-width: 200px; padding: 12px 36px; background-color: var(--bose-pink); color: var(--bose-white); border-radius: 12px; font-weight: 700; cursor: pointer; transition: var(--bose-transition-smooth);">
+                <button id="btn-load-more-products" class="bose-product-action-btn" style="display: inline-flex; justify-content: center; align-items: center; width: auto; min-width: 220px; padding: 14px 40px; background-color: var(--bose-pink); color: var(--bose-white); border-radius: 12px; font-weight: 700; cursor: pointer; border: none; font-size: 15px; box-shadow: var(--bose-shadow-glow); transition: var(--bose-transition-smooth);">
                     استعرض المزيد
                 </button>
             </div>
         </section>
 
-        <section id="flower-preview-section" class="preview-builder-block" style="background-color: #FFF5F6; border: 1px solid rgba(255,145,164,0.22); padding: 50px 16px; margin: 40px 0;">
+        <!-- 🌸 قسم محاكي الورد المطور بالكامل ليتطابق مع لون وحجم محاكي التورتة بخلفية الـ Pink وصور مكبرة -->
+        <section id="flower-preview-section" class="preview-builder-block" style="background-color: var(--bose-pink); padding: 50px 16px; margin: 40px 0; border-radius: 0; width: 100vw; margin-right: calc(-50vw + 50%); margin-left: calc(-50vw + 50%);">
             <div style="max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 24px;">
-                <div class="builder-preview-image-box" style="width: 100%; max-width: 320px; aspect-ratio: 1/1; overflow: hidden; border-radius: 24px; box-shadow: 0 12px 32px rgba(255, 145, 164, 0.1);">
+                <div class="builder-preview-image-box" style="width: 100%; max-width: 420px; aspect-ratio: 1/1; overflow: hidden; border-radius: 24px; box-shadow: 0 12px 32px rgba(17,17,17,0.15);">
                     <img id="flower-preview-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="محاكي الورد حلويات بوسي" style="width: 100%; height: 100%; object-fit: cover;">
                 </div>
-                <div class="builder-preview-text-box">
-                    <h2 id="flower-preview-title" style="font-size: 2rem; color: var(--bose-black); margin-bottom: 12px;">محاكي الورد التفاعلي</h2>
-                    <p id="flower-preview-desc" style="font-size: 1rem; color: #444444; line-height: 1.7; max-width: 700px; margin: 0 auto 20px auto;">
+                <div class="builder-preview-text-box" style="color: var(--bose-white);">
+                    <h2 id="flower-preview-title" style="font-size: 2.2rem; color: var(--bose-white) !important; margin-bottom: 12px; font-weight: 700;">محاكي الورد التفاعلي</h2>
+                    <p id="flower-preview-desc" style="font-size: 1.1rem; color: var(--bose-white); opacity: 0.95; line-height: 1.7; max-width: 750px; margin: 0 auto 20px auto;">
                         يمكنك تنسيق بوكيه الورد المفضل لك من الورد الطبيعي النضر أو الستان الفاخر، واختيار التغليف الفاخر مع إمكانية إضافة الهدايا النقدية ومفاجآت الكاش المدمجة وسلسة الحساب.
                     </p>
-                    <a href="flower-builder.html" id="flower-preview-cta" style="display: inline-flex; align-items: center; gap: 10px; background-color: var(--bose-pink); color: var(--bose-white); padding: 12px 32px; border-radius: 12px; font-weight: 700; text-decoration: none; box-shadow: var(--bose-shadow-glow); transition: var(--bose-transition-smooth);">
+                    <a href="flower-builder.html" id="flower-preview-cta" style="display: inline-flex; align-items: center; gap: 10px; background-color: var(--bose-white); color: var(--bose-pink); padding: 14px 40px; border-radius: 50px; font-weight: 700; text-decoration: none; box-shadow: 0 8px 24px rgba(0,0,0,0.1); transition: var(--bose-transition-smooth);">
                         استعرض المحاكي <i class="fas fa-chevron-left" style="font-size: 12px;"></i>
                     </a>
                 </div>
             </div>
         </section>
 
-        <section id="pride-section" class="bose-pride-statistics-section" style="background-color: #FFF5F6; padding: 60px 16px;">
+        <!-- 👑 قسم الفخر والاعتزاز المطور ليكون غاية في الفخامة والاحترافية -->
+        <section id="pride-section" class="bose-pride-statistics-section" style="background-color: #FFF5F6; padding: 60px 16px; border: 1px solid rgba(255, 145, 164, 0.15); border-radius: 24px; margin: 40px 16px; box-shadow: var(--bose-shadow-glow);">
             <div class="bose-pride-container" style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 30px; text-align: center;">
                 <div class="bose-pride-text-block">
-                    <span class="pride-mini-tag" style="color: var(--bose-gold); font-weight: 700; font-size: 1.1rem; display: block; margin-bottom: 8px;">👑 الفخر والاعتزاز</span>
-                    <h2 style="font-size: 2.2rem; margin-bottom: 16px;">رحلتنا في قلوبكم</h2>
-                    <p style="font-size: 1.05rem; color: #444444; max-width: 700px; margin: 0 auto; line-height: 1.7;">
+                    <span class="pride-mini-tag" style="color: var(--bose-gold); font-weight: 700; font-size: 1.2rem; display: block; margin-bottom: 8px;">👑 الفخر والاعتزاز</span>
+                    <h2 style="font-size: 2.4rem; font-weight: 700; margin-bottom: 16px; color: var(--bose-black);">رحلتنا في قلوبكم</h2>
+                    <p style="font-size: 1.1rem; color: #444444; max-width: 750px; margin: 0 auto; line-height: 1.8; font-weight: 500;">
                         ثقة عملائنا ومحبتهم الصادقة هي المحرك الأساسي لرحلتنا الطويلة والناجحة لتقديم أرقى مستويات الخدمة والفخامة المطلقة التي تليق بكم بصدق ومصداقية تامة.
                     </p>
                 </div>
                 <div class="bose-statistics-grid-block" id="counters-stats-wrapper" style="width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-top: 20px;">
-                    <div class="bose-category-card" style="padding: 20px; border-radius: 20px; background: var(--bose-white); border: 1px solid rgba(255,145,164,0.15);">
-                        <div class="stat-icon-wrapper"><i class="fas fa-award"></i></div>
-                        <div class="stat-number" id="stat-years-value">0</div>
-                        <div class="stat-label">سنوات الخبرة</div>
+                    <div class="bose-category-card" style="padding: 24px 16px; border-radius: 20px; background: var(--bose-white); border: 1px solid rgba(255,145,164,0.2); box-shadow: 0 8px 24px rgba(255,145,164,0.04);">
+                        <div class="stat-icon-wrapper" style="color: var(--bose-gold); font-size: 24px; margin-bottom: 10px;"><i class="fas fa-award"></i></div>
+                        <div class="stat-number" id="stat-years-value" style="font-size: 28px; font-weight: 700; color: var(--bose-black);">0</div>
+                        <div class="stat-label" style="font-size: 14px; font-weight: 600; color: #666; margin-top: 4px;">سنوات الخبرة</div>
                     </div>
-                    <div class="bose-category-card" style="padding: 20px; border-radius: 20px; background: var(--bose-white); border: 1px solid rgba(255,145,164,0.15);">
-                        <div class="stat-icon-wrapper"><i class="fas fa-heart"></i></div>
-                        <div class="stat-number" id="stat-customers-value">0</div>
-                        <div class="stat-label">عميل سعيد</div>
+                    <div class="bose-category-card" style="padding: 24px 16px; border-radius: 20px; background: var(--bose-white); border: 1px solid rgba(255,145,164,0.2); box-shadow: 0 8px 24px rgba(255,145,164,0.04);">
+                        <div class="stat-icon-wrapper" style="color: var(--bose-pink); font-size: 24px; margin-bottom: 10px;"><i class="fas fa-heart"></i></div>
+                        <div class="stat-number" id="stat-customers-value" style="font-size: 28px; font-weight: 700; color: var(--bose-black);">0</div>
+                        <div class="stat-label" style="font-size: 14px; font-weight: 600; color: #666; margin-top: 4px;">عميل سعيد</div>
                     </div>
-                    <div class="bose-category-card" style="padding: 20px; border-radius: 20px; background: var(--bose-white); border: 1px solid rgba(255,145,164,0.15);">
-                        <div class="stat-icon-wrapper"><i class="fas fa-shopping-bag"></i></div>
-                        <div class="stat-number" id="stat-orders-value">0</div>
-                        <div class="stat-label">طلب ناجح</div>
+                    <div class="bose-category-card" style="padding: 24px 16px; border-radius: 20px; background: var(--bose-white); border: 1px solid rgba(255,145,164,0.2); box-shadow: 0 8px 24px rgba(255,145,164,0.04);">
+                        <div class="stat-icon-wrapper" style="color: var(--bose-pink); font-size: 24px; margin-bottom: 10px;"><i class="fas fa-shopping-bag"></i></div>
+                        <div class="stat-number" id="stat-orders-value" style="font-size: 28px; font-weight: 700; color: var(--bose-black);">0</div>
+                        <div class="stat-label" style="font-size: 14px; font-weight: 600; color: #666; margin-top: 4px;">طلب ناجح</div>
                     </div>
-                    <div class="bose-category-card" style="padding: 20px; border-radius: 20px; background: var(--bose-white); border: 1px solid rgba(255,145,164,0.15);">
-                        <div class="stat-icon-wrapper"><i class="fas fa-birthday-cake"></i></div>
-                        <div class="stat-number" id="stat-cakes-value">0</div>
-                        <div class="stat-label">تورتة صممت بحب</div>
+                    <div class="bose-category-card" style="padding: 24px 16px; border-radius: 20px; background: var(--bose-white); border: 1px solid rgba(255,145,164,0.2); box-shadow: 0 8px 24px rgba(255,145,164,0.04);">
+                        <div class="stat-icon-wrapper" style="color: var(--bose-gold); font-size: 24px; margin-bottom: 10px;"><i class="fas fa-birthday-cake"></i></div>
+                        <div class="stat-number" id="stat-cakes-value" style="font-size: 28px; font-weight: 700; color: var(--bose-black);">0</div>
+                        <div class="stat-label" style="font-size: 14px; font-weight: 600; color: #666; margin-top: 4px;">تورتة صممت بحب</div>
                     </div>
-                    <div class="bose-category-card" style="padding: 20px; border-radius: 20px; background: var(--bose-white); border: 1px solid rgba(255,145,164,0.15);">
-                        <div class="stat-icon-wrapper"><i class="fas fa-seedling"></i></div>
-                        <div class="stat-number" id="stat-bouquets-value">0</div>
-                        <div class="stat-label">بوكيه نسق بعناية</div>
+                    <div class="bose-category-card" style="padding: 24px 16px; border-radius: 20px; background: var(--bose-white); border: 1px solid rgba(255,145,164,0.2); box-shadow: 0 8px 24px rgba(255,145,164,0.04);">
+                        <div class="stat-icon-wrapper" style="color: var(--bose-gold); font-size: 24px; margin-bottom: 10px;"><i class="fas fa-seedling"></i></div>
+                        <div class="stat-number" id="stat-bouquets-value" style="font-size: 28px; font-weight: 700; color: var(--bose-black);">0</div>
+                        <div class="stat-label" style="font-size: 14px; font-weight: 600; color: #666; margin-top: 4px;">بوكيه نسق بعناية</div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="categories-slider-section" class="bose-section-container" style="padding: 40px 16px;">
-            <div class="bose-section-header">
+        <!-- 🌸 قسم تسوق حسب الفئة المعدل لحقن الـ 12 كارت المعتمدة بحجم مكبر 30% لملء الحيز تماماً -->
+        <section id="categories-slider-section" class="bose-section-container" style="padding: 40px 16px; overflow: hidden;">
+            <div class="bose-section-header" style="text-align: center; margin-bottom: 25px;">
                 <h2 class="bose-section-title">تسوق حسب الفئة</h2>
                 <p class="bose-section-subtitle">انتقل مباشرة وبمنتهى السهولة لأي صنف تفضله من قائمة خيارات المنيو الـ 12 المعتمدة والمنظمة.</p>
             </div>
-            <div id="categories-slider-wrapper" class="bose-perfection-carousel-wrapper" style="width: 100%; overflow: hidden; position: relative;">
-                <div id="categories-track" class="categories-track-loop" style="display: flex; gap: 24px; will-change: transform;">
-                    </div>
+            <div id="categories-slider-wrapper" class="bose-perfection-carousel-wrapper" style="width: 100%; overflow-x: auto; scroll-snap-type: x mandatory; display: flex; scrollbar-width: none; -webkit-overflow-scrolling: touch;">
+                <div id="categories-track" style="display: flex; gap: 20px; width: max-content; will-change: transform;"></div>
             </div>
+            <div id="categories-dots" class="bose-dots-container" style="display: flex; justify-content: center; gap: 8px; margin-top: 20px;"></div>
         </section>
 
     </main>
 
-    <footer class="bose-footer">
-        </footer>
+    <footer class="bose-footer"></footer>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            // انتظار تهيئة واستدعاء قاعدة بيانات حلويات بوسي المستقرة من محرك التأسيس
             if (typeof window.onBoseDatabaseReady === "function") {
                 window.onBoseDatabaseReady((storeData) => {
                     buildBoseHomepageFeatures(storeData);
@@ -245,46 +250,71 @@
                 const menu = data.products || [];
                 const sections = data.homepage || {};
 
-                // 1. شريط الإعلانات العلوي اللانهائي
+                // 1. شريط الإعلانات اللانهائي المحدث
                 const marqueeContainer = document.getElementById("marquee-text-container");
                 if (marqueeContainer && data.navigation?.topBarMessages) {
-                    // تكرار الرسائل 3 مرات برمجياً لضمان الدوران المستمر بدون ظهور فراغات أو مساحات بيضاء مشوهة
-                    const repeatedMessages = [...data.navigation.topBarMessages, ...data.navigation.topBarMessages, ...data.navigation.topBarMessages];
+                    const repeatedMessages = [...data.navigation.topBarMessages, ...data.navigation.topBarMessages, ...data.navigation.topBarMessages, ...data.navigation.topBarMessages];
                     marqueeContainer.innerHTML = repeatedMessages.map(msg => `
-                        <span class="bose-arabic-text" style="font-size: 13.5px; font-weight: 600; color: var(--bose-black); padding-left: 20px;">
+                        <span class="bose-arabic-text" style="font-size: 13.5px; font-weight: 600; color: var(--bose-black); padding-left: 40px; display: inline-block;">
                             ${msg}
                         </span>
                     `).join("");
                 }
 
-                // 2. محرك شلال المنتجات البصري الأنيق (Waterfall Column Logic)
+                // 2. شلال منتجات ممتد يملأ الشاشة بالكامل بدون أي فراغات
                 const leftCol = document.getElementById("waterfall-left-col");
                 const rightCol = document.getElementById("waterfall-right-col");
                 if (leftCol && rightCol && sections.waterfall) {
                     const wf = sections.waterfall;
-                    leftCol.innerHTML = (wf.leftColumnImages || []).map(imgUrl => `
-                        <div style="width: 140px; height: 140px; border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,145,164,0.15); flex-shrink: 0; box-shadow: var(--bose-shadow-glow);">
-                            <img src="${imgUrl}" alt="حلويات بوسي الفاخرة" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy">
+                    // تكرار الصور لضمان التدفق المستمر الكامل مئة بالمئة
+                    const doubleLeft = [...wf.leftColumnImages, ...wf.leftColumnImages, ...wf.leftColumnImages];
+                    const doubleRight = [...wf.rightColumnImages, ...wf.rightColumnImages, ...wf.rightColumnImages];
+                    
+                    leftCol.innerHTML = doubleLeft.map(imgUrl => `
+                        <div style="width: 100%; aspect-ratio: 1/1; overflow: hidden; flex-shrink: 0;">
+                            <img src="${imgUrl}" alt="حلويات بوسي" style="width: 100%; height: 100%; object-fit: cover;">
                         </div>
                     `).join("");
-                    rightCol.innerHTML = (wf.rightColumnImages || []).map(imgUrl => `
-                        <div style="width: 140px; height: 140px; border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,145,164,0.15); flex-shrink: 0; box-shadow: var(--bose-shadow-glow);">
-                            <img src="${imgUrl}" alt="حلويات بوسي الفاخرة" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy">
+                    rightCol.innerHTML = doubleRight.map(imgUrl => `
+                        <div style="width: 100%; aspect-ratio: 1/1; overflow: hidden; flex-shrink: 0;">
+                            <img src="${imgUrl}" alt="حلويات بوسي" style="width: 100%; height: 100%; object-fit: cover;">
                         </div>
                     `).join("");
                 }
 
-                // 3. قسم عقد من الإتقان (3 صور متصلة بالكامل بدون أي فواصل بصرية مشوهة)
+                // 3. قسم عقد من الإتقان (3 صور متصلة بالكامل بدون أي فراغ ملتصقة هندسياً)
                 const excellenceTrack = document.getElementById("excellence-images-track");
+                const prideDots = document.getElementById("pride-dots-container");
                 if (excellenceTrack && sections.excellence?.images) {
                     excellenceTrack.innerHTML = sections.excellence.images.map(imgUrl => `
-                        <a href="menu.html" class="category-slide-card" style="width: 280px; flex-shrink: 0; display: block; border-radius: 20px; overflow: hidden; border: 1px solid rgba(255, 145, 164, 0.2); box-shadow: var(--bose-shadow-glow);">
-                            <img src="${imgUrl}" alt="عقد من الإتقان - حلويات بوسي" style="width: 100%; height: 210px; object-fit: cover;" loading="lazy">
-                        </a>
+                        <div style="width: 100vw; flex-shrink: 0; scroll-snap-align: start; padding: 0; box-sizing: border-box;">
+                            <img src="${imgUrl}" alt="عقد من الإتقان" style="width: 100%; height: 320px; object-fit: cover; display: block;">
+                        </div>
                     `).join("");
+                    
+                    prideDots.innerHTML = sections.excellence.images.map((_, idx) => `
+                        <span class="bose-dot ${idx === 0 ? 'active' : ''}" data-index="${idx}" style="width: 8px; height: 8px; border-radius: 50%; background: rgba(255,145,164,0.3); display: inline-block; transition: 0.3s;"></span>
+                    `).join("");
+                    
+                    const wrapper = document.getElementById("pride-slider-wrapper");
+                    wrapper.addEventListener("scroll", () => {
+                        const index = Math.round(wrapper.scrollLeft / window.innerWidth);
+                        const dots = prideDots.querySelectorAll(".bose-dot");
+                        dots.forEach((dot, i) => {
+                            if(i === Math.abs(index)) {
+                                dot.style.background = "var(--bose-pink)";
+                                dot.style.width = "20px";
+                                dot.style.borderRadius = "4px";
+                            } else {
+                                dot.style.background = "rgba(255,145,164,0.3)";
+                                dot.style.width = "8px";
+                                dot.style.borderRadius = "50%";
+                            }
+                        });
+                    });
                 }
 
-                // 4. دالة توليد هيكل الكارت الموحد الصارم (Strict Product Card DOM) لمنع الأخطاء البصرية
+                // 4. توليد الهيكل الموحد الصارم والكامل للكروت
                 function generateStrictCard(product) {
                     const price = Math.round(Number(product.price || 0));
                     const imgUrl = product.images ? product.images[0] : 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png';
@@ -293,7 +323,7 @@
                     const displayDesc = product.flavorDesc || product.description || '';
 
                     return `
-                        <div class="product-card" data-slug="${product.slug}" style="background: var(--bose-white); border: 1px solid rgba(255,145,164,0.18); border-radius: 20px; padding: 14px; display: flex; flex-direction: column; gap: 10px; justify-content: space-between; position: relative; box-shadow: 0 8px 32px rgba(255,145,164,0.04); direction: rtl; text-align: right; width: 100%; box-sizing: border-box; height: 100%;">
+                        <div class="product-card" data-slug="${product.slug}" style="background: var(--bose-white); border: 1px solid rgba(255,145,164,0.18); border-radius: 20px; padding: 14px; display: flex; flex-direction: column; gap: 10px; justify-content: space-between; position: relative; box-shadow: 0 8px 32px rgba(255,145,164,0.04); direction: rtl; text-align: right; width: 100%; box-sizing: border-box; scroll-snap-align: start; flex-shrink: 0;">
                             <a href="product.html?slug=${product.slug}" style="text-decoration: none; display: flex; flex-direction: column; gap: 10px; width: 100%; color: inherit;">
                                 <div style="position: relative; overflow: hidden; border-radius: 14px; height: 180px; width: 100%; background: #FFF5F6;">
                                     <img src="${imgUrl}" alt="${displayTitle}" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy">
@@ -313,14 +343,13 @@
                                 <div style="font-size: 16px; font-weight: 700; color: var(--bose-pink); text-align: center; margin: 2px 0;">
                                     <span class="dynamic-card-price">${price}</span> <span style="font-size: 11px; font-weight: 400; color: var(--bose-black);">EGP</span>
                                 </div>
-                                <button class="btn-add-to-cart-central bose-product-action-btn" data-id="${product.id}" style="width: 100%; background: var(--bose-pink); color: #FFF; font-weight: 700; padding: 10px; border-radius: 10px; cursor: pointer; border: none; font-size: 13px; font-family: 'Cairo', sans-serif;">إضافة للسلة</button>
+                                <button class="btn-add-to-cart-central bose-product-action-btn" data-id="${product.id}" style="width: 100%; background: var(--bose-pink); color: #FFF; font-weight: 700; padding: 10px; border-radius: 10px; cursor: pointer; border: none; font-size: 13px;">إضافة للسلة</button>
                             </div>
                         </div>
                     `;
                 }
 
-                // حقن وبناء أحداث كروت الأصناف لضبط أزرار الزيادة والنقصان لمنع القيم السالبة
-                function bindCardControls(container, originalPrice) {
+                function bindCardControls(container) {
                     container.querySelectorAll('.product-card').forEach(card => {
                         const plus = card.querySelector('.qty-btn-plus');
                         const minus = card.querySelector('.qty-btn-minus');
@@ -346,7 +375,6 @@
                         }
                     });
 
-                    // ربط كود الشراء المباشر بالمحرك المركزي لضمان التحديث التلقائي اللحظي
                     container.querySelectorAll('.btn-add-to-cart-central').forEach(btn => {
                         btn.onclick = function(e) {
                             e.stopPropagation();
@@ -357,7 +385,6 @@
                             const selectedQuantity = qtyInput ? (parseInt(qtyInput.value, 10) || 1) : 1;
 
                             if (matchedProduct && typeof window.addAbsoluteProductToCart === "function") {
-                                // تكرار الإضافة بحسب العدد المطلوب في العداد المرن
                                 for (let i = 0; i < selectedQuantity; i++) {
                                     window.addAbsoluteProductToCart(matchedProduct);
                                 }
@@ -369,23 +396,51 @@
                     });
                 }
 
-                // 5. حقن قسم الأكثر مبيعاً (8 منتجات كاملة بالهيكل الموحد)
-                const mostSellingGrid = document.getElementById("most-selling-grid");
+                function setupHorizontalSliderDots(wrapper, dotsContainer, itemCount) {
+                    dotsContainer.innerHTML = Array.from({length: itemCount}).map((_, i) => `
+                        <span class="bose-dot ${i === 0 ? 'active' : ''}" style="width: 8px; height: 8px; border-radius: 50%; background: rgba(255,145,164,0.3); display: inline-block; transition: 0.3s;"></span>
+                    `).join("");
+                    
+                    wrapper.addEventListener("scroll", () => {
+                        const cardWidth = wrapper.querySelector(".product-card").offsetWidth + 16;
+                        const index = Math.round(wrapper.scrollLeft / cardWidth);
+                        const dots = dotsContainer.querySelectorAll(".bose-dot");
+                        dots.forEach((dot, i) => {
+                            if(i === Math.abs(index)) {
+                                dot.style.background = "var(--bose-pink)";
+                                dot.style.width = "20px";
+                                dot.style.borderRadius = "4px";
+                            } else {
+                                dot.style.background = "rgba(255,145,164,0.3)";
+                                dot.style.width = "8px";
+                                dot.style.borderRadius = "50%";
+                            }
+                        });
+                    });
+                }
+
+                // 5. حقن سلايدر الأكثر مبيعاً الأفقي الذكي بالسحب
+                const mostSellingGrid = document.getElementById("most-selling-section").querySelector(".bose-horizontal-scroll-slider");
                 if (mostSellingGrid && sections.mostSelling) {
                     const mostSellingItems = menu.filter(p => sections.mostSelling.includes(p.id));
                     mostSellingGrid.innerHTML = mostSellingItems.map(generateStrictCard).join("");
+                    // ضبط عرض الكروت لتناسب السحب الجانبي للموبايل
+                    mostSellingGrid.querySelectorAll(".product-card").forEach(c => c.style.width = "80vw");
                     bindCardControls(mostSellingGrid);
+                    setupHorizontalSliderDots(mostSellingGrid, document.getElementById("most-selling-dots"), mostSellingItems.length);
                 }
 
-                // 6. حقن قسم وصل حديثاً (6 عناصر كاملة بالهيكل الموحد)
-                const newArrivalsGrid = document.getElementById("new-arrivals-grid");
+                // 6. حقن سلايدر وصل حديثاً الأفقي الذكي بالسحب
+                const newArrivalsGrid = document.getElementById("new-arrivals-section").querySelector(".bose-horizontal-scroll-slider");
                 if (newArrivalsGrid && sections.newArrivals) {
                     const newArrivalsItems = menu.filter(p => sections.newArrivals.includes(p.id));
                     newArrivalsGrid.innerHTML = newArrivalsItems.map(generateStrictCard).join("");
+                    newArrivalsGrid.querySelectorAll(".product-card").forEach(c => c.style.width = "80vw");
                     bindCardControls(newArrivalsGrid);
+                    setupHorizontalSliderDots(newArrivalsGrid, document.getElementById("new-arrivals-dots"), newArrivalsItems.length);
                 }
 
-                // 7. حقن قسم منتجاتنا (التوزيع الشبكي الثنائي - 4 كروت في العرض الأولي)
+                // 7. حقن قسم منتجاتنا (كارتين متوازيين تماماً مع الـ 4 كروت الأولى)
                 const ourProductsGrid = document.getElementById("our-products-grid");
                 const loadMoreBtn = document.getElementById("btn-load-more-products");
                 if (ourProductsGrid && sections.ourProducts) {
@@ -404,12 +459,12 @@
                         loadMoreBtn.onclick = () => {
                             isExpanded = true;
                             renderOurProductsSlice();
-                            loadMoreBtn.style.display = "none"; // إخفاء الزر بعد اكتمال الـ 8 كروت بدقة تامة لراحة النفس والعين
+                            loadMoreBtn.style.display = "none";
                         };
                     }
                 }
 
-                // 8. تشغيل الأرقام التصاعدية لقسم الفخر والاعتزاز لمنع أخطاء الـ NaN
+                // 8. تشغيل الأرقام الفخمة التصاعدية
                 if (data.homepage?.pride?.stats) {
                     const stats = data.homepage.pride.stats;
                     document.getElementById("stat-years-value").textContent = stats.years.value + stats.years.suffix;
@@ -419,17 +474,39 @@
                     document.getElementById("stat-bouquets-value").textContent = stats.bouquets.value.toLocaleString() + stats.bouquets.suffix;
                 }
 
-                // 9. تسوق حسب الفئة (بناء الـ 12 كارت المعتمد رسمياً بحجم هندسي مكبر 30% مع دوتس التصفح)
+                // 9. تسوق حسب الفئة (حقن الـ 12 كارت المعتمد بحجم هندسي مكبر 30% لملء المساحة بالكامل)
                 const categoriesTrack = document.getElementById("categories-track");
+                const catDots = document.getElementById("categories-dots");
                 if (categoriesTrack && sections.categoriesSlider) {
                     categoriesTrack.innerHTML = sections.categoriesSlider.map(cat => `
-                        <a href="category.html?id=${cat.id}" class="category-slide-card" style="width: 280px; flex-shrink: 0; background: var(--bose-white); border: 1px solid rgba(255,145,164,0.18); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; box-shadow: var(--bose-shadow-glow); text-decoration: none;">
+                        <a href="category.html?id=${cat.id}" class="category-slide-card" style="width: 280px; flex-shrink: 0; scroll-snap-align: start; background: var(--bose-white); border: 1px solid rgba(255,145,164,0.18); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; box-shadow: var(--bose-shadow-glow); text-decoration: none;">
                             <div style="width: 100%; aspect-ratio: 1/1; overflow: hidden; border-radius: 16px; border: 1px solid rgba(255, 145, 164, 0.1); background: #FFF5F6;">
                                 <img src="${cat.image}" alt="${cat.title}" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy">
                             </div>
                             <h3 style="margin: 0; font-size: 20px; font-weight: 700; color: var(--bose-black); text-align: center;">${cat.title}</h3>
                         </a>
                     `).join("");
+                    
+                    catDots.innerHTML = sections.categoriesSlider.map((_, i) => `
+                        <span class="bose-dot ${i === 0 ? 'active' : ''}" style="width: 8px; height: 8px; border-radius: 50%; background: rgba(255,145,164,0.3); display: inline-block; transition: 0.3s;"></span>
+                    `).join("");
+                    
+                    const cWrapper = document.getElementById("categories-slider-wrapper");
+                    cWrapper.addEventListener("scroll", () => {
+                        const index = Math.round(cWrapper.scrollLeft / 300);
+                        const dots = catDots.querySelectorAll(".bose-dot");
+                        dots.forEach((dot, i) => {
+                            if(i === Math.abs(index)) {
+                                dot.style.background = "var(--bose-pink)";
+                                dot.style.width = "20px";
+                                dot.style.borderRadius = "4px";
+                            } else {
+                                dot.style.background = "rgba(255,145,164,0.3)";
+                                dot.style.width = "8px";
+                                dot.style.borderRadius = "50%";
+                            }
+                        });
+                    });
                 }
             }
         });
