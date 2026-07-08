@@ -1,7 +1,6 @@
 /**
  * 👑 المحرك المركزي العام والنهائي للموقع والنافذة العائمة - حلويات بوسي 👑
- * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية ومشاكل التداخل
- * [يقوم بإدارة: قاعدة البيانات JSON، العدادات، التنبيهات الراقية، والسلة العائمة التفاعلية الفاخرة، وضخ الكروت]
+ * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية ومشاكل التداخل V40.0
  * متوافق بشكل مطلق وثنائي الاتجاه مع كافة ملفات css/ وجافا سكريبت الموقع وقاعدة البيانات site-data-final.json
  */
 
@@ -35,7 +34,6 @@
 
             const response = await fetch(jsonPath);
             if (!response.ok) {
-                // محاولة دفاعية ثانية بالمسار البديل إذا فشل الأول
                 const fallbackResponse = await fetch('data/site-data-final.json');
                 if (!fallbackResponse.ok) throw new Error(`فشل جلب البيانات: ${fallbackResponse.status}`);
                 boseGlobalStoreData = await fallbackResponse.json();
@@ -45,6 +43,10 @@
             
             // إطلاق الحدث العالمي لإعلام كافة المحركات الفرعية بنجاح التحميل الآمن
             window.BoseStoreData = boseGlobalStoreData;
+            
+            // حقن الأيقونات والخطوط والأنماط الحيوية فوراً لمنع وميض الألوان والأيقونات المكسورة
+            injectEarlyDependencies();
+            
             document.dispatchEvent(new CustomEvent('BoseDatabaseLoaded', { detail: boseGlobalStoreData }));
             
             // تنفيذ كافة المهام المؤجلة المنتظرة لقاعدة البيانات فوراً لمنع الـ Race Condition
@@ -60,7 +62,6 @@
         }
     }
 
-    // واجهة برمجية آمنة وموثوقة لربط المحركات الفرعية بكفاءة كاملة (مثل محرك السلة والكيك)
     window.onBoseDatabaseReady = function (callback) {
         if (boseGlobalStoreData) {
             callback(boseGlobalStoreData);
@@ -69,13 +70,38 @@
         }
     };
 
+    // حقن مكتبات الخطوط والـ FontAwesome برمجياً في الـ Head لتجنب أخطاء التحميل واختفاء الأيقونات
+    function injectEarlyDependencies() {
+        if (!document.querySelector('link[href*="fonts.googleapis.com"]')) {
+            const preconnect1 = document.createElement('link');
+            preconnect1.rel = 'preconnect';
+            preconnect1.href = 'https://fonts.googleapis.com';
+            const preconnect2 = document.createElement('link');
+            preconnect2.rel = 'preconnect';
+            preconnect2.href = 'https://fonts.gstatic.com';
+            preconnect2.crossOrigin = 'anonymous';
+            const fontLink = document.createElement('link');
+            fontLink.rel = 'stylesheet';
+            fontLink.href = 'https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap';
+            document.head.appendChild(preconnect1);
+            document.head.appendChild(preconnect2);
+            document.head.appendChild(fontLink);
+        }
+
+        if (!document.querySelector('link[href*="all.min.css"]')) {
+            const faLink = document.createElement('link');
+            faLink.rel = 'stylesheet';
+            faLink.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css';
+            document.head.appendChild(faLink);
+        }
+    }
+
     /* ==========================================================================\
        2. هيكلة وبناء نظام السلة العائمة التفاعلية الفاخرة ديناميكياً (Floating Cart Drawer)
        ========================================================================== */
     function injectFloatingCartSystem() {
         if (document.getElementById('bose-floating-cart-wrapper')) return;
 
-        // إنشاء زر السلة العائم السحري الذي يرافق العميل لراحة تامة في التصفح
         const triggerButton = document.createElement('button');
         triggerButton.id = 'bose-floating-cart-trigger';
         triggerButton.setAttribute('aria-label', 'استعراض سلة المشتريات العائمة');
@@ -86,7 +112,6 @@
             </div>
         `;
 
-        // إنشاء لوحة السلة العائمة الجانبية الفخمة (Drawer) المتوافقة مع الموبايل والكمبيوتر
         const cartDrawer = document.createElement('div');
         cartDrawer.id = 'bose-floating-cart-drawer';
         cartDrawer.innerHTML = `
@@ -111,11 +136,9 @@
             </div>
         `;
 
-        // غطاء الخلفية المعتم الناعم (Overlay) لمنع التشتت وتحقيق الراحة النفسية البصرية للعميل
         const overlay = document.createElement('div');
         overlay.id = 'bose-floating-cart-overlay';
 
-        // حقن العناصر في جذر الصفحة
         const container = document.createElement('div');
         container.id = 'bose-floating-cart-wrapper';
         container.appendChild(triggerButton);
@@ -123,10 +146,8 @@
         container.appendChild(overlay);
         document.body.appendChild(container);
 
-        // حقن كود التنسيق الحاكم والمقدس الخاص بالسلة العائمة
         injectFloatingCartStyles();
 
-        // ربط أحداث فتح وإغلاق السلة العائمة بسلاسة مطلقة
         triggerButton.addEventListener('click', openBoseCartDrawer);
         document.getElementById('bose-close-drawer-trigger').addEventListener('click', closeBoseCartDrawer);
         overlay.addEventListener('click', closeBoseCartDrawer);
@@ -140,7 +161,7 @@
             drawer.style.left = '0px';
             overlay.style.display = 'block';
             setTimeout(() => overlay.style.opacity = '1', 10);
-            document.body.style.overflow = 'hidden'; // منع التمرير الخلفي المزعج على الموبايل
+            document.body.style.overflow = 'hidden';
         }
     }
 
@@ -170,7 +191,6 @@
 
     function saveInMemoryCart(cart) {
         localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
-        // إطلاق حدث التحديث المتزامن لضمان استماع كافة أجزاء الموقع والتطبيقات للبيانات الجديدة
         document.dispatchEvent(new CustomEvent('BoseCartUpdated'));
     }
 
@@ -198,23 +218,20 @@
 
         let totalSum = 0;
         bodyContainer.innerHTML = cart.map((item, index) => {
-            const price = Math.round(Number(item.price || 0));
+            const price = Math.round(Number(item.finalPrice || item.price || 0));
             const qty = Number(item.quantity || 1);
             const itemTotal = price * qty;
             totalSum += itemTotal;
 
             let customizationHTML = '';
-            if (item.customizations) {
-                if (Array.isArray(item.customizations)) {
-                    customizationHTML = `<div class="bose-drawer-item-specs">${item.customizations.join(' | ')}</div>`;
-                } else if (typeof item.customizations === 'object') {
-                    const specs = [];
-                    if (item.customizations.size) specs.push(`الشكل: ${item.customizations.size}`);
-                    if (item.customizations.persons) specs.push(`الأفراد: ${item.customizations.persons}`);
-                    if (item.customizations.filling) specs.push(`الحشو: ${item.customizations.filling}`);
-                    if (item.customizations.text) specs.push(`الكتابة: "${item.customizations.text}"`);
-                    if (item.customizations.flowersCount) specs.push(`الورد: ${item.customizations.flowersCount} فرع`);
-                    customizationHTML = `<div class="bose-drawer-item-specs">${specs.join(' - ')}</div>`;
+            if (item.customDetails) {
+                const cd = item.customDetails;
+                const specs = [];
+                if (cd.cakeType && cd.cakeType !== "none" && cd.cakeType !== "افتراضي") specs.push(`الطعم: ${cd.cakeType}`);
+                if (cd.persons && cd.persons > 0) specs.push(`الأفراد: ${cd.persons}`);
+                if (cd.flowerCount && cd.flowerCount > 0) specs.push(`الورد: ${cd.flowerCount}`);
+                if (specs.length > 0) {
+                    customizationHTML = `<div class="bose-drawer-item-specs">${specs.join(' | ')}</div>`;
                 }
             }
 
@@ -222,9 +239,9 @@
 
             return `
                 <div class="bose-drawer-card" data-index="${index}">
-                    <img src="${imgUrl}" alt="${item.name || 'منتج حلويات بوسي'}" class="bose-drawer-card-img">
+                    <img src="${imgUrl}" alt="${item.title || 'منتجحلويات بوسي'}" class="bose-drawer-card-img">
                     <div class="bose-drawer-card-info">
-                        <h4>${item.name || 'منتج فاخر'}</h4>
+                        <h4>${item.title || 'منتج فاخر'}</h4>
                         ${customizationHTML}
                         <div class="bose-drawer-card-pricing">
                             <span class="bose-drawer-card-price">${price} EGP</span>
@@ -311,7 +328,6 @@
         `;
 
         container.appendChild(toast);
-
         setTimeout(() => toast.classList.add('bose-toast-active'), 10);
         
         setTimeout(() => {
@@ -325,42 +341,50 @@
         if (!productObject || !productObject.id) return;
         
         const cart = getInMemoryCart();
-        const existingIndex = cart.findIndex(item => item.id === productObject.id && !item.customizations);
+        const existingIndex = cart.findIndex(item => item.id === productObject.id && !item.customDetails?.isCustomized);
         
         if (existingIndex > -1) {
             cart[existingIndex].quantity = (Number(cart[existingIndex].quantity) || 1) + 1;
         } else {
             cart.push({
                 id: productObject.id,
-                name: productObject.name,
+                productSlug: productObject.slug,
+                title: productObject.title,
+                flavorName: productObject.flavorName || "افتراضي",
                 price: productObject.price,
-                image: productObject.image,
+                finalPrice: productObject.price,
+                image: productObject.images ? productObject.images[0] : productObject.image,
                 quantity: 1,
-                customizations: null
+                type: productObject.type || "standard",
+                customDetails: {}
             });
         }
         
         saveInMemoryCart(cart);
-        window.showBoseToast(`تمت إضافة المشروب أو الحلوى إلى السلة العائمة بنجاح 🌸`);
+        window.showBoseToast(`تمت إضافة ${productObject.title} إلى السلة العائمة بنجاح 🌸`);
         openBoseCartDrawer();
     };
 
     /* ==========================================================================\
-       5. [مطور ومضاف] مهندس ومولد كروت المنتجات الصارم لمنع مشاكل الشلل والانضغاط
+       5. مهندس ومولد كروت المنتجات الصارم (تم حل ثغرة undefined بقراءة title)
        ========================================================================== */
     window.generateStrictProductCardHTML = function (product, currency = 'EGP') {
         if (!product) return '';
         const price = Math.round(Number(product.price || 0));
-        const imgUrl = product.image || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png';
+        const imgUrl = product.images ? product.images[0] : (product.image || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png');
+        const displayTitle = product.title || product.name || 'منتج فاخر';
+        const displayFlavor = product.flavorName || 'نكهة بوسي المميزة';
+        const displayDesc = product.flavorDesc || product.description || '';
         
         return `
-            <div class="product-card" data-slug="${product.slug}" style="background: ${BRAND_COLORS.white}; border: 1px solid rgba(255,145,164,0.2); border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 10px; justify-content: space-between; position: relative; box-shadow: 0 4px 16px rgba(255,145,164,0.03); direction: rtl; text-align: right;">
+            <div class="product-card" data-slug="${product.slug}" style="background: ${BRAND_COLORS.white}; border: 1px solid rgba(255,145,164,0.2); border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 10px; justify-content: space-between; position: relative; box-shadow: 0 4px 16px rgba(255,145,164,0.03); direction: rtl; text-align: right; min-width: 260px;">
                 <div class="product-card-top" style="position: relative; overflow: hidden; border-radius: 12px; height: 180px; width: 100%;">
-                    <img src="${imgUrl}" alt="${product.name}" style="width: 100%; height: 100%; object-fit: cover; transition: 0.3s;" loading="lazy">
+                    <img src="${imgUrl}" alt="${displayTitle}" style="width: 100%; height: 100%; object-fit: cover; transition: 0.3s;" loading="lazy">
                 </div>
                 <div class="product-card-info" style="flex-grow: 1; display: flex; flex-direction: column; gap: 4px;">
-                    <h3 style="margin: 0; font-size: 0.95rem; font-weight: 700; color: ${BRAND_COLORS.black};">${product.name}</h3>
-                    <p style="margin: 0; font-size: 0.75rem; color: #666; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${product.description || ''}</p>
+                    <h3 style="margin: 0; font-size: 0.95rem; font-weight: 700; color: ${BRAND_COLORS.black};">${displayTitle}</h3>
+                    <span style="font-size: 0.8rem; font-weight: 700; color: ${BRAND_COLORS.pink};">${displayFlavor}</span>
+                    <p style="margin: 0; font-size: 0.75rem; color: #666; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 34px;">${displayDesc}</p>
                 </div>
                 <div class="product-card-bottom" style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px;">
                     <span style="font-size: 1rem; font-weight: 700; color: ${BRAND_COLORS.pink};">${price} ${currency}</span>
@@ -413,23 +437,16 @@
         }
     }
 
-    /* ==========================================================================\
-       7. دالة التهيئة والربط المركزي الكامل للواجهات (Global Central Boot)
-       ========================================================================== */
     function initializeGlobalFeatures() {
         injectFloatingCartSystem();
         updateGlobalCartCounters();
     }
 
-    // ربط مضاف ومطور: الاستماع لأحداث التحديث وتوصيل الأحداث المباشرة فور استدعاء الملف
     document.addEventListener('BoseCartUpdated', updateGlobalCartCounters);
     window.addEventListener('storage', (e) => {
         if (e.key === CART_STORAGE_KEY) updateGlobalCartCounters();
     });
 
-    /* ==========================================================================\
-       8. محددات الأداء والتنسيق البرمجي والجمالي الصارم للسلة العائمة (Dynamic Styles)
-       ========================================================================== */
     function injectFloatingCartStyles() {
         if (document.getElementById('bose-floating-styles-block')) return;
 
@@ -545,13 +562,6 @@
                 padding: 20px;
                 background-color: ${BRAND_COLORS.cream};
             }
-            .bose-drawer-body-scroll::-webkit-scrollbar {
-                width: 5px;
-            }
-            .bose-drawer-body-scroll::-webkit-scrollbar-thumb {
-                background: ${BRAND_COLORS.pink};
-                border-radius: 10px;
-            }
             .bose-drawer-empty-state {
                 text-align: center;
                 padding: 40px 10px;
@@ -594,7 +604,6 @@
                 font-size: 14px;
                 color: ${BRAND_COLORS.black};
                 font-weight: 700;
-                padding-left: 20px;
             }
             .bose-drawer-item-specs {
                 font-size: 11px;
@@ -634,9 +643,6 @@
                 align-items: center;
                 justify-content: center;
             }
-            .bose-drawer-qty-btn:hover {
-                background-color: ${BRAND_COLORS.cream};
-            }
             .bose-drawer-qty-value {
                 padding: 0 8px;
                 font-size: 13px;
@@ -653,9 +659,6 @@
                 font-size: 20px;
                 color: #aaa;
                 cursor: pointer;
-            }
-            .bose-drawer-card-remove:hover {
-                color: ${BRAND_COLORS.pink};
             }
             .bose-drawer-footer {
                 padding: 20px;
@@ -690,26 +693,15 @@
                 text-decoration: none;
                 cursor: pointer;
                 font-family: 'Cairo', sans-serif;
-                box-sizing: border-box;
             }
             .bose-btn-primary-drawer {
                 background-color: ${BRAND_COLORS.pink};
                 color: ${BRAND_COLORS.white};
-                border: none;
             }
             .bose-btn-secondary-drawer {
                 background-color: ${BRAND_COLORS.white};
                 color: ${BRAND_COLORS.black};
                 border: 1px solid ${BRAND_COLORS.black};
-            }
-            .bose-btn-secondary-drawer:hover {
-                background-color: ${BRAND_COLORS.cream};
-            }
-            .bose-drawer-footer-notice {
-                text-align: center;
-                font-size: 11px;
-                color: #888;
-                margin: 12px 0 0 0;
             }
             
             #bose-toast-central-container {
@@ -735,46 +727,21 @@
                 opacity: 0;
                 transform: translateX(50px);
                 transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.35s ease;
-                pointer-events: auto;
             }
             .bose-toast-card.bose-toast-active {
                 opacity: 1;
                 transform: translateX(0);
-            }
-            .bose-toast-card.bose-toast-fadeout {
-                opacity: 0;
-                transform: translateY(-20px);
             }
             .bose-toast-content {
                 display: flex;
                 align-items: center;
                 gap: 12px;
             }
-            .bose-toast-sparkle {
-                font-size: 16px;
-            }
             .bose-toast-text {
                 margin: 0;
                 font-size: 13px;
                 color: ${BRAND_COLORS.black};
                 font-weight: 600;
-                line-height: 1.5;
-            }
-            
-            @media (max-width: 480px) {
-                #bose-floating-cart-drawer {
-                    max-width: 100%;
-                    left: -100%;
-                }
-                #bose-toast-central-container {
-                    left: 16px;
-                    right: 16px;
-                    top: 16px;
-                }
-                .bose-toast-card {
-                    min-width: calc(100% - 32px);
-                    max-width: 100%;
-                }
             }
         `;
         document.head.appendChild(styleBlock);
@@ -784,22 +751,11 @@
         if (document.getElementById('bose-db-fallback-error')) return;
         const errorDiv = document.createElement('div');
         errorDiv.id = "bose-db-fallback-error";
-        errorDiv.style.position = 'fixed';
-        errorDiv.style.bottom = '16px';
-        errorDiv.style.right = '16px';
-        errorDiv.style.backgroundColor = BRAND_COLORS.cream;
-        errorDiv.style.border = `1px solid ${BRAND_COLORS.pink}`;
-        errorDiv.style.padding = '12px 20px';
-        errorDiv.style.borderRadius = '8px';
-        errorDiv.style.zIndex = '999999';
-        errorDiv.style.direction = 'rtl';
-        errorDiv.style.fontSize = '14px';
-        errorDiv.style.fontFamily = 'Cairo';
+        errorDiv.style.cssText = `position:fixed; bottom:16px; right:16px; background-color:${BRAND_COLORS.cream}; border:1px solid ${BRAND_COLORS.pink}; padding:12px 20px; border-radius:8px; z-index:999999; direction:rtl; font-size:14px; font-family:Cairo;`;
         errorDiv.textContent = 'عذراً، هناك صعوبة في الاتصال بالخادم حالياً. يرجى إعادة محاولة تحميل الصفحة لراحتك.';
         document.body.appendChild(errorDiv);
     }
 
-    // تشغيل فوري تحديث العدادات من ذاكرة التخزين المحلية قبل اكتمال تحميل الـ JSON لتجنب الصفر المؤقت
     updateGlobalCartCounters();
 
     if (document.readyState === 'loading') {
