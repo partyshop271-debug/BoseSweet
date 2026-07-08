@@ -1,7 +1,8 @@
 /**
  * 👑 المحرك المركزي العام والنهائي للموقع والنافذة العائمة - حلويات بوسي 👑
- * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية ومشاكل التداخل V52.0
+ * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية ومشاكل التداخل V53.0
  * متوافق بشكل مطلق وثنائي الاتجاه مع كافة ملفات css/ وجافا سكريبت الموقع وقاعدة البيانات site-data-final.json
+ * [تم التحديث برمجياً: كسر كاش المتصفح تلقائياً لضمان ظهور النكهات والأوصاف الجديدة فور الرفع على الاستضافة]
  */
 
 (function () {
@@ -24,20 +25,26 @@
     let databaseReadyCallbacks = [];
 
     /* ==========================================================================\
-       1. حارس التمهيد واستدعاء قاعدة البيانات المعتمدة site-data-final.json
+       1. حارس التمهيد واستدعاء قاعدة البيانات المعتمدة site-data-final.json مع كسر الكاش
        ========================================================================== */
     async function loadBoseAbsoluteDatabase() {
         try {
             const currentPath = window.location.pathname;
-            let jsonPath = 'data/site-data-final.json';
+            let jsonPath = 'site-data-final.json';
             
-            if (currentPath.includes('/css/') || currentPath.includes('/js/') || currentPath.includes('/pages/')) {
-                jsonPath = '../data/site-data-final.json';
+            // توحيد وفحص مسار قاعدة البيانات لتفادي أخطاء المجلدات الفرعية على الاستضافة
+            if (currentPath.includes('/css/') || currentPath.includes('/js/') || currentPath.includes('/pages/') || currentPath.includes('/admin/')) {
+                jsonPath = '../site-data-final.json';
             }
 
-            const response = await fetch(jsonPath);
+            // 👑 [تقنية كسر كاش المتصفح الحتمية]: إضافة طابع زمني فريد لإجبار السيرفر على جلب النسخة المحدثة فوراً
+            const cacheBuster = `?v=${Date.now()}`;
+            
+            const response = await fetch(jsonPath + cacheBuster);
             if (!response.ok) {
-                const fallbackResponse = await fetch('data/site-data-final.json');
+                // محاولة المسار البديل في حال اختلاف إعدادات السيرفر اللوجستية
+                const alternativePath = 'data/site-data-final.json' + cacheBuster;
+                const fallbackResponse = await fetch(alternativePath);
                 if (!fallbackResponse.ok) throw new Error(`فشل جلب البيانات: ${fallbackResponse.status}`);
                 boseGlobalStoreData = await fallbackResponse.json();
             } else {
