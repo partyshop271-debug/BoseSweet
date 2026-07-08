@@ -70,6 +70,7 @@
             width: max-content !important;
             padding: 10px 4px 15px 4px !important;
             box-sizing: border-box !important;
+            display: block !important;
         }
         #excellence-images-track .excellence-track-link {
             flex: 0 0 280px !important;
@@ -161,11 +162,35 @@
         .sidebar-sublink-item:hover {
             color: #FF91A4;
         }
+        
+        /* تحسينات المتحكم بالكمية لمنع اللبس البصري وظهوره بشكل واضح للعميل */
+        .qty-control-trigger {
+            border: none;
+            background: transparent;
+            font-size: 16px;
+            color: var(--bose-black, #111111);
+            width: 30px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+        }
+        .qty-numerical-display {
+            width: 32px;
+            text-align: center;
+            border: none;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--bose-black, #111111);
+            background: transparent;
+            padding: 0;
+        }
     </style>
 </head>
-<body class="bose-hardware-accelerated bose-arabic-text">
+<body class="bose-hardware-accelerated bose-arabic-text" style="padding-top: 0 !important;">
 
-    <div id="top-bar-marquee" style="background-color: var(--bose-pink, #FF91A4); height: 40px; overflow: hidden; display: flex; align-items: center; width: 100%; position: relative; z-index: 1001; direction: rtl;">
+    <div id="top-bar-marquee" style="background-color: var(--bose-pink, #FF91A4); height: 40px; overflow: hidden; display: flex; align-items: center; width: 100%; position: relative; z-index: 10001; direction: rtl;">
         <div class="animate-marquee" style="display: flex; width: max-content; gap: 40px; animation: boseMarquee 28s linear infinite; will-change: transform;">
             <span style="white-space: nowrap; font-size: 0.85rem; font-weight: 700; color: var(--bose-white, #FFFFFF);">🌸 كل قطعة من حلويات بوسي صنعت يدوياً بحب وشغف لتليق بمناسباتكم السعيدة</span>
             <span style="white-space: nowrap; font-size: 0.85rem; font-weight: 700; color: var(--bose-white, #FFFFFF);">✨ مكونات طبيعية 100% طازجة يومياً للحصول على الطعم الأصلي الفاخر</span>
@@ -173,7 +198,7 @@
         </div>
     </div>
 
-    <header class="bose-navbar" style="position: sticky; top: 0; z-index: 1000; background-color: rgba(255, 255, 255, 0.99); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 2px solid rgba(255, 145, 164, 0.25); display: flex; justify-content: space-between; align-items: center; padding: 0 16px; height: 70px; width: 100%; box-shadow: var(--bose-shadow-glow, 0 8px 32px rgba(255, 145, 164, 0.12)); direction: rtl;">
+    <header class="bose-navbar" style="position: fixed !important; top: 40px !important; left: 0; right: 0; z-index: 10000; background-color: rgba(255, 255, 255, 0.99); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 2px solid rgba(255, 145, 164, 0.25); display: flex; justify-content: space-between; align-items: center; padding: 0 16px; height: 70px; width: 100%; box-shadow: var(--bose-shadow-glow, 0 8px 32px rgba(255, 145, 164, 0.12)); direction: rtl;">
         <div class="navbar-mobile-wrapper" style="display: flex; width: 100%; justify-content: space-between; align-items: center; height: 100%;">
             <button id="mobile-menu-toggle" class="nav-icon-btn" aria-label="فتح قائمة التصفح" style="background: none; border: none; font-size: 1.4rem; color: var(--bose-black, #111111); cursor: pointer;">
                 <i class="fas fa-bars"></i>
@@ -196,10 +221,11 @@
         </div>
     </header>
 
-    <div id="drawer-shield" class="drawer-overlay" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(17, 17, 17, 0.4); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); z-index: 1999; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;"></div>
+    <div style="height: 110px; width: 100%;"></div>
+
+    <div id="drawer-shield" class="drawer-overlay" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(17, 17, 17, 0.4); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); z-index: 19999; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;"></div>
     
-    <!-- 👑 القائمة الجانبية الفاخرة المطورة بالكامل بالـ 12 فئة الرسمية لبراند حلويات بوسي 👑 -->
-    <aside id="sidebar-drawer" class="bose-drawer-menu" style="position: fixed; top: 0; right: 0; width: 340px; max-width: 85vw; height: 100vh; background-color: #FFFFFF; box-shadow: -10px 0 40px rgba(255, 145, 164, 0.15) !important; z-index: 2000; display: flex; flex-direction: column; transform: translate3d(100%, 0, 0); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); direction: rtl; text-align: right;">
+    <aside id="sidebar-drawer" class="bose-drawer-menu" style="position: fixed; top: 0; right: 0; width: 340px; max-width: 85vw; height: 100vh; background-color: #FFFFFF; box-shadow: -10px 0 40px rgba(255, 145, 164, 0.15) !important; z-index: 20000; display: flex; flex-direction: column; transform: translate3d(100%, 0, 0); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); direction: rtl; text-align: right;">
         <div class="drawer-premium-header" style="padding: 24px 20px; border-bottom: 1px solid rgba(255, 145, 164, 0.25); background: linear-gradient(to bottom, #FFF5F6, #FFFFFF); position: relative;">
             <button id="sidebar-close-panel-btn" class="drawer-close-btn" aria-label="إغلاق القائمة" style="position: absolute; left: 20px; top: 50%; transform: translateY(-50%); width: 36px; height: 36px; border-radius: 50%; background: transparent; color: #111111; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid rgba(255, 145, 164, 0.2); font-size: 20px; font-weight: bold;">×</button>
             <h3 style="margin: 0; font-size: 1.15rem; font-weight: 700; color: #111111;">قائمة التصفح الفاخرة</h3>
@@ -211,13 +237,11 @@
             <ul class="drawer-links-list" style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px;">
                 <li class="drawer-link-item"><a href="index.html" class="active" style="display: flex; align-items: center; gap: 10px; font-size: 0.95rem; font-weight: 700; color: #111111; padding: 10px 14px; border-radius: 12px; text-decoration: none;"><i class="fas fa-home" style="color: #FF91A4;"></i> الواجهة الرئيسية</a></li>
                 
-                <!-- 👑 الأكورديون المنسدل الفاخر لـ فئات حلويات بوسي الـ 12 المعتمدة -->
                 <li class="drawer-link-item">
                     <div id="sidebar-menu-accordion-toggle" class="sidebar-accordion-trigger" style="display: flex; align-items: center; justify-content: space-between; font-size: 0.95rem; font-weight: 700; color: #111111; padding: 10px 14px; border-radius: 12px;">
                         <span style="display: flex; align-items: center; gap: 10px;"><i class="fas fa-utensils" style="color: #FF91A4;"></i> المنيو حسب الفئة</span>
                         <i class="fas fa-chevron-down" style="font-size: 0.8rem; color: #FF91A4;"></i>
                     </div>
-                    <!-- الفئات الـ 12 الرسمية الصريحة بالتطابق مع الـ JSON والمواصفات -->
                     <div id="sidebar-menu-accordion-content" class="sidebar-accordion-content" style="margin-top: 4px; padding-right: 12px;">
                         <a href="category.html?id=taswaq-toort" class="sidebar-sublink-item"><i class="fas fa-birthday-cake" style="color: #D4AF37; font-size: 0.75rem;"></i> التورت</a>
                         <a href="category.html?id=taswaq-gatowat" class="sidebar-sublink-item"><i class="fas fa-cookie" style="color: #D4AF37; font-size: 0.75rem;"></i> الجاتوهات</a>
@@ -228,7 +252,7 @@
                         <a href="category.html?id=taswaq-red-velvet" class="sidebar-sublink-item"><i class="fas fa-cheese" style="color: #D4AF37; font-size: 0.75rem;"></i> الريدڤيلڤت</a>
                         <a href="category.html?id=taswaq-cupcake" class="sidebar-sublink-item"><i class="fas fa-cookie-bite" style="color: #D4AF37; font-size: 0.75rem;"></i> الكب كيك</a>
                         <a href="category.html?id=taswaq-mini-cake" class="sidebar-sublink-item"><i class="fas fa-birthday-cake" style="color: #D4AF37; font-size: 0.75rem;"></i> الميني تورت</a>
-                        <a href="category.html?id=taswaq-flowers" class="sidebar-sublink-item"><i class="fas fa-spa" style="color: #D4AF37; font-size: 0.75rem;"></i> الورد</a>
+                        <a href="category.html?id=taswaq-flowers" class="sidebar-sublink-item"><i class="fas fa-spa" style="color: #D4AF37; font-size: 0.75rem;"></i> הورد</a>
                         <a href="category.html?id=taswaq-happiness-cups" class="sidebar-sublink-item"><i class="fas fa-glass-martini-alt" style="color: #D4AF37; font-size: 0.75rem;"></i> كبات السعادة</a>
                         <a href="category.html?id=taswaq-relax-box" class="sidebar-sublink-item"><i class="fas fa-box-open" style="color: #D4AF37; font-size: 0.75rem;"></i> بوكس الروقان</a>
                     </div>
@@ -449,7 +473,6 @@
     </footer>
 
     <script>
-        // 👑 محرك تشغيل قائمة الأكورديون المنسدلة في الـ Sidebar لمنع التعارض البرمجي
         document.addEventListener("DOMContentLoaded", function() {
             const accordionToggle = document.getElementById('sidebar-menu-accordion-toggle');
             const accordionContent = document.getElementById('sidebar-menu-accordion-content');
