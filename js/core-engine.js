@@ -64,7 +64,6 @@
         }
     }
 
-    // دعم كلا الطريقتين لضمان عدم انهيار أي صفحة داخلية قديمة أو حديثة
     window.onBoseDatabaseReady = function (callback) {
         if (boseGlobalStoreData) {
             callback(boseGlobalStoreData);
@@ -108,9 +107,6 @@
         }
     }
 
-    /* ==========================================================================\
-       ⚙️ حارس الحقن التلقائي للهيدر والفوتر الفاخر لمنع اختفائه بالصفحات الأخرى
-       ========================================================================== */
     function ensureSharedLayoutHubs(storeData) {
         if (!storeData) return;
         
@@ -166,14 +162,10 @@
             `;
         }
         
-        // إعادة ربط أحداث القائمة الجانبية بعد التأكد من وجود الهيدر في الـ DOM
         initializeSidebarDrawer();
         updateGlobalCartCounters();
     }
 
-    /* ==========================================================================\
-       2. تفعيل وربط القائمة الجانبية الهندسية الاحترافية المطورة بالكامل للعميل
-       ========================================================================== */
     function initializeSidebarDrawer() {
         const toggleBtn = document.getElementById('mobile-menu-toggle') || document.querySelector('[aria-label="فتح قائمة التصفح"]');
         const drawer = document.getElementById('sidebar-drawer');
@@ -355,9 +347,6 @@
         });
     }
 
-    /* ==========================================================================\
-       3. محرك العدادات التصاعدية الذكي لقسم الفخر والاعتزاز
-       ========================================================================== */
     function runBoseStatsCounter(storeData) {
         const prideSection = document.getElementById('pride-section');
         if (!prideSection || !storeData?.homepage?.pride?.stats) return; 
@@ -407,9 +396,6 @@
         }
     }
 
-    /* ==========================================================================\
-       4. رندرة وتعبئة قسم "تسوق حسب الفئة" الـ 12 المعتمدة بالـ Transform الفخم والأسهم الحية
-       ========================================================================== */
     function renderBoseCategoriesSlider(storeData) {
         const wrapper = document.getElementById('categories-slider-wrapper');
         const track = document.getElementById('categories-track');
@@ -498,9 +484,6 @@
         }
     }
 
-    /* ==========================================================================\
-       4.ب. تشغيل ومزامنة سلايدر "عقد من الإتقان" التلقائي بالكامل بالـ Dots
-       ========================================================================== */
     function initializeBosePrideSlider() {
         const prideTrack = document.getElementById('excellence-images-track');
         const prideWrapper = document.getElementById('pride-slider-wrapper');
@@ -623,9 +606,6 @@
         });
     }
 
-    /* ==========================================================================\
-       5. هيكلة وبناء نظام السلة العائمة التفاعلية الفاخرة وسيكولوجية الوميض
-       ========================================================================== */
     function injectFloatingCartSystem() {
         if (document.getElementById('bose-floating-cart-wrapper')) return;
 
@@ -855,9 +835,6 @@
         });
     }
 
-    /* ==========================================================================\
-       6. نظام التنبيهات الراقية الفاخرة (Toast System)
-       ========================================================================== */
     window.showBoseToast = function (message, type = 'success') {
         let container = document.getElementById('bose-toast-central-container');
         if (!container) {
@@ -913,9 +890,6 @@
         openBoseCartDrawer();
     };
 
-    /* ==========================================================================\
-       7. مهندس ومولد كروت المنتجات القياسي الفاخر - ربط السلوك التفاعلي المباشر
-       ========================================================================== */
     window.generateStrictProductCardHTML = function (product, currency = 'EGP') {
         if (!product) return '';
         const price = Math.round(Number(product.price || 0));
@@ -924,7 +898,6 @@
         const displayFlavor = product.flavorName || 'نكهة بوسي المميزة';
         const displayDesc = product.flavorDesc || product.description || '';
         
-        // 👑 [تحسين التوجيه الهيكلي]: جعل الكرت بالكامل عبارة عن رابط آمن ينقله إلى صفحة المنتج الفردية لرؤية المراجعات والبدائل الذكية
         return `
             <div class="product-card" data-slug="${product.slug}" style="background: ${BRAND_COLORS.white}; border: 1px solid rgba(255,145,164,0.18); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 12px; justify-content: space-between; position: relative; box-shadow: 0 8px 32px rgba(255,145,164,0.04); direction: rtl; text-align: right; width: 100%; box-sizing: border-box; transition: transform 0.3s ease;">
                 
@@ -976,14 +949,14 @@
             if (plusBtn && minusBtn && qtyInput) {
                 plusBtn.onclick = (e) => {
                     e.preventDefault();
-                    e.stopPropagation(); // يمنع الدخول لصفحة المنتج عند الرغبة في زيادة العدد فقط
+                    e.stopPropagation(); 
                     let currentVal = parseInt(qtyInput.value, 10) || 1;
                     qtyInput.value = currentVal + 1;
                 };
 
                 minusBtn.onclick = (e) => {
                     e.preventDefault();
-                    e.stopPropagation(); // يمنع الدخول لصفحة المنتج عند الرغبة في تقليل العدد فقط
+                    e.stopPropagation(); 
                     let currentVal = parseInt(qtyInput.value, 10) || 1;
                     if (currentVal > 1) {
                         qtyInput.value = currentVal - 1;
@@ -995,7 +968,7 @@
         containerElement.querySelectorAll('.bose-add-to-cart-btn').forEach(btn => {
             btn.onclick = function (e) {
                 e.preventDefault();
-                e.stopPropagation(); // يمنع انهيار الصفحة أو التوجيه التلقائي
+                e.stopPropagation(); 
                 
                 const currentButton = this;
                 const prodId = currentButton.dataset.id;
@@ -1053,9 +1026,6 @@
         });
     };
 
-    /* ==========================================================================\
-       8. موازنة وتحديث عدادات شارات الهيدر الموحدة (Sync Header Badges)
-       ========================================================================== */
     function updateGlobalCartCounters() {
         const cart = getInMemoryCart();
         let totalItems = 0;
