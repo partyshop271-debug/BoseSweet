@@ -1,9 +1,8 @@
 /**
  * 👑 المحرك المركزي العام والنهائي للموقع والنافذة العائمة - حلويات بوسي 👑
- * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية ومشاكل التداخل V60.0
+ * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية ومشاكل التداخل V61.0
  * متوافق بشكل مطلق وثنائي الاتجاه مع كافة ملفات css/ وجافا سكريبت الموقع وقاعدة البيانات data/site-data-final.json
- * [تم التحديث: تثبيت حقيقي ومطلق للسلة العائمة وتعديل نظام الإشعارات ليكون بالأسفل في مواجهة عين العميل مباشرة]
- * يمنع منعاً باتاً الحذف أو الاختصار أو التبسيط - بناء وتوسيع وتطوير شامل لكافة المحركات.
+ * [تم التحديث والتطوير الشامل: تثبيت حقيقي ومطلق للسلة العائمة وتعديل نظام الإشعارات ليكون بالأسفل في مواجهة عين العميل مباشرة]
  */
 
 (function () {
@@ -234,7 +233,7 @@
                         });
                     } else {
                         productLinksHTML = `
-                            <a href="category.html?category=${cat.id}" style="display: flex; align-items: center; gap: 10px; font-size: 0.85rem; font-weight: 600; color: #666; padding: 10px 16px; text-decoration: none; font-style: italic;">
+                            <a href="category.html?category=${cat.id}" style="display: flex; align-items: center; gap: 10px; font-size: 0.85rem; font-weight: 600; color: #666; padding: 10px 166px; text-decoration: none; font-style: italic;">
                                 <i class="fas fa-cookie"></i> استعراض تشكيلة قسم ${cat.title}
                             </a>
                         `;
@@ -688,6 +687,20 @@
         }
     }
 
+    function getInMemoryCart() {
+        try {
+            return JSON.parse(localStorage.getItem(CART_STORAGE_KEY)) || [];
+        } catch (e) {
+            return [];
+        }
+    }
+
+    function saveInMemoryCart(cart) {
+        localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+        document.dispatchEvent(new CustomEvent('BoseCartUpdated'));
+        applyPsychologicalBlinking();
+    }
+
     /* ==========================================================================\
        3. نظام الإشعارات الفوري المنبثق هندسياً في منتصف أسفل الشاشة المواجه للعميل
        ========================================================================== */
@@ -742,7 +755,7 @@
         }
         
         saveInMemoryCart(cart);
-        window.showBoseToast(`تمت إضافة ${productObject.title} إلى السلة بنجاح 🌸`);
+        window.showBoseToast(`تمت إضافة ${productObject.title} إلى السلة 🌸`);
     };
 
     window.generateStrictProductCardHTML = function (product, currency = 'EGP') {
@@ -924,7 +937,7 @@
                 left: auto !important;
                 width: 64px !important;
                 height: 64px !important;
-                z-index: 2147483647 !important; 
+                z-index: 999999 !important; /* أعلى طبقة برمجية لتطفو مطلقاً وتتحدى أي تداخل من الفوتر */
                 pointer-events: auto !important;
                 -webkit-tap-highlight-color: transparent;
             }
@@ -996,9 +1009,10 @@
                 box-sizing: border-box !important;
                 border: 2px solid ${BRAND_COLORS.white} !important;
                 box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
-                z-index: 2147483647 !important;
+                z-index: 1000000 !important;
             }
 
+            /* التجاوب الفاخر والمثالي مع شاشات الهواتف المحمولة والموبايل أولاً */
             @media (max-width: 576px) {
                 #bose-floating-cart-wrapper {
                     bottom: 25px !important;
@@ -1020,11 +1034,11 @@
             /* الهندسة البصرية المحدثة لحاوية الإشعارات لتكون عائمة دائماً في الجزء السفلي أمام نظر العميل مباشرة */
             #bose-toast-central-container {
                 position: fixed !important;
-                bottom: 110px !important; 
+                bottom: 110px !important; /* يرتفع بأناقة فوق السلة العائمة ليكون واضحاً للعين وبمركز الانتباه */
                 left: 50% !important;
                 right: auto !important;
                 transform: translate3d(-50%, 0, 0) !important;
-                z-index: 2147483646 !important;
+                z-index: 999998 !important;
                 display: flex !important;
                 flex-direction: column !important;
                 gap: 12px !important;
@@ -1038,7 +1052,7 @@
             .bose-toast-card {
                 background: ${BRAND_COLORS.white} !important;
                 border: 1px solid rgba(255,145,164,0.3) !important;
-                border-bottom: 4px solid ${BRAND_COLORS.pink} !important; 
+                border-bottom: 4px solid ${BRAND_COLORS.pink} !important; /* لمسة رقيقة باللون البمبي المعتمد */
                 border-radius: 16px !important;
                 padding: 14px 24px !important;
                 box-shadow: 0 12px 32px rgba(255,145,164,0.15) !important;
@@ -1067,7 +1081,7 @@
                 margin: 0 !important;
                 font-size: 14px !important;
                 color: ${BRAND_COLORS.black} !important;
-                font-weight: 700 !important; 
+                font-weight: 700 !important; /* وزن القاهرة القياسي الفاخر للعناوين والرسائل الحيوية */
                 text-align: center !important;
             }
             .bose-toast-sparkle {
