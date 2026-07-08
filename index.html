@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
+    <!-- SEO الهوية والاشهار الرقمي الفاخر -->
     <title>حلويات بوسي | صنعناها بحب لتهديها لمن تحب</title>
     <meta name="description" content="منصة بيع إلكترونية متكاملة لعلامة حلويات بوسي الفاخرة. استمتع بتجربة تسوق فريدة، صمم تورتتك الخاصة وبوكيه الورد المخصص عبر محاكياتنا التفاعلية الفريدة.">
     <meta name="keywords" content="حلويات, تورت, بوكس هدايا, كاب كيك, سينابون, ورد, دوناتس, حلويات بوسي">
@@ -13,58 +14,42 @@
     <meta property="og:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
     <meta property="og:url" content="https://bosesweets.com">
     
+    <!-- الاعتمادات والملفات التصميمية القياسية -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/main.css">
+    
+    <!-- المحرك المركزي العالمي مستدعى في الرأس حتماً لمنع الوميض ومزامنة البيانات -->
+    <script src="js/core-engine.js"></script>
 </head>
 <body class="bose-hardware-accelerated">
 
-    <!-- شريط علوي متحرك لا نهائي -->
-    <div class="bose-top-ticker-wrapper" id="top-bar-marquee">
-        <div class="bose-ticker-content animate-marquee">
-            <span>✨ خامات طبيعية ممتازة ومضمونة 100% لتشرفك قدام ضيوفك ✨</span>
-            <span>كل قطعة حكاية شغف وتفاصيل محفورة بالدقة والمهارة الفائقة ✨</span>
-            <span>صنعناها بحب لتهديها لمن تحب - جودة فاخرة تليق بمناسباتكم السعيدة ✨</span>
+    <!-- TOP BAR: شريط علوي متحرك لا نهائي فوق الهيدر -->
+    <div class="bose-top-ticker-wrapper" id="top-bar-marquee" style="background: var(--bose-cream); border-bottom: 1px solid rgba(255,145,164,0.2); padding: 8px 0; overflow: hidden; z-index: 10000; position: relative;">
+        <div class="bose-ticker-content animate-marquee" style="display: flex; white-space: nowrap; gap: 50px; font-size: 13px; font-weight: 700; color: var(--bose-black);">
+            <span>كل قطعة من حلويات بوسي صنعت يدوياً بحب وشغف لتليق بمناسباتكم السعيدة 🌸</span>
+            <span>مكونات طبيعية 100% طازجة يومياً للحصول على الطعم الأصلي الفاخر ✨</span>
+            <span>تميزوا بهداياكم وجلساتكم الفاخرة مع تشكيلة بوكس الروقان وكبات السعادة 👑</span>
+            <!-- التكرار الهندسي المانع للفراغات البصرية -->
+            <span>كل قطعة من حلويات بوسي صنعت يدوياً بحب وشغف لتليق بمناسباتكم السعيدة 🌸</span>
+            <span>مكونات طبيعية 100% طازجة يومياً للحصول على الطعم الأصلي الفاخر ✨</span>
+            <span>تميزوا بهداياكم وجلساتكم الفاخرة مع تشكيلة بوكس الروقان وكبات السعادة 👑</span>
         </div>
     </div>
 
-    <!-- الهيدر الثابت الموحد المطور بالتوافق المطلق مع الـ DOM الهندسي الموحد -->
-    <header class="bose-navbar" id="bose-global-header">
-        <div class="navbar-mobile-wrapper">
-            <button id="mobile-menu-toggle" class="nav-icon-btn" aria-label="فتح قائمة التصفح">
-                <i class="fas fa-bars"></i>
-            </button>
-            
-            <div class="brand-logo-container">
-                <a href="index.html">
-                    <img id="bose-store-logo" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="شعار حلويات بوسي">
-                </a>
-            </div>
-            
-            <span class="brand-name-display">حلويات بوسي</span>
-            
-            <div class="nav-actions">
-                <button id="nav-search-btn" class="nav-icon-btn" aria-label="البحث في المنتجات">
-                    <i class="fas fa-search"></i>
-                </button>
-                
-                <a href="cart.html" class="nav-cart-icon-wrapper" aria-label="عرض سلة التسوق">
-                    <i class="fas fa-shopping-bag"></i>
-                    <span id="nav-cart-count" class="bose-cart-counter-global">0</span>
-                </a>
-            </div>
-        </div>
-    </header>
+    <!-- HEADER: الهيدر الثابت الموحد المطور بالتوافق المطلق مع الـ DOM الهندسي الموحد -->
+    <header class="bose-navbar" id="bose-global-header"></header>
 
-    <!-- القائمة الجانبية الفاخرة (Drawer Menu) المحدثة لحل ثغرة زر الإغلاق والتجاوب -->
+    <!-- DRAWER: القائمة الجانبية الفاخرة المدفوعة برمجياً -->
     <div id="sidebar-drawer" class="bose-premium-sidebar"></div>
     <div id="drawer-shield" class="bose-drawer-shield"></div>
 
-    <main>
-        <!-- SECTION 01: عقد من التميز -->
+    <main style="padding-bottom: 60px;">
+        
+        <!-- SECTION 01: عقد من التميز (البانر الرئيسي العريض) -->
         <section class="bose-hero-section" id="hero-section">
             <div class="bose-hero-slider">
-                <div class="bose-hero-slide active">
+                <div class="bose-hero-slide active" style="background-image: url('https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png');">
                     <div class="bose-hero-slide-overlay">
                         <h1 class="bose-hero-title" id="hero-title">عقد من <span style="color: var(--bose-pink);">التميز</span> في صناعة الحلويات</h1>
                         <p class="bose-hero-desc" id="hero-description">تم اختيار المكونات بعناية فائقة للحصول على أفضل جودة تليق بمناسباتكم السعيدة وتضمن ثقتكم الدائمة.</p>
@@ -74,41 +59,43 @@
             </div>
         </section>
 
-        <!-- WATERFALL: قسم شلال المنتجات البصري الأنيق المستمر الحركة -->
-        <section class="bose-waterfall-section" id="waterfall-section">
+        <!-- WATERFALL: قسم شلال المنتجات البصري الممتد المستمر الحركة -->
+        <section class="bose-waterfall-section" id="waterfall-section" style="padding: 40px 16px; background: var(--bose-white); position: relative; overflow: hidden; height: 700px;">
             <div class="waterfall-overlay-top"></div>
-            <div class="bose-section-header">
+            <div class="bose-section-header" style="text-align: center; margin-bottom: 30px; position: relative; z-index: 10;">
                 <h2 class="bose-section-title">روائع بوسي المتدفقة</h2>
-                <p class="bose-section-subtitle">تشكيلة بصرية ممتدة من إبداعاتنا الفاخرة المجهزة يومياً بكل حب.</p>
+                <p class="bose-section-subtitle" style="color: #4D4D4D; font-size: 14px;">تشكيلة بصرية ممتدة من إبداعاتنا الفاخرة المجهزة يومياً بكل حب.</p>
             </div>
-            <div class="waterfall-container">
-                <div class="waterfall-col waterfall-up" id="waterfall-left-col"></div>
-                <div class="waterfall-col waterfall-down" id="waterfall-right-col"></div>
+            <div class="waterfall-container" style="display: flex; gap: 16px; height: 500px; overflow: hidden; position: relative;">
+                <div class="waterfall-col waterfall-up" id="waterfall-left-col" style="flex: 1; display: flex; flex-direction: column; gap: 16px;"></div>
+                <div class="waterfall-col waterfall-down" id="waterfall-right-col" style="flex: 1; display: flex; flex-direction: column; gap: 16px;"></div>
             </div>
             <div class="waterfall-overlay-bottom"></div>
         </section>
 
-        <!-- SECTION 02: عقد من الإتقان -->
+        <!-- SECTION 02: عقد من الإتقان (سلايدر أفقي تلقائي مستمر) -->
         <section class="bose-perfection-section" id="excellence-section">
             <div class="bose-section-header">
                 <h2 class="bose-section-title">عقد من الإتقان</h2>
                 <p class="bose-section-subtitle">خلف كل قطعة حكاية شغف وتفاصيل محفورة بالدقة والمهارة الفائقة لتقديم تجربة تذوق ساحرة.</p>
             </div>
-            <div class="bose-perfection-carousel-wrapper" id="pride-slider-wrapper">
+            <div class="bose-perfection-carousel-wrapper" id="pride-slider-wrapper" style="width: 100%; overflow: hidden; position: relative; padding: 10px 0;">
                 <div class="bose-perfection-track" id="excellence-images-track"></div>
             </div>
         </section>
 
-        <!-- SECTION 03: الأكثر مبيعاً -->
-        <section class="bose-bestseller-section" id="most-selling-section">
+        <!-- SECTION 03: الأكثر مبيعاً (سلايدر جانبي مريح لعين العميل) -->
+        <section class="bose-bestseller-section" id="most-selling-section" style="padding: 40px 16px; background: var(--bose-white); overflow: hidden;">
             <div class="bose-section-header">
                 <h2 class="bose-section-title">الأكثر مبيعاً</h2>
                 <p class="bose-section-subtitle">تشكيلة فاخرة ومعتمدة من خياراتنا الاستثنائية التي نالت ثقة ومحبة عملائنا المطلقة.</p>
             </div>
-            <div class="bose-products-grid" id="dynamic-bestsellers-grid"></div>
+            <div class="bose-bestsellers-slider-container" style="width: 100%; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; padding: 10px 4px;">
+                <div class="bose-products-grid" id="dynamic-bestsellers-grid" style="display: flex; gap: 16px; width: max-content;"></div>
+            </div>
         </section>
 
-        <!-- SECTION 04: محاكي التورت الفاخر -->
+        <!-- SECTION 04: محاكي التورت الفاخر (بلوك عريض متكامل وعالي الفخامة) -->
         <section class="bose-simulator-promo-section" id="cake-preview-section">
             <div class="bose-simulator-card-block">
                 <div class="simulator-text-content">
@@ -123,28 +110,32 @@
             </div>
         </section>
 
-        <!-- SECTION 05: وصل حديثاً -->
-        <section class="bose-new-arrivals-section" id="new-arrivals-section">
+        <!-- SECTION 05: وصل حديثاً (سلايدر جانبي متحرك بمرونة) -->
+        <section class="bose-new-arrivals-section" id="new-arrivals-section" style="padding: 40px 16px; background: var(--bose-white); overflow: hidden;">
             <div class="bose-section-header">
                 <h2 class="bose-section-title">وصل حديثاً</h2>
                 <p class="bose-section-subtitle">استكشف نكهات وتوليفات جديدة وحصرية تحمل بصمة الابتكار والإتقان الفاخر لعلامتنا التجارية.</p>
             </div>
-            <div class="bose-products-grid" id="dynamic-new-arrivals-grid"></div>
+            <div class="bose-new-arrivals-slider-container" style="width: 100%; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; padding: 10px 4px;">
+                <div class="bose-products-grid" id="dynamic-new-arrivals-grid" style="display: flex; gap: 16px; width: max-content;"></div>
+            </div>
         </section>
 
-        <!-- SECTION 06: منتجاتنا الفاخرة الموزعة هندسياً -->
-        <section class="bose-all-products-section" id="our-products-section">
+        <!-- SECTION 06: منتجاتنا الفاخرة (توزيع شبكي ثنائي: كارتين جنب بعض بالملي) -->
+        <section class="bose-all-products-section" id="our-products-section" style="padding: 40px 16px; background: var(--bose-white);">
             <div class="bose-section-header">
                 <h2 class="bose-section-title">منتجاتنا الفاخرة</h2>
                 <p class="bose-section-subtitle">تم اختيار المكونات بعناية فائقة للحصول على أفضل جودة تضمن راحتكم النفسية والصحية والطعم الفريش يومياً.</p>
             </div>
-            <div class="bose-products-grid" id="dynamic-main-products-grid"></div>
+            <!-- كروت ثنائية متوازنة العرض تماماً تمنع التكدس البصري -->
+            <div class="bose-products-grid" id="dynamic-main-products-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; width: 100%; box-sizing: border-box;"></div>
+            
             <div class="bose-view-more-container" style="text-align: center; margin-top: 30px;">
-                <button id="btn-load-more-products" class="bose-simulator-action-btn" style="background-color: var(--bose-black); color: #FFF; border-radius: 10px; cursor: pointer;">استعرض المزيد</button>
+                <button id="btn-load-more-products" class="bose-simulator-action-btn" style="background-color: var(--bose-black); color: #FFF; border-radius: 12px; padding: 12px 30px; font-weight:700; cursor: pointer;">استعرض المزيد</button>
             </div>
         </section>
 
-        <!-- SECTION 07: محاكي الورد الفاخر -->
+        <!-- SECTION 07: محاكي الورد الفاخر (بلوك عريض متكامل) -->
         <section class="bose-simulator-promo-section flower-promo-variant" id="flower-preview-section">
             <div class="bose-simulator-card-block" style="border-color: var(--bose-gold);">
                 <div class="simulator-text-content">
@@ -192,22 +183,23 @@
             </div>
         </section>
 
-        <!-- SECTION 09: تسوق حسب الفئة بمقاس كارت أكبر بنسبة 30% -->
-        <section class="bose-categories-carousel-section" id="categories-slider-section">
+        <!-- SECTION 09: تسوق حسب الفئة بمقاس كارت أكبر بنسبة 30% مع شريط حركي دائم -->
+        <section class="bose-categories-carousel-section" id="categories-slider-section" style="padding: 40px 16px; background: var(--bose-white); overflow: hidden;">
             <div class="bose-section-header">
                 <h2>تسوق حسب الفئة</h2>
                 <p class="bose-section-subtitle">سهولة الانتقال المباشر والوصول السريع للفئة المطلوبة باقتناع كامل، بمقاس كارت أكبر لراحة العين الفائقة.</p>
             </div>
-            <div class="bose-categories-scroll-wrapper" id="categories-slider-wrapper">
-                <div class="categories-track-loop" id="categories-track"></div>
+            <div class="bose-categories-scroll-wrapper" id="categories-slider-wrapper" style="width: 100; overflow: hidden; position: relative;">
+                <div class="categories-track-loop" id="categories-track" style="display: flex; gap: 20px; width: max-content;"></div>
             </div>
         </section>
+
     </main>
 
-    <!-- الفوتر الموحد والثابت المعتمد بلونه الفاتح الخالي من التكديس والتسويد -->
+    <!-- FOOTER: الفوتر الموحد والثابت المعتمد بلونه الفاتح الخالي من التكديس والتسويد -->
     <footer class="bose-footer"></footer>
 
-    <!-- شاشة البحث الفوري الفاخرة -->
+    <!-- SEARCH SCREEN: شاشة البحث الفوري الفاخرة الديناميكية -->
     <div class="bose-search-modal" id="search-modal-hub">
         <div class="search-modal-box">
             <div class="bose-search-header">
@@ -221,54 +213,51 @@
         </div>
     </div>
 
-    <!-- المحركات البرمجية المركزية -->
-    <script src="js/core-engine.js"></script>
+    <!-- ميكانيزم المعالجة والحقن البرمجي الدقيق من السيرفر مباشرة -->
     <script>
         document.addEventListener("BoseDatabaseLoaded", (e) => {
             const storeData = e.detail;
             if (!storeData) return;
 
-            // 🛠️ ميكانيزم الحقن البرمجي السليم لمنع الـ undefined المزعجة وحل تعارض العناوين
             const allProducts = storeData.products || [];
 
-            // 1. بناء شلال المنتجات البصري بصور المنتجات الفعلية من قاعدة البيانات
+            // 1. بناء شلال المنتجات البصري بدون أي فراغات نهائياً
             const leftCol = document.getElementById('waterfall-left-col');
             const rightCol = document.getElementById('waterfall-right-col');
             if (leftCol && rightCol && allProducts.length > 0) {
                 let leftHTML = '', rightHTML = '';
-                // تكرار آمن لملء الشلال ومنع الفراغات البصرية نهائياً
-                const doubled = [...allProducts, ...allProducts, ...allProducts];
-                doubled.forEach((prod, inx) => {
+                const doubledProducts = [...allProducts, ...allProducts, ...allProducts];
+                doubledProducts.forEach((prod, idx) => {
                     const img = prod.images ? prod.images[0] : prod.image;
-                    const itemHTML = `
-                        <div style="width:100%; border-radius:14px; overflow:hidden; border:1px solid rgba(255,145,164,0.15); background:#FFF;">
+                    const block = `
+                        <div style="width:100%; border-radius:16px; overflow:hidden; border:1px solid rgba(255,145,164,0.15); background:#FFF; box-shadow: var(--bose-shadow-glow);">
                             <img src="${img}" alt="${prod.title}" style="width:100%; display:block; object-fit:cover;">
                         </div>
                     `;
-                    if (inx % 2 === 0) leftHTML += itemHTML;
-                    else rightHTML += itemHTML;
+                    if (idx % 2 === 0) leftHTML += block;
+                    else rightHTML += block;
                 });
                 leftCol.innerHTML = leftHTML;
                 rightCol.innerHTML = rightHTML;
             }
 
-            // 2. بناء سلايدر "عقد من الإتقان" الدائري المتصل بروابط التوجيه الذكية
+            // 2. بناء سلايدر "عقد من الإتقان" التلقائي المتصل
             const excellenceTrack = document.getElementById('excellence-images-track');
             if (excellenceTrack && allProducts.length > 0) {
                 excellenceTrack.innerHTML = allProducts.slice(0, 6).map(prod => `
-                    <a href="product.html?slug=${prod.slug}" class="bose-perfection-card">
-                        <div class="perfection-card-img-holder">
-                            <img src="${prod.images ? prod.images[0] : prod.image}" alt="${prod.title}">
+                    <a href="product.html?slug=${prod.slug}" class="bose-perfection-card" style="flex-shrink:0; display:block; width:240px; text-decoration:none;">
+                        <div class="perfection-card-img-holder" style="width:100%; height:180px; overflow:hidden; border-radius:14px;">
+                            <img src="${prod.images ? prod.images[0] : prod.image}" alt="${prod.title}" style="width:100%; height:100%; object-fit:cover;">
                         </div>
-                        <div class="perfection-card-info">
-                            <h3>${prod.title}</h3>
-                            <span class="perfection-card-price">${Math.round(prod.price)} EGP</span>
+                        <div class="perfection-card-info" style="padding:10px; text-align:center;">
+                            <h3 style="font-size:14px; margin:4px 0; color:var(--bose-black); font-weight:600;">${prod.title}</h3>
+                            <span class="perfection-card-price" style="color:var(--bose-pink); font-weight:700;">${Math.round(prod.price)} EGP</span>
                         </div>
                     </a>
                 `).join('');
             }
 
-            // 3. بناء شبكة الأكثر مبيعاً (8 منتجات بالتمام والكمال) بالهيكل الموحد بالمسطرة
+            // 3. بناء شبكة الأكثر مبيعاً (8 منتجات كاملة كسلايدر جانبي)
             const bestGrid = document.getElementById('dynamic-bestsellers-grid');
             if (bestGrid) {
                 let bestHTML = '';
@@ -278,9 +267,11 @@
                 });
                 bestGrid.innerHTML = bestHTML;
                 window.attachProductCardEvents(bestGrid, allProducts);
+                // تكييف العرض ليعمل كـ كروت أفقية مرنة في السلايدر الجانبي للموبايل
+                bestGrid.querySelectorAll('.product-card').forEach(card => card.style.width = '280px');
             }
 
-            // 4. بناء شبكة وصل حديثاً (6 منتجات) بالهيكل الموحد
+            // 4. بناء شبكة وصل حديثاً (6 منتجات كاملة كسلايدر جانبي)
             const newGrid = document.getElementById('dynamic-new-arrivals-grid');
             if (newGrid) {
                 let newHTML = '';
@@ -290,14 +281,16 @@
                 });
                 newGrid.innerHTML = newHTML;
                 window.attachProductCardEvents(newGrid, allProducts);
+                newGrid.querySelectorAll('.product-card').forEach(card => card.style.width = '280px');
             }
 
-            // 5. بناء شبكة منتجاتنا (عرض 4 كروت أولاً، وضخ الـ 4 كروت المتبقية ديناميكياً لراحة النفسية وعناية التنفس البصري)
+            // 5. بناء شبكة منتجاتنا الفاخرة (كارتين جنب بعض بالظبط 2+2) لراحة العميل
             const mainGrid = document.getElementById('dynamic-main-products-grid');
             const loadMoreBtn = document.getElementById('btn-load-more-products');
             if (mainGrid) {
-                const mainList = allProducts.slice(0, 8); // الإجمالي 8 منتجات
+                const mainList = allProducts.slice(0, 8);
                 let initialHTML = '';
+                // إظهار أول 4 منتجات (صفين بملء الشاشة كارتين جنب بعض)
                 mainList.slice(0, 4).forEach(prod => {
                     initialHTML += window.generateStrictProductCardHTML(prod);
                 });
@@ -316,13 +309,13 @@
                             mainGrid.appendChild(tempDiv.firstChild);
                         }
                         window.attachProductCardEvents(mainGrid, allProducts);
-                        loadMoreBtn.style.display = 'none'; // إخفاء بعد الاكتمال لراحة النفسية
+                        loadMoreBtn.style.display = 'none'; // إخفاء ذكي لراحة النفسية والتنفس البصري
                         window.showBoseToast("تم استعراض المنيو الفاخر بالكامل 🌸");
                     };
                 }
             }
 
-            // 🔍 ميكانيزم تشغيل المودال الفاخر للبحث الفوري الذكي
+            // 🔍 ميكانيزم البحث الفوري الذكي المعتمد
             const searchBtn = document.getElementById('nav-search-btn');
             const searchModal = document.getElementById('search-modal-hub');
             const closeSearch = document.getElementById('close-search-modal-btn');
@@ -354,12 +347,12 @@
                     }
                     
                     searchViewport.innerHTML = filtered.map(p => `
-                        <a href="product.html?slug=${p.slug}" class="search-result-card">
-                            <img src="${p.images ? p.images[0] : p.image}" class="search-card-img" alt="${p.title}">
-                            <div class="search-card-info-pane">
-                                <h4 class="search-card-title">${p.title}</h4>
-                                <span class="search-card-flavor">${p.flavorName}</span>
-                                <span class="search-card-price">${Math.round(p.price)} EGP</span>
+                        <a href="product.html?slug=${p.slug}" class="search-result-card" style="display:flex; gap:12px; padding:10px; text-decoration:none; border-bottom:1px solid #F5F5F5;">
+                            <img src="${p.images ? p.images[0] : p.image}" class="search-card-img" alt="${p.title}" style="width:60px; height:60px; object-fit:cover; border-radius:8px;">
+                            <div class="search-card-info-pane" style="display:flex; flex-direction:column; justify-content:center;">
+                                <h4 class="search-card-title" style="margin:0; font-size:14px; color:var(--bose-black); font-weight:600;">${p.title}</h4>
+                                <span class="search-card-flavor" style="font-size:12px; color:var(--bose-pink); font-weight:600;">${p.flavorName}</span>
+                                <span class="search-card-price" style="font-size:13px; font-weight:700; color:var(--bose-black);">${Math.round(p.price)} EGP</span>
                             </div>
                         </a>
                     `).join('');
