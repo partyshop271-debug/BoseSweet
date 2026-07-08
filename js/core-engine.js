@@ -57,6 +57,9 @@
 
             initializeGlobalFeatures();
             
+            // 🛡️ [حارس الحقن والمطابقة]: تأمين عدم ضياع الهيدر والفوتر في صفحات المنيو والصفحات الأخرى
+            ensureSharedLayoutHubs(boseGlobalStoreData);
+            
         } catch (error) {
             console.error("❌ حارس البيانات المركزي: تعذر تحميل قاعدة البيانات السيادية.", error);
             injectFallbackErrorDisplay();
@@ -97,16 +100,79 @@
     }
 
     /* ==========================================================================\
+       ⚙️ حارس الحقن التلقائي للهيدر والفوتر في الصفحات الأخرى لمنع ضياع المكونات
+       ========================================================================== */
+    function ensureSharedLayoutHubs(storeData) {
+        if (!storeData) return;
+        
+        // فحص وحقن الهيدر لو مش موجود استاتيكياً في الصفحة المنتقل إليها
+        const headerNode = document.querySelector('.bose-navbar');
+        if (headerNode && headerNode.innerHTML.trim() === "") {
+            headerNode.innerHTML = `
+                <div class="navbar-mobile-wrapper">
+                    <button id="mobile-menu-toggle" class="nav-icon-btn" aria-label="فتح قائمة التصفح">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="brand-logo-container">
+                        <a href="index.html">
+                            <img id="bose-store-logo" src="${storeData.store.logo}" alt="شعار حلويات بوسي">
+                        </a>
+                    </div>
+                    <span class="brand-name-display">حلويات بوسي</span>
+                    <div class="nav-actions">
+                        <button id="nav-search-btn" class="nav-icon-btn" aria-label="البحث في المنتجات">
+                            <i class="fas fa-search"></i>
+                        </button>
+                        <a href="cart.html" class="nav-cart-icon-wrapper" aria-label="عرض سلة التسوق">
+                            <i class="fas fa-shopping-bag"></i>
+                            <span id="nav-cart-count" class="bose-cart-counter-global">0</span>
+                        </a>
+                    </div>
+                </div>
+            `;
+            // إعادة ربط أحداث القائمة الجانبية بعد الحقن اللحظي
+            initializeSidebarDrawer();
+        }
+
+        // فحص وحقن الفوتر الموحد الفاتح لمنع اختفائه بالصفحات الأخرى
+        const footerNode = document.querySelector('.bose-footer');
+        if (footerNode && footerNode.innerHTML.trim() === "") {
+            footerNode.innerHTML = `
+                <div class="footer-inner-wrapper">
+                    <div class="footer-logo-container">
+                        <a href="index.html">
+                            <img id="bose-store-logo" src="${storeData.store.logo}" alt="شعار حلويات بوسي">
+                        </a>
+                    </div>
+                    <span class="brand-name-display footer-brand-name">حلويات بوسي</span>
+                    <div class="footer-about-block">
+                        <p id="footer-about-text">${storeData.footer.about}</p>
+                    </div>
+                    <div id="footer-social-links">
+                        <a href="${storeData.social.facebook}" class="social-link-facebook" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                        <a href="${storeData.social.instagram}" class="social-link-instagram" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="${storeData.social.tiktok}" class="social-link-tiktok" target="_blank"><i class="fab fa-tiktok"></i></a>
+                        <a href="https://wa.me/2${storeData.store.phone}" class="social-link-whatsapp" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                    <div class="footer-copyright-block">
+                        <p>© <span id="copyright-year">2026</span> جميع الحقوق محفوظة لعلامة حلويات بوسي التجارية الفاخرة</p>
+                    </div>
+                </div>
+            `;
+        }
+        updateGlobalCartCounters();
+    }
+
+    /* ==========================================================================\
        2. تفعيل وربط القائمة الجانبية الهندسية الاحترافية المطورة بالكامل للعميل
        ========================================================================== */
     function initializeSidebarDrawer() {
-        const toggleBtn = document.getElementById('mobile-menu-toggle');
+        const toggleBtn = document.getElementById('mobile-menu-toggle') || document.querySelector('[aria-label="فتح قائمة التصفح"]');
         const drawer = document.getElementById('sidebar-drawer');
         const shield = document.getElementById('drawer-shield');
 
-        if (!drawer) return; // حارس أمان في حال عدم وجود العنصر بالصفحة
+        if (!drawer) return; 
 
-        // حقن الهيكل الفاخر المطور لسهولة وصول المستهلك ورفع المبيعات
         if (!drawer.classList.contains('bose-premium-sidebar-initiated')) {
             drawer.classList.add('bose-premium-sidebar-initiated');
             drawer.innerHTML = `
@@ -178,7 +244,7 @@
        ========================================================================== */
     function runBoseStatsCounter(storeData) {
         const prideSection = document.getElementById('pride-section');
-        if (!prideSection || !storeData?.homepage?.pride?.stats) return; // حارس أمان لمنع التداخل بالصفحات الأخرى
+        if (!prideSection || !storeData?.homepage?.pride?.stats) return; 
 
         const statsConfig = storeData.homepage.pride.stats;
 
@@ -231,11 +297,10 @@
     function renderBoseCategoriesSlider(storeData) {
         const wrapper = document.getElementById('categories-slider-wrapper');
         const track = document.getElementById('categories-track');
-        if (!track || !storeData?.homepage?.categoriesSlider) return; // حارس أمان لصفحة الـ Index فقط
+        if (!track || !storeData?.homepage?.categoriesSlider) return; 
 
         const cats = storeData.homepage.categoriesSlider;
         
-        // رندرة الكروت الكلاسيكية الفاخرة المعتمدة
         track.innerHTML = cats.map(cat => `
             <a href="category.html?id=${cat.id}" class="category-slide-card" style="flex: 0 0 200px; text-decoration: none; display: flex; flex-direction: column; align-items: center; transition: 0.3s;">
                 <div style="width: 100%; aspect-ratio: 1/1; overflow: hidden; border-radius: 20px; border: 1px solid rgba(255, 145, 164, 0.2); background: var(--bose-cream); position: relative;">
@@ -245,14 +310,13 @@
             </a>
         `).join('');
 
-        // حقن شارات التنقل الـ 12 المعتمدة والأسهم لمنع التموه
         let controlsContainer = document.getElementById('bose-categories-controls');
         if (!controlsContainer && wrapper) {
             controlsContainer = document.createElement('div');
             controlsContainer.id = 'bose-categories-controls';
             controlsContainer.style.cssText = `display: flex; flex-direction: column; align-items: center; gap: 14px; margin-top: 20px; width: 100%; direction: rtl;`;
             
-            arrowsRow = document.createElement('div');
+            let arrowsRow = document.createElement('div');
             arrowsRow.style.cssText = `display: flex; gap: 40px; align-items: center; justify-content: center;`;
             arrowsRow.innerHTML = `
                 <button id="cat-arrow-prev" style="width: 40px; height: 40px; border-radius: 50%; border: 1px solid ${BRAND_COLORS.pink}; background: ${BRAND_COLORS.white}; color: ${BRAND_COLORS.pink}; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: 0.2s;"><i class="fas fa-chevron-right"></i></button>
@@ -322,7 +386,7 @@
     function initializeBosePrideSlider() {
         const prideTrack = document.getElementById('excellence-images-track');
         const prideWrapper = document.getElementById('pride-slider-wrapper');
-        if (!prideTrack || !prideWrapper) return; // حارس أمان لمنع حدوث أخطاء برمجية خارج الصفحة الرئيسية
+        if (!prideTrack || !prideWrapper) return; 
 
         const slides = prideTrack.children;
         if (slides.length === 0) return;
@@ -376,15 +440,20 @@
             }, 3500);
         }
 
-        function stopAutoPlay() {
+        function startAutoPlayTimer() {
             if (slideInterval) clearInterval(slideInterval);
+            slideInterval = setInterval(() => {
+                currentIdx++;
+                if (currentIdx >= slides.length) currentIdx = 0;
+                scrollPrideToEach(currentIdx);
+            }, 3500);
         }
 
-        startAutoPlay();
-        prideTrack.addEventListener('mouseenter', stopAutoPlay);
-        prideTrack.addEventListener('mouseleave', startAutoPlay);
-        prideTrack.addEventListener('touchstart', stopAutoPlay, {passive: true});
-        prideTrack.addEventListener('touchend', startAutoPlay, {passive: true});
+        startAutoPlayTimer();
+        prideTrack.addEventListener('mouseenter', () => clearInterval(slideInterval));
+        prideTrack.addEventListener('mouseleave', startAutoPlayTimer);
+        prideTrack.addEventListener('touchstart', () => clearInterval(slideInterval), {passive: true});
+        prideTrack.addEventListener('touchend', startAutoPlayTimer, {passive: true});
     }
 
     /* ==========================================================================\
@@ -688,7 +757,8 @@
         const displayFlavor = product.flavorName || 'نكهة بوسي المميزة';
         const displayDesc = product.flavorDesc || product.description || '';
         
-        // 👑 تطبيق الهيكلية المقدسة: الصورة بالكامل -> الاسم وبجانبه السعر مفصلاً بالأعلى -> الوصف والنكهة -> العداد -> زر السلة العريض بالأسفل
+        // 👑 [تطبيق الهيكلية المقدسة والمطلوبة]: 
+        // الاسم والوصف والنكهة أولاً -> ثم السعر منفصل بكتلة مستقلة تحتهم -> ثم العداد وزر السلة بالأسفل تماماً لمنع التداخل البصري
         return `
             <div class="product-card" data-slug="${product.slug}" style="background: ${BRAND_COLORS.white}; border: 1px solid rgba(255,145,164,0.18); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 12px; justify-content: space-between; position: relative; box-shadow: 0 8px 32px rgba(255,145,164,0.04); direction: rtl; text-align: right; width: 100%; box-sizing: border-box; transition: transform 0.3s ease;">
                 
@@ -696,16 +766,20 @@
                     <img src="${imgUrl}" alt="${displayTitle}" style="width: 100%; height: 100%; object-fit: cover; transition: 0.3s;" loading="lazy">
                 </div>
 
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%; margin-top: 4px; gap: 8px;">
-                    <h3 style="margin: 0; font-size: 16px; font-weight: 700; color: ${BRAND_COLORS.black}; font-family: 'Cairo'; line-height: 1.4; flex: 1;">${displayTitle}</h3>
-                    <div class="product-card-price" style="font-size: 17px; font-weight: 700; color: ${BRAND_COLORS.pink}; white-space: nowrap; font-family: 'Cairo'; padding-top: 1px;">
-                        ${price} <span style="font-size: 11px; font-weight: 600; color: ${BRAND_COLORS.black};">EGP</span>
-                    </div>
+                <div style="display: flex; flex-direction: column; gap: 4px; width: 100%; margin-top: 4px;">
+                    <h3 style="margin: 0; font-size: 16px; font-weight: 700; color: ${BRAND_COLORS.black}; font-family: 'Cairo'; line-height: 1.4;">${displayTitle}</h3>
+                    <span style="font-size: 12px; font-weight: 700; color: ${BRAND_COLORS.pink}; font-family: 'Cairo';">${displayFlavor}</span>
                 </div>
 
                 <div class="product-card-info" style="flex-grow: 1; display: flex; flex-direction: column; gap: 4px;">
-                    <span style="font-size: 12px; font-weight: 700; color: ${BRAND_COLORS.pink}; font-family: 'Cairo';">${displayFlavor}</span>
                     <p style="margin: 0; font-size: 12px; color: #555; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 38px; font-family: 'Cairo';">${displayDesc}</p>
+                </div>
+                
+                <!-- 💰 [كتلة السعر المستقلة]: متمحورة صراحة فوق الأزرار والعداد لحل المشكلة البصرية تماماً -->
+                <div class="product-card-price-block" style="margin: 4px 0; text-align: right; width: 100%;">
+                    <span style="font-size: 17px; font-weight: 700; color: ${BRAND_COLORS.pink}; font-family: 'Cairo';">
+                        ${price} <span style="font-size: 11px; font-weight: 600; color: ${BRAND_COLORS.black};">EGP</span>
+                    </span>
                 </div>
                 
                 <div class="bose-qty-controller-box" style="display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255, 145, 164, 0.2); border-radius: 10px; width: 100%; background: #FFFFFF; height: 38px; padding: 2px; box-sizing: border-box; margin: 4px 0;">
@@ -844,7 +918,6 @@
         initializeSidebarDrawer();
         injectFloatingCartSystem();
         
-        // 🛡️ حراس الاستدعاء الأمنيين لضمان تصفح الصفحات الفرعية دون انهيار المحرك
         if (document.getElementById('categories-track')) {
             renderBoseCategoriesSlider(boseGlobalStoreData);
         }
