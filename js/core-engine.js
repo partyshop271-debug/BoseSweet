@@ -1,8 +1,8 @@
 /**
  * 👑 المحرك المركزي العام والنهائي للموقع والنافذة العائمة - حلويات بوسي 👑
- * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية ومشاكل التداخل V47.0
+ * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية ومشاكل التداخل V48.0
  * متوافق بشكل مطلق وثنائي الاتجاه مع كافة ملفات css/ وجافا سكريبت الموقع وقاعدة البيانات site-data-final.json
- * [تم حل كوارث القائمة الجانبية الفاخرة، أتمتة سلايدر الإتقان والفئات بالـ Dots والأسهم، وهيكلة كروت المنتجات القياسية]
+ * [تم حل كوارث القائمة الجانبية الفاخرة، أتمتة سلايدر الإتقان بالحركة اللانهائية والدوتس، وأسهم وفئات الدوتس بالكامل]
  */
 
 (function () {
@@ -381,46 +381,84 @@
     }
 
     /* ==========================================================================\
-       4.ب. تشغيل ومزامنة سلايدر "عقد من الإتقان" التلقائي بالكامل بالـ Dots
+       4.ب. تشغيل ومزامنة سلايدر "عقد من الإتقان" التلقائي بالكامل بالـ Dots (حركة لا نهائية دائرية)
        ========================================================================== */
     function initializeBosePrideSlider() {
         const prideTrack = document.getElementById('excellence-images-track');
         const prideWrapper = document.getElementById('pride-slider-wrapper');
         if (!prideTrack || !prideWrapper) return; 
 
-        const slides = prideTrack.children;
-        if (slides.length === 0) return;
+        const originalSlides = Array.from(prideTrack.children);
+        if (originalSlides.length === 0) return;
 
+        // تهيئة الـ Dots بناءً على العدد الأصلي للسلايدز
         let prideDotsContainer = document.getElementById('pride-dots-container');
         if (!prideDotsContainer) {
             prideDotsContainer = document.createElement('div');
             prideDotsContainer.id = 'pride-dots-container';
             prideDotsContainer.style.cssText = `display: flex; gap: 8px; justify-content: center; align-items: center; margin-top: 16px; width: 100%;`;
             
-            for (let i = 0; i < slides.length; i++) {
+            originalSlides.forEach((_, i) => {
                 const dot = document.createElement('span');
                 dot.className = `pride-dot ${i === 0 ? 'active' : ''}`;
                 dot.style.cssText = `width: 8px; height: 8px; border-radius: 50%; background: ${i === 0 ? BRAND_COLORS.pink : 'rgba(255,145,164,0.3)'}; transition: 0.3s; cursor: pointer;`;
                 dot.dataset.index = i;
                 dot.onclick = function() {
-                    currentIdx = parseInt(this.dataset.index, 10);
-                    scrollPrideToEach(currentIdx);
+                    if (isTransitioning) return;
+                    currentIdx = parseInt(this.dataset.index, 10) + cloneCount;
+                    scrollPrideToEach(true);
+                    restartAutoPlay();
                 };
                 prideDotsContainer.appendChild(dot);
-            }
+            });
             prideWrapper.appendChild(prideDotsContainer);
         }
 
-        let currentIdx = 0;
-        let slideInterval = null;
+        // تطبيق آلية الـ Infinite Loops عن طريق مضاعفة العناصر كـ Clones من الطرفين
+        const cloneCount = originalSlides.length;
+        
+        // استنساخ العناصر قبل وبعد لضمان سلاسة الدوران اللانهائي
+        originalSlides.forEach(slide => {
+            const cloneAfter = slide.cloneNode(true);
+            prideTrack.appendChild(cloneAfter);
+        });
+        
+        for (let i = cloneCount - 1; i >= 0; i--) {
+            const cloneBefore = originalSlides[i].cloneNode(true);
+            prideTrack.insertBefore(cloneBefore, prideTrack.firstChild);
+        }
 
-        function scrollPrideToEach(index) {
-            if (!slides[index]) return;
-            const slideWidth = slides[0].offsetWidth || 280;
-            prideTrack.scrollTo({ left: index * (slideWidth + 16), behavior: 'smooth' });
+        const totalSlides = prideTrack.children;
+        let currentIdx = cloneCount; 
+        let slideInterval = null;
+        let isTransitioning = false;
+
+        // ضبط الـ CSS الأساسي للتراك ليعمل بالـ Transform المرن بدلاً من الـ Scroll لضمان أداء هندسي فائق
+        prideTrack.style.display = 'flex';
+        prideTrack.style.transition = 'none';
+        
+        function getSlideWidth() {
+            return totalSlides[0].offsetWidth + 16; // العرض بالإضافة إلى الـ Gap
+        }
+
+        function scrollPrideToEach(animate = true) {
+            const slideWidth = getSlideWidth();
+            if (animate) {
+                prideTrack.style.transition = 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)';
+                isTransitioning = true;
+            } else {
+                prideTrack.style.transition = 'none';
+            }
             
+            // التحريك السلس ثنائي الاتجاه بالـ Transform
+            prideTrack.style.transform = `translateX(${currentIdx * slideWidth}px)`;
+            
+            // تحديث حالة الـ Dots النشطة
+            let activeDotIndex = (currentIdx - cloneCount) % cloneCount;
+            if (activeDotIndex < 0) activeDotIndex += cloneCount;
+
             document.querySelectorAll('.pride-dot').forEach((d, i) => {
-                if (i === index) {
+                if (i === activeDotIndex) {
                     d.style.background = BRAND_COLORS.pink;
                     d.classList.add('active');
                 } else {
@@ -430,30 +468,51 @@
             });
         }
 
+        // إرجاع السلايدر فجائياً وبدون قفزة بصرية عند الوصول للنهاية أو البداية الوهمية
+        prideTrack.addEventListener('transitionend', () => {
+            isTransitioning = false;
+            const slideWidth = getSlideWidth();
+            
+            if (currentIdx >= cloneCount * 2) {
+                prideTrack.style.transition = 'none';
+                currentIdx = cloneCount;
+                prideTrack.style.transform = `translateX(${currentIdx * slideWidth}px)`;
+            } else if (currentIdx < cloneCount) {
+                prideTrack.style.transition = 'none';
+                currentIdx = cloneCount * 2 - 1;
+                prideTrack.style.transform = `translateX(${currentIdx * slideWidth}px)`;
+            }
+        });
+
         function startAutoPlay() {
             slideInterval = setInterval(() => {
+                if (isTransitioning) return;
                 currentIdx++;
-                if (currentIdx >= slides.length) {
-                    currentIdx = 0;
-                }
-                scrollPrideToEach(currentIdx);
-            }, 3500);
+                scrollPrideToEach(true);
+            }, 3000); // التحرك التلقائي المستمر كل 3 ثوانٍ لراحة بصرية فائقة
         }
 
-        function startAutoPlayTimer() {
-            if (slideInterval) clearInterval(slideInterval);
-            slideInterval = setInterval(() => {
-                currentIdx++;
-                if (currentIdx >= slides.length) currentIdx = 0;
-                scrollPrideToEach(currentIdx);
-            }, 3500);
+        function restartAutoPlay() {
+            clearInterval(slideInterval);
+            startAutoPlay();
         }
 
-        startAutoPlayTimer();
+        // تموضع البداية الأولي بدون أن يشعر المستخدم
+        setTimeout(() => {
+            scrollPrideToEach(false);
+            startAutoPlay();
+        }, 150);
+
+        // إيقاف الوميض التلقائي مؤقتاً عند التفاعل اليدوي أو اللمس باليد لضمان أفضل تجربة مستخدم
         prideTrack.addEventListener('mouseenter', () => clearInterval(slideInterval));
-        prideTrack.addEventListener('mouseleave', startAutoPlayTimer);
+        prideTrack.addEventListener('mouseleave', startAutoPlay);
         prideTrack.addEventListener('touchstart', () => clearInterval(slideInterval), {passive: true});
-        prideTrack.addEventListener('touchend', startAutoPlayTimer, {passive: true});
+        prideTrack.addEventListener('touchend', startAutoPlay, {passive: true});
+        
+        // إعادة حساب الأبعاد بدقة متناهية عند تغيير حجم الشاشة أو تدوير الهاتف المجمول
+        window.addEventListener('resize', () => {
+            scrollPrideToEach(false);
+        });
     }
 
     /* ==========================================================================\
@@ -757,8 +816,6 @@
         const displayFlavor = product.flavorName || 'نكهة بوسي المميزة';
         const displayDesc = product.flavorDesc || product.description || '';
         
-        // 👑 [تطبيق الهيكلية المقدسة والمطلوبة]: 
-        // الاسم والوصف والنكهة أولاً -> ثم السعر منفصل بكتلة مستقلة تحتهم -> ثم العداد وزر السلة بالأسفل تماماً لمنع التداخل البصري
         return `
             <div class="product-card" data-slug="${product.slug}" style="background: ${BRAND_COLORS.white}; border: 1px solid rgba(255,145,164,0.18); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 12px; justify-content: space-between; position: relative; box-shadow: 0 8px 32px rgba(255,145,164,0.04); direction: rtl; text-align: right; width: 100%; box-sizing: border-box; transition: transform 0.3s ease;">
                 
@@ -775,7 +832,6 @@
                     <p style="margin: 0; font-size: 12px; color: #555; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 38px; font-family: 'Cairo';">${displayDesc}</p>
                 </div>
                 
-                <!-- 💰 [كتلة السعر المستقلة]: متمحورة صراحة فوق الأزرار والعداد لحل المشكلة البصرية تماماً -->
                 <div class="product-card-price-block" style="margin: 4px 0; text-align: right; width: 100%;">
                     <span style="font-size: 17px; font-weight: 700; color: ${BRAND_COLORS.pink}; font-family: 'Cairo';">
                         ${price} <span style="font-size: 11px; font-weight: 600; color: ${BRAND_COLORS.black};">EGP</span>
