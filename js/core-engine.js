@@ -2,7 +2,7 @@
  * 👑 المحرك المركزي العام والنهائي للموقع والنافذة العائمة - حلويات بوسي 👑
  * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية ومشاكل التداخل V59.0
  * متوافق بشكل مطلق وثنائي الاتجاه مع كافة ملفات css/ وجافا سكريبت الموقع وقاعدة البيانات data/site-data-final.json
- * [تم التحديث: تثبيت السلة العائمة برمجياً وتطوير نظام الإشعارات السفلي ليكون فوق الزر مباشرة أمام عين العميل]
+ * [تم التحديث: تثبيت حقيقي ومطلق للسلة العائمة وتعديل نظام الإشعارات ليكون بالأسفل في مواجهة عين العميل مباشرة]
  */
 
 (function () {
@@ -35,7 +35,6 @@
             let baseRootPath = "";
             const currentPath = boseLocation.pathname;
             
-            // فحص ديناميكي دقيق وعام لمستوى المجلد الحالي
             if (currentPath.includes('/pages/') || currentPath.includes('/admin/') || currentPath.includes('/css/') || currentPath.includes('/js/')) {
                 baseRootPath = "../";
             } else {
@@ -51,7 +50,7 @@
             if (!response.ok) {
                 const alternativePath = `${baseRootPath}site-data-final.json${cacheBuster}`;
                 const fallbackResponse = await fetch(alternativePath);
-                if (!fallbackResponse.ok) throw new Error(`فشل جلب البيانات من كافة المسارات القياسية: ${fallbackResponse.status}`);
+                if (!fallbackResponse.ok) throw new Error(`Fشل جلب البيانات من كافة المسارات القياسية: ${fallbackResponse.status}`);
                 boseGlobalStoreData = await fallbackResponse.json();
             } else {
                 boseGlobalStoreData = await response.json();
@@ -123,7 +122,6 @@
     function ensureSharedLayoutHubs(storeData) {
         if (!storeData) return;
         
-        // 🛡️ [تأمين ذكي للهيدر]: إذا كان عنصر النافذة غير موجود في الـ HTML نقوم بخلطه وحقنه فوراً في أعلى الـ Body لضمان ظهوره
         let headerNode = document.querySelector('.bose-navbar');
         if (!headerNode) {
             headerNode = document.createElement('header');
@@ -156,7 +154,6 @@
             `;
         }
 
-        // 🛡️ [تأمين ذكي للفوتر]: إذا لم يكن وسم الفوتر موجوداً نقوم بخلطه وحقنه في أسفل الـ Body تلقائياً لراحة العميل النفسية
         let footerNode = document.querySelector('.bose-footer');
         if (!footerNode) {
             footerNode = document.createElement('footer');
@@ -189,76 +186,201 @@
             `;
         }
         
-        // تأمين القائمة الجانبية
         if (!document.getElementById('sidebar-drawer')) {
-            let drawerNode = document.createElement('aside');
-            drawerNode.id = 'sidebar-drawer';
-            drawerNode.className = 'bose-drawer-menu';
-            document.body.appendChild(drawerNode);
+            const drawerDiv = document.createElement('div');
+            drawerDiv.id = 'sidebar-drawer';
+            drawerDiv.className = 'bose-premium-sidebar';
+            document.body.appendChild(drawerDiv);
+            
+            const shieldDiv = document.createElement('div');
+            shieldDiv.id = 'drawer-shield';
+            shieldDiv.className = 'bose-drawer-shield';
+            document.body.appendChild(shieldDiv);
         }
-        if (!document.getElementById('drawer-shield')) {
-            let shieldNode = document.createElement('div');
-            shieldNode.id = 'drawer-shield';
-            shieldNode.className = 'drawer-overlay';
-            document.body.appendChild(shieldNode);
-        }
-
-        // تفعيل إدارة القائمة الجانبية الموحدة
-        const menuToggle = document.getElementById('mobile-menu-toggle');
-        const sidebarDrawer = document.getElementById('sidebar-drawer');
-        const drawerShield = document.getElementById('drawer-shield');
-
-        if (menuToggle && sidebarDrawer && drawerShield) {
-            const populateDrawerOnce = () => {
-                if (sidebarDrawer.innerHTML.trim() !== "") return;
-                sidebarDrawer.innerHTML = `
-                    <div class="drawer-premium-header">
-                        <button type="button" class="drawer-close-btn" id="btn-close-sidebar-drawer" aria-label="إغلاق القائمة">&times;</button>
-                        <h3>تصفح القائمة</h3>
-                        <p>حلويات بوسي الفاخرة 🌸</p>
-                    </div>
-                    <div class="drawer-links-scrollable">
-                        <span class="drawer-divider-label">الروابط الرئيسية</span>
-                        <ul class="drawer-links-list">
-                            <li class="drawer-link-item"><a href="index.html"><i class="fas fa-home"></i> الرئيسية</a></li>
-                            <li class="drawer-link-item"><a href="menu.html"><i class="fas fa-utensils"></i> المنيو الشامل</a></li>
-                            <li class="drawer-link-item"><a href="cart.html"><i class="fas fa-shopping-bag"></i> سلة المشتريات</a></li>
-                        </ul>
-                        <span class="drawer-divider-label">محاكيات التخصيص الملكية</span>
-                        <ul class="drawer-links-list">
-                            <li class="drawer-link-item featured-hub"><a href="cake-builder.html"><i class="fas fa-birthday-cake" style="color:var(--bose-gold);"></i> محاكي تخصيص التورت</a></li>
-                            <li class="drawer-link-item featured-hub"><a href="flower-builder.html"><i class="fas fa-seedling" style="color:var(--bose-gold);"></i> محاكي الورد والهدية المادية</a></li>
-                        </ul>
-                    </div>
-                `;
-                const closeDrawerBtn = document.getElementById('btn-close-sidebar-drawer');
-                if (closeDrawerBtn) closeDrawerBtn.onclick = closeDrawerMenu;
-            };
-
-            const openDrawerMenu = (e) => {
-                e.preventDefault();
-                populateDrawerOnce();
-                sidebarDrawer.classList.add('active');
-                drawerShield.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            };
-
-            const closeDrawerMenu = () => {
-                sidebarDrawer.classList.remove('active');
-                drawerShield.classList.remove('active');
-                document.body.style.overflow = '';
-            };
-
-            menuToggle.onclick = openDrawerMenu;
-            drawerShield.onclick = closeDrawerMenu;
-        }
-
+        
         initializeSidebarDrawer();
         updateGlobalCartCounters();
     }
 
     function initializeSidebarDrawer() {
-        // تم دمج التحكم المباشر بالأكورديون والقائمة في دالة ensureSharedLayoutHubs لمنع التكرار والتعارض اللامتزامن
+        const toggleBtn = document.getElementById('mobile-menu-toggle') || document.querySelector('[aria-label="فتح قائمة التصفح"]');
+        const drawer = document.getElementById('sidebar-drawer');
+        const shield = document.getElementById('drawer-shield');
+
+        if (!drawer) return; 
+
+        if (!drawer.classList.contains('bose-premium-sidebar-initiated')) {
+            drawer.classList.add('bose-premium-sidebar-initiated');
+            
+            let accordionCategoriesHTML = '';
+            
+            if (boseGlobalStoreData && boseGlobalStoreData.homepage && boseGlobalStoreData.homepage.categoriesSlider && boseGlobalStoreData.products) {
+                const catsList = boseGlobalStoreData.homepage.categoriesSlider;
+                const prodsList = boseGlobalStoreData.products;
+                
+                catsList.forEach(cat => {
+                    const relatedProducts = prodsList.filter(p => p.category === cat.id);
+                    let productLinksHTML = '';
+                    
+                    if (relatedProducts.length > 0) {
+                        relatedProducts.forEach(prod => {
+                            productLinksHTML += `
+                                <a href="product.html?slug=${prod.slug}" style="display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 0.85rem; font-weight: 600; color: #333333; padding: 8px 16px; text-decoration: none; border-bottom: 1px solid rgba(255,145,164,0.05);">
+                                    <span style="display: flex; align-items: center; gap: 6px;"><i class="fas fa-angle-left" style="color: ${BRAND_COLORS.pink}; font-size: 10px;"></i> ${prod.flavorName || prod.title}</span>
+                                    <span style="font-size: 11px; color: ${BRAND_COLORS.pink}; font-weight: 700;">${Math.round(prod.price)} EGP</span>
+                                </a>
+                            `;
+                        });
+                    } else {
+                        productLinksHTML = `
+                            <a href="category.html?category=${cat.id}" style="display: flex; align-items: center; gap: 10px; font-size: 0.85rem; font-weight: 600; color: #666; padding: 10px 166px; text-decoration: none; font-style: italic;">
+                                <i class="fas fa-cookie"></i> استعراض تشكيلة قسم ${cat.title}
+                            </a>
+                        `;
+                    }
+                    
+                    accordionCategoriesHTML += `
+                        <div class="sidebar-nested-category-block" style="border-bottom: 1px solid rgba(17,17,17,0.04);">
+                            <div class="sidebar-sub-accordion-trigger" data-target="sub-cat-${cat.id}" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; cursor: pointer; background: rgba(255,145,164,0.02);">
+                                <span style="font-size: 0.88rem; font-weight: 700; color: ${BRAND_COLORS.black};"><i class="fas fa-chevron-left" style="font-size: 8px; color: ${BRAND_COLORS.gold}; margin-left: 6px;"></i> ${cat.title}</span>
+                                <i class="fas fa-plus sub-accordion-plus-icon" style="font-size: 0.7rem; color: ${BRAND_COLORS.pink}; transition: transform 0.3s;"></i>
+                            </div>
+                            <div id="sub-cat-${cat.id}" class="sidebar-sub-accordion-content" style="max-height: 0px; overflow: hidden; transition: max-height 0.3s ease; display: flex; flex-direction: column; background: #FFFFFF; padding-right: 8px;">
+                                ${productLinksHTML}
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            drawer.innerHTML = `
+                <div class="sidebar-luxury-header" style="padding: 24px 20px; border-bottom: 1px solid ${BRAND_COLORS.cream}; display: flex; justify-content: space-between; align-items: center; background: ${BRAND_COLORS.white};">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <img src="${boseGlobalStoreData.store.logo}" style="width: 44px; height: 44px; object-fit: contain;" alt="لوجو بوسي الفاخر">
+                        <div style="display: flex; flex-direction: column;">
+                            <span style="font-family: 'Cairo'; font-weight: 700; font-size: 15px; color: ${BRAND_COLORS.black}; line-height: 1.3;">حلويات بوسي</span>
+                            <span style="font-family: 'Cairo'; font-size: 11px; color: #777;">صنعناها بحب لتهديها لمن تحب</span>
+                        </div>
+                    </div>
+                    <button id="sidebar-close-panel-btn" style="background: none; border: none; font-size: 28px; color: ${BRAND_COLORS.black}; cursor: pointer; line-height: 1; padding: 0 4px;">&times;</button>
+                </div>
+                <div class="sidebar-luxury-body" style="flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; background: ${BRAND_COLORS.white};">
+                    <span style="font-size: 11px; font-weight: 700; color: ${BRAND_COLORS.pink}; letter-spacing: 0.5px; margin-bottom: 4px; font-family: 'Cairo';">أقسام التصفح الأساسية</span>
+                    
+                    <a href="index.html" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; background: ${BRAND_COLORS.cream}; color: ${BRAND_COLORS.black}; font-weight: 700; font-size: 13px; text-decoration: none; font-family: 'Cairo';"><i class="fas fa-home" style="color: ${BRAND_COLORS.pink}; font-size: 15px;"></i> الواجهة الرئيسية للموقع</a>
+                    
+                    <div class="drawer-link-item" style="display: flex; flex-direction: column; gap: 4px;">
+                        <div id="sidebar-menu-accordion-toggle" class="sidebar-accordion-trigger" style="display: flex; align-items: center; justify-content: space-between; font-size: 0.95rem; font-weight: 700; color: ${BRAND_COLORS.black}; padding: 10px 14px; border-radius: 12px; cursor: pointer; background: rgba(255,145,164,0.03);">
+                            <span style="display: flex; align-items: center; gap: 10px;"><i class="fas fa-utensils" style="color: ${BRAND_COLORS.pink};"></i> المنيو حسب الفئة</span>
+                            <i class="fas fa-chevron-down" style="font-size: 0.8rem; color: ${BRAND_COLORS.pink}; transition: transform 0.3s ease;"></i>
+                        </div>
+                        <div id="sidebar-menu-accordion-content" class="sidebar-accordion-content" style="max-height: 0px; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1); background-color: #FFF5F6; border-radius: 12px; display: flex; flex-direction: column; gap: 2px; padding: 0 4px; box-sizing: border-box;">
+                            ${accordionCategoriesHTML}
+                        </div>
+                    </div>
+                    
+                    <a href="cart.html" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; color: ${BRAND_COLORS.black}; font-weight: 600; font-size: 13px; text-decoration: none; font-family: 'Cairo'; transition: 0.2s;"><i class="fas fa-shopping-bag" style="color: ${BRAND_COLORS.pink}; font-size: 15px;"></i> سلة المشتريات والطلبات</a>
+                    
+                    <div style="height: 1px; background: #F1F1F1; margin: 8px 0;"></div>
+                    
+                    <span style="font-size: 11px; font-weight: 700; color: ${BRAND_COLORS.pink}; letter-spacing: 0.5px; margin-bottom: 4px; font-family: 'Cairo';">أجنحة التخصيص والمحاكاة الفاخرة</span>
+                    
+                    <a href="cake-builder.html" style="display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border: 1px solid rgba(255,145,164,0.22); border-radius: 12px; color: ${BRAND_COLORS.black}; font-weight: 700; font-size: 13px; text-decoration: none; background: #FFFFFF; font-family: 'Cairo'; transition: 0.2s; box-shadow: 0 4px 12px rgba(255,145,164,0.03);"><span style="display: flex; align-items: center; gap: 12px;"><i class="fas fa-birthday-cake" style="color: ${BRAND_COLORS.gold}; font-size: 16px;"></i> محاكي وتصميم التورت الحصري</span> <i class="fas fa-chevron-left" style="font-size: 11px; color: ${BRAND_COLORS.pink};"></i></a>
+                    <a href="flower-builder.html" style="display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border: 1px solid rgba(255,145,164,0.22); border-radius: 12px; color: ${BRAND_COLORS.black}; font-weight: 700; font-size: 13px; text-decoration: none; background: #FFFFFF; font-family: 'Cairo'; transition: 0.2s; box-shadow: 0 4px 12px rgba(255,145,164,0.03);"><span style="display: flex; align-items: center; gap: 12px;"><i class="fas fa-seedling" style="color: ${BRAND_COLORS.gold}; font-size: 16px;"></i> تنسيق بوكيهات الورد والمال الفاخرة</span> <i class="fas fa-chevron-left" style="font-size: 11px; color: ${BRAND_COLORS.pink};"></i></a>
+                    
+                    <div style="margin-top: auto; padding-top: 30px; text-align: center;">
+                        <span style="font-size: 11px; font-weight: 600; color: #999; font-family: 'Cairo'; display: block; line-height: 1.5;">فرع الكفاح - بجوار صيدلية د. أحمد مجدي 🌸</span>
+                        <span style="font-size: 10px; color: #BBB; font-family: 'Cairo'; margin-top: 4px; display: block;">جميع الحقوق محفوظة © ٢٠٢٦</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        const closeBtn = document.getElementById('sidebar-close-panel-btn');
+
+        if (toggleBtn && drawer && shield) {
+            toggleBtn.onclick = (e) => {
+                e.preventDefault();
+                drawer.classList.add('active');
+                shield.classList.add('active');
+                drawer.style.transform = 'translate3d(0, 0, 0)';
+                shield.style.display = 'block';
+                setTimeout(() => shield.style.opacity = '1', 10);
+                document.body.style.overflow = 'hidden';
+            };
+        }
+
+        const closeDrawerMenu = () => {
+            if (drawer && shield) {
+                drawer.classList.remove('active');
+                shield.classList.remove('active');
+                drawer.style.transform = 'translate3d(100%, 0, 0)';
+                shield.style.opacity = '0';
+                setTimeout(() => {
+                    shield.style.display = 'none';
+                    document.body.style.overflow = '';
+                }, 300);
+            }
+        };
+
+        if (closeBtn) closeBtn.onclick = closeDrawerMenu;
+        if (shield) shield.onclick = closeDrawerMenu;
+
+        const accordionToggle = document.getElementById('sidebar-menu-accordion-toggle');
+        const accordionContent = document.getElementById('sidebar-menu-accordion-content');
+        
+        if (accordionToggle && accordionContent) {
+            accordionToggle.onclick = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const isOpen = accordionToggle.classList.contains('open');
+                const chevronIcon = accordionToggle.querySelector('.fa-chevron-down');
+                
+                if (isOpen) {
+                    accordionToggle.classList.remove('open');
+                    accordionContent.style.maxHeight = '0px';
+                    if (chevronIcon) chevronIcon.style.transform = 'rotate(0deg)';
+                } else {
+                    accordionToggle.classList.add('open');
+                    accordionContent.style.maxHeight = accordionContent.scrollHeight + 'px';
+                    if (chevronIcon) chevronIcon.style.transform = 'rotate(180deg)';
+                }
+            };
+        }
+
+        document.querySelectorAll('.sidebar-sub-accordion-trigger').forEach(trigger => {
+            trigger.onclick = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const targetId = this.getAttribute('data-target');
+                const targetContent = document.getElementById(targetId);
+                const plusIcon = this.querySelector('.sub-accordion-plus-icon');
+                
+                if (targetContent) {
+                    const isSubOpen = targetContent.style.maxHeight && targetContent.style.maxHeight !== '0px';
+                    
+                    if (isSubOpen) {
+                        targetContent.style.maxHeight = '0px';
+                        if (plusIcon) {
+                            plusIcon.className = "fas fa-plus sub-accordion-plus-icon";
+                            plusIcon.style.transform = "rotate(0deg)";
+                        }
+                    } else {
+                        targetContent.style.maxHeight = targetContent.scrollHeight + 'px';
+                        if (plusIcon) {
+                            plusIcon.className = "fas fa-minus sub-accordion-plus-icon";
+                            plusIcon.style.transform = "rotate(180deg)";
+                        }
+                        
+                        if (accordionContent) {
+                            accordionContent.style.maxHeight = (accordionContent.scrollHeight + targetContent.scrollHeight) + 'px';
+                        }
+                    }
+                }
+            };
+        });
     }
 
     function runBoseStatsCounter(storeData) {
@@ -526,7 +648,6 @@
     function injectFloatingCartSystem() {
         if (document.getElementById('bose-floating-cart-wrapper')) return;
 
-        // لا داعي لإظهار السلة الطافية داخل صفحات السلة والدفع لضمان التركيز البصري والراحة النفسية
         const currentPath = window.location.pathname.toLowerCase();
         if (currentPath.includes("cart.html") || currentPath.includes("checkout.html")) {
             return;
@@ -539,7 +660,7 @@
         triggerLink.id = 'bose-floating-cart-trigger';
         triggerLink.href = 'cart.html';
         triggerLink.className = 'bose-floating-cart-trigger';
-        triggerLink.setAttribute('aria-label', 'الانتقال إلى صفحة سلة المشتريات الموحدة');
+        triggerLink.setAttribute('aria-label', 'Anتقال إلى صفحة سلة المشتريات الموحدة');
         triggerLink.innerHTML = `
             <div class="bose-trigger-icon-box">
                 <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
@@ -581,7 +702,7 @@
     }
 
     /* ==========================================================================\
-       3. نظام الإشعارات المنبثقة السفلي الذكي (Dynamic Bottom Toast System)
+       3. نظام الإشعارات الفوري المنبثق هندسياً في منتصف أسفل الشاشة المواجه للعميل
        ========================================================================== */
     window.showBoseToast = function (message, type = 'success') {
         let container = document.getElementById('bose-toast-central-container');
@@ -607,7 +728,7 @@
             toast.classList.remove('bose-toast-active');
             toast.classList.add('bose-toast-fadeout');
             setTimeout(() => toast.remove(), 400);
-        }, 3500);
+        }, 3000);
     };
 
     window.addAbsoluteProductToCart = function (productObject) {
@@ -616,12 +737,8 @@
         const cart = getInMemoryCart();
         const existingIndex = cart.findIndex(item => item.id === productObject.id && !item.customDetails?.isCustomized);
         
-        const cardNode = document.querySelector(`[data-id="${productObject.id}"]`)?.closest('.product-card');
-        const qtyInput = cardNode ? cardNode.querySelector('.input-qty-card-val') : null;
-        const selectedQuantity = qtyInput ? (parseInt(qtyInput.value, 10) || 1) : 1;
-
         if (existingIndex > -1) {
-            cart[existingIndex].quantity = (Number(cart[existingIndex].quantity) || 1) + selectedQuantity;
+            cart[existingIndex].quantity = (Number(cart[existingIndex].quantity) || 1) + 1;
         } else {
             cart.push({
                 id: productObject.id,
@@ -631,15 +748,14 @@
                 price: productObject.price,
                 finalPrice: productObject.price,
                 image: productObject.images ? productObject.images[0] : productObject.image,
-                quantity: selectedQuantity,
+                quantity: 1,
                 type: productObject.type || "standard",
                 customDetails: {}
             });
         }
         
         saveInMemoryCart(cart);
-        window.showBoseToast("تمت إضافة المنتج إلى السلة");
-        if (qtyInput) qtyInput.value = 1;
+        window.showBoseToast(`تمت إضافة ${productObject.title} إلى السلة بنجاح 🌸`);
     };
 
     window.generateStrictProductCardHTML = function (product, currency = 'EGP') {
@@ -655,37 +771,22 @@
                 
                 <a href="product.html?slug=${product.slug}" class="bose-product-details-link" style="text-decoration: none; display: flex; flex-direction: column; gap: 12px; width: 100%; color: inherit;">
                     <div class="product-card-top" style="position: relative; overflow: hidden; border-radius: 14px; height: 210px; width: 100%;">
-                        <img src="${imgUrl}" alt="${displayTitle}" style="width: 100%; height: 100%; object-fit: cover; transition: 0.3s;" loading="lazy">
+                        <img src="${imgUrl}" alt="${displayTitle}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease;">
                     </div>
-
-                    <div style="display: flex; flex-direction: column; gap: 4px; width: 100%; margin-top: 4px;">
-                        <h3 style="margin: 0; font-size: 16px; font-weight: 700; color: ${BRAND_COLORS.black}; font-family: 'Cairo'; line-height: 1.4;">${displayTitle}</h3>
-                        <span style="font-size: 12px; font-weight: 700; color: ${BRAND_COLORS.pink}; font-family: 'Cairo';">${displayFlavor}</span>
-                    </div>
-
-                    <div class="product-card-info" style="flex-grow: 1; display: flex; flex-direction: column; gap: 4px;">
-                        <p style="margin: 0; font-size: 12px; color: #555; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 38px; font-family: 'Cairo';">${displayDesc}</p>
-                    </div>
-                    
-                    <div class="product-card-price-block" style="margin: 4px 0; text-align: right; width: 100%;">
-                        <span style="font-size: 17px; font-weight: 700; color: ${BRAND_COLORS.pink}; font-family: 'Cairo';">
-                            ${price} <span style="font-size: 11px; font-weight: 600; color: ${BRAND_COLORS.black};">EGP</span>
-                        </span>
+                    <div class="search-card-info-pane">
+                        <h4 class="search-card-title">${displayTitle}</h4>
+                        <div class="search-card-flavor">${displayFlavor}</div>
+                        <div class="search-card-price">${price} ${currency}</div>
                     </div>
                 </a>
                 
-                <div class="bose-qty-controller-box" style="display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255, 145, 164, 0.2); border-radius: 10px; width: 100%; background: #FFFFFF; height: 38px; padding: 2px; box-sizing: border-box; margin: 4px 0;">
-                    <button class="btn-qty-card-minus" style="border: none; background: transparent; width: 33%; height: 100%; font-weight: 700; font-size: 18px; color: ${BRAND_COLORS.black}; cursor: pointer; display: flex; align-items: center; justify-content: center;">-</button>
-                    <input type="text" readonly class="input-qty-card-val" value="1" style="width: 34%; text-align: center; border: none; font-size: 14px; font-weight: 700; color: ${BRAND_COLORS.black}; background: transparent; padding:0; font-family: 'Cairo';">
-                    <button class="btn-qty-card-plus" style="border: none; background: transparent; width: 33%; height: 100%; font-weight: 700; font-size: 18px; color: ${BRAND_COLORS.black}; cursor: pointer; display: flex; align-items: center; justify-content: center;">+</button>
+                <div class="bose-qty-controller-box" style="display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,145,164,0.2); border-radius: 10px; padding: 2px; height: 36px; background: #FFF;">
+                    <button class="qty-control-trigger plus" style="width:30px; height:100%; font-weight:700; cursor:pointer;">+</button>
+                    <input type="text" class="qty-numerical-display" value="1" readonly style="width:30px; text-align:center; border:none; font-weight:700; background:transparent;">
+                    <button class="qty-control-trigger minus" style="width:30px; height:100%; font-weight:700; cursor:pointer;">-</button>
                 </div>
-
-                <div class="product-card-action-row" style="width: 100%; margin-top: 2px;">
-                    <button class="bose-add-to-cart-btn" data-id="${product.id}" style="width: 100%; background-color: ${BRAND_COLORS.pink}; color: ${BRAND_COLORS.white}; border: none; height: 44px; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: 'Cairo'; box-shadow: 0 4px 12px rgba(255,145,164,0.15);">
-                        <i class="fas fa-shopping-cart bose-btn-cart-icon"></i>
-                        <span class="bose-btn-text-label">إضافة للسلة</span>
-                    </button>
-                </div>
+                
+                <button class="bose-add-to-cart-btn" data-id="${product.id}" style="width: 100%; background: ${BRAND_COLORS.pink}; color: #FFF; font-weight: 700; padding: 10px; border-radius: 10px; cursor: pointer; box-shadow: 0 4px 12px rgba(255,145,164,0.15);">إضافة للسلة</button>
             </div>
         `;
     };
@@ -694,9 +795,9 @@
         if (!containerElement || !productsList) return;
         
         containerElement.querySelectorAll('.product-card').forEach(card => {
-            const plusBtn = card.querySelector('.btn-qty-card-plus');
-            const minusBtn = card.querySelector('.btn-qty-card-minus');
-            const qtyInput = card.querySelector('.input-qty-card-val');
+            const plusBtn = card.querySelector('.qty-control-trigger.plus');
+            const minusBtn = card.querySelector('.qty-control-trigger.minus');
+            const qtyInput = card.querySelector('.qty-numerical-display');
 
             if (plusBtn && minusBtn && qtyInput) {
                 plusBtn.onclick = (e) => {
@@ -726,7 +827,7 @@
                 const prodId = currentButton.dataset.id;
                 const matchedProduct = productsList.find(p => String(p.id) === String(prodId));
                 const cardNode = currentButton.closest('.product-card');
-                const qtyInput = cardNode ? cardNode.querySelector('.input-qty-card-val') : null;
+                const qtyInput = cardNode ? cardNode.querySelector('.qty-numerical-display') : null;
                 const selectedQuantity = qtyInput ? (parseInt(qtyInput.value, 10) || 1) : 1;
 
                 if (matchedProduct) {
@@ -752,22 +853,16 @@
                     
                     saveInMemoryCart(cart);
                     
-                    const iconNode = currentButton.querySelector('.bose-btn-cart-icon');
-                    const textNode = currentButton.querySelector('.bose-btn-text-label');
+                    const originalText = currentButton.textContent;
+                    currentButton.textContent = "تمت الإضافة بنجاح ✨";
+                    currentButton.style.backgroundColor = "#2ECC71";
                     
-                    if (iconNode && textNode) {
-                        iconNode.className = "fas fa-check bose-btn-cart-icon";
-                        textNode.textContent = "تمت الإضافة بنجاح ✨";
-                        currentButton.style.backgroundColor = "#2ECC71";
-                        
-                        setTimeout(() => {
-                            iconNode.className = "fas fa-shopping-cart bose-btn-cart-icon";
-                            textNode.textContent = "إضافة للسلة";
-                            currentButton.style.backgroundColor = BRAND_COLORS.pink;
-                        }, 2000);
-                    }
+                    setTimeout(() => {
+                        currentButton.textContent = originalText;
+                        currentButton.style.backgroundColor = BRAND_COLORS.pink;
+                    }, 2000);
 
-                    window.showBoseToast("تمت إضافة المنتج إلى السلة");
+                    window.showBoseToast(`تمت إضافة المنتج إلى السلة`);
                     if (qtyInput) qtyInput.value = 1;
                 }
             };
@@ -795,9 +890,6 @@
         applyPsychologicalBlinking();
     }
 
-    /**
-     * 🤝 آلية الاستماع وتحديث العدادات فورياً عند قيام أي محرك فرعي آخر بتعديل السلة
-     */
     window.refreshBoseGlobalCartUI = function () {
         updateGlobalCartCounters();
     };
@@ -838,15 +930,15 @@
                 animation: bosePulseBlinking 2.2s infinite ease-in-out;
             }
 
-            /* 👑 [تثبيت وحماية السلة العائمة الديناميكية الفاخرة لتطفو مطلقاً فوق قاع الفوتر وكافة العناصر] */
+            /* 👑 [تثبيت حقيقي ومطلق للسلة العائمة الديناميكية الفاخرة لتتبع العميل فوق قاع الفوتر وكافة العناصر] */
             #bose-floating-cart-wrapper {
                 position: fixed !important;
                 bottom: 30px !important;
-                right: 30px !important; 
+                right: 30px !important;
                 left: auto !important;
                 width: 64px !important;
                 height: 64px !important;
-                z-index: 2147483647 !important; /* أقصى طبقة ظهور برمجية ممكنة لتطفو فوق الفوتر والروت وكافة العناصر دائماً */
+                z-index: 2147483647 !important; /* أعلى طبقة برمجية لتطفو مطلقاً وتتحدى أي تداخل من الفوتر */
                 pointer-events: auto !important;
                 -webkit-tap-highlight-color: transparent;
             }
@@ -924,14 +1016,14 @@
             /* التجاوب الفاخر والمثالي مع شاشات الهواتف المحمولة والموبايل أولاً */
             @media (max-width: 576px) {
                 #bose-floating-cart-wrapper {
-                    bottom: 20px !important;
-                    right: 20px !important;
-                    width: 56px !important;
-                    height: 56px !important;
+                    bottom: 25px !important;
+                    right: 25px !important;
+                    width: 58px !important;
+                    height: 58px !important;
                 }
                 .bose-trigger-icon-box svg {
-                    width: 24px !important;
-                    height: 24px !important;
+                    width: 25px !important;
+                    height: 25px !important;
                 }
                 #bose-floating-badge-counter {
                     min-width: 20px !important;
@@ -940,67 +1032,61 @@
                 }
             }
             
-            /* 👑 [هندسة نظام الإشعارات المنبثقة السفلي ليكون أمام عين العميل مباشرة فوق الزر العائم دائمًا] */
+            /* الهندسة البصرية المحدثة لحاوية الإشعارات لتكون عائمة دائماً في الجزء السفلي أمام نظر العميل مباشرة */
             #bose-toast-central-container {
                 position: fixed !important;
-                bottom: 110px !important; /* يظهر فوق الزر العائم مباشرة بمسافة هندسية مريحة */
-                right: 30px !important;
-                left: auto !important;
-                z-index: 2147483647 !important; /* يطفو بشكل مطلق مع الزر العائم */
-                display: flex;
-                flex-direction: column;
-                gap: 10px;
-                pointer-events: none;
-                direction: rtl;
-                font-family: 'Cairo', sans-serif;
+                bottom: 110px !important; /* يرتفع بأناقة فوق السلة العائمة ليكون واضحاً للعين وبمركز الانتباه */
+                left: 50% !important;
+                right: auto !important;
+                transform: translate3d(-50%, 0, 0) !important;
+                z-index: 2147483646 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 12px !important;
+                pointer-events: none !important;
+                direction: rtl !important;
+                font-family: 'Cairo', sans-serif !important;
+                width: 90% !important;
+                max-width: 360px !important;
+                align-items: center !important;
             }
-
-            @media (max-width: 576px) {
-                #bose-toast-central-container {
-                    bottom: 90px !important;
-                    right: 20px !important;
-                    left: 20px !important; /* يتوسع بشكل متجاوب مريح للعين على الموبايل فوق الزر العائم */
-                }
-            }
-
             .bose-toast-card {
                 background: ${BRAND_COLORS.white} !important;
-                border: 2px solid ${BRAND_COLORS.pink} !important;
+                border: 1px solid rgba(255,145,164,0.3) !important;
+                border-bottom: 4px solid ${BRAND_COLORS.pink} !important; /* لمسة رقيقة باللون البمبي المعتمد */
                 border-radius: 16px !important;
-                padding: 12px 20px !important;
-                box-shadow: 0 8px 32px rgba(255, 145, 164, 0.15) !important; /* ظل ناعم بمبي بدون أي سواد لضمان الفخامة */
-                min-width: 260px;
+                padding: 14px 24px !important;
+                box-shadow: 0 12px 32px rgba(255,145,164,0.15) !important;
+                width: 100% !important;
                 opacity: 0;
-                transform: translateY(20px);
-                transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.35s ease;
+                transform: translate3d(0, 30px, 0) scale(0.95);
+                transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease !important;
+                box-sizing: border-box !important;
             }
-
             .bose-toast-card.bose-toast-active {
                 opacity: 1 !important;
-                transform: translateY(0) !important;
+                transform: translate3d(0, 0, 0) scale(1) !important;
             }
-
             .bose-toast-card.bose-toast-fadeout {
                 opacity: 0 !important;
-                transform: translateY(-15px) !important;
+                transform: translate3d(0, -20px, 0) !important;
             }
-
             .bose-toast-content {
-                display: flex;
-                align-items: center;
-                gap: 10px;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                gap: 10px !important;
+                width: 100% !important;
             }
-
-            .bose-toast-sparkle {
-                font-size: 16px;
-            }
-
             .bose-toast-text {
-                margin: 0;
-                font-size: 13.5px;
+                margin: 0 !important;
+                font-size: 14px !important;
                 color: ${BRAND_COLORS.black} !important;
-                font-weight: 700 !important; /* وزن 700 المعتمد لضمان الوضوح البصري */
-                line-height: 1.4;
+                font-weight: 700 !important; /* وزن القاهرة القياسي الفاخر للعناوين والرسائل الحيوية */
+                text-align: center !important;
+            }
+            .bose-toast-sparkle {
+                font-size: 16px !important;
             }
         `;
         document.head.appendChild(styleBlock);
