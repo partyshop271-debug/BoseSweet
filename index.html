@@ -22,29 +22,29 @@
     <script src="js/core-engine.js"></script>
 
     <style>
-        /* 🚨 حل مشكلة الشلل الميكانيكي والقفز لقسم تسوق حسب الفئة */
+        /* 👑 التنسيق البصري الفاخر لـ "تسوق حسب الفئة" - منع الشلل الميكانيكي 👑 */
+        #categories-slider-wrapper {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            padding: 10px 0;
+        }
         #categories-track {
             display: flex !important;
             flex-direction: row !important;
             justify-content: flex-start !important;
-            overflow-x: auto !important;
-            scroll-snap-type: x mandatory !important;
-            -webkit-overflow-scrolling: touch !important;
-            scrollbar-width: none !important;
-            padding: 10px 4px 24px 4px !important;
+            align-items: center !important;
+            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1) !important;
+            will-change: transform;
             gap: 20px !important;
-            width: 100% !important;
+            width: max-content !important;
+            padding: 10px 4px 24px 4px !important;
             box-sizing: border-box !important;
-            cursor: grab;
-        }
-        #categories-track::-webkit-scrollbar {
-            display: none !important;
         }
         #categories-track .category-slide-card {
-            flex: 0 0 280px !important;
-            width: 280px !important;
-            max-width: 280px !important;
-            scroll-snap-align: start !important;
+            flex: 0 0 240px !important;
+            width: 240px !important;
+            max-width: 240px !important;
             box-sizing: border-box !important;
             text-decoration: none;
             display: flex;
@@ -52,31 +52,38 @@
             align-items: center;
         }
 
-        /* 🚨 حل قاطع لمشكلة الإزاحة والبدء من نصف الصفحة لقسم عقد من الإتقان */
+        /* 👑 التنسيق البصري الفاخر لـ "عقد من الإتقان" - منع قفز الإزاحة اللانهائي 👑 */
+        #pride-slider-wrapper {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            padding: 10px 0;
+        }
         #excellence-images-track {
             display: flex !important;
             flex-direction: row !important;
             justify-content: flex-start !important;
-            overflow-x: auto !important;
-            scroll-snap-type: x mandatory !important;
-            -webkit-overflow-scrolling: touch !important;
-            scrollbar-width: none !important;
+            align-items: center !important;
+            transition: none;
+            will-change: transform;
             gap: 16px !important;
-            width: 100% !important;
+            width: max-content !important;
             padding: 10px 4px 15px 4px !important;
             box-sizing: border-box !important;
-            cursor: grab;
-        }
-        #excellence-images-track::-webkit-scrollbar {
-            display: none !important;
         }
         #excellence-images-track .excellence-track-link {
-            flex: 0 0 85vw !important;
-            width: 85vw !important;
-            max-width: 85vw !important;
-            scroll-snap-align: start !important;
+            flex: 0 0 280px !important;
+            width: 280px !important;
+            max-width: 280px !important;
             box-sizing: border-box !important;
             display: block !important;
+        }
+
+        /* تنسيق الأزرار النشطة (Active Dots) للسلايدرز لضمان الفخامة الرقمية */
+        .cat-dot.active, .pride-dot.active {
+            background-color: #FF91A4 !important;
+            width: 24px !important;
+            border-radius: 6px !important;
         }
 
         /* 🚨 تدمير عصر وانضغاط لوجو الفوتر بفرض نمط الاحتواء والتناسب التلقائي للعرض */
@@ -91,17 +98,16 @@
             margin: 0 auto !important;
         }
 
-        /* تنسيق الكروت على الديسك توب لضمان التوزيع الشبكي والانسيابي الفاخر */
+        /* التجاوب الفاخر لشاشات الديسك توب والكمبيوتر */
         @media (min-width: 1024px) {
             #categories-track .category-slide-card {
-                flex: 0 0 420px !important;
-                width: 420px !important;
-                max-width: 420px !important;
+                flex: 0 0 280px !important;
+                width: 280px !important;
             }
             #excellence-images-track .excellence-track-link {
-                flex: 0 0 380px !important;
-                width: 380px !important;
-                max-width: 380px !important;
+                flex: 0 0 350px !important;
+                width: 350px !important;
+                max-width: 350px !important;
             }
         }
 
@@ -115,8 +121,8 @@
         @media (min-width: 1024px) {
             #most-selling-grid .product-card, 
             #new-arrivals-grid .product-card {
-                flex: 0 0 380px !important;
-                max-width: 380px !important;
+                flex: 0 0 260px !important;
+                max-width: 260px !important;
             }
         }
     </style>
@@ -210,18 +216,20 @@
                 <h2 class="bose-section-title" style="font-size: 1.75rem; font-weight: 700; color: #111111; position: relative; display: inline-block; padding-bottom: 10px;">عقد من الإتقان</h2>
                 <p class="bose-section-subtitle" style="color: #4D4D4D; font-size: 0.95rem; font-weight: 400; margin-top: 5px;">خلف كل قطعة حكاية شغف وتفاصيل محفورة بالدقة والمهارة الفائقة لتقديم تجربة تذوق ساحرة.</p>
             </div>
-            <div id="excellence-images-track" style="display: flex !important; flex-direction: row !important; justify-content: flex-start !important; overflow-x: auto !important; scroll-snap-type: x mandatory !important; -webkit-overflow-scrolling: touch !important; scrollbar-width: none !important; gap: 16px !important; width: 100% !important; padding: 10px 4px 15px 4px !important; box-sizing: border-box !important; cursor: grab;">
-                <a href="menu.html" class="excellence-track-link">
-                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=ex1" alt="إتقان بوسي 1" style="width: 100%; height: 350px; object-fit: cover; border-radius: 24px; border: 1px solid rgba(255, 145, 164, 0.3);" loading="lazy">
-                </a>
-                <a href="menu.html" class="excellence-track-link">
-                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=ex2" alt="إتقان بوسي 2" style="width: 100%; height: 350px; object-fit: cover; border-radius: 24px; border: 1px solid rgba(255, 145, 164, 0.3);" loading="lazy">
-                </a>
-                <a href="menu.html" class="excellence-track-link">
-                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=ex3" alt="إتقان بوسي 3" style="width: 100%; height: 350px; object-fit: cover; border-radius: 24px; border: 1px solid rgba(255, 145, 164, 0.3);" loading="lazy">
-                </a>
+            
+            <div id="pride-slider-wrapper" style="width: 100%; overflow: hidden;">
+                <div id="excellence-images-track">
+                    <a href="menu.html" class="excellence-track-link">
+                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=ex1" alt="إتقان بوسي 1" style="width: 100%; height: 350px; object-fit: cover; border-radius: 24px; border: 1px solid rgba(255, 145, 164, 0.3);" loading="lazy">
+                    </a>
+                    <a href="menu.html" class="excellence-track-link">
+                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=ex2" alt="إتقان بوسي 2" style="width: 100%; height: 350px; object-fit: cover; border-radius: 24px; border: 1px solid rgba(255, 145, 164, 0.3);" loading="lazy">
+                    </a>
+                    <a href="menu.html" class="excellence-track-link">
+                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=ex3" alt="إتقان بوسي 3" style="width: 100%; height: 350px; object-fit: cover; border-radius: 24px; border: 1px solid rgba(255, 145, 164, 0.3);" loading="lazy">
+                    </a>
+                </div>
             </div>
-            <div class="bose-dots-container"></div>
         </section>
 
         <section id="most-selling-section" class="bose-section-container" style="width: 100%; max-width: 1200px; margin: 40px auto; padding: 40px 16px; text-align: center; direction: rtl; overflow: hidden; position: relative;">
@@ -233,7 +241,6 @@
             <div id="most-selling-grid" class="bose-manual-scroll-active" style="display: flex; flex-direction: row; gap: 16px; overflow-x: auto; width: 100%; padding-bottom: 16px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; scrollbar-width: none;">
                 <div style="text-align: center; width: 100%; color: #FF91A4; font-weight: 700; padding: 20px 0;">⏳ جاري جلب أصناف الأكثر مبيعاً الفاخرة...</div>
             </div>
-            <div class="bose-dots-container"></div>
         </section>
 
         <section id="cake-preview-section" style="width: 100%; min-height: 600px; background-color: var(--bose-pink, #FF91A4); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 24px; text-align: center; direction: rtl; box-sizing: border-box; position: relative;">
@@ -254,7 +261,6 @@
             <div id="new-arrivals-grid" class="bose-manual-scroll-active" style="display: flex; flex-direction: row; gap: 16px; overflow-x: auto; width: 100%; padding-bottom: 16px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; scrollbar-width: none;">
                 <div style="text-align: center; width: 100%; color: #FF91A4; font-weight: 700; padding: 20px 0;">⏳ جاري جلب توليفات وصل حديثاً المبتكرة...</div>
             </div>
-            <div class="bose-dots-container"></div>
         </section>
 
         <section id="our-products-section" class="bose-section-container" style="width: 100%; max-width: 1200px; margin: 40px auto; padding: 40px 16px; text-align: center; direction: rtl; position: relative;">
@@ -317,10 +323,11 @@
                 <p class="bose-section-subtitle" style="color: #4D4D4D; font-size: 0.95rem; font-weight: 400; margin-top: 5px;">تسهيل وتأمين انتقالك المباشر والذكي لأي صنف تفضله باقتناع وثقة كاملة.</p>
             </div>
             
-            <div id="categories-track">
-                <div style="text-align: center; width: 100%; color: #FF91A4; font-weight: 700; padding: 20px 0;">⏳ جاري جلب الفئات الـ 12 المعتمدة رسمياً...</div>
+            <div id="categories-slider-wrapper" style="width: 100%; overflow: hidden;">
+                <div id="categories-track">
+                    <div style="text-align: center; width: 100%; color: #FF91A4; font-weight: 700; padding: 20px 0;">⏳ جاري جلب الفئات الـ 12 المعتمدة رسمياً...</div>
+                </div>
             </div>
-            <div class="bose-dots-container"></div>
         </section>
     </main>
 
@@ -384,22 +391,16 @@
             const currency = siteData.store?.currency || "EGP";
             const productsList = siteData.products;
 
-            // مصفوفة مركزية لمنع تكرار أي منتج أو نكهة مرتين في الصفحة الرئيسية نهائياً لحماية التنوع البصري
             let renderedSlugs = [];
 
-            // 👑 دالة الفرز السلوكي المتقدمة مع حظر التكرار البصري المتبادل بين الأقسام 👑
             const sortAndFilterUniqueByBehavior = (slugsArray, maxLimit) => {
-                // 1. فلترة واستبعاد أي منتج ظهر للعميل في قسم علوي سابق لحماية التنوع
                 let availableSlugs = slugsArray.filter(slug => !renderedSlugs.includes(slug));
-                
-                // جلب كائنات المنتجات الكاملة المتطابقة من قاعدة البيانات السلوكية
                 let matchedProds = availableSlugs.map(slug => productsList.find(p => p.slug === slug)).filter(Boolean);
                 
                 try {
                     const behaviorData = localStorage.getItem('bose_user_behavior');
                     const behaviorLog = behaviorData ? JSON.parse(behaviorData) : {};
                     
-                    // فرز المنتجات المتاحة بناءً على أعلى نقاط اهتمام مسجلة بجهاز العميل
                     matchedProds.sort((a, b) => {
                         let scoreA = behaviorLog[a.slug] ? behaviorLog[a.slug].score : 0;
                         let scoreB = behaviorLog[b.slug] ? behaviorLog[b.slug].score : 0;
@@ -412,16 +413,11 @@
                     });
                 } catch (err) {}
                 
-                // قطع مصفوفة الأصناف لتطابق بالمليم العدد القياسي المحدد للمقاطع البصرية
                 let finalSelection = matchedProds.slice(0, maxLimit);
-                
-                // تسجيل الأصناف المختارة حالياً في المصفوفة المركزية لحظرها الصارم من الأقسام التالية بالكامل
                 finalSelection.forEach(p => renderedSlugs.push(p.slug));
-                
                 return finalSelection;
             };
 
-            // 1. رندرة وتحديث قسم الأكثر مبيعاً (8 منتجات متنوعة على مزاج العميل وبدون تكرار)
             const mostSellingGrid = document.getElementById('most-selling-grid');
             if (mostSellingGrid && siteData.homepage.mostSelling) {
                 const uniqueMS = sortAndFilterUniqueByBehavior(siteData.homepage.mostSelling, 8);
@@ -431,13 +427,11 @@
                 }
             }
 
-            // 2. رندرة وتحديث قسم وصل حديثاً (6 منتجات جديدة كلياً ومختلفة تماماً عما معروض بالأعلى)
             const newArrivalsGrid = document.getElementById('new-arrivals-grid');
             if (newArrivalsGrid && siteData.homepage.newArrivals) {
                 const uniqueNA = sortAndFilterUniqueByBehavior(siteData.homepage.newArrivals, 6);
                 
                 if (uniqueNA.length === 0) {
-                    // حارس أمان دفاعي: لو العميل مهتم بكل الأصناف وظهرت فوق، نجلب أصناف بديلة طازجة لملء المساحة منعاً للفراغ البصري
                     const backupNA = siteData.homepage.newArrivals.map(slug => productsList.find(p => p.slug === slug)).filter(p => p && !renderedSlugs.includes(p.slug)).slice(0, 6);
                     newArrivalsGrid.innerHTML = backupNA.map(prod => window.generateStrictProductCardHTML(prod, currency)).join('');
                 } else {
@@ -449,14 +443,11 @@
                 }
             }
 
-            // 3. رندرة وتحديث قسم منتجاتنا ثنائي العرض (عرض 4 منتجات متبقية فريدة وضغط المزيد للـ 4 الآخرين)
             const ourProductsGrid = document.getElementById('our-products-grid');
             const showMoreBtn = document.getElementById('btn-show-more-products');
             if (ourProductsGrid && siteData.homepage.ourProducts) {
-                // جلب كل المنتجات المتبقية في مصفوفة منتجاتنا والتي لم تظهر في أي مكان بالأعلى نهائياً
                 let uniqueOPAll = siteData.homepage.ourProducts.map(slug => productsList.find(p => p.slug === slug)).filter(p => p && !renderedSlugs.includes(p.slug));
                 
-                // صمام أمان دفاعي: لو المنتجات خلصت بسبب الفلترة المتبادلة، نفتح المصفوفة لملء العرض البصري الثنائي لراحة العميل
                 if (uniqueOPAll.length < 4) {
                     uniqueOPAll = siteData.homepage.ourProducts.map(slug => productsList.find(p => p.slug === slug)).filter(Boolean);
                 }
