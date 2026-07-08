@@ -393,11 +393,9 @@
 </head>
 <body class="bose-hardware-accelerated">
 
-    <header class="bose-navbar">
-        </header>
+    <header class="bose-navbar"></header>
 
-    <div id="sidebar-drawer" class="bose-drawer-menu">
-        </div>
+    <div id="sidebar-drawer" class="bose-drawer-menu"></div>
 
     <div id="drawer-shield" class="drawer-overlay"></div>
 
@@ -411,8 +409,7 @@
                 <div class="master-image-frame">
                     <img id="bose-master-gallery-image" src="" alt="صورة المنتج الفاخر">
                 </div>
-                <div id="bose-thumbnails-strip" class="thumbnails-strip-flow">
-                    </div>
+                <div id="bose-thumbnails-strip" class="thumbnails-strip-flow"></div>
             </div>
 
             <div class="product-meta-details-pane">
@@ -428,8 +425,7 @@
                 
                 <p id="bose-product-desc-text" class="product-story-paragraph">وصف قصة المكونات الفاخرة والطعم الأصلي المميز للقطعة...</p>
                 
-                <div id="bose-product-customization-options-root" class="customization-options-box">
-                    </div>
+                <div id="bose-product-customization-options-root" class="customization-options-box"></div>
 
                 <div class="actions-purchase-integration-row">
                     <div class="qty-picker-capsule">
@@ -451,8 +447,7 @@
                 <p style="font-size: 0.88rem; color: var(--bose-black); opacity: 0.7; margin: 0;">تشكيلة مميزة وخيارات بديلة نوصي بها لتكمل بها روعة اختيارك اليوم وتكتشف عوالم جديدة من الروقان.</p>
             </div>
             
-            <div id="related-products-grid" class="bose-horizontal-suggestions-slider">
-                </div>
+            <div id="related-products-grid" class="bose-horizontal-suggestions-slider"></div>
         </section>
 
         <section class="reviews-premium-section">
@@ -499,55 +494,11 @@
                 <button id="btn-submit-premium-review" type="button" style="background:var(--bose-pink); color:#fff; border:none; padding:12px 30px; border-radius:50px; font-weight:700; cursor:pointer; box-shadow:0 4px 12px rgba(255,145,164,0.2);">نشر المراجعة الملكية فوراً</button>
             </div>
 
-            <div id="bose-review-form-wrapper" style="display: none; background: rgba(255, 145, 164, 0.03); border: 1px dashed var(--bose-pink); border-radius: 24px; padding: 24px; margin-bottom: 30px; direction: rtl;">
-                <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 16px;">مراجعتك الفاخرة للصنف</h3>
-                <div style="display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 16px;">
-                    <div>
-                        <label style="display:block; font-size:0.88rem; font-weight:700; margin-bottom:6px;">اسمك المحترم</label>
-                        <input id="bose-review-user-name" type="text" placeholder="يمكنك كتابة اسمك هنا..." style="width:100%; padding:12px; border-radius:12px; border:1px solid rgba(17,17,17,0.12); font-family:'Cairo'; box-sizing:border-box;">
-                    </div>
-                    <div>
-                        <label style="display:block; font-size:0.88rem; font-weight:700; margin-bottom:6px;">تقييمك بالنجوم للمنتج</label>
-                        <div style="display:flex; gap:10px; flex-direction:row-reverse; justify-content:flex-end; font-size:1.4rem; color:#ccc;">
-                            <input type="radio" id="st5" name="bose-star-rating" value="5" style="display:none;"><label for="st5" style="cursor:pointer;"><i class="fas fa-star"></i></label>
-                            <input type="radio" id="st4" name="bose-star-rating" value="4" style="display:none;"><label for="st4" style="cursor:pointer;"><i class="fas fa-star"></i></label>
-                            <input type="radio" id="st3" name="bose-star-rating" value="3" style="display:none;"><label for="st3" style="cursor:pointer;"><i class="fas fa-star"></i></label>
-                            <input type="radio" id="st2" name="bose-star-rating" value="2" style="display:none;"><label for="st2" style="cursor:pointer;"><i class="fas fa-star"></i></label>
-                            <input type="radio" id="st1" name="bose-star-rating" value="1" style="display:none;"><label for="st1" style="cursor:pointer;"><i class="fas fa-star"></i></label>
-                        </div>
-                    </div>
-                </div>
-                <div style="margin-bottom: 16px;">
-                    <label style="display:block; font-size:0.88rem; font-weight:700; margin-bottom:6px;">رأيك وتجربتك بالتفصيل</label>
-                    <textarea id="bose-review-comment" placeholder="كيف كانت تجربتك لطعم وجودة المنتج؟ يسعدنا سماع رأيك الراقٍ..." style="width:100%; height:90px; padding:12px; border-radius:12px; border:1px solid rgba(17,17,17,0.12); font-family:'Cairo'; resize:none; box-sizing:border-box;"></textarea>
-                </div>
-                
-                <div style="margin-bottom: 20px;">
-                    <label style="display:block; font-size:0.88rem; font-weight:700; margin-bottom:6px;"><i class="fas fa-camera"></i> أضف صوراً حقيقية لالتقاط روعة الصنف (اختياري)</label>
-                    <input id="bose-review-images-picker" type="file" accept="image/*" multiple style="display: none;">
-                    <button id="btn-trigger-review-images" type="button" style="background:#fff; border:1px solid rgba(17,17,17,0.15); padding:8px 16px; border-radius:10px; cursor:pointer; font-size:0.85rem; font-weight:700;"><i class="fas fa-images" style="color:var(--bose-pink);"></i> اختيار الصور من جهازك</button>
-                    <div id="bose-review-images-preview-zone" style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;"></div>
-                </div>
-
-                <button id="btn-submit-premium-review" type="button" style="background:var(--bose-pink); color:#fff; border:none; padding:12px 30px; border-radius:50px; font-weight:700; cursor:pointer; box-shadow:0 4px 12px rgba(255,145,164,0.2);">نشر المراجعة الملكية فوراً</button>
-            </div>
-
-            <div id="bose-product-reviews-collection-list">
-                <div class="review-card-node" style="direction: rtl; text-align: right;">
-                    <div class="review-user-meta">
-                        <h4 style="font-size: 0.95rem; font-weight: 700; margin: 0;">أحمد الفرفراوي</h4>
-                        <div class="review-stars-row">
-                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                        </div>
-                    </div>
-                    <p style="font-size: 0.88rem; color: var(--bose-black); opacity: 0.85; line-height: 1.5; margin: 6px 0 0 0;">الحلويات بجد طعمها حكاية، خامات طبيعية وممتازة والتوصيل في فرع الكفاح دقيق جداً وبيحافظ على شكل وتنسيق المنتج الفاخر، تشرف في أي عزومة أو مناسبة سعيدة. شكراً لعلامة حلويات بوسي 🌸</p>
-                </div>
-            </div>
+            <div id="bose-product-reviews-collection-list"></div>
         </section>
     </main>
 
-    <footer class="bose-footer">
-        </footer>
+    <footer class="bose-footer"></footer>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
@@ -576,12 +527,10 @@
                     return;
                 }
 
-                // تتبع سلوك العميل في النظام التكنولوجي الموحد لمنح الصنف نقطتين اهتمام
                 if (typeof window.trackBoseUserBehavior === "function") {
                     window.trackBoseUserBehavior(currentProduct.slug, 2);
                 }
 
-                // حقن وتحديث نصوص وبيانات الواجهة المباشرة للصنف الصادق بالمليم
                 document.getElementById("bose-product-title-text").textContent = currentProduct.title;
                 document.title = `${currentProduct.title} | حلويات بوسي الفاخرة`;
                 
@@ -592,8 +541,6 @@
                 }
                 
                 document.getElementById("bose-product-flavor-text").textContent = currentProduct.flavorName || "كلاسيك فاخر";
-                
-                // قراءة الوصف الصارم والفريد الحقيقي من مصفوفة الـ JSON مباشرة لكل نكهة وصنف
                 document.getElementById("bose-product-desc-text").textContent = currentProduct.description || currentProduct.flavorDesc || "";
 
                 const defaultLogo = "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png";
@@ -623,11 +570,9 @@
                     thumbnailsStrip.innerHTML = "";
                 }
 
-                // معالجة وبناء بطاقات التخصيص والخيارات القياسية المتاحة للصنف ديناميكياً
                 const optionsRoot = document.getElementById("bose-product-customization-options-root");
                 optionsRoot.innerHTML = "";
                 
-                // فلترة النكهات التابعة لنفس فئة المنتج الحالي لعرضها كخيارات بديلة مميزة وفريدة
                 const relatedFlavors = dbData.products.filter(p => p.category === currentProduct.category && p.slug !== currentProduct.slug);
                 
                 if (relatedFlavors.length > 0) {
@@ -652,7 +597,6 @@
                     group.querySelectorAll(".custom-selectable-card").forEach(card => {
                         card.addEventListener("click", function() {
                             if (this.dataset.slug !== currentProduct.slug) {
-                                // انتقال سلس وفوري لصفحة المنتج الفردي الخاص بالنكهة المحددة للحفاظ على استقلالية كل نكهة ووصفها
                                 window.location.href = `product.html?slug=${this.dataset.slug}`;
                             }
                         });
@@ -662,10 +606,39 @@
 
                 updateLivePriceDisplay(dbData.store?.currency || "EGP");
                 
+                renderDynamicProductReviews();
+
                 skeleton.style.display = "none";
                 contentView.style.display = "grid";
 
                 renderRelatedProducts(dbData);
+            }
+
+            function renderDynamicProductReviews() {
+                const reviewsListContainer = document.getElementById("bose-product-reviews-collection-list");
+                if (!reviewsListContainer || !currentProduct) return;
+
+                if (currentProduct.reviews && currentProduct.reviews.length > 0) {
+                    reviewsListContainer.innerHTML = currentProduct.reviews.map(rev => {
+                        let starsHTML = "";
+                        for (let i = 1; i <= 5; i++) {
+                            starsHTML += `<i class="fas fa-star" style="color:${i <= rev.rating ? 'var(--bose-gold)' : '#ccc'}"></i>`;
+                        }
+                        return `
+                            <div class="review-card-node" style="direction: rtl; text-align: right;">
+                                <div class="review-user-meta">
+                                    <h4 style="font-size: 0.95rem; font-weight: 700; margin: 0;">${escapeHTML(rev.user)}</h4>
+                                    <div class="review-stars-row">${starsHTML}</div>
+                                </div>
+                                <p style="font-size: 0.88rem; color: var(--bose-black); opacity: 0.85; line-height: 1.5; margin: 6px 0 0 0;">${escapeHTML(rev.comment)}</p>
+                            </div>
+                        `;
+                    }).join("");
+                } else {
+                    reviewsListContainer.innerHTML = `
+                        <p style="text-align:center; padding:30px 10px; font-size:0.9rem; opacity:0.6; font-weight:600;">لم يتم نشر مراجعات لهذا الصنف بعد. شاركنا رأيك الصادق لتكون أول من يوثق تجربته الفاخرة! 🌸</p>
+                    `;
+                }
             }
 
             function updateLivePriceDisplay(currency) {
@@ -740,7 +713,6 @@
                 const relatedGrid = document.getElementById("related-products-grid");
                 if (!relatedGrid || !dbData || !dbData.products) return;
 
-                // جلب 5 مقترحات ذكية لا تتضمن المنتج الحالي لزيادة المبيعات والانتشار
                 const suggestionsList = dbData.products.filter(p => p.slug !== currentProduct.slug).slice(0, 5);
                 const currency = dbData.store?.currency || "EGP";
                 const defaultLogo = dbData.store?.logo || "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png";
@@ -842,6 +814,11 @@
                 }
 
                 const reviewsList = document.getElementById("bose-product-reviews-collection-list");
+                
+                if (reviewsList.innerHTML.includes("لم يتم نشر مراجعات")) {
+                    reviewsList.innerHTML = "";
+                }
+
                 const newReviewCard = document.createElement("div");
                 newReviewCard.className = "review-card-node";
                 
