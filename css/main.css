@@ -1,5 +1,5 @@
 /**
- * 👑 ملف التصميم المركزي للأقسام والمنيو - حلويات بوسي V18.0 👑
+ * 👑 ملف التصميم المركزي للأقسام والمنيو - حلويات بوسي V19.0 👑
  * النسخة الهندسية القياسية الكاملة بنسبة 100% - خالية تماماً من الثغرات والمشاكل البصرية
  * متوافقة بشكل مطلق ومتبادل مع: global.css، core-engine.js، cart-engine.js، وقاعدة البيانات site-data-final.json
  * [تغطية شاملة للصفحة الرئيسية، المنيو الشامل، صفحة الفئة الديناميكية، وصفحة المنتج الفردي مع تأمين التجاوب واللمس على الموبايل]
@@ -34,7 +34,7 @@
     letter-spacing: normal !important;
 }
 
-/* distribution الأوزان الهندسية الصحيحة لكل فئة أيقونات لمنع ظهور المربعات الفارغة */
+/* الأوزان الهندسية الصحيحة لكل فئة أيقونات لمنع ظهور المربعات الفارغة */
 .fa-solid, .fas {
     font-weight: 900 !important;
 }
@@ -110,7 +110,7 @@ body.bose-no-scroll {
     background-repeat: no-repeat;
 }
 
-/* تدرج معتم فاخر يضمن وضوح النصوص البيضاء دون تشويه صورة المنتج */
+/* تدرج معتم فاخر يضمن وضوح النصوص البيضاء دون تشويه صورة... */
 .bose-hero-slide-overlay {
     position: absolute;
     top: 0;
@@ -161,7 +161,6 @@ body.bose-no-scroll {
     box-shadow: 0 4px 10px rgba(255, 145, 164, 0.35);
 }
 
-/* عزل تأثير الـ Hover على الأجهزة المكتبية فقط لتفادي تعليق الموبايل */
 @media (hover: hover) {
     .bose-hero-btn:hover {
         background-color: var(--bose-white);
@@ -242,16 +241,15 @@ body.bose-no-scroll {
 }
 
 .bose-section-subtitle {
-    color: #4D4D4D; /* زيادة التباين اللوني للمقروئية الفاخرة */
+    color: #4D4D4D;
     font-size: 0.95rem;
     font-weight: 400;
     margin-top: 5px;
 }
 
-/* شبكة عرض فئات الصفحة الرئيسية الـ 12 المعتمدة */
 .bose-categories-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 فئات متجاورة لتسهيل الاستخدام على الموبايل */
+    grid-template-columns: repeat(3, 1fr);
     gap: 12px;
     justify-content: center;
 }
@@ -323,7 +321,7 @@ body.bose-no-scroll {
 
 .bose-products-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* كارتين متجاورين بالمحاذاة التامة لمنع التراص العمودي */
+    grid-template-columns: repeat(2, 1fr);
     gap: 12px;
 }
 
@@ -390,7 +388,6 @@ body.bose-no-scroll {
     justify-content: space-between;
 }
 
-/* حماية العناوين من البتر مع الحفاظ على تناسق التصميم */
 .bose-product-title {
     color: var(--bose-black);
     font-size: 0.95rem;
@@ -418,7 +415,7 @@ body.bose-no-scroll {
 }
 
 .bose-product-rating span {
-    color: #555555; /* تباين مرتفع متوافق مع معايير الـ WCAG */
+    color: #555555;
     font-size: 0.75rem;
     margin-right: 4px;
 }
@@ -437,7 +434,7 @@ body.bose-no-scroll {
 }
 
 .bose-product-price-old {
-    color: #7A7A7A; /* تباين مرتفع للنص المشطوب */
+    color: #7A7A7A;
     font-size: 0.85rem;
     text-decoration: line-through;
 }
@@ -476,7 +473,6 @@ body.bose-no-scroll {
     direction: rtl;
 }
 
-/* شريط تصفح الفئات الأفقي والسلس للموبايل */
 .menu-categories-scroll {
     display: flex;
     gap: 10px;
@@ -491,7 +487,6 @@ body.bose-no-scroll {
     display: none;
 }
 
-/* كبسولات فلترة الفئات المعتمدة */
 .menu-category-filter-pill {
     flex-shrink: 0;
     scroll-snap-align: start;
@@ -517,7 +512,6 @@ body.bose-no-scroll {
     box-shadow: 0 4px 12px rgba(255, 145, 164, 0.3);
 }
 
-/* حاوية محددات الترتيب والفرز */
 .menu-sort-wrapper {
     display: flex;
     justify-content: space-between;
@@ -599,7 +593,6 @@ body.bose-no-scroll {
     color: var(--bose-pink);
 }
 
-/* خيارات المقاسات أو الإضافات */
 .product-size-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -630,7 +623,6 @@ body.bose-no-scroll {
     box-shadow: 0 4px 10px rgba(255, 145, 164, 0.2);
 }
 
-/* مدخلات الكتابة على التورتة والملاحظات */
 .product-custom-input {
     width: 100%;
     font-family: 'Cairo', sans-serif;
@@ -650,7 +642,6 @@ body.bose-no-scroll {
     box-shadow: 0 0 8px rgba(255, 145, 164, 0.25);
 }
 
-/* متحكم الكمية الاحترافي واللمسي */
 .quantity-selector-wrapper {
     display: flex;
     align-items: center;
@@ -955,7 +946,7 @@ body.bose-no-scroll {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(17, 17, 17, 0.65); /* حماية من التعتيم الأسود التام */
+    background-color: rgba(17, 17, 17, 0.65);
     backdrop-filter: blur(5px);
     z-index: 2000;
     display: none;
@@ -1058,23 +1049,21 @@ body.bose-no-scroll {
    14. محددات التجاوب والشبكات للشاشات المتوسطة والكبيرة (Responsive Breakpoints)
    ========================================================================== */
 
-/* شاشات الموبايل المتوسطة والصغيرة (شاشات حتى 360px وأقل) */
 @media (max-width: 360px) {
     .bose-hero-title {
         font-size: 1.5rem;
     }
     .bose-categories-grid {
-        grid-template-columns: repeat(2, 1fr); /* فئتين لمنع حشر الأيقونات وضغط النصوص */
+        grid-template-columns: repeat(2, 1fr);
     }
     .bose-products-grid {
-        grid-template-columns: 1fr; /* عرض منتج واحد في السطر للتصفح السهل */
+        grid-template-columns: 1fr;
     }
     .product-size-grid {
         grid-template-columns: 1fr;
     }
 }
 
-/* أجهزة التابلت والمتوسطة (Tablet Devices - 768px فأكبر) */
 @media (min-width: 768px) {
     .bose-hero-slider {
         height: 45vh;
@@ -1090,7 +1079,7 @@ body.bose-no-scroll {
         max-width: 70%;
     }
     .bose-categories-grid {
-        grid-template-columns: repeat(6, 1fr); /* فئات متوازنة على شاشات التابلت */
+        grid-template-columns: repeat(6, 1fr);
     }
     .bose-products-grid {
         grid-template-columns: repeat(3, 1fr);
@@ -1116,7 +1105,6 @@ body.bose-no-scroll {
     }
 }
 
-/* شاشات الكمبيوتر والديسك توب الفاخر (Desktop - 1024px فأكبر) */
 @media (min-width: 1024px) {
     .bose-hero-slider {
         height: 60vh;
@@ -1132,7 +1120,7 @@ body.bose-no-scroll {
         max-width: 60%;
     }
     .bose-categories-grid {
-        grid-template-columns: repeat(12, 1fr); /* الـ 12 فئة المعتمدة متجاورة بأناقة بالغة */
+        grid-template-columns: repeat(12, 1fr);
         gap: 16px;
     }
     .bose-products-grid {
@@ -1155,15 +1143,16 @@ body.bose-no-scroll {
     }
 }
 
-/* تعديل جذري لتنسيق لوجو الفوتر لمنع الضغط والتشوه البصري المزعج لعين المستهلك */
 .footer-logo-container img {
-    height: 60px !important;        /* تثبيت الارتفاع للحفاظ على الهيكل القياسي الموحد للفوتر */
-    width: auto !important;         /* فك العصر: السماح للعرض بالتناسب تلقائياً بنسبته الطبيعية */
-    max-width: 100% !important;     /* تأمين عدم تجاوز الحاوية المرنة لراحة العميل النفسية */
-    object-fit: contain !important; /* حظر السحق والبتر للحفاظ على فخامة اللوجو الأصلي الفاخر */
+    height: 60px !important;
+    width: auto !important;
+    max-width: 100% !important;
+    object-fit: contain !important;
+    aspect-ratio: auto !important;
+    display: block;
+    margin: 0 auto;
 }
 
-/* 🛡️ حارس العزل السلس وحماية التحكم الذكي بالجافا سكريبت لمنع تصادم الأبعاد 🛡️ */
 .animate-marquee {
     overflow-x: hidden;
     scrollbar-width: none;
@@ -1174,20 +1163,15 @@ body.bose-no-scroll {
     display: none !important;
 } 
 
-/* 👑 دعم التمرير الانسيابي الموجه كلياً بالمحرك الموحد core-engine.js 👑 */
+/* 👑 إتاحة العرض الممتد الكامل لضمان دوران لا نهائي سلس مئة بالمئة برمجياً */
 .categories-track-loop, 
 #excellence-images-track {
     display: flex !important;
     flex-wrap: nowrap !important;
     width: max-content !important;
-    overflow-x: visible !important; /* السماح للمحرك بالتحريك خارج حدود الرؤية الوهمية */
+    overflow-x: visible !important; 
     scrollbar-width: none !important;
     -ms-overflow-style: none !important;
-    touch-action: pan-y !important; /* قصر حركة التداخل الرأسي لحماية تمرير الصفحة */
+    touch-action: pan-y !important;
     will-change: transform;
 }
-
-/* تم إيقاف أنيميشن الـ CSS الاستاتيكي المتعارض لترك التحكم الكلي للـ JavaScript والـ Dots */
-/* .categories-track-loop { animation: boseCategoriesLoop 32s linear infinite; }
-#excellence-images-track { animation: boseMarquee 28s linear infinite; }
-*/
