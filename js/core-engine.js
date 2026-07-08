@@ -1,7 +1,8 @@
 /**
  * 👑 المحرك المركزي العام والنهائي للموقع والنافذة العائمة - حلويات بوسي 👑
- * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية ومشاكل التداخل V45.0
+ * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية ومشاكل التداخل V46.0
  * متوافق بشكل مطلق وثنائي الاتجاه مع كافة ملفات css/ وجافا سكريبت الموقع وقاعدة البيانات site-data-final.json
+ * [تم حل كوارث القائمة الجانبية، أتمتة سلايدر الإتقان والفئات بالـ Dots والأسهم، وهيكلة كروت المنتجات وسيكولوجية وميض السلة]
  */
 
 (function () {
@@ -28,7 +29,6 @@
        ========================================================================== */
     async function loadBoseAbsoluteDatabase() {
         try {
-            // صمام أمان لتحديد المسار الصحيح للملف سواء كنا في الصفحة الرئيسية أو صفحة فرعية
             const isSubPage = window.location.pathname.includes('/css/') || window.location.pathname.includes('/js/');
             const jsonPath = isSubPage ? '../data/site-data-final.json' : 'data/site-data-final.json';
 
@@ -41,19 +41,15 @@
                 boseGlobalStoreData = await response.json();
             }
             
-            // إطلاق الحدث العالمي لإعلام كافة المحركات الفرعية بنجاح التحميل الآمن
             window.BoseStoreData = boseGlobalStoreData;
             
-            // حقن الأيقونات والخطوط والأنماط الحيوية فوراً لمنع وميض الألوان والأيقونات المكسورة
             injectEarlyDependencies();
             
             document.dispatchEvent(new CustomEvent('BoseDatabaseLoaded', { detail: boseGlobalStoreData }));
             
-            // تنفيذ كافة المهام المؤجلة المنتظرة لقاعدة البيانات فوراً لمنع الـ Race Condition
             databaseReadyCallbacks.forEach(callback => callback(boseGlobalStoreData));
             databaseReadyCallbacks = [];
 
-            // تهيئة الخصائص المركزية للموقع والسلة العائمة فوراً
             initializeGlobalFeatures();
             
         } catch (error) {
@@ -70,7 +66,6 @@
         }
     };
 
-    // حقن مكتبات الخطوط والـ FontAwesome برمجياً في الـ Head لتجنب أخطاء التحميل واختفاء الأيقونات
     function injectEarlyDependencies() {
         if (!document.querySelector('link[href*="fonts.googleapis.com"]')) {
             const preconnect1 = document.createElement('link');
@@ -97,7 +92,7 @@
     }
 
     /* ==========================================================================\
-       2. تفعيل وربط القائمة الجانبية الهندسية وعناصر الـ DOM التفاعلية
+       2. تفعيل وربط القائمة الجانبية الهندسية الاحترافية المطورة بالكامل للعميل
        ========================================================================== */
     function initializeSidebarDrawer() {
         const toggleBtn = document.getElementById('mobile-menu-toggle');
@@ -105,24 +100,61 @@
         const drawer = document.getElementById('sidebar-drawer');
         const shield = document.getElementById('drawer-shield');
 
+        // إذا لم يكن هيكل المنيو الجانبي المطور محقوناً في الصفحة، نزرعه برفق لتقديم أفضل تجربة تصفح للعميل
+        if (drawer && !drawer.classList.contains('bose-premium-sidebar-initiated')) {
+            drawer.classList.add('bose-premium-sidebar-initiated');
+            drawer.innerHTML = `
+                <div class="sidebar-luxury-header" style="padding: 20px; border-bottom: 1px solid ${BRAND_COLORS.cream}; display: flex; justify-content: space-between; align-items: center;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" style="width: 40px; height: 40px; object-fit: contain;" alt="لوجو بوسي">
+                        <span style="font-family: 'Cairo'; font-weight: 700; font-size: 16px; color: ${BRAND_COLORS.black};">قائمة التصفح الفاخرة</span>
+                    </div>
+                    <button id="sidebar-close-panel-btn" style="background: none; border: none; font-size: 24px; color: ${BRAND_COLORS.black}; cursor: pointer;">&times;</button>
+                </div>
+                <div class="sidebar-luxury-body" style="flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 14px;">
+                    <span style="font-size: 11px; font-weight: 700; color: ${BRAND_COLORS.pink}; letter-spacing: 1px; text-transform: uppercase;">الأقسام الرئيسية</span>
+                    <a href="index.html" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; background: ${BRAND_COLORS.cream}; color: ${BRAND_COLORS.black}; font-weight: 600; font-size: 14px; text-decoration: none;"><i class="fas fa-home" style="color: ${BRAND_COLORS.pink};"></i> الواجهة الرئيسية</a>
+                    <a href="menu.html" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; color: ${BRAND_COLORS.black}; font-weight: 600; font-size: 14px; text-decoration: none; transition: 0.2s;"><i class="fas fa-utensils" style="color: ${BRAND_COLORS.pink};"></i> المنيو الشامل</a>
+                    <a href="cart.html" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; color: ${BRAND_COLORS.black}; font-weight: 600; font-size: 14px; text-decoration: none; transition: 0.2s;"><i class="fas fa-shopping-bag" style="color: ${BRAND_COLORS.pink};"></i> سلة التسوق الخاصة بك</a>
+                    
+                    <span style="font-size: 11px; font-weight: 700; color: ${BRAND_COLORS.pink}; letter-spacing: 1px; text-transform: uppercase; margin-top: 10px;">المحاكيات التفاعلية الفاخرة</span>
+                    <a href="cake-builder.html" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border: 1px solid rgba(255,145,164,0.25); border-radius: 12px; color: ${BRAND_COLORS.black}; font-weight: 600; font-size: 14px; text-decoration: none; background: #FFFFFF;"><span style="display: flex; align-items: center; gap: 12px;"><i class="fas fa-birthday-cake" style="color: ${BRAND_COLORS.gold};"></i> محاكي التورت الحصري</span> <i class="fas fa-chevron-left" style="font-size: 11px; color: #ccc;"></i></a>
+                    <a href="flower-builder.html" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border: 1px solid rgba(255,145,164,0.25); border-radius: 12px; color: ${BRAND_COLORS.black}; font-weight: 600; font-size: 14px; text-decoration: none; background: #FFFFFF;"><span style="display: flex; align-items: center; gap: 12px;"><i class="fas fa-seedling" style="color: ${BRAND_COLORS.gold};"></i> تنسيق بوكيهات الورد والمال</span> <i class="fas fa-chevron-left" style="font-size: 11px; color: #ccc;"></i></a>
+                    
+                    <span style="font-size: 11px; font-weight: 700; color: #888; text-align: center; margin-top: auto; padding-top: 20px;">فرع الكفاح - صنعناها بحب لتهديها لمن تحب 🌸</span>
+                </div>
+            `;
+        }
+
+        const reCloseBtn = document.getElementById('sidebar-close-panel-btn');
+
         if (toggleBtn && drawer && shield) {
-            toggleBtn.addEventListener('click', () => {
+            toggleBtn.onclick = (e) => {
+                e.preventDefault();
                 drawer.classList.add('active');
                 shield.classList.add('active');
-                document.body.classList.add('bose-no-scroll');
-            });
+                drawer.style.right = '0px';
+                shield.style.display = 'block';
+                setTimeout(() => shield.style.opacity = '1', 10);
+                document.body.style.overflow = 'hidden';
+            };
         }
 
         const closeDrawerMenu = () => {
             if (drawer && shield) {
                 drawer.classList.remove('active');
                 shield.classList.remove('active');
-                document.body.classList.remove('bose-no-scroll');
+                drawer.style.right = '-320px';
+                shield.style.opacity = '0';
+                setTimeout(() => {
+                    shield.style.display = 'none';
+                    document.body.style.overflow = '';
+                }, 300);
             }
         };
 
-        if (closeBtn) closeBtn.addEventListener('click', closeDrawerMenu);
-        if (shield) shield.addEventListener('click', closeDrawerMenu);
+        if (reCloseBtn) reCloseBtn.onclick = closeDrawerMenu;
+        if (shield) shield.onclick = closeDrawerMenu;
     }
 
     /* ==========================================================================\
@@ -177,25 +209,175 @@
     }
 
     /* ==========================================================================\
-       4. رندرة وتعبئة قسم "تسوق حسب الفئة" الـ 12 المعتمدة رسمياً هندسياً
+       4. رندرة وتعبئة قسم "تسوق حسب الفئة" الـ 12 المعتمدة بالدوتس والأسهم الحية
        ========================================================================== */
     function renderBoseCategoriesSlider(storeData) {
+        const wrapper = document.getElementById('categories-slider-wrapper');
         const track = document.getElementById('categories-track');
         if (!track || !storeData?.homepage?.categoriesSlider) return;
 
         const cats = storeData.homepage.categoriesSlider;
+        
+        // رندرة الكروت الكلاسيكية الفاخرة
         track.innerHTML = cats.map(cat => `
-            <a href="category.html?id=${cat.id}" class="category-slide-card">
-                <div style="width: 100%; aspect-ratio: 1/1; overflow: hidden; border-radius: 20px; border: 1px solid rgba(255, 145, 164, 0.2); background: var(--bose-cream);">
+            <a href="category.html?id=${cat.id}" class="category-slide-card" style="flex: 0 0 200px; text-decoration: none; display: flex; flex-direction: column; align-items: center; transition: 0.3s;">
+                <div style="width: 100%; aspect-ratio: 1/1; overflow: hidden; border-radius: 20px; border: 1px solid rgba(255, 145, 164, 0.2); background: var(--bose-cream); position: relative;">
                     <img src="${cat.image}" alt="${cat.title}" style="width: 100%; height: 100%; object-fit: cover; display: block;" loading="lazy">
                 </div>
-                <h3 style="margin-top: 12px; font-size: 20px; font-weight: 700; color: #111111; text-align: center;">${cat.title}</h3>
+                <h3 style="margin-top: 12px; font-size: 16px; font-weight: 700; color: #111111; text-align: center; font-family: 'Cairo';">${cat.title}</h3>
             </a>
         `).join('');
+
+        // إضافة الأسهم التفاعلية الفاخرة ونقاط التنقل الـ 12 (Dots) لتقديم أفضل تجربة تصفح للعميل
+        let controlsContainer = document.getElementById('bose-categories-controls');
+        if (!controlsContainer && wrapper) {
+            controlsContainer = document.createElement('div');
+            controlsContainer.id = 'bose-categories-controls';
+            controlsContainer.style.cssText = `display: flex; flex-direction: column; align-items: center; gap: 14px; margin-top: 20px; width: 100%; direction: rtl;`;
+            
+            // الأسهم الفاخرة
+            const arrowsRow = document.createElement('div');
+            arrowsRow.style.cssText = `display: flex; gap: 40px; align-items: center; justify-content: center;`;
+            arrowsRow.innerHTML = `
+                <button id="cat-arrow-prev" style="width: 40px; height: 40px; border-radius: 50%; border: 1px solid ${BRAND_COLORS.pink}; background: ${BRAND_COLORS.white}; color: ${BRAND_COLORS.pink}; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: 0.2s;"><i class="fas fa-chevron-right"></i></button>
+                <button id="cat-arrow-next" style="width: 40px; height: 40px; border-radius: 50%; border: 1px solid ${BRAND_COLORS.pink}; background: ${BRAND_COLORS.white}; color: ${BRAND_COLORS.pink}; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: 0.2s;"><i class="fas fa-chevron-left"></i></button>
+            `;
+            
+            // نقاط التنقل الـ 12 الذكية المعتمدة
+            const dotsRow = document.createElement('div');
+            dotsRow.id = 'cat-dots-container';
+            dotsRow.style.cssText = `display: flex; gap: 8px; justify-content: center; align-items: center; flex-wrap: wrap;`;
+            dotsRow.innerHTML = cats.map((_, i) => `
+                <span class="cat-dot ${i === 0 ? 'active' : ''}" data-index="${i}" style="width: 8px; height: 8px; border-radius: 50%; background: ${i === 0 ? BRAND_COLORS.pink : 'rgba(255,145,164,0.3)'}; cursor: pointer; transition: 0.3s;"></span>
+            `).join('');
+
+            controlsContainer.appendChild(arrowsRow);
+            controlsContainer.appendChild(dotsRow);
+            wrapper.appendChild(controlsContainer);
+
+            // ربط حركة الأسهم والسحب ميكانيكياً
+            const prevBtn = document.getElementById('cat-arrow-prev');
+            const nextBtn = document.getElementById('cat-arrow-next');
+            
+            if (prevBtn && nextBtn) {
+                prevBtn.onclick = () => {
+                    track.scrollBy({ left: 220, behavior: 'smooth' });
+                    updateActiveDotDelay();
+                };
+                nextBtn.onclick = () => {
+                    track.scrollBy({ left: -220, behavior: 'smooth' });
+                    updateActiveDotDelay();
+                };
+            }
+
+            // ربط ضغطات الـ Dots
+            document.querySelectorAll('.cat-dot').forEach(dot => {
+                dot.onclick = function() {
+                    const idx = parseInt(this.dataset.index, 10);
+                    track.scrollTo({ left: idx * 220, behavior: 'smooth' });
+                    document.querySelectorAll('.cat-dot').forEach(d => {
+                        d.style.background = 'rgba(255,145,164,0.3)';
+                        d.classList.remove('active');
+                    });
+                    this.style.background = BRAND_COLORS.pink;
+                    this.classList.add('active');
+                };
+            });
+
+            function updateActiveDotDelay() {
+                setTimeout(() => {
+                    const currentScroll = Math.abs(track.scrollLeft);
+                    const activeIndex = Math.min(Math.round(currentScroll / 220), cats.length - 1);
+                    document.querySelectorAll('.cat-dot').forEach((d, i) => {
+                        if (i === activeIndex) {
+                            d.style.background = BRAND_COLORS.pink;
+                            d.classList.add('active');
+                        } else {
+                            d.style.background = 'rgba(255,145,164,0.3)';
+                            d.classList.remove('active');
+                        }
+                    });
+                }, 300);
+            }
+            track.addEventListener('scroll', updateActiveDotDelay);
+        }
     }
 
     /* ==========================================================================\
-       5. هيكلة وبناء نظام السلة العائمة التفاعلية الفاخرة ديناميكياً (Floating Cart Drawer)
+       4.ب. تشغيل ومزامنة سلايدر "عقد من الإتقان" التلقائي بالكامل بالـ Dots
+       ========================================================================== */
+    function initializeBosePrideSlider() {
+        const prideTrack = document.getElementById('excellence-images-track');
+        const prideWrapper = document.getElementById('pride-slider-wrapper');
+        if (!prideTrack || !prideWrapper) return;
+
+        // استخراج الصور أو العناصر لحساب العدد
+        const slides = prideTrack.children;
+        if (slides.length === 0) return;
+
+        // توليد وحقن الـ Dots تحت السلايدر التلقائي لضمان المظهر الاحترافي والتنفس البصري الكامل
+        let prideDotsContainer = document.getElementById('pride-dots-container');
+        if (!prideDotsContainer) {
+            prideDotsContainer = document.createElement('div');
+            prideDotsContainer.id = 'pride-dots-container';
+            prideDotsContainer.style.cssText = `display: flex; gap: 8px; justify-content: center; align-items: center; margin-top: 16px; width: 100%;`;
+            
+            for (let i = 0; i < slides.length; i++) {
+                const dot = document.createElement('span');
+                dot.className = `pride-dot ${i === 0 ? 'active' : ''}`;
+                dot.style.cssText = `width: 8px; height: 8px; border-radius: 50%; background: ${i === 0 ? BRAND_COLORS.pink : 'rgba(255,145,164,0.3)'}; transition: 0.3s; cursor: pointer;`;
+                dot.dataset.index = i;
+                dot.onclick = function() {
+                    currentIdx = parseInt(this.dataset.index, 10);
+                    scrollPrideToEach(currentIdx);
+                };
+                prideDotsContainer.appendChild(dot);
+            }
+            prideWrapper.appendChild(prideDotsContainer);
+        }
+
+        let currentIdx = 0;
+        let slideInterval = null;
+
+        function scrollPrideToEach(index) {
+            if (!slides[index]) return;
+            const slideWidth = slides[0].offsetWidth || 280;
+            prideTrack.scrollTo({ left: index * (slideWidth + 16), behavior: 'smooth' });
+            
+            document.querySelectorAll('.pride-dot').forEach((d, i) => {
+                if (i === index) {
+                    d.style.background = BRAND_COLORS.pink;
+                    d.classList.add('active');
+                } else {
+                    d.style.background = 'rgba(255,145,164,0.3)';
+                    d.classList.remove('active');
+                }
+            });
+        }
+
+        function startAutoPlay() {
+            slideInterval = setInterval(() => {
+                currentIdx++;
+                if (currentIdx >= slides.length) {
+                    currentIdx = 0;
+                }
+                scrollPrideToEach(currentIdx);
+            }, 3500); // تنقل تلقائي ناعم ومريح كل 3.5 ثانية
+        }
+
+        function stopAutoPlay() {
+            if (slideInterval) clearInterval(slideInterval);
+        }
+
+        startAutoPlay();
+        prideTrack.addEventListener('mouseenter', stopAutoPlay);
+        prideTrack.addEventListener('mouseleave', startAutoPlay);
+        prideTrack.addEventListener('touchstart', stopAutoPlay, {passive: true});
+        prideTrack.addEventListener('touchend', startAutoPlay, {passive: true});
+    }
+
+    /* ==========================================================================\
+       5. هيكلة وبناء نظام السلة العائمة التفاعلية الفاخرة وسيكولوجية الوميض
        ========================================================================== */
     function injectFloatingCartSystem() {
         if (document.getElementById('bose-floating-cart-wrapper')) return;
@@ -249,6 +431,24 @@
         triggerButton.addEventListener('click', openBoseCartDrawer);
         document.getElementById('bose-close-drawer-trigger').addEventListener('click', closeBoseCartDrawer);
         overlay.addEventListener('click', closeBoseCartDrawer);
+        
+        applySychologicalBlinking();
+    }
+
+    /**
+     * 🧠 تطبيق سيكولوجية الوميض والنبض الفاخر (Sychological Blinking)
+     * تومض السلة برفق وإثارة بصرية راقية عندما تكون فارغة لزيادة التفاعل، وتهدأ فور امتلائها بمنتج واحد على الأقل.
+     */
+    function applySychologicalBlinking() {
+        const cart = getInMemoryCart();
+        const trigger = document.getElementById('bose-floating-cart-trigger');
+        if (!trigger) return;
+
+        if (cart.length === 0) {
+            trigger.classList.add('bose-pulse-blinking-active');
+        } else {
+            trigger.classList.remove('bose-pulse-blinking-active');
+        }
     }
 
     function openBoseCartDrawer() {
@@ -287,6 +487,7 @@
     function saveInMemoryCart(cart) {
         localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
         document.dispatchEvent(new CustomEvent('BoseCartUpdated'));
+        applySychologicalBlinking();
     }
 
     function renderFloatingCartItems() {
@@ -460,7 +661,7 @@
     };
 
     /* ==========================================================================\
-       7. مهندس ومولد كروت المنتجات الصارم والتحكم بعدادات الكمية الحية
+       7. مهندس ومولد كروت المنتجات القياسي الفاخر - السعر بالأعلى والسلة بالأسفل
        ========================================================================== */
     window.generateStrictProductCardHTML = function (product, currency = 'EGP') {
         if (!product) return '';
@@ -471,25 +672,35 @@
         const displayDesc = product.flavorDesc || product.description || '';
         
         return `
-            <div class="product-card" data-slug="${product.slug}" style="background: ${BRAND_COLORS.white}; border: 1px solid rgba(255,145,164,0.18); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 12px; justify-content: space-between; position: relative; box-shadow: var(--bose-shadow-glow, 0 8px 32px rgba(255,145,164,0.04)); direction: rtl; text-align: right; width: 100%; box-sizing: border-box;">
-                <div class="product-card-top" style="position: relative; overflow: hidden; border-radius: 14px; height: 220px; width: 100%;">
+            <div class="product-card" data-slug="${product.slug}" style="background: ${BRAND_COLORS.white}; border: 1px solid rgba(255,145,164,0.18); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 10px; justify-content: space-between; position: relative; box-shadow: 0 8px 32px rgba(255,145,164,0.04); direction: rtl; text-align: right; width: 100%; box-sizing: border-box;">
+                
+                <div class="product-card-top" style="position: relative; overflow: hidden; border-radius: 14px; height: 210px; width: 100%;">
                     <img src="${imgUrl}" alt="${displayTitle}" style="width: 100%; height: 100%; object-fit: cover; transition: 0.3s;" loading="lazy">
                 </div>
-                <div class="product-card-info" style="flex-grow: 1; display: flex; flex-direction: column; gap: 4px;">
-                    <h3 style="margin: 0; font-size: 15px; font-weight: 700; color: ${BRAND_COLORS.black};">${displayTitle}</h3>
-                    <span style="font-size: 13px; font-weight: 700; color: ${BRAND_COLORS.pink};">${displayFlavor}</span>
-                    <p style="margin: 0; font-size: 12px; color: #555; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 36px;">${displayDesc}</p>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: 2px;">
+                    <h3 style="margin: 0; font-size: 15px; font-weight: 700; color: ${BRAND_COLORS.black}; font-family: 'Cairo';">${displayTitle}</h3>
+                    <div class="product-card-price" style="font-size: 16px; font-weight: 700; color: ${BRAND_COLORS.pink}; white-space: nowrap; font-family: 'Cairo';">
+                        ${price} <span style="font-size: 11px; font-weight:400; color:#111;">EGP</span>
+                    </div>
+                </div>
+
+                <div class="product-card-info" style="flex-grow: 1; display: flex; flex-direction: column; gap: 2px;">
+                    <span style="font-size: 12px; font-weight: 700; color: ${BRAND_COLORS.pink}; font-family: 'Cairo';">${displayFlavor}</span>
+                    <p style="margin: 0; font-size: 12px; color: #555; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 36px; font-family: 'Cairo';">${displayDesc}</p>
                 </div>
                 
-                <div class="bose-qty-controller-box" style="display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255, 145, 164, 0.2); border-radius: 10px; width: 100%; background: #FFFFFF; height: 36px; padding: 2px; box-sizing: border-box; margin: 4px 0;">
+                <div class="bose-qty-controller-box" style="display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255, 145, 164, 0.2); border-radius: 10px; width: 100%; background: #FFFFFF; height: 36px; padding: 2px; box-sizing: border-box; margin: 2px 0;">
                     <button class="btn-qty-card-plus" style="border: none; background: transparent; width: 33%; height: 100%; font-weight: 700; font-size: 16px; color: ${BRAND_COLORS.black}; cursor: pointer;">+</button>
                     <input type="text" readonly class="input-qty-card-val" value="1" style="width: 34%; text-align: center; border: none; font-size: 14px; font-weight: 700; color: ${BRAND_COLORS.black}; background: transparent; padding:0;">
                     <button class="btn-qty-card-minus" style="border: none; background: transparent; width: 33%; height: 100%; font-weight: 700; font-size: 16px; color: ${BRAND_COLORS.black}; cursor: pointer;">-</button>
                 </div>
 
-                <div class="product-card-bottom" style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px; width:100%;">
-                    <div class="product-card-price" style="font-size: 16px; font-weight: 700; color: ${BRAND_COLORS.pink}; white-space: nowrap;">${price} <span style="font-size: 11px; font-weight:400; color:#111;">EGP</span></div>
-                    <button class="bose-add-to-cart-btn" data-id="${product.id}" style="background-color: ${BRAND_COLORS.pink}; color: ${BRAND_COLORS.white}; border: none; padding: 8px 16px; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; transition: 0.2s;">إضافة للسلة</button>
+                <div class="product-card-action-row" style="width: 100%; margin-top: 2px;">
+                    <button class="bose-add-to-cart-btn" data-id="${product.id}" style="width: 100%; background-color: ${BRAND_COLORS.pink}; color: ${BRAND_COLORS.white}; border: none; height: 40px; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: 'Cairo';">
+                        <i class="fas fa-shopping-cart bose-btn-cart-icon"></i>
+                        <span class="bose-btn-text-label">إضافة للسلة</span>
+                    </button>
                 </div>
             </div>
         `;
@@ -498,37 +709,37 @@
     window.attachProductCardEvents = function (containerElement, productsList, currency) {
         if (!containerElement || !productsList) return;
         
-        // ربط أحداث عداد كرت المنيو الفرعي الصغير
         containerElement.querySelectorAll('.product-card').forEach(card => {
             const plusBtn = card.querySelector('.btn-qty-card-plus');
             const minusBtn = card.querySelector('.btn-qty-card-minus');
             const qtyInput = card.querySelector('.input-qty-card-val');
 
             if (plusBtn && minusBtn && qtyInput) {
-                plusBtn.addEventListener('click', (e) => {
+                plusBtn.onclick = (e) => {
                     e.preventDefault();
                     let currentVal = parseInt(qtyInput.value, 10) || 1;
                     qtyInput.value = currentVal + 1;
-                });
+                };
 
-                minusBtn.addEventListener('click', (e) => {
+                minusBtn.onclick = (e) => {
                     e.preventDefault();
                     let currentVal = parseInt(qtyInput.value, 10) || 1;
                     if (currentVal > 1) {
                         qtyInput.value = currentVal - 1;
                     }
-                });
+                };
             }
         });
 
-        // ربط حدث زر الإضافة الحقيقي للسلة مع الكمية المحددة بالعداد
         containerElement.querySelectorAll('.bose-add-to-cart-btn').forEach(btn => {
-            btn.addEventListener('click', function (e) {
+            btn.onclick = function (e) {
                 e.preventDefault();
                 e.stopPropagation();
-                const prodId = this.dataset.id;
+                
+                const currentButton = this;
+                const prodId = currentButton.dataset.id;
                 const matchedProduct = productsList.find(p => String(p.id) === String(prodId));
-                const cardNode = this.closest('.product-card');
+                const cardNode = currentButton.closest('.product-card');
                 const qtyInput = cardNode ? cardNode.querySelector('.input-qty-card-val') : null;
                 const selectedQuantity = qtyInput ? (parseInt(qtyInput.value, 10) || 1) : 1;
 
@@ -554,11 +765,32 @@
                     }
                     
                     saveInMemoryCart(cart);
-                    window.showBoseToast(`تمت إضافة ${selectedQuantity} من ${matchedProduct.title} بنجاح 🌸`);
-                    if (qtyInput) qtyInput.value = 1; // تصفير العداد لعملية مريحة تالية
-                    openBoseCartDrawer();
+                    
+                    // 🌟 تجربة مستخدم متطورة: تحويل السلة لعلامة صح راقية فوراً وتحديث النص برفق لمنع التموه
+                    const iconNode = currentButton.querySelector('.bose-btn-cart-icon');
+                    const textNode = currentButton.querySelector('.bose-btn-text-label');
+                    
+                    if (iconNode && textNode) {
+                        iconNode.className = "fas fa-check bose-btn-cart-icon";
+                        textNode.textContent = "تمت الإضافة بنجاح ✨";
+                        currentButton.style.backgroundColor = "#2ECC71"; // اللون الأخضر الهادئ لراحة نفس العميل لنجاح العملية
+                        
+                        setTimeout(() => {
+                            iconNode.className = "fas fa-shopping-cart bose-btn-cart-icon";
+                            textNode.textContent = "إضافة للسلة";
+                            currentButton.style.backgroundColor = BRAND_COLORS.pink;
+                        }, 2000);
+                    }
+
+                    window.showBoseToast(`تمت إضافة ${selectedQuantity} من ${matchedProduct.title} بنجاح لراحتك 🌸`);
+                    if (qtyInput) qtyInput.value = 1;
+                    
+                    // فتح السلة تلقائياً دون تجميد أو تمويه عشوائي
+                    setTimeout(() => {
+                        openBoseCartDrawer();
+                    }, 400);
                 }
-            });
+            };
         });
     };
 
@@ -587,6 +819,7 @@
         if (drawer && drawer.style.left === '0px') {
             renderFloatingCartItems();
         }
+        applySychologicalBlinking();
     }
 
     function initializeGlobalFeatures() {
@@ -594,6 +827,7 @@
         injectFloatingCartSystem();
         renderBoseCategoriesSlider(boseGlobalStoreData);
         runBoseStatsCounter(boseGlobalStoreData);
+        initializeBosePrideSlider();
         updateGlobalCartCounters();
     }
 
@@ -608,6 +842,16 @@
         const styleBlock = document.createElement('style');
         styleBlock.id = 'bose-floating-styles-block';
         styleBlock.textContent = `
+            /* أنيميشن الوميض والنبض السيكولوجي الفاخر للسلة عندما تكون فارغة */
+            @keyframes bosePulseBlinking {
+                0% { transform: scale(1); box-shadow: 0 8px 24px rgba(255,145,164,0.3); border-color: ${BRAND_COLORS.pink}; }
+                50% { transform: scale(1.06); box-shadow: 0 12px 32px rgba(255,145,164,0.6); border-color: ${BRAND_COLORS.gold}; }
+                100% { transform: scale(1); box-shadow: 0 8px 24px rgba(255,145,164,0.3); border-color: ${BRAND_COLORS.pink}; }
+            }
+            .bose-pulse-blinking-active {
+                animation: bosePulseBlinking 2.2s infinite ease-in-out;
+            }
+
             #bose-floating-cart-trigger {
                 position: fixed;
                 bottom: 24px;
@@ -624,10 +868,11 @@
                 align-items: center;
                 justify-content: center;
                 padding: 0;
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
             }
             #bose-floating-cart-trigger:hover {
-                transform: scale(1.08);
-                box-shadow: 0 12px 40px rgba(255,145,164,0.4);
+                transform: scale(1.08) !important;
+                box-shadow: 0 12px 40px rgba(255,145,164,0.4) !important;
             }
             .bose-trigger-icon-box {
                 position: relative;
@@ -677,8 +922,8 @@
                 left: 0;
                 width: 100%;
                 height: 100%;
-                background-color: rgba(17, 17, 17, 0.4);
-                backdrop-filter: blur(4px);
+                background-color: rgba(17, 17, 17, 0.3);
+                backdrop-filter: blur(3px);
                 z-index: 999997;
                 display: none;
                 opacity: 0;
