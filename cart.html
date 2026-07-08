@@ -14,23 +14,31 @@
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/cart-checkout.css">
     
-    <!-- 📐 حارس الأنماط الصارم لتأمين طبقات العرض وبناء السلايدر الأفقي السلس 📐 -->
+    <!-- 📐 حارس الأنماط الصارم لتأمين طبقات العرض وبناء السلايدر الأفقي الفاخر 📐 -->
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+        
+        body {
+            font-family: 'Cairo', sans-serif !important;
+        }
+
         .bose-drawer-menu, #sidebar-drawer {
             z-index: 1000500 !important;
         }
         .drawer-overlay, #drawer-shield {
             z-index: 1000100 !important;
         }
-        /* 🔄 هندسة مجرى الحركة الأفقي للمقترحات الذكية لمنع التراص الرأسي */
+        
+        /* 🔄 هندسة مجرى الحركة الأفقي للمقترحات الذكية لمنع التراص البصري */
         .bose-cart-horizontal-slider {
             display: flex !important;
             flex-direction: row !important;
             flex-wrap: nowrap !important;
             overflow-x: auto !important;
-            gap: 16px;
-            padding: 12px 4px 24px 4px;
+            gap: 24px;
+            padding: 20px 8px 32px 8px;
             width: 100%;
+            box-sizing: border-box;
             scrollbar-width: none !important; /* إخفاء شريط التمرير لمتصفحات ديسكتوب */
             -ms-overflow-style: none !important;
             -webkit-overflow-scrolling: touch !important; /* تفعيل السحب الحر بصباع العميل على الموبايل */
@@ -39,13 +47,99 @@
         .bose-cart-horizontal-slider::-webkit-scrollbar {
             display: none !important; /* إخفاء متقدم لمتصفحات سياق الموبايل */
         }
-        /* تثبيت حجم وأبعاد كارت المنتج المصغر داخل السلايدر الأفقي لراحة العين */
+
+        /* 👑 إعادة هيكلة كارت المنتج المقترح ليكون فخماً، جذاباً، وغير مضغوط 👑 */
         .bose-cart-horizontal-slider .bose-suggestion-micro-card {
-            flex: 0 0 280px !important; /* يعرض كارتين جنب بعض بالمليم على الشاشات الذكية */
-            width: 280px !important;
-            max-width: 280px !important;
+            flex: 0 0 300px !important; /* مساحة عرض سخية تمنع انكماش الكارت */
+            width: 300px !important;
+            max-width: 300px !important;
             box-sizing: border-box !important;
             scroll-snap-align: start;
+            background: #FFFFFF !important; /* بياض ناصع مريح للعين */
+            border: 2px solid #FF91A4 !important; /* نبض الحياة في حدود المنتج */
+            border-radius: 24px !important;
+            overflow: hidden;
+            padding: 0 !important;
+            display: flex !important;
+            flex-direction: column !important; /* عرض عمودي مريح للعين يحاكي المنيو الفاخر */
+            justify-content: space-between;
+            box-shadow: 0 8px 24px rgba(255, 145, 164, 0.08) !important; /* ظلال ناعمة بمبي */
+            transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+        }
+
+        .bose-cart-horizontal-slider .bose-suggestion-micro-card:hover {
+            transform: translateY(-6px) !important;
+            box-shadow: 0 12px 32px rgba(255, 145, 164, 0.15) !important;
+        }
+
+        /* تنسيق الأجزاء الداخلية لكارت الاقتراحات الفاخر */
+        .bose-suggestion-image-wrapper {
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+            background: #FFFFFF;
+        }
+        .bose-suggestion-image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        .bose-suggestion-micro-card:hover .bose-suggestion-image-wrapper img {
+            transform: scale(1.06);
+        }
+        .bose-suggestion-content-pane {
+            padding: 18px;
+            text-align: right;
+            direction: rtl;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .bose-suggestion-title-text {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #111111; /* أسود صريح معزول عن الخلفيات والظلال */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .bose-suggestion-rating-stars {
+            color: #D4AF37; /* لمسة ذهبية ناعمة للتقييمات الفاخرة */
+            font-size: 0.85rem;
+            display: flex;
+            gap: 2px;
+        }
+        .bose-suggestion-footer-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 6px;
+        }
+        .bose-suggestion-price-tag {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #FF91A4; /* السعر بلون نبض الحياة */
+        }
+        .bose-suggestion-add-trigger {
+            background: #FF91A4;
+            color: #FFFFFF;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s ease;
+        }
+        .bose-suggestion-add-trigger:hover {
+            background: #111111;
         }
 
         /* 🛠️ [إصلاح برمجى حاسم لحظر عصر وتشويه لوجو الفوتر نهائياً] 🛠️ */
@@ -110,14 +204,12 @@
     </div>
 
     <!-- 🏢 مكون الهيدر الموحد والثابت (Shared Universal Header) المتوافق بالمليم مع خريطة الـ DOM الهندسية الموحدة 🏢 -->
-    <header class="bose-navbar">
-        <!-- يتم التحكم في حقن وتنشيط هذا الوعاء بالكامل بواسطة محرك الموقع المركزي core-engine.js -->
+    <header class="bose-navbar" id="bose-global-header">
+        <!-- يتم التحكم في حقن وتنشيط هذا الوعاء بالكامل بواسطة محرك الموقع المركزي core-engine.js أو كود الحماية المدمج بالأسفل -->
     </header>
 
     <!-- 🚪 القائمة الجانبية الفاخرة للتصفح على الموبايل (Universal Drawer Menu) 🚪 -->
-    <div id="sidebar-drawer" class="bose-drawer-menu">
-        <!-- يتم إدارتها وتفعيل أحداث الإغلاق بواسطة المحرك العام للموقع لمنع أي شلل برمجى -->
-    </div>
+    <div id="sidebar-drawer" class="bose-drawer-menu"></div>
 
     <!-- الوعاء الحاجب لتأثيرات الخلفية والتمويه الموحد عند فتح القائمة -->
     <div id="drawer-shield" class="drawer-overlay"></div>
@@ -125,7 +217,7 @@
     <!-- 🧱 المحتوى الرئيسي لصفحة السلة الشاملة 🧱 -->
     <main class="bose-cart-page-section" id="cart-main-container">
         <div class="cart-page-header">
-            <h1 class="cart-page-title">سلة التسوق</h1>
+            <h1 class="cart-page-title" style="font-weight: 700; max-width: 700px;">سلة التسوق</h1>
             <p class="cart-page-subtitle bose-arabic-text">راجع منتجاتك وأصنافك المفضلة براحة تامة قبل الانتقال لخطوة إرسال وتأكيد الفاتورة الملكية عبر الواتساب الفوري.</p>
         </div>
 
@@ -135,8 +227,8 @@
             <!-- الجانب الأيمن: قائمة كروت المشتريات المحقونة ديناميكياً عبر مصفوفة bose_cart -->
             <div class="cart-items-list-wrapper">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; direction: rtl;">
-                    <h3 style="font-size: 1.15rem; font-weight: 600;">الأصناف المحددة للطلب</h3>
-                    <button id="btn-clear-cart" class="btn-clear-cart-node" style="font-family: var(--bose-font); font-size: 0.88rem; font-weight: 700; color: #777; border: 1px solid rgba(17,17,17,0.12); padding: 6px 14px; border-radius: 30px; cursor: pointer; transition: var(--bose-transition);">إفراغ السلة</button>
+                    <h3 style="font-size: 1.15rem; font-weight: 700; color: #111111;">الأصناف المحددة للطلب</h3>
+                    <button id="btn-clear-cart" class="btn-clear-cart-node" style="font-family: 'Cairo', sans-serif; font-size: 0.88rem; font-weight: 700; color: #777; border: 1px solid rgba(17,17,17,0.12); padding: 6px 14px; border-radius: 30px; cursor: pointer; transition: 0.2s;">إفراغ السلة</button>
                 </div>
                 
                 <!-- حاوية الحقن المركزي للكروت الأفقية القياسية خالية تماماً من ثغرات ومشاكل التكديس وبتر النصوص -->
@@ -146,16 +238,16 @@
 
                 <!-- حقل ملاحظات العميل الحرة الاختيارية لضمان الدعم وتلافي المشاكل اللوجستية والطبية -->
                 <div class="checkout-details-card" style="margin-top: 24px; padding: 20px;">
-                    <h4 class="product-option-title" style="margin-bottom: 12px; font-weight: 600;">
+                    <h4 class="product-option-title" style="margin-bottom: 12px; font-weight: 700; color: #111111;">
                         <i class="fas fa-pen-fancy"></i> توصيات أو ملاحظات خاصة بالطلب (اختياري)
                     </h4>
-                    <textarea id="checkout-order-notes-textarea" class="product-custom-input" placeholder="مثال: يرجى الاتصال بي هاتفياً قبل التوصيل بوقت كافٍ، أو إلغاء المكسرات من حشوة التورتة لسلامتكم الطبية..." style="height: 90px; font-family: var(--bose-font); font-size: 0.9rem; padding: 12px; border-radius: 12px; resize: none; width: 100%; box-sizing: border-box;"></textarea>
+                    <textarea id="checkout-order-notes-textarea" class="product-custom-input" placeholder="مثال: يرجى الاتصال بي هاتفياً قبل التوصيل بوقت كافٍ، أو إلغاء المكسرات من حشوة التورتة لسلامتكم الطبية..." style="height: 90px; font-family: 'Cairo', sans-serif; font-size: 0.9rem; padding: 12px; border-radius: 12px; resize: none; width: 100%; box-sizing: border-box;"></textarea>
                 </div>
             </div>
 
             <!-- الجانب الأيسر: ملخص الفاتورة وحقل الكوبونات التفاعلي الصارم المطبق لمعادلة التقريب الكلي الصارم -->
             <div class="bose-summary-sticky-card">
-                <h3 class="summary-section-title">ملخص الطلب المالي</h3>
+                <h3 class="summary-section-title" style="font-weight: 700; color: #111111;">ملخص الطلب المالي</h3>
                 
                 <!-- نظام كوبونات الخصم والربط المالي الآمن -->
                 <div class="coupon-form-container">
@@ -168,15 +260,15 @@
                 <div class="summary-pricing-table">
                     <div class="pricing-row-node">
                         <span class="pricing-label-text">عدد الأصناف بالسلة:</span>
-                        <span id="summary-items-count" class="pricing-value-text" style="font-weight: 700;">0</span>
+                        <span id="summary-items-count" class="pricing-value-text" style="font-weight: 700; color: #111111;">0</span>
                     </div>
                     <div class="pricing-row-node">
                         <span class="pricing-label-text">المجموع الصافي للمشتريات:</span>
-                        <span id="cart-subtotal-value" class="pricing-value-text">0 EGP</span>
+                        <span id="cart-subtotal-value" class="pricing-value-text" style="color: #111111; font-weight: 700;">0 EGP</span>
                     </div>
                     <div class="pricing-row-node">
                         <span class="pricing-label-text">الخصم المطبق:</span>
-                        <span id="summary-discount" class="pricing-value-text" style="color: var(--bose-success-text); font-weight: 700;">0 EGP</span>
+                        <span id="summary-discount" class="pricing-value-text" style="color: #FF91A4; font-weight: 700;">0 EGP</span>
                     </div>
                     <div class="pricing-row-node">
                         <span class="pricing-label-text">رسوم ومصاريف الشحن والتوصيل:</span>
@@ -184,62 +276,62 @@
                     </div>
                     
                     <div class="summary-grand-total-row">
-                        <span class="grand-total-label">العجمالي النهائي التقريبي:</span>
-                        <span id="cart-grand-total-value" class="total-value-display">0 EGP</span>
+                        <span class="grand-total-label" style="color: #111111;">العجمالي النهائي التقريبي:</span>
+                        <span id="cart-grand-total-value" class="total-value-display" style="color: #FF91A4;">0 EGP</span>
                     </div>
                 </div>
 
                 <!-- زر الإجراء الحاسم والانتقال المباشر لصفحة إتمام المشتريات والبيانات اللوجستية -->
-                <a href="checkout.html" id="btn-proceed-to-checkout" class="bose-primary-checkout-btn">
+                <a href="checkout.html" id="btn-proceed-to-checkout" class="bose-primary-checkout-btn" style="font-weight: 700;">
                     <i class="fas fa-shopping-bag"></i> الانتقال لإتمام الطلب
                 </a>
                 
-                <a href="menu.html" class="bose-continue-shopping-anchor">
+                <a href="menu.html" class="bose-continue-shopping-anchor" style="color: #111111; font-weight: 600;">
                     <i class="fas fa-arrow-right"></i> العودة للمنيو الشامل واستعراض المزيد
                 </a>
             </div>
         </div>
 
-        <!-- 🌸 قسم المقترحات الذكية والخيارات البديلة (قد يعجبك أيضاً) - المطور ليعمل كسلايدر أفقي سلس الحركة 🌸 -->
-        <section class="bose-section-container" style="padding: 40px 0 0 0; margin-top: 40px; border-top: 1px dashed var(--bose-border-pink);">
+        <!-- 🌸 قسم المقترحات الذكية والخيارات البديلة (قد يعجبك أيضاً) - المطور ليعمل كسلايدر أفقي سلس وحقن كروت فاخرة مستقلة 🌸 -->
+        <section class="bose-section-container" style="padding: 40px 0 0 0; margin-top: 40px; border-top: 1px dashed #FF91A4;">
             <div class="bose-section-header" style="text-align: right; margin-bottom: 20px; direction: rtl;">
-                <h2 class="bose-section-title" style="font-size: 1.35rem; padding-bottom: 6px;">قد يعجبك أيضاً</h2>
-                <p class="bose-section-subtitle" style="font-size: 0.88rem; margin-top: 2px;">أصناف فاخرة ومميزة يوصي بها خبراؤنا لتكمل بها روعة اختيارك اليوم وتتحرك بشكل جانبي مريح للعين.</p>
+                <h2 class="bose-section-title" style="font-size: 1.5rem; font-weight: 700; color: #111111; padding-bottom: 6px;">قد يعجبك أيضاً</h2>
+                <p class="bose-section-subtitle" style="font-size: 0.95rem; color: #777; margin-top: 2px;">أصناف فاخرة ومميزة يوصي بها خبراؤنا لتكمل بها روعة اختيارك اليوم وتتحرك بشكل جانبي مريح للعين.</p>
             </div>
             
             <!-- مجرى الحركة المخصص والمنظم لعرض المنتجات ككروت كاملة ومستقلة تتحرك أفقياً بحرية تامة وبدون أي تكديس رأسي -->
             <div id="bose-cart-premium-suggestions-grid" class="bose-cart-horizontal-slider">
-                <!-- يتم توليد وحقن كروت المنتجات الفاخرة المصغرة هنا ديناميكياً عبر الموتور المدمج بالأسفل عند تحميل قاعدة البيانات بنجاح -->
+                <!-- يتم توليد وحقن كروت المنتجات الفاخرة هنا ديناميكياً عبر الموتور المدمج بالأسفل عند تحميل قاعدة البيانات بنجاح -->
             </div>
         </section>
 
         <!-- 🛡️ شريط عناصر الثقة والضمان الأربعة القياسي الموحد لعلامة حلويات بوسي الفاخرة 🛡️ -->
         <div class="shared-trust-bar">
             <div class="trust-item-node">
-                <div class="trust-icon-box"><i class="fas fa-birthday-cake"></i></div>
+                <div class="trust-icon-box" style="color: #FF91A4;"><i class="fas fa-birthday-cake"></i></div>
                 <div class="trust-info-pane">
-                    <h4>طازج ولذيذ 100%</h4>
+                    <h4 style="font-weight: 700; color: #111111;">طازج ولذيذ 100%</h4>
                     <p class="bose-arabic-text">خامات طبيعية ممتازة ومصنوعة يدوياً بحب وشغف لكل عميل لضمان الطعم الفاخر.</p>
                 </div>
             </div>
             <div class="trust-item-node">
-                <div class="trust-icon-box"><i class="fas fa-truck-ramp-box"></i></div>
+                <div class="trust-icon-box" style="color: #FF91A4;"><i class="fas fa-truck-ramp-box"></i></div>
                 <div class="trust-info-pane">
-                    <h4>شحن آمن وضامن</h4>
+                    <h4 style="font-weight: 700; color: #111111;">شحن آمن وضامن</h4>
                     <p class="bose-arabic-text">نضمن لك التوصيل الفاخر بأعلى دقة تحافظ على شكل ونضارة وتنسيق طلبك الملكي.</p>
                 </div>
             </div>
             <div class="trust-item-node">
-                <div class="trust-icon-box"><i class="fas fa-headset"></i></div>
+                <div class="trust-icon-box" style="color: #FF91A4;"><i class="fas fa-headset"></i></div>
                 <div class="trust-info-pane">
-                    <h4>الاهتمام والتقدير</h4>
+                    <h4 style="font-weight: 700; color: #111111;">الاهتمام والتقدير</h4>
                     <p class="bose-arabic-text">نتحدث معك وليس إليك، ونشرح الجودة والقيمة الحقيقية للمكونات الفاخرة قبل السعر.</p>
                 </div>
             </div>
             <div class="trust-item-node">
-                <div class="trust-icon-box"><i class="fas fa-shield-halved"></i></div>
+                <div class="trust-icon-box" style="color: #FF91A4;"><i class="fas fa-shield-halved"></i></div>
                 <div class="trust-info-pane">
-                    <h4>حجز وتأكيد مباشر</h4>
+                    <h4 style="font-weight: 700; color: #111111;">حجز وتأكيد مباشر</h4>
                     <p class="bose-arabic-text">توثيق مالي متكامل ومزامنة تامة وتأكيد فوري للفواتير عبر الواتساب الخاص بالفرع.</p>
                 </div>
             </div>
@@ -247,7 +339,7 @@
     </main>
 
     <!-- 🏪 الفوتر الموحد والثابت (Shared Universal Footer) بياض ناصع مريح للعين 🏪 -->
-    <footer class="bose-footer">
+    <footer class="bose-footer" id="bose-global-footer">
         <!-- يتم إدارته وحقنه ديناميكياً بكامل وثائق السياسات وقنوات التواصل الاجتماعي عبر محرك الموقع المركزي core-engine.js -->
     </footer>
 
@@ -258,6 +350,31 @@
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             
+            // 🔐 [حارس حماية وحقن اضطراري للهيدر والفوتر في حال توقف المحرك الخارجي]
+            const ensureHeaderFooterFallback = () => {
+                const headerBox = document.getElementById("bose-global-header");
+                const footerBox = document.getElementById("bose-global-footer");
+                
+                if (headerBox && headerBox.innerHTML.trim() === "") {
+                    headerBox.innerHTML = `
+                        <div style="display:flex; justify-content:space-between; align-items:center; width:100%; max-width:1200px; margin:0 auto; padding:10px 20px; direction:rtl;">
+                            <a href="index.html" style="text-decoration:none; font-weight:700; font-size:1.4rem; color:#111111;">حلويات بوسي</a>
+                            <nav style="display:flex; gap:20px;">
+                                <a href="menu.html" style="text-decoration:none; color:#111111; font-weight:700;">تصفح المنيو</a>
+                                <a href="index.html" style="text-decoration:none; color:#111111; font-weight:700;">الرئيسية</a>
+                            </nav>
+                        </div>`;
+                }
+                if (footerBox && footerBox.innerHTML.trim() === "") {
+                    footerBox.innerHTML = `
+                        <div style="text-align:center; padding:20px; background:#FFFFFF; border-top:1px solid rgba(17,17,17,0.06); direction:rtl;">
+                            <p style="margin:0; font-size:0.9rem; color:#111111; font-weight:700;">&copy; 2026 حلويات بوسي - جميع الحقوق محفوظة.</p>
+                        </div>`;
+                }
+            };
+            // تشغيل فحص الأمان بعد ثانية واحدة للتأكد من الحقن الفوري والآمن
+            setTimeout(ensureHeaderFooterFallback, 1000);
+
             // صمام الأمان وتأمين حماية الهروب لمنع الـ Syntax Error في حال انعدام تعريف الدالة محلياً
             const secureEscape = window.escapeHtml || window.escapeHTML || function(str) {
                 if (!str) return '';
@@ -278,26 +395,33 @@
                 const currency = dbData.store?.currency || "EGP";
 
                 if (finalSuggestions.length === 0) {
-                    targetGrid.innerHTML = `<p style="text-align:center; width:100%; font-weight:600; padding:20px; opacity:0.7;">تصفح قائمتنا الشاملة عبر المنيو لاستكشاف المزيد من المفاجآت 🌸</p>`;
+                    targetGrid.innerHTML = `<p style="text-align:center; width:100%; font-weight:700; padding:20px; opacity:0.7;">تصفح قائمتنا الشاملة عبر المنيو لاستكشاف المزيد من المفاجآت 🌸</p>`;
                     return;
                 }
 
-                // [🔐 حل جذري لثغرة حشو وتشتيت كروت السلايدر]: بناء الكارت المصغر الملتزم فقط بـ (الصورة، الاسم، السعر، وزر الإضافة السريع +)
+                // [🔐 حل جذري لثغرة حشو وتشتيت كروت السلايدر]: بناء الكارت العمودي الفاخر الملتزم بالمعايير الجمالية للبراند
                 targetGrid.innerHTML = finalSuggestions.map(prod => {
                     const defaultLogo = "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png";
                     const imgUrl = prod.image || (prod.images && prod.images[0] ? prod.images[0] : defaultLogo);
                     const calculatedPrice = window.calculateBosePrice ? window.calculateBosePrice(prod.price, "menu-only") : prod.price;
                     
                     return `
-                        <div class="bose-suggestion-micro-card" data-slug="${prod.slug}" style="border: var(--bose-border-pink); border-radius: 20px; background: var(--bose-white); overflow: hidden; padding: 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px; box-shadow: 0 4px 16px rgba(255,145,164,0.04); direction: rtl; text-align: right;">
-                            <div style="display: flex; align-items: center; gap: 12px; overflow: hidden; flex: 1;">
-                                <img src="${imgUrl}" alt="${secureEscape(prod.title)}" style="width: 65px; height: 60px; object-fit: cover; border-radius: 12px; flex-shrink: 0;" onerror="this.src='${defaultLogo}';">
-                                <div style="overflow: hidden;">
-                                    <h4 style="margin: 0 0 4px 0; font-size: 0.92rem; font-weight: 700; color: var(--bose-black); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${secureEscape(prod.title)}</h4>
-                                    <span style="font-size: 0.95rem; font-weight: 700; color: var(--bose-pink); display: block;">${calculatedPrice} ${currency}</span>
+                        <div class="bose-suggestion-micro-card" data-slug="${prod.slug}">
+                            <div class="bose-suggestion-image-wrapper">
+                                <img src="${imgUrl}" alt="${secureEscape(prod.title)}" onerror="this.src='${defaultLogo}';">
+                            </div>
+                            <div class="bose-suggestion-content-pane">
+                                <h4 class="bose-suggestion-title-text">${secureEscape(prod.title)}</h4>
+                                <div class="bose-suggestion-rating-stars">
+                                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                                </div>
+                                <div class="bose-suggestion-footer-row">
+                                    <span class="bose-suggestion-price-tag">${calculatedPrice} ${currency}</span>
+                                    <button class="btn-quick-add-to-cart bose-suggestion-add-trigger" aria-label="إضافة سريعة صنف ${secureEscape(prod.title)}">
+                                        <i class="fas fa-plus"></i> إضافة
+                                    </button>
                                 </div>
                             </div>
-                            <button class="btn-quick-add-to-cart" style="background: var(--bose-pink); color: var(--bose-white); border: none; width: 36px; height: 36px; border-radius: 50%; font-size: 1.3rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; flex-shrink: 0;" aria-label="إضافة سريعة صنف ${secureEscape(prod.title)}">+</button>
                         </div>
                     `;
                 }).join("");
@@ -316,7 +440,6 @@
                                 const standardItem = window.createCartItem(product, { flavorName: product.flavorName || "كلاسيك" }, 1);
                                 if (standardItem) {
                                     window.addBoseCartItem(standardItem);
-                                    // [🔐 إعادة تمهيد رندرة السلة الحية فوراً دون حدوث فجوة بيضاء تصفيرية للأسعار]
                                     if (typeof renderCartItems === "function") {
                                         renderCartItems();
                                     } else {
