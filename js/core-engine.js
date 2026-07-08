@@ -1,6 +1,6 @@
 /**
  * 👑 المحرك المركزي العام والنهائي للموقع والنافذة العائمة - حلويات بوسي 👑
- * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية ومشاكل التداخل V51.0
+ * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية ومشاكل التداخل V52.0
  * متوافق بشكل مطلق وثنائي الاتجاه مع كافة ملفات css/ وجافا سكريبت الموقع وقاعدة البيانات site-data-final.json
  */
 
@@ -138,12 +138,10 @@
                     </div>
                 </div>
             `;
-            initializeSidebarDrawer();
         }
 
         const footerNode = document.querySelector('.bose-footer');
         if (footerNode && footerNode.innerHTML.trim() === "") {
-            // 🛠️ [إصلاح حاسم]: تمت إزالة تعارض دالة الـ instagram النصية لضمان استقرار الحقن
             footerNode.innerHTML = `
                 <div class="footer-inner-wrapper">
                     <div class="footer-logo-container">
@@ -167,6 +165,9 @@
                 </div>
             `;
         }
+        
+        // إعادة ربط أحداث القائمة الجانبية بعد التأكد من وجود الهيدر في الـ DOM
+        initializeSidebarDrawer();
         updateGlobalCartCounters();
     }
 
@@ -196,7 +197,7 @@
                     if (relatedProducts.length > 0) {
                         relatedProducts.forEach(prod => {
                             productLinksHTML += `
-                                <a href="product.html?id=${prod.id}" style="display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 0.85rem; font-weight: 600; color: #333333; padding: 8px 16px; text-decoration: none; border-bottom: 1px solid rgba(255,145,164,0.05);">
+                                <a href="product.html?slug=${prod.slug}" style="display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 0.85rem; font-weight: 600; color: #333333; padding: 8px 16px; text-decoration: none; border-bottom: 1px solid rgba(255,145,164,0.05);">
                                     <span style="display: flex; align-items: center; gap: 6px;"><i class="fas fa-angle-left" style="color: ${BRAND_COLORS.pink}; font-size: 10px;"></i> ${prod.flavorName || prod.title}</span>
                                     <span style="font-size: 11px; color: ${BRAND_COLORS.pink}; font-weight: 700;">${Math.round(prod.price)} EGP</span>
                                 </a>
@@ -204,7 +205,7 @@
                         });
                     } else {
                         productLinksHTML = `
-                            <a href="category.html?id=${cat.id}" style="display: flex; align-items: center; gap: 10px; font-size: 0.85rem; font-weight: 600; color: #666; padding: 10px 16px; text-decoration: none; font-style: italic;">
+                            <a href="category.html?category=${cat.id}" style="display: flex; align-items: center; gap: 10px; font-size: 0.85rem; font-weight: 600; color: #666; padding: 10px 16px; text-decoration: none; font-style: italic;">
                                 <i class="fas fa-cookie"></i> استعراض تشكيلة قسم ${cat.title}
                             </a>
                         `;
@@ -417,7 +418,7 @@
         const cats = storeData.homepage.categoriesSlider;
         
         track.innerHTML = cats.map(cat => `
-            <a href="category.html?id=${cat.id}" class="category-slide-card">
+            <a href="category.html?category=${cat.id}" class="category-slide-card">
                 <div style="width: 100%; aspect-ratio: 1/1; overflow: hidden; border-radius: 20px; border: 1px solid rgba(255, 145, 164, 0.2); background: ${BRAND_COLORS.cream}; position: relative;">
                     <img src="${cat.image}" alt="${cat.title}" style="width: 100%; height: 100%; object-fit: cover; display: block;" loading="lazy">
                 </div>
@@ -913,7 +914,7 @@
     };
 
     /* ==========================================================================\
-       7. مهندس ومولد كروت المنتجات القياسي الفاخر - السعر بالأعلى والسلة بالأسفل
+       7. مهندس ومولد كروت المنتجات القياسي الفاخر - ربط السلوك التفاعلي المباشر
        ========================================================================== */
     window.generateStrictProductCardHTML = function (product, currency = 'EGP') {
         if (!product) return '';
@@ -923,27 +924,30 @@
         const displayFlavor = product.flavorName || 'نكهة بوسي المميزة';
         const displayDesc = product.flavorDesc || product.description || '';
         
+        // 👑 [تحسين التوجيه الهيكلي]: جعل الكرت بالكامل عبارة عن رابط آمن ينقله إلى صفحة المنتج الفردية لرؤية المراجعات والبدائل الذكية
         return `
             <div class="product-card" data-slug="${product.slug}" style="background: ${BRAND_COLORS.white}; border: 1px solid rgba(255,145,164,0.18); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 12px; justify-content: space-between; position: relative; box-shadow: 0 8px 32px rgba(255,145,164,0.04); direction: rtl; text-align: right; width: 100%; box-sizing: border-box; transition: transform 0.3s ease;">
                 
-                <div class="product-card-top" style="position: relative; overflow: hidden; border-radius: 14px; height: 210px; width: 100%;">
-                    <img src="${imgUrl}" alt="${displayTitle}" style="width: 100%; height: 100%; object-fit: cover; transition: 0.3s;" loading="lazy">
-                </div>
+                <a href="product.html?slug=${product.slug}" class="bose-product-details-link" style="text-decoration: none; display: flex; flex-direction: column; gap: 12px; width: 100%; color: inherit;">
+                    <div class="product-card-top" style="position: relative; overflow: hidden; border-radius: 14px; height: 210px; width: 100%;">
+                        <img src="${imgUrl}" alt="${displayTitle}" style="width: 100%; height: 100%; object-fit: cover; transition: 0.3s;" loading="lazy">
+                    </div>
 
-                <div style="display: flex; flex-direction: column; gap: 4px; width: 100%; margin-top: 4px;">
-                    <h3 style="margin: 0; font-size: 16px; font-weight: 700; color: ${BRAND_COLORS.black}; font-family: 'Cairo'; line-height: 1.4;">${displayTitle}</h3>
-                    <span style="font-size: 12px; font-weight: 700; color: ${BRAND_COLORS.pink}; font-family: 'Cairo';">${displayFlavor}</span>
-                </div>
+                    <div style="display: flex; flex-direction: column; gap: 4px; width: 100%; margin-top: 4px;">
+                        <h3 style="margin: 0; font-size: 16px; font-weight: 700; color: ${BRAND_COLORS.black}; font-family: 'Cairo'; line-height: 1.4;">${displayTitle}</h3>
+                        <span style="font-size: 12px; font-weight: 700; color: ${BRAND_COLORS.pink}; font-family: 'Cairo';">${displayFlavor}</span>
+                    </div>
 
-                <div class="product-card-info" style="flex-grow: 1; display: flex; flex-direction: column; gap: 4px;">
-                    <p style="margin: 0; font-size: 12px; color: #555; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 38px; font-family: 'Cairo';">${displayDesc}</p>
-                </div>
-                
-                <div class="product-card-price-block" style="margin: 4px 0; text-align: right; width: 100%;">
-                    <span style="font-size: 17px; font-weight: 700; color: ${BRAND_COLORS.pink}; font-family: 'Cairo';">
-                        ${price} <span style="font-size: 11px; font-weight: 600; color: ${BRAND_COLORS.black};">EGP</span>
-                    </span>
-                </div>
+                    <div class="product-card-info" style="flex-grow: 1; display: flex; flex-direction: column; gap: 4px;">
+                        <p style="margin: 0; font-size: 12px; color: #555; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 38px; font-family: 'Cairo';">${displayDesc}</p>
+                    </div>
+                    
+                    <div class="product-card-price-block" style="margin: 4px 0; text-align: right; width: 100%;">
+                        <span style="font-size: 17px; font-weight: 700; color: ${BRAND_COLORS.pink}; font-family: 'Cairo';">
+                            ${price} <span style="font-size: 11px; font-weight: 600; color: ${BRAND_COLORS.black};">EGP</span>
+                        </span>
+                    </div>
+                </a>
                 
                 <div class="bose-qty-controller-box" style="display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255, 145, 164, 0.2); border-radius: 10px; width: 100%; background: #FFFFFF; height: 38px; padding: 2px; box-sizing: border-box; margin: 4px 0;">
                     <button class="btn-qty-card-minus" style="border: none; background: transparent; width: 33%; height: 100%; font-weight: 700; font-size: 18px; color: ${BRAND_COLORS.black}; cursor: pointer; display: flex; align-items: center; justify-content: center;">-</button>
@@ -972,14 +976,14 @@
             if (plusBtn && minusBtn && qtyInput) {
                 plusBtn.onclick = (e) => {
                     e.preventDefault();
-                    e.stopPropagation();
+                    e.stopPropagation(); // يمنع الدخول لصفحة المنتج عند الرغبة في زيادة العدد فقط
                     let currentVal = parseInt(qtyInput.value, 10) || 1;
                     qtyInput.value = currentVal + 1;
                 };
 
                 minusBtn.onclick = (e) => {
                     e.preventDefault();
-                    e.stopPropagation();
+                    e.stopPropagation(); // يمنع الدخول لصفحة المنتج عند الرغبة في تقليل العدد فقط
                     let currentVal = parseInt(qtyInput.value, 10) || 1;
                     if (currentVal > 1) {
                         qtyInput.value = currentVal - 1;
@@ -991,7 +995,7 @@
         containerElement.querySelectorAll('.bose-add-to-cart-btn').forEach(btn => {
             btn.onclick = function (e) {
                 e.preventDefault();
-                e.stopPropagation();
+                e.stopPropagation(); // يمنع انهيار الصفحة أو التوجيه التلقائي
                 
                 const currentButton = this;
                 const prodId = currentButton.dataset.id;
@@ -1078,7 +1082,6 @@
     }
 
     function initializeGlobalFeatures() {
-        initializeSidebarDrawer();
         injectFloatingCartSystem();
         
         if (document.getElementById('categories-track')) {
