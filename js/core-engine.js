@@ -1,8 +1,8 @@
 /**
  * 👑 المحرك المركزي العام والنهائي للموقع والنافذة العائمة - حلويات بوسي 👑
- * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية ومشاكل التداخل V46.0
+ * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية ومشاكل التداخل V47.0
  * متوافق بشكل مطلق وثنائي الاتجاه مع كافة ملفات css/ وجافا سكريبت الموقع وقاعدة البيانات site-data-final.json
- * [تم حل كوارث القائمة الجانبية، أتمتة سلايدر الإتقان والفئات بالـ Dots والأسهم، وهيكلة كروت المنتجات وسيكولوجية وميض السلة]
+ * [تم حل كوارث القائمة الجانبية الفاخرة، أتمتة سلايدر الإتقان والفئات بالـ Dots والأسهم، وهيكلة كروت المنتجات القياسية]
  */
 
 (function () {
@@ -29,8 +29,13 @@
        ========================================================================== */
     async function loadBoseAbsoluteDatabase() {
         try {
-            const isSubPage = window.location.pathname.includes('/css/') || window.location.pathname.includes('/js/');
-            const jsonPath = isSubPage ? '../data/site-data-final.json' : 'data/site-data-final.json';
+            // فحص ذكي للمسار لضمان عمل الجلب في كافة الصفحات والمسارات الفرعية
+            const currentPath = window.location.pathname;
+            let jsonPath = 'data/site-data-final.json';
+            
+            if (currentPath.includes('/css/') || currentPath.includes('/js/') || currentPath.includes('/pages/')) {
+                jsonPath = '../data/site-data-final.json';
+            }
 
             const response = await fetch(jsonPath);
             if (!response.ok) {
@@ -96,37 +101,48 @@
        ========================================================================== */
     function initializeSidebarDrawer() {
         const toggleBtn = document.getElementById('mobile-menu-toggle');
-        const closeBtn = document.getElementById('sidebar-close-panel-btn');
         const drawer = document.getElementById('sidebar-drawer');
         const shield = document.getElementById('drawer-shield');
 
-        // إذا لم يكن هيكل المنيو الجانبي المطور محقوناً في الصفحة، نزرعه برفق لتقديم أفضل تجربة تصفح للعميل
-        if (drawer && !drawer.classList.contains('bose-premium-sidebar-initiated')) {
+        if (!drawer) return; // حارس أمان في حال عدم وجود العنصر بالصفحة
+
+        // حقن الهيكل الفاخر المطور لسهولة وصول المستهلك ورفع المبيعات
+        if (!drawer.classList.contains('bose-premium-sidebar-initiated')) {
             drawer.classList.add('bose-premium-sidebar-initiated');
             drawer.innerHTML = `
-                <div class="sidebar-luxury-header" style="padding: 20px; border-bottom: 1px solid ${BRAND_COLORS.cream}; display: flex; justify-content: space-between; align-items: center;">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" style="width: 40px; height: 40px; object-fit: contain;" alt="لوجو بوسي">
-                        <span style="font-family: 'Cairo'; font-weight: 700; font-size: 16px; color: ${BRAND_COLORS.black};">قائمة التصفح الفاخرة</span>
+                <div class="sidebar-luxury-header" style="padding: 24px 20px; border-bottom: 1px solid ${BRAND_COLORS.cream}; display: flex; justify-content: space-between; align-items: center; background: ${BRAND_COLORS.white};">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" style="width: 44px; height: 44px; object-fit: contain;" alt="لوجو بوسي الفاخر">
+                        <div style="display: flex; flex-direction: column;">
+                            <span style="font-family: 'Cairo'; font-weight: 700; font-size: 15px; color: ${BRAND_COLORS.black}; line-height: 1.3;">حلويات بوسي</span>
+                            <span style="font-family: 'Cairo'; font-size: 11px; color: #777;">صنعناها بحب لتهديها لمن تحب</span>
+                        </div>
                     </div>
-                    <button id="sidebar-close-panel-btn" style="background: none; border: none; font-size: 24px; color: ${BRAND_COLORS.black}; cursor: pointer;">&times;</button>
+                    <button id="sidebar-close-panel-btn" style="background: none; border: none; font-size: 28px; color: ${BRAND_COLORS.black}; cursor: pointer; line-height: 1; padding: 0 4px;">&times;</button>
                 </div>
-                <div class="sidebar-luxury-body" style="flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 14px;">
-                    <span style="font-size: 11px; font-weight: 700; color: ${BRAND_COLORS.pink}; letter-spacing: 1px; text-transform: uppercase;">الأقسام الرئيسية</span>
-                    <a href="index.html" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; background: ${BRAND_COLORS.cream}; color: ${BRAND_COLORS.black}; font-weight: 600; font-size: 14px; text-decoration: none;"><i class="fas fa-home" style="color: ${BRAND_COLORS.pink};"></i> الواجهة الرئيسية</a>
-                    <a href="menu.html" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; color: ${BRAND_COLORS.black}; font-weight: 600; font-size: 14px; text-decoration: none; transition: 0.2s;"><i class="fas fa-utensils" style="color: ${BRAND_COLORS.pink};"></i> المنيو الشامل</a>
-                    <a href="cart.html" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; color: ${BRAND_COLORS.black}; font-weight: 600; font-size: 14px; text-decoration: none; transition: 0.2s;"><i class="fas fa-shopping-bag" style="color: ${BRAND_COLORS.pink};"></i> سلة التسوق الخاصة بك</a>
+                <div class="sidebar-luxury-body" style="flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; background: ${BRAND_COLORS.white};">
+                    <span style="font-size: 11px; font-weight: 700; color: ${BRAND_COLORS.pink}; letter-spacing: 0.5px; margin-bottom: 4px; font-family: 'Cairo';">أقسام التصفح الأساسية</span>
                     
-                    <span style="font-size: 11px; font-weight: 700; color: ${BRAND_COLORS.pink}; letter-spacing: 1px; text-transform: uppercase; margin-top: 10px;">المحاكيات التفاعلية الفاخرة</span>
-                    <a href="cake-builder.html" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border: 1px solid rgba(255,145,164,0.25); border-radius: 12px; color: ${BRAND_COLORS.black}; font-weight: 600; font-size: 14px; text-decoration: none; background: #FFFFFF;"><span style="display: flex; align-items: center; gap: 12px;"><i class="fas fa-birthday-cake" style="color: ${BRAND_COLORS.gold};"></i> محاكي التورت الحصري</span> <i class="fas fa-chevron-left" style="font-size: 11px; color: #ccc;"></i></a>
-                    <a href="flower-builder.html" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border: 1px solid rgba(255,145,164,0.25); border-radius: 12px; color: ${BRAND_COLORS.black}; font-weight: 600; font-size: 14px; text-decoration: none; background: #FFFFFF;"><span style="display: flex; align-items: center; gap: 12px;"><i class="fas fa-seedling" style="color: ${BRAND_COLORS.gold};"></i> تنسيق بوكيهات الورد والمال</span> <i class="fas fa-chevron-left" style="font-size: 11px; color: #ccc;"></i></a>
+                    <a href="index.html" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; background: ${BRAND_COLORS.cream}; color: ${BRAND_COLORS.black}; font-weight: 700; font-size: 13px; text-decoration: none; font-family: 'Cairo';"><i class="fas fa-home" style="color: ${BRAND_COLORS.pink}; font-size: 15px;"></i> الواجهة الرئيسية للموقع</a>
+                    <a href="menu.html" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; color: ${BRAND_COLORS.black}; font-weight: 600; font-size: 13px; text-decoration: none; font-family: 'Cairo'; transition: 0.2s;"><i class="fas fa-utensils" style="color: ${BRAND_COLORS.pink}; font-size: 15px;"></i> المنيو الشامل الأصلي</a>
+                    <a href="cart.html" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; color: ${BRAND_COLORS.black}; font-weight: 600; font-size: 13px; text-decoration: none; font-family: 'Cairo'; transition: 0.2s;"><i class="fas fa-shopping-bag" style="color: ${BRAND_COLORS.pink}; font-size: 15px;"></i> سلة المشتريات والطلبات</a>
                     
-                    <span style="font-size: 11px; font-weight: 700; color: #888; text-align: center; margin-top: auto; padding-top: 20px;">فرع الكفاح - صنعناها بحب لتهديها لمن تحب 🌸</span>
+                    <div style="height: 1px; background: #F1F1F1; margin: 8px 0;"></div>
+                    
+                    <span style="font-size: 11px; font-weight: 700; color: ${BRAND_COLORS.pink}; letter-spacing: 0.5px; margin-bottom: 4px; font-family: 'Cairo';">أجنحة التخصيص والمحاكاة الفاخرة</span>
+                    
+                    <a href="cake-builder.html" style="display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border: 1px solid rgba(255,145,164,0.22); border-radius: 12px; color: ${BRAND_COLORS.black}; font-weight: 700; font-size: 13px; text-decoration: none; background: #FFFFFF; font-family: 'Cairo'; transition: 0.2s; box-shadow: 0 4px 12px rgba(255,145,164,0.03);"><span style="display: flex; align-items: center; gap: 12px;"><i class="fas fa-birthday-cake" style="color: ${BRAND_COLORS.gold}; font-size: 16px;"></i> محاكي وتصميم التورت الحصري</span> <i class="fas fa-chevron-left" style="font-size: 11px; color: ${BRAND_COLORS.pink};"></i></a>
+                    <a href="flower-builder.html" style="display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border: 1px solid rgba(255,145,164,0.22); border-radius: 12px; color: ${BRAND_COLORS.black}; font-weight: 700; font-size: 13px; text-decoration: none; background: #FFFFFF; font-family: 'Cairo'; transition: 0.2s; box-shadow: 0 4px 12px rgba(255,145,164,0.03);"><span style="display: flex; align-items: center; gap: 12px;"><i class="fas fa-seedling" style="color: ${BRAND_COLORS.gold}; font-size: 16px;"></i> تنسيق بوكيهات الورد والمال الفاخرة</span> <i class="fas fa-chevron-left" style="font-size: 11px; color: ${BRAND_COLORS.pink};"></i></a>
+                    
+                    <div style="margin-top: auto; padding-top: 30px; text-align: center;">
+                        <span style="font-size: 11px; font-weight: 600; color: #999; font-family: 'Cairo'; display: block; line-height: 1.5;">فرع الكفاح - بجوار صيدلية د. أحمد مجدي 🌸</span>
+                        <span style="font-size: 10px; color: #BBB; font-family: 'Cairo'; margin-top: 4px; display: block;">جميع الحقوق محفوظة © ٢٠٢٦</span>
+                    </div>
                 </div>
             `;
         }
 
-        const reCloseBtn = document.getElementById('sidebar-close-panel-btn');
+        const closeBtn = document.getElementById('sidebar-close-panel-btn');
 
         if (toggleBtn && drawer && shield) {
             toggleBtn.onclick = (e) => {
@@ -153,7 +169,7 @@
             }
         };
 
-        if (reCloseBtn) reCloseBtn.onclick = closeDrawerMenu;
+        if (closeBtn) closeBtn.onclick = closeDrawerMenu;
         if (shield) shield.onclick = closeDrawerMenu;
     }
 
@@ -161,7 +177,9 @@
        3. محرك العدادات التصاعدية الذكي لقسم الفخر والاعتزاز
        ========================================================================== */
     function runBoseStatsCounter(storeData) {
-        if (!storeData?.homepage?.pride?.stats) return;
+        const prideSection = document.getElementById('pride-section');
+        if (!prideSection || !storeData?.homepage?.pride?.stats) return; // حارس أمان لمنع التداخل بالصفحات الأخرى
+
         const statsConfig = storeData.homepage.pride.stats;
 
         const targets = [
@@ -185,7 +203,7 @@
             const stepTime = Math.max(Math.floor(duration / end), 15);
             
             const timer = setInterval(() => {
-                start += Math.ceil(end / 100);
+                start += Math.ceil(end / 60);
                 if (start >= end) {
                     start = end;
                     clearInterval(timer);
@@ -194,8 +212,7 @@
             }, stepTime);
         };
 
-        const prideSection = document.getElementById('pride-section');
-        if (prideSection && 'IntersectionObserver' in window) {
+        if ('IntersectionObserver' in window) {
             const observer = new IntersectionObserver((entries) => {
                 if (entries[0].isIntersecting) {
                     targets.forEach(animateNode);
@@ -214,11 +231,11 @@
     function renderBoseCategoriesSlider(storeData) {
         const wrapper = document.getElementById('categories-slider-wrapper');
         const track = document.getElementById('categories-track');
-        if (!track || !storeData?.homepage?.categoriesSlider) return;
+        if (!track || !storeData?.homepage?.categoriesSlider) return; // حارس أمان لصفحة الـ Index فقط
 
         const cats = storeData.homepage.categoriesSlider;
         
-        // رندرة الكروت الكلاسيكية الفاخرة
+        // رندرة الكروت الكلاسيكية الفاخرة المعتمدة
         track.innerHTML = cats.map(cat => `
             <a href="category.html?id=${cat.id}" class="category-slide-card" style="flex: 0 0 200px; text-decoration: none; display: flex; flex-direction: column; align-items: center; transition: 0.3s;">
                 <div style="width: 100%; aspect-ratio: 1/1; overflow: hidden; border-radius: 20px; border: 1px solid rgba(255, 145, 164, 0.2); background: var(--bose-cream); position: relative;">
@@ -228,25 +245,23 @@
             </a>
         `).join('');
 
-        // إضافة الأسهم التفاعلية الفاخرة ونقاط التنقل الـ 12 (Dots) لتقديم أفضل تجربة تصفح للعميل
+        // حقن شارات التنقل الـ 12 المعتمدة والأسهم لمنع التموه
         let controlsContainer = document.getElementById('bose-categories-controls');
         if (!controlsContainer && wrapper) {
             controlsContainer = document.createElement('div');
             controlsContainer.id = 'bose-categories-controls';
             controlsContainer.style.cssText = `display: flex; flex-direction: column; align-items: center; gap: 14px; margin-top: 20px; width: 100%; direction: rtl;`;
             
-            // الأسهم الفاخرة
-            const arrowsRow = document.createElement('div');
+            arrowsRow = document.createElement('div');
             arrowsRow.style.cssText = `display: flex; gap: 40px; align-items: center; justify-content: center;`;
             arrowsRow.innerHTML = `
                 <button id="cat-arrow-prev" style="width: 40px; height: 40px; border-radius: 50%; border: 1px solid ${BRAND_COLORS.pink}; background: ${BRAND_COLORS.white}; color: ${BRAND_COLORS.pink}; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: 0.2s;"><i class="fas fa-chevron-right"></i></button>
                 <button id="cat-arrow-next" style="width: 40px; height: 40px; border-radius: 50%; border: 1px solid ${BRAND_COLORS.pink}; background: ${BRAND_COLORS.white}; color: ${BRAND_COLORS.pink}; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: 0.2s;"><i class="fas fa-chevron-left"></i></button>
             `;
             
-            // نقاط التنقل الـ 12 الذكية المعتمدة
             const dotsRow = document.createElement('div');
             dotsRow.id = 'cat-dots-container';
-            dotsRow.style.cssText = `display: flex; gap: 8px; justify-content: center; align-items: center; flex-wrap: wrap;`;
+            dotsRow.style.cssText = `display: flex; gap: 8px; justify-content: center; align-items: center; flex-wrap: wrap; max-width: 90%;`;
             dotsRow.innerHTML = cats.map((_, i) => `
                 <span class="cat-dot ${i === 0 ? 'active' : ''}" data-index="${i}" style="width: 8px; height: 8px; border-radius: 50%; background: ${i === 0 ? BRAND_COLORS.pink : 'rgba(255,145,164,0.3)'}; cursor: pointer; transition: 0.3s;"></span>
             `).join('');
@@ -255,7 +270,6 @@
             controlsContainer.appendChild(dotsRow);
             wrapper.appendChild(controlsContainer);
 
-            // ربط حركة الأسهم والسحب ميكانيكياً
             const prevBtn = document.getElementById('cat-arrow-prev');
             const nextBtn = document.getElementById('cat-arrow-next');
             
@@ -270,7 +284,6 @@
                 };
             }
 
-            // ربط ضغطات الـ Dots
             document.querySelectorAll('.cat-dot').forEach(dot => {
                 dot.onclick = function() {
                     const idx = parseInt(this.dataset.index, 10);
@@ -309,13 +322,11 @@
     function initializeBosePrideSlider() {
         const prideTrack = document.getElementById('excellence-images-track');
         const prideWrapper = document.getElementById('pride-slider-wrapper');
-        if (!prideTrack || !prideWrapper) return;
+        if (!prideTrack || !prideWrapper) return; // حارس أمان لمنع حدوث أخطاء برمجية خارج الصفحة الرئيسية
 
-        // استخراج الصور أو العناصر لحساب العدد
         const slides = prideTrack.children;
         if (slides.length === 0) return;
 
-        // توليد وحقن الـ Dots تحت السلايدر التلقائي لضمان المظهر الاحترافي والتنفس البصري الكامل
         let prideDotsContainer = document.getElementById('pride-dots-container');
         if (!prideDotsContainer) {
             prideDotsContainer = document.createElement('div');
@@ -362,7 +373,7 @@
                     currentIdx = 0;
                 }
                 scrollPrideToEach(currentIdx);
-            }, 3500); // تنقل تلقائي ناعم ومريح كل 3.5 ثانية
+            }, 3500);
         }
 
         function stopAutoPlay() {
@@ -435,10 +446,6 @@
         applySychologicalBlinking();
     }
 
-    /**
-     * 🧠 تطبيق سيكولوجية الوميض والنبض الفاخر (Sychological Blinking)
-     * تومض السلة برفق وإثارة بصرية راقية عندما تكون فارغة لزيادة التفاعل، وتهدأ فور امتلائها بمنتج واحد على الأقل.
-     */
     function applySychologicalBlinking() {
         const cart = getInMemoryCart();
         const trigger = document.getElementById('bose-floating-cart-trigger');
@@ -559,6 +566,16 @@
 
     function bindFloatingCartActions() {
         document.querySelectorAll('.bose-drawer-qty-btn.plus').forEach(btn => {
+            btn.replaceWith(btn.cloneNode(true));
+        });
+        document.querySelectorAll('.bose-drawer-qty-btn.minus').forEach(btn => {
+            btn.replaceWith(btn.cloneNode(true));
+        });
+        document.querySelectorAll('.bose-drawer-card-remove').forEach(btn => {
+            btn.replaceWith(btn.cloneNode(true));
+        });
+
+        document.querySelectorAll('.bose-drawer-qty-btn.plus').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const index = e.currentTarget.dataset.index;
                 const cart = getInMemoryCart();
@@ -671,33 +688,34 @@
         const displayFlavor = product.flavorName || 'نكهة بوسي المميزة';
         const displayDesc = product.flavorDesc || product.description || '';
         
+        // 👑 تطبيق الهيكلية المقدسة: الصورة بالكامل -> الاسم وبجانبه السعر مفصلاً بالأعلى -> الوصف والنكهة -> العداد -> زر السلة العريض بالأسفل
         return `
-            <div class="product-card" data-slug="${product.slug}" style="background: ${BRAND_COLORS.white}; border: 1px solid rgba(255,145,164,0.18); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 10px; justify-content: space-between; position: relative; box-shadow: 0 8px 32px rgba(255,145,164,0.04); direction: rtl; text-align: right; width: 100%; box-sizing: border-box;">
+            <div class="product-card" data-slug="${product.slug}" style="background: ${BRAND_COLORS.white}; border: 1px solid rgba(255,145,164,0.18); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 12px; justify-content: space-between; position: relative; box-shadow: 0 8px 32px rgba(255,145,164,0.04); direction: rtl; text-align: right; width: 100%; box-sizing: border-box; transition: transform 0.3s ease;">
                 
                 <div class="product-card-top" style="position: relative; overflow: hidden; border-radius: 14px; height: 210px; width: 100%;">
                     <img src="${imgUrl}" alt="${displayTitle}" style="width: 100%; height: 100%; object-fit: cover; transition: 0.3s;" loading="lazy">
                 </div>
 
-                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: 2px;">
-                    <h3 style="margin: 0; font-size: 15px; font-weight: 700; color: ${BRAND_COLORS.black}; font-family: 'Cairo';">${displayTitle}</h3>
-                    <div class="product-card-price" style="font-size: 16px; font-weight: 700; color: ${BRAND_COLORS.pink}; white-space: nowrap; font-family: 'Cairo';">
-                        ${price} <span style="font-size: 11px; font-weight:400; color:#111;">EGP</span>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%; margin-top: 4px; gap: 8px;">
+                    <h3 style="margin: 0; font-size: 16px; font-weight: 700; color: ${BRAND_COLORS.black}; font-family: 'Cairo'; line-height: 1.4; flex: 1;">${displayTitle}</h3>
+                    <div class="product-card-price" style="font-size: 17px; font-weight: 700; color: ${BRAND_COLORS.pink}; white-space: nowrap; font-family: 'Cairo'; padding-top: 1px;">
+                        ${price} <span style="font-size: 11px; font-weight: 600; color: ${BRAND_COLORS.black};">EGP</span>
                     </div>
                 </div>
 
-                <div class="product-card-info" style="flex-grow: 1; display: flex; flex-direction: column; gap: 2px;">
+                <div class="product-card-info" style="flex-grow: 1; display: flex; flex-direction: column; gap: 4px;">
                     <span style="font-size: 12px; font-weight: 700; color: ${BRAND_COLORS.pink}; font-family: 'Cairo';">${displayFlavor}</span>
-                    <p style="margin: 0; font-size: 12px; color: #555; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 36px; font-family: 'Cairo';">${displayDesc}</p>
+                    <p style="margin: 0; font-size: 12px; color: #555; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 38px; font-family: 'Cairo';">${displayDesc}</p>
                 </div>
                 
-                <div class="bose-qty-controller-box" style="display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255, 145, 164, 0.2); border-radius: 10px; width: 100%; background: #FFFFFF; height: 36px; padding: 2px; box-sizing: border-box; margin: 2px 0;">
-                    <button class="btn-qty-card-plus" style="border: none; background: transparent; width: 33%; height: 100%; font-weight: 700; font-size: 16px; color: ${BRAND_COLORS.black}; cursor: pointer;">+</button>
-                    <input type="text" readonly class="input-qty-card-val" value="1" style="width: 34%; text-align: center; border: none; font-size: 14px; font-weight: 700; color: ${BRAND_COLORS.black}; background: transparent; padding:0;">
-                    <button class="btn-qty-card-minus" style="border: none; background: transparent; width: 33%; height: 100%; font-weight: 700; font-size: 16px; color: ${BRAND_COLORS.black}; cursor: pointer;">-</button>
+                <div class="bose-qty-controller-box" style="display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255, 145, 164, 0.2); border-radius: 10px; width: 100%; background: #FFFFFF; height: 38px; padding: 2px; box-sizing: border-box; margin: 4px 0;">
+                    <button class="btn-qty-card-minus" style="border: none; background: transparent; width: 33%; height: 100%; font-weight: 700; font-size: 18px; color: ${BRAND_COLORS.black}; cursor: pointer; display: flex; align-items: center; justify-content: center;">-</button>
+                    <input type="text" readonly class="input-qty-card-val" value="1" style="width: 34%; text-align: center; border: none; font-size: 14px; font-weight: 700; color: ${BRAND_COLORS.black}; background: transparent; padding:0; font-family: 'Cairo';">
+                    <button class="btn-qty-card-plus" style="border: none; background: transparent; width: 33%; height: 100%; font-weight: 700; font-size: 18px; color: ${BRAND_COLORS.black}; cursor: pointer; display: flex; align-items: center; justify-content: center;">+</button>
                 </div>
 
                 <div class="product-card-action-row" style="width: 100%; margin-top: 2px;">
-                    <button class="bose-add-to-cart-btn" data-id="${product.id}" style="width: 100%; background-color: ${BRAND_COLORS.pink}; color: ${BRAND_COLORS.white}; border: none; height: 40px; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: 'Cairo';">
+                    <button class="bose-add-to-cart-btn" data-id="${product.id}" style="width: 100%; background-color: ${BRAND_COLORS.pink}; color: ${BRAND_COLORS.white}; border: none; height: 44px; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: 'Cairo'; box-shadow: 0 4px 12px rgba(255,145,164,0.15);">
                         <i class="fas fa-shopping-cart bose-btn-cart-icon"></i>
                         <span class="bose-btn-text-label">إضافة للسلة</span>
                     </button>
@@ -717,12 +735,14 @@
             if (plusBtn && minusBtn && qtyInput) {
                 plusBtn.onclick = (e) => {
                     e.preventDefault();
+                    e.stopPropagation();
                     let currentVal = parseInt(qtyInput.value, 10) || 1;
                     qtyInput.value = currentVal + 1;
                 };
 
                 minusBtn.onclick = (e) => {
                     e.preventDefault();
+                    e.stopPropagation();
                     let currentVal = parseInt(qtyInput.value, 10) || 1;
                     if (currentVal > 1) {
                         qtyInput.value = currentVal - 1;
@@ -766,14 +786,13 @@
                     
                     saveInMemoryCart(cart);
                     
-                    // 🌟 تجربة مستخدم متطورة: تحويل السلة لعلامة صح راقية فوراً وتحديث النص برفق لمنع التموه
                     const iconNode = currentButton.querySelector('.bose-btn-cart-icon');
                     const textNode = currentButton.querySelector('.bose-btn-text-label');
                     
                     if (iconNode && textNode) {
                         iconNode.className = "fas fa-check bose-btn-cart-icon";
                         textNode.textContent = "تمت الإضافة بنجاح ✨";
-                        currentButton.style.backgroundColor = "#2ECC71"; // اللون الأخضر الهادئ لراحة نفس العميل لنجاح العملية
+                        currentButton.style.backgroundColor = "#2ECC71";
                         
                         setTimeout(() => {
                             iconNode.className = "fas fa-shopping-cart bose-btn-cart-icon";
@@ -785,7 +804,6 @@
                     window.showBoseToast(`تمت إضافة ${selectedQuantity} من ${matchedProduct.title} بنجاح لراحتك 🌸`);
                     if (qtyInput) qtyInput.value = 1;
                     
-                    // فتح السلة تلقائياً دون تجميد أو تمويه عشوائي
                     setTimeout(() => {
                         openBoseCartDrawer();
                     }, 400);
@@ -825,9 +843,18 @@
     function initializeGlobalFeatures() {
         initializeSidebarDrawer();
         injectFloatingCartSystem();
-        renderBoseCategoriesSlider(boseGlobalStoreData);
-        runBoseStatsCounter(boseGlobalStoreData);
-        initializeBosePrideSlider();
+        
+        // 🛡️ حراس الاستدعاء الأمنيين لضمان تصفح الصفحات الفرعية دون انهيار المحرك
+        if (document.getElementById('categories-track')) {
+            renderBoseCategoriesSlider(boseGlobalStoreData);
+        }
+        if (document.getElementById('pride-section')) {
+            runBoseStatsCounter(boseGlobalStoreData);
+        }
+        if (document.getElementById('excellence-images-track')) {
+            initializeBosePrideSlider();
+        }
+        
         updateGlobalCartCounters();
     }
 
@@ -842,7 +869,6 @@
         const styleBlock = document.createElement('style');
         styleBlock.id = 'bose-floating-styles-block';
         styleBlock.textContent = `
-            /* أنيميشن الوميض والنبض السيكولوجي الفاخر للسلة عندما تكون فارغة */
             @keyframes bosePulseBlinking {
                 0% { transform: scale(1); box-shadow: 0 8px 24px rgba(255,145,164,0.3); border-color: ${BRAND_COLORS.pink}; }
                 50% { transform: scale(1.06); box-shadow: 0 12px 32px rgba(255,145,164,0.6); border-color: ${BRAND_COLORS.gold}; }
