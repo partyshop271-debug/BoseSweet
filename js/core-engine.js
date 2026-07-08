@@ -1,8 +1,8 @@
 /**
  * 👑 المحرك المركزي العام والنهائي للموقع والنافذة العائمة - حلويات بوسي 👑
- * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية ومشاكل التداخل V48.0
+ * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية ومشاكل التداخل V49.0
  * متوافق بشكل مطلق وثنائي الاتجاه مع كافة ملفات css/ وجافا سكريبت الموقع وقاعدة البيانات site-data-final.json
- * [تم حل كوارث القائمة الجانبية الفاخرة، أتمتة سلايدر الإتقان بالحركة اللانهائية والدوتس، وأسهم وفئات الدوتس بالكامل]
+ * [تم حل كوارث القائمة الجانبية الفاخرة، دعم الأكورديون المنسدل، أتمتة سلايدر الإتقان بالحركة اللانهائية، وأسهم الفئات بالكامل]
  */
 
 (function () {
@@ -61,7 +61,7 @@
             ensureSharedLayoutHubs(boseGlobalStoreData);
             
         } catch (error) {
-            console.error("❌ حارس البيانات المركزي: تعذر تحميل قاعدة البيانات السيادية.", error);
+            console.error("❌ خطأ حرج في تهيئة نظام حلويات بوسي الموحد:", error);
             injectFallbackErrorDisplay();
         }
     }
@@ -190,7 +190,30 @@
                     <span style="font-size: 11px; font-weight: 700; color: ${BRAND_COLORS.pink}; letter-spacing: 0.5px; margin-bottom: 4px; font-family: 'Cairo';">أقسام التصفح الأساسية</span>
                     
                     <a href="index.html" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; background: ${BRAND_COLORS.cream}; color: ${BRAND_COLORS.black}; font-weight: 700; font-size: 13px; text-decoration: none; font-family: 'Cairo';"><i class="fas fa-home" style="color: ${BRAND_COLORS.pink}; font-size: 15px;"></i> الواجهة الرئيسية للموقع</a>
-                    <a href="menu.html" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; color: ${BRAND_COLORS.black}; font-weight: 600; font-size: 13px; text-decoration: none; font-family: 'Cairo'; transition: 0.2s;"><i class="fas fa-utensils" style="color: ${BRAND_COLORS.pink}; font-size: 15px;"></i> المنيو الشامل الأصلي</a>
+                    
+                    <!-- 👑 الكبسولة المنسدلة الذكية للمنيو الشامل (Dynamic Dropdown Accordion) -->
+                    <div class="drawer-link-item" style="display: flex; flex-direction: column; gap: 4px;">
+                        <div id="sidebar-menu-accordion-toggle" class="sidebar-accordion-trigger" style="display: flex; align-items: center; justify-content: space-between; font-size: 0.95rem; font-weight: 700; color: ${BRAND_COLORS.black}; padding: 10px 14px; border-radius: 12px; cursor: pointer;">
+                            <span style="display: flex; align-items: center; gap: 10px;"><i class="fas fa-utensils" style="color: ${BRAND_COLORS.pink};"></i> المنيو الشامل المعتمد</span>
+                            <i class="fas fa-chevron-down" style="font-size: 0.8rem; color: ${BRAND_COLORS.pink}; transition: transform 0.3s ease;"></i>
+                        </div>
+                        <!-- الفئات الـ 12 المعتمدة بالتفصيل داخل قائمة الأكورديون المنسدلة -->
+                        <div id="sidebar-menu-accordion-content" class="sidebar-accordion-content" style="max-height: 0px; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1); background-color: #FFF5F6; border-radius: 12px; display: flex; flex-direction: column; gap: 4px; padding-right: 12px; box-sizing: border-box;">
+                            <a href="category.html?id=cakes" style="display: flex; align-items: center; gap: 10px; font-size: 0.88rem; font-weight: 600; color: #111111; padding: 10px 16px; text-decoration: none;"><i class="fas fa-birthday-cake" style="color: #D4AF37; font-size: 0.75rem;"></i> قسم التورت الفاخرة</a>
+                            <a href="category.html?id=gateaux" style="display: flex; align-items: center; gap: 10px; font-size: 0.88rem; font-weight: 600; color: #111111; padding: 10px 16px; text-decoration: none;"><i class="fas fa-cookie" style="color: #D4AF37; font-size: 0.75rem;"></i> قسم الجاتوهات السويسرول</a>
+                            <a href="category.html?id=boxes" style="display: flex; align-items: center; gap: 10px; font-size: 0.88rem; font-weight: 600; color: #111111; padding: 10px 16px; text-decoration: none;"><i class="fas fa-box-open" style="color: #D4AF37; font-size: 0.75rem;"></i> بوكسات السعادة والروقان</a>
+                            <a href="category.html?id=eastern" style="display: flex; align-items: center; gap: 10px; font-size: 0.88rem; font-weight: 600; color: #111111; padding: 10px 16px; text-decoration: none;"><i class="fas fa-stroopwafel" style="color: #D4AF37; font-size: 0.75rem;"></i> الحلويات الشرقية والقشطوطة</a>
+                            <a href="category.html?id=western" style="display: flex; align-items: center; gap: 10px; font-size: 0.88rem; font-weight: 600; color: #111111; padding: 10px 16px; text-decoration: none;"><i class="fas fa-ice-cream" style="color: #D4AF37; font-size: 0.75rem;"></i> الحلويات الغربية والموس</a>
+                            <a href="category.html?id=cupcakes" style="display: flex; align-items: center; gap: 10px; font-size: 0.88rem; font-weight: 600; color: #111111; padding: 10px 16px; text-decoration: none;"><i class="fas fa-cheese" style="color: #D4AF37; font-size: 0.75rem;"></i> الكاب كيك والسينابون الفاخر</a>
+                            <a href="category.html?id=donuts" style="display: flex; align-items: center; gap: 10px; font-size: 0.88rem; font-weight: 600; color: #111111; padding: 10px 16px; text-decoration: none;"><i class="fas fa-doughnut" style="color: #D4AF37; font-size: 0.75rem;"></i> الدوناتس والملفاي الطازج</a>
+                            <a href="category.html?id=cookies" style="display: flex; align-items: center; gap: 10px; font-size: 0.88rem; font-weight: 600; color: #111111; padding: 10px 16px; text-decoration: none;"><i class="fas fa-cookie-bite" style="color: #D4AF37; font-size: 0.75rem;"></i> الكوكيز والبراونيز الساخن</a>
+                            <a href="category.html?id=desserts" style="display: flex; align-items: center; gap: 10px; font-size: 0.88rem; font-weight: 600; color: #111111; padding: 10px 16px; text-decoration: none;"><i class="fas fa-apple-alt" style="color: #D4AF37; font-size: 0.75rem;"></i> تارت الفواكه وحلى الكاسات</a>
+                            <a href="category.html?id=flowers" style="display: flex; align-items: center; gap: 10px; font-size: 0.88rem; font-weight: 600; color: #111111; padding: 10px 16px; text-decoration: none;"><i class="fas fa-spa" style="color: #D4AF37; font-size: 0.75rem;"></i> بوكيهات الورد الطبيعي والستان</a>
+                            <a href="category.html?id=gifts" style="display: flex; align-items: center; gap: 10px; font-size: 0.88rem; font-weight: 600; color: #111111; padding: 10px 16px; text-decoration: none;"><i class="fas fa-gift" style="color: #D4AF37; font-size: 0.75rem;"></i> تنسيقات الهدايا والفلوس والمفاجآت</a>
+                            <a href="category.html?id=custom" style="display: flex; align-items: center; gap: 10px; font-size: 0.88rem; font-weight: 600; color: #111111; padding: 10px 16px; text-decoration: none;"><i class="fas fa-magic" style="color: #D4AF37; font-size: 0.75rem;"></i> الطلبات والتصاميم الخاصة</a>
+                        </div>
+                    </div>
+                    
                     <a href="cart.html" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; color: ${BRAND_COLORS.black}; font-weight: 600; font-size: 13px; text-decoration: none; font-family: 'Cairo'; transition: 0.2s;"><i class="fas fa-shopping-bag" style="color: ${BRAND_COLORS.pink}; font-size: 15px;"></i> سلة المشتريات والطلبات</a>
                     
                     <div style="height: 1px; background: #F1F1F1; margin: 8px 0;"></div>
@@ -210,6 +233,7 @@
 
         const closeBtn = document.getElementById('sidebar-close-panel-btn');
 
+        // ربط منطق فتح وإغلاق القائمة الجانبية
         if (toggleBtn && drawer && shield) {
             toggleBtn.onclick = (e) => {
                 e.preventDefault();
@@ -237,6 +261,31 @@
 
         if (closeBtn) closeBtn.onclick = closeDrawerMenu;
         if (shield) shield.onclick = closeDrawerMenu;
+
+        // 👑 ربط تفاعل قائمة الأكورديون المنسدلة ديناميكياً للـ Sidebar
+        const accordionToggle = document.getElementById('sidebar-menu-accordion-toggle');
+        const accordionContent = document.getElementById('sidebar-menu-accordion-content');
+        
+        if (accordionToggle && accordionContent) {
+            accordionToggle.onclick = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const isOpen = accordionToggle.classList.contains('open');
+                const chevronIcon = accordionToggle.querySelector('.fa-chevron-down');
+                
+                if (isOpen) {
+                    accordionToggle.classList.remove('open');
+                    accordionContent.style.maxHeight = '0px';
+                    if (chevronIcon) chevronIcon.style.transform = 'rotate(0deg)';
+                } else {
+                    accordionToggle.classList.add('open');
+                    // حساب الطول الفعلي للأبناء لحقن الحركة بسلاسة متناهية
+                    accordionContent.style.maxHeight = accordionContent.scrollHeight + 'px';
+                    if (chevronIcon) chevronIcon.style.transform = 'rotate(180deg)';
+                }
+            };
+        }
     }
 
     /* ==========================================================================\
@@ -752,7 +801,7 @@
     }
 
     /* ==========================================================================\
-       6. Tنظام التنبيهات الراقية الفاخرة (Toast System)
+       6. نظام التنبيهات الراقية الفاخرة (Toast System)
        ========================================================================== */
     window.showBoseToast = function (message, type = 'success') {
         let container = document.getElementById('bose-toast-central-container');
@@ -911,7 +960,7 @@
                             flavorName: matchedProduct.flavorName || "افتراضي",
                             price: matchedProduct.price,
                             finalPrice: matchedProduct.price,
-                            image: matchedProduct.images ? matchedProduct.images[0] : matchedProduct.image,
+                            image: Mystery || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png',
                             quantity: selectedQuantity,
                             type: matchedProduct.type || "standard",
                             customDetails: {}
