@@ -1758,15 +1758,10 @@
      const currency = data.store.currency || "EGP";
      const productsList = data.products || [];
 
-     // نقوم بضخ الماركي العلوي في كافة الصفحات إن وجد
      const marqueeTrack = document.getElementById('top-bar-marquee');
      if (marqueeTrack && data.navigation && data.navigation.topBarMessages) {
          renderTopMarquee(marqueeTrack, data.navigation.topBarMessages);
      }
-
-     // ==========================================
-     // فحص وحقن العناصر بذكاء لمنع التوقف في الصفحات الداخلية
-     // ==========================================
 
      const heroSection = document.getElementById('hero-section');
      if (heroSection && data.homepage && data.homepage.hero) {
@@ -2748,5 +2743,7 @@
                  verifyAndInitializeEngine();
              }
          }, 50);
-     });
- })();
+     }
+ });
+
+})();
