@@ -3,731 +3,409 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>حلويات بوسي - الرئيسية 👑</title>
     
-    <!-- 📄 استيراد خط القاهرة الفاخر بجميع أوزانه القياسية -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>حلويات بوسي | صنعناها بحب لتهديها لمن تحب</title>
+    <meta name="description" content="منصة بيع إلكترونية متكاملة لعلامة حلويات بوسي الفاخرة. استمتع بتجربة تسوق فريدة، صمم تورتتك الخاصة وبوكيه الورد المخصص عبر محاكياتنا التفاعلية الفريدة.">
+    <meta name="keywords" content="حلويات, تورت, بوكس هدايا, كاب كيك, سينابون, ورد, دوناتس, حلويات بوسي">
     
-    <!-- 🎨 استيراد ملفات التنسيق والهوية البصرية القياسية الموحدة للموقع -->
-    <link rel="stylesheet" href="global.css">
-    <link rel="stylesheet" href="main.css">
-
-    <!-- 🛠️ معالجات CSS إضافية فائقة المرونة لحل مشاكل تداخل نصوص الموبايل نهائياً ومنع بتر الكلمات -->
-    <style>
-        /* تأمين خط القاهرة كخيار افتراضي مطلق لجميع العناصر */
-        body, button, input, select, textarea {
-            font-family: 'Cairo', sans-serif !important;
-        }
-
-        /* منع التداخل وبتر النصوص في كروت المنتجات على الموبايل والكمبيوتر */
-        .bose-product-card {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            height: auto !important; /* مرونة كاملة لمنع انضغاط الكرت */
-            min-height: 440px; /* ضمان مساحة تصفح عمودية مريحة للعين */
-            border: 1px solid var(--bose-pink, #FF91A4) !important;
-            border-radius: 16px !important;
-            background-color: var(--bose-white, #FFFFFF) !important;
-            box-shadow: 0 8px 24px rgba(255, 145, 164, 0.05) !important;
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        /* تأمين تمدد نصوص أسماء المنتجات دون بتر (مثل قشطوطة لوتس) */
-        .bose-product-title {
-            font-size: 1.15rem !important;
-            font-weight: 700 !important; /* سقف الوزن القياسي للفخامة والوضوح */
-            color: var(--bose-black, #111111) !important;
-            word-wrap: break-word !important;
-            overflow-wrap: break-word !important;
-            white-space: normal !important; /* السماح بالنزول لسطر جديد تلقائياً عند الحاجة */
-            line-height: 1.4 !important;
-            min-height: 2.8em; /* حجز سطرين لتجنب تفاوت ارتفاع الأزرار */
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-align: right;
-            padding: 0 12px;
-        }
-
-        /* تنسيق وعرض الأسعار الديناميكية بمرونة كاملة */
-        .bose-product-price-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            padding: 8px 12px;
-            direction: rtl;
-        }
-
-        .bose-product-price-value {
-            font-size: 1.2rem !important;
-            font-weight: 700 !important;
-            color: var(--bose-pink, #FF91A4) !important; /* اللون البمبي نبض حياة الموقع للأسعار */
-            white-space: nowrap;
-        }
-
-        /* تنسيق محكم وأنيق لأزرار إضافة السلة وتحكم الكميات */
-        .bose-quantity-control-wrapper {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background-color: var(--bose-cream, #FFF5F6);
-            border-radius: 12px;
-            padding: 4px;
-            border: 1px solid rgba(255, 145, 164, 0.2);
-            width: 100%;
-            margin-top: auto;
-        }
-
-        .bose-qty-btn {
-            background-color: var(--bose-white, #FFFFFF) !important;
-            color: var(--bose-pink, #FF91A4) !important;
-            border: 1px solid rgba(255, 145, 164, 0.2) !important;
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .bose-qty-btn:active {
-            background-color: var(--bose-pink, #FF91A4) !important;
-            color: var(--bose-white, #FFFFFF) !important;
-        }
-
-        .bose-qty-display {
-            font-weight: 700;
-            color: var(--bose-black, #111111);
-            font-size: 1.05rem;
-            width: 30px;
-            text-align: center;
-        }
-
-        /* 🔄 محاذاة وحركة الشلال البصري ثنائي الأعمدة المتعاكسين */
-        #waterfall-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            height: 480px;
-            overflow: hidden;
-            position: relative;
-            border-radius: 20px;
-            background: linear-gradient(180deg, #FFFFFF 0%, #FFF5F6 100%);
-            padding: 8px;
-        }
-
-        .waterfall-column {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            height: max-content;
-        }
-
-        /* أنيميشن حركة الشلال اللانهائية */
-        .column-up {
-            animation: waterfallScrollUp 32s linear infinite;
-        }
-
-        .column-down {
-            animation: waterfallScrollDown 32s linear infinite;
-        }
-
-        @keyframes waterfallScrollUp {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-50%); }
-        }
-
-        @keyframes waterfallScrollDown {
-            0% { transform: translateY(-50%); }
-            100% { transform: translateY(0); }
-        }
-
-        .waterfall-column:hover {
-            animation-play-state: paused; /* إيقاف مؤقت ممتع عند تمرير مؤشر الفأرة لراحة العميل البصرية */
-        }
-
-        .waterfall-card {
-            width: 100%;
-            border-radius: 16px;
-            overflow: hidden;
-            border: 1px solid var(--bose-pink, #FF91A4);
-            background-color: var(--bose-white, #FFFFFF);
-            box-shadow: 0 6px 16px rgba(255, 145, 164, 0.04);
-            aspect-ratio: 1/1;
-        }
-
-        .waterfall-card img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.4s ease;
-        }
-
-        .waterfall-card:hover img {
-            transform: scale(1.06);
-        }
-
-        /* 🍩 تصميم متجاوب لسلايدر الفئات الـ 12 بمقاس كارت فخم مريح للعين */
-        .categories-slider-container {
-            display: flex;
-            overflow-x: auto;
-            scroll-behavior: smooth;
-            gap: 18px;
-            padding: 16px 8px;
-            scrollbar-width: none; /* إخفاء شريط التمرير الافتراضي لجمال العرض */
-        }
-
-        .categories-slider-container::-webkit-scrollbar {
-            display: none;
-        }
-
-        .category-slide-card {
-            flex: 0 0 calc(30% - 12px); /* كارت أكبر مريح للعين للموبايل */
-            min-width: 105px;
-            max-width: 130px;
-            text-align: center;
-            cursor: pointer;
-            transition: transform 0.2s ease;
-        }
-
-        @media (min-width: 768px) {
-            .category-slide-card {
-                flex: 0 0 calc(12.5% - 16px);
-                min-width: 130px;
-            }
-        }
-
-        .category-slide-card:hover {
-            transform: scale(1.05);
-        }
-
-        .category-circle-img {
-            width: 85px;
-            height: 85px;
-            border-radius: 50%;
-            border: 2px solid var(--bose-pink, #FF91A4);
-            padding: 3px;
-            background-color: var(--bose-white, #FFFFFF);
-            margin: 0 auto 10px;
-            overflow: hidden;
-            box-shadow: 0 8px 20px rgba(255, 145, 164, 0.08);
-            transition: all 0.3s ease;
-        }
-
-        .category-slide-card:hover .category-circle-img {
-            box-shadow: 0 10px 24px rgba(255, 145, 164, 0.2);
-            border-color: var(--bose-gold, #D4AF37); /* لمسة فخامة ذهبية ناعمة عند التفاعل */
-        }
-
-        .category-circle-img img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .category-card-name {
-            font-size: 0.95rem;
-            font-weight: 700;
-            color: var(--bose-black, #111111);
-            margin: 0;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        /* 🌟 مميزات الفخر والخبرة (The Pride Section) */
-        .pride-feature-card {
-            background-color: var(--bose-white, #FFFFFF);
-            border: 1px dashed rgba(255, 145, 164, 0.4);
-            border-radius: 16px;
-            padding: 24px;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .pride-feature-card:hover {
-            border-style: solid;
-            border-color: var(--bose-pink, #FF91A4);
-            box-shadow: 0 12px 28px rgba(255, 145, 164, 0.08);
-        }
-
-        /* الهيكل العظمي المؤقت (Skeletons) لحين اكتمال الـ JSON */
-        .bose-skeleton-pulse {
-            background: linear-gradient(90deg, #FFF5F6 25%, #FFE3E7 50%, #FFF5F6 75%);
-            background-size: 200% 100%;
-            animation: skeletonLoading 1.5s infinite;
-        }
-
-        @keyframes skeletonLoading {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-    </style>
+    <meta property="og:title" content="حلويات بوسي | صنعناها بحب لتهديها لمن تحب">
+    <meta property="og:description" content="استمتع بتجربة تسوق فريدة، صمم تورتتك الخاصة وبوكيه الورد المخصص عبر محاكياتنا التفاعلية الفريدة.">
+    <meta property="og:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+    <meta property="og:url" content="https://bosesweets.com">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/main.css">
+    
+    <script src="js/core-engine.js"></script>
 </head>
-<body class="bg-white text-black min-h-screen flex flex-col justify-between">
+<body class="bose-hardware-accelerated">
 
-    <!-- ⚠️ الهيدر المشترك يتم ضخه بالكامل وتأمينه ديناميكياً بواسطة محرك core-engine.js -->
-    <div id="bose-header-placeholder"></div>
+    <div class="bose-top-ticker-wrapper" id="top-bar-marquee" style="background: var(--bose-cream); border-bottom: 1px solid rgba(255,145,164,0.2); padding: 8px 0; overflow: hidden; z-index: 10000; position: relative;">
+        <div class="bose-ticker-content animate-marquee" id="dynamic-ticker-track" style="display: flex; white-space: nowrap; gap: 50px; font-size: 13px; font-weight: 700; color: var(--bose-black);">
+            <span>كل قطعة من حلويات بوسي صنعت يدوياً بحب وشغف لتليق بمناسباتكم السعيدة 🌸</span>
+            <span>مكونات طبيعية 100% طازجة يومياً للحصول على الطعم الأصلي الفاخر ✨</span>
+            <span>تميزوا بهداياكم وجلساتكم الفاخرة مع تشكيلة بوكس الروقان وكبات السعادة 👑</span>
+            <span>كل قطعة من حلويات بوسي صنعت يدوياً بحب وشغف لتليق بمناسباتكم السعيدة 🌸</span>
+            <span>مكونات طبيعية 100% طازجة يومياً للحصول على الطعم الأصلي الفاخر ✨</span>
+            <span>تميزوا بهداياكم وجلساتكم الفاخرة مع تشكيلة بوكس الروقان وكبات السعادة 👑</span>
+        </div>
+    </div>
 
-    <!-- 👑 المحتوى الرئيسي المنظم والمرتب حسب دليل التشغيل الصارم لعلامة حلويات بوسي -->
-    <main class="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-12">
+    <header class="bose-navbar" id="bose-global-header"></header>
 
-        <!-- 1️⃣ قسم البانر الرئيسي الدوار (Hero Section) -->
-        <section id="hero-section" class="relative rounded-2xl overflow-hidden shadow-lg bg-white" style="min-height: 280px;">
-            <div id="hero-slides-wrapper" class="w-full h-full min-height-[280px] flex items-center relative">
-                <!-- شريحة ترحيبية افتراضية ذات هوية بصرية ممتعة وصادقة قبل تفعيل ديناميكية الصور -->
-                <div class="absolute inset-0 w-full h-full flex flex-col justify-center items-start text-right px-8 sm:px-16 py-12 z-10" style="background: linear-gradient(90deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.7) 100%);">
-                    <span class="inline-block px-3 py-1 bg-[#FFF5F6] border border-[#FF91A4] text-[#FF91A4] text-xs font-bold rounded-full mb-3">شغل بيتي أصلي ومضمون 100% ✨</span>
-                    <h1 class="text-2xl sm:text-4xl font-bold text-[#111111] leading-tight mb-2" style="font-weight:700;">طعم يدخل قلبك ويسعد أوقاتك 👑</h1>
-                    <p class="text-sm sm:text-base text-gray-700 max-w-md mb-6 leading-relaxed">اخترنا المكونات الطبيعية بكل حب وعناية علشان نقدم لك تجربة حلويات فاخرة وبسيطة تليق بجمال مناسباتك وجمعتك الطيبة.</p>
-                    <a href="#categories-slider-section" class="bg-[#FF91A4] hover:bg-[#ffe3e7] hover:text-[#FF91A4] text-white font-bold px-6 py-3 rounded-xl transition duration-300 shadow-md transform active:scale-95 text-sm" style="border: 1px solid #FF91A4;">تصفح المنيو الفاخر</a>
-                </div>
-                <!-- صورة خلفية للهيدر هادئة ونظيفة ومتناسقة -->
-                <div class="absolute inset-0 w-full h-full bg-[#FFF5F6] flex justify-end items-center opacity-40">
-                    <div class="w-1/2 h-full bose-skeleton-pulse" id="hero-bg-skeleton"></div>
+    <div id="sidebar-drawer" class="bose-premium-sidebar"></div>
+    <div id="drawer-shield" class="bose-drawer-shield"></div>
+
+    <main style="padding-bottom: 60px;">
+        
+        <section class="bose-hero-section" id="hero-section">
+            <div class="bose-hero-slider">
+                <div class="bose-hero-slide active" style="background-image: url('https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png');">
+                    <div class="bose-hero-slide-overlay">
+                        <h1 class="bose-hero-title" id="hero-title">عقد من <span style="color: var(--bose-pink);">التميز</span> في صناعة الحلويات</h1>
+                        <p class="bose-hero-desc" id="hero-description">تم اختيار المكونات بعناية فائقة للحصول على أفضل جودة تليق بمناسباتكم السعيدة وتضمن ثقتكم الدائمة.</p>
+                        <a href="menu.html" class="bose-hero-btn" id="hero-cta-btn">اطلب الآن <i class="fas fa-arrow-left"></i></a>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- 2️⃣ قسم الشلال البصري الفاخر (Waterfall Hook Section) -->
-        <section id="waterfall-section" class="space-y-4">
-            <div class="text-right">
-                <span class="text-xs font-bold text-[#FF91A4] uppercase tracking-wider block mb-1">الجاذبية البصرية الأولى</span>
-                <h2 class="text-xl sm:text-2xl font-bold text-[#111111]" style="font-weight: 700;">لوحة الحب والشغف 🎨</h2>
-                <p class="text-xs sm:text-sm text-gray-600 mt-1">تمرير بصري ناعم لروائعنا ومخبوزاتنا الطازجة التي تأسر حواسك.</p>
+        <section class="bose-waterfall-section" id="waterfall-section" style="padding: 40px 16px; background: var(--bose-white); position: relative; overflow: hidden; height: 700px;">
+            <div class="waterfall-overlay-top" style="position: absolute; top: 0; left: 0; width: 100%; height: 80px; background: linear-gradient(to bottom, var(--bose-white), transparent); z-index: 5; pointer-events: none; backdrop-filter: blur(1px);"></div>
+            <div class="bose-section-header" style="text-align: center; margin-bottom: 30px; position: relative; z-index: 10;">
+                <h2 class="bose-section-title">روائع بوسي المتدفقة</h2>
+                <p class="bose-section-subtitle" style="color: #4D4D4D; font-size: 14px;">تشكيلة بصرية ممتدة من إبداعاتنا الفاخرة المجهزة يومياً بكل حب.</p>
             </div>
+            <div class="waterfall-container" style="display: flex; gap: 16px; height: 500px; overflow: hidden; position: relative;">
+                <div class="waterfall-col waterfall-up" id="waterfall-left-col" style="flex: 1; display: flex; flex-direction: column; gap: 16px;"></div>
+                <div class="waterfall-col waterfall-down" id="waterfall-right-col" style="flex: 1; display: flex; flex-direction: column; gap: 16px;"></div>
+            </div>
+            <div class="waterfall-overlay-bottom" style="position: absolute; bottom: 0; left: 0; width: 100%; height: 80px; background: linear-gradient(to top, var(--bose-white), transparent); z-index: 5; pointer-events: none; backdrop-filter: blur(1px);"></div>
+        </section>
+
+        <section class="bose-perfection-section" id="excellence-section">
+            <div class="bose-section-header">
+                <h2 class="bose-section-title">عقد من الإتقان</h2>
+                <p class="bose-section-subtitle">خلف كل قطعة حكاية شغف وتفاصيل محفورة بالدقة والمهارة الفائقة لتقديم تجربة تذوق ساحرة.</p>
+            </div>
+            <div class="bose-perfection-carousel-wrapper" id="pride-slider-wrapper" style="width: 100%; overflow: hidden; position: relative; padding: 10px 0;">
+                <div class="bose-perfection-track" id="excellence-images-track" style="display: flex; width: 100vw; transition: transform 0.5s ease;"></div>
+            </div>
+            <div class="bose-carousel-dots" id="excellence-dots" style="display: flex; justify-content: center; gap: 8px; margin-top: 15px;"></div>
+        </section>
+
+        <section class="bose-bestseller-section" id="most-selling-section" style="padding: 40px 16px; background: var(--bose-white); overflow: hidden;">
+            <div class="bose-section-header">
+                <h2 class="bose-section-title">الأكثر مبيعاً</h2>
+                <p class="bose-section-subtitle">تشكيلة فاخرة ومعتمدة من خياراتنا الاستثنائية التي نالت ثقة ومحبة عملائنا المطلقة.</p>
+            </div>
+            <div class="bose-bestsellers-slider-container" style="width: 100%; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; padding: 10px 4px;">
+                <div class="bose-products-grid products-grid" id="dynamic-bestsellers-grid" style="display: flex; gap: 16px; width: max-content;"></div>
+            </div>
+        </section>
+
+        <section class="bose-simulator-promo-section" id="cake-preview-section">
+            <div class="bose-simulator-card-block">
+                <div class="simulator-text-content">
+                    <span class="simulator-badge">حصري وتفاعلي</span>
+                    <h2 id="cake-preview-title">محاكي تصميم التورت الفاخر</h2>
+                    <p id="cake-preview-desc">حلويات بوسي تتيح لكم هندسة وتصميم التورتة الخاصة بكم حسب الطلب، واختيار كافة التفاصيل والطبقات الحقيقية لراحة العميل النفسية.</p>
+                    <a href="cake-builder.html" class="bose-simulator-action-btn" id="cake-preview-cta">تصميم تورتتك الآن <i class="fas fa-birthday-cake"></i></a>
+                </div>
+                <div class="simulator-visual-content">
+                    <img id="cake-preview-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="محاكي تصميم التورت الفاخر من حلويات بوسي">
+                </div>
+            </div>
+        </section>
+
+        <section class="bose-new-arrivals-section" id="new-arrivals-section" style="padding: 40px 16px; background: var(--bose-white); overflow: hidden;">
+            <div class="bose-section-header">
+                <h2 class="bose-section-title">وصل حديثاً</h2>
+                <p class="bose-section-subtitle">استكشف نكهات وتوليفات جديدة وحصرية تحمل بصمة الابتكار والإتقان الفاخر لعلامتنا التجارية.</p>
+            </div>
+            <div class="bose-new-arrivals-slider-container" style="width: 100%; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; padding: 10px 4px;">
+                <div class="bose-products-grid products-grid" id="dynamic-new-arrivals-grid" style="display: flex; gap: 16px; width: max-content;"></div>
+            </div>
+            <div class="bose-carousel-dots" id="new-arrivals-dots" style="display: flex; justify-content: center; gap: 8px; margin-top: 15px;"></div>
+        </section>
+
+        <section class="bose-all-products-section" id="our-products-section" style="padding: 40px 16px; background: var(--bose-white);">
+            <div class="bose-section-header">
+                <h2 class="bose-section-title">منتجاتنا الفاخرة</h2>
+                <p class="bose-section-subtitle">تم اختيار المكونات بعناية فائقة للحصول على أفضل جودة تضمن راحتكم النفسية والصحية والطعم الفريش يومياً.</p>
+            </div>
+            <div class="bose-products-grid" id="dynamic-main-products-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; width: 100%; box-sizing: border-box;"></div>
             
-            <!-- حاوية الشلال البصري المزدوج ثنائي الأعمدة المتعاكسين لمنع أي فراغات بصرية -->
-            <div id="waterfall-container">
-                <!-- العمود الأيمن: يتحرك لأعلى بشكل ديناميكي سلس -->
-                <div class="waterfall-column column-up" id="waterfall-col-left">
-                    <div class="waterfall-card bose-skeleton-pulse"></div>
-                    <div class="waterfall-card bose-skeleton-pulse"></div>
-                    <div class="waterfall-card bose-skeleton-pulse"></div>
+            <div class="bose-view-more-container" style="text-align: center; margin-top: 30px;">
+                <button id="btn-load-more-products" class="bose-simulator-action-btn" style="background-color: var(--bose-black); color: #FFF; border-radius: 12px; padding: 12px 30px; font-weight:700; cursor: pointer;">إظهار المزيد</button>
+            </div>
+        </section>
+
+        <section class="bose-simulator-promo-section flower-promo-variant" id="flower-preview-section">
+            <div class="bose-simulator-card-block" style="border-color: var(--bose-gold);">
+                <div class="simulator-text-content">
+                    <span class="simulator-badge gold-badge">فخامة وتنسيق</span>
+                    <h2 id="flower-preview-title">محاكي تنسيق الورد الفاخر</h2>
+                    <p id="flower-preview-desc">تخصيص وتنسيق البوكيه بالكامل واختيار الورد الطبيعي النضر، الصناعي الفاخر، أو ورد الستان المصنوع بحب مع خيارات دمج مفاجآت الكاش المدمجة بدقة.</p>
+                    <a href="flower-builder.html" class="bose-simulator-action-btn flower-btn" id="flower-preview-cta" style="background-color: var(--bose-gold);">تنسيق البوكيه الآن <i class="fas fa-seedling"></i></a>
                 </div>
-                <!-- العمود الأيسر: يتحرك لأسفل بشكل ديناميكي متعاكس -->
-                <div class="waterfall-column column-down" id="waterfall-col-right">
-                    <div class="waterfall-card bose-skeleton-pulse"></div>
-                    <div class="waterfall-card bose-skeleton-pulse"></div>
-                    <div class="waterfall-card bose-skeleton-pulse"></div>
+                <div class="simulator-visual-content">
+                    <img id="flower-preview-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="محاكي تنسيق الورد الفاخر من حلويات بوسي">
                 </div>
             </div>
         </section>
 
-        <!-- 3️⃣ قسم الأكثر مبيعاً الفاخر (Most Selling Grid Section) -->
-        <section id="most-selling-section" class="space-y-6">
-            <div class="text-right">
-                <span class="text-xs font-bold text-[#FF91A4] uppercase tracking-wider block mb-1">اختيارات عملائنا المفضلة</span>
-                <h2 class="text-xl sm:text-2xl font-bold text-[#111111]" style="font-weight: 700;">الأكثر طلباً ومبيعاً 🔥</h2>
-                <p class="text-xs sm:text-sm text-gray-600 mt-1">التشكيلة التي فازت بحب ورضا جميع زوارنا بفضل مذاقها الاستثنائي الأصيل.</p>
-            </div>
-
-            <!-- شبكة كروت المنتجات الأكثر مبيعاً المقاومة تماماً لأخطاء الموبايل وبتر الكلمات -->
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6" id="most-selling-products-grid">
-                <!-- كروت الهيكل المؤقتة الراقية تظهر لحين حقن كروت المنتجات الحية من الـ JSON -->
-                <div class="bose-product-card p-4 space-y-3 bose-skeleton-pulse" style="min-height: 440px;"></div>
-                <div class="bose-product-card p-4 space-y-3 bose-skeleton-pulse" style="min-height: 440px;"></div>
-                <div class="bose-product-card p-4 space-y-3 bose-skeleton-pulse" style="min-height: 440px;"></div>
-                <div class="bose-product-card p-4 space-y-3 bose-skeleton-pulse" style="min-height: 440px;"></div>
-            </div>
-        </section>
-
-        <!-- 4️⃣ قسم المحاكيات التفاعلية الفاخرة (Custom Cakes & Bundles Section) -->
-        <section id="custom-cakes-section" class="space-y-6">
-            <div class="text-right">
-                <span class="text-xs font-bold text-[#FF91A4] uppercase tracking-wider block mb-1">صمم على ذوقك وبنفسك</span>
-                <h2 class="text-xl sm:text-2xl font-bold text-[#111111]" style="font-weight: 700;">محاكيات التخصيص الفاخرة 👑</h2>
-                <p class="text-xs sm:text-sm text-gray-600 mt-1">جرب متعة الابتكار والتصميم واحصل على كعكتك الخاصة أو صندوقك الرائع بدقة وسهولة.</p>
-            </div>
-
-            <!-- شبكة كروت المحاكيات الرائعة والتفاعلية -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="simulators-container">
-                <!-- محاكي تورتة الأحلام الفاخر -->
-                <div class="border border-[#FF91A4] rounded-2xl bg-white p-6 sm:p-8 flex flex-col justify-between space-y-6 shadow-md hover:shadow-lg transition-all">
-                    <div class="space-y-3 text-right">
-                        <span class="inline-block px-3 py-1 bg-[#FFF5F6] text-[#FF91A4] text-xs font-bold rounded-full">محاكي التورتة السحري 🪄</span>
-                        <h3 class="text-lg sm:text-xl font-bold text-[#111111]">صانع تورتة الأحلام</h3>
-                        <p class="text-xs sm:text-sm text-gray-600 leading-relaxed">حدد الحجم، النكهات الداخلية والخارجية، التزيين، والإضافات الخاصة، وشاهد التكلفة الإجمالية في لحظات وبكل وضوح.</p>
-                    </div>
-                    <div class="flex items-center justify-between border-t border-[#FFF5F6] pt-4">
-                        <span class="text-xs font-bold text-gray-400">يبدأ من مكونات فخمة</span>
-                        <a href="cake-builder.html" class="bg-[#FF91A4] hover:bg-white border border-[#FF91A4] text-white hover:text-[#FF91A4] font-bold px-5 py-2.5 rounded-xl text-sm transition-all shadow-sm">ابدأ التصميم الآن</a>
-                    </div>
+        <section class="bose-pride-statistics-section" id="pride-section">
+            <div class="bose-pride-container">
+                <div class="bose-pride-text-block">
+                    <span class="pride-mini-tag"><i class="fas fa-crown"></i> فخرنا واعتزازنا</span>
+                    <h2>قصة نجاح نرويها بإتقان</h2>
+                    <p>لم تكن حلويات بوسي مجرد متجر، بل هي كيان هندسي فاخر لصناعة السعادة. نفتخر بثقة آلاف العملاء الذين شاركونا أدق تفاصيل مناسباتهم السعيدة وعقد من الزمان صمدنا فيه بتقديم القيمة والجودة الطبيعية دون مساومة.</p>
                 </div>
-
-                <!-- صانع تورتة الورد الطبيعي الفاخر -->
-                <div class="border border-[#FF91A4] rounded-2xl bg-white p-6 sm:p-8 flex flex-col justify-between space-y-6 shadow-md hover:shadow-lg transition-all">
-                    <div class="space-y-3 text-right">
-                        <span class="inline-block px-3 py-1 bg-[#FFF5F6] text-[#FF91A4] text-xs font-bold rounded-full">التنسيق اليدوي الأنيق 💐</span>
-                        <h3 class="text-lg sm:text-xl font-bold text-[#111111]">صانع تورتة الورد الطبيعي والمال</h3>
-                        <p class="text-xs sm:text-sm text-gray-600 leading-relaxed">أضف باقات الورد الطبيعي الفاخر، أو حدد مصفوفة الأوراق النقدية والأربطة لتخرج هديتك برقي وفخامة لا تُنسى وتشرفك أمام ضيوفك.</p>
+                <div class="bose-statistics-grid-block stats-container">
+                    <div class="bose-stat-card">
+                        <div class="stat-icon-wrapper"><i class="fas fa-award"></i></div>
+                        <h3 class="stat-number" id="stat-years-value">0</h3>
+                        <p class="stat-label">سنوات خبرة وإتقان</p>
                     </div>
-                    <div class="flex items-center justify-between border-t border-[#FFF5F6] pt-4">
-                        <span class="text-xs font-bold text-gray-400">تنسيق احترافي رائع</span>
-                        <a href="flower-builder.html" class="bg-[#FF91A4] hover:bg-white border border-[#FF91A4] text-white hover:text-[#FF91A4] font-bold px-5 py-2.5 rounded-xl text-sm transition-all shadow-sm">تنسيق هديتك الراقية</a>
+                    <div class="bose-stat-card">
+                        <div class="stat-icon-wrapper"><i class="fas fa-users"></i></div>
+                        <h3 class="stat-number" id="stat-customers-value">0</h3>
+                        <p class="stat-label">عميل فخور ومستمر</p>
+                    </div>
+                    <div class="bose-stat-card">
+                        <div class="stat-icon-wrapper"><i class="fas fa-box-open"></i></div>
+                        <h3 class="stat-number" id="stat-orders-value">0</h3>
+                        <p class="stat-label">طلب ناجح تم تسليمه</p>
+                    </div>
+                    <div class="bose-stat-card">
+                        <div class="stat-icon-wrapper"><i class="fas fa-birthday-cake"></i></div>
+                        <h3 class="stat-number" id="stat-cakes-value">0</h3>
+                        <p class="stat-label">تورتة مصممة وخاصة</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- 5️⃣ قسم تسوق حسب الفئة (Categories Slider Section) -->
-        <section id="categories-slider-section" class="space-y-4">
-            <div class="text-right">
-                <span class="text-xs font-bold text-[#FF91A4] uppercase tracking-wider block mb-1">تسهيل وتيسير الاختيار</span>
-                <h2 class="text-xl sm:text-2xl font-bold text-[#111111]" style="font-weight: 700;">تسوق حسب فئتك المفضلة 🍩</h2>
-                <p class="text-xs sm:text-sm text-gray-600 mt-1">تسهيلاً لوصولك السريع والآمن إلى ما تحب وتشتهي من منيو حلويات بوسي الحصري.</p>
+        <section class="bose-categories-carousel-section" id="categories-slider-section" style="padding: 40px 16px; background: var(--bose-white); overflow: hidden;">
+            <div class="bose-section-header">
+                <h2>تسوق حسب الفئة</h2>
+                <p class="bose-section-subtitle">سهولة الانتقال المباشر والوصول السريع للفئة المطلوبة باقتناع كامل، بمقاس كارت أكبر لراحة العين الفائقة.</p>
             </div>
-
-            <!-- حاوية السلايدر الـ 12 المحدثة بنظام تمرير يدوي وتفاعلي فائق السلاسة والدقة -->
-            <div class="relative">
-                <div class="categories-slider-container" id="bose-categories-track">
-                    <!-- هيكل عظمي متكرر لـ 12 فئة لحين الحقن الديناميكي الآمن -->
-                    <div class="category-slide-card space-y-2"><div class="category-circle-img bose-skeleton-pulse"></div><div class="h-4 w-16 bg-[#FFE3E7] mx-auto rounded"></div></div>
-                    <div class="category-slide-card space-y-2"><div class="category-circle-img bose-skeleton-pulse"></div><div class="h-4 w-16 bg-[#FFE3E7] mx-auto rounded"></div></div>
-                    <div class="category-slide-card space-y-2"><div class="category-circle-img bose-skeleton-pulse"></div><div class="h-4 w-16 bg-[#FFE3E7] mx-auto rounded"></div></div>
-                    <div class="category-slide-card space-y-2"><div class="category-circle-img bose-skeleton-pulse"></div><div class="h-4 w-16 bg-[#FFE3E7] mx-auto rounded"></div></div>
-                    <div class="category-slide-card space-y-2"><div class="category-circle-img bose-skeleton-pulse"></div><div class="h-4 w-16 bg-[#FFE3E7] mx-auto rounded"></div></div>
-                    <div class="category-slide-card space-y-2"><div class="category-circle-img bose-skeleton-pulse"></div><div class="h-4 w-16 bg-[#FFE3E7] mx-auto rounded"></div></div>
-                </div>
+            <div class="bose-categories-scroll-wrapper" id="categories-slider-wrapper" style="width: 100%; overflow: hidden; position: relative;">
+                <div class="categories-track-loop" id="categories-track" style="display: flex; gap: 20px; width: max-content;"></div>
             </div>
-        </section>
-
-        <!-- 6️⃣ قسم فخر حلويات بوسي والخبرة (The Pride & Trust Section) -->
-        <section id="pride-section" class="space-y-6">
-            <div class="text-right">
-                <span class="text-xs font-bold text-[#FF91A4] uppercase tracking-wider block mb-1">لماذا حلويات بوسي هي الخيار الأمثل؟</span>
-                <h2 class="text-xl sm:text-2xl font-bold text-[#111111]" style="font-weight: 700;">تفاصيل صغيرة تصنع فخامة وجودة تشرفك 👑</h2>
-                <p class="text-xs sm:text-sm text-gray-600 mt-1">نهتم بدقائق الأمور لضمان روعة المذاق ونظافة التصنيع والالتزام الكامل بموعدك.</p>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- ميزة 1: مواد خام حقيقية وطبيعية 100% -->
-                <div class="pride-feature-card space-y-4">
-                    <div class="mx-auto w-12 h-12 rounded-full bg-[#FFF5F6] flex items-center justify-center text-xl text-[#FF91A4]">🥛</div>
-                    <h3 class="font-bold text-sm sm:text-base text-[#111111]">خامات طبيعية ونقية 100%</h3>
-                    <p class="text-xs text-gray-600 leading-relaxed">نرفض تماماً استخدام البدائل أو المواد المصنعة الرخيصة؛ الزبدة طبيعية، القشطة بلدي، واللوتس أصلي لتقديم طعم بيتي يسعد قلبك.</p>
-                </div>
-                
-                <!-- ميزة 2: خبراء وشيفات على أعلى مستوى -->
-                <div class="pride-feature-card space-y-4">
-                    <div class="mx-auto w-12 h-12 rounded-full bg-[#FFF5F6] flex items-center justify-center text-xl text-[#FF91A4]">👩‍🍳</div>
-                    <h3 class="font-bold text-sm sm:text-base text-[#111111]">صنع بأيدي خبراء وشغف</h3>
-                    <p class="text-xs text-gray-600 leading-relaxed">كل صنف من المنيو يتم خبزه وتزيينه بدقة متناهية وعناية فائقة لنحافظ على جودة وفخامة لا تتبدل أبداً بمرور الوقت.</p>
-                </div>
-
-                <!-- ميزة 3: تجهيز ملتزم ومرن خلال 24 ساعة -->
-                <div class="pride-feature-card space-y-4">
-                    <div class="mx-auto w-12 h-12 rounded-full bg-[#FFF5F6] flex items-center justify-center text-xl text-[#FF91A4]">⏳</div>
-                    <h3 class="font-bold text-sm sm:text-base text-[#111111]">تجهيز طازج والتزام تام</h3>
-                    <p class="text-xs text-gray-600 leading-relaxed">نبدأ في إعداد طلبك خصيصاً بمجرد تأكيده لضمان استلامه طازجاً، ملتزمين بحد أدنى 24 ساعة لتفادي أي استعجال يقلل الجودة.</p>
-                </div>
-
-                <!-- ميزة 4: تسعير عادل وتخصيص آمن للأموال والورد -->
-                <div class="pride-feature-card space-y-4">
-                    <div class="mx-auto w-12 h-12 rounded-full bg-[#FFF5F6] flex items-center justify-center text-xl text-[#FF91A4]">🎯</div>
-                    <h3 class="font-bold text-sm sm:text-base text-[#111111]">تسعير شفاف وعادل</h3>
-                    <p class="text-xs text-gray-600 leading-relaxed">نعرض عليك قيمة ما تدفعه، وضوح تام في أسعار المكونات والخدمات والورد، وبدون أي تكاليف خفية لتعامل يسوده الاحترام المتبادل.</p>
-                </div>
-            </div>
+            <div class="bose-carousel-dots" id="categories-dots" style="display: flex; justify-content: center; gap: 8px; margin-top: 15px;"></div>
         </section>
 
     </main>
 
-    <!-- ⚠️ الفوتر المشترك يتم ضخه بالكامل وتأمينه ديناميكياً بواسطة محرك core-engine.js -->
-    <div id="bose-footer-placeholder"></div>
+    <footer class="bose-footer"></footer>
 
-    <!-- 🚀 استدعاء المحرك المركزي ومحرك السلة والتوثيق المالي بالترتيب الهندسي المعتمد -->
-    <script src="core-engine.js"></script>
-    <script src="cart-engine.js"></script>
+    <div class="bose-search-modal" id="search-modal-hub">
+        <div class="search-modal-box">
+            <div class="bose-search-header">
+                <div class="bose-search-input-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="modal-search-field" class="bose-search-input" placeholder="ابحث عن حلوياتك المفضلة...">
+                </div>
+                <button id="close-search-modal-btn" class="bose-search-close-btn">&times;</button>
+            </div>
+            <div class="search-results-grid" id="modal-search-results-viewport"></div>
+        </div>
+    </div>
 
-    <!-- 🧠 معالج حارس التمهيد ومنع التعارض البرمجي (Engine Bootstrap Guard) وعملية الرندرة الآمنة -->
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            // التحقق الفوري من جاهزية كائن البيانات الموحد لمتجر حلويات بوسي
-            if (window.BoseStoreData && window.BoseStoreData.store) {
-                verifyAndInitializeHomeView(window.BoseStoreData);
-            } else {
-                let attempts = 0;
-                const maxAttempts = 100; // مراقبة مستمرة لمدة 5 ثوان لتجنب شلل الموبايل
-                
-                const indexGuardInterval = setInterval(() => {
-                    attempts++;
-                    if (window.BoseStoreData && window.BoseStoreData.store) {
-                        clearInterval(indexGuardInterval);
-                        verifyAndInitializeHomeView(window.BoseStoreData);
-                    } else if (attempts >= maxAttempts) {
-                        clearInterval(indexGuardInterval);
-                        console.error("❌ حارس تمهيد الاندكس: فشل تأمين كائن الـ JSON. تم التحويل لوضع الفيلباك الآمن.");
-                        injectSafeOfflineMode();
-                    }
-                }, 50);
-            }
+        document.addEventListener("BoseDatabaseLoaded", (e) => {
+            const storeData = e.detail;
+            if (!storeData) return;
+
+            const allProducts = storeData.products || [];
+
+            // 1. بناء شلال المنتجات البصري مع الالتزام بصور قاعدة البيانات المتعاكسة من الـ JSON منعاً للعشوائية
+            const leftCol = document.getElementById('waterfall-left-col');
+            const rightCol = document.getElementById('waterfall-right-col');
+            const wfData = storeData.homepage.waterfall;
             
-            // الاستماع لحدث اكتمال التحميل اللامتزامن من المحرك كدفاع إضافي
-            document.addEventListener("BoseDatabaseLoaded", (e) => {
-                verifyAndInitializeHomeView(e.detail);
-            });
-        });
-
-        /**
-         * دالة الرندرة والتحقق الأساسية لبناء أقسام الصفحة الرئيسية
-         */
-        function verifyAndInitializeHomeView(storeData) {
-            if (!storeData || !storeData.store) return;
-            
-            // 1. معالجة وتغذية الشلال البصري بالصور الفعلية والروابط من الـ JSON
-            hydrateBoseWaterfall(storeData);
-
-            // 2. بناء وعرض الأكثر مبيعاً مع معالجة حماية النصوص والأزرار
-            hydrateMostSelling(storeData);
-
-            // 3. بناء سلايدر الفئات الـ 12 وحل مشكلة الشلل المسبق
-            hydrateCategoriesSlider(storeData);
-            
-            // 4. تهيئة أحداث السلة وأحداث الإضافة والتزامن اللحظي مع السلة العائمة
-            syncHomeCartIndicators();
-        }
-
-        /**
-         * 🔄 تغذية الشلال البصري لملء الأعمدة المتعاكسة ديناميكياً بدون أي فراغ
-         */
-        function hydrateBoseWaterfall(storeData) {
-            const leftCol = document.getElementById("waterfall-col-left");
-            const rightCol = document.getElementById("waterfall-col-right");
-            if (!leftCol || !rightCol) return;
-
-            // تجميع الصور المتوفرة بالمنيو، أو استعمال اللوجو الفاخر كبلات هولدر قياسي
-            const products = storeData.products || [];
-            const defaultLogo = storeData.store.logo || "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png";
-            
-            let imageUrls = products.filter(p => p.image).map(p => p.image);
-            if (imageUrls.length < 6) {
-                // تكرار الصور لملء الشلال بسخاء وتفادي الفراغات
-                imageUrls = [...imageUrls, defaultLogo, defaultLogo, defaultLogo, defaultLogo, defaultLogo];
-            }
-
-            // حقن العمود الأيسر (يتحرك لأعلى)
-            leftCol.innerHTML = imageUrls.slice(0, 5).map(imgUrl => `
-                <div class="waterfall-card">
-                    <img src="${imgUrl}" alt="حلويات بوسي الفاخرة" onerror="this.src='${defaultLogo}'">
-                </div>
-            `).join('') + imageUrls.slice(0, 5).map(imgUrl => `
-                <div class="waterfall-card">
-                    <img src="${imgUrl}" alt="حلويات بوسي الفاخرة" onerror="this.src='${defaultLogo}'">
-                </div>
-            `).join(''); // مضاعفة المحتوى لحركة سلسة مستمرة وبدون وميض
-
-            // حقن العمود الأيمن (يتحرك لأسفل)
-            rightCol.innerHTML = imageUrls.slice(3, 8).map(imgUrl => `
-                <div class="waterfall-card">
-                    <img src="${imgUrl}" alt="روائع حلويات بوسي" onerror="this.src='${defaultLogo}'">
-                </div>
-            `).join('') + imageUrls.slice(3, 8).map(imgUrl => `
-                <div class="waterfall-card">
-                    <img src="${imgUrl}" alt="روائع حلويات بوسي" onerror="this.src='${defaultLogo}'">
-                </div>
-            `).join('');
-        }
-
-        /**
-         * 🔥 رندرة كروت الأكثر مبيعاً المقاومة للبتر والتداخل تماماً
-         */
-        function hydrateMostSelling(storeData) {
-            const grid = document.getElementById("most-selling-products-grid");
-            if (!grid) return;
-
-            const products = storeData.products || [];
-            // تصفية وعرض المنتجات الأكثر طلباً أو الفاخرة
-            const bestSellers = products.filter(p => p.isMostSelling === true || p.tag === "most-selling").slice(0, 8);
-            
-            if (bestSellers.length === 0) {
-                // فلباك ذكي: في حال غياب تصنيف الأكثر مبيعاً، نعرض أول 4 منتجات بالمنيو لضمان مظهر فخم
-                bestSellers.push(...products.slice(0, 4));
-            }
-
-            const defaultLogo = storeData.store.logo || "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png";
-            const cartItems = JSON.parse(localStorage.getItem('bose_cart') || '[]');
-
-            grid.innerHTML = bestSellers.map(product => {
-                const cartItem = cartItems.find(item => item.id === product.id);
-                const currentQty = cartItem ? cartItem.qty : 0;
-                
-                return `
-                    <div class="bose-product-card p-3 sm:p-4" data-product-id="${product.id}">
-                        <!-- غلاف وصورة المنتج الطبيعية غير المشوهة بضوء النهار -->
-                        <div class="w-full aspect-square rounded-xl overflow-hidden mb-3 border border-[#FFF5F6]">
-                            <img src="${product.image || defaultLogo}" alt="${product.name}" class="w-full h-full object-cover transition-transform duration-300 hover:scale-105" onerror="this.src='${defaultLogo}'">
-                        </div>
-                        
-                        <!-- اسم المنتج الفاخر المعالج بالكامل ضد عيوب البتر والتداخل -->
-                        <h3 class="bose-product-title" title="${product.name}">
-                            ${product.name}
-                        </h3>
-                        
-                        <!-- سطر المزايا والتقييمات الرمزية الذهبية -->
-                        <div class="flex items-center justify-between text-xs text-gray-500 px-3 py-1">
-                            <span class="text-[#D4AF37] font-bold">⭐ ${product.rating || '5.0'}</span>
-                            <span class="bg-[#FFF5F6] px-2 py-0.5 rounded-full text-[10px] text-gray-600">${product.category || 'صنف فاخر'}</span>
-                        </div>
-                        
-                        <!-- سطر التكلفة المالية الدقيقة والنهائية -->
-                        <div class="bose-product-price-row mt-2">
-                            <span class="text-xs text-gray-400 font-semibold">التكلفة والتقدير</span>
-                            <span class="bose-product-price-value">${product.price} EGP</span>
-                        </div>
-
-                        <!-- حاوية التحكم الديناميكية الفورية المتزامنة مع السلة العائمة والمحرك المركزي -->
-                        <div class="w-full mt-3 pt-2 border-t border-[#FFF5F6]">
-                            ${currentQty > 0 ? `
-                                <div class="bose-quantity-control-wrapper">
-                                    <button class="bose-qty-btn shadow-sm" onclick="adjustHomeProductQty('${product.id}', 1)">+</button>
-                                    <span class="bose-qty-display">${currentQty}</span>
-                                    <button class="bose-qty-btn shadow-sm" onclick="adjustHomeProductQty('${product.id}', -1)">-</button>
-                                </div>
-                            ` : `
-                                <button onclick="addHomeProductToCart('${product.id}')" class="w-full bg-white hover:bg-[#FF91A4] text-[#FF91A4] hover:text-white border border-[#FF91A4] font-bold py-2.5 px-4 rounded-xl text-sm transition-all shadow-sm flex items-center justify-center gap-2 transform active:scale-95">
-                                    <span>🛒</span>
-                                    <span>إضافة للسلة</span>
-                                </button>
-                            `}
-                        </div>
+            if (leftCol && rightCol && wfData) {
+                leftCol.innerHTML = [...wfData.leftColumnImages, ...wfData.leftColumnImages].map(img => `
+                    <div style="width:100%; border-radius:16px; overflow:hidden; border:1px solid rgba(255,145,164,0.15); background:#FFF; box-shadow: var(--bose-shadow-glow);">
+                        <img src="${img}" alt="روائع بوسي" style="width:100%; display:block; object-fit:cover; height: 280px;">
                     </div>
-                `;
-            }).join('');
-        }
+                `).join('');
 
-        /**
-         * 🍩 رندرة سلايدر الفئات الـ 12 المذهل وحل مشكلة الشلل بالكامل وبشكل مريح للعين
-         */
-        function hydrateCategoriesSlider(storeData) {
-            const track = document.getElementById("bose-categories-track");
-            if (!track) return;
-
-            const categories = storeData.categories || [];
-            const defaultLogo = storeData.store.logo || "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png";
-
-            if (categories.length === 0) {
-                track.innerHTML = `<div class="w-full text-center text-xs text-gray-400 py-4">المنيو متوفر وقيد التحميل لراحتك...</div>`;
-                return;
+                rightCol.innerHTML = [...wfData.rightColumnImages, ...wfData.rightColumnImages].map(img => `
+                    <div style="width:100%; border-radius:16px; overflow:hidden; border:1px solid rgba(255,145,164,0.15); background:#FFF; box-shadow: var(--bose-shadow-glow);">
+                        <img src="${img}" alt="روائع بوسي" style="width:100%; display:block; object-fit:cover; height: 280px;">
+                    </div>
+                `).join('');
             }
 
-            // رسم الفئات الـ 12 كاملة ومستقلة بالأسماء صريحة حسب دليل التشغيل الصارم
-            track.innerHTML = categories.map(cat => `
-                <div class="category-slide-card space-y-2 flex-shrink-0" onclick="handleCategorySelection('${cat.id}')">
-                    <div class="category-circle-img">
-                        <img src="${cat.image || defaultLogo}" alt="${cat.name}" onerror="this.src='${defaultLogo}'">
+            // 2. بناء سلايدر "عقد من الإتقان" الملتزم بـ 3 صور تملأ عرض الشاشة بالكامل بدون فواصل مع النقاط
+            const excellenceTrack = document.getElementById('excellence-images-track');
+            const excellenceDots = document.getElementById('excellence-dots');
+            const excData = storeData.homepage.excellence;
+            
+            if (excellenceTrack && excData && excData.images) {
+                excellenceTrack.innerHTML = excData.images.map(img => `
+                    <div class="bose-perfection-card" style="width: 100vw; flex-shrink: 0; position: relative; height: 350px; overflow: hidden; border-radius: 20px;">
+                        <img src="${img}" alt="${excData.title}" style="width: 100%; height: 100%; object-fit: cover;">
                     </div>
-                    <h4 class="category-card-name">${cat.name}</h4>
-                </div>
-            `).join('');
-        }
+                `).join('');
+                
+                excellenceDots.innerHTML = excData.images.map((_, i) => `
+                    <span class="bose-dot ${i===0?'active':''}" style="width: 8px; height: 8px; border-radius: 50%; background: ${i===0?'var(--bose-pink)':'#DDD'}; display: inline-block;"></span>
+                `).join('');
+            }
 
-        /**
-         * دالة التوجيه الذكية عند النقر على أي فئة للعميل
-         */
-        function handleCategorySelection(catId) {
-            // حفظ الفئة المحددة والانتقال لصفحة المنيو ليتفاعل معها محرك cart-engine
-            localStorage.setItem('bose_selected_category_filter', catId);
-            window.location.href = "menu.html"; 
-        }
-
-        /**
-         * دالة إضافة منتج للسلة مباشرة من الصفحة الرئيسية مع إشعار ناعم
-         */
-        window.addHomeProductToCart = function(productId) {
-            if (!window.BoseStoreData) return;
-            const product = window.BoseStoreData.products.find(p => p.id === productId);
-            if (!product) return;
-
-            let cart = JSON.parse(localStorage.getItem('bose_cart') || '[]');
-            const existingItem = cart.find(item => item.id === productId);
-
-            if (existingItem) {
-                existingItem.qty += 1;
-            } else {
-                cart.push({
-                    id: product.id,
-                    name: product.name,
-                    price: product.price,
-                    image: product.image,
-                    qty: 1
+            // 3. بناء شبكة الأكثر مبيعاً (8 منتجات كاملة بالهيكل القياسي الحتمي والمستقر)
+            const bestGrid = document.getElementById('dynamic-bestsellers-grid');
+            if (bestGrid) {
+                let bestHTML = '';
+                const bestList = allProducts.filter(p => storeData.homepage.mostSelling.includes(p.slug || p.id)).slice(0, 8);
+                bestList.forEach(prod => {
+                    bestHTML += window.generateStrictProductCardHTML ? window.generateStrictProductCardHTML(prod) : `
+                        <div class="product-card" style="border: 1px solid rgba(255,145,164,0.15); background: #FFF; border-radius: 20px; padding: 16px; width: 280px; box-sizing: border-box; flex-shrink: 0;">
+                            <img src="${prod.images[0]}" alt="${prod.title}" class="product-card-img" style="width: 100%; height: 220px; object-fit: cover; border-radius: 20px;">
+                            <h3 class="product-card-title" style="font-size: 16px; font-weight: 600; margin: 10px 0 4px 0;">${prod.title}</h3>
+                            <span class="product-card-flavor-name" style="color: var(--bose-pink); font-weight: 600; font-size: 13px;">${prod.flavorName}</span>
+                            <p class="product-card-desc" style="font-size: 12px; color: #666; margin: 8px 0; height: 36px; overflow: hidden;">${prod.flavorDesc || prod.description.substring(0,60)}...</p>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px;">
+                                <div class="product-card-price" style="font-weight: 700; font-size: 15px;">${Math.round(prod.price)} EGP</div>
+                                <button class="btn-add-to-cart" data-slug="${prod.slug}" style="background: var(--bose-pink); color: #FFF; border: none; padding: 8px 14px; border-radius: 10px; font-weight: 600; cursor: pointer;">إضافة للسلة</button>
+                            </div>
+                        </div>
+                    `;
                 });
+                bestGrid.innerHTML = bestHTML;
+                if (window.attachProductCardEvents) window.attachProductCardEvents(bestGrid, allProducts);
             }
 
-            localStorage.setItem('bose_cart', JSON.stringify(cart));
-            
-            // تحديث الواجهة فوراً للتزامن الكامل
-            verifyAndInitializeHomeView(window.BoseStoreData);
-            
-            // إطلاق حدث للمحرك المركزي لتحديث السلة العائمة والعداد
-            document.dispatchEvent(new CustomEvent('BoseCartUpdated'));
-
-            // إرسال إشعار ترحيبي راقٍ وتفاعلي من المحرك
-            if (window.BoseEngine && typeof window.BoseEngine.showToast === 'function') {
-                window.BoseEngine.showToast(`تمت إضافة ${product.name} إلى السلة بنجاح ✨`);
-            }
-        };
-
-        /**
-         * دالة التحكم وتعديل كميات الكارت الفردي من الصفحة الرئيسية
-         */
-        window.adjustHomeProductQty = function(productId, delta) {
-            let cart = JSON.parse(localStorage.getItem('bose_cart') || '[]');
-            const itemIndex = cart.findIndex(item => item.id === productId);
-
-            if (itemIndex > -1) {
-                cart[itemIndex].qty += delta;
-                if (cart[itemIndex].qty <= 0) {
-                    cart.splice(itemIndex, 1);
-                }
-                localStorage.setItem('bose_cart', JSON.stringify(cart));
+            // 4. بناء شبكة وصل حديثاً (6 منتجات كاملة مع حقن النقاط المخصصة هندسياً)
+            const newGrid = document.getElementById('dynamic-new-arrivals-grid');
+            const newDots = document.getElementById('new-arrivals-dots');
+            if (newGrid) {
+                let newHTML = '';
+                const newList = allProducts.filter(p => storeData.homepage.newArrivals.includes(p.slug || p.id)).slice(0, 6);
+                newList.forEach(prod => {
+                    newHTML += window.generateStrictProductCardHTML ? window.generateStrictProductCardHTML(prod) : '';
+                });
+                newGrid.innerHTML = newHTML;
+                if (window.attachProductCardEvents) window.attachProductCardEvents(newGrid, allProducts);
                 
-                // تحديث الواجهة فوراً للتزامن الكامل
-                verifyAndInitializeHomeView(window.BoseStoreData);
-                
-                // إطلاق حدث للمحرك المركزي لتحديث السلة العائمة والعداد
-                document.dispatchEvent(new CustomEvent('BoseCartUpdated'));
-            }
-        };
-
-        /**
-         * مزامنة دورية وسريعة لمؤشرات السلة لمنع الوهج البصري عند الانتقال
-         */
-        function syncHomeCartIndicators() {
-            // الاستماع لتعديلات التخزين الخارجي ومزامنتها لحظياً
-            window.addEventListener('storage', (e) => {
-                if (e.key === 'bose_cart' && window.BoseStoreData) {
-                    verifyAndInitializeHomeView(window.BoseStoreData);
+                if (newDots) {
+                    newDots.innerHTML = newList.map((_, i) => `
+                        <span class="bose-dot ${i===0?'active':''}" style="width: 8px; height: 8px; border-radius: 50%; background: ${i===0?'var(--bose-pink)':'#DDD'}; display: inline-block;"></span>
+                    `).join('');
                 }
-            });
-        }
+            }
 
-        /**
-         * وضع الأمان ومقاومة انقطاع الإنترنت (Offline Fallback Mode)
-         */
-        function injectSafeOfflineMode() {
-            const grid = document.getElementById("most-selling-products-grid");
-            if (grid) {
-                grid.innerHTML = `
-                    <div class="col-span-full text-center py-8 space-y-3">
-                        <p class="text-[#FF91A4] text-sm font-bold">نواجه صعوبة مؤقتة في جلب قائمة المنيو الحية حالياً.</p>
-                        <button onclick="window.location.reload()" class="bg-[#FF91A4] text-white font-bold px-4 py-2 rounded-xl text-xs border border-[#FF91A4]">إعادة تجربة التحميل</button>
+            // 5. بناء شبكة منتجاتنا الفاخرة (كارتين جنب بعض بالظبط 2+2) لراحة العميل النفسية والتنفس البصري
+            const mainGrid = document.getElementById('dynamic-main-products-grid');
+            const loadMoreBtn = document.getElementById('btn-load-more-products');
+            if (mainGrid) {
+                const mainList = allProducts.filter(p => storeData.homepage.ourProducts.includes(p.slug || p.id)).slice(0, 8);
+                let initialHTML = '';
+                // إظهار أول 4 منتجات (صفين بملء الشاشة كارتين جنب بعض تماماً)
+                mainList.slice(0, 4).forEach(prod => {
+                    initialHTML += window.generateStrictProductCardHTML ? window.generateStrictProductCardHTML(prod) : '';
+                });
+                mainGrid.innerHTML = initialHTML;
+                if (window.attachProductCardEvents) window.attachProductCardEvents(mainGrid, allProducts);
+
+                if (loadMoreBtn) {
+                    loadMoreBtn.onclick = function() {
+                        let extraHTML = '';
+                        mainList.slice(4, 8).forEach(prod => {
+                            extraHTML += window.generateStrictProductCardHTML ? window.generateStrictProductCardHTML(prod) : '';
+                        });
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = extraHTML;
+                        while(tempDiv.firstChild) {
+                            mainGrid.appendChild(tempDiv.firstChild);
+                        }
+                        if (window.attachProductCardEvents) window.attachProductCardEvents(mainGrid, allProducts);
+                        loadMoreBtn.style.display = 'none'; // إخفاء ذكي للتنفس البصري
+                        if (window.showBoseToast) window.showBoseToast("تم استعراض المنيو الفاخر بالكامل 🌸");
+                    };
+                }
+            }
+
+            // 6. تشغيل المحرك التصاعدي الذكي لعدادات قسم الفخر والاعتزاز (منع خطأ NaN المطلق)
+            const prideConfig = storeData.homepage.pride.stats;
+            if (prideConfig) {
+                const animateStatCounter = (id, targetValue, suffix) => {
+                    const el = document.getElementById(id);
+                    if (!el) return;
+                    let current = 0;
+                    const duration = 2000;
+                    const stepTime = Math.abs(Math.floor(duration / targetValue));
+                    const timer = setInterval(() => {
+                        current += Math.ceil(targetValue / 50);
+                        if (current >= targetValue) {
+                            el.textContent = targetValue + suffix;
+                            clearInterval(timer);
+                        } else {
+                            el.textContent = current + suffix;
+                        }
+                    }, 30);
+                };
+
+                animateStatCounter('stat-years-value', prideConfig.years.value, prideConfig.years.suffix);
+                animateStatCounter('stat-customers-value', prideConfig.customers.value, prideConfig.customers.suffix);
+                animateStatCounter('stat-orders-value', prideConfig.orders.value, prideConfig.orders.suffix);
+                animateStatCounter('stat-cakes-value', prideConfig.cakes.value, prideConfig.cakes.suffix);
+            }
+
+            // 7. بناء مجرى الفئات الـ 12 مع حساب حجم الكروت الأكبر بنسبة 30% وضمان حلقة التدفق اللانهائية
+            const catsTrack = document.getElementById('categories-track');
+            const catsDots = document.getElementById('categories-dots');
+            const catsList = storeData.homepage.categoriesSlider || [];
+            
+            if (catsTrack && catsList.length > 0) {
+                // مضاعفة هندسية مدمجة لمنع الفراغات البصرية التامة أثناء الأنيميشن المعتمد
+                const doubledCats = [...catsList, ...catsList];
+                catsTrack.innerHTML = doubledCats.map(cat => `
+                    <div class="bose-category-card" style="width: 280px; height: 360px; flex-shrink: 0; background: var(--bose-white); border-radius: 20px; border: 1px solid rgba(255,145,164,0.15); box-shadow: var(--bose-shadow-glow); text-align: center; padding: 15px; box-sizing: border-box;">
+                        <div style="width: 250px; height: 250px; overflow: hidden; border-radius: 16px; margin: 0 auto;">
+                            <img src="${cat.image}" alt="${cat.title}" style="width: 100%; height: 100%; object-fit: cover;">
+                        </div>
+                        <h3 style="font-size: 20px; font-weight: 700; margin-top: 15px; color: var(--bose-black);">${cat.title}</h3>
                     </div>
-                `;
+                `).join('');
+
+                if (catsDots) {
+                    catsDots.innerHTML = catsList.map((_, i) => `
+                        <span class="bose-dot ${i===0?'active':''}" style="width: 8px; height: 8px; border-radius: 50%; background: ${i===0?'var(--bose-pink)':'#DDD'}; display: inline-block;"></span>
+                    `).join('');
+                }
             }
-        }
+
+            // 🔍 ميكانيزم البحث الفوري الذكي المعتمد
+            const searchBtn = document.getElementById('nav-search-btn');
+            const searchModal = document.getElementById('search-modal-hub');
+            const closeSearch = document.getElementById('close-search-modal-btn');
+            const searchField = document.getElementById('modal-search-field');
+            const searchViewport = document.getElementById('modal-search-results-viewport');
+
+            if (searchBtn && searchModal && closeSearch) {
+                searchBtn.onclick = () => searchModal.classList.add('active');
+                closeSearch.onclick = () => {
+                    searchModal.classList.remove('active');
+                    searchField.value = '';
+                    searchViewport.innerHTML = '';
+                };
+            }
+
+            if (searchField && searchViewport) {
+                searchField.oninput = function() {
+                    const query = this.value.trim().toLowerCase();
+                    if(query.length < 2) { searchViewport.innerHTML = ''; return; }
+                    
+                    const filtered = allProducts.filter(p => 
+                        p.title.toLowerCase().includes(query) || 
+                        (p.searchTerms && p.searchTerms.some(t => t.toLowerCase().includes(query)))
+                    );
+                    
+                    if(filtered.length === 0) {
+                        searchViewport.innerHTML = `<p style="text-align:center; padding:20px; font-weight:600; color:#777;">لم نجد نتائج تطابق بحثك الفاخر..</p>`;
+                        return;
+                    }
+                    
+                    searchViewport.innerHTML = filtered.map(p => `
+                        <a href="product.html?slug=${p.slug}" class="search-result-card" style="display:flex; gap:12px; padding:10px; text-decoration:none; border-bottom:1px solid #F5F5F5;">
+                            <img src="${p.images ? p.images[0] : p.image}" class="search-card-img" alt="${p.title}" style="width:60px; height:60px; object-fit:cover; border-radius:8px;">
+                            <div class="search-card-info-pane" style="display:flex; flex-direction:column; justify-content:center;">
+                                <h4 class="search-card-title" style="margin:0; font-size:14px; color:var(--bose-black); font-weight:600;">${p.title}</h4>
+                                <span class="search-card-flavor" style="font-size:12px; color:var(--bose-pink); font-weight:600;">${p.flavorName}</span>
+                                <span class="search-card-price" style="font-size:13px; font-weight:700; color:var(--bose-black);">${Math.round(p.price)} EGP</span>
+                            </div>
+                        </a>
+                    `).join('');
+                };
+            }
+        });
     </script>
 </body>
 </html>
-
