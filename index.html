@@ -198,6 +198,7 @@
 
     <div id="drawer-shield" class="drawer-overlay" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(17, 17, 17, 0.4); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); z-index: 1999; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;"></div>
     
+    <!-- 👑 القائمة الجانبية الفاخرة المطورة بالكامل بالـ 12 فئة الرسمية لبراند حلويات بوسي 👑 -->
     <aside id="sidebar-drawer" class="bose-drawer-menu" style="position: fixed; top: 0; right: 0; width: 340px; max-width: 85vw; height: 100vh; background-color: #FFFFFF; box-shadow: -10px 0 40px rgba(255, 145, 164, 0.15) !important; z-index: 2000; display: flex; flex-direction: column; transform: translate3d(100%, 0, 0); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); direction: rtl; text-align: right;">
         <div class="drawer-premium-header" style="padding: 24px 20px; border-bottom: 1px solid rgba(255, 145, 164, 0.25); background: linear-gradient(to bottom, #FFF5F6, #FFFFFF); position: relative;">
             <button id="sidebar-close-panel-btn" class="drawer-close-btn" aria-label="إغلاق القائمة" style="position: absolute; left: 20px; top: 50%; transform: translateY(-50%); width: 36px; height: 36px; border-radius: 50%; background: transparent; color: #111111; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid rgba(255, 145, 164, 0.2); font-size: 20px; font-weight: bold;">×</button>
@@ -210,24 +211,26 @@
             <ul class="drawer-links-list" style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px;">
                 <li class="drawer-link-item"><a href="index.html" class="active" style="display: flex; align-items: center; gap: 10px; font-size: 0.95rem; font-weight: 700; color: #111111; padding: 10px 14px; border-radius: 12px; text-decoration: none;"><i class="fas fa-home" style="color: #FF91A4;"></i> الواجهة الرئيسية</a></li>
                 
+                <!-- 👑 الأكورديون المنسدل الفاخر لـ فئات حلويات بوسي الـ 12 المعتمدة -->
                 <li class="drawer-link-item">
                     <div id="sidebar-menu-accordion-toggle" class="sidebar-accordion-trigger" style="display: flex; align-items: center; justify-content: space-between; font-size: 0.95rem; font-weight: 700; color: #111111; padding: 10px 14px; border-radius: 12px;">
-                        <span style="display: flex; align-items: center; gap: 10px;"><i class="fas fa-utensils" style="color: #FF91A4;"></i> المنيو الشامل المعتمد</span>
+                        <span style="display: flex; align-items: center; gap: 10px;"><i class="fas fa-utensils" style="color: #FF91A4;"></i> المنيو حسب الفئة</span>
                         <i class="fas fa-chevron-down" style="font-size: 0.8rem; color: #FF91A4;"></i>
                     </div>
+                    <!-- الفئات الـ 12 الرسمية الصريحة بالتطابق مع الـ JSON والمواصفات -->
                     <div id="sidebar-menu-accordion-content" class="sidebar-accordion-content" style="margin-top: 4px; padding-right: 12px;">
-                        <a href="category.html?id=cakes" class="sidebar-sublink-item"><i class="fas fa-birthday-cake" style="color: #D4AF37; font-size: 0.75rem;"></i> قسم التورت الفاخرة</a>
-                        <a href="category.html?id=gateaux" class="sidebar-sublink-item"><i class="fas fa-cookie" style="color: #D4AF37; font-size: 0.75rem;"></i> قسم الجاتوهات السويسرول</a>
-                        <a href="category.html?id=boxes" class="sidebar-sublink-item"><i class="fas fa-box-open" style="color: #D4AF37; font-size: 0.75rem;"></i> بوكسات السعادة والروقان</a>
-                        <a href="category.html?id=eastern" class="sidebar-sublink-item"><i class="fas fa-stroopwafel" style="color: #D4AF37; font-size: 0.75rem;"></i> الحلويات الشرقية والقشطوطة</a>
-                        <a href="category.html?id=western" class="sidebar-sublink-item"><i class="fas fa-ice-cream" style="color: #D4AF37; font-size: 0.75rem;"></i> الحلويات الغربية والموس</a>
-                        <a href="category.html?id=cupcakes" class="sidebar-sublink-item"><i class="fas fa-cheese" style="color: #D4AF37; font-size: 0.75rem;"></i> الكاب كيك والسينابون الفاخر</a>
-                        <a href="category.html?id=donuts" class="sidebar-sublink-item"><i class="fas fa-doughnut" style="color: #D4AF37; font-size: 0.75rem;"></i> الدوناتس والملفاي الطازج</a>
-                        <a href="category.html?id=cookies" class="sidebar-sublink-item"><i class="fas fa-cookie-bite" style="color: #D4AF37; font-size: 0.75rem;"></i> الكوكيز والبراونيز الساخن</a>
-                        <a href="category.html?id=desserts" class="sidebar-sublink-item"><i class="fas fa-apple-alt" style="color: #D4AF37; font-size: 0.75rem;"></i> تارت الفواكه وحلى الكاسات</a>
-                        <a href="category.html?id=flowers" class="sidebar-sublink-item"><i class="fas fa-spa" style="color: #D4AF37; font-size: 0.75rem;"></i> بوكيهات الورد الطبيعي والستان</a>
-                        <a href="category.html?id=gifts" class="sidebar-sublink-item"><i class="fas fa-gift" style="color: #D4AF37; font-size: 0.75rem;"></i> تنسيقات الهدايا والفلوس والمفاجآت</a>
-                        <a href="category.html?id=custom" class="sidebar-sublink-item"><i class="fas fa-magic" style="color: #D4AF37; font-size: 0.75rem;"></i> الطلبات والتصاميم الخاصة</a>
+                        <a href="category.html?id=taswaq-toort" class="sidebar-sublink-item"><i class="fas fa-birthday-cake" style="color: #D4AF37; font-size: 0.75rem;"></i> التورت</a>
+                        <a href="category.html?id=taswaq-gatowat" class="sidebar-sublink-item"><i class="fas fa-cookie" style="color: #D4AF37; font-size: 0.75rem;"></i> الجاتوهات</a>
+                        <a href="category.html?id=taswaq-qashtota" class="sidebar-sublink-item"><i class="fas fa-stroopwafel" style="color: #D4AF37; font-size: 0.75rem;"></i> القشطوطة</a>
+                        <a href="category.html?id=taswaq-despacito" class="sidebar-sublink-item"><i class="fas fa-ice-cream" style="color: #D4AF37; font-size: 0.75rem;"></i> الديسباسيتو</a>
+                        <a href="category.html?id=taswaq-cinabon" class="sidebar-sublink-item"><i class="fas fa-bread-slice" style="color: #D4AF37; font-size: 0.75rem;"></i> السينابون</a>
+                        <a href="category.html?id=taswaq-donuts" class="sidebar-sublink-item"><i class="fas fa-doughnut" style="color: #D4AF37; font-size: 0.75rem;"></i> الدوناتس</a>
+                        <a href="category.html?id=taswaq-red-velvet" class="sidebar-sublink-item"><i class="fas fa-cheese" style="color: #D4AF37; font-size: 0.75rem;"></i> الريدڤيلڤت</a>
+                        <a href="category.html?id=taswaq-cupcake" class="sidebar-sublink-item"><i class="fas fa-cookie-bite" style="color: #D4AF37; font-size: 0.75rem;"></i> الكب كيك</a>
+                        <a href="category.html?id=taswaq-mini-cake" class="sidebar-sublink-item"><i class="fas fa-birthday-cake" style="color: #D4AF37; font-size: 0.75rem;"></i> الميني تورت</a>
+                        <a href="category.html?id=taswaq-flowers" class="sidebar-sublink-item"><i class="fas fa-spa" style="color: #D4AF37; font-size: 0.75rem;"></i> الورد</a>
+                        <a href="category.html?id=taswaq-happiness-cups" class="sidebar-sublink-item"><i class="fas fa-glass-martini-alt" style="color: #D4AF37; font-size: 0.75rem;"></i> كبات السعادة</a>
+                        <a href="category.html?id=taswaq-relax-box" class="sidebar-sublink-item"><i class="fas fa-box-open" style="color: #D4AF37; font-size: 0.75rem;"></i> بوكس الروقان</a>
                     </div>
                 </li>
                 
@@ -463,7 +466,6 @@
                         accordionContent.style.maxHeight = '0px';
                     } else {
                         accordionToggle.classList.add('open');
-                        // حساب الارتفاع الفعلي للعناصر بالداخل لفتح القائمة بسلاسة ديناميكية
                         accordionContent.style.maxHeight = accordionContent.scrollHeight + 'px';
                     }
                 });
@@ -562,7 +564,7 @@
                             }
                             showMoreBtn.style.display = 'none';
                             if (typeof window.showBoseToast === 'function') {
-                                window.showBoseToast(\"تم استعراض تشكيلة منتجاتنا العامة كاملة على ذوقك اليوم 🌸\");
+                                window.showBoseToast("تم استعراض تشكيلة منتجاتنا العامة كاملة على ذوقك اليوم 🌸");
                             }
                         });
                         showMoreBtn.dataset.listenerActive = "true";
