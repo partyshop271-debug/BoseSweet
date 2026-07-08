@@ -458,8 +458,8 @@
         <section class="reviews-premium-section">
             <div class="reviews-summary-row" style="direction: rtl;">
                 <div style="text-align: right;">
-                    <h2 style="font-size: 1.3rem; font-weight: 700; color: var(--bose-black);">مراجعات وتقييمات عشاق بوسي</h2>
-                    <p style="font-size: 0.88rem; color: var(--bose-black); opacity: 0.7; margin-top: 4px;">آراء وتجارب حقيقية شاركها معنا عملاؤنا الكرام بكل فخر واعتزاز بالجودة الفاخرة.</p>
+                    <h2 style="font-size: 1.3rem; font-weight: 700; color: var(--bose-black);">مراجعات وتقييمات حلويات بوسي</h2>
+                    <p style="font-size: 0.88rem; color: var(--bose-black); opacity: 0.7; margin-top: 4px;">آراء وتجارب حقيقية شاركها معنا عملاؤنا الكرام بكل فخر واعتزاز بالجودة الفاخرة لمنتجاتنا.</p>
                 </div>
                 <button id="btn-toggle-review-form" class="btn-trigger-review-form" type="button">
                     <i class="fas fa-pen"></i> شاركنا تجربتك وتقييمك الفاخر
@@ -470,8 +470,41 @@
                 <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 16px;">مراجعتك الفاخرة للصنف</h3>
                 <div style="display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 16px;">
                     <div>
-                        <label style="display:block; font-size:0.88rem; font-weight:700; margin-bottom:6px;">الاسم الكريم</label>
-                        <input id="bose-review-user-name" type="text" placeholder="اكتب اسمك هنا..." style="width:100%; padding:12px; border-radius:12px; border:1px solid rgba(17,17,17,0.12); font-family:'Cairo'; box-sizing:border-box;">
+                        <label style="display:block; font-size:0.88rem; font-weight:700; margin-bottom:6px;">اسمك المحترم</label>
+                        <input id="bose-review-user-name" type="text" placeholder="يمكنك كتابة اسمك هنا..." style="width:100%; padding:12px; border-radius:12px; border:1px solid rgba(17,17,17,0.12); font-family:'Cairo'; box-sizing:border-box;">
+                    </div>
+                    <div>
+                        <label style="display:block; font-size:0.88rem; font-weight:700; margin-bottom:6px;">تقييمك بالنجوم للمنتج</label>
+                        <div style="display:flex; gap:10px; flex-direction:row-reverse; justify-content:flex-end; font-size:1.4rem; color:#ccc;">
+                            <input type="radio" id="st5" name="bose-star-rating" value="5" style="display:none;"><label for="st5" style="cursor:pointer;"><i class="fas fa-star"></i></label>
+                            <input type="radio" id="st4" name="bose-star-rating" value="4" style="display:none;"><label for="st4" style="cursor:pointer;"><i class="fas fa-star"></i></label>
+                            <input type="radio" id="st3" name="bose-star-rating" value="3" style="display:none;"><label for="st3" style="cursor:pointer;"><i class="fas fa-star"></i></label>
+                            <input type="radio" id="st2" name="bose-star-rating" value="2" style="display:none;"><label for="st2" style="cursor:pointer;"><i class="fas fa-star"></i></label>
+                            <input type="radio" id="st1" name="bose-star-rating" value="1" style="display:none;"><label for="st1" style="cursor:pointer;"><i class="fas fa-star"></i></label>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-bottom: 16px;">
+                    <label style="display:block; font-size:0.88rem; font-weight:700; margin-bottom:6px;">رأيك وتجربتك بالتفصيل</label>
+                    <textarea id="bose-review-comment" placeholder="كيف كانت تجربتك لطعم وجودة المنتج؟ يسعدنا سماع رأيك الراقٍ..." style="width:100%; height:90px; padding:12px; border-radius:12px; border:1px solid rgba(17,17,17,0.12); font-family:'Cairo'; resize:none; box-sizing:border-box;"></textarea>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label style="display:block; font-size:0.88rem; font-weight:700; margin-bottom:6px;"><i class="fas fa-camera"></i> أضف صوراً حقيقية لالتقاط روعة الصنف (اختياري)</label>
+                    <input id="bose-review-images-picker" type="file" accept="image/*" multiple style="display: none;">
+                    <button id="btn-trigger-review-images" type="button" style="background:#fff; border:1px solid rgba(17,17,17,0.15); padding:8px 16px; border-radius:10px; cursor:pointer; font-size:0.85rem; font-weight:700;"><i class="fas fa-images" style="color:var(--bose-pink);"></i> اختيار الصور من جهازك</button>
+                    <div id="bose-review-images-preview-zone" style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;"></div>
+                </div>
+
+                <button id="btn-submit-premium-review" type="button" style="background:var(--bose-pink); color:#fff; border:none; padding:12px 30px; border-radius:50px; font-weight:700; cursor:pointer; box-shadow:0 4px 12px rgba(255,145,164,0.2);">نشر المراجعة الملكية فوراً</button>
+            </div>
+
+            <div id="bose-review-form-wrapper" style="display: none; background: rgba(255, 145, 164, 0.03); border: 1px dashed var(--bose-pink); border-radius: 24px; padding: 24px; margin-bottom: 30px; direction: rtl;">
+                <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 16px;">مراجعتك الفاخرة للصنف</h3>
+                <div style="display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 16px;">
+                    <div>
+                        <label style="display:block; font-size:0.88rem; font-weight:700; margin-bottom:6px;">اسمك المحترم</label>
+                        <input id="bose-review-user-name" type="text" placeholder="يمكنك كتابة اسمك هنا..." style="width:100%; padding:12px; border-radius:12px; border:1px solid rgba(17,17,17,0.12); font-family:'Cairo'; box-sizing:border-box;">
                     </div>
                     <div>
                         <label style="display:block; font-size:0.88rem; font-weight:700; margin-bottom:6px;">تقييمك بالنجوم للمنتج</label>
@@ -529,7 +562,6 @@
                 return;
             }
 
-            // تهيئة المتغيرات الأساسية للمنتج وتخصيصه لضمان دقة العمل الحسابي
             let currentProduct = null;
             let currentSelectedOptions = { flavorName: "كلاسيك" };
             let currentMasterQuantity = 1;
@@ -540,11 +572,11 @@
                 
                 currentProduct = dbData.products.find(p => p.slug === currentSlug);
                 if (!currentProduct) {
-                    renderErrorPanel("عذراً، هذا المنتج غير متوفر في قائمتنا الحالية حالياً.");
+                    renderErrorPanel("عذراً، هذا المنتج غير متوفر في قائمتنا الحالية.");
                     return;
                 }
 
-                // [🔐 تفعيل نظام التتبع السلوكي اللحظي فوراً لمنح الصنف نقطتين اهتمام]
+                // تتبع سلوك العميل في النظام التكنولوجي الموحد لمنح الصنف نقطتين اهتمام
                 if (typeof window.trackBoseUserBehavior === "function") {
                     window.trackBoseUserBehavior(currentProduct.slug, 2);
                 }
@@ -554,21 +586,22 @@
                 document.title = `${currentProduct.title} | حلويات بوسي الفاخرة`;
                 
                 const catBadge = document.getElementById("bose-product-badge-cat");
-                if (catBadge && currentProduct.categoryTitle) {
-                    catBadge.textContent = currentProduct.categoryTitle;
+                if (catBadge && currentProduct.category) {
+                    const foundCat = dbData.homepage.categoriesSlider.find(c => c.id === currentProduct.category);
+                    if (foundCat) catBadge.textContent = foundCat.title;
                 }
                 
                 document.getElementById("bose-product-flavor-text").textContent = currentProduct.flavorName || "كلاسيك فاخر";
+                
+                // قراءة الوصف الصارم والفريد الحقيقي من مصفوفة الـ JSON مباشرة لكل نكهة وصنف
                 document.getElementById("bose-product-desc-text").textContent = currentProduct.description || currentProduct.flavorDesc || "";
 
-                // تهيئة معرض الصور والألبوم المتتابع للصنف بوضوح تام
                 const defaultLogo = "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png";
                 const masterImg = currentProduct.image || (currentProduct.images && currentProduct.images[0] ? currentProduct.images[0] : defaultLogo);
                 
                 const masterImgNode = document.getElementById("bose-master-gallery-image");
                 masterImgNode.src = masterImg;
                 
-                // توليد ألبوم المصغرات التفاعلي في حال وجود مصفوفة صور متعددة للصنف
                 const thumbnailsStrip = document.getElementById("bose-thumbnails-strip");
                 const allImages = currentProduct.images && currentProduct.images.length > 0 ? currentProduct.images : [masterImg];
                 
@@ -590,22 +623,27 @@
                     thumbnailsStrip.innerHTML = "";
                 }
 
-                // بناء بطاقات التخصيص والخيارات القياسية المتاحة للصنف (مثل خيارات الميني كيك)
+                // معالجة وبناء بطاقات التخصيص والخيارات القياسية المتاحة للصنف ديناميكياً
                 const optionsRoot = document.getElementById("bose-product-customization-options-root");
                 optionsRoot.innerHTML = "";
                 
-                if (currentProduct.customizationOptions && currentProduct.customizationOptions.flavor) {
-                    currentSelectedOptions.flavorName = currentProduct.customizationOptions.flavor.options[0]?.title || currentProduct.flavorName || "كلاسيك";
-                    
+                // فلترة النكهات التابعة لنفس فئة المنتج الحالي لعرضها كخيارات بديلة مميزة وفريدة
+                const relatedFlavors = dbData.products.filter(p => p.category === currentProduct.category && p.slug !== currentProduct.slug);
+                
+                if (relatedFlavors.length > 0) {
                     const group = document.createElement("div");
                     group.className = "option-group-wrapper";
                     group.innerHTML = `
-                        <label class="option-group-title"><i class="fas fa-cookie-bite" style="color:var(--bose-pink);"></i> اختر نكهة التخصيص المفضلة لك</label>
+                        <label class="option-group-title"><i class="fas fa-cookie-bite" style="color:var(--bose-pink);"></i> استكشف باقي نكهات القسم الفريدة</label>
                         <div class="custom-cards-flex-row">
-                            ${currentProduct.customizationOptions.flavor.options.map((opt, oIdx) => `
-                                <div class="custom-selectable-card ${oIdx === 0 ? 'selected' : ''}" data-flavor-title="${opt.title}">
-                                    <span class="card-primary-txt">${opt.title}</span>
-                                    <span class="card-secondary-txt">طبيعي 100%</span>
+                            <div class="custom-selectable-card selected" data-slug="${currentProduct.slug}">
+                                <span class="card-primary-txt">${currentProduct.flavorName || 'كلاسيك'}</span>
+                                <span class="card-secondary-txt">الحالي</span>
+                            </div>
+                            ${relatedFlavors.map(opt => `
+                                <div class="custom-selectable-card" data-slug="${opt.slug}">
+                                    <span class="card-primary-txt">${opt.flavorName}</span>
+                                    <span class="card-secondary-txt">${Math.round(opt.price)} EGP</span>
                                 </div>
                             `).join("")}
                         </div>
@@ -613,25 +651,20 @@
                     
                     group.querySelectorAll(".custom-selectable-card").forEach(card => {
                         card.addEventListener("click", function() {
-                            group.querySelectorAll(".custom-selectable-card").forEach(c => c.classList.remove("selected"));
-                            this.classList.add("selected");
-                            currentSelectedOptions.flavorName = this.dataset.flavorTitle;
-                            
-                            // تحديث نص النكهة الفرعي باللوحة لراحة العميل النفسية
-                            document.getElementById("bose-product-flavor-text").textContent = this.dataset.flavorTitle;
+                            if (this.dataset.slug !== currentProduct.slug) {
+                                // انتقال سلس وفوري لصفحة المنتج الفردي الخاص بالنكهة المحددة للحفاظ على استقلالية كل نكهة ووصفها
+                                window.location.href = `product.html?slug=${this.dataset.slug}`;
+                            }
                         });
                     });
                     optionsRoot.appendChild(group);
                 }
 
-                // تحديث الأسعار ورندرة القيم المالية الصافية للمنتج
                 updateLivePriceDisplay(dbData.store?.currency || "EGP");
                 
-                // إخفاء وعاء الهيكل العظمي وإظهار تفاصيل الصنف بالكامل للعميل
                 skeleton.style.display = "none";
                 contentView.style.display = "grid";
 
-                // [🔮 رندرة وتفعيل شبكة المقترحات الذكية المتنوعة 5 منتجات عبر السلايدر الأفقي]
                 renderRelatedProducts(dbData);
             }
 
@@ -642,7 +675,6 @@
                 document.getElementById("bose-product-price-text").textContent = `${totalPrice} ${currency}`;
             }
 
-            // ربط وعزل أحداث أزرار التحكم اللمسي في كمية الفاتورة
             document.getElementById("btn-qty-master-plus").addEventListener("click", () => {
                 currentMasterQuantity++;
                 document.getElementById("input-qty-master-value").value = currentMasterQuantity;
@@ -657,57 +689,59 @@
                 }
             });
 
-            // ربط كبس زر الإضافة الفاخرة واللحظية لسلة المشتريات bose_cart
             document.getElementById("btn-add-to-cart-master-trigger").addEventListener("click", (e) => {
                 e.preventDefault();
                 if (!currentProduct) return;
 
-                if (window.createCartItem && window.addBoseCartItem) {
-                    const finalCartItem = window.createCartItem(currentProduct, currentSelectedOptions, currentMasterQuantity);
-                    if (finalCartItem) {
-                        window.addBoseCartItem(finalCartItem);
-                        if (typeof window.showBoseToast === 'function') {
-                            window.showBoseToast(`🌸 تمت إضافة ${currentMasterQuantity} قطعة من "${currentProduct.title}" بنجاح إلى سلتك الفاخرة.`);
-                        }
+                if (typeof window.addAbsoluteProductToCart === "function") {
+                    const cartItemObj = {
+                        id: currentProduct.id,
+                        slug: currentProduct.slug,
+                        title: currentProduct.title,
+                        flavorName: currentProduct.flavorName,
+                        price: currentProduct.price,
+                        image: currentProduct.image || (currentProduct.images ? currentProduct.images[0] : "")
+                    };
+                    for(let i=0; i<currentMasterQuantity; i++) {
+                        window.addAbsoluteProductToCart(cartItemObj);
                     }
                 } else {
-                    // فولباك محلي لحفظ المنتجات في الـ localStorage في حال تأخر استجابة محرك السلة المشترك
                     const rawCart = localStorage.getItem("bose_cart");
                     let cartArr = rawCart ? JSON.parse(rawCart) : [];
                     
-                    const finalUnitPrice = window.calculateProductFinalPrice ? window.calculateProductFinalPrice(currentProduct, currentSelectedOptions) : currentProduct.price;
+                    const finalUnitPrice = currentProduct.price;
                     const fallbackItem = {
-                        id: `${currentProduct.slug}-${Date.now()}`,
+                        id: String(currentProduct.id),
                         productSlug: currentProduct.slug,
                         title: currentProduct.title,
-                        flavorName: currentSelectedOptions.flavorName || currentProduct.flavorName || "كلاسيك",
+                        flavorName: currentProduct.flavorName || "كلاسيك",
                         finalPrice: finalUnitPrice,
                         quantity: currentMasterQuantity,
-                        image: currentProduct.image || ""
+                        image: currentProduct.image || (currentProduct.images ? currentProduct.images[0] : "")
                     };
-                    cartArr.push(fallbackItem);
-                    localStorage.setItem("bose_cart", JSON.stringify(cartArr));
                     
-                    // تحديث العداد الصغير بالهيدر ديناميكياً
-                    const countNode = document.getElementById("nav-cart-count");
-                    if (countNode) countNode.textContent = cartArr.length;
+                    const existingIdx = cartArr.findIndex(item => item.id === fallbackItem.id);
+                    if (existingIdx > -1) {
+                        cartArr[existingIdx].quantity += currentMasterQuantity;
+                    } else {
+                        cartArr.push(fallbackItem);
+                    }
+                    
+                    localStorage.setItem("bose_cart", JSON.stringify(cartArr));
+                    document.dispatchEvent(new CustomEvent('BoseCartUpdated'));
                     
                     if (typeof window.showBoseToast === 'function') {
-                        window.showBoseToast(`🌸 تمت إضافة "${currentProduct.title}" بنجاح إلى سلتك الفاخرة.`);
+                        window.showBoseToast(`تمت إضافة ${currentMasterQuantity} من ${currentProduct.title} بنجاح لراحتك 🌸`);
                     }
                 }
             });
 
-            // [🔮 دالة الرندرة والربط اللحظي لـ 5 كروت مقترحات ذكية بداخل السلايدر الأفقي]
             function renderRelatedProducts(dbData) {
                 const relatedGrid = document.getElementById("related-products-grid");
                 if (!relatedGrid || !dbData || !dbData.products) return;
 
-                // استدعاء المحرك المركزي المطور لجلب 5 مقترحات سلوكية متنوعة ومنع التكرار
-                const suggestionsList = window.getBosePersonalizedSuggestions ? 
-                    window.getBosePersonalizedSuggestions(dbData.products, currentProduct.slug, 5) : 
-                    dbData.products.filter(p => p.slug !== currentProduct.slug).slice(0, 5);
-
+                // جلب 5 مقترحات ذكية لا تتضمن المنتج الحالي لزيادة المبيعات والانتشار
+                const suggestionsList = dbData.products.filter(p => p.slug !== currentProduct.slug).slice(0, 5);
                 const currency = dbData.store?.currency || "EGP";
                 const defaultLogo = dbData.store?.logo || "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png";
 
@@ -716,12 +750,11 @@
                     return;
                 }
 
-                // تغيير الكلاس ديناميكياً ليتحول الوعاء فوراً لسلايدر أفقي فاخر وموحد بالمليم
                 relatedGrid.className = "bose-horizontal-suggestions-slider";
 
                 relatedGrid.innerHTML = suggestionsList.map(prod => {
                     const imgUrl = prod.image || (prod.images && prod.images[0] ? prod.images[0] : defaultLogo);
-                    const calcPrice = window.calculateBosePrice ? window.calculateBosePrice(prod.price, "menu-only") : prod.price;
+                    const calcPrice = Math.round(prod.price);
                     
                     return `
                         <div class="product-card bose-product-card" data-slug="${prod.slug}" style="border:var(--bose-border-pink); border-radius:20px; background:var(--bose-white); overflow:hidden; padding:16px; display:flex; flex-direction:column; gap:10px; box-shadow:var(--bose-shadow-glow); text-align:right; direction:rtl;">
@@ -746,7 +779,6 @@
                 }).join("");
             }
 
-            // تفعيل فحص وتأمين أحداث المزامنة التلقائية لبيانات المتجر والقائمة الشاملة
             if (window.BoseStoreData) {
                 initProductPage(window.BoseStoreData);
             }
@@ -754,8 +786,7 @@
                 initProductPage(e.detail);
             });
 
-            // تشغيل أحداث ومفاتيح لوحة مراجعات وتقييمات العملاء الفاخرة
-            const toggleFormBtn = document.getElementById("btn-trigger-review-form");
+            const toggleFormBtn = document.getElementById("btn-toggle-review-form");
             const formWrapper = document.getElementById("bose-review-form-wrapper");
             
             toggleFormBtn.addEventListener("click", () => {
@@ -769,7 +800,6 @@
                 }
             });
 
-            // تفعيل ضغط وتأمين رفع صور العملاء محلياً بالـ Base64 لضمان الأداء
             const imagesPicker = document.getElementById("bose-review-images-picker");
             const triggerImagesBtn = document.getElementById("btn-trigger-review-images");
             const previewContainer = document.getElementById("bose-review-images-preview-zone");
@@ -794,7 +824,12 @@
                 });
             });
 
-            // كبس معالج نشر مراجعات العملاء الفورية والمؤمنة
+            function escapeHTML(str) {
+                return str.replace(/[&<>'"]/g, 
+                    tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+                );
+            }
+
             document.getElementById("btn-submit-premium-review").addEventListener("click", () => {
                 const userName = document.getElementById("bose-review-user-name").value.trim();
                 const comment = document.getElementById("bose-review-comment").value.trim();
@@ -802,7 +837,7 @@
                 const rating = checkedRadio ? checkedRadio.value : "5";
 
                 if (!userName || !comment) {
-                    if (typeof window.showBoseToast === 'function') window.showBoseToast("يرجى ملء جميع الحقول المطلوبة (الاسم الكريم والتعليق) قبل النشر لسلامة التقييم 🌸");
+                    if (typeof window.showBoseToast === 'function') window.showBoseToast("يرجى ملء جميع الحقول المطلوبة (اسمك المحترم والتعليق) قبل النشر لسلامة التقييم 🌸");
                     return;
                 }
 
@@ -831,7 +866,6 @@
 
                 reviewsList.insertBefore(newReviewCard, reviewsList.firstChild);
 
-                // تصفير وتنظيف الحقول فوراً بعد النجاح لراحة المستهلك النفسية
                 document.getElementById('bose-review-user-name').value = "";
                 document.getElementById('bose-review-comment').value = "";
                 if (checkedRadio) checkedRadio.checked = false;
