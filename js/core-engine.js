@@ -1,35 +1,35 @@
 /**
  * 👑 المحرك المركزي العام والنهائي للموقع والنافذة العائمة - حلويات بوسي 👑
- * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية ومشاكل التداخل V49.0
+ * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية ومشاكل التداخل V50.0
  * متوافق بشكل مطلق وثنائي الاتجاه مع كافة ملفات css/ وجافا سكريبت الموقع وقاعدة البيانات site-data-final.json
- * [تم حل كوارث القائمة الجانبية الفاخرة، دعم الأكورديون المنسدل، أتمتة سلايدر الإتقان بالحركة اللانهائية، وأسهم الفئات بالكامل]
+ * [تم حل ثغرة القائمة الجانبية، أتمتة جلب المنتجات الحقيقية وتوجيهها الصارم لصفحة product.html، مع الحفاظ الكامل على حركات السلايدرات والسلة]
  */
 
 (function () {
     "use strict";
 
-    // 🎨 نظام الألوان الحاكمة والمقدسة للعلامة التجارية للهندسة البصرية الرقمية (The Strict Palette)
+    // 🎨 نظام الألوان الحاكمة والمقدسة للعلامة التجارية للهندسة البصرية الرقمية (The Strict Palette)[span_7](start_span)[span_7](end_span)
     const BRAND_COLORS = {
-        pink: "#FF91A4",  // نبض الحياة في الموقع
-        white: "#FFFFFF", // المسيطر تماماً على الخلفيات والمساحات للتنفس البصري
-        black: "#111111", // النصوص والعناوين فقط - معزول تماماً عن الظلال والخلفيات
-        gold: "#D4AF37",  // وجود رمزي ناعم وخفيف جداً لفخامة اللوجو
-        cream: "#FFF5F6"  // خلفية دافئة ناعمة للفواصل وكروت السلة
+        pink: "#FF91A4",  // نبض الحياة في الموقع[span_8](start_span)[span_8](end_span)
+        white: "#FFFFFF", // المسيطر تماماً على الخلفيات والمساحات للتنفس البصري[span_9](start_span)[span_9](end_span)
+        black: "#111111", // النصوص والعناوين فقط - معزول تماماً عن الظلال والخلفيات[span_10](start_span)[span_10](end_span)
+        gold: "#D4AF37",  // وجود رمزي ناعم وخفيف جداً لفخامة اللوجو[span_11](start_span)[span_11](end_span)
+        cream: "#FFF5F6"  // خلفية دافئة ناعمة للفواصل وكروت السلة[span_12](start_span)[span_12](end_span)
     };
 
-    // 🔑 مفتاح تخزين السلة الموحد والثابت عبر كافة محركات الموقع لضمان التزامن الكامل
+    // 🔑 مفتاح تخزين السلة الموحد والثابت عبر كافة محركات الموقع لضمان التزامن الكامل[span_13](start_span)[span_13](end_span)
     const CART_STORAGE_KEY = 'bose_cart';
     
-    // 🧠 ذاكرة البيانات المركزية للموقع (Global Singleton Pattern) لمنع تكرار الاتصال بالخادم
+    // 🧠 ذاكرة البيانات المركزية للموقع (Global Singleton Pattern) لمنع تكرار الاتصال بالخادم[span_14](start_span)[span_14](end_span)
     let boseGlobalStoreData = null;
     let databaseReadyCallbacks = [];
 
     /* ==========================================================================\
-       1. حارس التمهيد واستدعاء قاعدة البيانات المعتمدة site-data-final.json
+       1. حارس التمهيد واستدعاء قاعدة البيانات المعتمدة site-data-final.json[span_15](start_span)[span_15](end_span)
        ========================================================================== */
     async function loadBoseAbsoluteDatabase() {
         try {
-            // فحص ذكي للمسار لضمان عمل الجلب في كافة الصفحات والمسارات الفرعية
+            // فحص ذكي للمسار لضمان عمل الجلب في كافة الصفحات والمسارات الفرعية[span_16](start_span)[span_16](end_span)
             const currentPath = window.location.pathname;
             let jsonPath = 'data/site-data-final.json';
             
@@ -57,7 +57,7 @@
 
             initializeGlobalFeatures();
             
-            // 🛡️ [حارس الحقن والمطابقة]: تأمين عدم ضياع الهيدر والفوتر في صفحات المنيو والصفحات الأخرى
+            // 🛡️ [حارس الحقن والمطابقة]: تأمين عدم ضياع الهيدر والفوتر في صفحات المنيو والصفحات الأخرى[span_17](start_span)[span_17](end_span)
             ensureSharedLayoutHubs(boseGlobalStoreData);
             
         } catch (error) {
@@ -100,12 +100,12 @@
     }
 
     /* ==========================================================================\
-       ⚙️ حارس الحقن التلقائي للهيدر والفوتر في الصفحات الأخرى لمنع ضياع المكونات
+       ⚙️ حارس الحقن التلقائي للهيدر والفوتر في الصفحات الأخرى لمنع ضياع المكونات[span_18](start_span)[span_18](end_span)
        ========================================================================== */
     function ensureSharedLayoutHubs(storeData) {
         if (!storeData) return;
         
-        // فحص وحقن الهيدر لو مش موجود استاتيكياً في الصفحة المنتقل إليها
+        // فحص وحقن الهيدر لو مش موجود استاتيكياً في الصفحة المنتقل إليها[span_19](start_span)[span_19](end_span)
         const headerNode = document.querySelector('.bose-navbar');
         if (headerNode && headerNode.innerHTML.trim() === "") {
             headerNode.innerHTML = `
@@ -130,11 +130,11 @@
                     </div>
                 </div>
             `;
-            // إعادة ربط أحداث القائمة الجانبية بعد الحقن اللحظي
+            // إعادة ربط أحداث القائمة الجانبية بعد الحقن اللحظي[span_20](start_span)[span_20](end_span)
             initializeSidebarDrawer();
         }
 
-        // فحص وحقن الفوتر الموحد الفاتح لمنع اختفائه بالصفحات الأخرى
+        // فحص وحقن الفوتر الموحد الفاتح لمنع اختفائه بالصفحات الأخرى[span_21](start_span)[span_21](end_span)
         const footerNode = document.querySelector('.bose-footer');
         if (footerNode && footerNode.innerHTML.trim() === "") {
             footerNode.innerHTML = `
@@ -150,7 +150,7 @@
                     </div>
                     <div id="footer-social-links">
                         <a href="${storeData.social.facebook}" class="social-link-facebook" target="_blank"><i class="fab fa-facebook-f"></i></a>
-                        <a href="${storeData.social.instagram}" class="social-link-instagram" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="${storeData.social.instagram("bose_sweets?igsh=amdkMmhxMXJyanYy")}?igsh=amdkMmhxMXJyanYy" class="social-link-instagram" target="_blank"><i class="fab fa-instagram"></i></a>
                         <a href="${storeData.social.tiktok}" class="social-link-tiktok" target="_blank"><i class="fab fa-tiktok"></i></a>
                         <a href="https://wa.me/2${storeData.store.phone}" class="social-link-whatsapp" target="_blank"><i class="fab fa-whatsapp"></i></a>
                     </div>
@@ -164,7 +164,7 @@
     }
 
     /* ==========================================================================\
-       2. تفعيل وربط القائمة الجانبية الهندسية الاحترافية المطورة بالكامل للعميل
+       2. تفعيل وربط القائمة الجانبية الهندسية الاحترافية المطورة بالكامل للعميل[span_22](start_span)[span_22](end_span)
        ========================================================================== */
     function initializeSidebarDrawer() {
         const toggleBtn = document.getElementById('mobile-menu-toggle') || document.querySelector('[aria-label="فتح قائمة التصفح"]');
@@ -175,6 +175,51 @@
 
         if (!drawer.classList.contains('bose-premium-sidebar-initiated')) {
             drawer.classList.add('bose-premium-sidebar-initiated');
+            
+            // 👑 بناء نظام ضخ وحقن حركي مخصص للفئات والمنتجات من الـ JSON مباشرة لمنع المنتجات الوهمية
+            let accordionCategoriesHTML = '';
+            
+            if (boseGlobalStoreData && boseGlobalStoreData.homepage && boseGlobalStoreData.homepage.categoriesSlider && boseGlobalStoreData.products) {
+                const catsList = boseGlobalStoreData.homepage.categoriesSlider;
+                const prodsList = boseGlobalStoreData.products;
+                
+                catsList.forEach(cat => {
+                    // فلترة المنتجات التابعة لهذه الفئة حصرياً من مصفوفة الأصناف الأصلية
+                    const relatedProducts = prodsList.filter(p => p.category === cat.id);
+                    let productLinksHTML = '';
+                    
+                    if (relatedProducts.length > 0) {
+                        relatedProducts.forEach(prod => {
+                            productLinksHTML += `
+                                <a href="product.html?id=${prod.id}" style="display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 0.85rem; font-weight: 600; color: #333333; padding: 8px 16px; text-decoration: none; border-bottom: 1px solid rgba(255,145,164,0.05);">
+                                    <span style="display: flex; align-items: center; gap: 6px;"><i class="fas fa-angle-left" style="color: ${BRAND_COLORS.pink}; font-size: 10px;"></i> ${prod.flavorName || prod.title}</span>
+                                    <span style="font-size: 11px; color: ${BRAND_COLORS.pink}; font-weight: 700;">${Math.round(prod.price)} EGP</span>
+                                </a>
+                            `;
+                        });
+                    } else {
+                        // كود حارس احتياطي إذا كانت الفئة خالية مؤقتاً لتوجه العميل لصفحة الفئة الشاملة
+                        productLinksHTML = `
+                            <a href="category.html?id=${cat.id}" style="display: flex; align-items: center; gap: 10px; font-size: 0.85rem; font-weight: 600; color: #666; padding: 10px 16px; text-decoration: none; font-style: italic;">
+                                <i class="fas fa-cookie"></i> استعراض تشكيلة قسم ${cat.title}
+                            </a>
+                        `;
+                    }
+                    
+                    accordionCategoriesHTML += `
+                        <div class="sidebar-nested-category-block" style="border-bottom: 1px solid rgba(17,17,17,0.04);">
+                            <div class="sidebar-sub-accordion-trigger" data-target="sub-cat-${cat.id}" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; cursor: pointer; background: rgba(255,145,164,0.02);">
+                                <span style="font-size: 0.88rem; font-weight: 700; color: ${BRAND_COLORS.black};"><i class="fas fa-chevron-left" style="font-size: 8px; color: ${BRAND_COLORS.gold}; margin-left: 6px;"></i> ${cat.title}</span>
+                                <i class="fas fa-plus sub-accordion-plus-icon" style="font-size: 0.7rem; color: ${BRAND_COLORS.pink}; transition: transform 0.3s;"></i>
+                            </div>
+                            <div id="sub-cat-${cat.id}" class="sidebar-sub-accordion-content" style="max-height: 0px; overflow: hidden; transition: max-height 0.3s ease; display: flex; flex-direction: column; background: #FFFFFF; padding-right: 8px;">
+                                ${productLinksHTML}
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
             drawer.innerHTML = `
                 <div class="sidebar-luxury-header" style="padding: 24px 20px; border-bottom: 1px solid ${BRAND_COLORS.cream}; display: flex; justify-content: space-between; align-items: center; background: ${BRAND_COLORS.white};">
                     <div style="display: flex; align-items: center; gap: 12px;">
@@ -193,24 +238,13 @@
                     
                     <!-- 👑 الكبسولة المنسدلة الذكية للمنيو الشامل (Dynamic Dropdown Accordion) -->
                     <div class="drawer-link-item" style="display: flex; flex-direction: column; gap: 4px;">
-                        <div id="sidebar-menu-accordion-toggle" class="sidebar-accordion-trigger" style="display: flex; align-items: center; justify-content: space-between; font-size: 0.95rem; font-weight: 700; color: ${BRAND_COLORS.black}; padding: 10px 14px; border-radius: 12px; cursor: pointer;">
+                        <div id="sidebar-menu-accordion-toggle" class="sidebar-accordion-trigger" style="display: flex; align-items: center; justify-content: space-between; font-size: 0.95rem; font-weight: 700; color: ${BRAND_COLORS.black}; padding: 10px 14px; border-radius: 12px; cursor: pointer; background: rgba(255,145,164,0.03);">
                             <span style="display: flex; align-items: center; gap: 10px;"><i class="fas fa-utensils" style="color: ${BRAND_COLORS.pink};"></i> المنيو الشامل المعتمد</span>
                             <i class="fas fa-chevron-down" style="font-size: 0.8rem; color: ${BRAND_COLORS.pink}; transition: transform 0.3s ease;"></i>
                         </div>
-                        <!-- الفئات الـ 12 المعتمدة بالتفصيل داخل قائمة الأكورديون المنسدلة -->
-                        <div id="sidebar-menu-accordion-content" class="sidebar-accordion-content" style="max-height: 0px; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1); background-color: #FFF5F6; border-radius: 12px; display: flex; flex-direction: column; gap: 4px; padding-right: 12px; box-sizing: border-box;">
-                            <a href="category.html?id=cakes" style="display: flex; align-items: center; gap: 10px; font-size: 0.88rem; font-weight: 600; color: #111111; padding: 10px 16px; text-decoration: none;"><i class="fas fa-birthday-cake" style="color: #D4AF37; font-size: 0.75rem;"></i> قسم التورت الفاخرة</a>
-                            <a href="category.html?id=gateaux" style="display: flex; align-items: center; gap: 10px; font-size: 0.88rem; font-weight: 600; color: #111111; padding: 10px 16px; text-decoration: none;"><i class="fas fa-cookie" style="color: #D4AF37; font-size: 0.75rem;"></i> قسم الجاتوهات السويسرول</a>
-                            <a href="category.html?id=boxes" style="display: flex; align-items: center; gap: 10px; font-size: 0.88rem; font-weight: 600; color: #111111; padding: 10px 16px; text-decoration: none;"><i class="fas fa-box-open" style="color: #D4AF37; font-size: 0.75rem;"></i> بوكسات السعادة والروقان</a>
-                            <a href="category.html?id=eastern" style="display: flex; align-items: center; gap: 10px; font-size: 0.88rem; font-weight: 600; color: #111111; padding: 10px 16px; text-decoration: none;"><i class="fas fa-stroopwafel" style="color: #D4AF37; font-size: 0.75rem;"></i> الحلويات الشرقية والقشطوطة</a>
-                            <a href="category.html?id=western" style="display: flex; align-items: center; gap: 10px; font-size: 0.88rem; font-weight: 600; color: #111111; padding: 10px 16px; text-decoration: none;"><i class="fas fa-ice-cream" style="color: #D4AF37; font-size: 0.75rem;"></i> الحلويات الغربية والموس</a>
-                            <a href="category.html?id=cupcakes" style="display: flex; align-items: center; gap: 10px; font-size: 0.88rem; font-weight: 600; color: #111111; padding: 10px 16px; text-decoration: none;"><i class="fas fa-cheese" style="color: #D4AF37; font-size: 0.75rem;"></i> الكاب كيك والسينابون الفاخر</a>
-                            <a href="category.html?id=donuts" style="display: flex; align-items: center; gap: 10px; font-size: 0.88rem; font-weight: 600; color: #111111; padding: 10px 16px; text-decoration: none;"><i class="fas fa-doughnut" style="color: #D4AF37; font-size: 0.75rem;"></i> الدوناتس والملفاي الطازج</a>
-                            <a href="category.html?id=cookies" style="display: flex; align-items: center; gap: 10px; font-size: 0.88rem; font-weight: 600; color: #111111; padding: 10px 16px; text-decoration: none;"><i class="fas fa-cookie-bite" style="color: #D4AF37; font-size: 0.75rem;"></i> الكوكيز والبراونيز الساخن</a>
-                            <a href="category.html?id=desserts" style="display: flex; align-items: center; gap: 10px; font-size: 0.88rem; font-weight: 600; color: #111111; padding: 10px 16px; text-decoration: none;"><i class="fas fa-apple-alt" style="color: #D4AF37; font-size: 0.75rem;"></i> تارت الفواكه وحلى الكاسات</a>
-                            <a href="category.html?id=flowers" style="display: flex; align-items: center; gap: 10px; font-size: 0.88rem; font-weight: 600; color: #111111; padding: 10px 16px; text-decoration: none;"><i class="fas fa-spa" style="color: #D4AF37; font-size: 0.75rem;"></i> بوكيهات الورد الطبيعي والستان</a>
-                            <a href="category.html?id=gifts" style="display: flex; align-items: center; gap: 10px; font-size: 0.88rem; font-weight: 600; color: #111111; padding: 10px 16px; text-decoration: none;"><i class="fas fa-gift" style="color: #D4AF37; font-size: 0.75rem;"></i> تنسيقات الهدايا والفلوس والمفاجآت</a>
-                            <a href="category.html?id=custom" style="display: flex; align-items: center; gap: 10px; font-size: 0.88rem; font-weight: 600; color: #111111; padding: 10px 16px; text-decoration: none;"><i class="fas fa-magic" style="color: #D4AF37; font-size: 0.75rem;"></i> الطلبات والتصاميم الخاصة</a>
+                        <!-- الفئات الـ 12 المعتمدة والمنتجات الحقيقية المنسدلة منها مباشرة دون أي تزوير وهمي -->
+                        <div id="sidebar-menu-accordion-content" class="sidebar-accordion-content" style="max-height: 0px; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1); background-color: #FFF5F6; border-radius: 12px; display: flex; flex-direction: column; gap: 2px; padding: 0 4px; box-sizing: border-box;">
+                            ${accordionCategoriesHTML}
                         </div>
                     </div>
                     
@@ -233,7 +267,7 @@
 
         const closeBtn = document.getElementById('sidebar-close-panel-btn');
 
-        // ربط منطق فتح وإغلاق القائمة الجانبية
+        // ربط منطق فتح وإغلاق القائمة الجانبية[span_23](start_span)[span_23](end_span)
         if (toggleBtn && drawer && shield) {
             toggleBtn.onclick = (e) => {
                 e.preventDefault();
@@ -262,7 +296,7 @@
         if (closeBtn) closeBtn.onclick = closeDrawerMenu;
         if (shield) shield.onclick = closeDrawerMenu;
 
-        // 👑 ربط تفاعل قائمة الأكورديون المنسدلة ديناميكياً للـ Sidebar
+        // 👑 ربط تفاعل قائمة الأكورديون المنسدلة ديناميكياً للـ Sidebar[span_24](start_span)[span_24](end_span)
         const accordionToggle = document.getElementById('sidebar-menu-accordion-toggle');
         const accordionContent = document.getElementById('sidebar-menu-accordion-content');
         
@@ -280,16 +314,50 @@
                     if (chevronIcon) chevronIcon.style.transform = 'rotate(0deg)';
                 } else {
                     accordionToggle.classList.add('open');
-                    // حساب الطول الفعلي للأبناء لحقن الحركة بسلاسة متناهية
                     accordionContent.style.maxHeight = accordionContent.scrollHeight + 'px';
                     if (chevronIcon) chevronIcon.style.transform = 'rotate(180deg)';
                 }
             };
         }
+
+        // 👑 ربط تفاعل الفئات الداخلية الفرعية (Sub-Accordions) للأصناف الحقيقية
+        document.querySelectorAll('.sidebar-sub-accordion-trigger').forEach(trigger => {
+            trigger.onclick = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const targetId = this.getAttribute('data-target');
+                const targetContent = document.getElementById(targetId);
+                const plusIcon = this.querySelector('.sub-accordion-plus-icon');
+                
+                if (targetContent) {
+                    const isSubOpen = targetContent.style.maxHeight && targetContent.style.maxHeight !== '0px';
+                    
+                    if (isSubOpen) {
+                        targetContent.style.maxHeight = '0px';
+                        if (plusIcon) {
+                            plusIcon.className = "fas fa-plus sub-accordion-plus-icon";
+                            plusIcon.style.transform = "rotate(0deg)";
+                        }
+                    } else {
+                        targetContent.style.maxHeight = targetContent.scrollHeight + 'px';
+                        if (plusIcon) {
+                            plusIcon.className = "fas fa-minus sub-accordion-plus-icon";
+                            plusIcon.style.transform = "rotate(180deg)";
+                        }
+                        
+                        // تعديل طول حاوية الأكورديون الأب الرئيسية لتمنع قص المحتوى
+                        if (accordionContent) {
+                            accordionContent.style.maxHeight = (accordionContent.scrollHeight + targetContent.scrollHeight) + 'px';
+                        }
+                    }
+                }
+            };
+        });
     }
 
     /* ==========================================================================\
-       3. محرك العدادات التصاعدية الذكي لقسم الفخر والاعتزاز
+       3. محرك العدادات التصاعدية الذكي لقسم الفخر والاعتزاز[span_25](start_span)[span_25](end_span)
        ========================================================================== */
     function runBoseStatsCounter(storeData) {
         const prideSection = document.getElementById('pride-section');
@@ -341,7 +409,7 @@
     }
 
     /* ==========================================================================\
-       4. رندرة وتعبئة قسم "تسوق حسب الفئة" الـ 12 المعتمدة بالـ Transform الفخم والأسهم الحية
+       4. رندرة وتعبئة قسم "تسوق حسب الفئة" الـ 12 المعتمدة بالـ Transform الفخم والأسهم الحية[span_26](start_span)[span_26](end_span)
        ========================================================================== */
     function renderBoseCategoriesSlider(storeData) {
         const wrapper = document.getElementById('categories-slider-wrapper');
@@ -384,13 +452,11 @@
             wrapper.appendChild(controlsContainer);
 
             let currentCatInx = 0;
-            const cardWidth = 260; // عرض الكارد الفعلي بالإضافة للـ Gap المخصص له
+            const cardWidth = 260; 
 
             function updateCatSliderPosition() {
-                // التحريك السلس عبر معالج الرسوميات GPU لمنع مشاكل الـ overflow
                 track.style.transform = `translate3d(${currentCatInx * cardWidth}px, 0px, 0px)`;
                 
-                // تحديث المظهر الفخم للدوتس النشطة
                 document.querySelectorAll('.cat-dot').forEach((d, i) => {
                     if (i === currentCatInx) {
                         d.style.background = BRAND_COLORS.pink;
@@ -434,7 +500,7 @@
     }
 
     /* ==========================================================================\
-       4.ب. تشغيل ومزامنة سلايدر "عقد من الإتقان" التلقائي بالكامل بالـ Dots (حركة لا نهائية دائرية)
+       4.ب. تشغيل ومزامنة سلايدر "عقد من الإتقان" التلقائي بالكامل بالـ Dots[span_27](start_span)[span_27](end_span)
        ========================================================================== */
     function initializeBosePrideSlider() {
         const prideTrack = document.getElementById('excellence-images-track');
@@ -444,7 +510,6 @@
         const originalSlides = Array.from(prideTrack.children);
         if (originalSlides.length === 0) return;
 
-        // تهيئة الـ Dots بناءً على العدد الأصلي للسلايدز
         let prideDotsContainer = document.getElementById('pride-dots-container');
         if (!prideDotsContainer) {
             prideDotsContainer = document.createElement('div');
@@ -467,10 +532,8 @@
             prideWrapper.appendChild(prideDotsContainer);
         }
 
-        // تطبيق آلية الـ Infinite Loops عن طريق مضاعفة العناصر كـ Clones من الطرفين
         const cloneCount = originalSlides.length;
         
-        // استنساخ العناصر قبل وبعد لضمان سلاسة الدوران اللانهائي
         originalSlides.forEach(slide => {
             const cloneAfter = slide.cloneNode(true);
             prideTrack.appendChild(cloneAfter);
@@ -486,12 +549,11 @@
         let slideInterval = null;
         let isTransitioning = false;
 
-        // ضبط الـ CSS الأساسي للتراك ليعمل بالـ Transform المرن بدلاً من الـ Scroll لضمان أداء هندسي فائق
         prideTrack.style.display = 'flex';
         prideTrack.style.transition = 'none';
         
         function getSlideWidth() {
-            return totalSlides[0].offsetWidth + 16; // العرض بالإضافة إلى الـ Gap
+            return totalSlides[0].offsetWidth + 16; 
         }
 
         function scrollPrideToEach(animate = true) {
@@ -503,10 +565,8 @@
                 prideTrack.style.transition = 'none';
             }
             
-            // التحريك السلس ثنائي الاتجاه بالـ Transform
             prideTrack.style.transform = `translateX(${currentIdx * slideWidth}px)`;
             
-            // تحديث حالة الـ Dots النشطة
             let activeDotIndex = (currentIdx - cloneCount) % cloneCount;
             if (activeDotIndex < 0) activeDotIndex += cloneCount;
 
@@ -521,7 +581,6 @@
             });
         }
 
-        // إرجاع السلايدر فجائياً وبدون قفزة بصرية عند الوصول للنهاية أو البداية الوهمية
         prideTrack.addEventListener('transitionend', () => {
             isTransitioning = false;
             const slideWidth = getSlideWidth();
@@ -542,7 +601,7 @@
                 if (isTransitioning) return;
                 currentIdx++;
                 scrollPrideToEach(true);
-            }, 3000); // التحرك التلقائي المستمر كل 3 ثوانٍ لراحة بصرية فائقة
+            }, 3000); 
         }
 
         function restartAutoPlay() {
@@ -550,26 +609,23 @@
             startAutoPlay();
         }
 
-        // تموضع البداية الأولي بدون أن يشعر المستخدم
         setTimeout(() => {
             scrollPrideToEach(false);
             startAutoPlay();
         }, 150);
 
-        // إيقاف الوميض التلقائي مؤقتاً عند التفاعل اليدوي أو اللمس باليد لضمان أفضل تجربة مستخدم
         prideTrack.addEventListener('mouseenter', () => clearInterval(slideInterval));
         prideTrack.addEventListener('mouseleave', startAutoPlay);
         prideTrack.addEventListener('touchstart', () => clearInterval(slideInterval), {passive: true});
         prideTrack.addEventListener('touchend', startAutoPlay, {passive: true});
         
-        // إعادة حساب الأبعاد بدقة متناهية عند تغيير حجم الشاشة أو تدوير الهاتف المحمول
         window.addEventListener('resize', () => {
             scrollPrideToEach(false);
         });
     }
 
     /* ==========================================================================\
-       5. هيكلة وبناء نظام السلة العائمة التفاعلية الفاخرة وسيكولوجية الوميض
+       5. هيكلة وبناء نظام السلة العائمة التفاعلية الفاخرة وسيكولوجية الوميض[span_28](start_span)[span_28](end_span)
        ========================================================================== */
     function injectFloatingCartSystem() {
         if (document.getElementById('bose-floating-cart-wrapper')) return;
@@ -801,7 +857,7 @@
     }
 
     /* ==========================================================================\
-       6. نظام التنبيهات الراقية الفاخرة (Toast System)
+       6. نظام التنبيهات الراقية الفاخرة (Toast System)[span_29](start_span)[span_29](end_span)
        ========================================================================== */
     window.showBoseToast = function (message, type = 'success') {
         let container = document.getElementById('bose-toast-central-container');
@@ -859,7 +915,7 @@
     };
 
     /* ==========================================================================\
-       7. مهندس ومولد كروت المنتجات القياسي الفاخر - السعر بالأعلى والسلة بالأسفل
+       7. مهندس ومولد كروت المنتجات القياسي الفاخر - السعر بالأعلى والسلة بالأسفل[span_30](start_span)[span_30](end_span)
        ========================================================================== */
     window.generateStrictProductCardHTML = function (product, currency = 'EGP') {
         if (!product) return '';
@@ -960,7 +1016,7 @@
                             flavorName: matchedProduct.flavorName || "افتراضي",
                             price: matchedProduct.price,
                             finalPrice: matchedProduct.price,
-                            image: Mystery || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png',
+                            image: matchedProduct.images ? matchedProduct.images[0] : matchedProduct.image,
                             quantity: selectedQuantity,
                             type: matchedProduct.type || "standard",
                             customDetails: {}
@@ -996,7 +1052,7 @@
     };
 
     /* ==========================================================================\
-       8. موازنة وتحديث عدادات شارات الهيدر الموحدة (Sync Header Badges)
+       8. موازنة وتحديث عدادات شارات الهيدر الموحدة (Sync Header Badges)[span_31](start_span)[span_31](end_span)
        ========================================================================== */
     function updateGlobalCartCounters() {
         const cart = getInMemoryCart();
@@ -1364,8 +1420,7 @@
         document.body.appendChild(errorDiv);
     }
 
-    updateGlobalCartCounters();
-
+    // إطلاق تهيئة واستدعاء قاعدة البيانات الموحدة للموقع[span_32](start_span)[span_32](end_span)
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', loadBoseAbsoluteDatabase);
     } else {
