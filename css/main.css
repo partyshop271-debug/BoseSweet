@@ -34,7 +34,7 @@
     letter-spacing: normal !important;
 }
 
-/* توزيع الأوزان الهندسية الصحيحة لكل فئة أيقونات لمنع ظهور المربعات الفارغة */
+/* distribution الأوزان الهندسية الصحيحة لكل فئة أيقونات لمنع ظهور المربعات الفارغة */
 .fa-solid, .fas {
     font-weight: 900 !important;
 }
@@ -62,7 +62,7 @@ body.bose-no-scroll {
     perspective: 1000px;
 }
 
-/* hماية نصوص اللغة العربية من التقطيع والتشويه البصري */
+/* حماية نصوص اللغة العربية من التقطيع والتشويه البصري */
 .bose-arabic-text {
     word-break: keep-all;
     overflow-wrap: break-word;
@@ -1153,69 +1153,41 @@ body.bose-no-scroll {
         margin: 0 auto;
         padding: 40px 16px;
     }
+}
 
+/* تعديل جذري لتنسيق لوجو الفوتر لمنع الضغط والتشوه البصري المزعج لعين المستهلك */
+.footer-logo-container img {
+    height: 60px !important;        /* تثبيت الارتفاع للحفاظ على الهيكل القياسي الموحد للفوتر */
+    width: auto !important;         /* فك العصر: السماح للعرض بالتناسب تلقائياً بنسبته الطبيعية */
+    max-width: 100% !important;     /* تأمين عدم تجاوز الحاوية المرنة لراحة العميل النفسية */
+    object-fit: contain !important; /* حظر السحق والبتر للحفاظ على فخامة اللوجو الأصلي الفاخر */
+}
 
 /* 🛡️ حارس العزل السلس وحماية التحكم الذكي بالجافا سكريبت لمنع تصادم الأبعاد 🛡️ */
-.animate-marquee, .categories-track-loop {
-    overflow-x: hidden; /* تم التعديل لحذف !important ومنع تجمد السحب بصباع العميل */
+.animate-marquee {
+    overflow-x: hidden;
     scrollbar-width: none;
     -ms-overflow-style: none;
 }
 
-.animate-marquee::-webkit-scrollbar, .categories-track-loop::-webkit-scrollbar {
+.animate-marquee::-webkit-scrollbar {
     display: none !important;
 } 
-/* 👑 إضافات الدعم القياسي الفاخر لمنع شلل السحب وتكرار العرض اللانهائي 👑 */
 
-/* تأمين أداء مجرى حركة الأقسام والفئات لملء الشاشة بالكامل بدون فراغات[span_4](start_span)[span_4](end_span) */
+/* 👑 دعم التمرير الانسيابي الموجه كلياً بالمحرك الموحد core-engine.js 👑 */
 .categories-track-loop, 
 #excellence-images-track {
     display: flex !important;
     flex-wrap: nowrap !important;
     width: max-content !important;
-    overflow-x: auto !important; /* فك الشلل: تفعيل السحب الطبيعي بصباع العميل */
-    scrollbar-width: none !important; /* إخفاء شريط التمرير التقليدي المشوه لراحة العين */
+    overflow-x: visible !important; /* السماح للمحرك بالتحريك خارج حدود الرؤية الوهمية */
+    scrollbar-width: none !important;
     -ms-overflow-style: none !important;
-    cursor: grab;
-    touch-action: pan-x !important; /* قصر اللمس على المحور الأفقي بسلاسة تامة */
+    touch-action: pan-y !important; /* قصر حركة التداخل الرأسي لحماية تمرير الصفحة */
     will-change: transform;
 }
 
-.categories-track-loop::-webkit-scrollbar, 
-#excellence-images-track::-webkit-scrollbar {
-    display: none !important; /* إخفاء متقدم لمتصفحات سياق الموبايل */
-}
-
-/* فك تعارض الأنيميشن التلقائي مع السحب الحر للمستخدم */
-.categories-track-loop {
-    animation: boseCategoriesLoop 32s linear infinite;
-}
-
-#excellence-images-track {
-    animation: boseMarquee 28s linear infinite;
-}
-
-/* الكروت داخل الفئات: الحجم الأكبر بنسبة 30% لراحة العين ومنع الانعصار البصري[span_5](start_span)[span_5](end_span) */
-.category-slide-card {
-    flex: 0 0 280px !important;
-    width: 280px !important;
-    max-width: 280px !important;
-    box-sizing: border-box !important;
-}
-
-/* التجاوب الفاخر على الشاشات الكبيرة للكمبيوتر[span_6](start_span)[span_6](end_span) */
-@media (min-width: 1024px) {
-    .category-slide-card {
-        flex: 0 0 420px !important;
-        width: 420px !important;
-        max-width: 420px !important;
-    }
-}
-
-/* تعديل جذري لتنسيق لوجو الفوتر لمنع الضغط والتشوه البصري المزعج لعين المستهلك */
-.footer-logo-container img {
-    height: 60px !important;        /* تثبيت الارتفاع للحفاظ على الهيكل القياسي الموحد للفوتر[span_7](start_span)[span_7](end_span) */
-    width: auto !important;         /* فك العصر: السماح للعرض بالتناسب تلقائياً بنسبته الطبيعية */
-    max-width: 100% !important;     /* تأمين عدم تجاوز الحاوية المرنة لراحة العميل النفسية */
-    object-fit: contain !important; /* حظر السحق والبتر للحفاظ على فخامة اللوجو الأصلي الفاخر[span_8](start_span)[span_8](end_span) */
-}
+/* تم إيقاف أنيميشن الـ CSS الاستاتيكي المتعارض لترك التحكم الكلي للـ JavaScript والـ Dots */
+/* .categories-track-loop { animation: boseCategoriesLoop 32s linear infinite; }
+#excellence-images-track { animation: boseMarquee 28s linear infinite; }
+*/
