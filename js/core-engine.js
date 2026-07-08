@@ -1,8 +1,8 @@
 /**
  * 👑 المحرك المركزي العام والنهائي للموقع والنافذة العائمة - حلويات بوسي 👑
- * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية ومشاكل التداخل V55.0
+ * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية ومشاكل التداخل V56.0
  * متوافق بشكل مطلق وثنائي الاتجاه مع كافة ملفات css/ وجافا سكريبت الموقع وقاعدة البيانات data/site-data-final.json
- * [تم التحديث: توحيد السلة بالكامل وتحويل الزر العائم لواجهة تتبع ذكية توجه لصفحة السلة الرسمية مباشرة لمنع التشتيت]
+ * [تم التحديث: جعل السلة العائمة طافية ومتحركة بشكل مطلق فوق كافة العناصر وحل مشكلة اختفاء الهيدر والفوتر تلقائياً]
  */
 
 (function () {
@@ -64,7 +64,7 @@
 
             initializeGlobalFeatures();
             
-            // 🛡️ [حارس الحقن والمطابقة]: تأمين عدم ضياع الهيدر والفوتر في صفحات المنيو والصفحات الأخرى
+            // 🛡️ [حارس الحقن والمطابقة]: تأمين عدم ضياع الهيدر والفوتر في صفحات المنيو والصفحات الأخرى والنافذة العائمة
             ensureSharedLayoutHubs(boseGlobalStoreData);
             
         } catch (error) {
@@ -119,8 +119,15 @@
     function ensureSharedLayoutHubs(storeData) {
         if (!storeData) return;
         
-        const headerNode = document.querySelector('.bose-navbar');
-        if (headerNode && headerNode.innerHTML.trim() === "") {
+        // 🛡️ [تأمين ذكي للهيدر]: إذا كان عنصر النافذة غير موجود في الـ HTML نقوم بخلطه وحقنه فوراً في أعلى الـ Body لضمان ظهوره
+        let headerNode = document.querySelector('.bose-navbar');
+        if (!headerNode) {
+            headerNode = document.createElement('header');
+            headerNode.className = 'bose-navbar';
+            document.body.insertBefore(headerNode, document.body.firstChild);
+        }
+        
+        if (headerNode.innerHTML.trim() === "") {
             headerNode.innerHTML = `
                 <div class="navbar-mobile-wrapper">
                     <button id="mobile-menu-toggle" class="nav-icon-btn" aria-label="فتح قائمة التصفح">
@@ -145,8 +152,15 @@
             `;
         }
 
-        const footerNode = document.querySelector('.bose-footer');
-        if (footerNode && footerNode.innerHTML.trim() === "") {
+        // 🛡️ [تأمين ذكي للفوتر]: إذا لم يكن وسم الفوتر موجوداً نقوم بخلطه وحقنه في أسفل الـ Body تلقائياً لراحة العميل النفسية
+        let footerNode = document.querySelector('.bose-footer');
+        if (!footerNode) {
+            footerNode = document.createElement('footer');
+            footerNode.className = 'bose-footer';
+            document.body.appendChild(footerNode);
+        }
+        
+        if (footerNode.innerHTML.trim() === "") {
             footerNode.innerHTML = `
                 <div class="footer-inner-wrapper">
                     <div class="footer-logo-container">
@@ -169,6 +183,19 @@
                     </div>
                 </div>
             `;
+        }
+        
+        // تأمين بقاء وعاء الدروج الجانبي للموبايل
+        if (!document.getElementById('sidebar-drawer')) {
+            const drawerDiv = document.createElement('div');
+            drawerDiv.id = 'sidebar-drawer';
+            drawerDiv.className = 'bose-premium-sidebar';
+            document.body.appendChild(drawerDiv);
+            
+            const shieldDiv = document.createElement('div');
+            shieldDiv.id = 'drawer-shield';
+            shieldDiv.className = 'bose-drawer-shield';
+            document.body.appendChild(shieldDiv);
         }
         
         initializeSidebarDrawer();
@@ -229,7 +256,7 @@
             drawer.innerHTML = `
                 <div class="sidebar-luxury-header" style="padding: 24px 20px; border-bottom: 1px solid ${BRAND_COLORS.cream}; display: flex; justify-content: space-between; align-items: center; background: ${BRAND_COLORS.white};">
                     <div style="display: flex; align-items: center; gap: 12px;">
-                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" style="width: 44px; height: 44px; object-fit: contain;" alt="لوجو بوسي الفاخر">
+                        <img src="${boseGlobalStoreData.store.logo}" style="width: 44px; height: 44px; object-fit: contain;" alt="لوجو بوسي الفاخر">
                         <div style="display: flex; flex-direction: column;">
                             <span style="font-family: 'Cairo'; font-weight: 700; font-size: 15px; color: ${BRAND_COLORS.black}; line-height: 1.3;">حلويات بوسي</span>
                             <span style="font-family: 'Cairo'; font-size: 11px; color: #777;">صنعناها بحب لتهديها لمن تحب</span>
@@ -913,54 +940,62 @@
                 animation: bosePulseBlinking 2.2s infinite ease-in-out;
             }
 
+            /* 👑 [تثبيت وحماية السلة العائمة فوق الفوتر وكافة العناصر] */
+            #bose-floating-cart-wrapper {
+                position: fixed !important;
+                bottom: 24px !important;
+                left: 24px !important;
+                width: 64px !important;
+                height: 64px !important;
+                z-index: 9999999 !important;
+                pointer-events: auto !important;
+            }
+
             #bose-floating-cart-trigger {
-                position: fixed;
-                bottom: 24px;
-                left: 24px;
-                width: 64px;
-                height: 64px;
-                background-color: ${BRAND_COLORS.white};
-                border: 2px solid ${BRAND_COLORS.pink};
-                border-radius: 50%;
-                box-shadow: 0 8px 32px rgba(255,145,164,0.25);
-                cursor: pointer;
-                z-index: 999998;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                padding: 0;
-                text-decoration: none;
-                transition: transform 0.2s ease, box-shadow 0.2s ease;
+                display: flex !important;
+                width: 100% !important;
+                height: 100% !important;
+                background-color: ${BRAND_COLORS.white} !important;
+                border: 2px solid ${BRAND_COLORS.pink} !important;
+                border-radius: 50% !important;
+                box-shadow: 0 8px 32px rgba(255,145,164,0.25) !important;
+                cursor: pointer !important;
+                align-items: center !important;
+                justify-content: center !important;
+                padding: 0 !important;
+                text-decoration: none !important;
+                transition: transform 0.2s ease, box-shadow 0.2s ease !important;
             }
             #bose-floating-cart-trigger:hover {
                 transform: scale(1.08) !important;
                 box-shadow: 0 12px 40px rgba(255,145,164,0.4) !important;
             }
             .bose-trigger-icon-box {
-                position: relative;
-                color: ${BRAND_COLORS.black};
-                display: flex;
-                align-items: center;
-                justify-content: center;
+                position: relative !important;
+                color: ${BRAND_COLORS.black} !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
             }
             #bose-floating-badge-counter {
-                position: absolute;
-                top: -12px;
-                right: -12px;
-                background-color: ${BRAND_COLORS.pink};
-                color: ${BRAND_COLORS.white};
-                font-family: 'Cairo', sans-serif;
-                font-weight: 700;
-                font-size: 12px;
-                min-width: 22px;
-                height: 22px;
-                border-radius: 11px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                padding: 0 4px;
-                box-sizing: border-box;
-                border: 2px solid ${BRAND_COLORS.white};
+                position: absolute !important;
+                top: -12px !important;
+                right: -12px !important;
+                background-color: ${BRAND_COLORS.pink} !important;
+                color: ${BRAND_COLORS.white} !important;
+                font-family: 'Cairo', sans-serif !important;
+                font-weight: 700 !important;
+                font-size: 12px !important;
+                min-width: 22px !important;
+                height: 22px !important;
+                border-radius: 11px !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                padding: 0 4px !important;
+                box-sizing: border-box !important;
+                border: 2px solid ${BRAND_COLORS.white} !important;
+                z-index: 10000000 !important;
             }
             
             #bose-toast-central-container {
