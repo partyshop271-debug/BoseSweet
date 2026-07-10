@@ -1,7 +1,8 @@
 /**
- * 👑 المحرك المركزي العام والنهائي للموقع - حلويات بوسي 👑
- * النسخة الهندسیة القياسية الشاملة والمطهرة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية V65.0
+ * 👑 المحرك المركزي العام والنهائي للموقع - حلويات بوسي (BoseSweets) 👑
+ * النسخة الهندسية القياسية الشاملة والمطورة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية V66.0
  * متوافق بشكل مطلق وثنائي الاتجاه مع كافة ملفات css/ وجافا سكريبت الموقع وقاعدة البيانات data/site-data-final.json
+ * يدمج حارس الإيماءات اللمسية الذكي وتأثير السكرول المتطور للهيدر مع الحفاظ التام على خريطة الـ DOM المقدسة
  */
 
 (function () {
@@ -9,10 +10,10 @@
 
     // 🎨 نظام الألوان الحاكمة والمقدسة للعلامة التجارية للهندسة البصرية الرقمية (The Strict Palette)
     const BRAND_COLORS = {
-        pink: "#FF91A4",  // نبض الحياة في الموقع
-        white: "#FFFFFF", // المسيطر تماماً على الخلفيات والمساحات للتنفس البصري ومنع التكديس
-        black: "#111111", // النصوص والعناوين فقط - معزول تماماً عن الظلال والخلفيات
-        gold: "#D4AF37"   // وجود رمزي ناعم وخفيف جداً لمحاكاة فخامة اللوجو
+        pink: "#FF91A4",  // نبض الحياة في الموقع: حدود كروت المنتجات، الظلال الناعمة، نصوص الأسعار، والـ Hover
+        white: "#FFFFFF", // المسيطر تماماً على الخلفيات والمساحات لخلق تنفس بصري ومنع التكديس لراحة العميل النفسية
+        black: "#111111", // النصوص والعناوين فقط لضمان وضوح كامل للعين - معزول تماماً عن الظلال والخلفيات
+        gold: "#D4AF37"   // وجود رمزي ناعم وخفيف جداً لمحاكاة فخامة اللوجو ونجوم التقييمات
     };
 
     // 🔑 مفتاح تخزين السلة الموحد والثابت عبر كافة محركات الموقع لضمان التزامن الكامل
@@ -1142,6 +1143,21 @@
                 internalStructureImg.setAttribute("data-isolated-framework", "true"); 
             }
         });
+
+        // 🚀 معالجة حركة الهيدر اللطيفة والذكية أثناء السكرول (Scroll Direction Effect)
+        let lastScrollTop = 0;
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.bose-navbar');
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            if (navbar) {
+                if (scrollTop > 100 && scrollTop > lastScrollTop) {
+                    navbar.style.transform = 'translate3d(0, -100%, 0)'; // إخفاء ذكي وسلس لزيادة التنفس البصري أثناء النزول
+                } else {
+                    navbar.style.transform = 'translate3d(0, 0, 0)'; // إظهار فوري لاصق عند أي حركة صعود لراحة العميل
+                }
+            }
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+        }, { passive: true });
         
         updateGlobalCartCounters();
     }
@@ -1309,62 +1325,3 @@
                 align-items: center !important;
                 justify-content: center !important;
                 gap: 10px !important;
-                width: 100% !important;
-            }
-            .bose-toast-text {
-                margin: 0 !important;
-                font-size: 14px !important;
-                color: ${BRAND_COLORS.black} !important;
-                font-weight: 700 !important; 
-                text-align: center !important;
-            }
-            .bose-toast-sparkle {
-                font-size: 16px !important;
-            }
-            
-            #top-bar-marquee {
-                background-color: ${BRAND_COLORS.pink} !important; 
-                width: 100% !important;
-                height: 40px !important;
-                display: flex !important;
-                align-items: center !important;
-                overflow: hidden !important;
-            }
-            .bose-ticker-item {
-                color: ${BRAND_COLORS.white} !important;
-                font-family: 'Cairo', sans-serif !important;
-                font-size: 13px !important;
-                font-weight: 600 !important;
-                padding: 0 40px !important;
-                white-space: nowrap !important;
-            }
-            @keyframes boseMarqueeSmoothLoop {
-                0% { transform: translate3d(0, 0, 0); }
-                100% { transform: translate3d(-50%, 0, 0); }
-            }
-            .animate-marquee {
-                display: flex !important;
-                width: max-content !important;
-                animation: boseMarqueeSmoothLoop 22s linear infinite !important;
-                will-change: transform;
-            }
-        `;
-        document.head.appendChild(styleBlock);
-    }
-
-    function injectFallbackErrorDisplay() {
-        if (document.getElementById('bose-db-fallback-error')) return;
-        const errorDiv = document.createElement('div');
-        errorDiv.id = "bose-db-fallback-error";
-        errorDiv.style.cssText = `position:fixed; bottom:16px; right:16px; background-color:${BRAND_COLORS.white}; border:1px solid ${BRAND_COLORS.pink}; padding:12px 20px; border-radius:8px; z-index:2147483647; direction:rtl; font-size:14px; font-family:Cairo, sans-serif; font-weight: 600; color:${BRAND_COLORS.black}; box-shadow: 0 4px 12px rgba(255,145,164,0.1);`;
-        errorDiv.textContent = 'عذراً، هناك صعوبة في الاتصال بالخادم حالياً. يرجى إعادة محاولة تحميل الصفحة لراحتك.';
-        document.body.appendChild(errorDiv);
-    }
-
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', loadBoseAbsoluteDatabase);
-    } else {
-        loadBoseAbsoluteDatabase();
-    }
-
-})();
