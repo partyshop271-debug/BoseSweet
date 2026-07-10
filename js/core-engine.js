@@ -1,8 +1,9 @@
 /**
  * 👑 المحرك المركزي العام والنهائي للموقع والنافذة العائمة - حلويات بوسي 👑
- * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية ومشاكل التداخل V61.0
+ * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية ومشاكل التداخل V63.0
  * متوافق بشكل مطلق وثنائي الاتجاه مع كافة ملفات css/ وجافا سكريبت الموقع وقاعدة البيانات data/site-data-final.json
  * [تم التحديث والتطوير الشامل: تثبيت حقيقي ومطلق للسلة العائمة وتعديل نظام الإشعارات ليكون بالأسفل في مواجهة عين العميل مباشرة]
+ * [تحديث هندسي فاخر: دعم كامل للسحب باللمس، وإصلاح انقطاع التيكر، وعزل خلفيات المحاكي، ومنع انضغاط التصنيفات]
  */
 
 (function () {
@@ -23,6 +24,7 @@
     // 🧠 ذاكرة البيانات المركزية للموقع (Global Singleton Pattern) لمنع تكرار الاتصال بالخادم
     let boseGlobalStoreData = null;
     let databaseReadyCallbacks = [];
+    window.boseServerTimeOffset = 0; // فارق التوقيت بالمللي ثانية: (وقت الخادم - وقت جهاز العميل)
 
     /* ==========================================================================\
        1. حارس التمهيد واستدعاء قاعدة البيانات المعتمدة data/site-data-final.json مع كسر الكاش المطلق
@@ -41,24 +43,36 @@
                 baseRootPath = "./";
             }
 
-            const jsonPath = `${baseRootPath}data/site-data-final.json`;
+            let jsonPath = `${baseRootPath}data/site-data-final.json`;
             
             // 👑 [تقنية كسر كاش المتصفح الحتمية]: إضافة طابع زمني فريد لإجبار السيرفر على جلب النسخة المحدثة فوراً
             const cacheBuster = `?v=${Date.now()}`;
             
-            const response = await fetch(jsonPath + cacheBuster);
+            let response = await fetch(jsonPath + cacheBuster);
             if (!response.ok) {
                 const alternativePath = `${baseRootPath}site-data-final.json${cacheBuster}`;
                 const fallbackResponse = await fetch(alternativePath);
                 if (!fallbackResponse.ok) throw new Error(`فشل جلب البيانات من كافة المسارات القياسية: ${fallbackResponse.status}`);
                 boseGlobalStoreData = await fallbackResponse.json();
+                response = fallbackResponse;
             } else {
                 boseGlobalStoreData = await response.json();
             }
             
+            // استخلاص توقيت الخادم الحقيقي من الهيدر لمنع تلاعب أو فروق ساعات أجهزة العملاء
+            const serverDateHeader = response.headers ? response.headers.get('Date') : null;
+            if (serverDateHeader) {
+                const serverTime = new Date(serverDateHeader).getTime();
+                const clientTime = Date.now();
+                window.boseServerTimeOffset = serverTime - clientTime;
+            } else {
+                window.boseServerTimeOffset = 0;
+            }
+
             window.BoseStoreData = boseGlobalStoreData;
             
             injectEarlyDependencies();
+            applyGlobalSEOAndBranding();
             
             document.dispatchEvent(new CustomEvent('BoseDatabaseLoaded', { detail: boseGlobalStoreData }));
             
@@ -117,6 +131,20 @@
             faLink.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css';
             document.head.appendChild(faLink);
         }
+    }
+
+    function applyGlobalSEOAndBranding() {
+        if (!boseGlobalStoreData) return;
+        const data = boseGlobalStoreData;
+        if (data.seo && data.seo.title) {
+            document.title = data.seo.title;
+        }
+        const logoImgs = document.querySelectorAll('img#bose-store-logo');
+        logoImgs.forEach(img => {
+            if (data.store && img.src !== data.store.logo) img.src = data.store.logo;
+        });
+        const aboutText = document.getElementById('footer-about-text');
+        if (aboutText && !aboutText.textContent && data.footer) aboutText.textContent = data.footer.about;
     }
 
     function ensureSharedLayoutHubs(storeData) {
@@ -233,7 +261,7 @@
                         });
                     } else {
                         productLinksHTML = `
-                            <a href="category.html?category=${cat.id}" style="display: flex; align-items: center; gap: 10px; font-size: 0.85rem; font-weight: 600; color: #666; padding: 10px 166px; text-decoration: none; font-style: italic;">
+                            <a href="category.html?category=${cat.id}" style="display: flex; align-items: center; gap: 10px; font-size: 0.85rem; font-weight: 600; color: #666; padding: 10px 16px; text-decoration: none; font-style: italic;">
                                 <i class="fas fa-cookie"></i> استعراض تشكيلة قسم ${cat.title}
                             </a>
                         `;
@@ -440,11 +468,11 @@
         const cats = storeData.homepage.categoriesSlider;
         
         track.innerHTML = cats.map(cat => `
-            <a href="category.html?category=${cat.id}" class="category-slide-card">
+            <a href="category.html?category=${cat.id}" class="category-slide-card" style="width: 280px; flex-shrink: 0; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; gap: 12px; text-decoration: none;">
                 <div style="width: 100%; aspect-ratio: 1/1; overflow: hidden; border-radius: 20px; border: 1px solid rgba(255, 145, 164, 0.2); background: ${BRAND_COLORS.cream}; position: relative;">
                     <img src="${cat.image}" alt="${cat.title}" style="width: 100%; height: 100%; object-fit: cover; display: block;" loading="lazy">
                 </div>
-                <h3 style="margin-top: 12px; font-size: 16px; font-weight: 700; color: #111111; text-align: center; font-family: 'Cairo';">${cat.title}</h3>
+                <h3 style="margin-top: 12px; font-size: 20px; font-weight: 700; color: #111111; text-align: center; font-family: 'Cairo'; white-space: normal; word-break: break-word;">${cat.title}</h3>
             </a>
         `).join('');
 
@@ -454,13 +482,6 @@
             controlsContainer.id = 'bose-categories-controls';
             controlsContainer.style.cssText = `display: flex; flex-direction: column; align-items: center; gap: 14px; margin-top: 20px; width: 100%; direction: rtl;`;
             
-            let arrowsRow = document.createElement('div');
-            arrowsRow.style.cssText = `display: flex; gap: 40px; align-items: center; justify-content: center;`;
-            arrowsRow.innerHTML = `
-                <button id="cat-arrow-prev" style="width: 40px; height: 40px; border-radius: 50%; border: 1px solid ${BRAND_COLORS.pink}; background: ${BRAND_COLORS.white}; color: ${BRAND_COLORS.pink}; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: 0.2s;"><i class="fas fa-chevron-right"></i></button>
-                <button id="cat-arrow-next" style="width: 40px; height: 40px; border-radius: 50%; border: 1px solid ${BRAND_COLORS.pink}; background: ${BRAND_COLORS.white}; color: ${BRAND_COLORS.pink}; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: 0.2s;"><i class="fas fa-chevron-left"></i></button>
-            `;
-            
             const dotsRow = document.createElement('div');
             dotsRow.id = 'cat-dots-container';
             dotsRow.style.cssText = `display: flex; gap: 8px; justify-content: center; align-items: center; flex-wrap: wrap; max-width: 90%;`;
@@ -468,15 +489,17 @@
                 <span class="cat-dot ${i === 0 ? 'active' : ''}" data-index="${i}" style="width: 8px; height: 8px; border-radius: 50%; background: ${i === 0 ? BRAND_COLORS.pink : 'rgba(255,145,164,0.3)'}; cursor: pointer; transition: 0.3s;"></span>
             `).join('');
 
-            controlsContainer.appendChild(arrowsRow);
             controlsContainer.appendChild(dotsRow);
             wrapper.appendChild(controlsContainer);
 
             let currentCatInx = 0;
-            const cardWidth = 260; 
+            const cardWidth = 300; 
 
             function updateCatSliderPosition() {
-                track.style.transform = `translate3d(${currentCatInx * cardWidth}px, 0px, 0px)`;
+                wrapper.scrollTo({
+                    left: -(currentCatInx * cardWidth),
+                    behavior: 'smooth'
+                });
                 
                 document.querySelectorAll('.cat-dot').forEach((d, i) => {
                     if (i === currentCatInx) {
@@ -493,23 +516,25 @@
                 });
             }
 
-            const prevBtn = document.getElementById('cat-arrow-prev');
-            const nextBtn = document.getElementById('cat-arrow-next');
-            
-            if (prevBtn && nextBtn) {
-                prevBtn.onclick = () => {
-                    if (currentCatInx > 0) {
-                        currentCatInx--;
-                        updateCatSliderPosition();
-                    }
-                };
-                nextBtn.onclick = () => {
-                    if (currentCatInx < cats.length - 1) {
-                        currentCatInx++;
-                        updateCatSliderPosition();
-                    }
-                };
-            }
+            wrapper.addEventListener('scroll', () => {
+                const index = Math.round(Math.abs(wrapper.scrollLeft) / cardWidth);
+                if (index !== currentCatInx && index < cats.length) {
+                    currentCatInx = index;
+                    document.querySelectorAll('.cat-dot').forEach((d, i) => {
+                        if (i === currentCatInx) {
+                            d.style.background = BRAND_COLORS.pink;
+                            d.style.width = '24px';
+                            d.style.borderRadius = '6px';
+                            d.classList.add('active');
+                        } else {
+                            d.style.background = 'rgba(255,145,164,0.3)';
+                            d.style.width = '8px';
+                            d.style.borderRadius = '50%';
+                            d.classList.remove('active');
+                        }
+                    });
+                }
+            }, { passive: true });
 
             document.querySelectorAll('.cat-dot').forEach(dot => {
                 dot.onclick = function() {
@@ -566,24 +591,28 @@
         let currentIdx = cloneCount; 
         let slideInterval = null;
         let isTransitioning = false;
+        
+        let touchStartX = 0;
+        let touchCurrentX = 0;
+        let isDragging = false;
 
         prideTrack.style.display = 'flex';
         prideTrack.style.transition = 'none';
         
         function getSlideWidth() {
-            return totalSlides[0].offsetWidth + 16; 
+            return totalSlides[0].offsetWidth || window.innerWidth; 
         }
 
         function scrollPrideToEach(animate = true) {
             const slideWidth = getSlideWidth();
             if (animate) {
-                prideTrack.style.transition = 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)';
+                prideTrack.style.transition = 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)'; 
                 isTransitioning = true;
             } else {
                 prideTrack.style.transition = 'none';
             }
             
-            prideTrack.style.transform = `translateX(${currentIdx * slideWidth}px)`;
+            prideTrack.style.transform = `translate3d(${-(currentIdx * slideWidth)}px, 0, 0)`;
             
             let activeDotIndex = (currentIdx - cloneCount) % cloneCount;
             if (activeDotIndex < 0) activeDotIndex += cloneCount;
@@ -606,17 +635,49 @@
             if (currentIdx >= cloneCount * 2) {
                 prideTrack.style.transition = 'none';
                 currentIdx = cloneCount;
-                prideTrack.style.transform = `translateX(${currentIdx * slideWidth}px)`;
+                prideTrack.style.transform = `translate3d(${-(currentIdx * slideWidth)}px, 0, 0)`;
             } else if (currentIdx < cloneCount) {
                 prideTrack.style.transition = 'none';
                 currentIdx = cloneCount * 2 - 1;
-                prideTrack.style.transform = `translateX(${currentIdx * slideWidth}px)`;
+                prideTrack.style.transform = `translate3d(${-(currentIdx * slideWidth)}px, 0, 0)`;
             }
         });
 
+        prideWrapper.addEventListener('touchstart', (e) => {
+            clearInterval(slideInterval);
+            if (isTransitioning) return;
+            isDragging = true;
+            touchStartX = e.touches[0].clientX;
+            prideTrack.style.transition = 'none';
+        }, { passive: true });
+
+        prideWrapper.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            touchCurrentX = e.touches[0].clientX;
+            const diffX = touchCurrentX - touchStartX;
+            const slideWidth = getSlideWidth();
+            const currentOffset = -(currentIdx * slideWidth);
+            prideTrack.style.transform = `translate3d(${currentOffset + diffX}px, 0, 0)`;
+        }, { passive: true });
+
+        prideWrapper.addEventListener('touchend', (e) => {
+            if (!isDragging) return;
+            isDragging = false;
+            const diffX = touchCurrentX - touchStartX;
+            if (Math.abs(diffX) > 50) {
+                if (diffX > 0) {
+                    currentIdx--; 
+                } else {
+                    currentIdx++; 
+                }
+            }
+            scrollPrideToEach(true);
+            startAutoPlay();
+        }, { passive: true });
+
         function startAutoPlay() {
             slideInterval = setInterval(() => {
-                if (isTransitioning) return;
+                if (isTransitioning || isDragging) return;
                 currentIdx++;
                 scrollPrideToEach(true);
             }, 3000); 
@@ -634,8 +695,6 @@
 
         prideTrack.addEventListener('mouseenter', () => clearInterval(slideInterval));
         prideTrack.addEventListener('mouseleave', startAutoPlay);
-        prideTrack.addEventListener('touchstart', () => clearInterval(slideInterval), {passive: true});
-        prideTrack.addEventListener('touchend', startAutoPlay, {passive: true});
         
         window.addEventListener('resize', () => {
             scrollPrideToEach(false);
@@ -755,7 +814,7 @@
         }
         
         saveInMemoryCart(cart);
-        window.showBoseToast(`تمت إضافة ${productObject.title} إلى السلة 🌸`);
+        window.showBoseToast(`تمت إضافة المنتج إلى السلة 🌸`);
     };
 
     window.generateStrictProductCardHTML = function (product, currency = 'EGP') {
@@ -780,9 +839,9 @@
                 </a>
                 
                 <div class="bose-qty-controller-box" style="display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,145,164,0.2); border-radius: 10px; padding: 2px; height: 36px; background: #FFF;">
-                    <button class="qty-control-trigger plus" style="width:30px; height:100%; font-weight:700; cursor:pointer;">+</button>
-                    <input type="text" class="qty-numerical-display" value="1" readonly style="width:30px; text-align:center; border:none; font-weight:700; background:transparent;">
                     <button class="qty-control-trigger minus" style="width:30px; height:100%; font-weight:700; cursor:pointer;">-</button>
+                    <input type="text" class="qty-numerical-display" value="1" readonly style="width:30px; text-align:center; border:none; font-weight:700; background:transparent;">
+                    <button class="qty-control-trigger plus" style="width:30px; height:100%; font-weight:700; cursor:pointer;">+</button>
                 </div>
                 
                 <button class="bose-add-to-cart-btn" data-id="${product.id}" style="width: 100%; background: ${BRAND_COLORS.pink}; color: #FFF; font-weight: 700; padding: 10px; border-radius: 10px; cursor: pointer; box-shadow: 0 4px 12px rgba(255,145,164,0.15);">إضافة للسلة</button>
@@ -893,6 +952,235 @@
         updateGlobalCartCounters();
     };
 
+    /* ==========================================================================\
+       4. المزامنة والربط الفني المالي لـ "دليل المواصفات القياسية الفاخرة"
+       ========================================================================== */
+    window.calculateBosePrice = function(basePrice, applyOnContext = "menu-only") {
+        if (!boseGlobalStoreData) return basePrice;
+        const rule = boseGlobalStoreData.store?.priceIncrease;
+        if (rule && rule.enabled && (rule.applyOn === "all" || rule.applyOn === applyOnContext)) {
+            return parseFloat((basePrice * (1 + (rule.percent / 100))).toFixed(4));
+        }
+        return basePrice;
+    };
+
+    window.calculateProductFinalPrice = function(product, selectedOptions) {
+        const opts = selectedOptions || {};
+        let price = 0;
+        
+        if (product) {
+            price = product.price || product.basePrice || 0;
+
+            if (product.prices && opts.size) {
+                price = product.prices[opts.size] || price;
+            }
+
+            const selectedPrinting = opts.printing || opts.printingType || 'none';
+            if (selectedPrinting && selectedPrinting !== 'none') {
+                let printingFee = 0;
+                if (product.customizationOptions && product.customizationOptions.printing) {
+                    const printOptions = product.customizationOptions.printing.options;
+                    if (Array.isArray(printOptions)) {
+                        const printingOpt = printOptions.find(opt => opt.id === selectedPrinting || opt.type === selectedPrinting);
+                        if (printingOpt) {
+                            printingFee = printingOpt.price;
+                        }
+                    }
+                }
+                
+                if (printingFee === 0) {
+                    if (selectedPrinting === 'edible' || selectedPrinting === 'printable-edible' || selectedPrinting === 'صورة_صالحة_للأكل') {
+                        printingFee = 60;
+                    } else if (selectedPrinting === 'non-edible' || selectedPrinting === 'printable-non-edible' || selectedPrinting === 'صورة_غير_صالحة_للأكل') {
+                        printingFee = 15;
+                    }
+                }
+                
+                price += printingFee;
+            }
+            
+            if (product.isMiniCake || product.type === "mini-cake" || product.slug === "mini-cake-two-person") {
+                if (opts.extraToppingPrice) {
+                    price += parseFloat(opts.extraToppingPrice);
+                }
+                if (opts.printingPrice) {
+                    price += parseFloat(opts.printingPrice);
+                }
+            }
+        }
+
+        return window.calculateBosePrice(price, "menu-only");
+    };
+
+    window.createCartItem = function(product, selectedOptions, quantity = 1) {
+        if (!product) return null;
+        const opts = selectedOptions || {};
+        const finalUnitPrice = window.calculateProductFinalPrice(product, opts);
+        const isCustomizable = product.isMiniCake ||
+                             product.type === "custom-cake" || 
+                             product.type === "custom-flower" || 
+                             (product.customizationOptions && Object.keys(opts).length > 0);
+                             
+        const finalId = isCustomizable ? `${product.slug}-${Date.now()}` : String(product.slug || product.id);
+        
+        return {
+            id: finalId,
+            productSlug: product.slug,
+            title: product.title,
+            flavorName: opts.flavorName || opts.cakeType || product.flavor || "افتراضي",
+            basePrice: parseFloat((product.price || product.basePrice || 0).toFixed(4)),
+            finalPrice: parseFloat(finalUnitPrice.toFixed(4)),
+            quantity: parseInt(quantity, 10) || 1,
+            image: product.image || (product.images ? product.images[0] : ""),
+            type: product.type || (product.isMiniCake ? "mini-cake" : "standard"),
+            customDetails: {
+                cakeType: opts.cakeType || opts.cakeFlavor || "فانيليا",
+                shape: opts.shape || "circle",
+                persons: parseInt(opts.persons, 10) || (product.isMiniCake ? 2 : 0),
+                printingType: opts.printingType || opts.printing || "none",
+                customMessage: opts.customMessage || "",
+                allergyNote: opts.allergyNote || "",
+                flowerType: opts.flowerType || "none",
+                flowerCount: parseInt(opts.flowerCount, 10) || 0,
+                moneyAmount: parseInt(opts.moneyAmount, 10) || 0,
+                moneyFee: parseInt(opts.moneyFee, 10) || 0,
+                chocolateType: opts.chocolateType || "none",
+                chocolatePieces: parseInt(opts.chocolatePieces, 10) || 0,
+                wrappingType: opts.wrappingType || "none",
+                giftCardText: opts.giftCardText || ""
+            }
+        };
+    };
+
+    window.calculateCustomCakePrice = function(persons, options = {}) {
+        const config = boseGlobalStoreData?.cakeBuilder;
+        const safePersons = parseInt(persons, 10) || (config ? config.persons.minimum : 10) || 10;
+        let price = (config ? config.basePrice : 580) || 580;
+        
+        const minPersons = (config ? config.persons.minimum : 10) || 10;
+        const pricePerPerson = (config ? config.pricePerPerson : 145) || 145;
+        
+        const extraPersons = Math.max(0, safePersons - minPersons);
+        price += extraPersons * pricePerPerson;
+
+        const selectedPrinting = options.printingType || options.printing || 'none';
+        if (selectedPrinting && selectedPrinting !== 'none') {
+            let printingFee = 0;
+            if (config && config.printingOptions) {
+                const printOpt = config.printingOptions.find(opt => opt.id === selectedPrinting);
+                if (printOpt) {
+                    printingFee = printOpt.price;
+                }
+            }
+            
+            if (printingFee === 0) {
+                if (selectedPrinting === 'edible' || selectedPrinting === 'printable-edible' || selectedPrinting === 'صورة_صالحة_للأكل') {
+                    printingFee = 60;
+                } else if (selectedPrinting === 'non-edible' || selectedPrinting === 'printable-non-edible' || selectedPrinting === 'صورة_غير_صالحة_للأكل') {
+                    printingFee = 15;
+                }
+            }
+            
+            price += printingFee;
+        }
+
+        if (options.wrappingPrice) {
+            price += parseFloat(options.wrappingPrice) || 0;
+        }
+        
+        return window.calculateBosePrice(price, "menu-only");
+    };
+
+    window.calculateCustomFlowerPrice = function(flowerType, flowerCount, options = {}) {
+        const config = boseGlobalStoreData?.flowerBuilder;
+        if (!config) return 0;
+        
+        const safeFlowerCount = parseInt(flowerCount, 10) || config.baseFlowers;
+        const safeCashAmount = parseInt(options.moneyAmount, 10) || 0;
+        const safeCashCategoryAmount = parseInt(options.moneyCategoryAmount, 10) || 0;
+        const safeChocolatePieces = parseInt(options.chocolatePieces, 10) || 0;
+        const safePhotoCount = parseInt(options.photoCount, 10) || 0;
+        
+        let servicePrice = config.basePrice || 400;
+        const extraFlowers = Math.max(0, safeFlowerCount - config.baseFlowers);
+        servicePrice += extraFlowers * config.extraFlowerPrice;
+
+        if (options.wrappingType) {
+            const wrapOpt = config.wrappingTypes.find(opt => opt.id === options.wrappingType);
+            if (wrapOpt) servicePrice += wrapOpt.price;
+        }
+        
+        if (options.chocolateType && safeChocolatePieces > 0) {
+            const chocOpt = config.chocolateTypes.find(opt => opt.id === options.chocolateType);
+            if (chocOpt) servicePrice += chocOpt.price * safeChocolatePieces;
+        }
+        
+        if (options.hasGiftCard) servicePrice += config.giftCardPrice || 20;
+        if (safePhotoCount > 0) servicePrice += safePhotoCount * (config.photoPrintPrice || 15);
+
+        let cashHandlingFee = 0;
+        if (safeCashAmount > 0 && safeCashCategoryAmount > 0) {
+            const selectedCategory = config.moneyCategories.find(cat => cat.amount === safeCashCategoryAmount);
+            if (selectedCategory) {
+                const billCount = Math.floor(safeCashAmount / safeCashCategoryAmount);
+                cashHandlingFee += billCount * selectedCategory.fee;
+                
+                const remainder = safeCashAmount % safeCashCategoryAmount;
+                if (remainder > 0) {
+                    const remainderCategory = config.moneyCategories
+                        .filter(cat => cat.amount <= remainder)
+                        .sort((a, b) => b.amount - a.amount)[0] || config.moneyCategories[0];
+                    if (remainderCategory) {
+                        cashHandlingFee += remainderCategory.fee;
+                    }
+                }
+            }
+        }
+        
+        servicePrice += cashHandlingFee;
+        const finalServicePrice = window.calculateBosePrice(servicePrice, "menu-only");
+        return finalServicePrice + safeCashAmount;
+    };
+
+    window.validateBosePhoneNumber = function(phone, isOptional = false) {
+        if (!phone || phone.trim() === "") {
+            return isOptional;
+        }
+        const cleaned = window.sanitizeBosePhoneNumber(phone);
+        const egPhoneRegex = /^01[0125][0-9]{8}$/;
+        return egPhoneRegex.test(cleaned);
+    };
+
+    window.sanitizeBosePhoneNumber = function(phone) {
+        if (!phone) return "";
+        let cleaned = phone.trim().replace(/[\s\-\(\)\+]/g, "");
+        if (cleaned.startsWith("201")) {
+            cleaned = "0" + cleaned.substring(2);
+        } else if (cleaned.startsWith("00201")) {
+            cleaned = "0" + cleaned.substring(4);
+        } else if (cleaned.startsWith("1") && cleaned.length === 10) {
+            cleaned = "0" + cleaned;
+        }
+        return cleaned;
+    };
+
+    window.validateBoseDeliverySchedule = function(dateStr, timeStr) {
+        if (!dateStr || !timeStr) return false;
+        const selectedDateTime = new Date(`${dateStr}T${timeStr}`);
+        const synchronizedTime = Date.now() + (window.boseServerTimeOffset || 0);
+        const currentDateTime = new Date(synchronizedTime);
+        
+        if (selectedDateTime <= currentDateTime) return false;
+        
+        const diffMs = selectedDateTime - currentDateTime;
+        const hoursDiff = diffMs / (1000 * 60 * 60);
+        return hoursDiff >= 23.95;
+    };
+
+    window.updateGlobalCartCounter = function() {
+        updateGlobalCartCounters();
+    };
+
     function initializeGlobalFeatures() {
         injectFloatingCartSystem();
         
@@ -905,6 +1193,21 @@
         if (document.getElementById('excellence-images-track')) {
             initializeBosePrideSlider();
         }
+        
+        const interactiveSimulatorBlocks = document.querySelectorAll(".preview-builder-block, #cake-preview-section, #flower-preview-section");
+        interactiveSimulatorBlocks.forEach(block => {
+            block.style.backgroundColor = BRAND_COLORS.pink; 
+            block.style.position = "relative";
+            block.style.overflow = "hidden";
+            
+            const internalStructureImg = block.querySelector("img");
+            if (internalStructureImg) {
+                internalStructureImg.style.position = "relative";
+                internalStructureImg.style.zIndex = "2";
+                internalStructureImg.style.display = "block";
+                internalStructureImg.setAttribute("data-isolated-framework", "true"); 
+            }
+        });
         
         updateGlobalCartCounters();
     }
@@ -929,7 +1232,6 @@
                 animation: bosePulseBlinking 2.2s infinite ease-in-out;
             }
 
-            /* 👑 [تثبيت حقيقي ومطلق للسلة العائمة الديناميكية الفاخرة لتتبع العميل فوق قاع الفوتر وكافة العناصر] */
             #bose-floating-cart-wrapper {
                 position: fixed !important;
                 bottom: 30px !important;
@@ -937,7 +1239,7 @@
                 left: auto !important;
                 width: 64px !important;
                 height: 64px !important;
-                z-index: 999999 !important; /* أعلى طبقة برمجية لتطفو مطلقاً وتتحدى أي تداخل من الفوتر */
+                z-index: 999999 !important; 
                 pointer-events: auto !important;
                 -webkit-tap-highlight-color: transparent;
             }
@@ -1012,7 +1314,6 @@
                 z-index: 1000000 !important;
             }
 
-            /* التجاوب الفاخر والمثالي مع شاشات الهواتف المحمولة والموبايل أولاً */
             @media (max-width: 576px) {
                 #bose-floating-cart-wrapper {
                     bottom: 25px !important;
@@ -1031,10 +1332,9 @@
                 }
             }
             
-            /* الهندسة البصرية المحدثة لحاوية الإشعارات لتكون عائمة دائماً في الجزء السفلي أمام نظر العميل مباشرة */
             #bose-toast-central-container {
                 position: fixed !important;
-                bottom: 110px !important; /* يرتفع بأناقة فوق السلة العائمة ليكون واضحاً للعين وبمركز الانتباه */
+                bottom: 110px !important; 
                 left: 50% !important;
                 right: auto !important;
                 transform: translate3d(-50%, 0, 0) !important;
@@ -1052,7 +1352,7 @@
             .bose-toast-card {
                 background: ${BRAND_COLORS.white} !important;
                 border: 1px solid rgba(255,145,164,0.3) !important;
-                border-bottom: 4px solid ${BRAND_COLORS.pink} !important; /* لمسة رقيقة باللون البمبي المعتمد */
+                border-bottom: 4px solid ${BRAND_COLORS.pink} !important; 
                 border-radius: 16px !important;
                 padding: 14px 24px !important;
                 box-shadow: 0 12px 32px rgba(255,145,164,0.15) !important;
@@ -1081,11 +1381,28 @@
                 margin: 0 !important;
                 font-size: 14px !important;
                 color: ${BRAND_COLORS.black} !important;
-                font-weight: 700 !important; /* وزن القاهرة القياسي الفاخر للعناوين والرسائل الحيوية */
+                font-weight: 700 !important; 
                 text-align: center !important;
             }
             .bose-toast-sparkle {
                 font-size: 16px !important;
+            }
+            
+            #top-bar-marquee {
+                background-color: ${BRAND_COLORS.pink} !important; 
+            }
+            #top-bar-marquee span {
+                color: ${BRAND_COLORS.white} !important; 
+            }
+            @keyframes boseMarqueeSmoothLoop {
+                0% { transform: translate3d(0, 0, 0); }
+                100% { transform: translate3d(-50%, 0, 0); }
+            }
+            .animate-marquee {
+                display: flex !important;
+                width: max-content !important;
+                animation: boseMarqueeSmoothLoop 22s linear infinite !important;
+                will-change: transform;
             }
         `;
         document.head.appendChild(styleBlock);
@@ -1100,6 +1417,7 @@
         document.body.appendChild(errorDiv);
     }
 
+    // حارس التمهيد ومنع التعارض البرمجي (Engine Bootstrap Guard)
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', loadBoseAbsoluteDatabase);
     } else {

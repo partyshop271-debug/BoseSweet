@@ -1,6 +1,6 @@
 /**
  * 👑 محرك السلة وإتمام الطلب والتوثيق المالي النهائي المصحح كلياً - حلويات بوسي 👑
- * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من ثغرات البتر وتداخل النصوص V3.0
+ * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من ثغرات البتر وتداخل النصوص V4.0
  * متوافق بشكل مطلق وثنائي الاتجاه مع: core-engine.js، وقاعدة البيانات site-data-final.json ومعايير الأداء والموبايل أولاً
  */
 
@@ -69,7 +69,6 @@ function renderBoseCartPage(storeData) {
             const finalProductPrice = parseFloat(item.finalPrice || 0);
             const totalItemCost = finalProductPrice * (parseInt(item.quantity, 10) || 1);
             
-            // 🚨 [علاج جذر المشكلة البصرية]: قصر عرض حقول التخصيص والمحاكيات على المنتجات المصممة فقط وحظرها تماماً عن الدوناتس والأصناف القياسية
             let customDetailsHTML = "";
             const isBespokeItem = item.type === "custom-cake" || item.type === "custom-flower" || item.type === "mini-cake";
             
@@ -95,14 +94,12 @@ function renderBoseCartPage(storeData) {
                 }
             }
 
-            // 🚨 [هندسة التجاوب الكامل]: بناء الكارت الأفقي بهيكل مرن متوافق 100% مع الموبايل ويمنع خروج المحتوى برة الشاشة
             const cartCard = document.createElement("div");
             cartCard.className = "bose-horizontal-cart-card";
             cartCard.setAttribute("data-item-id", item.id);
             cartCard.style.cssText = "display: flex; flex-direction: row; align-items: center; justify-content: space-between; border: 1px solid rgba(255, 145, 164, 0.2); background: #FFFFFF; padding: 16px; border-radius: 20px; margin-bottom: 16px; box-shadow: 0 8px 32px rgba(255, 145, 164, 0.05); position: relative; direction: rtl; width: 100%; box-sizing: border-box; gap: 12px; min-width: 0;";
             
             cartCard.innerHTML = `
-                <!-- الجانب الأيمن المرن: الصورة والبيانات لتلافي بتر القراءة -->
                 <div style="display: flex; align-items: center; gap: 14px; flex: 1; min-width: 0;">
                     <img src="${item.image || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png'}" class="cart-item-image" alt="${item.title}" style="width: 85px; height: 85px; border-radius: 14px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(255,145,164,0.1);">
                     <div style="display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0; text-align: right;">
@@ -110,7 +107,6 @@ function renderBoseCartPage(storeData) {
                         <span class="cart-item-flavor-name" style="font-size: 13px; color: var(--bose-pink); font-weight: 700;">${item.flavorName}</span>
                         ${customDetailsHTML}
                         
-                        <!-- متحكم الكمية عريض ومريح للضغط بالأصابع -->
                         <div class="bose-qty-controller-box" style="display: flex; align-items: center; border: 1px solid rgba(255, 145, 164, 0.2); border-radius: 10px; width: max-content; margin-top: 6px; background: #FFFFFF; height: 34px; padding: 2px;">
                             <button class="btn-qty-plus" data-index="${index}" style="border: none; background: transparent; width: 32px; height: 100%; font-weight: 700; font-size: 15px; color: var(--bose-black); cursor: pointer;">+</button>
                             <input type="text" readonly class="qty-numerical-display" value="${item.quantity}" style="width: 32px; text-align: center; border: none; font-size: 14px; font-weight: 700; color: var(--bose-black); background: transparent;">
@@ -119,7 +115,6 @@ function renderBoseCartPage(storeData) {
                     </div>
                 </div>
                 
-                <!-- الجانب الأيسر المخصص للحسابات وأيقونة السلة لمنع التكديس والتراكم -->
                 <div style="display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; min-height: 85px; flex-shrink: 0; text-align: left;">
                     <button class="btn-remove-item" data-index="${index}" aria-label="حذف الصنف" style="background: transparent; border: none; color: rgba(17,17,17,0.3); font-size: 15px; cursor: pointer; padding: 4px; transition: color 0.2s;">
                         <i class="fas fa-trash-alt"></i>
@@ -140,13 +135,13 @@ function renderBoseCartPage(storeData) {
     }
     
     if (clearCartBtn) {
-        clearCartBtn.addEventListener("click", () => {
+        clearCartBtn.onclick = () => {
             if (confirm("هل ترغب في إفراغ كافة محتويات سلة المشتريات؟")) {
                 localStorage.removeItem("bose_cart");
                 if (typeof window.updateGlobalCartCounter === "function") window.updateGlobalCartCounter();
                 refreshCartUI();
             }
-        });
+        };
     }
 
     refreshCartUI();
@@ -154,17 +149,17 @@ function renderBoseCartPage(storeData) {
 
 function bindCartCardsEvents(cart, storeData) {
     document.querySelectorAll("#cart-items-wrapper .btn-qty-plus").forEach(btn => {
-        btn.addEventListener("click", (e) => {
+        btn.onclick = (e) => {
             const index = parseInt(e.currentTarget.getAttribute("data-index"), 10);
             cart[index].quantity += 1;
             localStorage.setItem("bose_cart", JSON.stringify(cart));
             if (typeof window.updateGlobalCartCounter === "function") window.updateGlobalCartCounter();
             renderBoseCartPage(storeData);
-        });
+        };
     });
     
     document.querySelectorAll("#cart-items-wrapper .btn-qty-minus").forEach(btn => {
-        btn.addEventListener("click", (e) => {
+        btn.onclick = (e) => {
             const index = parseInt(e.currentTarget.getAttribute("data-index"), 10);
             if (cart[index].quantity > 1) {
                 cart[index].quantity -= 1;
@@ -174,20 +169,14 @@ function bindCartCardsEvents(cart, storeData) {
             } else {
                 triggerCartItemRemoval(cart, index, storeData);
             }
-        });
+        };
     });
     
     document.querySelectorAll("#cart-items-wrapper .btn-remove-item").forEach(btn => {
-        btn.addEventListener("click", (e) => {
+        btn.onclick = (e) => {
             const index = parseInt(e.currentTarget.getAttribute("data-index"), 10);
             triggerCartItemRemoval(cart, index, storeData);
-        });
-    });
-    
-    // إضافة تحسين تفاعلي لتغيير لون أيقونة الحذف عند اقتراب إصبع المستخدم منها لسهولة التحكم
-    document.querySelectorAll("#cart-items-wrapper .btn-remove-item").forEach(btn => {
-        btn.addEventListener("mouseenter", (e) => e.currentTarget.style.color = "#E74C3C");
-        btn.addEventListener("mouseleave", (e) => e.currentTarget.style.color = "rgba(17,17,17,0.3)");
+        };
     });
 }
 
@@ -222,8 +211,8 @@ function updateCartSummary(cart, storeData) {
     
     let discount = 0;
     const activeCoupon = localStorage.getItem("bose_active_coupon");
-    if (activeCoupon && storeData.store && storeData.store.coupons) {
-        const couponRule = storeData.store.coupons.find(c => c.code === activeCoupon);
+    if (activeCoupon && storeData.coupons) {
+        const couponRule = storeData.coupons.find(c => c.code === activeCoupon);
         if (couponRule) discount = subtotal * (couponRule.value / 100);
     }
     
@@ -234,7 +223,7 @@ function updateCartSummary(cart, storeData) {
     if (finalGrandTotal < 0) finalGrandTotal = 0;
     
     if (grandTotalDisplay) {
-        grandTotalDisplay.textContent = finalGrandTotal.toFixed(2) + " EGP";
+        grandTotalDisplay.textContent = Math.round(finalGrandTotal) + " EGP";
     }
     
     const promoInput = document.getElementById("coupon-input");
@@ -243,7 +232,7 @@ function updateCartSummary(cart, storeData) {
     
     if (promoBtn && promoInput && couponMsg) {
         if (!promoBtn.dataset.listenerAttached) {
-            promoBtn.addEventListener("click", () => {
+            promoBtn.onclick = () => {
                 const code = promoInput.value.trim().toUpperCase();
                 if (!code) return;
                 
@@ -259,7 +248,7 @@ function updateCartSummary(cart, storeData) {
                         couponMsg.textContent = "⚠️ كود الخصم المدخل غير صحيح أو منتهي الصلاحية.";
                     }
                 }
-            });
+            };
             promoBtn.dataset.listenerAttached = "true";
         }
     }
@@ -289,7 +278,7 @@ function renderBoseCheckoutPage(storeData) {
     let selectedShippingFee = 0;
 
     if (pickupBtn) {
-        pickupBtn.addEventListener("click", () => {
+        pickupBtn.onclick = () => {
             currentShippingMethod = "pickup";
             pickupBtn.className = "shipping-method-card active-option";
             if (deliveryBtn) deliveryBtn.className = "shipping-method-card";
@@ -300,11 +289,11 @@ function renderBoseCheckoutPage(storeData) {
             injectBoseBranchBlock(storeData);
             selectedShippingFee = 0;
             recalculateCheckoutInvoice(cart, storeData, selectedShippingFee);
-        });
+        };
     }
 
     if (deliveryBtn) {
-        deliveryBtn.addEventListener("click", () => {
+        deliveryBtn.onclick = () => {
             currentShippingMethod = "delivery";
             deliveryBtn.className = "shipping-method-card active-option";
             if (pickupBtn) pickupBtn.className = "shipping-method-card";
@@ -316,13 +305,13 @@ function renderBoseCheckoutPage(storeData) {
             if (addressDetailsWrapper) addressDetailsWrapper.style.display = "block";
             
             fetchSelectedZonePrice();
-        });
+        };
     }
 
     if (zoneSelect) {
-        zoneSelect.addEventListener("change", () => {
+        zoneSelect.onchange = () => {
             fetchSelectedZonePrice();
-        });
+        };
     }
 
     function fetchSelectedZonePrice() {
@@ -347,10 +336,10 @@ function renderBoseCheckoutPage(storeData) {
 
     const submitOrderBtn = document.getElementById("btn-submit-order-final");
     if (submitOrderBtn) {
-        submitOrderBtn.addEventListener("click", (e) => {
+        submitOrderBtn.onclick = (e) => {
             e.preventDefault();
             processFinalBoseOrder(cart, storeData, currentShippingMethod, selectedShippingFee);
-        });
+        };
     }
 }
 
@@ -365,13 +354,13 @@ function injectBoseBranchBlock(storeData) {
     branchDiv.id = "bose-branch-info-static";
     branchDiv.style.cssText = "background: rgba(212, 175, 55, 0.04); border: 1px solid var(--bose-gold); padding: 16px; border-radius: 14px; margin: 15px 0; direction: rtl; text-align: right;";
     
-    const addressText = storeData.store?.pickup?.address || "الكفاح - شارع الوحدة المحلية - بجوار صيدلية الدكتور أحمد مجدي وبجوار عيادة الدكتور علي";
+    const addressText = storeData.store?.pickup?.address || "الكفاح شارع الوحدة المحلية بجوار صيدلية الدكتور أحمد مجدي وبجوار عيادة الدكتور علي";
     const mapLink = storeData.store?.pickup?.mapUrl || "https://maps.app.goo.gl/nAg4Y7vQ7hACvKGc8?g_st=ac";
     
     branchDiv.innerHTML = `
         <h4 style="margin: 0 0 6px 0; font-size: 15px; color: var(--bose-black); font-weight: 700;"><i class="fas fa-building" style="color: var(--bose-gold); margin-left: 6px;"></i> مقر الاستلام الرسمي للبراند:</h4>
         <p style="margin: 0 0 12px 0; font-size: 13.5px; color: #444; line-height: 1.6;">${addressText}</p>
-        <a href="${mapLink}" target="_blank" class="success-action-secondary-btn" style="padding: 8px 16px; font-size: 13px; font-weight: 700; border-radius: 8px; display: inline-flex; align-items: center; gap: 6px;">
+        <a href="${mapLink}" target="_blank" class="success-action-secondary-btn" style="padding: 8px 16px; font-size: 13px; font-weight: 700; border-radius: 8px; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; background: #FFF; border: 1px solid var(--bose-gold); color: #111;">
             <i class="fas fa-map-marked-alt" style="color: var(--bose-gold);"></i> عرض الموقع على خرائط جوجل
         </a>
     `;
@@ -392,7 +381,7 @@ function recalculateCheckoutInvoice(cart, storeData, shippingFee) {
     if (subtotalDisplay) subtotalDisplay.textContent = subtotal.toFixed(2) + " EGP";
     if (shippingDisplay) {
         shippingDisplay.textContent = shippingFee === 0 ? "مجاناً" : shippingFee.toFixed(2) + " EGP";
-        if (shippingFee === 0) shippingDisplay.style.color = "var(--bose-success-text)";
+        if (shippingFee === 0) shippingDisplay.style.color = "#2ECC71";
         else shippingDisplay.style.color = "var(--bose-black)";
     }
     
@@ -605,17 +594,17 @@ function renderBoseSuccessPage(storeData) {
     
     if (receiptWrapper) {
         receiptWrapper.innerHTML = `
-            <div class="receipt-card-header">
-                <span class="order-id-label">رقم الطلب المرجعي: ${order.orderId}</span>
+            <div class="receipt-card-header" style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,145,164,0.1); padding-bottom: 8px; margin-bottom: 12px;">
+                <span class="order-id-label" style="font-weight:700; color:var(--bose-pink);">رقم الطلب المرجعي: ${order.orderId}</span>
                 <span style="font-size: 13px; color: #777;">توقيت المعاملة: 2026</span>
             </div>
-            <div class="invoice-receipt-details-list">
+            <div class="invoice-receipt-details-list" style="display: flex; flex-direction: column; gap: 8px; direction: rtl; text-align: right;">
                 <div class="receipt-row-item"><span>اسم المستلم الصريح:</span> <strong>${order.customerName}</strong></div>
                 <div class="receipt-row-item"><span>رقم الهاتف الأساسي المؤكد:</span> <strong>${order.phone1}</strong></div>
                 <div class="receipt-row-item"><span>نوع ومسار الاستلام:</span> <strong>${order.deliveryMethod} (${order.deliveryZone})</strong></div>
                 <div class="receipt-row-item"><span>الموعد الملتزم للتجهيز:</span> <strong>${order.scheduledDate} في ${order.scheduledTime}</strong></div>
-                <div class="receipt-grand-total-divider"></div>
-                <div class="receipt-grand-total-row"><span class="receipt-total-label">المجموع المالي الكلي والنهائي:</span> <span class="receipt-total-value">${order.grandTotal} EGP</span></div>
+                <div class="receipt-grand-total-divider" style="height: 1px; background: rgba(17,17,17,0.06); margin: 6px 0;"></div>
+                <div class="receipt-grand-total-row" style="display: flex; justify-content: space-between; align-items: center;"><span class="receipt-total-label" style="font-weight:700;">المجموع المالي الكلي والنهائي:</span> <span class="receipt-total-value" style="font-size: 18px; font-weight: 700; color: var(--bose-pink);">${order.grandTotal} EGP</span></div>
             </div>
         `;
     }
