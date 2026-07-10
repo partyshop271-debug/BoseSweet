@@ -15,8 +15,8 @@
         
         while (retries > 0) {
             try {
-                // جلب قاعدة البيانات من المسار المعتمد والصحيح هندسياً المتوافق مع هيكلية المجلدات
-                const response = await fetch('data/site-data-final.json');
+                // تم تعديل المسار هنا ليكون مطلقاً من جذر الموقع لضمان القراءة الصحيحة بنسبة 100% على الاستضافة ومنع خطأ 404
+                const response = await fetch('/data/site-data-final.json');
                 if (!response.ok) throw new Error('فشل جلب ملف قاعدة البيانات الرئيسي.');
                 
                 const serverDateHeader = response.headers.get('Date');
@@ -70,7 +70,7 @@
                 </button>
                 <div class="brand-logo-container">
                     <a href="index.html">
-                        <img id="bose-store-logo" src="${window.BoseStoreData.store.logo}" alt="شعار حلويات بوسي">
+                        <img id="bose-store-logo" src="\${window.BoseStoreData.store.logo}" alt="شعار حلويات بوسي">
                     </a>
                 </div>
                 <span class="brand-name-display">حلويات بوسي</span>
@@ -97,7 +97,7 @@
 
     function renderUniversalSidebar() {
         let sidebarPanel = document.getElementById('sidebar-drawer');
-        if (sidebarPanel) sidebarPanel.remove(); // منع التكرار لراحة معالجات الموبايل
+        if (sidebarPanel) sidebarPanel.remove(); 
         
         const sidebar = document.createElement('div');
         sidebar.id = 'sidebar-drawer';
@@ -124,7 +124,6 @@
         `;
         document.body.appendChild(sidebar);
 
-        // ربط أحداث القائمة المتطورة فوراً بطريقة مستقرة للكمبيوتر والموبايل
         setTimeout(() => {
             const toggleBtn = document.getElementById('mobile-menu-toggle');
             const closeBtn = document.getElementById('sidebar-close-btn');
@@ -158,18 +157,18 @@
         footerEl.innerHTML = `
             <div class="footer-logo-container">
                 <a href="index.html">
-                    <img id="bose-footer-logo-node" src="${window.BoseStoreData.store.logo}" alt="شعار حلويات بوسي">
+                    <img id="bose-footer-logo-node" src="\${window.BoseStoreData.store.logo}" alt="شعار حلويات بوسي">
                 </a>
             </div>
             <span class="brand-name-display footer-brand-name">حلويات بوسي</span>
             <div class="footer-about-block">
-                <p id="footer-about-text">${window.BoseStoreData.footer.about}</p>
+                <p id="footer-about-text">\${window.BoseStoreData.footer.about}</p>
             </div>
             <div id="footer-social-links" class="bose-social-links-wrapper">
-                <a href="${window.BoseStoreData.social.facebook}" class="social-link-facebook" target="_blank" aria-label="فيسبوك حلويات بوسي"><i class="fab fa-facebook-f"></i></a>
-                <a href="${window.BoseStoreData.social.instagram}" class="social-link-instagram" target="_blank" aria-label="انستجرام حلويات بوسي"><i class="fab fa-instagram"></i></a>
-                <a href="${window.BoseStoreData.social.tiktok}" class="social-link-tiktok" target="_blank" aria-label="تيك توك حلويات بوسي"><i class="fab fa-tiktok"></i></a>
-                <a href="https://wa.me/${window.sanitizeBosePhoneNumber(window.BoseStoreData.social.whatsapp)}" class="social-link-whatsapp" target="_blank" aria-label="واتساب حلويات بوسي"><i class="fab fa-whatsapp"></i></a>
+                <a href="\${window.BoseStoreData.social.facebook}" class="social-link-facebook" target="_blank" aria-label="فيسبوك حلويات بوسي"><i class="fab fa-facebook-f"></i></a>
+                <a href="\${window.BoseStoreData.social.instagram}" class="social-link-instagram" target="_blank" aria-label="انستجرام حلويات بوسي"><i class="fab fa-instagram"></i></a>
+                <a href="\${window.BoseStoreData.social.tiktok}" class="social-link-tiktok" target="_blank" aria-label="تيك توك حلويات بوسي"><i class="fab fa-tiktok"></i></a>
+                <a href="https://wa.me/\${window.sanitizeBosePhoneNumber(window.BoseStoreData.social.whatsapp)}" class="social-link-whatsapp" target="_blank" aria-label="واتساب حلويات بوسي"><i class="fab fa-whatsapp"></i></a>
             </div>
             <div class="footer-policies-container" id="bose-footer-policies">
                 <ul class="nav-list" style="justify-content: center; gap: 16px; flex-wrap: wrap; list-style: none;">
@@ -234,7 +233,7 @@
         const finalUnitPrice = window.calculateProductFinalPrice(product, opts);
         
         const isCustomizable = product.isMiniCake || product.type === "custom-cake" || product.type === "custom-flower" || (product.customizationOptions && Object.keys(opts).length > 0);
-        const finalId = isCustomizable ? `${product.slug}-${Date.now()}` : String(product.slug || product.id);
+        const finalId = isCustomizable ? `\${product.slug}-\${Date.now()}` : String(product.slug || product.id);
         
         return {
             id: finalId,
@@ -356,7 +355,7 @@
 
     window.validateBoseDeliverySchedule = function(dateStr, timeStr) {
         if (!dateStr || !timeStr) return false;
-        const selectedDateTime = new Date(`${dateStr}T${timeStr}`);
+        const selectedDateTime = new Date(`\${dateStr}T\${timeStr}`);
         const synchronizedTime = Date.now() + (window.boseServerTimeOffset || 0);
         return (selectedDateTime - new Date(synchronizedTime)) / (1000 * 60 * 60) >= 23.95;
     };
