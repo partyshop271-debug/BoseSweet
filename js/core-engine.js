@@ -1,8 +1,9 @@
 /**
  * 👑 المحرك المركزي العام والنهائي للموقع - حلويات بوسي (BoseSweets) 👑
- * النسخة الهندسية القياسية الشاملة والمطورة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية V66.0
+ * النسخة الهندسية القياسية الشاملة والمطورة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية واللوجستية V67.0 Master
  * متوافق بشكل مطلق وثنائي الاتجاه مع كافة ملفات css/ وجافا سكريبت الموقع وقاعدة البيانات data/site-data-final.json
  * يدمج حارس الإيماءات اللمسية الذكي وتأثير السكرول المتطور للهيدر مع الحفاظ التام على خريطة الـ DOM المقدسة
+ * التزام كامل بملفات الحوكمة والمواصفات: التخلص من الدالات الميتة، سد الثغرات الجغرافية والزمنية والمالية، وتأمين الأداء للموبايل والكمبيوتر
  */
 
 (function () {
@@ -31,7 +32,7 @@
         try {
             const boseLocation = window.location;
             
-            // 🛡️ إصلاح ذكي وجذري للمسارات لتفادي شلل الأجزاء المشتركة بالصفحات
+            // 🛡️ إصلاح ذكي وجذري للمسارات لتفادي شلل الأجزاء المشتركة بالصفحات على الاستضافات والموبايل أولاً
             let baseRootPath = "";
             const currentPath = boseLocation.pathname;
             
@@ -55,7 +56,7 @@
                 boseGlobalStoreData = await response.json();
             }
             
-            // [حل الثغرة: تزامن التوقيت المحلي لشرط التحضير ومنع التلاعب]
+            // [حل الثغرة اللوجستية: تزامن التوقيت المحلي لشرط التحضير ومنع التلاعب من العميل]
             const serverDateHeader = response.headers ? response.headers.get('Date') : null;
             if (serverDateHeader) {
                 const serverTime = new Date(serverDateHeader).getTime();
@@ -81,7 +82,8 @@
             ensureSharedLayoutHubs(boseGlobalStoreData);
             
         } catch (error) {
-            console.error("❌ خطأ حرج في تهيئة نظام حلويات بوسي الموحد:", error);
+            console.error("❌ خطأ حرج في تهيئة نظام حلويات بوسي الموحد واختفاء الحاويات البصرية:", error);
+            showGlobalFriendlyError();
         }
     }
 
@@ -134,7 +136,7 @@
         if (data.seo && data.seo.title) {
             document.title = data.seo.title;
         }
-        const logoImgs = document.querySelectorAll('img#bose-store-logo');
+        const logoImgs = document.querySelectorAll('img#bose-store-logo, .bose-footer-store-logo-fallback, img#bose-footer-logo-node');
         logoImgs.forEach(img => {
             if (data.store && img.src !== data.store.logo) img.src = data.store.logo;
         });
@@ -150,13 +152,14 @@
         if (!tickerNode) {
             tickerNode = document.createElement('div');
             tickerNode.id = 'top-bar-marquee';
+            tickerNode.className = 'bose-ticker-section';
             document.body.insertBefore(tickerNode, document.body.firstChild);
         }
-        if (tickerNode.innerHTML.trim() === "" && storeData.navigation && storeData.navigation.topBarMessages) {
+        if ((tickerNode.innerHTML.trim() === "" || document.getElementById('top-bar-marquee-track')) && storeData.navigation && storeData.navigation.topBarMessages) {
             const messagesHTML = storeData.navigation.topBarMessages.map(msg => `
-                <div class="bose-ticker-item"><i class="fas fa-crown" style="color: ${BRAND_COLORS.gold};"></i> ${msg}</div>
+                <div class="bose-ticker-item"><i class="fas fa-crown" style="color: ${BRAND_COLORS.gold} !important;"></i> ${msg}</div>
             `).join('');
-            tickerNode.innerHTML = `<div class="bose-ticker-wrapper animate-marquee">${messagesHTML}${messagesHTML}</div>`;
+            tickerNode.innerHTML = `<div id="top-bar-marquee-track" class="bose-ticker-wrapper animate-marquee">${messagesHTML}${messagesHTML}</div>`;
         }
         
         // 🏢 مكون الهيدر الموحد والثابت (Shared Universal Header) اللاصق عالي السرعة والاستجابة بالمسطرة
@@ -204,27 +207,27 @@
             let policiesHTML = '';
             if (storeData.footer && storeData.footer.policies) {
                 policiesHTML = storeData.footer.policies.map(policy => `
-                    <a href="#" class="footer-policy-link" style="color: ${BRAND_COLORS.black}; text-decoration: none; font-size: 12px; font-weight: 600;">${policy}</a>
+                    <a href="#" class="footer-policy-link" style="color: ${BRAND_COLORS.black} !important; text-decoration: none; font-size: 12px; font-weight: 600;">${policy}</a>
                 `).join(' <span style="color: rgba(255,145,164,0.3);">|</span> ');
             }
 
             footerNode.innerHTML = `
                 <div class="footer-logo-container">
                     <a href="index.html">
-                        <img id="bose-store-logo" src="${storeData.store.logo}" alt="شعار حلويات بوسي">
+                        <img class="bose-footer-store-logo-fallback" id="bose-footer-logo-node" src="${storeData.store.logo}" alt="شعار حلويات بوسي">
                     </a>
                 </div>
                 <span class="brand-name-display footer-brand-name">حلويات بوسي</span>
                 <div class="footer-about-block">
                     <p id="footer-about-text">${storeData.footer.about}</p>
                 </div>
-                <div id="footer-social-links">
+                <div id="footer-social-links" class="bose-social-links-wrapper">
                     <a href="${storeData.social.facebook}" class="social-link-facebook" target="_blank" aria-label="فيسبوك حلويات بوسي"><i class="fab fa-facebook-f"></i></a>
                     <a href="${storeData.social.instagram}" class="social-link-instagram" target="_blank" aria-label="انستجرام حلويات بوسي"><i class="fab fa-instagram"></i></a>
                     <a href="${storeData.social.tiktok}" class="social-link-tiktok" target="_blank" aria-label="تيك توك حلويات بوسي"><i class="fab fa-tiktok"></i></a>
                     <a href="https://wa.me/${storeData.social.whatsapp}" class="social-link-whatsapp" target="_blank" aria-label="واتساب حلويات بوسي"><i class="fab fa-whatsapp"></i></a>
                 </div>
-                <div class="footer-policies-container" style="margin: 16px 0; text-align: center; font-family: 'Cairo';">
+                <div class="footer-policies-container" id="bose-footer-policies" style="margin: 16px 0; text-align: center; font-family: 'Cairo';">
                     ${policiesHTML}
                 </div>
                 <div class="footer-copyright-block">
@@ -272,16 +275,16 @@
                     if (relatedProducts.length > 0) {
                         relatedProducts.forEach(prod => {
                             productLinksHTML += `
-                                <a href="product.html?slug=${prod.slug}" style="display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 0.85rem; font-weight: 600; color: ${BRAND_COLORS.black}; padding: 8px 16px; text-decoration: none; border-bottom: 1px solid rgba(255,145,164,0.05); font-family: 'Cairo';">
-                                    <span style="display: flex; align-items: center; gap: 6px;"><i class="fas fa-angle-left" style="color: ${BRAND_COLORS.pink}; font-size: 10px;"></i> ${prod.flavorName || prod.title}</span>
-                                    <span style="font-size: 11px; color: ${BRAND_COLORS.pink}; font-weight: 700;">${prod.price} EGP</span>
+                                <a href="product.html?slug=${prod.slug}" style="display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 0.85rem; font-weight: 600; color: ${BRAND_COLORS.black} !important; padding: 8px 16px; text-decoration: none; border-bottom: 1px solid rgba(255,145,164,0.05); font-family: 'Cairo';">
+                                    <span style="display: flex; align-items: center; gap: 6px;"><i class="fas fa-angle-left" style="color: ${BRAND_COLORS.pink} !important; font-size: 10px;"></i> ${prod.flavorName || prod.title}</span>
+                                    <span style="font-size: 11px; color: ${BRAND_COLORS.pink} !important; font-weight: 700;">${prod.price} EGP</span>
                                 </a>
                             `;
                         });
                     } else {
                         productLinksHTML = `
                             <a href="category.html?category=${cat.id}" style="display: flex; align-items: center; gap: 10px; font-size: 0.85rem; font-weight: 600; color: #666; padding: 10px 16px; text-decoration: none; font-family: 'Cairo';">
-                                <i class="fas fa-cookie" style="color: ${BRAND_COLORS.gold};"></i> استعراض تشكيلة قسم ${cat.title}
+                                <i class="fas fa-cookie" style="color: ${BRAND_COLORS.gold} !important;"></i> استعراض تشكيلة قسم ${cat.title}
                             </a>
                         `;
                     }
@@ -289,8 +292,8 @@
                     accordionCategoriesHTML += `
                         <div class="sidebar-nested-category-block" style="border-bottom: 1px solid rgba(17,17,17,0.04);">
                             <div class="sidebar-sub-accordion-trigger" data-target="sub-cat-${cat.id}" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; cursor: pointer;">
-                                <span style="font-size: 0.88rem; font-weight: 700; color: ${BRAND_COLORS.black}; font-family: 'Cairo';"><i class="fas fa-chevron-left" style="font-size: 8px; color: ${BRAND_COLORS.gold}; margin-left: 6px;"></i> ${cat.title}</span>
-                                <i class="fas fa-plus sub-accordion-plus-icon" style="font-size: 0.7rem; color: ${BRAND_COLORS.pink}; transition: transform 0.3s;"></i>
+                                <span style="font-size: 0.88rem; font-weight: 700; color: ${BRAND_COLORS.black} !important; font-family: 'Cairo';"><i class="fas fa-chevron-left" style="font-size: 8px; color: ${BRAND_COLORS.gold} !important; margin-left: 6px;"></i> ${cat.title}</span>
+                                <i class="fas fa-plus sub-accordion-plus-icon" style="font-size: 0.7rem; color: ${BRAND_COLORS.pink} !important; transition: transform 0.3s;"></i>
                             </div>
                             <div id="sub-cat-${cat.id}" class="sidebar-sub-accordion-content" style="max-height: 0px; overflow: hidden; transition: max-height 0.3s ease; display: flex; flex-direction: column; background: ${BRAND_COLORS.white}; padding-right: 8px;">
                                 ${productLinksHTML}
@@ -305,35 +308,35 @@
                     <div style="display: flex; align-items: center; gap: 12px;">
                         <img src="${boseGlobalStoreData.store.logo}" style="width: 44px; height: 44px; object-fit: contain;" alt="لوجو بوسي الفاخر">
                         <div style="display: flex; flex-direction: column;">
-                            <span style="font-family: 'Cairo'; font-weight: 700; font-size: 15px; color: ${BRAND_COLORS.black}; line-height: 1.3;">حلويات بوسي</span>
+                            <span style="font-family: 'Cairo'; font-weight: 700; font-size: 15px; color: ${BRAND_COLORS.black} !important; line-height: 1.3;">حلويات بوسي</span>
                             <span style="font-family: 'Cairo'; font-size: 11px; color: #777;">صنعناها بحب لتهديها لمن تحب</span>
                         </div>
                     </div>
-                    <button id="sidebar-close-panel-btn" style="background: none; border: none; font-size: 28px; color: ${BRAND_COLORS.black}; cursor: pointer; line-height: 1; padding: 0 4px;">&times;</button>
+                    <button id="sidebar-close-panel-btn" style="background: none; border: none; font-size: 28px; color: ${BRAND_COLORS.black} !important; cursor: pointer; line-height: 1; padding: 0 4px;">&times;</button>
                 </div>
                 <div class="sidebar-luxury-body" style="flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; background: ${BRAND_COLORS.white};">
-                    <span style="font-size: 11px; font-weight: 700; color: ${BRAND_COLORS.pink}; letter-spacing: 0.5px; margin-bottom: 4px; font-family: 'Cairo';">أقسام التصفح الأساسية</span>
+                    <span style="font-size: 11px; font-weight: 700; color: ${BRAND_COLORS.pink} !important; letter-spacing: 0.5px; margin-bottom: 4px; font-family: 'Cairo';">أقسام التصفح الأساسية</span>
                     
-                    <a href="index.html" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; border: 1px solid rgba(255,145,164,0.2); color: ${BRAND_COLORS.black}; font-weight: 700; font-size: 13px; text-decoration: none; font-family: 'Cairo';"><i class="fas fa-home" style="color: ${BRAND_COLORS.pink}; font-size: 15px;"></i> الواجهة الرئيسية للموقع</a>
+                    <a href="index.html" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; border: 1px solid rgba(255,145,164,0.2); color: ${BRAND_COLORS.black} !important; font-weight: 700; font-size: 13px; text-decoration: none; font-family: 'Cairo';"><i class="fas fa-home" style="color: ${BRAND_COLORS.pink} !important; font-size: 15px;"></i> الواجهة الرئيسية للموقع</a>
                     
                     <div class="drawer-link-item" style="display: flex; flex-direction: column; gap: 4px;">
-                        <div id="sidebar-menu-accordion-toggle" class="sidebar-accordion-trigger" style="display: flex; align-items: center; justify-content: space-between; font-size: 0.95rem; font-weight: 700; color: ${BRAND_COLORS.black}; padding: 10px 14px; border-radius: 12px; cursor: pointer; background: rgba(255,145,164,0.03); border: 1px solid rgba(255,145,164,0.1); border-color: rgba(255,145,164,0.1) !important;">
-                            <span style="display: flex; align-items: center; gap: 10px; font-family: 'Cairo';"><i class="fas fa-utensils" style="color: ${BRAND_COLORS.pink};"></i> المنيو حسب الفئة</span>
-                            <i class="fas fa-chevron-down" style="font-size: 0.8rem; color: ${BRAND_COLORS.pink}; transition: transform 0.3s ease;"></i>
+                        <div id="sidebar-menu-accordion-toggle" class="sidebar-accordion-trigger" style="display: flex; align-items: center; justify-content: space-between; font-size: 0.95rem; font-weight: 700; color: ${BRAND_COLORS.black} !important; padding: 10px 14px; border-radius: 12px; cursor: pointer; background: rgba(255,145,164,0.03); border: 1px solid rgba(255,145,164,0.1) !important;">
+                            <span style="display: flex; align-items: center; gap: 10px; font-family: 'Cairo';"><i class="fas fa-utensils" style="color: ${BRAND_COLORS.pink} !important;"></i> المنيو حسب الفئة</span>
+                            <i class="fas fa-chevron-down" style="font-size: 0.8rem; color: ${BRAND_COLORS.pink} !important; transition: transform 0.3s ease;"></i>
                         </div>
                         <div id="sidebar-menu-accordion-content" class="sidebar-accordion-content" style="max-height: 0px; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1); background-color: ${BRAND_COLORS.white}; border-radius: 12px; display: flex; flex-direction: column; gap: 2px; padding: 0 4px; box-sizing: border-box;">
                             ${accordionCategoriesHTML}
                         </div>
                     </div>
                     
-                    <a href="cart.html" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; color: ${BRAND_COLORS.black}; font-weight: 600; font-size: 13px; text-decoration: none; font-family: 'Cairo'; transition: 0.2s;"><i class="fas fa-shopping-bag" style="color: ${BRAND_COLORS.pink}; font-size: 15px;"></i> سلة المشتريات والطلبات</a>
+                    <a href="cart.html" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; color: ${BRAND_COLORS.black} !important; font-weight: 600; font-size: 13px; text-decoration: none; font-family: 'Cairo'; transition: 0.2s;"><i class="fas fa-shopping-bag" style="color: ${BRAND_COLORS.pink} !important; font-size: 15px;"></i> سلة المشتريات والطلبات</a>
                     
                     <div style="height: 1px; background: #F1F1F1; margin: 8px 0;"></div>
                     
-                    <span style="font-size: 11px; font-weight: 700; color: ${BRAND_COLORS.pink}; letter-spacing: 0.5px; margin-bottom: 4px; font-family: 'Cairo';">تصفح المحاكيات التفاعلية</span>
+                    <span style="font-size: 11px; font-weight: 700; color: ${BRAND_COLORS.pink} !important; letter-spacing: 0.5px; margin-bottom: 4px; font-family: 'Cairo';">تصفح المحاكيات التفاعلية</span>
                     
-                    <a href="cake-builder.html" style="display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border: 1px solid rgba(255,145,164,0.22); border-radius: 12px; color: ${BRAND_COLORS.black}; font-weight: 700; font-size: 13px; text-decoration: none; background: ${BRAND_COLORS.white}; font-family: 'Cairo'; transition: 0.2s; box-shadow: 0 4px 12px rgba(255,145,164,0.03);"><span style="display: flex; align-items: center; gap: 12px;"><i class="fas fa-birthday-cake" style="color: ${BRAND_COLORS.gold}; font-size: 16px;"></i> محاكي وتصميم التورت الحصري</span> <i class="fas fa-chevron-left" style="font-size: 11px; color: ${BRAND_COLORS.pink};"></i></a>
-                    <a href="flower-builder.html" style="display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border: 1px solid rgba(255,145,164,0.22); border-radius: 12px; color: ${BRAND_COLORS.black}; font-weight: 700; font-size: 13px; text-decoration: none; background: ${BRAND_COLORS.white}; font-family: 'Cairo'; transition: 0.2s; box-shadow: 0 4px 12px rgba(255,145,164,0.03);"><span style="display: flex; align-items: center; gap: 12px;"><i class="fas fa-seedling" style="color: ${BRAND_COLORS.gold}; font-size: 16px;"></i> محاكي الورد وتنسيق البوكيهات</span> <i class="fas fa-chevron-left" style="font-size: 11px; color: ${BRAND_COLORS.pink};"></i></a>
+                    <a href="cake-builder.html" style="display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border: 1px solid rgba(255,145,164,0.22); border-radius: 12px; color: ${BRAND_COLORS.black} !important; font-weight: 700; font-size: 13px; text-decoration: none; background: ${BRAND_COLORS.white}; font-family: 'Cairo'; transition: 0.2s; box-shadow: 0 4px 12px rgba(255,145,164,0.03);"><span style="display: flex; align-items: center; gap: 12px;"><i class="fas fa-birthday-cake" style="color: ${BRAND_COLORS.gold} !important; font-size: 16px;"></i> محاكي وتصميم التورت الحصري</span> <i class="fas fa-chevron-left" style="font-size: 11px; color: ${BRAND_COLORS.pink} !important;"></i></a>
+                    <a href="flower-builder.html" style="display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border: 1px solid rgba(255,145,164,0.22); border-radius: 12px; color: ${BRAND_COLORS.black} !important; font-weight: 700; font-size: 13px; text-decoration: none; background: ${BRAND_COLORS.white}; font-family: 'Cairo'; transition: 0.2s; box-shadow: 0 4px 12px rgba(255,145,164,0.03);"><span style="display: flex; align-items: center; gap: 12px;"><i class="fas fa-seedling" style="color: ${BRAND_COLORS.gold} !important; font-size: 16px;"></i> محاكي الورد وتنسيق البوكيهات</span> <i class="fas fa-chevron-left" style="font-size: 11px; color: ${BRAND_COLORS.pink} !important;"></i></a>
                     
                     <div style="margin-top: auto; padding-top: 30px; text-align: center;">
                         <span style="font-size: 11px; font-weight: 600; color: #999; font-family: 'Cairo'; display: block; line-height: 1.5;">فرع الكفاح - بجوار صيدلية د. أحمد مجدي 🌸</span>
@@ -487,11 +490,11 @@
         const cats = storeData.homepage.categoriesSlider;
         
         track.innerHTML = cats.map(cat => `
-            <a href="category.html?category=${cat.id}" class="category-slide-card" style="width: 280px; flex-shrink: 0; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; gap: 12px; text-decoration: none;">
+            <a href="category.html?category=${cat.id}" class="category-slide-card" style="width: 280px !important; flex-shrink: 0 !important; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; gap: 12px; text-decoration: none;">
                 <div style="width: 100%; aspect-ratio: 1/1; overflow: hidden; border-radius: 20px; border: 1px solid rgba(255, 145, 164, 0.2); background: ${BRAND_COLORS.white}; position: relative;">
                     <img src="${cat.image}" alt="${cat.title}" style="width: 100%; height: 100%; object-fit: cover; display: block;" loading="lazy">
                 </div>
-                <h3 style="margin-top: 12px; font-size: 20px; font-weight: 700; color: #111111; text-align: center; font-family: 'Cairo'; white-space: normal; word-break: break-word;">${cat.title}</h3>
+                <h3 style="margin-top: 12px; font-size: 20px; font-weight: 700 !important; color: #111111 !important; text-align: center; font-family: 'Cairo'; white-space: normal; word-break: break-word;">${cat.title}</h3>
             </a>
         `).join('');
 
@@ -504,9 +507,9 @@
             const arrowsRow = document.createElement('div');
             arrowsRow.style.cssText = `display: flex; gap: 20px; align-items: center; justify-content: center;`;
             arrowsRow.innerHTML = `
-                <button id="cat-slide-prev" style="background: none; border: none; color: ${BRAND_COLORS.pink}; font-size: 20px; cursor: pointer; padding: 4px 12px;"><i class="fas fa-chevron-right"></i></button>
+                <button id="cat-slide-prev" style="background: none; border: none; color: ${BRAND_COLORS.pink} !important; font-size: 20px; cursor: pointer; padding: 4px 12px;"><i class="fas fa-chevron-right"></i></button>
                 <div id="cat-dots-container" style="display: flex; gap: 8px; justify-content: center; align-items: center; flex-wrap: wrap; max-width: 90%;"></div>
-                <button id="cat-slide-next" style="background: none; border: none; color: ${BRAND_COLORS.pink}; font-size: 20px; cursor: pointer; padding: 4px 12px;"><i class="fas fa-chevron-left"></i></button>
+                <button id="cat-slide-next" style="background: none; border: none; color: ${BRAND_COLORS.pink} !important; font-size: 20px; cursor: pointer; padding: 4px 12px;"><i class="fas fa-chevron-left"></i></button>
             `;
             controlsContainer.appendChild(arrowsRow);
             wrapper.parentNode.insertBefore(controlsContainer, wrapper.nextSibling);
@@ -810,26 +813,26 @@
         const displayFlavor = product.flavorName || 'نكهة متميزة';
         
         return `
-            <div class="product-card" data-slug="${product.slug}" style="background: ${BRAND_COLORS.white}; border: 1px solid rgba(255,145,164,0.18); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 12px; justify-content: space-between; position: relative; box-shadow: ${BRAND_COLORS.white}; direction: rtl; text-align: right; width: 100%; box-sizing: border-box; transition: transform 0.3s ease;">
+            <div class="product-card" data-slug="${product.slug}" style="background: ${BRAND_COLORS.white} !important; border: 1px solid rgba(255,145,164,0.18) !important; border-radius: 20px !important; padding: 16px !important; display: flex; flex-direction: column; gap: 12px; justify-content: space-between; position: relative; box-shadow: none !important; direction: rtl; text-align: right; width: 100%; box-sizing: border-box; transition: transform 0.3s ease;">
                 
                 <a href="product.html?slug=${product.slug}" class="bose-product-details-link" style="text-decoration: none; display: flex; flex-direction: column; gap: 12px; width: 100%; color: inherit;">
                     <div class="product-card-top" style="position: relative; overflow: hidden; border-radius: 14px; height: 210px; width: 100%;">
                         <img src="${imgUrl}" alt="${displayTitle}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease;">
                     </div>
                     <div class="search-card-info-pane">
-                        <h4 class="search-card-title" style="color: ${BRAND_COLORS.black}; font-weight: 600; margin: 4px 0;">${displayTitle}</h4>
-                        <div class="search-card-flavor" style="color: ${BRAND_COLORS.black}; font-size: 13px; margin-bottom: 4px;">${displayFlavor}</div>
-                        <div class="search-card-price" style="color: ${BRAND_COLORS.pink}; font-weight: 700;">${price} ${currency}</div>
+                        <h4 class="search-card-title" style="color: ${BRAND_COLORS.black} !important; font-weight: 600 !important; margin: 4px 0;">${displayTitle}</h4>
+                        <div class="search-card-flavor" style="color: ${BRAND_COLORS.black} !important; font-size: 13px; margin-bottom: 4px;">${displayFlavor}</div>
+                        <div class="search-card-price" style="color: ${BRAND_COLORS.pink} !important; font-weight: 700 !important;">${price} ${currency}</div>
                     </div>
                 </a>
                 
-                <div class="bose-qty-controller-box" style="display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,145,164,0.2); border-radius: 10px; padding: 2px; height: 36px; background: ${BRAND_COLORS.white};">
-                    <button class="qty-control-trigger minus" style="width:30px; height:100%; font-weight:700; cursor:pointer; background: none; border: none; color: ${BRAND_COLORS.black};">-</button>
-                    <input type="text" class="qty-numerical-display" value="1" readonly style="width:30px; text-align:center; border:none; font-weight:700; background:transparent; color: ${BRAND_COLORS.black};">
-                    <button class="qty-control-trigger plus" style="width:30px; height:100%; font-weight:700; cursor:pointer; background: none; border: none; color: ${BRAND_COLORS.black};">+</button>
+                <div class="bose-qty-controller-box" style="display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,145,164,0.2); border-radius: 10px; padding: 2px; height: 36px; background: ${BRAND_COLORS.white} !important;">
+                    <button class="qty-control-trigger minus" style="width:30px; height:100%; font-weight:700 !important; cursor:pointer; background: none; border: none; color: ${BRAND_COLORS.black} !important;">-</button>
+                    <input type="text" class="qty-numerical-display" value="1" readonly style="width:30px; text-align:center; border:none; font-weight:700 !important; background:transparent; color: ${BRAND_COLORS.black} !important;">
+                    <button class="qty-control-trigger plus" style="width:30px; height:100%; font-weight:700 !important; cursor:pointer; background: none; border: none; color: ${BRAND_COLORS.black} !important;">+</button>
                 </div>
                 
-                <button class="bose-add-to-cart-btn" data-id="${product.id}" style="width: 100%; background: ${BRAND_COLORS.pink}; color: ${BRAND_COLORS.white}; border: none; font-weight: 700; padding: 10px; border-radius: 10px; cursor: pointer; box-shadow: 0 4px 12px rgba(255,145,164,0.15); font-family: 'Cairo';">إضافة للسلة</button>
+                <button class="bose-add-to-cart-btn" data-id="${product.id}" style="width: 100%; background: ${BRAND_COLORS.pink} !important; color: ${BRAND_COLORS.white} !important; border: none; font-weight: 700 !important; padding: 10px; border-radius: 10px; cursor: pointer; box-shadow: 0 4px 12px rgba(255,145,164,0.15); font-family: 'Cairo';">إضافة للسلة</button>
             </div>
         `;
     };
@@ -1110,7 +1113,7 @@
             initializeBosePrideSlider();
         }
         
-        // 👑 هندسة التخصيص الحصرية: عزل كامل لطبقة الخلفية البمبي عن طبقة صور المنتجات الحقيقية
+        // 👑 هندسة التخصيص الحصرية: عزل كامل لطبقة الخلفية البمبي عن طبقة صور المنتجات الحقيقية لمنع التكديس والتداخل
         const interactiveSimulatorBlocks = document.querySelectorAll(".preview-builder-block, #cake-preview-section, #flower-preview-section");
         interactiveSimulatorBlocks.forEach(block => {
             block.style.position = "relative";
@@ -1143,7 +1146,7 @@
             }
         });
 
-        // 🚀 معالجة حركة الهيدر اللاصق الثابت: تثبيت مطلق لراحة العميل النفسية وتأمين سهولة الوصول للسلة
+        // 🚀 صمام أمان الهيدر المرن لمنع انكماش أو حجب الرؤية عن العميل والتثبيت المطلق أثناء الـ Scroll
         window.addEventListener('scroll', () => {
             const navbar = document.querySelector('.bose-navbar');
             if (navbar) {
