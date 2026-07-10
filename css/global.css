@@ -1,5 +1,5 @@
 /* ==========================================================================
-   👑 ملف التنسيق الموحد والهوية البصرية لعلامة حلويات بوسي الفاخرة V65.0 👑
+   👑 ملف التنسيق الموحد والهوية البصرية لعلامة حلويات بوسي الفاخرة V66.0 👑
    المطابق بالمليم لكافة محركات الموقع وقاعدة البيانات site-data-final.json
    المطور والمحدث بالكامل لسد الثغرات وحل تعارضات الأنيميشن والموديلز والأيقونات
    ========================================================================== */
@@ -23,6 +23,7 @@
     --bose-transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     
     /* 🛡️ تأمين طبقات العرض لمنع تداخل المحاكي والسلة والمودالز */
+    --z-index-ticker: 9998;
     --z-index-navbar: 9999;     
     --z-index-overlay: 20000;
     --z-index-drawer: 30000;
@@ -69,12 +70,12 @@ body {
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    padding-top: 70px; /* مساحة أمان هندسية مكافئة تماماً لارتفاع الهيدر الثابت الموحد */
+    padding-top: 110px; /* مساحة أمان هندسية محسوبة بدقة تشمل ارتفاع شريط الإعلانات والهيدر معاً */
 }
 
 @media (min-width: 1024px) {
     body {
-        padding-top: 80px; /* مساحة أمان متجاوبة متوافقة مع شاشات الكمبيوتر الكبيرة */
+        padding-top: 120px; /* مساحة أمان متجاوبة متوافقة مع شاشات الكمبيوتر الكبيرة */
     }
 }
 
@@ -134,23 +135,51 @@ button, input, select, textarea {
     touch-action: manipulation;
 }
 
-/* 📥 تحسينات حقول الإدخال والأزرار التأسيسية لصفحات الشراء والمحاكي */
-input[type="text"], input[type="tel"], input[type="email"], select, textarea {
+/* ==========================================================================
+   🚨 التيكر (الشريط العلوي المتحرك) - تثبيت هندسي مطلق في أعلى الشاشة 🚨
+   ========================================================================== */
+#top-bar-marquee, .bose-ticker-section {
+    position: fixed !important;
+    top: 0;
+    left: 0;
     width: 100%;
-    padding: 12px 16px;
-    border: var(--bose-border-pink);
-    border-radius: 12px;
-    background-color: var(--bose-white);
-    color: var(--bose-black);
-    font-size: 0.95rem;
-    transition: var(--bose-transition-smooth);
+    z-index: var(--z-index-ticker);
+    background-color: var(--bose-pink) !important; 
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 8px 0;
+    display: flex;
+    align-items: center;
+    box-shadow: var(--bose-shadow-glow);
     direction: rtl;
-    text-align: right;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    height: 40px;
 }
 
-input:focus, select:focus, textarea:focus {
-    border-color: var(--bose-pink);
-    box-shadow: 0 0 0 3px rgba(255, 145, 164, 0.15);
+.bose-ticker-wrapper {
+    display: flex;
+    width: max-content;
+    animation: boseTickerLoop 25s linear infinite !important;
+    will-change: transform;
+}
+
+.bose-ticker-item {
+    display: inline-flex;
+    align-items: center;
+    color: var(--bose-white) !important; 
+    font-size: 0.9rem;
+    font-weight: 700 !important;
+    padding: 0 30px;
+    gap: 10px;
+}
+
+.bose-ticker-item i {
+    color: var(--bose-gold) !important; 
+}
+
+@keyframes boseTickerLoop {
+    0% { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(-50%, 0, 0); }
 }
 
 /* ==========================================================================
@@ -158,7 +187,7 @@ input:focus, select:focus, textarea:focus {
    ========================================================================== */
 .bose-navbar {
     position: fixed !important; 
-    top: 0;
+    top: 40px; /* يبدأ مباشرة بعد شريط الإعلانات العلوي لمنع التداخل والتعارض الجغرافي */
     left: 0;
     z-index: var(--z-index-navbar);
     background-color: rgba(255, 255, 255, 0.99) !important;
@@ -212,7 +241,6 @@ input:focus, select:focus, textarea:focus {
     white-space: nowrap;
 }
 
-/* زر قائمة الموبايل التأسيسي الفاخر والثابت */
 #mobile-menu-toggle {
     display: flex;
     align-items: center;
@@ -562,143 +590,52 @@ input:focus, select:focus, textarea:focus {
 }
 
 /* ==========================================================================
-   🚨 التيكر (الشريط العلوي المتحرك) - ضبط اتجاه الحركة لملائمة الـ RTL 🚨
+   Shared Universal Footer & Trust System - بياض ناصع مريح
    ========================================================================== */
-#top-bar-marquee, .bose-ticker-section {
-    width: 100%;
-    background-color: var(--bose-pink) !important; 
-    overflow: hidden;
-    white-space: nowrap;
-    padding: 8px 0;
-    display: flex;
-    align-items: center;
-    box-shadow: var(--bose-shadow-glow);
+.shared-trust-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px;
+    padding: 40px 0;
+    border-top: 1px dashed rgba(255, 145, 164, 0.25);
+    margin-top: 40px;
     direction: rtl;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    text-align: right;
 }
 
-.bose-ticker-wrapper {
+.trust-item-node {
     display: flex;
-    width: max-content;
-    animation: boseTickerLoop 25s linear infinite !important;
-    will-change: transform;
+    gap: 16px;
+    align-items: flex-start;
 }
 
-.bose-ticker-item {
-    display: inline-flex;
+.trust-icon-box {
+    width: 50px;
+    height: 50px;
+    border-radius: 16px;
+    background-color: var(--bose-white);
+    color: var(--bose-pink);
+    display: flex;
     align-items: center;
-    color: var(--bose-white) !important; 
-    font-size: 0.9rem;
-    font-weight: 700 !important;
-    padding: 0 30px;
-    gap: 10px;
+    justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+    border: var(--bose-border-pink);
 }
 
-.bose-ticker-item i {
-    color: var(--bose-gold) !important; 
+.trust-info-pane h4 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin: 0 0 4px 0;
+    color: var(--bose-black) !important;
 }
 
-@keyframes boseTickerLoop {
-    0% { transform: translate3d(0, 0, 0); }
-    100% { transform: translate3d(-50%, 0, 0); } /* سحب انسيابي سليم متوافق مع الـ RTL والمحرك المركزي */
+.trust-info-pane p {
+    font-size: 0.8rem;
+    margin: 0;
+    color: var(--bose-black) !important;
 }
 
-/* ==========================================================================
-   🧱 شلال المنتجات البصري المطور (Waterfall Section) 
-   ========================================================================== */
-#waterfall-section, .bose-waterfall-section-container {
-    position: relative;
-    overflow: hidden;
-    width: 100%;
-}
-
-.waterfall-container {
-    display: flex;
-    gap: 16px;
-    width: 100%;
-    overflow: hidden;
-    position: relative;
-}
-
-.waterfall-col {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    transform: translate3d(0, 0, 0);
-    flex: 1 1 0%;
-}
-
-@keyframes boseWaterfallUp {
-    0% { transform: translate3d(0, 0, 0); }
-    100% { transform: translate3d(0, -50%, 0); }
-}
-
-@keyframes boseWaterfallDown {
-    0% { transform: translate3d(0, -50%, 0); }
-    100% { transform: translate3d(0, 0, 0); }
-}
-
-.waterfall-up {
-    animation: boseWaterfallUp 35s linear infinite;
-    will-change: transform;
-}
-
-.waterfall-down {
-    animation: boseWaterfallDown 35s linear infinite;
-    will-change: transform;
-}
-
-.waterfall-overlay-top {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 120px;
-    background: linear-gradient(to bottom, var(--bose-white) 0%, rgba(255,255,255,0) 100%);
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
-    z-index: 5;
-    pointer-events: none;
-}
-
-.waterfall-overlay-bottom {
-    position: absolute;
-    bottom: 0; left: 0; width: 100%; height: 120px;
-    background: linear-gradient(to top, var(--bose-white) 0%, rgba(255,255,255,0) 100%);
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
-    z-index: 5;
-    pointer-events: none;
-}
-
-/* ==========================================================================
-   🔄 حركات السلايدرات والمجرى اللانهائي الدائري (Marquee Track)
-   ========================================================================== */
-@keyframes boseMarquee {
-    0% { transform: translate3d(0, 0, 0); }
-    100% { transform: translate3d(-50%, 0, 0); }
-}
-
-@keyframes boseCategoriesLoop {
-    0% { transform: translate3d(0, 0, 0); }
-    100% { transform: translate3d(-50%, 0, 0); }
-}
-
-.animate-marquee, .categories-track-loop {
-    display: flex !important;
-    width: max-content !important;
-    transform: translate3d(0, 0, 0);
-    will-change: transform;
-}
-
-.animate-marquee {
-    animation: boseMarquee 28s linear infinite;
-}
-
-.categories-track-loop {
-    animation: boseCategoriesLoop 32s linear infinite;
-}
-
-/* ==========================================================================
-   🏪 الفوتر الموحد والثابت (Shared Universal Footer) بياض ناصع مريح
-   ========================================================================== */
 .bose-footer {
     background-color: var(--bose-white) !important;
     border-top: var(--bose-border-pink) !important;
@@ -786,53 +723,6 @@ input:focus, select:focus, textarea:focus {
 }
 
 /* ==========================================================================
-   Shared Trust Bar - شريط عناصر الضمان والثقة الموحد
-   ========================================================================== */
-.shared-trust-bar {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 24px;
-    padding: 40px 0;
-    border-top: 1px dashed rgba(255, 145, 164, 0.25);
-    margin-top: 40px;
-    direction: rtl;
-    text-align: right;
-}
-
-.trust-item-node {
-    display: flex;
-    gap: 16px;
-    align-items: flex-start;
-}
-
-.trust-icon-box {
-    width: 50px;
-    height: 50px;
-    border-radius: 16px;
-    background-color: var(--bose-white);
-    color: var(--bose-pink);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.3rem;
-    flex-shrink: 0;
-    border: var(--bose-border-pink);
-}
-
-.trust-info-pane h4 {
-    font-size: 0.95rem;
-    font-weight: 700;
-    margin: 0 0 4px 0;
-    color: var(--bose-black) !important;
-}
-
-.trust-info-pane p {
-    font-size: 0.8rem;
-    margin: 0;
-    color: var(--bose-black) !important;
-}
-
-/* ==========================================================================
    Dots Carousel Navigation - نظام المؤشرات النقطية المتفاعل
    ========================================================================== */
 .bose-dots-container {
@@ -862,7 +752,7 @@ input:focus, select:focus, textarea:focus {
 }
 
 /* ==========================================================================
-   التنببهات المخصصة وحفظ بواب الحماية (Custom Dialogues & Toasts)
+   التنببهات المخصصة وحفظ بواب الحماية (Custom Dialogue UI)
    ========================================================================== */
 .bose-toast-container, #bose-toast-central-container {
     position: fixed !important;
@@ -1136,6 +1026,7 @@ body.drawer-active {
 .category-slide-card {
     width: 280px !important;
     height: 360px !important; /* ارتفاع الكارت الكلي المستقر للموبايل */
+    flex-shrink: 0 !important; /* تأمين استقرار حجم الكارت بالكامل أثناء السحب والتحريك الأفقي */
 }
 
 .category-slide-card img {
@@ -1173,22 +1064,6 @@ body.drawer-active {
     }
 }
 
-/* كروت التنسيق الشبكي الثنائي لمنتجاتنا والمقاطع الحرة لمنع التشوه البصري */
-.products-grid, .bose-products-grid {
-    display: grid !important;
-    grid-template-columns: repeat(2, 1fr) !important; /* كارتين بجوار بعضهما البعض هندسياً بالمسطرة */
-    gap: 16px !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-}
-
-@media (max-width: 480px) {
-    /* حماية تصفح الهواتف الذكية للأكثر مبيعاً ووصل حديثاً بحجم ملاءمة ممتاز */
-    .bose-perfection-card, [id*="most-selling-section"] .product-card, [id*="new-arrivals-section"] .product-card {
-        width: 85vw !important;
-    }
-}
-
 @media (min-width: 1024px) {
     #mobile-menu-toggle { display: none !important; }
     #bose-nav-menu { display: block !important; }
@@ -1196,7 +1071,4 @@ body.drawer-active {
     #bose-store-logo { width: 52px; height: 52px; }
     .brand-name-display { font-size: 1.4rem; }
     .shared-trust-bar { grid-template-columns: repeat(4, 1fr); padding: 60px 0; }
-    .products-grid, .bose-products-grid {
-        grid-template-columns: repeat(4, 1fr) !important; /* التوزيع المريح على الكمبيوتر لمنع التكديس */
-    }
 }
