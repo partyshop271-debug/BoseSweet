@@ -15,7 +15,7 @@
         
         while (retries > 0) {
             try {
-                // جلب قاعدة البيانات من المسار المعتمد والصحيح هندسياً
+                // جلب قاعدة البيانات من المسار المعتمد والصحيح هندسياً المتوافق مع هيكلية المجلدات
                 const response = await fetch('data/site-data-final.json');
                 if (!response.ok) throw new Error('فشل جلب ملف قاعدة البيانات الرئيسي.');
                 
@@ -28,7 +28,7 @@
                 
                 window.BoseStoreData = await response.json();
                 
-                // 1. إدارة وضخ العناصر العالمية المشتركة في كل الصفحات لتوحيد الواجهات
+                // 1. إدارة وضخ العناصر العالمية المشتركة في كل الصفحات لتوحيد الواجهات ومنع التكديس
                 injectEarlyDependencies();
                 applyGlobalStyles(window.BoseStoreData.store.theme);
                 renderUniversalHeader();
@@ -39,12 +39,7 @@
                 applyGlobalSEOAndBranding();
                 window.updateGlobalCartCounter();
                 
-                // 3. الفحص الجغرافي للواجهة: إذا كنا في الصفحة الرئيسية، يتم تفعيل محرك ضخ الأقسام تلقائياً
-                if (document.getElementById('hero-section') || document.querySelector('.bose-waterfall-section-container') || !!document.getElementById('most-selling-grid')) {
-                    renderMainPageSections();
-                }
-                
-                // تفعيل حدث مخصص لباقي المحركات والملفات المعتمدة على البيانات لمنع التعارض
+                // 3. تفعيل حدث مخصص لباقي المحركات والملفات المعتمدة على البيانات لمنع التعارض البرمجي
                 document.dispatchEvent(new CustomEvent('BoseDatabaseLoaded', { detail: window.BoseStoreData }));
                 return;
             } catch (error) {
@@ -102,7 +97,7 @@
 
     function renderUniversalSidebar() {
         let sidebarPanel = document.getElementById('sidebar-drawer');
-        if (sidebarPanel) sidebarPanel.remove(); // منع التكرار التكديسي
+        if (sidebarPanel) sidebarPanel.remove(); // منع التكرار لراحة معالجات الموبايل
         
         const sidebar = document.createElement('div');
         sidebar.id = 'sidebar-drawer';
@@ -129,7 +124,7 @@
         `;
         document.body.appendChild(sidebar);
 
-        // ربط أحداث القائمة المتطورة فوراً بطريقة مستقرة مئة بالمئة للكمبيوتر والموبايل
+        // ربط أحداث القائمة المتطورة فوراً بطريقة مستقرة للكمبيوتر والموبايل
         setTimeout(() => {
             const toggleBtn = document.getElementById('mobile-menu-toggle');
             const closeBtn = document.getElementById('sidebar-close-btn');
@@ -174,7 +169,7 @@
                 <a href="${window.BoseStoreData.social.facebook}" class="social-link-facebook" target="_blank" aria-label="فيسبوك حلويات بوسي"><i class="fab fa-facebook-f"></i></a>
                 <a href="${window.BoseStoreData.social.instagram}" class="social-link-instagram" target="_blank" aria-label="انستجرام حلويات بوسي"><i class="fab fa-instagram"></i></a>
                 <a href="${window.BoseStoreData.social.tiktok}" class="social-link-tiktok" target="_blank" aria-label="تيك توك حلويات بوسي"><i class="fab fa-tiktok"></i></a>
-                <a href="https://wa.me/${window.BoseStoreData.sanitizeBosePhoneNumber(window.BoseStoreData.social.whatsapp)}" class="social-link-whatsapp" target="_blank" aria-label="واتساب حلويات بوسي"><i class="fab fa-whatsapp"></i></a>
+                <a href="https://wa.me/${window.sanitizeBosePhoneNumber(window.BoseStoreData.social.whatsapp)}" class="social-link-whatsapp" target="_blank" aria-label="واتساب حلويات بوسي"><i class="fab fa-whatsapp"></i></a>
             </div>
             <div class="footer-policies-container" id="bose-footer-policies">
                 <ul class="nav-list" style="justify-content: center; gap: 16px; flex-wrap: wrap; list-style: none;">
@@ -188,312 +183,6 @@
                 <p>© <span id="copyright-year">2026</span> جميع الحقوق محفوظة لعلامة حلويات بوسي التجارية الفاخرة</p>
             </div>
         `;
-    }
-
-    /* ==========================================================================
-       🏪 محرك الصفحة الرئيسية وضخ الأقسام الـ 10 (Main Page Layout Engine)
-       ========================================================================== */
-
-    function renderMainPageSections() {
-        const data = window.BoseStoreData;
-
-        // ضخ رسائل الهيرو والأوصاف لمنع الفراغات البصرية
-        const heroDesc = document.getElementById('hero-description');
-        const heroBtn = document.getElementById('hero-cta-btn');
-        if (heroDesc) heroDesc.textContent = data.homepage.hero.description;
-        if (heroBtn) {
-            heroBtn.textContent = data.homepage.hero.cta;
-            heroBtn.href = "menu.html";
-        }
-
-        // شريط علوي متحرك لضمان حركة لانهائية بدون أي فراغات مرئية
-        const tickerTrack = document.getElementById('top-bar-marquee-track');
-        if (tickerTrack && data.navigation.topBarMessages) {
-            let messagesHTML = data.navigation.topBarMessages.map(msg => `
-                <span class="bose-ticker-item"><i class="fas fa-sparkles"></i> ${msg}</span>
-            `).join('');
-            tickerTrack.innerHTML = `${messagesHTML}${messagesHTML}`;
-        }
-
-        // قسم شلال المنتجات البصري الأنيق المتعاكس الحركة بدون فراغات بصرية
-        const leftCol = document.getElementById('waterfall-left-col');
-        const rightCol = document.getElementById('waterfall-right-col');
-        if (leftCol && rightCol && data.homepage.waterfall) {
-            let leftHTML = data.homepage.waterfall.leftColumnImages.map(img => `<img src="${img}" alt="شلال بوسي الفاخر">`).join('');
-            let rightHTML = data.homepage.waterfall.rightColumnImages.map(img => `<img src="${img}" alt="شلال بوسي الفاخر">`).join('');
-            leftCol.innerHTML = `<div class="waterfall-up">${leftHTML}${leftHTML}</div>`;
-            rightCol.innerHTML = `<div class="waterfall-down">${rightHTML}${rightHTML}</div>`;
-        }
-
-        // قسم عقد من الإتقان - مجرى حركة أفقي تلقائي متصل لملء الشاشة
-        const excellenceTrack = document.getElementById('excellence-images-track');
-        const excellenceTitle = document.getElementById('excellence-title');
-        const excellenceDesc = document.getElementById('excellence-description');
-        if (excellenceTitle) excellenceTitle.textContent = data.homepage.excellence.title;
-        if (excellenceDesc) excellenceDesc.textContent = data.homepage.excellence.description;
-        if (excellenceTrack && data.homepage.excellence.images) {
-            let trackHTML = data.homepage.excellence.images.map(img => `
-                <div class="bose-perfection-card" onclick="window.location.href='menu.html'">
-                    <div class="perfection-card-img-holder">
-                        <img src="${img}" alt="إتقان حلويات بوسي">
-                    </div>
-                </div>
-            `).join('');
-            excellenceTrack.innerHTML = `${trackHTML}${trackHTML}`;
-            renderDotsSystem('excellence-dots', data.homepage.excellence.images.length);
-        }
-
-        // ضخ نصوص المحاكيات (التورت والورد) وصمامات الأمان الخاصة بها
-        const cakeTitle = document.getElementById('cake-preview-title');
-        const cakeDesc = document.getElementById('cake-preview-desc');
-        const cakeCta = document.getElementById('cake-preview-cta');
-        const cakeImg = document.getElementById('cake-preview-img');
-        if (cakeTitle) cakeTitle.textContent = data.homepage.cakePreview.title;
-        if (cakeDesc) cakeDesc.textContent = data.homepage.cakePreview.description;
-        if (cakeCta) {
-            cakeCta.textContent = data.homepage.cakePreview.cta;
-            cakeCta.href = data.homepage.cakePreview.target;
-        }
-        if (cakeImg) cakeImg.src = data.homepage.cakePreview.image;
-
-        const flowerTitle = document.getElementById('flower-preview-title');
-        const flowerDesc = document.getElementById('flower-preview-desc');
-        const flowerCta = document.getElementById('flower-preview-cta');
-        const flowerImg = document.getElementById('flower-preview-img');
-        if (flowerTitle) flowerTitle.textContent = data.homepage.flowerPreview.title;
-        if (flowerDesc) flowerDesc.textContent = data.homepage.flowerPreview.description;
-        if (flowerCta) {
-            flowerCta.textContent = data.homepage.flowerPreview.cta;
-            flowerCta.href = data.homepage.flowerPreview.target;
-        }
-        if (flowerImg) flowerImg.src = data.homepage.flowerPreview.image;
-
-        // ضخ شبكات العناوين للمجموعات (الأكثر مبيعاً، وصل حديثاً)
-        const msTitle = document.getElementById('most-selling-title');
-        const msDesc = document.getElementById('most-selling-description');
-        if (msTitle) msTitle.textContent = "الأكثر مبيعاً";
-        if (msDesc) msDesc.textContent = "تشكيلة حصرية من الأصناف الأكثر طلباً وشهية التي نالت ثقة عملائنا.";
-        injectProductGrid('most-selling-grid', data.homepage.mostSelling);
-        renderDotsSystem('most-selling-dots', 4);
-
-        const naTitle = document.getElementById('new-arrivals-title');
-        const naDesc = document.getElementById('new-arrivals-description');
-        if (naTitle) naTitle.textContent = "وصل حديثاً";
-        if (naDesc) naDesc.textContent = "اكتشف أحدث ابتكارات وتوليفات نكهاتنا المبتكرة والفريدة المصنوعة بشغف.";
-        injectProductGrid('new-arrivals-grid', data.homepage.newArrivals);
-        renderDotsSystem('new-arrivals-dots', 3);
-
-        // قسم منتجاتنا - التوزيع الثنائي المتوازن الصارم (4 كروت أولية وعرض ديناميكي)
-        const ourTitle = document.getElementById('our-products-title');
-        const ourDesc = document.getElementById('our-products-description');
-        if (ourTitle) ourTitle.textContent = "منتجاتنا الفاخرة";
-        if (ourDesc) ourDesc.textContent = "استعرض التشكيلة الكاملة والمنوعة المعدة طازجة يومياً بمكونات طبيعية 100%.";
-        injectProductsOurSection();
-
-        // قسم الفخر والاعتزاز - العدادات الرقمية التصاعدية الذكية لمنع الـ NaN
-        const prideTitle = document.getElementById('pride-main-title');
-        const prideText = document.getElementById('pride-main-text');
-        if (prideTitle) prideTitle.textContent = data.homepage.pride.title;
-        if (prideText) prideText.textContent = data.homepage.pride.text;
-        
-        const stats = data.homepage.pride.stats;
-        if (stats) {
-            setupStatNode('stat-years-value', 'stat-years-label', stats.years);
-            setupStatNode('stat-customers-value', 'stat-customers-label', stats.customers);
-            setupStatNode('stat-orders-value', 'stat-orders-label', stats.orders);
-            setupStatNode('stat-cakes-value', 'stat-cakes-label', stats.cakes);
-            setupStatNode('stat-bouquets-value', 'stat-bouquets-label', stats.bouquets);
-            triggerCounterAnimations();
-        }
-
-        // قسم تسوق حسب الفئة - مجرى الـ 12 كارت ذو الوزن البصري الأكبر بـ 30%
-        const catTitle = document.getElementById('categories-section-title');
-        const catDesc = document.getElementById('categories-section-subtitle');
-        if (catTitle) catTitle.textContent = "تسوق حسب الفئة";
-        if (catDesc) catDesc.textContent = "انتقل مباشرة وبكل سهولة إلى فئتك المفضلة لاستكشاف نكهاتها الخاصة وأسعارها.";
-        
-        const categoriesTrack = document.getElementById('categories-track');
-        if (categoriesTrack && data.homepage.categoriesSlider) {
-            let catHTML = data.homepage.categoriesSlider.map(cat => `
-                <div class="category-slide-card" onclick="window.location.href='category.html?id=${cat.id}'" style="flex-shrink:0; cursor:pointer;">
-                    <img src="${cat.image}" alt="${cat.title}">
-                    <span class="brand-name-display" style="display:block; text-align:center; margin-top:12px; font-size:20px; font-weight:700;">${cat.title}</span>
-                </div>
-            `).join('');
-            categoriesTrack.innerHTML = `${catHTML}${catHTML}`;
-            renderDotsSystem('categories-dots', data.homepage.categoriesSlider.length);
-        }
-    }
-
-    function setupStatNode(valId, labelId, statObj) {
-        const valEl = document.getElementById(valId);
-        const labelEl = document.getElementById(labelId);
-        if (valEl && labelEl && statObj) {
-            valEl.setAttribute('data-target', statObj.value);
-            valEl.textContent = "0";
-            labelEl.textContent = statObj.label;
-            
-            // تنظيف الحاوية لمنع التراكم الإلحاقي
-            const oldSuffix = valEl.parentNode.querySelector('.stat-suffix');
-            if(oldSuffix) oldSuffix.remove();
-            
-            valEl.insertAdjacentHTML('afterend', `<span class="stat-suffix" style="font-size:24px; font-weight:700; color:var(--bose-black); margin-left:4px;">${statObj.suffix}</span>`);
-        }
-    }
-
-    function renderDotsSystem(containerId, count) {
-        const container = document.getElementById(containerId);
-        if (!container) return;
-        let dotsHTML = '';
-        for (let i = 0; i < count; i++) {
-            dotsHTML += `<button class="bose-dot ${i === 0 ? 'active' : ''}"></button>`;
-        }
-        container.innerHTML = dotsHTML;
-    }
-
-    function injectProductGrid(targetId, slugList) {
-        const gridContainer = document.getElementById(targetId);
-        if (!gridContainer || !slugList) return;
-
-        const filteredProducts = window.BoseStoreData.products.filter(p => slugList.includes(p.slug));
-        gridContainer.innerHTML = filteredProducts.map(p => createStrictProductCardHTML(p)).join('');
-        bindCardEvents(gridContainer);
-    }
-
-    function injectProductsOurSection() {
-        const gridContainer = document.getElementById('our-products-grid');
-        if (!gridContainer) return;
-
-        const allSlugs = window.BoseStoreData.homepage.ourProducts;
-        const allProducts = window.BoseStoreData.products.filter(p => allSlugs.includes(p.slug));
-        
-        const initialProducts = allProducts.slice(0, 4);
-        gridContainer.innerHTML = initialProducts.map(p => createStrictProductCardHTML(p)).join('');
-        bindCardEvents(gridContainer);
-
-        const showMoreBtn = document.getElementById('our-products-show-more');
-        if (showMoreBtn) {
-            showMoreBtn.textContent = "إظهار المزيد";
-            showMoreBtn.onclick = () => {
-                const remainingProducts = allProducts.slice(4);
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = remainingProducts.map(p => createStrictProductCardHTML(p)).join('');
-                
-                while (tempDiv.firstChild) {
-                    gridContainer.appendChild(tempDiv.firstChild);
-                }
-                bindCardEvents(gridContainer);
-                showMoreBtn.style.display = 'none'; 
-            };
-        }
-    }
-
-    function createStrictProductCardHTML(product) {
-        const displayPrice = window.calculateBosePrice(product.price || product.basePrice, "menu-only");
-        const flavorDisplay = product.flavorName ? `<span class="product-card-flavor-name" style="color:var(--bose-pink); font-size:0.85rem; font-weight:700; display:block; margin:4px 0;">${product.flavorName}</span>` : '';
-        
-        return `
-            <div class="product-card" data-slug="${product.slug}" style="display:flex; flex-direction:column; justify-content:space-between;">
-                <div class="product-card-top" onclick="window.location.href='product.html?slug=${product.slug}'" style="cursor:pointer;">
-                    <img class="product-card-img" src="${product.images[0]}" alt="${product.title}">
-                    <h3 class="product-card-title" style="margin-top:8px; font-size:1rem;">${product.title}</h3>
-                    ${flavorDisplay}
-                    <p class="product-card-desc" style="font-size:0.8rem; opacity:0.7; margin:6px 0; line-height:1.4;">${product.flavorDesc || product.description.substring(0, 75) + '...'}</p>
-                </div>
-                <div class="product-card-bottom" style="margin-top:auto;">
-                    <div style="display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:12px; direction:ltr;">
-                        <button class="btn-qty-plus" style="width:30px; height:30px; background:rgba(255,145,164,0.1); color:var(--bose-pink); border-radius:50%; font-weight:700; cursor:pointer;">+</button>
-                        <input class="input-qty-value" type="number" value="1" min="1" readonly style="width:40px; text-align:center; font-weight:700; border:none; color:var(--bose-black);">
-                        <button class="btn-qty-minus" style="width:30px; height:30px; background:rgba(255,145,164,0.1); color:var(--bose-pink); border-radius:50%; font-weight:700; cursor:pointer;">-</button>
-                    </div>
-                    <div class="product-card-price" style="text-align:center; font-size:1.1rem; margin-bottom:8px;">${Math.round(displayPrice)} جنيه</div>
-                    <button class="btn-add-to-cart" style="width:100%; padding:10px; background:var(--bose-pink); color:#fff; border-radius:12px; font-weight:700; cursor:pointer; transition:var(--bose-transition-smooth);">اضافة للسلة</button>
-                </div>
-            </div>
-        `;
-    }
-
-    function bindCardEvents(container) {
-        container.querySelectorAll('.product-card').forEach(card => {
-            const minusBtn = card.querySelector('.btn-qty-minus');
-            const plusBtn = card.querySelector('.btn-qty-plus');
-            const qtyInput = card.querySelector('.input-qty-value');
-            const addToCartBtn = card.querySelector('.btn-add-to-cart');
-            const slug = card.getAttribute('data-slug');
-
-            if (minusBtn && plusBtn && qtyInput) {
-                minusBtn.onclick = () => {
-                    let val = parseInt(qtyInput.value, 10) || 1;
-                    if (val > 1) qtyInput.value = val - 1;
-                };
-                plusBtn.onclick = () => {
-                    let val = parseInt(qtyInput.value, 10) || 1;
-                    qtyInput.value = val + 1;
-                };
-            }
-
-            if (addToCartBtn) {
-                addToCartBtn.onclick = () => {
-                    const product = window.BoseStoreData.products.find(p => p.slug === slug);
-                    if (product) {
-                        const qty = parseInt(qtyInput.value, 10) || 1;
-                        const cartItem = window.createCartItem(product, {}, qty);
-                        
-                        let rawCart = localStorage.getItem('bose_cart');
-                        let cart = rawCart ? JSON.parse(rawCart) : [];
-                        
-                        const existingIdx = cart.findIndex(item => item.id === cartItem.id);
-                        if (existingIdx > -1) {
-                            cart[existingIdx].quantity += qty;
-                        } else {
-                            cart.push(cartItem);
-                        }
-                        
-                        localStorage.setItem('bose_cart', JSON.stringify(cart));
-                        window.updateGlobalCartCounter();
-                        showCentralToast("تمت إضافة المنتج إلى السلة.");
-                    }
-                };
-            }
-        });
-    }
-
-    function showCentralToast(msg) {
-        let container = document.getElementById('bose-toast-central-container');
-        if (!container) {
-            container = document.createElement('div');
-            container.id = 'bose-toast-central-container';
-            container.className = 'bose-toast-container';
-            document.body.appendChild(container);
-        }
-        const toast = document.createElement('div');
-        toast.className = 'bose-toast-card bose-toast-active';
-        toast.innerHTML = `<div class="bose-toast-content"><p class="bose-toast-text">${msg}</p></div>`;
-        container.appendChild(toast);
-        setTimeout(() => {
-            toast.classList.add('bose-toast-fadeout');
-            setTimeout(() => toast.remove(), 400);
-        }, 2000);
-    }
-
-    function triggerCounterAnimations() {
-        const counters = document.querySelectorAll('.stat-number');
-        counters.forEach(counter => {
-            const target = +counter.getAttribute('data-target');
-            if(!target) return;
-            const speed = 60;
-            const updateCount = () => {
-                const count = +counter.innerText;
-                const inc = target / speed;
-                if (count < target) {
-                    counter.innerText = Math.ceil(count + inc);
-                    setTimeout(updateCount, 20);
-                } else {
-                    counter.innerText = target;
-                }
-            };
-            updateCount();
-        });
     }
 
     /* ==========================================================================
@@ -578,9 +267,9 @@
 
     window.calculateCustomCakePrice = function(persons, options = {}) {
         const config = window.BoseStoreData?.cakeBuilder;
-        const safePersons = parseInt(persons, 10) || 10;
+        const safePersons = parseInt(persons, 10) || (config ? config.persons.minimum : 4) || 4;
         let price = (config ? config.basePrice : 580) || 580;
-        const minPersons = (config ? config.persons.minimum : 10) || 10;
+        const minPersons = (config ? config.persons.minimum : 4) || 4;
         const pricePerPerson = (config ? config.pricePerPerson : 145) || 145; 
         
         const extraPersons = Math.max(0, safePersons - minPersons);
