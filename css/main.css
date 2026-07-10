@@ -275,6 +275,26 @@ body.bose-hardware-accelerated {
     margin-top: 5px;
 }
 
+/* 📐 حوكمة التوزيع الثنائي المتناسق تماماً لمنع ظهور كارت ونصف في الشاشة للعميل */
+.products-grid, .bose-products-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important; /* صفوف ثنائية متوازنة بالملي للموبايل */
+    gap: 16px !important;
+    width: 100% !important;
+}
+
+@media (min-width: 768px) {
+    .products-grid, .bose-products-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+    }
+}
+
+@media (min-width: 1024px) {
+    .products-grid, .bose-products-grid {
+        grid-template-columns: repeat(4, 1fr) !important; /* توزيع رباعي للتنفس البصري الفاخر على الشاشات الكبيرة */
+    }
+}
+
 .bose-show-more-container {
     text-align: center;
     margin-top: 30px;
@@ -319,6 +339,7 @@ body.bose-hardware-accelerated {
     overflow: hidden;
     background-color: var(--bose-white);
     box-shadow: var(--bose-shadow-glow);
+    height: 600px !important; /* 📐 فرض الارتفاع القياسي لمحاكي التورت والورد على الموبايل منعاً للمط والتداخل */
 }
 
 .bose-simulator-title {
@@ -365,6 +386,7 @@ body.bose-hardware-accelerated {
     background-color: var(--bose-white);
     border-top: 1px solid rgba(255, 145, 164, 0.15);
     border-bottom: 1px solid rgba(255, 145, 164, 0.15);
+    min-height: 550px !important; /* 📐 صمام الأمان الهندسي لمنع انكماش عناصر العدادات على الموبايل */
 }
 
 .bose-pride-container {
@@ -474,6 +496,12 @@ body.bose-hardware-accelerated {
     }
     .bose-hero-title {
         font-size: 2.6rem;
+    }
+    .preview-builder-block, .bose-isolated-simulator-card {
+        height: 750px !important; /* 📐 فرض الارتفاع القياسي المخصص لسطح المكتب وعرض المحاكي الكامل */
+    }
+    .bose-pride-statistics-section {
+        min-height: 700px !important; /* 📐 قفل الحد الأدنى لارتفاع الفخر والاعتزاز للكمبيوتر حظرًا للتداخل البصري */
     }
     .bose-pride-container {
         display: grid;

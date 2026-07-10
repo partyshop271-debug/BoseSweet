@@ -705,7 +705,8 @@ button, input, select, textarea {
 
 .social-link-facebook { background-color: #3b5998; }
 .social-link-instagram { background-color: #e1306c; }
-.social-link-tiktok { background-color: #000000; }
+/* 🛡️ تم سد ثغرة التناخم اللوني لزر التيك توك وتجريد السواد الصافي وحظر التكدس اللوني */
+.social-link-tiktok { background-color: var(--bose-black); } 
 .social-link-whatsapp { background-color: #25d366; }
 
 .footer-copyright-block {
@@ -1002,9 +1003,9 @@ body.drawer-active {
    📐 الأبعاد والمقاسات الإلزامية الصارمة لكروت المنتجات والفئات (UI Dimensions)
    ========================================================================== */
 
-/* كارت المنتج الموحد (Strict Product Card DOM) */
+/* كارت المنتج الموحد (Strict Product Card DOM) - متوافق بالملي مع الأكثر مبيعاً ووصل حديثاً */
 .product-card {
-    width: 100% !important;
+    width: 85vw !important; /* 📐 تم التعديل لتطابق مواصفات الفحص المالي والمبيعات للموبايل */
     height: auto !important;
     background: var(--bose-white) !important;
     border: 1px solid rgba(255, 145, 164, 0.2) !important;
@@ -1014,35 +1015,33 @@ body.drawer-active {
     box-sizing: border-box !important;
 }
 
-.product-card-img, .product-card-top img {
-    width: 100% !important;
-    height: 220px !important; /* ارتفاع الصورة الثابت للموبايل */
-    aspect-ratio: 1 / 1 !important;
-    border-radius: 14px !important;
-    object-fit: cover !important;
-}
-
-/* كارت تسوق حسب الفئة - أكبر بنسبة 30% لإبراز وزن الأقسام */
+/* كارت تسوق حسب الفئة - أكبر بنسبة 30% لإبراز وزن الأقسام وتأمين السحب الأفقي المستقر */
 .category-slide-card {
     width: 280px !important;
-    height: 360px !important; /* ارتفاع الكارت الكلي المستقر للموبايل */
-    flex-shrink: 0 !important; /* تأمين استقرار حجم الكارت بالكامل أثناء السحب والتحريك الأفقي */
+    height: 360px !important; /* 📐 الارتفاع الكلي المستقر والإلزامي للموبايل */
+    flex-shrink: 0 !important; 
+    background: var(--bose-white) !important;
+    border-radius: 20px !important;
 }
 
 .category-slide-card img {
     width: 280px !important;
-    height: 280px !important; /* ارتفاع صورة الفئة للموبايل */
+    height: 280px !important; /* الارتفاع الفعلي لصورة الفئة للموبايل */
     object-fit: cover !important;
+    border-radius: 20px 20px 0 0 !important;
 }
 
-/* التجاوب المتوازن للمقاسات الهندسية بحسب نوع الشاشة */
+/* التجاوب المتوازن للمقاسات الهندسية بحسب نوع الشاشة ومجرى الحركة */
 @media (min-width: 768px) {
+    .product-card {
+        width: 100% !important; /* استعادة الطول الكامل للمصفوفات داخل الحاويات اللوحية الكبيرة */
+    }
     .product-card-img, .product-card-top img {
         height: 260px !important; /* ارتفاع الصورة للتابلت */
     }
     .category-slide-card {
         width: 340px !important;
-        height: 430px !important; /* ارتفاع الكارت للتابلت */
+        height: 430px !important; /* الارتفاع الكلي المستقر للتابلت */
     }
     .category-slide-card img {
         width: 340px !important;
@@ -1051,12 +1050,15 @@ body.drawer-active {
 }
 
 @media (min-width: 1024px) {
+    .product-card {
+        width: 380px !important; /* 📐 قفل العرض الثابت لكروت الحسابات للكمبيوتر منعاً للمط والتلف */
+    }
     .product-card-img, .product-card-top img {
         height: 320px !important; /* ارتفاع الصورة للكمبيوتر */
     }
     .category-slide-card {
         width: 420px !important;
-        height: 520px !important; /* ارتفاع الكارت للكمبيوتر */
+        height: 520px !important; /* الارتفاع الكلي المستقر للكمبيوتر */
     }
     .category-slide-card img {
         width: 420px !important;
