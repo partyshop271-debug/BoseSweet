@@ -1,6 +1,6 @@
 /**
  * 👑 المحرك المركزي العام والنهائي للموقع والنافذة العائمة - حلويات بوسي 👑
- * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية ومشاكل التداخل V65.0
+ * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية ومشاكل التداخل V64.0
  * متوافق بشكل مطلق وثنائي الاتجاه مع كافة ملفات css/ وجافا سكريبت الموقع وقاعدة البيانات data/site-data-final.json
  * [تم التحديث والتطوير الشامل: حل ثغرة الكاروسيل المكسور، عزل خلفيات المحاكي، منع انضغاط التصنيفات، وضبط التيكر]
  */
@@ -825,7 +825,6 @@
         window.showBoseToast(`تمت إضافة المنتج إلى السلة 🌸`);
     };
 
-    /* 🛡️ [تعديل هندسي حرج]: إظهار مؤشر الكمية بالكامل بين زري (+) و (-) في كروت المنتجات الشاملة */
     window.generateStrictProductCardHTML = function (product, currency = 'EGP') {
         if (!product) return '';
         const price = Math.round(Number(product.price || 0));
@@ -841,19 +840,19 @@
                         <img src="${imgUrl}" alt="${displayTitle}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease;">
                     </div>
                     <div class="search-card-info-pane">
-                        <h4 class="search-card-title" style="font-family: 'Cairo'; font-weight: 700; margin: 0; font-size: 16px; color: ${BRAND_COLORS.black};">${displayTitle}</h4>
-                        <div class="search-card-flavor" style="font-family: 'Cairo'; font-size: 13px; color: ${BRAND_COLORS.pink}; font-weight: 600; margin-top: 4px;">${displayFlavor}</div>
-                        <div class="search-card-price" style="font-family: 'Cairo'; font-size: 16px; font-weight: 700; color: ${BRAND_COLORS.black}; margin-top: 6px;">${price} ${currency}</div>
+                        <h4 class="search-card-title">${displayTitle}</h4>
+                        <div class="search-card-flavor">${displayFlavor}</div>
+                        <div class="search-card-price">${price} ${currency}</div>
                     </div>
                 </a>
                 
-                <div class="bose-qty-controller-box" style="display: flex; align-items: center; justify-content: space-between; border: 1px solid rgba(255,145,164,0.2); border-radius: 10px; padding: 2px; height: 38px; background: #FFF; width: 100%; box-sizing: border-box; margin-top: 4px;">
-                    <button class="qty-control-trigger minus" style="width:35px; height:100%; font-weight:700; cursor:pointer; background:none; border:none; font-size:16px; color:${BRAND_COLORS.black};">-</button>
-                    <input type="text" class="qty-numerical-display" value="1" readonly style="width:calc(100% - 70px); text-align:center; border:none; font-weight:700; font-size:14px; color:${BRAND_COLORS.black}; background:transparent; font-family:'Cairo';">
-                    <button class="qty-control-trigger plus" style="width:35px; height:100%; font-weight:700; cursor:pointer; background:none; border:none; font-size:16px; color:${BRAND_COLORS.black};">+</button>
+                <div class="bose-qty-controller-box" style="display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,145,164,0.2); border-radius: 10px; padding: 2px; height: 36px; background: #FFF;">
+                    <button class="qty-control-trigger minus" style="width:30px; height:100%; font-weight:700; cursor:pointer;">-</button>
+                    <input type="text" class="qty-numerical-display" value="1" readonly style="width:30px; text-align:center; border:none; font-weight:700; background:transparent;">
+                    <button class="qty-control-trigger plus" style="width:30px; height:100%; font-weight:700; cursor:pointer;">+</button>
                 </div>
                 
-                <button class="bose-add-to-cart-btn" data-id="${product.id}" style="width: 100%; background: ${BRAND_COLORS.pink}; color: #FFF; font-weight: 700; padding: 11px; border: none; border-radius: 10px; cursor: pointer; font-family: 'Cairo'; font-size: 14px; box-shadow: 0 4px 12px rgba(255,145,164,0.15); transition: 0.2s;">إضافة للسلة</button>
+                <button class="bose-add-to-cart-btn" data-id="${product.id}" style="width: 100%; background: ${BRAND_COLORS.pink}; color: #FFF; font-weight: 700; padding: 10px; border-radius: 10px; cursor: pointer; box-shadow: 0 4px 12px rgba(255,145,164,0.15);">إضافة للسلة</button>
             </div>
         `;
     };
