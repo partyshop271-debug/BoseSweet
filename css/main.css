@@ -1,33 +1,16 @@
 /* ==========================================================================
-   👑 ملف التصميم المركزي للأقسام والمنيو - حلويات بوسي V65.0 Master 👑
+   👑 ملف التصميم المركزي للأقسام والمنيو - حلويات بوسي V66.0 Master 👑
    النسخة الهندسية القياسية الكاملة بنسبة 100% - خالية تماماً من الثغرات والمشاكل البصرية
    متوافقة بشكل مطلق ومتبادل مع: global.css، core-engine.js، وقاعدة البيانات site-data-final.json
    ========================================================================== */
 
 /* ==========================================================================\
-   1. حارس بيئة العمل والألوان الحاكمة الاحتياطية (Core Palette Fallbacks)
-   ========================================================================== */
-:root {
-    --bose-pink: #FF91A4;       /* نبض الحياة: للحدود، الأسعار الديناميكية، وتأثيرات Hover */
-    --bose-white: #FFFFFF;      /* المسيطر تماماً: للخلفيات لمنع التكديس وتحقيق التنفس البصري */
-    --bose-black: #111111;      /* معزول تماماً: للنصوص والعناوين فقط، محظور استخدامه في الظلال والخلفيات */
-    --bose-gold: #D4AF37;       /* الفخامة الرمزية الناعمة: لنجوم التقييم وتفاصيل التخصيص الفاخرة */
-}
-
-/* ==========================================================================\
-   2. منع تداخل اللمس والتسريع العتادي على الموبايل (GPU & Mobile Touch Guards)
+   1. منع تداخل اللمس والتسريع العتادي على الموبايل (GPU & Mobile Touch Guards)
    ========================================================================== */
 body.bose-hardware-accelerated {
     transform: none !important;
     perspective: none !important;
     backface-visibility: visible !important;
-}
-
-.bose-hardware-accelerated {
-    will-change: transform, opacity;
-    transform: translate3d(0, 0, 0);
-    backface-visibility: hidden;
-    perspective: 1000px;
 }
 
 .bose-arabic-text {
@@ -39,7 +22,7 @@ body.bose-hardware-accelerated {
 }
 
 /* ==========================================================================\
-   3. قسم الهيرو وبانر العروض المتزلق (Hardware-Accelerated Hero Slider)
+   2. قسم الهيرو وبانر العروض المتجاوب (Clean Air Hero Layout)
    ========================================================================== */
 .bose-hero-section {
     position: relative;
@@ -60,7 +43,8 @@ body.bose-hardware-accelerated {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(to top, rgba(17, 17, 17, 0.75) 0%, rgba(17, 17, 17, 0.2) 100%);
+    /* 🎨 تم التطهير وحظر التعتيم الأسود القاسي لضمان فخامة العرض والتنفس البصري */
+    background: linear-gradient(to top, rgba(255, 145, 164, 0.15) 0%, rgba(255, 255, 255, 0) 100%);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -73,7 +57,7 @@ body.bose-hardware-accelerated {
 }
 
 .bose-hero-title {
-    color: var(--bose-white) !important;
+    color: var(--bose-black) !important; /* قفل تلوين النص بالأسود الصريح الشرعي للعناوين */
     font-size: 1.85rem;
     font-weight: 700 !important;
     line-height: 1.3;
@@ -85,7 +69,7 @@ body.bose-hardware-accelerated {
 }
 
 .bose-hero-desc {
-    color: rgba(255, 255, 255, 0.95) !important;
+    color: var(--bose-black) !important;
     font-size: 0.95rem;
     font-weight: 400 !important;
     line-height: 1.6;
@@ -107,13 +91,14 @@ body.bose-hardware-accelerated {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 14px rgba(255, 145, 164, 0.3);
+    box-shadow: var(--bose-shadow-glow);
 }
 
 .bose-hero-btn:hover {
     background-color: var(--bose-white);
     color: var(--bose-pink) !important;
     border-color: var(--bose-pink);
+    box-shadow: var(--bose-shadow-hover);
 }
 
 .bose-hero-btn:active {
@@ -121,7 +106,7 @@ body.bose-hardware-accelerated {
 }
 
 /* ==========================================================================\
-   4. قسم شلال المنتجات البصري الأنيق المستمر الحركة (Waterfall Section)
+   3. قسم شلال المنتجات البصري الأنيق المستمر الحركة (Waterfall Section)
    ========================================================================== */
 .bose-waterfall-section-container {
     position: relative;
@@ -134,7 +119,7 @@ body.bose-hardware-accelerated {
     display: flex;
     gap: 16px;
     width: 100%;
-    height: 700px; /* ارتفاع الحاوية الإجباري للموبايل */
+    height: 700px; /* الارتفاع الإجباري المحسوب للموبايل */
     overflow: hidden;
     position: relative;
     padding: 0 16px;
@@ -142,7 +127,7 @@ body.bose-hardware-accelerated {
 
 @media (min-width: 1024px) {
     .waterfall-container {
-        height: 1000px; /* ارتفاع الحاوية الإجباري للكمبيوتر */
+        height: 1000px; /* الارتفاع الإجباري المحسوب للكمبيوتر */
     }
 }
 
@@ -161,12 +146,12 @@ body.bose-hardware-accelerated {
     max-height: 320px;
     object-fit: cover !important;
     border-radius: 20px;
-    border: 1px solid rgba(255, 145, 164, 0.15);
+    border: var(--bose-border-pink);
     display: block;
 }
 
 /* ==========================================================================\
-   5. قسم عقد من الإتقان ومجرى الحركة الدائري (Decade of Perfection)
+   4. قسم عقد من الإتقان والتحكم اللمسي الحر (Decade of Perfection Track)
    ========================================================================== */
 .bose-perfection-section {
     padding: 40px 16px;
@@ -174,9 +159,15 @@ body.bose-hardware-accelerated {
 }
 
 .bose-perfection-carousel-wrapper {
-    overflow: hidden;
+    overflow-x: auto;
     width: 100%;
     position: relative;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.bose-perfection-carousel-wrapper::-webkit-scrollbar {
+    display: none !important;
 }
 
 .bose-perfection-track {
@@ -184,17 +175,26 @@ body.bose-hardware-accelerated {
     gap: 20px;
     width: max-content;
     will-change: transform;
+    touch-action: pan-y !important; /* تأمين التجاوب والتحكم مع سحب أصابع اليد على الموبايل */
 }
 
 .bose-perfection-card {
-    width: 240px;
+    width: 260px;
     background-color: var(--bose-white);
-    border: 1px solid rgba(255, 145, 164, 0.2);
+    border: var(--bose-border-pink);
     border-radius: 16px;
     overflow: hidden;
     display: block;
     text-decoration: none;
-    box-shadow: 0 8px 24px rgba(255, 145, 164, 0.04);
+    box-shadow: var(--bose-shadow-glow);
+    flex-shrink: 0 !important; /* حماية الكروت من الانكماش أثناء تصفح السحب الجانبي */
+    transition: var(--bose-transition-smooth);
+}
+
+.bose-perfection-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--bose-shadow-hover);
+    border-color: var(--bose-pink);
 }
 
 .perfection-card-img-holder {
@@ -230,7 +230,7 @@ body.bose-hardware-accelerated {
 }
 
 /* ==========================================================================\
-   6. الهيكل الموحد للأقسام والشبكات (Flexible Categories Viewport)
+   5. الهيكل الموحد للأقسام والشبكات (Flexible Categories Viewport)
    ========================================================================== */
 .bose-section-container {
     width: 100%;
@@ -275,14 +275,6 @@ body.bose-hardware-accelerated {
     margin-top: 5px;
 }
 
-.bose-products-grid, .products-grid {
-    display: grid !important;
-    grid-template-columns: repeat(2, 1fr) !important; /* فرض كارتين بجوار بعضهما البعض إجبارياً بالمسطرة */
-    gap: 16px !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-}
-
 .bose-show-more-container {
     text-align: center;
     margin-top: 30px;
@@ -298,23 +290,23 @@ body.bose-hardware-accelerated {
     border-radius: 12px !important;
     font-weight: 700 !important;
     cursor: pointer !important;
-    box-shadow: 0 4px 12px rgba(255, 145, 164, 0.2);
+    box-shadow: var(--bose-shadow-glow);
     transition: var(--bose-transition-smooth);
 }
 
 .bose-product-action-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(255, 145, 164, 0.3);
+    box-shadow: var(--bose-shadow-hover);
 }
 
 /* ==========================================================================\
-   7. هندسة بلوكات ومحاكيات الورد والتورت الكبيرة والفاخرة بالكامل
+   6. هندسة بلوكات ومحاكيات الورد والتورت الكبيرة والفاخرة بالكامل
    ========================================================================== */
 .preview-builder-block, .bose-isolated-simulator-card {
     width: calc(100% - 32px);
     margin: 30px 16px;
     padding: 40px 20px;
-    border: 1px solid rgba(255, 145, 164, 0.3) !important;
+    border: var(--bose-border-pink) !important;
     border-radius: 24px !important;
     display: flex;
     flex-direction: column;
@@ -325,6 +317,8 @@ body.bose-hardware-accelerated {
     box-sizing: border-box;
     position: relative;
     overflow: hidden;
+    background-color: var(--bose-white);
+    box-shadow: var(--bose-shadow-glow);
 }
 
 .bose-simulator-title {
@@ -349,7 +343,7 @@ body.bose-hardware-accelerated {
     border-radius: 12px !important;
     font-weight: 700 !important;
     text-decoration: none !important;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15) !important;
+    box-shadow: 0 4px 15px rgba(17, 17, 17, 0.15) !important;
     transition: var(--bose-transition-smooth);
     z-index: 2;
     display: inline-flex;
@@ -359,11 +353,12 @@ body.bose-hardware-accelerated {
 
 .bose-simulator-action-btn:hover {
     transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    background-color: var(--bose-pink) !important;
+    box-shadow: var(--bose-shadow-hover);
 }
 
 /* ==========================================================================\
-   8. هندسة كتلة البصريات الفاخرة لقسم الفخر والاعتزاز
+   7. هندسة كتلة البصريات الفاخرة لقسم الفخر والاعتزاز
    ========================================================================== */
 .bose-pride-statistics-section {
     padding: 60px 16px;
@@ -421,11 +416,11 @@ body.bose-hardware-accelerated {
 
 .bose-stat-card {
     background-color: var(--bose-white);
-    border: 1px solid rgba(255, 145, 164, 0.2);
+    border: var(--bose-border-pink);
     border-radius: 20px;
     padding: 24px;
     text-align: center;
-    box-shadow: 0 10px 30px rgba(255, 145, 164, 0.04);
+    box-shadow: var(--bose-shadow-glow);
 }
 
 .stat-icon-wrapper {
@@ -456,29 +451,7 @@ body.bose-hardware-accelerated {
 }
 
 /* ==========================================================================\
-   9. قسم تسوق حسب الفئة ونظام السلايدر الأفقي (Categories Slider Layout)
-   ========================================================================== */
-.bose-categories-slider-section {
-    overflow: hidden;
-    width: 100%;
-    background-color: var(--bose-white);
-}
-
-.bose-categories-slider-wrapper {
-    overflow-x: auto;
-    width: 100%;
-    display: flex;
-    padding: 20px 4px;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-}
-
-.bose-categories-slider-wrapper::-webkit-scrollbar {
-    display: none !important;
-}
-
-/* ==========================================================================\
-   10. محددات التجاوب والشبكات للشاشات المتوسطة والكبيرة (Responsive Breakpoints)
+   8. محددات التجاوب والشبكات للشاشات المتوسطة والكبيرة (Responsive Breakpoints)
    ========================================================================== */
 @media (min-width: 768px) {
     .bose-pride-container {
@@ -502,10 +475,6 @@ body.bose-hardware-accelerated {
     .bose-hero-title {
         font-size: 2.6rem;
     }
-    .bose-products-grid, .products-grid {
-        grid-template-columns: repeat(4, 1fr) !important; /* عرض رباعي مريح على الكمبيوتر لمنع التكديس */
-        gap: 20px !important;
-    }
     .bose-pride-container {
         display: grid;
         grid-template-columns: 1.2fr 1.8fr;
@@ -524,26 +493,4 @@ body.bose-hardware-accelerated {
         margin: 40px auto;
         width: 100%;
     }
-}
-
-.animate-marquee {
-    overflow-x: hidden;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-}
-
-.animate-marquee::-webkit-scrollbar {
-    display: none !important;
-} 
-
-.categories-track-loop, 
-#excellence-images-track {
-    display: flex !important;
-    flex-wrap: nowrap !important;
-    width: max-content !important;
-    overflow-x: visible !important; 
-    scrollbar-width: none !important;
-    -ms-overflow-style: none !important;
-    touch-action: pan-y !important;
-    will-change: transform;
 }
