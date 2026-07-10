@@ -1,108 +1,28 @@
-/**
- * 👑 ملف التصميم المركزي للأقسام والمنيو - حلويات بوسي V19.6 Master Fixed Edition 👑
- * النسخة الهندسية القياسية الكاملة بنسبة 100% - خالية تماماً من الثغرات والمشاكل البصرية
- * متوافقة بشكل مطلق ومتبادل مع: global.css، core-engine.js، cart-engine.js، وقاعدة البيانات site-data-final.json
- * [تم إصلاح ثغرة تعارض التسعير العتادي وفك حصار السلة العائمة من الفوتر وجعلها طافية بشكل مطلق]
- * [تم تعيين نظام الإشعارات المنبثقة الذكي ليظهر في منتصف الشاشة تماماً أمام أعين العملاء لراحة التصفح]
- */
+/* ==========================================================================
+   👑 ملف التصميم المركزي للأقسام والمنيو - حلويات بوسي V65.0 Master 👑
+   النسخة الهندسية القياسية الكاملة بنسبة 100% - خالية تماماً من الثغرات والمشاكل البصرية
+   متوافقة بشكل مطلق ومتبادل مع: global.css، core-engine.js، وقاعدة البيانات site-data-final.json
+   ========================================================================== */
 
 /* ==========================================================================\
    1. حارس بيئة العمل والألوان الحاكمة الاحتياطية (Core Palette Fallbacks)
    ========================================================================== */
-
 :root {
-    /* تفعيل القيم والرموز الافتراضية لمنع انهيار التصميم في حال تأخر تحميل global.css */
     --bose-pink: #FF91A4;       /* نبض الحياة: للحدود، الأسعار الديناميكية، وتأثيرات Hover */
     --bose-white: #FFFFFF;      /* المسيطر تماماً: للخلفيات لمنع التكديس وتحقيق التنفس البصري */
     --bose-black: #111111;      /* معزول تماماً: للنصوص والعناوين فقط، محظور استخدامه في الظلال والخلفيات */
     --bose-gold: #D4AF37;       /* الفخامة الرمزية الناعمة: لنجوم التقييم وتفاصيل التخصيص الفاخرة */
-    --bose-cream: #FFF5F6;      /* خلفية دافئة ناعمة للفواصل والمقاطع التفاعلية */
 }
 
 /* ==========================================================================\
-   2. حارس الأيقونات الذكي ومنع اختفائها (Strict Icon Weight Guard)
+   2. منع تداخل اللمس والتسريع العتادي على الموبايل (GPU & Mobile Touch Guards)
    ========================================================================== */
-
-/* تأمين استدعاء خط الأيقونات ومنع Cairo من السيطرة عليها دون فرض أوزان خاطئة تدمر ظهورها */
-.fa, .fas, .fab, .far, .fa-solid, .fa-regular, .fa-brands, [class*="fa-"] {
-    font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free', 'FontAwesome', sans-serif !important;
-    display: inline-block !important;
-    font-style: normal !important;
-    font-variant: normal !important;
-    text-rendering: auto !important;
-    -webkit-font-smoothing: antialiased !important;
-    word-spacing: normal !important;
-    letter-spacing: normal !important;
-}
-
-/* الأوزان الهندسية الصحيحة لكل فئة أيقونات لمنع ظهور المربعات الفارغة */
-.fa-solid, .fas {
-    font-weight: 900 !important;
-}
-
-.fa-regular, .far, .fa-brands, .fab {
-    font-weight: 400 !important;
-}
-
-/* ==========================================================================\
-   3. قسم حماية عناصر التموضع الثابت وفك حصار السلة العائمة والإشعارات الحركية
-   ========================================================================== */
-
-/* منع حظر وإلغاء فاعلية التموضع الثابت عند دمج كلاس التسريع العتادي على حاوية الجسم الكبرى */
 body.bose-hardware-accelerated {
     transform: none !important;
     perspective: none !important;
     backface-visibility: visible !important;
 }
 
-/* 🌸 نظام الإشعارات المنبثقة الفاخرة المدمجة بالتصميم لتظهر في منتصف الشاشة تماماً أمام العميل 🌸 */
-#bose-toast-central-container {
-    position: fixed !important;
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    right: auto !important;
-    bottom: auto !important;
-    z-index: 2147483647 !important; /* أقصى طبقة برمجية لتطفو دائمًا أمام العميل */
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 12px !important;
-    align-items: center !important;
-    justify-content: center !important;
-    width: auto !important;
-    pointer-events: none !important;
-}
-
-.bose-toast-card {
-    transform: scale(0.9) !important;
-    opacity: 0 !important;
-    transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.35s ease !important;
-    border: 2px solid var(--bose-pink) !important;
-    border-radius: 16px !important;
-    box-shadow: 0 12px 32px rgba(255, 145, 164, 0.15) !important;
-    background: #FFFFFF !important;
-    padding: 14px 24px !important;
-    min-width: 290px !important;
-    max-width: 380px !important;
-}
-
-.bose-toast-card.bose-toast-active {
-    opacity: 1 !important;
-    transform: scale(1) !important;
-}
-
-/* ==========================================================================\
-   4. تسريع الرسوميات ومنع تداخل اللمس على الموبايل (GPU & Mobile Touch Guards)
-   ========================================================================== */
-
-/* فئة تأمين التمرير للجسم عند فتح النوافذ المنبثقة لمنع تسريب التمرير */
-body.bose-no-scroll {
-    overflow: hidden !important;
-    touch-action: none !important;
-    height: 100vh !important;
-}
-
-/* تسريع عمليات التنقل والحركة على الهواتف */
 .bose-hardware-accelerated {
     will-change: transform, opacity;
     transform: translate3d(0, 0, 0);
@@ -110,7 +30,6 @@ body.bose-no-scroll {
     perspective: 1000px;
 }
 
-/* حماية نصوص اللغة العربية من التقطيع والتشويه البصري */
 .bose-arabic-text {
     word-break: keep-all;
     overflow-wrap: break-word;
@@ -120,151 +39,111 @@ body.bose-no-scroll {
 }
 
 /* ==========================================================================\
-   5. قسم الهيرو وبانر العروض المتزلق (Hardware-Accelerated Hero Slider)
+   3. قسم الهيرو وبانر العروض المتزلق (Hardware-Accelerated Hero Slider)
    ========================================================================== */
-
 .bose-hero-section {
     position: relative;
     width: 100%;
+    height: 60vh;
     overflow: hidden;
     background-color: var(--bose-white);
     padding: 0;
     margin: 0;
-}
-
-.bose-hero-slider {
-    position: relative;
-    width: 100%;
-    height: 55vh; /* توازن مثالي على شاشات الموبايل */
-    overflow: hidden;
-}
-
-.bose-hero-wrapper {
     display: flex;
-    width: 100%;
-    height: 100%;
-    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    will-change: transform;
-    transform: translate3d(0, 0, 0);
+    align-items: center;
+    justify-content: center;
 }
 
-.bose-hero-slide {
-    flex-shrink: 0;
-    width: 100%;
-    height: 100%;
-    position: relative;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-}
-
-/* تدرج معتم فاخر يضمن وضوح النصوص البيضاء دون تشويه صورة البانر خلفها */
 .bose-hero-slide-overlay {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(to top, rgba(17, 17, 17, 0.8) 0%, rgba(17, 17, 17, 0.25) 100%);
+    background: linear-gradient(to top, rgba(17, 17, 17, 0.75) 0%, rgba(17, 17, 17, 0.2) 100%);
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
-    padding: 35px 20px;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
     direction: rtl;
+    text-align: center;
+    width: 100%;
+    height: 100%;
 }
 
 .bose-hero-title {
-    color: var(--bose-white);
+    color: var(--bose-white) !important;
     font-size: 1.85rem;
-    font-weight: 700;
+    font-weight: 700 !important;
     line-height: 1.3;
-    margin-bottom: 8px;
-    text-shadow: 0 2px 8px rgba(255, 145, 164, 0.35);
+    margin-bottom: 12px;
+}
+
+.bose-hero-title .bose-highlight-pink {
+    color: var(--bose-pink) !important;
 }
 
 .bose-hero-desc {
-    color: rgba(255, 255, 255, 0.95);
+    color: rgba(255, 255, 255, 0.95) !important;
     font-size: 0.95rem;
-    font-weight: 400;
-    line-height: 1.5;
-    margin-bottom: 18px;
-    max-width: 95%;
+    font-weight: 400 !important;
+    line-height: 1.6;
+    margin-bottom: 24px;
+    max-width: 600px;
     word-wrap: break-word;
 }
 
 .bose-hero-btn {
-    align-self: flex-start;
     background-color: var(--bose-pink);
-    color: var(--bose-white);
-    font-weight: 700;
-    font-size: 0.9rem;
-    padding: 10px 24px;
+    color: var(--bose-white) !important;
+    font-weight: 700 !important;
+    font-size: 0.95rem;
+    padding: 12px 40px;
     border-radius: 50px;
     text-decoration: none;
-    transition: all 0.3s ease;
+    transition: var(--bose-transition-smooth);
     border: 2px solid transparent;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    box-shadow: 0 4px 10px rgba(255, 145, 164, 0.35);
+    justify-content: center;
+    box-shadow: 0 4px 14px rgba(255, 145, 164, 0.3);
 }
 
-@media (hover: hover) {
-    .bose-hero-btn:hover {
-        background-color: var(--bose-white);
-        color: var(--bose-pink);
-        border-color: var(--bose-pink);
-        box-shadow: 0 6px 14px rgba(255, 145, 164, 0.5);
-    }
+.bose-hero-btn:hover {
+    background-color: var(--bose-white);
+    color: var(--bose-pink) !important;
+    border-color: var(--bose-pink);
 }
 
 .bose-hero-btn:active {
     transform: scale(0.96);
 }
 
-.bose-hero-dots {
-    position: absolute;
-    bottom: 12px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 8px;
-    z-index: 10;
-}
-
-.bose-hero-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.5);
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    padding: 0;
-}
-
-.bose-hero-dot.active {
-    background-color: var(--bose-pink);
-    width: 24px;
-    border-radius: 5px;
-}
-
 /* ==========================================================================\
-   6. قسم شلال المنتجات البصري الأنيق المستمر الحركة (Waterfall Section)
+   4. قسم شلال المنتجات البصري الأنيق المستمر الحركة (Waterfall Section)
    ========================================================================== */
-
-#waterfall-section {
+.bose-waterfall-section-container {
     position: relative;
     overflow: hidden;
     width: 100%;
+    background-color: var(--bose-white);
 }
 
 .waterfall-container {
     display: flex;
     gap: 16px;
     width: 100%;
+    height: 700px; /* ارتفاع الحاوية الإجباري للموبايل */
     overflow: hidden;
     position: relative;
+    padding: 0 16px;
+}
+
+@media (min-width: 1024px) {
+    .waterfall-container {
+        height: 1000px; /* ارتفاع الحاوية الإجباري للكمبيوتر */
+    }
 }
 
 .waterfall-col {
@@ -275,50 +154,20 @@ body.bose-no-scroll {
     transform: translate3d(0, 0, 0);
 }
 
-@keyframes boseWaterfallUp {
-    0% { transform: translate3d(0, 0, 0); }
-    100% { transform: translate3d(0, -50%, 0); }
-}
-
-@keyframes boseWaterfallDown {
-    0% { transform: translate3d(0, -50%, 0); }
-    100% { transform: translate3d(0, 0, 0); }
-}
-
-.waterfall-up {
-    animation: boseWaterfallUp 35s linear infinite;
-    will-change: transform;
-}
-
-.waterfall-down {
-    animation: boseWaterfallDown 35s linear infinite;
-    will-change: transform;
-}
-
-.waterfall-overlay-top {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 120px;
-    background: linear-gradient(to bottom, var(--bose-white) 0%, rgba(255,255,255,0) 100%);
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
-    z-index: 5;
-    pointer-events: none;
-}
-
-.waterfall-overlay-bottom {
-    position: absolute;
-    bottom: 0; left: 0; width: 100%; height: 120px;
-    background: linear-gradient(to top, var(--bose-white) 0%, rgba(255,255,255,0) 100%);
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
-    z-index: 5;
-    pointer-events: none;
+.waterfall-col img {
+    width: 100%;
+    height: auto;
+    min-height: 250px;
+    max-height: 320px;
+    object-fit: cover !important;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 145, 164, 0.15);
+    display: block;
 }
 
 /* ==========================================================================\
-   7. قسم عقد من الإتقان ومجرى الحركة الدائري العازل للتآكل (Decade of Perfection)
+   5. قسم عقد من الإتقان ومجرى الحركة الدائري (Decade of Perfection)
    ========================================================================== */
-
 .bose-perfection-section {
     padding: 40px 16px;
     background-color: var(--bose-white);
@@ -345,20 +194,20 @@ body.bose-no-scroll {
     overflow: hidden;
     display: block;
     text-decoration: none;
-    box-shadow: 0 8px 24px rgba(255, 145, 164, 0.05);
+    box-shadow: 0 8px 24px rgba(255, 145, 164, 0.04);
 }
 
 .perfection-card-img-holder {
     width: 100%;
     height: 180px;
     overflow: hidden;
-    background-color: var(--bose-cream);
+    background-color: var(--bose-white);
 }
 
 .perfection-card-img-holder img {
     width: 100%;
     height: 100%;
-    object-fit: cover !important; /* حل جذري لمنع تآكل أو تشوه صور الكاروسيل */
+    object-fit: cover !important;
     display: block;
 }
 
@@ -369,21 +218,20 @@ body.bose-no-scroll {
 
 .perfection-card-info h3 {
     font-size: 15px;
-    font-weight: 700;
-    color: var(--bose-black);
+    font-weight: 600 !important;
+    color: var(--bose-black) !important;
     margin-bottom: 6px;
 }
 
 .perfection-card-price {
     font-size: 14px;
-    font-weight: 700;
-    color: var(--bose-pink);
+    font-weight: 700 !important;
+    color: var(--bose-pink) !important;
 }
 
 /* ==========================================================================\
-   8. حاويات وأقسام الفئات الـ 12 المعتمدة (Flexible Categories Viewport)
+   6. الهيكل الموحد للأقسام والشبكات (Flexible Categories Viewport)
    ========================================================================== */
-
 .bose-section-container {
     width: 100%;
     max-width: 1200px;
@@ -398,9 +246,9 @@ body.bose-no-scroll {
 }
 
 .bose-section-title {
-    color: var(--bose-black);
+    color: var(--bose-black) !important;
     font-size: 1.75rem;
-    font-weight: 700;
+    font-weight: 700 !important;
     position: relative;
     display: inline-block;
     padding-bottom: 10px;
@@ -420,441 +268,106 @@ body.bose-no-scroll {
 }
 
 .bose-section-subtitle {
-    color: #4D4D4D;
+    color: var(--bose-black);
+    opacity: 0.7;
     font-size: 0.95rem;
-    font-weight: 400;
+    font-weight: 400 !important;
     margin-top: 5px;
 }
 
-/* حل ثغرة كروت الفئات المضغوطة والتآكل النصي */
-.bose-categories-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    justify-content: center;
-    width: 100%;
+.bose-products-grid, .products-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important; /* فرض كارتين بجوار بعضهما البعض إجبارياً بالمسطرة */
+    gap: 16px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
 }
 
-.bose-category-card {
-    background-color: var(--bose-white);
-    border: 1px solid rgba(255, 145, 164, 0.15);
-    border-radius: 14px;
-    padding: 16px 8px;
+.bose-show-more-container {
     text-align: center;
-    text-decoration: none;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    box-shadow: 0 4px 12px rgba(255, 145, 164, 0.03);
-    min-height: 120px; /* ضمان مساحة كافية تمنع انضغاط الكارت */
-}
-
-@media (hover: hover) {
-    .bose-category-card:hover {
-        transform: translateY(-4px);
-        border-color: var(--bose-pink);
-        box-shadow: 0 8px 22px rgba(255, 145, 164, 0.12);
-    }
-}
-
-.bose-category-card:active {
-    transform: scale(0.97);
-}
-
-.bose-category-icon-wrapper {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background-color: var(--bose-cream);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 8px;
-    transition: background-color 0.3s ease;
-}
-
-.bose-category-card:hover .bose-category-icon-wrapper {
-    background-color: var(--bose-pink);
-}
-
-.bose-category-icon-wrapper i {
-    color: var(--bose-pink);
-    font-size: 1.35rem;
-    transition: color 0.3s ease;
-}
-
-.bose-category-card:hover .bose-category-icon-wrapper i {
-    color: var(--bose-white);
-}
-
-.bose-category-name {
-    color: var(--bose-black);
-    font-size: 0.9rem;
-    font-weight: 700;
-    line-height: 1.3;
-    word-break: keep-all; /* منع تقطيع الكلمات الحساسة مثل التورت */
-    overflow-wrap: normal;
-    text-overflow: clip;
-    white-space: normal;
-    text-align: center;
-}
-
-/* ==========================================================================\
-   9. كروت عرض المنتجات الموحدة وتأمين مؤشر الكمية التفاعلي (Product Card DOM)
-   ========================================================================== */
-
-.bose-products-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-}
-
-.bose-product-card {
-    background-color: var(--bose-white);
-    border: 1px solid rgba(255, 145, 164, 0.15);
-    border-radius: 16px;
-    overflow: hidden;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 0 4px 12px rgba(255, 145, 164, 0.04);
-    height: 100%;
-}
-
-@media (hover: hover) {
-    .bose-product-card:hover {
-        transform: translateY(-5px);
-        border-color: var(--bose-pink);
-        box-shadow: 0 10px 25px rgba(255, 145, 164, 0.15);
-    }
-}
-
-.bose-product-badge {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: var(--bose-gold);
-    color: var(--bose-white);
-    font-size: 0.75rem;
-    font-weight: 700;
-    padding: 4px 10px;
-    border-radius: 20px;
-    z-index: 2;
-    box-shadow: 0 3px 8px rgba(212, 175, 55, 0.25);
-}
-
-.bose-product-image-container {
+    margin-top: 30px;
     width: 100%;
-    aspect-ratio: 1 / 1;
-    overflow: hidden;
-    background-color: var(--bose-cream);
-    position: relative;
-}
-
-.bose-product-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s ease;
-    display: block;
-}
-
-.bose-product-card:hover .bose-product-image {
-    transform: scale(1.05);
-}
-
-.bose-product-info {
-    padding: 12px;
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    justify-content: space-between;
-}
-
-.bose-product-title {
-    color: var(--bose-black);
-    font-size: 0.95rem;
-    font-weight: 700;
-    line-height: 1.4;
-    margin-bottom: 6px;
-    word-wrap: break-word;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    min-height: 2.8em;
-}
-
-.bose-product-rating {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    margin-bottom: 8px;
-}
-
-.bose-product-rating i {
-    color: var(--bose-gold);
-    font-size: 0.75rem;
-}
-
-.bose-product-rating span {
-    color: #555555;
-    font-size: 0.75rem;
-    margin-right: 4px;
-}
-
-.bose-product-price-wrapper {
-    display: flex;
-    align-items: baseline;
-    gap: 6px;
-    margin-bottom: 12px;
-}
-
-.bose-product-price {
-    color: var(--bose-pink);
-    font-size: 1.15rem;
-    font-weight: 700;
-}
-
-.bose-product-price-old {
-    color: #7A7A7A;
-    font-size: 0.85rem;
-    text-decoration: line-through;
-}
-
-/* 📐 ستايل أزرار ومؤشر الكمية التفاعلي لإظهار العدد بوضوح بين الزرين */
-.bose-card-quantity-control {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    background-color: var(--bose-cream);
-    border: 1px solid rgba(255, 145, 164, 0.3);
-    border-radius: 8px;
-    overflow: hidden;
-    height: 40px;
-}
-
-.bose-card-qty-btn {
-    width: 35px;
-    height: 100%;
-    background: transparent;
-    color: var(--bose-pink);
-    font-size: 1.1rem;
-    font-weight: 700;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: var(--bose-transition-smooth);
-}
-
-.bose-card-qty-btn:hover {
-    background-color: var(--bose-pink);
-    color: var(--bose-white);
-}
-
-.bose-card-qty-value {
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: var(--bose-black);
-    flex-grow: 1;
-    text-align: center;
 }
 
 .bose-product-action-btn {
-    width: 100%;
-    background-color: var(--bose-pink);
-    color: var(--bose-white);
-    border: none;
-    border-radius: 8px;
-    padding: 10px;
-    font-size: 0.85rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    height: 40px;
+    display: inline-flex !important;
+    width: auto !important;
+    padding: 12px 40px !important;
+    background-color: var(--bose-pink) !important;
+    color: var(--bose-white) !important;
+    border-radius: 12px !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    box-shadow: 0 4px 12px rgba(255, 145, 164, 0.2);
+    transition: var(--bose-transition-smooth);
 }
 
 .bose-product-action-btn:hover {
-    background-color: var(--bose-black);
-    color: var(--bose-white);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(255, 145, 164, 0.3);
 }
 
 /* ==========================================================================\
-   10. تصميم صفحة المنيو الشامل والفلاتر الذكية (Menu & Filters Layout)
+   7. هندسة بلوكات ومحاكيات الورد والتورت الكبيرة والفاخرة بالكامل
    ========================================================================== */
-
-.menu-layout-container {
+.preview-builder-block, .bose-isolated-simulator-card {
+    width: calc(100% - 32px);
+    margin: 30px 16px;
+    padding: 40px 20px;
+    border: 1px solid rgba(255, 145, 164, 0.3) !important;
+    border-radius: 24px !important;
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    padding: 20px 16px;
-    direction: rtl;
-}
-
-.menu-categories-scroll {
-    display: flex;
-    gap: 10px;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    padding: 4px 4px 12px 4px;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-}
-
-.menu-categories-scroll::-webkit-scrollbar {
-    display: none;
-}
-
-.menu-category-filter-pill {
-    flex-shrink: 0;
-    scroll-snap-align: start;
-    background-color: var(--bose-white);
-    border: 1px solid rgba(255, 145, 164, 0.25);
-    color: var(--bose-black);
-    font-family: 'Cairo', sans-serif;
-    font-weight: 700;
-    font-size: 0.85rem;
-    padding: 8px 16px;
-    border-radius: 30px;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    display: flex;
+    justify-content: center;
     align-items: center;
-    gap: 6px;
+    text-align: center;
+    gap: 16px;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
 }
 
-.menu-category-filter-pill.active {
-    background-color: var(--bose-pink);
-    color: var(--bose-white);
-    border-color: var(--bose-pink);
-    box-shadow: 0 4px 12px rgba(255, 145, 164, 0.3);
+.bose-simulator-title {
+    color: var(--bose-black) !important;
+    font-weight: 700 !important;
+    font-size: 24px !important;
+    z-index: 2;
 }
 
-.menu-sort-wrapper {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid rgba(255, 145, 164, 0.15);
-    padding-bottom: 12px;
-    margin-bottom: 8px;
-}
-
-.menu-results-count {
-    font-size: 0.9rem;
-    color: #4D4D4D;
-    font-weight: 600;
-}
-
-.menu-sort-dropdown {
-    font-family: 'Cairo', sans-serif;
-    font-weight: 700;
-    font-size: 0.85rem;
-    color: var(--bose-black);
-    border: 1px solid rgba(255, 145, 164, 0.25);
-    background-color: var(--bose-white);
-    padding: 6px 12px;
-    border-radius: 8px;
-    outline: none;
-    cursor: pointer;
-}
-
-.menu-sort-dropdown:focus {
-    border-color: var(--bose-pink);
-}
-
-/* ==========================================================================\
-   11. هندسة بلوكات ومحاكيات الورد والتورت الكبيرة والفاخرة بالكامل
-   ========================================================================== */
-
-.bose-simulator-promo-section {
-    padding: 50px 16px;
-    background-color: var(--bose-white);
-}
-
-.bose-simulator-card-block {
-    max-width: 1100px;
-    margin: 0 auto;
-    background-color: var(--bose-white);
-    border: 3px solid var(--bose-pink);
-    border-radius: 24px;
-    padding: 40px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 32px;
-    align-items: center;
-    box-shadow: 0 12px 32px rgba(255, 145, 164, 0.05); /* حظر الظلال السوداء ومحاكاة الفخامة بالبمبي المعتمد */
-}
-
-.simulator-text-content .simulator-badge {
-    background-color: var(--bose-cream);
-    color: var(--bose-pink);
-    padding: 6px 16px;
-    border-radius: 50px;
-    font-size: 13px;
-    font-weight: 700;
-    display: inline-block;
-    margin-bottom: 16px;
-    border: 1px solid var(--bose-pink);
-}
-
-.simulator-text-content .gold-badge {
-    color: var(--bose-gold);
-    border-color: var(--bose-gold);
-}
-
-.simulator-text-content h2 {
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--bose-black);
-    margin-bottom: 16px;
-}
-
-.simulator-text-content p {
-    font-size: 15px;
-    color: #444444;
-    line-height: 1.8;
-    margin-bottom: 24px;
+.bose-simulator-desc {
+    color: var(--bose-black) !important;
+    font-size: 15px !important;
+    max-width: 600px;
+    line-height: 1.6;
+    z-index: 2;
 }
 
 .bose-simulator-action-btn {
+    background-color: var(--bose-black) !important;
+    color: var(--bose-white) !important;
+    padding: 12px 40px !important;
+    border-radius: 12px !important;
+    font-weight: 700 !important;
+    text-decoration: none !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15) !important;
+    transition: var(--bose-transition-smooth);
+    z-index: 2;
     display: inline-flex;
     align-items: center;
-    gap: 10px;
-    background-color: var(--bose-pink);
-    color: var(--bose-white);
-    padding: 14px 32px;
-    border-radius: 12px;
-    font-weight: 700;
-    text-decoration: none;
-    box-shadow: 0 8px 20px rgba(255, 145, 164, 0.15);
-    transition: all 0.3s ease;
+    justify-content: center;
 }
 
 .bose-simulator-action-btn:hover {
     transform: translateY(-3px);
-}
-
-.simulator-visual-content img {
-    width: 100%;
-    max-height: 350px;
-    object-fit: contain;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
 }
 
 /* ==========================================================================\
-   12. هندسة كتلة البصريات الفاخرة لقسم الفخر والاعتزاز وتلوين كلمة "قلوبكم" 🌸
+   8. هندسة كتلة البصريات الفاخرة لقسم الفخر والاعتزاز
    ========================================================================== */
-
 .bose-pride-statistics-section {
     padding: 60px 16px;
-    background-color: var(--bose-cream);
+    background-color: var(--bose-white);
     border-top: 1px solid rgba(255, 145, 164, 0.15);
     border-bottom: 1px solid rgba(255, 145, 164, 0.15);
 }
@@ -862,43 +375,48 @@ body.bose-no-scroll {
 .bose-pride-container {
     max-width: 1200px;
     margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1.2fr 1.8fr;
+    display: flex;
+    flex-direction: column;
     gap: 40px;
-    align-items: center;
+}
+
+.bose-pride-text-block {
+    text-align: center;
 }
 
 .bose-pride-text-block .pride-mini-tag {
-    color: var(--bose-gold);
+    color: var(--bose-gold) !important;
     font-size: 15px;
-    font-weight: 700;
+    font-weight: 700 !important;
     display: block;
     margin-bottom: 12px;
 }
 
 .bose-pride-text-block h2 {
     font-size: 32px;
-    font-weight: 700;
-    color: var(--bose-black);
+    font-weight: 700 !important;
+    color: var(--bose-black) !important;
     margin-bottom: 18px;
 }
 
-/* تلوين الكلمة المستهدفة باللون البمبي الحاكم الفاخر وسد ثغرة القسم */
 .bose-pride-text-block h2 span.bose-highlight-pink {
     color: var(--bose-pink) !important;
-    font-weight: 700 !important;
 }
 
 .bose-pride-text-block p {
     font-size: 15px;
-    color: #444444;
+    color: var(--bose-black);
+    opacity: 0.8;
     line-height: 1.8;
+    max-width: 700px;
+    margin: 0 auto;
 }
 
 .bose-statistics-grid-block {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    width: 100%;
 }
 
 .bose-stat-card {
@@ -913,7 +431,7 @@ body.bose-no-scroll {
 .stat-icon-wrapper {
     width: 50px;
     height: 50px;
-    background-color: var(--bose-cream);
+    background-color: rgba(255, 145, 164, 0.08);
     color: var(--bose-pink);
     border-radius: 50%;
     display: flex;
@@ -925,624 +443,87 @@ body.bose-no-scroll {
 
 .stat-number {
     font-size: 26px;
-    font-weight: 700;
-    color: var(--bose-black);
+    font-weight: 700 !important;
+    color: var(--bose-black) !important;
     margin-bottom: 6px;
 }
 
 .stat-label {
     font-size: 13px;
-    font-weight: 600;
-    color: #666666;
+    font-weight: 600 !important;
+    color: var(--bose-black);
+    opacity: 0.7;
 }
 
 /* ==========================================================================\
-   13. صفحة تفاصيل المنتج والمقاسات والملاحظات (Single Product Detail Page)
+   9. قسم تسوق حسب الفئة ونظام السلايدر الأفقي (Categories Slider Layout)
    ========================================================================== */
-
-.product-detail-layout {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 20px;
-    padding: 20px 16px;
-    direction: rtl;
-}
-
-.product-gallery-wrapper {
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    border-radius: 16px;
+.bose-categories-slider-section {
     overflow: hidden;
-    border: 1px solid rgba(255, 145, 164, 0.15);
-    background-color: var(--bose-cream);
-}
-
-.product-gallery-wrapper img {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.product-options-card {
     background-color: var(--bose-white);
-    border: 1px solid rgba(255, 145, 164, 0.15);
-    border-radius: 16px;
-    padding: 20px;
-    box-shadow: 0 4px 15px rgba(255, 145, 164, 0.04);
 }
 
-.product-option-title {
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: var(--bose-black);
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.product-option-title i {
-    color: var(--bose-pink);
-}
-
-.product-size-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    margin-bottom: 16px;
-}
-
-.product-size-radio {
-    display: none;
-}
-
-.product-size-label {
-    border: 1px solid rgba(255, 145, 164, 0.25);
-    border-radius: 10px;
-    padding: 10px;
-    text-align: center;
-    cursor: pointer;
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: var(--bose-black);
-    transition: all 0.3s ease;
-}
-
-.product-size-radio:checked + .product-size-label {
-    background-color: var(--bose-pink);
-    color: var(--bose-white);
-    border-color: var(--bose-pink);
-    box-shadow: 0 4px 10px rgba(255, 145, 164, 0.2);
-}
-
-.product-custom-input {
-    width: 100%;
-    font-family: 'Cairo', sans-serif;
-    font-size: 0.9rem;
-    padding: 10px 12px;
-    border: 1px solid rgba(255, 145, 164, 0.25);
-    background-color: var(--bose-cream);
-    border-radius: 10px;
-    color: var(--bose-black);
-    outline: none;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.product-custom-input:focus {
-    border-color: var(--bose-pink);
-    background-color: var(--bose-white);
-    box-shadow: 0 0 8px rgba(255, 145, 164, 0.25);
-}
-
-.quantity-selector-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
-    margin: 20px 0;
-}
-
-.qty-btn {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: 1px solid rgba(255, 145, 164, 0.3);
-    background-color: var(--bose-white);
-    color: var(--bose-pink);
-    font-size: 1.2rem;
-    font-weight: 700;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
-}
-
-.qty-btn:active {
-    transform: scale(0.9);
-    background-color: var(--bose-pink);
-    color: var(--bose-white);
-}
-
-.qty-val {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: var(--bose-black);
-    min-width: 30px;
-    text-align: center;
-}
-
-/* ==========================================================================\
-   14. بانرات العروض الهدايا وكروت التسويق (Promo Campaign Blocks)
-   ========================================================================== */
-
-.bose-promo-section {
-    background-color: var(--bose-cream);
-    width: 100%;
-}
-
-.bose-promo-cards-container {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.bose-promo-card {
-    background-color: var(--bose-white);
-    border: 1px solid rgba(255, 145, 164, 0.15);
-    border-radius: 16px;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    min-height: 180px;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 4px 12px rgba(255, 145, 164, 0.04);
-}
-
-.bose-promo-card-tag {
-    align-self: flex-start;
-    background-color: var(--bose-cream);
-    color: var(--bose-pink);
-    font-size: 0.75rem;
-    font-weight: 700;
-    padding: 4px 10px;
-    border-radius: 20px;
-    margin-bottom: 12px;
-}
-
-.bose-promo-card-title {
-    color: var(--bose-black);
-    font-size: 1.3rem;
-    font-weight: 700;
-    margin-bottom: 8px;
-    line-height: 1.3;
-}
-
-.bose-promo-card-desc {
-    color: #4D4D4D;
-    font-size: 0.9rem;
-    line-height: 1.5;
-    margin-bottom: 16px;
-    max-width: 85%;
-    word-wrap: break-word;
-}
-
-.bose-promo-card-btn {
-    align-self: flex-start;
-    color: var(--bose-pink);
-    font-weight: 700;
-    font-size: 0.85rem;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    transition: transform 0.3s ease;
-}
-
-.bose-promo-card-btn:hover {
-    transform: translateX(-6px);
-}
-
-/* ==========================================================================\
-   15. آراء العملاء وقنوات التقييم الفاخرة (Reviews Touch Slider)
-   ========================================================================== */
-
-.bose-reviews-slider {
-    display: flex;
-    gap: 16px;
+.bose-categories-slider-wrapper {
     overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    padding: 10px 4px 20px 4px;
+    width: 100%;
+    display: flex;
+    padding: 20px 4px;
     scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
+    -ms-overflow-style: none;
 }
 
-.bose-reviews-slider::-webkit-scrollbar {
-    display: none;
-}
-
-.bose-review-card {
-    flex: 0 0 85%;
-    scroll-snap-align: start;
-    background-color: var(--bose-white);
-    border: 1px solid rgba(255, 145, 164, 0.12);
-    border-radius: 16px;
-    padding: 20px;
-    box-shadow: 0 6px 15px rgba(255, 145, 164, 0.04);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.bose-review-text {
-    color: #444444;
-    font-size: 0.9rem;
-    line-height: 1.6;
-    margin-bottom: 16px;
-    font-style: italic;
-    word-wrap: break-word;
-}
-
-.bose-review-user-info {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.bose-review-user-avatar {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background-color: var(--bose-cream);
-    color: var(--bose-pink);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.1rem;
-    font-weight: 700;
-    border: 1px solid rgba(255, 145, 164, 0.2);
-}
-
-.bose-review-user-name {
-    color: var(--bose-black);
-    font-size: 0.85rem;
-    font-weight: 700;
-}
-
-.bose-review-user-date {
-    color: #7A7A7A;
-    font-size: 0.75rem;
-    margin-top: 2px;
+.bose-categories-slider-wrapper::-webkit-scrollbar {
+    display: none !important;
 }
 
 /* ==========================================================================\
-   16. معرض السوشيال ميديا وتغطيات العمل الفعلي (Live Social Gallery)
+   10. محددات التجاوب والشبكات للشاشات المتوسطة والكبيرة (Responsive Breakpoints)
    ========================================================================== */
-
-.social-gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-}
-
-.gallery-item {
-    position: relative;
-    aspect-ratio: 1/1;
-    border-radius: 12px;
-    overflow: hidden;
-    border: 1px solid rgba(255, 145, 164, 0.15);
-}
-
-.gallery-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s ease;
-}
-
-.gallery-item:hover img {
-    transform: scale(1.08);
-}
-
-.gallery-overlay-icon {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(255, 145, 164, 0.35);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.gallery-item:hover .gallery-overlay-icon {
-    opacity: 1;
-}
-
-.gallery-overlay-icon i {
-    color: var(--bose-white);
-    font-size: 1.8rem;
-}
-
-/* ==========================================================================\
-   17. الأسئلة الشائعة وتسهيل الاستخدام (Accordion System)
-   ========================================================================== */
-
-.bose-faq-container {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.bose-faq-item {
-    background-color: var(--bose-white);
-    border: 1px solid rgba(255, 145, 164, 0.15);
-    border-radius: 12px;
-    overflow: hidden;
-    transition: all 0.3s ease;
-}
-
-.bose-faq-trigger {
-    width: 100%;
-    background: none;
-    border: none;
-    padding: 16px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    cursor: pointer;
-    text-align: right;
-    font-family: 'Cairo', sans-serif;
-    font-weight: 700;
-    color: var(--bose-black);
-    font-size: 0.95rem;
-}
-
-.bose-faq-trigger i {
-    color: var(--bose-pink);
-    transition: transform 0.3s ease;
-}
-
-.bose-faq-item.active .bose-faq-trigger i {
-    transform: rotate(180deg);
-}
-
-.bose-faq-content {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease-out;
-    background-color: var(--bose-cream);
-}
-
-.bose-faq-inner {
-    padding: 16px;
-    color: #4D4D4D;
-    font-size: 0.9rem;
-    line-height: 1.6;
-    border-top: 1px solid rgba(255, 145, 164, 0.1);
-    word-wrap: break-word;
-}
-
-/* ==========================================================================\
-   18. موديل البحث السريع وتأمين الفلاتر (Search Modal & Popups)
-   ========================================================================== */
-
-.bose-search-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(17, 17, 17, 0.65);
-    backdrop-filter: blur(5px);
-    z-index: 2000;
-    display: none;
-    justify-content: center;
-    align-items: flex-start;
-    padding-top: 12vh;
-}
-
-.bose-search-card {
-    background-color: var(--bose-white);
-    border-radius: 18px;
-    width: 90%;
-    max-width: 600px;
-    box-shadow: 0 10px 30px rgba(255, 145, 164, 0.2);
-    overflow: hidden;
-    animation: slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.bose-search-header {
-    padding: 16px;
-    border-bottom: 1px solid rgba(255, 145, 164, 0.15);
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.bose-search-input-wrapper {
-    flex-grow: 1;
-    position: relative;
-}
-
-.bose-search-input-wrapper i {
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--bose-pink);
-}
-
-.bose-search-input {
-    width: 100%;
-    border: 1px solid rgba(255, 145, 164, 0.25);
-    background-color: var(--bose-cream);
-    border-radius: 30px;
-    padding: 10px 38px 10px 16px;
-    font-family: 'Cairo', sans-serif;
-    font-size: 0.95rem;
-    color: var(--bose-black);
-    outline: none;
-}
-
-.bose-search-input:focus {
-    border-color: var(--bose-pink);
-    background-color: var(--bose-white);
-}
-
-.bose-search-close-btn {
-    background: none;
-    border: none;
-    font-size: 1.3rem;
-    color: #555555;
-    cursor: pointer;
-}
-
-.bose-search-results {
-    max-height: 400px;
-    overflow-y: auto;
-    padding: 12px;
-}
-
-.bose-category-badge {
-    display: inline-block;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    margin-bottom: 8px;
-}
-
-.bose-product-details-container {
-    background-color: var(--bose-white);
-    border: 1px solid rgba(255, 145, 164, 0.15);
-    border-radius: 20px;
-    padding: 24px;
-    box-shadow: 0 8px 24px rgba(255, 145, 164, 0.05);
-}
-
-/* ==========================================================================\
-   19. محددات التجاوب والشبكات للشاشات المتوسطة والكبيرة (Responsive Breakpoints)
-   ========================================================================== */
-
-@media (max-width: 360px) {
-    .bose-hero-title {
-        font-size: 1.5rem;
-    }
-    .bose-categories-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    .bose-products-grid {
-        grid-template-columns: 1fr;
-    }
-    .product-size-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
 @media (min-width: 768px) {
-    .bose-hero-slider {
-        height: 45vh;
+    .bose-pride-container {
+        grid-template-columns: 1.2fr 1.8fr;
     }
-    .bose-hero-slide-overlay {
-        padding: 40px;
-    }
-    .bose-hero-title {
-        font-size: 2.2rem;
-    }
-    .bose-hero-desc {
-        font-size: 1rem;
-        max-width: 70%;
-    }
-    .bose-categories-grid {
-        grid-template-columns: repeat(6, 1fr);
-    }
-    .bose-products-grid {
+    .bose-statistics-grid-block {
         grid-template-columns: repeat(3, 1fr);
     }
-    .social-gallery-grid {
-        grid-template-columns: repeat(4, 1fr);
+    .bose-pride-text-block {
+        text-align: right;
     }
-    .bose-promo-cards-container {
-        flex-direction: row;
-    }
-    .bose-promo-card {
-        flex: 1;
-    }
-    .bose-review-card {
-        flex: 0 0 45%;
-    }
-    .product-detail-layout {
-        grid-template-columns: 1fr 1.2fr;
-        gap: 30px;
-    }
-    .menu-layout-container {
-        padding: 30px 24px;
+    .bose-pride-text-block p {
+        margin: 0;
     }
 }
 
 @media (min-width: 1024px) {
-    .bose-hero-slider {
+    .bose-hero-section {
         height: 60vh;
-    }
-    .bose-hero-slide-overlay {
-        padding: 50px 45px;
     }
     .bose-hero-title {
         font-size: 2.6rem;
     }
-    .bose-hero-desc {
-        font-size: 1.05rem;
-        max-width: 60%;
+    .bose-products-grid, .products-grid {
+        grid-template-columns: repeat(4, 1fr) !important; /* عرض رباعي مريح على الكمبيوتر لمنع التكديس */
+        gap: 20px !important;
     }
-    .bose-categories-grid {
-        grid-template-columns: repeat(12, 1fr);
-        gap: 16px;
+    .bose-pride-container {
+        display: grid;
+        grid-template-columns: 1.2fr 1.8fr;
+        gap: 40px;
+        align-items: center;
     }
-    .bose-products-grid {
-        grid-template-columns: repeat(4, 1fr);
-        gap: 18px;
+    .bose-statistics-grid-block {
+        grid-template-columns: repeat(5, 1fr);
     }
-    .bose-review-card {
-        flex: 0 0 30%;
-    }
-    .bose-promo-cards-container {
-        gap: 24px;
-    }
-    .bose-promo-card {
-        padding: 30px;
-    }
-    .product-detail-layout {
+    .preview-builder-block, .bose-isolated-simulator-card {
+        flex-direction: row;
+        padding: 50px;
+        justify-content: space-between;
+        text-align: right;
         max-width: 1200px;
-        margin: 0 auto;
-        padding: 40px 16px;
+        margin: 40px auto;
+        width: 100%;
     }
-}
-
-.footer-logo-container img {
-    height: 60px !important;
-    width: auto !important;
-    max-width: 100% !important;
-    object-fit: contain !important;
-    aspect-ratio: auto !important;
-    display: block;
-    margin: 0 auto;
 }
 
 .animate-marquee {
@@ -1555,7 +536,6 @@ body.bose-no-scroll {
     display: none !important;
 } 
 
-/* 👑 إتاحة العرض الممتد الكامل لضمان دوران لا نهائي سلس مئة بالمئة برمجياً */
 .categories-track-loop, 
 #excellence-images-track {
     display: flex !important;
