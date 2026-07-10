@@ -26,9 +26,6 @@
 </head>
 <body class="bose-hardware-accelerated">
 
-    <!-- TOASTS CONTAINER: الحاوية المركزية والشرعية والوحيدة لاستقبال توست السلة والتنبيهات المعتمدة برمجياً -->
-    <div id="bose-toast-central-container"></div>
-
     <!-- TOP BAR: شريط علوي متحرك لاستقبال رسائل التسويق ديناميكياً من الـ JSON ومنع الفراغات بصرية -->
     <div id="top-bar-marquee" class="bose-ticker-section">
         <div id="top-bar-marquee-track" class="bose-ticker-wrapper"></div>
@@ -140,7 +137,7 @@
             </div>
             <div id="our-products-grid" class="bose-products-grid products-grid"></div>
             <div class="bose-show-more-container">
-                <!-- تم تصحيح المعرّف وتوحيده بالملي ليتطابق مع المحرك المركزي والمواصفة الهندسية -->
+                <!-- تم تصحيح الـ ID ليتطابق مع محرك ضخ وقراءة الكروت المتبقية ديناميكياً بدون تعارض -->
                 <button id="our-products-show-more" class="bose-product-action-btn"></button>
             </div>
         </section>
@@ -237,6 +234,9 @@
             <p>© <span id="copyright-year">2026</span> جميع الحقوق محفوظة لعلامة حلويات بوسي التجارية الفاخرة</p>
         </div>
     </footer>
+
+    <!-- حقن حاوية التوست المركزية لتأمين استقبال إشعارات الإضافة الفورية للسلة بنجاح -->
+    <div id="bose-toast-central-container" class="bose-toast-container"></div>
 
 </body>
 </html>
