@@ -1,5 +1,6 @@
+
 /**
- * 📑 الدليل الهندسي للمواصفات القياسية الفاخرة - النسخة الكاملة والمطورة V4
+ * 📑 الدليل الهندسي للمواصفات القياسية الفاخرة - النسخة الكاملة والمطورة V4.1
  * المحرك المركزي العالمي لبناء وضخ الواجهات وعمليات الفحص المالي (js/core-engine.js)
  * براند: حلويات بوسي (BoseSweets) - يمنع الاختصار أو الحذف أو التبسيط نهائياً.
  */
@@ -13,44 +14,53 @@
         let retries = 5;
         let delay = 1000;
         
+        // مصفوفة مسارات ذكية لضمان قراءة ملف الـ JSON في أي بيئة استضافة
+        const pathsToTry = [
+            'data/site-data-final.json',
+            '/data/site-data-final.json',
+            './data/site-data-final.json'
+        ];
+        
         while (retries > 0) {
-            try {
-                // تم تعديل المسار هنا ليكون مطلقاً من جذر الموقع لضمان القراءة الصحيحة بنسبة 100% على الاستضافة ومنع خطأ 404
-                const response = await fetch('/data/site-data-final.json');
-                if (!response.ok) throw new Error('فشل جلب ملف قاعدة البيانات الرئيسي.');
-                
-                const serverDateHeader = response.headers.get('Date');
-                if (serverDateHeader) {
-                    const serverTime = new Date(serverDateHeader).getTime();
-                    const clientTime = Date.now();
-                    window.boseServerTimeOffset = serverTime - clientTime;
+            for (let path of pathsToTry) {
+                try {
+                    const response = await fetch(path);
+                    if (!response.ok) continue;
+                    
+                    const serverDateHeader = response.headers.get('Date');
+                    if (serverDateHeader) {
+                        const serverTime = new Date(serverDateHeader).getTime();
+                        const clientTime = Date.now();
+                        window.boseServerTimeOffset = serverTime - clientTime;
+                    }
+                    
+                    window.BoseStoreData = await response.json();
+                    
+                    // 1. إدارة وضخ العناصر العالمية المشتركة
+                    injectEarlyDependencies();
+                    applyGlobalStyles(window.BoseStoreData.store.theme);
+                    renderUniversalHeader();
+                    renderUniversalSidebar();
+                    renderUniversalFooter();
+                    
+                    // 2. تحديثات الحالة العامة والـ SEO
+                    applyGlobalSEOAndBranding();
+                    window.updateGlobalCartCounter();
+                    
+                    // 3. تفعيل حدث مخصص لباقي المحركات والملفات المعتمدة على البيانات
+                    document.dispatchEvent(new CustomEvent('BoseDatabaseLoaded', { detail: window.BoseStoreData }));
+                    return;
+                } catch (error) {
+                    continue;
                 }
-                
-                window.BoseStoreData = await response.json();
-                
-                // 1. إدارة وضخ العناصر العالمية المشتركة في كل الصفحات لتوحيد الواجهات ومنع التكديس
-                injectEarlyDependencies();
-                applyGlobalStyles(window.BoseStoreData.store.theme);
-                renderUniversalHeader();
-                renderUniversalSidebar();
-                renderUniversalFooter();
-                
-                // 2. تحديثات الحالة العامة والـ SEO
-                applyGlobalSEOAndBranding();
-                window.updateGlobalCartCounter();
-                
-                // 3. تفعيل حدث مخصص لباقي المحركات والملفات المعتمدة على البيانات لمنع التعارض البرمجي
-                document.dispatchEvent(new CustomEvent('BoseDatabaseLoaded', { detail: window.BoseStoreData }));
-                return;
-            } catch (error) {
-                retries--;
-                if (retries === 0) {
-                    console.error("❌ خطأ حرج في نظام حلويات بوسي الموحد:", error);
-                    showGlobalFriendlyError();
-                } else {
-                    await new Promise(res => setTimeout(res, delay));
-                    delay *= 2; 
-                }
+            }
+            retries--;
+            if (retries === 0) {
+                console.error("❌ خطأ حرج في نظام حلويات بوسي الموحد: تعذر جلب البيانات.");
+                showGlobalFriendlyError();
+            } else {
+                await new Promise(res => setTimeout(res, delay));
+                delay *= 2; 
             }
         }
     }
@@ -70,7 +80,7 @@
                 </button>
                 <div class="brand-logo-container">
                     <a href="index.html">
-                        <img id="bose-store-logo" src="\${window.BoseStoreData.store.logo}" alt="شعار حلويات بوسي">
+                        <img id="bose-store-logo" src="${window.BoseStoreData.store.logo}" alt="شعار حلويات بوسي">
                     </a>
                 </div>
                 <span class="brand-name-display">حلويات بوسي</span>
@@ -157,18 +167,18 @@
         footerEl.innerHTML = `
             <div class="footer-logo-container">
                 <a href="index.html">
-                    <img id="bose-footer-logo-node" src="\${window.BoseStoreData.store.logo}" alt="شعار حلويات بوسي">
+                    <img id="bose-footer-logo-node" src="${window.BoseStoreData.store.logo}" alt="شعار حلويات بوسي">
                 </a>
             </div>
             <span class="brand-name-display footer-brand-name">حلويات بوسي</span>
             <div class="footer-about-block">
-                <p id="footer-about-text">\${window.BoseStoreData.footer.about}</p>
+                <p id="footer-about-text">${window.BoseStoreData.footer.about}</p>
             </div>
             <div id="footer-social-links" class="bose-social-links-wrapper">
-                <a href="\${window.BoseStoreData.social.facebook}" class="social-link-facebook" target="_blank" aria-label="فيسبوك حلويات بوسي"><i class="fab fa-facebook-f"></i></a>
-                <a href="\${window.BoseStoreData.social.instagram}" class="social-link-instagram" target="_blank" aria-label="انستجرام حلويات بوسي"><i class="fab fa-instagram"></i></a>
-                <a href="\${window.BoseStoreData.social.tiktok}" class="social-link-tiktok" target="_blank" aria-label="تيك توك حلويات بوسي"><i class="fab fa-tiktok"></i></a>
-                <a href="https://wa.me/\${window.sanitizeBosePhoneNumber(window.BoseStoreData.social.whatsapp)}" class="social-link-whatsapp" target="_blank" aria-label="واتساب حلويات بوسي"><i class="fab fa-whatsapp"></i></a>
+                <a href="${window.BoseStoreData.social.facebook}" class="social-link-facebook" target="_blank" aria-label="فيسبوك حلويات بوسي"><i class="fab fa-facebook-f"></i></a>
+                <a href="${window.BoseStoreData.social.instagram}" class="social-link-instagram" target="_blank" aria-label="انستجرام حلويات بوسي"><i class="fab fa-instagram"></i></a>
+                <a href="${window.BoseStoreData.social.tiktok}" class="social-link-tiktok" target="_blank" aria-label="تيك توك حلويات بوسي"><i class="fab fa-tiktok"></i></a>
+                <a href="https://wa.me/${window.sanitizeBosePhoneNumber(window.BoseStoreData.social.whatsapp)}" class="social-link-whatsapp" target="_blank" aria-label="واتساب حلويات بوسي"><i class="fab fa-whatsapp"></i></a>
             </div>
             <div class="footer-policies-container" id="bose-footer-policies">
                 <ul class="nav-list" style="justify-content: center; gap: 16px; flex-wrap: wrap; list-style: none;">
@@ -233,7 +243,7 @@
         const finalUnitPrice = window.calculateProductFinalPrice(product, opts);
         
         const isCustomizable = product.isMiniCake || product.type === "custom-cake" || product.type === "custom-flower" || (product.customizationOptions && Object.keys(opts).length > 0);
-        const finalId = isCustomizable ? `\${product.slug}-\${Date.now()}` : String(product.slug || product.id);
+        const finalId = isCustomizable ? `${product.slug}-${Date.now()}` : String(product.slug || product.id);
         
         return {
             id: finalId,
@@ -355,7 +365,7 @@
 
     window.validateBoseDeliverySchedule = function(dateStr, timeStr) {
         if (!dateStr || !timeStr) return false;
-        const selectedDateTime = new Date(`\${dateStr}T\${timeStr}`);
+        const selectedDateTime = new Date(`${dateStr}T${timeStr}`);
         const synchronizedTime = Date.now() + (window.boseServerTimeOffset || 0);
         return (selectedDateTime - new Date(synchronizedTime)) / (1000 * 60 * 60) >= 23.95;
     };
