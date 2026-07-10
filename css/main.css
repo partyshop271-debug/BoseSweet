@@ -320,7 +320,7 @@ body.bose-hardware-accelerated {
 }
 
 /* ==========================================================================\
-   6. هندسة بلوكات ومحاكيات الورد والتورت الكبيرة والفاخرة بالكامل
+   6. هندسة كتل ومحاكيات الورد والتورت الكبيرة الفاخرة المحدثة
    ========================================================================== */
 .preview-builder-block, .bose-isolated-simulator-card {
     width: calc(100% - 32px);
@@ -357,14 +357,15 @@ body.bose-hardware-accelerated {
     z-index: 2;
 }
 
+/* 🛡️ صمام الأمان المالي والجمالي: استبدال الأسود بالبمبي الفاخر الحاسم لدفع العميل على الطلب فوراً */
 .bose-simulator-action-btn {
-    background-color: var(--bose-black) !important;
+    background-color: var(--bose-pink) !important;
     color: var(--bose-white) !important;
     padding: 12px 40px !important;
     border-radius: 12px !important;
     font-weight: 700 !important;
     text-decoration: none !important;
-    box-shadow: 0 4px 15px rgba(17, 17, 17, 0.15) !important;
+    box-shadow: var(--bose-shadow-glow) !important;
     transition: var(--bose-transition-smooth);
     z-index: 2;
     display: inline-flex;
@@ -374,8 +375,10 @@ body.bose-hardware-accelerated {
 
 .bose-simulator-action-btn:hover {
     transform: translateY(-3px);
-    background-color: var(--bose-pink) !important;
-    box-shadow: var(--bose-shadow-hover);
+    background-color: var(--bose-white) !important;
+    color: var(--bose-pink) !important;
+    border: 1px solid var(--bose-pink) !important;
+    box-shadow: var(--bose-shadow-hover) !important;
 }
 
 /* ==========================================================================\
@@ -498,7 +501,7 @@ body.bose-hardware-accelerated {
         font-size: 2.6rem;
     }
     .preview-builder-block, .bose-isolated-simulator-card {
-        height: 750px !important; /* 📐 فرض الارتفاع القياسي المخصص لسطح المكتب وعرض المحاكي الكامل */
+        height: 750px !important; /* 📐 فرض الارتفاع القياسي لسطح المكتب وعرض المحاكي الكامل */
     }
     .bose-pride-statistics-section {
         min-height: 700px !important; /* 📐 قفل الحد الأدنى لارتفاع الفخر والاعتزاز للكمبيوتر حظرًا للتداخل البصري */
