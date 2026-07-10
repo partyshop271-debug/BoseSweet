@@ -82,7 +82,6 @@
             
         } catch (error) {
             console.error("❌ خطأ حرج في تهيئة نظام حلويات بوسي الموحد:", error);
-            injectFallbackErrorDisplay();
         }
     }
 
@@ -146,7 +145,7 @@
     function ensureSharedLayoutHubs(storeData) {
         if (!storeData) return;
 
-        // 🚨 حقن الشريط العلوي المتحرك كأول عنصر هندسي مقدّس في الـ body قبل الهيدر تماماً
+        // 🚨 حرس الترتيب الصارم: حقن الشريط التسويقي أولاً كأول عنصر هندسي مقدّس في الـ body قبل الهيدر تماماً من عيار 100%
         let tickerNode = document.getElementById('top-bar-marquee');
         if (!tickerNode) {
             tickerNode = document.createElement('div');
@@ -160,7 +159,7 @@
             tickerNode.innerHTML = `<div class="bose-ticker-wrapper animate-marquee">${messagesHTML}${messagesHTML}</div>`;
         }
         
-        // 🏢 مكون الهيدر الموحد والثابت (Shared Universal Header) المتطابق مع خريطة الـ DOM القياسية
+        // 🏢 مكون الهيدر الموحد والثابت (Shared Universal Header) اللاصق عالي السرعة والاستجابة بالمسطرة
         let headerNode = document.querySelector('.bose-navbar');
         if (!headerNode) {
             headerNode = document.createElement('header');
@@ -318,7 +317,7 @@
                     <a href="index.html" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; border: 1px solid rgba(255,145,164,0.2); color: ${BRAND_COLORS.black}; font-weight: 700; font-size: 13px; text-decoration: none; font-family: 'Cairo';"><i class="fas fa-home" style="color: ${BRAND_COLORS.pink}; font-size: 15px;"></i> الواجهة الرئيسية للموقع</a>
                     
                     <div class="drawer-link-item" style="display: flex; flex-direction: column; gap: 4px;">
-                        <div id="sidebar-menu-accordion-toggle" class="sidebar-accordion-trigger" style="display: flex; align-items: center; justify-content: space-between; font-size: 0.95rem; font-weight: 700; color: ${BRAND_COLORS.black}; padding: 10px 14px; border-radius: 12px; cursor: pointer; background: rgba(255,145,164,0.03); border: 1px solid rgba(255,145,164,0.1);">
+                        <div id="sidebar-menu-accordion-toggle" class="sidebar-accordion-trigger" style="display: flex; align-items: center; justify-content: space-between; font-size: 0.95rem; font-weight: 700; color: ${BRAND_COLORS.black}; padding: 10px 14px; border-radius: 12px; cursor: pointer; background: rgba(255,145,164,0.03); border: 1px solid rgba(255,145,164,0.1); border-color: rgba(255,145,164,0.1) !important;">
                             <span style="display: flex; align-items: center; gap: 10px; font-family: 'Cairo';"><i class="fas fa-utensils" style="color: ${BRAND_COLORS.pink};"></i> المنيو حسب الفئة</span>
                             <i class="fas fa-chevron-down" style="font-size: 0.8rem; color: ${BRAND_COLORS.pink}; transition: transform 0.3s ease;"></i>
                         </div>
@@ -1144,19 +1143,14 @@
             }
         });
 
-        // 🚀 معالجة حركة الهيدر اللطيفة والذكية أثناء السكرول (Scroll Direction Effect)
-        let lastScrollTop = 0;
+        // 🚀 معالجة حركة الهيدر اللاصق الثابت: تثبيت مطلق لراحة العميل النفسية وتأمين سهولة الوصول للسلة
         window.addEventListener('scroll', () => {
             const navbar = document.querySelector('.bose-navbar');
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
             if (navbar) {
-                if (scrollTop > 100 && scrollTop > lastScrollTop) {
-                    navbar.style.transform = 'translate3d(0, -100%, 0)'; // إخفاء ذكي وسلس لزيادة التنفس البصري أثناء النزول
-                } else {
-                    navbar.style.transform = 'translate3d(0, 0, 0)'; // إظهار فوري لاصق عند أي حركة صعود لراحة العميل
-                }
+                navbar.style.position = 'sticky';
+                navbar.style.top = '0';
+                navbar.style.transform = 'translate3d(0, 0, 0)'; 
             }
-            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
         }, { passive: true });
         
         updateGlobalCartCounters();
@@ -1325,3 +1319,10 @@
                 align-items: center !important;
                 justify-content: center !important;
                 gap: 10px !important;
+            }
+        `;
+        document.head.appendChild(styleBlock);
+    }
+
+    loadBoseAbsoluteDatabase();
+})();
