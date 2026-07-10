@@ -1,9 +1,8 @@
 /**
  * 👑 المحرك المركزي العام والنهائي للموقع والنافذة العائمة - حلويات بوسي 👑
- * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية ومشاكل التداخل V63.0
+ * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية ومشاكل التداخل V64.0
  * متوافق بشكل مطلق وثنائي الاتجاه مع كافة ملفات css/ وجافا سكريبت الموقع وقاعدة البيانات data/site-data-final.json
- * [تم التحديث والتطوير الشامل: تثبيت حقيقي ومطلق للسلة العائمة وتعديل نظام الإشعارات ليكون بالأسفل في مواجهة عين العميل مباشرة]
- * [تحديث هندسي فاخر: دعم كامل للسحب باللمس، وإصلاح انقطاع التيكر، وعزل خلفيات المحاكي، ومنع انضغاط التصنيفات]
+ * [تم التحديث والتطوير الشامل: حل ثغرة الكاروسيل المكسور، عزل خلفيات المحاكي، منع انضغاط التصنيفات، وضبط التيكر]
  */
 
 (function () {
@@ -460,6 +459,7 @@
         }
     }
 
+    /* 🛡️ تم إصلاح الكروت وعرضها بنسب هندسية موحدة تمنع الانضغاط وتلغي النقاط العشوائية */
     function renderBoseCategoriesSlider(storeData) {
         const wrapper = document.getElementById('categories-slider-wrapper');
         const track = document.getElementById('categories-track');
@@ -493,7 +493,7 @@
             wrapper.appendChild(controlsContainer);
 
             let currentCatInx = 0;
-            const cardWidth = 300; 
+            const cardWidth = 280; // تطابق هندسي كامل لمنع الـ Jumping
 
             function updateCatSliderPosition() {
                 wrapper.scrollTo({
@@ -545,6 +545,7 @@
         }
     }
 
+    /* 🧠 حل جذري ومطور لثغرة الكاروسيل وقابلية السحب واللمس الناعمة دون أي انقطاع */
     function initializeBosePrideSlider() {
         const prideTrack = document.getElementById('excellence-images-track');
         const prideWrapper = document.getElementById('pride-slider-wrapper');
@@ -577,13 +578,19 @@
 
         const cloneCount = originalSlides.length;
         
+        // مسح الكلونز السابقة آلياً للتأمين ضد التكرار عند حدوث الـ Hot Reload
+        const currentClones = prideTrack.querySelectorAll('[data-bose-clone="true"]');
+        currentClones.forEach(c => c.remove());
+
         originalSlides.forEach(slide => {
             const cloneAfter = slide.cloneNode(true);
+            cloneAfter.setAttribute('data-bose-clone', 'true');
             prideTrack.appendChild(cloneAfter);
         });
         
         for (let i = cloneCount - 1; i >= 0; i--) {
             const cloneBefore = originalSlides[i].cloneNode(true);
+            cloneBefore.setAttribute('data-bose-clone', 'true');
             prideTrack.insertBefore(cloneBefore, prideTrack.firstChild);
         }
 
@@ -600,7 +607,7 @@
         prideTrack.style.transition = 'none';
         
         function getSlideWidth() {
-            return totalSlides[0].offsetWidth || window.innerWidth; 
+            return prideWrapper.getBoundingClientRect().width || window.innerWidth; 
         }
 
         function scrollPrideToEach(animate = true) {
@@ -676,6 +683,7 @@
         }, { passive: true });
 
         function startAutoPlay() {
+            if (slideInterval) clearInterval(slideInterval);
             slideInterval = setInterval(() => {
                 if (isTransitioning || isDragging) return;
                 currentIdx++;
@@ -1194,17 +1202,36 @@
             initializeBosePrideSlider();
         }
         
+        /* 👑 هندسة التخصيص الحصرية: عزل كامل لطبقة الخلفية البمبي عن طبقة صور المنتجات الحقيقية */
         const interactiveSimulatorBlocks = document.querySelectorAll(".preview-builder-block, #cake-preview-section, #flower-preview-section");
         interactiveSimulatorBlocks.forEach(block => {
-            block.style.backgroundColor = BRAND_COLORS.pink; 
             block.style.position = "relative";
             block.style.overflow = "hidden";
+            
+            // التحقق من وجود طبقة خلفية معزولة مسبقاً لمنع التكرار
+            let backdropLayer = block.querySelector(".bose-isolated-backdrop-framework");
+            if (!backdropLayer) {
+                backdropLayer = document.createElement("div");
+                backdropLayer.className = "bose-isolated-backdrop-framework";
+                backdropLayer.style.cssText = `
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background-color: ${BRAND_COLORS.pink};
+                    z-index: 1;
+                    pointer-events: none;
+                `;
+                block.insertBefore(backdropLayer, block.firstChild);
+            }
             
             const internalStructureImg = block.querySelector("img");
             if (internalStructureImg) {
                 internalStructureImg.style.position = "relative";
                 internalStructureImg.style.zIndex = "2";
                 internalStructureImg.style.display = "block";
+                internalStructureImg.style.backgroundColor = "transparent"; // ضمان النقاء البصري الكامل للمنتج
                 internalStructureImg.setAttribute("data-isolated-framework", "true"); 
             }
         });
