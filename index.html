@@ -26,6 +26,9 @@
 </head>
 <body class="bose-hardware-accelerated">
 
+    <!-- TOASTS CONTAINER: الحاوية المركزية والشرعية والوحيدة لاستقبال توست السلة والتنبيهات المعتمدة برمجياً -->
+    <div id="bose-toast-central-container"></div>
+
     <!-- TOP BAR: شريط علوي متحرك لاستقبال رسائل التسويق ديناميكياً من الـ JSON ومنع الفراغات بصرية -->
     <div id="top-bar-marquee" class="bose-ticker-section">
         <div id="top-bar-marquee-track" class="bose-ticker-wrapper"></div>
@@ -137,7 +140,8 @@
             </div>
             <div id="our-products-grid" class="bose-products-grid products-grid"></div>
             <div class="bose-show-more-container">
-                <button id="btn-load-more-products" class="bose-product-action-btn"></button>
+                <!-- تم تصحيح المعرّف وتوحيده بالملي ليتطابق مع المحرك المركزي والمواصفة الهندسية -->
+                <button id="our-products-show-more" class="bose-product-action-btn"></button>
             </div>
         </section>
 
