@@ -38,6 +38,14 @@
     -webkit-tap-highlight-color: transparent;
 }
 
+/* التسريع العتادي الصارم لبيئة الموبايل وتأمين الاستقرار الحركي للمحركات */
+.bose-hardware-accelerated {
+    will-change: transform, opacity;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+}
+
 /* حل ثغرة الأيقونات المكسورة: نطبق الخط على النصوص ونستثني عائلات أيقونات Font Awesome الصريحة */
 *:not(i):not([class*="fa-"]):not([class*="fontawesome-"]) {
     font-family: 'Cairo', sans-serif !important;
@@ -71,9 +79,9 @@ body {
 }
 
 /* 📐 فرض أوزان خط Cairo الصارمة ومنع أي نصوص باهتة أو مقطوعة نهائياً لضمان الفخامة */
-h1, h2, .brand-name-display, .brand-name-text, .footer-brand-name, .bose-simulator-title {
+h1, h2, .brand-name-display, .brand-name-text, .footer-brand-name, .bose-simulator-title, [id*="pride-section"] h2 {
     font-weight: 700 !important; /* قفل وزن الخط عند 700 كحد أقصى لأضخم العناوين الرئيسية */
-    color: var(--bose-black) !important;
+    color: var(--bose-black) !important; /* الأسود هو اللون الشرعي والوحيد للعناوين لمنع تداخل الذهبي المشوه */
     line-height: 1.3;
     white-space: normal;
     text-overflow: clip;
@@ -87,12 +95,20 @@ h3, h4, .product-card-title, .search-card-title, .cart-item-title {
 
 p, span, a, button, input, select, textarea, .bose-toast-text, .bose-modal-text, .bose-simulator-desc {
     font-weight: 400 !important; /* الوزن المعياري لسهولة القراءة المريحة للعين */
-    color: var(--bose-black);
+    color: var(--bose-black) !important;
 }
 
 strong, .bose-price-text, .product-card-price, .bose-btn-primary, .search-card-price {
     font-weight: 700 !important;
     color: var(--bose-pink) !important; /* نصوص الأسعار الديناميكية حصرية بالبمبي */
+}
+
+/* حماية نصوص التخصيص والأوصاف الممتدة داخل الموقع من القطع البصري */
+.bose-arabic-text-protection {
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    hyphens: none;
 }
 
 a {
@@ -605,11 +621,11 @@ input:focus, select:focus, textarea:focus {
 }
 
 .waterfall-col {
-    flex: 1;
     display: flex;
     flex-direction: column;
     gap: 16px;
     transform: translate3d(0, 0, 0);
+    flex: 1 1 0%;
 }
 
 @keyframes boseWaterfallUp {
@@ -721,7 +737,7 @@ input:focus, select:focus, textarea:focus {
 
 #footer-about-text {
     font-size: 0.95rem;
-    color: var(--bose-black);
+    color: var(--bose-black) !important;
     line-height: 1.6;
     margin: 0;
 }
@@ -765,7 +781,7 @@ input:focus, select:focus, textarea:focus {
 .footer-copyright-block p {
     margin: 0;
     font-size: 0.8rem;
-    color: var(--bose-black);
+    color: var(--bose-black) !important;
     font-weight: 600 !important;
 }
 
@@ -807,11 +823,13 @@ input:focus, select:focus, textarea:focus {
     font-size: 0.95rem;
     font-weight: 700;
     margin: 0 0 4px 0;
+    color: var(--bose-black) !important;
 }
 
 .trust-info-pane p {
     font-size: 0.8rem;
     margin: 0;
+    color: var(--bose-black) !important;
 }
 
 /* ==========================================================================
@@ -949,7 +967,7 @@ input:focus, select:focus, textarea:focus {
 .bose-modal-text {
     font-size: 15px;
     font-weight: 600;
-    color: var(--bose-black);
+    color: var(--bose-black) !important;
     line-height: 1.6;
     margin: 0 0 20px 0;
 }
@@ -984,7 +1002,7 @@ input:focus, select:focus, textarea:focus {
 
 .bose-modal-btn-cancel {
     background: transparent;
-    color: var(--bose-black);
+    color: var(--bose-black) !important;
     border: 1px solid rgba(17, 17, 17, 0.15);
 }
 
