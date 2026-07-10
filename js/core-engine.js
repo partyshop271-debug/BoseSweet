@@ -15,11 +15,10 @@
         
         while (retries > 0) {
             try {
-                // جلب قاعدة البيانات من المسار المعتمد
+                // جلب قاعدة البيانات من المسار المعتمد والصحيح هندسياً
                 const response = await fetch('data/site-data-final.json');
                 if (!response.ok) throw new Error('فشل جلب ملف قاعدة البيانات الرئيسي.');
                 
-                // [حل الثغرة: تزامن التوقيت المحلي لشرط التحضير]
                 const serverDateHeader = response.headers.get('Date');
                 if (serverDateHeader) {
                     const serverTime = new Date(serverDateHeader).getTime();
@@ -40,7 +39,7 @@
                 applyGlobalSEOAndBranding();
                 window.updateGlobalCartCounter();
                 
-                // 3. الفحص الجغرافي: إذا كنا في الصفحة الرئيسية، يتم تفعيل محرك ضخ الأقسام تلقائياً
+                // 3. الفحص الجغرافي للواجهة: إذا كنا في الصفحة الرئيسية، يتم تفعيل محرك ضخ الأقسام تلقائياً
                 if (document.getElementById('hero-section') || document.querySelector('.bose-waterfall-section-container') || !!document.getElementById('most-selling-grid')) {
                     renderMainPageSections();
                 }
@@ -67,7 +66,7 @@
 
     function renderUniversalHeader() {
         let headerEl = document.querySelector('header.bose-navbar');
-        if (!headerEl) return; // الامتثال لهيكل الصفحة المقيد
+        if (!headerEl) return; 
         
         headerEl.innerHTML = `
             <div class="navbar-mobile-wrapper">
@@ -102,14 +101,15 @@
     }
 
     function renderUniversalSidebar() {
-        if (document.getElementById('sidebar-drawer')) return;
+        let sidebarPanel = document.getElementById('sidebar-drawer');
+        if (sidebarPanel) sidebarPanel.remove(); // منع التكرار التكديسي
         
         const sidebar = document.createElement('div');
         sidebar.id = 'sidebar-drawer';
         sidebar.className = 'bose-drawer-menu';
         sidebar.innerHTML = `
             <div class="drawer-overlay" id="sidebar-close-overlay"></div>
-            <div class="search-modal-box" style="position: fixed; right: 0; top: 0; width: 340px; max-width: 85vw; height: 100vh; background: #fff; padding: 0; display: flex; flex-direction: column;">
+            <div class="bose-drawer-panel-content">
                 <div class="drawer-premium-header">
                     <h3>تصفح أقسامنا الفاخرة</h3>
                     <p>حلويات بوسي - صنعناها بحب</p>
@@ -129,28 +129,31 @@
         `;
         document.body.appendChild(sidebar);
 
-        // ربط أحداث القائمة المتطورة الانسيابية فوراً للموبايل والكمبيوتر
+        // ربط أحداث القائمة المتطورة فوراً بطريقة مستقرة مئة بالمئة للكمبيوتر والموبايل
         setTimeout(() => {
             const toggleBtn = document.getElementById('mobile-menu-toggle');
             const closeBtn = document.getElementById('sidebar-close-btn');
             const overlay = document.getElementById('sidebar-close-overlay');
             const menuPanel = document.getElementById('sidebar-drawer');
 
-            if (toggleBtn) {
-                toggleBtn.addEventListener('click', () => {
+            if (toggleBtn && menuPanel) {
+                toggleBtn.onclick = (e) => {
+                    e.preventDefault();
                     menuPanel.classList.add('active');
-                    overlay.classList.add('active');
+                    if(overlay) overlay.classList.add('active');
                     document.body.classList.add('drawer-active');
-                });
+                };
             }
+
             const closeMenu = () => {
-                menuPanel.classList.remove('active');
-                overlay.classList.remove('active');
+                if(menuPanel) menuPanel.classList.remove('active');
+                if(overlay) overlay.classList.remove('active');
                 document.body.classList.remove('drawer-active');
             };
-            if (closeBtn) closeBtn.addEventListener('click', closeMenu);
-            if (overlay) overlay.addEventListener('click', closeMenu);
-        }, 100);
+
+            if (closeBtn) closeBtn.onclick = closeMenu;
+            if (overlay) overlay.onclick = closeMenu;
+        }, 150);
     }
 
     function renderUniversalFooter() {
@@ -188,7 +191,7 @@
     }
 
     /* ==========================================================================
-       🏪 محرك الصفحة الرئيسية وضخ الأقسام (Main Page Layout Engine)
+       🏪 محرك الصفحة الرئيسية وضخ الأقسام الـ 10 (Main Page Layout Engine)
        ========================================================================== */
 
     function renderMainPageSections() {
@@ -203,7 +206,7 @@
             heroBtn.href = "menu.html";
         }
 
-        // شريط علوي متحرك (#top-bar-marquee-track) لضمان حركة لانهائية بدون أي فراغات
+        // شريط علوي متحرك لضمان حركة لانهائية بدون أي فراغات مرئية
         const tickerTrack = document.getElementById('top-bar-marquee-track');
         if (tickerTrack && data.navigation.topBarMessages) {
             let messagesHTML = data.navigation.topBarMessages.map(msg => `
@@ -222,7 +225,7 @@
             rightCol.innerHTML = `<div class="waterfall-down">${rightHTML}${rightHTML}</div>`;
         }
 
-        // قسم عقد من الإتقان (#excellence-images-track) - مجرى حركة أفقي تلقائي متصل لملء الشاشة
+        // قسم عقد من الإتقان - مجرى حركة أفقي تلقائي متصل لملء الشاشة
         const excellenceTrack = document.getElementById('excellence-images-track');
         const excellenceTitle = document.getElementById('excellence-title');
         const excellenceDesc = document.getElementById('excellence-description');
@@ -329,8 +332,12 @@
             valEl.setAttribute('data-target', statObj.value);
             valEl.textContent = "0";
             labelEl.textContent = statObj.label;
-            // إضافة اللاحقة للـ DOM بجانب الرقم برمجياً لحفظ الهيكل الموحد بالمسطرة
-            valEl.insertAdjacentHTML('afterend', `<span class="stat-suffix" style="font-size:24px; font-weight:700; color:var(--bose-black);">${statObj.suffix}</span>`);
+            
+            // تنظيف الحاوية لمنع التراكم الإلحاقي
+            const oldSuffix = valEl.parentNode.querySelector('.stat-suffix');
+            if(oldSuffix) oldSuffix.remove();
+            
+            valEl.insertAdjacentHTML('afterend', `<span class="stat-suffix" style="font-size:24px; font-weight:700; color:var(--bose-black); margin-left:4px;">${statObj.suffix}</span>`);
         }
     }
 
@@ -360,7 +367,6 @@
         const allSlugs = window.BoseStoreData.homepage.ourProducts;
         const allProducts = window.BoseStoreData.products.filter(p => allSlugs.includes(p.slug));
         
-        // التوزيع الشبكي الملتزم: عرض 4 كروت أولية فقط للتنفس البصري
         const initialProducts = allProducts.slice(0, 4);
         gridContainer.innerHTML = initialProducts.map(p => createStrictProductCardHTML(p)).join('');
         bindCardEvents(gridContainer);
@@ -377,7 +383,7 @@
                     gridContainer.appendChild(tempDiv.firstChild);
                 }
                 bindCardEvents(gridContainer);
-                showMoreBtn.style.display = 'none'; // إخفاء الزر بعد اكتمال الشبكة بـ 8 كروت كاملة
+                showMoreBtn.style.display = 'none'; 
             };
         }
     }
@@ -445,8 +451,6 @@
                         
                         localStorage.setItem('bose_cart', JSON.stringify(cart));
                         window.updateGlobalCartCounter();
-                        
-                        // تنشيط شريط الإشعارات والتوست المركزي الموثق لراحة العميل
                         showCentralToast("تمت إضافة المنتج إلى السلة.");
                     }
                 };
@@ -455,8 +459,13 @@
     }
 
     function showCentralToast(msg) {
-        const container = document.getElementById('bose-toast-central-container');
-        if (!container) return;
+        let container = document.getElementById('bose-toast-central-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'bose-toast-central-container';
+            container.className = 'bose-toast-container';
+            document.body.appendChild(container);
+        }
         const toast = document.createElement('div');
         toast.className = 'bose-toast-card bose-toast-active';
         toast.innerHTML = `<div class="bose-toast-content"><p class="bose-toast-text">${msg}</p></div>`;
@@ -471,13 +480,14 @@
         const counters = document.querySelectorAll('.stat-number');
         counters.forEach(counter => {
             const target = +counter.getAttribute('data-target');
-            const speed = 100;
+            if(!target) return;
+            const speed = 60;
             const updateCount = () => {
                 const count = +counter.innerText;
                 const inc = target / speed;
                 if (count < target) {
                     counter.innerText = Math.ceil(count + inc);
-                    setTimeout(updateCount, 15);
+                    setTimeout(updateCount, 20);
                 } else {
                     counter.innerText = target;
                 }
@@ -571,7 +581,7 @@
         const safePersons = parseInt(persons, 10) || 10;
         let price = (config ? config.basePrice : 580) || 580;
         const minPersons = (config ? config.persons.minimum : 10) || 10;
-        const pricePerPerson = (config ? config.pricePerPerson : 145) || 145; // الالتزام التام بـ 145 جنيهاً للفرد
+        const pricePerPerson = (config ? config.pricePerPerson : 145) || 145; 
         
         const extraPersons = Math.max(0, safePersons - minPersons);
         price += extraPersons * pricePerPerson;
@@ -721,6 +731,9 @@
             .waterfall-up { animation: boseWaterfallUp 40s linear infinite; will-change: transform; }
             .waterfall-down { animation: boseWaterfallDown 40s linear infinite; will-change: transform; }
             .categories-track-loop { display: flex; width: max-content; animation: boseMarquee 30s linear infinite; will-change: transform; }
+            .bose-drawer-menu { position: fixed; top: 0; right: 0; width: 340px; max-width: 85vw; height: 100vh; background: #fff !important; z-index: 30000; transform: translate3d(100%, 0, 0); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+            .bose-drawer-menu.active { transform: translate3d(0, 0, 0) !important; }
+            .bose-drawer-panel-content { display: flex; flex-direction: column; height: 100vh; width: 100%; }
         `;
         document.head.appendChild(styleElement);
     }
