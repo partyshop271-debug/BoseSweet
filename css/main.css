@@ -1,5 +1,5 @@
 /**
- * 👑 ملف التصميم المركزي للأقسام والمنيو - حلويات بوسي V19.5 Master Fixed Edition 👑
+ * 👑 ملف التصميم المركزي للأقسام والمنيو - حلويات بوسي V19.6 Master Fixed Edition 👑
  * النسخة الهندسية القياسية الكاملة بنسبة 100% - خالية تماماً من الثغرات والمشاكل البصرية
  * متوافقة بشكل مطلق ومتبادل مع: global.css، core-engine.js، cart-engine.js، وقاعدة البيانات site-data-final.json
  * [تم إصلاح ثغرة تعارض التسعير العتادي وفك حصار السلة العائمة من الفوتر وجعلها طافية بشكل مطلق]
@@ -316,7 +316,7 @@ body.bose-no-scroll {
 }
 
 /* ==========================================================================\
-   7. قسم عقد من الإتقان ومجرى الحركة الدائري (Decade of Perfection Carousel)
+   7. قسم عقد من الإتقان ومجرى الحركة الدائري العازل للتآكل (Decade of Perfection)
    ========================================================================== */
 
 .bose-perfection-section {
@@ -352,12 +352,14 @@ body.bose-no-scroll {
     width: 100%;
     height: 180px;
     overflow: hidden;
+    background-color: var(--bose-cream);
 }
 
 .perfection-card-img-holder img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: cover !important; /* حل جذري لمنع تآكل أو تشوه صور الكاروسيل */
+    display: block;
 }
 
 .perfection-card-info {
@@ -424,18 +426,20 @@ body.bose-no-scroll {
     margin-top: 5px;
 }
 
+/* حل ثغرة كروت الفئات المضغوطة والتآكل النصي */
 .bose-categories-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 12px;
     justify-content: center;
+    width: 100%;
 }
 
 .bose-category-card {
     background-color: var(--bose-white);
     border: 1px solid rgba(255, 145, 164, 0.15);
     border-radius: 14px;
-    padding: 12px 6px;
+    padding: 16px 8px;
     text-align: center;
     text-decoration: none;
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -443,6 +447,7 @@ body.bose-no-scroll {
     flex-direction: column;
     align-items: center;
     box-shadow: 0 4px 12px rgba(255, 145, 164, 0.03);
+    min-height: 120px; /* ضمان مساحة كافية تمنع انضغاط الكارت */
 }
 
 @media (hover: hover) {
@@ -485,15 +490,18 @@ body.bose-no-scroll {
 
 .bose-category-name {
     color: var(--bose-black);
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     font-weight: 700;
     line-height: 1.3;
-    word-wrap: break-word;
+    word-break: keep-all; /* منع تقطيع الكلمات الحساسة مثل التورت */
+    overflow-wrap: normal;
+    text-overflow: clip;
+    white-space: normal;
     text-align: center;
 }
 
 /* ==========================================================================\
-   9. كروت عرض المنتجات الموحدة وتأمين الأسعار والبادجات (Strict Product Card DOM)
+   9. كروت عرض المنتجات الموحدة وتأمين مؤشر الكمية التفاعلي (Product Card DOM)
    ========================================================================== */
 
 .bose-products-grid {
@@ -616,6 +624,46 @@ body.bose-no-scroll {
     text-decoration: line-through;
 }
 
+/* 📐 ستايل أزرار ومؤشر الكمية التفاعلي لإظهار العدد بوضوح بين الزرين */
+.bose-card-quantity-control {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    background-color: var(--bose-cream);
+    border: 1px solid rgba(255, 145, 164, 0.3);
+    border-radius: 8px;
+    overflow: hidden;
+    height: 40px;
+}
+
+.bose-card-qty-btn {
+    width: 35px;
+    height: 100%;
+    background: transparent;
+    color: var(--bose-pink);
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--bose-transition-smooth);
+}
+
+.bose-card-qty-btn:hover {
+    background-color: var(--bose-pink);
+    color: var(--bose-white);
+}
+
+.bose-card-qty-value {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--bose-black);
+    flex-grow: 1;
+    text-align: center;
+}
+
 .bose-product-action-btn {
     width: 100%;
     background-color: var(--bose-pink);
@@ -631,6 +679,7 @@ body.bose-no-scroll {
     align-items: center;
     justify-content: center;
     gap: 8px;
+    height: 40px;
 }
 
 .bose-product-action-btn:hover {
@@ -800,7 +849,7 @@ body.bose-no-scroll {
 }
 
 /* ==========================================================================\
-   12. هندسة كتلة البصريات الفاخرة لقسم الفخر والاعتزاز والعدادات الذكية
+   12. هندسة كتلة البصريات الفاخرة لقسم الفخر والاعتزاز وتلوين كلمة "قلوبكم" 🌸
    ========================================================================== */
 
 .bose-pride-statistics-section {
@@ -832,6 +881,12 @@ body.bose-no-scroll {
     font-weight: 700;
     color: var(--bose-black);
     margin-bottom: 18px;
+}
+
+/* تلوين الكلمة المستهدفة باللون البمبي الحاكم الفاخر وسد ثغرة القسم */
+.bose-pride-text-block h2 span.bose-highlight-pink {
+    color: var(--bose-pink) !important;
+    font-weight: 700 !important;
 }
 
 .bose-pride-text-block p {

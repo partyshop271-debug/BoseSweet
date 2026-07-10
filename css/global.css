@@ -1,5 +1,5 @@
 /* ==========================================================================
-   👑 ملف التنسيق الموحد والهوية البصرية لعلامة حلويات بوسي الفاخرة V5.1 👑
+   👑 ملف التنسيق الموحد والهوية البصرية لعلامة حلويات بوسي الفاخرة V5.2 👑
    المطابق بالمليم لكافة محركات الموقع وقاعدة البيانات site-data-final.json
    المطور والمحدث بالكامل لسد الثغرات وحل تعارضات الأنيميشن والموديلز والأيقونات
    تم حل مشكلة ثبات الهيدر الحتمي وتثبيت الزر العائم فوق الفوتر بكفاءة مطلقة
@@ -76,7 +76,7 @@ body {
 
 /* 📐 فرض أوزان خط Cairo الصارمة ومنع أي تباين باهت */
 h1, h2, .brand-name-display, .brand-name-text, .footer-brand-name {
-    font-weight: 700 !important; /* سقف أوزان الخطوط للأقسام الكبرى وتأكيد الهوية */
+    font-weight: 700 !important; /* سقف أوزان الخطوط للأقسام الكبرى وتأكيد الهوية وعمل قفل عند وزن 700 */
     color: var(--bose-black) !important;
     line-height: 1.3;
 }
@@ -569,6 +569,48 @@ input:focus, select:focus, textarea:focus {
 }
 
 /* ==========================================================================
+   🚨 تثبيت الـ Ticker (الشريط العلوي المتحرك) وحل ثغرة تآكل النص وقص الحركة 🚨
+   ========================================================================== */
+.bose-ticker-section {
+    width: 100%;
+    background-color: var(--bose-pink) !important; /* اللون البمبي الحاكم كنبض حياة */
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 8px 0;
+    display: flex;
+    align-items: center;
+    box-shadow: var(--bose-shadow-glow);
+    direction: rtl;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.bose-ticker-wrapper {
+    display: flex;
+    width: max-content;
+    animation: boseTickerLoop 25s linear infinite !important;
+    will-change: transform;
+}
+
+.bose-ticker-item {
+    display: inline-flex;
+    align-items: center;
+    color: var(--bose-white) !important; /* تباين ناصع */
+    font-size: 0.9rem;
+    font-weight: 700 !important;
+    padding: 0 30px;
+    gap: 10px;
+}
+
+.bose-ticker-item i {
+    color: var(--bose-gold) !important; /* لمسة ذهبية ناعمة للأيقونات */
+}
+
+@keyframes boseTickerLoop {
+    0% { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(100%, 0, 0); } /* سحب انسيابي متجاوب مع الـ RTL */
+}
+
+/* ==========================================================================
    🧱 شلال المنتجات البصري المطور (Waterfall Section) لتفادي الـ Flicker
    ========================================================================== */
 #waterfall-section {
@@ -1043,7 +1085,7 @@ body.drawer-active {
     left: auto !important;
     width: 64px !important;
     height: 64px !important;
-    z-index: var(--z-index-navbar) !important; /* مرتبط بطبقة تضمن الظهور فوق شلالات الصور والفوتر تماماً */
+    z-index: var(--z-index-navbar) !important; /* مرتبط بطبقة تضمن الظهور فوق شلالات الصور والفوتر تماماً وتحريره من الفوتر */
     pointer-events: auto !important;
 }
 
@@ -1102,38 +1144,38 @@ body.drawer-active {
     border: 2px solid var(--bose-white) !important;
 }
 
-/* هندسة حاوية الإشعارات المركزية لتبث في منتصف أسفل الشاشة تماماً لراحة العميل */
+/* هندسة حاوية الإشعارات المركزية لتبث في منتصف الشاشة لراحة العميل */
 #bose-toast-central-container {
     position: fixed !important;
-    bottom: 110px !important; /* يرتفع بأناقة ملحوظة فوق السلة العائمة ليكون بمركز الانتباه */
+    top: 50% !important;
     left: 50% !important;
-    transform: translate3d(-50%, 0, 0) !important;
-    z-index: var(--z-index-toast) !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 2147483647 !important; /* أقصى طبقة برمجية لتطفو دائماً أمام العميل وحمايتها من التداخل */
     display: flex !important;
     flex-direction: column !important;
     gap: 12px !important;
     pointer-events: none !important;
-    width: 90% !important;
-    max-width: 360px !important;
+    width: auto !important;
     align-items: center !important;
+    justify-content: center !important;
 }
 
 .bose-toast-card {
     background: var(--bose-white) !important;
-    border: 1px solid rgba(255,145,164,0.3) !important;
-    border-bottom: 4px solid var(--bose-pink) !important;
+    border: 2px solid var(--bose-pink) !important;
     border-radius: 16px !important;
     padding: 14px 24px !important;
     box-shadow: 0 12px 32px rgba(255,145,164,0.15) !important;
-    width: 100% !important;
+    min-width: 290px !important;
+    max-width: 380px !important;
     opacity: 0;
-    transform: translate3d(0, 30px, 0) scale(0.95);
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease !important;
+    transform: scale(0.9) !important;
+    transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.35s ease !important;
 }
 
 .bose-toast-card.bose-toast-active {
     opacity: 1 !important;
-    transform: translate3d(0, 0, 0) scale(1) !important;
+    transform: scale(1) !important;
 }
 
 .bose-toast-content {
