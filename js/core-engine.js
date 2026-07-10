@@ -1,5 +1,5 @@
 /**
- * 📑 الدليل الهندسي للمواصفات القياسية الفاخرة - النسخة المكتملة والمطورة V3
+ * 📑 الدليل الهندسي للمواصفات القياسية الفاخرة - النسخة الكاملة والمطورة V4
  * المحرك المركزي العالمي لبناء وضخ الواجهات وعمليات الفحص المالي (js/core-engine.js)
  * براند: حلويات بوسي (BoseSweets) - يمنع الاختصار أو الحذف أو التبسيط نهائياً.
  */
@@ -15,9 +15,11 @@
         
         while (retries > 0) {
             try {
+                // جلب قاعدة البيانات من المسار المعتمد
                 const response = await fetch('data/site-data-final.json');
                 if (!response.ok) throw new Error('فشل جلب ملف قاعدة البيانات الرئيسي.');
                 
+                // [حل الثغرة: تزامن التوقيت المحلي لشرط التحضير]
                 const serverDateHeader = response.headers.get('Date');
                 if (serverDateHeader) {
                     const serverTime = new Date(serverDateHeader).getTime();
@@ -27,22 +29,23 @@
                 
                 window.BoseStoreData = await response.json();
                 
-                // 1. إدارة وضخ العناصر العالمية المشتركة في كل الصفحات
+                // 1. إدارة وضخ العناصر العالمية المشتركة في كل الصفحات لتوحيد الواجهات
                 injectEarlyDependencies();
                 applyGlobalStyles(window.BoseStoreData.store.theme);
                 renderUniversalHeader();
                 renderUniversalSidebar();
                 renderUniversalFooter();
                 
-                // 2. تحديثات الحالة والـ SEO
+                // 2. تحديثات الحالة العامة والـ SEO
                 applyGlobalSEOAndBranding();
                 window.updateGlobalCartCounter();
                 
                 // 3. الفحص الجغرافي: إذا كنا في الصفحة الرئيسية، يتم تفعيل محرك ضخ الأقسام تلقائياً
-                if (document.getElementById('hero-section') || document.querySelector('.waterfall-container') || !!document.getElementById('most-selling-grid')) {
+                if (document.getElementById('hero-section') || document.querySelector('.bose-waterfall-section-container') || !!document.getElementById('most-selling-grid')) {
                     renderMainPageSections();
                 }
                 
+                // تفعيل حدث مخصص لباقي المحركات والملفات المعتمدة على البيانات لمنع التعارض
                 document.dispatchEvent(new CustomEvent('BoseDatabaseLoaded', { detail: window.BoseStoreData }));
                 return;
             } catch (error) {
@@ -63,13 +66,8 @@
        ========================================================================== */
 
     function renderUniversalHeader() {
-        // البحث عن وسم الـ header المشترك في خريطة الـ DOM
         let headerEl = document.querySelector('header.bose-navbar');
-        if (!headerEl) {
-            headerEl = document.createElement('header');
-            headerEl.className = 'bose-navbar';
-            document.body.insertBefore(headerEl, document.body.firstChild);
-        }
+        if (!headerEl) return; // الامتثال لهيكل الصفحة المقيد
         
         headerEl.innerHTML = `
             <div class="navbar-mobile-wrapper">
@@ -104,79 +102,79 @@
     }
 
     function renderUniversalSidebar() {
-        if (document.getElementById('bose-side-menu')) return;
+        if (document.getElementById('sidebar-drawer')) return;
         
         const sidebar = document.createElement('div');
-        sidebar.id = 'bose-side-menu';
-        sidebar.className = 'bose-sidebar-wrapper';
+        sidebar.id = 'sidebar-drawer';
+        sidebar.className = 'bose-drawer-menu';
         sidebar.innerHTML = `
-            <div class="sidebar-overlay" id="sidebar-close-overlay"></div>
-            <div class="sidebar-content-panel">
-                <div class="sidebar-header-block">
-                    <span class="sidebar-title-text">تصفح أقسامنا</span>
-                    <button id="sidebar-close-btn" class="sidebar-close-icon"><i class="fas fa-times"></i></button>
+            <div class="drawer-overlay" id="sidebar-close-overlay"></div>
+            <div class="search-modal-box" style="position: fixed; right: 0; top: 0; width: 340px; max-width: 85vw; height: 100vh; background: #fff; padding: 0; display: flex; flex-direction: column;">
+                <div class="drawer-premium-header">
+                    <h3>تصفح أقسامنا الفاخرة</h3>
+                    <p>حلويات بوسي - صنعناها بحب</p>
+                    <button id="sidebar-close-btn" class="drawer-close-btn"><i class="fas fa-times"></i></button>
                 </div>
-                <div class="sidebar-logo-hero">
-                    <img src="${window.BoseStoreData.store.logo}" alt="حلويات بوسي">
-                    <span class="brand-name-display">حلويات بوسي</span>
+                <div class="drawer-links-scrollable">
+                    <ul class="drawer-links-list">
+                        <li class="drawer-link-item"><a href="index.html"><i class="fas fa-home"></i> الرئيسية</a></li>
+                        <li class="drawer-link-item"><a href="menu.html"><i class="fas fa-utensils"></i> المنيو الشامل</a></li>
+                        <li class="drawer-link-item"><a href="cake-builder.html"><i class="fas fa-birthday-cake"></i> محاكي التورت التفاعلي</a></li>
+                        <li class="drawer-link-item"><a href="flower-builder.html"><i class="fas fa-seedling"></i> محاكي الورد التفاعلي</a></li>
+                        <li class="drawer-link-item"><a href="cart.html"><i class="fas fa-shopping-basket"></i> سلة المشتريات</a></li>
+                        <li class="drawer-link-item"><a href="checkout.html"><i class="fas fa-credit-card"></i> إتمام الطلب الشامل</a></li>
+                    </ul>
                 </div>
-                <ul class="sidebar-links-list">
-                    <li><a href="index.html"><i class="fas fa-home"></i> الرئيسية</a></li>
-                    <li><a href="menu.html"><i class="fas fa-utensils"></i> المنيو الشامل</a></li>
-                    <li><a href="cake-builder.html"><i class="fas fa-birthday-cake"></i> محاكي التورت التفاعلي</a></li>
-                    <li><a href="flower-builder.html"><i class="fas fa-seedling"></i> محاكي الورد التفاعلي</a></li>
-                    <li><a href="cart.html"><i class="fas fa-shopping-basket"></i> سلة المشتريات</a></li>
-                    <li><a href="checkout.html"><i class="fas fa-credit-card"></i> إتمام الطلب الشامل</a></li>
-                </ul>
             </div>
         `;
         document.body.appendChild(sidebar);
 
-        // ربط أحداث القائمة المتطورة الذكية فوراً
+        // ربط أحداث القائمة المتطورة الانسيابية فوراً للموبايل والكمبيوتر
         setTimeout(() => {
             const toggleBtn = document.getElementById('mobile-menu-toggle');
             const closeBtn = document.getElementById('sidebar-close-btn');
             const overlay = document.getElementById('sidebar-close-overlay');
-            const menuPanel = document.getElementById('bose-side-menu');
+            const menuPanel = document.getElementById('sidebar-drawer');
 
             if (toggleBtn) {
-                toggleBtn.addEventListener('click', () => menuPanel.classList.add('sidebar-active'));
+                toggleBtn.addEventListener('click', () => {
+                    menuPanel.classList.add('active');
+                    overlay.classList.add('active');
+                    document.body.classList.add('drawer-active');
+                });
             }
-            if (closeBtn) {
-                closeBtn.addEventListener('click', () => menuPanel.classList.remove('sidebar-active'));
-            }
-            if (overlay) {
-                overlay.addEventListener('click', () => menuPanel.classList.remove('sidebar-active'));
-            }
+            const closeMenu = () => {
+                menuPanel.classList.remove('active');
+                overlay.classList.remove('active');
+                document.body.classList.remove('drawer-active');
+            };
+            if (closeBtn) closeBtn.addEventListener('click', closeMenu);
+            if (overlay) overlay.addEventListener('click', closeMenu);
         }, 100);
     }
 
     function renderUniversalFooter() {
         let footerEl = document.querySelector('footer.bose-footer');
-        if (!footerEl) {
-            footerEl = document.createElement('footer');
-            footerEl.className = 'bose-footer';
-            document.body.appendChild(footerEl);
-        }
+        if (!footerEl) return;
         
         footerEl.innerHTML = `
             <div class="footer-logo-container">
                 <a href="index.html">
-                    <img id="bose-store-logo" src="${window.BoseStoreData.store.logo}" alt="شعار حلويات بوسي">
+                    <img id="bose-footer-logo-node" src="${window.BoseStoreData.store.logo}" alt="شعار حلويات بوسي">
                 </a>
             </div>
             <span class="brand-name-display footer-brand-name">حلويات بوسي</span>
             <div class="footer-about-block">
                 <p id="footer-about-text">${window.BoseStoreData.footer.about}</p>
             </div>
-            <div id="footer-social-links">
+            <div id="footer-social-links" class="bose-social-links-wrapper">
                 <a href="${window.BoseStoreData.social.facebook}" class="social-link-facebook" target="_blank" aria-label="فيسبوك حلويات بوسي"><i class="fab fa-facebook-f"></i></a>
                 <a href="${window.BoseStoreData.social.instagram}" class="social-link-instagram" target="_blank" aria-label="انستجرام حلويات بوسي"><i class="fab fa-instagram"></i></a>
                 <a href="${window.BoseStoreData.social.tiktok}" class="social-link-tiktok" target="_blank" aria-label="تيك توك حلويات بوسي"><i class="fab fa-tiktok"></i></a>
-                <a href="https://wa.me/${window.BoseStoreData.social.whatsapp}" class="social-link-whatsapp" target="_blank" aria-label="واتساب حلويات بوسي"><i class="fab fa-whatsapp"></i></a>
+                <a href="https://wa.me/${window.BoseStoreData.sanitizeBosePhoneNumber(window.BoseStoreData.social.whatsapp)}" class="social-link-whatsapp" target="_blank" aria-label="واتساب حلويات بوسي"><i class="fab fa-whatsapp"></i></a>
             </div>
-            <div class="footer-policies-container">
-                <ul class="footer-policies-list">
+            <div class="footer-policies-container" id="bose-footer-policies">
+                <ul class="nav-list" style="justify-content: center; gap: 16px; flex-wrap: wrap; list-style: none;">
                     <li><a href="privacy-policy.html">سياسة الخصوصية</a></li>
                     <li><a href="refund-policy.html">سياسة الاسترجاع</a></li>
                     <li><a href="shipping-policy.html">سياسة الطلبات</a></li>
@@ -190,68 +188,162 @@
     }
 
     /* ==========================================================================
-       🏪 محرك الصفحة الرئيسية والأقسام العشرة (Main Page Layout Engine)
+       🏪 محرك الصفحة الرئيسية وضخ الأقسام (Main Page Layout Engine)
        ========================================================================== */
 
     function renderMainPageSections() {
         const data = window.BoseStoreData;
 
-        // شريط علوي متحرك (#top-bar-marquee)
-        const topBar = document.getElementById('top-bar-marquee');
-        if (topBar && data.navigation.topBarMessages) {
-            let messagesHTML = data.navigation.topBarMessages.map(msg => `<span class="marquee-item">${msg}</span>`).join('');
-            topBar.innerHTML = `<div class="animate-marquee">${messagesHTML}${messagesHTML}</div>`;
+        // ضخ رسائل الهيرو والأوصاف لمنع الفراغات البصرية
+        const heroDesc = document.getElementById('hero-description');
+        const heroBtn = document.getElementById('hero-cta-btn');
+        if (heroDesc) heroDesc.textContent = data.homepage.hero.description;
+        if (heroBtn) {
+            heroBtn.textContent = data.homepage.hero.cta;
+            heroBtn.href = "menu.html";
         }
 
-        // قسم شلال المنتجات البصري الأنيق (#waterfall-section)
+        // شريط علوي متحرك (#top-bar-marquee-track) لضمان حركة لانهائية بدون أي فراغات
+        const tickerTrack = document.getElementById('top-bar-marquee-track');
+        if (tickerTrack && data.navigation.topBarMessages) {
+            let messagesHTML = data.navigation.topBarMessages.map(msg => `
+                <span class="bose-ticker-item"><i class="fas fa-sparkles"></i> ${msg}</span>
+            `).join('');
+            tickerTrack.innerHTML = `${messagesHTML}${messagesHTML}`;
+        }
+
+        // قسم شلال المنتجات البصري الأنيق المتعاكس الحركة بدون فراغات بصرية
         const leftCol = document.getElementById('waterfall-left-col');
         const rightCol = document.getElementById('waterfall-right-col');
         if (leftCol && rightCol && data.homepage.waterfall) {
-            leftCol.innerHTML = `<div class="waterfall-up">${data.homepage.waterfall.leftColumnImages.map(img => `<img src="${img}" alt="شلال بوسي الفاخر">`).join('')}${data.homepage.waterfall.leftColumnImages.map(img => `<img src="${img}" alt="شلال بوسي الفاخر">`).join('')}</div>`;
-            rightCol.innerHTML = `<div class="waterfall-down">${data.homepage.waterfall.rightColumnImages.map(img => `<img src="${img}" alt="شلال بوسي الفاخر">`).join('')}${data.homepage.waterfall.rightColumnImages.map(img => `<img src="${img}" alt="شلال بوسي الفاخر">`).join('')}</div>`;
+            let leftHTML = data.homepage.waterfall.leftColumnImages.map(img => `<img src="${img}" alt="شلال بوسي الفاخر">`).join('');
+            let rightHTML = data.homepage.waterfall.rightColumnImages.map(img => `<img src="${img}" alt="شلال بوسي الفاخر">`).join('');
+            leftCol.innerHTML = `<div class="waterfall-up">${leftHTML}${leftHTML}</div>`;
+            rightCol.innerHTML = `<div class="waterfall-down">${rightHTML}${rightHTML}</div>`;
         }
 
-        // قسم عقد من الإتقان (#excellence-section) - السلايدر الأفقي المتصل
+        // قسم عقد من الإتقان (#excellence-images-track) - مجرى حركة أفقي تلقائي متصل لملء الشاشة
         const excellenceTrack = document.getElementById('excellence-images-track');
-        if (excellenceTrack && data.homepage.excellence) {
-            let trackHTML = data.homepage.excellence.images.map(img => `<a href="menu.html" class="excellence-link-item"><img src="${img}" alt="إتقان حلويات بوسي"></a>`).join('');
-            excellenceTrack.innerHTML = `${trackHTML}${trackHTML}`;
-        }
-
-        // الأقسام الديناميكية وشبكات المنتجات (الأكثر مبيعاً، وصل حديثاً، منتجاتنا)
-        injectProductGrid('most-selling-grid', data.homepage.mostSelling);
-        injectProductGrid('new-arrivals-grid', data.homepage.newArrivals);
-        injectProductsOurSection();
-
-        // قسم الفخر والاعتزاز (#pride-section) - العدادات التصاعدية
-        const statsContainer = document.querySelector('.stats-container');
-        if (statsContainer && data.homepage.pride.stats) {
-            const stats = data.homepage.pride.stats;
-            statsContainer.innerHTML = Object.keys(stats).map(key => `
-                <div class="stat-card">
-                    <span class="stat-number" data-target="${stats[key].value}">0</span><span class="stat-suffix">${stats[key].suffix}</span>
-                    <h3 class="stat-label">${stats[key].label}</h3>
+        const excellenceTitle = document.getElementById('excellence-title');
+        const excellenceDesc = document.getElementById('excellence-description');
+        if (excellenceTitle) excellenceTitle.textContent = data.homepage.excellence.title;
+        if (excellenceDesc) excellenceDesc.textContent = data.homepage.excellence.description;
+        if (excellenceTrack && data.homepage.excellence.images) {
+            let trackHTML = data.homepage.excellence.images.map(img => `
+                <div class="bose-perfection-card" onclick="window.location.href='menu.html'">
+                    <div class="perfection-card-img-holder">
+                        <img src="${img}" alt="إتقان حلويات بوسي">
+                    </div>
                 </div>
             `).join('');
+            excellenceTrack.innerHTML = `${trackHTML}${trackHTML}`;
+            renderDotsSystem('excellence-dots', data.homepage.excellence.images.length);
+        }
+
+        // ضخ نصوص المحاكيات (التورت والورد) وصمامات الأمان الخاصة بها
+        const cakeTitle = document.getElementById('cake-preview-title');
+        const cakeDesc = document.getElementById('cake-preview-desc');
+        const cakeCta = document.getElementById('cake-preview-cta');
+        const cakeImg = document.getElementById('cake-preview-img');
+        if (cakeTitle) cakeTitle.textContent = data.homepage.cakePreview.title;
+        if (cakeDesc) cakeDesc.textContent = data.homepage.cakePreview.description;
+        if (cakeCta) {
+            cakeCta.textContent = data.homepage.cakePreview.cta;
+            cakeCta.href = data.homepage.cakePreview.target;
+        }
+        if (cakeImg) cakeImg.src = data.homepage.cakePreview.image;
+
+        const flowerTitle = document.getElementById('flower-preview-title');
+        const flowerDesc = document.getElementById('flower-preview-desc');
+        const flowerCta = document.getElementById('flower-preview-cta');
+        const flowerImg = document.getElementById('flower-preview-img');
+        if (flowerTitle) flowerTitle.textContent = data.homepage.flowerPreview.title;
+        if (flowerDesc) flowerDesc.textContent = data.homepage.flowerPreview.description;
+        if (flowerCta) {
+            flowerCta.textContent = data.homepage.flowerPreview.cta;
+            flowerCta.href = data.homepage.flowerPreview.target;
+        }
+        if (flowerImg) flowerImg.src = data.homepage.flowerPreview.image;
+
+        // ضخ شبكات العناوين للمجموعات (الأكثر مبيعاً، وصل حديثاً)
+        const msTitle = document.getElementById('most-selling-title');
+        const msDesc = document.getElementById('most-selling-description');
+        if (msTitle) msTitle.textContent = "الأكثر مبيعاً";
+        if (msDesc) msDesc.textContent = "تشكيلة حصرية من الأصناف الأكثر طلباً وشهية التي نالت ثقة عملائنا.";
+        injectProductGrid('most-selling-grid', data.homepage.mostSelling);
+        renderDotsSystem('most-selling-dots', 4);
+
+        const naTitle = document.getElementById('new-arrivals-title');
+        const naDesc = document.getElementById('new-arrivals-description');
+        if (naTitle) naTitle.textContent = "وصل حديثاً";
+        if (naDesc) naDesc.textContent = "اكتشف أحدث ابتكارات وتوليفات نكهاتنا المبتكرة والفريدة المصنوعة بشغف.";
+        injectProductGrid('new-arrivals-grid', data.homepage.newArrivals);
+        renderDotsSystem('new-arrivals-dots', 3);
+
+        // قسم منتجاتنا - التوزيع الثنائي المتوازن الصارم (4 كروت أولية وعرض ديناميكي)
+        const ourTitle = document.getElementById('our-products-title');
+        const ourDesc = document.getElementById('our-products-description');
+        if (ourTitle) ourTitle.textContent = "منتجاتنا الفاخرة";
+        if (ourDesc) ourDesc.textContent = "استعرض التشكيلة الكاملة والمنوعة المعدة طازجة يومياً بمكونات طبيعية 100%.";
+        injectProductsOurSection();
+
+        // قسم الفخر والاعتزاز - العدادات الرقمية التصاعدية الذكية لمنع الـ NaN
+        const prideTitle = document.getElementById('pride-main-title');
+        const prideText = document.getElementById('pride-main-text');
+        if (prideTitle) prideTitle.textContent = data.homepage.pride.title;
+        if (prideText) prideText.textContent = data.homepage.pride.text;
+        
+        const stats = data.homepage.pride.stats;
+        if (stats) {
+            setupStatNode('stat-years-value', 'stat-years-label', stats.years);
+            setupStatNode('stat-customers-value', 'stat-customers-label', stats.customers);
+            setupStatNode('stat-orders-value', 'stat-orders-label', stats.orders);
+            setupStatNode('stat-cakes-value', 'stat-cakes-label', stats.cakes);
+            setupStatNode('stat-bouquets-value', 'stat-bouquets-label', stats.bouquets);
             triggerCounterAnimations();
         }
 
-        // قسم تسوق حسب الفئة (#categories-slider-section) - كروت الفئات الأكبر بـ 30%
+        // قسم تسوق حسب الفئة - مجرى الـ 12 كارت ذو الوزن البصري الأكبر بـ 30%
+        const catTitle = document.getElementById('categories-section-title');
+        const catDesc = document.getElementById('categories-section-subtitle');
+        if (catTitle) catTitle.textContent = "تسوق حسب الفئة";
+        if (catDesc) catDesc.textContent = "انتقل مباشرة وبكل سهولة إلى فئتك المفضلة لاستكشاف نكهاتها الخاصة وأسعارها.";
+        
         const categoriesTrack = document.getElementById('categories-track');
         if (categoriesTrack && data.homepage.categoriesSlider) {
             let catHTML = data.homepage.categoriesSlider.map(cat => `
-                <div class="category-slider-card" onclick="window.location.href='category.html?id=${cat.id}'">
+                <div class="category-slide-card" onclick="window.location.href='category.html?id=${cat.id}'" style="flex-shrink:0; cursor:pointer;">
                     <img src="${cat.image}" alt="${cat.title}">
-                    <span class="category-card-title">${cat.title}</span>
+                    <span class="brand-name-display" style="display:block; text-align:center; margin-top:12px; font-size:20px; font-weight:700;">${cat.title}</span>
                 </div>
             `).join('');
-            categoriesTrack.innerHTML = `<div class="categories-track-loop">${catHTML}${catHTML}</div>`;
+            categoriesTrack.innerHTML = `${catHTML}${catHTML}`;
+            renderDotsSystem('categories-dots', data.homepage.categoriesSlider.length);
         }
     }
 
-    /**
-     * دالة حقن شبكات المنتجات القياسية لالتزام الهيكل الموحد للكارت بالمسطرة
-     */
+    function setupStatNode(valId, labelId, statObj) {
+        const valEl = document.getElementById(valId);
+        const labelEl = document.getElementById(labelId);
+        if (valEl && labelEl && statObj) {
+            valEl.setAttribute('data-target', statObj.value);
+            valEl.textContent = "0";
+            labelEl.textContent = statObj.label;
+            // إضافة اللاحقة للـ DOM بجانب الرقم برمجياً لحفظ الهيكل الموحد بالمسطرة
+            valEl.insertAdjacentHTML('afterend', `<span class="stat-suffix" style="font-size:24px; font-weight:700; color:var(--bose-black);">${statObj.suffix}</span>`);
+        }
+    }
+
+    function renderDotsSystem(containerId, count) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        let dotsHTML = '';
+        for (let i = 0; i < count; i++) {
+            dotsHTML += `<button class="bose-dot ${i === 0 ? 'active' : ''}"></button>`;
+        }
+        container.innerHTML = dotsHTML;
+    }
+
     function injectProductGrid(targetId, slugList) {
         const gridContainer = document.getElementById(targetId);
         if (!gridContainer || !slugList) return;
@@ -261,9 +353,6 @@
         bindCardEvents(gridContainer);
     }
 
-    /**
-     * معالجة خاصة وفصل هندسي لقسم منتجاتنا (Section 06) لعرض 4 كروت أولاً ثم ضخ الباقي
-     */
     function injectProductsOurSection() {
         const gridContainer = document.getElementById('our-products-grid');
         if (!gridContainer) return;
@@ -271,14 +360,15 @@
         const allSlugs = window.BoseStoreData.homepage.ourProducts;
         const allProducts = window.BoseStoreData.products.filter(p => allSlugs.includes(p.slug));
         
-        // عرض أول 4 كروت فقط لضمان التنفس البصري
+        // التوزيع الشبكي الملتزم: عرض 4 كروت أولية فقط للتنفس البصري
         const initialProducts = allProducts.slice(0, 4);
         gridContainer.innerHTML = initialProducts.map(p => createStrictProductCardHTML(p)).join('');
         bindCardEvents(gridContainer);
 
         const showMoreBtn = document.getElementById('our-products-show-more');
         if (showMoreBtn) {
-            showMoreBtn.addEventListener('click', () => {
+            showMoreBtn.textContent = "إظهار المزيد";
+            showMoreBtn.onclick = () => {
                 const remainingProducts = allProducts.slice(4);
                 const tempDiv = document.createElement('div');
                 tempDiv.innerHTML = remainingProducts.map(p => createStrictProductCardHTML(p)).join('');
@@ -287,39 +377,38 @@
                     gridContainer.appendChild(tempDiv.firstChild);
                 }
                 bindCardEvents(gridContainer);
-                showMoreBtn.style.display = 'none'; // إخفاء الزر بعد اكتمال الشبكة بـ 8 كروت
-            });
+                showMoreBtn.style.display = 'none'; // إخفاء الزر بعد اكتمال الشبكة بـ 8 كروت كاملة
+            };
         }
     }
 
-    /**
-     * إنتاج وتوليد وسم كارت المنتج الفاخر الموحد والمطابق للمواصفة القياسية بالمليم
-     */
     function createStrictProductCardHTML(product) {
         const displayPrice = window.calculateBosePrice(product.price || product.basePrice, "menu-only");
-        const flavorDisplay = product.flavorName ? `<span class="product-card-flavor-name">${product.flavorName}</span>` : '';
+        const flavorDisplay = product.flavorName ? `<span class="product-card-flavor-name" style="color:var(--bose-pink); font-size:0.85rem; font-weight:700; display:block; margin:4px 0;">${product.flavorName}</span>` : '';
         
         return `
-            <div class="product-strict-card" data-slug="${product.slug}">
-                <img class="product-card-img" src="${product.images[0]}" alt="${product.title}" onclick="window.location.href='product.html?slug=${product.slug}'">
-                <h3 class="product-card-title" onclick="window.location.href='product.html?slug=${product.slug}'">${product.title}</h3>
-                ${flavorDisplay}
-                <p class="product-card-desc">${product.flavorDesc || product.description.substring(0, 85) + '...'}</p>
-                
-                <div class="product-card-qty-control-block">
-                    <button class="btn-qty-minus"><i class="fas fa-minus"></i></button>
-                    <input class="input-qty-value" type="number" value="1" min="1" readonly>
-                    <button class="btn-qty-plus"><i class="fas fa-plus"></i></button>
+            <div class="product-card" data-slug="${product.slug}" style="display:flex; flex-direction:column; justify-content:space-between;">
+                <div class="product-card-top" onclick="window.location.href='product.html?slug=${product.slug}'" style="cursor:pointer;">
+                    <img class="product-card-img" src="${product.images[0]}" alt="${product.title}">
+                    <h3 class="product-card-title" style="margin-top:8px; font-size:1rem;">${product.title}</h3>
+                    ${flavorDisplay}
+                    <p class="product-card-desc" style="font-size:0.8rem; opacity:0.7; margin:6px 0; line-height:1.4;">${product.flavorDesc || product.description.substring(0, 75) + '...'}</p>
                 </div>
-                
-                <div class="product-card-price">${Math.round(displayPrice)} جنيه</div>
-                <button class="btn-add-to-cart">اضافة للسلة</button>
+                <div class="product-card-bottom" style="margin-top:auto;">
+                    <div style="display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:12px; direction:ltr;">
+                        <button class="btn-qty-plus" style="width:30px; height:30px; background:rgba(255,145,164,0.1); color:var(--bose-pink); border-radius:50%; font-weight:700; cursor:pointer;">+</button>
+                        <input class="input-qty-value" type="number" value="1" min="1" readonly style="width:40px; text-align:center; font-weight:700; border:none; color:var(--bose-black);">
+                        <button class="btn-qty-minus" style="width:30px; height:30px; background:rgba(255,145,164,0.1); color:var(--bose-pink); border-radius:50%; font-weight:700; cursor:pointer;">-</button>
+                    </div>
+                    <div class="product-card-price" style="text-align:center; font-size:1.1rem; margin-bottom:8px;">${Math.round(displayPrice)} جنيه</div>
+                    <button class="btn-add-to-cart" style="width:100%; padding:10px; background:var(--bose-pink); color:#fff; border-radius:12px; font-weight:700; cursor:pointer; transition:var(--bose-transition-smooth);">اضافة للسلة</button>
+                </div>
             </div>
         `;
     }
 
     function bindCardEvents(container) {
-        container.querySelectorAll('.product-strict-card').forEach(card => {
+        container.querySelectorAll('.product-card').forEach(card => {
             const minusBtn = card.querySelector('.btn-qty-minus');
             const plusBtn = card.querySelector('.btn-qty-plus');
             const qtyInput = card.querySelector('.input-qty-value');
@@ -342,7 +431,6 @@
                     const product = window.BoseStoreData.products.find(p => p.slug === slug);
                     if (product) {
                         const qty = parseInt(qtyInput.value, 10) || 1;
-                        // تمرير كود التهيئة وحماية البيانات المالية للسلة الموحدة
                         const cartItem = window.createCartItem(product, {}, qty);
                         
                         let rawCart = localStorage.getItem('bose_cart');
@@ -358,30 +446,38 @@
                         localStorage.setItem('bose_cart', JSON.stringify(cart));
                         window.updateGlobalCartCounter();
                         
-                        // إشعار تفاعلي راقٍ وقصير ممتثل للهوية
-                        addToCartBtn.textContent = "تمت الإضافة";
-                        addToCartBtn.style.backgroundColor = "var(--bose-gold)";
-                        setTimeout(() => {
-                            addToCartBtn.textContent = "اضافة للسلة";
-                            addToCartBtn.style.backgroundColor = "var(--bose-pink)";
-                        }, 1200);
+                        // تنشيط شريط الإشعارات والتوست المركزي الموثق لراحة العميل
+                        showCentralToast("تمت إضافة المنتج إلى السلة.");
                     }
                 };
             }
         });
     }
 
+    function showCentralToast(msg) {
+        const container = document.getElementById('bose-toast-central-container');
+        if (!container) return;
+        const toast = document.createElement('div');
+        toast.className = 'bose-toast-card bose-toast-active';
+        toast.innerHTML = `<div class="bose-toast-content"><p class="bose-toast-text">${msg}</p></div>`;
+        container.appendChild(toast);
+        setTimeout(() => {
+            toast.classList.add('bose-toast-fadeout');
+            setTimeout(() => toast.remove(), 400);
+        }, 2000);
+    }
+
     function triggerCounterAnimations() {
         const counters = document.querySelectorAll('.stat-number');
         counters.forEach(counter => {
             const target = +counter.getAttribute('data-target');
-            const speed = 200;
+            const speed = 100;
             const updateCount = () => {
                 const count = +counter.innerText;
                 const inc = target / speed;
                 if (count < target) {
                     counter.innerText = Math.ceil(count + inc);
-                    setTimeout(updateCount, 1);
+                    setTimeout(updateCount, 15);
                 } else {
                     counter.innerText = target;
                 }
@@ -475,7 +571,7 @@
         const safePersons = parseInt(persons, 10) || 10;
         let price = (config ? config.basePrice : 580) || 580;
         const minPersons = (config ? config.persons.minimum : 10) || 10;
-        const pricePerPerson = (config ? config.pricePerPerson : 145) || 145;
+        const pricePerPerson = (config ? config.pricePerPerson : 145) || 145; // الالتزام التام بـ 145 جنيهاً للفرد
         
         const extraPersons = Math.max(0, safePersons - minPersons);
         price += extraPersons * pricePerPerson;
@@ -507,6 +603,7 @@
         const safeCashAmount = parseInt(options.moneyAmount, 10) || 0;
         const safeCashCategoryAmount = parseInt(options.moneyCategoryAmount, 10) || 0;
         const safeChocolatePieces = parseInt(options.chocolatePieces, 10) || 0;
+        const safePhotoCount = parseInt(options.photoCount, 10) || 0;
         
         let servicePrice = config.basePrice || 400;
         const extraFlowers = Math.max(0, safeFlowerCount - config.baseFlowers);
@@ -520,6 +617,8 @@
             const chocOpt = config.chocolateTypes.find(opt => opt.id === options.chocolateType);
             if (chocOpt) servicePrice += chocOpt.price * safeChocolatePieces;
         }
+        if (options.hasGiftCard) servicePrice += config.giftCardPrice || 20;
+        if (safePhotoCount > 0) servicePrice += safePhotoCount * (config.photoPrintPrice || 15);
         
         let cashHandlingFee = 0;
         if (safeCashAmount > 0 && safeCashCategoryAmount > 0) {
@@ -527,6 +626,13 @@
             if (selectedCategory) {
                 const billCount = Math.floor(safeCashAmount / safeCashCategoryAmount);
                 cashHandlingFee += billCount * selectedCategory.fee;
+                const remainder = safeCashAmount % safeCashCategoryAmount;
+                if (remainder > 0) {
+                    const remainderCategory = config.moneyCategories
+                        .filter(cat => cat.amount <= remainder)
+                        .sort((a, b) => b.amount - a.amount)[0] || config.moneyCategories[0];
+                    if (remainderCategory) cashHandlingFee += remainderCategory.fee;
+                }
             }
         }
         
@@ -545,6 +651,7 @@
         let cleaned = phone.trim().replace(/[\s\-\(\)\+]/g, "");
         if (cleaned.startsWith("201")) cleaned = "0" + cleaned.substring(2);
         else if (cleaned.startsWith("00201")) cleaned = "0" + cleaned.substring(4);
+        else if (cleaned.startsWith("1") && cleaned.length === 10) cleaned = "0" + cleaned;
         return cleaned;
     };
 
@@ -555,9 +662,38 @@
         return (selectedDateTime - new Date(synchronizedTime)) / (1000 * 60 * 60) >= 23.95;
     };
 
+    window.updateGlobalCartCounter = function() {
+        const cartCountBadge = document.getElementById('nav-cart-count');
+        if (!cartCountBadge) return;
+        
+        const rawCart = localStorage.getItem('bose_cart');
+        const cart = rawCart ? JSON.parse(rawCart) : [];
+        
+        let totalDisplayItems = 0;
+        cart.forEach(item => {
+            const isBespokeOrCustom = item.type === "custom-cake" || item.type === "custom-flower" || item.type === "mini-cake" || (item.id && item.id.includes("-"));
+            totalDisplayItems += isBespokeOrCustom ? 1 : (parseInt(item.quantity, 10) || 1);
+        });
+        cartCountBadge.textContent = totalDisplayItems;
+    };
+
+    window.onBoseDatabaseReady = function(callback) {
+        if (window.BoseStoreData && window.BoseStoreData.store) {
+            callback(window.BoseStoreData);
+        } else {
+            const handleLoaded = (e) => {
+                callback(e.detail);
+                document.removeEventListener('BoseDatabaseLoaded', handleLoaded);
+            };
+            document.addEventListener('BoseDatabaseLoaded', handleLoaded);
+        }
+    };
+
     function applyGlobalSEOAndBranding() {
         if (!window.BoseStoreData) return;
         document.title = window.BoseStoreData.seo.title;
+        const logoImgs = document.querySelectorAll('img#bose-store-logo');
+        logoImgs.forEach(img => { img.src = window.BoseStoreData.store.logo; });
     }
 
     function injectEarlyDependencies() {
@@ -573,49 +709,27 @@
         }
     }
 
-    function styleSidebarMenu(theme) {
-        if (document.getElementById('bose-sidebar-custom-styles')) return;
-        const style = document.createElement('style');
-        style.id = 'bose-sidebar-custom-styles';
-        style.textContent = `
-            .bose-sidebar-wrapper { position: fixed; top: 0; right: -100%; width: 100%; height: 100%; z-index: 999999; transition: right 0.4s ease; }
-            .bose-sidebar-wrapper.sidebar-active { right: 0; }
-            .sidebar-overlay { position: absolute; width: 100%; height: 100%; background: rgba(0,0,0,0.4); }
-            .sidebar-content-panel { position: absolute; right: 0; width: 280px; height: 100%; background: #FFF; box-shadow: -4px 0 24px rgba(0,0,0,0.15); display: flex; flex-direction: column; padding: 20px; }
-            .sidebar-header-block { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,145,164,0.2); padding-bottom: 15px; }
-            .sidebar-title-text { font-weight: 700; color: #111; font-size: 18px; }
-            .sidebar-close-icon { background: none; border: none; font-size: 20px; color: #111; cursor: pointer; }
-            .sidebar-logo-hero { text-align: center; padding: 25px 0; }
-            .sidebar-logo-hero img { width: 80px; height: 80px; border-radius: 50%; border: 2px solid ${theme.primary}; }
-            .sidebar-links-list { list-style: none; padding: 0; margin: 0; }
-            .sidebar-links-list li a { display: block; padding: 14px 10px; color: #111; text-decoration: none; font-weight: 600; border-radius: 8px; transition: all 0.2s; }
-            .sidebar-links-list li a:hover { background: rgba(255,145,164,0.1); color: ${theme.primary}; }
-            .sidebar-links-list li a i { margin-left: 8px; color: ${theme.secondary}; }
-        `;
-        document.head.appendChild(style);
-    }
-
     function applyGlobalStyles(theme) {
-        styleSidebarMenu(theme);
         if (document.getElementById('bose-global-dynamic-styles')) return;
         const styleElement = document.createElement('style');
         styleElement.id = 'bose-global-dynamic-styles';
         styleElement.textContent = `
-            :root {
-                --bose-pink: ${theme.primary || '#FF91A4'};
-                --bose-white: ${theme.background || '#FFFFFF'};
-                --bose-black: ${theme.text || '#111111'};
-                --bose-gold: ${theme.secondary || '#D4AF37'};
-                --bose-shadow-glow: 0 8px 32px rgba(255, 145, 164, 0.12);
-                --bose-shadow-hover: 0 16px 40px rgba(255, 145, 164, 0.22);
-                --bose-border-pink: 1px solid rgba(255, 145, 164, 0.3);
-                --bose-border-thick: 2px solid ${theme.primary || '#FF91A4'};
-            }
-            body { font-family: 'Cairo', sans-serif !important; background-color: var(--bose-white) !important; color: var(--bose-black) !important; margin: 0; padding: 0; overflow-x: hidden; }
-            h1, h2 { font-family: 'Cairo', sans-serif !important; font-weight: 700 !important; color: var(--bose-black) !important; }
-            h3, h4 { font-family: 'Cairo', sans-serif !important; font-weight: 600 !important; color: var(--bose-black) !important; }
+            @keyframes boseMarquee { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-50%, 0, 0); } }
+            @keyframes boseWaterfallUp { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(0, -50%, 0); } }
+            @keyframes boseWaterfallDown { 0% { transform: translate3d(0, -50%, 0); } 100% { transform: translate3d(0, 0, 0); } }
+            .animate-marquee { display: flex; width: max-content; animation: boseMarquee 25s linear infinite; will-change: transform; }
+            .waterfall-up { animation: boseWaterfallUp 40s linear infinite; will-change: transform; }
+            .waterfall-down { animation: boseWaterfallDown 40s linear infinite; will-change: transform; }
+            .categories-track-loop { display: flex; width: max-content; animation: boseMarquee 30s linear infinite; will-change: transform; }
         `;
         document.head.appendChild(styleElement);
+    }
+
+    function showGlobalFriendlyError() {
+        const errorDiv = document.createElement('div');
+        errorDiv.style = 'position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#FF91A4; color:#FFF; padding:12px 24px; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.15); z-index:99999; direction:rtl; font-size:14px;';
+        errorDiv.textContent = 'عذراً، نواجه صعوبة في الاتصال بالخادم حالياً. يرجى إعادة محاولة تحميل الصفحة.';
+        document.body.appendChild(errorDiv);
     }
 
     loadStoreDatabase();
