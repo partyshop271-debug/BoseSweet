@@ -43,7 +43,6 @@ body.bose-hardware-accelerated {
     left: 0;
     right: 0;
     bottom: 0;
-    /* 🎨 تم التطهير وحظر التعتيم الأسود القاسي لضمان فخامة العرض والتنفس البصري */
     background: linear-gradient(to top, rgba(255, 145, 164, 0.15) 0%, rgba(255, 255, 255, 0) 100%);
     display: flex;
     flex-direction: column;
@@ -57,14 +56,14 @@ body.bose-hardware-accelerated {
 }
 
 .bose-hero-title {
-    color: var(--bose-black) !important; /* قفل تلوين النص بالأسود الصريح الشرعي للعناوين */
+    color: var(--bose-black) !important;
     font-size: 1.85rem;
     font-weight: 700 !important;
     line-height: 1.3;
     margin-bottom: 12px;
 }
 
-.bose-hero-title .bose-highlight-pink {
+.bose-hero-title span.pink-highlight {
     color: var(--bose-pink) !important;
 }
 
@@ -86,12 +85,13 @@ body.bose-hardware-accelerated {
     padding: 12px 40px;
     border-radius: 50px;
     text-decoration: none;
-    transition: var(--bose-transition-smooth);
+    transition: var(--bose-transition-smooth, 0.3s ease);
     border: 2px solid transparent;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     box-shadow: var(--bose-shadow-glow);
+    cursor: pointer;
 }
 
 .bose-hero-btn:hover {
@@ -115,19 +115,40 @@ body.bose-hardware-accelerated {
     background-color: var(--bose-white);
 }
 
+/* طبقة الضبابية العلوية والسفلية لراحة العين ومنع التداخل */
+.bose-waterfall-section-container::before,
+.bose-waterfall-section-container::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 60px;
+    z-index: 2;
+    pointer-events: none;
+}
+.bose-waterfall-section-container::before {
+    top: 0;
+    background: linear-gradient(to bottom, var(--bose-white) 0%, rgba(255, 255, 255, 0) 100%);
+}
+.bose-waterfall-section-container::after {
+    bottom: 0;
+    background: linear-gradient(to top, var(--bose-white) 0%, rgba(255, 255, 255, 0) 100%);
+}
+
 .waterfall-container {
     display: flex;
     gap: 16px;
     width: 100%;
-    height: 700px; /* الارتفاع الإجباري المحسوب للموبايل */
+    height: 700px; /* المقاس الإلزامي الصارم للموبايل */
     overflow: hidden;
     position: relative;
     padding: 0 16px;
+    box-sizing: border-box;
 }
 
 @media (min-width: 1024px) {
     .waterfall-container {
-        height: 1000px; /* الارتفاع الإجباري المحسوب للكمبيوتر */
+        height: 1000px; /* المقاس الإلزامي الصارم لسطح المكتب */
     }
 }
 
@@ -136,7 +157,17 @@ body.bose-hardware-accelerated {
     display: flex;
     flex-direction: column;
     gap: 16px;
-    transform: translate3d(0, 0, 0);
+}
+
+/* الربط الفوري مع متحركات محرك الأداء المركزي العالمي */
+.waterfall-col.moving-up {
+    animation: boseWaterfallUp 40s linear infinite;
+    will-change: transform;
+}
+
+.waterfall-col.moving-down {
+    animation: boseWaterfallDown 40s linear infinite;
+    will-change: transform;
 }
 
 .waterfall-col img {
@@ -151,86 +182,7 @@ body.bose-hardware-accelerated {
 }
 
 /* ==========================================================================\
-   4. قسم عقد من الإتقان والتحكم اللمسي الحر (Decade of Perfection Track)
-   ========================================================================== */
-.bose-perfection-section {
-    padding: 40px 16px;
-    background-color: var(--bose-white);
-}
-
-.bose-perfection-carousel-wrapper {
-    overflow-x: auto;
-    width: 100%;
-    position: relative;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-}
-
-.bose-perfection-carousel-wrapper::-webkit-scrollbar {
-    display: none !important;
-}
-
-.bose-perfection-track {
-    display: flex;
-    gap: 20px;
-    width: max-content;
-    will-change: transform;
-    touch-action: pan-y !important; /* تأمين التجاوب والتحكم مع سحب أصابع اليد على الموبايل */
-}
-
-.bose-perfection-card {
-    width: 260px;
-    background-color: var(--bose-white);
-    border: var(--bose-border-pink);
-    border-radius: 16px;
-    overflow: hidden;
-    display: block;
-    text-decoration: none;
-    box-shadow: var(--bose-shadow-glow);
-    flex-shrink: 0 !important; /* حماية الكروت من الانكماش أثناء تصفح السحب الجانبي */
-    transition: var(--bose-transition-smooth);
-}
-
-.bose-perfection-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--bose-shadow-hover);
-    border-color: var(--bose-pink);
-}
-
-.perfection-card-img-holder {
-    width: 100%;
-    height: 180px;
-    overflow: hidden;
-    background-color: var(--bose-white);
-}
-
-.perfection-card-img-holder img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover !important;
-    display: block;
-}
-
-.perfection-card-info {
-    padding: 14px;
-    text-align: center;
-}
-
-.perfection-card-info h3 {
-    font-size: 15px;
-    font-weight: 600 !important;
-    color: var(--bose-black) !important;
-    margin-bottom: 6px;
-}
-
-.perfection-card-price {
-    font-size: 14px;
-    font-weight: 700 !important;
-    color: var(--bose-pink) !important;
-}
-
-/* ==========================================================================\
-   5. الهيكل الموحد للأقسام والشبكات (Flexible Categories Viewport)
+   4. أقسام الكروت وشبكات المنتجات الموحدة القياسية (Strict Product Cards Grid)
    ========================================================================== */
 .bose-section-container {
     width: 100%;
@@ -238,6 +190,7 @@ body.bose-hardware-accelerated {
     margin: 0 auto;
     padding: 40px 16px;
     direction: rtl;
+    box-sizing: border-box;
 }
 
 .bose-section-header {
@@ -275,12 +228,32 @@ body.bose-hardware-accelerated {
     margin-top: 5px;
 }
 
-/* 📐 حوكمة التوزيع الثنائي المتناسق تماماً لمنع ظهور كارت ونصف في الشاشة للعميل */
+/* 📐 هندسة التوزيع الشبكي الملتزم يمنع ظهور أنصاف كروت نهائياً */
 .products-grid, .bose-products-grid {
     display: grid !important;
-    grid-template-columns: repeat(2, 1fr) !important; /* صفوف ثنائية متوازنة بالملي للموبايل */
+    grid-template-columns: repeat(2, 1fr) !important; /* كارتين متوازنين تماماً للموبايل */
     gap: 16px !important;
     width: 100% !important;
+    box-sizing: border-box;
+}
+
+/* 📐 السلايدرات الأفقية للأكثر مبيعاً ووصل حديثاً على الموبايل */
+@media (max-width: 767px) {
+    .bose-most-selling-grid-slider,
+    .bose-new-arrivals-grid-slider {
+        display: flex !important;
+        overflow-x: auto !important;
+        scroll-behavior: smooth !important;
+        gap: 16px !important;
+        padding: 10px 4px !important;
+        width: 100% !important;
+    }
+    
+    .bose-most-selling-grid-slider .product-card-unified,
+    .bose-new-arrivals-grid-slider .product-card-unified {
+        width: 85vw !important; /* مقاس هندسي صارم للموبايل */
+        flex-shrink: 0 !important;
+    }
 }
 
 @media (min-width: 768px) {
@@ -291,8 +264,126 @@ body.bose-hardware-accelerated {
 
 @media (min-width: 1024px) {
     .products-grid, .bose-products-grid {
-        grid-template-columns: repeat(4, 1fr) !important; /* توزيع رباعي للتنفس البصري الفاخر على الشاشات الكبيرة */
+        grid-template-columns: repeat(4, 1fr) !important;
     }
+}
+
+/* 📐 الهيكل البصري الموحد للكارت بالمسطرة */
+.product-card-unified {
+    width: 100%;
+    height: auto;
+    background-color: var(--bose-white) !important;
+    border: var(--bose-border-pink) !important;
+    border-radius: 20px !important;
+    padding: 16px;
+    box-sizing: border-box;
+    box-shadow: var(--bose-shadow-glow) !important;
+    transition: var(--bose-transition-smooth, 0.3s ease) !important;
+    display: flex;
+    flex-direction: column;
+}
+
+.product-card-unified:hover {
+    box-shadow: var(--bose-shadow-hover) !important;
+    border-color: var(--bose-pink) !important;
+}
+
+.product-card-img {
+    width: 100%;
+    height: 220px; /* الارتفاع الإلزامي للموبايل */
+    aspect-ratio: 1 / 1;
+    object-fit: cover !important;
+    border-radius: 20px;
+    display: block;
+    margin-bottom: 12px;
+}
+
+@media (min-width: 768px) {
+    .product-card-img { height: 260px; } /* الارتفاع الإلزامي للتابلت */
+}
+@media (min-width: 1024px) {
+    .product-card-img { height: 320px; } /* الارتفاع الإلزامي للكمبيوتر */
+}
+
+/* تصميم عناصر الكارت بالتناسق التام */
+.product-card-title {
+    font-size: 1.15rem;
+    font-weight: 600 !important;
+    color: var(--bose-black);
+    margin: 0 0 6px 0;
+}
+.product-card-flavor-name {
+    font-size: 0.95rem;
+    color: var(--bose-pink);
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+.product-card-desc {
+    font-size: 0.85rem;
+    color: var(--bose-black);
+    opacity: 0.8;
+    line-height: 1.5;
+    margin: 0 0 12px 0;
+}
+
+/* العداد المرن لمنع القيم السالبة */
+.bose-quantity-counter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: auto;
+    margin-bottom: 12px;
+    direction: ltr; /* يمين + ، وسط عدد ، يسار - */
+}
+.btn-qty-plus, .btn-qty-minus {
+    background-color: var(--bose-white);
+    border: var(--bose-border-pink);
+    color: var(--bose-black);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s ease;
+}
+.btn-qty-plus:hover, .btn-qty-minus:hover {
+    background-color: var(--bose-pink);
+    color: var(--bose-white);
+}
+.input-qty-value {
+    width: 40px;
+    text-align: center;
+    border: none;
+    font-weight: 700;
+    color: var(--bose-black);
+    background: transparent;
+}
+
+.product-card-price {
+    color: var(--bose-pink);
+    font-weight: 700;
+    font-size: 1.1rem;
+    text-align: center;
+    margin-bottom: 12px;
+}
+
+.btn-add-to-cart {
+    width: 100%;
+    background-color: var(--bose-pink);
+    color: var(--bose-white);
+    border: none;
+    padding: 10px;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+.btn-add-to-cart:hover {
+    opacity: 0.9;
 }
 
 .bose-show-more-container {
@@ -311,22 +402,17 @@ body.bose-hardware-accelerated {
     font-weight: 700 !important;
     cursor: pointer !important;
     box-shadow: var(--bose-shadow-glow);
-    transition: var(--bose-transition-smooth);
-}
-
-.bose-product-action-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--bose-shadow-hover);
+    transition: var(--bose-transition-smooth, 0.3s ease);
+    border: none;
 }
 
 /* ==========================================================================\
-   6. هندسة كتل ومحاكيات الورد والتورت الكبيرة الفاخرة المحدثة
+   5. كتل عروض المحاكيات البصرية الكبرى (Section 04 & Section 07 Global Layout)
    ========================================================================== */
-.preview-builder-block, .bose-isolated-simulator-card {
+.preview-builder-block {
     width: calc(100% - 32px);
     margin: 30px 16px;
     padding: 40px 20px;
-    border: var(--bose-border-pink) !important;
     border-radius: 24px !important;
     display: flex;
     flex-direction: column;
@@ -337,48 +423,97 @@ body.bose-hardware-accelerated {
     box-sizing: border-box;
     position: relative;
     overflow: hidden;
-    background-color: var(--bose-white);
     box-shadow: var(--bose-shadow-glow);
-    height: 600px !important; /* 📐 فرض الارتفاع القياسي لمحاكي التورت والورد على الموبايل منعاً للمط والتداخل */
+    height: 600px !important; /* الارتفاع الإلزامي للموبايل */
+    background-color: var(--bose-white);
+    border: var(--bose-border-pink);
 }
 
-.bose-simulator-title {
-    color: var(--bose-black) !important;
-    font-weight: 700 !important;
-    font-size: 24px !important;
-    z-index: 2;
+@media (min-width: 1024px) {
+    .preview-builder-block {
+        height: 750px !important; /* الارتفاع الإلزامي للكمبيوتر */
+        flex-direction: row;
+        padding: 50px;
+        justify-content: space-between;
+        text-align: right;
+        max-width: 1200px;
+        margin: 40px auto;
+        width: 100%;
+    }
 }
 
-.bose-simulator-desc {
-    color: var(--bose-black) !important;
-    font-size: 15px !important;
-    max-width: 600px;
-    line-height: 1.6;
-    z-index: 2;
+/* ==========================================================================\
+   6. قسم تسوق حسب الفئة الـ 12 (Categories Slider Section)
+   ========================================================================== */
+.bose-category-slider-container {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    padding: 10px 0;
 }
 
-/* 🛡️ صمام الأمان المالي والجمالي: استبدال الأسود بالبمبي الفاخر الحاسم لدفع العميل على الطلب فوراً */
-.bose-simulator-action-btn {
-    background-color: var(--bose-pink) !important;
-    color: var(--bose-white) !important;
-    padding: 12px 40px !important;
-    border-radius: 12px !important;
-    font-weight: 700 !important;
-    text-decoration: none !important;
-    box-shadow: var(--bose-shadow-glow) !important;
-    transition: var(--bose-transition-smooth);
-    z-index: 2;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+.categories-track-loop {
+    display: flex;
+    gap: 16px;
+    width: max-content;
+    animation: boseCategoriesLoop 30s linear infinite;
+    will-change: transform;
 }
 
-.bose-simulator-action-btn:hover {
-    transform: translateY(-3px);
+.bose-category-slider-card {
     background-color: var(--bose-white) !important;
-    color: var(--bose-pink) !important;
-    border: 1px solid var(--bose-pink) !important;
-    box-shadow: var(--bose-shadow-hover) !important;
+    border: var(--bose-border-pink) !important;
+    border-radius: 20px !important;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: var(--bose-shadow-glow);
+    transition: var(--bose-transition-smooth, 0.3s ease);
+    flex-shrink: 0;
+    box-sizing: border-box;
+    
+    /* 📐 مقاسات الموبايل الإلزامية للكارت (أكبر بنسبة 30%) */
+    width: 280px !important;
+    height: 360px !important;
+}
+
+.bose-category-slider-card .category-img {
+    width: 100%;
+    height: 280px !important; /* إلزامي للموبايل */
+    object-fit: cover !important;
+    display: block;
+}
+
+.bose-category-slider-card .category-title-display {
+    margin-top: auto;
+    padding-bottom: 15px;
+    text-align: center;
+    font-size: 20px !important;
+    font-weight: 700 !important; /* مقفول عند 700 */
+    color: var(--bose-black) !important;
+}
+
+@media (min-width: 768px) {
+    /* 📐 مقاسات التابلت */
+    .bose-category-slider-card {
+        width: 340px !important;
+        height: 430px !important;
+    }
+    .bose-category-slider-card .category-img {
+        height: 330px !important;
+    }
+}
+
+@media (min-width: 1024px) {
+    /* 📐 مقاسات الكمبيوتر */
+    .bose-category-slider-card {
+        width: 420px !important;
+        height: 520px !important;
+    }
+    .bose-category-slider-card .category-img {
+        height: 420px !important;
+    }
 }
 
 /* ==========================================================================\
@@ -389,7 +524,8 @@ body.bose-hardware-accelerated {
     background-color: var(--bose-white);
     border-top: 1px solid rgba(255, 145, 164, 0.15);
     border-bottom: 1px solid rgba(255, 145, 164, 0.15);
-    min-height: 550px !important; /* 📐 صمام الأمان الهندسي لمنع انكماش عناصر العدادات على الموبايل */
+    min-height: 550px !important; /* قفل الحد الأدنى للموبايل منعا للتكديس */
+    box-sizing: border-box;
 }
 
 .bose-pride-container {
@@ -404,32 +540,11 @@ body.bose-hardware-accelerated {
     text-align: center;
 }
 
-.bose-pride-text-block .pride-mini-tag {
-    color: var(--bose-gold) !important;
-    font-size: 15px;
-    font-weight: 700 !important;
-    display: block;
-    margin-bottom: 12px;
-}
-
 .bose-pride-text-block h2 {
     font-size: 32px;
     font-weight: 700 !important;
     color: var(--bose-black) !important;
     margin-bottom: 18px;
-}
-
-.bose-pride-text-block h2 span.bose-highlight-pink {
-    color: var(--bose-pink) !important;
-}
-
-.bose-pride-text-block p {
-    font-size: 15px;
-    color: var(--bose-black);
-    opacity: 0.8;
-    line-height: 1.8;
-    max-width: 700px;
-    margin: 0 auto;
 }
 
 .bose-statistics-grid-block {
@@ -448,19 +563,6 @@ body.bose-hardware-accelerated {
     box-shadow: var(--bose-shadow-glow);
 }
 
-.stat-icon-wrapper {
-    width: 50px;
-    height: 50px;
-    background-color: rgba(255, 145, 164, 0.08);
-    color: var(--bose-pink);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 14px auto;
-    font-size: 20px;
-}
-
 .stat-number {
     font-size: 26px;
     font-weight: 700 !important;
@@ -468,43 +570,16 @@ body.bose-hardware-accelerated {
     margin-bottom: 6px;
 }
 
-.stat-label {
-    font-size: 13px;
-    font-weight: 600 !important;
-    color: var(--bose-black);
-    opacity: 0.7;
-}
-
-/* ==========================================================================\
-   8. محددات التجاوب والشبكات للشاشات المتوسطة والكبيرة (Responsive Breakpoints)
-   ========================================================================== */
 @media (min-width: 768px) {
-    .bose-pride-container {
-        grid-template-columns: 1.2fr 1.8fr;
-    }
     .bose-statistics-grid-block {
         grid-template-columns: repeat(3, 1fr);
     }
-    .bose-pride-text-block {
-        text-align: right;
-    }
-    .bose-pride-text-block p {
-        margin: 0;
-    }
+    .bose-pride-text-block { text-align: right; }
 }
 
 @media (min-width: 1024px) {
-    .bose-hero-section {
-        height: 60vh;
-    }
-    .bose-hero-title {
-        font-size: 2.6rem;
-    }
-    .preview-builder-block, .bose-isolated-simulator-card {
-        height: 750px !important; /* 📐 فرض الارتفاع القياسي لسطح المكتب وعرض المحاكي الكامل */
-    }
     .bose-pride-statistics-section {
-        min-height: 700px !important; /* 📐 قفل الحد الأدنى لارتفاع الفخر والاعتزاز للكمبيوتر حظرًا للتداخل البصري */
+        min-height: 700px !important; /* قفل الارتفاع للكمبيوتر */
     }
     .bose-pride-container {
         display: grid;
@@ -514,14 +589,5 @@ body.bose-hardware-accelerated {
     }
     .bose-statistics-grid-block {
         grid-template-columns: repeat(5, 1fr);
-    }
-    .preview-builder-block, .bose-isolated-simulator-card {
-        flex-direction: row;
-        padding: 50px;
-        justify-content: space-between;
-        text-align: right;
-        max-width: 1200px;
-        margin: 40px auto;
-        width: 100%;
     }
 }

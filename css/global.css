@@ -1,37 +1,19 @@
 /* ==========================================================================
-   👑 ملف التنسيق الموحد والهوية البصرية لعلامة حلويات بوسي الفاخرة V66.0 👑
-   المطابق بالمليم لكافة محركات الموقع وقاعدة البيانات site-data-final.json
-   المطور والمحدث بالكامل لسد الثغرات وحل تعارضات الأنيميشن والموديلز والأيقونات
+   BoseSweets Strict Production Global Stylesheet (css/global.css)
+   الهوية البصرية الموحدة والأبعاد الهندسية المقدسة - حلويات بوسي 2026
    ========================================================================== */
 
+/* --- 1. المكونات الحاكمة والألوان المقدسة (CSS Tokens) --- */
+/* تم تطهير الجذور: المتغيرات الحاكمة والألوان الأساسية تُقاد بالكامل ديناميكياً 
+   عبر المحرك المركزي core-engine.js لمنع التضارب والوميض البصري على الموبايل */
 :root {
-    /* 🎨 نظام الألوان الحاكمة والمقدسة لعلامة حلويات بوسي (The Strict Palette) */
-    --bose-pink: #FF91A4;       /* نبض الحياة: حدود الكروت، الظلال، نصوص الأسعار الديناميكية، والتأثيرات التفاعلية */
-    --bose-white: #FFFFFF;      /* المسيطر تماماً على الخلفيات لخلق تنفس بصري لراحة العميل النفسية ومنع التكديس نهائياً */
-    --bose-black: #111111;      /* معزول تماماً: يستخدم للنصوص والعناوين فقط، ومحظور في أي خلفيات أو ظلال لضمان وضوح كامل للعين */
-    --bose-gold: #D4AF37;       /* فخامة رمزية ناعمة وخفيفة جداً لمحاكاة اللوجو ونجوم التقييم وتفاصيل التخصيص */
-    
-    /* 📐 معايير الظلال والحدود الهندسية لحظر الظلال السوداء تماماً */
     --bose-shadow-glow: 0 8px 32px rgba(255, 145, 164, 0.12);
     --bose-shadow-hover: 0 16px 40px rgba(255, 145, 164, 0.22);
     --bose-border-pink: 1px solid rgba(255, 145, 164, 0.3);
     --bose-border-thick: 2px solid #FF91A4;
-    --bose-border-gold: 1px solid rgba(212, 175, 55, 0.4);
-    
-    /* ⚡ حركات فائقة النعومة مع موازنة معالجات الموبايل عبر التسريع العتادي الآمن */
-    --bose-transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --bose-transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    
-    /* 🛡️ تأمين طبقات العرض لمنع تداخل المحاكي والسلة والمودالز */
-    --z-index-ticker: 9998;
-    --z-index-navbar: 9999;     
-    --z-index-overlay: 20000;
-    --z-index-drawer: 30000;
-    --z-index-modal: 40000;
-    --z-index-toast: 50000;
 }
 
-/* 🧱 إعادة تعيين الأنماط القياسية وحظر التشويه البصري */
+/* --- 2. الإعدادات القياسية وهندسة النصوص (Reset & Typography) --- */
 *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
@@ -39,1038 +21,246 @@
     -webkit-tap-highlight-color: transparent;
 }
 
-/* التسريع العتادي الصارم لبيئة الموبايل وتأمين الاستقرار الحركي للمحركات */
-.bose-hardware-accelerated {
-    will-change: transform, opacity;
-    transform: translate3d(0, 0, 0);
-    backface-visibility: hidden;
-    perspective: 1000px;
-}
-
-/* حل ثغرة الأيقونات المكسورة: نطبق الخط على النصوص ونستثني عائلات أيقونات Font Awesome الصريحة */
-*:not(i):not([class*="fa-"]):not([class*="fontawesome-"]) {
-    font-family: 'Cairo', sans-serif !important;
-}
-
 html {
     scroll-behavior: smooth;
     font-size: 16px;
-    background-color: var(--bose-white);
-    color: var(--bose-black);
-    overflow-x: hidden;
 }
 
 body {
-    background-color: var(--bose-white) !important;
-    color: var(--bose-black) !important;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
+    direction: rtl;
     overflow-x: hidden;
     line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    padding-top: 110px; /* مساحة أمان هندسية محسوبة بدقة تشمل ارتفاع شريط الإعلانات والهيدر معاً */
 }
 
-@media (min-width: 1024px) {
-    body {
-        padding-top: 120px; /* مساحة أمان متجاوبة متوافقة مع شاشات الكمبيوتر الكبيرة */
-    }
-}
-
-/* 📐 فرض أوزان خط Cairo الصارمة ومنع أي نصوص باهتة أو مقطوعة نهائياً لضمان الفخامة */
-h1, h2, .brand-name-display, .brand-name-text, .footer-brand-name, .bose-simulator-title, [id*="pride-section"] h2 {
-    font-weight: 700 !important; /* قفل وزن الخط عند 700 كحد أقصى لأضخم العناوين الرئيسية */
-    color: var(--bose-black) !important; /* الأسود هو اللون الشرعي والوحيد للعناوين لمنع تداخل الذهبي المشوه */
-    line-height: 1.3;
+/* حارس التماسك البصري ومنع انقطاع أو بتر النصوص نهائياً (No Text Overflow) */
+h1, h2, h3, h4, p, span, a, button, input, select, textarea {
     white-space: normal;
-    text-overflow: clip;
-}
-
-h3, h4, .product-card-title, .search-card-title, .cart-item-title {
-    font-weight: 600 !important; /* حماية التفاصيل وعناوين الكروت من التضخم البصري */
-    color: var(--bose-black) !important;
-    line-height: 1.4;
-}
-
-p, span, a, button, input, select, textarea, .bose-toast-text, .bose-modal-text, .bose-simulator-desc {
-    font-weight: 400 !important; /* الوزن المعياري لسهولة القراءة المريحة للعين */
-    color: var(--bose-black) !important;
-}
-
-strong, .bose-price-text, .product-card-price, .bose-btn-primary, .search-card-price {
-    font-weight: 700 !important;
-    color: var(--bose-pink) !important; /* نصوص الأسعار الديناميكية حصرية بالبمبي */
-}
-
-/* حماية نصوص التخصيص والأوصاف الممتدة داخل الموقع من القطع البصري */
-.bose-arabic-text-protection {
-    word-break: keep-all;
-    overflow-wrap: break-word;
     word-wrap: break-word;
-    hyphens: none;
+    overflow-wrap: break-word;
+}
+
+/* قفل أوزان الخطوط لحماية الفخامة ومنع التشويه البصري (الهيكل ثابت والمحرك يحقن النوع) */
+h1, h2 {
+    font-weight: 700 !important; /* سقف الوزن لأضخم العناوين الرئيسية */
+}
+
+h3, h4 {
+    font-weight: 600 !important; /* عناوين كروت المنتجات والتفاصيل */
 }
 
 a {
     text-decoration: none;
     color: inherit;
-    transition: var(--bose-transition-smooth);
-    touch-action: manipulation;
-}
-
-img {
-    max-width: 100%;
-    height: auto;
-    display: block;
-    object-fit: cover;
-    user-select: none;
-    -webkit-user-drag: none;
+    transition: all 0.3s ease;
 }
 
 button, input, select, textarea {
     border: none;
     outline: none;
     background: none;
-    touch-action: manipulation;
 }
 
-/* ==========================================================================
-   🚨 التيكر (الشريط العلوي المتحرك) - تثبيت هندسي مطلق في أعلى الشاشة 🚨
-   ========================================================================== */
-#top-bar-marquee, .bose-ticker-section {
-    position: fixed !important;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: var(--z-index-ticker);
-    background-color: var(--bose-pink) !important; 
-    overflow: hidden;
-    white-space: nowrap;
-    padding: 8px 0;
-    display: flex;
-    align-items: center;
-    box-shadow: var(--bose-shadow-glow);
-    direction: rtl;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    height: 40px;
+img {
+    max-width: 100%;
+    display: block;
+    object-fit: cover;
 }
 
-.bose-ticker-wrapper {
-    display: flex;
-    width: max-content;
-    animation: boseTickerLoop 25s linear infinite !important;
-    will-change: transform;
-}
-
-.bose-ticker-item {
-    display: inline-flex;
-    align-items: center;
-    color: var(--bose-white) !important; 
-    font-size: 0.9rem;
-    font-weight: 700 !important;
-    padding: 0 30px;
-    gap: 10px;
-}
-
-.bose-ticker-item i {
-    color: var(--bose-gold) !important; 
-}
-
-@keyframes boseTickerLoop {
-    0% { transform: translate3d(0, 0, 0); }
-    100% { transform: translate3d(-50%, 0, 0); }
-}
-
-/* ==========================================================================
-   🏢 الهيدر الثابت الموحد المطور بالتوافق المطلق مع خريطة الـ DOM الهندسية
-   ========================================================================== */
+/* --- 3. الهيدر الموحد والثابت القياسي (Universal Sticky Header UX) --- */
 .bose-navbar {
-    position: fixed !important; 
-    top: 40px; /* يبدأ مباشرة بعد شريط الإعلانات العلوي لمنع التداخل والتعارض الجغرافي */
+    position: fixed;
+    top: 0;
+    right: 0;
     left: 0;
-    z-index: var(--z-index-navbar);
-    background-color: rgba(255, 255, 255, 0.99) !important;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 2px solid rgba(255, 145, 164, 0.25) !important;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 16px;
     height: 70px;
-    width: 100%;
+    background-color: var(--bose-white);
+    border-bottom: var(--bose-border-pink);
     box-shadow: var(--bose-shadow-glow);
-    transition: var(--bose-transition-smooth);
-    direction: rtl;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
 }
 
 .navbar-mobile-wrapper {
-    display: flex;
     width: 100%;
-    justify-content: space-between;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: auto auto 1fr auto;
     align-items: center;
-    height: 100%;
-    direction: rtl;
+    gap: 15px;
+}
+
+/* خريطة الـ DOM الهندسية للهيدر من اليمين لليسار الملتزمة بالمواصفة الصارمة */
+#mobile-menu-toggle {
+    grid-column: 1;
+    font-size: 1.4rem;
+    color: var(--bose-black);
+    cursor: pointer;
 }
 
 .brand-logo-container {
+    grid-column: 2;
     display: flex;
     align-items: center;
-    gap: 8px;
 }
 
 #bose-store-logo {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    border: var(--bose-border-pink);
-    object-fit: cover;
-    transition: var(--bose-transition-smooth);
-}
-
-#bose-store-logo:hover {
-    transform: scale(1.05) rotate(5deg);
-    border-color: var(--bose-pink);
+    height: 45px;
+    width: auto;
 }
 
 .brand-name-display {
-    font-size: 1.15rem;
+    grid-column: 3;
+    font-size: 1.25rem;
     font-weight: 700;
-    color: var(--bose-black);
-    white-space: nowrap;
-}
-
-#mobile-menu-toggle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    cursor: pointer;
-    color: var(--bose-black);
-    transition: var(--bose-transition-smooth);
-}
-#mobile-menu-toggle:hover {
-    background-color: rgba(255, 145, 164, 0.08);
-    color: var(--bose-pink);
-}
-
-#bose-nav-menu {
-    display: none;
-}
-
-.nav-list {
-    list-style: none;
-    display: flex;
-    gap: 24px;
-    align-items: center;
-}
-
-.nav-list a {
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: var(--bose-black);
-    padding: 8px 12px;
-    border-radius: 8px;
-    transition: var(--bose-transition-smooth);
-}
-
-.nav-list a:hover, .nav-list a.active {
-    color: var(--bose-pink) !important;
-    background-color: rgba(255, 145, 164, 0.05);
+    color: var(--bose-black) !important;
+    padding-right: 5px;
+    display: block !important; /* ثابت ومقدس على جميع الشاشات لمنع التشتيت البصري */
 }
 
 .nav-actions {
+    grid-column: 4;
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 20px;
+    justify-content: flex-end;
 }
 
-.nav-icon-btn, .nav-cart-icon-wrapper {
-    background: transparent;
-    cursor: pointer;
+.nav-icon-btn {
+    font-size: 1.3rem;
     color: var(--bose-black);
-    width: 44px;
-    height: 44px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.nav-icon-btn:hover {
+    color: var(--bose-pink);
+}
+
+.nav-cart-icon-wrapper {
+    position: relative;
+    font-size: 1.4rem;
+    color: var(--bose-black);
     display: flex;
     align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    transition: var(--bose-transition-smooth);
-    position: relative;
-    text-decoration: none;
 }
 
-.nav-icon-btn i, .nav-cart-icon-wrapper i {
-    font-size: 1.25rem !important;
-    color: var(--bose-black) !important;
-    transition: var(--bose-transition-smooth);
-    display: inline-block !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-}
-
-.nav-icon-btn:hover, .nav-cart-icon-wrapper:hover {
-    background-color: rgba(255, 145, 164, 0.08);
-}
-
-.nav-icon-btn:hover i, .nav-cart-icon-wrapper:hover i {
-    color: var(--bose-pink) !important;
-    transform: scale(1.08);
-}
-
+/* شارة العداد اللحظي المحدث ذكياً بالهيدر الموحد */
 #nav-cart-count {
     position: absolute;
-    top: -4px;
-    left: -6px;
+    top: -6px;
+    left: -10px;
     background-color: var(--bose-pink);
     color: var(--bose-white);
     font-size: 0.75rem;
     font-weight: 700;
     min-width: 18px;
     height: 18px;
-    padding: 2px 6px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1.5px solid var(--bose-white);
-    transition: var(--bose-transition-smooth);
-    z-index: 10;
-    line-height: 1;
+    padding: 2px;
+    box-shadow: 0 2px 5px rgba(255, 145, 164, 0.4);
 }
 
-/* ==========================================================================
-   🚪 القائمة الجانبية الفاخرة (Drawer Menu) بياض ناصع مريح للعين
-   ========================================================================== */
-.bose-drawer-menu, #sidebar-drawer {
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 340px;
-    max-width: 85vw;
-    height: 100vh;
-    background-color: var(--bose-white) !important;
-    box-shadow: -10px 0 40px rgba(255, 145, 164, 0.15) !important;
-    z-index: var(--z-index-drawer);
-    display: flex;
-    flex-direction: column;
-    border-left: var(--bose-border-pink);
-    direction: rtl;
-    text-align: right;
-    transform: translate3d(100%, 0, 0);
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+#bose-nav-menu {
+    display: none; 
 }
 
-.bose-drawer-menu.active, #sidebar-drawer.active {
-    transform: translate3d(0, 0, 0) !important;
-}
-
-.drawer-premium-header {
-    padding: 24px 20px;
-    border-bottom: var(--bose-border-pink);
-    background: var(--bose-white);
-    position: relative;
-}
-
-.drawer-close-btn {
-    position: absolute;
-    left: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: transparent;
-    color: var(--bose-black);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: var(--bose-transition-smooth);
-    border: 1px solid rgba(255, 145, 164, 0.2);
-}
-
-.drawer-close-btn:hover {
-    background-color: rgba(255, 145, 164, 0.08);
-    color: var(--bose-pink);
-    border-color: var(--bose-pink);
-}
-
-.drawer-premium-header h3 {
-    font-size: 1.15rem;
-    color: var(--bose-black);
-    font-weight: 700;
-    padding-left: 40px; 
-}
-
-.drawer-premium-header p {
-    font-size: 0.85rem;
-    color: var(--bose-pink);
-    font-weight: 600;
-    margin-top: 4px;
-}
-
-.drawer-links-scrollable {
-    flex-grow: 1;
-    overflow-y: auto;
-    padding: 16px 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    -webkit-overflow-scrolling: touch;
-}
-
-.drawer-links-list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding: 0;
-    margin: 0;
-}
-
-.drawer-link-item a {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: var(--bose-black);
-    padding: 10px 14px;
-    border-radius: 12px;
-    transition: var(--bose-transition-smooth);
-}
-
-.drawer-link-item a:hover, .drawer-link-item a.active {
-    background-color: rgba(255, 145, 164, 0.05);
-    color: var(--bose-pink) !important;
-}
-
-.drawer-premium-footer {
-    padding: 20px;
-    border-top: var(--bose-border-pink);
-    background-color: var(--bose-white);
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.drawer-overlay, #drawer-shield {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(17, 17, 17, 0.4);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    z-index: var(--z-index-overlay);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-}
-
-.drawer-overlay.active, #drawer-shield.active {
-    opacity: 1 !important;
-    pointer-events: auto !important;
-}
-
-/* ==========================================================================
-   🔍 شاشة البحث الفوري الفاخرة (Search Modal)
-   ========================================================================== */
-.bose-search-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
+/* شريط الإعلانات العلوي القياسي المانع للفراغات البصرية */
+#top-bar-marquee {
     width: 100%;
-    height: 100%;
-    background: rgba(17, 17, 17, 0.6);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    z-index: var(--z-index-modal);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-}
-
-.bose-search-modal.active {
-    opacity: 1;
-    pointer-events: auto;
-}
-
-.search-modal-box {
-    background: var(--bose-white);
-    border: var(--bose-border-thick);
-    border-radius: 24px;
-    width: 90%;
-    max-width: 500px;
-    padding: 24px;
-    box-shadow: var(--bose-shadow-hover);
-    transform: translate3d(0, 15px, 0) scale(0.95);
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    direction: rtl;
-    text-align: right;
-}
-
-.bose-search-modal.active .search-modal-box {
-    transform: translate3d(0, 0, 0) scale(1);
-}
-
-.search-results-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 14px;
-    padding: 16px 4px;
-    max-height: 50vh;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-}
-
-.search-result-card {
-    display: flex;
-    gap: 16px;
-    padding: 12px;
-    border-radius: 18px;
-    border: var(--bose-border-pink);
-    background: var(--bose-white);
-    transition: var(--bose-transition-smooth);
-    align-items: center;
-    text-decoration: none;
-    box-shadow: 0 4px 15px rgba(255, 145, 164, 0.06);
-}
-
-.search-result-card:hover {
-    transform: translate3d(0, -2px, 0);
-    border-color: var(--bose-pink);
-    box-shadow: var(--bose-shadow-hover);
-}
-
-.search-card-img {
-    width: 70px;
-    height: 70px;
-    border-radius: 12px;
-    object-fit: cover;
-    flex-shrink: 0;
-}
-
-.search-card-info-pane {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    overflow: hidden;
-    text-align: right;
-    direction: rtl;
-}
-
-.search-card-title {
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: var(--bose-black);
-    line-height: 1.3;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin: 0;
-}
-
-.search-card-flavor {
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: var(--bose-pink);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-/* ==========================================================================
-   Shared Universal Footer & Trust System - بياض ناصع مريح
-   ========================================================================== */
-.shared-trust-bar {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 24px;
-    padding: 40px 0;
-    border-top: 1px dashed rgba(255, 145, 164, 0.25);
-    margin-top: 40px;
-    direction: rtl;
-    text-align: right;
-}
-
-.trust-item-node {
-    display: flex;
-    gap: 16px;
-    align-items: flex-start;
-}
-
-.trust-icon-box {
-    width: 50px;
-    height: 50px;
-    border-radius: 16px;
     background-color: var(--bose-white);
-    color: var(--bose-pink);
+    border-bottom: var(--bose-border-pink);
+    padding: 10px 0;
+    margin-top: 70px; /* يعطي تنفساً بصرياً كاملاً ويمنع الاختفاء تحت الهيدر الثابت */
+    overflow: hidden;
     display: flex;
     align-items: center;
-    justify-content: center;
-    font-size: 1.3rem;
-    flex-shrink: 0;
-    border: var(--bose-border-pink);
 }
 
-.trust-info-pane h4 {
-    font-size: 0.95rem;
-    font-weight: 700;
-    margin: 0 0 4px 0;
-    color: var(--bose-black) !important;
-}
-
-.trust-info-pane p {
-    font-size: 0.8rem;
-    margin: 0;
-    color: var(--bose-black) !important;
-}
-
+/* --- 4. الفوتر القياسي الموحد المعتمد (Shared Universal Footer) --- */
 .bose-footer {
     background-color: var(--bose-white) !important;
-    border-top: var(--bose-border-pink) !important;
-    padding: 40px 16px !important;
+    border-top: var(--bose-border-pink);
+    padding: 40px 20px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
     width: 100%;
-    margin-top: auto;
-    position: relative;
-    z-index: 10;
-    direction: rtl;
-    text-align: center !important;
-    box-shadow: 0 -8px 32px rgba(255, 145, 164, 0.04);
 }
 
 .footer-logo-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
 }
 
-.footer-logo-container img {
+.footer-logo-container #bose-store-logo {
     height: 60px;
-    object-fit: contain;
+    margin: 0 auto;
 }
 
 .footer-brand-name {
-    font-size: 1.4rem !important;
-    display: block;
-    margin-bottom: 12px;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 15px;
 }
 
 .footer-about-block {
     max-width: 600px;
-    margin: 0 auto 16px auto;
+    margin-bottom: 25px;
 }
 
 #footer-about-text {
     font-size: 0.95rem;
-    color: var(--bose-black) !important;
-    line-height: 1.6;
-    margin: 0;
+    color: var(--bose-black);
+    opacity: 0.9;
+    line-height: 1.7;
 }
 
 #footer-social-links {
     display: flex;
-    gap: 16px;
+    align-items: center;
     justify-content: center;
-    margin: 16px 0;
+    gap: 25px;
+    margin-bottom: 30px;
 }
 
 #footer-social-links a {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
+    font-size: 1.5rem;
+    color: var(--bose-pink);
+}
+
+.footer-policies-container {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    text-decoration: none;
-    font-size: 1.1rem;
-    color: var(--bose-white) !important;
-    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    gap: 20px;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
 }
-
-#footer-social-links a:hover {
-    transform: translate3d(0, -2px, 0) scale(1.1);
-}
-
-.social-link-facebook { background-color: #3b5998; }
-.social-link-instagram { background-color: #e1306c; }
-/* 🛡️ تم سد ثغرة التناخم اللوني لزر التيك توك وتجريد السواد الصافي وحظر التكدس اللوني */
-.social-link-tiktok { background-color: var(--bose-black); } 
-.social-link-whatsapp { background-color: #25d366; }
 
 .footer-copyright-block {
-    margin-top: 16px;
+    width: 100%;
     border-top: 1px solid rgba(255, 145, 164, 0.15);
     padding-top: 20px;
-    width: 100%;
+    margin-top: 15px;
 }
 
 .footer-copyright-block p {
-    margin: 0;
-    font-size: 0.8rem;
-    color: var(--bose-black) !important;
-    font-weight: 600 !important;
+    font-size: 0.85rem;
+    color: var(--bose-black);
+    opacity: 0.7;
 }
 
-/* ==========================================================================
-   Dots Carousel Navigation - نظام المؤشرات النقطية المتفاعل
-   ========================================================================== */
-.bose-dots-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-    margin-top: 16px;
-    width: 100%;
-}
-
-.bose-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background-color: rgba(255, 145, 164, 0.3) !important;
-    transition: var(--bose-transition-smooth);
-    cursor: pointer;
-    border: none !important;
-    padding: 0;
-}
-
-.bose-dot.active {
-    background-color: var(--bose-pink) !important;
-    width: 24px;
-    border-radius: 5px;
-}
-
-/* ==========================================================================
-   التنببهات المخصصة وحفظ بواب الحماية (Custom Dialogue UI)
-   ========================================================================== */
-.bose-toast-container, #bose-toast-central-container {
-    position: fixed !important;
-    bottom: 110px !important; /* حماية مكان التوست أعلى الزر العائم ومنع حجب الرؤية عن العميل */
-    left: 50% !important;
-    right: auto !important;
-    transform: translate3d(-50%, 0, 0) !important;
-    z-index: var(--z-index-toast) !important;
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 12px !important;
-    pointer-events: none !important;
-    direction: rtl !important;
-    width: 90% !important;
-    max-width: 360px !important;
-    align-items: center !important;
-}
-
-.bose-toast, .bose-toast-card {
-    background-color: var(--bose-white) !important;
-    color: var(--bose-black) !important;
-    border: 1px solid rgba(255, 145, 164, 0.3) !important;
-    border-bottom: 4px solid var(--bose-pink) !important;
-    padding: 14px 24px !important;
-    border-radius: 16px !important;
-    box-shadow: 0 12px 32px rgba(255, 145, 164, 0.05) !important;
-    display: flex !important;
-    align-items: center !important;
-    gap: 10px !important;
-    pointer-events: auto !important;
-    opacity: 0;
-    transform: translate3d(0, 30px, 0) scale(0.95);
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease !important;
-    box-sizing: border-box !important;
-    width: 100% !important;
-}
-
-.bose-toast.active, .bose-toast-card.bose-toast-active {
-    opacity: 1 !important;
-    transform: translate3d(0, 0, 0) scale(1) !important;
-}
-
-.bose-toast.bose-toast-fadeout, .bose-toast-card.bose-toast-fadeout {
-    opacity: 0 !important;
-    transform: translate3d(0, -20px, 0) !important;
-}
-
-.bose-toast-content {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: 10px !important;
-    width: 100% !important;
-}
-
-.bose-toast-text {
-    margin: 0 !important;
-    font-size: 14px !important;
-    color: var(--bose-black) !important;
-    font-weight: 700 !important; 
-    text-align: center !important;
-}
-
-.bose-modal-overlay {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(17, 17, 17, 0.4);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: var(--z-index-modal);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-}
-
-.bose-modal-overlay.active {
-    opacity: 1 !important;
-    pointer-events: auto !important;
-}
-
-.bose-modal-box {
-    background: var(--bose-white);
-    border: 1px solid var(--bose-pink);
-    border-radius: 24px;
-    width: 90%;
-    max-width: 400px;
-    padding: 24px;
-    box-shadow: 0 16px 40px rgba(255, 145, 164, 0.12);
-    transform: translate3d(0, 10px, 0) scale(0.9);
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    direction: rtl;
-    text-align: right;
-}
-
-.bose-modal-overlay.active .bose-modal-box {
-    transform: translate3d(0, 0, 0) scale(1) !important;
-}
-
-.bose-modal-text {
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--bose-black) !important;
-    line-height: 1.6;
-    margin: 0 0 20px 0;
-}
-
-.bose-modal-actions {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 12px;
-}
-
-.bose-modal-btn {
-    font-family: 'Cairo', sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-    padding: 10px 24px;
-    border-radius: 50px;
-    cursor: pointer;
-    transition: 0.2s;
-    border: none;
-}
-
-.bose-modal-btn-confirm {
-    background: var(--bose-pink);
-    color: var(--bose-white);
-    box-shadow: 0 4px 12px rgba(255, 145, 164, 0.2);
-}
-
-.bose-modal-btn-confirm:hover {
-    opacity: 0.9;
-}
-
-.bose-modal-btn-cancel {
-    background: transparent;
-    color: var(--bose-black) !important;
-    border: 1px solid rgba(17, 17, 17, 0.15);
-}
-
-.bose-modal-btn-cancel:hover {
-    background: rgba(17, 17, 17, 0.03);
-}
-
-.bose-star-rating {
-    color: var(--bose-gold) !important;
-    font-size: 0.95rem;
-}
-
-body.drawer-active {
-    overflow: hidden !important;
-    touch-action: none;
-}
-
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: var(--bose-white);
-}
-
-::-webkit-scrollbar-thumb {
-    background: rgba(255, 145, 164, 0.4);
-    border-radius: 20px;
-    border: 2px solid var(--bose-white);
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: var(--bose-pink);
-}
-
-/* ==========================================================================
-   🚨 التحديث الخاص بالزر العائم ونظام الإشعارات المباشر 🚨
-   ========================================================================== */
-#bose-floating-cart-wrapper {
-    position: fixed !important;
-    bottom: 30px !important;
-    right: 30px !important;
-    left: auto !important;
-    width: 64px !important;
-    height: 64px !important;
-    z-index: var(--z-index-navbar) !important; 
-    pointer-events: auto !important;
-}
-
-.bose-floating-cart-trigger {
-    display: flex !important;
-    width: 100% !important;
-    height: 100% !important;
-    background-color: var(--bose-white) !important;
-    border: 2px solid var(--bose-pink) !important;
-    border-radius: 50% !important;
-    box-shadow: 0 8px 24px rgba(255, 145, 164, 0.25) !important;
-    cursor: pointer !important;
-    align-items: center !important;
-    justify-content: center !important;
-    padding: 0 !important;
-    text-decoration: none !important;
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease, border-color 0.3s ease !important;
-}
-
-.bose-floating-cart-trigger:hover {
-    transform: scale(1.1) translateY(-5px) !important;
-    box-shadow: 0 12px 28px rgba(255, 145, 164, 0.4) !important;
-    border-color: var(--bose-black) !important;
-}
-
-.bose-trigger-icon-box {
-    position: relative !important;
-    color: var(--bose-black) !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    width: 100% !important;
-    height: 100% !important;
-}
-
-.bose-trigger-icon-box svg {
-    width: 28px !important;
-    height: 28px !important;
-    stroke: var(--bose-black) !important;
-}
-
-#bose-floating-badge-counter {
-    position: absolute !important;
-    top: -4px !important;
-    left: -4px !important;
-    background-color: var(--bose-pink) !important;
-    color: var(--bose-white) !important;
-    font-weight: 700 !important;
-    font-size: 12px !important;
-    min-width: 22px !important;
-    height: 22px !important;
-    border-radius: 11px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    border: 2px solid var(--bose-white) !important;
-}
-
-/* ==========================================================================
-   📐 الأبعاد والمقاسات الإلزامية الصارمة لكروت المنتجات والفئات (UI Dimensions)
-   ========================================================================== */
-
-/* كارت المنتج الموحد (Strict Product Card DOM) - متوافق بالملي مع الأكثر مبيعاً ووصل حديثاً */
-.product-card {
-    width: 85vw !important; /* 📐 تم التعديل لتطابق مواصفات الفحص المالي والمبيعات للموبايل */
-    height: auto !important;
-    background: var(--bose-white) !important;
-    border: 1px solid rgba(255, 145, 164, 0.2) !important;
-    border-radius: 20px !important;
-    padding: 16px !important;
-    box-shadow: 0 8px 32px rgba(255, 145, 164, 0.04) !important;
-    box-sizing: border-box !important;
-}
-
-/* كارت تسوق حسب الفئة - أكبر بنسبة 30% لإبراز وزن الأقسام وتأمين السحب الأفقي المستقر */
-.category-slide-card {
-    width: 280px !important;
-    height: 360px !important; /* 📐 الارتفاع الكلي المستقر والإلزامي للموبايل */
-    flex-shrink: 0 !important; 
-    background: var(--bose-white) !important;
-    border-radius: 20px !important;
-}
-
-.category-slide-card img {
-    width: 280px !important;
-    height: 280px !important; /* الارتفاع الفعلي لصورة الفئة للموبايل */
-    object-fit: cover !important;
-    border-radius: 20px 20px 0 0 !important;
-}
-
-/* التجاوب المتوازن للمقاسات الهندسية بحسب نوع الشاشة ومجرى الحركة */
-@media (min-width: 768px) {
-    .product-card {
-        width: 100% !important; /* استعادة الطول الكامل للمصفوفات داخل الحاويات اللوحية الكبيرة */
+/* --- 5. التوافق والربط الهيكلي القياسي مع الشاشات (Mobile UX First) --- */
+@media (max-width: 767px) {
+    #bose-nav-menu {
+        display: none;
     }
-    .product-card-img, .product-card-top img {
-        height: 260px !important; /* ارتفاع الصورة للتابلت */
-    }
-    .category-slide-card {
-        width: 340px !important;
-        height: 430px !important; /* الارتفاع الكلي المستقر للتابلت */
-    }
-    .category-slide-card img {
-        width: 340px !important;
-        height: 340px !important; /* ارتفاع الصورة للتابلت */
-    }
-}
-
-@media (min-width: 1024px) {
-    .product-card {
-        width: 380px !important; /* 📐 قفل العرض الثابت لكروت الحسابات للكمبيوتر منعاً للمط والتلف */
-    }
-    .product-card-img, .product-card-top img {
-        height: 320px !important; /* ارتفاع الصورة للكمبيوتر */
-    }
-    .category-slide-card {
-        width: 420px !important;
-        height: 520px !important; /* الارتفاع الكلي المستقر للكمبيوتر */
-    }
-    .category-slide-card img {
-        width: 420px !important;
-        height: 420px !important; /* ارتفاع الصورة للكمبيوتر */
-    }
-}
-
-@media (min-width: 1024px) {
-    #mobile-menu-toggle { display: none !important; }
-    #bose-nav-menu { display: block !important; }
-    .bose-navbar { padding: 0 40px; height: 80px; }
-    #bose-store-logo { width: 52px; height: 52px; }
-    .brand-name-display { font-size: 1.4rem; }
-    .shared-trust-bar { grid-template-columns: repeat(4, 1fr); padding: 60px 0; }
 }
