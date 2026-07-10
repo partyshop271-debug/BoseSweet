@@ -1,6 +1,6 @@
 /**
  * 👑 محرك السلة وإتمام الطلب والتوثيق المالي النهائي المصحح كلياً - حلويات بوسي 👑
- * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من ثغرات البتر وتداخل النصوص V4.0
+ * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من ثغرات البتر وتداخل النصوص V4.1
  * متوافق بشكل مطلق وثنائي الاتجاه مع: core-engine.js، وقاعدة البيانات site-data-final.json ومعايير الأداء والموبايل أولاً
  */
 
@@ -54,9 +54,9 @@ function renderBoseCartPage(storeData) {
         if (cart.length === 0) {
             cartWrapper.innerHTML = `
                 <div class="empty-cart-message-block" style="text-align: center; padding: 60px 20px;">
-                    <i class="fas fa-shopping-bag" style="font-size: 48px; color: var(--bose-pink); margin-bottom: 20px; display: block; opacity: 0.5;"></i>
-                    <p style="font-size: 18px; font-weight: 600; color: var(--bose-black);">سلة المشتريات فارغة حالياً</p>
-                    <a href="menu.html" class="bose-btn-primary" style="display: inline-block; margin-top: 15px; background: var(--bose-pink); color: #FFF; padding: 10px 25px; border-radius: 8px; text-decoration: none; font-weight: 600;">تصفح المنيو الشامل</a>
+                    <i class="fas fa-shopping-bag" style="font-size: 48px; color: #FF91A4; margin-bottom: 20px; display: block; opacity: 0.5;"></i>
+                    <p style="font-size: 18px; font-weight: 600; color: #111111; font-family: 'Cairo';">سلة المشتريات فارغة حالياً</p>
+                    <a href="menu.html" class="bose-btn-primary" style="display: inline-block; margin-top: 15px; background: #FF91A4; color: #FFF; padding: 10px 25px; border-radius: 8px; text-decoration: none; font-weight: 600; font-family: 'Cairo';">تصفح المنيو الشامل</a>
                 </div>
             `;
             updateCartSummary(cart, storeData);
@@ -90,7 +90,7 @@ function renderBoseCartPage(storeData) {
                 if (cd.giftCardText && cd.giftCardText.trim() !== "") specs.push(`<strong>كارت الإهداء:</strong> "${cd.giftCardText}"`);
                 
                 if (specs.length > 0) {
-                    customDetailsHTML = `<div class="cart-item-customizations-panel" style="font-size: 13px; color: #555; background: rgba(255,145,164,0.04); padding: 10px; border-radius: 12px; margin: 6px 0; border-right: 3px solid var(--bose-pink); display: flex; flex-direction: column; gap: 4px; width: 100%; box-sizing: border-box;">${specs.join("")}</div>`;
+                    customDetailsHTML = `<div class="cart-item-customizations-panel" style="font-size: 13px; color: #555; background: rgba(255,145,164,0.04); padding: 10px; border-radius: 12px; margin: 6px 0; border-right: 3px solid #FF91A4; display: flex; flex-direction: column; gap: 4px; width: 100%; box-sizing: border-box; font-family: 'Cairo';">${specs.join("")}</div>`;
                 }
             }
 
@@ -103,14 +103,14 @@ function renderBoseCartPage(storeData) {
                 <div style="display: flex; align-items: center; gap: 14px; flex: 1; min-width: 0;">
                     <img src="${item.image || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png'}" class="cart-item-image" alt="${item.title}" style="width: 85px; height: 85px; border-radius: 14px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(255,145,164,0.1);">
                     <div style="display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0; text-align: right;">
-                        <h3 class="cart-item-title" style="margin: 0; font-size: 15px; font-weight: 700; color: var(--bose-black); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.title}</h3>
-                        <span class="cart-item-flavor-name" style="font-size: 13px; color: var(--bose-pink); font-weight: 700;">${item.flavorName}</span>
+                        <h3 class="cart-item-title" style="margin: 0; font-size: 15px; font-weight: 700; color: #111111; font-family: 'Cairo'; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.title}</h3>
+                        <span class="cart-item-flavor-name" style="font-size: 13px; color: #FF91A4; font-weight: 700; font-family: 'Cairo';">${item.flavorName}</span>
                         ${customDetailsHTML}
                         
                         <div class="bose-qty-controller-box" style="display: flex; align-items: center; border: 1px solid rgba(255, 145, 164, 0.2); border-radius: 10px; width: max-content; margin-top: 6px; background: #FFFFFF; height: 34px; padding: 2px;">
-                            <button class="btn-qty-plus" data-index="${index}" style="border: none; background: transparent; width: 32px; height: 100%; font-weight: 700; font-size: 15px; color: var(--bose-black); cursor: pointer;">+</button>
-                            <input type="text" readonly class="qty-numerical-display" value="${item.quantity}" style="width: 32px; text-align: center; border: none; font-size: 14px; font-weight: 700; color: var(--bose-black); background: transparent;">
-                            <button class="btn-qty-minus" data-index="${index}" style="border: none; background: transparent; width: 32px; height: 100%; font-weight: 700; font-size: 15px; color: var(--bose-black); cursor: pointer;">-</button>
+                            <button class="btn-qty-plus" data-index="${index}" style="border: none; background: transparent; width: 32px; height: 100%; font-weight: 700; font-size: 15px; color: #111111; cursor: pointer;">+</button>
+                            <input type="text" readonly class="qty-numerical-display" value="${item.quantity}" style="width: 32px; text-align: center; border: none; font-size: 14px; font-weight: 700; color: #111111; background: transparent; font-family: 'Cairo';">
+                            <button class="btn-qty-minus" data-index="${index}" style="border: none; background: transparent; width: 32px; height: 100%; font-weight: 700; font-size: 15px; color: #111111; cursor: pointer;">-</button>
                         </div>
                     </div>
                 </div>
@@ -120,9 +120,9 @@ function renderBoseCartPage(storeData) {
                         <i class="fas fa-trash-alt"></i>
                     </button>
                     
-                    <div style="text-align: left;">
+                    <div style="text-align: left; font-family: 'Cairo';">
                         ${item.quantity > 1 ? `<span style="display: block; font-size: 11px; color: #888; direction: ltr;">${finalProductPrice.toFixed(2)} × ${item.quantity}</span>` : ""}
-                        <div class="cart-item-total-price" style="font-size: 16px; font-weight: 700; color: var(--bose-pink); white-space: nowrap;">${totalItemCost.toFixed(2)} <span style="font-size: 11px; font-weight: 400; color: var(--bose-black);">EGP</span></div>
+                        <div class="cart-item-total-price" style="font-size: 16px; font-weight: 700; color: #FF91A4; white-space: nowrap;">${totalItemCost.toFixed(2)} <span style="font-size: 11px; font-weight: 400; color: #111111;">EGP</span></div>
                     </div>
                 </div>
             `;
@@ -352,16 +352,16 @@ function injectBoseBranchBlock(storeData) {
     
     const branchDiv = document.createElement("div");
     branchDiv.id = "bose-branch-info-static";
-    branchDiv.style.cssText = "background: rgba(212, 175, 55, 0.04); border: 1px solid var(--bose-gold); padding: 16px; border-radius: 14px; margin: 15px 0; direction: rtl; text-align: right;";
+    branchDiv.style.cssText = "background: rgba(212, 175, 55, 0.04); border: 1px solid #D4AF37; padding: 16px; border-radius: 14px; margin: 15px 0; direction: rtl; text-align: right;";
     
     const addressText = storeData.store?.pickup?.address || "الكفاح شارع الوحدة المحلية بجوار صيدلية الدكتور أحمد مجدي وبجوار عيادة الدكتور علي";
     const mapLink = storeData.store?.pickup?.mapUrl || "https://maps.app.goo.gl/nAg4Y7vQ7hACvKGc8?g_st=ac";
     
     branchDiv.innerHTML = `
-        <h4 style="margin: 0 0 6px 0; font-size: 15px; color: var(--bose-black); font-weight: 700;"><i class="fas fa-building" style="color: var(--bose-gold); margin-left: 6px;"></i> مقر الاستلام الرسمي للبراند:</h4>
-        <p style="margin: 0 0 12px 0; font-size: 13.5px; color: #444; line-height: 1.6;">${addressText}</p>
-        <a href="${mapLink}" target="_blank" class="success-action-secondary-btn" style="padding: 8px 16px; font-size: 13px; font-weight: 700; border-radius: 8px; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; background: #FFF; border: 1px solid var(--bose-gold); color: #111;">
-            <i class="fas fa-map-marked-alt" style="color: var(--bose-gold);"></i> عرض الموقع على خرائط جوجل
+        <h4 style="margin: 0 0 6px 0; font-size: 15px; color: #111111; font-weight: 700; font-family: 'Cairo';"><i class="fas fa-building" style="color: #D4AF37; margin-left: 6px;"></i> مقر الاستلام الرسمي للبراند:</h4>
+        <p style="margin: 0 0 12px 0; font-size: 13.5px; color: #444; line-height: 1.6; font-family: 'Cairo';">${addressText}</p>
+        <a href="${mapLink}" target="_blank" class="success-action-secondary-btn" style="padding: 8px 16px; font-size: 13px; font-weight: 700; border-radius: 8px; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; background: #FFF; border: 1px solid #D4AF37; color: #111; font-family: 'Cairo';">
+            <i class="fas fa-map-marked-alt" style="color: #D4AF37;"></i> عرض الموقع على خرائط جوجل
         </a>
     `;
     
@@ -382,7 +382,7 @@ function recalculateCheckoutInvoice(cart, storeData, shippingFee) {
     if (shippingDisplay) {
         shippingDisplay.textContent = shippingFee === 0 ? "مجاناً" : shippingFee.toFixed(2) + " EGP";
         if (shippingFee === 0) shippingDisplay.style.color = "#2ECC71";
-        else shippingDisplay.style.color = "var(--bose-black)";
+        else shippingDisplay.style.color = "#111111";
     }
     
     let discount = 0;
@@ -594,17 +594,17 @@ function renderBoseSuccessPage(storeData) {
     
     if (receiptWrapper) {
         receiptWrapper.innerHTML = `
-            <div class="receipt-card-header" style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,145,164,0.1); padding-bottom: 8px; margin-bottom: 12px;">
-                <span class="order-id-label" style="font-weight:700; color:var(--bose-pink);">رقم الطلب المرجعي: ${order.orderId}</span>
+            <div class="receipt-card-header" style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,145,164,0.1); padding-bottom: 8px; margin-bottom: 12px; font-family: 'Cairo';">
+                <span class="order-id-label" style="font-weight:700; color:#FF91A4;">رقم الطلب المرجعي: ${order.orderId}</span>
                 <span style="font-size: 13px; color: #777;">توقيت المعاملة: 2026</span>
             </div>
-            <div class="invoice-receipt-details-list" style="display: flex; flex-direction: column; gap: 8px; direction: rtl; text-align: right;">
+            <div class="invoice-receipt-details-list" style="display: flex; flex-direction: column; gap: 8px; direction: rtl; text-align: right; font-family: 'Cairo';">
                 <div class="receipt-row-item"><span>اسم المستلم الصريح:</span> <strong>${order.customerName}</strong></div>
                 <div class="receipt-row-item"><span>رقم الهاتف الأساسي المؤكد:</span> <strong>${order.phone1}</strong></div>
                 <div class="receipt-row-item"><span>نوع ومسار الاستلام:</span> <strong>${order.deliveryMethod} (${order.deliveryZone})</strong></div>
                 <div class="receipt-row-item"><span>الموعد الملتزم للتجهيز:</span> <strong>${order.scheduledDate} في ${order.scheduledTime}</strong></div>
                 <div class="receipt-grand-total-divider" style="height: 1px; background: rgba(17,17,17,0.06); margin: 6px 0;"></div>
-                <div class="receipt-grand-total-row" style="display: flex; justify-content: space-between; align-items: center;"><span class="receipt-total-label" style="font-weight:700;">المجموع المالي الكلي والنهائي:</span> <span class="receipt-total-value" style="font-size: 18px; font-weight: 700; color: var(--bose-pink);">${order.grandTotal} EGP</span></div>
+                <div class="receipt-grand-total-row" style="display: flex; justify-content: space-between; align-items: center;"><span class="receipt-total-label" style="font-weight:700;">المجموع المالي الكلي والنهائي:</span> <span class="receipt-total-value" style="font-size: 18px; font-weight: 700; color: #FF91A4;">${order.grandTotal} EGP</span></div>
             </div>
         `;
     }
