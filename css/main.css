@@ -1,7 +1,8 @@
 /* ==========================================================================
-   👑 ملف التصميم المركزي للأقسام والمنيو - حلويات بوسي V67.1 Master 👑
+   👑 ملف التصميم المركزي للأقسام والمنيو - حلويات بوسي V67.2 Master 👑
    النسخة الهندسية القياسية المصححة والمطورة كلياً - تمنع التكدس وتؤمن التنفس البصري
-   ممتثل لملفات الحوكمة ومتوافق بشكل مطلق ومتبادل مع: global.css و core-engine.js والـ JSON
+   امتثال مطلق وأعمى لملف الحوكمة والمواصفة الرسمية القياسية الفاخرة للصفحة الرئيسية
+   متوافق ومترابط بشكل مطلق ومتبادل مع: global.css و core-engine.js والـ JSON
    ========================================================================== */
 
 body.bose-hardware-accelerated {
@@ -37,16 +38,16 @@ body.bose-hardware-accelerated {
     font-family: 'Cairo', sans-serif !important;
     font-weight: 600;
     color: var(--bose-white) !important; /* النصوص باللون الأبيض الناصع للتنفس والوضوح الكامل على الخلفية البمبي */
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     white-space: nowrap;
     display: inline-block;
 }
 
-/* تفعيل الحارس المطلق للحركة التلقائية اللانهائية دون انقطاع */
+/* تفعيل الحارس المطلق للحركة التلقائية اللانهائية دون انقطاع أو بتر */
 .animate-marquee {
     display: flex !important;
     width: max-content !important;
-    animation: boseMarquee 25s linear infinite !important;
+    animation: boseMarquee 45s linear infinite !important; /* تهدئة السرعة لمنع قطع أو وميض النصوص */
     will-change: transform;
 }
 
@@ -773,4 +774,35 @@ body.bose-hardware-accelerated {
     .menu-categories-grid-framework {
         grid-template-columns: repeat(3, 1fr) !important;
     }
+}
+
+/* ==========================================================================
+   👑 10. التطوير الشامل لروابط الفوتر الموحد وقنوات التواصل (Universal Footer Styling)
+   ========================================================================== */
+.footer-quick-links ul li a {
+    color: var(--bose-black) !important;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-quick-links ul li a:hover {
+    color: var(--bose-pink) !important;
+}
+
+.bose-social-links-wrapper a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: var(--bose-white);
+    border: var(--bose-border-pink);
+    box-shadow: var(--bose-shadow-glow);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+}
+
+.bose-social-links-wrapper a:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--bose-shadow-hover);
 }
