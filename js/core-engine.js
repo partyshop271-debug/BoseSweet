@@ -235,14 +235,21 @@
         const data = window.BoseStoreData;
         if (!data) return;
 
-        // 🔄 تصحيح الشريط العلوي المتحرك حتمياً وضخ النصوص وتكرارها هندسياً لملء المسار
+        // 🔄 تصحيح الشريط العلوي المتحرك حتمياً وضخ النصوص وتكرارها هندسياً لملء المسار ومنع الفراغات بصرى
         const tickerTrack = document.getElementById('top-bar-marquee-track');
         if (tickerTrack && data.navigation.topBarMessages) {
             let messagesHtml = data.navigation.topBarMessages.map(msg => `
-                <span class="ticker-message-item" style="color: var(--bose-white) !important;">${msg} &nbsp;&nbsp;&nbsp;&nbsp; 🌸 &nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <span class="ticker-message-item" style="color: var(--bose-white) !important; display: inline-block; white-space: nowrap; padding: 0 50px; font-family: 'Cairo', sans-serif; font-weight: 600; font-size: 0.95rem;">
+                    ${msg} &nbsp;&nbsp;&nbsp;&nbsp; 🌸 &nbsp;&nbsp;&nbsp;&nbsp;
+                </span>
             `).join('');
-            // مضاعفة المحتوى تكرارياً لملء مسار الحركة بالكامل لضمان الانسيابية اللانهائية وعدم ظهور فراغ بصرى
-            tickerTrack.innerHTML = `${messagesHtml}${messagesHtml}${messagesHtml}${messagesHtml}${messagesHtml}${messagesHtml}`;
+            
+            // صمام الأمان الهندسي المانع للفراغ: تكرار الجمل 16 مرة متتالية لبناء شريط ممتد وعريض جداً يمنع الاختفاء السريع
+            let infiniteLoopHtml = '';
+            for (let i = 0; i < 16; i++) {
+                infiniteLoopHtml += messagesHtml;
+            }
+            tickerTrack.innerHTML = infiniteLoopHtml;
         }
 
         const heroDesc = document.getElementById('hero-description');
