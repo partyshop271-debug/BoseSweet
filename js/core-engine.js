@@ -1,7 +1,8 @@
 /**
- * 👑 ملف المحرك المركزي العالمي المصحح والمطور بالكامل V7.3 - حلويات بوسي 2026 👑
+ * 👑 ملف المحرك المركزي العالمي المصحح والمطور بالكامل V8.0 - حلويات بوسي 2026 👑
  * معالجة هندسية شاملة وجذرية للفوضى البصرية وحوكمة السلايدرات وقفل التزامن بالمسطرة
- * تم إصلاح موضع الشريط العلوي المتحرك ليكون في مكانه الصحيح هندسياً أعلى الهيدر وليس بأسفله
+ * امتثال مطلق وأعمى لملف الحوكمة والمواصفة الرسمية القياسية الفاخرة للصفحة الرئيسية
+ * تم إصلاح موضع الشريط العلوي المتحرك ليكون في مكانه الصحيح هندسياً أعلى الهيدر تماماً
  * إصلاح حاسم لثغرة اختفاء نصوص الشريط العلوي المتحرك وضمان التدفق الدائري الانسيابي الفاخر
  * حل جذري ونهائي لمشكلة تجمد حركة سلايدر قسم (عقد من الإتقان) ودعم الـ RTL الذكي تلقائياً
  * متوافق ومترابط بشكل مطلق ومتبادل مع: global.css و main.css وقاعدة البيانات site-data-final.json
@@ -85,7 +86,7 @@
                 <div id="top-bar-marquee-track" class="animate-marquee"></div>
             </div>
             
-            <!-- الهيدر الهيكلي المقدس Sticky -->
+            <!-- الهيدر الهيكلي المقدس Sticky الثابت الملتزم بالمواصفة بالملي من اليمين لليسار -->
             <header class="bose-navbar">
                 <div class="navbar-mobile-wrapper">
                     <button id="mobile-menu-toggle" class="nav-icon-btn" aria-label="فتح قائمة التصفح">
@@ -219,12 +220,12 @@
         const data = window.BoseStoreData;
         if (!data) return;
 
-        // أ. تحديث شريط الإعلانات المتجدد العلوي الصافي وحل ثغرة التعارض البرمجي
+        // أ. تحديث شريط الإعلانات المتجدد العلوي الصافي ومنع ثغرة الوميض أو الفراغ البصري نهائياً
         const tickerTrack = document.getElementById('top-bar-marquee-track');
         if (tickerTrack && data.navigation.topBarMessages) {
             let messagesHtml = data.navigation.topBarMessages.map(msg => `<span class="ticker-message-item">${msg}</span>`).join('');
-            // حقن مباشر ومكرر مرتين لضمان استمرارية دوران اللوب اللانهائي بكفاءة ومظهر فاخر
-            tickerTrack.innerHTML = `${messagesHtml}${messagesHtml}`;
+            // حل ثغرة الاختفاء: مضاعفة مصفوفة النصوص لأربع مرات متتالية لملء عرض Track بالكامل على كافة الشاشات والموبايل
+            tickerTrack.innerHTML = `${messagesHtml}${messagesHtml}${messagesHtml}${messagesHtml}`;
         }
 
         // ب. تحديث هيرو الواجهة الرئيسية
@@ -241,18 +242,19 @@
             rightCol.innerHTML = data.homepage.waterfall.rightColumnImages.map(img => `<img src="${img}" alt="حلويات بوسي فخامة بصرية">`).join('');
         }
 
-        // د. بناء وتفعيل سلايدر قسم عقد من الإتقان المصلح ليعمل تلقائياً ويدوياً معاً
+        // د. بناء وتفعيل سلايدر قسم عقد من الإتقان المصلح ليعمل تلقائياً ويدوياً معاً بدون تجمد
         const excellenceTitle = document.getElementById('excellence-title');
         const excellenceDesc = document.getElementById('excellence-description');
         const excellenceTrack = document.getElementById('excellence-images-track');
         if (excellenceTitle) excellenceTitle.textContent = data.homepage.excellence.title;
         if (excellenceDesc) excellenceDesc.textContent = data.homepage.excellence.description;
         if (excellenceTrack && data.homepage.excellence.images) {
+            // الامتثال للمواصفة: 3 صور متصلة بالكامل بدون أي فراغ أو فواصل بصرية وكل صورة تعمل كرابط ذكي
             excellenceTrack.innerHTML = data.homepage.excellence.images.map(img => `<a href="menu.html" class="perfection-slide-node"><img src="${img}" alt="إتقان حلويات بوسي"></a>`).join('');
             initializeBoseSliderLogic(excellenceTrack, 'excellence-dots', true, false); 
         }
 
-        // هـ. هيكل الكارت الموحد (Strict Product Card DOM) بالمسطرة
+        // هـ. هيكل الكارت الموحد (Strict Product Card DOM) الملتزم بالمسطرة هندسياً وترتيبياً
         function createProductCardHTML(product) {
             return `
                 <div class="product-card-unified" data-slug="${product.slug}">
@@ -271,7 +273,7 @@
             `;
         }
 
-        // و. ضخ وتشغيل سلايدر الأكثر مبيعاً مع دعم السحب الفعلي واللمس
+        // و. ضخ وتشغيل سلايدر الأكثر مبيعاً (8 منتجات) مع دعم السحب الفعلي واللمس
         const mostSellingGrid = document.getElementById('most-selling-grid');
         if (mostSellingGrid) {
             document.getElementById('most-selling-title').textContent = "الأكثر مبيعاً";
@@ -285,7 +287,7 @@
             initializeBoseSliderLogic(mostSellingGrid, 'most-selling-dots', false, false);
         }
 
-        // ز. ضخ وتشغيل سلايدر وصل حديثاً مع دعم السحب الفعلي واللمس والسنترة
+        // ز. ضخ وتشغيل سلايدر وصل حديثاً (6 عناصر) مع دعم السحب الفعلي واللمس والسنترة
         const newArrivalsGrid = document.getElementById('new-arrivals-grid');
         if (newArrivalsGrid) {
             document.getElementById('new-arrivals-title').textContent = "وصل حديثاً";
@@ -299,12 +301,13 @@
             initializeBoseTracksSliderLogic(newArrivalsGrid, 'new-arrivals-dots', false, false);
         }
 
-        // ح. ضخ قسم منتجاتنا بالتوزيع الشبكي الثنائي الصارم الملتزم لمنع الفوضى أو الوميض
+        // ح. ضخ قسم منتجاتنا بالتوزيع الشبكي الثنائي الصارم (2 كارت بالصف) للموبايل ومنع الفوضى أو الوميض
         const ourProductsGrid = document.getElementById('our-products-grid');
         if (ourProductsGrid) {
             document.getElementById('our-products-title').textContent = "منتجاتنا";
             document.getElementById('our-products-description').textContent = "الجودة والقيمة العالية للمكونات الطازجة يومياً.";
             let allItems = data.products.filter(p => data.homepage.ourProducts.includes(p.slug));
+            // عرض أولي لـ 4 كروت فقط لراحة العميل البصرية والتنفس البصري
             ourProductsGrid.innerHTML = allItems.slice(0, 4).map(p => createProductCardHTML(p)).join('');
             
             const showMoreBtn = document.getElementById('our-products-show-more');
@@ -318,7 +321,7 @@
             }
         }
 
-        // ط. كتل واجهات عرض وتخصيص محاكيات التورت والورد الفاخرة
+        // ط. كتل واجهات عرض وتخصيص محاكيات التورت والورد الفاخرة الممتدة لكامل عرض الشاشة
         if (document.getElementById('cake-preview-title')) {
             document.getElementById('cake-preview-title').textContent = data.homepage.cakePreview.title;
             document.getElementById('cake-preview-desc').textContent = data.homepage.cakePreview.description;
@@ -444,7 +447,7 @@
         buildSliderDots(sliderTrack, dotsContainerId, isCategoryType);
 
         function startAutoPlayLogic() {
-            // هندسة الحركة التلقائية المصلحة بالكامل لتتوافق مع اتجاه الـ RTL الصارم لصفحات المتصفح
+            // هندسة الحركة التلقائية المصلحة بالكامل لتتوافق مع اتجاه الـ RTL الصارم لصفحات المتصفح العربية
             const isRTL = window.getComputedStyle(sliderTrack).direction === 'rtl';
             let autoSliderDirection = isRTL ? -1 : 1;
 
