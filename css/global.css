@@ -1,24 +1,19 @@
 /* ==========================================================================
-   👑 BoseSweets Strict Production Global Stylesheet (css/global.css) V9.5 👑
-   الهوية البصرية الموحدة والأبعاد الهندسية المقدسة - حلويات بوسي 2026
-   امتثال مطلق وأعمى لملف الحوكمة والمواصفة الرسمية القياسية الفاخرة
+   👑 BoseSweets Strict Production Global Stylesheet (css/global.css) V9.6 👑
    ========================================================================== */
 
-/* --- 1. المكونات الحاكمة والألوان المقدسة (CSS Tokens) --- */
 :root {
-    --bose-pink: #FF91A4;        /* نبض الحياة: حدود المنتجات، الظلال الناعمة، والأسعار الديناميكية */
-    --bose-white: #FFFFFF;       /* المسيطر تماماً: مسيطر على الخلفيات والمساحات بالكامل لمنع التكديس */
-    --bose-black: #111111;       /* النصوص والعناوين فقط: محظور استخدامه نهائياً في أي ظلال أو خلفيات */
-    --bose-gold: #D4AF37;        /* وجود رمزي ناعم وخفيف جداً لمحاكاة فخامة اللوجو ونجوم التقييمات */
+    --bose-pink: #FF91A4;        
+    --bose-white: #FFFFFF;       
+    --bose-black: #111111;       
+    --bose-gold: #D4AF37;        
 
-    /* الهندسة البرمجية للظلال والحدود لمنع استخدام الظلال السوداء نهائياً */
     --bose-shadow-glow: 0 8px 32px rgba(255, 145, 164, 0.12);
     --bose-shadow-hover: 0 16px 40px rgba(255, 145, 164, 0.22);
     --bose-border-pink: 1px solid rgba(255, 145, 164, 0.3);
     --bose-border-thick: 2px solid #FF91A4;
 }
 
-/* --- 2. الإعدادات القياسية وهندسة النصوص (Reset & Typography) --- */
 *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
@@ -38,28 +33,26 @@ body {
     background-color: var(--bose-white) !important;
     color: var(--bose-black) !important;
     font-family: 'Cairo', sans-serif !important;
-    padding-top: 120px !important; /* قفل الإزاحة بالمسطرة لمنع تداخل أقسام الموقع العليا */
+    padding-top: 120px !important; 
 }
 
 body.drawer-active {
     overflow: hidden !important; 
 }
 
-/* حارس التماسك البصري ومنع انقطاع أو بتر النصوص نهائياً (No Text Overflow) */
 h1, h2, h3, h4, p, span, a, button, input, select, textarea {
     white-space: normal;
     word-wrap: break-word;
     overflow-wrap: break-word;
 }
 
-/* قفل أوزان الخطوط لحماية الفخامة ومنع التشويه البصري */
 h1, h2 {
-    font-weight: 700 !important; /* سقف الوزن لأضخم العناوين الرئيسية */
+    font-weight: 700 !important; 
     color: var(--bose-black) !important;
 }
 
 h3, h4, h5, h6 {
-    font-weight: 600 !important; /* عناوين كروت المنتجات والتفاصيل */
+    font-weight: 600 !important; 
     color: var(--bose-black) !important;
 }
 
@@ -82,7 +75,7 @@ img {
     object-fit: cover;
 }
 
-/* --- 3. محرك الشريط العلوي المتحرك المطور (Bose Premium Top Bar Marquee) --- */
+/* --- 3. محرك الشريط العلوي المتحرك المطور --- */
 #top-bar-marquee {
     position: fixed; 
     top: 0;
@@ -114,7 +107,6 @@ img {
     display: inline-block !important;
 }
 
-/* 🔄 محرك الأنميشن الانسيابي المطور: مهدأ وموزون تماماً على 68 ثانية متصلة لمنع السرعة الزائدة والاختفاء البصري */
 @keyframes boseMarquee {
     0% { transform: translate3d(0, 0, 0); }
     100% { transform: translate3d(-50%, 0, 0); }
@@ -123,11 +115,11 @@ img {
 .animate-marquee {
     display: flex !important;
     width: max-content !important;
-    animation: boseMarquee 68s linear infinite !important;
+    animation: boseMarquee 45s linear infinite !important;
     will-change: transform;
 }
 
-/* --- 4. الهيدر الموحد والثابت القياسي (Universal Sticky Header UX) --- */
+/* --- 4. الهيدر الموحد والثابت القياسي --- */
 .bose-navbar {
     position: fixed;
     top: 46px; 
@@ -225,11 +217,9 @@ img {
     box-shadow: 0 2px 6px rgba(255, 145, 164, 0.4);
 }
 
-#bose-nav-menu {
-    display: none; 
-}
+#bose-nav-menu { display: none; }
 
-/* --- 5. حوكمة وتطوير استايلات القائمة الجانبية (Premium Sidebar Drawer) --- */
+/* --- 5. حوكمة وتطوير استايلات القائمة الجانبية --- */
 .bose-drawer-menu {
     position: fixed;
     top: 0;
@@ -263,15 +253,8 @@ img {
     border-bottom: 1px solid rgba(255, 145, 164, 0.1);
 }
 
-.drawer-premium-header h3 {
-    font-size: 1.2rem;
-    margin-bottom: 4px;
-}
-
-.drawer-premium-header p {
-    font-size: 0.85rem;
-    color: var(--bose-pink);
-}
+.drawer-premium-header h3 { font-size: 1.2rem; margin-bottom: 4px; }
+.drawer-premium-header p { font-size: 0.85rem; color: var(--bose-pink); }
 
 .drawer-links-scrollable {
     flex: 1;
@@ -279,17 +262,17 @@ img {
     padding: 10px 0;
 }
 
-.drawer-links-list {
-    list-style: none;
-}
+.drawer-links-list { list-style: none; }
 
+/* 🛡️ تم إصلاح الأوفرلاي والظلال بحظر اللون الأسود واستبداله بلون وردي ناعم وشفاف */
 .drawer-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(17, 17, 17, 0.4) !important; 
+    background: rgba(255, 145, 164, 0.15) !important; 
+    backdrop-filter: blur(4px);
     z-index: 49999 !important;
     opacity: 0;
     pointer-events: none;
@@ -310,7 +293,6 @@ img {
     font-weight: 600;
     font-size: 1rem;
     border-bottom: 1px solid rgba(255, 145, 164, 0.06);
-    transition: background 0.3s, color 0.3s;
 }
 
 .drawer-link-item a i {
@@ -333,7 +315,7 @@ img {
     cursor: pointer;
 }
 
-/* --- 6. الفوتر القياسي الموحد المعتمد (Shared Universal Footer) --- */
+/* --- 6. الفوتر القياسي الموحد المعتمد --- */
 .bose-footer {
     background-color: var(--bose-white) !important;
     border-top: var(--bose-border-pink) !important;
@@ -343,13 +325,9 @@ img {
     align-items: center;
     text-align: center;
     width: 100%;
-    box-sizing: border-box;
 }
 
-.footer-logo-container {
-    margin-bottom: 12px;
-}
-
+.footer-logo-container { margin-bottom: 12px; }
 .footer-brand-name {
     font-size: 1.45rem;
     font-weight: 700;
@@ -357,11 +335,7 @@ img {
     margin-bottom: 16px;
 }
 
-.footer-about-block {
-    max-width: 650px;
-    margin-bottom: 25px;
-}
-
+.footer-about-block { max-width: 650px; margin-bottom: 25px; }
 #footer-about-text {
     font-size: 0.95rem;
     color: var(--bose-black) !important;
@@ -369,20 +343,9 @@ img {
     line-height: 1.7;
 }
 
-.footer-quick-links {
-    margin-bottom: 20px;
-}
-
-.footer-quick-links ul {
-    list-style: none;
-    display: flex;
-    gap: 20px;
-}
-
-.footer-policies-container {
-    margin-bottom: 20px;
-}
-
+.footer-quick-links { margin-bottom: 20px; }
+.footer-quick-links ul { list-style: none; display: flex; gap: 20px; }
+.footer-policies-container { margin-bottom: 20px; }
 .footer-policies-container ul {
     list-style: none;
     display: flex;
@@ -392,17 +355,8 @@ img {
     font-size: 0.9rem;
 }
 
-.bose-social-links-wrapper {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 20px;
-}
-
-.footer-location-block {
-    font-size: 0.9rem;
-    color: var(--bose-black);
-    margin-bottom: 15px;
-}
+.bose-social-links-wrapper { display: flex; gap: 15px; margin-bottom: 20px; }
+.footer-location-block { font-size: 0.9rem; color: var(--bose-black); margin-bottom: 15px; }
 
 .footer-copyright-block {
     width: 100%;
@@ -415,7 +369,6 @@ img {
     font-size: 0.85rem;
     color: var(--bose-black) !important;
     opacity: 0.7;
-    margin: 0;
 }
 
 .global-error-banner-node {
@@ -428,13 +381,8 @@ img {
     padding: 12px 24px;
     border-radius: 12px;
     z-index: 99999;
-    font-size: 0.9rem;
-    box-shadow: var(--bose-shadow-hover);
 }
 
-/* --- 7. التوافق والربط الهيكلي مع الشاشات (Mobile UX First) --- */
 @media (max-width: 767px) {
-    #bose-nav-menu {
-        display: none;
-    }
+    #bose-nav-menu { display: none; }
 }
