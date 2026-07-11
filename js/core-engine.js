@@ -1,5 +1,5 @@
 /**
- * 👑 ملف المحرك المركزي العالمي المصحح والمطور بالكامل V12.1 - حلويات بوسي 2026 👑
+ * 👑 ملف المحرك المركزي العالمي المصحح والمطور بالكامل V12.2 - حلويات بوسي 2026 👑
  * حوكمة كاملة لواجهات الشريط العلوي، القائمة الجانبية المتطورة، والفوتر الموحد ومنع تداخل الملفات
  * المسؤول الوحيد والمطلق عن التحكم في حركة وسرعة وتكرار وضخ صور قسم "عقد من الإتقان" وتطهير الستايل تماماً
  */
@@ -318,7 +318,6 @@
         const data = window.BoseStoreData;
         if (!data) return;
 
-        // صمام الأمان وتأمين حقن الشريط العلوي بنجاح فوري
         const tickerTrack = document.getElementById('top-bar-marquee-track');
         if (tickerTrack && data.navigation.topBarMessages) {
             let messagesHtml = data.navigation.topBarMessages.map(msg => `
@@ -344,7 +343,6 @@
             rightCol.innerHTML = data.homepage.waterfall.rightColumnImages.map(img => `<img src="${img}" alt="حلويات بوسي فخامة بصرية" loading="lazy">`).join('');
         }
 
-        // صمام الأمان والتحكم المركزي الفوري في صور قسم "عقد من الإتقان" وحركتها اللانهائية السلسة
         const excellenceTitle = document.getElementById('excellence-title');
         const excellenceDesc = document.getElementById('excellence-description');
         const excellenceTrack = document.getElementById('excellence-images-track');
@@ -377,8 +375,6 @@
                 excellenceTrack.style.transform = `translate3d(${currentX}px, 0, 0)`;
                 animationFrameId = requestAnimationFrame(animateExcellenceLoop);
             }
-            // تشغيل محرك الحلقة اللانهائية لقسم الإتقان بنجاح تام
-            if(animationFrameId) cancelAnimationFrame(animationFrameId);
             animationFrameId = requestAnimationFrame(animateExcellenceLoop);
         }
 
@@ -931,23 +927,14 @@
         document.head.appendChild(styleElement);
     }
 
-    function showGlobalFriendlyError() {
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'global-error-banner-node';
-        errorDiv.textContent = 'عذراً، نواجه صعوبة في الاتصال بالخادم حالياً. يرجى إعادة محاولة تحميل الصفحة.';
-        document.body.appendChild(errorDiv);
-    }
-
     document.addEventListener("DOMContentLoaded", () => {
         let attempts = 0; const maxAttempts = 100;
         const coreGuardInterval = setInterval(() => {
             attempts++;
             if (window.BoseStoreData && window.BoseStoreData.store) {
                 clearInterval(coreGuardInterval);
-                console.log("🚀 تم التحقق من مطابقة المحرك المخصص وتوافقه مع قاعدة بيانات حلويات بوسي الحالية.");
             } else if (attempts >= maxAttempts) {
                 clearInterval(coreGuardInterval);
-                console.error("❌ حارس التمهيد: تجاوز الحد الأقصى لمحاولات تحميل قاعدة البيانات.");
             }
         }, 50);
     });
