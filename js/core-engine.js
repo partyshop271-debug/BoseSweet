@@ -1,8 +1,9 @@
 /**
- * 👑 ملف المحرك المركزي العالمي المصحح والمطور بالكامل V12.5 - حلويات بوسي 2026 👑
+ * 👑 ملف المحرك المركزي العالمي المصحح والمطور بالكامل V12.6 - حلويات بوسي 2026 👑
  * حوكمة كاملة لواجهات الشريط العلوي، القائمة الجانبية المتطورة، والفوتر الموحد ومنع تداخل الملفات
  * القضاء التام والنهائي على ثغرة بتر القائمة الجانبية وضمان التمرير الكامل لآخر عنصر لوجستي
  * المسؤول الوحيد والمطلق عن التحكم في حركة وسرعة وتكرار وضخ صور قسم "عقد من الإتقان" وتطهير الستايل تماماً
+ * [تحديث ذكي]: إصلاح مسار التوجيه الجغرافي لكروت المحاكيات داخل أقسام القائمة الجانبية لتعمل بالتوافق الصارم
  */
 (function() {
     // محددات الحالة المركزية المعزولة بأمان
@@ -117,7 +118,7 @@
     }
 
     // ==========================================
-    // 3. موديول القائمة الجانبية التفاعلية المتطورة والحل الجذري لمشكلة البتر السفلي
+    // 3. موديول القائمة الجانبية التفاعلية المتطورة والحل الجذري لمشكلة البتر السفلي التوجيهي
     // ==========================================
     function renderUniversalSidebar() {
         let sidebarPanel = document.getElementById('sidebar-drawer');
@@ -127,7 +128,6 @@
         sidebar.id = 'sidebar-drawer';
         sidebar.className = 'bose-drawer-menu';
         
-        // تم إعادة هيكلة الـ DOM بالكامل ليصبح الفوتر ومحتويات السلة والدعم مدمجين داخل الـ Scrollable Track لمنع البتر نهائياً
         sidebar.innerHTML = `
             <div class="drawer-overlay" id="sidebar-close-overlay"></div>
             <div class="bose-drawer-panel-content">
@@ -151,7 +151,6 @@
                     <div class="drawer-premium-section-title">سلتك الحالية</div>
                     <div id="sidebar-mini-cart-wrapper" class="sidebar-mini-cart-container"></div>
 
-                    <!-- دمج كتلة الفوتر والدعم داخل حاوية السكرول لضمان ظهورها الكامل وعدم قطعها في الشاشات الصغيرة -->
                     <div class="drawer-premium-footer-block" style="margin-top: 30px; padding: 20px 24px;">
                         <div class="drawer-social-icons-row" id="sidebar-social-links-injector" style="display: flex; gap: 15px; justify-content: center; margin-bottom: 15px;"></div>
                         <a href="https://wa.me/${window.sanitizeBosePhoneNumber(window.BoseStoreData.social.whatsapp)}" target="_blank" class="drawer-support-call-btn">
@@ -165,12 +164,19 @@
 
         const quickCategoriesContainer = document.getElementById('sidebar-quick-categories-node');
         if (quickCategoriesContainer && window.BoseStoreData.homepage.categoriesSlider) {
-            quickCategoriesContainer.innerHTML = window.BoseStoreData.homepage.categoriesSlider.map(cat => `
-                <a href="category.html?id=${cat.id}" class="sidebar-cat-chip-node">
-                    <img src="${cat.image}" alt="${cat.title}" loading="lazy">
-                    <span>${cat.title}</span>
-                </a>
-            `).join('');
+            quickCategoriesContainer.innerHTML = window.BoseStoreData.homepage.categoriesSlider.map(cat => {
+                // فحص الحوكمة الذكي: توجيه التورت والورد للمحاكيات مباشرة لحل المشكلة
+                let targetUrl = `category.html?id=${cat.id}`;
+                if (cat.id === "taswaq-toort") targetUrl = "cake-builder.html";
+                if (cat.id === "taswaq-flowers") targetUrl = "flower-builder.html";
+
+                return `
+                    <a href="${targetUrl}" class="sidebar-cat-chip-node">
+                        <img src="${cat.image}" alt="${cat.title}" loading="lazy">
+                        <span>${cat.title}</span>
+                    </a>
+                `;
+            }).join('');
         }
 
         const socialLinksContainer = document.getElementById('sidebar-social-links-injector');
@@ -321,7 +327,6 @@
         const data = window.BoseStoreData;
         if (!data) return;
 
-        // صمام الأمان وتأمين حقن الشريط العلوي بنجاح فوري
         const tickerTrack = document.getElementById('top-bar-marquee-track');
         if (tickerTrack && data.navigation.topBarMessages) {
             let messagesHtml = data.navigation.topBarMessages.map(msg => `
@@ -347,7 +352,6 @@
             rightCol.innerHTML = data.homepage.waterfall.rightColumnImages.map(img => `<img src="${img}" alt="حلويات بوسي فخامة بصرية" loading="lazy">`).join('');
         }
 
-        // صمام الأمان والتحكم المركزي الفوري في صور قسم "عقد من الإتقان" وحركتها اللانهائية السلسة
         const excellenceTitle = document.getElementById('excellence-title');
         const excellenceDesc = document.getElementById('excellence-description');
         const excellenceTrack = document.getElementById('excellence-images-track');
@@ -380,7 +384,6 @@
                 excellenceTrack.style.transform = `translate3d(${currentX}px, 0, 0)`;
                 animationFrameId = requestAnimationFrame(animateExcellenceLoop);
             }
-            // تشغيل محرك الحلقة اللانهائية لقسم الإتقان بنجاح تام
             if(animationFrameId) cancelAnimationFrame(animationFrameId);
             animationFrameId = requestAnimationFrame(animateExcellenceLoop);
         }
@@ -471,14 +474,20 @@
             document.getElementById('categories-section-title').textContent = "تسوق حسب الفئة";
             document.getElementById('categories-section-subtitle').textContent = "اختر فئتك المفضلة لتستعرض كافة تفاصيلها ونكهاتها الموزونة.";
             
-            categoriesTrack.innerHTML = data.homepage.categoriesSlider.map(cat => `
-                <div class="bose-category-slider-card">
-                    <a href="category.html?id=${cat.id}">
-                        <img src="${cat.image}" class="category-img" alt="${cat.title}" loading="lazy">
-                        <div class="category-title-display">${cat.title}</div>
-                    </a>
-                </div>
-            `).join('');
+            categoriesTrack.innerHTML = data.homepage.categoriesSlider.map(cat => {
+                let catUrl = `category.html?id=${cat.id}`;
+                if (cat.id === "taswaq-toort") catUrl = "cake-builder.html";
+                if (cat.id === "taswaq-flowers") catUrl = "flower-builder.html";
+
+                return `
+                    <div class="bose-category-slider-card">
+                        <a href="${catUrl}">
+                            <img src="${cat.image}" class="category-img" alt="${cat.title}" loading="lazy">
+                            <div class="category-title-display">${cat.title}</div>
+                        </a>
+                    </div>
+                `;
+            }).join('');
             initializeBoseSliderLogic(categoriesTrack, 'categories-dots', true, true); 
         }
     }
