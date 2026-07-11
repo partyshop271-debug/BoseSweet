@@ -1,15 +1,18 @@
-/* ==========================================================================
+    }
+د/* ==========================================================================
    BoseSweets Strict Production Global Stylesheet (css/global.css)
    الهوية البصرية الموحدة والأبعاد الهندسية المقدسة - حلويات بوسي 2026
+   النسخة الهندسية القياسية v6.5 - مصححة بالكامل لحظر الفوضى البصرية والتكدس
+   متوافقة ومترابطة بشكل مطلق ومتبادل مع: main.css و core-engine.js والـ JSON
    ========================================================================== */
 
 /* --- 1. المكونات الحاكمة والألوان المقدسة (CSS Tokens) --- */
 :root {
     /* الألوان الحاكمة والمقدسة للعلامة التجارية (صمام الأمان لضمان التنفس البصري ومنع وميض الألوان) */
-    --bose-pink: #FF91A4;        /* نبض الحياة: حدود المنتجات، الظلال الناعمة، والأسعار الديناميكية */
-    --bose-white: #FFFFFF;       /* المسيطر تماماً: مسيطر على الخلفيات والمساحات بالكامل لمنع التكديس */
-    --bose-black: #111111;       /* النصوص والعناوين فقط: محظور استخدامه نهائياً في أي ظلال أو خلفيات */
-    --bose-gold: #D4AF37;        /* وجود رمزي ناعم وخفيف جداً لمحاكاة فخامة اللوجو ونجوم التقييمات */
+    --bose-pink: #FF91A4;        /* نبض الحياة: حدود المنتجات، الظلال الناعمة، والأسعار الديناميكية[span_3](start_span)[span_3](end_span) */
+    --bose-white: #FFFFFF;       /* المسيطر تماماً: مسيطر على الخلفيات والمساحات بالكامل لمنع التكديس[span_4](start_span)[span_4](end_span) */
+    --bose-black: #111111;       /* النصوص والعناوين فقط: محظور استخدامه نهائياً في أي ظلال أو خلفيات[span_5](start_span)[span_5](end_span) */
+    --bose-gold: #D4AF37;        /* وجود رمزي ناعم وخفيف جداً لمحاكاة فخامة اللوجو ونجوم التقييمات[span_6](start_span)[span_6](end_span) */
 
     /* الهندسة البرمجية للظلال والحدود لمنع استخدام الظلال السوداء نهائياً */
     --bose-shadow-glow: 0 8px 32px rgba(255, 145, 164, 0.12);
@@ -37,6 +40,7 @@ body {
     line-height: 1.6;
     background-color: var(--bose-white);
     color: var(--bose-black);
+    font-family: 'Cairo', sans-serif !important;
 }
 
 /* حارس التماسك البصري ومنع انقطاع أو بتر النصوص نهائياً (No Text Overflow) */
@@ -48,11 +52,11 @@ h1, h2, h3, h4, p, span, a, button, input, select, textarea {
 
 /* قفل أوزان الخطوط لحماية الفخامة ومنع التشويه البصري */
 h1, h2 {
-    font-weight: 700 !important; /* سقف الوزن لأضخم العناوين الرئيسية */
+    font-weight: 700 !important; /* سقف الوزن لأضخم العناوين الرئيسية[span_7](start_span)[span_7](end_span) */
 }
 
 h3, h4 {
-    font-weight: 600 !important; /* عناوين كروت المنتجات والتفاصيل */
+    font-weight: 600 !important; /* عناوين كروت المنتجات والتفاصيل[span_8](start_span)[span_8](end_span) */
 }
 
 a {
@@ -65,6 +69,7 @@ button, input, select, textarea {
     border: none;
     outline: none;
     background: none;
+    font-family: 'Cairo', sans-serif !important;
 }
 
 img {
@@ -124,7 +129,7 @@ img {
     font-weight: 700;
     color: var(--bose-black) !important;
     padding-right: 5px;
-    display: block !important; /* ثابت ومقدس على جميع الشاشات لمنع التشتيت البصري */
+    display: block !important; /* ثابت ومقدس على جميع الشاشات لمنع التشتيت البصري[span_9](start_span)[span_9](end_span) */
 }
 
 .nav-actions {
@@ -183,7 +188,7 @@ img {
     background-color: var(--bose-white);
     border-bottom: var(--bose-border-pink);
     padding: 10px 0;
-    margin-top: 70px; /* يعطي تنفساً بصرياً كاملاً ويمنع الاختفاء تحت الهيدر الثابت */
+    margin-top: 70px; /* يعطي تنفساً بصرياً كاملاً ويمنع الاختفاء تحت الهيدر الثابت[span_10](start_span)[span_10](end_span) */
     overflow: hidden;
     display: flex;
     align-items: center;
@@ -239,6 +244,11 @@ img {
 #footer-social-links a {
     font-size: 1.5rem;
     color: var(--bose-pink);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#footer-social-links a:hover {
+    transform: scale(1.15);
 }
 
 .footer-policies-container {
@@ -250,6 +260,10 @@ img {
     margin-bottom: 20px;
     font-size: 0.9rem;
     font-weight: 600;
+}
+
+.footer-policies-container a:hover {
+    color: var(--bose-pink);
 }
 
 .footer-copyright-block {
