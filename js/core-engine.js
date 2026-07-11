@@ -1,7 +1,9 @@
 /**
- * 👑 ملف المحرك المركزي العالمي المصحح والمطور بالكامل V7.1 - حلويات بوسي 2026 👑
+ * 👑 ملف المحرك المركزي العالمي المصحح والمطور بالكامل V7.3 - حلويات بوسي 2026 👑
  * معالجة هندسية شاملة وجذرية للفوضى البصرية وحوكمة السلايدرات وقفل التزامن بالمسطرة
  * تم إصلاح موضع الشريط العلوي المتحرك ليكون في مكانه الصحيح هندسياً أعلى الهيدر وليس بأسفله
+ * إصلاح حاسم لثغرة اختفاء نصوص الشريط العلوي المتحرك وضمان التدفق الدائري الانسيابي الفاخر
+ * حل جذري ونهائي لمشكلة تجمد حركة سلايدر قسم (عقد من الإتقان) ودعم الـ RTL الذكي تلقائياً
  * متوافق ومترابط بشكل مطلق ومتبادل مع: global.css و main.css وقاعدة البيانات site-data-final.json
  */
 (function() {
@@ -80,7 +82,7 @@
         headerInjector.innerHTML = `
             <!-- شريط علوي متحرك (#top-bar-marquee) في مكانه الصحيح والمطلق بأعلى الصفحة -->
             <div id="top-bar-marquee">
-                <div id="top-bar-marquee-track"></div>
+                <div id="top-bar-marquee-track" class="animate-marquee"></div>
             </div>
             
             <!-- الهيدر الهيكلي المقدس Sticky -->
@@ -217,11 +219,12 @@
         const data = window.BoseStoreData;
         if (!data) return;
 
-        // أ. تحديث شريط الإعلانات المتجدد العلوي (Top Bar Marquee) وحل مشكلة اختفائه
+        // أ. تحديث شريط الإعلانات المتجدد العلوي الصافي وحل ثغرة التعارض البرمجي
         const tickerTrack = document.getElementById('top-bar-marquee-track');
         if (tickerTrack && data.navigation.topBarMessages) {
             let messagesHtml = data.navigation.topBarMessages.map(msg => `<span class="ticker-message-item">${msg}</span>`).join('');
-            tickerTrack.innerHTML = `<div class="animate-marquee">${messagesHtml}${messagesHtml}</div>`;
+            // حقن مباشر ومكرر مرتين لضمان استمرارية دوران اللوب اللانهائي بكفاءة ومظهر فاخر
+            tickerTrack.innerHTML = `${messagesHtml}${messagesHtml}`;
         }
 
         // ب. تحديث هيرو الواجهة الرئيسية
@@ -385,7 +388,6 @@
         let startX;
         let scrollLeft;
         let autoPlayTimer = null;
-        let autoSliderDirection = 1;
         
         sliderTrack.addEventListener('mousedown', (e) => {
             isDown = true;
@@ -442,19 +444,24 @@
         buildSliderDots(sliderTrack, dotsContainerId, isCategoryType);
 
         function startAutoPlayLogic() {
+            // هندسة الحركة التلقائية المصلحة بالكامل لتتوافق مع اتجاه الـ RTL الصارم لصفحات المتصفح
+            const isRTL = window.getComputedStyle(sliderTrack).direction === 'rtl';
+            let autoSliderDirection = isRTL ? -1 : 1;
+
             autoPlayTimer = setInterval(() => {
                 if (!isDown) {
-                    const isRTL = window.getComputedStyle(sliderTrack).direction === 'rtl';
                     const maxScroll = sliderTrack.scrollWidth - sliderTrack.clientWidth;
                     
                     if (isRTL) {
-                        sliderTrack.scrollLeft -= autoSliderDirection * 2;
+                        // في الـ RTL قيم الـ scrollLeft تتناقص بالسالب حتى تصل إلى أقصى اليسار (-maxScroll)
+                        sliderTrack.scrollLeft += autoSliderDirection * 2; // التعديل الجذري: استخدام الـ (+) للتحرك العكسي
                         if (Math.abs(sliderTrack.scrollLeft) >= maxScroll - 2) {
-                            autoSliderDirection = -1;
-                        } else if (Math.abs(sliderTrack.scrollLeft) <= 2) {
-                            autoSliderDirection = 1;
+                            autoSliderDirection = 1; // عكس الاتجاه لليمين
+                        } else if (sliderTrack.scrollLeft >= -2) {
+                            autoSliderDirection = -1; // العودة لليسار
                         }
                     } else {
+                        // في الـ LTR قيم الـ scrollLeft تتزايد بالموجب
                         sliderTrack.scrollLeft += autoSliderDirection * 2;
                         if (sliderTrack.scrollLeft >= maxScroll - 2) {
                             autoSliderDirection = -1;
@@ -817,7 +824,7 @@
             .drawer-link-item a { display: flex; align-items: center; gap: 14px; padding: 14px 24px; color: #111111 !important; font-weight: 600; font-size: 0.95rem; border-bottom: 1px solid rgba(255, 145, 164, 0.05); transition: background 0.3s; }
             .drawer-link-item a i { color: #FF91A4; width: 20px; text-align: center; }
             .drawer-link-item a:hover { background-color: rgba(255, 145, 164, 0.08); color: #FF91A4 !important; }
-            .ticker-message-item { padding: 0 40px; font-family: Cairo; font-weight: 600; color: #111111; font-size: 0.9rem; }
+            .ticker-message-item { padding: 0 40px; font-family: Cairo; font-weight: 600; color: #111111; font-size: 0.9rem; white-space: nowrap; display: inline-block; }
             .grabbing { cursor: grabbing !important; }
             .bose-arabic-text { word-break: keep-all; overflow-wrap: break-word; }
         `;
