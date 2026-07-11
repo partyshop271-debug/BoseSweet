@@ -1,7 +1,7 @@
 /**
- * 📑 الدليل الهندسي للمواصفات القياسية الفاخرة - النسخة المحدثة والمطورة V6.0
+ * 📑 الدليل الهندسي للمواصفات القياسية الفاخرة - النسخة المصححة والمطورة V6.1
  * المحرك المركزي العالمي لبناء وضخ الواجهات وعمليات الفحص المالي (js/core-engine.js)
- * براند: حلويات بوسي (BoseSweets) - مع محرك السحب واللمس التفاعلي والأزرار الذكية.
+ * براند: حلويات بوسي (BoseSweets) - حل مشكلة اختفاء الهيدر والفوتر وحوكمة الحقن الديناميكي.
  */
 (function() {
     window.BoseStoreData = null; 
@@ -35,7 +35,7 @@
                     
                     window.BoseStoreData = await response.json();
                     
-                    // 1. إدارة وضخ العناصر العالمية المشتركة
+                    // 1. إدارة وضخ العناصر العالمية المشتركة عبر بروتوكول الحقن الهندسي الصحيح
                     injectEarlyDependencies();
                     applyGlobalStyles(window.BoseStoreData.store.theme);
                     renderUniversalHeader();
@@ -73,38 +73,41 @@
        ========================================================================== */
 
     function renderUniversalHeader() {
-        let headerEl = document.querySelector('header.bose-navbar');
-        if (!headerEl) return; 
+        // تم تصحيح المستهدف البرمجي ليتطابق بالملي مع وسم الحقن المعتمد في الـ DOM المقدس
+        let headerInjector = document.getElementById('bose-header-injector');
+        if (!headerInjector) return; 
         
-        headerEl.innerHTML = `
-            <div class="navbar-mobile-wrapper">
-                <button id="mobile-menu-toggle" class="nav-icon-btn" aria-label="فتح قائمة التصفح">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <div class="brand-logo-container">
-                    <a href="index.html">
-                        <img id="bose-store-logo" src="${window.BoseStoreData.store.logo}" alt="شعار حلويات بوسي">
-                    </a>
-                </div>
-                <span class="brand-name-display">حلويات بوسي</span>
-                <nav id="bose-nav-menu">
-                    <ul class="nav-list">
-                        <li><a href="index.html">الرئيسية</a></li>
-                        <li><a href="menu.html">المنيو الشامل</a></li>
-                        <li><a href="cake-builder.html">محاكي التورت</a></li>
-                        <li><a href="flower-builder.html">محاكي الورد</a></li>
-                    </ul>
-                </nav>
-                <div class="nav-actions">
-                    <button id="nav-search-btn" class="nav-icon-btn" aria-label="البحث في المنتجات">
-                        <i class="fas fa-search"></i>
+        headerInjector.innerHTML = `
+            <header class="bose-navbar">
+                <div class="navbar-mobile-wrapper">
+                    <button id="mobile-menu-toggle" class="nav-icon-btn" aria-label="فتح قائمة التصفح">
+                        <i class="fas fa-bars"></i>
                     </button>
-                    <a href="cart.html" class="nav-cart-icon-wrapper" aria-label="عرض سلة التسوق">
-                        <i class="fas fa-shopping-bag"></i>
-                        <span id="nav-cart-count">0</span>
-                    </a>
+                    <div class="brand-logo-container">
+                        <a href="index.html">
+                            <img id="bose-store-logo" src="${window.BoseStoreData.store.logo}" alt="شعار حلويات بوسي">
+                        </a>
+                    </div>
+                    <span class="brand-name-display">حلويات بوسي</span>
+                    <nav id="bose-nav-menu">
+                        <ul class="nav-list">
+                            <li><a href="index.html">الرئيسية</a></li>
+                            <li><a href="menu.html">المنيو الشامل</a></li>
+                            <li><a href="cake-builder.html">محاكي التورت</a></li>
+                            <li><a href="flower-builder.html">محاكي الورد</a></li>
+                        </ul>
+                    </nav>
+                    <div class="nav-actions">
+                        <button id="nav-search-btn" class="nav-icon-btn" aria-label="البحث في المنتجات">
+                            <i class="fas fa-search"></i>
+                        </button>
+                        <a href="cart.html" class="nav-cart-icon-wrapper" aria-label="عرض سلة التسوق">
+                            <i class="fas fa-shopping-bag"></i>
+                            <span id="nav-cart-count">0</span>
+                        </a>
+                    </div>
                 </div>
-            </div>
+            </header>
         `;
     }
 
@@ -164,36 +167,39 @@
     }
 
     function renderUniversalFooter() {
-        let footerEl = document.querySelector('footer.bose-footer');
-        if (!footerEl) return;
+        // تم تصحيح مستهدف الحقن ليطابق بالملي وسم الفوتر في خريطة الـ DOM المعتمدة للموقع
+        let footerInjector = document.getElementById('bose-footer-injector');
+        if (!footerInjector) return;
         
-        footerEl.innerHTML = `
-            <div class="footer-logo-container">
-                <a href="index.html">
-                    <img id="bose-footer-logo-node" src="${window.BoseStoreData.store.logo}" alt="شعار حلويات بوسي">
-                </a>
-            </div>
-            <span class="brand-name-display footer-brand-name">حلويات بوسي</span>
-            <div class="footer-about-block">
-                <p id="footer-about-text">${window.BoseStoreData.footer.about}</p>
-            </div>
-            <div id="footer-social-links" class="bose-social-links-wrapper">
-                <a href="${window.BoseStoreData.social.facebook}" class="social-link-facebook" target="_blank" aria-label="فيسبوك حلويات بوسي"><i class="fab fa-facebook-f"></i></a>
-                <a href="${window.BoseStoreData.social.instagram}" class="social-link-instagram" target="_blank" aria-label="انستجرام حلويات بوسي"><i class="fab fa-instagram"></i></a>
-                <a href="${window.BoseStoreData.social.tiktok}" class="social-link-tiktok" target="_blank" aria-label="تيك توك حلويات بوسي"><i class="fab fa-tiktok"></i></a>
-                <a href="https://wa.me/${window.sanitizeBosePhoneNumber(window.BoseStoreData.social.whatsapp)}" class="social-link-whatsapp" target="_blank" aria-label="واتساب حلويات بوسي"><i class="fab fa-whatsapp"></i></a>
-            </div>
-            <div class="footer-policies-container" id="bose-footer-policies">
-                <ul class="nav-list" style="justify-content: center; gap: 16px; flex-wrap: wrap; list-style: none;">
-                    <li><a href="privacy-policy.html">سياسة الخصوصية</a></li>
-                    <li><a href="refund-policy.html">سياسة الاسترجاع</a></li>
-                    <li><a href="shipping-policy.html">سياسة الطلبات</a></li>
-                    <li><a href="terms.html">الشروط والأحكام</a></li>
-                </ul>
-            </div>
-            <div class="footer-copyright-block">
-                <p>© <span id="copyright-year">2026</span> جميع الحقوق محفوظة لعلامة حلويات بوسي التجارية الفاخرة</p>
-            </div>
+        footerInjector.innerHTML = `
+            <footer class="bose-footer">
+                <div class="footer-logo-container">
+                    <a href="index.html">
+                        <img id="bose-footer-logo-node" src="${window.BoseStoreData.store.logo}" alt="شعار حلويات بوسي">
+                    </a>
+                </div>
+                <span class="brand-name-display footer-brand-name">حلويات بوسي</span>
+                <div class="footer-about-block">
+                    <p id="footer-about-text">${window.BoseStoreData.footer.about}</p>
+                </div>
+                <div id="footer-social-links" class="bose-social-links-wrapper">
+                    <a href="${window.BoseStoreData.social.facebook}" class="social-link-facebook" target="_blank" aria-label="فيسبوك حلويات بوسي"><i class="fab fa-facebook-f"></i></a>
+                    <a href="${window.BoseStoreData.social.instagram}" class="social-link-instagram" target="_blank" aria-label="انستجرام حلويات بوسي"><i class="fab fa-instagram"></i></a>
+                    <a href="${window.BoseStoreData.social.tiktok}" class="social-link-tiktok" target="_blank" aria-label="تيك توك حلويات بوسي"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://wa.me/${window.sanitizeBosePhoneNumber(window.BoseStoreData.social.whatsapp)}" class="social-link-whatsapp" target="_blank" aria-label="واتساب حلويات بوسي"><i class="fab fa-whatsapp"></i></a>
+                </div>
+                <div class="footer-policies-container" id="bose-footer-policies">
+                    <ul class="nav-list" style="justify-content: center; gap: 16px; flex-wrap: wrap; list-style: none; padding:0; margin:0;">
+                        <li><a href="privacy-policy.html">سياسة الخصوصية</a></li>
+                        <li><a href="refund-policy.html">سياسة الاسترجاع</a></li>
+                        <li><a href="shipping-policy.html">سياسة الطلبات</a></li>
+                        <li><a href="terms.html">الشروط والأحكام</a></li>
+                    </ul>
+                </div>
+                <div class="footer-copyright-block">
+                    <p>© <span id="copyright-year">2026</span> جميع الحقوق محفوظة لعلامة حلويات بوسي التجارية الفاخرة</p>
+                </div>
+            </footer>
         `;
     }
 
@@ -371,7 +377,6 @@
         let startX;
         let scrollLeft;
         
-        // إعدادات أحداث الماوس للكمبيوتر
         sliderTrack.addEventListener('mousedown', (e) => {
             isDown = true;
             sliderTrack.classList.add('grabbing');
@@ -395,7 +400,6 @@
             sliderTrack.scrollLeft = scrollLeft - walk;
         });
 
-        // إعدادات أحداث اللمس للهواتف الذكية (Touch Events)
         sliderTrack.addEventListener('touchstart', (e) => {
             startX = e.touches[0].pageX - sliderTrack.offsetLeft;
             scrollLeft = sliderTrack.scrollLeft;
@@ -411,7 +415,6 @@
             updateSliderDots(sliderTrack, dotsContainerId);
         });
 
-        // بناء الـ Dots لأول مرة تلقائياً لراحة عين العميل النفسية
         buildSliderDots(sliderTrack, dotsContainerId);
     }
 
@@ -727,18 +730,34 @@
         styleElement.id = 'bose-global-dynamic-styles';
         
         styleElement.textContent = `
+            :root {
+                --bose-pink: ${theme.primary || '#FF91A4'};
+                --bose-white: ${theme.background || '#FFFFFF'};
+                --bose-black: ${theme.text || '#111111'};
+                --bose-gold: ${theme.secondary || '#D4AF37'};
+                --bose-shadow-glow: 0 8px 32px rgba(255, 145, 164, 0.12);
+                --bose-shadow-hover: 0 16px 40px rgba(255, 145, 164, 0.22);
+                --bose-border-pink: 1px solid rgba(255, 145, 164, 0.3);
+                --bose-border-thick: 2px solid ${theme.primary || '#FF91A4'};
+            }
+            body {
+                font-family: 'Cairo', sans-serif !important;
+                background-color: var(--bose-white) !important;
+                color: var(--bose-black) !important;
+                margin: 0; padding: 0; overflow-x: hidden;
+            }
+            h1, h2 { font-family: 'Cairo', sans-serif !important; font-weight: 700 !important; color: var(--bose-black) !important; }
+            h3, h4, h5, h6 { font-family: 'Cairo', sans-serif !important; font-weight: 600 !important; color: var(--bose-black) !important; }
+            p, span, a, button, input, select, textarea { font-family: 'Cairo', sans-serif !important; }
             @keyframes boseMarquee { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-50%, 0, 0); } }
             @keyframes boseWaterfallUp { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(0, -50%, 0); } }
             @keyframes boseWaterfallDown { 0% { transform: translate3d(0, -50%, 0); } 100% { transform: translate3d(0, 0, 0); } }
             .animate-marquee { display: flex; width: max-content; animation: boseMarquee 25s linear infinite; will-change: transform; }
             .waterfall-up { animation: boseWaterfallUp 40s linear infinite; will-change: transform; }
             .waterfall-down { animation: boseWaterfallDown 40s linear infinite; will-change: transform; }
-            
-            /* أزرار ومؤشرات النقط الفاخرة المعتمدة هندسياً للسلايدر */
             .bose-slider-dots-wrapper { display: flex; justify-content: center; gap: 8px; margin-top: 16px; width: 100%; }
             .bose-slider-dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255, 145, 164, 0.3); cursor: pointer; transition: all 0.3s ease; }
             .bose-slider-dot.active { background: #FF91A4 !important; width: 24px; border-radius: 8px; }
-            
             .bose-drawer-menu { position: fixed; top: 0; right: 0; width: 340px; max-width: 85vw; height: 100vh; background: #ffffff !important; z-index: 30000; transform: translate3d(100%, 0, 0); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: -8px 0 32px rgba(17,17,17,0.08); font-family: 'Cairo', sans-serif; }
             .bose-drawer-menu.active { transform: translate3d(0, 0, 0) !important; }
             .bose-drawer-panel-content { display: flex; flex-direction: column; height: 100vh; width: 100%; direction: rtl; }
