@@ -227,7 +227,7 @@
             `).join('');
             
             let infiniteLoopHtml = '';
-            for (let i = 0; i < 30; i++) { 
+            for (let i = 0; i < 40; i++) { 
                 infiniteLoopHtml += messagesHtml;
             }
             tickerTrack.innerHTML = infiniteLoopHtml;
@@ -251,7 +251,15 @@
         if (excellenceTitle) excellenceTitle.textContent = data.homepage.excellence.title;
         if (excellenceDesc) excellenceDesc.textContent = data.homepage.excellence.description;
         if (excellenceTrack && data.homepage.excellence.images) {
-            excellenceTrack.innerHTML = data.homepage.excellence.images.map(img => `<a href="menu.html" class="perfection-slide-node"><img src="${img}" alt="إتقان حلويات بوسي"></a>`).join('');
+            let imagesHtml = data.homepage.excellence.images.map(img => `
+                <a href="menu.html" class="perfection-slide-node"><img src="${img}" alt="إتقان حلويات بوسي"></a>
+            `).join('');
+            
+            let infiniteExcellenceHtml = '';
+            for (let i = 0; i < 30; i++) {
+                infiniteExcellenceHtml += imagesHtml;
+            }
+            excellenceTrack.innerHTML = infiniteExcellenceHtml;
             initializeBoseSliderLogic(excellenceTrack, 'excellence-dots', true, false); 
         }
 
@@ -400,21 +408,6 @@
         }, {passive: true});
 
         buildSliderDots(sliderTrack, dotsContainerId, isCategoryType);
-
-        // 🔄 محرك الأنميشن الانسيابي المطور: مهدأ وموزون تماماً لمنع الاختفاء والمساحات البيضاء
-        if (isAutoPlay && !isCategoryType) {
-            let autoMove = setInterval(() => {
-                if (!isDown) {
-                    let maxScroll = sliderTrack.scrollWidth - sliderTrack.clientWidth;
-                    if (sliderTrack.scrollLeft >= maxScroll || Math.abs(sliderTrack.scrollLeft) >= maxScroll) {
-                        sliderTrack.scrollTo({ left: 0, behavior: 'smooth' });
-                    } else {
-                        sliderTrack.scrollBy({ left: window.innerWidth * 0.6, behavior: 'smooth' });
-                    }
-                }
-            }, 4000);
-            sliderTrack.dataset.autoInterval = autoMove;
-        }
     }
 
     function buildSliderDots(track, containerId, isCategoryType) {
@@ -429,15 +422,9 @@
         const visibleItemsCount = Math.max(1, Math.floor(track.offsetWidth / cardWidth)); 
         const dotsCount = Math.max(1, totalItems - visibleItemsCount + 1);
 
-        for (let i = 0; i < dotsCount; i++) {
+        for (let i = 0; i < Math.min(dotsCount, 8); i++) {
             const dot = document.createElement('span');
             dot.className = 'bose-slider-dot' + (i === 0 ? ' active' : '');
-            dot.onclick = () => {
-                const finalCardWidth = (isCategoryType ? 280 : track.children[0].offsetWidth) + 16; 
-                const isRTL = window.getComputedStyle(track).direction === 'rtl';
-                const targetScroll = isRTL ? -(i * finalCardWidth) : (i * finalCardWidth);
-                track.scrollTo({ left: targetScroll, behavior: 'smooth' });
-            };
             container.appendChild(dot);
         }
     }
@@ -451,7 +438,7 @@
         
         const dots = container.querySelectorAll('.bose-slider-dot');
         dots.forEach((dot, idx) => {
-            if (idx === activeIndex) dot.classList.add('active');
+            if (idx === activeIndex % (dots.length || 1)) dot.classList.add('active');
             else dot.classList.remove('active');
         });
     }
