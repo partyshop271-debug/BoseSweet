@@ -1,10 +1,9 @@
 /**
- * 👑 ملف المحرك المركزي العالمي المصحح والمطور بالكامل V8.1 - حلويات بوسي 2026 👑
- * معالجة هندسية شاملة وجذرية للفوضى البصرية وحوكمة السلايدرات وقفل التزامن بالمسطرة
- * امتثال مطلق وأعمى لملف الحوكمة والمواصفة الرسمية القياسية الفاخرة للصفحة الرئيسية
- * تم إصلاح موضع الشريط العلوي المتحرك ليكون في مكانه الصحيح هندسياً أعلى الهيدر تماماً
- * إصلاح حاسم لثغرة اختفاء نصوص الشريط العلوي المتحرك وضمان التدفق الدائري الانسيابي الفاخر
- * حل جذري ونهائي لمشكلة تجمد حركة سلايدر قسم (عقد من الإتقان) ودعم الـ RTL الذكي تلقائياً
+ * 👑 ملف المحرك المركزي العالمي المصحح والمطور بالكامل V8.2 - حلويات بوسي 2026 👑
+ * معالجة هندسية شاملة وحوكمة كاملة لواجهات الشريط العلوي، القائمة الجانبية، والفوتر الموحد
+ * امتثال مطلق وأعمى لملف الحوكمة والمواصفة الرسمية القياسية الفاخرة لمنع الأخطاء البصرية
+ * تم إصلاح حركة ونصوص الشريط العلوي المتحرك ليكون صافياً وبدون أي انقطاع أو بتر بصرى
+ * حظر كامل للون الأسود والظلال المظلمة من القائمة الجانبية والفوتر لتأمين التنفس البصري الكامل
  * متوافق ومترابط بشكل مطلق ومتبادل مع: global.css و main.css وقاعدة البيانات site-data-final.json
  */
 (function() {
@@ -79,7 +78,6 @@
         let headerInjector = document.getElementById('bose-header-injector');
         if (!headerInjector) return; 
         
-        // التعديل الهندسي الصارم: التوب بار المتحرك في أعلى الهيدر تماماً وخارج الـ بكسل البصري للـ navbar
         headerInjector.innerHTML = `
             <!-- شريط علوي متحرك (#top-bar-marquee) في مكانه الصحيح والمطلق بأعلى الصفحة -->
             <div id="top-bar-marquee">
@@ -129,22 +127,24 @@
         const sidebar = document.createElement('div');
         sidebar.id = 'sidebar-drawer';
         sidebar.className = 'bose-drawer-menu';
+        
+        // تطوير شامل للقائمة الجانبية: حظر الخلفية السوداء واستبدالها بالبمبي الشفاف الناعم والراحة الكاملة
         sidebar.innerHTML = `
-            <div class="drawer-overlay" id="sidebar-close-overlay"></div>
-            <div class="bose-drawer-panel-content">
-                <div class="drawer-premium-header">
-                    <h3>تصفح أقسامنا الفاخرة</h3>
-                    <p class="bose-arabic-text" style="color: var(--bose-pink) !important; font-weight: 600; margin-top: 4px;">حلويات بوسي - ${storeSlogan}</p>
-                    <button id="sidebar-close-btn" class="drawer-close-btn"><i class="fas fa-times"></i></button>
+            <div class="drawer-overlay" id="sidebar-close-overlay" style="background: rgba(255, 145, 164, 0.05) !important;"></div>
+            <div class="bose-drawer-panel-content" style="background: var(--bose-white) !important; border-right: var(--bose-border-pink);">
+                <div class="drawer-premium-header" style="border-bottom: 2px solid var(--bose-pink); padding: 24px 20px;">
+                    <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--bose-black) !important; margin: 0 0 6px 0;">تصفح أقسامنا الفاخرة</h3>
+                    <p class="bose-arabic-text" style="color: var(--bose-pink) !important; font-weight: 600; font-size: 0.9rem; margin: 0;">حلويات بوسي - ${storeSlogan}</p>
+                    <button id="sidebar-close-btn" class="drawer-close-btn" style="color: var(--bose-pink);"><i class="fas fa-times"></i></button>
                 </div>
-                <div class="drawer-links-scrollable">
+                <div class="drawer-links-scrollable" style="background-color: var(--bose-white) !important; padding: 15px 0;">
                     <ul class="drawer-links-list">
-                        <li class="drawer-link-item"><a href="index.html"><i class="fas fa-home"></i> الرئيسية</a></li>
-                        <li class="drawer-link-item"><a href="menu.html"><i class="fas fa-utensils"></i> المنيو الشامل</a></li>
-                        <li class="drawer-link-item"><a href="cake-builder.html"><i class="fas fa-birthday-cake"></i> محاكي التورت التفاعلي</a></li>
-                        <li class="drawer-link-item"><a href="flower-builder.html"><i class="fas fa-seedling"></i> محاكي الورد التفاعلي</a></li>
-                        <li class="drawer-link-item"><a href="cart.html"><i class="fas fa-shopping-basket"></i> سلة المشتريات</a></li>
-                        <li class="drawer-link-item"><a href="checkout.html"><i class="fas fa-credit-card"></i> إتمام الطلب الشامل</a></li>
+                        <li class="drawer-link-item"><a href="index.html" style="color: var(--bose-black) !important; font-weight: 600;"><i class="fas fa-home" style="color: var(--bose-pink);"></i> الرئيسية</a></li>
+                        <li class="drawer-link-item"><a href="menu.html" style="color: var(--bose-black) !important; font-weight: 600;"><i class="fas fa-utensils" style="color: var(--bose-pink);"></i> المنيو الشامل</a></li>
+                        <li class="drawer-link-item"><a href="cake-builder.html" style="color: var(--bose-black) !important; font-weight: 600;"><i class="fas fa-birthday-cake" style="color: var(--bose-pink);"></i> محاكي التورت التفاعلي</a></li>
+                        <li class="drawer-link-item"><a href="flower-builder.html" style="color: var(--bose-black) !important; font-weight: 600;"><i class="fas fa-seedling" style="color: var(--bose-pink);"></i> محاكي الورد التفاعلي</a></li>
+                        <li class="drawer-link-item"><a href="cart.html" style="color: var(--bose-black) !important; font-weight: 600;"><i class="fas fa-shopping-basket" style="color: var(--bose-pink);"></i> سلة المشتريات</a></li>
+                        <li class="drawer-link-item"><a href="checkout.html" style="color: var(--bose-black) !important; font-weight: 600;"><i class="fas fa-credit-card" style="color: var(--bose-pink);"></i> إتمام الطلب الشامل</a></li>
                     </ul>
                 </div>
             </div>
@@ -181,33 +181,54 @@
         let footerInjector = document.getElementById('bose-footer-injector');
         if (!footerInjector) return;
         
+        // تطوير شامل للفوتر: ممتثل للمواصفة، أبيض صريح يمنع التكديس ويحظر الخلفيات أو الظلال السوداء تماماً
         footerInjector.innerHTML = `
-            <footer class="bose-footer">
-                <div class="footer-logo-container">
+            <footer class="bose-footer" style="background-color: var(--bose-white) !important; border-top: var(--bose-border-pink); padding: 50px 20px 30px 20px;">
+                <div class="footer-logo-container" style="margin-bottom: 12px;">
                     <a href="index.html">
-                        <img id="bose-footer-logo-node" src="${window.BoseStoreData.store.logo}" alt="شعار حلويات بوسي">
+                        <img id="bose-footer-logo-node" src="${window.BoseStoreData.store.logo}" alt="شعار حلويات بوسي" style="height: 65px; margin: 0 auto;">
                     </a>
                 </div>
-                <span class="brand-name-display footer-brand-name">حلويات بوسي</span>
-                <div class="footer-about-block">
-                    <p id="footer-about-text">${window.BoseStoreData.footer.about}</p>
+                <span class="brand-name-display footer-brand-name" style="font-size: 1.45rem; font-weight: 700; color: var(--bose-black) !important; margin-bottom: 16px;">حلويات بوسي</span>
+                
+                <div class="footer-about-block" style="max-width: 650px; margin-bottom: 24px;">
+                    <p id="footer-about-text" style="font-size: 0.95rem; color: var(--bose-black) !important; line-height: 1.7; opacity: 0.95;">${window.BoseStoreData.footer.about}</p>
                 </div>
-                <div id="footer-social-links" class="bose-social-links-wrapper">
-                    <a href="${window.BoseStoreData.social.facebook}" class="social-link-facebook" target="_blank" aria-label="فيسبوك حلويات بوسي"><i class="fab fa-facebook-f"></i></a>
-                    <a href="${window.BoseStoreData.social.instagram}" class="social-link-instagram" target="_blank" aria-label="انستجرام حلويات بوسي"><i class="fab fa-instagram"></i></a>
-                    <a href="${window.BoseStoreData.social.tiktok}" class="social-link-tiktok" target="_blank" aria-label="تيك توك حلويات بوسي"><i class="fab fa-tiktok"></i></a>
-                    <a href="https://wa.me/${window.sanitizeBosePhoneNumber(window.BoseStoreData.social.whatsapp)}" class="social-link-whatsapp" target="_blank" aria-label="واتساب حلويات بوسي"><i class="fab fa-whatsapp"></i></a>
-                </div>
-                <div class="footer-policies-container" id="bose-footer-policies">
-                    <ul class="nav-list" style="justify-content: center; gap: 16px; flex-wrap: wrap; list-style: none; padding:0; margin:0;">
-                        <li><a href="privacy-policy.html">سياسة الخصوصية</a></li>
-                        <li><a href="refund-policy.html">سياسة الاسترجاع</a></li>
-                        <li><a href="shipping-policy.html">سياسة الطلبات</a></li>
-                        <li><a href="terms.html">الشروط والأحكام</a></li>
+                
+                <!-- روابط الصفحات الرئيسية للتنقل السريع والذكي لراحة العميل -->
+                <div class="footer-quick-links" style="margin-bottom: 24px;">
+                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; font-weight: 600; font-size: 0.95rem;">
+                        <li><a href="index.html" style="color: var(--bose-black) !important; transition: color 0.3s;">الرئيسية</a></li>
+                        <li><a href="menu.html" style="color: var(--bose-black) !important; transition: color 0.3s;">المنيو الشامل</a></li>
+                        <li><a href="cart.html" style="color: var(--bose-black) !important; transition: color 0.3s;">سلة التسوق</a></li>
                     </ul>
                 </div>
-                <div class="footer-copyright-block">
-                    <p>© <span id="copyright-year">2026</span> جميع الحقوق محفوظة لعلامة حلويات بوسي التجارية الفاخرة</p>
+
+                <!-- قنوات التواصل الاجتماعي الرسمية بألوانها وأيقوناتها المعتمدة الصريحة دون تغيير -->
+                <div id="footer-social-links" class="bose-social-links-wrapper" style="display: flex; gap: 24px; justify-content: center; margin-bottom: 30px;">
+                    <a href="${window.BoseStoreData.social.facebook}" class="social-link-facebook" target="_blank" aria-label="فيسبوك حلويات بوسي" style="font-size: 1.6rem; color: #1877F2; transition: transform 0.3s;"><i class="fab fa-facebook-f"></i></a>
+                    <a href="${window.BoseStoreData.social.instagram}" class="social-link-instagram" target="_blank" aria-label="انستجرام حلويات بوسي" style="font-size: 1.6rem; color: #E1306C; transition: transform 0.3s;"><i class="fab fa-instagram"></i></a>
+                    <a href="${window.BoseStoreData.social.tiktok}" class="social-link-tiktok" target="_blank" aria-label="تيك توك حلويات بوسي" style="font-size: 1.6rem; color: #000000; transition: transform 0.3s;"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://wa.me/${window.sanitizeBosePhoneNumber(window.BoseStoreData.social.whatsapp)}" class="social-link-whatsapp" target="_blank" aria-label="واتساب حلويات بوسي" style="font-size: 1.6rem; color: #25D366; transition: transform 0.3s;"><i class="fab fa-whatsapp"></i></a>
+                </div>
+
+                <!-- روابط وثائق السياسات الرسمية لتعزيز مصداقية وثقة العميل اللوجستية -->
+                <div class="footer-policies-container" id="bose-footer-policies" style="margin-bottom: 24px;">
+                    <ul class="nav-list" style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; list-style: none; padding:0; margin:0; font-size: 0.9rem; font-weight: 600;">
+                        <li><a href="privacy-policy.html" style="color: var(--bose-black) !important;">سياسة الخصوصية</a></li>
+                        <li><a href="refund-policy.html" style="color: var(--bose-black) !important;">سياسة الاسترجاع</a></li>
+                        <li><a href="shipping-policy.html" style="color: var(--bose-black) !important;">سياسة الطلبات</a></li>
+                        <li><a href="terms.html" style="color: var(--bose-black) !important;">الشروط والأحكام</a></li>
+                    </ul>
+                </div>
+
+                <!-- مقر الاستلام الثابت والواضح للعلامة الفاخرة لتوجيه ودعم العميل -->
+                <div class="footer-location-block" style="margin-bottom: 24px; font-size: 0.9rem; color: var(--bose-black); opacity: 0.85; max-width: 500px; line-height: 1.5;">
+                    <p><i class="fas fa-map-marker-alt" style="color: var(--bose-pink); margin-left: 6px;"></i> ${window.BoseStoreData.store.pickup.address}</p>
+                </div>
+
+                <div class="footer-copyright-block" style="width: 100%; border-top: 1px solid rgba(255, 145, 164, 0.15); padding-top: 20px; text-align: center;">
+                    <p style="font-size: 0.85rem; color: var(--bose-black) !important; opacity: 0.7; margin: 0;">© <span id="copyright-year">2026</span> جميع الحقوق محفوظة لعلامة حلويات بوسي التجارية الفاخرة</p>
                 </div>
             </footer>
         `;
@@ -220,12 +241,15 @@
         const data = window.BoseStoreData;
         if (!data) return;
 
-        // أ. تحديث شريط الإعلانات المتجدد العلوي الصافي ومنع ثغرة الوميض أو الفراغ البصري نهائياً
+        // أ. تحديث شريط الإعلانات المتجدد العلوي ومنع ثغرة الوميض أو الفراغ أو قطع النص نهائياً بالمسطرة
         const tickerTrack = document.getElementById('top-bar-marquee-track');
         if (tickerTrack && data.navigation.topBarMessages) {
-            let messagesHtml = data.navigation.topBarMessages.map(msg => `<span class="ticker-message-item">${msg}</span>`).join('');
-            // حل ثغرة الاختفاء: مضاعفة مصفوفة النصوص لأربع مرات متتالية لملء عرض Track بالكامل على كافة الشاشات والموبايل
-            tickerTrack.innerHTML = `${messagesHtml}${messagesHtml}${messagesHtml}${messagesHtml}`;
+            // إضافة مسافات كافية وأيقونة فخمة تفصل بين الجمل لراحة العين ومنع التدفق المكتوم أو المقطوع
+            let messagesHtml = data.navigation.topBarMessages.map(msg => `
+                <span class="ticker-message-item" style="color: var(--bose-white) !important;">${msg} &nbsp;&nbsp;&nbsp;&nbsp; 🌸 &nbsp;&nbsp;&nbsp;&nbsp;</span>
+            `).join('');
+            // مضاعفة المصفوفة 6 مرات متتالية لملء عرض الـ Track بالكامل على كافة الشاشات والموجات
+            tickerTrack.innerHTML = `${messagesHtml}${messagesHtml}${messagesHtml}${messagesHtml}${messagesHtml}${messagesHtml}`;
         }
 
         // ب. تحديث هيرو الواجهة الرئيسية
@@ -249,7 +273,6 @@
         if (excellenceTitle) excellenceTitle.textContent = data.homepage.excellence.title;
         if (excellenceDesc) excellenceDesc.textContent = data.homepage.excellence.description;
         if (excellenceTrack && data.homepage.excellence.images) {
-            // الامتثال للمواصفة: 3 صور متصلة بالكامل بدون أي فراغ أو فواصل بصرية وكل صورة تعمل كرابط ذكي
             excellenceTrack.innerHTML = data.homepage.excellence.images.map(img => `<a href="menu.html" class="perfection-slide-node"><img src="${img}" alt="إتقان حلويات بوسي"></a>`).join('');
             initializeBoseSliderLogic(excellenceTrack, 'excellence-dots', true, false); 
         }
@@ -277,7 +300,7 @@
         const mostSellingGrid = document.getElementById('most-selling-grid');
         if (mostSellingGrid) {
             document.getElementById('most-selling-title').textContent = "الأكثر مبيعاً";
-            document.getElementById('most-selling-description').textContent = "تشكيلة فاخرة حازت على إعجاب وتقدير عملائنا dائمًا.";
+            document.getElementById('most-selling-description').textContent = "تشكيلة فاخرة حازت على إعجاب وتقدير عملائنا دائماً.";
             let items = data.products.filter(p => data.homepage.mostSelling.includes(p.slug));
             mostSellingGrid.innerHTML = items.map(p => createProductCardHTML(p)).join('');
             
@@ -307,7 +330,6 @@
             document.getElementById('our-products-title').textContent = "منتجاتنا";
             document.getElementById('our-products-description').textContent = "الجودة والقيمة العالية للمكونات الطازجة يومياً.";
             let allItems = data.products.filter(p => data.homepage.ourProducts.includes(p.slug));
-            // عرض أولي لـ 4 كروت فقط لراحة العميل البصرية والتنفس البصري
             ourProductsGrid.innerHTML = allItems.slice(0, 4).map(p => createProductCardHTML(p)).join('');
             
             const showMoreBtn = document.getElementById('our-products-show-more');
@@ -364,7 +386,7 @@
             initializeBoseSliderLogic(categoriesTrack, 'categories-dots', false, true); 
         }
 
-        // ل. ضخ صفحة المنيو الشامل (menu.html) بالتوزيع والاشتراطات الهندسية الكاملة للشاشات
+        // ل. ضخ صفحة المنيو الشامل (menu.html) بالتوزيع والاشتاظات الهندسية الكاملة للشاشات
         const menuCategoriesGrid = document.getElementById('menu-categories-grid');
         if (menuCategoriesGrid && data.homepage.categoriesSlider) {
             menuCategoriesGrid.innerHTML = data.homepage.categoriesSlider.map(cat => `
@@ -386,8 +408,6 @@
        ========================================================================== */
     function initializeBoseSliderLogic(sliderTrack, dotsContainerId, isAutoPlay = false, isCategoryType = false) {
         if (!sliderTrack) return;
-        
-        // 🚨 حماية حاسمة: حظر الشريط العلوي تماماً من التدخل البرمجي لـ الجافاسكريبت ليعمل بالـ CSS بحرية
         if (sliderTrack.id === 'top-bar-marquee-track') return;
 
         let isDown = false;
