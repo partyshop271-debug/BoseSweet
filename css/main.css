@@ -1,6 +1,7 @@
 /* ==========================================================================
-   👑 ملف التصميم المركزي للأقسام والمنيو - حلويات بوسي V66.1 Master 👑
+   👑 ملف التصميم المركزي للأقسام والمنيو - حلويات بوسي V66.5 Master 👑
    النسخة الهندسية القياسية المصححة بالكامل - تمنع التكدس وتؤمن السحب الأفقي
+   متوافق ومترابط بشكل متبادل مع: global.css, core-engine.js وقاعدة البيانات
    ========================================================================== */
 
 body.bose-hardware-accelerated {
@@ -17,7 +18,7 @@ body.bose-hardware-accelerated {
     line-height: 1.5;
 }
 
-/* ==========================================================================\
+/* ==========================================================================
    2. قسم الهيرو وبانر العروض المتجاوب (Clean Air Hero Layout)
    ========================================================================== */
 .bose-hero-section {
@@ -54,7 +55,7 @@ body.bose-hardware-accelerated {
 .bose-hero-title {
     color: var(--bose-black) !important;
     font-size: 1.85rem;
-    font-weight: 700 !important;
+    font-weight: 700 !important; /* قفل وزن الخط عند 700 كحد أقصى لأضخم العناوين */
     line-height: 1.3;
     margin-bottom: 12px;
 }
@@ -97,7 +98,7 @@ body.bose-hardware-accelerated {
     box-shadow: var(--bose-shadow-hover);
 }
 
-/* ==========================================================================\
+/* ==========================================================================
    3. قسم شلال المنتجات البصري الأنيق المستمر الحركة (Waterfall Section)
    ========================================================================== */
 .bose-waterfall-section-container {
@@ -161,7 +162,7 @@ body.bose-hardware-accelerated {
     display: block;
 }
 
-/* ==========================================================================\
+/* ==========================================================================
    📐 4. حل مشكلة قسم "عقد من الإتقان" المكدس عمودياً (Excellence Carousel)
    ========================================================================== */
 .bose-perfection-section {
@@ -177,6 +178,7 @@ body.bose-hardware-accelerated {
     scroll-behavior: smooth;
     display: flex;
     padding: 10px 0;
+    scroll-snap-type: x mandatory; /* هندسة إجبار التوقف عند حافة الصورة */
 }
 
 /* منع ظهور شريط التمرير الافتراضي المشوه لراحة العين النفسية */
@@ -199,6 +201,7 @@ body.bose-hardware-accelerated {
     flex: 0 0 100%;
     width: 100%;
     display: block;
+    scroll-snap-align: start; /* أوتو سنترة الموبايل بالمسطرة */
 }
 
 .perfection-slide-node img {
@@ -214,7 +217,7 @@ body.bose-hardware-accelerated {
     }
 }
 
-/* ==========================================================================\
+/* ==========================================================================
    5. أقسام الكروت وشبكات المنتجات الموحدة القياسية (Strict Product Cards Grid)
    ========================================================================== */
 .bose-section-container {
@@ -277,26 +280,29 @@ body.bose-hardware-accelerated {
 }
 
 @media (max-width: 767px) {
-    /* التوزيع الثنائي الصارم المتوازن لقسم منتجاتنا على الموبايل لضمان التنفس البصري */
+    /* 📐 التوزيع الثنائي الصارم المتوازن لقسم منتجاتنا على الموبايل لضمان التنفس البصري ومنع الانحياز خارج الحواف */
     .products-grid, .bose-products-grid {
         grid-template-columns: repeat(2, 1fr) !important;
     }
 
-    /* 📐 تحويل الأكثر مبيعاً ووصل حديثاً إلى سلايدر مالي الشاشة جانبي مرن ومقاوم للتكدس */
+    /* 📐 تحويل الأكثر مبيعاً ووصل حديثاً إلى سلايدر مرن ومقاوم للتكدس مع أوتو-سنترة الكروت الذكية */
     .bose-most-selling-grid-slider,
     .bose-new-arrivals-grid-slider {
         display: flex !important;
         overflow-x: auto !important;
         scroll-behavior: smooth !important;
+        scroll-snap-type: x mandatory !important; /* فرض قفل انزلاق أصابع العميل عند منتصف الكارت بالضبط */
         gap: 16px !important;
-        padding: 10px 4px !important;
+        padding: 15px 16px !important;
         width: 100% !important;
+        box-sizing: border-box !important;
     }
     
     .bose-most-selling-grid-slider .product-card-unified,
     .bose-new-arrivals-grid-slider .product-card-unified {
-        width: 85vw !important; /* مقاس الكارت المقفل بالمسطرة لملء الشاشة */
-        flex-shrink: 0 !important; /* منع انضغاط الكروت نهائياً */
+        width: 82vw !important; /* مقاس الكارت المعياري لإبقاء مساحة تلميح بصري للكارت التالي */
+        flex-shrink: 0 !important; /* حظر انضغاط الكروت نهائياً */
+        scroll-snap-align: center !important; /* سنترة الكارت بالملي في منتصف الشاشة */
     }
 }
 
@@ -433,7 +439,7 @@ body.bose-hardware-accelerated {
     border: none;
 }
 
-/* ==========================================================================\
+/* ==========================================================================
    6. كتل عروض المحاكيات البصرية الكبرى (Section 04 & Section 07 Global Layout)
    ========================================================================== */
 .preview-builder-block {
@@ -465,9 +471,10 @@ body.bose-hardware-accelerated {
 }
 
 .simulator-card-inner-layout img {
-    max-height: 200px;
+    max-height: 250px; /* تكبير حيز صورة المحاكي آلياً للموبايل لإبراز تفاصيل الجمال */
     width: auto;
     margin-bottom: 15px;
+    object-fit: contain;
 }
 
 .bose-simulator-title {
@@ -511,7 +518,7 @@ body.bose-hardware-accelerated {
     }
 }
 
-/* ==========================================================================\
+/* ==========================================================================
    📐 7. حل شلل قسم "تسوق حسب الفئة" ودعم التمرير المرن يدوياً (Categories)
    ========================================================================== */
 .bose-categories-slider-section {
@@ -524,16 +531,17 @@ body.bose-hardware-accelerated {
     width: 100%;
     overflow-x: auto; /* تمكين سحب الأصابع المرن */
     scroll-behavior: smooth !important;
+    scroll-snap-type: x mandatory !important;
     display: flex;
-    padding: 15px 4px;
+    padding: 15px 16px;
+    box-sizing: border-box;
 }
 
 .categories-track-loop {
     display: flex !important;
     gap: 16px !important;
     width: max-content !important;
-    /* إلغاء الأنميشن التلقائي الجبري الذي يشل تصفح العميل باللمس */
-    animation: none !important; 
+    animation: none !important; /* إلغاء الأنميشن التلقائي الجبري الذي يشل تصفح العميل باللمس */
 }
 
 .bose-category-slider-card {
@@ -547,6 +555,7 @@ body.bose-hardware-accelerated {
     box-shadow: var(--bose-shadow-glow);
     transition: 0.3s ease;
     flex-shrink: 0 !important; /* منع تقليص الكروت الكبرى الـ 12 */
+    scroll-snap-align: center !important;
     box-sizing: border-box;
     
     /* المقاسات القياسية الأكبر بنسبة 30% للموبايل */
@@ -600,7 +609,22 @@ body.bose-hardware-accelerated {
     width: 100%;
 }
 
-/* ==========================================================================\
+.bose-slider-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255, 145, 164, 0.3);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bose-slider-dot.active {
+    background: var(--bose-pink) !important;
+    width: 24px;
+    border-radius: 8px;
+}
+
+/* ==========================================================================
    8. هندسة قسم الفخر والاعتزاز (Pride Section)
    ========================================================================== */
 .bose-pride-statistics-section {
@@ -676,7 +700,7 @@ body.bose-hardware-accelerated {
     }
 }
 
-/* ==========================================================================\
+/* ==========================================================================
    9. تصميم صفحة المنيو الشامل (Menu Grid Page Structure)
    ========================================================================== */
 .menu-categories-grid-framework {
