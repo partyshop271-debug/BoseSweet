@@ -1,5 +1,5 @@
 /**
- * 👑 ملف المحرك المركزي العالمي المصحح والمطور بالكامل V9.0 - حلويات بوسي 2026 👑
+ * 👑 ملف المحرك المركزي العالمي المصحح والمطور بالكامل V9.5 - حلويات بوسي 2026 👑
  * معالجة هندسية شاملة وحوكمة كاملة لواجهات الشريط العلوي، القائمة الجانبية، والفوتر الموحد
  * امتثال مطلق وأعمى لملف الحوكمة والمواصفة الرسمية القياسية الفاخرة لمنع الأخطاء البصرية
  * تم إصلاح حركات السلايدرات، الشريط العلوي، والشلال بفصل تام للمسؤوليات ومنع حقن الاستايلات المتعارضة
@@ -52,6 +52,11 @@
                     
                     // تفعيل حدث مخصص فوراً وضمان ترحيله للمتصفح لمنع التعارض الزمني
                     document.dispatchEvent(new CustomEvent('BoseDatabaseLoaded', { detail: window.BoseStoreData }));
+                    
+                    // حارس التمهيد لربط الـ DOM واستدعاء معالجات الواجهة بعد طلاء العناصر تماماً
+                    if (typeof window.onBoseDatabaseReadyWrapper === "function") {
+                        window.onBoseDatabaseReadyWrapper(window.BoseStoreData);
+                    }
                     return;
                 } catch (error) {
                     continue;
@@ -77,12 +82,10 @@
         if (!headerInjector) return; 
         
         headerInjector.innerHTML = `
-            <!-- شريط علوي متحرك (#top-bar-marquee) في مكانه الصحيح والمطلق بأعلى الصفحة -->
             <div id="top-bar-marquee">
                 <div id="top-bar-marquee-track" class="animate-marquee"></div>
             </div>
             
-            <!-- الهيدر الهيكلي المقدس Sticky الثابت الملتزم بالمواصفة بالملي من اليمين لليسار -->
             <header class="bose-navbar">
                 <div class="navbar-mobile-wrapper">
                     <button id="mobile-menu-toggle" class="nav-icon-btn" aria-label="فتح قائمة التصفح">
@@ -233,17 +236,15 @@
         const data = window.BoseStoreData;
         if (!data) return;
 
-        // 🔄 تكرار الجمل هندسياً لملء المسار ومنع الفراغات بصرى في تراك الأنميشن الخاص بـ CSS
+        // 🔄 إصلاح الشريط العلوي: حقن الجمل وتكرارها لمنع الفراغات والسرعة الزائدة هندسياً
         const tickerTrack = document.getElementById('top-bar-marquee-track');
         if (tickerTrack && data.navigation.topBarMessages) {
             let messagesHtml = data.navigation.topBarMessages.map(msg => `
-                <span class="ticker-message-item">
-                    ${msg} &nbsp;&nbsp;&nbsp;&nbsp; 🌸 &nbsp;&nbsp;&nbsp;&nbsp;
-                </span>
+                <span class="ticker-message-item">${msg} &nbsp;&nbsp;&nbsp;&nbsp; 🌸 &nbsp;&nbsp;&nbsp;&nbsp;</span>
             `).join('');
             
             let infiniteLoopHtml = '';
-            for (let i = 0; i < 16; i++) {
+            for (let i = 0; i < 20; i++) { 
                 infiniteLoopHtml += messagesHtml;
             }
             tickerTrack.innerHTML = infiniteLoopHtml;
@@ -268,7 +269,8 @@
         if (excellenceDesc) excellenceDesc.textContent = data.homepage.excellence.description;
         if (excellenceTrack && data.homepage.excellence.images) {
             excellenceTrack.innerHTML = data.homepage.excellence.images.map(img => `<a href="menu.html" class="perfection-slide-node"><img src="${img}" alt="إتقان حلويات بوسي"></a>`).join('');
-            initializeBoseSliderLogic(excellenceTrack, 'excellence-dots', false, false); 
+            // تهيئة السلايدر الموزون هندسياً لحل مشكلة المساحات البيضاء
+            initializeBoseSliderLogic(excellenceTrack, 'excellence-dots', true, false); 
         }
 
         function createProductCardHTML(product) {
@@ -349,12 +351,6 @@
         if (document.getElementById('pride-main-title')) {
             document.getElementById('pride-main-title').textContent = data.homepage.pride.title;
             document.getElementById('pride-main-text').textContent = data.homepage.pride.text;
-            
-            document.getElementById('stat-years-value').textContent = data.homepage.pride.stats.years.value + data.homepage.pride.stats.years.suffix;
-            document.getElementById('stat-customers-value').textContent = data.homepage.pride.stats.customers.value + data.homepage.pride.stats.customers.suffix;
-            document.getElementById('stat-orders-value').textContent = data.homepage.pride.stats.orders.value + data.homepage.pride.stats.orders.suffix;
-            document.getElementById('stat-cakes-value').textContent = data.homepage.pride.stats.cakes.value + data.homepage.pride.stats.cakes.suffix;
-            document.getElementById('stat-bouquets-value').textContent = data.homepage.pride.stats.bouquets.value + data.homepage.pride.stats.bouquets.suffix;
         }
 
         const categoriesTrack = document.getElementById('categories-track');
@@ -723,6 +719,14 @@
             totalDisplayItems += isBespokeOrCustom ? 1 : (parseInt(item.quantity, 10) || 1);
         });
         cartCountBadge.textContent = totalDisplayItems;
+    };
+
+    // حارس التمهيد لربط الـ DOM وتنشيط العدادات الرقمية فور اكتمال مصفوفة قاعدة البيانات
+    window.onBoseDatabaseReady = function(callback) {
+        window.onBoseDatabaseReadyWrapper = callback;
+        if (window.BoseStoreData) {
+            callback(window.BoseStoreData);
+        }
     };
 
     function applyGlobalSEOAndBranding() {
