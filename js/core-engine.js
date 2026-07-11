@@ -483,11 +483,11 @@
         if (!statsConfig) return;
         
         const mapPrideDomIds = {
-            years: 'counter-years-node',
-            customers: 'counter-customers-node',
-            orders: 'counter-orders-node',
-            cakes: 'counter-cakes-node',
-            bouquets: 'counter-bouquets-node'
+            years: 'stat-years-value',
+            customers: 'stat-customers-value',
+            orders: 'stat-orders-value',
+            cakes: 'stat-cakes-value',
+            bouquets: 'stat-bouquets-value'
         };
 
         Object.keys(mapPrideDomIds).forEach(key => {
