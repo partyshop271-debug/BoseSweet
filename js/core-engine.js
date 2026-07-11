@@ -1,6 +1,7 @@
 /**
- * 👑 ملف المحرك المركزي العالمي المصحح والمطور V6.2 - حلويات بوسي 2026 👑
+ * 👑 ملف المحرك المركزي العالمي المصحح والمطور V6.5 - حلويات بوسي 2026 👑
  * معالجة شاملة للفوضى البصرية وحوكمة السلايدرات والقائمة الجانبية بالمسطرة
+ * يحل مشاكل التزامن، التفاف النصوص، وحركة النقاط المترابطة على الموبايل والكمبيوتر
  * متوافق ومترابط بشكل مطلق ومتبادل مع: global.css و main.css وقاعدة البيانات site-data-final.json
  */
 (function() {
@@ -113,6 +114,9 @@
         let sidebarPanel = document.getElementById('sidebar-drawer');
         if (sidebarPanel) sidebarPanel.remove(); 
         
+        // جلب السلوغان الكامل والشرعي من الـ JSON مباشرة حظراً لأي بتر أو قص نصي
+        const storeSlogan = window.BoseStoreData.store.slogan || "صنعناها بحب لتهديها لمن تحب";
+        
         const sidebar = document.createElement('div');
         sidebar.id = 'sidebar-drawer';
         sidebar.className = 'bose-drawer-menu';
@@ -121,7 +125,7 @@
             <div class="bose-drawer-panel-content">
                 <div class="drawer-premium-header">
                     <h3>تصفح أقسامنا الفاخرة</h3>
-                    <p>حلويات بوسي - صنعناها بحب</p>
+                    <p class="bose-arabic-text" style="color: var(--bose-pink) !important; font-weight: 600; margin-top: 4px;">حلويات بوسي - ${storeSlogan}</p>
                     <button id="sidebar-close-btn" class="drawer-close-btn"><i class="fas fa-times"></i></button>
                 </div>
                 <div class="drawer-links-scrollable">
@@ -149,7 +153,7 @@
                     e.preventDefault();
                     menuPanel.classList.add('active');
                     if(overlay) overlay.classList.add('active');
-                    document.body.classList.add('drawer-active');
+                    document.body.classList.add('drawer-active'); // تجميد سكرول الخلفية تماماً
                 };
             }
 
@@ -220,7 +224,7 @@
         if (heroDesc) heroDesc.textContent = data.homepage.hero.description;
         if (heroCta) heroCta.textContent = data.homepage.hero.cta;
 
-        // ج. بناء الشلال البصري المزدوج المتعاكس
+        // ج.ة بناء الشلال البصري المزدوج المتعاكس
         const leftCol = document.getElementById('waterfall-left-col');
         const rightCol = document.getElementById('waterfall-right-col');
         if (leftCol && rightCol) {
@@ -428,21 +432,29 @@
             updateSliderDots(sliderTrack, dotsContainerId);
         });
 
+        // متابعة حركة التمرير المباشر لتحديث النقاط لحظياً عند انزلاق الكروت بالمسطرة
+        sliderTrack.addEventListener('scroll', () => {
+            if (!isDown) {
+                updateSliderDots(sliderTrack, dotsContainerId);
+            }
+        }, {passive: true});
+
         // بناء المؤشرات النقطية (Dots) آلياً
         buildSliderDots(sliderTrack, dotsContainerId);
 
-        // التصفح الأفقي التلقائي الحركي لقسم عقد من الإتقان الفاخر لمنع أي فراغات بصرية
+        // التصفح الأفقي التلقائي الخالي من العيوب البصرية (يدعم التوافق المتبادل لمتصفحات RTL)
         if (isAutoPlay) {
             let autoSliderDirection = 1;
             setInterval(() => {
                 if (!isDown) {
+                    // حماية اتجاه الانزلاق لتفادي مشكلة السكرول المعكوس في بعض أنظمة الهواتف الذكية
                     sliderTrack.scrollLeft += autoSliderDirection;
-                    if (sliderTrack.scrollLeft >= (sliderTrack.scrollWidth - sliderTrack.clientWidth - 2)) {
+                    const maxScroll = sliderTrack.scrollWidth - sliderTrack.clientWidth;
+                    if (Math.abs(sliderTrack.scrollLeft) >= maxScroll - 2) {
                         autoSliderDirection = -1;
-                    } else if (sliderTrack.scrollLeft <= 2) {
+                    } else if (Math.abs(sliderTrack.scrollLeft) <= 2) {
                         autoSliderDirection = 1;
                     }
-                    updateSliderDots(sliderTrack, dotsContainerId);
                 }
             }, 30);
         }
@@ -465,8 +477,10 @@
             dot.className = 'bose-slider-dot' + (i === 0 ? ' active' : '');
             dot.onclick = () => {
                 const cardWidth = track.children[0].offsetWidth + 16; 
-                track.scrollTo({ left: i * cardWidth, behavior: 'smooth' });
-                setTimeout(() => updateSliderDots(track, containerId), 300);
+                // دعم متصفحات الـ RTL لحساب الاتجاه الصحيح تماماً
+                const isRTL = window.getComputedStyle(track).direction === 'rtl';
+                const targetScroll = isRTL ? -(i * cardWidth) : (i * cardWidth);
+                track.scrollTo({ left: targetScroll, behavior: 'smooth' });
             };
             container.appendChild(dot);
         }
@@ -477,7 +491,8 @@
         if (!container || !track.children.length) return;
         
         const cardWidth = track.children[0].offsetWidth + 16;
-        const activeIndex = Math.round(track.scrollLeft / cardWidth);
+        // استخدام Math.abs لحماية الحسابات المالية والبصرية من التوقيع السالب في مصفوفات الـ RTL على هواتف الموبايل
+        const activeIndex = Math.round(Math.abs(track.scrollLeft) / cardWidth);
         
         const dots = container.querySelectorAll('.bose-slider-dot');
         dots.forEach((dot, idx) => {
@@ -760,6 +775,9 @@
                 color: var(--bose-black) !important;
                 margin: 0; padding: 0; overflow-x: hidden;
             }
+            body.drawer-active {
+                overflow: hidden !important; /* تجميد سكرول الصفحة تماماً عند فتح القائمة */
+            }
             h1, h2 { font-family: 'Cairo', sans-serif !important; font-weight: 700 !important; color: var(--bose-black) !important; }
             h3, h4, h5, h6 { font-family: 'Cairo', sans-serif !important; font-weight: 600 !important; color: var(--bose-black) !important; }
             p, span, a, button, input, select, textarea { font-family: 'Cairo', sans-serif !important; }
@@ -781,7 +799,6 @@
             .drawer-overlay.active { opacity: 1 !important; pointer-events: auto !important; }
             .drawer-premium-header { padding: 24px 20px; background-color: #FFFFFF !important; border-bottom: 1px solid rgba(255, 145, 164, 0.2); position: relative; }
             .drawer-premium-header h3 { font-size: 1.15rem; color: #111111 !important; margin: 0 0 4px 0; font-weight: 700; }
-            .drawer-premium-header p { font-size: 0.85rem; color: #FF91A4 !important; margin: 0; }
             .drawer-close-btn { position: absolute; left: 20px; top: 24px; font-size: 1.3rem; color: #111111; cursor: pointer; border: none; background: none; }
             .drawer-links-scrollable { flex: 1; overflow-y: auto; padding: 15px 0; background-color: #FFFFFF !important; }
             .drawer-links-list { list-style: none; padding: 0; margin: 0; }
@@ -792,6 +809,9 @@
             
             /* منع تداخل الإمساك والسحب على الكروت */
             .grabbing { cursor: grabbing !important; }
+            
+            /* لمنع وميض أو بتر الكلمات العربية */
+            .bose-arabic-text { word-break: keep-all; overflow-wrap: break-word; }
         `;
         document.head.appendChild(styleElement);
     }
