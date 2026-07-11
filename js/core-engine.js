@@ -1,5 +1,5 @@
 /**
- * 👑 ملف المحرك المركزي العالمي المصحح والمطور بالكامل V8.0 - حلويات بوسي 2026 👑
+ * 👑 ملف المحرك المركزي العالمي المصحح والمطور بالكامل V8.1 - حلويات بوسي 2026 👑
  * معالجة هندسية شاملة وجذرية للفوضى البصرية وحوكمة السلايدرات وقفل التزامن بالمسطرة
  * امتثال مطلق وأعمى لملف الحوكمة والمواصفة الرسمية القياسية الفاخرة للصفحة الرئيسية
  * تم إصلاح موضع الشريط العلوي المتحرك ليكون في مكانه الصحيح هندسياً أعلى الهيدر تماماً
@@ -277,7 +277,7 @@
         const mostSellingGrid = document.getElementById('most-selling-grid');
         if (mostSellingGrid) {
             document.getElementById('most-selling-title').textContent = "الأكثر مبيعاً";
-            document.getElementById('most-selling-description').textContent = "تشكيلة فاخرة حازت على إعجاب وتقدير عملائنا دائمًا.";
+            document.getElementById('most-selling-description').textContent = "تشكيلة فاخرة حازت على إعجاب وتقدير عملائنا dائمًا.";
             let items = data.products.filter(p => data.homepage.mostSelling.includes(p.slug));
             mostSellingGrid.innerHTML = items.map(p => createProductCardHTML(p)).join('');
             
@@ -387,6 +387,9 @@
     function initializeBoseSliderLogic(sliderTrack, dotsContainerId, isAutoPlay = false, isCategoryType = false) {
         if (!sliderTrack) return;
         
+        // 🚨 حماية حاسمة: حظر الشريط العلوي تماماً من التدخل البرمجي لـ الجافاسكريبت ليعمل بالـ CSS بحرية
+        if (sliderTrack.id === 'top-bar-marquee-track') return;
+
         let isDown = false;
         let startX;
         let scrollLeft;
@@ -447,7 +450,6 @@
         buildSliderDots(sliderTrack, dotsContainerId, isCategoryType);
 
         function startAutoPlayLogic() {
-            // هندسة الحركة التلقائية المصلحة بالكامل لتتوافق مع اتجاه الـ RTL الصارم لصفحات المتصفح العربية
             const isRTL = window.getComputedStyle(sliderTrack).direction === 'rtl';
             let autoSliderDirection = isRTL ? -1 : 1;
 
@@ -456,15 +458,13 @@
                     const maxScroll = sliderTrack.scrollWidth - sliderTrack.clientWidth;
                     
                     if (isRTL) {
-                        // في الـ RTL قيم الـ scrollLeft تتناقص بالسالب حتى تصل إلى أقصى اليسار (-maxScroll)
-                        sliderTrack.scrollLeft += autoSliderDirection * 2; // التعديل الجذري: استخدام الـ (+) للتحرك العكسي
+                        sliderTrack.scrollLeft += autoSliderDirection * 2; 
                         if (Math.abs(sliderTrack.scrollLeft) >= maxScroll - 2) {
-                            autoSliderDirection = 1; // عكس الاتجاه لليمين
+                            autoSliderDirection = 1; 
                         } else if (sliderTrack.scrollLeft >= -2) {
-                            autoSliderDirection = -1; // العودة لليسار
+                            autoSliderDirection = -1; 
                         }
                     } else {
-                        // في الـ LTR قيم الـ scrollLeft تتزايد بالموجب
                         sliderTrack.scrollLeft += autoSliderDirection * 2;
                         if (sliderTrack.scrollLeft >= maxScroll - 2) {
                             autoSliderDirection = -1;
@@ -807,7 +807,7 @@
             @keyframes boseMarquee { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-50%, 0, 0); } }
             @keyframes boseWaterfallUp { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(0, -50%, 0); } }
             @keyframes boseWaterfallDown { 0% { transform: translate3d(0, -50%, 0); } 100% { transform: translate3d(0, 0, 0); } }
-            .animate-marquee { display: flex; width: max-content; animation: boseMarquee 25s linear infinite; will-change: transform; }
+            .animate-marquee { display: flex; width: max-content; animation: boseMarquee 25s linear infinite !important; will-change: transform; }
             .waterfall-up { animation: boseWaterfallUp 40s linear infinite; will-change: transform; }
             .waterfall-down { animation: boseWaterfallDown 40s linear infinite; will-change: transform; }
             .bose-slider-dots-wrapper { display: flex; justify-content: center; gap: 8px; margin-top: 16px; width: 100%; }
