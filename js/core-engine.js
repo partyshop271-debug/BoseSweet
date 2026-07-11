@@ -116,13 +116,11 @@
     }
 
     // ==========================================
-    // 3. موديول القائمة الجانبية التفاعلية المتطورة (Sidebar Drawer) بوزن جيوغرافي معزول
+    // 3. موديول القائمة الجانبية التفاعلية المتطورة (Sidebar Drawer) لراحة العميل وتطوير تجربة المستخدم
     // ==========================================
     function renderUniversalSidebar() {
         let sidebarPanel = document.getElementById('sidebar-drawer');
         if (sidebarPanel) sidebarPanel.remove(); 
-        
-        const storeSlogan = window.BoseStoreData.store.slogan || "صنعناها بحب لتهديها لمن تحب";
         
         const sidebar = document.createElement('div');
         sidebar.id = 'sidebar-drawer';
@@ -133,7 +131,7 @@
             <div class="bose-drawer-panel-content">
                 <div class="drawer-premium-header">
                     <h3>تصفح أقسامنا الفاخرة</h3>
-                    <p class="bose-arabic-text">حلويات بوسي - ${storeSlogan}</p>
+                    <p class="bose-arabic-text">حلويات بوسي</p>
                     <button id="sidebar-close-btn" class="drawer-close-btn"><i class="fas fa-times"></i></button>
                 </div>
                 
@@ -345,7 +343,6 @@
             rightCol.innerHTML = data.homepage.waterfall.rightColumnImages.map(img => `<img src="${img}" alt="حلويات بوسي فخامة بصرية" loading="lazy">`).join('');
         }
 
-        // 🎯 [المسؤول الوحيد والمطور لقسم عقد من الإتقان المحدث برمجياً وسحب مسارات الـ JSON]
         const excellenceTitle = document.getElementById('excellence-title');
         const excellenceDesc = document.getElementById('excellence-description');
         const excellenceTrack = document.getElementById('excellence-images-track');
@@ -362,13 +359,12 @@
             }
             excellenceTrack.innerHTML = infiniteExcellenceHtml;
 
-            // تطبيق التحكم المركزي الصارم في سرعة وحركة التكرار الانسيابي المعزول كلياً عن السلايدرات الميتة
             excellenceTrack.style.display = 'flex';
             excellenceTrack.style.gap = '16px';
             excellenceTrack.style.width = 'max-content';
             
             let currentX = 0;
-            const scrollSpeed = 1.2; // ⚡ تحكم برمي كامل في سرعة الإطارات لمنع شلل الحركة والتصادم
+            const scrollSpeed = 1.2; 
             let animationFrameId = null;
             
             function animateExcellenceLoop() {
@@ -379,7 +375,6 @@
                 excellenceTrack.style.transform = `translate3d(${currentX}px, 0, 0)`;
                 animationFrameId = requestAnimationFrame(animateExcellenceLoop);
             }
-            // إطلاق المحرك البرمجي المعزول كلياً لإدارة الحركة بسلاسة تامة لراحة العين
             animationFrameId = requestAnimationFrame(animateExcellenceLoop);
         }
 
@@ -939,7 +934,6 @@
         document.body.appendChild(errorDiv);
     }
 
-    // حارس التمهيد ومنع التعارض البرمجي القياسي للحوكمة
     document.addEventListener("DOMContentLoaded", () => {
         let attempts = 0; const maxAttempts = 100;
         const coreGuardInterval = setInterval(() => {
