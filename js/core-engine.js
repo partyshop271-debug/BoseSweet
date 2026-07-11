@@ -1,5 +1,5 @@
 /**
- * 👑 ملف المحرك المركزي العالمي المصحح والمطور بالكامل V8.4 - حلويات بوسي 2026 👑
+ * 👑 ملف المحرك المركزي العالمي المصحح والمطور بالكامل V8.5 - حلويات بوسي 2026 👑
  * معالجة هندسية شاملة وحوكمة كاملة لواجهات الشريط العلوي، القائمة الجانبية، والفوتر الموحد
  * امتثال مطلق وأعمى لملف الحوكمة والمواصفة الرسمية القياسية الفاخرة لمنع الأخطاء البصرية
  * تم إصلاح حركة ونصوص الشريط العلوي المتحرك ليكون صافياً وبدون أي انقطاع أو بتر بصرى
@@ -235,13 +235,13 @@
         const data = window.BoseStoreData;
         if (!data) return;
 
-        // 🔄 تصحيح الشريط العلوي المتحرك حتمياً لمنع الفراغات أو السرعة الجنونية
+        // 🔄 تصحيح الشريط العلوي المتحرك حتمياً وضخ النصوص وتكرارها هندسياً لملء المسار
         const tickerTrack = document.getElementById('top-bar-marquee-track');
         if (tickerTrack && data.navigation.topBarMessages) {
             let messagesHtml = data.navigation.topBarMessages.map(msg => `
                 <span class="ticker-message-item" style="color: var(--bose-white) !important;">${msg} &nbsp;&nbsp;&nbsp;&nbsp; 🌸 &nbsp;&nbsp;&nbsp;&nbsp;</span>
             `).join('');
-            // مضاعفة المحتوى تكرارياً لملء مسار الحركة بالكامل لضمان الانسيابية اللانهائية
+            // مضاعفة المحتوى تكرارياً لملء مسار الحركة بالكامل لضمان الانسيابية اللانهائية وعدم ظهور فراغ بصرى
             tickerTrack.innerHTML = `${messagesHtml}${messagesHtml}${messagesHtml}${messagesHtml}${messagesHtml}${messagesHtml}`;
         }
 
