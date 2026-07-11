@@ -1,7 +1,7 @@
 /**
- * 👑 ملف المحرك المركزي العالمي المصحح والمطور بالكامل V12.0 - حلويات بوسي 2026 👑
+ * 👑 ملف المحرك المركزي العالمي المصحح والمطور بالكامل V12.1 - حلويات بوسي 2026 👑
  * حوكمة كاملة لواجهات الشريط العلوي، القائمة الجانبية المتطورة، والفوتر الموحد ومنع تداخل الملفات
- * المسؤول الوحيد والمطلق عن التحكم في حركة وسرعة وتكرار وضخ صور قسم "عقد من الإتقان" لتطهير الستايل تماماً
+ * المسؤول الوحيد والمطلق عن التحكم في حركة وسرعة وتكرار وضخ صور قسم "عقد من الإتقان" وتطهير الستايل تماماً
  */
 (function() {
     // محددات الحالة المركزية المعزولة بأمان
@@ -318,6 +318,7 @@
         const data = window.BoseStoreData;
         if (!data) return;
 
+        // صمام الأمان وتأمين حقن الشريط العلوي بنجاح فوري
         const tickerTrack = document.getElementById('top-bar-marquee-track');
         if (tickerTrack && data.navigation.topBarMessages) {
             let messagesHtml = data.navigation.topBarMessages.map(msg => `
@@ -343,6 +344,7 @@
             rightCol.innerHTML = data.homepage.waterfall.rightColumnImages.map(img => `<img src="${img}" alt="حلويات بوسي فخامة بصرية" loading="lazy">`).join('');
         }
 
+        // صمام الأمان والتحكم المركزي الفوري في صور قسم "عقد من الإتقان" وحركتها اللانهائية السلسة
         const excellenceTitle = document.getElementById('excellence-title');
         const excellenceDesc = document.getElementById('excellence-description');
         const excellenceTrack = document.getElementById('excellence-images-track');
@@ -375,6 +377,8 @@
                 excellenceTrack.style.transform = `translate3d(${currentX}px, 0, 0)`;
                 animationFrameId = requestAnimationFrame(animateExcellenceLoop);
             }
+            // تشغيل محرك الحلقة اللانهائية لقسم الإتقان بنجاح تام
+            if(animationFrameId) cancelAnimationFrame(animationFrameId);
             animationFrameId = requestAnimationFrame(animateExcellenceLoop);
         }
 
