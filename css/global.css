@@ -109,7 +109,7 @@ img {
     display: inline-block;
 }
 
-/* 🔄 محرك الأنميشن الانسيابي المطور: مهدأ وموزون على 45 ثانية ليتمكن العميل من القراءة بوضوح */
+/* 🔄 محرك الأنميشن الانسيابي المطور: مهدأ وموزون تماماً على 68 ثانية متصلة لمنع السرعة الزائدة والاختفاء البصري */
 @keyframes boseMarquee {
     0% { transform: translate3d(0, 0, 0); }
     100% { transform: translate3d(-50%, 0, 0); }
@@ -118,7 +118,7 @@ img {
 .animate-marquee {
     display: flex !important;
     width: max-content !important;
-    animation: boseMarquee 45s linear infinite !important;
+    animation: boseMarquee 68s linear infinite !important;
     will-change: transform;
 }
 
