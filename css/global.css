@@ -1,5 +1,5 @@
 /* ==========================================================================
-   👑 BoseSweets Strict Production Global Stylesheet (css/global.css) V12.1 👑
+   👑 BoseSweets Strict Production Global Stylesheet (css/global.css) V12.2 👑
    الهوية البصرية الموحدة، الهيدر، الفوتر، والقائمة الجانبية وحوكمة خط Cairo
    امتثال كامل ومغلق لأدلة المواصفات - سد ثغرة التمويه وعزل الـ Overlays تماماً
    ========================================================================== */
@@ -50,6 +50,7 @@ h1, h2, h3, h4, h5, h6, p, span, a, button, input, select, textarea {
     white-space: normal;
     word-wrap: break-word;
     overflow-wrap: break-word;
+    overflow-collapse: unset;
 }
 
 /* قفل أوزان الخطوط الهندسية للعلامة التجارية منعا للتشويه */
@@ -250,7 +251,7 @@ img {
 }
 
 /* ==========================================================================
-   4. حوكمة واجهة القائمة الجانبية المتطورة (Sidebar Drawer) وسد الثغرات البصرية
+   4. حوكمة واجهة القائمة الجانبية المتطورة (Sidebar Drawer) وإصلاح البتر السفلي
    ========================================================================== */
 .bose-drawer-menu {
     position: fixed;
@@ -280,18 +281,21 @@ img {
     z-index: 50002 !important; /* تأمين وضوح وحدة القائمة ومنع تمويه النصوص */
 }
 
+/* الرأس الفاخر المطور باللون البمبي الموحد للعلامة التجارية لراحة العميل */
 .drawer-premium-header {
     padding: 30px 24px 20px 24px;
-    border-bottom: 1px solid rgba(255, 145, 164, 0.1);
+    background-color: var(--bose-pink) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
-.drawer-premium-header h3 { font-size: 1.2rem; margin-bottom: 4px; color: var(--bose-black); }
-.drawer-premium-header p { font-size: 0.85rem; color: var(--bose-pink); font-weight: 600; }
+.drawer-premium-header h3 { font-size: 1.2rem; margin-bottom: 4px; color: var(--bose-white) !important; font-weight: 700 !important; }
+.drawer-premium-header p { font-size: 0.85rem; color: var(--bose-white) !important; font-weight: 600; opacity: 0.95; }
 
+/* زر الإغلاق ليتناسب مع الخلفية البمبية الجديدة */
 .drawer-close-btn {
     position: absolute;
     left: 20px; top: 28px;
     font-size: 1.4rem;
-    color: var(--bose-pink) !important;
+    color: var(--bose-white) !important;
     cursor: pointer;
     transition: transform 0.2s ease;
 }
@@ -299,11 +303,14 @@ img {
     transform: rotate(90deg);
 }
 
+/* حل حرج لمنع بتر القائمة الجانبية من الأسفل والسماح بالتمرير الكامل لآخر عنصر لوجستي */
 .drawer-links-scrollable {
     flex: 1;
-    overflow-y: auto; /* تمكين التمرير الداخلي المنفصل لراحة يد العميل ومحاربة الجمود */
-    padding: 10px 0;
+    overflow-y: auto; /* تمكين التمرير الداخلي المنفصل لراحة يد العميل ومحاربة الجمود البصري */
+    padding: 10px 0 20px 0;
     -webkit-overflow-scrolling: touch;
+    display: flex;
+    flex-direction: column;
 }
 
 .drawer-links-list {
@@ -417,10 +424,12 @@ img {
     font-size: 0.95rem;
 }
 
+/* تحسين تموضع وحركة كتلة الفوتر الفاخر داخل مجرى التمرير لضمان عدم حدوث بتر */
 .drawer-premium-footer-block {
     padding: 20px 24px 30px 24px;
     border-top: 1px solid rgba(255, 145, 164, 0.1);
     background: var(--bose-white);
+    margin-top: auto; /* دفع الفوتر لأسفل مسار التمرير لضمان التناسق واستقرار الارتفاع */
 }
 .drawer-support-call-btn {
     display: flex;
