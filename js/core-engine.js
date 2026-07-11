@@ -1,7 +1,7 @@
 /**
- * 👑 ملف المحرك المركزي العالمي المصحح والمطور V6.5 - حلويات بوسي 2026 👑
- * معالجة شاملة للفوضى البصرية وحوكمة السلايدرات والقائمة الجانبية بالمسطرة
- * يحل مشاكل التزامن، التفاف النصوص، وحركة النقاط المترابطة على الموبايل والكمبيوتر
+ * 👑 ملف المحرك المركزي العالمي المصحح والمطور بالكامل V7.0 - حلويات بوسي 2026 👑
+ * معالجة هندسية شاملة وجذرية للفوضى البصرية وحوكمة السلايدرات وقفل التزامن بالمسطرة
+ * يحل مشاكل شلل التصفح التلقائي، واختفاء شريط الإعلانات، ومزامنة النقاط المترابطة على الموبايل والكمبيوتر
  * متوافق ومترابط بشكل مطلق ومتبادل مع: global.css و main.css وقاعدة البيانات site-data-final.json
  */
 (function() {
@@ -77,6 +77,10 @@
         if (!headerInjector) return; 
         
         headerInjector.innerHTML = `
+            <!-- توب بار متحرك بشكل لانهائي لمنع الفراغات البصرية وحقن الرسائل ديناميكياً -->
+            <div id="top-bar-marquee">
+                <div id="top-bar-marquee-track"></div>
+            </div>
             <header class="bose-navbar">
                 <div class="navbar-mobile-wrapper">
                     <button id="mobile-menu-toggle" class="nav-icon-btn" aria-label="فتح قائمة التصفح">
@@ -114,7 +118,6 @@
         let sidebarPanel = document.getElementById('sidebar-drawer');
         if (sidebarPanel) sidebarPanel.remove(); 
         
-        // جلب السلوغان الكامل والشرعي من الـ JSON مباشرة حظراً لأي بتر أو قص نصي
         const storeSlogan = window.BoseStoreData.store.slogan || "صنعناها بحب لتهديها لمن تحب";
         
         const sidebar = document.createElement('div');
@@ -153,7 +156,7 @@
                     e.preventDefault();
                     menuPanel.classList.add('active');
                     if(overlay) overlay.classList.add('active');
-                    document.body.classList.add('drawer-active'); // تجميد سكرول الخلفية تماماً
+                    document.body.classList.add('drawer-active'); 
                 };
             }
 
@@ -205,13 +208,13 @@
     }
 
     /* ==========================================================================
-       🎰 محرك ضخ وبناء المحتوى الحركي والشبكي التفاعلي (Dynamic Render Engine)
+       👑 محرك ضخ وبناء المحتوى الحركي والشبكي التفاعلي (Dynamic Render Engine)
        ========================================================================== */
     function renderBoseDynamicContent() {
         const data = window.BoseStoreData;
         if (!data) return;
 
-        // أ. تحديث شريط الإعلانات المتجدد العلوي (Top Bar Marquee)
+        // أ. تحديث شريط الإعلانات المتجدد العلوي (Top Bar Marquee) وحل مشكلة اختفائه
         const tickerTrack = document.getElementById('top-bar-marquee-track');
         if (tickerTrack && data.navigation.topBarMessages) {
             let messagesHtml = data.navigation.topBarMessages.map(msg => `<span class="ticker-message-item">${msg}</span>`).join('');
@@ -224,15 +227,15 @@
         if (heroDesc) heroDesc.textContent = data.homepage.hero.description;
         if (heroCta) heroCta.textContent = data.homepage.hero.cta;
 
-        // ج.ة بناء الشلال البصري المزدوج المتعاكس
+        // ج. بناء الشلال البصري المزدوج المتعاكس
         const leftCol = document.getElementById('waterfall-left-col');
         const rightCol = document.getElementById('waterfall-right-col');
         if (leftCol && rightCol) {
-            leftCol.innerHTML = data.homepage.waterfall.leftColumnImages.map(img => `<img src="${img}" alt="حلويات بوسي فخامة بصري">`).join('');
-            rightCol.innerHTML = data.homepage.waterfall.rightColumnImages.map(img => `<img src="${img}" alt="حلويات بوسي فخامة بصري">`).join('');
+            leftCol.innerHTML = data.homepage.waterfall.leftColumnImages.map(img => `<img src="${img}" alt="حلويات بوسي فخامة بصرية">`).join('');
+            rightCol.innerHTML = data.homepage.waterfall.rightColumnImages.map(img => `<img src="${img}" alt="حلويات بوسي فخامة بصرية">`).join('');
         }
 
-        // د. بناء وتفعيل سلايدر قسم عقد من الإتقان الأفقي التلقائي المصلح هندسياً
+        // د. بناء وتفعيل سلايدر قسم عقد من الإتقان المصلح ليعمل تلقائياً ويدوياً معاً
         const excellenceTitle = document.getElementById('excellence-title');
         const excellenceDesc = document.getElementById('excellence-description');
         const excellenceTrack = document.getElementById('excellence-images-track');
@@ -240,10 +243,10 @@
         if (excellenceDesc) excellenceDesc.textContent = data.homepage.excellence.description;
         if (excellenceTrack && data.homepage.excellence.images) {
             excellenceTrack.innerHTML = data.homepage.excellence.images.map(img => `<a href="menu.html" class="perfection-slide-node"><img src="${img}" alt="إتقان حلويات بوسي"></a>`).join('');
-            initializeBoseSliderLogic(excellenceTrack, 'excellence-dots', true); // تمرير true لتفعيل الحركة التلقائية
+            initializeBoseSliderLogic(excellenceTrack, 'excellence-dots', true, false); // تفعيل التصفح التلقائي والانسيابي الشامل
         }
 
-        // هـ. دالة مساعدة لبناء هيكل الكارت الموحد (Strict Product Card DOM) بالمسطرة
+        // هـ. هيكل الكارت الموحد (Strict Product Card DOM) بالمسطرة
         function createProductCardHTML(product) {
             return `
                 <div class="product-card-unified" data-slug="${product.slug}">
@@ -262,7 +265,7 @@
             `;
         }
 
-        // و. ضخ وتشغيل سلايدر الأكثر مبيعاً (8 منتجات) مع منع التكدس ودعم السحب الفعلي
+        // و. ضخ وتشغيل سلايدر الأكثر مبيعاً مع دعم السحب الفعلي واللمس
         const mostSellingGrid = document.getElementById('most-selling-grid');
         if (mostSellingGrid) {
             document.getElementById('most-selling-title').textContent = "الأكثر مبيعاً";
@@ -270,14 +273,13 @@
             let items = data.products.filter(p => data.homepage.mostSelling.includes(p.slug));
             mostSellingGrid.innerHTML = items.map(p => createProductCardHTML(p)).join('');
             
-            // تهيئة السلايدر ليعمل كغلاف مالي مرن ومستجيب للسحب بالكامل على الموبايل
             if (window.innerWidth <= 767) {
                 mostSellingGrid.className = "bose-most-selling-grid-slider";
             }
-            initializeBoseSliderLogic(mostSellingGrid, 'most-selling-dots', false);
+            initializeBoseSliderLogic(mostSellingGrid, 'most-selling-dots', false, false);
         }
 
-        // ز. ضخ وتشغيل سلايدر وصل حديثاً (6 منتجات) مع منع التكدس ودعم السحب الفعلي
+        // ز. ضخ وتشغيل سلايدر وصل حديثاً مع دعم السحب الفعلي واللمس والسنترة
         const newArrivalsGrid = document.getElementById('new-arrivals-grid');
         if (newArrivalsGrid) {
             document.getElementById('new-arrivals-title').textContent = "وصل حديثاً";
@@ -288,10 +290,10 @@
             if (window.innerWidth <= 767) {
                 newArrivalsGrid.className = "bose-new-arrivals-grid-slider";
             }
-            initializeBoseSliderLogic(newArrivalsGrid, 'new-arrivals-dots', false);
+            initializeBoseTracksSliderLogic(newArrivalsGrid, 'new-arrivals-dots', false, false);
         }
 
-        // ح. ضخ قسم منتجاتنا بالتوزيع الشبكي الثنائي الصارم (4 كروت أولية + استعرض المزيد)
+        // ح. ضخ قسم منتجاتنا بالتوزيع الشبكي الثنائي الصارم الملتزم لمنع الفوضى أو الوميض
         const ourProductsGrid = document.getElementById('our-products-grid');
         if (ourProductsGrid) {
             document.getElementById('our-products-title').textContent = "منتجاتنا";
@@ -330,22 +332,13 @@
             document.getElementById('pride-main-text').textContent = data.homepage.pride.text;
             
             document.getElementById('stat-years-value').textContent = data.homepage.pride.stats.years.value + data.homepage.pride.stats.years.suffix;
-            document.getElementById('stat-years-label').textContent = data.homepage.pride.stats.years.label;
-            
             document.getElementById('stat-customers-value').textContent = data.homepage.pride.stats.customers.value + data.homepage.pride.stats.customers.suffix;
-            document.getElementById('stat-customers-label').textContent = data.homepage.pride.stats.customers.label;
-            
             document.getElementById('stat-orders-value').textContent = data.homepage.pride.stats.orders.value + data.homepage.pride.stats.orders.suffix;
-            document.getElementById('stat-orders-label').textContent = data.homepage.pride.stats.orders.label;
-            
             document.getElementById('stat-cakes-value').textContent = data.homepage.pride.stats.cakes.value + data.homepage.pride.stats.cakes.suffix;
-            document.getElementById('stat-cakes-label').textContent = data.homepage.pride.stats.cakes.label;
-            
             document.getElementById('stat-bouquets-value').textContent = data.homepage.pride.stats.bouquets.value + data.homepage.pride.stats.bouquets.suffix;
-            document.getElementById('stat-bouquets-label').textContent = data.homepage.pride.stats.bouquets.label;
         }
 
-        // ك. شريط تسوق حسب الفئة الـ 12 فئة المعتمدة بحجم أكبر 30% وإعادة تشغيل الدوتس والسحب واللمس
+        // ك. شريط تسوق حسب الفئة الـ 12 فئة المعتمدة بحجم أكبر 30% وإعادة تشغيل الدوتس والسحب واللمس بالملي
         const categoriesTrack = document.getElementById('categories-track');
         if (categoriesTrack && data.homepage.categoriesSlider) {
             document.getElementById('categories-section-title').textContent = "تسوق حسب الفئة";
@@ -359,7 +352,7 @@
                     </a>
                 </div>
             `).join('');
-            initializeBoseSliderLogic(categoriesTrack, 'categories-dots', false);
+            initializeBoseSliderLogic(categoriesTrack, 'categories-dots', false, true); // تمرير true للتأكيد على تفعيل فئات الـ 12 بحساب العرض 280px
         }
 
         // ل. ضخ صفحة المنيو الشامل (menu.html) بالتوزيع والاشتراطات الهندسية الكاملة للشاشات
@@ -380,14 +373,16 @@
     }
 
     /* ==========================================================================
-       🎰 محرك السحب واللمس والتصفح الأفقي المصلح الشامل (Universal Slider Logic)
+       👑 محرك السحب واللمس والتصفح الأفقي المصلح الشامل (Universal Slider Logic)
        ========================================================================== */
-    function initializeBoseSliderLogic(sliderTrack, dotsContainerId, isAutoPlay = false) {
+    function initializeBoseSliderLogic(sliderTrack, dotsContainerId, isAutoPlay = false, isCategoryType = false) {
         if (!sliderTrack) return;
         
         let isDown = false;
         let startX;
         let scrollLeft;
+        let autoPlayTimer = null;
+        let autoSliderDirection = 1;
         
         // ربط أحداث الماوس للكمبيوتر الشخصي
         sliderTrack.addEventListener('mousedown', (e) => {
@@ -395,15 +390,18 @@
             sliderTrack.classList.add('grabbing');
             startX = e.pageX - sliderTrack.offsetLeft;
             scrollLeft = sliderTrack.scrollLeft;
+            if(autoPlayTimer) clearInterval(autoPlayTimer);
         });
         sliderTrack.addEventListener('mouseleave', () => {
             isDown = false;
             sliderTrack.classList.remove('grabbing');
+            if (isAutoPlay) startAutoPlayLogic();
         });
         sliderTrack.addEventListener('mouseup', () => {
             isDown = false;
             sliderTrack.classList.remove('grabbing');
-            updateSliderDots(sliderTrack, dotsContainerId);
+            updateSliderDots(sliderTrack, dotsContainerId, isCategoryType);
+            if (isAutoPlay) startAutoPlayLogic();
         });
         sliderTrack.addEventListener('mousemove', (e) => {
             if(!isDown) return;
@@ -413,11 +411,12 @@
             sliderTrack.scrollLeft = scrollLeft - walk;
         });
 
-        // ربط أحداث اللمس والمسح لهواتف الموبايل والتابلت بنسبة 100%
+        // ربط أحداث اللمس لهواتف الموبايل والتابلت بنسبة 100% يدوياً وتلقائياً لمنع الشلل البرمجي
         sliderTrack.addEventListener('touchstart', (e) => {
             isDown = true;
             startX = e.touches[0].pageX - sliderTrack.offsetLeft;
             scrollLeft = sliderTrack.scrollLeft;
+            if(autoPlayTimer) clearInterval(autoPlayTimer);
         }, {passive: true});
         
         sliderTrack.addEventListener('touchmove', (e) => {
@@ -429,38 +428,52 @@
 
         sliderTrack.addEventListener('touchend', () => {
             isDown = false;
-            updateSliderDots(sliderTrack, dotsContainerId);
+            updateSliderDots(sliderTrack, dotsContainerId, isCategoryType);
+            if (isAutoPlay) startAutoPlayLogic();
         });
 
-        // متابعة حركة التمرير المباشر لتحديث النقاط لحظياً عند انزلاق الكروت بالمسطرة
         sliderTrack.addEventListener('scroll', () => {
             if (!isDown) {
-                updateSliderDots(sliderTrack, dotsContainerId);
+                updateSliderDots(sliderTrack, dotsContainerId, isCategoryType);
             }
         }, {passive: true});
 
-        // بناء المؤشرات النقطية (Dots) آلياً
-        buildSliderDots(sliderTrack, dotsContainerId);
+        // بناء المؤشرات النقطية آلياً بالتزامن الشامل مع الأبعاد الفاخرة المعتمدة
+        buildSliderDots(sliderTrack, dotsContainerId, isCategoryType);
 
-        // التصفح الأفقي التلقائي الخالي من العيوب البصرية (يدعم التوافق المتبادل لمتصفحات RTL)
-        if (isAutoPlay) {
-            let autoSliderDirection = 1;
-            setInterval(() => {
+        // دالة تشغيل التصفح التلقائي الانسيابي الخالي من العيوب البصرية (يدعم التوافق لمتصفحات RTL ومستجيب للمس)
+        function startAutoPlayLogic() {
+            autoPlayTimer = setInterval(() => {
                 if (!isDown) {
-                    // حماية اتجاه الانزلاق لتفادي مشكلة السكرول المعكوس في بعض أنظمة الهواتف الذكية
-                    sliderTrack.scrollLeft += autoSliderDirection;
+                    // حماية وتأمين اتجاه الانزلاق لتفادي مشكلة السكرول المعكوس في أنظمة الموبايل
+                    const isRTL = window.getComputedStyle(sliderTrack).direction === 'rtl';
                     const maxScroll = sliderTrack.scrollWidth - sliderTrack.clientWidth;
-                    if (Math.abs(sliderTrack.scrollLeft) >= maxScroll - 2) {
-                        autoSliderDirection = -1;
-                    } else if (Math.abs(sliderTrack.scrollLeft) <= 2) {
-                        autoSliderDirection = 1;
+                    
+                    if (isRTL) {
+                        sliderTrack.scrollLeft -= autoSliderDirection * 2;
+                        if (Math.abs(sliderTrack.scrollLeft) >= maxScroll - 2) {
+                            autoSliderDirection = -1;
+                        } else if (Math.abs(sliderTrack.scrollLeft) <= 2) {
+                            autoSliderDirection = 1;
+                        }
+                    } else {
+                        sliderTrack.scrollLeft += autoSliderDirection * 2;
+                        if (sliderTrack.scrollLeft >= maxScroll - 2) {
+                            autoSliderDirection = -1;
+                        } else if (sliderTrack.scrollLeft <= 2) {
+                            autoSliderDirection = 1;
+                        }
                     }
                 }
             }, 30);
         }
+
+        if (isAutoPlay) {
+            startAutoPlayLogic();
+        }
     }
 
-    function buildSliderDots(track, containerId) {
+    function buildSliderDots(track, containerId, isCategoryType) {
         const container = document.getElementById(containerId);
         if (!container) return;
         
@@ -468,31 +481,31 @@
         const totalItems = track.children.length;
         if(totalItems === 0) return;
         
-        const firstChildWidth = track.children[0].offsetWidth || 280;
-        const visibleItemsCount = Math.max(1, Math.floor(track.offsetWidth / firstChildWidth)); 
+        // حوكمة قياس كروت تسوق حسب الفئة (280px للموبايل) مقابل الكروت العادية لضمان المزامنة المطلقة للنقاط الـ 12
+        const cardWidth = isCategoryType ? 280 : (track.children[0].offsetWidth || 280);
+        const visibleItemsCount = Math.max(1, Math.floor(track.offsetWidth / cardWidth)); 
         const dotsCount = Math.max(1, totalItems - visibleItemsCount + 1);
 
         for (let i = 0; i < dotsCount; i++) {
             const dot = document.createElement('span');
             dot.className = 'bose-slider-dot' + (i === 0 ? ' active' : '');
             dot.onclick = () => {
-                const cardWidth = track.children[0].offsetWidth + 16; 
-                // دعم متصفحات الـ RTL لحساب الاتجاه الصحيح تماماً
+                const finalCardWidth = (isCategoryType ? 280 : track.children[0].offsetWidth) + 16; 
                 const isRTL = window.getComputedStyle(track).direction === 'rtl';
-                const targetScroll = isRTL ? -(i * cardWidth) : (i * cardWidth);
+                const targetScroll = isRTL ? -(i * finalCardWidth) : (i * finalCardWidth);
                 track.scrollTo({ left: targetScroll, behavior: 'smooth' });
             };
             container.appendChild(dot);
         }
     }
 
-    function updateSliderDots(track, containerId) {
+    function updateSliderDots(track, containerId, isCategoryType) {
         const container = document.getElementById(containerId);
         if (!container || !track.children.length) return;
         
-        const cardWidth = track.children[0].offsetWidth + 16;
-        // استخدام Math.abs لحماية الحسابات المالية والبصرية من التوقيع السالب في مصفوفات الـ RTL على هواتف الموبايل
-        const activeIndex = Math.round(Math.abs(track.scrollLeft) / cardWidth);
+        const finalCardWidth = (isCategoryType ? 280 : track.children[0].offsetWidth) + 16;
+        // حماية تامة من التوقيع السالب في حسابات التصفح لمتصفحات RTL على شاشات الهواتف الذكية المكتشفة في الفيديو
+        const activeIndex = Math.round(Math.abs(track.scrollLeft) / finalCardWidth);
         
         const dots = container.querySelectorAll('.bose-slider-dot');
         dots.forEach((dot, idx) => {
@@ -501,8 +514,13 @@
         });
     }
 
+    // دالة مساعدة مطابقة لحركة سلايدرات كروت المنتجات القياسية المتبقية
+    window.initializeBoseTracksSliderLogic = function(sliderTrack, dotsContainerId, isAutoPlay = false, isCategoryType = false) {
+        initializeBoseSliderLogic(sliderTrack, dotsContainerId, isAutoPlay, isCategoryType);
+    };
+
     /* ==========================================================================
-       🎰 إدارة عمليات تفاعل الكروت الفورية (إضافة للسلة وتعديل الكميات)
+       👑 إدارة عمليات تفاعل الكروت الفورية (إضافة للسلة وتعديل الكميات)
        ========================================================================== */
     window.modifyBoseQtyCard = function(button, change) {
         const counterWrapper = button.parentElement;
@@ -514,9 +532,9 @@
     };
 
     window.addBoseCardToCart = function(button, productSlug) {
-        const cardNode = button.closest('.product-card-unified');
-        const qtyInput = cardNode.querySelector('.input-qty-value');
-        const quantity = parseInt(qtyInput.value, 10) || 1;
+        const cardNode = button.closest('.product-card-unified') || button.closest('.menu-category-card');
+        const qtyInput = cardNode ? cardNode.querySelector('.input-qty-value') : null;
+        const quantity = qtyInput ? (parseInt(qtyInput.value, 10) || 1) : 1;
         
         const product = window.BoseStoreData.products.find(p => p.slug === productSlug);
         if (!product) return;
@@ -553,7 +571,7 @@
     }
 
     /* ==========================================================================
-       🎰 الحسابات المالية الدقيقة وحوكمة الفئات (Core Mathematical System)
+       👑 الحسابات المالية الدقيقة وحوكمة الفئات (Core Mathematical System)
        ========================================================================== */
     window.calculateBosePrice = function(basePrice, applyOnContext = "menu-only") {
         if (!window.BoseStoreData) return basePrice;
@@ -776,7 +794,7 @@
                 margin: 0; padding: 0; overflow-x: hidden;
             }
             body.drawer-active {
-                overflow: hidden !important; /* تجميد سكرول الصفحة تماماً عند فتح القائمة */
+                overflow: hidden !important; 
             }
             h1, h2 { font-family: 'Cairo', sans-serif !important; font-weight: 700 !important; color: var(--bose-black) !important; }
             h3, h4, h5, h6 { font-family: 'Cairo', sans-serif !important; font-weight: 600 !important; color: var(--bose-black) !important; }
@@ -791,7 +809,6 @@
             .bose-slider-dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255, 145, 164, 0.3); cursor: pointer; transition: all 0.3s ease; }
             .bose-slider-dot.active { background: #FF91A4 !important; width: 24px; border-radius: 8px; }
             
-            /* 📐 حل مشكلة الخلفية السوداء وحظرها نهائياً من القائمة الجانبية لتأمين اللون الأبيض الفاخر */
             .bose-drawer-menu { position: fixed; top: 0; right: 0; width: 340px; max-width: 85vw; height: 100vh; background: #FFFFFF !important; z-index: 30000; transform: translate3d(100%, 0, 0); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: -8px 0 32px rgba(17,17,17,0.08); font-family: 'Cairo', sans-serif; }
             .bose-drawer-menu.active { transform: translate3d(0, 0, 0) !important; }
             .bose-drawer-panel-content { display: flex; flex-direction: column; height: 100vh; width: 100%; direction: rtl; background: #FFFFFF !important; }
@@ -806,11 +823,7 @@
             .drawer-link-item a i { color: #FF91A4; width: 20px; text-align: center; }
             .drawer-link-item a:hover { background-color: rgba(255, 145, 164, 0.08); color: #FF91A4 !important; }
             .ticker-message-item { padding: 0 40px; font-family: Cairo; font-weight: 600; color: #111111; font-size: 0.9rem; }
-            
-            /* منع تداخل الإمساك والسحب على الكروت */
             .grabbing { cursor: grabbing !important; }
-            
-            /* لمنع وميض أو بتر الكلمات العربية */
             .bose-arabic-text { word-break: keep-all; overflow-wrap: break-word; }
         `;
         document.head.appendChild(styleElement);
