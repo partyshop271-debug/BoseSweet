@@ -1,7 +1,7 @@
 /* ==========================================================================
-   👑 ملف التصميم المركزي للأقسام والمنيو - حلويات بوسي V66.5 Master 👑
-   النسخة الهندسية القياسية المصححة بالكامل - تمنع التكدس وتؤمن السحب الأفقي
-   متوافق ومترابط بشكل متبادل مع: global.css, core-engine.js وقاعدة البيانات
+   👑 ملف التصميم المركزي للأقسام والمنيو - حلويات بوسي V67.0 Master 👑
+   النسخة الهندسية القياسية المصححة والمطورة كلياً - تمنع التكدس وتؤمن التنفس البصري
+   ممتثل لملفات الحوكمة ومتوافق بشكل مطلق ومتبادل مع: global.css و core-engine.js والـ JSON
    ========================================================================== */
 
 body.bose-hardware-accelerated {
@@ -16,6 +16,29 @@ body.bose-hardware-accelerated {
     word-wrap: break-word;
     hyphens: none;
     line-height: 1.5;
+}
+
+/* ==========================================================================
+   🚨 حوكمة وتلوين شريط الإعلانات العلوي المتحرك (Bose Premium Top Bar Marquee)
+   ========================================================================== */
+#top-bar-marquee {
+    width: 100%;
+    background-color: var(--bose-pink) !important; /* ضخ وتثبيت اللون البمبي نبض الحياة الرسمي للهوية */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 12px 0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+#top-bar-marquee .ticker-message-item {
+    padding: 0 40px;
+    font-family: 'Cairo', sans-serif !important;
+    font-weight: 600;
+    color: var(--bose-white) !important; /* النصوص باللون الأبيض الناصع للتنفس والوضوح الكامل على الخلفية البمبي */
+    font-size: 0.9rem;
+    white-space: nowrap;
 }
 
 /* ==========================================================================
@@ -55,7 +78,7 @@ body.bose-hardware-accelerated {
 .bose-hero-title {
     color: var(--bose-black) !important;
     font-size: 1.85rem;
-    font-weight: 700 !important; /* قفل وزن الخط عند 700 كحد أقصى لأضخم العناوين */
+    font-weight: 700 !important; /* سقف وزن الخط عند 700 كحد أقصى لأضخم العناوين */
     line-height: 1.3;
     margin-bottom: 12px;
 }
@@ -163,7 +186,7 @@ body.bose-hardware-accelerated {
 }
 
 /* ==========================================================================
-   📐 4. حل مشكلة قسم "عقد من الإتقان" المكدس عمودياً (Excellence Carousel)
+   4. حل مشكلة قسم "عقد من الإتقان" المكدس عمودياً (Excellence Carousel)
    ========================================================================== */
 .bose-perfection-section {
     width: 100%;
@@ -178,10 +201,9 @@ body.bose-hardware-accelerated {
     scroll-behavior: smooth;
     display: flex;
     padding: 10px 0;
-    scroll-snap-type: x mandatory; /* هندسة إجبار التوقف عند حافة الصورة */
+    scroll-snap-type: x mandatory; /* هندسة إجبار التوقف عند حافة الصورة بالمسطرة */
 }
 
-/* منع ظهور شريط التمرير الافتراضي المشوه لراحة العين النفسية */
 .bose-perfection-carousel-wrapper::-webkit-scrollbar,
 .bose-categories-slider-wrapper::-webkit-scrollbar,
 .bose-most-selling-grid-slider::-webkit-scrollbar,
@@ -201,7 +223,7 @@ body.bose-hardware-accelerated {
     flex: 0 0 100%;
     width: 100%;
     display: block;
-    scroll-snap-align: start; /* أوتو سنترة الموبايل بالمسطرة */
+    scroll-snap-align: start;
 }
 
 .perfection-slide-node img {
@@ -280,18 +302,29 @@ body.bose-hardware-accelerated {
 }
 
 @media (max-width: 767px) {
-    /* 📐 التوزيع الثنائي الصارم المتوازن لقسم منتجاتنا على الموبايل لضمان التنفس البصري ومنع الانحياز خارج الحواف */
-    .products-grid, .bose-products-grid {
-        grid-template-columns: repeat(2, 1fr) !important;
+    /* 📐 إصلاح عيوب قسم منتجاتنا والتثبيت الثنائي الصارم المتوازن (2 كارت كاملين بالصف) في منتصف الشاشة بالضبط */
+    #our-products-grid.products-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important; /* منع الفوضى والوميض وقفل التماسك الثنائي */
+        gap: 12px !important;
+        width: 100% !important;
+        padding: 0 !important;
+        overflow: visible !important;
     }
 
-    /* 📐 تحويل الأكثر مبيعاً ووصل حديثاً إلى سلايدر مرن ومقاوم للتكدس مع أوتو-سنترة الكروت الذكية */
+    #our-products-grid.products-grid .product-card-unified {
+        width: 100% !important;
+        flex-shrink: 1 !important;
+        scroll-snap-align: none !important;
+    }
+
+    /* تحويل الأكثر مبيعاً ووصل حديثاً إلى سلايدر مرن لمنع التكدس مع تلميح الكارت التالي */
     .bose-most-selling-grid-slider,
     .bose-new-arrivals-grid-slider {
         display: flex !important;
         overflow-x: auto !important;
         scroll-behavior: smooth !important;
-        scroll-snap-type: x mandatory !important; /* فرض قفل انزلاق أصابع العميل عند منتصف الكارت بالضبط */
+        scroll-snap-type: x mandatory !important; 
         gap: 16px !important;
         padding: 15px 16px !important;
         width: 100% !important;
@@ -300,13 +333,13 @@ body.bose-hardware-accelerated {
     
     .bose-most-selling-grid-slider .product-card-unified,
     .bose-new-arrivals-grid-slider .product-card-unified {
-        width: 82vw !important; /* مقاس الكارت المعياري لإبقاء مساحة تلميح بصري للكارت التالي */
-        flex-shrink: 0 !important; /* حظر انضغاط الكروت نهائياً */
-        scroll-snap-align: center !important; /* سنترة الكارت بالملي في منتصف الشاشة */
+        width: 82vw !important; 
+        flex-shrink: 0 !important; 
+        scroll-snap-align: center !important; 
     }
 }
 
-/* الهيكل البصري الموحد للكارت بالمسطرة */
+/* الهيكل البصري الموحد لكروت المنتجات بالمسطرة */
 .product-card-unified {
     width: 100%;
     height: auto;
@@ -315,7 +348,7 @@ body.bose-hardware-accelerated {
     border-radius: 20px !important;
     padding: 16px;
     box-sizing: border-box;
-    box-shadow: var(--bose-shadow-glow) !important;
+    box-shadow: var(--bose-shadow-glow) !important; /* حظر الظلال السوداء واستبدالها بظلال الهوية الناعمة */
     transition: 0.3s ease !important;
     display: flex;
     flex-direction: column;
@@ -471,7 +504,7 @@ body.bose-hardware-accelerated {
 }
 
 .simulator-card-inner-layout img {
-    max-height: 250px; /* تكبير حيز صورة المحاكي آلياً للموبايل لإبراز تفاصيل الجمال */
+    max-height: 250px; 
     width: auto;
     margin-bottom: 15px;
     object-fit: contain;
@@ -519,7 +552,7 @@ body.bose-hardware-accelerated {
 }
 
 /* ==========================================================================
-   📐 7. حل شلل قسم "تسوق حسب الفئة" ودعم التمرير المرن يدوياً (Categories)
+   📐 7. حوكمة وأبعاد كروت الفئات الـ 12 المحدثة (Categories Slider UI)
    ========================================================================== */
 .bose-categories-slider-section {
     width: 100%;
@@ -529,7 +562,7 @@ body.bose-hardware-accelerated {
 
 .bose-categories-slider-wrapper {
     width: 100%;
-    overflow-x: auto; /* تمكين سحب الأصابع المرن */
+    overflow-x: auto; 
     scroll-behavior: smooth !important;
     scroll-snap-type: x mandatory !important;
     display: flex;
@@ -541,7 +574,7 @@ body.bose-hardware-accelerated {
     display: flex !important;
     gap: 16px !important;
     width: max-content !important;
-    animation: none !important; /* إلغاء الأنميشن التلقائي الجبري الذي يشل تصفح العميل باللمس */
+    animation: none !important; /* حظر الأنميشن التلقائي لحماية وتأمين تصفح العميل باللمس */
 }
 
 .bose-category-slider-card {
@@ -554,11 +587,11 @@ body.bose-hardware-accelerated {
     align-items: center;
     box-shadow: var(--bose-shadow-glow);
     transition: 0.3s ease;
-    flex-shrink: 0 !important; /* منع تقليص الكروت الكبرى الـ 12 */
+    flex-shrink: 0 !important; /* حظر تقليص الكروت أثناء التمرير يدوياً */
     scroll-snap-align: center !important;
     box-sizing: border-box;
     
-    /* المقاسات القياسية الأكبر بنسبة 30% للموبايل */
+    /* الالتزام بمقاسات كارت الفئة الأكبر بنسبة 30% لراحة العين */
     width: 280px !important;
     height: 360px !important;
 }
@@ -599,7 +632,6 @@ body.bose-hardware-accelerated {
     }
 }
 
-/* حاوية مؤشرات التصفح النقطية (Central Dots Container) */
 .bose-dots-container {
     display: flex;
     justify-content: center;
