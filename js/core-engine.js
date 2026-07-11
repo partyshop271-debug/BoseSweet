@@ -1,6 +1,7 @@
 /**
- * 👑 ملف المحرك المركزي العالمي المصحح والمطور بالكامل V12.2 - حلويات بوسي 2026 👑
+ * 👑 ملف المحرك المركزي العالمي المصحح والمطور بالكامل V12.5 - حلويات بوسي 2026 👑
  * حوكمة كاملة لواجهات الشريط العلوي، القائمة الجانبية المتطورة، والفوتر الموحد ومنع تداخل الملفات
+ * القضاء التام والنهائي على ثغرة بتر القائمة الجانبية وضمان التمرير الكامل لآخر عنصر لوجستي
  * المسؤول الوحيد والمطلق عن التحكم في حركة وسرعة وتكرار وضخ صور قسم "عقد من الإتقان" وتطهير الستايل تماماً
  */
 (function() {
@@ -116,7 +117,7 @@
     }
 
     // ==========================================
-    // 3. موديول القائمة الجانبية التفاعلية المتطورة (Sidebar Drawer) لراحة العميل وتطوير تجربة المستخدم
+    // 3. موديول القائمة الجانبية التفاعلية المتطورة والحل الجذري لمشكلة البتر السفلي
     // ==========================================
     function renderUniversalSidebar() {
         let sidebarPanel = document.getElementById('sidebar-drawer');
@@ -126,6 +127,7 @@
         sidebar.id = 'sidebar-drawer';
         sidebar.className = 'bose-drawer-menu';
         
+        // تم إعادة هيكلة الـ DOM بالكامل ليصبح الفوتر ومحتويات السلة والدعم مدمجين داخل الـ Scrollable Track لمنع البتر نهائياً
         sidebar.innerHTML = `
             <div class="drawer-overlay" id="sidebar-close-overlay"></div>
             <div class="bose-drawer-panel-content">
@@ -135,7 +137,7 @@
                     <button id="sidebar-close-btn" class="drawer-close-btn"><i class="fas fa-times"></i></button>
                 </div>
                 
-                <div class="drawer-links-scrollable">
+                <div class="drawer-links-scrollable" style="padding-bottom: 60px !important;">
                     <ul class="drawer-links-list">
                         <li class="drawer-link-item"><a href="index.html"><i class="fas fa-home"></i> الرئيسية</a></li>
                         <li class="drawer-link-item"><a href="menu.html"><i class="fas fa-utensils"></i> المنيو الشامل</a></li>
@@ -148,13 +150,14 @@
 
                     <div class="drawer-premium-section-title">سلتك الحالية</div>
                     <div id="sidebar-mini-cart-wrapper" class="sidebar-mini-cart-container"></div>
-                </div>
 
-                <div class="drawer-premium-footer-block">
-                    <div class="drawer-social-icons-row" id="sidebar-social-links-injector"></div>
-                    <a href="https://wa.me/${window.sanitizeBosePhoneNumber(window.BoseStoreData.social.whatsapp)}" target="_blank" class="drawer-support-call-btn">
-                        <i class="fab fa-whatsapp"></i> دعم عملاء حلويات بوسي
-                    </a>
+                    <!-- دمج كتلة الفوتر والدعم داخل حاوية السكرول لضمان ظهورها الكامل وعدم قطعها في الشاشات الصغيرة -->
+                    <div class="drawer-premium-footer-block" style="margin-top: 30px; padding: 20px 24px;">
+                        <div class="drawer-social-icons-row" id="sidebar-social-links-injector" style="display: flex; gap: 15px; justify-content: center; margin-bottom: 15px;"></div>
+                        <a href="https://wa.me/${window.sanitizeBosePhoneNumber(window.BoseStoreData.social.whatsapp)}" target="_blank" class="drawer-support-call-btn">
+                            <i class="fab fa-whatsapp"></i> دعم عملاء حلويات بوسي
+                        </a>
+                    </div>
                 </div>
             </div>
         `;
@@ -173,9 +176,9 @@
         const socialLinksContainer = document.getElementById('sidebar-social-links-injector');
         if (socialLinksContainer) {
             socialLinksContainer.innerHTML = `
-                <a href="${window.BoseStoreData.social.facebook}" target="_blank" class="social-link-facebook" aria-label="فيسبوك"><i class="fab fa-facebook-f"></i></a>
-                <a href="${window.BoseStoreData.social.instagram}" target="_blank" class="social-link-instagram" aria-label="انستجرام"><i class="fab fa-instagram"></i></a>
-                <a href="${window.BoseStoreData.social.tiktok}" target="_blank" class="social-link-tiktok" aria-label="تيك توك"><i class="fab fa-tiktok"></i></a>
+                <a href="${window.BoseStoreData.social.facebook}" target="_blank" style="color: #111111; font-size: 1.2rem;" aria-label="فيسبوك"><i class="fab fa-facebook-f"></i></a>
+                <a href="${window.BoseStoreData.social.instagram}" target="_blank" style="color: #111111; font-size: 1.2rem;" aria-label="انستجرام"><i class="fab fa-instagram"></i></a>
+                <a href="${window.BoseStoreData.social.tiktok}" target="_blank" style="color: #111111; font-size: 1.2rem;" aria-label="تيك توك"><i class="fab fa-tiktok"></i></a>
             `;
         }
 
