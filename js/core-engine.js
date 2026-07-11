@@ -1,10 +1,9 @@
 /**
- * 👑 ملف المحرك المركزي العالمي المصحح والمطور بالكامل V8.5 - حلويات بوسي 2026 👑
+ * 👑 ملف المحرك المركزي العالمي المصحح والمطور بالكامل V9.0 - حلويات بوسي 2026 👑
  * معالجة هندسية شاملة وحوكمة كاملة لواجهات الشريط العلوي، القائمة الجانبية، والفوتر الموحد
  * امتثال مطلق وأعمى لملف الحوكمة والمواصفة الرسمية القياسية الفاخرة لمنع الأخطاء البصرية
- * تم إصلاح حركة ونصوص الشريط العلوي المتحرك ليكون صافياً وبدون أي انقطاع أو بتر بصرى
- * حظر كامل للون الأسود والظلال المظلمة من القائمة الجانبية والفوتر لتأمين التنفس البصري الكامل
- * متوافق ومترابط بشكل مطلق ومتبادل مع: global.css و main.css وقاعدة البيانات site-data-final.json
+ * تم إصلاح حركات السلايدرات، الشريط العلوي، والشلال بفصل تام للمسؤوليات ومنع حقن الاستايلات المتعارضة
+ * ملتزم تماماً بمهامه اللوجستية والبياناتية دون التدخل أو التعارض في مهام ملفات الـ CSS المستقلة
  */
 (function() {
     window.BoseStoreData = null; 
@@ -40,7 +39,6 @@
                     
                     // إدارة وضخ العناصر العالمية المشتركة عبر بروتوكول الحقن الهندسي الصحيح
                     injectEarlyDependencies();
-                    applyGlobalStyles(window.BoseStoreData.store.theme);
                     renderUniversalHeader();
                     renderUniversalSidebar();
                     renderUniversalFooter();
@@ -129,21 +127,21 @@
         sidebar.className = 'bose-drawer-menu';
         
         sidebar.innerHTML = `
-            <div class="drawer-overlay" id="sidebar-close-overlay" style="background: rgba(255, 145, 164, 0.05) !important;"></div>
-            <div class="bose-drawer-panel-content" style="background: var(--bose-white) !important; border-right: var(--bose-border-pink);">
-                <div class="drawer-premium-header" style="border-bottom: 2px solid var(--bose-pink); padding: 24px 20px;">
-                    <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--bose-black) !important; margin: 0 0 6px 0;">تصفح أقسامنا الفاخرة</h3>
-                    <p class="bose-arabic-text" style="color: var(--bose-pink) !important; font-weight: 600; font-size: 0.9rem; margin: 0;">حلويات بوسي - ${storeSlogan}</p>
-                    <button id="sidebar-close-btn" class="drawer-close-btn" style="color: var(--bose-pink);"><i class="fas fa-times"></i></button>
+            <div class="drawer-overlay" id="sidebar-close-overlay"></div>
+            <div class="bose-drawer-panel-content">
+                <div class="drawer-premium-header">
+                    <h3>تصفح أقسامنا الفاخرة</h3>
+                    <p class="bose-arabic-text">حلويات بوسي - ${storeSlogan}</p>
+                    <button id="sidebar-close-btn" class="drawer-close-btn"><i class="fas fa-times"></i></button>
                 </div>
-                <div class="drawer-links-scrollable" style="background-color: var(--bose-white) !important; padding: 15px 0;">
+                <div class="drawer-links-scrollable">
                     <ul class="drawer-links-list">
-                        <li class="drawer-link-item"><a href="index.html" style="color: var(--bose-black) !important; font-weight: 600;"><i class="fas fa-home" style="color: var(--bose-pink);"></i> الرئيسية</a></li>
-                        <li class="drawer-link-item"><a href="menu.html" style="color: var(--bose-black) !important; font-weight: 600;"><i class="fas fa-utensils" style="color: var(--bose-pink);"></i> المنيو الشامل</a></li>
-                        <li class="drawer-link-item"><a href="cake-builder.html" style="color: var(--bose-black) !important; font-weight: 600;"><i class="fas fa-birthday-cake" style="color: var(--bose-pink);"></i> محاكي التورت التفاعلي</a></li>
-                        <li class="drawer-link-item"><a href="flower-builder.html" style="color: var(--bose-black) !important; font-weight: 600;"><i class="fas fa-seedling" style="color: var(--bose-pink);"></i> محاكي الورد التفاعلي</a></li>
-                        <li class="drawer-link-item"><a href="cart.html" style="color: var(--bose-black) !important; font-weight: 600;"><i class="fas fa-shopping-basket" style="color: var(--bose-pink);"></i> سلة المشتريات</a></li>
-                        <li class="drawer-link-item"><a href="checkout.html" style="color: var(--bose-black) !important; font-weight: 600;"><i class="fas fa-credit-card" style="color: var(--bose-pink);"></i> إتمام الطلب الشامل</a></li>
+                        <li class="drawer-link-item"><a href="index.html"><i class="fas fa-home"></i> الرئيسية</a></li>
+                        <li class="drawer-link-item"><a href="menu.html"><i class="fas fa-utensils"></i> المنيو الشامل</a></li>
+                        <li class="drawer-link-item"><a href="cake-builder.html"><i class="fas fa-birthday-cake"></i> محاكي التورت التفاعلي</a></li>
+                        <li class="drawer-link-item"><a href="flower-builder.html"><i class="fas fa-seedling"></i> محاكي الورد التفاعلي</a></li>
+                        <li class="drawer-link-item"><a href="cart.html"><i class="fas fa-shopping-basket"></i> سلة المشتريات</a></li>
+                        <li class="drawer-link-item"><a href="checkout.html"><i class="fas fa-credit-card"></i> إتمام الطلب الشامل</a></li>
                     </ul>
                 </div>
             </div>
@@ -181,48 +179,48 @@
         if (!footerInjector) return;
         
         footerInjector.innerHTML = `
-            <footer class="bose-footer" style="background-color: var(--bose-white) !important; border-top: var(--bose-border-pink); padding: 50px 20px 30px 20px;">
-                <div class="footer-logo-container" style="margin-bottom: 12px;">
+            <footer class="bose-footer">
+                <div class="footer-logo-container">
                     <a href="index.html">
-                        <img id="bose-footer-logo-node" src="${window.BoseStoreData.store.logo}" alt="شعار حلويات بوسي" style="height: 65px; margin: 0 auto;">
+                        <img id="bose-footer-logo-node" src="${window.BoseStoreData.store.logo}" alt="شعار حلويات بوسي">
                     </a>
                 </div>
-                <span class="brand-name-display footer-brand-name" style="font-size: 1.45rem; font-weight: 700; color: var(--bose-black) !important; margin-bottom: 16px;">حلويات بوسي</span>
+                <span class="brand-name-display footer-brand-name">حلويات بوسي</span>
                 
-                <div class="footer-about-block" style="max-width: 650px; margin-bottom: 24px;">
-                    <p id="footer-about-text" style="font-size: 0.95rem; color: var(--bose-black) !important; line-height: 1.7; opacity: 0.95;">${window.BoseStoreData.footer.about}</p>
+                <div class="footer-about-block">
+                    <p id="footer-about-text">${window.BoseStoreData.footer.about}</p>
                 </div>
                 
-                <div class="footer-quick-links" style="margin-bottom: 24px;">
-                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; font-weight: 600; font-size: 0.95rem;">
-                        <li><a href="index.html" style="color: var(--bose-black) !important; transition: color 0.3s;">الرئيسية</a></li>
-                        <li><a href="menu.html" style="color: var(--bose-black) !important; transition: color 0.3s;">المنيو الشامل</a></li>
-                        <li><a href="cart.html" style="color: var(--bose-black) !important; transition: color 0.3s;">سلة التسوق</a></li>
+                <div class="footer-quick-links">
+                    <ul>
+                        <li><a href="index.html">الرئيسية</a></li>
+                        <li><a href="menu.html">المنيو الشامل</a></li>
+                        <li><a href="cart.html">سلة التسوق</a></li>
                     </ul>
                 </div>
 
-                <div id="footer-social-links" class="bose-social-links-wrapper" style="display: flex; gap: 24px; justify-content: center; margin-bottom: 30px;">
-                    <a href="${window.BoseStoreData.social.facebook}" class="social-link-facebook" target="_blank" aria-label="فيسبوك حلويات بوسي" style="font-size: 1.6rem; color: #1877F2; transition: transform 0.3s;"><i class="fab fa-facebook-f"></i></a>
-                    <a href="${window.BoseStoreData.social.instagram}" class="social-link-instagram" target="_blank" aria-label="انستجرام حلويات بوسي" style="font-size: 1.6rem; color: #E1306C; transition: transform 0.3s;"><i class="fab fa-instagram"></i></a>
-                    <a href="${window.BoseStoreData.social.tiktok}" class="social-link-tiktok" target="_blank" aria-label="تيك توك حلويات بوسي" style="font-size: 1.6rem; color: #000000; transition: transform 0.3s;"><i class="fab fa-tiktok"></i></a>
-                    <a href="https://wa.me/${window.sanitizeBosePhoneNumber(window.BoseStoreData.social.whatsapp)}" class="social-link-whatsapp" target="_blank" aria-label="واتساب حلويات بوسي" style="font-size: 1.6rem; color: #25D366; transition: transform 0.3s;"><i class="fab fa-whatsapp"></i></a>
+                <div id="footer-social-links" class="bose-social-links-wrapper">
+                    <a href="${window.BoseStoreData.social.facebook}" class="social-link-facebook" target="_blank" aria-label="فيسبوك حلويات بوسي"><i class="fab fa-facebook-f"></i></a>
+                    <a href="${window.BoseStoreData.social.instagram}" class="social-link-instagram" target="_blank" aria-label="انستجرام حلويات بوسي"><i class="fab fa-instagram"></i></a>
+                    <a href="${window.BoseStoreData.social.tiktok}" class="social-link-tiktok" target="_blank" aria-label="تيك توك حلويات بوسي"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://wa.me/${window.sanitizeBosePhoneNumber(window.BoseStoreData.social.whatsapp)}" class="social-link-whatsapp" target="_blank" aria-label="واتساب حلويات بوسي"><i class="fab fa-whatsapp"></i></a>
                 </div>
 
-                <div class="footer-policies-container" id="bose-footer-policies" style="margin-bottom: 24px;">
-                    <ul class="nav-list" style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; list-style: none; padding:0; margin:0; font-size: 0.9rem; font-weight: 600;">
-                        <li><a href="privacy-policy.html" style="color: var(--bose-black) !important;">سياسة الخصوصية</a></li>
-                        <li><a href="refund-policy.html" style="color: var(--bose-black) !important;">سياسة الاسترجاع</a></li>
-                        <li><a href="shipping-policy.html" style="color: var(--bose-black) !important;">سياسة الطلبات</a></li>
-                        <li><a href="terms.html" style="color: var(--bose-black) !important;">الشروط والأحكام</a></li>
+                <div class="footer-policies-container" id="bose-footer-policies">
+                    <ul class="nav-list">
+                        <li><a href="privacy-policy.html">سياسة الخصوصية</a></li>
+                        <li><a href="refund-policy.html">سياسة الاسترجاع</a></li>
+                        <li><a href="shipping-policy.html">سياسة الطلبات</a></li>
+                        <li><a href="terms.html">الشروط والأحكام</a></li>
                     </ul>
                 </div>
 
-                <div class="footer-location-block" style="margin-bottom: 24px; font-size: 0.9rem; color: var(--bose-black); opacity: 0.85; max-width: 500px; line-height: 1.5;">
-                    <p><i class="fas fa-map-marker-alt" style="color: var(--bose-pink); margin-left: 6px;"></i> ${window.BoseStoreData.store.pickup.address}</p>
+                <div class="footer-location-block">
+                    <p><i class="fas fa-map-marker-alt"></i> ${window.BoseStoreData.store.pickup.address}</p>
                 </div>
 
-                <div class="footer-copyright-block" style="width: 100%; border-top: 1px solid rgba(255, 145, 164, 0.15); padding-top: 20px; text-align: center;">
-                    <p style="font-size: 0.85rem; color: var(--bose-black) !important; opacity: 0.7; margin: 0;">© <span id="copyright-year">2026</span> جميع الحقوق محفوظة لعلامة حلويات بوسي التجارية الفاخرة</p>
+                <div class="footer-copyright-block">
+                    <p>© <span id="copyright-year">2026</span> جميع الحقوق محفوظة لعلامة حلويات بوسي التجارية الفاخرة</p>
                 </div>
             </footer>
         `;
@@ -235,16 +233,15 @@
         const data = window.BoseStoreData;
         if (!data) return;
 
-        // 🔄 تصحيح الشريط العلوي المتحرك حتمياً وضخ النصوص وتكرارها هندسياً لملء المسار ومنع الفراغات بصرى
+        // 🔄 تكرار الجمل هندسياً لملء المسار ومنع الفراغات بصرى في تراك الأنميشن الخاص بـ CSS
         const tickerTrack = document.getElementById('top-bar-marquee-track');
         if (tickerTrack && data.navigation.topBarMessages) {
             let messagesHtml = data.navigation.topBarMessages.map(msg => `
-                <span class="ticker-message-item" style="color: var(--bose-white) !important; display: inline-block; white-space: nowrap; padding: 0 50px; font-family: 'Cairo', sans-serif; font-weight: 600; font-size: 0.95rem;">
+                <span class="ticker-message-item">
                     ${msg} &nbsp;&nbsp;&nbsp;&nbsp; 🌸 &nbsp;&nbsp;&nbsp;&nbsp;
                 </span>
             `).join('');
             
-            // صمام الأمان الهندسي المانع للفراغ: تكرار الجمل 16 مرة متتالية لبناء شريط ممتد وعريض جداً يمنع الاختفاء السريع
             let infiniteLoopHtml = '';
             for (let i = 0; i < 16; i++) {
                 infiniteLoopHtml += messagesHtml;
@@ -271,7 +268,7 @@
         if (excellenceDesc) excellenceDesc.textContent = data.homepage.excellence.description;
         if (excellenceTrack && data.homepage.excellence.images) {
             excellenceTrack.innerHTML = data.homepage.excellence.images.map(img => `<a href="menu.html" class="perfection-slide-node"><img src="${img}" alt="إتقان حلويات بوسي"></a>`).join('');
-            initializeBoseSliderLogic(excellenceTrack, 'excellence-dots', true, false); 
+            initializeBoseSliderLogic(excellenceTrack, 'excellence-dots', false, false); 
         }
 
         function createProductCardHTML(product) {
@@ -367,7 +364,7 @@
             
             categoriesTrack.innerHTML = data.homepage.categoriesSlider.map(cat => `
                 <div class="bose-category-slider-card">
-                    <a href="category.html?id=${cat.id}" style="text-decoration:none; display:block; width:100%;">
+                    <a href="category.html?id=${cat.id}">
                         <img src="${cat.image}" class="category-img" alt="${cat.title}">
                         <div class="category-title-display">${cat.title}</div>
                     </a>
@@ -380,12 +377,12 @@
         if (menuCategoriesGrid && data.homepage.categoriesSlider) {
             menuCategoriesGrid.innerHTML = data.homepage.categoriesSlider.map(cat => `
                 <div class="menu-category-card">
-                    <a href="category.html?id=${cat.id}" style="text-decoration:none; display:block;">
-                        <img src="${cat.image}" style="width:100%; height:280px; object-fit:cover; border-radius:15px;" alt="${cat.title}">
+                    <a href="category.html?id=${cat.id}">
+                        <img src="${cat.image}" class="category-main-img" alt="${cat.title}">
                     </a>
-                    <h3 style="font-size:20px; font-weight:700; color:var(--bose-black); margin:15px 0 10px 0; text-align:center;">${cat.title}</h3>
-                    <div style="display:flex; justify-content:center; width:100%;">
-                        <a href="category.html?id=${cat.id}" class="bose-hero-btn" style="padding:8px 24px; font-size:14px; text-decoration:none; text-align:center;">استعرض المنتجات</a>
+                    <h3 class="category-card-title-node">${cat.title}</h3>
+                    <div class="category-card-action-node">
+                        <a href="category.html?id=${cat.id}" class="bose-hero-btn">استعرض المنتجات</a>
                     </div>
                 </div>
             `).join('');
@@ -402,25 +399,21 @@
         let isDown = false;
         let startX;
         let scrollLeft;
-        let autoPlayTimer = null;
         
         sliderTrack.addEventListener('mousedown', (e) => {
             isDown = true;
             sliderTrack.classList.add('grabbing');
             startX = e.pageX - sliderTrack.offsetLeft;
             scrollLeft = sliderTrack.scrollLeft;
-            if(autoPlayTimer) clearInterval(autoPlayTimer);
         });
         sliderTrack.addEventListener('mouseleave', () => {
             isDown = false;
             sliderTrack.classList.remove('grabbing');
-            if (isAutoPlay) startAutoPlayLogic();
         });
         sliderTrack.addEventListener('mouseup', () => {
             isDown = false;
             sliderTrack.classList.remove('grabbing');
             updateSliderDots(sliderTrack, dotsContainerId, isCategoryType);
-            if (isAutoPlay) startAutoPlayLogic();
         });
         sliderTrack.addEventListener('mousemove', (e) => {
             if(!isDown) return;
@@ -434,7 +427,6 @@
             isDown = true;
             startX = e.touches[0].pageX - sliderTrack.offsetLeft;
             scrollLeft = sliderTrack.scrollLeft;
-            if(autoPlayTimer) clearInterval(autoPlayTimer);
         }, {passive: true});
         
         sliderTrack.addEventListener('touchmove', (e) => {
@@ -447,7 +439,6 @@
         sliderTrack.addEventListener('touchend', () => {
             isDown = false;
             updateSliderDots(sliderTrack, dotsContainerId, isCategoryType);
-            if (isAutoPlay) startAutoPlayLogic();
         });
 
         sliderTrack.addEventListener('scroll', () => {
@@ -457,37 +448,6 @@
         }, {passive: true});
 
         buildSliderDots(sliderTrack, dotsContainerId, isCategoryType);
-
-        function startAutoPlayLogic() {
-            const isRTL = window.getComputedStyle(sliderTrack).direction === 'rtl';
-            let autoSliderDirection = isRTL ? -1 : 1;
-
-            autoPlayTimer = setInterval(() => {
-                if (!isDown) {
-                    const maxScroll = sliderTrack.scrollWidth - sliderTrack.clientWidth;
-                    
-                    if (isRTL) {
-                        sliderTrack.scrollLeft += autoSliderDirection * 2; 
-                        if (Math.abs(sliderTrack.scrollLeft) >= maxScroll - 2) {
-                            autoSliderDirection = 1; 
-                        } else if (sliderTrack.scrollLeft >= -2) {
-                            autoSliderDirection = -1; 
-                        }
-                    } else {
-                        sliderTrack.scrollLeft += autoSliderDirection * 2;
-                        if (sliderTrack.scrollLeft >= maxScroll - 2) {
-                            autoSliderDirection = -1;
-                        } else if (sliderTrack.scrollLeft <= 2) {
-                            autoSliderDirection = 1;
-                        }
-                    }
-                }
-            }, 30);
-        }
-
-        if (isAutoPlay) {
-            startAutoPlayLogic();
-        }
     }
 
     function buildSliderDots(track, containerId, isCategoryType) {
@@ -578,7 +538,7 @@
             document.body.appendChild(container);
         }
         const toast = document.createElement('div');
-        toast.style = 'background:var(--bose-pink); color:#fff; padding:12px 24px; border-radius:12px; margin-top:8px; box-shadow:var(--bose-shadow-hover); font-family:Cairo; font-weight:600; direction:rtl;';
+        toast.className = 'bose-toast-node';
         toast.textContent = message;
         container.appendChild(toast);
         setTimeout(() => { toast.remove(); }, 3000);
@@ -785,14 +745,9 @@
         }
     }
 
-    function applyGlobalStyles(theme) {
-        // حظر كامل لضخ الأكواد البصرية والأنميشن داخل ملفات الجافا سكريبت منعاً لأي تعارض هيكلي مع ملفات الستايل المستقلة
-        console.log("🛡️ حوكمة الحركية: تم عزل وحظر ضخ الاستايلات محلياً للتأكيد على تخصص ملفات الستايل الخارجية بدورها فقط.");
-    }
-
     function showGlobalFriendlyError() {
         const errorDiv = document.createElement('div');
-        errorDiv.style = 'position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#FF91A4; color:#FFF; padding:12px 24px; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.15); z-index:99999; direction:rtl; font-size:14px;';
+        errorDiv.className = 'global-error-banner-node';
         errorDiv.textContent = 'عذراً، نواجه صعوبة في الاتصال بالخادم حالياً. يرجى إعادة محاولة تحميل الصفحة.';
         document.body.appendChild(errorDiv);
     }
