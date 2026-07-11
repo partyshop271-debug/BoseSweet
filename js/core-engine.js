@@ -1,15 +1,15 @@
 /**
- * 👑 ملف المحرك المركزي العالمي المصحح والمطور بالكامل V11.0 - حلويات بوسي 2026 👑
+ * 👑 ملف المحرك المركزي العالمي المصحح والمطور بالكامل V12.0 - حلويات بوسي 2026 👑
  * حوكمة كاملة لواجهات الشريط العلوي، القائمة الجانبية المتطورة، والفوتر الموحد ومنع تداخل الملفات
- * المسؤول الوحيد والمطلق عن التحكم في حركة وسرعة وتكرار وضخ صور قسم "عقد من الإتقان" لتطهير الستايل تماماً[span_5](start_span)[span_5](end_span)
+ * المسؤول الوحيد والمطلق عن التحكم في حركة وسرعة وتكرار وضخ صور قسم "عقد من الإتقان" لتطهير الستايل تماماً
  */
 (function() {
     // محددات الحالة المركزية المعزولة بأمان
     window.BoseStoreData = null; 
-    window.boseServerTimeOffset = 0; 
+    window.boseServerTimeOffset = 0; // فارق التوقيت بالمللي ثانية: (وقت الخادم - وقت جهاز العميل)
 
     // ==========================================
-    // 1. موديول إدارة قاعدة البيانات والتمهيد
+    // 1. موديول إدارة قاعدة البيانات والتمهيد وحراس الأمان
     // ==========================================
     async function loadStoreDatabase() {
         if (window.BoseStoreData) return;
@@ -38,7 +38,7 @@
                     
                     window.BoseStoreData = await response.json();
                     
-                    // استدعاء موديولات البناء الداخلي بالتتابع الهندسي الصارم
+                    // استدعاء موديولات البناء الداخلي بالتتابع الهندسي الصارم والمقدس
                     injectEarlyDependencies();
                     renderUniversalHeader();
                     renderUniversalSidebar();
@@ -48,7 +48,7 @@
                     window.updateGlobalCartCounter();
                     renderBoseDynamicContent();
                     
-                    // إطلاق حدث الاعتماد الآمن لحراس ومحركات الموقع
+                    // إطلاق حدث الاعتماد الآمن لحراس ومحركات الموقع ومنع التصادم البرمجي
                     document.dispatchEvent(new CustomEvent('BoseDatabaseLoaded', { detail: window.BoseStoreData }));
                     
                     if (typeof window.onBoseDatabaseReadyWrapper === "function") {
@@ -71,7 +71,7 @@
     }
 
     // ==========================================
-    // 2. موديول حقن الهيدر والشريط العلوي المقدس
+    // 2. موديول حقن الهيدر والشريط العلوي المقدس (تطهير كامل من السلوغان والنصوص الزائدة)
     // ==========================================
     function renderUniversalHeader() {
         let headerInjector = document.getElementById('bose-header-injector');
@@ -89,7 +89,7 @@
                     </button>
                     <div class="brand-logo-container">
                         <a href="index.html">
-                            <img id="bose-store-logo" src="${window.BoseStoreData.store.logo}" alt="شعار حلويات بوسي">
+                            <img id="bose-store-logo" src="${window.BoseStoreData.store.logo}" alt="شعار حلويات بوسي" loading="lazy">
                         </a>
                     </div>
                     <span class="brand-name-display">حلويات بوسي</span>
@@ -116,7 +116,7 @@
     }
 
     // ==========================================
-    // 3. موديول القائمة الجانبية التفاعلية المتطورة (Sidebar Drawer)
+    // 3. موديول القائمة الجانبية التفاعلية المتطورة (Sidebar Drawer) بوزن جيوغرافي معزول
     // ==========================================
     function renderUniversalSidebar() {
         let sidebarPanel = document.getElementById('sidebar-drawer');
@@ -166,7 +166,7 @@
         if (quickCategoriesContainer && window.BoseStoreData.homepage.categoriesSlider) {
             quickCategoriesContainer.innerHTML = window.BoseStoreData.homepage.categoriesSlider.map(cat => `
                 <a href="category.html?id=${cat.id}" class="sidebar-cat-chip-node">
-                    <img src="${cat.image}" alt="${cat.title}">
+                    <img src="${cat.image}" alt="${cat.title}" loading="lazy">
                     <span>${cat.title}</span>
                 </a>
             `).join('');
@@ -234,7 +234,7 @@
             totalAmount += finalPriceSum;
             return `
                 <div class="sidebar-mini-cart-item-node">
-                    <img src="${item.image}" alt="${item.title}">
+                    <img src="${item.image}" alt="${item.title}" loading="lazy">
                     <div class="sidebar-mini-cart-item-details">
                         <h4>${item.title}</h4>
                         <h5>النكهة: ${item.flavorName}</h5>
@@ -259,7 +259,7 @@
     };
 
     // ==========================================
-    // 4. موديول حقن الفوتر الرسمي الموحد
+    // 4. موديول حقن الفوتر الرسمي الموحد بلونه الفاتح لخلق تنفس بصري
     // ==========================================
     function renderUniversalFooter() {
         let footerInjector = document.getElementById('bose-footer-injector');
@@ -269,7 +269,7 @@
             <footer class="bose-footer">
                 <div class="footer-logo-container">
                     <a href="index.html">
-                        <img id="bose-footer-logo-node" src="${window.BoseStoreData.store.logo}" alt="شعار حلويات بوسي">
+                        <img id="bose-footer-logo-node" src="${window.BoseStoreData.store.logo}" alt="شعار حلويات بوسي" loading="lazy">
                     </a>
                 </div>
                 <span class="brand-name-display footer-brand-name">حلويات بوسي</span>
@@ -314,7 +314,7 @@
     }
 
     // ==========================================
-    // 5. موديول حقن المحتوى الديناميكي وحركات الـ JavaScript
+    // 5. موديول حقن المحتوى الديناميكي وحركات الـ JavaScript (تحكم مركزي صارم وعزل اللمس)
     // ==========================================
     function renderBoseDynamicContent() {
         const data = window.BoseStoreData;
@@ -341,12 +341,11 @@
         const leftCol = document.getElementById('waterfall-left-col');
         const rightCol = document.getElementById('waterfall-right-col');
         if (leftCol && rightCol) {
-            leftCol.innerHTML = data.homepage.waterfall.leftColumnImages.map(img => `<img src="${img}" alt="حلويات بوسي فخامة بصرية">`).join('');
-            rightCol.innerHTML = data.homepage.waterfall.rightColumnImages.map(img => `<img src="${img}" alt="حلويات بوسي فخامة بصرية">`).join('');
+            leftCol.innerHTML = data.homepage.waterfall.leftColumnImages.map(img => `<img src="${img}" alt="حلويات بوسي فخامة بصرية" loading="lazy">`).join('');
+            rightCol.innerHTML = data.homepage.waterfall.rightColumnImages.map(img => `<img src="${img}" alt="حلويات بوسي فخامة بصرية" loading="lazy">`).join('');
         }
 
-        // 🎯 [المسؤول الوحيد والمطور لقسم عقد من الإتقان][span_6](start_span)[span_6](end_span)
-        // بناء وضخ وتدوير المجرى بالكامل برمجياً مع سحب الأكواد من ملفات الـ CSS لمنع التعارض[span_7](start_span)[span_7](end_span)
+        // 🎯 [المسؤول الوحيد والمطور لقسم عقد من الإتقان المحدث برمجياً وسحب مسارات الـ JSON]
         const excellenceTitle = document.getElementById('excellence-title');
         const excellenceDesc = document.getElementById('excellence-description');
         const excellenceTrack = document.getElementById('excellence-images-track');
@@ -354,7 +353,7 @@
         if (excellenceDesc) excellenceDesc.textContent = data.homepage.excellence.description;
         if (excellenceTrack && data.homepage.excellence.images) {
             let imagesHtml = data.homepage.excellence.images.map(img => `
-                <a href="menu.html" class="perfection-slide-node"><img src="${img}" alt="إتقان حلويات بوسي"></a>
+                <a href="menu.html" class="perfection-slide-node"><img src="${img}" alt="إتقان حلويات بوسي" loading="lazy"></a>
             `).join('');
             
             let infiniteExcellenceHtml = '';
@@ -363,33 +362,31 @@
             }
             excellenceTrack.innerHTML = infiniteExcellenceHtml;
 
-            // تطبيق التحكم المركزي الصارم في سرعة وحركة التكرار الانسيابي من هنا[span_8](start_span)[span_8](end_span)
+            // تطبيق التحكم المركزي الصارم في سرعة وحركة التكرار الانسيابي المعزول كلياً عن السلايدرات الميتة
             excellenceTrack.style.display = 'flex';
             excellenceTrack.style.gap = '16px';
             excellenceTrack.style.width = 'max-content';
             
             let currentX = 0;
-            const scrollSpeed = 1.2; // ⚡ تحكم كامل في سرعة الحركة بكسل لكل إطار[span_9](start_span)[span_9](end_span)
+            const scrollSpeed = 1.2; // ⚡ تحكم برمي كامل في سرعة الإطارات لمنع شلل الحركة والتصادم
+            let animationFrameId = null;
             
             function animateExcellenceLoop() {
                 currentX -= scrollSpeed;
-                // إعادة تعيين موضع المجرى عند تكرار الدورة لمنع أي وميض أو فراغ[span_10](start_span)[span_10](end_span)
                 if (Math.abs(currentX) >= (excellenceTrack.scrollWidth / 2)) {
                     currentX = 0;
                 }
                 excellenceTrack.style.transform = `translate3d(${currentX}px, 0, 0)`;
-                requestAnimationFrame(animateExcellenceLoop);
+                animationFrameId = requestAnimationFrame(animateExcellenceLoop);
             }
-            // إطلاق المحرك البرمجي للحركة التلقائية الملساء[span_11](start_span)[span_11](end_span)
-            requestAnimationFrame(animateExcellenceLoop);
-
-            initializeBoseSliderLogic(excellenceTrack, 'excellence-dots', true, false); 
+            // إطلاق المحرك البرمجي المعزول كلياً لإدارة الحركة بسلاسة تامة لراحة العين
+            animationFrameId = requestAnimationFrame(animateExcellenceLoop);
         }
 
         function createProductCardHTML(product) {
             return `
                 <div class="product-card-unified" data-slug="${product.slug}">
-                    <img src="${product.images[0]}" class="product-card-img" alt="${product.title}">
+                    <img src="${product.images[0]}" class="product-card-img" alt="${product.title}" loading="lazy">
                     <h3 class="product-card-title">${product.title}</h3>
                     <span class="product-card-flavor-name">${product.flavorName}</span>
                     <p class="product-card-desc">${product.flavorDesc}</p>
@@ -475,7 +472,7 @@
             categoriesTrack.innerHTML = data.homepage.categoriesSlider.map(cat => `
                 <div class="bose-category-slider-card">
                     <a href="category.html?id=${cat.id}">
-                        <img src="${cat.image}" class="category-img" alt="${cat.title}">
+                        <img src="${cat.image}" class="category-img" alt="${cat.title}" loading="lazy">
                         <div class="category-title-display">${cat.title}</div>
                     </a>
                 </div>
@@ -485,7 +482,7 @@
     }
 
     // ==========================================
-    // 6. موديول إدارة وتفعيل العدادات التصاعدية الذكية
+    // 6. موديول إدارة وتفعيل العدادات التصاعدية الذكية من الـ JSON الصريح
     // ==========================================
     function initializeBosePrideCounters(statsConfig) {
         if (!statsConfig) return;
@@ -525,7 +522,7 @@
     }
 
     // ==========================================
-    // 7. موديول إدارة وتوجيه السلايدرات اللمسية والتلقائية
+    // 7. موديول إدارة وتوجيه السلايدرات اللمسية والتلقائية (المحصورة بالأقسام المتوافقة)
     // ==========================================
     function initializeBoseSliderLogic(sliderTrack, dotsContainerId, isAutoPlay = false, isCategoryType = false) {
         if (!sliderTrack) return;
@@ -611,8 +608,179 @@
     }
 
     // ==========================================
-    // 8. موديول العمليات المالية وإدارة السلة التأسيسية
+    // 8. موديول العمليات المالية والفحص الشامل وإدارة الحسابات التأسيسية
     // ==========================================
+    window.calculateBosePrice = function(basePrice, applyOnContext = "menu-only") {
+        if (!window.BoseStoreData) return basePrice;
+        const rule = window.BoseStoreData.store.priceIncrease;
+        if (rule && rule.enabled && (rule.applyOn === "all" || rule.applyOn === applyOnContext)) {
+            return parseFloat((basePrice * (1 + (rule.percent / 100))).toFixed(4));
+        }
+        return basePrice;
+    };
+
+    window.calculateProductFinalPrice = function(product, selectedOptions) {
+        const opts = selectedOptions || {};
+        let price = 0;
+        
+        if (product) {
+            price = product.price || product.basePrice || 0;
+
+            if (product.prices && opts.size) {
+                price = product.prices[opts.size] || price;
+            }
+
+            const selectedPrinting = opts.printing || opts.printingType || 'none';
+            if (selectedPrinting && selectedPrinting !== 'none') {
+                let printingFee = 0;
+                if (product.customizationOptions && product.customizationOptions.printing) {
+                    const printOptions = product.customizationOptions.printing.options;
+                    if (Array.isArray(printOptions)) {
+                        const printingOpt = printOptions.find(opt => opt.id === selectedPrinting || opt.type === selectedPrinting);
+                        if (printingOpt) {
+                            printingFee = printingOpt.price;
+                        }
+                    }
+                }
+                
+                if (printingFee === 0) {
+                    if (selectedPrinting === 'edible' || selectedPrinting === 'printable-edible' || selectedPrinting === 'صورة_صالحة_للأكل') {
+                        printingFee = 60;
+                    } else if (selectedPrinting === 'non-edible' || selectedPrinting === 'printable-non-edible' || selectedPrinting === 'صورة_غير_صالحة_للأكل') {
+                        printingFee = 15;
+                    }
+                }
+                price += printingFee;
+            }
+            
+            if (product.isMiniCake || product.type === "mini-cake" || product.slug === "mini-cake-two-person") {
+                if (opts.extraToppingPrice) price += parseFloat(opts.extraToppingPrice);
+                if (opts.printingPrice) price += parseFloat(opts.printingPrice);
+            }
+        }
+        return window.calculateBosePrice(price, "menu-only");
+    };
+
+    window.createCartItem = function(product, selectedOptions, quantity = 1) {
+        if (!product) return null;
+        const opts = selectedOptions || {};
+        const finalUnitPrice = window.calculateProductFinalPrice(product, opts);
+        
+        const isCustomizable = product.isMiniCake ||
+                             product.type === "custom-cake" || 
+                             product.type === "custom-flower" || 
+                             (product.customizationOptions && Object.keys(opts).length > 0);
+                             
+        const finalId = isCustomizable ? `${product.slug}-${Date.now()}` : String(product.slug || product.id);
+        
+        const cartItem = {
+            id: finalId,
+            productSlug: product.slug,
+            title: product.title,
+            flavorName: opts.flavorName || opts.cakeType || product.flavor || "افتراضي",
+            basePrice: parseFloat((product.price || product.basePrice || 0).toFixed(4)),
+            finalPrice: parseFloat(finalUnitPrice.toFixed(4)),
+            quantity: parseInt(quantity, 10) || 1,
+            image: product.image || product.images[0] || "",
+            type: product.type || (product.isMiniCake ? "mini-cake" : "standard"),
+            customDetails: {
+                cakeType: opts.cakeType || opts.cakeFlavor || "فانيليا",
+                shape: opts.shape || "circle",
+                persons: parseInt(opts.persons, 10) || (product.isMiniCake ? 2 : 0),
+                printingType: opts.printingType || opts.printing || "none",
+                customMessage: opts.customMessage || "",
+                allergyNote: opts.allergyNote || "",
+                flowerType: opts.flowerType || "none",
+                flowerCount: parseInt(opts.flowerCount, 10) || 0,
+                moneyAmount: parseInt(opts.moneyAmount, 10) || 0,
+                moneyFee: parseInt(opts.moneyFee, 10) || 0,
+                chocolateType: opts.chocolateType || "none",
+                chocolatePieces: parseInt(opts.chocolatePieces, 10) || 0,
+                wrappingType: opts.wrappingType || "none",
+                giftCardText: opts.giftCardText || ""
+            }
+        };
+        return cartItem;
+    };
+
+    window.calculateCustomCakePrice = function(persons, options = {}) {
+        const config = window.BoseStoreData?.cakeBuilder;
+        const safePersons = parseInt(persons, 10) || (config ? config.persons.minimum : 10) || 10;
+        let price = (config ? config.basePrice : 580) || 580;
+        
+        const minPersons = (config ? config.persons.minimum : 10) || 10;
+        const pricePerPerson = (config ? config.pricePerPerson : 145) || 145;
+        
+        const extraPersons = Math.max(0, safePersons - minPersons);
+        price += extraPersons * pricePerPerson;
+        
+        const selectedPrinting = options.printingType || options.printing || 'none';
+        if (selectedPrinting && selectedPrinting !== 'none') {
+            let printingFee = 0;
+            if (config && config.printingOptions) {
+                const printOpt = config.printingOptions.find(opt => opt.id === selectedPrinting);
+                if (printOpt) printingFee = printOpt.price;
+            }
+            if (printingFee === 0) {
+                if (selectedPrinting === 'edible' || selectedPrinting === 'printable-edible' || selectedPrinting === 'صورة_صالحة_للأكل') {
+                    printingFee = 60;
+                } else if (selectedPrinting === 'non-edible' || selectedPrinting === 'printable-non-edible' || selectedPrinting === 'صورة_غير_صالحة_للأكل') {
+                    printingFee = 15;
+                }
+            }
+            price += printingFee;
+        }
+        if (options.wrappingPrice) price += parseFloat(options.wrappingPrice) || 0;
+        
+        return window.calculateBosePrice(price, "menu-only");
+    };
+
+    window.calculateCustomFlowerPrice = function(flowerType, flowerCount, options = {}) {
+        const config = window.BoseStoreData?.flowerBuilder;
+        if (!config) return 0;
+        
+        const safeFlowerCount = parseInt(flowerCount, 10) || config.baseFlowers;
+        const safeCashAmount = parseInt(options.moneyAmount, 10) || 0;
+        const safeCashCategoryAmount = parseInt(options.moneyCategoryAmount, 10) || 0;
+        const safeChocolatePieces = parseInt(options.chocolatePieces, 10) || 0;
+        const safePhotoCount = parseInt(options.photoCount, 10) || 0;
+        
+        let servicePrice = config.basePrice || 400;
+        const extraFlowers = Math.max(0, safeFlowerCount - config.baseFlowers);
+        servicePrice += extraFlowers * config.extraFlowerPrice;
+        
+        if (options.wrappingType) {
+            const wrapOpt = config.wrappingTypes.find(opt => opt.id === options.wrappingType);
+            if (wrapOpt) servicePrice += wrapOpt.price;
+        }
+        if (options.chocolateType && safeChocolatePieces > 0) {
+            const chocOpt = config.chocolateTypes.find(opt => opt.id === options.chocolateType);
+            if (chocOpt) servicePrice += chocOpt.price * safeChocolatePieces;
+        }
+        if (options.hasGiftCard) servicePrice += config.giftCardPrice || 20;
+        if (safePhotoCount > 0) servicePrice += safePhotoCount * (config.photoPrintPrice || 15);
+        
+        let cashHandlingFee = 0;
+        if (safeCashAmount > 0 && safeCashCategoryAmount > 0) {
+            const selectedCategory = config.moneyCategories.find(cat => cat.amount === safeCashCategoryAmount);
+            if (selectedCategory) {
+                const billCount = Math.floor(safeCashAmount / safeCashCategoryAmount);
+                cashHandlingFee += billCount * selectedCategory.fee;
+                
+                const remainder = safeCashAmount % safeCashCategoryAmount;
+                if (remainder > 0) {
+                    const remainderCategory = config.moneyCategories
+                        .filter(cat => cat.amount <= remainder)
+                        .sort((a, b) => b.amount - a.amount)[0] || config.moneyCategories[0];
+                    if (remainderCategory) cashHandlingFee += remainderCategory.fee;
+                }
+            }
+        }
+        servicePrice += cashHandlingFee;
+        const finalServicePrice = window.calculateBosePrice(servicePrice, "menu-only");
+        return finalServicePrice + safeCashAmount;
+    };
+
     window.modifyBoseQtyCard = function(button, change) {
         const counterWrapper = button.parentElement;
         const input = counterWrapper.querySelector('.input-qty-value');
@@ -662,15 +830,6 @@
         setTimeout(() => { toast.remove(); }, 3000);
     }
 
-    window.calculateBosePrice = function(basePrice, applyOnContext = "menu-only") {
-        if (!window.BoseStoreData) return basePrice;
-        const rule = window.BoseStoreData.store.priceIncrease;
-        if (rule && rule.enabled && (rule.applyOn === "all" || rule.applyOn === applyOnContext)) {
-            return parseFloat((basePrice * (1 + (rule.percent / 100))).toFixed(4));
-        }
-        return basePrice;
-    };
-
     window.validateBosePhoneNumber = function(phone, isOptional = false) {
         if (!phone || phone.trim() === "") return isOptional;
         const cleaned = window.sanitizeBosePhoneNumber(phone);
@@ -684,6 +843,18 @@
         else if (cleaned.startsWith("00201")) cleaned = "0" + cleaned.substring(4);
         else if (cleaned.startsWith("1") && cleaned.length === 10) cleaned = "0" + cleaned;
         return cleaned;
+    };
+
+    window.validateBoseDeliverySchedule = function(dateStr, timeStr) {
+        if (!dateStr || !timeStr) return false;
+        const selectedDateTime = new Date(`${dateStr}T${timeStr}`);
+        const synchronizedTime = Date.now() + (window.boseServerTimeOffset || 0);
+        const currentDateTime = new Date(synchronizedTime);
+        
+        if (selectedDateTime <= currentDateTime) return false;
+        const diffMs = selectedDateTime - currentDateTime;
+        const hoursDiff = diffMs / (1000 * 60 * 60);
+        return hoursDiff >= 23.95;
     };
 
     window.updateGlobalCartCounter = function() {
@@ -711,6 +882,7 @@
         document.title = window.BoseStoreData.seo.title;
         const logoImgs = document.querySelectorAll('img#bose-store-logo');
         logoImgs.forEach(img => { img.src = window.BoseStoreData.store.logo; });
+        applyGlobalStyles(window.BoseStoreData.store.theme);
     }
 
     function injectEarlyDependencies() {
@@ -726,12 +898,61 @@
         }
     }
 
+    function applyGlobalStyles(theme) {
+        if (document.getElementById('bose-global-dynamic-styles')) return;
+        const styleElement = document.createElement('style');
+        styleElement.id = 'bose-global-dynamic-styles';
+        styleElement.textContent = `
+            :root {
+                --bose-pink: ${theme.primary || '#FF91A4'};
+                --bose-white: ${theme.background || '#FFFFFF'};
+                --bose-black: ${theme.text || '#111111'};
+                --bose-gold: ${theme.secondary || '#D4AF37'};
+                --bose-shadow-glow: 0 8px 32px rgba(255, 145, 164, 0.12);
+                --bose-shadow-hover: 0 16px 40px rgba(255, 145, 164, 0.22);
+                --bose-border-pink: 1px solid rgba(255, 145, 164, 0.3);
+                --bose-border-thick: 2px solid ${theme.primary || '#FF91A4'};
+            }
+            body {
+                font-family: 'Cairo', sans-serif !important;
+                background-color: var(--bose-white) !important;
+                color: var(--bose-black) !important;
+                margin: 0; padding: 0; overflow-x: hidden;
+            }
+            h1, h2 { font-family: 'Cairo', sans-serif !important; font-weight: 700 !important; color: var(--bose-black) !important; }
+            h3, h4, h5, h6 { font-family: 'Cairo', sans-serif !important; font-weight: 600 !important; color: var(--bose-black) !important; }
+            p, span, a, button, input, select, textarea { font-family: 'Cairo', sans-serif !important; }
+            @keyframes boseMarquee { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-50%, 0, 0); } }
+            @keyframes boseWaterfallUp { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(0, -50%, 0); } }
+            @keyframes boseWaterfallDown { 0% { transform: translate3d(0, -50%, 0); } 100% { transform: translate3d(0, 0, 0); } }
+            .animate-marquee { display: flex; width: max-content; animation: boseMarquee 25s linear infinite; will-change: transform; }
+            .waterfall-up { animation: boseWaterfallUp 40s linear infinite; will-change: transform; }
+            .waterfall-down { animation: boseWaterfallDown 40s linear infinite; will-change: transform; }
+        `;
+        document.head.appendChild(styleElement);
+    }
+
     function showGlobalFriendlyError() {
         const errorDiv = document.createElement('div');
         errorDiv.className = 'global-error-banner-node';
         errorDiv.textContent = 'عذراً، نواجه صعوبة في الاتصال بالخادم حالياً. يرجى إعادة محاولة تحميل الصفحة.';
         document.body.appendChild(errorDiv);
     }
+
+    // حارس التمهيد ومنع التعارض البرمجي القياسي للحوكمة
+    document.addEventListener("DOMContentLoaded", () => {
+        let attempts = 0; const maxAttempts = 100;
+        const coreGuardInterval = setInterval(() => {
+            attempts++;
+            if (window.BoseStoreData && window.BoseStoreData.store) {
+                clearInterval(coreGuardInterval);
+                console.log("🚀 تم التحقق من مطابقة المحرك المخصص وتوافقه مع قاعدة بيانات حلويات بوسي الحالية.");
+            } else if (attempts >= maxAttempts) {
+                clearInterval(coreGuardInterval);
+                console.error("❌ حارس التمهيد: تجاوز الحد الأقصى لمحاولات تحميل قاعدة البيانات.");
+            }
+        }, 50);
+    });
 
     loadStoreDatabase();
 })();
