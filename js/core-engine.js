@@ -1,7 +1,7 @@
 /**
- * 📑 الدليل الهندسي للمواصفات القياسية الفاخرة - النسخة المصححة والمطورة V6.1
- * المحرك المركزي العالمي لبناء وضخ الواجهات وعمليات الفحص المالي (js/core-engine.js)
- * براند: حلويات بوسي (BoseSweets) - حل مشكلة اختفاء الهيدر والفوتر وحوكمة الحقن الديناميكي.
+ * 👑 ملف المحرك المركزي العالمي المصحح والمطور V6.2 - حلويات بوسي 2026 👑
+ * معالجة شاملة للفوضى البصرية وحوكمة السلايدرات والقائمة الجانبية بالمسطرة
+ * متوافق ومترابط بشكل مطلق ومتبادل مع: global.css و main.css وقاعدة البيانات site-data-final.json
  */
 (function() {
     window.BoseStoreData = null; 
@@ -35,23 +35,22 @@
                     
                     window.BoseStoreData = await response.json();
                     
-                    // 1. إدارة وضخ العناصر العالمية المشتركة عبر بروتوكول الحقن الهندسي الصحيح
+                    // إدارة وضخ العناصر العالمية المشتركة عبر بروتوكول الحقن الهندسي الصحيح
                     injectEarlyDependencies();
                     applyGlobalStyles(window.BoseStoreData.store.theme);
                     renderUniversalHeader();
                     renderUniversalSidebar();
                     renderUniversalFooter();
                     
-                    // 2. تحديثات الحالة العامة والـ SEO
+                    // تحديثات الحالة العامة والـ SEO
                     applyGlobalSEOAndBranding();
                     window.updateGlobalCartCounter();
 
-                    // 3. محرك ضخ واجهات الصفحة الرئيسية والمنيو تلقائياً لملء الأوسمة الفارغة
+                    // محرك ضخ واجهات الصفحة الرئيسية والمنيو تلقائياً لملء الأوسمة الفارغة
                     renderBoseDynamicContent();
                     
-                    // 4. تفعيل حدث مخصص فوراً وضمان ترحيله للمتصفح لمنع التعارض الزمني
+                    // تفعيل حدث مخصص فوراً وضمان ترحيله للمتصفح لمنع التعارض الزمني
                     document.dispatchEvent(new CustomEvent('BoseDatabaseLoaded', { detail: window.BoseStoreData }));
-                    
                     return;
                 } catch (error) {
                     continue;
@@ -73,7 +72,6 @@
        ========================================================================== */
 
     function renderUniversalHeader() {
-        // تم تصحيح المستهدف البرمجي ليتطابق بالملي مع وسم الحقن المعتمد في الـ DOM المقدس
         let headerInjector = document.getElementById('bose-header-injector');
         if (!headerInjector) return; 
         
@@ -167,7 +165,6 @@
     }
 
     function renderUniversalFooter() {
-        // تم تصحيح مستهدف الحقن ليطابق بالملي وسم الفوتر في خريطة الـ DOM المعتمدة للموقع
         let footerInjector = document.getElementById('bose-footer-injector');
         if (!footerInjector) return;
         
@@ -231,7 +228,7 @@
             rightCol.innerHTML = data.homepage.waterfall.rightColumnImages.map(img => `<img src="${img}" alt="حلويات بوسي فخامة بصري">`).join('');
         }
 
-        // د. بناء مجرى حركة قسم عقد من الإتقان الأفقي
+        // د. بناء وتفعيل سلايدر قسم عقد من الإتقان الأفقي التلقائي المصلح هندسياً
         const excellenceTitle = document.getElementById('excellence-title');
         const excellenceDesc = document.getElementById('excellence-description');
         const excellenceTrack = document.getElementById('excellence-images-track');
@@ -239,6 +236,7 @@
         if (excellenceDesc) excellenceDesc.textContent = data.homepage.excellence.description;
         if (excellenceTrack && data.homepage.excellence.images) {
             excellenceTrack.innerHTML = data.homepage.excellence.images.map(img => `<a href="menu.html" class="perfection-slide-node"><img src="${img}" alt="إتقان حلويات بوسي"></a>`).join('');
+            initializeBoseSliderLogic(excellenceTrack, 'excellence-dots', true); // تمرير true لتفعيل الحركة التلقائية
         }
 
         // هـ. دالة مساعدة لبناء هيكل الكارت الموحد (Strict Product Card DOM) بالمسطرة
@@ -260,24 +258,33 @@
             `;
         }
 
-        // و. ضخ وتشغيل سلايدر الأكثر مبيعاً (8 منتجات) مع دبابيس اللمس والدوتس
+        // و. ضخ وتشغيل سلايدر الأكثر مبيعاً (8 منتجات) مع منع التكدس ودعم السحب الفعلي
         const mostSellingGrid = document.getElementById('most-selling-grid');
         if (mostSellingGrid) {
             document.getElementById('most-selling-title').textContent = "الأكثر مبيعاً";
             document.getElementById('most-selling-description').textContent = "تشكيلة فاخرة حازت على إعجاب وتقدير عملائنا دائمًا.";
             let items = data.products.filter(p => data.homepage.mostSelling.includes(p.slug));
             mostSellingGrid.innerHTML = items.map(p => createProductCardHTML(p)).join('');
-            initializeBoseSliderLogic(mostSellingGrid, 'most-selling-dots');
+            
+            // تهيئة السلايدر ليعمل كغلاف مالي مرن ومستجيب للسحب بالكامل على الموبايل
+            if (window.innerWidth <= 767) {
+                mostSellingGrid.className = "bose-most-selling-grid-slider";
+            }
+            initializeBoseSliderLogic(mostSellingGrid, 'most-selling-dots', false);
         }
 
-        // ز. ضخ وتشغيل سلايدر وصل حديثاً (6 منتجات) مع دبابيس اللمس والدوتس
+        // ز. ضخ وتشغيل سلايدر وصل حديثاً (6 منتجات) مع منع التكدس ودعم السحب الفعلي
         const newArrivalsGrid = document.getElementById('new-arrivals-grid');
         if (newArrivalsGrid) {
             document.getElementById('new-arrivals-title').textContent = "وصل حديثاً";
             document.getElementById('new-arrivals-description').textContent = "استكشف نكهاتنا المبتكرة والجديدة كلياً لهذا الأسبوع.";
             let items = data.products.filter(p => data.homepage.newArrivals.includes(p.slug));
             newArrivalsGrid.innerHTML = items.map(p => createProductCardHTML(p)).join('');
-            initializeBoseSliderLogic(newArrivalsGrid, 'new-arrivals-dots');
+            
+            if (window.innerWidth <= 767) {
+                newArrivalsGrid.className = "bose-new-arrivals-grid-slider";
+            }
+            initializeBoseSliderLogic(newArrivalsGrid, 'new-arrivals-dots', false);
         }
 
         // ح. ضخ قسم منتجاتنا بالتوزيع الشبكي الثنائي الصارم (4 كروت أولية + استعرض المزيد)
@@ -291,6 +298,7 @@
             const showMoreBtn = document.getElementById('our-products-show-more');
             if (showMoreBtn) {
                 showMoreBtn.textContent = "استعرض المزيد";
+                showMoreBtn.style.display = "inline-flex";
                 showMoreBtn.onclick = function() {
                     ourProductsGrid.innerHTML = allItems.map(p => createProductCardHTML(p)).join('');
                     showMoreBtn.style.display = "none";
@@ -333,7 +341,7 @@
             document.getElementById('stat-bouquets-label').textContent = data.homepage.pride.stats.bouquets.label;
         }
 
-        // ك. شريط تسوق حسب الفئة الـ 12 فئة المعتمدة بحجم أكبر 30% ودعم التمرير والدوتس
+        // ك. شريط تسوق حسب الفئة الـ 12 فئة المعتمدة بحجم أكبر 30% وإعادة تشغيل الدوتس والسحب واللمس
         const categoriesTrack = document.getElementById('categories-track');
         if (categoriesTrack && data.homepage.categoriesSlider) {
             document.getElementById('categories-section-title').textContent = "تسوق حسب الفئة";
@@ -347,7 +355,7 @@
                     </a>
                 </div>
             `).join('');
-            initializeBoseSliderLogic(categoriesTrack, 'categories-dots');
+            initializeBoseSliderLogic(categoriesTrack, 'categories-dots', false);
         }
 
         // ل. ضخ صفحة المنيو الشامل (menu.html) بالتوزيع والاشتراطات الهندسية الكاملة للشاشات
@@ -368,15 +376,16 @@
     }
 
     /* ==========================================================================
-       🎰 محرك السحب واللمس التفاعلي المتطور (Bose Touch/Swipe Slider Engine)
+       🎰 محرك السحب واللمس والتصفح الأفقي المصلح الشامل (Universal Slider Logic)
        ========================================================================== */
-    function initializeBoseSliderLogic(sliderTrack, dotsContainerId) {
+    function initializeBoseSliderLogic(sliderTrack, dotsContainerId, isAutoPlay = false) {
         if (!sliderTrack) return;
         
         let isDown = false;
         let startX;
         let scrollLeft;
         
+        // ربط أحداث الماوس للكمبيوتر الشخصي
         sliderTrack.addEventListener('mousedown', (e) => {
             isDown = true;
             sliderTrack.classList.add('grabbing');
@@ -400,22 +409,43 @@
             sliderTrack.scrollLeft = scrollLeft - walk;
         });
 
+        // ربط أحداث اللمس والمسح لهواتف الموبايل والتابلت بنسبة 100%
         sliderTrack.addEventListener('touchstart', (e) => {
+            isDown = true;
             startX = e.touches[0].pageX - sliderTrack.offsetLeft;
             scrollLeft = sliderTrack.scrollLeft;
         }, {passive: true});
         
         sliderTrack.addEventListener('touchmove', (e) => {
+            if(!isDown) return;
             const x = e.touches[0].pageX - sliderTrack.offsetLeft;
             const walk = (x - startX) * 1.5;
             sliderTrack.scrollLeft = scrollLeft - walk;
         }, {passive: true});
 
         sliderTrack.addEventListener('touchend', () => {
+            isDown = false;
             updateSliderDots(sliderTrack, dotsContainerId);
         });
 
+        // بناء المؤشرات النقطية (Dots) آلياً
         buildSliderDots(sliderTrack, dotsContainerId);
+
+        // التصفح الأفقي التلقائي الحركي لقسم عقد من الإتقان الفاخر لمنع أي فراغات بصرية
+        if (isAutoPlay) {
+            let autoSliderDirection = 1;
+            setInterval(() => {
+                if (!isDown) {
+                    sliderTrack.scrollLeft += autoSliderDirection;
+                    if (sliderTrack.scrollLeft >= (sliderTrack.scrollWidth - sliderTrack.clientWidth - 2)) {
+                        autoSliderDirection = -1;
+                    } else if (sliderTrack.scrollLeft <= 2) {
+                        autoSliderDirection = 1;
+                    }
+                    updateSliderDots(sliderTrack, dotsContainerId);
+                }
+            }, 30);
+        }
     }
 
     function buildSliderDots(track, containerId) {
@@ -424,7 +454,10 @@
         
         container.innerHTML = '';
         const totalItems = track.children.length;
-        const visibleItemsCount = Math.max(1, Math.floor(track.offsetWidth / 280)); 
+        if(totalItems === 0) return;
+        
+        const firstChildWidth = track.children[0].offsetWidth || 280;
+        const visibleItemsCount = Math.max(1, Math.floor(track.offsetWidth / firstChildWidth)); 
         const dotsCount = Math.max(1, totalItems - visibleItemsCount + 1);
 
         for (let i = 0; i < dotsCount; i++) {
@@ -672,13 +705,6 @@
         return cleaned;
     };
 
-    window.validateBoseDeliverySchedule = function(dateStr, timeStr) {
-        if (!dateStr || !timeStr) return false;
-        const selectedDateTime = new Date(`${dateStr}T${timeStr}`);
-        const synchronizedTime = Date.now() + (window.boseServerTimeOffset || 0);
-        return (selectedDateTime - new Date(synchronizedTime)) / (1000 * 60 * 60) >= 23.95;
-    };
-
     window.updateGlobalCartCounter = function() {
         const cartCountBadge = document.getElementById('nav-cart-count');
         if (!cartCountBadge) return;
@@ -690,18 +716,6 @@
             totalDisplayItems += isBespokeOrCustom ? 1 : (parseInt(item.quantity, 10) || 1);
         });
         cartCountBadge.textContent = totalDisplayItems;
-    };
-
-    window.onBoseDatabaseReady = function(callback) {
-        if (window.BoseStoreData && window.BoseStoreData.store) {
-            callback(window.BoseStoreData);
-        } else {
-            const handleLoaded = (e) => {
-                callback(e.detail);
-                document.removeEventListener('BoseDatabaseLoaded', handleLoaded);
-            };
-            document.addEventListener('BoseDatabaseLoaded', handleLoaded);
-        }
     };
 
     function applyGlobalSEOAndBranding() {
@@ -758,21 +772,26 @@
             .bose-slider-dots-wrapper { display: flex; justify-content: center; gap: 8px; margin-top: 16px; width: 100%; }
             .bose-slider-dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255, 145, 164, 0.3); cursor: pointer; transition: all 0.3s ease; }
             .bose-slider-dot.active { background: #FF91A4 !important; width: 24px; border-radius: 8px; }
-            .bose-drawer-menu { position: fixed; top: 0; right: 0; width: 340px; max-width: 85vw; height: 100vh; background: #ffffff !important; z-index: 30000; transform: translate3d(100%, 0, 0); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: -8px 0 32px rgba(17,17,17,0.08); font-family: 'Cairo', sans-serif; }
+            
+            /* 📐 حل مشكلة الخلفية السوداء وحظرها نهائياً من القائمة الجانبية لتأمين اللون الأبيض الفاخر */
+            .bose-drawer-menu { position: fixed; top: 0; right: 0; width: 340px; max-width: 85vw; height: 100vh; background: #FFFFFF !important; z-index: 30000; transform: translate3d(100%, 0, 0); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: -8px 0 32px rgba(17,17,17,0.08); font-family: 'Cairo', sans-serif; }
             .bose-drawer-menu.active { transform: translate3d(0, 0, 0) !important; }
-            .bose-drawer-panel-content { display: flex; flex-direction: column; height: 100vh; width: 100%; direction: rtl; }
+            .bose-drawer-panel-content { display: flex; flex-direction: column; height: 100vh; width: 100%; direction: rtl; background: #FFFFFF !important; }
             .drawer-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(11,11,11,0.4); z-index: 29999; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
             .drawer-overlay.active { opacity: 1 !important; pointer-events: auto !important; }
-            .drawer-premium-header { padding: 24px 20px; background-color: #ffffff; border-bottom: 1px solid rgba(255, 145, 164, 0.2); position: relative; }
+            .drawer-premium-header { padding: 24px 20px; background-color: #FFFFFF !important; border-bottom: 1px solid rgba(255, 145, 164, 0.2); position: relative; }
             .drawer-premium-header h3 { font-size: 1.15rem; color: #111111 !important; margin: 0 0 4px 0; font-weight: 700; }
             .drawer-premium-header p { font-size: 0.85rem; color: #FF91A4 !important; margin: 0; }
             .drawer-close-btn { position: absolute; left: 20px; top: 24px; font-size: 1.3rem; color: #111111; cursor: pointer; border: none; background: none; }
-            .drawer-links-scrollable { flex: 1; overflow-y: auto; padding: 15px 0; }
+            .drawer-links-scrollable { flex: 1; overflow-y: auto; padding: 15px 0; background-color: #FFFFFF !important; }
             .drawer-links-list { list-style: none; padding: 0; margin: 0; }
             .drawer-link-item a { display: flex; align-items: center; gap: 14px; padding: 14px 24px; color: #111111 !important; font-weight: 600; font-size: 0.95rem; border-bottom: 1px solid rgba(255, 145, 164, 0.05); transition: background 0.3s; }
             .drawer-link-item a i { color: #FF91A4; width: 20px; text-align: center; }
             .drawer-link-item a:hover { background-color: rgba(255, 145, 164, 0.08); color: #FF91A4 !important; }
             .ticker-message-item { padding: 0 40px; font-family: Cairo; font-weight: 600; color: #111111; font-size: 0.9rem; }
+            
+            /* منع تداخل الإمساك والسحب على الكروت */
+            .grabbing { cursor: grabbing !important; }
         `;
         document.head.appendChild(styleElement);
     }
@@ -786,25 +805,3 @@
 
     loadStoreDatabase();
 })();
-
-/* ==========================================================================
-   🛡️ حارس التمهيد ومنع التعارض البرمجي (Engine Bootstrap Guard)
-   ========================================================================== */
-document.addEventListener("DOMContentLoaded", () => {
-    if (window.BoseStoreData && window.BoseStoreData.store) {
-        console.log("🚀 تم التحقق من مطابقة المحرك المخصص وتوافقه مع قاعدة بيانات حلويات بوسي الحالية.");
-    } else {
-        let attempts = 0;
-        const maxAttempts = 100; 
-        const coreGuardInterval = setInterval(() => {
-            attempts++;
-            if (window.BoseStoreData && window.BoseStoreData.store) {
-                clearInterval(coreGuardInterval);
-                console.log("🚀 تم التحقق من مطابقة المحرك المخصص وتوافقه مع قاعدة بيانات حلويات بوسي الحالية.");
-            } else if (attempts >= maxAttempts) {
-                clearInterval(coreGuardInterval);
-                console.error("❌ حارس التمهيد: تجاوز الحد الأقصى لمحاولات تحميل قاعدة البيانات.");
-            }
-        }, 50);
-    }
-});
