@@ -87,14 +87,6 @@ img {
     object-fit: cover;
 }
 
-/* ==========================================================================
-   🎯 المحرك المركزي العالمي للحركات الأفقية اللانهائية (Hardware-Accelerated)
-   ========================================================================== */
-@keyframes boseMarquee {
-    0% { transform: translate3d(0, 0, 0); }
-    100% { transform: translate3d(-50%, 0, 0); } /* إزاحة انسيابية هندسية تمنع الفراغات بملء العرض */
-}
-
 /* --- 3. محرك الشريط العلوي المتحرك المطور --- */
 #top-bar-marquee {
     position: fixed; 
@@ -115,8 +107,6 @@ img {
     display: flex !important;
     white-space: nowrap !important;
     width: max-content !important;
-    animation: boseMarquee 45s linear infinite !important;
-    will-change: transform; /* إشعار مسبق لكارت شاشة الهاتف لتهيئة الأداء اللحظي */
 }
 
 .ticker-message-item {
@@ -271,7 +261,6 @@ img {
 
 .drawer-links-list { list-style: none; }
 
-/* الأوفرلاي والظلال الفاخرة المحسوبة لحظر الظلال السوداء تماشيا مع الحوكمة */
 .drawer-overlay {
     position: fixed;
     top: 0;
