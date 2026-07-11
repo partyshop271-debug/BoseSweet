@@ -1,19 +1,23 @@
 /* ==========================================================================
-   👑 BoseSweets Strict Production Global Stylesheet (css/global.css) V9.6 👑
+   👑 BoseSweets Strict Production Global Stylesheet (css/global.css) V10.0 👑
+   تطهير برمي شامل - توافق مطور للموبايل والكمبيوتر - حظر الهدر البصري
    ========================================================================== */
 
 :root {
-    --bose-pink: #FF91A4;        
-    --bose-white: #FFFFFF;       
-    --bose-black: #111111;       
-    --bose-gold: #D4AF37;        
+    /* الألوان الحاكمة والمقدسة للعلامة التجارية */
+    --bose-pink: #FF91A4;        /* نبض الحياة: حدود المنتجات، الظلال الناعمة، نصوص الأسعار */
+    --bose-white: #FFFFFF;       /* المسيطر تماماً: خلفيات المساحات للتنفس البصري والراحة النفسية */
+    --bose-black: #111111;       /* محظور استخدامه في أي ظلال أو خلفيات؛ مكانه الوحيد هو النصوص والعناوين */
+    --bose-gold: #D4AF37;        /* وجود رمزي ناعم: نجوم التقييمات وتفاصيل التخصيص الفاخرة */
 
+    /* الهندسة البرمجية للظلال والحدود دون استخدام ظلال سوداء نهائياً */
     --bose-shadow-glow: 0 8px 32px rgba(255, 145, 164, 0.12);
     --bose-shadow-hover: 0 16px 40px rgba(255, 145, 164, 0.22);
     --bose-border-pink: 1px solid rgba(255, 145, 164, 0.3);
     --bose-border-thick: 2px solid #FF91A4;
 }
 
+/* إعادة تهيئة شاملة وتوفير مساحات التنفس البصري */
 *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
@@ -33,46 +37,62 @@ body {
     background-color: var(--bose-white) !important;
     color: var(--bose-black) !important;
     font-family: 'Cairo', sans-serif !important;
-    padding-top: 120px !important; 
+    padding-top: 120px !important; /* تأمين مسافة تحميل الهيدر والشريط العلوي الثابتين */
 }
 
 body.drawer-active {
     overflow: hidden !important; 
 }
 
+/* حظر القطع أو نصوص Overflow لسهولة القراءة والراحة التامة للعين */
 h1, h2, h3, h4, p, span, a, button, input, select, textarea {
     white-space: normal;
     word-wrap: break-word;
     overflow-wrap: break-word;
 }
 
+/* قفل أوزان الخطوط لمنع التشويه البصري */
 h1, h2 {
-    font-weight: 700 !important; 
+    font-family: 'Cairo', sans-serif !important;
+    font-weight: 700 !important; /* مقفول كحد أقصى لأضخم العناوين الرئيسية */
     color: var(--bose-black) !important;
 }
 
 h3, h4, h5, h6 {
-    font-weight: 600 !important; 
+    font-family: 'Cairo', sans-serif !important;
+    font-weight: 600 !important; /* عناوين المنتجات والفئات */
     color: var(--bose-black) !important;
+}
+
+p, span, a, button, input, select, textarea {
+    font-family: 'Cairo', sans-serif !important;
+    font-weight: 400;
 }
 
 a {
     text-decoration: none;
     color: inherit;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 button, input, select, textarea {
     border: none;
     outline: none;
     background: none;
-    font-family: 'Cairo', sans-serif !important;
 }
 
 img {
     max-width: 100%;
     display: block;
     object-fit: cover;
+}
+
+/* ==========================================================================
+   🎯 المحرك المركزي العالمي للحركات الأفقية اللانهائية (Hardware-Accelerated)
+   ========================================================================== */
+@keyframes boseMarquee {
+    0% { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(-50%, 0, 0); } /* إزاحة انسيابية هندسية تمنع الفراغات بملء العرض */
 }
 
 /* --- 3. محرك الشريط العلوي المتحرك المطور --- */
@@ -95,11 +115,12 @@ img {
     display: flex !important;
     white-space: nowrap !important;
     width: max-content !important;
+    animation: boseMarquee 45s linear infinite !important;
+    will-change: transform; /* إشعار مسبق لكارت شاشة الهاتف لتهيئة الأداء اللحظي */
 }
 
 .ticker-message-item {
     padding: 0 40px;
-    font-family: 'Cairo', sans-serif !important;
     font-weight: 600;
     color: var(--bose-white) !important; 
     font-size: 0.95rem;
@@ -107,19 +128,7 @@ img {
     display: inline-block !important;
 }
 
-@keyframes boseMarquee {
-    0% { transform: translate3d(0, 0, 0); }
-    100% { transform: translate3d(-50%, 0, 0); }
-}
-
-.animate-marquee {
-    display: flex !important;
-    width: max-content !important;
-    animation: boseMarquee 45s linear infinite !important;
-    will-change: transform;
-}
-
-/* --- 4. الهيدر الموحد والثابت القياسي --- */
+/* --- 4. الهيدر الموحد والثابت القياسي الديناميكي --- */
 .bose-navbar {
     position: fixed;
     top: 46px; 
@@ -217,9 +226,7 @@ img {
     box-shadow: 0 2px 6px rgba(255, 145, 164, 0.4);
 }
 
-#bose-nav-menu { display: none; }
-
-/* --- 5. حوكمة وتطوير استايلات القائمة الجانبية --- */
+/* --- 5. حوكمة وتطوير استايلات القائمة الجانبية الملوكية --- */
 .bose-drawer-menu {
     position: fixed;
     top: 0;
@@ -264,7 +271,7 @@ img {
 
 .drawer-links-list { list-style: none; }
 
-/* 🛡️ تم إصلاح الأوفرلاي والظلال بحظر اللون الأسود واستبداله بلون وردي ناعم وشفاف */
+/* الأوفرلاي والظلال الفاخرة المحسوبة لحظر الظلال السوداء تماشيا مع الحوكمة */
 .drawer-overlay {
     position: fixed;
     top: 0;
@@ -315,7 +322,7 @@ img {
     cursor: pointer;
 }
 
-/* --- 6. الفوتر القياسي الموحد المعتمد --- */
+/* --- 6. الفوتر القياسي الموحد المعتمد بلونه الفاتح الخالص --- */
 .bose-footer {
     background-color: var(--bose-white) !important;
     border-top: var(--bose-border-pink) !important;
@@ -369,20 +376,4 @@ img {
     font-size: 0.85rem;
     color: var(--bose-black) !important;
     opacity: 0.7;
-}
-
-.global-error-banner-node {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: var(--bose-pink);
-    color: var(--bose-white);
-    padding: 12px 24px;
-    border-radius: 12px;
-    z-index: 99999;
-}
-
-@media (max-width: 767px) {
-    #bose-nav-menu { display: none; }
 }
