@@ -1,7 +1,7 @@
 /**
- * 📑 الدليل الهندسي للمواصفات القياسية الفاخرة - النسخة الكاملة والمطورة V4.2
+ * 📑 الدليل الهندسي للمواصفات القياسية الفاخرة - النسخة الكاملة والمطورة V5.0
  * المحرك المركزي العالمي لبناء وضخ الواجهات وعمليات الفحص المالي (js/core-engine.js)
- * براند: حلويات بوسي (BoseSweets) - يمنع الاختصار أو الحذف أو التبسيط نهائياً.
+ * براند: حلويات بوسي (BoseSweets) - تم سد الثغرات اللوجستية والزمنية وحظر انهيار الواجهات.
  */
 (function() {
     window.BoseStoreData = null; 
@@ -13,7 +13,6 @@
         let retries = 5;
         let delay = 1000;
         
-        // 🔥 تم تحديث مصفوفة المسارات الذكية لتقرأ فولدر data/ المعتمد في استضافتك بنجاح
         const pathsToTry = [
             'data/site-data-final.json',
             '/data/site-data-final.json',
@@ -47,8 +46,13 @@
                     applyGlobalSEOAndBranding();
                     window.updateGlobalCartCounter();
                     
-                    // 3. تفعيل حدث مخصص لباقي المحركات والملفات المعتمدة على البيانات
+                    // 3. تفعيل حدث مخصص فوراً وضمان ترحيله للمتصفح لمنع التعارض الزمني
                     document.dispatchEvent(new CustomEvent('BoseDatabaseLoaded', { detail: window.BoseStoreData }));
+                    
+                    // صمام أمان إضافي لحقن تشغيل ملف app.js في حال كان متجمداً
+                    if (typeof window.verifyAndInitializeEngine === "function") {
+                        window.verifyAndInitializeEngine();
+                    }
                     return;
                 } catch (error) {
                     continue;
@@ -134,6 +138,7 @@
         `;
         document.body.appendChild(sidebar);
 
+        // تفعيل فوري لأحداث الفتح والإغلاق وإصلاح انعدام الرؤية
         setTimeout(() => {
             const toggleBtn = document.getElementById('mobile-menu-toggle');
             const closeBtn = document.getElementById('sidebar-close-btn');
@@ -421,6 +426,8 @@
         if (document.getElementById('bose-global-dynamic-styles')) return;
         const styleElement = document.createElement('style');
         styleElement.id = 'bose-global-dynamic-styles';
+        
+        // 🔥 حجز وهندسة وتصحيح أكواد الـ CSS الخاصة بالـ Drawer والـ Overlay بالكامل لمنع الانهيار
         styleElement.textContent = `
             @keyframes boseMarquee { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-50%, 0, 0); } }
             @keyframes boseWaterfallUp { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(0, -50%, 0); } }
@@ -429,9 +436,22 @@
             .waterfall-up { animation: boseWaterfallUp 40s linear infinite; will-change: transform; }
             .waterfall-down { animation: boseWaterfallDown 40s linear infinite; will-change: transform; }
             .categories-track-loop { display: flex; width: max-content; animation: boseMarquee 30s linear infinite; will-change: transform; }
-            .bose-drawer-menu { position: fixed; top: 0; right: 0; width: 340px; max-width: 85vw; height: 100vh; background: #fff !important; z-index: 30000; transform: translate3d(100%, 0, 0); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+            
+            /* 🛠️ هندسة واجهة الـ Sidebar الفاخرة لعلامة بوسي */
+            .bose-drawer-menu { position: fixed; top: 0; right: 0; width: 340px; max-width: 85vw; height: 100vh; background: #ffffff !important; z-index: 30000; transform: translate3d(100%, 0, 0); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: -8px 0 32px rgba(17,17,17,0.08); font-family: 'Cairo', sans-serif; }
             .bose-drawer-menu.active { transform: translate3d(0, 0, 0) !important; }
-            .bose-drawer-panel-content { display: flex; flex-direction: column; height: 100vh; width: 100%; }
+            .bose-drawer-panel-content { display: flex; flex-direction: column; height: 100vh; width: 100%; direction: rtl; }
+            .drawer-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(11,11,11,0.4); z-index: 29999; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
+            .drawer-overlay.active { opacity: 1 !important; pointer-events: auto !important; }
+            .drawer-premium-header { padding: 24px 20px; background-color: #ffffff; border-bottom: 1px solid rgba(255, 145, 164, 0.2); position: relative; }
+            .drawer-premium-header h3 { font-size: 1.15rem; color: #111111 !important; margin: 0 0 4px 0; font-weight: 700; }
+            .drawer-premium-header p { font-size: 0.85rem; color: #FF91A4 !important; margin: 0; }
+            .drawer-close-btn { position: absolute; left: 20px; top: 24px; font-size: 1.3rem; color: #111111; cursor: pointer; border: none; background: none; }
+            .drawer-links-scrollable { flex: 1; overflow-y: auto; padding: 15px 0; }
+            .drawer-links-list { list-style: none; padding: 0; margin: 0; }
+            .drawer-link-item a { display: flex; align-items: center; gap: 14px; padding: 14px 24px; color: #111111 !important; font-weight: 600; font-size: 0.95rem; border-bottom: 1px solid rgba(255, 145, 164, 0.05); transition: background 0.3s; }
+            .drawer-link-item a i { color: #FF91A4; width: 20px; text-align: center; }
+            .drawer-link-item a:hover { background-color: rgba(255, 145, 164, 0.08); color: #FF91A4 !important; }
         `;
         document.head.appendChild(styleElement);
     }
