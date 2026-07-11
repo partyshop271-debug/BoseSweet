@@ -1,7 +1,7 @@
 /**
- * 📑 الدليل الهندسي للمواصفات القياسية الفاخرة - النسخة الكاملة والمطورة V5.0
+ * 📑 الدليل الهندسي للمواصفات القياسية الفاخرة - النسخة الكاملة والمطورة V5.5
  * المحرك المركزي العالمي لبناء وضخ الواجهات وعمليات الفحص المالي (js/core-engine.js)
- * براند: حلويات بوسي (BoseSweets) - تم سد الثغرات اللوجستية والزمنية وحظر انهيار الواجهات.
+ * براند: حلويات بوسي (BoseSweets) - تم دمج محرك حقن كروت المنتجات والشلال والفئات تلقائياً.
  */
 (function() {
     window.BoseStoreData = null; 
@@ -13,7 +13,6 @@
         let retries = 5;
         let delay = 1000;
         
-        // مصفوفة المسارات الذكية لحل مشكلة عدم قراءة الملف على الاستضافات المختلفة
         const pathsToTry = [
             'data/site-data-final.json',
             '/data/site-data-final.json',
@@ -46,14 +45,13 @@
                     // 2. تحديثات الحالة العامة والـ SEO
                     applyGlobalSEOAndBranding();
                     window.updateGlobalCartCounter();
+
+                    // 3. محرك ضخ واجهات الصفحة الرئيسية والمنيو تلقائياً لملء الأوسمة الفارغة
+                    renderBoseDynamicContent();
                     
-                    // 3. تفعيل حدث مخصص فوراً وضمان ترحيله للمتصفح لمنع التعارض الزمني
+                    // 4. تفعيل حدث مخصص فوراً وضمان ترحيله للمتصفح لمنع التعارض الزمني
                     document.dispatchEvent(new CustomEvent('BoseDatabaseLoaded', { detail: window.BoseStoreData }));
                     
-                    // صمام أمان إضافي لحقن تشغيل ملف app.js في حال كان متجمداً
-                    if (typeof window.verifyAndInitializeEngine === "function") {
-                        window.verifyAndInitializeEngine();
-                    }
                     return;
                 } catch (error) {
                     continue;
@@ -139,7 +137,6 @@
         `;
         document.body.appendChild(sidebar);
 
-        // تفعيل فوري لأحداث الفتح والإغلاق وإصلاح انعدام الرؤية
         setTimeout(() => {
             const toggleBtn = document.getElementById('mobile-menu-toggle');
             const closeBtn = document.getElementById('sidebar-close-btn');
@@ -198,6 +195,218 @@
                 <p>© <span id="copyright-year">2026</span> جميع الحقوق محفوظة لعلامة حلويات بوسي التجارية الفاخرة</p>
             </div>
         `;
+    }
+
+    /* ==========================================================================
+       🎯 محرك بناء وضخ كروت المنتجات والشلال والأقسام تلقائياً لملء الأوسمة الفارغة
+       ========================================================================== */
+    function renderBoseDynamicContent() {
+        const data = window.BoseStoreData;
+        if (!data) return;
+
+        // أ. تحديث نصوص التيكر والمرحلة الأولى (Top Bar Marquee)
+        const tickerTrack = document.getElementById('top-bar-marquee-track');
+        if (tickerTrack && data.navigation.topBarMessages) {
+            let messagesHtml = data.navigation.topBarMessages.map(msg => `<span class="ticker-message-item">${msg}</span>`).join('');
+            tickerTrack.innerHTML = `<div class="animate-marquee">${messagesHtml}${messagesHtml}</div>`;
+        }
+
+        // ب. بناء وضخ أقسام الصفحة الرئيسية (index.html) إن وجدت الأوسمة
+        const heroDesc = document.getElementById('hero-description');
+        const heroCta = document.getElementById('hero-cta-btn');
+        if (heroDesc) heroDesc.textContent = data.homepage.hero.description;
+        if (heroCta) heroCta.textContent = data.homepage.hero.cta;
+
+        // ج. بناء قسم الشلال (Waterfall) بدون أي فراغات
+        const leftCol = document.getElementById('waterfall-left-col');
+        const rightCol = document.getElementById('waterfall-right-col');
+        if (leftCol && rightCol) {
+            leftCol.innerHTML = data.homepage.waterfall.leftColumnImages.map(img => `<img src="${img}" alt="حلويات بوسي فخامة بصري">`).join('');
+            rightCol.innerHTML = data.homepage.waterfall.rightColumnImages.map(img => `<img src="${img}" alt="حلويات بوسي فخامة بصري">`).join('');
+        }
+
+        // د. بناء السلايدر الأفقي لقسم عقد من الإتقان
+        const excellenceTitle = document.getElementById('excellence-title');
+        const excellenceDesc = document.getElementById('excellence-description');
+        const excellenceTrack = document.getElementById('excellence-images-track');
+        if (excellenceTitle) excellenceTitle.textContent = data.homepage.excellence.title;
+        if (excellenceDesc) excellenceDesc.textContent = data.homepage.excellence.description;
+        if (excellenceTrack && data.homepage.excellence.images) {
+            excellenceTrack.innerHTML = data.homepage.excellence.images.map(img => `<a href="menu.html" class="perfection-slide-node"><img src="${img}" alt="إتقان حلويات بوسي"></a>`).join('');
+        }
+
+        // هـ. دالة مساعدة لإنشاء كارت المنتج القياسي بالعداد والترتيب البرمجي المعياري
+        function createProductCardHTML(product) {
+            return `
+                <div class="product-card-unified" data-slug="${product.slug}">
+                    <img src="${product.images[0]}" class="product-card-img" alt="${product.title}">
+                    <h3 class="product-card-title">${product.title}</h3>
+                    <span class="product-card-flavor-name">${product.flavorName}</span>
+                    <p class="product-card-desc">${product.flavorDesc}</p>
+                    <div class="bose-quantity-counter">
+                        <button class="btn-qty-minus" onclick="window.modifyBoseQtyCard(this, -1)">-</button>
+                        <input type="text" class="input-qty-value" value="1" readonly>
+                        <button class="btn-qty-plus" onclick="window.modifyBoseQtyCard(this, 1)">+</button>
+                    </div>
+                    <div class="product-card-price">${product.price} جنيه</div>
+                    <button class="btn-add-to-cart" onclick="window.addBoseCardToCart(this, '${product.slug}')">إضافة للسلة</button>
+                </div>
+            `;
+        }
+
+        // و. ضخ شبكة الأكثر مبيعاً (8 منتجات)
+        const mostSellingGrid = document.getElementById('most-selling-grid');
+        if (mostSellingGrid) {
+            document.getElementById('most-selling-title').textContent = "الأكثر مبيعاً";
+            document.getElementById('most-selling-description').textContent = "تشكيلة فاخرة حازت على إعجاب وتقدير عملائنا دائمًا.";
+            let items = data.products.filter(p => data.homepage.mostSelling.includes(p.slug));
+            mostSellingGrid.innerHTML = items.map(p => createProductCardHTML(p)).join('');
+        }
+
+        // ز. ضخ شبكة وصل حديثاً (6 منتجات)
+        const newArrivalsGrid = document.getElementById('new-arrivals-grid');
+        if (newArrivalsGrid) {
+            document.getElementById('new-arrivals-title').textContent = "وصل حديثاً";
+            document.getElementById('new-arrivals-description').textContent = "استكشف نكهاتنا المبتكرة والجديدة كلياً لهذا الأسبوع.";
+            let items = data.products.filter(p => data.homepage.newArrivals.includes(p.slug));
+            newArrivalsGrid.innerHTML = items.map(p => createProductCardHTML(p)).join('');
+        }
+
+        // ح. ضخ قسم منتجاتنا (التوزيع الثنائي - 4 كروت أولية)
+        const ourProductsGrid = document.getElementById('our-products-grid');
+        if (ourProductsGrid) {
+            document.getElementById('our-products-title').textContent = "منتجاتنا";
+            document.getElementById('our-products-description').textContent = "الجودة والقيمة العالية للمكونات الطازجة يومياً.";
+            window.boseOurProductsRendered = false;
+            let allItems = data.products.filter(p => data.homepage.ourProducts.includes(p.slug));
+            ourProductsGrid.innerHTML = allItems.slice(0, 4).map(p => createProductCardHTML(p)).join('');
+            
+            const showMoreBtn = document.getElementById('our-products-show-more');
+            if (showMoreBtn) {
+                showMoreBtn.textContent = "استعرض المزيد";
+                showMoreBtn.onclick = function() {
+                    ourProductsGrid.innerHTML = allItems.map(p => createProductCardHTML(p)).join('');
+                    showMoreBtn.style.display = "none";
+                };
+            }
+        }
+
+        // ط. محاكيات التورت والورد عريضة الحجم والتخصيص الحصري
+        if (document.getElementById('cake-preview-title')) {
+            document.getElementById('cake-preview-title').textContent = data.homepage.cakePreview.title;
+            document.getElementById('cake-preview-desc').textContent = data.homepage.cakePreview.description;
+            document.getElementById('cake-preview-img').src = data.homepage.cakePreview.image;
+            document.getElementById('cake-preview-cta').textContent = data.homepage.cakePreview.cta;
+        }
+        if (document.getElementById('flower-preview-title')) {
+            document.getElementById('flower-preview-title').textContent = data.homepage.flowerPreview.title;
+            document.getElementById('flower-preview-desc').textContent = data.homepage.flowerPreview.description;
+            document.getElementById('flower-preview-img').src = data.homepage.flowerPreview.image;
+            document.getElementById('flower-preview-cta').textContent = data.homepage.flowerPreview.cta;
+        }
+
+        // ي. قسم الفخر والاعتزاز والعدادات الذكية التصاعدية
+        if (document.getElementById('pride-main-title')) {
+            document.getElementById('pride-main-title').textContent = data.homepage.pride.title;
+            document.getElementById('pride-main-text').textContent = data.homepage.pride.text;
+            
+            // حقن الأرقام الثابتة واللواحق
+            document.getElementById('stat-years-value').textContent = data.homepage.pride.stats.years.value + data.homepage.pride.stats.years.suffix;
+            document.getElementById('stat-years-label').textContent = data.homepage.pride.stats.years.label;
+            
+            document.getElementById('stat-customers-value').textContent = data.homepage.pride.stats.customers.value + data.homepage.pride.stats.customers.suffix;
+            document.getElementById('stat-customers-label').textContent = data.homepage.pride.stats.customers.label;
+            
+            document.getElementById('stat-orders-value').textContent = data.homepage.pride.stats.orders.value + data.homepage.pride.stats.orders.suffix;
+            document.getElementById('stat-orders-label').textContent = data.homepage.pride.stats.orders.label;
+            
+            document.getElementById('stat-cakes-value').textContent = data.homepage.pride.stats.cakes.value + data.homepage.pride.stats.cakes.suffix;
+            document.getElementById('stat-cakes-label').textContent = data.homepage.pride.stats.cakes.label;
+            
+            document.getElementById('stat-bouquets-value').textContent = data.homepage.pride.stats.bouquets.value + data.homepage.pride.stats.bouquets.suffix;
+            document.getElementById('stat-bouquets-label').textContent = data.homepage.pride.stats.bouquets.label;
+        }
+
+        // ك. شريط تسوق حسب الفئة الـ 12 كارت المعتمدة
+        const categoriesTrack = document.getElementById('categories-track');
+        if (categoriesTrack && data.homepage.categoriesSlider) {
+            document.getElementById('categories-section-title').textContent = "تسوق حسب الفئة";
+            document.getElementById('categories-section-subtitle').textContent = "اختر فئتك المفضلة لتستعرض كافة تفاصيلها ونكهاتها الموزونة.";
+            
+            let categoriesHtml = data.homepage.categoriesSlider.map(cat => `
+                <div class="bose-category-slider-card">
+                    <img src="${cat.image}" class="category-img" alt="${cat.title}">
+                    <div class="category-title-display">${cat.title}</div>
+                </div>
+            `).join('');
+            categoriesTrack.innerHTML = categoriesHtml;
+        }
+
+        // ل. ضخ صفحة المنيو الشامل (menu.html) إن وجد وسام المنيو الشامل المخصص
+        const menuCategoriesGrid = document.getElementById('menu-categories-grid');
+        if (menuCategoriesGrid && data.homepage.categoriesSlider) {
+            menuCategoriesGrid.innerHTML = data.homepage.categoriesSlider.map(cat => `
+                <div class="menu-category-card" style="width:100%; background:#fff; border:var(--bose-border-pink); border-radius:20px; padding:16px; box-shadow:var(--bose-shadow-glow); display:flex; flex-direction:column; align-items:center;">
+                    <img src="${cat.image}" style="width:100%; height:280px; object-fit:cover; border-radius:15px;" alt="${cat.title}">
+                    <h3 style="font-size:20px; font-weight:700; color:var(--bose-black); margin:15px 0 10px 0;">${cat.title}</h3>
+                    <a href="category.html?id=${cat.id}" class="bose-hero-btn" style="padding:8px 24px; font-size:14px;">استعرض المنتجات</a>
+                </div>
+            `).join('');
+        }
+    }
+
+    /* ==========================================================================
+       🎰 إدارة عمليات تفاعل الكروت الفورية (إضافة للسلة وتعديل الكميات)
+       ========================================================================== */
+    window.modifyBoseQtyCard = function(button, change) {
+        const counterWrapper = button.parentElement;
+        const input = counterWrapper.querySelector('.input-qty-value');
+        let currentVal = parseInt(input.value, 10) || 1;
+        currentVal += change;
+        if (currentVal < 1) currentVal = 1;
+        input.value = currentVal;
+    };
+
+    window.addBoseCardToCart = function(button, productSlug) {
+        const cardNode = button.closest('.product-card-unified');
+        const qtyInput = cardNode.querySelector('.input-qty-value');
+        const quantity = parseInt(qtyInput.value, 10) || 1;
+        
+        const product = window.BoseStoreData.products.find(p => p.slug === productSlug);
+        if (!product) return;
+        
+        let cartItem = window.createCartItem(product, {}, quantity);
+        
+        let rawCart = localStorage.getItem('bose_cart');
+        let cart = rawCart ? JSON.parse(rawCart) : [];
+        
+        let existingIndex = cart.findIndex(item => item.productSlug === productSlug && (!item.id || !item.id.includes("-")));
+        if (existingIndex > -1) {
+            cart[existingIndex].quantity += quantity;
+        } else {
+            cart.push(cartItem);
+        }
+        
+        localStorage.setItem('bose_cart', JSON.stringify(cart));
+        window.updateGlobalCartCounter();
+        
+        // إشعار توست مبهج وسريع للعميل
+        showBoseToast(`تمت إضافة ${product.title} إلى السلة.`);
+    };
+
+    function showBoseToast(message) {
+        let container = document.getElementById('bose-toast-central-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'bose-toast-central-container';
+            container.className = 'bose-toast-container';
+            document.body.appendChild(container);
+        }
+        const toast = document.createElement('div');
+        toast.style = 'background:var(--bose-pink); color:#fff; padding:12px 24px; border-radius:12px; margin-top:8px; box-shadow:var(--bose-shadow-hover); font-family:Cairo; font-weight:600; direction:rtl;';
+        toast.textContent = message;
+        container.appendChild(toast);
+        setTimeout(() => { toast.remove(); }, 3000);
     }
 
     /* ==========================================================================
@@ -451,6 +660,7 @@
             .drawer-link-item a { display: flex; align-items: center; gap: 14px; padding: 14px 24px; color: #111111 !important; font-weight: 600; font-size: 0.95rem; border-bottom: 1px solid rgba(255, 145, 164, 0.05); transition: background 0.3s; }
             .drawer-link-item a i { color: #FF91A4; width: 20px; text-align: center; }
             .drawer-link-item a:hover { background-color: rgba(255, 145, 164, 0.08); color: #FF91A4 !important; }
+            .ticker-message-item { padding: 0 40px; font-family: Cairo; font-weight: 600; color: var(--bose-black); font-size: 0.9rem; }
         `;
         document.head.appendChild(styleElement);
     }
