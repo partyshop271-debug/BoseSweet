@@ -152,7 +152,6 @@ body.bose-hardware-accelerated {
     gap: 16px;
 }
 
-/* 🔄 تفعيل حركة الشلال هندسياً وعكسياً للأعمدة الفردية بناءً على معرّفات الـ ID الصريحة */
 #waterfall-left-col {
     animation: boseWaterfallUp 40s linear infinite !important;
     will-change: transform;
@@ -185,8 +184,8 @@ body.bose-hardware-accelerated {
 }
 
 /* ==========================================================================
-   4. قسم "عقد من الإتقان" (Excellence Carousel)
-   👑 [تم إصلاح الأنميشن القسري المتعارض لمنع المساحات البيضاء والاختفاء البصري]
+   4. قسم "عقد من الإتقان" اللانهائي المطور (Excellence Smooth Loop)
+   🔄 تم إخضاع التراك لأنميشن الشلال الدائري المستمر أفقياً وبشكل صريح
    ========================================================================== */
 .bose-perfection-section {
     width: 100%;
@@ -197,52 +196,46 @@ body.bose-hardware-accelerated {
 
 .bose-perfection-carousel-wrapper {
     width: 100%;
-    overflow-x: auto;
-    scroll-behavior: smooth;
+    overflow: hidden; 
     display: flex;
     padding: 10px 0;
-    scroll-snap-type: x mandatory; 
 }
 
-.bose-perfection-carousel-wrapper::-webkit-scrollbar,
-.bose-categories-slider-wrapper::-webkit-scrollbar,
-.bose-most-selling-grid-slider::-webkit-scrollbar,
-.bose-new-arrivals-grid-slider::-webkit-scrollbar {
-    display: none !important;
-    width: 0 !important;
-    height: 0 !important;
-}
-
-/* 🔄 التراك يعمل الآن بسحب هيدروليكي طبيعي متوافق مع الموبايل والكمبيوتر بدون قفز تلقائي مدمر */
 #excellence-images-track {
     display: flex !important;
     gap: 16px !important;
     width: max-content !important;
-    animation: none !important; /* إلغاء التدمير الحركي لثبات المحتوى */
+    animation: boseExcellenceLoop 35s linear infinite !important; 
+    will-change: transform;
+}
+
+@keyframes boseExcellenceLoop {
+    0% { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(-50%, 0, 0); } 
 }
 
 .perfection-slide-node {
-    width: 85vw !important;
-    scroll-snap-align: center;
+    width: 280px !important;
     display: block;
 }
 
 .perfection-slide-node img {
     width: 100% !important;
-    height: 45vh;
+    height: 220px;
     border-radius: 24px;
     border: var(--bose-border-pink);
     object-fit: cover !important;
     display: block;
 }
 
+@media (min-width: 768px) {
+    .perfection-slide-node { width: 340px !important; }
+    .perfection-slide-node img { height: 300px; }
+}
+
 @media (min-width: 1024px) {
-    .perfection-slide-node {
-        width: 60vw !important;
-    }
-    .perfection-slide-node img {
-        height: 60vh;
-    }
+    .perfection-slide-node { width: 420px !important; }
+    .perfection-slide-node img { height: 380px; }
 }
 
 /* ==========================================================================
@@ -307,7 +300,6 @@ body.bose-hardware-accelerated {
 }
 
 @media (max-width: 767px) {
-    /* 📐 التثبيت الثنائي الصارم المتوازن (2 كارت كاملين بالصف) لمنتجاتنا */
     #our-products-grid.products-grid {
         display: grid !important;
         grid-template-columns: repeat(2, 1fr) !important; 
@@ -555,7 +547,7 @@ body.bose-hardware-accelerated {
 }
 
 /* ==========================================================================
-   📐 7. حوكمة وأبعاد كروت الفئات الـ 12 المحدثة (Categories Slider UI)
+   7. حوكمة وأبعاد كروت الفئات الـ 12 المحدثة (Categories Slider UI)
    ========================================================================== */
 .bose-categories-slider-section {
     width: 100%;
@@ -577,7 +569,7 @@ body.bose-hardware-accelerated {
     display: flex !important;
     gap: 16px !important;
     width: max-content !important;
-    animation: none !important; /* قفل الأنميشن لتأمين السحب المرن المتوافق مع المواصفة */
+    animation: none !important;
 }
 
 .bose-category-slider-card {
