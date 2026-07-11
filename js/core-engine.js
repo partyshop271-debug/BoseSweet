@@ -1,5 +1,5 @@
 /**
- * 👑 ملف المحرك المركزي العالمي المصحح والمطور بالكامل V8.2 - حلويات بوسي 2026 👑
+ * 👑 ملف المحرك المركزي العالمي المصحح والمطور بالكامل V8.4 - حلويات بوسي 2026 👑
  * معالجة هندسية شاملة وحوكمة كاملة لواجهات الشريط العلوي، القائمة الجانبية، والفوتر الموحد
  * امتثال مطلق وأعمى لملف الحوكمة والمواصفة الرسمية القياسية الفاخرة لمنع الأخطاء البصرية
  * تم إصلاح حركة ونصوص الشريط العلوي المتحرك ليكون صافياً وبدون أي انقطاع أو بتر بصرى
@@ -128,7 +128,6 @@
         sidebar.id = 'sidebar-drawer';
         sidebar.className = 'bose-drawer-menu';
         
-        // تطوير شامل للقائمة الجانبية: حظر الخلفية السوداء واستبدالها بالبمبي الشفاف الناعم والراحة الكاملة
         sidebar.innerHTML = `
             <div class="drawer-overlay" id="sidebar-close-overlay" style="background: rgba(255, 145, 164, 0.05) !important;"></div>
             <div class="bose-drawer-panel-content" style="background: var(--bose-white) !important; border-right: var(--bose-border-pink);">
@@ -181,7 +180,6 @@
         let footerInjector = document.getElementById('bose-footer-injector');
         if (!footerInjector) return;
         
-        // تطوير شامل للفوتر: ممتثل للمواصفة، أبيض صريح يمنع التكديس ويحظر الخلفيات أو الظلال السوداء تماماً
         footerInjector.innerHTML = `
             <footer class="bose-footer" style="background-color: var(--bose-white) !important; border-top: var(--bose-border-pink); padding: 50px 20px 30px 20px;">
                 <div class="footer-logo-container" style="margin-bottom: 12px;">
@@ -195,7 +193,6 @@
                     <p id="footer-about-text" style="font-size: 0.95rem; color: var(--bose-black) !important; line-height: 1.7; opacity: 0.95;">${window.BoseStoreData.footer.about}</p>
                 </div>
                 
-                <!-- روابط الصفحات الرئيسية للتنقل السريع والذكي لراحة العميل -->
                 <div class="footer-quick-links" style="margin-bottom: 24px;">
                     <ul style="list-style: none; padding: 0; margin: 0; display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; font-weight: 600; font-size: 0.95rem;">
                         <li><a href="index.html" style="color: var(--bose-black) !important; transition: color 0.3s;">الرئيسية</a></li>
@@ -204,7 +201,6 @@
                     </ul>
                 </div>
 
-                <!-- قنوات التواصل الاجتماعي الرسمية بألوانها وأيقوناتها المعتمدة الصريحة دون تغيير -->
                 <div id="footer-social-links" class="bose-social-links-wrapper" style="display: flex; gap: 24px; justify-content: center; margin-bottom: 30px;">
                     <a href="${window.BoseStoreData.social.facebook}" class="social-link-facebook" target="_blank" aria-label="فيسبوك حلويات بوسي" style="font-size: 1.6rem; color: #1877F2; transition: transform 0.3s;"><i class="fab fa-facebook-f"></i></a>
                     <a href="${window.BoseStoreData.social.instagram}" class="social-link-instagram" target="_blank" aria-label="انستجرام حلويات بوسي" style="font-size: 1.6rem; color: #E1306C; transition: transform 0.3s;"><i class="fab fa-instagram"></i></a>
@@ -212,7 +208,6 @@
                     <a href="https://wa.me/${window.sanitizeBosePhoneNumber(window.BoseStoreData.social.whatsapp)}" class="social-link-whatsapp" target="_blank" aria-label="واتساب حلويات بوسي" style="font-size: 1.6rem; color: #25D366; transition: transform 0.3s;"><i class="fab fa-whatsapp"></i></a>
                 </div>
 
-                <!-- روابط وثائق السياسات الرسمية لتعزيز مصداقية وثقة العميل اللوجستية -->
                 <div class="footer-policies-container" id="bose-footer-policies" style="margin-bottom: 24px;">
                     <ul class="nav-list" style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; list-style: none; padding:0; margin:0; font-size: 0.9rem; font-weight: 600;">
                         <li><a href="privacy-policy.html" style="color: var(--bose-black) !important;">سياسة الخصوصية</a></li>
@@ -222,7 +217,6 @@
                     </ul>
                 </div>
 
-                <!-- مقر الاستلام الثابت والواضح للعلامة الفاخرة لتوجيه ودعم العميل -->
                 <div class="footer-location-block" style="margin-bottom: 24px; font-size: 0.9rem; color: var(--bose-black); opacity: 0.85; max-width: 500px; line-height: 1.5;">
                     <p><i class="fas fa-map-marker-alt" style="color: var(--bose-pink); margin-left: 6px;"></i> ${window.BoseStoreData.store.pickup.address}</p>
                 </div>
@@ -241,24 +235,21 @@
         const data = window.BoseStoreData;
         if (!data) return;
 
-        // أ. تحديث شريط الإعلانات المتجدد العلوي ومنع ثغرة الوميض أو الفراغ أو قطع النص نهائياً بالمسطرة
+        // 🔄 تصحيح الشريط العلوي المتحرك حتمياً لمنع الفراغات أو السرعة الجنونية
         const tickerTrack = document.getElementById('top-bar-marquee-track');
         if (tickerTrack && data.navigation.topBarMessages) {
-            // إضافة مسافات كافية وأيقونة فخمة تفصل بين الجمل لراحة العين ومنع التدفق المكتوم أو المقطوع
             let messagesHtml = data.navigation.topBarMessages.map(msg => `
                 <span class="ticker-message-item" style="color: var(--bose-white) !important;">${msg} &nbsp;&nbsp;&nbsp;&nbsp; 🌸 &nbsp;&nbsp;&nbsp;&nbsp;</span>
             `).join('');
-            // مضاعفة المصفوفة 6 مرات متتالية لملء عرض الـ Track بالكامل على كافة الشاشات والموجات
+            // مضاعفة المحتوى تكرارياً لملء مسار الحركة بالكامل لضمان الانسيابية اللانهائية
             tickerTrack.innerHTML = `${messagesHtml}${messagesHtml}${messagesHtml}${messagesHtml}${messagesHtml}${messagesHtml}`;
         }
 
-        // ب. تحديث هيرو الواجهة الرئيسية
         const heroDesc = document.getElementById('hero-description');
         const heroCta = document.getElementById('hero-cta-btn');
         if (heroDesc) heroDesc.textContent = data.homepage.hero.description;
         if (heroCta) heroCta.textContent = data.homepage.hero.cta;
 
-        // ج. بناء الشلال البصري المزدوج المتعاكس
         const leftCol = document.getElementById('waterfall-left-col');
         const rightCol = document.getElementById('waterfall-right-col');
         if (leftCol && rightCol) {
@@ -266,7 +257,6 @@
             rightCol.innerHTML = data.homepage.waterfall.rightColumnImages.map(img => `<img src="${img}" alt="حلويات بوسي فخامة بصرية">`).join('');
         }
 
-        // د. بناء وتفعيل سلايدر قسم عقد من الإتقان المصلح ليعمل تلقائياً ويدوياً معاً بدون تجمد
         const excellenceTitle = document.getElementById('excellence-title');
         const excellenceDesc = document.getElementById('excellence-description');
         const excellenceTrack = document.getElementById('excellence-images-track');
@@ -277,7 +267,6 @@
             initializeBoseSliderLogic(excellenceTrack, 'excellence-dots', true, false); 
         }
 
-        // هـ. هيكل الكارت الموحد (Strict Product Card DOM) الملتزم بالمسطرة هندسياً وترتيبياً
         function createProductCardHTML(product) {
             return `
                 <div class="product-card-unified" data-slug="${product.slug}">
@@ -296,7 +285,6 @@
             `;
         }
 
-        // و. ضخ وتشغيل سلايدر الأكثر مبيعاً (8 منتجات) مع دعم السحب الفعلي واللمس
         const mostSellingGrid = document.getElementById('most-selling-grid');
         if (mostSellingGrid) {
             document.getElementById('most-selling-title').textContent = "الأكثر مبيعاً";
@@ -310,7 +298,6 @@
             initializeBoseSliderLogic(mostSellingGrid, 'most-selling-dots', false, false);
         }
 
-        // ز. ضخ وتشغيل سلايدر وصل حديثاً (6 عناصر) مع دعم السحب الفعلي واللمس والسنترة
         const newArrivalsGrid = document.getElementById('new-arrivals-grid');
         if (newArrivalsGrid) {
             document.getElementById('new-arrivals-title').textContent = "وصل حديثاً";
@@ -324,7 +311,6 @@
             initializeBoseTracksSliderLogic(newArrivalsGrid, 'new-arrivals-dots', false, false);
         }
 
-        // ح. ضخ قسم منتجاتنا بالتوزيع الشبكي الثنائي الصارم (2 كارت بالصف) للموبايل ومنع الفوضى أو الوميض
         const ourProductsGrid = document.getElementById('our-products-grid');
         if (ourProductsGrid) {
             document.getElementById('our-products-title').textContent = "منتجاتنا";
@@ -343,7 +329,6 @@
             }
         }
 
-        // ط. كتل واجهات عرض وتخصيص محاكيات التورت والورد الفاخرة الممتدة لكامل عرض الشاشة
         if (document.getElementById('cake-preview-title')) {
             document.getElementById('cake-preview-title').textContent = data.homepage.cakePreview.title;
             document.getElementById('cake-preview-desc').textContent = data.homepage.cakePreview.description;
@@ -357,7 +342,6 @@
             document.getElementById('flower-preview-cta').textContent = data.homepage.flowerPreview.cta;
         }
 
-        // ي. قسم الفخر والاعتزاز والعدادات التصاعدية الرقمية الذكية
         if (document.getElementById('pride-main-title')) {
             document.getElementById('pride-main-title').textContent = data.homepage.pride.title;
             document.getElementById('pride-main-text').textContent = data.homepage.pride.text;
@@ -369,7 +353,6 @@
             document.getElementById('stat-bouquets-value').textContent = data.homepage.pride.stats.bouquets.value + data.homepage.pride.stats.bouquets.suffix;
         }
 
-        // ك. شريط تسوق حسب الفئة الـ 12 فئة المعتمدة بحجم أكبر 30% وإعادة تشغيل الدوتس والسحب واللمس بالملي
         const categoriesTrack = document.getElementById('categories-track');
         if (categoriesTrack && data.homepage.categoriesSlider) {
             document.getElementById('categories-section-title').textContent = "تسوق حسب الفئة";
@@ -386,7 +369,6 @@
             initializeBoseSliderLogic(categoriesTrack, 'categories-dots', false, true); 
         }
 
-        // ل. ضخ صفحة المنيو الشامل (menu.html) بالتوزيع والاشتاظات الهندسية الكاملة للشاشات
         const menuCategoriesGrid = document.getElementById('menu-categories-grid');
         if (menuCategoriesGrid && data.homepage.categoriesSlider) {
             menuCategoriesGrid.innerHTML = data.homepage.categoriesSlider.map(cat => `
@@ -797,61 +779,8 @@
     }
 
     function applyGlobalStyles(theme) {
-        if (document.getElementById('bose-global-dynamic-styles')) return;
-        const styleElement = document.createElement('style');
-        styleElement.id = 'bose-global-dynamic-styles';
-        
-        styleElement.textContent = `
-            :root {
-                --bose-pink: ${theme.primary || '#FF91A4'};
-                --bose-white: ${theme.background || '#FFFFFF'};
-                --bose-black: ${theme.text || '#111111'};
-                --bose-gold: ${theme.secondary || '#D4AF37'};
-                --bose-shadow-glow: 0 8px 32px rgba(255, 145, 164, 0.12);
-                --bose-shadow-hover: 0 16px 40px rgba(255, 145, 164, 0.22);
-                --bose-border-pink: 1px solid rgba(255, 145, 164, 0.3);
-                --bose-border-thick: 2px solid ${theme.primary || '#FF91A4'};
-            }
-            body {
-                font-family: 'Cairo', sans-serif !important;
-                background-color: var(--bose-white) !important;
-                color: var(--bose-black) !important;
-                margin: 0; padding: 0; overflow-x: hidden;
-            }
-            body.drawer-active {
-                overflow: hidden !important; 
-            }
-            h1, h2 { font-family: 'Cairo', sans-serif !important; font-weight: 700 !important; color: var(--bose-black) !important; }
-            h3, h4, h5, h6 { font-family: 'Cairo', sans-serif !important; font-weight: 600 !important; color: var(--bose-black) !important; }
-            p, span, a, button, input, select, textarea { font-family: 'Cairo', sans-serif !important; }
-            @keyframes boseMarquee { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-50%, 0, 0); } }
-            @keyframes boseWaterfallUp { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(0, -50%, 0); } }
-            @keyframes boseWaterfallDown { 0% { transform: translate3d(0, -50%, 0); } 100% { transform: translate3d(0, 0, 0); } }
-            .animate-marquee { display: flex; width: max-content; animation: boseMarquee 25s linear infinite !important; will-change: transform; }
-            .waterfall-up { animation: boseWaterfallUp 40s linear infinite; will-change: transform; }
-            .waterfall-down { animation: boseWaterfallDown 40s linear infinite; will-change: transform; }
-            .bose-slider-dots-wrapper { display: flex; justify-content: center; gap: 8px; margin-top: 16px; width: 100%; }
-            .bose-slider-dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255, 145, 164, 0.3); cursor: pointer; transition: all 0.3s ease; }
-            .bose-slider-dot.active { background: #FF91A4 !important; width: 24px; border-radius: 8px; }
-            
-            .bose-drawer-menu { position: fixed; top: 0; right: 0; width: 340px; max-width: 85vw; height: 100vh; background: #FFFFFF !important; z-index: 30000; transform: translate3d(100%, 0, 0); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: -8px 0 32px rgba(17,17,17,0.08); font-family: 'Cairo', sans-serif; }
-            .bose-drawer-menu.active { transform: translate3d(0, 0, 0) !important; }
-            .bose-drawer-panel-content { display: flex; flex-direction: column; height: 100vh; width: 100%; direction: rtl; background: #FFFFFF !important; }
-            .drawer-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(11,11,11,0.4); z-index: 29999; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
-            .drawer-overlay.active { opacity: 1 !important; pointer-events: auto !important; }
-            .drawer-premium-header { padding: 24px 20px; background-color: #FFFFFF !important; border-bottom: 1px solid rgba(255, 145, 164, 0.2); position: relative; }
-            .drawer-premium-header h3 { font-size: 1.15rem; color: #111111 !important; margin: 0 0 4px 0; font-weight: 700; }
-            .drawer-close-btn { position: absolute; left: 20px; top: 24px; font-size: 1.3rem; color: #111111; cursor: pointer; border: none; background: none; }
-            .drawer-links-scrollable { flex: 1; overflow-y: auto; padding: 15px 0; background-color: #FFFFFF !important; }
-            .drawer-links-list { list-style: none; padding: 0; margin: 0; }
-            .drawer-link-item a { display: flex; align-items: center; gap: 14px; padding: 14px 24px; color: #111111 !important; font-weight: 600; font-size: 0.95rem; border-bottom: 1px solid rgba(255, 145, 164, 0.05); transition: background 0.3s; }
-            .drawer-link-item a i { color: #FF91A4; width: 20px; text-align: center; }
-            .drawer-link-item a:hover { background-color: rgba(255, 145, 164, 0.08); color: #FF91A4 !important; }
-            .ticker-message-item { padding: 0 40px; font-family: Cairo; font-weight: 600; color: #111111; font-size: 0.9rem; white-space: nowrap; display: inline-block; }
-            .grabbing { cursor: grabbing !important; }
-            .bose-arabic-text { word-break: keep-all; overflow-wrap: break-word; }
-        `;
-        document.head.appendChild(styleElement);
+        // حظر كامل لضخ الأكواد البصرية والأنميشن داخل ملفات الجافا سكريبت منعاً لأي تعارض هيكلي مع ملفات الستايل المستقلة
+        console.log("🛡️ حوكمة الحركية: تم عزل وحظر ضخ الاستايلات محلياً للتأكيد على تخصص ملفات الستايل الخارجية بدورها فقط.");
     }
 
     function showGlobalFriendlyError() {
