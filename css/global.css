@@ -1,18 +1,17 @@
-    }
-د/* ==========================================================================
+/* ==========================================================================
    BoseSweets Strict Production Global Stylesheet (css/global.css)
    الهوية البصرية الموحدة والأبعاد الهندسية المقدسة - حلويات بوسي 2026
-   النسخة الهندسية القياسية v6.5 - مصححة بالكامل لحظر الفوضى البصرية والتكدس
+   النسخة الهندسية القياسية v7.0 - المحدثة والمطورة بالكامل لحل مشكلة الشريط العلوي
    متوافقة ومترابطة بشكل مطلق ومتبادل مع: main.css و core-engine.js والـ JSON
    ========================================================================== */
 
 /* --- 1. المكونات الحاكمة والألوان المقدسة (CSS Tokens) --- */
 :root {
     /* الألوان الحاكمة والمقدسة للعلامة التجارية (صمام الأمان لضمان التنفس البصري ومنع وميض الألوان) */
-    --bose-pink: #FF91A4;        /* نبض الحياة: حدود المنتجات، الظلال الناعمة، والأسعار الديناميكية[span_3](start_span)[span_3](end_span) */
-    --bose-white: #FFFFFF;       /* المسيطر تماماً: مسيطر على الخلفيات والمساحات بالكامل لمنع التكديس[span_4](start_span)[span_4](end_span) */
-    --bose-black: #111111;       /* النصوص والعناوين فقط: محظور استخدامه نهائياً في أي ظلال أو خلفيات[span_5](start_span)[span_5](end_span) */
-    --bose-gold: #D4AF37;        /* وجود رمزي ناعم وخفيف جداً لمحاكاة فخامة اللوجو ونجوم التقييمات[span_6](start_span)[span_6](end_span) */
+    --bose-pink: #FF91A4;        /* نبض الحياة: حدود المنتجات، الظلال الناعمة، والأسعار الديناميكية */
+    --bose-white: #FFFFFF;       /* المسيطر تماماً: مسيطر على الخلفيات والمساحات بالكامل لمنع التكديس */
+    --bose-black: #111111;       /* النصوص والعناوين فقط: محظور استخدامه نهائياً في أي ظلال أو خلفيات */
+    --bose-gold: #D4AF37;        /* وجود رمزي ناعم وخفيف جداً لمحاكاة فخامة اللوجو ونجوم التقييمات */
 
     /* الهندسة البرمجية للظلال والحدود لمنع استخدام الظلال السوداء نهائياً */
     --bose-shadow-glow: 0 8px 32px rgba(255, 145, 164, 0.12);
@@ -41,6 +40,7 @@ body {
     background-color: var(--bose-white);
     color: var(--bose-black);
     font-family: 'Cairo', sans-serif !important;
+    padding-top: 110px; /* 👑 تأمين مسافة التنفس البصري الكافية (ارتفاع التوب بار 40px + الهيدر 70px) */
 }
 
 /* حارس التماسك البصري ومنع انقطاع أو بتر النصوص نهائياً (No Text Overflow) */
@@ -52,11 +52,11 @@ h1, h2, h3, h4, p, span, a, button, input, select, textarea {
 
 /* قفل أوزان الخطوط لحماية الفخامة ومنع التشويه البصري */
 h1, h2 {
-    font-weight: 700 !important; /* سقف الوزن لأضخم العناوين الرئيسية[span_7](start_span)[span_7](end_span) */
+    font-weight: 700 !important; /* سقف الوزن لأضخم العناوين الرئيسية */
 }
 
 h3, h4 {
-    font-weight: 600 !important; /* عناوين كروت المنتجات والتفاصيل[span_8](start_span)[span_8](end_span) */
+    font-weight: 600 !important; /* عناوين كروت المنتجات والتفاصيل */
 }
 
 a {
@@ -78,10 +78,26 @@ img {
     object-fit: cover;
 }
 
-/* --- 3. الهيدر الموحد والثابت القياسي (Universal Sticky Header UX) --- */
+/* --- 3. شريط الإعلانات العلوي المتحرك (Bose Premium Top Bar Marquee) --- */
+#top-bar-marquee {
+    position: fixed; /* 👑 تثبيت مطلق وصارم في أعلى الشاشة تماماً لقفل التزامن */
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 40px; /* ارتفاع هندسي ثابت لتجنب التداخل البرمجي */
+    width: 100%;
+    background-color: var(--bose-pink) !important; /* اللون البمبي نبض الحياة الصريح للهوية */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    z-index: 1001; /* 👑 أولوية بصرية مطلقة ليكون فوق الهيدر بالمسطرة */
+}
+
+/* --- 4. الهيدر الموحد والثابت القياسي (Universal Sticky Header UX) --- */
 .bose-navbar {
     position: fixed;
-    top: 0;
+    top: 40px; /* 👑 الإزاحة الهندسية الكبرى: يبدأ الهيدر مباشرة بعد انتهاء الـ 40px الخاصة بالشريط */
     right: 0;
     left: 0;
     height: 70px;
@@ -129,7 +145,7 @@ img {
     font-weight: 700;
     color: var(--bose-black) !important;
     padding-right: 5px;
-    display: block !important; /* ثابت ومقدس على جميع الشاشات لمنع التشتيت البصري[span_9](start_span)[span_9](end_span) */
+    display: block !important; /* ثابت ومقدس على جميع الشاشات لمنع التشتيت البصري */
 }
 
 .nav-actions {
@@ -182,19 +198,7 @@ img {
     display: none; 
 }
 
-/* شريط الإعلانات العلوي القياسي المانع للفراغات البصرية */
-#top-bar-marquee {
-    width: 100%;
-    background-color: var(--bose-white);
-    border-bottom: var(--bose-border-pink);
-    padding: 10px 0;
-    margin-top: 70px; /* يعطي تنفساً بصرياً كاملاً ويمنع الاختفاء تحت الهيدر الثابت[span_10](start_span)[span_10](end_span) */
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-}
-
-/* --- 4. الفوتر القياسي الموحد المعتمد (Shared Universal Footer) --- */
+/* --- 5. الفوتر القياسي الموحد المعتمد (Shared Universal Footer) --- */
 .bose-footer {
     background-color: var(--bose-white) !important;
     border-top: var(--bose-border-pink);
@@ -279,7 +283,7 @@ img {
     opacity: 0.7;
 }
 
-/* --- 5. التوافق والربط الهيكلي القياسي مع الشاشات (Mobile UX First) --- */
+/* --- 6. التوافق والربط الهيكلي القياسي مع الشاشات (Mobile UX First) --- */
 @media (max-width: 767px) {
     #bose-nav-menu {
         display: none;
