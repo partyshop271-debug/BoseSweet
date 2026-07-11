@@ -13,6 +13,7 @@
         let retries = 5;
         let delay = 1000;
         
+        // مصفوفة المسارات الذكية لحل مشكلة عدم قراءة الملف على الاستضافات المختلفة
         const pathsToTry = [
             'data/site-data-final.json',
             '/data/site-data-final.json',
@@ -427,7 +428,6 @@
         const styleElement = document.createElement('style');
         styleElement.id = 'bose-global-dynamic-styles';
         
-        // 🔥 حجز وهندسة وتصحيح أكواد الـ CSS الخاصة بالـ Drawer والـ Overlay بالكامل لمنع الانهيار
         styleElement.textContent = `
             @keyframes boseMarquee { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-50%, 0, 0); } }
             @keyframes boseWaterfallUp { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(0, -50%, 0); } }
@@ -437,7 +437,6 @@
             .waterfall-down { animation: boseWaterfallDown 40s linear infinite; will-change: transform; }
             .categories-track-loop { display: flex; width: max-content; animation: boseMarquee 30s linear infinite; will-change: transform; }
             
-            /* 🛠️ هندسة واجهة الـ Sidebar الفاخرة لعلامة بوسي */
             .bose-drawer-menu { position: fixed; top: 0; right: 0; width: 340px; max-width: 85vw; height: 100vh; background: #ffffff !important; z-index: 30000; transform: translate3d(100%, 0, 0); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: -8px 0 32px rgba(17,17,17,0.08); font-family: 'Cairo', sans-serif; }
             .bose-drawer-menu.active { transform: translate3d(0, 0, 0) !important; }
             .bose-drawer-panel-content { display: flex; flex-direction: column; height: 100vh; width: 100%; direction: rtl; }
