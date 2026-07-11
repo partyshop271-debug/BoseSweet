@@ -1,7 +1,8 @@
 /* ==========================================================================
-   👑 ملف التصميم المركزي للأقسام والمنيو - حلويات بوسي V67.3 Master 👑
+   👑 ملف التصميم المركزي للأقسام والمنيو - حلويات بوسي V9.0 Master 👑
    النسخة الهندسية القياسية المصححة والمطورة كلياً - تمنع التكدس وتؤمن التنفس البصري
    امتثال مطلق وأعمى لملف الحوكمة والمواصفة الرسمية القياسية الفاخرة للصفحة الرئيسية
+   ملتزم بمهامه للأقسام الداخلية والشبكات دون التدخل في مهام global.css أو الهيدر والفوتر
    ========================================================================== */
 
 body.bose-hardware-accelerated {
@@ -151,6 +152,27 @@ body.bose-hardware-accelerated {
     gap: 16px;
 }
 
+/* 🔄 تفعيل حركة الشلال هندسياً وعكسياً للأعمدة الفردية بناءً على معرّفات الـ ID الصريحة */
+#waterfall-left-col {
+    animation: boseWaterfallUp 40s linear infinite !important;
+    will-change: transform;
+}
+
+#waterfall-right-col {
+    animation: boseWaterfallDown 40s linear infinite !important;
+    will-change: transform;
+}
+
+@keyframes boseWaterfallUp {
+    0% { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(0, -50%, 0); }
+}
+
+@keyframes boseWaterfallDown {
+    0% { transform: translate3d(0, -50%, 0); }
+    100% { transform: translate3d(0, 0, 0); }
+}
+
 .waterfall-col img {
     width: 100%;
     height: auto;
@@ -190,21 +212,27 @@ body.bose-hardware-accelerated {
     height: 0 !important;
 }
 
-.bose-perfection-track {
-    display: flex;
-    gap: 0px;
-    width: 100%;
+/* 🔄 محرك التحريك التلقائي الدائم المتصل والمتجانس لملء العرض دون مساحات فارغة */
+#excellence-images-track {
+    display: flex !important;
+    gap: 0px !important;
+    width: max-content !important;
+    animation: boseExcellenceLoop 35s linear infinite !important;
+    will-change: transform;
+}
+
+@keyframes boseExcellenceLoop {
+    0% { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(-50%, 0, 0); }
 }
 
 .perfection-slide-node {
-    flex: 0 0 100%;
-    width: 100%;
+    width: 100vw !important;
     display: block;
-    scroll-snap-align: start;
 }
 
 .perfection-slide-node img {
-    width: 100%;
+    width: 100vw !important;
     height: 45vh;
     object-fit: cover !important;
     display: block;
