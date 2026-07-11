@@ -1,12 +1,17 @@
 /**
- * 👑 ملف المحرك المركزي العالمي المصحح والمطور بالكامل V9.6 - حلويات بوسي 2026 👑
- * حوكمة كاملة لواجهات الشريط العلوي، القائمة الجانبية، والفوتر الموحد ومنع تداخل الملفات
+ * 👑 ملف المحرك المركزي العالمي المصحح والمطور بالكامل V10.0 - حلويات بوسي 2026 👑
+ * حوكمة كاملة لواجهات الشريط العلوي، القائمة الجانبية المتطورة، والفوتر الموحد ومنع تداخل الملفات
  * امتثال مطلق وأعمى للمواصفة القياسية الفاخرة لمنع الأخطاء البصرية وحل مشكلة الاختفاء
+ * نظام بناء وتوسيع وتطوير شامل - يمنع التعارض أو التكرار البرمجي نهائياً
  */
 (function() {
+    // محددات الحالة المركزية المعزولة بأمان
     window.BoseStoreData = null; 
     window.boseServerTimeOffset = 0; 
 
+    // ==========================================
+    // 1. موديول إدارة قاعدة البيانات والتمهيد
+    // ==========================================
     async function loadStoreDatabase() {
         if (window.BoseStoreData) return;
         let retries = 5;
@@ -34,6 +39,7 @@
                     
                     window.BoseStoreData = await response.json();
                     
+                    // استدعاء موديولات البناء الداخلي بالتتابع الهندسي الصارم
                     injectEarlyDependencies();
                     renderUniversalHeader();
                     renderUniversalSidebar();
@@ -43,6 +49,7 @@
                     window.updateGlobalCartCounter();
                     renderBoseDynamicContent();
                     
+                    // إطلاق حدث الاعتماد الآمن لحراس ومحركات الموقع
                     document.dispatchEvent(new CustomEvent('BoseDatabaseLoaded', { detail: window.BoseStoreData }));
                     
                     if (typeof window.onBoseDatabaseReadyWrapper === "function") {
@@ -64,6 +71,9 @@
         }
     }
 
+    // ==========================================
+    // 2. موديول حقن الهيدر والشريط العلوي المقدس
+    // ==========================================
     function renderUniversalHeader() {
         let headerInjector = document.getElementById('bose-header-injector');
         if (!headerInjector) return; 
@@ -106,6 +116,9 @@
         `;
     }
 
+    // ==========================================
+    // 3. موديول القائمة الجانبية التفاعلية المتطورة (Sidebar Drawer)
+    // ==========================================
     function renderUniversalSidebar() {
         let sidebarPanel = document.getElementById('sidebar-drawer');
         if (sidebarPanel) sidebarPanel.remove(); 
@@ -116,6 +129,7 @@
         sidebar.id = 'sidebar-drawer';
         sidebar.className = 'bose-drawer-menu';
         
+        // بناء هيكل القائمة المطور ليكون محرك تسوق ومبيعات حقيقي وليس مجرد منظر بجمال بصري
         sidebar.innerHTML = `
             <div class="drawer-overlay" id="sidebar-close-overlay"></div>
             <div class="bose-drawer-panel-content">
@@ -124,20 +138,61 @@
                     <p class="bose-arabic-text">حلويات بوسي - ${storeSlogan}</p>
                     <button id="sidebar-close-btn" class="drawer-close-btn"><i class="fas fa-times"></i></button>
                 </div>
+                
                 <div class="drawer-links-scrollable">
+                    <!-- كتل الروابط التأسيسية الموحدة -->
                     <ul class="drawer-links-list">
                         <li class="drawer-link-item"><a href="index.html"><i class="fas fa-home"></i> الرئيسية</a></li>
                         <li class="drawer-link-item"><a href="menu.html"><i class="fas fa-utensils"></i> المنيو الشامل</a></li>
                         <li class="drawer-link-item"><a href="cake-builder.html"><i class="fas fa-birthday-cake"></i> محاكي التورت التفاعلي</a></li>
                         <li class="drawer-link-item"><a href="flower-builder.html"><i class="fas fa-seedling"></i> محاكي الورد التفاعلي</a></li>
-                        <li class="drawer-link-item"><a href="cart.html"><i class="fas fa-shopping-basket"></i> سلة المشتريات</a></li>
-                        <li class="drawer-link-item"><a href="checkout.html"><i class="fas fa-credit-card"></i> إتمام الطلب الشامل</a></li>
                     </ul>
+
+                    <!-- كتلة هندسية مطورة 01: التسوق السريع واللحظي للفئات الـ 12 المعتمدة صراحة -->
+                    <div class="drawer-premium-section-title">تسوق حسب الفئة</div>
+                    <div class="drawer-categories-quick-grid" id="sidebar-quick-categories-node"></div>
+
+                    <!-- كتلة هندسية مطورة 02: عارض السلة اللحظي والمبيعات (Mini Cart Dashboard) -->
+                    <div class="drawer-premium-section-title">سلتك الحالية</div>
+                    <div id="sidebar-mini-cart-wrapper" class="sidebar-mini-cart-container"></div>
+                </div>
+
+                <!-- كتلة هندسية مطورة 03: قنوات التواصل وعناصر الثقة الرسمية بالأسفل لراحة العميل النفسية -->
+                <div class="drawer-premium-footer-block">
+                    <div class="drawer-social-icons-row" id="sidebar-social-links-injector"></div>
+                    <a href="https://wa.me/${window.sanitizeBosePhoneNumber(window.BoseStoreData.social.whatsapp)}" target="_blank" class="drawer-support-call-btn">
+                        <i class="fab fa-whatsapp"></i> دعم عملاء حلويات بوسي
+                    </a>
                 </div>
             </div>
         `;
         document.body.appendChild(sidebar);
 
+        // حقن الفئات الـ 12 المعتمدة ديناميكياً داخل القائمة الجانبية بالأسماء الصريحة
+        const quickCategoriesContainer = document.getElementById('sidebar-quick-categories-node');
+        if (quickCategoriesContainer && window.BoseStoreData.homepage.categoriesSlider) {
+            quickCategoriesContainer.innerHTML = window.BoseStoreData.homepage.categoriesSlider.map(cat => `
+                <a href="category.html?id=${cat.id}" class="sidebar-cat-chip-node">
+                    <img src="${cat.image}" alt="${cat.title}">
+                    <span>${cat.title}</span>
+                </a>
+            `).join('');
+        }
+
+        // حقن روابط السوشيال ميديا الرسمية بألوانها الأصلية داخل ذيل القائمة الجانبية
+        const socialLinksContainer = document.getElementById('sidebar-social-links-injector');
+        if (socialLinksContainer) {
+            socialLinksContainer.innerHTML = `
+                <a href="${window.BoseStoreData.social.facebook}" target="_blank" class="social-link-facebook" aria-label="فيسبوك"><i class="fab fa-facebook-f"></i></a>
+                <a href="${window.BoseStoreData.social.instagram}" target="_blank" class="social-link-instagram" aria-label="انستجرام"><i class="fab fa-instagram"></i></a>
+                <a href="${window.BoseStoreData.social.tiktok}" target="_blank" class="social-link-tiktok" aria-label="تيك توك"><i class="fab fa-tiktok"></i></a>
+            `;
+        }
+
+        // إطلاق وتحديث عارض السلة المصغراللحظي (Mini Cart)
+        window.refreshSidebarMiniCartDisplay();
+
+        // تفعيل أحداث فتح وإغلاق القائمة بسلاسة كاملة وثبات تام
         setTimeout(() => {
             const toggleBtn = document.getElementById('mobile-menu-toggle');
             const closeBtn = document.getElementById('sidebar-close-btn');
@@ -147,6 +202,7 @@
             if (toggleBtn && menuPanel) {
                 toggleBtn.onclick = (e) => {
                     e.preventDefault();
+                    window.refreshSidebarMiniCartDisplay(); // تحديث السلة لحظة الفتح
                     menuPanel.classList.add('active');
                     if(overlay) overlay.classList.add('active');
                     document.body.classList.add('drawer-active'); 
@@ -164,6 +220,58 @@
         }, 150);
     }
 
+    // دالة تحديث وحقن كائنات سلة المشتريات المصغرة ديناميكياً داخل القائمة الجانبية
+    window.refreshSidebarMiniCartDisplay = function() {
+        const miniCartWrapper = document.getElementById('sidebar-mini-cart-wrapper');
+        if (!miniCartWrapper) return;
+
+        const rawCart = localStorage.getItem('bose_cart');
+        const cart = rawCart ? JSON.parse(rawCart) : [];
+
+        if (cart.length === 0) {
+            miniCartWrapper.innerHTML = `
+                <div class="sidebar-mini-cart-empty">
+                    <i class="fas fa-shopping-basket"></i>
+                    <p>السلة فارغة حالياً</p>
+                    <a href="menu.html" onclick="document.getElementById('sidebar-close-btn').click();" class="sidebar-browse-menu-trigger">تصفح المنيو الشامل</a>
+                </div>
+            `;
+            return;
+        }
+
+        let totalAmount = 0;
+        let itemsHtml = cart.map(item => {
+            const finalPriceSum = item.finalPrice * item.quantity;
+            totalAmount += finalPriceSum;
+            return `
+                <div class="sidebar-mini-cart-item-node">
+                    <img src="${item.image}" alt="${item.title}">
+                    <div class="sidebar-mini-cart-item-details">
+                        <h4>${item.title}</h4>
+                        <h5>النكهة: ${item.flavorName}</h5>
+                        <p class="sidebar-mini-cart-item-meta">العدد: ${item.quantity} × ${item.finalPrice} جنيه</p>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        miniCartWrapper.innerHTML = `
+            <div class="sidebar-mini-cart-items-list-track">${itemsHtml}</div>
+            <div class="sidebar-mini-cart-footer-summary">
+                <div class="sidebar-mini-cart-total-row">
+                    <span>إجمالي المشتريات:</span>
+                    <strong>${totalAmount.toFixed(2)} جنيه</strong>
+                </div>
+                <a href="cart.html" class="sidebar-mini-cart-checkout-cta-btn">
+                    استعراض السلة وإتمام الطلب <i class="fas fa-arrow-left"></i>
+                </a>
+            </div>
+        `;
+    };
+
+    // ==========================================
+    // 4. موديول حقن الفوتر الرسمي الموحد
+    // ==========================================
     function renderUniversalFooter() {
         let footerInjector = document.getElementById('bose-footer-injector');
         if (!footerInjector) return;
@@ -216,10 +324,14 @@
         `;
     }
 
+    // ==========================================
+    // 5. موديول حقن المحتوى الديناميكي وحركات الـ JavaScript
+    // ==========================================
     function renderBoseDynamicContent() {
         const data = window.BoseStoreData;
         if (!data) return;
 
+        // ضخ رسائل الشريط العلوي المتحرك بشكل لا نهائي ممتد
         const tickerTrack = document.getElementById('top-bar-marquee-track');
         if (tickerTrack && data.navigation.topBarMessages) {
             let messagesHtml = data.navigation.topBarMessages.map(msg => `
@@ -233,11 +345,13 @@
             tickerTrack.innerHTML = infiniteLoopHtml;
         }
 
+        // ربط نصوص الهيرو والـ CTA الأصلي
         const heroDesc = document.getElementById('hero-description');
         const heroCta = document.getElementById('hero-cta-btn');
         if (heroDesc) heroDesc.textContent = data.homepage.hero.description;
         if (heroCta) heroCta.textContent = data.homepage.hero.cta;
 
+        // جلب وحقن صور أعمدة شلال المنتجات البصري المتعاكس
         const leftCol = document.getElementById('waterfall-left-col');
         const rightCol = document.getElementById('waterfall-right-col');
         if (leftCol && rightCol) {
@@ -245,6 +359,7 @@
             rightCol.innerHTML = data.homepage.waterfall.rightColumnImages.map(img => `<img src="${img}" alt="حلويات بوسي فخامة بصرية">`).join('');
         }
 
+        // بناء مجرى الحركة التلقائي الفاخر المتصل بلا فواصل لقسم "عقد من الإتقان"
         const excellenceTitle = document.getElementById('excellence-title');
         const excellenceDesc = document.getElementById('excellence-description');
         const excellenceTrack = document.getElementById('excellence-images-track');
@@ -263,6 +378,7 @@
             initializeBoseSliderLogic(excellenceTrack, 'excellence-dots', true, false); 
         }
 
+        // وظيفة بناء كروت الشبكة الموحدة بالمسطرة الهندسية الصارمة
         function createProductCardHTML(product) {
             return `
                 <div class="product-card-unified" data-slug="${product.slug}">
@@ -281,6 +397,7 @@
             `;
         }
 
+        // ضخ وبناء شبكة الأصناف الثمانية لـ "الأكثر مبيعاً"
         const mostSellingGrid = document.getElementById('most-selling-grid');
         if (mostSellingGrid) {
             document.getElementById('most-selling-title').textContent = "الأكثر مبيعاً";
@@ -294,6 +411,7 @@
             initializeBoseSliderLogic(mostSellingGrid, 'most-selling-dots', false, false);
         }
 
+        // ضخ وبناء شبكة الأصناف الستة لـ "وصل حديثاً"
         const newArrivalsGrid = document.getElementById('new-arrivals-grid');
         if (newArrivalsGrid) {
             document.getElementById('new-arrivals-title').textContent = "وصل حديثاً";
@@ -307,6 +425,7 @@
             initializeBoseSliderLogic(newArrivalsGrid, 'new-arrivals-dots', false, false);
         }
 
+        // ضخ وبناء شبكة "منتجاتنا" - التوزيع الثنائي المتوازن لمنع التكدس البصري
         const ourProductsGrid = document.getElementById('our-products-grid');
         if (ourProductsGrid) {
             document.getElementById('our-products-title').textContent = "منتجاتنا";
@@ -325,6 +444,16 @@
             }
         }
 
+        // تفعيل وربط العدادات التصاعدية التلقائية لقسم "الفخر والاعتزاز"
+        if (document.getElementById('pride-main-title')) {
+            document.getElementById('pride-main-title').textContent = data.homepage.pride.title;
+            document.getElementById('pride-main-text').textContent = data.homepage.pride.text;
+            
+            // استدعاء محرك العدادات الرقمية التصاعدية الذكية الملتزم بقيم الـ JSON الصريحة
+            initializeBosePrideCounters(data.homepage.pride.stats);
+        }
+
+        // كتل معاينة محاكيات التورت والورد
         if (document.getElementById('cake-preview-title')) {
             document.getElementById('cake-preview-title').textContent = data.homepage.cakePreview.title;
             document.getElementById('cake-preview-desc').textContent = data.homepage.cakePreview.description;
@@ -338,11 +467,7 @@
             document.getElementById('flower-preview-cta').textContent = data.homepage.flowerPreview.cta;
         }
 
-        if (document.getElementById('pride-main-title')) {
-            document.getElementById('pride-main-title').textContent = data.homepage.pride.title;
-            document.getElementById('pride-main-text').textContent = data.homepage.pride.text;
-        }
-
+        // بناء مجرى الحركة الانسيابي لـ "تسوق حسب الفئة" الـ 12 صنفاً مع تكبير الحجم بنسبة 30% للوزن البصري
         const categoriesTrack = document.getElementById('categories-track');
         if (categoriesTrack && data.homepage.categoriesSlider) {
             document.getElementById('categories-section-title').textContent = "تسوق حسب الفئة";
@@ -360,6 +485,49 @@
         }
     }
 
+    // ==========================================
+    // 6. موديول إدارة وتفعيل العدادات التصاعدية الذكية (Pride Counters Module)
+    // ==========================================
+    function initializeBosePrideCounters(statsConfig) {
+        if (!statsConfig) return;
+        
+        const mapPrideDomIds = {
+            years: 'counter-years-node',
+            customers: 'counter-customers-node',
+            orders: 'counter-orders-node',
+            cakes: 'counter-cakes-node',
+            bouquets: 'counter-bouquets-node'
+        };
+
+        Object.keys(mapPrideDomIds).forEach(key => {
+            const domId = mapPrideDomIds[key];
+            const targetElement = document.getElementById(domId);
+            if (!targetElement) return;
+
+            const targetValue = parseInt(statsConfig[key].value, 10) || 0;
+            const suffixStr = statsConfig[key].suffix || '';
+            
+            let startCount = 0;
+            const animationDuration = 2000; // مدة الحركة بالملي ثانية
+            const stepsCount = 50;
+            const incrementValue = Math.ceil(targetValue / stepsCount);
+            const stepIntervalTime = animationDuration / stepsCount;
+
+            const counterInterval = setInterval(() => {
+                startCount += incrementValue;
+                if (startCount >= targetValue) {
+                    targetElement.textContent = targetValue.toLocaleString() + suffixStr;
+                    clearInterval(counterInterval);
+                } else {
+                    targetElement.textContent = startCount.toLocaleString() + suffixStr;
+                }
+            }, stepIntervalTime);
+        });
+    }
+
+    // ==========================================
+    // 7. موديول إدارة وتوجيه السلايدرات اللمسية والتلقائية
+    // ==========================================
     function initializeBoseSliderLogic(sliderTrack, dotsContainerId, isAutoPlay = false, isCategoryType = false) {
         if (!sliderTrack) return;
         
@@ -443,6 +611,9 @@
         });
     }
 
+    // ==========================================
+    // 8. موديول العمليات المالية وإدارة السلة التأسيسية
+    // ==========================================
     window.modifyBoseQtyCard = function(button, change) {
         const counterWrapper = button.parentElement;
         const input = counterWrapper.querySelector('.input-qty-value');
@@ -473,6 +644,7 @@
         
         localStorage.setItem('bose_cart', JSON.stringify(cart));
         window.updateGlobalCartCounter();
+        window.refreshSidebarMiniCartDisplay(); // المزامنة الفورية لعارض السلة المصغر بالقائمة
         showBoseToast(`تمت إضافة ${product.title} إلى السلة.`);
     };
 
@@ -535,6 +707,9 @@
         }
     };
 
+    // ==========================================
+    // 9. موديول الأرشفة والتحميل المسبق للاعتمادات
+    // ==========================================
     function applyGlobalSEOAndBranding() {
         if (!window.BoseStoreData) return;
         document.title = window.BoseStoreData.seo.title;
@@ -562,5 +737,6 @@
         document.body.appendChild(errorDiv);
     }
 
+    // إطلاق محرك التمهيد الرئيسي
     loadStoreDatabase();
 })();
