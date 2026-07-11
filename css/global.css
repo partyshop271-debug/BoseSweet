@@ -1,5 +1,5 @@
-"""/* ==========================================================================
-   👑 BoseSweets Strict Production Global Stylesheet (css/global.css) V9.0 👑
+/* ==========================================================================
+   👑 BoseSweets Strict Production Global Stylesheet (css/global.css) V9.5 👑
    الهوية البصرية الموحدة والأبعاد الهندسية المقدسة - حلويات بوسي 2026
    امتثال مطلق وأعمى لملف الحوكمة والمواصفة الرسمية القياسية الفاخرة
    ========================================================================== */
@@ -98,6 +98,12 @@ img {
     z-index: 40000 !important; 
 }
 
+#top-bar-marquee-track {
+    display: flex !important;
+    white-space: nowrap !important;
+    width: max-content !important;
+}
+
 .ticker-message-item {
     padding: 0 40px;
     font-family: 'Cairo', sans-serif !important;
@@ -105,7 +111,7 @@ img {
     color: var(--bose-white) !important; 
     font-size: 0.95rem;
     white-space: nowrap;
-    display: inline-block;
+    display: inline-block !important;
 }
 
 /* 🔄 محرك الأنميشن الانسيابي المطور: مهدأ وموزون تماماً على 68 ثانية متصلة لمنع السرعة الزائدة والاختفاء البصري */
@@ -249,6 +255,32 @@ img {
     width: 100%;
     direction: rtl;
     background: var(--bose-white) !important;
+    position: relative;
+}
+
+.drawer-premium-header {
+    padding: 30px 24px 20px 24px;
+    border-bottom: 1px solid rgba(255, 145, 164, 0.1);
+}
+
+.drawer-premium-header h3 {
+    font-size: 1.2rem;
+    margin-bottom: 4px;
+}
+
+.drawer-premium-header p {
+    font-size: 0.85rem;
+    color: var(--bose-pink);
+}
+
+.drawer-links-scrollable {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px 0;
+}
+
+.drawer-links-list {
+    list-style: none;
 }
 
 .drawer-overlay {
@@ -257,7 +289,7 @@ img {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(255, 145, 164, 0.05) !important; 
+    background: rgba(17, 17, 17, 0.4) !important; 
     z-index: 49999 !important;
     opacity: 0;
     pointer-events: none;
@@ -337,6 +369,41 @@ img {
     line-height: 1.7;
 }
 
+.footer-quick-links {
+    margin-bottom: 20px;
+}
+
+.footer-quick-links ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+.footer-policies-container {
+    margin-bottom: 20px;
+}
+
+.footer-policies-container ul {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    font-size: 0.9rem;
+}
+
+.bose-social-links-wrapper {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.footer-location-block {
+    font-size: 0.9rem;
+    color: var(--bose-black);
+    margin-bottom: 15px;
+}
+
 .footer-copyright-block {
     width: 100%;
     border-top: 1px solid rgba(255, 145, 164, 0.15);
@@ -351,17 +418,23 @@ img {
     margin: 0;
 }
 
+.global-error-banner-node {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--bose-pink);
+    color: var(--bose-white);
+    padding: 12px 24px;
+    border-radius: 12px;
+    z-index: 99999;
+    font-size: 0.9rem;
+    box-shadow: var(--bose-shadow-hover);
+}
+
 /* --- 7. التوافق والربط الهيكلي مع الشاشات (Mobile UX First) --- */
 @media (max-width: 767px) {
     #bose-nav-menu {
         display: none;
     }
 }
-"""
-
-# كتابة وحفظ الملف في المجلد الافتراضي بصيغة نهائية نظيفة
-os.makedirs("css", exist_ok=True)
-with open("css/global.css", "w", encoding="utf-8") as f:
-    f.write(global_css_content)
-
-print("SUCCESS: css/global.css generated flawlessly.")

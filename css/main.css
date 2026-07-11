@@ -1,5 +1,5 @@
 /* ==========================================================================
-   👑 ملف التصميم المركزي للأقسام والمنيو - حلويات بوسي V9.0 Master 👑
+   👑 ملف التصميم المركزي للأقسام والمنيو - حلويات بوسي V9.5 Master 👑
    النسخة الهندسية القياسية المصححة والمطورة كلياً - تمنع التكدس وتؤمن التنفس البصري
    امتثال مطلق وأعمى لملف الحوكمة والمواصفة الرسمية القياسية الفاخرة للصفحة الرئيسية
    ملتزم بمهامه للأقسام الداخلية والشبكات دون التدخل في مهام global.css أو الهيدر والفوتر
@@ -186,6 +186,7 @@ body.bose-hardware-accelerated {
 
 /* ==========================================================================
    4. قسم "عقد من الإتقان" (Excellence Carousel)
+   👑 [تم إصلاح الأنميشن القسري المتعارض لمنع المساحات البيضاء والاختفاء البصري]
    ========================================================================== */
 .bose-perfection-section {
     width: 100%;
@@ -212,33 +213,33 @@ body.bose-hardware-accelerated {
     height: 0 !important;
 }
 
-/* 🔄 محرك التحريك التلقائي الدائم المتصل والمتجانس لملء العرض دون مساحات فارغة */
+/* 🔄 التراك يعمل الآن بسحب هيدروليكي طبيعي متوافق مع الموبايل والكمبيوتر بدون قفز تلقائي مدمر */
 #excellence-images-track {
     display: flex !important;
-    gap: 0px !important;
+    gap: 16px !important;
     width: max-content !important;
-    animation: boseExcellenceLoop 35s linear infinite !important;
-    will-change: transform;
-}
-
-@keyframes boseExcellenceLoop {
-    0% { transform: translate3d(0, 0, 0); }
-    100% { transform: translate3d(-50%, 0, 0); }
+    animation: none !important; /* إلغاء التدمير الحركي لثبات المحتوى */
 }
 
 .perfection-slide-node {
-    width: 100vw !important;
+    width: 85vw !important;
+    scroll-snap-align: center;
     display: block;
 }
 
 .perfection-slide-node img {
-    width: 100vw !important;
+    width: 100% !important;
     height: 45vh;
+    border-radius: 24px;
+    border: var(--bose-border-pink);
     object-fit: cover !important;
     display: block;
 }
 
 @media (min-width: 1024px) {
+    .perfection-slide-node {
+        width: 60vw !important;
+    }
     .perfection-slide-node img {
         height: 60vh;
     }
@@ -576,7 +577,7 @@ body.bose-hardware-accelerated {
     display: flex !important;
     gap: 16px !important;
     width: max-content !important;
-    animation: none !important; 
+    animation: none !important; /* قفل الأنميشن لتأمين السحب المرن المتوافق مع المواصفة */
 }
 
 .bose-category-slider-card {
