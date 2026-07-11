@@ -1,7 +1,7 @@
 /**
- * 👑 ملف المحرك المركزي العالمي المصحح والمطور بالكامل V7.0 - حلويات بوسي 2026 👑
+ * 👑 ملف المحرك المركزي العالمي المصحح والمطور بالكامل V7.1 - حلويات بوسي 2026 👑
  * معالجة هندسية شاملة وجذرية للفوضى البصرية وحوكمة السلايدرات وقفل التزامن بالمسطرة
- * يحل مشاكل شلل التصفح التلقائي، واختفاء شريط الإعلانات، ومزامنة النقاط المترابطة على الموبايل والكمبيوتر
+ * تم إصلاح موضع الشريط العلوي المتحرك ليكون في مكانه الصحيح هندسياً أعلى الهيدر وليس بأسفله
  * متوافق ومترابط بشكل مطلق ومتبادل مع: global.css و main.css وقاعدة البيانات site-data-final.json
  */
 (function() {
@@ -76,11 +76,14 @@
         let headerInjector = document.getElementById('bose-header-injector');
         if (!headerInjector) return; 
         
+        // التعديل الهندسي الصارم: التوب بار المتحرك في أعلى الهيدر تماماً وخارج الـ بكسل البصري للـ navbar
         headerInjector.innerHTML = `
-            <!-- توب بار متحرك بشكل لانهائي لمنع الفراغات البصرية وحقن الرسائل ديناميكياً -->
+            <!-- شريط علوي متحرك (#top-bar-marquee) في مكانه الصحيح والمطلق بأعلى الصفحة -->
             <div id="top-bar-marquee">
                 <div id="top-bar-marquee-track"></div>
             </div>
+            
+            <!-- الهيدر الهيكلي المقدس Sticky -->
             <header class="bose-navbar">
                 <div class="navbar-mobile-wrapper">
                     <button id="mobile-menu-toggle" class="nav-icon-btn" aria-label="فتح قائمة التصفح">
@@ -243,7 +246,7 @@
         if (excellenceDesc) excellenceDesc.textContent = data.homepage.excellence.description;
         if (excellenceTrack && data.homepage.excellence.images) {
             excellenceTrack.innerHTML = data.homepage.excellence.images.map(img => `<a href="menu.html" class="perfection-slide-node"><img src="${img}" alt="إتقان حلويات بوسي"></a>`).join('');
-            initializeBoseSliderLogic(excellenceTrack, 'excellence-dots', true, false); // تفعيل التصفح التلقائي والانسيابي الشامل
+            initializeBoseSliderLogic(excellenceTrack, 'excellence-dots', true, false); 
         }
 
         // هـ. هيكل الكارت الموحد (Strict Product Card DOM) بالمسطرة
@@ -352,7 +355,7 @@
                     </a>
                 </div>
             `).join('');
-            initializeBoseSliderLogic(categoriesTrack, 'categories-dots', false, true); // تمرير true للتأكيد على تفعيل فئات الـ 12 بحساب العرض 280px
+            initializeBoseSliderLogic(categoriesTrack, 'categories-dots', false, true); 
         }
 
         // ل. ضخ صفحة المنيو الشامل (menu.html) بالتوزيع والاشتراطات الهندسية الكاملة للشاشات
@@ -384,7 +387,6 @@
         let autoPlayTimer = null;
         let autoSliderDirection = 1;
         
-        // ربط أحداث الماوس للكمبيوتر الشخصي
         sliderTrack.addEventListener('mousedown', (e) => {
             isDown = true;
             sliderTrack.classList.add('grabbing');
@@ -411,7 +413,6 @@
             sliderTrack.scrollLeft = scrollLeft - walk;
         });
 
-        // ربط أحداث اللمس لهواتف الموبايل والتابلت بنسبة 100% يدوياً وتلقائياً لمنع الشلل البرمجي
         sliderTrack.addEventListener('touchstart', (e) => {
             isDown = true;
             startX = e.touches[0].pageX - sliderTrack.offsetLeft;
@@ -438,14 +439,11 @@
             }
         }, {passive: true});
 
-        // بناء المؤشرات النقطية آلياً بالتزامن الشامل مع الأبعاد الفاخرة المعتمدة
         buildSliderDots(sliderTrack, dotsContainerId, isCategoryType);
 
-        // دالة تشغيل التصفح التلقائي الانسيابي الخالي من العيوب البصرية (يدعم التوافق لمتصفحات RTL ومستجيب للمس)
         function startAutoPlayLogic() {
             autoPlayTimer = setInterval(() => {
                 if (!isDown) {
-                    // حماية وتأمين اتجاه الانزلاق لتفادي مشكلة السكرول المعكوس في أنظمة الموبايل
                     const isRTL = window.getComputedStyle(sliderTrack).direction === 'rtl';
                     const maxScroll = sliderTrack.scrollWidth - sliderTrack.clientWidth;
                     
@@ -481,7 +479,6 @@
         const totalItems = track.children.length;
         if(totalItems === 0) return;
         
-        // حوكمة قياس كروت تسوق حسب الفئة (280px للموبايل) مقابل الكروت العادية لضمان المزامنة المطلقة للنقاط الـ 12
         const cardWidth = isCategoryType ? 280 : (track.children[0].offsetWidth || 280);
         const visibleItemsCount = Math.max(1, Math.floor(track.offsetWidth / cardWidth)); 
         const dotsCount = Math.max(1, totalItems - visibleItemsCount + 1);
@@ -504,7 +501,6 @@
         if (!container || !track.children.length) return;
         
         const finalCardWidth = (isCategoryType ? 280 : track.children[0].offsetWidth) + 16;
-        // حماية تامة من التوقيع السالب في حسابات التصفح لمتصفحات RTL على شاشات الهواتف الذكية المكتشفة في الفيديو
         const activeIndex = Math.round(Math.abs(track.scrollLeft) / finalCardWidth);
         
         const dots = container.querySelectorAll('.bose-slider-dot');
@@ -514,7 +510,6 @@
         });
     }
 
-    // دالة مساعدة مطابقة لحركة سلايدرات كروت المنتجات القياسية المتبقية
     window.initializeBoseTracksSliderLogic = function(sliderTrack, dotsContainerId, isAutoPlay = false, isCategoryType = false) {
         initializeBoseSliderLogic(sliderTrack, dotsContainerId, isAutoPlay, isCategoryType);
     };
