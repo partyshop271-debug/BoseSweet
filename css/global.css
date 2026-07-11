@@ -1,98 +1,99 @@
 /* ==========================================================================
-   👑 BoseSweets Strict Production Global Stylesheet (css/global.css) V10.0 👑
-   تطهير برمي شامل - توافق مطور للموبايل والكمبيوتر - حظر الهدر البصري
+   👑 BoseSweets Strict Production Global Stylesheet (css/global.css) V12.0 👑
+   الهوية البصرية الموحدة، الهيدر، الفوتر، والقائمة الجانبية وحوكمة خط Cairo
+   امتثال كامل ومغلق لأدلة المواصفات - منع التداخل البصري والـ Overflow نهائياً
    ========================================================================== */
 
 :root {
-    /* الألوان الحاكمة والمقدسة للعلامة التجارية */
-    --bose-pink: #FF91A4;        /* نبض الحياة: حدود المنتجات، الظلال الناعمة، نصوص الأسعار[span_0](start_span)[span_0](end_span)[span_1](start_span)[span_1](end_span) */
-    --bose-white: #FFFFFF;       /* المسيطر تماماً: خلفيات المساحات للتنفس البصري والراحة النفسية[span_2](start_span)[span_2](end_span)[span_3](start_span)[span_3](end_span) */
-    --bose-black: #111111;       /* محظور استخدامه في أي ظلال أو خلفيات؛ مكانه الوحيد هو النصوص والعناوين[span_4](start_span)[span_4](end_span)[span_5](start_span)[span_5](end_span) */
-    --bose-gold: #D4AF37;        /* وجود رمزي ناعم: نجوم التقييمات وتفاصيل التخصيص الفاخرة[span_6](start_span)[span_6](end_span)[span_7](start_span)[span_7](end_span) */
+    /* الألوان الحاكمة والمقدسة لعلامة حلويات بوسي الفاخرة */
+    --bose-pink: #FF91A4;        /* نبض الحياة: حدود كروت المنتجات، الظلال الناعمة، نصوص الأسعار، والتأثيرات التفاعلية Hover */
+    --bose-white: #FFFFFF;       /* المسيطر تماماً: خلفيات المساحات لتأمين التنفس البصري الكامل والراحة النفسية للعميل */
+    --bose-black: #111111;       /* محظور استخدامه في أي ظلال أو خلفيات؛ مكانه الشرعي هو النصوص والعناوين لضمان وضوح كامل للعين */
+    --bose-gold: #D4AF37;        /* وجود رمزي ناعم وخفيف جداً: يحاكي فخامة اللوجو (نجوم التقييمات وتفاصيل التخصيص الفاخرة) */
 
-    /* الهندسة البرمجية للظلال والحدود دون استخدام ظلال سوداء نهائياً */
-    --bose-shadow-glow: 0 8px 32px rgba(255, 145, 164, 0.12);[span_8](start_span)[span_8](end_span)[span_9](start_span)[span_9](end_span)
-    --bose-shadow-hover: 0 16px 40px rgba(255, 145, 164, 0.22);[span_10](start_span)[span_10](end_span)[span_11](start_span)[span_11](end_span)
-    --bose-border-pink: 1px solid rgba(255, 145, 164, 0.3);[span_12](start_span)[span_12](end_span)[span_13](start_span)[span_13](end_span)
-    --bose-border-thick: 2px solid #FF91A4;[span_14](start_span)[span_14](end_span)[span_15](start_span)[span_15](end_span)
+    /* الهندسة البرمجية للظلال والحدود - محظور استخدام ظلال سوداء نهائياً */
+    --bose-shadow-glow: 0 8px 32px rgba(255, 145, 164, 0.12);
+    --bose-shadow-hover: 0 16px 40px rgba(255, 145, 164, 0.22);
+    --bose-border-pink: 1px solid rgba(255, 145, 164, 0.3);
+    --bose-border-thick: 2px solid #FF91A4;
 }
 
-/* إعادة تهيئة شاملة وتوفير مساحات التنفس البصري */
+/* إعادة تهيئة شاملة وتأمين قواعد التجاوب وصمامات الأمان */
 *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    -webkit-tap-highlight-color: transparent;[span_16](start_span)[span_16](end_span)
+    -webkit-tap-highlight-color: transparent;
 }
 
 html {
     scroll-behavior: smooth;
-    font-size: 16px;[span_17](start_span)[span_17](end_span)
+    font-size: 16px;
 }
 
 body {
     direction: rtl;
     overflow-x: hidden;
     line-height: 1.6;
-    background-color: var(--bose-white) !important;[span_18](start_span)[span_18](end_span)
-    color: var(--bose-black) !important;[span_19](start_span)[span_19](end_span)
-    font-family: 'Cairo', sans-serif !important;[span_20](start_span)[span_20](end_span)
-    padding-top: 120px !important; /* تأمين مسافة تحميل الهيدر والشريط العلوي الثابتين[span_21](start_span)[span_21](end_span) */
+    background-color: var(--bose-white) !important;
+    color: var(--bose-black) !important;
+    font-family: 'Cairo', sans-serif !important;
+    padding-top: 120px !important; /* تأمين المسافة الرأسية الكاملة لتحميل الهيدر والشريط العلوي الثابتين لمنع تداخل العناصر */
 }
 
 body.drawer-active {
-    overflow: hidden !important;[span_22](start_span)[span_22](end_span)
+    overflow: hidden !important; /* منع سكرول الخلفية عند فتح القائمة الجانبية الملوكية لراحة العميل */
 }
 
-/* حظر القطع أو نصوص Overflow لسهولة القراءة والراحة التامة للعين */
-h1, h2, h3, h4, p, span, a, button, input, select, textarea {
+/* حظر القطع ونصوص Overflow لضمان الفخامة وسهولة القراءة لراحة العين التامة */
+h1, h2, h3, h4, h5, h6, p, span, a, button, input, select, textarea {
     white-space: normal;
     word-wrap: break-word;
-    overflow-wrap: break-word;[span_23](start_span)[span_23](end_span)
+    overflow-wrap: break-word;
 }
 
-/* قفل أوزان الخطوط لمنع التشويه البصري */
+/* قفل أوزان الخطوط الهندسية للعلامة التجارية منعا للتشويه */
 h1, h2 {
     font-family: 'Cairo', sans-serif !important;
-    font-weight: 700 !important; /* مقفول كحد أقصى لأضخم العناوين الرئيسية[span_24](start_span)[span_24](end_span)[span_25](start_span)[span_25](end_span) */
-    color: var(--bose-black) !important;[span_26](start_span)[span_26](end_span)
+    font-weight: 700 !important; /* مقفول ومحمي كحد أقصى لأضخم العناوين الرئيسية بالموقع */
+    color: var(--bose-black) !important;
 }
 
 h3, h4, h5, h6 {
     font-family: 'Cairo', sans-serif !important;
-    font-weight: 600 !important; /* عناوين المنتجات والفئات[span_27](start_span)[span_27](end_span)[span_28](start_span)[span_28](end_span) */
-    color: var(--bose-black) !important;[span_29](start_span)[span_29](end_span)
+    font-weight: 600 !important; /* عناوين المنتجات، الفئات، وملخصات الفواتير */
+    color: var(--bose-black) !important;
 }
 
 p, span, a, button, input, select, textarea {
     font-family: 'Cairo', sans-serif !important;
-    font-weight: 400;[span_30](start_span)[span_30](end_span)
+    font-weight: 400;
 }
 
 a {
     text-decoration: none;
     color: inherit;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);[span_31](start_span)[span_31](end_span)
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 button, input, select, textarea {
     border: none;
     outline: none;
-    background: none;[span_32](start_span)[span_32](end_span)
+    background: none;
 }
 
 img {
     max-width: 100%;
     display: block;
-    object-fit: cover;[span_33](start_span)[span_33](end_span)
+    object-fit: cover;
 }
 
-/* --- 3. محرك الشريط العلوي المتحرك المطور مع تسريع العتاد --- */
+/* ==========================================================================
+   2. محرك وتصميم الشريط العلوي المتحرك اللانهائي (#top-bar-marquee)
+   ========================================================================== */
 #top-bar-marquee {
     position: fixed; 
-    top: 0;
-    right: 0;
-    left: 0;
+    top: 0; right: 0; left: 0;
     height: 46px; 
     width: 100%;
     background-color: var(--bose-pink) !important; 
@@ -100,14 +101,14 @@ img {
     overflow: hidden;
     display: flex;
     align-items: center;
-    z-index: 40000 !important;[span_34](start_span)[span_34](end_span)
+    z-index: 40000 !important; /* أعلى طبقة برمجية لتأمين الشريط العلوي ومنع اختفائه */
 }
 
 #top-bar-marquee-track {
     display: flex !important;
     white-space: nowrap !important;
     width: max-content !important;
-    will-change: transform; /* تفعيل خاصية التوجيه المباشر لكارت الشاشة لضمان النعومة الفائقة والأداء المالي */
+    will-change: transform; /* تفعيل تسريع العتاد لكارت الشاشة لضمان النعومة الفائقة ومنع الفراغات */
 }
 
 .ticker-message-item {
@@ -116,22 +117,23 @@ img {
     color: var(--bose-white) !important; 
     font-size: 0.95rem;
     white-space: nowrap;
-    display: inline-block !important;[span_35](start_span)[span_35](end_span)
+    display: inline-block !important;
 }
 
-/* --- 4. الهيدر الموحد والثابت القياسي الديناميكي البصري الخالص --- */
+/* ==========================================================================
+   3. الهيدر الموحد والثابت القياسي الديناميكي (.bose-navbar)
+   ========================================================================== */
 .bose-navbar {
     position: fixed;
-    top: 46px; 
-    right: 0;
-    left: 0;
+    top: 46px; /* يستقر هندسياً تحت شريط الإعلانات تماماً */
+    right: 0; left: 0;
     height: 74px;
     background-color: var(--bose-white) !important;
     border-bottom: var(--bose-border-pink) !important;
     box-shadow: var(--bose-shadow-glow) !important;
-    z-index: 39999 !important;
+    z-index: 39999 !important; /* مرتبة الحماية للهيدر لضمان ثباته فوق محتوى الأقسام */
     display: flex;
-    align-items: center;[span_36](start_span)[span_36](end_span)
+    align-items: center;
 }
 
 .navbar-mobile-wrapper {
@@ -140,27 +142,32 @@ img {
     margin: 0 auto;
     padding: 0 20px;
     display: grid;
-    grid-template-columns: auto auto 1fr auto;
+    grid-template-columns: auto auto 1fr auto; /* توزيع هندسي متزن مريح للعين */
     align-items: center;
-    gap: 15px;[span_37](start_span)[span_37](end_span)
+    gap: 15px;
 }
 
 #mobile-menu-toggle {
     grid-column: 1;
     font-size: 1.45rem;
     color: var(--bose-black) !important;
-    cursor: pointer;[span_38](start_span)[span_38](end_span)
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+#mobile-menu-toggle:hover {
+    color: var(--bose-pink) !important;
 }
 
 .brand-logo-container {
     grid-column: 2;
     display: flex;
-    align-items: center;[span_39](start_span)[span_39](end_span)
+    align-items: center;
 }
 
 #bose-store-logo {
     height: 48px;
-    width: auto;[span_40](start_span)[span_40](end_span)
+    width: auto;
+    object-fit: contain;
 }
 
 .brand-name-display {
@@ -168,8 +175,12 @@ img {
     font-size: 1.3rem;
     font-weight: 700;
     color: var(--bose-black) !important;
-    padding-right: 6px;
-    display: block !important;[span_41](start_span)[span_41](end_span)
+    padding-right: 8px;
+    display: block !important;
+}
+
+#bose-nav-menu {
+    display: none; /* مخفي في الموبايل أولاً ويتم حوكمته في الشاشات الكبيرة للشاشات والكمبيوتر */
 }
 
 .nav-actions {
@@ -177,18 +188,18 @@ img {
     display: flex;
     align-items: center;
     gap: 20px;
-    justify-content: flex-end;[span_42](start_span)[span_42](end_span)
+    justify-content: flex-end;
 }
 
 .nav-icon-btn {
     font-size: 1.35rem;
     color: var(--bose-black) !important;
     cursor: pointer;
-    transition: color 0.3s ease;[span_43](start_span)[span_43](end_span)
+    transition: color 0.3s ease;
 }
 
 .nav-icon-btn:hover {
-    color: var(--bose-pink) !important;[span_44](start_span)[span_44](end_span)
+    color: var(--bose-pink) !important;
 }
 
 .nav-cart-icon-wrapper {
@@ -196,13 +207,13 @@ img {
     font-size: 1.45rem;
     color: var(--bose-black) !important;
     display: flex;
-    align-items: center;[span_45](start_span)[span_45](end_span)
+    align-items: center;
+    cursor: pointer;
 }
 
 #nav-cart-count {
     position: absolute;
-    top: -6px;
-    left: -10px;
+    top: -6px; left: -10px;
     background-color: var(--bose-pink) !important;
     color: var(--bose-white) !important;
     font-size: 0.75rem;
@@ -214,26 +225,49 @@ img {
     align-items: center;
     justify-content: center;
     padding: 2px;
-    box-shadow: 0 2px 6px rgba(255, 145, 164, 0.4);[span_46](start_span)[span_46](end_span)
+    box-shadow: 0 2px 6px rgba(255, 145, 164, 0.4);
 }
 
-/* --- 5. حوكمة وتطوير استايلات القائمة الجانبية الملوكية وسد ثغرات الضباب --- */
+/* دمج الحوكمة المتجاوبة للكمبيوتر واللاب توب داخل الهيدر الموحد */
+@media (min-width: 1024px) {
+    #mobile-menu-toggle { display: none; } /* حظر زر الهامبرغر في الكمبيوتر */
+    #bose-nav-menu {
+        display: block;
+        margin-right: 30px;
+    }
+    .nav-list {
+        list-style: none;
+        display: flex;
+        gap: 25px;
+    }
+    .nav-list li a {
+        font-weight: 600;
+        font-size: 1rem;
+        color: var(--bose-black);
+    }
+    .nav-list li a:hover {
+        color: var(--bose-pink) !important;
+    }
+}
+
+/* ==========================================================================
+   4. حوكمة واجهة القائمة الجانبية المتطورة (Sidebar Drawer) وسد الثغرات
+   ========================================================================== */
 .bose-drawer-menu {
     position: fixed;
-    top: 0;
-    right: 0;
+    top: 0; right: 0;
     width: 340px;
     max-width: 85vw;
     height: 100vh;
     background: var(--bose-white) !important;
-    z-index: 50000 !important; /* تأمين z-index القائمة الجانبية كحد أدنى لمنع التداخل البصري واختفاء النصوص */
-    transform: translate3d(100%, 0, 0);
+    z-index: 50000 !important; /* قفل الـ z-index في أعلى مرتبة على الإطلاق لمنع تداخل كروت المنيو والشلال */
+    transform: translate3d(100%, 0, 0); /* إزاحة كاملة خارج الشاشة مع تسريع ثلاثي الأبعاد */
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: -8px 0 32px rgba(255, 145, 164, 0.08) !important;[span_47](start_span)[span_47](end_span)
+    box-shadow: -8px 0 32px rgba(255, 145, 164, 0.08) !important;
 }
 
 .bose-drawer-menu.active {
-    transform: translate3d(0, 0, 0) !important;[span_48](start_span)[span_48](end_span)
+    transform: translate3d(0, 0, 0) !important;
 }
 
 .bose-drawer-panel-content {
@@ -243,42 +277,37 @@ img {
     width: 100%;
     direction: rtl;
     background: var(--bose-white) !important;
-    position: relative;[span_49](start_span)[span_49](end_span)
+    position: relative;
 }
 
 .drawer-premium-header {
     padding: 30px 24px 20px 24px;
-    border-bottom: 1px solid rgba(255, 145, 164, 0.1);[span_50](start_span)[span_50](end_span)
+    border-bottom: 1px solid rgba(255, 145, 164, 0.1);
 }
+.drawer-premium-header h3 { font-size: 1.2rem; margin-bottom: 4px; color: var(--bose-black); }
+.drawer-premium-header p { font-size: 0.85rem; color: var(--bose-pink); font-weight: 600; }
 
-.drawer-premium-header h3 { font-size: 1.2rem; margin-bottom: 4px; }[span_51](start_span)[span_51](end_span)
-.drawer-premium-header p { font-size: 0.85rem; color: var(--bose-pink); }[span_52](start_span)[span_52](end_span)
+.drawer-close-btn {
+    position: absolute;
+    left: 20px; top: 28px;
+    font-size: 1.4rem;
+    color: var(--bose-pink) !important;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+.drawer-close-btn:hover {
+    transform: rotate(90deg);
+}
 
 .drawer-links-scrollable {
     flex: 1;
-    overflow-y: auto;
-    padding: 10px 0;[span_53](start_span)[span_53](end_span)
+    overflow-y: auto; /* تمكين التمرير الداخلي المنفصل لراحة يد العميل ومحاربة الجمود */
+    padding: 10px 0;
+    -webkit-overflow-scrolling: touch;
 }
 
-.drawer-links-list { list-style: none; }[span_54](start_span)[span_54](end_span)
-
-.drawer-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(255, 145, 164, 0.15) !important; 
-    backdrop-filter: blur(4px);
-    z-index: 49999 !important; /* إرجاع الغطاء الشفاف الضبابي لطبقة خلف لوحة القائمة مباشرة لعزل تأثير التمويه */
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.4s ease;[span_55](start_span)[span_55](end_span)
-}
-
-.drawer-overlay.active {
-    opacity: 1 !important;
-    pointer-events: auto !important;[span_56](start_span)[span_56](end_span)
+.drawer-links-list {
+    list-style: none;
 }
 
 .drawer-link-item a {
@@ -289,30 +318,146 @@ img {
     color: var(--bose-black) !important;
     font-weight: 600;
     font-size: 1rem;
-    border-bottom: 1px solid rgba(255, 145, 164, 0.06);[span_57](start_span)[span_57](end_span)
+    border-bottom: 1px solid rgba(255, 145, 164, 0.06);
 }
 
 .drawer-link-item a i {
     color: var(--bose-pink) !important;
     width: 20px;
-    text-align: center;[span_58](start_span)[span_58](end_span)
+    text-align: center;
 }
 
 .drawer-link-item a:hover {
-    background-color: rgba(255, 145, 164, 0.08) !important;
-    color: var(--bose-pink) !important;[span_59](start_span)[span_59](end_span)
-}
-
-.drawer-close-btn {
-    position: absolute;
-    left: 20px;
-    top: 24px;
-    font-size: 1.4rem;
+    background-color: rgba(255, 145, 164, 0.04) !important;
     color: var(--bose-pink) !important;
-    cursor: pointer;[span_60](start_span)[span_60](end_span)
 }
 
-/* --- 6. الفوتر القياسي الموحد المعتمد بلونه الفاتح الخالص --- */
+/* استايلات مخصصة لعناصر الفئات والـ Mini Cart المدمجة بالقائمة لراحة العميل */
+.drawer-premium-section-title {
+    padding: 20px 24px 10px 24px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--bose-black);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    opacity: 0.8;
+}
+
+.drawer-categories-quick-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    padding: 10px 24px;
+}
+
+.sidebar-cat-chip-node {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    border: var(--bose-border-pink);
+    border-radius: 12px;
+    background: var(--bose-white);
+}
+.sidebar-cat-chip-node img { width: 32px; height: 32px; border-radius: 50%; }
+.sidebar-cat-chip-node span { font-size: 0.85rem; font-weight: 600; color: var(--bose-black); }
+
+.sidebar-mini-cart-container {
+    padding: 10px 24px;
+}
+.sidebar-mini-cart-empty {
+    text-align: center;
+    padding: 20px 0;
+    color: var(--bose-black);
+    opacity: 0.6;
+}
+.sidebar-mini-cart-empty i { font-size: 2rem; margin-bottom: 8px; color: var(--bose-pink); }
+.sidebar-mini-cart-empty p { font-size: 0.9rem; }
+.sidebar-browse-menu-trigger {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 0.85rem;
+    color: var(--bose-pink);
+    font-weight: 700;
+}
+
+.sidebar-mini-cart-item-node {
+    display: flex;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px dashed rgba(255, 145, 164, 0.15);
+}
+.sidebar-mini-cart-item-node img { width: 44px; height: 44px; border-radius: 8px; }
+.sidebar-mini-cart-item-details h4 { font-size: 0.9rem; margin-bottom: 2px; }
+.sidebar-mini-cart-item-details h5 { font-size: 0.75rem; color: var(--bose-pink); margin-bottom: 2px; }
+.sidebar-mini-cart-item-meta { font-size: 0.75rem; opacity: 0.8; }
+
+.sidebar-mini-cart-footer-summary {
+    margin-top: 15px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 145, 164, 0.15);
+}
+.sidebar-mini-cart-total-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+}
+.sidebar-mini-cart-total-row strong { color: var(--bose-pink); }
+.sidebar-mini-cart-checkout-cta-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    background: var(--bose-pink);
+    color: var(--bose-white) !important;
+    padding: 10px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.drawer-premium-footer-block {
+    padding: 20px 24px 30px 24px;
+    border-top: 1px solid rgba(255, 145, 164, 0.1);
+    background: var(--bose-white);
+}
+.drawer-support-call-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    background: #25D366; /* لون واتساب الرسمي الصريح للقنوات والمحادثات */
+    color: var(--bose-white) !important;
+    padding: 12px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.2);
+}
+
+.drawer-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(17, 17, 17, 0.2) !important; /* غطاء مظلم خفيف وناعم وشفاف بعيداً عن السواد الحاد */
+    backdrop-filter: blur(4px);
+    z-index: 49999 !important; /* يستقر هندسياً تحت لوحة القائمة مباشرة لعزل تأثير التمويه وحماية النصوص */
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+}
+
+.drawer-overlay.active {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+/* ==========================================================================
+   5. الفوتر القياسي الموحد المعتمد بلونه الفاتح الخالص (.bose-footer)
+   ========================================================================== */
 .bose-footer {
     background-color: var(--bose-white) !important;
     border-top: var(--bose-border-pink) !important;
@@ -321,49 +466,143 @@ img {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    width: 100%;[span_61](start_span)[span_61](end_span)
+    width: 100%;
 }
 
-.footer-logo-container { margin-bottom: 12px; }[span_62](start_span)[span_62](end_span)
+.footer-logo-container {
+    margin-bottom: 12px;
+}
+#bose-footer-logo-node {
+    height: 60px;
+    width: auto;
+    object-fit: contain;
+}
+
 .footer-brand-name {
     font-size: 1.45rem;
     font-weight: 700;
     color: var(--bose-black) !important;
-    margin-bottom: 16px;[span_63](start_span)[span_63](end_span)
+    margin-bottom: 16px;
+    display: inline-block;
 }
 
-.footer-about-block { max-width: 650px; margin-bottom: 25px; }[span_64](start_span)[span_64](end_span)
+.footer-about-block {
+    max-width: 650px;
+    margin-bottom: 25px;
+}
 #footer-about-text {
     font-size: 0.95rem;
     color: var(--bose-black) !important;
     opacity: 0.9;
-    line-height: 1.7;[span_65](start_span)[span_65](end_span)
+    line-height: 1.7;
 }
 
-.footer-quick-links { margin-bottom: 20px; }[span_66](start_span)[span_66](end_span)
-.footer-quick-links ul { list-style: none; display: flex; gap: 20px; }[span_67](start_span)[span_67](end_span)
-.footer-policies-container { margin-bottom: 20px; }[span_68](start_span)[span_68](end_span)
+.footer-quick-links {
+    margin-bottom: 25px;
+}
+.footer-quick-links ul {
+    list-style: none;
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+}
+.footer-quick-links ul li a {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--bose-black);
+}
+
+.footer-policies-container {
+    margin-bottom: 25px;
+}
 .footer-policies-container ul {
     list-style: none;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 15px;
-    font-size: 0.9rem;[span_69](start_span)[span_69](end_span)
+    gap: 20px;
+    font-size: 0.9rem;
+}
+.footer-policies-container ul li a {
+    color: var(--bose-black);
+    opacity: 0.8;
 }
 
-.bose-social-links-wrapper { display: flex; gap: 15px; margin-bottom: 20px; }[span_70](start_span)[span_70](end_span)
-.footer-location-block { font-size: 0.9rem; color: var(--bose-black); margin-bottom: 15px; }[span_71](start_span)[span_71](end_span)
+.bose-social-links-wrapper {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.footer-location-block {
+    font-size: 0.9rem;
+    color: var(--bose-black);
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+.footer-location-block i {
+    color: var(--bose-pink);
+    margin-left: 6px;
+}
 
 .footer-copyright-block {
     width: 100%;
     border-top: 1px solid rgba(255, 145, 164, 0.15);
     padding-top: 20px;
-    margin-top: 20px;[span_72](start_span)[span_72](end_span)
+    margin-top: 20px;
 }
-
 .footer-copyright-block p {
     font-size: 0.85rem;
     color: var(--bose-black) !important;
-    opacity: 0.7;[span_73](start_span)[span_73](end_span)
+    opacity: 0.7;
+}
+
+/* ==========================================================================
+   6. التنبيهات المركزية العائمة وحاوية الـ Toast للموقع
+   ========================================================================== */
+.bose-toast-container {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 60000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+}
+
+.bose-toast-node {
+    background: var(--bose-black);
+    color: var(--bose-white);
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    direction: rtl;
+    text-align: center;
+    pointer-events: auto;
+    animation: boseToastIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes boseToastIn {
+    0% { transform: translateY(20px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+}
+
+.global-error-banner-node {
+    position: fixed;
+    bottom: 20px; left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--bose-pink);
+    color: var(--bose-white);
+    padding: 12px 24px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 99999;
+    direction: rtl;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
 }
