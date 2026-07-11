@@ -1,15 +1,12 @@
 /**
- * 👑 ملف المحرك المركزي العالمي المصحح والمطور بالكامل V9.5 - حلويات بوسي 2026 👑
- * معالجة هندسية شاملة وحوكمة كاملة لواجهات الشريط العلوي، القائمة الجانبية، والفوتر الموحد
- * امتثال مطلق وأعمى لملف الحوكمة والمواصفة الرسمية القياسية الفاخرة لمنع الأخطاء البصرية
- * تم إصلاح حركات السلايدرات، الشريط العلوي، والشلال بفصل تام للمسؤوليات ومنع حقن الاستايلات المتعارضة
- * ملتزم تماماً بمهامه اللوجستية والبياناتية دون التدخل أو التعارض في مهام ملفات الـ CSS المستقلة
+ * 👑 ملف المحرك المركزي العالمي المصحح والمطور بالكامل V9.6 - حلويات بوسي 2026 👑
+ * حوكمة كاملة لواجهات الشريط العلوي، القائمة الجانبية، والفوتر الموحد ومنع تداخل الملفات
+ * امتثال مطلق وأعمى للمواصفة القياسية الفاخرة لمنع الأخطاء البصرية وحل مشكلة الاختفاء
  */
 (function() {
     window.BoseStoreData = null; 
     window.boseServerTimeOffset = 0; 
 
-    // تهيئة واستدعاء قاعدة بيانات حلويات بوسي المستقرة والوحيدة للموقع
     async function loadStoreDatabase() {
         if (window.BoseStoreData) return;
         let retries = 5;
@@ -37,23 +34,17 @@
                     
                     window.BoseStoreData = await response.json();
                     
-                    // إدارة وضخ العناصر العالمية المشتركة عبر بروتوكول الحقن الهندسي الصحيح
                     injectEarlyDependencies();
                     renderUniversalHeader();
                     renderUniversalSidebar();
                     renderUniversalFooter();
                     
-                    // تحديثات الحالة العامة والـ SEO
                     applyGlobalSEOAndBranding();
                     window.updateGlobalCartCounter();
-
-                    // محرك ضخ واجهات الصفحة الرئيسية والمنيو تلقائياً لملء الأوسمة الفارغة
                     renderBoseDynamicContent();
                     
-                    // تفعيل حدث مخصص فوراً وضمان ترحيله للمتصفح لمنع التعارض الزمني
                     document.dispatchEvent(new CustomEvent('BoseDatabaseLoaded', { detail: window.BoseStoreData }));
                     
-                    // حارس التمهيد لربط الـ DOM واستدعاء معالجات الواجهة بعد طلاء العناصر تماماً
                     if (typeof window.onBoseDatabaseReadyWrapper === "function") {
                         window.onBoseDatabaseReadyWrapper(window.BoseStoreData);
                     }
@@ -72,10 +63,6 @@
             }
         }
     }
-
-    /* ==========================================================================
-       👑 قسم ضخ وبناء الواجهات الموحدة الثابتة (Universal Layout Injection)
-       ========================================================================== */
 
     function renderUniversalHeader() {
         let headerInjector = document.getElementById('bose-header-injector');
@@ -229,14 +216,10 @@
         `;
     }
 
-    /* ==========================================================================
-       👑 محرك ضخ وبناء المحتوى الحركي والشبكي التفاعلي (Dynamic Render Engine)
-       ========================================================================== */
     function renderBoseDynamicContent() {
         const data = window.BoseStoreData;
         if (!data) return;
 
-        // 🔄 إصلاح الشريط العلوي: حقن الجمل وتكرارها لمنع الفراغات والسرعة الزائدة هندسياً
         const tickerTrack = document.getElementById('top-bar-marquee-track');
         if (tickerTrack && data.navigation.topBarMessages) {
             let messagesHtml = data.navigation.topBarMessages.map(msg => `
@@ -244,7 +227,7 @@
             `).join('');
             
             let infiniteLoopHtml = '';
-            for (let i = 0; i < 20; i++) { 
+            for (let i = 0; i < 30; i++) { 
                 infiniteLoopHtml += messagesHtml;
             }
             tickerTrack.innerHTML = infiniteLoopHtml;
@@ -269,7 +252,6 @@
         if (excellenceDesc) excellenceDesc.textContent = data.homepage.excellence.description;
         if (excellenceTrack && data.homepage.excellence.images) {
             excellenceTrack.innerHTML = data.homepage.excellence.images.map(img => `<a href="menu.html" class="perfection-slide-node"><img src="${img}" alt="إتقان حلويات بوسي"></a>`).join('');
-            // تهيئة السلايدر الموزون هندسياً لحل مشكلة المساحات البيضاء
             initializeBoseSliderLogic(excellenceTrack, 'excellence-dots', true, false); 
         }
 
@@ -314,7 +296,7 @@
             if (window.innerWidth <= 767) {
                 newArrivalsGrid.className = "bose-new-arrivals-grid-slider";
             }
-            initializeBoseTracksSliderLogic(newArrivalsGrid, 'new-arrivals-dots', false, false);
+            initializeBoseSliderLogic(newArrivalsGrid, 'new-arrivals-dots', false, false);
         }
 
         const ourProductsGrid = document.getElementById('our-products-grid');
@@ -366,49 +348,25 @@
                     </a>
                 </div>
             `).join('');
-            initializeBoseSliderLogic(categoriesTrack, 'categories-dots', false, true); 
-        }
-
-        const menuCategoriesGrid = document.getElementById('menu-categories-grid');
-        if (menuCategoriesGrid && data.homepage.categoriesSlider) {
-            menuCategoriesGrid.innerHTML = data.homepage.categoriesSlider.map(cat => `
-                <div class="menu-category-card">
-                    <a href="category.html?id=${cat.id}">
-                        <img src="${cat.image}" class="category-main-img" alt="${cat.title}">
-                    </a>
-                    <h3 class="category-card-title-node">${cat.title}</h3>
-                    <div class="category-card-action-node">
-                        <a href="category.html?id=${cat.id}" class="bose-hero-btn">استعرض المنتجات</a>
-                    </div>
-                </div>
-            `).join('');
+            initializeBoseSliderLogic(categoriesTrack, 'categories-dots', true, true); 
         }
     }
 
-    /* ==========================================================================
-       👑 محرك السحب واللمس والتصفح الأفقي المصلح الشامل (Universal Slider Logic)
-       ========================================================================== */
     function initializeBoseSliderLogic(sliderTrack, dotsContainerId, isAutoPlay = false, isCategoryType = false) {
         if (!sliderTrack) return;
-        if (sliderTrack.id === 'top-bar-marquee-track') return;
-
+        
         let isDown = false;
         let startX;
         let scrollLeft;
         
         sliderTrack.addEventListener('mousedown', (e) => {
             isDown = true;
-            sliderTrack.classList.add('grabbing');
             startX = e.pageX - sliderTrack.offsetLeft;
             scrollLeft = sliderTrack.scrollLeft;
         });
-        sliderTrack.addEventListener('mouseleave', () => {
-            isDown = false;
-            sliderTrack.classList.remove('grabbing');
-        });
+        sliderTrack.addEventListener('mouseleave', () => { isDown = false; });
         sliderTrack.addEventListener('mouseup', () => {
             isDown = false;
-            sliderTrack.classList.remove('grabbing');
             updateSliderDots(sliderTrack, dotsContainerId, isCategoryType);
         });
         sliderTrack.addEventListener('mousemove', (e) => {
@@ -438,12 +396,25 @@
         });
 
         sliderTrack.addEventListener('scroll', () => {
-            if (!isDown) {
-                updateSliderDots(sliderTrack, dotsContainerId, isCategoryType);
-            }
+            if (!isDown) { updateSliderDots(sliderTrack, dotsContainerId, isCategoryType); }
         }, {passive: true});
 
         buildSliderDots(sliderTrack, dotsContainerId, isCategoryType);
+
+        // 🔄 محرك الأنميشن الانسيابي المطور: مهدأ وموزون تماماً لمنع الاختفاء والمساحات البيضاء
+        if (isAutoPlay && !isCategoryType) {
+            let autoMove = setInterval(() => {
+                if (!isDown) {
+                    let maxScroll = sliderTrack.scrollWidth - sliderTrack.clientWidth;
+                    if (sliderTrack.scrollLeft >= maxScroll || Math.abs(sliderTrack.scrollLeft) >= maxScroll) {
+                        sliderTrack.scrollTo({ left: 0, behavior: 'smooth' });
+                    } else {
+                        sliderTrack.scrollBy({ left: window.innerWidth * 0.6, behavior: 'smooth' });
+                    }
+                }
+            }, 4000);
+            sliderTrack.dataset.autoInterval = autoMove;
+        }
     }
 
     function buildSliderDots(track, containerId, isCategoryType) {
@@ -485,13 +456,6 @@
         });
     }
 
-    window.initializeBoseTracksSliderLogic = function(sliderTrack, dotsContainerId, isAutoPlay = false, isCategoryType = false) {
-        initializeBoseSliderLogic(sliderTrack, dotsContainerId, isAutoPlay, isCategoryType);
-    };
-
-    /* ==========================================================================
-       👑 إدارة عمليات تفاعل الكروت الفورية (إضافة للسلة وتعديل الكميات)
-       ========================================================================== */
     window.modifyBoseQtyCard = function(button, change) {
         const counterWrapper = button.parentElement;
         const input = counterWrapper.querySelector('.input-qty-value');
@@ -502,7 +466,7 @@
     };
 
     window.addBoseCardToCart = function(button, productSlug) {
-        const cardNode = button.closest('.product-card-unified') || button.closest('.menu-category-card');
+        const cardNode = button.closest('.product-card-unified');
         const qtyInput = cardNode ? cardNode.querySelector('.input-qty-value') : null;
         const quantity = qtyInput ? (parseInt(qtyInput.value, 10) || 1) : 1;
         
@@ -540,9 +504,6 @@
         setTimeout(() => { toast.remove(); }, 3000);
     }
 
-    /* ==========================================================================
-       👑 الحسابات المالية الدقيقة وحوكمة الفئات (Core Mathematical System)
-       ========================================================================== */
     window.calculateBosePrice = function(basePrice, applyOnContext = "menu-only") {
         if (!window.BoseStoreData) return basePrice;
         const rule = window.BoseStoreData.store.priceIncrease;
@@ -550,147 +511,6 @@
             return parseFloat((basePrice * (1 + (rule.percent / 100))).toFixed(4));
         }
         return basePrice;
-    };
-
-    window.calculateProductFinalPrice = function(product, selectedOptions) {
-        const opts = selectedOptions || {};
-        let price = product ? (product.price || product.basePrice || 0) : 0;
-
-        if (product && product.prices && opts.size) {
-            price = product.prices[opts.size] || price;
-        }
-
-        const selectedPrinting = opts.printing || opts.printingType || 'none';
-        if (selectedPrinting && selectedPrinting !== 'none') {
-            let printingFee = 0;
-            if (product && product.customizationOptions && product.customizationOptions.printing) {
-                const printOptions = product.customizationOptions.printing.options;
-                if (Array.isArray(printOptions)) {
-                    const printingOpt = printOptions.find(opt => opt.id === selectedPrinting || opt.type === selectedPrinting);
-                    if (printingOpt) printingFee = printingOpt.price;
-                }
-            }
-            if (printingFee === 0) {
-                if (selectedPrinting === 'edible' || selectedPrinting === 'printable-edible' || selectedPrinting === 'صورة_صالحة_للأكل') {
-                    printingFee = 60;
-                } else if (selectedPrinting === 'non-edible' || selectedPrinting === 'printable-non-edible' || selectedPrinting === 'صورة_غير_صالحة_للأكل') {
-                    printingFee = 15;
-                }
-            }
-            price += printingFee;
-        }
-        return window.calculateBosePrice(price, "menu-only");
-    };
-
-    window.createCartItem = function(product, selectedOptions, quantity = 1) {
-        if (!product) return null;
-        const opts = selectedOptions || {};
-        const finalUnitPrice = window.calculateProductFinalPrice(product, opts);
-        
-        const isCustomizable = product.isMiniCake || product.type === "custom-cake" || product.type === "custom-flower" || (product.customizationOptions && Object.keys(opts).length > 0);
-        const finalId = isCustomizable ? `${product.slug}-${Date.now()}` : String(product.slug || product.id);
-        
-        return {
-            id: finalId,
-            productSlug: product.slug,
-            title: product.title,
-            flavorName: opts.flavorName || opts.cakeType || product.flavor || "افتراضي",
-            basePrice: parseFloat((product.price || product.basePrice || 0).toFixed(4)),
-            finalPrice: parseFloat(finalUnitPrice.toFixed(4)),
-            quantity: parseInt(quantity, 10) || 1,
-            image: product.image || (product.images && product.images[0]) || "",
-            type: product.type || (product.isMiniCake ? "mini-cake" : "standard"),
-            customDetails: {
-                cakeType: opts.cakeType || opts.cakeFlavor || "فانيليا",
-                shape: opts.shape || "circle",
-                persons: parseInt(opts.persons, 10) || 0,
-                printingType: opts.printingType || opts.printing || "none",
-                customMessage: opts.customMessage || "",
-                allergyNote: opts.allergyNote || "",
-                flowerType: opts.flowerType || "none",
-                flowerCount: parseInt(opts.flowerCount, 10) || 0,
-                moneyAmount: parseInt(opts.moneyAmount, 10) || 0,
-                moneyFee: parseInt(opts.moneyFee, 10) || 0,
-                chocolateType: opts.chocolateType || "none",
-                chocolatePieces: parseInt(opts.chocolatePieces, 10) || 0,
-                wrappingType: opts.wrappingType || "none",
-                giftCardText: opts.giftCardText || ""
-            }
-        };
-    };
-
-    window.calculateCustomCakePrice = function(persons, options = {}) {
-        const config = window.BoseStoreData?.cakeBuilder;
-        const safePersons = parseInt(persons, 10) || (config ? config.persons.minimum : 4) || 4;
-        let price = (config ? config.basePrice : 580) || 580;
-        const minPersons = (config ? config.persons.minimum : 4) || 4;
-        const pricePerPerson = (config ? config.pricePerPerson : 145) || 145; 
-        
-        const extraPersons = Math.max(0, safePersons - minPersons);
-        price += extraPersons * pricePerPerson;
-        
-        const selectedPrinting = options.printingType || options.printing || 'none';
-        if (selectedPrinting && selectedPrinting !== 'none') {
-            let printingFee = 0;
-            if (config && config.printingOptions) {
-                const printOpt = config.printingOptions.find(opt => opt.id === selectedPrinting);
-                if (printOpt) printingFee = printOpt.price;
-            }
-            if (printingFee === 0) {
-                if (selectedPrinting === 'edible' || selectedPrinting === 'printable-edible' || selectedPrinting === 'صورة_صالحة_للأكل') {
-                    printingFee = 60;
-                } else if (selectedPrinting === 'non-edible' || selectedPrinting === 'printable-non-edible' || selectedPrinting === 'صورة_غير_صالحة_للأكل') {
-                    printingFee = 15;
-                }
-            }
-            price += printingFee;
-        }
-        return window.calculateBosePrice(price, "menu-only");
-    };
-
-    window.calculateCustomFlowerPrice = function(flowerType, flowerCount, options = {}) {
-        const config = window.BoseStoreData?.flowerBuilder;
-        if (!config) return 0;
-        
-        const safeFlowerCount = parseInt(flowerCount, 10) || config.baseFlowers;
-        const safeCashAmount = parseInt(options.moneyAmount, 10) || 0;
-        const safeCashCategoryAmount = parseInt(options.moneyCategoryAmount, 10) || 0;
-        const safeChocolatePieces = parseInt(options.chocolatePieces, 10) || 0;
-        const safePhotoCount = parseInt(options.photoCount, 10) || 0;
-        
-        let servicePrice = config.basePrice || 400;
-        const extraFlowers = Math.max(0, safeFlowerCount - config.baseFlowers);
-        servicePrice += extraFlowers * config.extraFlowerPrice;
-        
-        if (options.wrappingType) {
-            const wrapOpt = config.wrappingTypes.find(opt => opt.id === options.wrappingType);
-            if (wrapOpt) servicePrice += wrapOpt.price;
-        }
-        if (options.chocolateType && safeChocolatePieces > 0) {
-            const chocOpt = config.chocolateTypes.find(opt => opt.id === options.chocolateType);
-            if (chocOpt) servicePrice += chocOpt.price * safeChocolatePieces;
-        }
-        if (options.hasGiftCard) servicePrice += config.giftCardPrice || 20;
-        if (safePhotoCount > 0) servicePrice += safePhotoCount * (config.photoPrintPrice || 15);
-        
-        let cashHandlingFee = 0;
-        if (safeCashAmount > 0 && safeCashCategoryAmount > 0) {
-            const selectedCategory = config.moneyCategories.find(cat => cat.amount === safeCashCategoryAmount);
-            if (selectedCategory) {
-                const billCount = Math.floor(safeCashAmount / safeCashCategoryAmount);
-                cashHandlingFee += billCount * selectedCategory.fee;
-                const remainder = safeCashAmount % safeCashCategoryAmount;
-                if (remainder > 0) {
-                    const remainderCategory = config.moneyCategories
-                        .filter(cat => cat.amount <= remainder)
-                        .sort((a, b) => b.amount - a.amount)[0] || config.moneyCategories[0];
-                    if (remainderCategory) cashHandlingFee += remainderCategory.fee;
-                }
-            }
-        }
-        
-        servicePrice += cashHandlingFee;
-        return window.calculateBosePrice(servicePrice, "menu-only") + safeCashAmount;
     };
 
     window.validateBosePhoneNumber = function(phone, isOptional = false) {
@@ -721,7 +541,6 @@
         cartCountBadge.textContent = totalDisplayItems;
     };
 
-    // حارس التمهيد لربط الـ DOM وتنشيط العدادات الرقمية فور اكتمال مصفوفة قاعدة البيانات
     window.onBoseDatabaseReady = function(callback) {
         window.onBoseDatabaseReadyWrapper = callback;
         if (window.BoseStoreData) {
