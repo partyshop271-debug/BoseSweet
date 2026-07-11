@@ -15,12 +15,12 @@
     <link rel="canonical" href="https://bosesweets.com">
 
     <!-- ملفات الستايل الرسمية المعزولة لمنع تضخم الواجهات وتحقيق الفخامة والتنفس البصري -->
-    <link rel="stylesheet" href="css/global.css">
-    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/global.css?v=2026_v8.5">
+    <link rel="stylesheet" href="css/main.css?v=2026_v67.3">
     <link rel="stylesheet" href="css/simulators.css">
     
-    <!-- المحرك المركزي العالمي وحارس التمهيد: المستدعى الوحيد برأس الصفحة لحظر وميض الألوان وتأمين الأداء -->
-    <script src="js/core-engine.js?v=2026_production_v7"></script>
+    <!-- 🔄 كسر الذاكرة المؤقتة الحتمي (Cache Busting) لضمان قراءة التعديل فوراً من الاستضافة -->
+    <script src="js/core-engine.js?v=2026_production_v8.5_fixed"></script>
 </head>
 <body class="bose-hardware-accelerated">
 
@@ -178,8 +178,7 @@
             window.onBoseDatabaseReady && window.onBoseDatabaseReady((data) => {
                 console.log("👑 حارس التمهيد: تم مزامنة واجهة index.html بالكامل وبنجاح مع قاعدة البيانات.");
                 
-                // محرك العدادات التصاعدية الرقمية الذكية الخالي من أخطاء الـ NaN لـ 5 خانات كاملة بالمسطرة
-                const run تصاعدي = (id, targetValue) => {
+                const runتصارعي = (id, targetValue) => {
                     const el = document.getElementById(id);
                     if (!el) return;
                     let current = 0;
@@ -198,15 +197,13 @@
                     }, stepTime);
                 };
 
-                // إثارة وتشغيل العدادات فوراً بقيمها النقية والأصيلة المستدعاة من الـ JSON
                 setTimeout(() => {
-                    run("stat-years-value", data.homepage.pride.stats.years.value);
-                    run("stat-customers-value", data.homepage.pride.stats.customers.value);
-                    run("stat-orders-value", data.homepage.pride.stats.orders.value);
-                    run("stat-cakes-value", data.homepage.pride.stats.cakes.value);
-                    run("stat-bouquets-value", data.homepage.pride.stats.bouquets.value);
+                    runتصارعي("stat-years-value", data.homepage.pride.stats.years.value);
+                    runتصارعي("stat-customers-value", data.homepage.pride.stats.customers.value);
+                    runتصارعي("stat-orders-value", data.homepage.pride.stats.orders.value);
+                    runتصارعي("stat-cakes-value", data.homepage.pride.stats.cakes.value);
+                    runتصارعي("stat-bouquets-value", data.homepage.pride.stats.bouquets.value);
                     
-                    // حقن لواحق الأسماء والتسميات التوضيحية ديناميكياً لتفادي الكتابة اليدوية
                     document.getElementById("stat-years-label").textContent = data.homepage.pride.stats.years.label;
                     document.getElementById("stat-customers-label").textContent = data.homepage.pride.stats.customers.label;
                     document.getElementById("stat-orders-label").textContent = data.homepage.pride.stats.orders.label;
