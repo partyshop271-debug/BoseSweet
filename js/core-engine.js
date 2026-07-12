@@ -1,10 +1,9 @@
 /**
- * 👑 ملف المحرك المركزي العالمي المصحح والمطور بالكامل V13.0 - حلويات بوسي 2026 👑
+ * 👑 ملف المحرك المركزي العالمي المصحح والمطور بالكامل V13.5 - حلويات بوسي 2026 👑
  * حوكمة كاملة لواجهات الشريط العلوي، القائمة الجانبية المتطورة، والفوتر الموحد ومنع تداخل الملفات
- * القضاء التام والنهائي على ثغرة بتر القائمة الجانبية وضمان التمرير الكامل لآخر عنصر لوجستي
+ * القضاء التام والنهائي على ثغرة وميض واختفاء نصوص الشريط العلوي وصور قسم "عقد من الإتقان"
  * المسؤول الوحيد والمطلق عن التحكم في حركة وسرعة وتكرار وضخ نصوص الشريط العلوي وقسم "عقد من الإتقان"
- * [إصلاح شامل من الجذور]: عكس حركة شريط الإعلانات ليبدأ من اليمين لليسار متوافقاً 100% مع اللغة العربية.
- * [تطهير بصري]: إنهاء ثغرة اختفاء وميض قسم "عقد من الإتقان" وجعل الصور متصلة تماماً وتملأ كامل الحيز البصري بلا فواصل.
+ * [إصلاح شامل من الجذور]: عزل اتجاه حركية السلايدرات لمنع انقطاع أو بتر المحتوى البصري على جميع الأجهزة.
  */
 (function() {
     window.BoseStoreData = null; 
@@ -312,10 +311,10 @@
         const tickerTrack = document.getElementById('top-bar-marquee-track');
         if (tickerTrack && data.navigation.topBarMessages) {
             let messagesHtml = data.navigation.topBarMessages.map(msg => `
-                <span class="ticker-message-item">${msg} &nbsp;&nbsp;&nbsp;&nbsp; 🌸 &nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <span class="ticker-message-item" style="direction: rtl !important; display: inline-block;">${msg} &nbsp;&nbsp;&nbsp;&nbsp; 🌸 &nbsp;&nbsp;&nbsp;&nbsp;</span>
             `).join('');
             
-            tickerTrack.innerHTML = messagesHtml + messagesHtml;
+            tickerTrack.innerHTML = messagesHtml + messagesHtml + messagesHtml;
             tickerTrack.className = "animate-marquee";
         }
 
@@ -339,26 +338,28 @@
         
         if (excellenceTrack && data.homepage.excellence.images) {
             let imagesHtml = data.homepage.excellence.images.map(img => `
-                <a href="menu.html" class="perfection-slide-node"><img src="${img}" alt="إتقان حلويات بوسي" loading="lazy"></a>
+                <a href="menu.html" class="perfection-slide-node" style="direction: rtl !important;"><img src="${img}" alt="إتقان حلويات بوسي" loading="lazy"></a>
             `).join('');
             
             let infiniteExcellenceHtml = '';
-            for (let i = 0; i < 15; i++) {
+            for (let i = 0; i < 6; i++) {
                 infiniteExcellenceHtml += imagesHtml;
             }
             excellenceTrack.innerHTML = infiniteExcellenceHtml;
 
             excellenceTrack.style.display = 'flex';
-            excellenceTrack.style.gap = '0px'; 
+            excellenceTrack.style.gap = '16px'; 
             excellenceTrack.style.width = 'max-content';
+            excellenceTrack.style.direction = 'ltr'; 
             
             let currentX = 0;
-            const scrollSpeed = 1.2; 
+            const scrollSpeed = 1.0; 
             let animationFrameId = null;
             
             function animateExcellenceLoop() {
                 currentX -= scrollSpeed;
-                if (Math.abs(currentX) >= (excellenceTrack.scrollWidth / 2)) {
+                const halfWidth = excellenceTrack.scrollWidth / 2;
+                if (Math.abs(currentX) >= halfWidth) {
                     currentX = 0;
                 }
                 excellenceTrack.style.transform = `translate3d(${currentX}px, 0, 0)`;
@@ -905,14 +906,18 @@
             h3, h4, h5, h6 { font-family: 'Cairo', sans-serif !important; font-weight: 600 !important; color: var(--bose-black) !important; }
             p, span, a, button, input, select, textarea { font-family: 'Cairo', sans-serif !important; }
             
+            #top-bar-marquee-track {
+                direction: ltr !important;
+            }
+
             @keyframes boseMarquee { 
                 0% { transform: translate3d(0, 0, 0); } 
-                100% { transform: translate3d(50%, 0, 0); } 
+                100% { transform: translate3d(-33.333%, 0, 0); } 
             }
             @keyframes boseWaterfallUp { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(0, -50%, 0); } }
             @keyframes boseWaterfallDown { 0% { transform: translate3d(0, -50%, 0); } 100% { transform: translate3d(0, 0, 0); } }
             
-            .animate-marquee { display: flex; width: max-content; animation: boseMarquee 20s linear infinite; will-change: transform; }
+            .animate-marquee { display: flex; width: max-content; animation: boseMarquee 35s linear infinite; will-change: transform; }
             .waterfall-up { animation: boseWaterfallUp 40s linear infinite; will-change: transform; }
             .waterfall-down { animation: boseWaterfallDown 40s linear infinite; will-change: transform; }
         `;
