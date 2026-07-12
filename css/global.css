@@ -1,5 +1,5 @@
 /* ==========================================================================
-   👑 BoseSweets Strict Production Global Stylesheet (css/global.css) V12.3 👑
+   👑 BoseSweets Strict Production Global Stylesheet (css/global.css) V12.2 👑
    الهوية البصرية الموحدة، الهيدر، الفوتر، والقائمة الجانبية وحوكمة خط Cairo
    امتثال كامل ومغلق لأدلة المواصفات - سد ثغرة التمويه وعزل الـ Overlays تماماً
    ========================================================================== */
@@ -103,7 +103,6 @@ img {
     display: flex;
     align-items: center;
     z-index: 40000 !important; /* أعلى طبقة برمجية لتأمين الشريط العلوي ومنع اختفائه */
-    direction: ltr !important; /* قفل المجرى لضمان حركة اليمين إلى اليسار المتوافقة مع النصوص العربية دون انقطاع */
 }
 
 #top-bar-marquee-track {
@@ -120,7 +119,6 @@ img {
     font-size: 0.95rem;
     white-space: nowrap;
     display: inline-block !important;
-    direction: rtl !important;
 }
 
 /* ==========================================================================
@@ -280,7 +278,7 @@ img {
     direction: rtl;
     background: var(--bose-white) !important;
     position: relative;
-    z-index: 5002 !important; /* تأمين وضوح وحدة القائمة ومنع تمويه النصوص */
+    z-index: 50002 !important; /* تأمين وضوح وحدة القائمة ومنع تمويه النصوص */
 }
 
 /* الرأس الفاخر المطور باللون البمبي الموحد للعلامة التجارية لراحة العميل */
@@ -523,10 +521,6 @@ img {
     color: var(--bose-black);
 }
 
-.footer-quick-links ul li a:hover {
-    color: var(--bose-pink) !important;
-}
-
 .footer-policies-container {
     margin-bottom: 25px;
 }
@@ -541,10 +535,6 @@ img {
 .footer-policies-container ul li a {
     color: var(--bose-black);
     opacity: 0.8;
-}
-.footer-policies-container ul li a:hover {
-    color: var(--bose-pink) !important;
-    opacity: 1;
 }
 
 .bose-social-links-wrapper {
