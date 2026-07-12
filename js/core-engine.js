@@ -1,5 +1,5 @@
 /**
- * 👑 ملف المحرك المركزي العالمي النظيف والمصحح بالكامل V15.0 - حلويات بوسي 2026 👑
+ * 👑 ملف المحرك المركزي العالمي النظيف والمصحح بالكامل V16.0 - حلويات بوسي 2026 👑
  * حوكمة كاملة لواجهات الشريط العلوي، القائمة الجانبية المتطورة، والفوتر الموحد ومنع تداخل الملفات
  * القضاء التام والنهائي على ثغرة اختفاء نصوص الشريط العلوي وصور قسم "عقد من الإتقان"
  * المسؤول الوحيد والمطلق عن التحكم في حركة وسرعة وتكرار وضخ نصوص الشريط العلوي وقسم "عقد من الإتقان"
@@ -46,10 +46,6 @@
                     renderBoseDynamicContent();
                     
                     document.dispatchEvent(new CustomEvent('BoseDatabaseLoaded', { detail: window.BoseStoreData }));
-                    
-                    if (typeof window.onBoseDatabaseReadyWrapper === "function") {
-                        window.onBoseDatabaseReadyWrapper(window.BoseStoreData);
-                    }
                     return;
                 } catch (error) {
                     continue;
@@ -156,13 +152,7 @@
                 let targetUrl = `category.html?id=${cat.id}`;
                 if (cat.id === "taswaq-toort") targetUrl = "cake-builder.html";
                 if (cat.id === "taswaq-flowers") targetUrl = "flower-builder.html";
-
-                return `
-                    <a href="${targetUrl}" class="sidebar-cat-chip-node">
-                        <img src="${cat.image}" alt="${cat.title}" loading="lazy">
-                        <span>${cat.title}</span>
-                    </a>
-                `;
+                return `<a href="${targetUrl}" class="sidebar-cat-chip-node"><img src="${cat.image}" alt="${cat.title}" loading="lazy"><span>${cat.title}</span></a>`;
             }).join('');
         }
 
@@ -224,8 +214,7 @@
 
         let totalAmount = 0;
         let itemsHtml = cart.map(item => {
-            const finalPriceSum = item.finalPrice * item.quantity;
-            totalAmount += finalPriceSum;
+            totalAmount += item.finalPrice * item.quantity;
             return `
                 <div class="sidebar-mini-cart-item-node">
                     <img src="${item.image}" alt="${item.title}" loading="lazy">
@@ -245,9 +234,7 @@
                     <span>إجمالي المشتريات:</span>
                     <strong>${totalAmount.toFixed(2)} جنيه</strong>
                 </div>
-                <a href="cart.html" class="sidebar-mini-cart-checkout-cta-btn">
-                    استعراض السلة وإتمام الطلب <i class="fas fa-arrow-left"></i>
-                </a>
+                <a href="cart.html" class="sidebar-mini-cart-checkout-cta-btn">استعراض السلة وإتمام الطلب <i class="fas fa-arrow-left"></i></a>
             </div>
         `;
     };
@@ -259,16 +246,10 @@
         footerInjector.innerHTML = `
             <footer class="bose-footer">
                 <div class="footer-logo-container">
-                    <a href="index.html">
-                        <img id="bose-footer-logo-node" src="${window.BoseStoreData.store.logo}" alt="شعار حلويات بوسي" loading="lazy">
-                    </a>
+                    <a href="index.html"><img id="bose-footer-logo-node" src="${window.BoseStoreData.store.logo}" alt="شعار حلويات بوسي" loading="lazy"></a>
                 </div>
                 <span class="brand-name-display footer-brand-name">حلويات بوسي</span>
-                
-                <div class="footer-about-block">
-                    <p id="footer-about-text">${window.BoseStoreData.footer.about}</p>
-                </div>
-                
+                <div class="footer-about-block"><p id="footer-about-text">${window.BoseStoreData.footer.about}</p></div>
                 <div class="footer-quick-links">
                     <ul>
                         <li><a href="index.html">الرئيسية</a></li>
@@ -276,15 +257,13 @@
                         <li><a href="cart.html">سلة التسوق</a></li>
                     </ul>
                 </div>
-
                 <div id="footer-social-links" class="bose-social-links-wrapper">
-                    <a href="${window.BoseStoreData.social.facebook}" class="social-link-facebook" target="_blank" aria-label="فيسبوك حلويات بوسي"><i class="fab fa-facebook-f"></i></a>
-                    <a href="${window.BoseStoreData.social.instagram}" class="social-link-instagram" target="_blank" aria-label="انستجرام حلويات بوسي"><i class="fab fa-instagram"></i></a>
-                    <a href="${window.BoseStoreData.social.tiktok}" class="social-link-tiktok" target="_blank" aria-label="تيك توك حلويات بوسي"><i class="fab fa-tiktok"></i></a>
-                    <a href="https://wa.me/${window.sanitizeBosePhoneNumber(window.BoseStoreData.social.whatsapp)}" class="social-link-whatsapp" target="_blank" aria-label="واتساب حلويات بوسي"><i class="fab fa-whatsapp"></i></a>
+                    <a href="${window.BoseStoreData.social.facebook}" class="social-link-facebook" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                    <a href="${window.BoseStoreData.social.instagram}" class="social-link-instagram" target="_blank"><i class="fab fa-instagram"></i></a>
+                    <a href="${window.BoseStoreData.social.tiktok}" class="social-link-tiktok" target="_blank"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://wa.me/${window.sanitizeBosePhoneNumber(window.BoseStoreData.social.whatsapp)}" class="social-link-whatsapp" target="_blank"><i class="fab fa-whatsapp"></i></a>
                 </div>
-
-                <div class="footer-policies-container" id="bose-footer-policies">
+                <div class="footer-policies-container">
                     <ul class="nav-list">
                         <li><a href="privacy-policy.html">سياسة الخصوصية</a></li>
                         <li><a href="refund-policy.html">سياسة الاسترجاع</a></li>
@@ -292,14 +271,8 @@
                         <li><a href="terms.html">الشروط والأحكام</a></li>
                     </ul>
                 </div>
-
-                <div class="footer-location-block">
-                    <p><i class="fas fa-map-marker-alt"></i> ${window.BoseStoreData.store.pickup.address}</p>
-                </div>
-
-                <div class="footer-copyright-block">
-                    <p>© <span id="copyright-year">2026</span> جميع الحقوق محفوظة لعلامة حلويات بوسي التجارية الفاخرة</p>
-                </div>
+                <div class="footer-location-block"><p><i class="fas fa-map-marker-alt"></i> ${window.BoseStoreData.store.pickup.address}</p></div>
+                <div class="footer-copyright-block"><p>© <span>2026</span> جميع الحقوق محفوظة لعلامة حلويات بوسي التجارية الفاخرة</p></div>
             </footer>
         `;
     }
@@ -308,23 +281,16 @@
         const data = window.BoseStoreData;
         if (!data) return;
 
-        // 1. الشريط العلوي المتحرك (نصوص كاملة متكررة)
+        // إصلاح شريط الماركي العلوي
         const tickerTrack = document.getElementById('top-bar-marquee-track');
         if (tickerTrack && data.navigation.topBarMessages) {
-            let messagesHtml = data.navigation.topBarMessages.map(msg => `
-                <span class="ticker-message-item">${msg} &nbsp;&nbsp;&nbsp;&nbsp; 🌸 &nbsp;&nbsp;&nbsp;&nbsp;</span>
-            `).join('');
-            
-            // حقن متكرر 4 مرات لملء كامل المسار الحركي ومنع الفراغات نهائياً
+            let messagesHtml = data.navigation.topBarMessages.map(msg => `<span class="ticker-message-item">${msg} &nbsp;&nbsp;&nbsp;&nbsp; 🌸 &nbsp;&nbsp;&nbsp;&nbsp;</span>`).join('');
             tickerTrack.innerHTML = messagesHtml + messagesHtml + messagesHtml + messagesHtml;
-            tickerTrack.className = "animate-marquee";
         }
 
-        // 2. قسم الهيرو والشلال البصري
-        const heroDesc = document.getElementById('hero-description');
-        const heroCta = document.getElementById('hero-cta-btn');
-        if (heroDesc) heroDesc.textContent = data.homepage.hero.description;
-        if (heroCta) heroCta.textContent = data.homepage.hero.cta;
+        // إصلاح قسم الهيرو والشلال البصري
+        if (document.getElementById('hero-description')) document.getElementById('hero-description').textContent = data.homepage.hero.description;
+        if (document.getElementById('hero-cta-btn')) document.getElementById('hero-cta-btn').textContent = data.homepage.hero.cta;
 
         const leftCol = document.getElementById('waterfall-left-col');
         const rightCol = document.getElementById('waterfall-right-col');
@@ -333,21 +299,14 @@
             rightCol.innerHTML = data.homepage.waterfall.rightColumnImages.map(img => `<img src="${img}" alt="حلويات بوسي فخامة بصرية" loading="lazy">`).join('');
         }
 
-        // 3. قسم عقد من الإتقان (3 صور متصلة وملتصقة تماماً تتحرك كلياً بالـ CSS)
-        const excellenceTitle = document.getElementById('excellence-title');
-        const excellenceDesc = document.getElementById('excellence-description');
-        const excellenceTrack = document.getElementById('excellence-images-track');
-        if (excellenceTitle) excellenceTitle.textContent = data.homepage.excellence.title;
-        if (excellenceDesc) excellenceDesc.textContent = data.homepage.excellence.description;
+        // إصلاح وعزل قسم عقد من الإتقان تماماً عن الجافا سكريبت الميت
+        if (document.getElementById('excellence-title')) document.getElementById('excellence-title').textContent = data.homepage.excellence.title;
+        if (document.getElementById('excellence-description')) document.getElementById('excellence-description').textContent = data.homepage.excellence.description;
         
+        const excellenceTrack = document.getElementById('excellence-images-track');
         if (excellenceTrack && data.homepage.excellence.images) {
-            let imagesHtml = data.homepage.excellence.images.map(img => `
-                <a href="menu.html" class="perfection-slide-node"><img src="${img}" alt="إتقان حلويات بوسي" loading="lazy"></a>
-            `).join('');
-            
-            // مضاعفة تكرار كروت الصور لضمان الاستمرارية الحركية اللانهائية بـ CSS وبدون جافا سكريبت ميت
+            let imagesHtml = data.homepage.excellence.images.map(img => `<a href="menu.html" class="perfection-slide-node"><img src="${img}" alt="إتقان حلويات بوسي" loading="lazy"></a>`).join('');
             excellenceTrack.innerHTML = imagesHtml + imagesHtml + imagesHtml + imagesHtml;
-            excellenceTrack.className = "bose-excellence-animate-loop";
         }
 
         function createProductCardHTML(product) {
@@ -370,37 +329,24 @@
 
         const mostSellingGrid = document.getElementById('most-selling-grid');
         if (mostSellingGrid) {
-            document.getElementById('most-selling-title').textContent = "الأكثر مبيعاً";
-            document.getElementById('most-selling-description').textContent = "تشكيلة فاخرة حازت على إعجاب وتقدير عملائنا دائماً.";
             let items = data.products.filter(p => data.homepage.mostSelling.includes(p.slug));
             mostSellingGrid.innerHTML = items.map(p => createProductCardHTML(p)).join('');
-            
-            if (window.innerWidth <= 767) {
-                mostSellingGrid.className = "bose-most-selling-grid-slider";
-            }
-            initializeBoseSliderLogic(mostSellingGrid, 'most-selling-dots', false, false);
+            if (window.innerWidth <= 767) mostSellingGrid.className = "bose-most-selling-grid-slider";
+            initializeBoseSliderLogic(mostSellingGrid, 'most-selling-dots');
         }
 
         const newArrivalsGrid = document.getElementById('new-arrivals-grid');
         if (newArrivalsGrid) {
-            document.getElementById('new-arrivals-title').textContent = "وصل حديثاً";
-            document.getElementById('new-arrivals-description').textContent = "استكشف نكهاتنا المبتكرة والجديدة كلياً لهذا الأسبوع.";
             let items = data.products.filter(p => data.homepage.newArrivals.includes(p.slug));
             newArrivalsGrid.innerHTML = items.map(p => createProductCardHTML(p)).join('');
-            
-            if (window.innerWidth <= 767) {
-                newArrivalsGrid.className = "bose-new-arrivals-grid-slider";
-            }
-            initializeBoseSliderLogic(newArrivalsGrid, 'new-arrivals-dots', false, false);
+            if (window.innerWidth <= 767) newArrivalsGrid.className = "bose-new-arrivals-grid-slider";
+            initializeBoseSliderLogic(newArrivalsGrid, 'new-arrivals-dots');
         }
 
         const ourProductsGrid = document.getElementById('our-products-grid');
         if (ourProductsGrid) {
-            document.getElementById('our-products-title').textContent = "منتجاتنا";
-            document.getElementById('our-products-description').textContent = "الجودة والقيمة العالية للمكونات الطازجة يومياً.";
             let allItems = data.products.filter(p => data.homepage.ourProducts.includes(p.slug));
             ourProductsGrid.innerHTML = allItems.slice(0, 4).map(p => createProductCardHTML(p)).join('');
-            
             const showMoreBtn = document.getElementById('our-products-show-more');
             if (showMoreBtn) {
                 showMoreBtn.textContent = "استعرض المزيد";
@@ -410,12 +356,6 @@
                     showMoreBtn.style.display = "none";
                 };
             }
-        }
-
-        if (document.getElementById('pride-main-title')) {
-            document.getElementById('pride-main-title').textContent = data.homepage.pride.title;
-            document.getElementById('pride-main-text').textContent = data.homepage.pride.text;
-            initializeBosePrideCounters(data.homepage.pride.stats);
         }
 
         if (document.getElementById('cake-preview-title')) {
@@ -433,324 +373,57 @@
 
         const categoriesTrack = document.getElementById('categories-track');
         if (categoriesTrack && data.homepage.categoriesSlider) {
-            document.getElementById('categories-section-title').textContent = "تسوق حسب الفئة";
-            document.getElementById('categories-section-subtitle').textContent = "اختر فئتك المفضلة لتستعرض كافة تفاصيلها ونكهاتها الموزونة.";
-            
             categoriesTrack.innerHTML = data.homepage.categoriesSlider.map(cat => {
                 let catUrl = `category.html?id=${cat.id}`;
                 if (cat.id === "taswaq-toort") catUrl = "cake-builder.html";
                 if (cat.id === "taswaq-flowers") catUrl = "flower-builder.html";
-
-                return `
-                    <div class="bose-category-slider-card">
-                        <a href="${catUrl}">
-                            <img src="${cat.image}" class="category-img" alt="${cat.title}" loading="lazy">
-                            <div class="category-title-display">${cat.title}</div>
-                        </a>
-                    </div>
-                `;
+                return `<div class="bose-category-slider-card"><a href="${catUrl}"><img src="${cat.image}" class="category-img" alt="${cat.title}" loading="lazy"><div class="category-title-display">${cat.title}</div></a></div>`;
             }).join('');
-            initializeBoseSliderLogic(categoriesTrack, 'categories-dots', true, true); 
+            initializeBoseSliderLogic(categoriesTrack, 'categories-dots', true); 
         }
     }
 
-    function initializeBosePrideCounters(statsConfig) {
-        if (!statsConfig) return;
-        
-        const mapPrideDomIds = {
-            years: 'stat-years-value',
-            customers: 'stat-customers-value',
-            orders: 'stat-orders-value',
-            cakes: 'stat-cakes-value',
-            bouquets: 'stat-bouquets-value'
-        };
-
-        Object.keys(mapPrideDomIds).forEach(key => {
-            const domId = mapPrideDomIds[key];
-            const targetElement = document.getElementById(domId);
-            if (!targetElement) return;
-
-            const targetValue = parseInt(statsConfig[key].value, 10) || 0;
-            const suffixStr = statsConfig[key].suffix || '';
-            
-            let startCount = 0;
-            const animationDuration = 2000; 
-            const stepsCount = 50;
-            const incrementValue = Math.ceil(targetValue / stepsCount);
-            const stepIntervalTime = animationDuration / stepsCount;
-
-            const counterInterval = setInterval(() => {
-                startCount += incrementValue;
-                if (startCount >= targetValue) {
-                    targetElement.textContent = targetValue.toLocaleString() + suffixStr;
-                    clearInterval(counterInterval);
-                } else {
-                    targetElement.textContent = startCount.toLocaleString() + suffixStr;
-                }
-            }, stepIntervalTime);
-        });
-    }
-
-    function initializeBoseSliderLogic(sliderTrack, dotsContainerId, isAutoPlay = false, isCategoryType = false) {
+    function initializeBoseSliderLogic(sliderTrack, dotsContainerId, isCategoryType = false) {
         if (!sliderTrack) return;
+        let isDown = false; let startX; let scrollLeft;
         
-        let isDown = false;
-        let startX;
-        let scrollLeft;
-        
-        sliderTrack.addEventListener('mousedown', (e) => {
-            isDown = true;
-            startX = e.pageX - sliderTrack.offsetLeft;
-            scrollLeft = sliderTrack.scrollLeft;
-        });
+        sliderTrack.addEventListener('mousedown', (e) => { isDown = true; startX = e.pageX - sliderTrack.offsetLeft; scrollLeft = sliderTrack.scrollLeft; });
         sliderTrack.addEventListener('mouseleave', () => { isDown = false; });
-        sliderTrack.addEventListener('mouseup', () => {
-            isDown = false;
-            updateSliderDots(sliderTrack, dotsContainerId, isCategoryType);
-        });
-        sliderTrack.addEventListener('mousemove', (e) => {
-            if(!isDown) return;
-            e.preventDefault();
-            const x = e.pageX - sliderTrack.offsetLeft;
-            const walk = (x - startX) * 1.5; 
-            sliderTrack.scrollLeft = scrollLeft - walk;
-        });
-
-        sliderTrack.addEventListener('touchstart', (e) => {
-            isDown = true;
-            startX = e.touches[0].pageX - sliderTrack.offsetLeft;
-            scrollLeft = sliderTrack.scrollLeft;
-        }, {passive: true});
-        
-        sliderTrack.addEventListener('touchmove', (e) => {
-            if(!isDown) return;
-            const x = e.touches[0].pageX - sliderTrack.offsetLeft;
-            const walk = (x - startX) * 1.5;
-            sliderTrack.scrollLeft = scrollLeft - walk;
-        }, {passive: true});
-
-        sliderTrack.addEventListener('touchend', () => {
-            isDown = false;
-            updateSliderDots(sliderTrack, dotsContainerId, isCategoryType);
-        });
-
-        sliderTrack.addEventListener('scroll', () => {
-            if (!isDown) { updateSliderDots(sliderTrack, dotsContainerId, isCategoryType); }
-        }, {passive: true});
-
+        sliderTrack.addEventListener('mouseup', () => { isDown = false; updateSliderDots(sliderTrack, dotsContainerId, isCategoryType); });
+        sliderTrack.addEventListener('mousemove', (e) => { if(!isDown) return; e.preventDefault(); const x = e.pageX - sliderTrack.offsetLeft; const walk = (x - startX) * 1.5; sliderTrack.scrollLeft = scrollLeft - walk; });
+        sliderTrack.addEventListener('touchstart', (e) => { isDown = true; startX = e.touches[0].pageX - sliderTrack.offsetLeft; scrollLeft = sliderTrack.scrollLeft; }, {passive: true});
+        sliderTrack.addEventListener('touchmove', (e) => { if(!isDown) return; const x = e.touches[0].pageX - sliderTrack.offsetLeft; const walk = (x - startX) * 1.5; sliderTrack.scrollLeft = scrollLeft - walk; }, {passive: true});
+        sliderTrack.addEventListener('touchend', () => { isDown = false; updateSliderDots(sliderTrack, dotsContainerId, isCategoryType); });
+        sliderTrack.addEventListener('scroll', () => { if (!isDown) { updateSliderDots(sliderTrack, dotsContainerId, isCategoryType); } }, {passive: true});
         buildSliderDots(sliderTrack, dotsContainerId, isCategoryType);
     }
 
     function buildSliderDots(track, containerId, isCategoryType) {
         const container = document.getElementById(containerId);
-        if (!container) return;
-        
-        container.innerHTML = '';
-        const totalItems = track.children.length;
-        if(totalItems === 0) return;
-        
+        if (!container) return; container.innerHTML = '';
+        const totalItems = track.children.length; if(totalItems === 0) return;
         const cardWidth = isCategoryType ? 280 : (track.children[0].offsetWidth || 280);
         const visibleItemsCount = Math.max(1, Math.floor(track.offsetWidth / cardWidth)); 
         const dotsCount = Math.max(1, totalItems - visibleItemsCount + 1);
-
         for (let i = 0; i < Math.min(dotsCount, 8); i++) {
-            const dot = document.createElement('span');
-            dot.className = 'bose-slider-dot' + (i === 0 ? ' active' : '');
-            container.appendChild(dot);
+            const dot = document.createElement('span'); dot.className = 'bose-slider-dot' + (i === 0 ? ' active' : ''); container.appendChild(dot);
         }
     }
 
     function updateSliderDots(track, containerId, isCategoryType) {
         const container = document.getElementById(containerId);
         if (!container || !track.children.length) return;
-        
         const finalCardWidth = (isCategoryType ? 280 : track.children[0].offsetWidth) + 16;
         const activeIndex = Math.round(Math.abs(track.scrollLeft) / finalCardWidth);
-        
         const dots = container.querySelectorAll('.bose-slider-dot');
-        dots.forEach((dot, idx) => {
-            if (idx === activeIndex % (dots.length || 1)) dot.classList.add('active');
-            else dot.classList.remove('active');
-        });
+        dots.forEach((dot, idx) => { if (idx === activeIndex % (dots.length || 1)) dot.classList.add('active'); else dot.classList.remove('active'); });
     }
-
-    window.calculateBosePrice = function(basePrice, applyOnContext = "menu-only") {
-        if (!window.BoseStoreData) return basePrice;
-        const rule = window.BoseStoreData.store.priceIncrease;
-        if (rule && rule.enabled && (rule.applyOn === "all" || rule.applyOn === applyOnContext)) {
-            return parseFloat((basePrice * (1 + (rule.percent / 100))).toFixed(4));
-        }
-        return basePrice;
-    };
-
-    window.calculateProductFinalPrice = function(product, selectedOptions) {
-        const opts = selectedOptions || {};
-        let price = 0;
-        
-        if (product) {
-            price = product.price || product.basePrice || 0;
-
-            if (product.prices && opts.size) {
-                price = product.prices[opts.size] || price;
-            }
-
-            const selectedPrinting = opts.printing || opts.printingType || 'none';
-            if (selectedPrinting && selectedPrinting !== 'none') {
-                let printingFee = 0;
-                if (product.customizationOptions && product.customizationOptions.printing) {
-                    const printOptions = product.customizationOptions.printing.options;
-                    if (Array.isArray(printOptions)) {
-                        const printingOpt = printOptions.find(opt => opt.id === selectedPrinting || opt.type === selectedPrinting);
-                        if (printingOpt) {
-                            printingFee = printingOpt.price;
-                        }
-                    }
-                }
-                
-                if (printingFee === 0) {
-                    if (selectedPrinting === 'edible' || selectedPrinting === 'printable-edible' || selectedPrinting === 'صورة_صالحة_للأكل') {
-                        printingFee = 60;
-                    } else if (selectedPrinting === 'non-edible' || selectedPrinting === 'printable-non-edible' || selectedPrinting === 'صورة_غير_صالحة_للأكل') {
-                        printingFee = 15;
-                    }
-                }
-                price += printingFee;
-            }
-            
-            if (product.isMiniCake || product.type === "mini-cake" || product.slug === "mini-cake-two-person") {
-                if (opts.extraToppingPrice) price += parseFloat(opts.extraToppingPrice);
-                if (opts.printingPrice) price += parseFloat(opts.printingPrice);
-            }
-        }
-        return window.calculateBosePrice(price, "menu-only");
-    };
-
-    window.createCartItem = function(product, selectedOptions, quantity = 1) {
-        if (!product) return null;
-        const opts = selectedOptions || {};
-        const finalUnitPrice = window.calculateProductFinalPrice(product, opts);
-        
-        const isCustomizable = product.isMiniCake ||
-                             product.type === "custom-cake" || 
-                             product.type === "custom-flower" || 
-                             (product.customizationOptions && Object.keys(opts).length > 0);
-                             
-        const finalId = isCustomizable ? `${product.slug}-${Date.now()}` : String(product.slug || product.id);
-        
-        const cartItem = {
-            id: finalId,
-            productSlug: product.slug,
-            title: product.title,
-            flavorName: opts.flavorName || opts.cakeType || product.flavor || "افتراضي",
-            basePrice: parseFloat((product.price || product.basePrice || 0).toFixed(4)),
-            finalPrice: parseFloat(finalUnitPrice.toFixed(4)),
-            quantity: parseInt(quantity, 10) || 1,
-            image: product.image || product.images[0] || "",
-            type: product.type || (product.isMiniCake ? "mini-cake" : "standard"),
-            customDetails: {
-                cakeType: opts.cakeType || opts.cakeFlavor || "فانيليا",
-                shape: opts.shape || "circle",
-                persons: parseInt(opts.persons, 10) || (product.isMiniCake ? 2 : 0),
-                printingType: opts.printingType || opts.printing || "none",
-                customMessage: opts.customMessage || "",
-                allergyNote: opts.allergyNote || "",
-                flowerType: opts.flowerType || "none",
-                flowerCount: parseInt(opts.flowerCount, 10) || 0,
-                moneyAmount: parseInt(opts.moneyAmount, 10) || 0,
-                moneyFee: parseInt(opts.moneyFee, 10) || 0,
-                chocolateType: opts.chocolateType || "none",
-                chocolatePieces: parseInt(opts.chocolatePieces, 10) || 0,
-                wrappingType: opts.wrappingType || "none",
-                giftCardText: opts.giftCardText || ""
-            }
-        };
-        return cartItem;
-    };
-
-    window.calculateCustomCakePrice = function(persons, options = {}) {
-        const config = window.BoseStoreData?.cakeBuilder;
-        const safePersons = parseInt(persons, 10) || (config ? config.persons.minimum : 10) || 10;
-        let price = (config ? config.basePrice : 580) || 580;
-        
-        const minPersons = (config ? config.persons.minimum : 10) || 10;
-        const pricePerPerson = (config ? config.pricePerPerson : 145) || 145;
-        
-        const extraPersons = Math.max(0, safePersons - minPersons);
-        price += extraPersons * pricePerPerson;
-        
-        const selectedPrinting = options.printingType || options.printing || 'none';
-        if (selectedPrinting && selectedPrinting !== 'none') {
-            let printingFee = 0;
-            if (config && config.printingOptions) {
-                const printOpt = config.printingOptions.find(opt => opt.id === selectedPrinting);
-                if (printOpt) printingFee = printOpt.price;
-            }
-            if (printingFee === 0) {
-                if (selectedPrinting === 'edible' || selectedPrinting === 'printable-edible' || selectedPrinting === 'صورة_صالحة_للأكل') {
-                    printingFee = 60;
-                } else if (selectedPrinting === 'non-edible' || selectedPrinting === 'printable-non-edible' || selectedPrinting === 'صورة_غير_صالحة_للأكل') {
-                    printingFee = 15;
-                }
-            }
-            price += printingFee;
-        }
-        if (options.wrappingPrice) price += parseFloat(options.wrappingPrice) || 0;
-        
-        return window.calculateBosePrice(price, "menu-only");
-    };
-
-    window.calculateCustomFlowerPrice = function(flowerType, flowerCount, options = {}) {
-        const config = window.BoseStoreData?.flowerBuilder;
-        if (!config) return 0;
-        
-        const safeFlowerCount = parseInt(flowerCount, 10) || config.baseFlowers;
-        const safeCashAmount = parseInt(options.moneyAmount, 10) || 0;
-        const safeCashCategoryAmount = parseInt(options.moneyCategoryAmount, 10) || 0;
-        const safeChocolatePieces = parseInt(options.chocolatePieces, 10) || 0;
-        const safePhotoCount = parseInt(options.photoCount, 10) || 0;
-        
-        let servicePrice = config.basePrice || 400;
-        const extraFlowers = Math.max(0, safeFlowerCount - config.baseFlowers);
-        servicePrice += extraFlowers * config.extraFlowerPrice;
-        
-        if (options.wrappingType) {
-            const wrapOpt = config.wrappingTypes.find(opt => opt.id === options.wrappingType);
-            if (wrapOpt) servicePrice += wrapOpt.price;
-        }
-        if (options.chocolateType && safeChocolatePieces > 0) {
-            const chocOpt = config.chocolateTypes.find(opt => opt.id === options.chocolateType);
-            if (chocOpt) servicePrice += chocOpt.price * safeChocolatePieces;
-        }
-        if (options.hasGiftCard) servicePrice += config.giftCardPrice || 20;
-        if (safePhotoCount > 0) servicePrice += safePhotoCount * (config.photoPrintPrice || 15);
-        
-        let cashHandlingFee = 0;
-        if (safeCashAmount > 0 && safeCashCategoryAmount > 0) {
-            const selectedCategory = config.moneyCategories.find(cat => cat.amount === safeCashCategoryAmount);
-            if (selectedCategory) {
-                const billCount = Math.floor(safeCashAmount / safeCashCategoryAmount);
-                cashHandlingFee += billCount * selectedCategory.fee;
-                
-                const remainder = safeCashAmount % safeCashCategoryAmount;
-                if (remainder > 0) {
-                    const remainderCategory = config.moneyCategories
-                        .filter(cat => cat.amount <= remainder)
-                        .sort((a, b) => b.amount - a.amount)[0] || config.moneyCategories[0];
-                    if (remainderCategory) cashHandlingFee += remainderCategory.fee;
-                }
-            }
-        }
-        servicePrice += cashHandlingFee;
-        const finalServicePrice = window.calculateBosePrice(servicePrice, "menu-only");
-        return finalServicePrice + safeCashAmount;
-    };
 
     window.modifyBoseQtyCard = function(button, change) {
         const counterWrapper = button.parentElement;
         const input = counterWrapper.querySelector('.input-qty-value');
         let currentVal = parseInt(input.value, 10) || 1;
-        currentVal += change;
-        if (currentVal < 1) currentVal = 1;
+        currentVal += change; if (currentVal < 1) currentVal = 1;
         input.value = currentVal;
     };
 
@@ -758,20 +431,16 @@
         const cardNode = button.closest('.product-card-unified');
         const qtyInput = cardNode ? cardNode.querySelector('.input-qty-value') : null;
         const quantity = qtyInput ? (parseInt(qtyInput.value, 10) || 1) : 1;
-        
         const product = window.BoseStoreData.products.find(p => p.slug === productSlug);
         if (!product) return;
         
         let cartItem = window.createCartItem(product, {}, quantity);
         let rawCart = localStorage.getItem('bose_cart');
         let cart = rawCart ? JSON.parse(rawCart) : [];
-        
         let existingIndex = cart.findIndex(item => item.productSlug === productSlug && (!item.id || !item.id.includes("-")));
-        if (existingIndex > -1) {
-            cart[existingIndex].quantity += quantity;
-        } else {
-            cart.push(cartItem);
-        }
+        
+        if (existingIndex > -1) cart[existingIndex].quantity += quantity;
+        else cart.push(cartItem);
         
         localStorage.setItem('bose_cart', JSON.stringify(cart));
         window.updateGlobalCartCounter();
@@ -781,164 +450,62 @@
 
     function showBoseToast(message) {
         let container = document.getElementById('bose-toast-central-container');
-        if (!container) {
-            container = document.createElement('div');
-            container.id = 'bose-toast-central-container';
-            container.className = 'bose-toast-container';
-            document.body.appendChild(container);
-        }
-        const toast = document.createElement('div');
-        toast.className = 'bose-toast-node';
-        toast.textContent = message;
-        container.appendChild(toast);
+        if (!container) { container = document.createElement('div'); container.id = 'bose-toast-central-container'; container.className = 'bose-toast-container'; document.body.appendChild(container); }
+        const toast = document.createElement('div'); toast.className = 'bose-toast-node'; toast.textContent = message; container.appendChild(toast);
         setTimeout(() => { toast.remove(); }, 3000);
     }
 
-    window.validateBosePhoneNumber = function(phone, isOptional = false) {
-        if (!phone || phone.trim() === "") return isOptional;
-        const cleaned = window.sanitizeBosePhoneNumber(phone);
-        return /^01[0125][0-9]{8}$/.test(cleaned);
-    };
-
     window.sanitizeBosePhoneNumber = function(phone) {
-        if (!phone) return "";
-        let cleaned = phone.trim().replace(/[\s\-\(\)\+]/g, "");
+        if (!phone) return ""; let cleaned = phone.trim().replace(/[\s\-\(\)\+]/g, "");
         if (cleaned.startsWith("201")) cleaned = "0" + cleaned.substring(2);
         else if (cleaned.startsWith("00201")) cleaned = "0" + cleaned.substring(4);
-        else if (cleaned.startsWith("1") && cleaned.length === 10) cleaned = "0" + cleaned;
         return cleaned;
     };
 
-    window.validateBoseDeliverySchedule = function(dateStr, timeStr) {
-        if (!dateStr || !timeStr) return false;
-        const selectedDateTime = new Date(`${dateStr}T${timeStr}`);
-        const synchronizedTime = Date.now() + (window.boseServerTimeOffset || 0);
-        const currentDateTime = new Date(synchronizedTime);
-        
-        if (selectedDateTime <= currentDateTime) return false;
-        const diffMs = selectedDateTime - currentDateTime;
-        const hoursDiff = diffMs / (1000 * 60 * 60);
-        return hoursDiff >= 23.95;
-    };
-
     window.updateGlobalCartCounter = function() {
-        const cartCountBadge = document.getElementById('nav-cart-count');
-        if (!cartCountBadge) return;
-        const rawCart = localStorage.getItem('bose_cart');
-        const cart = rawCart ? JSON.parse(rawCart) : [];
+        const cartCountBadge = document.getElementById('nav-cart-count'); if (!cartCountBadge) return;
+        const rawCart = localStorage.getItem('bose_cart'); const cart = rawCart ? JSON.parse(rawCart) : [];
         let totalDisplayItems = 0;
-        cart.forEach(item => {
-            const isBespokeOrCustom = item.type === "custom-cake" || item.type === "custom-flower" || item.type === "mini-cake" || (item.id && item.id.includes("-"));
-            totalDisplayItems += isBespokeOrCustom ? 1 : (parseInt(item.quantity, 10) || 1);
-        });
+        cart.forEach(item => { const isBespoke = item.id && item.id.includes("-"); totalDisplayItems += isBespoke ? 1 : (parseInt(item.quantity, 10) || 1); });
         cartCountBadge.textContent = totalDisplayItems;
     };
 
-    window.onBoseDatabaseReady = function(callback) {
-        window.onBoseDatabaseReadyWrapper = callback;
-        if (window.BoseStoreData) {
-            callback(window.BoseStoreData);
-        }
-    };
-
-    function applyGlobalSEOAndBranding() {
-        if (!window.BoseStoreData) return;
-        document.title = window.BoseStoreData.seo.title;
-        const logoImgs = document.querySelectorAll('img#bose-store-logo');
-        logoImgs.forEach(img => { img.src = window.BoseStoreData.store.logo; });
-        applyGlobalStyles(window.BoseStoreData.store.theme);
-    }
-
+    window.onBoseDatabaseReady = function(callback) { if (window.BoseStoreData) { callback(window.BoseStoreData); } };
+    function applyGlobalSEOAndBranding() { document.title = window.BoseStoreData.seo.title; applyGlobalStyles(window.BoseStoreData.store.theme); }
     function injectEarlyDependencies() {
-        if (!document.querySelector('link[href*="fonts.googleapis.com"]')) {
-            const p1 = document.createElement('link'); p1.rel = 'preconnect'; p1.href = 'https://fonts.googleapis.com';
-            const p2 = document.createElement('link'); p2.rel = 'preconnect'; p2.href = 'https://fonts.gstatic.com'; p2.crossOrigin = 'anonymous';
-            const f = document.createElement('link'); f.rel = 'stylesheet'; f.href = 'https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap';
-            document.head.appendChild(p1); document.head.appendChild(p2); document.head.appendChild(f);
-        }
         if (!document.querySelector('link[href*="font-awesome"]')) {
-            const fa = document.createElement('link'); fa.rel = 'stylesheet'; fa.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css';
-            document.head.appendChild(fa);
+            const fa = document.createElement('link'); fa.rel = 'stylesheet'; fa.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'; document.head.appendChild(fa);
         }
     }
 
     function applyGlobalStyles(theme) {
         if (document.getElementById('bose-global-dynamic-styles')) return;
-        const styleElement = document.createElement('style');
-        styleElement.id = 'bose-global-dynamic-styles';
+        const styleElement = document.createElement('style'); styleElement.id = 'bose-global-dynamic-styles';
         styleElement.textContent = `
             :root {
-                --bose-pink: ${theme.primary || '#FF91A4'};
-                --bose-white: ${theme.background || '#FFFFFF'};
-                --bose-black: ${theme.text || '#111111'};
-                --bose-gold: ${theme.secondary || '#D4AF37'};
-                --bose-shadow-glow: 0 8px 32px rgba(255, 145, 164, 0.12);
-                --bose-shadow-hover: 0 16px 40px rgba(255, 145, 164, 0.22);
-                --bose-border-pink: 1px solid rgba(255, 145, 164, 0.3);
-                --bose-border-thick: 2px solid ${theme.primary || '#FF91A4'};
+                --bose-pink: ${theme.primary || '#FF91A4'}; --bose-white: ${theme.background || '#FFFFFF'};
+                --bose-black: ${theme.text || '#111111'}; --bose-gold: ${theme.secondary || '#D4AF37'};
+                --bose-shadow-glow: 0 8px 32px rgba(255, 145, 164, 0.12); --bose-shadow-hover: 0 16px 40px rgba(255, 145, 164, 0.22);
+                --bose-border-pink: 1px solid rgba(255, 145, 164, 0.3); --bose-border-thick: 2px solid ${theme.primary || '#FF91A4'};
             }
-            body {
-                font-family: 'Cairo', sans-serif !important;
-                background-color: var(--bose-white) !important;
-                color: var(--bose-black) !important;
-                margin: 0; padding: 0; overflow-x: hidden;
-            }
-            h1, h2 { font-family: 'Cairo', sans-serif !important; font-weight: 700 !important; color: var(--bose-black) !important; }
-            h3, h4, h5, h6 { font-family: 'Cairo', sans-serif !important; font-weight: 600 !important; color: var(--bose-black) !important; }
-            p, span, a, button, input, select, textarea { font-family: 'Cairo', sans-serif !important; }
-            
-            #top-bar-marquee-track {
-                direction: ltr !important;
-            }
-
-            @keyframes boseMarquee { 
-                0% { transform: translate3d(0, 0, 0); } 
-                100% { transform: translate3d(-50%, 0, 0); } 
-            }
+            body { font-family: 'Cairo', sans-serif !important; background-color: var(--bose-white) !important; color: var(--bose-black) !important; }
+            #top-bar-marquee-track { direction: ltr !important; }
+            @keyframes boseMarquee { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-50%, 0, 0); } }
             @keyframes boseWaterfallUp { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(0, -50%, 0); } }
             @keyframes boseWaterfallDown { 0% { transform: translate3d(0, -50%, 0); } 100% { transform: translate3d(0, 0, 0); } }
-            
-            /* أنيميشن ناعم وسلس لقسم عقد من الإتقان كلياً بالـ CSS */
-            @keyframes boseExcellenceLoop {
-                0% { transform: translate3d(0, 0, 0); }
-                100% { transform: translate3d(-50%, 0, 0); }
-            }
-
+            @keyframes boseExcellenceLoop { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-50%, 0, 0); } }
             .animate-marquee { display: flex; width: max-content; animation: boseMarquee 25s linear infinite; will-change: transform; }
             .waterfall-up { animation: boseWaterfallUp 40s linear infinite; will-change: transform; }
             .waterfall-down { animation: boseWaterfallDown 40s linear infinite; will-change: transform; }
-            
-            .bose-excellence-animate-loop {
-                display: flex !important;
-                width: max-content !important;
-                direction: ltr !important;
-                animation: boseExcellenceLoop 20s linear infinite !important;
-                will-change: transform;
-            }
+            .bose-excellence-animate-loop { display: flex !important; width: max-content !important; direction: ltr !important; animation: boseExcellenceLoop 20s linear infinite !important; will-change: transform; }
         `;
         document.head.appendChild(styleElement);
     }
 
     function showGlobalFriendlyError() {
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'global-error-banner-node';
-        errorDiv.textContent = 'عذراً، نواجه صعوبة في الاتصال بالخادم حالياً. يرجى إعادة محاولة تحميل الصفحة.';
-        document.body.appendChild(errorDiv);
+        const errorDiv = document.createElement('div'); errorDiv.className = 'global-error-banner-node';
+        errorDiv.textContent = 'عذراً، نواجه صعوبة في الاتصال بالخادم حالياً. يرجى إعادة محاولة تحميل الصفحة.'; document.body.appendChild(errorDiv);
     }
-
-    document.addEventListener("DOMContentLoaded", () => {
-        let attempts = 0; const maxAttempts = 100;
-        const coreGuardInterval = setInterval(() => {
-            attempts++;
-            if (window.BoseStoreData && window.BoseStoreData.store) {
-                clearInterval(coreGuardInterval);
-                console.log("🚀 تم التحقق من مطابقة المحرك المخصص وتوافقه مع قاعدة بيانات حلويات بوسي الحالية.");
-            } else if (attempts >= maxAttempts) {
-                clearInterval(coreGuardInterval);
-                console.error("❌ حارس التمهيد: تجاوز الحد الأقصى لمحاولات تحميل قاعدة البيانات.");
-            }
-        }, 50);
-    });
 
     loadStoreDatabase();
 })();
