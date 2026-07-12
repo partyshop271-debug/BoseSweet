@@ -338,12 +338,12 @@
             a { text-decoration: none; }
             
             /* تصميم الهيدر والـ Top Bar والمكونات المشتركة الفاخرة */
-            .bose-top-bar-marquee-container { background-color: var(--bose-pink); color: var(--bose-white); overflow: hidden; padding: 10px 0; font-size: 14px; font-weight: 600; white-space: nowrap; direction: ltr; position: relative; z-index: 1000; }
+            .bose-top-bar-marquee-container { background-color: var(--bose-pink); color: var(--bose-white); overflow: hidden; padding: 10px 0; font-size: 14px; font-weight: 600; white-space: nowrap; direction: ltr; position: relative; z-index: 45000; }
             .bose-top-bar-marquee-track { display: flex; width: max-content; animation: boseMarquee 30s linear infinite; }
             .bose-marquee-item { padding: 0 40px; direction: rtl; display: inline-block; color: #FFFFFF !important; }
             @keyframes boseMarquee { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-50%, 0, 0); } }
 
-            .bose-sticky-header { position: sticky; top: 0; z-index: 999; background-color: var(--bose-white); border-bottom: var(--bose-border-pink); box-shadow: var(--bose-shadow-glow); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; transition: all 0.3s ease; }
+            .bose-sticky-header { position: sticky; top: 0; z-index: 39999; background-color: var(--bose-white); border-bottom: var(--bose-border-pink); box-shadow: var(--bose-shadow-glow); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; transition: all 0.3s ease; }
             .header-right-side, .header-left-side { display: flex; align-items: center; gap: 15px; }
             .bose-nav-btn { background: none; border: none; font-size: 20px; color: var(--bose-black); cursor: pointer; padding: 8px; transition: color 0.3s ease; display: flex; align-items: center; justify-content: center; }
             .bose-nav-btn:hover { color: var(--bose-pink); }
@@ -354,7 +354,7 @@
             .nav-cart-count-badge { position: absolute; top: -2px; left: -2px; background-color: var(--bose-pink); color: #FFFFFF !important; font-size: 11px; font-weight: 700; min-width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 0 4px; box-shadow: 0 2px 6px rgba(255,145,164,0.4); }
 
             /* تصميم القائمة الجانبية Drawer */
-            .bose-sidebar-drawer { position: fixed; top: 0; right: -320px; width: 320px; height: 100%; background-color: var(--bose-white); z-index: 2000; box-shadow: -5px 0 30px rgba(0,0,0,0.1); transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column; border-left: var(--bose-border-pink); }
+            .bose-sidebar-drawer { position: fixed; top: 0; right: -320px; width: 320px; height: 100%; background-color: var(--bose-white); z-index: 50000; box-shadow: -5px 0 30px rgba(0,0,0,0.1); transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column; border-left: var(--bose-border-pink); }
             .bose-sidebar-drawer.open { right: 0; }
             .sidebar-header { padding: 20px; border-bottom: var(--bose-border-pink); display: flex; justify-content: space-between; align-items: center; background-color: rgba(255,145,164,0.03); }
             .sidebar-logo-container { display: flex; align-items: center; gap: 10px; }
@@ -366,7 +366,7 @@
             .sidebar-link-item a { display: flex; align-items: center; gap: 15px; padding: 14px 25px; font-size: 16px; font-weight: 600; color: var(--bose-black); border-bottom: 1px solid rgba(255,145,164,0.05); transition: all 0.3s ease; }
             .sidebar-link-item a i { color: var(--bose-pink); width: 20px; text-align: center; font-size: 18px; }
             .sidebar-link-item a:hover { background-color: rgba(255,145,164,0.06); padding-right: 32px; color: var(--bose-pink); }
-            .bose-sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.4); z-index: 1999; opacity: 0; visibility: hidden; transition: all 0.3s ease; backdrop-filter: blur(3px); }
+            .bose-sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.4); z-index: 49999; opacity: 0; visibility: hidden; transition: all 0.3s ease; backdrop-filter: blur(3px); }
             .bose-sidebar-overlay.show { opacity: 1; visibility: visible; }
 
             /* تصميم الفوتر الاحترافي الفاخر الموحد */
@@ -393,7 +393,7 @@
             .footer-copyright-block { text-align: center; padding-top: 20px; font-size: 13px; font-weight: 600; margin: 0; color: var(--bose-black); opacity: 0.8; }
             
             /* تصميم نموذج البحث المنبثق الفاخر للبحث النشط */
-            .bose-search-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255,255,255,0.98); z-index: 2500; display: flex; flex-direction: column; opacity: 0; visibility: hidden; transition: all 0.3s ease; padding: 30px 20px; }
+            .bose-search-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255,255,255,0.98); z-index: 55000; display: flex; flex-direction: column; opacity: 0; visibility: hidden; transition: all 0.3s ease; padding: 30px 20px; }
             .bose-search-modal.active { opacity: 1; visibility: visible; }
             .search-modal-header { max-width: 800px; width: 100%; margin: 0 auto; display: flex; justify-content: flex-end; padding-bottom: 20px; }
             .search-input-wrapper { max-width: 800px; width: 100%; margin: 40px auto 20px auto; position: relative; }
@@ -438,25 +438,20 @@
         // أ. ضخ الهيدر والشريط العلوي والقائمة الجانبية والبحث داخل النائب الموحد
         const headerInjector = document.getElementById('bose-header-injector');
         if (headerInjector) {
-            // توليد رسائل الشريط العلوي المزدوجة لملء العرض ومنع ظهور أي فراغات نهائياً
             const marqueeMessages = data.navigation.topBarMessages;
             let marqueeItemsHtml = '';
-            // تكرار الرسائل 4 مرات لضمان اتصال المجرى الحركة بدون أي مساحات فارغة لراحة العين
-            for (let i = 0; i < 4; i++) {
-                marqueeMessages.forEach(msg => {
-                    marqueeItemsHtml += `<span class="bose-marquee-item">${msg} ✨</span>`;
-                });
-            }
+            // عرض الرسائل بشكل نظيف ومستقر بدون تجميع تدميري
+            marqueeMessages.forEach(msg => {
+                marqueeItemsHtml += `<span class="bose-marquee-item">${msg} ✨</span>`;
+            });
 
             const headerHtml = `
-                <!-- شريط علوي متحرك لا نهائي -->
                 <div id="top-bar-marquee" class="bose-top-bar-marquee-container" aria-label="شريط الإعلانات التسويقية">
                     <div class="bose-top-bar-marquee-track">
-                        ${marqueeItemsHtml}
+                        ${marqueeItemsHtml} ${marqueeItemsHtml}
                     </div>
                 </div>
 
-                <!-- الهيدر الرسمي الموحد والثابت Sticky -->
                 <header class="bose-sticky-header">
                     <div class="header-right-side">
                         <button id="mobile-menu-toggle" class="bose-nav-btn" aria-label="فتح القائمة الجانبية">
@@ -478,7 +473,6 @@
                     </div>
                 </header>
 
-                <!-- القائمة الجانبية المتطورة Sidebar Drawer -->
                 <div id="bose-sidebar-drawer" class="bose-sidebar-drawer" aria-hidden="true">
                     <div class="sidebar-header">
                         <div class="sidebar-logo-container">
@@ -501,7 +495,6 @@
                 </div>
                 <div id="bose-sidebar-overlay" class="bose-sidebar-overlay"></div>
 
-                <!-- نموذج البحث النشط الذكي المستقر -->
                 <div id="bose-search-modal" class="bose-search-modal" aria-hidden="true">
                     <div class="search-modal-header">
                         <button id="search-modal-close" class="bose-nav-btn" style="font-size: 26px;" aria-label="إغلاق البحث">
@@ -509,7 +502,7 @@
                         </button>
                     </div>
                     <div class="search-input-wrapper">
-                        <input type="text" id="bose-search-field" class="bose-search-field" placeholder="ابحث عن النكهة أو الصنف (لوتس، بيستاشيو، قشطوطة...)" aria-label="حقل البحث" autocomplete="off" />
+                        <input type="text" id="bose-search-field" class="bose-search-field" placeholder="ابحث عن النكهة أو الصنف (لوتس، بيستاشيو...)" aria-label="حقل البحث" autocomplete="off" />
                         <i class="fa-solid fa-magnifying-glass search-field-icon"></i>
                     </div>
                     <div id="search-results-container" class="search-results-container"></div>
@@ -525,7 +518,6 @@
             const footerHtml = `
                 <footer class="bose-footer" role="contentinfo">
                     <div class="footer-grid-layout">
-                        <!-- العمود الأول: الهوية والنبذة -->
                         <div class="footer-column-block">
                             <div class="footer-brand-meta">
                                 <img src="${data.store.logo}" alt="حلويات بوسي الفاخرة" class="footer-logo" />
@@ -533,33 +525,29 @@
                             </div>
                             <p id="footer-about-text" class="footer-about-paragraph">${data.footer.about}</p>
                             <div id="footer-social-links" class="footer-social-wrapper">
-                                <a href="${data.social.facebook}" target="_blank" class="footer-social-icon-btn" aria-label="تابعنا على فيسبوك"><i class="fa-brands fa-facebook-f"></i></a>
-                                <a href="${data.social.instagram}" target="_blank" class="footer-social-icon-btn" aria-label="تابعنا على انستجرام"><i class="fa-brands fa-instagram"></i></a>
-                                <a href="${data.social.tiktok}" target="_blank" class="footer-social-icon-btn" aria-label="تابعنا على تيك توك"><i class="fa-brands fa-tiktok"></i></a>
-                                <a href="https://wa.me/${data.social.whatsapp}" target="_blank" class="footer-social-icon-btn" aria-label="تواصل معنا عبر واتساب"><i class="fa-brands fa-whatsapp"></i></a>
+                                <a href="${data.social.facebook}" target="_blank" class="footer-social-icon-btn"><i class="fa-brands fa-facebook-f"></i></a>
+                                <a href="${data.social.instagram}" target="_blank" class="footer-social-icon-btn"><i class="fa-brands fa-instagram"></i></a>
+                                <a href="${data.social.tiktok}" target="_blank" class="footer-social-icon-btn"><i class="fa-brands fa-tiktok"></i></a>
+                                <a href="https://wa.me/${data.social.whatsapp}" target="_blank" class="footer-social-icon-btn"><i class="fa-brands fa-whatsapp"></i></a>
                             </div>
                         </div>
-
-                        <!-- العمود الثاني: الروابط السريعة والمساعدة -->
                         <div class="footer-column-block">
                             <h3 class="footer-heading-title">روابط سريعة</h3>
                             <ul class="footer-links-ul">
-                                <li><a href="index.html"><i class="fa-solid fa-chevron-left"></i> الرئيسية</a></li>
-                                <li><a href="menu.html"><i class="fa-solid fa-chevron-left"></i> المنيو الشامل</a></li>
-                                <li><a href="cake-builder.html"><i class="fa-solid fa-chevron-left"></i> محاكي التورت</a></li>
-                                <li><a href="flower-builder.html"><i class="fa-solid fa-chevron-left"></i> محاكي الورد</a></li>
-                                <li><a href="cart.html"><i class="fa-solid fa-chevron-left"></i> سلة التسوق</a></li>
+                                <li><a href="index.html">الرئيسية</a></li>
+                                <li><a href="menu.html">المنيو الشامل</a></li>
+                                <li><a href="cake-builder.html">محاكي التورت</a></li>
+                                <li><a href="flower-builder.html">محاكي الورد</a></li>
+                                <li><a href="cart.html">سلة التسوق</a></li>
                             </ul>
                         </div>
-
-                        <!-- العمود الثالث: السياسات واللوجستيات -->
                         <div class="footer-column-block">
                             <h3 class="footer-heading-title">وثائق وسياسات</h3>
                             <ul class="footer-links-ul">
-                                <li><a href="policies/privacy-policy.html"><i class="fa-solid fa-shield-halved"></i> سياسة الخصوصية</a></li>
-                                <li><a href="policies/refund-policy.html"><i class="fa-solid fa-rotate-left"></i> سياسة الاسترجاع المالي</a></li>
-                                <li><a href="policies/shipping-policy.html"><i class="fa-solid fa-truck-ramp-box"></i> سياسة الشحن والتوصيل</a></li>
-                                <li><a href="policies/terms.html"><i class="fa-solid fa-gavel"></i> الشروط والأحكام</a></li>
+                                <li><a href="policies/privacy-policy.html">سياسة الخصوصية</a></li>
+                                <li><a href="policies/refund-policy.html">سياسة الاسترجاع المالي</a></li>
+                                <li><a href="policies/shipping-policy.html">سياسة الشحن والتوصيل</a></li>
+                                <li><a href="policies/terms.html">الشروط والأحكام</a></li>
                                 <li class="footer-contact-item" style="margin-top: 15px;">
                                     <i class="fa-solid fa-location-dot"></i>
                                     <span>${data.store.pickup.address}</span>
@@ -567,15 +555,10 @@
                             </ul>
                         </div>
                     </div>
-                    <!-- حقوق النشر والتأريخ التلقائي للعام الحالي 2026 -->
                     <p class="footer-copyright-block">جميع الحقوق محفوظة &copy; <span id="footer-year-display">2026</span> لعلامة حلويات بوسي الفاخرة.</p>
                 </footer>
             `;
             footerInjector.innerHTML = footerHtml;
-            
-            // التأكيد الهندسي للعام الثابت 2026 للامتثال للمواصفات
-            const yearDisplay = document.getElementById('footer-year-display');
-            if (yearDisplay) yearDisplay.textContent = "2026";
         }
     }
 
@@ -594,12 +577,10 @@
         const searchField = document.getElementById('bose-search-field');
         const resultsContainer = document.getElementById('search-results-container');
 
-        // أحداث القائمة الجانبية
         if (toggleBtn && sidebar && overlay) {
             toggleBtn.addEventListener('click', () => {
                 sidebar.classList.add('open');
                 overlay.classList.add('show');
-                sidebar.setAttribute('aria-hidden', 'false');
             });
         }
         
@@ -607,18 +588,15 @@
             if (sidebar && overlay) {
                 sidebar.classList.remove('open');
                 overlay.classList.remove('show');
-                sidebar.setAttribute('aria-hidden', 'true');
             }
         };
 
         if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
         if (overlay) overlay.addEventListener('click', closeSidebar);
 
-        // أحداث نظام البحث النشط المتقدم
         if (searchBtn && searchModal) {
             searchBtn.addEventListener('click', () => {
                 searchModal.classList.add('active');
-                searchModal.setAttribute('aria-hidden', 'false');
                 setTimeout(() => searchField?.focus(), 200);
             });
         }
@@ -626,59 +604,36 @@
         if (searchClose) {
             searchClose.addEventListener('click', () => {
                 searchModal.classList.remove('active');
-                searchModal.setAttribute('aria-hidden', 'true');
-                if (searchField) searchField.value = '';
-                if (resultsContainer) resultsContainer.innerHTML = '';
             });
         }
 
         if (searchField && resultsContainer) {
             searchField.addEventListener('input', (e) => {
                 const query = e.target.value.trim().toLowerCase();
-                if (!query) {
-                    resultsContainer.innerHTML = '';
-                    return;
-                }
+                if (!query) { resultsContainer.innerHTML = ''; return; }
 
                 const allProducts = window.BoseStoreData?.products || [];
-                const filtered = allProducts.filter(p => {
-                    const titleMatch = p.title?.toLowerCase().includes(query);
-                    const flavorMatch = p.flavorName?.toLowerCase().includes(query);
-                    const descMatch = p.flavorDesc?.toLowerCase().includes(query) || p.description?.toLowerCase().includes(query);
-                    const termsMatch = Array.isArray(p.searchTerms) && p.searchTerms.some(t => t.toLowerCase().includes(query));
-                    return titleMatch || flavorMatch || descMatch || termsMatch;
-                });
-
-                if (filtered.length === 0) {
-                    resultsContainer.innerHTML = `<div class="search-no-results-msg">لم نجد أصنافاً تطابق "${query}"، تصفح المنيو الشامل لاستكشاف روائعنا.</div>`;
-                    return;
-                }
+                const filtered = allProducts.filter(p => p.title?.toLowerCase().includes(query) || p.flavorName?.toLowerCase().includes(query));
 
                 let html = '';
                 filtered.forEach(p => {
-                    const priceToShow = window.calculateProductFinalPrice(p, { size: p.defaultSize || 'triangle' });
-                    // تحديد صفحة التوجيه المناسبة برمجياً
-                    const targetPage = p.customBuilderUrl ? p.customBuilderUrl : `product.html?slug=${p.slug}`;
-                    
                     html += `
-                        <a href="${targetPage}" class="search-result-card-item">
-                            <img src="${p.image || p.images[0]}" alt="${p.title}" class="search-result-img" />
+                        <a href="product.html?slug=${p.slug}" class="search-result-card-item">
+                            <img src="${p.images[0]}" class="search-result-img" />
                             <div class="search-result-info">
-                                <div class="search-result-name">${p.title} - ${p.flavorName || 'طعم أصيل'}</div>
-                                <div class="search-result-category">وصف غني وقيمة عالية الجودة</div>
+                                <div class="search-result-name">${p.title} - ${p.flavorName}</div>
                             </div>
-                            <div class="search-result-price-view">${Math.round(priceToShow)} جنيه</div>
+                            <div class="search-result-price-view">${Math.round(p.price)} جنيه</div>
                         </a>
                     `;
                 });
-                resultsContainer.innerHTML = html;
+                resultsContainer.innerHTML = html || '<div class="search-no-results-msg">لم نجد أصنافاً تطابق بحثك.</div>';
             });
         }
     }
 
     /**
      * 13. محرك قسم عقد من الإتقان المتحرك الفاخر (#excellence-section)
-     * يضمن ملء الشاشة وحركة دائرية انسيابية متصلة بدون انقطاع أو مساحات بيضاء
      */
     window.initializeExcellenceSectionSlider = function() {
         const track = document.getElementById('excellence-images-track');
@@ -687,110 +642,91 @@
         const config = window.BoseStoreData.homepage?.excellence;
         if (!config || !Array.isArray(config.images)) return;
         
-        // مضاعفة وتكرار الصور 4 مرات لبناء مجرى حركة لا نهائي آمن وممتد يمنع الفراغات البصرية تماماً
         let imagesHtml = '';
-        for (let r = 0; r < 4; r++) {
-            config.images.forEach(imgUrl => {
-                imagesHtml += `
-                    <a href="menu.html" class="excellence-image-link-wrapper" style="display: inline-block; box-sizing: border-box;">
-                        <img src="${imgUrl}" alt="روائع وإتقان حلويات بوسي" class="excellence-slider-img-fluid" />
-                    </a>
-                `;
-            });
-        }
-        
-        track.innerHTML = `
-            <div class="excellence-marquee-fluid-track">
-                ${imagesHtml}
-            </div>
-        `;
-        
-        // حقن أنيميشن الـ CSS المخصصة لقسم الإتقان لضمان سلاسة التدفق والأداء العالي
-        if (!document.getElementById('bose-excellence-slider-styles')) {
-            const style = document.createElement('style');
-            style.id = 'bose-excellence-slider-styles';
-            style.textContent = `
-                .excellence-marquee-fluid-track {
-                    display: flex;
-                    width: max-content;
-                    animation: boseExcellenceLoop 35s linear infinite;
-                    will-change: transform;
-                }
-                .excellence-image-link-wrapper {
-                    padding: 0 5px;
-                    width: 100vw;
-                }
-                @media(min-width: 768px) { .excellence-image-link-wrapper { width: 340px; } }
-                @media(min-width: 1024px) { .excellence-image-link-wrapper { width: 420px; } }
-                
-                .excellence-slider-img-fluid {
-                    width: 100%;
-                    height: 360px;
-                    object-fit: cover;
-                    border-radius: 20px;
-                    border: var(--bose-border-pink);
-                    box-shadow: var(--bose-shadow-glow);
-                    transition: transform 0.4s ease;
-                }
-                .excellence-slider-img-fluid:hover {
-                    transform: scale(1.02);
-                }
-                @media(min-width: 768px) { .excellence-slider-img-fluid { height: 340px; } }
-                @media(min-width: 1024px) { .excellence-slider-img-fluid { height: 420px; } }
-                
-                @keyframes boseExcellenceLoop {
-                    0% { transform: translate3d(0, 0, 0); }
-                    100% { transform: translate3d(-25%, 0, 0); }
-                }
+        config.images.forEach(imgUrl => {
+            imagesHtml += `
+                <div class="perfection-slide-node">
+                    <img src="${imgUrl}" alt="روائع وإتقان حلويات بوسي" />
+                </div>
             `;
-            document.head.appendChild(style);
-        }
+        });
+        
+        track.innerHTML = imagesHtml + imagesHtml; // مضاعفة المسار لمنع الفراغات البصرية نهائياً
     };
 
     function showGlobalFriendlyError() {
         const err = document.createElement('div');
-        err.style.cssText = 'position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background-color:#FF91A4; color:#FFFFFF; padding:12px 24px; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.15); z-index:99999; direction:rtl; font-size:14px; font-weight:700;';
-        err.textContent = 'عذراً، واجهنا صعوبة خفيفة في الاتصال بالخادم. يرجى سحب الصفحة لتحديث البيانات وإعادة المحاولة.';
+        err.style.cssText = 'position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background-color:#FF91A4; color:#FFFFFF; padding:12px 24px; border-radius:8px; z-index:99999; font-weight:700;';
+        err.textContent = 'عذراً، واجهنا صعوبة في جلب البيانات. يرجى تحديث الصفحة.';
         document.body.appendChild(err);
     }
 
-    // بدء تشغيل وتثبيت المحرك المركزي الشامل فوراً
     loadStoreDatabase();
 })();
 
 /**
- * 🛡️ حارس التمهيد ومنع التعارض البرمجي (Engine Bootstrap Guard)
- * يضمن تشغيل كافة الأقسام والوظائف بعد استقرار قاعدة البيانات بالكامل
+ * 🛡️ حارس التمهيد لضمان ملء كروت وشلالات الصفحة الرئيسية فور الجلب
  */
 document.addEventListener("DOMContentLoaded", () => {
-    if (window.BoseStoreData && window.BoseStoreData.store) {
-        verifyAndInitializeEngine();
-    } else {
-        let attempts = 0;
-        const maxAttempts = 100; 
-        
-        const coreGuardInterval = setInterval(() => {
-            attempts++;
-            if (window.BoseStoreData && window.BoseStoreData.store) {
-                clearInterval(coreGuardInterval);
-                verifyAndInitializeEngine();
-            } else if (attempts >= maxAttempts) {
-                clearInterval(coreGuardInterval);
-                console.error("❌ حارس التمهيد: تجاوز الحد الأقصى لمحاولات تحميل قاعدة البيانات الحاكمة.");
-            }
-        }, 50);
-    }
-});
+    window.onBoseDatabaseReady && window.onBoseDatabaseReady((data) => {
+        // حقن صور قسم الشلال (Waterfall) ومنع اختفائها
+        const leftCol = document.getElementById('waterfall-left-col');
+        const rightCol = document.getElementById('waterfall-right-col');
+        if (leftCol && rightCol) {
+            leftCol.innerHTML = data.homepage.waterfall.leftColumnImages.map(img => `<img src="${img}" />`).join('');
+            rightCol.innerHTML = data.homepage.waterfall.rightColumnImages.map(img => `<img src="${img}" />`).join('');
+        }
 
-function verifyAndInitializeEngine() {
-    console.log("🚀 تم التحقق من مطابقة المحرك المركزي الموحد وتوافقه مع قاعدة بيانات حلويات بوسي بنجاح.");
-    
-    // تشغيل سلايدر الإتقان تلقائياً في حال وجوده بالصفحة الحالية
-    if (document.getElementById('excellence-images-track')) {
-        window.initializeExcellenceSectionSlider();
-    }
-    
-    if (typeof startEngineLogic === "function") {
-        startEngineLogic();
-    }
-}
+        // حقن نصوص قسم الهيرو وبانر التورت
+        if(document.getElementById('hero-description')) document.getElementById('hero-description').textContent = data.homepage.hero.description;
+        if(document.getElementById('excellence-title')) document.getElementById('excellence-title').textContent = data.homepage.excellence.title;
+        if(document.getElementById('excellence-description')) document.getElementById('excellence-description').textContent = data.homepage.excellence.description;
+        
+        // محاكي التورت والورد البلوكات الكبرى
+        if(document.getElementById('cake-preview-img')) document.getElementById('cake-preview-img').src = data.homepage.cakePreview.image;
+        if(document.getElementById('cake-preview-title')) document.getElementById('cake-preview-title').textContent = data.homepage.cakePreview.title;
+        if(document.getElementById('cake-preview-desc')) document.getElementById('cake-preview-desc').textContent = data.homepage.cakePreview.description;
+        if(document.getElementById('cake-preview-cta')) document.getElementById('cake-preview-cta').textContent = data.homepage.cakePreview.cta;
+
+        if(document.getElementById('flower-preview-img')) document.getElementById('flower-preview-img').src = data.homepage.flowerPreview.image;
+        if(document.getElementById('flower-preview-title')) document.getElementById('flower-preview-title').textContent = data.homepage.flowerPreview.title;
+        if(document.getElementById('flower-preview-desc')) document.getElementById('flower-preview-desc').textContent = data.homepage.flowerPreview.description;
+        if(document.getElementById('flower-preview-cta')) document.getElementById('flower-preview-cta').textContent = data.homepage.flowerPreview.cta;
+
+        // إغلاق وبناء كروت الأكثر مبيعاً ديناميكياً لتأمين الظهور الكامل
+        const mostSellingGrid = document.getElementById('most-selling-grid');
+        if (mostSellingGrid) {
+            let html = '';
+            data.products.filter(p => data.homepage.mostSelling.includes(p.id)).forEach(p => {
+                html += `
+                    <div class="product-card-unified">
+                        <img src="${p.images[0]}" class="product-card-img" />
+                        <h3 class="product-card-title">${p.title}</h3>
+                        <span class="product-card-flavor-name">${p.flavorName}</span>
+                        <p class="product-card-desc">${p.flavorDesc}</p>
+                        <div class="product-card-price">${Math.round(p.price)} جنيه</div>
+                        <button class="btn-add-to-cart" onclick="location.href='product.html?slug=${p.slug}'">استعرض التفاصيل</button>
+                    </div>
+                `;
+            });
+            mostSellingGrid.innerHTML = html;
+        }
+
+        // بناء كروت تسوق حسب الفئة الـ 12 الملوكي لمنع الفراغات البصرية
+        const categoriesTrack = document.getElementById('categories-track');
+        if (categoriesTrack) {
+            let catHtml = data.homepage.categoriesSlider.map(cat => `
+                <div class="bose-category-slider-card" onclick="location.href='menu.html'">
+                    <img src="${cat.image}" class="category-img" />
+                    <div class="category-title-display">${cat.title}</div>
+                </div>
+            `).join('');
+            categoriesTrack.innerHTML = catHtml + catHtml;
+        }
+
+        // تشغيل السلايدر الأفقي لعقد من الإتقان تلقائياً
+        if (document.getElementById('excellence-images-track')) {
+            window.initializeExcellenceSectionSlider();
+        }
+    });
+});
