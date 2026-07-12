@@ -1,9 +1,10 @@
 /**
- * 👑 ملف المحرك المركزي العالمي المصحح والمطور بالكامل V12.7 - حلويات بوسي 2026 👑
+ * 👑 ملف المحرك المركزي العالمي المصحح والمطور بالكامل V12.8 - حلويات بوسي 2026 👑
  * حوكمة كاملة لواجهات الشريط العلوي، القائمة الجانبية المتطورة، والفوتر الموحد ومنع تداخل الملفات
  * القضاء التام والنهائي على ثغرة بتر القائمة الجانبية وضمان التمرير الكامل لآخر عنصر لوجستي
  * المسؤول الوحيد والمطلق عن التحكم في حركة وسرعة وتكرار وضخ نصوص الشريط العلوي وقسم "عقد من الإتقان"
  * [إصلاح حرج]: معالجة اختفاء نصوص شريط الإعلانات اللانهائي وضبط مسارات الأنميشن بالتوافق مع الـ DOM
+ * [تطوير استراتيجي]: إصلاح واجهة صور قسم "عقد من الإتقان" اللانهائي ومنع وميضها أو اختفائها كلياً لراحة العين
  */
 (function() {
     // محددات الحالة المركزية المعزولة بأمان
@@ -320,7 +321,7 @@
     }
 
     // ==========================================
-    // 5. موديول حقن المحتوى الديناميكي وحركات الـ JavaScript (حل مشكلة اختفاء نصوص الشريط العلوي)
+    // 5. موديول حقن المحتوى الديناميكي وحركات الـ JavaScript (تحكم مركزي صارم وعزل اللمس)
     // ==========================================
     function renderBoseDynamicContent() {
         const data = window.BoseStoreData;
@@ -333,7 +334,6 @@
                 <span class="ticker-message-item">${msg} &nbsp;&nbsp;&nbsp;&nbsp; 🌸 &nbsp;&nbsp;&nbsp;&nbsp;</span>
             `).join('');
             
-            // تكرار متزن (مضاعف مرتين) لملء مجرى التمرير مع كلاس السحب المستقر للـ CSS
             tickerTrack.innerHTML = messagesHtml + messagesHtml;
             tickerTrack.className = "animate-marquee";
         }
@@ -355,16 +355,15 @@
         const excellenceTrack = document.getElementById('excellence-images-track');
         if (excellenceTitle) excellenceTitle.textContent = data.homepage.excellence.title;
         if (excellenceDesc) excellenceDesc.textContent = data.homepage.excellence.description;
+        
+        // [تعديل هندسي ومحكم لقسم عقد من الإتقان]: منع الاختفاء والتصادم عبر التكرار المتزن المباشر والأداء النظيف
         if (excellenceTrack && data.homepage.excellence.images) {
             let imagesHtml = data.homepage.excellence.images.map(img => `
                 <a href="menu.html" class="perfection-slide-node"><img src="${img}" alt="إتقان حلويات بوسي" loading="lazy"></a>
             `).join('');
             
-            let infiniteExcellenceHtml = '';
-            for (let i = 0; i < 30; i++) {
-                infiniteExcellenceHtml += imagesHtml;
-            }
-            excellenceTrack.innerHTML = infiniteExcellenceHtml;
+            // تكرار متناسق وموزون (مضاعف مرتين فقط) لملء مجرى التمرير ومحاربة الجمود
+            excellenceTrack.innerHTML = imagesHtml + imagesHtml;
 
             excellenceTrack.style.display = 'flex';
             excellenceTrack.style.gap = '16px';
@@ -376,6 +375,7 @@
             
             function animateExcellenceLoop() {
                 currentX -= scrollSpeed;
+                // عند التمرير لنصف العرض تماماً، نقوم بالتمرير العكسي اللحظي للبدء من الصفر لخلق تيار لا نهائي
                 if (Math.abs(currentX) >= (excellenceTrack.scrollWidth / 2)) {
                     currentX = 0;
                 }
