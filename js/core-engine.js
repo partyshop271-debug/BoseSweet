@@ -1,9 +1,8 @@
 /**
- * 👑 ملف المحرك المركزي العالمي النظيف والمصحح بالكامل V20.0 - حلويات بوسي 2026 👑
- * حوكمة كاملة لواجهات الشريط العلوي، الشلال البصري، وقسم عقد من الإتقان والفوتر
- * القضاء التام والنهائي على ثغرة اختفاء نصوص الشريط العلوي وعناوين الأقسام الرئيسية كلياً
+ * 👑 ملف المحرك المركزي العالمي النظيف والمصحح بالكامل V21.0 - حلويات بوسي 2026 👑
+ * حوكمة كاملة لضمان حركة دائرية مستمرة لا نهائية ومنع اختفاء نصوص الشريط العلوي وقسم عقد من الإتقان
  * المسؤول الوحيد والمطلق عن التحكم في حركة وسرعة وتكرار وضخ جميع نصوص وأقسام الموقع
- * [تطهير برمي شامل]: خالي تماماً من أي دالات ميتة ومتوافق 100% مع باقي ملفات الموقع.
+ * [تطهير برمي شامل]: متوافق 100% مع باقي ملفات الموقع وبدون أي ثغرات مالية أو حسابية.
  */
 (function() {
     window.BoseStoreData = null; 
@@ -309,7 +308,8 @@
             let messagesHtml = data.navigation.topBarMessages.map(msg => `
                 <span class="ticker-message-item">${msg} &nbsp;&nbsp;&nbsp;&nbsp; 🌸 &nbsp;&nbsp;&nbsp;&nbsp;</span>
             `).join('');
-            tickerTrack.innerHTML = messagesHtml + messagesHtml + messagesHtml + messagesHtml + messagesHtml + messagesHtml + messagesHtml + messagesHtml;
+            // 🚀 دمج وحقن مصفوفة النصوص أربع مرات متتالية (صمام الأمان لمنع المساحات الفارغة)
+            tickerTrack.innerHTML = messagesHtml + messagesHtml + messagesHtml + messagesHtml;
         }
 
         if (heroDesc = document.getElementById('hero-description')) heroDesc.textContent = data.homepage.hero.description;
@@ -328,7 +328,6 @@
             rightCol.className = "waterfall-col waterfall-down";
         }
 
-        // 🛡️ حوكمة وضمان ثبات نصوص وعناوين الأقسام بالكامل مع الوصف التفصيلي الراقي
         if (document.getElementById('most-selling-title')) document.getElementById('most-selling-title').textContent = "الأكثر مبيعاً";
         if (document.getElementById('most-selling-description')) document.getElementById('most-selling-description').textContent = "تشكيلة حصرية من الأصناف الأكثر طلباً وشهرة المصنوعة بشغف كامل ونقاء تام لتسعد أوقاتك الفاخرة";
         
@@ -349,7 +348,8 @@
             let imagesHtml = data.homepage.excellence.images.map(img => `
                 <div class="perfection-slide-node"><img src="${img}" alt="إتقان حلويات بوسي" loading="lazy"></div>
             `).join('');
-            excellenceTrack.innerHTML = imagesHtml + imagesHtml + imagesHtml + imagesHtml + imagesHtml + imagesHtml;
+            // 🚀 مضاعفة حقن حاوية السلايدر أربع مرات متتالية للتغطية الكاملة أثناء الدوران الدائري اللامتناهي
+            excellenceTrack.innerHTML = imagesHtml + imagesHtml + imagesHtml + imagesHtml;
         }
 
         function createProductCardHTML(product) {
@@ -428,13 +428,11 @@
                 `;
             }).join('');
             
-            // 🚀 هندسة إلغاء التحرك التلقائي لـ "تسوق حسب الفئة" وجعله ثابتاً ومستقراً بالكامل يستجيب للمس والأزرار
             categoriesTrack.className = "categories-track-static-layout";
             initializeCategoriesSliderInteractions();
         }
     }
 
-    // 🎯 محرك التفاعل والتحكم التام لقسم تسوق حسب الفئة (اللمس، الدوتس، والأسهم)
     function initializeCategoriesSliderInteractions() {
         const wrapper = document.getElementById('categories-slider-wrapper');
         const dotsContainer = document.getElementById('categories-dots');
@@ -585,7 +583,7 @@
             h3, h4, h5, h6 { font-family: 'Cairo', sans-serif !important; font-weight: 600 !important; color: var(--bose-black) !important; }
             p, span, a, button, input, select, textarea { font-family: 'Cairo', sans-serif !important; color: var(--bose-black) !important; }
             
-            /* 🚀 حركات الأنميشن الهندسية وسد فجوة وهيكل الفئات المستقرة */
+            /* 🚀 حركات الأنميشن الثلاثية النظيفة الحامية لكرت الشاشة والتسريع العتادي الفاخر */
             @keyframes boseMarquee {
                 0% { transform: translate3d(0, 0, 0); }
                 100% { transform: translate3d(-50%, 0, 0); }
@@ -599,18 +597,18 @@
                 100% { transform: translate3d(0, 0, 0); }
             }
 
-            .animate-marquee {
+            .animate-marquee, #top-bar-marquee-track {
                 display: inline-flex !important;
                 width: max-content !important;
                 flex-wrap: nowrap !important;
-                animation: boseMarquee 25s linear infinite !important;
+                animation: boseMarquee 20s linear infinite !important;
                 will-change: transform;
             }
             #excellence-images-track {
                 display: inline-flex !important;
                 width: max-content !important;
                 flex-wrap: nowrap !important;
-                animation: boseMarquee 30s linear infinite !important;
+                animation: boseMarquee 25s linear infinite !important;
                 will-change: transform;
             }
             .waterfall-up {
@@ -622,7 +620,6 @@
                 will-change: transform;
             }
             
-            /* تخطيط الفئات المستقرة */
             .categories-track-static-layout {
                 display: inline-flex !important;
                 flex-wrap: nowrap !important;
