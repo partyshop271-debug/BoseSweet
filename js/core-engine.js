@@ -1,15 +1,52 @@
 /**
- * 👑 ملف المحرك المركزي العالمي النظيف والمصحح بالكامل V25.0 - حلويات بوسي 2026 👑
+ * 👑 ملف المحرك المركزي العالمي النظيف والمصحح بالكامل V26.0 - حلويات بوسي 2026 👑
  * حوكمة كاملة لضمان حركة دائرية مستمرة لا نهائية ومنع اختفاء نصوص الشريط العلوي وقسم عقد من الإتقان
  * المسؤول الوحيد والمطلق عن التحكم في حركة وسرعة وتكرار وضخ جميع نصوص وأقسام الموقع
- * [تطهير برمي شامل]: متوافق 100% مع باقي ملفات الموقع وبدون أي ثغرات مالية أو حسابية.
+ * [تم حل مشاكل التعارض البصري والأنميشن الدائري ملء الشاشة وحظر أنصاف الكروت المقطوعة نهائياً]
  */
 (function() {
+    "use strict";
+
     window.BoseStoreData = null; 
     window.boseServerTimeOffset = 0;
 
+    // بروتوكول الحقن الأولي السريع لضمان عدم حدوث صمت بصري أو أشرطة خاوية أثناء جلب البيانات
+    function preRenderSkeleton() {
+        const headerInjector = document.getElementById('bose-header-injector');
+        if (headerInjector && !headerInjector.innerHTML.trim()) {
+            headerInjector.innerHTML = `
+                <div id="top-bar-marquee">
+                    <div id="top-bar-marquee-track" class="animate-marquee">
+                        <span class="ticker-message-item">كل قطعة من حلويات بوسي صنعت يدوياً بحب وشغف لتليق بمناسباتكم السعيدة 🌸</span>
+                        <span class="ticker-message-item">مكونات طبيعية 100% طازجة يومياً للحصول على الطعم الأصلي الفاخر ✨</span>
+                        <span class="ticker-message-item">تميزوا بهداياكم وجلساتكم الفاخرة مع تشكيلة بوكس الروقان وكبات السعادة 👑</span>
+                    </div>
+                </div>
+                <header class="bose-navbar">
+                    <div class="navbar-mobile-wrapper">
+                        <button id="mobile-menu-toggle" class="nav-icon-btn" aria-label="فتح قائمة التصفح">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                        <div class="brand-logo-container">
+                            <a href="index.html">
+                                <img id="bose-store-logo" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="شعار حلويات بوسي" loading="lazy">
+                            </a>
+                        </div>
+                        <span class="brand-name-display">حلويات بوسي</span>
+                        <div class="nav-actions">
+                            <a href="cart.html" class="nav-cart-icon-wrapper" aria-label="عرض سلة التسوق">
+                                <i class="fas fa-shopping-bag"></i>
+                                <span id="nav-cart-count">0</span>
+                            </a>
+                        </div>
+                    </div>
+                </header>
+            `;
+        }
+    }
+
     async function loadStoreDatabase() {
-        if (window.BoseStoreData) return;
+        preRenderSkeleton();
         let retries = 5;
         let delay = 1000;
         
@@ -281,10 +318,10 @@
 
                 <div class="footer-policies-container" id="bose-footer-policies">
                     <ul class="nav-list">
-                        <li><a href="privacy-policy.html">سياسة الخصوصية</a></li>
-                        <li><a href="refund-policy.html">سياسة الاسترجاع</a></li>
-                        <li><a href="shipping-policy.html">سياسة الطلبات</a></li>
-                        <li><a href="terms.html">الشروط والأحكام</a></li>
+                        <li><a href="policies/privacy-policy.html">سياسة الخصوصية</a></li>
+                        <li><a href="policies/refund-policy.html">سياسة الاسترجاع</a></li>
+                        <li><a href="policies/shipping-policy.html">سياسة الطلبات</a></li>
+                        <li><a href="policies/terms.html">الشروط والأحكام</a></li>
                     </ul>
                 </div>
 
@@ -303,7 +340,7 @@
         const data = window.BoseStoreData;
         if (!data) return;
 
-        // 👑 صمام الأمان لشريط الإعلانات: حقن مضاعف 12 مرة متتالية هندسياً لمنع حدوث أي فراغ صمت بصري نهائياً
+        // 👑 إصلاح شريط الإعلانات البصري: حقن متكرر متناسق تماماً لملء العرض
         const tickerTrack = document.getElementById('top-bar-marquee-track');
         if (tickerTrack && data.navigation.topBarMessages) {
             let messagesHtml = data.navigation.topBarMessages.map(msg => `
@@ -315,8 +352,8 @@
             tickerTrack.innerHTML = infiniteMessages;
         }
 
-        if (heroDesc = document.getElementById('hero-description')) heroDesc.textContent = data.homepage.hero.description;
-        if (heroCta = document.getElementById('hero-cta-btn')) heroCta.textContent = data.homepage.hero.cta;
+        if (document.getElementById('hero-description')) document.getElementById('hero-description').textContent = data.homepage.hero.description;
+        if (document.getElementById('hero-cta-btn')) document.getElementById('hero-cta-btn').textContent = data.homepage.hero.cta;
 
         const leftCol = document.getElementById('waterfall-left-col');
         const rightCol = document.getElementById('waterfall-right-col');
@@ -326,9 +363,6 @@
             
             leftCol.innerHTML = leftImgHtml + leftImgHtml + leftImgHtml;
             rightCol.innerHTML = rightImgHtml + rightImgHtml + rightImgHtml;
-            
-            leftCol.className = "waterfall-col waterfall-up";
-            rightCol.className = "waterfall-col waterfall-down";
         }
 
         if (document.getElementById('most-selling-title')) document.getElementById('most-selling-title').textContent = "الأكثر مبيعاً";
@@ -346,7 +380,7 @@
         if (document.getElementById('excellence-title')) document.getElementById('excellence-title').textContent = data.homepage.excellence.title;
         if (document.getElementById('excellence-description')) document.getElementById('excellence-description').textContent = data.homepage.excellence.description;
         
-        // 👑 حل المشكلة الجذري لقسم "عقد من الإتقان": مضاعفة مصفوفة الصور 12 مرة متتالية وإلغاء الفواصل بالكامل لضمان دوران متصل لا ينتهي
+        // 👑 حل مشكلة قسم "عقد من الإتقان": لحام متصل وتكرار يسد أي فراغات بصرية كلياً
         const excellenceTrack = document.getElementById('excellence-images-track');
         if (excellenceTrack && data.homepage.excellence.images) {
             let imagesHtml = data.homepage.excellence.images.map(img => `
@@ -434,7 +468,6 @@
                 `;
             }).join('');
             
-            categoriesTrack.className = "categories-track-static-layout";
             initializeCategoriesSliderInteractions();
         }
     }
@@ -448,14 +481,14 @@
         if (cards.length === 0) return;
 
         dotsContainer.innerHTML = '';
-        const totalPages = cards.length;
+        const totalPages = Math.ceil(cards.length / 4);
         
         for (let i = 0; i < totalPages; i++) {
             const dot = document.createElement('div');
             dot.className = `bose-slider-dot ${i === 0 ? 'active' : ''}`;
             dot.onclick = () => {
                 const cardWidth = cards[0].offsetWidth + 16;
-                wrapper.scrollTo({ left: -(cardWidth * i), behavior: 'smooth' });
+                wrapper.scrollTo({ left: -(cardWidth * i * 4), behavior: 'smooth' });
             };
             dotsContainer.appendChild(dot);
         }
@@ -463,7 +496,7 @@
         wrapper.onscroll = () => {
             const cardWidth = cards[0].offsetWidth + 16;
             const scrollPos = Math.abs(wrapper.scrollLeft);
-            const activeIndex = Math.round(scrollPos / cardWidth);
+            const activeIndex = Math.round(scrollPos / (cardWidth * 4));
             
             const dots = dotsContainer.querySelectorAll('.bose-slider-dot');
             dots.forEach((dot, idx) => {
@@ -589,8 +622,7 @@
             h3, h4, h5, h6 { font-family: 'Cairo', sans-serif !important; font-weight: 600 !important; color: var(--bose-black) !important; }
             p, span, a, button, input, select, textarea { font-family: 'Cairo', sans-serif !important; color: var(--bose-black) !important; }
             
-            /* 🚀 حركات الأنميشن الثلاثية النظيفة الحامية لكرت الشاشة والتسريع العتادي الفاخر المعتمد على translate3d ونسبة الـ 50% لمنع حدوث فراغات صمت */
-            @keyframes boseMarquee {
+            @keyframes boseGlobalMarquee {
                 0% { transform: translate3d(0, 0, 0); }
                 100% { transform: translate3d(-50%, 0, 0); }
             }
@@ -626,7 +658,7 @@
                 will-change: transform;
             }
             
-            .categories-track-static-layout {
+            .categories-track-static-layout, .categories-track-loop {
                 display: inline-flex !important;
                 flex-wrap: nowrap !important;
                 gap: 16px !important;
@@ -661,5 +693,8 @@
         errorDiv.textContent = 'عذراً، نواجه صعوبة في الاتصال بالخادم حالياً. يرجى إعادة محاولة تحميل الصفحة.'; document.body.appendChild(errorDiv);
     }
 
-    loadStoreDatabase();
+    document.addEventListener("DOMContentLoaded", () => {
+        preRenderSkeleton();
+        loadStoreDatabase();
+    });
 })();
