@@ -1,9 +1,9 @@
 /**
- * 👑 ملف المحرك المركزي العالمي المصحح والمطور بالكامل V14.0 - حلويات بوسي 2026 👑
+ * 👑 ملف المحرك المركزي العالمي النظيف والمصحح بالكامل V15.0 - حلويات بوسي 2026 👑
  * حوكمة كاملة لواجهات الشريط العلوي، القائمة الجانبية المتطورة، والفوتر الموحد ومنع تداخل الملفات
- * القضاء التام والنهائي على ثغرة وميض واختفاء نصوص الشريط العلوي وصور قسم "عقد من الإتقان"
+ * القضاء التام والنهائي على ثغرة اختفاء نصوص الشريط العلوي وصور قسم "عقد من الإتقان"
  * المسؤول الوحيد والمطلق عن التحكم في حركة وسرعة وتكرار وضخ نصوص الشريط العلوي وقسم "عقد من الإتقان"
- * [إصلاح هندسي للـ Images Loop]: تأمين حسابات العرض البرمجي بعد اكتمال تحميل الصور لضمان الاستقرار البصري الكامل.
+ * [تطهير برمي]: حذف كامل لجميع الدوال الميتة وحسابات التحميل المعقدة لضمان استقرار العرض اللحظي.
  */
 (function() {
     window.BoseStoreData = null; 
@@ -308,16 +308,19 @@
         const data = window.BoseStoreData;
         if (!data) return;
 
+        // 1. الشريط العلوي المتحرك (نصوص كاملة متكررة)
         const tickerTrack = document.getElementById('top-bar-marquee-track');
         if (tickerTrack && data.navigation.topBarMessages) {
             let messagesHtml = data.navigation.topBarMessages.map(msg => `
-                <span class="ticker-message-item" style="direction: rtl !important; display: inline-block;">${msg} &nbsp;&nbsp;&nbsp;&nbsp; 🌸 &nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <span class="ticker-message-item">${msg} &nbsp;&nbsp;&nbsp;&nbsp; 🌸 &nbsp;&nbsp;&nbsp;&nbsp;</span>
             `).join('');
             
-            tickerTrack.innerHTML = messagesHtml + messagesHtml + messagesHtml;
+            // حقن متكرر 4 مرات لملء كامل المسار الحركي ومنع الفراغات نهائياً
+            tickerTrack.innerHTML = messagesHtml + messagesHtml + messagesHtml + messagesHtml;
             tickerTrack.className = "animate-marquee";
         }
 
+        // 2. قسم الهيرو والشلال البصري
         const heroDesc = document.getElementById('hero-description');
         const heroCta = document.getElementById('hero-cta-btn');
         if (heroDesc) heroDesc.textContent = data.homepage.hero.description;
@@ -330,6 +333,7 @@
             rightCol.innerHTML = data.homepage.waterfall.rightColumnImages.map(img => `<img src="${img}" alt="حلويات بوسي فخامة بصرية" loading="lazy">`).join('');
         }
 
+        // 3. قسم عقد من الإتقان (3 صور متصلة وملتصقة تماماً تتحرك كلياً بالـ CSS)
         const excellenceTitle = document.getElementById('excellence-title');
         const excellenceDesc = document.getElementById('excellence-description');
         const excellenceTrack = document.getElementById('excellence-images-track');
@@ -338,61 +342,12 @@
         
         if (excellenceTrack && data.homepage.excellence.images) {
             let imagesHtml = data.homepage.excellence.images.map(img => `
-                <a href="menu.html" class="perfection-slide-node" style="direction: rtl !important; margin: 0 !important; padding: 0 !important;"><img src="${img}" alt="إتقان حلويات بوسي" style="display: block; width: 100%; border-radius: 0 !important; border: none !important;"></a>
+                <a href="menu.html" class="perfection-slide-node"><img src="${img}" alt="إتقان حلويات بوسي" loading="lazy"></a>
             `).join('');
             
-            let infiniteExcellenceHtml = '';
-            for (let i = 0; i < 8; i++) {
-                infiniteExcellenceHtml += imagesHtml;
-            }
-            excellenceTrack.innerHTML = infiniteExcellenceHtml;
-
-            excellenceTrack.style.display = 'flex';
-            excellenceTrack.style.gap = '0px'; 
-            excellenceTrack.style.padding = '0px';
-            excellenceTrack.style.margin = '0px';
-            excellenceTrack.style.width = 'max-content';
-            excellenceTrack.style.direction = 'ltr'; 
-
-            // صمام الأمان الهندسي: بدء الحركة والحسابات فقط بعد ضمان تحميل الصور الفعلي في المتصفح
-            let currentX = 0;
-            const scrollSpeed = 1.0; 
-            let animationFrameId = null;
-            
-            function startExcellenceLoopAnimation() {
-                function animateExcellenceLoop() {
-                    currentX -= scrollSpeed;
-                    const halfWidth = excellenceTrack.scrollWidth / 2;
-                    if (halfWidth > 0 && Math.abs(currentX) >= halfWidth) {
-                        currentX = 0;
-                    }
-                    excellenceTrack.style.transform = `translate3d(${currentX}px, 0, 0)`;
-                    animationFrameId = requestAnimationFrame(animateExcellenceLoop);
-                }
-                if(animationFrameId) cancelAnimationFrame(animationFrameId);
-                animationFrameId = requestAnimationFrame(animateExcellenceLoop);
-            }
-
-            // فحص التحميل الفوري أو الانتظار الفعلي للصور
-            const trackImages = excellenceTrack.querySelectorAll('img');
-            let loadedCount = 0;
-            if(trackImages.length > 0) {
-                trackImages.forEach(img => {
-                    if (img.complete) {
-                        loadedCount++;
-                    } else {
-                        img.onload = () => {
-                            loadedCount++;
-                            if (loadedCount === trackImages.length) {
-                                startExcellenceLoopAnimation();
-                            }
-                        };
-                    }
-                });
-                if (loadedCount === trackImages.length) {
-                    startExcellenceLoopAnimation();
-                }
-            }
+            // مضاعفة تكرار كروت الصور لضمان الاستمرارية الحركية اللانهائية بـ CSS وبدون جافا سكريبت ميت
+            excellenceTrack.innerHTML = imagesHtml + imagesHtml + imagesHtml + imagesHtml;
+            excellenceTrack.className = "bose-excellence-animate-loop";
         }
 
         function createProductCardHTML(product) {
@@ -938,14 +893,28 @@
 
             @keyframes boseMarquee { 
                 0% { transform: translate3d(0, 0, 0); } 
-                100% { transform: translate3d(-33.333%, 0, 0); } 
+                100% { transform: translate3d(-50%, 0, 0); } 
             }
             @keyframes boseWaterfallUp { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(0, -50%, 0); } }
             @keyframes boseWaterfallDown { 0% { transform: translate3d(0, -50%, 0); } 100% { transform: translate3d(0, 0, 0); } }
             
-            .animate-marquee { display: flex; width: max-content; animation: boseMarquee 35s linear infinite; will-change: transform; }
+            /* أنيميشن ناعم وسلس لقسم عقد من الإتقان كلياً بالـ CSS */
+            @keyframes boseExcellenceLoop {
+                0% { transform: translate3d(0, 0, 0); }
+                100% { transform: translate3d(-50%, 0, 0); }
+            }
+
+            .animate-marquee { display: flex; width: max-content; animation: boseMarquee 25s linear infinite; will-change: transform; }
             .waterfall-up { animation: boseWaterfallUp 40s linear infinite; will-change: transform; }
             .waterfall-down { animation: boseWaterfallDown 40s linear infinite; will-change: transform; }
+            
+            .bose-excellence-animate-loop {
+                display: flex !important;
+                width: max-content !important;
+                direction: ltr !important;
+                animation: boseExcellenceLoop 20s linear infinite !important;
+                will-change: transform;
+            }
         `;
         document.head.appendChild(styleElement);
     }
