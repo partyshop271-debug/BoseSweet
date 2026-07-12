@@ -87,7 +87,7 @@
                     if (selectedPrinting === 'edible' || selectedPrinting === 'printable-edible' || selectedPrinting === 'صورة_صالحة_للأكل') {
                         printingFee = 60; // 60 جنيهاً للصورة الصالحة للأكل
                     } else if (selectedPrinting === 'non-edible' || selectedPrinting === 'printable-non-edible' || selectedPrinting === 'صورة_غير_صالحة_للأكل') {
-                        printingFee = 15; // 15 جنيهاً للصورة غير الصالحة للأكل
+                        printingFee = 15; // 15 جنيهاً للصورة غير صالحة للأكل
                     }
                 }
                 price += printingFee;
