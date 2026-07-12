@@ -751,3 +751,31 @@ body.bose-hardware-accelerated {
     }
     .menu-category-card img { height: 420px !important; }
 }
+/* ==========================================================================
+   🔒 صمام أمان قياسي لمنع اختفاء صور عقد من الإتقان والشريط العلوي 🔒
+   ========================================================================== */
+#excellence-images-track, 
+#top-bar-marquee-track {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    width: max-content !important;
+}
+
+.perfection-slide-node {
+    width: 280px !important;
+    flex-shrink: 0 !important;
+    display: block !important;
+}
+
+@media (min-width: 768px) {
+    .perfection-slide-node { width: 340px !important; }
+}
+
+@media (min-width: 1024px) {
+    .perfection-slide-node { width: 420px !important; }
+}
+
+.bose-excellence-animate-loop {
+    animation: boseExcellenceLoop 20s linear infinite !important;
+}
