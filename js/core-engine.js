@@ -1,5 +1,5 @@
 /**
- * 👑 ملف المحرك المركزي العالمي النظيف والمصحح بالكامل V23.0 - حلويات بوسي 2026 👑
+ * 👑 ملف المحرك المركزي العالمي النظيف والمصحح بالكامل V24.0 - حلويات بوسي 2026 👑
  * حوكمة كاملة لضمان حركة دائرية مستمرة لا نهائية ومنع اختفاء نصوص الشريط العلوي وقسم عقد من الإتقان
  * المسؤول الوحيد والمطلق عن التحكم في حركة وسرعة وتكرار وضخ جميع نصوص وأقسام الموقع
  * [تطهير برمي شامل]: متوافق 100% مع باقي ملفات الموقع وبدون أي ثغرات مالية أو حسابية.
@@ -303,14 +303,16 @@
         const data = window.BoseStoreData;
         if (!data) return;
 
-        // 👑 إصلاح وحوكمة المضاعفة الهندسية لشريط الإعلانات لمنع حدوث فراغات الصمت الصفرية (Looping Multiplication)
+        // 👑 صمام الأمان لشريط الإعلانات: حقن مضاعف 12 مرة متتالية هندسياً لمنع حدوث أي فراغ صمت بصري نهائياً
         const tickerTrack = document.getElementById('top-bar-marquee-track');
         if (tickerTrack && data.navigation.topBarMessages) {
             let messagesHtml = data.navigation.topBarMessages.map(msg => `
                 <span class="ticker-message-item">${msg} &nbsp;&nbsp;&nbsp;&nbsp; 🌸 &nbsp;&nbsp;&nbsp;&nbsp;</span>
             `).join('');
-            // حقن مضاعف 8 مرات هندسياً كصمام أمان برمي يملأ عروض الشاشات العملاقة والموبايل لضمان استمرار اللحام البصري والانسياب التام
-            tickerTrack.innerHTML = messagesHtml + messagesHtml + messagesHtml + messagesHtml + messagesHtml + messagesHtml + messagesHtml + messagesHtml;
+            
+            let infiniteMessages = "";
+            for (let i = 0; i < 12; i++) { infiniteMessages += messagesHtml; }
+            tickerTrack.innerHTML = infiniteMessages;
         }
 
         if (heroDesc = document.getElementById('hero-description')) heroDesc.textContent = data.homepage.hero.description;
@@ -344,14 +346,16 @@
         if (document.getElementById('excellence-title')) document.getElementById('excellence-title').textContent = data.homepage.excellence.title;
         if (document.getElementById('excellence-description')) document.getElementById('excellence-description').textContent = data.homepage.excellence.description;
         
-        // 👑 إصلاح وحوكمة المضاعفة الحركية لـ 3 صور الكبار لقسم "عقد من الإتقان" لتلتحم تماماً بالتوافق مع نسبة الـ 50% لمنع الاختفاء نهائياً
+        // 👑 حل المشكلة الجذري لقسم "عقد من الإتقان": مضاعفة مصفوفة الصور 12 مرة متتالية وإلغاء الفواصل بالكامل لضمان دوران متصل لا ينتهي
         const excellenceTrack = document.getElementById('excellence-images-track');
         if (excellenceTrack && data.homepage.excellence.images) {
             let imagesHtml = data.homepage.excellence.images.map(img => `
                 <div class="perfection-slide-node"><img src="${img}" alt="إتقان حلويات بوسي" loading="lazy"></div>
             `).join('');
-            // استنساخ هندسي متناسق مكرر 8 مرات كاملة لتأمين تتابع التدفق البصري الأفقي المستمر ومنع توقف الحركة أو ترك أي مساحات فارغة
-            excellenceTrack.innerHTML = imagesHtml + imagesHtml + imagesHtml + imagesHtml + imagesHtml + imagesHtml + imagesHtml + imagesHtml;
+            
+            let infiniteImages = "";
+            for (let i = 0; i < 12; i++) { infiniteImages += imagesHtml; }
+            excellenceTrack.innerHTML = infiniteImages;
         }
 
         function createProductCardHTML(product) {
