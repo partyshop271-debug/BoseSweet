@@ -1,8 +1,8 @@
 /**
- * 👑 ملف المحرك المركزي العالمي النظيف والمصحح بالكامل V18.5 - حلويات بوسي 2026 👑
- * حوكمة كاملة لواجهات الشريط العلوي، القائمة الجانبية المتطورة، والفوتر الموحد ومنع تداخل الملفات
- * القضاء التام والنهائي على ثغرة اختفاء نصوص الشريط العلوي وصور قسم "عقد من الإتقان" والشلال
- * المسؤول الوحيد والمطلق عن التحكم في حركة وسرعة وتكرار وضخ نصوص الشريط العلوي وقسم "عقد من الإتقان"
+ * 👑 ملف المحرك المركزي العالمي النظيف والمصحح بالكامل V19.0 - حلويات بوسي 2026 👑
+ * حوكمة كاملة لواجهات الشريط العلوي، الشلال البصري، وقسم عقد من الإتقان والفوتر
+ * القضاء التام والنهائي على ثغرة اختفاء نصوص الشريط العلوي وعناوين الأقسام الرئيسية كلياً
+ * المسؤول الوحيد والمطلق عن التحكم في حركة وسرعة وتكرار وضخ جميع نصوص وأقسام الموقع
  * [تطهير برمي شامل]: خالي تماماً من أي دالات ميتة ومتوافق 100% مع باقي ملفات الموقع.
  */
 (function() {
@@ -212,7 +212,7 @@
                 <div class="sidebar-mini-cart-empty">
                     <i class="fas fa-shopping-basket"></i>
                     <p>السلة فارغة حالياً</p>
-                    <a href="menu.html" class="sidebar-browse-menu-trigger">تصفح المنيو الشامل</a>
+                    <a href="menu.html" onclick="document.getElementById('sidebar-close-btn').click();" class="sidebar-browse-menu-trigger">تصفح المنيو الشامل</a>
                 </div>
             `;
             return;
@@ -304,7 +304,7 @@
         const data = window.BoseStoreData;
         if (!data) return;
 
-        // 1. شريط الإعلانات العلوي - تفعيل الحركة التلقائية المتصلة المحمية
+        // 1. صمام الأمان للشريط العلوي - مضاعفة هندسية وحقن مسار الحركة
         const tickerTrack = document.getElementById('top-bar-marquee-track');
         if (tickerTrack && data.navigation.topBarMessages) {
             let messagesHtml = data.navigation.topBarMessages.map(msg => `
@@ -316,22 +316,37 @@
         if (heroDesc = document.getElementById('hero-description')) heroDesc.textContent = data.homepage.hero.description;
         if (heroCta = document.getElementById('hero-cta-btn')) heroCta.textContent = data.homepage.hero.cta;
 
-        // 2. الشلال الحركي - زراعة الصور وتفعيل حركة الصعود والهبوط اللانهائية هندسياً
+        // 2. إصلاح شلل الشلال البصري وعزل الفراغات البيضاء نهائياً
         const leftCol = document.getElementById('waterfall-left-col');
         const rightCol = document.getElementById('waterfall-right-col');
         if (leftCol && rightCol) {
-            let leftImages = data.homepage.waterfall.leftColumnImages.map(img => `<img src="${img}" alt="حلويات بوسي فخامة بصرية" loading="lazy">`).join('');
-            let rightImages = data.homepage.waterfall.rightColumnImages.map(img => `<img src="${img}" alt="حلويات بوسي فخامة بصرية" loading="lazy">`).join('');
+            let leftImgHtml = data.homepage.waterfall.leftColumnImages.map(img => `<img src="${img}" alt="حلويات بوسي فخامة بصرية" loading="lazy">`).join('');
+            let rightImgHtml = data.homepage.waterfall.rightColumnImages.map(img => `<img src="${img}" alt="حلويات بوسي فخامة بصرية" loading="lazy">`).join('');
             
-            // مضاعفة الصور البرمجية لضمان تلاحم الحركة اللانهائية بدون فراغات أو مساحات بيضاء
-            leftCol.innerHTML = leftImages + leftImages + leftImages;
-            rightCol.innerHTML = rightImages + rightImages + rightImages;
+            leftCol.innerHTML = leftImgHtml + leftImgHtml + leftImgHtml;
+            rightCol.innerHTML = rightImgHtml + rightImgHtml + rightImgHtml;
+            
+            leftCol.className = "waterfall-col waterfall-up";
+            rightCol.className = "waterfall-col waterfall-down";
         }
 
+        // [تأمين وحقن العناوين والوصف للأقسام الرئيسية الـ 3 الممسوحة بالكامل]
+        if (document.getElementById('most-selling-title')) document.getElementById('most-selling-title').textContent = "الأكثر مبيعاً";
+        if (document.getElementById('most-selling-description')) document.getElementById('most-selling-description').textContent = "تشكيلة حصرية من نكهاتنا الفاخرة الأكثر طلباً ونقاءً";
+        
+        if (document.getElementById('new-arrivals-title')) document.getElementById('new-arrivals-title').textContent = "وصل حديثاً";
+        if (document.getElementById('new-arrivals-description')) document.getElementById('new-arrivals-description').textContent = "استكشف أحدث ابتكارات وتوليفات مطبخ بوسي الحصرية";
+
+        if (document.getElementById('our-products-title')) document.getElementById('our-products-title').textContent = "منتجاتنا";
+        if (document.getElementById('our-products-description')) document.getElementById('our-products-description').textContent = "عالم متكامل من أصناف السعادة المصنوعة يومياً بكل شغف وحب";
+
+        if (document.getElementById('categories-section-title')) document.getElementById('categories-section-title').textContent = "تسوق حسب الفئة";
+        if (document.getElementById('categories-section-subtitle')) document.getElementById('categories-section-subtitle').textContent = "انتقل مباشرة لقسمك المفضل واستمتع بالروقان الخالص";
+
+        // 3. إصلاح عقد من الإتقان ليعمل كشلال دائري مستمر متلاحم الصور
         if (document.getElementById('excellence-title')) document.getElementById('excellence-title').textContent = data.homepage.excellence.title;
         if (document.getElementById('excellence-description')) document.getElementById('excellence-description').textContent = data.homepage.excellence.description;
         
-        // 3. عقد من الإتقان - معالجة الشلل وإعادة ربط كلاس الحركة الانسيابية المستمرة لملء الشاشة
         const excellenceTrack = document.getElementById('excellence-images-track');
         if (excellenceTrack && data.homepage.excellence.images) {
             let imagesHtml = data.homepage.excellence.images.map(img => `
@@ -416,6 +431,7 @@
                     </div>
                 `;
             }).join('');
+            categoriesTrack.className = "categories-track-loop";
         }
     }
 
@@ -535,7 +551,7 @@
             h3, h4, h5, h6 { font-family: 'Cairo', sans-serif !important; font-weight: 600 !important; color: var(--bose-black) !important; }
             p, span, a, button, input, select, textarea { font-family: 'Cairo', sans-serif !important; }
 
-            /* حوكمة حركات الأنميشن الهندسية اللانهائية للمحركات الميكانيكية بالكامل */
+            /* حوكمة حركات الأنميشن الهندسية الفاخرة لتنظيف الشلل المرئي */
             @keyframes boseMarquee {
                 0% { transform: translate3d(0, 0, 0); }
                 100% { transform: translate3d(-50%, 0, 0); }
@@ -560,11 +576,11 @@
                 will-change: transform;
             }
             .waterfall-up {
-                animation: boseWaterfallUp 30s linear infinite !important;
+                animation: boseWaterfallUp 28s linear infinite !important;
                 will-change: transform;
             }
             .waterfall-down {
-                animation: boseWaterfallDown 30s linear infinite !important;
+                animation: boseWaterfallDown 28s linear infinite !important;
                 will-change: transform;
             }
             .categories-track-loop {
@@ -572,6 +588,29 @@
                 width: max-content !important;
                 animation: boseCategoriesLoop 25s linear infinite !important;
                 will-change: transform;
+            }
+
+            /* إصلاح فجوة وهيكل الفوتر الموحد منعا للتكديس */
+            .bose-footer {
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                gap: 20px !important;
+                padding: 40px 20px !important;
+                background: var(--bose-white) !important;
+                border-top: var(--bose-border-pink) !important;
+            }
+            .footer-quick-links ul, .footer-policies-container ul {
+                display: flex !important;
+                justify-content: center !important;
+                flex-wrap: wrap !important;
+                gap: 15px !important;
+                list-style: none !important;
+            }
+            .bose-social-links-wrapper {
+                display: flex !important;
+                gap: 15px !important;
+                justify-content: center !important;
             }
         `;
         document.head.appendChild(styleElement);
