@@ -303,13 +303,14 @@
         const data = window.BoseStoreData;
         if (!data) return;
 
-        // 👑 التدخل المطور: حقن مصفوفة الرسائل مرتين متطابقتين فقط بالتطابق التام للتوافق مع translate3d(-50%) لمنع الفراغات والشلل الحركي
+        // 👑 التعديل والمضاعفة الهندسية لشريط الإعلانات اللانهائي (Cloning Loop)
         const tickerTrack = document.getElementById('top-bar-marquee-track');
         if (tickerTrack && data.navigation.topBarMessages) {
             let messagesHtml = data.navigation.topBarMessages.map(msg => `
                 <span class="ticker-message-item">${msg} &nbsp;&nbsp;&nbsp;&nbsp; 🌸 &nbsp;&nbsp;&nbsp;&nbsp;</span>
             `).join('');
-            tickerTrack.innerHTML = messagesHtml + messagesHtml;
+            // حقن متضاعف 4 مرات كصمام أمان برمي يملأ الشاشات العملاقة ويفيض مسبباً اللحام والانسياب التام
+            tickerTrack.innerHTML = messagesHtml + messagesHtml + messagesHtml + messagesHtml;
         }
 
         if (heroDesc = document.getElementById('hero-description')) heroDesc.textContent = data.homepage.hero.description;
@@ -321,8 +322,8 @@
             let leftImgHtml = data.homepage.waterfall.leftColumnImages.map(img => `<img src="${img}" alt="حلويات بوسي فخامة بصرية" loading="lazy">`).join('');
             let rightImgHtml = data.homepage.waterfall.rightColumnImages.map(img => `<img src="${img}" alt="حلويات بوسي فخامة بصرية" loading="lazy">`).join('');
             
-            leftCol.innerHTML = leftImgHtml + leftImgHtml;
-            rightCol.innerHTML = rightImgHtml + rightImgHtml;
+            leftCol.innerHTML = leftImgHtml + leftImgHtml + leftImgHtml;
+            rightCol.innerHTML = rightImgHtml + rightImgHtml + rightImgHtml;
             
             leftCol.className = "waterfall-col waterfall-up";
             rightCol.className = "waterfall-col waterfall-down";
@@ -343,13 +344,14 @@
         if (document.getElementById('excellence-title')) document.getElementById('excellence-title').textContent = data.homepage.excellence.title;
         if (document.getElementById('excellence-description')) document.getElementById('excellence-description').textContent = data.homepage.excellence.description;
         
-        // 👑 التدخل المطور: حقن الصور الثلاثة الكبار مكررين مرتين فقط بالتوالي لضمان اللحام والدوران الدائري المستمر ومنع الصمت والـ 10 ثوان الفاضية
+        // 👑 التعديل والمضاعفة الهندسية لقسم عقد من الإتقان (3 الصور الكبار)
         const excellenceTrack = document.getElementById('excellence-images-track');
         if (excellenceTrack && data.homepage.excellence.images) {
             let imagesHtml = data.homepage.excellence.images.map(img => `
                 <div class="perfection-slide-node"><img src="${img}" alt="إتقان حلويات بوسي" loading="lazy"></div>
             `).join('');
-            excellenceTrack.innerHTML = imagesHtml + imagesHtml;
+            // استنساخ مضاعف 4 مرات لزيادة التدفق البصري الأفقي ومنع توقف الحركة أو ترك أي مساحات فارغة نهائياً
+            excellenceTrack.innerHTML = imagesHtml + imagesHtml + imagesHtml + imagesHtml;
         }
 
         function createProductCardHTML(product) {
@@ -583,17 +585,17 @@
             h3, h4, h5, h6 { font-family: 'Cairo', sans-serif !important; font-weight: 600 !important; color: var(--bose-black) !important; }
             p, span, a, button, input, select, textarea { font-family: 'Cairo', sans-serif !important; color: var(--bose-black) !important; }
             
-            /* 🚀 حركات الأنميشن الثلاثية النظيفة الحامية لكرت الشاشة والتسريع العتادي الفاخر */
+            /* 🚀 حركات الأنميشن الثلاثية النظيفة الحامية لكرت الشاشة والتسريع العتادي الفاخر المعتمد على translate3d ونسبة الـ 25% لتغطية الأجزاء الأربعة المستنسخة */
             @keyframes boseMarquee {
                 0% { transform: translate3d(0, 0, 0); }
-                100% { transform: translate3d(-50%, 0, 0); }
+                100% { transform: translate3d(-25%, 0, 0); }
             }
             @keyframes boseWaterfallUp {
                 0% { transform: translate3d(0, 0, 0); }
-                100% { transform: translate3d(0, -50%, 0); }
+                100% { transform: translate3d(0, -33.33%, 0); }
             }
             @keyframes boseWaterfallDown {
-                0% { transform: translate3d(0, -50%, 0); }
+                0% { transform: translate3d(0, -33.33%, 0); }
                 100% { transform: translate3d(0, 0, 0); }
             }
 
@@ -601,14 +603,14 @@
                 display: inline-flex !important;
                 width: max-content !important;
                 flex-wrap: nowrap !important;
-                animation: boseMarquee 20s linear infinite !important;
+                animation: boseMarquee 25s linear infinite !important;
                 will-change: transform;
             }
             #excellence-images-track {
                 display: inline-flex !important;
                 width: max-content !important;
                 flex-wrap: nowrap !important;
-                animation: boseMarquee 25s linear infinite !important;
+                animation: boseMarquee 30s linear infinite !important;
                 will-change: transform;
             }
             .waterfall-up {
