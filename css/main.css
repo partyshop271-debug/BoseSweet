@@ -1,5 +1,5 @@
 /* ==========================================================================
-   👑 ملف التصميم المركزي للأقسام والمنيو - حلويات بوسي V24.0 Master 👑
+   👑 ملف التصميم المركزي للأقسام والمنيو - حلويات بوسي V25.0 Master 👑
    امتثال مطلق وأعمى للمقاسات الإلزامية الصارمة على جميع الشاشات والموبايل أولاً
    تطهير بصري كامل مع تفعيل كلاسات حركة الشلال وحظر أنصاف الكروت المقطوعة
    حل جذري ونهائي لخلل مسار الدوران لقسم عقد من الإتقان وشريط الإعلانات
@@ -767,4 +767,18 @@ body.bose-hardware-accelerated {
         height: 520px !important;
     }
     .menu-category-card img { height: 420px !important; }
+}
+
+/* 👑 كود أنميشن الدوران الملوكي الحاكم الصارم الموحد لملف global لمنع وميض وصمت الحركة نهائياً */
+@keyframes boseGlobalMarquee {
+    0% { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(-50%, 0, 0); }
+}
+
+.animate-marquee {
+    display: flex !important;
+    width: max-content !important;
+    animation: boseGlobalMarquee 25s linear infinite !important;
+    will-change: transform;
+    white-space: nowrap !important; /* منع حدوث الـ Text Overflow والقطع نهائياً */
 }
