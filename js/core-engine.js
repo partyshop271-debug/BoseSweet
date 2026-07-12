@@ -1,9 +1,9 @@
 /**
- * 👑 ملف المحرك المركزي العالمي المصحح والمطور بالكامل V13.5 - حلويات بوسي 2026 👑
+ * 👑 ملف المحرك المركزي العالمي المصحح والمطور بالكامل V14.0 - حلويات بوسي 2026 👑
  * حوكمة كاملة لواجهات الشريط العلوي، القائمة الجانبية المتطورة، والفوتر الموحد ومنع تداخل الملفات
  * القضاء التام والنهائي على ثغرة وميض واختفاء نصوص الشريط العلوي وصور قسم "عقد من الإتقان"
  * المسؤول الوحيد والمطلق عن التحكم في حركة وسرعة وتكرار وضخ نصوص الشريط العلوي وقسم "عقد من الإتقان"
- * [إصلاح شامل من الجذور]: عزل اتجاه حركية السلايدرات لمنع انقطاع أو بتر المحتوى البصري على جميع الأجهزة.
+ * [إصلاح هندسي للـ Images Loop]: تأمين حسابات العرض البرمجي بعد اكتمال تحميل الصور لضمان الاستقرار البصري الكامل.
  */
 (function() {
     window.BoseStoreData = null; 
@@ -338,35 +338,61 @@
         
         if (excellenceTrack && data.homepage.excellence.images) {
             let imagesHtml = data.homepage.excellence.images.map(img => `
-                <a href="menu.html" class="perfection-slide-node" style="direction: rtl !important;"><img src="${img}" alt="إتقان حلويات بوسي" loading="lazy"></a>
+                <a href="menu.html" class="perfection-slide-node" style="direction: rtl !important; margin: 0 !important; padding: 0 !important;"><img src="${img}" alt="إتقان حلويات بوسي" style="display: block; width: 100%; border-radius: 0 !important; border: none !important;"></a>
             `).join('');
             
             let infiniteExcellenceHtml = '';
-            for (let i = 0; i < 6; i++) {
+            for (let i = 0; i < 8; i++) {
                 infiniteExcellenceHtml += imagesHtml;
             }
             excellenceTrack.innerHTML = infiniteExcellenceHtml;
 
             excellenceTrack.style.display = 'flex';
-            excellenceTrack.style.gap = '16px'; 
+            excellenceTrack.style.gap = '0px'; 
+            excellenceTrack.style.padding = '0px';
+            excellenceTrack.style.margin = '0px';
             excellenceTrack.style.width = 'max-content';
             excellenceTrack.style.direction = 'ltr'; 
-            
+
+            // صمام الأمان الهندسي: بدء الحركة والحسابات فقط بعد ضمان تحميل الصور الفعلي في المتصفح
             let currentX = 0;
             const scrollSpeed = 1.0; 
             let animationFrameId = null;
             
-            function animateExcellenceLoop() {
-                currentX -= scrollSpeed;
-                const halfWidth = excellenceTrack.scrollWidth / 2;
-                if (Math.abs(currentX) >= halfWidth) {
-                    currentX = 0;
+            function startExcellenceLoopAnimation() {
+                function animateExcellenceLoop() {
+                    currentX -= scrollSpeed;
+                    const halfWidth = excellenceTrack.scrollWidth / 2;
+                    if (halfWidth > 0 && Math.abs(currentX) >= halfWidth) {
+                        currentX = 0;
+                    }
+                    excellenceTrack.style.transform = `translate3d(${currentX}px, 0, 0)`;
+                    animationFrameId = requestAnimationFrame(animateExcellenceLoop);
                 }
-                excellenceTrack.style.transform = `translate3d(${currentX}px, 0, 0)`;
+                if(animationFrameId) cancelAnimationFrame(animationFrameId);
                 animationFrameId = requestAnimationFrame(animateExcellenceLoop);
             }
-            if(animationFrameId) cancelAnimationFrame(animationFrameId);
-            animationFrameId = requestAnimationFrame(animateExcellenceLoop);
+
+            // فحص التحميل الفوري أو الانتظار الفعلي للصور
+            const trackImages = excellenceTrack.querySelectorAll('img');
+            let loadedCount = 0;
+            if(trackImages.length > 0) {
+                trackImages.forEach(img => {
+                    if (img.complete) {
+                        loadedCount++;
+                    } else {
+                        img.onload = () => {
+                            loadedCount++;
+                            if (loadedCount === trackImages.length) {
+                                startExcellenceLoopAnimation();
+                            }
+                        };
+                    }
+                });
+                if (loadedCount === trackImages.length) {
+                    startExcellenceLoopAnimation();
+                }
+            }
         }
 
         function createProductCardHTML(product) {
