@@ -1,5 +1,5 @@
 /**
- * 👑 ملف المحرك المركزي العالمي النظيف والمصحح بالكامل V19.0 - حلويات بوسي 2026 👑
+ * 👑 ملف المحرك المركزي العالمي النظيف والمصحح بالكامل V20.0 - حلويات بوسي 2026 👑
  * حوكمة كاملة لواجهات الشريط العلوي، الشلال البصري، وقسم عقد من الإتقان والفوتر
  * القضاء التام والنهائي على ثغرة اختفاء نصوص الشريط العلوي وعناوين الأقسام الرئيسية كلياً
  * المسؤول الوحيد والمطلق عن التحكم في حركة وسرعة وتكرار وضخ جميع نصوص وأقسام الموقع
@@ -304,33 +304,33 @@
         const data = window.BoseStoreData;
         if (!data) return;
 
-        // 1. صمام الأمان للشريط العلوي - مضاعفة هندسية وحقن مسار الحركة
+        // 1. صمام الأمان للشريط العلوي - مضاعفة تكرارية كاملة لتغذية حاوية العرض لمنع الاختفاء الفجائي
         const tickerTrack = document.getElementById('top-bar-marquee-track');
         if (tickerTrack && data.navigation.topBarMessages) {
             let messagesHtml = data.navigation.topBarMessages.map(msg => `
                 <span class="ticker-message-item">${msg} &nbsp;&nbsp;&nbsp;&nbsp; 🌸 &nbsp;&nbsp;&nbsp;&nbsp;</span>
             `).join('');
-            tickerTrack.innerHTML = messagesHtml + messagesHtml + messagesHtml + messagesHtml;
+            tickerTrack.innerHTML = messagesHtml + messagesHtml + messagesHtml + messagesHtml + messagesHtml + messagesHtml + messagesHtml + messagesHtml;
         }
 
         if (heroDesc = document.getElementById('hero-description')) heroDesc.textContent = data.homepage.hero.description;
         if (heroCta = document.getElementById('hero-cta-btn')) heroCta.textContent = data.homepage.hero.cta;
 
-        // 2. إصلاح شلل الشلال البصري وعزل الفراغات البيضاء نهائياً
+        // 2. تفعيل وحقن كلاسات الشلال البصري المطور وحظر الفراغات
         const leftCol = document.getElementById('waterfall-left-col');
         const rightCol = document.getElementById('waterfall-right-col');
         if (leftCol && rightCol) {
             let leftImgHtml = data.homepage.waterfall.leftColumnImages.map(img => `<img src="${img}" alt="حلويات بوسي فخامة بصرية" loading="lazy">`).join('');
             let rightImgHtml = data.homepage.waterfall.rightColumnImages.map(img => `<img src="${img}" alt="حلويات بوسي فخامة بصرية" loading="lazy">`).join('');
             
-            leftCol.innerHTML = leftImgHtml + leftImgHtml + leftImgHtml;
-            rightCol.innerHTML = rightImgHtml + rightImgHtml + rightImgHtml;
+            leftCol.innerHTML = leftImgHtml + leftImgHtml + leftImgHtml + leftImgHtml;
+            rightCol.innerHTML = rightImgHtml + rightImgHtml + rightImgHtml + rightImgHtml;
             
             leftCol.className = "waterfall-col waterfall-up";
             rightCol.className = "waterfall-col waterfall-down";
         }
 
-        // [تأمين وحقن العناوين والوصف للأقسام الرئيسية الـ 3 الممسوحة بالكامل]
+        // 3. تأمين وضمان ثبات نصوص وعناوين الأقسام الـ 3 الرئيسية والوصف التفصيلي لها ومنع الاختفاء نهائياً
         if (document.getElementById('most-selling-title')) document.getElementById('most-selling-title').textContent = "الأكثر مبيعاً";
         if (document.getElementById('most-selling-description')) document.getElementById('most-selling-description').textContent = "تشكيلة حصرية من نكهاتنا الفاخرة الأكثر طلباً ونقاءً";
         
@@ -343,7 +343,7 @@
         if (document.getElementById('categories-section-title')) document.getElementById('categories-section-title').textContent = "تسوق حسب الفئة";
         if (document.getElementById('categories-section-subtitle')) document.getElementById('categories-section-subtitle').textContent = "انتقل مباشرة لقسمك المفضل واستمتع بالروقان الخالص";
 
-        // 3. إصلاح عقد من الإتقان ليعمل كشلال دائري مستمر متلاحم الصور
+        // 4. حوكمة قسم "عقد من الإتقان" ليعمل كشلال أفقي لانهائي ومستمر متلاحم الصور
         if (document.getElementById('excellence-title')) document.getElementById('excellence-title').textContent = data.homepage.excellence.title;
         if (document.getElementById('excellence-description')) document.getElementById('excellence-description').textContent = data.homepage.excellence.description;
         
@@ -352,8 +352,7 @@
             let imagesHtml = data.homepage.excellence.images.map(img => `
                 <div class="perfection-slide-node"><img src="${img}" alt="إتقان حلويات بوسي" loading="lazy"></div>
             `).join('');
-            excellenceTrack.innerHTML = imagesHtml + imagesHtml + imagesHtml + imagesHtml;
-            excellenceTrack.className = "animate-marquee";
+            excellenceTrack.innerHTML = imagesHtml + imagesHtml + imagesHtml + imagesHtml + imagesHtml + imagesHtml;
         }
 
         function createProductCardHTML(product) {
@@ -549,19 +548,21 @@
             body { font-family: 'Cairo', sans-serif !important; background-color: var(--bose-white) !important; color: var(--bose-black) !important; margin: 0; padding: 0; overflow-x: hidden; }
             h1, h2 { font-family: 'Cairo', sans-serif !important; font-weight: 700 !important; color: var(--bose-black) !important; }
             h3, h4, h5, h6 { font-family: 'Cairo', sans-serif !important; font-weight: 600 !important; color: var(--bose-black) !important; }
-            p, span, a, button, input, select, textarea { font-family: 'Cairo', sans-serif !important; }
+            p, span, a, button, input, select, textarea { font-family: 'Cairo', sans-serif !important; color: var(--bose-black) !important; }
+            .bose-stat-card .stat-number { color: var(--bose-black) !important; font-weight: 700 !important; }
+            .bose-stat-card .stat-label { color: var(--bose-black) !important; opacity: 0.9 !important; }
 
-            /* حوكمة حركات الأنميشن الهندسية الفاخرة لتنظيف الشلل المرئي */
+            /* حوكمة حركات الأنميشن الهندسية الفاخرة وسد فجوات الحركة التنافسية */
             @keyframes boseMarquee {
                 0% { transform: translate3d(0, 0, 0); }
                 100% { transform: translate3d(-50%, 0, 0); }
             }
             @keyframes boseWaterfallUp {
                 0% { transform: translate3d(0, 0, 0); }
-                100% { transform: translate3d(0, -33.333%, 0); }
+                100% { transform: translate3d(0, -50%, 0); }
             }
             @keyframes boseWaterfallDown {
-                0% { transform: translate3d(0, -33.333%, 0); }
+                0% { transform: translate3d(0, -50%, 0); }
                 100% { transform: translate3d(0, 0, 0); }
             }
             @keyframes boseCategoriesLoop {
@@ -570,46 +571,70 @@
             }
 
             .animate-marquee {
-                display: flex !important;
+                display: inline-flex !important;
                 width: max-content !important;
-                animation: boseMarquee 20s linear infinite !important;
+                flex-wrap: nowrap !important;
+                animation: boseMarquee 25s linear infinite !important;
+                will-change: transform;
+            }
+            #top-bar-marquee-track span {
+                display: inline-block !important;
+                white-space: nowrap !important;
+            }
+            #excellence-images-track {
+                display: inline-flex !important;
+                width: max-content !important;
+                flex-wrap: nowrap !important;
+                animation: boseMarquee 30s linear infinite !important;
                 will-change: transform;
             }
             .waterfall-up {
-                animation: boseWaterfallUp 28s linear infinite !important;
+                animation: boseWaterfallUp 35s linear infinite !important;
                 will-change: transform;
             }
             .waterfall-down {
-                animation: boseWaterfallDown 28s linear infinite !important;
+                animation: boseWaterfallDown 35s linear infinite !important;
                 will-change: transform;
             }
             .categories-track-loop {
-                display: flex !important;
+                display: inline-flex !important;
                 width: max-content !important;
                 animation: boseCategoriesLoop 25s linear infinite !important;
                 will-change: transform;
             }
 
-            /* إصلاح فجوة وهيكل الفوتر الموحد منعا للتكديس */
+            /* إصلاح فجوة وهيكل الفوتر الموحد منعا للتكديس لراحة العميل النفسية */
             .bose-footer {
                 display: flex !important;
                 flex-direction: column !important;
                 align-items: center !important;
-                gap: 20px !important;
-                padding: 40px 20px !important;
+                gap: 25px !important;
+                padding: 50px 20px 30px 20px !important;
                 background: var(--bose-white) !important;
                 border-top: var(--bose-border-pink) !important;
+                width: 100% !important;
             }
             .footer-quick-links ul, .footer-policies-container ul {
                 display: flex !important;
                 justify-content: center !important;
                 flex-wrap: wrap !important;
-                gap: 15px !important;
+                gap: 20px !important;
                 list-style: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            .footer-quick-links ul li a, .footer-policies-container ul li a {
+                color: var(--bose-black) !important;
+                font-weight: 600 !important;
+                font-size: 0.95rem !important;
+                transition: color 0.3s ease;
+            }
+            .footer-quick-links ul li a:hover, .footer-policies-container ul li a:hover {
+                color: var(--bose-pink) !important;
             }
             .bose-social-links-wrapper {
                 display: flex !important;
-                gap: 15px !important;
+                gap: 20px !important;
                 justify-content: center !important;
             }
         `;
