@@ -377,7 +377,7 @@
             .sidebar-brand-name { font-size: 18px; font-weight: 700; }
             .sidebar-close-btn { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--bose-black); padding: 5px; transition: color 0.3s; }
             .sidebar-close-btn:hover { color: var(--bose-pink); }
-            .sidebar-links-list { list-style: none; padding: 20px 0; margin: 0; flex: 1; overflow-y: auto; }
+            .sidebar-links-list { list-style: list; padding: 20px 0; margin: 0; flex: 1; overflow-y: auto; }
             .sidebar-link-item a { display: flex; align-items: center; gap: 15px; padding: 14px 25px; font-size: 16px; font-weight: 600; color: var(--bose-black); border-bottom: 1px solid rgba(255,145,164,0.05); transition: all 0.3s ease; }
             .sidebar-link-item a i { color: var(--bose-pink); width: 20px; text-align: center; font-size: 18px; }
             .sidebar-link-item a:hover { background-color: rgba(255,145,164,0.06); padding-right: 32px; color: var(--bose-pink); }
@@ -443,7 +443,6 @@
     function applyGlobalSEOAndBranding() {
         if (!window.BoseStoreData) return;
         const data = window.BoseStoreData;
-        
         if (document.title !== data.seo.title) {
             document.title = data.seo.title;
         }
