@@ -1,5 +1,5 @@
 /**
- * 👑 ملف المحرك المركزي العالمي النظيف والمصحح بالكامل V24.0 - حلويات بوسي 2026 👑
+ * 👑 ملف المحرك المركزي العالمي النظيف والمصحح بالكامل V25.0 - حلويات بوسي 2026 👑
  * حوكمة كاملة لضمان حركة دائرية مستمرة لا نهائية ومنع اختفاء نصوص الشريط العلوي وقسم عقد من الإتقان
  * المسؤول الوحيد والمطلق عن التحكم في حركة وسرعة وتكرار وضخ جميع نصوص وأقسام الموقع
  * [تطهير برمي شامل]: متوافق 100% مع باقي ملفات الموقع وبدون أي ثغرات مالية أو حسابية.
@@ -607,14 +607,14 @@
                 display: inline-flex !important;
                 width: max-content !important;
                 flex-wrap: nowrap !important;
-                animation: boseMarquee 25s linear infinite !important;
+                animation: boseGlobalMarquee 25s linear infinite !important;
                 will-change: transform;
             }
             #excellence-images-track {
                 display: inline-flex !important;
                 width: max-content !important;
                 flex-wrap: nowrap !important;
-                animation: boseMarquee 30s linear infinite !important;
+                animation: boseGlobalMarquee 30s linear infinite !important;
                 will-change: transform;
             }
             .waterfall-up {
