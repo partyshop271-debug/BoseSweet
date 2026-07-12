@@ -1,5 +1,5 @@
 /* ==========================================================================
-   👑 ملف التصميم المركزي للأقسام والمنيو - حلويات بوسي V13.0 Master 👑
+   👑 ملف التصميم المركزي للأقسام والمنيو - حلويات بوسي V14.0 Master 👑
    امتثال مطلق وأعمى للمقاسات الإلزامية الصارمة على جميع الشاشات والموبايل أولاً
    تطهير بصري كامل مع تفعيل كلاسات حركة الشلال وحظر أنصاف الكروت المقطوعة
    ========================================================================== */
@@ -165,7 +165,7 @@ body.bose-hardware-accelerated {
 
 .bose-perfection-carousel-wrapper {
     width: 100% !important;
-    overflow: hidden !important; 
+    overflow-x: hidden !important; 
     display: flex !important;
     position: relative !important;
     cursor: grab;
@@ -189,25 +189,25 @@ body.bose-hardware-accelerated {
     width: 280px !important; /* مقاس كارت الموبايل الصارم */
     flex-shrink: 0 !important;
     display: block !important;
-    padding: 0 4px;
+    padding: 0 0px !important; /* إلغاء البادينج الجانبي للتلاحم المطلق */
 }
 
 .perfection-slide-node img {
     width: 100% !important;
-    height: 220px !important;
-    border-radius: 24px !important;
-    border: var(--bose-border-pink);
+    height: 280px !important; /* زيادة حجم الصورة لملء الفراغ بالكامل بحسب طلبك */
+    border-radius: 0px !important; /* إلغاء الحواف في هذا القسم لضمان اتصال شريطي فاخر */
+    object-fit: cover !important;
     display: block;
 }
 
 @media (min-width: 768px) {
     .perfection-slide-node { width: 340px !important; }
-    .perfection-slide-node img { height: 300px !important; }
+    .perfection-slide-node img { height: 340px !important; }
 }
 
 @media (min-width: 1024px) {
     .perfection-slide-node { width: 420px !important; }
-    .perfection-slide-node img { height: 380px !important; }
+    .perfection-slide-node img { height: 420px !important; }
 }
 
 /* ==========================================================================
