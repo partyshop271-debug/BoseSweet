@@ -1,41 +1,45 @@
+
 /**
- * 📑 المحرك المركزي العام وعمليات الحوكمة المتقدمة - حلويات بوسي (النسخة المصححة والمطورة V2)
- * -------------------------------------------------------------------------------------
- * النطاق المعماري: إدارة البيانات اللحظية، الفحص المالي الدقيق، صمام أمان الشحن والوقت،
- * وحقن عناصر الواجهة المقدسة (الهيدر، الشريط العلوي، السايدبار، قسم الإتقان، والفوتر) بعد نجاح الاتصال.
- * التوافق التكنولوجي: الموبايل أولاً (Mobile-First) + الكمبيوتر - متوافق بالكامل مع استضافة الموبايل.
+ * 👑 المحرك المركزي العالمي وحوكمة واجهات الاستخدام (js/core-engine.js)
+ * علامة حلويات بوسي الفاخرة (BoseSweets) - إصدار الإنتاج المتطور 2026
+ * 
+ * يمنع نهائياً الحذف أو الاختصار أو التبسيط لضمان التوافق المطلق وسد الثغرات المالية[span_3](start_span)[span_3](end_span).
  */
 
 (function() {
-    // النطاق العالمي للمحرك لمنع التعارض البرمجي
+    // النطاق العالمي الآمن للمحرك
     window.BoseStoreData = null; 
     window.boseServerTimeOffset = 0; 
 
-    // 1. استدعاء وتهيئة قاعدة بيانات حلويات بوسي المستقرة
+    // 1. تهيئة واستدعاء قاعدة بيانات حلويات بوسي المستقرة
     async function loadStoreDatabase() {
         if (window.BoseStoreData) return;
+        
         let retries = 5;
-        let delay = 500; // تقليص وقت الانتظار الأولي لسرعة الاستجابة على الشبكات الضعيفة
+        let delay = 1000;
         
         while (retries > 0) {
             try {
                 const response = await fetch('data/site-data-final.json');
                 if (!response.ok) throw new Error('فشل جلب ملف قاعدة البيانات الرئيسي.');
                 
-                // مزامنة وقت الخادم الحقيقي من الهيدر لمنع تلاعب ساعات أجهزة العملاء
                 const serverDateHeader = response.headers.get('Date');
                 if (serverDateHeader) {
-                    window.boseServerTimeOffset = new Date(serverDateHeader).getTime() - Date.now();
+                    const serverTime = new Date(serverDateHeader).getTime();
+                    const clientTime = Date.now();
+                    window.boseServerTimeOffset = serverTime - clientTime;
+                } else {
+                    window.boseServerTimeOffset = 0;
                 }
                 
                 window.BoseStoreData = await response.json();
                 
-                // صمام أمان التمهيد: نطبق البناء والتشغيل فقط وحصرياً بعد نجاح استلام كائن البيانات بالكامل
+                // تشغيل البناء الديناميكي للمكونات المشتركة فوراً
+                buildAndInjectUniversalLayout();
                 applyGlobalSEOAndBranding();
-                injectBoseUniversalLayouts();
-                updateGlobalCartCounter();
+                window.updateGlobalCartCounter();
                 
-                // إطلاق حدث النجاح لباقي المحركات المعزولة (cart-engine, cake-engine) للبدء في سحب المنتجات فوراً
+                // تفعيل حدث مخصص لباقي المحركات المعتمدة على البيانات[span_4](start_span)[span_4](end_span)
                 document.dispatchEvent(new CustomEvent('BoseDatabaseLoaded', { detail: window.BoseStoreData }));
                 return;
             } catch (error) {
@@ -51,7 +55,9 @@
         }
     }
 
-    // 2. الحوكمة الحسابية والمالية الصارمة وحظر الثغرات
+    /**
+     * 2. دالة مراجعة زيادة الأسعار الرسمية وحظر الثغرات المالية[span_5](start_span)[span_5](end_span)
+     */
     window.calculateBosePrice = function(basePrice, applyOnContext = "menu-only") {
         if (!window.BoseStoreData) return basePrice;
         const rule = window.BoseStoreData.store.priceIncrease;
@@ -61,6 +67,9 @@
         return basePrice;
     };
 
+    /**
+     * 3. الدالة الهندسية لحساب السعر النهائي للمنتج شامل خيارات التخصيص[span_6](start_span)[span_6](end_span)
+     */
     window.calculateProductFinalPrice = function(product, selectedOptions) {
         const opts = selectedOptions || {};
         let price = 0;
@@ -82,12 +91,13 @@
                         if (printingOpt) printingFee = printingOpt.price;
                     }
                 }
-                // صمام الأمان المالي والامتثال القياسي للكب كيك والمنتجات العادية
+                
+                // صمام الأمان والامتثال المالي القياسي[span_7](start_span)[span_7](end_span)
                 if (printingFee === 0) {
-                    if (selectedPrinting === 'edible' || selectedPrinting === 'printable-edible' || selectedPrinting === 'صورة_صالحة_للأكل') {
-                        printingFee = 60; // 60 جنيهاً للصورة الصالحة للأكل
-                    } else if (selectedPrinting === 'non-edible' || selectedPrinting === 'printable-non-edible' || selectedPrinting === 'صورة_غير_صالحة_للأكل') {
-                        printingFee = 15; // 15 جنيهاً للصورة غير صالحة للأكل
+                    if (['edible', 'printable-edible', 'صورة_صالحة_للأكل'].includes(selectedPrinting)) {
+                        printingFee = 60;
+                    } else if (['non-edible', 'printable-non-edible', 'صورة_غير_صالحة_للأكل'].includes(selectedPrinting)) {
+                        printingFee = 15;
                     }
                 }
                 price += printingFee;
@@ -101,6 +111,9 @@
         return window.calculateBosePrice(price, "menu-only");
     };
 
+    /**
+     * 4. بناء كائن السلة القياسي الموحد[span_8](start_span)[span_8](end_span)
+     */
     window.createCartItem = function(product, selectedOptions, quantity = 1) {
         if (!product) return null;
         const opts = selectedOptions || {};
@@ -142,20 +155,30 @@
         };
     };
 
-    // 3. الحسبة الهندسية للتورت المخصصة وبوكيهات الورد
+    /**
+     * 5. الحسبة الهندسية للتورت المخصصة وحساب الأفراد الاحترافي[span_9](start_span)[span_9](end_span)
+     */
     window.calculateCustomCakePrice = function(persons, options = {}) {
         const config = window.BoseStoreData?.cakeBuilder;
         const safePersons = parseInt(persons, 10) || 10;
-        let price = (config ? config.basePrice : 580) || 580;
-        const minPersons = (config ? config.persons.minimum : 4) || 4;
-        const pricePerPerson = (config ? config.pricePerPerson : 145) || 145; // 145 جنيهاً للفرد لحظر الثغرات المالية
+        let price = config?.basePrice || 580;
+        
+        const minPersons = config?.persons.minimum || 10;
+        const pricePerPerson = config?.pricePerPerson || 145; // الالتزام بسعر الفرد المحصن 145 جنيهاً[span_10](start_span)[span_10](end_span)
         
         const extraPersons = Math.max(0, safePersons - minPersons);
         price += extraPersons * pricePerPerson;
         
         const selectedPrinting = options.printingType || options.printing || 'none';
         if (selectedPrinting && selectedPrinting !== 'none') {
-            let printingFee = (selectedPrinting === 'edible') ? 60 : 15;
+            let printingFee = 0;
+            if (config?.printingOptions) {
+                const printOpt = config.printingOptions.find(opt => opt.id === selectedPrinting);
+                if (printOpt) printingFee = printOpt.price;
+            }
+            if (printingFee === 0) {
+                printingFee = ['edible', 'printable-edible', 'صورة_صالحة_للأكل'].includes(selectedPrinting) ? 60 : 15;
+            }
             price += printingFee;
         }
         if (options.wrappingPrice) price += parseFloat(options.wrappingPrice) || 0;
@@ -163,12 +186,16 @@
         return window.calculateBosePrice(price, "menu-only");
     };
 
+    /**
+     * 6. الحسبة الهندسية لبوكيهات الورد المخصصة مع الإضافات ومفاجآت الكاش[span_11](start_span)[span_11](end_span)
+     */
     window.calculateCustomFlowerPrice = function(flowerType, flowerCount, options = {}) {
         const config = window.BoseStoreData?.flowerBuilder;
         if (!config) return 0;
         
         const safeFlowerCount = parseInt(flowerCount, 10) || config.baseFlowers;
         const safeCashAmount = parseInt(options.moneyAmount, 10) || 0;
+        const safeCashCategoryAmount = parseInt(options.moneyCategoryAmount, 10) || 0;
         const safeChocolatePieces = parseInt(options.chocolatePieces, 10) || 0;
         const safePhotoCount = parseInt(options.photoCount, 10) || 0;
         
@@ -187,10 +214,30 @@
         if (options.hasGiftCard) servicePrice += config.giftCardPrice || 20;
         if (safePhotoCount > 0) servicePrice += safePhotoCount * (config.photoPrintPrice || 15);
         
+        // حساب رسوم فئات العملات النقدية بدقة[span_12](start_span)[span_12](end_span)
+        let cashHandlingFee = 0;
+        if (safeCashAmount > 0 && safeCashCategoryAmount > 0) {
+            const selectedCategory = config.moneyCategories.find(cat => cat.amount === safeCashCategoryAmount);
+            if (selectedCategory) {
+                const billCount = Math.floor(safeCashAmount / safeCashCategoryAmount);
+                cashHandlingFee += billCount * selectedCategory.fee;
+                const remainder = safeCashAmount % safeCashCategoryAmount;
+                if (remainder > 0) {
+                    const remainderCategory = config.moneyCategories
+                        .filter(cat => cat.amount <= remainder)
+                        .sort((a, b) => b.amount - a.amount)[0] || config.moneyCategories[0];
+                    if (remainderCategory) cashHandlingFee += remainderCategory.fee;
+                }
+            }
+        }
+        
+        servicePrice += cashHandlingFee;
         return window.calculateBosePrice(servicePrice, "menu-only") + safeCashAmount;
     };
 
-    // 4. حراس التنظيف، الفحص، وأمان التوصيل (قفل الـ 24 ساعة تحضير)
+    /**
+     * 7. دوال التحقق والتطهير لأرقام الهواتف وجدول التحضير الصارم (24 ساعة)[span_13](start_span)[span_13](end_span)
+     */
     window.validateBosePhoneNumber = function(phone, isOptional = false) {
         if (!phone || phone.trim() === "") return isOptional;
         return /^01[0125][0-9]{8}$/.test(window.sanitizeBosePhoneNumber(phone));
@@ -223,235 +270,164 @@
         }
     };
 
-    // 5. بروتوكول الحقن الديناميكي الموحد لجميع المكونات (Universal Injection Layout)
-    function injectBoseUniversalLayouts() {
+    /**
+     * 8. بروتوكول بناء وضخ الهياكل الموحدة (Universal Injection Protocol)[span_14](start_span)[span_14](end_span)
+     */
+    function buildAndInjectUniversalLayout() {
+        const headerInjector = document.getElementById('bose-header-injector');
+        const footerInjector = document.getElementById('bose-footer-injector');
         const data = window.BoseStoreData;
         if (!data) return;
 
-        // أ. بناء وحقن شريط الإعلانات العلوي المتحرك (Top Bar Marquee) - إصلاح الحركة المبتورة والعكسية
-        const headerInjector = document.getElementById('bose-header-injector');
-        if (headerInjector && !document.getElementById('bose-top-bar-marquee') && data.navigation?.topBarMessages) {
-            const topBar = document.createElement('div');
-            topBar.id = 'bose-top-bar-marquee';
-            topBar.style.cssText = 'background-color: var(--bose-pink); color: #FFFFFF; overflow: hidden; padding: 10px 0; font-size: 14px; font-weight: 600; direction: rtl; position: relative; z-index: 10001;';
+        // أ. بناء الهيدر والشريط العلوي المتحرك والقائمة الجانبية الفاخرة
+        if (headerInjector) {
+            // تجميع رسائل الشريط العلوي
+            const marqueeMessages = data.navigation.topBarMessages.map(msg => `<span>${msg}</span>`).join('<span class="bose-separator">✦</span>');
             
-            const track = document.createElement('div');
-            track.className = 'animate-marquee';
-            
-            // تكرار الرسائل 4 مرات متتالية لملء عرض الشاشات الضخمة كلياً وحظر الفراغات أو البتر البصري نهائياً
-            const repeatedMessages = [
-                ...data.navigation.topBarMessages, 
-                ...data.navigation.topBarMessages,
-                ...data.navigation.topBarMessages,
-                ...data.navigation.topBarMessages
-            ];
-            
-            repeatedMessages.forEach(msg => {
-                const item = document.createElement('span');
-                item.style.cssText = 'padding: 0 50px; display: inline-block; white-space: nowrap;';
-                item.innerHTML = `${msg} <i class="fa-solid fa-sparkles" style="color: var(--bose-gold); margin-right: 8px;"></i>`;
-                track.appendChild(item);
-            });
-            
-            topBar.appendChild(track);
-            headerInjector.before(topBar);
-        }
-
-        // ب. بناء وحقن الهيدر الذكي الموحد الثابت (Sticky Header)
-        if (headerInjector && !document.getElementById('bose-main-header')) {
             headerInjector.innerHTML = `
-                <header id="bose-main-header" style="background-color: var(--bose-white); border-bottom: var(--bose-border-pink); position: sticky; top: 0; z-index: 10000; padding: 12px 20px; box-shadow: var(--bose-shadow-glow); direction: rtl;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto;">
-                        <button id="mobile-menu-toggle" aria-label="فتح القائمة" style="background: none; border: none; color: var(--bose-black); font-size: 22px; cursor: pointer; transition: color 0.3s;">
-                            <i class="fa-solid fa-bars-staggered"></i>
+                <!-- TOP BAR MARQUEE[span_15](start_span)[span_15](end_span) -->
+                <div id="top-bar-marquee" style="background: var(--bose-pink); color: #FFFFFF; padding: 10px 0; overflow: hidden; direction: rtl; border-bottom: 1px solid rgba(255,255,255,0.2); z-index: 1001; position: relative;">
+                    <div class="animate-marquee" style="white-space: nowrap; display: inline-block; padding-left: 100%;">
+                        ${marqueeMessages} ${marqueeMessages}
+                    </div>
+                </div>
+                
+                <!-- STICKY HEADER[span_16](start_span)[span_16](end_span) -->
+                <header class="bose-sticky-header" style="position: sticky; top: 0; background: var(--bose-white); box-shadow: var(--bose-shadow-glow); z-index: 1000; padding: 12px 5%; display: flex; align-items: center; justify-content: space-between; direction: rtl;">
+                    <button id="mobile-menu-toggle" aria-label="فتح القائمة" style="background: none; border: none; color: var(--bose-black); fontSize: 22px; cursor: pointer;">
+                        <i class="fa-solid fa-bars-staggered"></i>
+                    </button>
+                    <div class="brand-logo-container" style="display: flex; align-items: center; gap: 10px;">
+                        <img id="bose-store-logo" src="${data.store.logo}" alt="حلويات بوسي" style="height: 45px; width: 45px; object-fit: contain;">
+                        <span class="brand-name-display" style="font-weight: 700; font-size: 20px; color: var(--bose-black);">حلويات بوسي</span>
+                    </div>
+                    <div class="header-actions-wrapper" style="display: flex; align-items: center; gap: 18px;">
+                        <button id="nav-search-btn" aria-label="بحث" style="background: none; border: none; color: var(--bose-black); font-size: 20px; cursor: pointer;">
+                            <i class="fa-solid fa-magnifying-glass"></i>
                         </button>
-                        
-                        <div class="brand-logo-container" style="display: flex; align-items: center; gap: 10px; cursor: pointer;" onclick="window.location.href='index.html'">
-                            <img id="bose-store-logo" src="${data.store.logo}" alt="حلويات بوسي" style="height: 45px; width: 45px; object-fit: contain;">
-                            <span class="brand-name-display" style="font-size: 20px; font-weight: 700; color: var(--bose-black); letter-spacing: 0.5px;">${data.store.name}</span>
-                        </div>
-                        
-                        <div style="display: flex; align-items: center; gap: 18px;">
-                            <button id="nav-search-btn" aria-label="البحث" style="background: none; border: none; color: var(--bose-black); font-size: 20px; cursor: pointer;" onclick="window.location.href='search.html'">
-                                <i class="fa-solid fa-magnifying-glass"></i>
-                            </button>
-                            <a class="nav-cart-icon-wrapper" href="cart.html" style="position: relative; color: var(--bose-black); font-size: 20px; text-decoration: none;">
-                                <i class="fa-solid fa-bag-shopping"></i>
-                                <span id="nav-cart-count" style="position: absolute; top: -8px; left: -10px; background-color: var(--bose-pink); color: #FFFFFF; font-size: 11px; font-weight: 700; min-width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 2px; box-shadow: 0 2px 5px rgba(255,145,164,0.4);">0</span>
-                            </a>
-                        </div>
+                        <a href="cart.html" class="nav-cart-icon-wrapper" style="position: relative; color: var(--bose-black); font-size: 20px; text-decoration: none;">
+                            <i class="fa-solid fa-bag-shopping"></i>
+                            <span id="nav-cart-count" style="position: absolute; top: -7px; left: -10px; background: var(--bose-pink); color: #FFFFFF; font-size: 11px; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700;">0</span>
+                        </a>
                     </div>
                 </header>
-            `;
-        }
 
-        // ج. بناء وحقن القائمة الجانبية المتطورة (Sidebar Drawer)
-        if (!document.getElementById('bose-sidebar-drawer')) {
-            const sidebar = document.createElement('div');
-            sidebar.id = 'bose-sidebar-drawer';
-            sidebar.style.cssText = 'position: fixed; top: 0; right: -320px; width: 300px; height: 100%; background-color: var(--bose-white); box-shadow: -5px 0 25px rgba(0,0,0,0.08); z-index: 100000; transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1); direction: rtl; padding: 30px 24px; box-sizing: border-box;';
-            
-            let menuLinksHtml = '';
-            if (data.navigation?.menuItems) {
-                const targetUrls = { 'الرئيسية': 'index.html', 'المنيو الشامل': 'menu.html', 'السلة': 'cart.html', 'محاكي التورت': 'cake-builder.html', 'محاكي الورد': 'flower-builder.html' };
-                data.navigation.menuItems.forEach(item => {
-                    const url = targetUrls[item] || '#';
-                    menuLinksHtml += `<a href="${url}" style="display: block; padding: 14px 10px; color: var(--bose-black); font-weight: 600; text-decoration: none; font-size: 16px; border-bottom: 1px solid rgba(255,145,164,0.1); transition: all 0.3s; border-radius: 8px;">${item}</a>`;
-                });
-            }
-
-            sidebar.innerHTML = `
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 35px; border-bottom: 2px solid var(--bose-pink); padding-bottom: 15px;">
-                    <span style="font-weight: 700; font-size: 18px; color: var(--bose-black);">تصفح القائمة</span>
-                    <button id="sidebar-close-btn" style="background: none; border: none; font-size: 20px; color: var(--bose-black); cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
+                <!-- NAVIGATION SIDEBAR DRAWER[span_17](start_span)[span_17](end_span) -->
+                <div id="bose-sidebar-drawer" style="position: fixed; top: 0; right: -100%; width: 320px; height: 100%; background: var(--bose-white); box-shadow: -5px 0 25px rgba(0,0,0,0.05); z-index: 2000; transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1); direction: rtl; padding: 30px 24px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 40px; border-bottom: var(--bose-border-pink); padding-bottom: 15px;">
+                        <span style="font-weight: 700; font-size: 18px; color: var(--bose-black);">تصفح الأقسام</span>
+                        <button id="bose-sidebar-close" style="background: none; border: none; color: var(--bose-black); font-size: 20px; cursor: pointer;">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                    <nav style="display: flex; flex-direction: column; gap: 16px;">
+                        <a href="index.html" class="sidebar-link" style="font-weight:600; color:var(--bose-black); text-decoration:none; padding:10px; border-radius:8px; display:block; transition:all 0.3s;"><i class="fa-solid fa-house" style="margin-left:10px; color:var(--bose-pink);"></i> الرئيسية</a>
+                        <a href="menu.html" class="sidebar-link" style="font-weight:600; color:var(--bose-black); text-decoration:none; padding:10px; border-radius:8px; display:block; transition:all 0.3s;"><i class="fa-solid fa-utensils" style="margin-left:10px; color:var(--bose-pink);"></i> المنيو الشامل</a>
+                        <a href="cake-builder.html" class="sidebar-link" style="font-weight:600; color:var(--bose-black); text-decoration:none; padding:10px; border-radius:8px; display:block; transition:all 0.3s;"><i class="fa-solid fa-cake-candles" style="margin-left:10px; color:var(--bose-pink);"></i> محاكي التورتة</a>
+                        <a href="flower-builder.html" class="sidebar-link" style="font-weight:600; color:var(--bose-black); text-decoration:none; padding:10px; border-radius:8px; display:block; transition:all 0.3s;"><i class="fa-solid fa-seedling" style="margin-left:10px; color:var(--bose-pink);"></i> محاكي الورد</a>
+                        <a href="cart.html" class="sidebar-link" style="font-weight:600; color:var(--bose-black); text-decoration:none; padding:10px; border-radius:8px; display:block; transition:all 0.3s;"><i class="fa-solid fa-basket-shopping" style="margin-left:10px; color:var(--bose-pink);"></i> سلة المشتريات</a>
+                        <a href="about.html" class="sidebar-link" style="font-weight:600; color:var(--bose-black); text-decoration:none; padding:10px; border-radius:8px; display:block; transition:all 0.3s;"><i class="fa-solid fa-heart" style="margin-left:10px; color:var(--bose-pink);"></i> من نحن</a>
+                        <a href="contact.html" class="sidebar-link" style="font-weight:600; color:var(--bose-black); text-decoration:none; padding:10px; border-radius:8px; display:block; transition:all 0.3s;"><i class="fa-solid fa-phone" style="margin-left:10px; color:var(--bose-pink);"></i> تواصل معنا</a>
+                    </nav>
                 </div>
-                <nav style="display: flex; flex-direction: column; gap: 8px;">
-                    ${menuLinksHtml}
-                </nav>
+                <!-- OVERLAY BACKGROUND -->
+                <div id="bose-sidebar-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.15); backdrop-filter: blur(2px); z-index: 1999; display: none; transition: opacity 0.3s ease;"></div>
             `;
-            document.body.appendChild(sidebar);
-
-            const backdrop = document.createElement('div');
-            backdrop.id = 'bose-sidebar-backdrop';
-            backdrop.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(17,17,17,0.3); backdrop-filter: blur(4px); z-index: 99999; display: none; opacity: 0; transition: opacity 0.3s;';
-            document.body.appendChild(backdrop);
-
-            const openSidebar = () => {
-                sidebar.style.right = '0';
-                backdrop.style.display = 'block';
-                setTimeout(() => backdrop.style.opacity = '1', 10);
-            };
-            const closeSidebar = () => {
-                sidebar.style.right = '-320px';
-                backdrop.style.opacity = '0';
-                setTimeout(() => backdrop.style.display = 'none', 300);
-            };
-
-            document.addEventListener('click', function(e) {
-                if (e.target.closest('#mobile-menu-toggle')) openSidebar();
-                else if (e.target.closest('#sidebar-close-btn') || e.target === backdrop) closeSidebar();
-            });
+            
+            // ربط أحداث فتح وإغلاق القائمة الجانبية مركزياً
+            bindSidebarEvents();
         }
 
-        // د. بناء وتشغيل قسم عقد من الإتقان المروحي لملء الشاشة
-        const excellenceContainer = document.getElementById('excellence-images-track');
-        if (excellenceContainer && data.homepage?.excellence?.images && !excellenceContainer.classList.contains('initialized')) {
-            excellenceContainer.innerHTML = '';
-            excellenceContainer.style.cssText = 'display: flex; width: max-content; overflow: hidden;';
-            excellenceContainer.classList.add('initialized');
-            
-            const trackLoop = document.createElement('div');
-            trackLoop.className = 'categories-track-loop';
-            
-            const repeatedExImages = [...data.homepage.excellence.images, ...data.homepage.excellence.images, ...data.homepage.excellence.images];
-            repeatedExImages.forEach(imgUrl => {
-                const linkWrapper = document.createElement('a');
-                linkWrapper.href = 'menu.html';
-                linkWrapper.style.cssText = 'display: block; flex-shrink: 0; margin-right: 0; padding: 0; line-height: 0;';
-                
-                const img = document.createElement('img');
-                img.src = imgUrl;
-                img.alt = 'إتقان حلويات بوسي';
-                img.loading = 'lazy';
-                img.style.cssText = 'width: 33.333vw; min-width: 280px; height: 350px; object-fit: cover; border: none; pointer-events: none;';
-                
-                linkWrapper.appendChild(img);
-                trackLoop.appendChild(linkWrapper);
-            });
-            excellenceContainer.appendChild(trackLoop);
-        }
-
-        // هـ. بناء وحقن الفوتر الرسمي الفاخر للموقع بكامل مكوناته وثائقه وضمان راحتها البصرية الفاتحة
-        const footerContainer = document.getElementById('bose-footer-injector');
-        if (footerContainer && !document.getElementById('bose-main-footer')) {
-            let policyLinksHtml = '';
-            if (data.footer?.policies) {
-                const policyUrls = { 'سياسة الخصوصية': 'policies/privacy-policy.html', 'سياسة الاسترجاع': 'policies/refund-policy.html', 'سياسة الطلبات': 'policies/shipping-policy.html', 'الشروط والأحكام': 'policies/terms.html' };
-                data.footer.policies.forEach(p => {
-                    policyLinksHtml += `<a href="${policyUrls[p] || '#'}" style="color: var(--bose-black); text-decoration: none; font-size: 14px; font-weight: 400; transition: color 0.3s;">${p}</a>`;
-                });
-            }
-
-            footerContainer.innerHTML = `
-                <footer id="bose-main-footer" class="bose-footer" style="background-color: var(--bose-white); border-top: var(--bose-border-pink); padding: 50px 20px 20px; direction: rtl; color: var(--bose-black);">
-                    <div style="max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 40px; border-bottom: 1px solid rgba(255,145,164,0.15); padding-bottom: 40px;">
+        // ب. بناء الفوتر الموحد الصارم بلونه الفاتح الخالي من الخلفيات السوداء
+        if (footerInjector) {
+            footerInjector.innerHTML = `
+                <footer class="bose-footer" style="background: var(--bose-white); border-top: var(--bose-border-pink); padding: 60px 5% 20px; direction: rtl;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 40px;">
                         <div>
-                            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 18px;">
-                                <img src="${data.store.logo}" alt="لوجو بوسي" style="height: 50px; width: 50px; object-fit: contain;">
-                                <span style="font-size: 22px; font-weight: 700;">${data.store.name}</span>
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+                                <img src="${data.store.logo}" alt="حلويات بوسي" style="height: 50px;">
+                                <span style="font-weight: 700; font-size: 22px; color: var(--bose-black);">حلويات بوسي</span>
                             </div>
-                            <p id="footer-about-text" style="font-size: 14px; line-height: 1.8; color: var(--bose-black); font-weight: 400; margin: 0;">${data.footer.about}</p>
+                            <p id="footer-about-text" style="color: var(--bose-black); opacity: 0.8; font-size: 14px; line-height: 1.8; text-align: justify; margin: 0;">${data.footer.about}</p>
                         </div>
-                        
                         <div>
-                            <h3 style="font-size: 16px; font-weight: 600; margin-top: 0; margin-bottom: 20px; position: relative; padding-bottom: 8px; border-bottom: 2px solid var(--bose-pink); width: max-content;">روابط سريعة</h3>
-                            <div style="display: flex; flex-direction: column; gap: 12px;">
-                                <a href="index.html" style="color: var(--bose-black); text-decoration: none; font-size: 14px;">الرئيسية</a>
-                                <a href="menu.html" style="color: var(--bose-black); text-decoration: none; font-size: 14px;">المنيو الشامل</a>
-                                <a href="about.html" style="color: var(--bose-black); text-decoration: none; font-size: 14px;">مَنْ نحن</a>
-                                <a href="contact.html" style="color: var(--bose-black); text-decoration: none; font-size: 14px;">تواصل معنا</a>
-                            </div>
+                            <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 20px; color: var(--bose-black);">روابط سريعة</h3>
+                            <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px;">
+                                <li><a href="index.html" style="color: var(--bose-black); text-decoration: none; font-size: 14px; transition: color 0.3s;">الرئيسية</a></li>
+                                <li><a href="menu.html" style="style="color: var(--bose-black); text-decoration: none; font-size: 14px; transition: color 0.3s;">المنيو الشامل</a></li>
+                                <li><a href="cake-builder.html" style="color: var(--bose-black); text-decoration: none; font-size: 14px; transition: color 0.3s;">محاكي التورت التفاعلي</a></li>
+                                <li><a href="flower-builder.html" style="color: var(--bose-black); text-decoration: none; font-size: 14px; transition: color 0.3s;">محاكي الورد التفاعلي</a></li>
+                            </ul>
                         </div>
-
                         <div>
-                            <h3 style="font-size: 16px; font-weight: 600; margin-top: 0; margin-bottom: 20px; position: relative; padding-bottom: 8px; border-bottom: 2px solid var(--bose-pink); width: max-content;">وثائق السياسات</h3>
-                            <div style="display: flex; flex-direction: column; gap: 12px;">
-                                ${policyLinksHtml}
-                            </div>
+                            <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 20px; color: var(--bose-black);">وثائق السياسات</h3>
+                            <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px;">
+                                <li><a href="policies/privacy-policy.html" style="color: var(--bose-black); text-decoration: none; font-size: 14px;">سياسة الخصوصية</a></li>
+                                <li><a href="policies/refund-policy.html" style="color: var(--bose-black); text-decoration: none; font-size: 14px;">سياسة الاسترجاع والتبديل</a></li>
+                                <li><a href="policies/shipping-policy.html" style="color: var(--bose-black); text-decoration: none; font-size: 14px;">سياسة التوصيل والشحن</a></li>
+                                <li><a href="policies/terms.html" style="color: var(--bose-black); text-decoration: none; font-size: 14px;">الشروط والأحكام القانونية</a></li>
+                            </ul>
                         </div>
-
                         <div>
-                            <h3 style="font-size: 16px; font-weight: 600; margin-top: 0; margin-bottom: 20px; position: relative; padding-bottom: 8px; border-bottom: 2px solid var(--bose-pink); width: max-content;">بيانات الفرع والنشاط</h3>
-                            <p style="font-size: 14px; line-height: 1.6; margin-bottom: 15px;"><i class="fa-solid fa-location-dot" style="color: var(--bose-pink); margin-left: 8px;"></i>${data.store.pickup.address}</p>
-                            <div id="footer-social-links" style="display: flex; gap: 14px; margin-top: 15px;">
-                                <a href="${data.social.facebook}" target="_blank" aria-label="فيسبوك" style="color: #1877F2; font-size: 22px;"><i class="fa-brands fa-facebook"></i></a>
-                                <a href="${data.social.instagram}" target="_blank" aria-label="انستجرام" style="color: #E1306C; font-size: 22px;"><i class="fa-brands fa-instagram"></i></a>
-                                <a href="${data.social.tiktok}" target="_blank" aria-label="تيك توك" style="color: #000000; font-size: 22px;"><i class="fa-brands fa-tiktok"></i></a>
-                                <a href="https://wa.me/${window.sanitizeBosePhoneNumber(data.social.whatsapp)}" target="_blank" aria-label="واتساب" style="color: #25D366; font-size: 22px;"><i class="fa-brands fa-whatsapp"></i></a>
+                            <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 20px; color: var(--bose-black);">تواصل معنا</h3>
+                            <p style="color: var(--bose-black); font-size: 14px; margin-bottom: 15px;"><i class="fa-solid fa-location-dot" style="color: var(--bose-pink); margin-left: 8px;"></i> ${data.store.pickup.address}</p>
+                            <div id="footer-social-links" style="display: flex; gap: 15px; margin-top: 20px;">
+                                <a href="${data.social.facebook}" target="_blank" aria-label="Facebook" style="color: #1877F2; font-size: 22px;"><i class="fa-brands fa-facebook"></i></a>
+                                <a href="${data.social.instagram}" target="_blank" aria-label="Instagram" style="color: #E1306C; font-size: 22px;"><i class="fa-brands fa-instagram"></i></a>
+                                <a href="${data.social.tiktok}" target="_blank" aria-label="TikTok" style="color: #000000; font-size: 22px;"><i class="fa-brands fa-tiktok"></i></a>
+                                <a href="https://wa.me/${data.sanitizeBosePhoneNumber(data.social.whatsapp)}" target="_blank" aria-label="WhatsApp" style="color: #25D366; font-size: 22px;"><i class="fa-brands fa-whatsapp"></i></a>
                             </div>
                         </div>
                     </div>
-                    
-                    <div style="text-align: center; padding-top: 25px; margin-top: 10px;">
-                        <p class="footer-copyright-block" style="font-size: 13px; color: var(--bose-black); font-weight: 400; margin: 0;">جميع الحقوق محفوظة © ٢٠٢٦ لموقع حلويات بوسي</p>
+                    <div style="border-top: var(--bose-border-pink); padding-top: 20px; text-align: center;">
+                        <p class="footer-copyright-block" style="margin: 0; font-size: 13px; color: var(--bose-black); opacity: 0.7;">جميع الحقوق محفوظة © حلويات بوسي - عام 2026</p>
                     </div>
                 </footer>
             `;
         }
     }
 
-    // 6. تهيئة الخطوط والـ SEO والاعتمادات الأساسية
+    function bindSidebarEvents() {
+        const toggleBtn = document.getElementById('mobile-menu-toggle');
+        const closeBtn = document.getElementById('bose-sidebar-close');
+        const drawer = document.getElementById('bose-sidebar-drawer');
+        const overlay = document.getElementById('bose-sidebar-overlay');
+        const searchBtn = document.getElementById('nav-search-btn');
+
+        if (toggleBtn && drawer && overlay) {
+            toggleBtn.addEventListener('click', () => {
+                drawer.style.right = '0';
+                overlay.style.display = 'block';
+            });
+        }
+        if (closeBtn && drawer && overlay) {
+            closeBtn.addEventListener('click', () => {
+                drawer.style.right = '-100%';
+                overlay.style.display = 'none';
+            });
+            overlay.addEventListener('click', () => {
+                drawer.style.right = '-100%';
+                overlay.style.display = 'none';
+            });
+        }
+        if (searchBtn) {
+            searchBtn.addEventListener('click', () => {
+                window.location.href = 'search.html';
+            });
+        }
+    }
+
     function applyGlobalSEOAndBranding() {
         if (!window.BoseStoreData) return;
         const data = window.BoseStoreData;
-        
-        document.title = data.seo.title;
-        
-        const logoImgs = document.querySelectorAll('img#bose-store-logo');
-        logoImgs.forEach(img => { if(img.src !== data.store.logo) img.src = data.store.logo; });
-        
-        injectEarlyDependencies();
         applyGlobalStyles(data.store.theme);
-    }
-
-    function injectEarlyDependencies() {
-        if (!document.querySelector('link[href*="fonts.googleapis.com"]')) {
-            const pre1 = document.createElement('link'); pre1.rel = 'preconnect'; pre1.href = 'https://fonts.googleapis.com';
-            const pre2 = document.createElement('link'); pre2.rel = 'preconnect'; pre2.href = 'https://fonts.gstatic.com'; pre2.crossOrigin = 'anonymous';
-            const font = document.createElement('link'); font.rel = 'stylesheet'; font.href = 'https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap';
-            document.head.append(pre1, pre2, font);
-        }
-        if (!document.querySelector('link[href*="font-awesome"]')) {
-            const fa = document.createElement('link'); fa.rel = 'stylesheet'; fa.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css';
-            document.head.appendChild(fa);
-        }
     }
 
     function applyGlobalStyles(theme) {
         if (document.getElementById('bose-global-dynamic-styles')) return;
-        const style = document.createElement('style');
-        style.id = 'bose-global-dynamic-styles';
-        style.textContent = `
+        const styleElement = document.createElement('style');
+        styleElement.id = 'bose-global-dynamic-styles';
+        styleElement.textContent = `
             :root {
                 --bose-pink: ${theme.primary || '#FF91A4'};
                 --bose-white: ${theme.background || '#FFFFFF'};
@@ -462,28 +438,40 @@
                 --bose-border-pink: 1px solid rgba(255, 145, 164, 0.3);
                 --bose-border-thick: 2px solid ${theme.primary || '#FF91A4'};
             }
-            body { font-family: 'Cairo', sans-serif !important; background-color: var(--bose-white) !important; color: var(--bose-black) !important; margin: 0; padding: 0; overflow-x: hidden; }
+            body {
+                font-family: 'Cairo', sans-serif !important;
+                background-color: var(--bose-white) !important;
+                color: var(--bose-black) !important;
+                margin: 0; padding: 0; overflow-x: hidden;
+            }
             h1, h2 { font-family: 'Cairo', sans-serif !important; font-weight: 700 !important; color: var(--bose-black) !important; }
             h3, h4, h5, h6 { font-family: 'Cairo', sans-serif !important; font-weight: 600 !important; color: var(--bose-black) !important; }
             p, span, a, button, input, select, textarea { font-family: 'Cairo', sans-serif !important; }
+            .sidebar-link:hover { background: rgba(255,145,164,0.08); padding-right: 15px !important; color: var(--bose-pink) !important; }
             
-            /* تعديل أنميشن الماركي ليتحرك بسلاسة كاملة من اليمين لليسار RTL وبدون أي قفزات أو بتر نصوص */
-            @keyframes boseMarquee { 
-                0% { transform: translate3d(0, 0, 0); } 
-                100% { transform: translate3d(-25%, 0, 0); } 
+            @keyframes boseMarquee {
+                0% { transform: translate3d(0, 0, 0); }
+                100% { transform: translate3d(-50%, 0, 0); }
             }
-            @keyframes boseCategoriesLoop { 
-                0% { transform: translate3d(0, 0, 0); } 
-                100% { transform: translate3d(-33.333%, 0, 0); } 
+            @keyframes boseWaterfallUp {
+                0% { transform: translate3d(0, 0, 0); }
+                100% { transform: translate3d(0, -50%, 0); }
             }
-            
-            .animate-marquee { display: flex; width: max-content; animation: boseMarquee 35s linear infinite; will-change: transform; }
-            .categories-track-loop { display: flex; width: max-content; animation: boseCategoriesLoop 40s linear infinite; will-change: transform; }
+            @keyframes boseWaterfallDown {
+                0% { transform: translate3d(0, -50%, 0); }
+                100% { transform: translate3d(0, 0, 0); }
+            }
+            .animate-marquee { display: flex; width: max-content; animation: boseMarquee 25s linear infinite; will-change: transform; }
+            .bose-separator { margin: 0 30px; color: var(--bose-gold); font-size: 12px; }
+            .waterfall-up { animation: boseWaterfallUp 40s linear infinite; will-change: transform; }
+            .waterfall-down { animation: boseWaterfallDown 40s linear infinite; will-change: transform; }
         `;
-        document.head.appendChild(style);
+        document.head.appendChild(styleElement);
     }
 
-    // 7. عداد السلة اللحظي الموحد بالهيدر
+    /**
+     * 9. دالة تحديث عداد السلة العالمي بالهيدر والتحكم الدقيق بالكميات[span_18](start_span)[span_18](end_span)
+     */
     window.updateGlobalCartCounter = function() {
         const cartCountBadge = document.getElementById('nav-cart-count');
         if (!cartCountBadge) return;
@@ -493,17 +481,62 @@
         
         let totalDisplayItems = 0;
         cart.forEach(item => {
-            const isBespokeOrCustom = item.type === "custom-cake" || item.type === "custom-flower" || item.type === "mini-cake" || (item.id && item.id.includes("-"));
-            totalDisplayItems += isBespokeOrCustom ? 1 : (parseInt(item.quantity, 10) || 1);
+            const isBespokeOrCustom = item.type === "custom-cake" || 
+                                      item.type === "custom-flower" || 
+                                      item.type === "mini-cake" || 
+                                      (item.id && item.id.includes("-"));
+            if (isBespokeOrCustom) totalDisplayItems += 1;
+            else totalDisplayItems += (parseInt(item.quantity, 10) || 1);
         });
         cartCountBadge.textContent = totalDisplayItems;
     };
 
+    /**
+     * 10. تشغيل العدادات التصاعدية الذكية لقسم الفخر والاعتزاز (Section 08)[span_19](start_span)[span_19](end_span)
+     */
+    window.initializeBosePrideCounters = function() {
+        const prideSection = document.getElementById('pride-section');
+        if (!prideSection) return;
+
+        const counters = prideSection.querySelectorAll('.stats-counter-value');
+        if (counters.length === 0) return;
+
+        const runCounters = () => {
+            counters.forEach(counter => {
+                const target = parseInt(counter.getAttribute('data-target'), 10) || 0;
+                let current = 0;
+                const duration = 2000; 
+                const stepTime = Math.max(Math.floor(duration / target), 15);
+                
+                const timer = setInterval(() => {
+                    current += Math.ceil(target / (duration / stepTime));
+                    if (current >= target) {
+                        counter.textContent = target;
+                        clearInterval(timer);
+                    } else {
+                        counter.textContent = current;
+                    }
+                }, stepTime);
+            });
+        };
+
+        // تفعيل العدادات عند ظهور القسم في الشاشة لراحة عين العميل البصرية[span_20](start_span)[span_20](end_span)
+        if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting) {
+                    runCounters();
+                    observer.disconnect();
+                }
+            }, { threshold: 0.2 });
+            observer.observe(prideSection);
+        } else {
+            runCounters();
+        }
+    };
+
     function showGlobalFriendlyError() {
-        if (document.getElementById('bose-error-toast')) return;
         const errorDiv = document.createElement('div');
-        errorDiv.id = 'bose-error-toast';
-        errorDiv.style.cssText = 'position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background-color: var(--bose-pink); color: #FFFFFF; padding: 12px 24px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 100005; direction: rtl; font-size: 14px; font-weight: 600;';
+        errorDiv.style = 'position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#FF91A4; color:#FFFFFF; padding:12px 24px; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.15); z-index:99999; direction:rtl; font-size:14px;';
         errorDiv.textContent = 'عذراً، نواجه صعوبة في الاتصال بالخادم حالياً. يرجى إعادة محاولة تحميل الصفحة.';
         document.body.appendChild(errorDiv);
     }
@@ -512,7 +545,7 @@
 })();
 
 /**
- * 🛡️ حارس التمهيد ومنع التعارض البرمجي (Engine Bootstrap Guard)
+ * 🛡️ حارس التمهيد النهائي ومنع التعارض البرمجي (Engine Bootstrap Guard)[span_21](start_span)[span_21](end_span)
  */
 document.addEventListener("DOMContentLoaded", () => {
     if (window.BoseStoreData && window.BoseStoreData.store) {
@@ -520,6 +553,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
         let attempts = 0;
         const maxAttempts = 100; 
+        
         const coreGuardInterval = setInterval(() => {
             attempts++;
             if (window.BoseStoreData && window.BoseStoreData.store) {
@@ -534,5 +568,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function verifyAndInitializeEngine() {
-    console.log("🚀 تم التحقق من مطابقة المحرك المخصص وتوافقه مع قاعدة بيانات حلويات بوسي بنجاح ٢٠٢٦.");
+    console.log("🚀 تم التحقق من مطابقة المحرك المخصص وتوافقه مع قاعدة بيانات حلويات بوسي بنجاح.");
+    window.initializeBosePrideCounters();
 }
