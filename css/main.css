@@ -1,7 +1,8 @@
 /* ==========================================================================
-   👑 ملف التصميم المركزي للأقسام والمنيو - حلويات بوسي V13.5 Master 👑
+   👑 ملف التصميم المركزي للأقسام والمنيو - حلويات بوسي V23.0 Master 👑
    امتثال مطلق وأعمى للمقاسات الإلزامية الصارمة على جميع الشاشات والموبايل أولاً
    تطهير بصري كامل مع تفعيل كلاسات حركة الشلال وحظر أنصاف الكروت المقطوعة
+   حل جذري ونهائي لخلل مسار الدوران لقسم عقد من الإتقان وشريط الإعلانات
    ========================================================================== */
 
 body.bose-hardware-accelerated {
@@ -163,7 +164,7 @@ body.bose-hardware-accelerated {
     overflow: hidden;
 }
 
-/* 👑 قتل التصفح اليدوي تماماً وعزل السكرول لتحقيق الانسيابية الدائرية التلقائية */
+/* 👑 تصفير الهوامش تماماً وعزل السكرول لتحقيق الانسيابية الدائرية التلقائية المستمرة */
 .bose-perfection-carousel-wrapper {
     width: 100% !important;
     overflow: hidden !important; 
@@ -171,9 +172,10 @@ body.bose-hardware-accelerated {
     position: relative !important;
     padding: 0 !important;
     margin: 0 !important;
+    pointer-events: none; /* حظر التدخل اليدوي لضمان ثبات الحركة الدائرية */
 }
 
-/* 👑 إجبار مسار تدوير الصور على لحام صفري صارم وإلغاء أي فواصل بصرياً */
+/* 👑 إجبار مسار تدوير الصور على لحام صفري صارم وإلغاء أي فواصل بصرياً لراحة العين */
 #excellence-images-track {
     display: inline-flex !important; 
     flex-direction: row !important;
@@ -181,9 +183,11 @@ body.bose-hardware-accelerated {
     gap: 0px !important; 
     padding: 0 !important;
     margin: 0 !important;
+    will-change: transform;
+    animation: boseMarquee 30s linear infinite !important; /* ربط مباشر بالأنميشن الدائري */
 }
 
-/* 👑 حوكمة المقاسات الإلزامية الصارمة: 100vw كامل العرض وارتفاع 340px إلزامي على الموبايل */
+/* 👑 حوكمة المقاسات القياسية الملتزمة: تملأ العرض بالكامل وارتفاع 340px إلزامي على الموبايل */
 .perfection-slide-node {
     width: 100vw !important; 
     height: 340px !important; 
@@ -199,17 +203,14 @@ body.bose-hardware-accelerated {
     border-radius: 0px !important; 
     border: none !important; 
     object-fit: cover !important;
-    display: block;
+    display: block !important;
 }
 
-/* 👑 الالتفاف المرن الفخم مع الشاشات والكمبيوتر الملوكي لعرض الـ 3 صور الكبار ملتحمين */
+/* 👑 الالتفاف المرن المتوازن مع شاشات التابلت والكمبيوتر الملوكي لعرض الصور كاملة ملتحمة */
 @media (min-width: 768px) {
     .perfection-slide-node { 
         width: 50vw !important; 
         height: 520px !important;
-    }
-    .perfection-slide-node img { 
-        height: 100% !important; 
     }
 }
 
@@ -218,12 +219,9 @@ body.bose-hardware-accelerated {
         width: 33.333vw !important; 
         height: 520px !important;
     }
-    .perfection-slide-node img { 
-        height: 100% !important; 
-    }
 }
 
-/* 👑 حظر وعزل مؤشرات التصفح النقطية تماماً لمنع تعطيل الانسيابية البصرية المفتوحة */
+/* 👑 حظر وعزل مؤشرات التصفح النقطية تماماً لمنع حدوث أي فراغات بصرية */
 #excellence-dots, .bose-perfection-section .bose-dots-container {
     display: none !important;
     visibility: hidden !important;
@@ -780,7 +778,7 @@ body.bose-hardware-accelerated {
         transform: translate3d(0, 0, 0);
     }
     100% {
-        transform: translate3d(-50%, 0, 0); /* قفزة ملي ثانية صفرية آمنة دون مساحات فارغة */
+        transform: translate3d(-50%, 0, 0); /* قفزة ملي ثانية صفرية آمنة ومطابقة 100% للتكرار البرمجي */
     }
 }
 
@@ -789,5 +787,5 @@ body.bose-hardware-accelerated {
     width: max-content !important;
     animation: boseMarquee 25s linear infinite !important;
     will-change: transform;
-    white-space: nowrap !important; /* عزل ومنع الـ Text Overflow نهائياً */
+    white-space: nowrap !important; /* منع حدوث الـ Text Overflow والقطع نهائياً */
 }
