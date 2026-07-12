@@ -1,10 +1,10 @@
 /**
- * 👑 ملف المحرك المركزي العالمي المصحح والمطور بالكامل V12.8 - حلويات بوسي 2026 👑
+ * 👑 ملف المحرك المركزي العالمي المصحح والمطور بالكامل V12.9 - حلويات بوسي 2026 👑
  * حوكمة كاملة لواجهات الشريط العلوي، القائمة الجانبية المتطورة، والفوتر الموحد ومنع تداخل الملفات
  * القضاء التام والنهائي على ثغرة بتر القائمة الجانبية وضمان التمرير الكامل لآخر عنصر لوجستي
  * المسؤول الوحيد والمطلق عن التحكم في حركة وسرعة وتكرار وضخ نصوص الشريط العلوي وقسم "عقد من الإتقان"
- * [إصلاح حرج]: معالجة اختفاء نصوص شريط الإعلانات اللانهائي وضبط مسارات الأنميشن بالتوافق مع الـ DOM
- * [تطوير استراتيجي]: إصلاح واجهة صور قسم "عقد من الإتقان" اللانهائي ومنع وميضها أو اختفائها كلياً لراحة العين
+ * [إصلاح شامل من الجذور]: عكس حركة شريط الإعلانات ليبدأ من اليمين لليسار متوافقاً 100% مع اللغة العربية.
+ * [تطهير بصري]: إنهاء ثغرة اختفاء وميض قسم "عقد من الإتقان" وجعل الصور متصلة تماماً وتملأ كامل الحيز البصري بلا فواصل.
  */
 (function() {
     // محددات الحالة المركزية المعزولة بأمان
@@ -356,26 +356,30 @@
         if (excellenceTitle) excellenceTitle.textContent = data.homepage.excellence.title;
         if (excellenceDesc) excellenceDesc.textContent = data.homepage.excellence.description;
         
-        // [تعديل هندسي ومحكم لقسم عقد من الإتقان]: منع الاختفاء والتصادم عبر التكرار المتزن المباشر والأداء النظيف
+        // [حل الخلل من الجذور لقسم عقد من الإتقان]: تكرار تكميلي مالي لكامل الحيز الأفقي ومنع وميض الاختفاء
         if (excellenceTrack && data.homepage.excellence.images) {
             let imagesHtml = data.homepage.excellence.images.map(img => `
                 <a href="menu.html" class="perfection-slide-node"><img src="${img}" alt="إتقان حلويات بوسي" loading="lazy"></a>
             `).join('');
             
-            // تكرار متناسق وموزون (مضاعف مرتين فقط) لملء مجرى التمرير ومحاربة الجمود
-            excellenceTrack.innerHTML = imagesHtml + imagesHtml;
+            // تجميع وتكثيف الصور لملء المسافة وضمان اتصال كامل 100% بدون أي فواصل مرئية أو فراغات
+            let infiniteExcellenceHtml = '';
+            for (let i = 0; i < 15; i++) {
+                infiniteExcellenceHtml += imagesHtml;
+            }
+            excellenceTrack.innerHTML = infiniteExcellenceHtml;
 
             excellenceTrack.style.display = 'flex';
-            excellenceTrack.style.gap = '16px';
+            excellenceTrack.style.gap = '0px'; // إلغاء الفواصل للحفاظ على ملمس تلاحمي فاخر
             excellenceTrack.style.width = 'max-content';
             
             let currentX = 0;
-            const scrollSpeed = 1.2; 
+            const scrollSpeed = 1.2; // سرعة دوران مريحة لراحة يد وعين العميل
             let animationFrameId = null;
             
             function animateExcellenceLoop() {
                 currentX -= scrollSpeed;
-                // عند التمرير لنصف العرض تماماً، نقوم بالتمرير العكسي اللحظي للبدء من الصفر لخلق تيار لا نهائي
+                // ضبط نقطة العودة الهندسية للمحرك عند انتهاء نصف التراك بالضبط لضمان تيار دوران مستمر طول الوقت
                 if (Math.abs(currentX) >= (excellenceTrack.scrollWidth / 2)) {
                     currentX = 0;
                 }
@@ -617,7 +621,7 @@
     }
 
     // ==========================================
-    // 8. موديول العمليات المالية والفحص الشامل وإدارة الحسابات التأسيسية
+    // 8. موديول Operations المالية والفحص الشامل وإدارة الحسابات التأسيسية
     // ==========================================
     window.calculateBosePrice = function(basePrice, applyOnContext = "menu-only") {
         if (!window.BoseStoreData) return basePrice;
@@ -934,7 +938,7 @@
             
             @keyframes boseMarquee { 
                 0% { transform: translate3d(0, 0, 0); } 
-                100% { transform: translate3d(50%, 0, 0); } 
+                100% { transform: translate3d(-50%, 0, 0); } 
             }
             @keyframes boseWaterfallUp { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(0, -50%, 0); } }
             @keyframes boseWaterfallDown { 0% { transform: translate3d(0, -50%, 0); } 100% { transform: translate3d(0, 0, 0); } }
