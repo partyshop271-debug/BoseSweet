@@ -1,5 +1,5 @@
 /**
- * 👑 ملف المحرك المركزي العالمي النظيف والمصحح بالكامل V21.0 - حلويات بوسي 2026 👑
+ * 👑 ملف المحرك المركزي العالمي النظيف والمصحح بالكامل V22.0 - حلويات بوسي 2026 👑
  * حوكمة كاملة لضمان حركة دائرية مستمرة لا نهائية ومنع اختفاء نصوص الشريط العلوي وقسم عقد من الإتقان
  * المسؤول الوحيد والمطلق عن التحكم في حركة وسرعة وتكرار وضخ جميع نصوص وأقسام الموقع
  * [تطهير برمي شامل]: متوافق 100% مع باقي ملفات الموقع وبدون أي ثغرات مالية أو حسابية.
@@ -303,13 +303,13 @@
         const data = window.BoseStoreData;
         if (!data) return;
 
+        // 👑 التدخل المطور: حقن مصفوفة الرسائل مرتين متطابقتين فقط بالتطابق التام للتوافق مع translate3d(-50%) لمنع الفراغات والشلل الحركي
         const tickerTrack = document.getElementById('top-bar-marquee-track');
         if (tickerTrack && data.navigation.topBarMessages) {
             let messagesHtml = data.navigation.topBarMessages.map(msg => `
                 <span class="ticker-message-item">${msg} &nbsp;&nbsp;&nbsp;&nbsp; 🌸 &nbsp;&nbsp;&nbsp;&nbsp;</span>
             `).join('');
-            // 🚀 دمج وحقن مصفوفة النصوص أربع مرات متتالية (صمام الأمان لمنع المساحات الفارغة)
-            tickerTrack.innerHTML = messagesHtml + messagesHtml + messagesHtml + messagesHtml;
+            tickerTrack.innerHTML = messagesHtml + messagesHtml;
         }
 
         if (heroDesc = document.getElementById('hero-description')) heroDesc.textContent = data.homepage.hero.description;
@@ -321,8 +321,8 @@
             let leftImgHtml = data.homepage.waterfall.leftColumnImages.map(img => `<img src="${img}" alt="حلويات بوسي فخامة بصرية" loading="lazy">`).join('');
             let rightImgHtml = data.homepage.waterfall.rightColumnImages.map(img => `<img src="${img}" alt="حلويات بوسي فخامة بصرية" loading="lazy">`).join('');
             
-            leftCol.innerHTML = leftImgHtml + leftImgHtml + leftImgHtml + leftImgHtml;
-            rightCol.innerHTML = rightImgHtml + rightImgHtml + rightImgHtml + rightImgHtml;
+            leftCol.innerHTML = leftImgHtml + leftImgHtml;
+            rightCol.innerHTML = rightImgHtml + rightImgHtml;
             
             leftCol.className = "waterfall-col waterfall-up";
             rightCol.className = "waterfall-col waterfall-down";
@@ -343,13 +343,13 @@
         if (document.getElementById('excellence-title')) document.getElementById('excellence-title').textContent = data.homepage.excellence.title;
         if (document.getElementById('excellence-description')) document.getElementById('excellence-description').textContent = data.homepage.excellence.description;
         
+        // 👑 التدخل المطور: حقن الصور الثلاثة الكبار مكررين مرتين فقط بالتوالي لضمان اللحام والدوران الدائري المستمر ومنع الصمت والـ 10 ثوان الفاضية
         const excellenceTrack = document.getElementById('excellence-images-track');
         if (excellenceTrack && data.homepage.excellence.images) {
             let imagesHtml = data.homepage.excellence.images.map(img => `
                 <div class="perfection-slide-node"><img src="${img}" alt="إتقان حلويات بوسي" loading="lazy"></div>
             `).join('');
-            // 🚀 مضاعفة حقن حاوية السلايدر أربع مرات متتالية للتغطية الكاملة أثناء الدوران الدائري اللامتناهي
-            excellenceTrack.innerHTML = imagesHtml + imagesHtml + imagesHtml + imagesHtml;
+            excellenceTrack.innerHTML = imagesHtml + imagesHtml;
         }
 
         function createProductCardHTML(product) {
