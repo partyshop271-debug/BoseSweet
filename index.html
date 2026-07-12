@@ -174,13 +174,13 @@
     <!-- 🏢 بروتوكول الهيكل الموحد: حاوية حقن الفوتر المعتمد ذو اللون الفاتح الخالص -->
     <div id="bose-footer-injector"></div>
 
-    <!-- محرك التزامن والتصاعد الرقمي بعد تخطي حارس التمهيد باحترافية -->
+    <!-- محرك التزامن والتصاعد الرقمي بعد تخطي حارس التمهيد باحترافية (تم تصحيح الأخطاء الحرجية للنصوص المختلطة) -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             window.onBoseDatabaseReady && window.onBoseDatabaseReady((data) => {
                 console.log("👑 حارس التمهيد: تم مزامنة واجهة index.html بالكامل وبنجاح مع قاعدة البيانات.");
                 
-                const runتصارعي = (id, targetValue) => {
+                const runBoseCounterAnimation = (id, targetValue) => {
                     const el = document.getElementById(id);
                     if (!el) return;
                     let current = 0;
@@ -200,11 +200,11 @@
                 };
 
                 setTimeout(() => {
-                    runتصارعي("stat-years-value", data.homepage.pride.stats.years.value);
-                    runتصارعي("stat-customers-value", data.homepage.pride.stats.customers.value);
-                    runتصارعي("stat-orders-value", data.homepage.pride.stats.orders.value);
-                    runتصارعي("stat-cakes-value", data.homepage.pride.stats.cakes.value);
-                    runتصارعي("stat-bouquets-value", data.homepage.pride.stats.bouquets.value);
+                    runBoseCounterAnimation("stat-years-value", data.homepage.pride.stats.years.value);
+                    runBoseCounterAnimation("stat-customers-value", data.homepage.pride.stats.customers.value);
+                    runBoseCounterAnimation("stat-orders-value", data.homepage.pride.stats.orders.value);
+                    runBoseCounterAnimation("stat-cakes-value", data.homepage.pride.stats.cakes.value);
+                    runBoseCounterAnimation("stat-bouquets-value", data.homepage.pride.stats.bouquets.value);
                     
                     document.getElementById("stat-years-label").textContent = data.homepage.pride.stats.years.label;
                     document.getElementById("stat-customers-label").textContent = data.homepage.pride.stats.customers.label;
