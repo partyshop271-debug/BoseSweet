@@ -1,9 +1,9 @@
 /**
- * 👑 ملف المحرك المركزي العالمي المصحح والمطور بالكامل V12.6 - حلويات بوسي 2026 👑
+ * 👑 ملف المحرك المركزي العالمي المصحح والمطور بالكامل V12.7 - حلويات بوسي 2026 👑
  * حوكمة كاملة لواجهات الشريط العلوي، القائمة الجانبية المتطورة، والفوتر الموحد ومنع تداخل الملفات
  * القضاء التام والنهائي على ثغرة بتر القائمة الجانبية وضمان التمرير الكامل لآخر عنصر لوجستي
- * المسؤول الوحيد والمطلق عن التحكم في حركة وسرعة وتكرار وضخ صور قسم "عقد من الإتقان" وتطهير الستايل تماماً
- * [تحديث ذكي]: إصلاح مسار التوجيه الجغرافي لكروت المحاكيات داخل أقسام القائمة الجانبية لتعمل بالتوافق الصارم
+ * المسؤول الوحيد والمطلق عن التحكم في حركة وسرعة وتكرار وضخ نصوص الشريط العلوي وقسم "عقد من الإتقان"
+ * [إصلاح حرج]: معالجة اختفاء نصوص شريط الإعلانات اللانهائي وضبط مسارات الأنميشن بالتوافق مع الـ DOM
  */
 (function() {
     // محددات الحالة المركزية المعزولة بأمان
@@ -73,7 +73,7 @@
     }
 
     // ==========================================
-    // 2. موديول حقن الهيدر والشريط العلوي المقدس (تطهير كامل من السلوغان والنصوص الزائدة)
+    // 2. موديول حقن الهيدر والشريط العلوي المقدس
     // ==========================================
     function renderUniversalHeader() {
         let headerInjector = document.getElementById('bose-header-injector');
@@ -165,7 +165,6 @@
         const quickCategoriesContainer = document.getElementById('sidebar-quick-categories-node');
         if (quickCategoriesContainer && window.BoseStoreData.homepage.categoriesSlider) {
             quickCategoriesContainer.innerHTML = window.BoseStoreData.homepage.categoriesSlider.map(cat => {
-                // فحص الحوكمة الذكي: توجيه التورت والورد للمحاكيات مباشرة لحل المشكلة
                 let targetUrl = `category.html?id=${cat.id}`;
                 if (cat.id === "taswaq-toort") targetUrl = "cake-builder.html";
                 if (cat.id === "taswaq-flowers") targetUrl = "flower-builder.html";
@@ -321,23 +320,22 @@
     }
 
     // ==========================================
-    // 5. موديول حقن المحتوى الديناميكي وحركات الـ JavaScript (تحكم مركزي صارم وعزل اللمس)
+    // 5. موديول حقن المحتوى الديناميكي وحركات الـ JavaScript (حل مشكلة اختفاء نصوص الشريط العلوي)
     // ==========================================
     function renderBoseDynamicContent() {
         const data = window.BoseStoreData;
         if (!data) return;
 
+        // حل حرج: بناء ومضاعفة التراك متزناً بالتوافق التام مع هندسة حركة الـ CSS لتفادي الاختفاء المفاجئ للأبد
         const tickerTrack = document.getElementById('top-bar-marquee-track');
         if (tickerTrack && data.navigation.topBarMessages) {
             let messagesHtml = data.navigation.topBarMessages.map(msg => `
                 <span class="ticker-message-item">${msg} &nbsp;&nbsp;&nbsp;&nbsp; 🌸 &nbsp;&nbsp;&nbsp;&nbsp;</span>
             `).join('');
             
-            let infiniteLoopHtml = '';
-            for (let i = 0; i < 40; i++) { 
-                infiniteLoopHtml += messagesHtml;
-            }
-            tickerTrack.innerHTML = infiniteLoopHtml;
+            // تكرار متزن (مضاعف مرتين) لملء مجرى التمرير مع كلاس السحب المستقر للـ CSS
+            tickerTrack.innerHTML = messagesHtml + messagesHtml;
+            tickerTrack.className = "animate-marquee";
         }
 
         const heroDesc = document.getElementById('hero-description');
@@ -933,10 +931,15 @@
             h1, h2 { font-family: 'Cairo', sans-serif !important; font-weight: 700 !important; color: var(--bose-black) !important; }
             h3, h4, h5, h6 { font-family: 'Cairo', sans-serif !important; font-weight: 600 !important; color: var(--bose-black) !important; }
             p, span, a, button, input, select, textarea { font-family: 'Cairo', sans-serif !important; }
-            @keyframes boseMarquee { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-50%, 0, 0); } }
+            
+            @keyframes boseMarquee { 
+                0% { transform: translate3d(0, 0, 0); } 
+                100% { transform: translate3d(50%, 0, 0); } 
+            }
             @keyframes boseWaterfallUp { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(0, -50%, 0); } }
             @keyframes boseWaterfallDown { 0% { transform: translate3d(0, -50%, 0); } 100% { transform: translate3d(0, 0, 0); } }
-            .animate-marquee { display: flex; width: max-content; animation: boseMarquee 25s linear infinite; will-change: transform; }
+            
+            .animate-marquee { display: flex; width: max-content; animation: boseMarquee 20s linear infinite; will-change: transform; }
             .waterfall-up { animation: boseWaterfallUp 40s linear infinite; will-change: transform; }
             .waterfall-down { animation: boseWaterfallDown 40s linear infinite; will-change: transform; }
         `;
