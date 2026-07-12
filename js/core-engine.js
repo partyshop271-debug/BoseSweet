@@ -1,7 +1,7 @@
 /**
- * 👑 ملف المحرك المركزي العالمي النظيف والمصحح بالكامل V20.0 - حلويات بوسي 2026 👑
- * حوكمة كاملة لواجهات الشريط العلوي، الشلال البصري، وقسم عقد من الإتقان والفوتر
- * القضاء التام والنهائي على ثغرة اختفاء نصوص الشريط العلوي وعناوين الأقسام الرئيسية كلياً
+ * 👑 ملف المحرك المركزي العالمي النظيف والمصحح بالكامل V21.0 - حلويات بوسي 2026 👑
+ * حوكمة كاملة لواجهات الشريط العلوي، الأقسام، الفوتر، والتحكم التفاعلي باللمس والأسهم والـ Dots
+ * القضاء التام والنهائي على عك النصوص واختفاء عناوين الأقسام الرئيسية كلياً وحظر الاختصارات
  * المسؤول الوحيد والمطلق عن التحكم في حركة وسرعة وتكرار وضخ جميع نصوص وأقسام الموقع
  * [تطهير برمي شامل]: خالي تماماً من أي دالات ميتة ومتوافق 100% مع باقي ملفات الموقع.
  */
@@ -68,7 +68,7 @@
         
         headerInjector.innerHTML = `
             <div id="top-bar-marquee">
-                <div id="top-bar-marquee-track" class="animate-marquee"></div>
+                <div id="top-bar-marquee-track"></div>
             </div>
             
             <header class="bose-navbar">
@@ -304,56 +304,51 @@
         const data = window.BoseStoreData;
         if (!data) return;
 
-        // 1. صمام الأمان للشريط العلوي - مضاعفة تكرارية كاملة لتغذية حاوية العرض لمنع الاختفاء الفجائي
+        // 1. الشريط العلوي - صياغة نصوص مريحة للعين بدون أي أنميشن يسبب الاختفاء
         const tickerTrack = document.getElementById('top-bar-marquee-track');
         if (tickerTrack && data.navigation.topBarMessages) {
-            let messagesHtml = data.navigation.topBarMessages.map(msg => `
-                <span class="ticker-message-item">${msg} &nbsp;&nbsp;&nbsp;&nbsp; 🌸 &nbsp;&nbsp;&nbsp;&nbsp;</span>
+            tickerTrack.innerHTML = data.navigation.topBarMessages.map(msg => `
+                <span class="ticker-static-item">🌸 ${msg} &nbsp;&nbsp;&nbsp;&nbsp;</span>
             `).join('');
-            tickerTrack.innerHTML = messagesHtml + messagesHtml + messagesHtml + messagesHtml + messagesHtml + messagesHtml + messagesHtml + messagesHtml;
         }
 
         if (heroDesc = document.getElementById('hero-description')) heroDesc.textContent = data.homepage.hero.description;
         if (heroCta = document.getElementById('hero-cta-btn')) heroCta.textContent = data.homepage.hero.cta;
 
-        // 2. تفعيل وحقن كلاسات الشلال البصري المطور وحظر الفراغات
+        // 2. تفعيل وحقن كلاسات الشلال البصري المستقر وحظر الفراغات
         const leftCol = document.getElementById('waterfall-left-col');
         const rightCol = document.getElementById('waterfall-right-col');
         if (leftCol && rightCol) {
             let leftImgHtml = data.homepage.waterfall.leftColumnImages.map(img => `<img src="${img}" alt="حلويات بوسي فخامة بصرية" loading="lazy">`).join('');
             let rightImgHtml = data.homepage.waterfall.rightColumnImages.map(img => `<img src="${img}" alt="حلويات بوسي فخامة بصرية" loading="lazy">`).join('');
             
-            leftCol.innerHTML = leftImgHtml + leftImgHtml + leftImgHtml + leftImgHtml;
-            rightCol.innerHTML = rightImgHtml + rightImgHtml + rightImgHtml + rightImgHtml;
+            leftCol.innerHTML = leftImgHtml + leftImgHtml;
+            rightCol.innerHTML = rightImgHtml + rightImgHtml;
             
             leftCol.className = "waterfall-col waterfall-up";
             rightCol.className = "waterfall-col waterfall-down";
         }
 
-        // 3. تأمين وضمان ثبات نصوص وعناوين الأقسام الـ 3 الرئيسية والوصف التفصيلي لها ومنع الاختفاء نهائياً
-        if (document.getElementById('most-selling-title')) document.getElementById('most-selling-title').textContent = "الأكثر مبيعاً";
-        if (document.getElementById('most-selling-description')) document.getElementById('most-selling-description').textContent = "تشكيلة حصرية من نكهاتنا الفاخرة الأكثر طلباً ونقاءً";
-        
-        if (document.getElementById('new-arrivals-title')) document.getElementById('new-arrivals-title').textContent = "وصل حديثاً";
-        if (document.getElementById('new-arrivals-description')) document.getElementById('new-arrivals-description').textContent = "استكشف أحدث ابتكارات وتوليفات مطبخ بوسي الحصرية";
-
-        if (document.getElementById('our-products-title')) document.getElementById('our-products-title').textContent = "منتجاتنا";
-        if (document.getElementById('our-products-description')) document.getElementById('our-products-description').textContent = "عالم متكامل من أصناف السعادة المصنوعة يومياً بكل شغف وحب";
-
-        if (document.getElementById('categories-section-title')) document.getElementById('categories-section-title').textContent = "تسوق حسب الفئة";
-        if (document.getElementById('categories-section-subtitle')) document.getElementById('categories-section-subtitle').textContent = "انتقل مباشرة لقسمك المفضل واستمتع بالروقان الخالص";
-
-        // 4. حوكمة قسم "عقد من الإتقان" ليعمل كشلال أفقي لانهائي ومستمر متلاحم الصور
-        if (document.getElementById('excellence-title')) document.getElementById('excellence-title').textContent = data.homepage.excellence.title;
-        if (document.getElementById('excellence-description')) document.getElementById('excellence-description').textContent = data.homepage.excellence.description;
-        
+        // 3. حقن كروت قسم "عقد من الإتقان" لتعمل بثبات كامل من قاعدة البيانات
         const excellenceTrack = document.getElementById('excellence-images-track');
         if (excellenceTrack && data.homepage.excellence.images) {
-            let imagesHtml = data.homepage.excellence.images.map(img => `
+            excellenceTrack.innerHTML = data.homepage.excellence.images.map(img => `
                 <div class="perfection-slide-node"><img src="${img}" alt="إتقان حلويات بوسي" loading="lazy"></div>
             `).join('');
-            excellenceTrack.innerHTML = imagesHtml + imagesHtml + imagesHtml + imagesHtml + imagesHtml + imagesHtml;
         }
+
+        // 4. حقن العناوين والوصف التفصيلي الاحترافي للأقسام لمنع التشتيت وحماية الهوية الفاخرة
+        if (document.getElementById('most-selling-title')) document.getElementById('most-selling-title').textContent = "الأكثر مبيعاً";
+        if (document.getElementById('most-selling-description')) document.getElementById('most-selling-description').textContent = "روائعنا الفاخرة التي خطفت قلوب عملائنا؛ توليفات مميزة وموزونة صُنعت خصيصاً لتبهر حواسك وتصبح نجمة كل مناسبة سعيدة.";
+        
+        if (document.getElementById('new-arrivals-title')) document.getElementById('new-arrivals-title').textContent = "وصل حديثاً";
+        if (document.getElementById('new-arrivals-description')) document.getElementById('new-arrivals-description').textContent = "استكشف أحدث ابتكارات مطبخ حلويات بوسي الحصرية؛ نكهات وتوليفات جديدة ومبتكرة تحمل بصمتنا الفريدة وتضمن لك روقاناً خالصاً.";
+
+        if (document.getElementById('our-products-title')) document.getElementById('our-products-title').textContent = "منتجاتنا";
+        if (document.getElementById('our-products-description')) document.getElementById('our-products-description').textContent = "عالم متكامل من أصناف السعادة المخبوزة يومياً بمكونات طبيعية 100% وزبدة مدروسة بعناية، لتقديم القيمة والجودة الفاخرة التي تستحقها.";
+
+        if (document.getElementById('categories-section-title')) document.getElementById('categories-section-title').textContent = "تسوق حسب الفئة";
+        if (document.getElementById('categories-section-subtitle')) document.getElementById('categories-section-subtitle').textContent = "انتقل مباشرة لقسمك المفضل واستمتع بالروقان الخالص؛ رتبنا لك أصنافنا الفاخرة لتصل إلى اختيارك بكل سلاسة وراحة تامة.";
 
         function createProductCardHTML(product) {
             return `
@@ -377,14 +372,14 @@
         if (mostSellingGrid) {
             let items = data.products.filter(p => data.homepage.mostSelling.includes(p.slug));
             mostSellingGrid.innerHTML = items.map(p => createProductCardHTML(p)).join('');
-            if (window.innerWidth <= 767) mostSellingGrid.className = "bose-most-selling-grid-slider";
+            setupBoseSliderFramework('most-selling-grid', 'most-selling-dots');
         }
 
         const newArrivalsGrid = document.getElementById('new-arrivals-grid');
         if (newArrivalsGrid) {
             let items = data.products.filter(p => data.homepage.newArrivals.includes(p.slug));
             newArrivalsGrid.innerHTML = items.map(p => createProductCardHTML(p)).join('');
-            if (window.innerWidth <= 767) newArrivalsGrid.className = "bose-new-arrivals-grid-slider";
+            setupBoseSliderFramework('new-arrivals-grid', 'new-arrivals-dots');
         }
 
         const ourProductsGrid = document.getElementById('our-products-grid');
@@ -415,6 +410,7 @@
             document.getElementById('flower-preview-cta').textContent = data.homepage.flowerPreview.cta;
         }
 
+        // 5. بناء وحقن كروت الفئات الـ 12 مع تفعيل أزرار التنقل والـ Dots بالسحب واللمس يدوياً فقط
         const categoriesTrack = document.getElementById('categories-track');
         if (categoriesTrack && data.homepage.categoriesSlider) {
             categoriesTrack.innerHTML = data.homepage.categoriesSlider.map(cat => {
@@ -430,8 +426,56 @@
                     </div>
                 `;
             }).join('');
-            categoriesTrack.className = "categories-track-loop";
+            setupBoseSliderFramework('categories-slider-wrapper', 'categories-dots', true);
         }
+    }
+
+    // 👑 محرك التحكم التفاعلي باللمس والسحب والأسهم والـ Dots للأقسام والسلايدرات
+    function setupBoseSliderFramework(wrapperId, dotsContainerId, hasArrows = false) {
+        const wrapper = document.getElementById(wrapperId);
+        const dotsContainer = document.getElementById(dotsContainerId);
+        if (!wrapper || !dotsContainer) return;
+
+        let isDown = false; let startX; let scrollLeft;
+        
+        wrapper.addEventListener('mousedown', (e) => { isDown = true; startX = e.pageX - wrapper.offsetLeft; scrollLeft = wrapper.scrollLeft; });
+        wrapper.addEventListener('mouseleave', () => { isDown = false; });
+        wrapper.addEventListener('mouseup', () => { isDown = false; updateDots(); });
+        wrapper.addEventListener('mousemove', (e) => { if(!isDown) return; e.preventDefault(); const x = e.pageX - wrapper.offsetLeft; const walk = (x - startX) * 2; wrapper.scrollLeft = scrollLeft - walk; });
+
+        wrapper.addEventListener('touchstart', (e) => { isDown = true; startX = e.touches[0].pageX - wrapper.offsetLeft; scrollLeft = wrapper.scrollLeft; }, {passive: true});
+        wrapper.addEventListener('touchend', () => { isDown = false; updateDots(); }, {passive: true});
+        wrapper.addEventListener('touchmove', (e) => { if(!isDown) return; const x = e.touches[0].pageX - wrapper.offsetLeft; const walk = (x - startX) * 2; wrapper.scrollLeft = scrollLeft - walk; }, {passive: true});
+
+        function updateDots() {
+            const children = wrapper.children[0]?.className === 'categories-track-loop' ? wrapper.children[0].children : wrapper.children;
+            if (!children || children.length === 0) return;
+            const cardWidth = children[0].offsetWidth + 16;
+            const activeIndex = Math.round(wrapper.scrollLeft / cardWidth);
+            
+            dotsContainer.innerHTML = '';
+            const totalDots = Math.ceil(children.length / (window.innerWidth > 768 ? 3 : 1));
+            for (let i = 0; i < totalDots; i++) {
+                const dot = document.createElement('div');
+                dot.className = `bose-slider-dot ${i === Math.min(activeIndex, totalDots - 1) ? 'active' : ''}`;
+                dot.onclick = () => { wrapper.scrollTo({ left: i * cardWidth * (window.innerWidth > 768 ? 3 : 1), behavior: 'smooth' }); setTimeout(updateDots, 300); };
+                dotsContainer.appendChild(dot);
+            }
+        }
+
+        if (hasArrows && !document.getElementById(`${wrapperId}-arrow-left`)) {
+            const parent = wrapper.parentElement;
+            const leftArrow = document.createElement('button'); leftArrow.id = `${wrapperId}-arrow-left`; leftArrow.className = 'bose-slider-arrow arrow-left'; leftArrow.innerHTML = '<i class="fas fa-chevron-left"></i>';
+            const rightArrow = document.createElement('button'); rightArrow.id = `${wrapperId}-arrow-right`; rightArrow.className = 'bose-slider-arrow arrow-right'; rightArrow.innerHTML = '<i class="fas fa-chevron-right"></i>';
+            
+            leftArrow.onclick = () => { const cardWidth = wrapper.children[0]?.children[0]?.offsetWidth || 300; wrapper.scrollBy({ left: -(cardWidth + 16), behavior: 'smooth' }); setTimeout(updateDots, 300); };
+            rightArrow.onclick = () => { const cardWidth = wrapper.children[0]?.children[0]?.offsetWidth || 300; wrapper.scrollBy({ left: cardWidth + 16, behavior: 'smooth' }); setTimeout(updateDots, 300); };
+            
+            parent.appendChild(leftArrow); parent.appendChild(rightArrow);
+        }
+
+        setTimeout(updateDots, 500);
+        window.addEventListener('resize', updateDots);
     }
 
     window.calculateBosePrice = function(basePrice, applyOnContext = "menu-only") {
@@ -552,91 +596,27 @@
             .bose-stat-card .stat-number { color: var(--bose-black) !important; font-weight: 700 !important; }
             .bose-stat-card .stat-label { color: var(--bose-black) !important; opacity: 0.9 !important; }
 
-            /* حوكمة حركات الأنميشن الهندسية الفاخرة وسد فجوات الحركة التنافسية */
-            @keyframes boseMarquee {
-                0% { transform: translate3d(0, 0, 0); }
-                100% { transform: translate3d(-50%, 0, 0); }
-            }
-            @keyframes boseWaterfallUp {
-                0% { transform: translate3d(0, 0, 0); }
-                100% { transform: translate3d(0, -50%, 0); }
-            }
-            @keyframes boseWaterfallDown {
-                0% { transform: translate3d(0, -50%, 0); }
-                100% { transform: translate3d(0, 0, 0); }
-            }
-            @keyframes boseCategoriesLoop {
-                0% { transform: translate3d(0, 0, 0); }
-                100% { transform: translate3d(-50%, 0, 0); }
+            #top-bar-marquee { background-color: var(--bose-pink) !important; display: flex !important; justify-content: center !important; padding: 0 16px !important; }
+            #top-bar-marquee-track { display: flex !important; flex-wrap: wrap !important; justify-content: center !important; gap: 20px !important; padding: 10px 0 !important; }
+            .ticker-static-item { color: var(--bose-white) !important; font-weight: 600 !important; font-size: 0.95rem !important; }
+
+            .bose-categories-slider-wrapper { position: relative !important; display: flex !important; overflow-x: hidden !important; scroll-behavior: smooth !important; width: 100% !important; }
+            .categories-track-loop { display: flex !important; gap: 16px !important; width: max-content !important; padding: 10px 0 !important; }
+            
+            .bose-slider-arrow { position: absolute !important; top: 50% !important; transform: translateY(-50%) !important; background: var(--bose-white) !important; border: var(--bose-border-pink) !important; color: var(--bose-pink) !important; width: 44px !important; height: 44px !important; border-radius: 50% !important; display: flex !important; align-items: center !important; justify-content: center !important; z-index: 10 !important; cursor: pointer !important; box-shadow: var(--bose-shadow-glow) !important; transition: 0.3s ease !important; }
+            .bose-slider-arrow:hover { background: var(--bose-pink) !important; color: var(--bose-white) !important; box-shadow: var(--bose-shadow-hover) !important; }
+            .arrow-left { left: 10px !important; } .arrow-right { right: 10px !important; }
+
+            .bose-most-selling-grid-slider, .bose-new-arrivals-grid-slider { display: flex !important; overflow-x: hidden !important; scroll-behavior: smooth !important; gap: 16px !important; width: 100% !important; padding: 15px 0 !important; }
+            .bose-most-selling-grid-slider .product-card-unified, .bose-new-arrivals-grid-slider .product-card-unified { width: 85vw !important; flex-shrink: 0 !important; }
+
+            @media (min-width: 768px) {
+                .bose-most-selling-grid-slider .product-card-unified, .bose-new-arrivals-grid-slider .product-card-unified { width: 380px !important; }
             }
 
-            .animate-marquee {
-                display: inline-flex !important;
-                width: max-content !important;
-                flex-wrap: nowrap !important;
-                animation: boseMarquee 25s linear infinite !important;
-                will-change: transform;
-            }
-            #top-bar-marquee-track span {
-                display: inline-block !important;
-                white-space: nowrap !important;
-            }
-            #excellence-images-track {
-                display: inline-flex !important;
-                width: max-content !important;
-                flex-wrap: nowrap !important;
-                animation: boseMarquee 30s linear infinite !important;
-                will-change: transform;
-            }
-            .waterfall-up {
-                animation: boseWaterfallUp 35s linear infinite !important;
-                will-change: transform;
-            }
-            .waterfall-down {
-                animation: boseWaterfallDown 35s linear infinite !important;
-                will-change: transform;
-            }
-            .categories-track-loop {
-                display: inline-flex !important;
-                width: max-content !important;
-                animation: boseCategoriesLoop 25s linear infinite !important;
-                will-change: transform;
-            }
-
-            /* إصلاح فجوة وهيكل الفوتر الموحد منعا للتكديس لراحة العميل النفسية */
-            .bose-footer {
-                display: flex !important;
-                flex-direction: column !important;
-                align-items: center !important;
-                gap: 25px !important;
-                padding: 50px 20px 30px 20px !important;
-                background: var(--bose-white) !important;
-                border-top: var(--bose-border-pink) !important;
-                width: 100% !important;
-            }
-            .footer-quick-links ul, .footer-policies-container ul {
-                display: flex !important;
-                justify-content: center !important;
-                flex-wrap: wrap !important;
-                gap: 20px !important;
-                list-style: none !important;
-                padding: 0 !important;
-                margin: 0 !important;
-            }
-            .footer-quick-links ul li a, .footer-policies-container ul li a {
-                color: var(--bose-black) !important;
-                font-weight: 600 !important;
-                font-size: 0.95rem !important;
-                transition: color 0.3s ease;
-            }
-            .footer-quick-links ul li a:hover, .footer-policies-container ul li a:hover {
-                color: var(--bose-pink) !important;
-            }
-            .bose-social-links-wrapper {
-                display: flex !important;
-                gap: 20px !important;
-                justify-content: center !important;
-            }
+            .bose-footer { display: flex !important; flex-direction: column !important; align-items: center !important; gap: 25px !important; padding: 50px 20px 30px 20px !important; background: var(--bose-white) !important; border-top: var(--bose-border-pink) !important; width: 100% !important; }
+            .footer-quick-links ul, .footer-policies-container ul { display: flex !important; justify-content: center !important; flex-wrap: wrap !important; gap: 20px !important; list-style: none !important; padding: 0 !important; margin: 0 !important; }
+            .bose-social-links-wrapper { display: flex !important; gap: 20px !important; justify-content: center !important; }
         `;
         document.head.appendChild(styleElement);
     }
