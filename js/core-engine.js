@@ -103,7 +103,6 @@
                     }
                 }
                 
-                // صمام الأمان والامتثال المالي لإصلاح ثغرة الكب كيك والمنتجات العادية المحددة بالـ JSON:
                 if (printingFee === 0) {
                     if (selectedPrinting === 'edible' || selectedPrinting === 'printable-edible' || selectedPrinting === 'صورة_صالحة_للأكل') {
                         printingFee = 60;
@@ -174,10 +173,10 @@
     window.calculateCustomCakePrice = function(persons, options = {}) {
         const config = window.BoseStoreData?.cakeBuilder;
         const safePersons = parseInt(persons, 10) || 10;
-        let price = 580; // السعر الأساسي الافتراضي المعرف بالملف
+        let price = 580; 
         
         const minPersons = 4;
-        const pricePerPerson = 145; // القيمة الحاكمة القياسية لمنع الثغرات
+        const pricePerPerson = 145; 
         
         const extraPersons = Math.max(0, safePersons - minPersons);
         price += extraPersons * pricePerPerson;
@@ -301,7 +300,6 @@
         }
     };
 
-    // استدعاء المعتمدات من خارج الـ CSS لمنع التداخل البصري
     function injectEarlyDependencies() {
         if (!document.querySelector('link[href*="fonts.googleapis.com"]')) {
             const p1 = document.createElement('link'); p1.rel = 'preconnect'; p1.href = 'https://fonts.googleapis.com';
@@ -538,11 +536,9 @@
             `;
         });
         
-        // تكرار مضاعف صريح لتأمين الحركة الدائرية المانعة للفراغات البصرية نهائياً
         track.innerHTML = imagesHtml + imagesHtml; 
         
-        // بناء التحكم النقطي (Dots) المطابق لعدد كروت الصور الأصلي في هذا القسم
-        const dotsContainer = document.getElementById('excellence-dots-container');
+        const dotsContainer = document.getElementById('excellence-dots');
         if (dotsContainer) {
             dotsContainer.innerHTML = config.images.map((_, index) => `
                 <span class="bose-dot-node ${index === 0 ? 'active' : ''}" data-index="${index}"></span>
@@ -561,7 +557,6 @@
         let items = Array.from(track.children);
         if (items.length === 0) return;
 
-        // بناء النقاط بشكل ديناميكي كامل بعدد كروت هذا القسم لضمان الحوكمة
         if (dotsContainer) {
             dotsContainer.innerHTML = items.map((_, index) => `
                 <span class="bose-dot-node ${index === 0 ? 'active' : ''}" data-index="${index}"></span>
@@ -570,10 +565,9 @@
 
         const dots = dotsContainer ? Array.from(dotsContainer.children) : [];
 
-        // تحديث حالة النقاط أثناء التمرير العشوائي أو السحب الجانبي للعميل
         track.addEventListener('scroll', () => {
             const scrollLeft = Math.abs(track.scrollLeft);
-            const itemWidth = items[0].offsetWidth; 
+            const itemWidth = items[0].offsetWidth || 300; 
             const activeIndex = Math.round(scrollLeft / itemWidth);
             
             dots.forEach((dot, idx) => {
@@ -582,27 +576,24 @@
             });
         });
 
-        // ربط أحداث النقر على النقاط للتوجه المباشر والاستجابة للحركة
         dots.forEach(dot => {
             dot.addEventListener('click', (e) => {
                 const targetIndex = parseInt(e.target.getAttribute('data-index'), 10);
-                const itemWidth = items[0].offsetWidth;
-                // في اتجاه RTL يكون التمرير سالباً
+                const itemWidth = items[0].offsetWidth || 300;
                 track.scrollTo({ left: -(targetIndex * itemWidth), behavior: 'smooth' });
             });
         });
 
-        // تفعيل أزرار الأسهم إن وجدت (خاص بقسم الفئات والتحكم الذكي والتحرك غير التلقائي)
         const prevBtn = arrowPrevId ? document.getElementById(arrowPrevId) : null;
         const nextBtn = arrowNextId ? document.getElementById(arrowNextId) : null;
 
         if (prevBtn && nextBtn) {
             prevBtn.addEventListener('click', () => {
-                const itemWidth = items[0].offsetWidth;
+                const itemWidth = items[0].offsetWidth || 300;
                 track.scrollBy({ left: itemWidth, behavior: 'smooth' });
             });
             nextBtn.addEventListener('click', () => {
-                const itemWidth = items[0].offsetWidth;
+                const itemWidth = items[0].offsetWidth || 300;
                 track.scrollBy({ left: -itemWidth, behavior: 'smooth' });
             });
         }
@@ -623,7 +614,6 @@
  */
 document.addEventListener("DOMContentLoaded", () => {
     window.onBoseDatabaseReady && window.onBoseDatabaseReady((data) => {
-        // حقن صور قسم الشلال (Waterfall) ومنع اختفائها
         const leftCol = document.getElementById('waterfall-left-col');
         const rightCol = document.getElementById('waterfall-right-col');
         if (leftCol && rightCol) {
@@ -631,7 +621,6 @@ document.addEventListener("DOMContentLoaded", () => {
             rightCol.innerHTML = data.homepage.waterfall.rightColumnImages.map(img => `<img src="${img}" alt="شلال بوسي" />`).join('');
         }
 
-        // حقن نصوص الأقسام والعناوين التفصيلية الفريدة لمنع التداخل والتكديس طبقاً لبيانات الـ JSON
         if(document.getElementById('hero-description')) document.getElementById('hero-description').textContent = data.homepage.hero.description;
         if(document.getElementById('excellence-title')) document.getElementById('excellence-title').textContent = data.homepage.excellence.title;
         if(document.getElementById('excellence-description')) document.getElementById('excellence-description').textContent = data.homepage.excellence.description;
@@ -645,8 +634,8 @@ document.addEventListener("DOMContentLoaded", () => {
         if(document.getElementById('our-products-title')) document.getElementById('our-products-title').textContent = data.homepage.ourProductsTitle || "منتجاتنا الفاخرة";
         if(document.getElementById('our-products-description')) document.getElementById('our-products-description').textContent = data.homepage.ourProductsDescription || "تم اختيار المكونات بعناية فائقة للحصول على أفضل جودة طازجة.";
 
-        if(document.getElementById('categories-title')) document.getElementById('categories-title').textContent = data.homepage.categoriesTitle || "تسوق حسب الفئة";
-        if(document.getElementById('categories-description')) document.getElementById('categories-description').textContent = data.homepage.categoriesDescription || "انتقل مباشرة وبكل سهولة إلى الصنف المفضل لديك.";
+        if(document.getElementById('categories-section-title')) document.getElementById('categories-section-title').textContent = data.homepage.categoriesTitle || "تسوق حسب الفئة";
+        if(document.getElementById('categories-section-subtitle')) document.getElementById('categories-section-subtitle').textContent = data.homepage.categoriesDescription || "انتقل مباشرة وبكل سهولة إلى الصنف المفضل لديك.";
 
         if(document.getElementById('cake-preview-img')) document.getElementById('cake-preview-img').src = data.homepage.cakePreview.image;
         if(document.getElementById('cake-preview-title')) document.getElementById('cake-preview-title').textContent = data.homepage.cakePreview.title;
@@ -658,7 +647,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if(document.getElementById('flower-preview-desc')) document.getElementById('flower-preview-desc').textContent = data.homepage.flowerPreview.description;
         if(document.getElementById('flower-preview-cta')) document.getElementById('flower-preview-cta').textContent = data.homepage.flowerPreview.cta;
 
-        // دالة موحدة لإنتاج كود HTML للكروت وفق "الهيكل الموحد الصارم للكارت" دون تداخل أي أكواد تصميمية
         function buildProductCardHTML(p) {
             return `
                 <div class="product-card-unified">
@@ -677,7 +665,6 @@ document.addEventListener("DOMContentLoaded", () => {
             `;
         }
 
-        // أ. بناء وضخ كروت قسم الأكثر مبيعاً (سلايدر جانبي متجاوب مع السحب تحتها دوتس بعدد الكروت)
         const mostSellingGrid = document.getElementById('most-selling-grid');
         if (mostSellingGrid) {
             let html = '';
@@ -685,11 +672,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 html += buildProductCardHTML(p);
             });
             mostSellingGrid.innerHTML = html;
-            // تهيئة السلايدر التفاعلي الصارم بالنقاط والسحب الجانبي لقسم الأكثر مبيعاً
-            window.setupBoseInteractiveSlider('most-selling-grid', 'most-selling-dots-container');
+            window.setupBoseInteractiveSlider('most-selling-grid', 'most-selling-dots');
         }
 
-        // ب. بناء وضخ كروت قسم وصل حديثاً (سلايدر جانبي متجاوب مع السحب تحتها دوتس بعدد الكروت)
         const newArrivalsGrid = document.getElementById('new-arrivals-grid');
         if (newArrivalsGrid) {
             let html = '';
@@ -697,29 +682,31 @@ document.addEventListener("DOMContentLoaded", () => {
                 html += buildProductCardHTML(p);
             });
             newArrivalsGrid.innerHTML = html;
-            // تهيئة السلايدر التفاعلي الصارم بالنقاط والسحب الجانبي لقسم وصل حديثاً
-            window.setupBoseInteractiveSlider('new-arrivals-grid', 'new-arrivals-dots-container');
+            window.setupBoseInteractiveSlider('new-arrivals-grid', 'new-arrivals-dots');
         }
 
-        // ج. بناء وضخ كروت قسم منتجاتنا (كارتين جنب بعض في الصف ثنائية التوازن - لا تتحرك تلقائياً)
         const ourProductsGrid = document.getElementById('our-products-grid');
         if (ourProductsGrid) {
             const allOurProducts = data.products.filter(p => data.homepage.ourProducts.includes(p.id));
             let initialProducts = allOurProducts.slice(0, 4);
             ourProductsGrid.innerHTML = initialProducts.map(p => buildProductCardHTML(p)).join('');
 
-            const showMoreBtn = document.getElementById('bose-show-more-products-btn');
-            if (showMoreBtn && allOurProducts.length > 4) {
-                showMoreBtn.addEventListener('click', () => {
-                    let remainingProducts = allOurProducts.slice(4);
-                    let extraHtml = remainingProducts.map(p => buildProductCardHTML(p)).join('');
-                    ourProductsGrid.insertAdjacentHTML('beforeend', extraHtml);
+            const showMoreBtn = document.getElementById('our-products-show-more');
+            if (showMoreBtn) {
+                showMoreBtn.textContent = "استعرض المزيد";
+                if (allOurProducts.length > 4) {
+                    showMoreBtn.addEventListener('click', () => {
+                        let remainingProducts = allOurProducts.slice(4);
+                        let extraHtml = remainingProducts.map(p => buildProductCardHTML(p)).join('');
+                        ourProductsGrid.insertAdjacentHTML('beforeend', extraHtml);
+                        showMoreBtn.style.display = 'none';
+                    });
+                } else {
                     showMoreBtn.style.display = 'none';
-                });
+                }
             }
         }
 
-        // د. بناء كروت تسوق حسب الفئة الـ 12 الملوكي (سلايدر مستجيب بالكامل للسحب والأسهم والنقاط ولا يتحرك تلقائياً أبداً)
         const categoriesTrack = document.getElementById('categories-track');
         if (categoriesTrack) {
             categoriesTrack.innerHTML = data.homepage.categoriesSlider.map(cat => `
@@ -729,11 +716,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>
             `).join('');
             
-            // تهيئة السلايدر التفاعلي الصارم بالأزرار والنقاط والسحب الجانبي لقسم الفئات (غير تلقائي)
-            window.setupBoseInteractiveSlider('categories-track', 'categories-dots-container', 'categories-prev-arrow', 'categories-next-arrow');
+            window.setupBoseInteractiveSlider('categories-track', 'categories-dots');
         }
 
-        // تشغيل السلايدر الأفقي لعقد من الإتقان تلقائياً وبشكل لا نهائي
         if (document.getElementById('excellence-images-track')) {
             window.initializeExcellenceSectionSlider();
         }
