@@ -231,7 +231,7 @@
                 document.body.classList.remove('drawer-active');
             };
 
-            if (closeBtn) closeBtn.onclick = closeMenu;
+            if (closeBtn) closeMenu;
             if (overlay) overlay.onclick = closeMenu;
         }, 150);
     }
@@ -639,7 +639,7 @@
                 display: inline-flex !important;
                 width: max-content !important;
                 flex-wrap: nowrap !important;
-                animation: boseGlobalMarquee 25s linear infinite !important;
+                animation: boseGlobalMarquee 62.5s linear infinite !important;
                 will-change: transform;
             }
             #excellence-images-track {
