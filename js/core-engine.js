@@ -1,7 +1,7 @@
 /**
- * 👑 ملف المحرك المركزي العالمي النظيف والمصحح بالكامل V18.0 - حلويات بوسي 2026 👑
+ * 👑 ملف المحرك المركزي العالمي النظيف والمصحح بالكامل V18.5 - حلويات بوسي 2026 👑
  * حوكمة كاملة لواجهات الشريط العلوي، القائمة الجانبية المتطورة، والفوتر الموحد ومنع تداخل الملفات
- * القضاء التام والنهائي على ثغرة اختفاء نصوص الشريط العلوي وصور قسم "عقد من الإتقان"
+ * القضاء التام والنهائي على ثغرة اختفاء نصوص الشريط العلوي وصور قسم "عقد من الإتقان" والشلال
  * المسؤول الوحيد والمطلق عن التحكم في حركة وسرعة وتكرار وضخ نصوص الشريط العلوي وقسم "عقد من الإتقان"
  * [تطهير برمي شامل]: خالي تماماً من أي دالات ميتة ومتوافق 100% مع باقي ملفات الموقع.
  */
@@ -68,7 +68,7 @@
         
         headerInjector.innerHTML = `
             <div id="top-bar-marquee">
-                <div id="top-bar-marquee-track"></div>
+                <div id="top-bar-marquee-track" class="animate-marquee"></div>
             </div>
             
             <header class="bose-navbar">
@@ -212,7 +212,7 @@
                 <div class="sidebar-mini-cart-empty">
                     <i class="fas fa-shopping-basket"></i>
                     <p>السلة فارغة حالياً</p>
-                    <a href="menu.html" onclick="document.getElementById('sidebar-close-btn').click();" class="sidebar-browse-menu-trigger">تصفح المنيو الشامل</a>
+                    <a href="menu.html" class="sidebar-browse-menu-trigger">تصفح المنيو الشامل</a>
                 </div>
             `;
             return;
@@ -304,30 +304,34 @@
         const data = window.BoseStoreData;
         if (!data) return;
 
-        // 1. شريط الإعلانات العلوي - حركة برمجية لا نهائية تمنع الاختفاء نهائياً عبر الأنميشن الهندسي المحمي
+        // 1. شريط الإعلانات العلوي - تفعيل الحركة التلقائية المتصلة المحمية
         const tickerTrack = document.getElementById('top-bar-marquee-track');
         if (tickerTrack && data.navigation.topBarMessages) {
             let messagesHtml = data.navigation.topBarMessages.map(msg => `
                 <span class="ticker-message-item">${msg} &nbsp;&nbsp;&nbsp;&nbsp; 🌸 &nbsp;&nbsp;&nbsp;&nbsp;</span>
             `).join('');
             tickerTrack.innerHTML = messagesHtml + messagesHtml + messagesHtml + messagesHtml;
-            tickerTrack.parentElement.className = "animate-marquee";
         }
 
         if (heroDesc = document.getElementById('hero-description')) heroDesc.textContent = data.homepage.hero.description;
         if (heroCta = document.getElementById('hero-cta-btn')) heroCta.textContent = data.homepage.hero.cta;
 
+        // 2. الشلال الحركي - زراعة الصور وتفعيل حركة الصعود والهبوط اللانهائية هندسياً
         const leftCol = document.getElementById('waterfall-left-col');
         const rightCol = document.getElementById('waterfall-right-col');
         if (leftCol && rightCol) {
-            leftCol.innerHTML = data.homepage.waterfall.leftColumnImages.map(img => `<img src="${img}" alt="حلويات بوسي فخامة بصرية" loading="lazy">`).join('');
-            rightCol.innerHTML = data.homepage.waterfall.rightColumnImages.map(img => `<img src="${img}" alt="حلويات بوسي فخامة بصرية" loading="lazy">`).join('');
+            let leftImages = data.homepage.waterfall.leftColumnImages.map(img => `<img src="${img}" alt="حلويات بوسي فخامة بصرية" loading="lazy">`).join('');
+            let rightImages = data.homepage.waterfall.rightColumnImages.map(img => `<img src="${img}" alt="حلويات بوسي فخامة بصرية" loading="lazy">`).join('');
+            
+            // مضاعفة الصور البرمجية لضمان تلاحم الحركة اللانهائية بدون فراغات أو مساحات بيضاء
+            leftCol.innerHTML = leftImages + leftImages + leftImages;
+            rightCol.innerHTML = rightImages + rightImages + rightImages;
         }
 
-        // 2. عقد من الإتقان - معالجة الشلل الحركي وإلغاء الفواصل ليصبح شلالاً دائرياً مستمراً متلاحم الصور
         if (document.getElementById('excellence-title')) document.getElementById('excellence-title').textContent = data.homepage.excellence.title;
         if (document.getElementById('excellence-description')) document.getElementById('excellence-description').textContent = data.homepage.excellence.description;
         
+        // 3. عقد من الإتقان - معالجة الشلل وإعادة ربط كلاس الحركة الانسيابية المستمرة لملء الشاشة
         const excellenceTrack = document.getElementById('excellence-images-track');
         if (excellenceTrack && data.homepage.excellence.images) {
             let imagesHtml = data.homepage.excellence.images.map(img => `
@@ -530,6 +534,45 @@
             h1, h2 { font-family: 'Cairo', sans-serif !important; font-weight: 700 !important; color: var(--bose-black) !important; }
             h3, h4, h5, h6 { font-family: 'Cairo', sans-serif !important; font-weight: 600 !important; color: var(--bose-black) !important; }
             p, span, a, button, input, select, textarea { font-family: 'Cairo', sans-serif !important; }
+
+            /* حوكمة حركات الأنميشن الهندسية اللانهائية للمحركات الميكانيكية بالكامل */
+            @keyframes boseMarquee {
+                0% { transform: translate3d(0, 0, 0); }
+                100% { transform: translate3d(-50%, 0, 0); }
+            }
+            @keyframes boseWaterfallUp {
+                0% { transform: translate3d(0, 0, 0); }
+                100% { transform: translate3d(0, -33.333%, 0); }
+            }
+            @keyframes boseWaterfallDown {
+                0% { transform: translate3d(0, -33.333%, 0); }
+                100% { transform: translate3d(0, 0, 0); }
+            }
+            @keyframes boseCategoriesLoop {
+                0% { transform: translate3d(0, 0, 0); }
+                100% { transform: translate3d(-50%, 0, 0); }
+            }
+
+            .animate-marquee {
+                display: flex !important;
+                width: max-content !important;
+                animation: boseMarquee 20s linear infinite !important;
+                will-change: transform;
+            }
+            .waterfall-up {
+                animation: boseWaterfallUp 30s linear infinite !important;
+                will-change: transform;
+            }
+            .waterfall-down {
+                animation: boseWaterfallDown 30s linear infinite !important;
+                will-change: transform;
+            }
+            .categories-track-loop {
+                display: flex !important;
+                width: max-content !important;
+                animation: boseCategoriesLoop 25s linear infinite !important;
+                will-change: transform;
+            }
         `;
         document.head.appendChild(styleElement);
     }
