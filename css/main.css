@@ -183,12 +183,13 @@ body.bose-hardware-accelerated {
     padding: 0 !important;
     margin: 0 !important;
     will-change: transform;
+    animation: boseGlobalMarquee 30s linear infinite !important; /* ربط مباشر وصارم بالأنميشن الدائري الموحد الكلي المانع للصمت البصري */
 }
 
-/* 👑 حوكمة المقاسات القياسية الملتزمة: تملأ العرض بالكامل وارتفاع 340px إلزامي على الموبايل لتظهر الصور ضخمة وفخمة */
+/* 👑 حوكمة المقاسات القياسية الملتزمة: تملأ العرض بالكامل وارتفاع 400px إلزامي كامل مالي الشاشة بدون بتر */
 .perfection-slide-node {
     width: 100vw !important; 
-    height: 400px !important; /* رفع الحجم لتطابق الفخامة القياسية الكبيرة وملء الشاشة */
+    height: 400px !important; 
     flex-shrink: 0 !important;
     display: block !important;
     padding: 0 !important; 
@@ -766,24 +767,4 @@ body.bose-hardware-accelerated {
         height: 520px !important;
     }
     .menu-category-card img { height: 420px !important; }
-}
-
-/* ==========================================================================
-   9. حوكمة وإعادة صياغة أنميشن الدوران الملوكي لمنع وميض أو بتر النصوص
-   ========================================================================== */
-@keyframes boseMarquee {
-    0% {
-        transform: translate3d(0, 0, 0);
-    }
-    100% {
-        transform: translate3d(-50%, 0, 0); /* قفزة ملي ثانية صفرية آمنة ومطابقة 100% للتكرار البرمجي */
-    }
-}
-
-.animate-marquee {
-    display: flex !important;
-    width: max-content !important;
-    animation: boseMarquee 25s linear infinite !important;
-    will-change: transform;
-    white-space: nowrap !important; /* منع حدوث الـ Text Overflow والقطع نهائياً */
 }

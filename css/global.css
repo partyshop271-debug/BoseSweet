@@ -1,5 +1,5 @@
 /* ==========================================================================
-   👑 BoseSweets Strict Production Global Stylesheet (css/global.css) V13.0 👑
+   👑 BoseSweets Strict Production Global Stylesheet (css/global.css) V14.0 👑
    الهوية البصرية الموحدة، الهيدر، الفوتر، والقائمة الجانبية وحوكمة خط Cairo
    امتثال كامل ومغلق لأدلة المواصفات - سد ثغرة التمويه وعزل الـ Overlays تماماً
    ========================================================================== */
@@ -111,6 +111,7 @@ img {
     flex-wrap: nowrap !important;
     width: max-content !important;
     will-change: transform; /* تفعيل تسريع العتاد لكارت الشاشة لضمان النعومة الفائقة ومنع الفراغات */
+    animation: boseGlobalMarquee 25s linear infinite !important; /* ربط مباشر وصريح للأنميشن الدائري الموحد */
 }
 
 .ticker-message-item {
@@ -252,7 +253,7 @@ img {
 }
 
 /* ==========================================================================
-   4. حوكمة واجهة القائمة الجانبية المتطورة (Sidebar Drawer) وإصلاح البتر السفلي
+   4. القائمة الجانبية المتطورة (Sidebar Drawer)
    ========================================================================== */
 .bose-drawer-menu {
     position: fixed;
@@ -261,8 +262,8 @@ img {
     max-width: 85vw;
     height: 100vh;
     background: var(--bose-white) !important;
-    z-index: 50000 !important; /* قفل الـ z-index في أعلى مرتبة على الإطلاق لمنع تداخل كروت المنيو والشلال */
-    transform: translate3d(100%, 0, 0); /* إزاحة كاملة خارج الشاشة مع تسريع ثلاثي الأبعاد */
+    z-index: 50000 !important;
+    transform: translate3d(100%, 0, 0);
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: -8px 0 32px rgba(255, 145, 164, 0.08) !important;
 }
@@ -279,7 +280,7 @@ img {
     direction: rtl;
     background: var(--bose-white) !important;
     position: relative;
-    z-index: 5002 !important; /* تأمين وضوح وحدة القائمة ومنع تمويه النصوص */
+    z-index: 5002 !important;
 }
 
 .drawer-premium-header {
@@ -287,8 +288,8 @@ img {
     background-color: var(--bose-pink) !important;
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
-.drawer-premium-header h3 { font-size: 1.2rem; margin-bottom: 4px; color: var(--bose-white) !important; font-weight: 700 !important; }
-.drawer-premium-header p { font-size: 0.85rem; color: var(--bose-white) !important; font-weight: 600; opacity: 0.95; }
+.drawer-premium-header h3 { font-size: 1.2rem; margin-bottom: 4px; color: var(--white) !important; font-weight: 700 !important; }
+.drawer-premium-header p { font-size: 0.85rem; color: var(--white) !important; font-weight: 600; opacity: 0.95; }
 
 .drawer-close-btn {
     position: absolute;
@@ -298,9 +299,7 @@ img {
     cursor: pointer;
     transition: transform 0.2s ease;
 }
-.drawer-close-btn:hover {
-    transform: rotate(90deg);
-}
+.drawer-close-btn:hover { transform: rotate(90deg); }
 
 .drawer-links-scrollable {
     flex: 1;
@@ -311,10 +310,7 @@ img {
     flex-direction: column;
 }
 
-.drawer-links-list {
-    list-style: none;
-}
-
+.drawer-links-list { list-style: none; }
 .drawer-link-item a {
     display: flex;
     align-items: center;
@@ -325,17 +321,8 @@ img {
     font-size: 1rem;
     border-bottom: 1px solid rgba(255, 145, 164, 0.06);
 }
-
-.drawer-link-item a i {
-    color: var(--bose-pink) !important;
-    width: 20px;
-    text-align: center;
-}
-
-.drawer-link-item a:hover {
-    background-color: rgba(255, 145, 164, 0.04) !important;
-    color: var(--bose-pink) !important;
-}
+.drawer-link-item a i { color: var(--bose-pink) !important; width: 20px; text-align: center; }
+.drawer-link-item a:hover { background-color: rgba(255, 145, 164, 0.04) !important; color: var(--bose-pink) !important; }
 
 .drawer-premium-section-title {
     padding: 20px 24px 10px 24px;
@@ -366,24 +353,11 @@ img {
 .sidebar-cat-chip-node img { width: 32px; height: 32px; border-radius: 50%; }
 .sidebar-cat-chip-node span { font-size: 0.85rem; font-weight: 600; color: var(--bose-black); }
 
-.sidebar-mini-cart-container {
-    padding: 10px 24px;
-}
-.sidebar-mini-cart-empty {
-    text-align: center;
-    padding: 20px 0;
-    color: var(--bose-black);
-    opacity: 0.6;
-}
+.sidebar-mini-cart-container { padding: 10px 24px; }
+.sidebar-mini-cart-empty { text-align: center; padding: 20px 0; color: var(--bose-black); opacity: 0.6; }
 .sidebar-mini-cart-empty i { font-size: 2rem; margin-bottom: 8px; color: var(--bose-pink); }
 .sidebar-mini-cart-empty p { font-size: 0.9rem; }
-.sidebar-browse-menu-trigger {
-    display: inline-block;
-    margin-top: 10px;
-    font-size: 0.85rem;
-    color: var(--bose-pink);
-    font-weight: 700;
-}
+.sidebar-browse-menu-trigger { display: inline-block; margin-top: 10px; font-size: 0.85rem; color: var(--bose-pink); font-weight: 700; }
 
 .sidebar-mini-cart-item-node {
     display: flex;
@@ -396,69 +370,22 @@ img {
 .sidebar-mini-cart-item-details h5 { font-size: 0.75rem; color: var(--bose-pink); margin-bottom: 2px; }
 .sidebar-mini-cart-item-meta { font-size: 0.75rem; opacity: 0.8; }
 
-.sidebar-mini-cart-footer-summary {
-    margin-top: 15px;
-    padding-top: 12px;
-    border-top: 1px solid rgba(255, 145, 164, 0.15);
-}
-.sidebar-mini-cart-total-row {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.9rem;
-    margin-bottom: 12px;
-}
+.sidebar-mini-cart-footer-summary { margin-top: 15px; padding-top: 12px; border-top: 1px solid rgba(255, 145, 164, 0.15); }
+.sidebar-mini-cart-total-row { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 12px; }
 .sidebar-mini-cart-total-row strong { color: var(--bose-pink); }
 .sidebar-mini-cart-checkout-cta-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    width: 100%;
-    background: var(--bose-pink);
-    color: var(--bose-white) !important;
-    padding: 10px;
-    border-radius: 12px;
-    font-weight: 700;
-    font-size: 0.95rem;
+    display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: var(--bose-pink); color: var(--bose-white) !important; padding: 10px; border-radius: 12px; font-weight: 700; font-size: 0.95rem;
 }
 
-.drawer-premium-footer-block {
-    padding: 20px 24px 30px 24px;
-    border-top: 1px solid rgba(255, 145, 164, 0.1);
-    background: var(--bose-white);
-    margin-top: auto; 
-}
+.drawer-premium-footer-block { padding: 20px 24px 30px 24px; border-top: 1px solid rgba(255, 145, 164, 0.1); background: var(--bose-white); margin-top: auto; }
 .drawer-support-call-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    width: 100%;
-    background: #25D366; 
-    color: var(--bose-white) !important;
-    padding: 12px;
-    border-radius: 12px;
-    font-weight: 700;
-    font-size: 0.95rem;
-    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.2);
+    display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; background: #25D366; color: var(--bose-white) !important; padding: 12px; border-radius: 12px; font-weight: 700; font-size: 0.95rem; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.2);
 }
 
 .drawer-overlay {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw; height: 100vh;
-    background: rgba(17, 17, 17, 0.25) !important; 
-    backdrop-filter: blur(4px);
-    z-index: 4999 !important; /* يستقر خلف لوحة الـ Content لحماية وضوح الكلمات والعناوين */
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.4s ease;
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(17, 17, 17, 0.25) !important; backdrop-filter: blur(4px); z-index: 4999 !important; opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
 }
-
-.drawer-overlay.active {
-    opacity: 1 !important;
-    pointer-events: auto !important;
-}
+.drawer-overlay.active { opacity: 1 !important; pointer-events: auto !important; }
 
 /* ==========================================================================
    5. الفوتر القياسي الموحد المعتمد بلونه الفاتح الخالص (.bose-footer)
@@ -472,134 +399,40 @@ img {
     align-items: center !important;
     text-align: center !important;
     width: 100% !important;
-    gap: 24px !important; /* توفير مسافات للتنفس البصري ومنع التكدس */
+    gap: 24px !important;
 }
 
-.footer-logo-container {
-    margin-bottom: 4px;
-}
-#bose-footer-logo-node {
-    height: 60px;
-    width: auto;
-    object-fit: contain;
-}
+.footer-logo-container { margin-bottom: 4px; }
+#bose-footer-logo-node { height: 60px; width: auto; object-fit: contain; }
+.footer-brand-name { font-size: 1.45rem; font-weight: 700; color: var(--bose-black) !important; margin-bottom: 4px; display: inline-block; }
+.footer-about-block { max-width: 650px; padding: 0 10px; }
+#footer-about-text { font-size: 0.95rem; color: var(--bose-black) !important; opacity: 0.9; line-height: 1.7; }
 
-.footer-brand-name {
-    font-size: 1.45rem;
-    font-weight: 700;
-    color: var(--bose-black) !important;
-    margin-bottom: 4px;
-    display: inline-block;
-}
-
-.footer-about-block {
-    max-width: 650px;
-    padding: 0 10px;
-}
-#footer-about-text {
-    font-size: 0.95rem;
-    color: var(--bose-black) !important;
-    opacity: 0.9;
-    line-height: 1.7;
-}
-
-.footer-quick-links, .footer-policies-container {
-    width: 100%;
-}
+.footer-quick-links, .footer-policies-container { width: 100%; }
 .footer-quick-links ul, .footer-policies-container ul {
-    list-style: none !important;
-    display: flex !important;
-    flex-wrap: wrap !important; /* الالتفاف التلقائي المرن لراحة العميل النفسية على الموبايل */
-    gap: 20px !important;
-    justify-content: center !important;
-    padding: 0 !important;
-    margin: 0 !important;
+    list-style: none !important; display: flex !important; flex-wrap: wrap !important; gap: 20px !important; justify-content: center !important; padding: 0 !important; margin: 0 !important;
 }
-.footer-quick-links ul li a, .footer-policies-container ul li a {
-    font-weight: 600 !important;
-    font-size: 0.95rem !important;
-    color: var(--bose-black) !important;
-    transition: color 0.3s ease;
-}
-.footer-quick-links ul li a:hover, .footer-policies-container ul li a:hover {
-    color: var(--bose-pink) !important;
-}
+.footer-quick-links ul li a, .footer-policies-container ul li a { font-weight: 600 !important; font-size: 0.95rem !important; color: var(--bose-black) !important; transition: color 0.3s ease; }
+.footer-quick-links ul li a:hover, .footer-policies-container ul li a:hover { color: var(--bose-pink) !important; }
 
-.bose-social-links-wrapper {
-    display: flex !important;
-    gap: 20px !important;
-    justify-content: center !important;
-    margin-bottom: 4px;
-}
+.bose-social-links-wrapper { display: flex !important; gap: 20px !important; justify-content: center !important; margin-bottom: 4px; }
+.footer-location-block { font-size: 0.9rem; color: var(--bose-black); font-weight: 600; }
+.footer-location-block i { color: var(--bose-pink); margin-left: 6px; }
 
-.footer-location-block {
-    font-size: 0.9rem;
-    color: var(--bose-black);
-    font-weight: 600;
-}
-.footer-location-block i {
-    color: var(--bose-pink);
-    margin-left: 6px;
-}
-
-.footer-copyright-block {
-    width: 100%;
-    border-top: 1px solid rgba(255, 145, 164, 0.15);
-    padding-top: 20px;
-    margin-top: 10px;
-}
-.footer-copyright-block p {
-    font-size: 0.85rem;
-    color: var(--bose-black) !important;
-    opacity: 0.7;
-}
+.footer-copyright-block { width: 100%; border-top: 1px solid rgba(255, 145, 164, 0.15); padding-top: 20px; margin-top: 10px; }
+.footer-copyright-block p { font-size: 0.85rem; color: var(--bose-black) !important; opacity: 0.7; }
 
 /* ==========================================================================
-   6. التنببهات المركزية العائمة وحاوية الـ Toast للموقع
+   6. التنبيهات المركزية وأنيميشن التدوير العالمي الحاكم الموحد
    ========================================================================== */
-.bose-toast-container {
-    position: fixed;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 60000;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    pointer-events: none;
-}
+.bose-toast-container { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 60000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+.bose-toast-node { background: var(--bose-black); color: var(--bose-white); padding: 12px 24px; border-radius: 12px; font-size: 0.95rem; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,0.2); direction: rtl; text-align: center; pointer-events: auto; animation: boseToastIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
 
-.bose-toast-node {
-    background: var(--bose-black);
-    color: var(--bose-white);
-    padding: 12px 24px;
-    border-radius: 12px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    direction: rtl;
-    text-align: center;
-    pointer-events: auto;
-    animation: boseToastIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-}
+@keyframes boseToastIn { 0% { transform: translateY(20px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+.global-error-banner-node { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background-color: var(--bose-pink); color: var(--bose-white); padding: 12px 24px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 99999; direction: rtl; font-size: 14px; font-weight: 600; text-align: center; }
 
-@keyframes boseToastIn {
-    0% { transform: translateY(20px); opacity: 0; }
-    100% { transform: translateY(0); opacity: 1; }
-}
-
-.global-error-banner-node {
-    position: fixed;
-    bottom: 20px; left: 50%;
-    transform: translateX(-50%);
-    background-color: var(--bose-pink);
-    color: var(--bose-white);
-    padding: 12px 24px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    z-index: 99999;
-    direction: rtl;
-    font-size: 14px;
-    font-weight: 600;
-    text-align: center;
+/* 👑 كود أنميشن الدوران الملوكي الحاكم الصارم الموحد لملف global لمنع وميض وصمت الحركة نهائياً */
+@keyframes boseGlobalMarquee {
+    0% { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(-50%, 0, 0); }
 }
