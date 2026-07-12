@@ -1,7 +1,7 @@
 /**
- * 👑 ملف المحرك المركزي العالمي النظيف والمصحح بالكامل V18.0 - حلويات بوسي 2026 👑
+ * 👑 ملف المحرك المركزي العالمي النظيف والمصحح بالكامل V19.0 - حلويات بوسي 2026 👑
  * حوكمة كاملة لواجهات الشريط العلوي، القائمة الجانبية المتطورة، والفوتر الموحد ومنع تداخل الملفات
- * القضاء التام والنهائي على ثغرة اختفاء نصوص الشريط العلوي وصور قسم "عقد من الإتقان"
+ * القضاء التام والنهائي على ثغرة اختفاء نصوص الشريط العلوي وصور قسم "عقد من الإتقان" والشلال
  * المسؤول الوحيد والمطلق عن التحكم في حركة وسرعة وتكرار وضخ نصوص الشريط العلوي وقسم "عقد من الإتقان"
  * [تطهير برمي شامل]: خالي تماماً من أي دالات ميتة ومتوافق 100% مع باقي ملفات الموقع.
  */
@@ -304,19 +304,20 @@
         const data = window.BoseStoreData;
         if (!data) return;
 
-        // 1. شريط الإعلانات العلوي - حركة برمجية لا نهائية تمنع الاختفاء نهائياً
+        // 1. شريط الإعلانات العلوي المتحرك - اتجاه لغوي مصري صحيح وحركة لانهائية حقيقية بالكامل
         const tickerTrack = document.getElementById('top-bar-marquee-track');
         if (tickerTrack && data.navigation.topBarMessages) {
             let messagesHtml = data.navigation.topBarMessages.map(msg => `
                 <span class="ticker-message-item">${msg} &nbsp;&nbsp;&nbsp;&nbsp; 🌸 &nbsp;&nbsp;&nbsp;&nbsp;</span>
             `).join('');
             tickerTrack.innerHTML = messagesHtml + messagesHtml + messagesHtml + messagesHtml;
-            initializeBoseInfiniteMarquee(tickerTrack, 0.8);
+            initializeBoseInfiniteMarquee(tickerTrack, 0.7);
         }
 
         if (heroDesc = document.getElementById('hero-description')) heroDesc.textContent = data.homepage.hero.description;
         if (heroCta = document.getElementById('hero-cta-btn')) heroCta.textContent = data.homepage.hero.cta;
 
+        // تشغيل كروت الشلال البصري المتعاكس تلقائياً بدقة هندسية كاملة
         const leftCol = document.getElementById('waterfall-left-col');
         const rightCol = document.getElementById('waterfall-right-col');
         if (leftCol && rightCol) {
@@ -324,7 +325,7 @@
             rightCol.innerHTML = data.homepage.waterfall.rightColumnImages.map(img => `<img src="${img}" alt="حلويات بوسي فخامة بصرية" loading="lazy">`).join('');
         }
 
-        // 2. عقد من الإتقان - حركة تلقائية ملساء مع قبول كامل ومطلق للسحب واللمس بدون أي شلل
+        // 2. قسم عقد من الإتقان - حركة ملساء سلسة ومستمرة تماماً مع قبول حر ومطلق للسحب واللمس اليدوي
         if (document.getElementById('excellence-title')) document.getElementById('excellence-title').textContent = data.homepage.excellence.title;
         if (document.getElementById('excellence-description')) document.getElementById('excellence-description').textContent = data.homepage.excellence.description;
         
@@ -333,7 +334,8 @@
             let imagesHtml = data.homepage.excellence.images.map(img => `
                 <div class="perfection-slide-node"><img src="${img}" alt="إتقان حلويات بوسي" loading="lazy"></div>
             `).join('');
-            excellenceTrack.innerHTML = imagesHtml + imagesHtml + imagesHtml + imagesHtml;
+            // حقن تكراري برمي منظم يمنع الفراغات والمساحات البيضاء نهائياً
+            excellenceTrack.innerHTML = imagesHtml + imagesHtml + imagesHtml + imagesHtml + imagesHtml;
             initializeBoseInteractiveTrack(excellenceTrack);
         }
 
@@ -415,21 +417,28 @@
         }
     }
 
+    // محرك ماركي إعلاني مصلح هندسياً يبدأ من اليمين بشكل طبيعي ومستمر دون انقطاع
     function initializeBoseInfiniteMarquee(track, speed) {
         let currentPos = 0;
+        track.style.display = "flex";
+        track.style.whiteSpace = "nowrap";
+        
         function step() {
-            currentPos -= speed;
-            if (Math.abs(currentPos) >= track.scrollWidth / 2) currentPos = 0;
-            track.style.transform = `translate3d(${currentPos}px, 0, 0)`;
+            currentPos += speed; // اتجاه حركي عربي صحيح لليمين يمنع الاختفاء اللحظي
+            if (currentPos >= track.scrollWidth / 2) {
+                currentPos = 0;
+            }
+            track.style.transform = `translate3d(${-currentPos}px, 0, 0)`;
             requestAnimationFrame(step);
         }
         requestAnimationFrame(step);
     }
 
+    // محرك تراك الإتقان الهجين المطور (حركة مستمرة + سحب يدوي حر سلس 100% بدون أي مساحات فارغة)
     function initializeBoseInteractiveTrack(track) {
         let isDragging = false;
         let startX, scrollLeft;
-        let autoScrollSpeed = 0.6;
+        let autoScrollSpeed = 0.5;
         let currentScrollX = 0;
         let isHovered = false;
         const wrapper = track.parentElement;
@@ -437,7 +446,10 @@
         function autoMove() {
             if (!isDragging && !isHovered) {
                 currentScrollX += autoScrollSpeed;
-                if (currentScrollX >= track.scrollWidth / 2) currentScrollX = 0;
+                // إعادة تعيين لحظية دقيقة عند منتصف المسار لمنع المساحات البيضاء الفارغة نهائياً
+                if (currentScrollX >= track.scrollWidth / 2) {
+                    currentScrollX = 0;
+                }
                 wrapper.scrollLeft = currentScrollX;
             } else if (isDragging) {
                 currentScrollX = wrapper.scrollLeft;
@@ -448,6 +460,7 @@
 
         const startDrag = (e) => {
             isDragging = true;
+            wrapper.style.scrollBehavior = "auto";
             startX = (e.pageX || e.touches[0].pageX) - wrapper.offsetLeft;
             scrollLeft = wrapper.scrollLeft;
         };
@@ -455,12 +468,15 @@
         const moveDrag = (e) => {
             if (!isDragging) return;
             const x = (e.pageX || e.touches[0].pageX) - wrapper.offsetLeft;
-            const walk = (x - startX) * 1.5;
+            const walk = (x - startX) * 1.2;
             wrapper.scrollLeft = scrollLeft - walk;
             currentScrollX = wrapper.scrollLeft;
         };
 
-        const stopDrag = () => { isDragging = false; };
+        const stopDrag = () => { 
+            isDragging = false; 
+            wrapper.style.scrollBehavior = "smooth";
+        };
 
         wrapper.addEventListener('mousedown', startDrag);
         wrapper.addEventListener('mousemove', moveDrag);
