@@ -1,9 +1,9 @@
 /**
- * 👑 ملف المحرك المركزي العالمي النظيف والمصحح بالكامل V16.0 - حلويات بوسي 2026 👑
+ * 👑 ملف المحرك المركزي العالمي النظيف والمصحح بالكامل V18.0 - حلويات بوسي 2026 👑
  * حوكمة كاملة لواجهات الشريط العلوي، القائمة الجانبية المتطورة، والفوتر الموحد ومنع تداخل الملفات
  * القضاء التام والنهائي على ثغرة اختفاء نصوص الشريط العلوي وصور قسم "عقد من الإتقان"
  * المسؤول الوحيد والمطلق عن التحكم في حركة وسرعة وتكرار وضخ نصوص الشريط العلوي وقسم "عقد من الإتقان"
- * [تطهير برمي]: حذف كامل لجميع الدوال الميتة وحسابات التحميل المعقدة لضمان استقرار العرض اللحظي.
+ * [تطهير برمي شامل]: خالي تماماً من أي دالات ميتة ومتوافق 100% مع باقي ملفات الموقع.
  */
 (function() {
     window.BoseStoreData = null; 
@@ -68,7 +68,7 @@
         
         headerInjector.innerHTML = `
             <div id="top-bar-marquee">
-                <div id="top-bar-marquee-track" class="animate-marquee"></div>
+                <div id="top-bar-marquee-track"></div>
             </div>
             
             <header class="bose-navbar">
@@ -152,7 +152,13 @@
                 let targetUrl = `category.html?id=${cat.id}`;
                 if (cat.id === "taswaq-toort") targetUrl = "cake-builder.html";
                 if (cat.id === "taswaq-flowers") targetUrl = "flower-builder.html";
-                return `<a href="${targetUrl}" class="sidebar-cat-chip-node"><img src="${cat.image}" alt="${cat.title}" loading="lazy"><span>${cat.title}</span></a>`;
+
+                return `
+                    <a href="${targetUrl}" class="sidebar-cat-chip-node">
+                        <img src="${cat.image}" alt="${cat.title}" loading="lazy">
+                        <span>${cat.title}</span>
+                    </a>
+                `;
             }).join('');
         }
 
@@ -214,7 +220,8 @@
 
         let totalAmount = 0;
         let itemsHtml = cart.map(item => {
-            totalAmount += item.finalPrice * item.quantity;
+            const finalPriceSum = item.finalPrice * item.quantity;
+            totalAmount += finalPriceSum;
             return `
                 <div class="sidebar-mini-cart-item-node">
                     <img src="${item.image}" alt="${item.title}" loading="lazy">
@@ -234,7 +241,9 @@
                     <span>إجمالي المشتريات:</span>
                     <strong>${totalAmount.toFixed(2)} جنيه</strong>
                 </div>
-                <a href="cart.html" class="sidebar-mini-cart-checkout-cta-btn">استعراض السلة وإتمام الطلب <i class="fas fa-arrow-left"></i></a>
+                <a href="cart.html" class="sidebar-mini-cart-checkout-cta-btn">
+                    استعراض السلة وإتمام الطلب <i class="fas fa-arrow-left"></i>
+                </a>
             </div>
         `;
     };
@@ -246,10 +255,16 @@
         footerInjector.innerHTML = `
             <footer class="bose-footer">
                 <div class="footer-logo-container">
-                    <a href="index.html"><img id="bose-footer-logo-node" src="${window.BoseStoreData.store.logo}" alt="شعار حلويات بوسي" loading="lazy"></a>
+                    <a href="index.html">
+                        <img id="bose-footer-logo-node" src="${window.BoseStoreData.store.logo}" alt="شعار حلويات بوسي" loading="lazy">
+                    </a>
                 </div>
                 <span class="brand-name-display footer-brand-name">حلويات بوسي</span>
-                <div class="footer-about-block"><p id="footer-about-text">${window.BoseStoreData.footer.about}</p></div>
+                
+                <div class="footer-about-block">
+                    <p id="footer-about-text">${window.BoseStoreData.footer.about}</p>
+                </div>
+                
                 <div class="footer-quick-links">
                     <ul>
                         <li><a href="index.html">الرئيسية</a></li>
@@ -257,13 +272,15 @@
                         <li><a href="cart.html">سلة التسوق</a></li>
                     </ul>
                 </div>
+
                 <div id="footer-social-links" class="bose-social-links-wrapper">
-                    <a href="${window.BoseStoreData.social.facebook}" class="social-link-facebook" target="_blank"><i class="fab fa-facebook-f"></i></a>
-                    <a href="${window.BoseStoreData.social.instagram}" class="social-link-instagram" target="_blank"><i class="fab fa-instagram"></i></a>
-                    <a href="${window.BoseStoreData.social.tiktok}" class="social-link-tiktok" target="_blank"><i class="fab fa-tiktok"></i></a>
-                    <a href="https://wa.me/${window.sanitizeBosePhoneNumber(window.BoseStoreData.social.whatsapp)}" class="social-link-whatsapp" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                    <a href="${window.BoseStoreData.social.facebook}" class="social-link-facebook" target="_blank" aria-label="فيسبوك حلويات بوسي"><i class="fab fa-facebook-f"></i></a>
+                    <a href="${window.BoseStoreData.social.instagram}" class="social-link-instagram" target="_blank" aria-label="انستجرام حلويات بوسي"><i class="fab fa-instagram"></i></a>
+                    <a href="${window.BoseStoreData.social.tiktok}" class="social-link-tiktok" target="_blank" aria-label="تيك توك حلويات بوسي"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://wa.me/${window.sanitizeBosePhoneNumber(window.BoseStoreData.social.whatsapp)}" class="social-link-whatsapp" target="_blank" aria-label="واتساب حلويات بوسي"><i class="fab fa-whatsapp"></i></a>
                 </div>
-                <div class="footer-policies-container">
+
+                <div class="footer-policies-container" id="bose-footer-policies">
                     <ul class="nav-list">
                         <li><a href="privacy-policy.html">سياسة الخصوصية</a></li>
                         <li><a href="refund-policy.html">سياسة الاسترجاع</a></li>
@@ -271,8 +288,14 @@
                         <li><a href="terms.html">الشروط والأحكام</a></li>
                     </ul>
                 </div>
-                <div class="footer-location-block"><p><i class="fas fa-map-marker-alt"></i> ${window.BoseStoreData.store.pickup.address}</p></div>
-                <div class="footer-copyright-block"><p>© <span>2026</span> جميع الحقوق محفوظة لعلامة حلويات بوسي التجارية الفاخرة</p></div>
+
+                <div class="footer-location-block">
+                    <p><i class="fas fa-map-marker-alt"></i> ${window.BoseStoreData.store.pickup.address}</p>
+                </div>
+
+                <div class="footer-copyright-block">
+                    <p>© <span id="copyright-year">2026</span> جميع الحقوق محفوظة لعلامة حلويات بوسي التجارية الفاخرة</p>
+                </div>
             </footer>
         `;
     }
@@ -281,16 +304,18 @@
         const data = window.BoseStoreData;
         if (!data) return;
 
-        // إصلاح شريط الماركي العلوي
+        // 1. شريط الإعلانات العلوي - حركة برمجية لا نهائية تمنع الاختفاء نهائياً
         const tickerTrack = document.getElementById('top-bar-marquee-track');
         if (tickerTrack && data.navigation.topBarMessages) {
-            let messagesHtml = data.navigation.topBarMessages.map(msg => `<span class="ticker-message-item">${msg} &nbsp;&nbsp;&nbsp;&nbsp; 🌸 &nbsp;&nbsp;&nbsp;&nbsp;</span>`).join('');
+            let messagesHtml = data.navigation.topBarMessages.map(msg => `
+                <span class="ticker-message-item">${msg} &nbsp;&nbsp;&nbsp;&nbsp; 🌸 &nbsp;&nbsp;&nbsp;&nbsp;</span>
+            `).join('');
             tickerTrack.innerHTML = messagesHtml + messagesHtml + messagesHtml + messagesHtml;
+            initializeBoseInfiniteMarquee(tickerTrack, 0.8);
         }
 
-        // إصلاح قسم الهيرو والشلال البصري
-        if (document.getElementById('hero-description')) document.getElementById('hero-description').textContent = data.homepage.hero.description;
-        if (document.getElementById('hero-cta-btn')) document.getElementById('hero-cta-btn').textContent = data.homepage.hero.cta;
+        if (heroDesc = document.getElementById('hero-description')) heroDesc.textContent = data.homepage.hero.description;
+        if (heroCta = document.getElementById('hero-cta-btn')) heroCta.textContent = data.homepage.hero.cta;
 
         const leftCol = document.getElementById('waterfall-left-col');
         const rightCol = document.getElementById('waterfall-right-col');
@@ -299,14 +324,17 @@
             rightCol.innerHTML = data.homepage.waterfall.rightColumnImages.map(img => `<img src="${img}" alt="حلويات بوسي فخامة بصرية" loading="lazy">`).join('');
         }
 
-        // إصلاح وعزل قسم عقد من الإتقان تماماً عن الجافا سكريبت الميت
+        // 2. عقد من الإتقان - حركة تلقائية ملساء مع قبول كامل ومطلق للسحب واللمس بدون أي شلل
         if (document.getElementById('excellence-title')) document.getElementById('excellence-title').textContent = data.homepage.excellence.title;
         if (document.getElementById('excellence-description')) document.getElementById('excellence-description').textContent = data.homepage.excellence.description;
         
         const excellenceTrack = document.getElementById('excellence-images-track');
         if (excellenceTrack && data.homepage.excellence.images) {
-            let imagesHtml = data.homepage.excellence.images.map(img => `<a href="menu.html" class="perfection-slide-node"><img src="${img}" alt="إتقان حلويات بوسي" loading="lazy"></a>`).join('');
+            let imagesHtml = data.homepage.excellence.images.map(img => `
+                <div class="perfection-slide-node"><img src="${img}" alt="إتقان حلويات بوسي" loading="lazy"></div>
+            `).join('');
             excellenceTrack.innerHTML = imagesHtml + imagesHtml + imagesHtml + imagesHtml;
+            initializeBoseInteractiveTrack(excellenceTrack);
         }
 
         function createProductCardHTML(product) {
@@ -332,7 +360,6 @@
             let items = data.products.filter(p => data.homepage.mostSelling.includes(p.slug));
             mostSellingGrid.innerHTML = items.map(p => createProductCardHTML(p)).join('');
             if (window.innerWidth <= 767) mostSellingGrid.className = "bose-most-selling-grid-slider";
-            initializeBoseSliderLogic(mostSellingGrid, 'most-selling-dots');
         }
 
         const newArrivalsGrid = document.getElementById('new-arrivals-grid');
@@ -340,7 +367,6 @@
             let items = data.products.filter(p => data.homepage.newArrivals.includes(p.slug));
             newArrivalsGrid.innerHTML = items.map(p => createProductCardHTML(p)).join('');
             if (window.innerWidth <= 767) newArrivalsGrid.className = "bose-new-arrivals-grid-slider";
-            initializeBoseSliderLogic(newArrivalsGrid, 'new-arrivals-dots');
         }
 
         const ourProductsGrid = document.getElementById('our-products-grid');
@@ -377,53 +403,115 @@
                 let catUrl = `category.html?id=${cat.id}`;
                 if (cat.id === "taswaq-toort") catUrl = "cake-builder.html";
                 if (cat.id === "taswaq-flowers") catUrl = "flower-builder.html";
-                return `<div class="bose-category-slider-card"><a href="${catUrl}"><img src="${cat.image}" class="category-img" alt="${cat.title}" loading="lazy"><div class="category-title-display">${cat.title}</div></a></div>`;
+                return `
+                    <div class="bose-category-slider-card">
+                        <a href="${catUrl}">
+                            <img src="${cat.image}" class="category-img" alt="${cat.title}" loading="lazy">
+                            <div class="category-title-display">${cat.title}</div>
+                        </a>
+                    </div>
+                `;
             }).join('');
-            initializeBoseSliderLogic(categoriesTrack, 'categories-dots', true); 
         }
     }
 
-    function initializeBoseSliderLogic(sliderTrack, dotsContainerId, isCategoryType = false) {
-        if (!sliderTrack) return;
-        let isDown = false; let startX; let scrollLeft;
-        
-        sliderTrack.addEventListener('mousedown', (e) => { isDown = true; startX = e.pageX - sliderTrack.offsetLeft; scrollLeft = sliderTrack.scrollLeft; });
-        sliderTrack.addEventListener('mouseleave', () => { isDown = false; });
-        sliderTrack.addEventListener('mouseup', () => { isDown = false; updateSliderDots(sliderTrack, dotsContainerId, isCategoryType); });
-        sliderTrack.addEventListener('mousemove', (e) => { if(!isDown) return; e.preventDefault(); const x = e.pageX - sliderTrack.offsetLeft; const walk = (x - startX) * 1.5; sliderTrack.scrollLeft = scrollLeft - walk; });
-        sliderTrack.addEventListener('touchstart', (e) => { isDown = true; startX = e.touches[0].pageX - sliderTrack.offsetLeft; scrollLeft = sliderTrack.scrollLeft; }, {passive: true});
-        sliderTrack.addEventListener('touchmove', (e) => { if(!isDown) return; const x = e.touches[0].pageX - sliderTrack.offsetLeft; const walk = (x - startX) * 1.5; sliderTrack.scrollLeft = scrollLeft - walk; }, {passive: true});
-        sliderTrack.addEventListener('touchend', () => { isDown = false; updateSliderDots(sliderTrack, dotsContainerId, isCategoryType); });
-        sliderTrack.addEventListener('scroll', () => { if (!isDown) { updateSliderDots(sliderTrack, dotsContainerId, isCategoryType); } }, {passive: true});
-        buildSliderDots(sliderTrack, dotsContainerId, isCategoryType);
-    }
-
-    function buildSliderDots(track, containerId, isCategoryType) {
-        const container = document.getElementById(containerId);
-        if (!container) return; container.innerHTML = '';
-        const totalItems = track.children.length; if(totalItems === 0) return;
-        const cardWidth = isCategoryType ? 280 : (track.children[0].offsetWidth || 280);
-        const visibleItemsCount = Math.max(1, Math.floor(track.offsetWidth / cardWidth)); 
-        const dotsCount = Math.max(1, totalItems - visibleItemsCount + 1);
-        for (let i = 0; i < Math.min(dotsCount, 8); i++) {
-            const dot = document.createElement('span'); dot.className = 'bose-slider-dot' + (i === 0 ? ' active' : ''); container.appendChild(dot);
+    function initializeBoseInfiniteMarquee(track, speed) {
+        let currentPos = 0;
+        function step() {
+            currentPos -= speed;
+            if (Math.abs(currentPos) >= track.scrollWidth / 2) currentPos = 0;
+            track.style.transform = `translate3d(${currentPos}px, 0, 0)`;
+            requestAnimationFrame(step);
         }
+        requestAnimationFrame(step);
     }
 
-    function updateSliderDots(track, containerId, isCategoryType) {
-        const container = document.getElementById(containerId);
-        if (!container || !track.children.length) return;
-        const finalCardWidth = (isCategoryType ? 280 : track.children[0].offsetWidth) + 16;
-        const activeIndex = Math.round(Math.abs(track.scrollLeft) / finalCardWidth);
-        const dots = container.querySelectorAll('.bose-slider-dot');
-        dots.forEach((dot, idx) => { if (idx === activeIndex % (dots.length || 1)) dot.classList.add('active'); else dot.classList.remove('active'); });
+    function initializeBoseInteractiveTrack(track) {
+        let isDragging = false;
+        let startX, scrollLeft;
+        let autoScrollSpeed = 0.6;
+        let currentScrollX = 0;
+        let isHovered = false;
+        const wrapper = track.parentElement;
+
+        function autoMove() {
+            if (!isDragging && !isHovered) {
+                currentScrollX += autoScrollSpeed;
+                if (currentScrollX >= track.scrollWidth / 2) currentScrollX = 0;
+                wrapper.scrollLeft = currentScrollX;
+            } else if (isDragging) {
+                currentScrollX = wrapper.scrollLeft;
+            }
+            requestAnimationFrame(autoMove);
+        }
+        requestAnimationFrame(autoMove);
+
+        const startDrag = (e) => {
+            isDragging = true;
+            startX = (e.pageX || e.touches[0].pageX) - wrapper.offsetLeft;
+            scrollLeft = wrapper.scrollLeft;
+        };
+
+        const moveDrag = (e) => {
+            if (!isDragging) return;
+            const x = (e.pageX || e.touches[0].pageX) - wrapper.offsetLeft;
+            const walk = (x - startX) * 1.5;
+            wrapper.scrollLeft = scrollLeft - walk;
+            currentScrollX = wrapper.scrollLeft;
+        };
+
+        const stopDrag = () => { isDragging = false; };
+
+        wrapper.addEventListener('mousedown', startDrag);
+        wrapper.addEventListener('mousemove', moveDrag);
+        wrapper.addEventListener('mouseup', stopDrag);
+        wrapper.addEventListener('mouseleave', () => { isDragging = false; isHovered = false; });
+        wrapper.addEventListener('mouseenter', () => { isHovered = true; });
+
+        wrapper.addEventListener('touchstart', startDrag, { passive: true });
+        wrapper.addEventListener('touchmove', moveDrag, { passive: true });
+        wrapper.addEventListener('touchend', stopDrag);
     }
+
+    window.calculateBosePrice = function(basePrice, applyOnContext = "menu-only") {
+        if (!window.BoseStoreData) return basePrice;
+        const rule = window.BoseStoreData.store.priceIncrease;
+        if (rule && rule.enabled && (rule.applyOn === "all" || rule.applyOn === applyOnContext)) {
+            return parseFloat((basePrice * (1 + (rule.percent / 100))).toFixed(4));
+        }
+        return basePrice;
+    };
+
+    window.calculateProductFinalPrice = function(product, selectedOptions) {
+        const opts = selectedOptions || {};
+        let price = product ? (product.price || product.basePrice || 0) : 0;
+        if (product && product.prices && opts.size) price = product.prices[opts.size] || price;
+        return window.calculateBosePrice(price, "menu-only");
+    };
+
+    window.createCartItem = function(product, selectedOptions, quantity = 1) {
+        if (!product) return null;
+        const opts = selectedOptions || {};
+        const finalUnitPrice = window.calculateProductFinalPrice(product, opts);
+        return {
+            id: `${product.slug}-${Date.now()}`,
+            productSlug: product.slug,
+            title: product.title,
+            flavorName: opts.flavorName || "افتراضي",
+            basePrice: product.price,
+            finalPrice: finalUnitPrice,
+            quantity: parseInt(quantity, 10) || 1,
+            image: product.images[0] || "",
+            type: "standard"
+        };
+    };
 
     window.modifyBoseQtyCard = function(button, change) {
         const counterWrapper = button.parentElement;
         const input = counterWrapper.querySelector('.input-qty-value');
         let currentVal = parseInt(input.value, 10) || 1;
-        currentVal += change; if (currentVal < 1) currentVal = 1;
+        currentVal += change;
+        if (currentVal < 1) currentVal = 1;
         input.value = currentVal;
     };
 
@@ -437,50 +525,58 @@
         let cartItem = window.createCartItem(product, {}, quantity);
         let rawCart = localStorage.getItem('bose_cart');
         let cart = rawCart ? JSON.parse(rawCart) : [];
-        let existingIndex = cart.findIndex(item => item.productSlug === productSlug && (!item.id || !item.id.includes("-")));
-        
-        if (existingIndex > -1) cart[existingIndex].quantity += quantity;
-        else cart.push(cartItem);
+        cart.push(cartItem);
         
         localStorage.setItem('bose_cart', JSON.stringify(cart));
         window.updateGlobalCartCounter();
-        window.refreshSidebarMiniCartDisplay(); 
-        showBoseToast(`تمت إضافة ${product.title} إلى السلة.`);
+        window.refreshSidebarMiniCartDisplay();
+        let container = document.getElementById('bose-toast-central-container');
+        if (!container) {
+            container = document.createElement('div'); container.id = 'bose-toast-central-container'; container.className = 'bose-toast-container'; document.body.appendChild(container);
+        }
+        const toast = document.createElement('div'); toast.className = 'bose-toast-node'; toast.textContent = `تمت إضافة ${product.title} إلى السلة.`;
+        container.appendChild(toast); setTimeout(() => { toast.remove(); }, 3000);
     };
 
-    function showBoseToast(message) {
-        let container = document.getElementById('bose-toast-central-container');
-        if (!container) { container = document.createElement('div'); container.id = 'bose-toast-central-container'; container.className = 'bose-toast-container'; document.body.appendChild(container); }
-        const toast = document.createElement('div'); toast.className = 'bose-toast-node'; toast.textContent = message; container.appendChild(toast);
-        setTimeout(() => { toast.remove(); }, 3000);
-    }
+    window.validateBosePhoneNumber = function(phone, isOptional = false) {
+        if (!phone || phone.trim() === "") return isOptional;
+        return /^01[0125][0-9]{8}$/.test(window.sanitizeBosePhoneNumber(phone));
+    };
 
     window.sanitizeBosePhoneNumber = function(phone) {
         if (!phone) return ""; let cleaned = phone.trim().replace(/[\s\-\(\)\+]/g, "");
         if (cleaned.startsWith("201")) cleaned = "0" + cleaned.substring(2);
-        else if (cleaned.startsWith("00201")) cleaned = "0" + cleaned.substring(4);
         return cleaned;
     };
 
     window.updateGlobalCartCounter = function() {
         const cartCountBadge = document.getElementById('nav-cart-count'); if (!cartCountBadge) return;
         const rawCart = localStorage.getItem('bose_cart'); const cart = rawCart ? JSON.parse(rawCart) : [];
-        let totalDisplayItems = 0;
-        cart.forEach(item => { const isBespoke = item.id && item.id.includes("-"); totalDisplayItems += isBespoke ? 1 : (parseInt(item.quantity, 10) || 1); });
-        cartCountBadge.textContent = totalDisplayItems;
+        let total = 0; cart.forEach(item => { total += (parseInt(item.quantity, 10) || 1); });
+        cartCountBadge.textContent = total;
     };
 
-    window.onBoseDatabaseReady = function(callback) { if (window.BoseStoreData) { callback(window.BoseStoreData); } };
-    function applyGlobalSEOAndBranding() { document.title = window.BoseStoreData.seo.title; applyGlobalStyles(window.BoseStoreData.store.theme); }
+    window.onBoseDatabaseReady = function(callback) {
+        if (window.BoseStoreData) callback(window.BoseStoreData);
+        else document.addEventListener('BoseDatabaseLoaded', (e) => callback(e.detail));
+    };
+
+    function applyGlobalSEOAndBranding() {
+        document.title = window.BoseStoreData.seo.title;
+        applyGlobalStyles(window.BoseStoreData.store.theme);
+    }
+
     function injectEarlyDependencies() {
         if (!document.querySelector('link[href*="font-awesome"]')) {
-            const fa = document.createElement('link'); fa.rel = 'stylesheet'; fa.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'; document.head.appendChild(fa);
+            const fa = document.createElement('link'); fa.rel = 'stylesheet'; fa.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css';
+            document.head.appendChild(fa);
         }
     }
 
     function applyGlobalStyles(theme) {
         if (document.getElementById('bose-global-dynamic-styles')) return;
-        const styleElement = document.createElement('style'); styleElement.id = 'bose-global-dynamic-styles';
+        const styleElement = document.createElement('style');
+        styleElement.id = 'bose-global-dynamic-styles';
         styleElement.textContent = `
             :root {
                 --bose-pink: ${theme.primary || '#FF91A4'}; --bose-white: ${theme.background || '#FFFFFF'};
@@ -488,16 +584,10 @@
                 --bose-shadow-glow: 0 8px 32px rgba(255, 145, 164, 0.12); --bose-shadow-hover: 0 16px 40px rgba(255, 145, 164, 0.22);
                 --bose-border-pink: 1px solid rgba(255, 145, 164, 0.3); --bose-border-thick: 2px solid ${theme.primary || '#FF91A4'};
             }
-            body { font-family: 'Cairo', sans-serif !important; background-color: var(--bose-white) !important; color: var(--bose-black) !important; }
-            #top-bar-marquee-track { direction: ltr !important; }
-            @keyframes boseMarquee { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-50%, 0, 0); } }
-            @keyframes boseWaterfallUp { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(0, -50%, 0); } }
-            @keyframes boseWaterfallDown { 0% { transform: translate3d(0, -50%, 0); } 100% { transform: translate3d(0, 0, 0); } }
-            @keyframes boseExcellenceLoop { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-50%, 0, 0); } }
-            .animate-marquee { display: flex; width: max-content; animation: boseMarquee 25s linear infinite; will-change: transform; }
-            .waterfall-up { animation: boseWaterfallUp 40s linear infinite; will-change: transform; }
-            .waterfall-down { animation: boseWaterfallDown 40s linear infinite; will-change: transform; }
-            .bose-excellence-animate-loop { display: flex !important; width: max-content !important; direction: ltr !important; animation: boseExcellenceLoop 20s linear infinite !important; will-change: transform; }
+            body { font-family: 'Cairo', sans-serif !important; background-color: var(--bose-white) !important; color: var(--bose-black) !important; margin: 0; padding: 0; overflow-x: hidden; }
+            h1, h2 { font-family: 'Cairo', sans-serif !important; font-weight: 700 !important; color: var(--bose-black) !important; }
+            h3, h4, h5, h6 { font-family: 'Cairo', sans-serif !important; font-weight: 600 !important; color: var(--bose-black) !important; }
+            p, span, a, button, input, select, textarea { font-family: 'Cairo', sans-serif !important; }
         `;
         document.head.appendChild(styleElement);
     }
