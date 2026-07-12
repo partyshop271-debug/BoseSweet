@@ -1,5 +1,5 @@
 /* ==========================================================================
-   👑 BoseSweets Strict Production Global Stylesheet (css/global.css) V12.2 👑
+   👑 BoseSweets Strict Production Global Stylesheet (css/global.css) V12.5 👑
    الهوية البصرية الموحدة، الهيدر، الفوتر، والقائمة الجانبية وحوكمة خط Cairo
    امتثال كامل ومغلق لأدلة المواصفات - سد ثغرة التمويه وعزل الـ Overlays تماماً
    ========================================================================== */
@@ -278,10 +278,9 @@ img {
     direction: rtl;
     background: var(--bose-white) !important;
     position: relative;
-    z-index: 50002 !important; /* تأمين وضوح وحدة القائمة ومنع تمويه النصوص */
+    z-index: 5002 !important; /* تأمين وضوح وحدة القائمة ومنع تمويه النصوص */
 }
 
-/* الرأس الفاخر المطور باللون البمبي الموحد للعلامة التجارية لراحة العميل */
 .drawer-premium-header {
     padding: 30px 24px 20px 24px;
     background-color: var(--bose-pink) !important;
@@ -290,7 +289,6 @@ img {
 .drawer-premium-header h3 { font-size: 1.2rem; margin-bottom: 4px; color: var(--bose-white) !important; font-weight: 700 !important; }
 .drawer-premium-header p { font-size: 0.85rem; color: var(--bose-white) !important; font-weight: 600; opacity: 0.95; }
 
-/* زر الإغلاق ليتناسب مع الخلفية البمبية الجديدة */
 .drawer-close-btn {
     position: absolute;
     left: 20px; top: 28px;
@@ -303,10 +301,9 @@ img {
     transform: rotate(90deg);
 }
 
-/* حل حرج لمنع بتر القائمة الجانبية من الأسفل والسماح بالتمرير الكامل لآخر عنصر لوجستي */
 .drawer-links-scrollable {
     flex: 1;
-    overflow-y: auto; /* تمكين التمرير الداخلي المنفصل لراحة يد العميل ومحاربة الجمود البصري */
+    overflow-y: auto; 
     padding: 10px 0 20px 0;
     -webkit-overflow-scrolling: touch;
     display: flex;
@@ -424,12 +421,11 @@ img {
     font-size: 0.95rem;
 }
 
-/* تحسين تموضع وحركة كتلة الفوتر الفاخر داخل مجرى التمرير لضمان عدم حدوث بتر */
 .drawer-premium-footer-block {
     padding: 20px 24px 30px 24px;
-    border-top: 1px solid rgba(255, 145, 164, 0.1);
+    border-top: 1px solid rgba(255, 145, 164, 0.1;
     background: var(--bose-white);
-    margin-top: auto; /* دفع الفوتر لأسفل مسار التمرير لضمان التناسق واستقرار الارتفاع */
+    margin-top: auto; 
 }
 .drawer-support-call-btn {
     display: flex;
@@ -446,14 +442,13 @@ img {
     box-shadow: 0 4px 12px rgba(37, 211, 102, 0.2);
 }
 
-/* حل حرج لثغرة التمويه المسببة لشطب وغموض عناصر وقوائم التصفح */
 .drawer-overlay {
     position: fixed;
     top: 0; left: 0;
     width: 100vw; height: 100vh;
     background: rgba(17, 17, 17, 0.25) !important; 
     backdrop-filter: blur(4px);
-    z-index: 49990 !important; /* عزل هندسي صارم ومضمون يستقر تماماً خلف لوحة الـ Content لحماية وضوح الكلمات والعناوين */
+    z-index: 4999 !important; /* يستقر خلف لوحة الـ Content لحماية وضوح الكلمات والعناوين */
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.4s ease;
