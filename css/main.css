@@ -1,5 +1,5 @@
 /* ==========================================================================
-   👑 ملف التصميم المركزي للأقسام والمنيو - حلويات بوسي V12.0 Master 👑
+   👑 ملف التصميم المركزي للأقسام والمنيو - حلويات بوسي V13.0 Master 👑
    امتثال مطلق وأعمى للمقاسات الإلزامية الصارمة على جميع الشاشات والموبايل أولاً
    تطهير بصري كامل مع تفعيل كلاسات حركة الشلال وحظر أنصاف الكروت المقطوعة
    ========================================================================== */
@@ -123,7 +123,7 @@ body.bose-hardware-accelerated {
     display: flex;
     gap: 16px;
     width: 100%;
-    height: 700px; /* مقاس إلزامي بالمليم للموبايل لضمان عدم ظهور الفراغات البصرية */
+    height: 700px;
     overflow: hidden;
     position: relative;
     padding: 0 16px;
@@ -131,7 +131,7 @@ body.bose-hardware-accelerated {
 
 @media (min-width: 1024px) {
     .waterfall-container { 
-        height: 1000px; /* مقاس إلزامي بالمليم للكمبيوتر لملء الشاشة فخامة */
+        height: 1000px;
     }
 }
 
@@ -146,7 +146,7 @@ body.bose-hardware-accelerated {
     width: 100%;
     height: auto;
     min-height: 250px;
-    max-height: 320px; /* ضبط الحجم المرن حسب أبعاد الشاشة لمنع بتر الصور */
+    max-height: 320px;
     object-fit: cover !important;
     border-radius: 20px;
     border: var(--bose-border-pink);
@@ -154,8 +154,7 @@ body.bose-hardware-accelerated {
 }
 
 /* ==========================================================================
-   3. قسم "عقد من الإتقان" اللانهائي المطور (Excellence Smooth Loop)
-   🔒 محكوم ليتولى الجافا سكريبت إدارة الحركة تلقائياً وتطهير دالات التمرير الميتة
+   3. قسم "عقد من الإتقان" اللانهائي المطور (Excellence Smooth Layout)
    ========================================================================== */
 .bose-perfection-section {
     width: 100%;
@@ -165,40 +164,50 @@ body.bose-hardware-accelerated {
 }
 
 .bose-perfection-carousel-wrapper {
-    width: 100%;
-    overflow: hidden; 
-    display: flex;
-    padding: 10px 0;
+    width: 100% !important;
+    overflow: hidden !important; 
+    display: flex !important;
+    position: relative !important;
+    cursor: grab;
+    user-select: none;
+}
+
+.bose-perfection-carousel-wrapper:active {
+    cursor: grabbing;
 }
 
 #excellence-images-track {
     display: flex !important;
-    gap: 16px !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    gap: 0px !important; /* تلاصق تام لمنع الفراغات البصرية لراحة عين العميل */
     width: max-content !important;
-    will-change: transform;
+    pointer-events: auto !important; /* السماح المطلق بالسحب والتحريك اليدوي */
 }
 
 .perfection-slide-node {
-    width: 280px !important;
-    display: block;
+    width: 280px !important; /* مقاس كارت الموبايل الصارم */
+    flex-shrink: 0 !important;
+    display: block !important;
+    padding: 0 4px;
 }
 
 .perfection-slide-node img {
     width: 100% !important;
-    height: 220px;
-    border-radius: 24px;
+    height: 220px !important;
+    border-radius: 24px !important;
     border: var(--bose-border-pink);
     display: block;
 }
 
 @media (min-width: 768px) {
     .perfection-slide-node { width: 340px !important; }
-    .perfection-slide-node img { height: 300px; }
+    .perfection-slide-node img { height: 300px !important; }
 }
 
 @media (min-width: 1024px) {
     .perfection-slide-node { width: 420px !important; }
-    .perfection-slide-node img { height: 380px; }
+    .perfection-slide-node img { height: 380px !important; }
 }
 
 /* ==========================================================================
@@ -243,7 +252,6 @@ body.bose-hardware-accelerated {
     margin-top: 5px;
 }
 
-/* التوزيع الشبكي المتماثل والملتزم بالحوكمة ومنع أنصاف الكروت */
 .products-grid, .bose-products-grid {
     display: grid !important;
     grid-template-columns: repeat(4, 1fr) !important;
@@ -256,7 +264,6 @@ body.bose-hardware-accelerated {
 }
 
 @media (max-width: 767px) {
-    /* كروت الأقسام المتوازنة الثنائية في قسم منتجاتنا لمنع تشويه وتداخل الكروت */
     #our-products-grid.products-grid {
         display: grid !important;
         grid-template-columns: repeat(2, 1fr) !important; 
@@ -270,7 +277,6 @@ body.bose-hardware-accelerated {
         flex-shrink: 1 !important;
     }
 
-    /* تحويل السلايدرات في الموبايل للأكثر مبيعاً ووصل حديثاً إلى التمرير الأصلي المتوازن للسحب السلس اللحظي بـ CSS */
     .bose-most-selling-grid-slider,
     .bose-new-arrivals-grid-slider {
         display: flex !important;
@@ -285,7 +291,7 @@ body.bose-hardware-accelerated {
     
     .bose-most-selling-grid-slider .product-card-unified,
     .bose-new-arrivals-grid-slider .product-card-unified {
-        width: 85vw !important; /* عرض كارت الأكثر مبيعاً ووصل حديثاً الإلزامي بالموبايل */
+        width: 85vw !important;
         flex-shrink: 0 !important; 
         scroll-snap-align: center !important; 
     }
@@ -293,7 +299,7 @@ body.bose-hardware-accelerated {
 
 .product-card-unified {
     width: 100%;
-    height: auto; /* ارتفاع مرن متوافق مع طول النصوص لمنع الـ Overflow المسبب للمشاكل */
+    height: auto;
     background-color: var(--bose-white) !important;
     border: var(--bose-border-pink) !important;
     border-radius: 20px !important;
@@ -311,7 +317,7 @@ body.bose-hardware-accelerated {
 
 .product-card-img {
     width: 100%;
-    height: 220px; /* مقاس الصورة الصارم بالمليم للموبايل */
+    height: 220px;
     aspect-ratio: 1 / 1;
     border-radius: 20px;
     display: block;
@@ -320,12 +326,10 @@ body.bose-hardware-accelerated {
 }
 
 @media (min-width: 768px) { 
-    .product-card-img { height: 260px; } /* مقاس الصورة الصارم بالمليم للتابلت */
+    .product-card-img { height: 260px; }
 }
 @media (min-width: 1024px) { 
-    .product-card-img { height: 320px; } /* مقاس الصورة الصارم بالمليم للكمبيوتر */
-    
-    /* عرض كارت الأكثر مبيعاً ووصل حديثاً الثابت في الكمبيوتر لمنع التمدد البصري الزائف */
+    .product-card-img { height: 320px; }
     .bose-most-selling-grid-slider .product-card-unified,
     .bose-new-arrivals-grid-slider .product-card-unified {
         width: 380px !important;
@@ -356,9 +360,9 @@ body.bose-hardware-accelerated {
     align-items: center;
     justify-content: center;
     gap: 12px;
-    margin-top: auto; /* دفع العداد وزر الشراء لأسفل الكارت دائماً لتوحيد المحاذاة */
+    margin-top: auto;
     margin-bottom: 12px;
-    direction: ltr; /* ترتيب العداد العالمي: يمين +، وسط عدد، يسار - */
+    direction: ltr;
 }
 .btn-qty-plus, .btn-qty-minus {
     background-color: var(--bose-white);
@@ -442,7 +446,7 @@ body.bose-hardware-accelerated {
     position: relative;
     overflow: hidden;
     box-shadow: var(--bose-shadow-glow);
-    height: 600px !important; /* مقاس إلزامي لكتلة المحاكي بالموبايل لمنع انهيار العناصر */
+    height: 600px !important;
     background-color: var(--bose-white);
     border: var(--bose-border-pink);
     box-sizing: border-box;
@@ -488,7 +492,7 @@ body.bose-hardware-accelerated {
 
 @media (min-width: 1024px) {
     .preview-builder-block {
-        height: 750px !important; /* مقاس إلزامي لكتلة المحاكي بالكمبيوتر للوضوح الفاخر */
+        height: 750px !important;
         max-width: 1200px;
         margin: 40px auto;
         width: 100%;
@@ -525,7 +529,6 @@ body.bose-hardware-accelerated {
     display: flex !important;
     gap: 16px !important;
     width: max-content !important;
-    will-change: transform;
 }
 
 .bose-category-slider-card {
@@ -540,8 +543,6 @@ body.bose-hardware-accelerated {
     transition: 0.3s ease;
     flex-shrink: 0 !important; 
     scroll-snap-align: center !important;
-    
-    /* أبعاد كارت الفئة الإلزامية بالموبايل (أكبر بنسبة 30% لإعطاء وزن بصري) */
     width: 280px !important;
     height: 360px !important;
 }
@@ -558,11 +559,10 @@ body.bose-hardware-accelerated {
     padding-bottom: 15px;
     text-align: center;
     font-size: 20px !important; 
-    font-weight: 700 !important; /* قفل وزن خط عنوان الفئة عند 700 كحد أقصى لمنع التشويه البصري */
+    font-weight: 700 !important;
 }
 
 @media (min-width: 768px) {
-    /* أبعاد كارت الفئة الإلزامية بالتابلت */
     .bose-category-slider-card {
         width: 340px !important;
         height: 430px !important;
@@ -571,7 +571,6 @@ body.bose-hardware-accelerated {
 }
 
 @media (min-width: 1024px) {
-    /* أبعاد كارت الفئة الإلزامية بالكمبيوتر */
     .bose-category-slider-card {
         width: 420px !important;
         height: 520px !important;
@@ -610,7 +609,7 @@ body.bose-hardware-accelerated {
     background-color: var(--bose-white);
     border-top: 1px solid rgba(255, 145, 164, 0.15);
     border-bottom: 1px solid rgba(255, 145, 164, 0.15);
-    min-height: 550px !important; /* الحد الأدنى لإرتفاع الحاوية بالموبايل لمنع تداخل العناصر */
+    min-height: 550px !important;
     box-sizing: border-box;
 }
 
@@ -682,7 +681,7 @@ body.bose-hardware-accelerated {
 
 @media (min-width: 1024px) {
     .bose-pride-statistics-section { 
-        min-height: 700px !important; /* الحد الأدنى لإرتفاع الحاوية بالكمبيوتر للأداء المستقر */
+        min-height: 700px !important;
     }
     .bose-pride-container {
         display: grid;
@@ -698,7 +697,7 @@ body.bose-hardware-accelerated {
    ========================================================================== */
 .menu-categories-grid-framework {
     display: grid !important;
-    grid-template-columns: 1fr !important; /* كارت واحد كامل ومريح بكل صف على الموبايل لمنع التكدس */
+    grid-template-columns: 1fr !important;
     gap: 24px !important;
     width: 100%;
     padding: 20px 0;
@@ -711,7 +710,7 @@ body.bose-hardware-accelerated {
     border-radius: 20px;
     padding: 16px;
     box-shadow: var(--bose-shadow-glow);
-    height: 360px !important; /* أبعاد الكارت الثابتة بالموبايل امتثالاً للمواصفات */
+    height: 360px !important;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -734,48 +733,20 @@ body.bose-hardware-accelerated {
 
 @media (min-width: 768px) {
     .menu-categories-grid-framework { 
-        grid-template-columns: repeat(2, 1fr) !important; /* كارتان متكاملان بكل صف على التابلت */
+        grid-template-columns: repeat(2, 1fr) !important;
     } 
     .menu-category-card { 
-        height: 420px !important; /* أبعاد الكارت الثابتة بالتابلت */
+        height: 420px !important;
     }
     .menu-category-card img { height: 330px !important; }
 }
 
 @media (min-width: 1024px) {
     .menu-categories-grid-framework { 
-        grid-template-columns: repeat(3, 1fr) !important; /* 3 كروت متناسقة بكل صف على الكمبيوتر للتنفس البصري الكامل */
+        grid-template-columns: repeat(3, 1fr) !important;
     } 
     .menu-category-card { 
-        height: 520px !important; /* أبعاد الكارت الثابتة بالكمبيوتر */
+        height: 520px !important;
     }
     .menu-category-card img { height: 420px !important; }
-}
-/* ==========================================================================
-   🔒 صمام أمان قياسي لمنع اختفاء صور عقد من الإتقان والشريط العلوي 🔒
-   ========================================================================== */
-#excellence-images-track, 
-#top-bar-marquee-track {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    width: max-content !important;
-}
-
-.perfection-slide-node {
-    width: 280px !important;
-    flex-shrink: 0 !important;
-    display: block !important;
-}
-
-@media (min-width: 768px) {
-    .perfection-slide-node { width: 340px !important; }
-}
-
-@media (min-width: 1024px) {
-    .perfection-slide-node { width: 420px !important; }
-}
-
-.bose-excellence-animate-loop {
-    animation: boseExcellenceLoop 20s linear infinite !important;
 }
