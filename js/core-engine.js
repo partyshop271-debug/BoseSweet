@@ -1,5 +1,5 @@
 /**
- * 👑 ملف المحرك المركزي العالمي المصحح والمطور بالكامل V12.9 - حلويات بوسي 2026 👑
+ * 👑 ملف المحرك المركزي العالمي المصحح والمطور بالكامل V13.0 - حلويات بوسي 2026 👑
  * حوكمة كاملة لواجهات الشريط العلوي، القائمة الجانبية المتطورة، والفوتر الموحد ومنع تداخل الملفات
  * القضاء التام والنهائي على ثغرة بتر القائمة الجانبية وضمان التمرير الكامل لآخر عنصر لوجستي
  * المسؤول الوحيد والمطلق عن التحكم في حركة وسرعة وتكرار وضخ نصوص الشريط العلوي وقسم "عقد من الإتقان"
@@ -7,13 +7,9 @@
  * [تطهير بصري]: إنهاء ثغرة اختفاء وميض قسم "عقد من الإتقان" وجعل الصور متصلة تماماً وتملأ كامل الحيز البصري بلا فواصل.
  */
 (function() {
-    // محددات الحالة المركزية المعزولة بأمان
     window.BoseStoreData = null; 
-    window.boseServerTimeOffset = 0; // فارق التوقيت بالمللي ثانية: (وقت الخادم - وقت جهاز العميل)
+    window.boseServerTimeOffset = 0;
 
-    // ==========================================
-    // 1. موديول إدارة قاعدة البيانات والتمهيد وحراس الأمان
-    // ==========================================
     async function loadStoreDatabase() {
         if (window.BoseStoreData) return;
         let retries = 5;
@@ -41,7 +37,6 @@
                     
                     window.BoseStoreData = await response.json();
                     
-                    // استدعاء موديولات البناء الداخلي بالتتابع الهندسي الصارم والمقدس
                     injectEarlyDependencies();
                     renderUniversalHeader();
                     renderUniversalSidebar();
@@ -51,7 +46,6 @@
                     window.updateGlobalCartCounter();
                     renderBoseDynamicContent();
                     
-                    // إطلاق حدث الاعتماد الآمن لحراس ومحركات الموقع ومنع التصادم البرمجي
                     document.dispatchEvent(new CustomEvent('BoseDatabaseLoaded', { detail: window.BoseStoreData }));
                     
                     if (typeof window.onBoseDatabaseReadyWrapper === "function") {
@@ -73,9 +67,6 @@
         }
     }
 
-    // ==========================================
-    // 2. موديول حقن الهيدر والشريط العلوي المقدس
-    // ==========================================
     function renderUniversalHeader() {
         let headerInjector = document.getElementById('bose-header-injector');
         if (!headerInjector) return; 
@@ -118,9 +109,6 @@
         `;
     }
 
-    // ==========================================
-    // 3. موديول القائمة الجانبية التفاعلية المتطورة والحل الجذري لمشكلة البتر السفلي التوجيهي
-    // ==========================================
     function renderUniversalSidebar() {
         let sidebarPanel = document.getElementById('sidebar-drawer');
         if (sidebarPanel) sidebarPanel.remove(); 
@@ -265,9 +253,6 @@
         `;
     };
 
-    // ==========================================
-    // 4. موديول حقن الفوتر الرسمي الموحد بلونه الفاتح لخلق تنفس بصري
-    // ==========================================
     function renderUniversalFooter() {
         let footerInjector = document.getElementById('bose-footer-injector');
         if (!footerInjector) return;
@@ -320,14 +305,10 @@
         `;
     }
 
-    // ==========================================
-    // 5. موديول حقن المحتوى الديناميكي وحركات الـ JavaScript (تحكم مركزي صارم وعزل اللمس)
-    // ==========================================
     function renderBoseDynamicContent() {
         const data = window.BoseStoreData;
         if (!data) return;
 
-        // حل حرج: بناء ومضاعفة التراك متزناً بالتوافق التام مع هندسة حركة الـ CSS لتفادي الاختفاء المفاجئ للأبد
         const tickerTrack = document.getElementById('top-bar-marquee-track');
         if (tickerTrack && data.navigation.topBarMessages) {
             let messagesHtml = data.navigation.topBarMessages.map(msg => `
@@ -356,13 +337,11 @@
         if (excellenceTitle) excellenceTitle.textContent = data.homepage.excellence.title;
         if (excellenceDesc) excellenceDesc.textContent = data.homepage.excellence.description;
         
-        // [حل الخلل من الجذور لقسم عقد من الإتقان]: تكرار تكميلي مالي لكامل الحيز الأفقي ومنع وميض الاختفاء
         if (excellenceTrack && data.homepage.excellence.images) {
             let imagesHtml = data.homepage.excellence.images.map(img => `
                 <a href="menu.html" class="perfection-slide-node"><img src="${img}" alt="إتقان حلويات بوسي" loading="lazy"></a>
             `).join('');
             
-            // تجميع وتكثيف الصور لملء المسافة وضمان اتصال كامل 100% بدون أي فواصل مرئية أو فراغات
             let infiniteExcellenceHtml = '';
             for (let i = 0; i < 15; i++) {
                 infiniteExcellenceHtml += imagesHtml;
@@ -370,16 +349,15 @@
             excellenceTrack.innerHTML = infiniteExcellenceHtml;
 
             excellenceTrack.style.display = 'flex';
-            excellenceTrack.style.gap = '0px'; // إلغاء الفواصل للحفاظ على ملمس تلاحمي فاخر
+            excellenceTrack.style.gap = '0px'; 
             excellenceTrack.style.width = 'max-content';
             
             let currentX = 0;
-            const scrollSpeed = 1.2; // سرعة دوران مريحة لراحة يد وعين العميل
+            const scrollSpeed = 1.2; 
             let animationFrameId = null;
             
             function animateExcellenceLoop() {
                 currentX -= scrollSpeed;
-                // ضبط نقطة العودة الهندسية للمحرك عند انتهاء نصف التراك بالضبط لضمان تيار دوران مستمر طول الوقت
                 if (Math.abs(currentX) >= (excellenceTrack.scrollWidth / 2)) {
                     currentX = 0;
                 }
@@ -494,9 +472,6 @@
         }
     }
 
-    // ==========================================
-    // 6. موديول إدارة وتفعيل العدادات التصاعدية الذكية من الـ JSON الصريح
-    // ==========================================
     function initializeBosePrideCounters(statsConfig) {
         if (!statsConfig) return;
         
@@ -534,9 +509,6 @@
         });
     }
 
-    // ==========================================
-    // 7. موديول إدارة وتوجيه السلايدرات اللمسية والتلقائية (المحصورة بالأقسام المتوافقة)
-    // ==========================================
     function initializeBoseSliderLogic(sliderTrack, dotsContainerId, isAutoPlay = false, isCategoryType = false) {
         if (!sliderTrack) return;
         
@@ -620,9 +592,6 @@
         });
     }
 
-    // ==========================================
-    // 8. موديول Operations المالية والفحص الشامل وإدارة الحسابات التأسيسية
-    // ==========================================
     window.calculateBosePrice = function(basePrice, applyOnContext = "menu-only") {
         if (!window.BoseStoreData) return basePrice;
         const rule = window.BoseStoreData.store.priceIncrease;
@@ -938,7 +907,7 @@
             
             @keyframes boseMarquee { 
                 0% { transform: translate3d(0, 0, 0); } 
-                100% { transform: translate3d(-50%, 0, 0); } 
+                100% { transform: translate3d(50%, 0, 0); } 
             }
             @keyframes boseWaterfallUp { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(0, -50%, 0); } }
             @keyframes boseWaterfallDown { 0% { transform: translate3d(0, -50%, 0); } 100% { transform: translate3d(0, 0, 0); } }
