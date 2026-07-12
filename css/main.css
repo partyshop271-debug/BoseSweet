@@ -1,5 +1,5 @@
 /* ==========================================================================
-   👑 ملف التصميم المركزي للأقسام والمنيو - حلويات بوسي V13.0 Master 👑
+   👑 ملف التصميم المركزي للأقسام والمنيو - حلويات بوسي V13.5 Master 👑
    امتثال مطلق وأعمى للمقاسات الإلزامية الصارمة على جميع الشاشات والموبايل أولاً
    تطهير بصري كامل مع تفعيل كلاسات حركة الشلال وحظر أنصاف الكروت المقطوعة
    ========================================================================== */
@@ -163,7 +163,7 @@ body.bose-hardware-accelerated {
     overflow: hidden;
 }
 
-/* 👑 تعديل وحوكمة أبعاد حاوية السلايدر لمنع خروج أو وميض العناصر بصرياً */
+/* 👑 قتل التصفح اليدوي تماماً وعزل السكرول لتحقيق الانسيابية الدائرية التلقائية */
 .bose-perfection-carousel-wrapper {
     width: 100% !important;
     overflow: hidden !important; 
@@ -173,7 +173,7 @@ body.bose-hardware-accelerated {
     margin: 0 !important;
 }
 
-/* 👑 تعديل مسار تدوير الصور: فجوة صفرية وهوامش معدومة تماماً للحام دائم ومستمر */
+/* 👑 إجبار مسار تدوير الصور على لحام صفري صارم وإلغاء أي فواصل بصرياً */
 #excellence-images-track {
     display: inline-flex !important; 
     flex-direction: row !important;
@@ -183,10 +183,10 @@ body.bose-hardware-accelerated {
     margin: 0 !important;
 }
 
-/* 👑 فرض المقاسات الإلزامية الصارمة لصور الإتقان وتكبيرها لمنع البتر */
+/* 👑 حوكمة المقاسات الإلزامية الصارمة: 100vw كامل العرض وارتفاع 340px إلزامي على الموبايل */
 .perfection-slide-node {
-    width: 100vw !important; /* ملء كامل الشاشة على الموبايل لمنع المساحات البيضاء */
-    height: 340px !important; /* الارتفاع الإلزامي الرسمي للمشاهدة المريحة */
+    width: 100vw !important; 
+    height: 340px !important; 
     flex-shrink: 0 !important;
     display: block !important;
     padding: 0 !important; 
@@ -196,29 +196,39 @@ body.bose-hardware-accelerated {
 .perfection-slide-node img {
     width: 100% !important;
     height: 100% !important; 
-    border-radius: 0px !important; /* حواف حادة لضمان اتصال شلال الصور ببعضها */
+    border-radius: 0px !important; 
     border: none !important; 
     object-fit: cover !important;
     display: block;
 }
 
+/* 👑 الالتفاف المرن الفخم مع الشاشات والكمبيوتر الملوكي لعرض الـ 3 صور الكبار ملتحمين */
 @media (min-width: 768px) {
     .perfection-slide-node { 
         width: 50vw !important; 
+        height: 520px !important;
     }
     .perfection-slide-node img { 
-        height: 520px !important; 
+        height: 100% !important; 
     }
 }
 
-/* 👑 التجاوب المرن الفخم مع أجهزة الكمبيوتر الملوكي وعرض الـ 3 صور معاً بدقة */
 @media (min-width: 1024px) {
     .perfection-slide-node { 
         width: 33.333vw !important; 
+        height: 520px !important;
     }
     .perfection-slide-node img { 
-        height: 520px !important; 
+        height: 100% !important; 
     }
+}
+
+/* 👑 حظر وعزل مؤشرات التصفح النقطية تماماً لمنع تعطيل الانسيابية البصرية المفتوحة */
+#excellence-dots, .bose-perfection-section .bose-dots-container {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
 }
 
 /* ==========================================================================
@@ -760,4 +770,24 @@ body.bose-hardware-accelerated {
         height: 520px !important;
     }
     .menu-category-card img { height: 420px !important; }
+}
+
+/* ==========================================================================
+   9. حوكمة وإعادة صياغة أنميشن الدوران الملوكي لمنع وميض أو بتر النصوص
+   ========================================================================== */
+@keyframes boseMarquee {
+    0% {
+        transform: translate3d(0, 0, 0);
+    }
+    100% {
+        transform: translate3d(-50%, 0, 0); /* قفزة ملي ثانية صفرية آمنة دون مساحات فارغة */
+    }
+}
+
+.animate-marquee {
+    display: flex !important;
+    width: max-content !important;
+    animation: boseMarquee 25s linear infinite !important;
+    will-change: transform;
+    white-space: nowrap !important; /* عزل ومنع الـ Text Overflow نهائياً */
 }
