@@ -1,5 +1,5 @@
 /* ==========================================================================
-   👑 ملف التصميم المركزي للأقسام والمنيو - حلويات بوسي V23.0 Master 👑
+   👑 ملف التصميم المركزي للأقسام والمنيو - حلويات بوسي V24.0 Master 👑
    امتثال مطلق وأعمى للمقاسات الإلزامية الصارمة على جميع الشاشات والموبايل أولاً
    تطهير بصري كامل مع تفعيل كلاسات حركة الشلال وحظر أنصاف الكروت المقطوعة
    حل جذري ونهائي لخلل مسار الدوران لقسم عقد من الإتقان وشريط الإعلانات
@@ -159,7 +159,7 @@ body.bose-hardware-accelerated {
    ========================================================================== */
 .bose-perfection-section {
     width: 100%;
-    padding: 40px 0;
+    padding: 40px 0 20px 0;
     background-color: var(--bose-white);
     overflow: hidden;
 }
@@ -172,7 +172,6 @@ body.bose-hardware-accelerated {
     position: relative !important;
     padding: 0 !important;
     margin: 0 !important;
-    pointer-events: none; /* حظر التدخل اليدوي لضمان ثبات الحركة الدائرية */
 }
 
 /* 👑 إجبار مسار تدوير الصور على لحام صفري صارم وإلغاء أي فواصل بصرياً لراحة العين */
@@ -184,13 +183,12 @@ body.bose-hardware-accelerated {
     padding: 0 !important;
     margin: 0 !important;
     will-change: transform;
-    animation: boseMarquee 30s linear infinite !important; /* ربط مباشر بالأنميشن الدائري */
 }
 
-/* 👑 حوكمة المقاسات القياسية الملتزمة: تملأ العرض بالكامل وارتفاع 340px إلزامي على الموبايل */
+/* 👑 حوكمة المقاسات القياسية الملتزمة: تملأ العرض بالكامل وارتفاع 340px إلزامي على الموبايل لتظهر الصور ضخمة وفخمة */
 .perfection-slide-node {
     width: 100vw !important; 
-    height: 340px !important; 
+    height: 400px !important; /* رفع الحجم لتطابق الفخامة القياسية الكبيرة وملء الشاشة */
     flex-shrink: 0 !important;
     display: block !important;
     padding: 0 !important; 
@@ -206,22 +204,22 @@ body.bose-hardware-accelerated {
     display: block !important;
 }
 
-/* 👑 الالتفاف المرن المتوازن مع شاشات التابلت والكمبيوتر الملوكي لعرض الصور كاملة ملتحمة */
+/* 👑 التوزيع الموازن مع شاشات التابلت والكمبيوتر الملوكي لعرض الصور كاملة ملتحمة وبحجم جبار */
 @media (min-width: 768px) {
     .perfection-slide-node { 
         width: 50vw !important; 
-        height: 520px !important;
+        height: 550px !important;
     }
 }
 
 @media (min-width: 1024px) {
     .perfection-slide-node { 
         width: 33.333vw !important; 
-        height: 520px !important;
+        height: 600px !important;
     }
 }
 
-/* 👑 حظر وعزل مؤشرات التصفح النقطية تماماً لمنع حدوث أي فراغات بصرية */
+/* 👑 حظر وعزل مؤشرات التصفح النقطية تماماً لمنع حدوث أي فراغات بصرية وتثبيت الدوران التلقائي */
 #excellence-dots, .bose-perfection-section .bose-dots-container {
     display: none !important;
     visibility: hidden !important;
