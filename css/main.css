@@ -154,7 +154,7 @@ body.bose-hardware-accelerated {
 }
 
 /* ==========================================================================
-   3. قسم "عقد من الإتقان" اللانهائي المطور (إصلاح الفواصل والأبعاد كلياً)
+   3. قسم "عقد من الإتقان" اللانهائي المطور (إصلاح الفواصل والأبعاد كلياً)[span_2](start_span)[span_2](end_span)
    ========================================================================== */
 .bose-perfection-section {
     width: 100%;
@@ -173,16 +173,17 @@ body.bose-hardware-accelerated {
 }
 
 #excellence-images-track {
-    display: flex !important;
+    display: inline-flex !important; /* إجبار الحاوية على تبني نمط التدفق الأفقي المباشر */
     flex-direction: row !important;
     flex-wrap: nowrap !important;
-    gap: 0px !important; /* تلاصق مطلق وصارم لمنع الفواصل البصرية نهائياً */
+    gap: 0px !important; /* تلاصق مطلق وصارم لمنع الفواصل البصرية نهائياً بالملي */
     padding: 0 !important;
     margin: 0 !important;
 }
 
 .perfection-slide-node {
-    width: 100vw !important; /* ملء العرض الكامل المتاح على شاشات الموبايل بمرونة تامة */
+    width: 100vw !important; /* ملء العرض الكامل المتاح على شاشات الموبايل أولاً */
+    height: 340px !important; /* الارتفاع الإلزامي الصارم لمنع بتر النصوص أو الصور */
     flex-shrink: 0 !important;
     display: block !important;
     padding: 0 !important; /* عزل وهوامش صفرية مطلقة للاتصال التام */
@@ -191,21 +192,29 @@ body.bose-hardware-accelerated {
 
 .perfection-slide-node img {
     width: 100% !important;
-    height: 340px !important; /* الحجم الاحترافي المطور للموبايل لضمان عدم البتر ووضوح التفاصيل */
+    height: 100% !important; 
     border-radius: 0px !important; /* إلغاء الحواف الدائرية هنا لضمان لحام الصور كشلال واحد متصل */
-    border: none !important;
+    border: none !important; /* إزالة الحدود لمنع الثغرات البصرية تماماً */
     object-fit: cover !important;
     display: block;
 }
 
 @media (min-width: 768px) {
-    .perfection-slide-node { width: 50vw !important; }
-    .perfection-slide-node img { height: 400px !important; }
+    .perfection-slide-node { 
+        width: 50vw !important; /* التجاوب البرمجي الاحترافي لشاشات التابلت */
+    }
+    .perfection-slide-node img { 
+        height: 520px !important; /* رفع الارتفاع بالتناسب الفخم العريض للتابلت */
+    }
 }
 
 @media (min-width: 1024px) {
-    .perfection-slide-node { width: 33.333vw !important; }
-    .perfection-slide-node img { height: 520px !important; }
+    .perfection-slide-node { 
+        width: 33.333vw !important; /* التجاوب البرمجي الاحترافي لشاشات الكمبيوتر واللابتوب */
+    }
+    .perfection-slide-node img { 
+        height: 520px !important; /* الحفاظ على الارتفاع العريض المليء بالروقان النفسي والفخامة */
+    }
 }
 
 /* ==========================================================================
