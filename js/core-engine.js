@@ -339,9 +339,10 @@
             
             /* تصميم الهيدر والـ Top Bar والمكونات المشتركة الفاخرة */
             .bose-top-bar-marquee-container { background-color: var(--bose-pink); color: var(--bose-white); overflow: hidden; padding: 10px 0; font-size: 14px; font-weight: 600; white-space: nowrap; direction: rtl; position: relative; z-index: 45000; }
-            .bose-top-bar-marquee-track { display: flex; width: max-content; animation: boseMarqueeReverse 30s linear infinite; }
+            /* تم عكس حركة الاتجاه من اليسار لليمين بانتظام كامل وبدون فراغات */
+            .bose-top-bar-marquee-track { display: flex; width: max-content; animation: boseMarqueeNormal 30s linear infinite; }
             .bose-marquee-item { padding: 0 40px; direction: rtl; display: inline-block; color: #FFFFFF !important; }
-            @keyframes boseMarqueeReverse { 0% { transform: translate3d(-50%, 0, 0); } 100% { transform: translate3d(0, 0, 0); } }
+            @keyframes boseMarqueeNormal { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-50%, 0, 0); } }
 
             .bose-sticky-header { position: sticky; top: 0; z-index: 39999; background-color: var(--bose-white); border-bottom: var(--bose-border-pink); box-shadow: var(--bose-shadow-glow); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; transition: all 0.3s ease; }
             .header-right-side, .header-left-side { display: flex; align-items: center; gap: 15px; }
@@ -645,7 +646,7 @@
     }
 
     /**
-     * 12. محرك تهيئة قسم عقد من الإتقان بالحركة التلقائية اللانهائية وبدون فواصل
+     * 12. محرك تهيئة قسم عقد من الإتقان بالحركة التلقائية اللانهائية وبدون فواصل برمجية
      */
     window.initializeExcellenceSectionSlider = function() {
         const track = document.getElementById('excellence-images-track');
@@ -663,9 +664,10 @@
             `;
         });
         
-        track.innerHTML = imagesHtml + imagesHtml; // تكرار مضاعف صريح لتأمين الحركة الدائرية المانعة للفراغات البصرية
+        // تكرار مضاعف صريح لتأمين الحركة الدائرية المانعة للفراغات البصرية نهائياً
+        track.innerHTML = imagesHtml + imagesHtml; 
         
-        // بناء التحكم النقطي (Dots) المطابق لعدد كروت المنتجات الأصلي
+        // بناء التحكم النقطي (Dots) المطابق لعدد كروت الصور الأصلي في هذا القسم
         const dotsContainer = document.getElementById('excellence-dots-container');
         if (dotsContainer) {
             dotsContainer.innerHTML = config.images.map((_, index) => `
@@ -685,7 +687,7 @@
         let items = Array.from(track.children);
         if (items.length === 0) return;
 
-        // بناء النقاط بشكل ديناميكي كامل
+        // بناء النقاط بشكل ديناميكي كامل بعدد كروت هذا القسم
         if (dotsContainer) {
             dotsContainer.innerHTML = items.map((_, index) => `
                 <span class="bose-dot-node ${index === 0 ? 'active' : ''}" data-index="${index}"></span>
@@ -706,7 +708,7 @@
             });
         });
 
-        // ربط أحداث النقر على النقاط للتوجه المباشر
+        // ربط أحداث النقر على النقاط للتوجه المباشر والاستجابة للحركة
         dots.forEach(dot => {
             dot.addEventListener('click', (e) => {
                 const targetIndex = parseInt(e.target.getAttribute('data-index'), 10);
@@ -716,7 +718,7 @@
             });
         });
 
-        // تفعيل أزرار الأسهم إن وجدت (خاص بقسم الفئات)
+        // تفعيل أزرار الأسهم إن وجدت (خاص بقسم الفئات والتحكم الذكي)
         const prevBtn = arrowPrevId ? document.getElementById(arrowPrevId) : null;
         const nextBtn = arrowNextId ? document.getElementById(arrowNextId) : null;
 
@@ -797,7 +799,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 html += buildProductCardHTML(p);
             });
             mostSellingGrid.innerHTML = html;
-            // تفعيل وظيفة السلايدر التفاعلي بالنقاط والسحب الجانبي
+            // تهيئة السلايدر التفاعلي الصارم بالنقاط والسحب الجانبي لقسم الأكثر مبيعاً
             window.setupBoseInteractiveSlider('most-selling-grid', 'most-selling-dots-container');
         }
 
@@ -809,6 +811,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 html += buildProductCardHTML(p);
             });
             newArrivalsGrid.innerHTML = html;
+            // تهيئة السلايدر التفاعلي الصارم بالنقاط والسحب الجانبي لقسم وصل حديثاً
             window.setupBoseInteractiveSlider('new-arrivals-grid', 'new-arrivals-dots-container');
         }
 
@@ -816,7 +819,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const ourProductsGrid = document.getElementById('our-products-grid');
         if (ourProductsGrid) {
             const allOurProducts = data.products.filter(p => data.homepage.ourProducts.includes(p.id));
-            // عرض أول 4 منتجات فقط التزاماً بالتنفس البصري والراحة النفسية
             let initialProducts = allOurProducts.slice(0, 4);
             ourProductsGrid.innerHTML = initialProducts.map(p => buildProductCardHTML(p)).join('');
 
@@ -826,7 +828,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     let remainingProducts = allOurProducts.slice(4);
                     let extraHtml = remainingProducts.map(p => buildProductCardHTML(p)).join('');
                     ourProductsGrid.insertAdjacentHTML('beforeend', extraHtml);
-                    showMoreBtn.style.display = 'none'; // إخفاء الزر بعد الاكتمال لـ 8 كروت كاملة
+                    showMoreBtn.style.display = 'none';
                 });
             }
         }
