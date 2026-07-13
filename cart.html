@@ -8,7 +8,7 @@
     <meta name="description" content="راجع منتجاتك وأصنافك المفضلة وتورتك المصممة بحب عبر سلة المشتريات الذكية لحلويات بوسي قبل تأكيد الطلب السريع.">
     <meta name="keywords" content="سلة التسوق, حلويات بوسي, مراجعة الطلب, تورت مخصصة, الفرافرة, الكفاح">
     
-    <!-- استدعاء ملفات التنسيق القياسية لضمان وحدة الهوية البصرية -->
+    <!-- الأصول والتصاميم الموزعة والجاهزة بالموقع -->
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/cart-checkout.css">
@@ -20,59 +20,54 @@
             font-family: 'Cairo', sans-serif !important;
             background-color: #FFFFFF !important;
             color: #111111 !important;
+            margin: 0;
+            padding: 0;
         }
 
-        .bose-drawer-menu, #sidebar-drawer {
-            z-index: 1000500 !important;
-        }
-        .drawer-overlay, #drawer-shield {
-            z-index: 1000100 !important;
-        }
-        
-        /* 🔄 هندسة مجرى الحركة الأفقي للمقترحات الذكية لمنع التراص البصري */
+        /* 🔄 هندسة مجرى الحركة الأفقي للمقترحات الذكية لمنع التراص البصري وثبات الأبعاد */
         .bose-cart-horizontal-slider {
             display: flex !important;
             flex-direction: row !important;
             flex-wrap: nowrap !important;
             overflow-x: auto !important;
             gap: 24px;
-            padding: 20px 8px 32px 8px;
+            padding: 24px 8px 32px 8px;
             width: 100%;
             box-sizing: border-box;
-            scrollbar-width: none !important; /* إخفاء شريط التمرير لمتصفحات ديسكتوب */
+            scrollbar-width: none !important;
             -ms-overflow-style: none !important;
-            -webkit-overflow-scrolling: touch !important; /* تفعيل السحب الحر بصباع العميل على الموبايل */
+            -webkit-overflow-scrolling: touch !important; /* سحب سلس حر بصباع العميل على الموبايل */
             scroll-snap-type: x mandatory;
         }
         .bose-cart-horizontal-slider::-webkit-scrollbar {
-            display: none !important; /* إخفاء متقدم لمتصفحات سياق الموبايل */
+            display: none !important;
         }
 
-        /* 👑 كارت المنتج المقترح الفاخر والجذاب 👑 */
+        /* كارت المقترحات الذكية الفاخر والمنعزل بصرياً */
         .bose-cart-horizontal-slider .bose-suggestion-micro-card {
-            flex: 0 0 300px !important; /* مساحة عرض سخية تمنع انكماش الكارت */
+            flex: 0 0 300px !important;
             width: 300px !important;
             max-width: 300px !important;
             box-sizing: border-box !important;
             scroll-snap-align: start;
-            background: #FFFFFF !important; /* بياض ناصع مريح للعين */
-            border: 2px solid #FF91A4 !important; /* نبض الحياة في حدود المنتج */
+            background: #FFFFFF !important;
+            border: 1px solid rgba(255, 145, 164, 0.3) !important; /* إطار ناعم بلون نبض الحياة */
             border-radius: 24px !important;
             overflow: hidden;
             padding: 0 !important;
             display: flex !important;
-            flex-direction: column !important; /* عرض عمودي مريح للعين يحاكي المنيو الفاخر */
+            flex-direction: column !important;
             justify-content: space-between;
-            box-shadow: 0 8px 24px rgba(255, 145, 164, 0.08) !important; /* ظلال ناعمة بمبي */
+            box-shadow: 0 8px 32px rgba(255, 145, 164, 0.06) !important; /* ظلال ناعمة بمبي خالية من أي سواد */
             transition: transform 0.3s ease, box-shadow 0.3s ease !important;
         }
 
         .bose-cart-horizontal-slider .bose-suggestion-micro-card:hover {
             transform: translateY(-6px) !important;
-            box-shadow: 0 12px 32px rgba(255, 145, 164, 0.15) !important;
+            box-shadow: 0 12px 32px rgba(255, 145, 164, 0.12) !important;
+            border-color: #FF91A4 !important;
         }
 
-        /* تنسيق الأجزاء الداخلية لكارت الاقتراحات الفاخر */
         .bose-suggestion-image-wrapper {
             width: 100%;
             height: 200px;
@@ -87,7 +82,7 @@
             transition: transform 0.5s ease;
         }
         .bose-suggestion-micro-card:hover .bose-suggestion-image-wrapper img {
-            transform: scale(1.06);
+            transform: scale(1.05);
         }
         .bose-suggestion-content-pane {
             padding: 18px;
@@ -101,13 +96,13 @@
             margin: 0;
             font-size: 1.1rem;
             font-weight: 700;
-            color: #111111; /* أسود صريح معزول عن الخلفيات والظلال */
+            color: #111111; /* معزول تماماً ومقفل عند وزن 700 للعناوين */
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
         .bose-suggestion-rating-stars {
-            color: #D4AF37; /* لمسة ذهبية ناعمة للتقييمات الفاخرة */
+            color: #D4AF37; /* لمسة ذهبية ناعمة ورمزية لفخامة اللوجو */
             font-size: 0.85rem;
             display: flex;
             gap: 2px;
@@ -127,7 +122,7 @@
             background: #FF91A4;
             color: #FFFFFF;
             border: none;
-            padding: 8px 16px;
+            padding: 8px 18px;
             border-radius: 30px;
             font-family: 'Cairo', sans-serif;
             font-size: 0.85rem;
@@ -136,32 +131,21 @@
             display: flex;
             align-items: center;
             gap: 6px;
-            transition: background 0.2s ease;
+            transition: var(--bose-transition);
         }
         .bose-suggestion-add-trigger:hover {
-            background: #111111;
+            background: #ff788f; /* تعديل الهوفر للون البمبي الداكن بدلاً من الأسود المحظور */
+            transform: translateY(-2px);
         }
 
-        /* 🛠️ إصلاح مظهر لوجو الفوتر ومنع تشويهه 🛠️ */
-        .footer-logo-container img, 
-        .bose-footer #bose-store-logo {
-            height: 60px !important;
-            width: auto !important;
-            max-width: 100% !important;
-            object-fit: contain !important;
-            aspect-ratio: auto !important;
-            display: block !important;
-            margin: 0 auto !important;
-        }
-
-        /* 👑 حارس التحمل والأمان لحماية الواجهة من التجميد 👑 */
+        /* 👑 أمان وتأمين راحة المعالجة اللحظية للسلة 👑 */
         .bose-processing-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: rgba(17, 17, 17, 0.4);
+            background: rgba(255, 255, 255, 0.6);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             display: none;
@@ -178,11 +162,10 @@
         .bose-spinner-loader {
             width: 45px;
             height: 45px;
-            border: 4px solid #FFFFFF;
+            border: 4px solid #FFF5F6;
             border-top: 4px solid #FF91A4;
             border-radius: 50%;
             animation: boseCartSpinMaster 0.8s linear infinite;
-            box-shadow: 0 4px 15px rgba(255, 145, 164, 0.15);
         }
         @keyframes boseCartSpinMaster {
             0% { transform: rotate(0deg); }
@@ -190,54 +173,53 @@
         }
     </style>
 
-    <!-- استدعاء المحرك المركزي الهام حارس الحسابات والبيانات الموحدة -->
+    <!-- استدعاء المحرك المركزي الموحد حارس الحسابات وحاقن الهيدر والفوتر آلياً -->
     <script src="js/core-engine.js" defer></script>
 </head>
 <body class="bose-hardware-accelerated">
 
-    <!-- حامي وأمان التحميل اللحظي للعمليات -->
+    <!-- حارس تأمين وراحة العمليات الحسابية -->
     <div id="bose-cart-global-overlay" class="bose-processing-overlay">
         <div style="text-align: center;">
             <div class="bose-spinner-loader"></div>
-            <p style="font-family: 'Cairo', sans-serif; font-size: 14px; font-weight: 700; color: #FFFFFF; margin-top: 14px; text-shadow: 0 2px 4px rgba(17,17,17,0.3);">جاري تحديث سلة بوسي الفاخرة...</p>
+            <p style="font-family: 'Cairo', sans-serif; font-size: 14px; font-weight: 700; color: #111111; margin-top: 14px;">جاري تحديث سلة بوسي الفاخرة...</p>
         </div>
     </div>
 
-    <!-- الهيدر والفوتر والـ Drawers يتم حقنهم ديناميكياً من محرك Core Engine للمحافظة على التوافق واستقرار الأداء -->
-    <header class="bose-navbar" id="bose-global-header"></header>
-    <div id="sidebar-drawer" class="bose-drawer-menu"></div>
-    <div id="drawer-shield" class="drawer-overlay"></div>
+    <!-- 🏢 بروتوكول الهيكل الهندسي الموحد والحقن الديناميكي للعلامة التجارية 🏢 -->
+    <div id="bose-header-injector"></div>
 
-    <!-- المحتوى الرئيسي الحصري والخاص بالسلة -->
+    <!-- المحتوى الرئيسي الفاخر والمنعزل لصفحة السلة -->
     <main class="bose-cart-page-section" id="cart-main-container">
         <div class="cart-page-header">
             <h1 class="cart-page-title" style="font-weight: 700; max-width: 700px;">سلة التسوق</h1>
-            <p class="cart-page-subtitle bose-arabic-text">راجع منتجاتك وأصنافك المفضلة براحة تامة قبل الانتقال لخطوة إرسال وتأكيد الفاتورة الملكية عبر الواتساب الفوري.</p>
+            <p class="cart-page-subtitle bose-arabic-text">يمكنك مراجعة كل أصناف تورتك وحلوياتك المفضلة براحة تامة، وتعديل كمياتها قبل ما تتنقل لخطوة تأكيد وحجز الطلب عشان يوصلك فريش وجاهز لمناسبتك السعيدة.</p>
         </div>
 
         <div class="cart-checkout-grid">
-            <!-- الجانب الأيمن: قائمة المشتريات المحددة للطلب والملاحظات -->
+            
+            <!-- الجانب الأيمن: قائمة الأصناف المشتراة مع التنفس البصري الكامل -->
             <div class="cart-items-list-wrapper">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; direction: rtl;">
-                    <h3 style="font-size: 1.15rem; font-weight: 700; color: #111111;">الأصناف المحددة للطلب</h3>
-                    <button id="btn-clear-cart" class="btn-clear-cart-node" style="font-family: 'Cairo', sans-serif; font-size: 0.88rem; font-weight: 700; color: #777; border: 1px solid rgba(17,17,17,0.12); padding: 6px 14px; border-radius: 30px; cursor: pointer; transition: 0.2s;">إفراغ السلة</button>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; direction: rtl;">
+                    <h3 style="font-size: 1.2rem; font-weight: 700; color: #111111;">الأصناف المحددة للطلب</h3>
+                    <button id="btn-clear-cart" class="btn-clear-cart-node" style="font-family: 'Cairo', sans-serif; font-size: 0.88rem; font-weight: 700; color: #777; border: 1px solid rgba(255,145,164,0.3); padding: 8px 16px; border-radius: 30px; background: #FFFFFF; cursor: pointer; transition: 0.2s;">إفراغ السلة</button>
                 </div>
                 
-                <!-- حاوية ضخ المنتجات كأكواد HTML ديناميكية مستقلة -->
+                <!-- وسم حقن كروت السلة الأفقية المريحة الفخمة من الـ localStorage -->
                 <div id="cart-items-wrapper" class="cart-items-collection"></div>
 
-                <!-- حقل ملاحظات الطلب الحرة لمزيد من الراحة النفسية للعميل -->
-                <div class="checkout-details-card" style="margin-top: 24px; padding: 20px;">
-                    <h4 class="product-option-title" style="margin-bottom: 12px; font-weight: 700; color: #111111;">
-                        <i class="fas fa-pen-fancy"></i> توصيات أو ملاحظات خاصة بالطلب (اختياري)
+                <!-- توصيات وملاحظات العميل الاختيارية لضمان السلامة والراحة -->
+                <div class="checkout-details-card" style="margin-top: 24px; padding: 24px; background: #FFFFFF; border: 1px solid rgba(255,145,164,0.2); border-radius: 16px;">
+                    <h4 class="product-option-title" style="margin-bottom: 14px; font-weight: 700; color: #111111; font-size: 1rem;">
+                        <i class="fas fa-pen-fancy" style="color: #FF91A4; margin-left: 6px;"></i> عندك أي ملاحظات أو طلبات خاصة بالتحضير؟ (اختياري)
                     </h4>
-                    <textarea id="checkout-order-notes-textarea" class="product-custom-input" placeholder="مثال: يرجى الاتصال بي هاتفياً قبل التوصيل بوقت كافٍ، أو إلغاء المكسرات من حشوة التورتة لسلامتكم الطبية..." style="height: 90px; font-family: 'Cairo', sans-serif; font-size: 0.9rem; padding: 12px; border-radius: 12px; resize: none; width: 100%; box-sizing: border-box;"></textarea>
+                    <textarea id="checkout-order-notes-textarea" class="product-custom-input" placeholder="مثال: لو حابب نلغي المكسرات من حشوة التورتة عشان الحساسية، أو حابب نكلمك في التليفون قبل التوصيل بوقت كافٍ..." style="height: 100px; font-family: 'Cairo', sans-serif; font-size: 0.92rem; padding: 14px; border: 1px solid rgba(255,145,164,0.2); border-radius: 12px; resize: none; width: 100%; box-sizing: border-box; background: #FFF5F6; color: #111111;"></textarea>
                 </div>
             </div>
 
-            <!-- الجانب الأيسر: ملخص الحسابات وتطبيق كود الخصم -->
+            <!-- الجانب الأيسر: ملخص الطلب المالي والكوبونات الذكية -->
             <div class="bose-summary-sticky-card">
-                <h3 class="summary-section-title" style="font-weight: 700; color: #111111;">ملخص الطلب المالي</h3>
+                <h3 class="summary-section-title" style="font-weight: 700; color: #111111;">ملخص الطلب</h3>
                 
                 <div class="coupon-form-container">
                     <input type="text" id="coupon-input" class="coupon-input-field" placeholder="اكتب كود الخصم هنا (مثل BOOSY)...">
@@ -259,13 +241,13 @@
                         <span id="summary-discount" class="pricing-value-text" style="color: #FF91A4; font-weight: 700;">0 EGP</span>
                     </div>
                     <div class="pricing-row-node">
-                        <span class="pricing-label-text">رسوم ومصاريف الشحن والتوصيل:</span>
-                        <span id="summary-shipping-fee" class="pricing-value-text" style="color: #777; font-size: 0.88rem;">تحدد بخطوة الدفع</span>
+                        <span class="pricing-label-text">رسوم ومصاريف التوصيل:</span>
+                        <span id="summary-shipping-fee" class="pricing-value-text" style="color: #777; font-size: 0.88rem;">بتتحدد في خطوة الاستلام</span>
                     </div>
                     
-                    <div class="summary-grand-total-row">
-                        <span class="grand-total-label" style="color: #111111;">العجمالي النهائي التقريبي:</span>
-                        <span id="cart-grand-total-value" class="total-value-display" style="color: #FF91A4;">0 EGP</span>
+                    <div class="summary-grand-total-row" style="border-top: 1px dashed rgba(255,145,164,0.3); padding-top: 16px;">
+                        <span class="grand-total-label" style="color: #111111;">الإجمالي النهائي التقريبي:</span>
+                        <span id="cart-grand-total-value" class="total-value-display" style="color: #FF91A4; font-weight: 700; font-size: 1.5rem;">0 EGP</span>
                     </div>
                 </div>
 
@@ -273,72 +255,70 @@
                     <i class="fas fa-shopping-bag"></i> الانتقال لإتمام الطلب
                 </a>
                 
-                <a href="menu.html" class="bose-continue-shopping-anchor" style="color: #111111; font-weight: 600;">
+                <a href="menu.html" class="bose-continue-shopping-anchor" style="color: #111111; font-weight: 600; margin-top: 16px;">
                     <i class="fas fa-arrow-right"></i> العودة للمنيو الشامل واستعراض المزيد
                 </a>
             </div>
         </div>
 
-        <!-- قسم مقترحات قد يعجبك أيضاً المستقل والمريح بصرياً -->
+        <!-- قسم قد يعجبك أيضاً: مجرى حركة أفقي انسيابي مريح لعين العميل ومحمي الأبعاد -->
         <section class="bose-section-container" style="padding: 40px 0 0 0; margin-top: 40px; border-top: 1px dashed #FF91A4;">
             <div class="bose-section-header" style="text-align: right; margin-bottom: 20px; direction: rtl;">
                 <h2 class="bose-section-title" style="font-size: 1.5rem; font-weight: 700; color: #111111; padding-bottom: 6px;">قد يعجبك أيضاً</h2>
-                <p class="bose-section-subtitle" style="font-size: 0.95rem; color: #777; margin-top: 2px;">أصناف فاخرة ومميزة يوصي بها خبراؤنا لتكمل بها روعة اختيارك اليوم وتتحرك بشكل جانبي مريح للعين.</p>
+                <p class="bose-section-subtitle" style="font-size: 0.95rem; color: #777; margin-top: 2px;">أصناف مميزة بيقترحها عليك خبراء بوسي عشان تكمل بيها روعة اختيارك للنهارده.</p>
             </div>
             
             <div id="bose-cart-premium-suggestions-grid" class="bose-cart-horizontal-slider"></div>
         </section>
 
-        <!-- عناصر الثقة الأربعة الفاخرة المعتمدة للموقع ككل -->
-        <div class="shared-trust-bar">
+        <!-- شريط عناصر الثقة والضمان الأربعة القياسي الموحد -->
+        <div class="shared-trust-bar" style="margin-top: 50px;">
             <div class="trust-item-node">
                 <div class="trust-icon-box" style="color: #FF91A4;"><i class="fas fa-birthday-cake"></i></div>
                 <div class="trust-info-pane">
                     <h4 style="font-weight: 700; color: #111111;">طازج ولذيذ 100%</h4>
-                    <p class="bose-arabic-text">خامات طبيعية ممتازة ومصنوعة يدوياً بحب وشغف لكل عميل لضمان الطعم الفاخر.</p>
+                    <p class="bose-arabic-text">كل قطعة بنصنعها يدوي بحب وشغف ومن خامات طبيعية ممتازة عشان نضمن لك جودة طعم فريدة.</p>
                 </div>
             </div>
             <div class="trust-item-node">
                 <div class="trust-icon-box" style="color: #FF91A4;"><i class="fas fa-truck-ramp-box"></i></div>
                 <div class="trust-info-pane">
-                    <h4 style="font-weight: 700; color: #111111;">شحن آمن وضامن</h4>
-                    <p class="bose-arabic-text">نضمن لك التوصيل الفاخر بأعلى دقة تحافظ على شكل ونضارة وتنسيق طلبك الملكي.</p>
+                    <h4 style="font-weight: 700; color: #111111;">توصيل آمن وبيهتم بالتفاصيل</h4>
+                    <p class="bose-arabic-text">بنضمن لك شحن وتوصيل ممتاز بيحافظ على تنسيق وشكل طلبك الملكي لحد ما يوصل ليدك.</p>
                 </div>
             </div>
             <div class="trust-item-node">
                 <div class="trust-icon-box" style="color: #FF91A4;"><i class="fas fa-headset"></i></div>
                 <div class="trust-info-pane">
-                    <h4 style="font-weight: 700; color: #111111;">الاهتمام والتقدير</h4>
-                    <p class="bose-arabic-text">نتحدث معك وليس إليك، ونشرح الجودة والقيمة الحقيقية للمكونات الفاخرة قبل السعر.</p>
+                    <h4 style="font-weight: 700; color: #111111;">كل الاهتمام والتقدير</h4>
+                    <p class="bose-arabic-text">دايماً بنتكلم معاك وبنسمعك عشان نساعدك تفهم القيمة الحقيقية للمكونات الفاخرة اللي بنقدمها.</p>
                 </div>
             </div>
             <div class="trust-item-node">
                 <div class="trust-icon-box" style="color: #FF91A4;"><i class="fas fa-shield-halved"></i></div>
                 <div class="trust-info-pane">
                     <h4 style="font-weight: 700; color: #111111;">حجز وتأكيد مباشر</h4>
-                    <p class="bose-arabic-text">توثيق مالي متكامل ومزامنة تامة وتأكيد فوري للفواتير عبر الواتساب الخاص بالفرع.</p>
+                    <p class="bose-arabic-text">تأكيد فوري وحفظ للطلب في نظامنا بمجرد مشاركة الفاتورة عبر الواتساب الخاص بالفرع.</p>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- الفوتر الرسمي والشرعي للموقع -->
-    <footer class="bose-footer" id="bose-global-footer"></footer>
+    <!-- 🏢 وسم حقن الفوتر الرسمي والشرعي للموقع بالكامل 🏢 -->
+    <div id="bose-footer-injector"></div>
 
-    <!-- استدعاء محرك السلة للقيام بالعمليات اللوجستية والحسابات -->
+    <!-- استدعاء محرك العمليات والحسابات الموحد للطلب والسلة -->
     <script src="js/cart-engine.js" defer></script>
 
-    <!-- الكود البرمجي المستقل والخاص بصفحة السلة وحماية استقرار الأداء -->
+    <!-- كود الحقن المحمي والمستقل لصور المقترحات وتجربة السحب اللمسي -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             
-            // صمام الأمان وتأمين حماية الهروب للوقاية من أخطاء الـ Syntax محلياً ومستقلاً
             const secureEscape = (str) => {
                 if (!str) return '';
                 return str.toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
             };
 
-            // دالة بناء كروت المنتجات المقترحة بالهيكل العمودي الفخم
             const renderStrictSuggestionsGrid = (dbData) => {
                 const targetGrid = document.getElementById("bose-cart-premium-suggestions-grid");
                 if (!targetGrid || !dbData || !dbData.products) return;
@@ -347,29 +327,17 @@
                 const currentCart = rawCart ? JSON.parse(rawCart) : [];
                 const cartSlugs = currentCart.map(item => item.productSlug);
 
-                // استخلاص الفئات واستدعاء المقترحات الذكية بأمان تام
-                const getPersonalizedList = () => {
-                    if (window.getBosePersonalizedSuggestions) {
-                        return window.getBosePersonalizedSuggestions(dbData.products, "", 5);
-                    }
-                    // دالة محلية احتياطية (Fallback) مستقلة لمنع أي عطل أو جمود برمجي
-                    return dbData.products.filter(p => !cartSlugs.includes(p.slug)).slice(0, 5);
-                };
-
-                const finalSuggestions = getPersonalizedList();
+                const finalSuggestions = dbData.products.filter(p => !cartSlugs.includes(p.slug)).slice(0, 5);
                 const currency = dbData.store?.currency || "EGP";
 
                 if (finalSuggestions.length === 0) {
-                    targetGrid.innerHTML = `<p style="text-align:center; width:100%; font-weight:700; padding:20px; opacity:0.7;">تصفح قائمتنا الشاملة عبر المنيو لاستكشاف المزيد من المفاجآت 🌸</p>`;
+                    targetGrid.innerHTML = `<p style="text-align:center; width:100%; font-weight:700; padding:20px; opacity:0.6;">تصفح قائمتنا الشاملة عبر المنيو لاستكشاف المزيد من المفاجآت 🌸</p>`;
                     return;
                 }
 
-                // حقن كروت المنتجات المقترحة بأقل بصمة برمجية وأقوى استهلاك بيانات
                 targetGrid.innerHTML = finalSuggestions.map(prod => {
                     const defaultLogo = "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png";
                     const imgUrl = prod.image || (prod.images && prod.images[0] ? prod.images[0] : defaultLogo);
-                    
-                    // حساب السعر بأمان عبر الدالة العالمية أو القيمة المباشرة
                     const calculatedPrice = window.calculateBosePrice ? window.calculateBosePrice(prod.price, "menu-only") : prod.price;
                     
                     return `
@@ -383,7 +351,7 @@
                                     <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
                                 </div>
                                 <div class="bose-suggestion-footer-row">
-                                    <span class="bose-suggestion-price-tag">${calculatedPrice} ${currency}</span>
+                                    <span class="bose-suggestion-price-tag">${Math.round(calculatedPrice)} ${currency}</span>
                                     <button class="btn-quick-add-to-cart bose-suggestion-add-trigger" aria-label="إضافة سريعة صنف ${secureEscape(prod.title)}">
                                         <i class="fas fa-plus"></i> إضافة
                                     </button>
@@ -393,67 +361,42 @@
                     `;
                 }).join("");
 
-                // تفعيل مستمعي الأحداث والربط اللحظي للمقترحات الذكية صامتاً ومستقلاً
-                targetGrid.querySelectorAll('.bose-suggestion-micro-card').forEach(card => {
-                    const slug = card.dataset.slug;
-                    const product = dbData.products.find(p => p.slug === slug);
-                    if (!product) return;
-
-                    const quickAddBtn = card.querySelector('.btn-quick-add-to-cart');
-                    if (quickAddBtn) {
-                        quickAddBtn.addEventListener('click', (e) => {
-                            e.preventDefault();
-                            if (window.createCartItem) {
-                                const standardItem = window.createCartItem(product, { flavorName: product.flavorName || "كلاسيك" }, 1);
-                                if (standardItem) {
-                                    // فحص آمن لإدخال المنتج للسلة ومزامنة العرض دون التداخل
-                                    const rawCartItems = localStorage.getItem("bose_cart");
-                                    const cartList = rawCartItems ? JSON.parse(rawCartItems) : [];
-                                    
-                                    const existingIndex = cartList.findIndex(item => item.productSlug === standardItem.productSlug && item.id === standardItem.id);
-                                    if (existingIndex > -1) {
-                                        cartList[existingIndex].quantity += 1;
-                                    } else {
-                                        cartList.push(standardItem);
-                                    }
-                                    
-                                    localStorage.setItem("bose_cart", JSON.stringify(cartList));
-                                    
-                                    if (window.updateGlobalCartCounter) {
-                                        window.updateGlobalCartCounter();
-                                    }
-                                    
-                                    if (typeof renderCartItems === "function") {
-                                        renderCartItems();
-                                    } else {
-                                        window.location.reload();
-                                    }
-                                }
+                // تفعيل مستمعي كروت المقترحات يدوياً وبطريقة معزولة تامة
+                targetGrid.querySelectorAll('.btn-quick-add-to-cart').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const card = btn.closest('.bose-suggestion-micro-card');
+                        const slug = card ? card.dataset.slug : null;
+                        const product = dbData.products.find(p => p.slug === slug);
+                        
+                        if (product && window.createCartItem) {
+                            const standardItem = window.createCartItem(product, {}, 1);
+                            if (standardItem) {
+                                const rawCartItems = localStorage.getItem("bose_cart");
+                                let cartList = rawCartItems ? JSON.parse(rawCartItems) : [];
+                                const existIdx = cartList.findIndex(item => item.productSlug === standardItem.productSlug && item.id === standardItem.id);
+                                
+                                if (existIdx > -1) cartList[existIdx].quantity += 1;
+                                else cartList.push(standardItem);
+                                
+                                localStorage.setItem("bose_cart", JSON.stringify(cartList));
+                                if (window.updateGlobalCartCounter) window.updateGlobalCartCounter();
+                                window.location.reload();
                             }
-                        });
-                    }
+                        }
+                    });
                 });
             };
 
-            // تفعيل فحص المزامنة مع قاعدة البيانات لضمان أعلى أداء دون تعطيل الصفحة
-            if (window.BoseStoreData) {
-                renderStrictSuggestionsGrid(window.BoseStoreData);
-            }
-            document.addEventListener("BoseDatabaseLoaded", (e) => {
-                renderStrictSuggestionsGrid(e.detail);
-            });
+            if (window.BoseStoreData) { renderStrictSuggestionsGrid(window.BoseStoreData); }
+            document.addEventListener("BoseDatabaseLoaded", (e) => { renderStrictSuggestionsGrid(e.detail); });
 
-            // تفعيل الحركة اللمسية والتحريك التلقائي بسلاسة متناهية وبطريقة معزولة
+            // تمكين سحب شريط المقترحات بالماوس للمتصفحات والموبايل
             const horizontalTrack = document.getElementById("bose-cart-premium-suggestions-grid");
             if (horizontalTrack) {
-                let isDown = false;
-                let startX;
-                let scrollLeft;
-
+                let isDown = false, startX, scrollLeft;
                 horizontalTrack.addEventListener('mousedown', (e) => {
-                    isDown = true;
-                    startX = e.pageX - horizontalTrack.offsetLeft;
-                    scrollLeft = horizontalTrack.scrollLeft;
+                    isDown = true; startX = e.pageX - horizontalTrack.offsetLeft; scrollLeft = horizontalTrack.scrollLeft;
                 });
                 horizontalTrack.addEventListener('mouseleave', () => { isDown = false; });
                 horizontalTrack.addEventListener('mouseup', () => { isDown = false; });
@@ -461,33 +404,8 @@
                     if(!isDown) return;
                     e.preventDefault();
                     const x = e.pageX - horizontalTrack.offsetLeft;
-                    const walk = (x - startX) * 2;
-                    horizontalTrack.scrollLeft = scrollLeft - walk;
+                    horizontalTrack.scrollLeft = scrollLeft - (x - startX) * 2;
                 });
-            }
-
-            // مزامنة وحفظ حقل الملاحظات الحرة للسلة بطريقة معزولة آلياً
-            const notesTextarea = document.getElementById("checkout-order-notes-textarea");
-            const checkoutBtn = document.getElementById("btn-proceed-to-checkout");
-            if (notesTextarea) {
-                const savedLastOrder = localStorage.getItem("bose_last_order");
-                if (savedLastOrder) {
-                    try {
-                        const parsed = JSON.parse(savedLastOrder);
-                        if (parsed && parsed.notes) notesTextarea.value = parsed.notes;
-                    } catch(e) {}
-                }
-                if (checkoutBtn) {
-                    checkoutBtn.addEventListener("click", () => {
-                        let currentOrderObj = {};
-                        const lastOrderRaw = localStorage.getItem("bose_last_order");
-                        if (lastOrderRaw) {
-                            try { currentOrderObj = JSON.parse(lastOrderRaw); } catch(e) {}
-                        }
-                        currentOrderObj.notes = notesTextarea.value.trim();
-                        localStorage.setItem("bose_last_order", JSON.stringify(currentOrderObj));
-                    });
-                }
             }
         });
     </script>
