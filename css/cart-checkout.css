@@ -1,5 +1,5 @@
 /**
- * 👑 ملف التصميم الموحد والفاخر لسلة المشتريات وإتمام الطلب والتوصيل - حلويات بوسي V15.5 Master Edition 👑
+ * 👑 ملف التصميم الموحد والفاخر لسلة المشتريات وإتمام الطلب والتوصيل - حلويات بوسي V15.6 Master Edition 👑
  * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البصرية والبرمجية ومشاكل التداخل
  * متوافقة بشكل مطلق ومتبادل مع: global.css، main.css، simulators.css، core-engine.js، cart-engine.js وقاعدة البيانات site-data-final.json
  * [تغطي بصرياً: صفحة السلة، صفحة الدفع وتفاصيل التوصيل، وصفحة نجاح الطلب مع تأمين كامل لواجهات رفع وضغط صور العملاء لـ Cloudinary]
@@ -692,8 +692,9 @@
     box-shadow: 0 0 0 3px rgba(255, 145, 164, 0.15);
 }
 
+/* تم تعديل الخلفية لمنع استخدام اللون الأسود تماشياً مع الهوية البصرية الفاخرة */
 .coupon-apply-trigger {
-    background-color: var(--bose-black); /* الأزرار الثانوية باللون الأسود الراقي المعتمد */
+    background-color: var(--bose-pink); /* البمبي الفاخر نبض الحياة بدلاً من الأسود */
     color: var(--bose-white);
     border: none;
     border-radius: 8px;
@@ -705,11 +706,13 @@
     cursor: pointer;
     transition: var(--bose-transition);
     white-space: nowrap;
+    box-shadow: 0 4px 10px rgba(255, 145, 164, 0.15);
 }
 
 .coupon-apply-trigger:hover {
-    background-color: var(--bose-pink);
+    background-color: #ff788f; /* درجة أغمق قليلاً تفاعلية ناعمة */
     transform: translateY(-1px);
+    box-shadow: 0 6px 15px rgba(255, 145, 164, 0.25);
 }
 
 /* تغذية بصرية لنجاح وفشل الكوبون */
@@ -821,13 +824,13 @@
     flex-shrink: 0;
 }
 
-/* الأزرار الفاخرة المزدوجة التوافق للرحلة الشاملة */
+/* الأزرار الفاخرة المزدوجة التوافق للرحلة الشاملة - مؤمنة بالكامل باللون البمبي الفاخر */
 .bose-primary-checkout-btn,
 .premium-checkout-button,
 .bose-action-button-full {
     width: 100%;
     height: 52px;
-    background-color: var(--bose-pink);
+    background-color: var(--bose-pink); /* البمبي الفاخر كخيار وحيد وقاطع */
     color: var(--bose-white);
     border: none;
     border-radius: 12px;
@@ -850,7 +853,7 @@
 .bose-primary-checkout-btn:focus-visible,
 .premium-checkout-button:hover,
 .bose-action-button-full:hover {
-    background-color: #ff788f;
+    background-color: #ff788f; /* تأثير تفاعلي ناعم وداكن قليلاً */
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(255, 145, 164, 0.35);
     outline: none;
