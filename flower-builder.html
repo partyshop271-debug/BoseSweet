@@ -5,11 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>محاكي الورد التفاعلي | حلويات بوسي</title>
     
-    <!-- الاستدعاء الديناميكي والمبكر للمحرك المركزي والأعتماد البصري -->
+    <!-- 1. استدعاء ملفات الستايل القياسية الموزعة وعزل الهوية البصرية الحاكمة -->
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/simulators.css">
+    
+    <!-- 2. الاستدعاء المبكر للمحرك المركزي (حارس البيانات والحسابات المالية) -->
     <script src="js/core-engine.js"></script>
     
     <style>
-        /* هندسة التصميم الخاص بمحاكي الورد المتقدم simulators.css */
+        /* صمام أمان داخلي لحماية الأبعاد والتنفس البصري ومنع التكديس نهائياً */
         .builder-layout {
             display: grid;
             grid-template-columns: 1fr;
@@ -35,7 +39,7 @@
             box-shadow: var(--bose-shadow-glow);
             text-align: center;
             position: sticky;
-            top: 100px;
+            top: 120px;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
@@ -67,7 +71,6 @@
             font-weight: 700;
             color: var(--bose-pink);
             margin: 16px 0;
-            font-family: 'Cairo', sans-serif;
         }
 
         /* لوحة التحكم والخيارات التفاعلية */
@@ -100,7 +103,7 @@
             color: var(--bose-pink);
         }
 
-        /* خيارات الراديو الفاخرة المانعة للتشتيت */
+        /* خيارات الراديو الفاخرة المانعة للتشتيت البصري */
         .bose-grid-selector {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -141,7 +144,6 @@
             color: var(--bose-black);
         }
 
-        /* النطاقات المدخلة المرنة */
         .bose-range-wrapper {
             display: flex;
             align-items: center;
@@ -169,7 +171,6 @@
             background: #FFF6F7;
         }
 
-        /* الحقول النصية والملاحظات */
         .bose-input-field, .bose-textarea-field {
             width: 100%;
             padding: 12px;
@@ -194,7 +195,6 @@
             gap: 12px;
         }
 
-        /* أزرار الإجراءات الحازمة الكبرى */
         .bose-primary-btn {
             width: 100%;
             background-color: var(--bose-pink);
@@ -217,30 +217,32 @@
 
         .description-luxury-text {
             font-size: 14px;
-            color: #444444;
+            color: #111111;
+            opacity: 0.8;
             line-height: 1.8;
             margin-bottom: 24px;
             text-align: justify;
         }
     </style>
 </head>
-<body>
+<body class="bose-hardware-accelerated">
 
-    <!-- وسم حاقن الهيدر المركزي الموحد -->
+    <!-- بروتوكول الهيكل الموحد والحقن الديناميكي المقدس للأوسمة النائبة -->
     <div id="bose-header-injector"></div>
 
     <main class="builder-layout">
         
-        <!-- الجانب الأيمن: لوحة العرض والاعتماد اللحظي المالي -->
+        <!-- الجانب الأيمن: لوحة العرض والمحاكاة البصرية الكبيرة لملء الشاشة -->
         <section class="preview-sticky-panel">
             <div class="preview-image-wrapper">
-                <img id="bose-store-logo" src="" alt="حلويات بوسي">
+                <!-- معزول طبيعي ومضاء بإنارة النهار لتذوق المنتج بالعين قبل الفم -->
+                <img id="builder-live-flower-logo" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="حلويات بوسي">
             </div>
             <h2 id="live-flower-title" style="margin: 10px 0 5px 0; font-size: 22px;">بوكيه مخصص فاخر</h2>
-            <p id="live-flower-summary" style="font-size: 13px; color: #666; margin: 0;">بلمسات وتنسيقات من اختيارك الرفيع</p>
+            <p id="live-flower-summary" style="font-size: 13px; color: #111111; opacity: 0.6; margin: 0;">بلمسات وتنسيقات من اختيارك الرفيع</p>
             
             <div class="live-price-badge">
-                <span id="live-total-price">0</span> جنيه
+                <span id="live-total-price">400</span> جنيه
             </div>
             
             <button type="button" id="btn-add-flower-custom" class="bose-primary-btn">
@@ -248,57 +250,57 @@
             </button>
         </section>
 
-        <!-- الجانب الأيسر: لوحة التحكم والخيارات اللوجستية المتقدمة -->
+        <!-- الجانب الأيسر: لوحة التحكم والخيارات اللوجستية المتقدمة للعميل -->
         <section class="options-control-panel">
             <h1 style="font-size: 26px; margin-top: 0; margin-bottom: 8px;">مُحاكي الورد التفاعلي</h1>
             <p class="description-luxury-text">
-                ننفرد بتقديم خدمة تصميم بوكيهات الورد الفاخرة حسب الطلب. نتيح لك اختيار نوع الورد المفضل من الورد الطبيعي النضر، الصناعي الفاخر، أو ورد الستان المصنوع بحب، مع تنسيقات مخصصة مدمجة بالمفاجآت النقدية، الشوكولاتة الفاخرة بالعدد، الصور المطبوعة وكروت الإهداء النابعة من القلب لتصل لأحبابك كلوحة فنية مشرفة تعبر عن مشاعرك الصادقة.
+                ننفرد بتقديم خدمة تصميم بوكيهات الورد حسب الطلب. نتيح لك اختيار نوع الورد المفضل من الورد الطبيعي النضر، الصناعي الفاخر، أو ورد الستان المصنوع بحب، مع تنسيقات مخصصة مدمجة بالمفاجآت النقدية، الشوكولاتة الفاخرة بالعدد، الصور المطبوعة وكروت الإهداء الرسائل الصادقة لنوثق أسعد لحظاتكم بفخامة مطلقة.
             </p>
 
-            <form id="bose-flower-builder-form">
+            <form id="bose-flower-builder-form" onsubmit="event.preventDefault();">
                 
                 <!-- الخطوة 1: نوع الورد الأصيل -->
                 <div class="step-block-card">
                     <h3><i class="fa-solid fa-seedling"></i> 1. اختر نوع الورد الأصيل</h3>
                     <div class="bose-grid-selector" id="flower-type-container">
-                        <!-- يتم حقن الخيارات ديناميكياً من الـ JSON -->
+                        <!-- يتم حقنها ديناميكياً بأمان لمنع تعارض الـ JSON -->
                     </div>
                 </div>
 
                 <!-- الخطوة 2: عدد الورود الإضافية -->
                 <div class="step-block-card">
                     <h3><i class="fa-solid fa-sliders"></i> 2. حجم وتعداد البوكيه</h3>
-                    <p style="font-size: 12px; color: #666; margin-top: -8px; margin-bottom: 12px;">السعر الأساسي يتضمن 15 وردة، ويمكنك زيادة الحجم بحرية كاملة:</p>
+                    <p style="font-size: 12px; color: #111111; opacity: 0.6; margin-top: -8px; margin-bottom: 12px;">البوكيه يبدأ إجبارياً من حد أدنى 15 وردة متضمنة في السعر الأساسي وقابل للزيادة:</p>
                     <div class="bose-range-wrapper">
                         <input type="range" id="flower-count-slider" class="bose-range-slider" min="15" max="150" step="1" value="15">
                         <span id="flower-count-display" class="range-value-display">15</span>
                     </div>
                 </div>
 
-                <!-- الخطوة 3: التغليف الفاخر -->
+                <!-- الخطوة 3: التغليف الفاخر بلمسات الستان -->
                 <div class="step-block-card">
                     <h3><i class="fa-solid fa-gift"></i> 3. نمط التغليف الفاخر</h3>
                     <div class="bose-grid-selector" id="wrapping-type-container">
-                        <!-- يتم حقن الخيارات ديناميكياً من الـ JSON -->
+                        <!-- يتم حقنها ديناميكياً بأمان لمنع تعارض الـ JSON -->
                     </div>
                 </div>
 
-                <!-- الخطوة 4: قطع الشوكولاتة المدمجة -->
+                <!-- الخطوة 4: قطع الشوكولاتة المدمجة بالعدد التكاليفي -->
                 <div class="step-block-card">
                     <h3><i class="fa-solid fa-cookie-bite"></i> 4. قطع الشوكولاتة المدمجة بالبوكيه</h3>
                     <div class="bose-grid-selector" id="chocolate-type-container" style="margin-bottom: 15px;">
-                        <!-- يتم حقن الخيارات ديناميكياً من الـ JSON -->
+                        <!-- يتم حقنها ديناميكياً بأمان لمنع تعارض الـ JSON -->
                     </div>
                     <div id="chocolate-qty-block" style="display: none;">
                         <label style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 6px;">عدد قطع الشوكولاتة المطلوبة:</label>
                         <div class="bose-range-wrapper">
-                            <input type="range" id="chocolate-count-slider" class="bose-range-slider" min="1" max="50" step="1" value="1">
-                            <span id="chocolate-count-display" class="range-value-display">1</span>
+                            <input type="range" id="chocolate-count-slider" class="bose-range-slider" min="1" max="50" step="1" value="4">
+                            <span id="chocolate-count-display" class="range-value-display">4</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- الخطوة 5: مفاجآت الكاش النقدية المدمجة -->
+                <!-- الخطوة 5: مفاجآت الكاش المدمجة بدقة فئات العملات -->
                 <div class="step-block-card">
                     <h3><i class="fa-solid fa-money-bill-wave"></i> 5. إضافة مفاجأة نقدية مدمجة (كاش)</h3>
                     <div class="row-flex-inputs">
@@ -306,7 +308,7 @@
                             <label style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 6px;">فئة العملة النقدية:</label>
                             <select id="money-category-select" class="bose-input-field">
                                 <option value="0" data-fee="0">بدون كاش إضافي</option>
-                                <!-- حقن فئات الكاش والعمولات من الـ JSON -->
+                                <!-- يتم حقنه برمجياً من مصفوفة moneyCategories -->
                             </select>
                         </div>
                         <div>
@@ -314,14 +316,14 @@
                             <input type="number" id="money-amount-input" class="bose-input-field" placeholder="المبلغ الكلي ج.م" min="0" value="0" disabled>
                         </div>
                     </div>
-                    <p id="money-error-msg" style="color: red; font-size: 12px; margin: 6px 0 0 0; display: none;"></p>
+                    <p id="money-error-msg" style="color: #ff91a4; font-size: 12px; margin: 6px 0 0 0; display: none; font-weight: 600;"></p>
                 </div>
 
-                <!-- الخطوة 6: الصور الشخصية وكروت الإهداء -->
+                <!-- الخطوة 6: طباعة وإضافة الصور وكروت الإهداء والرسائل الصادقة -->
                 <div class="step-block-card">
-                    <h3><i class="fa-solid fa-camera-retro"></i> 6. الصور الشخصية وكارت الإهداء</h3>
+                    <h3><i class="fa-solid fa-camera-retro"></i> 6. الصور الخاصة وكارت الإهداء</h3>
                     <div style="margin-bottom: 15px;">
-                        <label style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 6px;">عدد الصور الشخصية المراد طباعتها وتثبيتها:</label>
+                        <label style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 6px;">عدد الصور الخاصة المراد طباعتها وتثبيتها:</label>
                         <div class="bose-range-wrapper">
                             <input type="range" id="photo-count-slider" class="bose-range-slider" min="0" max="10" step="1" value="0">
                             <span id="photo-count-display" class="range-value-display">0</span>
@@ -331,9 +333,9 @@
                     <div>
                         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
                             <input type="checkbox" id="has-gift-card-check" style="accent-color: var(--bose-pink); width: 16px; height: 16px; cursor: pointer;">
-                            <label for="has-gift-card-check" style="font-size: 13px; font-weight: 600; cursor: pointer;">أرغب في إضافة كارت إهداء ورسالة صادقة</label>
+                            <label for="has-gift-card-check" style="font-size: 13px; font-weight: 600; cursor: pointer;">أرغب في كتابة كارت إهداء ورسالة صادقة</label>
                         </div>
-                        <textarea id="gift-card-text-area" class="bose-textarea-field" rows="3" placeholder="اكتب رسالتك الصادقة هنا النابعة من قلبك..." style="display: none; resize: none;"></textarea>
+                        <textarea id="gift-card-text-area" class="bose-textarea-field" rows="3" placeholder="اكتب رسالتك الصادقة هنا النابعة من قلبك لتصل لأحبابك..." style="display: none; resize: none;"></textarea>
                     </div>
                 </div>
 
@@ -345,16 +347,21 @@
     <!-- وسم حاقن الفوتر المركزي الموحد -->
     <div id="bose-footer-injector"></div>
 
-    <!-- المحرك البرمجي المستقل لرحلة محاكي الورد js/flower-engine.js -->
+    <!-- 3. استدعاء المحرك البرمجي المستقل لرحلة محاكي الورد لمنع تعارض الملفات -->
+    <script src="js/flower-engine.js"></script>
+
     <script>
         /**
-         * محرك محاكي الورد التفاعلي الموزع ذكياً لمنع التعارض - حلويات بوسي
+         * 🛡️ حارس وجسر التمكين التوافقي (The Compatibility Bridge Guide)
+         * يقوم بحل ثغرة التوقف الجاف داخل core-engine.js ويضمن استدعاء رندرة المحاكي محلياً
          */
         function startEngineLogic() {
-            const config = window.BoseStoreData?.flowerBuilder;
-            if (!config) return;
+            const data = window.BoseStoreData;
+            if (!data || !data.flowerBuilder) return;
+            
+            const config = data.flowerBuilder;
 
-            // استدعاء عناصر الواجهة البرمجية المعتمدة
+            // استدعاء الحاويات والعناصر لملء البيانات الحية
             const flowerTypeContainer = document.getElementById('flower-type-container');
             const wrappingTypeContainer = document.getElementById('wrapping-type-container');
             const chocolateTypeContainer = document.getElementById('chocolate-type-container');
@@ -365,7 +372,6 @@
             const giftCardCheck = document.getElementById('has-gift-card-check');
             const giftCardText = document.getElementById('gift-card-text-area');
             
-            // المكونات التفاعلية للسلايدرات والعدادات
             const flowerSlider = document.getElementById('flower-count-slider');
             const flowerDisplay = document.getElementById('flower-count-display');
             const chocSlider = document.getElementById('chocolate-count-slider');
@@ -373,62 +379,106 @@
             const photoSlider = document.getElementById('photo-count-slider');
             const photoDisplay = document.getElementById('photo-count-display');
             const priceDisplay = document.getElementById('live-total-price');
+            const logoImg = document.getElementById('builder-live-flower-logo');
 
-            // 1. بناء وحقن خيارات نوع الورد
-            config.flowerTypes.forEach((type, idx) => {
-                const checkedAttr = idx === 0 ? 'checked' : '';
-                flowerTypeContainer.innerHTML += `
+            if(logoImg && data.store.logo) logoImg.src = data.store.logo;
+
+            // حقن خيارات أنواع الورد من الـ JSON
+            if (flowerTypeContainer && flowerTypeContainer.children.length === 0) {
+                config.flowerTypes.forEach((type, idx) => {
+                    flowerTypeContainer.innerHTML += `
+                        <div class="selector-item">
+                            <input type="radio" name="flowerType" value="${type.id}" ${idx === 0 ? 'checked' : ''}>
+                            <span class="selector-label">${type.name}</span>
+                        </div>
+                    `;
+                });
+            }
+
+            // حقن أنماط التغليف بلمسات الستان الفاخرة
+            if (wrappingTypeContainer && wrappingTypeContainer.children.length === 0) {
+                config.wrappingTypes.forEach((wrap, idx) => {
+                    wrappingTypeContainer.innerHTML += `
+                        <div class="selector-item">
+                            <input type="radio" name="wrappingType" value="${wrap.id}" ${idx === 0 ? 'checked' : ''}>
+                            <span class="selector-label">${wrap.name}</span>
+                        </div>
+                    `;
+                });
+            }
+
+            // حقن قطع الشوكولاتة المدمجة ونوع تكلفتها
+            if (chocolateTypeContainer && chocolateTypeContainer.children.length === 0) {
+                chocolateTypeContainer.innerHTML = `
                     <div class="selector-item">
-                        <input type="radio" name="flowerType" value="${type.id}" ${checkedAttr}>
-                        <span class="selector-label">${type.name}</span>
+                        <input type="radio" name="chocolateType" value="none" checked>
+                        <span class="selector-label">بدون شوكولاتة</span>
                     </div>
                 `;
-            });
+                config.chocolateTypes.forEach((choc) => {
+                    chocolateTypeContainer.innerHTML += `
+                        <div class="selector-item">
+                            <input type="radio" name="chocolateType" value="${choc.id}">
+                            <span class="selector-label">${choc.name}</span>
+                        </div>
+                    `;
+                });
+            }
 
-            // 2. بناء وحقن خيارات أنماط التغليف
-            config.wrappingTypes.forEach((wrap, idx) => {
-                const checkedAttr = idx === 0 ? 'checked' : '';
-                wrappingTypeContainer.innerHTML += `
-                    <div class="selector-item">
-                        <input type="radio" name="wrappingType" value="${wrap.id}" ${checkedAttr}>
-                        <span class="selector-label">${wrap.name}</span>
-                    </div>
-                `;
-            });
+            // حقن فئات العملات النقدية والعمولات المحددة بالمليم
+            if (moneyCategorySelect && moneyCategorySelect.children.length === 1) {
+                config.moneyCategories.forEach((cat) => {
+                    moneyCategorySelect.innerHTML += `
+                        <option value="${cat.amount}">${cat.amount} ج.م (مصاريف لَف: ${cat.fee} ج)</option>
+                    `;
+                });
+            }
 
-            // 3. بناء وحقن خيارات أنواع الشوكولاتة
-            chocolateTypeContainer.innerHTML = `
-                <div class="selector-item">
-                    <input type="radio" name="chocolateType" value="none" checked>
-                    <span class="selector-label">بدون شوكولاتة</span>
-                </div>
-            `;
-            config.chocolateTypes.forEach((choc) => {
-                chocolateTypeContainer.innerHTML += `
-                    <div class="selector-item">
-                        <input type="radio" name="chocolateType" value="${choc.id}">
-                        <span class="selector-label">${choc.name}</span>
-                    </div>
-                `;
-            });
+            // دالة الحساب والتحديث المالي اللحظي المتزامنة
+            function localRecalculate() {
+                flowerDisplay.textContent = flowerSlider.value;
+                chocDisplay.textContent = chocSlider.value;
+                photoDisplay.textContent = photoSlider.value;
 
-            // 4. بناء وحقن فئات العملات النقدية والعمولات اللوجستية
-            config.moneyCategories.forEach((cat) => {
-                moneyCategorySelect.innerHTML += `
-                    <option value="${cat.amount}" data-fee="${cat.fee}">${cat.amount} ج.م (عمولة لف الورقة ${cat.fee} ج)</option>
-                `;
-            });
+                const selectedFlowerType = document.querySelector('input[name="flowerType"]:checked')?.value || 'natural';
+                const selectedWrappingType = document.querySelector('input[name="wrappingType"]:checked')?.value || 'satin';
+                const selectedChocolateType = document.querySelector('input[name="chocolateType"]:checked')?.value || 'none';
+                const chocPieces = selectedChocolateType === 'none' ? 0 : parseInt(chocSlider.value, 10);
+                
+                const selectedMoneyCategory = parseInt(moneyCategorySelect.value, 10);
+                let inputMoneyAmount = parseInt(moneyAmountInput.value, 10) || 0;
 
-            // تفعيل الأحداث التفاعلية لتحديث الأسعار والعدادات لحظياً
-            [flowerSlider, chocSlider, photoSlider].forEach(slider => {
-                slider.addEventListener('input', updateSlidersAndPrice);
-            });
+                moneyErrorMsg.style.display = 'none';
+                if (selectedMoneyCategory > 0 && inputMoneyAmount > 0) {
+                    if (inputMoneyAmount % selectedMoneyCategory !== 0) {
+                        moneyErrorMsg.textContent = `⚠️ تنبيه: المبلغ المكتوب يجب أن يكون من مضاعفات فئة الـ (${selectedMoneyCategory} ج.م) ليتم لفه بنجاح.`;
+                        moneyErrorMsg.style.display = 'block';
+                    }
+                }
 
+                // استدعاء معادلة الحساب الموحدة من المحرك المركزي
+                if (typeof window.calculateCustomFlowerPrice === 'function') {
+                    const finalPrice = window.calculateCustomFlowerPrice(selectedFlowerType, flowerSlider.value, {
+                        wrappingType: selectedWrappingType,
+                        chocolateType: selectedChocolateType,
+                        chocolatePieces: chocPieces,
+                        moneyAmount: inputMoneyAmount,
+                        moneyCategoryAmount: selectedMoneyCategory,
+                        photoCount: parseInt(photoSlider.value, 10),
+                        hasGiftCard: giftCardCheck.checked
+                    });
+                    priceDisplay.textContent = Math.round(finalPrice);
+                }
+            }
+
+            // ربط أحداث الاستماع المرنة لتحديث عارض الأسعار لحظياً
+            [flowerSlider, chocSlider, photoSlider].forEach(s => s.addEventListener('input', localRecalculate));
+            
             document.getElementById('bose-flower-builder-form').addEventListener('change', (e) => {
                 if (e.target.name === 'chocolateType') {
                     chocolateQtyBlock.style.display = e.target.value === 'none' ? 'none' : 'block';
                 }
-                updateSlidersAndPrice();
+                localRecalculate();
             });
 
             moneyCategorySelect.addEventListener('change', () => {
@@ -438,90 +488,34 @@
                 } else {
                     moneyAmountInput.disabled = false;
                 }
-                updateSlidersAndPrice();
+                localRecalculate();
             });
 
-            moneyAmountInput.addEventListener('input', updateSlidersAndPrice);
-
+            moneyAmountInput.addEventListener('input', localRecalculate);
             giftCardCheck.addEventListener('change', () => {
                 giftCardText.style.display = giftCardCheck.checked ? 'block' : 'none';
-                updateSlidersAndPrice();
+                localRecalculate();
             });
 
-            // دالة الحساب والتحديث المالي اللحظي الشامل
-            function updateSlidersAndPrice() {
-                // مزامنة أرقام العدادات المرئية
-                flowerDisplay.textContent = flowerSlider.value;
-                chocDisplay.textContent = chocSlider.value;
-                photoDisplay.textContent = photoSlider.value;
+            localRecalculate();
 
-                const selectedFlowerType = document.querySelector('input[name="flowerType"]:checked')?.value;
-                const selectedWrappingType = document.querySelector('input[name="wrappingType"]:checked')?.value;
-                const selectedChocolateType = document.querySelector('input[name="chocolateType"]:checked')?.value;
-                const chcoPieces = selectedChocolateType === 'none' ? 0 : parseInt(chocSlider.value, 10);
-                
-                const selectedMoneyCategory = parseInt(moneyCategorySelect.value, 10);
-                let inputMoneyAmount = parseInt(moneyAmountInput.value, 10) || 0;
-
-                // التحقق من توافق المبلغ النقدي مع فئة العملة لمنع الكسور العشوائية في اللف
-                moneyErrorMsg.style.display = 'none';
-                if (selectedMoneyCategory > 0 && inputMoneyAmount > 0) {
-                    const remainder = inputMoneyAmount % selectedMoneyCategory;
-                    if (remainder !== 0) {
-                        moneyErrorMsg.textContent = `⚠️ تنبيه: المبلغ يجب أن يكون مضاعفاً للفئة المحددة (${selectedMoneyCategory} ج.م) ليتمكن المحرك من حساب عمولة عدد الأوراق بدقة بالمليم.`;
-                        moneyErrorMsg.style.display = 'block';
-                    }
-                }
-
-                // تمرير الخيارات بالكامل للمحرك المركزي لإصدار الحسبة المالية الدقيقة القياسية
-                const finalCalculatedPrice = window.calculateCustomFlowerPrice(selectedFlowerType, flowerSlider.value, {
-                    wrappingType: selectedWrappingType,
-                    chocolateType: selectedChocolateType,
-                    chocolatePieces: chcoPieces,
-                    moneyAmount: inputMoneyAmount,
-                    moneyCategoryAmount: selectedMoneyCategory,
-                    photoCount: parseInt(photoSlider.value, 10),
-                    hasGiftCard: giftCardCheck.checked
-                });
-
-                priceDisplay.textContent = Math.round(finalCalculatedPrice);
-            }
-
-            // تنفيذ الحسبة الأولية فور تمهيد النظام لراحة عين العميل
-            updateSlidersAndPrice();
-
-            // معالجة حدث الضغط والاعتماد النهائي للبوكيه المخصص وضخه في السلة bose_cart
+            // الاعتماد والإرسال الفوري لداخل سلة المشتريات الموحدة (bose_cart)
             document.getElementById('btn-add-flower-custom').addEventListener('click', () => {
                 const selectedFlowerType = document.querySelector('input[name="flowerType"]:checked')?.value;
                 const selectedFlowerTypeName = document.querySelector('input[name="flowerType"]:checked + .selector-label')?.textContent;
                 const selectedWrappingType = document.querySelector('input[name="wrappingType"]:checked')?.value;
                 const selectedChocolateType = document.querySelector('input[name="chocolateType"]:checked')?.value;
-                const chcoPieces = selectedChocolateType === 'none' ? 0 : parseInt(chocSlider.value, 10);
+                const chocPieces = selectedChocolateType === 'none' ? 0 : parseInt(chocSlider.value, 10);
                 const selectedMoneyCategory = parseInt(moneyCategorySelect.value, 10);
                 const inputMoneyAmount = parseInt(moneyAmountInput.value, 10) || 0;
 
-                // حظر ومنع ثغرة ترحيل مبالغ غير متوافقة مع فئة العملة المحددة
                 if (selectedMoneyCategory > 0 && inputMoneyAmount > 0 && (inputMoneyAmount % selectedMoneyCategory !== 0)) {
-                    alert('عذراً، يرجى إدخال مبلغ نقدي متوافق تماماً مع فئة العملة المحددة قبل إضافة المنتج للسلة لتجنب الفروقات اللوجستية.');
+                    alert('يرجى إدخال مبلغ نقدي متوافق تماماً مع فئة العملة المحددة قبل إضافة الطلب للسلة.');
                     return;
                 }
 
-                // استخراج وحساب قيم العمولات النقدية للتخزين الثابت وقت الإضافة لربطه بالسلة الفاتورة
-                let calculatedFee = 0;
-                if (inputMoneyAmount > 0 && selectedMoneyCategory > 0) {
-                    const billCount = Math.floor(inputMoneyAmount / selectedMoneyCategory);
-                    const matchedCat = config.moneyCategories.find(c => c.amount === selectedMoneyCategory);
-                    if (matchedCat) calculatedFee = billCount * matchedCat.fee;
-                }
-
-                // محاكاة كائن منتج رئيسي متوافق مع مصفوفة الـ JSON للربط البرمجي
-                const baseFlowerProduct = window.BoseStoreData.products.find(p => p.id === 'flowers-master') || {
-                    id: "flowers-master",
-                    slug: "flowers-master",
-                    title: "الورد",
-                    basePrice: config.basePrice,
-                    type: "custom-flower",
-                    image: window.BoseStoreData.store.logo
+                const baseFlowerProduct = data.products.find(p => p.id === 'flowers-master') || {
+                    id: "flowers-master", slug: "flowers-master", title: "الورد", basePrice: config.basePrice, type: "custom-flower", image: data.store.logo
                 };
 
                 const optionsObject = {
@@ -529,58 +523,51 @@
                     flavorName: `بوكيه ورد ${selectedFlowerTypeName} مخصص`,
                     flowerCount: parseInt(flowerSlider.value, 10),
                     moneyAmount: inputMoneyAmount,
-                    moneyFee: calculatedFee,
                     chocolateType: selectedChocolateType,
-                    chocolatePieces: chcoPieces,
+                    chocolatePieces: chocPieces,
                     wrappingType: selectedWrappingType,
                     giftCardText: giftCardCheck.checked ? giftCardText.value : ""
                 };
 
-                // إنشاء عنصر السلة القياسي الفريد غير القابل للتصادم برمجياً
-                const cartItem = window.createCartItem(baseFlowerProduct, optionsObject, 1);
-                
-                if (cartItem) {
-                    // تحديث الذاكرة الموحدة وحفظ كائن السلة الموحد bose_cart
-                    const rawCart = localStorage.getItem('bose_cart');
-                    const currentCart = rawCart ? JSON.parse(rawCart) : [];
-                    
-                    currentCart.push(cartItem);
-                    localStorage.setItem('bose_cart', JSON.stringify(currentCart));
-                    
-                    // تحديث شارة العداد اللحظي في الهيدر والترحيل لصفحة السلة بكل فخامة وسلاسة
-                    window.updateGlobalCartCounter();
-                    alert('تمت إضافة بوكيه الورد المخصص الفاخر إلى سلة المشتريات بنجاح.');
-                    window.location.href = 'cart.html';
+                if (typeof window.createCartItem === 'function') {
+                    const cartItem = window.createCartItem(baseFlowerProduct, optionsObject, 1);
+                    if (cartItem) {
+                        let currentCart = JSON.parse(localStorage.getItem('bose_cart')) || [];
+                        currentCart.push(cartItem);
+                        localStorage.setItem('bose_cart', JSON.stringify(currentCart));
+                        
+                        window.updateGlobalCartCounter();
+                        alert('تمت إضافة بوكيه الورد المخصص الفاخر إلى سلة المشتريات بنجاح.');
+                        window.location.href = 'cart.html';
+                    }
                 }
             });
         }
 
-        // تفعيل بروتوكول حارس التمهيد ومنع التعارض البرمجي القياسي بالموقع
+        // صمام الأمان وجسر حقن البيئة التوافقية المتكاملة
         document.addEventListener("DOMContentLoaded", () => {
+            let bridgeInterval = setInterval(() => {
+                if (window.BoseStoreData && window.BoseStoreData.store) {
+                    clearInterval(bridgeBridge);
+                    clearInterval(bridgeInterval);
+                    startEngineLogic();
+                }
+            }, 50);
+            
+            // في حال تم تحميل البيانات مبكراً
             if (window.BoseStoreData && window.BoseStoreData.store) {
-                verifyAndInitializeEngine();
-            } else {
-                let attempts = 0;
-                const maxAttempts = 100; 
-                const coreGuardInterval = setInterval(() => {
-                    attempts++;
-                    if (window.BoseStoreData && window.BoseStoreData.store) {
-                        clearInterval(coreGuardInterval);
-                        verifyAndInitializeEngine();
-                    } else if (attempts >= maxAttempts) {
-                        clearInterval(coreGuardInterval);
-                        console.error("❌ حارس التمهيد: تجاوز الحد الأقصى لمحاولات تحميل قاعدة البيانات. تم إيقاف الفحص لتأمين الأداء.");
-                    }
-                }, 50);
-            }
-        });
-
-        function verifyAndInitializeEngine() {
-            console.log("🚀 تم التحقق من مطابقة المحرك المخصص وتوافقه مع قاعدة بيانات حلويات بوسي الحالية.");
-            if (typeof startEngineLogic === "function") {
+                clearInterval(bridgeInterval);
                 startEngineLogic();
             }
-        }
+        });
+        
+        // جسر يدوي موازٍ احتياطي للحارس الصارم
+        const bridgeBridge = setInterval(() => {
+            if (window.BoseStoreData && window.BoseStoreData.store) {
+                clearInterval(bridgeBridge);
+                startEngineLogic();
+            }
+        }, 100);
     </script>
 </body>
 </html>
