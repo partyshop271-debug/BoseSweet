@@ -1,16 +1,16 @@
 /**
  * 👑 محرك محاكي تخصيص التورت التفاعلي الفاخر المطور والمصحح بالكامل - حلويات بوسي 👑
- * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية V32.0[span_1](start_span)[span_1](end_span)
- * التزام مطلق بحدود الملف (Scope-Locked) بدون أي تداخل مع محركات الموقع الأخرى[span_2](start_span)[span_2](end_span)
+ * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية V32.0
+ * التزام مطلق بحدود الملف (Scope-Locked) بدون أي تداخل مع محركات الموقع الأخرى
  */
 
 (function () {
     "use strict";
 
-    // مفتاح تخزين السلة الموحد والثابت[span_3](start_span)[span_3](end_span)
+    // مفتاح تخزين السلة الموحد والثابت
     const CART_STORAGE_KEY = 'bose_cart';
 
-    // الإعدادات الافتراضية الدفاعية في حال تأخر تحميل قاعدة البيانات[span_4](start_span)[span_4](end_span)
+    // الإعدادات الافتراضية الدفاعية في حال تأخر تحميل قاعدة البيانات
     const cakeConfig = {
         enabled: true,
         basePrice: 580,          
@@ -38,13 +38,11 @@
             { id: "nutella", name: "نوتيلا أصلية", price: 40 },
             { id: "lotus", name: "كريمة لوتس", price: 45 },
             { id: "pistachio", name: "فستق حلبي", price: 60 },
-            { id: "caramel", name: "كراميل مملح", price: 30 },
             { id: "fruits", name: "فواكه طبيعية", price: 35 }
         ],
         toppings: [
             { id: "chocolate_chips", name: "شوكليت شيبس", price: 20 },
             { id: "crushed_nuts", name: "مكسرات مشكلة", price: 40 },
-            { id: "sprinkles", name: "سبراينكلز ملون", price: 15 },
             { id: "strawberry", name: "قطع فراولة", price: 25 },
             { id: "gold_flakes", name: "ورق ذهب قابل للأكل", price: 50 }
         ],
@@ -64,32 +62,30 @@
     let isEventsBound = false;
     let isUploadingImage = false;
 
-    // تهيئة حالة خيارات المستخدم للحفاظ على ذاكرة خفيفة[span_5](start_span)[span_5](end_span)
+    // تهيئة حالة خيارات المستخدم للحفاظ على ذاكرة خفيفة
     let selectedConfig = {
         shape: "circle",
-        cakeType: "half-half",  
+        cakeType: "vanilla",
         persons: 4,
         layers: 1,
         fillings: [],
         toppings: [],
-        printingType: "none",   
-        uploadedImageUrl: null, 
+        printingType: "none",
+        uploadedImageUrl: null,
         text: "",
         textPosition: "top"
     };
 
-    // كائن التخزين المؤقت المطور لـ DOM لسرعة استجابة متناهية[span_6](start_span)[span_6](end_span)
+    // كائن التخزين المؤقت المطور لـ DOM لسرعة استجابة متناهية
     const dom = {
         shapeCards: null, layerCards: null, cakeTypeCards: null, fillingCards: null,
         toppingCards: null, printingCards: null, textPositionCards: null, textInput: null,
-        personsInput: null, personsRange: null, btnMinusPersons: null, btnPlusPersons: null,
-        totalPriceEl: null, personsCountEl: null, stepPanels: null, stepButtons: null,
-        btnPrevStep: null, btnNextStep: null, btnAddToCart: null, summaryShape: null,
-        summaryCakeType: null, summaryPersons: null, summaryLayers: null, summaryFillings: null,
-        summaryToppings: null, summaryPrinting: null, summaryText: null
+        personsInput: null, btnMinusPersons: null, btnPlusPersons: null,
+        totalPriceEl: null, personsCountEl: null, btnAddToCart: null,
+        summaryShape: null, summaryCakeType: null, summaryPersons: null
     };
 
-    // مطهر النصوص لمنع هجمات XSS[span_7](start_span)[span_7](end_span)
+    // مطهر النصوص لمنع هجمات XSS
     const escapeHtml = function (unsafeString) {
         if (!unsafeString) return '';
         return unsafeString.toString()
@@ -105,27 +101,23 @@
         const style = document.createElement("style");
         style.id = "bose-cake-interactive-styles";
         style.textContent = `
-            .shape-card, .cake-shape-card, .layer-card, .cake-layer-card, 
-            .cake-type-card, .type-card, .cake-flavor-card, .filling-card, 
-            .cake-filling-card, .topping-card, .cake-topping-card, .printing-card, 
-            .cake-printing-card, .cake-photo-card, .position-card, .cake-text-position-card {
+            .cake-shape-card, .cake-layer-card, .cake-flavor-card, .filling-card, .topping-card, .cake-printing-card, .cake-text-position-card {
                 cursor: pointer;
                 transition: transform 0.2s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.2s ease, border-color 0.2s ease;
-                border: var(--bose-border-pink, 1px solid rgba(255, 145, 164, 0.2)) !important;
-                background-color: var(--bose-white, #FFFFFF) !important;
-                border-radius: 16px;
+                border: 1px solid rgba(255, 145, 164, 0.2) !important;
+                background-color: #FFFFFF !important;
+                text-align: center;
+                user-select: none;
             }
-            .shape-card:hover, .layer-card:hover, .cake-type-card:hover, .filling-card:hover, .topping-card:hover, .printing-card:hover {
+            .cake-shape-card:hover, .cake-layer-card:hover, .cake-flavor-card:hover, .filling-card:hover, .topping-card:hover, .cake-printing-card:hover, .cake-text-position-card:hover {
                 transform: translateY(-2px);
-                box-shadow: var(--bose-shadow-hover, 0 8px 24px rgba(255, 145, 164, 0.1)) !important;
+                box-shadow: 0 8px 24px rgba(255, 145, 164, 0.1) !important;
+                border-color: rgba(255, 145, 164, 0.6) !important;
             }
-            .shape-card.active, .layer-card.active, .cake-type-card.active, .filling-card.active, 
-            .topping-card.active, .printing-card.active, .position-card.active,
-            .cake-shape-card.active, .cake-layer-card.active, .cake-flavor-card.active, 
-            .cake-filling-card.active, .cake-topping-card.active, .cake-printing-card.active, .cake-position-card.active {
-                border: var(--bose-border-thick, 2px solid #FF91A4) !important;
+            .cake-shape-card.active, .cake-layer-card.active, .cake-flavor-card.active, .filling-card.active, .topping-card.active, .cake-printing-card.active, .cake-text-position-card.active {
+                border: 2px solid #FF91A4 !important;
                 background-color: #FFF0F2 !important;
-                box-shadow: var(--bose-shadow-glow, 0 8px 32px rgba(255, 145, 164, 0.12)) !important;
+                box-shadow: 0 8px 32px rgba(255, 145, 164, 0.12) !important;
                 transform: scale(1.02);
             }
         `;
@@ -174,7 +166,7 @@
             if (placementObj) total += parseFloat(placementObj.price) || 0;
         }
 
-        // استخدام دالة المراجعة الخارجية إذا وجدت دون إعادة تعريفها أو تعديلها لمنع التداخل[span_8](start_span)[span_8](end_span)
+        // استخدام دالة المراجعة الخارجية إذا وجدت دون إعادة تعريفها أو تعديلها لمنع التداخل
         return Math.round(window.calculateBosePrice ? window.calculateBosePrice(total, "menu-only") : total);
     }
 
@@ -199,35 +191,29 @@
     }
 
     function isCakeBuilderPage() {
-        return !!document.getElementById('cake-builder-container') || !!document.getElementById('cake-preview');
+        return !!document.getElementById('bose-cake-builder-form') || !!document.getElementById('cake-preview');
     }
 
     function cacheDOMElements() {
-        dom.shapeCards = document.querySelectorAll('.shape-card, .cake-shape-card');
-        dom.layerCards = document.querySelectorAll('.layer-card, .cake-layer-card');
-        dom.cakeTypeCards = document.querySelectorAll('.cake-type-card, .type-card, .cake-flavor-card');
-        dom.fillingCards = document.querySelectorAll('.filling-card, .cake-filling-card');
-        dom.toppingCards = document.querySelectorAll('.topping-card, .cake-topping-card');
-        dom.printingCards = document.querySelectorAll('.printing-card, .cake-printing-card, .cake-photo-card');
-        dom.textPositionCards = document.querySelectorAll('.position-card, .cake-text-position-card');
-        dom.textInput = document.getElementById('custom-text') || document.getElementById('cake-custom-text');
-        dom.personsInput = document.getElementById('persons-count') || document.getElementById('cake-persons-count');
-        dom.personsRange = document.getElementById('persons-range') || document.getElementById('cake-persons-range');
-        dom.btnMinusPersons = document.getElementById('btn-minus') || document.getElementById('cake-btn-minus');
-        dom.btnPlusPersons = document.getElementById('btn-plus') || document.getElementById('cake-btn-plus');
-        dom.totalPriceEl = document.getElementById('total-price') || document.getElementById('cake-total-price');
-        dom.personsCountEl = document.getElementById('persons-display') || document.getElementById('cake-persons-display');
-        dom.stepPanels = document.querySelectorAll('.step-panel, .cake-builder-step-panel');
-        dom.stepButtons = document.querySelectorAll('.step-btn, .cake-step-nav-btn');
-        dom.btnPrevStep = document.getElementById('btn-prev'); dom.btnNextStep = document.getElementById('btn-next');
-        dom.btnAddToCart = document.getElementById('add-to-cart-btn') || document.getElementById('btn-add-cake-to-cart');
-        dom.summaryShape = document.getElementById('summary-shape'); dom.summaryCakeType = document.getElementById('summary-cake-type');
-        dom.summaryPersons = document.getElementById('summary-persons'); dom.summaryLayers = document.getElementById('summary-layers');
-        dom.summaryFillings = document.getElementById('summary-fillings'); dom.summaryToppings = document.getElementById('summary-toppings');
-        dom.summaryPrinting = document.getElementById('summary-printing'); dom.summaryText = document.getElementById('summary-text');
+        dom.shapeCards = document.querySelectorAll('.cake-shape-card');
+        dom.layerCards = document.querySelectorAll('.cake-layer-card');
+        dom.cakeTypeCards = document.querySelectorAll('.cake-flavor-card');
+        dom.fillingCards = document.querySelectorAll('.filling-card');
+        dom.toppingCards = document.querySelectorAll('.topping-card');
+        dom.printingCards = document.querySelectorAll('.cake-printing-card');
+        dom.textPositionCards = document.querySelectorAll('.cake-text-position-card');
+        dom.textInput = document.getElementById('cake-custom-text');
+        dom.btnMinusPersons = document.getElementById('cake-btn-minus');
+        dom.btnPlusPersons = document.getElementById('cake-btn-plus');
+        dom.totalPriceEl = document.getElementById('cake-total-price');
+        dom.personsCountEl = document.getElementById('cake-persons-display');
+        dom.btnAddToCart = document.getElementById('btn-add-cake-to-cart');
+        dom.summaryShape = document.getElementById('summary-shape');
+        dom.summaryCakeType = document.getElementById('summary-cake-type');
+        dom.summaryPersons = document.getElementById('summary-persons');
     }
 
-    // ضغط الصور محلياً بدقة متناهية قبل الرفع لتقليل استهلاك البيانات بنسبة 80%[span_9](start_span)[span_9](end_span)
+    // ضغط الصور محلياً بدقة متناهية قبل الرفع لتقليل استهلاك البيانات بنسبة 80%
     function compressBoseImage(file, maxWidth = 800, maxHeight = 800, quality = 0.7) {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -272,7 +258,7 @@
         });
 
         addClickEvent(dom.cakeTypeCards, function() {
-            selectedConfig.cakeType = this.getAttribute('data-type') || this.getAttribute('data-cake-type') || this.getAttribute('data-flavor');
+            selectedConfig.cakeType = this.getAttribute('data-flavor');
             finalizeUIUpdate();
         });
 
@@ -295,9 +281,14 @@
         });
 
         addClickEvent(dom.printingCards, function() {
-            selectedConfig.printingType = this.getAttribute('data-printing') || this.getAttribute('data-printing-type');
+            selectedConfig.printingType = this.getAttribute('data-printing');
             const zone = document.getElementById('bose-photo-upload-zone');
             if (zone) zone.style.display = selectedConfig.printingType !== 'none' ? 'block' : 'none';
+            finalizeUIUpdate();
+        });
+
+        addClickEvent(dom.textPositionCards, function() {
+            selectedConfig.textPosition = this.getAttribute('data-position');
             finalizeUIUpdate();
         });
 
@@ -331,7 +322,7 @@
                     }
                 } catch (err) {
                     if (statusEl) statusEl.textContent = "⚠️ فشل رفع الصورة، يرجى التحقق من الشبكة.";
-                } finally {
+                } finaly {
                     isUploadingImage = false;
                 }
             });
@@ -349,8 +340,8 @@
             });
         }
 
-        if (dom.btnMinusPersons) dom.btnMinusPersons.addEventListener('click', () => modifyPersonsCount(-1));
-        if (dom.btnPlusPersons) dom.btnPlusPersons.addEventListener('click', () => modifyPersonsCount(1));
+        if (dom.btnMinusPersons) dom.btnMinusPersons.addEventListener('click', () => modifyPersonsCount(-2));
+        if (dom.btnPlusPersons) dom.btnPlusPersons.addEventListener('click', () => modifyPersonsCount(2));
 
         if (dom.btnAddToCart) dom.btnAddToCart.addEventListener('click', () => addCustomizedCakeToCart());
 
@@ -363,11 +354,9 @@
         let current = (parseInt(selectedConfig.persons, 10) || min) + offset;
         if (current < min) {
             current = min;
-            showPremiumToast(`عشان شكل التورتة يطلع معاك مظبوط، أقل مقاس للشكل ده هو ${min} فرد.`, "warning");
+            showPremiumToast(`عشان شكل التورتة يطلع معاك مضبوط، أقل مقاس للشكل ده هو ${min} فرد.`, "warning");
         }
         selectedConfig.persons = current;
-        if (dom.personsInput) dom.personsInput.value = current;
-        if (dom.personsRange) dom.personsRange.value = current;
         finalizeUIUpdate();
     }
 
@@ -376,8 +365,6 @@
         const min = shapeObj ? (shapeObj.minimumPersons || 4) : 4;
         if (selectedConfig.persons < min) {
             selectedConfig.persons = min;
-            if (dom.personsInput) dom.personsInput.value = min;
-            if (dom.personsRange) dom.personsRange.value = min;
             if (!isInitial) showPremiumToast(`أقل مقاس للشكل المختار هو ${min} فرد لضمان الجودة الجمالية.`, "warning");
         }
     }
@@ -386,7 +373,7 @@
        🎨 5. رسم ومعاينة الـ SVG والتحديث اللحظي للواجهة
        ========================================================================== */
     function drawCakePreviewSVG() {
-        const previewContainer = document.getElementById('cake-preview') || document.getElementById('cake-svg-preview');
+        const previewContainer = document.getElementById('cake-preview');
         if (!previewContainer) return;
 
         const { shape, layers, text, textPosition, uploadedImageUrl, printingType } = selectedConfig;
@@ -399,15 +386,15 @@
                 layersGroupMarkup += `
                     <g class="cake-3d-layer" style="transition: all 0.3s ease;">
                         <ellipse cx="150" cy="${y + height}" rx="${width / 2}" ry="14" fill="#EAD4D7" opacity="0.7"/>
-                        <path d="M ${x} ${y} A ${width / 2} 14 0 0 0 ${x + width} ${y} v ${height} A ${width / 2} 14 0 0 1 ${x} ${y + height} Z" fill="#FFF0F2" stroke="#FF91A4" stroke-width="2"/>
+                        <path d="M ${x} ${y} A ${width / 2} 14 0 0 0 ${x + width} ${y} v ${height} A ${width / 2} 14 0 0 1 ${x} ${y + height} Z" fill="#FFFFFF" stroke="#FF91A4" stroke-width="2"/>
                         <ellipse cx="150" cy="${y}" rx="${width / 2}" ry="14" fill="#FFD2D9" stroke="#FF91A4" stroke-width="1.5"/>
                     </g>`;
             } else {
                 layersGroupMarkup += `
                     <g class="cake-3d-layer" style="transition: all 0.3s ease;">
                         <path d="M 150 ${y - 8} L ${150 + width / 2} ${y + 4} L 150 ${y + 16} L ${150 - width / 2} ${y + 4} Z" fill="#FFD2D9" stroke="#FF91A4" stroke-width="1.5"/>
-                        <path d="M ${150 - width / 2} ${y + 4} L 150 ${y + 16} L 150 ${y + 16 + height} L ${150 - width / 2} ${y + 4 + height} Z" fill="#FFF0F2" stroke="#FF91A4" stroke-width="2"/>
-                        <path d="M 150 ${y + 16} L ${150 + width / 2} ${y + 4} L ${150 + width / 2} ${y + 4 + height} L 150 ${y + 16 + height} Z" fill="#FFF5F6" stroke="#FF91A4" stroke-width="2"/>
+                        <path d="M ${150 - width / 2} ${y + 4} L 150 ${y + 16} L 150 ${y + 16 + height} L ${150 - width / 2} ${y + 4 + height} Z" fill="#FFFFFF" stroke="#FF91A4" stroke-width="2"/>
+                        <path d="M 150 ${y + 16} L ${150 + width / 2} ${y + 4} L ${150 + width / 2} ${y + 4 + height} L 150 ${y + 16 + height} Z" fill="#FFFFFF" stroke="#FF91A4" stroke-width="2"/>
                     </g>`;
             }
         }
@@ -434,7 +421,7 @@
 
     function finalizeUIUpdate() {
         const config = liveStoreConfig || cakeConfig;
-        if (dom.totalPriceEl) dom.totalPriceEl.textContent = `${calculateLocalCakePrice(selectedConfig)} جنيه`;
+        if (dom.totalPriceEl) dom.totalPriceEl.textContent = `${calculateLocalCakePrice(selectedConfig)}`;
         if (dom.personsCountEl) dom.personsCountEl.textContent = selectedConfig.persons;
 
         if (dom.summaryShape) { const s = config.shapes.find(x => x.id === selectedConfig.shape); dom.summaryShape.textContent = s ? s.name : selectedConfig.shape; }
@@ -447,6 +434,15 @@
         };
         updateActiveState(dom.shapeCards, 'data-shape', selectedConfig.shape);
         updateActiveState(dom.layerCards, 'data-layer', selectedConfig.layers);
+        updateActiveState(dom.cakeTypeCards, 'data-flavor', selectedConfig.cakeType);
+        updateActiveState(dom.printingCards, 'data-printing', selectedConfig.printingType);
+        updateActiveState(dom.textPositionCards, 'data-position', selectedConfig.textPosition);
+
+        const updateMultiSelectState = (cards, attr, activeArray) => {
+            if (cards) cards.forEach(c => activeArray.includes(c.getAttribute(attr)) ? c.classList.add('active') : c.classList.remove('active'));
+        };
+        updateMultiSelectState(dom.fillingCards, 'data-filling', selectedConfig.fillings);
+        updateMultiSelectState(dom.toppingCards, 'data-topping', selectedConfig.toppings);
 
         drawCakePreviewSVG();
     }
@@ -493,7 +489,7 @@
             }
         };
 
-        // الالتزام التام بالتبادل المعزول للبيانات دون تعديل دالة الإضافة الأساسية للموقع[span_10](start_span)[span_10](end_span)
+        // الالتزام التام بالتبادل المعزول للبيانات دون تعديل دالة الإضافة الأساسية للموقع
         let cart = [];
         try {
             const localData = localStorage.getItem(CART_STORAGE_KEY);
@@ -504,8 +500,7 @@
             localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
         } catch (e) {}
 
-        // إطلاق الحدث لتنبيه ملف `cart-engine.js` بالتحيين دون تداخل الأكواد[span_11](start_span)[span_11](end_span)
-        window.boseInMemoryCart = cart;
+        // إطلاق الحدث لتنبيه ملف `cart-engine.js` بالتحيين دون تداخل الأكواد
         window.dispatchEvent(new Event('bose_cart_updated'));
         if (typeof window.updateGlobalCartCounter === 'function') window.updateGlobalCartCounter();
 
@@ -513,8 +508,8 @@
     }
 
     function showPremiumToast(message, type = 'success') {
-        if (typeof window.showBoseToast === 'function') { window.showBoseToast(message); return; }
-        console.log(`[BoseSweers-Toast] ${type}: ${message}`);
+        if (typeof window.showBoseGlobalToast === 'function') { window.showBoseGlobalToast(message); return; }
+        console.log(`[BoseSweets-Toast] ${type}: ${message}`);
     }
 
     /* ==========================================================================
@@ -539,7 +534,7 @@
         });
     }
 
-    // تصدير واجهة التحكم المعزولة والخاصة بالملف فقط[span_12](start_span)[span_12](end_span)
+    // تصدير واجهة التحكم المعزولة والخاصة بالملف فقط
     window.BoseCakeEngine = {
         refreshEngine: function () {
             isEventsBound = false;
