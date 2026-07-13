@@ -2,13 +2,16 @@
  * core-engine.js - المحرك المركزي العالمي وحارس البيانات والحسابات المالية
  * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية الشاملة والمطورة V26
  * 
- * تم التطوير والتحسين الشامل:
- * 1. حوكمة المهام: عزل تام ومطلق لمهام المحركات الأخرى مع الإبقاء على دالات الفحص المالي الأساسية.
- * 2. كفاءة البيانات: تفعيل نظام الكاش الذكي (Cache Mechanism) لقاعدة البيانات لتقليل الاستهلاك ومنع الفيتش المتكرر.
- * 3. الأداء والسرعة: تحسين جلب الأصول وحقن الـ DOM بدقة متناهية متوافقة مع الكمبيوتر والموبايل وحل ثغرة الهيدر والفوتر.
+ * تم التحديث: حل مشكلة عدم العودة لأول الصفحة عند الرجوع للوراء في جميع الصفحات.
  */
 
 (function() {
+    // [إصلاح حرج]: إجبار المتصفح على فتح أي صفحة من أولها نهائياً ومنع تذكر مكان السكرول القديم
+    if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+    }
+    window.scrollTo(0, 0);
+
     window.BoseStoreData = null; 
     window.boseServerTimeOffset = 0; 
 
@@ -18,10 +21,9 @@
     async function loadStoreDatabase() {
         if (window.BoseStoreData) return;
         
-        // محاولة جلب البيانات من كاش المتصفح المحلي أولاً لتقليل استهلاك البيانات وحماية السرعة
         const cachedData = localStorage.getItem('bose_database_cache');
         const cachedTime = localStorage.getItem('bose_database_cache_time');
-        const cacheDuration = 5 * 60 * 1000; // كاش لمدة 5 دقائق فقط لضمان تحديث الأسعار اللحظي
+        const cacheDuration = 5 * 60 * 1000; 
 
         if (cachedData && cachedTime && (Date.now() - cachedTime < cacheDuration)) {
             window.BoseStoreData = JSON.parse(cachedData);
@@ -48,7 +50,6 @@
                 
                 window.BoseStoreData = await response.json();
                 
-                // حفظ النسخة المستقرة في الكاش لتوفير البيانات في الصفحات القادمة
                 localStorage.setItem('bose_database_cache', JSON.stringify(window.BoseStoreData));
                 localStorage.setItem('bose_database_cache_time', Date.now());
                 
@@ -327,9 +328,6 @@
         cartCountBadges.forEach(badge => badge.textContent = totalDisplayItems);
     };
 
-    /**
-     * جلب اللون البمبي الصريح الموحد (#FF91A4) ليكون خلفية الإشعار بدلاً من الأسود
-     */
     window.showBoseGlobalToast = function(message) {
         let container = document.getElementById('bose-toast-container');
         if (!container) {
@@ -351,9 +349,6 @@
         }, 3000);
     };
 
-    /**
-     * معالجة إضافة المنتجات وحل مشكلة تصفير وإعادة تعيين عداد كرت المنتج تلقائياً
-     */
     window.handleBoseDirectAddToCart = function(buttonElement, productId) {
         if (!window.BoseStoreData || !buttonElement) return;
         
@@ -406,9 +401,6 @@
         }, 2500);
     };
 
-    /**
-     * خطاف تمهيد حارس التمهيد لمنع التعارض البرمجي
-     */
     window.onBoseDatabaseReady = function(callback) {
         if (window.BoseStoreData && window.BoseStoreData.store) {
             callback(window.BoseStoreData);
@@ -481,7 +473,6 @@
         if (document.title !== data.seo.title) {
             document.title = data.seo.title;
         }
-        // إعداد متغيرات الألوان وثيم الموقع من قاعدة البيانات مباشرة لتفادي مشاكل الألوان الافتراضية
         if (data.store && data.store.theme) {
             const root = document.documentElement;
             root.style.setProperty('--bose-pink', data.store.theme.primary || '#FF91A4');
@@ -684,9 +675,6 @@
         }
     }
 
-    /**
-     * 8. محرك تهيئة قسم عقد من الإتقان كـ Slider تفاعلي ثابت وقابل للسحب بالكامل
-     */
     window.initializeExcellenceSectionSlider = function() {
         const track = document.getElementById('excellence-images-track');
         if (!track || !window.BoseStoreData) return;
@@ -730,9 +718,6 @@
         window.setupBoseInteractiveSlider('excellence-images-track', 'excellence-dots', false);
     };
 
-    /**
-     * 9. دالة ربط وتهيئة السلايدرات التفاعلية بالنقاط (Dots) والسحب الجانبي (Swipe) اللمسي لجميع الأقسام
-     */
     window.setupBoseInteractiveSlider = function(trackId, dotsContainerId, isInfiniteLoop = false) {
         const track = document.getElementById(trackId);
         const dotsContainer = document.getElementById(dotsContainerId);
@@ -777,9 +762,6 @@
         });
     };
 
-    /**
-     * 10. محرك مالي وهندسي تفاعلي مخصص لإدارة عدادات الكروت والأسعار اللحظية بدقة
-     */
     window.attachBoseCardQuantityEngine = function(containerElement, baseUnitPrice) {
         if (!containerElement) return;
         const plusBtn = containerElement.querySelector('.btn-qty-plus');
@@ -817,7 +799,6 @@
         document.body.appendChild(err);
     }
 
-    // تفعيل المحرك تلقائياً فور تحميل الملف البرمجي لضمان الحقن الفوري للمكونات الأساسية بكل الصفحات
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', loadStoreDatabase);
     } else {
@@ -825,9 +806,6 @@
     }
 })();
 
-/**
- * 🌟 حارس التمهيد والمزامنة الكاملة للأوصاف الفاخرة وحقن الـ DOM وحقن كروت المنتجات من الـ JSON مباشرة
- */
 document.addEventListener("DOMContentLoaded", () => {
     window.onBoseDatabaseReady && window.onBoseDatabaseReady((data) => {
         const leftCol = document.getElementById('waterfall-left-col');
