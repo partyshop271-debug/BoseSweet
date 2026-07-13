@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>محاكي التورت التفاعلي | حلويات بوسي</title>
+    
+    <!-- محرك التهيئة المركزي العالمي (يُستدعى أولاً لحماية تهيئة البيانات والألوان) -->
+    <script src="js/core-engine.js"></script>
+    
+    <!-- ملفات التصميم الخارجية -->
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/simulators.css">
+</head>
+<body>
+
+    <!-- أوسمة الحقن الديناميكي للهيدر المقدس (يتولى محرك الموقع المركزي ملأها) -->
+    <div id="bose-header-injector"></div>
+
+    <main class="bose-main-container">
+        <!-- قسم المحاكي التفاعلي المتكامل -->
+        <section id="cake-preview-section" class="cake-builder-section">
+            <div class="simulator-container">
+                
+                <!-- لوحة العرض اللحظية (Visual Live Preview Block) -->
+                <div class="builder-visual-panel">
+                    <div class="cake-canvas-wrapper">
+                        <img id="cake-preview-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="معاينة التورتة المخصصة" class="main-preview-asset">
+                        <!-- مؤشر مرئي ديناميكي يعكس الخيارات المختارة بنعومة للعميل -->
+                        <div class="visual-badge-overlay" id="shape-badge">شكل: دائرة</div>
+                    </div>
+                    
+                    <!-- عارض السعر اللحظي الدقيق الشفاف -->
+                    <div class="pricing-card-summary">
+                        <div class="price-row">
+                            <span class="price-label">السعر التقديري للتخصيص:</span>
+                            <div class="dynamic-price-display">
+                                <span id="custom-cake-live-price">580</span> <span class="currency-label">جنيه</span>
+                            </div>
+                        </div>
+                        <p class="pricing-notice-info">الحسبة هنا قايمة على خامات طبيعية ممتازة ومضمونة 100% عشان تطلع لك تورتة تشرفك قدام ضيوفك وتبسطهم بالطعم الأصلي.</p>
+                    </div>
+                </div>
+
+                <!-- لوحة التحكم وتخصيص الخيارات (Customizer Control Panel) -->
+                <div class="builder-controls-panel">
+                    <div class="panel-header-block">
+                        <h1 id="cake-preview-title" class="builder-main-title">محاكي التورت الذكي</h1>
+                        <p id="cake-preview-desc" class="builder-sub-desc">ميزة حصرية تتيح لك تصميم تورتتك بنفسك واختيار كل التفاصيل اللي عايزها قبل ما ننفذها بحب وشغف.</p>
+                    </div>
+
+                    <form id="bose-cake-builder-form" onsubmit="event.preventDefault();">
+                        
+                        <!-- 1. تحديد عدد الأفراد -->
+                        <div class="control-group-box">
+                            <label class="group-field-label" for="cake-persons-input">
+                                <i class="fa-solid fa-users"></i> حجم التورتة (عدد الأفراد):
+                            </label>
+                            <div class="persons-stepper-control">
+                                <button type="button" class="stepper-btn" id="step-minus" aria-label="تقليل الأفراد">-</button>
+                                <input type="number" id="cake-persons-input" class="stepper-value-input" value="10" min="4" max="250" step="2" readonly>
+                                <button type="button" class="stepper-btn" id="step-plus" aria-label="زيادة الأفراد">+</button>
+                            </div>
+                            <span class="field-hint-text">يمكنك الاختيار من 4 إلى 250 فرد (الخطوة فردين).</span>
+                        </div>
+
+                        <!-- 2. تحديد الشكل الهندسي -->
+                        <div class="control-group-box">
+                            <label class="group-field-label"><i class="fa-solid fa-shapes"></i> الشكل الهندسي للطبقات:</label>
+                            <div class="bose-radio-tile-grid" id="shapes-radio-container">
+                                <!-- سيتم ملؤه ديناميكياً من الـ JSON عبر المحرك الداخلي -->
+                            </div>
+                            <!-- حاوية رسائل التحذير الذكية لمنع الأخطاء المنطقية -->
+                            <div id="shape-validation-warning" class="validation-warning-message" style="display: none;"></div>
+                        </div>
+
+                        <!-- 3. النكهة والطعم الداخلي -->
+                        <div class="control-group-box">
+                            <label class="group-field-label"><i class="fa-solid fa-cake-slice"></i> النكهة والطعم الداخلي الفاخر:</label>
+                            <div class="bose-radio-tile-grid" id="flavors-radio-container">
+                                <!-- سيتم ملؤه ديناميكياً من الـ JSON عبر المحرك الداخلي -->
+                            </div>
+                        </div>
+
+                        <!-- 4. خيارات طباعة الصور الخاصة -->
+                        <div class="control-group-box">
+                            <label class="group-field-label"><i class="fa-solid fa-image"></i> تصميم وطباعة الصور الخاصة:</label>
+                            <div class="bose-radio-tile-grid" id="printing-radio-container">
+                                <!-- سيتم ملؤه ديناميكياً من الـ JSON عبر المحرك الداخلي -->
+                            </div>
+                        </div>
+
+                        <!-- 5. الرسالة المكتوبة على التورتة -->
+                        <div class="control-group-box">
+                            <label class="group-field-label" for="cake-custom-message">
+                                <i class="fa-solid fa-pen-fancy"></i> الرسالة المكتوبة فوق التورتة:
+                            </label>
+                            <input type="text" id="cake-custom-message" class="bose-form-text-input" placeholder="مثال: عيد ميلاد سعيد يا بوسي" maxlength="60">
+                            <span class="field-hint-text">اكتب نصاً قصيراً وواضحاً ليتم تنفيذه بدقة متميزة.</span>
+                        </div>
+
+                        <!-- 6. ملاحظات الحساسية الغذائية -->
+                        <div class="control-group-box">
+                            <label class="group-field-label" for="cake-allergy-note">
+                                <i class="fa-solid fa-shield-heart"></i> ملاحظات الحساسية الغذائية (سلامتك الطبية):
+                            </label>
+                            <textarea id="cake-allergy-note" class="bose-form-textarea-input" placeholder="إذا كنت تعاني من حساسية تجاه المكسرات، الألبان، أو أي مكون، يرجى كتابته هنا بعناية..." rows="2"></textarea>
+                        </div>
+
+                        <!-- زر الاعتماد النهائي والإضافة للسلة -->
+                        <div class="builder-action-wrapper">
+                            <button type="button" id="cake-preview-cta" class="bose-primary-submit-btn">
+                                <i class="fa-solid fa-cart-plus"></i> اعتماد التصميم المخصص وإضافته للسلة
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <!-- أوسمة الحقن الديناميكي للفوتر المعتمد الفاتح -->
+    <div id="bose-footer-injector"></div>
+
+    <!-- المحرك البرمجي الداخلي والمعزول تماماً الخاص بصفحة محاكي الكيك فقط -->
+    <script>
+    (function() {
+        // حارس التمهيد: ننتظر حتى يتأكد المحرك المركزي العالمي من جاهزية قاعدة البيانات الموحدة
+        if (window.BoseStoreData) {
+            initCakeBuilderEngine();
+        } else {
+            document.addEventListener('BoseDatabaseLoaded', initCakeBuilderEngine);
+        }
+
+        function initCakeBuilderEngine() {
+            const db = window.BoseStoreData;
+            if (!db || !db.cakeBuilder) return;
+
+            const config = db.cakeBuilder;
+            
+            // عناصر واجهة الـ DOM الأساسية للمحاكي
+            const personsInput = document.getElementById('cake-persons-input');
+            const stepMinusBtn = document.getElementById('step-minus');
+            const stepPlusBtn = document.getElementById('step-plus');
+            const shapesContainer = document.getElementById('shapes-radio-container');
+            const flavorsContainer = document.getElementById('flavors-radio-container');
+            const printingContainer = document.getElementById('printing-radio-container');
+            const priceDisplay = document.getElementById('custom-cake-live-price');
+            const shapeBadge = document.getElementById('shape-badge');
+            const warningBox = document.getElementById('shape-validation-warning');
+            const addToCartBtn = document.getElementById('cake-preview-cta');
+
+            // 1. بناء حقول الاختيارات التفاعلية ديناميكياً لتوفير مرونة الصيانة الكامله واستهلاك البيانات
+            renderBuilderOptions();
+
+            // 2. ربط أحداث التحكم بالعداد (الأفراد) لضمان خطوة التغيير وحماية الحدود القياسية
+            stepMinusBtn.addEventListener('click', () => adjustPersons(-config.persons.step));
+            stepPlusBtn.addEventListener('click', () => adjustPersons(config.persons.step));
+            
+            // 3. ربط أحداث التغيير داخل الاستمارة لتحديث الأسعار والمعاينة البصرية لحظياً
+            document.getElementById('bose-cake-builder-form').addEventListener('change', evaluateSimulatorLogic);
+
+            // التنفيذ الأولي لحساب السعر الافتراضي
+            evaluateSimulatorLogic();
+
+            function renderBuilderOptions() {
+                // ضخ أشكال هندسة الطبقات
+                shapesContainer.innerHTML = config.shapes.map((shape, idx) => `
+                    <div class="bose-tile-item">
+                        <input type="radio" name="cake_shape" id="shape-${shape.id}" value="${shape.id}" ${idx === 0 ? 'checked' : ''} data-min="${shape.minimumPersons}">
+                        <label for="shape-${shape.id}" class="bose-tile-label">
+                            <span class="tile-title">${shape.name}</span>
+                        </label>
+                    </div>
+                `).join('');
+
+                // ضخ النكهات الداخلية
+                flavorsContainer.innerHTML = config.cakeTypes.map((type, idx) => `
+                    <div class="bose-tile-item">
+                        <input type="radio" name="cake_flavor" id="flavor-${type.id}" value="${type.name}" ${idx === 0 ? 'checked' : ''}>
+                        <label for="flavor-${type.id}" class="bose-tile-label">
+                            <span class="tile-title">${type.name}</span>
+                        </label>
+                    </div>
+                `).join('');
+
+                // ضخ خيارات الطباعة والصور
+                printingContainer.innerHTML = `
+                    <div class="bose-tile-item">
+                        <input type="radio" name="cake_printing" id="print-none" value="none" checked data-price="0">
+                        <label for="print-none" class="bose-tile-label"><span class="tile-title">بدون صورة</span></label>
+                    </div>
+                ` + config.printingOptions.map(opt => `
+                    <div class="bose-tile-item">
+                        <input type="radio" name="cake_printing" id="print-${opt.id}" value="${opt.id}" data-price="${opt.price}">
+                        <label for="print-${opt.id}" class="bose-tile-label">
+                            <span class="tile-title">${opt.name}</span>
+                            <span class="tile-fee">(+${opt.price} ج)</span>
+                        </label>
+                    </div>
+                `).join('');
+            }
+
+            function adjustPersons(amount) {
+                let current = parseInt(personsInput.value, 10) || 10;
+                let target = current + amount;
+                if (target >= config.persons.minimum && target <= config.persons.maximum) {
+                    personsInput.value = target;
+                    evaluateSimulatorLogic();
+                }
+            }
+
+            function evaluateSimulatorLogic() {
+                let persons = parseInt(personsInput.value, 10) || 10;
+                const selectedShapeRadio = document.querySelector('input[name="cake_shape"]:checked');
+                const selectedPrintingRadio = document.querySelector('input[name="cake_printing"]:checked');
+                
+                if (!selectedShapeRadio) return;
+
+                let shapeId = selectedShapeRadio.value;
+                let minRequiredPersons = parseInt(selectedShapeRadio.getAttribute('data-min'), 10) || 4;
+                
+                // صمام الأمان الذكي: فحص التوافقية المنطقية لعدد الأفراد مع الشكل الهندسي المختار
+                if (persons < minRequiredPersons) {
+                    warningBox.style.display = "block";
+                    if (shapeId === 'square') warningBox.textContent = config.images.squareMinimum;
+                    else if (shapeId === 'rectangle') warningBox.textContent = config.images.rectangleUpgrade;
+                    else warningBox.textContent = `هذا الشكل يتطلب على الأقل ${minRequiredPersons} فرد.`;
+                    
+                    // تصحيح الأفراد برمجياً بشكل تلقائي ومباشر لحماية الاختيار
+                    personsInput.value = minRequiredPersons;
+                    persons = minRequiredPersons;
+                } else {
+                    warningBox.style.display = "none";
+                }
+
+                // تحديث المؤشر البصري الصغير فوق الصورة
+                const shapeName = selectedShapeRadio.nextElementSibling.querySelector('.tile-title').textContent;
+                shapeBadge.textContent = `شكل: ${shapeName}`;
+
+                // استدعاء دالة الحسبة البرمجية للتورتة المخصصة والمزروعة بالملف المركزي العالمي
+                let printingType = selectedPrintingRadio ? selectedPrintingRadio.value : 'none';
+                
+                if (typeof window.calculateCustomCakePrice === "function") {
+                    let finalCalculatedPrice = window.calculateCustomCakePrice(persons, {
+                        printingType: printingType
+                    });
+                    priceDisplay.textContent = Math.round(finalCalculatedPrice);
+                }
+            }
+
+            // معالجة حدث الضغط على زر إضافة المنتج للسلة الفاخرة
+            addToCartBtn.addEventListener('click', () => {
+                const persons = parseInt(personsInput.value, 10) || 10;
+                const selectedShapeRadio = document.querySelector('input[name="cake_shape"]:checked');
+                const selectedFlavorRadio = document.querySelector('input[name="cake_flavor"]:checked');
+                const selectedPrintingRadio = document.querySelector('input[name="cake_printing"]:checked');
+
+                const shapeName = selectedShapeRadio ? selectedShapeRadio.nextElementSibling.querySelector('.tile-title').textContent : "دائرة";
+                const flavorName = selectedFlavorRadio ? selectedFlavorRadio.value : "فانيليا";
+                const printingValue = selectedPrintingRadio ? selectedPrintingRadio.value : "none";
+                const customMessage = document.getElementById('cake-custom-message').value.trim();
+                const allergyNote = document.getElementById('cake-allergy-note').value.trim();
+
+                // العثور على كائن المنتج المرجعي الأساسي من مصفوفة المنتجات للربط والمزامنة المستقرة
+                const masterProduct = db.products.find(p => p.slug === "toort-custom-master") || {
+                    slug: "toort-custom-master",
+                    title: "التورت",
+                    price: config.basePrice,
+                    basePrice: config.basePrice,
+                    type: "custom-cake"
+                };
+
+                // تجميع خيارات العميل الفردية المخصصة بدقة داخل المحاكي
+                const customizationOptions = {
+                    cakeType: flavorName,
+                    shape: shapeIdFromRadio(selectedShapeRadio.value),
+                    persons: persons,
+                    printingType: printingValue,
+                    customMessage: customMessage,
+                    allergyNote: allergyNote,
+                    flavorName: `تصميم خاص (${shapeName} - ${flavorName})`
+                };
+
+                // استدعاء دالة بناء عنصر السلة القياسي الموحد من المحرك المركزي العالمي
+                if (typeof window.createCartItem === "function" && typeof window.updateGlobalCartCounter === "function") {
+                    const finalCartItem = window.createCartItem(masterProduct, customizationOptions, 1);
+                    
+                    if (finalCartItem) {
+                        // ترحيل وحقن الصنف المخصص داخل الذاكرة المحلية المشتركة بأمان كامل وعزل لوجستي تام
+                        let currentCart = localStorage.getItem('bose_cart');
+                        let cartArray = currentCart ? JSON.parse(currentCart) : [];
+                        
+                        cartArray.push(finalCartItem);
+                        localStorage.setItem('bose_cart', JSON.stringify(cartArray));
+                        
+                        // تحديث عداد الهيدر العالمي فوراً عبر دالة المحرك المركزي
+                        window.updateGlobalCartCounter();
+                        
+                        // إشعار نجاح تفاعلي ناعم وسريع للغاية لراحة العميل النفسية
+                        showFriendlyNotification("تمت إضافة تورتتك المخصصة بنجاح إلى السلة.");
+                    }
+                }
+            });
+
+            function shapeIdFromRadio(val) {
+                return val; // يعيد المعرف المباشر المتوافق مع بروتوكول bose_cart (circle | heart | square | rectangle)
+            }
+
+            function showFriendlyNotification(msg) {
+                const toast = document.createElement('div');
+                toast.className = 'bose-toast-notification';
+                toast.textContent = msg;
+                document.body.appendChild(toast);
+                setTimeout(() => toast.classList.add('show-toast'), 10);
+                setTimeout(() => {
+                    toast.classList.remove('show-toast');
+                    setTimeout(() => toast.remove(), 300);
+                }, 3000);
+            }
+        }
+    })();
+    </script>
+</body>
+</html>
