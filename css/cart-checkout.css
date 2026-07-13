@@ -1,5 +1,5 @@
 /**
- * 👑 ملف التصميم الموحد والفاخر لسلة المشتريات وإتمام الطلب والتوصيل - حلويات بوسي V15.6 Master Edition 👑
+ * 👑 ملف التصميم الموحد والفاخر لسلة المشتريات وإتمام الطلب والتوصيل - حلويات بوسي V16.0 Master Edition 👑
  * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البصرية والبرمجية ومشاكل التداخل
  * متوافقة بشكل مطلق ومتبادل مع: global.css، main.css، simulators.css، core-engine.js، cart-engine.js وقاعدة البيانات site-data-final.json
  * [تغطي بصرياً: صفحة السلة، صفحة الدفع وتفاصيل التوصيل، وصفحة نجاح الطلب مع تأمين كامل لواجهات رفع وضغط صور العملاء لـ Cloudinary]
@@ -215,6 +215,34 @@
     line-height: 1.7;
 }
 
+/* التنسيق الهندسي لزر إفراغ السلة الحقيقي لمنع البتر وتأمين المظهر الفاخر */
+.btn-clear-cart-node {
+    background-color: var(--bose-white);
+    color: var(--bose-pink);
+    border: 1.5px solid var(--bose-pink);
+    border-radius: 30px;
+    padding: 10px 24px;
+    font-family: var(--bose-font);
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: var(--bose-transition);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    align-self: flex-start;
+    box-shadow: var(--bose-soft-shadow);
+    margin-bottom: 10px;
+}
+
+.btn-clear-cart-node:hover {
+    background-color: var(--bose-pink);
+    color: var(--bose-white);
+    box-shadow: var(--bose-hover-shadow);
+    transform: translateY(-2px);
+}
+
 /* ==========================================================================\
    3. كروت المنتجات وتأمين التجاوب ضد البتر (Premium Cart Item Cards)
    ========================================================================== */
@@ -226,6 +254,7 @@
     gap: 20px;
 }
 
+/* الكارد مبني كـ Grid قياسي للشاشات الكبيرة ومتوافق مع حقن عناصر الـ JS أفقياً */
 .bose-cart-item-card,
 .cart-item-card {
     background-color: var(--bose-white);
@@ -233,22 +262,14 @@
     border-radius: var(--bose-radius);
     padding: 20px;
     display: grid;
-    grid-template-columns: 90px 1fr;
-    gap: 16px;
+    grid-template-columns: 120px 1fr auto;
+    gap: 24px;
     align-items: center;
     box-shadow: var(--bose-soft-shadow);
     transition: var(--bose-transition);
     position: relative;
     overflow: hidden;
     box-sizing: border-box;
-}
-
-@media (min-width: 768px) {
-    .bose-cart-item-card,
-    .cart-item-card {
-        grid-template-columns: 110px 1fr auto;
-        gap: 24px;
-    }
 }
 
 /* الفئة الذكية لمنع الفراغات عند غياب الصورة المرفوعة في التخصيص المحاكي */
@@ -269,10 +290,10 @@
     border-color: var(--bose-pink);
 }
 
-/* صندوق الصورة المدمج مع الهوية البصرية */
+/* صندوق الصورة المقدس بمقاس 120px متوافق مع المصفوقة البصرية لمنع التمطط */
 .cart-item-media-box {
-    width: 90px;
-    height: 90px;
+    width: 120px;
+    height: 120px;
     border-radius: 12px;
     overflow: hidden;
     border: 2px solid var(--bose-cream);
@@ -283,13 +304,6 @@
     position: relative;
     flex-shrink: 0;
     aspect-ratio: 1 / 1;
-}
-
-@media (min-width: 768px) {
-    .cart-item-media-box {
-        width: 110px;
-        height: 110px;
-    }
 }
 
 .cart-item-media-box img {
@@ -380,7 +394,7 @@
     border: 1px solid rgba(255, 145, 164, 0.2);
 }
 
-/* زر إزالة المنتج */
+/* زر إزالة المنتج المتمحور في أعلى اليسار بحرية كاملة */
 .cart-item-remove-trigger {
     background: none;
     border: none;
@@ -525,20 +539,6 @@
     width: 100%;
     border-top: 1px dashed var(--bose-border-gray);
     padding-top: 12px;
-}
-
-@media (min-width: 768px) {
-    .cart-item-action-row {
-        flex-direction: column;
-        align-items: flex-end;
-        gap: 16px;
-        justify-content: space-between;
-        height: 100%;
-        margin-top: 0;
-        width: auto;
-        border-top: none;
-        padding-top: 0;
-    }
 }
 
 .cart-item-price-info,
@@ -692,7 +692,6 @@
     box-shadow: 0 0 0 3px rgba(255, 145, 164, 0.15);
 }
 
-/* تم تعديل الخلفية لمنع استخدام اللون الأسود تماشياً مع الهوية البصرية الفاخرة */
 .coupon-apply-trigger {
     background-color: var(--bose-pink); /* البمبي الفاخر نبض الحياة بدلاً من الأسود */
     color: var(--bose-white);
@@ -2012,61 +2011,65 @@ select.bose-form-control option,
 
 /* للهواتف الصغيرة جداً والشاشات الأقل من 480px */
 @media (max-width: 480px) {
+    /* تم تأمين الـ DOM لمنع كسر حقن الـ JS أفقياً على الشاشات الفردية التنافسية */
     .bose-cart-item-card,
     .cart-item-card {
-        grid-template-columns: 1fr !important; /* تحويل التخطيط لعمود واحد لمنع تداخل العناصر وضغطها */
-        gap: 14px;
-        text-align: center;
-        padding: 20px 16px;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 16px !important;
+        text-align: center !important;
+        padding: 24px 16px !important;
     }
 
+    /* حماية أبعاد الصورة لتظل 120px صريحة بدون تمطط أو بكسلة بصورة طبيعية 100% */
     .cart-item-media-box {
-        margin: 0 auto;
-        width: 105px;
-        height: 105px;
-        flex-shrink: 0;
+        margin: 0 auto !important;
+        width: 120px !important;
+        height: 120px !important;
+        flex-shrink: 0 !important;
     }
 
     .cart-item-main-info {
-        align-items: center;
+        align-items: center !important;
     }
 
     .cart-item-remove-trigger {
-        position: absolute;
-        top: 12px;
-        left: 12px;
+        position: absolute !important;
+        top: 12px !important;
+        left: 12px !important;
     }
 
     .cart-item-customizations-panel {
-        justify-content: center;
+        justify-content: center !important;
     }
 
     .cart-item-action-row {
-        flex-direction: column;
-        align-items: center;
-        gap: 12px;
-        width: 100%;
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 12px !important;
+        width: 100% !important;
     }
 
     .bose-qty-controller-box {
-        width: 100%;
-        max-width: 160px;
-        justify-content: space-between;
+        width: 100% !important;
+        max-width: 160px !important;
+        justify-content: space-between !important;
     }
 
     .bose-delivery-options-grid,
     .bose-shipping-toggle-container {
-        grid-template-columns: 1fr; /* عرض عمودي لخيارات التوصيل لتسهيل التصفح باللمس على الموبايل */
-        gap: 12px;
+        grid-template-columns: 1fr !important; /* عرض عمودي لخيارات التوصيل لتسهيل التصفح باللمس على الموبايل */
+        gap: 12px !important;
     }
 
     .coupon-form-container {
-        flex-direction: column;
+        flex-direction: column !important;
     }
 
     .coupon-apply-trigger {
-        width: 100%;
-        height: 46px;
+        width: 100% !important;
+        height: 46px !important;
     }
 }
 
@@ -2084,7 +2087,7 @@ select.bose-form-control option,
     .bose-summary-sticky-card,
     .bose-order-summary-sidebar,
     .cart-summary-card {
-        position: static; /* إزالة التثبيت الجانبي على الشاشات الصغيرة لراحة التصفح */
+        position: static !important; /* إزالة التثبيت الجانبي على الشاشات الصغيرة لراحة التصفح */
     }
 }
 
