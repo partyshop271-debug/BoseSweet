@@ -596,50 +596,42 @@ img {
 }
 
 /* ==========================================================================
-   8. الهندسة الفاخرة لقسم "عقد من الإتقان" الثابت والمستقر (#excellence-section)
-   تم إلغاء وشل الحركة التلقائية (الأوتوماتيكية) تماماً لمنع الإزعاج.
-   الصور مصفوفة أفقياً (واحدة بجانب الأخرى) بشكل سلايدر يدوي مرن مالي الشاشة،
-   يتحكم فيه العميل باللمس والسحب الجانبي (Swipe) براحته الكاملة وبدون وميض.
+   8. الهندسة الفاخرة لقسم "عقد من الإتقان" التفاعلي اللانهائي (#excellence-section)
+   اللوحة المتصلة: تم إزالة جميع الفواصل (gap: 0) وإلغاء الحواف الدائرية 
+   لتلتحم الصور كأنها لوحة فنية واحدة تتحرك بانسيابية تامة وبشكل لا نهائي.
    ========================================================================== */
 .bose-perfection-section {
     width: 100%;
-    padding: 40px 0;
+    padding: 40px 0 0 0; /* إزالة الـ padding الجانبي لتلامس اللوحة حواف الشاشة */
     background-color: var(--bose-white);
     overflow: hidden;
 }
 
 .bose-perfection-carousel-wrapper {
     width: 100vw !important;
-    overflow-x: auto !important; /* السماح بالسحب اللمسي الأفقي اليدوي فقط */
-    scroll-behavior: smooth !important;
-    scroll-snap-type: x mandatory !important;
+    overflow: hidden !important; /* إخفاء أي تمرير يدوي لأنها تتحرك تلقائياً */
     display: flex !important;
     position: relative !important;
-    padding: 10px 16px !important;
+    padding: 0 !important;
     margin: 20px 0 0 0 !important;
-    -webkit-overflow-scrolling: touch; /* سلاسة وسرعة استجابة متناهية للموبايل */
-}
-
-/* إخفاء شريط التمرير التقليدي المشوه تماماً لضمان الفخامة */
-.bose-perfection-carousel-wrapper::-webkit-scrollbar {
-    display: none !important;
 }
 
 #excellence-images-track {
     display: flex !important; 
     flex-direction: row !important;
     flex-wrap: nowrap !important;
-    gap: 16px !important; /* مسافة متوازنة للتنفس البصري ومنع التكدس */
+    gap: 0 !important; /* السر البصري: حظر الفواصل البصرية نهائياً لدمج كروت الصور */
+    padding: 0 !important;
+    margin: 0 !important;
     width: max-content !important;
-    animation: none !important; /* شلل كامل وحظر قطعي للحركة التلقائية */
-    transform: none !important;
+    will-change: transform;
+    animation: bosePerfectionLoop 25s linear infinite !important; /* تفعيل الحركة التلقائية الملساء */
 }
 
 .perfection-slide-node {
-    width: 85vw !important; /* حجم كارت مالي الشاشة ومثالي لتصفح الهواتف الذكية */
-    height: 50vh !important; /* أبعاد بصرية فائقة وراقية ومريحة للعين */
+    width: 100vw !important; /* الصورة تملأ عرض الموبايل بالكامل لتظهر كلوحة بانورامية */
+    height: 45vh !important; /* ارتفاع ملوكي وبصري فائق الجودة */
     flex-shrink: 0 !important;
-    scroll-snap-align: center !important;
     display: block !important;
     margin: 0 !important;
     padding: 0 !important;
@@ -648,35 +640,35 @@ img {
 .perfection-slide-node img {
     width: 100% !important;
     height: 100% !important; 
-    border-radius: 20px !important; /* حواف ناعمة فخمة متوافقة مع كروت الموقع */
-    border: var(--bose-border-pink) !important;
-    box-shadow: var(--bose-shadow-glow) !important;
+    border-radius: 0 !important;    /* منع الحواف الدائرية لتأمين تلاحم اللوحة بالكامل */
+    border: none !important;        /* منع الإطارات للتنفس البصري الكامل */
     object-fit: cover !important;
     display: block !important;
 }
 
-/* حوكمة وتناسق العرض والأبعاد الثابتة على أجهزة الكمبيوتر والدسكتوب */
+/* حوكمة الأبعاد على الشاشات الكبيرة (التابلت والكمبيوتر) */
+@media (min-width: 768px) {
+    .perfection-slide-node { 
+        width: 50vw !important; /* عرض صورتين في الشاشة للتابلت */
+        height: 60vh !important;
+    }
+}
+
 @media (min-width: 1024px) {
-    .bose-perfection-carousel-wrapper {
-        width: 100% !important;
-        max-width: 1200px;
-        margin: 30px auto 0 auto !important;
-        overflow-x: hidden !important; /* منع السكرول في الشاشات الكبيرة */
-        padding: 0 !important;
+    .perfection-slide-node { 
+        width: 33.333vw !important; /* عرض 3 صور ملتحمة في شاشة الكمبيوتر */
+        height: 70vh !important;
     }
+}
 
-    #excellence-images-track {
-        display: grid !important;
-        grid-template-columns: repeat(3, 1fr) !important; /* توزيع الـ 3 صور بالتساوي بكامل عرض الشاشة */
-        gap: 20px !important;
-        width: 100% !important;
-    }
-
-    .perfection-slide-node {
-        width: 100% !important;
-        height: 450px !important; /* ارتفاع ملوكي فخم مستقر بوضوح كامل */
-        scroll-snap-align: none !important;
-    }
+/* 
+  الحارس الرياضي الفاصل لإغلاق ثغرة السلايدر:
+  بما أننا كررنا الصور 4 مرات برمجياً، إذن التحرك بنسبة -25% سيقوم بسحب 
+  مجموعة واحدة كاملة ثم يعيد الدورة بدون أي رمشة أو فراغ أبيض.
+*/
+@keyframes bosePerfectionLoop {
+    0% { transform: translate3d(0, 0, 0); } 
+    100% { transform: translate3d(-25%, 0, 0); } 
 }
 /* ==========================================================================
    9. أقسام كروت وشبكات المنتجات الموحدة القياسية (Strict UI Dimensions)
