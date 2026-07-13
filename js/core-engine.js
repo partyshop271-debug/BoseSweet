@@ -1,16 +1,17 @@
 /**
  * core-engine.js - المحرك المركزي العالمي وحارس البيانات والحسابات المالية
- * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية الشاملة والمطورة V4
- * متوافق بالكامل مع حوكمة المواصفات القياسية الفاخرة والـ DOM المقدس[span_12](start_span)[span_12](end_span)[span_13](start_span)[span_13](end_span)
+ * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية الشاملة والمطورة V3
+ * متوافق بالكامل مع حوكمة المواصفات القياسية الفاخرة والـ DOM المقدس
  */
 
 (function() {
-    // إعداد المتغيرات العالمية داخل الكبسولة البرمجية لحماية أمن البيانات ومنع التصادم[span_14](start_span)[span_14](end_span)
+    // إعداد المتغيرات العالمية داخل الكبسولة البرمجية لحماية أمن البيانات ومنع التصادم
     window.BoseStoreData = null; 
-    window.boseServerTimeOffset = 0; // فارق التوقيت بالمللي ثانية (وقت الخادم - وقت العميل)[span_15](start_span)[span_15](end_span)
+    window.boseServerTimeOffset = 0; // فارق التوقيت بالمللي ثانية (وقت الخادم - وقت العميل)
 
     /**
-     * 1. تهيئة واستدعاء قاعدة بيانات حلويات بوسي المستقرة[span_16](start_span)[span_16](end_span)
+     * 1. تهيئة واستدعاء قاعدة بيانات حلويات بوسي المستقرة
+     * تقرأ JSON بامتداده الصحيح وبآلية فحص متكررة لمنع انقطاع الاتصال
      */
     async function loadStoreDatabase() {
         if (window.BoseStoreData) return;
@@ -21,8 +22,9 @@
         while (retries > 0) {
             try {
                 const response = await fetch('data/site-data-final.json');
-                if (!response.ok) throw new Error('فشل جلب ملف قاعدة البيانات الرئيسي.');[span_17](start_span)[span_17](end_span)
+                if (!response.ok) throw new Error('فشل جلب ملف قاعدة البيانات الرئيسي.');
                 
+                // استخلاص توقيت الخادم الحقيقي من الهيدر لمنع تلاعب ساعات العملاء
                 const serverDateHeader = response.headers.get('Date');
                 if (serverDateHeader) {
                     const serverTime = new Date(serverDateHeader).getTime();
@@ -32,20 +34,26 @@
                     window.boseServerTimeOffset = 0;
                 }
                 
-                window.BoseStoreData = await response.json();[span_18](start_span)[span_18](end_span)
+                window.BoseStoreData = await response.json();
                 
-                injectEarlyDependencies();[span_19](start_span)[span_19](end_span)
-                applyGlobalSEOAndBranding();[span_20](start_span)[span_20](end_span)
-                buildAndInjectGlobalComponents();[span_21](start_span)[span_21](end_span)
-                window.updateGlobalCartCounter();[span_22](start_span)[span_22](end_span)
+                // تشغيل وظائف التمهيد والبناء الديناميكي الفوري
+                injectEarlyDependencies();
+                applyGlobalSEOAndBranding();
                 
-                document.dispatchEvent(new CustomEvent('BoseDatabaseLoaded', { detail: window.BoseStoreData }));[span_23](start_span)[span_23](end_span)
+                // بناء وضخ المكونات المشتركة (الهيدر والفوتر والـ Sidebar والـ Top Bar)
+                buildAndInjectGlobalComponents();
+                
+                // تحديث عداد السلة العالمي لحظياً
+                window.updateGlobalCartCounter();
+                
+                // تفعيل حدث مخصص لإعلام باقي المحركات المعزولة باستقرار البيانات
+                document.dispatchEvent(new CustomEvent('BoseDatabaseLoaded', { detail: window.BoseStoreData }));
                 return;
             } catch (error) {
                 retries--;
                 if (retries === 0) {
-                    console.error("❌ خطأ حرج في تهيئة نظام حلويات بوسي الموحد:", error);[span_24](start_span)[span_24](end_span)
-                    showGlobalFriendlyError();[span_25](start_span)[span_25](end_span)
+                    console.error("❌ خطأ حرج في تهيئة نظام حلويات بوسي الموحد:", error);
+                    showGlobalFriendlyError();
                 } else {
                     await new Promise(res => setTimeout(res, delay));
                     delay *= 2; 
@@ -55,7 +63,7 @@
     }
 
     /**
-     * 2. دالة مراجعة زيادة الأسعار الرسمية وحظر الثغرات المالية[span_26](start_span)[span_26](end_span)
+     * 2. دالة مراجعة زيادة الأسعار الرسمية وحظر الثغرات المالية
      */
     window.calculateBosePrice = function(basePrice, applyOnContext = "menu-only") {
         if (!window.BoseStoreData) return basePrice;
@@ -67,7 +75,7 @@
     };
 
     /**
-     * 3. دالة هندسية لحساب السعر النهائي للمنتج شامل خيارات التخصيص والأحجام[span_27](start_span)[span_27](end_span)
+     * 3. دالة هندسية لحساب السعر النهائي للمنتج (finalPrice) شامل خيارات التخصيص والأحجام
      */
     window.calculateProductFinalPrice = function(product, selectedOptions) {
         const opts = selectedOptions || {};
@@ -76,10 +84,12 @@
         if (product) {
             price = product.price || product.basePrice || 0;
 
+            // أ. حساب السعر بناءً على الحجم المحدد
             if (product.prices && opts.size) {
                 price = product.prices[opts.size] || price;
             }
 
+            // ب. حساب قيمة خيارات الطباعة والصور المخصصة (دعم المنتجات العادية والكب كيك بمرونة تامة)
             const selectedPrinting = opts.printing || opts.printingType || 'none';
             if (selectedPrinting && selectedPrinting !== 'none') {
                 let printingFee = 0;
@@ -87,7 +97,9 @@
                     const printOptions = product.customizationOptions.printing.options;
                     if (Array.isArray(printOptions)) {
                         const printingOpt = printOptions.find(opt => opt.id === selectedPrinting || opt.type === selectedPrinting);
-                        if (printingOpt) printingFee = printingOpt.price;
+                        if (printingOpt) {
+                            printingFee = printingOpt.price;
+                        }
                     }
                 }
                 
@@ -101,6 +113,7 @@
                 price += printingFee;
             }
             
+            // ج. دعم خيارات الميني تورت المخصصة والملحقات الإضافية
             if (product.isMiniCake || product.type === "mini-cake" || product.slug === "mini-cake-two-person") {
                 if (opts.extraToppingPrice) price += parseFloat(opts.extraToppingPrice);
                 if (opts.printingPrice) price += parseFloat(opts.printingPrice);
@@ -111,7 +124,7 @@
     };
 
     /**
-     * 4. بناء عنصر السلة القياسي المانع للتداخل والتصادم البرمجي[span_28](start_span)[span_28](end_span)
+     * 4. بناء عنصر السلة القياسي المانع للتداخل والتصادم البرمجي
      */
     window.createCartItem = function(product, selectedOptions, quantity = 1) {
         if (!product) return null;
@@ -155,7 +168,7 @@
     };
 
     /**
-     * 5. الحسبة الهندسية لمحاكاة أسعار التورتة المخصصة ديناميكياً[span_29](start_span)[span_29](end_span)
+     * 5. الحسبة الهندسية لمحاكاة أسعار التورتة المخصصة ديناميكياً (رفع سعر الفرد لـ 145 جنيهاً)
      */
     window.calculateCustomCakePrice = function(persons, options = {}) {
         const safePersons = parseInt(persons, 10) || 10;
@@ -177,7 +190,7 @@
     };
 
     /**
-     * 6. الحسبة الهندسية لمحاكاة أسعار بوكيهات الورد المخصصة مع الإضافات[span_30](start_span)[span_30](end_span)
+     * 6. الحسبة الهندسية لمحاكاة أسعار بوكيهات الورد المخصصة مع الإضافات
      */
     window.calculateCustomFlowerPrice = function(flowerType, flowerCount, options = {}) {
         const config = window.BoseStoreData?.flowerBuilder;
@@ -220,7 +233,7 @@
     };
 
     /**
-     * 7. التحقق من أرقام الهواتف وتطهيرها بالصيغة المصرية الصارمة[span_31](start_span)[span_31](end_span)
+     * 7. التحقق من أرقام الهواتف وتطهيرها بالصيغة المصرية الصارمة
      */
     window.validateBosePhoneNumber = function(phone, isOptional = false) {
         if (!phone || phone.trim() === "") return isOptional;
@@ -238,7 +251,7 @@
     };
 
     /**
-     * 8. حارس الوقت القياسي والموحد (شرط الـ 24 ساعة للتحضير)[span_32](start_span)[span_32](end_span)
+     * 8. حارس الوقت القياسي والموحد (شرط الـ 24 ساعة للتحضير والإتقان)
      */
     window.validateBoseDeliverySchedule = function(dateStr, timeStr) {
         if (!dateStr || !timeStr) return false;
@@ -249,7 +262,7 @@
     };
 
     /**
-     * 9. تحديث شارة عداد السلة اللحظي بالهيدر[span_33](start_span)[span_33](end_span)
+     * 9. تحديث شارة عداد السلة اللحظي بالهيدر لمنع تداخل المنتجات المخصصة العالية القيمة
      */
     window.updateGlobalCartCounter = function() {
         const cartCountBadges = document.querySelectorAll('#nav-cart-count');
@@ -271,7 +284,7 @@
     };
 
     /**
-     * 10. خطاف تمهيد حارس التمهيد لمنع التعارض البرمجي[span_34](start_span)[span_34](end_span)
+     * 10. خطاف تمهيد حارس التمهيد لمنع التعارض البرمجي
      */
     window.onBoseDatabaseReady = function(callback) {
         if (window.BoseStoreData && window.BoseStoreData.store) {
@@ -307,7 +320,7 @@
     }
 
     /**
-     * 11. بناء وضخ المكونات الهندسية الفاخرة ديناميكياً لجميع صفحات الموقع[span_35](start_span)[span_35](end_span)
+     * 11. بناء وضخ المكونات الهندسية الفاخرة ديناميكياً لجميع صفحات الموقع دون تداخل استايل
      */
     function buildAndInjectGlobalComponents() {
         const data = window.BoseStoreData;
@@ -505,7 +518,7 @@
     }
 
     /**
-     * 12. محرك تهيئة قسم عقد من الإتقان بالحركة التلقائية اللانهائية[span_36](start_span)[span_36](end_span)
+     * 12. محرك تهيئة قسم عقد من الإتقان بالحركة التلقائية اللانهائية وبدون فواصل برمجية
      */
     window.initializeExcellenceSectionSlider = function() {
         const track = document.getElementById('excellence-images-track');
@@ -534,7 +547,7 @@
     };
 
     /**
-     * 13. دالة ربط وتهيئة السلايدرات التفاعلية بالنقاط (Dots) والسحب الجانبي (Swipe) والأزرار[span_37](start_span)[span_37](end_span)
+     * 13. دالة ربط وتهيئة السلايدرات التفاعلية بالنقاط (Dots) والسحب الجانبي (Swipe) والأزرار
      */
     window.setupBoseInteractiveSlider = function(trackId, dotsContainerId, arrowPrevId = null, arrowNextId = null) {
         const track = document.getElementById(trackId);
@@ -597,7 +610,7 @@
 })();
 
 /**
- * 🛡️ حارس التمهيد لضمان ملء كروت وشلالات الصفحة الرئيسية وسد فجوات التفاعل[span_38](start_span)[span_38](end_span)
+ * 🛡️ حارس التمهيد لضمان ملء كروت وشلالات الصفحة الرئيسية وسد فجوات التفاعل
  */
 document.addEventListener("DOMContentLoaded", () => {
     window.onBoseDatabaseReady && window.onBoseDatabaseReady((data) => {
@@ -608,7 +621,7 @@ document.addEventListener("DOMContentLoaded", () => {
             rightCol.innerHTML = data.homepage.waterfall.rightColumnImages.map(img => `<img src="${img}" alt="شلال بوسي" />`).join('');
         }
 
-        // إدخال وتحديث نصوص وأوصاف الأقسام الملتزمة والفاخرة بالتطابق الكامل مع وثيقة المواصفات القياسية[span_39](start_span)[span_39](end_span)[span_40](start_span)[span_40](end_span)
+        // إدخال وتحديث نصوص وأوصاف الأقسام الملتزمة والفاخرة بالتطابق الكامل مع وثيقة المواصفات القياسية
         if(document.getElementById('hero-description')) document.getElementById('hero-description').textContent = data.homepage.hero.description;
         
         if(document.getElementById('excellence-title')) document.getElementById('excellence-title').textContent = "عقد من الإتقان";
@@ -626,6 +639,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if(document.getElementById('categories-section-title')) document.getElementById('categories-section-title').textContent = "تسوق حسب الفئة";
         if(document.getElementById('categories-section-subtitle')) document.getElementById('categories-section-subtitle').textContent = "انتقل مباشرة وبكل سهولة إلى الصنف المفضل لديك عبر فئاتنا الشاملة.";
 
+        // تحديث كتل عروض المحاكيات البصرية الكبرى للتورت والورد
         if(document.getElementById('cake-preview-img')) document.getElementById('cake-preview-img').src = data.homepage.cakePreview.image;
         if(document.getElementById('cake-preview-title')) document.getElementById('cake-preview-title').textContent = data.homepage.cakePreview.title;
         if(document.getElementById('cake-preview-desc')) document.getElementById('cake-preview-desc').textContent = "تميز حصري يتيح لك تصميم تورتتك الفريدة بنفسك واختيار كافة تفاصيل النكهات والطبقات والرسائل الخاصة حسب الطلب.";
@@ -637,29 +651,26 @@ document.addEventListener("DOMContentLoaded", () => {
         if(document.getElementById('flower-preview-cta')) document.getElementById('flower-preview-cta').textContent = data.homepage.flowerPreview.cta;
 
         /**
-         * دالة بناء الكارت الموحد الصارم - مع معالجة حتمية لعزل التورت والورد وتوجيههم للمحاكيات[span_41](start_span)[span_41](end_span)
+         * دالة بناء الكارت الموحد الصارم - مع معالجة حتمية لعزل التورت والورد وتوجيههم للمحاكيات
          */
         function buildProductCardHTML(p) {
             let isCake = (p.id === 'toort-custom-master' || p.slug === 'toort-custom-master');
             let isFlower = (p.id === 'flowers-master' || p.slug === 'flowers-master');
             
-            // تحديد مسار التوجيه الحتمي بناءً على نوع المنتج من الكارت الموحد[span_42](start_span)[span_42](end_span)
+            // تحديد مسار التوجيه الحتمي بناءً على نوع المنتج
             let actionClickUrl = isCake ? 'cake-builder.html' : (isFlower ? 'flower-builder.html' : `product.html?slug=${p.slug}`);
             
-            // تخصيص الأوصاف التفصيلية الحصرية للتورت والورد حسب كراسة الشروط[span_43](start_span)[span_43](end_span)
-            let finalDesc = p.flavorDesc;
-            if (isCake) {
-                finalDesc = "التورت عندنا مش مجرد حلوى للمناسبة، لكنها قطعة مصممة خصيصاً لصاحب المناسبة تجمع بين الشكل الذي يحبه العميل والطعم الذي يفضله والتفاصيل التي تعبر عنه[span_44](start_span)[span_44](end_span).";
-            } else if (isFlower) {
-                finalDesc = "ننفرد بتقديم بوكيهات الورد الطبيعي والصناعي وورد الستان بأعلى مستوى من العناية والاهتمام بالتفاصيل ليصل الورد بكامل نضارته وحضوره[span_45](start_span)[span_45](end_span).";
-            }
-
             return `
                 <div class="product-card-unified">
                     <img src="${p.images[0]}" class="product-card-img" alt="${p.title}" loading="lazy" />
                     <h3 class="product-card-title">${p.title}</h3>
                     <span class="product-card-flavor-name">${p.flavorName}</span>
-                    <p class="product-card-desc">${finalDesc}</p>
+                    <p class="product-card-desc">${p.flavorDesc}</p>
+                    <div class="bose-quantity-counter">
+                        <button class="btn-qty-plus" onclick="event.stopPropagation();">+</button>
+                        <input type="text" class="input-qty-value" value="1" readonly />
+                        <button class="btn-qty-minus" onclick="event.stopPropagation();">-</button>
+                    </div>
                     <div class="product-card-price">${Math.round(p.price)} جنيه</div>
                     <button class="btn-add-to-cart" onclick="location.href='${actionClickUrl}'">استعرض التفاصيل</button>
                 </div>
@@ -708,11 +719,8 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
 
-        // معالجة قسم تسوق حسب الفئة ليتم عرضه كـ Slider أفقي جانبي مرن ومنع التكدس الرأسي تماماً[span_46](start_span)[span_46](end_span)[span_47](start_span)[span_47](end_span)
         const categoriesTrack = document.getElementById('categories-track');
         if (categoriesTrack) {
-            // إضافة كلاس المعالجة وضمان التوجيه لـ menu.html[span_48](start_span)[span_48](end_span)[span_49](start_span)[span_49](end_span)
-            categoriesTrack.className = "categories-track-scrollable"; 
             categoriesTrack.innerHTML = data.homepage.categoriesSlider.map(cat => `
                 <div class="bose-category-slider-card" onclick="location.href='menu.html'">
                     <img src="${cat.image}" class="category-img" alt="${cat.title}" loading="lazy" />
