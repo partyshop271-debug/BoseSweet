@@ -6,7 +6,6 @@
  * 1. إضافة نظام كاش ذكي (Local Storage Cache) لملف الـ JSON لتقليل استهلاك البيانات بنسبة 90% وسرعة تحميل لحظية.
  * 2. استخدام تقنية (Debouncing) في حقل البحث النشط لتقليل استهلاك المعالج ومنع التهنيج على الموبايل.
  * 3. حوكمة مالية صارمة بالكسور العشرية والتقريب النهائي للفاتورة لضمان التوافق المطلق.
- * 4. حل ثغرة عدادات الكروت: إرجاع حالة عداد الكمية إلى الرقم (1) فور إضافة المنتج بنجاح لتأمين تجربة مستخدم مثالية وسلسة.
  */
 
 (function() {
@@ -338,7 +337,6 @@
 
     /**
      * منع تحول مظهر ولون زر إضافة للسلة إلى اللون الأسود المنتهك للهوية عند الضغط
-     * تعديل: إرجاع العداد الداخلي للكارت وسعره اللحظي المعروض فور الترحيل بنجاح لضمان نقاء تجربة الشراء
      */
     window.handleBoseDirectAddToCart = function(buttonElement, productId) {
         if (!window.BoseStoreData || !buttonElement) return;
@@ -366,19 +364,6 @@
 
         localStorage.setItem('bose_cart', JSON.stringify(cart));
         window.updateGlobalCartCounter();
-
-        // [تثبيت وإصلاح ثغرة العداد] إعادة العداد الداخلي لـ 1 وتحديث السعر المرتبط به فوراً
-        if (cardContainer) {
-            const qtyInput = cardContainer.querySelector('.input-qty-value');
-            const priceDisplay = cardContainer.querySelector('.product-card-price');
-            if (qtyInput) {
-                qtyInput.value = 1; // العودة للقيمة الافتراضية الصالحة
-            }
-            if (priceDisplay) {
-                const baseFinalPrice = window.calculateProductFinalPrice(product, {});
-                priceDisplay.textContent = `${Math.round(baseFinalPrice)} جنيه`;
-            }
-        }
 
         const originalHtml = buttonElement.innerHTML;
         buttonElement.innerHTML = '<i class="fa-solid fa-check"></i> تمت الإضافة';
@@ -680,6 +665,7 @@
             });
         }
 
+        // تحسين أداء البحث بواسطة آلية الـ Debounce لمنع تكرار العمليات البرمجية بشكل مفرط وحماية طاقة معالجات الهواتف القديمة
         let searchTimeout;
         if (searchField && resultsContainer) {
             searchField.addEventListener('input', (e) => {
@@ -707,7 +693,7 @@
                         `;
                     });
                     resultsContainer.innerHTML = html || '<div class="search-no-results-msg">لم نجد أصنافاً تطابق بحثك.</div>';
-                }, 200); 
+                }, 200); // تأخير المعالجة 200 مللي ثانية للتأكد من انتهاء المستخدم من الكتابة
             });
         }
     }
@@ -790,7 +776,7 @@
                 if (idx === activeIndex) dot.classList.add('active');
                 else dot.classList.remove('active');
             });
-        }, { passive: true }); 
+        }, { passive: true }); // تحسين أداء السكرول للموبايل ومنع الـ Lag
 
         dots.forEach(dot => {
             dot.addEventListener('click', (e) => {
