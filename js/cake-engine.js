@@ -1,18 +1,24 @@
 /**
  * المحرك البرمجي المطور والمصحح لمحاكي التورت - حلويات بوسي
- * يضمن التوافق المطلق مع قاعدة البيانات الموحدة site-data-final.json وحساب الأسعار لحظياً
+ * يضمن التوافق المطلق مع قاعدة البيانات ونظام الخطوات المرن، وحماية السعر اللحظي خطوة بخطوة
  */
 
 function startEngineLogic() {
-    // 1. جلب عناصر الـ DOM وعزلها برمجياً لضمان أعلى أداء
+    // 1. استدعاء وعزل عناصر واجهة المستخدم والـ DOM
     const inputPersons = document.getElementById('input-cake-persons');
     const btnMinus = document.getElementById('btn-persons-minus');
     const btnPlus = document.getElementById('btn-persons-plus');
     const alertBox = document.getElementById('alert-shape-restriction');
     const priceDisplay = document.getElementById('display-dynamic-price');
-    const btnSubmit = document.getElementById('btn-cake-submit-cart');
+    const btnCartSubmit = document.getElementById('btn-cake-submit-cart');
     
-    // 2. سحب البيانات الحية مباشرة من الـ JSON المركزي الموحد للحفاظ على قدسية الهيكل
+    const btnWizardNext = document.getElementById('btn-wizard-next');
+    const btnWizardPrev = document.getElementById('btn-wizard-prev');
+    
+    let currentActiveStep = 1; // خطوة البداية الافتراضية
+    const totalWizardStepsCount = 4;
+
+    // 2. سحب المواصفات القياسية مباشرة من الـ JSON المركزي للحفاظ على حوكمة الأسعار
     const config = window.BoseStoreData?.cakeBuilder || {
         basePrice: 580,
         pricePerPerson: 145,
@@ -26,7 +32,7 @@ function startEngineLogic() {
     };
 
     /**
-     * دالة الحساب والتحقق اللحظي خطوة بخطوة لمنع الصدمات المالية واللوجستية للعميل
+     * دالة الحساب والتحقق اللحظي لمنع الصدمات المالية واللوجستية للعميل
      */
     function evaluateSimulatorState() {
         let currentPersons = parseInt(inputPersons.value, 10) || config.persons.minimum;
@@ -34,16 +40,15 @@ function startEngineLogic() {
         let selectedShape = selectedShapeElement ? selectedShapeElement.value : 'circle';
         let selectedPrinting = document.querySelector('input[name="cake_printing"]:checked')?.value || 'none';
         
-        // جلب المحددات والقيود الهندسية للأشكال من قاعدة البيانات
         const squareData = config.shapes.find(s => s.id === 'square') || { minimumPersons: 16 };
         const rectData = config.shapes.find(s => s.id === 'rectangle') || { minimumPersons: 20 };
         
         let alertText = "";
         
-        // فحص ومطابقة القيود هندسياً مع رسائل قاعدة البيانات الصارمة
+        // فحص ومطابقة القيود اللوجستية هندسياً لإرشاد العميل بنعومة
         if (selectedShape === 'square' && currentPersons < squareData.minimumPersons) {
             alertText = window.BoseStoreData?.cakeBuilder?.images?.squareMinimum || "المقاس المربع يبدأ من 16 فرد";
-            // معالجة ذكية: إرجاع الاختيار للدائرة تلقائياً لمنع قفل الزر وتأمين النعومة
+            // معالجة مرنة: إرجاع الاختيار للبلوك الدائري الافتراضي لمنع قفل رحلة العميل
             document.querySelector('input[name="cake_shape"][value="circle"]').checked = true;
             selectedShape = 'circle';
         } else if (selectedShape === 'rectangle' && currentPersons < rectData.minimumPersons) {
@@ -52,26 +57,75 @@ function startEngineLogic() {
             selectedShape = 'circle';
         }
         
-        // إظهار رسائل الترقية التعليمية للعميل بنعومة ودون تكدس بصري
+        // إظهار التنبيه التوضيحي التعليمي للعميل ثم إخفاؤه تلقائياً لراحة العين
         if (alertText !== "") {
             alertBox.textContent = alertText;
             alertBox.style.display = "block";
-            // تلاشي تدريجي للرسالة بعد 5 ثوانٍ لراحة عين العميل النفسية
             setTimeout(() => {
-                alertBox.style.style.display = "none";
-            }, 5000);
+                alertBox.style.display = "none";
+            }, 6000);
         }
         
-        // استدعاء دالة الفحص المالي الموحدة والمركزية بالنظام calculateCustomCakePrice حساب الكسور كاملة
+        // حساب السعر النهائي شامل الكسور بناءً على دالة النظام الموحدة calculateCustomCakePrice
         const finalDynamicPrice = window.calculateCustomCakePrice(currentPersons, {
             printingType: selectedPrinting
         });
         
-        // تحديث لافتة السعر اللحظية العائمة فوراً أمام عين العميل بالمليم
+        // طلاء وتحديث لافتة الأسعار اللحظية العائمة بالمليم
         priceDisplay.textContent = `${finalDynamicPrice} جنيه`;
     }
 
-    // 3. التحكم المرن في عداد الأفراد الرقمي ومنع القيم السالبة أو كسر الخطوات (Step = 2)
+    /**
+     * دالة حوكمة حركة الخطوات وإخفاء وإظهار الألواح برمجياً (The Stepper Engine)
+     */
+    function syncWizardPanelsUI() {
+        // إخفاء كافة الكروت والواجهات وتفعيل الكارت النشط فقط
+        for (let i = 1; i <= totalWizardStepsCount; i++) {
+            const panel = document.getElementById(`panel-wizard-step-${i}`);
+            const node = document.getElementById(`node-step-${i}`);
+            
+            if (panel) panel.classList.remove('active-panel');
+            if (node) {
+                node.classList.remove('active', 'done');
+                if (i === currentActiveStep) node.classList.add('active');
+                else if (i < currentActiveStep) node.classList.add('done');
+            }
+        }
+        
+        const activePanelToShow = document.getElementById(`panel-wizard-step-${currentActiveStep}`);
+        if (activePanelToShow) activePanelToShow.classList.add('active-panel');
+        
+        // التحكم في نصوص وحالات أزرار التنقل السفلية لحماية تجربة العميل
+        btnWizardPrev.disabled = (currentActiveStep === 1);
+        
+        if (currentActiveStep === totalWizardStepsCount) {
+            btnWizardNext.style.display = "none";
+            btnCartSubmit.style.display = "block"; // إظهار زر الإضافة للسلة النهائي في الخطوة الأخيرة فقط حماية للمسار
+        } else {
+            btnWizardNext.style.display = "block";
+            btnWizardNext.textContent = "التالي";
+            btnCartSubmit.style.display = "none";
+        }
+    }
+
+    // ربط أحداث الخطوات للتنقل الانسيابي المريح
+    btnWizardNext.addEventListener('click', () => {
+        if (currentActiveStep < totalWizardStepsCount) {
+            currentActiveStep++;
+            syncWizardPanelsUI();
+            evaluateSimulatorState();
+        }
+    });
+
+    btnWizardPrev.addEventListener('click', () => {
+        if (currentActiveStep > 1) {
+            currentActiveStep--;
+            syncWizardPanelsUI();
+            evaluateSimulatorState();
+        }
+    });
+
+    // التحكم الرقمي الميكانيكي لعداد الأفراد ومنع كسر الخطوات (Step = 2)
     btnMinus.addEventListener('click', () => {
         let current = parseInt(inputPersons.value, 10) || config.persons.minimum;
         if (current > config.persons.minimum) {
@@ -88,7 +142,7 @@ function startEngineLogic() {
         }
     });
 
-    // ربط أحداث التغيير الفورية لجميع المدخلات لضمان التحديث اللحظي خطوة بخطوة
+    // ربط أحداث التغيير الفورية لجميع المدخلات والراديو لضمان التحديث اللحظي المباشر
     document.querySelectorAll('input[name="cake_shape"]').forEach(radio => {
         radio.addEventListener('change', evaluateSimulatorState);
     });
@@ -100,7 +154,7 @@ function startEngineLogic() {
     /**
      * بروتوكول قفل وتثبيت السعر والترحيب الآمن بكائن الذاكرة الموحد bose_cart
      */
-    btnSubmit.addEventListener('click', () => {
+    btnCartSubmit.addEventListener('click', () => {
         let currentPersons = parseInt(inputPersons.value, 10) || config.persons.minimum;
         let selectedShape = document.querySelector('input[name="cake_shape"]:checked')?.value || 'circle';
         let selectedFlavor = document.querySelector('input[name="cake_flavor"]:checked')?.value || 'vanilla';
@@ -108,7 +162,6 @@ function startEngineLogic() {
         let messageText = document.getElementById('text-cake-message').value.trim();
         let allergyText = document.getElementById('text-cake-allergy').value.trim();
         
-        // جلب كائن التورت الأساسي الفاخر للربط المباشر مع المصدر
         const masterProduct = window.BoseStoreData?.products?.find(p => p.slug === "toort-custom-master") || {
             slug: "toort-custom-master",
             title: "التورت",
@@ -116,7 +169,6 @@ function startEngineLogic() {
             type: "custom-cake"
         };
 
-        // صياغة تفاصيل التصميم الدقيقة والمتوافقة تماماً مع طبقة Cart DOM Layer
         const customOptions = {
             cakeType: selectedFlavor === 'vanilla' ? 'فانيليا' : (selectedFlavor === 'chocolate' ? 'شوكولاتة' : 'نصف ونصف'),
             shape: selectedShape,
@@ -131,28 +183,29 @@ function startEngineLogic() {
         const finalCartItem = window.createCartItem(masterProduct, customOptions, 1);
         
         if (finalCartItem) {
-            // جلب الذاكرة المحلية الحالية وسد ثغرات التداخل
             let localCartRaw = localStorage.getItem('bose_cart');
             let boseCart = localCartRaw ? JSON.parse(localCartRaw) : [];
             
-            // قفل وتثبيت السعر الفعلي للحماية من التلاعب
+            // قفل وتثبيت السعر الفعلي للحماية من تفاوت الكسور الحسابية لاحقاً
             finalCartItem.finalPrice = window.calculateCustomCakePrice(currentPersons, { printingType: selectedPrinting });
             finalCartItem.type = "custom-cake";
             finalCartItem.flavorName = "تصميم خاص حسب الطلب";
             
-            // ضخ الكائن المخصص بالكامل في السلة ككائن فريد
             boseCart.push(finalCartItem);
             localStorage.setItem('bose_cart', JSON.stringify(boseCart));
             
-            // تحديث شارة العداد اللحظي بالهيدر ديناميكياً
             if (typeof window.updateGlobalCartCounter === 'function') {
                 window.updateGlobalCartCounter();
             }
             
-            // رسالة تفاعلية قصيرة وراقية مأخوذة من قيم الهوية
-            alert("تمت إضافة المنتج إلى السلة.");
+            // استخدام واجهة الإشعارات الموحدة والناعمة للبراند بدلاً من تنبيهات المتصفح الجافة
+            if (typeof window.showBoseGlobalToast === 'function') {
+                window.showBoseGlobalToast("تمت إضافة تصميم تورتتك الفريد إلى السلة بنجاح.");
+            } else {
+                alert("تمت إضافة المنتج إلى السلة.");
+            }
             
-            // إعادة تهيئة وتسوية الحقول ميكانيكياً بدون كركبة أو تكدس بصري
+            // تصفير الواجهة والعودة للخطوة الأولى لراحة العميل النفسية وتجهيز طلب جديد
             document.getElementById('text-cake-message').value = "";
             document.getElementById('text-cake-allergy').value = "";
             inputPersons.value = config.persons.minimum;
@@ -160,15 +213,18 @@ function startEngineLogic() {
             document.querySelector('input[name="cake_flavor"][value="vanilla"]').checked = true;
             document.querySelector('input[name="cake_printing"][value="none"]').checked = true;
             
+            currentActiveStep = 1;
+            syncWizardPanelsUI();
             evaluateSimulatorState();
         }
     });
 
-    // التمهيد والتشغيل الأولي اللحظي فور فحص حارس النظام
+    // التشغيل والتمهيد اللحظي عند تحميل الصفحة
+    syncWizardPanelsUI();
     evaluateSimulatorState();
 }
 
-// تشغيل المحرك والربط مع حارس التمهيد ومنع التعارض البرمجي للنظام
+// تشغيل المحرك والربط الآمن مع حارس التمهيد ومنع التعارض البرمجي للنظام
 if (typeof window.onBoseDatabaseReady === 'function') {
     window.onBoseDatabaseReady(() => {
         startEngineLogic();
