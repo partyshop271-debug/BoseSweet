@@ -1,9 +1,9 @@
 /**
  * core-engine.js - المحرك المركزي العالمي وحارس البيانات والحسابات المالية
- * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية الشاملة والمطورة V24
+ * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية الشاملة والمطورة V25
  * 
- * تم الإصلاح الشامل والجذري لحركة قسم "عقد من الإتقان" اللانهائية، ونقاط التصفح (Dots)
- * اللمسية التفاعلية لتعمل بدقة ميكانيكية مطلقة في جميع أقسام الموقع على الموبايل والكمبيوتر.
+ * تم التعديل الجذري لقسم "عقد من الإتقان" ليصبح سلايدر تفاعلي مستقر وثابت
+ * يستجيب للسحب اللمسي المباشر والنقاط (Dots) بدون أي اختفاء أو حركات تلقائية مشوهة.
  */
 
 (function() {
@@ -501,8 +501,8 @@
     }
 
     /**
-     * 12. محرك تهيئة قسم عقد من الإتقان المطور كلياً كلوحة متحركة لا نهائية تفاعلية
-     * تم تطبيق نظام الـ Clones المتكرر لملء المسافات البرمجية ومنع الفراغات والوميض نهائياً مع تفعيل نقاط التنقل الذكية.
+     * 12. محرك تهيئة قسم عقد من الإتقان كـ Slider تفاعلي ثابت وقابل للسحب بالكامل
+     * تم إلغاء حركات الأنميشن التلقائية والتكرار نهائياً لمنع وميض أو اختفاء الصور، مع ربط كل منتج بصفحته الفاخرة.
      */
     window.initializeExcellenceSectionSlider = function() {
         const track = document.getElementById('excellence-images-track');
@@ -511,56 +511,75 @@
         const config = window.BoseStoreData.homepage?.excellence;
         if (!config || !Array.isArray(config.images)) return;
         
+        // جلب عينات المنتجات المحددة لربط التوجيه الملوكي (مثال: تورت، ورد، بوكس الروقان)
+        const products = window.BoseStoreData.products || [];
+        
         let imagesHtml = '';
-        config.images.forEach(imgUrl => {
+        config.images.forEach((imgUrl, idx) => {
+            // توزيع ذكي للروابط الداخلية لتوجيه العميل لصفحة المنتج الفردية الصحيحة
+            let targetUrl = 'menu.html';
+            if (idx === 0) {
+                const p = products.find(prod => prod.id === 'toort-custom-master');
+                targetUrl = p ? 'cake-builder.html' : 'menu.html';
+            } else if (idx === 1) {
+                const p = products.find(prod => prod.id === 'relax-box');
+                targetUrl = p ? `product.html?slug=${p.slug}` : 'menu.html';
+            } else if (idx === 2) {
+                const p = products.find(prod => prod.id === 'flowers-master');
+                targetUrl = p ? 'flower-builder.html' : 'menu.html';
+            }
+
             imagesHtml += `
-                <div class="perfection-slide-node">
-                    <img src="${imgUrl}" alt="روائع وإتقان حلويات بوسي" loading="lazy" />
+                <div class="perfection-slide-node" style="scroll-snap-align: center; flex-shrink: 0;">
+                    <a href="${targetUrl}" style="display: block; width: 100%; height: 100%;">
+                        <img src="${imgUrl}" alt="روائع وإتقان حلويات بوسي" loading="eager" />
+                    </a>
                 </div>
             `;
         });
         
-        // حقن الصور مكررة 4 مرات هندسياً لملء مسار شريط الدوران اللانهائي بالتكامل الكامل
-        track.innerHTML = imagesHtml + imagesHtml + imagesHtml + imagesHtml; 
-        track.style.display = "flex";
-        track.style.animation = "bosePerfectionLoop 25s linear infinite"; // استعادة نبض حركة الشريط الانسيابية
+        // حقن الـ 3 صور الأصلية فقط بدون أي تكرار أو كلونات تلقائية لضمان الثبات المطلق
+        track.innerHTML = imagesHtml; 
         
-        // ربط نقاط التصفح التفاعلية للتحكم اليدوي المباشر مع تفعيل علم الحركة اللانهائية
-        window.setupBoseInteractiveSlider('excellence-images-track', 'excellence-dots', true);
+        // تهيئة أنماط CSS للسحب اللمسي الحر المباشر عبر أصابع اليد على الموبايل
+        track.style.display = "flex";
+        track.style.overflowX = "auto";
+        track.style.scrollSnapType = "x mandatory";
+        track.style.webkitOverflowScrolling = "touch";
+        track.style.animation = "none"; // حظر وحذف الأنميشن المسبب للاختفاء
+        
+        // ربط نقاط التصفح التفاعلية للتحكم اليدوي المباشر والسحب اللمسي
+        window.setupBoseInteractiveSlider('excellence-images-track', 'excellence-dots', false);
     };
 
     /**
      * 13. دالة ربط وتهيئة السلايدرات التفاعلية بالنقاط (Dots) والسحب الجانبي (Swipe) اللمسي لجميع الأقسام
-     * صممت بدقة ميكانيكية متناهية لمنع صراع التمرير وحل مشاكل اللمس نهائياً على الموبايل والكمبيوتر.
      */
     window.setupBoseInteractiveSlider = function(trackId, dotsContainerId, isInfiniteLoop = false) {
         const track = document.getElementById(trackId);
         const dotsContainer = document.getElementById(dotsContainerId);
         if (!track) return;
 
-        // في حالة شريط التميز التلقائي، نحسب النقاط بناءً على عدد عناصر المجموعة الواحدة الأصلية فقط (3 عناصر)
-        let totalOriginalItems = isInfiniteLoop ? 3 : track.children.length;
+        let totalOriginalItems = track.children.length;
         if (totalOriginalItems <= 0) return;
 
-        // بناء نقاط التصفح بالـ DOM الموحد والمحمي
         if (dotsContainer) {
             let dotsHtml = '';
             for (let i = 0; i < totalOriginalItems; i++) {
                 dotsHtml += `<span class="bose-dot-node ${i === 0 ? 'active' : ''}" data-index="${i}"></span>`;
             }
             dotsContainer.innerHTML = dotsHtml;
-            // ضمان تفعيل قدرة استقبال النقرات اللمسية بـ CSS بشكل صريح وحارس
             dotsContainer.style.pointerEvents = "auto";
-            dotsContainer.style.zIndex = "40000";
+            dotsContainer.style.zIndex = "45000";
         }
 
         const dots = dotsContainer ? Array.from(dotsContainer.children) : [];
 
-        // معالجة الاسكرول والتحديث اللحظي المتبادل للحالة النشطة للـ Dots أثناء سحب أصابع العميل
+        // معالجة السحب بالاصبع والتحديث اللحظي المتبادل للـ Dots مع السحب اللمسي المباشر للعميل
         track.addEventListener('scroll', () => {
             const scrollLeft = Math.abs(track.scrollLeft);
-            const itemWidth = track.children[0]?.offsetWidth || 300; 
-            const activeIndex = Math.round(scrollLeft / itemWidth) % totalOriginalItems;
+            const itemWidth = track.children[0]?.offsetWidth || track.offsetWidth || 300; 
+            const activeIndex = Math.min(totalOriginalItems - 1, Math.max(0, Math.round(scrollLeft / itemWidth)));
             
             dots.forEach((dot, idx) => {
                 if (idx === activeIndex) dot.classList.add('active');
@@ -568,34 +587,16 @@
             });
         });
 
-        // تشغيل ودعم أحداث اللمس والضغط المباشر والآمن على النقاط لنقل السلايدر فوراً وبسلاسة
+        // تشغيل ودعم أحداث اللمس والضغط المباشر على النقاط لنقل السلايدر فوراً
         dots.forEach(dot => {
             dot.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 
                 const targetIndex = parseInt(e.target.getAttribute('data-index'), 10);
-                const itemWidth = track.children[0]?.offsetWidth || 300;
+                const itemWidth = track.children[0]?.offsetWidth || track.offsetWidth || 300;
                 
-                if (isInfiniteLoop) {
-                    // حماية وإصلاح تصادم أنميشن الإتقان: نقوم بحساب المسافة ونقل التراك بـ transform مؤقتاً أو التمرير الصافي
-                    track.style.animationPlayState = 'paused';
-                }
-                
-                track.scrollTo({ 
-                    left: (targetIndex * itemWidth), 
-                    behavior: 'smooth' 
-                });
-                
-                // تحديث الكلاس النشط يدوياً لسرعة الاستجابة البصرية للعين
-                dots.forEach((d, idx) => {
-                    if (idx === targetIndex) d.classList.add('active');
-                    else d.classList.remove('active');
-                });
-                
-                if (isInfiniteLoop) {
-                    setTimeout(() => { track.style.animationPlayState = 'running'; }, 3000);
-                }
+                track.scrollTo({ left: (targetIndex * itemWidth), behavior: 'smooth' });
             });
         });
     };
