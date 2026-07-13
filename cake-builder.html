@@ -27,33 +27,6 @@
             margin: 0 auto;
         }
 
-        /* حاوية المعاينة الحية الموفرة للبيانات وثابتة جغرافياً أثناء التصفح */
-        .builder-visual-panel {
-            background: #FFFFFF;
-            border: 1px solid rgba(255,145,164,0.15);
-            padding: 30px;
-            border-radius: 24px;
-            box-shadow: 0 8px 32px rgba(255, 145, 164, 0.05) !important;
-            text-align: center;
-            position: sticky;
-            top: 130px;
-            z-index: 10;
-            box-sizing: border-box;
-            transition: all 0.3s ease;
-        }
-
-        .cake-canvas-wrapper {
-            background: #FFF5F6;
-            padding: 25px;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 260px;
-            margin-bottom: 20px;
-            box-sizing: border-box;
-        }
-
         /* لوحة التحكم وتخصيص خيارات العميل الفاخرة والمقسمة لخطوات */
         .builder-controls-panel {
             background: #FFFFFF;
@@ -61,6 +34,8 @@
             flex-direction: column;
             gap: 24px;
             box-sizing: border-box;
+            max-width: 700px;
+            margin: 0 auto;
         }
 
         /* أزرار التنقل الانسيابي بين خطوات المحاكي الفاخر */
@@ -72,20 +47,8 @@
             gap: 15px;
         }
 
-        /* شاشات الموبايل والتابلت: إلغاء الالتصاق والتحول لنمط طولي انسيابي مريح */
+        /* شاشات الموبايل والتابلت: التحول لنمط طولي انسيابي مريح */
         @media (max-width: 1024px) {
-            .simulator-grid-layout {
-                grid-template-columns: 1fr !important;
-                gap: 30px !important;
-            }
-
-            .builder-visual-panel {
-                position: relative !important;
-                top: 0 !important;
-                z-index: 1 !important;
-                padding: 20px !important;
-            }
-            
             .step-navigation-bar {
                 flex-direction: column-reverse !important;
                 gap: 10px !important;
@@ -113,9 +76,9 @@
                 <div class="step-node" data-step="3" id="node-step-3">3</div>
             </div>
 
-            <div class="simulator-grid-layout" style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 40px; align-items: start;">
+            <div class="simulator-grid-layout">
                 
-                <!-- أولاً: لوحة التحكم وتخصيص الخيارات الفاخرة بنظام الخطوات (الجانب الأيمن) -->
+                <!-- لوحة التحكم وتخصيص الخيارات الفاخرة بنظام الخطوات -->
                 <div class="builder-controls-panel">
                     <div class="panel-header-block" style="text-align: right; border-bottom: 1px solid rgba(255,145,164,0.1); padding-bottom: 15px;">
                         <h1 class="builder-main-title" style="font-family: 'Cairo'; font-size: 22px; font-weight: 700; color: #111111; margin: 0 0 6px 0;">محاكي التورت الذكي</h1>
@@ -140,7 +103,6 @@
                                     <span id="cake-persons-display" style="width: 50px; text-align: center; font-size: 16px; font-weight: 700; color: #111111; font-family: 'Cairo';">4</span>
                                     <button type="button" class="stepper-btn" id="cake-btn-minus" style="border: none; background: transparent; width: 40px; height: 100%; font-size: 20px; font-weight: 700; color: #111111; cursor: pointer;">-</button>
                                 </div>
-                                <span class="field-hint-text" style="font-family: 'Cairo'; font-size: 12px; color: #111111; opacity: 0.6; display: block; margin-top: 6px;">يمكنك اختيار الحجم بدقة (أقل مقاس يبدأ من 4 أفراد ويتعدل تلقائياً بحسب الشكل المختار لضمان الجودة الجمالية).</span>
                             </div>
 
                             <!-- 2. تحديد الشكل الهندسي للطبقات -->
@@ -151,8 +113,8 @@
                                 <div class="bose-cards-interactive-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
                                     <div class="cake-shape-card active" data-shape="circle">دائرة</div>
                                     <div class="cake-shape-card" data-shape="heart">قلب فخم</div>
-                                    <div class="cake-shape-card" data-shape="square">مربع (+100 ج)</div>
-                                    <div class="cake-shape-card" data-shape="rectangle">مستطيل (+150 j)</div>
+                                    <div class="cake-shape-card" data-shape="square">مربع</div>
+                                    <div class="cake-shape-card" data-shape="rectangle">مستطيل</div>
                                 </div>
                             </div>
                         </div>
@@ -168,8 +130,8 @@
                                 </label>
                                 <div class="bose-cards-interactive-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
                                     <div class="cake-layer-card active" data-layer="1">دور واحد</div>
-                                    <div class="cake-layer-card" data-layer="2">٢ دور (+150 ج)</div>
-                                    <div class="cake-layer-card" data-layer="3">٣ أدوار (+300 ج)</div>
+                                    <div class="cake-layer-card" data-layer="2">٢ دور</div>
+                                    <div class="cake-layer-card" data-layer="3">٣ أدوار</div>
                                 </div>
                             </div>
 
@@ -190,18 +152,18 @@
                         <div class="cake-builder-step-panel" id="cake-step-panel-3" style="display: none;">
                             <h2 class="step-title" style="font-family: 'Cairo'; font-size: 16px; font-weight: 700; color: #111111; margin-bottom: 20px;"><i class="fa-solid fa-wand-magic-sparkles" style="color:#FF91A4; margin-left:6px;"></i> الخطوة 3: التخصيص النهائي وطباعة الصور الخاصة</h2>
                             
-                            <!-- 1. خيارات طباعة الصور الخاصة المعتمدة والمطابقة للملف الحاكم -->
+                            <!-- 1. خيارات طباعة الصور الخاصة المعتمدة -->
                             <div class="control-group-box" style="text-align: right; margin-bottom: 24px;">
                                 <label class="group-field-label" style="font-family: 'Cairo'; font-size: 15px; font-weight: 700; color: #111111; display: block; margin-bottom: 12px;">
                                     <i class="fa-solid fa-image" style="color: #FF91A4; margin-left: 6px;"></i> تصميم وطباعة الصور الخاصة المعتمدة:
                                 </label>
                                 <div class="bose-cards-interactive-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px;">
                                     <div class="cake-printing-card active" data-printing="none">بدون صورة</div>
-                                    <div class="cake-printing-card" data-printing="edible">صورة للأكل (+60 ج)</div>
-                                    <div class="cake-printing-card" data-printing="non-edible">مجسمة برواز (+15 ج)</div>
+                                    <div class="cake-printing-card" data-printing="edible">صورة للأكل</div>
+                                    <div class="cake-printing-card" data-printing="non-edible">مجسمة برواز</div>
                                 </div>
                                 
-                                <!-- حاوية رفع الصور السحابية الآمنة الموفرة للباقة لـ Cloudinary -->
+                                <!-- حاوية رفع الصور السحابية لـ Cloudinary -->
                                 <div id="bose-photo-upload-zone" style="display: none;">
                                     <p style="font-family: 'Cairo'; font-size: 13px; font-weight: 600; color: #111111; margin: 0 0 10px 0;">ارفع صورتك المفضلة لتزيين تورتتك الفاخرة 🌸</p>
                                     <input type="file" id="cake-photo-file-input" accept="image/*" style="display: none;">
@@ -215,21 +177,22 @@
                                 </div>
                             </div>
 
-                            <!-- 2. العبارة النصية المكتوبة والموضع المعتمد مجاناً لحماية التنسيق الجمالي -->
+                            <!-- 2. العبارة النصية المكتوبة والموضع المعتمد مجاناً -->
                             <div class="control-group-box" style="text-align: right; margin-bottom: 24px;">
                                 <label class="group-field-label" for="cake-custom-text" style="font-family: 'Cairo'; font-size: 15px; font-weight: 700; color: #111111; display: block; margin-bottom: 10px;">
                                     <i class="fa-solid fa-pen-fancy" style="color: #FF91A4; margin-left: 6px;"></i> عبارة الإهداء المكتوبة فوق التورتة:
                                 </label>
                                 <input type="text" id="cake-custom-text" class="bose-form-text-input" placeholder="مثال: عيد ميلاد سعيد يا بوسي" maxlength="30" style="width: 100%; border: 1px solid rgba(255,145,164,0.3); padding: 12px; border-radius: 14px; font-family: 'Cairo'; font-size: 14px; color: #111111; box-sizing: border-box; background: #FFFFFF; outline: none;">
-                                <span class="field-hint-text" style="font-family: 'Cairo'; font-size: 12px; color: #111111; opacity: 0.6; display: block; margin-top: 6px;">تورتتك الرائعة تدعم حتى ٣٠ حرفاً لحماية الخط والتنسيق الجمالي البصري ومنع التداخل.</span>
                             </div>
 
-                            <!-- ملخص الحجز الإستراتيجي اللحظي الشفاف للعميل قبل الإضافة لسلة بوسي الموحدة -->
-                            <div class="summary-specs-card" style="background: rgba(255,145,164,0.02); border: 1px solid rgba(255,145,164,0.15); padding: 20px; border-radius: 20px; text-align: right; display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
-                                <h3 style="font-family: 'Cairo'; font-size: 14px; font-weight: 700; color: #111111; margin: 0 0 6px 0; border-bottom: 1px solid rgba(255,145,164,0.1); padding-bottom: 6px;">تكوين طلبيتك الفاخرة حالياً:</h3>
-                                <div style="font-family: 'Cairo'; font-size: 13px; color: #111111; display:flex; justify-content:space-between;"><span>الشكل الهندسي المختار:</span> <strong id="summary-shape">دائرة</strong></div>
-                                <div style="font-family: 'Cairo'; font-size: 13px; color: #111111; display:flex; justify-content:space-between;"><span>النكهة والطعم الداخلي:</span> <strong id="summary-cake-type">فانيليا هشة</strong></div>
-                                <div style="font-family: 'Cairo'; font-size: 13px; color: #111111; display:flex; justify-content:space-between;"><span>حجم التورتة الإجمالي:</span> <strong id="summary-persons">4 فرد</strong></div>
+                            <!-- السعر اللحظي المقفل والدقيق الشفاف الشامل للزيادات المعتمدة -->
+                            <div class="pricing-card-summary" style="border-top: 1px dashed rgba(255,145,164,0.3); padding-top: 15px; margin-bottom: 20px;">
+                                <div class="price-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                    <span class="price-label" style="font-family: 'Cairo'; font-size: 15px; font-weight: 600; color: #111111;">السعر التقديري للتخصيص:</span>
+                                    <div class="dynamic-price-display" style="font-family: 'Cairo'; font-size: 24px; font-weight: 700; color: #FF91A4;">
+                                        <span id="cake-total-price">580</span> <span style="font-size: 14px; color: #111111;">جنيه</span>
+                                    </div>
+                                </div>
                             </div>
 
                             <!-- زر الاعتماد النهائي الكلي للطلب والترحيل المعزول للسلة الموحدة -->
@@ -247,29 +210,6 @@
                         </div>
 
                     </form>
-                </div>
-
-                <!-- ثانياً: لوحة العرض اللحظية الخفيفة برمجياً برسم الـ SVG الموفر للبيانات (الجانب الأيسر) -->
-                <div class="builder-visual-panel">
-                    <h2 style="font-family: 'Cairo'; font-size: 16px; font-weight: 700; color: #111111; margin: 0 0 15px 0;">المعاينة الحية لتصميمك الفاخر ✨</h2>
-                    
-                    <!-- حاوية حقن الـ SVG الديناميكي الموفر للباقة بنسبة 100% -->
-                    <div id="cake-preview" class="cake-canvas-wrapper">
-                        <!-- يتم رسم وتحديث الكعكة ثلاثية الأبعاد هنا عبر محرك جافا سكريبت المطور -->
-                    </div>
-                    
-                    <!-- عارض السعر اللحظي المقفل والدقيق الشفاف الشامل للزيادات المعتمدة -->
-                    <div class="pricing-card-summary" style="border-top: 1px dashed rgba(255,145,164,0.3); padding-top: 15px;">
-                        <div class="price-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                            <span class="price-label" style="font-family: 'Cairo'; font-size: 15px; font-weight: 600; color: #111111;">السعر التقديري للتخصيص:</span>
-                            <div class="dynamic-price-display" style="font-family: 'Cairo'; font-size: 24px; font-weight: 700; color: #FF91A4;">
-                                <span id="cake-total-price">580</span> <span style="font-size: 14px; color: #111111;">جنيه</span>
-                            </div>
-                        </div>
-                        <p class="pricing-notice-info" style="font-family: 'Cairo'; font-size: 12px; color: #111111; opacity: 0.7; line-height: 1.6; margin: 0; text-align: right;">
-                            الحسبة هنا قايمة على خامات طبيعية ممتازة ومضمونة 100% عشان تطلع لك تورتة تشرفك قدام ضيوفك وتبسطهم بالطعم الأصلي.
-                        </p>
-                    </div>
                 </div>
 
             </div>
