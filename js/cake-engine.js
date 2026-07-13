@@ -1,393 +1,178 @@
 /**
- * 👑 محرك محاكي تخصيص التورت التفاعلي الفاخر المطور والمصحح بالكامل - حلويات بوسي 👑
- * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية V34.0
- * التزام مطلق بحدود الملف (Scope-Locked) وقواعد حوكمة البيانات المعتمدة لعام 2026
+ * المحرك البرمجي المطور والمصحح لمحاكي التورت - حلويات بوسي
+ * يضمن التوافق المطلق مع قاعدة البيانات الموحدة site-data-final.json وحساب الأسعار لحظياً
  */
 
-(function () {
-    "use strict";
-
-    const CART_STORAGE_KEY = 'bose_cart';
-    let currentStep = 1;
-    const totalSteps = 3;
-
-    const cakeConfig = {
-        enabled: true,
-        basePrice: 580,          
-        basePersons: 4,
-        extraPersonPrice: 145,   
+function startEngineLogic() {
+    // 1. جلب عناصر الـ DOM وعزلها برمجياً لضمان أعلى أداء
+    const inputPersons = document.getElementById('input-cake-persons');
+    const btnMinus = document.getElementById('btn-persons-minus');
+    const btnPlus = document.getElementById('btn-persons-plus');
+    const alertBox = document.getElementById('alert-shape-restriction');
+    const priceDisplay = document.getElementById('display-dynamic-price');
+    const btnSubmit = document.getElementById('btn-cake-submit-cart');
+    
+    // 2. سحب البيانات الحية مباشرة من الـ JSON المركزي الموحد للحفاظ على قدسية الهيكل
+    const config = window.BoseStoreData?.cakeBuilder || {
+        basePrice: 580,
+        pricePerPerson: 145,
+        persons: { minimum: 4, maximum: 250, step: 2 },
         shapes: [
-            { id: "circle", name: "دائرة", minimumPersons: 4, extraPrice: 0 },
-            { id: "heart", name: "قلب", minimumPersons: 4, extraPrice: 50 },
-            { id: "square", name: "مربع", minimumPersons: 16, extraPrice: 100 },
-            { id: "rectangle", name: "مستطيل", minimumPersons: 20, extraPrice: 150 }
-        ],
-        layers: [
-            { id: 1, name: "دور واحد", extraPrice: 0 },
-            { id: 2, name: "دورين (٢ دور)", extraPrice: 150 },
-            { id: 3, name: "ثلاثة أدوار (٣ أدوار)", extraPrice: 300 }
-        ],
-        cakeTypes: [
-            { id: "vanilla", name: "فانيليا" },
-            { id: "chocolate", name: "شوكولاتة" },
-            { id: "half-half", name: "نصف ونصف" }
-        ],
-        printingOptions: [
-            { id: "none", name: "بدون إضافة صور", price: 0 },
-            { id: "edible", name: "صورة قابلة للأكل", price: 60 },
-            { id: "non-edible", name: "صورة غير قابلة للأكل", price: 15 }
-        ],
-        maxTextLength: 30
+            { id: "circle", minimumPersons: 4 },
+            { id: "heart", minimumPersons: 4 },
+            { id: "square", minimumPersons: 16 },
+            { id: "rectangle", minimumPersons: 20 }
+        ]
     };
 
-    let liveStoreConfig = null;
-    let isEventsBound = false;
-    let isUploadingImage = false;
-
-    let selectedConfig = {
-        shape: "circle",
-        cakeType: "vanilla",
-        persons: 4,
-        layers: 1,
-        printingType: "none",
-        uploadedImageUrl: null,
-        text: "",
-        textPosition: "top"
-    };
-
-    const dom = {
-        shapeCards: null, layerCards: null, cakeTypeCards: null, printingCards: null, textInput: null,
-        personsInput: null, btnMinusPersons: null, btnPlusPersons: null, totalPriceEl: null, 
-        personsCountEl: null, btnAddToCart: null, btnNextStep: null, btnPrevStep: null
-    };
-
-    function calculateLocalCakePrice(customizations) {
-        const config = liveStoreConfig || cakeConfig;
-        let total = parseFloat(config.basePrice) || 580;
-
-        const shapeObj = config.shapes.find(s => s.id === customizations.shape);
-        if (shapeObj) total += parseFloat(shapeObj.extraPrice) || 0;
-
-        const minPersons = shapeObj ? (parseInt(shapeObj.minimumPersons, 10) || 4) : 4;
-        const chosenPersons = Math.max(minPersons, parseInt(customizations.persons, 10) || minPersons);
-        const extraPricePerPerson = parseFloat(config.pricePerPerson || config.extraPersonPrice) || 145;
-
-        if (chosenPersons > 4) {
-            total += (chosenPersons - 4) * extraPricePerPerson;
-        }
-
-        const layerObj = config.layers.find(l => parseInt(l.id, 10) === parseInt(customizations.layers, 10));
-        if (layerObj) total += parseFloat(layerObj.extraPrice) || 0;
-
-        const printingObj = config.printingOptions.find(p => p.id === customizations.printingType);
-        if (printingObj) total += parseFloat(printingObj.price) || 0;
-
-        return Math.round(window.calculateBosePrice ? window.calculateBosePrice(total, "menu-only") : total);
-    }
-
-    function loadConfigFromDatabase() {
-        if (window.BoseStoreData && window.BoseStoreData.cakeBuilder) {
-            const dbConfig = window.BoseStoreData.cakeBuilder;
-            liveStoreConfig = {
-                enabled: dbConfig.enabled !== undefined ? dbConfig.enabled : cakeConfig.enabled,
-                basePrice: dbConfig.basePrice !== undefined ? parseFloat(dbConfig.basePrice) : cakeConfig.basePrice,
-                pricePerPerson: dbConfig.pricePerPerson !== undefined ? parseFloat(dbConfig.pricePerPerson) : cakeConfig.extraPersonPrice,
-                maxTextLength: dbConfig.maxTextLength !== undefined ? parseInt(dbConfig.maxTextLength, 10) : cakeConfig.maxTextLength,
-                shapes: Array.isArray(dbConfig.shapes) ? dbConfig.shapes.map(s => ({ ...s, extraPrice: s.extraPrice || 0 })) : cakeConfig.shapes,
-                layers: cakeConfig.layers, cakeTypes: cakeConfig.cakeTypes, printingOptions: cakeConfig.printingOptions
-            };
-        } else {
-            liveStoreConfig = { ...cakeConfig };
-        }
-    }
-
-    function cacheDOMElements() {
-        dom.shapeCards = document.querySelectorAll('.cake-shape-card');
-        dom.layerCards = document.querySelectorAll('.cake-layer-card');
-        dom.cakeTypeCards = document.querySelectorAll('.cake-flavor-card');
-        dom.printingCards = document.querySelectorAll('.cake-printing-card');
-        dom.textInput = document.getElementById('cake-custom-text');
-        dom.btnMinusPersons = document.getElementById('cake-btn-minus');
-        dom.btnPlusPersons = document.getElementById('cake-btn-plus');
-        dom.totalPriceEl = document.getElementById('cake-total-price');
-        dom.personsCountEl = document.getElementById('cake-persons-display');
-        dom.btnAddToCart = document.getElementById('btn-add-cake-to-cart');
-        dom.btnNextStep = document.getElementById('btn-next-step');
-        dom.btnPrevStep = document.getElementById('btn-prev-step');
-    }
-
-    function compressBoseImage(file, maxWidth = 800, maxHeight = 800, quality = 0.7) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = e => {
-                const img = new Image();
-                img.src = e.target.result;
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    let w = img.width, h = img.height;
-                    if (w > h && w > maxWidth) { h = Math.round((h * maxWidth) / w); w = maxWidth; }
-                    else if (h > w && h > maxHeight) { w = Math.round((w * maxHeight) / h); h = maxHeight; }
-                    canvas.width = w; canvas.height = h;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, w, h);
-                    canvas.toBlob(blob => resolve(blob), 'image/jpeg', quality);
-                };
-            };
-            reader.onerror = err => reject(err);
-        });
-    }
-
-    function bindCentralizedEvents() {
-        if (isEventsBound) return;
-
-        const addClickEvent = (elements, callback) => {
-            if (elements) elements.forEach(el => el.addEventListener('click', callback));
-        };
-
-        addClickEvent(dom.shapeCards, function() {
-            selectedConfig.shape = this.getAttribute('data-shape');
-            enforceDynamicConstraints(false);
-            finalizeUIUpdate();
-        });
-
-        addClickEvent(dom.layerCards, function() {
-            selectedConfig.layers = parseInt(this.getAttribute('data-layer'), 10) || 1;
-            finalizeUIUpdate();
-        });
-
-        addClickEvent(dom.cakeTypeCards, function() {
-            selectedConfig.cakeType = this.getAttribute('data-flavor');
-            finalizeUIUpdate();
-        });
-
-        addClickEvent(dom.printingCards, function() {
-            selectedConfig.printingType = this.getAttribute('data-printing');
-            const zone = document.getElementById('bose-photo-upload-zone');
-            if (zone) zone.style.display = selectedConfig.printingType !== 'none' ? 'block' : 'none';
-            finalizeUIUpdate();
-        });
-
-        if (dom.btnNextStep) {
-            dom.btnNextStep.onclick = () => {
-                if (currentStep < totalSteps) {
-                    goToStep(currentStep + 1);
-                }
-            };
-        }
-
-        if (dom.btnPrevStep) {
-            dom.btnPrevStep.onclick = () => {
-                if (currentStep > 1) {
-                    goToStep(currentStep - 1);
-                }
-            };
-        }
-
-        const fileInput = document.getElementById('cake-photo-file-input');
-        if (fileInput) {
-            fileInput.addEventListener('change', async function (e) {
-                const file = e.target.files[0];
-                if (!file) return;
-                const statusEl = document.getElementById('cake-upload-status');
-                if (statusEl) statusEl.textContent = "⏳ جاري ضغط الصورة للحفاظ على الباقة والسرعة...";
-                isUploadingImage = true;
-
-                try {
-                    const compressedBlob = await compressBoseImage(file);
-                    if (statusEl) statusEl.textContent = "🚀 جاري الرفع الآمن للتصميم...";
-                    const formData = new FormData();
-                    formData.append('file', compressedBlob, 'cake_design.jpg');
-                    formData.append('upload_preset', 'bose_presets');
-
-                    const res = await fetch(`https://api.cloudinary.com/v1_1/dyx4w0dr1/image/upload`, { method: 'POST', body: formData });
-                    const data = await res.json();
-
-                    if (data.secure_url) {
-                        selectedConfig.uploadedImageUrl = data.secure_url;
-                        const previewImg = document.getElementById('cake-photo-preview-img');
-                        if (previewImg) previewImg.src = data.secure_url;
-                        const box = document.getElementById('cake-photo-preview-box');
-                        if (box) box.style.display = 'block';
-                        if (statusEl) statusEl.textContent = "🌸 تم رفع وضبط صورتك بنجاح!";
-                        if (typeof window.showBoseGlobalToast === 'function') window.showBoseGlobalToast("تم حفظ وتأمين صورتك بنجاح على التورتة!");
-                    }
-                } catch (err) {
-                    if (statusEl) statusEl.textContent = "⚠️ فشل رفع الصورة، يرجى التحقق من الشبكة.";
-                } finally {
-                    isUploadingImage = false;
-                }
-            });
-        }
-
-        const clearImgBtn = document.getElementById('btn-clear-uploaded-img');
-        if (clearImgBtn) {
-            clearImgBtn.onclick = (e) => {
-                e.stopPropagation();
-                selectedConfig.uploadedImageUrl = null;
-                const box = document.getElementById('cake-photo-preview-box');
-                if (box) box.style.display = 'none';
-                const statusEl = document.getElementById('cake-upload-status');
-                if (statusEl) statusEl.textContent = "";
-                const fileInput = document.getElementById('cake-photo-file-input');
-                if (fileInput) fileInput.value = "";
-            };
-        }
-
-        if (dom.textInput) {
-            dom.textInput.addEventListener('input', function () {
-                const max = (liveStoreConfig || cakeConfig).maxTextLength || 30;
-                if (this.value.length > max) {
-                    this.value = this.value.substring(0, max);
-                }
-                selectedConfig.text = this.value;
-                finalizeUIUpdate();
-            });
-        }
-
-        if (dom.btnMinusPersons) dom.btnMinusPersons.onclick = () => modifyPersonsCount(-2);
-        if (dom.btnPlusPersons) dom.btnPlusPersons.onclick = () => modifyPersonsCount(2);
-        if (dom.btnAddToCart) dom.btnAddToCart.onclick = () => addCustomizedCakeToCart();
-
-        isEventsBound = true;
-    }
-
-    function goToStep(step) {
-        document.querySelectorAll('.cake-builder-step-panel').forEach(p => p.style.display = 'none');
-        document.getElementById(`cake-step-panel-${step}`).style.display = 'block';
-
-        document.querySelectorAll('.step-node').forEach(node => {
-            const nodeStep = parseInt(node.getAttribute('data-step'), 10);
-            if (nodeStep === step) {
-                node.className = "step-node active";
-            } else if (nodeStep < step) {
-                node.className = "step-node completed";
-            } else {
-                node.className = "step-node";
-            }
-        });
-
-        currentStep = step;
-        if (dom.btnPrevStep) dom.btnPrevStep.style.display = step === 1 ? 'none' : 'inline-flex';
-        if (dom.btnNextStep) dom.btnNextStep.style.display = step === totalSteps ? 'none' : 'inline-flex';
-    }
-
-    function modifyPersonsCount(offset) {
-        const shapeObj = (liveStoreConfig || cakeConfig).shapes.find(s => s.id === selectedConfig.shape);
-        const min = shapeObj ? (shapeObj.minimumPersons || 4) : 4;
-        let current = (parseInt(selectedConfig.persons, 10) || min) + offset;
-        if (current < min) current = min;
-        selectedConfig.persons = current;
-        finalizeUIUpdate();
-    }
-
-    function enforceDynamicConstraints(isInitial) {
-        const shapeObj = (liveStoreConfig || cakeConfig).shapes.find(s => s.id === selectedConfig.shape);
-        const min = shapeObj ? (shapeObj.minimumPersons || 4) : 4;
-        if (selectedConfig.persons < min) {
-            selectedConfig.persons = min;
-        }
-    }
-
-    function finalizeUIUpdate() {
-        if (dom.totalPriceEl) dom.totalPriceEl.textContent = `${calculateLocalCakePrice(selectedConfig)}`;
-        if (dom.personsCountEl) dom.personsCountEl.textContent = selectedConfig.persons;
-
-        const updateActiveState = (cards, attr, currentVal) => {
-            if (cards) cards.forEach(c => c.getAttribute(attr) == currentVal ? c.classList.add('active') : c.classList.remove('active'));
-        };
-        updateActiveState(dom.shapeCards, 'data-shape', selectedConfig.shape);
-        updateActiveState(dom.layerCards, 'data-layer', selectedConfig.layers);
-        updateActiveState(dom.cakeTypeCards, 'data-flavor', selectedConfig.cakeType);
-        updateActiveState(dom.printingCards, 'data-printing', selectedConfig.printingType);
-    }
-
-    function addCustomizedCakeToCart() {
-        if (isUploadingImage) {
-            if (typeof window.showBoseGlobalToast === 'function') window.showBoseGlobalToast("ثواني فندم.. جاري الانتهاء من رفع صورتك السحابية الجميلة 🌸");
-            return;
-        }
-        if (selectedConfig.printingType !== 'none' && !selectedConfig.uploadedImageUrl) {
-            if (typeof window.showBoseGlobalToast === 'function') window.showBoseGlobalToast("يرجى رفع الصورة المطلوبة لتورتتك أولاً لضمان دقة طلبك الفاخر 🌸");
-            return;
-        }
-
-        const config = liveStoreConfig || cakeConfig;
-        const securePrice = calculateLocalCakePrice(selectedConfig);
-
-        const shapeObj = config.shapes.find(s => s.id === selectedConfig.shape);
-        const typeObj = config.cakeTypes.find(t => t.id === selectedConfig.cakeType);
-
-        const description = `طعم ${typeObj ? typeObj.name : selectedConfig.cakeType}، شكل ${shapeObj ? shapeObj.name : selectedConfig.shape}، مقاس ${selectedConfig.persons} فرد، ${selectedConfig.layers} دور ${selectedConfig.text ? '، وعبارة: ' + selectedConfig.text : ''}`;
-
-        const cartItem = {
-            id: "cake_" + Date.now() + "_" + Math.floor(Math.random() * 1000),
-            productSlug: "toort-custom-master",
-            slug: "toort-custom-master",
-            type: "custom-cake",
-            title: "تورتة مخصصة بالكامل",
-            description: description,
-            quantity: 1,
-            price: securePrice,
-            finalPrice: securePrice,
-            basePrice: parseFloat(config.basePrice) || 580,
-            image: selectedConfig.uploadedImageUrl || "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
-            customDetails: {
-                shape: selectedConfig.shape,
-                persons: parseInt(selectedConfig.persons, 10),
-                cakeType: typeObj ? typeObj.name : selectedConfig.cakeType,
-                printingType: selectedConfig.printingType,
-                customMessage: selectedConfig.text.trim()
-            }
-        };
-
-        let cart = [];
-        try {
-            const localData = localStorage.getItem(CART_STORAGE_KEY);
-            if (localData) cart = JSON.parse(localData);
-        } catch (e) {}
-        cart.push(cartItem);
-        try {
-            localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
-        } catch (e) {}
-
-        window.dispatchEvent(new Event('bose_cart_updated'));
-        if (typeof window.updateGlobalCartCounter === 'function') window.updateGlobalCartCounter();
-        if (typeof window.showBoseGlobalToast === 'function') window.showBoseGlobalToast("تمت إضافة تورتتك الجميلة بنجاح للسلة!");
+    /**
+     * دالة الحساب والتحقق اللحظي خطوة بخطوة لمنع الصدمات المالية واللوجستية للعميل
+     */
+    function evaluateSimulatorState() {
+        let currentPersons = parseInt(inputPersons.value, 10) || config.persons.minimum;
+        let selectedShapeElement = document.querySelector('input[name="cake_shape"]:checked');
+        let selectedShape = selectedShapeElement ? selectedShapeElement.value : 'circle';
+        let selectedPrinting = document.querySelector('input[name="cake_printing"]:checked')?.value || 'none';
         
-        setTimeout(() => {
-            window.location.href = "cart.html";
-        }, 800);
-    }
-
-    function safeBootEngine() {
-        loadConfigFromDatabase();
-        if (document.getElementById('bose-cake-builder-form')) {
-            cacheDOMElements();
-            bindCentralizedEvents();
-            enforceDynamicConstraints(true);
-            finalizeUIUpdate();
+        // جلب المحددات والقيود الهندسية للأشكال من قاعدة البيانات
+        const squareData = config.shapes.find(s => s.id === 'square') || { minimumPersons: 16 };
+        const rectData = config.shapes.find(s => s.id === 'rectangle') || { minimumPersons: 20 };
+        
+        let alertText = "";
+        
+        // فحص ومطابقة القيود هندسياً مع رسائل قاعدة البيانات الصارمة
+        if (selectedShape === 'square' && currentPersons < squareData.minimumPersons) {
+            alertText = window.BoseStoreData?.cakeBuilder?.images?.squareMinimum || "المقاس المربع يبدأ من 16 فرد";
+            // معالجة ذكية: إرجاع الاختيار للدائرة تلقائياً لمنع قفل الزر وتأمين النعومة
+            document.querySelector('input[name="cake_shape"][value="circle"]').checked = true;
+            selectedShape = 'circle';
+        } else if (selectedShape === 'rectangle' && currentPersons < rectData.minimumPersons) {
+            alertText = window.BoseStoreData?.cakeBuilder?.images?.rectangleUpgrade || "عشان تطلع معاك التورتة المستطيلة مظبوطة وبأفضل تنسيق، أقل مقاس بنقدر ننفذه للشكل ده هو 20 فرد.";
+            document.querySelector('input[name="cake_shape"][value="circle"]').checked = true;
+            selectedShape = 'circle';
         }
-    }
-
-    if (window.BoseStoreData) {
-        safeBootEngine();
-    } else {
-        document.addEventListener('BoseDatabaseLoaded', () => {
-            safeBootEngine();
+        
+        // إظهار رسائل الترقية التعليمية للعميل بنعومة ودون تكدس بصري
+        if (alertText !== "") {
+            alertBox.textContent = alertText;
+            alertBox.style.display = "block";
+            // تلاشي تدريجي للرسالة بعد 5 ثوانٍ لراحة عين العميل النفسية
+            setTimeout(() => {
+                alertBox.style.style.display = "none";
+            }, 5000);
+        }
+        
+        // استدعاء دالة الفحص المالي الموحدة والمركزية بالنظام calculateCustomCakePrice حساب الكسور كاملة
+        const finalDynamicPrice = window.calculateCustomCakePrice(currentPersons, {
+            printingType: selectedPrinting
         });
+        
+        // تحديث لافتة السعر اللحظية العائمة فوراً أمام عين العميل بالمليم
+        priceDisplay.textContent = `${finalDynamicPrice} جنيه`;
     }
 
-    window.BoseCakeEngine = {
-        refreshEngine: function () {
-            isEventsBound = false;
-            loadConfigFromDatabase();
-            cacheDOMElements(); 
-            bindCentralizedEvents(); 
-            finalizeUIUpdate();
-        },
-        calculatePrice: (opts) => calculateLocalCakePrice(opts),
-        getSelectedConfig: () => selectedConfig
-    };
+    // 3. التحكم المرن في عداد الأفراد الرقمي ومنع القيم السالبة أو كسر الخطوات (Step = 2)
+    btnMinus.addEventListener('click', () => {
+        let current = parseInt(inputPersons.value, 10) || config.persons.minimum;
+        if (current > config.persons.minimum) {
+            inputPersons.value = current - config.persons.step;
+            evaluateSimulatorState();
+        }
+    });
 
-})();
+    btnPlus.addEventListener('click', () => {
+        let current = parseInt(inputPersons.value, 10) || config.persons.minimum;
+        if (current < config.persons.maximum) {
+            inputPersons.value = current + config.persons.step;
+            evaluateSimulatorState();
+        }
+    });
+
+    // ربط أحداث التغيير الفورية لجميع المدخلات لضمان التحديث اللحظي خطوة بخطوة
+    document.querySelectorAll('input[name="cake_shape"]').forEach(radio => {
+        radio.addEventListener('change', evaluateSimulatorState);
+    });
+
+    document.querySelectorAll('input[name="cake_printing"]').forEach(radio => {
+        radio.addEventListener('change', evaluateSimulatorState);
+    });
+
+    /**
+     * بروتوكول قفل وتثبيت السعر والترحيب الآمن بكائن الذاكرة الموحد bose_cart
+     */
+    btnSubmit.addEventListener('click', () => {
+        let currentPersons = parseInt(inputPersons.value, 10) || config.persons.minimum;
+        let selectedShape = document.querySelector('input[name="cake_shape"]:checked')?.value || 'circle';
+        let selectedFlavor = document.querySelector('input[name="cake_flavor"]:checked')?.value || 'vanilla';
+        let selectedPrinting = document.querySelector('input[name="cake_printing"]:checked')?.value || 'none';
+        let messageText = document.getElementById('text-cake-message').value.trim();
+        let allergyText = document.getElementById('text-cake-allergy').value.trim();
+        
+        // جلب كائن التورت الأساسي الفاخر للربط المباشر مع المصدر
+        const masterProduct = window.BoseStoreData?.products?.find(p => p.slug === "toort-custom-master") || {
+            slug: "toort-custom-master",
+            title: "التورت",
+            basePrice: config.basePrice,
+            type: "custom-cake"
+        };
+
+        // صياغة تفاصيل التصميم الدقيقة والمتوافقة تماماً مع طبقة Cart DOM Layer
+        const customOptions = {
+            cakeType: selectedFlavor === 'vanilla' ? 'فانيليا' : (selectedFlavor === 'chocolate' ? 'شوكولاتة' : 'نصف ونصف'),
+            shape: selectedShape,
+            persons: currentPersons,
+            printingType: selectedPrinting,
+            customMessage: messageText,
+            allergyNote: allergyText,
+            flavorName: "تصميم خاص حسب الطلب"
+        };
+
+        // استدعاء دالة النظام المركزية لإنشاء عنصر السلة الموحد وتوليد المعرف الفريد [slug]-[timestamp]
+        const finalCartItem = window.createCartItem(masterProduct, customOptions, 1);
+        
+        if (finalCartItem) {
+            // جلب الذاكرة المحلية الحالية وسد ثغرات التداخل
+            let localCartRaw = localStorage.getItem('bose_cart');
+            let boseCart = localCartRaw ? JSON.parse(localCartRaw) : [];
+            
+            // قفل وتثبيت السعر الفعلي للحماية من التلاعب
+            finalCartItem.finalPrice = window.calculateCustomCakePrice(currentPersons, { printingType: selectedPrinting });
+            finalCartItem.type = "custom-cake";
+            finalCartItem.flavorName = "تصميم خاص حسب الطلب";
+            
+            // ضخ الكائن المخصص بالكامل في السلة ككائن فريد
+            boseCart.push(finalCartItem);
+            localStorage.setItem('bose_cart', JSON.stringify(boseCart));
+            
+            // تحديث شارة العداد اللحظي بالهيدر ديناميكياً
+            if (typeof window.updateGlobalCartCounter === 'function') {
+                window.updateGlobalCartCounter();
+            }
+            
+            // رسالة تفاعلية قصيرة وراقية مأخوذة من قيم الهوية
+            alert("تمت إضافة المنتج إلى السلة.");
+            
+            // إعادة تهيئة وتسوية الحقول ميكانيكياً بدون كركبة أو تكدس بصري
+            document.getElementById('text-cake-message').value = "";
+            document.getElementById('text-cake-allergy').value = "";
+            inputPersons.value = config.persons.minimum;
+            document.querySelector('input[name="cake_shape"][value="circle"]').checked = true;
+            document.querySelector('input[name="cake_flavor"][value="vanilla"]').checked = true;
+            document.querySelector('input[name="cake_printing"][value="none"]').checked = true;
+            
+            evaluateSimulatorState();
+        }
+    });
+
+    // التمهيد والتشغيل الأولي اللحظي فور فحص حارس النظام
+    evaluateSimulatorState();
+}
+
+// تشغيل المحرك والربط مع حارس التمهيد ومنع التعارض البرمجي للنظام
+if (typeof window.onBoseDatabaseReady === 'function') {
+    window.onBoseDatabaseReady(() => {
+        startEngineLogic();
+    });
+} else {
+    document.addEventListener("DOMContentLoaded", startEngineLogic);
+}
