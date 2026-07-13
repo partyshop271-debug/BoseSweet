@@ -2,9 +2,8 @@
  * core-engine.js - المحرك المركزي العالمي وحارس البيانات والحسابات المالية
  * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية الشاملة والمطورة V26
  * 
- * تم إصلاح ارتباط أزرار "اضافة للسله" في كروت الواجهة لمنع التحويل العشوائي،
- * مع ربط الإضافة اللحظية المباشرة، وتحويل الزر لعلامة صح، وإشعارات ناعمة،
- * واستثناء كروت المحاكيات لإجبار العميل على دخول المحاكي لتحديد تفاصيله الفاخرة.
+ * تم إصلاح انتهاكات الهوية البصرية وتوحيد الألوان باللون البمبي (#FF91A4).
+ * تم تطوير القائمة الجانبية والفوتر لدمج اللون البمبي في الأيقونات والتفاعلات.
  * تم إصلاح وتثبيت الهيدر برمجياً ومنع اختفائه تماماً أثناء السكرول.
  */
 
@@ -274,7 +273,7 @@
     };
 
     /**
-     * دالة هندسية لحقن إشعارات سريعة وراقية ومنسقة الألوان داخل الموقع من غير Popups مزعجة
+     * تصحيح كامل وشامل: جلب اللون البمبي الصريح الموحد (#FF91A4) ليكون خلفية الإشعار بدلاً من الأسود
      */
     window.showBoseGlobalToast = function(message) {
         let container = document.getElementById('bose-toast-container');
@@ -285,7 +284,8 @@
             document.body.appendChild(container);
         }
         const toast = document.createElement('div');
-        toast.style.cssText = 'background-color:#111111; color:#FFFFFF; padding:12px 24px; border-radius:30px; font-weight:600; font-size:14px; text-align:center; box-shadow:0 8px 32px rgba(255, 145, 164, 0.25); border:1px solid rgba(255,145,164,0.4); direction:rtl; opacity:0; transform:translateY(20px); transition:all 0.4s ease; pointer-events:auto;';
+        // تم استبدال الخلفية السوداء باللون البمبي الفاخر المعتمد مع كتابة النص بالأبيض الصريح للتنفس البصري
+        toast.style.cssText = 'background-color:#FF91A4; color:#FFFFFF; padding:12px 24px; border-radius:30px; font-weight:700; font-size:14px; text-align:center; box-shadow:0 8px 32px rgba(255, 145, 164, 0.3); border:1px solid rgba(255,255,255,0.4); direction:rtl; opacity:0; transform:translateY(20px); transition:all 0.4s ease; pointer-events:auto;';
         toast.textContent = message;
         container.appendChild(toast);
         
@@ -298,7 +298,7 @@
     };
 
     /**
-     * دالة معالجة إضافة المنتجات القياسية مباشرة من الكروت وتحديث حالة الأزرار
+     * تصحيح كامل وشامل: منع تحول مظهر ولون زر إضافة للسلة إلى اللون الأسود المنتهك للهوية عند الضغط
      */
     window.handleBoseDirectAddToCart = function(buttonElement, productId) {
         if (!window.BoseStoreData || !buttonElement) return;
@@ -306,7 +306,6 @@
         const product = window.BoseStoreData.products.find(p => p.id === productId);
         if (!product) return;
 
-        // جلب الكمية المحددة من العداد القريب للكارت
         const cardContainer = buttonElement.closest('.product-card-unified');
         let qty = 1;
         if (cardContainer) {
@@ -314,11 +313,9 @@
             if (qtyInput) qty = parseInt(qtyInput.value, 10) || 1;
         }
 
-        // قراءة وتجهيز السلة
         const rawCart = localStorage.getItem('bose_cart');
         let cart = rawCart ? JSON.parse(rawCart) : [];
 
-        // التحقق من وجود المنتج مسبقاً بنفس المعرف القياسي
         const existingItem = cart.find(item => item.id === product.slug);
         if (existingItem) {
             existingItem.quantity += qty;
@@ -330,20 +327,21 @@
         localStorage.setItem('bose_cart', JSON.stringify(cart));
         window.updateGlobalCartCounter();
 
-        // تحويل شكل ومظهر الزر برقة لعلامة صح وإصدار الإشعار الراقي
+        // التعديل الهندسي: الزر يظل بالخلفية البمبية الصريحة المتوافقة مع الهوية البصرية الحاكمة دون التموه بالأسود
         const originalHtml = buttonElement.innerHTML;
         buttonElement.innerHTML = '<i class="fa-solid fa-check"></i> تمت الإضافة';
-        buttonElement.style.backgroundColor = '#111111';
+        buttonElement.style.backgroundColor = '#FF91A4';
         buttonElement.style.color = '#FFFFFF';
+        buttonElement.style.borderColor = '#FF91A4';
         buttonElement.disabled = true;
 
         window.showBoseGlobalToast('تمت إضافة المنتج إلى السلة.');
 
-        // إعادة حالة الزر لطبيعتها بعد ثانيتين تفادياً للتعليق
         setTimeout(() => {
             buttonElement.innerHTML = originalHtml;
             buttonElement.style.backgroundColor = '';
             buttonElement.style.color = '';
+            buttonElement.style.borderColor = '';
             buttonElement.disabled = false;
         }, 2500);
     };
@@ -375,20 +373,19 @@
             document.head.appendChild(fa);
         }
         
-        // حقن ستايل الأمان الصارم لتثبيت الهيدر برمجياً ومنع أي اختفاء أو وميض أثناء التصفح
         if (!document.getElementById('bose-header-fix-styles')) {
             const fixStyle = document.createElement('style');
             fixStyle.id = 'bose-header-fix-styles';
             fixStyle.textContent = `
                 .bose-sticky-header {
                     position: fixed !important;
-                    top: 40px !important; /* أسفل الماركيه */
+                    top: 40px !important;
                     left: 0 !important;
                     width: 100% !important;
                     z-index: 40000 !important;
                     box-shadow: 0 4px 20px rgba(255, 145, 164, 0.08) !important;
                     background-color: #FFFFFF !important;
-                    transition: none !important; /* منع حركات الاختفاء المشوهة */
+                    transition: none !important;
                 }
                 .bose-top-bar-marquee-container {
                     position: fixed !important;
@@ -399,8 +396,63 @@
                     height: 40px !important;
                 }
                 body {
-                    padding-top: 110px !important; /* حماية مساحة العرض بعد تثبيت الهيدر */
+                    padding-top: 110px !important;
                 }
+                
+                /* تطوير القائمة الجانبية وإدخال اللون البمبي بشكل ملوكي فاخر */
+                .bose-sidebar-drawer {
+                    position: fixed; top: 0; right: -320px; width: 320px; height: 100%;
+                    background-color: #FFFFFF !important; z-index: 50000;
+                    transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+                    box-shadow: -8px 0 32px rgba(255, 145, 164, 0.15); direction: rtl;
+                    border-left: 1px solid rgba(255, 145, 164, 0.2);
+                }
+                .bose-sidebar-drawer.open { right: 0; }
+                .sidebar-header {
+                    display: flex; justify-content: space-between; align-items: center;
+                    padding: 24px; border-bottom: 2px solid #FF91A4;
+                }
+                .sidebar-brand-name { font-size: 16px; font-weight: 700; color: #111111; }
+                .sidebar-close-btn { background: none; border: none; font-size: 22px; color: #FF91A4; cursor: pointer; }
+                .sidebar-links-list { list-style: none; padding: 20px; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+                .sidebar-link-item a {
+                    display: flex; align-items: center; gap: 14px; padding: 14px 18px;
+                    color: #111111; text-decoration: none; font-weight: 600; font-size: 15px;
+                    border-radius: 12px; transition: all 0.3s ease;
+                }
+                .sidebar-link-item a i { color: #FF91A4; font-size: 18px; transition: all 0.3s ease; }
+                .sidebar-link-item a:hover { background-color: rgba(255, 145, 164, 0.08); color: #FF91A4; }
+                .sidebar-link-item a:hover i { transform: scale(1.1); }
+                .bose-sidebar-overlay {
+                    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                    background: rgba(17, 17, 17, 0.2); opacity: 0; pointer-events: none;
+                    z-index: 49000; transition: opacity 0.4s ease; backdrop-filter: blur(2px);
+                }
+                .bose-sidebar-overlay.show { opacity: 1; pointer-events: auto; }
+
+                /* تطوير الفوتر الموحد الفاخر وإقحام اللون البمبي الصريح والراقي */
+                .bose-footer { background-color: #FFFFFF !important; border-top: 1px solid rgba(255, 145, 164, 0.3); padding: 60px 20px 20px; direction: rtl; }
+                .footer-grid-layout { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; }
+                .footer-brand-meta { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+                .footer-logo { width: 50px; height: 50px; object-fit: contain; }
+                .footer-title { font-size: 22px; font-weight: 700; color: #111111; }
+                .footer-about-paragraph { color: #111111; font-size: 14px; line-height: 1.8; margin-bottom: 25px; font-weight: 400; }
+                .footer-social-wrapper { display: flex; gap: 12px; }
+                .footer-social-icon-btn {
+                    display: flex; align-items: center; justify-content: center;
+                    width: 40px; height: 40px; border-radius: 50%; background-color: rgba(255, 145, 164, 0.1);
+                    color: #FF91A4 !important; text-decoration: none; font-size: 16px; transition: all 0.3s ease;
+                }
+                .footer-social-icon-btn:hover { background-color: #FF91A4; color: #FFFFFF !important; transform: translateY(-4px); box-shadow: 0 8px 20px rgba(255, 145, 164, 0.3); }
+                .footer-heading-title { font-size: 16px; font-weight: 700; color: #111111; margin-bottom: 20px; position: relative; padding-bottom: 8px; }
+                .footer-heading-title::after { content: ''; position: absolute; bottom: 0; right: 0; width: 40px; height: 2px; background-color: #FF91A4; }
+                .footer-links-ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
+                .footer-links-ul li a { color: #111111; text-decoration: none; font-size: 14px; font-weight: 600; transition: all 0.3s ease; display: inline-block; }
+                .footer-links-ul li a:hover { color: #FF91A4; transform: translateX(-6px); }
+                .footer-contact-item { display: flex; align-items: center; gap: 10px; color: #111111; font-size: 14px; font-weight: 600; }
+                .footer-contact-item i { color: #FF91A4; font-size: 16px; }
+                .footer-copyright-block { text-align: center; border-top: 1px solid rgba(255, 145, 164, 0.15); margin-top: 50px; padding-top: 20px; font-size: 13px; color: #111111; font-weight: 600; }
+                .footer-copyright-block span { color: #FF91A4; font-weight: 700; }
             `;
             document.head.appendChild(fixStyle);
         }
@@ -454,9 +506,9 @@
 
                 <div id="bose-sidebar-drawer" class="bose-sidebar-drawer" aria-hidden="true">
                     <div class="sidebar-header">
-                        <div class="sidebar-logo-container">
-                            <img src="${data.store.logo}" alt="لوجو بوسي" class="sidebar-logo" />
-                            <span class="sidebar-brand-name">قائمة الأقسام الفاخرة</span>
+                        <div class="sidebar-logo-container" style="display:flex; align-items:center; gap:10px;">
+                            <img src="${data.store.logo}" alt="لوجو بوسي" class="sidebar-logo" style="width:40px; height:40px; object-fit:contain;" />
+                            <span class="sidebar-brand-name">أقسام حلويات بوسي</span>
                         </div>
                         <button id="sidebar-close-btn" class="sidebar-close-btn" aria-label="إغلاق القائمة">
                             <i class="fa-solid fa-xmark"></i>
@@ -786,7 +838,6 @@ document.addEventListener("DOMContentLoaded", () => {
             let isCake = (p.id === 'toort-custom-master' || p.slug === 'toort-custom-master');
             let isFlower = (p.id === 'flowers-master' || p.slug === 'flowers-master');
             
-            // صمام الأمان الصارم: إذا كان المنتج محاكي (كيك أو ورد) يحول لصفحة البناء، غير كده يضيف للسلة مباشرة بلغة جافاسكربت
             let actionAttr = (isCake || isFlower) 
                 ? `onclick="location.href='${isCake ? 'cake-builder.html' : 'flower-builder.html'}'"` 
                 : `onclick="window.handleBoseDirectAddToCart(this, '${p.id}')"`;
