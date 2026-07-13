@@ -2,8 +2,10 @@
  * core-engine.js - المحرك المركزي العالمي وحارس البيانات والحسابات المالية
  * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية الشاملة والمطورة V26
  * 
- * تم إصلاح ثغرة اختفاء الأصناف والشلال وإعادة دمج محرك حقن الـ DOM المقدس كاملاً.
- * تم تثبيت معيار تصفير العدادات وإعادتها للقيمة القياسية (1) بعد الإضافة للسلة مباشرة.
+ * تم التطوير والتحسين الشامل:
+ * 1. حوكمة المهام: عزل تام ومطلق لمهام المحركات الأخرى (حذف دالات حساب الأسعار المعقدة للمحاكيات لتقوم هي بمسؤوليتها).
+ * 2. كفاءة البيانات: تفعيل نظام الكاش الذكي (Cache Mechanism) لقاعدة البيانات لتقليل الاستهلاك ومنع الفيتش المتكرر.
+ * 3. الأداء والسرعة: تحسين جلب الأصول وحقن الـ DOM بدقة متناهية متوافقة مع الكمبيوتر والموبايل.
  */
 
 (function() {
@@ -11,11 +13,22 @@
     window.boseServerTimeOffset = 0; 
 
     /**
-     * 1. تهيئة واستدعاء قاعدة بيانات حلويات بوسي المستقرة
+     * 1. تهيئة واستدعاء قاعدة بيانات حلويات بوسي المستقرة بنظام الكاش الذكي توفيراً للبيانات
      */
     async function loadStoreDatabase() {
         if (window.BoseStoreData) return;
         
+        // محاولة جلب البيانات من كاش المتصفح المحلي أولاً لتقليل استهلاك البيانات وحماية السرعة
+        const cachedData = localStorage.getItem('bose_database_cache');
+        const cachedTime = localStorage.getItem('bose_database_cache_time');
+        const cacheDuration = 5 * 60 * 1000; // كاش لمدة 5 دقائق فقط لضمان تحديث الأسعار اللحظي
+
+        if (cachedData && cachedTime && (Date.now() - cachedTime < cacheDuration)) {
+            window.BoseStoreData = JSON.parse(cachedData);
+            initCoreFlow();
+            return;
+        }
+
         let retries = 5;
         let delay = 1000;
         
@@ -35,12 +48,11 @@
                 
                 window.BoseStoreData = await response.json();
                 
-                injectEarlyDependencies();
-                applyGlobalSEOAndBranding();
-                buildAndInjectGlobalComponents();
-                window.updateGlobalCartCounter();
+                // حفظ النسخة المستقرة في الكاش لتوفير البيانات في الصفحات القادمة
+                localStorage.setItem('bose_database_cache', JSON.stringify(window.BoseStoreData));
+                localStorage.setItem('bose_database_cache_time', Date.now());
                 
-                document.dispatchEvent(new CustomEvent('BoseDatabaseLoaded', { detail: window.BoseStoreData }));
+                initCoreFlow();
                 return;
             } catch (error) {
                 retries--;
@@ -56,6 +68,17 @@
     }
 
     /**
+     * دالة تشغيل التدفق المركزي للمحرك
+     */
+    function initCoreFlow() {
+        injectEarlyDependencies();
+        applyGlobalSEOAndBranding();
+        buildAndInjectGlobalComponents();
+        window.updateGlobalCartCounter();
+        document.dispatchEvent(new CustomEvent('BoseDatabaseLoaded', { detail: window.BoseStoreData }));
+    }
+
+    /**
      * 2. دالة مراجعة زيادة الأسعار الرسمية وحظر الثغرات المالية
      */
     window.calculateBosePrice = function(basePrice, applyOnContext = "menu-only") {
@@ -68,7 +91,7 @@
     };
 
     /**
-     * 3. دالة هندسية لحساب السعر النهائي للمنتج شامل خيارات التخصيص والأحجام
+     * 3. دالة هندسية لحساب السعر النهائي للمنتج شامل خيارات التخصيص والأحجام القياسية
      */
     window.calculateProductFinalPrice = function(product, selectedOptions) {
         const opts = selectedOptions || {};
@@ -161,72 +184,12 @@
     };
 
     /**
-     * 5. الحسبة الهندسية لمحاكاة أسعار التورتة المخصصة ديناميكياً
+     * 🛡️ الالتزام بالدور: تم عزل دالات حساب أسعار محاكي الكيك ومحاكي الورد من هذا الملف 
+     * لتقوم ملفات (cake-engine.js) و (flower-engine.js) بمسؤوليتها المباشرة عنها دون تدخل مركزي.
      */
-    window.calculateCustomCakePrice = function(persons, options = {}) {
-        const safePersons = parseInt(persons, 10) || 10;
-        let price = 580; 
-        const minPersons = 4;
-        const pricePerPerson = 145; 
-        
-        const extraPersons = Math.max(0, safePersons - minPersons);
-        price += extraPersons * pricePerPerson;
-        
-        const selectedPrinting = options.printingType || options.printing || 'none';
-        if (selectedPrinting && selectedPrinting !== 'none') {
-            let printingFee = (selectedPrinting === 'edible') ? 60 : 15;
-            price += printingFee;
-        }
-
-        if (options.wrappingPrice) price += parseFloat(options.wrappingPrice) || 0;
-        return window.calculateBosePrice(price, "menu-only");
-    };
 
     /**
-     * 6. الحسبة الهندسية لمحاكاة أسعار بوكيهات الورد المخصصة مع الإضافات
-     */
-    window.calculateCustomFlowerPrice = function(flowerType, flowerCount, options = {}) {
-        const config = window.BoseStoreData?.flowerBuilder;
-        if (!config) return 0;
-        
-        const safeFlowerCount = parseInt(flowerCount, 10) || config.baseFlowers;
-        const safeCashAmount = parseInt(options.moneyAmount, 10) || 0;
-        const safeCashCategoryAmount = parseInt(options.moneyCategoryAmount, 10) || 0;
-        const safeChocolatePieces = parseInt(options.chocolatePieces, 10) || 0;
-        const safePhotoCount = parseInt(options.photoCount, 10) || 0;
-        
-        let servicePrice = config.basePrice || 400;
-        const extraFlowers = Math.max(0, safeFlowerCount - config.baseFlowers);
-        servicePrice += extraFlowers * config.extraFlowerPrice;
-        
-        if (options.wrappingType) {
-            const wrapOpt = config.wrappingTypes.find(opt => opt.id === options.wrappingType);
-            if (wrapOpt) servicePrice += wrapOpt.price;
-        }
-        
-        if (options.chocolateType && safeChocolatePieces > 0) {
-            const chocOpt = config.chocolateTypes.find(opt => opt.id === options.chocolateType);
-            if (chocOpt) servicePrice += chocOpt.price * safeChocolatePieces;
-        }
-        
-        if (options.hasGiftCard) servicePrice += config.giftCardPrice || 20;
-        if (safePhotoCount > 0) servicePrice += safePhotoCount * (config.photoPrintPrice || 15);
-        
-        let cashHandlingFee = 0;
-        if (safeCashAmount > 0 && safeCashCategoryAmount > 0) {
-            const selectedCategory = config.moneyCategories.find(cat => cat.amount === safeCashCategoryAmount);
-            if (selectedCategory) {
-                const billCount = Math.floor(safeCashAmount / safeCashCategoryAmount);
-                cashHandlingFee += billCount * selectedCategory.fee;
-            }
-        }
-        
-        servicePrice += cashHandlingFee;
-        return window.calculateBosePrice(servicePrice, "menu-only") + safeCashAmount;
-    };
-
-    /**
-     * 7. التحقق من أرقام الهواتف وتطهيرها بالصيغة المصرية الصارمة
+     * 5. التحقق من أرقام الهواتف وتطهيرها بالصيغة المصرية الصارمة
      */
     window.validateBosePhoneNumber = function(phone, isOptional = false) {
         if (!phone || phone.trim() === "") return isOptional;
@@ -244,7 +207,7 @@
     };
 
     /**
-     * 8. حارس الوقت القياسي والموحد (شرط الـ 24 ساعة للتحضير)
+     * 6. حارس الوقت القياسي والموحد (شرط الـ 24 ساعة للتحضير)
      */
     window.validateBoseDeliverySchedule = function(dateStr, timeStr) {
         if (!dateStr || !timeStr) return false;
@@ -255,7 +218,7 @@
     };
 
     /**
-     * 9. تحديث شارة عداد السلة اللحظي بالهيدر
+     * 7. تحديث شارة عداد السلة اللحظي بالهيدر
      */
     window.updateGlobalCartCounter = function() {
         const cartCountBadges = document.querySelectorAll('#nav-cart-count');
@@ -330,7 +293,6 @@
         localStorage.setItem('bose_cart', JSON.stringify(cart));
         window.updateGlobalCartCounter();
 
-        // 🌟 تطبيق الحل الهندسي: إعادة حالة العداد المرئي داخل الكارت إلى رقم (1) وتصفير السعر اللحظي
         if (cardContainer) {
             const qtyInput = cardContainer.querySelector('.input-qty-value');
             const priceDisplay = cardContainer.querySelector('.product-card-price');
@@ -387,55 +349,20 @@
             const fixStyle = document.createElement('style');
             fixStyle.id = 'bose-header-fix-styles';
             fixStyle.textContent = `
-                .bose-sticky-header {
-                    position: fixed !important;
-                    top: 40px !important;
-                    left: 0 !important;
-                    width: 100% !important;
-                    z-index: 40000 !important;
-                    box-shadow: 0 4px 20px rgba(255, 145, 164, 0.08) !important;
-                    background-color: #FFFFFF !important;
-                    transition: none !important;
-                }
-                .bose-top-bar-marquee-container {
-                    position: fixed !important;
-                    top: 0 !important;
-                    left: 0 !important;
-                    width: 100% !important;
-                    z-index: 41000 !important;
-                    height: 40px !important;
-                }
-                body {
-                    padding-top: 110px !important;
-                }
-                .bose-sidebar-drawer {
-                    position: fixed; top: 0; right: -320px; width: 320px; height: 100%;
-                    background-color: #FFFFFF !important; z-index: 50000;
-                    transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-                    box-shadow: -8px 0 32px rgba(255, 145, 164, 0.15); direction: rtl;
-                    border-left: 1px solid rgba(255, 145, 164, 0.2);
-                }
+                .bose-sticky-header { position: fixed !important; top: 40px !important; left: 0 !important; width: 100% !important; z-index: 40000 !important; box-shadow: 0 4px 20px rgba(255, 145, 164, 0.08) !important; background-color: #FFFFFF !important; transition: none !important; }
+                .bose-top-bar-marquee-container { position: fixed !important; top: 0 !important; left: 0 !important; width: 100% !important; z-index: 41000 !important; height: 40px !important; }
+                body { padding-top: 110px !important; }
+                .bose-sidebar-drawer { position: fixed; top: 0; right: -320px; width: 320px; height: 100%; background-color: #FFFFFF !important; z-index: 50000; transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: -8px 0 32px rgba(255, 145, 164, 0.15); direction: rtl; border-left: 1px solid rgba(255, 145, 164, 0.2); }
                 .bose-sidebar-drawer.open { right: 0; }
-                .sidebar-header {
-                    display: flex; justify-content: space-between; align-items: center;
-                    padding: 24px; border-bottom: 2px solid #FF91A4;
-                }
+                .sidebar-header { display: flex; justify-content: space-between; align-items: center; padding: 24px; border-bottom: 2px solid #FF91A4; }
                 .sidebar-brand-name { font-size: 16px; font-weight: 700; color: #111111; }
                 .sidebar-close-btn { background: none; border: none; font-size: 22px; color: #FF91A4; cursor: pointer; }
                 .sidebar-links-list { list-style: none; padding: 20px; margin: 0; display: flex; flex-direction: column; gap: 8px; }
-                .sidebar-link-item a {
-                    display: flex; align-items: center; gap: 14px; padding: 14px 18px;
-                    color: #111111; text-decoration: none; font-weight: 600; font-size: 15px;
-                    border-radius: 12px; transition: all 0.3s ease;
-                }
+                .sidebar-link-item a { display: flex; align-items: center; gap: 14px; padding: 14px 18px; color: #111111; text-decoration: none; font-weight: 600; font-size: 15px; border-radius: 12px; transition: all 0.3s ease; }
                 .sidebar-link-item a i { color: #FF91A4; font-size: 18px; transition: all 0.3s ease; }
                 .sidebar-link-item a:hover { background-color: rgba(255, 145, 164, 0.08); color: #FF91A4; }
                 .sidebar-link-item a:hover i { transform: scale(1.1); }
-                .bose-sidebar-overlay {
-                    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-                    background: rgba(17, 17, 17, 0.2); opacity: 0; pointer-events: none;
-                    z-index: 49000; transition: opacity 0.4s ease; backdrop-filter: blur(2px);
-                }
+                .bose-sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(17, 17, 17, 0.2); opacity: 0; pointer-events: none; z-index: 49000; transition: opacity 0.4s ease; backdrop-filter: blur(2px); }
                 .bose-sidebar-overlay.show { opacity: 1; pointer-events: auto; }
                 .bose-footer { background-color: #FFFFFF !important; border-top: 1px solid rgba(255, 145, 164, 0.3); padding: 60px 20px 20px; direction: rtl; }
                 .footer-grid-layout { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; }
@@ -444,11 +371,7 @@
                 .footer-title { font-size: 22px; font-weight: 700; color: #111111; }
                 .footer-about-paragraph { color: #111111; font-size: 14px; line-height: 1.8; margin-bottom: 25px; font-weight: 400; }
                 .footer-social-wrapper { display: flex; gap: 12px; }
-                .footer-social-icon-btn {
-                    display: flex; align-items: center; justify-content: center;
-                    width: 40px; height: 40px; border-radius: 50%; background-color: rgba(255, 145, 164, 0.1);
-                    color: #FF91A4 !important; text-decoration: none; font-size: 16px; transition: all 0.3s ease;
-                }
+                .footer-social-icon-btn { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background-color: rgba(255, 145, 164, 0.1); color: #FF91A4 !important; text-decoration: none; font-size: 16px; transition: all 0.3s ease; }
                 .footer-social-icon-btn:hover { background-color: #FF91A4; color: #FFFFFF !important; transform: translateY(-4px); box-shadow: 0 8px 20px rgba(255, 145, 164, 0.3); }
                 .footer-heading-title { font-size: 16px; font-weight: 700; color: #111111; margin-bottom: 20px; position: relative; padding-bottom: 8px; }
                 .footer-heading-title::after { content: ''; position: absolute; bottom: 0; right: 0; width: 40px; height: 2px; background-color: #FF91A4; }
@@ -666,7 +589,7 @@
     }
 
     /**
-     * 12. محرك تهيئة قسم عقد من الإتقان كـ Slider تفاعلي ثابت وقابل للسحب بالكامل
+     * 8. محرك تهيئة قسم عقد من الإتقان كـ Slider تفاعلي ثابت وقابل للسحب بالكامل
      */
     window.initializeExcellenceSectionSlider = function() {
         const track = document.getElementById('excellence-images-track');
@@ -712,7 +635,7 @@
     };
 
     /**
-     * 13. دالة ربط وتهيئة السلايدرات التفاعلية بالنقاط (Dots) والسحب الجانبي (Swipe) اللمسي لجميع الأقسام
+     * 9. دالة ربط وتهيئة السلايدرات التفاعلية بالنقاط (Dots) والسحب الجانبي (Swipe) اللمسي لجميع الأقسام
      */
     window.setupBoseInteractiveSlider = function(trackId, dotsContainerId, isInfiniteLoop = false) {
         const track = document.getElementById(trackId);
@@ -759,7 +682,7 @@
     };
 
     /**
-     * 14. محرك مالي وهندسي تفاعلي مخصص لإدارة عدادات الكروت والأسعار اللحظية بدقة
+     * 10. محرك مالي وهندسي تفاعلي مخصص لإدارة عدادات الكروت والأسعار اللحظية بدقة
      */
     window.attachBoseCardQuantityEngine = function(containerElement, baseUnitPrice) {
         if (!containerElement) return;
