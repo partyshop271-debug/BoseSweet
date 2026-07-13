@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -9,6 +8,7 @@
     <meta name="description" content="راجع منتجاتك وأصنافك المفضلة وتورتك المصممة بحب عبر سلة المشتريات الذكية لحلويات بوسي قبل تأكيد الطلب السريع.">
     <meta name="keywords" content="سلة التسوق, حلويات بوسي, مراجعة الطلب, تورت مخصصة, الفرافرة, الكفاح">
     
+    <!-- استدعاء ملفات التنسيق القياسية لضمان وحدة الهوية البصرية -->
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/cart-checkout.css">
@@ -18,6 +18,8 @@
         
         body {
             font-family: 'Cairo', sans-serif !important;
+            background-color: #FFFFFF !important;
+            color: #111111 !important;
         }
 
         .bose-drawer-menu, #sidebar-drawer {
@@ -46,7 +48,7 @@
             display: none !important; /* إخفاء متقدم لمتصفحات سياق الموبايل */
         }
 
-        /* 👑 إعادة هيكلة كارت المنتج المقترح ليكون فخماً، جذاباً، وغير مضغوط 👑 */
+        /* 👑 كارت المنتج المقترح الفاخر والجذاب 👑 */
         .bose-cart-horizontal-slider .bose-suggestion-micro-card {
             flex: 0 0 300px !important; /* مساحة عرض سخية تمنع انكماش الكارت */
             width: 300px !important;
@@ -140,7 +142,7 @@
             background: #111111;
         }
 
-        /* 🛠️ [إصلاح برمجى حاسم لحظر عصر وتشويه لوجو الفوتر نهائياً] 🛠️ */
+        /* 🛠️ إصلاح مظهر لوجو الفوتر ومنع تشويهه 🛠️ */
         .footer-logo-container img, 
         .bose-footer #bose-store-logo {
             height: 60px !important;
@@ -152,7 +154,7 @@
             margin: 0 auto !important;
         }
 
-        /* 👑 [حارس التحميل والأمان المانع للتجميد العشوائي للواجهة] 👑 */
+        /* 👑 حارس التحمل والأمان لحماية الواجهة من التجميد 👑 */
         .bose-processing-overlay {
             position: fixed;
             top: 0;
@@ -188,10 +190,12 @@
         }
     </style>
 
-    <script src="js/core-engine.js"></script>
+    <!-- استدعاء المحرك المركزي الهام حارس الحسابات والبيانات الموحدة -->
+    <script src="js/core-engine.js" defer></script>
 </head>
 <body class="bose-hardware-accelerated">
 
+    <!-- حامي وأمان التحميل اللحظي للعمليات -->
     <div id="bose-cart-global-overlay" class="bose-processing-overlay">
         <div style="text-align: center;">
             <div class="bose-spinner-loader"></div>
@@ -199,13 +203,12 @@
         </div>
     </div>
 
-    <header class="bose-navbar" id="bose-global-header">
-        </header>
-
+    <!-- الهيدر والفوتر والـ Drawers يتم حقنهم ديناميكياً من محرك Core Engine للمحافظة على التوافق واستقرار الأداء -->
+    <header class="bose-navbar" id="bose-global-header"></header>
     <div id="sidebar-drawer" class="bose-drawer-menu"></div>
-
     <div id="drawer-shield" class="drawer-overlay"></div>
 
+    <!-- المحتوى الرئيسي الحصري والخاص بالسلة -->
     <main class="bose-cart-page-section" id="cart-main-container">
         <div class="cart-page-header">
             <h1 class="cart-page-title" style="font-weight: 700; max-width: 700px;">سلة التسوق</h1>
@@ -213,16 +216,17 @@
         </div>
 
         <div class="cart-checkout-grid">
-            
+            <!-- الجانب الأيمن: قائمة المشتريات المحددة للطلب والملاحظات -->
             <div class="cart-items-list-wrapper">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; direction: rtl;">
                     <h3 style="font-size: 1.15rem; font-weight: 700; color: #111111;">الأصناف المحددة للطلب</h3>
                     <button id="btn-clear-cart" class="btn-clear-cart-node" style="font-family: 'Cairo', sans-serif; font-size: 0.88rem; font-weight: 700; color: #777; border: 1px solid rgba(17,17,17,0.12); padding: 6px 14px; border-radius: 30px; cursor: pointer; transition: 0.2s;">إفراغ السلة</button>
                 </div>
                 
-                <div id="cart-items-wrapper" class="cart-items-collection">
-                    </div>
+                <!-- حاوية ضخ المنتجات كأكواد HTML ديناميكية مستقلة -->
+                <div id="cart-items-wrapper" class="cart-items-collection"></div>
 
+                <!-- حقل ملاحظات الطلب الحرة لمزيد من الراحة النفسية للعميل -->
                 <div class="checkout-details-card" style="margin-top: 24px; padding: 20px;">
                     <h4 class="product-option-title" style="margin-bottom: 12px; font-weight: 700; color: #111111;">
                         <i class="fas fa-pen-fancy"></i> توصيات أو ملاحظات خاصة بالطلب (اختياري)
@@ -231,6 +235,7 @@
                 </div>
             </div>
 
+            <!-- الجانب الأيسر: ملخص الحسابات وتطبيق كود الخصم -->
             <div class="bose-summary-sticky-card">
                 <h3 class="summary-section-title" style="font-weight: 700; color: #111111;">ملخص الطلب المالي</h3>
                 
@@ -274,16 +279,17 @@
             </div>
         </div>
 
+        <!-- قسم مقترحات قد يعجبك أيضاً المستقل والمريح بصرياً -->
         <section class="bose-section-container" style="padding: 40px 0 0 0; margin-top: 40px; border-top: 1px dashed #FF91A4;">
             <div class="bose-section-header" style="text-align: right; margin-bottom: 20px; direction: rtl;">
                 <h2 class="bose-section-title" style="font-size: 1.5rem; font-weight: 700; color: #111111; padding-bottom: 6px;">قد يعجبك أيضاً</h2>
                 <p class="bose-section-subtitle" style="font-size: 0.95rem; color: #777; margin-top: 2px;">أصناف فاخرة ومميزة يوصي بها خبراؤنا لتكمل بها روعة اختيارك اليوم وتتحرك بشكل جانبي مريح للعين.</p>
             </div>
             
-            <div id="bose-cart-premium-suggestions-grid" class="bose-cart-horizontal-slider">
-                </div>
+            <div id="bose-cart-premium-suggestions-grid" class="bose-cart-horizontal-slider"></div>
         </section>
 
+        <!-- عناصر الثقة الأربعة الفاخرة المعتمدة للموقع ككل -->
         <div class="shared-trust-bar">
             <div class="trust-item-node">
                 <div class="trust-icon-box" style="color: #FF91A4;"><i class="fas fa-birthday-cake"></i></div>
@@ -316,21 +322,23 @@
         </div>
     </main>
 
-    <footer class="bose-footer" id="bose-global-footer">
-        </footer>
+    <!-- الفوتر الرسمي والشرعي للموقع -->
+    <footer class="bose-footer" id="bose-global-footer"></footer>
 
-    <script src="js/cart-engine.js"></script>
+    <!-- استدعاء محرك السلة للقيام بالعمليات اللوجستية والحسابات -->
+    <script src="js/cart-engine.js" defer></script>
 
+    <!-- الكود البرمجي المستقل والخاص بصفحة السلة وحماية استقرار الأداء -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             
-            // صمام الأمان وتأمين حماية الهروب لمنع الـ Syntax Error في حال انعدام تعريف الدالة محلياً
-            const secureEscape = window.escapeHtml || window.escapeHTML || function(str) {
+            // صمام الأمان وتأمين حماية الهروب للوقاية من أخطاء الـ Syntax محلياً ومستقلاً
+            const secureEscape = (str) => {
                 if (!str) return '';
                 return str.toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
             };
 
-            // دالة حقن وبناء كروت المنتجات المقترحة بالهيكل الكامل الموحد والمطابق تماماً للمواصفات والأبعاد الحتمية للمقترحات
+            // دالة بناء كروت المنتجات المقترحة بالهيكل العمودي الفخم
             const renderStrictSuggestionsGrid = (dbData) => {
                 const targetGrid = document.getElementById("bose-cart-premium-suggestions-grid");
                 if (!targetGrid || !dbData || !dbData.products) return;
@@ -339,8 +347,16 @@
                 const currentCart = rawCart ? JSON.parse(rawCart) : [];
                 const cartSlugs = currentCart.map(item => item.productSlug);
 
-                // استدعاء مصفوفة المنتجات لضمان عزل النكهات المكررة بالكامل
-                const finalSuggestions = window.getBosePersonalizedSuggestions ? window.getBosePersonalizedSuggestions(dbData.products, "", 5) : dbData.products.slice(0, 5);
+                // استخلاص الفئات واستدعاء المقترحات الذكية بأمان تام
+                const getPersonalizedList = () => {
+                    if (window.getBosePersonalizedSuggestions) {
+                        return window.getBosePersonalizedSuggestions(dbData.products, "", 5);
+                    }
+                    // دالة محلية احتياطية (Fallback) مستقلة لمنع أي عطل أو جمود برمجي
+                    return dbData.products.filter(p => !cartSlugs.includes(p.slug)).slice(0, 5);
+                };
+
+                const finalSuggestions = getPersonalizedList();
                 const currency = dbData.store?.currency || "EGP";
 
                 if (finalSuggestions.length === 0) {
@@ -348,16 +364,18 @@
                     return;
                 }
 
-                // بناء الكارت العمودي الفاخر الملتزم بالمعايير الجمالية للبراند
+                // حقن كروت المنتجات المقترحة بأقل بصمة برمجية وأقوى استهلاك بيانات
                 targetGrid.innerHTML = finalSuggestions.map(prod => {
                     const defaultLogo = "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png";
                     const imgUrl = prod.image || (prod.images && prod.images[0] ? prod.images[0] : defaultLogo);
+                    
+                    // حساب السعر بأمان عبر الدالة العالمية أو القيمة المباشرة
                     const calculatedPrice = window.calculateBosePrice ? window.calculateBosePrice(prod.price, "menu-only") : prod.price;
                     
                     return `
                         <div class="bose-suggestion-micro-card" data-slug="${prod.slug}">
                             <div class="bose-suggestion-image-wrapper">
-                                <img src="${imgUrl}" alt="${secureEscape(prod.title)}" onerror="this.src='${defaultLogo}';">
+                                <img src="${imgUrl}" alt="${secureEscape(prod.title)}" loading="lazy" width="300" height="200" onerror="this.src='${defaultLogo}';">
                             </div>
                             <div class="bose-suggestion-content-pane">
                                 <h4 class="bose-suggestion-title-text">${secureEscape(prod.title)}</h4>
@@ -375,7 +393,7 @@
                     `;
                 }).join("");
 
-                // تفعيل مستمعي الأحداث والربط اللحظي للمقترحات الذكية
+                // تفعيل مستمعي الأحداث والربط اللحظي للمقترحات الذكية صامتاً ومستقلاً
                 targetGrid.querySelectorAll('.bose-suggestion-micro-card').forEach(card => {
                     const slug = card.dataset.slug;
                     const product = dbData.products.find(p => p.slug === slug);
@@ -385,10 +403,26 @@
                     if (quickAddBtn) {
                         quickAddBtn.addEventListener('click', (e) => {
                             e.preventDefault();
-                            if (window.createCartItem && window.addBoseCartItem) {
+                            if (window.createCartItem) {
                                 const standardItem = window.createCartItem(product, { flavorName: product.flavorName || "كلاسيك" }, 1);
                                 if (standardItem) {
-                                    window.addBoseCartItem(standardItem);
+                                    // فحص آمن لإدخال المنتج للسلة ومزامنة العرض دون التداخل
+                                    const rawCartItems = localStorage.getItem("bose_cart");
+                                    const cartList = rawCartItems ? JSON.parse(rawCartItems) : [];
+                                    
+                                    const existingIndex = cartList.findIndex(item => item.productSlug === standardItem.productSlug && item.id === standardItem.id);
+                                    if (existingIndex > -1) {
+                                        cartList[existingIndex].quantity += 1;
+                                    } else {
+                                        cartList.push(standardItem);
+                                    }
+                                    
+                                    localStorage.setItem("bose_cart", JSON.stringify(cartList));
+                                    
+                                    if (window.updateGlobalCartCounter) {
+                                        window.updateGlobalCartCounter();
+                                    }
+                                    
                                     if (typeof renderCartItems === "function") {
                                         renderCartItems();
                                     } else {
@@ -401,7 +435,7 @@
                 });
             };
 
-            // تفعيل فحص المزامنة للتأكد من ربط حقن الكروت بالشبكة فوراً وتجنب التعارض اللامتزامن لقاعدة البيانات
+            // تفعيل فحص المزامنة مع قاعدة البيانات لضمان أعلى أداء دون تعطيل الصفحة
             if (window.BoseStoreData) {
                 renderStrictSuggestionsGrid(window.BoseStoreData);
             }
@@ -409,13 +443,30 @@
                 renderStrictSuggestionsGrid(e.detail);
             });
 
-            // تمكين سحب الشريط الأفقي بالماوس والموبايل بسلاسة لمنع تجمده
+            // تفعيل الحركة اللمسية والتحريك التلقائي بسلاسة متناهية وبطريقة معزولة
             const horizontalTrack = document.getElementById("bose-cart-premium-suggestions-grid");
-            if (horizontalTrack && window.enableMarqueeDragScrolling) {
-                window.enableMarqueeDragScrolling(horizontalTrack);
+            if (horizontalTrack) {
+                let isDown = false;
+                let startX;
+                let scrollLeft;
+
+                horizontalTrack.addEventListener('mousedown', (e) => {
+                    isDown = true;
+                    startX = e.pageX - horizontalTrack.offsetLeft;
+                    scrollLeft = horizontalTrack.scrollLeft;
+                });
+                horizontalTrack.addEventListener('mouseleave', () => { isDown = false; });
+                horizontalTrack.addEventListener('mouseup', () => { isDown = false; });
+                horizontalTrack.addEventListener('mousemove', (e) => {
+                    if(!isDown) return;
+                    e.preventDefault();
+                    const x = e.pageX - horizontalTrack.offsetLeft;
+                    const walk = (x - startX) * 2;
+                    horizontalTrack.scrollLeft = scrollLeft - walk;
+                });
             }
 
-            // مزامنة وحفظ حقل الملاحظات الحرة للسلة
+            // مزامنة وحفظ حقل الملاحظات الحرة للسلة بطريقة معزولة آلياً
             const notesTextarea = document.getElementById("checkout-order-notes-textarea");
             const checkoutBtn = document.getElementById("btn-proceed-to-checkout");
             if (notesTextarea) {
