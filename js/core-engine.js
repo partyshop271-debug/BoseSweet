@@ -2,15 +2,22 @@
  * core-engine.js - المحرك المركزي العالمي وحارس البيانات والحسابات المالية
  * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية الشاملة والمطورة V26
  * 
- * تم التحديث: حل مشكلة عدم العودة لأول الصفحة عند الرجوع للوراء في جميع الصفحات.
+ * تم التحديث: إصلاح حرج لمنع تذكر المتصفح مكان السكرول والبدء دائماً من أول الصفحة.
  */
 
 (function() {
-    // [إصلاح حرج]: إجبار المتصفح على فتح أي صفحة من أولها نهائياً ومنع تذكر مكان السكرول القديم
+    // [إصلاح حرج وجذري]: إجبار المتصفح على فتح أي صفحة من أولها نهائياً ومنع تذكر مكان السكرول القديم عند الرجوع
     if ('scrollRestoration' in history) {
         history.scrollRestoration = 'manual';
     }
+    
+    // تأكيد الانتقال لأول الصفحة فورياً عند تحميل الملف أو أي عملية تنقل
     window.scrollTo(0, 0);
+    
+    // إضافي للتأكيد عند اكتمال تحميل عناصر الصفحة بالكامل
+    window.addEventListener('load', function() {
+        window.scrollTo(0, 0);
+    });
 
     window.BoseStoreData = null; 
     window.boseServerTimeOffset = 0; 
@@ -806,6 +813,7 @@
     }
 })();
 
+// بقية الأحداث والـ DOM المعتمد
 document.addEventListener("DOMContentLoaded", () => {
     window.onBoseDatabaseReady && window.onBoseDatabaseReady((data) => {
         const leftCol = document.getElementById('waterfall-left-col');
