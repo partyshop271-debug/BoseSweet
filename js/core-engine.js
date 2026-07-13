@@ -2,8 +2,8 @@
  * core-engine.js - المحرك المركزي العالمي وحارس البيانات والحسابات المالية
  * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية الشاملة والمطورة V26
  * 
- * تم إصلاح ثغرة تصفير وإعادة تهيئة عدادات كميات الكروت بعد الإضافة للسلة مباشرة.
- * تم تحسين كفاءة استهلاك البيانات وزيادة سرعة الاستجابة اللحظية على الكمبيوتر والموبايل.
+ * تم إصلاح ثغرة اختفاء الأصناف والشلال وإعادة دمج محرك حقن الـ DOM المقدس كاملاً.
+ * تم تثبيت معيار تصفير العدادات وإعادتها للقيمة القياسية (1) بعد الإضافة للسلة مباشرة.
  */
 
 (function() {
@@ -301,8 +301,7 @@
     };
 
     /**
-     * منع تحول مظهر ولون زر إضافة للسلة إلى اللون الأسود المنتهك للهوية عند الضغط
-     * إصلاح ثغرة تصفير مدخلات ومؤشرات العدادات بالكامل فوراً بعد عملية الإضافة الناجحة
+     * معالجة إضافة المنتجات وحل مشكلة تصفير وإعادة تعيين عداد كرت المنتج تلقائياً
      */
     window.handleBoseDirectAddToCart = function(buttonElement, productId) {
         if (!window.BoseStoreData || !buttonElement) return;
@@ -331,13 +330,12 @@
         localStorage.setItem('bose_cart', JSON.stringify(cart));
         window.updateGlobalCartCounter();
 
-        // بيئة تصفير العداد وإرجاع قيمة الكارت والأسعار المرئية للحالة القياسية الأولى (رقم 1)
+        // 🌟 تطبيق الحل الهندسي: إعادة حالة العداد المرئي داخل الكارت إلى رقم (1) وتصفير السعر اللحظي
         if (cardContainer) {
             const qtyInput = cardContainer.querySelector('.input-qty-value');
             const priceDisplay = cardContainer.querySelector('.product-card-price');
-            
-            if (qtyInput) qtyInput.value = "1"; // إرجاع عداد الكروت تلقائياً لرقم واحد من منع تراكم الأرقام للعميل
-            if (priceDisplay) priceDisplay.textContent = `${Math.round(product.price)} جنيه`; // ريست السعر لعرض سعر القطعة الواحدة الصريح
+            if (qtyInput) qtyInput.value = "1";
+            if (priceDisplay) priceDisplay.textContent = `${Math.round(product.price)} جنيه`;
         }
 
         const originalHtml = buttonElement.innerHTML;
@@ -802,3 +800,146 @@
 
     loadStoreDatabase();
 })();
+
+/**
+ * 🌟 حارس التمهيد والمزامنة الكاملة للأوصاف الفاخرة وحقن الـ DOM وحقن كروت المنتجات من الـ JSON مباشرة
+ */
+document.addEventListener("DOMContentLoaded", () => {
+    window.onBoseDatabaseReady && window.onBoseDatabaseReady((data) => {
+        const leftCol = document.getElementById('waterfall-left-col');
+        const rightCol = document.getElementById('waterfall-right-col');
+        if (leftCol && rightCol) {
+            leftCol.innerHTML = data.homepage.waterfall.leftColumnImages.map(img => `<img src="${img}" alt="شلال بوسي" />`).join('');
+            rightCol.innerHTML = data.homepage.waterfall.rightColumnImages.map(img => `<img src="${img}" alt="شلال بوسي" />`).join('');
+        }
+
+        if(document.getElementById('hero-description')) document.getElementById('hero-description').textContent = data.homepage.hero.description;
+        
+        if(document.getElementById('excellence-title')) document.getElementById('excellence-title').textContent = data.homepage.excellence.title;
+        if(document.getElementById('excellence-description')) document.getElementById('excellence-description').textContent = data.homepage.excellence.description;
+        
+        if(document.getElementById('most-selling-title')) document.getElementById('most-selling-title').textContent = "الأكثر مبيعاً";
+        if(document.getElementById('most-selling-description')) document.getElementById('most-selling-description').textContent = "تشكيلة مختارة بعناية فائقة تبرز فخامة الاختيارات المعتمدة والأكثر طلباً وشهرة من عملائنا.";
+
+        if(document.getElementById('new-arrivals-title')) document.getElementById('new-arrivals-title').textContent = "وصل حديثاً";
+        if(document.getElementById('new-arrivals-description')) document.getElementById('new-arrivals-description').textContent = "استكشف توليفاتنا الجديدة والمبتكرة الحصرية التي تحمل بصمة الجودة وعراقة الإتقان.";
+
+        if(document.getElementById('our-products-title')) document.getElementById('our-products-title').textContent = "منتجاتنا";
+        if(document.getElementById('our-products-description')) document.getElementById('our-products-description').textContent = "تشكيلة غنية ومتنوعة من الحلويات الطازجة يومياً، ركزنا فيها على المكونات الطبيعية 100% لأعلى قيمة جودة.";
+
+        if(document.getElementById('categories-section-title')) document.getElementById('categories-section-title').textContent = "تسوق حسب الفئة";
+        if(document.getElementById('categories-section-subtitle')) document.getElementById('categories-section-subtitle').textContent = "انتقل مباشرة وبكل سهولة إلى الصنف المفضل لديك عبر فئاتنا الشاملة المعتمدة.";
+
+        if(document.getElementById('cake-preview-img')) document.getElementById('cake-preview-img').src = data.homepage.cakePreview.image;
+        if(document.getElementById('cake-preview-title')) document.getElementById('cake-preview-title').textContent = data.homepage.cakePreview.title;
+        if(document.getElementById('cake-preview-desc')) document.getElementById('cake-preview-desc').textContent = data.homepage.cakePreview.description;
+        if(document.getElementById('cake-preview-cta')) document.getElementById('cake-preview-cta').textContent = data.homepage.cakePreview.cta;
+
+        if(document.getElementById('flower-preview-img')) document.getElementById('flower-preview-img').src = data.homepage.flowerPreview.image;
+        if(document.getElementById('flower-preview-title')) document.getElementById('flower-preview-title').textContent = data.homepage.flowerPreview.title;
+        if(document.getElementById('flower-preview-desc')) document.getElementById('flower-preview-desc').textContent = data.homepage.flowerPreview.description;
+        if(document.getElementById('flower-preview-cta')) document.getElementById('flower-preview-cta').textContent = data.homepage.flowerPreview.cta;
+
+        function buildProductCardHTML(p) {
+            let isCake = (p.id === 'toort-custom-master' || p.slug === 'toort-custom-master');
+            let isFlower = (p.id === 'flowers-master' || p.slug === 'flowers-master');
+            
+            let actionAttr = (isCake || isFlower) 
+                ? `onclick="location.href='${isCake ? 'cake-builder.html' : 'flower-builder.html'}'"` 
+                : `onclick="window.handleBoseDirectAddToCart(this, '${p.id}')"`;
+
+            return `
+                <div class="product-card-unified" data-product-id="${p.id}">
+                    <img src="${p.images[0]}" class="product-card-img" alt="${p.title}" loading="lazy" />
+                    <h3 class="product-card-title">${p.title}</h3>
+                    <span class="product-card-flavor-name">${p.flavorName}</span>
+                    <p class="product-card-desc">${p.flavorDesc}</p>
+                    <div class="bose-quantity-counter">
+                        <button class="btn-qty-plus">+</button>
+                        <input type="text" class="input-qty-value" value="1" readonly />
+                        <button class="btn-qty-minus">-</button>
+                    </div>
+                    <div class="product-card-price">${Math.round(p.price)} جنيه</div>
+                    <button class="btn-add-to-cart" ${actionAttr}>اضافة للسلة</button>
+                </div>
+            `;
+        }
+
+        const mostSellingGrid = document.getElementById('most-selling-grid');
+        if (mostSellingGrid) {
+            mostSellingGrid.innerHTML = '';
+            data.products.filter(p => data.homepage.mostSelling.includes(p.id)).forEach(p => { 
+                const wrapper = document.createElement('div');
+                wrapper.innerHTML = buildProductCardHTML(p);
+                const card = wrapper.firstElementChild;
+                mostSellingGrid.appendChild(card);
+                window.attachBoseCardQuantityEngine(card, p.price);
+            });
+            window.setupBoseInteractiveSlider('most-selling-grid', 'most-selling-dots');
+        }
+
+        const newArrivalsGrid = document.getElementById('new-arrivals-grid');
+        if (newArrivalsGrid) {
+            newArrivalsGrid.innerHTML = '';
+            data.products.filter(p => data.homepage.newArrivals.includes(p.id)).forEach(p => { 
+                const wrapper = document.createElement('div');
+                wrapper.innerHTML = buildProductCardHTML(p);
+                const card = wrapper.firstElementChild;
+                newArrivalsGrid.appendChild(card);
+                window.attachBoseCardQuantityEngine(card, p.price);
+            });
+            window.setupBoseInteractiveSlider('new-arrivals-grid', 'new-arrivals-dots');
+        }
+
+        const ourProductsGrid = document.getElementById('our-products-grid');
+        if (ourProductsGrid) {
+            const allOurProducts = data.products.filter(p => data.homepage.ourProducts.includes(p.id));
+            let initialProducts = allOurProducts.slice(0, 4);
+            
+            ourProductsGrid.innerHTML = '';
+            initialProducts.forEach(p => {
+                const wrapper = document.createElement('div');
+                wrapper.innerHTML = buildProductCardHTML(p);
+                const card = wrapper.firstElementChild;
+                ourProductsGrid.appendChild(card);
+                window.attachBoseCardQuantityEngine(card, p.price);
+            });
+
+            const showMoreBtn = document.getElementById('our-products-show-more');
+            if (showMoreBtn) {
+                showMoreBtn.textContent = "استعرض المزيد";
+                if (allOurProducts.length > 4) {
+                    showMoreBtn.addEventListener('click', () => {
+                        let remainingProducts = allOurProducts.slice(4);
+                        remainingProducts.forEach(p => {
+                            const wrapper = document.createElement('div');
+                            wrapper.innerHTML = buildProductCardHTML(p);
+                            const card = wrapper.firstElementChild;
+                            ourProductsGrid.appendChild(card);
+                            window.attachBoseCardQuantityEngine(card, p.price);
+                        });
+                        showMoreBtn.style.display = 'none';
+                    });
+                } else {
+                    showMoreBtn.style.display = 'none';
+                }
+            }
+        }
+
+        const categoriesTrack = document.getElementById('categories-track');
+        if (categoriesTrack) {
+            categoriesTrack.className = "categories-track-scrollable"; 
+            categoriesTrack.innerHTML = data.homepage.categoriesSlider.map(cat => `
+                <div class="bose-category-slider-card" onclick="location.href='menu.html'">
+                    <img src="${cat.image}" class="category-img" alt="${cat.title}" loading="lazy" />
+                    <div class="category-title-display">${cat.title}</div>
+                </div>
+            `).join('');
+            window.setupBoseInteractiveSlider('categories-track', 'categories-dots');
+        }
+
+        if (document.getElementById('excellence-images-track')) {
+            window.initializeExcellenceSectionSlider();
+        }
+    });
+});
