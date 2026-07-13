@@ -1,6 +1,6 @@
 /**
- * المحرك البرمجي المطور والمصحح لمحاكي التورت V3.5 - حلويات بوسي
- * يضمن صياغة نصوص الأسعار الديناميكية الذكية لحماية رغبة واقتناع العميل
+ * المحرك البرمجي المطور والمصحح لمحاكي التورت V3.8 - حلويات بوسي
+ * يضمن التوافق وحل مشكلة ثبات السكرول وإعادة توجيه الصفحة لبدايتها آلياً
  */
 
 function startEngineLogic() {
@@ -66,7 +66,6 @@ function startEngineLogic() {
             printingType: selectedPrinting
         });
         
-        // 🎯 تحقيق التوجيه الذكي: صياغة تصف غرض السعر بدقة دون فرض النكهة عشوائياً
         if (priceLabel) {
             priceLabel.textContent = `سعر التورتة الحالي لـ ${currentPersons} أفراد هو:`;
         }
@@ -75,7 +74,7 @@ function startEngineLogic() {
     }
 
     /**
-     * تزامن حركة لوحات ومؤشرات الـ Stepper
+     * تزامن حركة لوحات ومؤشرات الـ Stepper وحل ثغرة ثبات موضع السكرول
      */
     function syncWizardPanelsUI() {
         for (let i = 1; i <= totalWizardStepsCount; i++) {
@@ -103,6 +102,12 @@ function startEngineLogic() {
             btnWizardNext.textContent = "التالي";
             btnCartSubmit.style.display = "none";
         }
+
+        // 🛡️ حارس إعادة ضبط التمرير: يجبر الهاتف الذكي والكمبيوتر على نقل العميل لأول الصفحة فوراً
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
     }
 
     btnWizardNext.addEventListener('click', () => {
