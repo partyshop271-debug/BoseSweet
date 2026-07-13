@@ -1,6 +1,6 @@
 /**
  * 👑 محرك السلة وإتمام الطلب والتوثيق المالي النهائي الفاخر والمطور - حلويات بوسي 👑
- * النسخة الهندسية القياسية الشاملة والمطورة كلياً - خالية تماماً من ثغرات البتر وتداخل النصوص V5.8
+ * النسخة الهندسية القياسية الشاملة والمطورة كلياً - خالية تماماً من ثغرات البتر وتداخل النصوص V6.0
  * الأداء: تم تحديثه ليعتمد على التحديث الموضعي (Localized DOM Mutations) لتوفير المعالج والبيانات بنسبة 100%
  * التوافق: معزول كلياً ويلتزم بمهامه دون التداخل مع أي ملف آخر أو تكرار وظائفه اللوجستية
  */
@@ -58,10 +58,10 @@ function renderBoseCartPage(storeData) {
         
         if (cart.length === 0) {
             cartWrapper.innerHTML = `
-                <div class="empty-cart-message-block" style="text-align: center; padding: 60px 20px;">
-                    <i class="fas fa-shopping-bag" style="font-size: 48px; color: #FF91A4; margin-bottom: 20px; display: block; opacity: 0.5;"></i>
+                <div class="empty-cart-message-block" style="text-align: center; padding: 60px 20px; background: #FFFFFF;">
+                    <i class="fas fa-shopping-bag" style="font-size: 48px; color: #FF91A4; margin-bottom: 20px; display: block; opacity: 0.6;"></i>
                     <p style="font-size: 18px; font-weight: 700; color: #111111; font-family: 'Cairo'; margin-bottom: 20px;">سلة المشتريات فارغة حالياً</p>
-                    <a href="menu.html" class="bose-btn-primary" style="display: inline-block; background: #FF91A4; color: #FFFFFF; padding: 10px 25px; border-radius: 8px; text-decoration: none; font-weight: 700; font-family: 'Cairo'; box-shadow: 0 8px 32px rgba(255, 145, 164, 0.12);">تصفح المنيو الشامل</a>
+                    <a href="menu.html" class="bose-btn-primary" style="display: inline-block; background: #FF91A4; color: #FFFFFF; padding: 12px 30px; border-radius: 12px; text-decoration: none; font-weight: 700; font-family: 'Cairo'; box-shadow: 0 8px 32px rgba(255, 145, 164, 0.15);">تصفح المنيو الشامل</a>
                 </div>
             `;
             updateCartSummary(cart, storeData);
@@ -75,17 +75,17 @@ function renderBoseCartPage(storeData) {
             const totalItemCost = finalProductPrice * (parseInt(item.quantity, 10) || 1);
             
             let customDetailsHTML = "";
-            const isBespokeItem = item.type === "custom-cake" || item.type === "custom-flower" || item.type === "mini-cake";
+            const isBespokeItem = item.type === "custom-cake" || item.type === "custom-flower" || item.type === "mini-cake" || (item.id && item.id.includes("-"));
             
             if (item.customDetails && isBespokeItem) {
                 let specs = [];
                 const cd = item.customDetails;
                 
-                if (cd.cakeType && cd.cakeType !== "none" && cd.cakeType !== "افتراضي") specs.push(`<span><strong>نوع الكيك:</strong> ${cd.cakeType}</span>`);
-                if (cd.shape && cd.shape !== "none") specs.push(`<span><strong>الشكل:</strong> ${cd.shape === 'circle' ? 'دائري' : cd.shape === 'heart' ? 'قلب' : cd.shape === 'square' ? 'مربع' : 'مستطيل'}</span>`);
+                if (cd.cakeType && cd.cakeType !== "none" && cd.cakeType !== "افتراضي") specs.push(`<span><strong>طعم الكيك:</strong> ${cd.cakeType}</span>`);
+                if (cd.shape && cd.shape !== "none") specs.push(`<span><strong>الشكل:</strong> ${cd.shape === 'circle' ? 'دائري' : cd.shape === 'heart' ? 'قلب' : cd.shape === 'square' ? 'مربع' : cd.shape === 'rectangle' ? 'مستطيل' : cd.shape}</span>`);
                 if (cd.persons && parseInt(cd.persons, 10) > 0) specs.push(`<span><strong>عدد الأفراد:</strong> ${cd.persons} فرد</span>`);
                 if (cd.printingType && cd.printingType !== "none") specs.push(`<span><strong>الطباعة:</strong> ${cd.printingType === 'edible' ? 'صورة صالحة للأكل' : 'صورة مجسمة غير صالحة للأكل'}</span>`);
-                if (cd.customMessage && cd.customMessage.trim() !== "") specs.push(`<span><strong>الرسالة:</strong> "${cd.customMessage}"</span>`);
+                if (cd.customMessage && cd.customMessage.trim() !== "") specs.push(`<span><strong>الرسالة المكتوبة:</strong> "${cd.customMessage}"</span>`);
                 if (cd.allergyNote && cd.allergyNote.trim() !== "") specs.push(`<span style="color:#D4AF37;"><strong>ملاحظة الحساسية:</strong> ${cd.allergyNote}</span>`);
                 if (cd.flowerType && cd.flowerType !== "none") specs.push(`<span><strong>نوع الورد:</strong> ${cd.flowerType === 'natural' ? 'طبيعي نضر' : cd.flowerType === 'artificial' ? 'صناعي فاخر' : 'ستان مصنوع بحب'}</span>`);
                 if (cd.flowerCount && parseInt(cd.flowerCount, 10) > 0) specs.push(`<span><strong>عدد الورد:</strong> ${cd.flowerCount} وردة</span>`);
@@ -110,20 +110,20 @@ function renderBoseCartPage(storeData) {
             }
 
             const cartCard = document.createElement("div");
-            cartCard.className = "bose-horizontal-cart-card";
+            // 🛡️ حل الثغرة: تم تغيير اسم الكلاس المعتمد إلى bose-cart-item-card ليتطابق بالمسطرة مع ملف الـ CSS لمنع التمطط
+            cartCard.className = "bose-cart-item-card";
             cartCard.setAttribute("data-item-id", item.id);
             cartCard.setAttribute("data-index", index);
-            cartCard.style.cssText = "display: flex; flex-direction: row; align-items: center; justify-content: space-between; border: 1.5px solid rgba(255, 145, 164, 0.25); background: #FFFFFF; padding: 24px; border-radius: 24px; margin-bottom: 20px; box-shadow: 0 12px 32px rgba(255, 145, 164, 0.08); position: relative; direction: rtl; width: 100%; box-sizing: border-box; gap: 20px; min-width: 0;";
             
             cartCard.innerHTML = `
                 <div style="display: flex; align-items: center; gap: 20px; flex: 1; min-width: 0;">
-                    <img src="${item.image || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png'}" class="cart-item-image" alt="${item.title}" style="width: 100px; height: 100px; border-radius: 18px; object-fit: cover; flex-shrink: 0; border: 2px solid rgba(255,145,164,0.15);" loading="lazy">
+                    <img src="${item.image || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png'}" class="cart-item-image" alt="${item.title}" style="width: 120px; height: 120px; border-radius: 20px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(255,145,164,0.3);" loading="lazy">
                     <div style="display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 0; text-align: right;">
                         <h3 class="cart-item-title" style="margin: 0; font-size: 16px; font-weight: 700; color: #111111; font-family: 'Cairo'; line-height: 1.4;">${item.title}</h3>
                         <span class="cart-item-flavor-name" style="font-size: 13.5px; color: #FF91A4; font-weight: 700; font-family: 'Cairo';">${cleanFlavorName}</span>
                         ${customDetailsHTML}
                         
-                        <div class="bose-qty-controller-box" style="display: flex; align-items: center; border: 1.5px solid rgba(255, 145, 164, 0.25); border-radius: 12px; width: max-content; margin-top: 8px; background: #FFFFFF; height: 38px; padding: 2px;">
+                        <div class="bose-qty-controller-box" style="display: flex; align-items: center; border: 1px solid rgba(255, 145, 164, 0.3); border-radius: 12px; width: max-content; margin-top: 8px; background: #FFFFFF; height: 38px; padding: 2px;">
                             <button class="btn-qty-plus" data-index="${index}" style="border: none; background: transparent; width: 36px; height: 100%; font-weight: 700; font-size: 16px; color: #111111; cursor: pointer;">+</button>
                             <input type="text" readonly class="qty-numerical-display" value="${item.quantity}" style="width: 36px; text-align: center; border: none; font-size: 15px; font-weight: 700; color: #111111; background: transparent; font-family: 'Cairo';">
                             <button class="btn-qty-minus" data-index="${index}" style="border: none; background: transparent; width: 36px; height: 100%; font-weight: 700; font-size: 16px; color: #111111; cursor: pointer;">-</button>
@@ -172,7 +172,7 @@ function renderBoseCartPage(storeData) {
         const target = e.target.closest("button");
         if (!target) return;
         
-        const cardElement = target.closest(".bose-horizontal-cart-card");
+        const cardElement = target.closest(".bose-cart-item-card");
         if (!cardElement) return;
         
         const index = parseInt(cardElement.getAttribute("data-index"), 10);
@@ -239,7 +239,8 @@ function updateCartSummary(cart, storeData) {
     
     cart.forEach(item => {
         subtotal += parseFloat(item.finalPrice || 0) * (parseInt(item.quantity, 10) || 1);
-        if (item.type === "custom-cake" || item.type === "custom-flower" || item.type === "mini-cake") {
+        const isBespokeOrCustom = item.type === "custom-cake" || item.type === "custom-flower" || item.type === "mini-cake" || (item.id && item.id.includes("-"));
+        if (isBespokeOrCustom) {
             displayItems += 1;
         } else {
             displayItems += (parseInt(item.quantity, 10) || 1);
@@ -257,7 +258,9 @@ function updateCartSummary(cart, storeData) {
     const activeCoupon = localStorage.getItem("bose_active_coupon");
     if (activeCoupon && storeData.coupons) {
         const couponRule = storeData.coupons.find(c => c.code === activeCoupon);
-        if (couponRule) discount = subtotal * (couponRule.value / 100);
+        if (couponRule) {
+            discount = subtotal * (couponRule.value / 100);
+        }
     }
     
     const discountDisplay = document.getElementById("summary-discount");
@@ -398,7 +401,7 @@ function injectBoseBranchBlock(storeData) {
     
     const branchDiv = document.createElement("div");
     branchDiv.id = "bose-branch-info-static";
-    branchDiv.style.cssText = "background: rgba(255, 145, 164, 0.04); border: 1.5px solid #FF91A4; padding: 16px; border-radius: 14px; margin: 15px 0; direction: rtl; text-align: right;";
+    branchDiv.style.cssText = "background: rgba(255, 145, 164, 0.04); border: 1px solid #FF91A4; padding: 16px; border-radius: 14px; margin: 15px 0; direction: rtl; text-align: right;";
     
     const addressText = storeData.store?.pickup?.address || "الكفاح شارع الوحدة المحلية بجوار صيدلية الدكتور أحمد مجدي وبجوار عيادة الدكتور علي";
     const mapLink = storeData.store?.pickup?.mapUrl || "https://maps.app.goo.gl/nAg4Y7vQ7hACvKGc8?g_st=ac";
@@ -589,7 +592,8 @@ function buildBoseFormattedWhatsappInvoice(order) {
         msg += `   *الكمية المطلوبة:* ${item.quantity} قطعة / صنف\n`;
         msg += `   *سعر وحدة الصنف الشامل:* ${parseFloat(item.finalPrice).toFixed(2)} EGP\n`;
         
-        if (item.customDetails && (item.type === "custom-cake" || item.type === "custom-flower" || item.type === "mini-cake")) {
+        const isBespokeItem = item.type === "custom-cake" || item.type === "custom-flower" || item.type === "mini-cake" || (item.id && item.id.includes("-"));
+        if (item.customDetails && isBespokeItem) {
             const cd = item.customDetails;
             if (cd.cakeType && cd.cakeType !== "none" && cd.cakeType !== "افتراضي") msg += `   • طعم الكيك: ${cd.cakeType}\n`;
             if (cd.shape && cd.shape !== "none") msg += `   • الشكل الهندسي: ${cd.shape}\n`;
@@ -736,8 +740,8 @@ function showBoseCustomModal(messageText, onConfirmCallback) {
     document.getElementById("bose-modal-text-content").textContent = messageText;
     overlay.classList.add("active");
     
-    const btnOk = document.getElementById("bose-modal-btn-ok");
-    const btnNo = document.getElementById("bose-modal-btn-no");
+    const btnOk = document.getElementById("bose-global-modal-overlay").querySelector("#bose-modal-btn-ok");
+    const btnNo = document.getElementById("bose-global-modal-overlay").querySelector("#bose-modal-btn-no");
     
     btnOk.onclick = () => {
         overlay.classList.remove("active");
