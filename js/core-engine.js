@@ -1,7 +1,7 @@
 /**
  * core-engine.js - المحرك المركزي العالمي وحارس البيانات والحسابات المالية
- * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية الشاملة والمطورة V23.1
- * تم إصلاح حركات السلايدرات والـ Dots اللمسية لجميع الأقسام هندسياً لتعمل ديناميكياً بدقة
+ * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية الشاملة والمطورة V23.2
+ * تم إصلاح وتطوير شلال حركة قسم عقد من الإتقان ليعمل كشريط متصل لانهائي شديد النعومة والانسيابية
  */
 
 (function() {
@@ -500,7 +500,7 @@
 
     /**
      * 12. محرك تهيئة قسم عقد من الإتقان المطور كلياً كلوحة متحركة لا نهائية تفاعلية
-     * تم تطبيق نظام الـ Clones المتكرر لملء المسافات البرمجية ومنع الفراغات والوميض نهائياً مع تفعيل نقاط التنقل الذكية.
+     * هندسة الصور: تم تعديل عرض الصور ليتناسب مع تدفق الأنميشن الشريطي المتصل ذي السرعة المنتظمة.
      */
     window.initializeExcellenceSectionSlider = function() {
         const track = document.getElementById('excellence-images-track');
@@ -509,21 +509,51 @@
         const config = window.BoseStoreData.homepage?.excellence;
         if (!config || !Array.isArray(config.images)) return;
         
-        let imagesHtml = '';
-        config.images.forEach(imgUrl => {
-            imagesHtml += `
-                <div class="perfection-slide-node">
-                    <img src="${imgUrl}" alt="روائع وإتقان حلويات بوسي" loading="lazy" />
+        // بناء الهيكل التأسيسي للـ 3 صور الأصلية
+        let originalHtml = '';
+        config.images.forEach((imgUrl) => {
+            originalHtml += `
+                <div class="perfection-slide-node" style="width: 300px !important; flex-shrink: 0 !important; margin: 0 !important; padding: 0 5px !important;">
+                    <img src="${imgUrl}" alt="روائع وإتقان حلويات بوسي" style="width: 100% !important; height: 100% !important; border-radius: 12px !important; object-fit: cover !important;" loading="lazy" />
                 </div>
             `;
         });
         
-        // حقن الصور مكررة 4 مرات هندسياً لملء مسار شريط الدوران اللانهائي بالتكامل الكامل
-        track.innerHTML = imagesHtml + imagesHtml + imagesHtml + imagesHtml; 
-        track.style.display = "flex";
-        track.style.animation = "bosePerfectionLoop 25s linear infinite"; // استعادة نبض حركة الشريط الانسيابية
+        // لحركة تكرارية شريطية لانهائية صافية وسلسة (Marquee Loop) بدون قفزات مفاجئة:
+        // نقوم بمضاعفة الكروت لـ 6 تكرارات متتالية داخل التراك المفتوح لملء كامل مساحة العرض
+        track.innerHTML = originalHtml + originalHtml + originalHtml + originalHtml + originalHtml + originalHtml; 
         
-        // ربط نقاط التصفح التفاعلية للتحكم اليدوي المباشر
+        // تعديل خصائص الـ CSS للتراك جافاسكربت فوراً لضمان التدفق الأفقي اللانهائي المستمر بدون انقطاع
+        track.style.display = "flex";
+        track.style.flexDirection = "row";
+        track.style.flexWrap = "nowrap";
+        track.style.width = "max-content";
+        track.style.overflowX = "visible";
+        
+        // حقن وتفعيل كود الأنميشن الشريطي المتواصل فائق النعومة بدلاً من الـ Keyframe القديم القاسي
+        if (!document.getElementById('bose-marquee-excellence-style')) {
+            const style = document.createElement('style');
+            style.id = 'bose-marquee-excellence-style';
+            style.textContent = `
+                @keyframes boseExcellenceMarqueeSmooth {
+                    0% { transform: translate3d(0, 0, 0); }
+                    100% { transform: translate3d(-900px, 0, 0); } /* سحب مسافة الـ 3 صور بدقة (3 * 300px) ثم العودة فوراً */
+                }
+                .bose-perfection-carousel-wrapper {
+                    overflow-x: hidden !important;
+                    width: 100% !important;
+                }
+                #excellence-images-track {
+                    animation: boseExcellenceMarqueeSmooth 20s linear infinite !important;
+                }
+                #excellence-images-track:hover {
+                    animation-play-state: paused !important; /* إيقاف مؤقت دافئ عند إشارة الماوس لراحة العميل */
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        // ربط نقاط التصفح التفاعلية الحتمية المستجيبة للمس والسحب
         window.setupBoseInteractiveSlider('excellence-images-track', 'excellence-dots', true);
     };
 
@@ -535,7 +565,6 @@
         const dotsContainer = document.getElementById(dotsContainerId);
         if (!track) return;
 
-        // في حالة شريط التميز، نحسب النقاط بناءً على عدد عناصر المجموعة الواحدة الأصلية فقط (3 عناصر)
         let totalOriginalItems = isInfiniteLoop ? 3 : track.children.length;
         if (totalOriginalItems <= 0) return;
 
@@ -549,31 +578,38 @@
 
         const dots = dotsContainer ? Array.from(dotsContainer.children) : [];
 
-        // معالجة الاسكرول والتحديث المتبادل للـ Dots مع السحب اللمسي المباشر للعميل
-        track.addEventListener('scroll', () => {
-            const scrollLeft = Math.abs(track.scrollLeft);
-            const itemWidth = track.children[0]?.offsetWidth || 300; 
-            const activeIndex = Math.round(scrollLeft / itemWidth) % totalOriginalItems;
-            
-            dots.forEach((dot, idx) => {
-                if (idx === activeIndex) dot.classList.add('active');
-                else dot.classList.remove('active');
+        // معالجة الاسكرول والتحديث اللحظي للـ Dots مع السحب اللمسي المباشر للعميل لجميع الأقسام بالموقع
+        if (!isInfiniteLoop) {
+            track.addEventListener('scroll', () => {
+                const scrollLeft = Math.abs(track.scrollLeft);
+                const itemWidth = track.children[0]?.offsetWidth || 300; 
+                const activeIndex = Math.round(scrollLeft / itemWidth) % totalOriginalItems;
+                
+                dots.forEach((dot, idx) => {
+                    if (idx === activeIndex) dot.classList.add('active');
+                    else dot.classList.remove('active');
+                });
             });
-        });
+        }
 
-        // تشغيل ودعم أحداث اللمس والضغط المباشر على النقاط لنقل السلايدر فورا
+        // تشغيل ودعم أحداث اللمس والضغط المباشر على النقاط لنقل السلايدر فورا بشكل صحيح
         dots.forEach(dot => {
             dot.addEventListener('click', (e) => {
                 const targetIndex = parseInt(e.target.getAttribute('data-index'), 10);
-                const itemWidth = track.children[0]?.offsetWidth || 300;
-                
-                // في حالة الحركة التلقائية لشريط الإتقان، نقوم بإيقافها مؤقتاً لتسهيل رؤية الصورة المطلوبة
-                if (isInfiniteLoop) track.style.animationPlayState = 'paused';
-                
-                track.scrollTo({ left: (targetIndex * itemWidth), behavior: 'smooth' });
                 
                 if (isInfiniteLoop) {
-                    setTimeout(() => { track.style.animationPlayState = 'running'; }, 3000);
+                    // في حالة شريط التميز اللانهائي: الانتقال يتم بنعومة رياضية عبر تعديل نسبة الـ transform
+                    const targetX = targetIndex * 300;
+                    track.style.transition = "transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)";
+                    track.style.transform = `translate3d(-${targetX}px, 0, 0)`;
+                    
+                    dots.forEach((d, idx) => {
+                        if (idx === targetIndex) d.classList.add('active');
+                        else d.classList.remove('active');
+                    });
+                } else {
+                    const itemWidth = track.children[0]?.offsetWidth || 300;
+                    track.scrollTo({ left: (targetIndex * itemWidth), behavior: 'smooth' });
                 }
             });
         });
