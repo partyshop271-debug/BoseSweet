@@ -1,7 +1,7 @@
 /**
  * core-engine.js - المحرك المركزي العالمي وحارس البيانات والحسابات المالية
  * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية الشاملة والمطورة V23.0
- * حل مشاكل التعارض العكسي تماماً وضمان الأوصاف الفاخرة وحركة السلايدرات اللانهائية
+ * تم تفعيل محرك أزرار الكميات والأسعار اللحظية وربطها هندسياً لتعمل ديناميكياً بدقة
  */
 
 (function() {
@@ -571,6 +571,39 @@
         });
     };
 
+    /**
+     * 14. محرك مالي وهندسي تفاعلي مخصص لإدارة عدادات الكروت والأسعار اللحظية بدقة
+     */
+    window.attachBoseCardQuantityEngine = function(containerElement, baseUnitPrice) {
+        if (!containerElement) return;
+        const plusBtn = containerElement.querySelector('.btn-qty-plus');
+        const minusBtn = containerElement.querySelector('.btn-qty-minus');
+        const qtyInput = containerElement.querySelector('.input-qty-value');
+        const priceDisplay = containerElement.querySelector('.product-card-price');
+        
+        if (!plusBtn || !minusBtn || !qtyInput || !priceDisplay) return;
+        
+        plusBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            let currentVal = parseInt(qtyInput.value, 10) || 1;
+            currentVal++;
+            qtyInput.value = currentVal;
+            let finalCost = currentVal * baseUnitPrice;
+            priceDisplay.textContent = `${Math.round(finalCost)} جنيه`;
+        });
+        
+        minusBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            let currentVal = parseInt(qtyInput.value, 10) || 1;
+            if (currentVal > 1) {
+                currentVal--;
+                qtyInput.value = currentVal;
+                let finalCost = currentVal * baseUnitPrice;
+                priceDisplay.textContent = `${Math.round(finalCost)} جنيه`;
+            }
+        });
+    };
+
     function showGlobalFriendlyError() {
         const err = document.createElement('div');
         err.style.cssText = 'position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background-color:#FF91A4; color:#FFFFFF; padding:12px 24px; border-radius:8px; z-index:99999; font-weight:700;';
@@ -626,15 +659,15 @@ document.addEventListener("DOMContentLoaded", () => {
             let actionClickUrl = isCake ? 'cake-builder.html' : (isFlower ? 'flower-builder.html' : `product.html?slug=${p.slug}`);
 
             return `
-                <div class="product-card-unified">
+                <div class="product-card-unified" data-product-id="${p.id}">
                     <img src="${p.images[0]}" class="product-card-img" alt="${p.title}" loading="lazy" />
                     <h3 class="product-card-title">${p.title}</h3>
                     <span class="product-card-flavor-name">${p.flavorName}</span>
                     <p class="product-card-desc">${p.flavorDesc}</p>
                     <div class="bose-quantity-counter">
-                        <button class="btn-qty-plus" onclick="event.stopPropagation();">+</button>
-                        <input type="text" class="input-qty-value" value="1" readonly onclick="event.stopPropagation();" />
-                        <button class="btn-qty-minus" onclick="event.stopPropagation();">-</button>
+                        <button class="btn-qty-plus">+</button>
+                        <input type="text" class="input-qty-value" value="1" readonly />
+                        <button class="btn-qty-minus">-</button>
                     </div>
                     <div class="product-card-price">${Math.round(p.price)} جنيه</div>
                     <button class="btn-add-to-cart" onclick="location.href='${actionClickUrl}'">اضافة للسلة</button>
@@ -644,17 +677,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const mostSellingGrid = document.getElementById('most-selling-grid');
         if (mostSellingGrid) {
-            let html = '';
-            data.products.filter(p => data.homepage.mostSelling.includes(p.id)).forEach(p => { html += buildProductCardHTML(p); });
-            mostSellingGrid.innerHTML = html;
+            mostSellingGrid.innerHTML = '';
+            data.products.filter(p => data.homepage.mostSelling.includes(p.id)).forEach(p => { 
+                const wrapper = document.createElement('div');
+                wrapper.innerHTML = buildProductCardHTML(p);
+                const card = wrapper.firstElementChild;
+                mostSellingGrid.appendChild(card);
+                window.attachBoseCardQuantityEngine(card, p.price);
+            });
             window.setupBoseInteractiveSlider('most-selling-grid', 'most-selling-dots');
         }
 
         const newArrivalsGrid = document.getElementById('new-arrivals-grid');
         if (newArrivalsGrid) {
-            let html = '';
-            data.products.filter(p => data.homepage.newArrivals.includes(p.id)).forEach(p => { html += buildProductCardHTML(p); });
-            newArrivalsGrid.innerHTML = html;
+            newArrivalsGrid.innerHTML = '';
+            data.products.filter(p => data.homepage.newArrivals.includes(p.id)).forEach(p => { 
+                const wrapper = document.createElement('div');
+                wrapper.innerHTML = buildProductCardHTML(p);
+                const card = wrapper.firstElementChild;
+                newArrivalsGrid.appendChild(card);
+                window.attachBoseCardQuantityEngine(card, p.price);
+            });
             window.setupBoseInteractiveSlider('new-arrivals-grid', 'new-arrivals-dots');
         }
 
@@ -662,7 +705,15 @@ document.addEventListener("DOMContentLoaded", () => {
         if (ourProductsGrid) {
             const allOurProducts = data.products.filter(p => data.homepage.ourProducts.includes(p.id));
             let initialProducts = allOurProducts.slice(0, 4);
-            ourProductsGrid.innerHTML = initialProducts.map(p => buildProductCardHTML(p)).join('');
+            
+            ourProductsGrid.innerHTML = '';
+            initialProducts.forEach(p => {
+                const wrapper = document.createElement('div');
+                wrapper.innerHTML = buildProductCardHTML(p);
+                const card = wrapper.firstElementChild;
+                ourProductsGrid.appendChild(card);
+                window.attachBoseCardQuantityEngine(card, p.price);
+            });
 
             const showMoreBtn = document.getElementById('our-products-show-more');
             if (showMoreBtn) {
@@ -670,8 +721,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (allOurProducts.length > 4) {
                     showMoreBtn.addEventListener('click', () => {
                         let remainingProducts = allOurProducts.slice(4);
-                        let extraHtml = remainingProducts.map(p => buildProductCardHTML(p)).join('');
-                        ourProductsGrid.insertAdjacentHTML('beforeend', extraHtml);
+                        remainingProducts.forEach(p => {
+                            const wrapper = document.createElement('div');
+                            wrapper.innerHTML = buildProductCardHTML(p);
+                            const card = wrapper.firstElementChild;
+                            ourProductsGrid.appendChild(card);
+                            window.attachBoseCardQuantityEngine(card, p.price);
+                        });
                         showMoreBtn.style.display = 'none';
                     });
                 } else {
