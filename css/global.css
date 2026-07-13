@@ -1,5 +1,5 @@
 /* ==========================================================================
-   👑 BoseSweets Strict Production Global Stylesheet (css/global.css) V23.0 👑
+   👑 BoseSweets Strict Production Global Stylesheet (css/global.css) V24.0 👑
    الملف المركزي الموحد المعدل والمطور بالكامل لحل مشاكل السلايدرات والفئات
    امتثال كامل ومغلق لأدلة المواصفات القياسية وحوكمة الأبعاد والتنفس البصري
    ========================================================================== */
@@ -597,8 +597,6 @@ img {
 
 /* ==========================================================================
    8. الهندسة الفاخرة لقسم "عقد من الإتقان" التفاعلي اللانهائي (#excellence-section)
-   اللوحة المتصلة: تم إزالة جميع الفواصل (gap: 0) وإلغاء الحواف الدائرية 
-   لتلتحم الصور كأنها لوحة فنية واحدة تتحرك بانسيابية تامة وبشكل لا نهائي.
    ========================================================================== */
 .bose-perfection-section {
     width: 100%;
@@ -661,15 +659,11 @@ img {
     }
 }
 
-/* 
-  الحارس الرياضي الفاصل لإغلاق ثغرة السلايدر:
-  بما أننا كررنا الصور 4 مرات برمجياً، إذن التحرك بنسبة -25% سيقوم بسحب 
-  مجموعة واحدة كاملة ثم يعيد الدورة بدون أي رمشة أو فراغ أبيض.
-*/
 @keyframes bosePerfectionLoop {
     0% { transform: translate3d(0, 0, 0); } 
     100% { transform: translate3d(-25%, 0, 0); } 
 }
+
 /* ==========================================================================
    9. أقسام كروت وشبكات المنتجات الموحدة القياسية (Strict UI Dimensions)
    ========================================================================== */
@@ -1000,7 +994,6 @@ img {
     padding: 15px 0;
 }
 
-/* مجرى السحب والتصفح الجانبي اليدوي لـ 12 فئة - منع التكدس الرأسي نهائياً */
 .categories-track-scrollable {
     display: flex !important;
     overflow-x: auto !important;
@@ -1015,7 +1008,6 @@ img {
     display: none !important; 
 }
 
-/* كارت تسوق حسب الفئة - أكبر بنسبة 30% لإبراز وزن الأقسام الرئيسية */
 .bose-category-slider-card {
     background-color: var(--bose-white) !important;
     border: var(--bose-border-pink) !important;
@@ -1303,6 +1295,7 @@ img {
     }
 }
 
+/* 👑 حل وإصلاح ثغرة أيقونات التواصل بالفوتر القياسي 👑 */
 .footer-social-icon-btn {
     width: 38px !important;
     height: 38px !important;
@@ -1311,17 +1304,18 @@ img {
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    color: var(--bose-black) !important;
-    background-color: var(--bose-white) !important;
-    box-shadow: var(--bose-shadow-glow) !important;
-    transition: all 0.3s ease !important;
+    color: var(--bose-pink) !important;          /* تم سحب وإصلاح اللون الأسود الباهت ليصبح بمبي ناعم وملكاً للهوية البصرية */
+    background-color: var(--bose-white) !important;    /* أرضية بيضاء صريحة لتوفير التنفس البصري الكامل ومنع التكدس */
+    box-shadow: var(--bose-shadow-glow) !important;    /* ربط آمن بالظلال الناعمة المعتمدة هندسياً لمنع الظلال السوداء المشوهة */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
     font-size: 16px !important;
 }
 
 .footer-social-icon-btn:hover {
-    background-color: var(--bose-pink) !important;
-    color: var(--bose-white) !important;
-    border-color: var(--bose-pink) !important;
+    background-color: var(--bose-pink) !important;     /* التحول الملوكي الكامل للون البمبي نبض الحياة التفاعلي عند الهوفر */
+    color: var(--bose-white) !important;           /* قلب لون الأيقونة الداخلي للأبيض الساطع لراحة العين وثبات الأداء */
+    border-color: var(--bose-pink) !important;         /* غلق وتأمين تلاحم البوردر بشكل فخم وانسيابي */
+    transform: translateY(-3px) !important;            /* حركة ناعمة مريحة ومحفزة تليق بعميل علاماتنا الفاخرة */
 }
 
 .footer-heading-title {
