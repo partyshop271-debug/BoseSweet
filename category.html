@@ -7,6 +7,9 @@
     
     <!-- 🔍 إعدادات تحسين محركات البحث والأرشفة الفاخرة SEO المتطابقة -->
     <meta name="description" content="استمتع بتصفح تشكيلة حلويات بوسي الفاخرة المجهزة يومياً بمكونات طبيعية 100% طازجة تليق بمناسباتكم السعيدة وتضمن راحتكم النفسية.">
+    <meta property="og:title" content="تصفح الأصناف الفاخرة | حلويات بوسي">
+    <meta property="og:description" content="استمتع بتصفح تشكيلة حلويات بوسي الفاخرة المجهزة يومياً بمكونات طبيعية 100% طازجة تليق بمناسباتكم السعيدة.">
+    <meta property="og:type" content="website">
     
     <!-- 🎨 ربط ملفات التصميم الموزعة هندسياً لمنع تضخم الأكواد وتأخر التحميل -->
     <link rel="stylesheet" href="css/global.css">
@@ -25,6 +28,7 @@
             direction: rtl;
             box-sizing: border-box;
             background-color: var(--bose-white, #FFFFFF);
+            min-height: 60vh;
         }
 
         .bose-category-breadcrumb {
@@ -188,6 +192,18 @@
             max-width: 100% !important;
             object-fit: contain !important;
         }
+
+        /* حاوية رسالة الفشل أو السلة الفارغة بطريقة راقية */
+        .bose-empty-state-container {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--bose-black, #111111);
+        }
+        .bose-empty-state-container i {
+            font-size: 3rem;
+            color: var(--bose-pink, #FF91A4);
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body class="bose-hardware-accelerated bose-arabic-text">
@@ -245,27 +261,45 @@
             
             let activeSizeTab = "triangle";
 
-            if (!categoryId) return;
+            if (!categoryId) {
+                renderEmptyState("لم يتم تحديد الصنف بشكل صحيح. يرجى العودة للمنيو الرئيسي.");
+                return;
+            }
 
-            window.getBoseDatabase().then(siteData => {
-                initCategoryRendering(siteData);
-            }).catch(() => {
+            // محاولة جلب البيانات مع تأكيد الاتصال
+            if (window.BoseStoreData) {
+                initCategoryRendering(window.BoseStoreData);
+            } else {
                 document.addEventListener("BoseDatabaseLoaded", function(e) {
                     initCategoryRendering(e.detail);
                 });
-            });
+            }
 
             function initCategoryRendering(siteData) {
-                if (!siteData || !siteData.homepage || !siteData.products) return;
+                if (!siteData || !siteData.homepage || !siteData.products) {
+                    renderEmptyState("عذراً، حدث خطأ أثناء تحميل بيانات المتجر.");
+                    return;
+                }
 
                 const categoryObj = siteData.homepage.categoriesSlider.find(cat => cat.id === categoryId);
-                if (!categoryObj) return;
+                if (!categoryObj) {
+                    renderEmptyState("الصنف المطلوب غير متوفر حالياً.");
+                    return;
+                }
+
+                // تحديث وسوم الصفحة والـ SEO بشكل تفاعلي وراقي
+                document.title = `${categoryObj.title} الفاخرة | حلويات بوسي`;
+                const metaDesc = document.querySelector('meta[name="description"]');
+                if (metaDesc) {
+                    metaDesc.setAttribute("content", `تصفح تشكيلة ${categoryObj.title} الفاخرة من حلويات بوسي. مكونات طبيعية 100% طازجة تسعد قلبك وعائلتك.`);
+                }
 
                 headlineNode.textContent = categoryObj.title;
                 breadcrumbNode.textContent = categoryObj.title;
 
                 const filteredProducts = siteData.products.filter(p => p.category === categoryId);
-                // 👑 [بداية زراعة الترتيب السلوكي الذكي داخل الفئة] 👑
+                
+                // 👑 [الترتيب السلوكي الذكي داخل الفئة] 👑
                 try {
                     const behaviorData = localStorage.getItem('bose_user_behavior');
                     const behaviorLog = behaviorData ? JSON.parse(behaviorData) : {};
@@ -274,7 +308,6 @@
                         let scoreA = behaviorLog[a.slug] ? behaviorLog[a.slug].score : 0;
                         let scoreB = behaviorLog[b.slug] ? behaviorLog[b.slug].score : 0;
                         
-                        // لو النقاط متساوية، رتّب على حسب الأحدث زيارة للعميل
                         if (scoreB === scoreA) {
                             let timeA = behaviorLog[a.slug] ? behaviorLog[a.slug].lastVisited : 0;
                             let timeB = behaviorLog[b.slug] ? behaviorLog[b.slug].lastVisited : 0;
@@ -285,17 +318,18 @@
                 } catch (e) {
                     console.warn("⚠️ فشل فرز المنتجات سلوكياً داخل الفئة.");
                 }
-                // 👑 [نهاية زراعة الترتيب السلوكي الذكي داخل الفئة] 👑
                 
-                if (filteredProducts.length > 0 && filteredProducts[0].description) {
-                    descNode.textContent = filteredProducts[0].description;
+                if (filteredProducts.length > 0) {
+                    descNode.textContent = filteredProducts[0].description || `أفخر أنواع ${categoryObj.title} المصنوعة يدوياً بكل حب وشغف.`;
+                } else {
+                    renderEmptyState("لا توجد منتجات متوفرة حالياً في هذه الفئة.");
+                    return;
                 }
 
                 const currency = siteData.store.currency || "EGP";
                 const firstProduct = filteredProducts[0];
 
-                // 👑 [تحسين وتعديل تخطيط الكب كيك سلوكياً وبصرياً]:
-                // إذا كان المعرّف يخص فئة الكب كيك، نجبر الكلاس على أخذ النمط الفردي مالي الشاشة لمنع الحشر والتكديس
+                // 👑 [تحسين وتعديل تخطيط الفئات بصرياً وسلوكياً لمنع التكدس]:
                 if (categoryId === "taswaq-cupcake") {
                     productsGrid.className = "category-products-grid layout-full-card";
                     sizeFilterRow.style.display = "none";
@@ -314,27 +348,56 @@
                         if (categoryId !== "taswaq-cupcake" && firstProduct && firstProduct.layout === "tabs" && product.prices) {
                             product.defaultSize = activeSizeTab; 
                         }
+                        
+                        // صمام أمان هندسي لتوليد الكارت بشكل سليم حتى لو تعطل المحرك الخارجي
+                        let cardHTML = "";
                         if (typeof window.generateStrictProductCardHTML === 'function') {
-                            const cardHTML = window.generateStrictProductCardHTML(product, currency);
-                            const tempDiv = document.createElement('div');
-                            tempDiv.innerHTML = cardHTML;
+                            cardHTML = window.generateStrictProductCardHTML(product, currency);
+                        } else {
+                            // نظام توليد بديل فائق الجودة لحماية الصفحة من التعطل التام
+                            const calculatedPrice = typeof window.calculateProductFinalPrice === 'function' ? 
+                                window.calculateProductFinalPrice(product, {size: product.defaultSize}) : (product.price || 0);
                             
-                            // 👑 [إصلاح حاسم للرابط البرمجي]: توجيه العميل فوراً لصفحة تفاصيل الصنف الفردية ليرى المراجعات والبدائل الذكية
-                            const cardLinks = tempDiv.querySelectorAll('a');
-                            cardLinks.forEach(link => {
-                                link.href = `product.html?slug=${product.slug}`;
-                            });
-                            
-                            while (tempDiv.firstChild) {
-                                productsGrid.appendChild(tempDiv.firstChild);
-                            }
+                            cardHTML = `
+                                <div class="product-card" data-slug="${product.slug}">
+                                    <a href="product.html?slug=${product.slug}" style="text-decoration:none; color:inherit;">
+                                        <img class="product-card-img" src="${product.image || product.images[0]}" alt="${product.title}" loading="lazy">
+                                        <h3 class="product-card-title">${product.title}</h3>
+                                        <span class="product-card-flavor-name">${product.flavorName || ''}</span>
+                                        <p class="product-card-desc">${product.flavorDesc || ''}</p>
+                                    </a>
+                                    <div class="product-card-bottom-row" style="display:flex; justify-content:space-between; align-items:center; margin-top:auto; padding-top:10px;">
+                                        <div class="product-card-price" style="color:var(--bose-pink); font-weight:700;">${calculatedPrice} ${currency}</div>
+                                        <a href="product.html?slug=${product.slug}" class="btn-add-to-cart" style="background:var(--bose-pink); color:#fff; padding:8px 16px; border-radius:50px; text-decoration:none; font-size:0.85rem; font-weight:700;">استعرض وتذوق</a>
+                                    </div>
+                                </div>
+                            `;
+                        }
+
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = cardHTML;
+                        
+                        // تفعيل Lazy Loading لصور الكروت لخفض استهلاك بيانات العميل على الموبايل
+                        const imgNode = tempDiv.querySelector('img');
+                        if (imgNode) {
+                            imgNode.setAttribute('loading', 'lazy');
+                        }
+                        
+                        // 👑 [إصلاح حاسم للرابط البرمجي]: توجيه العميل فوراً لصفحة تفاصيل الصنف الفردية ليرى المراجعات والبدائل الذكية
+                        const cardLinks = tempDiv.querySelectorAll('a');
+                        cardLinks.forEach(link => {
+                            link.href = `product.html?slug=${product.slug}`;
+                        });
+                        
+                        while (tempDiv.firstChild) {
+                            productsGrid.appendChild(tempDiv.firstChild);
                         }
                     });
 
                     if (typeof window.attachProductCardEvents === 'function') {
                         window.attachProductCardEvents(productsGrid, siteData.products, currency);
                         
-                        // إعادة تطبيق تعديل الروابط بعد تفعيل الأحداث للتأكيد الكامل
+                        // إعادة تطبيق تعديل الروابط بعد تفعيل الأحداث للتأكيد الكامل والوقاية المطلقة
                         productsGrid.querySelectorAll('.product-card').forEach(card => {
                             const slug = card.dataset.slug;
                             const cardLinks = card.querySelectorAll('a');
@@ -356,6 +419,20 @@
                         renderProductsByLayoutConfig();
                     });
                 });
+            }
+
+            function renderEmptyState(message) {
+                productsGrid.className = "category-products-grid layout-full-card";
+                productsGrid.innerHTML = `
+                    <div class="bose-empty-state-container">
+                        <i class="fa-solid fa-cookie-bite"></i>
+                        <h3 style="font-weight: 700 !important; color: var(--bose-black); margin-bottom: 12px;">${message}</h3>
+                        <a href="menu.html" style="display: inline-block; background-color: var(--bose-pink); color: #FFFFFF; padding: 12px 28px; border-radius: 50px; text-decoration: none; font-weight: 700; margin-top:15px; transition:0.3s ease;">تصفح المنيو الشامل</a>
+                    </div>
+                `;
+                headlineNode.textContent = "عذراً";
+                descNode.textContent = "";
+                breadcrumbNode.textContent = "تنبيه";
             }
         });
     </script>
