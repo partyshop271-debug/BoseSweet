@@ -1,9 +1,11 @@
 /**
  * core-engine.js - المحرك المركزي العالمي وحارس البيانات والحسابات المالية
- * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية الشاملة والمطورة V25
+ * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية الشاملة والمطورة V26
  * 
- * تم التعديل الجذري لقسم "عقد من الإتقان" ليصبح سلايدر تفاعلي مستقر وثابت
- * يستجيب للسحب اللمسي المباشر والنقاط (Dots) بدون أي اختفاء أو حركات تلقائية مشوهة.
+ * تم إصلاح ارتباط أزرار "اضافة للسله" في كروت الواجهة لمنع التحويل العشوائي،
+ * مع ربط الإضافة اللحظية المباشرة، وتحويل الزر لعلامة صح، وإشعارات ناعمة،
+ * واستثناء كروت المحاكيات لإجبار العميل على دخول المحاكي لتحديد تفاصيله الفاخرة.
+ * تم إصلاح وتثبيت الهيدر برمجياً ومنع اختفائه تماماً أثناء السكرول.
  */
 
 (function() {
@@ -134,7 +136,7 @@
             basePrice: parseFloat((product.price || product.basePrice || 0).toFixed(4)),
             finalPrice: parseFloat(finalUnitPrice.toFixed(4)),
             quantity: parseInt(quantity, 10) || 1,
-            image: product.image || "",
+            image: product.image || product.images?.[0] || "",
             type: product.type || (product.isMiniCake ? "mini-cake" : "standard"),
             customDetails: {
                 cakeType: opts.cakeType || opts.cakeFlavor || "فانيليا",
@@ -272,6 +274,81 @@
     };
 
     /**
+     * دالة هندسية لحقن إشعارات سريعة وراقية ومنسقة الألوان داخل الموقع من غير Popups مزعجة
+     */
+    window.showBoseGlobalToast = function(message) {
+        let container = document.getElementById('bose-toast-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'bose-toast-container';
+            container.style.cssText = 'position:fixed; bottom:30px; left:50%; transform:translateX(-50%); z-index:999999; display:flex; flex-direction:column; gap:10px; pointer-events:none; font-family:"Cairo", sans-serif;';
+            document.body.appendChild(container);
+        }
+        const toast = document.createElement('div');
+        toast.style.cssText = 'background-color:#111111; color:#FFFFFF; padding:12px 24px; border-radius:30px; font-weight:600; font-size:14px; text-align:center; box-shadow:0 8px 32px rgba(255, 145, 164, 0.25); border:1px solid rgba(255,145,164,0.4); direction:rtl; opacity:0; transform:translateY(20px); transition:all 0.4s ease; pointer-events:auto;';
+        toast.textContent = message;
+        container.appendChild(toast);
+        
+        setTimeout(() => { toast.style.opacity = '1'; toast.style.transform = 'translateY(0)'; }, 50);
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateY(-20px)';
+            setTimeout(() => { toast.remove(); }, 400);
+        }, 3000);
+    };
+
+    /**
+     * دالة معالجة إضافة المنتجات القياسية مباشرة من الكروت وتحديث حالة الأزرار
+     */
+    window.handleBoseDirectAddToCart = function(buttonElement, productId) {
+        if (!window.BoseStoreData || !buttonElement) return;
+        
+        const product = window.BoseStoreData.products.find(p => p.id === productId);
+        if (!product) return;
+
+        // جلب الكمية المحددة من العداد القريب للكارت
+        const cardContainer = buttonElement.closest('.product-card-unified');
+        let qty = 1;
+        if (cardContainer) {
+            const qtyInput = cardContainer.querySelector('.input-qty-value');
+            if (qtyInput) qty = parseInt(qtyInput.value, 10) || 1;
+        }
+
+        // قراءة وتجهيز السلة
+        const rawCart = localStorage.getItem('bose_cart');
+        let cart = rawCart ? JSON.parse(rawCart) : [];
+
+        // التحقق من وجود المنتج مسبقاً بنفس المعرف القياسي
+        const existingItem = cart.find(item => item.id === product.slug);
+        if (existingItem) {
+            existingItem.quantity += qty;
+        } else {
+            const newItem = window.createCartItem(product, {}, qty);
+            if (newItem) cart.push(newItem);
+        }
+
+        localStorage.setItem('bose_cart', JSON.stringify(cart));
+        window.updateGlobalCartCounter();
+
+        // تحويل شكل ومظهر الزر برقة لعلامة صح وإصدار الإشعار الراقي
+        const originalHtml = buttonElement.innerHTML;
+        buttonElement.innerHTML = '<i class="fa-solid fa-check"></i> تمت الإضافة';
+        buttonElement.style.backgroundColor = '#111111';
+        buttonElement.style.color = '#FFFFFF';
+        buttonElement.disabled = true;
+
+        window.showBoseGlobalToast('تمت إضافة المنتج إلى السلة.');
+
+        // إعادة حالة الزر لطبيعتها بعد ثانيتين تفادياً للتعليق
+        setTimeout(() => {
+            buttonElement.innerHTML = originalHtml;
+            buttonElement.style.backgroundColor = '';
+            buttonElement.style.color = '';
+            buttonElement.disabled = false;
+        }, 2500);
+    };
+
+    /**
      * 10. خطاف تمهيد حارس التمهيد لمنع التعارض البرمجي
      */
     window.onBoseDatabaseReady = function(callback) {
@@ -296,6 +373,36 @@
         if (!document.querySelector('link[href*="font-awesome"]')) {
             const fa = document.createElement('link'); fa.rel = 'stylesheet'; fa.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css';
             document.head.appendChild(fa);
+        }
+        
+        // حقن ستايل الأمان الصارم لتثبيت الهيدر برمجياً ومنع أي اختفاء أو وميض أثناء التصفح
+        if (!document.getElementById('bose-header-fix-styles')) {
+            const fixStyle = document.createElement('style');
+            fixStyle.id = 'bose-header-fix-styles';
+            fixStyle.textContent = `
+                .bose-sticky-header {
+                    position: fixed !important;
+                    top: 40px !important; /* أسفل الماركيه */
+                    left: 0 !important;
+                    width: 100% !important;
+                    z-index: 40000 !important;
+                    box-shadow: 0 4px 20px rgba(255, 145, 164, 0.08) !important;
+                    background-color: #FFFFFF !important;
+                    transition: none !important; /* منع حركات الاختفاء المشوهة */
+                }
+                .bose-top-bar-marquee-container {
+                    position: fixed !important;
+                    top: 0 !important;
+                    left: 0 !important;
+                    width: 100% !important;
+                    z-index: 41000 !important;
+                    height: 40px !important;
+                }
+                body {
+                    padding-top: 110px !important; /* حماية مساحة العرض بعد تثبيت الهيدر */
+                }
+            `;
+            document.head.appendChild(fixStyle);
         }
     }
 
@@ -502,7 +609,6 @@
 
     /**
      * 12. محرك تهيئة قسم عقد من الإتقان كـ Slider تفاعلي ثابت وقابل للسحب بالكامل
-     * تم إلغاء حركات الأنميشن التلقائية والتكرار نهائياً لمنع وميض أو اختفاء الصور، مع ربط كل منتج بصفحته الفاخرة.
      */
     window.initializeExcellenceSectionSlider = function() {
         const track = document.getElementById('excellence-images-track');
@@ -511,12 +617,10 @@
         const config = window.BoseStoreData.homepage?.excellence;
         if (!config || !Array.isArray(config.images)) return;
         
-        // جلب عينات المنتجات المحددة لربط التوجيه الملوكي (مثال: تورت، ورد، بوكس الروقان)
         const products = window.BoseStoreData.products || [];
         
         let imagesHtml = '';
         config.images.forEach((imgUrl, idx) => {
-            // توزيع ذكي للروابط الداخلية لتوجيه العميل لصفحة المنتج الفردية الصحيحة
             let targetUrl = 'menu.html';
             if (idx === 0) {
                 const p = products.find(prod => prod.id === 'toort-custom-master');
@@ -538,17 +642,14 @@
             `;
         });
         
-        // حقن الـ 3 صور الأصلية فقط بدون أي تكرار أو كلونات تلقائية لضمان الثبات المطلق
         track.innerHTML = imagesHtml; 
         
-        // تهيئة أنماط CSS للسحب اللمسي الحر المباشر عبر أصابع اليد على الموبايل
         track.style.display = "flex";
         track.style.overflowX = "auto";
         track.style.scrollSnapType = "x mandatory";
         track.style.webkitOverflowScrolling = "touch";
-        track.style.animation = "none"; // حظر وحذف الأنميشن المسبب للاختفاء
+        track.style.animation = "none"; 
         
-        // ربط نقاط التصفح التفاعلية للتحكم اليدوي المباشر والسحب اللمسي
         window.setupBoseInteractiveSlider('excellence-images-track', 'excellence-dots', false);
     };
 
@@ -575,7 +676,6 @@
 
         const dots = dotsContainer ? Array.from(dotsContainer.children) : [];
 
-        // معالجة السحب بالاصبع والتحديث اللحظي المتبادل للـ Dots مع السحب اللمسي المباشر للعميل
         track.addEventListener('scroll', () => {
             const scrollLeft = Math.abs(track.scrollLeft);
             const itemWidth = track.children[0]?.offsetWidth || track.offsetWidth || 300; 
@@ -587,7 +687,6 @@
             });
         });
 
-        // تشغيل ودعم أحداث اللمس والضغط المباشر على النقاط لنقل السلايدر فوراً
         dots.forEach(dot => {
             dot.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -686,7 +785,11 @@ document.addEventListener("DOMContentLoaded", () => {
         function buildProductCardHTML(p) {
             let isCake = (p.id === 'toort-custom-master' || p.slug === 'toort-custom-master');
             let isFlower = (p.id === 'flowers-master' || p.slug === 'flowers-master');
-            let actionClickUrl = isCake ? 'cake-builder.html' : (isFlower ? 'flower-builder.html' : `product.html?slug=${p.slug}`);
+            
+            // صمام الأمان الصارم: إذا كان المنتج محاكي (كيك أو ورد) يحول لصفحة البناء، غير كده يضيف للسلة مباشرة بلغة جافاسكربت
+            let actionAttr = (isCake || isFlower) 
+                ? `onclick="location.href='${isCake ? 'cake-builder.html' : 'flower-builder.html'}'"` 
+                : `onclick="window.handleBoseDirectAddToCart(this, '${p.id}')"`;
 
             return `
                 <div class="product-card-unified" data-product-id="${p.id}">
@@ -700,7 +803,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         <button class="btn-qty-minus">-</button>
                     </div>
                     <div class="product-card-price">${Math.round(p.price)} جنيه</div>
-                    <button class="btn-add-to-cart" onclick="location.href='${actionClickUrl}'">اضافة للسلة</button>
+                    <button class="btn-add-to-cart" ${actionAttr}>اضافة للسلة</button>
                 </div>
             `;
         }
