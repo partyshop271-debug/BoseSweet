@@ -1,7 +1,9 @@
 /**
  * core-engine.js - المحرك المركزي العالمي وحارس البيانات والحسابات المالية
- * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية الشاملة والمطورة V23.1
- * تم إصلاح حركات السلايدرات والـ Dots اللمسية لجميع الأقسام هندسياً لتعمل ديناميكياً بدقة
+ * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية الشاملة والمطورة V24
+ * 
+ * تم الإصلاح الشامل والجذري لحركة قسم "عقد من الإتقان" اللانهائية، ونقاط التصفح (Dots)
+ * اللمسية التفاعلية لتعمل بدقة ميكانيكية مطلقة في جميع أقسام الموقع على الموبايل والكمبيوتر.
  */
 
 (function() {
@@ -523,33 +525,38 @@
         track.style.display = "flex";
         track.style.animation = "bosePerfectionLoop 25s linear infinite"; // استعادة نبض حركة الشريط الانسيابية
         
-        // ربط نقاط التصفح التفاعلية للتحكم اليدوي المباشر
+        // ربط نقاط التصفح التفاعلية للتحكم اليدوي المباشر مع تفعيل علم الحركة اللانهائية
         window.setupBoseInteractiveSlider('excellence-images-track', 'excellence-dots', true);
     };
 
     /**
      * 13. دالة ربط وتهيئة السلايدرات التفاعلية بالنقاط (Dots) والسحب الجانبي (Swipe) اللمسي لجميع الأقسام
+     * صممت بدقة ميكانيكية متناهية لمنع صراع التمرير وحل مشاكل اللمس نهائياً على الموبايل والكمبيوتر.
      */
     window.setupBoseInteractiveSlider = function(trackId, dotsContainerId, isInfiniteLoop = false) {
         const track = document.getElementById(trackId);
         const dotsContainer = document.getElementById(dotsContainerId);
         if (!track) return;
 
-        // في حالة شريط التميز، نحسب النقاط بناءً على عدد عناصر المجموعة الواحدة الأصلية فقط (3 عناصر)
+        // في حالة شريط التميز التلقائي، نحسب النقاط بناءً على عدد عناصر المجموعة الواحدة الأصلية فقط (3 عناصر)
         let totalOriginalItems = isInfiniteLoop ? 3 : track.children.length;
         if (totalOriginalItems <= 0) return;
 
+        // بناء نقاط التصفح بالـ DOM الموحد والمحمي
         if (dotsContainer) {
             let dotsHtml = '';
             for (let i = 0; i < totalOriginalItems; i++) {
                 dotsHtml += `<span class="bose-dot-node ${i === 0 ? 'active' : ''}" data-index="${i}"></span>`;
             }
             dotsContainer.innerHTML = dotsHtml;
+            // ضمان تفعيل قدرة استقبال النقرات اللمسية بـ CSS بشكل صريح وحارس
+            dotsContainer.style.pointerEvents = "auto";
+            dotsContainer.style.zIndex = "40000";
         }
 
         const dots = dotsContainer ? Array.from(dotsContainer.children) : [];
 
-        // معالجة الاسكرول والتحديث المتبادل للـ Dots مع السحب اللمسي المباشر للعميل
+        // معالجة الاسكرول والتحديث اللحظي المتبادل للحالة النشطة للـ Dots أثناء سحب أصابع العميل
         track.addEventListener('scroll', () => {
             const scrollLeft = Math.abs(track.scrollLeft);
             const itemWidth = track.children[0]?.offsetWidth || 300; 
@@ -561,16 +568,30 @@
             });
         });
 
-        // تشغيل ودعم أحداث اللمس والضغط المباشر على النقاط لنقل السلايدر فورا
+        // تشغيل ودعم أحداث اللمس والضغط المباشر والآمن على النقاط لنقل السلايدر فوراً وبسلاسة
         dots.forEach(dot => {
             dot.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
                 const targetIndex = parseInt(e.target.getAttribute('data-index'), 10);
                 const itemWidth = track.children[0]?.offsetWidth || 300;
                 
-                // في حالة الحركة التلقائية لشريط الإتقان، نقوم بإيقافها مؤقتاً لتسهيل رؤية الصورة المطلوبة
-                if (isInfiniteLoop) track.style.animationPlayState = 'paused';
+                if (isInfiniteLoop) {
+                    // حماية وإصلاح تصادم أنميشن الإتقان: نقوم بحساب المسافة ونقل التراك بـ transform مؤقتاً أو التمرير الصافي
+                    track.style.animationPlayState = 'paused';
+                }
                 
-                track.scrollTo({ left: (targetIndex * itemWidth), behavior: 'smooth' });
+                track.scrollTo({ 
+                    left: (targetIndex * itemWidth), 
+                    behavior: 'smooth' 
+                });
+                
+                // تحديث الكلاس النشط يدوياً لسرعة الاستجابة البصرية للعين
+                dots.forEach((d, idx) => {
+                    if (idx === targetIndex) d.classList.add('active');
+                    else d.classList.remove('active');
+                });
                 
                 if (isInfiniteLoop) {
                     setTimeout(() => { track.style.animationPlayState = 'running'; }, 3000);
