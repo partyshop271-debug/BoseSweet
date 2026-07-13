@@ -2,28 +2,43 @@
  * core-engine.js - المحرك المركزي العالمي وحارس البيانات والحسابات المالية
  * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية الشاملة والمطورة V26
  * 
- * تم التحديث: إصلاح حرج لمنع تذكر المتصفح مكان السكرول والبدء دائماً من أول الصفحة.
+ * تم التحديث: حل نهائي وقاطع لمشكلة عدم العودة لأول الصفحة عند الرجوع للوراء 
+ * في جميع الصفحات ومقاومة نظام الـ bfcache في المتصفحات.
  */
 
 (function() {
-    // [إصلاح حرج وجذري]: إجبار المتصفح على فتح أي صفحة من أولها نهائياً ومنع تذكر مكان السكرول القديم عند الرجوع
+    // 1. [إصلاح حرج وجذري]: إجبار المتصفح على تعطيل استعادة السكرول التلقائية فوراً
     if ('scrollRestoration' in history) {
         history.scrollRestoration = 'manual';
     }
-    
-    // تأكيد الانتقال لأول الصفحة فورياً عند تحميل الملف أو أي عملية تنقل
-    window.scrollTo(0, 0);
-    
-    // إضافي للتأكيد عند اكتمال تحميل عناصر الصفحة بالكامل
-    window.addEventListener('load', function() {
-        window.scrollTo(0, 0);
+
+    // دالة هندسية تضمن التمرير الفوري للأعلى مع صمام أمان زمني لتخطي معالجات المتصفح الخلفية
+    function forceScrollToTop() {
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        setTimeout(() => {
+            window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        }, 50); // تأخير ملي ثانية بسيط لضمان كسر ذاكرة المتصفح المؤقتة
+    }
+
+    // تشغيل الدالة فوراً عند تحميل الملف
+    forceScrollToTop();
+
+    // تشغيل الدالة عند اكتمال الـ DOM لضمان جاهزية الهيكل البصري
+    document.addEventListener('DOMContentLoaded', forceScrollToTop);
+
+    // تشغيل الدالة عند تحميل الصفحة بالكامل ومواردها
+    window.addEventListener('load', forceScrollToTop);
+
+    // [الحل السحري والأهم]: تشغيل الدالة عند إظهار الصفحة من كاش المتصفح الراجع (bfcache)
+    window.addEventListener('pageshow', function(event) {
+        forceScrollToTop();
     });
 
     window.BoseStoreData = null; 
     window.boseServerTimeOffset = 0; 
 
     /**
-     * 1. تهيئة واستدعاء قاعدة بيانات حلويات بوسي المستقرة بنظام الكاش الذكي توفيراً للبيانات
+     * تهيئة واستدعاء قاعدة بيانات حلويات بوسي المستقرة بنظام الكاش الذكي توفيراً للبيانات
      */
     async function loadStoreDatabase() {
         if (window.BoseStoreData) return;
@@ -813,7 +828,6 @@
     }
 })();
 
-// بقية الأحداث والـ DOM المعتمد
 document.addEventListener("DOMContentLoaded", () => {
     window.onBoseDatabaseReady && window.onBoseDatabaseReady((data) => {
         const leftCol = document.getElementById('waterfall-left-col');
