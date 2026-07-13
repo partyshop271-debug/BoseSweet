@@ -6,23 +6,21 @@
     <title>تصميم تورتتك الخاصة | حلويات بوسي</title>
     <meta name="description" content="ميزة حصرية تتيح للعميل تصميم تورتته بنفسه واختيار كل التفاصيل التي يريدها قبل تنفيذها.">
     
-    <!-- روابط الهوية البصرية والمحرك المركزي الحاكم للموقع -->
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/simulators.css">
     <script src="js/core-engine.js"></script>
     
     <style>
-        /* هندسة التنفس البصري والراحة النفسية للعميل ومنع التكدس */
         .bose-simulator-layout {
             max-width: 800px;
             margin: 0 auto;
-            padding: 30px 16px 100px 16px;
+            padding: 30px 16px 140px 16px;
         }
         .bose-main-hero-hook {
             width: 100%;
-            height: 48vh;
-            min-height: 290px;
-            max-height: 520px;
+            height: 45vh;
+            min-height: 280px;
+            max-height: 500px;
             border-radius: 24px;
             overflow: hidden;
             border: var(--bose-border-pink);
@@ -38,7 +36,6 @@
         .bose-intro-block {
             text-align: center;
             margin-bottom: 40px;
-            padding: 0 10px;
         }
         .bose-intro-block h1 {
             font-size: 32px;
@@ -48,13 +45,11 @@
         }
         .bose-intro-block p {
             font-size: 16px;
-            font-weight: 400;
             color: var(--bose-black);
             line-height: 1.7;
             margin: 0;
         }
         
-        /* تصميم البلوك الشامل للخطوات التفاعلية المريحة (Stepper Content) */
         .bose-step-wizard-card {
             background-color: var(--bose-white);
             border: var(--bose-border-pink);
@@ -65,7 +60,7 @@
         }
         .bose-step-wizard-panel {
             display: none;
-            animation: boseSmoothFadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            animation: boseSmoothFadeIn 0.4s ease-out forwards;
         }
         .bose-step-wizard-panel.active-panel {
             display: block;
@@ -75,14 +70,12 @@
             to { opacity: 1; transform: translateY(0); }
         }
         
-        /* مؤشرات الخطوات العلوية المرئية */
         .bose-stepper-progress-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 35px;
             position: relative;
-            padding: 0 5px;
         }
         .bose-stepper-progress-bar::before {
             content: '';
@@ -96,8 +89,8 @@
             transform: translateY(-50%);
         }
         .bose-progress-node {
-            width: 36px;
-            height: 36px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             background-color: var(--bose-white);
             border: 2px solid var(--bose-gray-border);
@@ -105,7 +98,7 @@
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            font-size: 14px;
+            font-size: 15px;
             color: var(--bose-black);
             z-index: 2;
             transition: var(--bose-transition);
@@ -117,28 +110,63 @@
             box-shadow: 0 0 12px var(--bose-pink-shadow) !important;
         }
         .bose-progress-node.done {
-            border-color: var(--bose-gold) !important;
-            background-color: var(--bose-gold) !important;
-            color: var(--bose-white) !important;
+            border-color: var(--bose-pink) !important;
+            background-color: var(--bose-white) !important;
+            color: var(--bose-pink) !important;
         }
 
-        /* لغة وأسلوب شرح الخطوات التفاعلية بنعومة */
         .bose-wizard-title {
-            font-size: 19px;
+            font-size: 20px;
             font-weight: 700;
             color: var(--bose-black);
             margin: 0 0 8px 0;
         }
         .bose-wizard-subtitle {
             font-size: 14px;
-            font-weight: 400;
             color: var(--bose-black);
             opacity: 0.8;
             margin: 0 0 24px 0;
-            line-height: 1.5;
+            line-height: 1.6;
         }
 
-        /* كروت الاختيار التفاعلية الموزعة لمنع التكدس */
+        /* تكبير حجم العداد الرقمي والتحكم لراحة أصابع اليد */
+        .bose-giant-qty-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            max-width: 260px;
+            margin: 30px auto;
+            border: 2px solid var(--bose-pink);
+            border-radius: 50px;
+            overflow: hidden;
+            background: var(--bose-white);
+            box-shadow: var(--bose-shadow-glow);
+        }
+        .bose-giant-qty-wrapper button {
+            background: none;
+            border: none;
+            width: 70px;
+            height: 60px;
+            font-size: 26px;
+            font-weight: 700;
+            cursor: pointer;
+            color: var(--bose-pink);
+            transition: background 0.2s;
+        }
+        .bose-giant-qty-wrapper button:hover {
+            background-color: var(--bose-pink-light);
+        }
+        .bose-giant-qty-wrapper input {
+            width: 100%;
+            height: 60px;
+            border: none;
+            text-align: center;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--bose-black);
+            background: transparent;
+        }
+
         .bose-interactive-radio-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -159,13 +187,12 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 20px 16px;
+            padding: 22px 16px;
             background-color: var(--bose-white);
             border: 1px solid rgba(255, 145, 164, 0.25);
             border-radius: 18px;
-            font-size: 15px;
+            font-size: 16px;
             font-weight: 700;
-            text-align: center;
             color: var(--bose-black);
             transition: var(--bose-transition);
         }
@@ -173,31 +200,19 @@
             background-color: var(--bose-pink-light);
             border: var(--bose-border-thick);
             box-shadow: var(--bose-shadow-glow);
-            transform: translateY(-2px);
         }
 
-        /* حزمة معرض سابقة الأعمال (Portfolio Gallery Block) داخل المحاكي */
         .bose-portfolio-gallery-title {
             font-size: 18px;
             font-weight: 700;
             color: var(--bose-black);
             margin: 40px 0 16px 0;
-            text-align: right;
         }
         .bose-portfolio-scroller-track {
             display: flex;
             gap: 16px;
             overflow-x: auto;
             padding: 10px 4px 20px 4px;
-            scroll-snap-type: x mandatory;
-            webkit-overflow-scrolling: touch;
-        }
-        .bose-portfolio-scroller-track::-webkit-scrollbar {
-            height: 5px;
-        }
-        .bose-portfolio-scroller-track::-webkit-scrollbar-thumb {
-            background-color: rgba(255, 145, 164, 0.3);
-            border-radius: 10px;
         }
         .bose-portfolio-img-node {
             flex-shrink: 0;
@@ -206,8 +221,11 @@
             border-radius: 16px;
             overflow: hidden;
             border: 1px solid var(--bose-gray-border);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-            scroll-snap-align: start;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .bose-portfolio-img-node:hover {
+            transform: scale(1.04);
         }
         .bose-portfolio-img-node img {
             width: 100%;
@@ -215,7 +233,6 @@
             object-fit: cover;
         }
 
-        /* نافذة التحكم السفلية داخل الكارت (الخطوات) */
         .bose-wizard-navigation-buttons {
             display: flex;
             justify-content: space-between;
@@ -226,8 +243,8 @@
             gap: 14px;
         }
         .bose-nav-action-btn {
-            padding: 12px 30px;
-            font-size: 15px;
+            padding: 14px 40px;
+            font-size: 16px;
             font-weight: 700;
             border-radius: 50px;
             cursor: pointer;
@@ -238,42 +255,63 @@
         .bose-nav-action-btn.bose-next-trigger {
             background: linear-gradient(135deg, var(--bose-pink), #ff758f);
             color: var(--bose-white);
-            box-shadow: var(--bose-shadow-glow);
-        }
-        .bose-nav-action-btn.bose-next-trigger:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--bose-shadow-hover);
         }
         .bose-nav-action-btn.bose-prev-trigger {
             background-color: var(--bose-white);
             border: 1.5px solid var(--bose-gray-border);
             color: var(--bose-black);
         }
-        .bose-nav-action-btn.bose-prev-trigger:hover {
-            background-color: var(--bose-gray-light);
-            border-color: var(--bose-pink);
+
+        /* نافذة المعاينة المنبثقة الفاخرة للصور */
+        .bose-lightbox-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(17, 17, 17, 0.75); backdrop-filter: blur(4px);
+            display: none; align-items: center; justify-content: center; z-index: 60000;
         }
+        .bose-lightbox-card {
+            background: var(--bose-white); padding: 12px; border-radius: 24px;
+            max-width: 90%; max-height: 80vh; position: relative;
+        }
+        .bose-lightbox-card img {
+            max-width: 100%; max-height: 75vh; border-radius: 16px; object-fit: contain; display: block;
+        }
+        .bose-lightbox-close {
+            position: absolute; top: -20px; left: -20px; background: var(--bose-pink);
+            color: var(--bose-white); border: none; width: 40px; height: 40px;
+            border-radius: 50%; font-size: 20px; cursor: pointer; display: flex;
+            align-items: center; justify-content: center; box-shadow: var(--bose-shadow-hover);
+        }
+
+        /* هندسة لوحة السعر الحالي المتوافقة تماماً */
+        .dynamic-tracker-bar {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background-color: var(--bose-white); border-top: var(--bose-border-pink);
+            padding: 16px 24px; box-shadow: 0 -8px 32px rgba(255, 145, 164, 0.1); z-index: 1000;
+        }
+        .tracker-flex-container {
+            max-width: 800px; margin: 0 auto; display: flex;
+            align-items: center; justify-content: space-between; gap: 16px;
+        }
+        .tracker-price-info { display: flex; flex-direction: column; text-align: right; }
+        .tracker-price-info .label { font-size: 14px; font-weight: 700; color: var(--bose-black); opacity: 0.7; }
+        .tracker-price-info .price-display { font-size: 26px; font-weight: 700; color: var(--bose-pink); }
     </style>
 </head>
 <body>
 
-    <!-- الهيدر الموحد لضمان التوافق المطلق -->
     <div id="bose-header-injector"></div>
 
     <main>
-        <!-- 🎯 أول هوك بصري: صورة التورتة الواسعة جداً والممتدة لإثارة شهية العميل -->
         <div class="bose-main-hero-hook">
-            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="صمم تورتة مناسبتك الفاخرة بنفسك مع حلويات بوسي">
+            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="تصميم تورتة فاخرة حسب الطلب">
         </div>
 
         <div class="bose-simulator-layout">
-            <!-- مساحة العنوان والترحيب الهادئ المتواضع بالعميل -->
             <div class="bose-intro-block">
                 <h1>محاكي التورت</h1>
                 <p>ميزة حصرية تتيح للعميل تصميم تورتته بنفسه واختيار كل التفاصيل التي يريدها قبل تنفيذها بلمسات فنية متكاملة تناسب فخامة مناسبتكم السعيدة.</p>
             </div>
 
-            <!-- مؤشر الأرقام العلوي لتجربة المستخدم الاحترافية -->
             <div class="bose-stepper-progress-bar">
                 <span class="bose-progress-node active" id="node-step-1">1</span>
                 <span class="bose-progress-node" id="node-step-2">2</span>
@@ -281,26 +319,25 @@
                 <span class="bose-progress-node" id="node-step-4">4</span>
             </div>
 
-            <!-- الكارت الرئيسي الشامل لرحلة الخطوات التفاعلية للعميل -->
             <div class="bose-step-wizard-card">
                 <form id="bose-interactive-cake-form" onsubmit="return false;">
                     
-                    <!-- 📦 المرحلة 1: تحديد الحجم وعدد الأفراد -->
+                    <!-- الخطوة 1 -->
                     <div class="bose-step-wizard-panel active-panel" id="panel-wizard-step-1">
-                        <h2 class="bose-wizard-title">حجم التورتة ومناسبتك قد إيه؟</h2>
-                        <p class="bose-wizard-subtitle">سعر التورتة بيتحدد بشكل أساسي حسب عدد الأفراد، يرجى اختيار العدد المناسب لضيوفك الكرام.</p>
+                        <h2 class="bose-wizard-title">تورتة مناسبتك الفاخرة لـ كام فرد؟</h2>
+                        <p class="bose-wizard-subtitle">حجم التورتة وسعرها بيتحدد بناءً على عدد الأفراد، يرجى اختيار العدد المناسب لضيوفك.</p>
                         
-                        <div class="bose-input-wrapper">
+                        <div class="bose-giant-qty-wrapper">
                             <button type="button" id="btn-persons-minus">-</button>
                             <input type="number" id="input-cake-persons" value="4" min="4" max="250" step="2" readonly>
                             <button type="button" id="btn-persons-plus">+</button>
                         </div>
                     </div>
 
-                    <!-- 📦 المرحلة 2: اختيار الشكل الهندسي للطبقات والقيود -->
+                    <!-- الخطوة 2 -->
                     <div class="bose-step-wizard-panel" id="panel-wizard-step-2">
                         <h2 class="bose-wizard-title">تحب شكل التورتة الخارجي يكون إيه؟</h2>
-                        <p class="bose-wizard-subtitle">اختر الشكل المفضل لك، مع العلم إن المقاسات المربعة والمستطيلة بنفذها لعدد أفراد محدد لضمان جودة وتنسيق التصميم الفاخر.</p>
+                        <p class="bose-wizard-subtitle">اختر الشكل المفضل لك، علمًا بأن المقاس المربع والمستطيل بنفذه لعدد أفراد محدد لضمان روعة التنسيق الفاخر.</p>
                         
                         <div class="bose-interactive-radio-grid">
                             <label class="bose-selection-card-label">
@@ -320,15 +357,13 @@
                                 <div class="bose-selection-card-inner">مستطيل</div>
                             </label>
                         </div>
-                        
-                        <!-- رسائل التنبيه والترقية المرنة الناعمة للعميل -->
                         <div class="bose-alert-message" id="alert-shape-restriction"></div>
                     </div>
 
-                    <!-- 📦 المرحلة 3: الطعم الداخلي والنكهات وطباعة الصور -->
+                    <!-- الخطوة 3 -->
                     <div class="bose-step-wizard-panel" id="panel-wizard-step-3">
-                        <h2 class="bose-wizard-title">النكهة المفضلة وطباعة الصور الخاصة</h2>
-                        <p class="bose-wizard-subtitle">اختر توليفة طعم الكيك الداخلي، وتقدر كمان تضيف صورتك الخاصة المطبوعة سواء قابلة للأكل بالكامل أو فخمة المظهر.</p>
+                        <h2 class="bose-wizard-title">نوع كيك مناسبتك وطباعة صورك الخاصة</h2>
+                        <p class="bose-wizard-subtitle">اختر طعم الكيك الأساسي، وتقدر تضيف صورة مخصصة فوق سطح التورتة لتوثيق أسعد لحظاتك.</p>
                         
                         <h3 class="premium-input-label" style="margin-top:20px;">1. طعم ونوع الكيك الداخلي:</h3>
                         <div class="bose-interactive-radio-grid" style="margin-bottom:24px;">
@@ -363,19 +398,18 @@
                         </div>
                     </div>
 
-                    <!-- 📦 المرحلة 4: الرسالة المكتوبة والتحقق وملاحظات الحساسية الغذائية لسلامته -->
+                    <!-- الخطوة 4 -->
                     <div class="bose-step-wizard-panel" id="panel-wizard-step-4">
-                        <h2 class="bose-wizard-title">اللمسة الأخيرة وإضافة العبارات الخاصة</h2>
-                        <p class="bose-wizard-subtitle">لو تحب نكتب جملة أو تهنئة معينة على سطح التورتة، ولو عندك أي ملاحظات طبية أو حساسية من مكونات معينة يرجى تدوينها لسلامتك الطبية الكاملة.</p>
+                        <h2 class="bose-wizard-title">اللمسة الأخيرة وإضافة العبارات الدافئة</h2>
+                        <p class="bose-wizard-subtitle">لو تفضل نكتب جملة معينة على سطح التورتة، ولو عندك أي ملاحظات أو حساسية من مكونات معينة لسلامتك الطبية الكاملة.</p>
                         
-                        <h3 class="premium-input-label">الجملة المراد خطّها فوق التورتة:</h3>
+                        <h3 class="premium-input-label">العبارة المراد خطّها فوق التورتة:</h3>
                         <textarea class="bose-textarea" id="text-cake-message" placeholder="مثال: عيد ميلاد سعيد يا بوسي" maxlength="100" style="margin-bottom:20px;"></textarea>
 
                         <h3 class="premium-input-label">ملاحظات الحساسية الغذائية لسلامتك:</h3>
-                        <textarea class="bose-textarea" id="text-cake-allergy" placeholder="اكتب لنا هنا لو فيه أي مكون بيسبب حساسية لضمان سلامتك التامة أثناء التحضير بالمعمل الفني للبراند" maxlength="150"></textarea>
+                        <textarea class="bose-textarea" id="text-cake-allergy" placeholder="اكتب لنا هنا لو فيه أي مكون يسبب حساسية لضمان سلامتك التامة أثناء التحضير بالمعمل" maxlength="150"></textarea>
                     </div>
 
-                    <!-- أزرار التقدم والتراجع التفاعلية لتجربة مستخدم انسيابية ونعومة مطلقة -->
                     <div class="bose-wizard-navigation-buttons">
                         <button type="button" class="bose-nav-action-btn bose-prev-trigger" id="btn-wizard-prev" disabled>السابق</button>
                         <button type="button" class="bose-nav-action-btn bose-next-trigger" id="btn-wizard-next">التالي</button>
@@ -384,30 +418,34 @@
                 </form>
             </div>
 
-            <!-- معرض سابقة الأعمال الفاخر لعرض جودة وتفاصيل المنتجات الطبيعية -->
-            <h3 class="bose-portfolio-gallery-title"><i class="fa-solid fa-wand-magic-sparkles" style="color:var(--bose-pink); margin-left:6px;"></i> شوف تورت تم تصميمها بحب في معملنا:</h3>
-            <div class="bose-portfolio-scroller-track" aria-label="معرض صور سابقة أعمال التورت المخصصة">
-                <div class="bose-portfolio-img-node"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=gal1" alt="تورتة مصممة بحب"></div>
-                <div class="bose-portfolio-img-node"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=gal2" alt="تورتة فاخرة حلويات بوسي"></div>
-                <div class="bose-portfolio-img-node"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=gal3" alt="تخصيص التورت"></div>
-                <div class="bose-portfolio-img-node"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=gal4" alt="روائع حلويات بوسي"></div>
+            <h3 class="bose-portfolio-gallery-title"><i class="fa-solid fa-wand-magic-sparkles" style="color:var(--bose-pink); margin-left:6px;"></i> تورت شرفت عملاءنا في كل مناسباتهم السعيدة:</h3>
+            <div class="bose-portfolio-scroller-track" id="bose-portfolio-lightbox-track">
+                <div class="bose-portfolio-img-node"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=p1" alt="روائع حلويات بوسي"></div>
+                <div class="bose-portfolio-img-node"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=p2" alt="تورتة مصممة فاخرة"></div>
+                <div class="bose-portfolio-img-node"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=p3" alt="تخصيص كامل للتورت"></div>
+                <div class="bose-portfolio-img-node"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=p4" alt="معمل حلويات بوسي"></div>
             </div>
-
         </div>
     </main>
 
-    <!-- لافتة التتبع والأسعار اللحظية العائمة في الأسفل لحماية ثقة واقتناع العميل بالمليم -->
     <div class="dynamic-tracker-bar">
         <div class="tracker-flex-container">
             <div class="tracker-price-info">
-                <span class="label">السعر المحدث لحظياً:</span>
+                <span class="label">السعر الحالي:</span>
                 <span class="price-display" id="display-dynamic-price">580 جنيه</span>
             </div>
-            <button type="button" class="bose-master-cta" id="btn-cake-submit-cart" style="display:none;">تأكيد وإضافة للسلة</button>
+            <button type="button" class="bose-master-cta" id="btn-cake-submit-cart" style="display:none; padding:14px 45px; font-size:16px; border-radius:50px;">تأكيد وإضافة للسلة</button>
         </div>
     </div>
 
-    <!-- الفوتر الرسمي المستقر بلونه الفاتح لمنع كركبة الواجهة -->
+    <!-- نافذة المعاينة المبثوقة -->
+    <div class="bose-lightbox-overlay" id="bose-lightbox-container">
+        <div class="bose-lightbox-card">
+            <button class="bose-lightbox-close" id="bose-lightbox-close-btn">&times;</button>
+            <img src="" id="bose-lightbox-img" alt="معاينة الصورة الفاخرة">
+        </div>
+    </div>
+
     <div id="bose-footer-injector"></div>
 
     <script src="js/cake-engine.js"></script>
