@@ -1,10 +1,9 @@
 /**
- * المحرك البرمجي المطور والمصحح لمحاكي التورت - حلويات بوسي
- * يضمن التوافق المطلق مع قاعدة البيانات ونظام الخطوات المرن، وحماية السعر اللحظي خطوة بخطوة
+ * المحرك البرمجي المطور والمصحح لمحاكي التورت V3.0 - حلويات بوسي
+ * يضمن سد الثغرات اللوجستية وتفعيل لايت بوكس سابقة الأعمال وتحديث السعر بدقة عشرية كاملة
  */
 
 function startEngineLogic() {
-    // 1. استدعاء وعزل عناصر واجهة المستخدم والـ DOM
     const inputPersons = document.getElementById('input-cake-persons');
     const btnMinus = document.getElementById('btn-persons-minus');
     const btnPlus = document.getElementById('btn-persons-plus');
@@ -15,10 +14,9 @@ function startEngineLogic() {
     const btnWizardNext = document.getElementById('btn-wizard-next');
     const btnWizardPrev = document.getElementById('btn-wizard-prev');
     
-    let currentActiveStep = 1; // خطوة البداية الافتراضية
+    let currentActiveStep = 1;
     const totalWizardStepsCount = 4;
 
-    // 2. سحب المواصفات القياسية مباشرة من الـ JSON المركزي للحفاظ على حوكمة الأسعار
     const config = window.BoseStoreData?.cakeBuilder || {
         basePrice: 580,
         pricePerPerson: 145,
@@ -32,7 +30,7 @@ function startEngineLogic() {
     };
 
     /**
-     * دالة الحساب والتحقق اللحظي لمنع الصدمات المالية واللوجستية للعميل
+     * دالة الحساب والتحقق اللحظي وسد ثغرات الأشكال المربعة والمستطيلة بالتساوي
      */
     function evaluateSimulatorState() {
         let currentPersons = parseInt(inputPersons.value, 10) || config.persons.minimum;
@@ -45,10 +43,9 @@ function startEngineLogic() {
         
         let alertText = "";
         
-        // فحص ومطابقة القيود اللوجستية هندسياً لإرشاد العميل بنعومة
+        // تطبيق موحد وصارم لرسائل التنبية والترقية للأشكال الهندسية
         if (selectedShape === 'square' && currentPersons < squareData.minimumPersons) {
             alertText = window.BoseStoreData?.cakeBuilder?.images?.squareMinimum || "المقاس المربع يبدأ من 16 فرد";
-            // معالجة مرنة: إرجاع الاختيار للبلوك الدائري الافتراضي لمنع قفل رحلة العميل
             document.querySelector('input[name="cake_shape"][value="circle"]').checked = true;
             selectedShape = 'circle';
         } else if (selectedShape === 'rectangle' && currentPersons < rectData.minimumPersons) {
@@ -57,7 +54,6 @@ function startEngineLogic() {
             selectedShape = 'circle';
         }
         
-        // إظهار التنبيه التوضيحي التعليمي للعميل ثم إخفاؤه تلقائياً لراحة العين
         if (alertText !== "") {
             alertBox.textContent = alertText;
             alertBox.style.display = "block";
@@ -66,20 +62,17 @@ function startEngineLogic() {
             }, 6000);
         }
         
-        // حساب السعر النهائي شامل الكسور بناءً على دالة النظام الموحدة calculateCustomCakePrice
         const finalDynamicPrice = window.calculateCustomCakePrice(currentPersons, {
             printingType: selectedPrinting
         });
         
-        // طلاء وتحديث لافتة الأسعار اللحظية العائمة بالمليم
-        priceDisplay.textContent = `${finalDynamicPrice} جنيه`;
+        priceDisplay.textContent = `${Math.round(finalDynamicPrice)} جنيه`;
     }
 
     /**
-     * دالة حوكمة حركة الخطوات وإخفاء وإظهار الألواح برمجياً (The Stepper Engine)
+     * تزامن حركة لوحات ومؤشرات الـ Stepper
      */
     function syncWizardPanelsUI() {
-        // إخفاء كافة الكروت والواجهات وتفعيل الكارت النشط فقط
         for (let i = 1; i <= totalWizardStepsCount; i++) {
             const panel = document.getElementById(`panel-wizard-step-${i}`);
             const node = document.getElementById(`node-step-${i}`);
@@ -95,12 +88,11 @@ function startEngineLogic() {
         const activePanelToShow = document.getElementById(`panel-wizard-step-${currentActiveStep}`);
         if (activePanelToShow) activePanelToShow.classList.add('active-panel');
         
-        // التحكم في نصوص وحالات أزرار التنقل السفلية لحماية تجربة العميل
         btnWizardPrev.disabled = (currentActiveStep === 1);
         
         if (currentActiveStep === totalWizardStepsCount) {
             btnWizardNext.style.display = "none";
-            btnCartSubmit.style.display = "block"; // إظهار زر الإضافة للسلة النهائي في الخطوة الأخيرة فقط حماية للمسار
+            btnCartSubmit.style.display = "block";
         } else {
             btnWizardNext.style.display = "block";
             btnWizardNext.textContent = "التالي";
@@ -108,7 +100,6 @@ function startEngineLogic() {
         }
     }
 
-    // ربط أحداث الخطوات للتنقل الانسيابي المريح
     btnWizardNext.addEventListener('click', () => {
         if (currentActiveStep < totalWizardStepsCount) {
             currentActiveStep++;
@@ -125,7 +116,6 @@ function startEngineLogic() {
         }
     });
 
-    // التحكم الرقمي الميكانيكي لعداد الأفراد ومنع كسر الخطوات (Step = 2)
     btnMinus.addEventListener('click', () => {
         let current = parseInt(inputPersons.value, 10) || config.persons.minimum;
         if (current > config.persons.minimum) {
@@ -142,7 +132,6 @@ function startEngineLogic() {
         }
     });
 
-    // ربط أحداث التغيير الفورية لجميع المدخلات والراديو لضمان التحديث اللحظي المباشر
     document.querySelectorAll('input[name="cake_shape"]').forEach(radio => {
         radio.addEventListener('change', evaluateSimulatorState);
     });
@@ -152,8 +141,29 @@ function startEngineLogic() {
     });
 
     /**
-     * بروتوكول قفل وتثبيت السعر والترحيب الآمن بكائن الذاكرة الموحد bose_cart
+     * تشغيل لايت بوكس منبثق لسابقة الأعمال لتكبير الصور بدقة كاملة لراحة العميل
      */
+    function initializeBoseLightboxGallery() {
+        const track = document.getElementById('bose-portfolio-lightbox-track');
+        const lightboxOverlay = document.getElementById('bose-lightbox-container');
+        const lightboxImg = document.getElementById('bose-lightbox-img');
+        const lightboxClose = document.getElementById('bose-lightbox-close-btn');
+
+        if (!track || !lightboxOverlay || !lightboxImg) return;
+
+        track.addEventListener('click', (e) => {
+            const clickedImg = e.target.closest('img');
+            if (clickedImg) {
+                lightboxImg.src = clickedImg.src;
+                lightboxOverlay.style.display = "flex";
+            }
+        });
+
+        const closeLightbox = () => { lightboxOverlay.style.display = "none"; lightboxImg.src = ""; };
+        if (lightboxClose) lightboxClose.onclick = closeLightbox;
+        lightboxOverlay.onclick = (e) => { if (e.target === lightboxOverlay) closeLightbox(); };
+    }
+
     btnCartSubmit.addEventListener('click', () => {
         let currentPersons = parseInt(inputPersons.value, 10) || config.persons.minimum;
         let selectedShape = document.querySelector('input[name="cake_shape"]:checked')?.value || 'circle';
@@ -179,17 +189,14 @@ function startEngineLogic() {
             flavorName: "تصميم خاص حسب الطلب"
         };
 
-        // استدعاء دالة النظام المركزية لإنشاء عنصر السلة الموحد وتوليد المعرف الفريد [slug]-[timestamp]
         const finalCartItem = window.createCartItem(masterProduct, customOptions, 1);
         
         if (finalCartItem) {
             let localCartRaw = localStorage.getItem('bose_cart');
             let boseCart = localCartRaw ? JSON.parse(localCartRaw) : [];
             
-            // قفل وتثبيت السعر الفعلي للحماية من تفاوت الكسور الحسابية لاحقاً
             finalCartItem.finalPrice = window.calculateCustomCakePrice(currentPersons, { printingType: selectedPrinting });
             finalCartItem.type = "custom-cake";
-            finalCartItem.flavorName = "تصميم خاص حسب الطلب";
             
             boseCart.push(finalCartItem);
             localStorage.setItem('bose_cart', JSON.stringify(boseCart));
@@ -198,14 +205,12 @@ function startEngineLogic() {
                 window.updateGlobalCartCounter();
             }
             
-            // استخدام واجهة الإشعارات الموحدة والناعمة للبراند بدلاً من تنبيهات المتصفح الجافة
             if (typeof window.showBoseGlobalToast === 'function') {
                 window.showBoseGlobalToast("تمت إضافة تصميم تورتتك الفريد إلى السلة بنجاح.");
             } else {
                 alert("تمت إضافة المنتج إلى السلة.");
             }
             
-            // تصفير الواجهة والعودة للخطوة الأولى لراحة العميل النفسية وتجهيز طلب جديد
             document.getElementById('text-cake-message').value = "";
             document.getElementById('text-cake-allergy').value = "";
             inputPersons.value = config.persons.minimum;
@@ -219,12 +224,11 @@ function startEngineLogic() {
         }
     });
 
-    // التشغيل والتمهيد اللحظي عند تحميل الصفحة
     syncWizardPanelsUI();
     evaluateSimulatorState();
+    initializeBoseLightboxGallery();
 }
 
-// تشغيل المحرك والربط الآمن مع حارس التمهيد ومنع التعارض البرمجي للنظام
 if (typeof window.onBoseDatabaseReady === 'function') {
     window.onBoseDatabaseReady(() => {
         startEngineLogic();
