@@ -1,6 +1,6 @@
 /**
  * core-engine.js - المحرك المركزي العالمي وحارس البيانات والحسابات المالية
- * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية الشاملة والمطورة V21.0
+ * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية الشاملة والمطورة V22.0
  * حل مشاكل التعارض العكسي تماماً وضمان الأوصاف الفاخرة وحركة السلايدرات اللانهائية
  */
 
@@ -316,9 +316,7 @@
         if (headerInjector) {
             const marqueeMessages = data.navigation.topBarMessages;
             let marqueeItemsHtml = '';
-            marqueeMessages.forEach(msg => {
-                marqueeItemsHtml += `<span class="bose-marquee-item">${msg} ✨</span>`;
-            });
+            marqueeMessages.forEach(msg => { marqueeItemsHtml += `<span class="bose-marquee-item">${msg}</span>`; });
 
             headerInjector.innerHTML = `
                 <div id="top-bar-marquee" class="bose-top-bar-marquee-container" aria-label="شريط الإعلانات التسويقية">
@@ -505,6 +503,7 @@
 
     /**
      * 12. محرك تهيئة قسم عقد من الإتقان بالحركة التلقائية اللانهائية الخالصة بالـ CSS
+     * تم إصلاح الثغرة البصرية ومضاعفة حقن الصور ثلاثياً لضمان التدفق والتحرك اللانهائي من الشمال لليمين
      */
     window.initializeExcellenceSectionSlider = function() {
         const track = document.getElementById('excellence-images-track');
@@ -517,18 +516,18 @@
         config.images.forEach(imgUrl => {
             imagesHtml += `
                 <div class="perfection-slide-node">
-                    <img src="${imgUrl}" alt="روائع وإتقان حلويات بوسي" />
+                    <img src="${imgUrl}" alt="روائع وإتقان حلويات بوسي" loading="lazy" />
                 </div>
             `;
         });
         
-        // مضاعفة العناصر بالكامل وتطبيق الحركة اللانهائية المباشرة لمنع أي فراغ بصرى نهائياً
+        // صمام الأمان والتحسين اللانهائي: تكرار مضاعف ثلاثي الأبعاد لملء العرض ومنع ظهور أي فراغات نهائياً
         track.innerHTML = imagesHtml + imagesHtml + imagesHtml; 
         track.style.display = "flex";
         track.style.width = "max-content";
         
-        // إزالة الحركات المتعارضة القديمة وربطها بالأنميشن الانسيابي الصارم
-        track.style.animation = "boseCategoriesLoop 25s linear infinite";
+        // ربط مباشر بـ CSS Keyframes المحدثة للحركة المعكوسة العذبة
+        track.style.animation = "bosePerfectionLoop 25s linear infinite";
     };
 
     /**
@@ -581,7 +580,7 @@
 })();
 
 /**
- * 🛡️ حارس التمهيد والمزامنة الكاملة للأوصاف الفاخرة والعناوين من الـ JSON مباشرة
+ * حارس التمهيد والمزامنة الكاملة للأوصاف الفاخرة والعناوين من الـ JSON مباشرة
  */
 document.addEventListener("DOMContentLoaded", () => {
     window.onBoseDatabaseReady && window.onBoseDatabaseReady((data) => {
@@ -592,7 +591,6 @@ document.addEventListener("DOMContentLoaded", () => {
             rightCol.innerHTML = data.homepage.waterfall.rightColumnImages.map(img => `<img src="${img}" alt="شلال بوسي" />`).join('');
         }
 
-        // حقن الأوصاف والعناوين ديناميكياً بناءً على اللهجة المصرية الراقية المعتمدة بقاعدة البيانات
         if(document.getElementById('hero-description')) document.getElementById('hero-description').textContent = data.homepage.hero.description;
         
         if(document.getElementById('excellence-title')) document.getElementById('excellence-title').textContent = data.homepage.excellence.title;
@@ -605,10 +603,10 @@ document.addEventListener("DOMContentLoaded", () => {
         if(document.getElementById('new-arrivals-description')) document.getElementById('new-arrivals-description').textContent = "استكشف توليفاتنا الجديدة والمبتكرة الحصرية التي تحمل بصمة الجودة وعراقة الإتقان.";
 
         if(document.getElementById('our-products-title')) document.getElementById('our-products-title').textContent = "منتجاتنا";
-        if(document.getElementById('our-products-description')) document.getElementById('our-products-description').textContent = "تشكيلة غنية ومتنوعة من الحلويات الطازجة يومياً، ركزنا فيها على المكونات الطبيعية 100% لأعلى قيمة وجودة.";
+        if(document.getElementById('our-products-description')) document.getElementById('our-products-description').textContent = "تشكيلة غنية ومتنوعة من الحلويات الطازجة يومياً، ركزنا فيها على المكونات الطبيعية 100% لأعلى قيمة جودة.";
 
         if(document.getElementById('categories-section-title')) document.getElementById('categories-section-title').textContent = "تسوق حسب الفئة";
-        if(document.getElementById('categories-section-subtitle')) document.getElementById('categories-section-subtitle').textContent = "انتقل مباشرة وبكل سهولة إلى الصنف المفضل لديك عبر فئاتنا الشاملة.";
+        if(document.getElementById('categories-section-subtitle')) document.getElementById('categories-section-subtitle').textContent = "انتقل مباشرة وبكل سهولة إلى الصنف المفضل لديك عبر فئاتنا الشاملة المعتمدة.";
 
         if(document.getElementById('cake-preview-img')) document.getElementById('cake-preview-img').src = data.homepage.cakePreview.image;
         if(document.getElementById('cake-preview-title')) document.getElementById('cake-preview-title').textContent = data.homepage.cakePreview.title;
@@ -620,22 +618,17 @@ document.addEventListener("DOMContentLoaded", () => {
         if(document.getElementById('flower-preview-desc')) document.getElementById('flower-preview-desc').textContent = data.homepage.flowerPreview.description;
         if(document.getElementById('flower-preview-cta')) document.getElementById('flower-preview-cta').textContent = data.homepage.flowerPreview.cta;
 
-        /**
-         * دالة بناء الكارت الموحد الصارم لشبكة المنتجات
-         */
         function buildProductCardHTML(p) {
             let isCake = (p.id === 'toort-custom-master' || p.slug === 'toort-custom-master');
             let isFlower = (p.id === 'flowers-master' || p.slug === 'flowers-master');
-            
             let actionClickUrl = isCake ? 'cake-builder.html' : (isFlower ? 'flower-builder.html' : `product.html?slug=${p.slug}`);
-            let finalDesc = p.flavorDesc;
 
             return `
                 <div class="product-card-unified">
                     <img src="${p.images[0]}" class="product-card-img" alt="${p.title}" loading="lazy" />
                     <h3 class="product-card-title">${p.title}</h3>
                     <span class="product-card-flavor-name">${p.flavorName}</span>
-                    <p class="product-card-desc">${finalDesc}</p>
+                    <p class="product-card-desc">${p.flavorDesc}</p>
                     <div class="bose-quantity-counter">
                         <button class="btn-qty-plus" onclick="event.stopPropagation();">+</button>
                         <input type="text" class="input-qty-value" value="1" readonly onclick="event.stopPropagation();" />
@@ -650,9 +643,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const mostSellingGrid = document.getElementById('most-selling-grid');
         if (mostSellingGrid) {
             let html = '';
-            data.products.filter(p => data.homepage.mostSelling.includes(p.id)).forEach(p => {
-                html += buildProductCardHTML(p);
-            });
+            data.products.filter(p => data.homepage.mostSelling.includes(p.id)).forEach(p => { html += buildProductCardHTML(p); });
             mostSellingGrid.innerHTML = html;
             window.setupBoseInteractiveSlider('most-selling-grid', 'most-selling-dots');
         }
@@ -660,9 +651,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const newArrivalsGrid = document.getElementById('new-arrivals-grid');
         if (newArrivalsGrid) {
             let html = '';
-            data.products.filter(p => data.homepage.newArrivals.includes(p.id)).forEach(p => {
-                html += buildProductCardHTML(p);
-            });
+            data.products.filter(p => data.homepage.newArrivals.includes(p.id)).forEach(p => { html += buildProductCardHTML(p); });
             newArrivalsGrid.innerHTML = html;
             window.setupBoseInteractiveSlider('new-arrivals-grid', 'new-arrivals-dots');
         }
@@ -698,7 +687,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     <div class="category-title-display">${cat.title}</div>
                 </div>
             `).join('');
-            
             window.setupBoseInteractiveSlider('categories-track', 'categories-dots');
         }
 
