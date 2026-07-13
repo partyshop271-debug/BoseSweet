@@ -1,10 +1,13 @@
 /**
  * 👑 محرك السلة وإتمام الطلب والتوثيق المالي النهائي المصحح كلياً - حلويات بوسي 👑
- * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من ثغرات البتر وتداخل النصوص V4.2
+ * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من ثغرات البتر وتداخل النصوص V4.5
  * متوافق بشكل مطلق وثنائي الاتجاه مع: core-engine.js، وقاعدة البيانات site-data-final.json ومعايير الأداء والموبايل أولاً
  */
 
 document.addEventListener("DOMContentLoaded", () => {
+    // إنشاء وحقن واجهة التنبيهات الفاخرة المخصصة لمنع استخدام نوافذ النظام السوداء
+    injectBoseCustomModalStyles();
+    
     // ربط المحرك المركزي والانتظار حتى تهيئة قاعدة البيانات الأساسية لـ JSON
     if (typeof window.onBoseDatabaseReady === "function") {
         window.onBoseDatabaseReady((storeData) => {
@@ -94,6 +97,17 @@ function renderBoseCartPage(storeData) {
                 }
             }
 
+            // فحص ثنائي وحل مشكلة الاسم الافتراضي عبر التحقق من الـ JSON الأصلي للربط المباشر
+            let cleanFlavorName = item.flavorName;
+            if (!cleanFlavorName || cleanFlavorName === "افتراضي" || cleanFlavorName === "none") {
+                if (storeData && storeData.products) {
+                    const matchedDbProd = storeData.products.find(p => p.slug === item.productSlug);
+                    cleanFlavorName = matchedDbProd ? matchedDbProd.flavorName : "جاهز وفريش";
+                } else {
+                    cleanFlavorName = "جاهز وفريش";
+                }
+            }
+
             const cartCard = document.createElement("div");
             cartCard.className = "bose-horizontal-cart-card";
             cartCard.setAttribute("data-item-id", item.id);
@@ -104,7 +118,7 @@ function renderBoseCartPage(storeData) {
                     <img src="${item.image || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png'}" class="cart-item-image" alt="${item.title}" style="width: 85px; height: 85px; border-radius: 14px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(255,145,164,0.1);">
                     <div style="display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0; text-align: right;">
                         <h3 class="cart-item-title" style="margin: 0; font-size: 15px; font-weight: 700; color: #111111; font-family: 'Cairo'; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.title}</h3>
-                        <span class="cart-item-flavor-name" style="font-size: 13px; color: #FF91A4; font-weight: 700; font-family: 'Cairo';">${item.flavorName}</span>
+                        <span class="cart-item-flavor-name" style="font-size: 13px; color: #FF91A4; font-weight: 700; font-family: 'Cairo';">${cleanFlavorName}</span>
                         ${customDetailsHTML}
                         
                         <div class="bose-qty-controller-box" style="display: flex; align-items: center; border: 1px solid rgba(255, 145, 164, 0.2); border-radius: 10px; width: max-content; margin-top: 6px; background: #FFFFFF; height: 34px; padding: 2px;">
@@ -136,11 +150,11 @@ function renderBoseCartPage(storeData) {
     
     if (clearCartBtn) {
         clearCartBtn.onclick = () => {
-            if (confirm("هل ترغب في إفراغ كافة محتويات سلة المشتريات؟")) {
+            showBoseCustomModal("هل ترغب في إفراغ كافة محتويات سلة المشتريات؟", () => {
                 localStorage.removeItem("bose_cart");
                 if (typeof window.updateGlobalCartCounter === "function") window.updateGlobalCartCounter();
                 refreshCartUI();
-            }
+            });
         };
     }
 
@@ -181,12 +195,12 @@ function bindCartCardsEvents(cart, storeData) {
 }
 
 function triggerCartItemRemoval(cart, index, storeData) {
-    if (confirm(`هل ترغب في إزالة صنف "${cart[index].title}" من السلة؟`)) {
+    showBoseCustomModal(`هل ترغب في إزالة صنف "${cart[index].title}" من السلة؟`, () => {
         cart.splice(index, 1);
         localStorage.setItem("bose_cart", JSON.stringify(cart));
         if (typeof window.updateGlobalCartCounter === "function") window.updateGlobalCartCounter();
         renderBoseCartPage(storeData);
-    }
+    });
 }
 
 function updateCartSummary(cart, storeData) {
@@ -624,4 +638,80 @@ function renderBoseSuccessPage(storeData) {
             window.location.href = "index.html"; 
         });
     }
+}
+
+/**
+ * =========================================================================
+ * 👑 4. محرك النوافذ المنبثقة الفاخرة لعلامة بوسي (Bose Custom Luxury Modals)
+ * =========================================================================
+ */
+function injectBoseCustomModalStyles() {
+    if (document.getElementById("bose-modal-styles-block")) return;
+    const styleEl = document.createElement("style");
+    styleEl.id = "bose-modal-styles-block";
+    styleEl.textContent = `
+        .bose-custom-modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(17, 17, 17, 0.4); display: flex; align-items: center;
+            justify-content: center; z-index: 100000; direction: rtl; opacity: 0;
+            transition: opacity 0.25s ease; pointer-events: none; padding: 20px; box-sizing: border-box;
+        }
+        .bose-custom-modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .bose-custom-modal-card {
+            background: #FFFFFF; border: 1px solid rgba(255, 145, 164, 0.3);
+            border-radius: 24px; padding: 24px; width: 100%; max-width: 400px;
+            box-shadow: 0 12px 40px rgba(255, 145, 164, 0.15); transform: scale(0.9);
+            transition: transform 0.25s ease; text-align: center; box-sizing: border-box;
+        }
+        .bose-custom-modal-overlay.active .bose-custom-modal-card { transform: scale(1); }
+        .bose-modal-text {
+            font-family: 'Cairo'; font-size: 16px; font-weight: 700;
+            color: #111111; margin: 0 0 20px 0; line-height: 1.5;
+        }
+        .bose-modal-actions-wrapper { display: flex; gap: 12px; justify-content: center; }
+        .bose-modal-btn {
+            font-family: 'Cairo'; font-size: 14px; font-weight: 700;
+            padding: 10px 24px; border-radius: 12px; cursor: pointer;
+            transition: background 0.2s, border-color 0.2s; border: none; box-sizing: border-box;
+        }
+        .bose-modal-btn-confirm { background: #FF91A4; color: #FFFFFF; }
+        .bose-modal-btn-confirm:hover { background: #ff7d94; }
+        .bose-modal-btn-cancel { background: #FFFFFF; color: #111111; border: 1px solid rgba(17,17,17,0.15); }
+        .bose-modal-btn-cancel:hover { background: rgba(17,17,17,0.03); }
+    `;
+    document.head.appendChild(styleEl);
+}
+
+function showBoseCustomModal(messageText, onConfirmCallback) {
+    let overlay = document.getElementById("bose-global-modal-overlay");
+    if (!overlay) {
+        overlay = document.createElement("div");
+        overlay.id = "bose-global-modal-overlay";
+        overlay.className = "bose-custom-modal-overlay";
+        overlay.innerHTML = `
+            <div class="bose-custom-modal-card">
+                <p class="bose-modal-text" id="bose-modal-text-content"></p>
+                <div class="bose-modal-actions-wrapper">
+                    <button class="bose-modal-btn bose-modal-btn-confirm" id="bose-modal-btn-ok">تأكيد</button>
+                    <button class="bose-modal-btn bose-modal-btn-cancel" id="bose-modal-btn-no">تراجع</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+    }
+    
+    document.getElementById("bose-modal-text-content").textContent = messageText;
+    overlay.classList.add("active");
+    
+    const btnOk = document.getElementById("bose-modal-btn-ok");
+    const btnNo = document.getElementById("bose-modal-btn-no");
+    
+    btnOk.onclick = () => {
+        overlay.classList.remove("active");
+        if (typeof onConfirmCallback === "function") onConfirmCallback();
+    };
+    
+    btnNo.onclick = () => {
+        overlay.classList.remove("active");
+    };
 }

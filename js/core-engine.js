@@ -113,7 +113,7 @@
     };
 
     /**
-     * 4. بناء عنصر السلة القياسي المانع للتداخل والتصادم البرمجي
+     * 4. بناء عنصر السلة القياسي المانع للتداخل والتصادم البرمجي من الجذور وحل ثغرة الاسم الافتراضي
      */
     window.createCartItem = function(product, selectedOptions, quantity = 1) {
         if (!product) return null;
@@ -127,15 +127,21 @@
                              
         const finalId = isCustomizable ? `${product.slug}-${Date.now()}` : String(product.slug || product.id);
         
+        // إزالة لفظ افتراضي والاستعانة التلقائية بالاسم الصريح المسجل بالنظام الفاخر لراحة عين العميل النفسية
+        let correctFlavor = opts.flavorName || opts.cakeType || product.flavorName || product.flavor || "جاهز وفريش";
+        if (correctFlavor === "none" || correctFlavor === "افتراضي") {
+            correctFlavor = product.flavorName || "جاهز وفريش";
+        }
+
         return {
             id: finalId,
             productSlug: product.slug,
             title: product.title,
-            flavorName: opts.flavorName || opts.cakeType || product.flavor || "افتراضي",
+            flavorName: correctFlavor,
             basePrice: parseFloat((product.price || product.basePrice || 0).toFixed(4)),
             finalPrice: parseFloat(finalUnitPrice.toFixed(4)),
             quantity: parseInt(quantity, 10) || 1,
-            image: product.image || product.images?.[0] || "",
+            image: product.image || product.images?.[0] || "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
             type: product.type || (product.isMiniCake ? "mini-cake" : "standard"),
             customDetails: {
                 cakeType: opts.cakeType || opts.cakeFlavor || "فانيليا",
@@ -273,7 +279,7 @@
     };
 
     /**
-     * تصحيح كامل وشامل: جلب اللون البمبي الصريح الموحد (#FF91A4) ليكون خلفية الإشعار بدلاً من الأسود
+     * جلب اللون البمبي الصريح الموحد (#FF91A4) ليكون خلفية الإشعار بدلاً من الأسود
      */
     window.showBoseGlobalToast = function(message) {
         let container = document.getElementById('bose-toast-container');
@@ -284,7 +290,6 @@
             document.body.appendChild(container);
         }
         const toast = document.createElement('div');
-        // تم استبدال الخلفية السوداء باللون البمبي الفاخر المعتمد مع كتابة النص بالأبيض الصريح للتنفس البصري
         toast.style.cssText = 'background-color:#FF91A4; color:#FFFFFF; padding:12px 24px; border-radius:30px; font-weight:700; font-size:14px; text-align:center; box-shadow:0 8px 32px rgba(255, 145, 164, 0.3); border:1px solid rgba(255,255,255,0.4); direction:rtl; opacity:0; transform:translateY(20px); transition:all 0.4s ease; pointer-events:auto;';
         toast.textContent = message;
         container.appendChild(toast);
@@ -298,7 +303,7 @@
     };
 
     /**
-     * تصحيح كامل وشامل: منع تحول مظهر ولون زر إضافة للسلة إلى اللون الأسود المنتهك للهوية عند الضغط
+     * منع تحول مظهر ولون زر إضافة للسلة إلى اللون الأسود المنتهك للهوية عند الضغط
      */
     window.handleBoseDirectAddToCart = function(buttonElement, productId) {
         if (!window.BoseStoreData || !buttonElement) return;
@@ -327,7 +332,6 @@
         localStorage.setItem('bose_cart', JSON.stringify(cart));
         window.updateGlobalCartCounter();
 
-        // التعديل الهندسي: الزر يظل بالخلفية البمبية الصريحة المتوافقة مع الهوية البصرية الحاكمة دون التموه بالأسود
         const originalHtml = buttonElement.innerHTML;
         buttonElement.innerHTML = '<i class="fa-solid fa-check"></i> تمت الإضافة';
         buttonElement.style.backgroundColor = '#FF91A4';
@@ -347,7 +351,7 @@
     };
 
     /**
-     * 10. خطاف تمهيد حارس التمهيد لمنع التعارض البرمجي
+     * خطاف تمهيد حارس التمهيد لمنع التعارض البرمجي
      */
     window.onBoseDatabaseReady = function(callback) {
         if (window.BoseStoreData && window.BoseStoreData.store) {
@@ -398,8 +402,6 @@
                 body {
                     padding-top: 110px !important;
                 }
-                
-                /* تطوير القائمة الجانبية وإدخال اللون البمبي بشكل ملوكي فاخر */
                 .bose-sidebar-drawer {
                     position: fixed; top: 0; right: -320px; width: 320px; height: 100%;
                     background-color: #FFFFFF !important; z-index: 50000;
@@ -429,8 +431,6 @@
                     z-index: 49000; transition: opacity 0.4s ease; backdrop-filter: blur(2px);
                 }
                 .bose-sidebar-overlay.show { opacity: 1; pointer-events: auto; }
-
-                /* تطوير الفوتر الموحد الفاخر وإقحام اللون البمبي الصريح والراقي */
                 .bose-footer { background-color: #FFFFFF !important; border-top: 1px solid rgba(255, 145, 164, 0.3); padding: 60px 20px 20px; direction: rtl; }
                 .footer-grid-layout { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; }
                 .footer-brand-meta { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
