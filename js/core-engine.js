@@ -1,7 +1,7 @@
 /**
  * core-engine.js - المحرك المركزي العالمي وحارس البيانات والحسابات المالية
- * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية الشاملة والمطورة V23.1
- * تم إصلاح حركات السلايدرات والـ Dots اللمسية لجميع الأقسام هندسياً لتعمل ديناميكياً بدقة
+ * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية الشاملة والمطورة V23.2
+ * تم إصلاح حركات السلايدرات والـ Dots اللمسية لجميع الأقسام هندسياً لتعمل ديناميكياً بدقة في بيئة RTL
  */
 
 (function() {
@@ -500,7 +500,6 @@
 
     /**
      * 12. محرك تهيئة قسم عقد من الإتقان المطور كلياً كلوحة متحركة لا نهائية تفاعلية
-     * تم تطبيق نظام الـ Clones المتكرر لملء المسافات البرمجية ومنع الفراغات والوميض نهائياً مع تفعيل نقاط التنقل الذكية.
      */
     window.initializeExcellenceSectionSlider = function() {
         const track = document.getElementById('excellence-images-track');
@@ -518,24 +517,22 @@
             `;
         });
         
-        // حقن الصور مكررة 4 مرات هندسياً لملء مسار شريط الدوران اللانهائي بالتكامل الكامل
         track.innerHTML = imagesHtml + imagesHtml + imagesHtml + imagesHtml; 
         track.style.display = "flex";
-        track.style.animation = "bosePerfectionLoop 25s linear infinite"; // استعادة نبض حركة الشريط الانسيابية
+        track.style.animation = "bosePerfectionLoop 25s linear infinite"; 
         
-        // ربط نقاط التصفح التفاعلية للتحكم اليدوي المباشر
         window.setupBoseInteractiveSlider('excellence-images-track', 'excellence-dots', true);
     };
 
     /**
      * 13. دالة ربط وتهيئة السلايدرات التفاعلية بالنقاط (Dots) والسحب الجانبي (Swipe) اللمسي لجميع الأقسام
+     * [تم تصحيح الحسابات هندسياً لتدعم اتجاه الـ RTL العربي بالكامل وبشكل لحظي للمس]
      */
     window.setupBoseInteractiveSlider = function(trackId, dotsContainerId, isInfiniteLoop = false) {
         const track = document.getElementById(trackId);
         const dotsContainer = document.getElementById(dotsContainerId);
         if (!track) return;
 
-        // في حالة شريط التميز، نحسب النقاط بناءً على عدد عناصر المجموعة الواحدة الأصلية فقط (3 عناصر)
         let totalOriginalItems = isInfiniteLoop ? 3 : track.children.length;
         if (totalOriginalItems <= 0) return;
 
@@ -549,7 +546,7 @@
 
         const dots = dotsContainer ? Array.from(dotsContainer.children) : [];
 
-        // معالجة الاسكرول والتحديث المتبادل للـ Dots مع السحب اللمسي المباشر للعميل
+        // معالجة التمرير والتحديث التلقائي للـ Dots مع السحب اللمسي للعميل
         track.addEventListener('scroll', () => {
             const scrollLeft = Math.abs(track.scrollLeft);
             const itemWidth = track.children[0]?.offsetWidth || 300; 
@@ -561,16 +558,19 @@
             });
         });
 
-        // تشغيل ودعم أحداث اللمس والضغط المباشر على النقاط لنقل السلايدر فورا
+        // دعم أحداث الضغط واللمس المباشر على النقاط ونقل السلايدر في بيئة الـ RTL الصارمة
         dots.forEach(dot => {
             dot.addEventListener('click', (e) => {
                 const targetIndex = parseInt(e.target.getAttribute('data-index'), 10);
                 const itemWidth = track.children[0]?.offsetWidth || 300;
                 
-                // في حالة الحركة التلقائية لشريط الإتقان، نقوم بإيقافها مؤقتاً لتسهيل رؤية الصورة المطلوبة
                 if (isInfiniteLoop) track.style.animationPlayState = 'paused';
                 
-                track.scrollTo({ left: (targetIndex * itemWidth), behavior: 'smooth' });
+                // تحديد معامل التمرير في بيئة الـ RTL (تحويل القيمة لسالبة لتتوافق مع المتصفحات الحديثة)
+                const isRTL = window.getComputedStyle(track).direction === 'rtl';
+                const scrollTarget = isRTL ? -(targetIndex * itemWidth) : (targetIndex * itemWidth);
+                
+                track.scrollTo({ left: scrollTarget, behavior: 'smooth' });
                 
                 if (isInfiniteLoop) {
                     setTimeout(() => { track.style.animationPlayState = 'running'; }, 3000);
@@ -621,143 +621,3 @@
 
     loadStoreDatabase();
 })();
-
-/**
- * حارس التمهيد والمزامنة الكاملة للأوصاف الفاخرة والعناوين من الـ JSON مباشرة
- */
-document.addEventListener("DOMContentLoaded", () => {
-    window.onBoseDatabaseReady && window.onBoseDatabaseReady((data) => {
-        const leftCol = document.getElementById('waterfall-left-col');
-        const rightCol = document.getElementById('waterfall-right-col');
-        if (leftCol && rightCol) {
-            leftCol.innerHTML = data.homepage.waterfall.leftColumnImages.map(img => `<img src="${img}" alt="شلال بوسي" />`).join('');
-            rightCol.innerHTML = data.homepage.waterfall.rightColumnImages.map(img => `<img src="${img}" alt="شلال بوسي" />`).join('');
-        }
-
-        if(document.getElementById('hero-description')) document.getElementById('hero-description').textContent = data.homepage.hero.description;
-        
-        if(document.getElementById('excellence-title')) document.getElementById('excellence-title').textContent = data.homepage.excellence.title;
-        if(document.getElementById('excellence-description')) document.getElementById('excellence-description').textContent = data.homepage.excellence.description;
-        
-        if(document.getElementById('most-selling-title')) document.getElementById('most-selling-title').textContent = "الأكثر مبيعاً";
-        if(document.getElementById('most-selling-description')) document.getElementById('most-selling-description').textContent = "تشكيلة مختارة بعناية فائقة تبرز فخامة الاختيارات المعتمدة والأكثر طلباً وشهرة من عملائنا.";
-
-        if(document.getElementById('new-arrivals-title')) document.getElementById('new-arrivals-title').textContent = "وصل حديثاً";
-        if(document.getElementById('new-arrivals-description')) document.getElementById('new-arrivals-description').textContent = "استكشف توليفاتنا الجديدة والمبتكرة الحصرية التي تحمل بصمة الجودة وعراقة الإتقان.";
-
-        if(document.getElementById('our-products-title')) document.getElementById('our-products-title').textContent = "منتجاتنا";
-        if(document.getElementById('our-products-description')) document.getElementById('our-products-description').textContent = "تشكيلة غنية ومتنوعة من الحلويات الطازجة يومياً، ركزنا فيها على المكونات الطبيعية 100% لأعلى قيمة جودة.";
-
-        if(document.getElementById('categories-section-title')) document.getElementById('categories-section-title').textContent = "تسوق حسب الفئة";
-        if(document.getElementById('categories-section-subtitle')) document.getElementById('categories-section-subtitle').textContent = "انتقل مباشرة وبكل سهولة إلى الصنف المفضل لديك عبر فئاتنا الشاملة المعتمدة.";
-
-        if(document.getElementById('cake-preview-img')) document.getElementById('cake-preview-img').src = data.homepage.cakePreview.image;
-        if(document.getElementById('cake-preview-title')) document.getElementById('cake-preview-title').textContent = data.homepage.cakePreview.title;
-        if(document.getElementById('cake-preview-desc')) document.getElementById('cake-preview-desc').textContent = data.homepage.cakePreview.description;
-        if(document.getElementById('cake-preview-cta')) document.getElementById('cake-preview-cta').textContent = data.homepage.cakePreview.cta;
-
-        if(document.getElementById('flower-preview-img')) document.getElementById('flower-preview-img').src = data.homepage.flowerPreview.image;
-        if(document.getElementById('flower-preview-title')) document.getElementById('flower-preview-title').textContent = data.homepage.flowerPreview.title;
-        if(document.getElementById('flower-preview-desc')) document.getElementById('flower-preview-desc').textContent = data.homepage.flowerPreview.description;
-        if(document.getElementById('flower-preview-cta')) document.getElementById('flower-preview-cta').textContent = data.homepage.flowerPreview.cta;
-
-        function buildProductCardHTML(p) {
-            let isCake = (p.id === 'toort-custom-master' || p.slug === 'toort-custom-master');
-            let isFlower = (p.id === 'flowers-master' || p.slug === 'flowers-master');
-            let actionClickUrl = isCake ? 'cake-builder.html' : (isFlower ? 'flower-builder.html' : `product.html?slug=${p.slug}`);
-
-            return `
-                <div class="product-card-unified" data-product-id="${p.id}">
-                    <img src="${p.images[0]}" class="product-card-img" alt="${p.title}" loading="lazy" />
-                    <h3 class="product-card-title">${p.title}</h3>
-                    <span class="product-card-flavor-name">${p.flavorName}</span>
-                    <p class="product-card-desc">${p.flavorDesc}</p>
-                    <div class="bose-quantity-counter">
-                        <button class="btn-qty-plus">+</button>
-                        <input type="text" class="input-qty-value" value="1" readonly />
-                        <button class="btn-qty-minus">-</button>
-                    </div>
-                    <div class="product-card-price">${Math.round(p.price)} جنيه</div>
-                    <button class="btn-add-to-cart" onclick="location.href='${actionClickUrl}'">اضافة للسلة</button>
-                </div>
-            `;
-        }
-
-        const mostSellingGrid = document.getElementById('most-selling-grid');
-        if (mostSellingGrid) {
-            mostSellingGrid.innerHTML = '';
-            data.products.filter(p => data.homepage.mostSelling.includes(p.id)).forEach(p => { 
-                const wrapper = document.createElement('div');
-                wrapper.innerHTML = buildProductCardHTML(p);
-                const card = wrapper.firstElementChild;
-                mostSellingGrid.appendChild(card);
-                window.attachBoseCardQuantityEngine(card, p.price);
-            });
-            window.setupBoseInteractiveSlider('most-selling-grid', 'most-selling-dots');
-        }
-
-        const newArrivalsGrid = document.getElementById('new-arrivals-grid');
-        if (newArrivalsGrid) {
-            newArrivalsGrid.innerHTML = '';
-            data.products.filter(p => data.homepage.newArrivals.includes(p.id)).forEach(p => { 
-                const wrapper = document.createElement('div');
-                wrapper.innerHTML = buildProductCardHTML(p);
-                const card = wrapper.firstElementChild;
-                newArrivalsGrid.appendChild(card);
-                window.attachBoseCardQuantityEngine(card, p.price);
-            });
-            window.setupBoseInteractiveSlider('new-arrivals-grid', 'new-arrivals-dots');
-        }
-
-        const ourProductsGrid = document.getElementById('our-products-grid');
-        if (ourProductsGrid) {
-            const allOurProducts = data.products.filter(p => data.homepage.ourProducts.includes(p.id));
-            let initialProducts = allOurProducts.slice(0, 4);
-            
-            ourProductsGrid.innerHTML = '';
-            initialProducts.forEach(p => {
-                const wrapper = document.createElement('div');
-                wrapper.innerHTML = buildProductCardHTML(p);
-                const card = wrapper.firstElementChild;
-                ourProductsGrid.appendChild(card);
-                window.attachBoseCardQuantityEngine(card, p.price);
-            });
-
-            const showMoreBtn = document.getElementById('our-products-show-more');
-            if (showMoreBtn) {
-                showMoreBtn.textContent = "استعرض المزيد";
-                if (allOurProducts.length > 4) {
-                    showMoreBtn.addEventListener('click', () => {
-                        let remainingProducts = allOurProducts.slice(4);
-                        remainingProducts.forEach(p => {
-                            const wrapper = document.createElement('div');
-                            wrapper.innerHTML = buildProductCardHTML(p);
-                            const card = wrapper.firstElementChild;
-                            ourProductsGrid.appendChild(card);
-                            window.attachBoseCardQuantityEngine(card, p.price);
-                        });
-                        showMoreBtn.style.display = 'none';
-                    });
-                } else {
-                    showMoreBtn.style.display = 'none';
-                }
-            }
-        }
-
-        const categoriesTrack = document.getElementById('categories-track');
-        if (categoriesTrack) {
-            categoriesTrack.className = "categories-track-scrollable"; 
-            categoriesTrack.innerHTML = data.homepage.categoriesSlider.map(cat => `
-                <div class="bose-category-slider-card" onclick="location.href='menu.html'">
-                    <img src="${cat.image}" class="category-img" alt="${cat.title}" loading="lazy" />
-                    <div class="category-title-display">${cat.title}</div>
-                </div>
-            `).join('');
-            window.setupBoseInteractiveSlider('categories-track', 'categories-dots');
-        }
-
-        if (document.getElementById('excellence-images-track')) {
-            window.initializeExcellenceSectionSlider();
-        }
-    });
-});
