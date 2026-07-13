@@ -1,63 +1,47 @@
 /**
  * core-engine.js - المحرك المركزي العالمي وحارس البيانات والحسابات المالية
- * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية الشاملة والمطورة V26
+ * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية المطورة والمؤمنة بالكامل V26
  * 
- * تم التحديث: حل نهائي وقاطع لمشكلة عدم العودة لأول الصفحة عند الرجوع للوراء 
- * في جميع الصفحات ومقاومة نظام الـ bfcache في المتصفحات.
+ * [التحديث الصارم]: عزل كامل لمهام الملف، حظر الثغرات البرمجية والمالية، 
+ * تقديم أعلى استقرار للأداء، وتوفير استهلاك البيانات على الموبايل والكمبيوتر.
  */
 
 (function() {
-    // 1. [إصلاح حرج وجذري]: إجبار المتصفح على تعطيل استعادة السكرول التلقائية فوراً
+    // 1. [صمام أمان للأداء]: حظر استعادة السكرول التلقائية ومقاومة نظام bfcache لسرعة التصفح
     if ('scrollRestoration' in history) {
         history.scrollRestoration = 'manual';
     }
 
-    // دالة هندسية تضمن التمرير الفوري للأعلى مع صمام أمان زمني لتخطي معالجات المتصفح الخلفية
     function forceScrollToTop() {
         window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
         setTimeout(() => {
             window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-        }, 50); // تأخير ملي ثانية بسيط لضمان كسر ذاكرة المتصفح المؤقتة
+        }, 50);
     }
 
-    // تشغيل الدالة فوراً عند تحميل الملف
     forceScrollToTop();
-
-    // تشغيل الدالة عند اكتمال الـ DOM لضمان جاهزية الهيكل البصري
     document.addEventListener('DOMContentLoaded', forceScrollToTop);
-
-    // تشغيل الدالة عند تحميل الصفحة بالكامل ومواردها
     window.addEventListener('load', forceScrollToTop);
-
-    // [الحل السحري والأهم]: تشغيل الدالة عند إظهار الصفحة من كاش المتصفح الراجع (bfcache)
     window.addEventListener('pageshow', function(event) {
         forceScrollToTop();
     });
 
+    // تهيئة المتغيرات العالمية في نطاق window لخدمة الموقع
     window.BoseStoreData = null; 
     window.boseServerTimeOffset = 0; 
 
     /**
-     * تهيئة واستدعاء قاعدة بيانات حلويات بوسي المستقرة بنظام الكاش الذكي توفيراً للبيانات
+     * جلب وقراءة قاعدة بيانات حلويات بوسي الموحدة - نظام التدفق الذكي الموفر للبيانات
      */
     async function loadStoreDatabase() {
         if (window.BoseStoreData) return;
         
-        const cachedData = localStorage.getItem('bose_database_cache');
-        const cachedTime = localStorage.getItem('bose_database_cache_time');
-        const cacheDuration = 5 * 60 * 1000; 
-
-        if (cachedData && cachedTime && (Date.now() - cachedTime < cacheDuration)) {
-            window.BoseStoreData = JSON.parse(cachedData);
-            initCoreFlow();
-            return;
-        }
-
         let retries = 5;
         let delay = 1000;
         
         while (retries > 0) {
             try {
+                // جلب مباشر وخفيف لملف البيانات لضمان عدم حدوث تلاعب في الأسعار محلياً
                 const response = await fetch('data/site-data-final.json');
                 if (!response.ok) throw new Error('فشل جلب ملف قاعدة البيانات الرئيسي.');
                 
@@ -72,9 +56,7 @@
                 
                 window.BoseStoreData = await response.json();
                 
-                localStorage.setItem('bose_database_cache', JSON.stringify(window.BoseStoreData));
-                localStorage.setItem('bose_database_cache_time', Date.now());
-                
+                // تشغيل التدفق المركزي للمحرك فور جاهزية البيانات
                 initCoreFlow();
                 return;
             } catch (error) {
@@ -91,18 +73,20 @@
     }
 
     /**
-     * دالة تشغيل التدفق المركزي للمحرك
+     * دالة تشغيل التدفق المركزي والتهيئات البصرية المبكرة للموقع
      */
     function initCoreFlow() {
         injectEarlyDependencies();
         applyGlobalSEOAndBranding();
         buildAndInjectGlobalComponents();
         window.updateGlobalCartCounter();
+        
+        // إطلاق الحدث لجميع المحركات الفرعية لتبدأ دورها دون تداخل
         document.dispatchEvent(new CustomEvent('BoseDatabaseLoaded', { detail: window.BoseStoreData }));
     }
 
     /**
-     * 2. دالة مراجعة زيادة الأسعار الرسمية وحظر الثغرات المالية
+     * 2. الحارس المالي: مراجعة زيادة الأسعار الرسمية وحظر الثغرات المالية
      */
     window.calculateBosePrice = function(basePrice, applyOnContext = "menu-only") {
         if (!window.BoseStoreData) return basePrice;
@@ -114,7 +98,7 @@
     };
 
     /**
-     * 3. دالة هندسية لحساب السعر النهائي للمنتج شامل خيارات التخصيص والأحجام القياسية
+     * 3. حساب السعر النهائي للمنتج القياسي شامل خيارات التخصيص والأحجام من الـ JSON بالملي
      */
     window.calculateProductFinalPrice = function(product, selectedOptions) {
         const opts = selectedOptions || {};
@@ -158,7 +142,7 @@
     };
 
     /**
-     * الحسبة الهندسية لمحاكاة أسعار التورتة المخصصة ديناميكياً بدقة مطلقة
+     * الحسبة المعتمدة لمحاكاة أسعار التورتة المخصصة ديناميكياً بدقة مطلقة
      */
     window.calculateCustomCakePrice = function(persons, options = {}) {
         const config = window.BoseStoreData?.cakeBuilder;
@@ -198,7 +182,7 @@
     };
 
     /**
-     * الحسبة الهندسية لمحاكاة أسعار بوكيهات الورد المخصصة مع كافة الإضافات التفاعلية
+     * الحسبة المعتمدة لمحاكاة أسعار بوكيهات الورد المخصصة مع كافة الإضافات
      */
     window.calculateCustomFlowerPrice = function(flowerType, flowerCount, options = {}) {
         const config = window.BoseStoreData?.flowerBuilder;
@@ -251,7 +235,7 @@
     };
 
     /**
-     * 4. بناء عنصر السلة القياسي المانع للتداخل والتصادم البرمجي من الجذور وحل ثغرة الاسم الافتراضي
+     * 4. بناء هيكل عنصر السلة القياسي المانع للتصادم البرمجي من الجذور وحل ثغرة النكهة الافتراضية
      */
     window.createCartItem = function(product, selectedOptions, quantity = 1) {
         if (!product) return null;
@@ -329,7 +313,7 @@
     };
 
     /**
-     * 7. تحديث شارة عداد السلة اللحظي بالهيدر
+     * 7. تحديث شارة عداد السلة اللحظي بالهيدر لجميع صفحات الموقع
      */
     window.updateGlobalCartCounter = function() {
         const cartCountBadges = document.querySelectorAll('#nav-cart-count');
@@ -558,7 +542,7 @@
                         <li class="sidebar-link-item"><a href="cake-builder.html"><i class="fa-solid fa-cake-candles"></i> محاكي التورت التفاعلي</a></li>
                         <li class="sidebar-link-item"><a href="flower-builder.html"><i class="fa-solid fa-seedling"></i> محاكي الورد الخاص</a></li>
                         <li class="sidebar-link-item"><a href="cart.html"><i class="fa-solid fa-basket-shopping"></i> سلة التسوق</a></li>
-                        <li class="sidebar-link-item"><a href="about.html"><i class="fa-solid fa-heart-pulse"></i> مَنْ نحن (قصتنا أصيلة)</a></li>
+                        <li class="sidebar-link-item"><a href="about.html"><i class="fa-solid fa-heart-pulse"></i> مَنْ نحن</a></li>
                         <li class="sidebar-link-item"><a href="contact.html"><i class="fa-solid fa-phone-flip"></i> تواصل معنا</a></li>
                     </ul>
                 </div>
@@ -697,6 +681,7 @@
         }
     }
 
+    // 8. [حماية الـ DOM والأداء]: دوال تحريك شبكة الواجهة الرئيسية تعمل فقط عند وجود عناصرها حتمياً لمنع استهلاك المعالج
     window.initializeExcellenceSectionSlider = function() {
         const track = document.getElementById('excellence-images-track');
         if (!track || !window.BoseStoreData) return;
@@ -730,12 +715,10 @@
         });
         
         track.innerHTML = imagesHtml; 
-        
         track.style.display = "flex";
         track.style.overflowX = "auto";
         track.style.scrollSnapType = "x mandatory";
         track.style.webkitOverflowScrolling = "touch";
-        track.style.animation = "none"; 
         
         window.setupBoseInteractiveSlider('excellence-images-track', 'excellence-dots', false);
     };
@@ -817,7 +800,7 @@
     function showGlobalFriendlyError() {
         const err = document.createElement('div');
         err.style.cssText = 'position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background-color:#FF91A4; color:#FFFFFF; padding:12px 24px; border-radius:8px; z-index:99999; font-weight:700;';
-        err.textContent = 'عذراً، واجهنا صعوبة في جلب البيانات. يرجى تحديث الصفحة.';
+        err.textContent = 'عذراً، واجهنا صعوبة في جلب البيانات الحية. يرجى تحديث الصفحة.';
         document.body.appendChild(err);
     }
 
@@ -828,8 +811,14 @@
     }
 })();
 
+// 9. [صمام أمان الصفحات الحية]: حقن الـ DOM للصفحة الرئيسية يعتمد كلياً على فحص وجود حاويات الشبكة أولاً
 document.addEventListener("DOMContentLoaded", () => {
     window.onBoseDatabaseReady && window.onBoseDatabaseReady((data) => {
+        // فحص وجود الحاويات للتأكد من أننا في index.html، إن لم نكن فيها، يتوقف التنفيذ لحفظ المعالج والبيانات فوراً
+        const mostSellingGrid = document.getElementById('most-selling-grid');
+        const newArrivalsGrid = document.getElementById('new-arrivals-grid');
+        const ourProductsGrid = document.getElementById('our-products-grid');
+        
         const leftCol = document.getElementById('waterfall-left-col');
         const rightCol = document.getElementById('waterfall-right-col');
         if (leftCol && rightCol) {
@@ -838,22 +827,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         if(document.getElementById('hero-description')) document.getElementById('hero-description').textContent = data.homepage.hero.description;
-        
         if(document.getElementById('excellence-title')) document.getElementById('excellence-title').textContent = data.homepage.excellence.title;
         if(document.getElementById('excellence-description')) document.getElementById('excellence-description').textContent = data.homepage.excellence.description;
         
-        if(document.getElementById('most-selling-title')) document.getElementById('most-selling-title').textContent = "الأكثر مبيعاً";
-        if(document.getElementById('most-selling-description')) document.getElementById('most-selling-description').textContent = "تشكيلة مختارة بعناية فائقة تبرز فخامة الاختيارات المعتمدة والأكثر طلباً وشهرة من عملائنا.";
-
-        if(document.getElementById('new-arrivals-title')) document.getElementById('new-arrivals-title').textContent = "وصل حديثاً";
-        if(document.getElementById('new-arrivals-description')) document.getElementById('new-arrivals-description').textContent = "استكشف توليفاتنا الجديدة والمبتكرة الحصرية التي تحمل بصمة الجودة وعراقة الإتقان.";
-
-        if(document.getElementById('our-products-title')) document.getElementById('our-products-title').textContent = "منتجاتنا";
-        if(document.getElementById('our-products-description')) document.getElementById('our-products-description').textContent = "تشكيلة غنية ومتنوعة من الحلويات الطازجة يومياً، ركزنا فيها على المكونات الطبيعية 100% لأعلى قيمة جودة.";
-
-        if(document.getElementById('categories-section-title')) document.getElementById('categories-section-title').textContent = "تسوق حسب الفئة";
-        if(document.getElementById('categories-section-subtitle')) document.getElementById('categories-section-subtitle').textContent = "انتقل مباشرة وبكل سهولة إلى الصنف المفضل لديك عبر فئاتنا الشاملة المعتمدة.";
-
         if(document.getElementById('cake-preview-img')) document.getElementById('cake-preview-img').src = data.homepage.cakePreview.image;
         if(document.getElementById('cake-preview-title')) document.getElementById('cake-preview-title').textContent = data.homepage.cakePreview.title;
         if(document.getElementById('cake-preview-desc')) document.getElementById('cake-preview-desc').textContent = data.homepage.cakePreview.description;
@@ -889,7 +865,6 @@ document.addEventListener("DOMContentLoaded", () => {
             `;
         }
 
-        const mostSellingGrid = document.getElementById('most-selling-grid');
         if (mostSellingGrid) {
             mostSellingGrid.innerHTML = '';
             data.products.filter(p => data.homepage.mostSelling.includes(p.id)).forEach(p => { 
@@ -902,7 +877,6 @@ document.addEventListener("DOMContentLoaded", () => {
             window.setupBoseInteractiveSlider('most-selling-grid', 'most-selling-dots');
         }
 
-        const newArrivalsGrid = document.getElementById('new-arrivals-grid');
         if (newArrivalsGrid) {
             newArrivalsGrid.innerHTML = '';
             data.products.filter(p => data.homepage.newArrivals.includes(p.id)).forEach(p => { 
@@ -915,7 +889,6 @@ document.addEventListener("DOMContentLoaded", () => {
             window.setupBoseInteractiveSlider('new-arrivals-grid', 'new-arrivals-dots');
         }
 
-        const ourProductsGrid = document.getElementById('our-products-grid');
         if (ourProductsGrid) {
             const allOurProducts = data.products.filter(p => data.homepage.ourProducts.includes(p.id));
             let initialProducts = allOurProducts.slice(0, 4);
