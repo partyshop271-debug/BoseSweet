@@ -1,6 +1,6 @@
 /**
  * 👑 محرك محاكي تخصيص التورت التفاعلي الفاخر المطور والمصحح بالكامل - حلويات بوسي 👑
- * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية V33.0
+ * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية V34.0
  * التزام مطلق بحدود الملف (Scope-Locked) وقواعد حوكمة البيانات المعتمدة لعام 2026
  */
 
@@ -11,7 +11,6 @@
     let currentStep = 1;
     const totalSteps = 3;
 
-    // الإعدادات القياسية الدفاعية من قاعدة البيانات
     const cakeConfig = {
         enabled: true,
         basePrice: 580,          
@@ -59,11 +58,8 @@
     const dom = {
         shapeCards: null, layerCards: null, cakeTypeCards: null, printingCards: null, textInput: null,
         personsInput: null, btnMinusPersons: null, btnPlusPersons: null, totalPriceEl: null, 
-        personsCountEl: null, btnAddToCart: null, summaryShape: null, summaryCakeType: null, 
-        summaryPersons: null, btnNextStep: null, btnPrevStep: null
+        personsCountEl: null, btnAddToCart: null, btnNextStep: null, btnPrevStep: null
     };
-
-    const escapeHtml = (unsafe) => (unsafe ? unsafe.toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;") : '');
 
     function calculateLocalCakePrice(customizations) {
         const config = liveStoreConfig || cakeConfig;
@@ -116,9 +112,6 @@
         dom.totalPriceEl = document.getElementById('cake-total-price');
         dom.personsCountEl = document.getElementById('cake-persons-display');
         dom.btnAddToCart = document.getElementById('btn-add-cake-to-cart');
-        dom.summaryShape = document.getElementById('summary-shape');
-        dom.summaryCakeType = document.getElementById('summary-cake-type');
-        dom.summaryPersons = document.getElementById('summary-persons');
         dom.btnNextStep = document.getElementById('btn-next-step');
         dom.btnPrevStep = document.getElementById('btn-prev-step');
     }
@@ -175,7 +168,6 @@
             finalizeUIUpdate();
         });
 
-        // إدارة لوحة التنقل المتدرج بين خطوات المحاكي الثلاث
         if (dom.btnNextStep) {
             dom.btnNextStep.onclick = () => {
                 if (currentStep < totalSteps) {
@@ -239,7 +231,6 @@
                 if (statusEl) statusEl.textContent = "";
                 const fileInput = document.getElementById('cake-photo-file-input');
                 if (fileInput) fileInput.value = "";
-                drawCakePreviewSVG();
             };
         }
 
@@ -298,61 +289,9 @@
         }
     }
 
-    function drawCakePreviewSVG() {
-        const previewContainer = document.getElementById('cake-preview');
-        if (!previewContainer) return;
-
-        const { shape, layers, text, textPosition, uploadedImageUrl, printingType } = selectedConfig;
-        let layersGroupMarkup = '';
-        const baseWidth = 220, baseHeight = 42, verticalGap = 34, startYPoint = 155;
-
-        for (let i = 0; i < layers; i++) {
-            const width = baseWidth - (i * 28), height = baseHeight, x = (300 - width) / 2, y = startYPoint - (i * verticalGap);
-            if (shape === 'circle' || shape === 'heart') {
-                layersGroupMarkup += `
-                    <g class="cake-3d-layer" style="transition: all 0.3s ease;">
-                        <ellipse cx="150" cy="${y + height}" rx="${width / 2}" ry="14" fill="#EAD4D7" opacity="0.7"/>
-                        <path d="M ${x} ${y} A ${width / 2} 14 0 0 0 ${x + width} ${y} v ${height} A ${width / 2} 14 0 0 1 ${x} ${y + height} Z" fill="#FFFFFF" stroke="#FF91A4" stroke-width="2"/>
-                        <ellipse cx="150" cy="${y}" rx="${width / 2}" ry="14" fill="#FFD2D9" stroke="#FF91A4" stroke-width="1.5"/>
-                    </g>`;
-            } else {
-                layersGroupMarkup += `
-                    <g class="cake-3d-layer" style="transition: all 0.3s ease;">
-                        <path d="M 150 ${y - 8} L ${150 + width / 2} ${y + 4} L 150 ${y + 16} L ${150 - width / 2} ${y + 4} Z" fill="#FFD2D9" stroke="#FF91A4" stroke-width="1.5"/>
-                        <path d="M ${150 - width / 2} ${y + 4} L 150 ${y + 16} L 150 ${y + 16 + height} L ${150 - width / 2} ${y + 4 + height} Z" fill="#FFFFFF" stroke="#FF91A4" stroke-width="2"/>
-                        <path d="M 150 ${y + 16} L ${150 + width / 2} ${y + 4} L ${150 + width / 2} ${y + 4 + height} L 150 ${y + 16 + height} Z" fill="#FFFFFF" stroke="#FF91A4" stroke-width="2"/>
-                    </g>`;
-            }
-        }
-
-        let printingMarkup = (printingType !== 'none' && uploadedImageUrl) ? `
-            <g class="cake-photo-frame" filter="drop-shadow(0px 2px 4px rgba(0,0,0,0.15))">
-                <clipPath id="photo-clip-path"><rect x="132" y="${startYPoint - ((layers - 1) * verticalGap) - 6}" width="36" height="24" rx="4"/></clipPath>
-                <rect x="130" y="${startYPoint - ((layers - 1) * verticalGap) - 8}" width="40" height="28" rx="6" fill="#FFFFFF" stroke="#D4AF37" stroke-width="1.5"/>
-                <image href="${uploadedImageUrl}" x="132" y="${startYPoint - ((layers - 1) * verticalGap) - 6}" width="36" height="24" preserveAspectRatio="xMidYMid slice" clip-path="url(#photo-clip-path)" />
-            </g>` : '';
-
-        let textMarkup = (text && text.trim().length > 0) ? `
-            <g class="cake-custom-text-wrap" filter="drop-shadow(1px 1.5px 0.5px rgba(255,255,255,0.95))">
-                <text x="150" y="${startYPoint - ((layers - 1) * verticalGap) - 2}" fill="#111111" style="font-family: 'Cairo', sans-serif; font-size: 11px; font-weight: 700; text-anchor: middle;">${escapeHtml(text)}</text>
-            </g>` : '';
-
-        previewContainer.innerHTML = `
-            <svg viewBox="0 0 300 240" class="w-full h-auto" style="max-height: 280px;">
-                <ellipse cx="150" cy="208" rx="122" ry="24" fill="#FFFFFF" stroke="#D4AF37" stroke-width="1.5" />
-                <ellipse cx="150" cy="213" rx="118" ry="22" fill="rgba(17,17,17,0.1)"/>
-                ${layersGroupMarkup} ${printingMarkup} ${textMarkup}
-            </svg>`;
-    }
-
     function finalizeUIUpdate() {
-        const config = liveStoreConfig || cakeConfig;
         if (dom.totalPriceEl) dom.totalPriceEl.textContent = `${calculateLocalCakePrice(selectedConfig)}`;
         if (dom.personsCountEl) dom.personsCountEl.textContent = selectedConfig.persons;
-
-        if (dom.summaryShape) { const s = config.shapes.find(x => x.id === selectedConfig.shape); dom.summaryShape.textContent = s ? s.name : selectedConfig.shape; }
-        if (dom.summaryCakeType) { const t = config.cakeTypes.find(x => x.id === selectedConfig.cakeType); dom.summaryCakeType.textContent = t ? t.name : selectedConfig.cakeType; }
-        if (dom.summaryPersons) dom.summaryPersons.textContent = `${selectedConfig.persons} فرد`;
 
         const updateActiveState = (cards, attr, currentVal) => {
             if (cards) cards.forEach(c => c.getAttribute(attr) == currentVal ? c.classList.add('active') : c.classList.remove('active'));
@@ -361,8 +300,6 @@
         updateActiveState(dom.layerCards, 'data-layer', selectedConfig.layers);
         updateActiveState(dom.cakeTypeCards, 'data-flavor', selectedConfig.cakeType);
         updateActiveState(dom.printingCards, 'data-printing', selectedConfig.printingType);
-
-        drawCakePreviewSVG();
     }
 
     function addCustomizedCakeToCart() {
@@ -425,7 +362,7 @@
 
     function safeBootEngine() {
         loadConfigFromDatabase();
-        if (document.getElementById('bose-cake-builder-form') || document.getElementById('cake-preview')) {
+        if (document.getElementById('bose-cake-builder-form')) {
             cacheDOMElements();
             bindCentralizedEvents();
             enforceDynamicConstraints(true);
