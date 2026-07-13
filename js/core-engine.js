@@ -1,13 +1,12 @@
 /**
  * core-engine.js - المحرك المركزي العالمي وحارس البيانات والحسابات المالية
- * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية الشاملة والمطورة V20.0
- * متوافق بالكامل مع حوكمة المواصفات القياسية الفاخرة والـ DOM المقدس
+ * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية الشاملة والمطورة V21.0
+ * حل مشاكل التعارض العكسي تماماً وضمان الأوصاف الفاخرة وحركة السلايدرات اللانهائية
  */
 
 (function() {
-    // إعداد المتغيرات العالمية داخل الكبسولة البرمجية لحماية أمن البيانات ومنع التصادم
     window.BoseStoreData = null; 
-    window.boseServerTimeOffset = 0; // فارق التوقيت بالمللي ثانية (وقت الخادم - وقت العميل)
+    window.boseServerTimeOffset = 0; 
 
     /**
      * 1. تهيئة واستدعاء قاعدة بيانات حلويات بوسي المستقرة
@@ -505,7 +504,7 @@
     }
 
     /**
-     * 12. محرك تهيئة قسم عقد من الإتقان بالحركة التلقائية اللانهائية
+     * 12. محرك تهيئة قسم عقد من الإتقان بالحركة التلقائية اللانهائية الخالصة بالـ CSS
      */
     window.initializeExcellenceSectionSlider = function() {
         const track = document.getElementById('excellence-images-track');
@@ -523,21 +522,19 @@
             `;
         });
         
-        track.innerHTML = imagesHtml + imagesHtml; 
+        // مضاعفة العناصر بالكامل وتطبيق الحركة اللانهائية المباشرة لمنع أي فراغ بصرى نهائياً
+        track.innerHTML = imagesHtml + imagesHtml + imagesHtml; 
+        track.style.display = "flex";
+        track.style.width = "max-content";
         
-        const dotsContainer = document.getElementById('excellence-dots');
-        if (dotsContainer) {
-            dotsContainer.innerHTML = config.images.map((_, index) => `
-                <span class="bose-dot-node ${index === 0 ? 'active' : ''}" data-index="${index}"></span>
-            `).join('');
-        }
+        // إزالة الحركات المتعارضة القديمة وربطها بالأنميشن الانسيابي الصارم
+        track.style.animation = "boseCategoriesLoop 25s linear infinite";
     };
 
     /**
-     * 13. دالة ربط وتهيئة السلايدرات التفاعلية بالنقاط (Dots) والسحب الجانبي (Swipe) والأزرار
-     * [تم تصحيح اتجاه الإحداثيات هندسياً لحل مشكلة التعارض العكسي تماماً]
+     * 13. دالة ربط وتهيئة السلايدرات التفاعلية بالنقاط (Dots) والسحب الجانبي (Swipe) للأقسام الأخرى
      */
-    window.setupBoseInteractiveSlider = function(trackId, dotsContainerId, arrowPrevId = null, arrowNextId = null) {
+    window.setupBoseInteractiveSlider = function(trackId, dotsContainerId) {
         const track = document.getElementById(trackId);
         const dotsContainer = document.getElementById(dotsContainerId);
         if (!track) return;
@@ -568,24 +565,9 @@
             dot.addEventListener('click', (e) => {
                 const targetIndex = parseInt(e.target.getAttribute('data-index'), 10);
                 const itemWidth = items[0].offsetWidth || 300;
-                // تعديل الاتجاه بما يتوافق مع حاوية RTL بدون تعارض
                 track.scrollTo({ left: (targetIndex * itemWidth), behavior: 'smooth' });
             });
         });
-
-        const prevBtn = arrowPrevId ? document.getElementById(arrowPrevId) : null;
-        const nextBtn = arrowNextId ? document.getElementById(arrowNextId) : null;
-
-        if (prevBtn && nextBtn) {
-            prevBtn.addEventListener('click', () => {
-                const itemWidth = items[0].offsetWidth || 300;
-                track.scrollBy({ left: -itemWidth, behavior: 'smooth' });
-            });
-            nextBtn.addEventListener('click', () => {
-                const itemWidth = items[0].offsetWidth || 300;
-                track.scrollBy({ left: itemWidth, behavior: 'smooth' });
-            });
-        }
     };
 
     function showGlobalFriendlyError() {
@@ -599,7 +581,7 @@
 })();
 
 /**
- * 🛡️ حارس التمهيد لضمان ملء كروت وشلالات الصفحة الرئيسية وسد فجوات التفاعل
+ * 🛡️ حارس التمهيد والمزامنة الكاملة للأوصاف الفاخرة والعناوين من الـ JSON مباشرة
  */
 document.addEventListener("DOMContentLoaded", () => {
     window.onBoseDatabaseReady && window.onBoseDatabaseReady((data) => {
@@ -610,7 +592,7 @@ document.addEventListener("DOMContentLoaded", () => {
             rightCol.innerHTML = data.homepage.waterfall.rightColumnImages.map(img => `<img src="${img}" alt="شلال بوسي" />`).join('');
         }
 
-        // [تم الحل] إدخال وتحديث نصوص وأوصاف الأقسام ديناميكياً بالتطابق الكامل والراقي مع مصفوفة الـ JSON من قاعدة البيانات
+        // حقن الأوصاف والعناوين ديناميكياً بناءً على اللهجة المصرية الراقية المعتمدة بقاعدة البيانات
         if(document.getElementById('hero-description')) document.getElementById('hero-description').textContent = data.homepage.hero.description;
         
         if(document.getElementById('excellence-title')) document.getElementById('excellence-title').textContent = data.homepage.excellence.title;
@@ -639,7 +621,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if(document.getElementById('flower-preview-cta')) document.getElementById('flower-preview-cta').textContent = data.homepage.flowerPreview.cta;
 
         /**
-         * دالة بناء الكارت الموحد الصارم - [تم الحل] زر الإضافة للسلة القياسي بدلاً من النص الخاطئ القديم
+         * دالة بناء الكارت الموحد الصارم لشبكة المنتجات
          */
         function buildProductCardHTML(p) {
             let isCake = (p.id === 'toort-custom-master' || p.slug === 'toort-custom-master');
@@ -707,10 +689,8 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
 
-        // [تم الحل] معالجة قسم تسوق حسب الفئة ليتم عرضه كـ Slider أفقي جانبي مرن ومنع التكدس الرأسي تماماً
         const categoriesTrack = document.getElementById('categories-track');
         if (categoriesTrack) {
-            // تفكيك الكلاس القديم المسبب للتعارض وحقن الهوية الملوكية السليمة لـ Slider السحب
             categoriesTrack.className = "categories-track-scrollable"; 
             categoriesTrack.innerHTML = data.homepage.categoriesSlider.map(cat => `
                 <div class="bose-category-slider-card" onclick="location.href='menu.html'">
