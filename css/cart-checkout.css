@@ -1,10 +1,9 @@
 /**
- * 👑 ملف التصميم الموحد والفاخر لسلة المشتريات وإتمام الطلب والتوصيل - حلويات بوسي V15.2 Master Edition 👑
+ * 👑 ملف التصميم الموحد والفاخر لسلة المشتريات وإتمام الطلب والتوصيل - حلويات بوسي V15.5 Master Edition 👑
  * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البصرية والبرمجية ومشاكل التداخل
  * متوافقة بشكل مطلق ومتبادل مع: global.css، main.css، simulators.css، core-engine.js، cart-engine.js وقاعدة البيانات site-data-final.json
  * [تغطي بصرياً: صفحة السلة، صفحة الدفع وتفاصيل التوصيل، وصفحة نجاح الطلب مع تأمين كامل لواجهات رفع وضغط صور العملاء لـ Cloudinary]
- * [يدعم أسماء الكلاسات القديمة والحديثة معاً لضمان عدم حدوث أي خلل في تشغيل لغة الـ Javascript الخاصة بالسلة والرفع]
- * [يمنع منعاً باتاً وقاطعاً حدوث أي بتر أو قص للنصوص أو تداخل في العناصر على كافة مقاسات الشاشات]
+ * [تلتزم بدورها البصري الخاص فقط ومغلقة تماماً عن مهام أو دالات أي ملفات خارجية أخرى]
  */
 
 /* ==========================================================================\
@@ -28,7 +27,7 @@
     
     --bose-soft-shadow: 0 12px 32px rgba(255, 145, 164, 0.08); /* ظل ناعم للغاية يتناغم مع الهوية البصرية البمبي بدون أي سواد */
     --bose-hover-shadow: 0 16px 40px rgba(255, 145, 164, 0.15); /* ظل تفاعلي جذاب */
-    --bose-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --bose-transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     --bose-radius: 16px;
     --bose-font: 'Cairo', sans-serif;
 }
@@ -170,7 +169,7 @@
     padding: 60px 20px;
     text-align: center;
     box-shadow: var(--bose-soft-shadow);
-    animation: boseFadeIn 0.4s ease-out;
+    animation: boseFadeIn 0.3s ease-out;
     grid-column: 1 / -1;
     display: flex;
     flex-direction: column;
@@ -283,6 +282,7 @@
     justify-content: center;
     position: relative;
     flex-shrink: 0;
+    aspect-ratio: 1 / 1;
 }
 
 @media (min-width: 768px) {
@@ -301,7 +301,7 @@
 
 .bose-cart-item-card:hover .cart-item-media-box img,
 .cart-item-card:hover .cart-item-media-box img {
-    transform: scale(1.08);
+    transform: scale(1.05);
 }
 
 /* شارات الرفع والضغط السحابي Cloudinary لصور التخصيص */
@@ -467,7 +467,7 @@
     flex-shrink: 0;
 }
 
-/* fئات التخصيص للمحاكيات لضمان عدم توقفها */
+/* فئات التخصيص للمحاكيات لضمان عدم توقفها */
 .customization-badge-node.gold-accent,
 .customization-badge-pill.gold-accent {
     border-color: rgba(212, 175, 55, 0.3);
@@ -880,6 +880,7 @@
     top: 50%;
     margin-left: -11px;
     margin-top: -11px;
+    will-change: transform;
 }
 
 .bose-primary-checkout-btn i,
@@ -1397,6 +1398,7 @@ select.bose-form-control option,
     border-radius: 50%;
     animation: boseSpin 0.8s linear infinite;
     flex-shrink: 0;
+    will-change: transform;
 }
 
 /* إخفاء السَبينر فور انتهاء العمليات أو حدوث خطأ */
@@ -1455,6 +1457,7 @@ select.bose-form-control option,
     background-color: var(--bose-pink);
     border-radius: 20px;
     transition: width 0.2s ease;
+    will-change: width;
 }
 
 /* شارة نجاح الرفع والضغط التلقائي للربط الآمن */
@@ -1756,7 +1759,7 @@ select.bose-form-control option,
     padding: 40px 25px;
     text-align: center;
     box-shadow: var(--bose-soft-shadow);
-    animation: boseFadeIn 0.5s ease-out;
+    animation: boseFadeIn 0.4s ease-out;
     box-sizing: border-box;
 }
 
@@ -1778,6 +1781,7 @@ select.bose-form-control option,
     justify-content: center;
     margin: 0 auto 25px auto;
     animation: boseBounce 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+    will-change: transform;
 }
 
 .success-celebration-badge-container i,
@@ -2086,3 +2090,4 @@ select.bose-form-control option,
     .cart-checkout-grid {
         grid-template-columns: 1fr;
     }
+}
