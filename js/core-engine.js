@@ -3,9 +3,9 @@
  * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية الشاملة والمطورة V26
  * 
  * تم التطوير والتحسين الشامل:
- * 1. حوكمة المهام: عزل تام ومطلق لمهام المحركات الأخرى (حذف دالات حساب الأسعار المعقدة للمحاكيات لتقوم هي بمسؤوليتها).
+ * 1. حوكمة المهام: عزل تام ومطلق لمهام المحركات الأخرى مع الإبقاء على دالات الفحص المالي الأساسية.
  * 2. كفاءة البيانات: تفعيل نظام الكاش الذكي (Cache Mechanism) لقاعدة البيانات لتقليل الاستهلاك ومنع الفيتش المتكرر.
- * 3. الأداء والسرعة: تحسين جلب الأصول وحقن الـ DOM بدقة متناهية متوافقة مع الكمبيوتر والموبايل.
+ * 3. الأداء والسرعة: تحسين جلب الأصول وحقن الـ DOM بدقة متناهية متوافقة مع الكمبيوتر والموبايل وحل ثغرة الهيدر والفوتر.
  */
 
 (function() {
@@ -135,6 +135,99 @@
     };
 
     /**
+     * الحسبة الهندسية لمحاكاة أسعار التورتة المخصصة ديناميكياً بدقة مطلقة
+     */
+    window.calculateCustomCakePrice = function(persons, options = {}) {
+        const config = window.BoseStoreData?.cakeBuilder;
+        const safePersons = parseInt(persons, 10) || (config ? config.persons.minimum : 10) || 10;
+        let price = (config ? config.basePrice : 580) || 580;
+        
+        const minPersons = (config ? config.persons.minimum : 10) || 10;
+        const pricePerPerson = (config ? config.pricePerPerson : 145) || 145;
+        
+        const extraPersons = Math.max(0, safePersons - minPersons);
+        price += extraPersons * pricePerPerson;
+        
+        const selectedPrinting = options.printingType || options.printing || 'none';
+        if (selectedPrinting && selectedPrinting !== 'none') {
+            let printingFee = 0;
+            if (config && config.printingOptions) {
+                const printOpt = config.printingOptions.find(opt => opt.id === selectedPrinting);
+                if (printOpt) printingFee = printOpt.price;
+            }
+            
+            if (printingFee === 0) {
+                if (selectedPrinting === 'edible' || selectedPrinting === 'printable-edible' || selectedPrinting === 'صورة_صالحة_للأكل') {
+                    printingFee = 60;
+                } else if (selectedPrinting === 'non-edible' || selectedPrinting === 'printable-non-edible' || selectedPrinting === 'صورة_غير_صالحة_للأكل') {
+                    printingFee = 15;
+                }
+            }
+            
+            price += printingFee;
+        }
+
+        if (options.wrappingPrice) {
+            price += parseFloat(options.wrappingPrice) || 0;
+        }
+        
+        return window.calculateBosePrice(price, "menu-only");
+    };
+
+    /**
+     * الحسبة الهندسية لمحاكاة أسعار بوكيهات الورد المخصصة مع كافة الإضافات التفاعلية
+     */
+    window.calculateCustomFlowerPrice = function(flowerType, flowerCount, options = {}) {
+        const config = window.BoseStoreData?.flowerBuilder;
+        if (!config) return 0;
+        
+        const safeFlowerCount = parseInt(flowerCount, 10) || config.baseFlowers;
+        const safeCashAmount = parseInt(options.moneyAmount, 10) || 0;
+        const safeCashCategoryAmount = parseInt(options.moneyCategoryAmount, 10) || 0;
+        const safeChocolatePieces = parseInt(options.chocolatePieces, 10) || 0;
+        const safePhotoCount = parseInt(options.photoCount, 10) || 0;
+        
+        let servicePrice = config.basePrice || 400;
+        const extraFlowers = Math.max(0, safeFlowerCount - config.baseFlowers);
+        servicePrice += extraFlowers * config.extraFlowerPrice;
+        if (options.wrappingType) {
+            const wrapOpt = config.wrappingTypes.find(opt => opt.id === options.wrappingType);
+            if (wrapOpt) servicePrice += wrapOpt.price;
+        }
+        
+        if (options.chocolateType && safeChocolatePieces > 0) {
+            const chocOpt = config.chocolateTypes.find(opt => opt.id === options.chocolateType);
+            if (chocOpt) servicePrice += chocOpt.price * safeChocolatePieces;
+        }
+        
+        if (options.hasGiftCard) servicePrice += config.giftCardPrice || 20;
+        if (safePhotoCount > 0) servicePrice += safePhotoCount * (config.photoPrintPrice || 15);
+        
+        let cashHandlingFee = 0;
+        if (safeCashAmount > 0 && safeCashCategoryAmount > 0) {
+            const selectedCategory = config.moneyCategories.find(cat => cat.amount === safeCashCategoryAmount);
+            if (selectedCategory) {
+                const billCount = Math.floor(safeCashAmount / safeCashCategoryAmount);
+                cashHandlingFee += billCount * selectedCategory.fee;
+                
+                const remainder = safeCashAmount % safeCashCategoryAmount;
+                if (remainder > 0) {
+                    const remainderCategory = config.moneyCategories
+                        .filter(cat => cat.amount <= remainder)
+                        .sort((a, b) => b.amount - a.amount)[0] || config.moneyCategories[0];
+                    if (remainderCategory) {
+                        cashHandlingFee += remainderCategory.fee;
+                    }
+                }
+            }
+        }
+        
+        servicePrice += cashHandlingFee;
+        const finalServicePrice = window.calculateBosePrice(servicePrice, "menu-only");
+        return finalServicePrice + safeCashAmount;
+    };
+
+    /**
      * 4. بناء عنصر السلة القياسي المانع للتداخل والتصادم البرمجي من الجذور وحل ثغرة الاسم الافتراضي
      */
     window.createCartItem = function(product, selectedOptions, quantity = 1) {
@@ -182,11 +275,6 @@
             }
         };
     };
-
-    /**
-     * 🛡️ الالتزام بالدور: تم عزل دالات حساب أسعار محاكي الكيك ومحاكي الورد من هذا الملف 
-     * لتقوم ملفات (cake-engine.js) و (flower-engine.js) بمسؤوليتها المباشرة عنها دون تدخل مركزي.
-     */
 
     /**
      * 5. التحقق من أرقام الهواتف وتطهيرها بالصيغة المصرية الصارمة
@@ -393,6 +481,14 @@
         if (document.title !== data.seo.title) {
             document.title = data.seo.title;
         }
+        // إعداد متغيرات الألوان وثيم الموقع من قاعدة البيانات مباشرة لتفادي مشاكل الألوان الافتراضية
+        if (data.store && data.store.theme) {
+            const root = document.documentElement;
+            root.style.setProperty('--bose-pink', data.store.theme.primary || '#FF91A4');
+            root.style.setProperty('--bose-white', data.store.theme.background || '#FFFFFF');
+            root.style.setProperty('--bose-black', data.store.theme.text || '#111111');
+            root.style.setProperty('--bose-gold', data.store.theme.secondary || '#D4AF37');
+        }
     }
 
     function buildAndInjectGlobalComponents() {
@@ -407,7 +503,7 @@
 
             headerInjector.innerHTML = `
                 <div id="top-bar-marquee" class="bose-top-bar-marquee-container" aria-label="شريط الإعلانات التسويقية">
-                    <div class="bose-top-bar-marquee-track">
+                    <div class="bose-top-bar-marquee-track animate-marquee">
                         ${marqueeItemsHtml} ${marqueeItemsHtml}
                     </div>
                 </div>
@@ -721,7 +817,12 @@
         document.body.appendChild(err);
     }
 
-    loadStoreDatabase();
+    // تفعيل المحرك تلقائياً فور تحميل الملف البرمجي لضمان الحقن الفوري للمكونات الأساسية بكل الصفحات
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', loadStoreDatabase);
+    } else {
+        loadStoreDatabase();
+    }
 })();
 
 /**
