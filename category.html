@@ -38,7 +38,7 @@
         .bose-category-breadcrumb a {
             color: var(--bose-black, #111111);
             text-decoration: none;
-            transition: var(--bose-transition-smooth, color 0.3s ease);
+            transition: color 0.3s ease;
         }
 
         .bose-category-breadcrumb a:hover {
@@ -86,7 +86,7 @@
             line-height: 1.6;
         }
 
-        /* 📐 محرك التوزيع الشبكي المرن المتوافق مع محددات الأبعاد القياسية الصارمة للمواصفة */
+        /* 📐 محرك التوزيع الشبكي المرن المتوافق مع محددات الأبعاد القياسية الصارمة */
         .category-products-grid {
             display: grid;
             gap: 20px;
@@ -94,7 +94,7 @@
             box-sizing: border-box;
         }
 
-        /* منع التكدس والحشر على الموبايل: كارت واحد كامل ومريح في الصف لراحة العميل النفسية */
+        /* كارت واحد كامل ومريح في الصف على الموبايل لمنع التكدس */
         .category-products-grid.layout-two-cards, 
         .category-products-grid.layout-tabs,
         .category-products-grid.layout-full-card {
@@ -104,10 +104,7 @@
         /* التوزيع المتوازن على الشاشات الأكبر */
         @media (min-width: 768px) {
             .category-products-grid.layout-two-cards,
-            .category-products-grid.layout-tabs {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 20px;
-            }
+            .category-products-grid.layout-tabs,
             .category-products-grid.layout-full-card {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 20px;
@@ -116,14 +113,84 @@
 
         @media (min-width: 1024px) {
             .category-products-grid.layout-two-cards,
-            .category-products-grid.layout-tabs {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 24px;
-            }
+            .category-products-grid.layout-tabs,
             .category-products-grid.layout-full-card {
                 grid-template-columns: repeat(3, 1fr);
                 gap: 24px;
             }
+        }
+
+        /* 📐 المقاسات الإلزامية الصارمة لكارت المنتج الموحد لمنع تضخم الكود والـ Overflow */
+        .product-card {
+            background: #FFFFFF;
+            border: 1px solid rgba(255, 145, 164, 0.15);
+            border-radius: 20px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            position: relative;
+            box-sizing: border-box;
+            width: 100%;
+            height: auto;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-50px);
+            box-shadow: var(--bose-shadow-hover, 0 16px 40px rgba(255, 145, 164, 0.22));
+            border-color: var(--bose-pink, #FF91A4);
+        }
+
+        .product-card-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .product-card-img {
+            width: 100%;
+            object-fit: cover;
+            border-radius: 12px;
+            display: block;
+            aspect-ratio: 1 / 1;
+            background-color: #F7F7F7;
+            /* أبعاد الارتفاع الهندسية القياسية الصارمة */
+            height: 220px !important;
+        }
+
+        @media (min-width: 768px) {
+            .product-card-img {
+                height: 260px !important;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .product-card-img {
+                height: 320px !important;
+            }
+        }
+
+        .product-card-title {
+            font-size: 1.15rem;
+            margin: 10px 0 4px 0;
+            font-weight: 700 !important;
+            color: var(--bose-black, #111111);
+        }
+
+        .product-card-flavor-name {
+            color: var(--bose-pink, #FF91A4);
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .product-card-desc {
+            font-size: 0.85rem;
+            color: #4D4D4D;
+            line-height: 1.4;
+            margin: 6px 0;
         }
 
         /* 🚨 التبويبات الفرعية لأصناف الديسباسيتو */
@@ -155,6 +222,84 @@
             box-shadow: 0 4px 12px rgba(255, 145, 164, 0.2);
         }
 
+        /* العداد المطور المرن بتوزيع هندسي يمين (+) وسط (القيمة) يسار (-) */
+        .product-card-qty-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: auto;
+            padding-top: 8px;
+            direction: ltr; /* للحفاظ على الترتيب الهندسي */
+        }
+
+        .bose-internal-qty-btn {
+            width: 36px;
+            height: 36px;
+            border: 1px solid rgba(255, 145, 164, 0.3);
+            background: #FFFFFF;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: var(--bose-black, #111111);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .bose-internal-qty-btn:hover {
+            border-color: var(--bose-pink, #FF91A4);
+            background-color: rgba(255, 145, 164, 0.05);
+        }
+
+        .bose-internal-input {
+            width: 45px;
+            text-align: center;
+            border: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--bose-black, #111111);
+            background: transparent;
+            -moz-appearance: textfield;
+        }
+
+        .bose-internal-input::-webkit-outer-spin-button,
+        .bose-internal-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .product-card-bottom-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+        }
+
+        .product-card-price {
+            color: var(--bose-pink, #FF91A4);
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .bose-internal-add {
+            background: var(--bose-pink, #FF91A4);
+            color: #FFFFFF;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 700;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .bose-internal-add:hover {
+            background-color: #111111;
+        }
+
         /* 🚨 هيكل التحميل الهيكلي الـ Skeleton */
         .skeleton-card-loader {
             background: #FFFFFF;
@@ -165,6 +310,7 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
+            box-sizing: border-box;
         }
 
         .skeleton-pulse-node {
@@ -184,32 +330,21 @@
             padding: 60px 20px;
             color: var(--bose-black, #111111);
         }
+        
         .bose-empty-state-container i {
             font-size: 3rem;
             color: var(--bose-pink, #FF91A4);
             margin-bottom: 20px;
         }
-        
-        /* 🛠️ [إصلاح هندسي لحل مشكلة الصورة المضغوطة بالفوتر] */
-        .bose-footer .footer-logo-container img {
-            height: 60px !important;
-            width: auto !important;
-            max-width: 100% !important;
-            object-fit: contain !important;
-        }
     </style>
 </head>
 <body class="bose-hardware-accelerated bose-arabic-text">
 
-    <!-- 🏢 [الأوسمة النائبة المعتمدة هندسياً في الـ Blueprint لحقن الهيدر ديناميكياً] -->
+    <!-- 🏢 [الأوسمة النائبة المعتمدة هندسياً في الـ Blueprint لحقن الهيدر والفوتر ديناميكياً] -->
     <div id="bose-header-injector"></div>
 
-    <!-- 📥 القائمة الجانبية المشتركة للموبايل -->
-    <div class="drawer-overlay" id="drawer-shield"></div>
-    <aside class="bose-drawer-menu" id="sidebar-drawer"></aside>
-
     <!-- 🧱 منطقة عرض الفئة والمنتجات التابعة لها -->
-    <main class="category-view-wrapper">
+    <main class="category-view-wrapper" id="main-category-content">
         <nav class="bose-category-breadcrumb" aria-label="مسار التنقل">
             <a href="index.html">الرئيسية</a>
             <span>/</span>
@@ -225,9 +360,9 @@
 
         <!-- تبويبات التصفح للأحجام والأبعاد لأصناف الديسباسيتو -->
         <div id="bose-size-filter-row" class="bose-size-tabs-filter" style="display: none;">
-            <button class="bose-filter-tab-pill active" data-filter-size="triangle">مثلث فردي</button>
-            <button class="bose-filter-tab-pill" data-filter-size="medium">وسط تشارك ممتع</button>
-            <button class="bose-filter-tab-pill" data-filter-size="large">كبير جمعات فاخرة</button>
+            <button class="bose-filter-tab-pill active" data-filter-size="triangle" aria-label="عرض مقاس مثلث فردي">مثلث فردي</button>
+            <button class="bose-filter-tab-pill" data-filter-size="medium" aria-label="عرض مقاس وسط تشارك ممتع">وسط تشارك ممتع</button>
+            <button class="bose-filter-tab-pill" data-filter-size="large" aria-label="عرض مقاس كبير جمعات فاخرة">كبير جمعات فاخرة</button>
         </div>
 
         <!-- حاوية الشبكة الهندسية للمنتجات المعزولة -->
@@ -253,13 +388,15 @@
             const sizeFilterRow = document.getElementById('bose-size-filter-row');
             
             let activeSizeTab = "triangle";
+            let globalFilteredProducts = [];
+            let globalStoreCurrency = "EGP";
 
             if (!categoryId) {
                 renderEmptyState("لم يتم تحديد الصنف بشكل صحيح. يرجى العودة للمنيو الرئيسي.");
                 return;
             }
 
-            // الاستماع والربط مع قاعدة البيانات المركزية
+            // الاستماع والربط الآمن مع قاعدة البيانات المركزية
             if (window.BoseStoreData) {
                 initCategoryRendering(window.BoseStoreData);
             } else {
@@ -281,17 +418,18 @@
                 }
 
                 document.title = `${categoryObj.title} الفاخرة | حلويات بوسي`;
-
                 headlineNode.textContent = categoryObj.title;
                 breadcrumbNode.textContent = categoryObj.title;
 
-                const filteredProducts = siteData.products.filter(p => p.category === categoryId);
+                globalFilteredProducts = siteData.products.filter(p => p.category === categoryId);
+                globalStoreCurrency = siteData.store.currency || "EGP";
                 
+                // الترتيب السلوكي الذكي للعميل
                 try {
                     const behaviorData = localStorage.getItem('bose_user_behavior');
                     const behaviorLog = behaviorData ? JSON.parse(behaviorData) : {};
                     
-                    filteredProducts.sort((a, b) => {
+                    globalFilteredProducts.sort((a, b) => {
                         let scoreA = behaviorLog[a.slug] ? behaviorLog[a.slug].score : 0;
                         let scoreB = behaviorLog[b.slug] ? behaviorLog[b.slug].score : 0;
                         
@@ -306,15 +444,14 @@
                     console.warn("⚠️ فشل فرز المنتجات سلوكياً داخل الفئة.");
                 }
                 
-                if (filteredProducts.length > 0) {
-                    descNode.textContent = filteredProducts[0].description || `أفخر أنواع ${categoryObj.title} المصنوعة يدوياً بكل حب وشغف.`;
+                if (globalFilteredProducts.length > 0) {
+                    descNode.textContent = globalFilteredProducts[0].description || `أفخر أنواع ${categoryObj.title} المصنوعة يدوياً بكل حب وشغف.`;
                 } else {
                     renderEmptyState("لا توجد منتجات متوفرة حالياً في هذه الفئة.");
                     return;
                 }
 
-                const currency = siteData.store.currency || "EGP";
-                const firstProduct = filteredProducts[0];
+                const firstProduct = globalFilteredProducts[0];
 
                 if (categoryId === "taswaq-cupcake") {
                     productsGrid.className = "category-products-grid layout-full-card";
@@ -328,119 +465,144 @@
                     }
                 }
 
-                const renderProductsByLayoutConfig = () => {
-                    productsGrid.innerHTML = "";
-                    filteredProducts.forEach(product => {
-                        if (categoryId !== "taswaq-cupcake" && firstProduct && firstProduct.layout === "tabs" && product.prices) {
-                            product.defaultSize = activeSizeTab; 
-                        }
-                        
-                        const calculatedPrice = typeof window.calculateProductFinalPrice === 'function' ? 
-                            window.calculateProductFinalPrice(product, {size: product.defaultSize}) : (product.price || 0);
-                        
-                        // 👑 الهيكل الموحد للكارت بالمسطرة محمي ومحفوظ داخل الـ DOM من غير دوال خارجية مشوهة 👑
-                        const cardHTML = `
-                            <div class="product-card" data-slug="${product.slug}" style="background:#FFFFFF; border:1px solid rgba(255,145,164,0.15); border-radius:20px; padding:16px; display:flex; flex-direction:column; gap:12px; position:relative;">
-                                <a href="product.html?slug=${product.slug}" style="text-decoration:none; color:inherit; display:block;">
-                                    <img class="product-card-img" src="${product.image || product.images[0]}" alt="${product.title}" loading="lazy" style="width:100%; height:220px; object-fit:cover; border-radius:12px;">
-                                    <h3 class="product-card-title" style="font-size:1.15rem; margin:10px 0 4px 0; font-weight:700 !important; color:#111111;">${product.title}</h3>
-                                    <span class="product-card-flavor-name" style="color:var(--bose-pink); font-size:0.9rem; font-weight:600; display:block; margin-bottom:4px;">${product.flavorName || ''}</span>
-                                    <p class="product-card-desc" style="font-size:0.85rem; color:#4D4D4D; line-height:1.4; margin:6px 0;">${product.flavorDesc || ''}</p>
-                                </a>
-                                
-                                <!-- 🛠️ العداد مع عزل كامل لمنع التصادم والاختفاء عند الضغط 🛠️ -->
-                                <div class="product-card-qty-row" style="display:flex; align-items:center; justify-content:center; gap:12px; margin-top:auto; padding-top:8px; direction:ltr;">
-                                    <button class="bose-internal-minus" style="width:34px; height:34px; border:1px solid rgba(255,145,164,0.3); background:#fff; border-radius:50%; font-weight:bold; font-size:1.1rem; cursor:pointer; color:#111111; display:flex; align-items:center; justify-content:center; transition:0.2s;">-</button>
-                                    <input class="bose-internal-input" type="number" value="1" min="1" readonly style="width:45px; text-align:center; border:none; font-weight:700; font-size:1.1rem; color:#111111; background:transparent;">
-                                    <button class="bose-internal-plus" style="width:34px; height:34px; border:1px solid rgba(255,145,164,0.3); background:#fff; border-radius:50%; font-weight:bold; font-size:1.1rem; cursor:pointer; color:#111111; display:flex; align-items:center; justify-content:center; transition:0.2s;">+</button>
-                                </div>
+                // بناء العرض الأولي
+                renderProductsDOM();
 
-                                <div class="product-card-bottom-row" style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
-                                    <div class="product-card-price" style="color:var(--bose-pink); font-weight:700; font-size:1.2rem;">${calculatedPrice} ${currency}</div>
-                                    <button class="bose-internal-add" style="background:var(--bose-pink); color:#FFFFFF; border:none; padding:10px 20px; border-radius:50px; cursor:pointer; font-size:0.85rem; font-weight:700; transition:0.2s;">إضافة للسلة</button>
-                                </div>
-                            </div>
-                        `;
-
-                        const tempDiv = document.createElement('div');
-                        tempDiv.innerHTML = cardHTML;
-                        
-                        // 🔐 [حارس الأحداث الذكي]: ربط مستقل ومباشر بالـ DOM يمنع الفقد أو الاختفاء نهائياً
-                        const minusBtn = tempDiv.querySelector('.bose-internal-minus');
-                        const plusBtn = tempDiv.querySelector('.bose-internal-plus');
-                        const inputField = tempDiv.querySelector('.bose-internal-input');
-                        const addBtn = tempDiv.querySelector('.bose-internal-add');
-
-                        plusBtn.addEventListener('click', function(e) {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            let currentVal = parseInt(inputField.value, 10) || 1;
-                            inputField.value = currentVal + 1;
-                        });
-
-                        minusBtn.addEventListener('click', function(e) {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            let currentVal = parseInt(inputField.value, 10) || 1;
-                            if (currentVal > 1) {
-                                inputField.value = currentVal - 1;
-                            }
-                        });
-
-                        addBtn.addEventListener('click', function(e) {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            const finalQty = parseInt(inputField.value, 10) || 1;
-                            
-                            // تمرير البيانات للمحرك الرئيسي كعملية إرسال مستقلة
-                            if (typeof window.createCartItem === 'function') {
-                                const cartItem = window.createCartItem(product, {size: product.defaultSize}, finalQty);
-                                if (cartItem) {
-                                    let rawCart = localStorage.getItem('bose_cart');
-                                    let cart = rawCart ? JSON.parse(rawCart) : [];
-                                    
-                                    // التحقق من تكرار الصنف لزيادة الكمية
-                                    const existingIndex = cart.findIndex(item => item.productSlug === product.slug && item.type === cartItem.type);
-                                    if (existingIndex > -1) {
-                                        cart[existingIndex].quantity += finalQty;
-                                    } else {
-                                        cart.push(cartItem);
-                                    }
-                                    
-                                    localStorage.setItem('bose_cart', JSON.stringify(cart));
-                                    if (typeof window.updateGlobalCartCounter === 'function') {
-                                        window.updateGlobalCartCounter();
-                                    }
-                                    
-                                    // تأثير تفاعلي راقٍ ومصري يؤكد الإضافة بنعومة
-                                    const originalText = addBtn.textContent;
-                                    addBtn.textContent = "تمت الإضافة للسلة";
-                                    addBtn.style.backgroundColor = "#111111";
-                                    setTimeout(() => {
-                                        addBtn.textContent = originalText;
-                                        addBtn.style.backgroundColor = "var(--bose-pink)";
-                                        inputField.value = 1; // تصفير العداد لراحة العميل النفسية
-                                    }, 1500);
-                                }
-                            }
-                        });
-                        
-                        while (tempDiv.firstChild) {
-                            productsGrid.appendChild(tempDiv.firstChild);
-                        }
-                    });
-                };
-
-                renderProductsByLayoutConfig();
-
+                // ربط التبويبات بكفاءة دون سحق أحداث الـ DOM بشكل عشوائي
                 sizeFilterRow.querySelectorAll('.bose-filter-tab-pill').forEach(pill => {
                     pill.addEventListener('click', function(e) {
                         e.preventDefault();
+                        if (this.classList.contains('active')) return;
+                        
                         sizeFilterRow.querySelectorAll('.bose-filter-tab-pill').forEach(p => p.classList.remove('active'));
                         this.classList.add('active');
                         activeSizeTab = this.getAttribute('data-filter-size');
-                        renderProductsByLayoutConfig();
+                        
+                        // تحديث الأسعار والمحددات ديناميكياً داخل الكروت القائمة لتوفير استهلاك البيانات والمعالجة
+                        updateExistingCardsConfig();
                     });
+                });
+            }
+
+            function renderProductsDOM() {
+                productsGrid.innerHTML = "";
+                
+                globalFilteredProducts.forEach(product => {
+                    const defaultSize = (categoryId !== "taswaq-cupcake" && product.prices) ? activeSizeTab : (product.defaultSize || "triangle");
+                    
+                    const calculatedPrice = typeof window.calculateProductFinalPrice === 'function' ? 
+                        window.calculateProductFinalPrice(product, {size: defaultSize}) : (product.price || 0);
+                    
+                    const cardElement = document.createElement('div');
+                    cardElement.className = 'product-card';
+                    cardElement.setAttribute('data-slug', product.slug);
+                    
+                    // الالتزام التام بالهيكل الموحد للكارت بالمسطرة والروابط الشاملة للأرشفة
+                    cardElement.innerHTML = `
+                        <a href="product.html?slug=${product.slug}" class="product-card-link" aria-label="عرض تفاصيل منتج ${product.title}">
+                            <img class="product-card-img" src="${product.image || (product.images ? product.images[0] : '')}" alt="${product.title}" loading="lazy">
+                            <h3 class="product-card-title">${product.title}</h3>
+                            <span class="product-card-flavor-name">${product.flavorName || ''}</span>
+                            <p class="product-card-desc">${product.flavorDesc || ''}</p>
+                        </a>
+                        
+                        <div class="product-card-qty-row">
+                            <button class="bose-internal-qty-btn bose-internal-plus" type="button" aria-label="زيادة الكمية">+</button>
+                            <input class="bose-internal-input" type="number" value="1" min="1" readonly aria-label="الكمية الحالية">
+                            <button class="bose-internal-qty-btn bose-internal-minus" type="button" aria-label="تقليل الكمية">-</button>
+                        </div>
+
+                        <div class="product-card-bottom-row">
+                            <div class="product-card-price" data-base-unit-price="${calculatedPrice}">${calculatedPrice} ${globalStoreCurrency}</div>
+                            <button class="bose-internal-add" type="button" aria-label="إضافة منتج ${product.title} لسلة المشتريات">إضافة للسلة</button>
+                        </div>
+                    `;
+
+                    // ربط أحداث العداد بشكل مستقل وآمن لراحة العميل النفسية والبدنية
+                    const plusBtn = cardElement.querySelector('.bose-internal-plus');
+                    const minusBtn = cardElement.querySelector('.bose-internal-minus');
+                    const inputField = cardElement.querySelector('.bose-internal-input');
+                    const addBtn = cardElement.querySelector('.bose-internal-add');
+                    const priceDisplay = cardElement.querySelector('.product-card-price');
+
+                    plusBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        let currentVal = parseInt(inputField.value, 10) || 1;
+                        inputField.value = currentVal + 1;
+                        updateCardPriceDisplay(priceDisplay, inputField.value);
+                    });
+
+                    minusBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        let currentVal = parseInt(inputField.value, 10) || 1;
+                        if (currentVal > 1) {
+                            inputField.value = currentVal - 1;
+                            updateCardPriceDisplay(priceDisplay, inputField.value);
+                        }
+                    });
+
+                    addBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const finalQty = parseInt(inputField.value, 10) || 1;
+                        const currentSize = (categoryId !== "taswaq-cupcake" && product.prices) ? activeSizeTab : (product.defaultSize || "triangle");
+                        
+                        if (typeof window.createCartItem === 'function') {
+                            const cartItem = window.createCartItem(product, {size: currentSize}, finalQty);
+                            if (cartItem) {
+                                let rawCart = localStorage.getItem('bose_cart');
+                                let cart = rawCart ? JSON.parse(rawCart) : [];
+                                
+                                const existingIndex = cart.findIndex(item => item.productSlug === product.slug && item.type === cartItem.type && item.customDetails.size === cartItem.customDetails.size);
+                                if (existingIndex > -1) {
+                                    cart[existingIndex].quantity += finalQty;
+                                } else {
+                                    cart.push(cartItem);
+                                }
+                                
+                                localStorage.setItem('bose_cart', JSON.stringify(cart));
+                                if (typeof window.updateGlobalCartCounter === 'function') {
+                                    window.updateGlobalCartCounter();
+                                }
+                                
+                                // تأثير تفاعلي ناعم وراقٍ يؤكد الإضافة
+                                const originalText = addBtn.textContent;
+                                addBtn.textContent = "تمت الإضافة للسلة";
+                                addBtn.style.backgroundColor = "#111111";
+                                setTimeout(() => {
+                                    addBtn.textContent = originalText;
+                                    addBtn.style.backgroundColor = "var(--bose-pink)";
+                                    inputField.value = 1; 
+                                    updateCardPriceDisplay(priceDisplay, 1);
+                                }, 1500);
+                            }
+                        }
+                    });
+
+                    productsGrid.appendChild(cardElement);
+                });
+            }
+
+            function updateCardPriceDisplay(priceDisplayNode, quantity) {
+                const basePrice = parseFloat(priceDisplayNode.getAttribute('data-base-unit-price')) || 0;
+                const totalDisplayPrice = basePrice * (parseInt(quantity, 10) || 1);
+                priceDisplayNode.textContent = `${totalDisplayPrice} ${globalStoreCurrency}`;
+            }
+
+            function updateExistingCardsConfig() {
+                globalFilteredProducts.forEach(product => {
+                    const cardNode = productsGrid.querySelector(`[data-slug="${product.slug}"]`);
+                    if (!cardNode) return;
+
+                    const priceDisplay = cardNode.querySelector('.product-card-price');
+                    const inputField = cardNode.querySelector('.bose-internal-input');
+                    
+                    const currentSize = (categoryId !== "taswaq-cupcake" && product.prices) ? activeSizeTab : (product.defaultSize || "triangle");
+                    
+                    const newUnitPrice = typeof window.calculateProductFinalPrice === 'function' ? 
+                        window.calculateProductFinalPrice(product, {size: currentSize}) : (product.price || 0);
+                    
+                    priceDisplay.setAttribute('data-base-unit-price', newUnitPrice);
+                    updateCardPriceDisplay(priceDisplay, inputField.value);
                 });
             }
 
@@ -450,7 +612,7 @@
                     <div class="bose-empty-state-container">
                         <i class="fa-solid fa-cookie-bite"></i>
                         <h3 style="font-weight: 700 !important; color: var(--bose-black); margin-bottom: 12px;">${message}</h3>
-                        <a href="menu.html" style="display: inline-block; background-color: var(--bose-pink); color: #FFFFFF; padding: 12px 28px; border-radius: 50px; text-decoration: none; font-weight: 700; margin-top:15px; transition:0.3s ease;">تصفح المنيو الشامل</a>
+                        <a href="menu.html" style="display: inline-block; background-color: var(--bose-pink); color: #FFFFFF; padding: 12px 28px; border-radius: 50px; text-decoration: none; font-weight: 700; margin-top:15px; transition: 0.3s ease;">تصفح المنيو الشامل</a>
                     </div>
                 `;
                 headlineNode.textContent = "تنبيه";
