@@ -486,7 +486,7 @@
                 filtered.forEach(p => {
                     let targetUrl = (p.id === 'toort-custom-master' || p.slug === 'toort-custom-master') ? 'cake-builder.html' : 
                                     ((p.id === 'flowers-master' || p.slug === 'flowers-master') ? 'flower-builder.html' : `product.html?slug=${p.slug}`);
-                    html += `
+                    targetUrl += `
                         <a href="${targetUrl}" class="search-result-card-item">
                             <img src="${p.images[0]}" class="search-result-img" />
                             <div class="search-result-info">
@@ -503,8 +503,8 @@
 
     /**
      * 12. محرك تهيئة قسم عقد من الإتقان بالحركة التلقائية اللانهائية الخالصة بالـ CSS
-     * التحسين الرياضي الفاصل: تكرار المصفوفة 4 مرات متتالية لملء شاشات العرض بالكامل
-     * مع التزامن المطلق مع أنميشن السحب الأفقي لإغلاق الثغرة تماماً وضمان العمل بشكل لا نهائي
+     * التحسين الرياضي الفاصل لمنع الفراغات والقطع: تكرار كتل المصفوفة 6 مرات متتالية
+     * ليغطي كامل العرض الافتراضي والحسابي الممتد للـ Track بشكل مثالي قبل إعادة الدورة البصرية
      */
     window.initializeExcellenceSectionSlider = function() {
         const track = document.getElementById('excellence-images-track');
@@ -522,14 +522,13 @@
             `;
         });
         
-        // صمام الأمان الفاصل: حقن كتل متسلسلة رباعية الأبعاد لربط حواف الـ Track
-        // ومنع التوقف أو ظهور الفراغ الأبيض نهائياً على كافة شاشات الهواتف الذكية أولاً
-        track.innerHTML = imagesHtml + imagesHtml + imagesHtml + imagesHtml; 
+        // زراعة الكتل مكررة 6 مرات متتالية لملء شاشات الموبايل والكمبيوتر بشكل لانهائي مطلق
+        track.innerHTML = imagesHtml + imagesHtml + imagesHtml + imagesHtml + imagesHtml + imagesHtml; 
         track.style.display = "flex";
         track.style.width = "max-content";
         
-        // تفعيل الحركة التلقائية المتصلة من اليسار لليمين بدون انقطاع
-        track.style.animation = "bosePerfectionLoop 20s linear infinite";
+        // ربط مباشر مع محرك التزامن السلس بالـ CSS
+        track.style.animation = "bosePerfectionLoop 30s linear infinite";
     };
 
     /**
