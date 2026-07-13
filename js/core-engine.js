@@ -1,6 +1,6 @@
 /**
  * core-engine.js - المحرك المركزي العالمي وحارس البيانات والحسابات المالية
- * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية الشاملة والمطورة V2
+ * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية الشاملة والمطورة V3
  * متوافق بالكامل مع حوكمة المواصفات القياسية الفاخرة والـ DOM المقدس
  */
 
@@ -171,10 +171,8 @@
      * 5. الحسبة الهندسية لمحاكاة أسعار التورتة المخصصة ديناميكياً (رفع سعر الفرد لـ 145 جنيهاً)
      */
     window.calculateCustomCakePrice = function(persons, options = {}) {
-        const config = window.BoseStoreData?.cakeBuilder;
         const safePersons = parseInt(persons, 10) || 10;
         let price = 580; 
-        
         const minPersons = 4;
         const pricePerPerson = 145; 
         
@@ -502,8 +500,10 @@
 
                 let html = '';
                 filtered.forEach(p => {
+                    let targetUrl = (p.id === 'toort-custom-master' || p.slug === 'toort-custom-master') ? 'cake-builder.html' : 
+                                    ((p.id === 'flowers-master' || p.slug === 'flowers-master') ? 'flower-builder.html' : `product.html?slug=${p.slug}`);
                     html += `
-                        <a href="product.html?slug=${p.slug}" class="search-result-card-item">
+                        <a href="${targetUrl}" class="search-result-card-item">
                             <img src="${p.images[0]}" class="search-result-img" />
                             <div class="search-result-info">
                                 <div class="search-result-name">${p.title} - ${p.flavorName}</div>
@@ -621,36 +621,48 @@ document.addEventListener("DOMContentLoaded", () => {
             rightCol.innerHTML = data.homepage.waterfall.rightColumnImages.map(img => `<img src="${img}" alt="شلال بوسي" />`).join('');
         }
 
+        // إدخال وتحديث نصوص وأوصاف الأقسام الملتزمة والفاخرة بالتطابق الكامل مع وثيقة المواصفات القياسية
         if(document.getElementById('hero-description')) document.getElementById('hero-description').textContent = data.homepage.hero.description;
-        if(document.getElementById('excellence-title')) document.getElementById('excellence-title').textContent = data.homepage.excellence.title;
-        if(document.getElementById('excellence-description')) document.getElementById('excellence-description').textContent = data.homepage.excellence.description;
         
-        if(document.getElementById('most-selling-title')) document.getElementById('most-selling-title').textContent = data.homepage.mostSellingTitle || "الأكثر مبيعاً";
-        if(document.getElementById('most-selling-description')) document.getElementById('most-selling-description').textContent = data.homepage.mostSellingDescription || "تشكيلة مختارة بعناية من الأصناف الأكثر طلباً وشهرة.";
+        if(document.getElementById('excellence-title')) document.getElementById('excellence-title').textContent = "عقد من الإتقان";
+        if(document.getElementById('excellence-description')) document.getElementById('excellence-description').textContent = "خلف كل قطعة حكاية شغف وتفاصيل محفورة بالدقة والمهارة الفائقة لتقديم تجربة تذوق ساحرة تأخذكم لعالم من الفخامة والروقان.";
+        
+        if(document.getElementById('most-selling-title')) document.getElementById('most-selling-title').textContent = "الأكثر مبيعاً";
+        if(document.getElementById('most-selling-description')) document.getElementById('most-selling-description').textContent = "تشكيلة مختارة بعناية فائقة تبرز فخامة الاختيارات المعتمدة والأكثر طلباً وشهرة من عملائنا.";
 
-        if(document.getElementById('new-arrivals-title')) document.getElementById('new-arrivals-title').textContent = data.homepage.newArrivalsTitle || "وصل حديثاً";
-        if(document.getElementById('new-arrivals-description')) document.getElementById('new-arrivals-description').textContent = data.homepage.newArrivalsDescription || "نكهات وتوليفات جديدة وحصرية تحمل بصمة الجودة الفاخرة.";
+        if(document.getElementById('new-arrivals-title')) document.getElementById('new-arrivals-title').textContent = "وصل حديثاً";
+        if(document.getElementById('new-arrivals-description')) document.getElementById('new-arrivals-description').textContent = "استكشف توليفاتنا الجديدة والمبتكرة الحصرية التي تحمل بصمة الجودة وعراقة الإتقان.";
 
-        if(document.getElementById('our-products-title')) document.getElementById('our-products-title').textContent = data.homepage.ourProductsTitle || "منتجاتنا الفاخرة";
-        if(document.getElementById('our-products-description')) document.getElementById('our-products-description').textContent = data.homepage.ourProductsDescription || "تم اختيار المكونات بعناية فائقة للحصول على أفضل جودة طازجة.";
+        if(document.getElementById('our-products-title')) document.getElementById('our-products-title').textContent = "منتجاتنا";
+        if(document.getElementById('our-products-description')) document.getElementById('our-products-description').textContent = "تشكيلة غنية ومتنوعة من الحلويات الطازجة يومياً، ركزنا فيها على المكونات الطبيعية 100% لأعلى قيمة وجودة.";
 
-        if(document.getElementById('categories-section-title')) document.getElementById('categories-section-title').textContent = data.homepage.categoriesTitle || "تسوق حسب الفئة";
-        if(document.getElementById('categories-section-subtitle')) document.getElementById('categories-section-subtitle').textContent = data.homepage.categoriesDescription || "انتقل مباشرة وبكل سهولة إلى الصنف المفضل لديك.";
+        if(document.getElementById('categories-section-title')) document.getElementById('categories-section-title').textContent = "تسوق حسب الفئة";
+        if(document.getElementById('categories-section-subtitle')) document.getElementById('categories-section-subtitle').textContent = "انتقل مباشرة وبكل سهولة إلى الصنف المفضل لديك عبر فئاتنا الشاملة.";
 
+        // تحديث كتل عروض المحاكيات البصرية الكبرى للتورت والورد
         if(document.getElementById('cake-preview-img')) document.getElementById('cake-preview-img').src = data.homepage.cakePreview.image;
         if(document.getElementById('cake-preview-title')) document.getElementById('cake-preview-title').textContent = data.homepage.cakePreview.title;
-        if(document.getElementById('cake-preview-desc')) document.getElementById('cake-preview-desc').textContent = data.homepage.cakePreview.description;
+        if(document.getElementById('cake-preview-desc')) document.getElementById('cake-preview-desc').textContent = "تميز حصري يتيح لك تصميم تورتتك الفريدة بنفسك واختيار كافة تفاصيل النكهات والطبقات والرسائل الخاصة حسب الطلب.";
         if(document.getElementById('cake-preview-cta')) document.getElementById('cake-preview-cta').textContent = data.homepage.cakePreview.cta;
 
         if(document.getElementById('flower-preview-img')) document.getElementById('flower-preview-img').src = data.homepage.flowerPreview.image;
         if(document.getElementById('flower-preview-title')) document.getElementById('flower-preview-title').textContent = data.homepage.flowerPreview.title;
-        if(document.getElementById('flower-preview-desc')) document.getElementById('flower-preview-desc').textContent = data.homepage.flowerPreview.description;
+        if(document.getElementById('flower-preview-desc')) document.getElementById('flower-preview-desc').textContent = "خدمة تنسيق البوكيهات الفاخرة من الورد الطبيعي النضر، الصناعي، أو الستان مع دمج الهدايا ومفاجآت الكاش والصور الخاصة.";
         if(document.getElementById('flower-preview-cta')) document.getElementById('flower-preview-cta').textContent = data.homepage.flowerPreview.cta;
 
+        /**
+         * دالة بناء الكارت الموحد الصارم - مع معالجة حتمية لعزل التورت والورد وتوجيههم للمحاكيات
+         */
         function buildProductCardHTML(p) {
+            let isCake = (p.id === 'toort-custom-master' || p.slug === 'toort-custom-master');
+            let isFlower = (p.id === 'flowers-master' || p.slug === 'flowers-master');
+            
+            // تحديد مسار التوجيه الحتمي بناءً على نوع المنتج
+            let actionClickUrl = isCake ? 'cake-builder.html' : (isFlower ? 'flower-builder.html' : `product.html?slug=${p.slug}`);
+            
             return `
                 <div class="product-card-unified">
-                    <img src="${p.images[0]}" class="product-card-img" alt="${p.title}" />
+                    <img src="${p.images[0]}" class="product-card-img" alt="${p.title}" loading="lazy" />
                     <h3 class="product-card-title">${p.title}</h3>
                     <span class="product-card-flavor-name">${p.flavorName}</span>
                     <p class="product-card-desc">${p.flavorDesc}</p>
@@ -660,7 +672,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         <button class="btn-qty-minus" onclick="event.stopPropagation();">-</button>
                     </div>
                     <div class="product-card-price">${Math.round(p.price)} جنيه</div>
-                    <button class="btn-add-to-cart" onclick="location.href='product.html?slug=${p.slug}'">استعرض التفاصيل</button>
+                    <button class="btn-add-to-cart" onclick="location.href='${actionClickUrl}'">استعرض التفاصيل</button>
                 </div>
             `;
         }
@@ -711,7 +723,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (categoriesTrack) {
             categoriesTrack.innerHTML = data.homepage.categoriesSlider.map(cat => `
                 <div class="bose-category-slider-card" onclick="location.href='menu.html'">
-                    <img src="${cat.image}" class="category-img" alt="${cat.title}" />
+                    <img src="${cat.image}" class="category-img" alt="${cat.title}" loading="lazy" />
                     <div class="category-title-display">${cat.title}</div>
                 </div>
             `).join('');
