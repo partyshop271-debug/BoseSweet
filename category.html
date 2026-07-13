@@ -137,7 +137,7 @@
         }
         
         .product-card:hover {
-            transform: translateY(-50px);
+            transform: translateY(-5px);
             box-shadow: var(--bose-shadow-hover, 0 16px 40px rgba(255, 145, 164, 0.22));
             border-color: var(--bose-pink, #FF91A4);
         }
@@ -222,7 +222,7 @@
             box-shadow: 0 4px 12px rgba(255, 145, 164, 0.2);
         }
 
-        /* العداد المطور المرن بتوزيع هندسي يمين (+) وسط (القيمة) يسار (-) */
+        /* العداد المطور المرن بتوزيع هندسي ملتزم: يمين (+) وسط (القيمة) يسار (-) */
         .product-card-qty-row {
             display: flex;
             align-items: center;
@@ -230,7 +230,7 @@
             gap: 12px;
             margin-top: auto;
             padding-top: 8px;
-            direction: ltr; /* للحفاظ على الترتيب الهندسي */
+            direction: rtl; /* تفعيل التناغم العربي الصريح من اليمين لليسار */
         }
 
         .bose-internal-qty-btn {
@@ -340,7 +340,7 @@
 </head>
 <body class="bose-hardware-accelerated bose-arabic-text">
 
-    <!-- 🏢 [الأوسمة النائبة المعتمدة هندسياً في الـ Blueprint لحقن الهيدر والفوتر ديناميكياً] -->
+    <!-- 🏢 [الأوسمة النائبة المعتمدة هندسياً لحقن الهيدر والفوتر ديناميكياً] -->
     <div id="bose-header-injector"></div>
 
     <!-- 🧱 منطقة عرض الفئة والمنتجات التابعة لها -->
@@ -478,7 +478,7 @@
                         this.classList.add('active');
                         activeSizeTab = this.getAttribute('data-filter-size');
                         
-                        // تحديث الأسعار والمحددات ديناميكياً داخل الكروت القائمة لتوفير استهلاك البيانات والمعالجة
+                        // تحديث الأسعار والمحددات ديناميكياً لتوفير استهلاك البيانات والمعالجة
                         updateExistingCardsConfig();
                     });
                 });
@@ -497,7 +497,7 @@
                     cardElement.className = 'product-card';
                     cardElement.setAttribute('data-slug', product.slug);
                     
-                    // الالتزام التام بالهيكل الموحد للكارت بالمسطرة والروابط الشاملة للأرشفة
+                    // 📐 الالتزام بالترتيب الهندسي الصارم: يمين (+) وسط (العدد) يسار (-) بالتوافق مع اتجاه RTL لصفحة المتجر
                     cardElement.innerHTML = `
                         <a href="product.html?slug=${product.slug}" class="product-card-link" aria-label="عرض تفاصيل منتج ${product.title}">
                             <img class="product-card-img" src="${product.image || (product.images ? product.images[0] : '')}" alt="${product.title}" loading="lazy">
@@ -564,7 +564,6 @@
                                     window.updateGlobalCartCounter();
                                 }
                                 
-                                // تأثير تفاعلي ناعم وراقٍ يؤكد الإضافة
                                 const originalText = addBtn.textContent;
                                 addBtn.textContent = "تمت الإضافة للسلة";
                                 addBtn.style.backgroundColor = "#111111";
@@ -615,7 +614,7 @@
                         <a href="menu.html" style="display: inline-block; background-color: var(--bose-pink); color: #FFFFFF; padding: 12px 28px; border-radius: 50px; text-decoration: none; font-weight: 700; margin-top:15px; transition: 0.3s ease;">تصفح المنيو الشامل</a>
                     </div>
                 `;
-                headlineNode.textContent = "تنبيه";
+                headlineNode.textContent = "تنببه";
                 descNode.textContent = "";
                 breadcrumbNode.textContent = "خطأ";
             }
