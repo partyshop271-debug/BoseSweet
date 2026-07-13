@@ -1,5 +1,5 @@
 /* ==========================================================================
-   👑 BoseSweets Strict Production Global Stylesheet (css/global.css) V18.0 👑
+   👑 BoseSweets Strict Production Global Stylesheet (css/global.css) V20.0 👑
    الملف المركزي الموحد المعدل والمطور بالكامل لحل مشاكل السلايدرات والفئات
    امتثال كامل ومغلق لأدلة المواصفات القياسية وحوكمة الأبعاد والتنفس البصري
    ========================================================================== */
@@ -242,7 +242,7 @@ img {
     visibility: hidden !important;
     transition: all 0.35s ease-in-out !important;
     padding: 30px 20px;
-    display: block !important; /* عزل ميكانيكا العرض المكدس */
+    display: block !important;
 }
 
 .bose-search-modal.active {
@@ -576,7 +576,7 @@ img {
 }
 
 #waterfall-right-col {
-    animation-direction: reverse; /* جعل العمود الثاني يتحرك عكس الأول ديناميكياً */
+    animation-direction: reverse;
 }
 
 .waterfall-col img {
@@ -596,7 +596,7 @@ img {
 }
 
 /* ==========================================================================
-   8. قسم "عقد من الإتقان" اللانهائي المطور (إصلاح الفواصل والأبعاد كلياً)
+   8. قسم "عقد من الإتقان" التفاعلي (إصلاح اتجاهات الحركة لمنع التعارض)
    ========================================================================== */
 .bose-perfection-section {
     width: 100%;
@@ -607,30 +607,34 @@ img {
 
 .bose-perfection-carousel-wrapper {
     width: 100% !important;
-    overflow: hidden !important; 
+    overflow-x: auto !important; 
     display: flex !important;
     position: relative !important;
-    padding: 0 !important;
+    padding: 10px 0 !important;
     margin: 0 !important;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+
+.bose-perfection-carousel-wrapper::-webkit-scrollbar {
+    display: none;
 }
 
 #excellence-images-track {
-    display: inline-flex !important; 
+    display: flex !important; 
     flex-direction: row !important;
     flex-wrap: nowrap !important;
-    gap: 0px !important; 
-    padding: 0 !important;
+    gap: 16px !important; 
+    padding: 0 16px !important;
     margin: 0 !important;
-    will-change: transform;
-    animation: bosePerfectionInfiniteLoop 35s linear infinite !important; /* ربط مباشر وصارم بالأنميشن المانع للصمت البصري */
+    width: max-content;
 }
 
 .perfection-slide-node {
-    width: 100vw !important; 
-    height: 400px !important; 
+    width: 85vw !important; 
+    height: 350px !important; 
     flex-shrink: 0 !important;
     display: block !important;
-    padding: 0 10px !important; 
     margin: 0 !important;
 }
 
@@ -645,21 +649,16 @@ img {
 
 @media (min-width: 768px) {
     .perfection-slide-node { 
-        width: 50vw !important; 
-        height: 550px !important;
+        width: 45vw !important; 
+        height: 450px !important;
     }
 }
 
 @media (min-width: 1024px) {
     .perfection-slide-node { 
-        width: 33.333vw !important; 
-        height: 600px !important;
+        width: 350px !important; 
+        height: 500px !important;
     }
-}
-
-@keyframes bosePerfectionInfiniteLoop {
-    0% { transform: translate3d(0, 0, 0); }
-    100% { transform: translate3d(-50%, 0, 0); }
 }
 
 /* ==========================================================================
@@ -713,12 +712,15 @@ img {
 }
 
 @media (max-width: 1023px) {
-    .products-grid, .bose-products-grid { grid-template-columns: repeat(3, 1fr) !important; }
+    .products-grid, .bose-products-grid { grid-template-columns: repeat(2, 1fr) !important; }
 }
 
-/* التطبيق الهندسي الفاخر لإصلاح الأخطاء وعرض السلايدرات مالي الشاشة وتحقيق السحب */
+@media (max-width: 500px) {
+    .products-grid, .bose-products-grid { grid-template-columns: 1fr !important; }
+}
+
+/* التطبيق الهندسي الفاخر لعرض السلايدرات مالي الشاشة وتحقيق السحب اللمسي المريح للعميل */
 @media (max-width: 767px) {
-    /* قفل قسم منتجاتنا: كارتين كاملين جنب بعض وحظر بقايا الأصناف والمقاطع ونصف */
     #our-products-grid.products-grid {
         display: grid !important;
         grid-template-columns: repeat(2, 1fr) !important; 
@@ -727,7 +729,6 @@ img {
         padding: 0 !important;
     }
 
-    /* حوكمة وتأمين تحويل الأكثر مبيعا ووصل حديثا لسلايدر كارت واحد كبير مالي الشاشة */
     #most-selling-section .products-grid,
     #new-arrivals-section .products-grid {
         display: flex !important;
@@ -747,7 +748,7 @@ img {
     
     #most-selling-section .products-grid .product-card-unified,
     #new-arrivals-section .products-grid .product-card-unified {
-        width: 85vw !important; /* عرض مخصص فخم مالي الشاشة ومريح تماما لتصفح الموبايل */
+        width: 85vw !important; 
         flex-shrink: 0 !important; 
         scroll-snap-align: center !important; 
     }
@@ -787,7 +788,6 @@ img {
 }
 @media (min-width: 1024px) { 
     .product-card-img { height: 320px; }
-    /* توحيد مقاسات كروت السلايدرات على شاشات الكمبيوتر الكبيرة */
     #most-selling-section .products-grid .product-card-unified,
     #new-arrivals-section .products-grid .product-card-unified {
         width: 380px !important;
@@ -826,7 +826,7 @@ img {
     gap: 12px;
     margin-top: auto;
     margin-bottom: 12px;
-    direction: ltr; /* الترتيب الهندسي للعداد: + يمين ، عدد وسط ، - يسار */
+    direction: ltr;
 }
 
 .btn-qty-plus, .btn-qty-minus {
@@ -990,17 +990,16 @@ img {
     padding: 15px 0;
 }
 
-/* مجرى السحب والتصفح الجانبي اليدوي لـ 12 فئة - محظور التلقائية صراحة منعا للتشويه البصري */
+/* مجرى السحب والتصفح الجانبي اليدوي لـ 12 فئة - منع التكدس الرأسي نهائياً */
 .categories-track-scrollable {
     display: flex !important;
     overflow-x: auto !important;
     scroll-behavior: smooth !important;
     scroll-snap-type: x mandatory !important;
     gap: 16px !important;
-    padding: 10px 4px !important;
+    padding: 10px 16px !important;
     width: 100% !important;
     -webkit-overflow-scrolling: touch;
-    animation: none !important; /* قفل وإلغاء أي حركة تلقائية عشوائية نهائياً */
 }
 .categories-track-scrollable::-webkit-scrollbar { 
     display: none !important; 
@@ -1021,6 +1020,7 @@ img {
     scroll-snap-align: center !important;
     width: 280px !important;
     height: 360px !important;
+    cursor: pointer;
 }
 
 .bose-category-slider-card .category-img {
@@ -1035,10 +1035,13 @@ img {
     padding-bottom: 15px;
     text-align: center;
     font-size: 20px !important; 
-    font-weight: 700 !important; /* مقفول عند وزن 700 كحد أقصى لمنع التشويه البصري */
+    font-weight: 700 !important;
 }
 
 @media (min-width: 768px) {
+    .bose-categories-slider-section .categories-track-scrollable {
+        display: flex !important;
+    }
     .bose-category-slider-card {
         width: 340px !important;
         height: 430px !important;
@@ -1053,32 +1056,6 @@ img {
     }
     .bose-category-slider-card .category-img { height: 420px !important; }
 }
-
-/* أزرار الأسهم التفاعلية الفعالة لقسم الفئات المكون من 12 كارت */
-.bose-slider-arrow-btn {
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    background-color: var(--bose-white);
-    border: var(--bose-border-pink);
-    box-shadow: var(--bose-shadow-glow);
-    color: var(--bose-black);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 15;
-    transition: all 0.3s ease;
-}
-.bose-slider-arrow-btn:hover {
-    background-color: var(--bose-pink);
-    color: #FFFFFF;
-}
-.bose-slider-arrow-btn.prev-arrow { right: 8px; }
-.bose-slider-arrow-btn.next-arrow { left: 8px; }
 
 /* ==========================================================================
    12. هندسة قسم الفخر والاعتزاز (Pride Section العدادات التصاعدية)
@@ -1422,15 +1399,8 @@ img {
 }
 
 /* ==========================================================================
-   15. التنبيهات المركزية والـ Dots الموحدة الفعالة للحركة مع اللمس والسحب
+   15. الـ Dots الموحدة الفعالة للحركة مع اللمس والسحب
    ========================================================================== */
-.bose-toast-container { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 60000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
-.bose-toast-node { background: var(--bose-black); color: var(--bose-white); padding: 12px 24px; border-radius: 12px; font-size: 0.95rem; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,0.2); direction: rtl; text-align: center; pointer-events: auto; animation: boseToastIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-
-@keyframes boseToastIn { 0% { transform: translateY(20px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
-.global-error-banner-node { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background-color: var(--bose-pink); color: var(--bose-white); padding: 12px 24px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 99999; direction: rtl; font-size: 14px; font-weight: 600; text-align: center; }
-
-/* الـ Dots الحاكمة والموحدة للسلايدرات لمنع الأشكال العشوائية المكدسة والاستجابة اللحظية للعميل */
 .bose-dots-container {
     display: flex !important;
     justify-content: center !important;
@@ -1452,19 +1422,6 @@ img {
 
 .bose-dot-node.active {
     background-color: var(--bose-pink) !important;
-    width: 24px !important; /* تمدد أنيق للنقطة النشطة والفعالة */
+    width: 24px !important; 
     border-radius: 5px !important;
-}
-
-@keyframes boseGlobalMarquee {
-    0% { transform: translate3d(0, 0, 0); }
-    100% { transform: translate3d(-50%, 0, 0); }
-}
-
-.animate-marquee {
-    display: flex !important;
-    width: max-content !important;
-    animation: boseGlobalMarquee 25s linear infinite !important;
-    will-change: transform;
-    white-space: nowrap !important;
 }
