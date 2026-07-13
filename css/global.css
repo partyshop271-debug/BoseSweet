@@ -1,6 +1,6 @@
 /* ==========================================================================
-   👑 BoseSweets Strict Production Global Stylesheet (css/global.css) V17.0 👑
-   الملف المركزي الموحد المحدث والمطور كلياً لحل مشاكل الواجهة الرئيسية 
+   👑 BoseSweets Strict Production Global Stylesheet (css/global.css) V18.0 👑
+   الملف المركزي الموحد المعدل والمطور بالكامل لحل مشاكل السلايدرات والفئات
    امتثال كامل ومغلق لأدلة المواصفات القياسية وحوكمة الأبعاد والتنفس البصري
    ========================================================================== */
 
@@ -704,7 +704,7 @@ img {
     margin-top: 5px;
 }
 
-/* حوكمة أبعاد شبكة الأصناف الموحدة */
+/* حوكمة شبكة الأصناف الموحدة للاعتيادي والدسكتوب */
 .products-grid, .bose-products-grid {
     display: grid !important;
     grid-template-columns: repeat(4, 1fr) !important;
@@ -716,7 +716,7 @@ img {
     .products-grid, .bose-products-grid { grid-template-columns: repeat(3, 1fr) !important; }
 }
 
-/* التطبيق الصارم لأبعاد السلايدرات الجانبية وقواعد الكروت ثنائية التوازن */
+/* التطبيق الهندسي الفاخر لإصلاح الأخطاء وعرض السلايدرات مالي الشاشة وتحقيق السحب */
 @media (max-width: 767px) {
     /* قفل قسم منتجاتنا: كارتين كاملين جنب بعض وحظر بقايا الأصناف والمقاطع ونصف */
     #our-products-grid.products-grid {
@@ -727,8 +727,9 @@ img {
         padding: 0 !important;
     }
 
-    /* حوكمة وتأمين السحب الجانبي اللمسي لقسم الأكثر مبيعا ووصل حديثا */
-    .bose-interactive-slider-track {
+    /* حوكمة وتأمين تحويل الأكثر مبيعا ووصل حديثا لسلايدر كارت واحد كبير مالي الشاشة */
+    #most-selling-section .products-grid,
+    #new-arrivals-section .products-grid {
         display: flex !important;
         overflow-x: auto !important;
         scroll-behavior: smooth !important;
@@ -738,12 +739,15 @@ img {
         width: 100% !important;
         -webkit-overflow-scrolling: touch;
     }
-    .bose-interactive-slider-track::-webkit-scrollbar {
-        display: none;
+    
+    #most-selling-section .products-grid::-webkit-scrollbar,
+    #new-arrivals-section .products-grid::-webkit-scrollbar {
+        display: none !important;
     }
     
-    .bose-interactive-slider-track .product-card-unified {
-        width: 85vw !important; /* عرض مخصص مالي الشاشة ومريح تماما لعلامات الموبايل */
+    #most-selling-section .products-grid .product-card-unified,
+    #new-arrivals-section .products-grid .product-card-unified {
+        width: 85vw !important; /* عرض مخصص فخم مالي الشاشة ومريح تماما لتصفح الموبايل */
         flex-shrink: 0 !important; 
         scroll-snap-align: center !important; 
     }
@@ -783,11 +787,13 @@ img {
 }
 @media (min-width: 1024px) { 
     .product-card-img { height: 320px; }
-    /* Unifying slide views on desktop widths */
-    .bose-interactive-slider-track .product-card-unified {
+    /* توحيد مقاسات كروت السلايدرات على شاشات الكمبيوتر الكبيرة */
+    #most-selling-section .products-grid .product-card-unified,
+    #new-arrivals-section .products-grid .product-card-unified {
         width: 380px !important;
     }
-    .bose-interactive-slider-track {
+    #most-selling-section .products-grid,
+    #new-arrivals-section .products-grid {
         display: flex !important;
         overflow-x: auto !important;
         scroll-behavior: smooth !important;
@@ -820,7 +826,7 @@ img {
     gap: 12px;
     margin-top: auto;
     margin-bottom: 12px;
-    direction: ltr;
+    direction: ltr; /* الترتيب الهندسي للعداد: + يمين ، عدد وسط ، - يسار */
 }
 
 .btn-qty-plus, .btn-qty-minus {
@@ -968,7 +974,7 @@ img {
 }
 
 /* ==========================================================================
-   11. حوكمة وأبعاد كروت الفئات الـ 12 المحدثة (Categories Slider UI)
+   11. حوكمة وأبعاد كروت الفئات الـ 12 وثباتها (Categories Slider UI)
    ========================================================================== */
 .bose-categories-slider-section {
     width: 100%;
@@ -984,7 +990,7 @@ img {
     padding: 15px 0;
 }
 
-/* مجرى التصفح اليدوي لـ 12 فئة الحاكمة والمانع للحركة التلقائية نهائياً */
+/* مجرى السحب والتصفح الجانبي اليدوي لـ 12 فئة - محظور التلقائية صراحة منعا للتشويه البصري */
 .categories-track-scrollable {
     display: flex !important;
     overflow-x: auto !important;
@@ -994,11 +1000,13 @@ img {
     padding: 10px 4px !important;
     width: 100% !important;
     -webkit-overflow-scrolling: touch;
+    animation: none !important; /* قفل وإلغاء أي حركة تلقائية عشوائية نهائياً */
 }
 .categories-track-scrollable::-webkit-scrollbar { 
-    display: none; 
+    display: none !important; 
 }
 
+/* كارت تسوق حسب الفئة - أكبر بنسبة 30% لإبراز وزن الأقسام الرئيسية */
 .bose-category-slider-card {
     background-color: var(--bose-white) !important;
     border: var(--bose-border-pink) !important;
@@ -1027,7 +1035,7 @@ img {
     padding-bottom: 15px;
     text-align: center;
     font-size: 20px !important; 
-    font-weight: 700 !important;
+    font-weight: 700 !important; /* مقفول عند وزن 700 كحد أقصى لمنع التشويه البصري */
 }
 
 @media (min-width: 768px) {
@@ -1046,7 +1054,7 @@ img {
     .bose-category-slider-card .category-img { height: 420px !important; }
 }
 
-/* أزرار الأسهم التفاعلية لقسم الفئات */
+/* أزرار الأسهم التفاعلية الفعالة لقسم الفئات المكون من 12 كارت */
 .bose-slider-arrow-btn {
     width: 42px;
     height: 42px;
@@ -1414,7 +1422,7 @@ img {
 }
 
 /* ==========================================================================
-   15. التنبيهات المركزية وأنيميشن التدوير العالمي الحاكم الموحد
+   15. التنبيهات المركزية والـ Dots الموحدة الفعالة للحركة مع اللمس والسحب
    ========================================================================== */
 .bose-toast-container { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 60000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
 .bose-toast-node { background: var(--bose-black); color: var(--bose-white); padding: 12px 24px; border-radius: 12px; font-size: 0.95rem; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,0.2); direction: rtl; text-align: center; pointer-events: auto; animation: boseToastIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
@@ -1422,7 +1430,7 @@ img {
 @keyframes boseToastIn { 0% { transform: translateY(20px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
 .global-error-banner-node { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background-color: var(--bose-pink); color: var(--bose-white); padding: 12px 24px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 99999; direction: rtl; font-size: 14px; font-weight: 600; text-align: center; }
 
-/* الـ Dots الحاكمة والموحدة للسلايدرات لمنع الأشكال العشوائية المكدسة */
+/* الـ Dots الحاكمة والموحدة للسلايدرات لمنع الأشكال العشوائية المكدسة والاستجابة اللحظية للعميل */
 .bose-dots-container {
     display: flex !important;
     justify-content: center !important;
@@ -1430,6 +1438,7 @@ img {
     gap: 8px !important;
     margin-top: 20px !important;
     width: 100% !important;
+    user-select: none;
 }
 
 .bose-dot-node {
@@ -1438,12 +1447,12 @@ img {
     border-radius: 50% !important;
     background-color: rgba(255, 145, 164, 0.3) !important;
     cursor: pointer !important;
-    transition: all 0.3s ease !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 .bose-dot-node.active {
     background-color: var(--bose-pink) !important;
-    width: 24px !important; /* تمدد أنيق للنقطة النشطة */
+    width: 24px !important; /* تمدد أنيق للنقطة النشطة والفعالة */
     border-radius: 5px !important;
 }
 
