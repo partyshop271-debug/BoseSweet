@@ -1,5 +1,5 @@
 /* ==========================================================================
-   👑 BoseSweets Strict Production Global Stylesheet (css/global.css) V20.0 👑
+   👑 BoseSweets Strict Production Global Stylesheet (css/global.css) V21.0 👑
    الملف المركزي الموحد المعدل والمطور بالكامل لحل مشاكل السلايدرات والفئات
    امتثال كامل ومغلق لأدلة المواصفات القياسية وحوكمة الأبعاد والتنفس البصري
    ========================================================================== */
@@ -596,69 +596,66 @@ img {
 }
 
 /* ==========================================================================
-   8. قسم "عقد من الإتقان" التفاعلي (إصلاح اتجاهات الحركة لمنع التعارض)
+   8. الهندسة الفاخرة لقسم "عقد من الإتقان" التفاعلي اللانهائي (#excellence-section)
+   الحل الجذري: دمج الصور كلياً بدون فواصل نهائياً كأنها لوحة واحدة ممتدة ملء الشاشة
    ========================================================================== */
 .bose-perfection-section {
     width: 100%;
-    padding: 40px 0 20px 0;
+    padding: 40px 0 0 0;
     background-color: var(--bose-white);
     overflow: hidden;
 }
 
 .bose-perfection-carousel-wrapper {
-    width: 100% !important;
-    overflow-x: auto !important; 
+    width: 100vw !important;
+    overflow: hidden !important; 
     display: flex !important;
     position: relative !important;
-    padding: 10px 0 !important;
-    margin: 0 !important;
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-}
-
-.bose-perfection-carousel-wrapper::-webkit-scrollbar {
-    display: none;
+    padding: 0 !important;
+    margin: 20px 0 0 0 !important;
 }
 
 #excellence-images-track {
     display: flex !important; 
     flex-direction: row !important;
     flex-wrap: nowrap !important;
-    gap: 16px !important; 
-    padding: 0 16px !important;
+    gap: 0 !important;              /* تصفير الفواصل البصرية نهائياً لدمج الصور[span_4](start_span)[span_4](end_span) */
+    padding: 0 !important;
     margin: 0 !important;
-    width: max-content;
+    width: max-content !important;
+    will-change: transform;
+    animation: boseCategoriesLoop 25s linear infinite !important; /* تشغيل الأنميشن اللانهائي دون أدنى اختفاء بصرى[span_5](start_span)[span_5](end_span) */
 }
 
 .perfection-slide-node {
-    width: 85vw !important; 
-    height: 350px !important; 
+    width: 100vw !important;        /* الصورة كبيرة وتملأ عرض الشاشة بالكامل[span_6](start_span)[span_6](end_span) */
+    height: 60vh !important;        /* أبعاد فخمة ومتناسقة ملوكية الطابع */
     flex-shrink: 0 !important;
     display: block !important;
     margin: 0 !important;
+    padding: 0 !important;
 }
 
 .perfection-slide-node img {
     width: 100% !important;
     height: 100% !important; 
-    border-radius: 20px !important; 
-    border: var(--bose-border-pink) !important; 
+    border-radius: 0 !important;    /* إزالة الحواف الدائرية لمنع تكسير اتصال اللوحة البصرية[span_7](start_span)[span_7](end_span) */
+    border: none !important;        /* إزالة الحدود لخلق امتداد بصرى متلاحم ومستمر[span_8](start_span)[span_8](end_span) */
     object-fit: cover !important;
     display: block !important;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
     .perfection-slide-node { 
-        width: 45vw !important; 
-        height: 450px !important;
+        width: 50vw !important;     /* توزيع متوازن فخم للشاشات الكبيرة */
+        height: 75vh !important;
     }
 }
 
-@media (min-width: 1024px) {
-    .perfection-slide-node { 
-        width: 350px !important; 
-        height: 500px !important;
-    }
+/* الأنميشن المركزي الحاكم لحركة الصور اللانهائية دون حدوث أي وميض أو مساحات بيضاء فارغة[span_9](start_span)[span_9](end_span)[span_10](start_span)[span_10](end_span) */
+@keyframes boseCategoriesLoop {
+    0% { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(-33.3333%, 0, 0); } /* إزاحة دقيقة متوافقة مع تكرار عناصر اللوحة الثلاثية */
 }
 
 /* ==========================================================================
