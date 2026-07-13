@@ -115,7 +115,6 @@
             line-height: 1.6;
         }
 
-        /* تنسيق أزرار اختيار مسار الاستلام التفاعلية الفاخرة */
         .fulfillment-methods-flex {
             display: flex;
             gap: 16px;
@@ -150,7 +149,6 @@
             color: var(--bose-pink, #FF91A4);
         }
 
-        /* مراجعة الفاتورة الجانبية الثابتة المستقرة */
         .invoice-sticky-preview {
             position: sticky;
             top: 100px;
@@ -209,7 +207,6 @@
             box-shadow: 0 6px 20px rgba(17, 17, 17, 0.15);
         }
 
-        /* 🛠️ [إصلاح هندسي حاسم لحظر عصر لوجو الفوتر نهائياً في هذا الملف] 🛠️ */
         .footer-logo-container img, 
         .bose-footer #bose-store-logo {
             height: 60px !important;
@@ -227,7 +224,8 @@
 </head>
 <body class="bose-hardware-accelerated Pw-checkout-view">
 
-    <!-- 🏢 مكون الهيدر الموحد والثابت (Shared Universal Header) المتوافق بالمليم مع خريطة الـ DOM 🏢 -->
+    <!-- 🏢 الأوسمة النائبة لاستقبال الهيدر والفوتر من ملف الحقن والمحرك العام الموحد لفك الشلل 🏢 -->
+    <div id="bose-header-injector"></div>
     <header class="bose-navbar"></header>
     <div id="sidebar-drawer" class="bose-drawer-menu"></div>
     <div id="drawer-shield" class="drawer-overlay"></div>
@@ -267,7 +265,7 @@
 
                     <!-- قسم تحديد طريقة ومسار الاستلام التفاعلي لبراند حلويات بوسي -->
                     <div class="input-group-node">
-                        <label>كيف ترغب في استلام الطلب? <span class="required-indicator">*</span></label>
+                        <label>كيف ترغب في استلام الطلب؟ <span class="required-indicator">*</span></label>
                         <div class="fulfillment-methods-flex">
                             <button type="button" id="method-delivery" class="btn-fulfillment-node active">
                                 <i class="fas fa-shipping-fast"></i> أرغب في التوصيل للمنزل
@@ -282,7 +280,7 @@
                     <div id="shipping-zone-wrapper" class="input-group-node">
                         <label for="checkout-zone-select">المنطقة السكنية للتوصيل <span class="required-indicator">*</span></label>
                         <select id="checkout-zone-select" class="bose-field-capture" style="appearance: none; -webkit-appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'24\' height=\'24\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%23FF91A4\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'><polyline points=\'6 9 12 15 18 9\'></polyline></svg>'); background-repeat: no-repeat; background-position: left 16px center; background-size: 16px; padding-left: 40px;" required>
-                            <!-- يتم جلب وحقن فئات مناطق الشحن الـ 10 ديناميكياً وحياً من مصفوفة shippingZones بالـ JSON عبر محرك السلة الخارجي -->
+                            <option value="" disabled selected>اختر المنطقة السكنية للتوصيل</option>
                         </select>
                     </div>
 
@@ -367,13 +365,14 @@
         </div>
     </main>
 
-    <!-- 🏪 مكون الفوتر الموحد والثابت الفاتح الصريح (Shared Universal Footer) 🏪 -->
+    <!-- 🏪 الوسم النائب لاستقبال الفوتر الموحد والثابت الفاتح الصريح 🏪 -->
+    <div id="bose-footer-injector"></div>
     <footer class="bose-footer"></footer>
 
     <!-- ⚡ استدعاء محرك السلة وإتمام عمليات الحساب والدفع والربط اللوجستي المركزي (js/cart-engine.js) ⚡ -->
     <script src="js/cart-engine.js"></script>
 
-    <!-- 🔮 سكريبت التزامن الدفاعي المحلي لربط وحقن الواجهات وضمان فك شلل حقول الصفحة 🔮 -->
+    <!-- 🔮 سكريبت التزامن الدفاعي المحلي لربط وحقن الواجهات وضمان فك شلل حقول الصفحة دون تعارض خارجي 🔮 -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const compactHook = document.getElementById("bose-checkout-compact-items-hook");
@@ -387,74 +386,48 @@
             const datePicker = document.getElementById("checkout-delivery-date");
             const zoneSelect = document.getElementById("checkout-zone-select");
 
-            // 1. حقن رندرة الأصناف داخل الإيصال الصغير لضمان فخامة المظهر قبل لقط المحرك
+            let currentCheckoutMethod = 'delivery';
+
+            // 1. قراءة كائنات السلة ورندرتها في الإيصال الجانبي الفاخر لراحة العميل البصرية
             const rawCart = localStorage.getItem("bose_cart");
             const cartArr = rawCart ? JSON.parse(rawCart) : [];
 
             if (cartArr.length > 0 && compactHook) {
                 compactHook.innerHTML = cartArr.map(item => `
                     <div class="invoice-item-compact-node">
-                        <span><strong>${window.escapeHTML ? window.escapeHTML(item.title) : item.title}</strong> <span style="opacity:0.6;">(×${item.quantity})</span><span style="display:block; font-size:0.75rem; color:var(--bose-pink); font-weight:700;">${item.flavorName || 'كلاسيك'}</span></span>
-                        <span style="font-weight:700; color:var(--bose-pink);">${item.finalPrice * item.quantity} EGP</span>
+                        <span><strong>${item.title}</strong> <span style="opacity:0.6;">(×${item.quantity})</span><span style="display:block; font-size:0.75rem; color:var(--bose-pink); font-weight:700;">${item.flavorName || 'كلاسيك'}</span></span>
+                        <span style="font-weight:700; color:var(--bose-pink);">${parseFloat((item.finalPrice * item.quantity).toFixed(4))} EGP</span>
                     </div>
                 `).join("");
             }
 
-            // [🔐 هندسة فك شلل القائمة المنسدلة]: تهيئة الحقل ديناميكياً فوراً لضمان عدم حدوث سباق بيانات مع الملف الخارجي
-            function populateZonesDropdown(zones) {
-                if (zoneSelect && zones && zones.length > 0 && !zoneSelect.dataset.populated) {
-                    zoneSelect.innerHTML = '<option value="" disabled selected>اختر المنطقة السكنية للتوصيل</option>';
-                    zones.forEach(zone => {
-                        const opt = document.createElement('option');
-                        opt.value = zone.id;
-                        opt.textContent = `${zone.area} (+${zone.price} EGP)`;
-                        zoneSelect.appendChild(opt);
-                    });
-                    zoneSelect.dataset.populated = "true";
-                }
-            }
-
-            // 2. المزامنة والربط اللحظي مع قاعدة بيانات متجر حلويات بوسي
-            window.getBoseDatabase().then(siteData => {
-                if (siteData && siteData.shippingZones) {
-                    populateZonesLive(siteData.shippingZones);
-                }
-                syncFulfillmentConfig(siteData);
-            }).catch(() => {
+            // 2. صمام أمان التميد المزدوج: الفحص الفوري المباشر لمنع تعليق أو وميض الصفحة
+            if (window.BoseStoreData && window.BoseStoreData.shippingZones) {
+                initializeLocalConfig(window.BoseStoreData);
+            } else {
                 document.addEventListener("BoseDatabaseLoaded", (e) => {
-                    if (e.detail && e.detail.shippingZones) {
-                        populateZonesLive(e.detail.shippingZones);
+                    if (e.detail) {
+                        initializeLocalConfig(e.detail);
                     }
-                    syncFulfillmentConfig(e.detail);
                 });
-            });
-
-            function populateZonesLive(zones) {
-                if (zoneSelect && zones && !zoneSelect.dataset.populated) {
-                    zoneSelect.innerHTML = '<option value="" disabled selected>اختر المنطقة السكنية للتوصيل</option>';
-                    zones.forEach(zone => {
-                        const opt = document.createElement('option');
-                        opt.value = zone.id;
-                        opt.textContent = `${zone.area} (+${zone.price} EGP)`;
-                        zoneSelect.appendChild(opt);
-                    });
-                    zoneSelect.dataset.populated = "true";
-                    zoneSelect.addEventListener('change', () => {
-                        if (typeof recalculateCheckoutTotals === "function") {
-                            recalculateCheckoutTotals('delivery');
-                        }
-                    });
-                }
             }
 
-            function syncFulfillmentConfig(siteData) {
+            function initializeLocalConfig(siteData) {
                 if (!siteData) return;
 
-                if (siteData.shippingZones && zoneSelect) {
-                    populateZonesDropdown(siteData.shippingZones);
+                // التعبئة الفورية والذكية للمناطق لمنع سباق البيانات وثغرات الاختيار الجغرافي
+                if (siteData.shippingZones && zoneSelect && !zoneSelect.dataset.populated) {
+                    zoneSelect.innerHTML = '<option value="" disabled selected>اختر المنطقة السكنية للتوصيل</option>';
+                    siteData.shippingZones.forEach(zone => {
+                        const opt = document.createElement('option');
+                        opt.value = zone.id;
+                        opt.textContent = `${zone.area} (+${zone.price} EGP)`;
+                        zoneSelect.appendChild(opt);
+                    });
+                    zoneSelect.dataset.populated = "true";
                 }
 
-                // شحن نص رسالة حارس الوقت اللوجستي لتعريف العميل برحلة الإتقان الصادقة
+                // سحب نص حارس الوقت لتعريف العميل برحلة الإتقان الصادقة للبراند
                 const prepMsgNode = document.getElementById("checkout-preparation-message");
                 if (prepMsgNode) {
                     prepMsgNode.textContent = siteData.orderRules?.preparationTimeMessage || "نحتاج إلى وقت كافٍ لتجهيز طلبك بأفضل جودة ممكنة، لذلك لا يمكن اختيار موعد قبل 24 ساعة من وقت تأكيد الطلب.";
@@ -462,8 +435,10 @@
 
                 // سحب وتأمين بيانات استلام الفرع وعنوان الخريطة التفاعلية الفعلي
                 if (siteData.store && siteData.store.pickup) {
-                    document.getElementById("bose-pickup-address-text").textContent = siteData.store.pickup.address;
-                    document.getElementById("bose-pickup-map-link").href = siteData.store.pickup.mapUrl;
+                    const addrText = document.getElementById("bose-pickup-address-text");
+                    const mapLink = document.getElementById("bose-pickup-map-link");
+                    if (addrText) addrText.textContent = siteData.store.pickup.address;
+                    if (mapLink) mapLink.href = siteData.store.pickup.mapUrl;
                 }
 
                 // ضبط حامي التاريخ ليكون بكرة كأول موعد متاح (إجبار مرور 24 ساعة تحضير برمجياً)
@@ -473,26 +448,18 @@
                 const mm = String(minDateObj.getMonth() + 1).padStart(2, '0');
                 const yyyy = minDateObj.getFullYear();
                 if (datePicker) datePicker.min = `${yyyy}-${mm}-${dd}`;
-            }
 
-            function populateZonesDropdown(zones) {
-                if (zoneSelect && zones && !zoneSelect.dataset.populated) {
-                    zoneSelect.innerHTML = '<option value="" disabled selected>اختر المنطقة السكنية للتوصيل</option>';
-                    zones.forEach(zone => {
-                        const opt = document.createElement('option');
-                        opt.value = zone.id;
-                        opt.textContent = `${zone.area} (+${zone.price} EGP)`;
-                        zoneSelect.appendChild(opt);
-                    });
-                    zoneSelect.dataset.populated = "true";
-                }
+                // الحسبة المبدئية عند التحميل
+                triggerTotalsRecalculation();
             }
 
             // 3. عزل وإدارة كبسات التبديل التفاعلي لخيارات الشحن والاستلام لراحة العميل
             if (methodDeliveryBtn && methodPickupBtn) {
                 methodDeliveryBtn.addEventListener("click", (e) => {
                     e.preventDefault();
-                    checkoutMethod = 'delivery'; // مزامنة المتغير الداخلي الحاكم لمحرك كود cart-engine.js
+                    currentCheckoutMethod = 'delivery';
+                    if (typeof window.checkoutMethod !== 'undefined') window.checkoutMethod = 'delivery';
+                    
                     methodDeliveryBtn.classList.add("active");
                     methodPickupBtn.classList.remove("active");
                     if (shippingWrapper) shippingWrapper.style.display = "flex";
@@ -502,12 +469,14 @@
                         addressInput.placeholder = "شارع... منزل... علامة مميزة...";
                         addressInput.required = true;
                     }
-                    if (typeof recalculateCheckoutTotals === "function") recalculateCheckoutTotals('delivery');
+                    triggerTotalsRecalculation();
                 });
 
                 methodPickupBtn.addEventListener("click", (e) => {
                     e.preventDefault();
-                    checkoutMethod = 'pickup'; // تحويل المتغير الحاكم برمجياً للاستلام من الفرع لتصفير الشحن تلقائياً
+                    currentCheckoutMethod = 'pickup';
+                    if (typeof window.checkoutMethod !== 'undefined') window.checkoutMethod = 'pickup';
+                    
                     methodPickupBtn.classList.add("active");
                     methodDeliveryBtn.classList.remove("active");
                     if (shippingWrapper) shippingWrapper.style.display = "none";
@@ -518,8 +487,22 @@
                         addressInput.required = false;
                     }
                     if (zoneSelect) zoneSelect.value = "";
-                    if (typeof recalculateCheckoutTotals === "function") recalculateCheckoutTotals('pickup');
+                    triggerTotalsRecalculation();
                 });
+            }
+
+            if (zoneSelect) {
+                zoneSelect.addEventListener('change', () => {
+                    triggerTotalsRecalculation();
+                });
+            }
+
+            function triggerTotalsRecalculation() {
+                if (typeof window.recalculateCheckoutTotals === "function") {
+                    window.recalculateCheckoutTotals(currentCheckoutMethod);
+                } else if (typeof recalculateCheckoutTotals === "function") {
+                    recalculateCheckoutTotals(currentCheckoutMethod);
+                }
             }
         });
     </script>
