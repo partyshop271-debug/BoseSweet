@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>محاكي الورد التفاعلي | حلويات بوسي</title>
+    
+    <!-- الاستدعاء الديناميكي والمبكر للمحرك المركزي والأعتماد البصري -->
+    <script src="js/core-engine.js"></script>
+    
+    <style>
+        /* هندسة التصميم الخاص بمحاكي الورد المتقدم simulators.css */
+        .builder-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 32px;
+            padding: 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        @media (min-width: 992px) {
+            .builder-layout {
+                grid-template-columns: 1.1fr 0.9fr;
+                align-items: start;
+            }
+        }
+
+        /* لوحة العرض والمحاكاة اللحظية الفاخرة */
+        .preview-sticky-panel {
+            background-color: var(--bose-white);
+            border: var(--bose-border-pink);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: var(--bose-shadow-glow);
+            text-align: center;
+            position: sticky;
+            top: 100px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .preview-sticky-panel:hover {
+            box-shadow: var(--bose-shadow-hover);
+        }
+
+        .preview-image-wrapper {
+            width: 100%;
+            height: 280px;
+            border-radius: 15px;
+            overflow: hidden;
+            background-color: #FFF6F7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            border: 1px dashed rgba(255, 145, 164, 0.5);
+        }
+
+        .preview-image-wrapper img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .live-price-badge {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--bose-pink);
+            margin: 16px 0;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        /* لوحة التحكم والخيارات التفاعلية */
+        .options-control-panel {
+            background-color: var(--bose-white);
+            border-radius: 20px;
+            padding: 16px;
+        }
+
+        .step-block-card {
+            background-color: var(--bose-white);
+            border: var(--bose-border-pink);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .step-block-card h3 {
+            margin-top: 0;
+            margin-bottom: 16px;
+            font-size: 18px;
+            color: var(--bose-black);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .step-block-card h3 i {
+            color: var(--bose-pink);
+        }
+
+        /* خيارات الراديو الفاخرة المانعة للتشتيت */
+        .bose-grid-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+        }
+
+        .selector-item {
+            position: relative;
+        }
+
+        .selector-item input[type="radio"],
+        .selector-item input[type="checkbox"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .selector-label {
+            display: block;
+            padding: 12px;
+            text-align: center;
+            border: 1px solid rgba(255, 145, 164, 0.2);
+            border-radius: 12px;
+            background-color: var(--bose-white);
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.25s ease;
+            user-select: none;
+        }
+
+        .selector-item input:checked + .selector-label {
+            border-color: var(--bose-pink);
+            background-color: #FFF6F7;
+            box-shadow: 0 0 0 1px var(--bose-pink);
+            color: var(--bose-black);
+        }
+
+        /* النطاقات المدخلة المرنة */
+        .bose-range-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-top: 10px;
+        }
+
+        .bose-range-slider {
+            flex: 1;
+            accent-color: var(--bose-pink);
+            height: 6px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .range-value-display {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--bose-black);
+            min-width: 60px;
+            text-align: center;
+            border: var(--bose-border-pink);
+            border-radius: 8px;
+            padding: 4px 8px;
+            background: #FFF6F7;
+        }
+
+        /* الحقول النصية والملاحظات */
+        .bose-input-field, .bose-textarea-field {
+            width: 100%;
+            padding: 12px;
+            border: var(--bose-border-pink);
+            border-radius: 10px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 14px;
+            color: var(--bose-black);
+            box-sizing: border-box;
+            background-color: var(--bose-white);
+            transition: border-color 0.3s ease;
+        }
+
+        .bose-input-field:focus, .bose-textarea-field:focus {
+            outline: none;
+            border-color: var(--bose-pink);
+        }
+
+        .row-flex-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        /* أزرار الإجراءات الحازمة الكبرى */
+        .bose-primary-btn {
+            width: 100%;
+            background-color: var(--bose-pink);
+            color: var(--bose-white);
+            border: none;
+            padding: 16px;
+            font-size: 18px;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            box-shadow: var(--bose-shadow-glow);
+            transition: all 0.3s ease;
+        }
+
+        .bose-primary-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--bose-shadow-hover);
+        }
+
+        .description-luxury-text {
+            font-size: 14px;
+            color: #444444;
+            line-height: 1.8;
+            margin-bottom: 24px;
+            text-align: justify;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- وسم حاقن الهيدر المركزي الموحد -->
+    <div id="bose-header-injector"></div>
+
+    <main class="builder-layout">
+        
+        <!-- الجانب الأيمن: لوحة العرض والاعتماد اللحظي المالي -->
+        <section class="preview-sticky-panel">
+            <div class="preview-image-wrapper">
+                <img id="bose-store-logo" src="" alt="حلويات بوسي">
+            </div>
+            <h2 id="live-flower-title" style="margin: 10px 0 5px 0; font-size: 22px;">بوكيه مخصص فاخر</h2>
+            <p id="live-flower-summary" style="font-size: 13px; color: #666; margin: 0;">بلمسات وتنسيقات من اختيارك الرفيع</p>
+            
+            <div class="live-price-badge">
+                <span id="live-total-price">0</span> جنيه
+            </div>
+            
+            <button type="button" id="btn-add-flower-custom" class="bose-primary-btn">
+                <i class="fa-solid fa-cart-plus"></i> اعتماد وإضافة البوكيه للسلة
+            </button>
+        </section>
+
+        <!-- الجانب الأيسر: لوحة التحكم والخيارات اللوجستية المتقدمة -->
+        <section class="options-control-panel">
+            <h1 style="font-size: 26px; margin-top: 0; margin-bottom: 8px;">مُحاكي الورد التفاعلي</h1>
+            <p class="description-luxury-text">
+                ننفرد بتقديم خدمة تصميم بوكيهات الورد الفاخرة حسب الطلب. نتيح لك اختيار نوع الورد المفضل من الورد الطبيعي النضر، الصناعي الفاخر، أو ورد الستان المصنوع بحب، مع تنسيقات مخصصة مدمجة بالمفاجآت النقدية، الشوكولاتة الفاخرة بالعدد، الصور المطبوعة وكروت الإهداء النابعة من القلب لتصل لأحبابك كلوحة فنية مشرفة تعبر عن مشاعرك الصادقة.
+            </p>
+
+            <form id="bose-flower-builder-form">
+                
+                <!-- الخطوة 1: نوع الورد الأصيل -->
+                <div class="step-block-card">
+                    <h3><i class="fa-solid fa-seedling"></i> 1. اختر نوع الورد الأصيل</h3>
+                    <div class="bose-grid-selector" id="flower-type-container">
+                        <!-- يتم حقن الخيارات ديناميكياً من الـ JSON -->
+                    </div>
+                </div>
+
+                <!-- الخطوة 2: عدد الورود الإضافية -->
+                <div class="step-block-card">
+                    <h3><i class="fa-solid fa-sliders"></i> 2. حجم وتعداد البوكيه</h3>
+                    <p style="font-size: 12px; color: #666; margin-top: -8px; margin-bottom: 12px;">السعر الأساسي يتضمن 15 وردة، ويمكنك زيادة الحجم بحرية كاملة:</p>
+                    <div class="bose-range-wrapper">
+                        <input type="range" id="flower-count-slider" class="bose-range-slider" min="15" max="150" step="1" value="15">
+                        <span id="flower-count-display" class="range-value-display">15</span>
+                    </div>
+                </div>
+
+                <!-- الخطوة 3: التغليف الفاخر -->
+                <div class="step-block-card">
+                    <h3><i class="fa-solid fa-gift"></i> 3. نمط التغليف الفاخر</h3>
+                    <div class="bose-grid-selector" id="wrapping-type-container">
+                        <!-- يتم حقن الخيارات ديناميكياً من الـ JSON -->
+                    </div>
+                </div>
+
+                <!-- الخطوة 4: قطع الشوكولاتة المدمجة -->
+                <div class="step-block-card">
+                    <h3><i class="fa-solid fa-cookie-bite"></i> 4. قطع الشوكولاتة المدمجة بالبوكيه</h3>
+                    <div class="bose-grid-selector" id="chocolate-type-container" style="margin-bottom: 15px;">
+                        <!-- يتم حقن الخيارات ديناميكياً من الـ JSON -->
+                    </div>
+                    <div id="chocolate-qty-block" style="display: none;">
+                        <label style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 6px;">عدد قطع الشوكولاتة المطلوبة:</label>
+                        <div class="bose-range-wrapper">
+                            <input type="range" id="chocolate-count-slider" class="bose-range-slider" min="1" max="50" step="1" value="1">
+                            <span id="chocolate-count-display" class="range-value-display">1</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- الخطوة 5: مفاجآت الكاش النقدية المدمجة -->
+                <div class="step-block-card">
+                    <h3><i class="fa-solid fa-money-bill-wave"></i> 5. إضافة مفاجأة نقدية مدمجة (كاش)</h3>
+                    <div class="row-flex-inputs">
+                        <div>
+                            <label style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 6px;">فئة العملة النقدية:</label>
+                            <select id="money-category-select" class="bose-input-field">
+                                <option value="0" data-fee="0">بدون كاش إضافي</option>
+                                <!-- حقن فئات الكاش والعمولات من الـ JSON -->
+                            </select>
+                        </div>
+                        <div>
+                            <label style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 6px;">المبلغ الإجمالي المراد لفه:</label>
+                            <input type="number" id="money-amount-input" class="bose-input-field" placeholder="المبلغ الكلي ج.م" min="0" value="0" disabled>
+                        </div>
+                    </div>
+                    <p id="money-error-msg" style="color: red; font-size: 12px; margin: 6px 0 0 0; display: none;"></p>
+                </div>
+
+                <!-- الخطوة 6: الصور الشخصية وكروت الإهداء -->
+                <div class="step-block-card">
+                    <h3><i class="fa-solid fa-camera-retro"></i> 6. الصور الشخصية وكارت الإهداء</h3>
+                    <div style="margin-bottom: 15px;">
+                        <label style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 6px;">عدد الصور الشخصية المراد طباعتها وتثبيتها:</label>
+                        <div class="bose-range-wrapper">
+                            <input type="range" id="photo-count-slider" class="bose-range-slider" min="0" max="10" step="1" value="0">
+                            <span id="photo-count-display" class="range-value-display">0</span>
+                        </div>
+                    </div>
+                    <hr style="border: 0; border-top: 1px dashed rgba(255,145,164,0.3); margin: 15px 0;">
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                            <input type="checkbox" id="has-gift-card-check" style="accent-color: var(--bose-pink); width: 16px; height: 16px; cursor: pointer;">
+                            <label for="has-gift-card-check" style="font-size: 13px; font-weight: 600; cursor: pointer;">أرغب في إضافة كارت إهداء ورسالة صادقة</label>
+                        </div>
+                        <textarea id="gift-card-text-area" class="bose-textarea-field" rows="3" placeholder="اكتب رسالتك الصادقة هنا النابعة من قلبك..." style="display: none; resize: none;"></textarea>
+                    </div>
+                </div>
+
+            </form>
+        </section>
+
+    </main>
+
+    <!-- وسم حاقن الفوتر المركزي الموحد -->
+    <div id="bose-footer-injector"></div>
+
+    <!-- المحرك البرمجي المستقل لرحلة محاكي الورد js/flower-engine.js -->
+    <script>
+        /**
+         * محرك محاكي الورد التفاعلي الموزع ذكياً لمنع التعارض - حلويات بوسي
+         */
+        function startEngineLogic() {
+            const config = window.BoseStoreData?.flowerBuilder;
+            if (!config) return;
+
+            // استدعاء عناصر الواجهة البرمجية المعتمدة
+            const flowerTypeContainer = document.getElementById('flower-type-container');
+            const wrappingTypeContainer = document.getElementById('wrapping-type-container');
+            const chocolateTypeContainer = document.getElementById('chocolate-type-container');
+            const chocolateQtyBlock = document.getElementById('chocolate-qty-block');
+            const moneyCategorySelect = document.getElementById('money-category-select');
+            const moneyAmountInput = document.getElementById('money-amount-input');
+            const moneyErrorMsg = document.getElementById('money-error-msg');
+            const giftCardCheck = document.getElementById('has-gift-card-check');
+            const giftCardText = document.getElementById('gift-card-text-area');
+            
+            // المكونات التفاعلية للسلايدرات والعدادات
+            const flowerSlider = document.getElementById('flower-count-slider');
+            const flowerDisplay = document.getElementById('flower-count-display');
+            const chocSlider = document.getElementById('chocolate-count-slider');
+            const chocDisplay = document.getElementById('chocolate-count-display');
+            const photoSlider = document.getElementById('photo-count-slider');
+            const photoDisplay = document.getElementById('photo-count-display');
+            const priceDisplay = document.getElementById('live-total-price');
+
+            // 1. بناء وحقن خيارات نوع الورد
+            config.flowerTypes.forEach((type, idx) => {
+                const checkedAttr = idx === 0 ? 'checked' : '';
+                flowerTypeContainer.innerHTML += `
+                    <div class="selector-item">
+                        <input type="radio" name="flowerType" value="${type.id}" ${checkedAttr}>
+                        <span class="selector-label">${type.name}</span>
+                    </div>
+                `;
+            });
+
+            // 2. بناء وحقن خيارات أنماط التغليف
+            config.wrappingTypes.forEach((wrap, idx) => {
+                const checkedAttr = idx === 0 ? 'checked' : '';
+                wrappingTypeContainer.innerHTML += `
+                    <div class="selector-item">
+                        <input type="radio" name="wrappingType" value="${wrap.id}" ${checkedAttr}>
+                        <span class="selector-label">${wrap.name}</span>
+                    </div>
+                `;
+            });
+
+            // 3. بناء وحقن خيارات أنواع الشوكولاتة
+            chocolateTypeContainer.innerHTML = `
+                <div class="selector-item">
+                    <input type="radio" name="chocolateType" value="none" checked>
+                    <span class="selector-label">بدون شوكولاتة</span>
+                </div>
+            `;
+            config.chocolateTypes.forEach((choc) => {
+                chocolateTypeContainer.innerHTML += `
+                    <div class="selector-item">
+                        <input type="radio" name="chocolateType" value="${choc.id}">
+                        <span class="selector-label">${choc.name}</span>
+                    </div>
+                `;
+            });
+
+            // 4. بناء وحقن فئات العملات النقدية والعمولات اللوجستية
+            config.moneyCategories.forEach((cat) => {
+                moneyCategorySelect.innerHTML += `
+                    <option value="${cat.amount}" data-fee="${cat.fee}">${cat.amount} ج.م (عمولة لف الورقة ${cat.fee} ج)</option>
+                `;
+            });
+
+            // تفعيل الأحداث التفاعلية لتحديث الأسعار والعدادات لحظياً
+            [flowerSlider, chocSlider, photoSlider].forEach(slider => {
+                slider.addEventListener('input', updateSlidersAndPrice);
+            });
+
+            document.getElementById('bose-flower-builder-form').addEventListener('change', (e) => {
+                if (e.target.name === 'chocolateType') {
+                    chocolateQtyBlock.style.display = e.target.value === 'none' ? 'none' : 'block';
+                }
+                updateSlidersAndPrice();
+            });
+
+            moneyCategorySelect.addEventListener('change', () => {
+                if (parseInt(moneyCategorySelect.value, 10) === 0) {
+                    moneyAmountInput.value = 0;
+                    moneyAmountInput.disabled = true;
+                } else {
+                    moneyAmountInput.disabled = false;
+                }
+                updateSlidersAndPrice();
+            });
+
+            moneyAmountInput.addEventListener('input', updateSlidersAndPrice);
+
+            giftCardCheck.addEventListener('change', () => {
+                giftCardText.style.display = giftCardCheck.checked ? 'block' : 'none';
+                updateSlidersAndPrice();
+            });
+
+            // دالة الحساب والتحديث المالي اللحظي الشامل
+            function updateSlidersAndPrice() {
+                // مزامنة أرقام العدادات المرئية
+                flowerDisplay.textContent = flowerSlider.value;
+                chocDisplay.textContent = chocSlider.value;
+                photoDisplay.textContent = photoSlider.value;
+
+                const selectedFlowerType = document.querySelector('input[name="flowerType"]:checked')?.value;
+                const selectedWrappingType = document.querySelector('input[name="wrappingType"]:checked')?.value;
+                const selectedChocolateType = document.querySelector('input[name="chocolateType"]:checked')?.value;
+                const chcoPieces = selectedChocolateType === 'none' ? 0 : parseInt(chocSlider.value, 10);
+                
+                const selectedMoneyCategory = parseInt(moneyCategorySelect.value, 10);
+                let inputMoneyAmount = parseInt(moneyAmountInput.value, 10) || 0;
+
+                // التحقق من توافق المبلغ النقدي مع فئة العملة لمنع الكسور العشوائية في اللف
+                moneyErrorMsg.style.display = 'none';
+                if (selectedMoneyCategory > 0 && inputMoneyAmount > 0) {
+                    const remainder = inputMoneyAmount % selectedMoneyCategory;
+                    if (remainder !== 0) {
+                        moneyErrorMsg.textContent = `⚠️ تنبيه: المبلغ يجب أن يكون مضاعفاً للفئة المحددة (${selectedMoneyCategory} ج.م) ليتمكن المحرك من حساب عمولة عدد الأوراق بدقة بالمليم.`;
+                        moneyErrorMsg.style.display = 'block';
+                    }
+                }
+
+                // تمرير الخيارات بالكامل للمحرك المركزي لإصدار الحسبة المالية الدقيقة القياسية
+                const finalCalculatedPrice = window.calculateCustomFlowerPrice(selectedFlowerType, flowerSlider.value, {
+                    wrappingType: selectedWrappingType,
+                    chocolateType: selectedChocolateType,
+                    chocolatePieces: chcoPieces,
+                    moneyAmount: inputMoneyAmount,
+                    moneyCategoryAmount: selectedMoneyCategory,
+                    photoCount: parseInt(photoSlider.value, 10),
+                    hasGiftCard: giftCardCheck.checked
+                });
+
+                priceDisplay.textContent = Math.round(finalCalculatedPrice);
+            }
+
+            // تنفيذ الحسبة الأولية فور تمهيد النظام لراحة عين العميل
+            updateSlidersAndPrice();
+
+            // معالجة حدث الضغط والاعتماد النهائي للبوكيه المخصص وضخه في السلة bose_cart
+            document.getElementById('btn-add-flower-custom').addEventListener('click', () => {
+                const selectedFlowerType = document.querySelector('input[name="flowerType"]:checked')?.value;
+                const selectedFlowerTypeName = document.querySelector('input[name="flowerType"]:checked + .selector-label')?.textContent;
+                const selectedWrappingType = document.querySelector('input[name="wrappingType"]:checked')?.value;
+                const selectedChocolateType = document.querySelector('input[name="chocolateType"]:checked')?.value;
+                const chcoPieces = selectedChocolateType === 'none' ? 0 : parseInt(chocSlider.value, 10);
+                const selectedMoneyCategory = parseInt(moneyCategorySelect.value, 10);
+                const inputMoneyAmount = parseInt(moneyAmountInput.value, 10) || 0;
+
+                // حظر ومنع ثغرة ترحيل مبالغ غير متوافقة مع فئة العملة المحددة
+                if (selectedMoneyCategory > 0 && inputMoneyAmount > 0 && (inputMoneyAmount % selectedMoneyCategory !== 0)) {
+                    alert('عذراً، يرجى إدخال مبلغ نقدي متوافق تماماً مع فئة العملة المحددة قبل إضافة المنتج للسلة لتجنب الفروقات اللوجستية.');
+                    return;
+                }
+
+                // استخراج وحساب قيم العمولات النقدية للتخزين الثابت وقت الإضافة لربطه بالسلة الفاتورة
+                let calculatedFee = 0;
+                if (inputMoneyAmount > 0 && selectedMoneyCategory > 0) {
+                    const billCount = Math.floor(inputMoneyAmount / selectedMoneyCategory);
+                    const matchedCat = config.moneyCategories.find(c => c.amount === selectedMoneyCategory);
+                    if (matchedCat) calculatedFee = billCount * matchedCat.fee;
+                }
+
+                // محاكاة كائن منتج رئيسي متوافق مع مصفوفة الـ JSON للربط البرمجي
+                const baseFlowerProduct = window.BoseStoreData.products.find(p => p.id === 'flowers-master') || {
+                    id: "flowers-master",
+                    slug: "flowers-master",
+                    title: "الورد",
+                    basePrice: config.basePrice,
+                    type: "custom-flower",
+                    image: window.BoseStoreData.store.logo
+                };
+
+                const optionsObject = {
+                    flowerType: selectedFlowerType,
+                    flavorName: `بوكيه ورد ${selectedFlowerTypeName} مخصص`,
+                    flowerCount: parseInt(flowerSlider.value, 10),
+                    moneyAmount: inputMoneyAmount,
+                    moneyFee: calculatedFee,
+                    chocolateType: selectedChocolateType,
+                    chocolatePieces: chcoPieces,
+                    wrappingType: selectedWrappingType,
+                    giftCardText: giftCardCheck.checked ? giftCardText.value : ""
+                };
+
+                // إنشاء عنصر السلة القياسي الفريد غير القابل للتصادم برمجياً
+                const cartItem = window.createCartItem(baseFlowerProduct, optionsObject, 1);
+                
+                if (cartItem) {
+                    // تحديث الذاكرة الموحدة وحفظ كائن السلة الموحد bose_cart
+                    const rawCart = localStorage.getItem('bose_cart');
+                    const currentCart = rawCart ? JSON.parse(rawCart) : [];
+                    
+                    currentCart.push(cartItem);
+                    localStorage.setItem('bose_cart', JSON.stringify(currentCart));
+                    
+                    // تحديث شارة العداد اللحظي في الهيدر والترحيل لصفحة السلة بكل فخامة وسلاسة
+                    window.updateGlobalCartCounter();
+                    alert('تمت إضافة بوكيه الورد المخصص الفاخر إلى سلة المشتريات بنجاح.');
+                    window.location.href = 'cart.html';
+                }
+            });
+        }
+
+        // تفعيل بروتوكول حارس التمهيد ومنع التعارض البرمجي القياسي بالموقع
+        document.addEventListener("DOMContentLoaded", () => {
+            if (window.BoseStoreData && window.BoseStoreData.store) {
+                verifyAndInitializeEngine();
+            } else {
+                let attempts = 0;
+                const maxAttempts = 100; 
+                const coreGuardInterval = setInterval(() => {
+                    attempts++;
+                    if (window.BoseStoreData && window.BoseStoreData.store) {
+                        clearInterval(coreGuardInterval);
+                        verifyAndInitializeEngine();
+                    } else if (attempts >= maxAttempts) {
+                        clearInterval(coreGuardInterval);
+                        console.error("❌ حارس التمهيد: تجاوز الحد الأقصى لمحاولات تحميل قاعدة البيانات. تم إيقاف الفحص لتأمين الأداء.");
+                    }
+                }, 50);
+            }
+        });
+
+        function verifyAndInitializeEngine() {
+            console.log("🚀 تم التحقق من مطابقة المحرك المخصص وتوافقه مع قاعدة بيانات حلويات بوسي الحالية.");
+            if (typeof startEngineLogic === "function") {
+                startEngineLogic();
+            }
+        }
+    </script>
+</body>
+</html>
