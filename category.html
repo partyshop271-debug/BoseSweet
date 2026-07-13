@@ -94,7 +94,7 @@
             box-sizing: border-box;
         }
 
-        /* منع التكدس والحشر على الموبايل: كارت واحد كامل ومريح في الصف كخيار افتراضي آمن */
+        /* منع التكدس والحشر على الموبايل: كارت واحد كامل ومريح في الصف لراحة العميل النفسية */
         .category-products-grid.layout-two-cards, 
         .category-products-grid.layout-tabs,
         .category-products-grid.layout-full-card {
@@ -189,11 +189,19 @@
             color: var(--bose-pink, #FF91A4);
             margin-bottom: 20px;
         }
+        
+        /* 🛠️ [إصلاح هندسي لحل مشكلة الصورة المضغوطة بالفوتر] */
+        .bose-footer .footer-logo-container img {
+            height: 60px !important;
+            width: auto !important;
+            max-width: 100% !important;
+            object-fit: contain !important;
+        }
     </style>
 </head>
 <body class="bose-hardware-accelerated bose-arabic-text">
 
-    <!-- 🏢 [إصلاح حاسم للأوسمة النائبة المعتمدة هندسياً في الـ Blueprint لحقن الهيدر ديناميكياً] -->
+    <!-- 🏢 [الأوسمة النائبة المعتمدة هندسياً في الـ Blueprint لحقن الهيدر ديناميكياً] -->
     <div id="bose-header-injector"></div>
 
     <!-- 📥 القائمة الجانبية المشتركة للموبايل -->
@@ -229,7 +237,7 @@
         </div>
     </main>
 
-    <!-- 🏪 [إصلاح حاسم للوسم النائب المعتمد هندسياً لحقن الفوتر ديناميكياً] -->
+    <!-- 🏪 [الوسم النائب المعتمد هندسياً لحقن الفوتر ديناميكياً] -->
     <div id="bose-footer-injector"></div>
 
     <!-- 👑 المحرك البرمجي المتكامل والمستقل لصفحة الفئة 👑 -->
@@ -312,10 +320,10 @@
 
                 // تطبيق التخطيطات الشبكية الآمنة تماشياً مع الـ JSON والمواصفات
                 if (categoryId === "taswaq-cupcake") {
-                    productsGrid.classList.add("layout-full-card");
+                    productsGrid.className = "category-products-grid layout-full-card";
                     sizeFilterRow.style.display = "none";
                 } else if (firstProduct && firstProduct.layout) {
-                    productsGrid.classList.add(`layout-${firstProduct.layout}`);
+                    productsGrid.className = `category-products-grid layout-${firstProduct.layout}`;
                     if (firstProduct.layout === "tabs") {
                         sizeFilterRow.style.display = "flex";
                     } else {
@@ -331,24 +339,33 @@
                         }
                         
                         let cardHTML = "";
-                        // صمام أمان لإنشاء الكروت بشكل صحيح حتى لو تأخرت أي دالة خارجية
+                        // 👑 [تصحيح فوري للمطابقة بالملي مع الهيكل الموحد للكارت بالمسطرة] 👑
                         if (typeof window.generateStrictProductCardHTML === 'function') {
                             cardHTML = window.generateStrictProductCardHTML(product, currency);
                         } else {
                             const calculatedPrice = typeof window.calculateProductFinalPrice === 'function' ? 
                                 window.calculateProductFinalPrice(product, {size: product.defaultSize}) : (product.price || 0);
                             
+                            // هيكل الكارت الموحد الصارم (الاسم، النكهة، السعر، العداد، وزر الإضافة الحقيقي)
                             cardHTML = `
-                                <div class="product-card" data-slug="${product.slug}" style="background:#FFFFFF; border:1px solid rgba(255,145,164,0.2); border-radius:20px; padding:16px; display:flex; flex-direction:column; gap:8px;">
+                                <div class="product-card" data-slug="${product.slug}" style="background:#FFFFFF; border:1px solid rgba(255,145,164,0.15); border-radius:20px; padding:16px; display:flex; flex-direction:column; gap:12px; position:relative;">
                                     <a href="product.html?slug=${product.slug}" style="text-decoration:none; color:inherit; display:block;">
                                         <img class="product-card-img" src="${product.image || product.images[0]}" alt="${product.title}" loading="lazy" style="width:100%; height:220px; object-fit:cover; border-radius:12px;">
-                                        <h3 class="product-card-title" style="font-size:1.1rem; margin:10px 0 4px 0; font-weight:600;">${product.title}</h3>
-                                        <span class="product-card-flavor-name" style="color:var(--bose-pink); font-size:0.9rem; font-weight:600; display:block;">${product.flavorName || ''}</span>
-                                        <p class="product-card-desc" style="font-size:0.85rem; color:#666; line-height:1.4; margin:6px 0;">${product.flavorDesc || ''}</p>
+                                        <h3 class="product-card-title" style="font-size:1.15rem; margin:10px 0 2px 0; font-weight:700 !important; color:#111111;">${product.title}</h3>
+                                        <span class="product-card-flavor-name" style="color:var(--bose-pink); font-size:0.9rem; font-weight:600; display:block; margin-bottom:4px;">${product.flavorName || ''}</span>
+                                        <p class="product-card-desc" style="font-size:0.85rem; color:#4D4D4D; line-height:1.4; margin:6px 0;">${product.flavorDesc || ''}</p>
                                     </a>
-                                    <div class="product-card-bottom-row" style="display:flex; justify-content:space-between; align-items:center; margin-top:auto; padding-top:10px;">
-                                        <div class="product-card-price" style="color:var(--bose-black); font-weight:700; font-size:1.1rem;">${calculatedPrice} ${currency}</div>
-                                        <a href="product.html?slug=${product.slug}" class="btn-add-to-cart" style="background:var(--bose-pink); color:#fff; padding:8px 16px; border-radius:50px; text-decoration:none; font-size:0.85rem; font-weight:700;">استعرض وتذوق</a>
+                                    
+                                    <!-- عداد الكمية المرن لمنع القيم السالبة -->
+                                    <div class="product-card-qty-row" style="display:flex; align-items:center; justify-content:center; gap:10px; margin-top:auto; padding-top:8px; direction:ltr;">
+                                        <button class="btn-qty-minus" style="width:32px; height:32px; border:1px solid rgba(255,145,164,0.3); background:#fff; border-radius:50%; font-weight:bold; cursor:pointer;">-</button>
+                                        <input class="input-qty-value" type="number" value="1" min="1" readonly style="width:40px; text-align:center; border:none; font-weight:700; font-size:1rem; color:#111111;">
+                                        <button class="btn-qty-plus" style="width:32px; height:32px; border:1px solid rgba(255,145,164,0.3); background:#fff; border-radius:50%; font-weight:bold; cursor:pointer;">+</button>
+                                    </div>
+
+                                    <div class="product-card-bottom-row" style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+                                        <div class="product-card-price" style="color:var(--bose-pink); font-weight:700; font-size:1.2rem;">${calculatedPrice} ${currency}</div>
+                                        <button class="btn-add-to-cart" style="background:var(--bose-pink); color:#FFFFFF; border:none; padding:10px 18px; border-radius:50px; cursor:pointer; font-size:0.85rem; font-weight:700;">إضافة للسلة</button>
                                     </div>
                                 </div>
                             `;
@@ -357,17 +374,11 @@
                         const tempDiv = document.createElement('div');
                         tempDiv.innerHTML = cardHTML;
                         
-                        // 📉 [أقل استهلاك بيانات]: إجبار الصور الديناميكية على استخدام الـ Lazy Loading لتوفير باقات الموبايل
+                        // تفعيل الـ Lazy Loading لتوفير الباقات وبيانات الموبايل
                         const imgElement = tempDiv.querySelector('img');
                         if (imgElement) {
                             imgElement.setAttribute('loading', 'lazy');
                         }
-                        
-                        // 👑 توجيه العميل فوراً لصفحة تفاصيل الصنف الفردية لمنع وميض الحسابات
-                        const cardLinks = tempDiv.querySelectorAll('a');
-                        cardLinks.forEach(link => {
-                            link.href = `product.html?slug=${product.slug}`;
-                        });
                         
                         while (tempDiv.firstChild) {
                             productsGrid.appendChild(tempDiv.firstChild);
@@ -376,15 +387,6 @@
 
                     if (typeof window.attachProductCardEvents === 'function') {
                         window.attachProductCardEvents(productsGrid, siteData.products, currency);
-                        
-                        // تأكيد حماية التوجيه بعد تفعيل الأحداث
-                        productsGrid.querySelectorAll('.product-card').forEach(card => {
-                            const slug = card.dataset.slug;
-                            const cardLinks = card.querySelectorAll('a');
-                            cardLinks.forEach(link => {
-                                link.href = `product.html?slug=${slug}`;
-                            });
-                        });
                     }
                 };
 
