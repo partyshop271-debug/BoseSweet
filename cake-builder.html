@@ -129,7 +129,6 @@
             line-height: 1.6;
         }
 
-        /* تكبير حجم العداد الرقمي والتحكم لراحة أصابع اليد */
         .bose-giant-qty-wrapper {
             display: flex;
             align-items: center;
@@ -262,7 +261,6 @@
             color: var(--bose-black);
         }
 
-        /* نافذة المعاينة المنبثقة الفاخرة للصور */
         .bose-lightbox-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(17, 17, 17, 0.75); backdrop-filter: blur(4px);
@@ -282,7 +280,6 @@
             align-items: center; justify-content: center; box-shadow: var(--bose-shadow-hover);
         }
 
-        /* هندسة لوحة السعر الحالي المتوافقة تماماً */
         .dynamic-tracker-bar {
             position: fixed; bottom: 0; left: 0; right: 0;
             background-color: var(--bose-white); border-top: var(--bose-border-pink);
@@ -293,8 +290,8 @@
             align-items: center; justify-content: space-between; gap: 16px;
         }
         .tracker-price-info { display: flex; flex-direction: column; text-align: right; }
-        .tracker-price-info .label { font-size: 14px; font-weight: 700; color: var(--bose-black); opacity: 0.7; }
-        .tracker-price-info .price-display { font-size: 26px; font-weight: 700; color: var(--bose-pink); }
+        .tracker-price-info .label { font-size: 15px; font-weight: 700; color: var(--bose-black); }
+        .tracker-price-info .price-display { font-size: 26px; font-weight: 700; color: var(--bose-pink); margin-top: 2px; }
     </style>
 </head>
 <body>
@@ -363,7 +360,7 @@
                     <!-- الخطوة 3 -->
                     <div class="bose-step-wizard-panel" id="panel-wizard-step-3">
                         <h2 class="bose-wizard-title">نوع كيك مناسبتك وطباعة صورك الخاصة</h2>
-                        <p class="bose-wizard-subtitle">اختر طعم الكيك الأساسي، وتقدر تضيف صورة مخصصة فوق سطح التورتة لتوثيق أسعد لحظاتك.</p>
+                        <p class="bose-wizard-subtitle">لو تحب تختار طعم الكيك الأساسي، وتقدر كمان تضيف صورة مخصصة فوق سطح التورتة لتوثيق أسعد لحظاتك.</p>
                         
                         <h3 class="premium-input-label" style="margin-top:20px;">1. طعم ونوع الكيك الداخلي:</h3>
                         <div class="bose-interactive-radio-grid" style="margin-bottom:24px;">
@@ -400,8 +397,8 @@
 
                     <!-- الخطوة 4 -->
                     <div class="bose-step-wizard-panel" id="panel-wizard-step-4">
-                        <h2 class="bose-wizard-title">اللمسة الأخيرة وإضافة العبارات الدافئة</h2>
-                        <p class="bose-wizard-subtitle">لو تفضل نكتب جملة معينة على سطح التورتة، ولو عندك أي ملاحظات أو حساسية من مكونات معينة لسلامتك الطبية الكاملة.</p>
+                        <h2 class="bose-wizard-title">لو تفضل نكتب جملة معينة على سطح التورتة:</h2>
+                        <p class="bose-wizard-subtitle">اكتب لنا العبارة المطلوبة، وسجل ملاحظات الحساسية الغذائية إن وجدت لضمان سلامتك الطبية الكاملة.</p>
                         
                         <h3 class="premium-input-label">العبارة المراد خطّها فوق التورتة:</h3>
                         <textarea class="bose-textarea" id="text-cake-message" placeholder="مثال: عيد ميلاد سعيد يا بوسي" maxlength="100" style="margin-bottom:20px;"></textarea>
@@ -431,14 +428,13 @@
     <div class="dynamic-tracker-bar">
         <div class="tracker-flex-container">
             <div class="tracker-price-info">
-                <span class="label">السعر الحالي:</span>
+                <span class="label" id="display-dynamic-label">سعر التورتة الحالي لـ 4 أفراد هو:</span>
                 <span class="price-display" id="display-dynamic-price">580 جنيه</span>
             </div>
             <button type="button" class="bose-master-cta" id="btn-cake-submit-cart" style="display:none; padding:14px 45px; font-size:16px; border-radius:50px;">تأكيد وإضافة للسلة</button>
         </div>
     </div>
 
-    <!-- نافذة المعاينة المبثوقة -->
     <div class="bose-lightbox-overlay" id="bose-lightbox-container">
         <div class="bose-lightbox-card">
             <button class="bose-lightbox-close" id="bose-lightbox-close-btn">&times;</button>
