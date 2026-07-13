@@ -1,6 +1,6 @@
 /**
- * المحرك البرمجي المطور والمصحح لمحاكي التورت V3.0 - حلويات بوسي
- * يضمن سد الثغرات اللوجستية وتفعيل لايت بوكس سابقة الأعمال وتحديث السعر بدقة عشرية كاملة
+ * المحرك البرمجي المطور والمصحح لمحاكي التورت V3.5 - حلويات بوسي
+ * يضمن صياغة نصوص الأسعار الديناميكية الذكية لحماية رغبة واقتناع العميل
  */
 
 function startEngineLogic() {
@@ -9,6 +9,7 @@ function startEngineLogic() {
     const btnPlus = document.getElementById('btn-persons-plus');
     const alertBox = document.getElementById('alert-shape-restriction');
     const priceDisplay = document.getElementById('display-dynamic-price');
+    const priceLabel = document.getElementById('display-dynamic-label');
     const btnCartSubmit = document.getElementById('btn-cake-submit-cart');
     
     const btnWizardNext = document.getElementById('btn-wizard-next');
@@ -30,7 +31,7 @@ function startEngineLogic() {
     };
 
     /**
-     * دالة الحساب والتحقق اللحظي وسد ثغرات الأشكال المربعة والمستطيلة بالتساوي
+     * دالة الحساب والتحقق وتعديل لافتة السعر الذكية ديناميكياً
      */
     function evaluateSimulatorState() {
         let currentPersons = parseInt(inputPersons.value, 10) || config.persons.minimum;
@@ -43,7 +44,6 @@ function startEngineLogic() {
         
         let alertText = "";
         
-        // تطبيق موحد وصارم لرسائل التنبية والترقية للأشكال الهندسية
         if (selectedShape === 'square' && currentPersons < squareData.minimumPersons) {
             alertText = window.BoseStoreData?.cakeBuilder?.images?.squareMinimum || "المقاس المربع يبدأ من 16 فرد";
             document.querySelector('input[name="cake_shape"][value="circle"]').checked = true;
@@ -65,6 +65,11 @@ function startEngineLogic() {
         const finalDynamicPrice = window.calculateCustomCakePrice(currentPersons, {
             printingType: selectedPrinting
         });
+        
+        // 🎯 تحقيق التوجيه الذكي: صياغة تصف غرض السعر بدقة دون فرض النكهة عشوائياً
+        if (priceLabel) {
+            priceLabel.textContent = `سعر التورتة الحالي لـ ${currentPersons} أفراد هو:`;
+        }
         
         priceDisplay.textContent = `${Math.round(finalDynamicPrice)} جنيه`;
     }
@@ -140,9 +145,6 @@ function startEngineLogic() {
         radio.addEventListener('change', evaluateSimulatorState);
     });
 
-    /**
-     * تشغيل لايت بوكس منبثق لسابقة الأعمال لتكبير الصور بدقة كاملة لراحة العميل
-     */
     function initializeBoseLightboxGallery() {
         const track = document.getElementById('bose-portfolio-lightbox-track');
         const lightboxOverlay = document.getElementById('bose-lightbox-container');
