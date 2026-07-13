@@ -1,5 +1,5 @@
 /* ==========================================================================
-   👑 BoseSweets Strict Production Global Stylesheet (css/global.css) V21.0 👑
+   👑 BoseSweets Strict Production Global Stylesheet (css/global.css) V22.0 👑
    الملف المركزي الموحد المعدل والمطور بالكامل لحل مشاكل السلايدرات والفئات
    امتثال كامل ومغلق لأدلة المواصفات القياسية وحوكمة الأبعاد والتنفس البصري
    ========================================================================== */
@@ -597,7 +597,7 @@ img {
 
 /* ==========================================================================
    8. الهندسة الفاخرة لقسم "عقد من الإتقان" التفاعلي اللانهائي (#excellence-section)
-   الحل الجذري: دمج الصور كلياً بدون فواصل نهائياً كأنها لوحة واحدة ممتدة ملء الشاشة
+   الحل الجذري: دمج الصور كلياً بدون فواصل نهائياً لتتحرك من الشمال لليمين كلوحة مستمرة
    ========================================================================== */
 .bose-perfection-section {
     width: 100%;
@@ -619,16 +619,16 @@ img {
     display: flex !important; 
     flex-direction: row !important;
     flex-wrap: nowrap !important;
-    gap: 0 !important;              /* تصفير الفواصل البصرية نهائياً لدمج الصور[span_4](start_span)[span_4](end_span) */
+    gap: 0 !important;              /* تصفير الفواصل البصرية نهائياً لدمج الصور كلياً */
     padding: 0 !important;
     margin: 0 !important;
     width: max-content !important;
     will-change: transform;
-    animation: boseCategoriesLoop 25s linear infinite !important; /* تشغيل الأنميشن اللانهائي دون أدنى اختفاء بصرى[span_5](start_span)[span_5](end_span) */
+    animation: bosePerfectionLoop 25s linear infinite !important; /* تشغيل الأنميشن اللانهائي دون أي فواصل */
 }
 
 .perfection-slide-node {
-    width: 100vw !important;        /* الصورة كبيرة وتملأ عرض الشاشة بالكامل[span_6](start_span)[span_6](end_span) */
+    width: 100vw !important;        /* الصورة تملأ عرض الشاشة بالكامل دون اقتطاع */
     height: 60vh !important;        /* أبعاد فخمة ومتناسقة ملوكية الطابع */
     flex-shrink: 0 !important;
     display: block !important;
@@ -639,8 +639,8 @@ img {
 .perfection-slide-node img {
     width: 100% !important;
     height: 100% !important; 
-    border-radius: 0 !important;    /* إزالة الحواف الدائرية لمنع تكسير اتصال اللوحة البصرية[span_7](start_span)[span_7](end_span) */
-    border: none !important;        /* إزالة الحدود لخلق امتداد بصرى متلاحم ومستمر[span_8](start_span)[span_8](end_span) */
+    border-radius: 0 !important;    /* إزالة الحواف الدائرية لمنع تكسير اتصال اللوحة البصرية */
+    border: none !important;        /* إزالة الحدود لخلق امتداد بصري متلاحم ومستمر */
     object-fit: cover !important;
     display: block !important;
 }
@@ -652,10 +652,10 @@ img {
     }
 }
 
-/* الأنميشن المركزي الحاكم لحركة الصور اللانهائية دون حدوث أي وميض أو مساحات بيضاء فارغة[span_9](start_span)[span_9](end_span)[span_10](start_span)[span_10](end_span) */
-@keyframes boseCategoriesLoop {
-    0% { transform: translate3d(0, 0, 0); }
-    100% { transform: translate3d(-33.3333%, 0, 0); } /* إزاحة دقيقة متوافقة مع تكرار عناصر اللوحة الثلاثية */
+/* الأنميشن المركزي الحاكم لحركة الصور اللانهائية من الشمال لليمين بدون أي فراغات بصرية */
+@keyframes bosePerfectionLoop {
+    0% { transform: translate3d(-33.3333%, 0, 0); } 
+    100% { transform: translate3d(0, 0, 0); } /* سحب عكسي مضبوط رياضياً للبدء من اليسار والتحرك لليمين */
 }
 
 /* ==========================================================================
