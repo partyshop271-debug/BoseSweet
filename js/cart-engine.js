@@ -1,8 +1,9 @@
 /**
  * 👑 محرك السلة وإتمام الطلب والتوثيق المالي النهائي الفاخر والمطور - حلويات بوسي 👑
- * النسخة الهندسية القياسية الشاملة والمطورة كلياً - خالية تماماً من ثغرات البتر وتداخل النصوص V6.0
+ * النسخة الهندسية القياسية الشاملة والمطورة كلياً - خالية تماماً من ثغرات البتر وتداخل النصوص V6.5
  * الأداء: تم تحديثه ليعتمد على التحديث الموضعي (Localized DOM Mutations) لتوفير المعالج والبيانات بنسبة 100%
  * التوافق: معزول كلياً ويلتزم بمهامه دون التداخل مع أي ملف آخر أو تكرار وظائفه اللوجستية
+ * [تم إصلاح ثغرة الفيديو جذرياً: حظر ظهور تفاصيل التخصيص (طعم الكيك/الشكل/الورد) على المنتجات العادية مثل الديسباسيتو]
  */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -75,24 +76,35 @@ function renderBoseCartPage(storeData) {
             const totalItemCost = finalProductPrice * (parseInt(item.quantity, 10) || 1);
             
             let customDetailsHTML = "";
-            const isBespokeItem = item.type === "custom-cake" || item.type === "custom-flower" || item.type === "mini-cake" || (item.id && item.id.includes("-"));
             
-            if (item.customDetails && isBespokeItem) {
+            // 🛡️ حل ثغرة الفيديو جذرياً من الجذور: 
+            // حصر التحقق من كتل التخصيص بناءً على نوع المنتج المعتمد رسمياً (type) لمنع ظهورها عشوائياً في المنتجات العادية كالفادج والديسباسيتو والسينابون
+            const isCakeBespoke = item.type === "custom-cake" || item.type === "mini-cake" || item.productSlug === "toort-custom-master" || item.productSlug === "mini-cake-two-person";
+            const isFlowerBespoke = item.type === "custom-flower" || item.productSlug === "flowers-master";
+            
+            if (item.customDetails) {
                 let specs = [];
                 const cd = item.customDetails;
                 
-                if (cd.cakeType && cd.cakeType !== "none" && cd.cakeType !== "افتراضي") specs.push(`<span><strong>طعم الكيك:</strong> ${cd.cakeType}</span>`);
-                if (cd.shape && cd.shape !== "none") specs.push(`<span><strong>الشكل:</strong> ${cd.shape === 'circle' ? 'دائري' : cd.shape === 'heart' ? 'قلب' : cd.shape === 'square' ? 'مربع' : cd.shape === 'rectangle' ? 'مستطيل' : cd.shape}</span>`);
-                if (cd.persons && parseInt(cd.persons, 10) > 0) specs.push(`<span><strong>عدد الأفراد:</strong> ${cd.persons} فرد</span>`);
-                if (cd.printingType && cd.printingType !== "none") specs.push(`<span><strong>الطباعة:</strong> ${cd.printingType === 'edible' ? 'صورة صالحة للأكل' : 'صورة مجسمة غير صالحة للأكل'}</span>`);
-                if (cd.customMessage && cd.customMessage.trim() !== "") specs.push(`<span><strong>الرسالة المكتوبة:</strong> "${cd.customMessage}"</span>`);
-                if (cd.allergyNote && cd.allergyNote.trim() !== "") specs.push(`<span style="color:#D4AF37;"><strong>ملاحظة الحساسية:</strong> ${cd.allergyNote}</span>`);
-                if (cd.flowerType && cd.flowerType !== "none") specs.push(`<span><strong>نوع الورد:</strong> ${cd.flowerType === 'natural' ? 'طبيعي نضر' : cd.flowerType === 'artificial' ? 'صناعي فاخر' : 'ستان مصنوع بحب'}</span>`);
-                if (cd.flowerCount && parseInt(cd.flowerCount, 10) > 0) specs.push(`<span><strong>عدد الورد:</strong> ${cd.flowerCount} وردة</span>`);
-                if (cd.moneyAmount && parseInt(cd.moneyAmount, 10) > 0) specs.push(`<span><strong>الكاش المدمج:</strong> +${cd.moneyAmount} جنيه</span>`);
-                if (cd.chocolatePieces && parseInt(cd.chocolatePieces, 10) > 0) specs.push(`<span><strong>قطع الشوكولاتة:</strong> ${cd.chocolatePieces} قطعة</span>`);
-                if (cd.wrappingType && cd.wrappingType !== "none") specs.push(`<span><strong>التغليف:</strong> ${cd.wrappingType}</span>`);
-                if (cd.giftCardText && cd.giftCardText.trim() !== "") specs.push(`<span><strong>كارت الإهداء:</strong> "${cd.giftCardText}"</span>`);
+                // 1. حقن مواصفات التورت والميني تورت فقط وحصرياً
+                if (isCakeBespoke) {
+                    if (cd.cakeType && cd.cakeType !== "none" && cd.cakeType !== "افتراضي") specs.push(`<span><strong>طعم الكيك:</strong> ${cd.cakeType}</span>`);
+                    if (cd.shape && cd.shape !== "none") specs.push(`<span><strong>الشكل:</strong> ${cd.shape === 'circle' ? 'دائري' : cd.shape === 'heart' ? 'قلب' : cd.shape === 'square' ? 'مربع' : cd.shape === 'rectangle' ? 'مستطيل' : cd.shape}</span>`);
+                    if (cd.persons && parseInt(cd.persons, 10) > 0) specs.push(`<span><strong>عدد الأفراد:</strong> ${cd.persons} فرد</span>`);
+                    if (cd.printingType && cd.printingType !== "none") specs.push(`<span><strong>الطباعة:</strong> ${cd.printingType === 'edible' ? 'صورة صالحة للأكل' : 'صورة مجسمة غير صالحة للأكل'}</span>`);
+                    if (cd.customMessage && cd.customMessage.trim() !== "") specs.push(`<span><strong>الرسالة المكتوبة:</strong> "${cd.customMessage}"</span>`);
+                    if (cd.allergyNote && cd.allergyNote.trim() !== "") specs.push(`<span style="color:#D4AF37;"><strong>ملاحظة الحساسية:</strong> ${cd.allergyNote}</span>`);
+                }
+                
+                // 2. حقن مواصفات الورد والبوكيهات الهدايا فقط وحصرياً
+                if (isFlowerBespoke) {
+                    if (cd.flowerType && cd.flowerType !== "none") specs.push(`<span><strong>نوع الورد:</strong> ${cd.flowerType === 'natural' ? 'طبيعي نضر' : cd.flowerType === 'artificial' ? 'صناعي فاخر' : 'ستان مصنوع بحب'}</span>`);
+                    if (cd.flowerCount && parseInt(cd.flowerCount, 10) > 0) specs.push(`<span><strong>عدد الورد:</strong> ${cd.flowerCount} وردة</span>`);
+                    if (cd.moneyAmount && parseInt(cd.moneyAmount, 10) > 0) specs.push(`<span><strong>الكاش المدمج:</strong> +${cd.moneyAmount} جنيه</span>`);
+                    if (cd.chocolatePieces && parseInt(cd.chocolatePieces, 10) > 0) specs.push(`<span><strong>قطع الشوكولاتة:</strong> ${cd.chocolatePieces} قطعة</span>`);
+                    if (cd.wrappingType && cd.wrappingType !== "none") specs.push(`<span><strong>التغليف:</strong> ${cd.wrappingType}</span>`);
+                    if (cd.giftCardText && cd.giftCardText.trim() !== "") specs.push(`<span><strong>كارت الإهداء:</strong> "${cd.giftCardText}"</span>`);
+                }
                 
                 if (specs.length > 0) {
                     customDetailsHTML = `<div class="cart-item-customizations-panel" style="font-size: 13px; color: #111111; background: rgba(255,145,164,0.04); padding: 10px; border-radius: 12px; margin: 6px 0; border-right: 3px solid #FF91A4; display: flex; flex-direction: column; gap: 4px; width: 100%; box-sizing: border-box; font-family: 'Cairo';">${specs.join("")}</div>`;
@@ -100,7 +112,7 @@ function renderBoseCartPage(storeData) {
             }
 
             let cleanFlavorName = item.flavorName;
-            if (!cleanFlavorName || cleanFlavorName === "افتراضي" || cleanFlavorName === "none") {
+            if (!cleanFlavorName || cleanFlavorName === "افتراضي" || cleanFlavorName === "none" || isCakeBespoke || isFlowerBespoke) {
                 if (storeData && storeData.products) {
                     const matchedDbProd = storeData.products.find(p => p.slug === item.productSlug);
                     cleanFlavorName = matchedDbProd ? matchedDbProd.flavorName : "جاهز وفريش";
@@ -110,7 +122,6 @@ function renderBoseCartPage(storeData) {
             }
 
             const cartCard = document.createElement("div");
-            // 🛡️ حل الثغرة: تم تغيير اسم الكلاس المعتمد إلى bose-cart-item-card ليتطابق بالمسطرة مع ملف الـ CSS لمنع التمطط
             cartCard.className = "bose-cart-item-card";
             cartCard.setAttribute("data-item-id", item.id);
             cartCard.setAttribute("data-index", index);
@@ -592,20 +603,26 @@ function buildBoseFormattedWhatsappInvoice(order) {
         msg += `   *الكمية المطلوبة:* ${item.quantity} قطعة / صنف\n`;
         msg += `   *سعر وحدة الصنف الشامل:* ${parseFloat(item.finalPrice).toFixed(2)} EGP\n`;
         
-        const isBespokeItem = item.type === "custom-cake" || item.type === "custom-flower" || item.type === "mini-cake" || (item.id && item.id.includes("-"));
-        if (item.customDetails && isBespokeItem) {
+        const isCakeBespoke = item.type === "custom-cake" || item.type === "mini-cake" || item.productSlug === "toort-custom-master" || item.productSlug === "mini-cake-two-person";
+        const isFlowerBespoke = item.type === "custom-flower" || item.productSlug === "flowers-master";
+        
+        if (item.customDetails) {
             const cd = item.customDetails;
-            if (cd.cakeType && cd.cakeType !== "none" && cd.cakeType !== "افتراضي") msg += `   • طعم الكيك: ${cd.cakeType}\n`;
-            if (cd.shape && cd.shape !== "none") msg += `   • الشكل الهندسي: ${cd.shape}\n`;
-            if (cd.persons && cd.persons > 0) msg += `   • سعة الأفراد: لـ ${cd.persons} فرد\n`;
-            if (cd.printingType && cd.printingType !== "none") msg += `   • نوع الصورة المطبوعة: ${cd.printingType}\n`;
-            if (cd.customMessage && cd.customMessage.trim() !== "") msg += `   • النص المطلوب فوقه: "${cd.customMessage}"\n`;
-            if (cd.flowerType && cd.flowerType !== "none") msg += `   • صنف الورد المختار: ${cd.flowerType}\n`;
-            if (cd.flowerCount && cd.flowerCount > 0) msg += `   • التعداد الكلي للورد: ${cd.flowerCount}\n`;
-            if (cd.moneyAmount && cd.moneyAmount > 0) msg += `   • قيمة الكاش المدمج بالبوكيه: +${cd.moneyAmount} EGP\n`;
-            if (cd.chocolatePieces && cd.chocolatePieces > 0) msg += `   • مضاف قطع شوكولاتة: ${cd.chocolatePieces} قطعة\n`;
-            if (cd.wrappingType && cd.wrappingType !== "none") msg += `   • التغليف الفاخر: ${cd.wrappingType}\n`;
-            if (cd.giftCardText && cd.giftCardText.trim() !== "") msg += `   • رسالة كارت الإهداء: "${cd.giftCardText}"\n`;
+            if (isCakeBespoke) {
+                if (cd.cakeType && cd.cakeType !== "none" && cd.cakeType !== "افتراضي") msg += `   • طعم الكيك: ${cd.cakeType}\n`;
+                if (cd.shape && cd.shape !== "none") msg += `   • الشكل الهندسي: ${cd.shape}\n`;
+                if (cd.persons && cd.persons > 0) msg += `   • سعة الأفراد: لـ ${cd.persons} فرد\n`;
+                if (cd.printingType && cd.printingType !== "none") msg += `   • نوع الصورة المطبوعة: ${cd.printingType}\n`;
+                if (cd.customMessage && cd.customMessage.trim() !== "") msg += `   • النص المطلوب فوقه: "${cd.customMessage}"\n`;
+            }
+            if (isFlowerBespoke) {
+                if (cd.flowerType && cd.flowerType !== "none") msg += `   • صنف الورد المختار: ${cd.flowerType}\n`;
+                if (cd.flowerCount && cd.flowerCount > 0) msg += `   • التعداد الكلي للورد: ${cd.flowerCount}\n`;
+                if (cd.moneyAmount && cd.moneyAmount > 0) msg += `   • قيمة الكاش المدمج بالبوكيه: +${cd.moneyAmount} EGP\n`;
+                if (cd.chocolatePieces && cd.chocolatePieces > 0) msg += `   • مضاف قطع شوكولاتة: ${cd.chocolatePieces} قطعة\n`;
+                if (cd.wrappingType && cd.wrappingType !== "none") msg += `   • التغليف الفاخر: ${cd.wrappingType}\n`;
+                if (cd.giftCardText && cd.giftCardText.trim() !== "") msg += `   • رسالة كارت الإهداء: "${cd.giftCardText}"\n`;
+            }
         }
         msg += `   ---------------------------\n`;
     });
