@@ -3,223 +3,388 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>محاكي التورت التفاعلي الفاخر | حلويات بوسي</title>
+    <title>محاكي التورت التفاعلي | حلويات بوسي</title>
+    <meta name="description" content="ميزة حصرية تتيح للعميل تصميم تورتته بنفسه واختيار كل التفاصيل التي يريدها قبل تنفيذها.">
     
-    <!-- المحرك المركزي العالمي (يُستدعى أولاً لتهيئة قاعدة البيانات والتوقيت المشترك) -->
-    <script src="js/core-engine.js"></script>
-    
+    <!-- المظهر المركزي للموقع ومحرك الخطوط -->
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/simulators.css">
-
+    
+    <!-- المحرك المركزي العالمي وحارس الفحص المالي (يستدعى أولاً حتماً) -->
+    <script src="js/core-engine.js"></script>
+    
     <style>
-        /* تطهير مساحات الواجهة وتأمين التنفس البصري الكامل وفقاً للحوكمة */
-        body {
-            background-color: #FFFFFF !important;
+        /* ستايلات حصرية ومكملة لصفحة المحاكي لتأمين الراحة والتنفس البصري الكامل */
+        .cake-hero-hook {
+            width: 100%;
+            height: 45vh;
+            min-height: 280px;
+            max-height: 500px;
+            overflow: hidden;
+            border-bottom: var(--bose-border-pink);
+            position: relative;
+        }
+        .cake-hero-hook img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .simulator-main-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 24px 16px 60px 16px;
+        }
+        .intro-text-block {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .intro-text-block h1 {
+            font-size: 28px;
+            margin: 0 0 12px 0;
+            color: var(--bose-black);
+        }
+        .intro-text-block p {
+            font-size: 16px;
+            color: var(--bose-black);
+            line-height: 1.6;
             margin: 0;
-            padding: 0;
+        }
+        .step-card-block {
+            background-color: var(--bose-white);
+            border: var(--bose-border-pink);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--bose-shadow-glow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .step-card-block:hover {
+            box-shadow: var(--bose-shadow-hover);
+        }
+        .step-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0 0 16px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--bose-black);
+            border-bottom: 1px solid rgba(255, 145, 164, 0.15);
+            padding-bottom: 8px;
+        }
+        .step-title span {
+            color: var(--bose-pink);
         }
         
-        .bose-main-container {
-            padding: 40px 15px;
-            box-sizing: border-box;
-            background-color: #FFFFFF;
-            max-width: 1200px;
+        /* هندسة عناصر الإدخال الرقمية الذكية */
+        .bose-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            max-width: 200px;
             margin: 0 auto;
+            border: var(--bose-border-thick);
+            border-radius: 50px;
+            overflow: hidden;
+            background: var(--bose-white);
         }
-
-        /* لوحة التحكم وتخصيص خيارات العميل الفاخرة والمقسمة لخطوات */
-        .builder-controls-panel {
-            background: #FFFFFF;
+        .bose-input-wrapper button {
+            background: none;
+            border: none;
+            width: 50px;
+            height: 45px;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--bose-pink);
+            transition: background 0.2s;
+        }
+        .bose-input-wrapper button:hover {
+            background-color: rgba(255, 145, 164, 0.08);
+        }
+        .bose-input-wrapper input {
+            width: 100%;
+            height: 45px;
+            border: none;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--bose-black);
+            background: transparent;
+        }
+        .bose-input-wrapper input:focus {
+            outline: none;
+        }
+        
+        /* التوزيع الهندسي للأزرار التفاعلية الناعمة بدون تكدس */
+        .bose-radio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 14px;
+        }
+        .bose-radio-btn {
+            position: relative;
+            cursor: pointer;
+        }
+        .bose-radio-btn input {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .bose-radio-content {
             display: flex;
             flex-direction: column;
-            gap: 24px;
-            box-sizing: border-box;
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
-        /* أزرار التنقل الانسيابي بين خطوات المحاكي الفاخر */
-        .step-navigation-bar {
-            display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-top: 20px;
-            gap: 15px;
+            justify-content: center;
+            padding: 16px;
+            background-color: var(--bose-white);
+            border: 1px solid rgba(255, 145, 164, 0.25);
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            text-align: center;
+            color: var(--bose-black);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
-        /* شاشات الموبايل والتابلت: التحول لنمط طولي انسيابي مريح */
-        @media (max-width: 1024px) {
-            .step-navigation-bar {
-                flex-direction: column-reverse !important;
-                gap: 10px !important;
-            }
-            
-            .premium-nav-btn {
-                width: 100% !important;
-                justify-content: center !important;
-            }
+        .bose-radio-btn input:checked + .bose-radio-content {
+            background-color: var(--bose-white);
+            border: var(--bose-border-thick);
+            box-shadow: var(--bose-shadow-glow);
+            transform: translateY(-2px);
+        }
+        .bose-radio-btn input:checked + .bose-radio-content::after {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            width: 12px;
+            height: 12px;
+            background-color: var(--bose-pink);
+            border-radius: 50%;
+            border: 2px solid var(--bose-white);
+        }
+        .bose-radio-btn.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .bose-radio-btn.disabled .bose-radio-content {
+            background-color: #f9f9f9;
+            border-color: #eee;
+        }
+        
+        /* التنبيهات المخصصة والذكية */
+        .bose-alert-message {
+            margin-top: 12px;
+            padding: 12px 16px;
+            background-color: rgba(255, 145, 164, 0.06);
+            border-right: 4px solid var(--bose-pink);
+            border-radius: 4px 12px 12px 4px;
+            font-size: 14px;
+            color: var(--bose-black);
+            line-height: 1.5;
+            display: none;
+        }
+        
+        /* حقول النصوص الكبيرة المريحة */
+        .bose-textarea {
+            width: 100%;
+            height: 90px;
+            border: 1px solid rgba(255, 145, 164, 0.3);
+            border-radius: 14px;
+            padding: 12px;
+            font-size: 15px;
+            color: var(--bose-black);
+            resize: none;
+            box-sizing: border-box;
+            background-color: var(--bose-white);
+            transition: border-color 0.2s;
+        }
+        .bose-textarea:focus {
+            outline: none;
+            border-color: var(--bose-pink);
+            box-shadow: 0 0 0 2px rgba(255, 145, 164, 0.1);
+        }
+        
+        /* الشريط العائم الحساس للسعر اللحظي لحمايته من الصدمات */
+        .dynamic-tracker-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(10px);
+            border-top: var(--bose-border-pink);
+            padding: 16px;
+            box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.05);
+            z-index: 1000;
+        }
+        .tracker-flex-container {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+        .tracker-price-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .tracker-price-info .label {
+            font-size: 13px;
+            color: #666;
+        }
+        .tracker-price-info .price-display {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--bose-pink);
+        }
+        .bose-master-cta {
+            background-color: var(--bose-pink);
+            color: var(--bose-white);
+            border: none;
+            padding: 12px 36px;
+            font-size: 18px;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: var(--bose-shadow-glow);
+        }
+        .bose-master-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--bose-shadow-hover);
+        }
+        .bose-master-cta:active {
+            transform: translateY(0);
         }
     </style>
 </head>
 <body>
 
-    <!-- أوسمة الحقن الديناميكي الموحدة للهيدر المقدس لمنع التكرار -->
+    <!-- وسم ضخ الهيدر المقدس ديناميكياً من محرك النظام -->
     <div id="bose-header-injector"></div>
 
-    <main class="bose-main-container">
-        <section id="cake-preview-section" class="cake-builder-section">
-            
-            <!-- مؤشر التقدم والخطوات الهندسي لتوجيه العميل بذكاء ورقي -->
-            <div class="simulator-steps-indicator" style="margin-bottom: 35px;">
-                <div class="step-node active" data-step="1" id="node-step-1">1</div>
-                <div class="step-node" data-step="2" id="node-step-2">2</div>
-                <div class="step-node" data-step="3" id="node-step-3">3</div>
+    <main>
+        <!-- الـ Hook البصري الأكبر في بداية الصفحة لجذب انتباه العميل الصريح -->
+        <div class="cake-hero-hook">
+            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" id="bose-custom-cake-hero-img" alt="تصميم تورتة فاخرة حسب الطلب - حلويات بوسي">
+        </div>
+
+        <div class="simulator-main-container">
+            <!-- مساحة النص والتعريف الهادئ بدون تكدس -->
+            <div class="intro-text-block">
+                <h1 id="cake-builder-title">محاكي التورت</h1>
+                <p id="cake-builder-desc">ميزة حصرية تتيح للعميل تصميم تورتته بنفسه واختيار كل التفاصيل التي يريدها قبل تنفيذها بلمسات فنية متكاملة.</p>
             </div>
 
-            <div class="simulator-grid-layout">
+            <form id="bose-cake-builder-form" onsubmit="return false;">
                 
-                <!-- لوحة التحكم وتخصيص الخيارات الفاخرة بنظام الخطوات -->
-                <div class="builder-controls-panel">
-                    <div class="panel-header-block" style="text-align: right; border-bottom: 1px solid rgba(255,145,164,0.1); padding-bottom: 15px;">
-                        <h1 class="builder-main-title" style="font-family: 'Cairo'; font-size: 22px; font-weight: 700; color: #111111; margin: 0 0 6px 0;">محاكي التورت الذكي</h1>
-                        <p class="builder-sub-desc" style="font-family: 'Cairo'; font-size: 14px; color: #111111; opacity: 0.8; margin: 0; line-height: 1.5;">
-                            ميزة حصرية تتيح لك تصميم تورتتك بنفسك واختيار كل التفاصيل اللي عايزها قبل ما ننفذها بحب وشغف.
-                        </p>
+                <!-- الخطوة 1: تحديد الحجم وعدد الأفراد -->
+                <div class="step-card-block">
+                    <h2 class="step-title"><span>1.</span> حدد حجم التورتة (عدد الأفراد)</h2>
+                    <div class="bose-input-wrapper">
+                        <button type="button" id="btn-persons-minus" aria-label="تقليل عدد الأفراد">-</button>
+                        <input type="number" id="input-cake-persons" value="4" min="4" max="250" step="2" readonly>
+                        <button type="button" id="btn-persons-plus" aria-label="زيادة عدد الأفراد">+</button>
                     </div>
-
-                    <form id="bose-cake-builder-form" onsubmit="event.preventDefault();" style="display: flex; flex-direction: column; gap: 24px;">
-                        
-                        <!-- 📦 الخطوة الأولى: الحجم والأبعاد الهندسية -->
-                        <div class="cake-builder-step-panel active" id="cake-step-panel-1">
-                            <h2 class="step-title" style="font-family: 'Cairo'; font-size: 16px; font-weight: 700; color: #111111; margin-bottom: 20px;"><i class="fa-solid fa-calculator" style="color:#FF91A4; margin-left:6px;"></i> الخطوة 1: تحديد الحجم والشكل الهندسي</h2>
-                            
-                            <!-- 1. تحديد حجم التورتة (عدد الأفراد) عبر حقل Stepper ذكي -->
-                            <div class="control-group-box" style="text-align: right; margin-bottom: 24px;">
-                                <label class="group-field-label" style="font-family: 'Cairo'; font-size: 15px; font-weight: 700; color: #111111; display: block; margin-bottom: 10px;">
-                                    <i class="fa-solid fa-users" style="color: #FF91A4; margin-left: 6px;"></i> حجم التورتة (عدد الأفراد):
-                                </label>
-                                <div class="persons-stepper-control" style="display: flex; align-items: center; border: 1px solid rgba(255,145,164,0.3); border-radius: 14px; width: max-content; background: #FFFFFF; padding: 4px; height: 44px; box-sizing: border-box;">
-                                    <button type="button" class="stepper-btn" id="cake-btn-plus" style="border: none; background: transparent; width: 40px; height: 100%; font-size: 20px; font-weight: 700; color: #111111; cursor: pointer;">+</button>
-                                    <span id="cake-persons-display" style="width: 50px; text-align: center; font-size: 16px; font-weight: 700; color: #111111; font-family: 'Cairo';">4</span>
-                                    <button type="button" class="stepper-btn" id="cake-btn-minus" style="border: none; background: transparent; width: 40px; height: 100%; font-size: 20px; font-weight: 700; color: #111111; cursor: pointer;">-</button>
-                                </div>
-                            </div>
-
-                            <!-- 2. تحديد الشكل الهندسي للطبقات -->
-                            <div class="control-group-box" style="text-align: right;">
-                                <label class="group-field-label" style="font-family: 'Cairo'; font-size: 15px; font-weight: 700; color: #111111; display: block; margin-bottom: 12px;">
-                                    <i class="fa-solid fa-shapes" style="color: #FF91A4; margin-left: 6px;"></i> الشكل الهندسي الخارجي للتورتة:
-                                </label>
-                                <div class="bose-cards-interactive-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
-                                    <div class="cake-shape-card active" data-shape="circle">دائرة</div>
-                                    <div class="cake-shape-card" data-shape="heart">قلب فخم</div>
-                                    <div class="cake-shape-card" data-shape="square">مربع</div>
-                                    <div class="cake-shape-card" data-shape="rectangle">مستطيل</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 📦 الخطوة الثانية: النكهة والطبقات الداخلية الفاخرة -->
-                        <div class="cake-builder-step-panel" id="cake-step-panel-2" style="display: none;">
-                            <h2 class="step-title" style="font-family: 'Cairo'; font-size: 16px; font-weight: 700; color: #111111; margin-bottom: 20px;"><i class="fa-solid fa-cake-slice" style="color:#FF91A4; margin-left:6px;"></i> الخطوة 2: النكهات وعدد أدوار التورتة</h2>
-                            
-                            <!-- 1. تحديد عدد الطبقات والأدوار -->
-                            <div class="control-group-box" style="text-align: right; margin-bottom: 24px;">
-                                <label class="group-field-label" style="font-family: 'Cairo'; font-size: 15px; font-weight: 700; color: #111111; display: block; margin-bottom: 12px;">
-                                    <i class="fa-solid fa-layer-group" style="color: #FF91A4; margin-left: 6px;"></i> عدد طبقات وأدوار التورتة:
-                                </label>
-                                <div class="bose-cards-interactive-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
-                                    <div class="cake-layer-card active" data-layer="1">دور واحد</div>
-                                    <div class="cake-layer-card" data-layer="2">٢ دور</div>
-                                    <div class="cake-layer-card" data-layer="3">٣ أدوار</div>
-                                </div>
-                            </div>
-
-                            <!-- 2. الطعم والنكهة الداخلية المعتمدة بالـ JSON -->
-                            <div class="control-group-box" style="text-align: right;">
-                                <label class="group-field-label" style="font-family: 'Cairo'; font-size: 15px; font-weight: 700; color: #111111; display: block; margin-bottom: 12px;">
-                                    <i class="fa-solid fa-cookie-bite" style="color: #FF91A4; margin-left: 6px;"></i> النكهة والطعم الداخلي المعتمد الأصيل:
-                                </label>
-                                <div class="bose-cards-interactive-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
-                                    <div class="cake-flavor-card active" data-flavor="vanilla">فانيليا هشة</div>
-                                    <div class="cake-flavor-card" data-flavor="chocolate">شوكولاتة غنية</div>
-                                    <div class="cake-flavor-card" data-flavor="half-half">نصف ونصف</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 📦 الخطوة الثالثة: طباعة الصور والعبارات النصية والإضافة للسلة -->
-                        <div class="cake-builder-step-panel" id="cake-step-panel-3" style="display: none;">
-                            <h2 class="step-title" style="font-family: 'Cairo'; font-size: 16px; font-weight: 700; color: #111111; margin-bottom: 20px;"><i class="fa-solid fa-wand-magic-sparkles" style="color:#FF91A4; margin-left:6px;"></i> الخطوة 3: التخصيص النهائي وطباعة الصور الخاصة</h2>
-                            
-                            <!-- 1. خيارات طباعة الصور الخاصة المعتمدة -->
-                            <div class="control-group-box" style="text-align: right; margin-bottom: 24px;">
-                                <label class="group-field-label" style="font-family: 'Cairo'; font-size: 15px; font-weight: 700; color: #111111; display: block; margin-bottom: 12px;">
-                                    <i class="fa-solid fa-image" style="color: #FF91A4; margin-left: 6px;"></i> تصميم وطباعة الصور الخاصة المعتمدة:
-                                </label>
-                                <div class="bose-cards-interactive-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px;">
-                                    <div class="cake-printing-card active" data-printing="none">بدون صورة</div>
-                                    <div class="cake-printing-card" data-printing="edible">صورة للأكل</div>
-                                    <div class="cake-printing-card" data-printing="non-edible">مجسمة برواز</div>
-                                </div>
-                                
-                                <!-- حاوية رفع الصور السحابية لـ Cloudinary -->
-                                <div id="bose-photo-upload-zone" style="display: none;">
-                                    <p style="font-family: 'Cairo'; font-size: 13px; font-weight: 600; color: #111111; margin: 0 0 10px 0;">ارفع صورتك المفضلة لتزيين تورتتك الفاخرة 🌸</p>
-                                    <input type="file" id="cake-photo-file-input" accept="image/*" style="display: none;">
-                                    <button type="button" class="bose-upload-trigger-btn" onclick="document.getElementById('cake-photo-file-input').click();">اختيار صورة من جهازك</button>
-                                    <div id="cake-upload-status"></div>
-                                    
-                                    <div id="cake-photo-preview-box">
-                                        <button type="button" class="bose-clear-uploaded-image" id="btn-clear-uploaded-img" aria-label="حذف الصورة">×</button>
-                                        <img id="cake-photo-preview-img" src="" alt="معاينة تصميم العميل السحابي">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- 2. العبارة النصية المكتوبة والموضع المعتمد مجاناً -->
-                            <div class="control-group-box" style="text-align: right; margin-bottom: 24px;">
-                                <label class="group-field-label" for="cake-custom-text" style="font-family: 'Cairo'; font-size: 15px; font-weight: 700; color: #111111; display: block; margin-bottom: 10px;">
-                                    <i class="fa-solid fa-pen-fancy" style="color: #FF91A4; margin-left: 6px;"></i> عبارة الإهداء المكتوبة فوق التورتة:
-                                </label>
-                                <input type="text" id="cake-custom-text" class="bose-form-text-input" placeholder="مثال: عيد ميلاد سعيد يا بوسي" maxlength="30" style="width: 100%; border: 1px solid rgba(255,145,164,0.3); padding: 12px; border-radius: 14px; font-family: 'Cairo'; font-size: 14px; color: #111111; box-sizing: border-box; background: #FFFFFF; outline: none;">
-                            </div>
-
-                            <!-- السعر اللحظي المقفل والدقيق الشفاف الشامل للزيادات المعتمدة -->
-                            <div class="pricing-card-summary" style="border-top: 1px dashed rgba(255,145,164,0.3); padding-top: 15px; margin-bottom: 20px;">
-                                <div class="price-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                                    <span class="price-label" style="font-family: 'Cairo'; font-size: 15px; font-weight: 600; color: #111111;">السعر التقديري للتخصيص:</span>
-                                    <div class="dynamic-price-display" style="font-family: 'Cairo'; font-size: 24px; font-weight: 700; color: #FF91A4;">
-                                        <span id="cake-total-price">580</span> <span style="font-size: 14px; color: #111111;">جنيه</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- زر الاعتماد النهائي الكلي للطلب والترحيل المعزول للسلة الموحدة -->
-                            <div class="builder-action-wrapper">
-                                <button type="button" id="btn-add-cake-to-cart" class="premium-nav-btn primary" style="width: 100%; justify-content: center; padding: 14px; border-radius: 16px; font-size: 16px;">
-                                    <i class="fa-solid fa-basket-shopping"></i> اعتماد التصميم المخصص وإضافته للسلة
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- 🛠️ شريط أزرار التحكم الفاخر للتنقل بين الخطوات بسلاسة تامة -->
-                        <div class="step-navigation-bar">
-                            <button type="button" class="premium-nav-btn secondary" id="btn-prev-step" style="display: none;"><i class="fa-solid fa-arrow-right"></i> الخطوة السابقة</button>
-                            <button type="button" class="premium-nav-btn primary" id="btn-next-step">الخطوة التالية <i class="fa-solid fa-arrow-left"></i></button>
-                        </div>
-
-                    </form>
                 </div>
 
-            </div>
-        </section>
+                <!-- الخطوة 2: الأشكال الهندسية والقيود اللوجستية -->
+                <div class="step-card-block">
+                    <h2 class="step-title"><span>2.</span> اختر الشكل الهندسي للطبقات</h2>
+                    <div class="bose-radio-grid" id="container-cake-shapes">
+                        <label class="bose-radio-btn">
+                            <input type="radio" name="cake_shape" value="circle" checked>
+                            <div class="bose-radio-content">دائرة</div>
+                        </label>
+                        <label class="bose-radio-btn">
+                            <input type="radio" name="cake_shape" value="heart">
+                            <div class="bose-radio-content">قلب</div>
+                        </label>
+                        <label class="bose-radio-btn" id="label-shape-square">
+                            <input type="radio" name="cake_shape" value="square">
+                            <div class="bose-radio-content">مربع</div>
+                        </label>
+                        <label class="bose-radio-btn" id="label-shape-rectangle">
+                            <input type="radio" name="cake_shape" value="rectangle">
+                            <div class="bose-radio-content">مستطيل</div>
+                        </label>
+                    </div>
+                    <!-- رسائل التنبيه والترقية الذكية المربوطة بالمحرك وفروق الأحجام -->
+                    <div class="bose-alert-message" id="alert-shape-restriction"></div>
+                </div>
+
+                <!-- الخطوة 3: النكهة والطعم الداخلي -->
+                <div class="step-card-block">
+                    <h2 class="step-title"><span>3.</span> النكهة والطعم الداخلي الفاخر</h2>
+                    <div class="bose-radio-grid">
+                        <label class="bose-radio-btn">
+                            <input type="radio" name="cake_flavor" value="vanilla" checked>
+                            <div class="bose-radio-content">فانيليا</div>
+                        </label>
+                        <label class="bose-radio-btn">
+                            <input type="radio" name="cake_flavor" value="chocolate">
+                            <div class="bose-radio-content">شوكولاتة</div>
+                        </label>
+                        <label class="bose-radio-btn">
+                            <input type="radio" name="cake_flavor" value="half-half">
+                            <div class="bose-radio-content">نصف ونصف</div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- الخطوة 4: طباعة الصور الخاصة -->
+                <div class="step-card-block">
+                    <h2 class="step-title"><span>4.</span> إضافة وتخصيص الصور المطبوعة</h2>
+                    <div class="bose-radio-grid">
+                        <label class="bose-radio-btn">
+                            <input type="radio" name="cake_printing" value="none" checked>
+                            <div class="bose-radio-content">بدون إضافة صور</div>
+                        </label>
+                        <label class="bose-radio-btn">
+                            <input type="radio" name="cake_printing" value="edible">
+                            <div class="bose-radio-content">صورة قابلة للأكل (+60 ج)</div>
+                        </label>
+                        <label class="bose-radio-btn">
+                            <input type="radio" name="cake_printing" value="non-edible">
+                            <div class="bose-radio-content">صورة غير قابلة للأكل (+15 ج)</div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- الخطوة 5: خط الرسائل الخاصة المميزة -->
+                <div class="step-card-block">
+                    <h2 class="step-title"><span>5.</span> النص المراد خطه على سطح التورتة</h2>
+                    <textarea class="bose-textarea" id="text-cake-message" placeholder="اكتب رسالتك هنا بدقة (مثال: عيد ميلاد سعيد يا بوسي)" maxlength="100"></textarea>
+                </div>
+
+                <!-- الخطوة 6: حارس السلامة الطبية (ملاحظات الحساسية) -->
+                <div class="step-card-block">
+                    <h2 class="step-title"><span>6.</span> حارس السلامة الطبية وملاحظات الحساسية</h2>
+                    <textarea class="bose-textarea" id="text-cake-allergy" placeholder="سجل هنا أي حساسية غذائية (مثال: حساسية من المكسرات أو الفول السوداني) لسلامتك الفورية أثناء التحضير بالمعمل" maxlength="150"></textarea>
+                </div>
+
+            </form>
+        </div>
     </main>
 
-    <!-- أوسمة الحقن الديناميكي للفوتر المعتمد الموحد لضمان الهوية البصرية -->
+    <!-- لافتة التتبع المالي اللحظية المستقرة في الأسفل لمنع تشتيت أو إخافة العميل -->
+    <div class="dynamic-tracker-bar">
+        <div class="tracker-flex-container">
+            <div class="tracker-price-info">
+                <span class="label">السعر اللحظي للتصميم الحالي:</span>
+                <span class="price-display" id="display-dynamic-price">580 جنيه</span>
+            </div>
+            <button type="button" class="bose-master-cta" id="btn-cake-submit-cart">إضافة للتصميم الخاص بالسلة</button>
+        </div>
+    </div>
+
+    <!-- وسم ضخ الفوتر الرسمي الموحد للموقع -->
     <div id="bose-footer-injector"></div>
 
-    <!-- استدعاء المحرك البرمجي المستقل والمعزول كلياً للمحاكي فقط -->
+    <!-- استدعاء المحرك المخصص البرمي لرحلة التخصيص الكاملة بالتوافق مع نواة النظام -->
     <script src="js/cake-engine.js"></script>
 </body>
 </html>
