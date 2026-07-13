@@ -1,6 +1,6 @@
 /**
  * 👑 محرك السلة وإتمام الطلب والتوثيق المالي النهائي الفاخر والمطور - حلويات بوسي 👑
- * النسخة الهندسية القياسية الشاملة والمطورة كلياً - خالية تماماً من ثغرات البتر وتداخل النصوص V5.6
+ * النسخة الهندسية القياسية الشاملة والمطورة كلياً - خالية تماماً من ثغرات البتر وتداخل النصوص V5.8
  * الأداء: تم تحديثه ليعتمد على التحديث الموضعي (Localized DOM Mutations) لتوفير المعالج والبيانات بنسبة 100%
  * التوافق: معزول كلياً ويلتزم بمهامه دون التداخل مع أي ملف آخر أو تكرار وظائفه اللوجستية
  */
@@ -47,7 +47,7 @@ function renderBoseCartPage(storeData) {
     const cartWrapper = document.getElementById("cart-items-wrapper");
     const clearCartBtn = document.getElementById("btn-clear-cart") || document.querySelector("button.btn-clear-all-cart");
     
-    // رندرة السلة الشاملة من البداية (تستدعى عند فتح الصفحة أو الحذف النهائي فقط)
+    // رندرة السلة الشاملة من البداية
     function buildFullCartUI() {
         const rawCart = localStorage.getItem("bose_cart");
         const cart = rawCart ? JSON.parse(rawCart) : [];
@@ -113,32 +113,32 @@ function renderBoseCartPage(storeData) {
             cartCard.className = "bose-horizontal-cart-card";
             cartCard.setAttribute("data-item-id", item.id);
             cartCard.setAttribute("data-index", index);
-            cartCard.style.cssText = "display: flex; flex-direction: row; align-items: center; justify-content: space-between; border: 1px solid rgba(255, 145, 164, 0.2); background: #FFFFFF; padding: 16px; border-radius: 20px; margin-bottom: 16px; box-shadow: 0 8px 32px rgba(255, 145, 164, 0.05); position: relative; direction: rtl; width: 100%; box-sizing: border-box; gap: 12px; min-width: 0;";
+            cartCard.style.cssText = "display: flex; flex-direction: row; align-items: center; justify-content: space-between; border: 1.5px solid rgba(255, 145, 164, 0.25); background: #FFFFFF; padding: 24px; border-radius: 24px; margin-bottom: 20px; box-shadow: 0 12px 32px rgba(255, 145, 164, 0.08); position: relative; direction: rtl; width: 100%; box-sizing: border-box; gap: 20px; min-width: 0;";
             
             cartCard.innerHTML = `
-                <div style="display: flex; align-items: center; gap: 14px; flex: 1; min-width: 0;">
-                    <img src="${item.image || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png'}" class="cart-item-image" alt="${item.title}" style="width: 85px; height: 85px; border-radius: 14px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(255,145,164,0.1);" loading="lazy">
-                    <div style="display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0; text-align: right;">
-                        <h3 class="cart-item-title" style="margin: 0; font-size: 15px; font-weight: 700; color: #111111; font-family: 'Cairo'; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.title}</h3>
-                        <span class="cart-item-flavor-name" style="font-size: 13px; color: #FF91A4; font-weight: 700; font-family: 'Cairo';">${cleanFlavorName}</span>
+                <div style="display: flex; align-items: center; gap: 20px; flex: 1; min-width: 0;">
+                    <img src="${item.image || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png'}" class="cart-item-image" alt="${item.title}" style="width: 100px; height: 100px; border-radius: 18px; object-fit: cover; flex-shrink: 0; border: 2px solid rgba(255,145,164,0.15);" loading="lazy">
+                    <div style="display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 0; text-align: right;">
+                        <h3 class="cart-item-title" style="margin: 0; font-size: 16px; font-weight: 700; color: #111111; font-family: 'Cairo'; line-height: 1.4;">${item.title}</h3>
+                        <span class="cart-item-flavor-name" style="font-size: 13.5px; color: #FF91A4; font-weight: 700; font-family: 'Cairo';">${cleanFlavorName}</span>
                         ${customDetailsHTML}
                         
-                        <div class="bose-qty-controller-box" style="display: flex; align-items: center; border: 1px solid rgba(255, 145, 164, 0.2); border-radius: 10px; width: max-content; margin-top: 6px; background: #FFFFFF; height: 34px; padding: 2px;">
-                            <button class="btn-qty-plus" data-index="${index}" style="border: none; background: transparent; width: 32px; height: 100%; font-weight: 700; font-size: 15px; color: #111111; cursor: pointer;">+</button>
-                            <input type="text" readonly class="qty-numerical-display" value="${item.quantity}" style="width: 32px; text-align: center; border: none; font-size: 14px; font-weight: 700; color: #111111; background: transparent; font-family: 'Cairo';">
-                            <button class="btn-qty-minus" data-index="${index}" style="border: none; background: transparent; width: 32px; height: 100%; font-weight: 700; font-size: 15px; color: #111111; cursor: pointer;">-</button>
+                        <div class="bose-qty-controller-box" style="display: flex; align-items: center; border: 1.5px solid rgba(255, 145, 164, 0.25); border-radius: 12px; width: max-content; margin-top: 8px; background: #FFFFFF; height: 38px; padding: 2px;">
+                            <button class="btn-qty-plus" data-index="${index}" style="border: none; background: transparent; width: 36px; height: 100%; font-weight: 700; font-size: 16px; color: #111111; cursor: pointer;">+</button>
+                            <input type="text" readonly class="qty-numerical-display" value="${item.quantity}" style="width: 36px; text-align: center; border: none; font-size: 15px; font-weight: 700; color: #111111; background: transparent; font-family: 'Cairo';">
+                            <button class="btn-qty-minus" data-index="${index}" style="border: none; background: transparent; width: 36px; height: 100%; font-weight: 700; font-size: 16px; color: #111111; cursor: pointer;">-</button>
                         </div>
                     </div>
                 </div>
                 
-                <div style="display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; min-height: 85px; flex-shrink: 0; text-align: left;">
-                    <button class="btn-remove-item" data-index="${index}" aria-label="حذف الصنف" style="background: transparent; border: none; color: rgba(17,17,17,0.3); font-size: 15px; cursor: pointer; padding: 4px; transition: color 0.2s;">
+                <div style="display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; min-height: 100px; flex-shrink: 0; text-align: left;">
+                    <button class="btn-remove-item" data-index="${index}" aria-label="حذف الصنف" style="background: transparent; border: none; color: rgba(17,17,17,0.3); font-size: 16px; cursor: pointer; padding: 6px; transition: color 0.2s;">
                         <i class="fas fa-trash-alt"></i>
                     </button>
                     
                     <div style="text-align: left; font-family: 'Cairo';">
-                        <span class="qty-multiplication-label" style="display: ${item.quantity > 1 ? 'block' : 'none'}; font-size: 11px; color: #111111; opacity: 0.6; direction: ltr;">${finalProductPrice.toFixed(2)} × ${item.quantity}</span>
-                        <div class="cart-item-total-price" style="font-size: 16px; font-weight: 700; color: #FF91A4; white-space: nowrap;">${totalItemCost.toFixed(2)} <span style="font-size: 11px; font-weight: 700; color: #111111;">EGP</span></div>
+                        <span class="qty-multiplication-label" style="display: ${item.quantity > 1 ? 'block' : 'none'}; font-size: 12px; color: #111111; opacity: 0.6; direction: ltr;">${finalProductPrice.toFixed(2)} × ${item.quantity}</span>
+                        <div class="cart-item-total-price" style="font-size: 18px; font-weight: 700; color: #FF91A4; white-space: nowrap;">${totalItemCost.toFixed(2)} <span style="font-size: 12px; font-weight: 700; color: #111111;">EGP</span></div>
                     </div>
                 </div>
             `;
@@ -151,7 +151,7 @@ function renderBoseCartPage(storeData) {
         updateCartSummary(cart, storeData);
     }
     
-    // التحديث الموضعي الذكي لمنع الـ Reflow الكامل وتوفير استهلاك معالجات الهواتف والبيانات
+    // التحديث الموضعي الذكي لمنع الـ Reflow الكامل
     function updateSingleItemDOM(cardElement, item, finalProductPrice, totalItemCost) {
         const qtyDisplay = cardElement.querySelector(".qty-numerical-display");
         const multiLabel = cardElement.querySelector(".qty-multiplication-label");
@@ -163,7 +163,7 @@ function renderBoseCartPage(storeData) {
             multiLabel.style.display = item.quantity > 1 ? "block" : "none";
         }
         if (totalDisplay) {
-            totalDisplay.innerHTML = `${totalItemCost.toFixed(2)} <span style="font-size: 11px; font-weight: 700; color: #111111;">EGP</span>`;
+            totalDisplay.innerHTML = `${totalItemCost.toFixed(2)} <span style="font-size: 12px; font-weight: 700; color: #111111;">EGP</span>`;
         }
     }
     
@@ -246,7 +246,11 @@ function updateCartSummary(cart, storeData) {
         }
     });
     
-    if (subtotalDisplay) subtotalDisplay.textContent = subtotal.toFixed(2) + " EGP";
+    if (subtotalDisplay) {
+        subtotalDisplay.style.color = "#FF91A4";
+        subtotalDisplay.style.fontWeight = "700";
+        subtotalDisplay.textContent = subtotal.toFixed(2) + " EGP";
+    }
     if (itemsCountDisplay) itemsCountDisplay.textContent = displayItems;
     
     let discount = 0;
@@ -263,6 +267,8 @@ function updateCartSummary(cart, storeData) {
     if (finalGrandTotal < 0) finalGrandTotal = 0;
     
     if (grandTotalDisplay) {
+        grandTotalDisplay.style.color = "#FF91A4";
+        grandTotalDisplay.style.fontWeight = "700";
         grandTotalDisplay.textContent = Math.round(finalGrandTotal) + " EGP";
     }
     
@@ -392,16 +398,16 @@ function injectBoseBranchBlock(storeData) {
     
     const branchDiv = document.createElement("div");
     branchDiv.id = "bose-branch-info-static";
-    branchDiv.style.cssText = "background: rgba(212, 175, 55, 0.04); border: 1px solid #D4AF37; padding: 16px; border-radius: 14px; margin: 15px 0; direction: rtl; text-align: right;";
+    branchDiv.style.cssText = "background: rgba(255, 145, 164, 0.04); border: 1.5px solid #FF91A4; padding: 16px; border-radius: 14px; margin: 15px 0; direction: rtl; text-align: right;";
     
     const addressText = storeData.store?.pickup?.address || "الكفاح شارع الوحدة المحلية بجوار صيدلية الدكتور أحمد مجدي وبجوار عيادة الدكتور علي";
     const mapLink = storeData.store?.pickup?.mapUrl || "https://maps.app.goo.gl/nAg4Y7vQ7hACvKGc8?g_st=ac";
     
     branchDiv.innerHTML = `
-        <h4 style="margin: 0 0 6px 0; font-size: 15px; color: #111111; font-weight: 700; font-family: 'Cairo';"><i class="fas fa-building" style="color: #D4AF37; margin-left: 6px;"></i> مقر الاستلام الرسمي للبراند:</h4>
+        <h4 style="margin: 0 0 6px 0; font-size: 15px; color: #111111; font-weight: 700; font-family: 'Cairo';"><i class="fas fa-building" style="color: #FF91A4; margin-left: 6px;"></i> مقر الاستلام الرسمي للبراند:</h4>
         <p style="margin: 0 0 12px 0; font-size: 13.5px; color: #111111; opacity: 0.8; line-height: 1.6; font-family: 'Cairo';">${addressText}</p>
-        <a href="${mapLink}" target="_blank" class="success-action-secondary-btn" style="padding: 8px 16px; font-size: 13px; font-weight: 700; border-radius: 8px; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; background: #FFFFFF; border: 1px solid #D4AF37; color: #111111; font-family: 'Cairo';">
-            <i class="fas fa-map-marked-alt" style="color: #D4AF37;"></i> عرض الموقع على خرائط جوجل
+        <a href="${mapLink}" target="_blank" class="success-action-secondary-btn" style="padding: 8px 16px; font-size: 13px; font-weight: 700; border-radius: 8px; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; background: #FFFFFF; border: 1px solid #FF91A4; color: #111111; font-family: 'Cairo';">
+            <i class="fas fa-map-marked-alt" style="color: #FF91A4;"></i> عرض الموقع على خرائط جوجل
         </a>
     `;
     
@@ -422,7 +428,7 @@ function recalculateCheckoutInvoice(cart, storeData, shippingFee) {
     if (shippingDisplay) {
         shippingDisplay.textContent = shippingFee === 0 ? "مجاناً" : shippingFee.toFixed(2) + " EGP";
         if (shippingFee === 0) shippingDisplay.style.color = "#2ECC71";
-        else shippingDisplay.style.color = "#111111";
+        else shippingDisplay.style.color = "#FF91A4";
     }
     
     let discount = 0;
@@ -436,6 +442,7 @@ function recalculateCheckoutInvoice(cart, storeData, shippingFee) {
     if (absoluteTotal < 0) absoluteTotal = 0;
     
     if (grandTotalDisplay) {
+        grandTotalDisplay.style.color = "#FF91A4";
         grandTotalDisplay.textContent = Math.round(absoluteTotal) + " EGP";
     }
 }
