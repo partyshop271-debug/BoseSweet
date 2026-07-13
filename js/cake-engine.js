@@ -30,9 +30,6 @@ function startEngineLogic() {
         ]
     };
 
-    /**
-     * دالة الحساب والتحقق وتعديل لافتة السعر الذكية ديناميكياً
-     */
     function evaluateSimulatorState() {
         let currentPersons = parseInt(inputPersons.value, 10) || config.persons.minimum;
         let selectedShapeElement = document.querySelector('input[name="cake_shape"]:checked');
@@ -73,9 +70,6 @@ function startEngineLogic() {
         priceDisplay.textContent = `${Math.round(finalDynamicPrice)} جنيه`;
     }
 
-    /**
-     * تزامن حركة لوحات ومؤشرات الـ Stepper وحل ثغرة ثبات موضع السكرول
-     */
     function syncWizardPanelsUI() {
         for (let i = 1; i <= totalWizardStepsCount; i++) {
             const panel = document.getElementById(`panel-wizard-step-${i}`);
@@ -103,7 +97,7 @@ function startEngineLogic() {
             btnCartSubmit.style.display = "none";
         }
 
-        // 🛡️ حارس إعادة ضبط التمرير: يجبر الهاتف الذكي والكمبيوتر على نقل العميل لأول الصفحة فوراً
+        // 🛡️ حارس إعادة ضبط التمرير لتجربة مستخدم انسيابية ومريحة
         window.scrollTo({
             top: 0,
             behavior: 'smooth'
