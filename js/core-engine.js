@@ -486,7 +486,7 @@
                 filtered.forEach(p => {
                     let targetUrl = (p.id === 'toort-custom-master' || p.slug === 'toort-custom-master') ? 'cake-builder.html' : 
                                     ((p.id === 'flowers-master' || p.slug === 'flowers-master') ? 'flower-builder.html' : `product.html?slug=${p.slug}`);
-                    targetUrl += `
+                    html += `
                         <a href="${targetUrl}" class="search-result-card-item">
                             <img src="${p.images[0]}" class="search-result-img" />
                             <div class="search-result-info">
@@ -502,9 +502,9 @@
     }
 
     /**
-     * 12. محرك تهيئة قسم عقد من الإتقان بالحركة التلقائية اللانهائية الخالصة بالـ CSS
-     * التحسين الرياضي الفاصل لمنع الفراغات والقطع: تكرار كتل المصفوفة 6 مرات متتالية
-     * ليغطي كامل العرض الافتراضي والحسابي الممتد للـ Track بشكل مثالي قبل إعادة الدورة البصرية
+     * 12. محرك تهيئة قسم عقد من الإتقان المطور كلياً كلوحة ثابتة ومستقرة
+     * بناءً على طلب الإدارة الصارم: شل حركة السلايدر تماماً وعرض الـ 3 صور الأصلية 
+     * بجوار بعضها كشبكة متوازنة خالية تماماً من العشوائية أو الفراغات البيضاء.
      */
     window.initializeExcellenceSectionSlider = function() {
         const track = document.getElementById('excellence-images-track');
@@ -522,13 +522,10 @@
             `;
         });
         
-        // زراعة الكتل مكررة 6 مرات متتالية لملء شاشات الموبايل والكمبيوتر بشكل لانهائي مطلق
-        track.innerHTML = imagesHtml + imagesHtml + imagesHtml + imagesHtml + imagesHtml + imagesHtml; 
-        track.style.display = "flex";
-        track.style.width = "max-content";
-        
-        // ربط مباشر مع محرك التزامن السلس بالـ CSS
-        track.style.animation = "bosePerfectionLoop 30s linear infinite";
+        // عرض الـ 3 صور الصافية فقط بشكل مستقر ومحمي تماماً
+        track.innerHTML = imagesHtml; 
+        track.style.display = "grid";
+        track.style.animation = "none"; // تأكيد الشلل الكامل للحركة التلقائية
     };
 
     /**
