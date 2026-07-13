@@ -1,23 +1,22 @@
 /**
  * 👑 محرك محاكي تخصيص التورت التفاعلي الفاخر المطور والمصحح بالكامل - حلويات بوسي 👑
- * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية V32.0
- * التزام مطلق بحدود الملف (Scope-Locked) بدون أي تداخل مع محركات الموقع الأخرى
+ * النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البرمجية والمالية V33.0
+ * التزام مطلق بحدود الملف (Scope-Locked) وقواعد حوكمة البيانات المعتمدة لعام 2026
  */
 
 (function () {
     "use strict";
 
-    // مفتاح تخزين السلة الموحد والثابت
     const CART_STORAGE_KEY = 'bose_cart';
+    let currentStep = 1;
+    const totalSteps = 3;
 
-    // الإعدادات الافتراضية الدفاعية في حال تأخر تحميل قاعدة البيانات
+    // الإعدادات القياسية الدفاعية من قاعدة البيانات
     const cakeConfig = {
         enabled: true,
         basePrice: 580,          
         basePersons: 4,
         extraPersonPrice: 145,   
-        maxFillings: 3,
-        maxToppings: 3,
         shapes: [
             { id: "circle", name: "دائرة", minimumPersons: 4, extraPrice: 0 },
             { id: "heart", name: "قلب", minimumPersons: 4, extraPrice: 50 },
@@ -34,145 +33,62 @@
             { id: "chocolate", name: "شوكولاتة" },
             { id: "half-half", name: "نصف ونصف" }
         ],
-        fillings: [
-            { id: "nutella", name: "نوتيلا أصلية", price: 40 },
-            { id: "lotus", name: "كريمة لوتس", price: 45 },
-            { id: "pistachio", name: "فستق حلبي", price: 60 },
-            { id: "fruits", name: "فواكه طبيعية", price: 35 }
-        ],
-        toppings: [
-            { id: "chocolate_chips", name: "شوكليت شيبس", price: 20 },
-            { id: "crushed_nuts", name: "مكسرات مشكلة", price: 40 },
-            { id: "strawberry", name: "قطع فراولة", price: 25 },
-            { id: "gold_flakes", name: "ورق ذهب قابل للأكل", price: 50 }
-        ],
         printingOptions: [
             { id: "none", name: "بدون إضافة صور", price: 0 },
             { id: "edible", name: "صورة قابلة للأكل", price: 60 },
             { id: "non-edible", name: "صورة غير قابلة للأكل", price: 15 }
         ],
-        maxTextLength: 30,
-        textPlacements: [
-            { id: "top", name: "على سطح التورتة", price: 0 },
-            { id: "board", name: "على البورد (القاعدة)", price: 15 }
-        ]
+        maxTextLength: 30
     };
 
     let liveStoreConfig = null;
     let isEventsBound = false;
     let isUploadingImage = false;
 
-    // تهيئة حالة خيارات المستخدم للحفاظ على ذاكرة خفيفة
     let selectedConfig = {
         shape: "circle",
         cakeType: "vanilla",
         persons: 4,
         layers: 1,
-        fillings: [],
-        toppings: [],
         printingType: "none",
         uploadedImageUrl: null,
         text: "",
         textPosition: "top"
     };
 
-    // كائن التخزين المؤقت المطور لـ DOM لسرعة استجابة متناهية
     const dom = {
-        shapeCards: null, layerCards: null, cakeTypeCards: null, fillingCards: null,
-        toppingCards: null, printingCards: null, textPositionCards: null, textInput: null,
-        personsInput: null, btnMinusPersons: null, btnPlusPersons: null,
-        totalPriceEl: null, personsCountEl: null, btnAddToCart: null,
-        summaryShape: null, summaryCakeType: null, summaryPersons: null
+        shapeCards: null, layerCards: null, cakeTypeCards: null, printingCards: null, textInput: null,
+        personsInput: null, btnMinusPersons: null, btnPlusPersons: null, totalPriceEl: null, 
+        personsCountEl: null, btnAddToCart: null, summaryShape: null, summaryCakeType: null, 
+        summaryPersons: null, btnNextStep: null, btnPrevStep: null
     };
 
-    // مطهر النصوص لمنع هجمات XSS
-    const escapeHtml = function (unsafeString) {
-        if (!unsafeString) return '';
-        return unsafeString.toString()
-            .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-    };
+    const escapeHtml = (unsafe) => (unsafe ? unsafe.toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;") : '');
 
-    /* ==========================================================================
-       📐 1. الأنماط البصرية الحاكمة والمحسنة للأداء
-       ========================================================================== */
-    function injectInteractiveStyles() {
-        if (document.getElementById("bose-cake-interactive-styles")) return;
-        const style = document.createElement("style");
-        style.id = "bose-cake-interactive-styles";
-        style.textContent = `
-            .cake-shape-card, .cake-layer-card, .cake-flavor-card, .filling-card, .topping-card, .cake-printing-card, .cake-text-position-card {
-                cursor: pointer;
-                transition: transform 0.2s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.2s ease, border-color 0.2s ease;
-                border: 1px solid rgba(255, 145, 164, 0.2) !important;
-                background-color: #FFFFFF !important;
-                text-align: center;
-                user-select: none;
-            }
-            .cake-shape-card:hover, .cake-layer-card:hover, .cake-flavor-card:hover, .filling-card:hover, .topping-card:hover, .cake-printing-card:hover, .cake-text-position-card:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 8px 24px rgba(255, 145, 164, 0.1) !important;
-                border-color: rgba(255, 145, 164, 0.6) !important;
-            }
-            .cake-shape-card.active, .cake-layer-card.active, .cake-flavor-card.active, .filling-card.active, .topping-card.active, .cake-printing-card.active, .cake-text-position-card.active {
-                border: 2px solid #FF91A4 !important;
-                background-color: #FFF0F2 !important;
-                box-shadow: 0 8px 32px rgba(255, 145, 164, 0.12) !important;
-                transform: scale(1.02);
-            }
-        `;
-        document.head.appendChild(style);
-    }
-
-    /* ==========================================================================
-       📐 2. دالة التسعير المعزولة الخاصة بالملف والمحاكي فقط
-       ========================================================================== */
     function calculateLocalCakePrice(customizations) {
         const config = liveStoreConfig || cakeConfig;
         let total = parseFloat(config.basePrice) || 580;
 
-        const shapeObj = config.shapes.find(s => s.id === (customizations.shape || "circle"));
+        const shapeObj = config.shapes.find(s => s.id === customizations.shape);
         if (shapeObj) total += parseFloat(shapeObj.extraPrice) || 0;
 
         const minPersons = shapeObj ? (parseInt(shapeObj.minimumPersons, 10) || 4) : 4;
         const chosenPersons = Math.max(minPersons, parseInt(customizations.persons, 10) || minPersons);
-        const extraPersonPrice = parseFloat(config.pricePerPerson || config.extraPersonPrice) || 145;
+        const extraPricePerPerson = parseFloat(config.pricePerPerson || config.extraPersonPrice) || 145;
 
         if (chosenPersons > 4) {
-            total += (chosenPersons - 4) * extraPersonPrice;
+            total += (chosenPersons - 4) * extraPricePerPerson;
         }
 
-        const layerObj = config.layers.find(l => parseInt(l.id, 10) === (parseInt(customizations.layers, 10) || 1));
+        const layerObj = config.layers.find(l => parseInt(l.id, 10) === parseInt(customizations.layers, 10));
         if (layerObj) total += parseFloat(layerObj.extraPrice) || 0;
 
-        if (Array.isArray(customizations.fillings)) {
-            customizations.fillings.forEach(id => {
-                const obj = config.fillings.find(f => f.id === id);
-                if (obj) total += parseFloat(obj.price) || 0;
-            });
-        }
-        if (Array.isArray(customizations.toppings)) {
-            customizations.toppings.forEach(id => {
-                const obj = config.toppings.find(t => t.id === id);
-                if (obj) total += parseFloat(obj.price) || 0;
-            });
-        }
-
-        const printingObj = config.printingOptions.find(p => p.id === (customizations.printingType || "none"));
+        const printingObj = config.printingOptions.find(p => p.id === customizations.printingType);
         if (printingObj) total += parseFloat(printingObj.price) || 0;
 
-        if (customizations.text && customizations.text.trim().length > 0) {
-            const placementObj = config.textPlacements.find(p => p.id === (customizations.textPosition || "top"));
-            if (placementObj) total += parseFloat(placementObj.price) || 0;
-        }
-
-        // استخدام دالة المراجعة الخارجية إذا وجدت دون إعادة تعريفها أو تعديلها لمنع التداخل
         return Math.round(window.calculateBosePrice ? window.calculateBosePrice(total, "menu-only") : total);
     }
 
-    /* ==========================================================================
-       🌐 3. المزامنة الذكية مع قاعدة البيانات وضغط الصور لتقليل استهلاك البيانات
-       ========================================================================== */
     function loadConfigFromDatabase() {
         if (window.BoseStoreData && window.BoseStoreData.cakeBuilder) {
             const dbConfig = window.BoseStoreData.cakeBuilder;
@@ -182,26 +98,18 @@
                 pricePerPerson: dbConfig.pricePerPerson !== undefined ? parseFloat(dbConfig.pricePerPerson) : cakeConfig.extraPersonPrice,
                 maxTextLength: dbConfig.maxTextLength !== undefined ? parseInt(dbConfig.maxTextLength, 10) : cakeConfig.maxTextLength,
                 shapes: Array.isArray(dbConfig.shapes) ? dbConfig.shapes.map(s => ({ ...s, extraPrice: s.extraPrice || 0 })) : cakeConfig.shapes,
-                layers: cakeConfig.layers, cakeTypes: cakeConfig.cakeTypes, fillings: cakeConfig.fillings, toppings: cakeConfig.toppings,
-                printingOptions: cakeConfig.printingOptions, textPlacements: cakeConfig.textPlacements
+                layers: cakeConfig.layers, cakeTypes: cakeConfig.cakeTypes, printingOptions: cakeConfig.printingOptions
             };
         } else {
             liveStoreConfig = { ...cakeConfig };
         }
     }
 
-    function isCakeBuilderPage() {
-        return !!document.getElementById('bose-cake-builder-form') || !!document.getElementById('cake-preview');
-    }
-
     function cacheDOMElements() {
         dom.shapeCards = document.querySelectorAll('.cake-shape-card');
         dom.layerCards = document.querySelectorAll('.cake-layer-card');
         dom.cakeTypeCards = document.querySelectorAll('.cake-flavor-card');
-        dom.fillingCards = document.querySelectorAll('.filling-card');
-        dom.toppingCards = document.querySelectorAll('.topping-card');
         dom.printingCards = document.querySelectorAll('.cake-printing-card');
-        dom.textPositionCards = document.querySelectorAll('.cake-text-position-card');
         dom.textInput = document.getElementById('cake-custom-text');
         dom.btnMinusPersons = document.getElementById('cake-btn-minus');
         dom.btnPlusPersons = document.getElementById('cake-btn-plus');
@@ -211,9 +119,10 @@
         dom.summaryShape = document.getElementById('summary-shape');
         dom.summaryCakeType = document.getElementById('summary-cake-type');
         dom.summaryPersons = document.getElementById('summary-persons');
+        dom.btnNextStep = document.getElementById('btn-next-step');
+        dom.btnPrevStep = document.getElementById('btn-prev-step');
     }
 
-    // ضغط الصور محلياً بدقة متناهية قبل الرفع لتقليل استهلاك البيانات بنسبة 80%
     function compressBoseImage(file, maxWidth = 800, maxHeight = 800, quality = 0.7) {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -236,9 +145,6 @@
         });
     }
 
-    /* ==========================================================================
-       📐 4. ربط الأحداث وإدارة المحاكي بكفاءة عزل كاملة
-       ========================================================================== */
     function bindCentralizedEvents() {
         if (isEventsBound) return;
 
@@ -262,24 +168,6 @@
             finalizeUIUpdate();
         });
 
-        const toggleFeature = (array, id, max, message) => {
-            const idx = array.indexOf(id);
-            if (idx > -1) array.splice(idx, 1);
-            else if (array.length < max) array.push(id);
-            else showPremiumToast(message, "warning");
-            finalizeUIUpdate();
-        };
-
-        addClickEvent(dom.fillingCards, function() {
-            const max = (liveStoreConfig || cakeConfig).maxFillings || 3;
-            toggleFeature(selectedConfig.fillings, this.getAttribute('data-filling'), max, `تورتتك تدعم حتى ${max} حشوات فقط لتظل متماسكة!`);
-        });
-
-        addClickEvent(dom.toppingCards, function() {
-            const max = (liveStoreConfig || cakeConfig).maxToppings || 3;
-            toggleFeature(selectedConfig.toppings, this.getAttribute('data-topping'), max, `لحماية التنسيق الجمالي، نقدر نضيف ${max} إضافات كحد أقصى.`);
-        });
-
         addClickEvent(dom.printingCards, function() {
             selectedConfig.printingType = this.getAttribute('data-printing');
             const zone = document.getElementById('bose-photo-upload-zone');
@@ -287,10 +175,22 @@
             finalizeUIUpdate();
         });
 
-        addClickEvent(dom.textPositionCards, function() {
-            selectedConfig.textPosition = this.getAttribute('data-position');
-            finalizeUIUpdate();
-        });
+        // إدارة لوحة التنقل المتدرج بين خطوات المحاكي الثلاث
+        if (dom.btnNextStep) {
+            dom.btnNextStep.onclick = () => {
+                if (currentStep < totalSteps) {
+                    goToStep(currentStep + 1);
+                }
+            };
+        }
+
+        if (dom.btnPrevStep) {
+            dom.btnPrevStep.onclick = () => {
+                if (currentStep > 1) {
+                    goToStep(currentStep - 1);
+                }
+            };
+        }
 
         const fileInput = document.getElementById('cake-photo-file-input');
         if (fileInput) {
@@ -318,14 +218,29 @@
                         const box = document.getElementById('cake-photo-preview-box');
                         if (box) box.style.display = 'block';
                         if (statusEl) statusEl.textContent = "🌸 تم رفع وضبط صورتك بنجاح!";
-                        showPremiumToast("تم حفظ وتأمين صورتك بنجاح على التورتة!", "success");
+                        if (typeof window.showBoseGlobalToast === 'function') window.showBoseGlobalToast("تم حفظ وتأمين صورتك بنجاح على التورتة!");
                     }
                 } catch (err) {
                     if (statusEl) statusEl.textContent = "⚠️ فشل رفع الصورة، يرجى التحقق من الشبكة.";
-                } finaly {
+                } finally {
                     isUploadingImage = false;
                 }
             });
+        }
+
+        const clearImgBtn = document.getElementById('btn-clear-uploaded-img');
+        if (clearImgBtn) {
+            clearImgBtn.onclick = (e) => {
+                e.stopPropagation();
+                selectedConfig.uploadedImageUrl = null;
+                const box = document.getElementById('cake-photo-preview-box');
+                if (box) box.style.display = 'none';
+                const statusEl = document.getElementById('cake-upload-status');
+                if (statusEl) statusEl.textContent = "";
+                const fileInput = document.getElementById('cake-photo-file-input');
+                if (fileInput) fileInput.value = "";
+                drawCakePreviewSVG();
+            };
         }
 
         if (dom.textInput) {
@@ -333,29 +248,44 @@
                 const max = (liveStoreConfig || cakeConfig).maxTextLength || 30;
                 if (this.value.length > max) {
                     this.value = this.value.substring(0, max);
-                    showPremiumToast(`لحماية جمال الخط، تورتتك الرائعة تدعم حتى ${max} حرف فقط.`, "warning");
                 }
                 selectedConfig.text = this.value;
                 finalizeUIUpdate();
             });
         }
 
-        if (dom.btnMinusPersons) dom.btnMinusPersons.addEventListener('click', () => modifyPersonsCount(-2));
-        if (dom.btnPlusPersons) dom.btnPlusPersons.addEventListener('click', () => modifyPersonsCount(2));
-
-        if (dom.btnAddToCart) dom.btnAddToCart.addEventListener('click', () => addCustomizedCakeToCart());
+        if (dom.btnMinusPersons) dom.btnMinusPersons.onclick = () => modifyPersonsCount(-2);
+        if (dom.btnPlusPersons) dom.btnPlusPersons.onclick = () => modifyPersonsCount(2);
+        if (dom.btnAddToCart) dom.btnAddToCart.onclick = () => addCustomizedCakeToCart();
 
         isEventsBound = true;
+    }
+
+    function goToStep(step) {
+        document.querySelectorAll('.cake-builder-step-panel').forEach(p => p.style.display = 'none');
+        document.getElementById(`cake-step-panel-${step}`).style.display = 'block';
+
+        document.querySelectorAll('.step-node').forEach(node => {
+            const nodeStep = parseInt(node.getAttribute('data-step'), 10);
+            if (nodeStep === step) {
+                node.className = "step-node active";
+            } else if (nodeStep < step) {
+                node.className = "step-node completed";
+            } else {
+                node.className = "step-node";
+            }
+        });
+
+        currentStep = step;
+        if (dom.btnPrevStep) dom.btnPrevStep.style.display = step === 1 ? 'none' : 'inline-flex';
+        if (dom.btnNextStep) dom.btnNextStep.style.display = step === totalSteps ? 'none' : 'inline-flex';
     }
 
     function modifyPersonsCount(offset) {
         const shapeObj = (liveStoreConfig || cakeConfig).shapes.find(s => s.id === selectedConfig.shape);
         const min = shapeObj ? (shapeObj.minimumPersons || 4) : 4;
         let current = (parseInt(selectedConfig.persons, 10) || min) + offset;
-        if (current < min) {
-            current = min;
-            showPremiumToast(`عشان شكل التورتة يطلع معاك مضبوط، أقل مقاس للشكل ده هو ${min} فرد.`, "warning");
-        }
+        if (current < min) current = min;
         selectedConfig.persons = current;
         finalizeUIUpdate();
     }
@@ -365,13 +295,9 @@
         const min = shapeObj ? (shapeObj.minimumPersons || 4) : 4;
         if (selectedConfig.persons < min) {
             selectedConfig.persons = min;
-            if (!isInitial) showPremiumToast(`أقل مقاس للشكل المختار هو ${min} فرد لضمان الجودة الجمالية.`, "warning");
         }
     }
 
-    /* ==========================================================================
-       🎨 5. رسم ومعاينة الـ SVG والتحديث اللحظي للواجهة
-       ========================================================================== */
     function drawCakePreviewSVG() {
         const previewContainer = document.getElementById('cake-preview');
         if (!previewContainer) return;
@@ -408,7 +334,7 @@
 
         let textMarkup = (text && text.trim().length > 0) ? `
             <g class="cake-custom-text-wrap" filter="drop-shadow(1px 1.5px 0.5px rgba(255,255,255,0.95))">
-                <text x="150" y="${textPosition === 'board' ? 222 : startYPoint - ((layers - 1) * verticalGap) - 2}" fill="#111111" style="font-family: 'Cairo', sans-serif; font-size: 11px; font-weight: 700; text-anchor: middle;">${escapeHtml(text)}</text>
+                <text x="150" y="${startYPoint - ((layers - 1) * verticalGap) - 2}" fill="#111111" style="font-family: 'Cairo', sans-serif; font-size: 11px; font-weight: 700; text-anchor: middle;">${escapeHtml(text)}</text>
             </g>` : '';
 
         previewContainer.innerHTML = `
@@ -428,7 +354,6 @@
         if (dom.summaryCakeType) { const t = config.cakeTypes.find(x => x.id === selectedConfig.cakeType); dom.summaryCakeType.textContent = t ? t.name : selectedConfig.cakeType; }
         if (dom.summaryPersons) dom.summaryPersons.textContent = `${selectedConfig.persons} فرد`;
 
-        // تحديث الفئات البصرية النشطة (Active Classes)
         const updateActiveState = (cards, attr, currentVal) => {
             if (cards) cards.forEach(c => c.getAttribute(attr) == currentVal ? c.classList.add('active') : c.classList.remove('active'));
         };
@@ -436,27 +361,17 @@
         updateActiveState(dom.layerCards, 'data-layer', selectedConfig.layers);
         updateActiveState(dom.cakeTypeCards, 'data-flavor', selectedConfig.cakeType);
         updateActiveState(dom.printingCards, 'data-printing', selectedConfig.printingType);
-        updateActiveState(dom.textPositionCards, 'data-position', selectedConfig.textPosition);
-
-        const updateMultiSelectState = (cards, attr, activeArray) => {
-            if (cards) cards.forEach(c => activeArray.includes(c.getAttribute(attr)) ? c.classList.add('active') : c.classList.remove('active'));
-        };
-        updateMultiSelectState(dom.fillingCards, 'data-filling', selectedConfig.fillings);
-        updateMultiSelectState(dom.toppingCards, 'data-topping', selectedConfig.toppings);
 
         drawCakePreviewSVG();
     }
 
-    /* ==========================================================================
-       🛒 6. الإضافة الآمنة والمعزولة إلى سلة المشتريات
-       ========================================================================== */
     function addCustomizedCakeToCart() {
         if (isUploadingImage) {
-            showPremiumToast("ثواني فندم.. جاري الانتهاء من رفع صورتك السحابية الجميلة 🌸", "warning");
+            if (typeof window.showBoseGlobalToast === 'function') window.showBoseGlobalToast("ثواني فندم.. جاري الانتهاء من رفع صورتك السحابية الجميلة 🌸");
             return;
         }
         if (selectedConfig.printingType !== 'none' && !selectedConfig.uploadedImageUrl) {
-            showPremiumToast("يرجى رفع الصورة المطلوبة لتورتتك أولاً لضمان دقة وتفاصيل طلبك الفاخر 🌸", "warning");
+            if (typeof window.showBoseGlobalToast === 'function') window.showBoseGlobalToast("يرجى رفع الصورة المطلوبة لتورتتك أولاً لضمان دقة طلبك الفاخر 🌸");
             return;
         }
 
@@ -489,7 +404,6 @@
             }
         };
 
-        // الالتزام التام بالتبادل المعزول للبيانات دون تعديل دالة الإضافة الأساسية للموقع
         let cart = [];
         try {
             const localData = localStorage.getItem(CART_STORAGE_KEY);
@@ -500,25 +414,18 @@
             localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
         } catch (e) {}
 
-        // إطلاق الحدث لتنبيه ملف `cart-engine.js` بالتحيين دون تداخل الأكواد
         window.dispatchEvent(new Event('bose_cart_updated'));
         if (typeof window.updateGlobalCartCounter === 'function') window.updateGlobalCartCounter();
-
-        showPremiumToast("تمت إضافة تورتتك الجميلة بنجاح للسلة!", "success");
+        if (typeof window.showBoseGlobalToast === 'function') window.showBoseGlobalToast("تمت إضافة تورتتك الجميلة بنجاح للسلة!");
+        
+        setTimeout(() => {
+            window.location.href = "cart.html";
+        }, 800);
     }
 
-    function showPremiumToast(message, type = 'success') {
-        if (typeof window.showBoseGlobalToast === 'function') { window.showBoseGlobalToast(message); return; }
-        console.log(`[BoseSweets-Toast] ${type}: ${message}`);
-    }
-
-    /* ==========================================================================
-       🚀 7. نظام التمهيد المانع لحالات السباق وقفل الدوال الحيوية
-       ========================================================================== */
     function safeBootEngine() {
         loadConfigFromDatabase();
-        injectInteractiveStyles();
-        if (isCakeBuilderPage()) {
+        if (document.getElementById('bose-cake-builder-form') || document.getElementById('cake-preview')) {
             cacheDOMElements();
             bindCentralizedEvents();
             enforceDynamicConstraints(true);
@@ -529,20 +436,21 @@
     if (window.BoseStoreData) {
         safeBootEngine();
     } else {
-        document.addEventListener('BoseDatabaseLoaded', function () {
+        document.addEventListener('BoseDatabaseLoaded', () => {
             safeBootEngine();
         });
     }
 
-    // تصدير واجهة التحكم المعزولة والخاصة بالملف فقط
     window.BoseCakeEngine = {
         refreshEngine: function () {
             isEventsBound = false;
             loadConfigFromDatabase();
-            if (isCakeBuilderPage()) { cacheDOMElements(); bindCentralizedEvents(); finalizeUIUpdate(); }
+            cacheDOMElements(); 
+            bindCentralizedEvents(); 
+            finalizeUIUpdate();
         },
-        calculatePrice: function (opts) { return calculateLocalCakePrice(opts); },
-        getSelectedConfig: function () { return selectedConfig; }
+        calculatePrice: (opts) => calculateLocalCakePrice(opts),
+        getSelectedConfig: () => selectedConfig
     };
 
 })();
