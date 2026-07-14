@@ -686,7 +686,7 @@
                     type: "custom-flower"
                 };
 
-                // بناء كائن الخيارات مع عزل الورد التام وحماية البيانات المؤقتة
+                // بناء كائن الخيارات مع عزل الورد التام وعزل الأجزاء التفاعلية
                 const customOptionsObj = {
                     flavorName: `بوكيه مخصص (${flowerTypeName})`,
                     flowerType: state.flowerType, 
