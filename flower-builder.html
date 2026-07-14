@@ -11,23 +11,22 @@
     <link rel="stylesheet" href="css/simulators.css">
     
     <style>
-        /* حقن تصميم مخصص إضافي لمنع تداخل النصوص والطفو العشوائي فوق الهيدر */
-        .bose-builder-wrapper {
-            margin-top: 20px;
+        /* صمام أمان لضمان التنفس البصري ومنع القطع أو التداخل اللوجستي */
+        .bose-custom-builder-block {
+            margin-top: 30px;
             box-sizing: border-box;
+            width: 100%;
         }
-        .bose-photo-upload-zone {
-            border: 2px dashed var(--bose-pink, #FF91A4);
-            background: rgba(255, 145, 164, 0.02);
-            border-radius: 16px;
-            padding: 30px 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        .bose-step-card-panel {
+            display: none;
+            animation: boseFadeInPanel 0.4s ease-in-out forwards;
         }
-        .bose-photo-upload-zone:hover {
-            background: rgba(255, 145, 164, 0.06);
-            border-color: var(--bose-pink, #FF91A4);
+        .bose-step-card-panel.active {
+            display: block !important;
+        }
+        @keyframes boseFadeInPanel {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
@@ -37,16 +36,16 @@
     <div id="bose-header-injector"></div>
 
     <!-- حاوية المحاكي التفاعلي المعزولة هندسياً -->
-    <main class="simulator-container bose-builder-wrapper">
+    <main class="simulator-container bose-custom-builder-block">
         
         <!-- عنوان ومقدمة المحاكي المهدئة -->
         <div class="simulator-header">
-            <h1 id="excellence-title">محاكي الورد التفاعلي</h1>
-            <p id="excellence-description">صمم بوكيه الورد الفاخر والخاص بمناسبتك خطوة بخطوة بالخيارات التي تسعد قلب أحبابك.</p>
+            <h1 style="font-weight: 700 !important; color: var(--bose-black, #111111);">محاكي الورد التفاعلي</h1>
+            <p style="font-weight: 400 !important; color: var(--bose-black, #111111); line-height: 1.6;">صمم بوكيه الورد الفاخر والخاص بمناسبتك خطوة بخطوة بالخيارات التي تسعد قلب أحبابك.</p>
         </div>
 
         <!-- الصورة التأسيسية الكبرى عالية النقاء -->
-        <div style="width: 100%; text-align: center; margin-bottom: 40px;">
+        <div style="width: 100%; text-align: center; margin-bottom: 40px; box-sizing: border-box;">
             <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="بوكيه ورد فاخر" class="hero-banner-frame" style="width: 100%; max-height: 480px; object-fit: cover; border-radius: 24px; box-shadow: var(--bose-shadow-glow); border: var(--bose-border-pink);">
         </div>
 
@@ -56,12 +55,12 @@
             <div class="simulator-control-panel">
                 
                 <!-- الخطوة 1: أساس البوكيه وصورة التصميم -->
-                <div class="simulator-step-content active" data-step="1">
+                <div class="bose-step-card-panel active" data-step="1">
                     <h2 class="step-title"><i class="fa-solid fa-seedling"></i> الخطوة 1: أساس البوكيه وصورة التصميم</h2>
                     
                     <div class="form-group-custom" style="margin-bottom: 24px;">
                         <label class="premium-input-label">تحديد نوع الورد الأصيل</label>
-                        <div class="natural-radio-grid">
+                        <div class="selection-cards-grid">
                             <div class="bose-selection-card active" data-type="natural">
                                 <span class="card-icon">🌸</span>
                                 <span class="card-label">ورد طبيعي نضر</span>
@@ -75,7 +74,6 @@
                                 <span class="card-label">ورد ستان مصنوع بحب</span>
                             </div>
                         </div>
-                        <!-- حقل هيدن للمزامنة مع المحرك البرمجي -->
                         <select id="flower-type" style="display: none;">
                             <option value="natural" selected>طبيعي</option>
                             <option value="artificial">صناعي</option>
@@ -86,9 +84,9 @@
                     <div class="form-group-custom">
                         <label class="premium-input-label">إرفاق صورة البوكيه للتقليد والمحاكاة بالملي</label>
                         <div class="bose-photo-upload-zone" id="bose-photo-upload-zone">
-                            <i class="fa-solid fa-cloud-arrow-up" style="font-size: 32px; color: var(--bose-pink); margin-bottom: 12px; display: block;"></i>
-                            <span class="card-label" style="font-size: 14px;">اضغط هنا لرفع صورة البوكيه لنقوم بتنفيذه بالملي</span>
-                            <input type="file" id="photo-file" accept="image/*" style="position: absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer;">
+                            <i class="fa-solid fa-cloud-arrow-up" style="font-size: 32px; color: var(--bose-pink, #FF91A4); margin-bottom: 12px; display: block; pointer-events: none;"></i>
+                            <span class="card-label" style="font-size: 14px; pointer-events: none;">اضغط هنا لرفع صورة البوكيه لنقوم بتنفيذه بالملي</span>
+                            <input type="file" id="photo-file" accept="image/*" style="position: absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer; pointer-events: auto;">
                         </div>
                         <div id="photo-preview-container" style="display: none; margin-top: 15px; text-align: center;">
                             <img id="photo-preview-img" src="" class="bose-uploaded-image-preview" style="max-width: 150px; border-radius: 12px; border: var(--bose-border-pink);">
@@ -97,25 +95,25 @@
                 </div>
 
                 <!-- الخطوة 2: حجم البوكيه وشرائط الستان -->
-                <div class="simulator-step-content" data-step="2">
+                <div class="bose-step-card-panel" data-step="2">
                     <h2 class="step-title"><i class="fa-solid fa-maximize"></i> الخطوة 2: حجم البوكيه وشرائط الستان</h2>
                     
                     <div class="form-group-custom" style="margin-bottom: 24px;">
                         <label class="premium-input-label">حجم البوكيه (عدد الوردات - الحد الأدنى الإلزامي 15 وردة بالسعر الأساسي)</label>
-                        <div class="bose-counter-box" style="display: inline-flex; align-items: center; background: var(--bose-gray-light); border-radius: 30px; border: var(--bose-border-pink);">
-                            <button type="button" class="bose-counter-btn" id="flower-plus" style="padding: 10px 20px; font-weight: 700; color: var(--bose-pink); background: none; border: none; cursor: pointer;">+</button>
-                            <input type="text" id="flower-count" class="bose-counter-value" value="15" readonly style="width: 50px; text-align: center; border: none; background: transparent; font-weight: 700; font-size: 16px;">
-                            <button type="button" class="bose-counter-btn" id="flower-minus" style="padding: 10px 20px; font-weight: 700; color: var(--bose-pink); background: none; border: none; cursor: pointer;">-</button>
+                        <div class="bose-counter-box">
+                            <button type="button" class="bose-counter-btn" id="flower-plus">+</button>
+                            <input type="text" id="flower-count" class="bose-counter-value" value="15" readonly>
+                            <button type="button" class="bose-counter-btn" id="flower-minus">-</button>
                         </div>
                     </div>
 
                     <div class="form-group-custom">
                         <label class="premium-input-label">هل تود إضافة شريط ستان مطبوع مخصص على البوكيه؟</label>
-                        <div class="natural-radio-grid" style="grid-template-columns: 1fr 1fr; max-width: 280px; margin-bottom: 12px;">
+                        <div class="selection-cards-grid" style="grid-template-columns: 1fr 1fr; max-width: 280px; margin-bottom: 12px;">
                             <div class="bose-selection-card" id="ribbon-toggle-yes">نعم</div>
                             <div class="bose-selection-card active" id="ribbon-toggle-no">لا</div>
                         </div>
-                        <div id="ribbon-text-block" class="dynamic-sub-block" style="display: none;">
+                        <div id="ribbon-text-block" class="custom-text-wrapper" style="display: none;">
                             <label class="premium-input-label" style="font-size: 13px;">اكتب الجملة المطلوب طباعتها حرارياً على شريط الستان بدقة:</label>
                             <input type="text" id="ribbon-printed-text" class="premium-text-input" placeholder="مثال: عيد ميلاد سعيد يا بوسي">
                         </div>
@@ -123,40 +121,40 @@
                 </div>
 
                 <!-- الخطوة 3: الصور الشخصية ومفاجأة الكاش -->
-                <div class="simulator-step-content" data-step="3">
+                <div class="bose-step-card-panel" data-step="3">
                     <h2 class="step-title"><i class="fa-solid fa-gift"></i> الخطوة 3: الصور الشخصية ومفاجأة الكاش</h2>
                     
                     <div class="form-group-custom" style="margin-bottom: 24px;">
-                        <label class="premium-input-label">هل تود إضافة صور شخصية مطبوعة وموزعة داخل البوكيه؟</label>
-                        <div class="natural-radio-grid" style="grid-template-columns: 1fr 1fr; max-width: 280px; margin-bottom: 12px;">
+                        <label class="premium-input-label">هل تود إضافة صور شخصية مطبوعة وموزعة داخل البوكيه?</label>
+                        <div class="selection-cards-grid" style="grid-template-columns: 1fr 1fr; max-width: 280px; margin-bottom: 12px;">
                             <div class="bose-selection-card" id="photo-toggle-yes">نعم</div>
                             <div class="bose-selection-card active" id="photo-toggle-no">لا</div>
                         </div>
                         <input type="checkbox" id="include-photo" style="display: none;">
-                        <div id="photo-upload-section" class="dynamic-sub-block" style="display: none;">
+                        <div id="photo-upload-section" class="custom-text-wrapper" style="display: none;">
                             <label class="premium-input-label" style="font-size: 13px;">حدد عدد الصور الشخصية (تبدأ من 1 كحد أدنى):</label>
-                            <div class="bose-counter-box" style="display: inline-flex; align-items: center; background: var(--bose-gray-light); border-radius: 30px; border: var(--bose-border-pink); margin-bottom: 12px;">
-                                <button type="button" class="bose-counter-btn" id="photo-count-plus" style="padding: 10px 20px; font-weight: 700; color: var(--bose-pink); background: none; border: none; cursor: pointer;">+</button>
-                                <input type="text" id="photo-count-value" class="bose-counter-value" value="1" readonly style="width: 50px; text-align: center; border: none; background: transparent; font-weight: 700; font-size: 16px;">
-                                <button type="button" class="bose-counter-btn" id="photo-count-minus" style="padding: 10px 20px; font-weight: 700; color: var(--bose-pink); background: none; border: none; cursor: pointer;">-</button>
+                            <div class="bose-counter-box" style="margin-bottom: 12px;">
+                                <button type="button" class="bose-counter-btn" id="photo-count-plus">+</button>
+                                <input type="text" id="photo-count-value" class="bose-counter-value" value="1" readonly>
+                                <button type="button" class="bose-counter-btn" id="photo-count-minus">-</button>
                             </div>
                             <div id="photos-upload-inputs-grid" style="display: grid; gap: 10px;"></div>
                         </div>
                     </div>
 
                     <div class="form-group-custom">
-                        <label class="premium-input-label">هل تود إضافة كاش مدمج بتنسيق البوكيه؟ (قيمة صافية بالكامل)</label>
-                        <div class="natural-radio-grid" style="grid-template-columns: 1fr 1fr; max-width: 280px; margin-bottom: 12px;">
+                        <label class="premium-input-label">هل تود إضافة كاش مدمج بتنسيق البوكيه؟ (صافي القيمة)</label>
+                        <div class="selection-cards-grid" style="grid-template-columns: 1fr 1fr; max-width: 280px; margin-bottom: 12px;">
                             <div class="bose-selection-card" id="cash-toggle-yes">نعم</div>
                             <div class="bose-selection-card active" id="cash-toggle-no">لا</div>
                         </div>
-                        <div id="cash-integration-block" class="dynamic-sub-block" style="display: none;">
+                        <div id="cash-integration-block" class="custom-text-wrapper" style="display: none;">
                             <div style="margin-bottom: 15px;">
-                                <label class="premium-input-label" style="font-size: 13px;">حدد قيمة المبلغ المطلوب وضعه (بدون أي مصاريف إضافية):</label>
-                                <div class="bose-counter-box" style="display: inline-flex; align-items: center; background: var(--bose-gray-light); border-radius: 30px; border: var(--bose-border-pink);">
-                                    <button type="button" class="bose-counter-btn" id="bill-plus" style="padding: 10px 20px; font-weight: 700; color: var(--bose-pink); background: none; border: none; cursor: pointer;">+</button>
-                                    <input type="number" id="money-amount" class="bose-counter-value" value="0" style="width: 80px; text-align: center; border: none; background: transparent; font-weight: 700; font-size: 16px;">
-                                    <button type="button" class="bose-counter-btn" id="bill-minus" style="padding: 10px 20px; font-weight: 700; color: var(--bose-pink); background: none; border: none; cursor: pointer;">-</button>
+                                <label class="premium-input-label" style="font-size: 13px;">حدد قيمة المبلغ المطلوب وضعه:</label>
+                                <div class="bose-counter-box">
+                                    <button type="button" class="bose-counter-btn" id="bill-plus">+</button>
+                                    <input type="number" id="money-amount" class="bose-counter-value" value="0" style="width: 80px;">
+                                    <button type="button" class="bose-counter-btn" id="bill-minus">-</button>
                                 </div>
                             </div>
                             <div>
@@ -175,16 +173,16 @@
                 </div>
 
                 <!-- الخطوة 4: الشوكولاتة الفاخرة وكارت الإهداء -->
-                <div class="simulator-step-content" data-step="4">
-                    <h2 class="step-title"><i class="fa-solid fa-chocolate"></i> الخطوة 4: الشوكولاتة الفاخرة وكارت الإهداء</h2>
+                <div class="bose-step-card-panel" data-step="4">
+                    <h2 class="step-title"><i class="fa-solid fa-cookie"></i> الخطوة 4: الشوكولاتة الفاخرة وكارت الإهداء</h2>
                     
                     <div class="form-group-custom" style="margin-bottom: 24px;">
                         <label class="premium-input-label">هل تود إضافة شوكولاتة مدمجة داخل البوكيه؟</label>
-                        <div class="natural-radio-grid" style="grid-template-columns: 1fr 1fr; max-width: 280px; margin-bottom: 12px;">
+                        <div class="selection-cards-grid" style="grid-template-columns: 1fr 1fr; max-width: 280px; margin-bottom: 12px;">
                             <div class="bose-selection-card" id="choc-toggle-yes">نعم</div>
                             <div class="bose-selection-card active" id="choc-toggle-no">لا</div>
                         </div>
-                        <div id="chocolate-budget-block" class="dynamic-sub-block" style="display: none;">
+                        <div id="chocolate-budget-block" class="custom-text-wrapper" style="display: none;">
                             <label class="premium-input-label" style="font-size: 13px;">اكتب الميزانية والمبلغ الذي تود شراء الشوكولاتة به وسنقوم بتنسيقها لك:</label>
                             <input type="number" id="chocolate-budget-input" class="premium-text-input" placeholder="مثال: شوكولاتة بمبلغ 150 جنيه" min="0">
                         </div>
@@ -192,20 +190,20 @@
 
                     <div class="form-group-custom">
                         <label class="premium-input-label">هل تود إضافة كارت إهداء ورقي؟</label>
-                        <div class="natural-radio-grid" style="grid-template-columns: 1fr 1fr; max-width: 280px; margin-bottom: 12px;">
+                        <div class="selection-cards-grid" style="grid-template-columns: 1fr 1fr; max-width: 280px; margin-bottom: 12px;">
                             <div class="bose-selection-card" id="card-toggle-yes">نعم</div>
                             <div class="bose-selection-card active" id="card-toggle-no">لا</div>
                         </div>
                         <input type="checkbox" id="include-card" style="display: none;">
-                        <div id="card-text-section" class="dynamic-sub-block" style="display: none;">
+                        <div id="card-text-section" class="custom-text-wrapper" style="display: none;">
                             <label class="premium-input-label" style="font-size: 13px;">اكتب نص الرسالة أو التهنئة المطلوب تدوينها داخل الكارت بخط منسق:</label>
                             <textarea id="card-text" class="premium-text-input" style="height: 100px; resize: none;" placeholder="اكتب مشاعرك الصادقة هنا..."></textarea>
                         </div>
                     </div>
                 </div>
 
-                <!-- شريط أزرار التنقل والتحكم بالخطوات -->
-                <div class="simulator-actions-bar" style="margin-top: 30px;">
+                <!-- شريط أزرار التنقل والتحكم بالخطوات المعزولة -->
+                <div class="simulator-actions-bar" style="margin-top: 30px; box-sizing: border-box;">
                     <button type="button" class="premium-nav-btn secondary" id="btn-prev" style="display: none;">السابق</button>
                     <button type="button" class="premium-nav-btn primary" id="btn-next" style="margin-right: auto;">التالي</button>
                 </div>
@@ -215,7 +213,7 @@
             <!-- الجانب الأيسر: شريط السعر اللحظي العائم والمحدث تلقائياً طوال الوقت -->
             <div class="price-sidebar-container">
                 <div class="sticky-summary-widget">
-                    <h3 class="summary-title"><i class="fa-solid fa-receipt" style="color: var(--bose-pink);"></i> شريط السعر اللحظي</h3>
+                    <h3 class="summary-title"><i class="fa-solid fa-receipt" style="color: var(--bose-pink, #FF91A4);"></i> شريط السعر اللحظي</h3>
                     
                     <div class="price-breakdown-list">
                         <div class="price-item-row">
@@ -223,7 +221,7 @@
                             <span id="base-price-val">400 EGP</span>
                         </div>
                         <div class="price-item-row">
-                            <span>الورد الإضافي <small id="extra-flowers-count" style="color: var(--bose-pink); font-weight: 700;">(0 وردة إضافية)</small>:</span>
+                            <span>الورد الإضافي <small id="extra-flowers-count" style="color: var(--bose-pink, #FF91A4); font-weight: 700;">(0 وردة إضافية)</small>:</span>
                             <span id="extra-flowers-cost">0 EGP</span>
                         </div>
                         <div class="price-item-row">
@@ -311,7 +309,7 @@
             const btnNext = document.getElementById("btn-next");
             const btnPrev = document.getElementById("btn-prev");
             const btnAddToCart = document.getElementById("add-to-cart-btn");
-            const stepsPanels = document.querySelectorAll(".simulator-step-content");
+            const stepsPanels = document.querySelectorAll(".bose-step-card-panel");
 
             // دالة تحديث وعرض الخطوات والتحكم بظهور الأزرار لمنع التكدس
             function updateActiveStepUI() {
