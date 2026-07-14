@@ -4,389 +4,639 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>محاكي الورد التفاعلي | حلويات بوسي</title>
-    <meta name="description" content="صمم بوكيه الورد الفاخر والخاص بمناسبتك خطوة بخطوة بالخيارات التي تسعد قلب أحبابك مع إضافة الهدايا والشوكولاتة ومفاجآت الكاش المدمجة.">
+    <meta name="description" content="صمم بوكيه الورد الفاخر والخاص بمناسبتك خطوة بخطوة بالخيارات التي تسعد قلب أحبابك مع إضافة الهدايا والشوكولاتة ومفاجآت الكاش المدمجة بدون رسوم إضافية.">
+    
+    <!-- استدعاء ملفات التنسيق الفاخرة والمعزولة للبراند -->
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/simulators.css">
+    
     <style>
-        :root {
-            --bose-pink: #FF91A4;
-            --bose-white: #FFFFFF;
-            --bose-black: #111111;
-            --bose-gold: #D4AF37;
-            --bose-pink-soft: rgba(255, 145, 164, 0.15);
-            --bose-shadow: 0 8px 32px rgba(255, 145, 164, 0.08);
+        /* حقن تصميم مخصص إضافي لمنع تداخل النصوص والطفو العشوائي فوق الهيدر */
+        .bose-builder-wrapper {
+            margin-top: 20px;
+            box-sizing: border-box;
         }
-        body {
-            font-family: 'Cairo', sans-serif !important;
-            background-color: var(--bose-white) !important;
-            color: var(--bose-black) !important;
-            margin: 0; padding: 0;
+        .bose-photo-upload-zone {
+            border: 2px dashed var(--bose-pink, #FF91A4);
+            background: rgba(255, 145, 164, 0.02);
+            border-radius: 16px;
+            padding: 30px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
-        h1, h2, h3 { font-weight: 700 !important; color: var(--bose-black); }
-        .simulator-container { max-width: 1200px; margin: 0 auto; padding: 24px 16px; }
-        .page-header-block { text-align: center; margin-bottom: 40px; }
-        .page-title-unified { font-size: 32px; margin-bottom: 12px; }
-        .page-desc-unified { font-size: 16px; max-width: 600px; margin: 0 auto; line-height: 1.8; }
-        .hero-banner-frame { width: 100%; height: auto; max-height: 480px; border-radius: 24px; object-fit: cover; box-shadow: var(--bose-shadow); border: 1px solid var(--bose-pink-soft); margin-bottom: 40px; }
-        .simulator-grid-layout { display: grid; grid-template-columns: 1fr; gap: 32px; margin-bottom: 60px; }
-        @media (min-width: 992px) { .simulator-grid-layout { grid-template-columns: 7fr 5fr; } }
-        .interactive-step-card { background: var(--bose-white); border: 1px solid var(--bose-pink-soft); border-radius: 24px; padding: 24px; box-shadow: var(--bose-shadow); margin-bottom: 24px; }
-        .step-title-node { font-size: 20px; display: flex; align-items: center; gap: 12px; margin-bottom: 20px; border-bottom: 2px solid var(--bose-pink-soft); padding-bottom: 12px; }
-        .form-group-custom { margin-bottom: 20px; }
-        .form-group-custom label { display: block; font-weight: 700; font-size: 15px; margin-bottom: 10px; }
-        .natural-radio-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
-        .natural-radio-node { border: 1px solid var(--bose-pink-soft); border-radius: 16px; padding: 16px; text-align: center; cursor: pointer; transition: all 0.3s ease; background: var(--bose-white); font-weight: 600; }
-        .natural-radio-node:hover { border-color: var(--bose-pink); background: var(--bose-pink-soft); }
-        .natural-radio-node.active { border-color: var(--bose-pink); background: var(--bose-pink-soft); box-shadow: 0 0 0 2px var(--bose-pink); }
-        .bose-counter-box { display: inline-flex; align-items: center; border: 1px solid var(--bose-pink-soft); border-radius: 30px; background: var(--bose-white); overflow: hidden; }
-        .bose-counter-btn { background: none; border: none; padding: 12px 20px; font-size: 18px; font-weight: 700; color: var(--bose-pink); cursor: pointer; }
-        .bose-counter-value { width: 60px; text-align: center; border: none; font-size: 16px; font-weight: 700; color: var(--bose-black); outline: none; }
-        .bose-input-field, .bose-select-field, .bose-textarea-field { width: 100%; padding: 14px; border: 1px solid var(--bose-pink-soft); border-radius: 14px; font-family: 'Cairo', sans-serif; font-size: 14px; color: var(--bose-black); background: var(--bose-white); box-sizing: border-box; outline: none; }
-        .bose-textarea-field { resize: vertical; height: 100px; }
-        .dynamic-sub-block { background: rgba(255, 145, 164, 0.04); border-radius: 16px; padding: 16px; margin-top: 16px; border: 1px dashed var(--bose-pink-soft); }
-        .sticky-summary-widget { position: sticky; top: 160px; background: var(--bose-white); border: 2px solid var(--bose-pink); border-radius: 24px; padding: 24px; box-shadow: var(--bose-shadow); height: fit-content; }
-        .summary-widget-title { font-size: 18px; border-bottom: 2px solid var(--bose-pink-soft); padding-bottom: 12px; margin-bottom: 16px; }
-        .pricing-invoice-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; font-size: 14px; font-weight: 600; border-bottom: 1px dashed var(--bose-pink-soft); }
-        .grand-price-node { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; padding-top: 16px; border-top: 2px solid var(--bose-pink); }
-        .grand-price-label { font-size: 18px; font-weight: 700; }
-        .grand-price-value { font-size: 24px; font-weight: 700; color: var(--bose-pink); }
-        .action-submit-btn { width: 100%; background: var(--bose-pink); color: var(--bose-white); border: none; padding: 16px; border-radius: 30px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 20px; box-shadow: 0 8px 24px rgba(255, 145, 164, 0.25); }
-        .portfolio-section { margin-top: 60px; border-top: 1px solid var(--bose-pink-soft); padding-top: 40px; }
-        .horizontal-swipe-slider { display: flex; gap: 16px; overflow-x: auto; padding: 16px 0; scroll-snap-type: x mandatory; scrollbar-width: none; }
-        .portfolio-item-card { flex: 0 0 280px; scroll-snap-align: start; background: var(--bose-white); border: 1px solid var(--bose-pink-soft); border-radius: 18px; overflow: hidden; cursor: pointer; box-shadow: var(--bose-shadow); }
-        .portfolio-item-img { width: 100%; height: 200px; object-fit: cover; }
-        .portfolio-item-body { padding: 12px; text-align: center; font-weight: 600; font-size: 14px; }
-        .bose-popup-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(17, 17, 17, 0.4); backdrop-filter: blur(4px); z-index: 99999; display: none; align-items: center; justify-content: center; padding: 16px; }
-        .bose-popup-content { background: var(--bose-white); border-radius: 24px; max-width: 600px; width: 100%; overflow: hidden; position: relative; }
-        .modal-close-btn { position: absolute; top: 16px; left: 16px; background: var(--bose-white); border: 1px solid var(--bose-pink-soft); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--bose-pink); font-weight: bold; }
-        .modal-img-frame { width: 100%; height: 300px; object-fit: cover; }
-        .modal-body-desc { padding: 24px; direction: rtl; text-align: right; line-height: 1.8; font-weight: 600; }
-        .file-upload-wrapper { position: relative; border: 2px dashed var(--bose-pink-soft); border-radius: 14px; padding: 20px; text-align: center; cursor: pointer; background: rgba(255, 145, 164, 0.02); }
-        .file-upload-wrapper input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
-        .preview-thumbnail { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; margin-top: 12px; border: 1px solid var(--bose-pink); }
+        .bose-photo-upload-zone:hover {
+            background: rgba(255, 145, 164, 0.06);
+            border-color: var(--bose-pink, #FF91A4);
+        }
     </style>
 </head>
 <body>
+
+    <!-- الهيدر الموحد والذكي للبراند -->
     <div id="bose-header-injector"></div>
-    <main class="simulator-container">
-        <div class="page-header-block">
-            <h1 class="page-title-unified">محاكي الورد التفاعلي</h1>
-            <p class="page-desc-unified">صمم بوكيه الورد الفاخر والخاص بمناسبتك خطوة بخطوة بالخيارات التي تسعد قلب أحبابك.</p>
+
+    <!-- حاوية المحاكي التفاعلي المعزولة هندسياً -->
+    <main class="simulator-container bose-builder-wrapper">
+        
+        <!-- عنوان ومقدمة المحاكي المهدئة -->
+        <div class="simulator-header">
+            <h1 id="excellence-title">محاكي الورد التفاعلي</h1>
+            <p id="excellence-description">صمم بوكيه الورد الفاخر والخاص بمناسبتك خطوة بخطوة بالخيارات التي تسعد قلب أحبابك.</p>
         </div>
-        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="بوكيه ورد فاخر" class="hero-banner-frame">
-        <div class="simulator-grid-layout">
-            <div class="steps-forms-wrapper">
-                <div class="interactive-step-card">
-                    <h2 class="step-title-node"><span style="color: var(--bose-pink);">١.</span> أساس البوكيه وصورة التصميم</h2>
-                    <div class="form-group-custom">
-                        <label>تحديد نوع الورد الأصيل</label>
+
+        <!-- الصورة التأسيسية الكبرى عالية النقاء -->
+        <div style="width: 100%; text-align: center; margin-bottom: 40px;">
+            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="بوكيه ورد فاخر" class="hero-banner-frame" style="width: 100%; max-height: 480px; object-fit: cover; border-radius: 24px; box-shadow: var(--bose-shadow-glow); border: var(--bose-border-pink);">
+        </div>
+
+        <div class="simulator-workspace">
+            
+            <!-- لوحة التخصيص والخيارات المدمجة (4 خطوات تفاعلية ذكية) -->
+            <div class="simulator-control-panel">
+                
+                <!-- الخطوة 1: أساس البوكيه وصورة التصميم -->
+                <div class="simulator-step-content active" data-step="1">
+                    <h2 class="step-title"><i class="fa-solid fa-seedling"></i> الخطوة 1: أساس البوكيه وصورة التصميم</h2>
+                    
+                    <div class="form-group-custom" style="margin-bottom: 24px;">
+                        <label class="premium-input-label">تحديد نوع الورد الأصيل</label>
                         <div class="natural-radio-grid">
-                            <div class="natural-radio-node active" data-type="natural">ورد طبيعي نضر 🌸</div>
-                            <div class="natural-radio-node" data-type="artificial">ورد صناعي فاخر ✨</div>
-                            <div class="natural-radio-node" data-type="satin">ورد ستان مصنوع بحب 🎀</div>
-                        </div>
-                        <select id="flower-type" style="display:none;"></select>
-                    </div>
-                    <div class="form-group-custom">
-                        <label>إرفاق صورة البوكيه للتقليد والمحاكاة بالملي</label>
-                        <div class="file-upload-wrapper">
-                            <p style="margin: 0; font-size: 13px; font-weight: 600;">اضغط هنا لرفع صورة البوكيه لنقوم بتنفيذه بالملي</p>
-                            <input type="file" id="photo-file" accept="image/*">
-                        </div>
-                        <div id="photo-preview-container" style="display:none; text-align:center;">
-                            <img id="photo-preview-img" src="" class="preview-thumbnail">
-                        </div>
-                    </div>
-                </div>
-                <div class="interactive-step-card">
-                    <h2 class="step-title-node"><span style="color: var(--bose-pink);">٢.</span> حجم البوكيه وشرائط الستان</h2>
-                    <div class="form-group-custom">
-                        <label>حجم البوكيه (عدد الوردات - الحد الأدنى الإلزامي ١٥ وردة)</label>
-                        <div class="bose-counter-box">
-                            <button type="button" class="bose-counter-btn" id="flower-plus">+</button>
-                            <input type="text" id="flower-count" class="bose-counter-value" value="15" readonly>
-                            <button type="button" class="bose-counter-btn" id="flower-minus">-</button>
-                        </div>
-                    </div>
-                    <div class="form-group-custom">
-                        <label>حابب تضيف شريط ستان مطبوع مخصص على البوكيه؟</label>
-                        <div class="natural-radio-grid" style="grid-template-columns: 1fr 1fr; max-width: 300px;">
-                            <div class="natural-radio-node" id="ribbon-toggle-yes">نعم</div>
-                            <div class="natural-radio-node active" id="ribbon-toggle-no">لا</div>
-                        </div>
-                        <div id="ribbon-text-block" class="dynamic-sub-block" style="display:none;">
-                            <label style="font-size: 13px;">اكتب الجملة المطلوب طباعتها حرارياً على شريط الستان بدقة:</label>
-                            <input type="text" id="ribbon-printed-text" class="bose-input-field" placeholder="مثال: عيد ميلاد سعيد يا بوسي">
-                        </div>
-                    </div>
-                </div>
-                <div class="interactive-step-card">
-                    <h2 class="step-title-node"><span style="color: var(--bose-pink);">٣.</span> الصور الشخصية ومفاجأة الكاش</h2>
-                    <div class="form-group-custom">
-                        <label>حابب تضيف صور شخصية مطبوعة وموزعة داخل البوكيه؟</label>
-                        <div class="natural-radio-grid" style="grid-template-columns: 1fr 1fr; max-width: 300px; margin-bottom: 12px;">
-                            <div class="natural-radio-node" id="photo-toggle-yes">نعم</div>
-                            <div class="natural-radio-node active" id="photo-toggle-no">لا</div>
-                        </div>
-                        <input type="checkbox" id="include-photo" style="display:none;">
-                        <div id="photo-upload-section" class="dynamic-sub-block" style="display:none;">
-                            <label style="font-size: 13px; margin-bottom: 8px;">حدد عدد الصور الشخصية (تبدأ من ١ كحد أدنى):</label>
-                            <div class="bose-counter-box" style="margin-bottom: 12px;">
-                                <button type="button" class="bose-counter-btn" id="photo-count-plus">+</button>
-                                <input type="text" id="photo-count-value" class="bose-counter-value" value="1" readonly>
-                                <button type="button" class="bose-counter-btn" id="photo-count-minus">-</button>
+                            <div class="bose-selection-card active" data-type="natural">
+                                <span class="card-icon">🌸</span>
+                                <span class="card-label">ورد طبيعي نضر</span>
                             </div>
-                            <div id="photos-upload-inputs-grid" style="display:grid; gap:8px;"></div>
+                            <div class="bose-selection-card" data-type="artificial">
+                                <span class="card-icon">✨</span>
+                                <span class="card-label">ورد صناعي فاخر</span>
+                            </div>
+                            <div class="bose-selection-card" data-type="satin">
+                                <span class="card-icon">🎀</span>
+                                <span class="card-label">ورد ستان مصنوع بحب</span>
+                            </div>
+                        </div>
+                        <!-- حقل هيدن للمزامنة مع المحرك البرمجي -->
+                        <select id="flower-type" style="display: none;">
+                            <option value="natural" selected>طبيعي</option>
+                            <option value="artificial">صناعي</option>
+                            <option value="satin">ستان</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label class="premium-input-label">إرفاق صورة البوكيه للتقليد والمحاكاة بالملي</label>
+                        <div class="bose-photo-upload-zone" id="bose-photo-upload-zone">
+                            <i class="fa-solid fa-cloud-arrow-up" style="font-size: 32px; color: var(--bose-pink); margin-bottom: 12px; display: block;"></i>
+                            <span class="card-label" style="font-size: 14px;">اضغط هنا لرفع صورة البوكيه لنقوم بتنفيذه بالملي</span>
+                            <input type="file" id="photo-file" accept="image/*" style="position: absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer;">
+                        </div>
+                        <div id="photo-preview-container" style="display: none; margin-top: 15px; text-align: center;">
+                            <img id="photo-preview-img" src="" class="bose-uploaded-image-preview" style="max-width: 150px; border-radius: 12px; border: var(--bose-border-pink);">
                         </div>
                     </div>
-                    <div class="form-group-custom">
-                        <label>حابب تضيف كاش مدمج بتنسيق البوكيه؟ (لا توجد أي رسوم معالجة نهائياً)</label>
-                        <div class="natural-radio-grid" style="grid-template-columns: 1fr 1fr; max-width: 300px; margin-bottom: 12px;">
-                            <div class="natural-radio-node" id="cash-toggle-yes">نعم</div>
-                            <div class="natural-radio-node active" id="cash-toggle-no">لا</div>
+                </div>
+
+                <!-- الخطوة 2: حجم البوكيه وشرائط الستان -->
+                <div class="simulator-step-content" data-step="2">
+                    <h2 class="step-title"><i class="fa-solid fa-maximize"></i> الخطوة 2: حجم البوكيه وشرائط الستان</h2>
+                    
+                    <div class="form-group-custom" style="margin-bottom: 24px;">
+                        <label class="premium-input-label">حجم البوكيه (عدد الوردات - الحد الأدنى الإلزامي 15 وردة بالسعر الأساسي)</label>
+                        <div class="bose-counter-box" style="display: inline-flex; align-items: center; background: var(--bose-gray-light); border-radius: 30px; border: var(--bose-border-pink);">
+                            <button type="button" class="bose-counter-btn" id="flower-plus" style="padding: 10px 20px; font-weight: 700; color: var(--bose-pink); background: none; border: none; cursor: pointer;">+</button>
+                            <input type="text" id="flower-count" class="bose-counter-value" value="15" readonly style="width: 50px; text-align: center; border: none; background: transparent; font-weight: 700; font-size: 16px;">
+                            <button type="button" class="bose-counter-btn" id="flower-minus" style="padding: 10px 20px; font-weight: 700; color: var(--bose-pink); background: none; border: none; cursor: pointer;">-</button>
                         </div>
-                        <div id="cash-integration-block" class="dynamic-sub-block" style="display:none;">
-                            <div style="margin-bottom: 12px;">
-                                <label style="font-size: 13px;">حدد قيمة المبلغ المطلوب وضعه:</label>
-                                <div class="bose-counter-box" style="display:flex;">
-                                    <button type="button" class="bose-counter-btn" id="bill-plus">+</button>
-                                    <input type="number" id="money-amount" class="bose-counter-value" value="0" style="width:100px;">
-                                    <button type="button" class="bose-counter-btn" id="bill-minus">-</button>
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label class="premium-input-label">هل تود إضافة شريط ستان مطبوع مخصص على البوكيه؟</label>
+                        <div class="natural-radio-grid" style="grid-template-columns: 1fr 1fr; max-width: 280px; margin-bottom: 12px;">
+                            <div class="bose-selection-card" id="ribbon-toggle-yes">نعم</div>
+                            <div class="bose-selection-card active" id="ribbon-toggle-no">لا</div>
+                        </div>
+                        <div id="ribbon-text-block" class="dynamic-sub-block" style="display: none;">
+                            <label class="premium-input-label" style="font-size: 13px;">اكتب الجملة المطلوب طباعتها حرارياً على شريط الستان بدقة:</label>
+                            <input type="text" id="ribbon-printed-text" class="premium-text-input" placeholder="مثال: عيد ميلاد سعيد يا بوسي">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- الخطوة 3: الصور الشخصية ومفاجأة الكاش -->
+                <div class="simulator-step-content" data-step="3">
+                    <h2 class="step-title"><i class="fa-solid fa-gift"></i> الخطوة 3: الصور الشخصية ومفاجأة الكاش</h2>
+                    
+                    <div class="form-group-custom" style="margin-bottom: 24px;">
+                        <label class="premium-input-label">هل تود إضافة صور شخصية مطبوعة وموزعة داخل البوكيه؟</label>
+                        <div class="natural-radio-grid" style="grid-template-columns: 1fr 1fr; max-width: 280px; margin-bottom: 12px;">
+                            <div class="bose-selection-card" id="photo-toggle-yes">نعم</div>
+                            <div class="bose-selection-card active" id="photo-toggle-no">لا</div>
+                        </div>
+                        <input type="checkbox" id="include-photo" style="display: none;">
+                        <div id="photo-upload-section" class="dynamic-sub-block" style="display: none;">
+                            <label class="premium-input-label" style="font-size: 13px;">حدد عدد الصور الشخصية (تبدأ من 1 كحد أدنى):</label>
+                            <div class="bose-counter-box" style="display: inline-flex; align-items: center; background: var(--bose-gray-light); border-radius: 30px; border: var(--bose-border-pink); margin-bottom: 12px;">
+                                <button type="button" class="bose-counter-btn" id="photo-count-plus" style="padding: 10px 20px; font-weight: 700; color: var(--bose-pink); background: none; border: none; cursor: pointer;">+</button>
+                                <input type="text" id="photo-count-value" class="bose-counter-value" value="1" readonly style="width: 50px; text-align: center; border: none; background: transparent; font-weight: 700; font-size: 16px;">
+                                <button type="button" class="bose-counter-btn" id="photo-count-minus" style="padding: 10px 20px; font-weight: 700; color: var(--bose-pink); background: none; border: none; cursor: pointer;">-</button>
+                            </div>
+                            <div id="photos-upload-inputs-grid" style="display: grid; gap: 10px;"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label class="premium-input-label">هل تود إضافة كاش مدمج بتنسيق البوكيه؟ (قيمة صافية بالكامل)</label>
+                        <div class="natural-radio-grid" style="grid-template-columns: 1fr 1fr; max-width: 280px; margin-bottom: 12px;">
+                            <div class="bose-selection-card" id="cash-toggle-yes">نعم</div>
+                            <div class="bose-selection-card active" id="cash-toggle-no">لا</div>
+                        </div>
+                        <div id="cash-integration-block" class="dynamic-sub-block" style="display: none;">
+                            <div style="margin-bottom: 15px;">
+                                <label class="premium-input-label" style="font-size: 13px;">حدد قيمة المبلغ المطلوب وضعه (بدون أي مصاريف إضافية):</label>
+                                <div class="bose-counter-box" style="display: inline-flex; align-items: center; background: var(--bose-gray-light); border-radius: 30px; border: var(--bose-border-pink);">
+                                    <button type="button" class="bose-counter-btn" id="bill-plus" style="padding: 10px 20px; font-weight: 700; color: var(--bose-pink); background: none; border: none; cursor: pointer;">+</button>
+                                    <input type="number" id="money-amount" class="bose-counter-value" value="0" style="width: 80px; text-align: center; border: none; background: transparent; font-weight: 700; font-size: 16px;">
+                                    <button type="button" class="bose-counter-btn" id="bill-minus" style="padding: 10px 20px; font-weight: 700; color: var(--bose-pink); background: none; border: none; cursor: pointer;">-</button>
                                 </div>
                             </div>
                             <div>
-                                <label style="font-size: 13px;">تحديد فئة الأوراق النقدية المطلوبة:</label>
-                                <select id="money-category" class="bose-select-field">
+                                <label class="premium-input-label" style="font-size: 13px;">تحديد فئة الأوراق النقدية المطلوبة للتنسيق:</label>
+                                <select id="money-category" class="bose-premium-text-input">
                                     <option value="5">5 جنيه</option>
                                     <option value="10">10 جنيه</option>
                                     <option value="20">20 جنيه</option>
                                     <option value="50">50 جنيه</option>
                                     <option value="100">100 جنيه</option>
-                                    <option value="200">200 جنيه</option>
+                                    <option value="200" selected>200 جنيه</option>
                                 </select>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="interactive-step-card">
-                    <h2 class="step-title-node"><span style="color: var(--bose-pink);">٤.</span> الشوكولاتة الفاخرة وكارت الإهداء</h2>
-                    <div class="form-group-custom">
-                        <label>حابب تضيف شوكولاتة مدمجة داخل البوكيه؟</label>
-                        <div class="natural-radio-grid" style="grid-template-columns: 1fr 1fr; max-width: 300px; margin-bottom: 12px;">
-                            <div class="natural-radio-node" id="choc-toggle-yes">نعم</div>
-                            <div class="natural-radio-node active" id="choc-toggle-no">لا</div>
+
+                <!-- الخطوة 4: الشوكولاتة الفاخرة وكارت الإهداء -->
+                <div class="simulator-step-content" data-step="4">
+                    <h2 class="step-title"><i class="fa-solid fa-chocolate"></i> الخطوة 4: الشوكولاتة الفاخرة وكارت الإهداء</h2>
+                    
+                    <div class="form-group-custom" style="margin-bottom: 24px;">
+                        <label class="premium-input-label">هل تود إضافة شوكولاتة مدمجة داخل البوكيه؟</label>
+                        <div class="natural-radio-grid" style="grid-template-columns: 1fr 1fr; max-width: 280px; margin-bottom: 12px;">
+                            <div class="bose-selection-card" id="choc-toggle-yes">نعم</div>
+                            <div class="bose-selection-card active" id="choc-toggle-no">لا</div>
                         </div>
-                        <div id="chocolate-budget-block" class="dynamic-sub-block" style="display:none;">
-                            <label style="font-size: 13px;">اكتب الميزانية والمبلغ الذي تود شراء شوكولاتة به:</label>
-                            <input type="number" id="chocolate-budget-input" class="bose-input-field" placeholder="مثال: شوكولاتة بمبلغ 150 جنيه" min="0">
+                        <div id="chocolate-budget-block" class="dynamic-sub-block" style="display: none;">
+                            <label class="premium-input-label" style="font-size: 13px;">اكتب الميزانية والمبلغ الذي تود شراء الشوكولاتة به وسنقوم بتنسيقها لك:</label>
+                            <input type="number" id="chocolate-budget-input" class="premium-text-input" placeholder="مثال: شوكولاتة بمبلغ 150 جنيه" min="0">
                         </div>
                     </div>
+
                     <div class="form-group-custom">
-                        <label>حابب تضيف كارت إهداء ورقي؟</label>
-                        <div class="natural-radio-grid" style="grid-template-columns: 1fr 1fr; max-width: 300px; margin-bottom: 12px;">
-                            <div class="natural-radio-node" id="card-toggle-yes">نعم</div>
-                            <div class="natural-radio-node active" id="card-toggle-no">لا</div>
+                        <label class="premium-input-label">هل تود إضافة كارت إهداء ورقي؟</label>
+                        <div class="natural-radio-grid" style="grid-template-columns: 1fr 1fr; max-width: 280px; margin-bottom: 12px;">
+                            <div class="bose-selection-card" id="card-toggle-yes">نعم</div>
+                            <div class="bose-selection-card active" id="card-toggle-no">لا</div>
                         </div>
-                        <input type="checkbox" id="include-card" style="display:none;">
-                        <div id="card-text-section" class="dynamic-sub-block" style="display:none;">
-                            <label style="font-size: 13px;">اكتب نص الرسالة أو التهنئة المطلوب تدوينها داخل الكارت بخط منسق:</label>
-                            <textarea id="card-text" class="bose-textarea-field" placeholder="اكتب مشاعرك الصادقة هنا..."></textarea>
+                        <input type="checkbox" id="include-card" style="display: none;">
+                        <div id="card-text-section" class="dynamic-sub-block" style="display: none;">
+                            <label class="premium-input-label" style="font-size: 13px;">اكتب نص الرسالة أو التهنئة المطلوب تدوينها داخل الكارت بخط منسق:</label>
+                            <textarea id="card-text" class="premium-text-input" style="height: 100px; resize: none;" placeholder="اكتب مشاعرك الصادقة هنا..."></textarea>
                         </div>
                     </div>
                 </div>
+
+                <!-- شريط أزرار التنقل والتحكم بالخطوات -->
+                <div class="simulator-actions-bar" style="margin-top: 30px;">
+                    <button type="button" class="premium-nav-btn secondary" id="btn-prev" style="display: none;">السابق</button>
+                    <button type="button" class="premium-nav-btn primary" id="btn-next" style="margin-right: auto;">التالي</button>
+                </div>
+
             </div>
+
+            <!-- الجانب الأيسر: شريط السعر اللحظي العائم والمحدث تلقائياً طوال الوقت -->
             <div class="price-sidebar-container">
                 <div class="sticky-summary-widget">
-                    <h3 class="summary-widget-title">شريط السعر اللحظي</h3>
-                    <div class="pricing-invoice-row"><span>سعر البوكيه الأساسي (شامل الورد والتنسيق):</span><span id="base-price-val">400 EGP</span></div>
-                    <div class="pricing-invoice-row"><span>الورد الإضافي <small id="extra-flowers-count">(0 وردة)</small>:</span><span id="extra-flowers-cost">0 EGP</span></div>
-                    <div class="pricing-invoice-row"><span>شريط الستان المطبوع:</span><span id="wrapping-cost-val">0 EGP</span></div>
-                    <div class="pricing-invoice-row"><span>الصور الشخصية المطبوعة:</span><span id="photo-cost-val">0 EGP</span></div>
-                    <div class="pricing-invoice-row"><span>ميزانية الشوكولاتة المنسقة:</span><span id="chocolate-cost-val">0 EGP</span></div>
-                    <div class="pricing-invoice-row"><span>كارت الإهداء الورقي المكتوب:</span><span id="card-cost-val">0 EGP</span></div>
-                    <div class="pricing-invoice-row"><span>قيمة الكاش المدمج الصافي:</span><span id="money-total-display">0 EGP</span></div>
-                    <div class="grand-price-node"><span class="grand-price-label">السعر الإجمالي الكلي اللحظي:</span><span class="grand-price-value" id="bouquet-total-val">400 EGP</span></div>
-                    <button type="button" class="action-submit-btn" id="add-to-cart-btn">اعتماد التصميم وإضافته للسلة</button>
+                    <h3 class="summary-title"><i class="fa-solid fa-receipt" style="color: var(--bose-pink);"></i> شريط السعر اللحظي</h3>
+                    
+                    <div class="price-breakdown-list">
+                        <div class="price-item-row">
+                            <span>سعر البوكيه الأساسي (شامل الورد والتنسيق):</span>
+                            <span id="base-price-val">400 EGP</span>
+                        </div>
+                        <div class="price-item-row">
+                            <span>الورد الإضافي <small id="extra-flowers-count" style="color: var(--bose-pink); font-weight: 700;">(0 وردة إضافية)</small>:</span>
+                            <span id="extra-flowers-cost">0 EGP</span>
+                        </div>
+                        <div class="price-item-row">
+                            <span>شريط الستان المطبوع حرارياً:</span>
+                            <span id="wrapping-cost-val">0 EGP</span>
+                        </div>
+                        <div class="price-item-row">
+                            <span>الصور الشخصية المطبوعة:</span>
+                            <span id="photo-cost-val">0 EGP</span>
+                        </div>
+                        <div class="price-item-row">
+                            <span>ميزانية الشوكولاتة المنسقة:</span>
+                            <span id="chocolate-cost-val">0 EGP</span>
+                        </div>
+                        <div class="price-item-row">
+                            <span>كارت الإهداء الورقي المكتوب:</span>
+                            <span id="card-cost-val">0 EGP</span>
+                        </div>
+                        <div class="price-item-row">
+                            <span>قيمة الكاش المدمج الصافي:</span>
+                            <span id="money-total-display">0 EGP</span>
+                        </div>
+                    </div>
+
+                    <div class="grand-price-node">
+                        <span class="grand-price-label">السعر الإجمالي الكلي اللحظي:</span>
+                        <span class="grand-price-value" id="bouquet-total-val">400 EGP</span>
+                    </div>
+
+                    <button type="button" class="action-submit-btn" id="add-to-cart-btn" style="display: none;">اعتماد التصميم وإضافته للسلة</button>
                 </div>
             </div>
+
         </div>
+
+        <!-- معرض سابقة أعمالنا الفخم التفاعلي -->
         <div class="portfolio-section">
             <h2 style="font-size: 24px; text-align: center; margin-bottom: 8px;">بوكيهات شرفت عملائنا في مناسباتهم الراقية</h2>
             <p style="text-align: center; font-size: 14px; margin-bottom: 24px; color: #555;">استعرض بعضاً من البوكيهات المنسقة والمنفذة يدوياً بحب لعملائنا لتستلهم منها فكرتك.</p>
+            
             <div class="horizontal-swipe-slider" id="portfolio-swipe-slider">
                 <div class="portfolio-item-card" data-index="1">
-                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="portfolio-item-img">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="portfolio-item-img" alt="بوكيه فخامة الأناقة الوردية الملكية">
                     <div class="portfolio-item-body">بوكيه فخامة الأناقة الوردية الملكية</div>
                 </div>
                 <div class="portfolio-item-card" data-index="2">
-                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="portfolio-item-img">
-                    <div class="portfolio-item-body">بوكيه ورد ستان متداخل مع ميزانية كاش صافي</div>
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="portfolio-item-img" alt="بوكيه ورد ستان متداخل مع ميزانية كاش">
+                    <div class="portfolio-item-body">بوكيه ورد ستان متداخل مع ميزانية كاش</div>
                 </div>
                 <div class="portfolio-item-card" data-index="3">
-                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="portfolio-item-img">
-                    <div class="portfolio-item-body">بوكيه طبيعي نضر مع صور معلقة وشريط مطبوع حرارياً</div>
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="portfolio-item-img" alt="بوكيه طبيعي نضر مع صور معلقة وشريط مطبوع">
+                    <div class="portfolio-item-body">بوكيه طبيعي نضر مع صور معلقة</div>
                 </div>
                 <div class="portfolio-item-card" data-index="4">
-                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="portfolio-item-img">
-                    <div class="portfolio-item-body">بوكس توليفة فاخرة من الورد الصناعي والشوكولاتة</div>
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="portfolio-item-img" alt="بوكس توليفة فاخرة من الورد الصناعي والشوكولاتة">
+                    <div class="portfolio-item-body">بوكس توليفة فاخرة من الورد والشوكولاتة</div>
                 </div>
             </div>
         </div>
+
     </main>
-    <div class="bose-popup-modal" id="portfolio-popup-modal">
+
+    <!-- النافذة المنبثقة التفاعلية الفخمة لمعرض الأعمال -->
+    <div class="bose-popup-modal" id="portfolio-popup-modal" style="display: none;">
         <div class="bose-popup-content">
             <span class="modal-close-btn" id="modal-close-node">X</span>
-            <img id="modal-display-img" src="" class="modal-img-frame">
+            <img id="modal-display-img" src="" class="modal-img-frame" alt="معاينة فخمة للمنتج">
             <div class="modal-body-desc" id="modal-display-desc"></div>
         </div>
     </div>
+
+    <!-- الفوتر الموحد والفاخر للبراند -->
     <div id="bose-footer-injector"></div>
+
+    <!-- استدعاء المحركات البرمجية للتنسيق والحوكمة وتوثيق السلة والطلب -->
     <script src="js/core-engine.js"></script>
     <script src="js/flower-engine.js"></script>
+
+    <!-- محرك التفاعل الخاص بصفحة المحاكي لمنع التعارض مع الملفات الخارجية -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const flowerRadioNodes = document.querySelectorAll('[data-type]');
-            flowerRadioNodes.forEach(node => {
-                node.addEventListener('click', function() {
-                    flowerRadioNodes.forEach(n => n.classList.remove('active'));
+            let currentActiveStep = 1;
+            const totalSteps = 4;
+
+            const btnNext = document.getElementById("btn-next");
+            const btnPrev = document.getElementById("btn-prev");
+            const btnAddToCart = document.getElementById("add-to-cart-btn");
+            const stepsPanels = document.querySelectorAll(".simulator-step-content");
+
+            // دالة تحديث وعرض الخطوات والتحكم بظهور الأزرار لمنع التكدس
+            function updateActiveStepUI() {
+                stepsPanels.forEach(panel => {
+                    const stepNum = parseInt(panel.getAttribute("data-step"), 10);
+                    if (stepNum === currentActiveStep) {
+                        panel.classList.add("active");
+                    } else {
+                        panel.classList.remove("active");
+                    }
+                });
+
+                if (currentActiveStep === 1) {
+                    btnPrev.style.display = "none";
+                } else {
+                    btnPrev.style.display = "inline-flex";
+                }
+
+                if (currentActiveStep === totalSteps) {
+                    btnNext.style.display = "none";
+                    btnAddToCart.style.display = "block";
+                } else {
+                    btnNext.style.display = "inline-flex";
+                    btnAddToCart.style.display = "none";
+                }
+            }
+
+            if (btnNext) {
+                btnNext.addEventListener("click", function() {
+                    if (currentActiveStep < totalSteps) {
+                        currentActiveStep++;
+                        updateActiveStepUI();
+                    }
+                });
+            }
+
+            if (btnPrev) {
+                btnPrev.addEventListener("click", function() {
+                    if (currentActiveStep > 1) {
+                        currentActiveStep--;
+                        updateActiveStepUI();
+                    }
+                });
+            }
+
+            // تفاعل أزرار تحديد نوع الورد الأصيل
+            const flowerTypeCards = document.querySelectorAll('[data-type]');
+            const hiddenFlowerSelect = document.getElementById('flower-type');
+            
+            flowerTypeCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    flowerTypeCards.forEach(c => c.classList.remove('active'));
                     this.classList.add('active');
+                    const selectedVal = this.getAttribute('data-type');
+                    if (hiddenFlowerSelect) {
+                        hiddenFlowerSelect.value = selectedVal;
+                        hiddenFlowerSelect.dispatchEvent(new Event('change'));
+                    }
                 });
             });
 
+            // تفاعل إظهار/إخفاء شريط الستان المطبوع
             const ribbonYes = document.getElementById('ribbon-toggle-yes');
             const ribbonNo = document.getElementById('ribbon-toggle-no');
             const ribbonBlock = document.getElementById('ribbon-text-block');
-            const wrappingCostValDisplay = document.getElementById('wrapping-cost-val');
-            
-            function updateRibbonLayoutPrice() {
-                if(ribbonYes && ribbonYes.classList.contains('active')) {
-                    if(ribbonBlock) ribbonBlock.style.display = "block";
-                    if(wrappingCostValDisplay) wrappingCostValDisplay.textContent = "50 EGP";
+            const wrappingCostVal = document.getElementById('wrapping-cost-val');
+
+            function triggerRibbonUpdate() {
+                if (ribbonYes && ribbonYes.classList.contains('active')) {
+                    if (ribbonBlock) ribbonBlock.style.display = "block";
+                    if (wrappingCostVal) wrappingCostVal.textContent = "50 EGP";
                 } else {
-                    if(ribbonBlock) ribbonBlock.style.display = "none";
-                    if(wrappingCostValDisplay) wrappingCostValDisplay.textContent = "0 EGP";
+                    if (ribbonBlock) ribbonBlock.style.display = "none";
+                    if (wrappingCostVal) wrappingCostVal.textContent = "0 EGP";
                 }
-                if(window.BoseFlowerBuilderUpdatePrice) window.BoseFlowerBuilderUpdatePrice();
+                if (window.BoseFlowerBuilderUpdatePrice) window.BoseFlowerBuilderUpdatePrice();
             }
 
-            if(ribbonYes && ribbonNo) {
-                ribbonYes.addEventListener('click', function() { ribbonNo.classList.remove('active'); this.classList.add('active'); updateRibbonLayoutPrice(); });
-                ribbonNo.addEventListener('click', function() { ribbonYes.classList.remove('active'); this.classList.add('active'); updateRibbonLayoutPrice(); });
+            if (ribbonYes && ribbonNo) {
+                ribbonYes.addEventListener('click', function() {
+                    ribbonNo.classList.remove('active');
+                    this.classList.add('active');
+                    triggerRibbonUpdate();
+                });
+                ribbonNo.addEventListener('click', function() {
+                    ribbonYes.classList.remove('active');
+                    this.classList.add('active');
+                    triggerRibbonUpdate();
+                });
             }
 
+            // تفاعل إضافة الصور الشخصية
             const photoYes = document.getElementById('photo-toggle-yes');
             const photoNo = document.getElementById('photo-toggle-no');
-            const photoUploadSectionBlock = document.getElementById('photo-upload-section');
-            const photoCostValDisplay = document.getElementById('photo-cost-val');
-            const photoCountInputVal = document.getElementById('photo-count-value');
+            const photoUploadSection = document.getElementById('photo-upload-section');
+            const includePhotoCheckbox = document.getElementById('include-photo');
+            const photoCostVal = document.getElementById('photo-cost-val');
+            const photoCountInput = document.getElementById('photo-count-value');
 
-            function updatePhotosLayoutPrice() {
-                if(photoYes && photoYes.classList.contains('active')) {
-                    if(photoUploadSectionBlock) photoUploadSectionBlock.style.display = "block";
-                    generateDynamicPhotoUploadInputs();
-                } else {
-                    if(photoUploadSectionBlock) photoUploadSectionBlock.style.display = "none";
-                    if(photoCostValDisplay) photoCostValDisplay.textContent = "0 EGP";
-                }
-            }
-
-            function generateDynamicPhotoUploadInputs() {
+            function generatePhotoInputs() {
                 const inputsGrid = document.getElementById('photos-upload-inputs-grid');
-                if(!inputsGrid || !photoCountInputVal) return;
-                let count = parseInt(photoCountInputVal.value, 10) || 1;
+                if (!inputsGrid || !photoCountInput) return;
+                let count = parseInt(photoCountInput.value, 10) || 1;
                 let html = '';
-                for(let i=1; i<=count; i++) {
-                    html += `<div style="display:flex; align-items:center; gap:8px;"><span style="font-size:12px; font-weight:700;">صورة ${i}:</span><input type="file" class="bose-input-field" accept="image/*" style="padding:6px; font-size:12px;"></div>`;
+                for (let i = 1; i <= count; i++) {
+                    html += `<div style="display:flex; align-items:center; gap:10px;"><span style="font-size:12px; font-weight:700;">صورة ${i}:</span><input type="file" class="bose-premium-text-input" accept="image/*" style="padding:6px; font-size:12px;"></div>`;
                 }
                 inputsGrid.innerHTML = html;
-                if(photoCostValDisplay) photoCostValDisplay.textContent = `${count * 15} EGP`;
-                if(window.BoseFlowerBuilderUpdatePrice) window.BoseFlowerBuilderUpdatePrice();
+                if (photoCostVal) photoCostVal.textContent = `${count * 15} EGP`;
+                if (window.BoseFlowerBuilderUpdatePrice) window.BoseFlowerBuilderUpdatePrice();
             }
 
-            if(photoYes && photoNo) {
-                photoYes.addEventListener('click', function() { photoNo.classList.remove('active'); this.classList.add('active'); updatePhotosLayoutPrice(); });
-                photoNo.addEventListener('click', function() { photoYes.classList.remove('active'); this.classList.add('active'); updatePhotosLayoutPrice(); });
+            function triggerPhotoUpdate() {
+                if (photoYes && photoYes.classList.contains('active')) {
+                    if (photoUploadSection) photoUploadSection.style.display = "block";
+                    if (includePhotoCheckbox) includePhotoCheckbox.checked = true;
+                    generatePhotoInputs();
+                } else {
+                    if (photoUploadSection) photoUploadSection.style.display = "none";
+                    if (includePhotoCheckbox) includePhotoCheckbox.checked = false;
+                    if (photoCostVal) photoCostVal.textContent = "0 EGP";
+                }
+                if (window.BoseFlowerBuilderUpdatePrice) window.BoseFlowerBuilderUpdatePrice();
+            }
+
+            if (photoYes && photoNo) {
+                photoYes.addEventListener('click', function() {
+                    photoNo.classList.remove('active');
+                    this.classList.add('active');
+                    triggerPhotoUpdate();
+                });
+                photoNo.addEventListener('click', function() {
+                    photoYes.classList.remove('active');
+                    this.classList.add('active');
+                    triggerPhotoUpdate();
+                });
             }
 
             const photoCountPlus = document.getElementById('photo-count-plus');
             const photoCountMinus = document.getElementById('photo-count-minus');
-            if(photoCountPlus && photoCountMinus && photoCountInputVal) {
-                photoCountPlus.addEventListener('click', function() { let current = parseInt(photoCountInputVal.value, 10) || 1; photoCountInputVal.value = current + 1; generateDynamicPhotoUploadInputs(); });
-                photoCountMinus.addEventListener('click', function() { let current = parseInt(photoCountInputVal.value, 10) || 1; if(current > 1) { photoCountInputVal.value = current - 1; generateDynamicPhotoUploadInputs(); } });
+            if (photoCountPlus && photoCountMinus && photoCountInput) {
+                photoCountPlus.addEventListener('click', function() {
+                    let current = parseInt(photoCountInput.value, 10) || 1;
+                    photoCountInput.value = current + 1;
+                    generatePhotoInputs();
+                });
+                photoCountMinus.addEventListener('click', function() {
+                    let current = parseInt(photoCountInput.value, 10) || 1;
+                    if (current > 1) {
+                        photoCountInput.value = current - 1;
+                        generatePhotoInputs();
+                    }
+                });
             }
 
+            // تفاعل إضافة ومفاجآت الكاش المدمج
             const cashYes = document.getElementById('cash-toggle-yes');
             const cashNo = document.getElementById('cash-toggle-no');
-            const cashBlockSection = document.getElementById('cash-integration-block');
-            const totalCashDisplayRow = document.getElementById('money-total-display');
-            const inputCashPureAmount = document.getElementById('money-amount');
+            const cashBlock = document.getElementById('cash-integration-block');
+            const cashDisplayRow = document.getElementById('money-total-display');
+            const inputCashAmount = document.getElementById('money-amount');
 
-            if(cashYes && cashNo) {
-                cashYes.addEventListener('click', function() { cashNo.classList.remove('active'); this.classList.add('active'); if(cashBlockSection) cashBlockSection.style.display = "block"; });
-                cashNo.addEventListener('click', function() { cashYes.classList.remove('active'); this.classList.add('active'); if(cashBlockSection) cashBlockSection.style.display = "none"; if(inputCashPureAmount) { inputCashPureAmount.value = 0; } if(totalCashDisplayRow) totalCashDisplayRow.textContent = "0 EGP"; if(window.BoseFlowerBuilderUpdatePrice) window.BoseFlowerBuilderUpdatePrice(); });
+            if (cashYes && cashNo) {
+                cashYes.addEventListener('click', function() {
+                    cashNo.classList.remove('active');
+                    this.classList.add('active');
+                    if (cashBlock) cashBlock.style.display = "block";
+                });
+                cashNo.addEventListener('click', function() {
+                    cashYes.classList.remove('active');
+                    this.classList.add('active');
+                    if (cashBlock) cashBlock.style.display = "none";
+                    if (inputCashAmount) inputCashAmount.value = 0;
+                    if (cashDisplayRow) cashDisplayRow.textContent = "0 EGP";
+                    if (window.BoseFlowerBuilderUpdatePrice) window.BoseFlowerBuilderUpdatePrice();
+                });
             }
 
+            // تفاعل إضافة ميزانية الشوكولاتة المنسقة
             const chocYes = document.getElementById('choc-toggle-yes');
             const chocNo = document.getElementById('choc-toggle-no');
-            const chocBlockSection = document.getElementById('chocolate-budget-block');
-            const chocCostValDisplay = document.getElementById('chocolate-cost-val');
+            const chocBlock = document.getElementById('chocolate-budget-block');
+            const chocCostVal = document.getElementById('chocolate-cost-val');
             const chocBudgetInput = document.getElementById('chocolate-budget-input');
 
-            if(chocYes && chocNo) {
-                chocYes.addEventListener('click', function() { chocNo.classList.remove('active'); this.classList.add('active'); if(chocBlockSection) chocBlockSection.style.display = "block"; });
-                chocNo.addEventListener('click', function() { chocYes.classList.remove('active'); this.classList.add('active'); if(chocBlockSection) chocBlockSection.style.display = "none"; if(chocBudgetInput) chocBudgetInput.value = ""; if(chocCostValDisplay) chocCostValDisplay.textContent = "0 EGP"; if(window.BoseFlowerBuilderUpdatePrice) window.BoseFlowerBuilderUpdatePrice(); });
+            if (chocYes && chocNo) {
+                chocYes.addEventListener('click', function() {
+                    chocNo.classList.remove('active');
+                    this.classList.add('active');
+                    if (chocBlock) chocBlock.style.display = "block";
+                });
+                chocNo.addEventListener('click', function() {
+                    cashYes.classList.remove('active');
+                    this.classList.add('active');
+                    if (chocBlock) chocBlock.style.display = "none";
+                    if (chocBudgetInput) chocBudgetInput.value = "";
+                    if (chocCostVal) chocCostVal.textContent = "0 EGP";
+                    if (window.BoseFlowerBuilderUpdatePrice) window.BoseFlowerBuilderUpdatePrice();
+                });
             }
-            if(chocBudgetInput) {
-                chocBudgetInput.addEventListener('input', function() { let val = parseInt(this.value, 10) || 0; if(chocCostValDisplay) chocCostValDisplay.textContent = `${val} EGP`; if(window.BoseFlowerBuilderUpdatePrice) window.BoseFlowerBuilderUpdatePrice(); });
+            if (chocBudgetInput) {
+                chocBudgetInput.addEventListener('input', function() {
+                    let val = parseInt(this.value, 10) || 0;
+                    if (chocCostVal) chocCostVal.textContent = `${val} EGP`;
+                    if (window.BoseFlowerBuilderUpdatePrice) window.BoseFlowerBuilderUpdatePrice();
+                });
             }
 
+            // تفاعل إضافة كارت الإهداء الورقي المكتوب
             const cardYes = document.getElementById('card-toggle-yes');
             const cardNo = document.getElementById('card-toggle-no');
-            const cardTextSectionBlock = document.getElementById('card-text-section');
-            const cardCostValDisplay = document.getElementById('card-cost-val');
+            const cardTextSection = document.getElementById('card-text-section');
+            const cardCostVal = document.getElementById('card-cost-val');
+            const includeCardCheckbox = document.getElementById('include-card');
 
-            if(cardYes && cardNo) {
-                cardYes.addEventListener('click', function() { cardNo.classList.remove('active'); this.classList.add('active'); if(cardTextSectionBlock) cardTextSectionBlock.style.display = "block"; if(cardCostValDisplay) cardCostValDisplay.textContent = "20 EGP"; if(window.BoseFlowerBuilderUpdatePrice) window.BoseFlowerBuilderUpdatePrice(); });
-                cardNo.addEventListener('click', function() { cardYes.classList.remove('active'); this.classList.add('active'); if(cardTextSectionBlock) cardTextSectionBlock.style.display = "none"; if(cardCostValDisplay) cardCostValDisplay.textContent = "0 EGP"; if(window.BoseFlowerBuilderUpdatePrice) window.BoseFlowerBuilderUpdatePrice(); });
+            if (cardYes && cardNo) {
+                cardYes.addEventListener('click', function() {
+                    cardNo.classList.remove('active');
+                    this.classList.add('active');
+                    if (cardTextSection) cardTextSection.style.display = "block";
+                    if (includeCardCheckbox) includeCardCheckbox.checked = true;
+                    if (cardCostVal) cardCostVal.textContent = "20 EGP";
+                    if (window.BoseFlowerBuilderUpdatePrice) window.BoseFlowerBuilderUpdatePrice();
+                });
+                cardNo.addEventListener('click', function() {
+                    cardYes.classList.remove('active');
+                    this.classList.add('active');
+                    if (cardTextSection) cardTextSection.style.display = "none";
+                    if (includeCardCheckbox) includeCardCheckbox.checked = false;
+                    if (cardCostVal) cardCostVal.textContent = "0 EGP";
+                    if (window.BoseFlowerBuilderUpdatePrice) window.BoseFlowerBuilderUpdatePrice();
+                });
             }
 
+            // محرك الحساب المالي الدقيق والرياضي اللحظي للبوكيه
             window.BoseFlowerBuilderUpdatePrice = function() {
-                const totalInvoiceValNode = document.getElementById('bouquet-total-val');
-                const baseFlowersValInput = document.getElementById('flower-count');
-                if(!totalInvoiceValNode || !baseFlowersValInput) return;
-                let baseCount = parseInt(baseFlowersValInput.value, 10) || 15;
-                let calculatedSum = 400;
-                if(baseCount > 15) calculatedSum += (baseCount - 15) * 35;
-                if(ribbonYes && ribbonYes.classList.contains('active')) calculatedSum += 50;
-                if(photoYes && photoYes.classList.contains('active') && photoCountInputVal) calculatedSum += (parseInt(photoCountInputVal.value, 10) || 1) * 15;
-                if(cashYes && cashYes.classList.contains('active') && inputCashPureAmount) calculatedSum += (parseInt(inputCashPureAmount.value, 10) || 0);
-                if(chocYes && chocYes.classList.contains('active') && chocBudgetInput) calculatedSum += (parseInt(chocBudgetInput.value, 10) || 0);
-                if(cardYes && cardYes.classList.contains('active')) calculatedSum += 20;
-                totalInvoiceValNode.textContent = `${calculatedSum} EGP`;
+                const totalInvoiceVal = document.getElementById('bouquet-total-val');
+                const baseFlowersInput = document.getElementById('flower-count');
+                if (!totalInvoiceVal || !baseFlowersInput) return;
+
+                let baseCount = parseInt(baseFlowersInput.value, 10) || 15;
+                let calculatedSum = 400; // سعر البوكيه الأساسي المعتمد للبراند
+
+                // سعر الوردة الإضافية الزائدة فوق الـ 15 وردة هو 35 جنيهاً
+                if (baseCount > 15) {
+                    calculatedSum += (baseCount - 15) * 35;
+                }
+
+                if (ribbonYes && ribbonYes.classList.contains('active')) {
+                    calculatedSum += 50; // سعر شريط الستان المطبوع حرارياً الثابت
+                }
+
+                if (photoYes && photoYes.classList.contains('active') && photoCountInput) {
+                    calculatedSum += (parseInt(photoCountInput.value, 10) || 1) * 15; // 15 جنيهاً لكل صورة شخصية
+                }
+
+                if (cashYes && cashYes.classList.contains('active') && inputCashAmount) {
+                    calculatedSum += (parseInt(inputCashAmount.value, 10) || 0); // الكاش الصافي المدمج بالبوكيه
+                }
+
+                if (chocYes && chocYes.classList.contains('active') && chocBudgetInput) {
+                    calculatedSum += (parseInt(chocBudgetInput.value, 10) || 0); // ميزانية الشوكولاتة الصافية
+                }
+
+                if (cardYes && cardYes.classList.contains('active')) {
+                    calculatedSum += 20; // سعر كارت الإهداء الورقي المكتوب الثابت
+                }
+
+                totalInvoiceVal.textContent = `${calculatedSum} EGP`;
             };
 
+            // العداد الذكي لحجم البوكيه
             const flowerCountBoxInput = document.getElementById('flower-count');
-            if(flowerCountBoxInput) {
+            if (flowerCountBoxInput) {
                 flowerCountBoxInput.addEventListener('change', function() {
                     const count = parseInt(this.value, 10) || 15;
-                    const extraFlowersCountNode = document.getElementById('extra-flowers-count');
-                    const extraFlowersCostNode = document.getElementById('extra-flowers-cost');
-                    if(extraFlowersCountNode && extraFlowersCostNode) {
+                    const extraFlowersCount = document.getElementById('extra-flowers-count');
+                    const extraFlowersCost = document.getElementById('extra-flowers-cost');
+                    if (extraFlowersCount && extraFlowersCost) {
                         let extra = Math.max(0, count - 15);
-                        extraFlowersCountNode.textContent = `(${extra} وردة إضافية)`;
-                        extraFlowersCostNode.textContent = `${extra * 35} EGP`;
+                        extraFlowersCount.textContent = `(${extra} وردة إضافية)`;
+                        extraFlowersCost.textContent = `${extra * 35} EGP`;
                     }
-                    if(window.BoseFlowerBuilderUpdatePrice) window.BoseFlowerBuilderUpdatePrice();
+                    if (window.BoseFlowerBuilderUpdatePrice) window.BoseFlowerBuilderUpdatePrice();
                 });
-                document.getElementById('flower-plus')?.addEventListener('click', () => { let c = parseInt(flowerCountBoxInput.value,10)||15; flowerCountBoxInput.value = c+1; flowerCountBoxInput.dispatchEvent(new Event('change')); });
-                document.getElementById('flower-minus')?.addEventListener('click', () => { let c = parseInt(flowerCountBoxInput.value,10)||15; if(c>15){ flowerCountBoxInput.value = c-1; flowerCountBoxInput.dispatchEvent(new Event('change')); } });
-            }
-            if(inputCashPureAmount) {
-                inputCashPureAmount.addEventListener('input', function() { if(totalCashDisplayRow) totalCashDisplayRow.textContent = `${this.value} EGP`; if(window.BoseFlowerBuilderUpdatePrice) window.BoseFlowerBuilderUpdatePrice(); });
-                document.getElementById('bill-plus')?.addEventListener('click', () => { let step = parseInt(document.getElementById('money-category').value,10)||50; let v = parseInt(inputCashPureAmount.value,10)||0; inputCashPureAmount.value = v + step; inputCashPureAmount.dispatchEvent(new Event('input')); });
-                document.getElementById('bill-minus')?.addEventListener('click', () => { let step = parseInt(document.getElementById('money-category').value,10)||50; let v = parseInt(inputCashPureAmount.value,10)||0; if(v>=step){ inputCashPureAmount.value = v - step; inputCashPureAmount.dispatchEvent(new Event('input')); } });
+
+                document.getElementById('flower-plus')?.addEventListener('click', () => {
+                    let c = parseInt(flowerCountBoxInput.value, 10) || 15;
+                    flowerCountBoxInput.value = c + 1;
+                    flowerCountBoxInput.dispatchEvent(new Event('change'));
+                });
+
+                document.getElementById('flower-minus')?.addEventListener('click', () => {
+                    let c = parseInt(flowerCountBoxInput.value, 10) || 15;
+                    if (c > 15) {
+                        flowerCountBoxInput.value = c - 1;
+                        flowerCountBoxInput.dispatchEvent(new Event('change'));
+                    }
+                });
             }
 
+            if (inputCashAmount) {
+                inputCashAmount.addEventListener('input', function() {
+                    if (cashDisplayRow) cashDisplayRow.textContent = `${this.value} EGP`;
+                    if (window.BoseFlowerBuilderUpdatePrice) window.BoseFlowerBuilderUpdatePrice();
+                });
+
+                document.getElementById('bill-plus')?.addEventListener('click', () => {
+                    let step = parseInt(document.getElementById('money-category').value, 10) || 200;
+                    let v = parseInt(inputCashAmount.value, 10) || 0;
+                    inputCashAmount.value = v + step;
+                    inputCashAmount.dispatchEvent(new Event('input'));
+                });
+
+                document.getElementById('bill-minus')?.addEventListener('click', () => {
+                    let step = parseInt(document.getElementById('money-category').value, 10) || 200;
+                    let v = parseInt(inputCashAmount.value, 10) || 0;
+                    if (v >= step) {
+                        inputCashAmount.value = v - step;
+                        inputCashAmount.dispatchEvent(new Event('input'));
+                    }
+                });
+            }
+
+            // تفاعل النوافذ المنبثقة لمعرض سابقة أعمالنا الفخم
             const portfolioModal = document.getElementById('portfolio-popup-modal');
             const modalImg = document.getElementById('modal-display-img');
             const modalDesc = document.getElementById('modal-display-desc');
@@ -394,8 +644,8 @@
             const portfolioCards = document.querySelectorAll('.portfolio-item-card');
 
             const portfolioExplanations = {
-                "1": "ورد طبيعي نضر ٣٠ وردة بلون بمبي فاخر مع تغليف شريط ستان مطبوع وصور شخصية مدمجة.",
-                "2": "ورد ستان مصنوع بحب ٢٥ وردة مع تنسيق مدمج لكاش صافي مخصص بالكامل لحجم اختيارك.",
+                "1": "ورد طبيعي نضر 30 وردة بلون بمبي فاخر مع تغليف شريط ستان مطبوع وصور شخصية مدمجة.",
+                "2": "ورد ستان مصنوع بحب 25 وردة مع تنسيق مدمج لكاش صافي مخصص بالكامل لحجم اختيارك.",
                 "3": "ورد طبيعي نضر مع صور معلقة داخل البوكيه وشريط مطبوع حرارياً مخصص للمناسبة.",
                 "4": "توليفة فخمة تجمع بين الورد الصناعي المنسق بعناية تامة وقطع الشوكولاتة الفاخرة."
             };
@@ -403,7 +653,7 @@
             portfolioCards.forEach(card => {
                 card.addEventListener('click', function() {
                     const idx = this.getAttribute('data-index');
-                    if(portfolioModal && modalImg && modalDesc) {
+                    if (portfolioModal && modalImg && modalDesc) {
                         modalImg.src = this.querySelector('img').src;
                         modalDesc.textContent = portfolioExplanations[idx];
                         portfolioModal.style.display = "flex";
@@ -411,8 +661,10 @@
                 });
             });
 
-            if(modalClose && portfolioModal) {
-                modalClose.addEventListener('click', () => portfolioModal.style.display = "none");
+            if (modalClose && portfolioModal) {
+                modalClose.addEventListener('click', () => {
+                    portfolioModal.style.display = "none";
+                });
             }
         });
     </script>
