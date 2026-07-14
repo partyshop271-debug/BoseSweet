@@ -1,6 +1,6 @@
 /**
  * 👑 محرك محاكي بوكيهات الورد والملحقات التفاعلي المطور - حلويات بوسي 👑
- * النسخة الهندسية القياسية الكاملة والمعزولة كلياً - المحدثة لحل مشكلات الفيديو والخطوات بالكامل V15.0
+ * النسخة الهندسية القياسية الكاملة والمعزولة كلياً - المحدثة لحل مشكلات الفيديو V15.0
  * الأداء: أقصى توفير لبيانات الموبايل والكمبيوتر عبر التحديث الموضعي الصامت للمحرك.
  * التوافق: يلتزم بمهام محاكي الورد فقط ولا يتدخل بأي ملف آخر، ويتزامن تلقائياً مع core-engine.js.
  */
@@ -86,7 +86,7 @@
     }
 
     /**
-     * 🧮 محرك الفحص المالي والتحكيم اللحظي لأسعار البوكيه - مطور ومحكوم موضعياً بالكامل
+     * 🧮 محرك الفحص المالي والتحكيم اللحظي لأسعار البوكيه - مطور لحل مشكلة كارت الفاتورة والستان والمرفقات كاملة
      */
     function recalculatePrice() {
         let extraFlowers = Math.max(0, state.flowerCount - flowerConfig.baseFlowers);
@@ -115,13 +115,12 @@
             embeddedPriceDisplay.innerHTML = `سعر هذا البوكيه الذي يحتوي على ${state.flowerCount} وردة هو <span>${Math.round(finalCountCost)} جنيه</span>`;
         }
 
-        // حل مشكلة الفيديو للخطوة الثانية: تحديث إطار السعر التوضيحي الموضع لشريط الستان ديناميكياً
+        // حل مشكلة الفيديو: تحديث إطار السعر الموضع التوضيحي داخل الخطوة الثانية (شريط الستان) ديناميكياً
         if (ribbonStepPriceDisplay) {
-            ribbonStepPriceDisplay.style.display = state.includeRibbonText ? "block" : "none";
             ribbonStepPriceDisplay.innerHTML = `سعر إضافة شريط الستان المطبوع حرارياً هو <span>${flowerConfig.satinRibbonPrice} جنيه</span>`;
         }
 
-        // تطوير الخطوة الثالثة: تحديث إطار السعر التوضيحي الموضع للصور ديناميكياً بناءً على حركة عدادها
+        // تحديث إطار السعر التلقائي الموضع الخاص بالصور الشخصية داخل الخطوة الثالثة ديناميكياً
         if (bosePhotosPriceDisplay) {
             bosePhotosPriceDisplay.style.display = state.includePhoto ? "block" : "none";
             if (state.includePhoto) {
@@ -129,12 +128,12 @@
             }
         }
 
-        // تطوير الخطوة الرابعة: التحكم في ظهور السعر الموضع التلقائي والشفاف لكارت الإهداء
+        // تحديث إطار السعر التلقائي الموضع الخاص بكارت الإهداء داخل الخطوة الرابعة ديناميكياً
         if (boseCardPriceDisplay) {
-            boseCardPriceDisplay.style.display = (state.includeCard && state.cardText.trim() !== "") ? "block" : "none";
+            boseCardPriceDisplay.style.display = state.includeCard ? "block" : "none";
         }
 
-        // تحديث الفاتورة الجانبية بتنسيق فاخر يبرز الألوان الحاكمة للبراند ووضوح كامل للعين
+        // حل مشكلة الفيديو: حقن وتطوير الفاتورة الجانبية بتنسيق فاخر يبرز الألوان الحاكمة للبراند ووضوح كامل للعين
         if (dynamicAddonsArea) {
             let html = "";
             if (extraFlowers > 0) {
@@ -284,9 +283,8 @@
         includeRibbonTextCheckbox = document.getElementById('include-ribbon-text');
         ribbonTextSection = document.getElementById('ribbon-text-section');
         ribbonTextInput = document.getElementById('ribbon-text-input');
-        ribbonStepPriceDisplay = document.getElementById('bose-ribbon-price-display'); 
+        ribbonStepPriceDisplay = document.getElementById('bose-ribbon-price-display');
         
-        // ربط معرفات الأسعار الموضعية للخطوات الجديدة 3 و 4
         bosePhotosPriceDisplay = document.getElementById('bose-photos-price-display');
         boseCardPriceDisplay = document.getElementById('bose-card-price-display');
         
@@ -401,7 +399,7 @@
             };
         }
 
-        // ربط أحداث شريط الستان المطور
+        // ربط أحداث الستان المطور
         if (includeRibbonTextCheckbox) {
             includeRibbonTextCheckbox.onclick = (e) => {
                 state.includeRibbonText = e.target.checked;
@@ -443,7 +441,6 @@
             photoFileInput.onchange = (e) => { if (e.target.files[0]) uploadReferenceImage(e.target.files[0]); };
         }
 
-        // كارت الإهداء والرسائل الصادقة
         if (includeCardCheckbox) {
             includeCardCheckbox.onclick = (e) => {
                 state.includeCard = e.target.checked;
@@ -458,7 +455,7 @@
             cardTextInput.oninput = (e) => { state.cardText = e.target.value; saveCurrentState(); recalculatePrice(); };
         }
 
-        // مفاجأة الكاش المدمج
+        // الكاش المدمج الصافي 100%
         if (includeCashCheckbox) {
             includeCashCheckbox.onclick = (e) => {
                 state.includeCash = e.target.checked;
@@ -495,7 +492,7 @@
             billMinus.onclick = () => { let step = state.moneyCategoryAmount || 50; if (state.moneyAmount >= step) { state.moneyAmount -= step; if (moneyAmountDisplay) moneyAmountDisplay.value = state.moneyAmount; saveCurrentState(); recalculatePrice(); } };
         }
 
-        // ميزانية الشوكولاتة الفاخرة المضافة
+        // ميزانية الشوكولاتة الفاخرة الصافية 100%
         if (includeChocolateCheckbox) {
             includeChocolateCheckbox.onclick = (e) => {
                 state.includeChocolate = e.target.checked;
@@ -531,7 +528,7 @@
             });
         }
 
-        // معرض سابقة الأعمال والـ Popups الشفافة النظيفة
+        // معرض سابقة الأعمال والـ Popups
         const portfolioModal = document.getElementById('portfolio-popup-modal');
         const modalImg = document.getElementById('modal-display-img');
         const modalClose = document.getElementById('modal-close-node');
@@ -606,7 +603,7 @@
     }
 
     /**
-     * حارس التشغيل الآمن بالتزامن مع قاعدة البيانات الموحدة للـ JSON
+     * حارس التشغيل الآمن بالتزامن مع قاعدة البيانات الموحدة
      */
     if (window.BoseStoreData && window.BoseStoreData.store) {
         initializeFlowerEngine();
