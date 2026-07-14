@@ -1,8 +1,8 @@
 /**
  * 👑 محرك محاكي بوكيهات الورد والهدايا المالية الفاخر والآمن - حلويات بوسي 👑
- * النسخة الهندسية القياسية الكاملة بنسبة 100% - خالية تماماً من الثغرات المالية والبرمجية V5
+ * النسخة الهندسية القياسية الكاملة بنسبة 100% - خالية تماماً من الثغرات المالية والبرمجية V6
  * متوافق بشكل مطلق وثنائي الاتجاه مع: core-engine.js، cart-engine.js، وقاعدة البيانات site-data-final.json 
- * [التصحيح الصارم V5]: تم تصفير وإلغاء فخ تغليف الستان المالي كلياً وحل مشاكل كارت الحساب اللحظي المكدس.
+ * [التصحيح الصارم V6]: تم دمج خيارات نوع الورد والعداد في الخطوة الأولى وتصحيح الاتجاهات بوضع (+) يميناً و (-) يساراً.
  * [عزل حقول الورد كلياً لحظر التداخل مع دالات التورت أو المنتجات العادية، وسد ثغرة تراكم الذاكرة بالمتصفح]
  */
 
@@ -14,10 +14,7 @@
     const FLOWER_STATE_STORAGE_KEY = 'bose_flower_builder_state';
     const BASE64_IMAGE_SESSION_KEY = 'bose_active_base64_image_session';
 
-    // ذاكرة احتياطية لضمان عمل المحاكي واستقرار التصفح الخفي (Incognito Mode)
     let flowerStateMemoryFallback = {};
-
-    // استعادة الـ Base64 من الـ sessionStorage المقاوم لعمليات التحديث (F5) لضمان عدم ضياع الصور المخصصة للعملاء
     let activeBase64ImageInMemory = "";
     try {
         activeBase64ImageInMemory = sessionStorage.getItem(BASE64_IMAGE_SESSION_KEY) || "";
@@ -25,7 +22,7 @@
         console.warn("⚠️ الـ sessionStorage غير متاح في المتصفح الحالي.");
     }
 
-    // الإعدادات القياسية للورد لضمان استقرار العمل وتجنب ثغرات الـ undefined
+    // الإعدادات القياسية للورد لضمان استقرار العمل
     let flowerConfig = {
         basePrice: 400,
         baseFlowers: 15,
@@ -47,7 +44,7 @@
         ]
     };
 
-    // الحالة الديناميكية الحالية للمحاكي مع الحفاظ على قيم التخصيص (التغليف كلاسيك ومجاني صامت ومثبت دائمًا)
+    // الحالة الديناميكية الحالية للمحاكي مع التزام فخامة بوسي الفاخرة
     let state = {
         flowerType: "natural",
         flowerCount: 15,
@@ -70,17 +67,14 @@
     };
 
     // عناصر الـ DOM الأساسية
-    let flowerTypeSelect, flowerCountInput, includePhotoCheckbox, photoFileInput, photoPreviewContainer, photoPreviewImg;
+    let flowerTypeSelect, flowerCountHidden, flowerCountDisplayNode;
+    let includePhotoCheckbox, photoFileInput, photoPreviewContainer, photoPreviewImg;
     let includeCardCheckbox, cardTextInput, moneyCategorySelect, bouquetTotalVal, addToCartBtn;
-    
     let includeRibbonTextCheckbox, ribbonTextSection, ribbonTextInput;
-    let includeCashCheckbox, cashMasterBlock, cashIntegrationCounterBlock, moneyAmountDisplay;
-    let includeChocolateCheckbox, chocolateBudgetMasterBlock, chocolateBudgetDisplay;
-    let photoCountInput, dynamicAddonsArea;
+    let includeCashCheckbox, cashMasterBlock, cashIntegrationCounterBlock, moneyAmountHidden, moneyAmountDisplayVal;
+    let includeChocolateCheckbox, chocolateBudgetMasterBlock, chocolateBudgetHidden, chocolateBudgetDisplayVal;
+    let photoCountHidden, photoCountDisplayVal, dynamicAddonsArea;
 
-    /**
-     * 🛡️ حارس الواجهة الفاخر لإظهار الإشعارات بأسلوب وتطابق البراند (بديل آمن لـ alert)
-     */
     function showBoseToast(message) {
         if (typeof window.showBoseGlobalToast === 'function') {
             window.showBoseGlobalToast(message);
@@ -89,9 +83,7 @@
         }
     }
 
-    /**
-     * 🖼️ محرك ضغط الصور المطور لتقليص الأبعاد وتخفيض حجم الملف لسرعة الرفع والأداء الفائق وحماية ذاكرة الموبايل
-     */
+    // ضغط الصور لحماية ذاكرة الموبايل وسرعة الاستجابة
     function compressAndOptimizeImage(file, maxDimension = 600, quality = 0.6) {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -123,9 +115,7 @@
 
                     canvas.toBlob((blob) => {
                         if (blob) {
-                            if (ctx) {
-                                ctx.clearRect(0, 0, width, height);
-                            }
+                            if (ctx) ctx.clearRect(0, 0, width, height);
                             canvas.width = 1;
                             canvas.height = 1;
                             resolve(blob);
@@ -134,34 +124,22 @@
                         }
                     }, 'image/jpeg', quality);
                 };
-                img.onerror = function (err) {
-                    reject(err);
-                };
+                img.onerror = (err) => reject(err);
             };
-            reader.onerror = function (err) {
-                reject(err);
-            };
+            reader.onerror = (err) => reject(err);
         });
     }
 
-    /**
-     * 💾 صمام الأمان الفائق ومحاكي الرفع السريع لضغط الصور بجودة خفيفة للغاية عند انقطاع شبكة الرفع
-     */
     function generateMicroBase64Fallback(file) {
         return compressAndOptimizeImage(file, 150, 0.4).then(blob => {
             return new Promise((resolve) => {
                 const reader = new FileReader();
                 reader.readAsDataURL(blob);
-                reader.onloadend = function () {
-                    resolve(reader.result);
-                };
+                reader.onloadend = () => resolve(reader.result);
             });
         });
     }
 
-    /**
-     * ☁️ معالج الرفع المباشر والآمن إلى سحابة Cloudinary (محتفظ به لحماية استقرار السيرفر وكفاءة الأداء)
-     */
     async function uploadImageToCloudinary(blob) {
         const cloudName = window.BoseStoreData?.store?.cloudinaryCloudName || 'dyx4w0dr1';
         const uploadPreset = window.BoseStoreData?.flowerBuilder?.cloudinaryPreset || 'ml_default';
@@ -172,11 +150,7 @@
         formData.append('upload_preset', uploadPreset);
 
         try {
-            const response = await fetch(endpointUrl, {
-                method: 'POST',
-                body: formData
-            });
-
+            const response = await fetch(endpointUrl, { method: 'POST', body: formData });
             if (!response.ok) throw new Error('استجابة غير صالحة من السيرفر السحابي.');
             const responseData = await response.json();
             if (responseData && responseData.secure_url) {
@@ -188,9 +162,6 @@
         }
     }
 
-    /**
-     * 💾 حفظ الحالة الحالية بأمان وتفادي مشكلة تراكم ملفات الـ Base64
-     */
     function saveCurrentState() {
         try {
             const tempState = { ...state };
@@ -213,9 +184,6 @@
         }
     }
 
-    /**
-     * 🛠️ تهيئة المحاكي الأولي والتحقق اللوجستي الكامل من قاعدة البيانات والـ DOM
-     */
     function initializeUIAndState() {
         if (window.BoseStoreData && window.BoseStoreData.flowerBuilder) {
             const data = window.BoseStoreData.flowerBuilder;
@@ -229,15 +197,19 @@
             if (Array.isArray(data.moneyCategories)) flowerConfig.moneyCategories = data.moneyCategories;
         }
 
-        // ربط عناصر الـ DOM الأساسية
+        // ربط العناصر الجديدة الموحدة للعدادات والمحاكي
         flowerTypeSelect = document.getElementById('flower-type');
-        flowerCountInput = document.getElementById('flower-count');
+        flowerCountHidden = document.getElementById('flower-count');
+        flowerCountDisplayNode = document.getElementById('flower-count-display');
+        
         includePhotoCheckbox = document.getElementById('include-photo');
         photoFileInput = document.getElementById('photo-file');
         photoPreviewContainer = document.getElementById('photo-preview-container');
         photoPreviewImg = document.getElementById('photo-preview-img');
+        
         includeCardCheckbox = document.getElementById('include-card');
         cardTextInput = document.getElementById('card-text');
+        
         moneyCategorySelect = document.getElementById('money-category');
         bouquetTotalVal = document.getElementById('bouquet-total-val');
         addToCartBtn = document.getElementById('add-to-cart-btn');
@@ -250,14 +222,18 @@
         includeCashCheckbox = document.getElementById('include-cash-toggle');
         cashMasterBlock = document.getElementById('cash-master-integration-block');
         cashIntegrationCounterBlock = document.getElementById('cash-integration-counter-block');
-        moneyAmountDisplay = document.getElementById('money-amount-display');
+        moneyAmountHidden = document.getElementById('money-amount-display');
+        moneyAmountDisplayVal = document.getElementById('money-amount-display-val');
         
         includeChocolateCheckbox = document.getElementById('include-chocolate-toggle');
         chocolateBudgetMasterBlock = document.getElementById('chocolate-budget-master-block');
-        chocolateBudgetDisplay = document.getElementById('chocolate-budget-display');
-        photoCountInput = document.getElementById('photo-count-input');
+        chocolateBudgetHidden = document.getElementById('chocolate-budget-display');
+        chocolateBudgetDisplayVal = document.getElementById('chocolate-budget-display-val');
+        
+        photoCountHidden = document.getElementById('photo-count-input');
+        photoCountDisplayVal = document.getElementById('photo-count-display-val');
 
-        if (!flowerCountInput || !bouquetTotalVal) return;
+        if (!flowerCountHidden || !bouquetTotalVal) return;
 
         let savedStateRaw = null;
         try {
@@ -301,7 +277,8 @@
 
     function applyStateToUI() {
         if (flowerTypeSelect) flowerTypeSelect.value = state.flowerType;
-        if (flowerCountInput) flowerCountInput.value = state.flowerCount;
+        if (flowerCountHidden) flowerCountHidden.value = state.flowerCount;
+        if (flowerCountDisplayNode) flowerCountDisplayNode.textContent = state.flowerCount;
         
         if (includeRibbonTextCheckbox) {
             includeRibbonTextCheckbox.checked = state.includeRibbonText;
@@ -316,7 +293,8 @@
                 photoUploadSectionDOM.style.display = state.includePhoto ? "block" : "none";
             }
         }
-        if (photoCountInput) photoCountInput.value = state.photoCount;
+        if (photoCountHidden) photoCountHidden.value = state.photoCount;
+        if (photoCountDisplayVal) photoCountDisplayVal.textContent = state.photoCount;
 
         if (state.photoUrl && state.includePhoto) {
             if (photoPreviewImg) photoPreviewImg.src = state.photoUrl;
@@ -331,13 +309,16 @@
         }
         if (moneyCategorySelect) moneyCategorySelect.value = state.moneyCategoryAmount.toString();
         if (cashIntegrationCounterBlock) cashIntegrationCounterBlock.style.display = state.moneyCategoryAmount > 0 ? "block" : "none";
-        if (moneyAmountDisplay) moneyAmountDisplay.value = state.moneyAmount;
+        
+        if (moneyAmountHidden) moneyAmountHidden.value = state.moneyAmount;
+        if (moneyAmountDisplayVal) moneyAmountDisplayVal.textContent = state.moneyAmount;
 
         if (includeChocolateCheckbox) {
             includeChocolateCheckbox.checked = state.includeChocolate;
             if (chocolateBudgetMasterBlock) chocolateBudgetMasterBlock.style.display = state.includeChocolate ? "block" : "none";
         }
-        if (chocolateBudgetDisplay) chocolateBudgetDisplay.value = state.chocolateBudget;
+        if (chocolateBudgetHidden) chocolateBudgetHidden.value = state.chocolateBudget;
+        if (chocolateBudgetDisplayVal) chocolateBudgetDisplayVal.textContent = state.chocolateBudget;
 
         if (includeCardCheckbox) {
             includeCardCheckbox.checked = state.includeCard;
@@ -371,43 +352,32 @@
             });
         }
 
-        if (flowerCountInput) {
-            flowerCountInput.addEventListener('input', function (e) {
-                if (preventActionIfUploading(e)) {
-                    flowerCountInput.value = state.flowerCount;
-                    return;
+        // ربط أزرار العداد المطور هندسياً للخطوة الأولى
+        const minusBtn = document.getElementById('flower-minus');
+        const plusBtn = document.getElementById('flower-plus');
+
+        if (minusBtn) {
+            minusBtn.addEventListener('click', function (e) {
+                if (preventActionIfUploading(e)) return;
+                if (state.flowerCount > flowerConfig.baseFlowers) {
+                    state.flowerCount--;
+                    if (flowerCountHidden) flowerCountHidden.value = state.flowerCount;
+                    if (flowerCountDisplayNode) flowerCountDisplayNode.textContent = state.flowerCount;
+                    saveCurrentState();
+                    recalculatePrice();
                 }
-                let val = parseInt(e.target.value, 10);
-                if (isNaN(val) || val < flowerConfig.baseFlowers) val = flowerConfig.baseFlowers;
-                state.flowerCount = val;
+            });
+        }
+
+        if (plusBtn) {
+            plusBtn.addEventListener('click', function (e) {
+                if (preventActionIfUploading(e)) return;
+                state.flowerCount++;
+                if (flowerCountHidden) flowerCountHidden.value = state.flowerCount;
+                if (flowerCountDisplayNode) flowerCountDisplayNode.textContent = state.flowerCount;
                 saveCurrentState();
                 recalculatePrice();
             });
-
-            const minusBtn = document.getElementById('flower-minus');
-            const plusBtn = document.getElementById('flower-plus');
-
-            if (minusBtn) {
-                minusBtn.addEventListener('click', function (e) {
-                    if (preventActionIfUploading(e)) return;
-                    if (state.flowerCount > flowerConfig.baseFlowers) {
-                        state.flowerCount--;
-                        flowerCountInput.value = state.flowerCount;
-                        saveCurrentState();
-                        recalculatePrice();
-                    }
-                });
-            }
-
-            if (plusBtn) {
-                plusBtn.addEventListener('click', function (e) {
-                    if (preventActionIfUploading(e)) return;
-                    state.flowerCount++;
-                    flowerCountInput.value = state.flowerCount;
-                    saveCurrentState();
-                    recalculatePrice();
-                });
-            }
         }
         
         if (includeRibbonTextCheckbox) {
@@ -427,7 +397,7 @@
             });
         }
         if (ribbonTextInput) {
-            ribbonTextInput.addEventListener('input', function (e) {
+            ribbonTextInput.addEventListener('input', (e) => {
                 state.ribbonText = e.target.value;
                 saveCurrentState();
             });
@@ -447,7 +417,8 @@
                 if (!state.includePhoto) {
                     state.photoUrl = "";
                     state.photoCount = 1;
-                    if (photoCountInput) photoCountInput.value = 1;
+                    if (photoCountHidden) photoCountHidden.value = 1;
+                    if (photoCountDisplayVal) photoCountDisplayVal.textContent = 1;
                     activeBase64ImageInMemory = ""; 
                     try { sessionStorage.removeItem(BASE64_IMAGE_SESSION_KEY); } catch (ex) {}
                     if (photoFileInput) photoFileInput.value = "";
@@ -466,7 +437,8 @@
             photoCountPlus.onclick = function (e) {
                 if (preventActionIfUploading(e)) return;
                 state.photoCount++;
-                if (photoCountInput) photoCountInput.value = state.photoCount;
+                if (photoCountHidden) photoCountHidden.value = state.photoCount;
+                if (photoCountDisplayVal) photoCountDisplayVal.textContent = state.photoCount;
                 saveCurrentState();
                 recalculatePrice();
             };
@@ -476,7 +448,8 @@
                 if (preventActionIfUploading(e)) return;
                 if (state.photoCount > 1) {
                     state.photoCount--;
-                    if (photoCountInput) photoCountInput.value = state.photoCount;
+                    if (photoCountHidden) photoCountHidden.value = state.photoCount;
+                    if (photoCountDisplayVal) photoCountDisplayVal.textContent = state.photoCount;
                     saveCurrentState();
                     recalculatePrice();
                 }
@@ -514,7 +487,7 @@
                         
                         if (photoPreviewImg) photoPreviewImg.src = localFallbackUrl;
                         if (photoPreviewContainer) photoPreviewContainer.style.display = "block";
-                        showBoseToast("تم تأمين الصورة محلياً لضمان السرية والسرعة.");
+                        showBoseToast("تم تأمين الصورة محلياً لضمان السرية.");
                         saveCurrentState();
                         recalculatePrice();
                     } catch (fallbackError) {
@@ -531,7 +504,6 @@
         }
 
         if (includeCardCheckbox) {
-            includeCardCheckbox.checked = state.includeCard;
             includeCardCheckbox.addEventListener('change', function (e) {
                 if (preventActionIfUploading(e)) {
                     includeCardCheckbox.checked = state.includeCard;
@@ -594,7 +566,9 @@
                     if (cashIntegrationCounterBlock) cashIntegrationCounterBlock.style.display = "none";
                     state.moneyAmount = 0;
                 }
-                if (moneyAmountDisplay) moneyAmountDisplay.value = state.moneyAmount;
+                
+                if (moneyAmountHidden) moneyAmountHidden.value = state.moneyAmount;
+                if (moneyAmountDisplayVal) moneyAmountDisplayVal.textContent = state.moneyAmount;
 
                 saveCurrentState();
                 recalculatePrice();
@@ -610,7 +584,8 @@
                 let step = state.moneyCategoryAmount || 50;
                 if (state.moneyAmount >= step) {
                     state.moneyAmount -= step;
-                    if (moneyAmountDisplay) moneyAmountDisplay.value = state.moneyAmount;
+                    if (moneyAmountHidden) moneyAmountHidden.value = state.moneyAmount;
+                    if (moneyAmountDisplayVal) moneyAmountDisplayVal.textContent = state.moneyAmount;
                     saveCurrentState();
                     recalculatePrice();
                 }
@@ -622,7 +597,8 @@
                 if (preventActionIfUploading(e)) return;
                 let step = state.moneyCategoryAmount || 50;
                 state.moneyAmount += step;
-                if (moneyAmountDisplay) moneyAmountDisplay.value = state.moneyAmount;
+                if (moneyAmountHidden) moneyAmountHidden.value = state.moneyAmount;
+                if (moneyAmountDisplayVal) moneyAmountDisplayVal.textContent = state.moneyAmount;
                 saveCurrentState();
                 recalculatePrice();
             });
@@ -638,7 +614,8 @@
                 if (chocolateBudgetMasterBlock) chocolateBudgetMasterBlock.style.display = state.includeChocolate ? "block" : "none";
                 if (!state.includeChocolate) {
                     state.chocolateBudget = 0;
-                    if (chocolateBudgetDisplay) chocolateBudgetDisplay.value = 0;
+                    if (chocolateBudgetHidden) chocolateBudgetHidden.value = 0;
+                    if (chocolateBudgetDisplayVal) chocolateBudgetDisplayVal.textContent = 0;
                 }
                 saveCurrentState();
                 recalculatePrice();
@@ -651,7 +628,8 @@
             chocBudgetPlus.onclick = function (e) {
                 if (preventActionIfUploading(e)) return;
                 state.chocolateBudget += 50;
-                if (chocolateBudgetDisplay) chocolateBudgetDisplay.value = state.chocolateBudget;
+                if (chocolateBudgetHidden) chocolateBudgetHidden.value = state.chocolateBudget;
+                if (chocolateBudgetDisplayVal) chocolateBudgetDisplayVal.textContent = state.chocolateBudget;
                 saveCurrentState();
                 recalculatePrice();
             };
@@ -661,7 +639,8 @@
                 if (preventActionIfUploading(e)) return;
                 if (state.chocolateBudget >= 50) {
                     state.chocolateBudget -= 50;
-                    if (chocolateBudgetDisplay) chocolateBudgetDisplay.value = state.chocolateBudget;
+                    if (chocolateBudgetHidden) chocolateBudgetHidden.value = state.chocolateBudget;
+                    if (chocolateBudgetDisplayVal) chocolateBudgetDisplayVal.textContent = state.chocolateBudget;
                     saveCurrentState();
                     recalculatePrice();
                 }
@@ -685,7 +664,6 @@
                     type: "custom-flower"
                 };
 
-                // بناء كائن الخيارات مع عزل الورد التام وحماية البيانات المؤقتة
                 const customOptionsObj = {
                     flavorName: `بوكيه مخصص (${flowerTypeName})`,
                     flowerType: state.flowerType, 
@@ -726,7 +704,6 @@
 
                 showBoseToast("تمت إضافة البوكيه الجميل إلى سلتك بنجاح! 🌸");
 
-                // تفادي مشكلة الذاكرة والملفات المتكدسة بالمتصفح
                 try {
                     sessionStorage.removeItem(BASE64_IMAGE_SESSION_KEY);
                     localStorage.removeItem(FLOWER_STATE_STORAGE_KEY);
@@ -739,9 +716,6 @@
         }
     }
 
-    /**
-     * 🧮 الحساب المالي الدقيق وبناء كارت الحساب الشفاف المقسم بلون بمبي ناعم منعاً للتكدس
-     */
     function recalculatePrice() {
         let extraFlowers = Math.max(0, state.flowerCount - flowerConfig.baseFlowers);
         let extraCost = extraFlowers * flowerConfig.extraFlowerPrice;
@@ -757,23 +731,20 @@
 
         if (bouquetTotalVal) bouquetTotalVal.textContent = `${total} جنيه`;
 
-        // حقن الحسابات بشكل ديناميكي أنيق وراقي لراحة العميل النفسية
+        // حقن الفواتير والتفاصيل بشكل أنيق ومقروء دون تشتيت
         if (dynamicAddonsArea) {
             let html = "";
-            if (extraFlowers > 0) html += `<div style="display:flex; justify-content:space-between; background:rgba(255,145,164,0.06); padding:8px 12px; border-radius:10px; font-size:13px; font-weight:700; color:#111111;"><span>الورد الإضافي (${extraFlowers} وردة):</span><span>+ ${extraCost} جنيه</span></div>`;
-            if (ribbonCost > 0) html += `<div style="display:flex; justify-content:space-between; background:rgba(255,145,164,0.06); padding:8px 12px; border-radius:10px; font-size:13px; font-weight:700; color:#111111;"><span>شريط ستان كلام مخصوص:</span><span>+ 50 جنيه</span></div>`;
-            if (photoCost > 0) html += `<div style="display:flex; justify-content:space-between; background:rgba(255,145,164,0.06); padding:8px 12px; border-radius:10px; font-size:13px; font-weight:700; color:#111111;"><span>الصور الشخصية المترتبة (${state.photoCount}):</span><span>+ ${photoCost} جنيه</span></div>`;
-            if (cardCost > 0) html += `<div style="display:flex; justify-content:space-between; background:rgba(255,145,164,0.06); padding:8px 12px; border-radius:10px; font-size:13px; font-weight:700; color:#111111;"><span>كارت إهداء شيك مكتوب:</span><span>+ 20 جنيه</span></div>`;
-            if (state.moneyAmount > 0) html += `<div style="display:flex; justify-content:space-between; background:rgba(255,145,164,0.06); padding:8px 12px; border-radius:10px; font-size:13px; font-weight:700; color:#111111;"><span>مفاجأة الكاش جوه البوكيه:</span><span>+ ${state.moneyAmount} جنيه</span></div>`;
-            if (state.chocolateBudget > 0) html += `<div style="display:flex; justify-content:space-between; background:rgba(255,145,164,0.06); padding:8px 12px; border-radius:10px; font-size:13px; font-weight:700; color:#111111;"><span>ميزانية الشوكولاتة الفخمة:</span><span>+ ${state.chocolateBudget} جنيه</span></div>`;
+            if (extraFlowers > 0) html += `<div style="display:flex; justify-content:space-between; background:rgba(255,145,164,0.04); padding:8px 12px; border-radius:10px; font-size:13px; font-weight:700; color:#111111;"><span>الورد الإضافي (${extraFlowers} وردة):</span><span>+ ${extraCost} جنيه</span></div>`;
+            if (ribbonCost > 0) html += `<div style="display:flex; justify-content:space-between; background:rgba(255,145,164,0.04); padding:8px 12px; border-radius:10px; font-size:13px; font-weight:700; color:#111111;"><span>شريط ستان كلام مخصوص:</span><span>+ 50 جنيه</span></div>`;
+            if (photoCost > 0) html += `<div style="display:flex; justify-content:space-between; background:rgba(255,145,164,0.04); padding:8px 12px; border-radius:10px; font-size:13px; font-weight:700; color:#111111;"><span>الصور الشخصية المترتبة (${state.photoCount}):</span><span>+ ${photoCost} جنيه</span></div>`;
+            if (cardCost > 0) html += `<div style="display:flex; justify-content:space-between; background:rgba(255,145,164,0.04); padding:8px 12px; border-radius:10px; font-size:13px; font-weight:700; color:#111111;"><span>كارت إهداء شيك مكتوب:</span><span>+ 20 جنيه</span></div>`;
+            if (state.moneyAmount > 0) html += `<div style="display:flex; justify-content:space-between; background:rgba(255,145,164,0.04); padding:8px 12px; border-radius:10px; font-size:13px; font-weight:700; color:#111111;"><span>مفاجأة الكاش جوه البوكيه:</span><span>+ ${state.moneyAmount} جنيه</span></div>`;
+            if (state.chocolateBudget > 0) html += `<div style="display:flex; justify-content:space-between; background:rgba(255,145,164,0.04); padding:8px 12px; border-radius:10px; font-size:13px; font-weight:700; color:#111111;"><span>ميزانية الشوكولاتة الفخمة:</span><span>+ ${state.chocolateBudget} جنيه</span></div>`;
             
             dynamicAddonsArea.innerHTML = html;
         }
     }
 
-    /**
-     * 🛡️ حارس التشغيل لضمان تحميل محرك الورد بالتنسيق المتزامن التام مع قاعدة البيانات
-     */
     function verifyAndBootFlowerEngine() {
         if (typeof window.onBoseDatabaseReady === 'function') {
             window.onBoseDatabaseReady(() => {
