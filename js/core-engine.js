@@ -1,49 +1,42 @@
 /**
  * core-engine.js - المحرك المركزي العالمي وحارس البيانات والحسابات المالية
- * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية المطورة والمؤمنة بالكامل V26
+ * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية المحدثة والمؤمنة بالكامل V3
  * 
- * [التحديث الصارم]: عزل كامل لمهام الملف، حظر الثغرات البرمجية والمالية، 
- * تقديم أعلى استقرار للأداء، وتوفير استهلاك البيانات على الموبايل والكمبيوتر.
+ * [التحديث الصارم]: التزام تام بنطاق الملف، عزل وحظر الثغرات المالية،
+ * تقديم أعلى استقرار للأداء، وتقليل استهلاك باقة الموبايل والكمبيوتر كلياً.
  */
 
 (function() {
-    // 1. [صمام أمان للأداء]: حظر استعادة السكرول التلقائية ومقاومة نظام bfcache لسرعة التصفح
+    "use strict";
+
+    // تصفير نظام استعادة السكرول التلقائية لضمان مثالية العرض وتجربة المستخدم
     if ('scrollRestoration' in history) {
         history.scrollRestoration = 'manual';
     }
 
     function forceScrollToTop() {
         window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-        setTimeout(() => {
-            window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-        }, 50);
     }
-
     forceScrollToTop();
     document.addEventListener('DOMContentLoaded', forceScrollToTop);
     window.addEventListener('load', forceScrollToTop);
-    window.addEventListener('pageshow', function(event) {
-        if (event.persisted) {
-            forceScrollToTop();
-        }
-    });
 
-    // تهيئة المتغيرات العالمية في نطاق window لخدمة الموقع
+    // تهيئة المتغيرات العالمية الموحدة في نطاق window لخدمة صفحات الموقع
     window.BoseStoreData = null; 
     window.boseServerTimeOffset = 0; 
 
     /**
-     * جلب وقراءة قاعدة بيانات حلويات بوسي الموحدة - نظام التدفق الذكي الموفر للبيانات (نظام الكاش الذكي)
+     * جلب وقراءة قاعدة بيانات حلويات بوسي الموحدة - نظام الكاش الذكي الموفر للبيانات والباقة
      */
     async function loadStoreDatabase() {
         if (window.BoseStoreData) return;
         
-        // محاولة استخدام البيانات المخزنة مؤقتاً لتوفير استهلاك باقة الإنترنت وتحقيق سرعة صاروخية
+        // جلب البيانات مع محاولة استخدام التخزين المحلي الآمن لتقليل استهلاك البيانات
         const cachedData = localStorage.getItem('bose_cached_store_data');
         const cachedTime = localStorage.getItem('bose_cached_store_time');
-        const oneHour = 60 * 60 * 1000; // صلاحية الكاش ساعة واحدة لضمان حداثة الأسعار
+        const cacheExpiry = 15 * 60 * 1000; // تقليص الصلاحية لـ 15 دقيقة لضمان دقة الأسعار وتحديثات الإدارة اللحظية
 
-        if (cachedData && cachedTime && (Date.now() - parseInt(cachedTime, 10) < oneHour)) {
+        if (cachedData && cachedTime && (Date.now() - parseInt(cachedTime, 10) < cacheExpiry)) {
             try {
                 window.BoseStoreData = JSON.parse(cachedData);
                 initCoreFlow();
@@ -54,12 +47,11 @@
             }
         }
         
-        let retries = 3;
-        let delay = 1000;
+        let retries = 4;
+        let delay = 800;
         
         while (retries > 0) {
             try {
-                // جلب مباشر وخفيف لملف البيانات لضمان عدم حدوث تلاعب في الأسعار محلياً
                 const response = await fetch('data/site-data-final.json');
                 if (!response.ok) throw new Error('فشل جلب ملف قاعدة البيانات الرئيسي.');
                 
@@ -74,11 +66,9 @@
                 
                 window.BoseStoreData = await response.json();
                 
-                // حفظ البيانات في الكاش المحلي لتوفير البيانات في الزيارات القادمة
                 localStorage.setItem('bose_cached_store_data', JSON.stringify(window.BoseStoreData));
                 localStorage.setItem('bose_cached_store_time', String(Date.now()));
                 
-                // تشغيل التدفق المركزي للمحرك فور جاهزية البيانات
                 initCoreFlow();
                 return;
             } catch (error) {
@@ -103,12 +93,12 @@
         buildAndInjectGlobalComponents();
         window.updateGlobalCartCounter();
         
-        // إطلاق الحدث لجميع المحركات الفرعية لتبدأ دورها دون تداخل
+        // إطلاق حدث الجاهزية دون التدخل في ملفات أو محركات أخرى
         document.dispatchEvent(new CustomEvent('BoseDatabaseLoaded', { detail: window.BoseStoreData }));
     }
 
     /**
-     * 2. الحارس المالي: مراجعة زيادة الأسعار الرسمية وحظر الثغرات المالية
+     * الحارس المالي: مراجعة زيادة الأسعار التضخمية وحظر التلاعب بالأسعار محلياً
      */
     window.calculateBosePrice = function(basePrice, applyOnContext = "menu-only") {
         if (!window.BoseStoreData) return basePrice;
@@ -120,7 +110,7 @@
     };
 
     /**
-     * 3. حساب السعر النهائي للمنتج القياسي شامل خيارات التخصيص والأحجام من الـ JSON بالملي
+     * حساب السعر النهائي للمنتجات القياسية والميني تورت والكب كيك بدقة الكسور الكاملة
      */
     window.calculateProductFinalPrice = function(product, selectedOptions) {
         const opts = selectedOptions || {};
@@ -164,7 +154,7 @@
     };
 
     /**
-     * الحسبة المعتمدة لمحاكاة أسعار التورتة المخصصة ديناميكياً بدقة مطلقة
+     * الحسبة المعتمدة لمحاكاة أسعار التورتة المخصصة ديناميكياً بدقة مطلقة (فردي 145 جنيه)
      */
     window.calculateCustomCakePrice = function(persons, options = {}) {
         const config = window.BoseStoreData?.cakeBuilder;
@@ -184,15 +174,9 @@
                 const printOpt = config.printingOptions.find(opt => opt.id === selectedPrinting);
                 if (printOpt) printingFee = printOpt.price;
             }
-            
             if (printingFee === 0) {
-                if (selectedPrinting === 'edible' || selectedPrinting === 'printable-edible' || selectedPrinting === 'صورة_صالحة_للأكل') {
-                    printingFee = 60;
-                } else if (selectedPrinting === 'non-edible' || selectedPrinting === 'printable-non-edible' || selectedPrinting === 'صورة_غير_صالحة_للأكل') {
-                    printingFee = 15;
-                }
+                printingFee = (selectedPrinting === 'edible' || selectedPrinting === 'صورة_صالحة_للأكل') ? 60 : 15;
             }
-            
             price += printingFee;
         }
 
@@ -204,65 +188,54 @@
     };
 
     /**
-     * الحسبة المعتمدة لمحاكاة أسعار بوكيهات الورد المخصصة مع كافة الإضافات
+     * الحسبة الهندسية لأسعار بوكيهات الورد المخصصة مع الإضافات - صافية وبدون رسوم معالجة على الكاش
      */
-    window.calculateCustomFlowerPrice = function(flowerType, flowerCount, options = {}) {
-        const config = window.BoseStoreData?.flowerBuilder;
-        if (!config) return 0;
+    window.calculateCustomFlowerPrice = function(flowerCount, options = {}) {
+        const basePrice = 400; 
+        const extraFlowerPrice = 35; 
         
-        const safeFlowerCount = parseInt(flowerCount, 10) || config.baseFlowers;
-        const safeCashAmount = parseInt(options.moneyAmount, 10) || 0;
-        const safeCashCategoryAmount = parseInt(options.moneyCategoryAmount, 10) || 0;
-        const safeChocolatePieces = parseInt(options.chocolatePieces, 10) || 0;
+        const safeFlowerCount = parseInt(flowerCount, 10) || 15;
+        const extraFlowers = Math.max(0, safeFlowerCount - 15);
+        
+        let servicePrice = basePrice + (extraFlowers * extraFlowerPrice);
+        
+        if (options.hasSatinRibbon) {
+            servicePrice += 50; 
+        }
+        
         const safePhotoCount = parseInt(options.photoCount, 10) || 0;
-        
-        let servicePrice = config.basePrice || 400;
-        const extraFlowers = Math.max(0, safeFlowerCount - config.baseFlowers);
-        servicePrice += extraFlowers * config.extraFlowerPrice;
-        if (options.wrappingType) {
-            const wrapOpt = config.wrappingTypes.find(opt => opt.id === options.wrappingType);
-            if (wrapOpt) servicePrice += wrapOpt.price;
+        if (options.hasPhotos && safePhotoCount > 0) {
+            servicePrice += safePhotoCount * 15; 
         }
         
-        if (options.chocolateType && safeChocolatePieces > 0) {
-            const chocOpt = config.chocolateTypes.find(opt => opt.id === options.chocolateType);
-            if (chocOpt) servicePrice += chocOpt.price * safeChocolatePieces;
+        if (options.hasGiftCard) {
+            servicePrice += 20; 
         }
         
-        if (options.hasGiftCard) servicePrice += config.giftCardPrice || 20;
-        if (safePhotoCount > 0) servicePrice += safePhotoCount * (config.photoPrintPrice || 15);
-        
-        let cashHandlingFee = 0;
-        if (safeCashAmount > 0 && safeCashCategoryAmount > 0) {
-            const selectedCategory = config.moneyCategories.find(cat => cat.amount === safeCashCategoryAmount);
-            if (selectedCategory) {
-                const billCount = Math.floor(safeCashAmount / safeCashCategoryAmount);
-                cashHandlingFee += billCount * selectedCategory.fee;
-                
-                const remainder = safeCashAmount % safeCashCategoryAmount;
-                if (remainder > 0) {
-                    const remainderCategory = config.moneyCategories
-                        .filter(cat => cat.amount <= remainder)
-                        .sort((a, b) => b.amount - a.amount)[0] || config.moneyCategories[0];
-                    if (remainderCategory) {
-                        cashHandlingFee += remainderCategory.fee;
-                    }
-                }
-            }
-        }
-        
-        servicePrice += cashHandlingFee;
         const finalServicePrice = window.calculateBosePrice(servicePrice, "menu-only");
-        return finalServicePrice + safeCashAmount;
+        
+        // إضافة المبالغ النقدية وميزانية الشوكولاتة كقيمة صافية تماماً بالمليم بدون رسوم معالجة
+        const safeCashAmount = parseFloat(options.cashAmount) || 0;
+        const safeChocolateBudget = parseFloat(options.chocolateBudget) || 0;
+        
+        return finalServicePrice + safeCashAmount + safeChocolateBudget;
     };
 
     /**
-     * 4. بناء هيكل عنصر السلة القياسي المانع للتصادم البرمجي من الجذور وحل ثغرة النكهة الافتراضية
+     * بناء عنصر وهيكل السلة القياسي المانع للتصادم الحسابي والبرمجي
      */
     window.createCartItem = function(product, selectedOptions, quantity = 1) {
         if (!product) return null;
         const opts = selectedOptions || {};
-        const finalUnitPrice = window.calculateProductFinalPrice(product, opts);
+        
+        let finalUnitPrice = 0;
+        if (product.type === "custom-flower") {
+            finalUnitPrice = window.calculateCustomFlowerPrice(opts.flowerCount, opts);
+        } else if (product.type === "custom-cake") {
+            finalUnitPrice = window.calculateCustomCakePrice(opts.persons, opts);
+        } else {
+            finalUnitPrice = window.calculateProductFinalPrice(product, opts);
+        }
         
         const isCustomizable = product.isMiniCake ||
                              product.type === "custom-cake" || 
@@ -284,7 +257,7 @@
             basePrice: parseFloat((product.price || product.basePrice || 0).toFixed(4)),
             finalPrice: parseFloat(finalUnitPrice.toFixed(4)),
             quantity: parseInt(quantity, 10) || 1,
-            image: product.image || product.images?.[0] || "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
+            image: product.image || "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
             type: product.type || (product.isMiniCake ? "mini-cake" : "standard"),
             customDetails: {
                 cakeType: opts.cakeType || opts.cakeFlavor || "فانيليا",
@@ -295,18 +268,20 @@
                 allergyNote: opts.allergyNote || "",
                 flowerType: opts.flowerType || "none",
                 flowerCount: parseInt(opts.flowerCount, 10) || 0,
-                moneyAmount: parseInt(opts.moneyAmount, 10) || 0,
-                moneyFee: parseInt(opts.moneyFee, 10) || 0,
-                chocolateType: opts.chocolateType || "none",
-                chocolatePieces: parseInt(opts.chocolatePieces, 10) || 0,
-                wrappingType: opts.wrappingType || "none",
+                cashAmount: parseFloat(opts.cashAmount) || 0,
+                hasSatinRibbon: !!opts.hasSatinRibbon,
+                satinRibbonText: opts.satinRibbonText || "",
+                photoCount: parseInt(opts.photoCount, 10) || 0,
+                hasChocolate: !!opts.hasChocolate,
+                chocolateBudget: parseFloat(opts.chocolateBudget) || 0,
+                hasGiftCard: !!opts.hasGiftCard,
                 giftCardText: opts.giftCardText || ""
             }
         };
     };
 
     /**
-     * 5. التحقق من أرقام الهواتف وتطهيرها بالصيغة المصرية الصارمة
+     * التحقق من أرقام الهواتف وتطهيرها بالصيغة المصرية الصارمة
      */
     window.validateBosePhoneNumber = function(phone, isOptional = false) {
         if (!phone || phone.trim() === "") return isOptional;
@@ -324,7 +299,7 @@
     };
 
     /**
-     * 6. حارس الوقت القياسي والموحد (شرط الـ 24 ساعة للتحضير)
+     * حارس الوقت القياسي والموحد (شرط الـ 24 ساعة للتحضير والإتقان)
      */
     window.validateBoseDeliverySchedule = function(dateStr, timeStr) {
         if (!dateStr || !timeStr) return false;
@@ -335,7 +310,7 @@
     };
 
     /**
-     * 7. تحديث شارة عداد السلة اللحظي بالهيدر لجميع صفحات الموقع
+     * تحديث شارة عداد السلة اللحظي بالهيدر لجميع صفحات الموقع بدون تأخير فرعي
      */
     window.updateGlobalCartCounter = function() {
         const cartCountBadges = document.querySelectorAll('#nav-cart-count');
@@ -461,56 +436,55 @@
                 .bose-top-bar-marquee-container { position: fixed !important; top: 0 !important; left: 0 !important; width: 100% !important; z-index: 41000 !important; height: 40px !important; }
                 body { padding-top: 110px !important; }
                 
-                /* القائمة الجانبية الفاخرة المطورة كلياً */
-                .bose-sidebar-drawer { position: fixed; top: 0; right: -340px; width: 340px; height: 100%; background-color: #FFFFFF !important; z-index: 50000; transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: -8px 0 32px rgba(255, 145, 164, 0.15); direction: rtl; border-left: 1px solid rgba(255, 145, 164, 0.2); display: flex; flex-direction: column; overflow: hidden; }
+                /* القائمة الجانبية الفاخرة المحدثة كلياً قلباً وقائباً */
+                .bose-sidebar-drawer { position: fixed; top: 0; right: -350px; width: 350px; height: 100%; background-color: #FFFFFF !important; z-index: 50000; transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: -8px 0 32px rgba(255, 145, 164, 0.12); direction: rtl; border-left: 1px solid rgba(255, 145, 164, 0.15); display: flex; flex-direction: column; overflow: hidden; }
                 .bose-sidebar-drawer.open { right: 0; }
-                .sidebar-header { display: flex; justify-content: space-between; align-items: center; padding: 24px; border-bottom: 2px solid #FF91A4; background: #FFFFFF; }
-                .sidebar-brand-name { font-size: 17px; font-weight: 700; color: #111111; font-family: "Cairo", sans-serif; }
+                .sidebar-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid rgba(255, 145, 164, 0.2); background: #FFFFFF; }
+                .sidebar-brand-name { font-size: 18px; font-weight: 700; color: #111111; font-family: "Cairo", sans-serif; }
                 .sidebar-close-btn { background: none; border: none; font-size: 24px; color: #FF91A4; cursor: pointer; transition: transform 0.3s ease; }
                 .sidebar-close-btn:hover { transform: rotate(90deg); }
                 
-                /* تصفح الأقسام والمحتوى الجانبي */
-                .sidebar-scrollable-content { flex: 1; overflow-y: auto; padding: 15px 20px; display: flex; flex-direction: column; gap: 20px; scrollbar-width: none; }
+                .sidebar-scrollable-content { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 24px; scrollbar-width: none; }
                 .sidebar-scrollable-content::-webkit-scrollbar { display: none; }
                 
-                .sidebar-section-title { font-size: 13px; font-weight: 700; color: #FF91A4; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; padding-right: 5px; }
+                .sidebar-section-title { font-size: 13px; font-weight: 700; color: #FF91A4; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; padding-right: 4px; }
                 
-                .sidebar-links-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; }
+                .sidebar-links-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 4px; }
                 .sidebar-link-item a { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; color: #111111; text-decoration: none; font-weight: 600; font-size: 14px; border-radius: 12px; transition: all 0.25s ease; border: 1px solid transparent; }
                 .sidebar-link-item a .link-main-side { display: flex; align-items: center; gap: 12px; }
                 .sidebar-link-item a i.main-icon { color: #FF91A4; font-size: 16px; transition: all 0.25s ease; width: 20px; text-align: center; }
                 .sidebar-link-item a i.arrow-icon { font-size: 11px; color: #111111; opacity: 0.3; transition: all 0.25s ease; }
                 
-                .sidebar-link-item a:hover { background-color: rgba(255, 145, 164, 0.05); border-color: rgba(255, 145, 164, 0.1); }
-                .sidebar-link-item a:hover i.main-icon { transform: scale(1.15); color: #FF91A4; }
+                .sidebar-link-item a:hover { background-color: rgba(255, 145, 164, 0.04); border-color: rgba(255, 145, 164, 0.08); }
+                .sidebar-link-item a:hover i.main-icon { transform: scale(1.1); color: #FF91A4; }
                 .sidebar-link-item a:hover i.arrow-icon { opacity: 1; color: #FF91A4; transform: translateX(-4px); }
                 
-                /* كارت العروض الفاخر داخل القائمة الجانبية */
-                .sidebar-promo-card { background: linear-gradient(135deg, rgba(255, 145, 164, 0.08) 0%, rgba(255, 255, 255, 0) 100%); border: 1px dashed rgba(255, 145, 164, 0.4); border-radius: 16px; padding: 16px; text-align: center; margin-top: 10px; position: relative; overflow: hidden; }
-                .sidebar-promo-badge { position: absolute; top: 10px; left: 10px; background-color: #D4AF37; color: #FFFFFF; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 20px; }
-                .sidebar-promo-title { font-size: 14px; font-weight: 700; color: #111111; margin-bottom: 6px; margin-top: 8px; }
-                .sidebar-promo-desc { font-size: 12px; color: #111111; opacity: 0.8; line-height: 1.5; margin-bottom: 12px; }
-                .sidebar-promo-btn { display: inline-block; background-color: #FF91A4; color: #FFFFFF; text-decoration: none; padding: 8px 18px; border-radius: 25px; font-size: 12px; font-weight: 700; box-shadow: 0 4px 12px rgba(255, 145, 164, 0.2); transition: all 0.3s ease; }
-                .sidebar-promo-btn:hover { background-color: #FFFFFF; color: #FF91A4; border: 1px solid #FF91A4; transform: translateY(-2px); }
+                /* كارت العروض والأقسام الخاصة المطور بالقائمة الجانبية */
+                .sidebar-promo-card { background: linear-gradient(135deg, rgba(255, 145, 164, 0.06) 0%, rgba(255, 255, 255, 0) 100%); border: 1px dashed rgba(255, 145, 164, 0.35); border-radius: 16px; padding: 16px; text-align: center; margin-top: 4px; position: relative; overflow: hidden; }
+                .sidebar-promo-badge { position: absolute; top: 10px; left: 10px; background-color: #D4AF37; color: #FFFFFF; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+                .sidebar-promo-title { font-size: 14px; font-weight: 700; color: #111111; margin-bottom: 6px; margin-top: 6px; }
+                .sidebar-promo-desc { font-size: 12px; color: #111111; opacity: 0.8; line-height: 1.6; margin-bottom: 12px; padding: 0 4px; }
+                .sidebar-promo-btn { display: inline-block; background-color: #FF91A4; color: #FFFFFF; text-decoration: none; padding: 8px 20px; border-radius: 25px; font-size: 12px; font-weight: 700; box-shadow: 0 4px 12px rgba(255, 145, 164, 0.15); transition: all 0.3s ease; }
+                .sidebar-promo-btn:hover { background-color: #FFFFFF; color: #FF91A4; border: 1px solid #FF91A4; transform: translateY(-1px); }
                 
-                /* قسم التواصل الفوري بالأسفل المدمج بالقائمة */
-                .sidebar-footer-contacts { border-top: 1px solid rgba(255, 145, 164, 0.15); padding: 20px; background-color: #FFFFFF; display: flex; flex-direction: column; gap: 10px; }
-                .sidebar-contact-pill { display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: rgba(255, 145, 164, 0.04); border-radius: 30px; text-decoration: none; color: #111111; font-size: 13px; font-weight: 600; border: 1px solid rgba(255, 145, 164, 0.05); transition: all 0.25s ease; }
+                /* التواصل والواتساب الفوري المدمج */
+                .sidebar-footer-contacts { border-top: 1px solid rgba(255, 145, 164, 0.12); padding: 16px 20px; background-color: #FFFFFF; display: flex; flex-direction: column; gap: 8px; }
+                .sidebar-contact-pill { display: flex; align-items: center; gap: 12px; padding: 10px 16px; background: rgba(255, 145, 164, 0.03); border-radius: 30px; text-decoration: none; color: #111111; font-size: 13px; font-weight: 600; border: 1px solid rgba(255, 145, 164, 0.04); transition: all 0.25s ease; }
                 .sidebar-contact-pill i { font-size: 15px; color: #FF91A4; }
-                .sidebar-contact-pill:hover { background: #FF91A4; color: #FFFFFF !important; transform: translateY(-2px); }
+                .sidebar-contact-pill:hover { background: #FF91A4; color: #FFFFFF !important; transform: translateY(-1px); }
                 .sidebar-contact-pill:hover i { color: #FFFFFF; }
                 
-                .bose-sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(17, 17, 17, 0.35); opacity: 0; pointer-events: none; z-index: 49000; transition: opacity 0.4s ease; backdrop-filter: blur(3px); }
+                .bose-sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(17, 17, 17, 0.3); opacity: 0; pointer-events: none; z-index: 49000; transition: opacity 0.4s ease; backdrop-filter: blur(4px); }
                 .bose-sidebar-overlay.show { opacity: 1; pointer-events: auto; }
-                .bose-footer { background-color: #FFFFFF !important; border-top: 1px solid rgba(255, 145, 164, 0.3); padding: 60px 20px 20px; direction: rtl; }
+                .bose-footer { background-color: #FFFFFF !important; border-top: 1px solid rgba(255, 145, 164, 0.2); padding: 60px 20px 20px; direction: rtl; }
                 .footer-grid-layout { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; }
                 .footer-brand-meta { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
                 .footer-logo { width: 50px; height: 50px; object-fit: contain; }
                 .footer-title { font-size: 22px; font-weight: 700; color: #111111; }
                 .footer-about-paragraph { color: #111111; font-size: 14px; line-height: 1.8; margin-bottom: 25px; font-weight: 400; }
                 .footer-social-wrapper { display: flex; gap: 12px; }
-                .footer-social-icon-btn { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background-color: rgba(255, 145, 164, 0.1); color: #FF91A4 !important; text-decoration: none; font-size: 16px; transition: all 0.3s ease; }
-                .footer-social-icon-btn:hover { background-color: #FF91A4; color: #FFFFFF !important; transform: translateY(-4px); box-shadow: 0 8px 20px rgba(255, 145, 164, 0.3); }
+                .footer-social-icon-btn { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background-color: rgba(255, 145, 164, 0.08); color: #FF91A4 !important; text-decoration: none; font-size: 16px; transition: all 0.3s ease; }
+                .footer-social-icon-btn:hover { background-color: #FF91A4; color: #FFFFFF !important; transform: translateY(-4px); box-shadow: 0 8px 20px rgba(255, 145, 164, 0.2); }
                 .footer-heading-title { font-size: 16px; font-weight: 700; color: #111111; margin-bottom: 20px; position: relative; padding-bottom: 8px; }
                 .footer-heading-title::after { content: ''; position: absolute; bottom: 0; right: 0; width: 40px; height: 2px; background-color: #FF91A4; }
                 .footer-links-ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
@@ -518,7 +492,7 @@
                 .footer-links-ul li a:hover { color: #FF91A4; transform: translateX(-6px); }
                 .footer-contact-item { display: flex; align-items: center; gap: 10px; color: #111111; font-size: 14px; font-weight: 600; }
                 .footer-contact-item i { color: #FF91A4; font-size: 16px; }
-                .footer-copyright-block { text-align: center; border-top: 1px solid rgba(255, 145, 164, 0.15); margin-top: 50px; padding-top: 20px; font-size: 13px; color: #111111; font-weight: 600; }
+                .footer-copyright-block { text-align: center; border-top: 1px solid rgba(255, 145, 164, 0.12); margin-top: 50px; padding-top: 20px; font-size: 13px; color: #111111; font-weight: 600; }
                 .footer-copyright-block span { color: #FF91A4; font-weight: 700; }
             `;
             document.head.appendChild(fixStyle);
@@ -645,9 +619,9 @@
                         </div>
 
                         <div class="sidebar-promo-card">
-                            <span class="sidebar-promo-badge">عرض خاص</span>
-                            <div class="sidebar-promo-title">تخصيص كامل ومجاني</div>
-                            <p class="sidebar-promo-desc">ابدأ بتفصيل تورتتك المميزة أو بوكيه الورد المليء بمشاعرك بخطوات تفاعلية بسيطة.</p>
+                            <span class="sidebar-promo-badge">تخصيص فاخر</span>
+                            <div class="sidebar-promo-title">تصميم تفاعلي حصري</div>
+                            <p class="sidebar-promo-desc">ابدأ بتفصيل تورتتك المميزة أو بوكيه الورد المليء بمشاعرك بخطوات تفاعلية مدمجة وبسيطة.</p>
                             <a href="cake-builder.html" class="sidebar-promo-btn">جرب المحاكي الآن</a>
                         </div>
                     </div>
@@ -667,7 +641,7 @@
 
                 <div id="bose-search-modal" class="bose-search-modal" aria-hidden="true">
                     <div class="search-modal-header">
-                        <button id="search-modal-close" class="bose-nav-btn" style="font-size: 26px;" aria-label="إغلاق البحث">
+                        <button id="search-modal-close" class="bose-nav-btn" style="font-size:26px;" aria-label="إغلاق البحث">
                             <i class="fa-solid fa-xmark"></i>
                         </button>
                     </div>
@@ -716,7 +690,7 @@
                                 <li><a href="policies/refund-policy.html">سياسة الاسترجاع المالي</a></li>
                                 <li><a href="policies/shipping-policy.html">سياسة الشحن والتوصيل</a></li>
                                 <li><a href="policies/terms.html">الشروط والأحكام</a></li>
-                                <li class="footer-contact-item" style="margin-top: 15px;">
+                                <li class="footer-contact-item" style="margin-top:15px;">
                                     <i class="fa-solid fa-location-dot"></i>
                                     <span>${data.store.pickup.address}</span>
                                 </li>
@@ -745,6 +719,7 @@
             toggleBtn.addEventListener('click', () => {
                 sidebar.classList.add('open');
                 overlay.classList.add('show');
+                document.body.style.overflow = 'hidden'; 
             });
         }
         
@@ -752,6 +727,7 @@
             if (sidebar && overlay) {
                 sidebar.classList.remove('open');
                 overlay.classList.remove('show');
+                document.body.style.overflow = ''; 
             }
         };
 
@@ -798,7 +774,9 @@
         }
     }
 
-    // 8. [حماية الـ DOM والأداء]: دوال تحريك شبكة الواجهة تعمل بنظام Throttled لتفادي انهيار الفريمات على الأجهزة المتوسطة والضعيفة
+    /**
+     * تشغيل وتحريك شبكة السلايدر الخاص بقسم الإتقان الفاخر بنظام الـ Throttled حماية للـ DOM
+     */
     window.initializeExcellenceSectionSlider = function() {
         const track = document.getElementById('excellence-images-track');
         if (!track || !window.BoseStoreData) return;
@@ -860,7 +838,6 @@
 
         const dots = dotsContainer ? Array.from(dotsContainer.children) : [];
 
-        // تحسين الحدث throttling لتجنب سحب موارد المعالج بالهواتف المحمولة
         let isScrollingEventFree = true;
         track.addEventListener('scroll', () => {
             if (!isScrollingEventFree) return;
@@ -924,8 +901,8 @@
 
     function showGlobalFriendlyError() {
         const err = document.createElement('div');
-        err.style.cssText = 'position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background-color:#FF91A4; color:#FFFFFF; padding:12px 24px; border-radius:8px; z-index:99999; font-weight:700;';
-        err.textContent = 'عذراً، واجهنا صعوبة في جلب البيانات الحية. يرجى تحديث الصفحة.';
+        err.style.cssText = 'position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background-color:#FF91A4; color:#FFFFFF; padding:12px 24px; border-radius:8px; z-index:99999; font-weight:700; font-size:14px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align:center; direction:rtl;';
+        err.textContent = 'عذراً، واجهنا صعوبة في جلب البيانات الحية حالياً. يرجى إعادة تحميل الصفحة.';
         document.body.appendChild(err);
     }
 
