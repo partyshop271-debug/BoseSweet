@@ -1,6 +1,6 @@
 /**
  * 👑 محرك محاكي بوكيهات الورد والملحقات التفاعلي المطور - حلويات بوسي 👑
- * النسخة الهندسية القياسية الكاملة والمعزولة كلياً - المحدثة لحل مشكلات الفيديو V12.0
+ * النسخة الهندسية القياسية الكاملة والمعزولة كلياً - المحدثة لحل مشكلات الفيديو والخطوات بالكامل V15.0
  * الأداء: أقصى توفير لبيانات الموبايل والكمبيوتر عبر التحديث الموضعي الصامت للمحرك.
  * التوافق: يلتزم بمهام محاكي الورد فقط ولا يتدخل بأي ملف آخر، ويتزامن تلقائياً مع core-engine.js.
  */
@@ -63,7 +63,7 @@
     let includeRibbonTextCheckbox, ribbonTextSection, ribbonTextInput, ribbonStepPriceDisplay;
     let includeCashCheckbox, cashMasterBlock, cashIntegrationCounterBlock, moneyAmountDisplay;
     let includeChocolateCheckbox, chocolateBudgetMasterBlock, chocolateBudgetDisplay;
-    let photoCountInput, dynamicAddonsArea, embeddedPriceDisplay;
+    let photoCountInput, dynamicAddonsArea, embeddedPriceDisplay, bosePhotosPriceDisplay, boseCardPriceDisplay;
     let btnNext, btnPrev, stepsPanels, stepsIndicators, iconicBtns, hiddenTypeInput, dynamicPricingWidget;
 
     /**
@@ -86,7 +86,7 @@
     }
 
     /**
-     * 🧮 محرك الفحص المالي والتحكيم اللحظي لأسعار البوكيه - مطور لحل مشكلة كارت الفاتورة والستان
+     * 🧮 محرك الفحص المالي والتحكيم اللحظي لأسعار البوكيه - مطور ومحكوم موضعياً بالكامل
      */
     function recalculatePrice() {
         let extraFlowers = Math.max(0, state.flowerCount - flowerConfig.baseFlowers);
@@ -115,12 +115,26 @@
             embeddedPriceDisplay.innerHTML = `سعر هذا البوكيه الذي يحتوي على ${state.flowerCount} وردة هو <span>${Math.round(finalCountCost)} جنيه</span>`;
         }
 
-        // حل مشكلة الفيديو: تحديث إطار السعر الموضع التوضيحي داخل الخطوة الثانية (شريط الستان) ديناميكياً
+        // حل مشكلة الفيديو للخطوة الثانية: تحديث إطار السعر التوضيحي الموضع لشريط الستان ديناميكياً
         if (ribbonStepPriceDisplay) {
+            ribbonStepPriceDisplay.style.display = state.includeRibbonText ? "block" : "none";
             ribbonStepPriceDisplay.innerHTML = `سعر إضافة شريط الستان المطبوع حرارياً هو <span>${flowerConfig.satinRibbonPrice} جنيه</span>`;
         }
 
-        // حل مشكلة الفيديو: حقن وتطوير الفاتورة الجانبية بتنسيق فاخر يبرز الألوان الحاكمة للبراند ووضوح كامل للعين
+        // تطوير الخطوة الثالثة: تحديث إطار السعر التوضيحي الموضع للصور ديناميكياً بناءً على حركة عدادها
+        if (bosePhotosPriceDisplay) {
+            bosePhotosPriceDisplay.style.display = state.includePhoto ? "block" : "none";
+            if (state.includePhoto) {
+                bosePhotosPriceDisplay.innerHTML = `<p class="bose-embedded-price-text">سعر طباعة وتنسيق الصور الشخصية (${state.photoCount} صورة) هو <span>${photoCost} جنيه</span></p>`;
+            }
+        }
+
+        // تطوير الخطوة الرابعة: التحكم في ظهور السعر الموضع التلقائي والشفاف لكارت الإهداء
+        if (boseCardPriceDisplay) {
+            boseCardPriceDisplay.style.display = (state.includeCard && state.cardText.trim() !== "") ? "block" : "none";
+        }
+
+        // تحديث الفاتورة الجانبية بتنسيق فاخر يبرز الألوان الحاكمة للبراند ووضوح كامل للعين
         if (dynamicAddonsArea) {
             let html = "";
             if (extraFlowers > 0) {
@@ -270,7 +284,11 @@
         includeRibbonTextCheckbox = document.getElementById('include-ribbon-text');
         ribbonTextSection = document.getElementById('ribbon-text-section');
         ribbonTextInput = document.getElementById('ribbon-text-input');
-        ribbonStepPriceDisplay = document.getElementById('bose-ribbon-price-display'); // الحقل الجديد الموضع للسعر
+        ribbonStepPriceDisplay = document.getElementById('bose-ribbon-price-display'); 
+        
+        // ربط معرفات الأسعار الموضعية للخطوات الجديدة 3 و 4
+        bosePhotosPriceDisplay = document.getElementById('bose-photos-price-display');
+        boseCardPriceDisplay = document.getElementById('bose-card-price-display');
         
         includeCashCheckbox = document.getElementById('include-cash-toggle');
         cashMasterBlock = document.getElementById('cash-master-integration-block');
@@ -310,7 +328,7 @@
             }
         } catch (e) {}
 
-        // تطبيق الحالة المستعادة على عناصر الـ UI مباشرة لمنع الـ CLS
+        // تطبيق الحالة المستعادة على عناصر الـ UI مباشرة لمنع الـ CLS واهتزاز الواجهة
         if (flowerCountInput) flowerCountInput.value = state.flowerCount;
         if (includeRibbonTextCheckbox) {
             includeRibbonTextCheckbox.checked = state.includeRibbonText;
@@ -383,7 +401,7 @@
             };
         }
 
-        // ربط أحداث الستان المطور
+        // ربط أحداث شريط الستان المطور
         if (includeRibbonTextCheckbox) {
             includeRibbonTextCheckbox.onclick = (e) => {
                 state.includeRibbonText = e.target.checked;
@@ -397,7 +415,7 @@
             ribbonTextInput.oninput = (e) => { state.ribbonText = e.target.value; saveCurrentState(); };
         }
 
-        // الملحقات والصور
+        // الملحقات والصور الشخصية
         if (includePhotoCheckbox) {
             includePhotoCheckbox.onclick = (e) => {
                 state.includePhoto = e.target.checked;
@@ -425,6 +443,7 @@
             photoFileInput.onchange = (e) => { if (e.target.files[0]) uploadReferenceImage(e.target.files[0]); };
         }
 
+        // كارت الإهداء والرسائل الصادقة
         if (includeCardCheckbox) {
             includeCardCheckbox.onclick = (e) => {
                 state.includeCard = e.target.checked;
@@ -439,7 +458,7 @@
             cardTextInput.oninput = (e) => { state.cardText = e.target.value; saveCurrentState(); recalculatePrice(); };
         }
 
-        // الكاش المدمج
+        // مفاجأة الكاش المدمج
         if (includeCashCheckbox) {
             includeCashCheckbox.onclick = (e) => {
                 state.includeCash = e.target.checked;
@@ -476,7 +495,7 @@
             billMinus.onclick = () => { let step = state.moneyCategoryAmount || 50; if (state.moneyAmount >= step) { state.moneyAmount -= step; if (moneyAmountDisplay) moneyAmountDisplay.value = state.moneyAmount; saveCurrentState(); recalculatePrice(); } };
         }
 
-        // ميزانية الشوكولاتة الفاخرة
+        // ميزانية الشوكولاتة الفاخرة المضافة
         if (includeChocolateCheckbox) {
             includeChocolateCheckbox.onclick = (e) => {
                 state.includeChocolate = e.target.checked;
@@ -512,7 +531,7 @@
             });
         }
 
-        // معرض سابقة الأعمال والـ Popups
+        // معرض سابقة الأعمال والـ Popups الشفافة النظيفة
         const portfolioModal = document.getElementById('portfolio-popup-modal');
         const modalImg = document.getElementById('modal-display-img');
         const modalClose = document.getElementById('modal-close-node');
@@ -587,7 +606,7 @@
     }
 
     /**
-     * حارس التشغيل الآمن بالتزامن مع قاعدة البيانات الموحدة
+     * حارس التشغيل الآمن بالتزامن مع قاعدة البيانات الموحدة للـ JSON
      */
     if (window.BoseStoreData && window.BoseStoreData.store) {
         initializeFlowerEngine();
