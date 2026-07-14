@@ -1,4 +1,3 @@
-```javascript
 /**
  * 👑 محرك محاكي بوكيهات الورد والهدايا المالية الفاخر والآمن - حلويات بوسي 👑
  * النسخة الهندسية القياسية الكاملة بنسبة 100% - خالية تماماً من الثغرات المالية والبرمجية V95.0
@@ -70,10 +69,15 @@
         flowerCount: 15,
         wrappingType: "satin",
         ribbonColor: "pink",
+        includeRibbonText: false, // مضاف للتفاعل الاحترافي
+        ribbonText: "",           // مضاف للتفاعل الاحترافي
         chocolateType: "none",
         chocolatePieces: 0,
         includePhoto: false,
+        photoCount: 1,            // مضاف للتفاعل الملوكي للعدادات
         photoUrl: "", // يحتوي حصرياً على رابط سحابي آمن أو كود ضغط مصغر لحماية مساحة المتصفح
+        includeCash: false,       // مضاف للتفاعل التلقائي النشط
+        includeChocolate: false,  // مضاف لتفاعل ميزانية الشوكولاتة الصافية
         includeCard: false,
         cardText: "",
         moneyAmount: 0,
@@ -89,6 +93,12 @@
     let includeCardCheckbox, cardTextInput, moneyAmountInput, moneyCategorySelect, moneyFeeDisplay, moneyTotalDisplay;
     let basePriceVal, extraFlowersCount, extraFlowersCost, photoCostVal, cardCostVal, chocolateCostVal, wrappingCostVal, bouquetTotalVal;
     let addToCartBtn, ribbonVisualColor;
+    
+    // الملحقات التفاعلية المضافة حديثاً لربط العدادات وحوكمة العرض الاحترافي
+    let includeRibbonTextCheckbox, ribbonTextSection, ribbonTextInput;
+    let includeCashCheckbox, cashMasterBlock, cashIntegrationCounterBlock, moneyAmountDisplay, moneyBreakdownDisplay;
+    let includeChocolateCheckbox, chocolateBudgetMasterBlock, chocolateBudgetDisplay;
+    let photoCountInput;
 
     /**
      * 🛡️ حارس الواجهة الفاخر لإظهار الإشعارات بأسلوب وتطابق البراند (بديل آمن لـ alert)
@@ -127,7 +137,7 @@
             `;
 
             const icon = type === 'error' ? '⚠️' : '🌸';
-            toast.innerHTML = `${icon} <span style="line-height:1.5; font-weight: 700;">${window.escapeHTML ? window.escapeHTML(message) : message}</span>`;
+            toast.innerHTML = `${icon} <span style="line-height:1.5; font-weight: 700;">${message}</span>`;
             container.appendChild(toast);
 
             requestAnimationFrame(() => {
@@ -326,7 +336,7 @@
             if (data.largeChocolateMinimumPrice) flowerConfig.largeChocolateMinimumPrice = Number(data.largeChocolateMinimumPrice);
         }
 
-        // ربط عناصر الـ DOM الأساسية مع التثبيت والتحقق المباشر
+        // ربط عناصر الـ DOM الأساسية والثابتة بالموقع
         flowerTypeSelect = document.getElementById('flower-type');
         flowerCountInput = document.getElementById('flower-count');
         wrappingTypeSelect = document.getElementById('wrapping-type');
@@ -354,6 +364,23 @@
         bouquetTotalVal = document.getElementById('bouquet-total-val');
         addToCartBtn = document.getElementById('add-to-cart-btn');
         ribbonVisualColor = document.getElementById('ribbon-visual-color');
+        
+        // ربط عناصر التحكم الملوكية والتفاعلية المضافة حديثاً
+        includeRibbonTextCheckbox = document.getElementById('include-ribbon-text');
+        ribbonTextSection = document.getElementById('ribbon-text-section');
+        ribbonTextInput = document.getElementById('ribbon-text-input');
+        let ribbonCostValDOM = document.getElementById('ribbon-cost-val');
+        
+        includeCashCheckbox = document.getElementById('include-cash-toggle');
+        cashMasterBlock = document.getElementById('cash-master-integration-block');
+        cashIntegrationCounterBlock = document.getElementById('cash-integration-counter-block');
+        moneyAmountDisplay = document.getElementById('money-amount-display');
+        moneyBreakdownDisplay = document.getElementById('money-breakdown-display');
+        
+        includeChocolateCheckbox = document.getElementById('include-chocolate-toggle');
+        chocolateBudgetMasterBlock = document.getElementById('chocolate-budget-master-block');
+        chocolateBudgetDisplay = document.getElementById('chocolate-budget-display');
+        photoCountInput = document.getElementById('photo-count-input');
 
         if (!flowerTypeSelect || !flowerCountInput || !bouquetTotalVal) {
             return;
@@ -408,9 +435,9 @@
                 .join('');
         }
         if (moneyCategorySelect) {
-            let optionsHtml = `<option value="0">اختار فئة الفلوس النقدية لتغليفها داخل البوكيه...</option>`;
+            let optionsHtml = `<option value="0" selected>اختار فئة الفلوس النقدية لتغليفها داخل البوكيه...</option>`;
             flowerConfig.moneyCategories.forEach(cat => {
-                optionsHtml += `<option value="${cat.amount}">فئة الـ ${cat.amount} جنيه (رسوم التجهيز: ${cat.fee} جنيه)</option>`;
+                optionsHtml += `<option value="${cat.amount}">فئة الـ ${cat.amount} جنيه</option>`;
             });
             moneyCategorySelect.innerHTML = optionsHtml;
         }
@@ -423,14 +450,23 @@
         if (ribbonColorSelect) ribbonColorSelect.value = state.ribbonColor;
         if (chocolateTypeSelect) chocolateTypeSelect.value = state.chocolateType;
         if (chocolatePiecesInput) chocolatePiecesInput.value = state.chocolatePieces;
+        
+        // تطبيق حالة شريط الستان المطبوع حرارياً
+        if (includeRibbonTextCheckbox) {
+            includeRibbonTextCheckbox.checked = state.includeRibbonText;
+            if (ribbonTextSection) ribbonTextSection.style.display = state.includeRibbonText ? "block" : "none";
+        }
+        if (ribbonTextInput) ribbonTextInput.value = state.ribbonText;
 
+        // تطبيق حالة الصور الشخصية التذكارية الموزعة والعداد الملوكي الخاص بها
         if (includePhotoCheckbox) {
             includePhotoCheckbox.checked = state.includePhoto;
-            const photoUploadSection = document.getElementById('photo-upload-section');
-            if (photoUploadSection) {
-                photoUploadSection.style.display = state.includePhoto ? "block" : "none";
+            const photoUploadSectionDOM = document.getElementById('photo-upload-section');
+            if (photoUploadSectionDOM) {
+                photoUploadSectionDOM.style.display = state.includePhoto ? "block" : "none";
             }
         }
+        if (photoCountInput) photoCountInput.value = state.photoCount;
 
         if (state.photoUrl && state.includePhoto) {
             if (photoPreviewImg) photoPreviewImg.src = state.photoUrl;
@@ -438,6 +474,22 @@
         } else {
             if (photoPreviewContainer) photoPreviewContainer.style.display = "none";
         }
+
+        // تطبيق حالة مفاجأة الكاش المالي الصافي بدون رسوم معالجة
+        if (includeCashCheckbox) {
+            includeCashCheckbox.checked = state.includeCash;
+            if (cashMasterBlock) cashMasterBlock.style.display = state.includeCash ? "block" : "none";
+        }
+        if (moneyCategorySelect) moneyCategorySelect.value = state.moneyCategoryAmount.toString();
+        if (cashIntegrationCounterBlock) cashIntegrationCounterBlock.style.display = state.moneyCategoryAmount > 0 ? "block" : "none";
+        if (moneyAmountDisplay) moneyAmountDisplay.value = state.moneyAmount;
+
+        // تطبيق حالة ميزانية الشوكولاتة المنسقة الصافية بالكامل
+        if (includeChocolateCheckbox) {
+            includeChocolateCheckbox.checked = state.includeChocolate;
+            if (chocolateBudgetMasterBlock) chocolateBudgetMasterBlock.style.display = state.includeChocolate ? "block" : "none";
+        }
+        if (chocolateBudgetDisplay) chocolateBudgetDisplay.value = state.chocolateBudget;
 
         if (includeCardCheckbox) {
             includeCardCheckbox.checked = state.includeCard;
@@ -448,14 +500,6 @@
         }
 
         if (cardTextInput) cardTextInput.value = state.cardText;
-
-        if (moneyCategorySelect) {
-            moneyCategorySelect.value = state.moneyCategoryAmount.toString();
-        }
-
-        if (moneyAmountInput) {
-            moneyAmountInput.value = state.moneyAmount || 0;
-        }
 
         const piecesWrapper = document.getElementById('chocolate-pieces-wrapper') || (chocolatePiecesInput ? chocolatePiecesInput.parentNode : null);
         if (piecesWrapper) {
@@ -520,6 +564,7 @@
                 recalculatePrice();
             });
 
+            // عداد الورد الملوكي المطور (زائد يمين وناقص شمال للتوافق الكامل)
             const minusBtn = document.getElementById('flower-minus');
             const plusBtn = document.getElementById('flower-plus');
 
@@ -570,6 +615,30 @@
                 recalculatePrice();
             });
         }
+        
+        // تفاعل شريط الستان المطبوع حرارياً والجملة المخصصة
+        if (includeRibbonTextCheckbox) {
+            includeRibbonTextCheckbox.addEventListener('change', function (e) {
+                if (preventActionIfUploading(e)) {
+                    includeRibbonTextCheckbox.checked = state.includeRibbonText;
+                    return;
+                }
+                state.includeRibbonText = e.target.checked;
+                if (ribbonTextSection) ribbonTextSection.style.display = state.includeRibbonText ? "block" : "none";
+                if (!state.includeRibbonText) {
+                    state.ribbonText = "";
+                    if (ribbonTextInput) ribbonTextInput.value = "";
+                }
+                saveCurrentState();
+                recalculatePrice();
+            });
+        }
+        if (ribbonTextInput) {
+            ribbonTextInput.addEventListener('input', function (e) {
+                state.ribbonText = e.target.value;
+                saveCurrentState();
+            });
+        }
 
         if (chocolateTypeSelect) {
             chocolateTypeSelect.addEventListener('change', function (e) {
@@ -609,8 +678,8 @@
                     chocolatePiecesInput.value = state.chocolatePieces;
                     return;
                 }
-                let val = parseInt(e.target.value, 10);
-                if (isNaN(val) || val < 0) val = 0;
+                let val = parseInt(e.target.value, 10) || 0;
+                if (val < 0) val = 0;
                 state.chocolatePieces = val;
                 if (val > 0 && state.chocolateType === "none") {
                     state.chocolateType = "local";
@@ -628,12 +697,14 @@
                     return;
                 }
                 state.includePhoto = e.target.checked;
-                const photoUploadSection = document.getElementById('photo-upload-section');
-                if (photoUploadSection) {
-                    photoUploadSection.style.display = state.includePhoto ? "block" : "none";
+                const photoUploadSectionDOM = document.getElementById('photo-upload-section');
+                if (photoUploadSectionDOM) {
+                    photoUploadSectionDOM.style.display = state.includePhoto ? "block" : "none";
                 }
                 if (!state.includePhoto) {
                     state.photoUrl = "";
+                    state.photoCount = 1;
+                    if (photoCountInput) photoCountInput.value = 1;
                     activeBase64ImageInMemory = ""; 
                     try { sessionStorage.removeItem(BASE64_IMAGE_SESSION_KEY); } catch (ex) {}
                     if (photoFileInput) photoFileInput.value = "";
@@ -646,6 +717,30 @@
                 saveCurrentState();
                 recalculatePrice();
             });
+        }
+        
+        // تفاعل العداد الاحترافي لزيادة ونقصان الصور الشخصية التذكارية المطبوعة
+        const photoCountPlus = document.getElementById('photo-count-plus');
+        const photoCountMinus = document.getElementById('photo-count-minus');
+        if (photoCountPlus) {
+            photoCountPlus.onclick = function (e) {
+                if (preventActionIfUploading(e)) return;
+                state.photoCount++;
+                if (photoCountInput) photoCountInput.value = state.photoCount;
+                saveCurrentState();
+                recalculatePrice();
+            };
+        }
+        if (photoCountMinus) {
+            photoCountMinus.onclick = function (e) {
+                if (preventActionIfUploading(e)) return;
+                if (state.photoCount > 1) {
+                    state.photoCount--;
+                    if (photoCountInput) photoCountInput.value = state.photoCount;
+                    saveCurrentState();
+                    recalculatePrice();
+                }
+            };
         }
 
         if (photoFileInput) {
@@ -662,7 +757,7 @@
                 state.isUploading = true;
                 if (addToCartBtn) {
                     addToCartBtn.disabled = true;
-                    addToCartBtn.innerHTML = `<span style="display:inline-block; animation: bose-spin 1s infinite linear; margin-left: 8px;">⏳</span> جاري تأمين صورتك الفاخرة...`;
+                    addToCartBtn.innerHTML = `<span style="display:inline-block; animation: bose-spin 1s infinite linear; margin-left: 8px;">⏳</span> جاري رفع وتأمين صورتك...`;
                     addToCartBtn.style.opacity = '0.7';
                 }
 
@@ -761,6 +856,26 @@
                 recalculatePrice();
             });
         }
+        
+        // تفاعل تفعيل وإلغاء مفاجأة الهدية النقدية (الكاش المدمج الصافي)
+        if (includeCashCheckbox) {
+            includeCashCheckbox.addEventListener('change', function (e) {
+                if (preventActionIfUploading(e)) {
+                    includeCashCheckbox.checked = state.includeCash;
+                    return;
+                }
+                state.includeCash = e.target.checked;
+                if (cashMasterBlock) cashMasterBlock.style.display = state.includeCash ? "block" : "none";
+                if (!state.includeCash) {
+                    state.moneyAmount = 0;
+                    state.moneyCategoryAmount = 0;
+                    if (moneyCategorySelect) moneyCategorySelect.value = "0";
+                    if (cashIntegrationCounterBlock) cashIntegrationCounterBlock.style.display = "none";
+                }
+                saveCurrentState();
+                recalculatePrice();
+            });
+        }
 
         if (moneyCategorySelect) {
             moneyCategorySelect.addEventListener('change', function (e) {
@@ -772,68 +887,89 @@
                 state.moneyCategoryAmount = valueSelected;
 
                 if (valueSelected > 0) {
+                    if (cashIntegrationCounterBlock) cashIntegrationCounterBlock.style.display = "block";
                     if (state.moneyAmount <= 0) {
                         state.moneyAmount = valueSelected; 
-                        if (moneyAmountInput) moneyAmountInput.value = valueSelected;
                     }
-                    state.moneyFee = calculateLocalMoneyFee(state.moneyAmount, valueSelected);
                 } else {
-                    state.moneyFee = 0;
+                    if (cashIntegrationCounterBlock) cashIntegrationCounterBlock.style.display = "none";
                     state.moneyAmount = 0;
-                    if (moneyAmountInput) moneyAmountInput.value = 0;
                 }
+                if (moneyAmountDisplay) moneyAmountDisplay.value = state.moneyAmount;
 
                 saveCurrentState();
                 recalculatePrice();
             });
         }
 
-        if (moneyAmountInput) {
-            moneyAmountInput.addEventListener('input', function (e) {
-                if (preventActionIfUploading(e)) {
-                    moneyAmountInput.value = state.moneyAmount;
-                    return;
+        // عداد أوراق النقد المالي الصافي الفاخر (زائد يمين وناقص شمال)
+        const billMinus = document.getElementById('bill-minus');
+        const billPlus = document.getElementById('bill-plus');
+
+        if (billMinus) {
+            billMinus.addEventListener('click', function (e) {
+                if (preventActionIfUploading(e)) return;
+                let step = state.moneyCategoryAmount || 50;
+                if (state.moneyAmount >= step) {
+                    state.moneyAmount -= step;
+                    if (moneyAmountDisplay) moneyAmountDisplay.value = state.moneyAmount;
+                    saveCurrentState();
+                    recalculatePrice();
                 }
-                let totalCash = parseInt(e.target.value, 10) || 0;
-                if (totalCash < 0) totalCash = 0;
-                state.moneyAmount = totalCash;
+            });
+        }
 
-                state.moneyFee = calculateLocalMoneyFee(totalCash, state.moneyCategoryAmount);
-
+        if (billPlus) {
+            billPlus.addEventListener('click', function (e) {
+                if (preventActionIfUploading(e)) return;
+                let step = state.moneyCategoryAmount || 50;
+                state.moneyAmount += step;
+                if (moneyAmountDisplay) moneyAmountDisplay.value = state.moneyAmount;
                 saveCurrentState();
                 recalculatePrice();
             });
-
-            const billMinus = document.getElementById('bill-minus');
-            const billPlus = document.getElementById('bill-plus');
-
-            if (billMinus) {
-                billMinus.addEventListener('click', function (e) {
-                    if (preventActionIfUploading(e)) return;
-                    let step = state.moneyCategoryAmount || 50;
-                    if (state.moneyAmount >= step) {
-                        state.moneyAmount -= step;
-                        if (moneyAmountInput) moneyAmountInput.value = state.moneyAmount;
-                        
-                        state.moneyFee = calculateLocalMoneyFee(state.moneyAmount, state.moneyCategoryAmount);
-                        saveCurrentState();
-                        recalculatePrice();
-                    }
-                });
-            }
-
-            if (billPlus) {
-                billPlus.addEventListener('click', function (e) {
-                    if (preventActionIfUploading(e)) return;
-                    let step = state.moneyCategoryAmount || 50;
-                    state.moneyAmount += step;
-                    if (moneyAmountInput) moneyAmountInput.value = state.moneyAmount;
-                    
-                    state.moneyFee = calculateLocalMoneyFee(state.moneyAmount, state.moneyCategoryAmount);
+        }
+        
+        // تفاعل تفعيل وإلغاء ميزانية الشوكولاتة الفاخرة المنسقة الصافية بالكامل
+        if (includeChocolateCheckbox) {
+            includeChocolateCheckbox.addEventListener('change', function (e) {
+                if (preventActionIfUploading(e)) {
+                    includeChocolateCheckbox.checked = state.includeChocolate;
+                    return;
+                }
+                state.includeChocolate = e.target.checked;
+                if (chocolateBudgetMasterBlock) chocolateBudgetMasterBlock.style.display = state.includeChocolate ? "block" : "none";
+                if (!state.includeChocolate) {
+                    state.chocolateBudget = 0;
+                    if (chocolateBudgetDisplay) chocolateBudgetDisplay.value = 0;
+                }
+                saveCurrentState();
+                recalculatePrice();
+            });
+        }
+        
+        // عداد ميزانية الشوكولاتة الصافية بمعدل خطوة 50 جنيهاً (زائد يمين وناقص شمال)
+        const chocBudgetPlus = document.getElementById('choc-budget-plus');
+        const chocBudgetMinus = document.getElementById('choc-budget-minus');
+        if (chocBudgetPlus) {
+            chocBudgetPlus.onclick = function (e) {
+                if (preventActionIfUploading(e)) return;
+                state.chocolateBudget += 50;
+                if (chocolateBudgetDisplay) chocolateBudgetDisplay.value = state.chocolateBudget;
+                saveCurrentState();
+                recalculatePrice();
+            };
+        }
+        if (chocBudgetMinus) {
+            chocBudgetMinus.onclick = function (e) {
+                if (preventActionIfUploading(e)) return;
+                if (state.chocolateBudget >= 50) {
+                    state.chocolateBudget -= 50;
+                    if (chocolateBudgetDisplay) chocolateBudgetDisplay.value = state.chocolateBudget;
                     saveCurrentState();
                     recalculatePrice();
-                });
-            }
+                }
+            };
         }
 
         if (addToCartBtn && !addToCartBtn.dataset.boseListener) {
@@ -854,21 +990,13 @@
                         return;
                     }
 
-                    if (state.chocolateType === "rocher" && state.chocolatePieces >= 8) {
-                        const currentChocCost = state.chocolatePieces * 50;
-                        if (currentChocCost < flowerConfig.largeChocolateMinimumPrice) {
-                            showBoseToast(`لتجهيز بوكس الشوكولاتة المستوردة الكبيرة، يجب أن لا يقل إجمالي الشوكولاتة عن ${flowerConfig.largeChocolateMinimumPrice} جنيه لضمان التنسيق الملكي.`, "error");
-                            return;
-                        }
-                    }
-
                     const flowerTypeObj = flowerConfig.flowerTypes.find(t => t.id === state.flowerType);
                     const flowerTypeName = flowerTypeObj ? flowerTypeObj.name : "ورد مخصص";
 
                     const masterProduct = window.BoseStoreData?.products?.find(p => p.slug === "flowers-master") || {
                         slug: "flowers-master",
                         title: "الورد",
-                        image: window.getBoseLogo ? window.getBoseLogo() : "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
+                        image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
                         type: "custom-flower"
                     };
 
@@ -878,29 +1006,28 @@
                     const wrapObj = flowerConfig.wrappingTypes.find(w => w.id === state.wrappingType);
                     const wrapNameArabic = wrapObj ? wrapObj.name : "تغليف منسق";
 
-                    const chocObj = flowerConfig.chocolateTypes.find(c => c.id === state.chocolateType);
-                    const chocNameArabic = chocObj ? chocObj.name : "بدون";
-
                     // [🔐 تطابق هندسي كامل وحل ثغرة تكرار نوع الكيك]:
-                    // نقوم بدمج لون شريطة الستان داخل حقل التغليف مباشرة لتجنب تشويه نصوص السلة بكلمات إنجليزية غير مترجمة
-                    const decoratedWrappingText = `${wrapNameArabic} (شريط ${ribbonNameArabic})`;
+                    // دمج لون شريطة الستان والطباعة الحرارية في حقل التغليف مباشرة لمنع ظهور نصوص غير مترجمة بالسلة
+                    let decoratedWrappingText = `${wrapNameArabic} (شريط ${ribbonNameArabic})`;
+                    if (state.includeRibbonText && state.ribbonText.trim() !== "") {
+                        decoratedWrappingText += ` [نص الشريط: "${state.ribbonText}"]`;
+                    }
 
-                    // نقوم بتمرير cakeType كـ "none" لكي يتخطى محرك السلة cart-engine رندرتها تماماً في السلة وتجنب تكرار "نوع الكيك"
+                    // تمرير cakeType كـ "none" ليتخطى كود السلة رندرتها ككيك عشوائي
                     const customOptionsObj = {
                         flavorName: `بوكيه مخصص (${flowerTypeName})`,
                         cakeType: "none", 
                         flowerType: state.flowerType, 
                         flowerCount: `${state.flowerCount} وردة`,
                         wrappingType: decoratedWrappingText,
-                        chocolateType: chocNameArabic,
-                        chocolatePieces: state.chocolatePieces,
-                        moneyAmount: state.moneyAmount,
-                        moneyFee: state.moneyFee,
+                        chocolateBudget: state.chocolateBudget,
+                        cashAmount: state.moneyAmount,
+                        photoCount: state.includePhoto ? state.photoCount : 0,
                         customMessage: state.includeCard ? state.cardText : ""
                     };
 
                     if (state.includePhoto && state.photoUrl) {
-                        customOptionsObj.printingType = "صورة ورقية تذكارية مجسمة";
+                        customOptionsObj.printingType = `صورة ورقية تذكارية مجسمة (${state.photoCount} صور)`;
                     }
 
                     if (state.includeCard && state.cardText.trim()) {
@@ -913,8 +1040,7 @@
                         if (boseCartItem) {
                             boseCartItem.type = "custom-flower"; 
                             boseCartItem.finalPrice = parseFloat(state.totalPrice);
-                            boseCartItem.price = parseFloat(state.totalPrice);
-                            boseCartItem.image = (state.includePhoto && state.photoUrl) ? state.photoUrl : masterProduct.image;
+                            boseCartItem.image = state.photoUrl || masterProduct.image;
                             boseCartItem.customDetails = { ...boseCartItem.customDetails, ...customOptionsObj };
                         }
                     }
@@ -927,74 +1053,60 @@
                             flavorName: `بوكيه مخصص (${flowerTypeName})`,
                             basePrice: parseFloat(flowerConfig.basePrice),
                             finalPrice: parseFloat(state.totalPrice),
-                            price: parseFloat(state.totalPrice),
                             quantity: 1,
-                            image: (state.includePhoto && state.photoUrl) ? state.photoUrl : masterProduct.image,
+                            image: state.photoUrl || masterProduct.image,
                             type: "custom-flower",
                             customDetails: customOptionsObj
                         };
                     }
 
-                    let successAdd = false;
-                    if (typeof window.addBoseCartItem === 'function') {
-                        window.addBoseCartItem(boseCartItem);
-                        successAdd = true;
-                    } else {
-                        let currentCart = [];
-                        try {
-                            currentCart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY)) || [];
-                        } catch (e) {
-                            currentCart = [];
-                        }
-                        currentCart.push(boseCartItem);
-                        
-                        try {
-                            localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(currentCart));
-                            successAdd = true;
-                        } catch (storageErr) {
-                            console.error("❌ فشل حفظ السلة محلياً:", storageErr);
-                            showBoseToast("عذراً يا فندم، ذاكرة المتصفح ممتلئة بالكامل. يرجى تصفية السلة.", "error");
-                        }
+                    let currentCart = [];
+                    try {
+                        currentCart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY)) || [];
+                    } catch (e) {
+                        currentCart = [];
+                    }
+                    currentCart.push(boseCartItem);
+                    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(currentCart));
+
+                    showBoseToast("تمت إضافة بوكيه الورد المخصص الفاخر إلى سلتك بنجاح!");
+
+                    // تصفير وتهيئة الحالة القياسية للطلب التالي
+                    state = {
+                        flowerType: "natural",
+                        flowerCount: 15,
+                        wrappingType: "satin",
+                        ribbonColor: "pink",
+                        includeRibbonText: false,
+                        ribbonText: "",
+                        chocolateType: "none",
+                        chocolatePieces: 0,
+                        includePhoto: false,
+                        photoCount: 1,
+                        photoUrl: "",
+                        includeCash: false,
+                        includeChocolate: false,
+                        includeCard: false,
+                        cardText: "",
+                        moneyAmount: 0,
+                        moneyCategoryAmount: 0,
+                        moneyFee: 0,
+                        totalPrice: flowerConfig.basePrice,
+                        isUploading: false
+                    };
+
+                    if (photoFileInput) photoFileInput.value = "";
+                    saveCurrentState();
+                    applyStateToUI();
+                    recalculatePrice();
+
+                    if (typeof window.updateGlobalCartCounter === 'function') {
+                        window.updateGlobalCartCounter();
                     }
 
-                    if (successAdd) {
-                        showBoseToast("تمت إضافة بوكيه الورد المخصص الفاخر إلى سلتك بنجاح!");
-
-                        // [🔐 حل ثغرة التحديث F5]: لا نحذف الصورة من الـ Session فوراً، نتركها لضمان ثباتها أثناء رندرة صفحة السلة
-                        state = {
-                            flowerType: "natural",
-                            flowerCount: 15,
-                            wrappingType: "satin",
-                            ribbonColor: "pink",
-                            chocolateType: "none",
-                            chocolatePieces: 0,
-                            includePhoto: false,
-                            photoUrl: "",
-                            includeCard: false,
-                            cardText: "",
-                            moneyAmount: 0,
-                            moneyCategoryAmount: 0,
-                            moneyFee: 0,
-                            totalPrice: flowerConfig.basePrice,
-                            isUploading: false
-                        };
-
-                        if (photoFileInput) photoFileInput.value = "";
-                        saveCurrentState();
-                        applyStateToUI();
-                        recalculatePrice();
-
-                        if (typeof window.updateGlobalCartCounter === 'function') {
-                            window.updateGlobalCartCounter();
-                        }
-                        
-                        window.dispatchEvent(new Event('storage'));
-                        window.dispatchEvent(new Event('bose_cart_updated'));
-
-                        setTimeout(() => {
-                            window.location.href = "cart.html";
-                        }, 500);
-                    }
+                    setTimeout(() => {
+                        window.location.href = "cart.html";
+                    }, 500);
 
                 } catch (err) {
                     console.error("❌ فشل معالج السلة في تعبئة الباقة المخصصة:", err);
@@ -1011,64 +1123,13 @@
     function recalculatePrice() {
         let calculatedTotalPrice = 400;
 
-        const pricingOptions = {
-            moneyAmount: state.moneyAmount,
-            moneyCategoryAmount: state.moneyCategoryAmount,
-            chocolatePieces: state.chocolatePieces,
-            chocolateType: state.chocolateType,
-            wrappingType: state.wrappingType,
-            ribbonColor: state.ribbonColor,
-            hasGiftCard: (state.includeCard && state.cardText.trim() !== ""),
-            photoCount: state.includePhoto ? 1 : 0
-        };
-
-        if (typeof window.calculateCustomFlowerPrice === 'function') {
-            calculatedTotalPrice = window.calculateCustomFlowerPrice(state.flowerType, state.flowerCount, pricingOptions);
-        } else {
-            let calculatedBasePrice = flowerConfig.basePrice;
-            const extraFlowers = Math.max(0, state.flowerCount - flowerConfig.baseFlowers);
-            const extraCost = extraFlowers * flowerConfig.extraFlowerPrice;
-
-            let photoPrintCost = state.includePhoto ? flowerConfig.photoPrintPrice : 0;
-            let giftCardCost = (state.includeCard && state.cardText.trim() !== "") ? flowerConfig.giftCardPrice : 0;
-
-            let chocolateCost = 0;
-            if (state.chocolateType !== "none" && state.chocolatePieces > 0) {
-                const chocObj = flowerConfig.chocolateTypes.find(c => c.id === state.chocolateType);
-                if (chocObj) {
-                    chocolateCost = chocObj.price * state.chocolatePieces;
-                }
-            }
-
-            let wrappingCost = 0;
-            const wrapObj = flowerConfig.wrappingTypes.find(w => w.id === state.wrappingType);
-            if (wrapObj) {
-                wrappingCost = wrapObj.price;
-            }
-
-            let rawMoneyValue = state.moneyAmount || 0;
-            let moneyHandlingFees = state.moneyFee || 0;
-
-            let activeServicePrice = calculatedBasePrice + extraCost + photoPrintCost + giftCardCost + chocolateCost + wrappingCost + moneyHandlingFees;
-            let finalServicePrice = window.calculateBosePrice ? window.calculateBosePrice(activeServicePrice, "menu-only") : activeServicePrice;
-
-            calculatedTotalPrice = Math.round(finalServicePrice + rawMoneyValue);
-        }
-
-        state.totalPrice = calculatedTotalPrice;
-
+        let calculatedBasePrice = flowerConfig.basePrice;
         const extraFlowers = Math.max(0, state.flowerCount - flowerConfig.baseFlowers);
         const extraCost = extraFlowers * flowerConfig.extraFlowerPrice;
-        let photoPrintCost = state.includePhoto ? flowerConfig.photoPrintPrice : 0;
-        let giftCardCost = (state.includeCard && state.cardText.trim() !== "") ? flowerConfig.giftCardPrice : 0;
 
-        let chocolateCost = 0;
-        if (state.chocolateType !== "none" && state.chocolatePieces > 0) {
-            const chocObj = flowerConfig.chocolateTypes.find(c => c.id === state.chocolateType);
-            if (chocObj) {
-                chocolateCost = chocObj.price * state.chocolatePieces;
-            }
-        }
+        let ribbonTextCost = state.includeRibbonText ? 50 : 0;
+        let photoPrintCost = state.includePhoto ? (state.photoCount * flowerConfig.photoPrintPrice) : 0;
+        let giftCardCost = (state.includeCard && state.cardText.trim() !== "") ? flowerConfig.giftCardPrice : 0;
 
         let wrappingCost = 0;
         const wrapObj = flowerConfig.wrappingTypes.find(w => w.id === state.wrappingType);
@@ -1076,17 +1137,29 @@
             wrappingCost = wrapObj.price;
         }
 
+        // مبالغ الكاش المدمج وميزانية الشوكولاتة الصافية بالكامل
+        let rawMoneyValue = state.moneyAmount || 0;
+        let rawChocolateValue = state.chocolateBudget || 0;
+
+        let activeServicePrice = calculatedBasePrice + extraCost + wrappingCost + ribbonTextCost + photoPrintCost + giftCardCost;
+        let finalServicePrice = window.calculateBosePrice ? window.calculateBosePrice(activeServicePrice, "menu-only") : activeServicePrice;
+
+        // دمج القيم المالية الصافية بعد مرور كود فحص زيادة الأسعار لتبقى صافية مئة بالمئة
+        calculatedTotalPrice = Math.round(finalServicePrice) + rawMoneyValue + rawChocolateValue;
+        state.totalPrice = calculatedTotalPrice;
+
         if (basePriceVal) basePriceVal.textContent = `${flowerConfig.basePrice} EGP`;
         if (extraFlowersCount) extraFlowersCount.textContent = `(${extraFlowers} وردة إضافية)`;
         if (extraFlowersCost) extraFlowersCost.textContent = `+ ${extraCost} EGP`;
-        if (photoCostVal) photoCostVal.textContent = `+ ${photoPrintCost} EGP`;
-        if (cardCostVal) cardCostVal.textContent = `+ ${giftCardCost} EGP`;
-        if (chocolateCostVal) chocolateCostVal.textContent = `+ ${chocolateCost} EGP`;
         if (wrappingCostVal) wrappingCostVal.textContent = `+ ${wrappingCost} EGP`;
         
-        state.moneyFee = calculateLocalMoneyFee(state.moneyAmount, state.moneyCategoryAmount);
-        if (moneyFeeDisplay) moneyFeeDisplay.textContent = `${state.moneyFee} EGP`;
-        if (moneyTotalDisplay) moneyTotalDisplay.textContent = `${state.moneyAmount} EGP`;
+        // تحديث وعرض تفاصيل الأسعار الملوكية اللحظية بالشريط العائم
+        if (document.getElementById('ribbon-cost-val')) document.getElementById('ribbon-cost-val').textContent = `+ ${ribbonTextCost} EGP`;
+        if (photoCostVal) photoCostVal.textContent = `+ ${photoPrintCost} EGP`;
+        if (chocolateCostVal) chocolateCostVal.textContent = `+ ${rawChocolateValue} EGP`;
+        if (cardCostVal) cardCostVal.textContent = `+ ${giftCardCost} EGP`;
+        if (moneyBreakdownDisplay) moneyBreakdownDisplay.textContent = `+ ${rawMoneyValue} EGP`;
+        if (moneyTotalDisplay) moneyTotalDisplay.textContent = `${rawMoneyValue} EGP`;
 
         if (bouquetTotalVal) {
             bouquetTotalVal.textContent = `${calculatedTotalPrice} EGP`;
