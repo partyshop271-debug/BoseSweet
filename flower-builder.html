@@ -33,18 +33,19 @@
             z-index: 10;
             transition: all 0.3s ease;
         }
-        /* الأزرار الأيقونية الفاخرة البديلة للقائمة المنسدلة */
+        
+        /* [إصلاح الثغرة 1]: أزرار هندسية فخمة ومستطيلة تمنع التكدس لخلق تنفس بصري راقٍ */
         .bose-iconic-options-row {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin-top: 10px;
+            gap: 16px;
+            margin-top: 15px;
         }
         .bose-iconic-btn-node {
             background: #FFFFFF !important;
             border: 1.5px solid #EAEAEA !important;
-            border-radius: 16px !important;
-            padding: 14px 10px !important;
+            border-radius: 12px !important; /* شكل مستطيل أرقى */
+            padding: 16px 12px !important;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -55,12 +56,12 @@
             box-sizing: border-box;
         }
         .bose-iconic-btn-node .btn-icon {
-            font-size: 20px;
+            font-size: 22px;
             color: #111111;
             transition: transform 0.3s ease;
         }
         .bose-iconic-btn-node .btn-label {
-            font-size: 13.5px;
+            font-size: 14px;
             font-weight: 700;
             color: #111111;
             font-family: 'Cairo', sans-serif;
@@ -71,7 +72,7 @@
         }
         .bose-iconic-btn-node.active-selected {
             border-color: #FF91A4 !important;
-            box-shadow: 0 6px 20px rgba(255, 145, 164, 0.15) !important;
+            box-shadow: 0 8px 32px rgba(255, 145, 164, 0.12) !important;
             background: #FFFFFF !important;
             transform: scale(1.02);
         }
@@ -79,7 +80,7 @@
             transform: scale(1.1);
         }
         
-        /* أزرار التحكم الدائرية المحسنة والمطابقة لترتيب الزائد على اليمين والناقص على اليسار */
+        /* أزرار التحكم بالعد الموزعة هندسياً (+ على اليمين و - على اليسار) */
         .bose-counter-wrapper {
             display: inline-flex;
             align-items: center;
@@ -124,6 +125,27 @@
             border-color: #ff7d94 !important;
         }
 
+        /* [إصلاح الثغرة 2]: حاوية السعر الديناميكي الموضعي المدمج بالملي أسفل عداد التحكم */
+        .bose-embedded-price-box {
+            margin-top: 15px;
+            padding: 12px;
+            background: rgba(255, 145, 164, 0.04);
+            border-radius: 12px;
+            text-align: center;
+            font-family: 'Cairo', sans-serif;
+            transition: all 0.3s ease;
+        }
+        .bose-embedded-price-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: #111111;
+            margin: 0;
+        }
+        .bose-embedded-price-text span {
+            color: #FF91A4;
+            font-weight: 700;
+        }
+
         /* قوالب التخصيص الاحترافية لمنع التكدس البصري */
         .bose-premium-template-box {
             background: #FFFFFF;
@@ -140,7 +162,7 @@
             box-shadow: 0 10px 30px rgba(255, 145, 164, 0.08);
         }
 
-        /* شريط الخطوات المطور: عودة خلفية الأرقام السابقة للون الأبيض */
+        /* شريط الخطوات المطور */
         .simulator-steps-indicator .step-node {
             background: #FFFFFF !important;
             border: 2px solid #EAEAEA !important;
@@ -169,13 +191,11 @@
     <!-- حاوية المحاكي التفاعلي المعزولة هندسياً -->
     <main class="simulator-container bose-custom-builder-block">
         
-        <!-- عنوان ومقدمة المحاكي المهدئة بتون الكلام الجديد -->
         <div class="simulator-header">
             <h1 style="font-weight: 700 !important; color: #111111;">محاكي الورد التفاعلي</h1>
             <p style="font-weight: 400 !important; color: #111111; line-height: 1.6;">عملي بوكيه الورد اللي على ذوقك خطوة بخطوة، واختاريه بالتفصيل اللي يفرح قلب اللي هتديهوله.</p>
         </div>
 
-        <!-- الصورة التأسيسية الكبرى عالية النقاء -->
         <div style="width: 100%; text-align: center; margin-bottom: 40px; box-sizing: border-box;">
             <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="بوكيه ورد فاخر" class="hero-banner-frame" style="width: 100%; max-height: 480px; object-fit: cover; border-radius: 24px; box-shadow: var(--bose-shadow-glow); border: var(--bose-border-pink);">
         </div>
@@ -190,14 +210,13 @@
 
         <div class="simulator-workspace">
             
-            <!-- لوحة التخصيص والخيارات المدمجة (4 خطوات تفاعلية ذكية) -->
             <div class="simulator-control-panel">
                 
-                <!-- الخطوة 1: نوع الورد ومقاس البوكيه (تم الدمج بالكامل للتسهيل وسد الثغرات) -->
+                <!-- الخطوة 1: أساس وتنسيق البوكيه -->
                 <div class="bose-step-card-panel active" data-step="1">
                     <h2 class="step-title"><i class="fa-solid fa-seedling"></i> الخطوة 1: أساس وتنسيق البوكيه</h2>
                     
-                    <!-- قالب نوع الورد -->
+                    <!-- قالب نوع الورد المستطيل المريح المعزول بصرياً -->
                     <div class="bose-premium-template-box">
                         <label class="premium-input-label">تحبي نوع الورد يكون إيه؟</label>
                         <div class="bose-iconic-options-row" id="flower-type-iconic-row">
@@ -217,14 +236,19 @@
                         <input type="hidden" id="flower-type" value="natural">
                     </div>
 
-                    <!-- قالب عداد حجم البوكيه مدمج في الخطوة الأولى بالكامل -->
+                    <!-- قالب العداد والسعر التحديثي اللحظي المدمج داخل نفس الإطار لراحة تامة للعين -->
                     <div class="bose-premium-template-box">
                         <label class="premium-input-label">تحبي البوكيه يكون فيه كام وردة؟ (بنبدأ من 15 وردة لتنسيق فخم ومليان)</label>
-                        <div style="display: flex; justify-content: center; margin-top: 12px;">
+                        <div style="display: flex; flex-direction: column; align-items: center; margin-top: 12px;">
                             <div class="bose-counter-wrapper">
                                 <button type="button" class="bose-circular-qty-btn btn-plus-style" id="flower-plus">+</button>
                                 <input type="text" id="flower-count" class="bose-premium-text-input" value="15" style="text-align: center; width: 80px; font-size: 16px; font-weight: 700; border: none; background: transparent; pointer-events: none;" readonly>
                                 <button type="button" class="bose-circular-qty-btn btn-minus-style" id="flower-minus">-</button>
+                            </div>
+                            
+                            <!-- السعر اللحظي والديناميكي الموضع المحدث تلقائياً -->
+                            <div class="bose-embedded-price-box" id="bose-embedded-price-container">
+                                <p class="bose-embedded-price-text" id="bose-embedded-price-display">سعر هذا البوكيه الذي يحتوي على 15 وردة هو <span>400 جنيه</span></p>
                             </div>
                         </div>
                     </div>
@@ -248,7 +272,6 @@
                     <h2 class="step-title"><i class="fa-solid fa-maximize"></i> الخطوة 2: شريط الستان والرسالة</h2>
                     
                     <div class="bose-premium-template-box">
-                        <!-- خيارات مخفية صامتة لضمان التوافق التام مع المحركات -->
                         <select id="wrapping-type" class="bose-premium-text-input" style="display: none;">
                             <option value="classic" selected>تغليف كلاسيك راقٍ</option>
                         </select>
@@ -272,16 +295,15 @@
                 <div class="bose-step-card-panel" data-step="3">
                     <h2 class="step-title"><i class="fa-solid fa-gift"></i> الخطوة 3: صورك الشخصية ومفاجأة الكاش</h2>
                     
-                    <!-- قالب الصور الشخصية -->
                     <div class="bose-premium-template-box">
                         <label class="premium-input-label" style="display: flex; align-items: center; gap: 10px; cursor: pointer; margin-bottom: 0;">
                             <input type="checkbox" id="include-photo" style="width: 20px; height: 20px; accent-color: #FF91A4;">
-                            تحبي تضيفي صور شخصية تترتب جوه البوكيه بشكل شيك؟ (+15 جنيه للصورة)
+                            تحبي نضيف صور شخصية تترتب جوه البوكيه بشكل شيك؟ (+15 جنيه للصورة)
                         </label>
                         <div id="photo-upload-section" class="custom-text-wrapper" style="display: none; padding: 15px; background: rgba(255, 145, 164, 0.02); border-radius: 14px; border-right: 3px solid var(--bose-pink); margin-top: 15px;">
                             <p style="font-size: 13.5px; font-weight: 700; margin: 0 0 10px 0; color: #111111;">سيتم اعتماد الصورة المرفوعة في الخطوة الأولى للطباعة التذكارية الشيك 📸</p>
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
-                                <label class="premium-input-label" style="font-size: 13.5px; margin: 0;">حابة تضيفي كام صورة؟</label>
+                                <label class="premium-input-label" style="font-size: 13.5px; margin: 0;">حابة تضيفي كام صورة?</label>
                                 <div class="bose-counter-wrapper" style="padding: 4px 8px;">
                                     <button type="button" class="bose-circular-qty-btn btn-plus-style" id="photo-count-plus" style="width:36px; height:36px; font-size:16px;">+</button>
                                     <input type="text" id="photo-count-input" class="bose-premium-text-input" value="1" style="text-align: center; width: 50px; font-size:15px; font-weight:700; border: none; background: transparent; pointer-events: none;" readonly>
@@ -291,7 +313,6 @@
                         </div>
                     </div>
 
-                    <!-- قالب مفاجأة الكاش -->
                     <div class="bose-premium-template-box">
                         <label class="premium-input-label" style="display: flex; align-items: center; gap: 10px; cursor: pointer; margin-bottom: 0;">
                             <input type="checkbox" id="include-cash-toggle" style="width: 20px; height: 20px; accent-color: #FF91A4;">
@@ -329,7 +350,6 @@
                 <div class="bose-step-card-panel" data-step="4">
                     <h2 class="step-title"><i class="fa-solid fa-cookie"></i> الخطوة 4: الشوكولاتة الفاخرة وكارت الإهداء</h2>
                     
-                    <!-- قالب الشوكولاتة -->
                     <div class="bose-premium-template-box">
                         <label class="premium-input-label" style="display: flex; align-items: center; gap: 10px; cursor: pointer; margin-bottom: 0;">
                             <input type="checkbox" id="include-chocolate-toggle" style="width: 20px; height: 20px; accent-color: #FF91A4;">
@@ -348,7 +368,6 @@
                         </div>
                     </div>
 
-                    <!-- قالب كارت الإهداء -->
                     <div class="bose-premium-template-box">
                         <label class="premium-input-label" style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
                             <input type="checkbox" id="include-card" style="width: 20px; height: 20px; accent-color: #FF91A4;">
@@ -361,7 +380,7 @@
                     </div>
                 </div>
 
-                <!-- شريط أزرار التحكم والتنقل بالخطوات المعزولة (الخطوة الأخيرة فقط يظهر بها زر السلة ويختفي التالي) -->
+                <!-- [إصلاح الثغرة 3]: شريط أزرار التحكم والتنقل بالخطوات (حذف زر الاعتماد تماماً من الخطوة 1 والالتزام بوجوده بالخطوة الأخيرة فقط) -->
                 <div class="simulator-actions-bar" style="margin-top: 30px; box-sizing: border-box;">
                     <button type="button" class="premium-nav-btn secondary" id="btn-prev" style="display: none;">السابق</button>
                     <button type="button" class="premium-nav-btn primary" id="btn-next" style="margin-right: auto;">التالي</button>
@@ -370,7 +389,7 @@
 
             </div>
 
-            <!-- الجانب الأيسر: شريط السعر اللحظي العائم والمحدث تلقائياً ككارت شفاف ومقسم بوضوح -->
+            <!-- الجانب الأيسر: شريط السعر اللحظي الشفاف المحدث تلقائياً لراحة العميل -->
             <div class="price-sidebar-container">
                 <div class="sticky-summary-widget" id="bose-dynamic-pricing-widget" style="background:#FFFFFF; border:1px solid rgba(255,145,164,0.3); border-radius:24px; padding:24px; box-shadow:0 8px 32px rgba(255, 145, 164, 0.05); display: none;">
                     <h3 class="summary-title" style="border-bottom:1px dashed #EAEAEA; padding-bottom:12px; margin-top:0; color:#111111; font-family:'Cairo'; font-weight:700;"><i class="fa-solid fa-receipt" style="color: #FF91A4;"></i> تفاصيل الحساب اللحظي</h3>
@@ -392,7 +411,7 @@
 
         </div>
 
-        <!-- معرض سابقة أعمالنا الفخم التفاعلي (تم إزالة التكدس الرأسي والعناوين المقيدة) -->
+        <!-- معرض سابقة أعمالنا الفخم التفاعلي -->
         <div class="portfolio-section" style="margin-top: 60px;">
             <h2 style="font-size: 24px; text-align: center; margin-bottom: 8px; font-weight:700; color:#111111;">بوكيهات شرفت عملائنا في مناسباتهم الراقية</h2>
             <p style="text-align: center; font-size: 14px; margin-bottom: 24px; color: #111111; opacity:0.7;">استعرض بعضاً من البوكيهات المنسقة والمنفذة يدوياً بحب لعملائنا لتستلهم منها فكرتك.</p>
@@ -415,19 +434,17 @@
 
     </main>
 
-    <!-- النافذة المنبثقة التفاعلية الفخمة لمعرض الأعمال (تفتح بكامل الشاشة لإبراز الجمال) -->
+    <!-- [إصلاح الثغرة 4]: النافذة المنبثقة التفاعلية الفخمة لمعرض الأعمال (خالية ونظيفة تماماً من أي نصوص أو تفاصيل لعرض الجمال الطبيعي) -->
     <div class="bose-popup-modal" id="portfolio-popup-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(17,17,17,0.7); z-index: 50000; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;">
-        <div class="bose-popup-content" style="background: #FFFFFF; border-radius: 24px; padding: 30px; max-width: 600px; width: 100%; position: relative; box-sizing: border-box; text-align: center;">
-            <span class="modal-close-btn" id="modal-close-node" style="position: absolute; top: 15px; left: 20px; font-size: 24px; font-weight: 700; color: #FF91A4; cursor: pointer; user-select: none;">×</span>
-            <img id="modal-display-img" src="" class="modal-img-frame" alt="معاينة فخمة للمنتج" style="width: 100%; max-height: 400px; object-fit: cover; border-radius: 16px; border: 1px solid rgba(255,145,164,0.3); margin-bottom: 20px;">
-            <div class="modal-body-desc" id="modal-display-desc" style="font-size: 15px; font-weight: 700; color: #111111; font-family: 'Cairo'; line-height: 1.6;"></div>
+        <div class="bose-popup-content" style="background: #FFFFFF; border-radius: 24px; padding: 20px; max-width: 600px; width: 100%; position: relative; box-sizing: border-box; text-align: center;">
+            <span class="modal-close-btn" id="modal-close-node" style="position: absolute; top: 15px; left: 20px; font-size: 26px; font-weight: 700; color: #FF91A4; cursor: pointer; user-select: none; z-index: 10;">×</span>
+            <img id="modal-display-img" src="" class="modal-img-frame" alt="معاينة فخمة للمنتج" style="width: 100%; max-height: 480px; object-fit: cover; border-radius: 16px; border: 1px solid rgba(255,145,164,0.3); display: block; margin: 0;">
         </div>
     </div>
 
     <!-- الفوتر الموحد والفاخر للبراند -->
     <div id="bose-footer-injector"></div>
 
-    <!-- استدعاء المحركات البرمجية للتنسيق والحوكمة وتوثيق السلة والطلب -->
     <script src="js/core-engine.js"></script>
     <script src="js/flower-engine.js"></script>
 
@@ -443,18 +460,30 @@
             const stepsPanels = document.querySelectorAll(".bose-step-card-panel");
             const stepsIndicators = document.querySelectorAll(".simulator-steps-indicator .step-node");
 
-            // تفعيل تفاعل أزرار اختيار نوع الورد الجديدة بالكامل
             const iconicBtns = document.querySelectorAll("#flower-type-iconic-row .bose-iconic-btn-node");
             const hiddenTypeInput = document.getElementById("flower-type");
             const dynamicPricingWidget = document.getElementById("bose-dynamic-pricing-widget");
+            const embeddedPriceDisplay = document.getElementById("bose-embedded-price-display");
 
-            // إظهار السعر فقط بعد قيام العميل باختيار الخيارات
             function checkAndShowPriceWidget() {
                 if (hiddenTypeInput && hiddenTypeInput.value) {
                     if (dynamicPricingWidget) {
                         dynamicPricingWidget.style.display = "block";
                     }
                 }
+            }
+
+            // تحديث السعر الموضع الديناميكي المدمج داخل الكارت بدقة وسرعة كاملة
+            function updateEmbeddedPrice() {
+                const countInput = document.getElementById("flower-count");
+                if (!countInput || !embeddedPriceDisplay) return;
+                
+                const count = parseInt(countInput.value, 10) || 15;
+                const basePrice = 400;
+                const extraPrice = 35;
+                const totalCost = basePrice + (Math.max(0, count - 15) * extraPrice);
+                
+                embeddedPriceDisplay.innerHTML = `سعر هذا البوكيه الذي يحتوي على ${count} وردة هو <span>${totalCost} جنيه</span>`;
             }
 
             iconicBtns.forEach(btn => {
@@ -464,18 +493,33 @@
                     const selectedVal = this.getAttribute("data-value");
                     if (hiddenTypeInput) {
                         hiddenTypeInput.value = selectedVal;
-                        // إطلاق حدث التغيير ليعمل محرك جافاسكربت الفرعي flower-engine.js فوراً دون تصادم
                         hiddenTypeInput.dispatchEvent(new Event('change'));
                     }
                     checkAndShowPriceWidget();
                 });
             });
 
-            // تفاعل إضافي عند كتابة العداد أو تغييره لإظهار الويدجت تلقائياً
-            document.getElementById("flower-count").addEventListener("change", checkAndShowPriceWidget);
+            // ربط العداد بتحديث السعر الديناميكي المكتوب فوراً عند كل ضغطة
+            const observer = new MutationObserver(function(mutations) {
+                updateEmbeddedPrice();
+                checkAndShowPriceWidget();
+            });
+            
+            const countInputEl = document.getElementById("flower-count");
+            if (countInputEl) {
+                // مراقبة تغيير العداد من أزرار الزيادة والنقصان الخارجية
+                const nativeInputValueDescriptor = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value");
+                Object.defineProperty(countInputEl, "value", {
+                    set: function(val) {
+                        nativeInputValueDescriptor.set.call(this, val);
+                        updateEmbeddedPrice();
+                    }
+                });
+                countInputEl.addEventListener("input", updateEmbeddedPrice);
+            }
 
-            // تشغيل التحقق المبدئي
             checkAndShowPriceWidget();
+            updateEmbeddedPrice();
 
             function updateActiveStepUI() {
                 stepsPanels.forEach(panel => {
@@ -492,7 +536,6 @@
                     if (nodeNum === currentActiveStep) {
                         node.className = "step-node active";
                     } else if (nodeNum < currentActiveStep) {
-                        // عودة خلفية الأرقام السابقة للون الأبيض النظيف
                         node.className = "step-node completed";
                     } else {
                         node.className = "step-node";
@@ -542,26 +585,16 @@
                 });
             });
 
-            // معرض سابقة الأعمال الفخم والمنبثق بكامل الشاشة
+            // [إصلاح الثغرة 4]: مودال معرض الأعمال نظيف وخالٍ تماماً من أي أوصاف تشتيتية
             const portfolioModal = document.getElementById('portfolio-popup-modal');
             const modalImg = document.getElementById('modal-display-img');
-            const modalDesc = document.getElementById('modal-display-desc');
             const modalClose = document.getElementById('modal-close-node');
             const portfolioCards = document.querySelectorAll('.portfolio-item-card');
 
-            const portfolioExplanations = {
-                "1": "بوكيه ورد فاخر منسق بعناية فائقة يجمع بين الورد الطبيعي النضر مع شرائط الستان الفاخرة المطبوعة والملحقات الراقية.",
-                "2": "تنسيق ملوكي فريد يعتمد على ورد ستان فخم مصنوع يدوياً بكل حب ليدوم كذكرى خالدة تسعد القلوب.",
-                "3": "بوكيه كلاسيكي ساحر يمزج بين دقة الصناعة ونضارة اللمسات البمبية المميزة لشرف مناسباتكم السعيدة.",
-                "4": "أناقة وتفاصيل لا تنتهي في باقة ورد فخمة تم تنسيقها وتوزيعها بعناية لتليق بالهدايا الخاصة والاستثنائية."
-            };
-
             portfolioCards.forEach(card => {
                 card.addEventListener('click', function() {
-                    const idx = this.getAttribute('data-index');
-                    if (portfolioModal && modalImg && modalDesc) {
+                    if (portfolioModal && modalImg) {
                         modalImg.src = this.querySelector('img').src;
-                        modalDesc.textContent = portfolioExplanations[idx];
                         portfolioModal.style.display = "flex";
                     }
                 });
@@ -573,7 +606,6 @@
                 });
             }
             
-            // غلق المودال بالضغط على الخلفية الشفافة لراحة وسلاسة التصفح
             if (portfolioModal) {
                 portfolioModal.addEventListener('click', function(e) {
                     if (e.target === this) {
