@@ -1,8 +1,8 @@
 /**
  * 👑 محرك محاكي بوكيهات الورد والهدايا المالية الفاخر والآمن - حلويات بوسي 👑
- * النسخة الهندسية القياسية الكاملة بنسبة 100% - خالية تماماً من الثغرات المالية والبرمجية V4
+ * النسخة الهندسية القياسية الكاملة بنسبة 100% - خالية تماماً من الثغرات المالية والبرمجية V5
  * متوافق بشكل مطلق وثنائي الاتجاه مع: core-engine.js، cart-engine.js، وقاعدة البيانات site-data-final.json 
- * [التصحيح الصارم V4]: تم تصفير وإلغاء فخ تغليف الستان المالي ومطابقته مع دليل الأسعار الرسمي كلياً.
+ * [التصحيح الصارم V5]: تم تصفير وإلغاء فخ تغليف الستان المالي كلياً وحل مشاكل كارت الحساب اللحظي المكدس.
  * [عزل حقول الورد كلياً لحظر التداخل مع دالات التورت أو المنتجات العادية، وسد ثغرة تراكم الذاكرة بالمتصفح]
  */
 
@@ -44,23 +44,14 @@
             { amount: 50 },
             { amount: 100 },
             { amount: 200 }
-        ],
-        ribbonColors: [
-            { id: "pink", name: "بمبي بوسي الفاخر", hex: "#FF91A4" },
-            { id: "gold", name: "ذهبي ملكي ناعم", hex: "#D4AF37" },
-            { id: "white", name: "أبيض ناصع راقٍ", hex: "#FFFFFF" }
-        ],
-        wrappingTypes: [
-            { id: "classic", name: "تغليف كلاسيك راقٍ (مشمول صافي)", price: 0 },
-            { id: "box", name: "بوكس هدايا فاخر ورائع", price: 100 }
         ]
     };
 
-    // الحالة الديناميكية الحالية للمحاكي مع الحفاظ على قيم التخصيص
+    // الحالة الديناميكية الحالية للمحاكي مع الحفاظ على قيم التخصيص (التغليف كلاسيك ومجاني صامت ومثبت دائمًا)
     let state = {
         flowerType: "natural",
         flowerCount: 15,
-        wrappingType: "classic",
+        wrappingType: "classic", 
         ribbonColor: "pink",
         includeRibbonText: false,
         ribbonText: "",
@@ -79,16 +70,13 @@
     };
 
     // عناصر الـ DOM الأساسية
-    let flowerTypeSelect, flowerCountInput, wrappingTypeSelect, ribbonColorSelect;
-    let includePhotoCheckbox, photoFileInput, photoPreviewContainer, photoPreviewImg;
-    let includeCardCheckbox, cardTextInput, moneyCategorySelect;
-    let basePriceVal, extraFlowersCount, extraFlowersCost, photoCostVal, cardCostVal, chocolateCostVal, wrappingCostVal, bouquetTotalVal;
-    let addToCartBtn, ribbonVisualColor;
+    let flowerTypeSelect, flowerCountInput, includePhotoCheckbox, photoFileInput, photoPreviewContainer, photoPreviewImg;
+    let includeCardCheckbox, cardTextInput, moneyCategorySelect, bouquetTotalVal, addToCartBtn;
     
     let includeRibbonTextCheckbox, ribbonTextSection, ribbonTextInput;
     let includeCashCheckbox, cashMasterBlock, cashIntegrationCounterBlock, moneyAmountDisplay;
     let includeChocolateCheckbox, chocolateBudgetMasterBlock, chocolateBudgetDisplay;
-    let photoCountInput;
+    let photoCountInput, dynamicAddonsArea;
 
     /**
      * 🛡️ حارس الواجهة الفاخر لإظهار الإشعارات بأسلوب وتطابق البراند (بديل آمن لـ alert)
@@ -157,7 +145,7 @@
     }
 
     /**
-     * 💾 صمام الأمان الفائق ومحاكي الرفع السريع لضغط الصور بجودة خفيفة للغاية عند انقطع شبكة الرفع
+     * 💾 صمام الأمان الفائق ومحاكي الرفع السريع لضغط الصور بجودة خفيفة للغاية عند انقطاع شبكة الرفع
      */
     function generateMicroBase64Fallback(file) {
         return compressAndOptimizeImage(file, 150, 0.4).then(blob => {
@@ -172,7 +160,7 @@
     }
 
     /**
-     * ☁️ معالج الرفع المباشر والآمن إلى سحابة Cloudinary
+     * ☁️ معالج الرفع المباشر والآمن إلى سحابة Cloudinary (محتفظ به لحماية استقرار السيرفر وكفاءة الأداء)
      */
     async function uploadImageToCloudinary(blob) {
         const cloudName = window.BoseStoreData?.store?.cloudinaryCloudName || 'dyx4w0dr1';
@@ -244,8 +232,6 @@
         // ربط عناصر الـ DOM الأساسية
         flowerTypeSelect = document.getElementById('flower-type');
         flowerCountInput = document.getElementById('flower-count');
-        wrappingTypeSelect = document.getElementById('wrapping-type');
-        ribbonColorSelect = document.getElementById('ribbon-color');
         includePhotoCheckbox = document.getElementById('include-photo');
         photoFileInput = document.getElementById('photo-file');
         photoPreviewContainer = document.getElementById('photo-preview-container');
@@ -253,17 +239,9 @@
         includeCardCheckbox = document.getElementById('include-card');
         cardTextInput = document.getElementById('card-text');
         moneyCategorySelect = document.getElementById('money-category');
-
-        basePriceVal = document.getElementById('base-price-val');
-        extraFlowersCount = document.getElementById('extra-flowers-count');
-        extraFlowersCost = document.getElementById('extra-flowers-cost');
-        photoCostVal = document.getElementById('photo-cost-val');
-        cardCostVal = document.getElementById('card-cost-val');
-        chocolateCostVal = document.getElementById('chocolate-cost-val');
-        wrappingCostVal = document.getElementById('wrapping-cost-val');
         bouquetTotalVal = document.getElementById('bouquet-total-val');
         addToCartBtn = document.getElementById('add-to-cart-btn');
-        ribbonVisualColor = document.getElementById('ribbon-visual-color');
+        dynamicAddonsArea = document.getElementById('bose-dynamic-addons-injection-area');
         
         includeRibbonTextCheckbox = document.getElementById('include-ribbon-text');
         ribbonTextSection = document.getElementById('ribbon-text-section');
@@ -279,7 +257,7 @@
         chocolateBudgetDisplay = document.getElementById('chocolate-budget-display');
         photoCountInput = document.getElementById('photo-count-input');
 
-        if (!flowerTypeSelect || !flowerCountInput || !bouquetTotalVal) return;
+        if (!flowerCountInput || !bouquetTotalVal) return;
 
         let savedStateRaw = null;
         try {
@@ -312,20 +290,8 @@
         if (flowerTypeSelect) {
             flowerTypeSelect.value = state.flowerType;
         }
-        if (wrappingTypeSelect) {
-            wrappingTypeSelect.innerHTML = flowerConfig.wrappingTypes
-                .map(w => `<option value="${w.id}">${w.name}</option>`)
-                .join('');
-            wrappingTypeSelect.value = state.wrappingType;
-        }
-        if (ribbonColorSelect) {
-            ribbonColorSelect.innerHTML = flowerConfig.ribbonColors
-                .map(r => `<option value="${r.id}">${r.name}</option>`)
-                .join('');
-            ribbonColorSelect.value = state.ribbonColor;
-        }
         if (moneyCategorySelect) {
-            let optionsHtml = `<option value="0" selected>اختار فئة الفلوس النقدية لتغليفها داخل البوكيه...</option>`;
+            let optionsHtml = `<option value="0" selected>اختار فئة الفلوس النقدية...</option>`;
             flowerConfig.moneyCategories.forEach(cat => {
                 optionsHtml += `<option value="${cat.amount}">فئة الـ ${cat.amount} جنيه</option>`;
             });
@@ -336,8 +302,6 @@
     function applyStateToUI() {
         if (flowerTypeSelect) flowerTypeSelect.value = state.flowerType;
         if (flowerCountInput) flowerCountInput.value = state.flowerCount;
-        if (wrappingTypeSelect) wrappingTypeSelect.value = state.wrappingType;
-        if (ribbonColorSelect) ribbonColorSelect.value = state.ribbonColor;
         
         if (includeRibbonTextCheckbox) {
             includeRibbonTextCheckbox.checked = state.includeRibbonText;
@@ -383,24 +347,13 @@
             }
         }
         if (cardTextInput) cardTextInput.value = state.cardText;
-
-        updateRibbonVisualColor();
-    }
-
-    function updateRibbonVisualColor() {
-        if (ribbonVisualColor && ribbonColorSelect) {
-            const selectedColor = flowerConfig.ribbonColors.find(r => r.id === ribbonColorSelect.value);
-            if (selectedColor) {
-                ribbonVisualColor.style.backgroundColor = selectedColor.hex;
-            }
-        }
     }
 
     function setupEventListeners() {
         const preventActionIfUploading = (e) => {
             if (state.isUploading) {
                 e.preventDefault();
-                showBoseToast("يرجى الانتظار حتى يكتمل تأمين ورفع الصورة المخصصة بنجاح 🌸");
+                showBoseToast("ثواني بنرفع صورتك الشيك ونأمنها بنجاح... 🌸");
                 return true;
             }
             return false;
@@ -455,31 +408,6 @@
                     recalculatePrice();
                 });
             }
-        }
-
-        if (wrappingTypeSelect) {
-            wrappingTypeSelect.addEventListener('change', function (e) {
-                if (preventActionIfUploading(e)) {
-                    wrappingTypeSelect.value = state.wrappingType;
-                    return;
-                }
-                state.wrappingType = e.target.value;
-                saveCurrentState();
-                recalculatePrice();
-            });
-        }
-
-        if (ribbonColorSelect) {
-            ribbonColorSelect.addEventListener('change', function (e) {
-                if (preventActionIfUploading(e)) {
-                    ribbonColorSelect.value = state.ribbonColor;
-                    return;
-                }
-                state.ribbonColor = e.target.value;
-                updateRibbonVisualColor();
-                saveCurrentState();
-                recalculatePrice();
-            });
         }
         
         if (includeRibbonTextCheckbox) {
@@ -563,7 +491,7 @@
                 state.isUploading = true;
                 if (addToCartBtn) {
                     addToCartBtn.disabled = true;
-                    addToCartBtn.innerHTML = `جاري رفع وتأمين صورتك...`;
+                    addToCartBtn.innerHTML = `بنجيب لكِ أعلى جودة للصورة...`;
                 }
 
                 try {
@@ -573,7 +501,7 @@
                     
                     if (photoPreviewImg) photoPreviewImg.src = CloudinarySecureUrl;
                     if (photoPreviewContainer) photoPreviewContainer.style.display = "block";
-                    showBoseToast("تم تحميل وتأمين الصورة المخصصة لطلبك.");
+                    showBoseToast("تم تأمين وحفظ الصورة بنجاح! ✨");
 
                     saveCurrentState();
                     recalculatePrice();
@@ -590,13 +518,13 @@
                         saveCurrentState();
                         recalculatePrice();
                     } catch (fallbackError) {
-                        showBoseToast("فشل معالجة الصورة، يرجى تكرار المحاولة.");
+                        showBoseToast("فشلت معالجة الصورة، جربي مرة ثانية.");
                     }
                 } finally {
                     state.isUploading = false;
                     if (addToCartBtn) {
                         addToCartBtn.disabled = false;
-                        addToCartBtn.innerHTML = `اعتماد التصميم وإضافته للسلة`;
+                        addToCartBtn.innerHTML = `اعتماد البوكيه وإضافته للسلة`;
                     }
                 }
             });
@@ -743,7 +671,7 @@
         if (addToCartBtn) {
             addToCartBtn.addEventListener('click', function () {
                 if (state.isUploading) {
-                    showBoseToast("يرجى الانتظار لحين اكتمال تأمين صورتك الفاخرة للبوكيه 🌸");
+                    showBoseToast("ثواني بنرفع صورتك الشيك ونأمنها بنجاح... 🌸");
                     return;
                 }
 
@@ -757,31 +685,19 @@
                     type: "custom-flower"
                 };
 
-                const ribbonObj = flowerConfig.ribbonColors.find(r => r.id === state.ribbonColor);
-                const ribbonNameArabic = ribbonObj ? ribbonObj.name : "لون منسق";
-                const wrapObj = flowerConfig.wrappingTypes.find(w => w.id === state.wrappingType);
-                const wrapNameArabic = wrapObj ? wrapObj.name : "تغليف منسق";
-
-                let decoratedWrappingText = `${wrapNameArabic} (شريط ${ribbonNameArabic})`;
-                if (state.includeRibbonText && state.ribbonText.trim() !== "") {
-                    decoratedWrappingText += ` [نص الشريط: "${state.ribbonText}"]`;
-                }
-
-                // كائن خيارات وعزل تام وحصري لعناصر الورد [حماية السلة والملفات الخارجية]
+                // بناء كائن الخيارات مع عزل الورد التام وحماية البيانات المؤقتة
                 const customOptionsObj = {
                     flavorName: `بوكيه مخصص (${flowerTypeName})`,
                     flowerType: state.flowerType, 
                     flowerCount: `${state.flowerCount} وردة`,
-                    wrappingType: decoratedWrappingText,
+                    hasSatinRibbon: state.includeRibbonText,
+                    satinRibbonText: state.ribbonText,
                     chocolateBudget: state.chocolateBudget,
                     cashAmount: state.moneyAmount,
                     photoCount: state.includePhoto ? state.photoCount : 0,
                     customMessage: state.includeCard ? state.cardText : ""
                 };
 
-                if (state.includePhoto && state.photoUrl) {
-                    customOptionsObj.printingType = `صورة ورقية تذكارية مجسمة (${state.photoCount} صور)`;
-                }
                 if (state.includeCard && state.cardText.trim()) {
                     customOptionsObj.giftCardText = state.cardText;
                 }
@@ -808,9 +724,9 @@
                 currentCart.push(boseCartItem);
                 localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(currentCart));
 
-                showBoseToast("تمت إضافة بوكيه الورد المخصص الفاخر إلى سلتك بنجاح!");
+                showBoseToast("تمت إضافة البوكيه الجميل إلى سلتك بنجاح! 🌸");
 
-                // حماية الـ storage من تراكم الصور ومسح البيانات المؤقتة فور إضافة المنتج بنجاح لضمان الأداء
+                // تفادي مشكلة الذاكرة والملفات المتكدسة بالمتصفح
                 try {
                     sessionStorage.removeItem(BASE64_IMAGE_SESSION_KEY);
                     localStorage.removeItem(FLOWER_STATE_STORAGE_KEY);
@@ -818,51 +734,41 @@
 
                 setTimeout(() => {
                     window.location.href = "cart.html";
-                }, 500);
+                }, 400);
             });
         }
     }
 
     /**
-     * 🧮 الحساب المالي الدقيق والرياضي المطلق لتتفادى فخ التكرار والزيادات الوهمية
+     * 🧮 الحساب المالي الدقيق وبناء كارت الحساب الشفاف المقسم بلون بمبي ناعم منعاً للتكدس
      */
     function recalculatePrice() {
-        let calculatedTotalPrice = 400;
-
-        let calculatedBasePrice = flowerConfig.basePrice;
-        const extraFlowers = Math.max(0, state.flowerCount - flowerConfig.baseFlowers);
-        const extraCost = extraFlowers * flowerConfig.extraFlowerPrice;
-
-        let ribbonTextCost = state.includeRibbonText ? 50 : 0;
-        let photoPrintCost = state.includePhoto ? (state.photoCount * flowerConfig.photoPrintPrice) : 0;
-        let giftCardCost = (state.includeCard && state.cardText.trim() !== "") ? flowerConfig.giftCardPrice : 0;
-
-        let wrappingCost = 0;
-        const wrapObj = flowerConfig.wrappingTypes.find(w => w.id === state.wrappingType);
-        if (wrapObj) wrappingCost = wrapObj.price;
-
-        let rawMoneyValue = state.moneyAmount || 0;
-        let rawChocolateValue = state.chocolateBudget || 0;
-
-        let activeServicePrice = calculatedBasePrice + extraCost + wrappingCost + ribbonTextCost + photoPrintCost + giftCardCost;
-        let finalServicePrice = window.calculateBosePrice ? window.calculateBosePrice(activeServicePrice, "menu-only") : activeServicePrice;
-
-        calculatedTotalPrice = Math.round(finalServicePrice) + rawMoneyValue + rawChocolateValue;
-        state.totalPrice = calculatedTotalPrice;
-
-        if (basePriceVal) basePriceVal.textContent = `${flowerConfig.basePrice} EGP`;
-        if (extraFlowersCount) extraFlowersCount.textContent = `(${extraFlowers} وردة إضافية)`;
-        if (extraFlowersCost) extraFlowersCost.textContent = `+ ${extraCost} EGP`;
-        if (wrappingCostVal) wrappingCostVal.textContent = `+ ${wrappingCost} EGP`;
+        let extraFlowers = Math.max(0, state.flowerCount - flowerConfig.baseFlowers);
+        let extraCost = extraFlowers * flowerConfig.extraFlowerPrice;
+        let ribbonCost = state.includeRibbonText ? 50 : 0;
+        let photoCost = state.includePhoto ? (state.photoCount * flowerConfig.photoPrintPrice) : 0;
+        let cardCost = (state.includeCard && state.cardText.trim() !== "") ? flowerConfig.giftCardPrice : 0;
         
-        if (document.getElementById('ribbon-cost-val')) document.getElementById('ribbon-cost-val').textContent = `+ ${ribbonTextCost} EGP`;
-        if (photoCostVal) photoCostVal.textContent = `+ ${photoPrintCost} EGP`;
-        if (chocolateCostVal) chocolateCostVal.textContent = `+ ${rawChocolateValue} EGP`;
-        if (cardCostVal) cardCostVal.textContent = `+ ${giftCardCost} EGP`;
-        if (moneyAmountDisplay) moneyAmountDisplay.value = rawMoneyValue;
-        if (document.getElementById('money-breakdown-display')) document.getElementById('money-breakdown-display').textContent = `+ ${rawMoneyValue} EGP`;
+        let servicePrice = flowerConfig.basePrice + extraCost + ribbonCost + photoCost + cardCost;
+        let finalServicePrice = window.calculateBosePrice ? window.calculateBosePrice(servicePrice, "menu-only") : servicePrice;
 
-        if (bouquetTotalVal) bouquetTotalVal.textContent = `${calculatedTotalPrice} EGP`;
+        let total = Math.round(finalServicePrice) + state.moneyAmount + state.chocolateBudget;
+        state.totalPrice = total;
+
+        if (bouquetTotalVal) bouquetTotalVal.textContent = `${total} جنيه`;
+
+        // حقن الحسابات بشكل ديناميكي أنيق وراقي لراحة العميل النفسية
+        if (dynamicAddonsArea) {
+            let html = "";
+            if (extraFlowers > 0) html += `<div style="display:flex; justify-content:space-between; background:rgba(255,145,164,0.06); padding:8px 12px; border-radius:10px; font-size:13px; font-weight:700; color:#111111;"><span>الورد الإضافي (${extraFlowers} وردة):</span><span>+ ${extraCost} جنيه</span></div>`;
+            if (ribbonCost > 0) html += `<div style="display:flex; justify-content:space-between; background:rgba(255,145,164,0.06); padding:8px 12px; border-radius:10px; font-size:13px; font-weight:700; color:#111111;"><span>شريط ستان كلام مخصوص:</span><span>+ 50 جنيه</span></div>`;
+            if (photoCost > 0) html += `<div style="display:flex; justify-content:space-between; background:rgba(255,145,164,0.06); padding:8px 12px; border-radius:10px; font-size:13px; font-weight:700; color:#111111;"><span>الصور الشخصية المترتبة (${state.photoCount}):</span><span>+ ${photoCost} جنيه</span></div>`;
+            if (cardCost > 0) html += `<div style="display:flex; justify-content:space-between; background:rgba(255,145,164,0.06); padding:8px 12px; border-radius:10px; font-size:13px; font-weight:700; color:#111111;"><span>كارت إهداء شيك مكتوب:</span><span>+ 20 جنيه</span></div>`;
+            if (state.moneyAmount > 0) html += `<div style="display:flex; justify-content:space-between; background:rgba(255,145,164,0.06); padding:8px 12px; border-radius:10px; font-size:13px; font-weight:700; color:#111111;"><span>مفاجأة الكاش جوه البوكيه:</span><span>+ ${state.moneyAmount} جنيه</span></div>`;
+            if (state.chocolateBudget > 0) html += `<div style="display:flex; justify-content:space-between; background:rgba(255,145,164,0.06); padding:8px 12px; border-radius:10px; font-size:13px; font-weight:700; color:#111111;"><span>ميزانية الشوكولاتة الفخمة:</span><span>+ ${state.chocolateBudget} جنيه</span></div>`;
+            
+            dynamicAddonsArea.innerHTML = html;
+        }
     }
 
     /**
