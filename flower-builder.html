@@ -4,21 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>محاكي الورد التفاعلي | حلويات بوسي</title>
-    <meta name="description" content="اعملي بوكيه الورد اللي على ذوقك خطوة بخطوة، واختاريه بالتفصيل اللي يفرح قلب اللي هتديهوله مع خيارات التخصيص الراقية والمفاجآت المدمجة.">
+    <meta name="description" content="عملي بوكيه الورد اللي على ذوقك خطوة بخطوة، واختاريه بالتفصيل اللي يفرح قلب اللي هتديهوله مع خيارات التخصيص الراقية.">
     
-    <!-- استدعاء ملفات التنسيق الفاخرة والمعزولة للبراند -->
+    <!-- استدعاء ملفات التنسيق للبراند -->
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/simulators.css">
     
     <style>
+        /* هندسة نصوص التفاعل والخطوط الحاكمة */
+        body {
+            font-family: 'Cairo', sans-serif !important;
+            background-color: #FFFFFF !important;
+            color: #111111 !important;
+            margin: 0;
+            padding: 0;
+        }
         .bose-custom-builder-block {
             margin-top: 30px;
             box-sizing: border-box;
             width: 100%;
+            padding: 0 15px;
         }
         .bose-step-card-panel {
             display: none;
             animation: boseFadeInPanel 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            background: #FFFFFF;
+            border: 1px solid rgba(255, 145, 164, 0.15);
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 25px;
         }
         .bose-step-card-panel.active {
             display: block !important;
@@ -27,12 +41,111 @@
             from { opacity: 0; transform: translateY(12px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .sticky-summary-widget {
-            position: sticky;
-            top: 100px;
-            z-index: 10;
+        
+        /* مؤشر الخطوات العلوي النظيف */
+        .simulator-steps-indicator {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 35px;
         }
-        /* الأزرار الأيقونية الفاخرة البديلة للقائمة المنسدلة */
+        .step-node {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 15px;
+            background: #FFFFFF;
+            border: 2px solid #EAEAEA;
+            color: #111111;
+            transition: all 0.3s ease;
+        }
+        .step-node.active {
+            border-color: #FF91A4;
+            background: #FF91A4;
+            color: #FFFFFF;
+            box-shadow: 0 4px 12px rgba(255, 145, 164, 0.25);
+        }
+        /* الخطوات السابقة تعود إلى اللون الأبيض النظيف فوراً من دون بقاء الذهبي */
+        .step-node.completed {
+            border-color: #FF91A4;
+            background: #FFFFFF;
+            color: #FF91A4;
+        }
+
+        /* قالب خيارات التخصيص الفاخر ذو الحدود الناعمة */
+        .bose-luxury-template-box {
+            border: 1px solid rgba(255, 145, 164, 0.2);
+            border-radius: 20px;
+            padding: 20px;
+            background: #FFFFFF;
+            box-shadow: 0 6px 20px rgba(255, 145, 164, 0.02);
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+
+        /* العداد الفخم والمطور هندسياً */
+        .bose-premium-counter-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            background: #FFFFFF;
+            border: 1.5px solid rgba(255, 145, 164, 0.25);
+            border-radius: 50px;
+            padding: 6px 12px;
+            width: fit-content;
+            margin: 12px auto 0 auto;
+            box-shadow: 0 4px 15px rgba(255, 145, 164, 0.04);
+        }
+        .bose-circular-qty-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: all 0.25s ease;
+            user-select: none;
+            outline: none;
+        }
+        /* الزائد على اليمين بالبمبي الفاخر */
+        .bose-circular-qty-btn.btn-plus-style {
+            background: #FF91A4 !important;
+            color: #FFFFFF !important;
+        }
+        .bose-circular-qty-btn.btn-plus-style:hover {
+            background: #ff7d94 !important;
+            transform: scale(1.05);
+        }
+        /* الناقص على اليسار بالخلفية البيضاء المحددة بالبمبي */
+        .bose-circular-qty-btn.btn-minus-style {
+            background: #FFFFFF !important;
+            border: 1.5px solid #FF91A4 !important;
+            color: #FF91A4 !important;
+        }
+        .bose-circular-qty-btn.btn-minus-style:hover {
+            background: rgba(255, 145, 164, 0.05) !important;
+            transform: scale(1.05);
+        }
+        .bose-counter-display-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #111111;
+            width: 50px;
+            text-align: center;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        /* الأزرار الأيقونية الراقية لخيارات نوع الورد */
         .bose-iconic-options-row {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -56,7 +169,6 @@
         .bose-iconic-btn-node .btn-icon {
             font-size: 20px;
             color: #111111;
-            transition: transform 0.3s ease;
         }
         .bose-iconic-btn-node .btn-label {
             font-size: 13.5px;
@@ -74,66 +186,50 @@
             background: #FFFFFF !important;
             transform: scale(1.02);
         }
-        .bose-iconic-btn-node.active-selected .btn-icon {
-            transform: scale(1.1);
+
+        /* تنسيق هيكلية توزيع العرض الجانبي للسعر العائم */
+        .simulator-workspace {
+            display: grid;
+            grid-template-columns: 1.8fr 1fr;
+            gap: 30px;
+            align-items: start;
         }
-        /* أزرار التحكم الدائرية للموبايل والكمبيوتر */
-        .bose-circular-qty-btn {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            outline: none;
-            box-sizing: border-box;
-            user-select: none;
+        @media (max-width: 991px) {
+            .simulator-workspace {
+                grid-template-columns: 1fr;
+            }
         }
-        .bose-circular-qty-btn.btn-minus-style {
-            background: #FFFFFF !important;
-            border: 1.5px solid #FF91A4 !important;
-            color: #FF91A4 !important;
+        .sticky-summary-widget {
+            position: sticky;
+            top: 100px;
+            z-index: 10;
+            background: #FFFFFF;
+            border: 1.5px solid rgba(255, 145, 164, 0.25);
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 8px 32px rgba(255, 145, 164, 0.05);
+            /* السعر يبدأ مخفياً بالكامل في الخطوة الأولى */
+            display: none;
         }
-        .bose-circular-qty-btn.btn-minus-style:hover {
-            background: rgba(255, 145, 164, 0.04) !important;
-        }
-        .bose-circular-qty-btn.btn-plus-style {
-            background: #FF91A4 !important;
-            border: 1.5px solid #FF91A4 !important;
-            color: #FFFFFF !important;
-            box-shadow: 0 4px 12px rgba(255, 145, 164, 0.2);
-        }
-        .bose-circular-qty-btn.btn-plus-style:hover {
-            background: #ff7d94 !important;
-            border-color: #ff7d94 !important;
+
+        /* تفاصيل الخط وجمالية العناوين */
+        h1, h2, h3, h4 {
+            font-weight: 700 !important;
+            color: #111111 !important;
         }
     </style>
 </head>
 <body>
 
-    <!-- الهيدر الموحد والذكي للبراند -->
-    <div id="bose-header-injector"></div>
-
-    <!-- حاوية المحاكي التفاعلي المعزولة هندسياً -->
     <main class="simulator-container bose-custom-builder-block">
         
-        <!-- عنوان ومقدمة المحاكي المهدئة بتون الكلام الجديد -->
-        <div class="simulator-header">
-            <h1 style="font-weight: 700 !important; color: #111111;">محاكي الورد التفاعلي</h1>
-            <p style="font-weight: 400 !important; color: #111111; line-height: 1.6;">عملي بوكيه الورد اللي على ذوقك خطوة بخطوة، واختاريه بالتفصيل اللي يفرح قلب اللي هتديهوله.</p>
+        <div class="simulator-header" style="text-align: center; margin-bottom: 30px;">
+            <h1>محاكي الورد التفاعلي</h1>
+            <p style="font-size: 15px; color: #111111; opacity: 0.85;">عملي بوكيه الورد اللي على ذوقك خطوة بخطوة، واختاريه بالتفصيل اللي يفرح قلب اللي هتديهوله.</p>
         </div>
 
-        <!-- الصورة التأسيسية الكبرى عالية النقاء -->
-        <div style="width: 100%; text-align: center; margin-bottom: 40px; box-sizing: border-box;">
-            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="بوكيه ورد فاخر" class="hero-banner-frame" style="width: 100%; max-height: 480px; object-fit: cover; border-radius: 24px; box-shadow: var(--bose-shadow-glow); border: var(--bose-border-pink);">
-        </div>
-
-        <!-- مؤشرات الخطوات التفاعلية -->
-        <div class="simulator-steps-indicator" style="margin-bottom: 30px;">
+        <!-- شريط مؤشرات الخطوات الفاخر -->
+        <div class="simulator-steps-indicator">
             <span class="step-node active" data-step-target="1">1</span>
             <span class="step-node" data-step-target="2">2</span>
             <span class="step-node" data-step-target="3">3</span>
@@ -142,16 +238,16 @@
 
         <div class="simulator-workspace">
             
-            <!-- لوحة التخصيص والخيارات المدمجة (4 خطوات تفاعلية ذكية) -->
+            <!-- الجانب الأيمن: لوحة الخيارات المنسقة والمحسنة بالكامل -->
             <div class="simulator-control-panel">
                 
-                <!-- الخطوة 1: شكل البوكيه ونوع الورد -->
+                <!-- الخطوة 1: دمج الخيارات الأساسية (نوع الورد + المقاس والعدد والعداد التلقائي) -->
                 <div class="bose-step-card-panel active" data-step="1">
-                    <h2 class="step-title"><i class="fa-solid fa-seedling"></i> الخطوة 1: شكل البوكيه ونوع الورد</h2>
+                    <h2 class="step-title" style="font-size: 18px; margin-bottom: 20px;">🌸 الخطوة 1: شكل البوكيه والعدد</h2>
                     
-                    <div class="form-group-custom" style="margin-bottom: 24px;">
-                        <label class="premium-input-label">تحبي نوع الورد يكون إيه؟</label>
-                        <!-- الأزرار الأيقونية الراقية لتجربة مستخدم فاخرة -->
+                    <!-- 1. دمج اختيار نوع الورد -->
+                    <div class="bose-luxury-template-box">
+                        <label style="font-size: 15px; font-weight: 700; color: #111111; display: block; margin-bottom: 12px;">تحبي نوع الورد يكون إيه؟</label>
                         <div class="bose-iconic-options-row" id="flower-type-iconic-row">
                             <div class="bose-iconic-btn-node active-selected" data-value="natural">
                                 <span class="btn-icon">🌸</span>
@@ -166,89 +262,89 @@
                                 <span class="btn-label">ورد ستان راقٍ</span>
                             </div>
                         </div>
-                        <!-- حقل هيدن متصل بالمحرك التكنولوجي الفرعي القديم لضمان عدم تعطل التوافق -->
                         <input type="hidden" id="flower-type" value="natural">
                     </div>
 
-                    <div class="form-group-custom">
-                        <label class="premium-input-label">لو عندك صورة بوكيه معجبة بيها وحابة نعملك زيها، ارفعيها هنا ونفسها لكِ بالظبط.</label>
-                        <div class="bose-photo-upload-zone" id="bose-photo-upload-zone" style="position: relative;">
-                            <i class="fa-solid fa-cloud-arrow-up" style="font-size: 32px; color: var(--bose-pink, #FF91A4); margin-bottom: 12px; display: block;"></i>
-                            <span class="card-label" style="font-size: 14px; font-weight: 700; color: #111111;">اضغطي هنا وارفعي الصورة</span>
+                    <!-- 2. دمج المقاس والعداد والعدد اللحظي في نفس الخطوة الأولى مباشرة -->
+                    <div class="bose-luxury-template-box">
+                        <label style="font-size: 15px; font-weight: 700; color: #111111; display: block; line-height: 1.6; text-align: center;">تحبي البوكيه يكون فيه كام وردة؟</label>
+                        <p style="font-size: 12.5px; color: #111111; opacity: 0.7; text-align: center; margin: 4px 0 12px 0;">(علشان يطلع منسق وشكله مليان، بنبدأ من 15 وردة)</p>
+                        
+                        <!-- عداد فاخر: زائد على اليمين وناقص على اليسار مع الالتزام التام بتنسيق الألوان الفاخرة -->
+                        <div class="bose-premium-counter-wrapper">
+                            <button type="button" class="bose-circular-qty-btn btn-plus-style" id="flower-plus">+</button>
+                            <span class="bose-counter-display-value" id="flower-count-display">15</span>
+                            <button type="button" class="bose-circular-qty-btn btn-minus-style" id="flower-minus">-</button>
+                        </div>
+                        <input type="hidden" id="flower-count" value="15">
+                    </div>
+
+                    <!-- 3. إرفاق صورة اختيارية محاط بحدود فخمة -->
+                    <div class="bose-luxury-template-box">
+                        <label style="font-size: 14px; font-weight: 700; color: #111111; display: block; margin-bottom: 12px; line-height: 1.6;">لو عندك صورة بوكيه معجبة بيها وحابة نعملك زيها، ارفعيها هنا ونفسها لكِ بالظبط.</label>
+                        <div class="bose-photo-upload-zone" id="bose-photo-upload-zone" style="position: relative; border: 1px dashed rgba(255, 145, 164, 0.4); padding: 25px; border-radius: 16px; text-align: center; background: rgba(255,145,164,0.01); cursor: pointer;">
+                            <span style="font-size: 14px; font-weight: 700; color: #FF91A4; display: block;">اضغطي هنا وارفعي الصورة</span>
                             <input type="file" id="photo-file" accept="image/*" style="position: absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer;">
                         </div>
                         <div id="photo-preview-container" style="display: none; margin-top: 15px; text-align: center;">
-                            <img id="photo-preview-img" src="" class="bose-uploaded-image-preview" style="max-width: 150px; border-radius: 12px; border: var(--bose-border-pink);">
+                            <img id="photo-preview-img" src="" style="max-width: 150px; border-radius: 12px; border: 1px solid #FF91A4;">
                         </div>
                     </div>
                 </div>
 
-                <!-- الخطوة 2: مقاس البوكيه والرسالة -->
+                <!-- الخطوة 2: شريط الستان والرسالة والتخصيص الفرعي -->
                 <div class="bose-step-card-panel" data-step="2">
-                    <h2 class="step-title"><i class="fa-solid fa-maximize"></i> الخطوة 2: مقاس البوكيه والرسالة</h2>
+                    <h2 class="step-title" style="font-size: 18px; margin-bottom: 20px;">🎗️ الخطوة 2: شريط الستان والتخصيص</h2>
                     
-                    <div class="form-group-custom" style="margin-bottom: 24px;">
-                        <label class="premium-input-label">تحبي البوكيه يكون فيه كام وردة؟ (علشان يطلع منسق وشكله مليان، بنبدأ من 15 وردة)</label>
-                        <div style="display: flex; gap: 14px; align-items: center; margin-top: 10px;">
-                            <button type="button" class="bose-circular-qty-btn btn-minus-style" id="flower-minus">-</button>
-                            <input type="text" id="flower-count" class="bose-premium-text-input" value="15" style="text-align: center; width: 80px; font-size: 16px; font-weight: 700;" readonly>
-                            <button type="button" class="bose-circular-qty-btn btn-plus-style" id="flower-plus">+</button>
-                        </div>
-                    </div>
-
-                    <div class="form-group-custom">
-                        <!-- تم إخفاء خيار تشتيت نوع التغليف وحذفه كلياً ليبقى مشمولاً صامتاً وصافياً تماشياً مع طلبك الصارم -->
-                        <select id="wrapping-type" class="bose-premium-text-input" style="display: none;">
-                            <option value="classic" selected>تغليف كلاسيك راقٍ</option>
-                        </select>
-
-                        <label class="premium-input-label" style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px; cursor: pointer;">
+                    <div class="bose-luxury-template-box">
+                        <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: 14.5px; font-weight: 700; color: #111111;">
                             <input type="checkbox" id="include-ribbon-text" style="width: 20px; height: 20px; accent-color: #FF91A4;">
                             حابة نكتب لكِ كلام مخصوص على شريط الستان؟ (+50 جنيه)
                         </label>
                         
-                        <div id="ribbon-text-section" class="custom-text-wrapper" style="display: none; margin-bottom: 15px;">
-                            <label class="premium-input-label" style="font-size: 13.5px;">اكتبي العبارة اللي حابة تطبعيها على الشريط هنا:</label>
-                            <input type="text" id="ribbon-text-input" class="bose-premium-text-input" placeholder="مثال: عيد ميلاد سعيد يا أغلى الحبايب">
+                        <div id="ribbon-text-section" style="display: none; margin-top: 15px;">
+                            <label style="font-size: 13px; font-weight: 700; color: #111111; display: block; margin-bottom: 8px;">اكتبي العبارة اللي حابة تطبعيها على الشريط:</label>
+                            <input type="text" id="ribbon-text-input" style="width: 100%; padding: 12px; border: 1.5px solid rgba(255,145,164,0.2); border-radius: 12px; outline: none; font-size: 14px; font-family:'Cairo';" placeholder="مثال: عيد ميلاد سعيد يا أغلى الحبايب">
                         </div>
-
-                        <!-- تم تثبيت شريطة الستان على الخيار بوسي الفاخر وإخفاء التحكم لعدم تشويه هوية البراند البصرية بالصفحة -->
-                        <select id="ribbon-color" class="bose-premium-text-input" style="display: none;">
-                            <option value="pink" selected>بمبي بوسي الفاخر</option>
-                        </select>
                     </div>
                 </div>
 
-                <!-- الخطوة 3: صورك الشخصية ومفاجأة الكاش -->
+                <!-- الخطوة 3: الصور التذكارية الشخصية ومفاجأة الكاش المدمج في البوكيه -->
                 <div class="bose-step-card-panel" data-step="3">
-                    <h2 class="step-title"><i class="fa-solid fa-gift"></i> الخطوة 3: صورك الشخصية ومفاجأة الكاش</h2>
+                    <h2 class="step-title" style="font-size: 18px; margin-bottom: 20px;">📸 الخطوة 3: الصور الشخصية ومفاجأة الكاش</h2>
                     
-                    <div class="form-group-custom" style="margin-bottom: 24px;">
-                        <label class="premium-input-label" style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                    <!-- قالب الصور التذكارية الموزعة بحدود ناعمة لمنع التكدس -->
+                    <div class="bose-luxury-template-box">
+                        <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: 14.5px; font-weight: 700; color: #111111; margin-bottom: 10px;">
                             <input type="checkbox" id="include-photo" style="width: 20px; height: 20px; accent-color: #FF91A4;">
                             تحبي تضيفي صور شخصية تترتب جوه البوكيه بشكل شيك؟ (+15 جنيه للصورة)
                         </label>
-                        <div id="photo-upload-section" class="custom-text-wrapper" style="display: none; padding: 15px; background: rgba(255, 145, 164, 0.02); border-radius: 14px; border-right: 3px solid var(--bose-pink);">
-                            <p style="font-size: 13.5px; font-weight: 700; margin: 0 0 10px 0; color: #111111;">سيتم اعتماد الصورة المرفوعة في الخطوة الأولى للطباعة التذكارية الشيك 📸</p>
-                            <div style="display: flex; gap: 12px; align-items: center; margin-top: 10px;">
-                                <label class="premium-input-label" style="font-size: 13.5px; margin: 0;">حابة تضيفي كام صورة؟</label>
-                                <button type="button" class="bose-circular-qty-btn btn-minus-style" id="photo-count-minus" style="width:36px; height:36px; font-size:16px;">-</button>
-                                <input type="text" id="photo-count-input" class="bose-premium-text-input" value="1" style="text-align: center; width: 50px; font-size:15px; font-weight:700;" readonly>
-                                <button type="button" class="bose-circular-qty-btn btn-plus-style" id="photo-count-plus" style="width:36px; height:36px; font-size:16px;">+</button>
+                        
+                        <div id="photo-upload-section" style="display: none; margin-top: 15px; padding: 15px; background: rgba(255, 145, 164, 0.01); border-radius: 12px;">
+                            <p style="font-size: 13px; color: #111111; margin-bottom: 12px;">سيتم اعتماد الصورة المرفوعة في الخطوة الأولى للطباعة التذكارية 📸</p>
+                            <div style="display: flex; gap: 12px; align-items: center;">
+                                <label style="font-size: 13px; font-weight: 700;">حابة تضيفي كام صورة؟</label>
+                                <div class="bose-premium-counter-wrapper" style="margin: 0; padding: 4px 8px;">
+                                    <button type="button" class="bose-circular-qty-btn btn-plus-style" id="photo-count-plus" style="width:30px; height:30px; font-size:16px;">+</button>
+                                    <span class="bose-counter-display-value" id="photo-count-display-val" style="font-size:15px; width:30px;">1</span>
+                                    <button type="button" class="bose-circular-qty-btn btn-minus-style" id="photo-count-minus" style="width:30px; height:30px; font-size:16px;">-</button>
+                                </div>
+                                <input type="hidden" id="photo-count-input" value="1">
                             </div>
                         </div>
                     </div>
 
-                    <div class="form-group-custom">
-                        <label class="premium-input-label" style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                    <!-- قالب مفاجأة الكاش المحاط بحدود ناعمة وفخمة -->
+                    <div class="bose-luxury-template-box">
+                        <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: 14.5px; font-weight: 700; color: #111111;">
                             <input type="checkbox" id="include-cash-toggle" style="width: 20px; height: 20px; accent-color: #FF91A4;">
-                            تحبي نجهز لكِ مفاجأة كاش جوه البوكيه؟ (بنرتبها لكِ من غير أي مصاريف زيادة)
+                            تحبي نجهز لكِ مفاجأة كاش جوه البوكيه؟ (من غير مصاريف زيادة)
                         </label>
                         
-                        <div id="cash-master-integration-block" class="custom-text-wrapper" style="display: none; padding: 15px; background: rgba(255, 145, 164, 0.02); border-radius: 14px; border-right: 3px solid var(--bose-pink);">
+                        <div id="cash-master-integration-block" style="display: none; margin-top: 15px;">
                             <div style="margin-bottom: 15px;">
-                                <label class="premium-input-label" style="font-size: 13.5px;">تحديد فئة الأوراق النقدية المطلوبة للتنسيق:</label>
-                                <select id="money-category" class="bose-premium-text-input">
+                                <label style="font-size: 13px; font-weight: 700; color: #111111; display: block; margin-bottom: 8px;">تحديد فئة الأوراق النقدية المطلوبة:</label>
+                                <select id="money-category" style="width:100%; padding:12px; border:1.5px solid rgba(255,145,164,0.2); border-radius:12px; font-family:'Cairo'; outline:none;">
                                     <option value="0" selected>اختار فئة الفلوس النقدية...</option>
                                     <option value="5">فئة 5 جنيه</option>
                                     <option value="10">فئة 10 جنيه</option>
@@ -258,122 +354,123 @@
                                     <option value="200">فئة 200 جنيه</option>
                                 </select>
                             </div>
-                            <div id="cash-integration-counter-block" style="display: none;">
-                                <label class="premium-input-label" style="font-size: 13.5px;">اكتبي مبلغ الكاش اللي حابة تحطيه جوه البوكيه:</label>
-                                <div style="display: flex; gap: 12px; align-items: center; margin-top: 5px;">
-                                    <button type="button" class="bose-circular-qty-btn btn-minus-style" id="bill-minus">-</button>
-                                    <input type="text" id="money-amount-display" class="bose-premium-text-input" value="0" style="text-align: center; width: 100px; font-size:16px; font-weight:700;" readonly>
+                            <div id="cash-integration-counter-block" style="display: none; text-align: center;">
+                                <label style="font-size: 13px; font-weight: 700; color: #111111; display: block; margin-bottom: 8px;">مبلغ الكاش الكلي المطلوب تنسيقه:</label>
+                                <div class="bose-premium-counter-wrapper">
                                     <button type="button" class="bose-circular-qty-btn btn-plus-style" id="bill-plus">+</button>
+                                    <span class="bose-counter-display-value" id="money-amount-display-val" style="width:70px;">0</span>
+                                    <button type="button" class="bose-circular-qty-btn btn-minus-style" id="bill-minus">-</button>
                                 </div>
+                                <input type="hidden" id="money-amount-display" value="0">
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- الخطوة 4: الشوكولاتة الفاخرة وكارت الإهداء -->
+                <!-- الخطوة 4: الشوكولاتة الفاخرة وكارت الإهداء الشيك المكتوب بحب -->
                 <div class="bose-step-card-panel" data-step="4">
-                    <h2 class="step-title"><i class="fa-solid fa-cookie"></i> الخطوة 4: الشوكولاتة الفاخرة وكارت الإهداء</h2>
+                    <h2 class="step-title" style="font-size: 18px; margin-bottom: 20px;">🍫 الخطوة 4: الشوكولاتة وكارت الإهداء</h2>
                     
-                    <div class="form-group-custom" style="margin-bottom: 24px;">
-                        <label class="premium-input-label" style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                    <!-- قالب الشوكولاتة المحاط بنظافة وفخامة البراند -->
+                    <div class="bose-luxury-template-box">
+                        <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: 14.5px; font-weight: 700; color: #111111;">
                             <input type="checkbox" id="include-chocolate-toggle" style="width: 20px; height: 20px; accent-color: #FF91A4;">
-                            تحبي نضيف شوكولاتة فخمة جوه البوكيه؟ (اكتبي الميزانية اللي حباها واحنا هنشتري ونرتبها لكِ)
+                            تحبي نضيف شوكولاتة فخمة جوه البوكيه؟
                         </label>
                         
-                        <div id="chocolate-budget-master-block" class="custom-text-wrapper" style="display: none; padding: 15px; background: rgba(255,145,164,0.02); border-radius: 14px; border-right: 3px solid var(--bose-pink);">
-                            <label class="premium-input-label" style="font-size: 13.5px;">حددي الميزانية المطلوبة للشوكولاتة الفاخرة:</label>
-                            <div style="display: flex; gap: 12px; align-items: center; margin-top: 5px;">
-                                <button type="button" class="bose-circular-qty-btn btn-minus-style" id="choc-budget-minus">-</button>
-                                <input type="text" id="chocolate-budget-display" class="bose-premium-text-input" value="0" style="text-align: center; width: 100px; font-size:16px; font-weight:700;" readonly>
+                        <div id="chocolate-budget-master-block" style="display: none; margin-top: 15px; text-align: center;">
+                            <label style="font-size: 13px; font-weight: 700; color: #111111; display: block; margin-bottom: 8px;">حددي ميزانية الشوكولاتة اللي تحبي نشتريها ونرتبها لكِ:</label>
+                            <div class="bose-premium-counter-wrapper">
                                 <button type="button" class="bose-circular-qty-btn btn-plus-style" id="choc-budget-plus">+</button>
+                                <span class="bose-counter-display-value" id="chocolate-budget-display-val" style="width:70px;">0</span>
+                                <button type="button" class="bose-circular-qty-btn btn-minus-style" id="choc-budget-minus">-</button>
                             </div>
+                            <input type="hidden" id="chocolate-budget-display" value="0">
                         </div>
                     </div>
 
-                    <div class="form-group-custom">
-                        <label class="premium-input-label" style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                    <!-- قالب كارت الإهداء الشيك المعبر عن نبل المشاعر -->
+                    <div class="bose-luxury-template-box">
+                        <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: 14.5px; font-weight: 700; color: #111111;">
                             <input type="checkbox" id="include-card" style="width: 20px; height: 20px; accent-color: #FF91A4;">
                             تحبي نكتب لكِ كارت إهداء شيك يتقدم مع البوكيه؟ (+20 جنيه)
                         </label>
-                        <div id="card-text-section" class="custom-text-wrapper" style="display: none;">
-                            <label class="premium-input-label" style="font-size: 13.5px;">اكتبي الكلام اللي حابة نكتبه على الكارت هنا:</label>
-                            <textarea id="card-text" class="premium-text-input" style="height: 100px; resize: none; font-weight:600;" placeholder="اكتبي مشاعرك الصادقة هنا ببراحة..."></textarea>
+                        <div id="card-text-section" style="display: none; margin-top: 15px;">
+                            <label style="font-size: 13px; font-weight: 700; color: #111111; display: block; margin-bottom: 8px;">اكتبي مشاعرك الرائعة هنا ليتم تدوينها بالخط الفاخر:</label>
+                            <textarea id="card-text" style="width: 100%; height: 90px; padding: 12px; border: 1.5px solid rgba(255,145,164,0.2); border-radius: 12px; font-family:'Cairo'; outline:none; resize:none;" placeholder="اكتبي مشاعرك الصادقة هنا ببراحة..."></textarea>
                         </div>
                     </div>
                 </div>
 
-                <!-- شريط أزرار التنقل والتحكم بالخطوات المعزولة -->
-                <div class="simulator-actions-bar" style="margin-top: 30px; box-sizing: border-box;">
-                    <button type="button" class="premium-nav-btn secondary" id="btn-prev" style="display: none;">السابق</button>
-                    <button type="button" class="premium-nav-btn primary" id="btn-next" style="margin-right: auto;">التالي</button>
-                    <button type="button" class="premium-nav-btn primary" id="add-to-cart-btn" style="display: none; margin-right: auto; background:#FF91A4 !important;">اعتماد البوكيه وإضافته للسلة</button>
+                <!-- شريط أزرار التنقل والتحكم بالخطوات المعزولة والمصححة بالكامل -->
+                <div class="simulator-actions-bar" style="margin-top: 30px; display: flex; justify-content: space-between;">
+                    <button type="button" class="premium-nav-btn secondary" id="btn-prev" style="display: none; background: #FFFFFF; border: 1.5px solid #FF91A4; color: #FF91A4; padding: 12px 25px; border-radius: 14px; font-weight: 700; cursor: pointer;">السابق</button>
+                    <!-- زر الاعتماد مخفي تماماً ولا يظهر إلا بالخطوة الأخيرة إلى جانب السابق بدلاً من التالي -->
+                    <button type="button" class="premium-nav-btn primary" id="add-to-cart-btn" style="display: none; background: #FF91A4; border: none; color: #FFFFFF; padding: 12px 25px; border-radius: 14px; font-weight: 700; cursor: pointer;">اعتماد البوكيه وإضافته للسلة</button>
+                    <button type="button" class="premium-nav-btn primary" id="btn-next" style="background: #FF91A4; border: none; color: #FFFFFF; padding: 12px 30px; border-radius: 14px; font-weight: 700; cursor: pointer; margin-right: auto;">التالي</button>
                 </div>
 
             </div>
 
             <!-- الجانب الأيسر: شريط السعر اللحظي العائم والمحدث تلقائياً ككارت شفاف ومقسم بوضوح -->
             <div class="price-sidebar-container">
-                <div class="sticky-summary-widget" style="background:#FFFFFF; border:1px solid rgba(255,145,164,0.3); border-radius:24px; padding:24px; box-shadow:0 8px 32px rgba(255, 145, 164, 0.05);">
-                    <h3 class="summary-title" style="border-bottom:1px dashed #EAEAEA; padding-bottom:12px; margin-top:0; color:#111111; font-family:'Cairo'; font-weight:700;"><i class="fa-solid fa-receipt" style="color: #FF91A4;"></i> تفاصيل الحساب اللحظي</h3>
+                <div class="sticky-summary-widget" id="bose-pricing-widget">
+                    <h3 class="summary-title" style="border-bottom: 1px dashed rgba(255,145,164,0.3); padding-bottom: 12px; margin-top: 0; font-size: 16px;"><i class="fa-solid fa-receipt" style="color: #FF91A4;"></i> تفاصيل الحساب اللحظي</h3>
                     
-                    <div class="price-breakdown-list" style="display:flex; flex-direction:column; gap:12px; margin-bottom:20px;">
-                        <div class="price-item-row" style="display:flex; justify-content:space-between; font-size:14px; font-weight:600; color:#111111;">
+                    <div class="price-breakdown-list" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
+                        <div class="price-item-row" style="display: flex; justify-content: space-between; font-size: 14px; font-weight: 700; color: #111111;">
                             <span>سعر الورد الأساسي:</span>
                             <span id="base-price-val">400 جنيه</span>
                         </div>
-                        <!-- حاوية ديناميكية يتم حقن الإضافات داخلها برمجياً بلون بمبي خفيف ومبهج منعاً للتكدس -->
-                        <div id="bose-dynamic-addons-injection-area" style="display:flex; flex-direction:column; gap:8px;"></div>
+                        <div id="bose-dynamic-addons-injection-area" style="display: flex; flex-direction: column; gap: 8px;"></div>
                     </div>
 
-                    <div class="grand-price-node" style="border-top:1px solid #EAEAEA; padding-top:16px; display:flex; justify-content:space-between; align-items:center;">
-                        <span class="grand-price-label" style="font-size:15px; font-weight:700; color:#111111; font-family:'Cairo';">المجموع الكلي:</span>
-                        <span class="grand-price-value" id="bouquet-total-val" style="font-size:24px; font-weight:700; color:#111111; font-family:'Cairo';">400 جنيه</span>
+                    <div class="grand-price-node" style="border-top: 1px solid #EAEAEA; padding-top: 16px; display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 15px; font-weight: 700;">المجموع الكلي:</span>
+                        <span id="bouquet-total-val" style="font-size: 24px; font-weight: 700; color: #FF91A4;">400 جنيه</span>
                     </div>
                 </div>
             </div>
 
         </div>
 
-        <!-- معرض سابقة أعمالنا الفخم التفاعلي (تم إزالة التكدس الرأسي والعناوين المقيدة) -->
+        <!-- معرض سابقة الأعمال الفخم التفاعلي بعد حذف التكدس والعناوين المقيدة والوصف الثابت -->
         <div class="portfolio-section" style="margin-top: 60px;">
-            <h2 style="font-size: 24px; text-align: center; margin-bottom: 8px; font-weight:700; color:#111111;">بوكيهات شرفت عملائنا في مناسباتهم الراقية</h2>
-            <p style="text-align: center; font-size: 14px; margin-bottom: 24px; color: #111111; opacity:0.7;">استعرض بعضاً من البوكيهات المنسقة والمنفذة يدوياً بحب لعملائنا لتستلهم منها فكرتك.</p>
+            <h2 style="font-size: 22px; text-align: center; margin-bottom: 8px; font-weight:700;">بوكيهات شرفت عملائنا في مناسباتهم الراقية</h2>
+            <p style="text-align: center; font-size: 14px; margin-bottom: 25px; opacity:0.8;">استعرض بعضاً من البوكيهات المنسقة والمنفذة يدوياً بحب لعملائنا لتستلهم منها فكرتك.</p>
             
             <div class="horizontal-swipe-slider" id="portfolio-swipe-slider" style="display: flex; gap: 20px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 15px; -webkit-overflow-scrolling: touch;">
                 <div class="portfolio-item-card" data-index="1" style="flex: 0 0 280px; scroll-snap-align: start; cursor: pointer; background:#FFFFFF; border-radius:18px; border:1px solid #EAEAEA; overflow:hidden; transition:all 0.3s ease;">
-                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="portfolio-item-img" alt="سابقة أعمال 1" style="width: 100%; height: 280px; object-fit: cover; display:block;">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" style="width: 100%; height: 280px; object-fit: cover; display:block;">
                 </div>
                 <div class="portfolio-item-card" data-index="2" style="flex: 0 0 280px; scroll-snap-align: start; cursor: pointer; background:#FFFFFF; border-radius:18px; border:1px solid #EAEAEA; overflow:hidden; transition:all 0.3s ease;">
-                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="portfolio-item-img" alt="سابقة أعمال 2" style="width: 100%; height: 280px; object-fit: cover; display:block;">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" style="width: 100%; height: 280px; object-fit: cover; display:block;">
                 </div>
                 <div class="portfolio-item-card" data-index="3" style="flex: 0 0 280px; scroll-snap-align: start; cursor: pointer; background:#FFFFFF; border-radius:18px; border:1px solid #EAEAEA; overflow:hidden; transition:all 0.3s ease;">
-                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="portfolio-item-img" alt="سابقة أعمال 3" style="width: 100%; height: 280px; object-fit: cover; display:block;">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" style="width: 100%; height: 280px; object-fit: cover; display:block;">
                 </div>
                 <div class="portfolio-item-card" data-index="4" style="flex: 0 0 280px; scroll-snap-align: start; cursor: pointer; background:#FFFFFF; border-radius:18px; border:1px solid #EAEAEA; overflow:hidden; transition:all 0.3s ease;">
-                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="portfolio-item-img" alt="سابقة أعمال 4" style="width: 100%; height: 280px; object-fit: cover; display:block;">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" style="width: 100%; height: 280px; object-fit: cover; display:block;">
                 </div>
             </div>
         </div>
 
     </main>
 
-    <!-- النافذة المنبثقة التفاعلية الفخمة لمعرض الأعمال (تفتح بكامل الشاشة لإبراز الجمال) -->
-    <div class="bose-popup-modal" id="portfolio-popup-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(17,17,17,0.7); z-index: 50000; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;">
+    <!-- المودال المنبثق الفخم لاستعراض الأعمال -->
+    <div class="bose-popup-modal" id="portfolio-popup-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(17,17,17,0.6); z-index: 50000; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;">
         <div class="bose-popup-content" style="background: #FFFFFF; border-radius: 24px; padding: 30px; max-width: 600px; width: 100%; position: relative; box-sizing: border-box; text-align: center;">
-            <span class="modal-close-btn" id="modal-close-node" style="position: absolute; top: 15px; left: 20px; font-size: 24px; font-weight: 700; color: #FF91A4; cursor: pointer; user-select: none;">×</span>
-            <img id="modal-display-img" src="" class="modal-img-frame" alt="معاينة فخمة للمنتج" style="width: 100%; max-height: 400px; object-fit: cover; border-radius: 16px; border: 1px solid rgba(255,145,164,0.3); margin-bottom: 20px;">
+            <span class="modal-close-btn" id="modal-close-node" style="position: absolute; top: 15px; left: 20px; font-size: 24px; font-weight: 700; color: #FF91A4; cursor: pointer;">×</span>
+            <img id="modal-display-img" src="" style="width: 100%; max-height: 400px; object-fit: cover; border-radius: 16px; border: 1px solid rgba(255,145,164,0.15); margin-bottom: 20px;">
             <div class="modal-body-desc" id="modal-display-desc" style="font-size: 15px; font-weight: 700; color: #111111; font-family: 'Cairo'; line-height: 1.6;"></div>
         </div>
     </div>
 
-    <!-- الفوتر الموحد والفاخر للبراند -->
-    <div id="bose-footer-injector"></div>
-
-    <!-- استدعاء المحركات البرمجية للتنسيق والحوكمة وتوثيق السلة والطلب -->
+    <!-- استدعاء ملفات تشغيل وحوكمة السلة والبراند -->
     <script src="js/core-engine.js"></script>
     <script src="js/flower-engine.js"></script>
 
-    <!-- محرك التفاعل الخاص بصفحة المحاكي لمنع التعارض مع الملفات الخارجية -->
+    <!-- محرك التفاعل للخطوات وسلوك شريط السعر -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             let currentActiveStep = 1;
@@ -384,8 +481,9 @@
             const btnAddToCart = document.getElementById("add-to-cart-btn");
             const stepsPanels = document.querySelectorAll(".bose-step-card-panel");
             const stepsIndicators = document.querySelectorAll(".simulator-steps-indicator .step-node");
+            const pricingWidget = document.getElementById("bose-pricing-widget");
 
-            // تفعيل تفاعل أزرار اختيار نوع الورد الجديدة بالكامل
+            // تفعيل تفاعل أزرار نوع الورد بالخطوة الأولى
             const iconicBtns = document.querySelectorAll("#flower-type-iconic-row .bose-iconic-btn-node");
             const hiddenTypeInput = document.getElementById("flower-type");
 
@@ -396,12 +494,12 @@
                     const selectedVal = this.getAttribute("data-value");
                     if (hiddenTypeInput) {
                         hiddenTypeInput.value = selectedVal;
-                        // إطلاق حدث التغيير ليعمل محرك جافاسكربت الفرعي flower-engine.js فوراً دون تصادم
                         hiddenTypeInput.dispatchEvent(new Event('change'));
                     }
                 });
             });
 
+            // دالة تحديث شريط الحالة وحوكمة حركة شريط السعر العائم
             function updateActiveStepUI() {
                 stepsPanels.forEach(panel => {
                     const stepNum = parseInt(panel.getAttribute("data-step"), 10);
@@ -417,11 +515,21 @@
                     if (nodeNum === currentActiveStep) {
                         node.className = "step-node active";
                     } else if (nodeNum < currentActiveStep) {
+                        // الخطوات السابقة في شريط التقدم ترجع للون الأبيض المريح فوراً منعاً للتشتت
                         node.className = "step-node completed";
                     } else {
                         node.className = "step-node";
                     }
                 });
+
+                // حوكمة شريط السعر: إخفاء كارت الحساب اللحظي بالخطوة الأولى وإظهاره فور الانتقال للخطوات التالية
+                if (pricingWidget) {
+                    if (currentActiveStep === 1) {
+                        pricingWidget.style.display = "none";
+                    } else {
+                        pricingWidget.style.display = "block";
+                    }
+                }
 
                 if (currentActiveStep === 1) {
                     btnPrev.style.display = "none";
@@ -466,7 +574,10 @@
                 });
             });
 
-            // معرض سابقة الأعمال الفخم والمنبثق بكامل الشاشة
+            // تهيئة أولية للسعر المخفي بالخطوة الأولى
+            if (pricingWidget) pricingWidget.style.display = "none";
+
+            // معرض سابقة الأعمال الفخم المطور والخالي تماماً من الوصف الثابت المقيد
             const portfolioModal = document.getElementById('portfolio-popup-modal');
             const modalImg = document.getElementById('modal-display-img');
             const modalDesc = document.getElementById('modal-display-desc');
@@ -474,10 +585,10 @@
             const portfolioCards = document.querySelectorAll('.portfolio-item-card');
 
             const portfolioExplanations = {
-                "1": "ورد طبيعي نضر 30 وردة بلون بمبي فاخر مع تغليف شريط ستان مطبوع وصور شخصية مدمجة بإضاءة نهارية قوية.",
-                "2": "ورد ستان مصنوع بحب 25 وردة مع تنسيق مدمج لكاش صافي مخصص بالكامل لحجم اختيارك تبعا للطلب الواضح.",
-                "3": "ورد طبيعي نضر مع صور معلقة داخل البوكيه بشكل شيك للغاية وشريط مطبوع حرارياً مخصوص للمناسبة السعيدة.",
-                "4": "توليفة فخمة وراقية تجمع بين الورد الطبيعي المنسق بعناية تامة وقطع الشوكولاتة الفاخرة بلمسة النهار البراقة."
+                "1": "بوكيه مخصص من الورد الطبيعي النضر المنسق يدوياً بكل فخامة ليتطابق مع أدق اختياراتك وتفاصيلك.",
+                "2": "تنسيق مذهل للبوكيه تم إعداده بلمسة البراند الراقية ليعبر عن ذوقك الخاص في مناسباتك السعيدة.",
+                "3": "توليفة راقية تمنح الهدية قيمة استثنائية من خلال دمج المكونات بجودة تناسب أدق رغباتك وتوقعاتك.",
+                "4": "أناقة وبساطة في باقة زهور حقيقية مصممة لتوفر للعميل التميز البصري الكامل والراحة النفسية العالية."
             };
 
             portfolioCards.forEach(card => {
@@ -496,8 +607,6 @@
                     portfolioModal.style.display = "none";
                 });
             }
-            
-            // غلق المودال بالضغط على الخلفية الشفافة لراحة وسلاسة التصفح
             if (portfolioModal) {
                 portfolioModal.addEventListener('click', function(e) {
                     if (e.target === this) {
