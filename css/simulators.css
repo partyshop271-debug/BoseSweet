@@ -14,8 +14,8 @@
     --bose-black: #111111;        /* معزول تماماً ومقدس: للنصوص والعناوين لضمان وضوح كامل للعين */
     --bose-gold: #D4AF37;         /* الفخامة الرمزية الناعمة: نجوم التقييمات وتفاصيل التخصيص الفاخرة */
     --bose-pink-light: rgba(255, 145, 164, 0.04);
-    --bose-pink-shadow: 0 8px 32px rgba(255, 145, 164, 0.08);
-    --bose-border-pink: 1.5px solid rgba(255, 145, 164, 0.25);
+    --bose-pink-shadow: 0 12px 40px rgba(255, 145, 164, 0.12); /* ظلال ناعمة بمبية تعزز الفخامة */
+    --bose-border-pink: 1.5px solid rgba(255, 145, 164, 0.3);
     --bose-gray-border: #EAEAEA;
     --bose-gray-light: #F9F9F9;
     --bose-transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -70,7 +70,7 @@
     max-height: 480px;
     object-fit: cover;
     border-radius: 24px;
-    box-shadow: var(--bose-shadow-glow);
+    box-shadow: var(--bose-pink-shadow);
     border: var(--bose-border-pink);
 }
 
@@ -183,7 +183,7 @@
 
 .bose-premium-template-box:hover {
     border-color: var(--bose-pink);
-    box-shadow: 0 10px 30px rgba(255, 145, 164, 0.06);
+    box-shadow: var(--bose-pink-shadow);
 }
 
 .premium-input-label {
@@ -323,7 +323,7 @@
     margin-top: 15px;
     padding: 12px;
     background: var(--bose-pink-light);
-    border: 1px solid rgba(255, 145, 164, 0.15);
+    border: 1px solid rgba(255, 145, 164, 0.2);
     border-radius: 12px;
     text-align: center;
     width: 100%;
@@ -387,7 +387,7 @@
     max-width: 140px;
     border-radius: 12px;
     border: var(--bose-border-pink);
-    box-shadow: var(--bose-shadow-glow);
+    box-shadow: 0 4px 12px rgba(255, 145, 164, 0.1);
 }
 
 .bose-checkbox-label-tap {
@@ -454,82 +454,95 @@
 }
 
 /* ==========================================================================\
-   7. 👑 تطوير وتنسيق كارت الحساب اللحظي المطور والفاخر (Invoice Box)
+   7. 👑 تطوير وتنسيق كارت الحساب اللحظي المطور والفاخر (حل مشكلة الفيديو)
    ========================================================================== */
 .sticky-summary-widget {
     position: sticky;
-    top: 100px;
-    z-index: 10;
-    background: var(--bose-white);
-    border: 1px solid rgba(255, 145, 164, 0.3);
-    border-radius: 24px;
-    padding: 24px;
-    box-shadow: 0 8px 32px rgba(255, 145, 164, 0.04);
+    top: 120px;
+    z-index: 100;
+    background: var(--bose-white) !important;
+    border: var(--bose-border-pink) !important; /* إضافة بوردر بمبي ناعم */
+    border-radius: 24px !important;
+    padding: 26px !important;
+    box-shadow: var(--bose-pink-shadow) !important; /* حقن الجلو والظلال البمبية ومنع الأسود نهائياً */
     box-sizing: border-box;
     width: 100%;
+    transition: var(--bose-transition);
 }
 
 .summary-title {
-    border-bottom: 1px dashed var(--bose-gray-border);
-    padding-bottom: 12px;
-    margin: 0 0 16px 0;
-    color: var(--bose-black);
-    font-size: 1.1rem !important;
+    border-bottom: 2px dashed rgba(255, 145, 164, 0.2);
+    padding-bottom: 14px;
+    margin: 0 0 20px 0;
+    color: var(--bose-black) !important;
+    font-size: 1.15rem !important;
     font-weight: 700 !important;
 }
 
 .price-breakdown-list {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 14px;
 }
 
 .price-item-row {
     display: flex;
     justify-content: space-between;
-    font-size: 14px;
+    align-items: center;
+    font-size: 15px; /* تكبير الخط لمنع التكدس القزمي */
     font-weight: 600;
-    color: var(--bose-black);
+    color: var(--bose-black) !important;
+}
+
+.price-item-row .item-value {
+    color: var(--bose-pink) !important; /* صبغة نبض الحياة الفاخرة للأرقام */
+    font-weight: 700;
 }
 
 .bose-dynamic-injection-box {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
 }
 
-/* أسطر الإضافات المترفة المقسمة والمحسنة بلون بمبي ناعم لراحة العميل */
+/* أسطر الإضافات المترفة المقسمة والمحسنة بلون بمبي ناعم لراحة العميل وسد الثغرات */
 .bose-invoice-addon-row {
     display: flex;
     justify-content: space-between;
-    background: rgba(255, 145, 164, 0.05);
-    padding: 10px 14px;
-    border-radius: 10px;
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--bose-black);
+    align-items: center;
+    background: var(--bose-pink-light) !important;
+    padding: 12px 16px !important;
+    border-radius: 12px !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    border: 1px solid rgba(255, 145, 164, 0.15) !important;
+    color: var(--bose-black) !important;
     animation: boseStepFade 0.25s ease forwards;
+}
+
+.bose-invoice-addon-row span:last-child {
+    color: var(--bose-pink) !important; /* اللون البمبي الحاكم على أرقام الإضافات */
 }
 
 .grand-price-node {
     border-top: 1px solid var(--bose-gray-border);
-    padding-top: 18px;
-    margin-top: 16px;
+    padding-top: 20px;
+    margin-top: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
 .grand-price-label {
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 700;
-    color: var(--bose-black);
+    color: var(--bose-black) !important;
 }
 
 .grand-price-value {
-    font-size: 24px;
-    font-weight: 700;
-    color: var(--bose-pink) !important; /* نبض الحياة */
+    font-size: 24px !important; /* خط ضخم وواضح */
+    font-weight: 700 !important;
+    color: var(--bose-pink) !important; /* نبض الحياة في المجموع الكلي */
 }
 
 /* ==========================================================================\
@@ -636,7 +649,7 @@
 .portfolio-item-card:hover {
     border-color: var(--bose-pink);
     transform: translateY(-4px);
-    box-shadow: var(--bose-shadow-glow);
+    box-shadow: 0 8px 24px rgba(255, 145, 164, 0.08);
 }
 
 .portfolio-item-img {
@@ -651,7 +664,7 @@
     display: none;
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(17, 17, 17, 0.6);
+    background: rgba(17, 17, 17, 0.5);
     z-index: 50000;
     align-items: center;
     justify-content: center;
