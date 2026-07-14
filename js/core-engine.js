@@ -1,15 +1,15 @@
 /**
  * core-engine.js - المحرك المركزي العالمي وحارس البيانات والحسابات المالية
- * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية المحدثة والمؤمنة بالكامل V3
+ * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية المؤمنة بالكامل V3
  * 
- * [التحديث الصارم]: التزام تام بنطاق الملف، عزل وحظر الثغرات المالية،
- * تقديم أعلى استقرار للأداء، وتقليل استهلاك باقة الموبايل والكمبيوتر كلياً.
+ * [قاعدة صارمة]: يلتزم الملف بدوره الخلفي فقط، يحظر التدخل في مهام الملفات الأخرى،
+ * ويؤمن أعلى أداء مع أقل استهلاك بيانات على الموبايل والكمبيوتر.
  */
 
 (function() {
     "use strict";
 
-    // تصفير نظام استعادة السكرول التلقائية لضمان مثالية العرض وتجربة المستخدم
+    // 1. [صمام أمان الأداء]: حظر استعادة السكرول التلقائية لسرعة التصفح لراحة العميل النفسية
     if ('scrollRestoration' in history) {
         history.scrollRestoration = 'manual';
     }
@@ -31,10 +31,9 @@
     async function loadStoreDatabase() {
         if (window.BoseStoreData) return;
         
-        // جلب البيانات مع محاولة استخدام التخزين المحلي الآمن لتقليل استهلاك البيانات
         const cachedData = localStorage.getItem('bose_cached_store_data');
         const cachedTime = localStorage.getItem('bose_cached_store_time');
-        const cacheExpiry = 15 * 60 * 1000; // تقليص الصلاحية لـ 15 دقيقة لضمان دقة الأسعار وتحديثات الإدارة اللحظية
+        const cacheExpiry = 15 * 60 * 1000; // صلاحية الكاش 15 دقيقة لضمان حداثة الأسعار والروقان
 
         if (cachedData && cachedTime && (Date.now() - parseInt(cachedTime, 10) < cacheExpiry)) {
             try {
@@ -60,8 +59,6 @@
                     const serverTime = new Date(serverDateHeader).getTime();
                     const clientTime = Date.now();
                     window.boseServerTimeOffset = serverTime - clientTime;
-                } else {
-                    window.boseServerTimeOffset = 0;
                 }
                 
                 window.BoseStoreData = await response.json();
@@ -93,7 +90,7 @@
         buildAndInjectGlobalComponents();
         window.updateGlobalCartCounter();
         
-        // إطلاق حدث الجاهزية دون التدخل في ملفات أو محركات أخرى
+        // إطلاق حدث الجاهزية لتبدأ المحركات الفرعية دورها المستقل دون تداخل
         document.dispatchEvent(new CustomEvent('BoseDatabaseLoaded', { detail: window.BoseStoreData }));
     }
 
@@ -154,7 +151,7 @@
     };
 
     /**
-     * الحسبة المعتمدة لمحاكاة أسعار التورتة المخصصة ديناميكياً بدقة مطلقة (فردي 145 جنيه)
+     * الحسبة المعتمدة لمحاكاة أسعار التورتة المخصصة ديناميكياً بدقة مطلقة (سعر الفرد 145 جنيه)
      */
     window.calculateCustomCakePrice = function(persons, options = {}) {
         const config = window.BoseStoreData?.cakeBuilder;
@@ -188,7 +185,7 @@
     };
 
     /**
-     * الحسبة الهندسية لأسعار بوكيهات الورد المخصصة مع الإضافات - صافية وبدون رسوم معالجة على الكاش
+     * الحسبة الهندسية لأسعار بوكيهات الورد المخصصة مع الإضافات - صافية وبدون أي رسوم معالجة على الكاش
      */
     window.calculateCustomFlowerPrice = function(flowerCount, options = {}) {
         const basePrice = 400; 
@@ -199,22 +196,15 @@
         
         let servicePrice = basePrice + (extraFlowers * extraFlowerPrice);
         
-        if (options.hasSatinRibbon) {
-            servicePrice += 50; 
-        }
+        if (options.hasSatinRibbon) servicePrice += 50; 
         
         const safePhotoCount = parseInt(options.photoCount, 10) || 0;
-        if (options.hasPhotos && safePhotoCount > 0) {
-            servicePrice += safePhotoCount * 15; 
-        }
+        if (options.hasPhotos && safePhotoCount > 0) servicePrice += safePhotoCount * 15; 
         
-        if (options.hasGiftCard) {
-            servicePrice += 20; 
-        }
+        if (options.hasGiftCard) servicePrice += 20; 
         
         const finalServicePrice = window.calculateBosePrice(servicePrice, "menu-only");
         
-        // إضافة المبالغ النقدية وميزانية الشوكولاتة كقيمة صافية تماماً بالمليم بدون رسوم معالجة
         const safeCashAmount = parseFloat(options.cashAmount) || 0;
         const safeChocolateBudget = parseFloat(options.chocolateBudget) || 0;
         
@@ -222,7 +212,7 @@
     };
 
     /**
-     * بناء عنصر وهيكل السلة القياسي المانع للتصادم الحسابي والبرمجي
+     * بناء عنصر وهيكل السلة القياسي المانع للتصادم الحسابي والبرمجي من الجذور
      */
     window.createCartItem = function(product, selectedOptions, quantity = 1) {
         if (!product) return null;
@@ -299,7 +289,7 @@
     };
 
     /**
-     * حارس الوقت القياسي والموحد (شرط الـ 24 ساعة للتحضير والإتقان)
+     * حارس الوقت القياسي والموحد (شرط الـ 24 ساعة للتحضير)
      */
     window.validateBoseDeliverySchedule = function(dateStr, timeStr) {
         if (!dateStr || !timeStr) return false;
@@ -310,7 +300,7 @@
     };
 
     /**
-     * تحديث شارة عداد السلة اللحظي بالهيدر لجميع صفحات الموقع بدون تأخير فرعي
+     * تحديث شارة عداد السلة اللحظي بالهيدر لجميع صفحات الموقع
      */
     window.updateGlobalCartCounter = function() {
         const cartCountBadges = document.querySelectorAll('#nav-cart-count');
@@ -436,55 +426,55 @@
                 .bose-top-bar-marquee-container { position: fixed !important; top: 0 !important; left: 0 !important; width: 100% !important; z-index: 41000 !important; height: 40px !important; }
                 body { padding-top: 110px !important; }
                 
-                /* القائمة الجانبية الفاخرة المحدثة كلياً قلباً وقائباً */
-                .bose-sidebar-drawer { position: fixed; top: 0; right: -350px; width: 350px; height: 100%; background-color: #FFFFFF !important; z-index: 50000; transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: -8px 0 32px rgba(255, 145, 164, 0.12); direction: rtl; border-left: 1px solid rgba(255, 145, 164, 0.15); display: flex; flex-direction: column; overflow: hidden; }
+                /* القائمة الجانبية الفاخرة والموسعة - حظر القطع ومنع التكدس تماماً لراحة العميل النفسية */
+                .bose-sidebar-drawer { position: fixed; top: 0; right: -360px; width: 360px; height: 100%; background-color: #FFFFFF !important; z-index: 50000; transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: -8px 0 32px rgba(255, 145, 164, 0.12); direction: rtl; border-left: 1px solid rgba(255, 145, 164, 0.2); display: flex; flex-direction: column; overflow: hidden; }
                 .bose-sidebar-drawer.open { right: 0; }
-                .sidebar-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid rgba(255, 145, 164, 0.2); background: #FFFFFF; }
+                .sidebar-header { display: flex; justify-content: space-between; align-items: center; padding: 24px; border-bottom: 1px solid rgba(255, 145, 164, 0.2); background: #FFFFFF; }
                 .sidebar-brand-name { font-size: 18px; font-weight: 700; color: #111111; font-family: "Cairo", sans-serif; }
-                .sidebar-close-btn { background: none; border: none; font-size: 24px; color: #FF91A4; cursor: pointer; transition: transform 0.3s ease; }
+                .sidebar-close-btn { background: none; border: none; font-size: 26px; color: #FF91A4; cursor: pointer; transition: transform 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; }
                 .sidebar-close-btn:hover { transform: rotate(90deg); }
                 
-                .sidebar-scrollable-content { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 24px; scrollbar-width: none; }
+                .sidebar-scrollable-content { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 28px; scrollbar-width: none; }
                 .sidebar-scrollable-content::-webkit-scrollbar { display: none; }
                 
-                .sidebar-section-title { font-size: 13px; font-weight: 700; color: #FF91A4; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; padding-right: 4px; }
+                .sidebar-section-title { font-size: 14px; font-weight: 700; color: #FF91A4; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; padding-right: 4px; }
                 
-                .sidebar-links-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 4px; }
-                .sidebar-link-item a { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; color: #111111; text-decoration: none; font-weight: 600; font-size: 14px; border-radius: 12px; transition: all 0.25s ease; border: 1px solid transparent; }
-                .sidebar-link-item a .link-main-side { display: flex; align-items: center; gap: 12px; }
-                .sidebar-link-item a i.main-icon { color: #FF91A4; font-size: 16px; transition: all 0.25s ease; width: 20px; text-align: center; }
-                .sidebar-link-item a i.arrow-icon { font-size: 11px; color: #111111; opacity: 0.3; transition: all 0.25s ease; }
+                .sidebar-links-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+                .sidebar-link-item a { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; color: #111111; text-decoration: none; font-weight: 600; font-size: 15px; border-radius: 12px; transition: all 0.25s ease; border: 1px solid transparent; min-height: 48px; }
+                .sidebar-link-item a .link-main-side { display: flex; align-items: center; gap: 14px; }
+                .sidebar-link-item a i.main-icon { color: #FF91A4; font-size: 18px; transition: all 0.25s ease; width: 24px; text-align: center; }
+                .sidebar-link-item a i.arrow-icon { font-size: 12px; color: #111111; opacity: 0.3; transition: all 0.25s ease; }
                 
-                .sidebar-link-item a:hover { background-color: rgba(255, 145, 164, 0.04); border-color: rgba(255, 145, 164, 0.08); }
+                .sidebar-link-item a:hover { background-color: rgba(255, 145, 164, 0.05); border-color: rgba(255, 145, 164, 0.1); }
                 .sidebar-link-item a:hover i.main-icon { transform: scale(1.1); color: #FF91A4; }
                 .sidebar-link-item a:hover i.arrow-icon { opacity: 1; color: #FF91A4; transform: translateX(-4px); }
                 
-                /* كارت العروض والأقسام الخاصة المطور بالقائمة الجانبية */
-                .sidebar-promo-card { background: linear-gradient(135deg, rgba(255, 145, 164, 0.06) 0%, rgba(255, 255, 255, 0) 100%); border: 1px dashed rgba(255, 145, 164, 0.35); border-radius: 16px; padding: 16px; text-align: center; margin-top: 4px; position: relative; overflow: hidden; }
-                .sidebar-promo-badge { position: absolute; top: 10px; left: 10px; background-color: #D4AF37; color: #FFFFFF; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
-                .sidebar-promo-title { font-size: 14px; font-weight: 700; color: #111111; margin-bottom: 6px; margin-top: 6px; }
-                .sidebar-promo-desc { font-size: 12px; color: #111111; opacity: 0.8; line-height: 1.6; margin-bottom: 12px; padding: 0 4px; }
-                .sidebar-promo-btn { display: inline-block; background-color: #FF91A4; color: #FFFFFF; text-decoration: none; padding: 8px 20px; border-radius: 25px; font-size: 12px; font-weight: 700; box-shadow: 0 4px 12px rgba(255, 145, 164, 0.15); transition: all 0.3s ease; }
-                .sidebar-promo-btn:hover { background-color: #FFFFFF; color: #FF91A4; border: 1px solid #FF91A4; transform: translateY(-1px); }
+                /* كارت العروض المطور كلياً - ألوان حاكمة صريحة بدون أي لون ذهبي مخالف */
+                .sidebar-promo-card { background: linear-gradient(135deg, rgba(255, 145, 164, 0.06) 0%, rgba(255, 255, 255, 0) 100%); border: 1px dashed rgba(255, 145, 164, 0.4); border-radius: 16px; padding: 20px; text-align: center; margin-top: 8px; position: relative; overflow: hidden; }
+                .sidebar-promo-badge { position: absolute; top: 12px; left: 12px; background-color: #FF91A4; color: #FFFFFF; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+                .sidebar-promo-title { font-size: 15px; font-weight: 700; color: #111111; margin-bottom: 8px; margin-top: 10px; }
+                .sidebar-promo-desc { font-size: 13px; color: #111111; opacity: 0.8; line-height: 1.6; margin-bottom: 16px; padding: 0 4px; }
+                .sidebar-promo-btn { display: inline-block; background-color: #FF91A4; color: #FFFFFF; text-decoration: none; padding: 10px 24px; border-radius: 25px; font-size: 13px; font-weight: 700; box-shadow: 0 4px 12px rgba(255, 145, 164, 0.15); transition: all 0.3s ease; }
+                .sidebar-promo-btn:hover { background-color: #111111; color: #FFFFFF; transform: translateY(-1px); }
                 
-                /* التواصل والواتساب الفوري المدمج */
-                .sidebar-footer-contacts { border-top: 1px solid rgba(255, 145, 164, 0.12); padding: 16px 20px; background-color: #FFFFFF; display: flex; flex-direction: column; gap: 8px; }
-                .sidebar-contact-pill { display: flex; align-items: center; gap: 12px; padding: 10px 16px; background: rgba(255, 145, 164, 0.03); border-radius: 30px; text-decoration: none; color: #111111; font-size: 13px; font-weight: 600; border: 1px solid rgba(255, 145, 164, 0.04); transition: all 0.25s ease; }
-                .sidebar-contact-pill i { font-size: 15px; color: #FF91A4; }
+                /* التواصل الفوري بالأسفل */
+                .sidebar-footer-contacts { border-top: 1px solid rgba(255, 145, 164, 0.15); padding: 20px 24px; background-color: #FFFFFF; display: flex; flex-direction: column; gap: 10px; }
+                .sidebar-contact-pill { display: flex; align-items: center; gap: 14px; padding: 12px 18px; background: rgba(255, 145, 164, 0.04); border-radius: 30px; text-decoration: none; color: #111111; font-size: 14px; font-weight: 600; border: 1px solid rgba(255, 145, 164, 0.05); transition: all 0.25s ease; min-height: 44px; }
+                .sidebar-contact-pill i { font-size: 16px; color: #FF91A4; }
                 .sidebar-contact-pill:hover { background: #FF91A4; color: #FFFFFF !important; transform: translateY(-1px); }
                 .sidebar-contact-pill:hover i { color: #FFFFFF; }
                 
-                .bose-sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(17, 17, 17, 0.3); opacity: 0; pointer-events: none; z-index: 49000; transition: opacity 0.4s ease; backdrop-filter: blur(4px); }
+                .bose-sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(17, 17, 17, 0.35); opacity: 0; pointer-events: none; z-index: 49000; transition: opacity 0.4s ease; backdrop-filter: blur(4px); }
                 .bose-sidebar-overlay.show { opacity: 1; pointer-events: auto; }
-                .bose-footer { background-color: #FFFFFF !important; border-top: 1px solid rgba(255, 145, 164, 0.2); padding: 60px 20px 20px; direction: rtl; }
+                .bose-footer { background-color: #FFFFFF !important; border-top: 1px solid rgba(255, 145, 164, 0.3); padding: 60px 20px 20px; direction: rtl; }
                 .footer-grid-layout { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; }
                 .footer-brand-meta { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
                 .footer-logo { width: 50px; height: 50px; object-fit: contain; }
                 .footer-title { font-size: 22px; font-weight: 700; color: #111111; }
                 .footer-about-paragraph { color: #111111; font-size: 14px; line-height: 1.8; margin-bottom: 25px; font-weight: 400; }
                 .footer-social-wrapper { display: flex; gap: 12px; }
-                .footer-social-icon-btn { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background-color: rgba(255, 145, 164, 0.08); color: #FF91A4 !important; text-decoration: none; font-size: 16px; transition: all 0.3s ease; }
-                .footer-social-icon-btn:hover { background-color: #FF91A4; color: #FFFFFF !important; transform: translateY(-4px); box-shadow: 0 8px 20px rgba(255, 145, 164, 0.2); }
+                .footer-social-icon-btn { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background-color: rgba(255, 145, 164, 0.1); color: #FF91A4 !important; text-decoration: none; font-size: 16px; transition: all 0.3s ease; }
+                .footer-social-icon-btn:hover { background-color: #FF91A4; color: #FFFFFF !important; transform: translateY(-4px); box-shadow: 0 8px 20px rgba(255, 145, 164, 0.3); }
                 .footer-heading-title { font-size: 16px; font-weight: 700; color: #111111; margin-bottom: 20px; position: relative; padding-bottom: 8px; }
                 .footer-heading-title::after { content: ''; position: absolute; bottom: 0; right: 0; width: 40px; height: 2px; background-color: #FF91A4; }
                 .footer-links-ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
@@ -492,7 +482,7 @@
                 .footer-links-ul li a:hover { color: #FF91A4; transform: translateX(-6px); }
                 .footer-contact-item { display: flex; align-items: center; gap: 10px; color: #111111; font-size: 14px; font-weight: 600; }
                 .footer-contact-item i { color: #FF91A4; font-size: 16px; }
-                .footer-copyright-block { text-align: center; border-top: 1px solid rgba(255, 145, 164, 0.12); margin-top: 50px; padding-top: 20px; font-size: 13px; color: #111111; font-weight: 600; }
+                .footer-copyright-block { text-align: center; border-top: 1px solid rgba(255, 145, 164, 0.15); margin-top: 50px; padding-top: 20px; font-size: 13px; color: #111111; font-weight: 600; }
                 .footer-copyright-block span { color: #FF91A4; font-weight: 700; }
             `;
             document.head.appendChild(fixStyle);
@@ -554,9 +544,9 @@
 
                 <div id="bose-sidebar-drawer" class="bose-sidebar-drawer" aria-hidden="true">
                     <div class="sidebar-header">
-                        <div class="sidebar-logo-container" style="display:flex; align-items:center; gap:10px;">
-                            <img src="${data.store.logo}" alt="لوجو بوسي" class="sidebar-logo" style="width:40px; height:40px; object-fit:contain;" />
-                            <span class="sidebar-brand-name">أقسام حلويات بوسي</span>
+                        <div class="sidebar-logo-container" style="display:flex; align-items:center; gap:12px;">
+                            <img src="${data.store.logo}" alt="لوجو حلويات بوسي" class="sidebar-logo" style="width:40px; height:40px; object-fit:contain;" />
+                            <span class="sidebar-brand-name">حلويات بوسي</span>
                         </div>
                         <button id="sidebar-close-btn" class="sidebar-close-btn" aria-label="إغلاق القائمة">
                             <i class="fa-solid fa-xmark"></i>
@@ -601,7 +591,7 @@
                         </div>
 
                         <div>
-                            <div class="sidebar-section-title">عن بوسي</div>
+                            <div class="sidebar-section-title">روابط المعرفة</div>
                             <ul class="sidebar-links-list">
                                 <li class="sidebar-link-item">
                                     <a href="about.html">
@@ -631,7 +621,7 @@
                             <i class="fa-brands fa-whatsapp"></i>
                             <span>راسلنا فوري عبر الواتساب</span>
                         </a>
-                        <a href="tel:${data.store.phone || '01000000000'}" class="sidebar-contact-pill">
+                        <a href="tel:${data.store.phone || '01097238441'}" class="sidebar-contact-pill">
                             <i class="fa-solid fa-phone"></i>
                             <span>اتصال هاتفي مباشر</span>
                         </a>
@@ -641,7 +631,7 @@
 
                 <div id="bose-search-modal" class="bose-search-modal" aria-hidden="true">
                     <div class="search-modal-header">
-                        <button id="search-modal-close" class="bose-nav-btn" style="font-size:26px;" aria-label="إغلاق البحث">
+                        <button id="search-modal-close" class="bose-nav-btn" style="font-size: 26px;" aria-label="إغلاق البحث">
                             <i class="fa-solid fa-xmark"></i>
                         </button>
                     </div>
@@ -690,7 +680,7 @@
                                 <li><a href="policies/refund-policy.html">سياسة الاسترجاع المالي</a></li>
                                 <li><a href="policies/shipping-policy.html">سياسة الشحن والتوصيل</a></li>
                                 <li><a href="policies/terms.html">الشروط والأحكام</a></li>
-                                <li class="footer-contact-item" style="margin-top:15px;">
+                                <li class="footer-contact-item" style="margin-top: 15px;">
                                     <i class="fa-solid fa-location-dot"></i>
                                     <span>${data.store.pickup.address}</span>
                                 </li>
@@ -774,135 +764,10 @@
         }
     }
 
-    /**
-     * تشغيل وتحريك شبكة السلايدر الخاص بقسم الإتقان الفاخر بنظام الـ Throttled حماية للـ DOM
-     */
-    window.initializeExcellenceSectionSlider = function() {
-        const track = document.getElementById('excellence-images-track');
-        if (!track || !window.BoseStoreData) return;
-        
-        const config = window.BoseStoreData.homepage?.excellence;
-        if (!config || !Array.isArray(config.images)) return;
-        
-        const products = window.BoseStoreData.products || [];
-        
-        let imagesHtml = '';
-        config.images.forEach((imgUrl, idx) => {
-            let targetUrl = 'menu.html';
-            if (idx === 0) {
-                const p = products.find(prod => prod.id === 'toort-custom-master');
-                targetUrl = p ? 'cake-builder.html' : 'menu.html';
-            } else if (idx === 1) {
-                const p = products.find(prod => prod.id === 'relax-box');
-                targetUrl = p ? `product.html?slug=${p.slug}` : 'menu.html';
-            } else if (idx === 2) {
-                const p = products.find(prod => prod.id === 'flowers-master');
-                targetUrl = p ? 'flower-builder.html' : 'menu.html';
-            }
-
-            imagesHtml += `
-                <div class="perfection-slide-node" style="scroll-snap-align: center; flex-shrink: 0;">
-                    <a href="${targetUrl}" style="display: block; width: 100%; height: 100%;">
-                        <img src="${imgUrl}" alt="روائع وإتقان حلويات بوسي" loading="eager" />
-                    </a>
-                </div>
-            `;
-        });
-        
-        track.innerHTML = imagesHtml; 
-        track.style.display = "flex";
-        track.style.overflowX = "auto";
-        track.style.scrollSnapType = "x mandatory";
-        track.style.webkitOverflowScrolling = "touch";
-        
-        window.setupBoseInteractiveSlider('excellence-images-track', 'excellence-dots', false);
-    };
-
-    window.setupBoseInteractiveSlider = function(trackId, dotsContainerId, isInfiniteLoop = false) {
-        const track = document.getElementById(trackId);
-        const dotsContainer = document.getElementById(dotsContainerId);
-        if (!track) return;
-
-        let totalOriginalItems = track.children.length;
-        if (totalOriginalItems <= 0) return;
-
-        if (dotsContainer) {
-            let dotsHtml = '';
-            for (let i = 0; i < totalOriginalItems; i++) {
-                dotsHtml += `<span class="bose-dot-node ${i === 0 ? 'active' : ''}" data-index="${i}"></span>`;
-            }
-            dotsContainer.innerHTML = dotsHtml;
-            dotsContainer.style.pointerEvents = "auto";
-            dotsContainer.style.zIndex = "45000";
-        }
-
-        const dots = dotsContainer ? Array.from(dotsContainer.children) : [];
-
-        let isScrollingEventFree = true;
-        track.addEventListener('scroll', () => {
-            if (!isScrollingEventFree) return;
-            isScrollingEventFree = false;
-            
-            requestAnimationFrame(() => {
-                const scrollLeft = Math.abs(track.scrollLeft);
-                const itemWidth = track.children[0]?.offsetWidth || track.offsetWidth || 300; 
-                const activeIndex = Math.min(totalOriginalItems - 1, Math.max(0, Math.round(scrollLeft / itemWidth)));
-                
-                dots.forEach((dot, idx) => {
-                    if (idx === activeIndex) dot.classList.add('active');
-                    else dot.classList.remove('active');
-                });
-                isScrollingEventFree = true;
-            });
-        });
-
-        dots.forEach(dot => {
-            dot.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                const targetIndex = parseInt(e.target.getAttribute('data-index'), 10);
-                const itemWidth = track.children[0]?.offsetWidth || track.offsetWidth || 300;
-                
-                track.scrollTo({ left: (targetIndex * itemWidth), behavior: 'smooth' });
-            });
-        });
-    };
-
-    window.attachBoseCardQuantityEngine = function(containerElement, baseUnitPrice) {
-        if (!containerElement) return;
-        const plusBtn = containerElement.querySelector('.btn-qty-plus');
-        const minusBtn = containerElement.querySelector('.btn-qty-minus');
-        const qtyInput = containerElement.querySelector('.input-qty-value');
-        const priceDisplay = containerElement.querySelector('.product-card-price');
-        
-        if (!plusBtn || !minusBtn || !qtyInput || !priceDisplay) return;
-        
-        plusBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            let currentVal = parseInt(qtyInput.value, 10) || 1;
-            currentVal++;
-            qtyInput.value = currentVal;
-            let finalCost = currentVal * baseUnitPrice;
-            priceDisplay.textContent = `${Math.round(finalCost)} جنيه`;
-        });
-        
-        minusBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            let currentVal = parseInt(qtyInput.value, 10) || 1;
-            if (currentVal > 1) {
-                currentVal--;
-                qtyInput.value = currentVal;
-                let finalCost = currentVal * baseUnitPrice;
-                priceDisplay.textContent = `${Math.round(finalCost)} جنيه`;
-            }
-        });
-    };
-
     function showGlobalFriendlyError() {
         const err = document.createElement('div');
-        err.style.cssText = 'position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background-color:#FF91A4; color:#FFFFFF; padding:12px 24px; border-radius:8px; z-index:99999; font-weight:700; font-size:14px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align:center; direction:rtl;';
-        err.textContent = 'عذراً، واجهنا صعوبة في جلب البيانات الحية حالياً. يرجى إعادة تحميل الصفحة.';
+        err.style.cssText = 'position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background-color:#FF91A4; color:#FFFFFF; padding:12px 24px; border-radius:8px; z-index:99999; font-weight:700;';
+        err.textContent = 'عذراً، واجهنا صعوبة في جلب البيانات الحية. يرجى تحديث الصفحة.';
         document.body.appendChild(err);
     }
 
