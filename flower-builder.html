@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>محاكي الورد التفاعلي | حلويات بوسي</title>
-    <meta name="description" content="صمم بوكيه الورد الفاخر والخاص بمناسبتك خطوة بخطوة بالخيارات التي تسعد قلب أحبابك مع إضافة الهدايا والشوكولاتة ومفاجآت الكاش المدمجة بدون رسوم إضافية.">
+    <meta name="description" content="اعملي بوكيه الورد اللي على ذوقك خطوة بخطوة، واختاريه بالتفصيل اللي يفرح قلب اللي هتديهوله مع خيارات التخصيص الراقية والمفاجآت المدمجة.">
     
     <!-- استدعاء ملفات التنسيق الفاخرة والمعزولة للبراند -->
     <link rel="stylesheet" href="css/global.css">
@@ -18,19 +18,98 @@
         }
         .bose-step-card-panel {
             display: none;
-            animation: boseFadeInPanel 0.4s ease-in-out forwards;
+            animation: boseFadeInPanel 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
         .bose-step-card-panel.active {
             display: block !important;
         }
         @keyframes boseFadeInPanel {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(12px); }
             to { opacity: 1; transform: translateY(0); }
         }
         .sticky-summary-widget {
             position: sticky;
             top: 100px;
             z-index: 10;
+        }
+        /* الأزرار الأيقونية الفاخرة البديلة للقائمة المنسدلة */
+        .bose-iconic-options-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 10px;
+        }
+        .bose-iconic-btn-node {
+            background: #FFFFFF !important;
+            border: 1.5px solid #EAEAEA !important;
+            border-radius: 16px !important;
+            padding: 14px 10px !important;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            box-sizing: border-box;
+        }
+        .bose-iconic-btn-node .btn-icon {
+            font-size: 20px;
+            color: #111111;
+            transition: transform 0.3s ease;
+        }
+        .bose-iconic-btn-node .btn-label {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #111111;
+            font-family: 'Cairo', sans-serif;
+        }
+        .bose-iconic-btn-node:hover {
+            border-color: #FF91A4 !important;
+            background: rgba(255, 145, 164, 0.02) !important;
+        }
+        .bose-iconic-btn-node.active-selected {
+            border-color: #FF91A4 !important;
+            box-shadow: 0 6px 20px rgba(255, 145, 164, 0.15) !important;
+            background: #FFFFFF !important;
+            transform: scale(1.02);
+        }
+        .bose-iconic-btn-node.active-selected .btn-icon {
+            transform: scale(1.1);
+        }
+        /* أزرار التحكم الدائرية للموبايل والكمبيوتر */
+        .bose-circular-qty-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            outline: none;
+            box-sizing: border-box;
+            user-select: none;
+        }
+        .bose-circular-qty-btn.btn-minus-style {
+            background: #FFFFFF !important;
+            border: 1.5px solid #FF91A4 !important;
+            color: #FF91A4 !important;
+        }
+        .bose-circular-qty-btn.btn-minus-style:hover {
+            background: rgba(255, 145, 164, 0.04) !important;
+        }
+        .bose-circular-qty-btn.btn-plus-style {
+            background: #FF91A4 !important;
+            border: 1.5px solid #FF91A4 !important;
+            color: #FFFFFF !important;
+            box-shadow: 0 4px 12px rgba(255, 145, 164, 0.2);
+        }
+        .bose-circular-qty-btn.btn-plus-style:hover {
+            background: #ff7d94 !important;
+            border-color: #ff7d94 !important;
         }
     </style>
 </head>
@@ -42,10 +121,10 @@
     <!-- حاوية المحاكي التفاعلي المعزولة هندسياً -->
     <main class="simulator-container bose-custom-builder-block">
         
-        <!-- عنوان ومقدمة المحاكي المهدئة -->
+        <!-- عنوان ومقدمة المحاكي المهدئة بتون الكلام الجديد -->
         <div class="simulator-header">
-            <h1 style="font-weight: 700 !important; color: var(--bose-black, #111111);">محاكي الورد التفاعلي</h1>
-            <p style="font-weight: 400 !important; color: var(--bose-black, #111111); line-height: 1.6;">صمم بوكيه الورد الفاخر والخاص بمناسبتك خطوة بخطوة بالخيارات التي تسعد قلب أحبابك.</p>
+            <h1 style="font-weight: 700 !important; color: #111111;">محاكي الورد التفاعلي</h1>
+            <p style="font-weight: 400 !important; color: #111111; line-height: 1.6;">عملي بوكيه الورد اللي على ذوقك خطوة بخطوة، واختاريه بالتفصيل اللي يفرح قلب اللي هتديهوله.</p>
         </div>
 
         <!-- الصورة التأسيسية الكبرى عالية النقاء -->
@@ -66,24 +145,36 @@
             <!-- لوحة التخصيص والخيارات المدمجة (4 خطوات تفاعلية ذكية) -->
             <div class="simulator-control-panel">
                 
-                <!-- الخطوة 1: أساس البوكيه وصورة التصميم -->
+                <!-- الخطوة 1: شكل البوكيه ونوع الورد -->
                 <div class="bose-step-card-panel active" data-step="1">
-                    <h2 class="step-title"><i class="fa-solid fa-seedling"></i> الخطوة 1: أساس البوكيه وصورة التصميم</h2>
+                    <h2 class="step-title"><i class="fa-solid fa-seedling"></i> الخطوة 1: شكل البوكيه ونوع الورد</h2>
                     
                     <div class="form-group-custom" style="margin-bottom: 24px;">
-                        <label class="premium-input-label">تحديد نوع الورد الأصيل</label>
-                        <select id="flower-type" class="bose-premium-text-input">
-                            <option value="natural" selected>طبيعي نضر 🌸</option>
-                            <option value="artificial">صناعي فاخر ✨</option>
-                            <option value="satin">ستان مصنوع بحب 🎀</option>
-                        </select>
+                        <label class="premium-input-label">تحبي نوع الورد يكون إيه؟</label>
+                        <!-- الأزرار الأيقونية الراقية لتجربة مستخدم فاخرة -->
+                        <div class="bose-iconic-options-row" id="flower-type-iconic-row">
+                            <div class="bose-iconic-btn-node active-selected" data-value="natural">
+                                <span class="btn-icon">🌸</span>
+                                <span class="btn-label">ورد طبيعي نضر</span>
+                            </div>
+                            <div class="bose-iconic-btn-node" data-value="artificial">
+                                <span class="btn-icon">✨</span>
+                                <span class="btn-label">ورد صناعي فاخر</span>
+                            </div>
+                            <div class="bose-iconic-btn-node" data-value="satin">
+                                <span class="btn-icon">🎀</span>
+                                <span class="btn-label">ورد ستان راقٍ</span>
+                            </div>
+                        </div>
+                        <!-- حقل هيدن متصل بالمحرك التكنولوجي الفرعي القديم لضمان عدم تعطل التوافق -->
+                        <input type="hidden" id="flower-type" value="natural">
                     </div>
 
                     <div class="form-group-custom">
-                        <label class="premium-input-label">إرفاق صورة البوكيه للتقليد والمحاكاة بالملي</label>
-                        <div class="bose-photo-upload-zone" id="bose-photo-upload-zone">
+                        <label class="premium-input-label">لو عندك صورة بوكيه معجبة بيها وحابة نعملك زيها، ارفعيها هنا ونفسها لكِ بالظبط.</label>
+                        <div class="bose-photo-upload-zone" id="bose-photo-upload-zone" style="position: relative;">
                             <i class="fa-solid fa-cloud-arrow-up" style="font-size: 32px; color: var(--bose-pink, #FF91A4); margin-bottom: 12px; display: block;"></i>
-                            <span class="card-label" style="font-size: 14px;">اضغط هنا لرفع صورة البوكيه لنقوم بتنفيذه بالملي</span>
+                            <span class="card-label" style="font-size: 14px; font-weight: 700; color: #111111;">اضغطي هنا وارفعي الصورة</span>
                             <input type="file" id="photo-file" accept="image/*" style="position: absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer;">
                         </div>
                         <div id="photo-preview-container" style="display: none; margin-top: 15px; text-align: center;">
@@ -92,77 +183,71 @@
                     </div>
                 </div>
 
-                <!-- الخطوة 2: حجم البوكيه وشرائط الستان -->
+                <!-- الخطوة 2: مقاس البوكيه والرسالة -->
                 <div class="bose-step-card-panel" data-step="2">
-                    <h2 class="step-title"><i class="fa-solid fa-maximize"></i> الخطوة 2: حجم البوكيه وشرائط الستان</h2>
+                    <h2 class="step-title"><i class="fa-solid fa-maximize"></i> الخطوة 2: مقاس البوكيه والرسالة</h2>
                     
                     <div class="form-group-custom" style="margin-bottom: 24px;">
-                        <label class="premium-input-label">حجم البوكيه (عدد الوردات - الحد الأدنى الإلزامي 15 وردة بالسعر الأساسي)</label>
-                        <div style="display: flex; gap: 10px; align-items: center;">
-                            <button type="button" class="bose-upload-btn" id="flower-minus" style="padding: 10px 20px;">-</button>
-                            <input type="text" id="flower-count" class="bose-premium-text-input" value="15" style="text-align: center; width: 80px;" readonly>
-                            <button type="button" class="bose-upload-btn" id="flower-plus" style="padding: 10px 20px;">+</button>
+                        <label class="premium-input-label">تحبي البوكيه يكون فيه كام وردة؟ (علشان يطلع منسق وشكله مليان، بنبدأ من 15 وردة)</label>
+                        <div style="display: flex; gap: 14px; align-items: center; margin-top: 10px;">
+                            <button type="button" class="bose-circular-qty-btn btn-minus-style" id="flower-minus">-</button>
+                            <input type="text" id="flower-count" class="bose-premium-text-input" value="15" style="text-align: center; width: 80px; font-size: 16px; font-weight: 700;" readonly>
+                            <button type="button" class="bose-circular-qty-btn btn-plus-style" id="flower-plus">+</button>
                         </div>
                     </div>
 
                     <div class="form-group-custom">
-                        <label class="premium-input-label">نوع التغليف الفخم (مشمول صافي في السعر الأساسي)</label>
-                        <select id="wrapping-type" class="bose-premium-text-input" style="margin-bottom: 15px;">
-                            <option value="classic">تغليف كلاسيك راقٍ</option>
-                            <option value="box">بوكس هدايا فاخر (+100 EGP)</option>
+                        <!-- تم إخفاء خيار تشتيت نوع التغليف وحذفه كلياً ليبقى مشمولاً صامتاً وصافياً تماشياً مع طلبك الصارم -->
+                        <select id="wrapping-type" class="bose-premium-text-input" style="display: none;">
+                            <option value="classic" selected>تغليف كلاسيك راقٍ</option>
                         </select>
 
-                        <label class="premium-input-label" style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
-                            <input type="checkbox" id="include-ribbon-text" style="width: 18px; height: 18px;">
-                            طباعة شريط ستان مخصص ومطبوع حرارياً على البوكيه (+50 EGP)
+                        <label class="premium-input-label" style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px; cursor: pointer;">
+                            <input type="checkbox" id="include-ribbon-text" style="width: 20px; height: 20px; accent-color: #FF91A4;">
+                            حابة نكتب لكِ كلام مخصوص على شريط الستان؟ (+50 جنيه)
                         </label>
                         
                         <div id="ribbon-text-section" class="custom-text-wrapper" style="display: none; margin-bottom: 15px;">
-                            <label class="premium-input-label" style="font-size: 13px;">اكتب الجملة المطلوب طباعتها على شريط الستان:</label>
-                            <input type="text" id="ribbon-text-input" class="bose-premium-text-input" placeholder="مثال: عيد ميلاد سعيد يا بوسي">
+                            <label class="premium-input-label" style="font-size: 13.5px;">اكتبي العبارة اللي حابة تطبعيها على الشريط هنا:</label>
+                            <input type="text" id="ribbon-text-input" class="bose-premium-text-input" placeholder="مثال: عيد ميلاد سعيد يا أغلى الحبايب">
                         </div>
 
-                        <label class="premium-input-label">لون شريطة الستان</label>
-                        <div style="display: flex; gap: 15px; align-items: center;">
-                            <select id="ribbon-color" class="bose-premium-text-input" style="flex: 1;">
-                                <option value="pink">بمبي بوسي الفاخر</option>
-                                <option value="gold">ذهبي ملكي ناعم</option>
-                                <option value="white">أبيض ناصع راقٍ</option>
-                            </select>
-                            <div id="ribbon-visual-color" style="width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(17,17,17,0.15); transition: all 0.3s ease;"></div>
-                        </div>
+                        <!-- تم تثبيت شريطة الستان على الخيار بوسي الفاخر وإخفاء التحكم لعدم تشويه هوية البراند البصرية بالصفحة -->
+                        <select id="ribbon-color" class="bose-premium-text-input" style="display: none;">
+                            <option value="pink" selected>بمبي بوسي الفاخر</option>
+                        </select>
                     </div>
                 </div>
 
-                <!-- الخطوة 3: الصور الشخصية ومفاجأة الكاش -->
+                <!-- الخطوة 3: صورك الشخصية ومفاجأة الكاش -->
                 <div class="bose-step-card-panel" data-step="3">
-                    <h2 class="step-title"><i class="fa-solid fa-gift"></i> الخطوة 3: الصور الشخصية ومفاجأة الكاش</h2>
+                    <h2 class="step-title"><i class="fa-solid fa-gift"></i> الخطوة 3: صورك الشخصية ومفاجأة الكاش</h2>
                     
                     <div class="form-group-custom" style="margin-bottom: 24px;">
-                        <label class="premium-input-label" style="display: flex; align-items: center; gap: 8px;">
-                            <input type="checkbox" id="include-photo" style="width: 18px; height: 18px;">
-                            إضافة صور شخصية مطبوعة وموزعة داخل البوكيه (+15 EGP للصورة)
+                        <label class="premium-input-label" style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                            <input type="checkbox" id="include-photo" style="width: 20px; height: 20px; accent-color: #FF91A4;">
+                            تحبي تضيفي صور شخصية تترتب جوه البوكيه بشكل شيك؟ (+15 جنيه للصورة)
                         </label>
-                        <div id="photo-upload-section" class="custom-text-wrapper" style="display: none; padding: 15px; background: rgba(255, 145, 164, 0.04); border-radius: 14px; border-right: 3px solid var(--bose-pink);">
-                            <p style="font-size: 13px; font-weight: 600; margin: 0 0 10px 0;">سيتم اعتماد الصورة المرفوعة في الخطوة الأولى للطباعة التذكارية 📸</p>
-                            <div style="display: flex; gap: 10px; align-items: center; margin-top: 10px;">
-                                <label class="premium-input-label" style="font-size: 13px; margin: 0;">عدد الصور المطلوبة:</label>
-                                <button type="button" class="bose-upload-btn" id="photo-count-minus" style="padding: 5px 15px;">-</button>
-                                <input type="text" id="photo-count-input" class="bose-premium-text-input" value="1" style="text-align: center; width: 50px;" readonly>
-                                <button type="button" class="bose-upload-btn" id="photo-count-plus" style="padding: 5px 15px;">+</button>
+                        <div id="photo-upload-section" class="custom-text-wrapper" style="display: none; padding: 15px; background: rgba(255, 145, 164, 0.02); border-radius: 14px; border-right: 3px solid var(--bose-pink);">
+                            <p style="font-size: 13.5px; font-weight: 700; margin: 0 0 10px 0; color: #111111;">سيتم اعتماد الصورة المرفوعة في الخطوة الأولى للطباعة التذكارية الشيك 📸</p>
+                            <div style="display: flex; gap: 12px; align-items: center; margin-top: 10px;">
+                                <label class="premium-input-label" style="font-size: 13.5px; margin: 0;">حابة تضيفي كام صورة؟</label>
+                                <button type="button" class="bose-circular-qty-btn btn-minus-style" id="photo-count-minus" style="width:36px; height:36px; font-size:16px;">-</button>
+                                <input type="text" id="photo-count-input" class="bose-premium-text-input" value="1" style="text-align: center; width: 50px; font-size:15px; font-weight:700;" readonly>
+                                <button type="button" class="bose-circular-qty-btn btn-plus-style" id="photo-count-plus" style="width:36px; height:36px; font-size:16px;">+</button>
                             </div>
                         </div>
                     </div>
 
                     <div class="form-group-custom">
-                        <label class="premium-input-label" style="display: flex; align-items: center; gap: 8px;">
-                            <input type="checkbox" id="include-cash-toggle" style="width: 18px; height: 18px;">
-                            هل تود إضافة كاش مدمج بتنسيق البوكيه? (صافي بدون رسوم معالجة)
+                        <label class="premium-input-label" style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                            <input type="checkbox" id="include-cash-toggle" style="width: 20px; height: 20px; accent-color: #FF91A4;">
+                            تحبي نجهز لكِ مفاجأة كاش جوه البوكيه؟ (بنرتبها لكِ من غير أي مصاريف زيادة)
                         </label>
                         
-                        <div id="cash-master-integration-block" class="custom-text-wrapper" style="display: none; padding: 15px; background: rgba(255, 145, 164, 0.04); border-radius: 14px; border-right: 3px solid var(--bose-pink);">
+                        <div id="cash-master-integration-block" class="custom-text-wrapper" style="display: none; padding: 15px; background: rgba(255, 145, 164, 0.02); border-radius: 14px; border-right: 3px solid var(--bose-pink);">
                             <div style="margin-bottom: 15px;">
-                                <label class="premium-input-label" style="font-size: 13px;">تحديد فئة الأوراق النقدية المطلوبة للتنسيق:</label>
+                                <label class="premium-input-label" style="font-size: 13.5px;">تحديد فئة الأوراق النقدية المطلوبة للتنسيق:</label>
                                 <select id="money-category" class="bose-premium-text-input">
                                     <option value="0" selected>اختار فئة الفلوس النقدية...</option>
                                     <option value="5">فئة 5 جنيه</option>
@@ -174,13 +259,12 @@
                                 </select>
                             </div>
                             <div id="cash-integration-counter-block" style="display: none;">
-                                <label class="premium-input-label" style="font-size: 13px;">حدد إجمالي قيمة المبلغ المطلوب وضعه كاش:</label>
-                                <div style="display: flex; gap: 10px; align-items: center;">
-                                    <button type="button" class="bose-upload-btn" id="bill-minus" style="padding: 10px 20px;">-</button>
-                                    <input type="text" id="money-amount-display" class="bose-premium-text-input" value="0" style="text-align: center; width: 100px;" readonly>
-                                    <button type="button" class="bose-upload-btn" id="bill-plus" style="padding: 10px 20px;">+</button>
+                                <label class="premium-input-label" style="font-size: 13.5px;">اكتبي مبلغ الكاش اللي حابة تحطيه جوه البوكيه:</label>
+                                <div style="display: flex; gap: 12px; align-items: center; margin-top: 5px;">
+                                    <button type="button" class="bose-circular-qty-btn btn-minus-style" id="bill-minus">-</button>
+                                    <input type="text" id="money-amount-display" class="bose-premium-text-input" value="0" style="text-align: center; width: 100px; font-size:16px; font-weight:700;" readonly>
+                                    <button type="button" class="bose-circular-qty-btn btn-plus-style" id="bill-plus">+</button>
                                 </div>
-                                <p style="font-size: 12px; font-weight: 700; color: #2ecc71; margin-top: 8px;">قيمة الكاش المضافة كلياً للفاتورة كصافي بدون رسوم معالجة.</p>
                             </div>
                         </div>
                     </div>
@@ -191,29 +275,29 @@
                     <h2 class="step-title"><i class="fa-solid fa-cookie"></i> الخطوة 4: الشوكولاتة الفاخرة وكارت الإهداء</h2>
                     
                     <div class="form-group-custom" style="margin-bottom: 24px;">
-                        <label class="premium-input-label" style="display: flex; align-items: center; gap: 8px;">
-                            <input type="checkbox" id="include-chocolate-toggle" style="width: 18px; height: 18px;">
-                            إضافة شوكولاتة مدمجة داخل البوكيه (ميزانية صافية يشتري بها الفرع)
+                        <label class="premium-input-label" style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                            <input type="checkbox" id="include-chocolate-toggle" style="width: 20px; height: 20px; accent-color: #FF91A4;">
+                            تحبي نضيف شوكولاتة فخمة جوه البوكيه؟ (اكتبي الميزانية اللي حباها واحنا هنشتري ونرتبها لكِ)
                         </label>
                         
-                        <div id="chocolate-budget-master-block" class="custom-text-wrapper" style="display: none; padding: 15px; background: rgba(255,145,164,0.04); border-radius: 14px; border-right: 3px solid var(--bose-pink);">
-                            <label class="premium-input-label" style="font-size: 13px;">حدد الميزانية التي تود إضافتها لشراء الشوكولاتة بالكامل:</label>
-                            <div style="display: flex; gap: 10px; align-items: center;">
-                                <button type="button" class="bose-upload-btn" id="choc-budget-minus" style="padding: 10px 20px;">-</button>
-                                <input type="text" id="chocolate-budget-display" class="bose-premium-text-input" value="0" style="text-align: center; width: 100px;" readonly>
-                                <button type="button" class="bose-upload-btn" id="choc-budget-plus" style="padding: 10px 20px;">+</button>
+                        <div id="chocolate-budget-master-block" class="custom-text-wrapper" style="display: none; padding: 15px; background: rgba(255,145,164,0.02); border-radius: 14px; border-right: 3px solid var(--bose-pink);">
+                            <label class="premium-input-label" style="font-size: 13.5px;">حددي الميزانية المطلوبة للشوكولاتة الفاخرة:</label>
+                            <div style="display: flex; gap: 12px; align-items: center; margin-top: 5px;">
+                                <button type="button" class="bose-circular-qty-btn btn-minus-style" id="choc-budget-minus">-</button>
+                                <input type="text" id="chocolate-budget-display" class="bose-premium-text-input" value="0" style="text-align: center; width: 100px; font-size:16px; font-weight:700;" readonly>
+                                <button type="button" class="bose-circular-qty-btn btn-plus-style" id="choc-budget-plus">+</button>
                             </div>
                         </div>
                     </div>
 
                     <div class="form-group-custom">
-                        <label class="premium-input-label" style="display: flex; align-items: center; gap: 8px;">
-                            <input type="checkbox" id="include-card" style="width: 18px; height: 18px;">
-                            إضافة كارت إهداء ورقي فاخر مكتوب بخط منسق (+20 EGP)
+                        <label class="premium-input-label" style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                            <input type="checkbox" id="include-card" style="width: 20px; height: 20px; accent-color: #FF91A4;">
+                            تحبي نكتب لكِ كارت إهداء شيك يتقدم مع البوكيه؟ (+20 جنيه)
                         </label>
                         <div id="card-text-section" class="custom-text-wrapper" style="display: none;">
-                            <label class="premium-input-label" style="font-size: 13px;">اكتب نص الرسالة أو التهنئة المطلوب تدوينها داخل الكارت بخط منسق:</label>
-                            <textarea id="card-text" class="premium-text-input" style="height: 100px; resize: none;" placeholder="اكتب مشاعرك الصادقة هنا..."></textarea>
+                            <label class="premium-input-label" style="font-size: 13.5px;">اكتبي الكلام اللي حابة نكتبه على الكارت هنا:</label>
+                            <textarea id="card-text" class="premium-text-input" style="height: 100px; resize: none; font-weight:600;" placeholder="اكتبي مشاعرك الصادقة هنا ببراحة..."></textarea>
                         </div>
                     </div>
                 </div>
@@ -222,93 +306,63 @@
                 <div class="simulator-actions-bar" style="margin-top: 30px; box-sizing: border-box;">
                     <button type="button" class="premium-nav-btn secondary" id="btn-prev" style="display: none;">السابق</button>
                     <button type="button" class="premium-nav-btn primary" id="btn-next" style="margin-right: auto;">التالي</button>
-                    <button type="button" class="premium-nav-btn primary" id="add-to-cart-btn" style="display: none; margin-right: auto;">اعتماد التصميم وإضافته للسلة</button>
+                    <button type="button" class="premium-nav-btn primary" id="add-to-cart-btn" style="display: none; margin-right: auto; background:#FF91A4 !important;">اعتماد البوكيه وإضافته للسلة</button>
                 </div>
 
             </div>
 
-            <!-- الجانب الأيسر: شريط السعر اللحظي العائم والمحدث تلقائياً طوال الوقت -->
+            <!-- الجانب الأيسر: شريط السعر اللحظي العائم والمحدث تلقائياً ككارت شفاف ومقسم بوضوح -->
             <div class="price-sidebar-container">
-                <div class="sticky-summary-widget">
-                    <h3 class="summary-title"><i class="fa-solid fa-receipt" style="color: var(--bose-pink, #FF91A4);"></i> شريط السعر اللحظي</h3>
+                <div class="sticky-summary-widget" style="background:#FFFFFF; border:1px solid rgba(255,145,164,0.3); border-radius:24px; padding:24px; box-shadow:0 8px 32px rgba(255, 145, 164, 0.05);">
+                    <h3 class="summary-title" style="border-bottom:1px dashed #EAEAEA; padding-bottom:12px; margin-top:0; color:#111111; font-family:'Cairo'; font-weight:700;"><i class="fa-solid fa-receipt" style="color: #FF91A4;"></i> تفاصيل الحساب اللحظي</h3>
                     
-                    <div class="price-breakdown-list">
-                        <div class="price-item-row">
-                            <span>سعر البوكيه الأساسي (شامل الورد والتنسيق):</span>
-                            <span id="base-price-val">400 EGP</span>
+                    <div class="price-breakdown-list" style="display:flex; flex-direction:column; gap:12px; margin-bottom:20px;">
+                        <div class="price-item-row" style="display:flex; justify-content:space-between; font-size:14px; font-weight:600; color:#111111;">
+                            <span>سعر الورد الأساسي:</span>
+                            <span id="base-price-val">400 جنيه</span>
                         </div>
-                        <div class="price-item-row">
-                            <span>الورد الإضافي <small id="extra-flowers-count" style="color: var(--bose-pink, #FF91A4); font-weight: 700;">(0 وردة إضافية)</small>:</span>
-                            <span id="extra-flowers-cost">0 EGP</span>
-                        </div>
-                        <div class="price-item-row">
-                            <span>صندوق هدايا فاخر (إن وجد):</span>
-                            <span id="wrapping-cost-val">0 EGP</span>
-                        </div>
-                        <div class="price-item-row">
-                            <span>شريط الستان المطبوع حرارياً:</span>
-                            <span id="ribbon-cost-val">0 EGP</span>
-                        </div>
-                        <div class="price-item-row">
-                            <span>الصور الشخصية المطبوعة:</span>
-                            <span id="photo-cost-val">0 EGP</span>
-                        </div>
-                        <div class="price-item-row">
-                            <span>ميزانية الشوكولاتة المضافة:</span>
-                            <span id="chocolate-cost-val">0 EGP</span>
-                        </div>
-                        <div class="price-item-row">
-                            <span>كارت الإهداء الورقي المكتوب:</span>
-                            <span id="card-cost-val">0 EGP</span>
-                        </div>
-                        <div class="price-item-row">
-                            <span>قيمة الكاش المدمج الصافي:</span>
-                            <span id="money-breakdown-display">0 EGP</span>
-                        </div>
+                        <!-- حاوية ديناميكية يتم حقن الإضافات داخلها برمجياً بلون بمبي خفيف ومبهج منعاً للتكدس -->
+                        <div id="bose-dynamic-addons-injection-area" style="display:flex; flex-direction:column; gap:8px;"></div>
                     </div>
 
-                    <div class="grand-price-node">
-                        <span class="grand-price-label">السعر الإجمالي الكلي اللحظي:</span>
-                        <span class="grand-price-value" id="bouquet-total-val">400 EGP</span>
+                    <div class="grand-price-node" style="border-top:1px solid #EAEAEA; padding-top:16px; display:flex; justify-content:space-between; align-items:center;">
+                        <span class="grand-price-label" style="font-size:15px; font-weight:700; color:#111111; font-family:'Cairo';">المجموع الكلي:</span>
+                        <span class="grand-price-value" id="bouquet-total-val" style="font-size:24px; font-weight:700; color:#111111; font-family:'Cairo';">400 جنيه</span>
                     </div>
                 </div>
             </div>
 
         </div>
 
-        <!-- معرض سابقة أعمالنا الفخم التفاعلي -->
+        <!-- معرض سابقة أعمالنا الفخم التفاعلي (تم إزالة التكدس الرأسي والعناوين المقيدة) -->
         <div class="portfolio-section" style="margin-top: 60px;">
-            <h2 style="font-size: 24px; text-align: center; margin-bottom: 8px;">بوكيهات شرفت عملائنا في مناسباتهم الراقية</h2>
-            <p style="text-align: center; font-size: 14px; margin-bottom: 24px; color: #555;">استعرض بعضاً من البوكيهات المنسقة والمنفذة يدوياً بحب لعملائنا لتستلهم منها فكرتك.</p>
+            <h2 style="font-size: 24px; text-align: center; margin-bottom: 8px; font-weight:700; color:#111111;">بوكيهات شرفت عملائنا في مناسباتهم الراقية</h2>
+            <p style="text-align: center; font-size: 14px; margin-bottom: 24px; color: #111111; opacity:0.7;">استعرض بعضاً من البوكيهات المنسقة والمنفذة يدوياً بحب لعملائنا لتستلهم منها فكرتك.</p>
             
-            <div class="horizontal-swipe-slider" id="portfolio-swipe-slider">
-                <div class="portfolio-item-card" data-index="1">
-                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="portfolio-item-img" alt="بوكيه فخامة الأناقة الوردية الملكية">
-                    <div class="portfolio-item-body">بوكيه فخامة الأناقة الوردية الملكية</div>
+            <div class="horizontal-swipe-slider" id="portfolio-swipe-slider" style="display: flex; gap: 20px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 15px; -webkit-overflow-scrolling: touch;">
+                <div class="portfolio-item-card" data-index="1" style="flex: 0 0 280px; scroll-snap-align: start; cursor: pointer; background:#FFFFFF; border-radius:18px; border:1px solid #EAEAEA; overflow:hidden; transition:all 0.3s ease;">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="portfolio-item-img" alt="سابقة أعمال 1" style="width: 100%; height: 280px; object-fit: cover; display:block;">
                 </div>
-                <div class="portfolio-item-card" data-index="2">
-                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="portfolio-item-img" alt="بوكيه ورد ستان متداخل مع ميزانية كاش">
-                    <div class="portfolio-item-body">بوكيه ورد ستان متداخل مع ميزانية كاش</div>
+                <div class="portfolio-item-card" data-index="2" style="flex: 0 0 280px; scroll-snap-align: start; cursor: pointer; background:#FFFFFF; border-radius:18px; border:1px solid #EAEAEA; overflow:hidden; transition:all 0.3s ease;">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="portfolio-item-img" alt="سابقة أعمال 2" style="width: 100%; height: 280px; object-fit: cover; display:block;">
                 </div>
-                <div class="portfolio-item-card" data-index="3">
-                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="portfolio-item-img" alt="بوكيه طبيعي نضر مع صور معلقة وشريط مطبوع">
-                    <div class="portfolio-item-body">بوكيه طبيعي نضر مع صور معلقة</div>
+                <div class="portfolio-item-card" data-index="3" style="flex: 0 0 280px; scroll-snap-align: start; cursor: pointer; background:#FFFFFF; border-radius:18px; border:1px solid #EAEAEA; overflow:hidden; transition:all 0.3s ease;">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="portfolio-item-img" alt="سابقة أعمال 3" style="width: 100%; height: 280px; object-fit: cover; display:block;">
                 </div>
-                <div class="portfolio-item-card" data-index="4">
-                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="portfolio-item-img" alt="بوكس توليفة فاخرة من الورد الصناعي والشوكولاتة">
-                    <div class="portfolio-item-body">بوكس توليفة فاخرة من الورد والشوكولاتة</div>
+                <div class="portfolio-item-card" data-index="4" style="flex: 0 0 280px; scroll-snap-align: start; cursor: pointer; background:#FFFFFF; border-radius:18px; border:1px solid #EAEAEA; overflow:hidden; transition:all 0.3s ease;">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="portfolio-item-img" alt="سابقة أعمال 4" style="width: 100%; height: 280px; object-fit: cover; display:block;">
                 </div>
             </div>
         </div>
 
     </main>
 
-    <!-- النافذة المنبثقة التفاعلية الفخمة لمعرض الأعمال -->
-    <div class="bose-popup-modal" id="portfolio-popup-modal" style="display: none;">
-        <div class="bose-popup-content">
-            <span class="modal-close-btn" id="modal-close-node">X</span>
-            <img id="modal-display-img" src="" class="modal-img-frame" alt="معاينة فخمة للمنتج">
-            <div class="modal-body-desc" id="modal-display-desc"></div>
+    <!-- النافذة المنبثقة التفاعلية الفخمة لمعرض الأعمال (تفتح بكامل الشاشة لإبراز الجمال) -->
+    <div class="bose-popup-modal" id="portfolio-popup-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(17,17,17,0.7); z-index: 50000; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;">
+        <div class="bose-popup-content" style="background: #FFFFFF; border-radius: 24px; padding: 30px; max-width: 600px; width: 100%; position: relative; box-sizing: border-box; text-align: center;">
+            <span class="modal-close-btn" id="modal-close-node" style="position: absolute; top: 15px; left: 20px; font-size: 24px; font-weight: 700; color: #FF91A4; cursor: pointer; user-select: none;">×</span>
+            <img id="modal-display-img" src="" class="modal-img-frame" alt="معاينة فخمة للمنتج" style="width: 100%; max-height: 400px; object-fit: cover; border-radius: 16px; border: 1px solid rgba(255,145,164,0.3); margin-bottom: 20px;">
+            <div class="modal-body-desc" id="modal-display-desc" style="font-size: 15px; font-weight: 700; color: #111111; font-family: 'Cairo'; line-height: 1.6;"></div>
         </div>
     </div>
 
@@ -330,6 +384,23 @@
             const btnAddToCart = document.getElementById("add-to-cart-btn");
             const stepsPanels = document.querySelectorAll(".bose-step-card-panel");
             const stepsIndicators = document.querySelectorAll(".simulator-steps-indicator .step-node");
+
+            // تفعيل تفاعل أزرار اختيار نوع الورد الجديدة بالكامل
+            const iconicBtns = document.querySelectorAll("#flower-type-iconic-row .bose-iconic-btn-node");
+            const hiddenTypeInput = document.getElementById("flower-type");
+
+            iconicBtns.forEach(btn => {
+                btn.addEventListener("click", function() {
+                    iconicBtns.forEach(b => b.classList.remove("active-selected"));
+                    this.classList.add("active-selected");
+                    const selectedVal = this.getAttribute("data-value");
+                    if (hiddenTypeInput) {
+                        hiddenTypeInput.value = selectedVal;
+                        // إطلاق حدث التغيير ليعمل محرك جافاسكربت الفرعي flower-engine.js فوراً دون تصادم
+                        hiddenTypeInput.dispatchEvent(new Event('change'));
+                    }
+                });
+            });
 
             function updateActiveStepUI() {
                 stepsPanels.forEach(panel => {
@@ -395,6 +466,7 @@
                 });
             });
 
+            // معرض سابقة الأعمال الفخم والمنبثق بكامل الشاشة
             const portfolioModal = document.getElementById('portfolio-popup-modal');
             const modalImg = document.getElementById('modal-display-img');
             const modalDesc = document.getElementById('modal-display-desc');
@@ -402,10 +474,10 @@
             const portfolioCards = document.querySelectorAll('.portfolio-item-card');
 
             const portfolioExplanations = {
-                "1": "ورد طبيعي نضر 30 وردة بلون بمبي فاخر مع تغليف شريط ستان مطبوع وصور شخصية مدمجة.",
-                "2": "ورد ستان مصنوع بحب 25 وردة مع تنسيق مدمج لكاش صافي مخصص بالكامل لحجم اختيارك.",
-                "3": "ورد طبيعي نضر مع صور معلقة داخل البوكيه وشريط مطبوع حرارياً مخصص للمناسبة.",
-                "4": "توليفة فخمة تجمع بين الورد الطبيعي المنسق بعناية تامة وقطع الشوكولاتة الفاخرة."
+                "1": "ورد طبيعي نضر 30 وردة بلون بمبي فاخر مع تغليف شريط ستان مطبوع وصور شخصية مدمجة بإضاءة نهارية قوية.",
+                "2": "ورد ستان مصنوع بحب 25 وردة مع تنسيق مدمج لكاش صافي مخصص بالكامل لحجم اختيارك تبعا للطلب الواضح.",
+                "3": "ورد طبيعي نضر مع صور معلقة داخل البوكيه بشكل شيك للغاية وشريط مطبوع حرارياً مخصوص للمناسبة السعيدة.",
+                "4": "توليفة فخمة وراقية تجمع بين الورد الطبيعي المنسق بعناية تامة وقطع الشوكولاتة الفاخرة بلمسة النهار البراقة."
             };
 
             portfolioCards.forEach(card => {
@@ -422,6 +494,15 @@
             if (modalClose && portfolioModal) {
                 modalClose.addEventListener('click', () => {
                     portfolioModal.style.display = "none";
+                });
+            }
+            
+            // غلق المودال بالضغط على الخلفية الشفافة لراحة وسلاسة التصفح
+            if (portfolioModal) {
+                portfolioModal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        portfolioModal.style.display = "none";
+                    }
                 });
             }
         });
