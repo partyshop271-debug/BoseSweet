@@ -34,7 +34,7 @@
             transition: all 0.3s ease;
         }
         
-        /* [إصلاح الثغرة 1]: أزرار هندسية فخمة ومستطيلة تمنع التكدس لخلق تنفس بصري راقٍ */
+        /* [تحديث هندسي]: أزرار اختيار مستطيلة راقية ومريحة تمنع التكدس البصري تماماً */
         .bose-iconic-options-row {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -44,7 +44,7 @@
         .bose-iconic-btn-node {
             background: #FFFFFF !important;
             border: 1.5px solid #EAEAEA !important;
-            border-radius: 12px !important; /* شكل مستطيل أرقى */
+            border-radius: 12px !important;
             padding: 16px 12px !important;
             text-align: center;
             cursor: pointer;
@@ -80,7 +80,7 @@
             transform: scale(1.1);
         }
         
-        /* أزرار التحكم بالعد الموزعة هندسياً (+ على اليمين و - على اليسار) */
+        /* أزرار التحكم الدائرية (+ على اليمين و - على اليسار كالقاعدة المعتمدة) */
         .bose-counter-wrapper {
             display: inline-flex;
             align-items: center;
@@ -125,14 +125,18 @@
             border-color: #ff7d94 !important;
         }
 
-        /* [إصلاح الثغرة 2]: حاوية السعر الديناميكي الموضعي المدمج بالملي أسفل عداد التحكم */
+        /* [حل جذري للمشكلة 2]: إطار السعر الديناميكي الموضع المحدث تلقائياً أمام العميل */
         .bose-embedded-price-box {
             margin-top: 15px;
             padding: 12px;
             background: rgba(255, 145, 164, 0.04);
+            border: 1px solid rgba(255, 145, 164, 0.2);
             border-radius: 12px;
             text-align: center;
             font-family: 'Cairo', sans-serif;
+            width: 100%;
+            max-width: 320px;
+            box-sizing: border-box;
             transition: all 0.3s ease;
         }
         .bose-embedded-price-text {
@@ -140,6 +144,7 @@
             font-weight: 600;
             color: #111111;
             margin: 0;
+            line-height: 1.5;
         }
         .bose-embedded-price-text span {
             color: #FF91A4;
@@ -212,7 +217,7 @@
             
             <div class="simulator-control-panel">
                 
-                <!-- الخطوة 1: أساس وتنسيق البوكيه -->
+                <!-- الخطوة 1: نوع الورد ومقاس البوكيه -->
                 <div class="bose-step-card-panel active" data-step="1">
                     <h2 class="step-title"><i class="fa-solid fa-seedling"></i> الخطوة 1: أساس وتنسيق البوكيه</h2>
                     
@@ -236,7 +241,7 @@
                         <input type="hidden" id="flower-type" value="natural">
                     </div>
 
-                    <!-- قالب العداد والسعر التحديثي اللحظي المدمج داخل نفس الإطار لراحة تامة للعين -->
+                    <!-- قالب العداد والسعر التحديثي اللحظي المدمج داخل نفس الإطار مباشرة أسفل زر التحكم -->
                     <div class="bose-premium-template-box">
                         <label class="premium-input-label">تحبي البوكيه يكون فيه كام وردة؟ (بنبدأ من 15 وردة لتنسيق فخم ومليان)</label>
                         <div style="display: flex; flex-direction: column; align-items: center; margin-top: 12px;">
@@ -246,8 +251,8 @@
                                 <button type="button" class="bose-circular-qty-btn btn-minus-style" id="flower-minus">-</button>
                             </div>
                             
-                            <!-- السعر اللحظي والديناميكي الموضع المحدث تلقائياً -->
-                            <div class="bose-embedded-price-box" id="bose-embedded-price-container">
+                            <!-- السعر اللحظي والديناميكي الموضع المحدث تلقائياً مع خطوة التغيير اللحظي للعداد -->
+                            <div class="bose-embedded-price-box">
                                 <p class="bose-embedded-price-text" id="bose-embedded-price-display">سعر هذا البوكيه الذي يحتوي على 15 وردة هو <span>400 جنيه</span></p>
                             </div>
                         </div>
@@ -303,7 +308,7 @@
                         <div id="photo-upload-section" class="custom-text-wrapper" style="display: none; padding: 15px; background: rgba(255, 145, 164, 0.02); border-radius: 14px; border-right: 3px solid var(--bose-pink); margin-top: 15px;">
                             <p style="font-size: 13.5px; font-weight: 700; margin: 0 0 10px 0; color: #111111;">سيتم اعتماد الصورة المرفوعة في الخطوة الأولى للطباعة التذكارية الشيك 📸</p>
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
-                                <label class="premium-input-label" style="font-size: 13.5px; margin: 0;">حابة تضيفي كام صورة?</label>
+                                <label class="premium-input-label" style="font-size: 13.5px; margin: 0;">حابة تضيفي كام صورة؟</label>
                                 <div class="bose-counter-wrapper" style="padding: 4px 8px;">
                                     <button type="button" class="bose-circular-qty-btn btn-plus-style" id="photo-count-plus" style="width:36px; height:36px; font-size:16px;">+</button>
                                     <input type="text" id="photo-count-input" class="bose-premium-text-input" value="1" style="text-align: center; width: 50px; font-size:15px; font-weight:700; border: none; background: transparent; pointer-events: none;" readonly>
@@ -380,7 +385,7 @@
                     </div>
                 </div>
 
-                <!-- [إصلاح الثغرة 3]: شريط أزرار التحكم والتنقل بالخطوات (حذف زر الاعتماد تماماً من الخطوة 1 والالتزام بوجوده بالخطوة الأخيرة فقط) -->
+                <!-- [حل جذري للمشكلة 3]: حذف زر الاعتماد نهائياً من أي خطوة مبكرة، والالتزام المطلق بوجوده فقط وحصرياً في الخطوة الأخيرة (4) لتوجيه المستخدم ذكياً -->
                 <div class="simulator-actions-bar" style="margin-top: 30px; box-sizing: border-box;">
                     <button type="button" class="premium-nav-btn secondary" id="btn-prev" style="display: none;">السابق</button>
                     <button type="button" class="premium-nav-btn primary" id="btn-next" style="margin-right: auto;">التالي</button>
@@ -389,7 +394,7 @@
 
             </div>
 
-            <!-- الجانب الأيسر: شريط السعر اللحظي الشفاف المحدث تلقائياً لراحة العميل -->
+            <!-- الجانب الأيسر: شريط السعر المحدث تلقائياً للفاتورة الكلية -->
             <div class="price-sidebar-container">
                 <div class="sticky-summary-widget" id="bose-dynamic-pricing-widget" style="background:#FFFFFF; border:1px solid rgba(255,145,164,0.3); border-radius:24px; padding:24px; box-shadow:0 8px 32px rgba(255, 145, 164, 0.05); display: none;">
                     <h3 class="summary-title" style="border-bottom:1px dashed #EAEAEA; padding-bottom:12px; margin-top:0; color:#111111; font-family:'Cairo'; font-weight:700;"><i class="fa-solid fa-receipt" style="color: #FF91A4;"></i> تفاصيل الحساب اللحظي</h3>
@@ -434,7 +439,7 @@
 
     </main>
 
-    <!-- [إصلاح الثغرة 4]: النافذة المنبثقة التفاعلية الفخمة لمعرض الأعمال (خالية ونظيفة تماماً من أي نصوص أو تفاصيل لعرض الجمال الطبيعي) -->
+    <!-- [حل جذري للمشكلة 4]: مسح كل الوصف والكلام نهائياً من الـ Popup Modal لتظهر صور بوكيهات العملاء نظيفة تماماً خالية من أي كلمات وتليق بفخامة البراند -->
     <div class="bose-popup-modal" id="portfolio-popup-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(17,17,17,0.7); z-index: 50000; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;">
         <div class="bose-popup-content" style="background: #FFFFFF; border-radius: 24px; padding: 20px; max-width: 600px; width: 100%; position: relative; box-sizing: border-box; text-align: center;">
             <span class="modal-close-btn" id="modal-close-node" style="position: absolute; top: 15px; left: 20px; font-size: 26px; font-weight: 700; color: #FF91A4; cursor: pointer; user-select: none; z-index: 10;">×</span>
@@ -448,7 +453,7 @@
     <script src="js/core-engine.js"></script>
     <script src="js/flower-engine.js"></script>
 
-    <!-- محرك التفاعل الخاص بصفحة المحاكي لمنع التعارض مع الملفات الخارجية -->
+    <!-- محرك التفاعل والتحكم لربط أزرار المحاكي بالعداد والسعر الديناميكي اللحظي -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             let currentActiveStep = 1;
@@ -464,6 +469,7 @@
             const hiddenTypeInput = document.getElementById("flower-type");
             const dynamicPricingWidget = document.getElementById("bose-dynamic-pricing-widget");
             const embeddedPriceDisplay = document.getElementById("bose-embedded-price-display");
+            const countInput = document.getElementById("flower-count");
 
             function checkAndShowPriceWidget() {
                 if (hiddenTypeInput && hiddenTypeInput.value) {
@@ -473,16 +479,18 @@
                 }
             }
 
-            // تحديث السعر الموضع الديناميكي المدمج داخل الكارت بدقة وسرعة كاملة
+            // [حل حاسم للمشكلة 2]: دالة برمجية مرنة ومربوطة بزناد الحدث لحساب القيمة وتحديث نص السعر الموضع تلقائياً مع كل نقرة (+ / -)
             function updateEmbeddedPrice() {
-                const countInput = document.getElementById("flower-count");
                 if (!countInput || !embeddedPriceDisplay) return;
                 
                 const count = parseInt(countInput.value, 10) || 15;
                 const basePrice = 400;
                 const extraPrice = 35;
+                
+                // حساب الفارق المالي الفعلي للوردات الزائدة
                 const totalCost = basePrice + (Math.max(0, count - 15) * extraPrice);
                 
+                // حقن النص التوضيحي السلس والمفهوم مباشرة داخل نفس كارت الخطوة
                 embeddedPriceDisplay.innerHTML = `سعر هذا البوكيه الذي يحتوي على ${count} وردة هو <span>${totalCost} جنيه</span>`;
             }
 
@@ -499,25 +507,29 @@
                 });
             });
 
-            // ربط العداد بتحديث السعر الديناميكي المكتوب فوراً عند كل ضغطة
-            const observer = new MutationObserver(function(mutations) {
-                updateEmbeddedPrice();
-                checkAndShowPriceWidget();
-            });
-            
-            const countInputEl = document.getElementById("flower-count");
-            if (countInputEl) {
-                // مراقبة تغيير العداد من أزرار الزيادة والنقصان الخارجية
-                const nativeInputValueDescriptor = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value");
-                Object.defineProperty(countInputEl, "value", {
-                    set: function(val) {
-                        nativeInputValueDescriptor.set.call(this, val);
+            // ربط مشغل أزرار المحاكي (الزائد والناقص) بتحديث النص الموضع لحظياً ومنع الجمود
+            const plusBtn = document.getElementById("flower-plus");
+            const minusBtn = document.getElementById("flower-minus");
+
+            if (plusBtn) {
+                plusBtn.addEventListener("click", function() {
+                    setTimeout(() => {
                         updateEmbeddedPrice();
-                    }
+                        checkAndShowPriceWidget();
+                    }, 10);
                 });
-                countInputEl.addEventListener("input", updateEmbeddedPrice);
             }
 
+            if (minusBtn) {
+                minusBtn.addEventListener("click", function() {
+                    setTimeout(() => {
+                        updateEmbeddedPrice();
+                        checkAndShowPriceWidget();
+                    }, 10);
+                });
+            }
+
+            // تشغيل التهيئة الأولية للمزامنة البرمجية الكاملة
             checkAndShowPriceWidget();
             updateEmbeddedPrice();
 
@@ -548,6 +560,7 @@
                     btnPrev.style.display = "inline-flex";
                 }
 
+                // [حسم المشكلة 3]: حظر ظهور زر الاعتماد إلا وحصرياً في الخطوة الأخيرة (Step 4) لتجنب التكرار والتضليل
                 if (currentActiveStep === totalSteps) {
                     btnNext.style.display = "none";
                     btnAddToCart.style.display = "block";
@@ -585,7 +598,7 @@
                 });
             });
 
-            // [إصلاح الثغرة 4]: مودال معرض الأعمال نظيف وخالٍ تماماً من أي أوصاف تشتيتية
+            // [تحديث المشكلة 4]: رندرة صور بوكيهات العملاء نظيفة وخالية من أي وصف نصي في النافذة المنبثقة
             const portfolioModal = document.getElementById('portfolio-popup-modal');
             const modalImg = document.getElementById('modal-display-img');
             const modalClose = document.getElementById('modal-close-node');
