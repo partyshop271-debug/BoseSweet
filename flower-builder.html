@@ -34,7 +34,7 @@
             transition: all 0.3s ease;
         }
         
-        /* [تحديث هندسي]: أزرار اختيار مستطيلة راقية ومريحة تمنع التكدس البصري تماماً */
+        /* أزرار اختيار مستطيلة راقية ومريحة تمنع التكدس البصري تماماً */
         .bose-iconic-options-row {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -125,7 +125,7 @@
             border-color: #ff7d94 !important;
         }
 
-        /* [حل جذري للمشكلة 2]: إطار السعر الديناميكي الموضع المحدث تلقائياً أمام العميل */
+        /* [حل جذري للمشكلة 1]: إطار السعر الديناميكي الموضع المحدث تلقائياً أمام العميل */
         .bose-embedded-price-box {
             margin-top: 15px;
             padding: 12px;
@@ -286,7 +286,7 @@
 
                         <label class="premium-input-label" style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px; cursor: pointer;">
                             <input type="checkbox" id="include-ribbon-text" style="width: 20px; height: 20px; accent-color: #FF91A4;">
-                            حابة نكتب لكِ كلام مخصوص على شريط الستان؟ (+50 جنيه)
+                            حابة نكتب لكِ كلام مخصوص على شريط الستان? (+50 جنيه)
                         </label>
                         
                         <div id="ribbon-text-section" class="custom-text-wrapper" style="display: none; margin-top: 15px;">
@@ -385,7 +385,7 @@
                     </div>
                 </div>
 
-                <!-- [حل جذري للمشكلة 3]: حذف زر الاعتماد نهائياً من أي خطوة مبكرة، والالتزام المطلق بوجوده فقط وحصرياً في الخطوة الأخيرة (4) لتوجيه المستخدم ذكياً -->
+                <!-- [حل جذري للمشكلة 2]: حذف زر الاعتماد نهائياً من أي خطوة مبكرة، والالتزام المطلق بوجوده فقط في الخطوة الرابعة (4) لتوجيه المستخدم ذكياً -->
                 <div class="simulator-actions-bar" style="margin-top: 30px; box-sizing: border-box;">
                     <button type="button" class="premium-nav-btn secondary" id="btn-prev" style="display: none;">السابق</button>
                     <button type="button" class="premium-nav-btn primary" id="btn-next" style="margin-right: auto;">التالي</button>
@@ -394,7 +394,7 @@
 
             </div>
 
-            <!-- الجانب الأيسر: شريط السعر المحدث تلقائياً للفاتورة الكلية -->
+            <!-- [حل جذري للمشكلة 3]: الجانب الأيسر: شريط السعر المحدث تلقائياً للفاتورة الكلية بتصميم راق ومنعزل يمنع التكدس البصري -->
             <div class="price-sidebar-container">
                 <div class="sticky-summary-widget" id="bose-dynamic-pricing-widget" style="background:#FFFFFF; border:1px solid rgba(255,145,164,0.3); border-radius:24px; padding:24px; box-shadow:0 8px 32px rgba(255, 145, 164, 0.05); display: none;">
                     <h3 class="summary-title" style="border-bottom:1px dashed #EAEAEA; padding-bottom:12px; margin-top:0; color:#111111; font-family:'Cairo'; font-weight:700;"><i class="fa-solid fa-receipt" style="color: #FF91A4;"></i> تفاصيل الحساب اللحظي</h3>
@@ -439,7 +439,7 @@
 
     </main>
 
-    <!-- [حل جذري للمشكلة 4]: مسح كل الوصف والكلام نهائياً من الـ Popup Modal لتظهر صور بوكيهات العملاء نظيفة تماماً خالية من أي كلمات وتليق بفخامة البراند -->
+    <!-- مسح كل الوصف والكلام نهائياً من الـ Popup Modal لتظهر صور بوكيهات العملاء نظيفة تماماً خالية من أي كلمات وتليق بفخامة البراند -->
     <div class="bose-popup-modal" id="portfolio-popup-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(17,17,17,0.7); z-index: 50000; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;">
         <div class="bose-popup-content" style="background: #FFFFFF; border-radius: 24px; padding: 20px; max-width: 600px; width: 100%; position: relative; box-sizing: border-box; text-align: center;">
             <span class="modal-close-btn" id="modal-close-node" style="position: absolute; top: 15px; left: 20px; font-size: 26px; font-weight: 700; color: #FF91A4; cursor: pointer; user-select: none; z-index: 10;">×</span>
@@ -479,7 +479,7 @@
                 }
             }
 
-            // [حل حاسم للمشكلة 2]: دالة برمجية مرنة ومربوطة بزناد الحدث لحساب القيمة وتحديث نص السعر الموضع تلقائياً مع كل نقرة (+ / -)
+            // [حل حاسم للمشكلة 1]: دالة برمجية مرنة ومربوطة بزناد الحدث لحساب القيمة وتحديث نص السعر الموضع تلقائياً مع كل نقرة (+ / -)
             function updateEmbeddedPrice() {
                 if (!countInput || !embeddedPriceDisplay) return;
                 
@@ -560,7 +560,7 @@
                     btnPrev.style.display = "inline-flex";
                 }
 
-                // [حسم المشكلة 3]: حظر ظهور زر الاعتماد إلا وحصرياً في الخطوة الأخيرة (Step 4) لتجنب التكرار والتضليل
+                // [حسم المشكلة 2]: حظر ظهور زر الاعتماد إلا وحصرياً في الخطوة الأخيرة (Step 4) لتجنب التكرار والتضليل
                 if (currentActiveStep === totalSteps) {
                     btnNext.style.display = "none";
                     btnAddToCart.style.display = "block";
@@ -598,7 +598,7 @@
                 });
             });
 
-            // [تحديث المشكلة 4]: رندرة صور بوكيهات العملاء نظيفة وخالية من أي وصف نصي في النافذة المنبثقة
+            // رندرة صور بوكيهات العملاء نظيفة وخالية من أي وصف نصي في النافذة المنبثقة
             const portfolioModal = document.getElementById('portfolio-popup-modal');
             const modalImg = document.getElementById('modal-display-img');
             const modalClose = document.getElementById('modal-close-node');
