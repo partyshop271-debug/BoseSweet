@@ -1,8 +1,8 @@
 /**
  * 👑 محرك محاكي بوكيهات الورد والملحقات التفاعلي المطور - حلويات بوسي 👑
- * النسخة الهندسية القياسية الكاملة والمعزولة كلياً - خالية تماماً من ثغرات تداخل الخطوات V7
- * الأداء: تم تحديثه ليعتمد على التحديث الموضعي (Localized DOM) لتوفير المعالج والبيانات بنسبة 100% على الموبايل
- * التوافق: يلتزم بمهام محاكي الورد فقط ولا يتدخل بأي ملف آخر، ويتزامن تلقائياً مع core-engine.js
+ * النسخة الهندسية القياسية الكاملة والمعزولة كلياً - المحدثة لحل مشكلات الفيديو V12.0
+ * الأداء: أقصى توفير لبيانات الموبايل والكمبيوتر عبر التحديث الموضعي الصامت للمحرك.
+ * التوافق: يلتزم بمهام محاكي الورد فقط ولا يتدخل بأي ملف آخر، ويتزامن تلقائياً مع core-engine.js.
  */
 
 (function () {
@@ -23,25 +23,17 @@
         console.warn("⚠️ الـ sessionStorage غير متاح.");
     }
 
-    // الإعدادات الافتراضية الصارمة تماشياً مع الوثيقة القياسية لحلويات بوسي
+    // الإعدادات الافتراضية الصارمة للأسعار تماشياً مع الوثيقة القياسية لحلويات بوسي
     let flowerConfig = {
         basePrice: 400,
         baseFlowers: 15,
         extraFlowerPrice: 35,
         photoPrintPrice: 15,
         giftCardPrice: 20,
-        flowerTypes: [
-            { id: "natural", name: "ورد طبيعي نضر" },
-            { id: "artificial", name: "ورد صناعي فاخر" },
-            { id: "satin", name: "ورد ستان راقٍ" }
-        ],
-        moneyCategories: [
-            { amount: 5 }, { amount: 10 }, { amount: 20 },
-            { amount: 50 }, { amount: 100 }, { amount: 200 }
-        ]
+        satinRibbonPrice: 50
     };
 
-    // الحالة الديناميكية الحالية لرحلة العميل
+    // الحالة الديناميكية الحالية لرحلة العميل داخل المحاكي
     let state = {
         currentActiveStep: 1,
         totalSteps: 4,
@@ -68,7 +60,7 @@
     // عناصر واجهة الـ DOM الخاصة بمحاكي الورد
     let flowerCountInput, includePhotoCheckbox, photoFileInput, photoPreviewContainer, photoPreviewImg;
     let includeCardCheckbox, cardTextInput, moneyCategorySelect, bouquetTotalVal, addToCartBtn;
-    let includeRibbonTextCheckbox, ribbonTextSection, ribbonTextInput;
+    let includeRibbonTextCheckbox, ribbonTextSection, ribbonTextInput, ribbonStepPriceDisplay;
     let includeCashCheckbox, cashMasterBlock, cashIntegrationCounterBlock, moneyAmountDisplay;
     let includeChocolateCheckbox, chocolateBudgetMasterBlock, chocolateBudgetDisplay;
     let photoCountInput, dynamicAddonsArea, embeddedPriceDisplay;
@@ -94,40 +86,61 @@
     }
 
     /**
-     * 🧮 محرك الفحص المالي والتحكيم اللحظي لأسعار البوكيه الشفافة بالملي
+     * 🧮 محرك الفحص المالي والتحكيم اللحظي لأسعار البوكيه - مطور لحل مشكلة كارت الفاتورة والستان
      */
     function recalculatePrice() {
         let extraFlowers = Math.max(0, state.flowerCount - flowerConfig.baseFlowers);
         let extraCost = extraFlowers * flowerConfig.extraFlowerPrice;
-        let ribbonCost = state.includeRibbonText ? 50 : 0;
+        let ribbonCost = state.includeRibbonText ? flowerConfig.satinRibbonPrice : 0;
         let photoCost = state.includePhoto ? (state.photoCount * flowerConfig.photoPrintPrice) : 0;
         let cardCost = (state.includeCard && state.cardText.trim() !== "") ? flowerConfig.giftCardPrice : 0;
         
         let servicePrice = flowerConfig.basePrice + extraCost + ribbonCost + photoCost + cardCost;
         
-        // استدعاء دالة الزيادة الرسمية من المحرك العام إن وجدت لتوحيد السياسة المالية للموقع
+        // استدعاء دالة الزيادة الرسمية من المحرك المركزي الموحد لتوحيد السياسة المالية للموقع
         let finalServicePrice = window.calculateBosePrice ? window.calculateBosePrice(servicePrice, "menu-only") : servicePrice;
 
+        // مبالغ الكاش وميزانية الشوكولاتة تضاف كقيم صافية تماماً 100% لراحة العميل وسد الثغرات
         let total = Math.round(finalServicePrice) + state.moneyAmount + state.chocolateBudget;
         state.totalPrice = total;
 
-        if (bouquetTotalVal) bouquetTotalVal.textContent = `${total} جنيه`;
-
-        // تحديث نص السعر الموضع التوضيحي بداخل كارت الخطوة الأولى فوراً مع التغيير اللحظي للعداد
-        if (embeddedPriceDisplay) {
-            const currentCountCost = flowerConfig.basePrice + (extraFlowers * flowerConfig.extraFlowerPrice);
-            embeddedPriceDisplay.innerHTML = `سعر هذا البوكيه الذي يحتوي على ${state.flowerCount} وردة هو <span>${currentCountCost} جنيه</span>`;
+        if (bouquetTotalVal) {
+            bouquetTotalVal.textContent = `${total} جنيه`;
         }
 
-        // حقن الحسابات اللحظية للفاتورة الجانبية بشكل راقٍ ومنعزل يمنع التكدس البصري لراحة العميل النفسية
+        // تحديث نص السعر الموضع التوضيحي بداخل كارت الخطوة الأولى فوراً
+        if (embeddedPriceDisplay) {
+            const currentCountCost = flowerConfig.basePrice + (extraFlowers * flowerConfig.extraFlowerPrice);
+            let finalCountCost = window.calculateBosePrice ? window.calculateBosePrice(currentCountCost, "menu-only") : currentCountCost;
+            embeddedPriceDisplay.innerHTML = `سعر هذا البوكيه الذي يحتوي على ${state.flowerCount} وردة هو <span>${Math.round(finalCountCost)} جنيه</span>`;
+        }
+
+        // حل مشكلة الفيديو: تحديث إطار السعر الموضع التوضيحي داخل الخطوة الثانية (شريط الستان) ديناميكياً
+        if (ribbonStepPriceDisplay) {
+            ribbonStepPriceDisplay.innerHTML = `سعر إضافة شريط الستان المطبوع حرارياً هو <span>${flowerConfig.satinRibbonPrice} جنيه</span>`;
+        }
+
+        // حل مشكلة الفيديو: حقن وتطوير الفاتورة الجانبية بتنسيق فاخر يبرز الألوان الحاكمة للبراند ووضوح كامل للعين
         if (dynamicAddonsArea) {
             let html = "";
-            if (extraFlowers > 0) html += `<div class="bose-invoice-addon-row"><span>الورد الإضافي (${extraFlowers} وردة):</span><span>+ ${extraCost} جنيه</span></div>`;
-            if (ribbonCost > 0) html += `<div class="bose-invoice-addon-row"><span>شريط ستان كلام مخصوص:</span><span>+ 50 جنيه</span></div>`;
-            if (photoCost > 0) html += `<div class="bose-invoice-addon-row"><span>الصور الشخصية المترتبة (${state.photoCount}):</span><span>+ ${photoCost} جنيه</span></div>`;
-            if (cardCost > 0) html += `<div class="bose-invoice-addon-row"><span>كارت إهداء شيك مكتوب:</span><span>+ 20 جنيه</span></div>`;
-            if (state.moneyAmount > 0) html += `<div class="bose-invoice-addon-row"><span>مفاجأة الكاش جوه البوكيه:</span><span>+ ${state.moneyAmount} جنيه</span></div>`;
-            if (state.chocolateBudget > 0) html += `<div class="bose-invoice-addon-row"><span>ميزانية الشوكولاتة الفخمة:</span><span>+ ${state.chocolateBudget} جنيه</span></div>`;
+            if (extraFlowers > 0) {
+                html += `<div class="bose-invoice-addon-row" style="display: flex; justify-content: space-between; background: rgba(255,145,164,0.05); padding: 12px 14px; border-radius: 12px; font-size: 13.5px; font-weight: 700; border: 1px solid rgba(255,145,164,0.15); color: #111111;"><span>الورد الإضافي (${extraFlowers} وردة):</span><span style="color: #FF91A4;">+ ${extraCost} جنيه</span></div>`;
+            }
+            if (ribbonCost > 0) {
+                html += `<div class="bose-invoice-addon-row" style="display: flex; justify-content: space-between; background: rgba(255,145,164,0.05); padding: 12px 14px; border-radius: 12px; font-size: 13.5px; font-weight: 700; border: 1px solid rgba(255,145,164,0.15); color: #111111;"><span>شريط ستان بكلام مخصوص:</span><span style="color: #FF91A4;">+ ${flowerConfig.satinRibbonPrice} جنيه</span></div>`;
+            }
+            if (photoCost > 0) {
+                html += `<div class="bose-invoice-addon-row" style="display: flex; justify-content: space-between; background: rgba(255,145,164,0.05); padding: 12px 14px; border-radius: 12px; font-size: 13.5px; font-weight: 700; border: 1px solid rgba(255,145,164,0.15); color: #111111;"><span>الصور الشخصية المترتبة (${state.photoCount}):</span><span style="color: #FF91A4;">+ ${photoCost} جنيه</span></div>`;
+            }
+            if (cardCost > 0) {
+                html += `<div class="bose-invoice-addon-row" style="display: flex; justify-content: space-between; background: rgba(255,145,164,0.05); padding: 12px 14px; border-radius: 12px; font-size: 13.5px; font-weight: 700; border: 1px solid rgba(255,145,164,0.15); color: #111111;"><span>كارت إهداء شيك مكتوب:</span><span style="color: #FF91A4;">+ ${flowerConfig.giftCardPrice} جنيه</span></div>`;
+            }
+            if (state.moneyAmount > 0) {
+                html += `<div class="bose-invoice-addon-row" style="display: flex; justify-content: space-between; background: rgba(255,145,164,0.05); padding: 12px 14px; border-radius: 12px; font-size: 13.5px; font-weight: 700; border: 1px solid rgba(255,145,164,0.15); color: #111111;"><span>مفاجأة الكاش جوه البوكيه:</span><span style="color: #FF91A4;">+ ${state.moneyAmount} جنيه</span></div>`;
+            }
+            if (state.chocolateBudget > 0) {
+                html += `<div class="bose-invoice-addon-row" style="display: flex; justify-content: space-between; background: rgba(255,145,164,0.05); padding: 12px 14px; border-radius: 12px; font-size: 13.5px; font-weight: 700; border: 1px solid rgba(255,145,164,0.15); color: #111111;"><span>ميزانية الشوكولاتة الفخمة:</span><span style="color: #FF91A4;">+ ${state.chocolateBudget} جنيه</span></div>`;
+            }
             dynamicAddonsArea.innerHTML = html;
         }
     }
@@ -136,7 +149,6 @@
      * 🗺️ حارس التحكم وتوجيه خطوات الـ Stepper ذكياً ومنع تشتت أزرار الخطوة الأخيرة
      */
     function updateActiveStepUI() {
-        // 1. إدارة إخفاء وإظهار كروت المراحل
         if (stepsPanels.length > 0) {
             stepsPanels.forEach(panel => {
                 const stepNum = parseInt(panel.getAttribute("data-step"), 10);
@@ -144,7 +156,6 @@
             });
         }
 
-        // 2. تحديث مؤشرات العقد العلوية
         if (stepsIndicators.length > 0) {
             stepsIndicators.forEach(node => {
                 const nodeNum = parseInt(node.getAttribute("data-step-target"), 10);
@@ -158,14 +169,13 @@
             });
         }
 
-        // 3. التحكم الذكي بالأزرار وحسم ثغرة التكرار والتضليل بالخطوة الرابعة
         if (btnPrev) btnPrev.style.display = (state.currentActiveStep === 1) ? "none" : "inline-flex";
 
         if (state.currentActiveStep === state.totalSteps) {
             if (btnNext) btnNext.style.display = "none";
             if (addToCartBtn) {
                 addToCartBtn.style.display = "inline-flex";
-                addToCartBtn.textContent = "اضافة للسلة"; // الالتزام بالنص العامي الراقي الموحد للموقع
+                addToCartBtn.textContent = "اضافة للسلة";
             }
         } else {
             if (btnNext) btnNext.style.display = "inline-flex";
@@ -173,7 +183,7 @@
         }
         
         if (dynamicPricingWidget) {
-            dynamicPricingWidget.style.display = (state.flowerType) ? "block" : "none";
+            dynamicPricingWidget.style.display = "block";
         }
     }
 
@@ -225,7 +235,6 @@
                 if (window.showBoseGlobalToast) window.showBoseGlobalToast("تم تأمين وحفظ الصورة بنجاح! ✨");
             }
         } catch (err) {
-            // Fallback محلي فوري عند ضعف الشبكة لحماية رحلة الشراء للعميل
             const reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onloadend = () => {
@@ -245,7 +254,6 @@
      * ⚙️ تهيئة المحرك وربط زناد الأحداث تفويضياً لمرة واحدة وحماية الذاكرة العشوائية
      */
     function initializeFlowerEngine() {
-        // ربط عناصر الـ DOM بالمتغيرات المحلية
         flowerCountInput = document.getElementById('flower-count');
         includePhotoCheckbox = document.getElementById('include-photo');
         photoFileInput = document.getElementById('photo-file');
@@ -262,6 +270,7 @@
         includeRibbonTextCheckbox = document.getElementById('include-ribbon-text');
         ribbonTextSection = document.getElementById('ribbon-text-section');
         ribbonTextInput = document.getElementById('ribbon-text-input');
+        ribbonStepPriceDisplay = document.getElementById('bose-ribbon-price-display'); // الحقل الجديد الموضع للسعر
         
         includeCashCheckbox = document.getElementById('include-cash-toggle');
         cashMasterBlock = document.getElementById('cash-master-integration-block');
@@ -281,17 +290,17 @@
         hiddenTypeInput = document.getElementById("flower-type");
         dynamicPricingWidget = document.getElementById("bose-dynamic-pricing-widget");
 
-        // استعادة الفئات النقدية وتغذية القائمة المنسدلة ديناميكياً
+        // تغذية القائمة المنسدلة ديناميكياً للفئات النقدية
         if (moneyCategorySelect && window.BoseStoreData) {
             let optionsHtml = `<option value="0" selected>اختار فئة الفلوس النقدية...</option>`;
-            const categories = window.BoseStoreData.flowerBuilder?.moneyCategories || flowerConfig.moneyCategories;
+            const categories = window.BoseStoreData.flowerBuilder?.moneyCategories || [{amount:5}, {amount:10}, {amount:20}, {amount:50}, {amount:100}, {amount:200}];
             categories.forEach(cat => {
                 optionsHtml += `<option value="${cat.amount}">فئة الـ ${cat.amount} جنيه</option>`;
             });
             moneyCategorySelect.innerHTML = optionsHtml;
         }
 
-        // استعادة الحالة المحفوظة سابقاً إن وجدت للعميل
+        // استعادة الحالة المحفوظة سابقاً إن وجدت
         try {
             const saved = localStorage.getItem(FLOWER_STATE_STORAGE_KEY);
             if (saved) {
@@ -301,7 +310,42 @@
             }
         } catch (e) {}
 
-        // ربط أحداث الأزرار التفاعلية لنوع الورد الكروي الفخم
+        // تطبيق الحالة المستعادة على عناصر الـ UI مباشرة لمنع الـ CLS
+        if (flowerCountInput) flowerCountInput.value = state.flowerCount;
+        if (includeRibbonTextCheckbox) {
+            includeRibbonTextCheckbox.checked = state.includeRibbonText;
+            if (ribbonTextSection) ribbonTextSection.style.display = state.includeRibbonText ? "block" : "none";
+        }
+        if (ribbonTextInput) ribbonTextInput.value = state.ribbonText;
+        if (includePhotoCheckbox) {
+            includePhotoCheckbox.checked = state.includePhoto;
+            const upSec = document.getElementById('photo-upload-section');
+            if (upSec) upSec.style.display = state.includePhoto ? "block" : "none";
+        }
+        if (photoCountInput) photoCountInput.value = state.photoCount;
+        if (state.photoUrl && photoPreviewImg) {
+            photoPreviewImg.src = state.photoUrl;
+            if (photoPreviewContainer) photoPreviewContainer.style.display = "block";
+        }
+        if (includeCardCheckbox) {
+            includeCardCheckbox.checked = state.includeCard;
+            const cardSec = document.getElementById('card-text-section');
+            if (cardSec) cardSec.style.display = state.includeCard ? "block" : "none";
+        }
+        if (cardTextInput) cardTextInput.value = state.cardText;
+        if (includeCashCheckbox) {
+            includeCashCheckbox.checked = state.includeCash;
+            if (cashMasterBlock) cashMasterBlock.style.display = state.includeCash ? "block" : "none";
+        }
+        if (moneyCategorySelect) moneyCategorySelect.value = state.moneyCategoryAmount;
+        if (moneyAmountDisplay) moneyAmountDisplay.value = state.moneyAmount;
+        if (includeChocolateCheckbox) {
+            includeChocolateCheckbox.checked = state.includeChocolate;
+            if (chocolateBudgetMasterBlock) chocolateBudgetMasterBlock.style.display = state.includeChocolate ? "block" : "none";
+        }
+        if (chocolateBudgetDisplay) chocolateBudgetDisplay.value = state.chocolateBudget;
+
+        // ربط أحداث أزرار نوع الورد الكروي الفخم
         if (iconicBtns.length > 0) {
             iconicBtns.forEach(btn => {
                 btn.classList.toggle("active-selected", btn.getAttribute("data-value") === state.flowerType);
@@ -316,7 +360,7 @@
             });
         }
 
-        // 🛡️ إصلاح وضبط مسار العداد ليكون الزائد (+) على اليمين والناقص (-) على اليسار بالملي
+        // ضبط مسار العداد ليكون الزائد (+) على اليمين والناقص (-) على اليسار بالملي
         const minusBtn = document.getElementById('flower-minus');
         const plusBtn = document.getElementById('flower-plus');
 
@@ -339,7 +383,7 @@
             };
         }
 
-        // ربط أحداث شرائط الستان والخيارات المفتوحة والمغلقة الموضعية
+        // ربط أحداث الستان المطور
         if (includeRibbonTextCheckbox) {
             includeRibbonTextCheckbox.onclick = (e) => {
                 state.includeRibbonText = e.target.checked;
@@ -353,6 +397,7 @@
             ribbonTextInput.oninput = (e) => { state.ribbonText = e.target.value; saveCurrentState(); };
         }
 
+        // الملحقات والصور
         if (includePhotoCheckbox) {
             includePhotoCheckbox.onclick = (e) => {
                 state.includePhoto = e.target.checked;
@@ -394,6 +439,7 @@
             cardTextInput.oninput = (e) => { state.cardText = e.target.value; saveCurrentState(); recalculatePrice(); };
         }
 
+        // الكاش المدمج
         if (includeCashCheckbox) {
             includeCashCheckbox.onclick = (e) => {
                 state.includeCash = e.target.checked;
@@ -430,6 +476,7 @@
             billMinus.onclick = () => { let step = state.moneyCategoryAmount || 50; if (state.moneyAmount >= step) { state.moneyAmount -= step; if (moneyAmountDisplay) moneyAmountDisplay.value = state.moneyAmount; saveCurrentState(); recalculatePrice(); } };
         }
 
+        // ميزانية الشوكولاتة الفاخرة
         if (includeChocolateCheckbox) {
             includeChocolateCheckbox.onclick = (e) => {
                 state.includeChocolate = e.target.checked;
@@ -449,7 +496,7 @@
             chocBudgetMinus.onclick = () => { if (state.chocolateBudget >= 50) { state.chocolateBudget -= 50; if (chocolateBudgetDisplay) chocolateBudgetDisplay.value = state.chocolateBudget; saveCurrentState(); recalculatePrice(); } };
         }
 
-        // ربط أزرار الـ Stepper الفاخرة المحدثة والتصفح المباشر بالنقرات
+        // أزرار التحكم في التصفح والـ Stepper
         if (btnNext) {
             btnNext.onclick = () => { if (state.currentActiveStep < state.totalSteps) { state.currentActiveStep++; updateActiveStepUI(); } };
         }
@@ -465,7 +512,7 @@
             });
         }
 
-        // إدارة كروت أعمالنا التذكارية الفخمة والنوافذ المنبثقة الشفافة
+        // معرض سابقة الأعمال والـ Popups
         const portfolioModal = document.getElementById('portfolio-popup-modal');
         const modalImg = document.getElementById('modal-display-img');
         const modalClose = document.getElementById('modal-close-node');
@@ -534,8 +581,7 @@
             };
         }
 
-        // تشغيل الرندرة الأولية للمحاكي فور اكتمال الربط
-        applyStateToUI();
+        // تشغيل الرندرة الأولية للمحاكي فور اكتمال الربط الموضعي
         recalculatePrice();
         updateActiveStepUI();
     }
