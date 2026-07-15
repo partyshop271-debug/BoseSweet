@@ -1,7 +1,7 @@
 /**
  * core-engine.js - المحرك المركزي العالمي وحارس البيانات والحسابات المالية
  * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية المؤمنة بالكامل V3
- * * [قاعدة صارمة]: يلتزم الملف بدوره الخلفي فقط، يحظر التدخل في مهام الملفات الأخرى،
+ * [قاعدة صارمة]: يلتزم الملف بدوره الخلفي فقط، يحظر التدخل في مهام الملفات الأخرى،
  * ويؤمن أعلى أداء مع أقل استهلاك بيانات على الموبايل والكمبيوتر.
  * تم التطوير والتوسيع الشامل لإصلاح مشاكل اختفاء المنتجات، الأقسام، والسلايدرات نهائياً.
  */
@@ -89,19 +89,17 @@
         applyGlobalSEOAndBranding();
         buildAndInjectGlobalComponents();
         
-        // جلب وتأمين عداد السلة بعد ضخ الهيدر مباشرة
         if (typeof window.updateGlobalCartCounter === 'function') {
             window.updateGlobalCartCounter();
         }
         
-        // تفعيل وحقن المكونات والأقسام ديناميكياً مع حماية كاملة من الانهيار
         injectHomepageSectionMeta();
         renderDynamicWaterfall();
         renderHomepageProductGrids();
         setupOurProductsShowMore();
         injectSimulatorsPreviewData();
+        setupCategoriesSliderTouch();
         
-        // إطلاق حدث الجاهزية لتبدأ المحركات الفرعية دورها المستقل دون تداخل
         document.dispatchEvent(new CustomEvent('BoseDatabaseLoaded', { detail: window.BoseStoreData }));
     }
 
@@ -112,7 +110,7 @@
         const data = window.BoseStoreData;
         if (!data || !data.homepage) return;
 
-        // 1. قسم عقد من الإتقان والسلايدر اللانهائي الخاص به
+        // 1. قسم عقد من الإتقان والسلايدر اللانهائي الدائري المصحح
         const excellenceSection = document.getElementById('excellence-section');
         if (excellenceSection && data.homepage.excellence) {
             const titleEl = excellenceSection.querySelector('.section-title') || excellenceSection.querySelector('h2');
@@ -127,12 +125,12 @@
                         <img src="${img}" alt="إتقان حلويات بوسي الفاخرة" loading="lazy" />
                     </div>
                 `).join('');
-                // مضاعفة العناصر لضمان حركة دائرية انسيابية لا نهائية مريحة لعين العميل وبدون أي فراغات
-                track.innerHTML = `<div class="excellence-track-loop">${imagesHtml} ${imagesHtml}</div>`;
+                // مضاعفة مضاعفة لتأمين التفاف انسيابي لانهائي كامل ممتد لراحة عين العميل
+                track.innerHTML = `<div class="excellence-track-loop">${imagesHtml} ${imagesHtml} ${imagesHtml}</div>`;
             }
         }
 
-        // 2. قسم تسوق حسب الفئة (ثابت ويستجيب للـ Dots والأسهم والسحب بدون حركة تلقائية)
+        // 2. قسم تسوق حسب الفئة (سلايدر السحب التفاعلي مع النقاط)
         const categoriesSection = document.getElementById('categories-slider-section');
         if (categoriesSection && data.homepage.categoriesSlider) {
             const titleEl = categoriesSection.querySelector('.section-title') || categoriesSection.querySelector('h2');
@@ -146,6 +144,9 @@
                         <div class="category-card-name">${cat.title}</div>
                     </div>
                 `).join('');
+                
+                // بناء نقاط التصفح (Dots) بعدد كروت الفئات ديناميكياً
+                buildCategoriesDots(data.homepage.categoriesSlider.length);
             }
         }
 
@@ -175,6 +176,110 @@
             const descEl = ourProductsSection.querySelector('p');
             if (descEl) descEl.textContent = "التشكيلة العامة الفاخرة المحضرة يومياً بمكونات طبيعية 100%.";
         }
+    }
+
+    /**
+     * بناء مؤشرات التنقل النقطية الذكية لقسم الفئات
+     */
+    function buildCategoriesDots(count) {
+        const dotsContainer = document.getElementById('categories-dots-container') || document.querySelector('.categories-slider-dots');
+        if (!dotsContainer) return;
+        
+        let dotsHtml = '';
+        for (let i = 0; i < count; i++) {
+            dotsHtml += `<span class="bose-slider-dot ${i === 0 ? 'active' : ''}" data-index="${i}"></span>`;
+        }
+        dotsContainer.innerHTML = dotsHtml;
+    }
+
+    /**
+     * 🎹 تفعيل معالجة الإيماءات والسحب اللحظي لسلايدر فئات تسوق حسب الفئة بالدوتس
+     */
+    function setupCategoriesSliderTouch() {
+        const sliderWrapper = document.getElementById('categories-slider-section');
+        const track = document.getElementById('categories-track');
+        if (!sliderWrapper || !track) return;
+
+        let isDragging = false;
+        let startX = 0;
+        let scrollLeft = 0;
+
+        // دعم السحب المباشر بالفأرة للكمبيوتر
+        track.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            track.style.cursor = 'grabbing';
+            startX = e.pageX - track.offsetLeft;
+            scrollLeft = track.scrollLeft;
+        });
+
+        track.addEventListener('mouseleave', () => {
+            isDragging = false;
+            track.style.cursor = 'grab';
+        });
+
+        track.addEventListener('mouseup', () => {
+            isDragging = false;
+            track.style.cursor = 'grab';
+            updateActiveDot(track);
+        });
+
+        track.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            e.preventDefault();
+            const x = e.pageX - track.offsetLeft;
+            const walk = (x - startX) * 1.5; 
+            track.scrollLeft = scrollLeft - walk;
+        });
+
+        // دعم السحب اللمسي الفوري لشاشات الموبايل
+        track.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].pageX - track.offsetLeft;
+            scrollLeft = track.scrollLeft;
+        }, { passive: true });
+
+        track.addEventListener('touchmove', (e) => {
+            const x = e.touches[0].pageX - track.offsetLeft;
+            const walk = (x - startX) * 1.2;
+            track.scrollLeft = scrollLeft - walk;
+        }, { passive: true });
+
+        track.addEventListener('touchend', () => {
+            updateActiveDot(track);
+        });
+
+        // ربط النقاط (Dots) التفاعلية لتمرير السلايدر عند الضغط عليها
+        const dotsContainer = document.getElementById('categories-dots-container') || document.querySelector('.categories-slider-dots');
+        if (dotsContainer) {
+            dotsContainer.addEventListener('click', (e) => {
+                const dot = e.target.closest('.bose-slider-dot');
+                if (!dot) return;
+                const index = parseInt(dot.getAttribute('data-index'), 10);
+                const cards = track.querySelectorAll('.category-card-unified');
+                if (cards[index]) {
+                    const cardWidth = cards[index].offsetWidth + 30; // إضافة الهامش الـ margin
+                    track.scrollTo({
+                        left: cardWidth * index,
+                        behavior: 'smooth'
+                    });
+                    
+                    dotsContainer.querySelectorAll('.bose-slider-dot').forEach(d => d.classList.remove('active'));
+                    dot.classList.add('active');
+                }
+            });
+        }
+    }
+
+    function updateActiveDot(track) {
+        const cards = track.querySelectorAll('.category-card-unified');
+        if (cards.length === 0) return;
+        const cardWidth = cards[0].offsetWidth + 30;
+        const currentIndex = Math.round(track.scrollLeft / cardWidth);
+        
+        const dots = document.querySelectorAll('.bose-slider-dot');
+        dots.forEach((dot, idx) => {
+            if (idx === currentIndex) dot.classList.add('active');
+            else dot.classList.remove('active');
+        });
     }
 
     /**
@@ -230,9 +335,6 @@
         `;
     }
 
-    /**
-     * إدارة التحكم في عداد الكمية المرن داخل كروت المنتجات ومنع القيم السالبة
-     */
     window.handleBoseCardQtyChange = function(buttonElement, direction) {
         const qtyContainer = buttonElement.closest('.product-card-qty-wrapper');
         const cardContainer = buttonElement.closest('.product-card-unified');
@@ -281,7 +383,7 @@
     }
 
     /**
-     * 🌟 نظام التحكم الديناميكي لزر (إظهار المزيد) بقسم منتجاتنا لحقن بقية الـ 8 منتجات بسلاسة كرتية
+     * 🌟 نظام التحكم الديناميكي لزر (إظهار المزيد) بقسم منتجاتنا لحقن بقية الـ 8 منتجات بسلاسة كرتية ثنائية
      */
     function setupOurProductsShowMore() {
         const showMoreBtn = document.getElementById('our-products-show-more-btn');
@@ -341,9 +443,6 @@
         }
     }
 
-    /**
-     * الحارس المالي: مراجعة زيادة الأسعار التضخمية وحظر التلاعب بالأسعار محلياً بدقة الكسور الكاملة
-     */
     window.calculateBosePrice = function(basePrice, applyOnContext = "menu-only") {
         if (!window.BoseStoreData) return basePrice;
         const rule = window.BoseStoreData.store.priceIncrease;
@@ -353,20 +452,15 @@
         return basePrice;
     };
 
-    /**
-     * حساب السعر النهائي للمنتجات القياسية والميني تورت والكب كيك بدقة الكسور الكاملة دون تقريب عشوائي
-     */
     window.calculateProductFinalPrice = function(product, selectedOptions) {
         const opts = selectedOptions || {};
         let price = 0;
         
         if (product) {
             price = product.price || product.basePrice || 0;
-
             if (product.prices && opts.size) {
                 price = product.prices[opts.size] || price;
             }
-
             const selectedPrinting = opts.printing || opts.printingType || 'none';
             if (selectedPrinting && selectedPrinting !== 'none') {
                 let printingFee = 0;
@@ -377,7 +471,6 @@
                         if (printingOpt) printingFee = printingOpt.price;
                     }
                 }
-                
                 if (printingFee === 0) {
                     if (selectedPrinting === 'edible' || selectedPrinting === 'printable-edible' || selectedPrinting === 'صورة_صالحة_للأكل') {
                         printingFee = 60;
@@ -387,27 +480,20 @@
                 }
                 price += printingFee;
             }
-            
             if (product.isMiniCake || product.type === "mini-cake" || product.slug === "mini-cake-two-person") {
                 if (opts.extraToppingPrice) price += parseFloat(opts.extraToppingPrice);
                 if (opts.printingPrice) price += parseFloat(opts.printingPrice);
             }
         }
-
         return window.calculateBosePrice(price, "menu-only");
     };
 
-    /**
-     * الحسبة المعتمدة لمحاكاة أسعار التورتة المخصصة ديناميكياً بدقة مطلقة (سعر الفرد 145 جنيه)
-     */
     window.calculateCustomCakePrice = function(persons, options = {}) {
         const config = window.BoseStoreData?.cakeBuilder;
         const safePersons = parseInt(persons, 10) || (config ? config.persons.minimum : 10) || 10;
         let price = (config ? config.basePrice : 580) || 580;
-        
         const minPersons = (config ? config.persons.minimum : 10) || 10;
         const pricePerPerson = (config ? config.pricePerPerson : 145) || 145;
-        
         const extraPersons = Math.max(0, safePersons - minPersons);
         price += extraPersons * pricePerPerson;
         
@@ -423,48 +509,29 @@
             }
             price += printingFee;
         }
-
-        if (options.wrappingPrice) {
-            price += parseFloat(options.wrappingPrice) || 0;
-        }
-        
+        if (options.wrappingPrice) price += parseFloat(options.wrappingPrice) || 0;
         return window.calculateBosePrice(price, "menu-only");
     };
 
-    /**
-     * الحسبة الهندسية لأسعار بوكيهات الورد المخصصة مع الإضافات - صافية وبدون أي رسوم معالجة على الكاش
-     */
     window.calculateCustomFlowerPrice = function(flowerCount, options = {}) {
         const basePrice = 400; 
         const extraFlowerPrice = 35; 
-        
         const safeFlowerCount = parseInt(flowerCount, 10) || 15;
         const extraFlowers = Math.max(0, safeFlowerCount - 15);
-        
         let servicePrice = basePrice + (extraFlowers * extraFlowerPrice);
-        
         if (options.hasSatinRibbon) servicePrice += 50; 
-        
         const safePhotoCount = parseInt(options.photoCount, 10) || 0;
         if (options.hasPhotos && safePhotoCount > 0) servicePrice += safePhotoCount * 15; 
-        
         if (options.hasGiftCard) servicePrice += 20; 
-        
         const finalServicePrice = window.calculateBosePrice(servicePrice, "menu-only");
-        
         const safeCashAmount = parseFloat(options.cashAmount) || 0;
         const safeChocolateBudget = parseFloat(options.chocolateBudget) || 0;
-        
         return finalServicePrice + safeCashAmount + safeChocolateBudget;
     };
 
-    /**
-     * بناء كائن عنصر السلة الموحد بالهندسة اللفظية الراقية للعلامة الفاخرة
-     */
     window.createCartItem = function(product, selectedOptions, quantity = 1) {
         if (!product) return null;
         const opts = selectedOptions || {};
-        
         let finalUnitPrice = 0;
         if (product.type === "custom-flower") {
             finalUnitPrice = window.calculateCustomFlowerPrice(opts.flowerCount, opts);
@@ -480,7 +547,6 @@
                              (product.customizationOptions && Object.keys(opts).length > 0);
                              
         const finalId = isCustomizable ? `${product.slug}-${Date.now()}` : String(product.slug || product.id);
-        
         let correctFlavor = opts.flavorName || opts.cakeType || product.flavorName || product.flavor || "جاهز وفريش";
         if (correctFlavor === "none" || correctFlavor === "افتراضي") {
             correctFlavor = product.flavorName || "جاهز وفريش";
@@ -517,9 +583,6 @@
         };
     };
 
-    /**
-     * التحقق من أرقام الهواتف وتطهيرها بالصيغة المصرية الصارمة
-     */
     window.validateBosePhoneNumber = function(phone, isOptional = false) {
         if (!phone || phone.trim() === "") return isOptional;
         const cleaned = window.sanitizeBosePhoneNumber(phone);
@@ -535,9 +598,6 @@
         return cleaned;
     };
 
-    /**
-     * حارس الوقت القياسي والموحد (شرط الـ 24 ساعة للتحضير)
-     */
     window.validateBoseDeliverySchedule = function(dateStr, timeStr) {
         if (!dateStr || !timeStr) return false;
         const selectedDateTime = new Date(`${dateStr}T${timeStr}`);
@@ -546,16 +606,12 @@
         return (selectedDateTime - currentDateTime) / (1000 * 60 * 60) >= 23.95;
     };
 
-    /**
-     * تحديث شارة عداد السلة اللحظي بالهيدر لجميع صفحات الموقع
-     */
     window.updateGlobalCartCounter = function() {
         const cartCountBadges = document.querySelectorAll('#nav-cart-count');
         if (cartCountBadges.length === 0) return;
         
         const rawCart = localStorage.getItem('bose_cart');
         const cart = rawCart ? JSON.parse(rawCart) : [];
-        
         let totalDisplayItems = 0;
         cart.forEach(item => {
             const isBespokeOrCustom = item.type === "custom-cake" || 
@@ -564,13 +620,9 @@
                                       (item.id && item.id.includes("-"));
             totalDisplayItems += isBespokeOrCustom ? 1 : (parseInt(item.quantity, 10) || 1);
         });
-        
         cartCountBadges.forEach(badge => badge.textContent = totalDisplayItems);
     };
 
-    /**
-     * توست إشعاري ناعم الملمس متوافق مع قوانين الهندسة البصرية والهوية الوردية الفاخرة
-     */
     window.showBoseGlobalToast = function(message) {
         let container = document.getElementById('bose-toast-container');
         if (!container) {
@@ -592,12 +644,8 @@
         }, 3000);
     };
 
-    /**
-     * معالجة الإضافة المباشرة من كروت المنتجات القياسية والموحدة
-     */
     window.handleBoseDirectAddToCart = function(buttonElement, productId) {
         if (!window.BoseStoreData || !buttonElement) return;
-        
         const product = window.BoseStoreData.products.find(p => p.id === productId);
         if (!product) return;
 
@@ -610,7 +658,6 @@
 
         const rawCart = localStorage.getItem('bose_cart');
         let cart = rawCart ? JSON.parse(rawCart) : [];
-
         const existingItem = cart.find(item => item.id === product.slug);
         if (existingItem) {
             existingItem.quantity += qty;
@@ -659,9 +706,6 @@
         }
     };
 
-    /**
-     * زرع التهيئات والتصميمات الحاكمة وحل مشاكل الخلفيات الباهتة أو اختفاء الألوان المميزة
-     */
     function injectEarlyDependencies() {
         if (!document.querySelector('link[href*="fonts.googleapis.com"]')) {
             const p1 = document.createElement('link'); p1.rel = 'preconnect'; p1.href = 'https://fonts.googleapis.com';
@@ -690,7 +734,6 @@
                 h1, h2 { font-weight: 700 !important; color: #111111 !important; }
                 h3, h4 { font-weight: 600 !important; color: #111111 !important; }
                 
-                /* تنسيقات الهيدر والشريط الإعلاني */
                 .bose-sticky-header { position: fixed !important; top: 40px !important; left: 0 !important; width: 100% !important; z-index: 40000 !important; box-shadow: 0 4px 20px rgba(255, 145, 164, 0.08) !important; background-color: #FFFFFF !important; display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; box-sizing: border-box; height: 70px; }
                 .bose-top-bar-marquee-container { position: fixed !important; top: 0 !important; left: 0 !important; width: 100% !important; z-index: 41000 !important; height: 40px !important; background-color: #FF91A4; overflow: hidden; display: flex; align-items: center; }
                 .bose-top-bar-marquee-track { display: flex; width: max-content; animation: boseMarquee 25s linear infinite; will-change: transform; }
@@ -706,7 +749,6 @@
                 .nav-cart-icon-wrapper { position: relative; text-decoration: none; display: flex; align-items: center; }
                 .nav-cart-count-badge { position: absolute; top: -5px; right: -8px; background-color: #FF91A4; color: #FFFFFF; font-size: 11px; font-weight: 700; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; border: 1px solid #FFFFFF; }
                 
-                /* تنسيقات القائمة الجانبية الفاخرة */
                 .bose-sidebar-drawer { position: fixed; top: 0; right: -360px; width: 360px; height: 100%; background-color: #FFFFFF !important; z-index: 50000; transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: -8px 0 32px rgba(255, 145, 164, 0.12); direction: rtl; border-left: 1px solid rgba(255, 145, 164, 0.2); display: flex; flex-direction: column; overflow: hidden; }
                 .bose-sidebar-drawer.open { right: 0; }
                 .sidebar-header { display: flex; justify-content: space-between; align-items: center; padding: 24px; border-bottom: 1px solid rgba(255, 145, 164, 0.2); background: #FFFFFF; }
@@ -740,7 +782,6 @@
                 .bose-sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(17, 17, 17, 0.35); opacity: 0; pointer-events: none; z-index: 49000; transition: opacity 0.4s ease; backdrop-filter: blur(4px); }
                 .bose-sidebar-overlay.show { opacity: 1; pointer-events: auto; }
                 
-                /* تنسيقات نافذة البحث المودال */
                 .bose-search-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #FFFFFF; z-index: 60000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; direction: rtl; padding: 30px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px; }
                 .bose-search-modal.active { opacity: 1; pointer-events: auto; }
                 .search-modal-header { display: flex; justify-content: flex-end; }
@@ -757,7 +798,6 @@
                 .search-result-price-view { font-weight: 700; color: #FF91A4; font-size: 14px; }
                 .search-no-results-msg { text-align: center; color: #111111; opacity: 0.6; padding: 40px; font-weight: 600; }
 
-                /* تنسيقات الفوتر الموحد الصافي */
                 .bose-footer { background-color: #FFFFFF !important; border-top: 1px solid rgba(255, 145, 164, 0.3); padding: 60px 20px 20px; direction: rtl; }
                 .footer-grid-layout { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; }
                 .footer-brand-meta { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
@@ -777,7 +817,6 @@
                 .footer-copyright-block { text-align: center; border-top: 1px solid rgba(255, 145, 164, 0.15); margin-top: 50px; padding-top: 20px; font-size: 13px; color: #111111; font-weight: 600; }
                 .footer-copyright-block span { color: #FF91A4; font-weight: 700; }
                 
-                /* تنسيقات كروت وحاوية المنتجات الموحدة القياسية للشبكة */
                 .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; width: 100%; max-width: 1200px; margin: 0 auto; padding: 20px; box-sizing: border-box; }
                 @media (max-width: 768px) { .products-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; } }
                 .product-card-unified { background: #FFFFFF; border: 1px solid rgba(255, 145, 164, 0.2); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 8px 32px rgba(255, 145, 164, 0.04); transition: transform 0.3s ease, box-shadow 0.3s ease; position: relative; }
@@ -789,7 +828,6 @@
                 .product-card-flavor-name { font-size: 14px; font-weight: 600; color: #FF91A4; }
                 .product-card-desc { font-size: 13px; color: #111111; opacity: 0.7; line-height: 1.6; margin: 0; min-height: 42px; }
                 
-                /* هندسة العداد البصري المريح */
                 .product-card-qty-wrapper { display: flex; align-items: center; justify-content: center; gap: 10px; background: rgba(255, 145, 164, 0.05); padding: 6px; border-radius: 30px; margin-top: auto; direction: ltr; }
                 .btn-qty-minus, .btn-qty-plus { background: #FFFFFF; border: 1px solid rgba(255, 145, 164, 0.3); width: 32px; height: 32px; border-radius: 50%; font-weight: 700; color: #111111; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
                 .btn-qty-minus:hover, .btn-qty-plus:hover { background: #FF91A4; color: #FFFFFF; border-color: #FF91A4; }
@@ -799,7 +837,10 @@
                 .btn-add-to-cart { background: #FFFFFF; border: 1px solid #FF91A4; color: #FF91A4; padding: 10px 20px; border-radius: 25px; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.3s ease; width: 100%; box-sizing: border-box; }
                 .btn-add-to-cart:hover { background: #FF91A4; color: #FFFFFF; }
                 
-                /* تنسيقات كروت الفئات الكبيرة الـ 12 وحلقات الحركة الانسيابية */
+                /* [تحديث هندسي]: السلايدر الجانبي المستجيب للسحب الكامل مع النقاط بقسم الفئات */
+                .categories-slider-outer-container { position: relative; width: 100%; max-width: 1200px; margin: 0 auto; overflow: hidden; padding: 20px 0; }
+                .categories-track-slider { display: flex; overflow-x: auto; scroll-behavior: smooth; padding: 10px; cursor: grab; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+                .categories-track-slider::-webkit-scrollbar { display: none; }
                 .category-card-unified { background: #FFFFFF; border: 1px solid rgba(255, 145, 164, 0.15); border-radius: 24px; padding: 12px; width: 280px; box-shadow: var(--bose-shadow-glow); transition: all 0.3s ease; text-align: center; flex-shrink: 0; box-sizing: border-box; margin: 0 15px; }
                 .category-card-unified:hover { transform: translateY(-6px); box-shadow: var(--bose-shadow-hover); border-color: var(--bose-pink); }
                 .category-card-img { width: 100%; height: 280px; object-fit: cover; border-radius: 18px; }
@@ -808,19 +849,23 @@
                 @media (min-width: 768px) { .category-card-unified { width: 340px; } .category-card-img { height: 340px; } }
                 @media (min-width: 1024px) { .category-card-unified { width: 420px; } .category-card-img { height: 420px; } }
                 
-                /* حركات الشلال البصري المتعاكس */
+                /* تصميم نقاط التصفح الانسيابية البمبية */
+                .categories-slider-dots { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 24px; width: 100%; }
+                .bose-slider-dot { width: 10px; height: 10px; background-color: rgba(255, 145, 164, 0.3); border-radius: 50%; cursor: pointer; transition: all 0.3s ease; }
+                .bose-slider-dot.active { background-color: #FF91A4; width: 24px; border-radius: 50px; box-shadow: 0 0 8px rgba(255, 145, 164, 0.5); }
+
                 .waterfall-up { display: flex; flex-direction: column; gap: 20px; animation: boseWaterfallUp 40s linear infinite; will-change: transform; }
                 .waterfall-down { display: flex; flex-direction: column; gap: 20px; animation: boseWaterfallDown 40s linear infinite; will-change: transform; }
                 @keyframes boseWaterfallUp { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(0, -50%, 0); } }
                 @keyframes boseWaterfallDown { 0% { transform: translate3d(0, -50%, 0); } 100% { transform: translate3d(0, 0, 0); } }
                 
-                /* حركة السلايدر الخاص بقسم عقد من الإتقان */
-                .excellence-track-loop { display: flex; width: max-content; animation: boseExcellence 30s linear infinite; will-change: transform; }
+                /* [تحديث هندسي]: حلقة الحركة الدائرية اللانهائية الممتدة بلا أي فراغات بقسم عقد من الإتقان */
+                .excellence-track-loop { display: flex; width: max-content; animation: boseExcellence 35s linear infinite; will-change: transform; }
                 .excellence-slide-card { width: 100vw; height: auto; flex-shrink: 0; }
                 .excellence-slide-card img { width: 100%; height: auto; object-fit: cover; }
-                @keyframes boseExcellence { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-50%, 0, 0); } }
+                @keyframes boseExcellence { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-33.3333%, 0, 0); } }
 
-                /* تلوين محاكيات البلوكات الفاخرة بالبمبي السلس لملء العرض ومنع الاختفاء */
+                /* [تحديث هندسي]: تلوين خلفيات بلوك المحاكيات باللون البمبي الفاخر لملء الشاشة بالكامل */
                 .bose-simulator-preview-block { background: #FF91A4 !important; padding: 60px 20px; border-radius: 0px; text-align: center; width: 100%; box-sizing: border-box; }
                 .bose-simulator-preview-block h2, .bose-simulator-preview-block p { color: #FFFFFF !important; }
                 .bose-simulator-preview-cta-btn { display: inline-block; background-color: #FFFFFF !important; color: #FF91A4 !important; font-weight: 700; padding: 12px 32px; border-radius: 30px; text-decoration: none; margin-top: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.06); transition: all 0.3s; }
