@@ -1,7 +1,7 @@
 /**
  * core-engine.js - المحرك المركزي العالمي وحارس البيانات والحسابات المالية
- * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية المؤمنة بالكامل V3.8
- * [تطهير برمي وتأمين بصري شامل]: تم حظر الارتفاعات الصلبة المسببة للاختفاء وقص المحاكيات بالكامل.
+ * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية المؤمنة بالكامل V4.5
+ * [تطهير برمي وتأمين بصري شامل]: تم حظر الارتفاعات الصلبة، وإصلاح الأنميشن اللانهائي، وتفعيل الـ Dots.
  */
 
 (function() {
@@ -19,19 +19,18 @@
     document.addEventListener('DOMContentLoaded', forceScrollToTop);
     window.addEventListener('load', forceScrollToTop);
 
-    // تهيئة المتغيرات العالمية الموحدة في نطاق window لخدمة صفحات الموقع
     window.BoseStoreData = null; 
-    window.boseServerTimeOffset = 0; // فارق التوقيت بالمللي ثانية: (وقت الخادم - وقت جهاز العميل)
+    window.boseServerTimeOffset = 0; 
 
     /**
-     * جلب وقراءة قاعدة بيانات حلويات بوسي الموحدة - نظام الكاش الذكي الموفر للبيانات والباقة
+     * جلب وقراءة قاعدة بيانات حلويات بوسي الموحدة
      */
     async function loadStoreDatabase() {
         if (window.BoseStoreData) return;
         
         const cachedData = localStorage.getItem('bose_cached_store_data');
         const cachedTime = localStorage.getItem('bose_cached_store_time');
-        const cacheExpiry = 15 * 60 * 1000; // صلاحية الكاش 15 دقيقة لضمان حداثة الأسعار والروقان
+        const cacheExpiry = 15 * 60 * 1000; 
 
         if (cachedData && cachedTime && (Date.now() - parseInt(cachedTime, 10) < cacheExpiry)) {
             try {
@@ -52,7 +51,6 @@
                 const response = await fetch('data/site-data-final.json');
                 if (!response.ok) throw new Error('فشل جلب ملف قاعدة البيانات الرئيسي.');
                 
-                // استخلاص توقيت الخادم الحقيقي من الهيدر لمنع تلاعب أو فروق ساعات أجهزة العملاء
                 const serverDateHeader = response.headers.get('Date');
                 if (serverDateHeader) {
                     const serverTime = new Date(serverDateHeader).getTime();
@@ -83,7 +81,7 @@
     }
 
     /**
-     * دالة تشغيل التدفق المركزي والتهيئات البصرية المبكرة للموقع مع حماية صارمة ضد أخطاء الـ DOM
+     * تشغيل التدفق المركزي والتهيئات البصرية المبكرة
      */
     function initCoreFlow() {
         injectEarlyDependencies();
@@ -106,45 +104,47 @@
     }
 
     /**
-     * ✍️ ضخ العناوين والوصف للأقسام الرئيسية لعلامة حلويات بوسي لمنع الاختفاء البصري واصلاح السلايدر
+     * ضخ العناوين والوصف للأقسام الرئيسية لعلامة حلويات بوسي لمنع الاختفاء البصري
      */
     function injectHomepageSectionMeta() {
         const data = window.BoseStoreData;
         if (!data || !data.homepage) return;
 
-        // 1. قسم عقد من الإتقان - معالجة ظهور الصور بلا انقطاع ودون حجب أو اختفاء بنظام التكرار السلس ثلاثي الأبعاد
-        const excellenceSection = document.getElementById('excellence-section') || document.querySelector('[id*="excellence"]');
+        // 1. قسم عقد من الإتقان - معالجة حركة الصور التناغمية اللانهائية بدون فواصل بيضاء
+        const excellenceSection = document.getElementById('excellence-section');
         if (excellenceSection && data.homepage.excellence) {
             const titleEl = excellenceSection.querySelector('.section-title') || excellenceSection.querySelector('h2');
-            const descEl = excellenceSection.querySelector('.section-desc') || excellenceSection.querySelector('p');
+            const descEl = excellenceSection.querySelector('.section-subtitle') || excellenceSection.querySelector('.bose-section-subtitle') || excellenceSection.querySelector('p');
             if (titleEl) titleEl.textContent = data.homepage.excellence.title;
             if (descEl) descEl.textContent = data.homepage.excellence.description;
             
-            const track = document.getElementById('excellence-images-track') || excellenceSection.querySelector('.excellence-track') || excellenceSection.querySelector('[id*="track"]');
+            const track = document.getElementById('excellence-images-track');
             if (track && data.homepage.excellence.images) {
-                // [إصلاح حاسم ومنع الوميض]: تكرار الصور 4 مرات كاملة لضمان التفاف الحركة (Infinite Carousel Loop) بلا أي فجوات بيضاء نهائياً
+                // تكرار ملوكي هندسي صارم للصور لتأمين التفاف الحركة الدائرية بنسبة 100% بدون فجوات
                 const imagesHtml = data.homepage.excellence.images.map(img => `
-                    <div class="excellence-slide-card" style="width: 100vw; flex-shrink: 0; display: block;">
-                        <img src="${img}" alt="إتقان حلويات بوسي الفاخرة" style="width:100%; height:auto; display:block; object-fit:cover;" />
+                    <div class="excellence-slide-card">
+                        <img src="${img}" alt="إتقان حلويات بوسي الفاخرة" />
                     </div>
                 `).join('');
                 
-                track.innerHTML = `<div class="excellence-track-loop" style="display:flex; width:max-content; animation: bosePerfectionLoop 25s linear infinite; will-change: transform;">${imagesHtml} ${imagesHtml} ${imagesHtml} ${imagesHtml}</div>`;
+                track.innerHTML = `${imagesHtml} ${imagesHtml} ${imagesHtml} ${imagesHtml}`;
             }
         }
 
-        // 2. قسم تسوق حسب الفئة (إلغاء الحركة التلقائية المزعجة وحقن مؤشرات التصفح والأسهم)
-        const categoriesSection = document.getElementById('categories-slider-section') || document.getElementById('categories-section') || document.querySelector('[id*="categories"]');
+        // 2. قسم تسوق حسب الفئة
+        const categoriesSection = document.getElementById('categories-slider-section');
         if (categoriesSection && data.homepage.categoriesSlider) {
             const titleEl = categoriesSection.querySelector('.section-title') || categoriesSection.querySelector('h2');
+            const descEl = categoriesSection.querySelector('.bose-section-subtitle') || categoriesSection.querySelector('p');
             if (titleEl) titleEl.textContent = "تسوق حسب الفئة";
+            if (descEl) descEl.textContent = "سهولة الانتقال المباشر لأي صنف تفضله بكل راحة وسلاسة بصريّة.";
             
-            const track = document.getElementById('categories-track') || categoriesSection.querySelector('.categories-track') || categoriesSection.querySelector('[id*="track"]');
+            const track = document.getElementById('categories-track');
             if (track) {
                 track.innerHTML = data.homepage.categoriesSlider.map(cat => `
-                    <div class="category-card-unified" onclick="window.location.href='category.html?id=${cat.id}'" style="cursor:pointer; background:#FFFFFF; border:1px solid rgba(255,145,164,0.15); border-radius:24px; padding:12px; width:280px; flex-shrink:0; box-sizing:border-box; margin:0 15px; text-align:center;">
-                        <img src="${cat.image}" alt="${cat.title}" class="category-card-img" style="width:100%; height:280px; object-fit:cover; border-radius:18px;" loading="lazy" />
-                        <div class="category-card-name" style="font-size:20px; font-weight:700; color:#111111; margin-top:15px;">${cat.title}</div>
+                    <div class="category-card-unified" onclick="window.location.href='category.html?id=${cat.id}'">
+                        <img src="${cat.image}" alt="${cat.title}" class="category-card-img" loading="lazy" />
+                        <div class="category-card-name">${cat.title}</div>
                     </div>
                 `).join('');
                 
@@ -171,7 +171,7 @@
         }
 
         // 5. قسم منتجاتنا
-        const ourProductsSection = document.getElementById('our-products-section') || document.querySelector('[id*="our-products"]');
+        const ourProductsSection = document.getElementById('our-products-section');
         if (ourProductsSection) {
             const titleEl = ourProductsSection.querySelector('h2');
             if (titleEl) titleEl.textContent = "منتجاتنا";
@@ -181,37 +181,11 @@
     }
 
     /**
-     * بناء مؤشرات التنقل النقطية الـ 12 والأسهم لقسم تسوق حسب الفئة
+     * بناء مؤشرات التنقل النقطية الـ 12 لقسم تسوق حسب الفئة
      */
     function buildCategoriesDots(count) {
-        const categoriesSection = document.getElementById('categories-slider-section') || document.getElementById('categories-section') || document.querySelector('[id*="categories"]');
-        if (!categoriesSection) return;
-
-        let controlsWrapper = categoriesSection.querySelector('.categories-slider-controls-wrapper');
-        let dotsContainer = document.getElementById('categories-dots-container');
-        
-        if (!controlsWrapper) {
-            controlsWrapper = document.createElement('div');
-            controlsWrapper.className = 'categories-slider-controls-wrapper';
-            controlsWrapper.style.cssText = 'display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:24px; width:100%;';
-            
-            const arrowsContainer = document.createElement('div');
-            arrowsContainer.className = 'bose-slider-arrows';
-            arrowsContainer.style.cssText = 'display:flex; gap:20px; direction:ltr;';
-            arrowsContainer.innerHTML = `
-                <button class="bose-slider-arrow prev" style="background:#FFFFFF; border:1px solid #FF91A4; color:#FF91A4; width:45px; height:45px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:16px; transition:all 0.3s;"><i class="fa-solid fa-chevron-left"></i></button>
-                <button class="bose-slider-arrow next" style="background:#FFFFFF; border:1px solid #FF91A4; color:#FF91A4; width:45px; height:45px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:16px; transition:all 0.3s;"><i class="fa-solid fa-chevron-right"></i></button>
-            `;
-            
-            dotsContainer = document.createElement('div');
-            dotsContainer.id = 'categories-dots-container';
-            dotsContainer.className = 'categories-slider-dots';
-            dotsContainer.style.cssText = 'display:flex; justify-content:center; align-items:center; gap:8px;';
-            
-            controlsWrapper.appendChild(arrowsContainer);
-            controlsWrapper.appendChild(dotsContainer);
-            categoriesSection.appendChild(controlsWrapper);
-        }
+        const dotsContainer = document.getElementById('categories-dots-container');
+        if (!dotsContainer) return;
         
         let dotsHtml = '';
         for (let i = 0; i < count; i++) {
@@ -221,39 +195,25 @@
     }
 
     /**
-     * 🎹 تفعيل معالجة الإيماءات والسحب اليدوي السلس والتحكم الكامل بالأسهم (حظر الحركة التلقائية)
+     * تفعيل السحب اليدوي والتحكم الكامل بالأسهم والنقاط (حل مشكلة عدم استجابة الـ Dots)
      */
     function setupCategoriesSliderTouch() {
-        const categoriesSection = document.getElementById('categories-slider-section') || document.getElementById('categories-section') || document.querySelector('[id*="categories"]');
-        const track = document.getElementById('categories-track') || (categoriesSection ? categoriesSection.querySelector('.categories-track') || categoriesSection.querySelector('[id*="track"]') : null);
+        const track = document.getElementById('categories-track');
+        const dotsContainer = document.getElementById('categories-dots-container');
         if (!track) return;
 
         let isDragging = false;
         let startX = 0;
         let scrollLeft = 0;
 
-        track.style.display = 'flex';
-        track.style.overflowX = 'auto';
-        track.style.scrollBehavior = 'smooth';
-        track.style.webkitOverflowScrolling = 'touch';
-
         track.addEventListener('mousedown', (e) => {
             isDragging = true;
-            track.style.cursor = 'grabbing';
             startX = e.pageX - track.offsetLeft;
             scrollLeft = track.scrollLeft;
         });
 
-        track.addEventListener('mouseleave', () => {
-            isDragging = false;
-            track.style.cursor = 'grab';
-        });
-
-        track.addEventListener('mouseup', () => {
-            isDragging = false;
-            track.style.cursor = 'grab';
-            updateActiveDot(track);
-        });
+        track.addEventListener('mouseleave', () => { isDragging = false; });
+        track.addEventListener('mouseup', () => { isDragging = false; updateActiveDot(track); });
 
         track.addEventListener('mousemove', (e) => {
             if (!isDragging) return;
@@ -263,55 +223,29 @@
             track.scrollLeft = scrollLeft - walk;
         });
 
-        track.addEventListener('touchstart', (e) => {
-            startX = e.touches[0].pageX - track.offsetLeft;
-            scrollLeft = track.scrollLeft;
-        }, { passive: true });
-
-        track.addEventListener('touchmove', (e) => {
-            const x = e.touches[0].pageX - track.offsetLeft;
-            const walk = (x - startX) * 1.2;
-            track.scrollLeft = scrollLeft - walk;
-        }, { passive: true });
-
-        track.addEventListener('touchend', () => {
-            updateActiveDot(track);
+        track.addEventListener('scroll', () => {
+            clearTimeout(track.BoseScrollTimeout);
+            track.BoseScrollTimeout = setTimeout(() => updateActiveDot(track), 100);
         });
 
-        if (categoriesSection) {
-            const nextBtn = categoriesSection.querySelector('.bose-slider-arrow.next');
-            const prevBtn = categoriesSection.querySelector('.bose-slider-arrow.prev');
-            
-            if (nextBtn && prevBtn) {
-                // [إصلاح حاسم لسلايدر الفئات]: استبدال القيمة الثابتة القديمة بالحجم الحقيقي الفعلي للكارت لمنع القطع العشوائي من المنتصف
-                const getStep = () => {
-                    const card = track.querySelector('.category-card-unified');
-                    return card ? card.offsetWidth + 30 : 310;
-                };
-                
-                nextBtn.addEventListener('click', () => {
-                    track.scrollBy({ left: getStep(), behavior: 'smooth' });
-                    setTimeout(() => updateActiveDot(track), 350);
-                });
-                
-                prevBtn.addEventListener('click', () => {
-                    track.scrollBy({ left: -getStep(), behavior: 'smooth' });
-                    setTimeout(() => updateActiveDot(track), 350);
-                });
-            }
-        }
-
-        const dotsContainer = document.getElementById('categories-dots-container');
+        // إصلاح جذرى لثغرة النقاط الميتة بالفيديو: ربط حدث النقر المباشر بالبكسل الفعلي للكارت
         if (dotsContainer) {
             dotsContainer.addEventListener('click', (e) => {
                 const dot = e.target.closest('.bose-slider-dot');
                 if (!dot) return;
+                
                 const index = parseInt(dot.getAttribute('data-index'), 10);
                 const cards = track.querySelectorAll('.category-card-unified');
                 if (cards[index]) {
-                    const cardWidth = cards[index].offsetWidth + 30; 
+                    const trackWidth = track.clientWidth;
+                    const cardWidth = cards[index].offsetWidth;
+                    const cardOffset = cards[index].offsetLeft;
+                    
+                    // حساب الموضع الهندسي الدقيق لمركزية الكارت داخل الحاوية المرنة
+                    const targetScroll = cardOffset - (trackWidth / 2) + (cardWidth / 2);
+                    
                     track.scrollTo({
-                        left: cardWidth * index,
+                        left: targetScroll,
                         behavior: 'smooth'
                     });
                     
@@ -324,19 +258,31 @@
 
     function updateActiveDot(track) {
         const cards = track.querySelectorAll('.category-card-unified');
-        if (cards.length === 0) return;
-        const cardWidth = cards[0].offsetWidth + 30;
-        const currentIndex = Math.round(track.scrollLeft / cardWidth);
+        const dotsContainer = document.getElementById('categories-dots-container');
+        if (cards.length === 0 || !dotsContainer) return;
         
-        const dots = document.querySelectorAll('.bose-slider-dot');
+        const trackCenter = track.scrollLeft + (track.clientWidth / 2);
+        let closestIndex = 0;
+        let minDistance = Infinity;
+        
+        cards.forEach((card, idx) => {
+            const cardCenter = card.offsetLeft + (card.offsetWidth / 2);
+            const distance = Math.abs(trackCenter - cardCenter);
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestIndex = idx;
+            }
+        });
+        
+        const dots = dotsContainer.querySelectorAll('.bose-slider-dot');
         dots.forEach((dot, idx) => {
-            if (idx === currentIndex) dot.classList.add('active');
+            if (idx === closestIndex) dot.classList.add('active');
             else dot.classList.remove('active');
         });
     }
 
     /**
-     * 🌊 بناء وحقن شلال المنتجات البصري الأنيق ديناميكياً لمنع الاختفاء والقص البصري
+     * بناء وحقن شلال المنتجات البصري الأنيق ديناميكياً
      */
     function renderDynamicWaterfall() {
         const leftCol = document.getElementById('waterfall-left-col');
@@ -349,19 +295,19 @@
             const leftHtml = waterfallData.leftColumnImages.map(img => 
                 `<img src="${img}" alt="منتج فاخر حلويات بوسي" class="waterfall-img" loading="lazy" />`
             ).join('');
-            leftCol.innerHTML = `<div class="waterfall-up">${leftHtml} ${leftHtml}</div>`;
+            leftCol.innerHTML = leftHtml + leftHtml;
         }
 
         if (rightCol && waterfallData.rightColumnImages) {
             const rightHtml = waterfallData.rightColumnImages.map(img => 
                 `<img src="${img}" alt="منتج راقي حلويات بوسي" class="waterfall-img" loading="lazy" />`
             ).join('');
-            rightCol.innerHTML = `<div class="waterfall-down">${rightHtml} ${rightHtml}</div>`;
+            rightCol.innerHTML = rightHtml + rightHtml;
         }
     }
 
     /**
-     * 🛒 دالة هندسية لبناء الكارت الموحد - زرار الزائد (+) على اليمين والصادر ناقص (-) على اليسار
+     * بناء الكارت الموحد الصارم هندسياً من قاعدة البيانات للشبكات الموزعة
      */
     function createProductCardHTML(product) {
         if (!product) return '';
@@ -369,7 +315,7 @@
         
         return `
             <div class="product-card-unified" data-id="${product.id}">
-                <img src="${product.images[0]}" alt="${product.title}" class="product-card-img" loading="lazy" onclick="window.location.href='product.html?slug=${product.slug}'" style="cursor:pointer;" />
+                <img src="${product.images[0]}" alt="${product.title}" class="product-card-img" loading="lazy" onclick="window.location.href='product.html?slug=${product.slug}'" />
                 <h3 class="product-card-title">${product.title}</h3>
                 <span class="product-card-flavor-name">${product.flavorName}</span>
                 <p class="product-card-desc">${product.flavorDesc || product.description.substring(0, 80) + '...'}</p>
@@ -407,28 +353,25 @@
     };
 
     /**
-     * 📊 ضخ وحقن شبكات المنتجات لجميع الأقسام بالصفحة الرئيسية ديناميكياً بحدود كمية هندسية صارمة
+     * ضخ وحقن شبكات المنتجات لجميع الأقسام بالصفحة الرئيسية ديناميكياً بحدود كمية هندسية صارمة
      */
     function renderHomepageProductGrids() {
         const data = window.BoseStoreData;
         if (!data || !data.products) return;
 
-        // 1. قسم الأكثر مبيعاً (8 منتجات كاملة هندسياً)
         const mostSellingGrid = document.getElementById('most-selling-grid');
         if (mostSellingGrid && data.homepage.mostSelling) {
             const items = data.homepage.mostSelling.map(id => data.products.find(p => p.id === id || p.slug === id)).filter(Boolean);
             mostSellingGrid.innerHTML = items.map(p => createProductCardHTML(p)).join('');
         }
 
-        // 2. قسم وصل حديثاً (6 منتجات بالتمام والكمال)
         const newArrivalsGrid = document.getElementById('new-arrivals-grid');
         if (newArrivalsGrid && data.homepage.newArrivals) {
             const items = data.homepage.newArrivals.map(id => data.products.find(p => p.id === id || p.slug === id)).filter(Boolean);
             newArrivalsGrid.innerHTML = items.map(p => createProductCardHTML(p)).join('');
         }
 
-        // 3. قسم منتجاتنا (كروت ثنائية متوازنة العرض، صفين كل صف كارتين بالتمام والكمال لراحة العميل)
-        const ourProductsGrid = document.getElementById('our-products-section-grid') || document.getElementById('our-products-grid') || document.querySelector('.our-products-grid');
+        const ourProductsGrid = document.getElementById('our-products-grid');
         if (ourProductsGrid && data.homepage.ourProducts) {
             const initialItems = data.homepage.ourProducts.slice(0, 4).map(id => data.products.find(p => p.id === id || p.slug === id)).filter(Boolean);
             ourProductsGrid.innerHTML = initialItems.map(p => createProductCardHTML(p)).join('');
@@ -436,42 +379,39 @@
     }
 
     /**
-     * 🌟 نظام التحكم لزر (إظهار المزيد) بقسم منتجاتنا لحقن الـ 8 كروت كاملة ومستقرة
+     * نظام التحكم لزر (إظهار المزيد) بقسم منتجاتنا لحقن الـ 8 كروت كاملة ومستقرة ثنائياً
      */
     function setupOurProductsShowMore() {
-        const showMoreBtn = document.getElementById('our-products-show-more-btn') || document.querySelector('[id*="show-more"]');
-        const ourProductsGrid = document.getElementById('our-products-section-grid') || document.getElementById('our-products-grid') || document.querySelector('.our-products-grid');
+        const showMoreBtn = document.getElementById('our-products-show-more-btn');
+        const ourProductsGrid = document.getElementById('our-products-grid');
         const data = window.BoseStoreData;
 
         if (!showMoreBtn || !ourProductsGrid || !data) return;
 
-        // [تعديل برمجى صارم]: فرّض إظهار الزرار بشكل صريح ككتلة عرض وتلوينه بالبمبي المعتمد لتدمير العوائق البصرية والاختفاء
-        showMoreBtn.style.cssText = "display: inline-block !important; background: #FFFFFF !important; border: 2px solid #FF91A4 !important; color: #FF91A4 !important; font-weight: 700; padding: 12px 36px; border-radius: 30px; cursor: pointer; transition: all 0.3s ease; opacity: 1 !important; visibility: visible !important;";
         showMoreBtn.textContent = "إظهار المزيد";
 
         showMoreBtn.addEventListener('click', function(e) {
             e.preventDefault();
             const allItems = data.homepage.ourProducts.map(id => data.products.find(p => p.id === id || p.slug === id)).filter(Boolean);
             ourProductsGrid.innerHTML = allItems.map(p => createProductCardHTML(p)).join('');
-            showMoreBtn.style.setProperty('display', 'none', 'important'); 
+            showMoreBtn.style.display = 'none'; 
         });
     }
 
     /**
-     * 👑 ضخ وحقن خيارات وألوان محاكي التورت ومحاكي الورد لملء الشاشة بالكامل بدون أي إزاحة وبأزرار واضحة
+     * ضخ بيانات واجهات عرض محاكي التورت ومحاكي الورد
      */
     function injectSimulatorsPreviewData() {
         const data = window.BoseStoreData;
         if (!data || !data.homepage) return;
 
-        // محاكي التورت
-        const cakeSection = document.getElementById('cake-preview-section') || document.querySelector('[id*="cake-preview"]');
+        const cakeSection = document.getElementById('cake-preview-section');
         if (cakeSection && data.homepage.cakePreview) {
             const preview = data.homepage.cakePreview;
-            const imgEl = cakeSection.querySelector('#cake-preview-img') || cakeSection.querySelector('.simulator-preview-img') || cakeSection.querySelector('img');
-            const titleEl = cakeSection.querySelector('#cake-preview-title') || cakeSection.querySelector('h2');
-            const descEl = cakeSection.querySelector('#cake-preview-desc') || cakeSection.querySelector('p');
-            const ctaEl = cakeSection.querySelector('#cake-preview-cta') || cakeSection.querySelector('a') || cakeSection.querySelector('.bose-simulator-preview-cta-btn');
+            const imgEl = document.getElementById('cake-preview-img');
+            const titleEl = document.getElementById('cake-preview-title');
+            const descEl = document.getElementById('cake-preview-desc');
+            const ctaEl = document.getElementById('cake-preview-cta');
 
             if (imgEl) imgEl.src = preview.image;
             if (titleEl) titleEl.textContent = preview.title;
@@ -479,19 +419,16 @@
             if (ctaEl) {
                 ctaEl.textContent = preview.cta;
                 ctaEl.href = preview.target;
-                // [تأمين حاسم لمنع حجب زرار دخول المحاكي]: تفعيل الـ inline-block بكثافة ملوكية واضحة
-                ctaEl.style.cssText = "display: inline-block !important; opacity: 1 !important; visibility: visible !important; background-color: #FFFFFF !important; color: #FF91A4 !important; font-weight: 700; padding: 14px 35px; border-radius: 30px; text-decoration: none; z-index: 50 !important; position: relative;";
             }
         }
 
-        // محاكي الورد
-        const flowerSection = document.getElementById('flower-preview-section') || document.querySelector('[id*="flower-preview"]');
+        const flowerSection = document.getElementById('flower-preview-section');
         if (flowerSection && data.homepage.flowerPreview) {
             const preview = data.homepage.flowerPreview;
-            const imgEl = flowerSection.querySelector('#flower-preview-img') || flowerSection.querySelector('.simulator-preview-img') || flowerSection.querySelector('img');
-            const titleEl = flowerSection.querySelector('#flower-preview-title') || flowerSection.querySelector('h2');
-            const descEl = flowerSection.querySelector('#flower-preview-desc') || flowerSection.querySelector('p');
-            const ctaEl = flowerSection.querySelector('#flower-preview-cta') || flowerSection.querySelector('a') || flowerSection.querySelector('.bose-simulator-preview-cta-btn');
+            const imgEl = document.getElementById('flower-preview-img');
+            const titleEl = document.getElementById('flower-preview-title');
+            const descEl = document.getElementById('flower-preview-desc');
+            const ctaEl = document.getElementById('flower-preview-cta');
 
             if (imgEl) imgEl.src = preview.image;
             if (titleEl) titleEl.textContent = preview.title;
@@ -499,17 +436,15 @@
             if (ctaEl) {
                 ctaEl.textContent = preview.cta;
                 ctaEl.href = preview.target;
-                // [تأمين حاسم لمنع حجب زرار دخول المحاكي]: تفعيل الـ inline-block بكثافة ملوكية واضحة
-                ctaEl.style.cssText = "display: inline-block !important; opacity: 1 !important; visibility: visible !important; background-color: #FFFFFF !important; color: #FF91A4 !important; font-weight: 700; padding: 14px 35px; border-radius: 30px; text-decoration: none; z-index: 50 !important; position: relative;";
             }
         }
     }
 
     /**
-     * 📈 العدادات التصاعدية الذكية لقسم الفخر والاعتزاز لتعبر بصدق عن رحلة نجاح بوسي الأصيلة
+     * العدادات التصاعدية الذكية لقسم الفخر والاعتزاز لتعبر بصدق عن رحلة نجاح بوسي
      */
     function setupPrideCountersAnimation() {
-        const prideSection = document.getElementById('pride-section') || document.querySelector('[id*="pride"]');
+        const prideSection = document.getElementById('pride-section');
         if (!prideSection || !window.BoseStoreData?.homepage?.pride?.stats) return;
 
         const statsData = window.BoseStoreData.homepage.pride.stats;
@@ -518,10 +453,9 @@
             let current = 0;
             const duration = 2000;
             const stepTime = Math.max(Math.floor(duration / target), 15);
-            const increment = Math.ceil(target / (duration / stepTime));
             
             const timer = setInterval(() => {
-                current += increment;
+                current += Math.ceil(target / 50);
                 if (current >= target) {
                     el.textContent = target + suffix;
                     clearInterval(timer);
@@ -535,7 +469,7 @@
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     Object.keys(statsData).forEach(key => {
-                        const targetEl = prideSection.querySelector(`[data-stat="${key}"]`) || document.getElementById(`pride-stat-${key}`);
+                        const targetEl = document.getElementById(`pride-stat-${key}`);
                         if (targetEl && !targetEl.classList.contains('animated')) {
                             targetEl.classList.add('animated');
                             animateCounter(targetEl, parseInt(statsData[key].value, 10), statsData[key].suffix || '');
@@ -544,7 +478,7 @@
                     observer.unobserve(prideSection);
                 }
             });
-        }, { threshold: 0.3 });
+        }, { threshold: 0.2 });
 
         observer.observe(prideSection);
     }
@@ -824,223 +758,6 @@
             const fa = document.createElement('link'); fa.rel = 'stylesheet'; fa.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css';
             document.head.appendChild(fa);
         }
-        
-        if (!document.getElementById('bose-header-fix-styles')) {
-            const fixStyle = document.createElement('style');
-            fixStyle.id = 'bose-header-fix-styles';
-            fixStyle.textContent = `
-                :root {
-                    --bose-pink: #FF91A4;
-                    --bose-white: #FFFFFF;
-                    --bose-black: #111111;
-                    --bose-gold: #D4AF37;
-                    --bose-shadow-glow: 0 8px 32px rgba(255, 145, 164, 0.12);
-                    --bose-shadow-hover: 0 16px 40px rgba(255, 145, 164, 0.22);
-                }
-                body { font-family: 'Cairo', sans-serif !important; background-color: #FFFFFF !important; color: #111111 !important; margin: 0; padding-top: 110px !important; overflow-x: hidden; }
-                h1, h2 { font-weight: 700 !important; color: #111111 !important; }
-                h3, h4 { font-weight: 600 !important; color: #111111 !important; }
-                
-                .bose-sticky-header { position: fixed !important; top: 40px !important; left: 0 !important; width: 100% !important; z-index: 40000 !important; box-shadow: 0 4px 20px rgba(255, 145, 164, 0.08) !important; background-color: #FFFFFF !important; display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; box-sizing: border-box; height: 70px; }
-                .bose-top-bar-marquee-container { position: fixed !important; top: 0 !important; left: 0 !important; width: 100% !important; z-index: 41000 !important; height: 40px !important; background-color: #FF91A4; overflow: hidden; display: flex; align-items: center; }
-                .bose-top-bar-marquee-track { display: flex; width: max-content; animation: boseMarquee 25s linear infinite; will-change: transform; }
-                .bose-marquee-item { color: #FFFFFF; font-weight: 600; font-size: 13px; padding: 0 40px; direction: rtl; white-space: nowrap; }
-                @keyframes boseMarquee { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-50%, 0, 0); } }
-                
-                .header-right-side, .header-left-side { display: flex; align-items: center; gap: 15px; }
-                .bose-nav-btn { background: none; border: none; font-size: 20px; color: #111111; cursor: pointer; transition: color 0.2s; padding: 5px; }
-                .bose-nav-btn:hover { color: #FF91A4; }
-                .brand-logo-container { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-                .brand-logo-img { width: 42px; height: 42px; object-fit: contain; }
-                .brand-name-display { font-size: 18px; font-weight: 700; color: #111111; }
-                .nav-cart-icon-wrapper { position: relative; text-decoration: none; display: flex; align-items: center; }
-                .nav-cart-count-badge { position: absolute; top: -5px; right: -8px; background-color: #FF91A4; color: #FFFFFF; font-size: 11px; font-weight: 700; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; border: 1px solid #FFFFFF; }
-                
-                .bose-sidebar-drawer { position: fixed; top: 0; right: -360px; width: 360px; height: 100%; background-color: #FFFFFF !important; z-index: 50000; transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: -8px 0 32px rgba(255, 145, 164, 0.12); direction: rtl; border-left: 1px solid rgba(255, 145, 164, 0.2); display: flex; flex-direction: column; overflow: hidden; }
-                .bose-sidebar-drawer.open { right: 0; }
-                .sidebar-header { display: flex; justify-content: space-between; align-items: center; padding: 24px; border-bottom: 1px solid rgba(255, 145, 164, 0.2); background: #FFFFFF; }
-                .sidebar-brand-name { font-size: 18px; font-weight: 700; color: #111111; }
-                .sidebar-close-btn { background: none; border: none; font-size: 26px; color: #FF91A4; cursor: pointer; transition: transform 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; }
-                .sidebar-close-btn:hover { transform: rotate(90deg); }
-                
-                .sidebar-scrollable-content { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 28px; scrollbar-width: none; }
-                .sidebar-scrollable-content::-webkit-scrollbar { display: none; }
-                .sidebar-section-title { font-size: 14px; font-weight: 700; color: #FF91A4; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; padding-right: 4px; }
-                .sidebar-links-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
-                .sidebar-link-item a { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; color: #111111; text-decoration: none; font-weight: 600; font-size: 15px; border-radius: 12px; transition: all 0.25s ease; border: 1px solid transparent; min-height: 48px; }
-                .sidebar-link-item a .link-main-side { display: flex; align-items: center; gap: 14px; }
-                .sidebar-link-item a i.main-icon { color: #FF91A4; font-size: 18px; width: 24px; text-align: center; }
-                .sidebar-link-item a i.arrow-icon { font-size: 12px; color: #111111; opacity: 0.3; }
-                .sidebar-link-item a:hover { background-color: rgba(255, 145, 164, 0.05); border-color: rgba(255, 145, 164, 0.1); }
-                .sidebar-link-item a:hover i.arrow-icon { opacity: 1; color: #FF91A4; transform: translateX(-4px); }
-                
-                .sidebar-footer-contacts { border-top: 1px solid rgba(255, 145, 164, 0.15); padding: 20px 24px; background-color: #FFFFFF; display: flex; flex-direction: column; gap: 10px; }
-                .sidebar-contact-pill { display: flex; align-items: center; gap: 14px; padding: 12px 18px; background: rgba(255, 145, 164, 0.04); border-radius: 30px; text-decoration: none; color: #111111; font-size: 14px; font-weight: 600; border: 1px solid rgba(255, 145, 164, 0.05); min-height: 44px; }
-                .sidebar-contact-pill i { font-size: 16px; color: #FF91A4; }
-                .sidebar-contact-pill:hover { background: #FF91A4; color: #FFFFFF !important; }
-                .sidebar-contact-pill:hover i { color: #FFFFFF; }
-                
-                .bose-sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(17, 17, 17, 0.35); opacity: 0; pointer-events: none; z-index: 49000; transition: opacity 0.4s ease; backdrop-filter: blur(4px); }
-                .bose-sidebar-overlay.show { opacity: 1; pointer-events: auto; }
-                
-                .bose-search-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #FFFFFF; z-index: 60000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; direction: rtl; padding: 30px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px; }
-                .bose-search-modal.active { opacity: 1; pointer-events: auto; }
-                .search-modal-header { display: flex; justify-content: flex-end; }
-                .search-input-wrapper { position: relative; max-width: 600px; width: 100%; margin: 0 auto; }
-                .bose-search-field { width: 100%; border: 1px solid rgba(255, 145, 164, 0.4); padding: 14px 50px 14px 20px; border-radius: 30px; font-size: 16px; box-sizing: border-box; outline: none; font-family: "Cairo", sans-serif; }
-                .bose-search-field:focus { border-color: #FF91A4; box-shadow: 0 0 10px rgba(255,145,164,0.2); }
-                .search-field-icon { position: absolute; top: 50%; right: 20px; transform: translateY(-50%); color: #FF91A4; font-size: 18px; }
-                .search-results-container { flex: 1; overflow-y: auto; max-width: 600px; width: 100%; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
-                .search-result-card-item { display: flex; align-items: center; gap: 15px; padding: 10px; border: 1px solid rgba(255, 145, 164, 0.15); border-radius: 12px; text-decoration: none; color: #111111; transition: background 0.2s; }
-                .search-result-card-item:hover { background: rgba(255, 145, 164, 0.03); }
-                .search-result-img { width: 60px; height: 60px; object-fit: cover; border-radius: 8px; }
-                .search-result-info { flex: 1; }
-                .search-result-name { font-weight: 700; font-size: 14px; }
-                .search-result-price-view { font-weight: 700; color: #FF91A4; font-size: 14px; }
-                .search-no-results-msg { text-align: center; color: #111111; opacity: 0.6; padding: 40px; font-weight: 600; }
-
-                .bose-footer { background-color: #FFFFFF !important; border-top: 1px solid rgba(255, 145, 164, 0.3); padding: 60px 20px 20px; direction: rtl; }
-                .footer-grid-layout { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; }
-                .footer-brand-meta { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
-                .footer-logo { width: 50px; height: 50px; object-fit: contain; }
-                .footer-title { font-size: 22px; font-weight: 700; color: #111111; }
-                .footer-about-paragraph { color: #111111; font-size: 14px; line-height: 1.8; margin-bottom: 25px; font-weight: 400; }
-                .footer-social-wrapper { display: flex; gap: 12px; }
-                .footer-social-icon-btn { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background-color: rgba(255, 145, 164, 0.1); color: #FF91A4 !important; text-decoration: none; font-size: 16px; transition: all 0.3s ease; }
-                .footer-social-icon-btn:hover { background-color: #FF91A4; color: #FFFFFF !important; transform: translateY(-4px); box-shadow: 0 8px 20px rgba(255, 145, 164, 0.3); }
-                .footer-heading-title { font-size: 16px; font-weight: 700; color: #111111; margin-bottom: 20px; position: relative; padding-bottom: 8px; }
-                .footer-heading-title::after { content: ''; position: absolute; bottom: 0; right: 0; width: 40px; height: 2px; background-color: #FF91A4; }
-                .footer-links-ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
-                .footer-links-ul li a { color: #111111; text-decoration: none; font-size: 14px; font-weight: 600; transition: all 0.3s ease; display: inline-block; }
-                .footer-links-ul li a:hover { color: #FF91A4; transform: translateX(-6px); }
-                .footer-contact-item { display: flex; align-items: center; gap: 10px; color: #111111; font-size: 14px; font-weight: 600; }
-                .footer-contact-item i { color: #FF91A4; font-size: 16px; }
-                .footer-copyright-block { text-align: center; border-top: 1px solid rgba(255, 145, 164, 0.15); margin-top: 50px; padding-top: 20px; font-size: 13px; color: #111111; font-weight: 600; }
-                .footer-copyright-block span { color: #FF91A4; font-weight: 700; }
-                
-                .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; width: 100%; max-width: 1200px; margin: 0 auto; padding: 20px; box-sizing: border-box; }
-                @media (max-width: 768px) { .products-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; } }
-                .product-card-unified { background: #FFFFFF; border: 1px solid rgba(255, 145, 164, 0.2); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 8px 32px rgba(255, 145, 164, 0.04); transition: transform 0.3s ease, box-shadow 0.3s ease; position: relative; }
-                .product-card-unified:hover { transform: translateY(-5px); box-shadow: 0 12px 40px rgba(255, 145, 164, 0.12); }
-                .product-card-img { width: 100%; height: 220px; object-fit: cover; border-radius: 14px; }
-                @media (min-width: 768px) { .product-card-img { height: 260px; } }
-                @media (min-width: 1024px) { .product-card-img { height: 320px; } }
-                .product-card-title { font-size: 18px; font-weight: 700; color: #111111; margin: 0; font-family: "Cairo", sans-serif; }
-                .product-card-flavor-name { font-size: 14px; font-weight: 600; color: #FF91A4; }
-                .product-card-desc { font-size: 13px; color: #111111; opacity: 0.7; line-height: 1.6; margin: 0; min-height: 42px; }
-                
-                .product-card-qty-wrapper { display: flex; align-items: center; justify-content: center; gap: 10px; background: rgba(255, 145, 164, 0.05); padding: 6px; border-radius: 30px; margin-top: auto; direction: rtl; }
-                .btn-qty-minus, .btn-qty-plus { background: #FFFFFF; border: 1px solid rgba(255, 145, 164, 0.3); width: 32px; height: 32px; border-radius: 50%; font-weight: 700; color: #111111; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
-                .btn-qty-minus:hover, .btn-qty-plus:hover { background: #FF91A4; color: #FFFFFF; border-color: #FF91A4; }
-                .input-qty-value { border: none; background: transparent; width: 40px; text-align: center; font-size: 15px; font-weight: 700; color: #111111; -moz-appearance: textfield; }
-                .input-qty-value::-webkit-outer-spin-button, .input-qty-value::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-                .product-card-price { font-size: 18px; font-weight: 700; color: #111111; text-align: center; margin: 4px 0; }
-                .btn-add-to-cart { background: #FFFFFF; border: 1px solid #FF91A4; color: #FF91A4; padding: 10px 20px; border-radius: 25px; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.3s ease; width: 100%; box-sizing: border-box; }
-                .btn-add-to-cart:hover { background: #FF91A4; color: #FFFFFF; }
-                
-                .categories-slider-outer-container { position: relative; width: 100%; max-width: 1200px; margin: 0 auto; overflow: hidden; padding: 20px 0; }
-                .categories-track-slider { display: flex; overflow-x: auto; scroll-behavior: smooth; padding: 10px; cursor: grab; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
-                .categories-track-slider::-webkit-scrollbar { display: none; }
-                .category-card-unified { background: #FFFFFF; border: 1px solid rgba(255, 145, 164, 0.15); border-radius: 24px; padding: 12px; width: 280px; box-shadow: var(--bose-shadow-glow); transition: all 0.3s ease; text-align: center; flex-shrink: 0; box-sizing: border-box; margin: 0 15px; }
-                .category-card-unified:hover { transform: translateY(-6px); box-shadow: var(--bose-shadow-hover); border-color: var(--bose-pink); }
-                .category-card-img { width: 100%; height: 280px; object-fit: cover; border-radius: 18px; }
-                .category-card-name { font-size: 20px; font-weight: 700; color: #111111; margin-top: 15px; font-family: "Cairo", sans-serif; }
-                
-                @media (min-width: 768px) { .category-card-unified { width: 340px; } .category-card-img { height: 340px; } }
-                @media (min-width: 1024px) { .category-card-unified { width: 420px; } .category-card-img { height: 420px; } }
-                
-                .categories-slider-dots { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 24px; width: 100%; }
-                .bose-slider-dot { width: 10px; height: 10px; background-color: rgba(255, 145, 164, 0.3); border-radius: 50%; cursor: pointer; transition: all 0.3s ease; }
-                .bose-slider-dot.active { background-color: #FF91A4; width: 24px; border-radius: 50px; box-shadow: 0 0 8px rgba(255, 145, 164, 0.5); }
-                .bose-slider-arrow { background: #FFFFFF; border: 1px solid #FF91A4; color: #FF91A4; width: 45px; height: 45px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s; }
-                .bose-slider-arrow:hover { background: #FF91A4 !important; color: #FFFFFF !important; }
-
-                .waterfall-up { display: flex; flex-direction: column; gap: 20px; animation: boseWaterfallUp 40s linear infinite; will-change: transform; }
-                .waterfall-down { display: flex; flex-direction: column; gap: 20px; animation: boseWaterfallDown 40s linear infinite; will-change: transform; }
-                @keyframes boseWaterfallUp { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(0, -50%, 0); } }
-                @keyframes boseWaterfallDown { 0% { transform: translate3d(0, -50%, 0); } 100% { transform: translate3d(0, 0, 0); } }
-                
-                .excellence-track-loop { display: flex; width: max-content; animation: bosePerfectionLoop 35s linear infinite; will-change: transform; }
-                .excellence-slide-card { width: 100vw; height: auto; flex-shrink: 0; }
-                .excellence-slide-card img { width: 100%; height: auto; object-fit: cover; }
-                @keyframes bosePerfectionLoop { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-50%, 0, 0); } }
-
-                /* 👑 [تأمين وحوكمة ظهور كتل المحاكيات للموبايل والكمبيوتر بدون أي اختفاء أو قص بفتحة الـ DOM] */
-                #cake-preview-section, #flower-preview-section, .bose-simulator-preview-block, [id*="cake-preview"], [id*="flower-preview"] { 
-                    background: #FFFFFF !important; /* استعادة سيطرة الأبيض الصريح للتنفس البصري ومنع الحوائط الملونة الصامتة */
-                    padding: 80px 20px !important; 
-                    border-top: 1px solid rgba(255,145,164,0.15);
-                    border-bottom: 1px solid rgba(255,145,164,0.15);
-                    text-align: center !important; 
-                    width: 100% !important; 
-                    box-sizing: border-box !important; 
-                    overflow: visible !important; /* السماح بتجاوز الحجم الطبيعي للسكشن لحقن الأزرار بدون حجبها */
-                    margin: 0 !important;
-                    display: block !important;
-                }
-                #cake-preview-section h2, #flower-preview-section h2, [id*="preview"] h2 { 
-                    color: #111111 !important; /* قصر الأسود الصريح للنصوص والعناوين لضمان وضوح كامل للعين */
-                    font-size: 28px !important;
-                    margin-bottom: 12px !important;
-                }
-                #cake-preview-section p, #flower-preview-section p, [id*="preview"] p { 
-                    color: #111111 !important; 
-                    opacity: 0.75;
-                    font-size: 15px !important;
-                    max-width: 600px;
-                    margin: 0 auto 20px auto !important;
-                    line-height: 1.8 !important;
-                }
-                
-                /* [إصلاح حاسم لأزرار المحاكيات لمنع الاختفاء نهائياً وتحسين تجربة النقر] */
-                .bose-simulator-preview-cta-btn, #cake-preview-cta, #flower-preview-cta, [id*="preview"] a { 
-                    display: inline-block !important; 
-                    opacity: 1 !important;
-                    visibility: visible !important;
-                    background-color: #FF91A4 !important; /* تفعيل البمبي كنبض حياة للأزرار والتأثيرات التفاعلية */
-                    color: #FFFFFF !important; 
-                    font-weight: 700 !important; 
-                    padding: 14px 35px !important; 
-                    border-radius: 30px !important; 
-                    text-decoration: none !important; 
-                    margin-top: 15px !important; 
-                    box-shadow: 0 8px 32px rgba(255, 145, 164, 0.22) !important; 
-                    transition: all 0.3s ease !important; 
-                    position: relative !important;
-                    z-index: 99 !important; /* الرفع فوق أي كائن بصري أخر لضمان تفاعل الأصابع */
-                }
-                .bose-simulator-preview-cta-btn:hover, #cake-preview-cta:hover, #flower-preview-cta:hover { 
-                    transform: translateY(-3px) !important; 
-                    box-shadow: 0 12px 40px rgba(255, 145, 164, 0.35) !important; 
-                }
-                
-                /* [إصلاح حاسم لصور المحاكيات لمنع الضغط والتشويه والقص وإعطائها مسافة حماية علوية] */
-                #cake-preview-img, #flower-preview-img, .simulator-preview-img, [id*="preview-img"] { 
-                    max-width: 450px !important; 
-                    width: 100% !important; 
-                    height: auto !important; 
-                    object-fit: contain !important; 
-                    border-radius: 20px !important; 
-                    margin: 30px auto !important; 
-                    padding: 0 !important; 
-                    display: block !important;
-                    box-shadow: var(--bose-shadow-glow) !important;
-                    border: 1px solid rgba(255,145,164,0.2) !important;
-                }
-                @media (max-width: 768px) {
-                    body {
-                        padding-top: 120px !important; /* إزاحة أمان علوية تحمي المحاكيات والصور من الاختفاء أسفل الهيدر الـ Sticky */
-                    }
-                    #cake-preview-img, #flower-preview-img, .simulator-preview-img, [id*="preview-img"] { 
-                        max-width: 290px !important; 
-                    }
-                    #cake-preview-section, #flower-preview-section {
-                        padding: 50px 15px !important; /* ضبط البادنج على الموبايل لتوفير مساحة للأزرار */
-                    }
-                }
-            `;
-            document.head.appendChild(fixStyle);
-        }
     }
 
     function applyGlobalSEOAndBranding() {
@@ -1104,79 +821,28 @@
                         <div>
                             <div class="sidebar-section-title">التصفح الفاخر</div>
                             <ul class="sidebar-links-list">
-                                <li class="sidebar-link-item">
-                                    <a href="index.html">
-                                        <span class="link-main-side"><i class="fa-solid fa-house main-icon"></i>الرئيسية</span>
-                                        <i class="fa-solid fa-chevron-left arrow-icon"></i>
-                                    </a>
-                                </li>
-                                <li class="sidebar-link-item">
-                                    <a href="menu.html">
-                                        <span class="link-main-side"><i class="fa-solid fa-utensils main-icon"></i>المنيو الشامل</span>
-                                        <i class="fa-solid fa-chevron-left arrow-icon"></i>
-                                    </a>
-                                </li>
-                                <li class="sidebar-link-item">
-                                    <a href="cake-builder.html">
-                                        <span class="link-main-side"><i class="fa-solid fa-cake-candles main-icon"></i>محاكي التورت التفاعلي</span>
-                                        <i class="fa-solid fa-chevron-left arrow-icon"></i>
-                                    </a>
-                                </li>
-                                <li class="sidebar-link-item">
-                                    <a href="flower-builder.html">
-                                        <span class="link-main-side"><i class="fa-solid fa-seedling main-icon"></i>محاكي الورد الخاص</span>
-                                        <i class="fa-solid fa-chevron-left arrow-icon"></i>
-                                    </a>
-                                </li>
-                                <li class="sidebar-link-item">
-                                    <a href="cart.html">
-                                        <span class="link-main-side"><i class="fa-solid fa-basket-shopping main-icon"></i>سلة التسوق</span>
-                                        <i class="fa-solid fa-chevron-left arrow-icon"></i>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <div>
-                            <div class="sidebar-section-title">روابط المعرفة</div>
-                            <ul class="sidebar-links-list">
-                                <li class="sidebar-link-item">
-                                    <a href="about.html">
-                                        <span class="link-main-side"><i class="fa-solid fa-heart-pulse main-icon"></i>مَنْ نحن</span>
-                                        <i class="fa-solid fa-chevron-left arrow-icon"></i>
-                                    </a>
-                                </li>
-                                <li class="sidebar-link-item">
-                                    <a href="contact.html">
-                                        <span class="link-main-side"><i class="fa-solid fa-phone-flip main-icon"></i>تواصل معنا</span>
-                                        <i class="fa-solid fa-chevron-left arrow-icon"></i>
-                                    </a>
-                                </li>
+                                <li class="sidebar-link-item"><a href="index.html"><span class="link-main-side"><i class="fa-solid fa-house main-icon"></i>الرئيسية</span><i class="fa-solid fa-chevron-left arrow-icon"></i></a></li>
+                                <li class="sidebar-link-item"><a href="menu.html"><span class="link-main-side"><i class="fa-solid fa-utensils main-icon"></i>المنيو الشامل</span><i class="fa-solid fa-chevron-left arrow-icon"></i></a></li>
+                                <li class="sidebar-link-item"><a href="cake-builder.html"><span class="link-main-side"><i class="fa-solid fa-cake-candles main-icon"></i>محاكي التورت التفاعلي</span><i class="fa-solid fa-chevron-left arrow-icon"></i></a></li>
+                                <li class="sidebar-link-item"><a href="flower-builder.html"><span class="link-main-side"><i class="fa-solid fa-seedling main-icon"></i>محاكي الورد الخاص</span><i class="fa-solid fa-chevron-left arrow-icon"></i></a></li>
+                                <li class="sidebar-link-item"><a href="cart.html"><span class="link-main-side"><i class="fa-solid fa-basket-shopping main-icon"></i>سلة التسوق</span><i class="fa-solid fa-chevron-left arrow-icon"></i></a></li>
                             </ul>
                         </div>
                     </div>
 
                     <div class="sidebar-footer-contacts">
-                        <a href="https://wa.me/${data.social.whatsapp}" target="_blank" class="sidebar-contact-pill">
-                            <i class="fa-brands fa-whatsapp"></i>
-                            <span>راسلنا فوري عبر الواتساب</span>
-                        </a>
-                        <a href="tel:${data.store.phone || '01097238441'}" class="sidebar-contact-pill">
-                            <i class="fa-solid fa-phone"></i>
-                            <span>اتصال هاتفي مباشر</span>
-                        </a>
+                        <a href="https://wa.me/${data.social.whatsapp}" target="_blank" class="sidebar-contact-pill"><i class="fa-brands fa-whatsapp"></i><span>راسلنا فوري عبر الواتساب</span></a>
+                        <a href="tel:${data.store.phone || '01097238441'}" class="sidebar-contact-pill"><i class="fa-solid fa-phone"></i><span>اتصال هاتفي مباشر</span></a>
                     </div>
                 </div>
                 <div id="bose-sidebar-overlay" class="bose-sidebar-overlay"></div>
 
                 <div id="bose-search-modal" class="bose-search-modal" aria-hidden="true">
                     <div class="search-modal-header">
-                        <button id="search-modal-close" class="bose-nav-btn" style="font-size: 26px;" aria-label="إغلاق البحث">
-                            <i class="fa-solid fa-xmark"></i>
-                        </button>
+                        <button id="search-modal-close" class="bose-nav-btn" style="font-size: 26px;" aria-label="إغلاق البحث"><i class="fa-solid fa-xmark"></i></button>
                     </div>
                     <div class="search-input-wrapper">
-                        <input type="text" id="bose-search-field" class="bose-search-field" placeholder="ابحث عن النكهة أو الصنف (لوتس، بيستاشيو...)" aria-label="حقل البحث" autocomplete="off" />
+                        <input type="text" id="bose-search-field" class="bose-search-field" placeholder="ابحث عن النكهة أو الصنف..." autocomplete="off" />
                         <i class="fa-solid fa-magnifying-glass search-field-icon"></i>
                     </div>
                     <div id="search-results-container" class="search-results-container"></div>
@@ -1203,31 +869,8 @@
                                 <a href="https://wa.me/${data.social.whatsapp}" target="_blank" class="footer-social-icon-btn"><i class="fa-brands fa-whatsapp"></i></a>
                             </div>
                         </div>
-                        <div class="footer-column-block">
-                            <h3 class="footer-heading-title">روابط سريعة</h3>
-                            <ul class="footer-links-ul">
-                                <li><a href="index.html">الرئيسية</a></li>
-                                <li><a href="menu.html">المنيو الشامل</a></li>
-                                <li><a href="cake-builder.html">محاكي التورت</a></li>
-                                <li><a href="flower-builder.html">محاكي الورد</a></li>
-                                <li><a href="cart.html">سلة التسوق</a></li>
-                            </ul>
-                        </div>
-                        <div class="footer-column-block">
-                            <h3 class="footer-heading-title">وثائق وسياسات</h3>
-                            <ul class="footer-links-ul">
-                                <li><a href="policies/privacy-policy.html">سياسة الخصوصية</a></li>
-                                <li><a href="policies/refund-policy.html">سياسة الاسترجاع المالي</a></li>
-                                <li><a href="policies/shipping-policy.html">سياسة الشحن والتوصيل</a></li>
-                                <li><a href="policies/terms.html">الشروط والأحكام</a></li>
-                                <li class="footer-contact-item" style="margin-top: 15px;">
-                                    <i class="fa-solid fa-location-dot"></i>
-                                    <span>${data.store.pickup.address}</span>
-                                </li>
-                            </ul>
-                        </div>
                     </div>
-                    <p class="footer-copyright-block">جميع الحقوق محفوظة &copy; <span id="footer-year-display">2026</span> لعلامة حلويات بوسي الفاخرة.</p>
+                    <p class="footer-copyright-block">جميع الحقوق محفوظة &copy; <span>2026</span> لعلامة حلويات بوسي الفاخرة.</p>
                 </footer>
             `;
         }
@@ -1271,11 +914,7 @@
             });
         }
 
-        if (searchClose) {
-            searchClose.addEventListener('click', () => {
-                searchModal.classList.remove('active');
-            });
-        }
+        if (searchClose) { searchClose.addEventListener('click', () => searchModal.classList.remove('active')); }
 
         if (searchField && resultsContainer) {
             searchField.addEventListener('input', (e) => {
@@ -1306,7 +945,7 @@
 
     function showGlobalFriendlyError() {
         const errorDiv = document.createElement('div');
-        errorDiv.style.cssText = 'position:fixed; bottom:20px; left:50%; transform:translateX(-50%); backgroundColor:#FF91A4; color:#FFFFFF; padding:12px 24px; borderRadius:8px; boxShadow:0 4px 12px rgba(0,0,0,0.15); zIndex:99999; direction:rtl; fontSize:14px;';
+        errorDiv.style.cssText = 'position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#FF91A4; color:#FFFFFF; padding:12px 24px; border-radius:8px; z-index:99999; direction:rtl; font-size:14px; font-family:"Cairo";';
         errorDiv.textContent = 'عذراً، نواجه صعوبة في الاتصال بالخادم حالياً. يرجى إعادة محاولة تحميل الصفحة.';
         document.body.appendChild(errorDiv);
     }
