@@ -1,24 +1,30 @@
 /* ==========================================================================
-   👑 BoseSweets Strict Production Global Stylesheet (css/global.css) V4.5 👑
-   الملف الملوكي النهائي المطور والمطهر كلياً من التعارضات والجرائم البصرية
-   تأمين التنفس البصري الكامل، وحل مشكلة اختفاء المنتجات، وحظر تداخل الواجهات
+   👑 BoseSweets Strict Production Global Stylesheet (css/global.css) V5.5 👑
+   الملف الملوكي الشامل والنهائي - مطهر كلياً وجذرياً من أي ثغرات أو جرائم بصرية
+   تأمين التنفس البصري، حظر التكدس، تطوير القائمة الجانبية، وتثبيت صور الإتقان طوال الوقت
    ========================================================================== */
 
 :root {
-    /* الألوان الحاكمة والمقدسة لعلامة حلويات بوسي الفاخرة */
-    --bose-pink: #FF91A4;        /* نبض الحياة: حدود كروت المنتجات، والظلال، والتأثيرات التفاعلية */
-    --bose-white: #FFFFFF;       /* المسيطر تماماً على الخلفيات والمساحات لخلق تنفس بصري لراحة العميل النفسية */
+    /* الألوان الحاكمة والمقدسة لعلامة حلويات بوسي الفاخرة - ممنوع مساسها */
+    --bose-pink: #FF91A4;        /* نبض الحياة: حدود كروت المنتجات، الأسعار الديناميكية، والتأثيرات التفاعلية */
+    --bose-white: #FFFFFF;       /* المسيطر تماماً: لخلق تنفس بصري ومنع التكديس نهائياً لراحة العميل النفسية */
     --bose-black: #111111;       /* النصوص والعناوين فقط لضمان وضوح كامل للعين وحظر استخدامه في ظلال أو خلفيات */
-    --bose-gold: #D4AF37;        /* وجود رمزي ناعم وخفيف جداً لمحاكاة فخامة اللوجو (مثل نجوم التقييمات) */
+    --bose-gold: #D4AF37;        /* وجود رمزي ناعم وخفيف جداً لمحاكاة فخامة اللوجو (نجوم التقييمات) */
 
-    /* الهندسة البرمجية للظلال والحدود - محظور استخدام ظلال سوداء نهائياً */
+    /* الهندسة الرقمية للظلال والحدود - محظور استخدام ظلال سوداء نهائياً بالموقع */
     --bose-shadow-glow: 0 8px 32px rgba(255, 145, 164, 0.12);
     --bose-shadow-hover: 0 16px 40px rgba(255, 145, 164, 0.22);
-    --bose-border-pink: 1px solid rgba(255, 145, 164, 0.3);
+    --bose-border-pink: 1px solid rgba(255, 145, 164, 0.15);
     --bose-border-thick: 2px solid #FF91A4;
+    
+    /* صمامات أمان أنميشن السلاسة والتوقيت البصري */
+    --bose-transition-fast: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    --bose-transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* إعادة تهيئة شاملة وتأمين قواعد التجاوب وصمامات الأمان لمختلف الشاشات */
+/* ==========================================================================
+   1. صمام أمان بيئة العمل المتجاوبة وإعادة التهيئة الشاملة (Reset & Hardware)
+   ========================================================================== */
 *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
@@ -29,6 +35,8 @@
 html {
     scroll-behavior: smooth;
     font-size: 16px;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
 }
 
 body {
@@ -38,43 +46,46 @@ body {
     background-color: var(--bose-white) !important;
     color: var(--bose-black) !important;
     font-family: 'Cairo', sans-serif !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
+/* حظر سكرول الخلفية عند فتح القائمة الجانبية لمنع الارتجاج والتشوه اللوجستي */
 body.drawer-active {
-    overflow: hidden !important; /* منع سكرول الخلفية عند فتح القائمة الجانبية لراحة العميل */
+    overflow: hidden !important;
+    position: fixed !important;
+    width: 100% !important;
+    height: 100% !important;
 }
 
-body.bose-hardware-accelerated {
+/* تسريع معالجة الرسوميات والأجهزة الذكية لمنع اهتزاز الأنميشن والمحاكيات */
+.bose-hardware-accelerated {
     transform: none !important;
     perspective: none !important;
     backface-visibility: visible !important;
 }
 
-.bose-arabic-text {
-    word-break: keep-all;
-    overflow-wrap: break-word;
-    word-wrap: break-word;
-    hyphens: none;
-    line-height: 1.5;
-}
-
-/* حظر القطع ونصوص Overflow لضمان الفخامة وسهولة القراءة لراحة العين التامة */
+/* ==========================================================================
+   2. الهندسة الرقمية للنصوص والخطوط (Typography Limits & Rules)
+   ========================================================================== */
 h1, h2, h3, h4, h5, h6, p, span, a, button, input, select, textarea {
     white-space: normal;
     word-wrap: break-word;
     overflow-wrap: break-word;
+    text-overflow: ellipsis;
 }
 
-/* قفل أوزان الخطوط الهندسية للعلامة التجارية منعاً للتشويه البصري والبرمجي */
+/* قفل أوزان الخطوط الهندسية للبراند لمنع التشويه البصري */
 h1, h2 {
     font-family: 'Cairo', sans-serif !important;
-    font-weight: 700 !important; /* مقفول ومحمي كحد أقصى لأضخم العناوين الرئيسية بالموقع */
+    font-weight: 700 !important; /* السقف الأقصى لأضخم العناوين الرئيسية لضمان الفخامة */
     color: var(--bose-black) !important;
+    letter-spacing: -0.5px;
 }
 
 h3, h4, h5, h6 {
     font-family: 'Cairo', sans-serif !important;
-    font-weight: 600 !important; /* عناوين المنتجات، الفئات، وملخصات الفواتير */
+    font-weight: 600 !important; /* كروت المنتجات والفئات وعناوين ملخص الفواتير */
     color: var(--bose-black) !important;
 }
 
@@ -86,37 +97,40 @@ p, span, a, button, input, select, textarea {
 a {
     text-decoration: none;
     color: inherit;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: var(--bose-transition-fast);
 }
 
-button, input, select, textarea {
+button {
     border: none;
     outline: none;
     background: none;
+    cursor: pointer;
+    font-family: 'Cairo', sans-serif !important;
 }
 
 img {
     max-width: 100%;
     display: block;
     object-fit: cover;
+    pointer-events: none;
 }
 
 /* ==========================================================================
-   2. شريط الإعلانات التسويقية الانسيابي اللانهائي
+   3. شريط الإعلانات التسويقية الانسيابي اللانهائي الفاخر (#top-bar-marquee)
    ========================================================================== */
 .bose-top-bar-marquee-container {
-    background-color: var(--bose-pink) !important; 
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    background-color: var(--bose-pink) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
     overflow: hidden;
     display: flex;
     align-items: center;
-    padding: 10px 0;
+    padding: 12px 0;
     font-size: 14px;
     font-weight: 600;
     white-space: nowrap;
-    direction: ltr; /* تفعيل الاتجاه المعاكس صراحة لمنع الوميض والفراغات البرمجية */
+    direction: ltr; /* التوجيه المعاكس هندسياً لمنع وميض أو انقطاع المسار البصري */
     position: relative;
-    z-index: 45000 !important; /* أعلى طبقة برمجية لتأمين الشريط العلوي ومنع اختفائه */
+    z-index: 56000 !important; /* تأمين الطبقة العليا فوق كافة المكونات الملتصقة */
 }
 
 .bose-top-bar-marquee-track {
@@ -125,11 +139,11 @@ img {
     flex-wrap: nowrap !important;
     width: max-content !important;
     will-change: transform;
-    animation: boseMarqueeReverse 30s linear infinite !important; /* ربط مباشر وصريح بالأنميشن المعكوس هندسياً */
+    animation: boseMarqueeReverse 35s linear infinite !important;
 }
 
 .bose-marquee-item {
-    padding: 0 40px;
+    padding: 0 50px;
     direction: rtl;
     display: inline-block !important;
     color: #FFFFFF !important;
@@ -142,39 +156,39 @@ img {
 }
 
 /* ==========================================================================
-   3. الهيدر الموحد والثابت القياسي الديناميكي (.bose-sticky-header)
+   4. الهيدر الموحد والثابت القياسي (.bose-sticky-header)
    ========================================================================== */
 .bose-sticky-header {
     position: sticky !important;
     top: 0 !important;
-    z-index: 39999 !important; /* مرتبة الحماية للهيدر لضمان ثباته فوق محتوى الأقسام ومنع اختفائه */
+    z-index: 49000 !important; /* حماية كاملة لتأمين تصفح الهيدر فوق المحتوى العام للشبكات */
     background-color: var(--bose-white) !important;
     border-bottom: var(--bose-border-pink) !important;
     box-shadow: var(--bose-shadow-glow) !important;
-    padding: 12px 20px;
+    padding: 14px 24px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    transition: all 0.3s ease;
+    box-sizing: border-box;
 }
 
 .header-right-side, .header-left-side {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 18px;
 }
 
 .bose-nav-btn {
     background: none;
     border: none;
-    font-size: 20px;
+    font-size: 22px;
     color: var(--bose-black);
     cursor: pointer;
-    padding: 8px;
-    transition: color 0.3s ease;
+    padding: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: var(--bose-transition-fast);
 }
 
 .bose-nav-btn:hover {
@@ -184,17 +198,17 @@ img {
 .brand-logo-container {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
 }
 
 .brand-logo-img {
-    height: 45px;
-    width: 45px;
+    height: 48px;
+    width: 48px;
     object-fit: contain;
 }
 
 .brand-name-display {
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 700;
     color: var(--bose-black);
     white-space: nowrap;
@@ -205,30 +219,30 @@ img {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
 }
 
 .nav-cart-count-badge {
     position: absolute;
-    top: -2px;
-    left: -2px;
+    top: 0;
+    left: 0;
     background-color: var(--bose-pink);
     color: #FFFFFF !important;
     font-size: 11px;
     font-weight: 700;
-    min-width: 18px;
-    height: 18px;
+    min-width: 20px;
+    height: 20px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 0 4px;
-    box-shadow: 0 2px 6px rgba(255,145,164,0.4);
+    box-shadow: 0 3px 8px rgba(255,145,164,0.35);
 }
 
 /* ==========================================================================
-   4. نافذة البحث (Search Modal)
+   5. نافذة البحث الفوري الاحترافي (Bose Search Modal)
    ========================================================================== */
 .bose-search-modal {
     position: fixed !important;
@@ -236,13 +250,14 @@ img {
     left: 0 !important;
     width: 100vw !important;
     height: 100vh !important;
-    background-color: rgba(255, 255, 255, 0.98) !important;
-    z-index: 60000 !important; 
+    background-color: rgba(255, 255, 255, 0.99) !important;
+    z-index: 60000 !important;
     opacity: 0 !important;
     visibility: hidden !important;
-    transition: all 0.35s ease-in-out !important;
-    padding: 30px 20px;
+    transition: var(--bose-transition-smooth) !important;
+    padding: 40px 24px;
     display: block !important;
+    box-sizing: border-box;
 }
 
 .bose-search-modal.active {
@@ -253,60 +268,69 @@ img {
 .search-modal-header {
     display: flex;
     justify-content: flex-end;
-    margin-bottom: 30px;
+    margin-bottom: 40px;
 }
 
 .search-input-wrapper {
-    max-width: 600px;
+    max-width: 700px;
     margin: 0 auto;
     position: relative;
     border-bottom: var(--bose-border-thick);
-    padding-bottom: 8px;
+    padding-bottom: 12px;
 }
 
 .bose-search-field {
     width: 100%;
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 600;
     color: var(--bose-black);
-    padding: 8px 40px 8px 8px;
+    padding: 10px 45px 10px 10px;
     text-align: right;
+    border: none;
+    background: transparent;
 }
 
 .search-field-icon {
     position: absolute;
     top: 50%;
-    right: 10px;
+    right: 12px;
     transform: translateY(-50%);
     color: var(--bose-pink);
-    font-size: 22px;
+    font-size: 24px;
 }
 
 .search-results-container {
-    max-width: 600px;
-    margin: 30px auto 0 auto;
-    max-height: 60vh;
+    max-width: 700px;
+    margin: 40px auto 0 auto;
+    max-height: 65vh;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 16px;
+    padding-right: 4px;
 }
 
 .search-result-card-item {
     display: flex;
     align-items: center;
-    gap: 15px;
-    padding: 12px;
+    gap: 18px;
+    padding: 14px;
     border: var(--bose-border-pink);
-    border-radius: 16px;
+    border-radius: 18px;
     background-color: var(--bose-white);
     box-shadow: var(--bose-shadow-glow);
+    transition: var(--bose-transition-fast);
+}
+
+.search-result-card-item:hover {
+    border-color: var(--bose-pink);
+    box-shadow: var(--bose-shadow-hover);
 }
 
 .search-result-img {
-    width: 60px;
-    height: 60px;
-    border-radius: 12px;
+    width: 65px;
+    height: 65px;
+    border-radius: 14px;
     object-fit: cover;
 }
 
@@ -316,165 +340,255 @@ img {
 }
 
 .search-result-name {
-    font-size: 16px;
+    font-size: 17px;
     font-weight: 600;
     color: var(--bose-black);
 }
 
 .search-result-price-view {
-    font-size: 16px;
+    font-size: 17px;
     font-weight: 700;
     color: var(--bose-pink);
 }
 
-.search-no-results-msg {
-    text-align: center;
-    font-size: 16px;
-    color: var(--bose-black);
-    opacity: 0.6;
-    padding: 20px;
-}
-
 /* ==========================================================================
-   5. القائمة الجانبية المتطورة (Sidebar Drawer)
+   6. 👑 هندسة وتطوير واجهة المحرك الكلي للقائمة الجانبية (Sidebar Drawer UI)
+   تطهير برمي وتأمين بصري شامل لمنع تكدس الروابط وتأمين فخامة التصفح
    ========================================================================== */
 .bose-sidebar-drawer {
-    position: fixed;
-    top: 0;
-    right: -320px;
-    width: 320px;
-    height: 100%;
-    background-color: var(--bose-white);
-    z-index: 50000;
-    box-shadow: -5px 0 30px rgba(0,0,0,0.1);
-    transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    display: flex;
-    flex-direction: column;
-    border-left: var(--bose-border-pink);
+    position: fixed !important;
+    top: 0 !important;
+    right: -340px !important; /* تأمين عرض واسع إضافي لراحة المحتوى الداخلي */
+    width: 340px !important;
+    height: 100vh !important;
+    background-color: var(--bose-white) !important;
+    z-index: 55000 !important;
+    box-shadow: -12px 0 45px rgba(255, 145, 164, 0.16) !important;
+    transition: right 0.45s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    border-left: var(--bose-border-pink) !important;
+    box-sizing: border-box !important;
 }
 
 .bose-sidebar-drawer.open {
-    right: 0;
+    right: 0 !important;
 }
 
 .sidebar-header {
-    padding: 20px;
-    border-bottom: var(--bose-border-pink);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: rgba(255,145,164,0.03);
+    padding: 26px 24px !important;
+    border-bottom: var(--bose-border-pink) !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    background-color: rgba(255,145,164,0.02) !important;
 }
 
 .sidebar-logo-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    display: flex !important;
+    align-items: center !important;
+    gap: 14px !important;
 }
 
 .sidebar-logo {
-    height: 35px;
-    width: 35px;
-    object-fit: contain;
+    height: 44px !important;
+    width: 44px !important;
+    object-fit: contain !important;
 }
 
 .sidebar-brand-name {
-    font-size: 18px;
-    font-weight: 700;
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    color: var(--bose-black) !important;
 }
 
 .sidebar-close-btn {
-    background: none;
-    border: none;
-    font-size: 20px;
-    cursor: pointer;
-    color: var(--bose-black);
-    padding: 5px;
-    transition: color 0.3s;
+    background: none !important;
+    border: none !important;
+    font-size: 24px !important;
+    cursor: pointer !important;
+    color: var(--bose-black) !important;
+    padding: 6px !important;
+    transition: var(--bose-transition-fast) !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
 }
 
 .sidebar-close-btn:hover {
-    color: var(--bose-pink);
+    color: var(--bose-pink) !important;
+}
+
+/* الحاوية البرمجية المرنة التمرير لروابط القائمة لراحة عين العميل */
+.sidebar-scrollable-content {
+    flex: 1 !important;
+    overflow-y: auto !important;
+    padding: 24px 14px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 30px !important; /* فواصل دقيقة بين كتل التصفح لمنع التكدس البصري */
+    -webkit-overflow-scrolling: touch;
+}
+
+.sidebar-menu-wrapper {
+    width: 100% !important;
+}
+
+.sidebar-section-title {
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    color: var(--bose-pink) !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1.2px !important;
+    padding: 0 16px 12px 16px !important;
+    border-bottom: 1px dashed rgba(255, 145, 164, 0.2) !important;
+    margin-bottom: 12px !important;
 }
 
 .sidebar-links-list {
-    list-style: none;
-    padding: 20px 0;
-    margin: 0;
-    flex: 1;
-    overflow-y: auto;
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.sidebar-link-item {
+    margin-bottom: 6px !important;
 }
 
 .sidebar-link-item a {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 14px 25px;
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--bose-black);
-    border-bottom: 1px solid rgba(255,145,164,0.05);
-    transition: all 0.3s ease;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 14px 18px !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    color: var(--bose-black) !important;
+    border-radius: 16px !important;
+    transition: var(--bose-transition-fast) !important;
+    box-sizing: border-box !important;
 }
 
-.sidebar-link-item a i {
-    color: var(--bose-pink);
-    width: 20px;
-    text-align: center;
-    font-size: 18px;
+.link-main-side {
+    display: flex !important;
+    align-items: center !important;
+    gap: 14px !important;
 }
 
+.sidebar-link-item a i.main-icon {
+    color: var(--bose-pink) !important;
+    font-size: 18px !important;
+    width: 24px !important;
+    text-align: center !important;
+}
+
+.sidebar-link-item a i.arrow-icon {
+    font-size: 13px !important;
+    color: var(--bose-black) !important;
+    opacity: 0.25 !important;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* روقان وتأثيرات التصفح الفاخر داخل القائمة الجانبية */
 .sidebar-link-item a:hover {
-    background-color: rgba(255,145,164,0.06);
-    padding-right: 32px;
-    color: var(--bose-pink);
+    background-color: rgba(255, 145, 164, 0.06) !important;
+    color: var(--bose-pink) !important;
+    padding-right: 24px !important;
 }
 
+.sidebar-link-item a:hover i.arrow-icon {
+    color: var(--bose-pink) !important;
+    opacity: 1 !important;
+    transform: translateX(-4px) !important;
+}
+
+/* الأزرار اللوجستية وقنوات الاتصال بأسفل السايد بار */
+.sidebar-footer-contacts {
+    padding: 24px 20px !important;
+    border-top: var(--bose-border-pink) !important;
+    background-color: rgba(255,145,164,0.01) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+}
+
+.sidebar-contact-pill {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 12px !important;
+    width: 100% !important;
+    padding: 14px !important;
+    border-radius: 18px !important;
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    box-sizing: border-box !important;
+    transition: var(--bose-transition-fast) !important;
+}
+
+.sidebar-footer-contacts .sidebar-contact-pill:nth-child(1) {
+    background-color: #FFFFFF !important;
+    color: #FF91A4 !important;
+    border: 2px solid #FF91A4 !important;
+    box-shadow: var(--bose-shadow-glow) !important;
+}
+
+.sidebar-footer-contacts .sidebar-contact-pill:nth-child(1):hover {
+    background-color: #FF91A4 !important;
+    color: #FFFFFF !important;
+    box-shadow: var(--bose-shadow-hover) !important;
+}
+
+.sidebar-footer-contacts .sidebar-contact-pill:nth-child(2) {
+    background-color: rgba(255, 145, 164, 0.04) !important;
+    color: var(--bose-black) !important;
+    border: 1px solid rgba(255, 145, 164, 0.12) !important;
+}
+
+.sidebar-footer-contacts .sidebar-contact-pill:nth-child(2):hover {
+    background-color: var(--bose-black) !important;
+    color: #FFFFFF !important;
+}
+
+/* غطاء التعتيم البصري والضبابي خلف السايد بار */
 .bose-sidebar-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.4);
-    z-index: 49999;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(3px);
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background-color: rgba(17, 17, 17, 0.35) !important;
+    z-index: 54000 !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transition: var(--bose-transition-fast) !important;
+    backdrop-filter: blur(5px) !important;
 }
 
 .bose-sidebar-overlay.show {
-    opacity: 1;
-    visibility: visible;
+    opacity: 1 !important;
+    visibility: visible !important;
 }
 
 /* ==========================================================================
-   6. قسم الهيرو وبانر العروض المتجاوب (Hero Layout)
-   ========================================================================= */
+   7. قسم الهيرو وبانر العروض المتجاوب الفاخر (#hero-section)
+   ========================================================================== */
 .bose-hero-section {
     position: relative;
     width: 100%;
-    height: 60vh;
+    height: 65vh;
     overflow: hidden;
     background-color: var(--bose-white);
-    padding: 0;
-    margin: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .bose-hero-slide-overlay {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: linear-gradient(to top, rgba(255, 145, 164, 0.15) 0%, rgba(255, 255, 255, 0) 100%);
+    background: linear-gradient(to top, rgba(255, 145, 164, 0.12) 0%, rgba(255, 255, 255, 0) 100%);
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 20px;
-    direction: rtl;
+    padding: 24px;
     text-align: center;
     width: 100%;
     height: 100%;
@@ -482,9 +596,9 @@ img {
 
 .bose-hero-title {
     color: var(--bose-black) !important;
-    font-size: 1.85rem;
+    font-size: 2.25rem;
     line-height: 1.3;
-    margin-bottom: 12px;
+    margin-bottom: 16px;
 }
 
 .bose-hero-title span.bose-highlight-pink {
@@ -493,26 +607,26 @@ img {
 
 .bose-hero-desc {
     color: var(--bose-black) !important;
-    font-size: 0.95rem;
-    line-height: 1.6;
-    margin-bottom: 24px;
-    max-width: 600px;
+    font-size: 1.05rem;
+    line-height: 1.7;
+    margin-bottom: 30px;
+    max-width: 650px;
+    opacity: 0.9;
 }
 
 .bose-hero-btn {
     background-color: var(--bose-pink);
     color: var(--bose-white) !important;
     font-weight: 700 !important;
-    font-size: 0.95rem;
-    padding: 12px 40px;
+    font-size: 1.05rem;
+    padding: 14px 48px;
     border-radius: 50px;
-    transition: 0.3s ease;
+    transition: var(--bose-transition-fast);
     border: 2px solid transparent;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     box-shadow: var(--bose-shadow-glow);
-    cursor: pointer;
 }
 
 .bose-hero-btn:hover {
@@ -520,10 +634,11 @@ img {
     color: var(--bose-pink) !important;
     border-color: var(--bose-pink);
     box-shadow: var(--bose-shadow-hover);
+    transform: translateY(-3px);
 }
 
 /* ==========================================================================
-   7. قسم شلال المنتجات البصري الأنيق المستمر الحركة (#waterfall-section)
+   8. قسم شلال المنتجات البصري الأنيق المستمر الحركة (#waterfall-section)
    ========================================================================== */
 .bose-waterfall-section-container {
     position: relative;
@@ -537,7 +652,7 @@ img {
     content: '';
     position: absolute;
     left: 0; right: 0;
-    height: 60px;
+    height: 80px;
     z-index: 2;
     pointer-events: none;
 }
@@ -552,12 +667,12 @@ img {
 
 .waterfall-container {
     display: flex;
-    gap: 16px;
+    gap: 20px;
     width: 100%;
     height: 700px;
     overflow: hidden;
     position: relative;
-    padding: 0 16px;
+    padding: 0 20px;
 }
 
 @media (min-width: 1024px) {
@@ -570,39 +685,49 @@ img {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    will-change: transform;
-    animation: boseWaterfallAnimation 25s linear infinite;
+    gap: 20px;
 }
 
-#waterfall-right-col {
-    animation-direction: reverse;
+.waterfall-up {
+    animation: boseWaterfallUp 30s linear infinite;
+    will-change: transform;
+}
+
+.waterfall-down {
+    animation: boseWaterfallDown 30s linear infinite;
+    will-change: transform;
 }
 
 .waterfall-col img {
     width: 100%;
     height: auto;
-    min-height: 250px;
-    max-height: 320px;
+    min-height: 260px;
+    max-height: 330px;
     object-fit: cover !important;
-    border-radius: 20px;
+    border-radius: 24px;
     border: var(--bose-border-pink);
     display: block;
 }
 
-@keyframes boseWaterfallAnimation {
+@keyframes boseWaterfallUp {
     0% { transform: translate3d(0, 0, 0); }
     100% { transform: translate3d(0, -50%, 0); }
 }
 
+@keyframes boseWaterfallDown {
+    0% { transform: translate3d(0, -50%, 0); }
+    100% { transform: translate3d(0, 0, 0); }
+}
+
 /* ==========================================================================
-   8. [إصلاح حاسم وتطهير للفراغ الأبيض]: قسم "عقد من الإتقان" التفاعلي اللانهائي
+   9. 🌸 [إصلاح الثغرة البصرية الكبرى]: قسم "عقد من الإتقان" التفاعلي اللانهائي
+   تأمين ظهور كامل للصور طوال الوقت، وحظر الوميض والفواصل البيضاء نهائياً
    ========================================================================== */
 .bose-perfection-section {
-    width: 100%;
-    padding: 40px 0;
-    background-color: var(--bose-white);
-    overflow: hidden;
+    width: 100% !important;
+    padding: 50px 0 !important;
+    background-color: var(--bose-white) !important;
+    overflow: hidden !important;
 }
 
 .bose-perfection-carousel-wrapper {
@@ -610,82 +735,86 @@ img {
     overflow: hidden !important; 
     display: flex !important;
     position: relative !important;
-    padding: 0 !important;
-    margin: 20px 0 0 0 !important;
+    padding: 10px 0 !important;
+    margin: 24px 0 0 0 !important;
 }
 
-.bose-perfection-track {
+.excellence-track-loop {
     display: flex !important; 
     flex-direction: row !important;
     flex-wrap: nowrap !important;
-    gap: 0 !important; /* حظر الفواصل البصرية لدمج كروت الصور */
-    padding: 0 !important;
+    gap: 20px !important; /* فواصل منسقة وثابتة بين كروت الإتقان */
+    padding: 0 10px !important;
     margin: 0 !important;
     width: max-content !important;
-    will-change: transform;
-    animation: bosePerfectionLoop 20s linear infinite !important; /* تقليل المدة الزمنية لمنع الفراغ اللانهائي التام لسرعة تلاحق الصور وعلاج مشكلة الـ 20 ثانية الفاضية */
+    will-change: transform !important;
+    animation: bosePerfectionLoop 25s linear infinite !important; /* دوران متلاحق لا نهائي لمنع الفراغ */
 }
 
 .excellence-slide-card {
-    width: 100vw !important; 
-    height: 45vh !important; 
+    width: 85vw !important; 
+    height: 340px !important; 
     flex-shrink: 0 !important;
     display: block !important;
-    margin: 0 !important;
-    padding: 0 !important;
+    border-radius: 28px !important;
+    overflow: hidden !important;
+    border: var(--bose-border-pink) !important;
+    box-shadow: var(--bose-shadow-glow) !important;
 }
 
 .excellence-slide-card img {
     width: 100% !important;
     height: 100% !important; 
-    border-radius: 0 !important;    
-    border: none !important;        
     object-fit: cover !important;
     display: block !important;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.excellence-slide-card:hover img {
+    transform: scale(1.06) !important;
 }
 
 @media (min-width: 768px) {
     .excellence-slide-card { 
-        width: 50vw !important; 
-        height: 50vh !important;
+        width: 46vw !important; 
+        height: 400px !important;
     }
 }
 
 @media (min-width: 1024px) {
     .excellence-slide-card { 
-        width: 33.333vw !important; 
-        height: 60vh !important;
+        width: 31vw !important; 
+        height: 460px !important;
     }
 }
 
-/* دمج وتأمين حركتي bosePerfectionLoop لضمان عدم حدوث الموت البصري أو الفراغات البيضاء البتة */
 @keyframes bosePerfectionLoop {
     0% { transform: translate3d(0, 0, 0); } 
     100% { transform: translate3d(-50%, 0, 0); } 
 }
 
 /* ==========================================================================
-   9. أقسام كروت وشبكات المنتجات الموحدة القياسية
+   10. شبكات المنيو وكروت المنتجات الموحدة القياسية العريضة
    ========================================================================== */
 .bose-section-container {
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 40px 16px;
-    direction: rtl;
+    padding: 50px 20px;
+    box-sizing: border-box;
 }
 
 .bose-section-header {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 40px;
 }
 
 .bose-section-title {
     color: var(--bose-black) !important;
-    font-size: 1.75rem;
+    font-size: 1.95rem;
     position: relative;
     display: inline-block;
-    padding-bottom: 10px;
+    padding-bottom: 12px;
     margin-bottom: 8px;
 }
 
@@ -694,22 +823,23 @@ img {
     position: absolute;
     bottom: 0; left: 50%;
     transform: translateX(-50%);
-    width: 60px; height: 3px;
+    width: 65px; height: 3.5px;
     background-color: var(--bose-pink);
-    border-radius: 2px;
+    border-radius: 4px;
 }
 
 .bose-section-subtitle {
     color: var(--bose-black);
-    opacity: 0.7;
-    font-size: 0.95rem;
-    margin-top: 5px;
+    opacity: 0.75;
+    font-size: 0.98rem;
+    margin-top: 6px;
 }
 
+/* الشبكة الهندسية القياسية للموقع */
 .products-grid, .bose-products-grid {
     display: grid !important;
     grid-template-columns: repeat(4, 1fr) !important;
-    gap: 16px !important;
+    gap: 20px !important;
     width: 100% !important;
 }
 
@@ -717,17 +847,17 @@ img {
     .products-grid, .bose-products-grid { grid-template-columns: repeat(2, 1fr) !important; }
 }
 
-@media (max-width: 500px) {
+@media (max-width: 550px) {
     .products-grid, .bose-products-grid { grid-template-columns: 1fr !important; }
 }
 
+/* التصفح الأفقي المريح للموبايل للأكثر مبيعاً ووصل حديثاً لرفع التفاعل */
 @media (max-width: 767px) {
     #our-products-grid.products-grid {
         display: grid !important;
         grid-template-columns: repeat(2, 1fr) !important; 
-        gap: 12px !important;
+        gap: 14px !important;
         width: 100% !important;
-        padding: 0 !important;
     }
 
     #most-selling-section .products-grid,
@@ -736,8 +866,8 @@ img {
         overflow-x: auto !important;
         scroll-behavior: smooth !important;
         scroll-snap-type: x mandatory !important; 
-        gap: 16px !important;
-        padding: 15px 4px !important;
+        gap: 20px !important;
+        padding: 20px 6px !important;
         width: 100% !important;
         -webkit-overflow-scrolling: touch;
     }
@@ -755,22 +885,25 @@ img {
     }
 }
 
+/* كارت المنتج الهيكلي الموحد بالمسطرة */
 .product-card-unified {
     width: 100%;
     height: auto;
     background-color: var(--bose-white) !important;
     border: var(--bose-border-pink) !important;
-    border-radius: 20px !important;
-    padding: 16px;
+    border-radius: 24px !important;
+    padding: 18px;
     box-shadow: var(--bose-shadow-glow) !important; 
-    transition: 0.3s ease !important;
+    transition: var(--bose-transition-fast) !important;
     display: flex;
     flex-direction: column;
+    box-sizing: border-box;
 }
 
 .product-card-unified:hover {
     box-shadow: var(--bose-shadow-hover) !important;
     border-color: var(--bose-pink) !important;
+    transform: translateY(-4px);
 }
 
 .product-card-img {
@@ -779,15 +912,13 @@ img {
     aspect-ratio: 1 / 1;
     border-radius: 20px;
     display: block;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
     object-fit: cover;
 }
 
-@media (min-width: 768px) { 
-    .product-card-img { height: 260px; }
-}
+@media (min-width: 768px) { .product-card-img { height: 260px; } }
 @media (min-width: 1024px) { 
-    .product-card-img { height: 320px; }
+    .product-card-img { height: 320px; } 
     #most-selling-section .products-grid .product-card-unified,
     #new-arrivals-section .products-grid .product-card-unified {
         width: 100% !important;
@@ -795,32 +926,35 @@ img {
 }
 
 .product-card-title {
-    font-size: 1.15rem;
+    font-size: 1.25rem;
     margin: 0 0 6px 0;
     color: var(--bose-black);
 }
+
 .product-card-flavor-name {
-    font-size: 0.95rem;
+    font-size: 0.98rem;
     color: var(--bose-pink);
     font-weight: 600;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
+    display: block;
 }
+
 .product-card-desc {
-    font-size: 0.85rem;
+    font-size: 0.88rem;
     color: var(--bose-black);
     opacity: 0.8;
-    line-height: 1.5;
-    margin: 0 0 12px 0;
-    min-height: 42px;
+    line-height: 1.6;
+    margin: 0 0 16px 0;
+    min-height: 45px;
 }
 
 .product-card-qty-wrapper {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
+    gap: 14px;
     margin-top: auto;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
     direction: rtl !important; 
 }
 
@@ -828,25 +962,27 @@ img {
     background-color: var(--bose-white);
     border: var(--bose-border-pink);
     color: var(--bose-black);
-    width: 36px; height: 36px;
+    width: 38px; height: 38px;
     border-radius: 50%;
     cursor: pointer;
     font-weight: 700;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: 0.2s ease;
+    transition: var(--bose-transition-fast);
 }
 
 .btn-qty-plus:hover, .btn-qty-minus:hover {
     background-color: var(--bose-pink);
     color: var(--bose-white);
+    border-color: var(--bose-pink);
 }
 
 .input-qty-value {
-    width: 40px;
+    width: 44px;
     text-align: center;
     font-weight: 700;
+    font-size: 16px;
     color: var(--bose-black);
     border: none;
     background: transparent;
@@ -855,61 +991,57 @@ img {
 .product-card-price {
     color: var(--bose-pink);
     font-weight: 700;
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     text-align: center;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
 }
 
 .btn-add-to-cart {
     width: 100%;
     background-color: var(--bose-pink);
     color: var(--bose-white);
-    padding: 10px;
-    border-radius: 12px;
+    padding: 12px;
+    border-radius: 16px;
     font-weight: 700;
     cursor: pointer;
-    transition: 0.2s ease;
+    transition: var(--bose-transition-fast);
     border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-add-to-cart:hover {
+    background-color: var(--bose-black);
+    color: var(--bose-white);
 }
 
 .bose-show-more-container {
     text-align: center;
-    margin-top: 30px;
+    margin-top: 36px;
     width: 100%;
 }
 
-.bose-product-action-btn {
-    display: inline-flex !important;
-    padding: 12px 40px !important;
-    background-color: var(--bose-pink) !important;
-    color: var(--bose-white) !important;
-    border-radius: 12px !important;
-    font-weight: 700 !important;
-    cursor: pointer !important;
-    box-shadow: var(--bose-shadow-glow);
-    transition: 0.3s ease;
-    border: none;
-}
-
 /* ==========================================================================
-   10. [إعادة بناء وهندسة بالكامل]: كتل عروض المحاكيات البصرية الكبرى
-   (تدمير التكدس والتشوه الملاحظ بالفيديو، وتأمين التناغم التام للمحاكي ككتلة واحدة)
+   11. كتل واجهات عروض المحاكيات الكبرى المتكاملة التناغم
+   حظر أي تكدس بصري وتأمين ظهور وحسم أزرار التخصيص والـ CTA بالكامل
    ========================================================================== */
 .preview-builder-block, .bose-isolated-simulator-card {
     width: 100% !important;
-    margin: 30px 0 !important;
-    padding: 40px 20px !important;
-    background-color: var(--bose-white) !important; /* خلفية بيضاء صريحة للتنفس البصري ومنع الحوائط الصامتة */
-    border: var(--bose-border-thick) !important; /* وضع بوردر بمبي معتمد حول المحاكي لحسم حدوده البصرية */
-    border-radius: 24px !important; 
-    box-shadow: var(--bose-shadow-glow) !important; /* توهج بمبي خفيف وناعم لراحة عين العميل */
+    margin: 40px 0 !important;
+    padding: 50px 24px !important;
+    background-color: var(--bose-white) !important;
+    border: var(--bose-border-thick) !important; /* حسم الحدود الخارجية بالبوردر البمبي المعتمد */
+    border-radius: 28px !important; 
+    box-shadow: var(--bose-shadow-glow) !important;
     display: flex !important;
     flex-direction: column !important;
     justify-content: center !important;
     align-items: center !important;
     text-align: center !important;
-    height: auto !important; /* إلغاء الارتفاع المقيد القاسي لتفادي تكدس النصوص والأقسام وعلاج عيب الهيكل المبعثر بالفيديو */
-    overflow: visible !important; /* السماح ببروز الأزرار بكل روعة وانسيابية */
+    height: auto !important; /* مرونة تامة لمنع تداخل أو سقوط نصوص التخصيص */
+    overflow: visible !important;
     box-sizing: border-box !important;
 }
 
@@ -919,78 +1051,77 @@ img {
     align-items: center !important;
     justify-content: center !important;
     width: 100% !important;
-    gap: 20px !important;
+    gap: 24px !important;
 }
 
-/* منع ضغط وتشويه الصور طبيعية الجودة بنسبة 100% وإجبارها على ملء المساحة بالتناسق */
+/* صمام الأمان الحرج لمنع ضغط أو تشويه صورة المحاكي وعلاج عجز الحيز البصري */
 #cake-preview-img, #flower-preview-img, .simulator-preview-img, [id*="preview-img"] {
-    max-width: 320px !important; 
+    max-width: 340px !important; 
     width: 100% !important;
     height: auto !important; 
-    object-fit: contain !important; /* صمام الأمان لمنع التمدد أو التشويه العشوائي وعلاج عجز الحيز البصري الملاحظ بالفيديو */
-    border-radius: 18px !important;
-    border: var(--bose-border-pink) !important; /* حماية حدود صورة المنتج بالبوردر الناعم */
+    object-fit: contain !important;
+    border-radius: 20px !important;
+    border: var(--bose-border-pink) !important;
     margin: 0 auto !important;
-    padding: 0 !important;
     display: block !important;
 }
 
 .bose-simulator-title {
-    font-size: 1.6rem !important;
+    font-size: 1.75rem !important;
     font-weight: 700 !important;
-    margin-bottom: 12px !important;
-    color: var(--bose-black) !important; /* عزل الأسود الصريح للنصوص والعناوين فقط لراحة العين */
+    margin-bottom: 14px !important;
+    color: var(--bose-black) !important;
 }
 
 .bose-simulator-desc {
-    font-size: 0.95rem !important;
+    font-size: 1rem !important;
     color: var(--bose-black) !important;
-    opacity: 0.75 !important;
-    margin-bottom: 24px !important;
-    max-width: 550px !important;
+    opacity: 0.8 !important;
+    margin-bottom: 26px !important;
+    max-width: 580px !important;
     line-height: 1.8 !important;
 }
 
-/* [تأمين حاسم وأقوى احترافية للأزرار]: وضع بوردر بمبي متوهج ورفع الـ z-index لمنع الحجب والضياع */
+/* 👑 [تأمين وحماية الأزرار]: حظر ثغرة الاختفاء وضمان أعلى معدلات التحويل للمحاكيات */
 .bose-simulator-preview-cta-btn, #cake-preview-cta, #flower-preview-cta, .bose-simulator-action-btn, [id*="preview"] a {
     display: inline-flex !important; 
     align-items: center !important;
     justify-content: center !important;
     opacity: 1 !important;
-    visibility: visible !important; /* تدمير الاختفاء الفوري للأبد وعلاج سقوط العناصر */
+    visibility: visible !important; /* تدمير ثغرة السقوط أو الاختفاء البصري للأبد */
     background-color: var(--bose-pink) !important; /* البمبي نبض الحياة للأزرار التفاعلية */
     color: var(--bose-white) !important; 
     font-weight: 700 !important; 
-    padding: 14px 45px !important; 
-    border-radius: 30px !important; 
-    border: 2px solid var(--bose-white) !important; /* بوردر أبيض داخلي ملوكي يبرز فخامة الزرار */
+    padding: 15px 50px !important; 
+    border-radius: 35px !important; 
+    border: 2px solid var(--bose-white) !important; /* إطار داخلي ملوكي أبيض يبرز أناقة النقرة */
     text-decoration: none !important; 
-    margin: 10px auto 0 auto !important; 
-    box-shadow: 0 8px 24px rgba(255, 145, 164, 0.4) !important; /* توهج بمبي كثيف ومحفز للشراء */
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    margin: 12px auto 0 auto !important; 
+    box-shadow: 0 8px 26px rgba(255, 145, 164, 0.4) !important;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
     position: relative !important;
-    z-index: 999 !important; /* الرفع المطلق فوق كل الكتل لمنع الاختفاء تحت الأقسام التالية وتأمين نقرات العميل */
+    z-index: 999 !important; /* الرفع المطلق لحفظ فاعلية أزرار الشراء والتخصيص */
 }
 
 .bose-simulator-preview-cta-btn:hover, #cake-preview-cta:hover, #flower-preview-cta:hover, .bose-simulator-action-btn:hover {
     background-color: var(--bose-white) !important;
     color: var(--bose-pink) !important;
-    border: 2px solid var(--bose-pink) !important; /* قلب الألوان بمرونة تفاعلية فاخرة عند الـ Hover */
-    transform: translateY(-4px) !important;
+    border: 2px solid var(--bose-pink) !important;
+    transform: translateY(-5px) !important;
     box-shadow: var(--bose-shadow-hover) !important;
 }
 
 @media (min-width: 1024px) {
     .preview-builder-block, .bose-isolated-simulator-card {
-        padding: 50px !important;
+        padding: 60px 40px !important;
     }
     .simulator-card-inner-layout {
         flex-direction: row-reverse !important;
         justify-content: space-between !important;
-        gap: 40px !important;
+        gap: 50px !important;
     }
     #cake-preview-img, #flower-preview-img, .simulator-preview-img, [id*="preview-img"] { 
-        max-width: 450px !important; 
+        max-width: 480px !important; 
     }
     .simulator-text-content {
         text-align: right !important;
@@ -999,7 +1130,7 @@ img {
 }
 
 /* ==========================================================================
-   11. حوكمة وأبعاد كروت الفئات الـ 12 وثباتها (Categories Slider UI)
+   12. حوكمة وأبعاد كروت الفئات الـ 12 وثباتها (Categories Slider UI)
    ========================================================================== */
 .bose-categories-slider-section {
     width: 100%;
@@ -1012,7 +1143,7 @@ img {
     width: 100%;
     overflow: hidden;
     position: relative;
-    padding: 15px 0;
+    padding: 20px 0;
 }
 
 .categories-track-slider {
@@ -1020,25 +1151,23 @@ img {
     overflow-x: auto !important;
     scroll-behavior: smooth !important;
     scroll-snap-type: x mandatory !important;
-    gap: 16px !important;
-    padding: 10px 16px !important;
+    gap: 20px !important;
+    padding: 12px 20px !important;
     width: 100% !important;
     -webkit-overflow-scrolling: touch;
 }
-.categories-track-slider::-webkit-scrollbar { 
-    display: none !important; 
-}
+.categories-track-slider::-webkit-scrollbar { display: none !important; }
 
 .category-card-unified {
     background-color: var(--bose-white) !important;
     border: var(--bose-border-pink) !important;
-    border-radius: 24px !important;
+    border-radius: 28px !important;
     overflow: hidden;
     display: flex;
     flex-direction: column;
     align-items: center;
     box-shadow: var(--bose-shadow-glow);
-    transition: 0.3s ease;
+    transition: var(--bose-transition-smooth);
     flex-shrink: 0 !important; 
     scroll-snap-align: center !important;
     width: 280px !important;
@@ -1048,7 +1177,7 @@ img {
 }
 
 .category-card-unified:hover {
-    transform: translateY(-6px);
+    transform: translateY(-8px);
     box-shadow: var(--bose-shadow-hover);
     border-color: var(--bose-pink);
 }
@@ -1062,11 +1191,10 @@ img {
 
 .category-card-name {
     margin-top: auto;
-    padding-bottom: 15px;
+    padding-bottom: 18px;
     text-align: center;
     font-size: 20px !important; 
     font-weight: 700 !important;
-    font-family: 'Cairo', sans-serif !important;
     color: var(--bose-black);
 }
 
@@ -1087,13 +1215,13 @@ img {
 }
 
 /* ==========================================================================
-   12. هندسة قسم الفخر والاعتزاز (Pride Section)
+   13. هندسة قسم الفخر والاعتزاز (Pride Section)
    ========================================================================== */
 .bose-pride-statistics-section {
-    padding: 60px 16px;
+    padding: 70px 20px;
     background-color: var(--bose-white);
-    border-top: 1px solid rgba(255, 145, 164, 0.15);
-    border-bottom: 1px solid rgba(255, 145, 164, 0.15);
+    border-top: 1px solid rgba(255, 145, 164, 0.12);
+    border-bottom: 1px solid rgba(255, 145, 164, 0.12);
     min-height: 550px !important;
     box-sizing: border-box;
 }
@@ -1103,60 +1231,68 @@ img {
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    gap: 40px;
+    gap: 45px;
 }
 
 .bose-pride-text-block { text-align: center; }
 .bose-pride-text-block h2 {
-    font-size: 32px;
-    margin-bottom: 18px;
+    font-size: 34px;
+    margin-bottom: 20px;
     color: var(--bose-black);
 }
 .bose-pride-text-block p {
     color: var(--bose-black);
-    opacity: 0.8;
+    opacity: 0.85;
+    line-height: 1.8;
 }
 
 .pride-mini-tag {
     display: inline-block;
     color: var(--bose-pink);
     font-weight: 700;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
+    font-size: 15px;
 }
 
 .bose-statistics-grid-block {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
+    gap: 20px;
     width: 100%;
 }
 
 .bose-stat-card {
     background-color: var(--bose-white);
     border: var(--bose-border-pink);
-    border-radius: 20px;
-    padding: 24px;
+    border-radius: 24px;
+    padding: 26px;
     text-align: center;
     box-shadow: var(--bose-shadow-glow);
+    transition: var(--bose-transition-fast);
+}
+
+.bose-stat-card:hover {
+    border-color: var(--bose-pink);
+    box-shadow: var(--bose-shadow-hover);
 }
 
 .stat-icon-wrapper {
-    font-size: 2rem;
+    font-size: 2.2rem;
     color: var(--bose-pink);
-    margin-bottom: 8px;
+    margin-bottom: 10px;
 }
 
 .stat-number {
-    font-size: 26px;
+    font-size: 28px;
     margin-bottom: 6px;
     color: var(--bose-black);
     font-weight: 700;
 }
 
 .stat-label {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     color: var(--bose-black);
-    opacity: 0.7;
+    opacity: 0.75;
 }
 
 @media (min-width: 768px) {
@@ -1165,90 +1301,88 @@ img {
 }
 
 @media (min-width: 1024px) {
-    .bose-pride-statistics-section { 
-        min-height: 700px !important;
-    }
+    .bose-pride-statistics-section { min-height: 700px !important; }
     .bose-pride-container {
         display: grid;
-        grid-template-columns: 1.2fr 1.8fr;
-        gap: 40px;
+        grid-template-columns: 1.1fr 1.9fr;
+        gap: 50px;
         align-items: center;
     }
     .bose-statistics-grid-block { grid-template-columns: repeat(5, 1fr); }
 }
 
 /* ==========================================================================
-   13. التوجيه الملوكي لصفحة المنيو الشامل (menu.html)
+   14. التوجيه الملوكي لصفحة المنيو الشامل (menu.html)
    ========================================================================== */
 .menu-categories-grid-framework {
     display: grid !important;
     grid-template-columns: 1fr !important;
-    gap: 24px !important;
+    gap: 30px !important;
     width: 100%;
-    padding: 20px 0;
+    padding: 25px 0;
 }
 
 .menu-category-card {
     width: 100%;
     background-color: var(--bose-white);
     border: var(--bose-border-pink);
-    border-radius: 20px;
-    padding: 16px;
+    border-radius: 24px;
+    padding: 18px;
     box-shadow: var(--bose-shadow-glow);
     height: 360px !important;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     align-items: center;
+    transition: var(--bose-transition-smooth);
+}
+
+.menu-category-card:hover {
+    transform: translateY(-8px);
+    border-color: var(--bose-pink);
+    box-shadow: var(--bose-shadow-hover);
 }
 
 .menu-category-card img {
     width: 100%;
     height: 280px !important;
     object-fit: cover;
-    border-radius: 16px;
+    border-radius: 20px;
 }
 
 .menu-category-card-title {
     margin-top: auto;
-    font-size: 1.2rem;
+    font-size: 20px;
     font-weight: 700;
     color: var(--bose-black);
 }
 
 @media (min-width: 768px) {
-    .menu-categories-grid-framework { 
-        grid-template-columns: repeat(2, 1fr) !important;
-    } 
-    .menu-category-card { 
-        height: 420px !important;
-    }
+    .menu-categories-grid-framework { grid-template-columns: repeat(2, 1fr) !important; } 
+    .menu-category-card { height: 420px !important; }
     .menu-category-card img { height: 330px !important; }
 }
 
 @media (min-width: 1024px) {
-    .menu-categories-grid-framework { 
-        grid-template-columns: repeat(3, 1fr) !important;
-    } 
-    .menu-category-card { 
-        height: 520px !important;
-    }
+    .menu-categories-grid-framework { grid-template-columns: repeat(3, 1fr) !important; } 
+    .menu-category-card { height: 520px !important; }
     .menu-category-card img { height: 420px !important; }
 }
 
 /* ==========================================================================
-   14. الفوتر القياسي الموحد المعتمد بلونه الفاتح الخالص (.bose-footer)
+   15. الفوتر القياسي الموحد الثابت بلونه الفاتح الخالص (.bose-footer)
+   المساحات متوازنة 100% ومنع التكدس نهائياً لراحة العميل النفسية
    ========================================================================== */
 .bose-footer {
     background-color: var(--bose-white) !important;
     border-top: var(--bose-border-pink) !important;
-    padding: 60px 20px 40px 20px !important;
+    padding: 70px 24px 45px 24px !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
     text-align: center !important;
     width: 100% !important;
-    gap: 35px !important;
+    gap: 40px !important;
     box-sizing: border-box !important;
 }
 
@@ -1257,7 +1391,7 @@ img {
     max-width: 1200px !important;
     display: grid !important;
     grid-template-columns: 1fr !important;
-    gap: 40px !important;
+    gap: 45px !important;
 }
 
 @media (min-width: 768px) {
@@ -1265,15 +1399,13 @@ img {
         grid-template-columns: repeat(3, 1fr) !important;
         text-align: right !important;
     }
-    .bose-footer {
-        align-items: flex-start !important;
-    }
+    .bose-footer { align-items: flex-start !important; }
 }
 
 .footer-column-block {
     display: flex !important;
     flex-direction: column !important;
-    gap: 15px !important;
+    gap: 18px !important;
     width: 100% !important;
 }
 
@@ -1281,50 +1413,46 @@ img {
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 12px !important;
+    gap: 14px !important;
 }
 
 @media (min-width: 768px) {
-    .footer-brand-meta {
-        justify-content: flex-start !important;
-    }
+    .footer-brand-meta { justify-content: flex-start !important; }
 }
 
 .footer-logo {
-    height: 55px !important;
+    height: 60px !important;
     width: auto !important;
     object-fit: contain !important;
 }
 
 .footer-title {
-    font-size: 22px !important;
+    font-size: 24px !important;
     font-weight: 700 !important;
     color: var(--bose-black) !important;
 }
 
 .footer-about-paragraph {
     font-size: 14px !important;
-    line-height: 1.7 !important;
+    line-height: 1.8 !important;
     color: var(--bose-black) !important;
-    opacity: 0.8 !important;
+    opacity: 0.85 !important;
 }
 
 .footer-social-wrapper {
     display: flex !important;
-    gap: 15px !important;
+    gap: 16px !important;
     justify-content: center !important;
-    margin-top: 10px !important;
+    margin-top: 12px !important;
 }
 
 @media (min-width: 768px) {
-    .footer-social-wrapper {
-        justify-content: flex-start !important;
-    }
+    .footer-social-wrapper { justify-content: flex-start !important; }
 }
 
 .footer-social-icon-btn {
-    width: 38px !important;
-    height: 38px !important;
+    width: 42px !important;
+    height: 42px !important;
     border-radius: 50% !important;
     border: var(--bose-border-pink) !important;
     display: flex !important;
@@ -1334,23 +1462,24 @@ img {
     background-color: var(--bose-white) !important;    
     box-shadow: var(--bose-shadow-glow) !important;    
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    font-size: 16px !important;
+    font-size: 18px !important;
 }
 
 .footer-social-icon-btn:hover {
     background-color: var(--bose-pink) !important;     
     color: var(--bose-white) !important;           
     border-color: var(--bose-pink) !important;         
-    transform: translateY(-3px) !important;            
+    transform: translateY(-4px) !important;            
+    box-shadow: var(--bose-shadow-hover) !important;
 }
 
 .footer-heading-title {
-    font-size: 18px !important;
+    font-size: 19px !important;
     font-weight: 700 !important;
     color: var(--bose-black) !important;
     position: relative !important;
-    padding-bottom: 8px !important;
-    margin-bottom: 5px !important;
+    padding-bottom: 10px !important;
+    margin-bottom: 6px !important;
 }
 
 .footer-heading-title::after {
@@ -1359,9 +1488,10 @@ img {
     bottom: 0 !important;
     left: 50% !important;
     transform: translateX(-50%) !important;
-    width: 40px !important;
-    height: 2px !important;
+    width: 45px !important;
+    height: 2.5px !important;
     background-color: var(--bose-pink) !important;
+    border-radius: 2px !important;
 }
 
 @media (min-width: 768px) {
@@ -1378,7 +1508,7 @@ img {
     margin: 0 !important;
     display: flex !important;
     flex-direction: column !important;
-    gap: 12px !important;
+    gap: 14px !important;
 }
 
 .footer-links-ul li a {
@@ -1386,35 +1516,35 @@ img {
     font-weight: 600 !important;
     color: var(--bose-black) !important;
     opacity: 0.85 !important;
-    transition: all 0.2s ease !important;
+    transition: var(--bose-transition-fast) !important;
 }
 
 .footer-links-ul li a:hover {
     color: var(--bose-pink) !important;
     opacity: 1 !important;
-    padding-right: 5px !important;
+    padding-right: 6px !important;
 }
 
 .footer-copyright-block {
     width: 100% !important;
-    border-top: 1px solid rgba(255, 145, 164, 0.15) !important;
-    padding-top: 25px !important;
-    margin-top: 15px !important;
-    font-size: 13px !important;
+    border-top: 1px solid rgba(255, 145, 164, 0.12) !important;
+    padding-top: 30px !important;
+    margin-top: 20px !important;
+    font-size: 14px !important;
     color: var(--bose-black) !important;
-    opacity: 0.7 !important;
+    opacity: 0.75 !important;
     text-align: center !important;
 }
 
 /* ==========================================================================
-   15. مؤشرات الـ Dots الموحدة للحركة
+   16. مؤشرات تصفح الـ Dots الموحدة
    ========================================================================== */
 .categories-slider-dots {
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
     gap: 8px !important;
-    margin-top: 24px !important;
+    margin-top: 26px !important;
     width: 100% !important;
     user-select: none;
 }
@@ -1423,13 +1553,13 @@ img {
     width: 10px !important;
     height: 10px !important;
     border-radius: 50% !important;
-    background-color: rgba(255, 145, 164, 0.3) !important;
+    background-color: rgba(255, 145, 164, 0.25) !important;
     cursor: pointer !important;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 .bose-slider-dot.active {
     background-color: var(--bose-pink) !important;
-    width: 24px !important; 
-    border-radius: 5px !important;
+    width: 26px !important; 
+    border-radius: 6px !important;
 }
