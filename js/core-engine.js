@@ -1,6 +1,6 @@
 /**
  * core-engine.js - المحرك المركزي العالمي وحارس البيانات والحسابات المالية
- * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية المؤمنة بالكامل V3.2
+ * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية المؤمنة بالكامل V3.5
  * [تحديث صارم وممتد]: تم الحظر النهائي للاختصارات أو التبسيط. إعادة بناء شاملة لشلال الصور، 
  * المحاكيات الفاخرة، أزرار شبكات كروت منتجاتنا الثنائية، وإيماءات سلايدر الفئات بالملي.
  */
@@ -8,7 +8,7 @@
 (function() {
     "use strict";
 
-    // 1. [صمام أمان الأداء]: حظر استعادة السكرول التلقائية لسرعة التصفح لراحة العميل النفسية[span_4](start_span)[span_4](end_span)
+    // 1. [صمام أمان الأداء]: حظر استعادة السكرول التلقائية لسرعة التصفح لراحة العميل النفسية
     if ('scrollRestoration' in history) {
         history.scrollRestoration = 'manual';
     }
@@ -20,19 +20,19 @@
     document.addEventListener('DOMContentLoaded', forceScrollToTop);
     window.addEventListener('load', forceScrollToTop);
 
-    // تهيئة المتغيرات العالمية الموحدة في نطاق window لخدمة صفحات الموقع[span_5](start_span)[span_5](end_span)
+    // تهيئة المتغيرات العالمية الموحدة في نطاق window لخدمة صفحات الموقع
     window.BoseStoreData = null; 
-    window.boseServerTimeOffset = 0; // فارق التوقيت بالمللي ثانية: (وقت الخادم - وقت جهاز العميل)[span_6](start_span)[span_6](end_span)
+    window.boseServerTimeOffset = 0; // فارق التوقيت بالمللي ثانية: (وقت الخادم - وقت جهاز العميل)
 
     /**
-     * جلب وقراءة قاعدة بيانات حلويات بوسي الموحدة - نظام الكاش الذكي الموفر للبيانات والباقة[span_7](start_span)[span_7](end_span)
+     * جلب وقراءة قاعدة بيانات حلويات بوسي الموحدة - نظام الكاش الذكي الموفر للبيانات والباقة
      */
     async function loadStoreDatabase() {
         if (window.BoseStoreData) return;
         
         const cachedData = localStorage.getItem('bose_cached_store_data');
         const cachedTime = localStorage.getItem('bose_cached_store_time');
-        const cacheExpiry = 15 * 60 * 1000; // صلاحية الكاش 15 دقيقة لضمان حداثة الأسعار والروقان[span_8](start_span)[span_8](end_span)
+        const cacheExpiry = 15 * 60 * 1000; // صلاحية الكاش 15 دقيقة لضمان حداثة الأسعار والروقان
 
         if (cachedData && cachedTime && (Date.now() - parseInt(cachedTime, 10) < cacheExpiry)) {
             try {
@@ -53,7 +53,7 @@
                 const response = await fetch('data/site-data-final.json');
                 if (!response.ok) throw new Error('فشل جلب ملف قاعدة البيانات الرئيسي.');
                 
-                // استخلاص توقيت الخادم الحقيقي من الهيدر لمنع تلاعب أو فروق ساعات أجهزة العملاء[span_9](start_span)[span_9](end_span)
+                // استخلاص توقيت الخادم الحقيقي من الهيدر لمنع تلاعب أو فروق ساعات أجهزة العملاء
                 const serverDateHeader = response.headers.get('Date');
                 if (serverDateHeader) {
                     const serverTime = new Date(serverDateHeader).getTime();
@@ -84,7 +84,7 @@
     }
 
     /**
-     * دالة تشغيل التدفق المركزي والتهيئات البصرية المبكرة للموقع مع حماية صارمة ضد أخطاء الـ DOM[span_10](start_span)[span_10](end_span)
+     * دالة تشغيل التدفق المركزي والتهيئات البصرية المبكرة للموقع مع حماية صارمة ضد أخطاء الـ DOM
      */
     function initCoreFlow() {
         injectEarlyDependencies();
@@ -107,13 +107,13 @@
     }
 
     /**
-     * ✍️ ضخ العناوين والوصف للأقسام الرئيسية لعلامة حلويات بوسي لمنع الاختفاء البصري واصلاح السلايدر[span_11](start_span)[span_11](end_span)[span_12](start_span)[span_12](end_span)
+     * ✍️ ضخ العناوين والوصف للأقسام الرئيسية لعلامة حلويات بوسي لمنع الاختفاء البصري واصلاح السلايدر
      */
     function injectHomepageSectionMeta() {
         const data = window.BoseStoreData;
         if (!data || !data.homepage) return;
 
-        // 1. قسم عقد من الإتقان - معالجة ظهور الصور بلا انقطاع ودون حجب أو اختفاء[span_13](start_span)[span_13](end_span)[span_14](start_span)[span_14](end_span)
+        // 1. قسم عقد من الإتقان - معالجة ظهور الصور بلا انقطاع ودون حجب أو اختفاء بنظام التكرار السلس ثلاثي الأبعاد
         const excellenceSection = document.getElementById('excellence-section') || document.querySelector('[id*="excellence"]');
         if (excellenceSection && data.homepage.excellence) {
             const titleEl = excellenceSection.querySelector('.section-title') || excellenceSection.querySelector('h2');
@@ -123,17 +123,18 @@
             
             const track = document.getElementById('excellence-images-track') || excellenceSection.querySelector('.excellence-track') || excellenceSection.querySelector('[id*="track"]');
             if (track && data.homepage.excellence.images) {
+                // تكرار الصور 4 مرات كاملة لضمان التفاف الحركة (Infinite Carousel Loop) بلا أي فجوات بيضاء نهائياً
                 const imagesHtml = data.homepage.excellence.images.map(img => `
                     <div class="excellence-slide-card" style="width: 100vw; flex-shrink: 0; display: block;">
                         <img src="${img}" alt="إتقان حلويات بوسي الفاخرة" style="width:100%; height:auto; display:block; object-fit:cover;" />
                     </div>
                 `).join('');
-                // حلقة حركة دائرية انسيابية مطلقة وممتدة هندسياً بلا أي مساحات فارغة لراحة العين[span_15](start_span)[span_15](end_span)[span_16](start_span)[span_16](end_span)
-                track.innerHTML = `<div class="excellence-track-loop" style="display:flex; width:max-content; animation: boseExcellence 35s linear infinite; will-change: transform;">${imagesHtml} ${imagesHtml} ${imagesHtml}</div>`;
+                
+                track.innerHTML = `<div class="excellence-track-loop" style="display:flex; width:max-content; animation: boseExcellence 35s linear infinite; will-change: transform;">${imagesHtml} ${imagesHtml} ${imagesHtml} ${imagesHtml}</div>`;
             }
         }
 
-        // 2. قسم تسوق حسب الفئة (إلغاء الحركة التلقائية المزعجة وحقن مؤشرات التصفح والأسهم)[span_17](start_span)[span_17](end_span)[span_18](start_span)[span_18](end_span)
+        // 2. قسم تسوق حسب الفئة (إلغاء الحركة التلقائية المزعجة وحقن مؤشرات التصفح والأسهم)
         const categoriesSection = document.getElementById('categories-slider-section') || document.getElementById('categories-section') || document.querySelector('[id*="categories"]');
         if (categoriesSection && data.homepage.categoriesSlider) {
             const titleEl = categoriesSection.querySelector('.section-title') || categoriesSection.querySelector('h2');
@@ -148,12 +149,11 @@
                     </div>
                 `).join('');
                 
-                // بناء الـ 12 دوتس والتحكم السهمي ديناميكياً[span_19](start_span)[span_19](end_span)[span_20](start_span)[span_20](end_span)
                 buildCategoriesDots(data.homepage.categoriesSlider.length);
             }
         }
 
-        // 3. قسم الأكثر مبيعاً[span_21](start_span)[span_21](end_span)[span_22](start_span)[span_22](end_span)
+        // 3. قسم الأكثر مبيعاً
         const mostSellingSection = document.getElementById('most-selling-section');
         if (mostSellingSection) {
             const titleEl = mostSellingSection.querySelector('h2');
@@ -162,7 +162,7 @@
             if (descEl) descEl.textContent = "تشكيلة من قطع السعادة الفاخرة والأكثر طلباً وإعجاباً من عملائنا.";
         }
 
-        // 4. قسم وصل حديثاً[span_23](start_span)[span_23](end_span)[span_24](start_span)[span_24](end_span)
+        // 4. قسم وصل حديثاً
         const newArrivalsSection = document.getElementById('new-arrivals-section');
         if (newArrivalsSection) {
             const titleEl = newArrivalsSection.querySelector('h2');
@@ -171,7 +171,7 @@
             if (descEl) descEl.textContent = "اكتشف أحدث ابتكاراتنا الحصرية وتوليفات النكهات الغنية المصنوعة بحب.";
         }
 
-        // 5. قسم منتجاتنا[span_25](start_span)[span_25](end_span)[span_26](start_span)[span_26](end_span)
+        // 5. قسم منتجاتنا
         const ourProductsSection = document.getElementById('our-products-section') || document.querySelector('[id*="our-products"]');
         if (ourProductsSection) {
             const titleEl = ourProductsSection.querySelector('h2');
@@ -182,7 +182,7 @@
     }
 
     /**
-     * بناء مؤشرات التنقل النقطية الـ 12 والأسهم لقسم تسوق حسب الفئة[span_27](start_span)[span_27](end_span)[span_28](start_span)[span_28](end_span)
+     * بناء مؤشرات التنقل النقطية الـ 12 والأسهم لقسم تسوق حسب الفئة
      */
     function buildCategoriesDots(count) {
         const categoriesSection = document.getElementById('categories-slider-section') || document.getElementById('categories-section') || document.querySelector('[id*="categories"]');
@@ -222,7 +222,7 @@
     }
 
     /**
-     * 🎹 تفعيل معالجة الإيماءات والسحب اليدوي السلس والتحكم الكامل بالأسهم (حظر الحركة التلقائية)[span_29](start_span)[span_29](end_span)
+     * 🎹 تفعيل معالجة الإيماءات والسحب اليدوي السلس والتحكم الكامل بالأسهم (حظر الحركة التلقائية)
      */
     function setupCategoriesSliderTouch() {
         const categoriesSection = document.getElementById('categories-slider-section') || document.getElementById('categories-section') || document.querySelector('[id*="categories"]');
@@ -336,7 +336,7 @@
     }
 
     /**
-     * 🌊 بناء وحقن شلال المنتجات البصري الأنيق ديناميكياً لمنع الاختفاء والقص البصري[span_30](start_span)[span_30](end_span)[span_31](start_span)[span_31](end_span)
+     * 🌊 بناء وحقن شلال المنتجات البصري الأنيق ديناميكياً لمنع الاختفاء والقص البصري
      */
     function renderDynamicWaterfall() {
         const leftCol = document.getElementById('waterfall-left-col');
@@ -361,7 +361,7 @@
     }
 
     /**
-     * 🛒 دالة هندسية لبناء الكارت الموحد - زرار الزائد (+) على اليمين والصادر ناقص (-) على اليسار[span_32](start_span)[span_32](end_span)[span_33](start_span)[span_33](end_span)
+     * 🛒 دالة هندسية لبناء الكارت الموحد - زرار الزائد (+) على اليمين والصادر ناقص (-) على اليسار
      */
     function createProductCardHTML(product) {
         if (!product) return '';
@@ -407,27 +407,27 @@
     };
 
     /**
-     * 📊 ضخ وحقن شبكات المنتجات لجميع الأقسام بالصفحة الرئيسية ديناميكياً بحدود كمية هندسية صارمة[span_34](start_span)[span_34](end_span)[span_35](start_span)[span_35](end_span)
+     * 📊 ضخ وحقن شبكات المنتجات لجميع الأقسام بالصفحة الرئيسية ديناميكياً بحدود كمية هندسية صارمة
      */
     function renderHomepageProductGrids() {
         const data = window.BoseStoreData;
         if (!data || !data.products) return;
 
-        // 1. قسم الأكثر مبيعاً (8 منتجات كاملة هندسياً)[span_36](start_span)[span_36](end_span)[span_37](start_span)[span_37](end_span)
+        // 1. قسم الأكثر مبيعاً (8 منتجات كاملة هندسياً)
         const mostSellingGrid = document.getElementById('most-selling-grid');
         if (mostSellingGrid && data.homepage.mostSelling) {
             const items = data.homepage.mostSelling.map(id => data.products.find(p => p.id === id || p.slug === id)).filter(Boolean);
             mostSellingGrid.innerHTML = items.map(p => createProductCardHTML(p)).join('');
         }
 
-        // 2. قسم وصل حديثاً (6 منتجات بالتمام والكمال)[span_38](start_span)[span_38](end_span)[span_39](start_span)[span_39](end_span)
+        // 2. قسم وصل حديثاً (6 منتجات بالتمام والكمال)
         const newArrivalsGrid = document.getElementById('new-arrivals-grid');
         if (newArrivalsGrid && data.homepage.newArrivals) {
             const items = data.homepage.newArrivals.map(id => data.products.find(p => p.id === id || p.slug === id)).filter(Boolean);
             newArrivalsGrid.innerHTML = items.map(p => createProductCardHTML(p)).join('');
         }
 
-        // 3. قسم منتجاتنا (كروت ثنائية متوازنة العرض، صفين كل صف كارتين بالتمام والكمال لراحة العميل)[span_40](start_span)[span_40](end_span)[span_41](start_span)[span_41](end_span)
+        // 3. قسم منتجاتنا (كروت ثنائية متوازنة العرض، صفين كل صف كارتين بالتمام والكمال لراحة العميل)
         const ourProductsGrid = document.getElementById('our-products-section-grid') || document.getElementById('our-products-grid') || document.querySelector('.our-products-grid');
         if (ourProductsGrid && data.homepage.ourProducts) {
             const initialItems = data.homepage.ourProducts.slice(0, 4).map(id => data.products.find(p => p.id === id || p.slug === id)).filter(Boolean);
@@ -436,7 +436,7 @@
     }
 
     /**
-     * 🌟 نظام التحكم لزر (إظهار المزيد) بقسم منتجاتنا لحقن الـ 8 كروت كاملة ومستقرة[span_42](start_span)[span_42](end_span)[span_43](start_span)[span_43](end_span)
+     * 🌟 نظام التحكم لزر (إظهار المزيد) بقسم منتجاتنا لحقن الـ 8 كروت كاملة ومستقرة
      */
     function setupOurProductsShowMore() {
         const showMoreBtn = document.getElementById('our-products-show-more-btn') || document.querySelector('[id*="show-more"]');
@@ -445,21 +445,25 @@
 
         if (!showMoreBtn || !ourProductsGrid || !data) return;
 
-        showMoreBtn.addEventListener('click', function() {
+        // [تعديل برمجى صارم]: إظهار الزرار بشكل صريح ككتلة عرض وتلوينه بالبمبي المعتمد لمنع أي اختفاء
+        showMoreBtn.style.cssText = "display: inline-block !important; background: #FFFFFF !important; border: 2px solid #FF91A4 !important; color: #FF91A4 !important; font-weight: 700; padding: 12px 36px; border-radius: 30px; cursor: pointer; transition: all 0.3s ease;";
+
+        showMoreBtn.addEventListener('click', function(e) {
+            e.preventDefault();
             const allItems = data.homepage.ourProducts.map(id => data.products.find(p => p.id === id || p.slug === id)).filter(Boolean);
             ourProductsGrid.innerHTML = allItems.map(p => createProductCardHTML(p)).join('');
-            showMoreBtn.style.display = 'none'; 
+            showMoreBtn.style.setProperty('display', 'none', 'important'); 
         });
     }
 
     /**
-     * 👑 ضخ وحقن خيارات وألوان محاكي التورت ومحاكي الورد لملء الشاشة بالكامل بدون أي إزاحة وبأزرار واضحة[span_44](start_span)[span_44](end_span)[span_45](start_span)[span_45](end_span)
+     * 👑 ضخ وحقن خيارات وألوان محاكي التورت ومحاكي الورد لملء الشاشة بالكامل بدون أي إزاحة وبأزرار واضحة
      */
     function injectSimulatorsPreviewData() {
         const data = window.BoseStoreData;
         if (!data || !data.homepage) return;
 
-        // محاكي التورت[span_46](start_span)[span_46](end_span)[span_47](start_span)[span_47](end_span)
+        // محاكي التورت
         const cakeSection = document.getElementById('cake-preview-section') || document.querySelector('[id*="cake-preview"]');
         if (cakeSection && data.homepage.cakePreview) {
             const preview = data.homepage.cakePreview;
@@ -474,11 +478,11 @@
             if (ctaEl) {
                 ctaEl.textContent = preview.cta;
                 ctaEl.href = preview.target;
-                ctaEl.style.display = 'inline-block';
+                ctaEl.style.cssText = "display: inline-block !important; opacity: 1 !important; visibility: visible !important; background-color: #FFFFFF !important; color: #FF91A4 !important; font-weight: 700; padding: 14px 35px; border-radius: 30px; text-decoration: none;";
             }
         }
 
-        // محاكي الورد[span_48](start_span)[span_48](end_span)[span_49](start_span)[span_49](end_span)
+        // محاكي الورد
         const flowerSection = document.getElementById('flower-preview-section') || document.querySelector('[id*="flower-preview"]');
         if (flowerSection && data.homepage.flowerPreview) {
             const preview = data.homepage.flowerPreview;
@@ -493,20 +497,19 @@
             if (ctaEl) {
                 ctaEl.textContent = preview.cta;
                 ctaEl.href = preview.target;
-                ctaEl.style.display = 'inline-block';
+                ctaEl.style.cssText = "display: inline-block !important; opacity: 1 !important; visibility: visible !important; background-color: #FFFFFF !important; color: #FF91A4 !important; font-weight: 700; padding: 14px 35px; border-radius: 30px; text-decoration: none;";
             }
         }
     }
 
     /**
-     * 📈 تحسين محرك العدادات التصاعدية الذكية لقسم الفخر والاعتزاز لمنع أخطاء الـ NaN[span_50](start_span)[span_50](end_span)
+     * 📈 العدادات التصاعدية الذكية لقسم الفخر والاعتزاز
      */
     function setupPrideCountersAnimation() {
         const prideSection = document.getElementById('pride-section') || document.querySelector('[id*="pride"]');
         if (!prideSection || !window.BoseStoreData?.homepage?.pride?.stats) return;
 
         const statsData = window.BoseStoreData.homepage.pride.stats;
-        const containers = prideSection.querySelectorAll('.stat-box, [data-stat]');
         
         const animateCounter = (el, target, suffix) => {
             let current = 0;
@@ -593,7 +596,7 @@
         const safePersons = parseInt(persons, 10) || (config ? config.persons.minimum : 10) || 10;
         let price = (config ? config.basePrice : 580) || 580;
         const minPersons = (config ? config.persons.minimum : 10) || 10;
-        const pricePerPerson = (config ? config.pricePerPerson : 145) || 145; // [حظر الثغرة بنجاح]: رفع سعر الفرد الاحتياطي إلى 145 جنيهاً[span_51](start_span)[span_51](end_span)[span_52](start_span)[span_52](end_span)
+        const pricePerPerson = (config ? config.pricePerPerson : 145) || 145; 
         const extraPersons = Math.max(0, safePersons - minPersons);
         price += extraPersons * pricePerPerson;
         
@@ -614,18 +617,17 @@
     };
 
     window.calculateCustomFlowerPrice = function(flowerCount, options = {}) {
-        const basePrice = 400; // سعر البوكيه الأساسي (الحد الأدنى 15 وردة)[span_53](start_span)[span_53](end_span)
-        const extraFlowerPrice = 35; // سعر الوردة الإضافية الزائدة[span_54](start_span)[span_54](end_span)
+        const basePrice = 400; 
+        const extraFlowerPrice = 35; 
         const safeFlowerCount = parseInt(flowerCount, 10) || 15;
         const extraFlowers = Math.max(0, safeFlowerCount - 15);
         let servicePrice = basePrice + (extraFlowers * extraFlowerPrice);
-        if (options.hasSatinRibbon) servicePrice += 50; // شريط الستان المطبوع حرارياً: 50 جنيهاً[span_55](start_span)[span_55](end_span)
+        if (options.hasSatinRibbon) servicePrice += 50; 
         const safePhotoCount = parseInt(options.photoCount, 10) || 0;
-        if (options.hasPhotos && safePhotoCount > 0) servicePrice += safePhotoCount * 15; // طباعة الصور الشخصية: 15 جنيهاً لكل صورة[span_56](start_span)[span_56](end_span)
-        if (options.hasGiftCard) servicePrice += 20; // كارت الإهداء الورقي المكتوب: 20 جنيهاً[span_57](start_span)[span_57](end_span)
+        if (options.hasPhotos && safePhotoCount > 0) servicePrice += safePhotoCount * 15; 
+        if (options.hasGiftCard) servicePrice += 20; 
         const finalServicePrice = window.calculateBosePrice(servicePrice, "menu-only");
         
-        // المبالغ الصافية (تضاف مباشرة بالملي بدون أي رسوم معالجة أو زيادات في الكاش)[span_58](start_span)[span_58](end_span)
         const safeCashAmount = parseFloat(options.cashAmount) || 0;
         const safeChocolateBudget = parseFloat(options.chocolateBudget) || 0;
         return finalServicePrice + safeCashAmount + safeChocolateBudget;
@@ -705,7 +707,7 @@
         const selectedDateTime = new Date(`${dateStr}T${timeStr}`);
         const currentDateTime = new Date(Date.now() + (window.boseServerTimeOffset || 0));
         if (selectedDateTime <= currentDateTime) return false;
-        return (selectedDateTime - currentDateTime) / (1000 * 60 * 60) >= 23.95; // حارس الـ 24 ساعة الصارم[span_59](start_span)[span_59](end_span)
+        return (selectedDateTime - currentDateTime) / (1000 * 60 * 60) >= 23.95; 
     };
 
     window.updateGlobalCartCounter = function() {
@@ -958,15 +960,60 @@
                 .excellence-track-loop { display: flex; width: max-content; animation: boseExcellence 35s linear infinite; will-change: transform; }
                 .excellence-slide-card { width: 100vw; height: auto; flex-shrink: 0; }
                 .excellence-slide-card img { width: 100%; height: auto; object-fit: cover; }
-                @keyframes boseExcellence { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-33.3333%, 0, 0); } }
+                @keyframes boseExcellence { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-25%, 0, 0); } } /* معدلة لتتوافق مع التكرار الرباعي المانع للفراغات البصرية */
 
-                /* 👑 [التحديث الهندسي المطور للـ DOM]: تلوين كامل لكتلة المحاكيات بالبمبي الفاخر وتكبير الصور 5 أضعاف[span_60](start_span)[span_60](end_span)[span_61](start_span)[span_61](end_span) */
-                #cake-preview-section, #flower-preview-section, .bose-simulator-preview-block, [id*="cake-preview"], [id*="flower-preview"] { background: #FF91A4 !important; padding: 60px 20px !important; border-radius: 0px !important; text-align: center !important; width: 100% !important; box-sizing: border-box !important; }
-                #cake-preview-section h2, #cake-preview-section p, #flower-preview-section h2, #flower-preview-section p, [id*="preview"] h2, [id*="preview"] p { color: #FFFFFF !important; }
-                .bose-simulator-preview-cta-btn, #cake-preview-cta, #flower-preview-cta, [id*="preview"] a { display: inline-block !important; background-color: #FFFFFF !important; color: #FF91A4 !important; font-weight: 700 !important; padding: 12px 32px !important; border-radius: 30px !important; text-decoration: none !important; margin-top: 20px !important; box-shadow: 0 8px 24px rgba(0,0,0,0.06) !important; transition: all 0.3s !important; }
-                .bose-simulator-preview-cta-btn:hover, #cake-preview-cta:hover, #flower-preview-cta:hover { transform: translateY(-3px) !important; box-shadow: 0 12px 32px rgba(0,0,0,0.12) !important; }
+                /* 👑 [إعادة تلوين وتهيئة كتل المحاكيات لمنع أي إزاحة أو قطع أو ضغط للصور] */
+                #cake-preview-section, #flower-preview-section, .bose-simulator-preview-block, [id*="cake-preview"], [id*="flower-preview"] { 
+                    background: #FF91A4 !important; 
+                    padding: 80px 20px !important; 
+                    border-radius: 0px !important; 
+                    text-align: center !important; 
+                    width: 100% !important; 
+                    box-sizing: border-box !important; 
+                    overflow: hidden !important;
+                    margin: 0 !important;
+                }
+                #cake-preview-section h2, #cake-preview-section p, #flower-preview-section h2, #flower-preview-section p, [id*="preview"] h2, [id*="preview"] p { 
+                    color: #FFFFFF !important; 
+                }
                 
-                #cake-preview-img, #flower-preview-img, .simulator-preview-img, [id*="preview-img"] { max-width: 600px !important; width: 100% !important; height: auto !important; object-fit: contain !important; border-radius: 16px !important; margin: 0 auto !important; padding: 0 !important; transform: scale(1.1); transition: transform 0.3s ease; }
+                /* [إصلاح حاسم لأزرار المحاكيات لمنع الاختفاء نهائياً] */
+                .bose-simulator-preview-cta-btn, #cake-preview-cta, #flower-preview-cta, [id*="preview"] a { 
+                    display: inline-block !important; 
+                    opacity: 1 !important;
+                    visibility: visible !important;
+                    background-color: #FFFFFF !important; 
+                    color: #FF91A4 !important; 
+                    font-weight: 700 !important; 
+                    padding: 14px 35px !important; 
+                    border-radius: 30px !important; 
+                    text-decoration: none !important; 
+                    margin-top: 25px !important; 
+                    box-shadow: 0 8px 24px rgba(0,0,0,0.08) !important; 
+                    transition: all 0.3s ease !important; 
+                }
+                .bose-simulator-preview-cta-btn:hover, #cake-preview-cta:hover, #flower-preview-cta:hover { 
+                    transform: translateY(-3px) !important; 
+                    box-shadow: 0 12px 32px rgba(0,0,0,0.15) !important; 
+                }
+                
+                /* [إصلاح حاسم لصور المحاكيات لمنع الضغط والتشويه والقص] */
+                #cake-preview-img, #flower-preview-img, .simulator-preview-img, [id*="preview-img"] { 
+                    max-width: 450px !important; 
+                    width: 100% !important; 
+                    height: 380px !important; 
+                    object-fit: contain !important; /* يمنع الضغط أو التمدد ويحافظ على النقاء والأبعاد الأصلية */
+                    border-radius: 20px !important; 
+                    margin: 20px auto !important; 
+                    padding: 0 !important; 
+                    display: block !important;
+                    transition: transform 0.3s ease; 
+                }
+                @media (max-width: 768px) {
+                    #cake-preview-img, #flower-preview-img, .simulator-preview-img, [id*="preview-img"] { 
+                        height: 280px !important; 
+                    }
+                }
             `;
             document.head.appendChild(fixStyle);
         }
