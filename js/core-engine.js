@@ -1,7 +1,8 @@
 /**
  * core-engine.js - المحرك المركزي العالمي وحارس البيانات والحسابات المالية
- * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية المؤمنة بالكامل V4.6
- * [تطهير برمي وتأمين بصري شامل]: إصلاح تكدس القائمة الجانبية، بناء فوتر ملوكي كامل، وتأمين الأنميشن.
+ * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية الملوكية المطورة V5.0
+ * [تطوير شامل وبناء]: ترقية القائمة الجانبية بالكامل (محرك وواجهة)، تثبيت صور قسم عقد من الإتقان طوال الوقت.
+ * محظور الحذف، الاختصار، الدمج، أو التبسيط نهائياً تماشياً مع فلسفة العلامة الفاخرة.
  */
 
 (function() {
@@ -112,7 +113,7 @@
         const data = window.BoseStoreData;
         if (!data || !data.homepage) return;
 
-        // 1. قسم عقد من الإتقان - معالجة ظهور الصور بلا انقطاع ودون حجب أو اختفاء بنظام التكرار السلس ثلاثي الأبعاد
+        // 1. قسم عقد من الإتقان - معالجة ظهور الصور بلا انقطاع ودون حجب طوال الوقت بنظام التكرار السلس ثلاثي الأبعاد
         const excellenceSection = document.getElementById('excellence-section') || document.querySelector('[id*="excellence"]');
         if (excellenceSection && data.homepage.excellence) {
             const titleEl = excellenceSection.querySelector('.section-title') || excellenceSection.querySelector('h2');
@@ -122,18 +123,18 @@
             
             const track = document.getElementById('excellence-images-track') || excellenceSection.querySelector('.excellence-track') || excellenceSection.querySelector('[id*="track"]');
             if (track && data.homepage.excellence.images) {
-                // [إصلاح حاسم ومنع الوميض]: تكرار الصور 4 مرات كاملة لضمان التفاف الحركة (Infinite Carousel Loop) بلا أي فجوات بيضاء نهائياً
+                // [إصلاح حاسم ومنع الوميض]: إظهار وتثبيت الصور طوال الوقت وتكرارها هندسياً لضمان التفاف انسيابي كامل بدون فراغات بيضاء
                 const imagesHtml = data.homepage.excellence.images.map(img => `
-                    <div class="excellence-slide-card" style="width: 100vw; flex-shrink: 0; display: block;">
-                        <img src="${img}" alt="إتقان حلويات بوسي الفاخرة" style="width:100%; height:auto; display:block; object-fit:cover;" />
+                    <div class="excellence-slide-card">
+                        <img src="${img}" alt="إتقان حلويات بوسي الفاخرة" />
                     </div>
                 `).join('');
                 
-                track.innerHTML = `<div class="excellence-track-loop" style="display:flex; width:max-content; animation: bosePerfectionLoop 25s linear infinite; will-change: transform;">${imagesHtml} ${imagesHtml} ${imagesHtml} ${imagesHtml}</div>`;
+                track.innerHTML = `<div class="excellence-track-loop">${imagesHtml} ${imagesHtml} ${imagesHtml} ${imagesHtml}</div>`;
             }
         }
 
-        // 2. قسم تسوق حسب الفئة (إلغاء الحركة التلقائية المزعجة وحقن مؤشرات التصفح والأسهم)
+        // 2. قسم تسوق حسب الفئة (حقن مؤشرات التصفح والأسهم)
         const categoriesSection = document.getElementById('categories-slider-section') || document.getElementById('categories-section') || document.querySelector('[id*="categories"]');
         if (categoriesSection && data.homepage.categoriesSlider) {
             const titleEl = categoriesSection.querySelector('.section-title') || categoriesSection.querySelector('h2');
@@ -142,9 +143,9 @@
             const track = document.getElementById('categories-track') || categoriesSection.querySelector('.categories-track') || categoriesSection.querySelector('[id*="track"]');
             if (track) {
                 track.innerHTML = data.homepage.categoriesSlider.map(cat => `
-                    <div class="category-card-unified" onclick="window.location.href='category.html?id=${cat.id}'" style="cursor:pointer; background:#FFFFFF; border:1px solid rgba(255,145,164,0.15); border-radius:24px; padding:12px; width:280px; flex-shrink:0; box-sizing:border-box; margin:0 15px; text-align:center;">
-                        <img src="${cat.image}" alt="${cat.title}" class="category-card-img" style="width:100%; height:280px; object-fit:cover; border-radius:18px;" loading="lazy" />
-                        <div class="category-card-name" style="font-size:20px; font-weight:700; color:#111111; margin-top:15px;">${cat.title}</div>
+                    <div class="category-card-unified" onclick="window.location.href='category.html?id=${cat.id}'">
+                        <img src="${cat.image}" alt="${cat.title}" class="category-card-img" loading="lazy" />
+                        <div class="category-card-name">${cat.title}</div>
                     </div>
                 `).join('');
                 
@@ -206,7 +207,6 @@
             dotsContainer = document.createElement('div');
             dotsContainer.id = 'categories-dots-container';
             dotsContainer.className = 'categories-slider-dots';
-            dotsContainer.style.cssText = 'display:flex; justify-content:center; align-items:center; gap:8px;';
             
             controlsWrapper.appendChild(arrowsContainer);
             controlsWrapper.appendChild(dotsContainer);
@@ -221,7 +221,7 @@
     }
 
     /**
-     * 🎹 تفعيل معالجة الإيماءات والسحب اليدوي السلس والتحكم الكامل بالأسهم (حظر الحركة التلقائية)
+     * 🎹 تفعيل معالجة الإيماءات والسحب اليدوي السلس والتحكم الكامل بالأسهم
      */
     function setupCategoriesSliderTouch() {
         const categoriesSection = document.getElementById('categories-slider-section') || document.getElementById('categories-section') || document.querySelector('[id*="categories"]');
@@ -477,7 +477,6 @@
             if (ctaEl) {
                 ctaEl.textContent = preview.cta;
                 ctaEl.href = preview.target;
-                ctaEl.style.cssText = "display: inline-block !important; opacity: 1 !important; visibility: visible !important; background-color: #FFFFFF !important; color: #FF91A4 !important; font-weight: 700; padding: 14px 35px; border-radius: 30px; text-decoration: none; z-index: 50 !important; position: relative;";
             }
         }
 
@@ -496,7 +495,6 @@
             if (ctaEl) {
                 ctaEl.textContent = preview.cta;
                 ctaEl.href = preview.target;
-                ctaEl.style.cssText = "display: inline-block !important; opacity: 1 !important; visibility: visible !important; background-color: #FFFFFF !important; color: #FF91A4 !important; font-weight: 700; padding: 14px 35px; border-radius: 30px; text-decoration: none; z-index: 50 !important; position: relative;";
             }
         }
     }
@@ -831,7 +829,7 @@
     }
 
     /**
-     * 👑 [إعادة هيكلة هندسية كاملة بنسبة 100%]: دالة ضخ وبناء القائمة الجانبية الملوكية لمنع التكدس وتأمين التنفس البصري والفوتر الكامل
+     * 👑 [إعادة هيكلة هندسية كاملة بنسبة 100%]: دالة ضخ وبناء القائمة الجانبية الملوكية للتحكم والفوتر الكامل
      */
     function buildAndInjectGlobalComponents() {
         const data = window.BoseStoreData;
@@ -871,10 +869,11 @@
                     </div>
                 </header>
 
+                <!-- واجهة القائمة الجانبية الملوكية المطورة لمنع التكدس بالكامل -->
                 <div id="bose-sidebar-drawer" class="bose-sidebar-drawer" aria-hidden="true">
                     <div class="sidebar-header">
-                        <div class="sidebar-logo-container" style="display:flex; align-items:center; gap:12px;">
-                            <img src="${data.store.logo}" alt="لوجو حلويات بوسي" class="sidebar-logo" style="width:40px; height:40px; object-fit:contain;" />
+                        <div class="sidebar-logo-container">
+                            <img src="${data.store.logo}" alt="لوجو حلويات بوسي" class="sidebar-logo" />
                             <span class="sidebar-brand-name">حلويات بوسي</span>
                         </div>
                         <button id="sidebar-close-btn" class="sidebar-close-btn" aria-label="إغلاق القائمة">
@@ -883,7 +882,7 @@
                     </div>
                     
                     <div class="sidebar-scrollable-content">
-                        <div>
+                        <div class="sidebar-menu-wrapper">
                             <div class="sidebar-section-title">التصفح الفاخر</div>
                             <ul class="sidebar-links-list">
                                 <li class="sidebar-link-item">
@@ -919,7 +918,7 @@
                             </ul>
                         </div>
 
-                        <div>
+                        <div class="sidebar-menu-wrapper" style="margin-top: 25px;">
                             <div class="sidebar-section-title">روابط المعرفة</div>
                             <ul class="sidebar-links-list">
                                 <li class="sidebar-link-item">
@@ -1002,8 +1001,8 @@
                                 <li><a href="policies/refund-policy.html">سياسة الاسترجاع المالي</a></li>
                                 <li><a href="policies/shipping-policy.html">سياسة الشحن والتوصيل</a></li>
                                 <li><a href="policies/terms.html">الشروط والأحكام</a></li>
-                                <li class="footer-contact-item" style="margin-top: 15px;">
-                                    <i class="fa-solid fa-location-dot"></i>
+                                <li class="footer-contact-item" style="margin-top: 15px; display: flex; align-items: center; gap: 8px; font-size: 14px; color: #111111;">
+                                    <i class="fa-solid fa-location-dot" style="color: #FF91A4;"></i>
                                     <span>${data.store.pickup.address}</span>
                                 </li>
                             </ul>
@@ -1031,7 +1030,7 @@
             toggleBtn.addEventListener('click', () => {
                 sidebar.classList.add('open');
                 overlay.classList.add('show');
-                document.body.style.overflow = 'hidden'; 
+                document.body.classList.add('drawer-active');
             });
         }
         
@@ -1039,7 +1038,7 @@
             if (sidebar && overlay) {
                 sidebar.classList.remove('open');
                 overlay.classList.remove('show');
-                document.body.style.overflow = ''; 
+                document.body.classList.remove('drawer-active');
             }
         };
 
