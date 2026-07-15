@@ -1,8 +1,8 @@
 /**
  * core-engine.js - المحرك المركزي العالمي وحارس البيانات والحسابات المالية
- * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية الملوكية المطورة V5.0
- * [تطوير شامل وبناء]: ترقية القائمة الجانبية بالكامل (محرك وواجهة)، تثبيت صور قسم عقد من الإتقان طوال الوقت.
- * محظور الحذف، الاختصار، الدمج، أو التبسيط نهائياً تماشياً مع فلسفة العلامة الفاخرة.
+ * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية الملوكية المطورة V6.0
+ * [تطوير شامل وبناء]: إصلاح حاسم لقسم عقد من الإتقان، وتفعيل نقاط التحكم والأسهم لقسم الفئات بالملي[span_10](start_span)[span_10](end_span).
+ * محظور الحذف، الاختصار، الدمج، أو التبسيط نهائياً تماشياً مع فلسفة العلامة الفاخرة[span_11](start_span)[span_11](end_span).
  */
 
 (function() {
@@ -22,7 +22,7 @@
 
     // تهيئة المتغيرات العالمية الموحدة في نطاق window لخدمة صفحات الموقع
     window.BoseStoreData = null; 
-    window.boseServerTimeOffset = 0; // فارق التوقيت بالمللي ثانية: (وقت الخادم - وقت جهاز العميل)
+    window.boseServerTimeOffset = 0; // فارق التوقيت بالمللي ثانية: (وقت الخادم - وقت جهاز العميل)[span_12](start_span)[span_12](end_span)
 
     /**
      * جلب وقراءة قاعدة بيانات حلويات بوسي الموحدة - نظام الكاش الذكي الموفر للبيانات والباقة
@@ -53,7 +53,7 @@
                 const response = await fetch('data/site-data-final.json');
                 if (!response.ok) throw new Error('فشل جلب ملف قاعدة البيانات الرئيسي.');
                 
-                // استخلاص توقيت الخادم الحقيقي من الهيدر لمنع تلاعب أو فروق ساعات أجهزة العملاء
+                // استخلاص توقيت الخادم الحقيقي من الهيدر لمنع تلاعب أو فروق ساعات أجهزة العملاء[span_13](start_span)[span_13](end_span)
                 const serverDateHeader = response.headers.get('Date');
                 if (serverDateHeader) {
                     const serverTime = new Date(serverDateHeader).getTime();
@@ -113,7 +113,7 @@
         const data = window.BoseStoreData;
         if (!data || !data.homepage) return;
 
-        // 1. قسم عقد من الإتقان - معالجة ظهور الصور بلا انقطاع ودون حجب طوال الوقت بنظام التكرار السلس ثلاثي الأبعاد
+        // 1. قسم عقد من الإتقان - معالجة ظهور الصور بلا انقطاع ودون حجب طوال الوقت بنظام التكرار السلس ثلاثي الأبعاد[span_14](start_span)[span_14](end_span)
         const excellenceSection = document.getElementById('excellence-section') || document.querySelector('[id*="excellence"]');
         if (excellenceSection && data.homepage.excellence) {
             const titleEl = excellenceSection.querySelector('.section-title') || excellenceSection.querySelector('h2');
@@ -123,22 +123,23 @@
             
             const track = document.getElementById('excellence-images-track') || excellenceSection.querySelector('.excellence-track') || excellenceSection.querySelector('[id*="track"]');
             if (track && data.homepage.excellence.images) {
-                // [إصلاح حاسم ومنع الوميض]: إظهار وتثبيت الصور طوال الوقت وتكرارها هندسياً لضمان التفاف انسيابي كامل بدون فراغات بيضاء
+                // [إصلاح حاسم ومنع الوميض]: إظهار وتثبيت الصور طوال الوقت وتكرارها هندسياً لضمان التفاف انسيابي كامل بدون فراغات بيضاء[span_15](start_span)[span_15](end_span)
                 const imagesHtml = data.homepage.excellence.images.map(img => `
                     <div class="excellence-slide-card">
                         <img src="${img}" alt="إتقان حلويات بوسي الفاخرة" />
                     </div>
                 `).join('');
                 
+                // تكرار الألبوم 4 مرات متلاحقة صلبة لمنع حدوث أي مساحات فارغة أثناء أنميشن الـ CSS اللانهائي[span_16](start_span)[span_16](end_span)[span_17](start_span)[span_17](end_span)
                 track.innerHTML = `<div class="excellence-track-loop">${imagesHtml} ${imagesHtml} ${imagesHtml} ${imagesHtml}</div>`;
             }
         }
 
-        // 2. قسم تسوق حسب الفئة (حقن مؤشرات التصفح والأسهم)
+        // 2. قسم تسوق حسب الفئة (حقن مؤشرات التصفح والأسهم)[span_18](start_span)[span_18](end_span)
         const categoriesSection = document.getElementById('categories-slider-section') || document.getElementById('categories-section') || document.querySelector('[id*="categories"]');
         if (categoriesSection && data.homepage.categoriesSlider) {
             const titleEl = categoriesSection.querySelector('.section-title') || categoriesSection.querySelector('h2');
-            if (titleEl) titleEl.textContent = "تسوق حسب الفئة";
+            if (titleEl) titleEl.textContent = "تسوق حسب الفئة";[span_19](start_span)[span_19](end_span)
             
             const track = document.getElementById('categories-track') || categoriesSection.querySelector('.categories-track') || categoriesSection.querySelector('[id*="track"]');
             if (track) {
@@ -157,32 +158,32 @@
         const mostSellingSection = document.getElementById('most-selling-section');
         if (mostSellingSection) {
             const titleEl = mostSellingSection.querySelector('h2');
-            if (titleEl) titleEl.textContent = "الأكثر مبيعاً";
+            if (titleEl) titleEl.textContent = "الأكثر مبيعاً";[span_20](start_span)[span_20](end_span)
             const descEl = mostSellingSection.querySelector('p');
-            if (descEl) descEl.textContent = "تشكيلة من قطع السعادة الفاخرة والأكثر طلباً وإعجاباً من عملائنا.";
+            if (descEl) descEl.textContent = "تشكيلة من قطع السعادة الفاخرة والأكثر طلباً وإعجاباً من عملائنا.";[span_21](start_span)[span_21](end_span)
         }
 
         // 4. قسم وصل حديثاً
         const newArrivalsSection = document.getElementById('new-arrivals-section');
         if (newArrivalsSection) {
             const titleEl = newArrivalsSection.querySelector('h2');
-            if (titleEl) titleEl.textContent = "وصل حديثاً";
+            if (titleEl) titleEl.textContent = "وصل حديثاً";[span_22](start_span)[span_22](end_span)
             const descEl = newArrivalsSection.querySelector('p');
-            if (descEl) descEl.textContent = "اكتشف أحدث ابتكاراتنا الحصرية وتوليفات النكهات الغنية المصنوعة بحب.";
+            if (descEl) descEl.textContent = "اكتشف أحدث ابتكاراتنا الحصرية وتوليفات النكهات الغنية المصنوعة بحب.";[span_23](start_span)[span_23](end_span)
         }
 
         // 5. قسم منتجاتنا
         const ourProductsSection = document.getElementById('our-products-section') || document.querySelector('[id*="our-products"]');
         if (ourProductsSection) {
             const titleEl = ourProductsSection.querySelector('h2');
-            if (titleEl) titleEl.textContent = "منتجاتنا";
+            if (titleEl) titleEl.textContent = "منتجاتنا";[span_24](start_span)[span_24](end_span)
             const descEl = ourProductsSection.querySelector('p');
-            if (descEl) descEl.textContent = "التشكيلة العامة الفاخرة المحضرة يومياً بمكونات طبيعية 100%.";
+            if (descEl) descEl.textContent = "التشكيلة العامة الفاخرة المحضرة يومياً بمكونات طبيعية 100%.";[span_25](start_span)[span_25](end_span)
         }
     }
 
     /**
-     * بناء مؤشرات التنقل النقطية الـ 12 والأسهم لقسم تسوق حسب الفئة
+     * بناء مؤشرات التنقل النقدية الـ 12 والأسهم لقسم تسوق حسب الفئة[span_26](start_span)[span_26](end_span)
      */
     function buildCategoriesDots(count) {
         const categoriesSection = document.getElementById('categories-slider-section') || document.getElementById('categories-section') || document.querySelector('[id*="categories"]');
@@ -221,7 +222,7 @@
     }
 
     /**
-     * 🎹 تفعيل معالجة الإيماءات والسحب اليدوي السلس والتحكم الكامل بالأسهم
+     * 🎹 تفعيل معالجة الإيماءات والسحب اليدوي السلس والتحكم الكامل بالأسهم والـ Dots[span_27](start_span)[span_27](end_span)
      */
     function setupCategoriesSliderTouch() {
         const categoriesSection = document.getElementById('categories-slider-section') || document.getElementById('categories-section') || document.querySelector('[id*="categories"]');
@@ -236,6 +237,11 @@
         track.style.overflowX = 'auto';
         track.style.scrollBehavior = 'smooth';
         track.style.webkitOverflowScrolling = 'touch';
+
+        // الاستماع لحدث التمرير الفعلي لتحديث الـ Dots لحظياً ومنع تجمدها أثناء سحب العميل على الموبايل[span_28](start_span)[span_28](end_span)
+        track.addEventListener('scroll', () => {
+            updateActiveDot(track);
+        });
 
         track.addEventListener('mousedown', (e) => {
             isDragging = true;
@@ -264,17 +270,20 @@
         });
 
         track.addEventListener('touchstart', (e) => {
+            isDragging = true;
             startX = e.touches[0].pageX - track.offsetLeft;
             scrollLeft = track.scrollLeft;
         }, { passive: true });
 
         track.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
             const x = e.touches[0].pageX - track.offsetLeft;
             const walk = (x - startX) * 1.2;
             track.scrollLeft = scrollLeft - walk;
         }, { passive: true });
 
         track.addEventListener('touchend', () => {
+            isDragging = false;
             updateActiveDot(track);
         });
 
@@ -285,21 +294,20 @@
             if (nextBtn && prevBtn) {
                 const getStep = () => {
                     const card = track.querySelector('.category-card-unified');
-                    return card ? card.offsetWidth + 30 : 310;
+                    return card ? card.offsetWidth + 20 : 300;
                 };
                 
                 nextBtn.addEventListener('click', () => {
                     track.scrollBy({ left: getStep(), behavior: 'smooth' });
-                    setTimeout(() => updateActiveDot(track), 350);
                 });
                 
                 prevBtn.addEventListener('click', () => {
                     track.scrollBy({ left: -getStep(), behavior: 'smooth' });
-                    setTimeout(() => updateActiveDot(track), 350);
                 });
             }
         }
 
+        // [إصلاح حاسم]: ربط وتفعيل نقرات الـ Dots للانتقال الفوري والسلس للصنف المطلوب لمنع تجمدها[span_29](start_span)[span_29](end_span)
         const dotsContainer = document.getElementById('categories-dots-container');
         if (dotsContainer) {
             dotsContainer.addEventListener('click', (e) => {
@@ -308,26 +316,26 @@
                 const index = parseInt(dot.getAttribute('data-index'), 10);
                 const cards = track.querySelectorAll('.category-card-unified');
                 if (cards[index]) {
-                    const cardWidth = cards[index].offsetWidth + 30; 
+                    const cardWidth = cards[0].offsetWidth + 20; 
                     track.scrollTo({
                         left: cardWidth * index,
                         behavior: 'smooth'
                     });
-                    
-                    dotsContainer.querySelectorAll('.bose-slider-dot').forEach(d => d.classList.remove('active'));
-                    dot.classList.add('active');
                 }
             });
         }
     }
 
+    /**
+     * تحديث النقطة النشطة لحظياً بناءً على موضع السكرول الفعلي بمجرى الحركة[span_30](start_span)[span_30](end_span)
+     */
     function updateActiveDot(track) {
         const cards = track.querySelectorAll('.category-card-unified');
         if (cards.length === 0) return;
-        const cardWidth = cards[0].offsetWidth + 30;
+        const cardWidth = cards[0].offsetWidth + 20;
         const currentIndex = Math.round(track.scrollLeft / cardWidth);
         
-        const dots = document.querySelectorAll('.bose-slider-dot');
+        const dots = document.querySelectorAll('.categories-slider-dots .bose-slider-dot');
         dots.forEach((dot, idx) => {
             if (idx === currentIndex) dot.classList.add('active');
             else dot.classList.remove('active');
@@ -348,14 +356,14 @@
             const leftHtml = waterfallData.leftColumnImages.map(img => 
                 `<img src="${img}" alt="منتج فاخر حلويات بوسي" class="waterfall-img" loading="lazy" />`
             ).join('');
-            leftCol.innerHTML = `<div class="waterfall-up">${leftHtml} ${leftHtml}</div>`;
+            leftCol.innerHTML = `<div class="waterfall-up">${leftHtml} ${leftHtml}</div>`;[span_31](start_span)[span_31](end_span)
         }
 
         if (rightCol && waterfallData.rightColumnImages) {
             const rightHtml = waterfallData.rightColumnImages.map(img => 
                 `<img src="${img}" alt="منتج راقي حلويات بوسي" class="waterfall-img" loading="lazy" />`
             ).join('');
-            rightCol.innerHTML = `<div class="waterfall-down">${rightHtml} ${rightHtml}</div>`;
+            rightCol.innerHTML = `<div class="waterfall-down">${rightHtml} ${rightHtml}</div>`;[span_32](start_span)[span_32](end_span)
         }
     }
 
