@@ -4,6 +4,7 @@
  * 
  * [قاعدة صارمة]: يلتزم الملف بدوره الخلفي فقط، يحظر التدخل في مهام الملفات الأخرى،
  * ويؤمن أعلى أداء مع أقل استهلاك بيانات على الموبايل والكمبيوتر.
+ * تم التطوير لحل مشكلة اختفاء الشلال والمنتجات وحقنها ديناميكياً بالكامل.
  */
 
 (function() {
@@ -90,8 +91,135 @@
         buildAndInjectGlobalComponents();
         window.updateGlobalCartCounter();
         
+        // إطلاق عمليات بناء المكونات البصرية الحيوية (الشلال والشبكات) فور جاهزية البيانات
+        renderDynamicWaterfall();
+        renderHomepageProductGrids();
+        setupOurProductsShowMore();
+        
         // إطلاق حدث الجاهزية لتبدأ المحركات الفرعية دورها المستقل دون تداخل
         document.dispatchEvent(new CustomEvent('BoseDatabaseLoaded', { detail: window.BoseStoreData }));
+    }
+
+    /**
+     * 🌊 بناء وحقن شلال المنتجات البصري الأنيق ديناميكياً لمنع الاختفاء
+     */
+    function renderDynamicWaterfall() {
+        const leftCol = document.getElementById('waterfall-left-col');
+        const rightCol = document.getElementById('waterfall-right-col');
+        const waterfallData = window.BoseStoreData?.homepage?.waterfall;
+
+        if (!waterfallData) return;
+
+        if (leftCol && waterfallData.leftColumnImages) {
+            leftCol.innerHTML = waterfallData.leftColumnImages.map(img => 
+                `<img src="${img}" alt="منتج فاخر حلويات بوسي" class="waterfall-img" loading="lazy" />`
+            ).join('') + waterfallData.leftColumnImages.map(img => 
+                `<img src="${img}" alt="منتج فاخر حلويات بوسي" class="waterfall-img" loading="lazy" />`
+            ).join(''); // مضاعفة الصور لضمان عدم وجود فراغ بصرى أثناء الحركة اللانهائية
+        }
+
+        if (rightCol && waterfallData.rightColumnImages) {
+            rightCol.innerHTML = waterfallData.rightColumnImages.map(img => 
+                `<img src="${img}" alt="منتج راقي حلويات بوسي" class="waterfall-img" loading="lazy" />`
+            ).join('') + waterfallData.rightColumnImages.map(img => 
+                `<img src="${img}" alt="منتج راقي حلويات بوسي" class="waterfall-img" loading="lazy" />`
+            ).join('');
+        }
+    }
+
+    /**
+     * 🛒 دالة هندسية لبناء الكارت الموحد بدقة تامة طبقاً للمواصفات القياسية
+     */
+    function createProductCardHTML(product) {
+        if (!product) return '';
+        const calculatedPrice = window.calculateProductFinalPrice(product, {});
+        
+        return `
+            <div class="product-card-unified" data-id="${product.id}">
+                <img src="${product.images[0]}" alt="${product.title}" class="product-card-img" loading="lazy" onclick="window.location.href='product.html?slug=${product.slug}'" style="cursor:pointer;" />
+                <h3 class="product-card-title">${product.title}</h3>
+                <span class="product-card-flavor-name">${product.flavorName}</span>
+                <p class="product-card-desc">${product.flavorDesc || product.description.substring(0, 80) + '...'}</p>
+                
+                <div class="product-card-qty-wrapper">
+                    <button class="btn-qty-minus" onclick="window.handleBoseCardQtyChange(this, -1)">-</button>
+                    <input type="number" class="input-qty-value" value="1" min="1" readonly />
+                    <button class="btn-qty-plus" onclick="window.handleBoseCardQtyChange(this, 1)">+</button>
+                </div>
+                
+                <div class="product-card-price" data-base-price="${calculatedPrice}">${Math.round(calculatedPrice)} جنيه</div>
+                <button class="btn-add-to-cart" onclick="window.handleBoseDirectAddToCart(this, '${product.id}')">
+                    <i class="fa-solid fa-basket-shopping"></i> اضافة للسلة
+                </button>
+            </div>
+        `;
+    }
+
+    /**
+     * إدارة التحكم في عداد الكمية المرن داخل كروت المنتجات ومنع القيم السالبة
+     */
+    window.handleBoseCardQtyChange = function(buttonElement, direction) {
+        const qtyContainer = buttonElement.closest('.product-card-qty-wrapper');
+        const cardContainer = buttonElement.closest('.product-card-unified');
+        if (!qtyContainer || !cardContainer) return;
+
+        const qtyInput = qtyContainer.querySelector('.input-qty-value');
+        const priceDisplay = cardContainer.querySelector('.product-card-price');
+        if (!qtyInput || !priceDisplay) return;
+
+        let currentQty = parseInt(qtyInput.value, 10) || 1;
+        currentQty += direction;
+        if (currentQty < 1) currentQty = 1;
+        qtyInput.value = String(currentQty);
+
+        const basePrice = parseFloat(priceDisplay.getAttribute('data-base-price')) || 0;
+        priceDisplay.textContent = `${Math.round(basePrice * currentQty)} جنيه`;
+    };
+
+    /**
+     * 📊 ضخ وحقن شبكات المنتجات لجميع الأقسام بالصفحة الرئيسية ديناميكياً
+     */
+    function renderHomepageProductGrids() {
+        const data = window.BoseStoreData;
+        if (!data || !data.products) return;
+
+        // 1. قسم الأكثر مبيعاً
+        const mostSellingGrid = document.getElementById('most-selling-grid');
+        if (mostSellingGrid && data.homepage.mostSelling) {
+            const items = data.homepage.mostSelling.map(id => data.products.find(p => p.id === id || p.slug === id)).filter(Boolean);
+            mostSellingGrid.innerHTML = items.map(p => createProductCardHTML(p)).join('');
+        }
+
+        // 2. قسم وصل حديثاً
+        const newArrivalsGrid = document.getElementById('new-arrivals-grid');
+        if (newArrivalsGrid && data.homepage.newArrivals) {
+            const items = data.homepage.newArrivals.map(id => data.products.find(p => p.id === id || p.slug === id)).filter(Boolean);
+            newArrivalsGrid.innerHTML = items.map(p => createProductCardHTML(p)).join('');
+        }
+
+        // 3. قسم منتجاتنا (العرض الأولي لـ 4 كروت فقط لضمان التنفس البصري)
+        const ourProductsGrid = document.getElementById('our-products-section-grid');
+        if (ourProductsGrid && data.homepage.ourProducts) {
+            const initialItems = data.homepage.ourProducts.slice(0, 4).map(id => data.products.find(p => p.id === id || p.slug === id)).filter(Boolean);
+            ourProductsGrid.innerHTML = initialItems.map(p => createProductCardHTML(p)).join('');
+        }
+    }
+
+    /**
+     * 🌟 نظام التحكم الديناميكي لزر (إظهار المزيد) بقسم منتجاتنا
+     */
+    function setupOurProductsShowMore() {
+        const showMoreBtn = document.getElementById('our-products-show-more-btn');
+        const ourProductsGrid = document.getElementById('our-products-section-grid');
+        const data = window.BoseStoreData;
+
+        if (!showMoreBtn || !ourProductsGrid || !data) return;
+
+        showMoreBtn.addEventListener('click', function() {
+            const allItems = data.homepage.ourProducts.map(id => data.products.find(p => p.id === id || p.slug === id)).filter(Boolean);
+            ourProductsGrid.innerHTML = allItems.map(p => createProductCardHTML(p)).join('');
+            showMoreBtn.style.display = 'none'; // إخفاء الزر بسلاسة فور اكتمال الـ 8 منتجات
+        });
     }
 
     /**
@@ -426,7 +554,6 @@
                 .bose-top-bar-marquee-container { position: fixed !important; top: 0 !important; left: 0 !important; width: 100% !important; z-index: 41000 !important; height: 40px !important; }
                 body { padding-top: 110px !important; }
                 
-                /* القائمة الجانبية الفاخرة والموسعة - حظر القطع ومنع التكدس تماماً لراحة العميل النفسية */
                 .bose-sidebar-drawer { position: fixed; top: 0; right: -360px; width: 360px; height: 100%; background-color: #FFFFFF !important; z-index: 50000; transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: -8px 0 32px rgba(255, 145, 164, 0.12); direction: rtl; border-left: 1px solid rgba(255, 145, 164, 0.2); display: flex; flex-direction: column; overflow: hidden; }
                 .bose-sidebar-drawer.open { right: 0; }
                 .sidebar-header { display: flex; justify-content: space-between; align-items: center; padding: 24px; border-bottom: 1px solid rgba(255, 145, 164, 0.2); background: #FFFFFF; }
@@ -449,7 +576,6 @@
                 .sidebar-link-item a:hover i.main-icon { transform: scale(1.1); color: #FF91A4; }
                 .sidebar-link-item a:hover i.arrow-icon { opacity: 1; color: #FF91A4; transform: translateX(-4px); }
                 
-                /* كارت العروض المطور كلياً - ألوان حاكمة صريحة بدون أي لون ذهبي مخالف */
                 .sidebar-promo-card { background: linear-gradient(135deg, rgba(255, 145, 164, 0.06) 0%, rgba(255, 255, 255, 0) 100%); border: 1px dashed rgba(255, 145, 164, 0.4); border-radius: 16px; padding: 20px; text-align: center; margin-top: 8px; position: relative; overflow: hidden; }
                 .sidebar-promo-badge { position: absolute; top: 12px; left: 12px; background-color: #FF91A4; color: #FFFFFF; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
                 .sidebar-promo-title { font-size: 15px; font-weight: 700; color: #111111; margin-bottom: 8px; margin-top: 10px; }
@@ -457,7 +583,6 @@
                 .sidebar-promo-btn { display: inline-block; background-color: #FF91A4; color: #FFFFFF; text-decoration: none; padding: 10px 24px; border-radius: 25px; font-size: 13px; font-weight: 700; box-shadow: 0 4px 12px rgba(255, 145, 164, 0.15); transition: all 0.3s ease; }
                 .sidebar-promo-btn:hover { background-color: #111111; color: #FFFFFF; transform: translateY(-1px); }
                 
-                /* التواصل الفوري بالأسفل */
                 .sidebar-footer-contacts { border-top: 1px solid rgba(255, 145, 164, 0.15); padding: 20px 24px; background-color: #FFFFFF; display: flex; flex-direction: column; gap: 10px; }
                 .sidebar-contact-pill { display: flex; align-items: center; gap: 14px; padding: 12px 18px; background: rgba(255, 145, 164, 0.04); border-radius: 30px; text-decoration: none; color: #111111; font-size: 14px; font-weight: 600; border: 1px solid rgba(255, 145, 164, 0.05); transition: all 0.25s ease; min-height: 44px; }
                 .sidebar-contact-pill i { font-size: 16px; color: #FF91A4; }
@@ -484,6 +609,26 @@
                 .footer-contact-item i { color: #FF91A4; font-size: 16px; }
                 .footer-copyright-block { text-align: center; border-top: 1px solid rgba(255, 145, 164, 0.15); margin-top: 50px; padding-top: 20px; font-size: 13px; color: #111111; font-weight: 600; }
                 .footer-copyright-block span { color: #FF91A4; font-weight: 700; }
+                
+                /* تنسيقات شبكة المنتجات والكروت الموحدة لضمان ثبات الواجهة */
+                .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; width: 100%; max-width: 1200px; margin: 0 auto; padding: 20px; box-sizing: border-box; }
+                @media (max-width: 768px) { .products-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; } }
+                .product-card-unified { background: #FFFFFF; border: 1px solid rgba(255, 145, 164, 0.2); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 8px 32px rgba(255, 145, 164, 0.04); transition: transform 0.3s ease, box-shadow 0.3s ease; position: relative; }
+                .product-card-unified:hover { transform: translateY(-5px); box-shadow: 0 12px 40px rgba(255, 145, 164, 0.12); }
+                .product-card-img { width: 100%; height: 220px; object-fit: cover; border-radius: 14px; }
+                @media (min-width: 769px) and (max-width: 1024px) { .product-card-img { height: 260px; } }
+                @media (min-width: 1025px) { .product-card-img { height: 320px; } }
+                .product-card-title { font-size: 18px; font-weight: 700; color: #111111; margin: 0; font-family: "Cairo", sans-serif; }
+                .product-card-flavor-name { font-size: 14px; font-weight: 600; color: #FF91A4; }
+                .product-card-desc { font-size: 13px; color: #111111; opacity: 0.7; line-height: 1.6; margin: 0; min-height: 42px; }
+                .product-card-qty-wrapper { display: flex; align-items: center; justify-content: center; gap: 10px; background: rgba(255, 145, 164, 0.05); padding: 6px; border-radius: 30px; margin-top: auto; }
+                .btn-qty-minus, .btn-qty-plus { background: #FFFFFF; border: 1px solid rgba(255, 145, 164, 0.3); width: 32px; height: 32px; border-radius: 50%; font-weight: 700; color: #111111; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+                .btn-qty-minus:hover, .btn-qty-plus:hover { background: #FF91A4; color: #FFFFFF; border-color: #FF91A4; }
+                .input-qty-value { border: none; background: transparent; width: 40px; text-align: center; font-size: 15px; font-weight: 700; color: #111111; -moz-appearance: textfield; }
+                .input-qty-value::-webkit-outer-spin-button, .input-qty-value::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+                .product-card-price { font-size: 18px; font-weight: 700; color: #111111; text-align: center; margin: 4px 0; }
+                .btn-add-to-cart { background: #FFFFFF; border: 1px solid #FF91A4; color: #FF91A4; padding: 10px 20px; border-radius: 25px; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.3s ease; width: 100%; box-sizing: border-box; }
+                .btn-add-to-cart:hover { background: #FF91A4; color: #FFFFFF; }
             `;
             document.head.appendChild(fixStyle);
         }
