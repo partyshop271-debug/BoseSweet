@@ -1,5 +1,5 @@
 /* ==========================================================================
-   👑 BoseSweets Strict Production Global Stylesheet (css/global.css) V7.0 👑
+   👑 BoseSweets Strict Production Global Stylesheet (css/global.css) V8.0 👑
    الملف الملوكي الشامل والنهائي المطوّر لمعالجة وحل مشاكل الفيديو بالملي
    تأمين التنفس البصري، حظر التكدس، ضبط سرعات الحركة، ومنع قص الكروت نهائياً
    ========================================================================== */
@@ -635,7 +635,7 @@ img {
 }
 
 /* ==========================================================================
-   8. [إصلاح حاسم وتحديث ملوكي]: قسم شلال المنتجات البصري الأنيق المستمر الحركة (#waterfall-section)
+   8. 🌊 [إصلاح حاسم وجذري بالملي]: قسم شلال المنتجات البصري الأنيق المستمر الحركة (#waterfall-section)
    ========================================================================== */
 .bose-waterfall-section-container {
     position: relative;
@@ -664,45 +664,49 @@ img {
 
 .waterfall-container {
     display: flex;
-    gap: 20px;
+    justify-content: space-between;
+    gap: 15px;
     width: 100%;
     height: 700px;
     overflow: hidden;
     position: relative;
-    padding: 0 20px;
+    padding: 0 10px;
 }
 
 @media (min-width: 1024px) {
     .waterfall-container { 
         height: 1000px;
+        padding: 0 20px;
     }
 }
 
 .waterfall-col {
-    /* [إصلاح هندسي]: زيادة عرض الشلال بنسبة 10% بالملي لملء الشاشة الفاخرة وسد الفراغات الجانبية */
-    flex: 1.1; 
+    /* [حل ثغرة الصور الرفيعة والمساحات الفارغة]: تثبيت العرض الصارم للأعمدة هندسياً لمنع الضغط والقص الجانبي للمنتج */
+    flex: 0 0 48% !important;
+    max-width: 48% !important;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 15px;
+    overflow: hidden;
 }
 
 .waterfall-up {
-    /* [إصلاح حاسم]: إبطاء حركة الشلال الصاعد بنسبة 10% إضافية (من 52s إلى 57.2s) لراحة العين */
+    /* [إصلاح حاسم]: تقليل سرعة الحركة بنسبة 10% صريحة (من 52s إلى 57.2s) لضمان الفخامة والنعومة الكاملة */
     animation: boseWaterfallUp 57.2s linear infinite;
     will-change: transform;
 }
 
 .waterfall-down {
-    /* [إصلاح حاسم]: إبطاء حركة الشلال الهابط بنسبة 10% إضافية (من 52s إلى 57.2s) لراحة العين */
+    /* [إصلاح حاسم]: تقليل سرعة الحركة بنسبة 10% صريحة (من 52s إلى 57.2s) لضمان الفخامة والنعومة الكاملة */
     animation: boseWaterfallDown 57.2s linear infinite;
     will-change: transform;
 }
 
 .waterfall-col img {
-    /* [تعديل هندسي]: زيادة العرض بنسبة 10% بالكامل، مع تثبيت الطول الفعلي دون أي مساس به */
-    width: 110%; 
+    /* [حل جذري وتعديل هندسي]: جعل عرض الصورة يملأ العمود بالكامل 100%، ويحمي الطول الطبيعي بلا بتر أو مط */
+    width: 100% !important;
     height: auto;
-    min-height: 260px;
+    min-height: 240px;
     max-height: 330px;
     object-fit: cover !important;
     border-radius: 24px;
@@ -721,7 +725,7 @@ img {
 }
 
 /* ==========================================================================
-   9. [إصلاح حاسم وتحديث]: قسم "عقد من الإتقان" التفاعلي اللانهائي المستمر دون أي انقطاع
+   9. 👑 [إصلاح حاسم وجذري]: قسم "عقد من الإتقان" التفاعلي اللانهائي المستمر 100% دون أي انقطاع
    ========================================================================== */
 .bose-perfection-section {
     width: 100% !important;
@@ -748,12 +752,14 @@ img {
     margin: 0 !important;
     width: max-content !important;
     will-change: transform !important;
-    /* دوران مستمر فائق النعومة متوافق تماماً مع تكرار ملف الـ JS */
+    white-space: nowrap !important;
+    /* [إصلاح حاسم]: دوران مستمر متناغم بالملي مع التكرار الرباعي المفروم برمجياً لمنع الفراغ */
     animation: bosePerfectionLoop 35s linear infinite !important; 
 }
 
 .excellence-slide-card {
-    width: 85vw !important; 
+    /* [حل ثغرة الإزاحة المفتوحة]: قفل عرض ثابت ومحكم للكارت لتسهيل الحساب الحركي اللانهائي دقيقة القوام */
+    width: 280px !important;
     height: 340px !important; 
     flex-shrink: 0 !important;
     display: block !important;
@@ -777,23 +783,23 @@ img {
 
 @media (min-width: 768px) {
     .excellence-slide-card { 
-        width: 46vw !important; 
+        width: 340px !important; 
         height: 400px !important;
     }
 }
 
 @media (min-width: 1024px) {
     .excellence-slide-card { 
-        width: 31vw !important; 
+        width: 420px !important; 
         height: 460px !important;
     }
 }
 
-/* [التعديل الذهبي الفاخر لربط التوقيت البصري بالكامل]: 
-   يتطابق بالملي مع كود جلب وتكرار الصور 4 مرات ليقدم محتوى مستمر 100% دون فواصل فارغة */
+/* [التعديل الهندسي الحتمي والمقدس]: 
+   الانتقال لنسبة الإزاحة الصارمة ليعيد تدوير الحاوية تلقائياً لحظة انتهاء الكروت تماماً دون ترك أي سنتيمتر فارغ */
 @keyframes bosePerfectionLoop {
     0% { transform: translate3d(0, 0, 0); } 
-    100% { transform: translate3d(-25%, 0, 0); } 
+    100% { transform: translate3d(-50%, 0, 0); } 
 }
 
 /* ==========================================================================
@@ -1529,7 +1535,6 @@ img {
     margin: 0 !important;
     display: flex !important;
     flex-direction: column !important;
-    gap: 14px !important;
 }
 
 .footer-links-ul li a {
