@@ -1,7 +1,7 @@
 /**
  * core-engine.js - المحرك المركزي العالمي وحارس البيانات والحسابات المالية
- * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية المؤمنة بالكامل V3.1
- * [تحديث هندسي]: إصلاح مشاكل واجهات الموبايل، المحاكيات، السلايدرات، والدوتس بالملي.
+ * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية المؤمنة بالكامل V3.2
+ * [تحديث صارم]: إصلاح شلال الصور، المحاكيات، أزرار منتجاتنا، وإيماءات سلايدر الفئات بالملي.
  */
 
 (function() {
@@ -108,7 +108,7 @@
         const data = window.BoseStoreData;
         if (!data || !data.homepage) return;
 
-        // 1. قسم عقد من الإتقان والسلايدر اللانهائي الدائري المصحح (بدون دوتس)
+        // 1. قسم عقد من الإتقان - معالجة ظهور الصور بلا انقطاع ودون حجب أو اختفاء
         const excellenceSection = document.getElementById('excellence-section') || document.querySelector('[id*="excellence"]');
         if (excellenceSection && data.homepage.excellence) {
             const titleEl = excellenceSection.querySelector('.section-title') || excellenceSection.querySelector('h2');
@@ -119,15 +119,16 @@
             const track = document.getElementById('excellence-images-track') || excellenceSection.querySelector('.excellence-track') || excellenceSection.querySelector('[id*="track"]');
             if (track && data.homepage.excellence.images) {
                 const imagesHtml = data.homepage.excellence.images.map(img => `
-                    <div class="excellence-slide-card" style="width: 100vw; flex-shrink: 0;">
-                        <img src="${img}" alt="إتقان حلويات بوسي الفاخرة" style="width:100%; height:auto; object-fit:cover;" loading="lazy" />
+                    <div class="excellence-slide-card" style="width: 100vw; flex-shrink: 0; display: block;">
+                        <img src="${img}" alt="إتقان حلويات بوسي الفاخرة" style="width:100%; height:auto; display:block; object-fit:cover;" />
                     </div>
                 `).join('');
+                // حلقة حركة دائرية انسيابية مطلقة وممتدة هندسياً بلا أي مساحات فارغة
                 track.innerHTML = `<div class="excellence-track-loop" style="display:flex; width:max-content; animation: boseExcellence 35s linear infinite; will-change: transform;">${imagesHtml} ${imagesHtml} ${imagesHtml}</div>`;
             }
         }
 
-        // 2. قسم تسوق حسب الفئة (سلايدر السحب التفاعلي مع الـ 12 دوتس والأسهم)
+        // 2. قسم تسوق حسب الفئة (إلغاء الحركة التلقائية المزعجة وحقن مؤشرات التصفح والأسهم)
         const categoriesSection = document.getElementById('categories-slider-section') || document.getElementById('categories-section') || document.querySelector('[id*="categories"]');
         if (categoriesSection && data.homepage.categoriesSlider) {
             const titleEl = categoriesSection.querySelector('.section-title') || categoriesSection.querySelector('h2');
@@ -142,7 +143,7 @@
                     </div>
                 `).join('');
                 
-                // بناء نقاط التصفح (Dots) بعدد كروت الفئات الـ 12 ديناميكياً
+                // بناء الـ 12 دوتس والتحكم السهمي ديناميكياً
                 buildCategoriesDots(data.homepage.categoriesSlider.length);
             }
         }
@@ -176,18 +177,19 @@
     }
 
     /**
-     * بناء مؤشرات التنقل النقطية الذكية والأسهم لقسم الفئات
+     * بناء مؤشرات التنقل النقطية الـ 12 والأسهم لقسم تسوق حسب الفئة
      */
     function buildCategoriesDots(count) {
         const categoriesSection = document.getElementById('categories-slider-section') || document.getElementById('categories-section') || document.querySelector('[id*="categories"]');
         if (!categoriesSection) return;
 
-        let dotsContainer = document.getElementById('categories-dots-container') || categoriesSection.querySelector('.categories-slider-dots') || categoriesSection.querySelector('[class*="dots"]');
+        let controlsWrapper = categoriesSection.querySelector('.categories-slider-controls-wrapper');
+        let dotsContainer = document.getElementById('categories-dots-container');
         
-        if (!dotsContainer) {
-            const wrapper = document.createElement('div');
-            wrapper.className = 'categories-slider-controls-wrapper';
-            wrapper.style.cssText = 'display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:24px; width:100%;';
+        if (!controlsWrapper) {
+            controlsWrapper = document.createElement('div');
+            controlsWrapper.className = 'categories-slider-controls-wrapper';
+            controlsWrapper.style.cssText = 'display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:24px; width:100%;';
             
             const arrowsContainer = document.createElement('div');
             arrowsContainer.className = 'bose-slider-arrows';
@@ -202,9 +204,9 @@
             dotsContainer.className = 'categories-slider-dots';
             dotsContainer.style.cssText = 'display:flex; justify-content:center; align-items:center; gap:8px;';
             
-            wrapper.appendChild(arrowsContainer);
-            wrapper.appendChild(dotsContainer);
-            categoriesSection.appendChild(wrapper);
+            controlsWrapper.appendChild(arrowsContainer);
+            controlsWrapper.appendChild(dotsContainer);
+            categoriesSection.appendChild(controlsWrapper);
         }
         
         let dotsHtml = '';
@@ -215,7 +217,7 @@
     }
 
     /**
-     * 🎹 تفعيل معالجة الإيماءات والسحب اللحظي والتحكم بالأسهم لسلايدر فئات تسوق حسب الفئة
+     * 🎹 تفعيل معالجة الإيماءات والسحب اليدوي السلس والتحكم الكامل بالأسهم (حظر الحركة التلقائية)
      */
     function setupCategoriesSliderTouch() {
         const categoriesSection = document.getElementById('categories-slider-section') || document.getElementById('categories-section') || document.querySelector('[id*="categories"]');
@@ -272,7 +274,7 @@
             updateActiveDot(track);
         });
 
-        // تشغيل أزرار الأسهم
+        // ربط أزرار التحكم السهمي يميناً ويساراً
         if (categoriesSection) {
             const nextBtn = categoriesSection.querySelector('.bose-slider-arrow.next');
             const prevBtn = categoriesSection.querySelector('.bose-slider-arrow.prev');
@@ -285,17 +287,17 @@
                 
                 nextBtn.addEventListener('click', () => {
                     track.scrollBy({ left: getStep(), behavior: 'smooth' });
-                    setTimeout(() => updateActiveDot(track), 400);
+                    setTimeout(() => updateActiveDot(track), 350);
                 });
                 
                 prevBtn.addEventListener('click', () => {
                     track.scrollBy({ left: -getStep(), behavior: 'smooth' });
-                    setTimeout(() => updateActiveDot(track), 400);
+                    setTimeout(() => updateActiveDot(track), 350);
                 });
             }
         }
 
-        const dotsContainer = document.getElementById('categories-dots-container') || document.querySelector('.categories-slider-dots') || document.querySelector('[class*="dots"]');
+        const dotsContainer = document.getElementById('categories-dots-container');
         if (dotsContainer) {
             dotsContainer.addEventListener('click', (e) => {
                 const dot = e.target.closest('.bose-slider-dot');
@@ -355,7 +357,7 @@
     }
 
     /**
-     * 🛒 دالة هندسية لبناء الكارت الموحد بدقة تامة - الزر زائد (+) على اليمين والناقص (-) على اليسار
+     * 🛒 دالة هندسية لبناء الكارت الموحد - زرار الزائد (+) على اليمين والصادر ناقص (-) على اليسار
      */
     function createProductCardHTML(product) {
         if (!product) return '';
@@ -430,7 +432,7 @@
     }
 
     /**
-     * 🌟 نظام التحكم الديناميكي لزر (إظهار المزيد) بقسم منتجاتنا لحقن بقية الـ 8 منتجات بسلاسة كرتية ثنائية
+     * 🌟 نظام التحكم لزر (استعرض المزيد / إظهار المزيد) بقسم منتجاتنا لحقن الـ 8 كروت كاملة ومستقرة
      */
     function setupOurProductsShowMore() {
         const showMoreBtn = document.getElementById('our-products-show-more-btn') || document.querySelector('[id*="show-more"]');
@@ -447,7 +449,7 @@
     }
 
     /**
-     * 👑 ضخ وحقن بيانات وألوان وصور محاكي التورت ومحاكي الورد لملء الشاشة بالفخامة البمبية المعتمدة
+     * 👑 ضخ وحقن خيارات وألوان محاكي التورت وماكي الورد لملء الشاشة بالكامل بدون أي إزاحة وبأزرار واضحة
      */
     function injectSimulatorsPreviewData() {
         const data = window.BoseStoreData;
@@ -897,6 +899,7 @@
                 .categories-slider-dots { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 24px; width: 100%; }
                 .bose-slider-dot { width: 10px; height: 10px; background-color: rgba(255, 145, 164, 0.3); border-radius: 50%; cursor: pointer; transition: all 0.3s ease; }
                 .bose-slider-dot.active { background-color: #FF91A4; width: 24px; border-radius: 50px; box-shadow: 0 0 8px rgba(255, 145, 164, 0.5); }
+                .bose-slider-arrow { background: #FFFFFF; border: 1px solid #FF91A4; color: #FF91A4; width: 45px; height: 45px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s; }
                 .bose-slider-arrow:hover { background: #FF91A4 !important; color: #FFFFFF !important; }
 
                 .waterfall-up { display: flex; flex-direction: column; gap: 20px; animation: boseWaterfallUp 40s linear infinite; will-change: transform; }
@@ -1182,13 +1185,6 @@
                 resultsContainer.innerHTML = html || '<div class="search-no-results-msg">لم نجد أصنافاً تطابق بحثك.</div>';
             });
         }
-    }
-
-    function showGlobalFriendlyError() {
-        const err = document.createElement('div');
-        err.style.cssText = 'position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background-color:#FF91A4; color:#FFFFFF; padding:12px 24px; border-radius:8px; z-index:99999; font-weight:700; box-shadow:0 4px 12px rgba(0,0,0,0.15); direction:rtl; font-size:14px;';
-        err.textContent = 'عذراً، واجهنا صعوبة في جلب البيانات الحية. يرجى تحديث الصفحة.';
-        document.body.appendChild(err);
     }
 
     if (document.readyState === 'loading') {
