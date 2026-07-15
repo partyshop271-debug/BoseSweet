@@ -137,7 +137,7 @@
                 `).join('');
                 
                 // حقن مصفوفة متكاملة وربطها تزامناً مع نسبة الـ 50% للـ CSS لإنهاء ثغرة الاختفاء
-                track.innerHTML = `<div class="excellence-track-loop">${imagesHtml} ${imagesHtml}</div>`;
+                track.innerHTML = `<div class="excellence-track-loop">${imagesHtml} ${imagesHtml} ${imagesHtml} ${imagesHtml}</div>`;
             }
         }
 
