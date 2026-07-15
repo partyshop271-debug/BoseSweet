@@ -91,13 +91,59 @@
         buildAndInjectGlobalComponents();
         window.updateGlobalCartCounter();
         
-        // إطلاق عمليات بناء المكونات البصرية الحيوية (الشلال والشبكات) فور جاهزية البيانات
+        // [تحديث حاسم]: ضخ العناوين والوصف والأقسام ديناميكياً لمنع الاختفاء البصري
+        injectHomepageSectionMeta();
         renderDynamicWaterfall();
         renderHomepageProductGrids();
         setupOurProductsShowMore();
         
         // إطلاق حدث الجاهزية لتبدأ المحركات الفرعية دورها المستقل دون تداخل
         document.dispatchEvent(new CustomEvent('BoseDatabaseLoaded', { detail: window.BoseStoreData }));
+    }
+
+    /**
+     * ✍️ ضخ العناوين والوصف للأقسام الرئيسية لعلامة حلويات بوسي لمنع الاختفاء
+     */
+    function injectHomepageSectionMeta() {
+        const data = window.BoseStoreData;
+        if (!data || !data.homepage) return;
+
+        // 1. قسم عقد من الإتقان
+        const excellenceSection = document.getElementById('excellence-section');
+        if (excellenceSection && data.homepage.excellence) {
+            const titleEl = excellenceSection.querySelector('.section-title') || excellenceSection.querySelector('h2');
+            const descEl = excellenceSection.querySelector('.section-desc') || excellenceSection.querySelector('p');
+            if (titleEl) titleEl.textContent = data.homepage.excellence.title;
+            if (descEl) descEl.textContent = data.homepage.excellence.description;
+        }
+
+        // 2. قسم تسوق حسب الفئة
+        const categoriesSection = document.getElementById('categories-slider-section');
+        if (categoriesSection && data.homepage.categoriesSlider) {
+            const titleEl = categoriesSection.querySelector('.section-title') || categoriesSection.querySelector('h2');
+            if (titleEl) titleEl.textContent = "تسوق حسب الفئة";
+        }
+
+        // 3. قسم الأكثر مبيعاً
+        const mostSellingSection = document.getElementById('most-selling-section');
+        if (mostSellingSection) {
+            const titleEl = mostSellingSection.querySelector('h2');
+            if (titleEl) titleEl.textContent = "الأكثر مبيعاً";
+        }
+
+        // 4. قسم وصل حديثاً
+        const newArrivalsSection = document.getElementById('new-arrivals-section');
+        if (newArrivalsSection) {
+            const titleEl = newArrivalsSection.querySelector('h2');
+            if (titleEl) titleEl.textContent = "وصل حديثاً";
+        }
+
+        // 5. قسم منتجاتنا
+        const ourProductsSection = document.getElementById('our-products-section');
+        if (ourProductsSection) {
+            const titleEl = ourProductsSection.querySelector('h2');
+            if (titleEl) titleEl.textContent = "منتجاتنا";
+        }
     }
 
     /**
@@ -340,7 +386,7 @@
     };
 
     /**
-     * بناء عنصر وهيكل السلة القياسي المانع للتصادم الحسابي والبرمجي من الجذور
+     * بدل الأوامر الآلية الجافة أو العاطفية، نستخدم لغة مصرية عامية راقية للغاية
      */
     window.createCartItem = function(product, selectedOptions, quantity = 1) {
         if (!product) return null;
@@ -649,8 +695,8 @@
                 .product-card-unified { background: #FFFFFF; border: 1px solid rgba(255, 145, 164, 0.2); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 8px 32px rgba(255, 145, 164, 0.04); transition: transform 0.3s ease, box-shadow 0.3s ease; position: relative; }
                 .product-card-unified:hover { transform: translateY(-5px); box-shadow: 0 12px 40px rgba(255, 145, 164, 0.12); }
                 .product-card-img { width: 100%; height: 220px; object-fit: cover; border-radius: 14px; }
-                @media (min-width: 769px) and (max-width: 1024px) { .product-card-img { height: 260px; } }
-                @media (min-width: 1025px) { .product-card-img { height: 320px; } }
+                @media (min-width: 768px) { .product-card-img { height: 260px; } }
+                @media (min-width: 1024px) { .product-card-img { height: 320px; } }
                 .product-card-title { font-size: 18px; font-weight: 700; color: #111111; margin: 0; font-family: "Cairo", sans-serif; }
                 .product-card-flavor-name { font-size: 14px; font-weight: 600; color: #FF91A4; }
                 .product-card-desc { font-size: 13px; color: #111111; opacity: 0.7; line-height: 1.6; margin: 0; min-height: 42px; }
