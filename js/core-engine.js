@@ -3,7 +3,7 @@
  * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية المؤمنة بالكامل V3
  * * [قاعدة صارمة]: يلتزم الملف بدوره الخلفي فقط، يحظر التدخل في مهام الملفات الأخرى،
  * ويؤمن أعلى أداء مع أقل استهلاك بيانات على الموبايل والكمبيوتر.
- * تم التطوير والتوسيع الشامل لحل مشكلة اختفاء الأقسام والمنتجات والمحاكيات تماماً.
+ * تم التطوير والتوسيع الشامل لإصلاح مشاكل اختفاء المنتجات، الأقسام، والسلايدرات نهائياً.
  */
 
 (function() {
@@ -94,69 +94,58 @@
             window.updateGlobalCartCounter();
         }
         
-        // [تحديث حاسم]: تأمين حقن المكونات ديناميكياً بفحص وجود العناصر أولاً لمنع انهيار السكريبت
-        if (document.getElementById('excellence-section') || 
-            document.getElementById('categories-slider-section') || 
-            document.getElementById('most-selling-section') || 
-            document.getElementById('new-arrivals-section') || 
-            document.getElementById('our-products-section')) {
-            injectHomepageSectionMeta();
-        }
-        
-        if (document.getElementById('waterfall-left-col') || document.getElementById('waterfall-right-col')) {
-            renderDynamicWaterfall();
-        }
-        
-        if (document.getElementById('most-selling-grid') || 
-            document.getElementById('new-arrivals-grid') || 
-            document.getElementById('our-products-section-grid')) {
-            renderHomepageProductGrids();
-        }
-        
-        if (document.getElementById('our-products-show-more-btn')) {
-            setupOurProductsShowMore();
-        }
-
-        if (document.getElementById('cake-preview-section') || document.getElementById('flower-preview-section')) {
-            injectSimulatorsPreviewData();
-        }
+        // تفعيل وحقن المكونات والأقسام ديناميكياً مع حماية كاملة من الانهيار
+        injectHomepageSectionMeta();
+        renderDynamicWaterfall();
+        renderHomepageProductGrids();
+        setupOurProductsShowMore();
+        injectSimulatorsPreviewData();
         
         // إطلاق حدث الجاهزية لتبدأ المحركات الفرعية دورها المستقل دون تداخل
         document.dispatchEvent(new CustomEvent('BoseDatabaseLoaded', { detail: window.BoseStoreData }));
     }
 
     /**
-     * ✍️ ضخ العناوين والوصف للأقسام الرئيسية لعلامة حلويات بوسي لمنع الاختفاء البصري
+     * ✍️ ضخ العناوين والوصف للأقسام الرئيسية لعلامة حلويات بوسي لمنع الاختفاء البصري واصلاح السلايدر
      */
     function injectHomepageSectionMeta() {
         const data = window.BoseStoreData;
         if (!data || !data.homepage) return;
 
-        // 1. قسم عقد من الإتقان
+        // 1. قسم عقد من الإتقان والسلايدر اللانهائي الخاص به
         const excellenceSection = document.getElementById('excellence-section');
         if (excellenceSection && data.homepage.excellence) {
             const titleEl = excellenceSection.querySelector('.section-title') || excellenceSection.querySelector('h2');
             const descEl = excellenceSection.querySelector('.section-desc') || excellenceSection.querySelector('p');
             if (titleEl) titleEl.textContent = data.homepage.excellence.title;
             if (descEl) descEl.textContent = data.homepage.excellence.description;
+            
+            const track = document.getElementById('excellence-images-track');
+            if (track && data.homepage.excellence.images) {
+                const imagesHtml = data.homepage.excellence.images.map(img => `
+                    <div class="excellence-slide-card">
+                        <img src="${img}" alt="إتقان حلويات بوسي الفاخرة" loading="lazy" />
+                    </div>
+                `).join('');
+                // مضاعفة العناصر لضمان حركة دائرية انسيابية لا نهائية مريحة لعين العميل وبدون أي فراغات
+                track.innerHTML = `<div class="excellence-track-loop">${imagesHtml} ${imagesHtml}</div>`;
+            }
         }
 
-        // 2. قسم تسوق حسب الفئة
+        // 2. قسم تسوق حسب الفئة (ثابت ويستجيب للـ Dots والأسهم والسحب بدون حركة تلقائية)
         const categoriesSection = document.getElementById('categories-slider-section');
         if (categoriesSection && data.homepage.categoriesSlider) {
             const titleEl = categoriesSection.querySelector('.section-title') || categoriesSection.querySelector('h2');
             if (titleEl) titleEl.textContent = "تسوق حسب الفئة";
             
-            // حقن كروت الفئات الـ 12 ديناميكياً مع مراعاة الأبعاد القياسية الكبيرة لمنع الفراغ البصري
             const track = document.getElementById('categories-track');
             if (track) {
-                const itemsHtml = data.homepage.categoriesSlider.map(cat => `
+                track.innerHTML = data.homepage.categoriesSlider.map(cat => `
                     <div class="category-card-unified" onclick="window.location.href='category.html?id=${cat.id}'" style="cursor:pointer;">
                         <img src="${cat.image}" alt="${cat.title}" class="category-card-img" loading="lazy" />
                         <div class="category-card-name">${cat.title}</div>
                     </div>
                 `).join('');
-                track.innerHTML = `<div class="categories-track-loop">${itemsHtml} ${itemsHtml}</div>`;
             }
         }
 
@@ -817,10 +806,7 @@
                 .category-card-name { font-size: 20px; font-weight: 700; color: #111111; margin-top: 15px; font-family: "Cairo", sans-serif; }
                 
                 @media (min-width: 768px) { .category-card-unified { width: 340px; } .category-card-img { height: 340px; } }
-                @media (min-width: 1024px) { .category-card-unified { width: 42px0; width: 420px; } .category-card-img { height: 420px; } }
-                
-                .categories-track-loop { display: flex; width: max-content; animation: boseCategoriesLoop 30s linear infinite; will-change: transform; }
-                @keyframes boseCategoriesLoop { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-50%, 0, 0); } }
+                @media (min-width: 1024px) { .category-card-unified { width: 420px; } .category-card-img { height: 420px; } }
                 
                 /* حركات الشلال البصري المتعاكس */
                 .waterfall-up { display: flex; flex-direction: column; gap: 20px; animation: boseWaterfallUp 40s linear infinite; will-change: transform; }
@@ -828,6 +814,12 @@
                 @keyframes boseWaterfallUp { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(0, -50%, 0); } }
                 @keyframes boseWaterfallDown { 0% { transform: translate3d(0, -50%, 0); } 100% { transform: translate3d(0, 0, 0); } }
                 
+                /* حركة السلايدر الخاص بقسم عقد من الإتقان */
+                .excellence-track-loop { display: flex; width: max-content; animation: boseExcellence 30s linear infinite; will-change: transform; }
+                .excellence-slide-card { width: 100vw; height: auto; flex-shrink: 0; }
+                .excellence-slide-card img { width: 100%; height: auto; object-fit: cover; }
+                @keyframes boseExcellence { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-50%, 0, 0); } }
+
                 /* تلوين محاكيات البلوكات الفاخرة بالبمبي السلس لملء العرض ومنع الاختفاء */
                 .bose-simulator-preview-block { background: #FF91A4 !important; padding: 60px 20px; border-radius: 0px; text-align: center; width: 100%; box-sizing: border-box; }
                 .bose-simulator-preview-block h2, .bose-simulator-preview-block p { color: #FFFFFF !important; }
