@@ -1,5 +1,5 @@
 /* ==========================================================================
-   👑 BoseSweets Strict Production Global Stylesheet (css/global.css) V8.0 👑
+   👑 BoseSweets Strict Production Global Stylesheet (css/global.css) V9.0 👑
    الملف الملوكي الشامل والنهائي المطوّر لمعالجة وحل مشاكل الفيديو بالملي
    تأمين التنفس البصري، حظر التكدس، ضبط سرعات الحركة، ومنع قص الكروت نهائياً
    ========================================================================== */
@@ -170,7 +170,7 @@ img {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-sizing: border-box;
+    box-shadow: var(--bose-shadow-glow);
 }
 
 .header-right-side, .header-left-side {
@@ -296,7 +296,7 @@ img {
     top: 50%;
     right: 12px;
     transform: translateY(-50%);
-    color: var(--bose-pink);
+    color: var(--bose-pink) holiday;
     font-size: 24px;
 }
 
@@ -635,7 +635,7 @@ img {
 }
 
 /* ==========================================================================
-   8. 🌊 [إصلاح حاسم وجذري بالملي]: قسم شلال المنتجات البصري الأنيق المستمر الحركة (#waterfall-section)
+   8. 🌊 [إصلاح هندسي شامل ومتجاوب بالملي]: قسم شلال المنتجات البصري الفخم (#waterfall-section)
    ========================================================================== */
 .bose-waterfall-section-container {
     position: relative;
@@ -663,9 +663,9 @@ img {
 }
 
 .waterfall-container {
-    display: flex;
-    justify-content: space-between;
-    gap: 15px;
+    display: flex !important;
+    justify-content: space-between !important;
+    gap: 15px !important;
     width: 100%;
     height: 700px;
     overflow: hidden;
@@ -681,31 +681,31 @@ img {
 }
 
 .waterfall-col {
-    /* [حل ثغرة الصور الرفيعة والمساحات الفارغة]: تثبيت العرض الصارم للأعمدة هندسياً لمنع الضغط والقص الجانبي للمنتج */
-    flex: 0 0 48% !important;
-    max-width: 48% !important;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    overflow: hidden;
+    /* [حل حاسم ومستقر لحجم الصور وفراغ الجوانب]: قفل توزيع الأعمدة بنسبة مرنة صريحة تمنع انضغاط المنتج */
+    flex: 0 0 calc(50% - 8px) !important;
+    width: calc(50% - 8px) !important;
+    max-width: calc(50% - 8px) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 15px !important;
 }
 
 .waterfall-up {
-    /* [إصلاح حاسم]: تقليل سرعة الحركة بنسبة 10% صريحة (من 52s إلى 57.2s) لضمان الفخامة والنعومة الكاملة */
-    animation: boseWaterfallUp 57.2s linear infinite;
+    /* [تعديل السرعة المطلوبة بالملي]: تقليل سرعة حركة الصعود بنسبة 10% صريحة (إلى 57.2s) لراحة العين ونعومتها */
+    animation: boseWaterfallUp 57.2s linear infinite !important;
     will-change: transform;
 }
 
 .waterfall-down {
-    /* [إصلاح حاسم]: تقليل سرعة الحركة بنسبة 10% صريحة (من 52s إلى 57.2s) لضمان الفخامة والنعومة الكاملة */
-    animation: boseWaterfallDown 57.2s linear infinite;
+    /* [تعديل السرعة المطلوبة بالملي]: تقليل سرعة حركة الهبوط بنسبة 10% صريحة (إلى 57.2s) لضمان الفخامة */
+    animation: boseWaterfallDown 57.2s linear infinite !important;
     will-change: transform;
 }
 
 .waterfall-col img {
-    /* [حل جذري وتعديل هندسي]: جعل عرض الصورة يملأ العمود بالكامل 100%، ويحمي الطول الطبيعي بلا بتر أو مط */
+    /* [حل جذري]: الصورة تأخذ العرض الكامل 100% من عمودها العريض لتظهر ممتلئة، مع حماية طولها الطبيعي من البتر */
     width: 100% !important;
-    height: auto;
+    height: auto !important;
     min-height: 240px;
     max-height: 330px;
     object-fit: cover !important;
@@ -725,7 +725,7 @@ img {
 }
 
 /* ==========================================================================
-   9. 👑 [إصلاح حاسم وجذري]: قسم "عقد من الإتقان" التفاعلي اللانهائي المستمر 100% دون أي انقطاع
+   9. 👑 [إصلاح حاسم وجذري نهائي]: قسم "عقد من الإتقان" اللانهائي المستمر 100% دون انقطاع أو فراغات
    ========================================================================== */
 .bose-perfection-section {
     width: 100% !important;
@@ -753,12 +753,12 @@ img {
     width: max-content !important;
     will-change: transform !important;
     white-space: nowrap !important;
-    /* [إصلاح حاسم]: دوران مستمر متناغم بالملي مع التكرار الرباعي المفروم برمجياً لمنع الفراغ */
+    /* دوران أفقي انسيابي كامل التزامن والمطابقة التامة مع حقن الـ JS */
     animation: bosePerfectionLoop 35s linear infinite !important; 
 }
 
 .excellence-slide-card {
-    /* [حل ثغرة الإزاحة المفتوحة]: قفل عرض ثابت ومحكم للكارت لتسهيل الحساب الحركي اللانهائي دقيقة القوام */
+    /* [تثبيت أبعاد العرض والارتفاع لمنع النطّات والاختفاء]: قفل عرض الكارت الفاخر ليتلاءم مع الحساب الحركي */
     width: 280px !important;
     height: 340px !important; 
     flex-shrink: 0 !important;
@@ -795,8 +795,8 @@ img {
     }
 }
 
-/* [التعديل الهندسي الحتمي والمقدس]: 
-   الانتقال لنسبة الإزاحة الصارمة ليعيد تدوير الحاوية تلقائياً لحظة انتهاء الكروت تماماً دون ترك أي سنتيمتر فارغ */
+/* [التطهير الهندسي المطلق لحركة الـ Loop اللانهائية]:
+   الحركة تعيد تدوير نفسها برمجياً عند نقطة المنتصف الصارمة للكروت لضمان بقاء الصور ظاهرة 100% طوال الوقت */
 @keyframes bosePerfectionLoop {
     0% { transform: translate3d(0, 0, 0); } 
     100% { transform: translate3d(-50%, 0, 0); } 
