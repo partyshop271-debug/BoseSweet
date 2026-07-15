@@ -1,7 +1,7 @@
 /* ==========================================================================
-   👑 BoseSweets Strict Production Global Stylesheet (css/global.css) V6.0 👑
-   الملف الملوكي الشامل والنهائي المطوّر لمعالجة وحل مشاكل الفيديو بالملي[span_37](start_span)[span_37](end_span)
-   تأمين التنفس البصري، حظر التكدس، ضبط سرعات الحركة، ومنع قص الكروت نهائياً[span_38](start_span)[span_38](end_span)[span_39](start_span)[span_39](end_span)
+   👑 BoseSweets Strict Production Global Stylesheet (css/global.css) V7.0 👑
+   الملف الملوكي الشامل والنهائي المطوّر لمعالجة وحل مشاكل الفيديو بالملي
+   تأمين التنفس البصري، حظر التكدس، ضبط سرعات الحركة، ومنع قص الكروت نهائياً
    ========================================================================== */
 
 :root {
@@ -635,7 +635,7 @@ img {
 }
 
 /* ==========================================================================
-   8. [إصلاح حاسم]: قسم شلال المنتجات البصري الأنيق المستمر الحركة (#waterfall-section)
+   8. [إصلاح حاسم وتحديث ملوكي]: قسم شلال المنتجات البصري الأنيق المستمر الحركة (#waterfall-section)
    ========================================================================== */
 .bose-waterfall-section-container {
     position: relative;
@@ -679,26 +679,28 @@ img {
 }
 
 .waterfall-col {
-    flex: 1;
+    /* [إصلاح هندسي]: زيادة عرض الشلال بنسبة 10% بالملي لملء الشاشة الفاخرة وسد الفراغات الجانبية */
+    flex: 1.1; 
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
 
 .waterfall-up {
-    /* [إصلاح حاسم]: إبطاء حركة الشلال الصاعد بنسبة 30% من 40s لراحة العين الفاخرة */
-    animation: boseWaterfallUp 52s linear infinite;
+    /* [إصلاح حاسم]: إبطاء حركة الشلال الصاعد بنسبة 10% إضافية (من 52s إلى 57.2s) لراحة العين */
+    animation: boseWaterfallUp 57.2s linear infinite;
     will-change: transform;
 }
 
 .waterfall-down {
-    /* [إصلاح حاسم]: إبطاء حركة الشلال الهابط بنسبة 30% من 40s لراحة العين الفاخرة */
-    animation: boseWaterfallDown 52s linear infinite;
+    /* [إصلاح حاسم]: إبطاء حركة الشلال الهابط بنسبة 10% إضافية (من 52s إلى 57.2s) لراحة العين */
+    animation: boseWaterfallDown 57.2s linear infinite;
     will-change: transform;
 }
 
 .waterfall-col img {
-    width: 100%;
+    /* [تعديل هندسي]: زيادة العرض بنسبة 10% بالكامل، مع تثبيت الطول الفعلي دون أي مساس به */
+    width: 110%; 
     height: auto;
     min-height: 260px;
     max-height: 330px;
@@ -719,7 +721,7 @@ img {
 }
 
 /* ==========================================================================
-   9. قسم "عقد من الإتقان" التفاعلي اللانهائي
+   9. [إصلاح حاسم وتحديث]: قسم "عقد من الإتقان" التفاعلي اللانهائي المستمر دون أي انقطاع
    ========================================================================== */
 .bose-perfection-section {
     width: 100% !important;
@@ -746,7 +748,8 @@ img {
     margin: 0 !important;
     width: max-content !important;
     will-change: transform !important;
-    animation: bosePerfectionLoop 25s linear infinite !important; 
+    /* دوران مستمر فائق النعومة متوافق تماماً مع تكرار ملف الـ JS */
+    animation: bosePerfectionLoop 35s linear infinite !important; 
 }
 
 .excellence-slide-card {
@@ -786,13 +789,15 @@ img {
     }
 }
 
+/* [التعديل الذهبي الفاخر لربط التوقيت البصري بالكامل]: 
+   يتطابق بالملي مع كود جلب وتكرار الصور 4 مرات ليقدم محتوى مستمر 100% دون فواصل فارغة */
 @keyframes bosePerfectionLoop {
     0% { transform: translate3d(0, 0, 0); } 
-    100% { transform: translate3d(-50%, 0, 0); } 
+    100% { transform: translate3d(-25%, 0, 0); } 
 }
 
 /* ==========================================================================
-   10. [إصلاح حاسم]: شبكات المنيو وكروت المنتجات الموحدة القياسية العريضة
+   10. شبكات المنيو وكروت المنتجات الموحدة القياسية العريضة
    ========================================================================== */
 .bose-section-container {
     width: 100%;
@@ -850,7 +855,7 @@ img {
 
 /* التصفح الأفقي المريح للموبايل للأكثر مبيعاً ووصل حديثاً لرفع التفاعل */
 @media (max-width: 767px) {
-    /* [إصلاح حاسم]: كروت قسم منتجاتنا على الموبايل تعرض كارتين متوازيين جنباً إلى جنب بالملي دون أي تشوه أو قص[span_40](start_span)[span_40](end_span) */
+    /* [إصلاح حاسم]: كروت قسم منتجاتنا على الموبايل تعرض كارتين متوازيين جنباً إلى جنب بالملي دون أي تشوه أو قص */
     #our-products-grid.products-grid {
         display: grid !important;
         grid-template-columns: repeat(2, 1fr) !important; 
