@@ -111,37 +111,37 @@
         if (!data || !data.homepage) return;
 
         // 1. قسم عقد من الإتقان والسلايدر اللانهائي الدائري المصحح
-        const excellenceSection = document.getElementById('excellence-section');
+        const excellenceSection = document.getElementById('excellence-section') || document.querySelector('[id*="excellence"]');
         if (excellenceSection && data.homepage.excellence) {
             const titleEl = excellenceSection.querySelector('.section-title') || excellenceSection.querySelector('h2');
             const descEl = excellenceSection.querySelector('.section-desc') || excellenceSection.querySelector('p');
             if (titleEl) titleEl.textContent = data.homepage.excellence.title;
             if (descEl) descEl.textContent = data.homepage.excellence.description;
             
-            const track = document.getElementById('excellence-images-track');
+            const track = document.getElementById('excellence-images-track') || excellenceSection.querySelector('.excellence-track') || excellenceSection.querySelector('[id*="track"]');
             if (track && data.homepage.excellence.images) {
                 const imagesHtml = data.homepage.excellence.images.map(img => `
-                    <div class="excellence-slide-card">
-                        <img src="${img}" alt="إتقان حلويات بوسي الفاخرة" loading="lazy" />
+                    <div class="excellence-slide-card" style="width: 100vw; flex-shrink: 0;">
+                        <img src="${img}" alt="إتقان حلويات بوسي الفاخرة" style="width:100%; height:auto; object-fit:cover;" loading="lazy" />
                     </div>
                 `).join('');
                 // مضاعفة مضاعفة لتأمين التفاف انسيابي لانهائي كامل ممتد لراحة عين العميل
-                track.innerHTML = `<div class="excellence-track-loop">${imagesHtml} ${imagesHtml} ${imagesHtml}</div>`;
+                track.innerHTML = `<div class="excellence-track-loop" style="display:flex; width:max-content; animation: boseExcellence 35s linear infinite; will-change: transform;">${imagesHtml} ${imagesHtml} ${imagesHtml}</div>`;
             }
         }
 
         // 2. قسم تسوق حسب الفئة (سلايدر السحب التفاعلي مع النقاط)
-        const categoriesSection = document.getElementById('categories-slider-section');
+        const categoriesSection = document.getElementById('categories-slider-section') || document.getElementById('categories-section') || document.querySelector('[id*="categories"]');
         if (categoriesSection && data.homepage.categoriesSlider) {
             const titleEl = categoriesSection.querySelector('.section-title') || categoriesSection.querySelector('h2');
             if (titleEl) titleEl.textContent = "تسوق حسب الفئة";
             
-            const track = document.getElementById('categories-track');
+            const track = document.getElementById('categories-track') || categoriesSection.querySelector('.categories-track') || categoriesSection.querySelector('[id*="track"]');
             if (track) {
                 track.innerHTML = data.homepage.categoriesSlider.map(cat => `
-                    <div class="category-card-unified" onclick="window.location.href='category.html?id=${cat.id}'" style="cursor:pointer;">
-                        <img src="${cat.image}" alt="${cat.title}" class="category-card-img" loading="lazy" />
-                        <div class="category-card-name">${cat.title}</div>
+                    <div class="category-card-unified" onclick="window.location.href='category.html?id=${cat.id}'" style="cursor:pointer; background:#FFFFFF; border:1px solid rgba(255,145,164,0.15); border-radius:24px; padding:12px; width:280px; flex-shrink:0; box-sizing:border-box; margin:0 15px; text-align:center;">
+                        <img src="${cat.image}" alt="${cat.title}" class="category-card-img" style="width:100%; height:280px; object-fit:cover; border-radius:18px;" loading="lazy" />
+                        <div class="category-card-name" style="font-size:20px; font-weight:700; color:#111111; margin-top:15px;">${cat.title}</div>
                     </div>
                 `).join('');
                 
@@ -169,7 +169,7 @@
         }
 
         // 5. قسم منتجاتنا
-        const ourProductsSection = document.getElementById('our-products-section');
+        const ourProductsSection = document.getElementById('our-products-section') || document.querySelector('[id*="our-products"]');
         if (ourProductsSection) {
             const titleEl = ourProductsSection.querySelector('h2');
             if (titleEl) titleEl.textContent = "منتجاتنا";
@@ -182,7 +182,7 @@
      * بناء مؤشرات التنقل النقطية الذكية لقسم الفئات
      */
     function buildCategoriesDots(count) {
-        const dotsContainer = document.getElementById('categories-dots-container') || document.querySelector('.categories-slider-dots');
+        const dotsContainer = document.getElementById('categories-dots-container') || document.querySelector('.categories-slider-dots') || document.querySelector('[class*="dots"]');
         if (!dotsContainer) return;
         
         let dotsHtml = '';
@@ -196,14 +196,19 @@
      * 🎹 تفعيل معالجة الإيماءات والسحب اللحظي لسلايدر فئات تسوق حسب الفئة بالدوتس
      */
     function setupCategoriesSliderTouch() {
-        const track = document.getElementById('categories-track');
+        const categoriesSection = document.getElementById('categories-slider-section') || document.getElementById('categories-section') || document.querySelector('[id*="categories"]');
+        const track = document.getElementById('categories-track') || (categoriesSection ? categoriesSection.querySelector('.categories-track') || categoriesSection.querySelector('[id*="track"]') : null);
         if (!track) return;
 
         let isDragging = false;
         let startX = 0;
         let scrollLeft = 0;
 
+        // إجبار التنسيق البرمجي على التدفق الأفقي المرن والكامل لمنع التكديس الرأسي بالفيديو
+        track.style.display = 'flex';
         track.style.overflowX = 'auto';
+        track.style.scrollBehavior = 'smooth';
+        track.style.webkitOverflowScrolling = 'touch';
 
         track.addEventListener('mousedown', (e) => {
             isDragging = true;
@@ -246,7 +251,7 @@
             updateActiveDot(track);
         });
 
-        const dotsContainer = document.getElementById('categories-dots-container') || document.querySelector('.categories-slider-dots');
+        const dotsContainer = document.getElementById('categories-dots-container') || document.querySelector('.categories-slider-dots') || document.querySelector('[class*="dots"]');
         if (dotsContainer) {
             dotsContainer.addEventListener('click', (e) => {
                 const dot = e.target.closest('.bose-slider-dot');
@@ -372,8 +377,8 @@
             newArrivalsGrid.innerHTML = items.map(p => createProductCardHTML(p)).join('');
         }
 
-        // 3. قسم منتجاتنا (العرض الأولي لـ 4 كروت فقط ثنائية التوزيع للتنفس البصري والراحة النفسية)
-        const ourProductsGrid = document.getElementById('our-products-section-grid');
+        // 3. قسم منتجاتنا (تأمين قراءة الـ ID أو الـ Class لضمان الحقن الفوري الفعّال)
+        const ourProductsGrid = document.getElementById('our-products-section-grid') || document.getElementById('our-products-grid') || document.querySelector('.our-products-grid') || document.querySelector('[id*="our-products"][class*="grid"]');
         if (ourProductsGrid && data.homepage.ourProducts) {
             const initialItems = data.homepage.ourProducts.slice(0, 4).map(id => data.products.find(p => p.id === id || p.slug === id)).filter(Boolean);
             ourProductsGrid.innerHTML = initialItems.map(p => createProductCardHTML(p)).join('');
@@ -384,8 +389,8 @@
      * 🌟 نظام التحكم الديناميكي لزر (إظهار المزيد) بقسم منتجاتنا لحقن بقية الـ 8 منتجات بسلاسة كرتية ثنائية
      */
     function setupOurProductsShowMore() {
-        const showMoreBtn = document.getElementById('our-products-show-more-btn');
-        const ourProductsGrid = document.getElementById('our-products-section-grid');
+        const showMoreBtn = document.getElementById('our-products-show-more-btn') || document.querySelector('[id*="show-more"]');
+        const ourProductsGrid = document.getElementById('our-products-section-grid') || document.getElementById('our-products-grid') || document.querySelector('.our-products-grid') || document.querySelector('[id*="our-products"][class*="grid"]');
         const data = window.BoseStoreData;
 
         if (!showMoreBtn || !ourProductsGrid || !data) return;
@@ -405,13 +410,13 @@
         if (!data || !data.homepage) return;
 
         // محاكي التورت
-        const cakeSection = document.getElementById('cake-preview-section');
+        const cakeSection = document.getElementById('cake-preview-section') || document.querySelector('[id*="cake-preview"]');
         if (cakeSection && data.homepage.cakePreview) {
             const preview = data.homepage.cakePreview;
-            const imgEl = cakeSection.querySelector('#cake-preview-img');
-            const titleEl = cakeSection.querySelector('#cake-preview-title');
-            const descEl = cakeSection.querySelector('#cake-preview-desc');
-            const ctaEl = cakeSection.querySelector('#cake-preview-cta');
+            const imgEl = cakeSection.querySelector('#cake-preview-img') || cakeSection.querySelector('img');
+            const titleEl = cakeSection.querySelector('#cake-preview-title') || cakeSection.querySelector('h2');
+            const descEl = cakeSection.querySelector('#cake-preview-desc') || cakeSection.querySelector('p');
+            const ctaEl = cakeSection.querySelector('#cake-preview-cta') || cakeSection.querySelector('a');
 
             if (imgEl) imgEl.src = preview.image;
             if (titleEl) titleEl.textContent = preview.title;
@@ -423,13 +428,13 @@
         }
 
         // محاكي الورد
-        const flowerSection = document.getElementById('flower-preview-section');
+        const flowerSection = document.getElementById('flower-preview-section') || document.querySelector('[id*="flower-preview"]');
         if (flowerSection && data.homepage.flowerPreview) {
             const preview = data.homepage.flowerPreview;
-            const imgEl = flowerSection.querySelector('#flower-preview-img');
-            const titleEl = flowerSection.querySelector('#flower-preview-title');
-            const descEl = flowerSection.querySelector('#flower-preview-desc');
-            const ctaEl = flowerSection.querySelector('#flower-preview-cta');
+            const imgEl = flowerSection.querySelector('#flower-preview-img') || flowerSection.querySelector('img');
+            const titleEl = flowerSection.querySelector('#flower-preview-title') || flowerSection.querySelector('h2');
+            const descEl = flowerSection.querySelector('#flower-preview-desc') || flowerSection.querySelector('p');
+            const ctaEl = flowerSection.querySelector('#flower-preview-cta') || flowerSection.querySelector('a');
 
             if (imgEl) imgEl.src = preview.image;
             if (titleEl) titleEl.textContent = preview.title;
@@ -863,11 +868,14 @@
                 .excellence-slide-card img { width: 100%; height: auto; object-fit: cover; }
                 @keyframes boseExcellence { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-33.3333%, 0, 0); } }
 
-                /* [تحديث هندسي]: تلوين خلفيات بلوك المحاكيات باللون البمبي الفاخر لملء الشاشة بالكامل */
-                #cake-preview-section, #flower-preview-section, .bose-simulator-preview-block { background: #FF91A4 !important; padding: 60px 20px; border-radius: 0px; text-align: center; width: 100%; box-sizing: border-box; }
-                #cake-preview-section h2, #cake-preview-section p, #flower-preview-section h2, #flower-preview-section p, .bose-simulator-preview-block h2, .bose-simulator-preview-block p { color: #FFFFFF !important; }
-                .bose-simulator-preview-cta-btn, #cake-preview-cta, #flower-preview-cta { display: inline-block; background-color: #FFFFFF !important; color: #FF91A4 !important; font-weight: 700; padding: 12px 32px; border-radius: 30px; text-decoration: none; margin-top: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.06); transition: all 0.3s; }
-                .bose-simulator-preview-cta-btn:hover, #cake-preview-cta:hover, #flower-preview-cta:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,0.12); }
+                /* [تحديث هندسي]: تلوين خلفيات بلوك المحاكيات باللون البمبي الفاخر لملء الشاشة بالكامل بقوة الـ DOM الصريحة بالفيديو */
+                #cake-preview-section, #flower-preview-section, .bose-simulator-preview-block, [id*="cake-preview"], [id*="flower-preview"] { background: #FF91A4 !important; padding: 60px 20px !important; border-radius: 0px !important; text-align: center !important; width: 100% !important; box-sizing: border-box !important; }
+                #cake-preview-section h2, #cake-preview-section p, #flower-preview-section h2, #flower-preview-section p, [id*="preview"] h2, [id*="preview"] p { color: #FFFFFF !important; }
+                .bose-simulator-preview-cta-btn, #cake-preview-cta, #flower-preview-cta, [id*="preview"] a { display: inline-block !important; background-color: #FFFFFF !important; color: #FF91A4 !important; font-weight: 700 !important; padding: 12px 32px !important; border-radius: 30px !important; text-decoration: none !important; margin-top: 20px !important; box-shadow: 0 8px 24px rgba(0,0,0,0.06) !important; transition: all 0.3s !important; }
+                .bose-simulator-preview-cta-btn:hover, #cake-preview-cta:hover, #flower-preview-cta:hover { transform: translateY(-3px) !important; box-shadow: 0 12px 32px rgba(0,0,0,0.12) !important; }
+                
+                /* تأمين الحجم المثالي لصورة المنتج داخل المحاكي المدمج هندسياً */
+                #cake-preview-img, #flower-preview-img, [id*="preview-img"] { max-width: 600px !important; width: 100% !important; height: auto !important; object-fit: contain !important; border-radius: 16px !important; margin: 0 auto !important; }
             `;
             document.head.appendChild(fixStyle);
         }
