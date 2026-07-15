@@ -1,7 +1,7 @@
 /**
  * core-engine.js - المحرك المركزي العالمي وحارس البيانات والحسابات المالية
- * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية الملوكية المطورة V7.5
- * [إصلاح حاسم وتوافق شامل]: علاج جلب قاعدة البيانات وحقن الشلال، المنتجات، وعقد من الإتقان، ونقاط الفئات بالملي.
+ * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية الملوكية المطورة V10.0
+ * [تطهير وحل نهائي]: علاج مشكلة عقد من الإتقان، الشلال، وحظر التعارض نهائياً.
  * محظور الحذف، الاختصار، الدمج، أو التبسيط نهائياً تماشياً مع فلسفة العلامة الفاخرة.
  */
 
@@ -136,8 +136,8 @@
                     </div>
                 `).join('');
                 
-                // حقن وضمان التفاف هندسي انسيابي كامل بدون فراغات بيضاء أو وميض متوافقاً مع الإزاحة الجديدة للـ CSS
-                track.innerHTML = `<div class="excellence-track-loop">${imagesHtml} ${imagesHtml} ${imagesHtml} ${imagesHtml}</div>`;
+                // حقن مصفوفة متكاملة وربطها تزامناً مع نسبة الـ 50% للـ CSS لإنهاء ثغرة الاختفاء
+                track.innerHTML = `<div class="excellence-track-loop">${imagesHtml} ${imagesHtml}</div>`;
             }
         }
 
@@ -201,7 +201,6 @@
         let dotsContainer = document.getElementById('categories-dots-container');
         if (dotsContainer) {
             let dotsHtml = '';
-            // [تم التطهير الكامل بنجاح]: إصلاح ثغرة الدوران اللانهائي لضمان الكفاءة المطلقة
             for (let i = 0; i < count; i++) {
                 dotsHtml += `<span class="bose-slider-dot ${i === 0 ? 'active' : ''}" data-index="${i}"></span>`;
             }
@@ -552,7 +551,7 @@
                         const targetEl = prideSection.querySelector(`[data-stat="${key}"]`) || document.getElementById(`pride-stat-${key}`);
                         if (targetEl && !targetEl.classList.contains('animated')) {
                             targetEl.classList.add('animated');
-                            animateCounter(targetEl, parseInt(statsData[key].value, 10), statsData[key].suffix || '');
+                            animateCounter(targetEl, parseInt(statsData[key].value, 10), statsData[key].stats[key].suffix || '');
                         }
                     });
                     observer.unobserve(prideSection);
