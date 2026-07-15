@@ -1,9 +1,7 @@
 /**
  * core-engine.js - المحرك المركزي العالمي وحارس البيانات والحسابات المالية
- * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية المؤمنة بالكامل V3
- * [قاعدة صارمة]: يلتزم الملف بدوره الخلفي فقط، يحظر التدخل في مهام الملفات الأخرى،
- * ويؤمن أعلى أداء مع أقل استهلاك بيانات على الموبايل والكمبيوتر.
- * تم التطوير والتوسيع الشامل لإصلاح مشاكل اختفاء المنتجات، الأقسام، والسلايدرات نهائياً.
+ * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية المؤمنة بالكامل V3.1
+ * [تحديث هندسي]: إصلاح مشاكل واجهات الموبايل، المحاكيات، السلايدرات، والدوتس بالملي.
  */
 
 (function() {
@@ -110,7 +108,7 @@
         const data = window.BoseStoreData;
         if (!data || !data.homepage) return;
 
-        // 1. قسم عقد من الإتقان والسلايدر اللانهائي الدائري المصحح
+        // 1. قسم عقد من الإتقان والسلايدر اللانهائي الدائري المصحح (بدون دوتس)
         const excellenceSection = document.getElementById('excellence-section') || document.querySelector('[id*="excellence"]');
         if (excellenceSection && data.homepage.excellence) {
             const titleEl = excellenceSection.querySelector('.section-title') || excellenceSection.querySelector('h2');
@@ -125,12 +123,11 @@
                         <img src="${img}" alt="إتقان حلويات بوسي الفاخرة" style="width:100%; height:auto; object-fit:cover;" loading="lazy" />
                     </div>
                 `).join('');
-                // مضاعفة مضاعفة لتأمين التفاف انسيابي لانهائي كامل ممتد لراحة عين العميل
                 track.innerHTML = `<div class="excellence-track-loop" style="display:flex; width:max-content; animation: boseExcellence 35s linear infinite; will-change: transform;">${imagesHtml} ${imagesHtml} ${imagesHtml}</div>`;
             }
         }
 
-        // 2. قسم تسوق حسب الفئة (سلايدر السحب التفاعلي مع النقاط)
+        // 2. قسم تسوق حسب الفئة (سلايدر السحب التفاعلي مع الـ 12 دوتس والأسهم)
         const categoriesSection = document.getElementById('categories-slider-section') || document.getElementById('categories-section') || document.querySelector('[id*="categories"]');
         if (categoriesSection && data.homepage.categoriesSlider) {
             const titleEl = categoriesSection.querySelector('.section-title') || categoriesSection.querySelector('h2');
@@ -145,7 +142,7 @@
                     </div>
                 `).join('');
                 
-                // بناء نقاط التصفح (Dots) بعدد كروت الفئات ديناميكياً
+                // بناء نقاط التصفح (Dots) بعدد كروت الفئات الـ 12 ديناميكياً
                 buildCategoriesDots(data.homepage.categoriesSlider.length);
             }
         }
@@ -179,11 +176,36 @@
     }
 
     /**
-     * بناء مؤشرات التنقل النقطية الذكية لقسم الفئات
+     * بناء مؤشرات التنقل النقطية الذكية والأسهم لقسم الفئات
      */
     function buildCategoriesDots(count) {
-        const dotsContainer = document.getElementById('categories-dots-container') || document.querySelector('.categories-slider-dots') || document.querySelector('[class*="dots"]');
-        if (!dotsContainer) return;
+        const categoriesSection = document.getElementById('categories-slider-section') || document.getElementById('categories-section') || document.querySelector('[id*="categories"]');
+        if (!categoriesSection) return;
+
+        let dotsContainer = document.getElementById('categories-dots-container') || categoriesSection.querySelector('.categories-slider-dots') || categoriesSection.querySelector('[class*="dots"]');
+        
+        if (!dotsContainer) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'categories-slider-controls-wrapper';
+            wrapper.style.cssText = 'display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:24px; width:100%;';
+            
+            const arrowsContainer = document.createElement('div');
+            arrowsContainer.className = 'bose-slider-arrows';
+            arrowsContainer.style.cssText = 'display:flex; gap:20px; direction:ltr;';
+            arrowsContainer.innerHTML = `
+                <button class="bose-slider-arrow prev" style="background:#FFFFFF; border:1px solid #FF91A4; color:#FF91A4; width:45px; height:45px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:16px; transition:all 0.3s;"><i class="fa-solid fa-chevron-left"></i></button>
+                <button class="bose-slider-arrow next" style="background:#FFFFFF; border:1px solid #FF91A4; color:#FF91A4; width:45px; height:45px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:16px; transition:all 0.3s;"><i class="fa-solid fa-chevron-right"></i></button>
+            `;
+            
+            dotsContainer = document.createElement('div');
+            dotsContainer.id = 'categories-dots-container';
+            dotsContainer.className = 'categories-slider-dots';
+            dotsContainer.style.cssText = 'display:flex; justify-content:center; align-items:center; gap:8px;';
+            
+            wrapper.appendChild(arrowsContainer);
+            wrapper.appendChild(dotsContainer);
+            categoriesSection.appendChild(wrapper);
+        }
         
         let dotsHtml = '';
         for (let i = 0; i < count; i++) {
@@ -193,7 +215,7 @@
     }
 
     /**
-     * 🎹 تفعيل معالجة الإيماءات والسحب اللحظي لسلايدر فئات تسوق حسب الفئة بالدوتس
+     * 🎹 تفعيل معالجة الإيماءات والسحب اللحظي والتحكم بالأسهم لسلايدر فئات تسوق حسب الفئة
      */
     function setupCategoriesSliderTouch() {
         const categoriesSection = document.getElementById('categories-slider-section') || document.getElementById('categories-section') || document.querySelector('[id*="categories"]');
@@ -204,7 +226,6 @@
         let startX = 0;
         let scrollLeft = 0;
 
-        // إجبار التنسيق البرمجي على التدفق الأفقي المرن والكامل لمنع التكديس الرأسي بالفيديو
         track.style.display = 'flex';
         track.style.overflowX = 'auto';
         track.style.scrollBehavior = 'smooth';
@@ -250,6 +271,29 @@
         track.addEventListener('touchend', () => {
             updateActiveDot(track);
         });
+
+        // تشغيل أزرار الأسهم
+        if (categoriesSection) {
+            const nextBtn = categoriesSection.querySelector('.bose-slider-arrow.next');
+            const prevBtn = categoriesSection.querySelector('.bose-slider-arrow.prev');
+            
+            if (nextBtn && prevBtn) {
+                const getStep = () => {
+                    const card = track.querySelector('.category-card-unified');
+                    return card ? card.offsetWidth + 30 : 310;
+                };
+                
+                nextBtn.addEventListener('click', () => {
+                    track.scrollBy({ left: getStep(), behavior: 'smooth' });
+                    setTimeout(() => updateActiveDot(track), 400);
+                });
+                
+                prevBtn.addEventListener('click', () => {
+                    track.scrollBy({ left: -getStep(), behavior: 'smooth' });
+                    setTimeout(() => updateActiveDot(track), 400);
+                });
+            }
+        }
 
         const dotsContainer = document.getElementById('categories-dots-container') || document.querySelector('.categories-slider-dots') || document.querySelector('[class*="dots"]');
         if (dotsContainer) {
@@ -311,7 +355,7 @@
     }
 
     /**
-     * 🛒 دالة هندسية لبناء الكارت الموحد بدقة تامة طبقاً للمواصفات القياسية وحظر حقول الاختيار المشتتة للعميل
+     * 🛒 دالة هندسية لبناء الكارت الموحد بدقة تامة - الزر زائد (+) على اليمين والناقص (-) على اليسار
      */
     function createProductCardHTML(product) {
         if (!product) return '';
@@ -403,7 +447,7 @@
     }
 
     /**
-     * 👑 ضخ وحقن بيانات وألوان محاكي التورت ومحاكي الورد لملء الشاشة بالفخامة البمبية المعتمدة
+     * 👑 ضخ وحقن بيانات وألوان وصور محاكي التورت ومحاكي الورد لملء الشاشة بالفخامة البمبية المعتمدة
      */
     function injectSimulatorsPreviewData() {
         const data = window.BoseStoreData;
@@ -413,10 +457,10 @@
         const cakeSection = document.getElementById('cake-preview-section') || document.querySelector('[id*="cake-preview"]');
         if (cakeSection && data.homepage.cakePreview) {
             const preview = data.homepage.cakePreview;
-            const imgEl = cakeSection.querySelector('#cake-preview-img') || cakeSection.querySelector('img');
+            const imgEl = cakeSection.querySelector('#cake-preview-img') || cakeSection.querySelector('.simulator-preview-img') || cakeSection.querySelector('img');
             const titleEl = cakeSection.querySelector('#cake-preview-title') || cakeSection.querySelector('h2');
             const descEl = cakeSection.querySelector('#cake-preview-desc') || cakeSection.querySelector('p');
-            const ctaEl = cakeSection.querySelector('#cake-preview-cta') || cakeSection.querySelector('a');
+            const ctaEl = cakeSection.querySelector('#cake-preview-cta') || cakeSection.querySelector('a') || cakeSection.querySelector('.bose-simulator-preview-cta-btn');
 
             if (imgEl) imgEl.src = preview.image;
             if (titleEl) titleEl.textContent = preview.title;
@@ -424,6 +468,7 @@
             if (ctaEl) {
                 ctaEl.textContent = preview.cta;
                 ctaEl.href = preview.target;
+                ctaEl.style.display = 'inline-block';
             }
         }
 
@@ -431,10 +476,10 @@
         const flowerSection = document.getElementById('flower-preview-section') || document.querySelector('[id*="flower-preview"]');
         if (flowerSection && data.homepage.flowerPreview) {
             const preview = data.homepage.flowerPreview;
-            const imgEl = flowerSection.querySelector('#flower-preview-img') || flowerSection.querySelector('img');
+            const imgEl = flowerSection.querySelector('#flower-preview-img') || flowerSection.querySelector('.simulator-preview-img') || flowerSection.querySelector('img');
             const titleEl = flowerSection.querySelector('#flower-preview-title') || flowerSection.querySelector('h2');
             const descEl = flowerSection.querySelector('#flower-preview-desc') || flowerSection.querySelector('p');
-            const ctaEl = flowerSection.querySelector('#flower-preview-cta') || flowerSection.querySelector('a');
+            const ctaEl = flowerSection.querySelector('#flower-preview-cta') || flowerSection.querySelector('a') || flowerSection.querySelector('.bose-simulator-preview-cta-btn');
 
             if (imgEl) imgEl.src = preview.image;
             if (titleEl) titleEl.textContent = preview.title;
@@ -442,6 +487,7 @@
             if (ctaEl) {
                 ctaEl.textContent = preview.cta;
                 ctaEl.href = preview.target;
+                ctaEl.style.display = 'inline-block';
             }
         }
     }
@@ -770,12 +816,6 @@
                 .sidebar-link-item a:hover { background-color: rgba(255, 145, 164, 0.05); border-color: rgba(255, 145, 164, 0.1); }
                 .sidebar-link-item a:hover i.arrow-icon { opacity: 1; color: #FF91A4; transform: translateX(-4px); }
                 
-                .sidebar-promo-card { background: linear-gradient(135deg, rgba(255, 145, 164, 0.06) 0%, rgba(255, 255, 255, 0) 100%); border: 1px dashed rgba(255, 145, 164, 0.4); border-radius: 16px; padding: 20px; text-align: center; margin-top: 8px; position: relative; }
-                .sidebar-promo-badge { position: absolute; top: 12px; left: 12px; background-color: #FF91A4; color: #FFFFFF; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
-                .sidebar-promo-title { font-size: 15px; font-weight: 700; color: #111111; margin-bottom: 8px; margin-top: 10px; }
-                .sidebar-promo-desc { font-size: 13px; color: #111111; opacity: 0.8; line-height: 1.6; margin-bottom: 16px; }
-                .sidebar-promo-btn { display: inline-block; background-color: #FF91A4; color: #FFFFFF; text-decoration: none; padding: 10px 24px; border-radius: 25px; font-size: 13px; font-weight: 700; box-shadow: 0 4px 12px rgba(255, 145, 164, 0.15); }
-                
                 .sidebar-footer-contacts { border-top: 1px solid rgba(255, 145, 164, 0.15); padding: 20px 24px; background-color: #FFFFFF; display: flex; flex-direction: column; gap: 10px; }
                 .sidebar-contact-pill { display: flex; align-items: center; gap: 14px; padding: 12px 18px; background: rgba(255, 145, 164, 0.04); border-radius: 30px; text-decoration: none; color: #111111; font-size: 14px; font-weight: 600; border: 1px solid rgba(255, 145, 164, 0.05); min-height: 44px; }
                 .sidebar-contact-pill i { font-size: 16px; color: #FF91A4; }
@@ -831,7 +871,8 @@
                 .product-card-flavor-name { font-size: 14px; font-weight: 600; color: #FF91A4; }
                 .product-card-desc { font-size: 13px; color: #111111; opacity: 0.7; line-height: 1.6; margin: 0; min-height: 42px; }
                 
-                .product-card-qty-wrapper { display: flex; align-items: center; justify-content: center; gap: 10px; background: rgba(255, 145, 164, 0.05); padding: 6px; border-radius: 30px; margin-top: auto; direction: ltr; }
+                /* [تحديث هندسي]: العداد زائد يمين والناقص يسار لراحة الموبايل واليد */
+                .product-card-qty-wrapper { display: flex; align-items: center; justify-content: center; gap: 10px; background: rgba(255, 145, 164, 0.05); padding: 6px; border-radius: 30px; margin-top: auto; direction: rtl; }
                 .btn-qty-minus, .btn-qty-plus { background: #FFFFFF; border: 1px solid rgba(255, 145, 164, 0.3); width: 32px; height: 32px; border-radius: 50%; font-weight: 700; color: #111111; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
                 .btn-qty-minus:hover, .btn-qty-plus:hover { background: #FF91A4; color: #FFFFFF; border-color: #FF91A4; }
                 .input-qty-value { border: none; background: transparent; width: 40px; text-align: center; font-size: 15px; font-weight: 700; color: #111111; -moz-appearance: textfield; }
@@ -840,7 +881,7 @@
                 .btn-add-to-cart { background: #FFFFFF; border: 1px solid #FF91A4; color: #FF91A4; padding: 10px 20px; border-radius: 25px; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.3s ease; width: 100%; box-sizing: border-box; }
                 .btn-add-to-cart:hover { background: #FF91A4; color: #FFFFFF; }
                 
-                /* [تحديث هندسي]: السلايدر الجانبي المستجيب للسحب الكامل مع النقاط بقسم الفئات */
+                /* [تحديث هندسي]: السلايدر الجانبي المستجيب للسحب الكامل مع النقاط والأسهم المتقاطعة */
                 .categories-slider-outer-container { position: relative; width: 100%; max-width: 1200px; margin: 0 auto; overflow: hidden; padding: 20px 0; }
                 .categories-track-slider { display: flex; overflow-x: auto; scroll-behavior: smooth; padding: 10px; cursor: grab; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
                 .categories-track-slider::-webkit-scrollbar { display: none; }
@@ -852,10 +893,11 @@
                 @media (min-width: 768px) { .category-card-unified { width: 340px; } .category-card-img { height: 340px; } }
                 @media (min-width: 1024px) { .category-card-unified { width: 420px; } .category-card-img { height: 420px; } }
                 
-                /* تصميم نقاط التصفح الانسيابية البمبية */
+                /* تصميم نقاط التصفح والأسهم */
                 .categories-slider-dots { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 24px; width: 100%; }
                 .bose-slider-dot { width: 10px; height: 10px; background-color: rgba(255, 145, 164, 0.3); border-radius: 50%; cursor: pointer; transition: all 0.3s ease; }
                 .bose-slider-dot.active { background-color: #FF91A4; width: 24px; border-radius: 50px; box-shadow: 0 0 8px rgba(255, 145, 164, 0.5); }
+                .bose-slider-arrow:hover { background: #FF91A4 !important; color: #FFFFFF !important; }
 
                 .waterfall-up { display: flex; flex-direction: column; gap: 20px; animation: boseWaterfallUp 40s linear infinite; will-change: transform; }
                 .waterfall-down { display: flex; flex-direction: column; gap: 20px; animation: boseWaterfallDown 40s linear infinite; will-change: transform; }
@@ -874,8 +916,8 @@
                 .bose-simulator-preview-cta-btn, #cake-preview-cta, #flower-preview-cta, [id*="preview"] a { display: inline-block !important; background-color: #FFFFFF !important; color: #FF91A4 !important; font-weight: 700 !important; padding: 12px 32px !important; border-radius: 30px !important; text-decoration: none !important; margin-top: 20px !important; box-shadow: 0 8px 24px rgba(0,0,0,0.06) !important; transition: all 0.3s !important; }
                 .bose-simulator-preview-cta-btn:hover, #cake-preview-cta:hover, #flower-preview-cta:hover { transform: translateY(-3px) !important; box-shadow: 0 12px 32px rgba(0,0,0,0.12) !important; }
                 
-                /* تأمين الحجم المثالي لصورة المنتج داخل المحاكي المدمج هندسياً */
-                #cake-preview-img, #flower-preview-img, [id*="preview-img"] { max-width: 600px !important; width: 100% !important; height: auto !important; object-fit: contain !important; border-radius: 16px !important; margin: 0 auto !important; }
+                /* تأمين الحجم المثالي لصورة المنتج داخل المحاكي لتصبح أكبر بـ 5 أضعاف بدون إزاحة */
+                #cake-preview-img, #flower-preview-img, .simulator-preview-img, [id*="preview-img"] { max-width: 600px !important; width: 100% !important; height: auto !important; object-fit: contain !important; border-radius: 16px !important; margin: 0 auto !important; padding: 0 !important; transform: scale(1.1); transition: transform 0.3s ease; }
             `;
             document.head.appendChild(fixStyle);
         }
@@ -991,13 +1033,6 @@
                                     </a>
                                 </li>
                             </ul>
-                        </div>
-
-                        <div class="sidebar-promo-card">
-                            <span class="sidebar-promo-badge">تخصيص فاخر</span>
-                            <div class="sidebar-promo-title">تصميم تفاعلي حصري</div>
-                            <p class="sidebar-promo-desc">ابدأ بتفصيل تورتتك المميزة أو بوكيه الورد المليء بمشاعرك بخطوات تفاعلية مدمجة وبسيطة.</p>
-                            <a href="cake-builder.html" class="sidebar-promo-btn">جرب المحاكي الآن</a>
                         </div>
                     </div>
 
