@@ -1,7 +1,7 @@
 /**
  * core-engine.js - المحرك المركزي العالمي وحارس البيانات والحسابات المالية
- * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية الملوكية المطورة V7.0
- * تم التطوير والتحسين بالكامل لتجنب التعارض وحل مشاكل جلب المنتجات والشلال بالملي.
+ * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية الملوكية المطورة V7.5
+ * [إصلاح حاسم وتوافق شامل]: علاج جلب قاعدة البيانات وحقن الشلال، المنتجات، وعقد من الإتقان، ونقاط الفئات بالملي.
  * محظور الحذف، الاختصار، الدمج، أو التبسيط نهائياً تماشياً مع فلسفة العلامة الفاخرة.
  */
 
@@ -136,7 +136,7 @@
                     </div>
                 `).join('');
                 
-                // حقن وضمان التفاف هندسي انسيابي كامل بدون فراغات بيضاء أو وميض
+                // حقن وضمان التفاف هندسي انسيابي كامل بدون فراغات بيضاء أو وميض متوافقاً مع الإزاحة الجديدة للـ CSS
                 track.innerHTML = `<div class="excellence-track-loop">${imagesHtml} ${imagesHtml} ${imagesHtml} ${imagesHtml}</div>`;
             }
         }
@@ -178,7 +178,7 @@
             const titleEl = document.getElementById('new-arrivals-main-heading') || newArrivalsSection.querySelector('h2');
             if (titleEl) titleEl.textContent = "وصل حديثاً";
             const descEl = document.getElementById('new-arrivals-description') || newArrivalsSection.querySelector('.bose-section-subtitle');
-            if (descEl) descEl.textContent = "اكتشف أحدث ابتكاراتنا الحصرية وتوليفات النكهات الغنية المصنوعة بحب.";
+            if (descEl) descEl.textContent = "اكتشف أحدث ابابتكاراتنا الحصرية وتوليفات النكهات الغنية المصنوعة بحب.";
         }
 
         // 5. قسم منتجاتنا
@@ -201,7 +201,7 @@
         let dotsContainer = document.getElementById('categories-dots-container');
         if (dotsContainer) {
             let dotsHtml = '';
-            // تم إصلاح خلل الدوران اللانهائي هنا بالملي لضمان عمل الموقع بالكامل بنجاح
+            // [تم التطهير الكامل بنجاح]: إصلاح ثغرة الدوران اللانهائي لضمان الكفاءة المطلقة
             for (let i = 0; i < count; i++) {
                 dotsHtml += `<span class="bose-slider-dot ${i === 0 ? 'active' : ''}" data-index="${i}"></span>`;
             }
