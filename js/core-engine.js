@@ -196,15 +196,15 @@
      * 🎹 تفعيل معالجة الإيماءات والسحب اللحظي لسلايدر فئات تسوق حسب الفئة بالدوتس
      */
     function setupCategoriesSliderTouch() {
-        const sliderWrapper = document.getElementById('categories-slider-section');
         const track = document.getElementById('categories-track');
-        if (!sliderWrapper || !track) return;
+        if (!track) return;
 
         let isDragging = false;
         let startX = 0;
         let scrollLeft = 0;
 
-        // دعم السحب المباشر بالفأرة للكمبيوتر
+        track.style.overflowX = 'auto';
+
         track.addEventListener('mousedown', (e) => {
             isDragging = true;
             track.style.cursor = 'grabbing';
@@ -231,7 +231,6 @@
             track.scrollLeft = scrollLeft - walk;
         });
 
-        // دعم السحب اللمسي الفوري لشاشات الموبايل
         track.addEventListener('touchstart', (e) => {
             startX = e.touches[0].pageX - track.offsetLeft;
             scrollLeft = track.scrollLeft;
@@ -247,7 +246,6 @@
             updateActiveDot(track);
         });
 
-        // ربط النقاط (Dots) التفاعلية لتمرير السلايدر عند الضغط عليها
         const dotsContainer = document.getElementById('categories-dots-container') || document.querySelector('.categories-slider-dots');
         if (dotsContainer) {
             dotsContainer.addEventListener('click', (e) => {
@@ -256,7 +254,7 @@
                 const index = parseInt(dot.getAttribute('data-index'), 10);
                 const cards = track.querySelectorAll('.category-card-unified');
                 if (cards[index]) {
-                    const cardWidth = cards[index].offsetWidth + 30; // إضافة الهامش الـ margin
+                    const cardWidth = cards[index].offsetWidth + 30; 
                     track.scrollTo({
                         left: cardWidth * index,
                         behavior: 'smooth'
@@ -866,10 +864,10 @@
                 @keyframes boseExcellence { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-33.3333%, 0, 0); } }
 
                 /* [تحديث هندسي]: تلوين خلفيات بلوك المحاكيات باللون البمبي الفاخر لملء الشاشة بالكامل */
-                .bose-simulator-preview-block { background: #FF91A4 !important; padding: 60px 20px; border-radius: 0px; text-align: center; width: 100%; box-sizing: border-box; }
-                .bose-simulator-preview-block h2, .bose-simulator-preview-block p { color: #FFFFFF !important; }
-                .bose-simulator-preview-cta-btn { display: inline-block; background-color: #FFFFFF !important; color: #FF91A4 !important; font-weight: 700; padding: 12px 32px; border-radius: 30px; text-decoration: none; margin-top: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.06); transition: all 0.3s; }
-                .bose-simulator-preview-cta-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,0.12); }
+                #cake-preview-section, #flower-preview-section, .bose-simulator-preview-block { background: #FF91A4 !important; padding: 60px 20px; border-radius: 0px; text-align: center; width: 100%; box-sizing: border-box; }
+                #cake-preview-section h2, #cake-preview-section p, #flower-preview-section h2, #flower-preview-section p, .bose-simulator-preview-block h2, .bose-simulator-preview-block p { color: #FFFFFF !important; }
+                .bose-simulator-preview-cta-btn, #cake-preview-cta, #flower-preview-cta { display: inline-block; background-color: #FFFFFF !important; color: #FF91A4 !important; font-weight: 700; padding: 12px 32px; border-radius: 30px; text-decoration: none; margin-top: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.06); transition: all 0.3s; }
+                .bose-simulator-preview-cta-btn:hover, #cake-preview-cta:hover, #flower-preview-cta:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,0.12); }
             `;
             document.head.appendChild(fixStyle);
         }
