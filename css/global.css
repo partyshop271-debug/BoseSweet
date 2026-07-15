@@ -1,12 +1,12 @@
 /* ==========================================================================
-   👑 BoseSweets Strict Production Global Stylesheet (css/global.css) V12.0 👑
+   👑 BoseSweets Strict Production Global Stylesheet (css/global.css) V13.0 👑
    الملف الملوكي الشامل والنهائي المطوّر لمعالجة وحل مشاكل الفيديو بالملي
-   تأمين التنفس البصري، حظر التكدس, ضبط سرعات الحركة، ومنع قص الكروت نهائياً
+   تأمين التنفس البصري، حظر التكدس، ضبط سرعات الحركة، ومنع قص الكروت نهائياً
    ========================================================================== */
 
 :root {
     /* الألوان الحاكمة والمقدسة لعلامة حلويات بوسي الفاخرة - ممنوع مساسها */
-    --bose-pink: #FF91A4;        /* نبض الحياة: حدود كروت المنتجات، الظلال الناعمة، نصوص الأسعار الديناميكية، والتأثيرات التفاعلية */
+    --bose-pink: #FF91A4;        /* نبض الحياة: حدود كروت المنتجات، الأسعار الديناميكية، والتأثيرات التفاعلية */
     --bose-white: #FFFFFF;       /* المسيطر تماماً: لخلق تنفس بصري ومنع التكديس نهائياً لراحة العميل النفسية */
     --bose-black: #111111;       /* النصوص والعناوين فقط لضمان وضوح كامل للعين وحظر استخدامه في ظلال أو خلفيات */
     --bose-gold: #D4AF37;        /* وجود رمزي ناعم وخفيف جداً لمحاكاة فخامة اللوجو (نجوم التقييمات) */
@@ -170,7 +170,7 @@ img {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: var(--bose-shadow-glow);
+    box-sizing: border-box;
 }
 
 .header-right-side, .header-left-side {
@@ -209,7 +209,7 @@ img {
 }
 
 .brand-name-display {
-    font-size: 18px; /* [إصلاح حاسم]: تصغير نسبي لمنع التداخل مع عدسة البحث على شاشات الموبايل الضيقة */
+    font-size: 18px; /* [إصلاح حاسم]: تصغير نسbyاً لمنع التداخل مع عدسة البحث على شاشات الموبايل الضيقة */
     font-weight: 700;
     color: var(--bose-black);
     white-space: nowrap;
@@ -681,7 +681,7 @@ img {
 }
 
 .waterfall-col {
-    /* [حل حاسم ومستقر لحجم الصور وفراغ الجوانب]: قفل توزيع الأعمدة بنسبة مرنة صريحة تمنع انضغاط المنتج */
+    /* قفل توزيع الأعمدة بنسبة مرنة صريحة تمنع انضغاط المنتج وتدعم ثبات العرض */
     flex: 0 0 calc(50% - 8px) !important;
     width: calc(50% - 8px) !important;
     max-width: calc(50% - 8px) !important;
@@ -691,19 +691,19 @@ img {
 }
 
 .waterfall-up {
-    /* [تعديل السرعة المطلوبة بالملي]: تقليل سرعة حركة الصعود بنسبة 10% صريحة (إلى 57.2s) لراحة العين ونعومتها */
+    /* تقليل سرعة حركة الصعود بنسبة 10% صريحة (إلى 57.2s) لراحة العين ونعومتها */
     animation: boseWaterfallUp 57.2s linear infinite !important;
     will-change: transform;
 }
 
 .waterfall-down {
-    /* [تعديل السرعة المطلوبة بالملي]: تقليل سرعة حركة الهبوط بنسبة 10% صريحة (إلى 57.2s) لضمان الفخامة */
+    /* تقليل سرعة حركة الهبوط بنسبة 10% صريحة (إلى 57.2s) لضمان الفخامة والسلاسة */
     animation: boseWaterfallDown 57.2s linear infinite !important;
     will-change: transform;
 }
 
 .waterfall-col img {
-    /* [حل جذري]: الصورة تأخذ العرض الكامل 100% من عمودها العريض لتظهر ممتلئة، مع حماية طولها الطبيعي من البتر */
+    /* الصورة تأخذ العرض الكامل 100% من عمودها العريض لتظهر ممتلئة تماماً */
     width: 100% !important;
     height: auto !important;
     min-height: 240px;
@@ -725,81 +725,40 @@ img {
 }
 
 /* ==========================================================================
-   9. 👑 [الحل الهندسي الشامل والنهائي لتطابق الـ Loop المستمر 100%]: قسم "عقد من الإتقان" 
+   9. 🎥 [الهندسة البرمجية للكتل السينمائية الجديدة - حظر الفراغ والوميض نهائياً للأقسام]
    ========================================================================== */
-.bose-perfection-section {
+.bose-video-showcase-section {
     width: 100% !important;
-    padding: 50px 0 !important;
+    padding: 50px 20px !important;
     background-color: var(--bose-white) !important;
-    overflow: hidden !important;
-}
-
-.bose-perfection-carousel-wrapper {
-    width: 100vw !important;
-    overflow: hidden !important; 
     display: flex !important;
-    position: relative !important;
-    padding: 10px 0 !important;
-    margin: 24px 0 0 0 !important;
+    flex-direction: column !important;
+    align-items: center !important;
 }
 
-.excellence-track-loop {
-    display: flex !important; 
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    gap: 20px !important; 
-    padding: 0 10px !important;
-    margin: 0 !important;
-    width: max-content !important;
-    will-change: transform !important;
-    white-space: nowrap !important;
-    /* [التطابق الحركي المطلق]: سرعة الدوران متزامنة بالملي مع التكرار الرباعي المحقن بالـ JS لمنع الفراغات الميتة */
-    animation: bosePerfectionLoop 30s linear infinite !important; 
-}
-
-.excellence-slide-card {
-    /* [حظر الانكماش]: تأمين بقاء الكروت ظاهرة ومفتوحة العرض بالكامل دون انضغاط المتصفح لها */
-    width: 280px !important;
-    height: 340px !important; 
-    flex-shrink: 0 !important; /* يمنع الكارت من الانهيار البرمجي داخل الحاوية */
-    display: block !important;
+.bose-video-player-frame {
+    width: 100% !important;
+    max-width: 800px !important;
+    height: 340px !important; /* مقاس مثالي ومريح ليد المتصفح على الموبايل */
     border-radius: 28px !important;
     overflow: hidden !important;
-    border: var(--bose-border-pink) !important;
-    box-shadow: var(--bose-shadow-glow) !important;
+    border: var(--bose-border-thick) !important;
+    box-shadow: var(--bose-shadow-hover) !important;
+    background-color: var(--bose-white) !important;
 }
 
-.excellence-slide-card img {
+.bose-video-player-frame video {
     width: 100% !important;
-    height: 100% !important; 
+    height: 100% !important;
     object-fit: cover !important;
     display: block !important;
-    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
-}
-
-.excellence-slide-card:hover img {
-    transform: scale(1.06) !important;
 }
 
 @media (min-width: 768px) {
-    .excellence-slide-card { 
-        width: 340px !important; 
-        height: 400px !important;
-    }
+    .bose-video-player-frame { height: 420px !important; }
 }
-
 @media (min-width: 1024px) {
-    .excellence-slide-card { 
-        width: 420px !important; 
-        height: 460px !important;
-    }
-}
-
-/* [المعادلة القياسية الفاخرة المانعة لثغرة الـ 20 ثانية فارغة]:
-   يتم التراجع الحركي بمقدار الربع الصارم (-25%) ليتطابق مع وفرة الحقن المضاعف 4 مرات بالـ JS لتأمين تدفق المحتوى طوال الوقت */
-@keyframes bosePerfectionLoop {
-    0% { transform: translate3d(0, 0, 0); } 
-    100% { transform: translate3d(-25%, 0, 0); } /* تعديل النسبة لقفل الفراغ ومنع الاختفاء الفجائي للأبد */
+    .bose-video-player-frame { height: 480px !important; }
 }
 
 /* ==========================================================================
@@ -861,7 +820,7 @@ img {
 
 /* التصفح الأفقي المريح للموبايل للأكثر مبيعاً ووصل حديثاً لرفع التفاعل */
 @media (max-width: 767px) {
-    /* [إصلاح حاسم]: كروت قسم منتجاتنا على الموبايل تعرض كارتين متوازيين جنباً إلى جنب بالملي دون أي تشوه أو قص */
+    /* كروت قسم منتجاتنا على الموبايل تعرض كارتين متوازيين جنباً إلى جنب بالملي دون أي تشوه أو قص */
     #our-products-grid.products-grid {
         display: grid !important;
         grid-template-columns: repeat(2, 1fr) !important; 
@@ -959,7 +918,7 @@ img {
     min-height: 45px;
 }
 
-/* [إصلاح حاسم]: تصميم جمالي ملوكي للعدادات والأسعار لمنع التداخل والوميض الأسود */
+/* تصميم جمالي ملوكي للعدادات والأسعار لمنع التداخل والوميض الأسود */
 .product-card-qty-wrapper {
     display: flex;
     align-items: center;
@@ -971,7 +930,7 @@ img {
     border: var(--bose-border-pink);
     border-radius: 30px;
     padding: 4px 8px;
-    background-color: rgba(255, 145, 164, 0.03); /* بمبي ناعم وشفاف لضمان الهوية الراقية */
+    background-color: rgba(255, 145, 164, 0.03); 
 }
 
 .btn-qty-plus, .btn-qty-minus {
@@ -1004,7 +963,7 @@ img {
     background: transparent;
 }
 
-/* [إصلاح حاسم]: إطار بمبي ناعم حول السعر ليكون مميزاً واحترافياً بنسبة 100% */
+/* إطار بمبي ناعم حول السعر ليكون مميزاً واحترافياً بنسبة 100% */
 .product-card-price {
     color: var(--bose-pink);
     font-weight: 700;
@@ -1040,7 +999,6 @@ img {
     color: var(--bose-white);
 }
 
-/* [إصلاح حاسم]: حظر ظهور أي خلفية سوداء أو رمادية عند تفعيل وإضافة التورتة */
 .btn-add-to-cart:disabled {
     background-color: var(--bose-pink) !important;
     color: var(--bose-white) !important;
@@ -1340,64 +1298,6 @@ img {
 }
 
 /* ==========================================================================
-   14. التوجيه الملوكي لصفحة المنيو الشامل (menu.html)
-   ========================================================================== */
-.menu-categories-grid-framework {
-    display: grid !important;
-    grid-template-columns: 1fr !important;
-    gap: 30px !important;
-    width: 100%;
-    padding: 25px 0;
-}
-
-.menu-category-card {
-    width: 100%;
-    background-color: var(--bose-white);
-    border: var(--bose-border-pink);
-    border-radius: 24px;
-    padding: 18px;
-    box-shadow: var(--bose-shadow-glow);
-    height: 360px !important;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    transition: var(--bose-transition-smooth);
-}
-
-.menu-category-card:hover {
-    transform: translateY(-8px);
-    border-color: var(--bose-pink);
-    box-shadow: var(--bose-shadow-hover);
-}
-
-.menu-category-card img {
-    width: 100%;
-    height: 280px !important;
-    object-fit: cover;
-    border-radius: 20px;
-}
-
-.menu-category-card-title {
-    margin-top: auto;
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--bose-black);
-}
-
-@media (min-width: 768px) {
-    .menu-categories-grid-framework { grid-template-columns: repeat(2, 1fr) !important; } 
-    .menu-category-card { height: 420px !important; }
-    .menu-category-card img { height: 330px !important; }
-}
-
-@media (min-width: 1024px) {
-    .menu-categories-grid-framework { grid-template-columns: repeat(3, 1fr) !important; } 
-    .menu-category-card { height: 520px !important; }
-    .menu-category-card img { height: 420px !important; }
-}
-
-/* ==========================================================================
    15. الفوتر القياسي الموحد الثابت بلونه الفاتح الخالص (.bose-footer)
    ========================================================================== */
 .bose-footer {
@@ -1534,7 +1434,7 @@ img {
     padding: 0 !important;
     margin: 0 !important;
     display: flex !important;
-    flex-direction: column !important;
+    flex-direction: column;
 }
 
 .footer-links-ul li a {
