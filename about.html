@@ -2,215 +2,292 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>مَنْ نحن - حلويات بوسي</title>
-    <meta name="description" content="تعرف على قصة نجاح حلويات بوسي ورحلتها الأصيلة في صناعة الحلويات الفاخرة والمبتكرة وتصميم اللحظات السعيدة لعملائنا.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>من نحن | حلويات بوسي</title>
     
-    <!-- الملفات الأسلوبية الموحدة للعلامة التجارية -->
+    <!-- Meta tags for SEO & Brand Quality -->
+    <meta name="description" content="تعرف على قصة شغف حلويات بوسي، رحلة بدأت من قلب أم بحثاً عن الأمان والجودة لأطفالها، لتتحول إلى دراسة أكاديمية وعقد من التميز والاحترافية الفاخرة.">
+    <meta property="og:title" content="من نحن | حلويات بوسي">
+    <meta property="og:description" content="قصة بدأت بالحب والأمان، وتطورت بالدراسة والخبرة لتقديم أرقى وأفخم الحلويات لعائلتك.">
+    <meta property="og:type" content="website">
+    
+    <!-- CSS Dependencies -->
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/main.css">
     
-    <!-- استدعاء المحرك المركزي الموحد كحارس أمن وبيانات في الهيد -->
-    <script src="js/core-engine.js"></script>
-    
+    <!-- Styling for About Page Elements (Embedded to ensure zero external file dependency conflicts) -->
     <style>
-        /* كود أسلوبي معزول وخاص بهندسة وتنسيق صفحة من نحن لضمان التنفس البصري */
-        .about-hero-section {
+        /* About Page Unique Decorative Classes */
+        .about-hero {
+            position: relative;
             padding: 80px 20px;
             text-align: center;
-            background: linear-gradient(180deg, rgba(255, 145, 164, 0.05) 0%, var(--bose-white) 100%);
+            background: linear-gradient(rgba(255, 145, 164, 0.04), rgba(255, 145, 164, 0.01));
+            margin-bottom: 40px;
         }
-        .about-hero-title {
-            font-size: clamp(28px, 5vw, 42px);
-            font-weight: 700;
-            color: var(--bose-black);
+        
+        .about-hero-badge {
+            display: inline-block;
+            background-color: rgba(255, 145, 164, 0.1);
+            color: var(--bose-pink);
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
             margin-bottom: 20px;
+            border: 1px solid rgba(255, 145, 164, 0.2);
         }
-        .about-hero-title span {
+        
+        .about-hero h1 {
+            font-size: 36px;
+            margin-bottom: 15px;
+            color: var(--bose-black);
+            line-height: 1.3;
+        }
+        
+        .about-hero h1 span {
             color: var(--bose-pink);
         }
-        .about-hero-desc {
+        
+        .about-hero p {
             font-size: 18px;
-            color: var(--bose-black);
-            max-width: 800px;
+            max-width: 700px;
             margin: 0 auto;
+            color: #444444;
             line-height: 1.8;
-            font-weight: 400;
         }
-        .story-block {
-            padding: 60px 20px;
-            max-width: 1200px;
+
+        .story-container {
+            max-width: 960px;
             margin: 0 auto;
+            padding: 0 20px 80px 20px;
         }
-        .story-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            align-items: center;
-        }
-        @media (max-width: 768px) {
-            .story-grid {
-                grid-template-columns: 1fr;
-            }
-            .about-hero-section {
-                padding: 40px 15px;
-            }
-        }
-        .story-img-wrapper {
-            border: var(--bose-border-thick);
-            border-radius: 20px;
-            overflow: hidden;
+
+        .story-block {
+            background-color: var(--bose-white);
+            border: var(--bose-border-pink);
+            border-radius: 24px;
+            padding: 40px;
+            margin-bottom: 40px;
             box-shadow: var(--bose-shadow-glow);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        .story-img-wrapper:hover {
-            transform: translateY(-5px);
+
+        .story-block:hover {
+            transform: translateY(-4px);
             box-shadow: var(--bose-shadow-hover);
         }
-        .story-img-wrapper img {
-            width: 100%;
-            height: auto;
-            display: block;
-            object-fit: cover;
+
+        .story-block-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            border-bottom: 1px dashed rgba(255, 145, 164, 0.2);
+            padding-bottom: 15px;
         }
-        .story-content h2 {
-            font-size: clamp(22px, 4vw, 32px);
-            font-weight: 700;
-            margin-bottom: 20px;
+
+        .story-block-header i {
+            color: var(--bose-pink);
+            font-size: 24px;
+        }
+
+        .story-block-header h2 {
+            font-size: 24px;
+            margin: 0;
             color: var(--bose-black);
-            position: relative;
-            padding-bottom: 10px;
         }
-        .story-content h2::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            width: 60px;
-            height: 3px;
-            background-color: var(--bose-pink);
-            border-radius: 2px;
-        }
-        .story-content p {
+
+        .story-text-content {
             font-size: 16px;
-            line-height: 1.8;
-            color: var(--bose-black);
-            margin-bottom: 20px;
-            font-weight: 400;
+            line-height: 1.9;
+            color: #333333;
+            text-align: justify;
         }
-        .values-section {
-            padding: 60px 20px;
+
+        .story-quote {
+            position: relative;
+            background-color: rgba(255, 145, 164, 0.03);
+            border-right: 4px solid var(--bose-pink);
+            padding: 20px 25px;
+            margin: 25px 0;
+            border-radius: 4px 12px 12px 4px;
+            font-style: italic;
+        }
+
+        .story-quote p {
+            margin: 0;
+            font-size: 16px;
+            color: var(--bose-black);
+            font-weight: 600;
+        }
+
+        /* Pillars Section */
+        .pillars-section {
             background-color: rgba(255, 145, 164, 0.02);
             border-top: var(--bose-border-pink);
             border-bottom: var(--bose-border-pink);
+            padding: 60px 20px;
+            margin-bottom: 60px;
         }
-        .values-title {
-            text-align: center;
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 40px;
-            color: var(--bose-black);
-        }
-        .values-grid {
+
+        .pillars-grid {
+            max-width: 960px;
+            margin: 0 auto;
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 30px;
-            max-width: 1200px;
-            margin: 0 auto;
         }
-        .value-card {
-            background-color: var(--bose-white);
-            border: var(--bose-border-pink);
+
+        .pillar-card {
+            background: var(--bose-white);
             border-radius: 20px;
             padding: 30px;
             text-align: center;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .value-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--bose-pink);
+            border: var(--bose-border-pink);
             box-shadow: var(--bose-shadow-glow);
         }
-        .value-icon {
-            font-size: 36px;
+
+        .pillar-icon {
+            width: 60px;
+            height: 60px;
+            line-height: 60px;
+            border-radius: 50%;
+            background-color: rgba(255, 145, 164, 0.1);
             color: var(--bose-pink);
-            margin-bottom: 20px;
+            font-size: 24px;
+            margin: 0 auto 20px auto;
         }
-        .value-card h3 {
+
+        .pillar-card h3 {
             font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             color: var(--bose-black);
         }
-        .value-card p {
+
+        .pillar-card p {
             font-size: 15px;
             line-height: 1.7;
-            color: var(--bose-black);
+            color: #555555;
             margin: 0;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .about-hero {
+                padding: 60px 15px 30px 15px;
+            }
+            .about-hero h1 {
+                font-size: 28px;
+            }
+            .about-hero p {
+                font-size: 16px;
+            }
+            .story-block {
+                padding: 25px 20px;
+            }
+            .story-block-header h2 {
+                font-size: 20px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- الواسم النائب لحقن الهيدر ديناميكياً بواسطة المحرك المركزي الموحد -->
+    <!-- Universal Header Injection Target -->
     <div id="bose-header-injector"></div>
 
-    <main>
-        <!-- القسم الترحيبي والتعريفي الرئيسي للهوية -->
-        <section class="about-hero-section">
-            <h1 class="about-hero-title">عقد من <span>الإتقان والشغف</span></h1>
-            <p class="about-hero-desc">
-                في حلويات بوسي، لا نصنع فقط الحلويات؛ نحن نبتكر لحظات من السعادة الحقيقية المغلفة بالإتقان والخبرة التي تمتد لأكثر من عشر سنوات من الإبداع والتميز الفاخر.
-            </p>
+    <!-- About Main Content -->
+    <main class="about-page-main">
+        
+        <!-- Hero Section -->
+        <section class="about-hero">
+            <div class="about-hero-badge">عقد من الحب والتميز</div>
+            <h1 id="about-main-title">حكايتنا.. من قلب أم لـ <span>شركاء النجاح</span></h1>
+            <p>قصة لم تُكتب لتكون مجرد تجارة، بل رحلة ممتلئة بالصدق، الأمان، والبحث المستمر عن الجودة الفاخرة التي تستحقها عائلتكم.</p>
         </section>
 
-        <!-- قصة نجاح حلويات بوسي الأصيلة وثقة عملائها -->
-        <section class="story-block">
-            <div class="story-grid">
-                <div class="story-content">
-                    <h2>رحلتنا في صناعة الفخامة</h2>
-                    <p>
-                        بدأت رحلتنا بشغف بسيط ورؤية واضحة: تقديم حلويات ذات جودة استثنائية تناسب ذوق عملائنا الرفيع. نحن نؤمن بأن كل تورتة أو قطعة جاتوه تخرج من مطبخنا هي بمثابة لوحة فنية فريدة تعبر عن شخصية صاحب المناسبة وتفاصيل يومه السعيد.
-                    </p>
-                    <p>
-                        نحن لا نبيع بالقوة ولا نسعى للمبالغة الزائفة؛ بل نتحدث بلغة الجودة والقيمة الحقيقية التي يشعر بها العميل في كل تفصيلة، من اختيار المكونات الطازجة بعناية فائقة إلى اللمسات البصرية الذهبية الناعمة التي تحاكي أرقى المعايير العالمية.
-                    </p>
-                    <p>
-                        التزامنا الصارم بالتطوير المستمر وتقديم حلول مبتكرة مثل محاكي التورت ومحاكي الورد التفاعلي جعلنا الاسم الأول الموثوق به في قلوب وعقول الآلاف من عملائنا السعداء.
-                    </p>
+        <!-- Main Narrative Container -->
+        <section class="story-container">
+            
+            <!-- Block 1: The Spark of Love & Fear -->
+            <div class="story-block">
+                <div class="story-block-header">
+                    <i class="fa-solid fa-heart"></i>
+                    <h2>بداية صعبة.. ولحظة غيرت كل شيء</h2>
                 </div>
-                <div class="story-img-wrapper">
-                    <!-- الصورة التأسيسية لرحلة العلامة التجارية -->
-                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="قصة نجاح حلويات بوسي" loading="lazy">
+                <div class="story-text-content">
+                    دايماً بيبقى فيه لحظة في الحياة بتغير كل حاجة.. ولحظتنا إحنا بدأت من أصعب وقت ممكن يمر بيه أي بيت. في مكان بعيد وهادي، مكان كان يفتقر لكل الجودة والجمال والحلويات اللي بنتمناها لأولادنا، حصلت لبنتي الصغيرة وهي عندها شهرين بس حادثة حريق صعبة جداً.. لحظة غيرت حياتنا وكل تفاصيلنا، وسابت أثر كبير على صحتها وبشرتها الضعيفة.
+                    <br><br>
+                    بنتي كانت ضعيفة جداً تجاه الحلويات وبتحبها بجنون، وبصفتي أم.. كنت بلف الدنيا وأدور على أي حاجة تفرح قلبها الصغير وتكون آمنة عليها بنسبة 100% وفي نفس الوقت طعمها يسعدها. بس للأسف، مالقيتش اللي بدور عليه.. المكان حوالينا كان خالي تماماً من الجودة والأمان اللي بنتي محتاجاهم.
                 </div>
+            </div>
+
+            <!-- Block 2: The Pivot to Professionalism -->
+            <div class="story-block">
+                <div class="story-block-header">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    <h2>نقطة التحول.. الشغف والدراسة (2010 - 2014)</h2>
+                </div>
+                <div class="story-text-content">
+                    من وسط حيرتي كأم، اتولدت فكرة غيرت كل حاجة: 
+                    <div class="story-quote">
+                        <p>"طب وليه ما أتعلمش بنفسي وأعمل لبنتي كل اللي بتتمناه؟"</p>
+                    </div>
+                    بدأت أعمل بإيدي في البيت، الفرحة اللي شفتها في عين بنتي نقلتها لأصحابها وجيراننا وقرايبنا.. الكل انبهر وحس بالحب والجودة اللي في كل قطمة. ومن هنا، حسيت بمسؤولية أكبر.. ليه ما أطورش الشغف ده وأدرس الموضوع بشكل أكاديمي واحترافي؟ عشان أقدر أساعد كل أم تانية بتمر بنفس حيرتي، ونفسها تفرح أولادها بمنتج فخم وآمن يطمن قلبها.
+                    <br><br>
+                    وبالفعل، من سنة 2010 لحد 2014، ركزت كل مجهودي على الدراسة والتعلم.. أخدت كورسات متخصصة في تصنيع الحلويات، اتعلمت أسس التسعير العادل والتغليف الفاخر اللي بيحافظ على المنتج، ودرست إدارة الأعمال والتسويق.. اتعلمت وطورت مهاراتي في كل تفصيلة عشان لما أقدم لكم حاجة، تكون على أعلى مستوى من الاحترافية.
+                </div>
+            </div>
+
+            <!-- Block 3: Continuous Trust -->
+            <div class="story-block">
+                <div class="story-block-header">
+                    <i class="fa-solid fa-award"></i>
+                    <h2>الرحلة مستمرة.. وعمرنا ما خذلناكم (منذ 2014 وحتى اليوم)</h2>
+                </div>
+                <div class="story-text-content">
+                    في سنة 2014، انطلقنا رسمياً باسم <strong>حلويات بوسي</strong>. والنهاردة، وإحنا بنبص لرحلتنا الممتدة دي، بنكون فخورين بكل لحظة تعب وبكل خطوة مشيناها معاكم.
+                    <br><br>
+                    بقالنا سنين طويلة بنقدم أعلى كواليتي وأرقى جودة.. قدرنا نفرح قلوب أمهات كتير، ونبقى "شركاء السعادة" في آلاف البيوت والمناسبات الراقية. والحمد لله، وسام الشرف اللي بنتشرف بيه دايماً هو إننا طوال مسيرتنا دي كلها ما جالناش فيدباك سلبي واحد!
+                    <br><br>
+                    ولحد الوقت الحالي، وطول ما إحنا مكملين، بنطور في نفسنا وفي منتجاتنا بكل حب، عشان نفضل دايماً عند حسن ظنكم، ونقدم لكم الأمان والطعم الأصيل والفخامة اللي تليق بيكم وبعائلتكم.
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Brand Core Values (Our Commitment to Luxury & Quality) -->
+        <section class="pillars-section">
+            <div class="pillars-grid">
+                
+                <div class="pillar-card">
+                    <div class="pillar-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                    <h3>أمان بنسبة 100%</h3>
+                    <p>نهتم بأدق التفاصيل الصحية؛ مكوناتنا طبيعية، طازجة، وخالية تماماً من الإضافات التجارية الضارة.</p>
+                </div>
+
+                <div class="pillar-card">
+                    <div class="pillar-icon"><i class="fa-solid fa-gem"></i></div>
+                    <h3>جودة فاخرة</h3>
+                    <p>دراستنا الأكاديمية وخبرتنا الطويلة تنعكس على مظهر وطعم كل قطعة نصنعها لكم بحب.</p>
+                </div>
+
+                <div class="pillar-card">
+                    <div class="pillar-icon"><i class="fa-solid fa-handshake"></i></div>
+                    <h3>شراكة صادقة</h3>
+                    <p>لا نبحث عن البيع السريع، بل نسعى لنكون الشريك الصادق والداعم لكل مناسبة جميلة في بيوتكم.</p>
+                </div>
+
             </div>
         </section>
 
-        <!-- مصفوفة المبادئ والقيم الحاكمة للعلامة التجارية الفاخرة -->
-        <section class="values-section">
-            <h2 class="values-title">ركائز التميز لدينا</h2>
-            <div class="values-grid">
-                <div class="value-card">
-                    <div class="value-icon"><i class="fa-solid fa-crown"></i></div>
-                    <h3>الجودة الفاخرة</h3>
-                    <p>نعتمد على أجود المكونات الطبيعية الطازجة بنسبة 100% لنضمن تقديم طعم أصيل يدوم في الذاكرة طويلاً.</p>
-                </div>
-                <div class="value-card">
-                    <div class="value-icon"><i class="fa-solid fa-heart"></i></div>
-                    <h3>الشغف والتفرد</h3>
-                    <p>نصمم كل طلب بحب واهتمام بالغ، لتعبر كل تفصيلة صغيرة في منتجاتنا عن صدق مشاعركم وجمال تطلعاتكم.</p>
-                </div>
-                <div class="value-card">
-                    <div class="value-icon"><i class="fa-solid fa-handshake"></i></div>
-                    <h3>الصدق والوضوح</h3>
-                    <p>نعرض الحقيقة كاملة لعملائنا، صورنا حقيقية، وصفنا دقيق وواقعي، ونبني علاقتنا معكم على الاحترام المتبادل.</p>
-                </div>
-            </div>
-        </section>
     </main>
 
-    <!-- الواسم النائب لحقن الفوتر ديناميكياً بواسطة المحرك المركزي الموحد -->
+    <!-- Universal Footer Injection Target -->
     <div id="bose-footer-injector"></div>
 
+    <!-- Core Engine Scripts (Handled by the Central System, About Page remains clean and compliant) -->
+    <script src="js/core-engine.js"></script>
 </body>
 </html>
