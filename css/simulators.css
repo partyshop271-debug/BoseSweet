@@ -1,37 +1,37 @@
 /**
- * 👑 ملف التصميم الموحد والفاخر للمحاكيات التفاعلية - حلويات بوسي V12.0 👑
+ * 👑 ملف التصميم الموحد والفاخر للمحاكيات التفاعلية - حلويات بوسي V12.1 👑
  * النسخة الهندسية القياسية الشاملة والمطورة بنسبة 100% - خالية تماماً من ثغرات التكدس البصري
- * فلسفة الأداء: الألوان حاكمة وصريحة، الأسود للنصوص فقط ومحظور استخدامه في أي ظلال أو خلفيات نهائياً
+ * فلسفة الأداء: الألوان حاكمة وصريحة، الأسود للنصوص فقط ومحظور استخدامه في أي ظلال أو خلفيات نهائياً[span_39](start_span)[span_39](end_span)
+ * التزام برمي صارم: مستقل ذاتياً ولا يتدخل في مهام أي ملف تنسيقي أو محرك برمي خارجي[span_40](start_span)[span_40](end_span).
  */
 
 /* ==========================================================================\
-   1. محددات بيئة المحاكيات والألوان الحاكمة (Strict Production CSS Tokens)
+   1. محددات بيئة المحاكيات والألوان الحاكمة (Strict Production CSS Tokens)[span_41](start_span)[span_41](end_span)
    ========================================================================== */
 :root {
-    --bose-pink: #FF91A4;         /* نبض الحياة: للحدود، الأسعار الديناميكية، والتأثيرات التفاعلية Hover */
-    --bose-white: #FFFFFF;        /* المسيطر تماماً: للخلفيات لمنع التكديس وتحقيق التنفس البصري للعميل */
-    --bose-black: #111111;        /* معزول تماماً ومقدس: للنصوص والعناوين لضمان وضوح كامل للعين */
-    --bose-gold: #D4AF37;         /* الفخامة الرمزية الناعمة: نجوم التقييمات وتفاصيل التخصيص الفاخرة */
+    --bose-pink: #FF91A4;         /* نبض الحياة: للحدود، الأسعار الديناميكية، والتأثيرات التفاعلية Hover[span_42](start_span)[span_42](end_span) */
+    --bose-white: #FFFFFF;        /* المسيطر تماماً: للخلفيات لمنع التكديس وتحقيق التنفس البصري للعميل[span_43](start_span)[span_43](end_span) */
+    --bose-black: #111111;        /* معزول تماماً ومقدس: للنصوص والعناوين لضمان وضوح كامل للعين[span_44](start_span)[span_44](end_span) */
+    --bose-gold: #D4AF37;         /* الفخامة الرمزية الناعمة: نجوم التقييمات وتفاصيل التخصيص الفاخرة[span_45](start_span)[span_45](end_span) */
     --bose-pink-light: rgba(255, 145, 164, 0.04);
-    --bose-pink-shadow: 0 12px 40px rgba(255, 145, 164, 0.12); /* ظلال ناعمة بمبية تعزز الفخامة */
+    --bose-pink-shadow: 0 12px 40px rgba(255, 145, 164, 0.12); /* ظلال ناعمة بمبية تعزز الفخامة[span_46](start_span)[span_46](end_span) */
     --bose-border-pink: 1.5px solid rgba(255, 145, 164, 0.3);
     --bose-gray-border: #EAEAEA;
     --bose-gray-light: #F9F9F9;
-    --bose-transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    --bose-transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* ==========================================================================\
-   2. التنسيق الهيكلي لصفحات المحاكيات وتأمين مساحات التنفس البصري
+   2. التنسيق الهيكلي لصفحات المحاكيات وتأمين مساحات التنفس البصري[span_47](start_span)[span_47](end_span)
    ========================================================================== */
 .simulator-container,
 .bose-custom-builder-block {
     max-width: 1200px;
     margin: 30px auto;
     padding: 0 20px;
-    font-family: 'Cairo', sans-serif !important;
-    color: var(--bose-black) !important;
     direction: rtl !important;
     box-sizing: border-box;
+    contain: layout style; /* عزل هيكلي لمنع التأثير على الصفحات المجاورة والمحافظة على الذاكرة */
 }
 
 .simulator-header {
@@ -41,7 +41,7 @@
 
 .simulator-header h1 {
     font-size: 2.2rem !important;
-    font-weight: 700 !important; /* قفل وزن الخط عند 700 كحد أقصى لأضخم العناوين */
+    font-weight: 700 !important; /* قفل وزن الخط عند 700 كحد أقصى لأضخم العناوين[span_48](start_span)[span_48](end_span) */
     color: var(--bose-black) !important;
     margin: 0 0 12px 0;
 }
@@ -56,7 +56,7 @@
     opacity: 0.85;
 }
 
-/* البانر التأسيسي الفخم عالي الإضاءة والنقاء */
+/* البانر التأسيسي الفخم عالي الإضاءة والنقاء[span_49](start_span)[span_49](end_span) */
 .simulator-hero-banner-wrapper {
     width: 100%;
     text-align: center;
@@ -66,14 +66,16 @@
 
 .hero-banner-frame {
     width: 100%;
+    height: auto;
     max-height: 480px;
+    aspect-ratio: 16 / 9; /* منع الـ CLS واهتزاز الصفحة أثناء تحميل الصورة */
     object-fit: cover;
     border-radius: 24px;
     box-shadow: var(--bose-pink-shadow);
     border: var(--bose-border-pink);
 }
 
-/* تقسيم مساحة العمل لجزأين متوازنين (أدوات التحكم واللوحة الجانبية) */
+/* تقسيم مساحة العمل لجزأين متوازنين (أدوات التحكم واللوحة الجانبية)[span_50](start_span)[span_50](end_span) */
 .simulator-workspace {
     display: grid;
     grid-template-columns: 1.1fr 0.9fr;
@@ -82,7 +84,7 @@
 }
 
 /* ==========================================================================\
-   3. خطوات التخصيص التفاعلية ومؤشر التقدم المطور (Premium Stepper)
+   3. خطوات التخصيص التفاعلية ومؤشر التقدم المطور (Premium Stepper)[span_51](start_span)[span_51](end_span)
    ========================================================================== */
 .simulator-steps-indicator {
     display: flex;
@@ -137,18 +139,19 @@
     box-shadow: none !important;
 }
 
-/* حاوية الخطوة الفردية لمنع الـ CLS واهتزاز الواجهة */
+/* حاوية الخطوة الفردية لمنع الـ CLS واهتزاز الواجهة[span_52](start_span)[span_52](end_span) */
 .bose-step-card-panel {
     display: none;
+    will-change: transform, opacity; /* تحفيز كارت الشاشة لرفع كفاءة المعالجة */
 }
 
 .bose-step-card-panel.active {
     display: block !important;
-    animation: boseStepFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: boseStepFade 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes boseStepFade {
-    from { opacity: 0; transform: translateY(12px); }
+    from { opacity: 0; transform: translateY(8px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
@@ -167,7 +170,7 @@
 }
 
 /* ==========================================================================\
-   4. قالب اختيار نوع الورد المستطيل الاحترافي (Iconic Selection Grid)
+   4. قالب اختيار نوع الورد المستطيل الاحترافي (Iconic Selection Grid)[span_53](start_span)[span_53](end_span)
    ========================================================================== */
 .bose-premium-template-box {
     background: var(--bose-white);
@@ -218,7 +221,7 @@
 
 .bose-iconic-btn-node .btn-icon {
     font-size: 22px;
-    transition: transform 0.3s ease;
+    transition: transform 0.25s ease;
 }
 
 .bose-iconic-btn-node .btn-label {
@@ -244,7 +247,7 @@
 }
 
 /* ==========================================================================\
-   5. 🎯 هندسة العدادات الذكية وإطار السعر الموضع التوضيحي المطور
+   5. 🎯 هندسة العدادات الذكية وإطار السعر الموضع التوضيحي المطور[span_54](start_span)[span_54](end_span)
    ========================================================================== */
 .bose-counter-alignment-zone {
     display: flex;
@@ -282,7 +285,6 @@
     user-select: none;
 }
 
-/* زر الناقص (-) على اليسار بخلفية بيضاء وبوردر بمبي */
 .bose-circular-qty-btn.btn-minus-style {
     background: var(--bose-white) !important;
     border: 1.5px solid var(--bose-pink) !important;
@@ -293,7 +295,6 @@
     background: var(--bose-pink-light) !important;
 }
 
-/* زر الزائد (+) على اليمين باللون البمبي نبض الحياة */
 .bose-circular-qty-btn.btn-plus-style {
     background: var(--bose-pink) !important;
     border: 1.5px solid var(--bose-pink) !important;
@@ -317,7 +318,6 @@
     pointer-events: none;
 }
 
-/* إطار وموضع نص السعر الفرعي الذكي داخل الخطوة */
 .bose-embedded-price-box {
     margin-top: 15px;
     padding: 12px;
@@ -344,7 +344,7 @@
 }
 
 /* ==========================================================================\
-   6. التنسيقات الخاصة بحقول الرفع والمدخلات التفاعلية الشفافة
+   6. التنسيقات الخاصة بحقول الرفع والمدخلات التفاعلية الشفافة[span_55](start_span)[span_55](end_span)
    ========================================================================== */
 .bose-photo-upload-zone {
     border: 2px dashed var(--bose-pink);
@@ -383,7 +383,9 @@
 }
 
 .bose-uploaded-image-preview {
-    max-width: 140px;
+    width: 140px;
+    aspect-ratio: 1; /* الحفاظ على الأبعاد الثابتة لمنع قفزات عناصر الصفحة */
+    object-fit: cover;
     border-radius: 12px;
     border: var(--bose-border-pink);
     box-shadow: 0 4px 12px rgba(255, 145, 164, 0.1);
@@ -407,7 +409,7 @@
 .custom-text-wrapper {
     display: none;
     margin-top: 15px;
-    animation: boseStepFade 0.3s ease forwards;
+    animation: boseStepFade 0.25s ease forwards;
 }
 
 .bose-premium-text-input {
@@ -453,7 +455,7 @@
 }
 
 /* ==========================================================================\
-   7. 👑 تطوير وتنسيق كارت الحساب اللحظي المطور والفاخر
+   7. 👑 تطوير وتنسيق كارت الحساب اللحظي المطور والفاخر[span_56](start_span)[span_56](end_span)
    ========================================================================== */
 .sticky-summary-widget {
     position: sticky;
@@ -504,7 +506,6 @@
     gap: 12px;
 }
 
-/* أسطر الإضافات المترفة بلون بمبي ناعم وواضح */
 .bose-invoice-addon-row {
     display: flex;
     justify-content: space-between;
@@ -545,7 +546,7 @@
 }
 
 /* ==========================================================================\
-   8. أزرار التحكم بالتنقل والإنهاء لرحلة العميل (Action Controls)
+   8. أزرار التحكم بالتنقل والإنهاء لرحلة العميل (Action Controls)[span_57](start_span)[span_57](end_span)
    ========================================================================== */
 .simulator-actions-bar {
     display: flex;
@@ -594,12 +595,14 @@
 }
 
 /* ==========================================================================\
-   9. معرض سابقة أعمالنا الفخم والنافذة المنبثقة النظيفة (Portfolio Section)
+   9. معرض سابقة أعمالنا الفخم والنافذة المنبثقة النظيفة (Portfolio Section)[span_58](start_span)[span_58](end_span)
    ========================================================================== */
 .portfolio-section {
     margin-top: 60px;
     width: 100%;
     box-sizing: border-box;
+    content-visibility: auto; /* تجميد معالجة القسم في الذاكرة لتخفيض استهلاك البطارية حتى الاقتراب منه */
+    contain-intrinsic-size: 500px;
 }
 
 .portfolio-section h2 {
@@ -623,6 +626,8 @@
     scroll-snap-type: x mandatory;
     padding-bottom: 15px;
     -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 145, 164, 0.2) transparent;
 }
 
 .horizontal-swipe-slider::-webkit-scrollbar {
@@ -658,12 +663,13 @@
     display: block;
 }
 
-/* واجهة الـ Popup المنبثقة النظيفة لسابقة الأعمال */
+/* واجهة الـ Popup المنبثقة النظيفة لسابقة الأعمال[span_59](start_span)[span_59](end_span) */
 .bose-popup-modal {
     display: none;
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(17, 17, 17, 0.5);
+    background: rgba(17, 17, 17, 0.4);
+    backdrop-filter: blur(4px); /* زيادة التركيز البصري ومنع التشتيت */
     z-index: 50000;
     align-items: center;
     justify-content: center;
@@ -697,6 +703,7 @@
 .modal-img-frame {
     width: 100%;
     max-height: 480px;
+    aspect-ratio: 16 / 9;
     object-fit: cover;
     border-radius: 16px;
     border: 1px solid rgba(255, 145, 164, 0.2);
@@ -704,7 +711,7 @@
 }
 
 /* ==========================================================================\
-   10. هندسة التجاوب المطلق وحماية حواف الهواتف والموبايل أولاً
+   10. هندسة التجاوب المطلق وحماية حواف الهواتف والموبايل أولاً[span_60](start_span)[span_60](end_span)
    ========================================================================== */
 @media (max-width: 991px) {
     .simulator-workspace {
