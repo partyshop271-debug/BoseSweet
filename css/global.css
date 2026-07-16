@@ -1,5 +1,5 @@
 /* ==========================================================================
-   👑 BoseSweets Strict Production Global Stylesheet (css/global.css) V15.0 👑
+   👑 BoseSweets Strict Production Global Stylesheet (css/global.css) V16.0 👑
    الملف الملوكي الشامل والنهائي المطوّر - مع تثبيت الهيدر بالملي أثناء السكرول
    تأمين التنفس البصري، حظر التكدس، ضبط سرعات الحركة، ومنع قص الكروت نهائياً
    ========================================================================== */
@@ -48,8 +48,8 @@ body {
     font-family: 'Cairo', sans-serif !important;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    /* تأمين مساحة تحت الهيدر الثابت لمنع حجب المحتوى الأولي */
-    padding-top: 76px !important; 
+    /* [حل المشكلة بالملي]: 44px شريط الإعلانات + 76px الهيدر = 120px لمنع حجب أو ضغط المحتوى */
+    padding-top: 120px !important; 
 }
 
 /* حظر سكرول الخلفية عند فتح القائمة الجانبية لمنع الارتجاج والتشوه اللوجستي */
