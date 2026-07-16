@@ -78,7 +78,7 @@ h1, h2, h3, h4, h5, h6, p, span, a, button, input, select, textarea {
 /* قفل أوزان الخطوط الهندسية للبراند لمنع التشويه البصري */
 h1, h2 {
     font-family: 'Cairo', sans-serif !important;
-    font-weight: 700 !important; /* السقف الأقصى لأضخم العناوين الرئيسية لضمان الفخامة */
+    font-weight: 700 !important; /* :خط Cairo بوزن لا يتعدى 700 كحد أقصى لأضخم العناوين الرئيسية لضمان الفخامة */
     color: var(--bose-black) !important;
     letter-spacing: -0.5px;
 }
@@ -209,7 +209,7 @@ img {
 }
 
 .brand-name-display {
-    font-size: 18px; /* [إصلاح حاسم]: تصغير نسbyاً لمنع التداخل مع عدسة البحث على شاشات الموبايل الضيقة */
+    font-size: 18px; /* [إصلاح حاسم]: تصغير نسبياً لمنع التداخل مع عدسة البحث على شاشات الموبايل الضيقة */
     font-weight: 700;
     color: var(--bose-black);
     white-space: nowrap;
@@ -726,7 +726,7 @@ img {
 
 /* ==========================================================================
    9. 🎥 [الهندسة البرمجية للكتل السينمائية الجديدة - حظر الفراغ والوميض نهائياً للأقسام]
-   تم التحديث الهندسي الشامل لدعم عناصر الـ iframe المتجاوبة بالملي ومنع قص المشغلات السحابية
+   تم التحديث الهندسي الشامل لدعم عناصر الـ iframe المتجاوبة بالملي وقص الهوامش الجانبية السوداء
    ========================================================================== */
 .bose-video-showcase-section {
     width: 100% !important;
@@ -739,30 +739,40 @@ img {
 
 .bose-video-player-frame {
     width: 100% !important;
-    max-width: 800px !important;
-    height: 340px !important; /* مقاس مثالي ومريح ليد المتصفح على الموبايل */
-    border-radius: 28px !important;
+    max-width: 420px !important; /* مقاس هندسي مقفل للفيديو الطولي الحقيقي تماشياً مع تجربة الهاتف */
+    height: 580px !important;    /* محاكاة تامة لأبعاد الريلز والشورتس لمنع التكدس البصري ومساحات السواد */
+    border-radius: 32px !important;
     overflow: hidden !important;
     border: var(--bose-border-thick) !important;
     box-shadow: var(--bose-shadow-hover) !important;
     background-color: var(--bose-white) !important;
-    position: relative !important; /* صمام أمان لتثبيت تموضع المشغلات */
+    position: relative !important;
 }
 
-/* دعم وتحسين أبعاد وقوة الـ iframe المتجاوبة المدمجة لمنع الخطوط البيضاء */
+/* صمام تحجيم وتمدد المشغل السحابي الداخلي بالملي لملء الكادر الخارجي */
 .bose-video-player-frame iframe {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
     width: 100% !important;
     height: 100% !important;
-    object-fit: cover !important;
-    display: block !important;
+    transform: translate(-50%, -50%) scale(1.35) !important; /* زوم تكبير ذكي 1.35x لإخفاء الحواف البرمجية تماماً */
+    transform-origin: center center !important;
     border: none !important;
+    object-fit: cover !important;
 }
 
 @media (min-width: 768px) {
-    .bose-video-player-frame { height: 420px !important; }
+    .bose-video-player-frame { 
+        max-width: 480px !important;
+        height: 640px !important; 
+    }
 }
 @media (min-width: 1024px) {
-    .bose-video-player-frame { height: 480px !important; }
+    .bose-video-player-frame { 
+        max-width: 520px !important;
+        height: 720px !important; 
+    }
 }
 
 /* ==========================================================================
@@ -1120,7 +1130,7 @@ img {
 }
 
 /* ==========================================================================
-   12. حوكمة وأبعاد كروت الفئات الـ 12 وثباتها (Categories Slider UI)
+   12. حוكمة وأبعاد كروت الفئات الـ 12 وثباتها (Categories Slider UI)
    ========================================================================== */
 .bose-categories-slider-section {
     width: 100%;
