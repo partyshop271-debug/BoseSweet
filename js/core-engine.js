@@ -100,8 +100,14 @@
         renderHomepageProductGrids();
         setupOurProductsShowMore();
         injectSimulatorsPreviewData();
-        setupCategoriesSliderTouch();
         setupPrideCountersAnimation();
+        
+        // تشغيل معالجات الحركة القياسية المتطورة للأقسام الثلاثة فور تحميل كروت المنيو الشامل
+        setTimeout(() => {
+            setupBoseUnifiedSliderEngine('categories-track', 'categories-dots-container', 'categories-slider-section');
+            setupBoseUnifiedSliderEngine('most-selling-grid', 'most-selling-dots-container', 'most-selling-section');
+            setupBoseUnifiedSliderEngine('new-arrivals-grid', 'new-arrivals-dots-container', 'new-arrivals-section');
+        }, 100);
         
         document.dispatchEvent(new CustomEvent('BoseDatabaseLoaded', { detail: window.BoseStoreData }));
     }
@@ -113,13 +119,11 @@
         const data = window.BoseStoreData;
         if (!data || !data.homepage) return;
 
-        // [تثبيت الوصف والـ Hook لعنوان البانر الرئيسي]
         const heroDesc = document.getElementById('hero-description');
         if (heroDesc && data.homepage.hero) {
             heroDesc.textContent = data.homepage.hero.description;
         }
 
-        // قسم تسوق حسب الفئة (حقن مؤشرات التصفح والأسهم وكافة الكروت الـ 12 بالترتيب الأصيل)
         const categoriesSection = document.getElementById('categories-slider-section') || document.getElementById('categories-section') || document.querySelector('[id*="categories"]');
         if (categoriesSection && data.homepage.categoriesSlider) {
             const titleEl = document.getElementById('categories-section-title') || categoriesSection.querySelector('.section-title') || categoriesSection.querySelector('h2');
@@ -136,12 +140,9 @@
                         <div class="category-card-name">${cat.title}</div>
                     </div>
                 `).join('');
-                
-                buildCategoriesDots(data.homepage.categoriesSlider.length);
             }
         }
 
-        // 3. قسم الأكثر مبيعاً وعناوين الأقسام
         const mostSellingSection = document.getElementById('most-selling-section');
         if (mostSellingSection) {
             const titleEl = document.getElementById('most-selling-main-heading') || mostSellingSection.querySelector('h2');
@@ -150,7 +151,6 @@
             if (descEl) descEl.textContent = "تشكيلة من قطع السعادة الفاخرة والأكثر طلباً وإعجاباً من عملائنا.";
         }
 
-        // 4. قسم وصل حديثاً
         const newArrivalsSection = document.getElementById('new-arrivals-section');
         if (newArrivalsSection) {
             const titleEl = document.getElementById('new-arrivals-main-heading') || newArrivalsSection.querySelector('h2');
@@ -159,7 +159,6 @@
             if (descEl) descEl.textContent = "اكتشف أحدث ابابتكاراتنا الحصرية وتوليفات النكهات الغنية المصنوعة بحب.";
         }
 
-        // 5. قسم منتجاتنا
         const ourProductsSection = document.getElementById('our-products-section');
         if (ourProductsSection) {
             const titleEl = document.getElementById('our-products-main-heading') || ourProductsSection.querySelector('h2');
@@ -170,193 +169,157 @@
     }
 
     /**
-     * بناء مؤشرات التنقل النقطية والأسهم لقسم تسوق حسب الفئة
+     * 👑 [محرك التعمير الموحد والذكي لكافة الحركات الأفقية - النسخة الفاخرة المعتمدة هندسياً V4] 👑
+     * يضمن تشغيل وصناعة الأسهم والدوتس والـ Touch الفعلي الملتزم لجميع الأقسام الثلاثة دفعة واحدة ومنع الاهتزاز كلياً
      */
-    function buildCategoriesDots(count) {
-        const categoriesSection = document.getElementById('categories-slider-section') || document.getElementById('categories-section') || document.querySelector('[id*="categories"]');
-        if (!categoriesSection) return;
+    function setupBoseUnifiedSliderEngine(trackId, dotsContainerId, sectionId) {
+        const track = document.getElementById(trackId);
+        const section = document.getElementById(sectionId) || (track ? track.closest('section') : null);
+        if (!track) return;
 
-        let dotsContainer = document.getElementById('categories-dots-container');
-        if (dotsContainer) {
-            let dotsHtml = '';
-            for (let i = 0; i < count; i++) {
-                dotsHtml += `<span class="bose-slider-dot ${i === 0 ? 'active' : ''}" data-index="${i}"></span>`;
-            }
-            dotsContainer.innerHTML = dotsHtml;
+        // 1. هندسة وتهيئة مسار التمرير ليكون ناعماً ومحكوم الإحداثيات تماماً ومقاوم للقفزات البصرية
+        track.style.display = 'flex';
+        track.style.overflowX = 'auto';
+        track.style.webkitOverflowScrolling = 'touch';
+        track.style.scrollSnapType = 'x mandatory';
+        track.style.scrollBehavior = 'smooth';
+
+        const cards = track.children;
+        const count = cards.length;
+        if (count === 0) return;
+
+        // ضبط الكروت لتلتزم بمحاذاة التثبيت المغناطيسي لمنع بقايا الكروت المبتورة في المنتصف
+        for (let card of cards) {
+            card.style.scrollSnapAlign = 'center';
         }
-        
-        let controlsWrapper = categoriesSection.querySelector('.categories-slider-controls-wrapper');
-        if (!controlsWrapper && !dotsContainer) {
-            controlsWrapper = document.createElement('div');
+
+        // 2. بناء أو جلب حاوية النقاط (Dots Container) ديناميكياً لتطابق عدد العناصر الفعلي لكل قسم
+        let dotsContainer = document.getElementById(dotsContainerId) || (section ? section.querySelector('.categories-slider-dots') : null);
+        let arrowsWrapper = section ? section.querySelector('.categories-slider-controls-wrapper') : null;
+
+        if (!dotsContainer && section) {
+            const controlsWrapper = document.createElement('div');
             controlsWrapper.className = 'categories-slider-controls-wrapper';
-            controlsWrapper.style.cssText = 'display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:24px; width:100%;';
+            controlsWrapper.style.cssText = 'display:flex; flex-direction:column; align-items:center; gap:20px; margin-top:24px; width:100%; user-select:none;';
             
             const arrowsContainer = document.createElement('div');
             arrowsContainer.className = 'bose-slider-arrows';
             arrowsContainer.style.cssText = 'display:flex; gap:20px; direction:ltr;';
             arrowsContainer.innerHTML = `
-                <button class="bose-slider-arrow prev" style="background:#FFFFFF; border:1px solid #FF91A4; color:#FF91A4; width:45px; height:45px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:16px; transition:all 0.3s;"><i class="fa-solid fa-chevron-left"></i></button>
-                <button class="bose-slider-arrow next" style="background:#FFFFFF; border:1px solid #FF91A4; color:#FF91A4; width:45px; height:45px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:16px; transition:all 0.3s;"><i class="fa-solid fa-chevron-right"></i></button>
+                <button class="bose-slider-arrow prev" style="background:#FFFFFF; border:1px solid #FF91A4; color:#FF91A4; width:45px; height:45px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:16px; transition:all 0.3s; box-shadow:0 4px 12px rgba(255,145,164,0.1);"><i class="fa-solid fa-chevron-left"></i></button>
+                <button class="bose-slider-arrow next" style="background:#FFFFFF; border:1px solid #FF91A4; color:#FF91A4; width:45px; height:45px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:16px; transition:all 0.3s; box-shadow:0 4px 12px rgba(255,145,164,0.1);"><i class="fa-solid fa-chevron-right"></i></button>
             `;
             
             dotsContainer = document.createElement('div');
-            dotsContainer.id = 'categories-dots-container';
+            dotsContainer.id = dotsContainerId;
             dotsContainer.className = 'categories-slider-dots';
+            dotsContainer.style.cssText = 'display:flex; justify-content:center; align-items:center; gap:8px; margin-top:12px; width:100%;';
             
             controlsWrapper.appendChild(arrowsContainer);
             controlsWrapper.appendChild(dotsContainer);
-            categoriesSection.appendChild(controlsWrapper);
-            
+            section.appendChild(controlsWrapper);
+        }
+
+        if (dotsContainer) {
             let dotsHtml = '';
             for (let i = 0; i < count; i++) {
-                dotsHtml += `<span class="bose-slider-dot ${i === 0 ? 'active' : ''}" data-index="${i}"></span>`;
+                dotsHtml += `<span class="bose-slider-dot ${i === 0 ? 'active' : ''}" data-index="${i}" style="width:10px; height:10px; border-radius:50%; background-color:rgba(255,145,164,0.25); cursor:pointer; transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display:inline-block;"></span>`;
             }
             dotsContainer.innerHTML = dotsHtml;
         }
-    }
 
-    /**
-     * 🎹 دالة المزامنة الحية والتحديث التلقائي للنقاط النشطة (Dots Synchronization Core)
-     * تم إضافتها وتعميرها هندسياً لربط حركة السحب والإيماءات بالنقاط وإضاءتها بدقة القرش
-     */
-    function updateActiveDot(track) {
-        const dots = document.querySelectorAll('#categories-dots-container .bose-slider-dot');
-        if (dots.length === 0) return;
+        const dots = dotsContainer ? dotsContainer.querySelectorAll('.bose-slider-dot') : [];
 
-        const cards = track.querySelectorAll('.category-card-unified');
-        if (cards.length === 0) return;
-
-        const cardWidth = cards[0].offsetWidth + 20; 
-        const scrollPosition = track.scrollLeft;
-        
-        // حساب الفئة الحالية بناءً على الإزاحة الفيزيائية المتوافقة مع الموبايل والكمبيوتر
-        let currentIndex = Math.round(scrollPosition / cardWidth);
-        if (currentIndex < 0) currentIndex = 0;
-        if (currentIndex >= dots.length) currentIndex = dots.length - 1;
-
-        dots.forEach((dot, idx) => {
-            if (idx === currentIndex) {
-                dot.classList.add('active');
-            } else {
-                dot.classList.remove('active');
-            }
-        });
-    }
-
-    /**
-     * 🎹 تفعيل معالجة الإيماءات والسحب اليدوي السلس والتحكم الكامل بالأسهم
-     * تم تعمير وتوسيع الكود ليستخدم التمرير السلس فائق الاستقرار وإلغاء القفزات البصرية تماماً
-     */
-    function setupCategoriesSliderTouch() {
-        const categoriesSection = document.getElementById('categories-slider-section') || document.getElementById('categories-section') || document.querySelector('[id*="categories"]');
-        const track = document.getElementById('categories-track');
-        if (!track) return;
-
-        let isDragging = false;
-        let startX = 0;
-        let scrollLeft = 0;
-
-        // تطبيق خصائص التثبيت الهندسي والانسيابية المطلقة لمنع التكدس أو وميض الصفحة
-        track.style.display = 'flex';
-        track.style.overflowX = 'auto';
-        track.style.scrollBehavior = 'smooth';
-        track.style.webkitOverflowScrolling = 'touch';
-        track.style.scrollSnapType = 'x mandatory';
-
-        track.addEventListener('scroll', () => {
-            updateActiveDot(track);
-        });
-
-        track.addEventListener('mousedown', (e) => {
-            isDragging = true;
-            track.style.scrollBehavior = 'auto'; // إلغاء السموث المؤقت أثناء السحب الفعلي لمنع قفزات الماوس
-            track.style.cursor = 'grabbing';
-            startX = e.pageX - track.offsetLeft;
-            scrollLeft = track.scrollLeft;
-        });
-
-        track.addEventListener('mouseleave', () => {
-            isDragging = false;
-            track.style.cursor = 'grab';
-            track.style.scrollBehavior = 'smooth';
-        });
-
-        track.addEventListener('mouseup', () => {
-            isDragging = false;
-            track.style.cursor = 'grab';
-            track.style.scrollBehavior = 'smooth';
-            updateActiveDot(track);
-        });
-
-        track.addEventListener('mousemove', (e) => {
-            if (!isDragging) return;
-            e.preventDefault();
-            const x = e.pageX - track.offsetLeft;
-            const walk = (x - startX) * 1.5; 
-            track.scrollLeft = scrollLeft - walk;
-        });
-
-        track.addEventListener('touchstart', (e) => {
-            isDragging = true;
-            track.style.scrollBehavior = 'auto';
-            startX = e.touches[0].pageX - track.offsetLeft;
-            scrollLeft = track.scrollLeft;
-        }, { passive: true });
-
-        track.addEventListener('touchmove', (e) => {
-            if (!isDragging) return;
-            const x = e.touches[0].pageX - track.offsetLeft;
-            const walk = (x - startX) * 1.2;
-            track.scrollLeft = scrollLeft - walk;
-        }, { passive: true });
-
-        track.addEventListener('touchend', () => {
-            isDragging = false;
-            track.style.scrollBehavior = 'smooth';
-            updateActiveDot(track);
-        });
-
-        if (categoriesSection) {
-            const nextBtn = categoriesSection.querySelector('.bose-slider-arrow.next');
-            const prevBtn = categoriesSection.querySelector('.bose-slider-arrow.prev');
+        // 3. دالة معالجة إضاءة ومزامنة النقطة النشطة لحظة السحب اليدوي الحر
+        const syncDotsAndPosition = () => {
+            const cardWidth = cards[0].offsetWidth + parseInt(window.getComputedStyle(track).gap || 20);
+            const scrollPosition = track.scrollLeft;
+            let activeIndex = Math.round(scrollPosition / cardWidth);
             
-            if (nextBtn && prevBtn) {
-                const getStep = () => {
-                    const card = track.querySelector('.category-card-unified');
-                    return card ? card.offsetWidth + 20 : 300;
-                };
-                
-                nextBtn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    track.style.scrollBehavior = 'smooth';
-                    track.scrollBy({ left: getStep(), behavior: 'smooth' });
-                });
-                
-                prevBtn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    track.style.scrollBehavior = 'smooth';
-                    track.scrollBy({ left: -getStep(), behavior: 'smooth' });
-                });
-            }
-        }
+            if (activeIndex < 0) activeIndex = 0;
+            if (activeIndex >= count) activeIndex = count - 1;
 
-        const dotsContainer = document.getElementById('categories-dots-container');
+            dots.forEach((dot, idx) => {
+                if (idx === activeIndex) {
+                    dot.classList.add('active');
+                    dot.style.cssText = 'width:26px; height:10px; border-radius:6px; background-color:#FF91A4; cursor:pointer; transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display:inline-block;';
+                } else {
+                    dot.classList.remove('active');
+                    dot.style.cssText = 'width:10px; height:10px; border-radius:50%; background-color:rgba(255,145,164,0.25); cursor:pointer; transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display:inline-block;';
+                }
+            });
+        };
+
+        track.addEventListener('scroll', syncDotsAndPosition);
+
+        // 4. ربط مستمعي كبس الأزرار النقطية (Dots Clicking Trigger) لخدمة تجربة المستخدم اللمسية
         if (dotsContainer) {
             dotsContainer.addEventListener('click', (e) => {
                 const dot = e.target.closest('.bose-slider-dot');
                 if (!dot) return;
                 const index = parseInt(dot.getAttribute('data-index'), 10);
-                const cards = track.querySelectorAll('.category-card-unified');
                 if (cards[index]) {
-                    const cardWidth = cards[0].offsetWidth + 20; 
+                    const cardWidth = cards[0].offsetWidth + parseInt(window.getComputedStyle(track).gap || 20);
                     track.style.scrollBehavior = 'smooth';
-                    track.scrollTo({
-                        left: cardWidth * index,
-                        behavior: 'smooth'
-                    });
+                    track.scrollTo({ left: cardWidth * index, behavior: 'smooth' });
                 }
             });
         }
+
+        // 5. ربط مستمعي كبس أزرار الأسهم الجانبية (Arrows Controls Guard) ومنع وميض أو تصفير الشاشة
+        if (section) {
+            const nextBtn = section.querySelector('.bose-slider-arrow.next');
+            const prevBtn = section.querySelector('.bose-slider-arrow.prev');
+            
+            if (nextBtn && prevBtn) {
+                const getScrollStep = () => cards[0].offsetWidth + parseInt(window.getComputedStyle(track).gap || 20);
+                
+                nextBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    track.style.scrollBehavior = 'smooth';
+                    track.scrollBy({ left: getScrollStep(), behavior: 'smooth' });
+                });
+                
+                prevBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    track.style.scrollBehavior = 'smooth';
+                    track.scrollBy({ left: -getScrollStep(), behavior: 'smooth' });
+                });
+            }
+        }
+
+        // 6. هندسة نظام السحب الحر والمس اللمسي بالماوس وبصباع العميل كالحرير (Fluid Touch Momentum)
+        let isDragging = false, startX = 0, startScrollLeft = 0;
+
+        const onDragStart = (e) => {
+            isDragging = true;
+            track.style.scrollBehavior = 'auto'; // إيقاف الأنيميشن لحظة الضغط المباشر لحظر أي قفزات غريبة
+            startX = (e.pageX || e.touches[0].pageX) - track.offsetLeft;
+            startScrollLeft = track.scrollLeft;
+        };
+
+        const onDragMove = (e) => {
+            if (!isDragging) return;
+            const x = (e.pageX || e.touches[0].pageX) - track.offsetLeft;
+            const walk = (x - startX) * 1.5; // تسريع عزم الحركة الفيزيائية لمنع الثقل والمقاومة الجافة
+            track.scrollLeft = startScrollLeft - walk;
+        };
+
+        const onDragEnd = () => {
+            if (!isDragging) return;
+            isDragging = false;
+            track.style.scrollBehavior = 'smooth'; // إعادة إحياء التمرير الناعم ليقوم بالثبات المغناطيسي تلقائياً عند أقرب حافة كارت
+            syncDotsAndPosition();
+        };
+
+        track.addEventListener('mousedown', onDragStart);
+        track.addEventListener('mousemove', onDragMove);
+        track.addEventListener('mouseup', onDragEnd);
+        track.addEventListener('mouseleave', onDragEnd);
+
+        track.addEventListener('touchstart', onDragStart, { passive: true });
+        track.addEventListener('touchmove', onDragMove, { passive: true });
+        track.addEventListener('touchend', onDragEnd);
     }
 
     function renderDynamicWaterfall() {
