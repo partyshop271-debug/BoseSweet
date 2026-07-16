@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
+    <!-- 🔍 إعدادات تحسين محركات البحث والأرشفة الفاخرة SEO الملتزمة بمواصفة البراند 🔍 -->
     <title>سلة المشتريات الفاخرة | حلويات بوسي</title>
     <meta name="description" content="راجع منتجاتك وأصنافك المفضلة وتورتك المصممة بحب عبر سلة المشتريات الذكية لحلويات بوسي قبل تأكيد الطلب السريع.">
     <meta name="keywords" content="سلة التسوق, حلويات بوسي, مراجعة الطلب, تورت مخصصة, الفرافرة, الكفاح">
     
-    <!-- الأصول والتصاميم الموزعة والجاهزة بالموقع -->
+    <!-- الأصول والتصاميم الموزعة والجاهزة بالموقع لمنع تضخم الأكواد -->
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/cart-checkout.css">
@@ -95,8 +96,8 @@
         .bose-suggestion-title-text {
             margin: 0;
             font-size: 1.1rem;
-            font-weight: 700;
-            color: #111111; /* معزول تماماً ومقفل عند وزن 700 للعناوين */
+            font-weight: 700 !important; /* قفل وزن الخط عند 700 كحد أقصى للعناوين */
+            color: #111111; 
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -116,7 +117,7 @@
         .bose-suggestion-price-tag {
             font-size: 1.15rem;
             font-weight: 700;
-            color: #FF91A4; /* السعر بلون نبض الحياة */
+            color: #FF91A4; /* السعر بلون نبض الحياة البمبي */
         }
         .bose-suggestion-add-trigger {
             background: #FF91A4;
@@ -131,14 +132,14 @@
             display: flex;
             align-items: center;
             gap: 6px;
-            transition: var(--bose-transition);
+            transition: all 0.25s ease;
         }
         .bose-suggestion-add-trigger:hover {
             background: #ff788f; /* تعديل الهوفر للون البمبي الداكن بدلاً من الأسود المحظور */
             transform: translateY(-2px);
         }
 
-        /* 👑 أمان وتأمين راحة المعالجة اللحظية للسلة 👑 */
+        /* 👑 أمان وتأمين راحة المعالجة اللحظية للسلة لمنع وميض الصفحة 👑 */
         .bose-processing-overlay {
             position: fixed;
             top: 0;
@@ -173,12 +174,12 @@
         }
     </style>
 
-    <!-- استدعاء المحرك المركزي الموحد حارس الحسابات وحاقن الهيدر والفوتر آلياً -->
+    <!-- استدعاء المحرك المركزي الموحد حارس الحسابات وحاقن الهيدر والفوتر آلياً أولاً -->
     <script src="js/core-engine.js" defer></script>
 </head>
 <body class="bose-hardware-accelerated">
 
-    <!-- حارس تأمين وراحة العمليات الحسابية -->
+    <!-- حارس تأمين وراحة العمليات الحسابية ومنع الـ Race Condition -->
     <div id="bose-cart-global-overlay" class="bose-processing-overlay">
         <div style="text-align: center;">
             <div class="bose-spinner-loader"></div>
@@ -189,26 +190,26 @@
     <!-- 🏢 بروتوكول الهيكل الهندسي الموحد والحقن الديناميكي للعلامة التجارية 🏢 -->
     <div id="bose-header-injector"></div>
 
-    <!-- المحتوى الرئيسي الفاخر والمنعزل لصفحة السلة -->
+    <!-- المحتوى الرئيسي الفاخر لصفحة السلة مع التنفس البصري الكامل -->
     <main class="bose-cart-page-section" id="cart-main-container">
         <div class="cart-page-header">
-            <h1 class="cart-page-title" style="font-weight: 700; max-width: 700px;">سلة التسوق</h1>
+            <h1 class="cart-page-title">سلة التسوق</h1>
             <p class="cart-page-subtitle bose-arabic-text">يمكنك مراجعة كل أصناف تورتك وحلوياتك المفضلة براحة تامة، وتعديل كمياتها قبل ما تتنقل لخطوة تأكيد وحجز الطلب عشان يوصلك فريش وجاهز لمناسبتك السعيدة.</p>
         </div>
 
         <div class="cart-checkout-grid">
             
-            <!-- الجانب الأيمن: قائمة الأصناف المشتراة مع التنفس البصري الكامل -->
+            <!-- الجانب الأيمن: قائمة الأصناف المشتراة من السلة -->
             <div class="cart-items-list-wrapper">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; direction: rtl;">
                     <h3 style="font-size: 1.2rem; font-weight: 700; color: #111111;">الأصناف المحددة للطلب</h3>
                     <button id="btn-clear-cart" class="btn-clear-cart-node" style="font-family: 'Cairo', sans-serif; font-size: 0.88rem; font-weight: 700; color: #777; border: 1px solid rgba(255,145,164,0.3); padding: 8px 16px; border-radius: 30px; background: #FFFFFF; cursor: pointer; transition: 0.2s;">إفراغ السلة</button>
                 </div>
                 
-                <!-- وسم حقن كروت السلة الأفقية المريحة الفخمة من الـ localStorage -->
+                <!-- وسم حقن كروت السلة الأفقية الفخمة والمحمية ضد البتر -->
                 <div id="cart-items-wrapper" class="cart-items-collection"></div>
 
-                <!-- توصيات وملاحظات العميل الاختيارية لضمان السلامة والراحة -->
+                <!-- توصيات وملاحظات العميل الاختيارية لسلامة التحضير اللوجستي والطبي -->
                 <div class="checkout-details-card" style="margin-top: 24px; padding: 24px; background: #FFFFFF; border: 1px solid rgba(255,145,164,0.2); border-radius: 16px;">
                     <h4 class="product-option-title" style="margin-bottom: 14px; font-weight: 700; color: #111111; font-size: 1rem;">
                         <i class="fas fa-pen-fancy" style="color: #FF91A4; margin-left: 6px;"></i> عندك أي ملاحظات أو طلبات خاصة بالتحضير؟ (اختياري)
@@ -219,7 +220,7 @@
 
             <!-- الجانب الأيسر: ملخص الطلب المالي والكوبونات الذكية -->
             <div class="bose-summary-sticky-card">
-                <h3 class="summary-section-title" style="font-weight: 700; color: #111111;">ملخص الطلب</h3>
+                <h3 class="summary-section-title">ملخص الطلب</h3>
                 
                 <div class="coupon-form-container">
                     <input type="text" id="coupon-input" class="coupon-input-field" placeholder="اكتب كود الخصم هنا (مثل BOOSY)...">
@@ -246,12 +247,12 @@
                     </div>
                     
                     <div class="summary-grand-total-row" style="border-top: 1px dashed rgba(255,145,164,0.3); padding-top: 16px;">
-                        <span class="grand-total-label" style="color: #111111;">الإجمالي النهائي التقريبي:</span>
+                        <span class="grand-total-label">الإجمالي النهائي التقريبي:</span>
                         <span id="cart-grand-total-value" class="total-value-display" style="color: #FF91A4; font-weight: 700; font-size: 1.5rem;">0 EGP</span>
                     </div>
                 </div>
 
-                <a href="checkout.html" id="btn-proceed-to-checkout" class="bose-primary-checkout-btn" style="font-weight: 700;">
+                <a href="checkout.html" id="btn-proceed-to-checkout" class="bose-primary-checkout-btn">
                     <i class="fas fa-shopping-bag"></i> الانتقال لإتمام الطلب
                 </a>
                 
@@ -261,11 +262,11 @@
             </div>
         </div>
 
-        <!-- قسم قد يعجبك أيضاً: مجرى حركة أفقي انسيابي مريح لعين العميل ومحمي الأبعاد -->
+        <!-- قسم قد يعجبك أيضاً: مجرى حركة أفقي انسيابي مريح لعين العميل ومحمي الأبعاد بالكامل -->
         <section class="bose-section-container" style="padding: 40px 0 0 0; margin-top: 40px; border-top: 1px dashed #FF91A4;">
             <div class="bose-section-header" style="text-align: right; margin-bottom: 20px; direction: rtl;">
                 <h2 class="bose-section-title" style="font-size: 1.5rem; font-weight: 700; color: #111111; padding-bottom: 6px;">قد يعجبك أيضاً</h2>
-                <p class="bose-section-subtitle" style="font-size: 0.95rem; color: #777; margin-top: 2px;">أصناف مميز بيقترحها عليك خبراء بوسي عشان تكمل بيها روعة اختيارك للنهارده.</p>
+                <p class="bose-section-subtitle" style="font-size: 0.95rem; color: #777; margin-top: 2px;">أصناف مميزة بيقترحها عليك خبراء بوسي عشان تكمل بيها روعة اختيارك للنهارده.</p>
             </div>
             
             <div id="bose-cart-premium-suggestions-grid" class="bose-cart-horizontal-slider"></div>
@@ -278,10 +279,9 @@
     <!-- استدعاء محرك العمليات والحسابات الموحد للطلب والسلة -->
     <script src="js/cart-engine.js" defer></script>
 
-    <!-- كود الحقن المحمي والمستقل لصور المقترحات وتجربة السحب اللمسي -->
+    <!-- كود حقن صور المقترحات المطور وتأمين تجربة الإضافة واللمس دون Full Refresh للبيانات -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            
             const secureEscape = (str) => {
                 if (!str) return '';
                 return str.toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -295,6 +295,7 @@
                 const currentCart = rawCart ? JSON.parse(rawCart) : [];
                 const cartSlugs = currentCart.map(item => item.productSlug);
 
+                // استبعاد التكرار واختيار 5 مقترحات فريدة وذكية تزيد المبيعات
                 const finalSuggestions = dbData.products.filter(p => !cartSlugs.includes(p.slug)).slice(0, 5);
                 const currency = dbData.store?.currency || "EGP";
 
@@ -305,7 +306,7 @@
 
                 targetGrid.innerHTML = finalSuggestions.map(prod => {
                     const defaultLogo = "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png";
-                    const imgUrl = prod.image || (prod.images && prod.images[0] ? prod.images[0] : defaultLogo);
+                    const imgUrl = prod.images && prod.images[0] ? prod.images[0] : (prod.image || defaultLogo);
                     const calculatedPrice = window.calculateBosePrice ? window.calculateBosePrice(prod.price, "menu-only") : prod.price;
                     
                     return `
@@ -329,7 +330,7 @@
                     `;
                 }).join("");
 
-                // تفعيل مستمعي كروت المقترحات يدوياً وبطريقة معزولة تامة
+                // تفعيل مستمعي كروت المقترحات يدوياً وبطريقة معزولة تمنع وميض وتصفير الصفحة
                 targetGrid.querySelectorAll('.btn-quick-add-to-cart').forEach(btn => {
                     btn.addEventListener('click', (e) => {
                         e.preventDefault();
@@ -349,7 +350,17 @@
                                 
                                 localStorage.setItem("bose_cart", JSON.stringify(cartList));
                                 if (window.updateGlobalCartCounter) window.updateGlobalCartCounter();
-                                window.location.reload();
+                                
+                                // تفعيل التحديث الموضعي اللحظي مع الإشعار بمبي الفخامة دون كسر أو شلل الصفحة
+                                if (window.showBoseGlobalToast) {
+                                    window.showBoseGlobalToast(`تمت إضافة ${product.title} إلى سلة المشتريات.`);
+                                }
+                                
+                                // رندرة السلة الجانبية لحظياً دون الفقد أو وميض الصفحة
+                                if (typeof window.initializeCartEngine === "function") {
+                                    window.initializeCartEngine(dbData);
+                                }
+                                renderStrictSuggestionsGrid(dbData);
                             }
                         }
                     });
@@ -359,7 +370,7 @@
             if (window.BoseStoreData) { renderStrictSuggestionsGrid(window.BoseStoreData); }
             document.addEventListener("BoseDatabaseLoaded", (e) => { renderStrictSuggestionsGrid(e.detail); });
 
-            // تمكين سحب شريط المقترحات بالماوس للمتصفحات والموبايل
+            // تمكين سحب شريط المقترحات بالماوس للمتصفحات والموبايل بسلاسة مطلقة
             const horizontalTrack = document.getElementById("bose-cart-premium-suggestions-grid");
             if (horizontalTrack) {
                 let isDown = false, startX, scrollLeft;
