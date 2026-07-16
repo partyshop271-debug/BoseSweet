@@ -4,12 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
-    <title>تمت عملية حجز طلبك بنجاح | حلويات بوسي</title>
+    <title>تم تسجيل طلبك بنجاح | حلويات بوسي</title>
     <meta name="robots" content="noindex, follow">
     
+    <!-- ملفات التصميم الخارجية الموحدة والمستقلة -->
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/main.css">
     
+    <!-- استدعاء المحرك المركزي في رأس الصفحة حتمياً لإدارة التمهيد والبيانات المالية -->
     <script src="js/core-engine.js"></script>
 
     <style>
@@ -73,7 +75,7 @@
             margin: 0;
         }
 
-        /* حاوية تفاصيل الفاتورة الصادقة المحفوظة بجهاز العميل */
+        /* حاوية تفاصيل الفاتورة المحفوظة بجهاز العميل */
         .order-summary-receipt-box {
             width: 100%;
             background-color: #FFF5F6;
@@ -204,13 +206,9 @@
 </head>
 <body class="bose-hardware-accelerated">
 
-    <header class="bose-navbar">
-        </header>
-
-    <div id="sidebar-drawer" class="bose-drawer-menu">
-        </div>
-
-    <div id="drawer-shield" class="drawer-overlay"></div>
+    <!-- 🏢 بروتوكول الهيكل الموحد والحقن الديناميكي (Universal Injection Layout) -->
+    <!-- تم استبدال الهياكل الصلبة المعطلة بأوسمة نائبة فارغة يستهدفها core-engine.js بدقة -->
+    <div id="bose-header-injector"></div>
 
     <main class="success-page-wrapper">
         <div class="success-card-capsule">
@@ -219,8 +217,8 @@
                 <i class="fas fa-check"></i>
             </div>
 
-            <h1 class="success-headline">تم تسجيل وحجز طلبك بنجاح!</h1>
-            <p class="success-subheadline">🌸 يسعدنا جداً اختيارك الفاخر اليوم. تم حجز وتوثيق عناصر طلبك في نظام فرع الكفاح بنجاح ومستعدون لبدء الخبز والتحضير بكل شغف وتوصيله بأعلى دقة تحافظ على شكل ونضارة طلبك الملكي.</p>
+            <h1 class="success-headline">تم تسجيل طلبك بنجاح!</h1>
+            <p class="success-subheadline">🌸 يسعدنا جداً اختيارك الفاخر اليوم. تم حجز وتوثيق عناصر طلبك بنجاح ومستعدون لبدء الخبز والتحضير بكل شغف وتوصيله بأعلى دقة تحافظ على شكل ونضارة طلبك.</p>
 
             <div class="order-summary-receipt-box">
                 <div class="receipt-header-row">
@@ -228,16 +226,15 @@
                     <span id="bose-receipt-date-lbl">00 / 00 / 2026</span>
                 </div>
                 
-                <div id="bose-receipt-items-container" class="receipt-items-list">
-                    </div>
+                <div id="bose-receipt-items-container" class="receipt-items-list"></div>
                 
                 <div class="receipt-footer-total">
-                    <span>الإجمالي النهائي التقريبي:</span>
+                    <span>الإجمالي النهائي:</span>
                     <span id="bose-receipt-grand-total" class="receipt-total-val">0 EGP</span>
                 </div>
             </div>
 
-            <p class="success-subheadline" style="font-size: 0.88rem; opacity: 0.7; margin: 5px 0 0 0;">📌 يرجى كبس زر الواتساب الفوري بالأسفل لتأكيد ومتابعة حالة الفاتورة اللوجستية وتحديد مواعيد التوصيل بدقة مع ممثل فرع الكفاح.</p>
+            <p class="success-subheadline" style="font-size: 0.88rem; opacity: 0.7; margin: 5px 0 0 0;">📌 يرجى كبس زر الواتساب الفوري بالأسفل لتأكيد ومتابعة حالة الفاتورة اللوجستية وتحديد مواعيد التوصيل بدقة.</p>
 
             <div class="success-actions-row">
                 <a href="https://wa.me/201097238441" id="bose-success-whatsapp-btn" class="btn-success-whatsapp-trigger" target="_blank">
@@ -250,12 +247,16 @@
         </div>
     </main>
 
-    <footer class="bose-footer">
-        </footer>
+    <div id="bose-footer-injector"></div>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            
+            // منع الرجوع للخلف نهائياً لحماية قاعدة البيانات من تكرار المعاملات وثغرات التصادم
+            window.history.pushState(null, "", window.location.href);
+            window.onpopstate = function() {
+                window.history.pushState(null, "", window.location.href);
+            };
+
             const itemsContainer = document.getElementById("bose-receipt-items-container");
             const orderNumLbl = document.getElementById("bose-receipt-number-lbl");
             const dateLbl = document.getElementById("bose-receipt-date-lbl");
@@ -264,27 +265,24 @@
 
             // 1. استرجاع وقراءة بيانات الفاتورة الأخيرة المحفوظة محلياً لتوثيق المصداقية أمام العميل
             const lastOrderRaw = localStorage.getItem("bose_last_order");
-            let purchasedSlugs = []; // مصفوفة لتجميع الأصناف المشتراة فعلياً لغرض تطهير الذاكرة السلوكية
+            let purchasedSlugs = []; 
 
             if (lastOrderRaw) {
                 try {
                     const orderObj = JSON.parse(lastOrderRaw);
                     
                     if (orderObj) {
-                        // تحديث ملصقات الفاتورة الفورية بالواجهة
                         if (orderObj.orderNumber) orderNumLbl.textContent = `رقم طلب الفاتورة: #${orderObj.orderNumber}`;
                         if (orderObj.date) dateLbl.textContent = orderObj.date;
-                        if (orderObj.grandTotal) totalDisplay.textContent = orderObj.grandTotal;
+                        if (orderObj.grandTotal) totalDisplay.textContent = `${orderObj.grandTotal} EGP`;
                         
-                        // حقن ورندرة الأصناف المشتراة داخل الإيصال الصادق
                         if (orderObj.items && Array.isArray(orderObj.items) && orderObj.items.length > 0) {
                             itemsContainer.innerHTML = orderObj.items.map(item => {
-                                // تجميع الـ slug الخاص بالصنف لتمريره لصمام أمان تطهير الذاكرة السلوكية
                                 if (item.productSlug) purchasedSlugs.push(item.productSlug);
                                 
                                 return `
                                     <div class="receipt-item-node">
-                                        <span class="receipt-item-name">${window.escapeHTML ? window.escapeHTML(item.title) : item.title} <span style="font-weight:400; opacity:0.6; font-size:0.8rem;">(×${item.quantity})</span> <span style="display:block; font-size:0.75rem; font-weight:700; color:var(--bose-pink); margin-top:2px;">${item.flavorName || 'كلاسيك'}</span></span>
+                                        <span class="receipt-item-name">${item.title} <span style="font-weight:400; opacity:0.6; font-size:0.8rem;">(×${item.quantity})</span> <span style="display:block; font-size:0.75rem; font-weight:700; color:var(--bose-pink); margin-top:2px;">${item.flavorName || 'كلاسيك'}</span></span>
                                         <span class="receipt-item-price">${item.finalPrice * item.quantity} EGP</span>
                                     </div>
                                 `;
@@ -293,7 +291,6 @@
                             itemsContainer.innerHTML = `<p style="text-align:center; opacity:0.6; font-size:0.85rem; margin:0;">تم توثيق وحجز طلبك الفاخر بنجاح في الفرع 🌸</p>`;
                         }
 
-                        // تعديل وتأمين رابط الواتساب الفوري ليتضمن رسالة نصية ملكية جاهزة بالكامل بالفاتورة لراحة العميل
                         if (orderObj.whatsappMessage && whatsappBtn) {
                             whatsappBtn.href = `https://wa.me/201097238441?text=${encodeURIComponent(orderObj.whatsappMessage)}`;
                         }
@@ -306,43 +303,27 @@
                 itemsContainer.innerHTML = `<p style="text-align:center; opacity:0.6; font-size:0.85rem; margin:0;">تم توثيق وحجز طلبك الفاخر بنجاح في الفرع 🌸</p>`;
             }
 
-            // 2. 🔐 [صمام الأمان وتطهير الذاكرة السلوكية - Data Flushing Node] 🔐
+            // 2. تطهير الذاكرة السلوكية لكسر تكرار المنتجات التي تم شراؤها فعلياً
             try {
                 const behaviorData = localStorage.getItem('bose_user_behavior');
-                
                 if (behaviorData) {
                     let behaviorLog = JSON.parse(behaviorData);
-                    
-                    // أولاً: تصفير وتطهير سجل السلوك للأصناف التي تم شراؤها فعلياً في هذه الفاتورة لكسر التكرار والملل
                     purchasedSlugs.forEach(slug => {
-                        if (behaviorLog[slug]) {
-                            delete behaviorLog[slug]; // حذف الصنف من دائرة الاهتمام الفوري لأنه تم اقتناؤه بالفعل
-                        }
+                        if (behaviorLog[slug]) delete behaviorLog[slug];
                     });
-
-                    // ثانياً: حارس تنظيف الذاكرة القديمة (Flushing Guard) - حذف أي صنف مر على تاريخ زيارته أكثر من 30 يوماً
-                    const thirtyDaysInMs = 30 * 24 * 60 * 60 * 1000;
-                    const now = Date.now();
-
-                    for (const slug in behaviorLog) {
-                        if (behaviorLog[slug].lastVisited && (now - behaviorLog[slug].lastVisited > thirtyDaysInMs)) {
-                            delete behaviorLog[slug]; // تنظيف محلي فوري للحفاظ على خفة وسرعة استجابة المحرك
-                        }
-                    }
-
-                    // حفظ سجل السلوك الجديد المطهّر والمنعش داخل الـ LocalStorage لراحة المستهلك النفسية
                     localStorage.setItem('bose_user_behavior', JSON.stringify(behaviorLog));
                 }
             } catch (err) {
                 console.warn("⚠️ تعذر تفعيل صمام الأمان لتطهير الذاكرة السلوكية.", err);
             }
 
-            // 3. مسح وإفراغ السلة المشتراة bose_cart فوراً لتجنب حشر الفواتير القديمة وتأمين دورة الشراء التالية
+            // 3. مسح وإفراغ السلة المشتراة فوراً لتجنب حشر الفواتير القديمة وتأمين دورة الشراء التالية
             localStorage.removeItem("bose_cart");
             
-            // مزامنة وتحديث العداد الصغير بالهيدر الموحد ليصبح 0 تلقائياً
-            const countBadge = document.getElementById("nav-cart-count");
-            if (countBadge) countBadge.textContent = "0";
+            // تحديث عداد السلة من خلال دالة المحرك المركزي لضمان التزامن اللحظي المباشر
+            if (typeof window.updateGlobalCartCounter === "function") {
+                window.updateGlobalCartCounter();
+            }
         });
     </script>
 </body>
