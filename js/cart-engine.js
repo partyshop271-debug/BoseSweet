@@ -75,7 +75,6 @@ function renderBoseCartPage(storeData) {
             
             let customDetailsHTML = "";
             
-            // حصر التحقق من كتل التخصيص بناءً على نوع المنتج المعتمد رسمياً لمنع ظهورها عشوائياً في المنتجات العادية
             const isCakeBespoke = item.type === "custom-cake" || item.type === "mini-cake" || item.productSlug === "toort-custom-master" || item.productSlug === "mini-cake-two-person";
             const isFlowerBespoke = item.type === "custom-flower" || item.productSlug === "flowers-master";
             
@@ -157,7 +156,6 @@ function renderBoseCartPage(storeData) {
         updateCartSummary(cart, storeData);
     }
     
-    // التحديث الموضعي الذكي لمنع الـ Reflow الكامل وحماية معالجات الأجهزة الذكية
     function updateSingleItemDOM(cardElement, item, finalProductPrice, totalItemCost) {
         const qtyDisplay = cardElement.querySelector(".qty-numerical-display");
         const multiLabel = cardElement.querySelector(".qty-multiplication-label");
@@ -173,7 +171,6 @@ function renderBoseCartPage(storeData) {
         }
     }
     
-    // ربط الأحداث تفويضياً لمرة واحدة على الحاوية كلياً لحماية الذاكرة العشوائية وتفعيل الإشعارات الحية
     cartWrapper.onclick = (e) => {
         const target = e.target.closest("button");
         if (!target) return;
@@ -457,7 +454,7 @@ function processFinalBoseOrder(cart, storeData, method, shippingFee) {
 
     const customerName = customerNameInput ? customerNameInput.value.trim() : "";
     if (customerName.length < 3) {
-        alert("يرجى كتابة اسم صاحب الطلب بالكامل.");
+        showBoseCustomModal("يرجى كتابة اسم صاحب الطلب بالكامل ثنائياً على الأقل.");
         if (customerNameInput) customerNameInput.focus();
         return;
     }
@@ -465,7 +462,7 @@ function processFinalBoseOrder(cart, storeData, method, shippingFee) {
     const phone1 = customerPhoneInput ? customerPhoneInput.value.trim() : "";
     if (typeof window.validateBosePhoneNumber === "function") {
         if (!window.validateBosePhoneNumber(phone1)) {
-            alert("يرجى إدخال رقم هاتف محمول مصري صحيح ومطابق للشبكة.");
+            showBoseCustomModal("يرجى إدخال رقم هاتف محمول مصري صحيح ومطابق للشبكة.");
             if (customerPhoneInput) customerPhoneInput.focus();
             return;
         }
@@ -476,7 +473,7 @@ function processFinalBoseOrder(cart, storeData, method, shippingFee) {
     if (customerPhone2Input && customerPhone2Input.value.trim() !== "") {
         const phone2 = customerPhone2Input.value.trim();
         if (typeof window.validateBosePhoneNumber === "function" && !window.validateBosePhoneNumber(phone2)) {
-            alert("رقم الهاتف البديل غير صحيح، يرجى مراجعته أو مسحه ليبقى اختيارياً.");
+            showBoseCustomModal("رقم الهاتف البديل غير صحيح، يرجى مراجعته أو مسحه ليبقى اختيارياً.");
             customerPhone2Input.focus();
             return;
         }
@@ -488,7 +485,7 @@ function processFinalBoseOrder(cart, storeData, method, shippingFee) {
     
     if (method === "delivery") {
         if (zoneSelect && !zoneSelect.value) {
-            alert("يرجى تحديد المنطقة السكنية.");
+            showBoseCustomModal("يرجى تحديد المنطقة السكنية.");
             zoneSelect.focus();
             return;
         }
@@ -496,7 +493,7 @@ function processFinalBoseOrder(cart, storeData, method, shippingFee) {
         
         const addressDetails = addressDetailsInput ? addressDetailsInput.value.trim() : "";
         if (addressDetails.length < 8) {
-            alert("يرجى كتابة العنوان السكني بالتفصيل لسلامة الشحن.");
+            showBoseCustomModal("يرجى كتابة العنوان السكني بالتفصيل لسلامة الشحن.");
             if (addressDetailsInput) addressDetailsInput.focus();
             return;
         }
@@ -507,14 +504,14 @@ function processFinalBoseOrder(cart, storeData, method, shippingFee) {
     const orderTime = deliveryTimeInput ? deliveryTimeInput.value : "";
     
     if (!orderDate || !orderTime) {
-        alert("يرجى اختيار تاريخ وساعة الاستلام المناسبة لتجهيز طلبك.");
+        showBoseCustomModal("يرجى اختيار تاريخ وساعة الاستلام المناسبة لتجهيز طلبك.");
         return;
     }
 
     if (typeof window.validateBoseDeliverySchedule === "function") {
         const isScheduleValid = window.validateBoseDeliverySchedule(orderDate, orderTime);
         if (!isScheduleValid) {
-            alert(storeData.orderRules?.preparationTimeMessage || "نحتاج إلى وقت كافٍ لتجهيز طلبك بأفضل جودة ممكنة، لذلك لا يمكن اختيار موعد قبل 24 ساعة.");
+            showBoseCustomModal(storeData.orderRules?.preparationTimeMessage || "نحتاج إلى وقت كافٍ لتجهيز طلبك بأفضل جودة ممكنة، لذلك لا يمكن اختيار موعد قبل 24 ساعة.");
             return;
         }
     }
@@ -532,10 +529,11 @@ function processFinalBoseOrder(cart, storeData, method, shippingFee) {
     }
     
     const finalGrandTotalCalculated = Math.round(subtotal - discount + shippingFee);
-    const orderIdGenerated = `BOSE-${Date.now().toString().slice(-6)}-${Math.floor(1000 + Math.random() * 9000)}`;
+    const orderIdGenerated = `${Math.floor(1000 + Math.random() * 9000)}`;
 
     const completedBoseOrderObject = {
-        orderId: orderIdGenerated,
+        orderNumber: orderIdGenerated,
+        orderId: `BOSE-${orderIdGenerated}`,
         customerName: customerName,
         phone1: sanitizedPhone1,
         phone2: sanitizedPhone2,
@@ -543,6 +541,7 @@ function processFinalBoseOrder(cart, storeData, method, shippingFee) {
         deliveryZone: selectedZoneName,
         shippingFee: shippingFee,
         address: fullAddressText,
+        date: `${orderDate.split('-')[2]} / ${orderDate.split('-')[1]} / ${orderDate.split('-')[0]}`,
         scheduledDate: orderDate,
         scheduledTime: orderTime,
         grandTotal: finalGrandTotalCalculated,
@@ -550,13 +549,16 @@ function processFinalBoseOrder(cart, storeData, method, shippingFee) {
         items: cart
     };
 
-    // 🤝 مزامنة القنوات والمفاتيح الموحدة لمنع ثغرات الفواتير والصفحات الفارغة
+    // 🤝 سد ثغرة الأصفار وتوحيد الذاكرة متبادلة التوافق تماماً
     localStorage.setItem("bose_last_order", JSON.stringify(completedBoseOrderObject));
     
     const whatsappMessageText = buildBoseFormattedWhatsappInvoice(completedBoseOrderObject);
     const brandWhatsappNumber = storeData.store?.phone || "01097238441";
     
-    localStorage.removeItem("bose_cart");
+    // ربط الرسالة بالـ object لضمان عدم حدوث شلل لزر الإرسال البديل بصفحة النجاح
+    completedBoseOrderObject.whatsappMessage = whatsappMessageText;
+    localStorage.setItem("bose_last_order", JSON.stringify(completedBoseOrderObject));
+
     localStorage.removeItem("bose_active_coupon");
     if (typeof window.updateGlobalCartCounter === "function") window.updateGlobalCartCounter();
 
@@ -625,13 +627,18 @@ function renderBoseSuccessPage(storeData) {
     const customerWelcome = document.getElementById("success-customer-welcome");
     const receiptWrapper = document.getElementById("bose-receipt-items-container");
     
-    if (orderIdDisplay) orderIdDisplay.textContent = order.orderId;
-    if (customerWelcome) customerWelcome.textContent = `مرحباً بك عميلنا المحترم: ${order.customerName}`;
+    const orderNumLbl = document.getElementById("bose-receipt-number-lbl");
+    const dateLbl = document.getElementById("bose-receipt-date-lbl");
+
+    // فك شلل الأصفار وإجبار قراءة المخرجات الحقيقية
+    if (orderNumLbl) orderNumLbl.textContent = `رقم طلب الفاتورة: #${order.orderNumber || '0000'}`;
+    if (dateLbl) dateLbl.textContent = order.date || '00 / 00 / 2026';
+    if (orderIdDisplay) orderIdDisplay.textContent = order.orderId || `#${order.orderNumber}`;
     
     if (receiptWrapper && order.items) {
         receiptWrapper.innerHTML = order.items.map(item => `
             <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; font-family: 'Cairo';">
-                <span><strong>${item.title}</strong> (×${item.quantity})</span>
+                <span><strong>${item.title}</strong> (×${item.quantity})<span style="display:block; font-size:0.75rem; font-weight:700; color:#FF91A4; margin-top:2px;">${item.flavorName || 'جاهز وفريش'}</span></span>
                 <span style="color:#FF91A4; font-weight:700;">${(item.finalPrice * item.quantity).toFixed(2)} EGP</span>
             </div>
         `).join("");
@@ -639,6 +646,11 @@ function renderBoseSuccessPage(storeData) {
 
     const grandTotalDisplay = document.getElementById("bose-receipt-grand-total");
     if (grandTotalDisplay) grandTotalDisplay.textContent = order.grandTotal + " EGP";
+    
+    const whatsappBtn = document.getElementById("bose-success-whatsapp-btn");
+    if (whatsappBtn && order.whatsappMessage) {
+        whatsappBtn.href = `https://wa.me/20${storeData.store?.phone || '01097238441'}?text=${encodeURIComponent(order.whatsappMessage)}`;
+    }
 }
 
 /**
