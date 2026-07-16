@@ -84,7 +84,9 @@
 
 .cart-layout-container,
 .bose-cart-container,
-.cart-checkout-grid {
+.cart-checkout-grid,
+.checkout-grid-layout,
+.checkout-grid-container {
     display: grid;
     grid-template-columns: 1fr;
     gap: 30px;
@@ -95,7 +97,13 @@
     .cart-layout-container,
     .bose-cart-container,
     .cart-checkout-grid {
-        grid-template-columns: 1.6fr 1.4fr; /* تقسيم هندسي متوازن ومريح للعين على الشاشات الكبيرة */
+        grid-template-columns: 1.6fr 1.4fr; /* تقسيم هندسي متوازن ومريح للعين على الشاشات الكبيرة والسلة */
+    }
+    .checkout-grid-container,
+    .bose-checkout-grid,
+    .checkout-grid-layout {
+        grid-template-columns: 1.25fr 1fr; /* تقسيم هندسي مخصص لصفحة الدفع */
+        gap: 40px;
     }
 }
 
@@ -160,7 +168,7 @@
     line-height: 1.5;
 }
 
-/* حالة السلة الفارغة */
+/* حالة السلة الفارغة المدمج بها الأنيميشن الحركي الذكي */
 .bose-empty-cart-card,
 .empty-cart-state-box,
 .empty-cart-view {
@@ -170,7 +178,7 @@
     padding: 60px 20px;
     text-align: center;
     box-shadow: var(--bose-soft-shadow);
-    animation: boseFadeIn 0.3s ease-out;
+    animation: boseFadeIn 0.3s ease-out; /* دمج الأنيميشن لضمان انسيابية الظهور */
     grid-column: 1 / -1;
     display: flex;
     flex-direction: column;
@@ -203,7 +211,6 @@
     font-weight: 700;
     font-size: 1.4rem;
     color: var(--bose-black);
-    margin-bottom: 12px;
 }
 
 .empty-cart-desc {
@@ -216,7 +223,7 @@
     line-height: 1.7;
 }
 
-/* التنسيق الهندسي لزر إفراغ السلة الحقيقي لمنع البتر وتأمين المظهر الفاخر */
+/* زر إفراغ السلة المطور لمنع البتر وتأمين المظهر الفاخر */
 .btn-clear-cart-node {
     background-color: var(--bose-white);
     color: var(--bose-pink);
@@ -290,7 +297,7 @@
     border-color: var(--bose-pink);
 }
 
-/* صندوق الصورة المقدس بمقاس 120px متوافق مع المصفوقة البصرية لمنع التمطط */
+/* صندوق الصورة المقدس بمقاس 120px لمنع التمطط والبكسلة بصورة طبيعية 100% */
 .cart-item-media-box {
     width: 120px;
     height: 120px;
@@ -481,7 +488,6 @@
     flex-shrink: 0;
 }
 
-/* فئات التخصيص للمحاكيات لضمان عدم توقفها */
 .customization-badge-node.gold-accent,
 .customization-badge-pill.gold-accent {
     border-color: rgba(212, 175, 55, 0.3);
@@ -648,7 +654,7 @@
     padding: 24px;
     box-shadow: var(--bose-soft-shadow);
     position: sticky;
-    top: 100px; 
+    top: 100px;
     box-sizing: border-box;
     z-index: 10; /* تأمين هندسي متناسق لمنع التداخل مع الهيدر الموحد */
 }
@@ -714,7 +720,7 @@
     box-shadow: 0 6px 15px rgba(255, 145, 164, 0.25);
 }
 
-/* تغذية بصرية لنجاح وفشل الكوبون */
+/* دمج التغذية البصرية المبتورة لحالة نجاح وفشل الكوبون */
 .coupon-status-toast {
     font-family: var(--bose-font);
     font-weight: 600;
@@ -823,13 +829,13 @@
     flex-shrink: 0;
 }
 
-/* الأزرار الفاخرة المزدوجة التوافق للرحلة الشاملة - مؤمنة بالكامل باللون البمبي الفاخر */
+/* الأزرار الفاخرة الملوكية للرحلة الشاملة */
 .bose-primary-checkout-btn,
 .premium-checkout-button,
 .bose-action-button-full {
     width: 100%;
     height: 52px;
-    background-color: var(--bose-pink); /* البمبي الفاخر كخيار وحيد وقاطع */
+    background-color: var(--bose-pink);
     color: var(--bose-white);
     border: none;
     border-radius: 12px;
@@ -849,13 +855,11 @@
 }
 
 .bose-primary-checkout-btn:hover,
-.bose-primary-checkout-btn:focus-visible,
 .premium-checkout-button:hover,
 .bose-action-button-full:hover {
-    background-color: #ff788f; /* تأثير تفاعلي ناعم وداكن قليلاً */
+    background-color: #ff788f;
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(255, 145, 164, 0.35);
-    outline: none;
 }
 
 /* فئة حالة التحميل عند معالجة الطلب برمجياً لمنع التكرار وقفل الكبس المزدوج */
@@ -883,12 +887,6 @@
     margin-left: -11px;
     margin-top: -11px;
     will-change: transform;
-}
-
-.bose-primary-checkout-btn i,
-.premium-checkout-button i,
-.bose-action-button-full i {
-    font-size: 1.05rem;
 }
 
 .bose-continue-shopping-anchor,
@@ -924,26 +922,12 @@
 }
 
 /* ==========================================================================\
-   6. صفحة الدفع وتفاصيل التوصيل الذكية (Secure Checkout Process)
+   6. صفحة الدفع وتفاصيل التوصيل الذكية والمدخلات (Secure Checkout Form)
    ========================================================================== */
-.checkout-grid-container,
-.bose-checkout-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 30px;
-    align-items: start;
-}
-
-@media (min-width: 992px) {
-    .checkout-grid-container,
-    .bose-checkout-grid {
-        grid-template-columns: 1.55fr 1.45fr;
-    }
-}
-
 .checkout-card-box,
 .checkout-step-card,
-.checkout-details-card {
+.checkout-details-card,
+.checkout-form-panel {
     background: var(--bose-white);
     border: 1px solid var(--bose-border-gray);
     border-radius: var(--bose-radius);
@@ -955,7 +939,8 @@
 
 .checkout-card-title,
 .step-card-title,
-.checkout-steps-nav {
+.checkout-steps-nav,
+.checkout-pane-title {
     font-family: var(--bose-font);
     font-weight: 700;
     font-size: 1.25rem;
@@ -969,15 +954,17 @@
 }
 
 .checkout-card-title i,
-.step-card-title i {
+.step-card-title i,
+.checkout-pane-title i {
     color: var(--bose-pink);
     font-size: 1.15rem;
 }
 
-/* تصميم حقول الإدخال والمدخلات الاحترافية */
+/* دمج الحقول الذكية والتجاوب الثنائي المبتور للكمبيوتر والموبايل */
 .checkout-fields-row,
 .bose-checkout-form-grid,
-.bose-checkout-form {
+.bose-checkout-form,
+.form-inputs-stack {
     display: grid;
     grid-template-columns: 1fr;
     gap: 18px;
@@ -987,26 +974,26 @@
     .checkout-fields-row.two-cols,
     .bose-checkout-form-grid,
     .bose-checkout-form {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr 1fr; /* توزيع عمودين متوازيين للكمبيوتر والشاشات الكبيرة */
     }
     .bose-form-group.full-width-col {
-        grid-column: span 2;
+        grid-column: span 2; /* الحقول العريضة مثل تفاصيل العنوان */
     }
 }
 
 .bose-form-group,
-.checkout-field-group {
+.checkout-field-group,
+.input-group-node {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    margin-bottom: 18px;
 }
 
 .bose-form-group label,
 .checkout-field-label,
-.bose-form-label {
+.bose-form-label,
+.input-group-node label {
     font-family: var(--bose-font);
-    font-weight: 700;
     font-size: 0.95rem;
     color: var(--bose-black);
     display: flex;
@@ -1014,7 +1001,8 @@
     gap: 4px;
 }
 
-.bose-form-group label span.required-indicator {
+.bose-form-group label span.required-indicator,
+.input-group-node label span.required-indicator {
     color: var(--bose-pink);
     font-weight: 700;
 }
@@ -1022,7 +1010,8 @@
 .bose-form-control,
 .checkout-text-input,
 .checkout-select-input,
-.checkout-textarea-input {
+.checkout-textarea-input,
+.bose-field-capture {
     background-color: var(--bose-white);
     border: 1.5px solid var(--bose-border-gray);
     border-radius: 8px;
@@ -1034,28 +1023,29 @@
     transition: var(--bose-transition);
     width: 100%;
     box-sizing: border-box;
+    outline: none;
 }
 
 .bose-form-control:focus,
 .checkout-text-input:focus,
 .checkout-select-input:focus,
-.checkout-textarea-input:focus {
-    outline: none;
+.checkout-textarea-input:focus,
+.bose-field-capture:focus {
     border-color: var(--bose-pink);
-    background-color: var(--bose-white);
-    box-shadow: 0 0 0 4px rgba(255, 145, 164, 0.1);
+    box-shadow: 0 0 0 4px rgba(255, 145, 164, 0.15);
 }
 
 textarea.bose-form-control,
-.checkout-textarea-input {
+.checkout-textarea-input,
+textarea.bose-field-capture {
     height: 110px;
     padding: 12px 16px;
     resize: none;
 }
 
-/* تنسيق قوائم الاختيار المخصصة (Select Inputs) */
 select.bose-form-control,
-.checkout-select-input {
+.checkout-select-input,
+select.bose-field-capture {
     appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FF91A4' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
     background-repeat: no-repeat;
@@ -1071,7 +1061,7 @@ select.bose-form-control option,
     font-family: var(--bose-font);
 }
 
-/* حقول الأخطاء البرمجية للمدخلات */
+/* دمج وتأمين حالات الحقول المعطوبة والأخطاء البرمجية (Error States) */
 .form-field-error-msg {
     font-family: var(--bose-font);
     font-weight: 600;
@@ -1084,28 +1074,31 @@ select.bose-form-control option,
 
 .bose-form-group.has-error .bose-form-control,
 .checkout-field-group.has-error .checkout-text-input {
-    border-color: var(--bose-error-text);
-    background-color: var(--bose-error-bg);
+    border-color: var(--bose-error-text) !important; /* قفل حارس الخطأ المبتور */
+    background-color: var(--bose-error-bg) !important;
 }
 
 .bose-form-group.has-error .form-field-error-msg {
-    display: block;
+    display: block !important;
 }
 
 /* ==========================================================================\
    7. خيارات التوصيل والاستلام التفاعلية (Delivery & Pickup Options Grid)
    ========================================================================== */
 .bose-shipping-toggle-container,
-.bose-delivery-options-grid {
+.bose-delivery-options-grid,
+.fulfillment-methods-flex {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 15px;
     margin-bottom: 25px;
+    width: 100%;
 }
 
 .shipping-method-card,
 .delivery-option-radio-card,
-.bose-shipping-option-card {
+.bose-shipping-option-card,
+.btn-fulfillment-node {
     background-color: var(--bose-white);
     border: 2px solid var(--bose-border-gray);
     border-radius: 12px;
@@ -1115,27 +1108,22 @@ select.bose-form-control option,
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 10px;
     transition: var(--bose-transition);
     box-sizing: border-box;
     position: relative;
+    font-family: var(--bose-font);
+    font-weight: 700;
+    color: rgba(17, 17, 17, 0.6);
 }
 
-.shipping-method-card i,
-.delivery-option-radio-card i,
+/* دمج وتلوين الأيقونات المبتورة عند تفعيل خيارات التوصيل */
+.shipping-method-card i, 
+.delivery-option-radio-card i, 
 .bose-shipping-option-card .option-icon {
     font-size: 1.8rem;
     color: rgba(17, 17, 17, 0.3);
-    transition: color 0.3s ease;
-}
-
-.shipping-method-card span,
-.delivery-option-radio-card .radio-card-header,
-.bose-shipping-option-card .option-title {
-    font-family: var(--bose-font);
-    font-weight: 700;
-    font-size: 0.95rem;
-    color: rgba(17, 17, 17, 0.6);
     transition: color 0.3s ease;
 }
 
@@ -1147,7 +1135,6 @@ select.bose-form-control option,
     accent-color: var(--bose-pink);
 }
 
-/* العلامة الدائرية المخصصة للاختيار */
 .selection-marker {
     width: 18px;
     height: 18px;
@@ -1162,29 +1149,25 @@ select.bose-form-control option,
     transition: var(--bose-transition);
 }
 
-/* حالة التنشيط الفاخرة للاختيار */
+/* تفعيل الحالات النشطة بالكامل وعلامة الاختيار المخصصة */
 .shipping-method-card.active-option,
 .delivery-option-radio-card.active-selected,
-.bose-shipping-option-card.is-active {
-    border-color: var(--bose-pink);
-    background-color: var(--bose-cream);
-    box-shadow: 0 4px 12px rgba(255, 145, 164, 0.08);
+.bose-shipping-option-card.is-active,
+.btn-fulfillment-node.active {
+    border-color: var(--bose-pink) !important;
+    background-color: var(--bose-cream) !important;
+    color: var(--bose-pink) !important;
+    box-shadow: 0 4px 12px rgba(255, 145, 164, 0.08) !important;
 }
 
 .shipping-method-card.active-option i,
 .delivery-option-radio-card.active-selected i,
 .bose-shipping-option-card.is-active .option-icon {
-    color: var(--bose-pink);
-}
-
-.shipping-method-card.active-option span,
-.delivery-option-radio-card.active-selected .radio-card-header,
-.bose-shipping-option-card.is-active .option-title {
-    color: var(--bose-black);
+    color: var(--bose-pink) !important; /* عودة لون الأيقونة نبض الحياة الساقط */
 }
 
 .bose-shipping-option-card.is-active .selection-marker {
-    border-color: var(--bose-pink);
+    border-color: var(--bose-pink) !important;
 }
 
 .bose-shipping-option-card.is-active .selection-marker::after {
@@ -1197,47 +1180,18 @@ select.bose-form-control option,
 }
 
 /* بطاقة عرض تفاصيل الاستلام من الفرع */
-.pickup-details-alert-box {
+.pickup-details-alert-box,
+#bose-pickup-location-block {
     background-color: var(--bose-cream);
-    border: 1px solid var(--bose-border-pink);
+    border: 1px dashed var(--bose-pink);
     border-radius: 14px;
     padding: 16px;
     margin-bottom: 20px;
-    display: none; 
-}
-
-.pickup-details-alert-box.active-state {
-    display: block;
-    animation: boseFadeIn 0.3s ease-out;
-}
-
-.pickup-address-header {
-    font-family: var(--bose-font);
-    font-weight: 700;
-    font-size: 0.95rem;
-    color: var(--bose-black);
-    margin-bottom: 6px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.pickup-address-header i {
-    color: var(--bose-pink);
-}
-
-.pickup-address-text {
-    font-family: var(--bose-font);
-    font-size: 0.88rem;
-    color: rgba(17, 17, 17, 0.7);
-    line-height: 1.6;
 }
 
 /* ==========================================================================\
-   8. محرك تحميل ومؤشر رفع الصور وضغطها تلقائياً لـ Cloudinary (Cloudinary Engine)
+   8. محرك مؤشر رفع الصور وضغطها تلقائياً لكلاوديناري (Cloudinary Engine)
    ========================================================================== */
-
-/* واجهة منطقة رفع وصيانة صور العملاء والضغط لـ Cloudinary */
 .bose-cloudinary-uploader-area,
 .bose-cloudinary-upload-container,
 .bose-cloudinary-upload-wrapper,
@@ -1260,88 +1214,36 @@ select.bose-form-control option,
     justify-content: center;
 }
 
-/* تحسين تجربة السحب والإفلات لربطها بـ JS */
-.bose-cloudinary-uploader-area.drag-over,
 .bose-cloudinary-uploader-area:hover,
 .bose-cloudinary-upload-container:hover,
-.bose-cloudinary-upload-container.dragover,
-.bose-cloudinary-upload-wrapper:hover,
-.bose-upload-dragzone:hover {
+.bose-upload-dragzone:hover,
+.bose-cloudinary-uploader-area.drag-over {
     border-color: var(--bose-pink);
     background-color: var(--bose-white);
     transform: scale(1.01);
     box-shadow: var(--bose-soft-shadow);
 }
 
-/* تأمين إخفاء محتويات منطقة الرفع والرموز أثناء حالة التحميل لتجنب التشويه */
+/* تأمين إخفاء الرموز في حالات الـ JS للرفع السحابي لتجنب التشويه */
 .bose-upload-state-loading .bose-cloudinary-uploader-area i.upload-main-icon,
 .bose-upload-state-loading .bose-cloudinary-uploader-area .upload-area-text,
-.bose-upload-state-loading .bose-cloudinary-upload-container .upload-zone-icon,
-.bose-upload-state-loading .bose-cloudinary-upload-container .upload-zone-title {
+.bose-upload-state-loading .bose-cloudinary-upload-container .upload-zone-icon {
     display: none !important;
 }
 
-/* فئات تبديل ديناميكية لإخفاء وإظهار الرفع المباشر */
 .bose-upload-state-success .bose-cloudinary-uploader-area,
-.bose-upload-state-success .bose-cloudinary-upload-container,
-.bose-upload-state-success .bose-upload-dragzone {
+.bose-upload-state-success .bose-cloudinary-upload-container {
     display: none !important;
 }
 
-/* إعادة تفعيل منطقة الرفع بالكامل في حالة الخطأ */
-.bose-upload-state-error .bose-cloudinary-uploader-area,
-.bose-upload-state-error .bose-cloudinary-upload-container,
-.bose-upload-state-error .bose-upload-dragzone {
-    display: flex !important;
-    border-color: var(--bose-error-red);
-    background-color: var(--bose-error-bg);
-}
-
-/* تعطيل الواجهة ومنع تكرار الرفع أثناء ضغط ومعالجة الصورة */
-.bose-cloudinary-uploader-area.bose-uploading-active,
-.bose-cloudinary-upload-container.bose-uploading-active,
-.bose-upload-dragzone.bose-uploading-active {
-    pointer-events: none !important;
-    opacity: 0.5;
-}
-
-.upload-main-icon,
-.upload-zone-icon,
-.bose-upload-icon {
+.upload-main-icon, .upload-zone-icon {
     font-size: 2.5rem;
     color: var(--bose-pink);
     margin-bottom: 4px;
     transition: var(--bose-transition);
 }
 
-.bose-cloudinary-uploader-area:hover .upload-main-icon,
-.bose-cloudinary-upload-container:hover .upload-zone-icon,
-.bose-upload-dragzone:hover .bose-upload-icon {
-    transform: translateY(-4px);
-}
-
-.upload-area-text,
-.upload-zone-title,
-.upload-zone-desc,
-.bose-upload-text,
-.bose-upload-hint {
-    font-family: var(--bose-font);
-    font-size: 0.9rem;
-    color: rgba(17, 17, 17, 0.6);
-    line-height: 1.5;
-    margin: 0;
-}
-
-.upload-area-text strong,
-.upload-zone-title,
-.bose-upload-text {
-    color: var(--bose-black);
-    font-weight: 700;
-}
-
-/* حقول الرفع المخفية للمحركات البرمجية */
-.bose-hidden-file-input,
-.upload-hidden-input {
+.bose-hidden-file-input, .upload-hidden-input {
     position: absolute;
     top: 0;
     left: 0;
@@ -1361,35 +1263,20 @@ select.bose-form-control option,
     border-radius: 14px;
     padding: 14px;
     margin-top: 15px;
-    display: none; 
+    display: none;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
     box-shadow: 0 4px 15px rgba(255, 145, 164, 0.03);
     width: 100%;
     box-sizing: border-box;
-    animation: boseFadeIn 0.3s ease-out;
 }
 
-/* إظهار المؤشر فوراً عند تفعيل حالات الـ JS للرفع السحابي */
+/* تفعيل ظهور المؤشرات المبتورة فوراً عند حقن حالات الخادم */
 .bose-upload-state-loading .cloudinary-upload-indicator-card,
 .bose-upload-state-loading .bose-upload-preview-card,
-.bose-upload-state-loading .bose-upload-progress-container,
-.bose-upload-state-success .cloudinary-upload-indicator-card,
-.bose-upload-state-success .bose-upload-preview-card,
-.bose-upload-state-error .cloudinary-upload-indicator-card,
-.bose-upload-state-error .bose-upload-preview-card {
+.bose-upload-state-success .bose-upload-preview-card {
     display: flex !important;
-}
-
-.cloudinary-status-meta,
-.upload-preview-details,
-.bose-upload-progress-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    min-width: 0;
-    flex: 1; 
 }
 
 .cloudinary-spinner {
@@ -1400,38 +1287,13 @@ select.bose-form-control option,
     border-radius: 50%;
     animation: boseSpin 0.8s linear infinite;
     flex-shrink: 0;
-    will-change: transform;
 }
 
-/* إخفاء السَبينر فور انتهاء العمليات أو حدوث خطأ */
-.bose-upload-state-success .cloudinary-spinner,
-.bose-upload-state-error .cloudinary-spinner {
+.bose-upload-state-success .cloudinary-spinner {
     display: none !important;
 }
 
-@keyframes boseSpin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-.cloudinary-status-text,
-.upload-preview-filename {
-    font-family: var(--bose-font);
-    font-weight: 700;
-    font-size: 0.85rem;
-    color: var(--bose-black);
-    white-space: normal;
-    word-wrap: break-word;
-    overflow-wrap: anywhere;
-    max-width: 100%;
-}
-
-/* تغيير نصوص التنبيهات السحابية ديناميكياً لتلائم حالات الخطأ */
-.bose-upload-state-error .cloudinary-status-text {
-    color: var(--bose-error-red);
-}
-
-/* شريط تقدم عملية ضغط الصورة الذاتية والرفع */
+/* شريط تقدم عملية ضغط الصورة المبتور وحفظ معالج الموبايل */
 .bose-cloudinary-progress-bar-wrapper,
 .bose-upload-progress-wrapper,
 .bose-upload-progress-track {
@@ -1447,7 +1309,6 @@ select.bose-form-control option,
 }
 
 .bose-upload-state-loading .bose-cloudinary-progress-bar-wrapper,
-.bose-upload-state-loading .bose-upload-progress-wrapper,
 .bose-upload-state-loading .bose-upload-progress-track {
     display: block !important;
 }
@@ -1455,14 +1316,12 @@ select.bose-form-control option,
 .bose-cloudinary-progress-fill,
 .bose-upload-progress-fill {
     height: 100%;
-    width: 0%; 
+    width: 0%;
     background-color: var(--bose-pink);
     border-radius: 20px;
     transition: width 0.2s ease;
-    will-change: width;
 }
 
-/* شارة نجاح الرفع والضغط التلقائي للربط الآمن */
 .cloudinary-success-badge,
 .upload-preview-status,
 .bose-upload-success-preview {
@@ -1480,43 +1339,31 @@ select.bose-form-control option,
     flex-shrink: 0;
 }
 
-.bose-upload-state-success .cloudinary-success-badge,
-.bose-upload-state-success .upload-preview-status,
-.bose-upload-state-success .bose-upload-success-preview {
+.bose-upload-state-success .cloudinary-success-badge {
     display: flex !important;
 }
 
-/* حاوية المعاينات المرفوعة بنجاح */
+/* إرجاع معاينات الصور المصغرة الناجحة المبتورة (Thumbnails) */
 .bose-cloudinary-previews-grid {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
     margin-top: 8px;
-    max-height: 110px;
-    overflow-y: auto;
 }
 
-.cloudinary-preview-thumbnail,
-.upload-preview-thumbnail,
-.bose-upload-success-preview img {
+.cloudinary-preview-thumbnail {
     width: 55px;
     height: 55px;
     border-radius: 8px;
     object-fit: cover;
     border: 1px solid var(--bose-border-pink);
-    aspect-ratio: 1 / 1;
-    flex-shrink: 0;
     display: none;
-    overflow: hidden; 
 }
 
-.bose-upload-state-success .cloudinary-preview-thumbnail,
-.bose-upload-state-success .upload-preview-thumbnail,
-.bose-upload-state-success .bose-upload-success-preview img {
+.bose-upload-state-success .cloudinary-preview-thumbnail {
     display: block !important;
 }
 
-/* حاوية المعاينة الكبيرة لصور التخصيص المرفوعة بنجاح قفل الأبعاد الآمن للموبايل */
 .bose-cloudinary-full-preview-box {
     width: 100%;
     max-height: 200px;
@@ -1530,46 +1377,26 @@ select.bose-form-control option,
 
 .bose-upload-state-success .bose-cloudinary-full-preview-box {
     display: block !important;
-    animation: boseFadeIn 0.3s ease-out;
 }
 
 .bose-cloudinary-full-preview-box img {
     width: 100%;
     height: 100%;
-    object-fit: contain; /* تأمين استعراض الصورة كاملة دون بتر للهوامش */
+    object-fit: contain;
 }
 
-/* زر حذف الصورة وإعادة الرفع لتجربة مستخدم مرنة */
-.cloudinary-remove-img-btn,
-.upload-remove-image-btn,
-.bose-upload-delete-trigger {
+.cloudinary-remove-img-btn {
     background: none;
     border: none;
     color: var(--bose-error-red);
     font-family: var(--bose-font);
     font-weight: 600;
-    font-size: 0.8rem;
     cursor: pointer;
     display: none;
-    padding: 4px 8px;
-    border-radius: 6px;
-    transition: var(--bose-transition);
-    flex-shrink: 0; 
 }
 
-.bose-upload-state-success .cloudinary-remove-img-btn,
-.bose-upload-state-success .upload-remove-image-btn,
-.bose-upload-state-success .bose-upload-delete-trigger,
-.bose-upload-state-error .cloudinary-remove-img-btn,
-.bose-upload-state-error .upload-remove-image-btn,
-.bose-upload-state-error .bose-upload-delete-trigger {
+.bose-upload-state-success .cloudinary-remove-img-btn {
     display: block !important;
-}
-
-.cloudinary-remove-img-btn:hover,
-.upload-remove-image-btn:hover,
-.bose-upload-delete-trigger:hover {
-    background-color: var(--bose-error-bg);
 }
 
 /* ==========================================================================\
@@ -1596,29 +1423,17 @@ select.bose-form-control option,
     gap: 12px;
     cursor: pointer;
     user-select: none;
-    transition: var(--bose-transition);
-}
-
-.payment-method-header-trigger input[type="radio"] {
-    accent-color: var(--bose-pink);
 }
 
 .payment-method-header-trigger label {
     font-weight: 700;
-    font-size: 1rem;
     color: var(--bose-black);
-    cursor: pointer;
     display: flex;
     align-items: center;
     gap: 8px;
-    flex-grow: 1;
 }
 
-.payment-method-header-trigger img {
-    height: 24px;
-    object-fit: contain;
-}
-
+/* دمج شرح الكرت المبتور لتعليمات الدفع */
 .payment-method-content-body {
     background-color: var(--bose-cream);
     padding: 0;
@@ -1628,48 +1443,38 @@ select.bose-form-control option,
 }
 
 .payment-method-accordion-item.expanded-active {
-    border-color: var(--bose-pink);
-    box-shadow: 0 4px 12px rgba(255, 145, 164, 0.05);
+    border-color: var(--bose-pink) !important;
 }
 
 .payment-method-accordion-item.expanded-active .payment-method-content-body {
     padding: 16px 20px;
-    max-height: 500px; /* سعة آمنة لكافة الشروح والتعليمات المرفقة */
+    max-height: 500px;
     border-top: 1px dashed rgba(255, 145, 164, 0.15);
 }
 
 .payment-instructions-box {
-    font-size: 0.88rem;
+    font-size: 0.88rem; /* نص شروح كاش الدعم الصافي المبتور */
     color: #444444;
     line-height: 1.6;
-}
-
-.payment-instructions-box strong {
-    color: var(--bose-black);
-    font-weight: 700;
 }
 
 /* ==========================================================================\
    10. مراجعة الطلب المصغرة بصفحة الدفع (Checkout Order Review)
    ========================================================================== */
-.review-items-container {
+.review-items-container,
+.invoice-items-compact-list {
     display: flex;
     flex-direction: column;
     gap: 14px;
     max-height: 280px;
     overflow-y: auto;
     margin-bottom: 20px;
-    padding-left: 4px; 
-    scrollbar-gutter: stable; 
-    -webkit-overflow-scrolling: touch; 
+    scrollbar-gutter: stable; /* الحفاظ على استقرار الكروت من البتر */
 }
 
+/* تحسين مظهر الـ Scrollbar المبتور لراحة العين */
 .review-items-container::-webkit-scrollbar {
     width: 5px;
-}
-
-.review-items-container::-webkit-scrollbar-track {
-    background: transparent;
 }
 
 .review-items-container::-webkit-scrollbar-thumb {
@@ -1677,30 +1482,25 @@ select.bose-form-control option,
     border-radius: 10px;
 }
 
-.review-item-compact-row {
-    display: grid;
-    grid-template-columns: 1fr auto;
+.review-item-compact-row,
+.invoice-item-compact-node {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
     gap: 15px;
     padding-bottom: 12px;
-    border-bottom: 1px solid rgba(17, 17, 17, 0.05);
-}
-
-.review-item-compact-row:last-child {
-    border-bottom: none;
+    border-bottom: 1px dashed rgba(17, 17, 17, 0.05);
 }
 
 .compact-item-meta {
     display: flex;
     align-items: center;
     gap: 10px;
-    min-width: 0; 
 }
 
 .compact-item-quantity {
     background-color: var(--bose-cream);
     color: var(--bose-pink);
-    font-family: var(--bose-font);
     font-weight: 700;
     font-size: 0.8rem;
     width: 24px;
@@ -1709,50 +1509,14 @@ select.bose-form-control option,
     display: flex;
     align-items: center;
     justify-content: center;
-    line-height: 1;
-    flex-shrink: 0;
-}
-
-.compact-item-title {
-    font-family: var(--bose-font);
-    font-weight: 600;
-    font-size: 0.92rem;
-    color: var(--bose-black);
-    overflow-wrap: anywhere;
-    word-wrap: break-word;
-}
-
-.compact-item-price {
-    font-family: var(--bose-font);
-    font-weight: 700;
-    font-size: 0.95rem;
-    color: var(--bose-black);
-    white-space: nowrap;
-    flex-shrink: 0;
 }
 
 /* ==========================================================================\
    11. تخطيط وتصميم صفحة نجاح الطلب الفخمة (Order Success Layout & Receipt)
    ========================================================================== */
+.success-page-wrapper,
 .bose-success-page-section,
-.bose-success-checkout-container,
-.success-page-card {
-    width: 100%;
-    min-height: 90vh;
-    padding: 60px 15px;
-    background-color: var(--bose-white);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    direction: rtl;
-    box-sizing: border-box;
-    max-width: 650px;
-    margin: 40px auto;
-}
-
-.success-card-wrapper,
-.bose-success-checkout-container,
+.success-card-capsule,
 .success-page-card {
     width: 100%;
     background-color: var(--bose-white);
@@ -1761,23 +1525,20 @@ select.bose-form-control option,
     padding: 40px 25px;
     text-align: center;
     box-shadow: var(--bose-soft-shadow);
-    animation: boseFadeIn 0.4s ease-out;
     box-sizing: border-box;
+    max-width: 650px;
+    margin: 40px auto;
+    animation: boseFadeIn 0.4s ease-out;
 }
 
-@keyframes boseFadeIn {
-    from { opacity: 0; transform: translateY(15px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.success-celebration-badge-container,
-.success-seal-icon-box,
-.success-badge-icon {
+/* حلقة الارتداد والحركة لشعار بطاقة عرض النجاح الفاخرة */
+.success-badge-pulse, .success-celebration-badge-container {
     width: 85px;
     height: 85px;
+    border-radius: 50%;
     background-color: var(--bose-cream);
     border: 3px solid var(--bose-pink);
-    border-radius: 50%;
+    color: var(--bose-pink);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1786,40 +1547,11 @@ select.bose-form-control option,
     will-change: transform;
 }
 
-.success-celebration-badge-container i,
-.success-seal-icon-box i,
-.success-badge-icon {
+.success-badge-pulse i, .success-celebration-badge-container i {
     font-size: 2.8rem;
-    color: var(--bose-pink);
 }
 
-@keyframes boseBounce {
-    0% { transform: scale(0); }
-    100% { transform: scale(1); }
-}
-
-.success-main-title,
-.success-order-title,
-.success-title {
-    font-family: var(--bose-font);
-    font-size: 1.7rem;
-    color: var(--bose-black);
-    margin-bottom: 10px;
-}
-
-.success-sub-desc,
-.success-order-desc,
-.success-desc {
-    font-family: var(--bose-font);
-    font-weight: 400;
-    font-size: 1.05rem;
-    color: rgba(17, 17, 17, 0.6);
-    line-height: 1.7;
-    margin-bottom: 30px;
-    padding: 0 10px;
-}
-
-/* بطاقة رقم المرجع */
+/* كارت وعارض رقم المرجع المبتور الصريح لهوية الطلبات */
 .order-reference-card {
     background: var(--bose-soft-gray);
     border: 1px dashed var(--bose-pink);
@@ -1832,20 +1564,14 @@ select.bose-form-control option,
     margin-bottom: 24px;
 }
 
-.order-reference-label {
-    font-size: 0.85rem;
-    color: #666666;
-    font-weight: 600;
-}
-
 .order-reference-number {
     font-size: 1.6rem;
     font-weight: 700;
-    color: var(--bose-pink); /* رقم الطلب ملون بنبض الهوية البصرية البمبي */
+    color: var(--bose-pink); /* رقم الفاتورة ملون بنبض الحياة */
     letter-spacing: 1px;
 }
 
-/* الفاتورة المصغرة الرقمية الفاخرة المزدوجة الكلاسات لربط الـ JS */
+.order-summary-receipt-box,
 .bose-receipt-digital-card,
 .success-invoice-receipt-card {
     background-color: var(--bose-cream);
@@ -1858,88 +1584,49 @@ select.bose-form-control option,
     width: 100%;
 }
 
-.receipt-card-header,
-.invoice-receipt-header {
-    font-family: var(--bose-font);
+.receipt-header-row,
+.invoice-receipt-header,
+.receipt-card-header {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dashed rgba(255, 145, 164, 0.3);
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+    font-size: 0.9rem;
     font-weight: 700;
-    font-size: 1.05rem;
     color: var(--bose-black);
-    border-bottom: 1px dashed rgba(255, 145, 164, 0.15);
-    padding-bottom: 10px;
-    margin-bottom: 15px;
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
 }
 
-.receipt-card-header span.order-id-label,
-.invoice-receipt-header span.order-id-label {
-    color: var(--bose-pink);
-    white-space: nowrap;
-}
-
-.receipt-row-meta,
-.receipt-row-item,
-.invoice-receipt-details-list .receipt-row-item {
+.receipt-item-node,
+.receipt-row-item {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    font-size: 0.88rem;
+    color: var(--bose-black);
     margin-bottom: 12px;
-    gap: 10px;
 }
 
-.receipt-row-meta:last-of-type,
-.receipt-row-item:last-of-type {
-    margin-bottom: 0;
-}
-
-.receipt-meta-label,
-.receipt-row-item span {
-    font-family: var(--bose-font);
-    font-size: 0.92rem;
-    color: rgba(17, 17, 17, 0.55);
-    overflow-wrap: anywhere;
-    word-wrap: break-word;
-}
-
-.receipt-meta-value,
-.receipt-row-item strong {
-    font-family: var(--bose-font);
-    font-weight: 700;
-    font-size: 0.95rem;
-    color: var(--bose-black);
-    white-space: nowrap;
-    flex-shrink: 0;
-}
-
-.receipt-grand-total-divider {
-    border-top: 1px dashed rgba(17, 17, 17, 0.08);
-    margin: 15px 0;
-}
-
+.receipt-footer-total,
 .receipt-grand-total-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 10px;
-}
-
-.receipt-total-label {
-    font-family: var(--bose-font);
+    border-top: 1px dashed rgba(255, 145, 164, 0.3);
+    padding-top: 14px;
+    font-size: 1.1rem;
     font-weight: 700;
-    font-size: 1.05rem;
     color: var(--bose-black);
 }
 
+.receipt-total-val,
 .receipt-total-value {
-    font-family: var(--bose-font);
-    font-weight: 700;
-    font-size: 1.35rem;
     color: var(--bose-pink);
-    white-space: nowrap;
-    flex-shrink: 0;
+    font-size: 1.2rem;
 }
 
 /* روابط الانتقال والعمليات بصفحة النجاح */
+.success-actions-row,
 .success-actions-box {
     display: flex;
     flex-direction: column;
@@ -1948,55 +1635,50 @@ select.bose-form-control option,
 }
 
 @media (min-width: 480px) {
+    .success-actions-row,
     .success-actions-box {
         flex-direction: row;
         justify-content: center;
     }
 }
 
+.btn-success-whatsapp-trigger,
 .success-action-primary-btn {
+    flex: 1;
     background-color: var(--bose-pink);
     color: var(--bose-white);
-    font-family: var(--bose-font);
-    font-weight: 700;
-    font-size: 0.95rem;
     border: none;
-    border-radius: 12px;
-    padding: 12px 24px;
+    padding: 14px 24px;
+    border-radius: 50px;
+    font-size: 0.95rem;
+    font-weight: 700;
     cursor: pointer;
-    text-decoration: none;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 10px;
+    text-decoration: none;
+    box-shadow: 0 4px 15px rgba(255, 145, 164, 0.2);
     transition: var(--bose-transition);
-    box-shadow: 0 4px 15px rgba(255, 145, 164, 0.2); /* تأمين الفخامة البصرية */
-    box-sizing: border-box;
 }
 
-.success-action-primary-btn:hover {
-    background-color: #ff788f;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(255, 145, 164, 0.35);
-}
-
+.btn-success-home-anchor,
 .success-action-secondary-btn {
+    flex: 1;
     background-color: var(--bose-white);
     color: rgba(17, 17, 17, 0.7);
-    font-family: var(--bose-font);
-    font-weight: 600;
-    font-size: 0.95rem;
     border: 1px solid rgba(17, 17, 17, 0.12);
-    border-radius: 12px;
-    padding: 12px 24px;
+    padding: 14px 24px;
+    border-radius: 50px;
+    font-size: 0.95rem;
+    font-weight: 700;
     cursor: pointer;
-    text-decoration: none;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 10px;
+    text-decoration: none;
     transition: var(--bose-transition);
-    box-sizing: border-box;
 }
 
 .success-action-secondary-btn:hover {
@@ -2006,39 +1688,66 @@ select.bose-form-control option,
 }
 
 /* ==========================================================================\
-   12. 👑 حوكمة وأمان قنوات الفوتر القياسي لحظر ثغرة التصفير 👑
+   12. 👑 حوكمة وأمان قنوات الفوتر القياسي لحظر ثغرة التصفير والظلال المشوهة 👑
    ========================================================================== */
 .footer-social-icon-btn {
     width: 38px !important;
     height: 38px !important;
     border-radius: 50% !important;
     border: 1px solid rgba(255, 145, 164, 0.3) !important; /* إطار بمبي ناعم يمثل نبض الحياة */
-    display: flex !important;
+    display: flex !important; /* إصلاح الفلكس بوكس الساقط لمركزة الأيقونات */
     align-items: center !important;
     justify-content: center !important;
-    color: #FF91A4 !important;                          /* إلغاء اللون الأسود الباهت وتحويله لبمبي ناعم ملوكي لراحة العين */
+    color: #FF91A4 !important;                           /* إلغاء اللون الأسود وتحويله لبمبي ناعم ملوكي لراحة العين */
     background-color: #FFFFFF !important;                /* أرضية بيضاء صريحة لتوفير التنفس البصري الكامل ومنع التكدس */
-    box-shadow: 0 8px 32px rgba(255, 145, 164, 0.08) !important; /* ربط آمن بالظلال الناعمة المعتمدة هندسياً لمنع الظلال السوداء المشوهة */
+    box-shadow: 0 8px 32px rgba(255, 145, 164, 0.08) !important; /* ظلال ناعمة مريحة خالية من أي سواد مشوه */
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
     font-size: 16px !important;
     text-decoration: none !important;
 }
 
 .footer-social-icon-btn:hover {
-    background-color: #FF91A4 !important;     /* التحول الملوكي الكامل لللون البمبي نبض الحياة التفاعلي عند الهوفر */
+    background-color: #FF91A4 !important;     /* التحول الملوكي الكامل للون البمبي نبض الحياة عند الهوفر */
     color: #FFFFFF !important;               /* قلب لون الأيقونة الداخلي للأبيض الساطع */
-    border-color: #FF91A4 !important;         /* غلق وتأمين تلاحم البوردر بشكل فخم وانسيابي */
-    transform: translateY(-3px) !important;            /* حركة ناعمة مريحة ومحفزة تليق بعميل علاماتنا الفاخرة */
+    border-color: #FF91A4 !important;         /* تأمين تلاحم البوردر بشكل فخم وانسيابي */
+    transform: translateY(-3px) !important;   /* حركة ناعمة محفزة تليق بعميل علاماتنا الفاخرة */
     box-shadow: 0 12px 40px rgba(255, 145, 164, 0.22) !important;
 }
 
 /* ==========================================================================\
-   13. التجاوب الكامل للأجهزة الذكية والموبايل (Responsive Layouts)
+   13. 👑 التجاوب والـ Media Queries وإرجاع قواعد أمان التابلت المبتورة 👑
    ========================================================================== */
+
+/* حارس تأمين شاشات التابلت والشاشات المتوسطة لمنع أي بتر نهائياً */
+@media (min-width: 768px) and (max-width: 992px) {
+    .cart-checkout-grid, .checkout-grid-container {
+        grid-template-columns: 1fr !important; /* فرض عمود عريض مريح للمس التابلت */
+    }
+}
+
+/* شاشات التابلت والموبايل حتى 991px */
+@media (max-width: 991px) {
+    .cart-layout-container,
+    .bose-cart-container,
+    .checkout-grid-container,
+    .bose-checkout-grid,
+    .cart-checkout-grid,
+    .checkout-grid-layout {
+        grid-template-columns: 1fr !important; /* تحويل التخطيط لعمود واحد لسهولة التصفح باللمس */
+        gap: 24px;
+    }
+
+    .bose-summary-sticky-card,
+    .cart-summary-card,
+    .invoice-sticky-preview,
+    .bose-order-summary-sidebar {
+        position: static !important; /* إزالة التثبيت الجانبي على الشاشات الصغيرة لراحة التصفح */
+    }
+}
 
 /* للهواتف الصغيرة جداً والشاشات الأقل من 480px */
 @media (max-width: 480px) {
-    /* تم تأمين الـ DOM لمنع كسر حقن الـ JS أفقياً على الشاشات الفردية التنافسية */
+    /* تم تأمين الـ DOM لمنع كسر حقن الـ JS أفقياً وتحويل الكارد لعمودي منسق ومتوازن */
     .bose-cart-item-card,
     .cart-item-card {
         display: flex !important;
@@ -2078,6 +1787,7 @@ select.bose-form-control option,
         width: 100% !important;
     }
 
+    /* تأمين متحكم الكميات على الهواتف الذكية التنافسية */
     .bose-qty-controller-box {
         width: 100% !important;
         max-width: 160px !important;
@@ -2085,8 +1795,9 @@ select.bose-form-control option,
     }
 
     .bose-delivery-options-grid,
-    .bose-shipping-toggle-container {
-        grid-template-columns: 1fr !important; /* عرض عمودي لخيارات التوصيل لتسهيل التصفح باللمس على الموبايل */
+    .bose-shipping-toggle-container,
+    .fulfillment-methods-flex {
+        grid-template-columns: 1fr !important; /* عرض عمودي مريح لخيارات اللمس على الموبايل */
         gap: 12px !important;
     }
 
@@ -2097,30 +1808,5 @@ select.bose-form-control option,
     .coupon-apply-trigger {
         width: 100% !important;
         height: 46px !important;
-    }
-}
-
-/* شاشات التابلت والشاشات المتوسطة حتى 991px */
-@media (max-width: 991px) {
-    .cart-layout-container,
-    .bose-cart-container,
-    .checkout-grid-container,
-    .bose-checkout-grid,
-    .cart-checkout-grid {
-        grid-template-columns: 1fr; /* تحويل التخطيط لعمود واحد لسهولة الاستخدام واللمس بالموبايل */
-        gap: 24px;
-    }
-
-    .bose-summary-sticky-card,
-    .bose-order-summary-sidebar,
-    .cart-summary-card {
-        position: static !important; /* إزالة التثبيت الجانبي على الشاشات الصغيرة لراحة التصفح */
-    }
-}
-
-/* تأمين شاشات التابلت والشاشات المتوسطة لمنع أي بتر نهائياً */
-@media (min-width: 768px) and (max-width: 992px) {
-    .cart-checkout-grid {
-        grid-template-columns: 1fr;
     }
 }
