@@ -179,7 +179,6 @@
         let dotsContainer = document.getElementById('categories-dots-container');
         if (dotsContainer) {
             let dotsHtml = '';
-            // [تم التطهير الكامل بنجاح]: إصلاح ثغرة الدوران اللانهائي لضمان الكفاءة المطلقة
             for (let i = 0; i < count; i++) {
                 dotsHtml += `<span class="bose-slider-dot ${i === 0 ? 'active' : ''}" data-index="${i}"></span>`;
             }
@@ -217,7 +216,36 @@
     }
 
     /**
+     * 🎹 دالة المزامنة الحية والتحديث التلقائي للنقاط النشطة (Dots Synchronization Core)
+     * تم إضافتها وتعميرها هندسياً لربط حركة السحب والإيماءات بالنقاط وإضاءتها بدقة القرش
+     */
+    function updateActiveDot(track) {
+        const dots = document.querySelectorAll('#categories-dots-container .bose-slider-dot');
+        if (dots.length === 0) return;
+
+        const cards = track.querySelectorAll('.category-card-unified');
+        if (cards.length === 0) return;
+
+        const cardWidth = cards[0].offsetWidth + 20; 
+        const scrollPosition = track.scrollLeft;
+        
+        // حساب الفئة الحالية بناءً على الإزاحة الفيزيائية المتوافقة مع الموبايل والكمبيوتر
+        let currentIndex = Math.round(scrollPosition / cardWidth);
+        if (currentIndex < 0) currentIndex = 0;
+        if (currentIndex >= dots.length) currentIndex = dots.length - 1;
+
+        dots.forEach((dot, idx) => {
+            if (idx === currentIndex) {
+                dot.classList.add('active');
+            } else {
+                dot.classList.remove('active');
+            }
+        });
+    }
+
+    /**
      * 🎹 تفعيل معالجة الإيماءات والسحب اليدوي السلس والتحكم الكامل بالأسهم
+     * تم تعمير وتوسيع الكود ليستخدم التمرير السلس فائق الاستقرار وإلغاء القفزات البصرية تماماً
      */
     function setupCategoriesSliderTouch() {
         const categoriesSection = document.getElementById('categories-slider-section') || document.getElementById('categories-section') || document.querySelector('[id*="categories"]');
@@ -228,10 +256,12 @@
         let startX = 0;
         let scrollLeft = 0;
 
+        // تطبيق خصائص التثبيت الهندسي والانسيابية المطلقة لمنع التكدس أو وميض الصفحة
         track.style.display = 'flex';
         track.style.overflowX = 'auto';
         track.style.scrollBehavior = 'smooth';
         track.style.webkitOverflowScrolling = 'touch';
+        track.style.scrollSnapType = 'x mandatory';
 
         track.addEventListener('scroll', () => {
             updateActiveDot(track);
@@ -239,6 +269,7 @@
 
         track.addEventListener('mousedown', (e) => {
             isDragging = true;
+            track.style.scrollBehavior = 'auto'; // إلغاء السموث المؤقت أثناء السحب الفعلي لمنع قفزات الماوس
             track.style.cursor = 'grabbing';
             startX = e.pageX - track.offsetLeft;
             scrollLeft = track.scrollLeft;
@@ -247,11 +278,13 @@
         track.addEventListener('mouseleave', () => {
             isDragging = false;
             track.style.cursor = 'grab';
+            track.style.scrollBehavior = 'smooth';
         });
 
         track.addEventListener('mouseup', () => {
             isDragging = false;
             track.style.cursor = 'grab';
+            track.style.scrollBehavior = 'smooth';
             updateActiveDot(track);
         });
 
@@ -265,6 +298,7 @@
 
         track.addEventListener('touchstart', (e) => {
             isDragging = true;
+            track.style.scrollBehavior = 'auto';
             startX = e.touches[0].pageX - track.offsetLeft;
             scrollLeft = track.scrollLeft;
         }, { passive: true });
@@ -278,6 +312,7 @@
 
         track.addEventListener('touchend', () => {
             isDragging = false;
+            track.style.scrollBehavior = 'smooth';
             updateActiveDot(track);
         });
 
@@ -291,11 +326,15 @@
                     return card ? card.offsetWidth + 20 : 300;
                 };
                 
-                nextBtn.addEventListener('click', () => {
+                nextBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    track.style.scrollBehavior = 'smooth';
                     track.scrollBy({ left: getStep(), behavior: 'smooth' });
                 });
                 
-                prevBtn.addEventListener('click', () => {
+                prevBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    track.style.scrollBehavior = 'smooth';
                     track.scrollBy({ left: -getStep(), behavior: 'smooth' });
                 });
             }
@@ -310,6 +349,7 @@
                 const cards = track.querySelectorAll('.category-card-unified');
                 if (cards[index]) {
                     const cardWidth = cards[0].offsetWidth + 20; 
+                    track.style.scrollBehavior = 'smooth';
                     track.scrollTo({
                         left: cardWidth * index,
                         behavior: 'smooth'
