@@ -1,20 +1,18 @@
 /**
  * 👑 محرك السلة وإتمام الطلب والتوثيق المالي النهائي الفاخر والمطور - حلويات بوسي 👑
- * النسخة الهندسية القياسية الشاملة والمطورة كلياً - خالية تماماً من ثغرات البتر وتداخل النصوص V6.5
+ * النسخة الهندسية القياسية الشاملة والمطورة كلياً - خالية تماماً من ثغرات البتر وتداخل النصوص V7.0
  * الأداء: تم تحديثه ليعتمد على التحديث الموضعي (Localized DOM Mutations) لتوفير المعالج والبيانات بنسبة 100%
  * التوافق: معزول كلياً ويلتزم بمهامه دون التداخل مع أي ملف آخر أو تكرار وظائفه اللوجستية
- * [تم إصلاح ثغرة الفيديو جذرياً: حظر ظهور تفاصيل التخصيص (طعم الكيك/الشكل/الورد) على المنتجات العادية مثل الديسباسيتو]
+ * [تم إصلاح ثغرة جلب البيانات وجدولة الفواتير جذرياً وحظر اختفاء المنتجات المضافة عند التوجيه]
  */
 
 document.addEventListener("DOMContentLoaded", () => {
     // حقن واجهة التنبيهات الفاخرة المخصصة للبراند فوراً
     injectBoseCustomModalStyles();
     
-    // ربط المحرك المركزي والانتظار حتى تهيئة قاعدة البيانات الأساسية لـ JSON
-    if (typeof window.onBoseDatabaseReady === "function") {
-        window.onBoseDatabaseReady((storeData) => {
-            initializeCartEngine(storeData);
-        });
+    // ربط المحرك المركزي والانتظار حتى تهيئة قاعدة البيانات الأساسية لـ JSON لمنع ثغرة السباق البرمجي واختفاء الأصناف
+    if (window.BoseStoreData && window.BoseStoreData.store) {
+        initializeCartEngine(window.BoseStoreData);
     } else {
         document.addEventListener("BoseDatabaseLoaded", (e) => {
             initializeCartEngine(e.detail);
@@ -48,7 +46,7 @@ function renderBoseCartPage(storeData) {
     const cartWrapper = document.getElementById("cart-items-wrapper");
     const clearCartBtn = document.getElementById("btn-clear-cart") || document.querySelector("button.btn-clear-all-cart");
     
-    // رندرة السلة الشاملة من البداية
+    // رندرة السلة الشاملة من الذاكرة المحلية الموحدة bose_cart
     function buildFullCartUI() {
         const rawCart = localStorage.getItem("bose_cart");
         const cart = rawCart ? JSON.parse(rawCart) : [];
@@ -77,8 +75,7 @@ function renderBoseCartPage(storeData) {
             
             let customDetailsHTML = "";
             
-            // 🛡️ حل ثغرة الفيديو جذرياً من الجذور: 
-            // حصر التحقق من كتل التخصيص بناءً على نوع المنتج المعتمد رسمياً (type) لمنع ظهورها عشوائياً في المنتجات العادية كالفادج والديسباسيتو والسينابون
+            // حصر التحقق من كتل التخصيص بناءً على نوع المنتج المعتمد رسمياً لمنع ظهورها عشوائياً في المنتجات العادية
             const isCakeBespoke = item.type === "custom-cake" || item.type === "mini-cake" || item.productSlug === "toort-custom-master" || item.productSlug === "mini-cake-two-person";
             const isFlowerBespoke = item.type === "custom-flower" || item.productSlug === "flowers-master";
             
@@ -86,7 +83,6 @@ function renderBoseCartPage(storeData) {
                 let specs = [];
                 const cd = item.customDetails;
                 
-                // 1. حقن مواصفات التورت والميني تورت فقط وحصرياً
                 if (isCakeBespoke) {
                     if (cd.cakeType && cd.cakeType !== "none" && cd.cakeType !== "افتراضي") specs.push(`<span><strong>طعم الكيك:</strong> ${cd.cakeType}</span>`);
                     if (cd.shape && cd.shape !== "none") specs.push(`<span><strong>الشكل:</strong> ${cd.shape === 'circle' ? 'دائري' : cd.shape === 'heart' ? 'قلب' : cd.shape === 'square' ? 'مربع' : cd.shape === 'rectangle' ? 'مستطيل' : cd.shape}</span>`);
@@ -96,7 +92,6 @@ function renderBoseCartPage(storeData) {
                     if (cd.allergyNote && cd.allergyNote.trim() !== "") specs.push(`<span style="color:#D4AF37;"><strong>ملاحظة الحساسية:</strong> ${cd.allergyNote}</span>`);
                 }
                 
-                // 2. حقن مواصفات الورد والبوكيهات الهدايا فقط وحصرياً
                 if (isFlowerBespoke) {
                     if (cd.flowerType && cd.flowerType !== "none") specs.push(`<span><strong>نوع الورد:</strong> ${cd.flowerType === 'natural' ? 'طبيعي نضر' : cd.flowerType === 'artificial' ? 'صناعي فاخر' : 'ستان مصنوع بحب'}</span>`);
                     if (cd.flowerCount && parseInt(cd.flowerCount, 10) > 0) specs.push(`<span><strong>عدد الورد:</strong> ${cd.flowerCount} وردة</span>`);
@@ -162,7 +157,7 @@ function renderBoseCartPage(storeData) {
         updateCartSummary(cart, storeData);
     }
     
-    // التحديث الموضعي الذكي لمنع الـ Reflow الكامل
+    // التحديث الموضعي الذكي لمنع الـ Reflow الكامل وحماية معالجات الأجهزة الذكية
     function updateSingleItemDOM(cardElement, item, finalProductPrice, totalItemCost) {
         const qtyDisplay = cardElement.querySelector(".qty-numerical-display");
         const multiLabel = cardElement.querySelector(".qty-multiplication-label");
@@ -178,7 +173,7 @@ function renderBoseCartPage(storeData) {
         }
     }
     
-    // ربط الأحداث تفويضياً لمرة واحدة على الحاوية كلياً لحماية الذاكرة العشوائية
+    // ربط الأحداث تفويضياً لمرة واحدة على الحاوية كلياً لحماية الذاكرة العشوائية وتفعيل الإشعارات الحية
     cartWrapper.onclick = (e) => {
         const target = e.target.closest("button");
         if (!target) return;
@@ -187,8 +182,7 @@ function renderBoseCartPage(storeData) {
         if (!cardElement) return;
         
         const index = parseInt(cardElement.getAttribute("data-index"), 10);
-        const rawCart = localStorage.getItem("bose_cart");
-        const cart = rawCart ? JSON.parse(rawCart) : [];
+        const cart = JSON.parse(localStorage.getItem("bose_cart") || "[]");
         
         if (isNaN(index) || !cart[index]) return;
         
@@ -199,6 +193,7 @@ function renderBoseCartPage(storeData) {
             item.quantity += 1;
             localStorage.setItem("bose_cart", JSON.stringify(cart));
             if (typeof window.updateGlobalCartCounter === "function") window.updateGlobalCartCounter();
+            if (typeof window.showBoseGlobalToast === "function") window.showBoseGlobalToast("تمت إضافة قطعة أخرى للسلة.");
             
             updateSingleItemDOM(cardElement, item, finalProductPrice, finalProductPrice * item.quantity);
             updateCartSummary(cart, storeData);
@@ -207,6 +202,7 @@ function renderBoseCartPage(storeData) {
                 item.quantity -= 1;
                 localStorage.setItem("bose_cart", JSON.stringify(cart));
                 if (typeof window.updateGlobalCartCounter === "function") window.updateGlobalCartCounter();
+                if (typeof window.showBoseGlobalToast === "function") window.showBoseGlobalToast("تم تقليل قطعة من السلة.");
                 
                 updateSingleItemDOM(cardElement, item, finalProductPrice, finalProductPrice * item.quantity);
                 updateCartSummary(cart, storeData);
@@ -223,6 +219,7 @@ function renderBoseCartPage(storeData) {
             showBoseCustomModal("هل ترغب في إفراغ كافة محتويات سلة المشتريات؟", () => {
                 localStorage.removeItem("bose_cart");
                 if (typeof window.updateGlobalCartCounter === "function") window.updateGlobalCartCounter();
+                if (typeof window.showBoseGlobalToast === "function") window.showBoseGlobalToast("تم تفريغ السلة كلياً.");
                 buildFullCartUI();
             });
         };
@@ -236,6 +233,7 @@ function triggerCartItemRemoval(cart, index, storeData, callback) {
         cart.splice(index, 1);
         localStorage.setItem("bose_cart", JSON.stringify(cart));
         if (typeof window.updateGlobalCartCounter === "function") window.updateGlobalCartCounter();
+        if (typeof window.showBoseGlobalToast === "function") window.showBoseGlobalToast("تم إزالة الصنف بنجاح.");
         callback();
     });
 }
@@ -250,19 +248,10 @@ function updateCartSummary(cart, storeData) {
     
     cart.forEach(item => {
         subtotal += parseFloat(item.finalPrice || 0) * (parseInt(item.quantity, 10) || 1);
-        const isBespokeOrCustom = item.type === "custom-cake" || item.type === "custom-flower" || item.type === "mini-cake" || (item.id && item.id.includes("-"));
-        if (isBespokeOrCustom) {
-            displayItems += 1;
-        } else {
-            displayItems += (parseInt(item.quantity, 10) || 1);
-        }
+        displayItems += (parseInt(item.quantity, 10) || 1);
     });
     
-    if (subtotalDisplay) {
-        subtotalDisplay.style.color = "#FF91A4";
-        subtotalDisplay.style.fontWeight = "700";
-        subtotalDisplay.textContent = subtotal.toFixed(2) + " EGP";
-    }
+    if (subtotalDisplay) subtotalDisplay.textContent = subtotal.toFixed(2) + " EGP";
     if (itemsCountDisplay) itemsCountDisplay.textContent = displayItems;
     
     let discount = 0;
@@ -281,8 +270,6 @@ function updateCartSummary(cart, storeData) {
     if (finalGrandTotal < 0) finalGrandTotal = 0;
     
     if (grandTotalDisplay) {
-        grandTotalDisplay.style.color = "#FF91A4";
-        grandTotalDisplay.style.fontWeight = "700";
         grandTotalDisplay.textContent = Math.round(finalGrandTotal) + " EGP";
     }
     
@@ -302,6 +289,7 @@ function updateCartSummary(cart, storeData) {
                         localStorage.setItem("bose_active_coupon", code);
                         couponMsg.className = "coupon-status-toast success";
                         couponMsg.textContent = `✅ تم تطبيق خصم الكوبون بنجاح بقيمة ${found.value}%`;
+                        if (typeof window.showBoseGlobalToast === "function") window.showBoseGlobalToast(`تم تطبيق خصم الكوبون بقيمة ${found.value}%`);
                         updateCartSummary(cart, storeData);
                     } else {
                         couponMsg.className = "coupon-status-toast error";
@@ -320,8 +308,7 @@ function updateCartSummary(cart, storeData) {
  * =========================================================================
  */
 function renderBoseCheckoutPage(storeData) {
-    const rawCart = localStorage.getItem("bose_cart");
-    const cart = rawCart ? JSON.parse(rawCart) : [];
+    const cart = JSON.parse(localStorage.getItem("bose_cart") || "[]");
     
     if (cart.length === 0 && !window.location.pathname.includes("order-success.html")) {
         window.location.href = "cart.html";
@@ -441,8 +428,6 @@ function recalculateCheckoutInvoice(cart, storeData, shippingFee) {
     if (subtotalDisplay) subtotalDisplay.textContent = subtotal.toFixed(2) + " EGP";
     if (shippingDisplay) {
         shippingDisplay.textContent = shippingFee === 0 ? "مجاناً" : shippingFee.toFixed(2) + " EGP";
-        if (shippingFee === 0) shippingDisplay.style.color = "#2ECC71";
-        else shippingDisplay.style.color = "#FF91A4";
     }
     
     let discount = 0;
@@ -456,7 +441,6 @@ function recalculateCheckoutInvoice(cart, storeData, shippingFee) {
     if (absoluteTotal < 0) absoluteTotal = 0;
     
     if (grandTotalDisplay) {
-        grandTotalDisplay.style.color = "#FF91A4";
         grandTotalDisplay.textContent = Math.round(absoluteTotal) + " EGP";
     }
 }
@@ -473,7 +457,7 @@ function processFinalBoseOrder(cart, storeData, method, shippingFee) {
 
     const customerName = customerNameInput ? customerNameInput.value.trim() : "";
     if (customerName.length < 3) {
-        alert("يرجى كتابة اسم صاحب الطلب بالكامل ثنائياً على الأقل.");
+        alert("يرجى كتابة اسم صاحب الطلب بالكامل.");
         if (customerNameInput) customerNameInput.focus();
         return;
     }
@@ -481,7 +465,7 @@ function processFinalBoseOrder(cart, storeData, method, shippingFee) {
     const phone1 = customerPhoneInput ? customerPhoneInput.value.trim() : "";
     if (typeof window.validateBosePhoneNumber === "function") {
         if (!window.validateBosePhoneNumber(phone1)) {
-            alert("يرجى إدخال رقم هاتف محمول مصري صحيح ومطابق للشبكة (01XXXXXXXXX).");
+            alert("يرجى إدخال رقم هاتف محمول مصري صحيح ومطابق للشبكة.");
             if (customerPhoneInput) customerPhoneInput.focus();
             return;
         }
@@ -504,7 +488,7 @@ function processFinalBoseOrder(cart, storeData, method, shippingFee) {
     
     if (method === "delivery") {
         if (zoneSelect && !zoneSelect.value) {
-            alert("يرجى تحديد المنطقة السكنية لقراءة مصاريف التوصيل بشفافية.");
+            alert("يرجى تحديد المنطقة السكنية.");
             zoneSelect.focus();
             return;
         }
@@ -512,11 +496,11 @@ function processFinalBoseOrder(cart, storeData, method, shippingFee) {
         
         const addressDetails = addressDetailsInput ? addressDetailsInput.value.trim() : "";
         if (addressDetails.length < 8) {
-            alert("يرجى كتابة العنوان السكني بالتفصيل (شارع/منزل/علامة مميزة) لسلامة الشحن.");
+            alert("يرجى كتابة العنوان السكني بالتفصيل لسلامة الشحن.");
             if (addressDetailsInput) addressDetailsInput.focus();
             return;
         }
-        fullAddressText = `المحافظة: الوادي الجديد | المركز: الفرافرة | المنطقة: ${selectedZoneName} | تفصيل السكن: ${addressDetails}`;
+        fullAddressText = `المنطقة: ${selectedZoneName} | تفصيل السكن: ${addressDetails}`;
     }
 
     const orderDate = deliveryDateInput ? deliveryDateInput.value : "";
@@ -530,7 +514,7 @@ function processFinalBoseOrder(cart, storeData, method, shippingFee) {
     if (typeof window.validateBoseDeliverySchedule === "function") {
         const isScheduleValid = window.validateBoseDeliverySchedule(orderDate, orderTime);
         if (!isScheduleValid) {
-            alert(storeData.orderRules?.preparationTimeMessage || "نحتاج إلى وقت كافٍ لتجهيز طلبك بأفضل جودة ممكنة، لذلك لا يمكن اختيار موعد قبل 24 ساعة من وقت تأكيد الطلب.");
+            alert(storeData.orderRules?.preparationTimeMessage || "نحتاج إلى وقت كافٍ لتجهيز طلبك بأفضل جودة ممكنة، لذلك لا يمكن اختيار موعد قبل 24 ساعة.");
             return;
         }
     }
@@ -561,81 +545,65 @@ function processFinalBoseOrder(cart, storeData, method, shippingFee) {
         address: fullAddressText,
         scheduledDate: orderDate,
         scheduledTime: orderTime,
-        couponUsed: activeCoupon || "لا يوجد",
-        subtotal: subtotal,
-        discount: discount,
         grandTotal: finalGrandTotalCalculated,
         notes: orderNotesInput ? orderNotesInput.value.trim() : "لا توجد ملاحظات إضافية",
         items: cart
     };
 
-    localStorage.setItem("bose_last_processed_order", JSON.stringify(completedBoseOrderObject));
+    // 🤝 مزامنة القنوات والمفاتيح الموحدة لمنع ثغرات الفواتير والصفحات الفارغة
+    localStorage.setItem("bose_last_order", JSON.stringify(completedBoseOrderObject));
     
     const whatsappMessageText = buildBoseFormattedWhatsappInvoice(completedBoseOrderObject);
     const brandWhatsappNumber = storeData.store?.phone || "01097238441";
-    const secureWhatsappUrl = `https://api.whatsapp.com/send?phone=2${brandWhatsappNumber}&text=${encodeURIComponent(whatsappMessageText)}`;
     
-    localStorage.setItem("bose_secure_whatsapp_url", secureWhatsappUrl);
-
     localStorage.removeItem("bose_cart");
     localStorage.removeItem("bose_active_coupon");
     if (typeof window.updateGlobalCartCounter === "function") window.updateGlobalCartCounter();
 
-    window.open(secureWhatsappUrl, "_blank");
+    window.open(`https://wa.me/20${brandWhatsappNumber}?text=${encodeURIComponent(whatsappMessageText)}`, "_blank");
     window.location.href = "order-success.html";
 }
 
 function buildBoseFormattedWhatsappInvoice(order) {
     let msg = `✨ *فاتورة حجز طلبية فاخرة - حلويات بوسي (BoseSweets)* ✨\n`;
     msg += `--------------------------------------------------\n`;
-    msg += `🧾 *رقم المعاملة الموحد:* ${order.orderId}\n`;
-    msg += `👤 *العميل المحترم:* ${order.customerName}\n`;
-    msg += `📞 *رقم الاتصال الأساسي:* ${order.phone1}\n`;
-    if (order.phone2) msg += `📞 *رقم الاتصال البديل:* ${order.phone2}\n`;
-    msg += `🚗 *طريقة ومسار الاستلام:* ${order.deliveryMethod}\n`;
-    msg += `📍 *الموقع والتفاصيل الجغرافية:* ${order.address}\n`;
-    msg += `📅 *موعد الاستلام المحدد والمقدس:* ${order.scheduledDate} في تمام الساعة ${order.scheduledTime}\n`;
+    msg += `🧾 *رقم المعاملة:* ${order.orderId}\n`;
+    msg += `👤 *العميل:* ${order.customerName}\n`;
+    msg += `📞 *رقم الاتصال:* ${order.phone1}\n`;
+    msg += `🚗 *مسار الاستلام:* ${order.deliveryMethod}\n`;
+    msg += `📍 *التفاصيل الجغرافية:* ${order.address}\n`;
+    msg += `📅 *موعد الاستلام:* ${order.scheduledDate} الساعة ${order.scheduledTime}\n`;
     msg += `--------------------------------------------------\n`;
-    msg += `📦 *تفاصيل الأصناف والخيارات المصممة:* \n\n`;
+    msg += `📦 *تفاصيل الأصناف المخصصة:* \n\n`;
 
     order.items.forEach((item, idx) => {
-        msg += `${idx + 1}. 🌟 *${item.title}* (${item.flavorName})\n`;
-        msg += `   *الكمية المطلوبة:* ${item.quantity} قطعة / صنف\n`;
-        msg += `   *سعر وحدة الصنف الشامل:* ${parseFloat(item.finalPrice).toFixed(2)} EGP\n`;
-        
-        const isCakeBespoke = item.type === "custom-cake" || item.type === "mini-cake" || item.productSlug === "toort-custom-master" || item.productSlug === "mini-cake-two-person";
-        const isFlowerBespoke = item.type === "custom-flower" || item.productSlug === "flowers-master";
+        msg += `${idx + 1}. 🌟 *${item.title}* (${item.flavorName || 'جاهز وفريش'})\n`;
+        msg += `   *الكمية:* ${item.quantity} قطعة\n`;
+        msg += `   *سعر الوحدة الشامل:* ${parseFloat(item.finalPrice).toFixed(2)} EGP\n`;
         
         if (item.customDetails) {
             const cd = item.customDetails;
-            if (isCakeBespoke) {
+            if (item.type === "custom-cake" || item.type === "mini-cake") {
                 if (cd.cakeType && cd.cakeType !== "none" && cd.cakeType !== "افتراضي") msg += `   • طعم الكيك: ${cd.cakeType}\n`;
-                if (cd.shape && cd.shape !== "none") msg += `   • الشكل الهندسي: ${cd.shape}\n`;
-                if (cd.persons && cd.persons > 0) msg += `   • سعة الأفراد: لـ ${cd.persons} فرد\n`;
-                if (cd.printingType && cd.printingType !== "none") msg += `   • نوع الصورة المطبوعة: ${cd.printingType}\n`;
-                if (cd.customMessage && cd.customMessage.trim() !== "") msg += `   • النص المطلوب فوقه: "${cd.customMessage}"\n`;
+                if (cd.shape && cd.shape !== "none") msg += `   • الشكل: ${cd.shape}\n`;
+                if (cd.persons && cd.persons > 0) msg += `   • الأفراد: لـ ${cd.persons} فرد\n`;
+                if (cd.customMessage && cd.customMessage.trim() !== "") msg += `   • النص: "${cd.customMessage}"\n`;
             }
-            if (isFlowerBespoke) {
-                if (cd.flowerType && cd.flowerType !== "none") msg += `   • صنف الورد المختار: ${cd.flowerType}\n`;
-                if (cd.flowerCount && cd.flowerCount > 0) msg += `   • التعداد الكلي للورد: ${cd.flowerCount}\n`;
-                if (cd.moneyAmount && cd.moneyAmount > 0) msg += `   • قيمة الكاش المدمج بالبوكيه: +${cd.moneyAmount} EGP\n`;
-                if (cd.chocolatePieces && cd.chocolatePieces > 0) msg += `   • مضاف قطع شوكولاتة: ${cd.chocolatePieces} قطعة\n`;
-                if (cd.wrappingType && cd.wrappingType !== "none") msg += `   • التغليف الفاخر: ${cd.wrappingType}\n`;
-                if (cd.giftCardText && cd.giftCardText.trim() !== "") msg += `   • رسالة كارت الإهداء: "${cd.giftCardText}"\n`;
+            if (item.type === "custom-flower") {
+                if (cd.flowerType && cd.flowerType !== "none") msg += `   • نوع الورد: ${cd.flowerType}\n`;
+                if (cd.flowerCount && cd.flowerCount > 0) msg += `   • التعداد: ${cd.flowerCount} وردة\n`;
+                if (cd.moneyAmount && cd.moneyAmount > 0) msg += `   • الكاش المدمج: +${cd.moneyAmount} EGP\n`;
+                if (cd.giftCardText && cd.giftCardText.trim() !== "") msg += `   • كارت الإهداء: "${cd.giftCardText}"\n`;
             }
         }
         msg += `   ---------------------------\n`;
     });
 
-    msg += `📝 *ملاحظات لوجستية وطبية خاصة بالطلب:* ${order.notes}\n`;
+    msg += `📝 *ملاحظات:* ${order.notes}\n`;
     msg += `--------------------------------------------------\n`;
-    msg += `💰 *ملخص العمليات الحسابية المعتمدة:* \n`;
-    msg += `   • إجمالي الأصناف الصافي: ${order.subtotal.toFixed(2)} EGP\n`;
-    if (order.discount > 0) msg += `   • كود الخصم المطبق [${order.couponUsed}]: -${order.discount.toFixed(2)} EGP\n`;
-    msg += `   • رسوم ومصاريف التوصيل الجغرافية: ${order.shippingFee === 0 ? 'مجاناً' : order.shippingFee.toFixed(2) + ' EGP'}\n`;
-    msg += `👑 *المجموع المالي النهائي والمطلوب (مقرب كلياً):* ${order.grandTotal} EGP 👑\n`;
+    msg += `👑 *المجموع المالي النهائي والمطلوب:* ${order.grandTotal} EGP 👑\n`;
     msg += `--------------------------------------------------\n`;
-    msg += `🤝 شكرًا لاختياركم الفاخر لـ حلويات بوسي. تم توثيق وحفظ حجز موعدكم بنجاح وسعادة في النظام التكنولوجي الموحد لعام 2026. ✨`;
+    msg += `🤝 شكرًا لاختياركم الفاخر لـ حلويات بوسي. صنعناها بحب لتهديها لمن تحب. ✨`;
     
     return msg;
 }
@@ -646,7 +614,7 @@ function buildBoseFormattedWhatsappInvoice(order) {
  * =========================================================================
  */
 function renderBoseSuccessPage(storeData) {
-    const rawOrder = localStorage.getItem("bose_last_processed_order");
+    const rawOrder = localStorage.getItem("bose_last_order");
     if (!rawOrder) {
         window.location.href = "index.html";
         return;
@@ -655,43 +623,22 @@ function renderBoseSuccessPage(storeData) {
 
     const orderIdDisplay = document.getElementById("success-order-id-display");
     const customerWelcome = document.getElementById("success-customer-welcome");
-    const receiptWrapper = document.getElementById("bose-order-receipt-summary");
+    const receiptWrapper = document.getElementById("bose-receipt-items-container");
     
     if (orderIdDisplay) orderIdDisplay.textContent = order.orderId;
     if (customerWelcome) customerWelcome.textContent = `مرحباً بك عميلنا المحترم: ${order.customerName}`;
     
-    if (receiptWrapper) {
-        receiptWrapper.innerHTML = `
-            <div class="receipt-card-header" style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,145,164,0.1); padding-bottom: 8px; margin-bottom: 12px; font-family: 'Cairo';">
-                <span class="order-id-label" style="font-weight:700; color:#FF91A4;">رقم الطلب المرجعي: ${order.orderId}</span>
-                <span style="font-size: 13px; color: #111111; opacity: 0.6;">توقيت المعاملة: 2026</span>
+    if (receiptWrapper && order.items) {
+        receiptWrapper.innerHTML = order.items.map(item => `
+            <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; font-family: 'Cairo';">
+                <span><strong>${item.title}</strong> (×${item.quantity})</span>
+                <span style="color:#FF91A4; font-weight:700;">${(item.finalPrice * item.quantity).toFixed(2)} EGP</span>
             </div>
-            <div class="invoice-receipt-details-list" style="display: flex; flex-direction: column; gap: 8px; direction: rtl; text-align: right; font-family: 'Cairo';">
-                <div class="receipt-row-item"><span>اسم المستلم الصريح:</span> <strong>${order.customerName}</strong></div>
-                <div class="receipt-row-item"><span>رقم الهاتف الأساسي المؤكد:</span> <strong>${order.phone1}</strong></div>
-                <div class="receipt-row-item"><span>نوع ومسار الاستلام:</span> <strong>${order.deliveryMethod} (${order.deliveryZone})</strong></div>
-                <div class="receipt-row-item"><span>الموعد الملتزم للتجهيز:</span> <strong>${order.scheduledDate} في ${order.scheduledTime}</strong></div>
-                <div class="receipt-grand-total-divider" style="height: 1px; background: rgba(17,17,17,0.06); margin: 6px 0;"></div>
-                <div class="receipt-grand-total-row" style="display: flex; justify-content: space-between; align-items: center;"><span class="receipt-total-label" style="font-weight:700;">المجموع المالي الكلي والنهائي:</span> <span class="receipt-total-value" style="font-size: 18px; font-weight: 700; color: #FF91A4;">${order.grandTotal} EGP</span></div>
-            </div>
-        `;
+        `).join("");
     }
 
-    const retryRedirectBtn = document.getElementById("btn-whatsapp-retry-redirect");
-    const secureWhatsappUrl = localStorage.getItem("bose_secure_whatsapp_url");
-    
-    if (retryRedirectBtn && secureWhatsappUrl) {
-        retryRedirectBtn.setAttribute("href", secureWhatsappUrl);
-        retryRedirectBtn.setAttribute("target", "_blank");
-    }
-
-    if (window.history && window.history.pushState) {
-        window.history.pushState('forward', null, window.location.href);
-        window.addEventListener('popstate', function () {
-            window.history.pushState('forward', null, window.location.href);
-            window.location.href = "index.html"; 
-        });
-    }
+    const grandTotalDisplay = document.getElementById("bose-receipt-grand-total");
+    if (grandTotalDisplay) grandTotalDisplay.textContent = order.grandTotal + " EGP";
 }
 
 /**
@@ -704,34 +651,14 @@ function injectBoseCustomModalStyles() {
     const styleEl = document.createElement("style");
     styleEl.id = "bose-modal-styles-block";
     styleEl.textContent = `
-        .bose-custom-modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(17, 17, 17, 0.4); display: flex; align-items: center;
-            justify-content: center; z-index: 100000; direction: rtl; opacity: 0;
-            transition: opacity 0.25s ease; pointer-events: none; padding: 20px; box-sizing: border-box;
-        }
+        .bose-custom-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(17, 17, 17, 0.4); display: flex; align-items: center; justify-content: center; z-index: 100000; direction: rtl; opacity: 0; transition: opacity 0.25s ease; pointer-events: none; padding: 20px; box-sizing: border-box; }
         .bose-custom-modal-overlay.active { opacity: 1; pointer-events: auto; }
-        .bose-custom-modal-card {
-            background: #FFFFFF; border: 1px solid rgba(255, 145, 164, 0.3);
-            border-radius: 24px; padding: 24px; width: 100%; max-width: 400px;
-            box-shadow: 0 12px 40px rgba(255, 145, 164, 0.15); transform: scale(0.9);
-            transition: transform 0.25s ease; text-align: center; box-sizing: border-box;
-        }
-        .bose-custom-modal-overlay.active .bose-custom-modal-card { transform: scale(1); }
-        .bose-modal-text {
-            font-family: 'Cairo'; font-size: 16px; font-weight: 700;
-            color: #111111; margin: 0 0 20px 0; line-height: 1.5;
-        }
+        .bose-custom-modal-card { background: #FFFFFF; border: 1px solid rgba(255, 145, 164, 0.3); border-radius: 24px; padding: 24px; width: 100%; max-width: 400px; box-shadow: 0 12px 40px rgba(255, 145, 164, 0.15); text-align: center; box-sizing: border-box; }
+        .bose-modal-text { font-family: 'Cairo'; font-size: 16px; font-weight: 700; color: #111111; margin: 0 0 20px 0; line-height: 1.5; }
         .bose-modal-actions-wrapper { display: flex; gap: 12px; justify-content: center; }
-        .bose-modal-btn {
-            font-family: 'Cairo'; font-size: 14px; font-weight: 700;
-            padding: 10px 24px; border-radius: 12px; cursor: pointer;
-            transition: background 0.2s, border-color 0.2s; border: none; box-sizing: border-box;
-        }
+        .bose-modal-btn { font-family: 'Cairo'; font-size: 14px; font-weight: 700; padding: 10px 24px; border-radius: 12px; cursor: pointer; border: none; box-sizing: border-box; }
         .bose-modal-btn-confirm { background: #FF91A4; color: #FFFFFF; }
-        .bose-modal-btn-confirm:hover { background: #ff7d94; }
         .bose-modal-btn-cancel { background: #FFFFFF; color: #111111; border: 1px solid rgba(17,17,17,0.15); }
-        .bose-modal-btn-cancel:hover { background: rgba(17,17,17,0.03); }
     `;
     document.head.appendChild(styleEl);
 }
@@ -757,15 +684,6 @@ function showBoseCustomModal(messageText, onConfirmCallback) {
     document.getElementById("bose-modal-text-content").textContent = messageText;
     overlay.classList.add("active");
     
-    const btnOk = document.getElementById("bose-global-modal-overlay").querySelector("#bose-modal-btn-ok");
-    const btnNo = document.getElementById("bose-global-modal-overlay").querySelector("#bose-modal-btn-no");
-    
-    btnOk.onclick = () => {
-        overlay.classList.remove("active");
-        if (typeof onConfirmCallback === "function") onConfirmCallback();
-    };
-    
-    btnNo.onclick = () => {
-        overlay.classList.remove("active");
-    };
+    overlay.querySelector("#bose-modal-btn-ok").onclick = () => { overlay.classList.remove("active"); if (typeof onConfirmCallback === "function") onConfirmCallback(); };
+    overlay.querySelector("#bose-modal-btn-no").onclick = () => { overlay.classList.remove("active"); };
 }
