@@ -7,13 +7,18 @@
     
     <meta name="description" content="استمتع بتذوق القيمة والجودة العالية لأصناف حلويات بوسي الفاخرة المجهزة يومياً بمكونات طبيعية 100% طازجة تليق بمناسباتكم السعيدة.">
     
+    <!-- تهيئة الأرشفة والـ SEO الفاخر -->
+    <meta property="og:title" content="تفاصيل المنتج الفاخر | حلويات بوسي">
+    <meta property="og:description" content="مكونات طبيعية 100% طازجة تليق بمناسباتكم السعيدة.">
+    <meta property="og:type" content="product">
+    
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/main.css">
     
     <script src="js/core-engine.js"></script>
 
     <style>
-        /* 🎨 الهندسة البصرية الخاصة بصفحة المنتج الفردي لمنع التكديس البصري */
+        /* 🎨 الهندسة البصرية المعتمدة لمنع التكديس والتزام الألوان الحاكمة */
         .product-internal-wrapper {
             width: 100%;
             max-width: 1200px;
@@ -35,7 +40,7 @@
             }
         }
 
-        /* حاوية معرض الصور الفاخر الحامي للمعة الطبيعية للمنتج */
+        /* معرض الصور الفاخر الحامي للمعة الطبيعية للمنتج */
         .premium-gallery-showcase {
             width: 100%;
             position: relative;
@@ -62,6 +67,7 @@
             height: 100%;
             object-fit: cover;
             display: block;
+            transition: opacity 0.3s ease;
         }
 
         .thumbnails-strip-flow {
@@ -85,7 +91,7 @@
             border: 2px solid transparent;
             cursor: pointer;
             flex-shrink: 0;
-            transition: var(--bose-transition, 0.3s);
+            transition: 0.2s ease;
             background: var(--bose-white);
         }
 
@@ -168,7 +174,7 @@
             margin: 0 0 24px 0;
         }
 
-        /* هندسة كروت خيارات التخصيص للميني كيك والأصناف القياسية */
+        /* كروت خيارات التخصيص للميني كيك والأصناف القياسية */
         .customization-options-box {
             display: flex;
             flex-direction: column;
@@ -296,7 +302,7 @@
             transform: translateY(-1px);
         }
 
-        /* 🔄 هندسة مجرى الحركة الأفقي للمقترحات الذكية الموحد لمنع التراص الرأسي */
+        /* 🔄 هندسة مجرى الحركة الأفقي للمقترحات الذكية */
         .bose-horizontal-suggestions-slider {
             display: flex !important;
             flex-direction: row !important;
@@ -319,7 +325,7 @@
             box-sizing: border-box !important;
         }
 
-        /* كتلة ومراجعات العملاء وتجربة التقييم الراقي */
+        /* مراجعات العملاء وتجربة التقييم الراقي */
         .reviews-premium-section {
             margin-top: 60px;
             border-top: 1px dashed rgba(255, 145, 164, 0.25);
@@ -393,10 +399,9 @@
 </head>
 <body class="bose-hardware-accelerated">
 
-    <header class="bose-navbar"></header>
-
+    <!-- بروتوكول الحقن الموحد لمنع تكرار وتداخل الأكواد -->
+    <div id="bose-header-injector"></div>
     <div id="sidebar-drawer" class="bose-drawer-menu"></div>
-
     <div id="drawer-shield" class="drawer-overlay"></div>
 
     <main class="product-internal-wrapper" id="bose-product-main-view">
@@ -407,7 +412,7 @@
         <div id="bose-product-content-view" class="product-view-split-grid" style="display: none;">
             <div class="premium-gallery-showcase">
                 <div class="master-image-frame">
-                    <img id="bose-master-gallery-image" src="" alt="صورة المنتج الفاخر">
+                    <img id="bose-master-gallery-image" src="" alt="صورة المنتج الفاخر" loading="eager">
                 </div>
                 <div id="bose-thumbnails-strip" class="thumbnails-strip-flow"></div>
             </div>
@@ -429,9 +434,9 @@
 
                 <div class="actions-purchase-integration-row">
                     <div class="qty-picker-capsule">
-                        <button id="btn-qty-master-plus" type="button">+</button>
-                        <input id="input-qty-master-value" type="number" value="1" min="1" readonly>
-                        <button id="btn-qty-master-minus" type="button">-</button>
+                        <button id="btn-qty-master-plus" type="button" aria-label="زيادة الكمية">+</button>
+                        <input id="input-qty-master-value" type="number" value="1" min="1" readonly aria-label="الكمية الحالية">
+                        <button id="btn-qty-master-minus" type="button" aria-label="تقليل الكمية">-</button>
                     </div>
                     
                     <button id="btn-add-to-cart-master-trigger" class="btn-add-to-cart-master" type="button">
@@ -498,7 +503,7 @@
         </section>
     </main>
 
-    <footer class="bose-footer"></footer>
+    <div id="bose-footer-injector"></div>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
@@ -517,6 +522,14 @@
             let currentSelectedOptions = { flavorName: "كلاسيك" };
             let currentMasterQuantity = 1;
             let uploadedImagesBase64 = [];
+
+            // دالة محلية آمنة لحساب السعر لتأمين تشغيل الصفحة بشكل معزول في حال عدم تحميل المحرك الرئيسي
+            function safeCalculatePrice(prod, opts) {
+                if (window.calculateProductFinalPrice) {
+                    return window.calculateProductFinalPrice(prod, opts);
+                }
+                return prod.price || 0;
+            }
 
             function initProductPage(dbData) {
                 if (!dbData || !dbData.products) return;
@@ -541,8 +554,6 @@
                 }
                 
                 document.getElementById("bose-product-flavor-text").textContent = currentProduct.flavorName || "كلاسيك فاخر";
-                
-                // 🚨 [الحل الهندسي]: إجبار نظام القراءة على إظهار وصف النكهة الفردية أولاً ومنع خلطه مع الوصف العام للصنف
                 document.getElementById("bose-product-desc-text").textContent = currentProduct.flavorDesc || currentProduct.description || "";
 
                 const defaultLogo = "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png";
@@ -557,7 +568,7 @@
                 if (allImages.length > 1) {
                     thumbnailsStrip.innerHTML = allImages.map((imgUrl, idx) => `
                         <div class="thumb-clip-node ${idx === 0 ? 'active' : ''}" data-img-url="${imgUrl}">
-                            <img src="${imgUrl}" alt="مصغر ${idx + 1}" onerror="this.src='${defaultLogo}';">
+                            <img src="${imgUrl}" alt="مصغر ${idx + 1}" loading="lazy" onerror="this.src='${defaultLogo}';">
                         </div>
                     `).join("");
                     
@@ -565,7 +576,11 @@
                         thumb.addEventListener("click", function() {
                             thumbnailsStrip.querySelectorAll(".thumb-clip-node").forEach(t => t.classList.remove("active"));
                             this.classList.add("active");
-                            masterImgNode.src = this.dataset.imgUrl;
+                            masterImgNode.style.opacity = 0.5;
+                            setTimeout(() => {
+                                masterImgNode.src = this.dataset.imgUrl;
+                                masterImgNode.style.opacity = 1;
+                            }, 100);
                         });
                     });
                 } else {
@@ -607,7 +622,6 @@
                 }
 
                 updateLivePriceDisplay(dbData.store?.currency || "EGP");
-                
                 renderDynamicProductReviews();
 
                 skeleton.style.display = "none";
@@ -645,7 +659,7 @@
 
             function updateLivePriceDisplay(currency) {
                 if (!currentProduct) return;
-                const unitPrice = window.calculateProductFinalPrice ? window.calculateProductFinalPrice(currentProduct, currentSelectedOptions) : currentProduct.price;
+                const unitPrice = safeCalculatePrice(currentProduct, currentSelectedOptions);
                 const totalPrice = unitPrice * currentMasterQuantity;
                 document.getElementById("bose-product-price-text").textContent = `${totalPrice} ${currency}`;
             }
@@ -653,14 +667,14 @@
             document.getElementById("btn-qty-master-plus").addEventListener("click", () => {
                 currentMasterQuantity++;
                 document.getElementById("input-qty-master-value").value = currentMasterQuantity;
-                if (window.BoseStoreData) updateLivePriceDisplay(window.BoseStoreData.store?.currency || "EGP");
+                updateLivePriceDisplay(window.BoseStoreData?.store?.currency || "EGP");
             });
 
             document.getElementById("btn-qty-master-minus").addEventListener("click", () => {
                 if (currentMasterQuantity > 1) {
                     currentMasterQuantity--;
                     document.getElementById("input-qty-master-value").value = currentMasterQuantity;
-                    if (window.BoseStoreData) updateLivePriceDisplay(window.BoseStoreData.store?.currency || "EGP");
+                    updateLivePriceDisplay(window.BoseStoreData?.store?.currency || "EGP");
                 }
             });
 
@@ -668,25 +682,36 @@
                 e.preventDefault();
                 if (!currentProduct) return;
 
-                if (typeof window.addAbsoluteProductToCart === "function") {
-                    const cartItemObj = {
-                        id: currentProduct.id,
-                        slug: currentProduct.slug,
-                        title: currentProduct.title,
-                        flavorName: currentProduct.flavorName,
-                        price: currentProduct.price,
-                        image: currentProduct.image || (currentProduct.images ? currentProduct.images[0] : "")
-                    };
-                    for(let i=0; i<currentMasterQuantity; i++) {
-                        window.addAbsoluteProductToCart(cartItemObj);
+                if (typeof window.createCartItem === "function") {
+                    const cartItemObj = window.createCartItem(currentProduct, currentSelectedOptions, currentMasterQuantity);
+                    if (cartItemObj) {
+                        const rawCart = localStorage.getItem("bose_cart");
+                        let cartArr = rawCart ? JSON.parse(rawCart) : [];
+                        const existingIdx = cartArr.findIndex(item => item.productSlug === cartItemObj.productSlug && item.flavorName === cartItemObj.flavorName);
+                        
+                        if (existingIdx > -1) {
+                            cartArr[existingIdx].quantity += currentMasterQuantity;
+                        } else {
+                            cartArr.push(cartItemObj);
+                        }
+                        
+                        localStorage.setItem("bose_cart", JSON.stringify(cartArr));
+                        if (typeof window.updateGlobalCartCounter === "function") {
+                            window.updateGlobalCartCounter();
+                        }
+                        document.dispatchEvent(new CustomEvent('BoseCartUpdated'));
+                        if (typeof window.showBoseToast === 'function') {
+                            window.showBoseToast(`تمت إضافة ${currentMasterQuantity} من ${currentProduct.title} بنجاح لراحتك 🌸`);
+                        }
                     }
                 } else {
+                    // Fallback محلي آمن في حال عدم تحميل الملفات الأخرى
                     const rawCart = localStorage.getItem("bose_cart");
                     let cartArr = rawCart ? JSON.parse(rawCart) : [];
                     
                     const finalUnitPrice = currentProduct.price;
                     const fallbackItem = {
-                        id: String(currentProduct.id),
+                        id: String(currentProduct.id || currentProduct.slug),
                         productSlug: currentProduct.slug,
                         title: currentProduct.title,
                         flavorName: currentProduct.flavorName || "كلاسيك",
@@ -695,7 +720,7 @@
                         image: currentProduct.image || (currentProduct.images ? currentProduct.images[0] : "")
                     };
                     
-                    const existingIdx = cartArr.findIndex(item => item.id === fallbackItem.id);
+                    const existingIdx = cartArr.findIndex(item => item.productSlug === fallbackItem.productSlug);
                     if (existingIdx > -1) {
                         cartArr[existingIdx].quantity += currentMasterQuantity;
                     } else {
@@ -703,10 +728,11 @@
                     }
                     
                     localStorage.setItem("bose_cart", JSON.stringify(cartArr));
-                    document.dispatchEvent(new CustomEvent('BoseCartUpdated'));
-                    
+                    if (typeof window.updateGlobalCartCounter === "function") {
+                        window.updateGlobalCartCounter();
+                    }
                     if (typeof window.showBoseToast === 'function') {
-                        window.showBoseToast(`تمت إضافة ${currentMasterQuantity} من ${currentProduct.title} بنجاح لراحتك 🌸`);
+                        window.showBoseToast(`تمت إضافة المنتج بنجاح لراحتك 🌸`);
                     }
                 }
             });
@@ -724,8 +750,6 @@
                     return;
                 }
 
-                relatedGrid.className = "bose-horizontal-suggestions-slider";
-
                 relatedGrid.innerHTML = suggestionsList.map(prod => {
                     const imgUrl = prod.image || (prod.images && prod.images[0] ? prod.images[0] : defaultLogo);
                     const calcPrice = Math.round(prod.price);
@@ -733,7 +757,7 @@
                     return `
                         <div class="product-card bose-product-card" data-slug="${prod.slug}" style="border:var(--bose-border-pink); border-radius:20px; background:var(--bose-white); overflow:hidden; padding:16px; display:flex; flex-direction:column; gap:10px; box-shadow:var(--bose-shadow-glow); text-align:right; direction:rtl;">
                             <a href="product.html?slug=${prod.slug}" style="text-decoration:none; display:block; overflow:hidden; border-radius:12px; height:220px;">
-                                <img class="product-card-img bose-product-image" src="${imgUrl}" alt="${prod.title}" style="width:100%; height:100%; object-fit:cover; display:block;" onerror="this.src='${defaultLogo}';">
+                                <img class="product-card-img bose-product-image" src="${imgUrl}" alt="${prod.title}" style="width:100%; height:100%; object-fit:cover; display:block;" loading="lazy" onerror="this.src='${defaultLogo}';">
                             </a>
                             <div class="bose-product-info" style="padding:0; display:flex; flex-direction:column; flex-grow:1; justify-content:space-between;">
                                 <h3 class="product-card-title bose-product-title" style="margin:4px 0 0 0; font-size:1.02rem; font-weight:700; color:var(--bose-black); line-height:1.4; min-height:2.8em; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">${prod.title}</h3>
@@ -784,15 +808,31 @@
                 const files = Array.from(this.files);
                 files.forEach(file => {
                     if (!file.type.startsWith("image/")) return;
+                    
                     const reader = new FileReader();
                     reader.onload = function(e) {
-                        const base64Str = e.target.result;
-                        uploadedImagesBase64.push(base64Str);
-                        
-                        const imgNode = document.createElement("img");
-                        imgNode.className = "review-attached-img";
-                        imgNode.src = base64Str;
-                        previewContainer.appendChild(imgNode);
+                        const img = new Image();
+                        img.src = e.target.result;
+                        img.onload = function() {
+                            // 🚀 [أداء فائق]: ضغط وتصغير الصورة تلقائياً لحفظ بيانات وبطارية هواتف العملاء
+                            const canvas = document.createElement("canvas");
+                            const MAX_WIDTH = 200;
+                            const scaleSize = MAX_WIDTH / img.width;
+                            canvas.width = MAX_WIDTH;
+                            canvas.height = img.height * scaleSize;
+                            
+                            const ctx = canvas.getContext("2d");
+                            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                            
+                            const compressedBase64 = canvas.toDataURL("image/jpeg", 0.7);
+                            uploadedImagesBase64.push(compressedBase64);
+                            
+                            const imgNode = document.createElement("img");
+                            imgNode.className = "review-attached-img";
+                            imgNode.src = compressedBase64;
+                            imgNode.loading = "lazy";
+                            previewContainer.appendChild(imgNode);
+                        };
                     };
                     reader.readAsDataURL(file);
                 });
@@ -811,7 +851,9 @@
                 const rating = checkedRadio ? checkedRadio.value : "5";
 
                 if (!userName || !comment) {
-                    if (typeof window.showBoseToast === 'function') window.showBoseToast("يرجى ملء جميع الحقول المطلوبة (اسمك المحترم والتعليق) قبل النشر لسلامة التقييم 🌸");
+                    if (typeof window.showBoseToast === 'function') {
+                        window.showBoseToast("يرجى ملء جميع الحقول المطلوبة قبل النشر 🌸");
+                    }
                     return;
                 }
 
@@ -831,7 +873,7 @@
 
                 let imagesHTML = "";
                 if (uploadedImagesBase64.length > 0) {
-                    imagesHTML = `<div class="review-attach-images-row">${uploadedImagesBase64.map(b64 => `<img class="review-attached-img" src="${b64}">`).join("")}</div>`;
+                    imagesHTML = `<div class="review-attach-images-row">${uploadedImagesBase64.map(b64 => `<img class="review-attached-img" src="${b64}" loading="lazy">`).join("")}</div>`;
                 }
 
                 newReviewCard.innerHTML = `
@@ -854,7 +896,9 @@
                 formWrapper.style.display = 'none';
                 toggleFormBtn.innerHTML = `<i class="fas fa-pen"></i> شاركنا تجربتك وتقييمك الفاخر`;
 
-                if (typeof window.showBoseToast === 'function') window.showBoseToast("تم نشر مراجعتك الفاخرة بنجاح، شكراً لمشاركتنا تجربتك السعيدة! 🌸");
+                if (typeof window.showBoseToast === 'function') {
+                    window.showBoseToast("تم نشر مراجعتك الفاخرة بنجاح، شكراً لكِ 🌸");
+                }
             });
 
             function renderErrorPanel(message) {
