@@ -1,5 +1,5 @@
 /* ==========================================================================
-   👑 BoseSweets Strict Production Global Stylesheet (css/global.css) V13.0 👑
+   👑 BoseSweets Strict Production Global Stylesheet (css/global.css) V14.0 👑
    الملف الملوكي الشامل والنهائي المطوّر لمعالجة وحل مشاكل الفيديو بالملي
    تأمين التنفس البصري، حظر التكدس، ضبط سرعات الحركة، ومنع قص الكروت نهائياً
    ========================================================================== */
@@ -726,6 +726,7 @@ img {
 
 /* ==========================================================================
    9. 🎥 [الهندسة البرمجية للكتل السينمائية الجديدة - حظر الفراغ والوميض نهائياً للأقسام]
+   تم التحديث الهندسي الشامل لدعم عناصر الـ iframe المتجاوبة بالملي ومنع قص المشغلات السحابية
    ========================================================================== */
 .bose-video-showcase-section {
     width: 100% !important;
@@ -745,13 +746,16 @@ img {
     border: var(--bose-border-thick) !important;
     box-shadow: var(--bose-shadow-hover) !important;
     background-color: var(--bose-white) !important;
+    position: relative !important; /* صمام أمان لتثبيت تموضع المشغلات */
 }
 
-.bose-video-player-frame video {
+/* دعم وتحسين أبعاد وقوة الـ iframe المتجاوبة المدمجة لمنع الخطوط البيضاء */
+.bose-video-player-frame iframe {
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
     display: block !important;
+    border: none !important;
 }
 
 @media (min-width: 768px) {
