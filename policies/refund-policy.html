@@ -2,49 +2,89 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>سياسة الاسترجاع والاستبدال | حلويات بوسي</title>
-    
-    <!-- Meta tags for SEO & Accessibility -->
-    <meta name="description" content="سياسة الاسترجاع والاستبدال الرسمية والواضحة لعملاء علامة حلويات بوسي لضمان تجربة تسوق راقية وموثوقة بنسبة 100%.">
-    <meta property="og:title" content="سياسة الاسترجاع والاستبدال | حلويات بوسي">
-    <meta property="og:description" content="تعرف على حقوقك وسياسة الاسترجاع والاستبدال المرنة والراقية لمنتجاتنا وحلوياتنا الفاخرة المصنوعة بحب.">
-    
-    <!-- استدعاء المحرك المركزي العالمي وحارس البيانات أولاً في الهيد -->
-    <script src="../js/core-engine.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سياسة الاسترجاع المالي | حلويات بوسي</title>
+    <!-- استدعاء خط Cairo والأيقونات من خلال المحرك أو كاحتياطي -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* تصميم مخصص لصفحة السياسة يمنع التكدس ويؤمن التنفس البصري الكامل */
-        .policy-hero-container {
-            padding: 60px 20px 40px;
+        :root {
+            /* الألوان الحاكمة والمقدسة للعلامة التجارية */
+            --bose-pink: #FF91A4;
+            --bose-white: #FFFFFF;
+            --bose-black: #111111;
+            --bose-gold: #D4AF37;
+            
+            /* الهندسة البرمجية للظلال والحدود لمنع استخدام الظلال السوداء */
+            --bose-shadow-glow: 0 8px 32px rgba(255, 145, 164, 0.12);
+            --bose-shadow-hover: 0 16px 40px rgba(255, 145, 164, 0.22);
+            --bose-border-pink: 1px solid rgba(255, 145, 164, 0.3);
+            --bose-border-thick: 2px solid #FF91A4;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif !important;
+            background-color: var(--bose-white) !important;
+            color: var(--bose-black) !important;
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .policy-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            min-height: 60vh;
+        }
+
+        .policy-header {
             text-align: center;
-            background-color: var(--bose-white);
-            border-bottom: var(--bose-border-pink);
+            margin-bottom: 50px;
+            padding: 20px 0;
         }
 
-        .policy-hero-container h1 {
+        .policy-header h1 {
             font-size: 32px;
-            margin-bottom: 12px;
-            color: var(--bose-black);
+            font-weight: 700 !important; /* قفل وزن الخط عند 700 كحد أقصى لمنع التشويه البصري */
+            color: var(--bose-black) !important;
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
         }
 
-        .policy-hero-container p {
+        .policy-header h1::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: var(--bose-pink);
+            border-radius: 2px;
+        }
+
+        .policy-header p {
             font-size: 16px;
             color: var(--bose-black);
-            max-width: 600px;
+            font-weight: 400;
+            max-width: 700px;
             margin: 0 auto;
-            line-height: 1.6;
+            opacity: 0.85;
         }
 
-        .policy-content-section {
-            padding: 60px 20px;
-            background-color: var(--bose-white);
-            min-height: 400px;
-        }
-
-        .policy-wrapper {
-            max-width: 800px;
-            margin: 0 auto;
+        .policy-grid {
+            display: block;
         }
 
         .policy-card {
@@ -58,59 +98,122 @@
         }
 
         .policy-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-4px);
             box-shadow: var(--bose-shadow-hover);
-            border-color: var(--bose-pink);
+            border: 1px solid var(--bose-pink);
+        }
+
+        .card-icon {
+            color: var(--bose-pink);
+            font-size: 28px;
+            margin-bottom: 15px;
+            display: inline-block;
         }
 
         .policy-card h2 {
             font-size: 22px;
+            font-weight: 700 !important;
+            color: var(--bose-black) !important;
+            margin-bottom: 15px;
+        }
+
+        .policy-card h2 span.en-title {
+            font-size: 14px;
+            font-weight: 400;
             color: var(--bose-black);
-            margin-top: 0;
-            margin-bottom: 16px;
+            opacity: 0.6;
+            margin-right: 10px;
+            display: inline-block;
+            direction: ltr;
+        }
+
+        .formulation-box {
+            background-color: rgba(255, 145, 164, 0.04);
+            border-right: 4px solid var(--bose-pink);
+            padding: 15px 20px;
+            margin: 15px 0;
+            border-radius: 4px 12px 12px 4px;
+        }
+
+        .formulation-box .label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--bose-pink);
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .formulation-box p {
+            font-size: 14px;
+            color: var(--bose-black);
+            font-style: italic;
+        }
+
+        .bose-tone-box {
+            background-color: var(--bose-white);
+            border: 1px dashed var(--bose-pink);
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 12px;
+            position: relative;
+        }
+
+        .bose-tone-box .label {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--bose-black);
+            margin-bottom: 8px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
-        .policy-card h2 i {
-            color: var(--bose-pink);
-            font-size: 20px;
+        .bose-tone-box .label i {
+            color: var(--bose-gold); /* الوجود الرمزي للذهبي في التقييمات والأيقونات الفاخرة */
         }
 
-        .policy-card p, .policy-card ul {
+        .bose-tone-box p {
             font-size: 15px;
             color: var(--bose-black);
-            line-height: 1.8;
-            margin-bottom: 0;
+            font-weight: 400;
+            line-height: 1.7;
         }
 
-        .policy-card ul {
-            padding-right: 20px;
-            margin-top: 12px;
+        .philosophy-banner {
+            background-color: rgba(255, 145, 164, 0.06);
+            border: var(--bose-border-thick);
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 50px;
+            text-align: center;
+            box-shadow: var(--bose-shadow-glow);
         }
 
-        .policy-card li {
-            margin-bottom: 8px;
+        .philosophy-banner h3 {
+            font-size: 20px;
+            font-weight: 700 !important;
+            color: var(--bose-black) !important;
+            margin-bottom: 10px;
         }
 
-        .policy-card li strong {
-            color: var(--bose-pink);
+        .philosophy-banner p {
+            font-size: 15px;
+            color: var(--bose-black);
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.7;
         }
 
+        /* استجابة شاشات الهواتف المحمولة والكمبيوتر بالكامل */
         @media (max-width: 768px) {
-            .policy-hero-container {
-                padding: 40px 15px 30px;
+            .policy-container {
+                margin: 20px auto;
             }
-            .policy-hero-container h1 {
+            .policy-header h1 {
                 font-size: 26px;
-            }
-            .policy-content-section {
-                padding: 30px 15px;
             }
             .policy-card {
                 padding: 20px;
-                border-radius: 16px;
             }
             .policy-card h2 {
                 font-size: 18px;
@@ -120,64 +223,101 @@
 </head>
 <body>
 
-    <!-- الهيدر الموحد يتم حقنه ديناميكياً بواسطة المحرك المركزي -->
+    <!-- بروتوكول الهيكل الموحد والحقن الديناميكي (الأوسمة النائبة للهيدر والفوتر والـ DOM المقدس) -->
     <div id="bose-header-injector"></div>
 
-    <main>
-        <!-- قسم العنوان والمقدمة البصرية -->
-        <section class="policy-hero-container">
-            <h1>سياسة الاسترجاع والاستبدال</h1>
-            <p>نلتزم في حلويات بوسي بتقديم أعلى معايير الجودة والفخامة، ويسعدنا دائماً ضمان رضاكم الكامل عن جميع منتجاتنا وخدماتنا الراقية.</p>
+    <!-- المحتوى الرئيسي المهندس بصرياً -->
+    <main class="policy-container">
+        
+        <header class="policy-header">
+            <h1>سياسة الاسترجاع المالي</h1>
+            <p>نلتزم في حلويات بوسي بأعلى المعايير العالمية الفاخرة لتقديم تجربة تسوق راقية تضمن الجودة المطلقة والسلامة الصحية، ونوضح هنا بنود التعامل مع المنتجات بكل شفافية وود متبادل.</p>
+        </header>
+
+        <section class="policy-grid">
+
+            <!-- 1. القاعدة الأساسية -->
+            <article class="policy-card">
+                <div class="card-icon"><i class="fa-solid fa-cake-candles"></i></div>
+                <h2>1. القاعدة الأساسية: طبيعة المنتجات الغذائية <span class="en-title">(The Freshness Rule)</span></h2>
+                <p>المنتجات الغذائية طازجة وحساسة بطبيعتها، ومجهزة ومصنوعة خصيصاً لكل عميل، ولذلك لا يمكن استرجاعها لمجرد "تغيير الرأي" بعد الاستلام بصورة سليمة.</p>
+                
+                <div class="formulation-box">
+                    <span class="label">الصياغة العالمية القياسية:</span>
+                    <p>"نظراً لأن منتجاتنا طازجة ومصنوعة خصيصاً لك، فإننا لا نقبل استرجاع أو استبدال المنتجات بعد استلامها بحالة سليمة."</p>
+                </div>
+
+                <div class="bose-tone-box">
+                    <span class="label"><i class="fa-solid fa-star"></i> بلهجة حلويات بوسي الراقية:</span>
+                    <p>"لأن كل قطعة من حلويات بوسي تُصنع وتُزين يدوياً بكل حب وشغف خصيصاً من أجلك وبأعلى معايير الجودة الطازجة، ونظراً لطبيعة الحلويات والمخبوزات الحساسة؛ فإننا نعتذر عن عدم إمكانية استرجاع أو استبدال المنتجات بعد استلامها سليمة بالكامل، وذلك لضمان أعلى مستويات الأمان الصحي والجودة لكل عميل من عملائنا."</p>
+                </div>
+            </article>
+
+            <!-- 2. الحالات الاستثنائية -->
+            <article class="policy-card">
+                <div class="card-icon"><i class="fa-solid fa-truck-ramp-box"></i></div>
+                <h2>2. الحالات الاستثنائية: الخطأ أو التلف <span class="en-title">(Damaged or Incorrect Orders)</span></h2>
+                <p>هنا تظهر قيمة البراند ومسؤوليته وصدقه الكامل. في حال حدوث أي خطأ غير مقصود في الطلب أو تعرضه للتلف أثناء التوصيل، فإننا نتحمل المسؤولية كاملة لتعويض عملائنا الفضلاء.</p>
+                
+                <div class="formulation-box">
+                    <span class="label">الصياغة العالمية القياسية:</span>
+                    <p>"في حال استلام منتج تالف أو غير مطابق لطلبك، يرجى التواصل معنا في غضون X ساعة لنقوم بتعويضك أو إعادة إرسال الطلب."</p>
+                </div>
+
+                <div class="bose-tone-box">
+                    <span class="label"><i class="fa-solid fa-star"></i> بلهجة حلويات بوسي الراقية:</span>
+                    <p>"نحن نلتزم بالدقة والكمال في كل تفصيلة، ولكن إذا حدث أي خطأ غير مقصود ووصلك طلب غير مطابق لما اخترته، أو تضرر شكل المنتج أثناء التوصيل؛ فإننا نتحمل المسؤولية كاملة. يسعدنا تواصلك معنا مباشرة خلال ساعتين من استلام الطلب، لنقوم بتقديم الحل الأنسب لك فوراً وسيسعدنا إرضاؤك."</p>
+                </div>
+            </article>
+
+            <!-- 3. الطلبات المخصصة -->
+            <article class="policy-card">
+                <div class="card-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                <h2>3. الطلبات المخصصة <span class="en-title">(Customized Orders)</span></h2>
+                <p>تخضع التصميمات الفريدة التي يتم تنسيقها خصيصاً لمناسباتكم السعيدة (مثل التورتات المخصصة وبوكيهات الورد المجهزة عبر المحاكيات التفاعلية) لمعايير دقيقة للغاية تمنع إلغاء الطلب بعد بدء التنفيذ الفعلي وشراء المكونات.</p>
+                
+                <div class="formulation-box">
+                    <span class="label">الصياغة العالمية القياسية:</span>
+                    <p>"الطلبات المصممة بمواصفات خاصة لا يمكن إلغاؤها أو تعديلها بعد بدء مرحلة التحضير."</p>
+                </div>
+
+                <div class="bose-tone-box">
+                    <span class="label"><i class="fa-solid fa-star"></i> بلهجة حلويات بوسي الراقية:</span>
+                    <p>"الطلبات المخصصة والتصميمات التي يتم تنسيقها خصيصاً لمناسبتك السعيدة (مثل تورتات المناسبات وبوكيهات الورد المخصصة) تتطلب تحضيراً وشراءً لمكونات وتفاصيل فنية دقيقة بمجرد تأكيدك للطلب. لذلك، نعتذر عن عدم إمكانية تعديل أو إلغاء الطلب بعد دخوله مرحلة التجهيز الفعلي، لضمان خروج المنتجات بنفس الجودة والدقة المطلوبة."</p>
+                </div>
+            </article>
+
+            <!-- 4. آلية الاسترداد المالي -->
+            <article class="policy-card">
+                <div class="card-icon"><i class="fa-solid fa-credit-card"></i></div>
+                <h2>4. آلية الاسترداد المالي <span class="en-title">(Refund Process)</span></h2>
+                <p>نوضح الخطوات والمدد الزمنية المحددة بدقة لعملية إعادة الأموال لبناء ثقة كاملة وراحة بال مطلقة للعميل.</p>
+                
+                <div class="formulation-box">
+                    <span class="label">الصياغة العالمية القياسية:</span>
+                    <p>"تتم عمليات الاسترداد المالي عبر نفس وسيلة الدفع الأصلية وتستغرق من X إلى Y أيام عمل."</p>
+                </div>
+
+                <div class="bose-tone-box">
+                    <span class="label"><i class="fa-solid fa-star"></i> بلهجة حلويات بوسي الراقية:</span>
+                    <p>"في حال الموافقة على الاسترداد المالي بعد مراجعة المشكلة، سيتم إعادة المبلغ المالي إليك بالكامل وبمنتهى السلاسة والسرعة. وإذا كان الدفع قد تم إلكترونياً، فسيتم تحويل المبلغ لبطاقتك أو محفظتك الإلكترونية الأصلية خلال أيام العمل المعتادة لتستمتع براحة بال كاملة."</p>
+                </div>
+            </article>
+
         </section>
 
-        <!-- محتوى السياسات المنسق هندسياً بالتنفس البصري المريح -->
-        <section class="policy-content-section">
-            <div class="policy-wrapper">
-
-                <!-- الكارت الأول: سلامة وجودة المنتجات -->
-                <div class="policy-card">
-                    <h2><i class="fa-solid fa-cake-candles"></i> طبيعة وجودة المنتجات</h2>
-                    <p>جميع منتجاتنا من الحلويات، التورت، والبوكيهات يتم إعدادها وتجهيزها يدوياً بحب وعناية فائقة عند تأكيد طلبكم لضمان النضارة والجودة المطلقة، ولأن هذه المنتجات تُصنع وتُخصص بمواصفات خاصة لكل عميل، فإننا نضمن لكم تسليمها مطابقة تماماً للمواصفات المتفق عليها.</p>
-                </div>
-
-                <!-- الكارت الثاني: شروط تعديل أو إلغاء الطلب -->
-                <div class="policy-card">
-                    <h2><i class="fa-solid fa-clock"></i> تعديل أو إلغاء الطلبات</h2>
-                    <p>يمكنكم تعديل أو إلغاء طلبكم بكل أريحية قبل بدء التحضير الفعلي للمنتج بالفرع، وذلك من خلال التواصل معنا عبر قنوات الاتصال الرسمية قبل موعد الاستلام المحدد بـ 12 ساعة على الأقل لتجنب هدر المواد وضمان أفضل تنسيق وتوقيت للتسليم.</p>
-                </div>
-
-                <!-- الكارت الثالث: الاستبدال والاسترجاع العادل -->
-                <div class="policy-card">
-                    <h2><i class="fa-solid fa-rotate-left"></i> حالات الاستبدال والاسترجاع المعتمدة</h2>
-                    <p>في حال وجود أي ملاحظة حقيقية على الطلب عند الاستلام، نتحمل كامل المسؤولية لمعالجة المشكلة فوراً وبأرقى أسلوب تواصل من خلال:</p>
-                    <ul>
-                        <li><strong>التعديل الفوري:</strong> نقوم بتعديل أي تفاصيل مطلوبة لتطابق رغبتكم بالكامل قبل مغادرة الفرع أو المندوب.</li>
-                        <li><strong>التعويض العادل:</strong> إذا تبين وجود اختلاف في المنتج عن المواصفات المطلوبة، يتم تعويضكم بمنتج بديل أو رد القيمة لضمان رضاكم المطلق.</li>
-                        <li><strong>دعم عملاء مستمر:</strong> يسعد فريقنا باستقبال ملاحظاتكم بجدية تامة لتقديم الحلول والتحسينات التي تضمن راحتكم وثقتكم في علامتنا التجارية.</li>
-                    </ul>
-                </div>
-
-                <!-- الكارت الرابع: التواصل والدعم الفني المباشر -->
-                <div class="policy-card">
-                    <h2><i class="fa-solid fa-comments"></i> للتواصل والاستفسار</h2>
-                    <p>إذا كان لديكم أي استفسار أو ملاحظة بشأن طلبكم، يسعدنا تواصلكم المباشر معنا عبر الواتساب أو الاتصال الهاتفي، حيث يسعى فريق الدعم في حلويات بوسي لحل كافة الاستفسارات وتقديم تجربة تسوق استثنائية تليق بكم.</p>
-                </div>
-
-            </div>
+        <!-- بنر النصيحة الإضافية وفلسفة البراندات الفاخرة -->
+        <section class="philosophy-banner">
+            <h3>فلسفة الالتزام والوقوف مع العميل</h3>
+            <p>نحن لا نستخدم في لغتنا صياغات حادة أو جافة، بل نتحدث مع عملائنا باحترام وتقدير متبادل. نوضح الأسباب الصحية والتنظيمية التي تحمي جودة وسلامة منتجاتنا الطازجة، ونلتزم التزاماً صادقاً ومسؤولاً بالتعويض الفوري والراقي في حال وجود أي تقصير من جانبنا.</p>
         </section>
+
     </main>
 
-    <!-- الفوتر الموحد يتم حقنه ديناميكياً بواسطة المحرك المركزي -->
+    <!-- وسم النائب الموحد للفوتر الفاخر - يتم حقنه ديناميكياً عبر المحرك لمنع كركبة السورس كود -->
     <div id="bose-footer-injector"></div>
 
-    <!-- حارس التمهيد لضمان حقن الهيدر والفوتر وتناسق الألوان تلقائياً -->
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            // التحقق من تفعيل الهيدر والفوتر وتحديث عداد السلة من المحرك المركزي
-            if (typeof window.updateGlobalCartCounter === "function") {
-                window.updateGlobalCartCounter();
-            }
-        });
-    </script>
+    <!-- استدعاء المحرك المركزي الموحد للموقع (حارس البيانات وحسابات السلة من المجلد الأب) -->
+    <script src="../js/core-engine.js"></script>
 </body>
 </html>
