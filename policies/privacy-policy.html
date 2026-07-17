@@ -3,46 +3,256 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>سياسة الخصوصية - حلويات بوسي</title>
-    <!-- المحرك المركزي العالمي وحارس البيانات الحسابية والمالية للموقع -->
-    <script src="../js/core-engine.js"></script>
+    <title>سياسة الخصوصية | حلويات بوسي</title>
+    <!-- استدعاء خط كايرو والأيقونات لضمان استقرار الطلاء البصري والفخامة الرقمية -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../css/global.css">
     <link rel="stylesheet" href="../css/main.css">
+    <style>
+        /* التزاماً بالهوية البصرية والألوان الحاكمة لـ حلويات بوسي */
+        :root {
+            --bose-pink: #FF91A4;
+            --bose-white: #FFFFFF;
+            --bose-black: #111111;
+            --bose-gold: #D4AF37;
+            --bose-shadow-glow: 0 12px 40px rgba(255, 145, 164, 0.12);
+            --bose-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif !important;
+            background-color: var(--bose-white) !important;
+            color: var(--bose-black) !important;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .policy-container {
+            max-width: 850px;
+            margin: 60px auto;
+            padding: 24px;
+            direction: rtl;
+        }
+
+        .policy-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .policy-header h1 {
+            font-size: 32px;
+            font-weight: 700; /* قفل وزن الخط عند 700 كحد أقصى */
+            color: var(--bose-black);
+            margin: 0 0 16px 0;
+            letter-spacing: -0.5px;
+        }
+
+        .policy-header p {
+            font-size: 17px;
+            font-weight: 400;
+            color: var(--bose-black);
+            opacity: 0.8;
+            margin: 0;
+        }
+
+        .policy-card {
+            background: var(--bose-white);
+            border: 1px solid rgba(255, 145, 164, 0.25); /* استخدام البمبي في الحدود بنعومة */
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: var(--bose-shadow-glow); /* ظلال ناعمة بمبية */
+            margin-bottom: 40px;
+            transition: var(--bose-transition);
+        }
+
+        .policy-card:hover {
+            border-color: var(--bose-pink);
+            box-shadow: 0 16px 48px rgba(255, 145, 164, 0.18);
+        }
+
+        .policy-section {
+            margin-bottom: 36px;
+        }
+
+        .policy-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .policy-section h2 {
+            font-size: 20px;
+            font-weight: 700; /* قفل وزن الخط عند 700 */
+            color: var(--bose-black);
+            border-right: 4px solid var(--bose-pink);
+            padding-right: 14px;
+            margin: 0 0 18px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .policy-section h2 i {
+            color: var(--bose-gold); /* لمسة ذهبية خفيفة وراقية تحاكي فخامة اللوجو */
+            font-size: 18px;
+        }
+
+        .policy-section p {
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.85; /* هندسة نصوص مريحة جداً وتمنع التكديس */
+            color: var(--bose-black);
+            margin: 0 0 16px 0;
+            text-align: justify;
+        }
+
+        .policy-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .policy-section ul li {
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.8;
+            color: var(--bose-black);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: flex-start;
+            padding: 12px 16px;
+            background: rgba(255, 145, 164, 0.03);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 145, 164, 0.08);
+            transition: var(--bose-transition);
+        }
+
+        .policy-section ul li:hover {
+            background: rgba(255, 145, 164, 0.06);
+            border-color: rgba(255, 145, 164, 0.2);
+            transform: translateX(-4px);
+        }
+
+        .policy-section ul li i {
+            color: var(--bose-pink);
+            margin-left: 12px;
+            margin-top: 5px;
+            font-size: 16px;
+        }
+
+        .policy-section ul li strong {
+            font-weight: 700;
+            color: var(--bose-black);
+            margin-left: 6px;
+        }
+
+        /* مواءمة الشاشات للموبايل أولاً وأعلى أداء على الكمبيوتر */
+        @media (max-width: 768px) {
+            .policy-container {
+                margin: 30px auto;
+                padding: 16px;
+            }
+            .policy-card {
+                padding: 24px;
+                border-radius: 20px;
+            }
+            .policy-header h1 {
+                font-size: 26px;
+            }
+            .policy-header p {
+                font-size: 15px;
+            }
+            .policy-section h2 {
+                font-size: 18px;
+            }
+            .policy-section p, .policy-section ul li {
+                font-size: 15px;
+                line-height: 1.75;
+            }
+            .policy-section ul li {
+                padding: 10px 12px;
+            }
+        }
+    </style>
 </head>
 <body>
 
-    <!-- الوعاء النائب لحقن الهيدر الموحد ديناميكياً عبر المحرك المركزي -->
+    <!-- أوسمة الحقن الديناميكي للهيدر الموحد لعلامة حلويات بوسي -->
     <div id="bose-header-injector"></div>
 
-    <main style="padding: 40px 16px; max-width: 800px; margin: 0 auto;">
-        <h1 style="font-size: 28px; font-weight: 700; color: #111111; margin-bottom: 8px; text-align: center;">سياسة الخصوصية</h1>
-        <p style="font-size: 16px; color: #111111; margin-bottom: 32px; text-align: center; font-weight: 400;">نلتزم بحفظ وحماية بياناتك بالكامل لضمان تجربة تسوق آمنة وفاخرة تليق بثقتك.</p>
-        
-        <hr style="border: 0; border-top: var(--bose-border-pink); margin-bottom: 32px;">
+    <main class="policy-container">
+        <div class="policy-header">
+            <h1>سياسة الخصوصية</h1>
+            <p>أمان بياناتك وراحتك النفسية هما أساس تجربتك الفاخرة معنا</p>
+        </div>
 
-        <section style="margin-bottom: 24px;">
-            <h2 style="font-size: 20px; font-weight: 700; color: #111111; margin-bottom: 12px;">1. البيانات التي نجمعها</h2>
-            <p style="font-size: 15px; color: #111111; line-height: 1.8; font-weight: 400;">عند استخدامك لموقع حلويات بوسي، نقوم بجمع البيانات الأساسية اللازمة لإتمام طلبك بدقة، وتشمل الاسم الثنائي بالكامل، رقم الهاتف الأساسي والبديل، وعنوان التوصيل الجغرافي بالتفصيل الممل لمنع توهان المندوب.</p>
-        </section>
+        <div class="policy-card">
+            <div class="policy-section">
+                <h2><i class="fa-solid fa-crown"></i> مرحباً بك في عالمنا الفاخر</h2>
+                <p>في حلويات بوسي، نعتبر ثقتك بنا هي أغلى ما نملك. وكما نحرص بكل حب وشغف على تقديم أعلى درجات الإتقان والجمال في صنع حلوياتنا وتنسيق مناسباتك السعيدة، فإننا نلتزم تماماً بحماية خصوصيتك وضمان أمان بياناتك الشخصية برقي وسرية تامة أثناء تصفحك لموقعنا وتصميم خياراتك الفريدة.</p>
+            </div>
 
-        <section style="margin-bottom: 24px;">
-            <h2 style="font-size: 20px; font-weight: 700; color: #111111; margin-bottom: 12px;">2. حماية وتأمين المعلومات</h2>
-            <p style="font-size: 15px; color: #111111; line-height: 1.8; font-weight: 400;">تُحفظ كافة خياراتك المخصصة من صور شخصية أو نصوص إهداء وتفاصيل مالية داخل الذاكرة المحلية الآمنة bose_cart، ويتم تشفيرها برمجياً لضمان عدم وصول أي طرف خارجي إليها، مع الحظر التام لمشاركة بياناتك لأي أغراض تجارية خارج نطاق تنفيذ وفحص طلبك.</p>
-        </section>
+            <div class="policy-section">
+                <h2><i class="fa-solid fa-star"></i> البيانات التي نسعد بتلقيها لخدمتك</h2>
+                <p>لتسهيل رحلتك داخل موقعنا ولضمان تجهيز طلباتك المخصصة بدقة فائقة وتوصيلها في الوقت المناسب، نطلب معلومات أساسية ومباشرة تشمل:</p>
+                <ul>
+                    <li>
+                        <i class="fas fa-check-circle"></i> 
+                        <span><strong>الاسم بالكامل:</strong> لتوثيق طلبك وتجهيزه بلمستك الفخمة والخاصة.</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i> 
+                        <span><strong>رقم الهاتف:</strong> للتواصل السريع والراقي معك، ولتأكيد تفاصيل الاستلام ومطابقة الفاتورة بمنتهى السلاسة.</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i> 
+                        <span><strong>تفاصيل العنوان:</strong> لكي يتمكن فريقنا من التوصيل الآمن والسريع، مع الحفاظ الكامل على نضارة وتنسيق طلبك.</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i> 
+                        <span><strong>الملفات والصور المرفوعة:</strong> مثل صور التصاميم التي تشاركها معنا داخل المحاكيات لنتمكن من تنفيذ طلباتك الفنية بدقة مذهلة تحاكي خيالك.</span>
+                    </li>
+                </ul>
+            </div>
 
-        <section style="margin-bottom: 24px;">
-            <h2 style="font-size: 20px; font-weight: 700; color: #111111; margin-bottom: 12px;">3. الذاكرة المحلية والملفات الذكية</h2>
-            <p style="font-size: 15px; color: #111111; line-height: 1.8; font-weight: 400;">نستخدم تقنيات التخزين المحلي localStorage لتحديث عداد السلة بالهيدر وحفظ مكونات بوكيهات الورد والتورت المخصصة لحظياً لضمان حماية التحويلات ومنع انقطاع جلسة الشراء على الموبايل والكمبيوتر.</p>
-        </section>
+            <div class="policy-section">
+                <h2><i class="fa-solid fa-star"></i> كيف نستخدم بياناتك لراحتك؟</h2>
+                <p>كل تفصيلة تشاركها معنا نستخدمها بذكاء وحرص لتقديم تجربة تسوق استثنائية وسلسة تليق بذوقك الرفيع، وذلك من أجل:</p>
+                <ul>
+                    <li>
+                        <i class="fas fa-heart"></i> 
+                        <span>إعداد وتصميم حلوياتك المفضلة وتخصيص تفاصيلها الفنية بمنتهى الدقة من خلال محركات الموقع.</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-heart"></i> 
+                        <span>حفظ ومزامنة سلة مشترياتك وتفضيلاتك لكي تجدها جاهزة في أي وقت دون أن تفقد خياراتك الملهمة.</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-heart"></i> 
+                        <span>تطوير أداء ومحرك موقعنا باستمرار لنوفر لك سرعة تصفح فائقة ومريحة تليق بك دائماً.</span>
+                    </li>
+                </ul>
+            </div>
 
-        <section style="margin-bottom: 24px;">
-            <h2 style="font-size: 20px; font-weight: 700; color: #111111; margin-bottom: 12px;">4. مشاركة وتأكيد الفواتير</h2>
-            <p style="font-size: 15px; color: #111111; line-height: 1.8; font-weight: 400;">البيانات والأسعار والخيارات المنتقاة تُصاغ في نهاية رحلتك على شكل فاتورة فاخرة ومنسقة، ترحل بموافقتك مباشرة إلى تطبيق الواتساب الرسمي للبراند لتأكيد الحجز النهائي وضمان المصداقية المطلقة.</p>
-        </section>
+            <div class="policy-section">
+                <h2><i class="fa-solid fa-shield-halved"></i> الأمان المطلق والسرية التامة</h2>
+                <p>خصوصيتك وراحتك النفسية هما أولويتنا المطلقة. نحن في حلويات بوسي نتبع بروتوكولات حماية صارمة ونستخدم أحدث تقنيات التشفير لضمان سرية بياناتك وصورك المرفوعة بالكامل. نتعهد بشكل حاسم بأنه لا يتم بيع، أو تأجير، أو مشاركة معلوماتك الشخصية مع أي جهة خارجية أو طرف ثالث على الإطلاق، لتبقى تجربة تسوقك محاطة بالأمان التام والخصوصية الراقية.</p>
+            </div>
+
+            <div class="policy-section">
+                <h2><i class="fa-solid fa-heart"></i> التحديثات وحقوقك كشريك نجاح</h2>
+                <p>تصفحك لموقع حلويات بوسي واستخدامك لمحاكياتنا التفاعلية الفاخرة هو بمثابة موافقة على بنود هذه السياسة التي صممت خصيصاً من أجلك. نقوم بمراجعة وتحديث هذه البنود دورياً للتأكد من مواكبة أعلى معايير الخصوصية والأمان العالمية، مع ترحيبنا الكامل برغبتك في تحديث أو مراجعة بياناتك المسجلة لدينا في أي وقت عبر التواصل مع فريق خدمتنا الخبير.</p>
+            </div>
+        </div>
     </main>
 
-    <!-- الوعاء النائب لحقن الفوتر الموحد ديناميكياً عبر المحرك المركزي -->
+    <!-- أوسمة الحقن الديناميكي للفوتر الموحد لعلامة حلويات بوسي -->
     <div id="bose-footer-injector"></div>
 
+    <!-- استدعاء المحرك المركزي العالمي لحلويات بوسي لإدارة البيانات والتوافق المطور -->
+    <script src="../js/core-engine.js"></script>
 </body>
 </html>
