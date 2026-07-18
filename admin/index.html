@@ -5,27 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>بوابة تسجيل الدخول الآمنة | لوحة تحكم حلويات بوسي</title>
     
-    <!-- التدابير الأمنية الصارمة لمنع أرشفة صفحة الإدارة -->
     <meta name="robots" content="noindex, nofollow, noarchive">
     <meta name="googlebot" content="noindex, nofollow">
     
-    <!-- الهندسة الرقمية للنصوص والخط Cairo الفاخر -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- المتغيرات والألوان الحاكمة والمقدسة لعلامة بوسي الفاخرة -->
     <style>
         :root {
-            --bose-pink: #FF91A4;     /* نبض الحياة: التفاعلات والحدود والظلال الناعمة */
-            --bose-white: #FFFFFF;    /* المسيطر تماماً على الخلفيات لمنع التكديس والراحة النفسية */
-            --bose-black: #111111;    /* النصوص والعناوين فقط لضمان الوضوح الكامل للعين */
-            --bose-gold: #D4AF37;     /* لمسات رمزية ناعمة لمحاكاة فخامة اللوجو */
+            --bose-pink: #FF91A4;
+            --bose-white: #FFFFFF;
+            --bose-black: #111111;
+            --bose-gold: #D4AF37;
             --bose-shadow-glow: 0 8px 32px rgba(255, 145, 164, 0.12);
             --bose-shadow-hover: 0 16px 40px rgba(255, 145, 164, 0.22);
             --bose-border-pink: 1px solid rgba(255, 145, 164, 0.3);
-            --bose-border-thick: 2px solid #FF91A4;
         }
 
         * {
@@ -207,7 +203,6 @@
 
     <div class="login-container">
         <div class="brand-header">
-            <!-- استخدام شعار حلويات بوسي المؤقت Placeholder المستدعى ديناميكياً لاحقاً -->
             <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="حلويات بوسي" class="brand-logo" id="bose-admin-logo">
             <h1 class="brand-name">حلويات بوسي</h1>
             <div class="portal-title"><i class="fa-solid fa-shield-halved"></i> بوابة الإدارة الآمنة</div>
@@ -243,14 +238,11 @@
     </div>
 
     <script>
-        // تعريف بيانات الاعتماد المشفرة محلياً (المتطلبات المحددة)
-        // اسم المستخدم: Aadmin | الرقم السري: Aaboohamdy
         const AUTH_KEYS = {
             u: "Aadmin",
             p: "Aaboohamdy"
         };
 
-        // تفعيل وإخفاء كلمة المرور بكل مرونة لراحة المستخدم
         function togglePasswordVisibility() {
             const pwdInput = document.getElementById('password');
             const icon = document.getElementById('toggle-pwd-icon');
@@ -263,7 +255,6 @@
             }
         }
 
-        // معالجة التحقق والتسجيل الآمن
         function handleAdminAuth(event) {
             event.preventDefault();
             
@@ -272,7 +263,6 @@
             const notification = document.getElementById('auth-notification');
             const submitBtn = document.getElementById('submit-btn');
 
-            // تأمين الحماية ومكافحة هجمات القوة الغاشمة البسيطة عبر تعطيل الزر مؤقتاً
             submitBtn.disabled = true;
             submitBtn.style.opacity = "0.7";
             notification.className = "notification";
@@ -280,33 +270,24 @@
 
             setTimeout(() => {
                 if (usernameInput === AUTH_KEYS.u && passwordInput === AUTH_KEYS.p) {
-                    // توليد توكن آمن مؤقت في الذاكرة المحلية (Session Storage) لربط حماية باقي الملفات
                     const sessionToken = btoa(JSON.stringify({
                         auth: true,
                         user: usernameInput,
                         timestamp: Date.now()
                     }));
                     sessionStorage.setItem('bose_admin_session', sessionToken);
+                    localStorage.setItem('bose_admin_session', sessionToken);
                     
-                    // التوجيه الفوري للوحة التحكم عند مطابقة البيانات
                     window.location.href = 'dashboard.html';
                 } else {
-                    // عرض رسالة الخطأ بأسلوب راقٍ ومفهوم بدون عدائية
                     notification.className = "notification error";
                     notification.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> <span>بيانات الاعتماد غير صحيحة، يرجى التحقق وإعادة المحاولة.</span>`;
                     
                     submitBtn.disabled = false;
                     submitBtn.style.opacity = "1";
                 }
-            }, 600); // تأخير زمني طفيف لمحاكاة فحص الأمان ومنع محاولات الإغراق
+            }, 600);
         }
-
-        // ربط اللوجو ببيانات الموقع الرئيسية في حال تحميلها مسبقاً لمنع انقطاع البنية
-        document.addEventListener("DOMContentLoaded", () => {
-            if (window.BoseStoreData && window.BoseStoreData.store) {
-                document.getElementById('bose-admin-logo').src = window.BoseStoreData.store.logo;
-            }
-        });
     </script>
 </body>
 </html>

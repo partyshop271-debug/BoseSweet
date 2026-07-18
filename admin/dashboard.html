@@ -4,17 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>لوحة التحكم وعرض المؤشرات | حلويات بوسي</title>
-    <!-- استدعاء خط Cairo الاحترافي وأيقونات Awesome -->
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- التصميم الهندسي الخاص بواجهات الإدارة الموحدة -->
     <link rel="stylesheet" href="admin.css">
     
     <style>
-        /* نظام الألوان الحاكمة والمقدسة داخل لوحة التحكم */
         :root {
             --bose-pink: #FF91A4;
             --bose-white: #FFFFFF;
@@ -32,16 +30,13 @@
             margin: 0;
             padding: 0;
             overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
         }
 
-        /* الهيكل التخطيطي للوحة التحكم - يدعم الموبايل والكمبيوتر */
         .admin-layout {
             display: flex;
             min-height: 100vh;
         }
 
-        /* القائمة الجانبية للإدارة */
         .admin-sidebar {
             width: 260px;
             background-color: var(--bose-white);
@@ -117,7 +112,6 @@
             border: 1px solid var(--bose-pink);
             color: var(--bose-pink);
             border-radius: 8px;
-            font-family: 'Cairo', sans-serif;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -128,7 +122,6 @@
             color: var(--bose-white);
         }
 
-        /* منطقة المحتوى الرئيسي */
         .admin-main {
             flex-grow: 1;
             padding: 30px;
@@ -166,7 +159,6 @@
             color: var(--bose-pink);
         }
 
-        /* شبكة كروت المؤشرات الرقمية الذكية */
         .metrics-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -219,7 +211,6 @@
             color: var(--bose-pink);
         }
 
-        /* كتل التحليلات والجداول المبسطة خفيفة الوزن */
         .dashboard-row {
             display: grid;
             grid-template-columns: 2fr 1fr;
@@ -253,7 +244,6 @@
             font-weight: 600;
         }
 
-        /* جدول الطلبات الأخيرة خفيف الوزن */
         .table-responsive {
             width: 100%;
             overflow-x: auto;
@@ -265,8 +255,7 @@
             text-align: right;
         }
 
-        .bose-admin-table th, 
-        .bose-admin-table td {
+        .bose-admin-table th, .bose-admin-table td {
             padding: 12px 16px;
             border-bottom: 1px solid #F0F0F0;
             font-size: 14px;
@@ -289,7 +278,6 @@
         .status-pending { background-color: #FFF3CD; color: #856404; }
         .status-completed { background-color: #D4EDDA; color: #155724; }
 
-        /* قائمة التوزيع الإحصائي البسيطة دون مكتبات خارجية ثقيلة */
         .distribution-list {
             display: flex;
             flex-direction: column;
@@ -324,85 +312,43 @@
             transition: width 0.5s ease;
         }
 
-        /* تحسينات التصميم المتجاوب للهواتف المحمولة والموبايل (Mobile First) */
         @media (max-width: 991px) {
-            .dashboard-row {
-                grid-template-columns: 1fr;
-            }
+            .dashboard-row { grid-template-columns: 1fr; }
         }
 
         @media (max-width: 768px) {
-            .admin-layout {
-                flex-direction: column;
-            }
-            .admin-sidebar {
-                width: 100%;
-                border-left: none;
-                border-bottom: var(--bose-border);
-            }
-            .admin-main {
-                max-width: 100%;
-                padding: 15px;
-            }
-            .sidebar-menu {
-                display: flex;
-                flex-wrap: wrap;
-                margin: 10px 0;
-            }
-            .sidebar-menu li {
-                flex: 1 1 50%;
-            }
-            .sidebar-menu li a {
-                padding: 10px 16px;
-                font-size: 13px;
-            }
-            .sidebar-footer {
-                display: none;
-            }
-            .admin-header {
-                padding: 12px 16px;
-                margin-bottom: 20px;
-            }
-            .admin-header h1 {
-                font-size: 18px;
-            }
+            .admin-layout { flex-direction: column; }
+            .admin-sidebar { width: 100%; border-left: none; border-bottom: var(--bose-border); }
+            .admin-main { max-width: 100%; padding: 15px; }
+            .sidebar-menu { display: flex; flex-wrap: wrap; margin: 10px 0; }
+            .sidebar-menu li { flex: 1 1 50%; }
+            .sidebar-menu li a { padding: 10px 16px; font-size: 13px; }
+            .sidebar-footer { display: none; }
+            .admin-header { padding: 12px 16px; margin-bottom: 20px; }
+            .admin-header h1 { font-size: 18px; }
         }
     </style>
 </head>
 <body>
 
     <div class="admin-layout">
-        
-        <!-- القائمة الجانبية الموحدة للوحة التحكم -->
         <aside class="admin-sidebar">
             <div class="sidebar-brand">
                 <img id="bose-store-logo" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="حلويات بوسي">
                 <h2>لوحة الإدارة الفاخرة</h2>
             </div>
-            
             <ul class="sidebar-menu">
-                <li class="active">
-                    <a href="dashboard.html"><i class="fa-solid fa-chart-line"></i>المؤشرات العامة</a>
-                </li>
-                <li>
-                    <a href="orders.html"><i class="fa-solid fa-basket-shopping"></i>إدارة الطلبات</a>
-                </li>
-                <li>
-                    <a href="products.html"><i class="fa-solid fa-cake-candles"></i>إدارة المنتجات</a>
-                </li>
-                <li>
-                    <a href="../index.html" target="_blank"><i class="fa-solid fa-globe"></i>عرض الموقع</a>
-                </li>
+                <li class="active"><a href="dashboard.html"><i class="fa-solid fa-chart-line"></i>المؤشرات العامة</a></li>
+                <li><a href="orders.html"><i class="fa-solid fa-basket-shopping"></i>إدارة الطلبات</a></li>
+                <li><a href="products.html"><i class="fa-solid fa-cake-candles"></i>إدارة المنتجات</a></li>
+                <li><a href="../index.html" target="_blank"><i class="fa-solid fa-globe"></i>عرض الموقع</a></li>
             </ul>
-            
             <div class="sidebar-footer">
-                <button class="btn-logout" onclick="boseAdminLogout()">تسجيل الخروج</button>
+                <button class="btn-logout" onclick="BoseAdminAuth.logout()">تسجيل الخروج</button>
             </div>
         </aside>
 
-        <!-- منطقة العمل الرئيسية واستعراض المؤشرات -->
         <main class="admin-main">
-            
             <header class="admin-header">
                 <h1 id="welcome-title">أهلاً بك في فضاء التحكم</h1>
                 <div class="admin-profile">
@@ -411,55 +357,38 @@
                 </div>
             </header>
 
-            <!-- شبكة العدادات الرقمية الفورية ذات الاستهلاك المنخفض للبيانات -->
             <section class="metrics-grid">
-                
                 <div class="metric-card">
                     <div class="metric-info">
-                        <h3>إجمالي مبيعات اليوم</h3>
+                        <h3>إجمالي المبيعات</h3>
                         <p class="metric-value" id="metric-sales">0 ج.م</p>
                     </div>
-                    <div class="metric-icon">
-                        <i class="fa-solid fa-money-bill-wave"></i>
-                    </div>
+                    <div class="metric-icon"><i class="fa-solid fa-money-bill-wave"></i></div>
                 </div>
-
                 <div class="metric-card">
                     <div class="metric-info">
-                        <h3>طلبات بانتظار التأكيد</h3>
+                        <h3>طلبات قيد الانتظار</h3>
                         <p class="metric-value" id="metric-pending-orders">0</p>
                     </div>
-                    <div class="metric-icon">
-                        <i class="fa-solid fa-clock"></i>
-                    </div>
+                    <div class="metric-icon"><i class="fa-solid fa-clock"></i></div>
                 </div>
-
                 <div class="metric-card">
                     <div class="metric-info">
-                        <h3>إجمالي الطلبات الناجحة</h3>
+                        <h3>إجمالي كل الطلبات</h3>
                         <p class="metric-value" id="metric-total-orders">0</p>
                     </div>
-                    <div class="metric-icon">
-                        <i class="fa-solid fa-circle-check"></i>
-                    </div>
+                    <div class="metric-icon"><i class="fa-solid fa-circle-check"></i></div>
                 </div>
-
                 <div class="metric-card">
                     <div class="metric-info">
                         <h3>أصناف المنتجات النشطة</h3>
                         <p class="metric-value" id="metric-products-count">0</p>
                     </div>
-                    <div class="metric-icon">
-                        <i class="fa-solid fa-boxes-stacked"></i>
-                    </div>
+                    <div class="metric-icon"><i class="fa-solid fa-boxes-stacked"></i></div>
                 </div>
-
             </section>
 
-            <!-- صف تفاصيل المؤشرات التنافسية للعلامة -->
             <div class="dashboard-row">
-                
-                <!-- كتلة الطلبات الأخيرة الواردة للموقع -->
                 <div class="panel-card">
                     <h3>
                         <span><i class="fa-solid fa-list-check" style="color: var(--bose-pink); margin-left: 8px;"></i>آخر العمليات والطلبات</span>
@@ -486,88 +415,55 @@
                     </div>
                 </div>
 
-                <!-- كتلة التوزيع النسبي للفئات الـ 12 المعتمدة بدون مكتبات ثقيلة -->
                 <div class="panel-card">
                     <h3>
                         <span><i class="fa-solid fa-chart-pie" style="color: var(--bose-pink); margin-left: 8px;"></i>نسب الفئات المطلوبة</span>
                     </h3>
                     <div class="distribution-list" id="categories-distribution-wrapper">
-                        <!-- يتم حقن أشرطة النسب مسبقة الحجم ميكانيكياً هنا لراحة العين والأداء المتوازن -->
                         <div style="text-align: center; color: #888; padding: 24px;">جاري تحليل السجلات المعتمدة...</div>
                     </div>
                 </div>
-
             </div>
-
         </main>
     </div>
 
-    <!-- المحركات الأمنية والذكية لإدارة وتأمين لوحة التحكم وعرض الإحصائيات الفورية -->
+    <!-- استدعاء المحرك الموحد أولاً ثم كود البناء -->
     <script src="admin.js"></script>
     <script>
-        /**
-         * حارس الحماية البرمجي الصارم لفحص بيانات اعتماد الإدارة ومنع الدخول العشوائي
-         */
-        (function verifyAdminSecurityGuard() {
-            const sessionActive = sessionStorage.getItem('bose_admin_session') || localStorage.getItem('bose_admin_session');
-            if (sessionActive !== 'authenticated_bose_sweets') {
-                // في حال عدم التطابق الصارم يتم ترحيله فوراً لصفحة تسجيل الدخول لحماية البيانات
-                window.location.replace('index.html');
-            }
-        })();
-
-        // تهيئة محرك الإحصائيات فور اكتمال بناء هيكل الصفحة بالكامل
         document.addEventListener("DOMContentLoaded", () => {
-            initializeDashboardEngine();
+            if (BoseAdminAuth.checkSession()) {
+                AdminState.loadData();
+                initializeDashboardEngine();
+            }
         });
 
-        /**
-         * المحرك التحليلي الخفيف لعرض ومعالجة مؤشرات لوحة التحكم بكفاءة متناهية واستهلاك بيانات منخفض جداً
-         */
         async function initializeDashboardEngine() {
             try {
-                // 1. جلب البيانات الأساسية من قاعدة البيانات الموحدة المستقرة بالموقع
                 const response = await fetch('../data/site-data-final.json');
-                if (!response.ok) throw new Error('فشل جلب قاعدة البيانات الموحدة.');
-                const storeData = await response.json();
-
-                // تحديث اللوجو والبيانات العامة التأسيسية بلوحة التحكم
-                if (storeData.store && storeData.store.logo) {
-                    document.getElementById('bose-store-logo').src = storeData.store.logo;
+                if (response.ok) {
+                    const storeData = await response.json();
+                    if (storeData.store && storeData.store.logo) {
+                        document.getElementById('bose-store-logo').src = storeData.store.logo;
+                    }
+                    let totalProductsCount = 0;
+                    if (storeData.menu && Array.isArray(storeData.menu.categories)) {
+                        storeData.menu.categories.forEach(cat => {
+                            if (Array.isArray(cat.items)) totalProductsCount += cat.items.length;
+                        });
+                    }
+                    document.getElementById('metric-products-count').textContent = totalProductsCount;
                 }
 
-                // حساب عدد الأصناف النشطة المسجلة ديناميكياً
-                let totalProductsCount = 0;
-                if (storeData.menu && Array.isArray(storeData.menu.categories)) {
-                    storeData.menu.categories.forEach(cat => {
-                        if (Array.isArray(cat.items)) totalProductsCount += cat.items.length;
-                    });
-                }
-                document.getElementById('metric-products-count').textContent = totalProductsCount;
-
-                // 2. قراءة وإحصاء سجل العمليات الفعلي المخزن محلياً بالإدارة لمنع ثغرات تزوير الحسابات
-                const rawOrders = localStorage.getItem('bose_submitted_orders');
-                const orders = rawOrders ? JSON.parse(rawOrders) : [];
-
-                // فرز وحساب العدادات المالية واللوجستية
+                const orders = AdminState.orders;
                 let todaySales = 0;
                 let pendingCount = 0;
-                let completedCount = 0;
-                
-                // خريطة تتبع نسب الفئات المطلوبة لبناء رسوم بيانية بصرية فائقة الخفة والأداء
                 const categoryTracker = {};
 
                 orders.forEach(order => {
-                    // حساب إجمالي مبيعات العمليات المستقرة والناجحة
-                    todaySales += parseFloat(order.grandTotal || 0);
-                    
-                    if (order.status === 'completed') {
-                        completedCount++;
-                    } else {
-                        pendingCount++; // الافتراضي هو انتظار التأكيد لسلامة التجهيز
+                    todaySales += parseFloat(order.grandTotal || order.total || 0);
+                    if (order.status !== 'completed') {
+                        pendingCount++;
                     }
-
-                    // تتبع وتصنيف المنتجات حسب فئاتها الـ 12 المعتمدة
                     if (Array.isArray(order.items)) {
                         order.items.forEach(item => {
                             const catName = item.category || 'أصناف عامة';
@@ -576,66 +472,52 @@
                     }
                 });
 
-                // تحديث العدادات الرقمية الفورية في الواجهة لراحة عين العميل والمسؤول بالملي
                 document.getElementById('metric-sales').textContent = `${Math.round(todaySales)} ج.م`;
                 document.getElementById('metric-pending-orders').textContent = pendingCount;
                 document.getElementById('metric-total-orders').textContent = orders.length;
 
-                // 3. بناء وتوليد جدول آخر العمليات والطلبات الواردة هندسياً
                 const tableBody = document.getElementById('recent-orders-table-body');
                 if (orders.length === 0) {
                     tableBody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #888; padding: 24px;">لا توجد طلبات أو عمليات مسجلة بالذاكرة حالياً.</td></tr>`;
                 } else {
-                    // إظهار آخر 5 طلبات فقط لضمان التنفس البصري وعدم تكديس البيانات
                     const recentOrders = orders.slice(-5).reverse();
                     tableBody.innerHTML = '';
-                    
-                    recentOrders.forEach(order => {
+                    recentOrders.forEach((order, index) => {
                         const statusClass = order.status === 'completed' ? 'status-completed' : 'status-pending';
                         const statusText = order.status === 'completed' ? 'مكتمل' : 'قيد الانتظار';
-                        
                         const tr = document.createElement('tr');
                         tr.innerHTML = `
-                            <td style="font-weight: 700; color: var(--bose-pink);">#${order.orderId || 'غير معرف'}</td>
+                            <td style="font-weight: 700; color: var(--bose-pink);">#${order.orderId || order.id || (index + 1)}</td>
                             <td>${escapeHtml(order.customerName || 'عميل محترم')}</td>
-                            <td>${escapeHtml(order.deliveryZone || 'الفرع')}</td>
-                            <td style="font-size: 13px; color: #555;">${order.orderDate || ''}</td>
-                            <td style="font-weight: 700;">${Math.round(order.grandTotal || 0)} ج.م</td>
+                            <td>${escapeHtml(order.deliveryZone || order.customerAddress || 'الفرع')}</td>
+                            <td style="font-size: 13px; color: #555;">${order.orderDate || 'اليوم'}</td>
+                            <td style="font-weight: 700;">${Math.round(order.grandTotal || order.total || 0)} ج.م</td>
                             <td><span class="status-badge ${statusClass}">${statusText}</span></td>
                         `;
                         tableBody.appendChild(tr);
                     });
                 }
 
-                // 4. بناء الرسوم البيانية الخفيفة والنقية لنسب توزيع الفئات هندسياً
                 const distWrapper = document.getElementById('categories-distribution-wrapper');
                 distWrapper.innerHTML = '';
-
                 const trackerEntries = Object.entries(categoryTracker);
+                
                 if (trackerEntries.length === 0) {
-                    // في حال عدم وجود سجل طلبات يتم وضع الفئات الرئيسية المعتمدة كـ Blueprint افتراضي
-                    const defaultCats = ['التورت', 'الورد', 'الميني تورت', 'الديسباسيتو'];
-                    defaultCats.forEach(cat => {
+                    ['التورت', 'الورد', 'الميني تورت', 'الديسباسيتو'].forEach(cat => {
                         appendDistributionRow(distWrapper, cat, 0, 0);
                     });
                 } else {
-                    // حساب المجموع الكلي للقطع المطلوبة لمعرفة النسبة المئوية الدقيقة
                     const totalItemsCount = Object.values(categoryTracker).reduce((a, b) => a + b, 0);
-                    // فرز وتنسيق الفئات الأكثر طلباً أولاً لسهولة القراءة
                     trackerEntries.sort((a, b) => b[1] - a[1]).slice(0, 5).forEach(entry => {
                         const percentage = ((entry[1] / totalItemsCount) * 100).toFixed(0);
                         appendDistributionRow(distWrapper, entry[0], entry[1], percentage);
                     });
                 }
-
             } catch (error) {
-                console.error("❌ خطأ في معالجة وتحديث مؤشرات لوحة التحكم الموحدة:", error);
+                console.error("❌ خطأ في معالجة لوحة التحكم:", error);
             }
         }
 
-        /**
-         * دالة مساعدة لحقن وبناء أسطر نسب الفئات بدقة هندسية ومظهر فخم
-         */
         function appendDistributionRow(container, label, count, percent) {
             const div = document.createElement('div');
             div.className = 'dist-item';
@@ -644,33 +526,14 @@
                     <span>${escapeHtml(label)}</span>
                     <span style="color: var(--bose-pink); font-weight: 700;">${percent}% (${count} قطعة)</span>
                 </div>
-                <div class="dist-bar-bg">
-                    <div class="dist-bar-fill" style="width: ${percent}%;"></div>
-                </div>
+                <div class="dist-bar-bg"><div class="dist-bar-fill" style="width: ${percent}%;"></div></div>
             `;
             container.appendChild(div);
         }
 
-        /**
-         * دالة تطهير النصوص لمنع ثغرات الحقن البرمجي (XSS) داخل لوحة الإدارة
-         */
         function escapeHtml(text) {
             if (!text) return '';
-            return text.toString()
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
-        }
-
-        /**
-         * دالة إلغاء تفعيل وتدمير جلسة الإدارة الآمنة والعودة الفورية لصفحة تسجيل الدخول
-         */
-        function boseAdminLogout() {
-            sessionStorage.removeItem('bose_admin_session');
-            localStorage.removeItem('bose_admin_session');
-            window.location.replace('index.html');
+            return text.toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         }
     </script>
 </body>
