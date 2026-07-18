@@ -1,14 +1,12 @@
 /**
- * حلويات بوسي - محرك الإدارة البرمجي المعزول (admin.js)
- * نظام المصادقة المشفر وحارس المسارات (Route Guard)
+ * حلويات بوسي - محرك الإدارة البرمجي المعزول والمطور (admin.js)
+ * نظام المصادقة المشفر وحارس المسارات المتوافق مع الاستضافات السحابية وVercel
  */
 
 (function () {
     'use strict';
 
     // 1. بصمات التعمية المشفرة لبيانات الدخول المطلوبة (SHA-256 Hashes)
-    // اسم المستخدم المعين: Aadmin -> الهاش الخاص به
-    // الرقم السري المعين: Aaboohamdy -> الهاش الخاص به
     const AUTH_CONFIG = {
         uHex: "4be4cc254924c8c7d8df9305fa4e61fbb9c60655c63d63b2f9a7391a329971db", // Aadmin Hash
         pHex: "a9d7cd19fdfb74c43cb4e488152e00ef7cb4a23450a21d51c70e281bb8de0867"  // Aaboohamdy Hash
@@ -29,22 +27,26 @@
         return temp.innerHTML.replace(/['"`;()]/g, '');
     }
 
-    // 4. نظام حارس المسار التلقائي (Route Guard System)
-    // يُنفذ فوراً عند استدعاء الملف في أي صفحة إدارة للتحقق من الجلسة
+    // 4. نظام حارس المسار المطور (Route Guard System) - متوافق مع Vercel Clean URLs
     function verifyRouteAccess() {
-        const currentPath = window.location.pathname;
+        const currentPath = window.location.pathname.toLowerCase();
         const sessionToken = sessionStorage.getItem('boosy_admin_session');
         const sessionVerify = localStorage.getItem('boosy_session_active');
 
-        // إذا كان المستخدم في صفحة تسجيل الدخول وهو بالفعل مسجل دخول، يتم توجيهه للوحة التحكم
-        if (currentPath.endsWith('index.html') || currentPath.endsWith('/admin/')) {
+        // فحص ذكي وشامل لكل الاحتمالات الممكنة لرابط صفحة تسجيل الدخول على Vercel
+        const isLoginPage = currentPath.endsWith('index.html') || 
+                            currentPath.endsWith('/admin/') || 
+                            currentPath.endsWith('/admin');
+
+        if (isLoginPage) {
+            // إذا كان المستخدم مسجل دخول بالفعل، يتم توجيهه للوحة التحكم تلقائياً
             if (sessionToken && sessionVerify === 'true') {
                 window.location.href = 'dashboard.html';
             }
-            return;
+            return; // السماح بالبقاء في صفحة تسجيل الدخول دون حظر
         }
 
-        // بالنسبة لباقي الصفحات الإدارية المخفية: إذا لم تتوفر البصمة الصحيحة يتم الحظر فورا
+        // بالنسبة لباقي الصفحات الإدارية (مثل dashboard.html): إذا لم تتوفر البصمة يتم الحظر فوراً
         if (!sessionToken || sessionVerify !== 'true') {
             sessionStorage.removeItem('boosy_admin_session');
             localStorage.removeItem('boosy_session_active');
@@ -52,7 +54,7 @@
         }
     }
 
-    // تشغيل الحارس بشكل استباقي وفوري لمنع أي وميض محتوى غير مصرح به
+    // تشغيل الحارس بشكل استباقي وفوري لمنع تعارض الصفحات
     verifyRouteAccess();
 
     // 5. ربط أحداث واجهة تسجيل الدخول إذا كانت متواجدة في الصفحة الحالية
@@ -97,7 +99,7 @@
 
                     showSystemMessage("تمت المصادقة بنجاح. جاري الانتقال للوحة التحكم.", "success");
 
-                    // التوجيه السلس الفوري بعد 800 مللي ثانية لمنح المستخدم انطباعاً مريحاً
+                    // التوجيه السلس الفوري بعد 800 مللي ثانية
                     setTimeout(() => {
                         window.location.href = 'dashboard.html';
                     }, 800);
@@ -111,7 +113,6 @@
             }
         });
 
-        // دالة إظهار الرسائل المباشرة والقصيرة الملتزمة بالهوية
         function showSystemMessage(text, type) {
             msgBox.textContent = text;
             msgBox.className = `system-message ${type}`;
