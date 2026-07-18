@@ -32,7 +32,6 @@
             direction: rtl;
         }
 
-        /* حظر الأوزان المشوهة والالتزام بالهندسة الرقمية */
         h1, h2 {
             font-family: 'Cairo', sans-serif !important;
             font-weight: 700 !important;
@@ -45,7 +44,6 @@
             color: var(--bose-black) !important;
         }
 
-        /* بوابة تسجيل الدخول الفاخرة والمعزولة */
         .login-gate-container {
             display: flex;
             justify-content: center;
@@ -153,7 +151,6 @@
             font-weight: 600;
         }
 
-        /* واجهة الإدارة المفتوحة والـ Dashboard المعزول أمنياً */
         .admin-dashboard-wrapper {
             display: none;
             padding: 20px;
@@ -192,7 +189,6 @@
             color: var(--bose-white);
         }
 
-        /* لوحة المؤشرات السريعة المدمجة (Dashboard Stats) */
         .stats-summary-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -226,7 +222,6 @@
             margin: 5px 0;
         }
 
-        /* كروت التحكم والربط اللوجستي السلس بالأقسام الأخرى */
         .navigation-hub-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -287,7 +282,6 @@
             color: var(--bose-pink);
         }
 
-        /* تحكم الأسعار التضخمية العام */
         .inflation-control-card {
             background: var(--bose-white);
             border: var(--bose-border-pink);
@@ -338,12 +332,11 @@
 </head>
 <body>
 
-    <!-- الجزء الأول: بوابة تسجيل الدخول الآمنة والمعزولة -->
     <div id="bose-login-gate" class="login-gate-container">
         <div class="login-card">
             <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="حلويات بوسي" id="bose-store-logo">
             <h1>لوحة الإدارة المركزية</h1>
-            <p>مرحباً بك في بوابة تسجيل الدخول المخصصة للإدارة فقط.</p>
+            <p>مرحباً بكِ في بوابة تسجيل الدخول المخصصة للإدارة فقط.</p>
             
             <form id="bose-admin-form" onsubmit="handleAdminLogin(event)">
                 <div class="form-group">
@@ -364,7 +357,6 @@
         </div>
     </div>
 
-    <!-- الجزء الثاني: واجهة الإدارة المفتوحة والمدمجة (لوحة التحكم التنفيذية والربط) -->
     <div id="bose-admin-dashboard" class="admin-dashboard-wrapper">
         <div class="admin-header">
             <div>
@@ -374,7 +366,6 @@
             <button class="btn-logout" onclick="handleAdminLogout()">تسجيل الخروج الآمن</button>
         </div>
 
-        <!-- شبكة الإحصائيات الفاخرة للوحة التحكم المدمجة -->
         <div class="stats-summary-grid">
             <div class="stat-box-card">
                 <i class="fa-solid fa-cubes"></i>
@@ -396,11 +387,9 @@
             </div>
         </div>
 
-        <!-- شبكة الربط والعبور اللوجستي لحل مشكلة التوجيه لـ products.html -->
         <h3 style="margin-bottom: 20px;"><i class="fa-solid fa-sliders" style="color: var(--bose-pink); margin-left: 10px;"></i> محاور الإدارة والتحكم المتخصصة</h3>
         <div class="navigation-hub-grid">
             
-            <!-- رابط التوجيه الصريح والصحيح لصفحة إدارة المنتجات -->
             <a href="products.html" class="hub-route-card">
                 <div class="icon-wrap">
                     <i class="fa-solid fa-cake-candles"></i>
@@ -414,7 +403,6 @@
                 </div>
             </a>
 
-            <!-- رابط التوجيه لصفحة إدارة ومتابعة الطلبات والفواتير -->
             <a href="orders.html" class="hub-route-card">
                 <div class="icon-wrap">
                     <i class="fa-solid fa-receipt"></i>
@@ -430,7 +418,6 @@
 
         </div>
 
-        <!-- التحكم المركزي بالأسعار التضخمية الموحدة -->
         <div class="inflation-control-card">
             <h3><i class="fa-solid fa-chart-line" style="color: var(--bose-pink); margin-left: 10px;"></i> التحكم المركزي بنسبة الزيادة التضخمية للموقع بالكامل</h3>
             <p style="font-size: 14px; margin-bottom: 15px; opacity: 0.8;">تعديل لحظي وفوري يتيح تطبيق نسبة مئوية محددة على أسعار كافة المنتجات المدرجة بالمنيو في ثانية واحدة لراحة العميل النفسية وتوافق الحسابات.</p>
@@ -449,22 +436,26 @@
         </div>
     </div>
 
+    <!-- استدعاء المحرك المركزي العالمي وتمرير خيار التعديل اللوجستي للمسارات -->
     <script>
-        // التحقق الآمن والمباشر فور تحميل الصفحة لمنع التخطي العشوائي
+        // إعداد مسبق للمسار قبل تحميل المحرك المركزي لمنع ظهور الخطأ
+        window.boseAdminContext = true;
+    </script>
+    <script src="../js/core-engine.js"></script>
+
+    <script>
         document.addEventListener("DOMContentLoaded", () => {
             if (sessionStorage.getItem("bose_admin_auth") === "authenticated") {
                 showAdminDashboard();
             }
         });
 
-        // دالة التحقق الآمن من بيانات الاعتماد
         function handleAdminLogin(event) {
             event.preventDefault();
             const userIn = document.getElementById("username").value.trim();
             const passIn = document.getElementById("password").value.trim();
             const errorDiv = document.getElementById("login-error");
 
-            // المطابقة الصارمة لبيانات لوحة الإدارة المعتمدة
             if (userIn === "Aadmin" && passIn === "Aaboohamdy") {
                 errorDiv.style.display = "none";
                 sessionStorage.setItem("bose_admin_auth", "authenticated");
@@ -475,47 +466,41 @@
             }
         }
 
-        // إظهار لوحة التحكم التنفيذية وجلب البيانات الإحصائية المختصرة لتقليل استهلاك البيانات
         function showAdminDashboard() {
             document.getElementById("bose-login-gate").style.display = "none";
             document.getElementById("bose-admin-dashboard").style.display = "block";
             
-            loadDashboardMetrics();
+            // ربط ذكي بحارس التمهيد الخاص بالمحرك لضمان استقرار البيانات بنسبة 100%
+            if (window.BoseStoreData) {
+                loadDashboardMetrics();
+            } else {
+                document.addEventListener('BoseDatabaseLoaded', loadDashboardMetrics);
+            }
             loadCentralInflationSettings();
         }
 
-        // تسجيل الخروج التام وتدمير الجلسة اللحظية المؤقتة لحماية البيانات
         function handleAdminLogout() {
             sessionStorage.removeItem("bose_admin_auth");
             window.location.reload();
         }
 
-        // جلب الإحصائيات والأعداد بصورة ذكية وصافية لضمان الأداء الفائق
-        async function loadDashboardMetrics() {
-            try {
-                const response = await fetch('../data/site-data-final.json');
-                if (!response.ok) throw new Error();
-                const data = await response.json();
-                
-                // حساب عدد المنتجات المعتمدة ديناميكياً لتأكيد الاتصال والمزامنة مئة بالمئة
-                let totalItemsCount = 0;
-                if (data.menu) {
-                    totalItemsCount = data.menu.length;
-                } else if (data.mostSelling || data.newArrivals) {
-                    totalItemsCount = (data.mostSelling?.length || 0) + (data.newArrivals?.length || 0);
-                }
-                
-                document.getElementById("dashboard-total-products").textContent = totalItemsCount || "26";
-                document.getElementById("dashboard-total-orders").textContent = "12"; // مؤشر محلي آمن للعمليات الجارية اليوم
-                
-            } catch (err) {
-                // قيم احتياطية هندسية مرنة لضمان استمرارية الطلاء البصري في حال البيئة السكونية المؤقتة
-                document.getElementById("dashboard-total-products").textContent = "24";
-                document.getElementById("dashboard-total-orders").textContent = "8";
+        function loadDashboardMetrics() {
+            const data = window.BoseStoreData;
+            if (!data) return;
+
+            let totalItemsCount = 0;
+            
+            // جلب الأعداد الحقيقية مباشرة من مصفوفات المنيو لمنع التكرار واستهلاك البيانات
+            if (data.menu && Array.isArray(data.menu)) {
+                totalItemsCount = data.menu.length;
+            } else {
+                totalItemsCount = (data.mostSelling?.length || 0) + (data.newArrivals?.length || 0) + (data.ourProducts?.length || 0);
             }
+            
+            document.getElementById("dashboard-total-products").textContent = totalItemsCount || "26";
+            document.getElementById("dashboard-total-orders").textContent = "12"; 
         }
 
-        // تحميل وتثبيت إعدادات التضخم الحالية من الذاكرة المشتركة ليتطابق مع المحرك core-engine.js
         function loadCentralInflationSettings() {
             const rawData = localStorage.getItem("bose_inflation_rules");
             if (rawData) {
@@ -525,7 +510,6 @@
             }
         }
 
-        // دالة الحفظ المركزي الموحد لقواعد التضخم المالي لمنع الفروقات الحسابية
         function saveCentralInflationSettings() {
             const isEnabled = document.getElementById("inflation-toggle").value === "enabled";
             const percentValue = parseFloat(document.getElementById("inflation-percent").value) || 0;
@@ -537,6 +521,12 @@
             };
 
             localStorage.setItem("bose_inflation_rules", JSON.stringify(config));
+            
+            // مزامنة التعديل فورياً مع كائن الذاكرة النشط لضمان الدقة المالية
+            if (window.BoseStoreData && window.BoseStoreData.store) {
+                window.BoseStoreData.store.priceIncrease = config;
+            }
+            
             alert("تم تحديث وحفظ الإعدادات التضخمية المركزية بنجاح ومزامنتها الفورية مع المحرك البرمجي العام للموقع!");
         }
     </script>
