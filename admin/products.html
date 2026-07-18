@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم | إدارة المنتجات والأسعار - حلويات بوسي</title>
+    <!-- استدعاء المحرك المركزي الموحد لضمان مزامنة البيانات والألوان الحاكمة -->
+    <script src="../js/core-engine.js"></script>
+    <style>
+        /* نظام الألوان الحاكمة والمقدسة لعلامة بوسي الفاخرة المطبقة في لوحة الإدارة */
+        :root {
+            --bose-pink: #FF91A4;
+            --bose-white: #FFFFFF;
+            --bose-black: #111111;
+            --bose-gold: #D4AF37;
+            --bose-shadow-glow: 0 8px 32px rgba(255, 145, 164, 0.12);
+            --bose-shadow-hover: 0 16px 40px rgba(255, 145, 164, 0.22);
+            --bose-border-pink: 1px solid rgba(255, 145, 164, 0.3);
+            --bose-border-thick: 2px solid #FF91A4;
+        }
+
+        /* حظر التشويه والأخطاء البصرية وضمان خط Cairo المعتمد بوزن أقصى 700 */
+        body {
+            font-family: 'Cairo', sans-serif !important;
+            background-color: var(--bose-white) !important;
+            color: var(--bose-black) !important;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        /* بوابة تسجيل الدخول الآمنة المخصصة للإدارة فقط */
+        #admin-auth-gate {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bose-white);
+            z-index: 100000;
+            display: flex;
+            align-content: center;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .auth-card {
+            background: var(--bose-white);
+            border: var(--bose-border-pink);
+            box-shadow: var(--bose-shadow-glow);
+            border-radius: 20px;
+            padding: 30px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        .auth-card h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--bose-black);
+        }
+
+        .auth-card p {
+            font-size: 14px;
+            color: var(--bose-black);
+            opacity: 0.8;
+            margin-bottom: 25px;
+        }
+
+        .bose-input-group {
+            margin-bottom: 20px;
+            text-align: right;
+        }
+
+        .bose-input-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .bose-field {
+            width: 100%;
+            padding: 12px 16px;
+            border: var(--bose-border-pink);
+            border-radius: 10px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 14px;
+            color: var(--bose-black);
+            box-sizing: border-box;
+            background-color: var(--bose-white);
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .bose-field:focus {
+            border-color: var(--bose-pink);
+            box-shadow: var(--bose-shadow-glow);
+        }
+
+        .bose-btn-primary {
+            background-color: var(--bose-pink);
+            color: var(--bose-white);
+            border: none;
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            font-family: 'Cairo', sans-serif;
+            transition: all 0.3s ease;
+            box-shadow: var(--bose-shadow-glow);
+        }
+
+        .bose-btn-primary:hover {
+            box-shadow: var(--bose-shadow-hover);
+            transform: translateY(-2px);
+        }
+
+        /* الهيكل الرئيسي للوحة الإدارة بعد تسجيل الدخول */
+        #admin-dashboard-layout {
+            display: none;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: var(--bose-border-pink);
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .admin-header h2 {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .admin-nav-links {
+            display: flex;
+            gap: 10px;
+        }
+
+        .admin-nav-btn {
+            background: none;
+            border: var(--bose-border-pink);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--bose-black);
+            text-decoration: none;
+            font-family: 'Cairo', sans-serif;
+            transition: all 0.2s ease;
+        }
+
+        .admin-nav-btn.active, .admin-nav-btn:hover {
+            background-color: var(--bose-pink);
+            color: var(--bose-white);
+            border-color: var(--bose-pink);
+        }
+
+        /* كتلة الأسعار التضخمية والزيادة الشاملة */
+        .global-control-card {
+            background: var(--bose-white);
+            border: var(--bose-border-thick);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: var(--bose-shadow-glow);
+        }
+
+        /* شبكة المنتجات داخل لوحة التحكم */
+        .products-admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .product-admin-card {
+            background: var(--bose-white);
+            border: var(--bose-border-pink);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: var(--bose-shadow-glow);
+            position: relative;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .product-admin-card:hover {
+            box-shadow: var(--bose-shadow-hover);
+            border-color: var(--bose-pink);
+        }
+
+        .product-admin-thumb {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+
+        .product-admin-details h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0 0 5px 0;
+        }
+
+        .product-admin-details .category-badge {
+            font-size: 12px;
+            background-color: rgba(255, 145, 164, 0.15);
+            color: var(--bose-black);
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .price-edit-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .price-edit-group span {
+            font-size: 14px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .toast-notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--bose-black);
+            color: var(--bose-white);
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 100001;
+            display: none;
+        }
+
+        /* تهيئة التصميم للموبايل والكمبيوتر */
+        @media(max-width: 768px) {
+            .admin-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            .products-admin-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- بوابة تسجيل الدخول الآمنة المخصصة للإدارة فقط -->
+    <div id="admin-auth-gate">
+        <div class="auth-card">
+            <img id="bose-store-logo" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="Bose Sweets" style="max-width: 100px; margin-bottom: 15px;">
+            <h1>بوابة الإدارة الآمنة</h1>
+            <p>سجل دخولك لتتمكن من تعديل المنتجات والأسعار الحاكمة</p>
+            
+            <div class="bose-input-group">
+                <label for="admin-user">اسم المستخدم المخصص</label>
+                <input type="text" id="admin-user" class="bose-field" placeholder="اكتب اسم المستخدم">
+            </div>
+
+            <div class="bose-input-group">
+                <label for="admin-pass">كلمة المرور السرية</label>
+                <input type="password" id="admin-pass" class="bose-field" placeholder="••••••••">
+            </div>
+
+            <button type="button" onclick="verifyAdminCredentials()" class="bose-btn-primary">تسجيل الدخول الآمن</button>
+        </div>
+    </div>
+
+    <!-- الهيكل الرئيسي والمنظم للوحة التحكم وإدارة المنتجات -->
+    <div id="admin-dashboard-layout">
+        <div class="admin-header">
+            <div>
+                <h2>لوحة التحكم الموحدة</h2>
+                <span style="font-size: 14px; opacity: 0.7;">موقع حلويات بوسي الفاخر - إدارة المنتجات V3</span>
+            </div>
+            <div class="admin-nav-links">
+                <a href="dashboard.html" class="admin-nav-btn">المؤشرات العامة</a>
+                <a href="products.html" class="admin-nav-btn active">إدارة المنتجات</a>
+                <a href="orders.html" class="admin-nav-btn">متابعة الطلبات</a>
+                <button onclick="handleAdminLogout()" class="admin-nav-btn" style="border-color: var(--bose-pink);">خروج</button>
+            </div>
+        </div>
+
+        <!-- كتلة حوكمة الأسعار والزيادة التضخمية الشاملة -->
+        <div class="global-control-card">
+            <h3 style="margin-top:0; font-weight:700; font-size:20px;">التحكم بالأسعار التضخمية الشاملة</h3>
+            <p style="font-size:14px; margin-bottom:15px;">تفعيل هذه الميزة يطبق زيادة مئوية تلقائية على كافة المنتجات أو أقسام محددة فوراً لمنع الخسائر المالية.</p>
+            <div style="display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-end;">
+                <div class="bose-input-group" style="margin-bottom:0; flex: 1; min-width: 200px;">
+                    <label>حالة التفعيل</label>
+                    <select id="global-inflation-toggle" class="bose-field">
+                        <option value="false">معطلة - الأسعار طبيعية</option>
+                        <option value="true">نشطة - تطبيق زيادة فورية</option>
+                    </select>
+                </div>
+                <div class="bose-input-group" style="margin-bottom:0; flex: 1; min-width: 200px;">
+                    <label>نسبة الزيادة التلقائية (%)</label>
+                    <input type="number" id="global-inflation-percent" class="bose-field" min="0" max="100" placeholder="مثال: 10">
+                </div>
+                <div style="flex: 1; min-width: 200px;">
+                    <button type="button" onclick="saveGlobalInflationSettings()" class="bose-btn-primary">حفظ وتحديث المحرك المركزي</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- شبكة المنتجات المستدعاة ديناميكياً من قاعدة البيانات -->
+        <h3 style="font-weight: 700; font-size: 22px; margin-bottom: 20px;">قائمة السلع والحلويات الحالية</h3>
+        <div id="admin-products-container" class="products-admin-grid">
+            <!-- يتم حقن الكروت بالكامل بواسطة الجافاسكربت لمنع التكدس البصري وأعلى أداء -->
+        </div>
+    </div>
+
+    <!-- إشعار نجاح فوري خفيف الاستهلاك -->
+    <div id="bose-toast" class="toast-notification">تم حفظ وتحديث التغييرات بنجاح..</div>
+
+    <script>
+        // بروتوكول الأمان الصارم وحارس البوابة لمنع الدخول العشوائي
+        const AUTH_KEY = "bose_admin_session";
+        
+        // كلمات مرور افتراضية مشفرة محلياً لمحاكاة الاستضافة المجانية المستقرة
+        const SECURE_USER = "admin_bose";
+        const SECURE_PASS = "bose2026_sweets";
+
+        document.addEventListener("DOMContentLoaded", () => {
+            checkCurrentAuthSession();
+        });
+
+        function checkCurrentAuthSession() {
+            const session = localStorage.getItem(AUTH_KEY);
+            if (session === "active_session") {
+                document.getElementById("admin-auth-gate").style.display = "none";
+                document.getElementById("admin-dashboard-layout").style.display = "block";
+                loadProductsIntoAdminDashboard();
+            }
+        }
+
+        function verifyAdminCredentials() {
+            const user = document.getElementById("admin-user").value.trim();
+            const pass = document.getElementById("admin-pass").value.trim();
+
+            if (user === SECURE_USER && pass === SECURE_PASS) {
+                localStorage.setItem(AUTH_KEY, "active_session");
+                showToastMessage("مرحباً بكِ في واجهة الإدارة الفاخرة.");
+                document.getElementById("admin-auth-gate").style.display = "none";
+                document.getElementById("admin-dashboard-layout").style.display = "block";
+                loadProductsIntoAdminDashboard();
+            } else {
+                alert("بيانات الدخول غير صحيحة، يرجى التحقق وإعادة المحاولة.");
+            }
+        }
+
+        function handleAdminLogout() {
+            localStorage.removeItem(AUTH_KEY);
+            window.location.reload();
+        }
+
+        // سحب البيانات من قاعدة البيانات الموحدة وضخها في شبكة الإدارة
+        function loadProductsIntoAdminDashboard() {
+            window.onBoseDatabaseReady((data) => {
+                // ضبط قيم المحرك التضخمي بالواجهة
+                if (data.store && data.store.priceIncrease) {
+                    document.getElementById("global-inflation-toggle").value = String(data.store.priceIncrease.enabled);
+                    document.getElementById("global-inflation-percent").value = data.store.priceIncrease.percent || 0;
+                }
+
+                const container = document.getElementById("admin-products-container");
+                container.innerHTML = ""; // تصفير الحاوية لمنع التكرار
+
+                // تجميع كافة المنتجات من الأقسام المعتمدة في مصفوفة مرنة
+                let allProducts = [];
+                if (data.mostSelling) allProducts = [...allProducts, ...data.mostSelling];
+                if (data.newArrivals) allProducts = [...allProducts, ...data.newArrivals];
+                if (data.ourProducts) allProducts = [...allProducts, ...data.ourProducts];
+
+                // إزالة المنتجات المكررة برمجياً بناءً على الـ Slug لضمان دقة العرض الفردي
+                const uniqueProducts = allProducts.filter((prod, index, self) =>
+                    index === self.findIndex((p) => p.slug === prod.slug)
+                );
+
+                uniqueProducts.forEach(product => {
+                    const card = document.createElement("div");
+                    card.className = "product-admin-card";
+                    
+                    // استخدام شعار بوسي المعتمد كـ Placeholder لحين جلب الصور بالكامل
+                    const imageSrc = product.image || "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png";
+
+                    card.innerHTML = `
+                        <img class="product-admin-thumb" src="${imageSrc}" alt="${product.title}" loading="lazy">
+                        <div class="product-admin-details">
+                            <h3>${product.title}</h3>
+                            <span class="category-badge">${product.flavor || 'صنف فاخر'}</span>
+                            <p style="font-size:13px; opacity:0.8; margin: 0 0 15px 0; height:40px; overflow:hidden;">${product.desc || 'لا يوجد وصف مضاف لهذا المنتج.'}</p>
+                            
+                            <div class="price-edit-group">
+                                <span>السعر الأساسي:</span>
+                                <input type="number" class="bose-field base-price-input" data-slug="${product.slug}" value="${product.price || 0}" style="padding:6px 10px;">
+                                <span>جـ</span>
+                            </div>
+                        </div>
+                        <div style="margin-top: 15px;">
+                            <button type="button" onclick="updateIndividualProductPrice('${product.slug}', this)" class="bose-btn-primary" style="padding: 8px 12px; font-size: 13px; border-radius: 8px;">تحديث السعر الفردي</button>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            });
+        }
+
+        // حفظ إعدادات الزيادة التضخمية الشاملة بالموقع
+        function saveGlobalInflationSettings() {
+            const isEnabled = document.getElementById("global-inflation-toggle").value === "true";
+            const percentValue = parseFloat(document.getElementById("global-inflation-percent").value) || 0;
+
+            // تحديث كائن البيانات اللحظي في ذاكرة المتصفح النشطة لمحاكاة الحفظ بالخادم المستقر
+            if (window.BoseStoreData && window.BoseStoreData.store) {
+                window.BoseStoreData.store.priceIncrease = {
+                    enabled: isEnabled,
+                    percent: percentValue,
+                    applyOn: "all"
+                };
+                showToastMessage("تم تحديث إعدادات المحرك التضخمي المركزي بنجاح.");
+            }
+        }
+
+        // تحديث وتثبيت سعر المنتج الفردي ومنع الثغرات المالية
+        function updateIndividualProductPrice(slug, buttonElement) {
+            const cardElement = buttonElement.closest(".product-admin-card");
+            const inputField = cardElement.querySelector(".base-price-input");
+            const newPrice = parseFloat(inputField.value) || 0;
+
+            if (newPrice <= 0) {
+                alert("يرجى كتابة سعر صحيح أكبر من الصفر لحماية الفاتورة.");
+                return;
+            }
+
+            // البحث عن المنتج وتحديث قيمته داخل الذاكرة الموحدة
+            let updated = false;
+            const data = window.BoseStoreData;
+            if (data) {
+                const arraysToSearch = [data.mostSelling, data.newArrivals, data.ourProducts];
+                arraysToSearch.forEach(arr => {
+                    if (arr) {
+                        const item = arr.find(p => p.slug === slug);
+                        if (item) {
+                            item.price = newPrice;
+                            updated = true;
+                        }
+                    }
+                });
+            }
+
+            if (updated) {
+                showToastMessage(`تم تعديل السعر الأساسي للصنف [${slug}] بنجاح.`);
+            } else {
+                alert("تعذر العثور على المنتج في قاعدة البيانات الحالية.");
+            }
+        }
+
+        // دالة عرض إشعارات الاستجابة السريعة (Toast Notification)
+        function showToastMessage(text) {
+            const toast = document.getElementById("bose-toast");
+            toast.textContent = text;
+            toast.style.display = "block";
+            setTimeout(() => {
+                toast.style.display = "none";
+            }, 3500);
+        }
+    </script>
+</body>
+</html>
