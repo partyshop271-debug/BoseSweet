@@ -400,7 +400,7 @@
                                 <tr>
                                     <th>رقم الطلب</th>
                                     <th>العميل</th>
-                                    <th>المنطقة</th>
+                                    <th>المنطقة/العنوان</th>
                                     <th>التاريخ والوقت</th>
                                     <th>المجموع النهائي</th>
                                     <th>الحالة</th>
@@ -427,7 +427,6 @@
         </main>
     </div>
 
-    <!-- استدعاء المحرك الموحد أولاً ثم كود البناء -->
     <script src="admin.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
@@ -439,71 +438,97 @@
 
         async function initializeDashboardEngine() {
             try {
-                const response = await fetch('../data/site-data-final.json');
-                if (response.ok) {
-                    const storeData = await response.json();
-                    if (storeData.store && storeData.store.logo) {
-                        document.getElementById('bose-store-logo').src = storeData.store.logo;
+                // 1. مزامنة بيانات المنتجات من ملف الـ JSON الأساسي ومن قاعدة البيانات المحلية المضافة
+                let jsonProductsCount = 0;
+                try {
+                    const response = await fetch('../data/site-data-final.json');
+                    if (response.ok) {
+                        const storeData = await response.json();
+                        if (storeData.store && storeData.store.logo) {
+                            document.getElementById('bose-store-logo').src = storeData.store.logo;
+                        }
+                        if (storeData.menu && Array.isArray(storeData.menu.categories)) {
+                            storeData.menu.categories.forEach(cat => {
+                                if (Array.isArray(cat.items)) jsonProductsCount += cat.items.length;
+                            });
+                        }
                     }
-                    let totalProductsCount = 0;
-                    if (storeData.menu && Array.isArray(storeData.menu.categories)) {
-                        storeData.menu.categories.forEach(cat => {
-                            if (Array.isArray(cat.items)) totalProductsCount += cat.items.length;
-                        });
-                    }
-                    document.getElementById('metric-products-count').textContent = totalProductsCount;
+                } catch (e) {
+                    console.warn("⚠️ تنبيه: تعذر استدعاء ملف الـ JSON، الاعتماد كلياً على الذاكرة المحلية:", e);
                 }
 
-                const orders = AdminState.orders;
-                let todaySales = 0;
+                const totalLocalProducts = (AdminState.products && AdminState.products.length) || 0;
+                document.getElementById('metric-products-count').textContent = jsonProductsCount + totalLocalProducts;
+
+                // 2. تحليل الطلبات الواردة والمزامنة المطلقة مع الكائن bose_orders
+                const orders = AdminState.orders || [];
+                let completedSales = 0;
                 let pendingCount = 0;
                 const categoryTracker = {};
 
                 orders.forEach(order => {
-                    todaySales += parseFloat(order.grandTotal || order.total || 0);
-                    if (order.status !== 'completed') {
+                    const orderTotal = parseFloat(order.total || order.grandTotal || 0);
+                    
+                    // حساب المبيعات من الطلبات المكتملة فقط لحماية الفواتير لوجستياً
+                    if (order.status === 'completed') {
+                        completedSales += orderTotal;
+                    } else {
                         pendingCount++;
                     }
+
+                    // التحقق الذكي من محتويات الطلب وتأمين التكرار العنقودي لمنع توقف الكود
                     if (Array.isArray(order.items)) {
                         order.items.forEach(item => {
-                            const catName = item.category || 'أصناف عامة';
-                            categoryTracker[catName] = (categoryTracker[catName] || 0) + (parseInt(item.quantity, 10) || 1);
+                            const catName = item.category || item.type || 'أصناف عامة';
+                            const qty = parseInt(item.quantity, 10) || 1;
+                            categoryTracker[catName] = (categoryTracker[catName] || 0) + qty;
                         });
+                    } else if (order.itemsDescription) {
+                        // دعم القراءة الذكية إذا كانت تفاصيل الطلب مخزنة كنص وصفي مجمع
+                        const desc = order.itemsDescription.toLowerCase();
+                        if (desc.includes('تورت') || desc.includes('cake')) categoryTracker['تورته مخصصة'] = (categoryTracker['تورته مخصصة'] || 0) + 1;
+                        if (desc.includes('ورد') || desc.includes('flower')) categoryTracker['بوكيه مخصص'] = (categoryTracker['بوكيه مخصص'] || 0) + 1;
                     }
                 });
 
-                document.getElementById('metric-sales').textContent = `${Math.round(todaySales)} ج.م`;
+                document.getElementById('metric-sales').textContent = `${Math.round(completedSales)} ج.م`;
                 document.getElementById('metric-pending-orders').textContent = pendingCount;
                 document.getElementById('metric-total-orders').textContent = orders.length;
 
+                // 3. بناء وتوليد جدول آخر العمليات بدقة كاملة
                 const tableBody = document.getElementById('recent-orders-table-body');
                 if (orders.length === 0) {
-                    tableBody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #888; padding: 24px;">لا توجد طلبات أو عمليات مسجلة بالذاكرة حالياً.</td></tr>`;
+                    tableBody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #111111; opacity: 0.6; padding: 24px;">لا توجد طلبات أو عمليات مسجلة بالذاكرة حالياً.</td></tr>`;
                 } else {
                     const recentOrders = orders.slice(-5).reverse();
                     tableBody.innerHTML = '';
                     recentOrders.forEach((order, index) => {
-                        const statusClass = order.status === 'completed' ? 'status-completed' : 'status-pending';
-                        const statusText = order.status === 'completed' ? 'مكتمل' : 'قيد الانتظار';
+                        const isCompleted = order.status === 'completed';
+                        const statusClass = isCompleted ? 'status-completed' : 'status-pending';
+                        const statusText = isCompleted ? 'تم التوصيل' : (order.status === 'pending' ? 'قيد الانتظار' : 'جاري التجهيز');
+                        
+                        const orderIdDisplay = order.id ? (typeof order.id === 'string' && order.id.includes('_') ? order.id.split('_')[1].slice(-6) : String(order.id).slice(-6)) : (index + 1);
+                        
                         const tr = document.createElement('tr');
                         tr.innerHTML = `
-                            <td style="font-weight: 700; color: var(--bose-pink);">#${order.orderId || order.id || (index + 1)}</td>
+                            <td style="font-weight: 700; color: var(--bose-pink);">#${orderIdDisplay}</td>
                             <td>${escapeHtml(order.customerName || 'عميل محترم')}</td>
-                            <td>${escapeHtml(order.deliveryZone || order.customerAddress || 'الفرع')}</td>
-                            <td style="font-size: 13px; color: #555;">${order.orderDate || 'اليوم'}</td>
-                            <td style="font-weight: 700;">${Math.round(order.grandTotal || order.total || 0)} ج.م</td>
+                            <td>${escapeHtml(order.customerAddress || order.deliveryZone || 'الفرع')}</td>
+                            <td style="font-size: 13px; color: #111111; opacity: 0.7;">${order.timestamp ? new Date(order.timestamp).toLocaleDateString('ar-EG') : 'اليوم'}</td>
+                            <td style="font-weight: 700;">${Math.round(parseFloat(order.total || order.grandTotal || 0))} ج.م</td>
                             <td><span class="status-badge ${statusClass}">${statusText}</span></td>
                         `;
                         tableBody.appendChild(tr);
                     });
                 }
 
+                // 4. بناء مؤشرات التوزيع التفاعلية ونسب الفئات
                 const distWrapper = document.getElementById('categories-distribution-wrapper');
                 distWrapper.innerHTML = '';
                 const trackerEntries = Object.entries(categoryTracker);
                 
                 if (trackerEntries.length === 0) {
-                    ['التورت', 'الورد', 'الميني تورت', 'الديسباسيتو'].forEach(cat => {
+                    ['التورت المخصصة', 'البوكيهات الفاخرة', 'حلويات شرقية', 'أصناف غربية'].forEach(cat => {
                         appendDistributionRow(distWrapper, cat, 0, 0);
                     });
                 } else {
@@ -515,6 +540,10 @@
                 }
             } catch (error) {
                 console.error("❌ خطأ في معالجة لوحة التحكم:", error);
+                const tableBody = document.getElementById('recent-orders-table-body');
+                if (tableBody) {
+                    tableBody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #ff4d6d; padding: 24px;">حدث خطأ أثناء مزامنة البيانات، يرجى مراجعة سجلات المحرك.</td></tr>`;
+                }
             }
         }
 
@@ -524,7 +553,7 @@
             div.innerHTML = `
                 <div class="dist-info">
                     <span>${escapeHtml(label)}</span>
-                    <span style="color: var(--bose-pink); font-weight: 700;">${percent}% (${count} قطعة)</span>
+                    <span style="color: var(--bose-pink); font-weight: 700;">${percent}% (${count} طلب)</span>
                 </div>
                 <div class="dist-bar-bg"><div class="dist-bar-fill" style="width: ${percent}%;"></div></div>
             `;
