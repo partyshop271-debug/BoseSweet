@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>لوحة التحكم | الرئيسية</title>
+    <!-- استدعاء خط Cairo الاحترافي المعتمد -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- الألوان الحاكمة والهندسة الرقمية الصارمة (The Strict Palette) --- */
+        :root {
+            --boosy-pink: #FF91A4;    /* نبض الحياة - للحدود، الظلال الناعمة، والتأثيرات التفاعلية */
+            --boosy-white: #FFFFFF;   /* المسيطر تماماً على الخلفيات لمنع التكدس نهائياً */
+            --boosy-black: #111111;   /* النصوص والعناوين فقط لضمان وضوح كامل للعين */
+            --boosy-gold: #D4AF37;    /* وجود رمزي ناعم وخفيف جداً للفخامة */
+            --boosy-gray: #F9F9F9;    /* خلفية الكروت والأقسام الفخمة */
+            --boosy-border: #EAEAEA;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--boosy-white);
+            color: var(--boosy-black);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* الهيدر العلوي الفخم للوحة القيادة */
+        header {
+            background-color: var(--boosy-white);
+            border-bottom: 2px solid var(--boosy-pink);
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 15px rgba(255, 145, 164, 0.08);
+        }
+
+        .header-brand h1 {
+            font-size: 22px;
+            font-weight: 700; /* قفل وزن الخط عند 700 كحد أقصى لأضخم العناوين */
+            color: var(--boosy-black);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        /* الأزرار التفاعلية الراقية */
+        .btn-nav {
+            padding: 10px 18px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--boosy-black);
+            background-color: var(--boosy-white);
+            border: 1.5px solid var(--boosy-border);
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .btn-nav:hover {
+            border-color: var(--boosy-pink);
+            color: var(--boosy-black);
+            box-shadow: 0 4px 10px rgba(255, 145, 164, 0.15);
+        }
+
+        .btn-logout {
+            border-color: #D63031;
+            color: #D63031;
+        }
+
+        .btn-logout:hover {
+            background-color: #FFF0F2;
+            border-color: #D63031;
+            color: #D63031;
+            box-shadow: none;
+        }
+
+        /* حاوية المحتوى الرئيسي المتنفّس */
+        main {
+            flex: 1;
+            padding: 40px 30px;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .welcome-section {
+            margin-bottom: 35px;
+        }
+
+        .welcome-section h2 {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--boosy-black);
+            margin-bottom: 5px;
+        }
+
+        .welcome-section p {
+            font-size: 15px;
+            color: var(--boosy-black);
+            opacity: 0.7;
+        }
+
+        /* شبكة الكروت الإحصائية الذكية والسريعة */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background-color: var(--boosy-white);
+            border: 2px solid var(--boosy-border);
+            border-radius: 12px;
+            padding: 25px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            border-color: var(--boosy-pink);
+            box-shadow: 0 8px 25px rgba(255, 145, 164, 0.12);
+        }
+
+        .stat-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--boosy-black);
+            opacity: 0.6;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--boosy-black);
+        }
+
+        .stat-badge {
+            position: absolute;
+            top: 25px;
+            left: 25px;
+            font-size: 18px;
+            color: var(--boosy-gold); /* الوجود الرمزي للذهبي */
+        }
+
+        /* روابط التحكم السريع وتسهيل الملاحة */
+        .quick-actions-section {
+            background-color: var(--boosy-gray);
+            border: 1px solid var(--boosy-border);
+            border-radius: 16px;
+            padding: 30px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--boosy-black);
+            margin-bottom: 20px;
+        }
+
+        .action-buttons-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .btn-action-block {
+            background-color: var(--boosy-white);
+            border: 2px solid var(--boosy-pink);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            text-decoration: none;
+            color: var(--boosy-black);
+            font-weight: 700;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(255, 145, 164, 0.05);
+        }
+
+        .btn-action-block:hover {
+            background-color: var(--boosy-pink);
+            color: var(--boosy-white);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(255, 145, 164, 0.2);
+        }
+
+        /* منع التشويه والنصوص المقطوعة */
+        .text-truncate {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* التوافق التام والتجاوب الاستثنائي مع الموبايل */
+        @media (max-width: 768px) {
+            header {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            .header-actions {
+                width: 100%;
+                justify-content: center;
+            }
+            main {
+                padding: 25px 20px;
+            }
+            .welcome-section h2 {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- الهيدر الموحد طبقاً لبروتوكول V3 المسارات النسبية المستقرة -->
+    <header>
+        <div class="header-brand">
+            <h1 class="text-truncate">حلويات بوسي</h1>
+        </div>
+        <div class="header-actions">
+            <a href="../index.html" class="btn-nav">استعراض الموقع</a>
+            <button onclick="executeLogout()" class="btn-nav btn-logout">تسجيل الخروج</button>
+        </div>
+    </header>
+
+    <main>
+        <section class="welcome-section">
+            <h2>أهلاً بك في لوحة الإدارة</h2>
+            <p>متابعة فورية ومباشرة لأداء وتفاصيل عمل النظام اليومي</p>
+        </section>
+
+        <!-- شبكة الإحصائيات الآنية المستخرجة من المحرك المحلي للبيانات المشتركة -->
+        <section class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-title">إجمالي المنتجات</div>
+                <div class="stat-value" id="totalProductsCount">0</div>
+                <div class="stat-badge">✨</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">الطلبات الواردة</div>
+                <div class="stat-value" id="totalOrdersCount">0</div>
+                <div class="stat-badge">⭐</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">طلبات قيد المراجعة</div>
+                <div class="stat-value" id="pendingOrdersCount">0</div>
+                <div class="stat-badge">⏳</div>
+            </div>
+        </section>
+
+        <!-- لوحة الأوامر والروابط الحتمية المستقرة -->
+        <section class="quick-actions-section">
+            <h3 class="section-title">إدارة الأقسام المباشرة</h3>
+            <div class="action-buttons-group">
+                <a href="products.html" class="btn-action-block">إدارة وتعديل المنتجات</a>
+                <a href="orders.html" class="btn-action-block">استعراض وتحديث الطلبات</a>
+            </div>
+        </section>
+    </main>
+
+    <!-- المحرك الأمني وحارس البوابة المركزي للوحة الرئيسية -->
+    <script>
+        // نظام حارس البوابة (Security Gatekeeper Guard) المفعّل في رأس الصفحة فورياً
+        (function checkAdminAuth() {
+            const currentSession = localStorage.getItem('boosy_admin_session');
+            const sessionExpiry = localStorage.getItem('boosy_admin_session_expiry');
+            const now = new Date().getTime();
+
+            // الفحص والتدقيق الفوري: حظر أمني شامل في حال انتهاء الصلاحية أو عدم وجود توكن
+            if (currentSession !== 'active_authenticated' || !sessionExpiry || now > parseInt(sessionExpiry)) {
+                // تصفية المخلفات المنتهية أمنياً وتوجيه فوري لصفحة الدخول
+                localStorage.removeItem('boosy_admin_session');
+                localStorage.removeItem('boosy_admin_session_expiry');
+                window.location.href = 'index.html'; 
+            }
+        })();
+
+        // محرك قراءة البيانات التزامني لاستخراج الإحصائيات الدقيقة
+        document.addEventListener('DOMContentLoaded', () => {
+            // جلب مصفوفة المنتجات وقراءة حجمها الفعلي
+            const productsData = JSON.parse(localStorage.getItem('boosy_products_catalog')) || [];
+            document.getElementById('totalProductsCount').textContent = productsData.length;
+
+            // جلب مصفوفة الطلبات الواردة من عمليات شراء العملاء
+            const ordersData = JSON.parse(localStorage.getItem('boosy_orders_list')) || [];
+            document.getElementById('totalOrdersCount').textContent = ordersData.length;
+
+            // حساب الطلبات التي في حالة "قيد الانتظار / المراجعة"
+            const pendingOrders = ordersData.filter(order => order.status === 'pending' || order.status === 'قيد الانتظار');
+            document.getElementById('pendingOrdersCount').textContent = pendingOrders.length;
+        });
+
+        // آلية تسجيل الخروج الآمنة وتدمير الجلسة بنعومة ومباشرة
+        function executeLogout() {
+            localStorage.removeItem('boosy_admin_session');
+            localStorage.removeItem('boosy_admin_session_expiry');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
