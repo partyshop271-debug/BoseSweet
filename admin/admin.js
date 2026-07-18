@@ -3,7 +3,7 @@
  * ║ BRAND        : BOOSY SWEETS (حلويات بوسي)                                         ║
  * ║ FILE         : admin/admin.js                                                   ║
  * ║ DESCRIPTION  : بوابة تسجيل الدخول الآمنة المخصصة للإدارة فقط                  ║
- * ║ VERSION      : 2.0.0 (تطوير كلي مستقر ومحمي)                                      ║
+ * ║ VERSION      : 2.0.1 (إصلاح تضارب البيانات وتوحيد محرك التحقق)                     ║
  * ║ DATE         : 2026-07-18                                                       ║
  * ╚══════════════════════════════════════════════════════════════════════════════════╝
  */
@@ -18,23 +18,27 @@
         primary: '#FF91A4',   // نبض الحياة (الحدود، الظلال، Hover)
         background: '#FFFFFF',// المسيطر تماماً لمنع التكديس والراحة النفسية
         text: '#111111',      // معزول تماماً للوضوح الكامل (العناوين والنصوص)
-        secondary: '#D4AF37' // الوجود الرمزي الناعم لمحاكاة الفخامة
+        secondary: '#D4AF37'  // الوجود الرمزي الناعم لمحاكاة الفخامة
     };
 
-    // حماية ضد التلاعب ببيانات الدخول في الذاكرة المحلية
     const SECURITY_CONFIG = {
-        sessionKey: 'boosy_admin_secure_token',
+        sessionKey: 'bose_admin_session', // تم التوحيد مع المفتاح المعتمد بالصفحات لمنع قفل الدخول
         expiryKey: 'boosy_admin_session_expiry',
         maxAttempts: 5,
-        lockoutTimeMs: 15 * 60 * 1000, // 15 دقيقة إغلاق عند الخطأ المتكرر
-        sessionLifetimeMs: 60 * 60 * 1000 // صلاحية الجلسة ساعة واحدة
+        lockoutTimeMs: 15 * 60 * 1000, 
+        sessionLifetimeMs: 60 * 60 * 1000 
+    };
+
+    // البيانات المعتمدة والوحيدة للدخول الصارم
+    const CREDENTIALS = {
+        user: "boosy_admin",
+        pass: "Boosy@2026_Secure"
     };
 
     // ─────────────────────────────────────────────────────────────────
     // 2. محرك إدارة الحالة والأمان الداخلي (Engine)
     // ─────────────────────────────────────────────────────────────────
     const AdminSecurityManager = {
-        // تنظيف المدخلات لمنع ثغرات XSS
         sanitizeInput(input) {
             if (typeof input !== 'string') return '';
             return input
@@ -46,19 +50,6 @@
                 .replace(/\//g, '&#x2F;');
         },
 
-        // تشفير تشبيهي خفيف للرموز لتجنب تخزين نصوص صريحة في الـ LocalStorage (مناسب للاستضافات المجانية)
-        hashToken(username, password) {
-            const rawStr = `boosy_${username}_secret_${password}_2026`;
-            let hash = 0;
-            for (let i = 0; i < rawStr.length; i++) {
-                const char = rawStr.charCodeAt(i);
-                hash = ((hash << 5) - hash) + char;
-                hash = hash & hash; 
-            }
-            return 'B_SEC_' + Math.abs(hash).toString(36).toUpperCase();
-        },
-
-        // التحقق من حالة القفل بسبب محاولات خاطئة
         checkLockout() {
             const attempts = parseInt(localStorage.getItem('boosy_login_attempts') || '0', 10);
             const lockTime = parseInt(localStorage.getItem('boosy_lockout_time') || '0', 10);
@@ -69,7 +60,6 @@
                     const remainingMin = Math.ceil((lockTime - now) / 60000);
                     return { locked: true, minutes: remainingMin };
                 } else {
-                    // انتهاء مدة القفل - إعادة تعيين المحاولات
                     localStorage.removeItem('boosy_login_attempts');
                     localStorage.removeItem('boosy_lockout_time');
                 }
@@ -77,7 +67,6 @@
             return { locked: false };
         },
 
-        // تسجيل محاولة فاشلة
         registerFailedAttempt() {
             let attempts = parseInt(localStorage.getItem('boosy_login_attempts') || '0', 10);
             attempts++;
@@ -92,93 +81,94 @@
     };
 
     // ─────────────────────────────────────────────────────────────────
-    // 3. التحكم الكامل في واجهة التفاعل (UI & DOM Engine)
+    // 3. التحكم الكامل في واجهة التفاعل والربط الذكي (UI Engine)
     // ─────────────────────────────────────────────────────────────────
     document.addEventListener('DOMContentLoaded', () => {
-        // التحقق الفوري من وجود الجلسة لمنع الدخول العشوائي
-        if (window.location.pathname.includes('dashboard.html')) {
-            validateDashboardAccess();
-            return;
+        // فحص الجلسة الحالية
+        if (window.location.pathname.includes('dashboard.html') || window.location.pathname.includes('products.html')) {
+            if (localStorage.getItem(SECURITY_CONFIG.sessionKey) !== "active_session") {
+                window.location.href = 'index.html';
+                return;
+            }
         }
 
-        const loginForm = document.getElementById('adminLoginForm');
-        if (!loginForm) return; // الحفاظ على الهيكل ثابت بدون تدخل
+        // حقن الدالة المباشرة في النطاق العالمي لضمان عمل أزرار onclick بالصفحات القديمة والجديدة دون تعارض
+        window.verifyAdminCredentials = async function() {
+            const userField = document.getElementById('admin-user');
+            const passField = document.getElementById('admin-pass');
+            const submitBtn = document.querySelector('.bose-btn-primary');
 
-        // تطبيق خط كايرو والأنماط الحاكمة برمجياً لضمان أعلى فخامة بصرية
-        injectStrictTypography();
+            if (!userField || !passField) return;
 
-        // معالجة الحدث عند إرسال النموذج
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            // فحص القفل أولاً
             const lockStatus = AdminSecurityManager.checkLockout();
             if (lockStatus.locked) {
-                showToast(`محاولات تسجيل الدخول محظورة حالياً. يرجى الانتظار ${lockStatus.minutes} دقيقة.`);
+                window.showBoseToast(`محاولات تسجيل الدخول محظورة حالياً. يرجى الانتظار ${lockStatus.minutes} دقيقة.`);
                 return;
             }
 
-            const usernameInput = loginForm.querySelector('input[type="text"]');
-            const passwordInput = loginForm.querySelector('input[type="password"]');
-            const submitButton = loginForm.querySelector('button[type="submit"]');
-
-            if (!usernameInput || !passwordInput) return;
-
-            const cleanUsername = AdminSecurityManager.sanitizeInput(usernameInput.value.trim());
-            const cleanPassword = AdminSecurityManager.sanitizeInput(passwordInput.value.trim());
+            const cleanUsername = AdminSecurityManager.sanitizeInput(userField.value.trim());
+            const cleanPassword = AdminSecurityManager.sanitizeInput(passField.value.trim());
 
             if (!cleanUsername || !cleanPassword) {
-                showToast("يرجى ملء جميع الحقول المطلوبة بشكل صحيح.");
+                window.showBoseToast("يرجى ملء جميع الحقول المطلوبة بشكل صحيح.");
                 return;
             }
 
-            // تفعيل حالة التحميل لتحسين تجربة المستخدم وتقليل استهلاك البيانات
-            setLoadingState(submitButton, true);
+            // تفعيل حالة التحميل البصرية الفخمة
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.style.opacity = '0.7';
+                submitBtn.textContent = 'جاري التحقق الآمن..';
+            }
 
-            try {
-                // محاكاة استعلام آمن وموثوق محلياً متوافق مع الاستضافة المجانية والموبايل
-                // الحساب الافتراضي الآمن: بوسي الإداري (يمكن استبداله ببيانات الخادم لاحقاً)
-                const targetUserHash = "boosy_admin";
-                const targetPassHash = "B_SEC_1g8a7p4"; // تشفير كلمة مرور افتراضية قوية
+            // محاكاة تأخير أمان الشبكة
+            await new Promise(resolve => setTimeout(resolve, 800));
 
-                const computedToken = AdminSecurityManager.hashToken(cleanUsername, cleanPassword);
+            if (cleanUsername === CREDENTIALS.user && cleanPassword === CREDENTIALS.pass) {
+                // نجاح الدخول وتثبيت الجلسة الموحدة بالموقع
+                localStorage.setItem(SECURITY_CONFIG.sessionKey, "active_session");
+                localStorage.setItem(SECURITY_CONFIG.expiryKey, (Date.now() + SECURITY_CONFIG.sessionLifetimeMs).toString());
+                
+                localStorage.removeItem('boosy_login_attempts');
+                localStorage.removeItem('boosy_lockout_time');
 
-                // تأخير بسيط لمحاكاة أمان الشبكة ومنع هجمات التوقيت (Timing Attacks)
-                await new Promise(resolve => setTimeout(resolve, 800));
-
-                if (cleanUsername === "boosy_admin" && cleanPassword === "Boosy@2026_Secure") {
-                    // نجاح الدخول
-                    localStorage.setItem(SECURITY_CONFIG.sessionKey, computedToken);
-                    localStorage.setItem(SECURITY_CONFIG.expiryKey, (Date.now() + SECURITY_CONFIG.sessionLifetimeMs).toString());
-                    
-                    // تنظيف سجل الأخطاء
-                    localStorage.removeItem('boosy_login_attempts');
-                    localStorage.removeItem('boosy_lockout_time');
-
-                    showToast("تم التحقق من الصلاحية بنجاح.. جاري الانتقال للوحة التحكم.");
-                    
-                    setTimeout(() => {
-                        window.location.href = 'dashboard.html';
-                    }, 1000);
-
-                } else {
-                    // فشل الدخول
-                    const currentAttempts = AdminSecurityManager.registerFailedAttempt();
-                    const remaining = SECURITY_CONFIG.maxAttempts - currentAttempts;
-                    
-                    if (remaining <= 0) {
-                        showToast("تم حظر الدخول مؤقتاً لتجاوز حد المحاولات المسموحة.");
+                window.showBoseToast("تم التحقق من الصلاحية بنجاح.. جاري الانتقال للوحة التحكم.");
+                
+                setTimeout(() => {
+                    // الانتقال الآمن للوحة التحكم
+                    const authGate = document.getElementById("admin-auth-gate");
+                    const dashboardLayout = document.getElementById("admin-dashboard-layout");
+                    if (authGate && dashboardLayout) {
+                        authGate.style.display = "none";
+                        dashboardLayout.style.display = "block";
+                        if (typeof window.loadProductsIntoAdminDashboard === "function") {
+                            window.loadProductsIntoAdminDashboard();
+                        }
                     } else {
-                        showToast(`بيانات الدخول غير صحيحة. متبقي ${remaining} محاولات.`);
+                        window.location.href = 'dashboard.html';
                     }
-                    setLoadingState(submitButton, false);
+                }, 1000);
+
+            } else {
+                // فشل الدخول تسجيل المحاولة وعرض التنبيه الفخم الفوري
+                const currentAttempts = AdminSecurityManager.registerFailedAttempt();
+                const remaining = SECURITY_CONFIG.maxAttempts - currentAttempts;
+                
+                if (remaining <= 0) {
+                    window.showBoseToast("تم حظر الدخول مؤقتاً لتجاوز حد المحاولات المسموحة.");
+                } else {
+                    window.showBoseToast(`بيانات الدخول غير صحيحة. متبقي ${remaining} محاولات.`);
                 }
 
-            } catch (error) {
-                setLoadingState(submitButton, false);
-                showToast("عذراً، حدث خطأ أثناء معالجة الطلب. حاول مرة أخرى.");
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.style.opacity = '1';
+                    submitBtn.textContent = 'تسجيل الدخول الآمن';
+                }
             }
-        });
+        };
+
+        injectStrictTypography();
     });
 
     // ─────────────────────────────────────────────────────────────────
@@ -186,8 +176,6 @@
     // ─────────────────────────────────────────────────────────────────
     function injectStrictTypography() {
         document.body.style.fontFamily = "'Cairo', sans-serif";
-        
-        // تطبيق قفل وزن الخط لأضخم العناوين تلقائياً
         const mainHeaders = document.querySelectorAll('h1, h2');
         mainHeaders.forEach(header => {
             header.style.fontWeight = '700';
@@ -195,22 +183,8 @@
         });
     }
 
-    function setLoadingState(button, isLoading) {
-        if (!button) return;
-        if (isLoading) {
-            button.disabled = true;
-            button.dataset.originalText = button.innerHTML;
-            button.innerHTML = '<span class="boosy-spinner"></span> جاري التحقق..';
-            button.style.opacity = '0.7';
-        } else {
-            button.disabled = false;
-            button.innerHTML = button.dataset.originalText || 'تسجيل الدخول';
-            button.style.opacity = '1';
-        }
-    }
-
-    // رسائل تفاعلية راقية متوافقة مع الهوية الفخمة والقصيرة
-    function showToast(message) {
+    // ترقية نظام التنبيهات ليعمل بشكل انسيابي فخم يتوافق مع الرغبة البصرية للعلامة التجارية
+    window.showBoseToast = function(message) {
         let toastContainer = document.getElementById('boosy-toast-container');
         if (!toastContainer) {
             toastContainer = document.createElement('div');
@@ -220,7 +194,7 @@
                 bottom: 24px;
                 left: 50%;
                 transform: translateX(-50%);
-                z-index: 9999;
+                z-index: 100002;
                 display: flex;
                 flex-direction: column;
                 gap: 8px;
@@ -241,28 +215,15 @@
             text-align: center;
             box-shadow: 0 4px 12px rgba(255,145,164,0.15);
             border-right: 4px solid ${THEME_PALETTE.primary};
-            animation: boosyFadeInUp 0.3s ease forwards;
+            transition: all 0.3s ease;
         `;
         toast.textContent = message;
         toastContainer.appendChild(toast);
 
         setTimeout(() => {
-            toast.style.animation = 'boosyFadeOut 0.3s ease forwards';
+            toast.style.opacity = '0';
             setTimeout(() => toast.remove(), 300);
         }, 3500);
-    }
-
-    // التحقق الصارم من حماية لوحة التحكم لمنع الالتفاف المباشر عبر الرابط
-    function validateDashboardAccess() {
-        const token = localStorage.getItem(SECURITY_CONFIG.sessionKey);
-        const expiry = localStorage.getItem(SECURITY_CONFIG.expiryKey);
-        const now = Date.now();
-
-        if (!token || !expiry || now > parseInt(expiry, 10)) {
-            localStorage.removeItem(SECURITY_CONFIG.sessionKey);
-            localStorage.removeItem(SECURITY_CONFIG.expiryKey);
-            window.location.href = 'index.html'; // الإعادة الفورية لصفحة الدخول
-        }
-    }
+    };
 
 })();
