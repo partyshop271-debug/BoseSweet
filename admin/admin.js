@@ -3,7 +3,7 @@
  * ║ BRAND        : BOOSY SWEETS (حلويات بوسي)                                         ║
  * ║ FILE         : admin/admin.js                                                   ║
  * ║ DESCRIPTION  : بوابة تسجيل الدخول الآمنة المخصصة للإدارة فقط                  ║
- * ║ VERSION      : 2.0.1 (إصلاح تضارب البيانات وتوحيد محرك التحقق)                     ║
+ * ║ VERSION      : 2.1.0 (حل تضارب معرّفات الدخول وتوحيد المحرك بالكامل)            ║
  * ║ DATE         : 2026-07-18                                                       ║
  * ╚══════════════════════════════════════════════════════════════════════════════════╝
  */
@@ -11,33 +11,27 @@
 (function () {
     'use strict';
 
-    // ─────────────────────────────────────────────────────────────────
-    // 1. التكوين والألوان الحاكمة والشخصية (Strict Configurations)
-    // ─────────────────────────────────────────────────────────────────
     const THEME_PALETTE = {
-        primary: '#FF91A4',   // نبض الحياة (الحدود، الظلال، Hover)
-        background: '#FFFFFF',// المسيطر تماماً لمنع التكديس والراحة النفسية
-        text: '#111111',      // معزول تماماً للوضوح الكامل (العناوين والنصوص)
-        secondary: '#D4AF37'  // الوجود الرمزي الناعم لمحاكاة الفخامة
+        primary: '#FF91A4',   
+        background: '#FFFFFF',
+        text: '#111111',      
+        secondary: '#D4AF37'  
     };
 
     const SECURITY_CONFIG = {
-        sessionKey: 'bose_admin_session', // تم التوحيد مع المفتاح المعتمد بالصفحات لمنع قفل الدخول
+        sessionKey: 'bose_admin_session', 
         expiryKey: 'boosy_admin_session_expiry',
         maxAttempts: 5,
         lockoutTimeMs: 15 * 60 * 1000, 
         sessionLifetimeMs: 60 * 60 * 1000 
     };
 
-    // البيانات المعتمدة والوحيدة للدخول الصارم
+    // البيانات الصارمة المعتمدة والوحيدة على مستوى كافة ملفات الموقع
     const CREDENTIALS = {
         user: "boosy_admin",
         pass: "Boosy@2026_Secure"
     };
 
-    // ─────────────────────────────────────────────────────────────────
-    // 2. محرك إدارة الحالة والأمان الداخلي (Engine)
-    // ─────────────────────────────────────────────────────────────────
     const AdminSecurityManager = {
         sanitizeInput(input) {
             if (typeof input !== 'string') return '';
@@ -80,77 +74,67 @@
         }
     };
 
-    // ─────────────────────────────────────────────────────────────────
-    // 3. التحكم الكامل في واجهة التفاعل والربط الذكي (UI Engine)
-    // ─────────────────────────────────────────────────────────────────
     document.addEventListener('DOMContentLoaded', () => {
-        // فحص الجلسة الحالية
-        if (window.location.pathname.includes('dashboard.html') || window.location.pathname.includes('products.html')) {
+        // حارس مسار الصفحات الداخلية
+        if (window.location.pathname.includes('dashboard.html') || window.location.pathname.includes('products.html') || window.location.pathname.includes('orders.html')) {
             if (localStorage.getItem(SECURITY_CONFIG.sessionKey) !== "active_session") {
                 window.location.href = 'index.html';
                 return;
             }
         }
 
-        // حقن الدالة المباشرة في النطاق العالمي لضمان عمل أزرار onclick بالصفحات القديمة والجديدة دون تعارض
+        // محرك التحقق الصارم والموحد
         window.verifyAdminCredentials = async function() {
             const userField = document.getElementById('admin-user');
             const passField = document.getElementById('admin-pass');
-            const submitBtn = document.querySelector('.bose-btn-primary');
+            const submitBtn = document.getElementById('btn-submit-login') || document.querySelector('.bose-btn-primary');
 
-            if (!userField || !passField) return;
+            if (!userField || !passField) {
+                console.error("عناصر الإدخال غير موجودة بالصفحة الحالية.");
+                return;
+            }
 
             const lockStatus = AdminSecurityManager.checkLockout();
             if (lockStatus.locked) {
-                window.showBoseToast(`محاولات تسجيل الدخول محظورة حالياً. يرجى الانتظار ${lockStatus.minutes} دقيقة.`);
+                window.showBoseToast(`محاولات الدخول محظورة حالياً. يرجى الانتظار ${lockStatus.minutes} دقيقة.`);
                 return;
             }
 
             const cleanUsername = AdminSecurityManager.sanitizeInput(userField.value.trim());
-            const cleanPassword = AdminSecurityManager.sanitizeInput(passField.value.trim());
+            const cleanPassword = passField.value.trim(); // كلمات السر لا تُعقم بالكامل برمجياً لمنع تلف الرموز الخاصة مثل @
 
             if (!cleanUsername || !cleanPassword) {
                 window.showBoseToast("يرجى ملء جميع الحقول المطلوبة بشكل صحيح.");
                 return;
             }
 
-            // تفعيل حالة التحميل البصرية الفخمة
             if (submitBtn) {
                 submitBtn.disabled = true;
                 submitBtn.style.opacity = '0.7';
                 submitBtn.textContent = 'جاري التحقق الآمن..';
             }
 
-            // محاكاة تأخير أمان الشبكة
-            await new Promise(resolve => setTimeout(resolve, 800));
+            await new Promise(resolve => setTimeout(resolve, 600));
 
             if (cleanUsername === CREDENTIALS.user && cleanPassword === CREDENTIALS.pass) {
-                // نجاح الدخول وتثبيت الجلسة الموحدة بالموقع
                 localStorage.setItem(SECURITY_CONFIG.sessionKey, "active_session");
                 localStorage.setItem(SECURITY_CONFIG.expiryKey, (Date.now() + SECURITY_CONFIG.sessionLifetimeMs).toString());
                 
                 localStorage.removeItem('boosy_login_attempts');
                 localStorage.removeItem('boosy_lockout_time');
 
-                window.showBoseToast("تم التحقق من الصلاحية بنجاح.. جاري الانتقال للوحة التحكم.");
+                window.showBoseToast("تم التحقق بنجاح.. جاري الانتقال للوحة التحكم.");
                 
                 setTimeout(() => {
-                    // الانتقال الآمن للوحة التحكم
-                    const authGate = document.getElementById("admin-auth-gate");
-                    const dashboardLayout = document.getElementById("admin-dashboard-layout");
-                    if (authGate && dashboardLayout) {
-                        authGate.style.display = "none";
-                        dashboardLayout.style.display = "block";
-                        if (typeof window.loadProductsIntoAdminDashboard === "function") {
-                            window.loadProductsIntoAdminDashboard();
-                        }
+                    // التوجيه الذكي للصفحة المتاحة لديك تلقائياً
+                    if (window.location.pathname.includes('products.html') || window.location.pathname.includes('orders.html')) {
+                        window.location.reload();
                     } else {
-                        window.location.href = 'dashboard.html';
+                        window.location.href = 'products.html'; 
                     }
                 }, 1000);
 
             } else {
-                // فشل الدخول تسجيل المحاولة وعرض التنبيه الفخم الفوري
                 const currentAttempts = AdminSecurityManager.registerFailedAttempt();
                 const remaining = SECURITY_CONFIG.maxAttempts - currentAttempts;
                 
@@ -163,17 +147,15 @@
                 if (submitBtn) {
                     submitBtn.disabled = false;
                     submitBtn.style.opacity = '1';
-                    submitBtn.textContent = 'تسجيل الدخول الآمن';
+                    submitBtn.textContent = 'تسجيل الدخول المباشر';
                 }
+                passField.value = '';
             }
         };
 
         injectStrictTypography();
     });
 
-    // ─────────────────────────────────────────────────────────────────
-    // 4. دالات الدعم المخصصة والمحسنة للأداء (Core Helpers)
-    // ─────────────────────────────────────────────────────────────────
     function injectStrictTypography() {
         document.body.style.fontFamily = "'Cairo', sans-serif";
         const mainHeaders = document.querySelectorAll('h1, h2');
@@ -183,7 +165,6 @@
         });
     }
 
-    // ترقية نظام التنبيهات ليعمل بشكل انسيابي فخم يتوافق مع الرغبة البصرية للعلامة التجارية
     window.showBoseToast = function(message) {
         let toastContainer = document.getElementById('boosy-toast-container');
         if (!toastContainer) {
@@ -211,7 +192,7 @@
             padding: 14px 20px;
             border-radius: 8px;
             font-size: 14px;
-            font-weight: 500;
+            font-weight: 600;
             text-align: center;
             box-shadow: 0 4px 12px rgba(255,145,164,0.15);
             border-right: 4px solid ${THEME_PALETTE.primary};

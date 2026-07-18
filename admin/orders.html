@@ -8,7 +8,6 @@
     <script src="../js/core-engine.js"></script>
     
     <style>
-        /* نظام التصميم الموحد الملتزم بالألوان الحاكمة والهندسة الرقمية للنصوص */
         :root {
             --admin-pink: #FF91A4;
             --admin-white: #FFFFFF;
@@ -27,7 +26,6 @@
             direction: rtl;
         }
 
-        /* حاوية بوابة تسجيل الدخول الآمنة */
         .auth-container {
             display: flex;
             justify-content: center;
@@ -44,8 +42,8 @@
             border: 2px solid var(--admin-pink);
             border-radius: 20px;
             padding: 30px;
-            box-shadow: var(--admin-shadow);
             text-align: center;
+            box-shadow: var(--admin-shadow);
         }
 
         .auth-card h1 {
@@ -109,15 +107,6 @@
             opacity: 0.9;
         }
 
-        .error-message {
-            color: #E63946;
-            font-size: 14px;
-            margin-top: 15px;
-            display: none;
-            font-weight: 600;
-        }
-
-        /* لوحة عرض إدارة الطلبات (مخفية افتراضياً حتى نجاح التوثيق) */
         .dashboard-wrapper {
             display: none;
             padding: 30px 20px;
@@ -163,7 +152,6 @@
             gap: 20px;
         }
 
-        /* كارت الطلب الموحد للإدارة */
         .order-admin-card {
             background: var(--admin-white);
             border: var(--admin-border);
@@ -280,13 +268,13 @@
 </head>
 <body>
 
-    <!-- البوابة الحتمية لتسجيل الدخول الآمن -->
     <div id="admin-auth-block" class="auth-container">
         <div class="auth-card">
+            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="Bose Sweets" style="max-width: 90px; margin-bottom: 15px;">
             <h1>مدير النظام</h1>
             <p>سجل دخولك لاستعراض ومتابعة طلبات عملاء حلويات بوسي</p>
             
-            <form id="admin-login-form" onsubmit="handleAdminAuth(event)">
+            <form id="admin-login-form" onsubmit="event.preventDefault(); window.verifyAdminCredentials();">
                 <div class="form-group">
                     <label for="admin-user">اسم المستخدم الفاخر</label>
                     <input type="text" id="admin-user" class="form-control" placeholder="ادخل اسم المستخدم" required autocomplete="username">
@@ -296,12 +284,10 @@
                     <input type="password" id="admin-pass" class="form-control" placeholder="••••••••" required autocomplete="current-password">
                 </div>
                 <button type="submit" class="btn-admin-submit">تفعيل الصلاحية الآمنة</button>
-                <div id="auth-error-log" class="error-message">بيانات الاعتماد غير مطابقة للمعايير المعتمدة.</div>
             </form>
         </div>
     </div>
 
-    <!-- لوحة التحكم وعرض الطلبات اللوجستية بعد التحقق -->
     <div id="admin-dashboard-block" class="dashboard-wrapper">
         <div class="dashboard-header">
             <div>
@@ -310,53 +296,26 @@
             <button class="btn-logout" onclick="terminateAdminSession()">إنهاء الجلسة الآمنة</button>
         </div>
 
-        <!-- شبكة ضخ وحقن كروت الطلبات ديناميكياً -->
-        <div id="admin-orders-grid" class="orders-grid">
-            <!-- يتم التوليد البرمجي هنا تلقائياً -->
-        </div>
+        <div id="admin-orders-grid" class="orders-grid"></div>
     </div>
 
     <script>
-        // الكود الهندسي الصارم للتحقق من الجلسة وعرض البيانات الفورية
-        const SECURE_TOKEN = "bose_admin_authorized";
+        const SECURE_TOKEN = "bose_admin_session";
 
         document.addEventListener("DOMContentLoaded", () => {
-            // التحقق الفوري لحظة تحميل الصفحة لمنع تخطي الحارس الرقمي
-            if (sessionStorage.getItem(SECURE_TOKEN) === "true") {
+            if (localStorage.getItem(SECURE_TOKEN) === "active_session") {
                 showDashboardView();
             }
         });
 
-        // معالجة وإدارة بوابة تسجيل الدخول الآمنة للفرع
-        function handleAdminAuth(event) {
-            event.preventDefault();
-            const userField = document.getElementById("admin-user").value.trim();
-            const passField = document.getElementById("admin-pass").value.trim();
-            const errorLog = document.getElementById("auth-error-log");
-
-            // بيانات افتراضية قياسية للإدارة - متوافقة كلياً مع الاستضافات المجانية وبيئة العمل المعزولة
-            if (userField === "boosy_admin" && passField === "BoseSweets2026") {
-                errorLog.style.display = "none";
-                sessionStorage.setItem(SECURE_TOKEN, "true");
-                showDashboardView();
-            } else {
-                errorLog.style.display = "block";
-                sessionStorage.scrollIntoView({ behavior: 'smooth' });
-            }
-        }
-
-        // إظهار لوحة التحكم اللوجستية وتفعيل محرك جلب الفواتير
         function showDashboardView() {
             document.getElementById("admin-auth-block").style.display = "none";
             document.getElementById("admin-dashboard-block").style.display = "block";
             renderAdminOrdersGrid();
         }
 
-        // بناء وحقن قائمة طلبات العملاء ديناميكياً بأعلى دقة ومعايير حماية
         function renderAdminOrdersGrid() {
             const gridContainer = document.getElementById("admin-orders-grid");
-            
-            // جلب البيانات من كائن التخزين الموحد للطلبات والمطابق لباقي محركات السلة وإتمام الطلب
             const storedOrdersRaw = localStorage.getItem("bose_orders");
             const ordersList = storedOrdersRaw ? JSON.parse(storedOrdersRaw) : [];
 
@@ -365,15 +324,11 @@
                 return;
             }
 
-            // ترتيب الطلبات من الأحدث إلى الأقدم استناداً لزمن المعاملة الموحد
             ordersList.sort((a, b) => b.timestamp - a.timestamp);
-
             let gridHTML = "";
 
             ordersList.forEach(order => {
                 let itemsHTML = "";
-                
-                // فحص بنية العناصر المشتراة داخل الفاتورة وضمان تطهيرها بصرياً
                 order.items.forEach(item => {
                     let customSpecsHTML = "";
                     if (item.customDetails) {
@@ -394,9 +349,7 @@
                             if (d.size) specsArray.push(`الحجم: ${d.size}`);
                             if (d.customMessage) specsArray.push(`الرسالة: ${d.customMessage}`);
                         }
-                        
                         if (d.allergyNote) specsArray.push(`⚠️ ملاحظة طبية: ${d.allergyNote}`);
-
                         if (specsArray.length > 0) {
                             customSpecsHTML = `<span class="order-custom-specs">${specsArray.join(' | ')}</span>`;
                         }
@@ -413,7 +366,6 @@
                     `;
                 });
 
-                // تحديد الحالة وتجهيز قائمة التحكم التفاعلية للإدارة
                 const currentStatus = order.status || "pending";
 
                 gridHTML += `
@@ -444,7 +396,7 @@
                         </div>
 
                         <div class="order-financial-summary">
-                            <div>إجمالي الفاتورة (شامل الشحن والتقريب الكلي):</div>
+                            <div>إجمالي الفاتورة:</div>
                             <div class="price-display-admin">${Math.round(order.grandTotal)} جنيه</div>
                         </div>
                     </div>
@@ -454,30 +406,23 @@
             gridContainer.innerHTML = gridHTML;
         }
 
-        // دالة تحديث حالة الطلب اللوجستية وحفظها الفوري في الذاكرة الموحدة للموقع
         function updateOrderStatus(orderId, newStatus) {
             const storedOrdersRaw = localStorage.getItem("bose_orders");
             if (!storedOrdersRaw) return;
 
             let ordersList = JSON.parse(storedOrdersRaw);
             const orderIndex = ordersList.findIndex(o => o.orderId === orderId);
-            
             if (orderIndex !== -1) {
                 ordersList[orderIndex].status = newStatus;
                 localStorage.setItem("bose_orders", JSON.stringify(ordersList));
-                console.log(`🚀 تم تحديث حالة الطلب #${orderId} بنجاح إلى: ${newStatus}`);
             }
         }
 
-        // إغلاق الجلسة الآمنة للإدارة وإعادة التوجيه الفوري لشاشة القفل
         function terminateAdminSession() {
-            sessionStorage.removeItem(SECURE_TOKEN);
-            document.getElementById("admin-dashboard-block").style.display = "none";
-            document.getElementById("admin-auth-block").style.display = "flex";
-            document.getElementById("admin-login-form").reset();
+            localStorage.removeItem(SECURE_TOKEN);
+            window.location.reload();
         }
 
-        // نظام تطهير وتعقيم النصوص الصارم لمنع ثغرات الـ XSS المخفية
         function escapeSecureText(text) {
             if (!text) return "";
             const div = document.createElement("div");
@@ -485,5 +430,6 @@
             return div.innerHTML;
         }
     </script>
+    <script src="admin.js"></script>
 </body>
 </html>
