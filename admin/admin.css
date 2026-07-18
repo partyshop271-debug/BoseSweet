@@ -1,387 +1,366 @@
-/* admin/admin.css */
-/* تم قفل الأوزان عند 700 كحد أقصى تماشياً مع هندسة النصوص الرقمية للموقع */
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+/**
+ * 🔒 ملف التصميم الهندسي لبوابة تسجيل الدخول الآمنة للإدارة - حلويات بوسي V3
+ * مكان الملف اللوجستي: root/admin/admin.css
+ * حالة الملف: مستقر، معزول تماماً، ومحسن لأعلى معايير الأداء والأمن والأجهزة الذكية.
+ */
 
+/* ==========================================================================
+   1. محددات بيئة العمل والألوان الحاكمة والمقدسة (BoseSweets Production Tokens)
+   ========================================================================== */
 :root {
-    /* الألوان الحاكمة الصارمة للموقع */
-    --primary-pink: #Ff91a4;     /* نبض الحياة: للحدود، الظلال، والتفاعلات */
-    --pure-white: #FFFFFF;       /* المسيطر تماماً على الخلفيات لمنع التكدس */
-    --dark-black: #111111;       /* للنصوص والعناوين فقط لضمان الوضوح الكامل */
-    --luxury-gold: #D4AF37;      /* لمسات الفخامة الناعمة */
-    --bg-light: #F8F9FA;         /* خلفية عامة مريحة للوحة التحكم */
-    --gray-border: #E5E5E5;      /* حدود رمادية خفيفة */
-    --success-green: #2ECC71;    /* للعمليات الناجحة والشارات المكتملة */
-    --warning-orange: #E67E22;   /* للعمليات المعلقة وبانتظار المراجعة */
+    /* الألوان الحاكمة والأساسية للعلامة التجارية - مطابقة للـ Blueprint المعتمد */
+    --bose-pink: #FF91A4;         /* نبض الحياة: حدود العناصر، الظلال التفاعلية، والتأثيرات الناعمة */
+    --bose-white: #FFFFFF;        /* المسيطر تماماً: المساحات والخلفيات لخلق تنفس بصري ومنع التكديس */
+    --bose-black: #111111;        /* معزول تماماً عن الظلال والخلفيات: للنصوص والعناوين فقط لضمان الوضوح */
+    --bose-gold: #D4AF37;         /* وجود رمزي ناعم: يحاكي فخامة اللوجو والتفاصيل الاستثنائية */
+
+    /* الألوان الوظيفية الخاصة ببوابة الإدارة الأمنية */
+    --admin-bg-gradient: radial-gradient(circle at 50% 50%, #FFFFFF 0%, #FFF5F6 100%);
+    --admin-error: #D93838;
+    --admin-success: #28A745;
+    --admin-input-bg: #FAFAFA;
+    --admin-input-focus: rgba(255, 145, 164, 0.15);
+
+    /* الهندسة البرمجية للظلال الفاخرة المانعة للون الأسود العشوائي */
+    --bose-shadow-glow: 0 12px 40px rgba(255, 145, 164, 0.12);
+    --bose-shadow-hover: 0 20px 48px rgba(255, 145, 164, 0.22);
+    --bose-border-pink: 1px solid rgba(255, 145, 164, 0.25);
+    --bose-border-thick: 2px solid #FF91A4;
+    
+    /* التوقيت الانسيابي للحركات */
+    --bose-transition: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* ==========================================================================
+   2. إعادة التهيئة الأساسية وتأمين الأداء (Reset & Performance Optimization)
+   ========================================================================== */
 * {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-    font-family: 'Cairo', sans-serif;
-}
-
-body {
-    background-color: var(--bg-light);
-    color: var(--dark-black);
-    direction: rtl;
-    line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* بوابة تسجيل الدخول الفاخرة */
-.login-container {
-    max-width: 450px;
-    margin: 80px auto;
-    padding: 40px;
-    background: var(--pure-white);
-    border-radius: 12px;
-    border: 1px solid var(--primary-pink);
-    /* تطبيق الظل البمبي الناعم المعتمد */
-    box-shadow: 0 10px 30px rgba(255, 145, 164, 0.15);
-}
-
-.login-logo {
-    text-align: center;
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 30px;
-    color: var(--dark-black);
-}
-
-.login-logo span {
-    color: var(--primary-pink);
-}
-
-/* النموذج والمدخلات */
-.form-group {
-    margin-bottom: 20px;
-}
-
-.form-group label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 8px;
-    font-size: 14px;
-    color: var(--dark-black);
-}
-
-.form-control {
-    width: 100%;
-    padding: 12px 15px;
-    border: 1px solid var(--gray-border);
-    border-radius: 8px;
-    font-size: 15px;
-    transition: all 0.25s ease-in-out;
-    background: var(--pure-white);
-    color: var(--dark-black);
-}
-
-.form-control:focus {
-    outline: none;
-    border-color: var(--primary-pink);
-    box-shadow: 0 0 0 3px rgba(255, 145, 164, 0.2);
-}
-
-.btn-admin {
-    width: 100%;
-    padding: 12px;
-    background: var(--dark-black);
-    color: var(--pure-white);
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.25s ease-in-out;
-}
-
-.btn-admin:hover {
-    background: var(--primary-pink);
-    color: var(--dark-black);
-    font-weight: 700;
-}
-
-/* الهيكل العام للوحة التحكم */
-.admin-wrapper {
-    display: flex;
+body.bose-admin-lockscreen {
+    font-family: 'Cairo', sans-serif !important;
+    background: var(--admin-bg-gradient) !important;
+    color: var(--bose-black) !important;
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    direction: rtl;
+    overflow-x: hidden;
 }
 
-/* القائمة الجانبية الفخمة */
-.admin-sidebar {
-    width: 260px;
-    background: var(--dark-black);
-    color: var(--pure-white);
-    padding: 30px 20px;
-    flex-shrink: 0;
-    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.05);
+/* ==========================================================================
+   3. معمارية كارت بوابة تسجيل الدخول الآمنة (Secure Login Card Structural DOM)
+   ========================================================================== */
+.bose-admin-login-container {
+    width: 100%;
+    max-width: 440px;
+    background-color: var(--bose-white);
+    border: var(--bose-border-pink);
+    border-radius: 24px;
+    padding: 40px 32px;
+    box-shadow: var(--bose-shadow-glow);
+    transition: transform 0.4s var(--bose-transition), box-shadow 0.4s var(--bose-transition);
+    position: relative;
+    overflow: hidden;
+    will-change: transform, box-shadow;
 }
 
-.sidebar-brand {
-    font-size: 22px;
-    font-weight: 700;
-    margin-bottom: 40px;
+.bose-admin-login-container:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--bose-shadow-hover);
+}
+
+/* صبغة فخامة براند حلويات بوسي العلوية للغطاء */
+.bose-admin-login-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, var(--bose-gold), var(--bose-pink), var(--bose-gold));
+}
+
+/* ==========================================================================
+   4. الهندسة الرقمية لعناصر الترويسة واللوجو (Typography & Branding Rules)
+   ========================================================================== */
+.admin-brand-wrapper {
     text-align: center;
+    margin-bottom: 32px;
 }
 
-.sidebar-brand span {
-    color: var(--primary-pink);
+.admin-store-logo {
+    width: 90px;
+    height: 90px;
+    object-fit: contain;
+    margin-bottom: 16px;
+    filter: drop-shadow(0 4px 8px rgba(255, 145, 164, 0.15));
+    user-select: none;
+    -webkit-user-drag: none;
 }
 
-.sidebar-menu {
-    list-style: none;
+.admin-portal-title {
+    font-size: 24px;
+    font-weight: 700 !important; /* قفل وزن الخط عند 700 كحد أقصى */
+    color: var(--bose-black);
+    line-height: 1.4;
+    margin-bottom: 8px;
 }
 
-.sidebar-menu li {
-    margin-bottom: 10px;
+.admin-portal-subtitle {
+    font-size: 14px;
+    font-weight: 400 !important;
+    color: var(--bose-black);
+    opacity: 0.7;
 }
 
-.sidebar-menu a {
+/* ==========================================================================
+   5. الحقول البرمجية وعناصر الإدخال (Form Fields & Secure Inputs)
+   ========================================================================== */
+.bose-admin-form {
     display: flex;
-    align-items: center;
-    padding: 12px 15px;
-    color: #E5E5E5;
-    text-decoration: none;
-    border-radius: 8px;
-    font-weight: 600;
-    transition: all 0.25s ease-in-out;
-}
-
-.sidebar-menu li.active a, 
-.sidebar-menu a:hover {
-    background: var(--primary-pink);
-    color: var(--dark-black);
-    font-weight: 700;
-}
-
-/* منطقة المحتوى الرئيسي */
-.admin-main {
-    flex-grow: 1;
-    padding: 40px;
-    overflow-y: auto;
-}
-
-.admin-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
-    border-bottom: 2px solid var(--gray-border);
-    padding-bottom: 15px;
-}
-
-.admin-header h1 {
-    font-size: 26px;
-    font-weight: 700;
-    color: var(--dark-black);
-}
-
-.btn-logout {
-    padding: 8px 16px;
-    background: transparent;
-    border: 1px solid var(--dark-black);
-    color: var(--dark-black);
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: all 0.25s ease-in-out;
-}
-
-.btn-logout:hover {
-    background: #FF4D4D;
-    color: var(--pure-white);
-    border-color: #FF4D4D;
-}
-
-/* كروت مؤشرات الأداء المحسنة بالظلال البمبي الناعمة */
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    flex-direction: column;
     gap: 20px;
-    margin-bottom: 40px;
 }
 
-.stat-card {
-    background: var(--pure-white);
-    padding: 25px;
-    border-radius: 12px;
-    border-right: 5px solid var(--primary-pink);
-    box-shadow: 0 4px 15px rgba(255, 145, 164, 0.05); /* ظلال ناعمة متوافقة مع الهوية */
+.admin-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
 }
 
-.stat-card.gold {
-    border-right-color: var(--luxury-gold);
-}
-
-.stat-card.green {
-    border-right-color: var(--success-green);
-}
-
-.stat-title {
+.admin-input-label {
     font-size: 14px;
-    color: #666666;
-    margin-bottom: 5px;
-    font-weight: 600;
+    font-weight: 600 !important;
+    color: var(--bose-black);
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
-.stat-value {
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--dark-black);
-}
-
-/* الجداول والبيانات */
-.data-card {
-    background: var(--pure-white);
-    border-radius: 12px;
-    padding: 25px;
-    box-shadow: 0 4px 15px rgba(255, 145, 164, 0.03);
-    margin-bottom: 30px;
-}
-
-.data-card h2 {
-    font-size: 18px;
-    margin-bottom: 20px;
-    font-weight: 700;
-    color: var(--dark-black);
-}
-
-.table-responsive {
-    width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch; /* سلاسة التمرير على الموبايل */
-}
-
-.admin-table {
-    width: 100%;
-    border-collapse: collapse;
-    text-align: right;
-    white-space: nowrap; /* حظر تقطيع النصوص نهائياً */
-}
-
-.admin-table th, .admin-table td {
-    padding: 14px 16px;
-    border-bottom: 1px solid var(--gray-border);
-}
-
-.admin-table th {
-    background-color: var(--bg-light);
-    font-weight: 700;
+.admin-input-label i {
+    color: var(--bose-pink);
     font-size: 14px;
-    color: var(--dark-black);
 }
 
-.admin-table td {
+.admin-field-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.admin-field-wrapper i.field-icon {
+    position: absolute;
+    right: 16px;
+    color: var(--bose-black);
+    opacity: 0.4;
+    font-size: 16px;
+    transition: color 0.3s var(--bose-transition), opacity 0.3s var(--bose-transition);
+    pointer-events: none;
+}
+
+.admin-secure-input {
+    width: 100%;
+    padding: 14px 44px 14px 16px; /* مسافة كافية للأيقونات اليمنى واليسرى */
+    font-family: 'Cairo', sans-serif !important;
     font-size: 15px;
-    color: var(--dark-black);
+    font-weight: 400;
+    color: var(--bose-black);
+    background-color: var(--admin-input-bg);
+    border: 1px solid rgba(17, 17, 17, 0.08);
+    border-radius: 12px;
+    outline: none;
+    transition: all 0.3s var(--bose-transition);
+    direction: ltr; /* لضمان كتابة البيانات الحساسة والرموز بانتظام */
+    text-align: right; /* محاذاة النص لليمين لراحة عين مدير النظام */
 }
 
-/* أزرار التحكم والتعديل الفاخرة */
-.action-btn {
-    padding: 6px 14px;
+/* حالة التركيز الآمنة */
+.admin-secure-input:focus {
+    border-color: var(--bose-pink);
+    background-color: var(--bose-white);
+    box-shadow: 0 0 0 4px var(--admin-input-focus);
+}
+
+.admin-secure-input:focus ~ i.field-icon {
+    color: var(--bose-pink);
+    opacity: 1;
+}
+
+/* زر إظهار وإخفاء الرقم السري التفاعلي */
+.bose-toggle-password {
+    position: absolute;
+    left: 16px;
+    background: none;
     border: none;
-    border-radius: 6px;
+    color: var(--bose-black);
+    opacity: 0.4;
     cursor: pointer;
-    font-weight: 600;
-    font-size: 13px;
-    margin-left: 5px;
-    transition: all 0.2s ease-in-out;
-    display: inline-flex;
+    font-size: 16px;
+    padding: 4px;
+    display: flex;
     align-items: center;
     justify-content: center;
+    transition: opacity 0.3s var(--bose-transition), color 0.3s var(--bose-transition);
 }
 
-.btn-edit {
-    background: rgba(212, 175, 55, 0.1);
-    color: var(--luxury-gold);
+.bose-toggle-password:hover {
+    opacity: 1;
+    color: var(--bose-pink);
 }
 
-.btn-edit:hover {
-    background: var(--luxury-gold);
-    color: var(--pure-white);
+/* ==========================================================================
+   6. آلية الفحص والتحكم في الرسائل (Validation Messages & Shields)
+   ========================================================================== */
+.admin-gate-shield-msg {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 13.5px;
+    font-weight: 600;
+    line-height: 1.5;
+    animation: boseShakeGate 0.4s cubic-bezier(.36,.07,.19,.97) both;
+    display: none; /* يتم التحكم بالظهور ديناميكياً عبر الجافاسكربت */
 }
 
-.btn-delete {
-    background: rgba(255, 77, 77, 0.08);
-    color: #FF4D4D;
+.admin-gate-shield-msg.is-error {
+    background-color: rgba(217, 56, 56, 0.06);
+    border: 1px solid rgba(217, 56, 56, 0.2);
+    color: var(--admin-error);
+    display: flex;
 }
 
-.btn-delete:hover {
-    background: #FF4D4D;
-    color: var(--pure-white);
+.admin-gate-shield-msg.is-success {
+    background-color: rgba(40, 167, 69, 0.06);
+    border: 1px solid rgba(40, 167, 69, 0.2);
+    color: var(--admin-success);
+    display: flex;
 }
 
-/* شارات الحالة المحسنة بصرياً بالكامل لراحة العين */
-.badge {
-    padding: 6px 12px;
-    border-radius: 20px;
+/* ==========================================================================
+   7. محرك زر الإجراء الحاسم للولوج الفاخر (Strict Action CTA Button)
+   ========================================================================== */
+.btn-admin-gate-submit {
+    width: 100%;
+    padding: 14px;
+    background-color: var(--bose-pink);
+    border: none;
+    border-radius: 12px;
+    color: var(--bose-white);
+    font-family: 'Cairo', sans-serif !important;
+    font-size: 16px;
+    font-weight: 700 !important; /* التزاماً بسقف أوزان الخطوط */
+    cursor: pointer;
+    transition: all 0.3s var(--bose-transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 4px 12px rgba(255, 145, 164, 0.2);
+    letter-spacing: 0.3px;
+}
+
+.btn-admin-gate-submit:hover {
+    background-color: #ff7d93;
+    box-shadow: 0 6px 20px rgba(255, 145, 164, 0.35);
+}
+
+.btn-admin-gate-submit:active {
+    transform: scale(0.98);
+}
+
+.btn-admin-gate-submit:disabled {
+    background-color: #ffccd4;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* محاكي التحميل والانتظار اللحظي داخل الزر */
+.bose-spinner {
+    width: 20px;
+    height: 20px;
+    border: 2.5px solid rgba(255, 255, 255, 0.3);
+    border-top-color: var(--bose-white);
+    border-radius: 50%;
+    animation: boseSpin 0.8s linear infinite;
+    display: none;
+}
+
+/* ==========================================================================
+   8. تذييل الصفحة وتأريخ الحقوق التلقائي (Secure Footer Block)
+   ========================================================================== */
+.admin-gate-footer {
+    margin-top: 32px;
+    text-align: center;
     font-size: 12px;
-    font-weight: 700;
-    display: inline-block;
+    font-weight: 400;
+    color: var(--bose-black);
+    opacity: 0.5;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
 
-.badge-pending { 
-    background: rgba(230, 126, 34, 0.12); 
-    color: var(--warning-orange); 
+.admin-gate-footer a {
+    color: var(--bose-pink);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s var(--bose-transition);
 }
 
-.badge-completed { 
-    background: rgba(46, 204, 113, 0.12); 
-    color: var(--success-green); 
+.admin-gate-footer a:hover {
+    color: var(--bose-black);
 }
 
-/* التصميم المتجاوب الاحترافي للموبايل والتابلت */
-@media (max-width: 768px) {
-    .admin-wrapper {
-        flex-direction: column;
+/* ==========================================================================
+   9. الحركات التفاعلية والاهتزازات الأمنية (Hardware-Accelerated Animations)
+   ========================================================================== */
+@keyframes boseSpin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes boseShakeGate {
+    10%, 90% { transform: translate3d(-1px, 0, 0); }
+    20%, 80% { transform: translate3d(2px, 0, 0); }
+    30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+    40%, 60% { transform: translate3d(4px, 0, 0); }
+}
+
+/* ==========================================================================
+   10. هندسة التجاوب الكامل الفاخر (Responsive Web Design / Mobile-First Match)
+   ========================================================================== */
+@media (max-width: 480px) {
+    body.bose-admin-lockscreen {
+        padding: 16px;
     }
     
-    .admin-sidebar {
-        width: 100%;
-        padding: 20px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    .bose-admin-login-container {
+        padding: 32px 20px;
+        border-radius: 20px;
     }
     
-    .sidebar-brand {
-        margin-bottom: 20px;
+    .admin-portal-title {
+        font-size: 21px;
     }
     
-    /* تحسين القائمة لتصبح انسيابية وسهلة اللمس دون تكدس */
-    .sidebar-menu {
-        display: flex;
-        overflow-x: auto;
-        padding-bottom: 5px;
-        gap: 8px;
-        justify-content: flex-start;
-        -webkit-overflow-scrolling: touch;
-    }
-    
-    .sidebar-menu::-webkit-scrollbar {
-        display: none; /* إخفاء شريط التمرير لمظهر فخم */
-    }
-    
-    .sidebar-menu li {
-        margin-bottom: 0;
-        flex-shrink: 0;
-    }
-    
-    .sidebar-menu a {
-        padding: 8px 14px;
+    .admin-secure-input {
+        padding: 12px 40px 12px 14px;
         font-size: 14px;
     }
     
-    .admin-main {
-        padding: 20px 15px;
-    }
-    
-    .admin-header h1 {
-        font-size: 22px;
-    }
-    
-    .stats-grid {
-        grid-template-columns: 1fr; /* كارت واحد كامل العرض على الشاشات الصغيرة جداً لراحة العين */
-        gap: 15px;
+    .btn-admin-gate-submit {
+        padding: 12px;
+        font-size: 15px;
     }
 }
