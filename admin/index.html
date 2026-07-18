@@ -178,46 +178,12 @@
             transform: scale(0.98);
         }
 
-        .feedback-message {
-            margin-top: 16px;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 14px;
-            text-align: center;
-            display: none;
-            animation: fadeIn 0.3s ease-in-out;
-        }
-
-        .feedback-error {
-            background-color: rgba(255, 0, 0, 0.05);
-            border: 1px solid rgba(255, 0, 0, 0.2);
-            color: #d32f2f;
-        }
-
-        .feedback-success {
-            background-color: rgba(76, 175, 80, 0.05);
-            border: 1px solid rgba(76, 175, 80, 0.2);
-            color: #2e7d32;
-        }
-
         .secure-footer {
             text-align: center;
             margin-top: 24px;
             font-size: 12px;
             color: var(--bose-black);
             opacity: 0.6;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @media (max-width: 480px) {
-            .login-card {
-                padding: 32px 20px;
-                border-radius: 16px;
-            }
         }
     </style>
 </head>
@@ -231,36 +197,31 @@
                 <p class="brand-subtitle">يرجى تسجيل الدخول للوصول إلى لوحة التحكم</p>
             </header>
 
-            <form id="bose-admin-login-form" novalidate>
-                <!-- حقل اسم المستخدم الحصري والأمن -->
+            <!-- تم تعديل الأكشن وربطه بالدالة المركزية الموحدة وتصحيح الـ IDs لتطابق ملف الـ JS تماماً -->
+            <form id="bose-admin-login-form" onsubmit="event.preventDefault(); window.verifyAdminCredentials();" novalidate>
                 <div class="form-group">
-                    <label for="admin-username" class="form-label">اسم المستخدم</label>
+                    <label for="admin-user" class="form-label">اسم المستخدم</label>
                     <div class="input-wrapper">
-                        <input type="text" id="admin-username" name="username" class="form-control" placeholder="ادخل اسم المستخدم المخصص" required autocomplete="username" spellcheck="false">
+                        <input type="text" id="admin-user" name="username" class="form-control" placeholder="ادخل اسم المستخدم المخصص" required autocomplete="username" spellcheck="false">
                         <i class="fa-solid fa-user-shield"></i>
                     </div>
                 </div>
 
-                <!-- حقل كلمة المرور المحمي -->
                 <div class="form-group">
-                    <label for="admin-password" class="form-label">كلمة المرور</label>
+                    <label for="admin-pass" class="form-label">كلمة المرور</label>
                     <div class="input-wrapper">
-                        <input type="password" id="admin-password" name="password" class="form-control" placeholder="ادخل كلمة المرور السرية" required autocomplete="current-password">
+                        <input type="password" id="admin-pass" name="password" class="form-control" placeholder="ادخل كلمة المرور السرية" required autocomplete="current-password">
                         <i class="fa-solid fa-lock"></i>
-                        <span class="toggle-password" id="password-visibility-toggle" role="button" aria-label="تبديل رؤية كلمة المرور">
+                        <span class="toggle-password" id="password-visibility-toggle" role="button" aria-label="تبديل رؤية كلمة المرور" onclick="togglePasswordVisibility()">
                             <i class="fa-solid fa-eye" id="toggle-icon"></i>
                         </span>
                     </div>
                 </div>
 
-                <!-- زر الإجراء الحاسم لتسجيل الدخول -->
                 <button type="submit" id="btn-submit-login" class="btn-submit-login">
                     <i class="fa-solid fa-right-to-bracket"></i> تسجيل الدخول المباشر
                 </button>
             </form>
-
-            <!-- وعاء التغذية الراجعة اللحظية للعمليات الأمنية -->
-            <div id="login-feedback" class="feedback-message" aria-live="polite"></div>
         </div>
 
         <footer class="secure-footer">
@@ -268,6 +229,19 @@
         </footer>
     </main>
 
+    <script>
+        function togglePasswordVisibility() {
+            const passField = document.getElementById('admin-pass');
+            const toggleIcon = document.getElementById('toggle-icon');
+            if (passField.type === 'password') {
+                passField.type = 'text';
+                toggleIcon.className = 'fa-solid fa-eye-slash';
+            } else {
+                passField.type = 'password';
+                toggleIcon.className = 'fa-solid fa-eye';
+            }
+        }
+    </script>
     <!-- استدعاء وظائف وجافاسكربت لوحة التحكم بالتوافق مع شجرة المعمارية الذهبية -->
     <script src="admin.js"></script>
 </body>
