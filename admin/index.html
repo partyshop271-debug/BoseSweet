@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بوابة التحكم الآمنة | حلويات بوسي</title>
+    
+    <!-- الربط الرقمي للخطوط والأيقونات القياسية الفاخرة -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- الربط المتوافق مع معمارية الملفات المعتمدة للموقع -->
+    <link rel="stylesheet" href="admin.css">
+    
+    <style>
+        :root {
+            --bose-pink: #FF91A4;
+            --bose-white: #FFFFFF;
+            --bose-black: #111111;
+            --bose-gold: #D4AF37;
+            --bose-shadow-glow: 0 8px 32px rgba(255, 145, 164, 0.12);
+            --bose-shadow-hover: 0 16px 40px rgba(255, 145, 164, 0.22);
+            --bose-border-pink: 1px solid rgba(255, 145, 164, 0.3);
+            --bose-border-thick: 2px solid #FF91A4;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif !important;
+            background-color: var(--bose-white) !important;
+            color: var(--bose-black) !important;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .login-gate-container {
+            width: 100%;
+            max-width: 420px;
+            padding: 24px;
+            box-sizing: border-box;
+        }
+
+        .login-card {
+            background-color: var(--bose-white);
+            border: var(--bose-border-pink);
+            border-radius: 20px;
+            padding: 40px 32px;
+            box-shadow: var(--bose-shadow-glow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .login-card:hover {
+            box-shadow: var(--bose-shadow-hover);
+            transform: translateY(-4px);
+        }
+
+        .brand-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .brand-logo {
+            max-width: 90px;
+            height: auto;
+            margin-bottom: 16px;
+        }
+
+        .brand-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--bose-black);
+            margin: 0 0 8px 0;
+        }
+
+        .brand-subtitle {
+            font-size: 14px;
+            font-weight: 400;
+            color: var(--bose-black);
+            opacity: 0.7;
+            margin: 0;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--bose-black);
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--bose-black);
+            opacity: 0.5;
+            transition: color 0.3s;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px 44px 14px 16px;
+            box-sizing: border-box;
+            border: var(--bose-border-pink);
+            border-radius: 12px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 15px;
+            color: var(--bose-black);
+            background-color: var(--bose-white);
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .form-control:focus {
+            border: var(--bose-border-thick);
+            box-shadow: 0 0 0 4px rgba(255, 145, 164, 0.15);
+        }
+
+        .form-control:focus + i {
+            color: var(--bose-pink);
+            opacity: 1;
+        }
+
+        .toggle-password {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--bose-black);
+            opacity: 0.5;
+            padding: 4px;
+            z-index: 10;
+        }
+
+        .toggle-password:hover {
+            opacity: 0.9;
+            color: var(--bose-pink);
+        }
+
+        .btn-submit-login {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--bose-pink);
+            border: none;
+            border-radius: 12px;
+            color: var(--bose-white);
+            font-family: 'Cairo', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+            box-shadow: 0 4px 12px rgba(255, 145, 164, 0.3);
+        }
+
+        .btn-submit-login:hover {
+            background-color: #ff7d93;
+            box-shadow: 0 6px 20px rgba(255, 145, 164, 0.4);
+        }
+
+        .btn-submit-login:active {
+            transform: scale(0.98);
+        }
+
+        .feedback-message {
+            margin-top: 16px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            text-align: center;
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .feedback-error {
+            background-color: rgba(255, 0, 0, 0.05);
+            border: 1px solid rgba(255, 0, 0, 0.2);
+            color: #d32f2f;
+        }
+
+        .feedback-success {
+            background-color: rgba(76, 175, 80, 0.05);
+            border: 1px solid rgba(76, 175, 80, 0.2);
+            color: #2e7d32;
+        }
+
+        .secure-footer {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 12px;
+            color: var(--bose-black);
+            opacity: 0.6;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 32px 20px;
+                border-radius: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <main class="login-gate-container" role="main">
+        <div class="login-card">
+            <header class="brand-header">
+                <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" id="bose-store-logo" class="brand-logo" alt="لوجو حلويات بوسي الفاخر">
+                <h1 class="brand-title">بوابة الإدارة المعتمدة</h1>
+                <p class="brand-subtitle">يرجى تسجيل الدخول للوصول إلى لوحة التحكم</p>
+            </header>
+
+            <form id="bose-admin-login-form" novalidate>
+                <!-- حقل اسم المستخدم الحصري والأمن -->
+                <div class="form-group">
+                    <label for="admin-username" class="form-label">اسم المستخدم</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="admin-username" name="username" class="form-control" placeholder="ادخل اسم المستخدم المخصص" required autocomplete="username" spellcheck="false">
+                        <i class="fa-solid fa-user-shield"></i>
+                    </div>
+                </div>
+
+                <!-- حقل كلمة المرور المحمي -->
+                <div class="form-group">
+                    <label for="admin-password" class="form-label">كلمة المرور</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="admin-password" name="password" class="form-control" placeholder="ادخل كلمة المرور السرية" required autocomplete="current-password">
+                        <i class="fa-solid fa-lock"></i>
+                        <span class="toggle-password" id="password-visibility-toggle" role="button" aria-label="تبديل رؤية كلمة المرور">
+                            <i class="fa-solid fa-eye" id="toggle-icon"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- زر الإجراء الحاسم لتسجيل الدخول -->
+                <button type="submit" id="btn-submit-login" class="btn-submit-login">
+                    <i class="fa-solid fa-right-to-bracket"></i> تسجيل الدخول المباشر
+                </button>
+            </form>
+
+            <!-- وعاء التغذية الراجعة اللحظية للعمليات الأمنية -->
+            <div id="login-feedback" class="feedback-message" aria-live="polite"></div>
+        </div>
+
+        <footer class="secure-footer">
+            <p>© 2026 حلويات بوسي. نظام إدارة المحتوى محمي برمجياً ومغلق لوجستياً.</p>
+        </footer>
+    </main>
+
+    <!-- استدعاء وظائف وجافاسكربت لوحة التحكم بالتوافق مع شجرة المعمارية الذهبية -->
+    <script src="admin.js"></script>
+</body>
+</html>
