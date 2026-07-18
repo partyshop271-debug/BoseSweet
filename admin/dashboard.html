@@ -43,7 +43,7 @@
             color: var(--bose-black) !important;
         }
 
-        /* ستايل بوابة تسجيل الدخول الآمنة */
+        /* ستايل بوابة تسجيل الدخول الآمنة الاحتياطية */
         .login-overlay {
             position: fixed;
             top: 0;
@@ -279,7 +279,7 @@
 </head>
 <body>
 
-    <!-- بوابة تسجيل الدخول الآمنة -->
+    <!-- بوابة تسجيل الدخول الآمنة الاحتياطية -->
     <div id="loginOverlay" class="login-overlay">
         <div class="login-card">
             <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="لوجو بوسي">
@@ -384,13 +384,10 @@
         }
 
         function syncDashboardMetrics() {
-            // سحب ديناميكي آمن وخفيف لحساب أعداد السلة والبيانات المخزنة دون استهلاك بيانات الاستضافة
             try {
                 const rawCart = localStorage.getItem('bose_cart');
                 const cartData = rawCart ? JSON.parse(rawCart) : [];
                 document.getElementById('m-orders').textContent = cartData.length > 0 ? '1' : '0';
-                
-                // جلب مؤشرات افتراضية ذكية متوافقة مع محرك JSON بدون تعليق الاتصال
                 document.getElementById('m-products').textContent = "12"; 
                 
                 if(cartData.length > 0) {
@@ -414,7 +411,7 @@
             }
         }
 
-        // فحص حالة الجلسة فور تحميل الصفحة لمنع تخطي البوابة لأي مستخدم عشوائي
+        // الحارس الذكي والموحد لمنع التعارض وفتح الداشبورد مباشرة فور تسجيل الدخول الصحيح
         document.addEventListener("DOMContentLoaded", () => {
             if (sessionStorage.getItem('bose_admin_auth') === 'authenticated_securely_v3') {
                 launchDashboardLayout();
