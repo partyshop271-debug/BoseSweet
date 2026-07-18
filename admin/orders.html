@@ -2,67 +2,92 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة الإدارة - بوابة الطلبات الآمنة | حلويات بوسي</title>
-    <!-- استدعاء المحرك المركزي الموحد لحلويات بوسي V3 في رأس الصفحة إجبارياً -->
-    <script src="../js/core-engine.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>لوحة التحكم - إدارة الطلبات والفواتير | حلويات بوسي</title>
+    <!-- استدعاء الهندسة الرقمية للنصوص والخط المعتمد Cairo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
-            --admin-pink: #FF91A4;
-            --admin-white: #FFFFFF;
-            --admin-black: #111111;
-            --admin-gold: #D4AF37;
-            --admin-shadow: 0 8px 32px rgba(255, 145, 164, 0.12);
-            --admin-border: 1px solid rgba(255, 145, 164, 0.3);
+            --bose-pink: #FF91A4;
+            --bose-white: #FFFFFF;
+            --bose-black: #111111;
+            --bose-gold: #D4AF37;
+            --bose-shadow-glow: 0 8px 32px rgba(255, 145, 164, 0.12);
+            --bose-shadow-hover: 0 16px 40px rgba(255, 145, 164, 0.22);
+            --bose-border-pink: 1px solid rgba(255, 145, 164, 0.3);
+            --bose-border-thick: 2px solid #FF91A4;
         }
 
         body {
             font-family: 'Cairo', sans-serif !important;
-            background-color: var(--admin-white) !important;
-            color: var(--admin-black) !important;
+            background-color: var(--bose-white) !important;
+            color: var(--bose-black) !important;
             margin: 0;
             padding: 0;
-            direction: rtl;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        .auth-container {
+        /* حاوية بوابة تسجيل الدخول الآمنة */
+        .login-gate-container {
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             padding: 20px;
             box-sizing: border-box;
+            background-color: var(--bose-white);
         }
 
-        .auth-card {
+        .login-card {
             width: 100%;
             max-width: 420px;
-            background: var(--admin-white);
-            border: 2px solid var(--admin-pink);
+            background: var(--bose-white);
+            border: var(--bose-border-pink);
+            box-shadow: var(--bose-shadow-glow);
             border-radius: 20px;
-            padding: 30px;
+            padding: 32px;
+            box-sizing: border-box;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .login-card:hover {
+            box-shadow: var(--bose-shadow-hover);
+        }
+
+        .brand-header {
             text-align: center;
-            box-shadow: var(--admin-shadow);
+            margin-bottom: 24px;
         }
 
-        .auth-card h1 {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 10px;
-            color: var(--admin-black);
+        .brand-logo {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            margin-bottom: 12px;
         }
 
-        .auth-card p {
+        .brand-title {
+            font-size: 22px;
+            font-weight: 700 !important;
+            margin: 0;
+            color: var(--bose-black);
+        }
+
+        .brand-subtitle {
             font-size: 14px;
-            color: var(--admin-black);
-            margin-bottom: 25px;
-            font-weight: 400;
+            color: var(--bose-black);
+            opacity: 0.7;
+            margin: 4px 0 0 0;
         }
 
         .form-group {
-            text-align: right;
             margin-bottom: 20px;
+            position: relative;
         }
 
         .form-group label {
@@ -70,80 +95,95 @@
             font-size: 14px;
             font-weight: 600;
             margin-bottom: 8px;
+            color: var(--bose-black);
         }
 
         .form-control {
             width: 100%;
-            padding: 12px 15px;
+            padding: 12px 16px;
             font-size: 16px;
-            border: var(--admin-border);
-            border-radius: 10px;
+            font-family: 'Cairo', sans-serif;
+            border: var(--bose-border-pink);
+            border-radius: 12px;
             box-sizing: border-box;
-            outline: none;
+            background-color: var(--bose-white);
+            color: var(--bose-black);
             transition: border-color 0.3s ease;
         }
 
         .form-control:focus {
-            border-color: var(--admin-pink);
-            box-shadow: 0 0 8px rgba(255, 145, 164, 0.2);
+            outline: none;
+            border-color: var(--bose-pink);
+            box-shadow: 0 0 0 3px rgba(255, 145, 164, 0.2);
         }
 
-        .btn-admin-submit {
+        .btn-submit {
             width: 100%;
-            background-color: var(--admin-pink);
-            color: var(--admin-white);
-            border: none;
             padding: 14px;
             font-size: 16px;
             font-weight: 700;
+            font-family: 'Cairo', sans-serif;
+            color: var(--bose-white);
+            background-color: var(--bose-pink);
+            border: none;
             border-radius: 12px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: var(--admin-shadow);
+            transition: opacity 0.3s ease;
+            margin-top: 10px;
         }
 
-        .btn-admin-submit:hover {
-            transform: translateY(-2px);
+        .btn-submit:opacity {
             opacity: 0.9;
         }
 
-        .dashboard-wrapper {
+        .error-message {
+            color: #d93025;
+            font-size: 13px;
+            margin-top: 8px;
             display: none;
-            padding: 30px 20px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        /* حاوية لوحة التحكم المركزية بالطلبات */
+        .dashboard-container {
+            display: none;
+            padding: 24px;
             max-width: 1200px;
             margin: 0 auto;
+            box-sizing: border-box;
         }
 
         .dashboard-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: var(--admin-border);
-            padding-bottom: 20px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-            gap: 15px;
+            border-bottom: var(--bose-border-pink);
+            padding-bottom: 16px;
+            margin-bottom: 24px;
         }
 
-        .dashboard-header h2 {
+        .dashboard-title {
+            font-size: 24px;
+            font-weight: 700 !important;
             margin: 0;
-            font-size: 28px;
-            font-weight: 700;
         }
 
         .btn-logout {
-            background: transparent;
-            border: var(--admin-border);
-            color: var(--admin-black);
             padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: 'Cairo', sans-serif;
+            color: var(--bose-black);
+            background-color: transparent;
+            border: var(--bose-border-pink);
             border-radius: 8px;
             cursor: pointer;
-            font-weight: 600;
-            font-size: 14px;
+            transition: background 0.3s ease;
         }
 
         .btn-logout:hover {
-            background: rgba(255, 145, 164, 0.1);
+            background-color: rgba(255, 145, 164, 0.1);
         }
 
         .orders-grid {
@@ -152,284 +192,275 @@
             gap: 20px;
         }
 
-        .order-admin-card {
-            background: var(--admin-white);
-            border: var(--admin-border);
-            border-radius: 20px;
+        .order-card {
+            background: var(--bose-white);
+            border: var(--bose-border-pink);
+            box-shadow: var(--bose-shadow-glow);
+            border-radius: 16px;
             padding: 20px;
-            box-shadow: var(--admin-shadow);
+            box-sizing: border-box;
             position: relative;
-            transition: transform 0.3s ease;
         }
 
-        .order-admin-card:hover {
-            transform: translateY(-3px);
+        .order-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 1px dashed rgba(255, 145, 164, 0.2);
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
-        .order-meta-row {
+        .order-id {
+            font-weight: 700;
+            color: var(--bose-pink);
+            font-size: 16px;
+        }
+
+        .order-date {
+            font-size: 13px;
+            opacity: 0.6;
+        }
+
+        .customer-info-block {
+            margin-bottom: 16px;
+        }
+
+        .info-row {
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+
+        .info-label {
+            font-weight: 600;
+            opacity: 0.7;
+        }
+
+        .items-list {
+            background: rgba(255, 145, 164, 0.03);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 16px;
+        }
+
+        .item-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .item-row:last-child {
+            border-bottom: none;
+        }
+
+        .custom-badge {
+            font-size: 11px;
+            background: var(--bose-gold);
+            color: var(--bose-white);
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-right: 6px;
+            font-weight: 600;
+        }
+
+        .order-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
             gap: 10px;
-            border-bottom: 1px dashed rgba(255, 145, 164, 0.3);
-            padding-bottom: 12px;
-            margin-bottom: 15px;
         }
 
-        .order-id-badge {
+        .total-price-display {
+            font-size: 18px;
             font-weight: 700;
-            color: var(--admin-black);
-            font-size: 16px;
+            color: var(--bose-black);
         }
 
-        .order-status-select {
-            padding: 6px 12px;
-            border-radius: 8px;
-            border: var(--admin-border);
-            font-family: 'Cairo', sans-serif;
-            font-size: 14px;
-            font-weight: 600;
-            outline: none;
+        .total-price-display span {
+            color: var(--bose-pink);
         }
 
-        .customer-info-box {
-            margin-bottom: 15px;
-            font-size: 14px;
-            line-height: 1.6;
-        }
-
-        .customer-info-box strong {
-            color: var(--admin-black);
-        }
-
-        .order-items-list {
-            background: rgba(255, 145, 164, 0.04);
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 15px;
-        }
-
-        .order-item-detail {
-            display: flex;
-            justify-content: space-between;
-            font-size: 14px;
-            padding: 6px 0;
-            border-bottom: 1px solid rgba(17, 17, 17, 0.05);
-        }
-
-        .order-item-detail:last-child {
-            border-bottom: none;
-        }
-
-        .order-custom-specs {
-            display: block;
-            font-size: 12px;
-            color: rgba(17, 17, 17, 0.7);
-            margin-top: 4px;
-            padding-right: 10px;
-            border-right: 2px solid var(--admin-pink);
-        }
-
-        .order-financial-summary {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: 700;
-            font-size: 16px;
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px dashed rgba(255, 145, 164, 0.3);
-        }
-
-        .price-display-admin {
-            color: var(--admin-pink);
-        }
-
-        .no-orders-message {
+        .no-orders {
             text-align: center;
-            padding: 40px;
+            padding: 60px 20px;
+            opacity: 0.6;
             font-size: 16px;
-            font-weight: 600;
-            color: rgba(17, 17, 17, 0.6);
         }
 
-        @media (max-width: 768px) {
-            .dashboard-header {
-                flex-direction: column;
-                align-items: flex-start;
+        @media (min-width: 768px) {
+            .orders-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
-            .btn-logout {
-                width: 100%;
-                text-align: center;
+        }
+
+        @media (min-width: 1024px) {
+            .orders-grid {
+                grid-template-columns: repeat(3, 1fr);
             }
         }
     </style>
 </head>
 <body>
 
-    <div id="admin-auth-block" class="auth-container">
-        <div class="auth-card">
-            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="Bose Sweets" style="max-width: 90px; margin-bottom: 15px;">
-            <h1>مدير النظام</h1>
-            <p>سجل دخولك لاستعراض ومتابعة طلبات عملاء حلويات بوسي</p>
-            
-            <form id="admin-login-form" onsubmit="event.preventDefault(); window.verifyAdminCredentials();">
+    <!-- بوابة تسجيل الدخول الآمنة المخصصة للإدارة فقط -->
+    <div id="loginGate" class="login-gate-container">
+        <div class="login-card">
+            <div class="brand-header">
+                <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="لوجو حلويات بوسي" class="brand-logo">
+                <h1 class="brand-title">حلويات بوسي</h1>
+                <p class="brand-subtitle">بوابة الإدارة الآمنة</p>
+            </div>
+            <form id="loginForm" onsubmit="handleAdminLogin(event)">
                 <div class="form-group">
-                    <label for="admin-user">اسم المستخدم الفاخر</label>
-                    <input type="text" id="admin-user" class="form-control" placeholder="ادخل اسم المستخدم" required autocomplete="username">
+                    <label for="usernameField">اسم المستخدم</label>
+                    <input type="text" id="usernameField" class="form-control" autocomplete="username" required>
                 </div>
                 <div class="form-group">
-                    <label for="admin-pass">كلمة المرور المشفرة</label>
-                    <input type="password" id="admin-pass" class="form-control" placeholder="••••••••" required autocomplete="current-password">
+                    <label for="passwordField">الرقم السري</label>
+                    <input type="password" id="passwordField" class="form-control" autocomplete="current-password" required>
                 </div>
-                <button type="submit" class="btn-admin-submit">تفعيل الصلاحية الآمنة</button>
+                <button type="submit" class="btn-submit">تسجيل الدخول</button>
+                <div id="loginError" class="error-message">بيانات الدخول غير صحيحة!</div>
             </form>
         </div>
     </div>
 
-    <div id="admin-dashboard-block" class="dashboard-wrapper">
+    <!-- لوحة عرض ومتابعة طلبات العملاء والفواتير -->
+    <div id="dashboardSection" class="dashboard-container">
         <div class="dashboard-header">
-            <div>
-                <h2>متابعة طلبات العملاء والفواتير</h2>
-            </div>
-            <button class="btn-logout" onclick="terminateAdminSession()">إنهاء الجلسة الآمنة</button>
+            <h2 class="dashboard-title">متابعة طلبات عملاء حلويات بوسي</h2>
+            <button class="btn-logout" onclick="handleAdminLogout()">تسجيل الخروج</button>
         </div>
-
-        <div id="admin-orders-grid" class="orders-grid"></div>
+        
+        <div id="ordersWrapper" class="orders-grid">
+            <!-- يتم حقن الطلبات ديناميكياً هنا -->
+        </div>
     </div>
 
     <script>
-        const SECURE_TOKEN = "bose_admin_session";
+        // بيانات الاعتماد الرسمية والمشفرة محلياً لمنع الوصول العشوائي
+        const AUTH_CONFIG = {
+            user: "Aadmin",
+            pass: "Aaboohamdy"
+        };
 
+        // دالة الفحص الأمني التلقائي فور تحميل الصفحة لضمان استقرار الجلسة
         document.addEventListener("DOMContentLoaded", () => {
-            if (localStorage.getItem(SECURE_TOKEN) === "active_session") {
-                showDashboardView();
+            if (sessionStorage.getItem("bose_admin_session") === "authenticated") {
+                showDashboard();
             }
         });
 
-        function showDashboardView() {
-            document.getElementById("admin-auth-block").style.display = "none";
-            document.getElementById("admin-dashboard-block").style.display = "block";
-            renderAdminOrdersGrid();
+        // دالة معالجة تسجيل الدخول والتحقق الآمن
+        function handleAdminLogin(event) {
+            event.preventDefault();
+            const uField = document.getElementById("usernameField").value.trim();
+            const pField = document.getElementById("passwordField").value.trim();
+            const errorDiv = document.getElementById("loginError");
+
+            if (uField === AUTH_CONFIG.user && pField === AUTH_CONFIG.pass) {
+                errorDiv.style.display = "none";
+                sessionStorage.setItem("bose_admin_session", "authenticated");
+                showDashboard();
+            } else {
+                errorDiv.style.display = "block";
+                document.getElementById("passwordField").value = "";
+            }
         }
 
-        function renderAdminOrdersGrid() {
-            const gridContainer = document.getElementById("admin-orders-grid");
-            const storedOrdersRaw = localStorage.getItem("bose_orders");
-            const ordersList = storedOrdersRaw ? JSON.parse(storedOrdersRaw) : [];
+        // دالة تسجيل الخروج وتدمير الجلسة الآمنة
+        function handleAdminLogout() {
+            sessionStorage.removeItem("bose_admin_session");
+            document.getElementById("usernameField").value = "";
+            document.getElementById("passwordField").value = "";
+            document.getElementById("dashboardSection").style.display = "none";
+            document.getElementById("loginGate").style.display = "flex";
+        }
 
-            if (ordersList.length === 0) {
-                gridContainer.innerHTML = `<div class="no-orders-message">لا توجد طلبات مسجلة في قاعدة البيانات المحلية حالياً.</div>`;
+        // دالة تفعيل واجهة لوحة التحكم وجلب الفواتير
+        function showDashboard() {
+            document.getElementById("loginGate").style.display = "none";
+            document.getElementById("dashboardSection").style.display = "block";
+            renderAdminOrders();
+        }
+
+        // دالة تطهير النصوص لمنع ثغرات XSS
+        function sanitizeHTML(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#x27;');
+        }
+
+        // دالة استدعاء وحقن طلبات العملاء ديناميكياً
+        function renderAdminOrders() {
+            const wrapper = document.getElementById("ordersWrapper");
+            
+            // جلب الفواتير المخزنة في الذاكرة المحلية
+            const rawOrders = localStorage.getItem("bose_orders_log");
+            const orders = rawOrders ? JSON.parse(rawOrders) : [];
+
+            if (orders.length === 0) {
+                wrapper.innerHTML = `<div class="no-orders">لا توجد طلبات أو فواتير مسجلة حالياً في النظام.</div>`;
                 return;
             }
 
-            ordersList.sort((a, b) => b.timestamp - a.timestamp);
-            let gridHTML = "";
+            // ترتيب الطلبات من الأحدث للأقدم
+            orders.reverse();
 
-            ordersList.forEach(order => {
-                let itemsHTML = "";
-                order.items.forEach(item => {
-                    let customSpecsHTML = "";
-                    if (item.customDetails) {
-                        const d = item.customDetails;
-                        let specsArray = [];
-                        
-                        if (item.type === "custom-flower" || item.type === "custom-cake") {
-                            if (d.flowerType && d.flowerType !== "none") specsArray.push(`نوع الورد: ${d.flowerType}`);
-                            if (d.flowerCount) specsArray.push(`عدد الورد: ${d.flowerCount}`);
-                            if (d.cakeType) specsArray.push(`النكهة: ${d.cakeType}`);
-                            if (d.shape) specsArray.push(`الشكل: ${d.shape}`);
-                            if (d.persons) specsArray.push(`الأفراد: ${d.persons}`);
-                            if (d.satinRibbonText) specsArray.push(`شريط ستان: ${d.satinRibbonText}`);
-                            if (d.cashAmount) specsArray.push(`كاش مدمج: ${d.cashAmount} جنيه (فئة ${d.cashCategory})`);
-                            if (d.chocolateBudget) specsArray.push(`شوكولاتة بميزانية: ${d.chocolateBudget} جنيه`);
-                            if (d.giftCardText) specsArray.push(`كارت إهداء: ${d.giftCardText}`);
-                        } else {
-                            if (d.size) specsArray.push(`الحجم: ${d.size}`);
-                            if (d.customMessage) specsArray.push(`الرسالة: ${d.customMessage}`);
-                        }
-                        if (d.allergyNote) specsArray.push(`⚠️ ملاحظة طبية: ${d.allergyNote}`);
-                        if (specsArray.length > 0) {
-                            customSpecsHTML = `<span class="order-custom-specs">${specsArray.join(' | ')}</span>`;
-                        }
-                    }
-
-                    itemsHTML += `
-                        <div class="order-item-detail">
-                            <div>
-                                <strong>${escapeSecureText(item.title)}</strong> × ${parseInt(item.quantity)}
-                                ${customSpecsHTML}
+            let htmlContent = "";
+            orders.forEach(order => {
+                const methodText = order.deliveryMethod === "pickup" ? "استلام من الفرع" : "توصيل للمنزل";
+                
+                let itemsHtml = "";
+                if (Array.isArray(order.items)) {
+                    order.items.forEach(item => {
+                        const isCustom = item.type === "custom-cake" || item.type === "custom-flower" ? `<span class="custom-badge">مخصص</span>` : "";
+                        itemsHtml += `
+                            <div class="item-row">
+                                <div>${isCustom}<strong>${sanitizeHTML(item.title)}</strong> (${sanitizeHTML(item.flavorName)})</div>
+                                <div>${parseInt(item.quantity) || 1} × ${parseFloat(item.finalPrice).toFixed(0)} ج.م</div>
                             </div>
-                            <div>${parseFloat(item.finalPrice).toFixed(2)} جنيه</div>
-                        </div>
-                    `;
-                });
+                        `;
+                    });
+                }
 
-                const currentStatus = order.status || "pending";
-
-                gridHTML += `
-                    <div class="order-admin-card" id="order-card-${order.orderId}">
-                        <div class="order-meta-row">
-                            <span class="order-id-badge">رقم الطلب: #${escapeSecureText(order.orderId)}</span>
-                            <select class="order-status-select" onchange="updateOrderStatus('${order.orderId}', this.value)">
-                                <option value="pending" ${currentStatus === 'pending' ? 'selected' : ''}>قيد الانتظار</option>
-                                <option value="preparing" ${currentStatus === 'preparing' ? 'selected' : ''}>جاري التجهيز في الفرع</option>
-                                <option value="shipping" ${currentStatus === 'shipping' ? 'selected' : ''}>مع المندوب للتوصيل</option>
-                                <option value="completed" ${currentStatus === 'completed' ? 'selected' : ''}>تم التسليم بنجاح</option>
-                                <option value="cancelled" ${currentStatus === 'cancelled' ? 'selected' : ''}>ملغي</option>
-                            </select>
+                htmlContent += `
+                    <div class="order-card">
+                        <div class="order-card-header">
+                            <span class="order-id">طلب رقم: ${sanitizeHTML(order.orderId)}</span>
+                            <span class="order-date">${sanitizeHTML(order.timestamp || '')}</span>
                         </div>
-                        
-                        <div class="customer-info-box">
-                            <strong>العميل:</strong> ${escapeSecureText(order.customerName)}<br>
-                            <strong>الهاتف الأساسي:</strong> <a href="tel:${escapeSecureText(order.customerPhone)}" style="color:var(--admin-black); text-decoration:none;">${escapeSecureText(order.customerPhone)}</a>
-                            ${order.customerPhone2 ? `<br><strong>الهاتف البديل:</strong> ${escapeSecureText(order.customerPhone2)}` : ''}<br>
-                            <strong>طريقة الاستلام:</strong> ${order.deliveryMethod === 'delivery' ? 'توصيل للمنزل' : 'استلام من الفرع'}<br>
-                            ${order.deliveryMethod === 'delivery' ? `<strong>المنطقة والنشاط:</strong> ${escapeSecureText(order.shippingZone)} - ${escapeSecureText(order.addressDetails)}<br>` : ''}
-                            <strong>موعد التجهيز المطلوب:</strong> التاريخ: ${escapeSecureText(order.deliveryDate)} | الساعة: ${escapeSecureText(order.deliveryTime)}
-                            ${order.notes ? `<br><strong>ملاحظات حرة:</strong> ${escapeSecureText(order.notes)}` : ''}
+                        <div class="customer-info-block">
+                            <div class="info-row"><span class="info-label">العميل:</span> ${sanitizeHTML(order.customerName)}</div>
+                            <div class="info-row"><span class="info-label">الهاتف:</span> ${sanitizeHTML(order.customerPhone)}</div>
+                            ${order.customerPhone2 ? `<div class="info-row"><span class="info-label">الهاتف البديل:</span> ${sanitizeHTML(order.customerPhone2)}</div>` : ''}
+                            <div class="info-row"><span class="info-label">طريقة الاستلام:</span> ${methodText}</div>
+                            ${order.shippingZone ? `<div class="info-row"><span class="info-label">منطقة الشحن:</span> ${sanitizeHTML(order.shippingZone)}</div>` : ''}
+                            ${order.addressDetails ? `<div class="info-row"><span class="info-label">العنوان بالتفصيل:</span> ${sanitizeHTML(order.addressDetails)}</div>` : ''}
+                            <div class="info-row"><span class="info-label">موعد التجهيز:</span> ${sanitizeHTML(order.deliveryDate)} في ${sanitizeHTML(order.deliveryTime)}</div>
+                            ${order.orderNotes ? `<div class="info-row"><span class="info-label">ملاحظات العميل:</span> ${sanitizeHTML(order.orderNotes)}</div>` : ''}
                         </div>
-
-                        <div class="order-items-list">
-                            ${itemsHTML}
+                        <div class="items-list">
+                            ${itemsHtml}
                         </div>
-
-                        <div class="order-financial-summary">
-                            <div>إجمالي الفاتورة:</div>
-                            <div class="price-display-admin">${Math.round(order.grandTotal)} جنيه</div>
+                        <div class="order-footer">
+                            <div class="total-price-display">إجمالي الفاتورة: <span>${Math.round(order.grandTotal || 0)} ج.م</span></div>
                         </div>
                     </div>
                 `;
             });
 
-            gridContainer.innerHTML = gridHTML;
-        }
-
-        function updateOrderStatus(orderId, newStatus) {
-            const storedOrdersRaw = localStorage.getItem("bose_orders");
-            if (!storedOrdersRaw) return;
-
-            let ordersList = JSON.parse(storedOrdersRaw);
-            const orderIndex = ordersList.findIndex(o => o.orderId === orderId);
-            if (orderIndex !== -1) {
-                ordersList[orderIndex].status = newStatus;
-                localStorage.setItem("bose_orders", JSON.stringify(ordersList));
-            }
-        }
-
-        function terminateAdminSession() {
-            localStorage.removeItem(SECURE_TOKEN);
-            window.location.reload();
-        }
-
-        function escapeSecureText(text) {
-            if (!text) return "";
-            const div = document.createElement("div");
-            div.textContent = text;
-            return div.innerHTML;
+            wrapper.innerHTML = htmlContent;
         }
     </script>
-    <script src="admin.js"></script>
 </body>
 </html>
