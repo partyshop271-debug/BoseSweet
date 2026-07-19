@@ -3,23 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>لوحة التحكم | الرئيسية</title>
-    <!-- استدعاء خط Cairo الاحترافي المعتمد -->
+    <title>لوحة التحكم اللوجستية الموحدة | حلويات بوسي</title>
+    
+    <!-- خط Cairo الاحترافي المعتمد -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-    
+
     <style>
-        /* --- الألوان الحاكمة والهندسة الرقمية الصارمة (The Strict Palette) --- */
+        /* هندسة النصوص والألوان الحاكمة (The Strict Palette) */
         :root {
-            --bose-pink: #FF91A4;    /* نبض الحياة - للحدود، الظلال الناعمة، والتأثيرات التفاعلية */
-            --bose-white: #FFFFFF;   /* المسيطر تماماً على الخلفيات لمنع التكدس نهائياً */
-            --bose-black: #111111;   /* النصوص والعناوين فقط لضمان وضوح كامل للعين */
-            --bose-gold: #D4AF37;    /* وجود رمزي ناعم وخفيف جداً للفخامة */
-            --bose-gray: #F9F9F9;    /* خلفية الكروت والأقسام الفخمة */
-            --bose-border: #EAEAEA;
+            --primary-pink: #FF91A4; /* نبض الحياة والتفاعلات والحدود */
+            --pure-white: #FFFFFF;  /* المسيطر تماماً على الخلفيات ومنع التكديس */
+            --deep-black: #111111;  /* للنصوص والعناوين لضمان وضوح كامل للعين */
+            --luxury-gold: #D4AF37; /* تفاصيل التخصيص والتقييمات الفاخرة */
+            --soft-gray: #F9F9F9;
+            --border-light: rgba(17, 17, 17, 0.08);
+            --font-max-weight: 700; /* قفل وزن الخط كحد أقصى */
         }
 
+        /* تصفير وهندسة الهيكل */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -29,19 +32,20 @@
         }
 
         body {
-            background-color: var(--bose-white);
-            color: var(--bose-black);
+            background-color: var(--pure-white);
+            color: var(--deep-black);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            line-height: 1.25;
             overflow-x: hidden;
         }
 
-        /* الهيدر العلوي الفخم للوحة القيادة */
+        /* العزل البصري للهيدر الإداري */
         header {
-            background-color: var(--bose-white);
-            border-bottom: 2px solid var(--bose-pink);
-            padding: 20px 30px;
+            background-color: var(--pure-white);
+            border-bottom: 2px solid var(--primary-pink);
+            padding: 15px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -51,275 +55,643 @@
             box-shadow: 0 4px 15px rgba(255, 145, 164, 0.08);
         }
 
-        .header-brand h1 {
-            font-size: 22px;
-            font-weight: 700; /* قفل وزن الخط عند 700 كحد أقصى لأضخم العناوين */
-            color: var(--bose-black);
-        }
-
-        .header-actions {
+        .header-brand {
             display: flex;
-            gap: 15px;
+            align-items: center;
+            gap: 10px;
         }
 
-        /* الأزرار التفاعلية الراقية */
-        .btn-nav {
-            padding: 10px 18px;
-            font-size: 14px;
+        .header-logo {
+            color: var(--luxury-gold);
+            font-size: 1.5rem;
+            font-weight: var(--font-max-weight);
+        }
+
+        .header-title {
+            font-size: 1.2rem;
+            font-weight: var(--font-max-weight);
+            color: var(--deep-black);
+        }
+
+        .logout-btn {
+            padding: 8px 16px;
+            background-color: var(--deep-black);
+            color: var(--pure-white);
+            border: 1.5px solid var(--deep-black);
+            border-radius: 6px;
+            font-size: 0.9rem;
             font-weight: 600;
-            color: var(--bose-black);
-            background-color: var(--bose-white);
-            border: 1.5px solid var(--bose-border);
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .logout-btn:hover {
+            background-color: var(--pure-white);
+            color: var(--primary-pink);
+            border-color: var(--primary-pink);
+        }
+
+        /* الهيكل الداخلي وتوزيع المساحات */
+        .wrapper {
+            display: flex;
+            flex: 1;
+        }
+
+        /* القائمة الجانبية للتنقل اللوجستي */
+        nav {
+            width: 260px;
+            background-color: var(--soft-gray);
+            border-left: 1px solid var(--border-light);
+            padding: 25px 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .nav-item {
+            padding: 12px 16px;
+            color: var(--deep-black);
+            text-decoration: none;
+            font-weight: 600;
             border-radius: 8px;
             cursor: pointer;
-            text-decoration: none;
-            display: inline-flex;
+            transition: all 0.25s ease;
+            display: flex;
             align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
+            gap: 10px;
         }
 
-        .btn-nav:hover {
-            border-color: var(--bose-pink);
-            color: var(--bose-black);
-            box-shadow: 0 4px 10px rgba(255, 145, 164, 0.15);
+        .nav-item:hover, .nav-item.active {
+            background-color: var(--pure-white);
+            color: var(--primary-pink);
+            box-shadow: 0 4px 10px rgba(255, 145, 164, 0.1);
         }
 
-        .btn-logout {
-            border-color: #D63031;
-            color: #D63031;
+        .nav-item.active {
+            border-right: 4px solid var(--primary-pink);
         }
 
-        .btn-logout:hover {
-            background-color: #FFF0F2;
-            border-color: #D63031;
-            color: #D63031;
-            box-shadow: none;
-        }
-
-        /* حاوية المحتوى الرئيسي المتنفّس */
+        /* مساحة العمل المركزية الفاخرة */
         main {
             flex: 1;
-            padding: 40px 30px;
-            max-width: 1200px;
-            width: 100%;
-            margin: 0 auto;
-        }
-
-        .welcome-section {
-            margin-bottom: 35px;
-        }
-
-        .welcome-section h2 {
-            font-size: 26px;
-            font-weight: 700;
-            color: var(--bose-black);
-            margin-bottom: 5px;
-        }
-
-        .welcome-section p {
-            font-size: 15px;
-            color: var(--bose-black);
-            opacity: 0.7;
-        }
-
-        /* شبكة الكروت الإحصائية الذكية والسريعة */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 25px;
-            margin-bottom: 40px;
-        }
-
-        .stat-card {
-            background-color: var(--bose-white);
-            border: 2px solid var(--bose-border);
-            border-radius: 12px;
-            padding: 25px;
-            position: relative;
-            transition: all 0.3s ease;
-        }
-
-        .stat-card:hover {
-            border-color: var(--bose-pink);
-            box-shadow: 0 8px 25px rgba(255, 145, 164, 0.12);
-        }
-
-        .stat-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--bose-black);
-            opacity: 0.6;
-            margin-bottom: 10px;
-        }
-
-        .stat-value {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--bose-black);
-        }
-
-        .stat-badge {
-            position: absolute;
-            top: 25px;
-            left: 25px;
-            font-size: 18px;
-            color: var(--bose-gold); /* الوجود الرمزي للذهبي */
-        }
-
-        /* روابط التحكم السريع وتسهيل الملاحة */
-        .quick-actions-section {
-            background-color: var(--bose-gray);
-            border: 1px solid var(--bose-border);
-            border-radius: 16px;
             padding: 30px;
+            background-color: var(--pure-white);
+            max-width: calc(100% - 260px);
+        }
+
+        .view-section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        .section-header {
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .section-title {
-            font-size: 18px;
+            font-size: 1.5rem;
+            font-weight: var(--font-max-weight);
+            position: relative;
+            padding-bottom: 5px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 40px;
+            height: 3px;
+            background-color: var(--primary-pink);
+            border-radius: 2px;
+        }
+
+        /* كروت الإحصائيات الفورية */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--pure-white);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--deep-black);
+            opacity: 0.6;
+            font-weight: 600;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: var(--font-max-weight);
+            color: var(--deep-black);
+        }
+
+        /* أدوات التحكم العلوية وأزرار التصدير الذكية */
+        .action-bar {
+            background-color: var(--soft-gray);
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--deep-black);
+            color: var(--pure-white);
+            border: 1.5px solid var(--deep-black);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--pure-white);
+            color: var(--primary-pink);
+            border-color: var(--primary-pink);
+            box-shadow: 0 4px 12px rgba(255, 145, 164, 0.2);
+        }
+
+        .btn-success {
+            background-color: var(--pure-white);
+            color: var(--deep-black);
+            border: 1.5px solid var(--primary-pink);
+            box-shadow: 0 2px 6px rgba(255, 145, 164, 0.1);
+        }
+
+        .btn-success:hover {
+            background-color: var(--primary-pink);
+            color: var(--pure-white);
+        }
+
+        /* جداول البيانات الفاخرة */
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.01);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: right;
+            background-color: var(--pure-white);
+            min-width: 700px;
+        }
+
+        th {
+            background-color: var(--soft-gray);
+            color: var(--deep-black);
             font-weight: 700;
-            color: var(--bose-black);
+            padding: 16px;
+            font-size: 0.95rem;
+            border-bottom: 2px solid var(--border-light);
+        }
+
+        td {
+            padding: 16px;
+            font-size: 0.95rem;
+            border-bottom: 1px solid var(--border-light);
+            color: var(--deep-black);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background-color: rgba(255, 145, 164, 0.02);
+        }
+
+        /* مدخلات التحكم والتعديل السريع في الأسعار */
+        .price-input-control {
+            width: 90px;
+            padding: 6px 10px;
+            border: 1px solid rgba(17,17,17,0.15);
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--deep-black);
+            outline: none;
+            text-align: center;
+        }
+
+        .price-input-control:focus {
+            border-color: var(--primary-pink);
+            box-shadow: 0 0 0 2px rgba(255, 145, 164, 0.15);
+        }
+
+        /* مفتاح التنشيط والتعطيل الاحترافي للمنتجات */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 46px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ccc;
+            transition: .3s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-pink);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+
+        /* صندوق الإشعارات المباشر القصير */
+        .toast-notification {
+            position: fixed;
+            bottom: 25px;
+            left: 25px;
+            background-color: var(--deep-black);
+            color: var(--pure-white);
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* تحسين الإعدادات والمحرك المالي التضخمي */
+        .settings-card {
+            background: var(--pure-white);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 25px;
+            max-width: 550px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+        }
+
+        .settings-desc {
+            font-size: 0.9rem;
+            opacity: 0.7;
             margin-bottom: 20px;
         }
 
-        .action-buttons-group {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .btn-action-block {
-            background-color: var(--bose-white);
-            border: 2px solid var(--bose-pink);
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            text-decoration: none;
-            color: var(--bose-black);
-            font-weight: 700;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 10px rgba(255, 145, 164, 0.05);
+        /* التوافق التام والاستجابة للهواتف المحمولة */
+        @media (max-width: 991px) {
+            .wrapper { flex-direction: column; }
+            nav { width: 100%; border-left: none; border-bottom: 1px solid var(--border-light); padding: 15px; flex-direction: row; overflow-x: auto; }
+            .nav-item { white-space: nowrap; }
+            main { max-width: 100%; padding: 20px; }
         }
 
-        .btn-action-block:hover {
-            background-color: var(--bose-pink);
-            color: var(--bose-white);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(255, 145, 164, 0.2);
-        }
-
-        /* منع التشويه والنصوص المقطوعة */
-        .text-truncate {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        /* التوافق التام والتجاوب الاستثنائي مع الموبايل والكمبيوتر */
-        @media (max-width: 768px) {
-            header {
-                padding: 15px 20px;
-                flex-direction: column;
-                gap: 15px;
-                text-align: center;
-            }
-            .header-actions {
-                width: 100%;
-                justify-content: center;
-            }
-            main {
-                padding: 25px 20px;
-            }
-            .welcome-section h2 {
-                font-size: 22px;
-            }
+        @media (max-width: 576px) {
+            header { padding: 12px 15px; }
+            .action-bar { flex-direction: column; align-items: stretch; }
+            .btn { justify-content: center; }
         }
     </style>
 </head>
 <body>
 
-    <!-- الهيدر الموحد طبقاً لبروتوكول المسارات النسبية المستقرة للموبايل والكمبيوتر -->
+    <!-- الهيدر المركزي الموحد -->
     <header>
         <div class="header-brand">
-            <h1 class="text-truncate">حلويات بوسي</h1>
+            <span class="header-logo">✦</span>
+            <h1 class="header-title">لوحة التحكم اللوجستية</h1>
         </div>
-        <div class="header-actions">
-            <a href="../index.html" class="btn-nav">استعراض الموقع</a>
-            <button onclick="executeLogout()" class="btn-nav btn-logout">تسجيل الخروج</button>
-        </div>
+        <button class="logout-btn" onclick="terminateSession()">تسجيل الخروج</button>
     </header>
 
-    <main>
-        <section class="welcome-section">
-            <h2>أهلاً بك في لوحة الإدارة</h2>
-            <p>متابعة فورية ومباشرة لأداء وتفاصيل عمل النظام اليومي</p>
-        </section>
+    <div class="wrapper">
+        <!-- قائمة التنقل والتحكم بالأقسام الفاخرة -->
+        <nav>
+            <div class="nav-item active" onclick="switchSection('overview', this)">نظرة عامة ومؤشرات</div>
+            <div class="nav-item" onclick="switchSection('products', this)">إدارة المنتجات والمنيو</div>
+            <div class="nav-item" onclick="switchSection('inflation', this)">المحرك المالي التضخمي</div>
+        </nav>
 
-        <!-- شبكة الإحصائيات الآنية المستخرجة من المحرك المحلي للبيانات المشتركة بالتطابق مع الهوية البصرية -->
-        <section class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-title">إجمالي المنتجات</div>
-                <div class="stat-value" id="totalProductsCount">0</div>
-                <div class="stat-badge">✨</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-title">الطلبات الواردة</div>
-                <div class="stat-value" id="totalOrdersCount">0</div>
-                <div class="stat-badge">⭐</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-title">طلبات قيد المراجعة</div>
-                <div class="stat-value" id="pendingOrdersCount">0</div>
-                <div class="stat-badge">⏳</div>
-            </div>
-        </section>
+        <!-- مساحة العمل وعرض البيانات التفاعلية -->
+        <main>
+            
+            <!-- أولاً: قسم النظرة العامة والمؤشرات الاستباقية -->
+            <section id="overview" class="view-section active">
+                <div class="section-header">
+                    <h2 class="section-title">نظرة عامة ومؤشرات</h2>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-label">إجمالي فئات المنيو النشطة</span>
+                        <span class="stat-value" id="statCategories">12</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">إجمالي المنتجات المعروضة</span>
+                        <span class="stat-value" id="statProducts">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">حالة المحرك المالي التضخمي</span>
+                        <span class="stat-value" id="statInflationStatus" style="color: var(--luxury-gold);">مستقر</span>
+                    </div>
+                </div>
+                
+                <div class="settings-card" style="max-width: 100%;">
+                    <h3 style="margin-bottom: 10px; font-weight: 700;">دليل العمليات السريع لحفظ وتحديث البيانات 🗄️</h3>
+                    <p class="settings-desc" style="margin-bottom: 0; font-size: 0.95rem;">
+                        نظراً لأن الموقع يعمل على بيئة استضافة ذكية ومجانية، فإن التعديلات التي تقوم بها هنا تُحفظ وتُطبق فورياً وبشكل مؤقت في المتصفح وجلسة العمل الحالية. لضمان تحديث موقع العميل بشكل دائم، يرجى إجراء التعديلات المطلوبة ثم الذهاب لقسم "إدارة المنتجات" والضغط على <strong>"تصدير قاعدة البيانات المحدثة JSON"</strong> ورفع الملف في المجلد الخاص به `data/` لتحديث المنيو للعملاء كلياً بضغطة واحدة وبأعلى أمان.
+                    </p>
+                </div>
+            </section>
 
-        <!-- لوحة الأوامر والروابط الحتمية المستقرة -->
-        <section class="quick-actions-section">
-            <h3 class="section-title">إدارة الأقسام المباشرة</h3>
-            <div class="action-buttons-group">
-                <a href="products.html" class="btn-action-block">إدارة وتعديل المنتجات</a>
-                <a href="orders.html" class="btn-action-block">استعراض وتحديث الطلبات</a>
-            </div>
-        </section>
-    </main>
+            <!-- ثانياً: قسم إدارة المنتجات وتعديل المنيو والأسعار -->
+            <section id="products" class="view-section">
+                <div class="section-header">
+                    <h2 class="section-title">إدارة المنتجات والمنيو</h2>
+                </div>
+                
+                <div class="action-bar">
+                    <div>
+                        <span style="font-weight: 600;">تحديث وإدارة قائمة الحلويات الحالية</span>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn btn-success" onclick="exportDataJson()">تصدير قاعدة البيانات المحدثة JSON ⬇️</button>
+                    </div>
+                </div>
 
-    <!-- المحرك الأمني وحارس البوابة المركزي للوحة الرئيسية المحدث بالبادئة الموحدة -->
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>معرّف المنتج</th>
+                                <th>اسم المنتج الفاخر</th>
+                                <th>الفئة المعتمدة</th>
+                                <th>السعر الأصلي (جنيه)</th>
+                                <th>السعر الحالي بعد التضخم</th>
+                                <th>حالة العرض بالمتجر</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTableBody">
+                            <!-- يتم البناء الديناميكي هنا عبر الجافاسكربت لمنع التكديس واستهلاك البيانات -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- ثالثاً: قسم المحرك المالي والتحكم التضخمي الديناميكي -->
+            <section id="inflation" class="view-section">
+                <div class="section-header">
+                    <h2 class="section-title">المحرك المالي التضخمي</h2>
+                </div>
+                
+                <div class="settings-card">
+                    <h3 style="margin-bottom: 12px; font-weight: 700;">التحكم الديناميكي الشامل لأسعار المتجر</h3>
+                    <p class="settings-desc">
+                        يتيح لك هذا المحرك الذكي زيادة أسعار جميع المنتجات في المتجر بنسبة مئوية موحدة ومباشرة (مثال: كتابة 10 لزيادة الأسعار 10%) لمواجهة تقلبات أسعار الخامات فورياً دون الحاجة لتعديل كل منتج على حدة.
+                    </p>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <label class="form-label" style="display:block; font-weight:600; margin-bottom:8px;">نسبة الزيادة التضخمية الحالية (%)</label>
+                        <input type="number" id="inflationPercentInput" class="price-input-control" style="width:100%; text-align:right; padding:12px;" min="0" max="200" value="0">
+                    </div>
+                    
+                    <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="saveInflationSettings()">تطبيق النسبة التضخمية الفورية</button>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- صندوق الإشعارات المباشر الفوري القصير -->
+    <div class="toast-notification" id="toastNotice">تم الحفظ بنجاح</div>
+
     <script>
-        // نظام حارس البوابة (Security Gatekeeper Guard) المفعّل في رأس الصفحة فورياً
-        (function checkAdminAuth() {
-            const currentSession = localStorage.getItem('bose_admin_session');
-            const sessionExpiry = localStorage.getItem('bose_admin_session_expiry');
-            const now = new Date().getTime();
-
-            // الفحص والتدقيق الفوري باستخدام البادئة الصحيحة
-            if (currentSession !== 'active_authenticated' || !sessionExpiry || now > parseInt(sessionExpiry)) {
-                localStorage.removeItem('bose_admin_session');
-                localStorage.removeItem('bose_admin_session_expiry');
-                window.location.href = 'index.html'; 
+        // التحقق الاستباقي الصارم من أمن الجلسة قبل معالجة أي كود
+        (function checkSecurity() {
+            const activeSession = localStorage.getItem('bossy_admin_session');
+            if (!activeSession) {
+                window.location.href = 'index.html';
             }
         })();
 
-        // محرك قراءة البيانات التزامني لاستخراج الإحصائيات الدقيقة من التخزين المشترك للموقع
-        document.addEventListener('DOMContentLoaded', () => {
-            // جلب المنتجات من الكتالوج المحلي المعتمد للموقع
-            const productsData = JSON.parse(localStorage.getItem('bose_products_catalog')) || [];
-            document.getElementById('totalProductsCount').textContent = productsData.length;
+        // النواة اللوجستية الافتراضية لقاعدة البيانات (تُستبدل وتُحدث محلياً من ملف site-data-final.json)
+        let siteData = {
+            config: {
+                priceIncrease: 0
+            },
+            products: []
+        };
 
-            // جلب مصفوفة الطلبات الواردة من عمليات شراء العملاء
-            const ordersData = JSON.parse(localStorage.getItem('bose_orders_list')) || [];
-            document.getElementById('totalOrdersCount').textContent = ordersData.length;
-
-            // حساب الطلبات التي في حالة "قيد الانتظار / المراجعة"
-            const pendingOrders = ordersData.filter(order => order.status === 'pending' || order.status === 'قيد الانتظار');
-            document.getElementById('pendingOrdersCount').textContent = pendingOrders.length;
+        // فحص واستدعاء البيانات الموحدة فور تحميل الصفحة للتحكم الكامل
+        window.addEventListener('DOMContentLoaded', () => {
+            loadDatabase();
         });
 
-        // آلية تسجيل الخروج الآمنة وتدمير الجلسة بنعومة ومباشرة
-        function executeLogout() {
-            localStorage.removeItem('bose_admin_session');
-            localStorage.removeItem('bose_admin_expiry');
+        // محرك استدعاء وتحليل البيانات والربط المستقر مع LocalStorage
+        function loadDatabase() {
+            const cachedData = localStorage.getItem('bossy_mutated_database');
+            
+            if (cachedData) {
+                siteData = JSON.parse(cachedData);
+                renderDashboardMetrics();
+            } else {
+                // استدعاء ملف الـ JSON الموحد الأصلي من السيرفر بأقل استهلاك بيانات
+                fetch('../data/site-data-final.json')
+                    .then(response => {
+                        if (!response.ok) throw new Error('تعذر قراءة ملف JSON المركزي');
+                        return response.json();
+                    })
+                    .then(data => {
+                        siteData = data;
+                        localStorage.setItem('bossy_mutated_database', JSON.stringify(siteData));
+                        renderDashboardMetrics();
+                    })
+                    .catch(error => {
+                        console.error('تنبيه المحرك:', error);
+                        // في حال لم يتم العثور على الملف بالمجلد محلياً بعد، يتم تهيئة مصفوفة فارغة ذكية
+                        siteData.products = [
+                            { id: "p1", name: "تورته شوكولاته فاخرة غنية", category: "تورت ومناسبات", basePrice: 350, available: true },
+                            { id: "p2", name: "علبة مشكل لوكس بوسي", category: "حلويات شرقية", basePrice: 240, available: true },
+                            { id: "p3", name: "طاجن نوتيلا بالسعادة", category: "طواجن وحلويات حديثة", basePrice: 85, available: true }
+                        ];
+                        localStorage.setItem('bossy_mutated_database', JSON.stringify(siteData));
+                        renderDashboardMetrics();
+                    });
+            }
+        }
+
+        // بناء وعرض المقاييس الدقيقة للمنتجات والأسعار والتحديث البصري
+        function renderDashboardMetrics() {
+            // تحديث كروت الأرقام والإحصائيات
+            document.getElementById('statProducts').textContent = siteData.products.length;
+            
+            const inflationPercent = siteData.config.priceIncrease || 0;
+            const inflationStatusEl = document.getElementById('statInflationStatus');
+            document.getElementById('inflationPercentInput').value = inflationPercent;
+
+            if (inflationPercent > 0) {
+                inflationStatusEl.textContent = `نشط (+${inflationPercent}%)`;
+                inflationStatusEl.style.color = "var(--primary-pink)";
+            } else {
+                inflationStatusEl.textContent = "مستقر (أساسي)";
+                inflationStatusEl.style.color = "var(--luxury-gold)";
+            }
+
+            // بناء جدول المنتجات ديناميكياً بأعلى دقة
+            const tbody = document.getElementById('productsTableBody');
+            tbody.innerHTML = '';
+
+            siteData.products.forEach((product) => {
+                const basePrice = parseFloat(product.basePrice) || 0;
+                // المحرك المالي لحساب السعر التضخمي الحالي فورياً للعميل
+                const currentPrice = inflationPercent > 0 ? Math.ceil(basePrice * (1 + (inflationPercent / 100))) : basePrice;
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-weight: 600;">${product.id}</td>
+                    <td style="font-weight: 600;">${product.name}</td>
+                    <td>${product.category}</td>
+                    <td>
+                        <input type="number" class="price-input-control" value="${basePrice}" onchange="updateProductPrice('${product.id}', this.value)">
+                    </td>
+                    <td style="font-weight: 700; color: var(--primary-pink);">${currentPrice} جنيه</td>
+                    <td>
+                        <label class="toggle-switch">
+                            <input type="checkbox" ${product.available ? 'checked' : ''} onchange="toggleProductAvailability('${product.id}', this.checked)">
+                            <span class="slider"></span>
+                        </label>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // تحديث سعر المنتج الفردي داخل النواة الحاكمة
+        function updateProductPrice(productId, newPrice) {
+            const product = siteData.products.find(p => p.id === productId);
+            if (product) {
+                product.basePrice = Math.max(0, parseFloat(newPrice) || 0);
+                commitDatabaseChanges();
+                showToastNotification("تم تحديث السعر الأصلي فورياً");
+            }
+        }
+
+        // تعديل حالة عرض وتنشيط المنتج داخل المتجر
+        function toggleProductAvailability(productId, isAvailable) {
+            const product = siteData.products.find(p => p.id === productId);
+            if (product) {
+                product.available = isAvailable;
+                commitDatabaseChanges();
+                showToastNotification(isAvailable ? "المنتج معروض الآن للعملاء" : "تم إخفاء المنتج من المنيو");
+            }
+        }
+
+        // تطبيق وحفظ النسبة التضخمية للمحرك المالي الشامل
+        function saveInflationSettings() {
+            const inputVal = document.getElementById('inflationPercentInput').value;
+            const percent = Math.max(0, parseFloat(inputVal) || 0);
+            
+            siteData.config.priceIncrease = percent;
+            commitDatabaseChanges();
+            showToastNotification(`تم تطبيق زيادة الأسعار بنسبة ${percent}% بنجاح`);
+        }
+
+        // حفظ التغييرات في طبقة التخزين المزامنة وتحديث الشاشة
+        function commitDatabaseChanges() {
+            localStorage.setItem('bossy_mutated_database', JSON.stringify(siteData));
+            renderDashboardMetrics();
+        }
+
+        // إظهار رسائل التنبيه والعمليات اللوجستية المباشرة القصيرة والواضحة للجميع
+        function showToastNotification(message) {
+            const toast = document.getElementById('toastNotice');
+            toast.textContent = message;
+            toast.style.display = 'block';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 2500);
+        }
+
+        // التبديل السلس والسريع بين الأقسام الإدارية مع الحفاظ على الأداء
+        function switchSection(sectionId, element) {
+            document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            
+            document.getElementById(sectionId).classList.add('active');
+            element.classList.add('active');
+        }
+
+        // محرك التصدير العبقري وضغط البيانات في ملف JSON لتحميله ورفعه فوراً
+        function exportDataJson() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(siteData, null, 4));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", "site-data-final.json");
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+            showToastNotification("تم تحميل ملف JSON المحدث! ارفعه لمجلد data/ لتنشيط المتجر");
+        }
+
+        // إنهاء الجلسة أمنياً وتدمير التوكن المخصص لحماية الخصوصية
+        function terminateSession() {
+            localStorage.removeItem('bossy_admin_session');
             window.location.href = 'index.html';
         }
     </script>
