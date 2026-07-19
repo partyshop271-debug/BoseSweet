@@ -13,16 +13,15 @@
     <style>
         /* هندسة النصوص والألوان الحاكمة (The Strict Palette) */
         :root {
-            --primary-pink: #FF91A4; /* نبض الحياة والتفاعلات والحدود */
-            --pure-white: #FFFFFF;  /* المسيطر تماماً على الخلفيات ومنع التكديس */
-            --deep-black: #111111;  /* للنصوص والعناوين لضمان وضوح كامل للعين */
-            --luxury-gold: #D4AF37; /* تفاصيل التخصيص والتقييمات الفاخرة */
+            --primary-pink: #FF91A4; 
+            --pure-white: #FFFFFF;  
+            --deep-black: #111111;  
+            --luxury-gold: #D4AF37; 
             --soft-gray: #F9F9F9;
             --border-light: rgba(17, 17, 17, 0.08);
-            --font-max-weight: 700; /* قفل وزن الخط كحد أقصى */
+            --font-max-weight: 700; 
         }
 
-        /* تصفير وهندسة الهيكل */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -41,7 +40,6 @@
             overflow-x: hidden;
         }
 
-        /* العزل البصري للهيدر الإداري */
         header {
             background-color: var(--pure-white);
             border-bottom: 2px solid var(--primary-pink);
@@ -91,13 +89,11 @@
             border-color: var(--primary-pink);
         }
 
-        /* الهيكل الداخلي وتوزيع المساحات */
         .wrapper {
             display: flex;
             flex: 1;
         }
 
-        /* القائمة الجانبية للتنقل اللوجستي */
         nav {
             width: 260px;
             background-color: var(--soft-gray);
@@ -131,7 +127,6 @@
             border-right: 4px solid var(--primary-pink);
         }
 
-        /* مساحة العمل المركزية الفاخرة */
         main {
             flex: 1;
             padding: 30px;
@@ -173,7 +168,6 @@
             border-radius: 2px;
         }
 
-        /* كروت الإحصائيات الفورية */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -205,7 +199,6 @@
             color: var(--deep-black);
         }
 
-        /* أدوات التحكم العلوية وأزرار التصدير الذكية */
         .action-bar {
             background-color: var(--soft-gray);
             padding: 15px 20px;
@@ -255,7 +248,6 @@
             color: var(--pure-white);
         }
 
-        /* جداول البيانات الفاخرة */
         .table-container {
             width: 100%;
             overflow-x: auto;
@@ -296,7 +288,6 @@
             background-color: rgba(255, 145, 164, 0.02);
         }
 
-        /* مدخلات التحكم والتعديل السريع في الأسعار */
         .price-input-control {
             width: 90px;
             padding: 6px 10px;
@@ -314,7 +305,6 @@
             box-shadow: 0 0 0 2px rgba(255, 145, 164, 0.15);
         }
 
-        /* مفتاح التنشيط والتعطيل الاحترافي للمنتجات */
         .toggle-switch {
             position: relative;
             display: inline-block;
@@ -357,7 +347,6 @@
             transform: translateX(22px);
         }
 
-        /* صندوق الإشعارات المباشر القصير */
         .toast-notification {
             position: fixed;
             bottom: 25px;
@@ -374,7 +363,6 @@
             animation: fadeIn 0.3s ease;
         }
 
-        /* تحسين الإعدادات والمحرك المالي التضخمي */
         .settings-card {
             background: var(--pure-white);
             border: 1px solid var(--border-light);
@@ -395,7 +383,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* التوافق التام والاستجابة للهواتف المحمولة */
         @media (max-width: 991px) {
             .wrapper { flex-direction: column; }
             nav { width: 100%; border-left: none; border-bottom: 1px solid var(--border-light); padding: 15px; flex-direction: row; overflow-x: auto; }
@@ -412,7 +399,6 @@
 </head>
 <body>
 
-    <!-- الهيدر المركزي الموحد -->
     <header>
         <div class="header-brand">
             <span class="header-logo">✦</span>
@@ -422,17 +408,13 @@
     </header>
 
     <div class="wrapper">
-        <!-- قائمة التنقل والتحكم بالأقسام الفاخرة -->
         <nav>
             <div class="nav-item active" onclick="switchSection('overview', this)">نظرة عامة ومؤشرات</div>
             <div class="nav-item" onclick="switchSection('products', this)">إدارة المنتجات والمنيو</div>
             <div class="nav-item" onclick="switchSection('inflation', this)">المحرك المالي التضخمي</div>
         </nav>
 
-        <!-- مساحة العمل وعرض البيانات التفاعلية -->
         <main>
-            
-            <!-- أولاً: قسم النظرة العامة والمؤشرات الاستباقية -->
             <section id="overview" class="view-section active">
                 <div class="section-header">
                     <h2 class="section-title">نظرة عامة ومؤشرات</h2>
@@ -455,12 +437,11 @@
                 <div class="settings-card" style="max-width: 100%;">
                     <h3 style="margin-bottom: 10px; font-weight: 700;">دليل العمليات السريع لحفظ وتحديث البيانات 🗄️</h3>
                     <p class="settings-desc" style="margin-bottom: 0; font-size: 0.95rem;">
-                        نظراً لأن الموقع يعمل على بيئة استضافة ذكية ومجانية، فإن التعديلات التي تقوم بها هنا تُحفظ وتُطبق فورياً وبشكل مؤقت في المتصفح وجلسة العمل الحالية. لضمان تحديث موقع العميل بشكل دائم، يرجى إجراء التعديلات المطلوبة ثم الذهاب لقسم "إدارة المنتجات" والضغط على <strong>"تصدير قاعدة البيانات المحدثة JSON"</strong> ورفع الملف في المجلد الخاص به `data/` لتحديث المنيو للعملاء كلياً بضغطة واحدة وبأعلى أمان.
+                        يرجى إجراء التعديلات المطلوبة ثم الذهاب لقسم "إدارة المنتجات" والضغط على <strong>"تصدير قاعدة البيانات المحدثة JSON"</strong> ورفع الملف في المجلد الخاص به `data/` لتحديث المنيو للعملاء كلياً بضغطة واحدة وبأعلى أمان.
                     </p>
                 </div>
             </section>
 
-            <!-- ثانياً: قسم إدارة المنتجات وتعديل المنيو والأسعار -->
             <section id="products" class="view-section">
                 <div class="section-header">
                     <h2 class="section-title">إدارة المنتجات والمنيو</h2>
@@ -487,14 +468,11 @@
                                 <th>حالة العرض بالمتجر</th>
                             </tr>
                         </thead>
-                        <tbody id="productsTableBody">
-                            <!-- يتم البناء الديناميكي هنا عبر الجافاسكربت لمنع التكديس واستهلاك البيانات -->
-                        </tbody>
+                        <tbody id="productsTableBody"></tbody>
                     </table>
                 </div>
             </section>
 
-            <!-- ثالثاً: قسم المحرك المالي والتحكم التضخمي الديناميكي -->
             <section id="inflation" class="view-section">
                 <div class="section-header">
                     <h2 class="section-title">المحرك المالي التضخمي</h2>
@@ -503,7 +481,7 @@
                 <div class="settings-card">
                     <h3 style="margin-bottom: 12px; font-weight: 700;">التحكم الديناميكي الشامل لأسعار المتجر</h3>
                     <p class="settings-desc">
-                        يتيح لك هذا المحرك الذكي زيادة أسعار جميع المنتجات في المتجر بنسبة مئوية موحدة ومباشرة (مثال: كتابة 10 لزيادة الأسعار 10%) لمواجهة تقلبات أسعار الخامات فورياً دون الحاجة لتعديل كل منتج على حدة.
+                        يتيح لك هذا المحرك الذكي زيادة أسعار جميع المنتجات في المتجر بنسبة مئوية موحدة ومباشرة لمواجهة تقلبات أسعار الخامات فورياً.
                     </p>
                     
                     <div style="margin-bottom: 20px;">
@@ -514,11 +492,9 @@
                     <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="saveInflationSettings()">تطبيق النسبة التضخمية الفورية</button>
                 </div>
             </section>
-
         </main>
     </div>
 
-    <!-- صندوق الإشعارات المباشر الفوري القصير -->
     <div class="toast-notification" id="toastNotice">تم الحفظ بنجاح</div>
 
     <script>
@@ -530,20 +506,16 @@
             }
         })();
 
-        // النواة اللوجستية الافتراضية لقاعدة البيانات (تُستبدل وتُحدث محلياً من ملف site-data-final.json)
         let siteData = {
-            config: {
-                priceIncrease: 0
-            },
+            config: { priceIncrease: 0 },
             products: []
         };
 
-        // فحص واستدعاء البيانات الموحدة فور تحميل الصفحة للتحكم الكامل
         window.addEventListener('DOMContentLoaded', () => {
             loadDatabase();
         });
 
-        // محرك استدعاء وتحليل البيانات والربط المستقر مع LocalStorage
+        // تم إصلاح مسار جلب الـ JSON الموحد ليعود خطوة واحدة للخلف بشكل صحيح نحو الجذر
         function loadDatabase() {
             const cachedData = localStorage.getItem('bossy_mutated_database');
             
@@ -551,7 +523,6 @@
                 siteData = JSON.parse(cachedData);
                 renderDashboardMetrics();
             } else {
-                // استدعاء ملف الـ JSON الموحد الأصلي من السيرفر بأقل استهلاك بيانات
                 fetch('../data/site-data-final.json')
                     .then(response => {
                         if (!response.ok) throw new Error('تعذر قراءة ملف JSON المركزي');
@@ -563,8 +534,7 @@
                         renderDashboardMetrics();
                     })
                     .catch(error => {
-                        console.error('تنبيه المحرك:', error);
-                        // في حال لم يتم العثور على الملف بالمجلد محلياً بعد، يتم تهيئة مصفوفة فارغة ذكية
+                        console.error('تنبيه المحرك البصري:', error);
                         siteData.products = [
                             { id: "p1", name: "تورته شوكولاته فاخرة غنية", category: "تورت ومناسبات", basePrice: 350, available: true },
                             { id: "p2", name: "علبة مشكل لوكس بوسي", category: "حلويات شرقية", basePrice: 240, available: true },
@@ -576,12 +546,10 @@
             }
         }
 
-        // بناء وعرض المقاييس الدقيقة للمنتجات والأسعار والتحديث البصري
         function renderDashboardMetrics() {
-            // تحديث كروت الأرقام والإحصائيات
             document.getElementById('statProducts').textContent = siteData.products.length;
             
-            const inflationPercent = siteData.config.priceIncrease || 0;
+            const inflationPercent = (siteData.config && siteData.config.priceIncrease) ? siteData.config.priceIncrease : 0;
             const inflationStatusEl = document.getElementById('statInflationStatus');
             document.getElementById('inflationPercentInput').value = inflationPercent;
 
@@ -593,19 +561,17 @@
                 inflationStatusEl.style.color = "var(--luxury-gold)";
             }
 
-            // بناء جدول المنتجات ديناميكياً بأعلى دقة
             const tbody = document.getElementById('productsTableBody');
             tbody.innerHTML = '';
 
             siteData.products.forEach((product) => {
-                const basePrice = parseFloat(product.basePrice) || 0;
-                // المحرك المالي لحساب السعر التضخمي الحالي فورياً للعميل
+                const basePrice = parseFloat(product.basePrice) || product.price || 0;
                 const currentPrice = inflationPercent > 0 ? Math.ceil(basePrice * (1 + (inflationPercent / 100))) : basePrice;
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td style="font-weight: 600;">${product.id}</td>
-                    <td style="font-weight: 600;">${product.name}</td>
+                    <td style="font-weight: 600;">${product.name || product.title}</td>
                     <td>${product.category}</td>
                     <td>
                         <input type="number" class="price-input-control" value="${basePrice}" onchange="updateProductPrice('${product.id}', this.value)">
@@ -622,17 +588,16 @@
             });
         }
 
-        // تحديث سعر المنتج الفردي داخل النواة الحاكمة
         function updateProductPrice(productId, newPrice) {
             const product = siteData.products.find(p => p.id === productId);
             if (product) {
                 product.basePrice = Math.max(0, parseFloat(newPrice) || 0);
+                if(product.price) product.price = product.basePrice;
                 commitDatabaseChanges();
                 showToastNotification("تم تحديث السعر الأصلي فورياً");
             }
         }
 
-        // تعديل حالة عرض وتنشيط المنتج داخل المتجر
         function toggleProductAvailability(productId, isAvailable) {
             const product = siteData.products.find(p => p.id === productId);
             if (product) {
@@ -642,23 +607,21 @@
             }
         }
 
-        // تطبيق وحفظ النسبة التضخمية للمحرك المالي الشامل
         function saveInflationSettings() {
             const inputVal = document.getElementById('inflationPercentInput').value;
             const percent = Math.max(0, parseFloat(inputVal) || 0);
             
+            if(!siteData.config) siteData.config = {};
             siteData.config.priceIncrease = percent;
             commitDatabaseChanges();
             showToastNotification(`تم تطبيق زيادة الأسعار بنسبة ${percent}% بنجاح`);
         }
 
-        // حفظ التغييرات في طبقة التخزين المزامنة وتحديث الشاشة
         function commitDatabaseChanges() {
             localStorage.setItem('bossy_mutated_database', JSON.stringify(siteData));
             renderDashboardMetrics();
         }
 
-        // إظهار رسائل التنبيه والعمليات اللوجستية المباشرة القصيرة والواضحة للجميع
         function showToastNotification(message) {
             const toast = document.getElementById('toastNotice');
             toast.textContent = message;
@@ -668,7 +631,6 @@
             }, 2500);
         }
 
-        // التبديل السلس والسريع بين الأقسام الإدارية مع الحفاظ على الأداء
         function switchSection(sectionId, element) {
             document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
@@ -677,7 +639,6 @@
             element.classList.add('active');
         }
 
-        // محرك التصدير العبقري وضغط البيانات في ملف JSON لتحميله ورفعه فوراً
         function exportDataJson() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(siteData, null, 4));
             const downloadAnchor = document.createElement('a');
@@ -689,7 +650,6 @@
             showToastNotification("تم تحميل ملف JSON المحدث! ارفعه لمجلد data/ لتنشيط المتجر");
         }
 
-        // إنهاء الجلسة أمنياً وتدمير التوكن المخصص لحماية الخصوصية
         function terminateSession() {
             localStorage.removeItem('bossy_admin_session');
             window.location.href = 'index.html';
