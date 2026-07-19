@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>لوحة التحكم اللوجستية الموحدة | حلويات بوسي</title>
+    
+    <!-- خط Cairo الاحترافي المعتمد -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* هندسة النصوص والألوان الحاكمة (The Strict Palette) */
+        :root {
+            --primary-pink: #FF91A4; 
+            --pure-white: #FFFFFF;  
+            --deep-black: #111111;  
+            --luxury-gold: #D4AF37; 
+            --soft-gray: #F9F9F9;
+            --border-light: rgba(17, 17, 17, 0.08);
+            --font-max-weight: 700; 
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--pure-white);
+            color: var(--deep-black);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.25;
+            overflow-x: hidden;
+        }
+
+        header {
+            background-color: var(--pure-white);
+            border-bottom: 2px solid var(--primary-pink);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 15px rgba(255, 145, 164, 0.08);
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-logo {
+            color: var(--luxury-gold);
+            font-size: 1.5rem;
+            font-weight: var(--font-max-weight);
+        }
+
+        .header-title {
+            font-size: 1.2rem;
+            font-weight: var(--font-max-weight);
+            color: var(--deep-black);
+        }
+
+        .logout-btn {
+            padding: 8px 16px;
+            background-color: var(--deep-black);
+            color: var(--pure-white);
+            border: 1.5px solid var(--deep-black);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .logout-btn:hover {
+            background-color: var(--pure-white);
+            color: var(--primary-pink);
+            border-color: var(--primary-pink);
+        }
+
+        .wrapper {
+            display: flex;
+            flex: 1;
+        }
+
+        nav {
+            width: 260px;
+            background-color: var(--soft-gray);
+            border-left: 1px solid var(--border-light);
+            padding: 25px 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .nav-item {
+            padding: 12px 16px;
+            color: var(--deep-black);
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background-color: var(--pure-white);
+            color: var(--primary-pink);
+            box-shadow: 0 4px 10px rgba(255, 145, 164, 0.1);
+        }
+
+        .nav-item.active {
+            border-right: 4px solid var(--primary-pink);
+        }
+
+        main {
+            flex: 1;
+            padding: 30px;
+            background-color: var(--pure-white);
+            max-width: calc(100% - 260px);
+        }
+
+        .view-section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        .section-header {
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: var(--font-max-weight);
+            position: relative;
+            padding-bottom: 5px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 40px;
+            height: 3px;
+            background-color: var(--primary-pink);
+            border-radius: 2px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--pure-white);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--deep-black);
+            opacity: 0.6;
+            font-weight: 600;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: var(--font-max-weight);
+            color: var(--deep-black);
+        }
+
+        .action-bar {
+            background-color: var(--soft-gray);
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--deep-black);
+            color: var(--pure-white);
+            border: 1.5px solid var(--deep-black);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--pure-white);
+            color: var(--primary-pink);
+            border-color: var(--primary-pink);
+            box-shadow: 0 4px 12px rgba(255, 145, 164, 0.2);
+        }
+
+        .btn-success {
+            background-color: var(--pure-white);
+            color: var(--deep-black);
+            border: 1.5px solid var(--primary-pink);
+            box-shadow: 0 2px 6px rgba(255, 145, 164, 0.1);
+        }
+
+        .btn-success:hover {
+            background-color: var(--primary-pink);
+            color: var(--pure-white);
+        }
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.01);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: right;
+            background-color: var(--pure-white);
+            min-width: 700px;
+        }
+
+        th {
+            background-color: var(--soft-gray);
+            color: var(--deep-black);
+            font-weight: 700;
+            padding: 16px;
+            font-size: 0.95rem;
+            border-bottom: 2px solid var(--border-light);
+        }
+
+        td {
+            padding: 16px;
+            font-size: 0.95rem;
+            border-bottom: 1px solid var(--border-light);
+            color: var(--deep-black);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background-color: rgba(255, 145, 164, 0.02);
+        }
+
+        .price-input-control {
+            width: 90px;
+            padding: 6px 10px;
+            border: 1px solid rgba(17,17,17,0.15);
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--deep-black);
+            outline: none;
+            text-align: center;
+        }
+
+        .price-input-control:focus {
+            border-color: var(--primary-pink);
+            box-shadow: 0 0 0 2px rgba(255, 145, 164, 0.15);
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 46px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ccc;
+            transition: .3s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-pink);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+
+        .toast-notification {
+            position: fixed;
+            bottom: 25px;
+            left: 25px;
+            background-color: var(--deep-black);
+            color: var(--pure-white);
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .settings-card {
+            background: var(--pure-white);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 25px;
+            max-width: 550px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+        }
+
+        .settings-desc {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-bottom: 20px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 991px) {
+            .wrapper { flex-direction: column; }
+            nav { width: 100%; border-left: none; border-bottom: 1px solid var(--border-light); padding: 15px; flex-direction: row; overflow-x: auto; }
+            .nav-item { white-space: nowrap; }
+            main { max-width: 100%; padding: 20px; }
+        }
+
+        @media (max-width: 576px) {
+            header { padding: 12px 15px; }
+            .action-bar { flex-direction: column; align-items: stretch; }
+            .btn { justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-brand">
+            <span class="header-logo">✦</span>
+            <h1 class="header-title">لوحة التحكم اللوجستية</h1>
+        </div>
+        <button class="logout-btn" onclick="terminateSession()">تسجيل الخروج</button>
+    </header>
+
+    <div class="wrapper">
+        <nav>
+            <div class="nav-item active" onclick="switchSection('overview', this)">نظرة عامة ومؤشرات</div>
+            <div class="nav-item" onclick="switchSection('products', this)">إدارة المنتجات والمنيو</div>
+            <div class="nav-item" onclick="switchSection('inflation', this)">المحرك المالي التضخمي</div>
+        </nav>
+
+        <main>
+            <section id="overview" class="view-section active">
+                <div class="section-header">
+                    <h2 class="section-title">نظرة عامة ومؤشرات</h2>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-label">إجمالي فئات المنيو النشطة</span>
+                        <span class="stat-value" id="statCategories">12</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">إجمالي المنتجات المعروضة</span>
+                        <span class="stat-value" id="statProducts">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">حالة المحرك المالي التضخمي</span>
+                        <span class="stat-value" id="statInflationStatus" style="color: var(--luxury-gold);">مستقر</span>
+                    </div>
+                </div>
+                
+                <div class="settings-card" style="max-width: 100%;">
+                    <h3 style="margin-bottom: 10px; font-weight: 700;">دليل العمليات السريع لحفظ وتحديث البيانات 🗄️</h3>
+                    <p class="settings-desc" style="margin-bottom: 0; font-size: 0.95rem;">
+                        يرجى إجراء التعديلات المطلوبة ثم الذهاب لقسم "إدارة المنتجات" والضغط على <strong>"تصدير قاعدة البيانات المحدثة JSON"</strong> ورفع الملف في المجلد الخاص به `data/` لتحديث المنيو للعملاء كلياً بضغطة واحدة وبأعلى أمان.
+                    </p>
+                </div>
+            </section>
+
+            <section id="products" class="view-section">
+                <div class="section-header">
+                    <h2 class="section-title">إدارة المنتجات والمنيو</h2>
+                </div>
+                
+                <div class="action-bar">
+                    <div>
+                        <span style="font-weight: 600;">تحديث وإدارة قائمة الحلويات الحالية</span>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn btn-success" onclick="exportDataJson()">تصدير قاعدة البيانات المحدثة JSON ⬇️</button>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>معرّف المنتج</th>
+                                <th>اسم المنتج الفاخر</th>
+                                <th>الفئة المعتمدة</th>
+                                <th>السعر الأصلي (جنيه)</th>
+                                <th>السعر الحالي بعد التضخم</th>
+                                <th>حالة العرض بالمتجر</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTableBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="inflation" class="view-section">
+                <div class="section-header">
+                    <h2 class="section-title">المحرك المالي التضخمي</h2>
+                </div>
+                
+                <div class="settings-card">
+                    <h3 style="margin-bottom: 12px; font-weight: 700;">التحكم الديناميكي الشامل لأسعار المتجر</h3>
+                    <p class="settings-desc">
+                        يتيح لك هذا المحرك الذكي زيادة أسعار جميع المنتجات في المتجر بنسبة مئوية موحدة ومباشرة لمواجهة تقلبات أسعار الخامات فورياً.
+                    </p>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <label class="form-label" style="display:block; font-weight:600; margin-bottom:8px;">نسبة الزيادة التضخمية الحالية (%)</label>
+                        <input type="number" id="inflationPercentInput" class="price-input-control" style="width:100%; text-align:right; padding:12px;" min="0" max="200" value="0">
+                    </div>
+                    
+                    <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="saveInflationSettings()">تطبيق النسبة التضخمية الفورية</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div class="toast-notification" id="toastNotice">تم الحفظ بنجاح</div>
+
+    <script>
+        // التحقق الاستباقي الصارم من أمن الجلسة قبل معالجة أي كود
+        (function checkSecurity() {
+            const activeSession = localStorage.getItem('bossy_admin_session');
+            if (!activeSession) {
+                window.location.href = 'index.html';
+            }
+        })();
+
+        let siteData = {
+            config: { priceIncrease: 0 },
+            products: []
+        };
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadDatabase();
+        });
+
+        // تم إصلاح مسار جلب الـ JSON الموحد ليعود خطوة واحدة للخلف بشكل صحيح نحو الجذر
+        function loadDatabase() {
+            const cachedData = localStorage.getItem('bossy_mutated_database');
+            
+            if (cachedData) {
+                siteData = JSON.parse(cachedData);
+                renderDashboardMetrics();
+            } else {
+                fetch('../data/site-data-final.json')
+                    .then(response => {
+                        if (!response.ok) throw new Error('تعذر قراءة ملف JSON المركزي');
+                        return response.json();
+                    })
+                    .then(data => {
+                        siteData = data;
+                        localStorage.setItem('bossy_mutated_database', JSON.stringify(siteData));
+                        renderDashboardMetrics();
+                    })
+                    .catch(error => {
+                        console.error('تنبيه المحرك البصري:', error);
+                        siteData.products = [
+                            { id: "p1", name: "تورته شوكولاته فاخرة غنية", category: "تورت ومناسبات", basePrice: 350, available: true },
+                            { id: "p2", name: "علبة مشكل لوكس بوسي", category: "حلويات شرقية", basePrice: 240, available: true },
+                            { id: "p3", name: "طاجن نوتيلا بالسعادة", category: "طواجن وحلويات حديثة", basePrice: 85, available: true }
+                        ];
+                        localStorage.setItem('bossy_mutated_database', JSON.stringify(siteData));
+                        renderDashboardMetrics();
+                    });
+            }
+        }
+
+        function renderDashboardMetrics() {
+            document.getElementById('statProducts').textContent = siteData.products.length;
+            
+            const inflationPercent = (siteData.config && siteData.config.priceIncrease) ? siteData.config.priceIncrease : 0;
+            const inflationStatusEl = document.getElementById('statInflationStatus');
+            document.getElementById('inflationPercentInput').value = inflationPercent;
+
+            if (inflationPercent > 0) {
+                inflationStatusEl.textContent = `نشط (+${inflationPercent}%)`;
+                inflationStatusEl.style.color = "var(--primary-pink)";
+            } else {
+                inflationStatusEl.textContent = "مستقر (أساسي)";
+                inflationStatusEl.style.color = "var(--luxury-gold)";
+            }
+
+            const tbody = document.getElementById('productsTableBody');
+            tbody.innerHTML = '';
+
+            siteData.products.forEach((product) => {
+                const basePrice = parseFloat(product.basePrice) || product.price || 0;
+                const currentPrice = inflationPercent > 0 ? Math.ceil(basePrice * (1 + (inflationPercent / 100))) : basePrice;
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-weight: 600;">${product.id}</td>
+                    <td style="font-weight: 600;">${product.name || product.title}</td>
+                    <td>${product.category}</td>
+                    <td>
+                        <input type="number" class="price-input-control" value="${basePrice}" onchange="updateProductPrice('${product.id}', this.value)">
+                    </td>
+                    <td style="font-weight: 700; color: var(--primary-pink);">${currentPrice} جنيه</td>
+                    <td>
+                        <label class="toggle-switch">
+                            <input type="checkbox" ${product.available ? 'checked' : ''} onchange="toggleProductAvailability('${product.id}', this.checked)">
+                            <span class="slider"></span>
+                        </label>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function updateProductPrice(productId, newPrice) {
+            const product = siteData.products.find(p => p.id === productId);
+            if (product) {
+                product.basePrice = Math.max(0, parseFloat(newPrice) || 0);
+                if(product.price) product.price = product.basePrice;
+                commitDatabaseChanges();
+                showToastNotification("تم تحديث السعر الأصلي فورياً");
+            }
+        }
+
+        function toggleProductAvailability(productId, isAvailable) {
+            const product = siteData.products.find(p => p.id === productId);
+            if (product) {
+                product.available = isAvailable;
+                commitDatabaseChanges();
+                showToastNotification(isAvailable ? "المنتج معروض الآن للعملاء" : "تم إخفاء المنتج من المنيو");
+            }
+        }
+
+        function saveInflationSettings() {
+            const inputVal = document.getElementById('inflationPercentInput').value;
+            const percent = Math.max(0, parseFloat(inputVal) || 0);
+            
+            if(!siteData.config) siteData.config = {};
+            siteData.config.priceIncrease = percent;
+            commitDatabaseChanges();
+            showToastNotification(`تم تطبيق زيادة الأسعار بنسبة ${percent}% بنجاح`);
+        }
+
+        function commitDatabaseChanges() {
+            localStorage.setItem('bossy_mutated_database', JSON.stringify(siteData));
+            renderDashboardMetrics();
+        }
+
+        function showToastNotification(message) {
+            const toast = document.getElementById('toastNotice');
+            toast.textContent = message;
+            toast.style.display = 'block';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 2500);
+        }
+
+        function switchSection(sectionId, element) {
+            document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            
+            document.getElementById(sectionId).classList.add('active');
+            element.classList.add('active');
+        }
+
+        function exportDataJson() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(siteData, null, 4));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", "site-data-final.json");
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+            showToastNotification("تم تحميل ملف JSON المحدث! ارفعه لمجلد data/ لتنشيط المتجر");
+        }
+
+        function terminateSession() {
+            localStorage.removeItem('bossy_admin_session');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
