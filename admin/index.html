@@ -12,11 +12,11 @@
     <style>
         /* --- الألوان الحاكمة والهندسة الرقمية الصارمة (The Strict Palette) --- */
         :root {
-            --boosy-pink: #FF91A4;    /* نبض الحياة - للحدود والتأثيرات التفاعلية */
-            --boosy-white: #FFFFFF;   /* المسيطر تماماً على الخلفيات لمنع التكدس */
-            --boosy-black: #111111;   /* النصوص والعناوين فقط لضمان وضوح كامل للعين */
-            --boosy-gold: #D4AF37;    /* وجود رمزي ناعم للفخامة */
-            --boosy-gray: #F9F9F9;    /* خلفية ناعمة جداً للمدخلات */
+            --bose-pink: #FF91A4;    /* نبض الحياة - للحدود والتأثيرات التفاعلية */
+            --bose-white: #FFFFFF;   /* المسيطر تماماً على الخلفيات لمنع التكدس */
+            --bose-black: #111111;   /* النصوص والعناوين فقط لضمان وضوح كامل للعين */
+            --bose-gold: #D4AF37;    /* وجود رمزي ناعم للفخامة */
+            --bose-gray: #F9F9F9;    /* خلفية ناعمة جداً للمدخلات */
         }
 
         * {
@@ -28,8 +28,8 @@
         }
 
         body {
-            background-color: var(--boosy-white);
-            color: var(--boosy-black);
+            background-color: var(--bose-white);
+            color: var(--bose-black);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -42,8 +42,8 @@
         .login-card {
             width: 100%;
             max-width: 420px;
-            background: var(--boosy-white);
-            border: 2px solid var(--boosy-pink);
+            background: var(--bose-white);
+            border: 2px solid var(--bose-pink);
             border-radius: 16px;
             padding: 40px 30px;
             box-shadow: 0 10px 30px rgba(255, 145, 164, 0.15);
@@ -63,14 +63,14 @@
         .brand-header h1 {
             font-size: 26px;
             font-weight: 700; /* قفل وزن الخط عند 700 كحد أقصى لأضخم العناوين */
-            color: var(--boosy-black);
+            color: var(--bose-black);
             margin-bottom: 8px;
             letter-spacing: -0.5px;
         }
 
         .brand-header p {
             font-size: 14px;
-            color: var(--boosy-black);
+            color: var(--bose-black);
             opacity: 0.7;
             font-weight: 400;
         }
@@ -78,7 +78,7 @@
         .gold-divider {
             width: 50px;
             height: 3px;
-            background-color: var(--boosy-gold);
+            background-color: var(--bose-gold);
             margin: 12px auto 0 auto;
             border-radius: 2px;
         }
@@ -93,7 +93,7 @@
             display: block;
             font-size: 14px;
             font-weight: 600;
-            color: var(--boosy-black);
+            color: var(--bose-black);
             margin-bottom: 8px;
         }
 
@@ -108,8 +108,8 @@
             font-size: 15px;
             border: 1.5px solid #EAEAEA;
             border-radius: 10px;
-            background-color: var(--boosy-gray);
-            color: var(--boosy-black);
+            background-color: var(--bose-gray);
+            color: var(--bose-black);
             outline: none;
             transition: border-color 0.3s ease, background-color 0.3s ease;
             -webkit-appearance: none;
@@ -117,8 +117,8 @@
 
         /* حظر الظلال الباهتة وتفعيل خط نبض الحياة عند التركيز */
         .form-control:focus {
-            border-color: var(--boosy-pink);
-            background-color: var(--boosy-white);
+            border-color: var(--bose-pink);
+            background-color: var(--bose-white);
             box-shadow: 0 0 0 3px rgba(255, 145, 164, 0.1);
         }
 
@@ -128,9 +128,9 @@
             padding: 15px;
             font-size: 16px;
             font-weight: 700;
-            color: var(--boosy-black);
-            background-color: var(--boosy-white);
-            border: 2px solid var(--boosy-pink);
+            color: var(--bose-black);
+            background-color: var(--bose-white);
+            border: 2px solid var(--bose-pink);
             border-radius: 10px;
             cursor: pointer;
             transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
@@ -141,8 +141,8 @@
         }
 
         .btn-submit:hover {
-            background-color: var(--boosy-pink);
-            color: var(--boosy-white);
+            background-color: var(--bose-pink);
+            color: var(--bose-white);
         }
 
         .btn-submit:active {
@@ -231,22 +231,21 @@
 
     <!-- المحرك الأمني المحلي المدمج لضمان أقصى أداء واستقلالية كاملة -->
     <script>
-        // فحص مسبق: إذا كان المسؤول مسجلاً دخوله بالفعل ولديه جلسة نشطة، يتم توجيهه تلقائياً دون إهدار موارد الاستضافة
+        // فحص مسبق: توحيد البادئة الهندسية إلى bose_ لمنع التعارض مع لوحة القيادة
         (function preAuthCheck() {
-            const currentSession = localStorage.getItem('boosy_admin_session');
-            const sessionExpiry = localStorage.getItem('boosy_admin_session_expiry');
+            const currentSession = localStorage.getItem('bose_admin_session');
+            const sessionExpiry = localStorage.getItem('bose_admin_session_expiry');
             const now = new Date().getTime();
 
             if (currentSession === 'active_authenticated' && sessionExpiry && now < parseInt(sessionExpiry)) {
                 window.location.href = 'dashboard.html';
             } else {
-                // تنظيف المخلفات المنتهية الصلاحية إن وجدت
-                localStorage.removeItem('boosy_admin_session');
-                localStorage.removeItem('boosy_admin_session_expiry');
+                localStorage.removeItem('bose_admin_session');
+                localStorage.removeItem('bose_admin_session_expiry');
             }
         })();
 
-        // محرك المصادقة الصارم الموحد طبقاً لبروتوكول V3
+        // محرك المصادقة الصارم الموحد 
         function executeAdminAuth(event) {
             event.preventDefault();
 
@@ -255,7 +254,6 @@
             const feedbackBox = document.getElementById('feedbackBox');
             const submitBtn = document.getElementById('submitBtn');
 
-            // إخفاء الرسائل السابقة وحماية الزر لمنع نقرات الموبايل المتكررة
             feedbackBox.style.display = 'none';
             submitBtn.disabled = true;
             submitBtn.style.opacity = '0.7';
@@ -264,32 +262,27 @@
             const OFFICIAL_USER = 'boosy_admin';
             const OFFICIAL_PASS = 'Boosy@2026_Premium';
 
-            // الفحص والتدقيق الآمن
             if (usernameInput === OFFICIAL_USER && passwordInput === OFFICIAL_PASS) {
-                // نجاح الدخول: إظهار رسالة راقية ومباشرة
                 feedbackBox.className = 'feedback-message feedback-success';
                 feedbackBox.textContent = 'تمت المصادقة بنجاح. جاري فتح البوابة..';
                 feedbackBox.style.display = 'block';
 
-                // حساب وقت انتهاء الجلسة بعد 24 ساعة (24 * 60 * 60 * 1000 مللي ثانية)
+                // حساب وقت انتهاء الجلسة بعد 24 ساعة
                 const expiryTime = new Date().getTime() + (24 * 60 * 60 * 1000);
 
-                // إنشاء الجلسة الموحدة داخل الذاكرة المشتركة للموقع
-                localStorage.setItem('boosy_admin_session', 'active_authenticated');
-                localStorage.setItem('boosy_admin_session_expiry', expiryTime.toString());
+                // إنشاء الجلسة الموحدة بالبادئة الصحيحة المتوافقة مع لوحة القيادة
+                localStorage.setItem('bose_admin_session', 'active_authenticated');
+                localStorage.setItem('bose_admin_session_expiry', expiryTime.toString());
 
-                // التوجيه الفوري المستقر نسبياً طبقاً لمصفوفة روابط V3
                 setTimeout(() => {
                     window.location.href = 'dashboard.html';
                 }, 800);
 
             } else {
-                // فشل الدخول: إظهار رسالة خطأ قصيرة وواضحة جداً
                 feedbackBox.className = 'feedback-message feedback-error';
                 feedbackBox.textContent = 'بيانات الدخول غير صحيحة. يرجى التحقق وإعادة المحاولة.';
                 feedbackBox.style.display = 'block';
                 
-                // إعادة تفعيل الزر فوراً
                 submitBtn.disabled = false;
                 submitBtn.style.opacity = '1';
             }

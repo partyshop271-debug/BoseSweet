@@ -12,12 +12,12 @@
     <style>
         /* --- الألوان الحاكمة والهندسة الرقمية الصارمة (The Strict Palette) --- */
         :root {
-            --boosy-pink: #FF91A4;    /* نبض الحياة - للحدود، الظلال الناعمة، والتأثيرات التفاعلية */
-            --boosy-white: #FFFFFF;   /* المسيطر تماماً على الخلفيات لمنع التكدس نهائياً */
-            --boosy-black: #111111;   /* النصوص والعناوين فقط لضمان وضوح كامل للعين */
-            --boosy-gold: #D4AF37;    /* وجود رمزي ناعم وخفيف جداً للفخامة */
-            --boosy-gray: #F9F9F9;    /* خلفية الكروت والأقسام الفخمة */
-            --boosy-border: #EAEAEA;
+            --bose-pink: #FF91A4;    /* نبض الحياة - للحدود، الظلال الناعمة، والتأثيرات التفاعلية */
+            --bose-white: #FFFFFF;   /* المسيطر تماماً على الخلفيات لمنع التكدس نهائياً */
+            --bose-black: #111111;   /* النصوص والعناوين فقط لضمان وضوح كامل للعين */
+            --bose-gold: #D4AF37;    /* وجود رمزي ناعم وخفيف جداً للفخامة */
+            --bose-gray: #F9F9F9;    /* خلفية الكروت والأقسام الفخمة */
+            --bose-border: #EAEAEA;
         }
 
         * {
@@ -29,8 +29,8 @@
         }
 
         body {
-            background-color: var(--boosy-white);
-            color: var(--boosy-black);
+            background-color: var(--bose-white);
+            color: var(--bose-black);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -39,8 +39,8 @@
 
         /* الهيدر العلوي الفخم للوحة القيادة */
         header {
-            background-color: var(--boosy-white);
-            border-bottom: 2px solid var(--boosy-pink);
+            background-color: var(--bose-white);
+            border-bottom: 2px solid var(--bose-pink);
             padding: 20px 30px;
             display: flex;
             justify-content: space-between;
@@ -54,7 +54,7 @@
         .header-brand h1 {
             font-size: 22px;
             font-weight: 700; /* قفل وزن الخط عند 700 كحد أقصى لأضخم العناوين */
-            color: var(--boosy-black);
+            color: var(--bose-black);
         }
 
         .header-actions {
@@ -67,9 +67,9 @@
             padding: 10px 18px;
             font-size: 14px;
             font-weight: 600;
-            color: var(--boosy-black);
-            background-color: var(--boosy-white);
-            border: 1.5px solid var(--boosy-border);
+            color: var(--bose-black);
+            background-color: var(--bose-white);
+            border: 1.5px solid var(--bose-border);
             border-radius: 8px;
             cursor: pointer;
             text-decoration: none;
@@ -80,8 +80,8 @@
         }
 
         .btn-nav:hover {
-            border-color: var(--boosy-pink);
-            color: var(--boosy-black);
+            border-color: var(--bose-pink);
+            color: var(--bose-black);
             box-shadow: 0 4px 10px rgba(255, 145, 164, 0.15);
         }
 
@@ -113,13 +113,13 @@
         .welcome-section h2 {
             font-size: 26px;
             font-weight: 700;
-            color: var(--boosy-black);
+            color: var(--bose-black);
             margin-bottom: 5px;
         }
 
         .welcome-section p {
             font-size: 15px;
-            color: var(--boosy-black);
+            color: var(--bose-black);
             opacity: 0.7;
         }
 
@@ -132,8 +132,8 @@
         }
 
         .stat-card {
-            background-color: var(--boosy-white);
-            border: 2px solid var(--boosy-border);
+            background-color: var(--bose-white);
+            border: 2px solid var(--bose-border);
             border-radius: 12px;
             padding: 25px;
             position: relative;
@@ -141,14 +141,14 @@
         }
 
         .stat-card:hover {
-            border-color: var(--boosy-pink);
+            border-color: var(--bose-pink);
             box-shadow: 0 8px 25px rgba(255, 145, 164, 0.12);
         }
 
         .stat-title {
             font-size: 14px;
             font-weight: 600;
-            color: var(--boosy-black);
+            color: var(--bose-black);
             opacity: 0.6;
             margin-bottom: 10px;
         }
@@ -156,7 +156,7 @@
         .stat-value {
             font-size: 28px;
             font-weight: 700;
-            color: var(--boosy-black);
+            color: var(--bose-black);
         }
 
         .stat-badge {
@@ -164,13 +164,13 @@
             top: 25px;
             left: 25px;
             font-size: 18px;
-            color: var(--boosy-gold); /* الوجود الرمزي للذهبي */
+            color: var(--bose-gold); /* الوجود الرمزي للذهبي */
         }
 
         /* روابط التحكم السريع وتسهيل الملاحة */
         .quick-actions-section {
-            background-color: var(--boosy-gray);
-            border: 1px solid var(--boosy-border);
+            background-color: var(--bose-gray);
+            border: 1px solid var(--bose-border);
             border-radius: 16px;
             padding: 30px;
         }
@@ -178,7 +178,7 @@
         .section-title {
             font-size: 18px;
             font-weight: 700;
-            color: var(--boosy-black);
+            color: var(--bose-black);
             margin-bottom: 20px;
         }
 
@@ -189,13 +189,13 @@
         }
 
         .btn-action-block {
-            background-color: var(--boosy-white);
-            border: 2px solid var(--boosy-pink);
+            background-color: var(--bose-white);
+            border: 2px solid var(--bose-pink);
             padding: 20px;
             border-radius: 10px;
             text-align: center;
             text-decoration: none;
-            color: var(--boosy-black);
+            color: var(--bose-black);
             font-weight: 700;
             font-size: 16px;
             transition: all 0.3s ease;
@@ -203,8 +203,8 @@
         }
 
         .btn-action-block:hover {
-            background-color: var(--boosy-pink);
-            color: var(--boosy-white);
+            background-color: var(--bose-pink);
+            color: var(--bose-white);
             transform: translateY(-2px);
             box-shadow: 0 6px 15px rgba(255, 145, 164, 0.2);
         }
@@ -216,7 +216,7 @@
             text-overflow: ellipsis;
         }
 
-        /* التوافق التام والتجاوب الاستثنائي مع الموبايل */
+        /* التوافق التام والتجاوب الاستثنائي مع الموبايل والكمبيوتر */
         @media (max-width: 768px) {
             header {
                 padding: 15px 20px;
@@ -239,7 +239,7 @@
 </head>
 <body>
 
-    <!-- الهيدر الموحد طبقاً لبروتوكول V3 المسارات النسبية المستقرة -->
+    <!-- الهيدر الموحد طبقاً لبروتوكول المسارات النسبية المستقرة للموبايل والكمبيوتر -->
     <header>
         <div class="header-brand">
             <h1 class="text-truncate">حلويات بوسي</h1>
@@ -256,7 +256,7 @@
             <p>متابعة فورية ومباشرة لأداء وتفاصيل عمل النظام اليومي</p>
         </section>
 
-        <!-- شبكة الإحصائيات الآنية المستخرجة من المحرك المحلي للبيانات المشتركة -->
+        <!-- شبكة الإحصائيات الآنية المستخرجة من المحرك المحلي للبيانات المشتركة بالتطابق مع الهوية البصرية -->
         <section class="stats-grid">
             <div class="stat-card">
                 <div class="stat-title">إجمالي المنتجات</div>
@@ -285,31 +285,30 @@
         </section>
     </main>
 
-    <!-- المحرك الأمني وحارس البوابة المركزي للوحة الرئيسية -->
+    <!-- المحرك الأمني وحارس البوابة المركزي للوحة الرئيسية المحدث بالبادئة الموحدة -->
     <script>
         // نظام حارس البوابة (Security Gatekeeper Guard) المفعّل في رأس الصفحة فورياً
         (function checkAdminAuth() {
-            const currentSession = localStorage.getItem('boosy_admin_session');
-            const sessionExpiry = localStorage.getItem('boosy_admin_session_expiry');
+            const currentSession = localStorage.getItem('bose_admin_session');
+            const sessionExpiry = localStorage.getItem('bose_admin_session_expiry');
             const now = new Date().getTime();
 
-            // الفحص والتدقيق الفوري: حظر أمني شامل في حال انتهاء الصلاحية أو عدم وجود توكن
+            // الفحص والتدقيق الفوري باستخدام البادئة الصحيحة
             if (currentSession !== 'active_authenticated' || !sessionExpiry || now > parseInt(sessionExpiry)) {
-                // تصفية المخلفات المنتهية أمنياً وتوجيه فوري لصفحة الدخول
-                localStorage.removeItem('boosy_admin_session');
-                localStorage.removeItem('boosy_admin_session_expiry');
+                localStorage.removeItem('bose_admin_session');
+                localStorage.removeItem('bose_admin_session_expiry');
                 window.location.href = 'index.html'; 
             }
         })();
 
-        // محرك قراءة البيانات التزامني لاستخراج الإحصائيات الدقيقة
+        // محرك قراءة البيانات التزامني لاستخراج الإحصائيات الدقيقة من التخزين المشترك للموقع
         document.addEventListener('DOMContentLoaded', () => {
-            // جلب مصفوفة المنتجات وقراءة حجمها الفعلي
-            const productsData = JSON.parse(localStorage.getItem('boosy_products_catalog')) || [];
+            // جلب المنتجات من الكتالوج المحلي المعتمد للموقع
+            const productsData = JSON.parse(localStorage.getItem('bose_products_catalog')) || [];
             document.getElementById('totalProductsCount').textContent = productsData.length;
 
             // جلب مصفوفة الطلبات الواردة من عمليات شراء العملاء
-            const ordersData = JSON.parse(localStorage.getItem('boosy_orders_list')) || [];
+            const ordersData = JSON.parse(localStorage.getItem('bose_orders_list')) || [];
             document.getElementById('totalOrdersCount').textContent = ordersData.length;
 
             // حساب الطلبات التي في حالة "قيد الانتظار / المراجعة"
@@ -319,8 +318,8 @@
 
         // آلية تسجيل الخروج الآمنة وتدمير الجلسة بنعومة ومباشرة
         function executeLogout() {
-            localStorage.removeItem('boosy_admin_session');
-            localStorage.removeItem('boosy_admin_session_expiry');
+            localStorage.removeItem('bose_admin_session');
+            localStorage.removeItem('bose_admin_expiry');
             window.location.href = 'index.html';
         }
     </script>
