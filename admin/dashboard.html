@@ -8,7 +8,7 @@
     <!-- خط Cairo الاحترافي المعتمد -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght=400;600;700&display=swap" rel="stylesheet">
 
     <style>
         /* هندسة النصوص والألوان الحاكمة (The Strict Palette) */
@@ -506,8 +506,17 @@
             }
         })();
 
+        // الهيكل المتوافق والمطابق تماماً لملف site-data-final.json المعتمد لديك
         let siteData = {
-            config: { priceIncrease: 0 },
+            store: {
+                id: "bose-sweets",
+                name: "حلويات بوسي",
+                priceIncrease: {
+                    enabled: false,
+                    percent: 0,
+                    applyOn: "menu-only"
+                }
+            },
             products: []
         };
 
@@ -515,41 +524,55 @@
             loadDatabase();
         });
 
-        // تم إصلاح مسار جلب الـ JSON الموحد ليعود خطوة واحدة للخلف بشكل صحيح نحو الجذر
         function loadDatabase() {
             const cachedData = localStorage.getItem('bossy_mutated_database');
             
             if (cachedData) {
-                siteData = JSON.parse(cachedData);
-                renderDashboardMetrics();
+                try {
+                    siteData = JSON.parse(cachedData);
+                    // معالجة ذكية في حال كانت النسخة المخزنة قديمة أو مهجنة
+                    if (!siteData.store) {
+                        siteData.store = { id: "bose-sweets", name: "حلويات بوسي", priceIncrease: { enabled: false, percent: 0, applyOn: "menu-only" } };
+                    }
+                    if (!siteData.store.priceIncrease) {
+                        siteData.store.priceIncrease = { enabled: false, percent: 0, applyOn: "menu-only" };
+                    }
+                    renderDashboardMetrics();
+                } catch(e) {
+                    localStorage.removeItem('bossy_mutated_database');
+                    fetchFreshJson();
+                }
             } else {
-                fetch('../data/site-data-final.json')
-                    .then(response => {
-                        if (!response.ok) throw new Error('تعذر قراءة ملف JSON المركزي');
-                        return response.json();
-                    })
-                    .then(data => {
-                        siteData = data;
-                        localStorage.setItem('bossy_mutated_database', JSON.stringify(siteData));
-                        renderDashboardMetrics();
-                    })
-                    .catch(error => {
-                        console.error('تنبيه المحرك البصري:', error);
-                        siteData.products = [
-                            { id: "p1", name: "تورته شوكولاته فاخرة غنية", category: "تورت ومناسبات", basePrice: 350, available: true },
-                            { id: "p2", name: "علبة مشكل لوكس بوسي", category: "حلويات شرقية", basePrice: 240, available: true },
-                            { id: "p3", name: "طاجن نوتيلا بالسعادة", category: "طواجن وحلويات حديثة", basePrice: 85, available: true }
-                        ];
-                        localStorage.setItem('bossy_mutated_database', JSON.stringify(siteData));
-                        renderDashboardMetrics();
-                    });
+                fetchFreshJson();
             }
         }
 
+        function fetchFreshJson() {
+            fetch('../data/site-data-final.json')
+                .then(response => {
+                    if (!response.ok) throw new Error('تعذر قراءة ملف JSON المركزي');
+                    return response.json();
+                })
+                .then(data => {
+                    siteData = data;
+                    if (!siteData.store.priceIncrease) {
+                        siteData.store.priceIncrease = { enabled: false, percent: 0, applyOn: "menu-only" };
+                    }
+                    localStorage.setItem('bossy_mutated_database', JSON.stringify(siteData));
+                    renderDashboardMetrics();
+                })
+                .catch(error => {
+                    console.error('تنبيه المحرك البصري:', error);
+                    showToastNotification("تحذير: فشل الاتصال بقاعدة البيانات الثابتة");
+                });
+        }
+
         function renderDashboardMetrics() {
+            if (!siteData.products) siteData.products = [];
             document.getElementById('statProducts').textContent = siteData.products.length;
             
-            const inflationPercent = (siteData.config && siteData.config.priceIncrease) ? siteData.config.priceIncrease : 0;
+            // قراءة النسبة التضخمية من المسار الصحيح الموحد للموقع بالكامل
+            const inflationPercent = (siteData.store && siteData.store.priceIncrease && siteData.store.priceIncrease.percent) ? siteData.store.priceIncrease.percent : 0;
             const inflationStatusEl = document.getElementById('statInflationStatus');
             document.getElementById('inflationPercentInput').value = inflationPercent;
 
@@ -567,11 +590,14 @@
             siteData.products.forEach((product) => {
                 const basePrice = parseFloat(product.basePrice) || product.price || 0;
                 const currentPrice = inflationPercent > 0 ? Math.ceil(basePrice * (1 + (inflationPercent / 100))) : basePrice;
+                
+                // دمج اسم النكهة الفريد مع العنوان لعرض احترافي واضح للإدارة بدقة
+                const productFullName = product.flavorName ? `${product.title} - ${product.flavorName}` : product.title;
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td style="font-weight: 600;">${product.id}</td>
-                    <td style="font-weight: 600;">${product.name || product.title}</td>
+                    <td style="font-weight: 600;">${productFullName}</td>
                     <td>${product.category}</td>
                     <td>
                         <input type="number" class="price-input-control" value="${basePrice}" onchange="updateProductPrice('${product.id}', this.value)">
@@ -579,7 +605,7 @@
                     <td style="font-weight: 700; color: var(--primary-pink);">${currentPrice} جنيه</td>
                     <td>
                         <label class="toggle-switch">
-                            <input type="checkbox" ${product.available ? 'checked' : ''} onchange="toggleProductAvailability('${product.id}', this.checked)">
+                            <input type="checkbox" ${product.available !== false ? 'checked' : ''} onchange="toggleProductAvailability('${product.id}', this.checked)">
                             <span class="slider"></span>
                         </label>
                     </td>
@@ -591,8 +617,17 @@
         function updateProductPrice(productId, newPrice) {
             const product = siteData.products.find(p => p.id === productId);
             if (product) {
-                product.basePrice = Math.max(0, parseFloat(newPrice) || 0);
-                if(product.price) product.price = product.basePrice;
+                const updatedPrice = Math.max(0, parseFloat(newPrice) || 0);
+                product.basePrice = updatedPrice;
+                product.price = updatedPrice; // تحديث الحقلين لضمان مرونة وتوافقية تامة
+                
+                // تحديث الأسعار الفرعية إذا كانت موجودة لمنع أي تضارب هيكلي
+                if (product.prices) {
+                    for (let key in product.prices) {
+                        product.prices[key] = updatedPrice;
+                    }
+                }
+                
                 commitDatabaseChanges();
                 showToastNotification("تم تحديث السعر الأصلي فورياً");
             }
@@ -611,8 +646,13 @@
             const inputVal = document.getElementById('inflationPercentInput').value;
             const percent = Math.max(0, parseFloat(inputVal) || 0);
             
-            if(!siteData.config) siteData.config = {};
-            siteData.config.priceIncrease = percent;
+            // الكتابة والتخزين داخل نفس الهيكل الأصلي المعتمد لباقي أجزاء الموقع
+            if (!siteData.store.priceIncrease) {
+                siteData.store.priceIncrease = { applyOn: "menu-only" };
+            }
+            siteData.store.priceIncrease.percent = percent;
+            siteData.store.priceIncrease.enabled = percent > 0;
+            
             commitDatabaseChanges();
             showToastNotification(`تم تطبيق زيادة الأسعار بنسبة ${percent}% بنجاح`);
         }
@@ -640,17 +680,19 @@
         }
 
         function exportDataJson() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(siteData, null, 4));
+            // التصدير بهيكل نقي 100% متوافق مع خوادم الاستضافة ومحرك السلة والمنيو الأساسي
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(siteData, null, 2));
             const downloadAnchor = document.createElement('a');
             downloadAnchor.setAttribute("href", dataStr);
             downloadAnchor.setAttribute("download", "site-data-final.json");
             document.body.appendChild(downloadAnchor);
             downloadAnchor.click();
             downloadAnchor.remove();
-            showToastNotification("تم تحميل ملف JSON المحدث! ارفعه لمجلد data/ لتنشيط المتجر");
+            showToastNotification("تم تحميل ملف JSON المحدث! ارفعه لمجلد data/ لتنشيط المتجر كلياً");
         }
 
         function terminateSession() {
+            localStorage.removeItem('boss_admin_session');
             localStorage.removeItem('bossy_admin_session');
             window.location.href = 'index.html';
         }
