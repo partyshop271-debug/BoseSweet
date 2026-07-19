@@ -228,7 +228,7 @@
             const btnSpinner = document.getElementById('btnSpinner');
             const btnText = document.getElementById('btnText');
 
-            // تعديل قيم التحقق لتطابق مدخلاتك الصحيحة تماماً
+            // بيانات الاعتماد الصحيحة والآمنة الخاصة بك
             const SECURE_UID = "Aadmin";
             const SECURE_PWD = "Aaboohamdy";
 
@@ -247,10 +247,13 @@
                         timestamp: new Date().getTime(),
                         role: "SuperAdmin"
                     };
+                    // تخزين التوكن في مسار موحد لمنع التضارب اللوجستي
                     localStorage.setItem('bossy_admin_session', JSON.stringify(adminToken));
                     
                     btnText.textContent = 'تم التأكيد.. جاري الانتقال';
-                    window.location.href = 'dashboard.html';
+                    
+                    // توجيه آمن ومباشر نسبي للمجلد المعزول الحالي
+                    window.location.replace('dashboard.html');
                 } else {
                     btnSpinner.style.display = 'none';
                     submitBtn.disabled = false;
@@ -262,17 +265,18 @@
                     passInput.value = '';
                     userInput.focus();
                 }
-            }, 600);
+            }, 400);
         }
 
-        // إصلاح فحص الجلسة الاستباقي لمنع أخطاء التوجيه الدائرية اللانهائية
+        // فحص الجلسة الاستباقي الذكي والمحمي تماماً من التوجيه اللانهائي
         window.addEventListener('DOMContentLoaded', () => {
             const activeSession = localStorage.getItem('bossy_admin_session');
             if (activeSession) {
                 try {
                     const sessionData = JSON.parse(activeSession);
-                    if (sessionData && sessionData.auth) {
-                        window.location.href = 'dashboard.html';
+                    // التوجيه فقط في حال كانت الجلسة صالحة ومفتوحة في صفحة مختلفة
+                    if (sessionData && sessionData.auth && !window.location.pathname.includes('dashboard.html')) {
+                        window.location.replace('dashboard.html');
                     }
                 } catch(e) {
                     localStorage.removeItem('bossy_admin_session');
