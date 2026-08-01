@@ -1,5 +1,5 @@
 /* ==========================================================================
-   👑 BoseSweets Strict Production Global Stylesheet (css/global.css) V17.0 👑
+   👑 BoseSweets Strict Production Global Stylesheet (css/global.css) V18.0 👑
    الملف الملوكي الشامل والنهائي المطوّر - مع تثبيت الهيدر بالملي أثناء السكرول
    تأمين التنفس البصري، حظر التكدس، ضبط سرعات الحركة، ومنع قص الكروت نهائياً
    ========================================================================== */
@@ -62,9 +62,10 @@ body.drawer-active {
 
 /* تسريع معالجة الرسوميات والأجهزة الذكية لمنع اهتزاز الأنميشن والمحاكيات */
 .bose-hardware-accelerated {
-    transform: none !important;
-    perspective: none !important;
-    backface-visibility: visible !important;
+    transform: translateZ(0) !important;
+    will-change: transform;
+    perspective: 1000px !important;
+    backface-visibility: hidden !important;
 }
 
 /* ==========================================================================
@@ -148,6 +149,10 @@ img {
     will-change: transform;
     /* تقليل سرعة الأنميشن بنسبة 20% لراحة العين من 35s إلى 44s */
     animation: boseMarqueeReverse 44s linear infinite !important;
+}
+
+.bose-top-bar-marquee-container:hover .bose-top-bar-marquee-track {
+    animation-play-state: paused !important;
 }
 
 .bose-marquee-item {
@@ -682,6 +687,11 @@ img {
     overflow: hidden;
     position: relative;
     padding: 0 10px;
+}
+
+.waterfall-container:hover .waterfall-up,
+.waterfall-container:hover .waterfall-down {
+    animation-play-state: paused !important;
 }
 
 @media (min-width: 1024px) {
@@ -1322,6 +1332,37 @@ img {
 }
 
 /* ==========================================================================
+   14. قسم دعم الوصول والتفاعل السريع (Accessibility & User Fast Actions)
+   ========================================================================== */
+.bose-quick-actions-bar {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 4000;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.bose-quick-action-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: var(--bose-pink);
+    color: var(--bose-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--bose-shadow-hover);
+    transition: var(--bose-transition-fast);
+}
+
+.bose-quick-action-btn:hover {
+    transform: scale(1.1);
+    background-color: var(--bose-black);
+}
+
+/* ==========================================================================
    15. الفوتر القياسي الموحد الثابت بلونه الفاتح الخالص (.bose-footer)
    ========================================================================== */
 .bose-footer {
@@ -1500,7 +1541,8 @@ img {
 }
 
 .bose-slider-dot {
-    width: 10px !important;
+    width: 100% !important;
+    max-width: 10px !important;
     height: 10px !important;
     border-radius: 50% !important;
     background-color: rgba(255, 145, 164, 0.25) !important;
@@ -1510,6 +1552,6 @@ img {
 
 .bose-slider-dot.active {
     background-color: var(--bose-pink) !important;
-    width: 26px !important; 
+    max-width: 26px !important;
     border-radius: 6px !important;
 }
