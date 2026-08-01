@@ -31,7 +31,7 @@
   },
   "seo": {
     "title": "حلويات بوسي | صنعناها بحب لتهديها لمن تحب",
-    "description": "منصة بيع إلكترونية متكاملة لعلامة حلويات بوسي الفاخرة. استمتع بتجربة تسوق فريدة، صمم تورتتك الخاصة وبوكيه الورد المخصص عبر محاكياتنا التفاعلية الفريدة.",
+    "description": "حلويات بوسي: حلويات فاخرة تُصنع بحب لتليق بأسعد لحظاتك. صمّم تورتتك وبوكيه ورودك بنفسك عبر محاكياتنا التفاعلية، واطلب أونلاين بثقة وسهولة.",
     "keywords": [
       "حلويات",
       "تورت",
@@ -68,14 +68,26 @@
     ]
   },
   "coupons": [
-    { "code": "BOSE10", "type": "percent", "value": 10 },
-    { "code": "BOOSY", "type": "fixed", "value": 50 },
-    { "code": "EID", "type": "percent", "value": 15 }
+    {
+      "code": "BOSE10",
+      "type": "percent",
+      "value": 10
+    },
+    {
+      "code": "BOOSY",
+      "type": "fixed",
+      "value": 50
+    },
+    {
+      "code": "EID",
+      "type": "percent",
+      "value": 15
+    }
   ],
   "homepage": {
     "hero": {
       "title": "عقد من التميز في صناعة الحلويات",
-      "description": "تم اختيار المكونات بعناية فائقة للحصول على أفضل جودة تليق بمناسباتكم السعيدة وتضمن ثقتكم الدائمة.",
+      "description": "نختار كل مكوّن بعناية فائقة، لنقدّم لكم جودة تليق بمناسباتكم السعيدة، وثقة تكبر معكم كل يوم.",
       "cta": "اطلب الآن"
     },
     "waterfall": {
@@ -107,7 +119,7 @@
       "relax-box",
       "mini-cake-two-person"
     ],
-    "mostSellingDescription": "دي الحاجات اللي دايماً بتطلبوها وحبيتوها على مدار السنين نكهات مميزة ومظبوطة بالملي بقت هي الأساس في كل لمتكم ومناسباتكم السعيدة والرمز الحقيقي لثقتكم الغالية اللي بنعتز بيها دايماً",
+    "mostSellingDescription": "دي الحاجات اللي بتطلبوها وتحبوها من زمان، نكهات مظبوطة بالملي بقت الأساس في كل لمة ومناسبة سعيدة عندكم.",
     "newArrivals": [
       "despacito-snickers",
       "cinabon-kinder",
@@ -116,7 +128,7 @@
       "cupcake-mix-new",
       "happiness-cups-rocher"
     ],
-    "newArrivalsDescription": "دايماً في أفكار جديدة وتجارب مش بتبطل هنا هتلاقوا أحدث الحاجات اللي جربناها وطورنا فيها شهور عشان تطلع ناعمة ومظبوطة وتخطف قلبكم من أول معلقة جربوا النكهات الجديدة دي وقولوا لنا رأيكم",
+    "newArrivalsDescription": "هنا هتلاقوا أحدث تجاربنا، اشتغلنا عليها شهور عشان تطلع ناعمة ومظبوطة، وتخطف قلبكم من أول معلقة. جربوا النكهات الجديدة، وقولولنا رأيكم.",
     "ourProducts": [
       "gateaux-classic",
       "red-velvet-triangle",
@@ -127,60 +139,140 @@
       "cupcake-chocolate",
       "happiness-cups-snickers"
     ],
-    "ourProductsDescription": "منيو حلويات بوسي الكامل تشكيلة غنية وبنحضرها طازة كل يوم بمكونات طبيعية 100% ومن غير أي تنازل عن الجودة من أول الكب كيك الخفيف الصغير لحد علب وبوكسات الضيافة الكبيرة اللي بتبيض الوش في اللمات العائلية",
+    "ourProductsDescription": "منيو حلويات بوسي الكامل، تشكيلة غنية بمكونات طبيعية 100%، نحضّرها طازة كل يوم من غير أي تنازل عن الجودة. من الكب كيك الخفيف لحد بوكسات الضيافة الكبيرة اللي تبيّض الوش في كل لمة عائلية.",
     "symphonyVideo": {
       "title": "سيمفونية الطعم",
-      "description": "عشان الطعم يعجبكم ويسعد قلوبكم بنهتم بكل تفصيلة صغيرة صوصات سايحة ودايبة وخامات طبيعية فريش وخطوات تحضير يدوية بنعملها بحب وشغف كل يوم عشان توصل لكم طازة وفي قمة روعتها",
+      "description": "بنهتم بكل تفصيلة صغيرة، عشان الطعم يعجبكم ويسعد قلوبكم: صوصات سايحة، خامات طبيعية فريش، وخطوات تحضير يدوية بحب وشغف كل يوم.",
       "url": "https://player.cloudinary.com/embed/?cloud_name=dyx4w0dr1&public_id=VID20260424210523_oviixh"
     },
     "excellenceVideo": {
       "title": "عقد من الإتقان",
-      "description": "وراء كل قطعة حلوى بنقدمها لكم قصة حب وإتقان وتعب وتفاصيل بنشتغل عليها بكل ذمة ونظافة عشان نقدم لكم حاجة تليق بيكم وتبيض الوش دايماً لأنكم تستاهلوا الأفضل والأضمن",
+      "description": "وراء كل قطعة حلوى، قصة حب وإتقان، وتفاصيل بنشتغل عليها بكل ذمة ونظافة. عشان تستاهلوا الأفضل، دايماً.",
       "url": "https://player.cloudinary.com/embed/?cloud_name=dyx4w0dr1&public_id=lv_0_%D9%A2%D9%A0%D9%A2%D9%A6%D9%A0%D9%A4%D9%A1%D9%A8%D9%A1%D9%A1%D9%A0%D9%A8%D9%A0%D9%A9_g2bv90"
     },
     "categoriesSlider": [
-      { "id": "taswaq-toort", "title": "التورت", "builderType": "cake-customizer", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" },
-      { "id": "taswaq-gatowat", "title": "الجاتوهات", "builderType": "standard", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" },
-      { "id": "taswaq-qashtota", "title": "القشطوطة", "builderType": "standard", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" },
-      { "id": "taswaq-despacito", "title": "الديسباسيتو", "builderType": "standard", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" },
-      { "id": "taswaq-cinabon", "title": "السينابون", "builderType": "standard", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" },
-      { "id": "taswaq-donuts", "title": "الدوناتس", "builderType": "standard", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" },
-      { "id": "taswaq-red-velvet", "title": "الريدڤيلڤت", "builderType": "standard", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" },
-      { "id": "taswaq-cupcake", "title": "الكب كيك", "builderType": "standard", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" },
-      { "id": "taswaq-mini-cake", "title": "الميني تورت", "builderType": "standard", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" },
-      { "id": "taswaq-flowers", "title": "الورد", "builderType": "flower-customizer", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" },
-      { "id": "taswaq-happiness-cups", "title": "كبات السعادة", "builderType": "standard", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" },
-      { "id": "taswaq-relax-box", "title": "بوكس الروقان", "builderType": "standard", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" }
+      {
+        "id": "taswaq-toort",
+        "title": "التورت",
+        "builderType": "cake-customizer",
+        "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      },
+      {
+        "id": "taswaq-gatowat",
+        "title": "الجاتوهات",
+        "builderType": "standard",
+        "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      },
+      {
+        "id": "taswaq-qashtota",
+        "title": "القشطوطة",
+        "builderType": "standard",
+        "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      },
+      {
+        "id": "taswaq-despacito",
+        "title": "الديسباسيتو",
+        "builderType": "standard",
+        "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      },
+      {
+        "id": "taswaq-cinabon",
+        "title": "السينابون",
+        "builderType": "standard",
+        "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      },
+      {
+        "id": "taswaq-donuts",
+        "title": "الدوناتس",
+        "builderType": "standard",
+        "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      },
+      {
+        "id": "taswaq-red-velvet",
+        "title": "الريدڤيلڤت",
+        "builderType": "standard",
+        "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      },
+      {
+        "id": "taswaq-cupcake",
+        "title": "الكب كيك",
+        "builderType": "standard",
+        "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      },
+      {
+        "id": "taswaq-mini-cake",
+        "title": "الميني تورت",
+        "builderType": "standard",
+        "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      },
+      {
+        "id": "taswaq-flowers",
+        "title": "الورد",
+        "builderType": "flower-customizer",
+        "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      },
+      {
+        "id": "taswaq-happiness-cups",
+        "title": "كبات السعادة",
+        "builderType": "standard",
+        "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      },
+      {
+        "id": "taswaq-relax-box",
+        "title": "بوكس الروقان",
+        "builderType": "standard",
+        "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      }
     ],
-    "categoriesSliderDescription": "رحلة سهلة وسريعة عشان تلاقوا اللي بتحبوه من غير حيرة قسمنا لكم منيو حلويات بوسي لـ 12 فئة واضحة بالصور عشان تختاروا الصنف اللي محتاجينه للروقان والمزاج الرايق بكل سهولة",
+    "categoriesSliderDescription": "رحلة سهلة وسريعة، من غير حيرة. قسّمنا منيو حلويات بوسي لـ 12 فئة واضحة بالصور، عشان تختاروا اللي يناسب مزاجكم بكل سهولة.",
     "pride": {
       "title": "الفخر والاعتزاز",
-      "description": "حكايتنا بدأت معاكم وبتكبر بيكم يوم بعد يوم أكتر من 10 سنين خبرة بنشارككم فيها أحلى الأوقات والمناسبات والنجاح ده هو نتيجة حبكم والتزامنا بتقديم أحسن حاجة ليكم من غير أي لف ودوران",
+      "description": "حكايتنا بدأت معاكم، وبتكبر بيكم يوم بعد يوم. أكتر من 10 سنين خبرة، شاركناكم فيها أحلى الأوقات والمناسبات. والنجاح ده نتيجة ثقتكم، والتزامنا بتقديم الأفضل من غير لف ولا دوران.",
       "stats": {
-        "years": { "value": 10, "suffix": "+", "label": "سنوات خبرة" },
-        "customers": { "value": 10000, "suffix": "+", "label": "عميل" },
-        "orders": { "value": 10000, "suffix": "+", "label": "طلب ناجح" },
-        "cakes": { "value": 5000, "suffix": "+", "label": "التورت المصممة" },
-        "bouquets": { "value": 3000, "suffix": "+", "label": "منسقة بحب" }
+        "years": {
+          "value": 10,
+          "suffix": "+",
+          "label": "سنوات خبرة"
+        },
+        "customers": {
+          "value": 10000,
+          "suffix": "+",
+          "label": "عميل"
+        },
+        "orders": {
+          "value": 10000,
+          "suffix": "+",
+          "label": "طلب ناجح"
+        },
+        "cakes": {
+          "value": 5000,
+          "suffix": "+",
+          "label": "التورت المصممة"
+        },
+        "bouquets": {
+          "value": 3000,
+          "suffix": "+",
+          "label": "منسقة بحب"
+        }
       }
     },
     "cakePreview": {
       "title": "محاكي التورت",
-      "description": "التورتة عندنا مش مجرد حلوى وخلاص دي قطعة بنعملها مخصوص عشان تفرح صاحب المناسبة وتعبر عنه بالظبط مع المحاكي بتاعنا تقدروا تصمموا تورتتكم بنفسكم اختاروا الحجم والنكهة والشكل وسيبوا الباقي علينا عشان نعمل لكم حاجة تشرف بجد",
+      "description": "التورتة عندنا مش مجرد حلوى، دي قطعة بنعملها مخصوص عشان تفرح صاحب المناسبة وتعبّر عنه بالظبط. اختاروا الحجم والنكهة والشكل مع المحاكي بتاعنا، وسيبوا الباقي علينا.",
       "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
       "cta": "تصميم التورتة الآن",
       "target": "cake-builder.html"
     },
     "flowerPreview": {
       "title": "محاكي الورد",
-      "description": "عشان الهدية تطلع من القلب وتفرح بجد عملنا لكم المحاكي ده تقدروا تنسقوا بوكيه الورد بنفسكم اختاروا الورد اللي تحبوه طبيعي أو صناعي أو ستان فخم وضيفوا معاه كارت إهداء أو شوكولاتة طعمها روعة أو حتى مفاجأة كاش متنسقة بكل شياكة",
+      "description": "عشان الهدية تطلع من القلب، عملنا لكم محاكي الورد. اختاروا الورد اللي تحبوه (طبيعي، صناعي، أو ستان فخم)، وضيفوا كارت إهداء، شوكولاتة، أو حتى مفاجأة كاش، بكل شياكة.",
       "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
       "cta": "تصميم البوكيه الآن",
       "target": "flower-builder.html"
     }
   },
   "footer": {
-    "about": "صنعناها بحب لتهديها لمن تحب. خبرة أكثر من 10 سنوات في صناعة الحلويات الفاخرة وتنسيق الهدايا والورد لنوثق أسعد لحظاتكم.",
+    "about": "صنعناها بحب لتُهديها لمن تحب. أكتر من 10 سنين خبرة في صناعة الحلويات الفاخرة، وتنسيق الهدايا والورد، لنوثّق أسعد لحظاتكم.",
     "links": [
       "الرئيسية",
       "المنيو الشامل",
@@ -200,16 +292,76 @@
     ]
   },
   "shippingZones": [
-    { "id": "elkefah", "governorate": "الوادي الجديد", "city": "الفرافرة", "area": "الكفاح", "price": 30 },
-    { "id": "aboelhol", "governorate": "الوادي الجديد", "city": "الفرافرة", "area": "أبو الهول", "price": 30 },
-    { "id": "sanaye3", "governorate": "الوادي الجديد", "city": "الفرافرة", "area": "الصنايع", "price": 40 },
-    { "id": "abobakr", "governorate": "الوادي الجديد", "city": "الفرافرة", "area": "أبو بكر", "price": 40 },
-    { "id": "farafra", "governorate": "الوادي الجديد", "city": "الفرافرة", "area": "الفرافرة", "price": 50 },
-    { "id": "association", "governorate": "الوادي الجديد", "city": "الفرافرة", "area": "الجمعية", "price": 50 },
-    { "id": "alamal", "governorate": "الوادي الجديد", "city": "الفرافرة", "area": "الأمل", "price": 50 },
-    { "id": "zone-13", "governorate": "الوادي الجديد", "city": "الفرافرة", "area": "قرية 13", "price": 70 },
-    { "id": "zone-17", "governorate": "الوادي الجديد", "city": "الفرافرة", "area": "قرية 17", "price": 70 },
-    { "id": "abohoraira", "governorate": "الوادي الجديد", "city": "الفرافرة", "area": "أبو هريرة", "price": 140 }
+    {
+      "id": "elkefah",
+      "governorate": "الوادي الجديد",
+      "city": "الفرافرة",
+      "area": "الكفاح",
+      "price": 30
+    },
+    {
+      "id": "aboelhol",
+      "governorate": "الوادي الجديد",
+      "city": "الفرافرة",
+      "area": "أبو الهول",
+      "price": 30
+    },
+    {
+      "id": "sanaye3",
+      "governorate": "الوادي الجديد",
+      "city": "الفرافرة",
+      "area": "الصنايع",
+      "price": 40
+    },
+    {
+      "id": "abobakr",
+      "governorate": "الوادي الجديد",
+      "city": "الفرافرة",
+      "area": "أبو بكر",
+      "price": 40
+    },
+    {
+      "id": "farafra",
+      "governorate": "الوادي الجديد",
+      "city": "الفرافرة",
+      "area": "الفرافرة",
+      "price": 50
+    },
+    {
+      "id": "association",
+      "governorate": "الوادي الجديد",
+      "city": "الفرافرة",
+      "area": "الجمعية",
+      "price": 50
+    },
+    {
+      "id": "alamal",
+      "governorate": "الوادي الجديد",
+      "city": "الفرافرة",
+      "area": "الأمل",
+      "price": 50
+    },
+    {
+      "id": "zone-13",
+      "governorate": "الوادي الجديد",
+      "city": "الفرافرة",
+      "area": "قرية 13",
+      "price": 70
+    },
+    {
+      "id": "zone-17",
+      "governorate": "الوادي الجديد",
+      "city": "الفرافرة",
+      "area": "قرية 17",
+      "price": 70
+    },
+    {
+      "id": "abohoraira",
+      "governorate": "الوادي الجديد",
+      "city": "الفرافرة",
+      "area": "أبو هريرة",
+      "price": 140
+    }
   ],
   "products": [
     {
@@ -223,9 +375,18 @@
       "layout": "full-card",
       "featured": true,
       "customBuilderUrl": "cake-builder.html",
-      "searchTerms": ["تورتة", "تورت", "مناسبات", "عيد ميلاد", "زفاف", "تخصيص"],
+      "searchTerms": [
+        "تورتة",
+        "تورت",
+        "مناسبات",
+        "عيد ميلاد",
+        "زفاف",
+        "تخصيص"
+      ],
       "description": "التورت عندنا مش مجرد حلوى للمناسبة، لكنها قطعة مصممة خصيصاً لصاحب المناسبة. كما تذهب الفتاة إلى مصمم أزياء محترف ليصنع لها فستاناً فريداً يخطف الأنظار، نحن نصمم كل تورتة بشكل يعبر عن شخصية صاحبها وذوقه وتفاصيل يومه المميز. لا نكرر نفس التورتة مرتين، لأن لكل عميل قصة مختلفة تستحق أن تُروى بشكل مختلف. كل تورتة تجمع بين الشكل الذي يحبه العميل والطعم الذي يفضله والتفاصيل التي تعبر عنه. لذلك كانت تورت حلويات بوسي نجمة العديد من المناسبات، وكانت دائماً سبباً في الإبهار قبل التذوق وبعده. ومن أكثر الجمل التي نسمعها من عملائنا: \"لسه حلاوتها في بوقي من يوم ما دوقتها.\"",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 580,
       "basePrice": 580,
       "prices": {
@@ -236,8 +397,16 @@
       "defaultSize": "triangle",
       "rating": 5.0,
       "reviews": [
-        { "user": "سارة أحمد", "rating": 5, "comment": "التورتة كانت تحفة فنية بجد! شكلها يفرح وطعمها يجنن وشرفتني جداً قدام ضيوفي في عيد الميلاد 🌸" },
-        { "user": "منة عصام", "rating": 5, "comment": "التفاصيل معمولة بالملي زي ما طلبتها، والفاكهة طازة والكريمة سكرها مظبوط ومش تقيلة." }
+        {
+          "user": "سارة أحمد",
+          "rating": 5,
+          "comment": "التورتة كانت تحفة فنية بجد! شكلها يفرح وطعمها يجنن وشرفتني جداً قدام ضيوفي في عيد الميلاد 🌸"
+        },
+        {
+          "user": "منة عصام",
+          "rating": 5,
+          "comment": "التفاصيل معمولة بالملي زي ما طلبتها، والفاكهة طازة والكريمة سكرها مظبوط ومش تقيلة."
+        }
       ]
     },
     {
@@ -250,9 +419,16 @@
       "flavorDesc": "تجربة فخمة غنية بالموسات والصوصات الكثيفة، متنسقة بلمسة ملوكية مخصصة لضيافة تشرفك وتبهر ضيوفك.",
       "layout": "full-card",
       "featured": true,
-      "searchTerms": ["جاتوه", "ملكي", "جاتوهات", "قطع"],
+      "searchTerms": [
+        "جاتوه",
+        "ملكي",
+        "جاتوهات",
+        "قطع"
+      ],
       "description": "الجاتوهات عندنا عبارة عن طبقات متوازنة من كيك الفانيليا أو الشوكولاتة مع حشوات غنية من الموسات والصوصات والكريمات المختارة بعناية. نوفر تشكيلة كبيرة ومتنوعة تناسب مختلف المناسبات والأذواق، بحيث يجد كل عميل الجاتوه الذي يناسب ذوقه ويكمل لحظته الجميلة.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 638,
       "basePrice": 638,
       "prices": {
@@ -263,7 +439,11 @@
       "defaultSize": "triangle",
       "rating": 4.9,
       "reviews": [
-        { "user": "نادية يوسف", "rating": 5, "comment": "القطع حجمها مناسب جداً والطعمة غنية ومتوازنة والسكر خفيف ومثالي للتقديم ✨" }
+        {
+          "user": "نادية يوسف",
+          "rating": 5,
+          "comment": "القطع حجمها مناسب جداً والطعمة غنية ومتوازنة والسكر خفيف ومثالي للتقديم ✨"
+        }
       ]
     },
     {
@@ -276,9 +456,15 @@
       "flavorDesc": "الطعم الأصيل الموزون والرايق.. طبقات كيك هشة مع كريمة خفيفة، مجهزة بامتياز لجمعاتكم الطيبة وأوقات الشاي الهادئة.",
       "layout": "full-card",
       "featured": false,
-      "searchTerms": ["جاتوه", "كلاسيك", "ضيافة"],
+      "searchTerms": [
+        "جاتوه",
+        "كلاسيك",
+        "ضيافة"
+      ],
       "description": "الجاتوهات عندنا عبارة عن طبقات متوازنة من كيك الفانيليا أو الشوكولاتة مع حشوات غنية من الموسات والصوصات والكريمات المختارة بعناية. نوفر تشكيلة كبيرة ومتنوعة تناسب مختلف المناسبات والأذواق, بحيث يجد كل عميل الجاتوه الذي يناسب ذوقه ويكمل لحظته الجميلة.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 506,
       "basePrice": 506,
       "prices": {
@@ -289,7 +475,11 @@
       "defaultSize": "triangle",
       "rating": 4.8,
       "reviews": [
-        { "user": "أحمد محمود", "rating": 5, "comment": "طعم زمان الأصيل والكريمة خفيفة وهشة جداً وهشاشة الكيك ممتازة." }
+        {
+          "user": "أحمد محمود",
+          "rating": 5,
+          "comment": "طعم زمان الأصيل والكريمة خفيفة وهشة جداً وهشاشة الكيك ممتازة."
+        }
       ]
     },
     {
@@ -302,9 +492,15 @@
       "flavorDesc": "قطع صغيرة مليانة لذة وأناقة، متنوعة الألوان والنكهات لتناسب الحفلات والاحتفالات الكبرى وتضفي بهجة على التقديم.",
       "layout": "full-card",
       "featured": false,
-      "searchTerms": ["جاتوه", "سواريه", "قطع صغيرة"],
+      "searchTerms": [
+        "جاتوه",
+        "سواريه",
+        "قطع صغيرة"
+      ],
       "description": "الجاتوهات عندنا عبارة عن طبقات متوازنة من كيك الفانيليا أو الشوكولاتة مع حشوات غنية من الموسات والصوصات والكريمات المختارة بعناية. نوفر تشكيلة كبيرة ومتنوعة تناسب مختلف المناسبات والأذواق، بحيث يجد كل عميل الجاتوه الذي يناسب ذوقه ويكمل لحظته الجميلة.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 374,
       "basePrice": 374,
       "prices": {
@@ -315,7 +511,11 @@
       "defaultSize": "triangle",
       "rating": 4.9,
       "reviews": [
-        { "user": "إيمان مجدي", "rating": 5, "comment": "مناسب جداً للحفلات الكبيرة وأعياد الميلاد وشكله شيك أوي في التقديم والكل أشاد بيه 🌸" }
+        {
+          "user": "إيمان مجدي",
+          "rating": 5,
+          "comment": "مناسب جداً للحفلات الكبيرة وأعياد الميلاد وشكله شيك أوي في التقديم والكل أشاد بيه 🌸"
+        }
       ]
     },
     {
@@ -328,14 +528,24 @@
       "flavorDesc": "قرمشة أصلية.. زبدة اللوتس الدايبة مع كسر البسكويت، توليفة معمولة بالمليم مع كيك الحليب الساقع عشان تظبط هرمون المزاج.",
       "layout": "two-cards",
       "featured": true,
-      "searchTerms": ["وصل حديثا", "قشطوطة", "لوتس"],
+      "searchTerms": [
+        "وصل حديثا",
+        "قشطوطة",
+        "لوتس"
+      ],
       "description": "كيك فانيليا مشرب بالحليب بعناية ليحافظ على نعومته وغناه، يعلوه طبقة من الكريمة اللباني بتوليفتنا الخاصة التي تحمل بصمتنا المميزة. ثم تأتي طبقة المكسرات التي أعددناها لتكمل التجربة وتمنح المنتج شخصيته الخاصة، مع إمكانية اختيار التوبنج المفضل للعميل.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 121,
       "basePrice": 121,
       "rating": 5.0,
       "reviews": [
-        { "user": "نهى كريم", "rating": 5, "comment": "أحلى قشطوطة لوتس دوقتها هنا! الكيك غرقان لبن وخفيف جداً وبسكويت اللوتس مقرمش وريحته تحفة 🌸" }
+        {
+          "user": "نهى كريم",
+          "rating": 5,
+          "comment": "أحلى قشطوطة لوتس دوقتها هنا! الكيك غرقان لبن وخفيف جداً وبسكويت اللوتس مقرمش وريحته تحفة 🌸"
+        }
       ]
     },
     {
@@ -348,14 +558,24 @@
       "flavorDesc": "فخامة كريمية.. صوص البيستاشيو الأصلي بملمسه الفاخر بيكسو السطح، ليعطي توازناً غنياً وراقياً مع طراوة الكريمة اللباني.",
       "layout": "two-cards",
       "featured": false,
-      "searchTerms": ["قشطوطة", "بيستاشيو", "فستق"],
+      "searchTerms": [
+        "قشطوطة",
+        "بيستاشيو",
+        "فستق"
+      ],
       "description": "كيك فانيليا مشرب بالحليب بعناية ليحافظ على نعومته وغناه، يعلوه طبقة من الكريمة اللباني بتوليفتنا الخاصة التي تحمل بصمتنا المميزة. ثم تأتي طبقة المكسرات التي أعددناها لتكمل التجربة وتمنح المنتج شخصيته الخاصة، مع إمكانية اختيار التوبنج المفضل للعميل.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 143,
       "basePrice": 143,
       "rating": 4.9,
       "reviews": [
-        { "user": "خالد سليمان", "rating": 5, "comment": "طعم الفستق أصلي وغني جداً والمكسرات مكملة القوام بشكل محترم أوي." }
+        {
+          "user": "خالد سليمان",
+          "rating": 5,
+          "comment": "طعم الفستق أصلي وغني جداً والمكسرات مكملة القوام بشكل محترم أوي."
+        }
       ]
     },
     {
@@ -368,14 +588,24 @@
       "flavorDesc": "نعومة كريمية استثنائية.. طعم نوتيلا الشوكولاتة البيضاء السلسة ينساب بسخاء، لمذاق مبهج يمنحك روقاناً تاماً وانتعاشاً خالصاً.",
       "layout": "two-cards",
       "featured": false,
-      "searchTerms": ["قشطوطة", "نوتيلا وايت", "شوكولاتة بيضاء"],
+      "searchTerms": [
+        "قشطوطة",
+        "نوتيلا وايت",
+        "شوكولاتة بيضاء"
+      ],
       "description": "كيك فانيليا مشرب بالحليب بعناية ليحافظ على نعومته وغناه، يعلوه طبقة من الكريمة اللباني بتوليفتنا الخاصة التي تحمل بصمتنا المميزة. ثم تأتي طبقة المكسرات التي أعددناها لتكمل التجربة وتمنح المنتج شخصيته الخاصة، مع إمكانية اختيار التوبنج المفضل للعميل.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 121,
       "basePrice": 121,
       "rating": 4.8,
       "reviews": [
-        { "user": "ياسمين عمرو", "rating": 5, "comment": "الشوكولاتة البيضاء جودتها ممتازة وطعمها ناعم ومتناسق مع طعم الحليب الساقع." }
+        {
+          "user": "ياسمين عمرو",
+          "rating": 5,
+          "comment": "الشوكولاتة البيضاء جودتها ممتازة وطعمها ناعم ومتناسق مع طعم الحليب الساقع."
+        }
       ]
     },
     {
@@ -388,14 +618,24 @@
       "flavorDesc": "لعشاق المزاج الصافي والموزون.. نوتيلا دارك بكثافتها الصريحة تكسر حلاوة كيك الحليب لتمنحك فصلاً وانسجاماً من أول معلقة.",
       "layout": "two-cards",
       "featured": false,
-      "searchTerms": ["قشطوطة", "نوتيلا دارك", "شوكولاتة غامقة"],
+      "searchTerms": [
+        "قشطوطة",
+        "نوتيلا دارك",
+        "شوكولاتة غامقة"
+      ],
       "description": "كيك فانيليا مشرب بالحليب بعناية ليحافظ على نعومته وغناه، يعلوه طبقة من الكريمة اللباني بتوليفتنا الخاصة التي تحمل بصمتنا المميزة. ثم تأتي طبقة المكسرات التي أعددناها لتكمل التجربة وتمنح المنتج شخصيته الخاصة، مع إمكانية اختيار التوبنج المفضل للعميل.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 121,
       "basePrice": 121,
       "rating": 4.9,
       "reviews": [
-        { "user": "طارق فاروق", "rating": 5, "comment": "لعشاق الشوكولاتة الداكنة اللي سكرها مضبوط دي أحسن قشطوطة ممكن تدوقها." }
+        {
+          "user": "طارق فاروق",
+          "rating": 5,
+          "comment": "لعشاق الشوكولاتة الداكنة اللي سكرها مضبوط دي أحسن قشطوطة ممكن تدوقها."
+        }
       ]
     },
     {
@@ -408,14 +648,23 @@
       "flavorDesc": "مذاق طفولي ساحر.. صوص شوكولاتة كيندر الأصلي ينساب فوق طبقة الكريمة، ليملأ تجربتك بالبهجة والروقان الفريد.",
       "layout": "two-cards",
       "featured": false,
-      "searchTerms": ["قشطوطة", "كيندر"],
+      "searchTerms": [
+        "قشطوطة",
+        "كيندر"
+      ],
       "description": "كيك فانيليا مشرب بالحليب بعناية ليحافظ على نعومته وغناه، يعلوه طبقة من الكريمة اللباني بتوليفتنا الخاصة التي تحمل بصمتنا المميزة. ثم تأتي طبقة المكسرات التي أعددناها لتكمل التجربة وتمنح المنتج شخصيته الخاصة، مع إمكانية اختيار التوبنج المفضل للعميل.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 121,
       "basePrice": 121,
       "rating": 5.0,
       "reviews": [
-        { "user": "هدير أحمد", "rating": 5, "comment": "الولاد حبوها جداً، طعم شوكولاتة الكيندر أصلي ونازل بسخاء فوق الكريمة اللباني." }
+        {
+          "user": "هدير أحمد",
+          "rating": 5,
+          "comment": "الولاد حبوها جداً، طعم شوكولاتة الكيندر أصلي ونازل بسخاء فوق الكريمة اللباني."
+        }
       ]
     },
     {
@@ -428,14 +677,23 @@
       "flavorDesc": "حلاوة دافئة وصافية.. صوص الكراميل المكثف بلمستنا الحصرية الحالية ينساب بنعومة، ليعطي كيك الحليب مذاقاً تقليدياً غنياً.",
       "layout": "two-cards",
       "featured": false,
-      "searchTerms": ["قشطوطة", "كراميل"],
+      "searchTerms": [
+        "قشطوطة",
+        "كراميل"
+      ],
       "description": "كيك فانيليا مشرب بالحليب بعناية ليحافظ على نعومته وغناه، يعلوه طبقة من الكريمة اللباني بتوليفتنا الخاصة التي تحمل بصمتنا المميزة. ثم تأتي طبقة المكسرات التي أعددناها لتكمل التجربة وتمنح المنتج شخصيته الخاصة، مع إمكانية اختيار التوبنج المفضل للعميل.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 121,
       "basePrice": 121,
       "rating": 4.7,
       "reviews": [
-        { "user": "سامح رمزي", "rating": 4, "comment": "طعم الكراميل موزون ومش مسكر زيادة عن اللزوم، توليفة رايقة أوي." }
+        {
+          "user": "سامح رمزي",
+          "rating": 4,
+          "comment": "طعم الكراميل موزون ومش مسكر زيادة عن اللزوم، توليفة رايقة أوي."
+        }
       ]
     },
     {
@@ -448,14 +706,25 @@
       "flavorDesc": "انتعاش الفاكهة الطبيعية.. مكعبات المانجا الفريش بحلاوتها الغنية بتنزل تظبط الطعم وتفتح النفس فوراً مع غنى كيك الحليب.",
       "layout": "two-cards",
       "featured": false,
-      "searchTerms": ["قشطوطة", "مانجو", "مانجا", "فواكه"],
+      "searchTerms": [
+        "قشطوطة",
+        "مانجو",
+        "مانجا",
+        "فواكه"
+      ],
       "description": "كيك فانيليا مشرب بالحليب بعناية ليحافظ على نعومته وغناه، يعلوه طبقة من الكريمة اللباني بتوليفتنا الخاصة التي تحمل بصمتنا المميزة. ثم تأتي طبقة المكسرات التي أعددناها لتكمل التجربة وتمنح المنتج شخصيته الخاصة، مع إمكانية اختيار التوبنج المفضل للعميل.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 121,
       "basePrice": 121,
       "rating": 4.9,
       "reviews": [
-        { "user": "ريم حسن", "rating": 5, "comment": "المانجا طازة وحلوة جداً، ميكس رائع ومنعش مع طبقة اللبن المكثف." }
+        {
+          "user": "ريم حسن",
+          "rating": 5,
+          "comment": "المانجا طازة وحلوة جداً، ميكس رائع ومنعش مع طبقة اللبن المكثف."
+        }
       ]
     },
     {
@@ -468,14 +737,23 @@
       "flavorDesc": "ميكس بارد منعش.. قطع الفراولة الطبيعية مغمورة بصوصها الخاص، تعطي حلاوة متوازنة وتكسر دسامة الحليب بلمسة مبهجة.",
       "layout": "two-cards",
       "featured": false,
-      "searchTerms": ["قشطوطة", "فراولة"],
+      "searchTerms": [
+        "قشطوطة",
+        "فراولة"
+      ],
       "description": "كيك فانيليا مشرب بالحليب بعناية ليحافظ على نعومته وغناه، يعلوه طبقة من الكريمة اللباني بتوليفتنا الخاصة التي تحمل بصمتنا المميزة. ثم تأتي طبقة المكسرات التي أعددناها لتكمل التجربة وتمنح المنتج شخصيته الخاصة، مع إمكانية اختيار التوبنج المفضل للعميل.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 121,
       "basePrice": 121,
       "rating": 4.8,
       "reviews": [
-        { "user": "نهى عادل", "rating": 5, "comment": "شكل الفراولة الطبيعية يفتح النفس وطعمها فيه مزازة خفيفة بتكسر السكر." }
+        {
+          "user": "نهى عادل",
+          "rating": 5,
+          "comment": "شكل الفراولة الطبيعية يفتح النفس وطعمها فيه مزازة خفيفة بتكسر السكر."
+        }
       ]
     },
     {
@@ -488,14 +766,23 @@
       "flavorDesc": "طعم بيتي دافئ.. شرائح الموز الطازجة المنسقة بعناية، تضفي قواماً ناعماً ومحبوباً يناسب أوقات التحلية العائلية الراقية.",
       "layout": "two-cards",
       "featured": false,
-      "searchTerms": ["قشطوطة", "موز"],
+      "searchTerms": [
+        "قشطوطة",
+        "موز"
+      ],
       "description": "كيك فانيليا مشرب بالحليب بعناية ليحافظ على نعومته وغناه، يعلوه طبقة من الكريمة اللباني بتوليفتنا الخاصة التي تحمل بصمتنا المميزة. ثم تأتي طبقة المكسرات التي أعددناها لتكمل التجربة وتمنح المنتج شخصيته الخاصة، مع إمكانية اختيار التوبنج المفضل للعميل.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 121,
       "basePrice": 121,
       "rating": 4.7,
       "reviews": [
-        { "user": "وليد صلاح", "rating": 4, "comment": "مغذية وخفيفة جداً ومحبوبة أوي من الأطفال عشان شرائح الموز طازجة." }
+        {
+          "user": "وليد صلاح",
+          "rating": 4,
+          "comment": "مغذية وخفيفة جداً ومحبوبة أوي من الأطفال عشان شرائح الموز طازجة."
+        }
       ]
     },
     {
@@ -508,14 +795,24 @@
       "flavorDesc": "لوحة فنية مبهجة تجمع قطع الفواكه الطازجة مع لمسات من أرقى الصوصات، لترضي كافة الأذواق في علبة واحدة فاخرة.",
       "layout": "two-cards",
       "featured": false,
-      "searchTerms": ["قشطوطة", "ميكس", "مشكل"],
+      "searchTerms": [
+        "قشطوطة",
+        "ميكس",
+        "مشكل"
+      ],
       "description": "كيك فانيليا مشرب بالحليب بعناية ليحافظ على نعومته وغناه، يعلوه طبقة من الكريمة اللباني بتوليفتنا الخاصة التي تحمل بصمتنا المميزة. ثم تأتي طبقة المكسرات التي أعددناها لتكمل التجربة وتمنح المنتج شخصيته الخاصة، مع إمكانية اختيار التوبنج المفضل للعميل.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 121,
       "basePrice": 121,
       "rating": 5.0,
       "reviews": [
-        { "user": "شريف فوزي", "rating": 5, "comment": "لما بكون محتار بطلب الميكس ده لأنه بيجمع الفواكه مع صوصات ممتازة في صنف واحد." }
+        {
+          "user": "شريف فوزي",
+          "rating": 5,
+          "comment": "لما بكون محتار بطلب الميكس ده لأنه بيجمع الفواكه مع صوصات ممتازة في صنف واحد."
+        }
       ]
     },
     {
@@ -528,9 +825,16 @@
       "flavorDesc": "فخامة اللقاء الملكي.. توبنج البيستاشيو الأصلي بكثافته وملمسه الفاخر بيمتزج مع موس الشوكولاتة؛ ليعطيك طعماً متوازناً يروق البال.",
       "layout": "tabs",
       "featured": true,
-      "searchTerms": ["وصل حديثا", "ديسباسيتو", "بيستاشيو", "فستق"],
+      "searchTerms": [
+        "وصل حديثا",
+        "ديسباسيتو",
+        "بيستاشيو",
+        "فستق"
+      ],
       "description": "كيك فادج غني مغمور بالشوكولاتة، يعلوه طبقة من النوتيلا ثم طبقة من موس الشوكولاتة بتوليفتنا الخاصة التي تمنحه طعماً متوازناً وغنياً. بعد ذلك يختار العميل التوبنج الذي يفضله ليكمل التجربة بالطريقة التي تناسب ذوقه.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 83,
       "basePrice": 83,
       "defaultSize": "triangle",
@@ -540,13 +844,26 @@
         "large": 297
       },
       "sizes": [
-        { "id": "triangle", "name": "مثلث فردي" },
-        { "id": "medium", "name": "وسط تشارك ممتع" },
-        { "id": "large", "name": "كبير جمعات فاخرة" }
+        {
+          "id": "triangle",
+          "name": "مثلث فردي"
+        },
+        {
+          "id": "medium",
+          "name": "وسط تشارك ممتع"
+        },
+        {
+          "id": "large",
+          "name": "كبير جمعات فاخرة"
+        }
       ],
       "rating": 4.9,
       "reviews": [
-        { "user": "علا ممدوح", "rating": 5, "comment": "كيك الفادج غرقان شوكولاتة دايبة وطعم الفستق فخم جداً ومش صناعي 🌸" }
+        {
+          "user": "علا ممدوح",
+          "rating": 5,
+          "comment": "كيك الفادج غرقان شوكولاتة دايبة وطعم الفستق فخم جداً ومش صناعي 🌸"
+        }
       ]
     },
     {
@@ -559,9 +876,14 @@
       "flavorDesc": "شلال نوتيلا دارك أصلي بينزل يندمج مع كيك الفادج الغني والموس؛ عشان يديكي طعم شوكولاتة صريح ومكثف يظبط مزاجك فوراً.",
       "layout": "tabs",
       "featured": false,
-      "searchTerms": ["ديسباسيتو", "نوتيلا دارك"],
+      "searchTerms": [
+        "ديسباسيتو",
+        "نوتيلا دارك"
+      ],
       "description": "كيك فادج غني مغمور بالشوكولاتة، يعلوه طبقة من النوتيلا ثم طبقة من موس الشوكولاتة بتوليفتنا الخاصة التي تمنحه طعماً متوازناً وغنياً. بعد ذلك يختار العميل التوبنج الذي يفضله ليكمل التجربة بالطريقة التي تناسب ذوقه.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 66,
       "basePrice": 66,
       "defaultSize": "triangle",
@@ -571,13 +893,26 @@
         "large": 264
       },
       "sizes": [
-        { "id": "triangle", "name": "مثلث فردي" },
-        { "id": "medium", "name": "وسط تشارك ممتع" },
-        { "id": "large", "name": "كبير جمعات فاخرة" }
+        {
+          "id": "triangle",
+          "name": "مثلث فردي"
+        },
+        {
+          "id": "medium",
+          "name": "وسط تشارك ممتع"
+        },
+        {
+          "id": "large",
+          "name": "كبير جمعات فاخرة"
+        }
       ],
       "rating": 4.8,
       "reviews": [
-        { "user": "مصطفى كامل", "rating": 5, "comment": "طعم غني جداً بالشوكولاتة ومثالي لضبط المزاج بعد يوم طويل." }
+        {
+          "user": "مصطفى كامل",
+          "rating": 5,
+          "comment": "طعم غني جداً بالشوكولاتة ومثالي لضبط المزاج بعد يوم طويل."
+        }
       ]
     },
     {
@@ -590,9 +925,14 @@
       "flavorDesc": "تناغم القوام الموزون.. زبدة اللوتس الناعمة مع كسر البسكويت المقرمش بيلتقوا مع موس الشوكولاتة ليمنحوك تباين قوام ممتع وسعيد.",
       "layout": "tabs",
       "featured": false,
-      "searchTerms": ["ديسباسيتو", "لوتس"],
+      "searchTerms": [
+        "ديسباسيتو",
+        "لوتس"
+      ],
       "description": "كيك فادج غني مغمور بالشوكولاتة، يعلوه طبقة من النوتيلا ثم طبقة من موس الشوكولاتة بتوليفتنا الخاصة التي تمنحه طعماً متوازناً وغنياً. بعد ذلك يختار العميل التوبنج الذي يفضله ليكمل التجربة بالطريقة التي تناسب ذوقه.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 66,
       "basePrice": 66,
       "defaultSize": "triangle",
@@ -602,13 +942,26 @@
         "large": 264
       },
       "sizes": [
-        { "id": "triangle", "name": "مثلث فردي" },
-        { "id": "medium", "name": "وسط تشارك ممتع" },
-        { "id": "large", "name": "كبير جمعات فاخرة" }
+        {
+          "id": "triangle",
+          "name": "مثلث فردي"
+        },
+        {
+          "id": "medium",
+          "name": "وسط تشارك ممتع"
+        },
+        {
+          "id": "large",
+          "name": "كبير جمعات فاخرة"
+        }
       ],
       "rating": 4.9,
       "reviews": [
-        { "user": "منى الشافعي", "rating": 5, "comment": "عجبت كل أفراد العيلة، زبدة اللوتس أصلية ومقرمشة وجميلة مع الموس الفاخر." }
+        {
+          "user": "منى الشافعي",
+          "rating": 5,
+          "comment": "عجبت كل أفراد العيلة، زبدة اللوتس أصلية ومقرمشة وجميلة مع الموس الفاخر."
+        }
       ]
     },
     {
@@ -621,9 +974,14 @@
       "flavorDesc": "نعومة كريمية حريرية.. صوص نوتيلا الشوكولاتة البيضاء بيفيض بنعومة فوق الموس الفاخر، ليعطيك حلاوة متناسقة وراحة نفسية تامة.",
       "layout": "tabs",
       "featured": false,
-      "searchTerms": ["despacito", "white-nutella"],
+      "searchTerms": [
+        "despacito",
+        "white-nutella"
+      ],
       "description": "كيك فادج غني مغمور بالشوكولاتة، يعلوه طبقة من النوتيلا ثم طبقة من موس الشوكولاتة بتوليفتنا الخاصة التي تمنحه طعماً متوازناً وغنياً. بعد ذلك يختار العميل التوبنج الذي يفضله ليكمل التجربة بالطريقة التي تناسب ذوقه.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 66,
       "basePrice": 66,
       "defaultSize": "triangle",
@@ -633,13 +991,26 @@
         "large": 264
       },
       "sizes": [
-        { "id": "triangle", "name": "مثلث فردي" },
-        { "id": "medium", "name": "وسط تشارك ممتع" },
-        { "id": "large", "name": "كبير جمعات فاخرة" }
+        {
+          "id": "triangle",
+          "name": "مثلث فردي"
+        },
+        {
+          "id": "medium",
+          "name": "وسط تشارك ممتع"
+        },
+        {
+          "id": "large",
+          "name": "كبير جمعات فاخرة"
+        }
       ],
       "rating": 4.7,
       "reviews": [
-        { "user": "رامي وجدي", "rating": 4, "comment": "ناعمة جداً ومميزة لمحبي الشوكولاتة البيضاء السلسة والخفيفة." }
+        {
+          "user": "رامي وجدي",
+          "rating": 4,
+          "comment": "ناعمة جداً ومميزة لمحبي الشوكولاتة البيضاء السلسة والخفيفة."
+        }
       ]
     },
     {
@@ -652,9 +1023,14 @@
       "flavorDesc": "حلاوة دافئة منسابة.. صوص الكراميل الفاخر بملمسه الغني يتخلل الموس السائل؛ ليمنحك مذاقاً مريحاً تروق به النفس كلياً.",
       "layout": "tabs",
       "featured": false,
-      "searchTerms": ["ديسباسيتو", "كراميل"],
+      "searchTerms": [
+        "ديسباسيتو",
+        "كراميل"
+      ],
       "description": "كيك فادج غني مغمور بالشوكولاتة، يعلوه طبقة من النوتيلا ثم طبقة من موس الشوكولاتة بتوليفتنا الخاصة التي تمنحه طعماً متوازناً وغنياً. بعد ذلك يختار العميل التوبنج الذي يفضله ليكمل التجربة بالطريقة التي تناسب ذوقه.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 66,
       "basePrice": 66,
       "defaultSize": "triangle",
@@ -664,13 +1040,26 @@
         "large": 264
       },
       "sizes": [
-        { "id": "triangle", "name": "مثلث فردي" },
-        { "id": "medium", "name": "وسط تشارك ممتع" },
-        { "id": "large", "name": "كبير جمعات فاخرة" }
+        {
+          "id": "triangle",
+          "name": "مثلث فردي"
+        },
+        {
+          "id": "medium",
+          "name": "وسط تشارك ممتع"
+        },
+        {
+          "id": "large",
+          "name": "كبير جمعات فاخرة"
+        }
       ],
       "rating": 4.8,
       "reviews": [
-        { "user": "شيماء علي", "rating": 5, "comment": "ميكس صوص الكراميل مع كيك الفادج الثقيل مدي طعم خطير ومتناسق." }
+        {
+          "user": "شيماء علي",
+          "rating": 5,
+          "comment": "ميكس صوص الكراميل مع كيك الفادج الثقيل مدي طعم خطير ومتناسق."
+        }
       ]
     },
     {
@@ -683,9 +1072,14 @@
       "flavorDesc": "رونق المذاق الفاخر.. صباغة شوكولاتة كيندر المميزة تتخلل قلب الموس الكثيف، لتعطيك إحساساً غنياً ومليئاً بالانسجام الصافي.",
       "layout": "tabs",
       "featured": false,
-      "searchTerms": ["ديسباسيتو", "كيندر"],
+      "searchTerms": [
+        "ديسباسيتو",
+        "كيندر"
+      ],
       "description": "كيك فادج غني مغمور بالشوكولاتة، يعلوه طبقة من النوتيلا ثم طبقة من موس الشوكولاتة بتوليفتنا الخاصة التي تمنحه طعماً متوازناً وغنياً. بعد ذلك يختار العميل التوبنج الذي يفضله ليكمل التجربة بالطريقة التي تناسب ذوقه.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 66,
       "basePrice": 66,
       "defaultSize": "triangle",
@@ -695,13 +1089,26 @@
         "large": 264
       },
       "sizes": [
-        { "id": "triangle", "name": "مثلث فردي" },
-        { "id": "medium", "name": "وسط تشارك ممتع" },
-        { "id": "large", "name": "كبير جمعات فاخرة" }
+        {
+          "id": "triangle",
+          "name": "مثلث فردي"
+        },
+        {
+          "id": "medium",
+          "name": "وسط تشارك ممتع"
+        },
+        {
+          "id": "large",
+          "name": "كبير جمعات فاخرة"
+        }
       ],
       "rating": 4.9,
       "reviews": [
-        { "user": "عمر الشريف", "rating": 5, "comment": "طعم شوكولاتة كيندر واضح وغني، والتغليف ممتاز بيحافظ على شكل القطعة." }
+        {
+          "user": "عمر الشريف",
+          "rating": 5,
+          "comment": "طعم شوكولاتة كيندر واضح وغني، والتغليف ممتاز بيحافظ على شكل القطعة."
+        }
       ]
     },
     {
@@ -714,9 +1121,15 @@
       "flavorDesc": "انتعاش يكسر الدسامة.. حبات البلوبيري البري بنكهتها المركزة والمنعشة، تمنح طبقات الشوكولاتة الثقيلة طعماً متوازناً يلطف الحلاوة فوراً.",
       "layout": "tabs",
       "featured": false,
-      "searchTerms": ["ديسباسيتو", "بلوبيري", "توت"],
+      "searchTerms": [
+        "ديسباسيتو",
+        "بلوبيري",
+        "توت"
+      ],
       "description": "كيك فادج غني مغمور بالشوكولاتة، يعلوه طبقة من النوتيلا ثم طبقة من موس الشوكولاتة بتوليفتنا الخاصة التي تمنحه طعماً متوازناً وغنياً. بعد ذلك يختار العميل التوبنج الذي يفضله ليكمل التجربة بالطريقة التي تناسب ذوقه.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 66,
       "basePrice": 66,
       "defaultSize": "triangle",
@@ -726,13 +1139,26 @@
         "large": 264
       },
       "sizes": [
-        { "id": "triangle", "name": "مثلث فردي" },
-        { "id": "medium", "name": "وسط تشارك ممتع" },
-        { "id": "large", "name": "كبير جمعات فاخرة" }
+        {
+          "id": "triangle",
+          "name": "مثلث فردي"
+        },
+        {
+          "id": "medium",
+          "name": "وسط تشارك ممتع"
+        },
+        {
+          "id": "large",
+          "name": "كبير جمعات فاخرة"
+        }
       ],
       "rating": 4.8,
       "reviews": [
-        { "user": "نور محمد", "rating": 5, "comment": "التوت بيديها طعم لاذع لذيذ بيعدل حلاوة الشوكولاتة ومبيخليهاش دسمة." }
+        {
+          "user": "نور محمد",
+          "rating": 5,
+          "comment": "التوت بيديها طعم لاذع لذيذ بيعدل حلاوة الشوكولاتة ومبيخليهاش دسمة."
+        }
       ]
     },
     {
@@ -745,9 +1171,15 @@
       "flavorDesc": "ميكس الأناقة والروقان.. حبات وصوص الراسبيري الطبيعي بنكهته المنعشة، تخطفت عينك وتذوب برقة مع ثقل كيك الفادج الغني.",
       "layout": "tabs",
       "featured": false,
-      "searchTerms": ["ديسباسيتو", "راسبيري", "توت احمر"],
+      "searchTerms": [
+        "ديسباسيتو",
+        "راسبيري",
+        "توت احمر"
+      ],
       "description": "كيك فادج غني مغمور بالشوكولاتة، يعلوه طبقة من النوتيلا ثم طبقة من موس الشوكولاتة بتوليفتنا الخاصة التي تمنحه طعماً متوازناً وغنياً. بعد ذلك يختار العميل التوبنج الذي يفضله ليكمل التجربة بالطريقة التي تناسب ذوقه.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 66,
       "basePrice": 66,
       "defaultSize": "triangle",
@@ -757,13 +1189,26 @@
         "large": 264
       },
       "sizes": [
-        { "id": "triangle", "name": "مثلث فردي" },
-        { "id": "medium", "name": "وسط تشارك ممتع" },
-        { "id": "large", "name": "كبير جمعات فاخرة" }
+        {
+          "id": "triangle",
+          "name": "مثلث فردي"
+        },
+        {
+          "id": "medium",
+          "name": "وسط تشارك ممتع"
+        },
+        {
+          "id": "large",
+          "name": "كبير جمعات فاخرة"
+        }
       ],
       "rating": 4.9,
       "reviews": [
-        { "user": "لبنى فاروق", "rating": 5, "comment": "جميلة وشيك جداً في التقديم وطعم التوت الأحمر غني وطازج وموزون." }
+        {
+          "user": "لبنى فاروق",
+          "rating": 5,
+          "comment": "جميلة وشيك جداً في التقديم وطعم التوت الأحمر غني وطازج وموزون."
+        }
       ]
     },
     {
@@ -776,9 +1221,14 @@
       "flavorDesc": "لمسة كلاسيكية فخمة.. قطع الكرز الطبيعي بنكهتها العميقة تمنحك توازناً حسياً مبهجاً مع حلاوة موس الشوكولاتة الساحر.",
       "layout": "tabs",
       "featured": false,
-      "searchTerms": ["ديسباسيتو", "كرز"],
+      "searchTerms": [
+        "ديسباسيتو",
+        "كرز"
+      ],
       "description": "كيك فادج غني مغمور بالشوكولاتة، يعلوه طبقة من النوتيلا ثم طبقة من موس الشوكولاتة بتوليفتنا الخاصة التي تمنحه طعماً متوازناً وغنياً. بعد ذلك يختار العميل التوبنج الذي يفضله ليكمل التجربة بالطريقة التي تناسب ذوقه.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 66,
       "basePrice": 66,
       "defaultSize": "triangle",
@@ -788,13 +1238,26 @@
         "large": 264
       },
       "sizes": [
-        { "id": "triangle", "name": "مثلث فردي" },
-        { "id": "medium", "name": "وسط تشارك ممتع" },
-        { "id": "large", "name": "كبير جمعات فاخرة" }
+        {
+          "id": "triangle",
+          "name": "مثلث فردي"
+        },
+        {
+          "id": "medium",
+          "name": "وسط تشارك ممتع"
+        },
+        {
+          "id": "large",
+          "name": "كبير جمعات فاخرة"
+        }
       ],
       "rating": 4.8,
       "reviews": [
-        { "user": "علاء نبيل", "rating": 4, "comment": "قطع الكرز مع موس الشوكولاتة مدي لمسة كلاسيكية ممتازة وفخمة." }
+        {
+          "user": "علاء نبيل",
+          "rating": 4,
+          "comment": "قطع الكرز مع موس الشوكولاتة مدي لمسة كلاسيكية ممتازة وفخمة."
+        }
       ]
     },
     {
@@ -807,9 +1270,15 @@
       "flavorDesc": "قرمشة غنية مضاعفة.. صوص الكراميل مدمج بالكامل مع قطع شوكولاتة سنيكرز وحبات الفول السوداني الفخم، لمزيج ملوكي وقوي القوام.",
       "layout": "tabs",
       "featured": false,
-      "searchTerms": ["ديسباسيتو", "سنيكرز", "اسنيكرز"],
+      "searchTerms": [
+        "ديسباسيتو",
+        "سنيكرز",
+        "اسنيكرز"
+      ],
       "description": "كيك فادج غني مغمور بالشوكولاتة، يعلوه طبقة من النوتيلا ثم طبقة من موس الشوكولاتة بتوليفتنا الخاصة التي تمنحه طعماً متوازناً وغنياً. بعد ذلك يختار العميل التوبنج الذي يفضله ليكمل التجربة بالطريقة التي تناسب ذوقه.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 66,
       "basePrice": 66,
       "defaultSize": "triangle",
@@ -819,13 +1288,26 @@
         "large": 264
       },
       "sizes": [
-        { "id": "triangle", "name": "مثلث فردي" },
-        { "id": "medium", "name": "وسط تشارك ممتع" },
-        { "id": "large", "name": "كبير جمعات فاخرة" }
+        {
+          "id": "triangle",
+          "name": "مثلث فردي"
+        },
+        {
+          "id": "medium",
+          "name": "وسط تشارك ممتع"
+        },
+        {
+          "id": "large",
+          "name": "كبير جمعات فاخرة"
+        }
       ],
       "rating": 4.9,
       "reviews": [
-        { "user": "كريم عبد العزيز", "rating": 5, "comment": "السنيكرز والكراميل والفول السوداني مديين قرمشة ممتعة جداً جوه الفم." }
+        {
+          "user": "كريم عبد العزيز",
+          "rating": 5,
+          "comment": "السنيكرز والكراميل والفول السوداني مديين قرمشة ممتعة جداً جوه الفم."
+        }
       ]
     },
     {
@@ -838,9 +1320,15 @@
       "flavorDesc": "مشاركة تشوق العين.. تجميعة منوعة ومبهجة من الصوصات والتوبنج الأكثر مبيعاً، مجهزة لترضي جميع الأذواق في جلساتكم الفاخرة.",
       "layout": "tabs",
       "featured": false,
-      "searchTerms": ["ديسباسيتو", "ميكس", "شوكولاتة مشكل"],
+      "searchTerms": [
+        "ديسباسيتو",
+        "ميكس",
+        "شوكولاتة مشكل"
+      ],
       "description": "كيك فادج غني مغمور بالشوكولاتة، يعلوه طبقة من النوتيلا ثم طبقة من موس الشوكولاتة بتوليفتنا الخاصة التي تمنحه طعماً متوازناً وغنياً. بعد ذلك يختار العميل التوبنج الذي يفضله ليكمل التجربة بالطريقة التي تناسب ذوقه.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 66,
       "basePrice": 66,
       "defaultSize": "triangle",
@@ -850,13 +1338,26 @@
         "large": 264
       },
       "sizes": [
-        { "id": "triangle", "name": "مثلث فردي" },
-        { "id": "medium", "name": "وسط تشارك ممتع" },
-        { "id": "large", "name": "كبير جمعات فاخرة" }
+        {
+          "id": "triangle",
+          "name": "مثلث فردي"
+        },
+        {
+          "id": "medium",
+          "name": "وسط تشارك ممتع"
+        },
+        {
+          "id": "large",
+          "name": "كبير جمعات فاخرة"
+        }
       ],
       "rating": 5.0,
       "reviews": [
-        { "user": "أميرة مصطفى", "rating": 5, "comment": "كل معلقة فيها طعم مختلف وجديد، مناسب جداً لو اللمة فيها أذواق كتير." }
+        {
+          "user": "أميرة مصطفى",
+          "rating": 5,
+          "comment": "كل معلقة فيها طعم مختلف وجديد، مناسب جداً لو اللمة فيها أذواق كتير."
+        }
       ]
     },
     {
@@ -869,14 +1370,25 @@
       "flavorDesc": "اللمسة الفخمة للشرق.. توبنج البيستاشيو الأصلي بكثافته الكريمية ومذاقه المميز، يذوب روعة فوق صوص التشيز الساخن ليعطيك روقاناً تاماً.",
       "layout": "two-cards",
       "featured": true,
-      "searchTerms": ["وصل حديثا", "سينابون", "بيستاشيو", "فستق"],
+      "searchTerms": [
+        "وصل حديثا",
+        "سينابون",
+        "بيستاشيو",
+        "فستق"
+      ],
       "description": "عجينة طرية محشوة بالزبدة والقرفة والسكر، تُخبز بعناية ثم تُغطى بطبقة من صوص التشيز الكلاسيكي المحضر بمكوناتنا الخاصة. بعد ذلك يختار العميل التوبنج الذي يفضله ليحصل على التجربة الأقرب لذوقه.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 143,
       "basePrice": 143,
       "rating": 5.0,
       "reviews": [
-        { "user": "فاطمة الزهراء", "rating": 5, "comment": "السينابون واصل دافي وريحة القرفة مع الزبدة تجنن، وتوبنج الفستق كريمي وطبيعي مش صناعي 🌸" }
+        {
+          "user": "فاطمة الزهراء",
+          "rating": 5,
+          "comment": "السينابون واصل دافي وريحة القرفة مع الزبدة تجنن، وتوبنج الفستق كريمي وطبيعي مش صناعي 🌸"
+        }
       ]
     },
     {
@@ -889,14 +1401,23 @@
       "flavorDesc": "الميكس الأقرب للقلب.. نوتيلا دارك سايحة ودايبة بغزارة بفعل السخونة وتتمازج مع صوص التشيز، لتظبط هرمون السعادة والمزاج فوراً.",
       "layout": "two-cards",
       "featured": false,
-      "searchTerms": ["سينابون", "نوتيلا دارك"],
+      "searchTerms": [
+        "سينابون",
+        "نوتيلا دارك"
+      ],
       "description": "عجينة طرية محشوة بالزبدة والقرفة والسكر، تُخبز بعناية ثم تُغطى بطبقة من صوص التشيز الكلاسيكي المحضر بمكوناتنا الخاصة. بعد ذلك يختار العميل التوبنج الذي يفضله ليحصل على التجربة الأقرب لذوقه.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 121,
       "basePrice": 121,
       "rating": 4.8,
       "reviews": [
-        { "user": "حازم سعيد", "rating": 5, "comment": "العجينة هشة وطرية بشكل مش طبيعي، والنوتيلا الدارك ممتازة لعشاق الكاكاو الصافي والموزون." }
+        {
+          "user": "حازم سعيد",
+          "rating": 5,
+          "comment": "العجينة هشة وطرية بشكل مش طبيعي، والنوتيلا الدارك ممتازة لعشاق الكاكاو الصافي والموزون."
+        }
       ]
     },
     {
@@ -909,14 +1430,23 @@
       "flavorDesc": "نعومة الحليب المذوب.. صوص الوايت نوتيلا الغني ينساب بسلاسة فائقة فوق السطح المخبوز الدافئ، ليمنحك هدوءاً ناعماً ولطيفاً.",
       "layout": "two-cards",
       "featured": false,
-      "searchTerms": ["سينابون", "وايت نوتيلا"],
+      "searchTerms": [
+        "سينابون",
+        "وايت نوتيلا"
+      ],
       "description": "عجينة طرية محشوة بالزبدة والقرفة والسكر، تُخبز بعناية ثم تُغطى بطبقة من صوص التشيز الكلاسيكي المحضر بمكوناتنا الخاصة. بعد ذلك يختار العميل التوبنج الذي يفضله ليحصل على التجربة الأقرب لذوقه.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 121,
       "basePrice": 121,
       "rating": 4.9,
       "reviews": [
-        { "user": "دينا سمير", "rating": 5, "comment": "الوايت نوتيلا دايبة تماماً فوق السطح الساخن، طعم دافي وممتاز جداً." }
+        {
+          "user": "دينا سمير",
+          "rating": 5,
+          "comment": "الوايت نوتيلا دايبة تماماً فوق السطح الساخن، طعم دافي وممتاز جداً."
+        }
       ]
     },
     {
@@ -929,14 +1459,24 @@
       "flavorDesc": "لمسة ذكية ومنعشة.. صوص حبات البلوبيري بلمسته اللاذعة الخفيفة يعطي لمسة مبهجة توازن قوام العجينة المخبوزة لراحة البال.",
       "layout": "two-cards",
       "featured": false,
-      "searchTerms": ["سينابون", "بلوبيري", "توت"],
+      "searchTerms": [
+        "سينابون",
+        "بلوبيري",
+        "توت"
+      ],
       "description": "عجينة طرية محشوة بالزبدة والقرفة والسكر، تُخبز بعناية ثم تُغطى بطبقة من صوص التشيز الكلاسيكي المحضر بمكوناتنا الخاصة. بعد ذلك يختار العميل التوبنج الذي يفضله ليحصل على التجربة الأقرب لذوقه.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 121,
       "basePrice": 121,
       "rating": 4.7,
       "reviews": [
-        { "user": "تامر مجدي", "rating": 4, "comment": "ميكس رائع وعجيب، صوص التوت البري بيدي طعم مميز وبيلطف السكر." }
+        {
+          "user": "تامر مجدي",
+          "rating": 4,
+          "comment": "ميكس رائع وعجيب، صوص التوت البري بيدي طعم مميز وبيلطف السكر."
+        }
       ]
     },
     {
@@ -949,14 +1489,23 @@
       "flavorDesc": "انتعاش مبهج دافئ.. حبات وصوص الراسبيري بنكهتها المبهجة، تضفي نضارة استثنائية تكسر دسامة الزبدة الفاخرة والقرفة.",
       "layout": "two-cards",
       "featured": false,
-      "searchTerms": ["سينابون", "rawberry"],
+      "searchTerms": [
+        "سينابون",
+        "rawberry"
+      ],
       "description": "عجينة طرية محشوة بالزبدة والقرفة والسكر، تُخبز بعناية ثم تُغطى بطبقة من صوص التشيز الكلاسيكي المحضر بمكوناتنا الخاصة. بعد ذلك يختار العميل التوبنج الذي يفضله ليحصل على التجربة الأقرب لذوقه.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 121,
       "basePrice": 121,
       "rating": 4.8,
       "reviews": [
-        { "user": "هايدي حسام", "rating": 5, "comment": "صوص التوت الأحمر طازج وبيوازن دسامة العجينة، طعم راقي ويشرف بجد." }
+        {
+          "user": "هايدي حسام",
+          "rating": 5,
+          "comment": "صوص التوت الأحمر طازج وبيوازن دسامة العجينة، طعم راقي ويشرف بجد."
+        }
       ]
     },
     {
@@ -969,14 +1518,23 @@
       "flavorDesc": "المذاق المخملي الأبيض.. صوص جوز الهند الكثيف مع جزيئات شوكولاتة الرفايلو الناعمة تمنح القطعة الساخنة نكهة فريدة بالغة الرقي.",
       "layout": "two-cards",
       "featured": false,
-      "searchTerms": ["سينابون", "رفايلو"],
+      "searchTerms": [
+        "سينابون",
+        "رفايلو"
+      ],
       "description": "عجينة طرية محشوة بالزبدة والقرفة والسكر، تُخبز بعناية ثم تُغطى بطبقة من صوص التشيز الكلاسيكي المحضر بمكوناتنا الخاصة. بعد ذلك يختار العميل التوبنج الذي يفضله ليحصل على التجربة الأقرب لذوقه.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 121,
       "basePrice": 121,
       "rating": 4.9,
       "reviews": [
-        { "user": "رنا وليد", "rating": 5, "comment": "عشاق جوز الهند والجمال الأبيض هيعجبهم الطعم الكريمي الناعم والخفيف ده جداً." }
+        {
+          "user": "رنا وليد",
+          "rating": 5,
+          "comment": "عشاق جوز الهند والجمال الأبيض هيعجبهم الطعم الكريمي الناعم والخفيف ده جداً."
+        }
       ]
     },
     {
@@ -989,14 +1547,23 @@
       "flavorDesc": "تباين قوام مشوق.. بسكويت الأوريو المطحون يكسو الطبقة الساخنة، ليعطيك قرمشة محبوبة وممتعة مع طراوة العجينة الداكنة.",
       "layout": "two-cards",
       "featured": false,
-      "searchTerms": ["سينابون", "اوريو"],
+      "searchTerms": [
+        "سينابون",
+        "اوريو"
+      ],
       "description": "عجينة طرية محشوة بالزبدة والقرفة والسكر، تُخبز بعناية ثم تُغطى بطبقة من صوص التشيز الكلاسيكي المحضر بمكوناتنا الخاصة. بعد ذلك يختار العميل التوبنج الذي يفضله ليحصل على التجربة الأقرب لذوقه.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 121,
       "basePrice": 121,
       "rating": 4.8,
       "reviews": [
-        { "user": "عاصم شريف", "rating": 5, "comment": "قرمشة الأوريو مع سخونة العجينة وصوص الجبنة بتعمل تناغم ممتاز وغني." }
+        {
+          "user": "عاصم شريف",
+          "rating": 5,
+          "comment": "قرمشة الأوريو مع سخونة العجينة وصوص الجبنة بتعمل تناغم ممتاز وغني."
+        }
       ]
     },
     {
@@ -1009,14 +1576,23 @@
       "flavorDesc": "قرمشة بلون الذهب.. زبدة اللوتس الغنية مع كسر البسكويت تكسو السطح، لتمنحك روقاناً متكاملاً يريح النفس والعين.",
       "layout": "two-cards",
       "featured": false,
-      "searchTerms": ["سينابون", "لوتس"],
+      "searchTerms": [
+        "سينابون",
+        "لوتس"
+      ],
       "description": "عجينة طرية محشوة بالزبدة والقرفة والسكر، تُخبز بعناية ثم تُغطى بطبقة من صوص التشيز الكلاسيكي المحضر بمكوناتنا الخاصة. بعد ذلك يختار العميل التوبنج الذي يفضله ليحصل على التجربة الأقرب لذوقه.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 121,
       "basePrice": 121,
       "rating": 4.9,
       "reviews": [
-        { "user": "ولاء جابر", "rating": 5, "comment": "اللوتس أصلي وطعمه باين وقوي وممتاز جداً مع القرفة السخنة." }
+        {
+          "user": "ولاء جابر",
+          "rating": 5,
+          "comment": "اللوتس أصلي وطعمه باين وقوي وممتاز جداً مع القرفة السخنة."
+        }
       ]
     },
     {
@@ -1029,14 +1605,23 @@
       "flavorDesc": "سلاسة ممتعة ومغشية.. صوص شوكولاتة كيندر الأصلي يذوب بانسيابية فائقة ليتخلل قلب العجينة المخبوزة في كل قطمة مباركة.",
       "layout": "two-cards",
       "featured": false,
-      "searchTerms": ["سينابون", "كيندر"],
+      "searchTerms": [
+        "سينابون",
+        "كيندر"
+      ],
       "description": "عجينة طرية محشوة بالزبدة والقرفة والسكر، تُخبز بعناية ثم تُغطى بطبقة من صوص التشيز الكلاسيكي المحضر بمكوناتنا الخاصة. بعد ذلك يختار العميل التوبنج الذي يفضله ليحصل على التجربة الأقرب لذوقه.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 121,
       "basePrice": 121,
       "rating": 5.0,
       "reviews": [
-        { "user": "مروة يحيى", "rating": 5, "comment": "شوكولاتة الكيندر أصلية ومطبوخة صح، والتسوية هشة وممتازة كالعادة." }
+        {
+          "user": "مروة يحيى",
+          "rating": 5,
+          "comment": "شوكولاتة الكيندر أصلية ومطبوخة صح، والتسوية هشة وممتازة كالعادة."
+        }
       ]
     },
     {
@@ -1049,14 +1634,23 @@
       "flavorDesc": "اللمسة التقليدية الدافئة.. خطوط صوص الكراميل المكثف تمنح صوص التشيز مذاقاً ناعماً ومحسناً يروق البال بامتياز.",
       "layout": "two-cards",
       "featured": false,
-      "searchTerms": ["سينابون", "كراميل"],
+      "searchTerms": [
+        "سينابون",
+        "كراميل"
+      ],
       "description": "عجينة طرية محشوة بالزبدة والقرفة والسكر، تُخبز بعناية ثم تُغطى بطبقة من صوص التشيز الكلاسيكي المحضر بمكوناتنا الخاصة. بعد ذلك يختار العميل التوبنج الذي يفضله ليحصل على التجربة الأقرب لذوقه.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 121,
       "basePrice": 121,
       "rating": 4.8,
       "reviews": [
-        { "user": "سليمان عبد الله", "rating": 5, "comment": "الكراميل رائع ودافي ولذيذ جداً مع ريحة المخبوزات الطازة بالفرع." }
+        {
+          "user": "سليمان عبد الله",
+          "rating": 5,
+          "comment": "الكراميل رائع ودافي ولذيذ جداً مع ريحة المخبوزات الطازة بالفرع."
+        }
       ]
     },
     {
@@ -1069,14 +1663,23 @@
       "flavorDesc": "الأصل التأسيسي الثابت.. مغطاة كلياً بلمستنا الحصرية من صوص التشيز الكريمي الطبيعي 100% الطازج يومياً بالفرع.",
       "layout": "two-cards",
       "featured": false,
-      "searchTerms": ["سينابون", "كلاسيك"],
+      "searchTerms": [
+        "سينابون",
+        "كلاسيك"
+      ],
       "description": "عجينة طرية محشوة بالزبدة والقرفة والسكر، تُخبز بعناية ثم تُغطى بطبقة من صوص التشيز الكلاسيكي المحضر بمكوناتنا الخاصة. بعد ذلك يختار العميل التوبنج الذي يفضله ليحصل على التجربة الأقرب لذوقه.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 121,
       "basePrice": 121,
       "rating": 4.9,
       "reviews": [
-        { "user": "محمود فوزي", "rating": 5, "comment": "السينابون الأصلي الموزون من غير أي إضافات تضيع طعم القرفة الأصيل والزبدة." }
+        {
+          "user": "محمود فوزي",
+          "rating": 5,
+          "comment": "السينابون الأصلي الموزون من غير أي إضافات تضيع طعم القرفة الأصيل والزبدة."
+        }
       ]
     },
     {
@@ -1089,14 +1692,25 @@
       "flavorDesc": "فخامة كريمية مبهجة.. توبنج البيستاشيو الأصلي بكثافته وملمسه الفاخر، يكسو القطعة بالكامل ليمنح ضيافتك كاريزما فريدة.",
       "layout": "two-cards",
       "featured": true,
-      "searchTerms": ["وصل حديثا", "دوناتس", "بيستاشيو", "فستق"],
+      "searchTerms": [
+        "وصل حديثا",
+        "دوناتس",
+        "بيستاشيو",
+        "فستق"
+      ],
       "description": "عجينة هشة وطرية يتم قليها بعناية حتى تصل للقوام المثالي، ثم تُحشى من الداخل بحشوات غنية ويضاف إليها التوبنج المختار من الخارج لتقديم تجربة متكاملة في كل قطعة.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 110,
       "basePrice": 110,
       "rating": 5.0,
       "reviews": [
-        { "user": "روان عادل", "rating": 5, "comment": "العجينة خفيفة زي القطن ومش شاربة زيت خالص، وحشوة الفستق كريمية وممتازة ومظبوطة جداً 🌸" }
+        {
+          "user": "روان عادل",
+          "rating": 5,
+          "comment": "العجينة خفيفة زي القطن ومش شاربة زيت خالص، وحشوة الفستق كريمية وممتازة ومظبوطة جداً 🌸"
+        }
       ]
     },
     {
@@ -1109,14 +1723,23 @@
       "flavorDesc": "حشو داخلي غني وتغطية خارجية سخية بنكهة نوتيلا الشوكولاتة البيضاء المذوبة بدقة، لمذاق مبهج وسلس تماماً للعين.",
       "layout": "two-cards",
       "featured": false,
-      "searchTerms": ["دوناتس", "نوتيلا وايت"],
+      "searchTerms": [
+        "دوناتس",
+        "نوتيلا وايت"
+      ],
       "description": "عجينة هشة وطرية يتم قليها بعناية حتى تصل للقوام المثالي، ثم تُحشى من الداخل بحشوات غنية ويضاف إليها التوبنج المختار من الخارج لتقديم تجربة متكاملة في كل قطعة.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 88,
       "basePrice": 88,
       "rating": 4.8,
       "reviews": [
-        { "user": "إيهاب جلال", "rating": 5, "comment": "الحشو الداخلي مليان ومخدوم صح، والشوكولاتة البيضاء جودتها عالية وبدون دسم زيادة." }
+        {
+          "user": "إيهاب جلال",
+          "rating": 5,
+          "comment": "الحشو الداخلي مليان ومخدوم صح، والشوكولاتة البيضاء جودتها عالية وبدون دسم زيادة."
+        }
       ]
     },
     {
@@ -1129,14 +1752,23 @@
       "flavorDesc": "حشو غني وتغطية كاملة.. نوتيلا دارك مكثفة بتغمر قطعتك الطازة من برة وجوة؛ لمتعة حقيقية تملأ كل قطمة وتروّق البال.",
       "layout": "two-cards",
       "featured": false,
-      "searchTerms": ["دوناتس", "نوتيلا dark"],
+      "searchTerms": [
+        "دوناتس",
+        "نوتيلا dark"
+      ],
       "description": "عجينة هشة وطرية يتم قليها بعناية حتى تصل للقوام المثالي، ثم تُحشى من الداخل بحشوات غنية ويضاف إليها التوبنج المختار من الخارج لتقديم تجربة متكاملة في كل قطعة.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 88,
       "basePrice": 88,
       "rating": 4.9,
       "reviews": [
-        { "user": "كمال صبري", "rating": 5, "comment": "دوناتس هشة وغرقانة نوتيلا غامقة، طعمها غني وبيروق المزاج بجد." }
+        {
+          "user": "كمال صبري",
+          "rating": 5,
+          "comment": "دوناتس هشة وغرقانة نوتيلا غامقة، طعمها غني وبيروق المزاج بجد."
+        }
       ]
     },
     {
@@ -1149,14 +1781,23 @@
       "flavorDesc": "تباين القوام الذهبي.. زبدة اللوتس الغنية مع كسر البسكويت تملأ الداخل وتغطي الوجه، لتمنحك روقاناً تاماً متكاملاً مع العجينة القطنية.",
       "layout": "two-cards",
       "featured": false,
-      "searchTerms": ["دوناتس", "لوتس"],
+      "searchTerms": [
+        "دوناتس",
+        "لوتس"
+      ],
       "description": "عجينة هشة وطرية يتم قليها بعناية حتى تصل للقوام المثالي، ثم تُحشى من الداخل بحشوات غنية ويضاف إليها التوبنج المختار من الخارج لتقديم تجربة متكاملة في كل قطعة.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 88,
       "basePrice": 88,
       "rating": 4.8,
       "reviews": [
-        { "user": "مروة حسن", "rating": 5, "comment": "طعم زبدة اللوتس باين وقوي وميكس البسكويت المقرمش مع العجينة الخفيفة خطير." }
+        {
+          "user": "مروة حسن",
+          "rating": 5,
+          "comment": "طعم زبدة اللوتس باين وقوي وميكس البسكويت المقرمش مع العجينة الخفيفة خطير."
+        }
       ]
     },
     {
@@ -1169,14 +1810,23 @@
       "flavorDesc": "مذاق كريمي ممتع.. صوص شوكولاتة كيندر الأصلي يملأ قلب قطعتك الفريش من الخارج والداخل، ليعطيك حلاوة خاطفة للأنظار بامتياز.",
       "layout": "two-cards",
       "featured": false,
-      "searchTerms": ["دوناتس", "كيندر"],
+      "searchTerms": [
+        "دوناتس",
+        "كيندر"
+      ],
       "description": "عجينة هشة وطرية يتم قليها بعناية حتى تصل للقوام المثالي، ثم تُحشى من الداخل بحشوات غنية ويضاف إليها التوبنج المختار من الخارج لتقديم تجربة متكاملة في كل قطعة.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 88,
       "basePrice": 88,
       "rating": 4.9,
       "reviews": [
-        { "user": "يوسف محمد", "rating": 5, "comment": "شوكولاتة الكيندر أصلية ومغرية جداً ومحشية بسخاء من غير لخبطة." }
+        {
+          "user": "يوسف محمد",
+          "rating": 5,
+          "comment": "شوكولاتة الكيندر أصلية ومغرية جداً ومحشية بسخاء من غير لخبطة."
+        }
       ]
     },
     {
@@ -1189,14 +1839,23 @@
       "flavorDesc": "حشوة دافئة ومترفة.. صوص الكراميل المكثف المجهز في الفرع يسيل بنعومة داخل وخارج القطعة، ليتناسب بامتياز مع طراوة العجينة مبهجة القوام.",
       "layout": "two-cards",
       "featured": false,
-      "searchTerms": ["دوناتس", "كراميل"],
+      "searchTerms": [
+        "دوناتس",
+        "كراميل"
+      ],
       "description": "عجينة هشة وطرية يتم قليها بعناية حتى تصل للقوام المثالي، ثم تُحشى من الداخل بحشوات غنية ويضاف إليها التوبنج المختار من الخارج لتقديم تجربة متكاملة في كل قطعة.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 88,
       "basePrice": 88,
       "rating": 4.7,
       "reviews": [
-        { "user": "سعاد شريف", "rating": 4, "comment": "الكراميل طعمه غني ومظبوط جداً ومش بيلكع في السكر، عجبني أوي الحشو." }
+        {
+          "user": "سعاد شريف",
+          "rating": 4,
+          "comment": "الكراميل طعمه غني ومظبوط جداً ومش بيلكع في السكر، عجبني أوي الحشو."
+        }
       ]
     },
     {
@@ -1209,14 +1868,23 @@
       "flavorDesc": "نعومة مخملية مترفة.. حشوة كريمة الريدفيلفت المتسقة تملأ التفاصيل الداخلية للدوناتس، لإضفاء مظهر ومذاق استثنائي يشرفك أمام ضيوفك.",
       "layout": "two-cards",
       "featured": false,
-      "searchTerms": ["دوناتس", "ريدفيلفت"],
+      "searchTerms": [
+        "دوناتس",
+        "ريدفيلفت"
+      ],
       "description": "عجينة هشة وطرية يتم قليها بعناية حتى تصل للقوام المثالي، ثم تُحشى من الداخل بحشوات غنية ويضاف إليها التوبنج المختار من الخارج لتقديم تجربة متكاملة في كل قطعة.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 99,
       "basePrice": 99,
       "rating": 4.8,
       "reviews": [
-        { "user": "ميرفت عادل", "rating": 5, "comment": "شكلها مبهج وناعم أوي، وحشوة كريمة التشيز مع الريدفيلفت فكرة ممتازة ومختلفة." }
+        {
+          "user": "ميرفت عادل",
+          "rating": 5,
+          "comment": "شكلها مبهج وناعم أوي، وحشوة كريمة التشيز مع الريدفيلفت فكرة ممتازة ومختلفة."
+        }
       ]
     },
     {
@@ -1229,14 +1897,24 @@
       "flavorDesc": "مكس انتعاش الفواكه الحقيقي.. توليفة تجمع حبات البلوبيري والراسبيري البري لتعطي طعماً غنياً يزيل أي دسامة فوراً ويضمن راحة العين والنفس.",
       "layout": "two-cards",
       "featured": false,
-      "searchTerms": ["دوناتس", "بلوبيري", "توت"],
+      "searchTerms": [
+        "دوناتس",
+        "بلوبيري",
+        "توت"
+      ],
       "description": "عجينة هشة وطرية يتم قليها بعناية حتى تصل للقوام المثالي، ثم تُحشى من الداخل بحشوات غنية ويضاف إليها التوبنج المختار من الخارج لتقديم تجربة متكاملة في كل قطعة.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 99,
       "basePrice": 99,
       "rating": 4.9,
       "reviews": [
-        { "user": "جيهان فاروق", "rating": 5, "comment": "طعم الفواكه طبيعي 100%، بيدي انتعاش حلو مع قوام الدوناتس الطازج الهش." }
+        {
+          "user": "جيهان فاروق",
+          "rating": 5,
+          "comment": "طعم الفواكه طبيعي 100%، بيدي انتعاش حلو مع قوام الدوناتس الطازج الهش."
+        }
       ]
     },
     {
@@ -1249,14 +1927,23 @@
       "flavorDesc": "مذاق صيفي مبهج.. حشوة صوص الفراولة اللذيذ تملأ قطعتك بالكامل مع تغطية وردية ناعمة تفتح الشهية وتحفز على الشراء الفوري.",
       "layout": "two-cards",
       "featured": false,
-      "searchTerms": ["دوناتس", "فراولة"],
+      "searchTerms": [
+        "دوناتس",
+        "فراولة"
+      ],
       "description": "عجينة هشة وطرية يتم قليها بعناية حتى تصل للقوام المثالي، ثم تُحشى من الداخل بحشوات غنية ويضاف إليها التوبنج المختار من الخارج لتقديم تجربة متكاملة في كل قطعة.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 88,
       "basePrice": 88,
       "rating": 4.8,
       "reviews": [
-        { "user": "رحاب أحمد", "rating": 5, "comment": "الصوص طعمه طبيعي ولذيذ والأولاد حبوها جداً عشان لونها المبهج وطعمها الفريش." }
+        {
+          "user": "رحاب أحمد",
+          "rating": 5,
+          "comment": "الصوص طعمه طبيعي ولذيذ والأولاد حبوها جداً عشان لونها المبهج وطعمها الفريش."
+        }
       ]
     },
     {
@@ -1269,14 +1956,24 @@
       "flavorDesc": "انتعاش يذوب فوراً.. قطع المانجا الفريش بحلاوتها الاستوائية الطبيعية تغمر قطعتك من الداخل، لتجربة صيفية فريدة وخفيفة على المعدة.",
       "layout": "two-cards",
       "featured": false,
-      "searchTerms": ["دوناتس", "مانجا", "مانجو"],
+      "searchTerms": [
+        "دوناتس",
+        "مانجا",
+        "مانجو"
+      ],
       "description": "عجينة هشة وطرية يتم قليها بعناية حتى تصل للقوام المثالي، ثم تُحشى من الداخل بحشوات غنية ويضاف إليها التوبنج المختار من الخارج لتقديم تجربة متكاملة في كل قطعة.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 99,
       "basePrice": 99,
       "rating": 4.9,
       "reviews": [
-        { "user": "شريف صبري", "rating": 5, "comment": "مكعبات المانجا فريش وطبيعية، توليفة مبهجة ومنعشة وخفيفة جداً على المعدة." }
+        {
+          "user": "شريف صبري",
+          "rating": 5,
+          "comment": "مكعبات المانجا فريش وطبيعية، توليفة مبهجة ومنعشة وخفيفة جداً على المعدة."
+        }
       ]
     },
     {
@@ -1289,14 +1986,24 @@
       "flavorDesc": "الأسطورة الغنية والمكثفة.. القطعة مغمورة بالكامل بشلالات الشوكولاتة الغنية من الداخل والخارج لمتعة مضاعفة تروق البال تماماً.",
       "layout": "two-cards",
       "featured": false,
-      "searchTerms": ["دوناتس", "ماتيلدا", "شوكولاتة مكثفة"],
+      "searchTerms": [
+        "دوناتس",
+        "ماتيلدا",
+        "شوكولاتة مكثفة"
+      ],
       "description": "عجينة هشة وطرية يتم قليها بعناية حتى تصل للقوام المثالي، ثم تُحشى من الداخل بحشوات غنية ويضاف إليها التوبنج المختار من الخارج لتقديم تجربة متكاملة في كل قطعة.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 110,
       "basePrice": 110,
       "rating": 5.0,
       "reviews": [
-        { "user": "شادي عيسى", "rating": 5, "comment": "شلال الشوكولاتة فظيع بجد! لمحبي الشوكولاتة الثقيلة والغنية، دي أفضل قطعة روقان جربتها." }
+        {
+          "user": "شادي عيسى",
+          "rating": 5,
+          "comment": "شلال الشوكولاتة فظيع بجد! لمحبي الشوكولاتة الثقيلة والغنية، دي أفضل قطعة روقان جربتها."
+        }
       ]
     },
     {
@@ -1309,14 +2016,23 @@
       "flavorDesc": "قرمشة محبوبة الأثر.. حشوة كريمة الأوريو بداخل القطعة الطازجة مع كسر البسكويت بالخارج لمذاق قوي ومبهج وممتع القوام.",
       "layout": "two-cards",
       "featured": false,
-      "searchTerms": ["دوناتس", "اوريو"],
+      "searchTerms": [
+        "دوناتس",
+        "اوريو"
+      ],
       "description": "عجينة هشة وطرية يتم قليها بعناية حتى تصل للقوام المثالي، ثم تُحشى من الداخل بحشوات غنية ويضاف إليها التوبنج المختار من الخارج لتقديم تجربة متكاملة في كل قطعة.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 88,
       "basePrice": 88,
       "rating": 4.8,
       "reviews": [
-        { "user": "أمير جمال", "rating": 4, "comment": "طعم كريمة الأوريو غني جداً من جوة والبسكويت مقرمش من برة ومتناسق مع العجينة." }
+        {
+          "user": "أمير جمال",
+          "rating": 4,
+          "comment": "طعم كريمة الأوريو غني جداً من جوة والبسكويت مقرمش من برة ومتناسق مع العجينة."
+        }
       ]
     },
     {
@@ -1329,14 +2045,23 @@
       "flavorDesc": "مذاق دافئ متوازن حاد.. توبنج حبات الكرز البري المنتقى بعناية يملأ قلب قطعتك، ليمنحك توازناً استثنائياً في المذاق والطعم الأصلي.",
       "layout": "two-cards",
       "featured": false,
-      "searchTerms": ["دوناتس", "كرز"],
+      "searchTerms": [
+        "دوناتس",
+        "كرز"
+      ],
       "description": "عجينة هشة وطرية يتم قليها بعناية حتى تصل للقوام المثالي، ثم تُحشى من الداخل بحشوات غنية ويضاف إليها التوبنج المختار من الخارج لتقديم تجربة متكاملة في كل قطعة.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 88,
       "basePrice": 88,
       "rating": 4.8,
       "reviews": [
-        { "user": "نرمين مجدي", "rating": 5, "comment": "الكرز البري طعمه طبيعي وممتاز وريحة العجينة طازجة وتفتح النفس للتحلية فوراً." }
+        {
+          "user": "نرمين مجدي",
+          "rating": 5,
+          "comment": "الكرز البري طعمه طبيعي وممتاز وريحة العجينة طازجة وتفتح النفس للتحلية فوراً."
+        }
       ]
     },
     {
@@ -1349,14 +2074,25 @@
       "flavorDesc": "نعومة مخملية ومظهر ساحر يعكس فخامة طبقات موس التشيز والراسبيري المتسق، مجهزة لتقديم فردي أنيق يبهج العين.",
       "layout": "full-card",
       "featured": true,
-      "searchTerms": ["ريد فيلفت", "مثلث", "موس تشيز", "راسبيري"],
+      "searchTerms": [
+        "ريد فيلفت",
+        "مثلث",
+        "موس تشيز",
+        "راسبيري"
+      ],
       "description": "طبقات من الريد ڤيلڤت الغني بقوامه الناعم ولونه المميز مع طبقات من موس التشيز والراسبيري التي تضيف توازناً رائعاً بين الحلاوة والانتعاش لتكوين تجربة متكاملة في كل قطعة.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 72,
       "basePrice": 72,
       "rating": 4.9,
       "reviews": [
-        { "user": "صفاء سليم", "rating": 5, "comment": "الكيكة إسفنجية وناعمة وموس الجبنة غني جداً مع طعم التوت المنعش 🌸" }
+        {
+          "user": "صفاء سليم",
+          "rating": 5,
+          "comment": "الكيكة إسفنجية وناعمة وموس الجبنة غني جداً مع طعم التوت المنعش 🌸"
+        }
       ]
     },
     {
@@ -1369,14 +2105,25 @@
       "flavorDesc": "كوب فردي مترف يجمع طبقات متسقة وموزونة من الريدفيلفت وموس التشيز، لإضفاء تجربة استثنائية تسعد قلبك ومزاجك في أي وقت.",
       "layout": "full-card",
       "featured": false,
-      "searchTerms": ["ريد فيلفت", "كب", "موس تشيز", "راسبيري"],
+      "searchTerms": [
+        "ريد فيلفت",
+        "كب",
+        "موس تشيز",
+        "راسبيري"
+      ],
       "description": "طبقات من الريد ڤيلڤت الغني بقوامه الناعم ولونه المميز مع طبقات من موس التشيز والراسبيري التي تضيف توازناً رائعاً بين الحلاوة والانتعاش لتكوين تجربة متكاملة في كل قطعة.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 99,
       "basePrice": 99,
       "rating": 5.0,
       "reviews": [
-        { "user": "سها محمود", "rating": 5, "comment": "الكب ده مع القهوة المظبوطة بيوديني في عالم تاني من السعادة والانسجام البصري والروقان." }
+        {
+          "user": "سها محمود",
+          "rating": 5,
+          "comment": "الكب ده مع القهوة المظبوطة بيوديني في عالم تاني من السعادة والانسجام البصري والروقان."
+        }
       ]
     },
     {
@@ -1389,14 +2136,26 @@
       "flavorDesc": "طاجن عائلي فاخر يعزز طعم اللمة والمشاركة، ويضفي لمسة فخامة حميمية على جمعاتكم السعيدة ومناسباتكم الكبيرة.",
       "layout": "full-card",
       "featured": false,
-      "searchTerms": ["ريد فيلفت", "طاجن", "موس تشيز", "راسبيري", "عائلي"],
+      "searchTerms": [
+        "ريد فيلفت",
+        "طاجن",
+        "موس تشيز",
+        "راسبيري",
+        "عائلي"
+      ],
       "description": "طبقات من الريد ڤيلڤت الغني بقوامه الناعم ولونه المميز مع طبقات من موس التشيز والراسبيري التي تضيف توازناً رائعاً بين الحلاوة والانتعاش لتكوين تجربة متكاملة في كل قطعة.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 165,
       "basePrice": 165,
       "rating": 4.9,
       "reviews": [
-        { "user": "خلود عادل", "rating": 5, "comment": "كفت كل صحابي في الحفلة، شكل الطاجن فخم أوي ويفتح النفس وبيض الوش." }
+        {
+          "user": "خلود عادل",
+          "rating": 5,
+          "comment": "كفت كل صحابي في الحفلة، شكل الطاجن فخم أوي ويفتح النفس وبيض الوش."
+        }
       ]
     },
     {
@@ -1409,24 +2168,48 @@
       "flavorDesc": "لوحة مبهجة وموزونة تجمع تشكيلة من أفضل صوصات وحشوات علاماتنا، لتناسب الحفلات ومختلف أذواق المدعوين لراحة العين.",
       "layout": "two-cards",
       "featured": true,
-      "searchTerms": ["وصل حديثا", "كب كيك", "ميكس", "مشكل"],
+      "searchTerms": [
+        "وصل حديثا",
+        "كب كيك",
+        "ميكس",
+        "مشكل"
+      ],
       "description": "قطع صغيرة من اللذة بطابع غني ومميز. يتم تحضير الكيك بنسبة زبدة مدروسة تمنحه قواماً وطعماً مختلفاً، ثم يتم حشو كل قطعة بحشوات وصوصات متنوعة قبل تزيينها بطبقة من الكريمة اللباني الغنية. يمكنك اختيار إضافة صور مطبوعة مميزة للدستة.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 324,
       "basePrice": 324,
       "customizationOptions": {
         "printing": {
           "required": false,
           "options": [
-            { "id": "none", "name": "بدون إضافة صور", "price": 0, "default": true },
-            { "id": "edible", "name": "صور قابلة للأكل للدستة", "price": 60 },
-            { "id": "non-edible", "name": "صور غير قابلة للأكل للدستة", "price": 15 }
+            {
+              "id": "none",
+              "name": "بدون إضافة صور",
+              "price": 0,
+              "default": true
+            },
+            {
+              "id": "edible",
+              "name": "صور قابلة للأكل للدستة",
+              "price": 60
+            },
+            {
+              "id": "non-edible",
+              "name": "صور غير قابلة للأكل للدستة",
+              "price": 15
+            }
           ]
         }
       },
       "rating": 5.0,
       "reviews": [
-        { "user": "سما عادل", "rating": 5, "comment": "التغليف شيك والقطع طازجة وجميلة جداً، وضفت صور الأولاد وطلعت واضحة ومفرحة 🌸" }
+        {
+          "user": "سما عادل",
+          "rating": 5,
+          "comment": "التغليف شيك والقطع طازجة وجميلة جداً، وضفت صور الأولاد وطلعت واضحة ومفرحة 🌸"
+        }
       ]
     },
     {
@@ -1439,24 +2222,46 @@
       "flavorDesc": "عشاق الكاكاو الفاخر.. 12 قطعة مزينة بالكامل ومحشوة بصوص الشوكولاتة الغني، لتأمين روعة التذوق الصافي الحقيقي.",
       "layout": "two-cards",
       "featured": false,
-      "searchTerms": ["كب كيك", "شوكولاتة"],
+      "searchTerms": [
+        "كب كيك",
+        "شوكولاتة"
+      ],
       "description": "قطع صغيرة من اللذة بطابع غني ومميز. يتم تحضير الكيك بنسبة زبدة مدروسة تمنحه قواماً وطعماً مختلفاً، ثم يتم حشو كل قطعة بحشوات وصوصات متنوعة قبل تزيينها بطبقة من الكريمة اللباني الغنية. يمكنك اختيار إضافة صور مطبوعة مميزة للدستة.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 324,
       "basePrice": 324,
       "customizationOptions": {
         "printing": {
           "required": false,
           "options": [
-            { "id": "none", "name": "بدون إضافة صور", "price": 0, "default": true },
-            { "id": "edible", "name": "صور قابلة للأكل للدستة", "price": 60 },
-            { "id": "non-edible", "name": "صور غير قابلة للأكل للدستة", "price": 15 }
+            {
+              "id": "none",
+              "name": "بدون إضافة صور",
+              "price": 0,
+              "default": true
+            },
+            {
+              "id": "edible",
+              "name": "صور قابلة للأكل للدستة",
+              "price": 60
+            },
+            {
+              "id": "non-edible",
+              "name": "صور غير قابلة للأكل للدستة",
+              "price": 15
+            }
           ]
         }
       },
       "rating": 4.9,
       "reviews": [
-        { "user": "أمجد خليل", "rating": 5, "comment": "محشوة بكريمة غنية جداً، الكيك مش ناشف وطعم الكاكاو فاخر وأصلي ومظبوط كقوام." }
+        {
+          "user": "أمجد خليل",
+          "rating": 5,
+          "comment": "محشوة بكريمة غنية جداً، الكيك مش ناشف وطعم الكاكاو فاخر وأصلي ومظبوط كقوام."
+        }
       ]
     },
     {
@@ -1469,24 +2274,46 @@
       "flavorDesc": "البساطة الراقية.. 12 قطعة مغطاة بالكريمة اللباني الفاخرة ومحشوة بصوصات الفانيليا الطبيعية، لحلاوة ناعمة ومبهجة تفتح النفس.",
       "layout": "two-cards",
       "featured": false,
-      "searchTerms": ["كب كيك", "فانيليا"],
+      "searchTerms": [
+        "كب كيك",
+        "فانيليا"
+      ],
       "description": "قطع صغيرة من اللذة بطابع غني ومميز. يتم تحضير الكيك بنسبة زبدة مدروسة تمنحه قواماً وطعماً مختلفاً، ثم يتم حشو كل قطعة بحشوات وصوصات متنوعة قبل تزيينها بطبقة من الكريمة اللباني الغنية. يمكنك اختيار إضافة صور مطبوعة مميزة للدستة.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 324,
       "basePrice": 324,
       "customizationOptions": {
         "printing": {
           "required": false,
           "options": [
-            { "id": "none", "name": "بدون إضافة صور", "price": 0, "default": true },
-            { "id": "edible", "name": "صور قابلة للأكل للدستة", "price": 60 },
-            { "id": "non-edible", "name": "صور غير قابلة للأكل للدستة", "price": 15 }
+            {
+              "id": "none",
+              "name": "بدون إضافة صور",
+              "price": 0,
+              "default": true
+            },
+            {
+              "id": "edible",
+              "name": "صور قابلة للأكل للدستة",
+              "price": 60
+            },
+            {
+              "id": "non-edible",
+              "name": "صور غير قابلة للأكل للدستة",
+              "price": 15
+            }
           ]
         }
       },
       "rating": 4.8,
       "reviews": [
-        { "user": "سوزان يحيى", "rating": 5, "comment": "الكيك خفيف وهش جداً، الكريمة اللباني طعمها صافي ومش دسمة زيادة ومناسبة للحفلات." }
+        {
+          "user": "سوزان يحيى",
+          "rating": 5,
+          "comment": "الكيك خفيف وهش جداً، الكريمة اللباني طعمها صافي ومش دسمة زيادة ومناسبة للحفلات."
+        }
       ]
     },
     {
@@ -1499,9 +2326,16 @@
       "flavorDesc": "ميني تورتة تكفي فردين، مغلفة بطبقة فاكيوم أنيقة تظهر عمق الحشوات والموس الموزون؛ لتمنحك احتفالاً ثنائياً شديد الخصوصية والروقان.",
       "layout": "full-card",
       "featured": true,
-      "searchTerms": ["ميني تورتة", "فاكيوم", "تورتة صغيرة", "فردين"],
+      "searchTerms": [
+        "ميني تورتة",
+        "فاكيوم",
+        "تورتة صغيرة",
+        "فردين"
+      ],
       "description": "طبقات غنية من كيك الفانيليا أو الشوكولاتة مع حشوات موس وصوصات ومكسرات وفواكه مختارة بعناية لتمنحك تجربة متكاملة في حجم صغير أنيق. تُغلف بطبقة فاكيوم شفافة تبرز جمال الطبقات والحشوات داخلها.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 154,
       "basePrice": 154,
       "prices": {
@@ -1511,13 +2345,21 @@
       },
       "defaultSize": "triangle",
       "options": {
-        "cakeTypes": ["فانيليا", "شوكولاتة", "نصف ونصف"],
+        "cakeTypes": [
+          "فانيليا",
+          "شوكولاتة",
+          "نصف ونصف"
+        ],
         "customMessage": true,
         "allergyNote": true
       },
       "rating": 5.0,
       "reviews": [
-        { "user": "شروق فاروق", "rating": 5, "comment": "حجمها ممتاز لشخصين، غلاف الفاكيوم الشفاف مديها شكل شيك ومحافظ على رونقها وطعمها فريش 🌸" }
+        {
+          "user": "شروق فاروق",
+          "rating": 5,
+          "comment": "حجمها ممتاز لشخصين، غلاف الفاكيوم الشفاف مديها شكل شيك ومحافظ على رونقها وطعمها فريش 🌸"
+        }
       ]
     },
     {
@@ -1530,9 +2372,16 @@
       "flavorDesc": "ميني تورتة تكفي 4 أفراد بتغليف الفاكيوم المميز، مخصصة للاحتفالات والمفاجآت العائلية السعيدة والهادئة لراحة النفس والعين.",
       "layout": "full-card",
       "featured": false,
-      "searchTerms": ["ميني تورتة", "فاكيوم", "تورتة صغيرة", "اربع افراد"],
+      "searchTerms": [
+        "ميني تورتة",
+        "فاكيوم",
+        "تورتة صغيرة",
+        "اربع افراد"
+      ],
       "description": "طبقات غنية من كيك الفانيليا أو الشوكولاتة مع حشوات موس وصوصات ومكسرات وفواكه مختارة بعناية لتمنحك تجربة متكاملة في حجم صغير أنيق. تُغلف بطبقة فاكيوم شفافة تبرز جمال الطبقات والحشوات داخلها.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 308,
       "basePrice": 308,
       "prices": {
@@ -1542,13 +2391,21 @@
       },
       "defaultSize": "triangle",
       "options": {
-        "cakeTypes": ["فانيليا", "شوكولاتة", "نصف ونصف"],
+        "cakeTypes": [
+          "فانيليا",
+          "شوكولاتة",
+          "نصف ونصف"
+        ],
         "customMessage": true,
         "allergyNote": true
       },
       "rating": 4.9,
       "reviews": [
-        { "user": "عماد حمدي", "rating": 5, "comment": "طازجة جداً والحل الأنسب للاحتفالات العائلية الصغيرة من غير هدر وبطعم غني." }
+        {
+          "user": "عماد حمدي",
+          "rating": 5,
+          "comment": "طازجة جداً والحل الأنسب للاحتفالات العائلية الصغيرة من غير هدر وبطعم غني."
+        }
       ]
     },
     {
@@ -1561,9 +2418,16 @@
       "flavorDesc": "ميني تورتة تكفي 6 أفراد، مثالية للجمعات الاحتفالية الصغيرة واللقاءات الراقية لتبث في جلستكم طابع الفخامة والطعم الأصيل المكتمل.",
       "layout": "full-card",
       "featured": false,
-      "searchTerms": ["ميني تورتة", "فاكيوم", "تورتة صغيرة", "ست افراد"],
+      "searchTerms": [
+        "ميني تورتة",
+        "فاكيوم",
+        "تورتة صغيرة",
+        "ست افراد"
+      ],
       "description": "طبقات غنية من كيك الفانيليا أو الشوكولاتة مع حشوات موس وصوصات ومكسرات وفواكه مختارة بعناية لتمنحك تجربة متكاملة في حجم صغير أنيق. تُغلف بطبقة فاكيوم شفافة تبرز جمال الطبقات والحشوات داخلها.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 462,
       "basePrice": 462,
       "prices": {
@@ -1573,13 +2437,21 @@
       },
       "defaultSize": "triangle",
       "options": {
-        "cakeTypes": ["فانيليا", "شوكولاتة", "نصف ونصف"],
+        "cakeTypes": [
+          "فانيليا",
+          "شوكولاتة",
+          "نصف ونصف"
+        ],
         "customMessage": true,
         "allergyNote": true
       },
       "rating": 4.9,
       "reviews": [
-        { "user": "رانيا نبيل", "rating": 5, "comment": "الكيك ناعم وخفيف، والفاكهة من فوق مرصوصة بمهارة وطازجة أوي وميكس الشوكولاتة رائع." }
+        {
+          "user": "رانيا نبيل",
+          "rating": 5,
+          "comment": "الكيك ناعم وخفيف، والفاكهة من فوق مرصوصة بمهارة وطازجة أوي وميكس الشوكولاتة رائع."
+        }
       ]
     },
     {
@@ -1593,9 +2465,17 @@
       "layout": "full-card",
       "featured": true,
       "customBuilderUrl": "flower-builder.html",
-      "searchTerms": ["ورد طبيعي", "ورد صناعي", "ستان", "بوكيه", "بوكس ورد"],
+      "searchTerms": [
+        "ورد طبيعي",
+        "ورد صناعي",
+        "ستان",
+        "بوكيه",
+        "بوكس ورد"
+      ],
       "description": "ننفرد بتقديم بوكيهات الورد الطبيعي والصناعي وورد الستان بأعلى مستوى من العناية والاهتمام بالتفاصيل. هدفنا أن يصل الورد للعميل وكأنه قُطف للتو، بكامل نضارته وجماله وحضوره. نوفر مختلف الألوان والأحجام والتنسيقات، سواء كنت تبحث عن بوكيه بسيط، بوكس فاخر، أو تصميم خاص يعبر عن شخص عزيز عليك. كل تفصيلة يتم تنفيذها بعناية حتى يصل الورد بالشكل الذي يشرفك أمام كل من تهديه له.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 400,
       "basePrice": 400,
       "prices": {
@@ -1606,7 +2486,11 @@
       "defaultSize": "triangle",
       "rating": 5.0,
       "reviews": [
-        { "user": "سعاد ناصر", "rating": 5, "comment": "الورد الطبيعي ريحته ونضارته تجنن وبجد التنسيق فخم جداً وراقي واللف شيك أوي 🌸" }
+        {
+          "user": "سعاد ناصر",
+          "rating": 5,
+          "comment": "الورد الطبيعي ريحته ونضارته تجنن وبجد التنسيق فخم جداً وراقي واللف شيك أوي 🌸"
+        }
       ]
     },
     {
@@ -1619,14 +2503,24 @@
       "flavorDesc": "مذاق سلس ولطيف.. صوص شوكولاتة كيندر الأصلي يغمر الوعاء الفردي ليعطيك حلاوة متسقة ومبهجة تروق بالك تماماً وتعدل المزاج.",
       "layout": "two-cards",
       "featured": true,
-      "searchTerms": ["وصل حديثا", "كبات السعادة", "كيندر"],
+      "searchTerms": [
+        "وصل حديثا",
+        "كبات السعادة",
+        "كيندر"
+      ],
       "description": "أكواب حلوى مصممة لتمنحك تجربة غنية في كل ملعقة. يبدأ الأمر باختيار نوع الكيك المناسب للتوبنج: فانيليا، شوكولاتة، ثم نقوم بإضافة موس وحشوات مختارة بعناية لتتكامل مع النكهة المختارة وتمنح المنتج توازنه الخاص.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 61,
       "basePrice": 61,
       "rating": 5.0,
       "reviews": [
-        { "user": "هبة علوي", "rating": 5, "comment": "الكب ده بيعدل المزاج وبيروق البال تماماً، شوكولاتة كيندر أصلية ولذيثة وخفيفة 🌸" }
+        {
+          "user": "هبة علوي",
+          "rating": 5,
+          "comment": "الكب ده بيعدل المزاج وبيروق البال تماماً، شوكولاتة كيندر أصلية ولذيثة وخفيفة 🌸"
+        }
       ]
     },
     {
@@ -1639,14 +2533,23 @@
       "flavorDesc": "طعم النوتيلا الكثيفة والموزعة بسخاء فوق طبقة الموس الغنية، لتعطيك تحلية فردية سريعة تظبط يومك بالكامل وبشكل فوري.",
       "layout": "two-cards",
       "featured": false,
-      "searchTerms": ["كبات السعادة", "نوتيلا"],
+      "searchTerms": [
+        "كبات السعادة",
+        "نوتيلا"
+      ],
       "description": "أكواب حلوى مصممة لتمنحك تجربة غنية في كل ملعقة. يبدأ الأمر باختيار نوع الكيك المناسب للتوبنج: فانيليا، شوكولاتة، ثم نقوم بإضافة موس وحشوات مختارة بعناية لتتكامل مع النكهة المختارة وتمنح المنتج توازنه الخاص.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 61,
       "basePrice": 61,
       "rating": 4.9,
       "reviews": [
-        { "user": "علاء صبحي", "rating": 5, "comment": "النوتيلا أصلية وثقيلة والموس غني ومظبوط، تحلية فردية ممتازة وسريعة ولذيذة." }
+        {
+          "user": "علاء صبحي",
+          "rating": 5,
+          "comment": "النوتيلا أصلية وثقيلة والموس غني ومظبوط، تحلية فردية ممتازة وسريعة ولذيذة."
+        }
       ]
     },
     {
@@ -1659,14 +2562,23 @@
       "flavorDesc": "قرمشة الكب السعيد.. زبدة اللوتس الكثيفة مع كسر البسكويت تمنح الكب مذاقاً متوازناً وجذاباً يسعد أوقاتك الهادئة الفردية.",
       "layout": "two-cards",
       "featured": false,
-      "searchTerms": ["كبات السعادة", "لوتس"],
+      "searchTerms": [
+        "كبات السعادة",
+        "لوتس"
+      ],
       "description": "أكواب حلوى مصممة لتمنحك تجربة غنية في كل ملعقة. يبدأ الأمر باختيار نوع الكيك المناسب للتوبنج: فانيليا، شوكولاتة، ثم نقوم بإضافة موس وحشوات مختارة بعناية لتتكامل مع النكهة المختارة وتمنح المنتج توازنه الخاص.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 61,
       "basePrice": 61,
       "rating": 4.9,
       "reviews": [
-        { "user": "لمياء أحمد", "rating": 5, "comment": "قوام زبدة اللوتس ناعم والبسكويت المكسر بيدي قرمشة حلوة مع كل معلقة وموس خفيف." }
+        {
+          "user": "لمياء أحمد",
+          "rating": 5,
+          "comment": "قوام زبدة اللوتس ناعم والبسكويت المكسر بيدي قرمشة حلوة مع كل معلقة وموس خفيف."
+        }
       ]
     },
     {
@@ -1679,14 +2591,23 @@
       "flavorDesc": "تباين أسود مبهج.. جزيئات بسكويت الأوريو المقرمش مدمجة مع الموس، بطعم قوي وواضح يخطف حواسك تماماً مع كل معلقة.",
       "layout": "two-cards",
       "featured": false,
-      "searchTerms": ["كبات السعادة", "اوريو"],
+      "searchTerms": [
+        "كبات السعادة",
+        "اوريو"
+      ],
       "description": "أكواب حلوى مصممة لتمنحك تجربة غنية في كل ملعقة. يبدأ الأمر باختيار نوع الكيك المناسب للتوبنج: فانيليا، شوكولاتة، ثم نقوم بإضافة موس وحشوات مختارة بعناية لتتكامل مع النكهة المختارة وتمنح المنتج توازنه الخاص.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 61,
       "basePrice": 61,
       "rating": 4.8,
       "reviews": [
-        { "user": "سامي وليد", "rating": 5, "comment": "عجبت الأطفال جداً، الميكس مبهج وخفيف والكاكاو فيه طعمه حلو ومتوازن." }
+        {
+          "user": "سامي وليد",
+          "rating": 5,
+          "comment": "عجبت الأطفال جداً، الميكس مبهج وخفيف والكاكاو فيه طعمه حلو ومتوازن."
+        }
       ]
     },
     {
@@ -1699,14 +2620,24 @@
       "flavorDesc": "مزيج مقرمش مكثف.. حبات الفول السوداني المحمص مع صوص الكراميل المكثف وموس علاماتنا الفاخر، لتجربة روقان فردية متكاملة.",
       "layout": "two-cards",
       "featured": false,
-      "searchTerms": ["كبات السعادة", "سنيكرز", "اسنيكرز"],
+      "searchTerms": [
+        "كبات السعادة",
+        "سنيكرز",
+        "اسنيكرز"
+      ],
       "description": "أكواب حلوى مصممة لتمنحك تجربة غنية في كل ملعقة. يبدأ الأمر باختيار نوع الكيك المناسب للتوبنج: فانيليا، شوكولاتة، ثم نقوم بإضافة موس وحشوات مختارة بعناية لتتكامل مع النكهة المختارة وتمنح المنتج توازنه الخاص.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 61,
       "basePrice": 61,
       "rating": 4.9,
       "reviews": [
-        { "user": "أمير نبيل", "rating": 5, "comment": "الفول السوداني محمص ومقرمش وصوص الكراميل مع الموس مدي ميكس ملوكي وفخم." }
+        {
+          "user": "أمير نبيل",
+          "rating": 5,
+          "comment": "الفول السوداني محمص ومقرمش وصوص الكراميل مع الموس مدي ميكس ملوكي وفخم."
+        }
       ]
     },
     {
@@ -1719,14 +2650,24 @@
       "flavorDesc": "انتعاش فردي حاد.. صوص حبات البلوبيري بلمسته المنعشة يوازن قوام الحلوى الناعمة، ويضمن التميز التام وراحة العين والنفس.",
       "layout": "two-cards",
       "featured": false,
-      "searchTerms": ["كبات السعادة", "بلوبيري", "توت"],
+      "searchTerms": [
+        "كبات السعادة",
+        "بلوبيري",
+        "توت"
+      ],
       "description": "أكواب حلوى مصممة لتمنحك تجربة غنية في كل ملعقة. يبدأ الأمر باختيار نوع الكيك المناسب للتوبنج: فانيليا، شوكولاتة، ثم نقوم بإضافة موس وحشوات مختارة بعناية لتتكامل مع النكهة المختارة وتمنح المنتج توازنه الخاص.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 61,
       "basePrice": 61,
       "rating": 4.7,
       "reviews": [
-        { "user": "عبير سليم", "rating": 4, "comment": "ممتاز ومنعش للي بيحبوا طعم فاكهة التوت البري مع الموس الخفيف والناعم." }
+        {
+          "user": "عبير سليم",
+          "rating": 4,
+          "comment": "ممتاز ومنعش للي بيحبوا طعم فاكهة التوت البري مع الموس الخفيف والناعم."
+        }
       ]
     },
     {
@@ -1739,14 +2680,23 @@
       "flavorDesc": "ميكس الأناقة الفردية.. حبات وصوص الراسبيري بنكهتها المنعشة الطبيعية، تخطف عينك وتذوب برقة مع طبقات الموس السلسة.",
       "layout": "two-cards",
       "featured": false,
-      "searchTerms": ["كبات السعادة", "راسبيري"],
+      "searchTerms": [
+        "كبات السعادة",
+        "راسبيري"
+      ],
       "description": "أكواب حلوى مصممة لتمنحك تجربة غنية في كل ملعقة. يبدأ الأمر باختيار نوع الكيك المناسب للتوبنج: فانيليا، شوكولاتة، ثم نقوم بإضافة موس وحشوات مختارة بعناية لتتكامل مع النكهة المختارة وتمنح المنتج توازنه الخاص.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 61,
       "basePrice": 61,
       "rating": 4.8,
       "reviews": [
-        { "user": "رشا نبيل", "rating": 5, "comment": "طعم التوت الأحمر فريش وصافي وبيعدل حلاوة طبقات الكب التحتانية ولذيذ أوي." }
+        {
+          "user": "رشا نبيل",
+          "rating": 5,
+          "comment": "طعم التوت الأحمر فريش وصافي وبيعدل حلاوة طبقات الكب التحتانية ولذيذ أوي."
+        }
       ]
     },
     {
@@ -1759,14 +2709,23 @@
       "flavorDesc": "لمسة توازن عميقة.. توبنج قطع الكرز البري الطبيعي يضفي نكهة حادة تبهج كبك وتسعد أوقاتك الفخمة والمنفردة بامتياز.",
       "layout": "two-cards",
       "featured": false,
-      "searchTerms": ["كبات السعادة", "كرز"],
+      "searchTerms": [
+        "كبات السعادة",
+        "كرز"
+      ],
       "description": "أكواب حلوى مصممة لتمنحك تجربة غنية في كل ملعقة. يبدأ الأمر باختيار نوع الكيك المناسب للتوبنج: فانيليا، شوكولاتة، ثم نقوم بإضافة موس وحشوات مختارة بعناية لتتكامل مع النكهة المختارة وتمنح المنتج توازنه الخاص.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 61,
       "basePrice": 61,
       "rating": 4.8,
       "reviews": [
-        { "user": "منال عيسى", "rating": 5, "comment": "حشوة الكرز ممتازة ومنسقة وطعمها طبيعي وبيروق المزاج وهشاشة الكب تحفة." }
+        {
+          "user": "منال عيسى",
+          "rating": 5,
+          "comment": "حشوة الكرز ممتازة ومنسقة وطعمها طبيعي وبيروق المزاج وهشاشة الكب تحفة."
+        }
       ]
     },
     {
@@ -1779,14 +2738,23 @@
       "flavorDesc": "تباين قوام مقرمش.. أصابع شوكولاتة كيت كات مدمجة بانسيابية مع الموس، لتمنحك تجربة تحلية خفيفة ومحبوبة وسريعة البهجة.",
       "layout": "two-cards",
       "featured": false,
-      "searchTerms": ["كبات السعادة", "كيت كات"],
+      "searchTerms": [
+        "كبات السعادة",
+        "كيت كات"
+      ],
       "description": "أكواب حلوى مصممة لتمنحك تجربة غنية في كل ملعقة. يبدأ الأمر باختيار نوع الكيك المناسب للتوبنج: فانيليا، شوكولاتة، ثم نقوم بإضافة موس وحشوات مختارة بعناية لتتكامل مع النكهة المختارة وتمنح المنتج توازنه الخاص.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 61,
       "basePrice": 61,
       "rating": 4.8,
       "reviews": [
-        { "user": "جلال نبيل", "rating": 5, "comment": "ويفر الشوكولاتة مقرمش وبيدي إضافة ممتعة مع موس الشوكولاتة الدايب والجميل." }
+        {
+          "user": "جلال نبيل",
+          "rating": 5,
+          "comment": "ويفر الشوكولاتة مقرمش وبيدي إضافة ممتعة مع موس الشوكولاتة الدايب والجميل."
+        }
       ]
     },
     {
@@ -1799,14 +2767,23 @@
       "flavorDesc": "الفخامة والروقان الحقيقي.. طعم شوكولاتة روشيه الفاخرة مع حشوة البندق المتميزة بداخل الكب لمحبين المذاق الملوكي المترف.",
       "layout": "two-cards",
       "featured": false,
-      "searchTerms": ["كبات السعادة", "روشيه"],
+      "searchTerms": [
+        "كبات السعادة",
+        "روشيه"
+      ],
       "description": "أكواب حلوى مصممة لتمنحك تجربة غنية في كل ملعقة. يبدأ الأمر باختيار نوع الكيك المناسب للتوبنج: فانيليا، شوكولاتة، ثم نقوم بإضافة موس وحشوات مختارة بعناية لتتكامل مع النكهة المختارة وتمنح المنتج توازنه الخاص.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 61,
       "basePrice": 61,
       "rating": 5.0,
       "reviews": [
-        { "user": "هادي صبري", "rating": 5, "comment": "روشيه فخم جداً والبندق محمص وطعم النوتيلا فيه غني أوي وممتاز كتحلية راقية." }
+        {
+          "user": "هادي صبري",
+          "rating": 5,
+          "comment": "روشيه فخم جداً والبندق محمص وطعم النوتيلا فيه غني أوي وممتاز كتحلية راقية."
+        }
       ]
     },
     {
@@ -1819,14 +2796,23 @@
       "flavorDesc": "الرحلة المخملية الناعمة.. صوص جوز الهند مع جزيئات شوكولاتة الرفايلو البيضاء الموزعة بنعومة لراحة العين ونقاء تذوق راقٍ فريد.",
       "layout": "two-cards",
       "featured": false,
-      "searchTerms": ["كبات السعادة", "refaello"],
+      "searchTerms": [
+        "كبات السعادة",
+        "refaello"
+      ],
       "description": "أكواب حلوى مصممة لتمنحك تجربة غنية في كل ملعقة. يبدأ الأمر باختيار نوع الكيك المناسب للتوبنج: فانيليا، شوكولاتة، ثم نقوم بإضافة موس وحشوات مختارة بعناية لتتكامل مع النكهة المختارة وتمنح المنتج توازنه الخاص.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 61,
       "basePrice": 61,
       "rating": 4.9,
       "reviews": [
-        { "user": "سميرة جابر", "rating": 5, "comment": "عشاق جوز الهند هيتبسطوا جداً بالكبات دي لأن الطعم كريمي وخفيف أوي ونظيف." }
+        {
+          "user": "سميرة جابر",
+          "rating": 5,
+          "comment": "عشاق جوز الهند هيتبسطوا جداً بالكبات دي لأن الطعم كريمي وخفيف أوي ونظيف."
+        }
       ]
     },
     {
@@ -1840,9 +2826,17 @@
       "layout": "full-card",
       "featured": true,
       "customBuilderUrl": "",
-      "searchTerms": ["بوكس الروقان", "بوكس السعادة", "هدية", "تجميعة", "بوكسات"],
+      "searchTerms": [
+        "بوكس الروقان",
+        "بوكس السعادة",
+        "هدية",
+        "تجميعة",
+        "بوكسات"
+      ],
       "description": "تجربة متكاملة تجمع بين أكثر المنتجات التي يحبها عملاؤنا داخل بوكس واحد. يحتوي على: تورتة، 2 كب سعادة، 1 كب ديسباسيتو، 1 كب ريد ڤيلڤت. مناسب للهدايا والجلسات الخاصة والمفاجآت الجميلة ليروق بالك ويسعد قلبك وقلب أحبابك.",
-      "images": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
       "price": 550,
       "basePrice": 550,
       "prices": {
@@ -1859,7 +2853,11 @@
       },
       "rating": 5.0,
       "reviews": [
-        { "user": "أحمد رمزي", "rating": 5, "comment": "البوكس ده بجد اختراع! مفيش مناسبة بتعدي من غير ما أطلبه، منوع وبيبيض الوش قدام أي حد وتغليفه فاخر 🌸" }
+        {
+          "user": "أحمد رمزي",
+          "rating": 5,
+          "comment": "البوكس ده بجد اختراع! مفيش مناسبة بتعدي من غير ما أطلبه، منوع وبيبيض الوش قدام أي حد وتغليفه فاخر 🌸"
+        }
       ]
     }
   ],
@@ -1874,19 +2872,52 @@
       "step": 2
     },
     "cakeTypes": [
-      { "id": "vanilla", "name": "فانيليا" },
-      { "id": "chocolate", "name": "شوكولاتة" },
-      { "id": "half-half", "name": "نصف ونصف" }
+      {
+        "id": "vanilla",
+        "name": "فانيليا"
+      },
+      {
+        "id": "chocolate",
+        "name": "شوكولاتة"
+      },
+      {
+        "id": "half-half",
+        "name": "نصف ونصف"
+      }
     ],
     "shapes": [
-      { "id": "circle", "name": "دائرة", "minimumPersons": 4 },
-      { "id": "heart", "name": "قلب", "minimumPersons": 4 },
-      { "id": "square", "name": "مربع", "minimumPersons": 16 },
-      { "id": "rectangle", "name": "مستطيل", "minimumPersons": 20 }
+      {
+        "id": "circle",
+        "name": "دائرة",
+        "minimumPersons": 4
+      },
+      {
+        "id": "heart",
+        "name": "قلب",
+        "minimumPersons": 4
+      },
+      {
+        "id": "square",
+        "name": "مربع",
+        "minimumPersons": 16
+      },
+      {
+        "id": "rectangle",
+        "name": "مستطيل",
+        "minimumPersons": 20
+      }
     ],
     "printingOptions": [
-      { "id": "edible", "name": "صورة قابلة للأكل", "price": 60 },
-      { "id": "non-edible", "name": "صورة غير قابلة للأكل", "price": 15 }
+      {
+        "id": "edible",
+        "name": "صورة قابلة للأكل",
+        "price": 60
+      },
+      {
+        "id": "non-edible",
+        "name": "صورة غير قابلة للأكل",
+        "price": 15
+      }
     ],
     "images": {
       "squareMinimum": "المقاس المربع يبدأ من 16 فرد",
@@ -1902,31 +2933,149 @@
     "baseFlowers": 15,
     "extraFlowerPrice": 35,
     "flowerTypes": [
-      { "id": "natural", "name": "ورد طبيعي" },
-      { "id": "artificial", "name": "ورد صناعي" },
-      { "id": "satin", "name": "ورد ستان" }
+      {
+        "id": "natural",
+        "name": "ورد طبيعي"
+      },
+      {
+        "id": "artificial",
+        "name": "ورد صناعي"
+      },
+      {
+        "id": "satin",
+        "name": "ورد ستان"
+      }
     ],
     "moneyCategories": [
-      { "amount": 5, "fee": 5 },
-      { "amount": 10, "fee": 5 },
-      { "amount": 20, "fee": 10 },
-      { "amount": 50, "fee": 15 },
-      { "amount": 100, "fee": 20 },
-      { "amount": 200, "fee": 30 }
+      {
+        "amount": 5,
+        "fee": 5
+      },
+      {
+        "amount": 10,
+        "fee": 5
+      },
+      {
+        "amount": 20,
+        "fee": 10
+      },
+      {
+        "amount": 50,
+        "fee": 15
+      },
+      {
+        "amount": 100,
+        "fee": 20
+      },
+      {
+        "amount": 200,
+        "fee": 30
+      }
     ],
     "photoPrintPrice": 15,
     "giftCardPrice": 20,
     "chocolateTypes": [
-      { "id": "local", "name": "شوكولاتة كلاسيك", "price": 20 },
-      { "id": "premium", "name": "شوكولاتة فاخرة", "price": 30 },
-      { "id": "rocher", "name": "روشيه مستورد", "price": 50 }
+      {
+        "id": "local",
+        "name": "شوكولاتة كلاسيك",
+        "price": 20
+      },
+      {
+        "id": "premium",
+        "name": "شوكولاتة فاخرة",
+        "price": 30
+      },
+      {
+        "id": "rocher",
+        "name": "روشيه مستورد",
+        "price": 50
+      }
     ],
     "wrappingTypes": [
-      { "id": "satin", "name": "تغليف ستان فاخر", "price": 50 },
-      { "id": "classic", "name": "تغليف كلاسيك راقٍ", "price": 30 },
-      { "id": "box", "name": "بوكس هدايا فاخر", "price": 100 }
+      {
+        "id": "satin",
+        "name": "تغليف ستان فاخر",
+        "price": 50
+      },
+      {
+        "id": "classic",
+        "name": "تغليف كلاسيك راقٍ",
+        "price": 30
+      },
+      {
+        "id": "box",
+        "name": "بوكس هدايا فاخر",
+        "price": 100
+      }
     ],
     "largeChocolateMinimumPrice": 100
-  }
+  },
+  "promotions": [
+    {
+      "id": "promo-donuts-mix-box",
+      "title": "بوكس دوناتس ميكس نكهات",
+      "description": "بوكس دوناتس بأحلى النكهات مجمّعة مع بعض في طبق واحد، عشان تجربوا وتختاروا من غير ما تحرموا نفسكم من نكهة.",
+      "oldPrice": 95.0,
+      "discountPercent": 10,
+      "newPrice": 85.5,
+      "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
+      "category": "taswaq-donuts",
+      "active": true
+    },
+    {
+      "id": "promo-cinabon-5plus1",
+      "title": "بوكس سينابون (5 + 1 هدية)",
+      "description": "اطلبوا 5 قطع سينابون واستلموا السادسة هدية منّا، نفس الطعم اللي بتحبوه بسعر يفرح قلبكم.",
+      "oldPrice": 726.0,
+      "discountPercent": 16.6,
+      "newPrice": 605.0,
+      "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
+      "category": "taswaq-cinabon",
+      "active": true
+    },
+    {
+      "id": "promo-despacito-qashtota-mix",
+      "title": "بوكس 3 طاجن ديسباسيتو وسط + 3 طاجن قشطوطة",
+      "description": "تشكيلة متكاملة من الديسباسيتو والقشطوطة، طاجنين حجم وسط من كل صنف، عشان تكفّي اللمة كلها.",
+      "oldPrice": 759.0,
+      "discountPercent": 12,
+      "newPrice": 668.0,
+      "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
+      "category": "taswaq-despacito",
+      "active": true
+    },
+    {
+      "id": "promo-luxury-mix-box",
+      "title": "بوكس المشكل الفاخر",
+      "description": "2 طاجن ريدڤيلڤت، 4 كب سعادة، وميني تورته تكفي فردين، تشكيلة فاخرة كاملة في بوكس واحد يليق بأحلى المناسبات.",
+      "oldPrice": 880.0,
+      "discountPercent": 8,
+      "newPrice": 810.0,
+      "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
+      "category": "taswaq-red-velvet",
+      "active": true
+    },
+    {
+      "id": "promo-gateaux-classic-dozen",
+      "title": "دستة الجاتوه الكلاسيك",
+      "description": "دستة كاملة من الجاتوه الكلاسيك، الطعم الأصيل اللي اتعودتوا عليه بسعر مميز.",
+      "oldPrice": 506.0,
+      "discountPercent": 10,
+      "newPrice": 455.0,
+      "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
+      "category": "taswaq-gatowat",
+      "active": true
+    },
+    {
+      "id": "promo-despacito-nutella-pistachio-family",
+      "title": "طاجن 2 ديسباسيتو (نوتيلا + بيستاشيو حجم عائلي)",
+      "description": "طاجن نوتيلا وطاجن بيستاشيو حجم عائلي مع بعض، تشكيلة تجمع بين النكهة الكلاسيك والفاخرة في عرض واحد.",
+      "oldPrice": 561.0,
+      "discountPercent": 11,
+      "newPrice": 499.0,
+      "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
+      "category": "taswaq-despacito",
+      "active": true
+    }
+  ]
 }
-
