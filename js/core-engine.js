@@ -105,7 +105,7 @@
         
         // تشغيل معالجات الحركة القياسية المتطورة للأقسام عبر السلايدر الموحد
         setTimeout(() => {
-            setupBoseUnifiedSliderEngine('offers-slider-viewport', 'offers-dots-container', 'offers-carousel-section');
+            setupBoseUnifiedSliderEngine('offers-slider-track', 'offers-dots-container', 'offers-carousel-section');
             setupBoseUnifiedSliderEngine('categories-track', 'categories-dots-container', 'categories-slider-section');
             setupBoseUnifiedSliderEngine('most-selling-grid', 'most-selling-dots-container', 'most-selling-section');
             setupBoseUnifiedSliderEngine('new-arrivals-grid', 'new-arrivals-dots-container', 'new-arrivals-section');
@@ -214,8 +214,8 @@
         offersTrack.innerHTML = offersData.map(offer => {
             const oldPriceHtml = offer.oldPrice ? `<span class="product-old-price" style="text-decoration: line-through; color: #888; font-size: 13px; margin-left: 8px;">${offer.oldPrice} جنيه</span>` : '';
             return `
-                <div class="product-card-unified offer-card" data-id="${offer.id}">
-                    <div class="offer-badge" style="position: absolute; top: 10px; right: 10px; background: #FF91A4; color: #FFFFFF; font-weight: 700; font-size: 12px; padding: 4px 10px; border-radius: 12px; z-index: 2;">خصم خاص</div>
+                <div class="product-card-unified offer-card bose-offer-card" data-id="${offer.id}">
+                    <div class="offer-badge bose-offer-badge" style="position: absolute; top: 10px; right: 10px; background: #FF91A4; color: #FFFFFF; font-weight: 700; font-size: 12px; padding: 4px 10px; border-radius: 12px; z-index: 2;">خصم خاص</div>
                     <img src="${offer.images[0]}" alt="${offer.title}" class="product-card-img" loading="lazy" onclick="window.location.href='product.html?slug=${offer.slug}'" style="cursor:pointer;" />
                     <h3 class="product-card-title">${offer.title}</h3>
                     <span class="product-card-flavor-name">${offer.flavorName || ''}</span>
