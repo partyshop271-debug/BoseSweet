@@ -2859,6 +2859,204 @@
           "comment": "البوكس ده بجد اختراع! مفيش مناسبة بتعدي من غير ما أطلبه، منوع وبيبيض الوش قدام أي حد وتغليفه فاخر 🌸"
         }
       ]
+    },
+    {
+      "id": "promo-donuts-mix-box",
+      "slug": "promo-donuts-mix-box",
+      "category": "taswaq-donuts",
+      "builderType": "standard",
+      "title": "بوكس دوناتس ميكس نكهات",
+      "flavorName": "تشكيلة مختارة من أفخر النكهات",
+      "flavorDesc": "بوكس دوناتس بأحلى النكهات مجمّعة مع بعض في طبق واحد.",
+      "layout": "grid-card",
+      "featured": true,
+      "searchTerms": [
+        "دوناتس",
+        "عروض",
+        "خصومات",
+        "بوكس دوناتس",
+        "ميكس نكهات"
+      ],
+      "description": "بوكس دوناتس ميكس نكهات، جمعنالكم فيه أحلى الأطعمة اللي بتحبوها في طبق واحد: نوتيلا دارك، نوتيلا وايت، لوتس، كراميل، كيندر، وبيستاشيو. كل قطعة دايبة من بره، طرية من جوه، ومحشوة بسخاء يليق بذوقكم. البوكس ده الحل المثالي لما تحبوا تجربوا أكتر من نكهة من غير ما تضطروا تختاروا واحدة بس، ومناسب جداً للمكاتب والتجمعات العائلية وسهرات الأصحاب.",
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
+      "price": 85.5,
+      "oldPrice": 95.0,
+      "basePrice": 85.5,
+      "prices": {
+        "triangle": 85.5,
+        "medium": 85.5,
+        "large": 85.5
+      },
+      "defaultSize": "triangle",
+      "rating": 5.0,
+      "reviews": []
+    },
+    {
+      "id": "promo-cinabon-5plus1",
+      "slug": "promo-cinabon-5plus1",
+      "category": "taswaq-cinabon",
+      "builderType": "standard",
+      "title": "بوكس سينابون (5 + 1 هدية)",
+      "flavorName": "كلاسيك",
+      "flavorDesc": "اطلبوا 5 قطع سينابون واستلموا السادسة هدية منّا.",
+      "layout": "grid-card",
+      "featured": true,
+      "searchTerms": [
+        "سينابون",
+        "عروض",
+        "خصومات",
+        "هدية",
+        "5+1"
+      ],
+      "description": "عرض سينابون هيفرحكم: اطلبوا 5 قطع سينابون كلاسيك بعجينة طرية دافية وكريمة جبنة غنية، واستلموا القطعة السادسة هدية منّا من غير ما تدفعوا فيها جنيه. نفس الطعم اللي اتعودتوا عليه وبتحبوه، بس بسعر يفرح قلبكم ويكفي أكتر من مناسبة.",
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
+      "price": 605.0,
+      "oldPrice": 726.0,
+      "basePrice": 605.0,
+      "prices": {
+        "triangle": 605.0,
+        "medium": 605.0,
+        "large": 605.0
+      },
+      "defaultSize": "triangle",
+      "rating": 5.0,
+      "reviews": []
+    },
+    {
+      "id": "promo-despacito-qashtota-mix",
+      "slug": "promo-despacito-qashtota-mix",
+      "category": "taswaq-despacito",
+      "builderType": "standard",
+      "title": "بوكس 3 طاجن ديسباسيتو وسط + 3 طاجن قشطوطة",
+      "flavorName": "تشكيلة مشكلة",
+      "flavorDesc": "3 طواجن ديسباسيتو حجم وسط + 3 طواجن قشطوطة.",
+      "layout": "grid-card",
+      "featured": true,
+      "searchTerms": [
+        "ديسباسيتو",
+        "قشطوطة",
+        "عروض",
+        "خصومات",
+        "بوكس مشكل"
+      ],
+      "description": "تشكيلة متكاملة من صنفين بيحبهم الكل: 3 طواجن ديسباسيتو حجم وسط، جنب 3 طواجن قشطوطة غنية بالحشو والقرمشة. البوكس ده معمول عشان يكفّي اللمة كلها ويقدملكم تنويعة حلوة من غير ما تتحيروا تختاروا بين الصنفين، تاخدوا الاتنين مع بعض بسعر مميز.",
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
+      "price": 668.0,
+      "oldPrice": 759.0,
+      "basePrice": 668.0,
+      "prices": {
+        "triangle": 668.0,
+        "medium": 668.0,
+        "large": 668.0
+      },
+      "defaultSize": "triangle",
+      "rating": 5.0,
+      "reviews": []
+    },
+    {
+      "id": "promo-luxury-mix-box",
+      "slug": "promo-luxury-mix-box",
+      "category": "taswaq-red-velvet",
+      "builderType": "standard",
+      "title": "بوكس المشكل الفاخر",
+      "flavorName": "ريدڤيلڤت مشكل",
+      "flavorDesc": "2 طاجن ريدڤيلڤت + 4 كب سعادة + ميني تورته تكفي فردين.",
+      "layout": "grid-card",
+      "featured": true,
+      "searchTerms": [
+        "ريدفيلفت",
+        "كب سعادة",
+        "ميني تورت",
+        "عروض",
+        "بوكس فاخر"
+      ],
+      "description": "بوكس المشكل الفاخر معمول عشان يبيّض الوش في أحلى المناسبات: 2 طاجن ريدڤيلڤت بطعمه المخملي المميز، 4 كب سعادة بنفس التوقيع، وميني تورته تكفي فردين لختام الوجبة بشكل فاخر. تشكيلة كاملة في بوكس واحد، مظبوطة بالملي، وتليق بأي مناسبة سعيدة تحبوا تحتفلوا بيها.",
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
+      "price": 810.0,
+      "oldPrice": 880.0,
+      "basePrice": 810.0,
+      "prices": {
+        "triangle": 810.0,
+        "medium": 810.0,
+        "large": 810.0
+      },
+      "defaultSize": "triangle",
+      "rating": 5.0,
+      "reviews": []
+    },
+    {
+      "id": "promo-gateaux-classic-dozen",
+      "slug": "promo-gateaux-classic-dozen",
+      "category": "taswaq-gatowat",
+      "builderType": "standard",
+      "title": "دستة الجاتوه الكلاسيك",
+      "flavorName": "كلاسيك",
+      "flavorDesc": "دستة كاملة من الجاتوه الكلاسيك بسعر مميز.",
+      "layout": "grid-card",
+      "featured": true,
+      "searchTerms": [
+        "جاتوه",
+        "كلاسيك",
+        "عروض",
+        "خصومات",
+        "دستة"
+      ],
+      "description": "دستة كاملة من الجاتوه الكلاسيك، بنفس الطعم الأصيل اللي اتعودتوا عليه وحبيتوه على مدار السنين، دلوقتي بسعر مميز يخليكم تطلبوها أكتر من مرة في الأسبوع من غير ما تفكروا كتير.",
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
+      "price": 455.0,
+      "oldPrice": 506.0,
+      "basePrice": 455.0,
+      "prices": {
+        "triangle": 455.0,
+        "medium": 455.0,
+        "large": 455.0
+      },
+      "defaultSize": "triangle",
+      "rating": 5.0,
+      "reviews": []
+    },
+    {
+      "id": "promo-despacito-nutella-pistachio-family",
+      "slug": "promo-despacito-nutella-pistachio-family",
+      "category": "taswaq-despacito",
+      "builderType": "standard",
+      "title": "طاجن 2 ديسباسيتو (نوتيلا + بيستاشيو حجم عائلي)",
+      "flavorName": "نوتيلا دارك وبيستاشيو",
+      "flavorDesc": "طاجن نوتيلا وطاجن بيستاشيو حجم عائلي مع بعض.",
+      "layout": "grid-card",
+      "featured": false,
+      "searchTerms": [
+        "ديسباسيتو",
+        "نوتيلا",
+        "بيستاشيو",
+        "عروض",
+        "حجم عائلي"
+      ],
+      "description": "طاجنين ديسباسيتو حجم عائلي مع بعض: واحد نوتيلا دارك غني وكثيف، وواحد بيستاشيو فاخر بطعمه المميز. تشكيلة تجمع بين الكلاسيك المضمون والفاخر المرغوب، وتكفّي اللمة العائلية الكبيرة بسعر مناسب.",
+      "images": [
+        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+      ],
+      "price": 499.0,
+      "oldPrice": 561.0,
+      "basePrice": 499.0,
+      "prices": {
+        "triangle": 499.0,
+        "medium": 499.0,
+        "large": 499.0
+      },
+      "defaultSize": "triangle",
+      "rating": 5.0,
+      "reviews": []
     }
   ],
   "cakeBuilder": {
@@ -3020,7 +3218,8 @@
       "newPrice": 85.5,
       "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
       "category": "taswaq-donuts",
-      "active": true
+      "active": true,
+      "productId": "promo-donuts-mix-box"
     },
     {
       "id": "promo-cinabon-5plus1",
@@ -3031,7 +3230,8 @@
       "newPrice": 605.0,
       "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
       "category": "taswaq-cinabon",
-      "active": true
+      "active": true,
+      "productId": "promo-cinabon-5plus1"
     },
     {
       "id": "promo-despacito-qashtota-mix",
@@ -3042,7 +3242,8 @@
       "newPrice": 668.0,
       "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
       "category": "taswaq-despacito",
-      "active": true
+      "active": true,
+      "productId": "promo-despacito-qashtota-mix"
     },
     {
       "id": "promo-luxury-mix-box",
@@ -3053,7 +3254,8 @@
       "newPrice": 810.0,
       "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
       "category": "taswaq-red-velvet",
-      "active": true
+      "active": true,
+      "productId": "promo-luxury-mix-box"
     },
     {
       "id": "promo-gateaux-classic-dozen",
@@ -3064,7 +3266,8 @@
       "newPrice": 455.0,
       "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
       "category": "taswaq-gatowat",
-      "active": true
+      "active": true,
+      "productId": "promo-gateaux-classic-dozen"
     },
     {
       "id": "promo-despacito-nutella-pistachio-family",
@@ -3075,7 +3278,8 @@
       "newPrice": 499.0,
       "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
       "category": "taswaq-despacito",
-      "active": true
+      "active": true,
+      "productId": "promo-despacito-nutella-pistachio-family"
     }
   ]
 }
