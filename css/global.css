@@ -301,6 +301,60 @@ img {
 }
 
 /* ==========================================================================
+   NEW 1.5. تيكر الفئات السريع أسفل زر اطلب الآن (حركة جانبية تلقائية متصلة)
+   ========================================================================== */
+.hero-categories-ticker-wrapper {
+    width: 100%;
+    overflow: hidden;
+    margin-top: 22px;
+}
+
+.hero-categories-ticker-track {
+    display: flex !important;
+    gap: 10px !important;
+    width: max-content !important;
+    will-change: transform;
+    animation: boseSubnavAutoScroll 35s linear infinite !important;
+}
+
+.hero-categories-ticker-track:hover {
+    animation-play-state: paused !important; /* إيقاف الحركة عند تحريك/لمس العميل */
+}
+
+.ticker-cat-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    border: var(--bose-border-pink);
+    border-radius: 50px;
+    background-color: rgba(255, 255, 255, 0.9);
+    color: var(--bose-black) !important;
+    font-weight: 600;
+    font-size: 13px;
+    white-space: nowrap !important;
+    text-decoration: none !important;
+    transition: var(--bose-transition-fast);
+    box-shadow: var(--bose-shadow-glow);
+}
+
+.ticker-cat-item i {
+    color: var(--bose-pink);
+    font-size: 14px;
+}
+
+.ticker-cat-item:hover {
+    border-color: var(--bose-pink);
+    background-color: var(--bose-pink);
+    color: var(--bose-white) !important;
+    transform: translateY(-2px);
+}
+
+.ticker-cat-item:hover i {
+    color: var(--bose-white);
+}
+
+/* ==========================================================================
    NEW 2. قسم عروض وخصومات - السلايدر الجانبي المتحرك (بعد الشلال وقبل الأكثر مبيعات)
    ========================================================================== */
 .bose-offers-slider-section {
