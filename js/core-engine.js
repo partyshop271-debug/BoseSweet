@@ -128,53 +128,35 @@
     }
 
     /**
-     * 👑 [جديد]: محرك سحب تبويب الفئات أسفل زر "اطلب الآن" (Hero Categories Ticker)
-     * بيحل مشكلة كانت موجودة قبل كده: التبويب كان بيتحرك تلقائياً بس عبر CSS
-     * من غير أي استجابة للمس أو السحب بالإصبع، فالعميل ميقدرش يوصل لفئة معينة براحته.
-     * الحركة التلقائية بقت متحكم فيها بالكامل من هنا (requestAnimationFrame) بدل
-     * @keyframes CSS، عشان تقدر توقف بسلاسة وقت السحب اليدوي وترجع تكمل من نفس
-     * المكان بالظبط من غير أي قفزة أو تعارض بين الحركتين.
+     * 👑 محرك سحب تبويب الفئات أسفل زر "اطلب الآن" (Hero Categories Ticker)
+     * التبويب دلوقتي ثابت في مكانه تماماً (من غير أي حركة تلقائية) وبيستجيب
+     * للسحب اليدوي باللمس أو الماوس فقط، براحة العميل، يمين وشمال، بحدود
+     * طول المحتوى الفعلي (مفيش تكرار للعناصر ولا لفة لا نهائية).
      */
     function setupHeroTickerDragEngine() {
         const track = document.querySelector('.hero-categories-ticker-track');
         if (!track) return;
 
-        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        const autoScrollSpeed = reducedMotion ? 0 : 0.4; // بكسل/فريم -- بيوقف تلقائياً لو العميل مفعّل "تقليل الحركة"
-
         let posX = 0;
-        let halfWidth = 0;
+        let minX = 0; // أقصى مسافة لليمين المسموح نسحب لها المحتوى (بيتحسب تحت)
         let isDragging = false;
         let dragMoved = false;
         let startX = 0;
         let startPosX = 0;
-        let rafId = null;
 
-        const recalcHalfWidth = () => {
-            // المحتوى مكرر مرتين في core-engine.js (injectHomepageSectionMeta)، فنص
-            // العرض الكامل هو طول دورة واحدة كاملة قبل ما تتكرر تاني
-            halfWidth = track.scrollWidth / 2;
+        const recalcBounds = () => {
+            const wrapperWidth = track.parentElement.clientWidth;
+            const contentWidth = track.scrollWidth;
+            // لو المحتوى أصلاً أقصر من عرض الشاشة، مفيش داعي لأي سحب خالص
+            minX = Math.min(0, wrapperWidth - contentWidth);
+            // نضمن إن الموضع الحالي لسه جوه الحدود الجديدة بعد أي تغيير في حجم الشاشة
+            posX = Math.max(minX, Math.min(0, posX));
+            applyTransform();
         };
-        recalcHalfWidth();
-        window.addEventListener('resize', recalcHalfWidth);
 
         const applyTransform = () => {
-            if (halfWidth > 0) {
-                // تدوير لا نهائي سلس من غير أي فراغ أو قفزة مرئية للعميل
-                if (posX <= -halfWidth) posX += halfWidth;
-                if (posX > 0) posX -= halfWidth;
-            }
             track.style.transform = `translate3d(${posX}px, 0, 0)`;
         };
-
-        const autoScrollStep = () => {
-            if (!isDragging && autoScrollSpeed > 0) {
-                posX -= autoScrollSpeed;
-                applyTransform();
-            }
-            rafId = requestAnimationFrame(autoScrollStep);
-        };
-        rafId = requestAnimationFrame(autoScrollStep);
 
         const onPointerDown = (e) => {
             isDragging = true;
@@ -189,7 +171,11 @@
             if (!isDragging) return;
             const delta = e.clientX - startX;
             if (Math.abs(delta) > 6) dragMoved = true;
-            posX = startPosX + delta;
+            // تأثير مطاطي ناعم لو العميل سحب أبعد من حدود المحتوى
+            let next = startPosX + delta;
+            if (next > 0) next = next * 0.35;
+            if (next < minX) next = minX + (next - minX) * 0.35;
+            posX = next;
             applyTransform();
         };
 
@@ -198,8 +184,11 @@
             isDragging = false;
             track.classList.remove('is-dragging');
             track.releasePointerCapture?.(e.pointerId);
+            // رجوع سلس داخل الحدود لو حصل تأثير مطاطي عند السحب لأبعد من الحد
+            posX = Math.max(minX, Math.min(0, posX));
+            applyTransform();
 
-            // منع فتح رابط الفئة بالخطأ لو العميل كان بيسحب مش بيضغط فعلياً
+            // منع فتح رابط الفئة بالخطأ لو العميل كان بيسحب مش بيدوس فعلياً
             if (dragMoved) {
                 const suppressClick = (clickEvent) => {
                     clickEvent.preventDefault();
@@ -208,6 +197,9 @@
                 track.addEventListener('click', suppressClick, { capture: true, once: true });
             }
         };
+
+        recalcBounds();
+        window.addEventListener('resize', recalcBounds);
 
         track.addEventListener('pointerdown', onPointerDown);
         track.addEventListener('pointermove', onPointerMove);
@@ -239,7 +231,7 @@
             const track = document.getElementById('categories-track') || categoriesSection.querySelector('.categories-track-slider') || categoriesSection.querySelector('[id*="track"]');
             if (track) {
                 track.innerHTML = data.homepage.categoriesSlider.map(cat => `
-                    <div class="category-card-unified" onclick="window.location.href='category.html?id=${cat.id}'">
+                    <div class="category-card-unified" onclick="window.location.href='category.html?category=${cat.id}'">
                         <img src="${cat.image}" alt="${cat.title}" class="category-card-img" loading="lazy" />
                         <div class="category-card-name">${cat.title}</div>
                     </div>
@@ -349,11 +341,8 @@
         const section = document.getElementById(sectionId) || (track ? track.closest('section') : null);
         if (!track) return;
 
-        track.style.display = 'flex';
-        track.style.overflowX = 'auto';
-        track.style.webkitOverflowScrolling = 'touch';
-        track.style.scrollSnapType = 'x mandatory';
-        track.style.scrollBehavior = 'smooth';
+        // [تنظيف]: display/overflow-x/scroll-snap بقوا مملوكين بالكامل من main.css
+        // (كانت الأسطر دي مكررة هنا زيادة عن الحاجة بعد توحيد تنسيق كل التراكات الأربعة)
 
         const cards = track.children;
         const count = cards.length;
