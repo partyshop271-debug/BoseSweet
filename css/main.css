@@ -12,11 +12,6 @@
    كانت كوداً ميتاً بالكامل. الـ @keyframes الخاصة بها اتنقلت تحت لأنها
    نفسها المستخدمة فعلياً في التيكر الحي (.hero-categories-ticker-track).
    ========================================================================== */
-@keyframes boseSubnavAutoScroll {
-    0% { transform: translate3d(0, 0, 0); }
-    100% { transform: translate3d(-50%, 0, 0); }
-}
-   ========================================================================== */
 .hero-categories-ticker-wrapper {
     width: 100%;
     overflow: hidden;
@@ -28,12 +23,19 @@
     gap: 10px !important;
     width: max-content !important;
     will-change: transform;
-    animation: boseSubnavAutoScroll 35s linear infinite !important;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: pan-y; /* يسمح بالسحب الأفقي اليدوي هنا مع ترك التمرير العمودي للصفحة شغال طبيعي */
 }
 
-.hero-categories-ticker-track:hover {
-    animation-play-state: paused !important; /* إيقاف الحركة عند تحريك/لمس العميل */
+.hero-categories-ticker-track.is-dragging {
+    cursor: grabbing;
 }
+/* [ملاحظة توافق]: الحركة التلقائية اتنقلت بالكامل لـ core-engine.js (requestAnimationFrame)
+   بدل @keyframes CSS، عشان تقدر تستجيب للسحب اليدوي بسلاسة من غير أي قفزة أو تعارض
+   بين حركة الـ CSS التلقائية وحركة سحب الجافاسكريبت. الـ @keyframes القديمة (boseSubnavAutoScroll)
+   اتشالت من هنا لأنها بقت بلا أي استخدام تاني في الملف. */
 
 .ticker-cat-item {
     display: flex;
@@ -832,6 +834,25 @@
     width: 100%;
 }
 
+.btn-show-more-outline {
+    display: inline-block;
+    background: var(--bose-white) !important;
+    border: 2px solid var(--bose-pink) !important;
+    color: var(--bose-pink) !important;
+    font-weight: 700;
+    padding: 12px 36px;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.btn-show-more-outline:hover {
+    background: var(--bose-pink) !important;
+    color: var(--bose-white) !important;
+}
+
 /* ==========================================================================
    11. كتل واجهات عروض المحاكيات الكبرى
    ========================================================================== */
@@ -1304,6 +1325,8 @@
 }
 
 .bose-slider-dot {
+    display: inline-block !important;
+    margin: 0 4px !important;
     width: 10px !important;
     height: 10px !important;
     border-radius: 50% !important;
@@ -1325,8 +1348,6 @@
    يوقف التيكرات والشلال اللانهائيين فقط، مع إبقاء كل المحتوى ظاهراً بالكامل.
    ========================================================================== */
 @media (prefers-reduced-motion: reduce) {
-    .bose-categories-subnav-track,
-    .hero-categories-ticker-track,
     .waterfall-up,
     .waterfall-down {
         animation-duration: 0.001ms !important;

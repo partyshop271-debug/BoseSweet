@@ -403,3 +403,67 @@ img {
     }
 }
 
+/* ==========================================================================
+   18. رسالة الخطأ العامة عند فشل الاتصال بقاعدة البيانات (Global Toast)
+   موجودة هنا في الملف الحرج (وليس main.css) لأنها لازم تكون جاهزة فوراً
+   حتى لو فشل تحميل main.css نفسه أو تأخر.
+   ========================================================================== */
+.bose-global-toast-error {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--bose-pink);
+    color: var(--bose-white);
+    padding: 12px 24px;
+    border-radius: 8px;
+    box-shadow: var(--bose-shadow-hover);
+    z-index: 99999;
+    direction: rtl;
+    font-size: 14px;
+    max-width: 90vw;
+    text-align: center;
+}
+
+/* ==========================================================================
+   19. نظام رسائل التنبيه المؤقتة العامة (Toast) -- زي "تمت الإضافة للسلة"
+   ========================================================================== */
+#bose-toast-container {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 999999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+    font-family: var(--bose-font, 'Cairo', sans-serif);
+}
+
+.bose-toast-message {
+    background-color: var(--bose-pink);
+    color: var(--bose-white);
+    padding: 12px 24px;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 14px;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(255, 145, 164, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    direction: rtl;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    pointer-events: auto;
+}
+
+.bose-toast-message.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.bose-toast-message.is-leaving {
+    opacity: 0;
+    transform: translateY(-20px);
+}
