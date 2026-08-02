@@ -6,58 +6,16 @@
    ========================================================================== */
 
 /* ==========================================================================
-   NEW 1. تبويب أقسام المنتجات التلقائي المتحرك جانبيًا (تحت زر "اطلب الآن")
+   NEW 1.5. تيكر الفئات السريع أسفل زر اطلب الآن (حركة جانبية تلقائية متصلة)
+   [ملاحظة تنظيف]: تم حذف نسخة مكررة قديمة هنا (.bose-categories-subnav-section
+   و .bose-subnav-pill) لأنها لم تكن مستخدمة في أي صفحة HTML أو أي ملف JS —
+   كانت كوداً ميتاً بالكامل. الـ @keyframes الخاصة بها اتنقلت تحت لأنها
+   نفسها المستخدمة فعلياً في التيكر الحي (.hero-categories-ticker-track).
    ========================================================================== */
-.bose-categories-subnav-section {
-    width: 100%;
-    background-color: var(--bose-white);
-    padding: 14px 0;
-    border-bottom: var(--bose-border-pink);
-    overflow: hidden;
-}
-
-.bose-categories-subnav-track {
-    display: flex !important;
-    gap: 12px !important;
-    width: max-content !important;
-    will-change: transform;
-    animation: boseSubnavAutoScroll 30s linear infinite !important;
-}
-
-.bose-categories-subnav-track:hover {
-    animation-play-state: paused !important; /* إيقاف الحركة عند تحريك/لمس العميل */
-}
-
-.bose-subnav-pill {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 18px;
-    border: var(--bose-border-pink);
-    border-radius: 50px;
-    background-color: rgba(255, 145, 164, 0.03);
-    color: var(--bose-black);
-    font-weight: 600;
-    font-size: 14px;
-    white-space: nowrap !important;
-    transition: var(--bose-transition-fast);
-    box-shadow: var(--bose-shadow-glow);
-}
-
-.bose-subnav-pill:hover {
-    border-color: var(--bose-pink);
-    background-color: var(--bose-pink);
-    color: var(--bose-white) !important;
-    transform: translateY(-2px);
-}
-
 @keyframes boseSubnavAutoScroll {
     0% { transform: translate3d(0, 0, 0); }
     100% { transform: translate3d(-50%, 0, 0); }
 }
-
-/* ==========================================================================
-   NEW 1.5. تيكر الفئات السريع أسفل زر اطلب الآن (حركة جانبية تلقائية متصلة)
    ========================================================================== */
 .hero-categories-ticker-wrapper {
     width: 100%;
