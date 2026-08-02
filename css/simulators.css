@@ -1,28 +1,29 @@
 /**
  * 👑 ملف التصميم الموحد والفاخر للمحاكيات التفاعلية - حلويات بوسي V12.1 👑
  * النسخة الهندسية القياسية الشاملة والمطورة بنسبة 100% - خالية تماماً من ثغرات التكدس البصري
- * فلسفة الأداء: الألوان حاكمة وصريحة، الأسود للنصوص فقط ومحظور استخدامه في أي ظلال أو خلفيات نهائياً[span_39](start_span)[span_39](end_span)
- * التزام برمي صارم: مستقل ذاتياً ولا يتدخل في مهام أي ملف تنسيقي أو محرك برمي خارجي[span_40](start_span)[span_40](end_span).
+ * فلسفة الأداء: الألوان حاكمة وصريحة، الأسود للنصوص فقط ومحظور استخدامه في أي ظلال أو خلفيات نهائياً
+ * التزام برمي صارم: مستقل ذاتياً ولا يتدخل في مهام أي ملف تنسيقي أو محرك برمي خارجي.
  */
 
-/* ==========================================================================\
-   1. محددات بيئة المحاكيات والألوان الحاكمة (Strict Production CSS Tokens)[span_41](start_span)[span_41](end_span)
+/* ==========================================================================
+   1. محددات بيئة المحاكيات والألوان الحاكمة (Strict Production CSS Tokens)
    ========================================================================== */
+/* [ملاحظة توافق]: --bose-pink / --bose-white / --bose-black / --bose-gold / --bose-border-pink
+   اتشالوا من هنا لأنهم معرّفين بالفعل في global.css بنفس القيم (ما عدا --bose-border-pink
+   اللي كانت قيمته هنا مختلفة عن global.css: 1.5px/0.3 بدل 1px/0.15 -- وده كان بيعمل Override
+   لكل حدود الموقع بمبية أتخن وأغمق من المفروض في كل الصفحات مش بس صفحات المحاكيات،
+   لأن CSS Custom Properties في :root عالمية على مستوى الصفحة كلها مش مقصورة على ملف بعينه).
+   هذا الملف الآن يعتمد على متغيرات global.css مباشرة، ويضيف فقط المتغيرات الخاصة
+   بالمحاكيات تحديداً واللي مش موجودة في أي ملف تاني. */
 :root {
-    --bose-pink: #FF91A4;         /* نبض الحياة: للحدود، الأسعار الديناميكية، والتأثيرات التفاعلية Hover[span_42](start_span)[span_42](end_span) */
-    --bose-white: #FFFFFF;        /* المسيطر تماماً: للخلفيات لمنع التكديس وتحقيق التنفس البصري للعميل[span_43](start_span)[span_43](end_span) */
-    --bose-black: #111111;        /* معزول تماماً ومقدس: للنصوص والعناوين لضمان وضوح كامل للعين[span_44](start_span)[span_44](end_span) */
-    --bose-gold: #D4AF37;         /* الفخامة الرمزية الناعمة: نجوم التقييمات وتفاصيل التخصيص الفاخرة[span_45](start_span)[span_45](end_span) */
     --bose-pink-light: rgba(255, 145, 164, 0.04);
-    --bose-pink-shadow: 0 12px 40px rgba(255, 145, 164, 0.12); /* ظلال ناعمة بمبية تعزز الفخامة[span_46](start_span)[span_46](end_span) */
-    --bose-border-pink: 1.5px solid rgba(255, 145, 164, 0.3);
+    --bose-pink-shadow: 0 12px 40px rgba(255, 145, 164, 0.12);
     --bose-gray-border: #EAEAEA;
     --bose-gray-light: #F9F9F9;
-    --bose-transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* ==========================================================================\
-   2. التنسيق الهيكلي لصفحات المحاكيات وتأمين مساحات التنفس البصري[span_47](start_span)[span_47](end_span)
+/* ==========================================================================
+   2. التنسيق الهيكلي لصفحات المحاكيات وتأمين مساحات التنفس البصري
    ========================================================================== */
 .simulator-container,
 .bose-custom-builder-block {
@@ -41,7 +42,7 @@
 
 .simulator-header h1 {
     font-size: 2.2rem !important;
-    font-weight: 700 !important; /* قفل وزن الخط عند 700 كحد أقصى لأضخم العناوين[span_48](start_span)[span_48](end_span) */
+    font-weight: 700 !important; /* قفل وزن الخط عند 700 كحد أقصى لأضخم العناوين */
     color: var(--bose-black) !important;
     margin: 0 0 12px 0;
 }
@@ -56,7 +57,7 @@
     opacity: 0.85;
 }
 
-/* البانر التأسيسي الفخم عالي الإضاءة والنقاء[span_49](start_span)[span_49](end_span) */
+/* البانر التأسيسي الفخم عالي الإضاءة والنقاء */
 .simulator-hero-banner-wrapper {
     width: 100%;
     text-align: center;
@@ -75,7 +76,7 @@
     border: var(--bose-border-pink);
 }
 
-/* تقسيم مساحة العمل لجزأين متوازنين (أدوات التحكم واللوحة الجانبية)[span_50](start_span)[span_50](end_span) */
+/* تقسيم مساحة العمل لجزأين متوازنين (أدوات التحكم واللوحة الجانبية) */
 .simulator-workspace {
     display: grid;
     grid-template-columns: 1.1fr 0.9fr;
@@ -83,8 +84,8 @@
     align-items: start;
 }
 
-/* ==========================================================================\
-   3. خطوات التخصيص التفاعلية ومؤشر التقدم المطور (Premium Stepper)[span_51](start_span)[span_51](end_span)
+/* ==========================================================================
+   3. خطوات التخصيص التفاعلية ومؤشر التقدم المطور (Premium Stepper)
    ========================================================================== */
 .simulator-steps-indicator {
     display: flex;
@@ -120,7 +121,10 @@
     font-weight: 700;
     font-size: 1rem;
     z-index: 2;
-    transition: var(--bose-transition);
+    transition: background-color 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                color 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     cursor: pointer;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
 }
@@ -139,7 +143,7 @@
     box-shadow: none !important;
 }
 
-/* حاوية الخطوة الفردية لمنع الـ CLS واهتزاز الواجهة[span_52](start_span)[span_52](end_span) */
+/* حاوية الخطوة الفردية لمنع الـ CLS واهتزاز الواجهة */
 .bose-step-card-panel {
     display: none;
     will-change: transform, opacity; /* تحفيز كارت الشاشة لرفع كفاءة المعالجة */
@@ -169,8 +173,8 @@
     color: var(--bose-pink);
 }
 
-/* ==========================================================================\
-   4. قالب اختيار نوع الورد المستطيل الاحترافي (Iconic Selection Grid)[span_53](start_span)[span_53](end_span)
+/* ==========================================================================
+   4. قالب اختيار نوع الورد المستطيل الاحترافي (Iconic Selection Grid)
    ========================================================================== */
 .bose-premium-template-box {
     background: var(--bose-white);
@@ -179,7 +183,8 @@
     padding: 20px;
     margin-bottom: 24px;
     box-shadow: 0 6px 20px rgba(255, 145, 164, 0.02);
-    transition: var(--bose-transition);
+    transition: border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     box-sizing: border-box;
 }
 
@@ -211,7 +216,10 @@
     padding: 16px 12px !important;
     text-align: center;
     cursor: pointer;
-    transition: var(--bose-transition);
+    transition: border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                background-color 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -246,8 +254,8 @@
     transform: scale(1.15);
 }
 
-/* ==========================================================================\
-   5. 🎯 هندسة العدادات الذكية وإطار السعر الموضع التوضيحي المطور[span_54](start_span)[span_54](end_span)
+/* ==========================================================================
+   5. 🎯 هندسة العدادات الذكية وإطار السعر الموضع التوضيحي المطور
    ========================================================================== */
 .bose-counter-alignment-zone {
     display: flex;
@@ -278,7 +286,8 @@
     font-size: 20px;
     font-weight: 700;
     cursor: pointer;
-    transition: var(--bose-transition);
+    transition: background-color 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     outline: none;
     border: none;
     box-sizing: border-box;
@@ -343,8 +352,8 @@
     font-weight: 700;
 }
 
-/* ==========================================================================\
-   6. التنسيقات الخاصة بحقول الرفع والمدخلات التفاعلية الشفافة[span_55](start_span)[span_55](end_span)
+/* ==========================================================================
+   6. التنسيقات الخاصة بحقول الرفع والمدخلات التفاعلية الشفافة
    ========================================================================== */
 .bose-photo-upload-zone {
     border: 2px dashed var(--bose-pink);
@@ -353,7 +362,7 @@
     text-align: center;
     background: var(--bose-white);
     cursor: pointer;
-    transition: var(--bose-transition);
+    transition: background-color 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     position: relative;
     box-sizing: border-box;
 }
@@ -423,7 +432,8 @@
     background: var(--bose-gray-light);
     outline: none;
     box-sizing: border-box;
-    transition: var(--bose-transition);
+    transition: border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                background-color 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .bose-premium-text-input:focus {
@@ -454,8 +464,8 @@
     padding: 4px 8px;
 }
 
-/* ==========================================================================\
-   7. 👑 تطوير وتنسيق كارت الحساب اللحظي المطور والفاخر[span_56](start_span)[span_56](end_span)
+/* ==========================================================================
+   7. 👑 تطوير وتنسيق كارت الحساب اللحظي المطور والفاخر
    ========================================================================== */
 .sticky-summary-widget {
     position: sticky;
@@ -468,7 +478,7 @@
     box-shadow: var(--bose-pink-shadow) !important;
     box-sizing: border-box;
     width: 100%;
-    transition: var(--bose-transition);
+    /* [تنظيف]: اتشالت transition من هنا لأن العنصر ده معندوش أي حالة hover/focus/active بتغيّر أي خاصية فيه أصلاً -- كانت سطر بلا أي أثر بصري */
 }
 
 .summary-title {
@@ -545,8 +555,8 @@
     color: var(--bose-pink) !important;
 }
 
-/* ==========================================================================\
-   8. أزرار التحكم بالتنقل والإنهاء لرحلة العميل (Action Controls)[span_57](start_span)[span_57](end_span)
+/* ==========================================================================
+   8. أزرار التحكم بالتنقل والإنهاء لرحلة العميل (Action Controls)
    ========================================================================== */
 .simulator-actions-bar {
     display: flex;
@@ -563,7 +573,9 @@
     font-weight: 700 !important;
     font-size: 0.95rem !important;
     cursor: pointer !important;
-    transition: var(--bose-transition);
+    transition: background-color 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -594,8 +606,8 @@
     background: var(--bose-gray-light) !important;
 }
 
-/* ==========================================================================\
-   9. معرض سابقة أعمالنا الفخم والنافذة المنبثقة النظيفة (Portfolio Section)[span_58](start_span)[span_58](end_span)
+/* ==========================================================================
+   9. معرض سابقة أعمالنا الفخم والنافذة المنبثقة النظيفة (Portfolio Section)
    ========================================================================== */
 .portfolio-section {
     margin-top: 60px;
@@ -647,7 +659,9 @@
     border-radius: 18px;
     border: 1px solid var(--bose-gray-border);
     overflow: hidden;
-    transition: var(--bose-transition);
+    transition: border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .portfolio-item-card:hover {
@@ -663,7 +677,7 @@
     display: block;
 }
 
-/* واجهة الـ Popup المنبثقة النظيفة لسابقة الأعمال[span_59](start_span)[span_59](end_span) */
+/* واجهة الـ Popup المنبثقة النظيفة لسابقة الأعمال */
 .bose-popup-modal {
     display: none;
     position: fixed;
@@ -710,8 +724,8 @@
     display: block;
 }
 
-/* ==========================================================================\
-   10. هندسة التجاوب المطلق وحماية حواف الهواتف والموبايل أولاً[span_60](start_span)[span_60](end_span)
+/* ==========================================================================
+   10. هندسة التجاوب المطلق وحماية حواف الهواتف والموبايل أولاً
    ========================================================================== */
 @media (max-width: 991px) {
     .simulator-workspace {
@@ -736,4 +750,17 @@
     .bose-iconic-btn-node .btn-label { font-size: 12px; }
     .simulator-actions-bar { flex-direction: column-reverse; gap: 12px; }
     .premium-nav-btn { width: 100% !important; padding: 14px !important; }
+}
+
+
+/* ==========================================================================
+   11. دعم تقليل الحركة لذوي الاحتياجات الحركية والبصرية (prefers-reduced-motion)
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+    .bose-step-card-panel.active,
+    .bose-invoice-addon-row,
+    .custom-text-wrapper,
+    .bose-popup-content {
+        animation-duration: 0.001ms !important;
+    }
 }

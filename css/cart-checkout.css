@@ -1,4 +1,4 @@
-/* ==========================================================================\
+/* ==========================================================================
    👑 ملف التصميم الموحد والفاخر لسلة المشتريات وإتمام الطلب والتوصيل - حلويات بوسي V17.0 Master Edition 👑
    النسخة الهندسية القياسية الشاملة بنسبة 100% - خالية تماماً من الثغرات البصرية والبرمجية ومشاكل التداخل
    متوافقة بشكل مطلق ومتبادل مع: global.css، main.css، simulators.css، core-engine.js، cart-engine.js وقاعدة البيانات site-data-final.json
@@ -7,28 +7,29 @@
    [تلتزم بدورها البصري الخاص فقط ومغلقة تماماً عن مهام أو دالات أي ملفات خارجية أخرى]
  ========================================================================== */
 
-/* ==========================================================================\
+/* ==========================================================================
    1. حارس بيئة العمل والألوان الحاكمة الاحتياطية (Core Theme Fallbacks)
    ========================================================================== */
+/* [ملاحظة توافق]: --bose-pink / --bose-white / --bose-black / --bose-gold اتشالوا من هنا
+   لأنهم معرّفين فعلاً في global.css بنفس القيم بالظبط -- مصدر واحد بس دلوقتي لمنع التكرار.
+   --bose-border-pink كانت هنا "لون فقط" (rgba بدون سُمك أو نمط) بينما في global.css هي
+   "حد كامل جاهز" (1px solid rgba(...)) -- بما إن :root عالمي على مستوى الصفحة، كان بيحصل
+   تعارض حقيقي: أي صفحة فيها الملفين مع بعض كان ممكن يبوظ شكل الحدود حسب ترتيب التحميل.
+   اتغير اسمها هنا لـ --bose-border-pink-tint عشان توضّح إنها "درجة لون" مش "حد جاهز"،
+   ومفيش أي تعارض تسمية بينها وبين global.css خالص دلوقتي. */
 :root {
-    --bose-pink: #FF91A4;         /* نبض الحياة: للحدود، الأسعار الديناميكية، والتأثيرات التفاعلية */
-    --bose-white: #FFFFFF;        /* المسيطر تماماً: للخلفيات لمنع التكديس وتحقيق التنفس البصري للعميل */
-    --bose-black: #111111;        /* معزول تماماً: للنصوص والعناوين فقط، ومحظور في أي ظلال أو خلفيات */
-    --bose-gold: #D4AF37;         /* الفخامة الرمزية الناعمة: لنجوم التقييم وتفاصيل التخصيص الفاخرة */
-    --bose-cream: #FFF5F6;        /* خلفية دافئة وناعمة للفواصل والمقاطع الحيوية للسلة والدفع */
-    --bose-soft-gray: #F9F9F9;    /* درجات رمادية راقية وخفيفة جداً لتقسيم الكروت */
-    --bose-border-gray: #EAEAEA;  /* لون الحدود المحايد الهادئ */
-    --bose-border-pink: rgba(255, 145, 164, 0.25); /* لون الحدود الفاخرة المدمجة بالتصميم */
-    --bose-success-green: #2ECC71; /* لون التعبير عن العمليات الناجحة مثل قبول الكوبونات والرفع لـ Cloudinary */
+    --bose-cream: #FFF5F6;
+    --bose-soft-gray: #F9F9F9;
+    --bose-border-gray: #EAEAEA;
+    --bose-border-pink-tint: rgba(255, 145, 164, 0.25);
+    --bose-success-green: #2ECC71;
     --bose-success-text: #2d7a4d;
     --bose-success-bg: rgba(46, 204, 113, 0.08);
-    --bose-error-red: #E74C3C;    /* لون التعبير عن الأخطاء والتنبيهات */
+    --bose-error-red: #E74C3C;
     --bose-error-text: #b83232;
     --bose-error-bg: rgba(231, 76, 60, 0.05);
-    
-    --bose-soft-shadow: 0 12px 32px rgba(255, 145, 164, 0.08); /* ظل ناعم للغاية يتناغم مع الهوية البصرية البمبي بدون أي سواد */
-    --bose-hover-shadow: 0 16px 40px rgba(255, 145, 164, 0.15); /* ظل تفاعلي جذاب */
-    --bose-transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    --bose-soft-shadow: 0 12px 32px rgba(255, 145, 164, 0.08);
+    --bose-hover-shadow: 0 16px 40px rgba(255, 145, 164, 0.15);
     --bose-radius: 16px;
     --bose-font: 'Cairo', sans-serif;
 }
@@ -63,7 +64,7 @@
     display: none !important;
 }
 
-/* ==========================================================================\
+/* ==========================================================================
    2. الحاويات العامة وتخطيط الصفحات الرئيسي (Primary Page Structures)
    ========================================================================== */
 .bose-cart-page-section,
@@ -173,7 +174,7 @@
 .empty-cart-state-box,
 .empty-cart-view {
     background-color: var(--bose-white);
-    border: 1.5px dashed var(--bose-border-pink);
+    border: 1.5px dashed var(--bose-border-pink-tint);
     border-radius: var(--bose-radius);
     padding: 60px 20px;
     text-align: center;
@@ -234,7 +235,10 @@
     font-weight: 700;
     font-size: 0.95rem;
     cursor: pointer;
-    transition: var(--bose-transition);
+    transition: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -251,7 +255,7 @@
     transform: translateY(-2px);
 }
 
-/* ==========================================================================\
+/* ==========================================================================
    3. كروت المنتجات وتأمين التجاوب ضد البتر (Premium Cart Item Cards)
    ========================================================================== */
 .cart-items-list-wrapper,
@@ -274,7 +278,9 @@
     gap: 24px;
     align-items: center;
     box-shadow: var(--bose-soft-shadow);
-    transition: var(--bose-transition);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
     box-sizing: border-box;
@@ -317,7 +323,7 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: var(--bose-transition);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .bose-cart-item-card:hover .cart-item-media-box img,
@@ -413,7 +419,9 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    transition: var(--bose-transition);
+    transition: color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     flex-shrink: 0;
 }
 
@@ -519,7 +527,8 @@
     text-decoration: none;
     font-weight: 700;
     font-size: 0.8rem;
-    transition: var(--bose-transition);
+    transition: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     background: var(--bose-cream);
     padding: 4px 8px;
     border-radius: 6px;
@@ -532,7 +541,7 @@
     transform: scale(1.03);
 }
 
-/* ==========================================================================\
+/* ==========================================================================
    4. متحكم الكميات وحذف المنتجات (Quantity & Action Controllers)
    ========================================================================== */
 .cart-item-action-row {
@@ -598,7 +607,8 @@
     cursor: pointer;
     font-size: 1rem;
     font-weight: 700;
-    transition: var(--bose-transition);
+    transition: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .qty-control-button:hover:not(:disabled),
@@ -642,7 +652,7 @@
     margin: 0;
 }
 
-/* ==========================================================================\
+/* ==========================================================================
    5. لوحة ملخص الطلب والفواتير الجانبية (Order Invoice Summary)
    ========================================================================== */
 .bose-summary-sticky-card,
@@ -688,7 +698,8 @@
     font-family: var(--bose-font);
     font-size: 0.9rem;
     color: var(--bose-black);
-    transition: var(--bose-transition);
+    transition: border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     min-width: 0;
 }
 
@@ -709,7 +720,9 @@
     font-weight: 700;
     font-size: 0.9rem;
     cursor: pointer;
-    transition: var(--bose-transition);
+    transition: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     white-space: nowrap;
     box-shadow: 0 4px 10px rgba(255, 145, 164, 0.15);
 }
@@ -847,7 +860,9 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-    transition: var(--bose-transition);
+    transition: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 4px 15px rgba(255, 145, 164, 0.25);
     text-decoration: none;
     position: relative;
@@ -902,7 +917,9 @@
     font-size: 0.92rem;
     color: rgba(17, 17, 17, 0.5);
     text-decoration: none;
-    transition: var(--bose-transition);
+    transition: color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     width: 100%;
 }
 
@@ -921,7 +938,7 @@
     border-color: var(--bose-pink);
 }
 
-/* ==========================================================================\
+/* ==========================================================================
    6. صفحة الدفع وتفاصيل التوصيل الذكية والمدخلات (Secure Checkout Form)
    ========================================================================== */
 .checkout-card-box,
@@ -949,7 +966,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    border-bottom: 1px dashed var(--bose-border-pink);
+    border-bottom: 1px dashed var(--bose-border-pink-tint);
     padding-bottom: 12px;
 }
 
@@ -1020,7 +1037,8 @@
     font-family: var(--bose-font);
     font-size: 0.95rem;
     color: var(--bose-black);
-    transition: var(--bose-transition);
+    transition: border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     width: 100%;
     box-sizing: border-box;
     outline: none;
@@ -1082,7 +1100,7 @@ select.bose-form-control option,
     display: block !important;
 }
 
-/* ==========================================================================\
+/* ==========================================================================
    7. خيارات التوصيل والاستلام التفاعلية (Delivery & Pickup Options Grid)
    ========================================================================== */
 .bose-shipping-toggle-container,
@@ -1110,7 +1128,10 @@ select.bose-form-control option,
     align-items: center;
     justify-content: center;
     gap: 10px;
-    transition: var(--bose-transition);
+    transition: border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     box-sizing: border-box;
     position: relative;
     font-family: var(--bose-font);
@@ -1146,7 +1167,7 @@ select.bose-form-control option,
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: var(--bose-transition);
+    transition: border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* تفعيل الحالات النشطة بالكامل وعلامة الاختيار المخصصة */
@@ -1189,7 +1210,7 @@ select.bose-form-control option,
     margin-bottom: 20px;
 }
 
-/* ==========================================================================\
+/* ==========================================================================
    8. محرك مؤشر رفع الصور وضغطها تلقائياً لكلاوديناري (Cloudinary Engine)
    ========================================================================== */
 .bose-cloudinary-uploader-area,
@@ -1203,7 +1224,10 @@ select.bose-form-control option,
     text-align: center;
     cursor: pointer;
     position: relative;
-    transition: var(--bose-transition);
+    transition: border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1240,7 +1264,7 @@ select.bose-form-control option,
     font-size: 2.5rem;
     color: var(--bose-pink);
     margin-bottom: 4px;
-    transition: var(--bose-transition);
+    transition: color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .bose-hidden-file-input, .upload-hidden-input {
@@ -1356,7 +1380,7 @@ select.bose-form-control option,
     height: 55px;
     border-radius: 8px;
     object-fit: cover;
-    border: 1px solid var(--bose-border-pink);
+    border: 1px solid var(--bose-border-pink-tint);
     display: none;
 }
 
@@ -1371,7 +1395,7 @@ select.bose-form-control option,
     border-radius: 12px;
     overflow: hidden;
     margin-top: 10px;
-    border: 1px solid var(--bose-border-pink);
+    border: 1px solid var(--bose-border-pink-tint);
     display: none;
 }
 
@@ -1399,7 +1423,7 @@ select.bose-form-control option,
     display: block !important;
 }
 
-/* ==========================================================================\
+/* ==========================================================================
    9. خيارات وطرق الدفع الفاخرة المعتمدة (Payment Options Accordion)
    ========================================================================== */
 .payment-methods-stack {
@@ -1412,7 +1436,7 @@ select.bose-form-control option,
     border: 1px solid rgba(255, 145, 164, 0.18);
     border-radius: 12px;
     overflow: hidden;
-    transition: var(--bose-transition);
+    transition: border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .payment-method-header-trigger {
@@ -1439,7 +1463,7 @@ select.bose-form-control option,
     padding: 0;
     max-height: 0;
     overflow: hidden;
-    transition: var(--bose-transition);
+    transition: max-height 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .payment-method-accordion-item.expanded-active {
@@ -1458,7 +1482,7 @@ select.bose-form-control option,
     line-height: 1.6;
 }
 
-/* ==========================================================================\
+/* ==========================================================================
    10. مراجعة الطلب المصغرة بصفحة الدفع (Checkout Order Review)
    ========================================================================== */
 .review-items-container,
@@ -1511,7 +1535,7 @@ select.bose-form-control option,
     justify-content: center;
 }
 
-/* ==========================================================================\
+/* ==========================================================================
    11. تخطيط وتصميم صفحة نجاح الطلب الفخمة (Order Success Layout & Receipt)
    ========================================================================== */
 .success-page-wrapper,
@@ -1659,7 +1683,9 @@ select.bose-form-control option,
     gap: 10px;
     text-decoration: none;
     box-shadow: 0 4px 15px rgba(255, 145, 164, 0.2);
-    transition: var(--bose-transition);
+    transition: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btn-success-home-anchor,
@@ -1678,7 +1704,9 @@ select.bose-form-control option,
     justify-content: center;
     gap: 10px;
     text-decoration: none;
-    transition: var(--bose-transition);
+    transition: border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .success-action-secondary-btn:hover {
@@ -1687,7 +1715,7 @@ select.bose-form-control option,
     background-color: var(--bose-cream);
 }
 
-/* ==========================================================================\
+/* ==========================================================================
    12. 👑 حوكمة وأمان قنوات الفوتر القياسي لحظر ثغرة التصفير والظلال المشوهة 👑
    ========================================================================== */
 .footer-social-icon-btn {
@@ -1714,7 +1742,7 @@ select.bose-form-control option,
     box-shadow: 0 12px 40px rgba(255, 145, 164, 0.22) !important;
 }
 
-/* ==========================================================================\
+/* ==========================================================================
    13. 👑 التجاوب والـ Media Queries وإرجاع قواعد أمان التابلت المبتورة 👑
    ========================================================================== */
 
@@ -1808,5 +1836,45 @@ select.bose-form-control option,
     .coupon-apply-trigger {
         width: 100% !important;
         height: 46px !important;
+    }
+}
+
+/* ==========================================================================
+   14. 👑 تعريف الحركات المفقودة (كانت مستخدمة في 5 أماكن بدون @keyframes
+   خاص بيها فكانت بتفشل بصمت: سبينر زرار الدفع، سبينر رفع صور Cloudinary،
+   دخول كارت السلة الفاضية، ودخول صفحة نجاح الطلب) 👑
+   ========================================================================== */
+@keyframes boseFadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes boseSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes boseBounce {
+    0% { transform: scale(0.3); opacity: 0; }
+    50% { transform: scale(1.08); }
+    70% { transform: scale(0.94); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* دعم تقليل الحركة لذوي الاحتياجات الحركية والبصرية -- الحركات الوظيفية
+   (سبينر التحميل) بتفضل شغالة لأنها بتوصل حالة حقيقية للعميل، لكن بسرعة
+   أهدأ، والحركات الزخرفية البحتة بتتوقف فوراً */
+@media (prefers-reduced-motion: reduce) {
+    .empty-cart-view,
+    .success-main-card,
+    .success-badge-pulse,
+    .success-celebration-badge-container {
+        animation-duration: 0.001ms !important;
+    }
+    .bose-primary-checkout-btn.bose-loading-active::after,
+    .premium-checkout-button.bose-loading-active::after,
+    .bose-action-button-full.bose-loading-active::after,
+    .cloudinary-spinner {
+        animation-duration: 1.4s !important;
     }
 }
