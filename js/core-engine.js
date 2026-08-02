@@ -20,6 +20,11 @@
     document.addEventListener('DOMContentLoaded', forceScrollToTop);
     window.addEventListener('load', forceScrollToTop);
 
+    // [إصلاح أداء]: تشغيل حقن الخطوط والأيقونات فوراً من هنا بدل ما تستنى خلاص
+    // تحميل ملف قاعدة البيانات (JSON) الأول -- كانت قبل كده بتتأخر لحد ما تخلص
+    // initCoreFlow، يعني الأيقونات والخط كانوا بياخدوا وقت زيادة يظهروا من غير داعي.
+    injectEarlyDependencies();
+
     // تهيئة المتغيرات العالمية الموحدة في نطاق window لخدمة صفحات الموقع
     window.BoseStoreData = null; 
     window.boseServerTimeOffset = 0; // فارق التوقيت بالمللي ثانية: (وقت الخادم - وقت جهاز العميل)
@@ -86,7 +91,6 @@
      * دالة تشغيل التدفق المركزي والتهيئات البصرية المبكرة للموقع مع حماية صارمة ضد أخطاء الـ DOM
      */
     function initCoreFlow() {
-        injectEarlyDependencies();
         applyGlobalSEOAndBranding();
         buildAndInjectGlobalComponents();
         
@@ -104,14 +108,112 @@
         setupPrideCountersAnimation();
         
         // تشغيل معالجات الحركة القياسية المتطورة للأقسام عبر السلايدر الموحد
-        setTimeout(() => {
-            setupBoseUnifiedSliderEngine('offers-slider-track', 'offers-dots-container', 'offers-carousel-section');
-            setupBoseUnifiedSliderEngine('categories-track', 'categories-dots-container', 'categories-slider-section');
-            setupBoseUnifiedSliderEngine('most-selling-grid', 'most-selling-dots-container', 'most-selling-section');
-            setupBoseUnifiedSliderEngine('new-arrivals-grid', 'new-arrivals-dots-container', 'new-arrivals-section');
-        }, 100);
+        // [إصلاح]: استبدال setTimeout(100) الثابت غير الموثوق (كان ممكن يفشل على
+        // الأجهزة البطيئة) بـ requestAnimationFrame مضاعف يضمن اكتمال رسم الـ DOM
+        // فعلياً قبل تفعيل السلايدرات، بدل رقم تخميني ثابت بالمللي ثانية.
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                setupBoseUnifiedSliderEngine('offers-slider-track', 'offers-dots-container', 'offers-carousel-section');
+                setupBoseUnifiedSliderEngine('categories-track', 'categories-dots-container', 'categories-slider-section');
+                setupBoseUnifiedSliderEngine('most-selling-grid', 'most-selling-dots-container', 'most-selling-section');
+                setupBoseUnifiedSliderEngine('new-arrivals-grid', 'new-arrivals-dots-container', 'new-arrivals-section');
+            });
+        });
+
+        // [جديد]: تفعيل السحب اليدوي لتبويب الفئات أسفل زر "اطلب الآن" -- كان قبل
+        // كده بيتحرك تلقائياً بس عبر CSS بدون أي استجابة للمس أو السحب بالإصبع
+        setupHeroTickerDragEngine();
         
         document.dispatchEvent(new CustomEvent('BoseDatabaseLoaded', { detail: window.BoseStoreData }));
+    }
+
+    /**
+     * 👑 [جديد]: محرك سحب تبويب الفئات أسفل زر "اطلب الآن" (Hero Categories Ticker)
+     * بيحل مشكلة كانت موجودة قبل كده: التبويب كان بيتحرك تلقائياً بس عبر CSS
+     * من غير أي استجابة للمس أو السحب بالإصبع، فالعميل ميقدرش يوصل لفئة معينة براحته.
+     * الحركة التلقائية بقت متحكم فيها بالكامل من هنا (requestAnimationFrame) بدل
+     * @keyframes CSS، عشان تقدر توقف بسلاسة وقت السحب اليدوي وترجع تكمل من نفس
+     * المكان بالظبط من غير أي قفزة أو تعارض بين الحركتين.
+     */
+    function setupHeroTickerDragEngine() {
+        const track = document.querySelector('.hero-categories-ticker-track');
+        if (!track) return;
+
+        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const autoScrollSpeed = reducedMotion ? 0 : 0.4; // بكسل/فريم -- بيوقف تلقائياً لو العميل مفعّل "تقليل الحركة"
+
+        let posX = 0;
+        let halfWidth = 0;
+        let isDragging = false;
+        let dragMoved = false;
+        let startX = 0;
+        let startPosX = 0;
+        let rafId = null;
+
+        const recalcHalfWidth = () => {
+            // المحتوى مكرر مرتين في core-engine.js (injectHomepageSectionMeta)، فنص
+            // العرض الكامل هو طول دورة واحدة كاملة قبل ما تتكرر تاني
+            halfWidth = track.scrollWidth / 2;
+        };
+        recalcHalfWidth();
+        window.addEventListener('resize', recalcHalfWidth);
+
+        const applyTransform = () => {
+            if (halfWidth > 0) {
+                // تدوير لا نهائي سلس من غير أي فراغ أو قفزة مرئية للعميل
+                if (posX <= -halfWidth) posX += halfWidth;
+                if (posX > 0) posX -= halfWidth;
+            }
+            track.style.transform = `translate3d(${posX}px, 0, 0)`;
+        };
+
+        const autoScrollStep = () => {
+            if (!isDragging && autoScrollSpeed > 0) {
+                posX -= autoScrollSpeed;
+                applyTransform();
+            }
+            rafId = requestAnimationFrame(autoScrollStep);
+        };
+        rafId = requestAnimationFrame(autoScrollStep);
+
+        const onPointerDown = (e) => {
+            isDragging = true;
+            dragMoved = false;
+            startX = e.clientX;
+            startPosX = posX;
+            track.classList.add('is-dragging');
+            track.setPointerCapture?.(e.pointerId);
+        };
+
+        const onPointerMove = (e) => {
+            if (!isDragging) return;
+            const delta = e.clientX - startX;
+            if (Math.abs(delta) > 6) dragMoved = true;
+            posX = startPosX + delta;
+            applyTransform();
+        };
+
+        const onPointerUp = (e) => {
+            if (!isDragging) return;
+            isDragging = false;
+            track.classList.remove('is-dragging');
+            track.releasePointerCapture?.(e.pointerId);
+
+            // منع فتح رابط الفئة بالخطأ لو العميل كان بيسحب مش بيضغط فعلياً
+            if (dragMoved) {
+                const suppressClick = (clickEvent) => {
+                    clickEvent.preventDefault();
+                    clickEvent.stopPropagation();
+                };
+                track.addEventListener('click', suppressClick, { capture: true, once: true });
+            }
+        };
+
+        track.addEventListener('pointerdown', onPointerDown);
+        track.addEventListener('pointermove', onPointerMove);
+        track.addEventListener('pointerup', onPointerUp);
+        track.addEventListener('pointercancel', onPointerUp);
+        track.addEventListener('pointerleave', onPointerUp);
     }
 
     /**
@@ -266,7 +368,7 @@
         if (dotsContainer) {
             let dotsHtml = '';
             for (let i = 0; i < count; i++) {
-                dotsHtml += `<span class="bose-slider-dot ${i === 0 ? 'active' : ''}" data-index="${i}" style="width:10px; height:10px; border-radius:50%; background-color:rgba(255,145,164,0.25); cursor:pointer; transition:all 0.3s ease; display:inline-block; margin:0 4px;"></span>`;
+                dotsHtml += `<span class="bose-slider-dot${i === 0 ? ' active' : ''}" data-index="${i}"></span>`;
             }
             dotsContainer.innerHTML = dotsHtml;
             dotsContainer.removeAttribute('hidden');
@@ -283,13 +385,7 @@
             if (activeIndex >= count) activeIndex = count - 1;
 
             dots.forEach((dot, idx) => {
-                if (idx === activeIndex) {
-                    dot.classList.add('active');
-                    dot.style.cssText = 'width:26px; height:10px; border-radius:6px; background-color:#FF91A4; cursor:pointer; transition:all 0.3s ease; display:inline-block; margin:0 4px;';
-                } else {
-                    dot.classList.remove('active');
-                    dot.style.cssText = 'width:10px; height:10px; border-radius:50%; background-color:rgba(255,145,164,0.25); cursor:pointer; transition:all 0.3s ease; display:inline-block; margin:0 4px;';
-                }
+                dot.classList.toggle('active', idx === activeIndex);
             });
         };
 
@@ -457,7 +553,7 @@
 
         if (!showMoreBtn || !ourProductsGrid || !data) return;
 
-        showMoreBtn.style.cssText = "display: inline-block !important; background: #FFFFFF !important; border: 2px solid #FF91A4 !important; color: #FF91A4 !important; font-weight: 700; padding: 12px 36px; border-radius: 30px; cursor: pointer; transition: all 0.3s ease; opacity: 1 !important; visibility: visible !important;";
+        showMoreBtn.classList.add('btn-show-more-outline');
         showMoreBtn.textContent = "استعرض المزيد";
 
         showMoreBtn.addEventListener('click', function(e) {
@@ -734,18 +830,17 @@
         if (!container) {
             container = document.createElement('div');
             container.id = 'bose-toast-container';
-            container.style.cssText = 'position:fixed; bottom:80px; left:50%; transform:translateX(-50%); z-index:999999; display:flex; flex-direction:column; gap:10px; pointer-events:none; font-family:"Cairo", sans-serif;';
             document.body.appendChild(container);
         }
         const toast = document.createElement('div');
-        toast.style.cssText = 'background-color:#FF91A4; color:#FFFFFF; padding:12px 24px; border-radius:30px; font-weight:700; font-size:14px; text-align:center; box-shadow:0 8px 32px rgba(255, 145, 164, 0.3); border:1px solid rgba(255,255,255,0.4); direction:rtl; opacity:0; transform:translateY(20px); transition:all 0.4s ease; pointer-events:auto;';
+        toast.className = 'bose-toast-message';
         toast.textContent = message;
         container.appendChild(toast);
-        
-        setTimeout(() => { toast.style.opacity = '1'; toast.style.transform = 'translateY(0)'; }, 50);
+
+        requestAnimationFrame(() => toast.classList.add('is-visible'));
         setTimeout(() => {
-            toast.style.opacity = '0';
-            toast.style.transform = 'translateY(-20px)';
+            toast.classList.remove('is-visible');
+            toast.classList.add('is-leaving');
             setTimeout(() => { toast.remove(); }, 400);
         }, 3000);
     };
@@ -784,18 +879,12 @@
 
         const originalHtml = buttonElement.innerHTML;
         buttonElement.innerHTML = '<i class="fa-solid fa-check"></i> تمت الإضافة';
-        buttonElement.style.backgroundColor = '#FF91A4';
-        buttonElement.style.color = '#FFFFFF';
-        buttonElement.style.borderColor = '#FF91A4';
-        buttonElement.disabled = true;
+        buttonElement.disabled = true; /* كلاس :disabled في main.css بيدي شكل "تمت الإضافة" تلقائياً */
 
         window.showBoseGlobalToast('تمت إضافة المنتج إلى السلة.');
 
         setTimeout(() => {
             buttonElement.innerHTML = originalHtml;
-            buttonElement.style.backgroundColor = '';
-            buttonElement.style.color = '';
-            buttonElement.style.borderColor = '';
             buttonElement.disabled = false;
         }, 2500);
     };
@@ -1076,7 +1165,7 @@
 
     function showGlobalFriendlyError() {
         const errorDiv = document.createElement('div');
-        errorDiv.style.cssText = 'position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background-color:#FF91A4; color:#FFFFFF; padding:12px 24px; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.15); z-index:99999; direction:rtl; font-size:14px;';
+        errorDiv.className = 'bose-global-toast-error';
         errorDiv.textContent = 'عذراً، نواجه صعوبة في الاتصال بالخادم حالياً. يرجى إعادة محاولة تحميل الصفحة.';
         document.body.appendChild(errorDiv);
     }
