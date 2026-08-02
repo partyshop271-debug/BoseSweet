@@ -6,6 +6,22 @@
  * [تم إصلاح ثغرة جلب البيانات وجدولة الفواتير جذرياً وحظر اختفاء المنتجات المضافة عند التوجيه]
  */
 
+/**
+ * 🛡️ تحميل السلة من localStorage مع إعادة حساب كل سعر من بيانات المتجر
+ * الموثوقة قبل عرضه أو استخدامه في أي حساب إجمالي أو رسالة طلب نهائية.
+ * تُستخدم في كل مكان بدل القراءة المباشرة من localStorage.
+ */
+function loadTrustedCart() {
+    const rawCart = localStorage.getItem("bose_cart");
+    let cart = rawCart ? JSON.parse(rawCart) : [];
+    if (typeof window.recalculateFullCart === "function") {
+        const result = window.recalculateFullCart(cart);
+        cart = result.cart;
+        localStorage.setItem("bose_cart", JSON.stringify(cart));
+    }
+    return cart;
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     // حقن واجهة التنبيهات الفاخرة المخصصة للبراند فوراً
     injectBoseCustomModalStyles();
@@ -48,8 +64,7 @@ function renderBoseCartPage(storeData) {
     
     // رندرة السلة الشاملة من الذاكرة المحلية الموحدة bose_cart
     function buildFullCartUI() {
-        const rawCart = localStorage.getItem("bose_cart");
-        const cart = rawCart ? JSON.parse(rawCart) : [];
+        const cart = loadTrustedCart();
         
         if (clearCartBtn) {
             clearCartBtn.style.display = cart.length > 0 ? "block" : "none";
@@ -179,7 +194,7 @@ function renderBoseCartPage(storeData) {
         if (!cardElement) return;
         
         const index = parseInt(cardElement.getAttribute("data-index"), 10);
-        const cart = JSON.parse(localStorage.getItem("bose_cart") || "[]");
+        const cart = loadTrustedCart();
         
         if (isNaN(index) || !cart[index]) return;
         
@@ -255,9 +270,9 @@ function updateCartSummary(cart, storeData) {
     const activeCoupon = localStorage.getItem("bose_active_coupon");
     if (activeCoupon && storeData.coupons) {
         const couponRule = storeData.coupons.find(c => c.code === activeCoupon);
-        if (couponRule) {
-            discount = subtotal * (couponRule.value / 100);
-        }
+        // 🛡️ [إصلاح حرج]: استخدام الحساب الموحد اللي بيفرّق بين خصم النسبة (%)
+        // والخصم الثابت (جنيه) بدل حساب كل كوبون كنسبة مئوية زي القديم.
+        discount = window.calculateCouponDiscount(subtotal, couponRule);
     }
     
     const discountDisplay = document.getElementById("summary-discount");
@@ -305,7 +320,7 @@ function updateCartSummary(cart, storeData) {
  * =========================================================================
  */
 function renderBoseCheckoutPage(storeData) {
-    const cart = JSON.parse(localStorage.getItem("bose_cart") || "[]");
+    const cart = loadTrustedCart();
     
     if (cart.length === 0 && !window.location.pathname.includes("order-success.html")) {
         window.location.href = "cart.html";
@@ -431,7 +446,7 @@ function recalculateCheckoutInvoice(cart, storeData, shippingFee) {
     const activeCoupon = localStorage.getItem("bose_active_coupon");
     if (activeCoupon && storeData.coupons) {
         const couponRule = storeData.coupons.find(c => c.code === activeCoupon);
-        if (couponRule) discount = subtotal * (couponRule.value / 100);
+        discount = window.calculateCouponDiscount(subtotal, couponRule);
     }
     
     let absoluteTotal = subtotal - discount + shippingFee;
@@ -525,7 +540,7 @@ function processFinalBoseOrder(cart, storeData, method, shippingFee) {
     const activeCoupon = localStorage.getItem("bose_active_coupon");
     if (activeCoupon && storeData.coupons) {
         const couponRule = storeData.coupons.find(c => c.code === activeCoupon);
-        if (couponRule) discount = subtotal * (couponRule.value / 100);
+        discount = window.calculateCouponDiscount(subtotal, couponRule);
     }
     
     const finalGrandTotalCalculated = Math.round(subtotal - discount + shippingFee);
@@ -562,7 +577,7 @@ function processFinalBoseOrder(cart, storeData, method, shippingFee) {
     localStorage.removeItem("bose_active_coupon");
     if (typeof window.updateGlobalCartCounter === "function") window.updateGlobalCartCounter();
 
-    window.open(`https://wa.me/20${brandWhatsappNumber}?text=${encodeURIComponent(whatsappMessageText)}`, "_blank");
+    window.open(window.buildWhatsappLink(brandWhatsappNumber, whatsappMessageText), "_blank");
     window.location.href = "order-success.html";
 }
 
@@ -649,7 +664,7 @@ function renderBoseSuccessPage(storeData) {
     
     const whatsappBtn = document.getElementById("bose-success-whatsapp-btn");
     if (whatsappBtn && order.whatsappMessage) {
-        whatsappBtn.href = `https://wa.me/20${storeData.store?.phone || '01097238441'}?text=${encodeURIComponent(order.whatsappMessage)}`;
+        whatsappBtn.href = window.buildWhatsappLink(storeData.store?.phone || '01097238441', order.whatsappMessage);
     }
 }
 

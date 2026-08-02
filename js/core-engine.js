@@ -231,9 +231,9 @@
             const track = document.getElementById('categories-track') || categoriesSection.querySelector('.categories-track-slider') || categoriesSection.querySelector('[id*="track"]');
             if (track) {
                 track.innerHTML = data.homepage.categoriesSlider.map(cat => `
-                    <div class="category-card-unified" onclick="window.location.href='category.html?category=${cat.id}'">
-                        <img src="${cat.image}" alt="${cat.title}" class="category-card-img" loading="lazy" />
-                        <div class="category-card-name">${cat.title}</div>
+                    <div class="category-card-unified" onclick="window.location.href='category.html?category=${encodeURIComponent(cat.id)}'">
+                        <img src="${window.optimizeBoseImageUrl(cat.image, 250)}" alt="${window.escapeBoseHTML(cat.title)}" class="category-card-img" width="180" height="180" loading="lazy" />
+                        <div class="category-card-name">${window.escapeBoseHTML(cat.title)}</div>
                     </div>
                 `).join('');
             }
@@ -307,13 +307,17 @@
 
         offersTrack.innerHTML = offersData.map(offer => {
             const oldPriceHtml = offer.oldPrice ? `<span class="product-old-price" style="text-decoration: line-through; color: #888; font-size: 13px; margin-left: 8px;">${offer.oldPrice} جنيه</span>` : '';
+            const safeImg = window.optimizeBoseImageUrl(offer.images[0], 400);
+            const safeTitle = window.escapeBoseHTML(offer.title);
+            const safeFlavor = window.escapeBoseHTML(offer.flavorName || '');
+            const safeDesc = window.escapeBoseHTML(offer.description ? (offer.description.substring(0, 75) + '...') : '');
             return `
                 <div class="product-card-unified offer-card bose-offer-card" data-id="${offer.id}">
                     <div class="offer-badge bose-offer-badge" style="position: absolute; top: 10px; right: 10px; background: #FF91A4; color: #FFFFFF; font-weight: 700; font-size: 12px; padding: 4px 10px; border-radius: 12px; z-index: 2;">خصم خاص</div>
-                    <img src="${offer.images[0]}" alt="${offer.title}" class="product-card-img" loading="lazy" onclick="window.location.href='product.html?slug=${offer.slug}'" style="cursor:pointer;" />
-                    <h3 class="product-card-title">${offer.title}</h3>
-                    <span class="product-card-flavor-name">${offer.flavorName || ''}</span>
-                    <p class="product-card-desc">${offer.description ? (offer.description.substring(0, 75) + '...') : ''}</p>
+                    <img src="${safeImg}" alt="${safeTitle}" class="product-card-img" width="300" height="300" loading="lazy" onclick="window.location.href='product.html?slug=${encodeURIComponent(offer.slug)}'" style="cursor:pointer;" />
+                    <h3 class="product-card-title">${safeTitle}</h3>
+                    <span class="product-card-flavor-name">${safeFlavor}</span>
+                    <p class="product-card-desc">${safeDesc}</p>
                     
                     <div class="product-card-qty-wrapper">
                         <button class="btn-qty-plus" onclick="window.handleBoseCardQtyChange(this, 1)">+</button>
@@ -456,14 +460,14 @@
 
         if (leftCol && waterfallData.leftColumnImages) {
             const leftHtml = waterfallData.leftColumnImages.map(img => 
-                `<img src="${img}" alt="منتج فاخر حلويات بوسي" class="waterfall-img" loading="lazy" />`
+                `<img src="${window.optimizeBoseImageUrl(img, 300)}" alt="منتج فاخر حلويات بوسي" class="waterfall-img" width="220" height="220" loading="lazy" />`
             ).join('');
             leftCol.innerHTML = `<div class="waterfall-up">${leftHtml} ${leftHtml}</div>`;
         }
 
         if (rightCol && waterfallData.rightColumnImages) {
             const rightHtml = waterfallData.rightColumnImages.map(img => 
-                `<img src="${img}" alt="منتج راقي حلويات بوسي" class="waterfall-img" loading="lazy" />`
+                `<img src="${window.optimizeBoseImageUrl(img, 300)}" alt="منتج راقي حلويات بوسي" class="waterfall-img" width="220" height="220" loading="lazy" />`
             ).join('');
             rightCol.innerHTML = `<div class="waterfall-down">${rightHtml} ${rightHtml}</div>`;
         }
@@ -472,13 +476,18 @@
     function createProductCardHTML(product) {
         if (!product) return '';
         const calculatedPrice = window.calculateProductFinalPrice(product, {});
-        
+        const rawImg = product.images ? product.images[0] : 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png';
+        const safeImg = window.optimizeBoseImageUrl(rawImg, 400);
+        const safeTitle = window.escapeBoseHTML(product.title);
+        const safeFlavor = window.escapeBoseHTML(product.flavorName || '');
+        const safeDesc = window.escapeBoseHTML(product.flavorDesc || (product.description ? product.description.substring(0, 80) + '...' : ''));
+
         return `
             <div class="product-card-unified" data-id="${product.id}">
-                <img src="${product.images ? product.images[0] : 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png'}" alt="${product.title}" class="product-card-img" loading="lazy" onclick="window.location.href='product.html?slug=${product.slug}'" style="cursor:pointer;" />
-                <h3 class="product-card-title">${product.title}</h3>
-                <span class="product-card-flavor-name">${product.flavorName || ''}</span>
-                <p class="product-card-desc">${product.flavorDesc || (product.description ? product.description.substring(0, 80) + '...' : '')}</p>
+                <img src="${safeImg}" alt="${safeTitle}" class="product-card-img" width="300" height="300" loading="lazy" onclick="window.location.href='product.html?slug=${encodeURIComponent(product.slug)}'" style="cursor:pointer;" />
+                <h3 class="product-card-title">${safeTitle}</h3>
+                <span class="product-card-flavor-name">${safeFlavor}</span>
+                <p class="product-card-desc">${safeDesc}</p>
                 
                 <div class="product-card-qty-wrapper">
                     <button class="btn-qty-plus" onclick="window.handleBoseCardQtyChange(this, 1)">+</button>
@@ -789,12 +798,135 @@
         return cleaned;
     };
 
+    /**
+     * 🛡️ [إصلاح حرج]: تحويل أي رقم هاتف مصري (محلي 01xxxxxxxxx أو دولي) لصيغة
+     * دولية موحدة وصحيحة بدون الصفر الأول، جاهزة للاستخدام المباشر في روابط
+     * wa.me. كانت الأكواد القديمة بتلزق "20" فوق الرقم المحلي زي ما هو، فيطلع
+     * رقم غلط فيه صفر زيادة (مثال: 2001097238441 بدل 201097238441).
+     */
+    window.toInternationalWhatsappNumber = function(phone) {
+        let cleaned = window.sanitizeBosePhoneNumber(phone || "");
+        if (cleaned.startsWith("0")) cleaned = cleaned.substring(1);
+        return "20" + cleaned;
+    };
+
+    /**
+     * 🛡️ [إصلاح حرج]: بناء رابط واتساب صحيح موحّد من مصدر واحد فقط، بدل تكرار
+     * منطق دمج الرقم يدوياً في أكثر من مكان (checkout، صفحة النجاح، الفوتر...).
+     */
+    window.buildWhatsappLink = function(phone, text) {
+        const intlNumber = window.toInternationalWhatsappNumber(phone);
+        return `https://wa.me/${intlNumber}?text=${encodeURIComponent(text || "")}`;
+    };
+
+    /**
+     * 🛡️ [إصلاح حرج]: حساب خصم الكوبون بشكل صحيح حسب نوعه الفعلي (نسبة % أو
+     * مبلغ ثابت جنيه). كان الكود القديم بيحسب أي كوبون كنسبة مئوية حتى لو
+     * كان نوعه "fixed"، وده كان بيسبب خصومات مالية أكبر بكتير من المقصود
+     * (مثال: كوبون BOOSY خصم ثابت 50 جنيه كان بيتحسب كـ 50% من الفاتورة).
+     */
+    window.calculateCouponDiscount = function(subtotal, coupon) {
+        const safeSubtotal = parseFloat(subtotal) || 0;
+        if (!coupon) return 0;
+        const value = parseFloat(coupon.value) || 0;
+        let discount = 0;
+        if (coupon.type === "fixed") {
+            discount = value;
+        } else {
+            // الافتراضي نسبة مئوية (percent) للتوافق مع أي كوبون قديم بدون type
+            discount = safeSubtotal * (value / 100);
+        }
+        // صمام أمان: الخصم ميزدش عن قيمة الفاتورة نفسها
+        return Math.max(0, Math.min(discount, safeSubtotal));
+    };
+
+    /**
+     * ⚡ [تحسين أداء وتوفير بيانات]: تطبيق بارامترات تحسين Cloudinary
+     * (ضغط تلقائي + صيغة حديثة + عرض محدد) على أي رابط صورة من Cloudinary،
+     * بدون أي تغيير على الروابط غير التابعة لـ Cloudinary.
+     */
+    window.optimizeBoseImageUrl = function(url, width) {
+        if (!url || typeof url !== "string") return url;
+        if (!url.includes("res.cloudinary.com") || !url.includes("/upload/")) return url;
+        const safeWidth = parseInt(width, 10) || 600;
+        const transform = `f_auto,q_auto,w_${safeWidth},c_limit`;
+        if (url.includes("/upload/f_auto") || url.includes("/upload/q_auto")) return url;
+        return url.replace("/upload/", `/upload/${transform}/`);
+    };
+
+    /**
+     * 🛡️ [إصلاح أمان]: تنقية أي نص قبل حقنه في innerHTML لمنع ثغرات XSS
+     * المحتملة مستقبلاً عند ربط محتوى المنتجات بلوحة تحكم يديرها الأدمن.
+     * دالة موحدة بدل تكرارها محلياً وبشكل غير متسق في كل صفحة على حدة.
+     */
+    window.escapeBoseHTML = function(str) {
+        if (str === null || str === undefined) return "";
+        return String(str)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    };
+
     window.validateBoseDeliverySchedule = function(dateStr, timeStr) {
         if (!dateStr || !timeStr) return false;
         const selectedDateTime = new Date(`${dateStr}T${timeStr}`);
         const currentDateTime = new Date(Date.now() + (window.boseServerTimeOffset || 0));
         if (selectedDateTime <= currentDateTime) return false;
         return (selectedDateTime - currentDateTime) / (1000 * 60 * 60) >= 23.95; 
+    };
+
+    /**
+     * 🛡️ [صمام أمان ضد التلاعب بالسعر]: بيانات السلة متخزنة في localStorage على
+     * جهاز العميل، وبالتالي قابلة للتعديل يدوياً (أدوات المطور). هذه الدالة
+     * بتعيد حساب سعر أي عنصر في السلة من نفس دوال التسعير المركزية ومن نفس
+     * بيانات المتجر الموثوقة (site-data-final.json)، بدل الوثوق بالسعر
+     * المخزّن مباشرة. لازم تُستدعى قبل عرض أي إجمالي وقبل إرسال أي طلب نهائي.
+     * ملحوظة: ده تحصين على مستوى المتصفح فقط، وليس بديلاً عن مراجعة السعر
+     * فعلياً من فريق الاستلام قبل تأكيد أي طلب طالما مفيش بوابة دفع مباشرة.
+     */
+    window.recalculateCartItemPrice = function(item) {
+        if (!item || !window.BoseStoreData) return parseFloat(item?.finalPrice) || 0;
+        const details = item.customDetails || {};
+
+        if (item.type === "custom-cake") {
+            return window.calculateCustomCakePrice(details.persons, { printingType: details.printingType });
+        }
+        if (item.type === "custom-flower") {
+            return window.calculateCustomFlowerPrice(details.flowerCount, {
+                hasSatinRibbon: details.hasSatinRibbon,
+                photoCount: details.photoCount,
+                hasPhotos: details.photoCount > 0,
+                hasGiftCard: details.hasGiftCard,
+                cashAmount: details.cashAmount,
+                chocolateBudget: details.hasChocolate ? details.chocolateBudget : 0
+            });
+        }
+
+        const product = window.BoseStoreData.products?.find(p => p.slug === item.productSlug);
+        if (!product) return parseFloat(item.finalPrice) || 0; // منتج غير موجود بالمنيو الحالي، لا يمكن التحقق
+
+        return window.calculateProductFinalPrice(product, {
+            printing: details.printingType,
+            extraToppingPrice: item.extraToppingPrice,
+            printingPrice: item.printingPrice
+        });
+    };
+
+    /**
+     * يعيد حساب أسعار كل عناصر السلة دفعة واحدة، ويرجع السلة بعد تصحيح أي
+     * سعر متلاعب فيه، بالإضافة لعلم يوضح هل حصل تصحيح فعلي أم لا.
+     */
+    window.recalculateFullCart = function(cart) {
+        let wasTampered = false;
+        const fixedCart = (cart || []).map(item => {
+            const trustedPrice = window.recalculateCartItemPrice(item);
+            const storedPrice = parseFloat(item.finalPrice) || 0;
+            if (Math.abs(trustedPrice - storedPrice) > 0.5) wasTampered = true;
+            return { ...item, finalPrice: parseFloat(trustedPrice.toFixed(4)) };
+        });
+        return { cart: fixedCart, wasTampered };
     };
 
     window.updateGlobalCartCounter = function() {
@@ -922,7 +1054,7 @@
                             <i class="fa-solid fa-bars-staggered"></i>
                         </button>
                         <a href="index.html" class="brand-logo-container">
-                            <img id="bose-store-logo" src="${data.store?.logo || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png'}" alt="لوجو حلويات بوسي الفاخرة" class="brand-logo-img" />
+                            <img id="bose-store-logo" src="${window.optimizeBoseImageUrl(data.store?.logo || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', 150)}" alt="لوجو حلويات بوسي الفاخرة" class="brand-logo-img" width="80" height="80" />
                             <span class="brand-name-display">حلويات بوسي</span>
                         </a>
                     </div>
@@ -940,7 +1072,7 @@
                 <div id="bose-sidebar-drawer" class="bose-sidebar-drawer" aria-hidden="true">
                     <div class="sidebar-header">
                         <div class="sidebar-logo-container">
-                            <img src="${data.store?.logo || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png'}" alt="لوجو حلويات بوسي" class="sidebar-logo" />
+                            <img src="${window.optimizeBoseImageUrl(data.store?.logo || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', 150)}" alt="لوجو حلويات بوسي" class="sidebar-logo" width="80" height="80" />
                             <span class="sidebar-brand-name">حلويات بوسي</span>
                         </div>
                         <button id="sidebar-close-btn" class="sidebar-close-btn" aria-label="إغلاق القائمة">
@@ -1005,7 +1137,7 @@
                     </div>
 
                     <div class="sidebar-footer-contacts">
-                        <a href="https://wa.me/${data.social?.whatsapp || '201097238441'}" target="_blank" class="sidebar-contact-pill">
+                        <a href="https://wa.me/${window.toInternationalWhatsappNumber(data.social?.whatsapp || '201097238441')}" target="_blank" class="sidebar-contact-pill">
                             <i class="fa-brands fa-whatsapp"></i>
                             <span>راسلنا فوري عبر الواتساب</span>
                         </a>
@@ -1040,7 +1172,7 @@
                     <div class="footer-grid-layout">
                         <div class="footer-column-block">
                             <div class="footer-brand-meta">
-                                <img src="${data.store?.logo || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png'}" alt="حلويات بوسي الفاخرة" class="footer-logo" />
+                                <img src="${window.optimizeBoseImageUrl(data.store?.logo || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', 150)}" alt="حلويات بوسي الفاخرة" class="footer-logo" width="80" height="80" />
                                 <span class="footer-title">حلويات بوسي</span>
                             </div>
                             <p id="footer-about-text" class="footer-about-paragraph">${data.footer?.about || 'صنعناها بحب لتهديها لمن تحب'}</p>
@@ -1048,7 +1180,7 @@
                                 <a href="${data.social?.facebook || '#'}" target="_blank" class="footer-social-icon-btn"><i class="fa-brands fa-facebook-f"></i></a>
                                 <a href="${data.social?.instagram || '#'}" target="_blank" class="footer-social-icon-btn"><i class="fa-brands fa-instagram"></i></a>
                                 <a href="${data.social?.tiktok || '#'}" target="_blank" class="footer-social-icon-btn"><i class="fa-brands fa-tiktok"></i></a>
-                                <a href="https://wa.me/${data.social?.whatsapp || '201097238441'}" target="_blank" class="footer-social-icon-btn"><i class="fa-brands fa-whatsapp"></i></a>
+                                <a href="https://wa.me/${window.toInternationalWhatsappNumber(data.social?.whatsapp || '201097238441')}" target="_blank" class="footer-social-icon-btn"><i class="fa-brands fa-whatsapp"></i></a>
                             </div>
                         </div>
                         <div class="footer-column-block">
@@ -1126,28 +1258,36 @@
         }
 
         if (searchField && resultsContainer) {
+            let searchDebounceTimer = null;
             searchField.addEventListener('input', (e) => {
-                const query = e.target.value.trim().toLowerCase();
-                if (!query) { resultsContainer.innerHTML = ''; return; }
+                clearTimeout(searchDebounceTimer);
+                const rawQuery = e.target.value;
+                searchDebounceTimer = setTimeout(() => {
+                    const query = rawQuery.trim().toLowerCase();
+                    if (!query) { resultsContainer.innerHTML = ''; return; }
 
-                const allProducts = window.BoseStoreData?.products || [];
-                const filtered = allProducts.filter(p => p.title?.toLowerCase().includes(query) || p.flavorName?.toLowerCase().includes(query));
+                    const allProducts = window.BoseStoreData?.products || [];
+                    const filtered = allProducts.filter(p => p.title?.toLowerCase().includes(query) || p.flavorName?.toLowerCase().includes(query));
 
-                let html = '';
-                filtered.forEach(p => {
-                    let targetUrl = (p.id === 'toort-custom-master' || p.slug === 'toort-custom-master') ? 'cake-builder.html' : 
-                                    ((p.id === 'flowers-master' || p.slug === 'flowers-master') ? 'flower-builder.html' : `product.html?slug=${p.slug}`);
-                    html += `
-                        <a href="${targetUrl}" class="search-result-card-item">
-                            <img src="${p.images ? p.images[0] : 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png'}" class="search-result-img" />
-                            <div class="search-result-info">
-                                <div class="search-result-name">${p.title} - ${p.flavorName || ''}</div>
-                            </div>
-                            <div class="search-result-price-view">${Math.round(p.price)} جنيه</div>
-                        </a>
-                    `;
-                });
-                resultsContainer.innerHTML = html || '<div class="search-no-results-msg">لم نجد أصنافاً تطابق بحثك.</div>';
+                    let html = '';
+                    filtered.forEach(p => {
+                        let targetUrl = (p.id === 'toort-custom-master' || p.slug === 'toort-custom-master') ? 'cake-builder.html' : 
+                                        ((p.id === 'flowers-master' || p.slug === 'flowers-master') ? 'flower-builder.html' : `product.html?slug=${encodeURIComponent(p.slug)}`);
+                        const safeImg = window.optimizeBoseImageUrl(p.images ? p.images[0] : 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', 120);
+                        const safeTitle = window.escapeBoseHTML(p.title);
+                        const safeFlavor = window.escapeBoseHTML(p.flavorName || '');
+                        html += `
+                            <a href="${targetUrl}" class="search-result-card-item">
+                                <img src="${safeImg}" class="search-result-img" width="60" height="60" loading="lazy" alt="${safeTitle}" />
+                                <div class="search-result-info">
+                                    <div class="search-result-name">${safeTitle} - ${safeFlavor}</div>
+                                </div>
+                                <div class="search-result-price-view">${Math.round(p.price)} جنيه</div>
+                            </a>
+                        `;
+                    });
+                    resultsContainer.innerHTML = html || '<div class="search-no-results-msg">لم نجد أصنافاً تطابق بحثك.</div>';
+                }, 200);
             });
         }
     }
