@@ -645,6 +645,41 @@
     .products-grid, .bose-products-grid { grid-template-columns: 1fr !important; }
 }
 
+/* [إصلاح تعارض]: #most-selling-grid و #new-arrivals-grid بالتحديد لازم يبقوا
+   سلايدر أفقي حقيقي (زي العروض والفئات بالظبط) مش شبكة ثابتة متعددة الصفوف --
+   القاعدة العامة فوق كانت بتلغي محاولة core-engine.js يحولهم لسلايدر أفقي
+   بسبب الـ !important، فكانت الدوتس بتظهر تحت شبكة أصلاً مش بتتحرك. */
+#most-selling-grid.bose-products-grid,
+#new-arrivals-grid.bose-products-grid {
+    display: flex !important;
+    grid-template-columns: none !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    flex-wrap: nowrap !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+}
+
+#most-selling-grid.bose-products-grid::-webkit-scrollbar,
+#new-arrivals-grid.bose-products-grid::-webkit-scrollbar {
+    display: none;
+}
+
+#most-selling-grid.bose-products-grid > *,
+#new-arrivals-grid.bose-products-grid > * {
+    flex: 0 0 auto !important;
+    scroll-snap-align: start !important;
+    width: 260px !important;
+}
+
+@media (max-width: 550px) {
+    #most-selling-grid.bose-products-grid > *,
+    #new-arrivals-grid.bose-products-grid > * {
+        width: 78vw !important;
+    }
+}
+
 @media (max-width: 767px) {
     #our-products-grid.products-grid {
         display: grid !important;
@@ -1313,15 +1348,23 @@
 
 /* ==========================================================================
    16. مؤشرات تصفح الـ Dots الموحدة
+   [إصلاح]: .bose-dots-container مكنتش معرّفة بأي تنسيق خالص قبل كده (كانت
+   السبب في ظهور الدوتس في مكان غلط تحت السلايدرات) -- دلوقتي موحّدة مع
+   .categories-slider-dots بنفس الشكل بالظبط: منتصف الصفحة تماماً تحت كل سلايدر.
    ========================================================================== */
-.categories-slider-dots {
-    display: flex !important;
+.categories-slider-dots,
+.bose-dots-container {
     justify-content: center !important;
     align-items: center !important;
     gap: 8px !important;
     margin-top: 26px !important;
     width: 100% !important;
     user-select: none;
+}
+
+.categories-slider-dots:not([hidden]),
+.bose-dots-container:not([hidden]) {
+    display: flex !important; /* مقيّدة بـ :not([hidden]) عشان ميحصلش ظهور فارغ قبل ما الجافاسكريبت يملأها */
 }
 
 .bose-slider-dot {
