@@ -902,6 +902,67 @@
     };
 
     /**
+     * 🧮 [إصلاح حرج - المرحلة 1]: الدالة الموحدة الوحيدة لحساب فاتورة السلة/الشحن/الطلب النهائي.
+     * تُستخدم من cart-engine.js في 3 نقاط: ملخص السلة، ملخص الشحن بالـ checkout، وتأكيد الطلب النهائي،
+     * لضمان تطابق الأرقام بالمليم في كل مرحلة من رحلة الشراء.
+     * القاعدة المالية الصارمة: لا تقريب على الأسعار الفردية أو subtotal/discount، والتقريب الوحيد
+     * يتم مرة واحدة وحصرياً على الإجمالي الكلي النهائي (grandTotal).
+     * @param {Array} cart
+     * @param {Object} storeData
+     * @param {number} shippingFee
+     * @returns {{subtotal: number, discount: number, shippingFee: number, grandTotal: number, itemsCount: number}}
+     */
+    window.calculateBoseInvoice = function(cart, storeData, shippingFee) {
+        const safeCart = Array.isArray(cart) ? cart : [];
+        const safeShippingFee = parseFloat(String(shippingFee)) || 0;
+
+        let subtotal = 0;
+        let itemsCount = 0;
+        safeCart.forEach((/** @type {any} */ item) => {
+            const unitPrice = parseFloat(item.finalPrice) || 0;
+            const qty = parseInt(item.quantity, 10) || 1;
+            subtotal += unitPrice * qty;
+            itemsCount += qty;
+        });
+        subtotal = parseFloat(subtotal.toFixed(4));
+
+        let discount = 0;
+        try {
+            const activeCouponCode = localStorage.getItem("bose_active_coupon");
+            if (activeCouponCode && storeData && Array.isArray(storeData.coupons)) {
+                const activeCoupon = storeData.coupons.find((/** @type {any} */ c) => c.code === activeCouponCode);
+                if (activeCoupon) {
+                    discount = window.calculateCouponDiscount(subtotal, activeCoupon);
+                }
+            }
+        } catch (e) {
+            discount = 0;
+        }
+        discount = parseFloat(discount.toFixed(4));
+
+        const grandTotal = Math.round(Math.max(0, subtotal - discount) + safeShippingFee);
+
+        return {
+            subtotal: subtotal,
+            discount: discount,
+            shippingFee: safeShippingFee,
+            grandTotal: grandTotal,
+            itemsCount: itemsCount
+        };
+    };
+
+    /**
+     * 🆔 [إصلاح حرج - المرحلة 1]: توليد رقم طلب فريد فعلياً (طابع زمني بصيغة Base36 + رقم عشوائي)
+     * لمنع تصادم أرقام الطلبات بين عمليتي شراء متزامنتين.
+     * @returns {string}
+     */
+    window.generateBoseOrderId = function() {
+        const timestampPart = Date.now().toString(36).toUpperCase();
+        const randomPart = Math.floor(1000 + Math.random() * 9000);
+        return `${timestampPart}${randomPart}`;
+    };
+
+    /**
      * @param {string} url
      * @param {number|string} width
      * @returns {string}
