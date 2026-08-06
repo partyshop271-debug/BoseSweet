@@ -1,7 +1,8 @@
 /**
  * core-engine.js - المحرك المركزي العالمي وحارس البيانات والحسابات المالية
- * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية الملوكية المطورة V12.9
- * [تحديث شامل وتوافق تام]: دعم تبويب الأقسام السريع، سلايدر العروض والخصومات، والتبويب السفلي الثابت.
+ * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية الملوكية المطورة V13.0
+ * [تحديث شامل وتوافق تام]: حل كافة تنبيهات الأنواع الضمنية (Implicit Any Warnings)، 
+ * توثيق المعاملات الموحد، ودعم تبويب الأقسام والسلايدرات بمرونة وأمان كامل.
  * محظور الحذف، الاختصار، الدمج، أو التبسيط نهائياً تماشياً مع فلسفة العلامة الفاخرة.
  */
 
@@ -20,9 +21,7 @@
     document.addEventListener('DOMContentLoaded', forceScrollToTop);
     window.addEventListener('load', forceScrollToTop);
 
-    // [إصلاح أداء]: تشغيل حقن الخطوط والأيقونات فوراً من هنا بدل ما تستنى خلاص
-    // تحميل ملف قاعدة البيانات (JSON) الأول -- كانت قبل كده بتتأخر لحد ما تخلص
-    // initCoreFlow، يعني الأيقونات والخط كانوا بياخدوا وقت زيادة يظهروا من غير داعي.
+    // تشغيل حقن الخطوط والأيقونات فوراً من هنا لسرعة الظهور
     injectEarlyDependencies();
 
     // تهيئة المتغيرات العالمية الموحدة في نطاق window لخدمة صفحات الموقع
@@ -31,13 +30,14 @@
 
     /**
      * جلب وقراءة قاعدة بيانات حلويات بوسي الموحدة - نظام الكاش الذكي الموفر للبيانات والباقة
+     * @returns {Promise<void>}
      */
     async function loadStoreDatabase() {
         if (window.BoseStoreData) return;
         
         const cachedData = localStorage.getItem('bose_cached_store_data');
         const cachedTime = localStorage.getItem('bose_cached_store_time');
-        const cacheExpiry = 15 * 60 * 1000; // صلاحية الكاش 15 دقيقة لضمان حداثة الأسعار والروقان
+        const cacheExpiry = 15 * 60 * 1000; // صلاحية الكاش 15 دقيقة لضمان حداثة الأسعار
 
         if (cachedData && cachedTime && (Date.now() - parseInt(cachedTime, 10) < cacheExpiry)) {
             try {
@@ -98,7 +98,6 @@
             window.updateGlobalCartCounter();
         }
         
-        // استدعاء جميع الدوال بالترتيب الصحيح لضمان حقن البيانات في كافة الأقسام
         injectHomepageSectionMeta();
         renderDynamicWaterfall();
         renderOffersSection();
@@ -107,10 +106,6 @@
         injectSimulatorsPreviewData();
         setupPrideCountersAnimation();
         
-        // تشغيل معالجات الحركة القياسية المتطورة للأقسام عبر السلايدر الموحد
-        // [إصلاح]: استبدال setTimeout(100) الثابت غير الموثوق (كان ممكن يفشل على
-        // الأجهزة البطيئة) بـ requestAnimationFrame مضاعف يضمن اكتمال رسم الـ DOM
-        // فعلياً قبل تفعيل السلايدرات، بدل رقم تخميني ثابت بالمللي ثانية.
         requestAnimationFrame(() => {
             requestAnimationFrame(() => {
                 setupBoseUnifiedSliderEngine('offers-slider-track', 'offers-dots-container', 'offers-carousel-section');
@@ -120,8 +115,6 @@
             });
         });
 
-        // [جديد]: تفعيل السحب اليدوي لتبويب الفئات أسفل زر "اطلب الآن" -- كان قبل
-        // كده بيتحرك تلقائياً بس عبر CSS بدون أي استجابة للمس أو السحب بالإصبع
         setupHeroTickerDragEngine();
         
         document.dispatchEvent(new CustomEvent('BoseDatabaseLoaded', { detail: window.BoseStoreData }));
@@ -129,27 +122,24 @@
 
     /**
      * 👑 محرك سحب تبويب الفئات أسفل زر "اطلب الآن" (Hero Categories Ticker)
-     * التبويب دلوقتي ثابت في مكانه تماماً (من غير أي حركة تلقائية) وبيستجيب
-     * للسحب اليدوي باللمس أو الماوس فقط، براحة العميل، يمين وشمال، بحدود
-     * طول المحتوى الفعلي (مفيش تكرار للعناصر ولا لفة لا نهائية).
      */
     function setupHeroTickerDragEngine() {
+        /** @type {HTMLElement|null} */
         const track = document.querySelector('.hero-categories-ticker-track');
         if (!track) return;
 
         let posX = 0;
-        let minX = 0; // أقصى مسافة لليمين المسموح نسحب لها المحتوى (بيتحسب تحت)
+        let minX = 0;
         let isDragging = false;
         let dragMoved = false;
         let startX = 0;
         let startPosX = 0;
 
         const recalcBounds = () => {
+            if (!track.parentElement) return;
             const wrapperWidth = track.parentElement.clientWidth;
             const contentWidth = track.scrollWidth;
-            // لو المحتوى أصلاً أقصر من عرض الشاشة، مفيش داعي لأي سحب خالص
             minX = Math.min(0, wrapperWidth - contentWidth);
-            // نضمن إن الموضع الحالي لسه جوه الحدود الجديدة بعد أي تغيير في حجم الشاشة
             posX = Math.max(minX, Math.min(0, posX));
             applyTransform();
         };
@@ -158,20 +148,23 @@
             track.style.transform = `translate3d(${posX}px, 0, 0)`;
         };
 
+        /** @param {PointerEvent} e */
         const onPointerDown = (e) => {
             isDragging = true;
             dragMoved = false;
             startX = e.clientX;
             startPosX = posX;
             track.classList.add('is-dragging');
-            track.setPointerCapture?.(e.pointerId);
+            if (typeof track.setPointerCapture === 'function') {
+                track.setPointerCapture(e.pointerId);
+            }
         };
 
+        /** @param {PointerEvent} e */
         const onPointerMove = (e) => {
             if (!isDragging) return;
             const delta = e.clientX - startX;
             if (Math.abs(delta) > 6) dragMoved = true;
-            // تأثير مطاطي ناعم لو العميل سحب أبعد من حدود المحتوى
             let next = startPosX + delta;
             if (next > 0) next = next * 0.35;
             if (next < minX) next = minX + (next - minX) * 0.35;
@@ -179,17 +172,19 @@
             applyTransform();
         };
 
+        /** @param {PointerEvent} e */
         const onPointerUp = (e) => {
             if (!isDragging) return;
             isDragging = false;
             track.classList.remove('is-dragging');
-            track.releasePointerCapture?.(e.pointerId);
-            // رجوع سلس داخل الحدود لو حصل تأثير مطاطي عند السحب لأبعد من الحد
+            if (typeof track.releasePointerCapture === 'function') {
+                track.releasePointerCapture(e.pointerId);
+            }
             posX = Math.max(minX, Math.min(0, posX));
             applyTransform();
 
-            // منع فتح رابط الفئة بالخطأ لو العميل كان بيسحب مش بيدوس فعلياً
             if (dragMoved) {
+                /** @param {MouseEvent} clickEvent */
                 const suppressClick = (clickEvent) => {
                     clickEvent.preventDefault();
                     clickEvent.stopPropagation();
@@ -230,7 +225,7 @@
             
             const track = document.getElementById('categories-track') || categoriesSection.querySelector('.categories-track-slider') || categoriesSection.querySelector('[id*="track"]');
             if (track) {
-                track.innerHTML = data.homepage.categoriesSlider.map(cat => `
+                track.innerHTML = data.homepage.categoriesSlider.map(/** @param {Object} cat */ (cat) => `
                     <div class="category-card-unified" onclick="window.location.href='category.html?category=${encodeURIComponent(cat.id)}'">
                         <img src="${window.optimizeBoseImageUrl(cat.image, 250)}" alt="${window.escapeBoseHTML(cat.title)}" class="category-card-img" width="180" height="180" loading="lazy" />
                         <div class="category-card-name">${window.escapeBoseHTML(cat.title)}</div>
@@ -274,13 +269,11 @@
         const data = window.BoseStoreData;
         let offersData = data?.homepage?.offers || [];
 
-        // في حالة عدم توفر مصفوفة عروض مخصصة، نستخدم المنتجات التي تحتوي على خصم أو وسوم عروض
         if (offersData.length === 0 && data?.products) {
-            offersData = data.products.filter(p => p.oldPrice && p.oldPrice > p.price);
+            offersData = data.products.filter(/** @param {Object} p */ (p) => p.oldPrice && p.oldPrice > p.price);
         }
 
         if (offersData.length === 0) {
-            // بيانات افتراضية توضيحية لضمان العرض
             offersData = [
                 {
                     id: "offer-1",
@@ -305,15 +298,26 @@
             ];
         }
 
-        offersTrack.innerHTML = offersData.map(offer => {
-            const oldPriceHtml = offer.oldPrice ? `<span class="product-old-price" style="text-decoration: line-through; color: #888; font-size: 13px; margin-left: 8px;">${offer.oldPrice} جنيه</span>` : '';
-            const safeImg = window.optimizeBoseImageUrl(offer.images[0], 400);
+        offersTrack.innerHTML = offersData.map(/** @param {Object} offer */ (offer) => {
+            const hasDiscount = offer.oldPrice && offer.oldPrice > offer.price;
+            const oldPriceHtml = hasDiscount ? `<span class="product-old-price" style="text-decoration: line-through; color: #888; font-size: 13px; margin-left: 8px;">${offer.oldPrice} جنيه</span>` : '';
+
+            let discountBadgeHtml = '<div class="offer-badge bose-offer-badge" style="position: absolute; top: 10px; right: 10px; background: #FF91A4; color: #FFFFFF; font-weight: 700; font-size: 12px; padding: 4px 10px; border-radius: 12px; z-index: 2;">خصم خاص</div>';
+            let savingsHtml = '';
+            if (hasDiscount) {
+                const savingsAmount = offer.oldPrice - offer.price;
+                const discountPercent = Math.round((savingsAmount / offer.oldPrice) * 100);
+                discountBadgeHtml = `<div class="offer-badge bose-offer-badge" style="position: absolute; top: 10px; right: 10px; background: #FF91A4; color: #FFFFFF; font-weight: 700; font-size: 12px; padding: 4px 10px; border-radius: 12px; z-index: 2;">خصم ${discountPercent}%</div>`;
+                savingsHtml = `<span class="offer-savings-note" style="display: block; color: #2E7D32; font-size: 12px; font-weight: 700; margin-top: 4px;">وفر ${Math.round(savingsAmount)} جنيه</span>`;
+            }
+
+            const safeImg = window.optimizeBoseImageUrl(offer.images ? offer.images[0] : '', 400);
             const safeTitle = window.escapeBoseHTML(offer.title);
             const safeFlavor = window.escapeBoseHTML(offer.flavorName || '');
             const safeDesc = window.escapeBoseHTML(offer.description ? (offer.description.substring(0, 75) + '...') : '');
             return `
                 <div class="product-card-unified offer-card bose-offer-card" data-id="${offer.id}">
-                    <div class="offer-badge bose-offer-badge" style="position: absolute; top: 10px; right: 10px; background: #FF91A4; color: #FFFFFF; font-weight: 700; font-size: 12px; padding: 4px 10px; border-radius: 12px; z-index: 2;">خصم خاص</div>
+                    ${discountBadgeHtml}
                     <img src="${safeImg}" alt="${safeTitle}" class="product-card-img" width="300" height="300" loading="lazy" onclick="window.location.href='product.html?slug=${encodeURIComponent(offer.slug)}'" style="cursor:pointer;" />
                     <h3 class="product-card-title">${safeTitle}</h3>
                     <span class="product-card-flavor-name">${safeFlavor}</span>
@@ -328,6 +332,7 @@
                     <div class="product-card-price" data-base-price="${offer.price}">
                         ${oldPriceHtml}
                         <span>${Math.round(offer.price)} جنيه</span>
+                        ${savingsHtml}
                     </div>
                     <button class="btn-add-to-cart" onclick="window.handleBoseDirectAddToCart(this, '${offer.id}')">
                         <i class="fa-solid fa-basket-shopping"></i> اضافة للسلة
@@ -339,21 +344,22 @@
 
     /**
      * 👑 [محرك التعمير الموحد لكافة الحركات الأفقية والسلايدرات]
+     * @param {string} trackId
+     * @param {string} dotsContainerId
+     * @param {string} sectionId
      */
     function setupBoseUnifiedSliderEngine(trackId, dotsContainerId, sectionId) {
+        /** @type {HTMLElement|null} */
         const track = document.getElementById(trackId);
         const section = document.getElementById(sectionId) || (track ? track.closest('section') : null);
         if (!track) return;
-
-        // [تنظيف]: display/overflow-x/scroll-snap بقوا مملوكين بالكامل من main.css
-        // (كانت الأسطر دي مكررة هنا زيادة عن الحاجة بعد توحيد تنسيق كل التراكات الأربعة)
 
         const cards = track.children;
         const count = cards.length;
         if (count === 0) return;
 
-        for (let card of cards) {
-            card.style.scrollSnapAlign = 'center';
+        for (let i = 0; i < cards.length; i++) {
+            /** @type {HTMLElement} */ (cards[i]).style.scrollSnapAlign = 'center';
         }
 
         let dotsContainer = document.getElementById(dotsContainerId) || (section ? section.querySelector('.bose-dots-container') : null);
@@ -370,14 +376,15 @@
         const dots = dotsContainer ? dotsContainer.querySelectorAll('.bose-slider-dot') : [];
 
         const syncDotsAndPosition = () => {
-            const cardWidth = cards[0].offsetWidth + parseInt(window.getComputedStyle(track).gap || 20);
+            const cardEl = /** @type {HTMLElement} */ (cards[0]);
+            const cardWidth = cardEl.offsetWidth + parseInt(window.getComputedStyle(track).gap || '20', 10);
             const scrollPosition = track.scrollLeft;
             let activeIndex = Math.round(scrollPosition / cardWidth);
             
             if (activeIndex < 0) activeIndex = 0;
             if (activeIndex >= count) activeIndex = count - 1;
 
-            dots.forEach((dot, idx) => {
+            dots.forEach((/** @type {Element} */ dot, /** @type {number} */ idx) => {
                 dot.classList.toggle('active', idx === activeIndex);
             });
         };
@@ -386,11 +393,13 @@
 
         if (dotsContainer) {
             dotsContainer.addEventListener('click', (e) => {
-                const dot = e.target.closest('.bose-slider-dot');
+                const target = /** @type {HTMLElement} */ (e.target);
+                const dot = target.closest('.bose-slider-dot');
                 if (!dot) return;
-                const index = parseInt(dot.getAttribute('data-index'), 10);
+                const index = parseInt(dot.getAttribute('data-index') || '0', 10);
                 if (cards[index]) {
-                    const cardWidth = cards[0].offsetWidth + parseInt(window.getComputedStyle(track).gap || 20);
+                    const cardEl = /** @type {HTMLElement} */ (cards[0]);
+                    const cardWidth = cardEl.offsetWidth + parseInt(window.getComputedStyle(track).gap || '20', 10);
                     track.style.scrollBehavior = 'smooth';
                     track.scrollTo({ left: cardWidth * index, behavior: 'smooth' });
                 }
@@ -402,7 +411,10 @@
             const prevBtn = section.querySelector('.offers-nav-prev') || section.querySelector('.bose-slider-arrow.prev');
             
             if (nextBtn && prevBtn) {
-                const getScrollStep = () => cards[0].offsetWidth + parseInt(window.getComputedStyle(track).gap || 20);
+                const getScrollStep = () => {
+                    const cardEl = /** @type {HTMLElement} */ (cards[0]);
+                    return cardEl.offsetWidth + parseInt(window.getComputedStyle(track).gap || '20', 10);
+                };
                 
                 nextBtn.addEventListener('click', (e) => {
                     e.preventDefault();
@@ -420,16 +432,20 @@
 
         let isDragging = false, startX = 0, startScrollLeft = 0;
 
+        /** @param {MouseEvent|TouchEvent} e */
         const onDragStart = (e) => {
             isDragging = true;
             track.style.scrollBehavior = 'auto';
-            startX = (e.pageX || e.touches[0].pageX) - track.offsetLeft;
+            const pageX = 'touches' in e ? e.touches[0].pageX : e.pageX;
+            startX = pageX - track.offsetLeft;
             startScrollLeft = track.scrollLeft;
         };
 
+        /** @param {MouseEvent|TouchEvent} e */
         const onDragMove = (e) => {
             if (!isDragging) return;
-            const x = (e.pageX || e.touches[0].pageX) - track.offsetLeft;
+            const pageX = 'touches' in e ? e.touches[0].pageX : e.pageX;
+            const x = pageX - track.offsetLeft;
             const walk = (x - startX) * 1.5;
             track.scrollLeft = startScrollLeft - walk;
         };
@@ -459,20 +475,24 @@
         if (!waterfallData) return;
 
         if (leftCol && waterfallData.leftColumnImages) {
-            const leftHtml = waterfallData.leftColumnImages.map(img => 
+            const leftHtml = waterfallData.leftColumnImages.map(/** @param {string} img */ (img) => 
                 `<img src="${window.optimizeBoseImageUrl(img, 300)}" alt="منتج فاخر حلويات بوسي" class="waterfall-img" width="220" height="220" loading="lazy" />`
             ).join('');
             leftCol.innerHTML = `<div class="waterfall-up">${leftHtml} ${leftHtml}</div>`;
         }
 
         if (rightCol && waterfallData.rightColumnImages) {
-            const rightHtml = waterfallData.rightColumnImages.map(img => 
+            const rightHtml = waterfallData.rightColumnImages.map(/** @param {string} img */ (img) => 
                 `<img src="${window.optimizeBoseImageUrl(img, 300)}" alt="منتج راقي حلويات بوسي" class="waterfall-img" width="220" height="220" loading="lazy" />`
             ).join('');
             rightCol.innerHTML = `<div class="waterfall-down">${rightHtml} ${rightHtml}</div>`;
         }
     }
 
+    /**
+     * @param {Object} product
+     * @returns {string}
+     */
     function createProductCardHTML(product) {
         if (!product) return '';
         const calculatedPrice = window.calculateProductFinalPrice(product, {});
@@ -503,11 +523,16 @@
         `;
     }
 
+    /**
+     * @param {HTMLElement} buttonElement
+     * @param {number} direction
+     */
     window.handleBoseCardQtyChange = function(buttonElement, direction) {
         const qtyContainer = buttonElement.closest('.product-card-qty-wrapper');
         const cardContainer = buttonElement.closest('.product-card-unified');
         if (!qtyContainer || !cardContainer) return;
 
+        /** @type {HTMLInputElement|null} */
         const qtyInput = qtyContainer.querySelector('.input-qty-value');
         const priceDisplay = cardContainer.querySelector('.product-card-price');
         if (!qtyInput || !priceDisplay) return;
@@ -517,7 +542,7 @@
         if (currentQty < 1) currentQty = 1;
         qtyInput.value = String(currentQty);
 
-        const basePrice = parseFloat(priceDisplay.getAttribute('data-base-price')) || 0;
+        const basePrice = parseFloat(priceDisplay.getAttribute('data-base-price') || '0') || 0;
         priceDisplay.textContent = `${Math.round(basePrice * currentQty)} جنيه`;
     };
 
@@ -527,20 +552,20 @@
 
         const mostSellingGrid = document.getElementById('most-selling-grid');
         if (mostSellingGrid && data.homepage.mostSelling) {
-            const items = data.homepage.mostSelling.map(id => data.products.find(p => p.id === id || p.slug === id)).filter(Boolean);
-            mostSellingGrid.innerHTML = items.map(p => createProductCardHTML(p)).join('');
+            const items = data.homepage.mostSelling.map(/** @param {string} id */ (id) => data.products.find((/** @type {any} */ p) => p.id === id || p.slug === id)).filter(Boolean);
+            mostSellingGrid.innerHTML = items.map((/** @type {any} */ p) => createProductCardHTML(p)).join('');
         }
 
         const newArrivalsGrid = document.getElementById('new-arrivals-grid');
         if (newArrivalsGrid && data.homepage.newArrivals) {
-            const items = data.homepage.newArrivals.map(id => data.products.find(p => p.id === id || p.slug === id)).filter(Boolean);
-            newArrivalsGrid.innerHTML = items.map(p => createProductCardHTML(p)).join('');
+            const items = data.homepage.newArrivals.map(/** @param {string} id */ (id) => data.products.find((/** @type {any} */ p) => p.id === id || p.slug === id)).filter(Boolean);
+            newArrivalsGrid.innerHTML = items.map((/** @type {any} */ p) => createProductCardHTML(p)).join('');
         }
 
         const ourProductsGrid = document.getElementById('our-products-grid');
         if (ourProductsGrid && data.homepage.ourProducts) {
-            const initialItems = data.homepage.ourProducts.slice(0, 4).map(id => data.products.find(p => p.id === id || p.slug === id)).filter(Boolean);
-            ourProductsGrid.innerHTML = initialItems.map(p => createProductCardHTML(p)).join('');
+            const initialItems = data.homepage.ourProducts.slice(0, 4).map(/** @param {string} id */ (id) => data.products.find((/** @type {any} */ p) => p.id === id || p.slug === id)).filter(Boolean);
+            ourProductsGrid.innerHTML = initialItems.map((/** @type {any} */ p) => createProductCardHTML(p)).join('');
         }
     }
 
@@ -556,8 +581,8 @@
 
         showMoreBtn.addEventListener('click', function(e) {
             e.preventDefault();
-            const allItems = data.homepage.ourProducts.map(id => data.products.find(p => p.id === id || p.slug === id)).filter(Boolean);
-            ourProductsGrid.innerHTML = allItems.map(p => createProductCardHTML(p)).join('');
+            const allItems = data.homepage.ourProducts.map(/** @param {string} id */ (id) => data.products.find((/** @type {any} */ p) => p.id === id || p.slug === id)).filter(Boolean);
+            ourProductsGrid.innerHTML = allItems.map((/** @type {any} */ p) => createProductCardHTML(p)).join('');
             showMoreBtn.style.setProperty('display', 'none', 'important'); 
         });
     }
@@ -569,10 +594,10 @@
         const cakeSection = document.getElementById('cake-preview-section');
         if (cakeSection && data.homepage.cakePreview) {
             const preview = data.homepage.cakePreview;
-            const imgEl = cakeSection.querySelector('#cake-preview-img');
+            /** @type {HTMLImageElement|null} */ const imgEl = cakeSection.querySelector('#cake-preview-img');
             const titleEl = cakeSection.querySelector('#cake-preview-title');
             const descEl = cakeSection.querySelector('#cake-preview-desc');
-            const ctaEl = cakeSection.querySelector('#cake-preview-cta');
+            /** @type {HTMLAnchorElement|null} */ const ctaEl = cakeSection.querySelector('#cake-preview-cta');
 
             if (imgEl && preview.image) imgEl.src = preview.image;
             if (titleEl && preview.title) titleEl.textContent = preview.title;
@@ -586,10 +611,10 @@
         const flowerSection = document.getElementById('flower-preview-section');
         if (flowerSection && data.homepage.flowerPreview) {
             const preview = data.homepage.flowerPreview;
-            const imgEl = flowerSection.querySelector('#flower-preview-img');
+            /** @type {HTMLImageElement|null} */ const imgEl = flowerSection.querySelector('#flower-preview-img');
             const titleEl = flowerSection.querySelector('#flower-preview-title');
             const descEl = flowerSection.querySelector('#flower-preview-desc');
-            const ctaEl = flowerSection.querySelector('#flower-preview-cta');
+            /** @type {HTMLAnchorElement|null} */ const ctaEl = flowerSection.querySelector('#flower-preview-cta');
 
             if (imgEl && preview.image) imgEl.src = preview.image;
             if (titleEl && preview.title) titleEl.textContent = preview.title;
@@ -607,6 +632,11 @@
 
         const statsData = window.BoseStoreData.homepage.pride.stats;
         
+        /**
+         * @param {Element} el
+         * @param {number} target
+         * @param {string} suffix
+         */
         const animateCounter = (el, target, suffix) => {
             let current = 0;
             const duration = 2000;
@@ -625,9 +655,9 @@
         };
 
         const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
+            entries.forEach((entry) => {
                 if (entry.isIntersecting) {
-                    Object.keys(statsData).forEach(key => {
+                    Object.keys(statsData).forEach((key) => {
                         const targetEl = prideSection.querySelector(`[data-stat="${key}"]`) || document.getElementById(`pride-stat-${key}`);
                         if (targetEl && !targetEl.classList.contains('animated')) {
                             targetEl.classList.add('animated');
@@ -642,6 +672,11 @@
         observer.observe(prideSection);
     }
 
+    /**
+     * @param {number} basePrice
+     * @param {string} applyOnContext
+     * @returns {number}
+     */
     window.calculateBosePrice = function(basePrice, applyOnContext = "menu-only") {
         if (!window.BoseStoreData) return basePrice;
         const rule = window.BoseStoreData.store.priceIncrease;
@@ -651,6 +686,11 @@
         return basePrice;
     };
 
+    /**
+     * @param {Object} product
+     * @param {Object} selectedOptions
+     * @returns {number}
+     */
     window.calculateProductFinalPrice = function(product, selectedOptions) {
         const opts = selectedOptions || {};
         let price = 0;
@@ -666,7 +706,7 @@
                 if (product.customizationOptions && product.customizationOptions.printing) {
                     const printOptions = product.customizationOptions.printing.options;
                     if (Array.isArray(printOptions)) {
-                        const printingOpt = printOptions.find(opt => opt.id === selectedPrinting || opt.type === selectedPrinting);
+                        const printingOpt = printOptions.find((/** @type {any} */ opt) => opt.id === selectedPrinting || opt.type === selectedPrinting);
                         if (printingOpt) printingFee = printingOpt.price;
                     }
                 }
@@ -687,9 +727,14 @@
         return window.calculateBosePrice(price, "menu-only");
     };
 
+    /**
+     * @param {number|string} persons
+     * @param {Object} options
+     * @returns {number}
+     */
     window.calculateCustomCakePrice = function(persons, options = {}) {
         const config = window.BoseStoreData?.cakeBuilder;
-        const safePersons = parseInt(persons, 10) || (config ? config.persons.minimum : 10) || 10;
+        const safePersons = parseInt(String(persons), 10) || (config ? config.persons.minimum : 10) || 10;
         let price = (config ? config.basePrice : 580) || 580;
         const minPersons = (config ? config.persons.minimum : 10) || 10;
         const pricePerPerson = (config ? config.pricePerPerson : 145) || 145; 
@@ -700,7 +745,7 @@
         if (selectedPrinting && selectedPrinting !== 'none') {
             let printingFee = 0;
             if (config && config.printingOptions) {
-                const printOpt = config.printingOptions.find(opt => opt.id === selectedPrinting);
+                const printOpt = config.printingOptions.find((/** @type {any} */ opt) => opt.id === selectedPrinting);
                 if (printOpt) printingFee = printOpt.price;
             }
             if (printingFee === 0) {
@@ -712,10 +757,15 @@
         return window.calculateBosePrice(price, "menu-only");
     };
 
+    /**
+     * @param {number|string} flowerCount
+     * @param {Object} options
+     * @returns {number}
+     */
     window.calculateCustomFlowerPrice = function(flowerCount, options = {}) {
         const basePrice = 400; 
         const extraFlowerPrice = 35; 
-        const safeFlowerCount = parseInt(flowerCount, 10) || 15;
+        const safeFlowerCount = parseInt(String(flowerCount), 10) || 15;
         const extraFlowers = Math.max(0, safeFlowerCount - 15);
         let servicePrice = basePrice + (extraFlowers * extraFlowerPrice);
         if (options.hasSatinRibbon) servicePrice += 50; 
@@ -729,6 +779,12 @@
         return finalServicePrice + safeCashAmount + safeChocolateBudget;
     };
 
+    /**
+     * @param {Object} product
+     * @param {Object} selectedOptions
+     * @param {number} quantity
+     * @returns {Object|null}
+     */
     window.createCartItem = function(product, selectedOptions, quantity = 1) {
         if (!product) return null;
         const opts = selectedOptions || {};
@@ -759,7 +815,7 @@
             flavorName: correctFlavor,
             basePrice: parseFloat((product.price || product.basePrice || 0).toFixed(4)),
             finalPrice: parseFloat(finalUnitPrice.toFixed(4)),
-            quantity: parseInt(quantity, 10) || 1,
+            quantity: parseInt(String(quantity), 10) || 1,
             image: (product.images && product.images[0]) || product.image || "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
             type: product.type || (product.isMiniCake ? "mini-cake" : "standard"),
             customDetails: {
@@ -783,12 +839,21 @@
         };
     };
 
+    /**
+     * @param {string} phone
+     * @param {boolean} isOptional
+     * @returns {boolean}
+     */
     window.validateBosePhoneNumber = function(phone, isOptional = false) {
         if (!phone || phone.trim() === "") return isOptional;
         const cleaned = window.sanitizeBosePhoneNumber(phone);
         return /^01[0125][0-9]{8}$/.test(cleaned);
     };
 
+    /**
+     * @param {string} phone
+     * @returns {string}
+     */
     window.sanitizeBosePhoneNumber = function(phone) {
         if (!phone) return "";
         let cleaned = phone.trim().replace(/[\s\-\(\)\+]/g, "");
@@ -799,10 +864,8 @@
     };
 
     /**
-     * 🛡️ [إصلاح حرج]: تحويل أي رقم هاتف مصري (محلي 01xxxxxxxxx أو دولي) لصيغة
-     * دولية موحدة وصحيحة بدون الصفر الأول، جاهزة للاستخدام المباشر في روابط
-     * wa.me. كانت الأكواد القديمة بتلزق "20" فوق الرقم المحلي زي ما هو، فيطلع
-     * رقم غلط فيه صفر زيادة (مثال: 2001097238441 بدل 201097238441).
+     * @param {string} phone
+     * @returns {string}
      */
     window.toInternationalWhatsappNumber = function(phone) {
         let cleaned = window.sanitizeBosePhoneNumber(phone || "");
@@ -811,8 +874,9 @@
     };
 
     /**
-     * 🛡️ [إصلاح حرج]: بناء رابط واتساب صحيح موحّد من مصدر واحد فقط، بدل تكرار
-     * منطق دمج الرقم يدوياً في أكثر من مكان (checkout، صفحة النجاح، الفوتر...).
+     * @param {string} phone
+     * @param {string} text
+     * @returns {string}
      */
     window.buildWhatsappLink = function(phone, text) {
         const intlNumber = window.toInternationalWhatsappNumber(phone);
@@ -820,44 +884,40 @@
     };
 
     /**
-     * 🛡️ [إصلاح حرج]: حساب خصم الكوبون بشكل صحيح حسب نوعه الفعلي (نسبة % أو
-     * مبلغ ثابت جنيه). كان الكود القديم بيحسب أي كوبون كنسبة مئوية حتى لو
-     * كان نوعه "fixed"، وده كان بيسبب خصومات مالية أكبر بكتير من المقصود
-     * (مثال: كوبون BOOSY خصم ثابت 50 جنيه كان بيتحسب كـ 50% من الفاتورة).
+     * @param {number} subtotal
+     * @param {Object} coupon
+     * @returns {number}
      */
     window.calculateCouponDiscount = function(subtotal, coupon) {
-        const safeSubtotal = parseFloat(subtotal) || 0;
+        const safeSubtotal = parseFloat(String(subtotal)) || 0;
         if (!coupon) return 0;
         const value = parseFloat(coupon.value) || 0;
         let discount = 0;
         if (coupon.type === "fixed") {
             discount = value;
         } else {
-            // الافتراضي نسبة مئوية (percent) للتوافق مع أي كوبون قديم بدون type
             discount = safeSubtotal * (value / 100);
         }
-        // صمام أمان: الخصم ميزدش عن قيمة الفاتورة نفسها
         return Math.max(0, Math.min(discount, safeSubtotal));
     };
 
     /**
-     * ⚡ [تحسين أداء وتوفير بيانات]: تطبيق بارامترات تحسين Cloudinary
-     * (ضغط تلقائي + صيغة حديثة + عرض محدد) على أي رابط صورة من Cloudinary،
-     * بدون أي تغيير على الروابط غير التابعة لـ Cloudinary.
+     * @param {string} url
+     * @param {number|string} width
+     * @returns {string}
      */
     window.optimizeBoseImageUrl = function(url, width) {
         if (!url || typeof url !== "string") return url;
         if (!url.includes("res.cloudinary.com") || !url.includes("/upload/")) return url;
-        const safeWidth = parseInt(width, 10) || 600;
+        const safeWidth = parseInt(String(width), 10) || 600;
         const transform = `f_auto,q_auto,w_${safeWidth},c_limit`;
         if (url.includes("/upload/f_auto") || url.includes("/upload/q_auto")) return url;
         return url.replace("/upload/", `/upload/${transform}/`);
     };
 
     /**
-     * 🛡️ [إصلاح أمان]: تنقية أي نص قبل حقنه في innerHTML لمنع ثغرات XSS
-     * المحتملة مستقبلاً عند ربط محتوى المنتجات بلوحة تحكم يديرها الأدمن.
-     * دالة موحدة بدل تكرارها محلياً وبشكل غير متسق في كل صفحة على حدة.
+     * @param {string} str
+     * @returns {string}
      */
     window.escapeBoseHTML = function(str) {
         if (str === null || str === undefined) return "";
@@ -869,22 +929,22 @@
             .replace(/'/g, "&#039;");
     };
 
+    /**
+     * @param {string} dateStr
+     * @param {string} timeStr
+     * @returns {boolean}
+     */
     window.validateBoseDeliverySchedule = function(dateStr, timeStr) {
         if (!dateStr || !timeStr) return false;
         const selectedDateTime = new Date(`${dateStr}T${timeStr}`);
         const currentDateTime = new Date(Date.now() + (window.boseServerTimeOffset || 0));
         if (selectedDateTime <= currentDateTime) return false;
-        return (selectedDateTime - currentDateTime) / (1000 * 60 * 60) >= 23.95; 
+        return (selectedDateTime.getTime() - currentDateTime.getTime()) / (1000 * 60 * 60) >= 23.95; 
     };
 
     /**
-     * 🛡️ [صمام أمان ضد التلاعب بالسعر]: بيانات السلة متخزنة في localStorage على
-     * جهاز العميل، وبالتالي قابلة للتعديل يدوياً (أدوات المطور). هذه الدالة
-     * بتعيد حساب سعر أي عنصر في السلة من نفس دوال التسعير المركزية ومن نفس
-     * بيانات المتجر الموثوقة (site-data-final.json)، بدل الوثوق بالسعر
-     * المخزّن مباشرة. لازم تُستدعى قبل عرض أي إجمالي وقبل إرسال أي طلب نهائي.
-     * ملحوظة: ده تحصين على مستوى المتصفح فقط، وليس بديلاً عن مراجعة السعر
-     * فعلياً من فريق الاستلام قبل تأكيد أي طلب طالما مفيش بوابة دفع مباشرة.
+     * @param {Object} item
+     * @returns {number}
      */
     window.recalculateCartItemPrice = function(item) {
         if (!item || !window.BoseStoreData) return parseFloat(item?.finalPrice) || 0;
@@ -904,8 +964,8 @@
             });
         }
 
-        const product = window.BoseStoreData.products?.find(p => p.slug === item.productSlug);
-        if (!product) return parseFloat(item.finalPrice) || 0; // منتج غير موجود بالمنيو الحالي، لا يمكن التحقق
+        const product = window.BoseStoreData.products?.find((/** @type {any} */ p) => p.slug === item.productSlug);
+        if (!product) return parseFloat(item.finalPrice) || 0;
 
         return window.calculateProductFinalPrice(product, {
             printing: details.printingType,
@@ -915,12 +975,12 @@
     };
 
     /**
-     * يعيد حساب أسعار كل عناصر السلة دفعة واحدة، ويرجع السلة بعد تصحيح أي
-     * سعر متلاعب فيه، بالإضافة لعلم يوضح هل حصل تصحيح فعلي أم لا.
+     * @param {Array} cart
+     * @returns {{cart: Array, wasTampered: boolean}}
      */
     window.recalculateFullCart = function(cart) {
         let wasTampered = false;
-        const fixedCart = (cart || []).map(item => {
+        const fixedCart = (cart || []).map((/** @type {any} */ item) => {
             const trustedPrice = window.recalculateCartItemPrice(item);
             const storedPrice = parseFloat(item.finalPrice) || 0;
             if (Math.abs(trustedPrice - storedPrice) > 0.5) wasTampered = true;
@@ -936,16 +996,23 @@
         const rawCart = localStorage.getItem('bose_cart');
         const cart = rawCart ? JSON.parse(rawCart) : [];
         let totalDisplayItems = 0;
-        cart.forEach(item => {
+        cart.forEach((/** @type {any} */ item) => {
+            // ملاحظة: المنتجات المخصصة (تورت/ورد) بيتولد لها id بالشكل `${slug}-${Date.now()}`
+            // يعني بينتهي بسلسلة أرقام طويلة (timestamp)، وده الفارق الحقيقي عن أكواد
+            // المنتجات العادية اللي بتستخدم شرطات في كتابتها (kebab-case) زي donuts-matilda
+            const hasTimestampSuffix = item.id && /-\d{10,}$/.test(String(item.id));
             const isBespokeOrCustom = item.type === "custom-cake" || 
                                       item.type === "custom-flower" || 
                                       item.type === "mini-cake" || 
-                                      (item.id && item.id.includes("-"));
+                                      hasTimestampSuffix;
             totalDisplayItems += isBespokeOrCustom ? 1 : (parseInt(item.quantity, 10) || 1);
         });
-        cartCountBadges.forEach(badge => badge.textContent = totalDisplayItems);
+        cartCountBadges.forEach((badge) => badge.textContent = String(totalDisplayItems));
     };
 
+    /**
+     * @param {string} message
+     */
     window.showBoseGlobalToast = function(message) {
         let container = document.getElementById('bose-toast-container');
         if (!container) {
@@ -966,21 +1033,26 @@
         }, 3000);
     };
 
+    /**
+     * @param {HTMLElement} buttonElement
+     * @param {string} productId
+     */
     window.handleBoseDirectAddToCart = function(buttonElement, productId) {
         if (!window.BoseStoreData || !buttonElement) return;
-        const product = window.BoseStoreData.products ? window.BoseStoreData.products.find(p => p.id === productId || p.slug === productId) : null;
+        const product = window.BoseStoreData.products ? window.BoseStoreData.products.find((/** @type {any} */ p) => p.id === productId || p.slug === productId) : null;
         if (!product) return;
 
         const cardContainer = buttonElement.closest('.product-card-unified');
         let qty = 1;
         if (cardContainer) {
+            /** @type {HTMLInputElement|null} */
             const qtyInput = cardContainer.querySelector('.input-qty-value');
             if (qtyInput) qty = parseInt(qtyInput.value, 10) || 1;
         }
 
         const rawCart = localStorage.getItem('bose_cart');
         let cart = rawCart ? JSON.parse(rawCart) : [];
-        const existingItem = cart.find(item => item.id === product.slug);
+        const existingItem = cart.find((/** @type {any} */ item) => item.id === product.slug);
         if (existingItem) {
             existingItem.quantity += qty;
         } else {
@@ -992,7 +1064,7 @@
         window.updateGlobalCartCounter();
 
         if (cardContainer) {
-            const qtyInput = cardContainer.querySelector('.input-qty-value');
+            /** @type {HTMLInputElement|null} */ const qtyInput = cardContainer.querySelector('.input-qty-value');
             const priceDisplay = cardContainer.querySelector('.product-card-price');
             if (qtyInput) qtyInput.value = "1";
             if (priceDisplay) priceDisplay.textContent = `${Math.round(product.price)} جنيه`;
@@ -1000,13 +1072,13 @@
 
         const originalHtml = buttonElement.innerHTML;
         buttonElement.innerHTML = '<i class="fa-solid fa-check"></i> تمت الإضافة';
-        buttonElement.disabled = true; /* كلاس :disabled في main.css بيدي شكل "تمت الإضافة" تلقائياً */
+        /** @type {HTMLButtonElement} */ (buttonElement).disabled = true;
 
         window.showBoseGlobalToast('تمت إضافة المنتج إلى السلة.');
 
         setTimeout(() => {
             buttonElement.innerHTML = originalHtml;
-            buttonElement.disabled = false;
+            /** @type {HTMLButtonElement} */ (buttonElement).disabled = false;
         }, 2500);
     };
 
@@ -1039,7 +1111,7 @@
         if (headerInjector) {
             const marqueeMessages = data.navigation?.topBarMessages || ["صنعناها بحب لتهديها لمن تحب", "توصيل طازج يومياً لجميع المناطق"];
             let marqueeItemsHtml = '';
-            marqueeMessages.forEach(msg => { marqueeItemsHtml += `<span class="bose-marquee-item">${msg}</span>`; });
+            marqueeMessages.forEach((/** @type {string} */ msg) => { marqueeItemsHtml += `<span class="bose-marquee-item">${msg}</span>`; });
 
             headerInjector.innerHTML = `
                 <div id="top-bar-marquee" class="bose-top-bar-marquee-container" aria-label="شريط الإعلانات التسويقية">
@@ -1222,7 +1294,7 @@
         const searchBtn = document.getElementById('nav-search-btn');
         const searchModal = document.getElementById('bose-search-modal');
         const searchClose = document.getElementById('search-modal-close');
-        const searchField = document.getElementById('bose-search-field');
+        /** @type {HTMLInputElement|null} */ const searchField = document.querySelector('#bose-search-field');
         const resultsContainer = document.getElementById('search-results-container');
 
         if (toggleBtn && sidebar && overlay) {
@@ -1260,17 +1332,18 @@
         if (searchField && resultsContainer) {
             let searchDebounceTimer = null;
             searchField.addEventListener('input', (e) => {
-                clearTimeout(searchDebounceTimer);
-                const rawQuery = e.target.value;
+                if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
+                const target = /** @type {HTMLInputElement} */ (e.target);
+                const rawQuery = target.value;
                 searchDebounceTimer = setTimeout(() => {
                     const query = rawQuery.trim().toLowerCase();
                     if (!query) { resultsContainer.innerHTML = ''; return; }
 
                     const allProducts = window.BoseStoreData?.products || [];
-                    const filtered = allProducts.filter(p => p.title?.toLowerCase().includes(query) || p.flavorName?.toLowerCase().includes(query));
+                    const filtered = allProducts.filter((/** @type {any} */ p) => p.title?.toLowerCase().includes(query) || p.flavorName?.toLowerCase().includes(query));
 
                     let html = '';
-                    filtered.forEach(p => {
+                    filtered.forEach((/** @type {any} */ p) => {
                         let targetUrl = (p.id === 'toort-custom-master' || p.slug === 'toort-custom-master') ? 'cake-builder.html' : 
                                         ((p.id === 'flowers-master' || p.slug === 'flowers-master') ? 'flower-builder.html' : `product.html?slug=${encodeURIComponent(p.slug)}`);
                         const safeImg = window.optimizeBoseImageUrl(p.images ? p.images[0] : 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', 120);
