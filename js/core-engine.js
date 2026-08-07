@@ -206,6 +206,17 @@
 
         recalcBounds();
         window.addEventListener('resize', recalcBounds);
+        // 🔧 [إصلاح الفراغ الفارغ]: recalcBounds بيتنفذ الأول قبل ما خط Cairo وأيقونات
+        // Font Awesome يخلصوا تحميل، فبيحسب عرض غلط ويعمل قفزة/فراغ لحظة اللف.
+        // بنعيد الحساب تاني بعد ما كل الخطوط تخلص تحميل، وبعد أول فريمين كمان كضمان إضافي.
+        if (document.fonts && typeof document.fonts.ready?.then === 'function') {
+            document.fonts.ready.then(recalcBounds);
+        }
+        requestAnimationFrame(() => requestAnimationFrame(recalcBounds));
+        // ومراقبة أي تغيير فعلي في حجم المحتوى نفسه (صور اتحملت متأخر مثلاً)
+        if (typeof ResizeObserver === 'function') {
+            new ResizeObserver(() => recalcBounds()).observe(track);
+        }
 
         track.addEventListener('pointerdown', onPointerDown);
         track.addEventListener('pointermove', onPointerMove);
@@ -1518,7 +1529,8 @@
                             <a href="${targetUrl}" class="search-result-card-item">
                                 <img src="${safeImg}" class="search-result-img" width="60" height="60" loading="lazy" alt="${safeTitle}" />
                                 <div class="search-result-info">
-                                    <div class="search-result-name">${safeTitle} - ${safeFlavor}</div>
+                                    <div class="search-result-name">${safeTitle}</div>
+                                    ${safeFlavor ? `<div class="search-result-flavor">${safeFlavor}</div>` : ''}
                                 </div>
                                 <div class="search-result-price-view">${Math.round(p.price)} جنيه</div>
                             </a>
