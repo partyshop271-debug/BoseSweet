@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>المنيو الشامل | حلويات بوسي</title>
     
     <!-- 🔍 إعدادات تحسين محركات البحث والأرشفة الفاخرة SEO -->
@@ -15,12 +15,22 @@
     <meta property="og:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
     <meta property="og:type" content="website">
     
+    <!-- ⚡ [إصلاح أداء]: preconnect ناقص كان بيأخر أول اتصال بمصادر الخط والصور والأيقونات -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
+
     <!-- 🎨 ربط ملفات التصميم الموزعة هندسياً لمنع تضخم الأكواد وتأخر التحميل -->
-    <link rel="stylesheet" href="css/global.css">
-    <link rel="stylesheet" href="css/main.css">
+    <!-- 🐛 [إصلاح حرج]: خط Cairo وأيقونات Font Awesome كانوا غير محمّلين نهائياً بالصفحة دي -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/global.css?v=2026_production_v30.0">
+    <link rel="stylesheet" href="css/main.css?v=2026_production_v30.0">
     
     <!-- 👑 استدعاء المحرك المركزي الموحد للموقع في الرأس لتأمين الـ DOM ومنع وميض الألوان -->
-    <script src="js/core-engine.js"></script>
+    <!-- ⚡ [إصلاح أداء]: defer عشان السكريبت متوقفش رسم الصفحة -->
+    <script src="js/core-engine.js?v=2026_production_v30.0" defer></script>
 
     <!-- 🎨 تخصيصات وتأمين الأبعاد القياسية للمنيو الشامل لمنع تداخل أو انضغاط العناصر -->
     <style>

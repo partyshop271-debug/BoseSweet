@@ -2,7 +2,13 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <title>تفاصيل المنتج الفاخر | حلويات بوسي</title>
     
     <meta name="description" content="استمتع بتذوق القيمة والجودة العالية لأصناف حلويات بوسي الفاخرة المجهزة يومياً بمكونات طبيعية 100% طازجة تليق بمناسباتكم السعيدة.">
@@ -12,10 +18,10 @@
     <meta property="og:description" content="مكونات طبيعية 100% طازجة تليق بمناسباتكم السعيدة.">
     <meta property="og:type" content="product">
     
-    <link rel="stylesheet" href="css/global.css">
-    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/global.css?v=2026_production_v30.0">
+    <link rel="stylesheet" href="css/main.css?v=2026_production_v30.0">
     
-    <script src="js/core-engine.js"></script>
+    <script src="js/core-engine.js?v=2026_production_v30.0" defer></script>
 
     <style>
         /* 🎨 الهندسة البصرية المعتمدة لمنع التكديس والتزام الألوان الحاكمة */
@@ -630,26 +636,71 @@
                 renderRelatedProducts(dbData);
             }
 
+            // 🛡️ [إصلاح جوهري]: تخزين مراجعات العملاء فعلياً في localStorage بدل
+            // عرضها في الـ DOM فقط ثم اختفاؤها بمجرد تحديث الصفحة. الحل مؤقت
+            // (بدون سيرفر) لحد ما يتوفر تخزين حقيقي على الخادم، لكنه على الأقل
+            // بيخلي مراجعة العميل تفضل ظاهرة له وللزوار التانيين على نفس الجهاز.
+            function getLocalReviewsStore() {
+                try {
+                    return JSON.parse(localStorage.getItem("bose_local_reviews") || "{}");
+                } catch (e) {
+                    return {};
+                }
+            }
+
+            function getLocalReviewsForCurrentProduct() {
+                if (!currentProduct) return [];
+                const store = getLocalReviewsStore();
+                return store[currentProduct.slug] || [];
+            }
+
+            function saveLocalReview(review) {
+                if (!currentProduct) return;
+                const store = getLocalReviewsStore();
+                if (!store[currentProduct.slug]) store[currentProduct.slug] = [];
+                store[currentProduct.slug].unshift(review);
+                try {
+                    localStorage.setItem("bose_local_reviews", JSON.stringify(store));
+                } catch (e) {
+                    // localStorage ممتلئ (غالباً بسبب صور كتيرة)، نتجاهل الحفظ بهدوء بدل كسر الصفحة
+                    console.warn("تعذر حفظ المراجعة محلياً:", e);
+                }
+            }
+
+            function buildReviewCardHTML(rev) {
+                let starsHTML = "";
+                const safeRating = parseInt(rev.rating, 10) || 0;
+                for (let i = 1; i <= 5; i++) {
+                    starsHTML += `<i class="fas fa-star" style="color:${i <= safeRating ? 'var(--bose-gold)' : '#ccc'}"></i>`;
+                }
+                let imagesHTML = "";
+                if (rev.images && rev.images.length > 0) {
+                    imagesHTML = `<div class="review-attach-images-row">${rev.images.map(b64 => `<img class="review-attached-img" src="${b64}" loading="lazy">`).join("")}</div>`;
+                }
+                return `
+                    <div class="review-card-node" style="direction: rtl; text-align: right;">
+                        <div class="review-user-meta">
+                            <h4 style="font-size: 0.95rem; font-weight: 700; margin: 0;">${escapeHTML(rev.user)}</h4>
+                            <div class="review-stars-row">${starsHTML}</div>
+                        </div>
+                        <p style="font-size: 0.88rem; color: var(--bose-black); opacity: 0.85; line-height: 1.5; margin: 6px 0 0 0;">${escapeHTML(rev.comment)}</p>
+                        ${imagesHTML}
+                    </div>
+                `;
+            }
+
             function renderDynamicProductReviews() {
                 const reviewsListContainer = document.getElementById("bose-product-reviews-collection-list");
                 if (!reviewsListContainer || !currentProduct) return;
 
-                if (currentProduct.reviews && currentProduct.reviews.length > 0) {
-                    reviewsListContainer.innerHTML = currentProduct.reviews.map(rev => {
-                        let starsHTML = "";
-                        for (let i = 1; i <= 5; i++) {
-                            starsHTML += `<i class="fas fa-star" style="color:${i <= rev.rating ? 'var(--bose-gold)' : '#ccc'}"></i>`;
-                        }
-                        return `
-                            <div class="review-card-node" style="direction: rtl; text-align: right;">
-                                <div class="review-user-meta">
-                                    <h4 style="font-size: 0.95rem; font-weight: 700; margin: 0;">${escapeHTML(rev.user)}</h4>
-                                    <div class="review-stars-row">${starsHTML}</div>
-                                </div>
-                                <p style="font-size: 0.88rem; color: var(--bose-black); opacity: 0.85; line-height: 1.5; margin: 6px 0 0 0;">${escapeHTML(rev.comment)}</p>
-                            </div>
-                        `;
-                    }).join("");
+                const catalogReviews = (currentProduct.reviews || []).map(rev => ({
+                    user: rev.user, rating: rev.rating, comment: rev.comment, images: []
+                }));
+                const localReviews = getLocalReviewsForCurrentProduct();
+                const allReviews = localReviews.concat(catalogReviews);
+
+                if (allReviews.length > 0) {
+                    reviewsListContainer.innerHTML = allReviews.map(buildReviewCardHTML).join("");
                 } else {
                     reviewsListContainer.innerHTML = `
                         <p style="text-align:center; padding:30px 10px; font-size:0.9rem; opacity:0.6; font-weight:600;">لم يتم نشر مراجعات لهذا الصنف بعد. شاركنا رأيك الصادق لتكون أول من يوثق تجربته الفاخرة! 🌸</p>
@@ -857,35 +908,13 @@
                     return;
                 }
 
-                const reviewsList = document.getElementById("bose-product-reviews-collection-list");
-                
-                if (reviewsList.innerHTML.includes("لم يتم نشر مراجعات")) {
-                    reviewsList.innerHTML = "";
-                }
-
-                const newReviewCard = document.createElement("div");
-                newReviewCard.className = "review-card-node";
-                
-                let starsHTML = "";
-                for (let i = 1; i <= 5; i++) {
-                    starsHTML += `<i class="fas fa-star" style="color:${i <= parseInt(rating,10) ? 'var(--bose-gold)' : '#ccc'}"></i>`;
-                }
-
-                let imagesHTML = "";
-                if (uploadedImagesBase64.length > 0) {
-                    imagesHTML = `<div class="review-attach-images-row">${uploadedImagesBase64.map(b64 => `<img class="review-attached-img" src="${b64}" loading="lazy">`).join("")}</div>`;
-                }
-
-                newReviewCard.innerHTML = `
-                    <div class="review-user-meta">
-                        <h4 style="font-size:0.95rem; font-weight:700; margin:0;">${escapeHTML(userName)}</h4>
-                        <div class="review-stars-row">${starsHTML}</div>
-                    </div>
-                    <p style="font-size:0.88rem; color:var(--bose-black); opacity:0.85; line-height:1.5; margin:6px 0 0 0;">${escapeHTML(comment)}</p>
-                    ${imagesHTML}
-                `;
-
-                reviewsList.insertBefore(newReviewCard, reviewsList.firstChild);
+                saveLocalReview({
+                    user: userName,
+                    rating: parseInt(rating, 10) || 5,
+                    comment: comment,
+                    images: uploadedImagesBase64.slice()
+                });
+                renderDynamicProductReviews();
 
                 document.getElementById('bose-review-user-name').value = "";
                 document.getElementById('bose-review-comment').value = "";

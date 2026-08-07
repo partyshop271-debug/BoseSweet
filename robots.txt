@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# صفحات خاصة بالعميل نفسه (سلة، دفع، نجاح الطلب) - لا داعي لأرشفتها في نتائج البحث
+Disallow: /cart.html
+Disallow: /checkout.html
+Disallow: /order-success.html
+
+Sitemap: https://bose-sweet.vercel.app/sitemap.xml

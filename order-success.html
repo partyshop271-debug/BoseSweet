@@ -8,11 +8,20 @@
     <meta name="robots" content="noindex, follow">
     
     <!-- ملفات التصميم الخارجية الموحدة والمستقلة -->
-    <link rel="stylesheet" href="css/global.css">
-    <link rel="stylesheet" href="css/main.css">
-    
+    <link rel="stylesheet" href="css/global.css?v=2026_production_v30.0">
+    <link rel="stylesheet" href="css/main.css?v=2026_production_v30.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <!-- استدعاء المحرك المركزي في رأس الصفحة حتمياً لإدارة التمهيد والبيانات المالية -->
-    <script src="js/core-engine.js"></script>
+    <!-- 🛡️ [إصلاح المرحلة 1]: تمت إضافة رقم الإصدار ?v=2026_production_v30.0 هنا،
+         كانت هذه الصفحة الوحيدة في الموقع بدون رقم إصدار مما يعرّضها لعرض نسخة
+         قديمة مخزّنة (Cache) من core-engine.js بعد أي تحديث مستقبلي للموقع. -->
+    <script src="js/core-engine.js?v=2026_production_v30.0"></script>
+    <!-- 🛡️ [إصلاح حرج - المرحلة 1]: هذه الصفحة كانت الوحيدة بين كل صفحات السلة/الدفع
+         التي لا تحمّل cart-engine.js، فكانت دالة renderBoseSuccessPage المخصصة لها
+         معطّلة تماماً ومعوّضة بسكريبت داخلي مكرر. تم حذف التكرار وربط الصفحة بالمحرك
+         المركزي الموحد مثل cart.html وcheckout.html بالضبط. -->
+    <script src="js/cart-engine.js?v=2026_production_v30.0"></script>
 
     <style>
         /* 🎨 الهندسة البصرية المخصصة لصفحة نجاح الطلب الفاخرة */
@@ -218,6 +227,10 @@
             </div>
 
             <h1 class="success-headline">تم تسجيل طلبك بنجاح!</h1>
+            <!-- 🛡️ [إصلاح المرحلة 1]: عنصر ترحيب باسم العميل مطابق للمواصفة الرسمية
+                 (h3#success-customer-welcome) - كان الكود الخاص بتعبئته موجوداً وجاهزاً
+                 في cart-engine.js لكن العنصر نفسه كان غائباً من الصفحة فعلياً. -->
+            <h3 id="success-customer-welcome" class="success-subheadline" style="display:none; font-weight:700; color:var(--bose-pink, #FF91A4); margin:0;"></h3>
             <p class="success-subheadline">🌸 يسعدنا جداً اختيارك الفاخر اليوم. تم حجز وتوثيق عناصر طلبك بنجاح ومستعدون لبدء الخبز والتحضير بكل شغف وتوصيله بأعلى دقة تحافظ على شكل ونضارة طلبك.</p>
 
             <div class="order-summary-receipt-box">
@@ -225,6 +238,8 @@
                     <span id="bose-receipt-number-lbl">رقم طلب الفاتورة: #0000</span>
                     <span id="bose-receipt-date-lbl">00 / 00 / 2026</span>
                 </div>
+                <!-- h2#success-order-id-display: البلوك البصري المستقل لعرض رقم الطلب المطلوب بالمواصفة -->
+                <h2 id="success-order-id-display" style="display:none; text-align:center; font-weight:700; color:var(--bose-black,#111111); margin: 4px 0 10px 0; font-size: 1rem;"></h2>
                 
                 <div id="bose-receipt-items-container" class="receipt-items-list"></div>
                 
@@ -250,80 +265,17 @@
     <div id="bose-footer-injector"></div>
 
     <script>
+        // 🛡️ [إصلاح حرج - المرحلة 1]: تم حذف السكريبت الداخلي المكرر بالكامل من هنا.
+        // كل منطق قراءة الفاتورة، فتح الواتساب، تنظيف السلة والذاكرة السلوكية أصبح
+        // موجوداً حصرياً داخل renderBoseSuccessPage() بملف js/cart-engine.js لمنع
+        // ازدواجية الكود وضمان أن أي تعديل مستقبلي يتم في مكان واحد فقط.
+        // الباقي هنا هو منطق خاص بهذه الصفحة تحديداً (منع الرجوع للخلف) وليس منطق عمل.
         document.addEventListener("DOMContentLoaded", () => {
             // منع الرجوع للخلف نهائياً لحماية قاعدة البيانات من تكرار المعاملات وثغرات التصادم
             window.history.pushState(null, "", window.location.href);
             window.onpopstate = function() {
                 window.history.pushState(null, "", window.location.href);
             };
-
-            const itemsContainer = document.getElementById("bose-receipt-items-container");
-            const orderNumLbl = document.getElementById("bose-receipt-number-lbl");
-            const dateLbl = document.getElementById("bose-receipt-date-lbl");
-            const totalDisplay = document.getElementById("bose-receipt-grand-total");
-            const whatsappBtn = document.getElementById("bose-success-whatsapp-btn");
-
-            // 1. استرجاع وقراءة بيانات الفاتورة الأخيرة المحفوظة محلياً لتوثيق المصداقية أمام العميل
-            const lastOrderRaw = localStorage.getItem("bose_last_order");
-            let purchasedSlugs = []; 
-
-            if (lastOrderRaw) {
-                try {
-                    const orderObj = JSON.parse(lastOrderRaw);
-                    
-                    if (orderObj) {
-                        if (orderObj.orderNumber) orderNumLbl.textContent = `رقم طلب الفاتورة: #${orderObj.orderNumber}`;
-                        if (orderObj.date) dateLbl.textContent = orderObj.date;
-                        if (orderObj.grandTotal) totalDisplay.textContent = `${orderObj.grandTotal} EGP`;
-                        
-                        if (orderObj.items && Array.isArray(orderObj.items) && orderObj.items.length > 0) {
-                            itemsContainer.innerHTML = orderObj.items.map(item => {
-                                if (item.productSlug) purchasedSlugs.push(item.productSlug);
-                                
-                                return `
-                                    <div class="receipt-item-node">
-                                        <span class="receipt-item-name">${item.title} <span style="font-weight:400; opacity:0.6; font-size:0.8rem;">(×${item.quantity})</span> <span style="display:block; font-size:0.75rem; font-weight:700; color:var(--bose-pink); margin-top:2px;">${item.flavorName || 'كلاسيك'}</span></span>
-                                        <span class="receipt-item-price">${item.finalPrice * item.quantity} EGP</span>
-                                    </div>
-                                `;
-                            }).join("");
-                        } else {
-                            itemsContainer.innerHTML = `<p style="text-align:center; opacity:0.6; font-size:0.85rem; margin:0;">تم توثيق وحجز طلبك الفاخر بنجاح في الفرع 🌸</p>`;
-                        }
-
-                        if (orderObj.whatsappMessage && whatsappBtn) {
-                            whatsappBtn.href = `https://wa.me/201097238441?text=${encodeURIComponent(orderObj.whatsappMessage)}`;
-                        }
-                    }
-                } catch (e) {
-                    console.error("⚠️ فشل قراءة أو معالجة إيصال الفاتورة الأخيرة.", e);
-                    itemsContainer.innerHTML = `<p style="text-align:center; opacity:0.6; font-size:0.85rem; margin:0;">تم توثيق وحجز طلبك الفاخر بنجاح في الفرع 🌸</p>`;
-                }
-            } else {
-                itemsContainer.innerHTML = `<p style="text-align:center; opacity:0.6; font-size:0.85rem; margin:0;">تم توثيق وحجز طلبك الفاخر بنجاح في الفرع 🌸</p>`;
-            }
-
-            // 2. تطهير الذاكرة السلوكية لكسر تكرار المنتجات التي تم شراؤها فعلياً
-            try {
-                const behaviorData = localStorage.getItem('bose_user_behavior');
-                if (behaviorData) {
-                    let behaviorLog = JSON.parse(behaviorData);
-                    purchasedSlugs.forEach(slug => {
-                        if (behaviorLog[slug]) delete behaviorLog[slug];
-                    });
-                    localStorage.setItem('bose_user_behavior', JSON.stringify(behaviorLog));
-                }
-            } catch (err) {
-                console.warn("⚠️ تعذر تفعيل صمام الأمان لتطهير الذاكرة السلوكية.", err);
-            }
-
-            // 3. مسح وإفراغ السلة المشتراة فوراً لتجنب حشر الفواتير القديمة وتأمين دورة الشراء التالية
-            localStorage.removeItem("bose_cart");
-            
-            // تحديث عداد السلة من خلال دالة المحرك المركزي لضمان التزامن اللحظي المباشر
-            if (typeof window.updateGlobalCartCounter === "function") {
-                window.updateGlobalCartCounter();
-            }
         });
     </script>
 </body>

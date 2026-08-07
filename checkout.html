@@ -2,17 +2,26 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- 🔍 إعدادات تحسين محركات البحث والأرشفة الفاخرة SEO الملتزمة بمواصفة البراند 🔍 -->
     <title>إتمام الطلب الفاخر | حلويات بوسي</title>
     <meta name="description" content="أدخل بياناتك اللوجستية لمراجعة وتأكيد فاتورتك الملكية وتنسيق التوصيل الفوري لطلبك من حلويات بوسي.">
     <meta name="robots" content="noindex, follow">
     
+    <!-- ⚡ [إصلاح أداء]: preconnect ناقص كان بيأخر أول اتصال بمصادر الخط والصور والأيقونات -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
+
     <!-- 🎨 ربط ملفات التصميم الموزعة هندسياً لمنع تضخم الأكواد وتأخر التحميل البصري 🎨 -->
-    <link rel="stylesheet" href="css/global.css">
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/cart-checkout.css">
+    <!-- 🐛 [إصلاح حرج]: خط Cairo وأيقونات Font Awesome كانوا غير محمّلين نهائياً في أهم صفحة تحويل بالموقع -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/global.css?v=2026_production_v30.0">
+    <link rel="stylesheet" href="css/main.css?v=2026_production_v30.0">
+    <link rel="stylesheet" href="css/cart-checkout.css?v=2026_production_v30.0">
     
     <!-- 📐 حارس الأنماط والأبعاد الإلزامية الصارمة لحماية الهوية البصرية ومنع التكديس البصري 📐 -->
     <style>
@@ -209,7 +218,7 @@
     </style>
 
     <!-- المحرك العام (يُستدعى أولاً في رأس كل الصفحات لقراءة قاعدة البيانات) -->
-    <script src="js/core-engine.js"></script>
+    <script src="js/core-engine.js?v=2026_production_v30.0" defer></script>
 </head>
 <body class="bose-hardware-accelerated Pw-checkout-view">
 
@@ -335,7 +344,7 @@
     <div id="bose-footer-injector"></div>
 
     <!-- ⚡ استدعاء محرك السلة وإتمام عمليات الحساب والدفع والربط اللوجستي المركزي (js/cart-engine.js) ⚡ -->
-    <script src="js/cart-engine.js"></script>
+    <script src="js/cart-engine.js?v=2026_production_v30.0" defer></script>
 
     <!-- 🔮 سكريبت التزامن الدفاعي المحلي لربط وحقن الواجهات وضمان فك شلل حقول الصفحة دون تعارض خارجي 🔮 -->
     <script>
@@ -389,15 +398,31 @@
                     zoneSelect.dataset.populated = "true";
                 }
 
-                // سحب نص حارس الوقت لتعريف العميل برحلة الإتقان الصادقة للبراند
                 const prepMsgNode = document.getElementById("checkout-preparation-message");
+
+                // 🛡️ [إصلاح - المرحلة 2]: قبل كده كان حامي التاريخ بيفرض بكرة (24 ساعة)
+                // كأول موعد متاح دايماً، حتى للتورت والورد المخصص اللي محتاج فعلياً
+                // أسبوع كامل حسب "الشروط والأحكام" الرسمية وتأكيد صاحب المتجر. دلوقتي
+                // بيتفحص محتوى السلة الفعلي ويحدد أول موعد متاح صح حسب نوع الطلب.
+                const rawCartForDate = localStorage.getItem("bose_cart");
+                const cartArrForDate = rawCartForDate ? JSON.parse(rawCartForDate) : [];
+                const hasCustomItemForDate = typeof window.boseCartHasCustomItem === "function"
+                    ? window.boseCartHasCustomItem(cartArrForDate)
+                    : false;
+                const leadDays = hasCustomItemForDate
+                    ? Math.ceil((siteData.orderRules?.minPreparationTimeHoursCustom || 168) / 24)
+                    : Math.ceil((siteData.orderRules?.minPreparationTimeHours || 24) / 24);
+
+                // سحب نص حارس الوقت الصحيح المطابق لنوع الطلب لتعريف العميل برحلة الإتقان الصادقة للبراند
                 if (prepMsgNode) {
-                    prepMsgNode.textContent = siteData.orderRules?.preparationTimeMessage || "نحتاج إلى وقت كافٍ لتجهيز طلبك بأفضل جودة ممكنة، لذلك لا يمكن اختيار موعد قبل 24 ساعة من وقت تأكيد الطلب.";
+                    prepMsgNode.textContent = hasCustomItemForDate
+                        ? (siteData.orderRules?.customPreparationTimeMessage || "التورت والورد المخصص عبر المحاكي بيحتاج حجز قبل موعد التسليم بأسبوع كامل (7 أيام) على الأقل.")
+                        : (siteData.orderRules?.preparationTimeMessage || "نحتاج إلى وقت كافٍ لتجهيز طلبك بأفضل جودة ممكنة، لذلك لا يمكن اختيار موعد قبل 24 ساعة من وقت تأكيد الطلب.");
                 }
 
-                // ضبط حامي التاريخ ليكون بكرة كأول موعد متاح (إجبار مرور 24 ساعة تحضير برمجياً وحسابياً)
+                // ضبط حامي التاريخ ليكون أول موعد متاح فعلياً حسب نوع الطلب (بكرة للعادي، بعد أسبوع للمخصص)
                 const minDateObj = new Date();
-                minDateObj.setDate(minDateObj.getDate() + 1);
+                minDateObj.setDate(minDateObj.getDate() + leadDays);
                 const dd = String(minDateObj.getDate()).padStart(2, '0');
                 const mm = String(minDateObj.getMonth() + 1).padStart(2, '0');
                 const yyyy = minDateObj.getFullYear();

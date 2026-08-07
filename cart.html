@@ -12,13 +12,17 @@
     
     <!-- 🔍 إعدادات تحسين محركات البحث والأرشفة الفاخرة SEO الملتزمة بمواصفة البراند 🔍 -->
     <title>سلة المشتريات الفاخرة | حلويات بوسي</title>
+    <!-- 🛡️ [إصلاح - المرحلة 3]: صفحة السلة كانت الوحيدة من صفحات "الطلب" (سلة/دفع/نجاح)
+         بدون وسم robots، فكانت عرضة للأرشفة في نتائج البحث رغم إنها صفحة خاصة بمحتوى
+         كل عميل (زي checkout.html وorder-success.html بالظبط). -->
+    <meta name="robots" content="noindex, follow">
     <meta name="description" content="راجع منتجاتك وأصنافك المفضلة وتورتك المصممة بحب عبر سلة المشتريات الذكية لحلويات بوسي قبل تأكيد الطلب السريع.">
     <meta name="keywords" content="سلة التسوق, حلويات بوسي, مراجعة الطلب, تورت مخصصة, الفرافرة, الكفاح">
     
     <!-- الأصول والتصاميم الموزعة والجاهزة بالموقع لمنع تضخم الأكواد -->
-    <link rel="stylesheet" href="css/global.css?v=2026_production_v29.0">
-    <link rel="stylesheet" href="css/main.css?v=2026_production_v29.0">
-    <link rel="stylesheet" href="css/cart-checkout.css?v=2026_production_v29.0">
+    <link rel="stylesheet" href="css/global.css?v=2026_production_v30.0">
+    <link rel="stylesheet" href="css/main.css?v=2026_production_v30.0">
+    <link rel="stylesheet" href="css/cart-checkout.css?v=2026_production_v30.0">
     
     <style>
         body {
@@ -179,7 +183,7 @@
     </style>
 
     <!-- استدعاء المحرك المركزي الموحد حارس الحسابات وحاقن الهيدر والفوتر آلياً أولاً -->
-    <script src="js/core-engine.js?v=2026_production_v29.0" defer></script>
+    <script src="js/core-engine.js?v=2026_production_v30.0" defer></script>
 </head>
 <body class="bose-hardware-accelerated">
 
@@ -281,7 +285,7 @@
     <div id="bose-footer-injector"></div>
 
     <!-- استدعاء محرك العمليات والحسابات الموحد للطلب والسلة -->
-    <script src="js/cart-engine.js?v=2026_production_v29.0" defer></script>
+    <script src="js/cart-engine.js?v=2026_production_v30.0" defer></script>
 
     <!-- كود حقن صور المقترحات المطور وتأمين تجربة الإضافة واللمس دون Full Refresh للبيانات -->
     <script>
