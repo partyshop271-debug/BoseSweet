@@ -130,6 +130,43 @@
     box-shadow: 0 4px 10px rgba(255, 145, 164, 0.3);
 }
 
+/* 🏷️ [إصلاح جذري لمشكلة تكرار منتجات العروض]: نفس الكلاسات دي بتشتغل تلقائياً
+   على أي منتج معاه oldPrice في أي مكان بالموقع (فئة، أكثر مبيعاً، وصل حديثاً،
+   صفحة العروض) - مش بس جوه كارت العروض بالرئيسية - عشان العميل يعرف فوراً
+   إن المنتج ده عليه خصم حتى لو شافه في صفحة فئته العادية. */
+.product-old-price {
+    text-decoration: line-through;
+    color: #888888;
+    font-size: 13px;
+    font-weight: 600;
+    margin-left: 8px;
+    display: inline-block;
+}
+
+.offer-savings-note {
+    display: block;
+    color: #2E7D32;
+    font-size: 12px;
+    font-weight: 700;
+    margin-top: 4px;
+}
+
+.bose-view-all-offers-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    color: var(--bose-pink);
+    font-weight: 700;
+    font-size: 14px;
+    text-decoration: none;
+    transition: gap 0.2s ease;
+}
+
+.bose-view-all-offers-link:hover {
+    gap: 12px;
+}
+
 /* ==========================================================================
    5. نافذة البحث الفوري الاحترافي (Bose Search Modal)
    ========================================================================== */
@@ -527,6 +564,18 @@
     border-radius: 24px;
     border: var(--bose-border-pink);
     display: block;
+}
+
+/* 🔗 [إصلاح]: كل صورة في الشلال بقت رابط فعلي لصفحة المنتج - غلاف الرابط لازم ياخد نفس شكل الصورة بالظبط */
+.waterfall-img-link {
+    display: block;
+    text-decoration: none;
+    border-radius: 24px;
+    transition: transform 0.25s ease;
+}
+
+.waterfall-img-link:hover {
+    transform: scale(1.02);
 }
 
 @keyframes boseWaterfallUp {
