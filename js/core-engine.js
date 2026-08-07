@@ -101,6 +101,7 @@
         injectHomepageSectionMeta();
         renderDynamicWaterfall();
         renderOffersSection();
+        renderAllOffersPage();
         renderHomepageProductGrids();
         setupOurProductsShowMore();
         injectSimulatorsPreviewData();
@@ -121,7 +122,11 @@
     }
 
     /**
-     * 👑 محرك سحب تبويب الفئات أسفل زر "اطلب الآن" (Hero Categories Ticker)
+     * 👑 [إصلاح جذري]: محرك تبويب الفئات أسفل زر "اطلب الآن" (Hero Categories Ticker)
+     * قبل كده كان التبويب "ثابت تماماً" ومسمى ticker بالغلط لأنه معندوش أي حركة تلقائية،
+     * والعميل محتاج يكتشف بنفسه إنه قابل للسحب. دلوقتي بيتحرك لوحده بسلاسة ولا نهائياً
+     * (المحتوى مكرر مرتين بالـ HTML لضمان عدم ظهور أي فراغ لحظة الالتفاف)، وبيوقف بس
+     * لحظة ما العميل يلمسه أو يسحبه يدوياً، ويكمل تلقائي تاني بعد ما يسيبه.
      */
     function setupHeroTickerDragEngine() {
         /** @type {HTMLElement|null} */
@@ -129,19 +134,17 @@
         if (!track) return;
 
         let posX = 0;
-        let minX = 0;
+        let halfWidth = 0;
         let isDragging = false;
         let dragMoved = false;
         let startX = 0;
         let startPosX = 0;
+        let autoScrollActive = true;
+        const AUTO_SCROLL_SPEED = 0.45; // بكسل لكل فريم - حركة ناعمة ومريحة للعين
 
         const recalcBounds = () => {
-            if (!track.parentElement) return;
-            const wrapperWidth = track.parentElement.clientWidth;
-            const contentWidth = track.scrollWidth;
-            minX = Math.min(0, wrapperWidth - contentWidth);
-            posX = Math.max(minX, Math.min(0, posX));
-            applyTransform();
+            // النص متكرر مرتين، فنص عرض المحتوى هو طول الدورة الكاملة الواحدة
+            halfWidth = track.scrollWidth / 2;
         };
 
         const applyTransform = () => {
@@ -151,6 +154,7 @@
         /** @param {PointerEvent} e */
         const onPointerDown = (e) => {
             isDragging = true;
+            autoScrollActive = false;
             dragMoved = false;
             startX = e.clientX;
             startPosX = posX;
@@ -165,10 +169,7 @@
             if (!isDragging) return;
             const delta = e.clientX - startX;
             if (Math.abs(delta) > 6) dragMoved = true;
-            let next = startPosX + delta;
-            if (next > 0) next = next * 0.35;
-            if (next < minX) next = minX + (next - minX) * 0.35;
-            posX = next;
+            posX = startPosX + delta;
             applyTransform();
         };
 
@@ -180,8 +181,8 @@
             if (typeof track.releasePointerCapture === 'function') {
                 track.releasePointerCapture(e.pointerId);
             }
-            posX = Math.max(minX, Math.min(0, posX));
-            applyTransform();
+            // نرجع نفعّل الحركة التلقائية تاني بعد ما العميل يسيب التبويب
+            setTimeout(() => { autoScrollActive = true; }, 900);
 
             if (dragMoved) {
                 /** @param {MouseEvent} clickEvent */
@@ -193,6 +194,16 @@
             }
         };
 
+        const runAutoScrollLoop = () => {
+            if (autoScrollActive && halfWidth > 0) {
+                posX -= AUTO_SCROLL_SPEED;
+                // لما نوصل لنهاية الدورة الأولى، نرجع بالظبط لبداية الدورة التانية المطابقة تماماً = قفزة غير محسوسة بصرياً
+                if (posX <= -halfWidth) posX += halfWidth;
+                applyTransform();
+            }
+            requestAnimationFrame(runAutoScrollLoop);
+        };
+
         recalcBounds();
         window.addEventListener('resize', recalcBounds);
 
@@ -201,6 +212,11 @@
         track.addEventListener('pointerup', onPointerUp);
         track.addEventListener('pointercancel', onPointerUp);
         track.addEventListener('pointerleave', onPointerUp);
+        // وقف الحركة التلقائية وقت مرور الماوس فوقها على الكمبيوتر (مريح لعين وقرار العميل)
+        track.addEventListener('mouseenter', () => { autoScrollActive = false; });
+        track.addEventListener('mouseleave', () => { if (!isDragging) autoScrollActive = true; });
+
+        requestAnimationFrame(runAutoScrollLoop);
     }
 
     /**
@@ -262,84 +278,32 @@
     /**
      * 🏷️ رندر قسم العروض والخصومات في بداية الأقسام
      */
+    /**
+     * 👑 [مصدر واحد للحقيقة]: قسم العروض بالرئيسية وصفحة كل العروض offers.html
+     * بيستخدموا نفس المصدر بالظبط - أي منتج في قاعدة البيانات معاه oldPrice > price.
+     * محدش بيكتب عروض يدوي تاني في أكتر من مكان، فمفيش احتمال تضارب أو نسيان.
+     */
+    function getAllOfferProducts() {
+        const data = window.BoseStoreData;
+        if (!data || !data.products) return [];
+        return data.products.filter(/** @param {Object} p */ (p) => p.oldPrice && p.oldPrice > p.price);
+    }
+    window.getAllOfferProducts = getAllOfferProducts;
+
     function renderOffersSection() {
         const offersTrack = document.getElementById('offers-slider-track');
+        const offersSection = document.getElementById('offers-carousel-section');
         if (!offersTrack) return;
 
-        const data = window.BoseStoreData;
-        let offersData = data?.homepage?.offers || [];
+        const offersData = getAllOfferProducts();
 
-        if (offersData.length === 0 && data?.products) {
-            offersData = data.products.filter(/** @param {Object} p */ (p) => p.oldPrice && p.oldPrice > p.price);
-        }
-
+        // مفيش عروض حالياً؟ القسم بالكامل يتخفي بدل ما يفضل فاضي قدام العميل
         if (offersData.length === 0) {
-            offersData = [
-                {
-                    id: "offer-1",
-                    title: "عرض بوكس الروقان الملكي",
-                    flavorName: "تشكيلة مشكلة",
-                    description: "بوكس كامل يحتوي على ميني تورتة مع 4 كب كيك و2 سينابون بسعر حصري.",
-                    price: 350,
-                    oldPrice: 450,
-                    images: ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
-                    slug: "box-roqan"
-                },
-                {
-                    id: "offer-2",
-                    title: "عرض التورتة العائلية + بوكيه ورد",
-                    flavorName: "شوكولاتة وفانيليا",
-                    description: "تورتة تكفي 12 فرد مع بوكيه ورد طبيعي تنسيق فاخر.",
-                    price: 850,
-                    oldPrice: 1050,
-                    images: ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
-                    slug: "family-cake-flower"
-                }
-            ];
+            if (offersSection) offersSection.style.display = 'none';
+            return;
         }
 
-        offersTrack.innerHTML = offersData.map(/** @param {Object} offer */ (offer) => {
-            const hasDiscount = offer.oldPrice && offer.oldPrice > offer.price;
-            const oldPriceHtml = hasDiscount ? `<span class="product-old-price" style="text-decoration: line-through; color: #888; font-size: 13px; margin-left: 8px;">${offer.oldPrice} جنيه</span>` : '';
-
-            let discountBadgeHtml = '<div class="offer-badge bose-offer-badge" style="position: absolute; top: 10px; right: 10px; background: #FF91A4; color: #FFFFFF; font-weight: 700; font-size: 12px; padding: 4px 10px; border-radius: 12px; z-index: 2;">خصم خاص</div>';
-            let savingsHtml = '';
-            if (hasDiscount) {
-                const savingsAmount = offer.oldPrice - offer.price;
-                const discountPercent = Math.round((savingsAmount / offer.oldPrice) * 100);
-                discountBadgeHtml = `<div class="offer-badge bose-offer-badge" style="position: absolute; top: 10px; right: 10px; background: #FF91A4; color: #FFFFFF; font-weight: 700; font-size: 12px; padding: 4px 10px; border-radius: 12px; z-index: 2;">خصم ${discountPercent}%</div>`;
-                savingsHtml = `<span class="offer-savings-note" style="display: block; color: #2E7D32; font-size: 12px; font-weight: 700; margin-top: 4px;">وفر ${Math.round(savingsAmount)} جنيه</span>`;
-            }
-
-            const safeImg = window.optimizeBoseImageUrl(offer.images ? offer.images[0] : '', 400);
-            const safeTitle = window.escapeBoseHTML(offer.title);
-            const safeFlavor = window.escapeBoseHTML(offer.flavorName || '');
-            const safeDesc = window.escapeBoseHTML(offer.description ? (offer.description.substring(0, 75) + '...') : '');
-            return `
-                <div class="product-card-unified offer-card bose-offer-card" data-id="${offer.id}">
-                    ${discountBadgeHtml}
-                    <img src="${safeImg}" alt="${safeTitle}" class="product-card-img" width="300" height="300" loading="lazy" onclick="window.location.href='product.html?slug=${encodeURIComponent(offer.slug)}'" style="cursor:pointer;" />
-                    <h3 class="product-card-title">${safeTitle}</h3>
-                    <span class="product-card-flavor-name">${safeFlavor}</span>
-                    <p class="product-card-desc">${safeDesc}</p>
-                    
-                    <div class="product-card-qty-wrapper">
-                        <button class="btn-qty-plus" onclick="window.handleBoseCardQtyChange(this, 1)">+</button>
-                        <input type="number" class="input-qty-value" value="1" min="1" readonly />
-                        <button class="btn-qty-minus" onclick="window.handleBoseCardQtyChange(this, -1)">-</button>
-                    </div>
-                    
-                    <div class="product-card-price" data-base-price="${offer.price}">
-                        ${oldPriceHtml}
-                        <span>${Math.round(offer.price)} جنيه</span>
-                        ${savingsHtml}
-                    </div>
-                    <button class="btn-add-to-cart" onclick="window.handleBoseDirectAddToCart(this, '${offer.id}')">
-                        <i class="fa-solid fa-basket-shopping"></i> اضافة للسلة
-                    </button>
-                </div>
-            `;
-        }).join('');
+        offersTrack.innerHTML = offersData.map(/** @param {Object} offer */ (offer) => createProductCardHTML(offer)).join('');
     }
 
     /**
@@ -467,6 +431,28 @@
         track.addEventListener('touchend', onDragEnd);
     }
 
+    /**
+     * 📄 صفحة العروض المستقلة offers.html - المكان الشرعي الوحيد لعرض كل العروض
+     * بتستخدم نفس مصدر البيانات ونفس دالة الكارت الموحدة، فأي تحديث في مكان واحد
+     * بينعكس تلقائياً هنا وفي كارت الرئيسية بدون أي تكرار أو تضارب.
+     */
+    function renderAllOffersPage() {
+        const grid = document.getElementById('all-offers-grid');
+        if (!grid) return;
+
+        const offersData = getAllOfferProducts();
+        const emptyState = document.getElementById('all-offers-empty-state');
+
+        if (offersData.length === 0) {
+            grid.innerHTML = '';
+            if (emptyState) emptyState.style.display = 'block';
+            return;
+        }
+
+        if (emptyState) emptyState.style.display = 'none';
+        grid.innerHTML = offersData.map(/** @param {Object} offer */ (offer) => createProductCardHTML(offer)).join('');
+    }
+
     function renderDynamicWaterfall() {
         const leftCol = document.getElementById('waterfall-left-col');
         const rightCol = document.getElementById('waterfall-right-col');
@@ -474,22 +460,38 @@
 
         if (!waterfallData) return;
 
+        /**
+         * كل صورة في الشلال دلوقتي مرتبطة بمنتج حقيقي (image + slug) بدل ما تكون
+         * صورة زخرفية مقطوعة عن أي منتج. الضغط على أي صورة يوصل العميل مباشرة
+         * لصفحة المنتج المستقلة الخاصة بيها.
+         * @param {Array<Object|string>} items
+         */
+        const buildWaterfallItemsHtml = (items) => items.map((item) => {
+            const isLinked = item && typeof item === 'object' && item.slug;
+            const imgSrc = isLinked ? item.image : item;
+            const imgTag = `<img src="${window.optimizeBoseImageUrl(imgSrc, 300)}" alt="منتج فاخر حلويات بوسي" class="waterfall-img" width="220" height="220" loading="lazy" />`;
+            return isLinked
+                ? `<a href="product.html?slug=${encodeURIComponent(item.slug)}" class="waterfall-img-link" aria-label="عرض تفاصيل المنتج">${imgTag}</a>`
+                : imgTag;
+        }).join('');
+
         if (leftCol && waterfallData.leftColumnImages) {
-            const leftHtml = waterfallData.leftColumnImages.map(/** @param {string} img */ (img) => 
-                `<img src="${window.optimizeBoseImageUrl(img, 300)}" alt="منتج فاخر حلويات بوسي" class="waterfall-img" width="220" height="220" loading="lazy" />`
-            ).join('');
+            const leftHtml = buildWaterfallItemsHtml(waterfallData.leftColumnImages);
             leftCol.innerHTML = `<div class="waterfall-up">${leftHtml} ${leftHtml}</div>`;
         }
 
         if (rightCol && waterfallData.rightColumnImages) {
-            const rightHtml = waterfallData.rightColumnImages.map(/** @param {string} img */ (img) => 
-                `<img src="${window.optimizeBoseImageUrl(img, 300)}" alt="منتج راقي حلويات بوسي" class="waterfall-img" width="220" height="220" loading="lazy" />`
-            ).join('');
+            const rightHtml = buildWaterfallItemsHtml(waterfallData.rightColumnImages);
             rightCol.innerHTML = `<div class="waterfall-down">${rightHtml} ${rightHtml}</div>`;
         }
     }
 
     /**
+     * 👑 [محرك موحد وحيد لكل كروت المنتجات في الموقع كله]
+     * أي منتج معاه oldPrice أكبر من price بيتحول تلقائياً وفي كل مكان يظهر فيه
+     * (فئة، أكثر مبيعاً، وصل حديثاً، صفحة العروض) لكارت "عليه عرض" واضح بشارة خصم
+     * وسعر قديم مشطوب ومبلغ التوفير - بدل ما يظهر كمنتج مستقل مربك للعميل.
+     * ده الحل الجذري لمشكلة تكرار منتجات العروض (مش بس الجاتوهات) في كل الفئات.
      * @param {Object} product
      * @returns {string}
      */
@@ -502,9 +504,22 @@
         const safeFlavor = window.escapeBoseHTML(product.flavorName || '');
         const safeDesc = window.escapeBoseHTML(product.flavorDesc || (product.description ? product.description.substring(0, 80) + '...' : ''));
 
+        const hasDiscount = !!(product.oldPrice && product.oldPrice > product.price);
+        let discountBadgeHtml = '';
+        let oldPriceHtml = '';
+        let savingsHtml = '';
+        if (hasDiscount) {
+            const savingsAmount = product.oldPrice - product.price;
+            const discountPercent = Math.round((savingsAmount / product.oldPrice) * 100);
+            discountBadgeHtml = `<div class="offer-badge bose-offer-badge">خصم ${discountPercent}%</div>`;
+            oldPriceHtml = `<span class="product-old-price">${Math.round(product.oldPrice)} جنيه</span>`;
+            savingsHtml = `<span class="offer-savings-note">وفر ${Math.round(savingsAmount)} جنيه</span>`;
+        }
+
         return `
-            <div class="product-card-unified" data-id="${product.id}">
-                <img src="${safeImg}" alt="${safeTitle}" class="product-card-img" width="300" height="300" loading="lazy" onclick="window.location.href='product.html?slug=${encodeURIComponent(product.slug)}'" style="cursor:pointer;" />
+            <div class="product-card-unified${hasDiscount ? ' bose-offer-card' : ''}" data-id="${product.id}" onclick="if(!event.target.closest('.product-card-qty-wrapper') && !event.target.closest('.btn-add-to-cart')){ window.location.href='product.html?slug=${encodeURIComponent(product.slug)}'; }" style="cursor:pointer;">
+                ${discountBadgeHtml}
+                <img src="${safeImg}" alt="${safeTitle}" class="product-card-img" width="300" height="300" loading="lazy" />
                 <h3 class="product-card-title">${safeTitle}</h3>
                 <span class="product-card-flavor-name">${safeFlavor}</span>
                 <p class="product-card-desc">${safeDesc}</p>
@@ -515,7 +530,11 @@
                     <button class="btn-qty-minus" onclick="window.handleBoseCardQtyChange(this, -1)">-</button>
                 </div>
                 
-                <div class="product-card-price" data-base-price="${calculatedPrice}">${Math.round(calculatedPrice)} جنيه</div>
+                <div class="product-card-price" data-base-price="${calculatedPrice}">
+                    ${oldPriceHtml}
+                    <span>${Math.round(calculatedPrice)} جنيه</span>
+                    ${savingsHtml}
+                </div>
                 <button class="btn-add-to-cart" onclick="window.handleBoseDirectAddToCart(this, '${product.id}')">
                     <i class="fa-solid fa-basket-shopping"></i> اضافة للسلة
                 </button>
@@ -1344,6 +1363,43 @@
                 </div>
             `;
             setupHeaderAndSidebarEvents();
+        }
+
+        // 🔧 [إصلاح جذري]: الشريط السفلي الثابت كان Hardcoded جوه index.html بس، فكان بيختفي
+        // تماماً في أي صفحة تانية (منتج، فئة، سلة، دفع...). دلوقتي بيتحقن تلقائياً في كل صفحة
+        // محملة core-engine.js، وزرار "العروض" بقى بيوجه لصفحة العروض المستقلة الحقيقية
+        // offers.html بدل ما يعمل Scroll جوه الرئيسية بس (اللي أصلاً معندهاش تأثير في أي صفحة تانية).
+        if (!document.querySelector('.bose-bottom-nav-bar')) {
+            const currentPage = (window.location.pathname.split('/').pop() || 'index.html');
+            const isHome = currentPage === '' || currentPage === 'index.html';
+            const isOffers = currentPage === 'offers.html';
+            const isCart = currentPage === 'cart.html';
+
+            const bottomNav = document.createElement('nav');
+            bottomNav.className = 'bose-bottom-nav bose-bottom-nav-bar';
+            bottomNav.setAttribute('aria-label', 'التنقل السفلي السريع');
+            bottomNav.innerHTML = `
+                <a href="index.html" class="bottom-nav-item bose-bottom-nav-item${isHome ? ' active' : ''}">
+                    <i class="fas fa-home"></i>
+                    <span>الرئيسية</span>
+                </a>
+                <a href="offers.html" class="bottom-nav-item bose-bottom-nav-item${isOffers ? ' active' : ''}">
+                    <i class="fas fa-tags"></i>
+                    <span>العروض</span>
+                </a>
+                <a href="https://wa.me/${window.toInternationalWhatsappNumber(data.social?.whatsapp || '201097238441')}" target="_blank" rel="noopener noreferrer" class="bottom-nav-item bose-bottom-nav-item whatsapp-item">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>الواتساب</span>
+                </a>
+                <a href="cart.html" class="bottom-nav-item bose-bottom-nav-item cart-item${isCart ? ' active' : ''}">
+                    <div class="nav-cart-icon-wrap">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span class="nav-cart-badge bose-bottom-nav-badge">0</span>
+                    </div>
+                    <span>السلة</span>
+                </a>
+            `;
+            document.body.appendChild(bottomNav);
         }
 
         const footerInjector = document.getElementById('bose-footer-injector');
