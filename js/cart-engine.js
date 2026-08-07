@@ -89,6 +89,7 @@ function renderBoseCartPage(storeData) {
             const totalItemCost = finalProductPrice * (parseInt(item.quantity, 10) || 1);
             
             let customDetailsHTML = "";
+            const esc = window.escapeBoseHTML || (s => s);
             
             const isCakeBespoke = item.type === "custom-cake" || item.type === "mini-cake" || item.productSlug === "toort-custom-master" || item.productSlug === "mini-cake-two-person";
             const isFlowerBespoke = item.type === "custom-flower" || item.productSlug === "flowers-master";
@@ -96,23 +97,23 @@ function renderBoseCartPage(storeData) {
             if (item.customDetails) {
                 let specs = [];
                 const cd = item.customDetails;
-                
+
                 if (isCakeBespoke) {
-                    if (cd.cakeType && cd.cakeType !== "none" && cd.cakeType !== "افتراضي") specs.push(`<span><strong>طعم الكيك:</strong> ${cd.cakeType}</span>`);
-                    if (cd.shape && cd.shape !== "none") specs.push(`<span><strong>الشكل:</strong> ${cd.shape === 'circle' ? 'دائري' : cd.shape === 'heart' ? 'قلب' : cd.shape === 'square' ? 'مربع' : cd.shape === 'rectangle' ? 'مستطيل' : cd.shape}</span>`);
-                    if (cd.persons && parseInt(cd.persons, 10) > 0) specs.push(`<span><strong>عدد الأفراد:</strong> ${cd.persons} فرد</span>`);
+                    if (cd.cakeType && cd.cakeType !== "none" && cd.cakeType !== "افتراضي") specs.push(`<span><strong>طعم الكيك:</strong> ${esc(cd.cakeType)}</span>`);
+                    if (cd.shape && cd.shape !== "none") specs.push(`<span><strong>الشكل:</strong> ${cd.shape === 'circle' ? 'دائري' : cd.shape === 'heart' ? 'قلب' : cd.shape === 'square' ? 'مربع' : cd.shape === 'rectangle' ? 'مستطيل' : esc(cd.shape)}</span>`);
+                    if (cd.persons && parseInt(cd.persons, 10) > 0) specs.push(`<span><strong>عدد الأفراد:</strong> ${parseInt(cd.persons, 10)} فرد</span>`);
                     if (cd.printingType && cd.printingType !== "none") specs.push(`<span><strong>الطباعة:</strong> ${cd.printingType === 'edible' ? 'صورة صالحة للأكل' : 'صورة مجسمة غير صالحة للأكل'}</span>`);
-                    if (cd.customMessage && cd.customMessage.trim() !== "") specs.push(`<span><strong>الرسالة المكتوبة:</strong> "${cd.customMessage}"</span>`);
-                    if (cd.allergyNote && cd.allergyNote.trim() !== "") specs.push(`<span style="color:#D4AF37;"><strong>ملاحظة الحساسية:</strong> ${cd.allergyNote}</span>`);
+                    if (cd.customMessage && cd.customMessage.trim() !== "") specs.push(`<span><strong>الرسالة المكتوبة:</strong> "${esc(cd.customMessage.trim())}"</span>`);
+                    if (cd.allergyNote && cd.allergyNote.trim() !== "") specs.push(`<span style="color:#D4AF37;"><strong>ملاحظة الحساسية:</strong> ${esc(cd.allergyNote.trim())}</span>`);
                 }
                 
                 if (isFlowerBespoke) {
                     if (cd.flowerType && cd.flowerType !== "none") specs.push(`<span><strong>نوع الورد:</strong> ${cd.flowerType === 'natural' ? 'طبيعي نضر' : cd.flowerType === 'artificial' ? 'صناعي فاخر' : 'ستان مصنوع بحب'}</span>`);
-                    if (cd.flowerCount && parseInt(cd.flowerCount, 10) > 0) specs.push(`<span><strong>عدد الورد:</strong> ${cd.flowerCount} وردة</span>`);
-                    if (cd.moneyAmount && parseInt(cd.moneyAmount, 10) > 0) specs.push(`<span><strong>الكاش المدمج:</strong> +${cd.moneyAmount} جنيه</span>`);
-                    if (cd.chocolatePieces && parseInt(cd.chocolatePieces, 10) > 0) specs.push(`<span><strong>قطع الشوكولاتة:</strong> ${cd.chocolatePieces} قطعة</span>`);
-                    if (cd.wrappingType && cd.wrappingType !== "none") specs.push(`<span><strong>التغليف:</strong> ${cd.wrappingType}</span>`);
-                    if (cd.giftCardText && cd.giftCardText.trim() !== "") specs.push(`<span><strong>كارت الإهداء:</strong> "${cd.giftCardText}"</span>`);
+                    if (cd.flowerCount && parseInt(cd.flowerCount, 10) > 0) specs.push(`<span><strong>عدد الورد:</strong> ${parseInt(cd.flowerCount, 10)} وردة</span>`);
+                    if (cd.moneyAmount && parseInt(cd.moneyAmount, 10) > 0) specs.push(`<span><strong>الكاش المدمج:</strong> +${parseInt(cd.moneyAmount, 10)} جنيه</span>`);
+                    if (cd.chocolatePieces && parseInt(cd.chocolatePieces, 10) > 0) specs.push(`<span><strong>قطع الشوكولاتة:</strong> ${parseInt(cd.chocolatePieces, 10)} قطعة</span>`);
+                    if (cd.wrappingType && cd.wrappingType !== "none") specs.push(`<span><strong>التغليف:</strong> ${esc(cd.wrappingType)}</span>`);
+                    if (cd.giftCardText && cd.giftCardText.trim() !== "") specs.push(`<span><strong>كارت الإهداء:</strong> "${esc(cd.giftCardText.trim())}"</span>`);
                 }
                 
                 if (specs.length > 0) {
@@ -135,12 +136,16 @@ function renderBoseCartPage(storeData) {
             cartCard.setAttribute("data-item-id", item.id);
             cartCard.setAttribute("data-index", index);
             
+            const safeCartImg = (window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(item.image, 240) : item.image) || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png';
+            const safeTitle = esc(item.title || "");
+            const safeFlavorName = esc(cleanFlavorName || "");
+
             cartCard.innerHTML = `
                 <div style="display: flex; align-items: center; gap: 20px; flex: 1; min-width: 0;">
-                    <img src="${item.image || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png'}" class="cart-item-image" alt="${item.title}" style="width: 120px; height: 120px; border-radius: 20px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(255,145,164,0.3);" loading="lazy">
+                    <img src="${safeCartImg}" class="cart-item-image" alt="${safeTitle}" style="width: 120px; height: 120px; border-radius: 20px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(255,145,164,0.3);" loading="lazy">
                     <div style="display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 0; text-align: right;">
-                        <h3 class="cart-item-title" style="margin: 0; font-size: 16px; font-weight: 700; color: #111111; font-family: 'Cairo'; line-height: 1.4;">${item.title}</h3>
-                        <span class="cart-item-flavor-name" style="font-size: 13.5px; color: #FF91A4; font-weight: 700; font-family: 'Cairo';">${cleanFlavorName}</span>
+                        <h3 class="cart-item-title" style="margin: 0; font-size: 16px; font-weight: 700; color: #111111; font-family: 'Cairo'; line-height: 1.4;">${safeTitle}</h3>
+                        <span class="cart-item-flavor-name" style="font-size: 13.5px; color: #FF91A4; font-weight: 700; font-family: 'Cairo';">${safeFlavorName}</span>
                         ${customDetailsHTML}
                         
                         <div class="bose-qty-controller-box" style="display: flex; align-items: center; border: 1px solid rgba(255, 145, 164, 0.3); border-radius: 12px; width: max-content; margin-top: 8px; background: #FFFFFF; height: 38px; padding: 2px;">
@@ -255,34 +260,18 @@ function updateCartSummary(cart, storeData) {
     const grandTotalDisplay = document.getElementById("cart-grand-total-value") || document.getElementById("summary-grand-total");
     const itemsCountDisplay = document.getElementById("summary-items-count");
     
-    let subtotal = 0;
-    let displayItems = 0;
+    // 🧮 [توحيد حسابي]: استخدام calculateBoseInvoice الموحدة بدل تكرار
+    // نفس المعادلة محلياً هنا (كانت بتفرق فعلياً عن checkout عند أي تعديل مستقبلي).
+    const invoice = window.calculateBoseInvoice(cart, storeData, 0);
     
-    cart.forEach(item => {
-        subtotal += parseFloat(item.finalPrice || 0) * (parseInt(item.quantity, 10) || 1);
-        displayItems += (parseInt(item.quantity, 10) || 1);
-    });
-    
-    if (subtotalDisplay) subtotalDisplay.textContent = subtotal.toFixed(2) + " EGP";
-    if (itemsCountDisplay) itemsCountDisplay.textContent = displayItems;
-    
-    let discount = 0;
-    const activeCoupon = localStorage.getItem("bose_active_coupon");
-    if (activeCoupon && storeData.coupons) {
-        const couponRule = storeData.coupons.find(c => c.code === activeCoupon);
-        // 🛡️ [إصلاح حرج]: استخدام الحساب الموحد اللي بيفرّق بين خصم النسبة (%)
-        // والخصم الثابت (جنيه) بدل حساب كل كوبون كنسبة مئوية زي القديم.
-        discount = window.calculateCouponDiscount(subtotal, couponRule);
-    }
+    if (subtotalDisplay) subtotalDisplay.textContent = invoice.subtotal.toFixed(2) + " EGP";
+    if (itemsCountDisplay) itemsCountDisplay.textContent = invoice.itemsCount;
     
     const discountDisplay = document.getElementById("summary-discount");
-    if (discountDisplay) discountDisplay.textContent = discount.toFixed(2) + " EGP";
-    
-    let finalGrandTotal = subtotal - discount;
-    if (finalGrandTotal < 0) finalGrandTotal = 0;
+    if (discountDisplay) discountDisplay.textContent = invoice.discount.toFixed(2) + " EGP";
     
     if (grandTotalDisplay) {
-        grandTotalDisplay.textContent = Math.round(finalGrandTotal) + " EGP";
+        grandTotalDisplay.textContent = invoice.grandTotal + " EGP";
     }
     
     const promoInput = document.getElementById("coupon-input");
@@ -305,7 +294,7 @@ function updateCartSummary(cart, storeData) {
                         updateCartSummary(cart, storeData);
                     } else {
                         couponMsg.className = "coupon-status-toast error";
-                        couponMsg.textContent = "⚠️ كود الخصم المدخل غير صحيح أو منتهي الصلاحية.";
+                        couponMsg.textContent = "⚠ ️ كود الخصم المدخل غير صحيح أو منتهي الصلاحية.";
                     }
                 }
             };
@@ -432,28 +421,16 @@ function recalculateCheckoutInvoice(cart, storeData, shippingFee) {
     const shippingDisplay = document.getElementById("summary-shipping-fee");
     const grandTotalDisplay = document.getElementById("summary-grand-total");
     
-    let subtotal = 0;
-    cart.forEach(item => {
-        subtotal += parseFloat(item.finalPrice || 0) * (parseInt(item.quantity, 10) || 1);
-    });
-    
-    if (subtotalDisplay) subtotalDisplay.textContent = subtotal.toFixed(2) + " EGP";
+    // 🧮 [توحيد حسابي]: نفس دالة السلة بالظبط، فرق الشحن بس بيتمرر كباراميتر
+    const invoice = window.calculateBoseInvoice(cart, storeData, shippingFee);
+
+    if (subtotalDisplay) subtotalDisplay.textContent = invoice.subtotal.toFixed(2) + " EGP";
     if (shippingDisplay) {
-        shippingDisplay.textContent = shippingFee === 0 ? "مجاناً" : shippingFee.toFixed(2) + " EGP";
+        shippingDisplay.textContent = invoice.shippingFee === 0 ? "مجاناً" : invoice.shippingFee.toFixed(2) + " EGP";
     }
-    
-    let discount = 0;
-    const activeCoupon = localStorage.getItem("bose_active_coupon");
-    if (activeCoupon && storeData.coupons) {
-        const couponRule = storeData.coupons.find(c => c.code === activeCoupon);
-        discount = window.calculateCouponDiscount(subtotal, couponRule);
-    }
-    
-    let absoluteTotal = subtotal - discount + shippingFee;
-    if (absoluteTotal < 0) absoluteTotal = 0;
     
     if (grandTotalDisplay) {
-        grandTotalDisplay.textContent = Math.round(absoluteTotal) + " EGP";
+        grandTotalDisplay.textContent = invoice.grandTotal + " EGP";
     }
 }
 
@@ -523,28 +500,34 @@ function processFinalBoseOrder(cart, storeData, method, shippingFee) {
         return;
     }
 
+    // 🛡️ [إصلاح - المرحلة 2]: تحديد هل السلة فيها منتج مخصص (تورت/ورد محاكي) عشان
+    // نطبّق قاعدة الأسبوع بدل الـ24 ساعة العامة - تطبيقاً لتأكيد صاحب المتجر إن
+    // التورت والورد المخصص بتاخد مراحل تحضير أطول من باقي المنتجات.
+    const cartHasCustomItem = typeof window.boseCartHasCustomItem === "function"
+        ? window.boseCartHasCustomItem(cart)
+        : false;
+
     if (typeof window.validateBoseDeliverySchedule === "function") {
-        const isScheduleValid = window.validateBoseDeliverySchedule(orderDate, orderTime);
+        const isScheduleValid = window.validateBoseDeliverySchedule(orderDate, orderTime, cartHasCustomItem);
         if (!isScheduleValid) {
-            showBoseCustomModal(storeData.orderRules?.preparationTimeMessage || "نحتاج إلى وقت كافٍ لتجهيز طلبك بأفضل جودة ممكنة، لذلك لا يمكن اختيار موعد قبل 24 ساعة.");
+            const fallbackMsg = cartHasCustomItem
+                ? "التورت والورد المخصص عبر المحاكي بيحتاج حجز قبل موعد التسليم بأسبوع كامل (7 أيام) على الأقل."
+                : "نحتاج إلى وقت كافٍ لتجهيز طلبك بأفضل جودة ممكنة، لذلك لا يمكن اختيار موعد قبل 24 ساعة.";
+            const msg = cartHasCustomItem
+                ? (storeData.orderRules?.customPreparationTimeMessage || fallbackMsg)
+                : (storeData.orderRules?.preparationTimeMessage || fallbackMsg);
+            showBoseCustomModal(msg);
             return;
         }
     }
 
-    let subtotal = 0;
-    cart.forEach(item => {
-        subtotal += parseFloat(item.finalPrice || 0) * (parseInt(item.quantity, 10) || 1);
-    });
-    
-    let discount = 0;
-    const activeCoupon = localStorage.getItem("bose_active_coupon");
-    if (activeCoupon && storeData.coupons) {
-        const couponRule = storeData.coupons.find(c => c.code === activeCoupon);
-        discount = window.calculateCouponDiscount(subtotal, couponRule);
-    }
-    
-    const finalGrandTotalCalculated = Math.round(subtotal - discount + shippingFee);
-    const orderIdGenerated = `${Math.floor(1000 + Math.random() * 9000)}`;
+    // 🧮 [توحيد حسابي]: نفس المعادلة المستخدمة بالسلة وبصفحة الشحن بالظبط
+    const invoice = window.calculateBoseInvoice(cart, storeData, shippingFee);
+    const finalGrandTotalCalculated = invoice.grandTotal;
+
+    // 🆔 [إصلاح حرج]: رقم طلب فريد فعلياً (طابع زمني + عشوائي) بدل رقم
+    // 4 خانات القديم اللي كان احتمال تصادمه وارد وقريب جداً.
+    const orderIdGenerated = window.generateBoseOrderId ? window.generateBoseOrderId() : `${Date.now()}`;
 
     const completedBoseOrderObject = {
         orderNumber: orderIdGenerated,
@@ -607,10 +590,18 @@ function buildBoseFormattedWhatsappInvoice(order) {
                 if (cd.customMessage && cd.customMessage.trim() !== "") msg += `   • النص: "${cd.customMessage}"\n`;
             }
             if (item.type === "custom-flower") {
+                // 🧾 [إصلاح - المرحلة 3]: cd.moneyAmount كان اسم حقل قديم بقى غير موجود
+                // خالص بعد توحيد بنية customDetails مع window.createCartItem (الاسم
+                // الصحيح دلوقتي هو cashAmount)، فكان الكاش مش هيظهر أبداً في فاتورة
+                // الواتساب رغم إن العميل دفعه فعلاً. بالإضافة لإضافة تفاصيل شريط
+                // الستان وميزانية الشوكولاتة وعدد الصور المطبوعة اللي كانت ناقصة.
                 if (cd.flowerType && cd.flowerType !== "none") msg += `   • نوع الورد: ${cd.flowerType}\n`;
                 if (cd.flowerCount && cd.flowerCount > 0) msg += `   • التعداد: ${cd.flowerCount} وردة\n`;
-                if (cd.moneyAmount && cd.moneyAmount > 0) msg += `   • الكاش المدمج: +${cd.moneyAmount} EGP\n`;
-                if (cd.giftCardText && cd.giftCardText.trim() !== "") msg += `   • كارت الإهداء: "${cd.giftCardText}"\n`;
+                if (cd.hasSatinRibbon && cd.satinRibbonText && cd.satinRibbonText.trim() !== "") msg += `   • شريط ستان مطبوع حرارياً: "${cd.satinRibbonText}"\n`;
+                if (cd.photoCount && cd.photoCount > 0) msg += `   • صور شخصية مطبوعة: ${cd.photoCount} صورة\n`;
+                if (cd.cashAmount && cd.cashAmount > 0) msg += `   • الكاش المدمج جوه البوكيه: +${cd.cashAmount} EGP\n`;
+                if (cd.hasChocolate && cd.chocolateBudget && cd.chocolateBudget > 0) msg += `   • ميزانية الشوكولاتة الفاخرة: +${cd.chocolateBudget} EGP\n`;
+                if (cd.hasGiftCard && cd.giftCardText && cd.giftCardText.trim() !== "") msg += `   • كارت الإهداء: "${cd.giftCardText}"\n`;
             }
         }
         msg += `   ---------------------------\n`;
@@ -631,40 +622,126 @@ function buildBoseFormattedWhatsappInvoice(order) {
  * =========================================================================
  */
 function renderBoseSuccessPage(storeData) {
-    const rawOrder = localStorage.getItem("bose_last_order");
-    if (!rawOrder) {
-        window.location.href = "index.html";
-        return;
-    }
-    const order = JSON.parse(rawOrder);
-
-    const orderIdDisplay = document.getElementById("success-order-id-display");
-    const customerWelcome = document.getElementById("success-customer-welcome");
-    const receiptWrapper = document.getElementById("bose-receipt-items-container");
-    
+    // 🛡️ [إصلاح حرج - المرحلة 1]: هذه الدالة كانت معطّلة بالكامل قبل كده — كان بيتم
+    // اكتشاف الصفحة عن طريق البحث عن id="success-order-id-display" غير موجود فعلياً
+    // في order-success.html، وكمان الملف ده مكانش بيتحمّل في الصفحة أصلاً. النتيجة كانت
+    // ظهور سكريبت داخلي منفصل ومكرر بالكامل جوه الـHTML يعمل نفس المهمة. دلوقتي
+    // order-success.html بيحمّل cart-engine.js فعلياً، وهذه الدالة أصبحت المصدر
+    // الوحيد لمنطق عرض الفاتورة - تم حذف السكريبت الداخلي المكرر نهائياً من الـHTML.
     const orderNumLbl = document.getElementById("bose-receipt-number-lbl");
     const dateLbl = document.getElementById("bose-receipt-date-lbl");
+    const receiptWrapper = document.getElementById("bose-receipt-items-container");
+    const grandTotalDisplay = document.getElementById("bose-receipt-grand-total");
+    const whatsappBtn = document.getElementById("bose-success-whatsapp-btn");
+    // عنصران اختياريان حسب نسخة الصفحة - الكود بيتخطاهم بأمان لو مش موجودين
+    const orderIdDisplay = document.getElementById("success-order-id-display");
+    const customerWelcome = document.getElementById("success-customer-welcome");
 
-    // فك شلل الأصفار وإجبار قراءة المخرجات الحقيقية
-    if (orderNumLbl) orderNumLbl.textContent = `رقم طلب الفاتورة: #${order.orderNumber || '0000'}`;
-    if (dateLbl) dateLbl.textContent = order.date || '00 / 00 / 2026';
-    if (orderIdDisplay) orderIdDisplay.textContent = order.orderId || `#${order.orderNumber}`;
-    
-    if (receiptWrapper && order.items) {
-        receiptWrapper.innerHTML = order.items.map(item => `
-            <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; font-family: 'Cairo';">
-                <span><strong>${item.title}</strong> (×${item.quantity})<span style="display:block; font-size:0.75rem; font-weight:700; color:#FF91A4; margin-top:2px;">${item.flavorName || 'جاهز وفريش'}</span></span>
-                <span style="color:#FF91A4; font-weight:700;">${(item.finalPrice * item.quantity).toFixed(2)} EGP</span>
-            </div>
-        `).join("");
+    const showEmptyState = () => {
+        if (receiptWrapper) {
+            receiptWrapper.innerHTML = `<p style="text-align:center; opacity:0.6; font-size:0.85rem; margin:0;">تم توثيق وحجز طلبك الفاخر بنجاح في الفرع 🌸</p>`;
+        }
+    };
+
+    const rawOrder = localStorage.getItem("bose_last_order");
+    if (!rawOrder) { showEmptyState(); return; }
+
+    let order;
+    try {
+        order = JSON.parse(rawOrder);
+    } catch (e) {
+        console.error("⚠️ فشل قراءة أو معالجة إيصال الفاتورة الأخيرة.", e);
+        showEmptyState();
+        return;
     }
 
-    const grandTotalDisplay = document.getElementById("bose-receipt-grand-total");
-    if (grandTotalDisplay) grandTotalDisplay.textContent = order.grandTotal + " EGP";
-    
-    const whatsappBtn = document.getElementById("bose-success-whatsapp-btn");
-    if (whatsappBtn && order.whatsappMessage) {
-        whatsappBtn.href = window.buildWhatsappLink(storeData.store?.phone || '01097238441', order.whatsappMessage);
+    if (orderNumLbl) orderNumLbl.textContent = `رقم طلب الفاتورة: #${order.orderNumber || '0000'}`;
+    if (dateLbl) dateLbl.textContent = order.date || '00 / 00 / 2026';
+    if (orderIdDisplay) {
+        orderIdDisplay.textContent = order.orderId || `#${order.orderNumber || ''}`;
+        orderIdDisplay.style.display = "block";
+    }
+    // 🐛 [إصلاح خلل وظيفي]: العنصر كان بيتقرأ من الـDOM بس مفيش أي كود
+    // بيحط فيه اسم العميل فعلياً، فكانت خانة الترحيب بتفضل فاضية دايماً.
+    if (customerWelcome && order.customerName) {
+        customerWelcome.textContent = `أهلاً بيك يا ${order.customerName} 🌸`;
+        customerWelcome.style.display = "block";
+    }
+
+    const purchasedSlugs = [];
+    if (receiptWrapper) {
+        if (order.items && Array.isArray(order.items) && order.items.length > 0) {
+            const escR = window.escapeBoseHTML || (s => s);
+            receiptWrapper.innerHTML = order.items.map(item => {
+                if (item.productSlug) purchasedSlugs.push(item.productSlug);
+                return `
+                <div class="receipt-item-node">
+                    <span class="receipt-item-name">${escR(item.title)} <span style="font-weight:400; opacity:0.6; font-size:0.8rem;">(×${item.quantity})</span><span style="display:block; font-size:0.75rem; font-weight:700; color:var(--bose-pink); margin-top:2px;">${escR(item.flavorName || 'جاهز وفريش')}</span></span>
+                    <span class="receipt-item-price">${(item.finalPrice * item.quantity).toFixed(2)} EGP</span>
+                </div>
+            `;
+            }).join("");
+        } else {
+            showEmptyState();
+        }
+    }
+
+    if (grandTotalDisplay) grandTotalDisplay.textContent = (order.grandTotal || 0) + " EGP";
+
+    let whatsappUrl = "";
+    if (whatsappBtn) {
+        whatsappUrl = order.whatsappMessage
+            ? window.buildWhatsappLink(storeData?.store?.phone || '01097238441', order.whatsappMessage)
+            : whatsappBtn.href;
+        whatsappBtn.href = whatsappUrl;
+    }
+
+    // 🚀 [إصلاح المرحلة 1 - تطبيق نص المواصفة]: فتح الواتساب تلقائياً فور تحميل
+    // الصفحة بدل انتظار ضغطة العميل اليدوية. بنستنى نص ثانية بسيطة (تقليل احتمال
+    // حظر الـPopup)، والزر اليدوي فاضل شغال كبديل فوري لو المتصفح منع الفتح التلقائي
+    // أو لو العميل قفل التبويب اللي اتفتح بالغلط.
+    const autoOpenFlag = "bose_whatsapp_auto_opened_" + (order.orderNumber || "0");
+    if (whatsappUrl && !sessionStorage.getItem(autoOpenFlag)) {
+        setTimeout(() => {
+            try {
+                window.open(whatsappUrl, "_blank");
+                sessionStorage.setItem(autoOpenFlag, "1");
+            } catch (e) {
+                console.warn("⚠️ تعذر فتح الواتساب تلقائياً، الزر اليدوي متاح كبديل.", e);
+            }
+        }, 600);
+    }
+
+    // 🗄️ [إصلاح المرحلة 1]: نسخة احتياطية اختيارية لتسجيل الطلب خارج المتصفح لمنع
+    // ضياعه لو فشل واتساب أو مسح العميل الكاش قبل التأكيد. للتفعيل: عرّف
+    // window.BOSE_ORDER_BACKUP_WEBHOOK_URL برابط خدمة الاستقبال بتاعتك (Google Apps
+    // Script / Webhook / أي Backend بسيط) قبل تحميل هذا الملف. لو مش معرّف، الخطوة
+    // دي بتتجاهل بأمان بدون أي خطأ أو تأثير على باقي الصفحة.
+    if (typeof window.BOSE_ORDER_BACKUP_WEBHOOK_URL === "string" && window.BOSE_ORDER_BACKUP_WEBHOOK_URL) {
+        fetch(window.BOSE_ORDER_BACKUP_WEBHOOK_URL, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(order)
+        }).catch((e) => console.warn("⚠️ تعذر إرسال نسخة الطلب الاحتياطية.", e));
+    }
+
+    // 🧹 تطهير الذاكرة السلوكية لكسر تكرار المنتجات التي تم شراؤها فعلياً
+    try {
+        const behaviorData = localStorage.getItem('bose_user_behavior');
+        if (behaviorData) {
+            const behaviorLog = JSON.parse(behaviorData);
+            purchasedSlugs.forEach((slug) => { if (behaviorLog[slug]) delete behaviorLog[slug]; });
+            localStorage.setItem('bose_user_behavior', JSON.stringify(behaviorLog));
+        }
+    } catch (e) {
+        console.warn("⚠️ تعذر تفعيل صمام الأمان لتطهير الذاكرة السلوكية.", e);
+    }
+
+    // مسح وإفراغ السلة المشتراة فوراً لتجنب حشر الفواتير القديمة وتأمين دورة الشراء التالية
+    localStorage.removeItem("bose_cart");
+    if (typeof window.updateGlobalCartCounter === "function") {
+        window.updateGlobalCartCounter();
     }
 }
 

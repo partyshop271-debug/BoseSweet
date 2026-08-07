@@ -7,12 +7,12 @@
 (function () {
     "use strict";
 
-    // مفاتيح التخزين الموحدة لعلامة بوسي الفاخرة لضمان التزامن المطلق[span_36](start_span)[span_36](end_span)
+    // مفاتيح التخزين الموحدة لعلامة بوسي الفاخرة لضمان التزامن المطلق
     const CART_STORAGE_KEY = 'bose_cart';
     const FLOWER_STATE_STORAGE_KEY = 'bose_flower_builder_state';
     const BASE64_IMAGE_SESSION_KEY = 'bose_active_base64_image_session';
 
-    // ذاكرة احتياطية لضمان استقرار التصفح الخفي (Incognito Mode Fallback)[span_37](start_span)[span_37](end_span)
+    // ذاكرة احتياطية لضمان استقرار التصفح الخفي (Incognito Mode Fallback)
     let flowerStateMemoryFallback = {};
     let activeBase64ImageInMemory = "";
 
@@ -22,7 +22,7 @@
         console.warn("⚠️ الـ sessionStorage غير متاح في المتصفح الحالي.");
     }
 
-    // الإعدادات الافتراضية الصارمة للأسعار تماشياً مع الوثيقة القياسية لحلويات بوسي[span_38](start_span)[span_38](end_span)[span_39](start_span)[span_39](end_span)
+    // الإعدادات الافتراضية الصارمة للأسعار تماشياً مع الوثيقة القياسية لحلويات بوسي
     let flowerConfig = {
         basePrice: 400,
         baseFlowers: 15,
@@ -32,13 +32,13 @@
         satinRibbonPrice: 50
     };
 
-    // الحالة الديناميكية الحالية لرحلة العميل داخل المحاكي[span_40](start_span)[span_40](end_span)
+    // الحالة الديناميكية الحالية لرحلة العميل داخل المحاكي
     let state = {
         currentActiveStep: 1,
         totalSteps: 4,
         flowerType: "natural",
         flowerCount: 15,
-        wrappingType: "classic", 
+        wrappingType: "classic",
         ribbonColor: "pink",
         includeRibbonText: false,
         ribbonText: "",
@@ -56,7 +56,7 @@
         isUploading: false
     };
 
-    // عناصر واجهة الـ DOM الخاصة بمحاكي الورد[span_41](start_span)[span_41](end_span)
+    // عناصر واجهة الـ DOM الخاصة بمحاكي الورد
     let flowerCountInput, includePhotoCheckbox, photoFileInput, photoPreviewContainer, photoPreviewImg;
     let includeCardCheckbox, cardTextInput, moneyCategorySelect, bouquetTotalVal, addToCartBtn;
     let includeRibbonTextCheckbox, ribbonTextSection, ribbonTextInput, ribbonStepPriceDisplay;
@@ -66,13 +66,13 @@
     let btnNext, btnPrev, stepsPanels, stepsIndicators, iconicBtns, hiddenTypeInput, dynamicPricingWidget;
 
     /**
-     * 🛡️ حفظ وتأمين الحالة التفاعلية الحالية للعميل منعاً لفقد الخيارات[span_42](start_span)[span_42](end_span)
+     * 🛡️ حفظ وتأمين الحالة التفاعلية الحالية للعميل منعاً لفقد الخيارات
      */
     function saveCurrentState() {
         try {
             const tempState = { ...state };
             if (tempState.photoUrl && tempState.photoUrl.startsWith('data:image/')) {
-                activeBase64ImageInMemory = tempState.photoUrl; 
+                activeBase64ImageInMemory = tempState.photoUrl;
                 tempState.photoUrl = "base64-stored-in-memory";
                 try {
                     sessionStorage.setItem(BASE64_IMAGE_SESSION_KEY, activeBase64ImageInMemory);
@@ -85,7 +85,7 @@
     }
 
     /**
-     * 🧮 محرك الفحص المالي لأسعار البوكيه - مطور كلياً لمنع تحميل ميزانية الكاش أو الشوكولاتة أي رسوم[span_43](start_span)[span_43](end_span)[span_44](start_span)[span_44](end_span)
+     * 🧮 محرك الفحص المالي لأسعار البوكيه - مطور كلياً لمنع تحميل ميزانية الكاش أو الشوكولاتة أي رسوم
      */
     function recalculatePrice() {
         let extraFlowers = Math.max(0, state.flowerCount - flowerConfig.baseFlowers);
@@ -93,34 +93,38 @@
         let ribbonCost = state.includeRibbonText ? flowerConfig.satinRibbonPrice : 0;
         let photoCost = state.includePhoto ? (state.photoCount * flowerConfig.photoPrintPrice) : 0;
         let cardCost = (state.includeCard && state.cardText.trim() !== "") ? flowerConfig.giftCardPrice : 0;
-        
+
         // 1. حساب تكلفة الخدمة والتنسيق القابلة لزيادة السعر الرسمية
         let servicePrice = flowerConfig.basePrice + extraCost + ribbonCost + photoCost + cardCost;
-        
-        // استدعاء دالة الزيادة الرسمية من المحرك المركزي الموحد لتوحيد السياسة المالية للموقع إن وجدت[span_45](start_span)[span_45](end_span)[span_46](start_span)[span_46](end_span)
+
+        // استدعاء دالة الزيادة الرسمية من المحرك المركزي الموحد لتوحيد السياسة المالية للموقع إن وجدت
         let finalServicePrice = window.calculateBosePrice ? window.calculateBosePrice(servicePrice, "menu-only") : servicePrice;
 
-        // 2. الكاش والشوكولاتة تُحسب كقيم صافية 100% بدون أي رسوم معالجة لثقة العميل[span_47](start_span)[span_47](end_span)[span_48](start_span)[span_48](end_span)
-        let total = Math.round(finalServicePrice) + state.moneyAmount + state.chocolateBudget;
+        // 2. الكاش والشوكولاتة تُحسب كقيم صافية 100% بدون أي رسوم معالجة لثقة العميل
+        // 🛡️ [إصلاح مالي]: القيمة المخزنة في state.totalPrice (اللي بتتحط في finalPrice
+        // بالسلة) بتفضل بكسورها العشرية الكاملة بدون تقريب مبكر، والتقريب الوحيد
+        // المسموح بيه بيتطبق على مستوى العرض بالواجهة فقط، تماشياً مع القاعدة المالية
+        // الصارمة بعدم تقريب أي سعر فردي أو مخصص، والتقريب مرة واحدة على الإجمالي الكلي.
+        let total = finalServicePrice + state.moneyAmount + state.chocolateBudget;
         state.totalPrice = total;
 
         if (bouquetTotalVal) {
-            bouquetTotalVal.textContent = `${total} جنيه`;
+            bouquetTotalVal.textContent = `${Math.round(total)} جنيه`;
         }
 
-        // تحديث نص السعر التوضيحي بداخل كارت الخطوة الأولى[span_49](start_span)[span_49](end_span)
+        // تحديث نص السعر التوضيحي بداخل كارت الخطوة الأولى
         if (embeddedPriceDisplay) {
             const currentCountCost = flowerConfig.basePrice + (extraFlowers * flowerConfig.extraFlowerPrice);
             let finalCountCost = window.calculateBosePrice ? window.calculateBosePrice(currentCountCost, "menu-only") : currentCountCost;
             embeddedPriceDisplay.innerHTML = `سعر هذا البوكيه الذي يحتوي على ${state.flowerCount} وردة هو <span>${Math.round(finalCountCost)} جنيه</span>`;
         }
 
-        // تحديث سعر شريط الستان[span_50](start_span)[span_50](end_span)
+        // تحديث سعر شريط الستان
         if (ribbonStepPriceDisplay) {
             ribbonStepPriceDisplay.innerHTML = `سعر إضافة شريط الستان المطبوع حرارياً هو <span>${flowerConfig.satinRibbonPrice} جنيه</span>`;
         }
 
-        // تحديث سعر الصور الشخصية[span_51](start_span)[span_51](end_span)
+        // تحديث سعر الصور الشخصية
         if (bosePhotosPriceDisplay) {
             bosePhotosPriceDisplay.style.display = state.includePhoto ? "block" : "none";
             if (state.includePhoto) {
@@ -128,12 +132,12 @@
             }
         }
 
-        // تحديث سعر كارت الإهداء[span_52](start_span)[span_52](end_span)
+        // تحديث سعر كارت الإهداء
         if (boseCardPriceDisplay) {
             boseCardPriceDisplay.style.display = state.includeCard ? "block" : "none";
         }
 
-        // رندرة الفاتورة الجانبية بتنسيق فاخر صريح وواضح للعين[span_53](start_span)[span_53](end_span)[span_54](start_span)[span_54](end_span)
+        // رندرة الفاتورة الجانبية بتنسيق فاخر صريح وواضح للعين
         if (dynamicAddonsArea) {
             let html = "";
             if (extraFlowers > 0) {
@@ -159,7 +163,7 @@
     }
 
     /**
-     * 🗺️ حارس التحكم وتوجيه خطوات الـ Stepper ذكياً[span_55](start_span)[span_55](end_span)
+     * 🗺️ حارس التحكم وتوجيه خطوات الـ Stepper ذكياً
      */
     function updateActiveStepUI() {
         if (stepsPanels.length > 0) {
@@ -194,7 +198,7 @@
             if (btnNext) btnNext.style.display = "inline-flex";
             if (addToCartBtn) addToCartBtn.style.display = "none";
         }
-        
+
         if (dynamicPricingWidget) {
             dynamicPricingWidget.style.display = "block";
         }
@@ -214,21 +218,21 @@
                     const canvas = document.createElement('canvas');
                     let width = img.width;
                     let height = img.height;
-                    
+
                     // تحجيم ذكي ومناسب لشاشات العرض بدون إهدار للبيانات
-                    if (width > 600) { 
-                        height = Math.round((height * 600) / width); 
-                        width = 600; 
+                    if (width > 600) {
+                        height = Math.round((height * 600) / width);
+                        width = 600;
                     }
-                    
-                    canvas.width = width; 
+
+                    canvas.width = width;
                     canvas.height = height;
                     const ctx = canvas.getContext('2d');
                     if (ctx) ctx.drawImage(img, 0, 0, width, height);
-                    
+
                     // تصدير الصورة بجودة مضغوطة ذكية للغاية
-                    canvas.toBlob((blob) => { 
-                        blob ? resolve(blob) : reject(); 
+                    canvas.toBlob((blob) => {
+                        blob ? resolve(blob) : reject();
                     }, 'image/jpeg', 0.65);
                 };
             };
@@ -238,24 +242,24 @@
     async function uploadReferenceImage(file) {
         if (!file) return;
         state.isUploading = true;
-        if (addToCartBtn) { 
-            addToCartBtn.disabled = true; 
-            addToCartBtn.textContent = "بنجيب لكِ أعلى جودة للصورة..."; 
+        if (addToCartBtn) {
+            addToCartBtn.disabled = true;
+            addToCartBtn.textContent = "بنجيب لكِ أعلى جودة للصورة...";
         }
-        
+
         try {
             // ضغط الصورة على جهاز العميل أولاً قبل عملية الرفع
             const compressedBlob = await compressImageFile(file);
             const cloudName = window.BoseStoreData?.store?.cloudinaryCloudName || 'dyx4w0dr1';
             const endpoint = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
-            
+
             const formData = new FormData();
             formData.append('file', compressedBlob, 'flower_compressed.jpg');
             formData.append('upload_preset', 'ml_default');
 
             const res = await fetch(endpoint, { method: 'POST', body: formData });
             const resData = await res.json();
-            
+
             if (resData && resData.secure_url) {
                 state.photoUrl = resData.secure_url;
                 if (photoPreviewImg) photoPreviewImg.src = resData.secure_url;
@@ -273,9 +277,9 @@
             };
         } finally {
             state.isUploading = false;
-            if (addToCartBtn) { 
-                addToCartBtn.disabled = false; 
-                addToCartBtn.textContent = "اضافة للسلة"; 
+            if (addToCartBtn) {
+                addToCartBtn.disabled = false;
+                addToCartBtn.textContent = "اضافة للسلة";
             }
             saveCurrentState();
             recalculatePrice();
@@ -286,6 +290,21 @@
      * ⚙️ تهيئة المحرك وربط الأحداث
      */
     function initializeFlowerEngine() {
+        // 🧮 [توحيد مصدر الأسعار - المرحلة 3]: تحديث flowerConfig من
+        // window.BoseStoreData.flowerBuilder فور جاهزية قاعدة البيانات، بنفس أسماء
+        // الحقول وبنفس القيم الاحتياطية المستخدمة حرفياً في core-engine.js
+        // (window.calculateCustomFlowerPrice) عشان يفضل سعر المحاكي المعروض للعميل
+        // مطابق تماماً لسعر الحارس المركزي اللي بيتأكد منه بعدين في صفحة السلة.
+        const fbConfig = window.BoseStoreData?.flowerBuilder || {};
+        flowerConfig.basePrice = parseFloat(fbConfig.basePrice) || flowerConfig.basePrice;
+        flowerConfig.baseFlowers = parseInt(fbConfig.baseFlowers, 10) || flowerConfig.baseFlowers;
+        flowerConfig.extraFlowerPrice = parseFloat(fbConfig.extraFlowerPrice) || flowerConfig.extraFlowerPrice;
+        flowerConfig.photoPrintPrice = parseFloat(fbConfig.photoPrintPrice) || flowerConfig.photoPrintPrice;
+        flowerConfig.giftCardPrice = parseFloat(fbConfig.giftCardPrice) || flowerConfig.giftCardPrice;
+        // satinRibbonPrice تفضل ثابتة (50) لعدم وجود حقل رسمي مخصص لها بالـ JSON حالياً،
+        // بنفس القرار المتبع في core-engine.js بالظبط. state.totalPrice هيتحدث تلقائياً
+        // بالقيم الجديدة عند نداء recalculatePrice() في نهاية الدالة دي.
+
         flowerCountInput = document.getElementById('flower-count');
         includePhotoCheckbox = document.getElementById('include-photo');
         photoFileInput = document.getElementById('photo-file');
@@ -298,20 +317,20 @@
         addToCartBtn = document.getElementById('add-to-cart-btn');
         dynamicAddonsArea = document.getElementById('bose-dynamic-addons-injection-area');
         embeddedPriceDisplay = document.getElementById('bose-embedded-price-display');
-        
+
         includeRibbonTextCheckbox = document.getElementById('include-ribbon-text');
         ribbonTextSection = document.getElementById('ribbon-text-section');
         ribbonTextInput = document.getElementById('ribbon-text-input');
         ribbonStepPriceDisplay = document.getElementById('bose-ribbon-price-display');
-        
+
         bosePhotosPriceDisplay = document.getElementById('bose-photos-price-display');
         boseCardPriceDisplay = document.getElementById('bose-card-price-display');
-        
+
         includeCashCheckbox = document.getElementById('include-cash-toggle');
         cashMasterBlock = document.getElementById('cash-master-integration-block');
         cashIntegrationCounterBlock = document.getElementById('cash-integration-counter-block');
         moneyAmountDisplay = document.getElementById('money-amount-display');
-        
+
         includeChocolateCheckbox = document.getElementById('include-chocolate-toggle');
         chocolateBudgetMasterBlock = document.getElementById('chocolate-budget-master-block');
         chocolateBudgetDisplay = document.getElementById('chocolate-budget-display');
@@ -426,18 +445,18 @@
             includeRibbonTextCheckbox.onclick = (e) => {
                 state.includeRibbonText = e.target.checked;
                 if (ribbonTextSection) ribbonTextSection.style.display = state.includeRibbonText ? "block" : "none";
-                if (!state.includeRibbonText) { 
-                    state.ribbonText = ""; 
-                    if (ribbonTextInput) ribbonTextInput.value = ""; 
+                if (!state.includeRibbonText) {
+                    state.ribbonText = "";
+                    if (ribbonTextInput) ribbonTextInput.value = "";
                 }
                 saveCurrentState();
                 recalculatePrice();
             };
         }
         if (ribbonTextInput) {
-            ribbonTextInput.oninput = (e) => { 
-                state.ribbonText = e.target.value; 
-                saveCurrentState(); 
+            ribbonTextInput.oninput = (e) => {
+                state.ribbonText = e.target.value;
+                saveCurrentState();
             };
         }
 
@@ -448,10 +467,10 @@
                 const uploadSectionDOM = document.getElementById('photo-upload-section');
                 if (uploadSectionDOM) uploadSectionDOM.style.display = state.includePhoto ? "block" : "none";
                 if (!state.includePhoto) {
-                    state.photoUrl = ""; 
-                    state.photoCount = 1; 
+                    state.photoUrl = "";
+                    state.photoCount = 1;
                     if (photoCountInput) photoCountInput.value = 1;
-                    if (photoFileInput) photoFileInput.value = ""; 
+                    if (photoFileInput) photoFileInput.value = "";
                     if (photoPreviewContainer) photoPreviewContainer.style.display = "none";
                 }
                 saveCurrentState();
@@ -462,27 +481,27 @@
         const photoCountPlus = document.getElementById('photo-count-plus');
         const photoCountMinus = document.getElementById('photo-count-minus');
         if (photoCountPlus) {
-            photoCountPlus.onclick = () => { 
-                state.photoCount++; 
-                if (photoCountInput) photoCountInput.value = state.photoCount; 
-                saveCurrentState(); 
-                recalculatePrice(); 
+            photoCountPlus.onclick = () => {
+                state.photoCount++;
+                if (photoCountInput) photoCountInput.value = state.photoCount;
+                saveCurrentState();
+                recalculatePrice();
             };
         }
         if (photoCountMinus) {
-            photoCountMinus.onclick = () => { 
-                if (state.photoCount > 1) { 
-                    state.photoCount--; 
-                    if (photoCountInput) photoCountInput.value = state.photoCount; 
-                    saveCurrentState(); 
-                    recalculatePrice(); 
-                } 
+            photoCountMinus.onclick = () => {
+                if (state.photoCount > 1) {
+                    state.photoCount--;
+                    if (photoCountInput) photoCountInput.value = state.photoCount;
+                    saveCurrentState();
+                    recalculatePrice();
+                }
             };
         }
 
         if (photoFileInput) {
-            photoFileInput.onchange = (e) => { 
-                if (e.target.files[0]) uploadReferenceImage(e.target.files[0]); 
+            photoFileInput.onchange = (e) => {
+                if (e.target.files[0]) uploadReferenceImage(e.target.files[0]);
             };
         }
 
@@ -491,19 +510,19 @@
                 state.includeCard = e.target.checked;
                 const cardSec = document.getElementById('card-text-section');
                 if (cardSec) cardSec.style.display = state.includeCard ? "block" : "none";
-                if (!state.includeCard) { 
-                    state.cardText = ""; 
-                    if (cardTextInput) cardTextInput.value = ""; 
+                if (!state.includeCard) {
+                    state.cardText = "";
+                    if (cardTextInput) cardTextInput.value = "";
                 }
                 saveCurrentState();
                 recalculatePrice();
             };
         }
         if (cardTextInput) {
-            cardTextInput.oninput = (e) => { 
-                state.cardText = e.target.value; 
-                saveCurrentState(); 
-                recalculatePrice(); 
+            cardTextInput.oninput = (e) => {
+                state.cardText = e.target.value;
+                saveCurrentState();
+                recalculatePrice();
             };
         }
 
@@ -512,11 +531,11 @@
             includeCashCheckbox.onclick = (e) => {
                 state.includeCash = e.target.checked;
                 if (cashMasterBlock) cashMasterBlock.style.display = state.includeCash ? "block" : "none";
-                if (!state.includeCash) { 
-                    state.moneyAmount = 0; 
-                    state.moneyCategoryAmount = 0; 
-                    if (moneyCategorySelect) moneyCategorySelect.value = "0"; 
-                    if (cashIntegrationCounterBlock) cashIntegrationCounterBlock.style.display = "none"; 
+                if (!state.includeCash) {
+                    state.moneyAmount = 0;
+                    state.moneyCategoryAmount = 0;
+                    if (moneyCategorySelect) moneyCategorySelect.value = "0";
+                    if (cashIntegrationCounterBlock) cashIntegrationCounterBlock.style.display = "none";
                 }
                 saveCurrentState();
                 recalculatePrice();
@@ -543,23 +562,23 @@
         const billPlus = document.getElementById('bill-plus');
         const billMinus = document.getElementById('bill-minus');
         if (billPlus) {
-            billPlus.onclick = () => { 
-                let step = state.moneyCategoryAmount || 50; 
-                state.moneyAmount += step; 
-                if (moneyAmountDisplay) moneyAmountDisplay.value = state.moneyAmount; 
-                saveCurrentState(); 
-                recalculatePrice(); 
+            billPlus.onclick = () => {
+                let step = state.moneyCategoryAmount || 50;
+                state.moneyAmount += step;
+                if (moneyAmountDisplay) moneyAmountDisplay.value = state.moneyAmount;
+                saveCurrentState();
+                recalculatePrice();
             };
         }
         if (billMinus) {
-            billMinus.onclick = () => { 
-                let step = state.moneyCategoryAmount || 50; 
-                if (state.moneyAmount >= step) { 
-                    state.moneyAmount -= step; 
-                    if (moneyAmountDisplay) moneyAmountDisplay.value = state.moneyAmount; 
-                    saveCurrentState(); 
-                    recalculatePrice(); 
-                } 
+            billMinus.onclick = () => {
+                let step = state.moneyCategoryAmount || 50;
+                if (state.moneyAmount >= step) {
+                    state.moneyAmount -= step;
+                    if (moneyAmountDisplay) moneyAmountDisplay.value = state.moneyAmount;
+                    saveCurrentState();
+                    recalculatePrice();
+                }
             };
         }
 
@@ -568,9 +587,9 @@
             includeChocolateCheckbox.onclick = (e) => {
                 state.includeChocolate = e.target.checked;
                 if (chocolateBudgetMasterBlock) chocolateBudgetMasterBlock.style.display = state.includeChocolate ? "block" : "none";
-                if (!state.includeChocolate) { 
-                    state.chocolateBudget = 0; 
-                    if (chocolateBudgetDisplay) chocolateBudgetDisplay.value = 0; 
+                if (!state.includeChocolate) {
+                    state.chocolateBudget = 0;
+                    if (chocolateBudgetDisplay) chocolateBudgetDisplay.value = 0;
                 }
                 saveCurrentState();
                 recalculatePrice();
@@ -580,48 +599,48 @@
         const chocBudgetPlus = document.getElementById('choc-budget-plus');
         const chocBudgetMinus = document.getElementById('choc-budget-minus');
         if (chocBudgetPlus) {
-            chocBudgetPlus.onclick = () => { 
-                state.chocolateBudget += 50; 
-                if (chocolateBudgetDisplay) chocolateBudgetDisplay.value = state.chocolateBudget; 
-                saveCurrentState(); 
-                recalculatePrice(); 
+            chocBudgetPlus.onclick = () => {
+                state.chocolateBudget += 50;
+                if (chocolateBudgetDisplay) chocolateBudgetDisplay.value = state.chocolateBudget;
+                saveCurrentState();
+                recalculatePrice();
             };
         }
         if (chocBudgetMinus) {
-            chocBudgetMinus.onclick = () => { 
-                if (state.chocolateBudget >= 50) { 
-                    state.chocolateBudget -= 50; 
-                    if (chocolateBudgetDisplay) chocolateBudgetDisplay.value = state.chocolateBudget; 
-                    saveCurrentState(); 
-                    recalculatePrice(); 
-                } 
+            chocBudgetMinus.onclick = () => {
+                if (state.chocolateBudget >= 50) {
+                    state.chocolateBudget -= 50;
+                    if (chocolateBudgetDisplay) chocolateBudgetDisplay.value = state.chocolateBudget;
+                    saveCurrentState();
+                    recalculatePrice();
+                }
             };
         }
 
         // أزرار التحكم في التصفح والـ Stepper
         if (btnNext) {
-            btnNext.onclick = () => { 
-                if (state.currentActiveStep < state.totalSteps) { 
-                    state.currentActiveStep++; 
-                    updateActiveStepUI(); 
-                } 
+            btnNext.onclick = () => {
+                if (state.currentActiveStep < state.totalSteps) {
+                    state.currentActiveStep++;
+                    updateActiveStepUI();
+                }
             };
         }
         if (btnPrev) {
-            btnPrev.onclick = () => { 
-                if (state.currentActiveStep > 1) { 
-                    state.currentActiveStep--; 
-                    updateActiveStepUI(); 
-                } 
+            btnPrev.onclick = () => {
+                if (state.currentActiveStep > 1) {
+                    state.currentActiveStep--;
+                    updateActiveStepUI();
+                }
             };
         }
         if (stepsIndicators.length > 0) {
             stepsIndicators.forEach(node => {
                 node.onclick = function () {
                     const target = parseInt(this.getAttribute("data-step-target"), 10);
-                    if (!isNaN(target)) { 
-                        state.currentActiveStep = target; 
-                        updateActiveStepUI(); 
+                    if (!isNaN(target)) {
+                        state.currentActiveStep = target;
+                        updateActiveStepUI();
                     }
                 };
             });
@@ -643,17 +662,17 @@
             });
         }
         if (modalClose && portfolioModal) {
-            modalClose.onclick = () => { 
-                portfolioModal.style.display = "none"; 
-                portfolioModal.setAttribute("aria-hidden", "true"); 
+            modalClose.onclick = () => {
+                portfolioModal.style.display = "none";
+                portfolioModal.setAttribute("aria-hidden", "true");
             };
         }
         if (portfolioModal) {
-            portfolioModal.onclick = function (e) { 
-                if (e.target === this) { 
-                    this.style.display = "none"; 
-                    this.setAttribute("aria-hidden", "true"); 
-                } 
+            portfolioModal.onclick = function (e) {
+                if (e.target === this) {
+                    this.style.display = "none";
+                    this.setAttribute("aria-hidden", "true");
+                }
             };
         }
 
@@ -663,37 +682,58 @@
                 if (state.isUploading) return;
 
                 const flowerTypeName = state.flowerType === "natural" ? "ورد طبيعي نضر" : (state.flowerType === "artificial" ? "ورد صناعي فاخر" : "ورد ستان راقٍ");
+                // نفس شرط ظهور كارت الإهداء بالضبط المستخدم في recalculatePrice() أعلاه
+                const hasGiftCardFinal = !!(state.includeCard && state.cardText.trim() !== "");
+
+                // 🧮 [إصلاح ثغرة مالية - المرحلة 2]: أسماء الحقول هنا لازم تطابق حرفياً
+                // المخطط المعتمد في core-engine.js (window.createCartItem وحارس
+                // window.recalculateCartItemPrice)، وهو: cashAmount (مش moneyAmount) و
+                // hasChocolate + chocolateBudget معاً. الفرق في الأسماء القديم كان السبب
+                // في تصفير الكاش والشوكولاتة تلقائياً كل ما تتفتح صفحة السلة.
                 const customOptionsObj = {
-                    flowerType: state.flowerType, 
+                    flowerType: state.flowerType,
                     flowerCount: state.flowerCount,
                     hasSatinRibbon: state.includeRibbonText,
                     satinRibbonText: state.ribbonText,
-                    chocolateBudget: state.chocolateBudget,
-                    moneyAmount: state.moneyAmount,
+                    hasChocolate: state.includeChocolate,
+                    chocolateBudget: state.includeChocolate ? state.chocolateBudget : 0,
+                    cashAmount: state.moneyAmount,
                     photoCount: state.includePhoto ? state.photoCount : 0,
-                    giftCardText: state.includeCard ? state.cardText : ""
+                    hasGiftCard: hasGiftCardFinal,
+                    giftCardText: hasGiftCardFinal ? state.cardText : "",
+                    flavorName: `بوكيه مخصص (${flowerTypeName})`
                 };
 
-                const boseCartItem = {
-                    id: `flowers-master-${Date.now()}`,
-                    productSlug: "flowers-master",
-                    title: "الورد",
-                    flavorName: `بوكيه مخصص (${flowerTypeName})`,
-                    basePrice: 400.0,
-                    finalPrice: parseFloat(state.totalPrice),
-                    quantity: 1,
-                    image: state.photoUrl || "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
-                    type: "custom-flower",
-                    customDetails: customOptionsObj
-                };
+                // 🧮 [توحيد إنشاء عنصر السلة]: استخدام window.createCartItem() الموحدة
+                // بدل بناء الكائن يدوياً، بنفس الأسلوب المتبع في cake-engine.js تماماً،
+                // عشان يبقى مصدر الحقيقة لبنية customDetails واحد بس في كل الموقع.
+                // بننسخ المنتج (بدل التعديل المباشر) عشان منلمسش window.BoseStoreData
+                // الأصلية بأي أثر جانبي.
+                const dbProduct = window.BoseStoreData?.products?.find(p => p.slug === "flowers-master");
+                const masterProduct = Object.assign(
+                    { slug: "flowers-master", title: "الورد", basePrice: flowerConfig.basePrice },
+                    dbProduct || {},
+                    { type: "custom-flower" }
+                );
+
+                const finalCartItem = window.createCartItem(masterProduct, customOptionsObj, 1);
+
+                if (!finalCartItem) return;
+
+                // القيمة المعروضة فعلياً للعميل طول رحلة المحاكي (بكامل دقتها العشرية)
+                // هي مصدر الحقيقة للسعر عند الإضافة، والحارس المركزي هيتأكد منها لاحقاً
+                // عند فتح السلة عبر calculateCustomFlowerPrice بنفس المدخلات بالظبط.
+                finalCartItem.finalPrice = parseFloat(state.totalPrice);
+                finalCartItem.type = "custom-flower";
+                finalCartItem.image = state.photoUrl || finalCartItem.image;
 
                 let currentCart = [];
-                try { 
-                    currentCart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY)) || []; 
-                } catch (e) { 
-                    currentCart = []; 
+                try {
+                    currentCart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY)) || [];
+                } catch (e) {
+                    currentCart = [];
                 }
-                currentCart.push(boseCartItem);
+                currentCart.push(finalCartItem);
                 localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(currentCart));
 
                 if (window.updateGlobalCartCounter) window.updateGlobalCartCounter();
@@ -704,8 +744,8 @@
                     localStorage.removeItem(FLOWER_STATE_STORAGE_KEY);
                 } catch (e) {}
 
-                setTimeout(() => { 
-                    window.location.href = "cart.html"; 
+                setTimeout(() => {
+                    window.location.href = "cart.html";
                 }, 400);
             };
         }
@@ -721,8 +761,8 @@
     if (window.BoseStoreData && window.BoseStoreData.store) {
         initializeFlowerEngine();
     } else {
-        document.addEventListener('BoseDatabaseLoaded', () => { 
-            initializeFlowerEngine(); 
+        document.addEventListener('BoseDatabaseLoaded', () => {
+            initializeFlowerEngine();
         });
     }
 })();

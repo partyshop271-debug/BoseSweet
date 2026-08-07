@@ -230,10 +230,17 @@ function startEngineLogic() {
     initializeBoseLightboxGallery();
 }
 
-if (typeof window.onBoseDatabaseReady === 'function') {
-    window.onBoseDatabaseReady(() => {
+// 🛡️ [إصلاح Race Condition - المرحلة 4]: window.onBoseDatabaseReady مش معرّفة
+// خالص في core-engine.js (كانت موجودة بس في نسخة قديمة V3)، فالكود القديم هنا
+// كان بيرجع دايماً لـ DOMContentLoaded كحل بديل، اللي ممكن يشتغل قبل ما بيانات
+// المتجر توصل فعلياً فتظهر أسعار افتراضية بدل الحقيقية للحظة. الحل: نفس النمط
+// المستخدم فعلاً وبنجاح في flower-engine.js - نتأكد إن window.BoseStoreData
+// جاهزة فوراً، وإلا ننتظر الحدث الحقيقي اللي core-engine.js بيبعته فعلاً
+// (BoseDatabaseLoaded) بدل دالة وهمية غير موجودة.
+if (window.BoseStoreData && window.BoseStoreData.store) {
+    startEngineLogic();
+} else {
+    document.addEventListener("BoseDatabaseLoaded", () => {
         startEngineLogic();
     });
-} else {
-    document.addEventListener("DOMContentLoaded", startEngineLogic);
 }

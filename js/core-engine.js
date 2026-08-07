@@ -763,15 +763,29 @@
      * @returns {number}
      */
     window.calculateCustomFlowerPrice = function(flowerCount, options = {}) {
-        const basePrice = 400; 
-        const extraFlowerPrice = 35; 
-        const safeFlowerCount = parseInt(String(flowerCount), 10) || 15;
-        const extraFlowers = Math.max(0, safeFlowerCount - 15);
+        // 🧮 [توحيد مصدر الأسعار - المرحلة 3]: القراءة من window.BoseStoreData.flowerBuilder
+        // بدل الأرقام المكتوبة يدوياً، عشان أي تعديل مستقبلي على السعر من قاعدة البيانات
+        // ينعكس فعلياً على الموقع. القيم بعد "||" هي نفس الأرقام القديمة تماماً كقيمة
+        // احتياطية فقط لو الحقل مفقود من الـ JSON لأي سبب - نفس القيم المستخدمة حرفياً
+        // في flower-engine.js لضمان تطابق سعر المحاكي مع سعر الحارس المركزي بالمليم.
+        const fbConfig = window.BoseStoreData?.flowerBuilder || {};
+        const basePrice = parseFloat(fbConfig.basePrice) || 400;
+        const baseFlowers = parseInt(fbConfig.baseFlowers, 10) || 15;
+        const extraFlowerPrice = parseFloat(fbConfig.extraFlowerPrice) || 35;
+        const photoPrintPrice = parseFloat(fbConfig.photoPrintPrice) || 15;
+        const giftCardPrice = parseFloat(fbConfig.giftCardPrice) || 20;
+        // ملحوظة: مفيش حقل رسمي لسعر شريط الستان المطبوع (satinRibbonPrice) داخل
+        // flowerBuilder بالـ JSON حالياً - فضّلنا نسيبه ثابت 50 بدل ما نخمّن ربطه بحقل
+        // تاني (زي wrappingTypes) معناه مختلف، لحد ما يتضاف حقل مخصص له فعلياً.
+        const satinRibbonPrice = 50;
+
+        const safeFlowerCount = parseInt(String(flowerCount), 10) || baseFlowers;
+        const extraFlowers = Math.max(0, safeFlowerCount - baseFlowers);
         let servicePrice = basePrice + (extraFlowers * extraFlowerPrice);
-        if (options.hasSatinRibbon) servicePrice += 50; 
+        if (options.hasSatinRibbon) servicePrice += satinRibbonPrice; 
         const safePhotoCount = parseInt(options.photoCount, 10) || 0;
-        if (options.hasPhotos && safePhotoCount > 0) servicePrice += safePhotoCount * 15; 
-        if (options.hasGiftCard) servicePrice += 20; 
+        if (options.hasPhotos && safePhotoCount > 0) servicePrice += safePhotoCount * photoPrintPrice; 
+        if (options.hasGiftCard) servicePrice += giftCardPrice; 
         const finalServicePrice = window.calculateBosePrice(servicePrice, "menu-only");
         
         const safeCashAmount = parseFloat(options.cashAmount) || 0;
@@ -995,12 +1009,35 @@
      * @param {string} timeStr
      * @returns {boolean}
      */
-    window.validateBoseDeliverySchedule = function(dateStr, timeStr) {
+    // 🛡️ [إصلاح - المرحلة 2]: قبل كده كانت الدالة بتطبّق 24 ساعة على كل أنواع
+    // الطلبات بدون استثناء، بينما "الشروط والأحكام" الرسمية بتوعد العميل بمدة
+    // أسبوع كامل للتورت والورد المخصص عبر المحاكي (لأنها بتاخد مراحل تحضير وتنسيق
+    // كتيرة). دلوقتي الدالة بتاخد isCustomOrder وتطبّق العتبة الصحيحة المطابقة
+    // لصاحب المتجر: 168 ساعة (7 أيام) للمخصص، 24 ساعة لباقي المنتجات.
+    window.validateBoseDeliverySchedule = function(dateStr, timeStr, isCustomOrder = false) {
         if (!dateStr || !timeStr) return false;
         const selectedDateTime = new Date(`${dateStr}T${timeStr}`);
         const currentDateTime = new Date(Date.now() + (window.boseServerTimeOffset || 0));
         if (selectedDateTime <= currentDateTime) return false;
-        return (selectedDateTime.getTime() - currentDateTime.getTime()) / (1000 * 60 * 60) >= 23.95; 
+        const rules = window.BoseStoreData?.orderRules || {};
+        const requiredHours = isCustomOrder
+            ? (rules.minPreparationTimeHoursCustom || 168) - 0.05
+            : (rules.minPreparationTimeHours || 24) - 0.05;
+        return (selectedDateTime.getTime() - currentDateTime.getTime()) / (1000 * 60 * 60) >= requiredHours;
+    };
+
+    // 🛡️ [إصلاح - المرحلة 2]: دالة مشتركة موحّدة لتحديد هل السلة فيها منتج مخصص
+    // (تورت محاكي / ورد محاكي) يستوجب قاعدة الأسبوع، بدل تكرار نفس الشرط في أكتر
+    // من ملف (cart-engine.js وcheckout.html) بشكل منفصل وعرضة للتعارض مستقبلاً.
+    window.boseCartHasCustomItem = function(cart) {
+        if (!Array.isArray(cart)) return false;
+        return cart.some(item =>
+            item.type === "custom-cake" ||
+            item.type === "mini-cake" ||
+            item.type === "custom-flower" ||
+            item.productSlug === "toort-custom-master" ||
+            item.productSlug === "flowers-master"
+        );
     };
 
     /**
@@ -1153,6 +1190,17 @@
         if (!document.querySelector('link[href*="font-awesome"]')) {
             const fa = document.createElement('link'); fa.rel = 'stylesheet'; fa.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css';
             document.head.appendChild(fa);
+        }
+        // 🛡️ [إصلاح - المرحلة 3]: manifest.json كان موجود كملف بس مش متربط بأي صفحة،
+        // فكانت ميزة "تثبيت الموقع كتطبيق" (PWA) معطّلة فعلياً بدون أي فايدة من وجود
+        // الملف. الحقن هنا مركزي في المحرك الرئيسي بدل تكرار الوسم يدوياً في كل صفحة.
+        if (!document.querySelector('link[rel="manifest"]')) {
+            const manifest = document.createElement('link'); manifest.rel = 'manifest'; manifest.href = '/manifest.json';
+            document.head.appendChild(manifest);
+        }
+        if (!document.querySelector('meta[name="theme-color"]')) {
+            const theme = document.createElement('meta'); theme.name = 'theme-color'; theme.content = '#FF91A4';
+            document.head.appendChild(theme);
         }
     }
 
