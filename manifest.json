@@ -1,0 +1,33 @@
+{
+  "name": "حلويات بوسي - صنعناها بحب لتهديها لمن تحب",
+  "short_name": "حلويات بوسي",
+  "description": "حلويات فاخرة تُصنع بحب لتليق بأسعد لحظاتك. صمّم تورتتك وبوكيه ورودك بنفسك عبر محاكياتنا التفاعلية.",
+  "start_url": "/index.html",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "dir": "rtl",
+  "lang": "ar",
+  "background_color": "#FFFFFF",
+  "theme_color": "#FF91A4",
+  "icons": [
+    {
+      "src": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
