@@ -27,7 +27,9 @@
   },
   "orderRules": {
     "minPreparationTimeHours": 24,
-    "preparationTimeMessage": "نحتاج إلى وقت كافٍ لتجهيز طلبك بأفضل جودة ممكنة، لذلك لا يمكن اختيار موعد قبل 24 ساعة من وقت تأكيد الطلب."
+    "preparationTimeMessage": "نحتاج إلى وقت كافٍ لتجهيز طلبك بأفضل جودة ممكنة، لذلك لا يمكن اختيار موعد قبل 24 ساعة من وقت تأكيد الطلب.",
+    "minPreparationTimeHoursCustom": 168,
+    "customPreparationTimeMessage": "التورت والورد المخصص عبر المحاكي بيمر بمراحل تحضير وتنسيق كتيرة بتاخد وقت، فمحتاجين حجز الطلبات دي قبل موعد التسليم بأسبوع كامل (7 أيام) على الأقل لضمان أعلى جودة."
   },
   "seo": {
     "title": "حلويات بوسي | صنعناها بحب لتهديها لمن تحب",
@@ -43,7 +45,7 @@
       "حلويات بوسي"
     ],
     "ogImage": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
-    "canonical": "https://bosesweets.com"
+    "canonical": "https://bose-sweet.vercel.app"
   },
   "social": {
     "facebook": "https://www.facebook.com/share/1H1vVMHyu9/",
