@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>كل العروض والتخفيضات | حلويات بوسي</title>
+
+    <!-- 🔍 إعدادات تحسين محركات البحث والأرشفة الفاخرة SEO -->
+    <meta name="description" content="كل عروض وتخفيضات حلويات بوسي في مكان واحد - أسعار استثنائية لفترة محدودة على تشكيلة مختارة بعناية.">
+    <meta name="robots" content="index, follow">
+
+    <!-- ⚡ preconnect لتسريع أول اتصال بمصادر الخط والصور والأيقونات -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/global.css?v=2026_production_v30.0">
+    <link rel="stylesheet" href="css/main.css?v=2026_production_v30.0">
+
+    <!-- 👑 المحرك المركزي العالمي - نفس المصدر اللي بيغذي كارت العروض بالرئيسية بالظبط -->
+    <script src="js/core-engine.js?v=2026_production_v30.0" defer></script>
+
+    <style>
+        /* 🎨 هوية بصرية مخصصة لصفحة العروض - المكان الشرعي الوحيد لعرض كل الخصومات */
+        .offers-page-hero {
+            padding: 50px 20px 30px 20px;
+            text-align: center;
+            background: linear-gradient(rgba(255, 145, 164, 0.06), rgba(255, 145, 164, 0.01));
+        }
+        .offers-page-hero .offers-page-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background-color: rgba(255, 145, 164, 0.1);
+            color: var(--bose-pink);
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            border: 1px solid rgba(255, 145, 164, 0.2);
+        }
+        .offers-page-hero h1 {
+            font-size: 30px;
+            color: var(--bose-black);
+            margin: 0 0 12px 0;
+        }
+        .offers-page-hero p {
+            font-size: 15px;
+            color: var(--bose-black);
+            opacity: 0.8;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+        .offers-page-wrapper {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 16px 70px 16px;
+            box-sizing: border-box;
+        }
+        #all-offers-grid.products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 16px;
+        }
+        @media (min-width: 640px) {
+            #all-offers-grid.products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+                gap: 22px;
+            }
+        }
+        #all-offers-empty-state {
+            display: none;
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--bose-black);
+            opacity: 0.7;
+        }
+        #all-offers-empty-state i {
+            font-size: 2.5rem;
+            color: var(--bose-pink);
+            margin-bottom: 16px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="bose-header-injector"></div>
+
+    <main>
+        <section class="offers-page-hero">
+            <span class="offers-page-badge"><i class="fas fa-percentage"></i> عروض حصريّة لفترة محدودة</span>
+            <h1>كل عروض وتخفيضات حلويات بوسي</h1>
+            <p>تجميعة كاملة وصادقة لكل المنتجات المخفضة عندنا دلوقتي في مكان واحد، من غير ما تدور عليها متفرقة جوه الفئات - أسعار واضحة ونسبة الخصم والتوفير مكتوبة على كل كارت بكل شفافية.</p>
+        </section>
+
+        <div class="offers-page-wrapper">
+            <div id="all-offers-grid" class="bose-products-grid products-grid"></div>
+            <div id="all-offers-empty-state">
+                <i class="fa-solid fa-tags"></i>
+                <p>مفيش عروض متاحة دلوقتي، تابعونا قريب هيبقى في تشكيلة جديدة من العروض الحصرية.</p>
+            </div>
+        </div>
+    </main>
+
+    <div id="bose-footer-injector"></div>
+
+</body>
+</html>
