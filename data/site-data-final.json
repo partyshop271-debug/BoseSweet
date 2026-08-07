@@ -99,16 +99,40 @@
       "imageSize": "320px",
       "blurEffect": true,
       "leftColumnImages": [
-        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=wl1",
-        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=wl2",
-        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=wl3",
-        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=wl4"
+        {
+          "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=wl1",
+          "slug": "gateaux-royal"
+        },
+        {
+          "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=wl2",
+          "slug": "gateaux-classic"
+        },
+        {
+          "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=wl3",
+          "slug": "gateaux-soiree"
+        },
+        {
+          "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=wl4",
+          "slug": "qashtota-lotus-new"
+        }
       ],
       "rightColumnImages": [
-        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=wr1",
-        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=wr2",
-        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=wr3",
-        "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=wr4"
+        {
+          "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=wr1",
+          "slug": "qashtota-pistachio"
+        },
+        {
+          "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=wr2",
+          "slug": "qashtota-white-nutella"
+        },
+        {
+          "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=wr3",
+          "slug": "qashtota-dark-nutella"
+        },
+        {
+          "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=wr4",
+          "slug": "qashtota-kinder"
+        }
       ]
     },
     "mostSelling": [
