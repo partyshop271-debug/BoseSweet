@@ -406,9 +406,12 @@
 <body class="bose-hardware-accelerated">
 
     <!-- بروتوكول الحقن الموحد لمنع تكرار وتداخل الأكواد -->
+    <!-- 🔧 [إصلاح جذري]: كان هنا عنصرين ميتين (#sidebar-drawer.bose-drawer-menu و #drawer-shield.drawer-overlay)
+         بكلاسات مش موجودة في أي ملف CSS بالموقع كله، فكانا بيترندروا كـ div عادي بدون أي تموضع،
+         وده اللي كان بيخلي محتوى القائمة الجانبية (لو اتحقن فيهم بالغلط) يطلع من مكانه ويتكدس جوه
+         الصفحة. القائمة الجانبية الحقيقية بتتحقن تلقائياً وبشكل صحيح 100% من core-engine.js
+         (#bose-sidebar-drawer + #bose-sidebar-overlay) زي باقي كل صفحات الموقع بالظبط. -->
     <div id="bose-header-injector"></div>
-    <div id="sidebar-drawer" class="bose-drawer-menu"></div>
-    <div id="drawer-shield" class="drawer-overlay"></div>
 
     <main class="product-internal-wrapper" id="bose-product-main-view">
         <div id="bose-product-loading-skeleton" style="text-align: center; padding: 100px 20px; font-weight: 600; opacity: 0.7;">
