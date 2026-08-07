@@ -560,8 +560,26 @@ function processFinalBoseOrder(cart, storeData, method, shippingFee) {
     localStorage.removeItem("bose_active_coupon");
     if (typeof window.updateGlobalCartCounter === "function") window.updateGlobalCartCounter();
 
+    // 🗄️ [إصلاح حرج]: بنفتح واتساب فوراً هنا (Synchronous) عشان متصفحات
+    // الموبايل (خصوصاً Safari/iOS) ماتحجبش النافذة، لأنها بتشترط إن فتح
+    // النافذة يحصل مباشرة جوه حدث ضغطة الزر بدون أي انتظار قبله.
     window.open(window.buildWhatsappLink(brandWhatsappNumber, whatsappMessageText), "_blank");
-    window.location.href = "order-success.html";
+
+    const finalizeNavigation = () => { window.location.href = "order-success.html"; };
+
+    // 🛡️ [إصلاح حرج]: قبل كده كان الطلب موجود بس في localStorage الخاص
+    // بجهاز العميل + نص رسالة واتساب، ولو حصل أي حاجة (popup اتحجب، العميل
+    // قفل التاب قبل الإرسال، أو مسح بيانات المتصفح) الطلب كان بيضيع نهائياً
+    // من غير أي أثر عندنا. دلوقتي بيتسجل فعلياً في قاعدة بيانات Supabase قبل
+    // الانتقال لصفحة النجاح. لو الاتصال فشل (نت ضعيف مثلاً) البيع لا يتوقف
+    // أبداً - واتساب فتح بالفعل فوق - وبنكمل التنقل بعد المحاولة سواء نجحت أو لأ.
+    if (window.BoseSupabase && typeof window.BoseSupabase.submitBoseOrderToDatabase === "function") {
+        window.saveBoseOrderToDatabase(completedBoseOrderObject)
+            .catch((err) => console.warn("⚠️ تعذر حفظ نسخة الطلب في قاعدة البيانات (البيع تم عبر واتساب بنجاح رغم ذلك):", err))
+            .finally(finalizeNavigation);
+    } else {
+        finalizeNavigation();
+    }
 }
 
 function buildBoseFormattedWhatsappInvoice(order) {
@@ -587,6 +605,7 @@ function buildBoseFormattedWhatsappInvoice(order) {
                 if (cd.cakeType && cd.cakeType !== "none" && cd.cakeType !== "افتراضي") msg += `   • طعم الكيك: ${cd.cakeType}\n`;
                 if (cd.shape && cd.shape !== "none") msg += `   • الشكل: ${cd.shape}\n`;
                 if (cd.persons && cd.persons > 0) msg += `   • الأفراد: لـ ${cd.persons} فرد\n`;
+                if (cd.printingType && cd.printingType !== "none") msg += `   • طباعة صورة: ${cd.printingType === 'edible' ? 'قابلة للأكل' : 'غير قابلة للأكل'}\n`;
                 if (cd.customMessage && cd.customMessage.trim() !== "") msg += `   • النص: "${cd.customMessage}"\n`;
             }
             if (item.type === "custom-flower") {
@@ -604,6 +623,24 @@ function buildBoseFormattedWhatsappInvoice(order) {
                 if (cd.hasGiftCard && cd.giftCardText && cd.giftCardText.trim() !== "") msg += `   • كارت الإهداء: "${cd.giftCardText}"\n`;
             }
         }
+
+        // 🛡️ [إصلاح حرج]: أي صورة رفعها العميل (تصميم تورتة مطلوب طباعتها،
+        // أو صورة بوكيه مرجعية) كانت بتتحفظ كرابط Cloudinary حقيقي جوه
+        // item.image لكن ما كانتش بتوصل خالص لنص فاتورة الواتساب، فالفرع
+        // كان بيستلم طلب "صورة" من غير أي صورة معاه فعلياً. دلوقتي أي رابط
+        // Cloudinary حقيقي (مش لوجو الموقع الافتراضي) بيظهر كسطر واضح قابل
+        // للفتح المباشر من واتساب.
+        const refImageUrls = [];
+        if (item.image && typeof item.image === "string" && item.image.startsWith("http") && !item.image.includes("logo_igggsb")) {
+            refImageUrls.push(item.image);
+        }
+        if (Array.isArray(item.referenceImages)) {
+            item.referenceImages.forEach(u => { if (u && typeof u === "string" && u.startsWith("http")) refImageUrls.push(u); });
+        }
+        refImageUrls.forEach((url, i) => {
+            msg += `   🖼️ *صورة مرجعية${refImageUrls.length > 1 ? ' ' + (i + 1) : ''}:* ${url}\n`;
+        });
+
         msg += `   ---------------------------\n`;
     });
 

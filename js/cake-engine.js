@@ -18,6 +18,67 @@ function startEngineLogic() {
     let currentActiveStep = 1;
     const totalWizardStepsCount = 4;
 
+    // 🛡️ [إصلاح حرج]: حالة رفع صورة الطباعة على التورتة (كانت الخانة موجودة
+    // في الخطوة 3 بدون أي وسيلة فعلية لإرسال الصورة نفسها). نفس آلية الرفع
+    // المستخدمة في flower-engine.js بالظبط عبر الدالة الموحّدة في supabase-client.js
+    let uploadedCakePhotoUrl = "";
+    let isUploadingCakePhoto = false;
+
+    const cakePhotoUploadSection = document.getElementById('cake-photo-upload-section');
+    const cakePhotoUploadZone = document.getElementById('bose-cake-photo-upload-zone');
+    const cakePhotoFileInput = document.getElementById('cake-photo-file');
+    const cakePhotoPreviewImg = document.getElementById('cake-photo-preview-img');
+    const cakePhotoUploadLabel = document.getElementById('cake-photo-upload-label');
+
+    function toggleCakePhotoUploadSection() {
+        const selectedPrinting = document.querySelector('input[name="cake_printing"]:checked')?.value || 'none';
+        if (cakePhotoUploadSection) {
+            cakePhotoUploadSection.style.display = (selectedPrinting !== 'none') ? 'block' : 'none';
+        }
+        // لو العميل رجع اختار "بدون صور" بعد ما رفع صورة، نمسح الصورة المرفوعة
+        if (selectedPrinting === 'none') {
+            uploadedCakePhotoUrl = "";
+            if (cakePhotoPreviewImg) cakePhotoPreviewImg.style.display = 'none';
+        }
+    }
+
+    if (cakePhotoUploadZone && cakePhotoFileInput) {
+        cakePhotoUploadZone.addEventListener('click', () => cakePhotoFileInput.click());
+        cakePhotoFileInput.addEventListener('change', async function () {
+            const file = this.files && this.files[0];
+            if (!file) return;
+            if (!window.BoseSupabase || typeof window.BoseSupabase.uploadBoseReferenceImage !== 'function') {
+                if (typeof window.showBoseGlobalToast === 'function') {
+                    window.showBoseGlobalToast("تعذر تحميل خدمة رفع الصور، حاول تحديث الصفحة.");
+                }
+                return;
+            }
+            isUploadingCakePhoto = true;
+            if (cakePhotoUploadLabel) cakePhotoUploadLabel.textContent = "بيتم رفع الصورة الآن...";
+            try {
+                uploadedCakePhotoUrl = await window.BoseSupabase.uploadBoseReferenceImage(file, (txt) => {
+                    if (cakePhotoUploadLabel) cakePhotoUploadLabel.textContent = txt;
+                });
+                if (cakePhotoPreviewImg) {
+                    cakePhotoPreviewImg.src = uploadedCakePhotoUrl;
+                    cakePhotoPreviewImg.style.display = 'block';
+                }
+                if (cakePhotoUploadLabel) cakePhotoUploadLabel.textContent = "تم رفع الصورة بنجاح ✓ (اضغط لتغييرها)";
+                if (typeof window.showBoseGlobalToast === 'function') {
+                    window.showBoseGlobalToast("تم رفع صورتك بنجاح! ✨");
+                }
+            } catch (err) {
+                uploadedCakePhotoUrl = "";
+                if (cakePhotoUploadLabel) cakePhotoUploadLabel.textContent = "فشل الرفع، اضغط للمحاولة مرة أخرى";
+                if (typeof window.showBoseGlobalToast === 'function') {
+                    window.showBoseGlobalToast("تعذر رفع الصورة، تأكدي من الاتصال بالإنترنت وحاولي تاني.");
+                }
+            } finally {
+                isUploadingCakePhoto = false;
+            }
+        });
+    }
+
     const config = window.BoseStoreData?.cakeBuilder || {
         basePrice: 580,
         pricePerPerson: 145,

@@ -55,19 +55,15 @@
         
         while (retries > 0) {
             try {
-                const response = await fetch('data/site-data-final.json');
-                if (!response.ok) throw new Error('فشل جلب ملف قاعدة البيانات الرئيسي.');
-                
-                const serverDateHeader = response.headers.get('Date');
-                if (serverDateHeader) {
-                    const serverTime = new Date(serverDateHeader).getTime();
-                    const clientTime = Date.now();
-                    window.boseServerTimeOffset = serverTime - clientTime;
-                } else {
-                    window.boseServerTimeOffset = 0;
+                // 🗄️ [ترحيل قاعدة البيانات]: بدل قراءة ملف ثابت data/site-data-final.json
+                // (اللي كان بيتطلب رفع نسخة جديدة يدوياً لكل تعديل سعر/منتج)، البيانات
+                // دلوقتي حية من Supabase عبر js/supabase-client.js اللي لازم يتحمّل
+                // قبل هذا الملف في كل صفحات الموقع.
+                if (!window.BoseSupabase) {
+                    throw new Error('طبقة الاتصال بقاعدة البيانات (supabase-client.js) غير محمّلة.');
                 }
-                
-                window.BoseStoreData = await response.json();
+                window.BoseStoreData = await window.BoseSupabase.loadBoseStoreDataFromSupabase();
+                window.boseServerTimeOffset = 0;
                 
                 localStorage.setItem('bose_cached_store_data', JSON.stringify(window.BoseStoreData));
                 localStorage.setItem('bose_cached_store_time', String(Date.now()));
