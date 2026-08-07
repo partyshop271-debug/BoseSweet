@@ -228,7 +228,7 @@
 
         const heroDesc = document.getElementById('hero-description');
         if (heroDesc && data.homepage.hero) {
-            heroDesc.textContent = data.homepage.hero.description || "تم اختيار المكونات بعناية فائقة للحصول على أفضل جودة تليق بمناسباتكم السعيدة وتضمن ثقتكم الدائمة.";
+            heroDesc.textContent = data.homepage.hero.description || "نختار كل مكوّن بعناية فائقة، لنصنع لمناسباتكم جودة تستاهل ثقتكم.";
         }
 
         const categoriesSection = document.getElementById('categories-slider-section') || document.getElementById('categories-section') || document.querySelector('[id*="categories"]');
@@ -237,7 +237,7 @@
             const descEl = document.getElementById('categories-section-subtitle') || categoriesSection.querySelector('.bose-section-subtitle');
             
             if (titleEl) titleEl.textContent = "تسوق حسب الفئة";
-            if (descEl) descEl.textContent = "سهولة الانتقال المباشر لأي صنف تفضله من فئاتنا الـ 12 المعتمدة رسمياً.";
+            if (descEl) descEl.textContent = "قسّمنا منيو حلويات بوسي لـ 12 فئة واضحة بالصور، عشان تلاقوا اللي بتحبوه من غير حيرة.";
             
             const track = document.getElementById('categories-track') || categoriesSection.querySelector('.categories-track-slider') || categoriesSection.querySelector('[id*="track"]');
             if (track) {
@@ -255,7 +255,7 @@
             const titleEl = document.getElementById('most-selling-main-heading') || mostSellingSection.querySelector('h2');
             if (titleEl) titleEl.textContent = "الأكثر مبيعاً";
             const descEl = document.getElementById('most-selling-description') || mostSellingSection.querySelector('.bose-section-subtitle');
-            if (descEl) descEl.textContent = "دي الحاجات اللي دايماً بتطلبوها وحبيتوها على مدار السنين نكهات مميزة ومظبوطة بالملي بقت هي الأساس في كل لمتكم ومناسباتكم السعيدة.";
+            if (descEl) descEl.textContent = "دي الأصناف اللي بتطلبوها وتحبوها من سنين، نكهات مظبوطة بالملي، بقت رمز ثقتكم فينا.";
         }
 
         const newArrivalsSection = document.getElementById('new-arrivals-section');
@@ -263,7 +263,7 @@
             const titleEl = document.getElementById('new-arrivals-main-heading') || newArrivalsSection.querySelector('h2');
             if (titleEl) titleEl.textContent = "وصل حديثاً";
             const descEl = document.getElementById('new-arrivals-description') || newArrivalsSection.querySelector('.bose-section-subtitle');
-            if (descEl) descEl.textContent = "دايماً في أفكار جديدة وتجارب مش بتبطل هنا هتلاقوا أحدث الحاجات اللي جربناها وطورنا فيها شهور عشان تطلع ناعمة ومظبوطة وتخطف قلبكم.";
+            if (descEl) descEl.textContent = "هنا هتلاقوا أحدث الأفكار اللي طورناها شهور كاملة، عشان تخطف قلبكم من أول معلقة.";
         }
 
         const ourProductsSection = document.getElementById('our-products-section');
@@ -271,7 +271,7 @@
             const titleEl = document.getElementById('our-products-main-heading') || ourProductsSection.querySelector('h2');
             if (titleEl) titleEl.textContent = "منيو حلويات بوسي";
             const descEl = document.getElementById('our-products-description') || ourProductsSection.querySelector('.bose-section-subtitle');
-            if (descEl) descEl.textContent = "منيو حلويات بوسي الكامل تشكيلة غنية وبنحضرها طازة كل يوم بمكونات طبيعية 100%.";
+            if (descEl) descEl.textContent = "منيو حلويات بوسي بالكامل: تشكيلة غنية، بنحضرها طازة كل يوم بمكونات طبيعية 100%.";
         }
     }
 
@@ -1191,7 +1191,7 @@
         buttonElement.innerHTML = '<i class="fa-solid fa-check"></i> تمت الإضافة';
         /** @type {HTMLButtonElement} */ (buttonElement).disabled = true;
 
-        window.showBoseGlobalToast('تمت إضافة المنتج إلى السلة.');
+        window.showBoseGlobalToast('ضفنا المنتج للسلة.');
 
         setTimeout(() => {
             buttonElement.innerHTML = originalHtml;

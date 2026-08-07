@@ -233,10 +233,10 @@ function renderBoseCartPage(storeData) {
     
     if (clearCartBtn) {
         clearCartBtn.onclick = () => {
-            showBoseCustomModal("هل ترغب في إفراغ كافة محتويات سلة المشتريات؟", () => {
+            showBoseCustomModal("تحب تفضّي السلة من كل الأصناف؟", () => {
                 localStorage.removeItem("bose_cart");
                 if (typeof window.updateGlobalCartCounter === "function") window.updateGlobalCartCounter();
-                if (typeof window.showBoseGlobalToast === "function") window.showBoseGlobalToast("تم تفريغ السلة كلياً.");
+                if (typeof window.showBoseGlobalToast === "function") window.showBoseGlobalToast("السلة اتفضّت خالص.");
                 buildFullCartUI();
             });
         };
@@ -246,11 +246,11 @@ function renderBoseCartPage(storeData) {
 }
 
 function triggerCartItemRemoval(cart, index, storeData, callback) {
-    showBoseCustomModal(`هل ترغب في إزالة صنف "${cart[index].title}" من السلة؟`, () => {
+    showBoseCustomModal(`تحب تشيل "${cart[index].title}" من السلة؟`, () => {
         cart.splice(index, 1);
         localStorage.setItem("bose_cart", JSON.stringify(cart));
         if (typeof window.updateGlobalCartCounter === "function") window.updateGlobalCartCounter();
-        if (typeof window.showBoseGlobalToast === "function") window.showBoseGlobalToast("تم إزالة الصنف بنجاح.");
+        if (typeof window.showBoseGlobalToast === "function") window.showBoseGlobalToast("الصنف اتشال من السلة.");
         callback();
     });
 }
@@ -289,12 +289,12 @@ function updateCartSummary(cart, storeData) {
                     if (found) {
                         localStorage.setItem("bose_active_coupon", code);
                         couponMsg.className = "coupon-status-toast success";
-                        couponMsg.textContent = `✅ تم تطبيق خصم الكوبون بنجاح بقيمة ${found.value}%`;
-                        if (typeof window.showBoseGlobalToast === "function") window.showBoseGlobalToast(`تم تطبيق خصم الكوبون بقيمة ${found.value}%`);
+                        couponMsg.textContent = `✅ تمام، خصم الكوبون اتطبق: ${found.value}%`;
+                        if (typeof window.showBoseGlobalToast === "function") window.showBoseGlobalToast(`خصم الكوبون اتطبق بقيمة ${found.value}%`);
                         updateCartSummary(cart, storeData);
                     } else {
                         couponMsg.className = "coupon-status-toast error";
-                        couponMsg.textContent = "⚠ ️ كود الخصم المدخل غير صحيح أو منتهي الصلاحية.";
+                        couponMsg.textContent = "⚠️ كود الخصم ده مش شغال، تأكدوا منه أو من تاريخ صلاحيته.";
                     }
                 }
             };
