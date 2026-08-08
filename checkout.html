@@ -19,9 +19,9 @@
     <!-- 🐛 [إصلاح حرج]: خط Cairo وأيقونات Font Awesome كانوا غير محمّلين نهائياً في أهم صفحة تحويل بالموقع -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/global.css?v=2026_production_v30.0">
-    <link rel="stylesheet" href="css/main.css?v=2026_production_v30.0">
-    <link rel="stylesheet" href="css/cart-checkout.css?v=2026_production_v30.0">
+    <link rel="stylesheet" href="css/global.css?v=2026_production_v31.0">
+    <link rel="stylesheet" href="css/main.css?v=2026_production_v31.0">
+    <link rel="stylesheet" href="css/cart-checkout.css?v=2026_production_v31.0">
     
     <!-- 📐 حارس الأنماط والأبعاد الإلزامية الصارمة لحماية الهوية البصرية ومنع التكديس البصري 📐 -->
     <style>
@@ -218,7 +218,8 @@
     </style>
 
     <!-- المحرك العام (يُستدعى أولاً في رأس كل الصفحات لقراءة قاعدة البيانات) -->
-    <script src="js/core-engine.js?v=2026_production_v30.0" defer></script>
+    <script src="js/supabase-client.js?v=2026_production_v31.0" defer></script>
+    <script src="js/core-engine.js?v=2026_production_v31.0" defer></script>
 </head>
 <body class="bose-hardware-accelerated Pw-checkout-view">
 
@@ -344,7 +345,7 @@
     <div id="bose-footer-injector"></div>
 
     <!-- ⚡ استدعاء محرك السلة وإتمام عمليات الحساب والدفع والربط اللوجستي المركزي (js/cart-engine.js) ⚡ -->
-    <script src="js/cart-engine.js?v=2026_production_v30.0" defer></script>
+    <script src="js/cart-engine.js?v=2026_production_v31.0" defer></script>
 
     <!-- 🔮 سكريبت التزامن الدفاعي المحلي لربط وحقن الواجهات وضمان فك شلل حقول الصفحة دون تعارض خارجي 🔮 -->
     <script>
@@ -364,9 +365,14 @@
             const cartArr = rawCart ? JSON.parse(rawCart) : [];
 
             if (cartArr.length > 0 && compactHook) {
+                // 🛡️ [إصلاح أمني]: item.title/flavorName كانوا بيتحقنوا في innerHTML من غير
+                // تعقيم هنا، بخلاف باقي الموقع اللي بيستخدم escapeBoseHTML دايماً لنفس
+                // الحقول - دفاع إضافي في العمق حتى لو الحقلين دول مش قابلين للتحكم الحر
+                // من العميل حالياً.
+                const escSafe = typeof window.escapeBoseHTML === 'function' ? window.escapeBoseHTML : (s => String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])));
                 compactHook.innerHTML = cartArr.map(item => `
                     <div class="invoice-item-compact-node">
-                        <span><strong>${item.title}</strong> <span style="opacity:0.6;">(×${item.quantity})</span><span style="display:block; font-size:0.75rem; color:var(--bose-pink); font-weight:700;">${item.flavorName || 'جاهز وفريش'}</span></span>
+                        <span><strong>${escSafe(item.title)}</strong> <span style="opacity:0.6;">(×${item.quantity})</span><span style="display:block; font-size:0.75rem; color:var(--bose-pink); font-weight:700;">${escSafe(item.flavorName || 'جاهز وفريش')}</span></span>
                         <span style="font-weight:700; color:var(--bose-pink);">${parseFloat((item.finalPrice * item.quantity).toFixed(2))} EGP</span>
                     </div>
                 `).join("");

@@ -6,9 +6,21 @@
     <title>محاكي الورد التفاعلي | حلويات بوسي</title>
     <meta name="description" content="اعمل بوكيه الورد اللي على ذوقك خطوة بخطوة، واختاره بالتفصيل اللي يفرح قلب اللي هتديهوله مع خيارات التخصيص الراقية والمفاجآت المدمجة.">
     
+    <!-- ⚡ preconnect لتسريع أول اتصال بمصادر الخط والصور والأيقونات -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
+
+    <!-- 🐛 [إصلاح حرج]: main.css وخط Cairo وأيقونات Font Awesome كانوا غايبين تماماً من هذه الصفحة
+         بالظبط زي مشكلة cake-builder.html - وده كان سبب ظهور الهيدر والقائمة الجانبية والفوتر
+         (المحقونين ديناميكياً عبر core-engine.js) بدون أي تنسيق ومتكدسين فوق بعض. -->
     <!-- استدعاء ملفات التنسيق الفاخرة والمعزولة للبراند -->
-    <link rel="stylesheet" href="css/global.css?v=2026_production_v30.0">
-    <link rel="stylesheet" href="css/simulators.css?v=2026_production_v30.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/global.css?v=2026_production_v31.0">
+    <link rel="stylesheet" href="css/main.css?v=2026_production_v31.0">
+    <link rel="stylesheet" href="css/simulators.css?v=2026_production_v31.0">
 </head>
 <body>
 
@@ -304,7 +316,8 @@
 
     <!-- استدعاء المحركات والملفات البرمجية المنفصلة والمعزولة ذكياً بالتتابع القياسي الصحيح -->
     <!-- ⚡ [توحيد نمط التحميل - المرحلة 4]: defer + رقم إصدار موحّد زي باقي صفحات الموقع -->
-    <script src="js/core-engine.js?v=2026_production_v30.0" defer></script>
-    <script src="js/flower-engine.js?v=2026_production_v30.0" defer></script>
+    <script src="js/supabase-client.js?v=2026_production_v31.0" defer></script>
+    <script src="js/core-engine.js?v=2026_production_v31.0" defer></script>
+    <script src="js/flower-engine.js?v=2026_production_v31.0" defer></script>
 </body>
 </html>

@@ -18,12 +18,13 @@
     <!-- 🐛 [إصلاح حرج]: خط Cairo وأيقونات Font Awesome كانوا غير محمّلين نهائياً بالصفحة دي -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/global.css?v=2026_production_v30.0">
-    <link rel="stylesheet" href="css/main.css?v=2026_production_v30.0">
+    <link rel="stylesheet" href="css/global.css?v=2026_production_v31.0">
+    <link rel="stylesheet" href="css/main.css?v=2026_production_v31.0">
     
     <!-- 👑 استدعاء المحرك المركزي العالمي في رأس الصفحة لتأمين الـ DOM ومنع وميض الألوان -->
     <!-- ⚡ [إصلاح أداء]: defer عشان السكريبت متوقفش رسم الصفحة -->
-    <script src="js/core-engine.js?v=2026_production_v30.0" defer></script>
+    <script src="js/supabase-client.js?v=2026_production_v31.0" defer></script>
+    <script src="js/core-engine.js?v=2026_production_v31.0" defer></script>
 
     <style>
         /* 🎨 الهندسة البصرية الخاصة بصفحة الفئة الديناميكية لمنع التكديس البصري */
@@ -504,16 +505,44 @@
                         window.calculateProductFinalPrice(product, {size: defaultSize}) : (product.price || 0);
                     
                     const cardElement = document.createElement('div');
-                    cardElement.className = 'product-card';
+                    // 🐛 [إصلاح حرج]: هذه الدالة كانت منفصلة تماماً عن createProductCardHTML الموحدة
+                    // في core-engine.js (كود مكرر بمنطق مختلف)، وده كان بيخلي أي منتج عليه عرض
+                    // (oldPrice > price) يظهر هنا بسعره الحالي فقط من غير أي شارة خصم أو سعر قديم
+                    // مشطوب - فيبان للعميل كأنه منتج مستقل بسعر غريب، مش نفس المنتج اللي شايفه
+                    // بخصم في قسم العروض. تم توحيد شكل شارة الخصم هنا مع نفس كلاسات main.css
+                    // (bose-offer-card / bose-offer-badge / product-old-price / offer-savings-note)
+                    // المستخدمة فعلياً في كل باقي الموقع.
+                    const hasDiscount = !!(product.oldPrice && product.oldPrice > product.price);
+                    cardElement.className = 'product-card' + (hasDiscount ? ' bose-offer-card' : '');
                     cardElement.setAttribute('data-slug', product.slug);
-                    
+
+                    // 🛡️ [إصلاح أمني]: escapeBoseHTML كان متاح ومستخدم في كل مكان تاني بالموقع،
+                    // لكن هذا الملف كان بيحقن title/flavorName/flavorDesc في innerHTML مباشرة
+                    // من غير أي تعقيم - ثغرة XSS محتملة لو أي حقل منتج فيه HTML/سكريبت.
+                    const esc = typeof window.escapeBoseHTML === 'function' ? window.escapeBoseHTML : (s => String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])));
+                    const safeTitle = esc(product.title);
+                    const safeFlavor = esc(product.flavorName || '');
+                    const safeDesc = esc(product.flavorDesc || '');
+
+                    let discountBadgeHtml = '';
+                    let oldPriceHtml = '';
+                    let savingsHtml = '';
+                    if (hasDiscount) {
+                        const savingsAmount = product.oldPrice - product.price;
+                        const discountPercent = Math.round((savingsAmount / product.oldPrice) * 100);
+                        discountBadgeHtml = `<div class="offer-badge bose-offer-badge">خصم ${discountPercent}%</div>`;
+                        oldPriceHtml = `<span class="product-old-price">${Math.round(product.oldPrice)} ${globalStoreCurrency}</span>`;
+                        savingsHtml = `<span class="offer-savings-note">وفرت ${Math.round(savingsAmount)} ${globalStoreCurrency}</span>`;
+                    }
+
                     // 📐 الالتزام بالترتيب الهندسي الصارم: يمين (+) وسط (العدد) يسار (-) بالتوافق مع اتجاه RTL لصفحة المتجر
                     cardElement.innerHTML = `
-                        <a href="product.html?slug=${product.slug}" class="product-card-link" aria-label="عرض تفاصيل منتج ${product.title}">
-                            <img class="product-card-img" src="${product.image || (product.images ? product.images[0] : '')}" alt="${product.title}" loading="lazy">
-                            <h3 class="product-card-title">${product.title}</h3>
-                            <span class="product-card-flavor-name">${product.flavorName || ''}</span>
-                            <p class="product-card-desc">${product.flavorDesc || ''}</p>
+                        ${discountBadgeHtml}
+                        <a href="product.html?slug=${encodeURIComponent(product.slug)}" class="product-card-link" aria-label="عرض تفاصيل منتج ${safeTitle}">
+                            <img class="product-card-img" src="${product.image || (product.images ? product.images[0] : '')}" alt="${safeTitle}" loading="lazy">
+                            <h3 class="product-card-title">${safeTitle}</h3>
+                            <span class="product-card-flavor-name">${safeFlavor}</span>
+                            <p class="product-card-desc">${safeDesc}</p>
                         </a>
                         
                         <div class="product-card-qty-row">
@@ -523,8 +552,12 @@
                         </div>
 
                         <div class="product-card-bottom-row">
-                            <div class="product-card-price" data-base-unit-price="${calculatedPrice}">${calculatedPrice} ${globalStoreCurrency}</div>
-                            <button class="bose-internal-add" type="button" aria-label="إضافة منتج ${product.title} لسلة المشتريات">إضافة للسلة</button>
+                            <div class="product-card-price" data-base-unit-price="${calculatedPrice}">
+                                ${oldPriceHtml}
+                                <span class="current-price-value">${calculatedPrice} ${globalStoreCurrency}</span>
+                                ${savingsHtml}
+                            </div>
+                            <button class="bose-internal-add" type="button" aria-label="إضافة منتج ${safeTitle} لسلة المشتريات">إضافة للسلة</button>
                         </div>
                     `;
 
@@ -592,9 +625,17 @@
             }
 
             function updateCardPriceDisplay(priceDisplayNode, quantity) {
+                // 🐛 [إصلاح حرج]: كان بيكتب على .product-card-price بالكامل بـ textContent،
+                // فكان بيمسح شارة "السعر القديم" وملاحظة "وفرت X جنيه" لأي منتج عليه عرض
+                // بمجرد ما العميل يغيّر الكمية. دلوقتي بيحدّث السعر الحالي بس جوه span مخصصة له.
                 const basePrice = parseFloat(priceDisplayNode.getAttribute('data-base-unit-price')) || 0;
                 const totalDisplayPrice = basePrice * (parseInt(quantity, 10) || 1);
-                priceDisplayNode.textContent = `${totalDisplayPrice} ${globalStoreCurrency}`;
+                const priceValueNode = priceDisplayNode.querySelector('.current-price-value');
+                if (priceValueNode) {
+                    priceValueNode.textContent = `${totalDisplayPrice} ${globalStoreCurrency}`;
+                } else {
+                    priceDisplayNode.textContent = `${totalDisplayPrice} ${globalStoreCurrency}`;
+                }
             }
 
             function updateExistingCardsConfig() {
