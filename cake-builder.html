@@ -253,10 +253,10 @@
         }
         .bose-portfolio-img-node {
             flex-shrink: 0;
-            /* 🔍 [تحسين تجربة المستخدم]: تكبير صور سابقة الأعمال (كانت 140px بس) عشان
-               العميل يقدر يميز التفاصيل من أول نظرة قبل حتى ما يكبّرها باللايت بوكس */
-            width: 220px;
-            height: 220px;
+            /* 🔍 [تحسين تجربة المستخدم +30%]: تكبير صور سابقة الأعمال بنسبة 30% (كانت 220px)
+               عشان العميل يقدر يميز التفاصيل من أول نظرة قبل حتى ما يكبّرها باللايت بوكس */
+            width: 286px;
+            height: 286px;
             border-radius: 18px;
             overflow: hidden;
             border: 1px solid var(--bose-gray-border);
@@ -264,7 +264,7 @@
             transition: transform 0.2s;
         }
         @media (max-width: 480px) {
-            .bose-portfolio-img-node { width: 170px; height: 170px; }
+            .bose-portfolio-img-node { width: 221px; height: 221px; }
         }
         .bose-portfolio-img-node:hover {
             transform: scale(1.04);
@@ -330,10 +330,16 @@
             z-index: 2;
         }
 
+        /* 🛡️ [إصلاح جذري]: شريط التنقل السفلي العام (.bose-bottom-nav-bar) بيتحقن في كل صفحة
+           بـ z-index: 50000 وبنفس bottom:0 بالظبط، فكان بيطلع فوق شريط سعر التورتة هنا
+           (z-index: 1000) ويغطي عليه تماماً. صفحة المحاكي عندها زرار تأكيد وسعر مخصص أوضح
+           وأهم من التنقل العام، فبنخفي الشريط العام هنا فقط ونسيب مكانه بالكامل لسعر التورتة. */
+        .bose-bottom-nav-bar { display: none !important; }
+
         .dynamic-tracker-bar {
             position: fixed; bottom: 0; left: 0; right: 0;
             background-color: var(--bose-white); border-top: var(--bose-border-pink);
-            padding: 16px 24px; box-shadow: 0 -10px 40px rgba(255, 145, 164, 0.15); z-index: 1000;
+            padding: 16px 24px; box-shadow: 0 -10px 40px rgba(255, 145, 164, 0.15); z-index: 51000;
         }
         .tracker-flex-container {
             max-width: 800px; margin: 0 auto; display: flex;

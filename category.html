@@ -432,7 +432,10 @@
                 headlineNode.textContent = categoryObj.title;
                 breadcrumbNode.textContent = categoryObj.title;
 
-                globalFilteredProducts = siteData.products.filter(p => p.category === categoryId);
+                // 🛡️ [إصلاح حرج]: منتجات البوكسات/العروض المجمّعة (بادئة "promo-") كانت بتظهر هنا كأنها
+                // منتج جديد منفصل بسعر مختلف لنفس النكهة، فيبان للعميل إنه تكرار غلط. مكانها الشرعي
+                // الوحيد هو قسم العروض بالرئيسية وصفحة offers.html فقط، مش شبكة الفئة العادية.
+                globalFilteredProducts = siteData.products.filter(p => p.category === categoryId && !String(p.id).startsWith('promo-'));
                 globalStoreCurrency = siteData.store.currency || "EGP";
                 
                 // الترتيب السلوكي الذكي للعميل

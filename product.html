@@ -54,18 +54,20 @@
         }
 
         .master-image-frame {
+            /* 🔍 [تحسين +30%]: تكبير الصورة الرئيسية للمنتج بنسبة 30% (كانت 320px/450px) */
             width: 100%;
-            height: 320px;
+            height: 416px;
             border-radius: 24px;
             overflow: hidden;
             border: var(--bose-border-pink);
             box-shadow: var(--bose-shadow-glow);
             background: var(--bose-white);
+            cursor: zoom-in;
         }
 
         @media (min-width: 768px) {
             .master-image-frame {
-                height: 450px;
+                height: 585px;
             }
         }
 
@@ -75,6 +77,28 @@
             object-fit: cover;
             display: block;
             transition: opacity 0.3s ease;
+        }
+
+        /* 🔍 [لايت بوكس جديد]: نافذة منبثقة تملي الشاشة لعرض صورة المنتج بأدق تفاصيلها عند الضغط */
+        .bose-product-lightbox-overlay {
+            position: fixed; inset: 0; background: rgba(17, 17, 17, 0.92);
+            backdrop-filter: blur(6px); display: none; align-items: center; justify-content: center;
+            z-index: 60000; padding: 20px; box-sizing: border-box;
+        }
+        .bose-product-lightbox-overlay.active { display: flex; }
+        .bose-product-lightbox-card {
+            position: relative; width: 100%; height: 100%; max-width: 1400px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .bose-product-lightbox-card img {
+            max-width: 100%; max-height: 100%; width: auto; height: auto;
+            border-radius: 14px; object-fit: contain; display: block;
+        }
+        .bose-product-lightbox-close {
+            position: absolute; top: 14px; left: 14px; background: var(--bose-pink);
+            color: #FFFFFF; border: none; width: 44px; height: 44px; border-radius: 50%;
+            font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+            z-index: 2;
         }
 
         .thumbnails-strip-flow {
@@ -396,11 +420,13 @@
         }
 
         .review-attached-img {
-            width: 60px;
-            height: 60px;
+            /* 🔍 [تحسين +30%]: تكبير صور المراجعات المرفقة بنسبة 30% (كانت 60px) + قابلة للتكبير بالضغط */
+            width: 78px;
+            height: 78px;
             border-radius: 8px;
             object-fit: cover;
             border: 1px solid rgba(17, 17, 17, 0.08);
+            cursor: zoom-in;
         }
     </style>
 </head>
@@ -421,7 +447,7 @@
 
         <div id="bose-product-content-view" class="product-view-split-grid" style="display: none;">
             <div class="premium-gallery-showcase">
-                <div class="master-image-frame">
+                <div class="master-image-frame" id="bose-master-gallery-frame">
                     <img id="bose-master-gallery-image" src="" alt="صورة المنتج الفاخر" loading="eager">
                 </div>
                 <div id="bose-thumbnails-strip" class="thumbnails-strip-flow"></div>
@@ -518,6 +544,51 @@
 
     <div id="bose-footer-injector"></div>
 
+    <!-- 🔍 لايت بوكس صور المنتج والمراجعات: تملي الشاشة وتبين التفاصيل بأعلى جودة -->
+    <div class="bose-product-lightbox-overlay" id="bose-product-lightbox-overlay">
+        <div class="bose-product-lightbox-card">
+            <button class="bose-product-lightbox-close" id="bose-product-lightbox-close">&times;</button>
+            <img src="" id="bose-product-lightbox-img" alt="معاينة الصورة بالحجم الكامل">
+        </div>
+    </div>
+    <script>
+        (function () {
+            const overlay = document.getElementById("bose-product-lightbox-overlay");
+            const lightboxImg = document.getElementById("bose-product-lightbox-img");
+            const closeBtn = document.getElementById("bose-product-lightbox-close");
+
+            function openBoseProductLightbox(src) {
+                if (!src) return;
+                lightboxImg.src = src;
+                overlay.classList.add("active");
+            }
+            function closeBoseProductLightbox() {
+                overlay.classList.remove("active");
+                lightboxImg.src = "";
+            }
+
+            closeBtn.addEventListener("click", closeBoseProductLightbox);
+            overlay.addEventListener("click", (e) => { if (e.target === overlay) closeBoseProductLightbox(); });
+
+            // الصورة الرئيسية لمعرض المنتج
+            const masterFrame = document.getElementById("bose-master-gallery-frame");
+            if (masterFrame) {
+                masterFrame.addEventListener("click", () => {
+                    const img = document.getElementById("bose-master-gallery-image");
+                    if (img) openBoseProductLightbox(img.dataset.fullsrc || img.src);
+                });
+            }
+
+            // صور المراجعات المرفقة (بما فيها اللي بتتحمل ديناميكياً بعد كتابة مراجعة جديدة)
+            document.addEventListener("click", (e) => {
+                const target = e.target.closest(".review-attached-img");
+                if (target && target.tagName === "IMG" && target.src) {
+                    openBoseProductLightbox(target.dataset.fullsrc || target.src);
+                }
+            });
+        })();
+    </script>
+
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const urlParams = new URLSearchParams(window.location.search);
@@ -553,6 +624,15 @@
                     return;
                 }
 
+                // 🛡️ [إصلاح جذري]: أي منتج "رئيسي" مرتبط بمحاكي تفاعلي (تورت مخصص/بوكيه ورد)
+                // معندوش سعر أو تفاصيل ثابتة أصلاً، ومكانه الشرعي الوحيد هو المحاكي مش صفحة
+                // منتج ثابتة بسعر تقريبي غلط. لو حد وصل هنا بأي رابط قديم أو من محرك بحث،
+                // بنوديه على طول للمحاكي الصحيح بدل ما يشوف صفحة مكررة وغلط.
+                if (currentProduct.customBuilderUrl && currentProduct.builderType && currentProduct.builderType !== 'standard') {
+                    window.location.replace(currentProduct.customBuilderUrl);
+                    return;
+                }
+
                 if (typeof window.trackBoseUserBehavior === "function") {
                     window.trackBoseUserBehavior(currentProduct.slug, 2);
                 }
@@ -571,9 +651,15 @@
 
                 const defaultLogo = "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png";
                 const masterImg = currentProduct.image || (currentProduct.images && currentProduct.images[0] ? currentProduct.images[0] : defaultLogo);
-                
+
+                // 🛡️ [إصلاح توفير البيانات]: كانت الصورة الرئيسية والمصغرات هنا بتتحمل بدقتها الكاملة
+                // من Cloudinary من غير أي تصغير أو ضغط، وده بيستهلك بيانات موبايل زيادة جداً من غير
+                // داعي. دلوقتي بنستخدم نفس دالة optimizeBoseImageUrl المستخدمة في باقي الموقع.
+                const optimize = (url, w) => (window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(url, w) : url);
+
                 const masterImgNode = document.getElementById("bose-master-gallery-image");
-                masterImgNode.src = masterImg;
+                masterImgNode.src = optimize(masterImg, 900);
+                masterImgNode.dataset.fullsrc = masterImg; // النسخة الكاملة الجودة للايت بوكس فقط
                 
                 const thumbnailsStrip = document.getElementById("bose-thumbnails-strip");
                 const allImages = currentProduct.images && currentProduct.images.length > 0 ? currentProduct.images : [masterImg];
@@ -581,7 +667,7 @@
                 if (allImages.length > 1) {
                     thumbnailsStrip.innerHTML = allImages.map((imgUrl, idx) => `
                         <div class="thumb-clip-node ${idx === 0 ? 'active' : ''}" data-img-url="${imgUrl}">
-                            <img src="${imgUrl}" alt="مصغر ${idx + 1}" loading="lazy" onerror="this.src='${defaultLogo}';">
+                            <img src="${optimize(imgUrl, 150)}" alt="مصغر ${idx + 1}" loading="lazy" onerror="this.src='${defaultLogo}';">
                         </div>
                     `).join("");
                     
@@ -591,7 +677,8 @@
                             this.classList.add("active");
                             masterImgNode.style.opacity = 0.5;
                             setTimeout(() => {
-                                masterImgNode.src = this.dataset.imgUrl;
+                                masterImgNode.src = optimize(this.dataset.imgUrl, 900);
+                                masterImgNode.dataset.fullsrc = this.dataset.imgUrl;
                                 masterImgNode.style.opacity = 1;
                             }, 100);
                         });
@@ -697,7 +784,7 @@
                 }
                 let imagesHTML = "";
                 if (rev.images && rev.images.length > 0) {
-                    imagesHTML = `<div class="review-attach-images-row">${rev.images.map(url => `<img class="review-attached-img" src="${url}" loading="lazy">`).join("")}</div>`;
+                    imagesHTML = `<div class="review-attach-images-row">${rev.images.map(url => `<img class="review-attached-img" src="${window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(url, 200) : url}" data-fullsrc="${url}" loading="lazy">`).join("")}</div>`;
                 }
                 const pendingBadge = rev.pending
                     ? `<span style="font-size:0.72rem; font-weight:700; color:var(--bose-pink); background:rgba(255,145,164,0.1); padding:3px 10px; border-radius:50px; margin-right:8px;">قيد المراجعة</span>`
@@ -915,7 +1002,7 @@
                 for (const file of filesToUpload) {
                     const placeholder = document.createElement("div");
                     placeholder.className = "review-attached-img-loading";
-                    placeholder.style.cssText = "width:56px; height:56px; border-radius:10px; background:#FFF5F6; display:flex; align-items:center; justify-content:center; font-size:0.7rem; color:var(--bose-pink);";
+                    placeholder.style.cssText = "width:73px; height:73px; border-radius:10px; background:#FFF5F6; display:flex; align-items:center; justify-content:center; font-size:0.7rem; color:var(--bose-pink);";
                     placeholder.textContent = "...";
                     previewContainer.appendChild(placeholder);
 
@@ -924,9 +1011,10 @@
                         uploadedImageUrls.push(url);
                         const imgNode = document.createElement("img");
                         imgNode.className = "review-attached-img";
-                        imgNode.src = url;
+                        imgNode.src = window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(url, 200) : url;
+                        imgNode.dataset.fullsrc = url;
                         imgNode.loading = "lazy";
-                        imgNode.style.cssText = "width:56px; height:56px; border-radius:10px; object-fit:cover;";
+                        imgNode.style.cssText = "width:73px; height:73px; border-radius:10px; object-fit:cover;";
                         placeholder.replaceWith(imgNode);
                     } catch (err) {
                         placeholder.remove();
