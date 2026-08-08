@@ -81,6 +81,10 @@
         const settings = (settingsRows && settingsRows[0]) || {};
 
         // إعادة تجميع كل منتج بنفس المفاتيح المستخدمة حالياً في core-engine.js
+        // 🛡️ [أمان الشكل]: oldPrice/reviews/layout مضافين هنا دفاعياً - لو الأعمدة دي
+        // مش موجودة في جدول products لسه، بترجع undefined عادي زي ما كانت، ومفيش
+        // أي كسر. اللي بيحصل فعلياً هو إن قسم العروض (offers) هيفضل فاضي لحد ما
+        // الأعمدة دي تتضاف وتتملى من لوحة التحكم - مش هيحصل خطأ في الكونسول.
         const rebuiltProducts = (products || []).map((p) => ({
             id: p.id,
             slug: p.id,
@@ -89,8 +93,10 @@
             flavorName: p.flavor_name,
             flavorDesc: p.flavor_desc,
             description: p.description,
+            layout: p.layout || "grid-card",
             images: p.images || [],
             price: p.price,
+            oldPrice: p.old_price || null,
             basePrice: p.base_price,
             prices: p.prices || {},
             defaultSize: p.default_size,
@@ -99,6 +105,7 @@
             searchTerms: p.search_terms || [],
             featured: p.is_featured,
             rating: p.rating,
+            reviews: p.reviews || [],
         }));
 
         return {
@@ -110,6 +117,14 @@
             footer: settings.footer || {},
             cakeBuilder: settings.cake_builder || {},
             flowerBuilder: settings.flower_builder || {},
+            // 🛡️ [إصلاح حرج]: homepage و promotions كانوا بيرجعوا من store_settings.*
+            // (select=*) لكن مكنوش بيتم تمريرهم في الـ object الراجع، فكانت أقسام
+            // الواجهة الرئيسية (الأكثر مبيعاً، وصل حديثاً، منتجاتنا، سلايدر الفئات،
+            // إحصائيات الفخر، بانر التورت/الورد) هتفضل فاضية تماماً وممكن تعمل كسر
+            // JS فعلي (data.homepage.mostSelling على undefined). دلوقتي بيرجعوا
+            // كـ object/array فاضي كحد أدنى آمن حتى لو العمود لسه فاضي في القاعدة.
+            homepage: settings.homepage || {},
+            promotions: settings.promotions || [],
             categories: categories || [],
             products: rebuiltProducts,
             offers: offers || [],

@@ -55,20 +55,23 @@
         
         while (retries > 0) {
             try {
-                const response = await fetch('data/site-data-final.json');
-                if (!response.ok) throw new Error('فشل جلب ملف قاعدة البيانات الرئيسي.');
-                
-                const serverDateHeader = response.headers.get('Date');
-                if (serverDateHeader) {
-                    const serverTime = new Date(serverDateHeader).getTime();
-                    const clientTime = Date.now();
-                    window.boseServerTimeOffset = serverTime - clientTime;
-                } else {
-                    window.boseServerTimeOffset = 0;
+                // 🛡️ [المرحلة 1 - الانتقال الكامل لـ Supabase]: الموقع بقى بيقرأ
+                // قاعدة البيانات الحية من Supabase مباشرة بدل ملف data/site-data-final.json
+                // الثابت. الملف الثابت اتشال نهائياً من مسار التحميل - أي تعديل سعر
+                // أو منتج أو محتوى دلوقتي لازم يحصل من قاعدة البيانات (لوحة التحكم
+                // في المرحلة الجاية) عشان يظهر فعلياً للعميل.
+                if (!window.BoseSupabase || typeof window.BoseSupabase.loadBoseStoreDataFromSupabase !== "function") {
+                    throw new Error("طبقة الاتصال بقاعدة البيانات (supabase-client.js) غير محمّلة قبل core-engine.js.");
                 }
-                
-                window.BoseStoreData = await response.json();
-                
+
+                window.BoseStoreData = await window.BoseSupabase.loadBoseStoreDataFromSupabase();
+
+                // ملحوظة: الاتصال بـ Supabase REST بيتم عبر fetch داخلي في supabase-client.js
+                // ومش بيرجّع نفس الوصول لهيدر Date اللي كنا بناخده من الملف الثابت،
+                // فبنسيب فارق التوقيت صفر بدل ما نحسبه غلط. الدقة دي مش حرجة لوظيفة
+                // الموقع الحالية (مفيش أي مكان بيعتمد عليها بشكل حاسم في الحسابات).
+                window.boseServerTimeOffset = 0;
+
                 localStorage.setItem('bose_cached_store_data', JSON.stringify(window.BoseStoreData));
                 localStorage.setItem('bose_cached_store_time', String(Date.now()));
                 
@@ -633,7 +636,9 @@
 
     function renderHomepageProductGrids() {
         const data = window.BoseStoreData;
-        if (!data || !data.products) return;
+        // 🛡️ [تحصين]: data.homepage ممكن يوصل فاضي {} لحد ما يتملى من لوحة التحكم،
+        // فالحماية هنا بتمنع أي كسر JS بدل ما تعتمد بس على وجود homepage نفسه.
+        if (!data || !data.products || !data.homepage) return;
 
         const mostSellingGrid = document.getElementById('most-selling-grid');
         if (mostSellingGrid && data.homepage.mostSelling) {
@@ -666,6 +671,8 @@
 
         showMoreBtn.addEventListener('click', function(e) {
             e.preventDefault();
+            // 🛡️ [تحصين]: منع كسر JS لو ourProducts لسه مش متملي في لوحة التحكم
+            if (!data.homepage || !data.homepage.ourProducts) return;
             const allItems = data.homepage.ourProducts.map(/** @param {string} id */ (id) => data.products.find((/** @type {any} */ p) => p.id === id || p.slug === id)).filter(Boolean);
             ourProductsGrid.innerHTML = allItems.map((/** @type {any} */ p) => createProductCardHTML(p)).join('');
             showMoreBtn.style.setProperty('display', 'none', 'important'); 
