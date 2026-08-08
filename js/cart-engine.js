@@ -280,22 +280,51 @@ function updateCartSummary(cart, storeData) {
     
     if (promoBtn && promoInput && couponMsg) {
         if (!promoBtn.dataset.listenerAttached) {
-            promoBtn.onclick = () => {
+            promoBtn.onclick = async () => {
                 const code = promoInput.value.trim().toUpperCase();
                 if (!code) return;
-                
-                if (storeData.coupons) {
-                    const found = storeData.coupons.find(c => c.code === code);
-                    if (found) {
-                        localStorage.setItem("bose_active_coupon", code);
+
+                // 🛡️ [إصلاح أمني]: التحقق من الكوبون بقى بيتم عبر دالة آمنة في الباكند
+                // (validate_coupon RPC عن طريق window.BoseSupabase.validateBoseCoupon)
+                // بدل مقارنته محلياً مع قايمة storeData.coupons اللي كانت بتوصل كاملة
+                // وواضحة لأي حد يفتح ملف بيانات المتجر العام مباشرة في المتصفح.
+                if (!window.BoseSupabase || typeof window.BoseSupabase.validateBoseCoupon !== "function") {
+                    couponMsg.className = "coupon-status-toast error";
+                    couponMsg.textContent = "⚠️ تعذر التحقق من الكوبون حالياً، حاول تحديث الصفحة.";
+                    return;
+                }
+
+                const originalBtnLabel = promoBtn.textContent;
+                promoBtn.disabled = true;
+                promoBtn.textContent = "بيتم التحقق...";
+
+                try {
+                    const result = await window.BoseSupabase.validateBoseCoupon(code);
+                    if (result && result.is_valid) {
+                        // ⚠️ ملحوظة: أسماء الحقول دي (discount_type/discount_value) افتراض
+                        // منطقي بناءً على استخدام calculateCouponDiscount(subtotal, {type, value}).
+                        // لازم تتأكد إنها مطابقة تماماً لأسماء الأعمدة الراجعة فعلياً من
+                        // دالة validate_coupon في قاعدة البيانات، وتعدلها هنا لو مختلفة.
+                        const discountType = result.discount_type || result.type || "percent";
+                        const discountValue = parseFloat(result.discount_value ?? result.value ?? 0) || 0;
+                        localStorage.setItem("bose_active_coupon", JSON.stringify({ code, type: discountType, value: discountValue }));
                         couponMsg.className = "coupon-status-toast success";
-                        couponMsg.textContent = `✅ تمام، خصم الكوبون اتطبق: ${found.value}%`;
-                        if (typeof window.showBoseGlobalToast === "function") window.showBoseGlobalToast(`خصم الكوبون اتطبق بقيمة ${found.value}%`);
+                        couponMsg.textContent = discountType === "fixed"
+                            ? `✅ تمام، خصم الكوبون اتطبق: ${discountValue} جنيه`
+                            : `✅ تمام، خصم الكوبون اتطبق: ${discountValue}%`;
+                        if (typeof window.showBoseGlobalToast === "function") window.showBoseGlobalToast("تم تطبيق كود الخصم بنجاح");
                         updateCartSummary(cart, storeData);
                     } else {
+                        localStorage.removeItem("bose_active_coupon");
                         couponMsg.className = "coupon-status-toast error";
-                        couponMsg.textContent = "⚠️ كود الخصم ده مش شغال، تأكدوا منه أو من تاريخ صلاحيته.";
+                        couponMsg.textContent = (result && result.message) || "⚠️ كود الخصم ده مش شغال، تأكدوا منه أو من تاريخ صلاحيته.";
                     }
+                } catch (err) {
+                    couponMsg.className = "coupon-status-toast error";
+                    couponMsg.textContent = "⚠️ تعذر التحقق من الكوبون، تأكد من الاتصال بالإنترنت وحاول تاني.";
+                } finally {
+                    promoBtn.disabled = false;
+                    promoBtn.textContent = originalBtnLabel;
                 }
             };
             promoBtn.dataset.listenerAttached = "true";
@@ -542,6 +571,9 @@ function processFinalBoseOrder(cart, storeData, method, shippingFee) {
         date: `${orderDate.split('-')[2]} / ${orderDate.split('-')[1]} / ${orderDate.split('-')[0]}`,
         scheduledDate: orderDate,
         scheduledTime: orderTime,
+        subtotal: invoice.subtotal,
+        discountAmount: invoice.discount,
+        couponCode: invoice.couponCode || null,
         grandTotal: finalGrandTotalCalculated,
         notes: orderNotesInput ? orderNotesInput.value.trim() : "لا توجد ملاحظات إضافية",
         items: cart
@@ -564,6 +596,13 @@ function processFinalBoseOrder(cart, storeData, method, shippingFee) {
     // الموبايل (خصوصاً Safari/iOS) ماتحجبش النافذة، لأنها بتشترط إن فتح
     // النافذة يحصل مباشرة جوه حدث ضغطة الزر بدون أي انتظار قبله.
     window.open(window.buildWhatsappLink(brandWhatsappNumber, whatsappMessageText), "_blank");
+    // 🛡️ [إصلاح تكرار فتح واتساب]: واتساب اتفتح بالفعل هنا لحظة تأكيد الطلب،
+    // فبنسجل نفس علامة "تم الفتح تلقائياً" اللي بتقرأها renderBoseSuccessPage()
+    // في order-success.html فوراً، عشان الصفحة متفتحش واتساب مرة تانية لوحدها
+    // لحظة وصول العميل ليها (كان بيفتح تابين واتساب لكل طلب).
+    try {
+        sessionStorage.setItem("bose_whatsapp_auto_opened_" + orderIdGenerated, "1");
+    } catch (e) { /* تجاهل بأمان لو الجلسة غير متاحة */ }
 
     const finalizeNavigation = () => { window.location.href = "order-success.html"; };
 

@@ -971,16 +971,24 @@
         subtotal = parseFloat(subtotal.toFixed(4));
 
         let discount = 0;
+        let activeCouponCode = null;
         try {
-            const activeCouponCode = localStorage.getItem("bose_active_coupon");
-            if (activeCouponCode && storeData && Array.isArray(storeData.coupons)) {
-                const activeCoupon = storeData.coupons.find((/** @type {any} */ c) => c.code === activeCouponCode);
-                if (activeCoupon) {
+            // 🛡️ [إصلاح أمني]: بيانات الكوبون النشط بقت جاية من نتيجة تحقق آمن عبر
+            // الباكند (validate_coupon RPC) وقت الضغط على "تطبيق"، مش من قايمة
+            // storeData.coupons العامة القديمة اللي كانت بتفضح كل أكواد الخصم لأي
+            // حد يفتح site-data-final.json مباشرة. راجع onclick الخاص بـ btn-apply-coupon
+            // في cart-engine.js لمصدر بيانات bose_active_coupon الجديد.
+            const rawActiveCoupon = localStorage.getItem("bose_active_coupon");
+            if (rawActiveCoupon) {
+                const activeCoupon = JSON.parse(rawActiveCoupon);
+                if (activeCoupon && activeCoupon.code) {
                     discount = window.calculateCouponDiscount(subtotal, activeCoupon);
+                    activeCouponCode = activeCoupon.code;
                 }
             }
         } catch (e) {
             discount = 0;
+            activeCouponCode = null;
         }
         discount = parseFloat(discount.toFixed(4));
 
@@ -991,7 +999,8 @@
             discount: discount,
             shippingFee: safeShippingFee,
             grandTotal: grandTotal,
-            itemsCount: itemsCount
+            itemsCount: itemsCount,
+            couponCode: activeCouponCode
         };
     };
 
