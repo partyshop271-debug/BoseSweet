@@ -27,6 +27,13 @@
     user-select: none;
     -webkit-user-select: none;
     touch-action: pan-y; /* يسمح بالسحب الأفقي اليدوي هنا مع ترك التمرير العمودي للصفحة شغال طبيعي */
+    /* 🐛 [إصلاح اختفاء الكروت وقت السحب]: عناصر الـ <a> عندها سحب أصلي (native drag & drop)
+       مفعّل تلقائياً من المتصفح. من غير تعطيله، أول ما العميلة تسحب كارت، بيتعارك نظام
+       السحب بتاعنا (JS pointer-drag) مع نظام المتصفح الأصلي لسحب الروابط، فالمتصفح بيخفي
+       العنصر الأصلي عشان يعرض "شبح" السحب بتاعه، وده اللي بيبان كأن الكارت اختفى تماماً
+       والمكان فضل فاضي. تعطيل user-drag هنا وعلى كل كارت بيمنع تضارب النظامين. */
+    -webkit-user-drag: none;
+    user-drag: none;
 }
 
 .hero-categories-ticker-track.is-dragging {
@@ -52,6 +59,11 @@
     text-decoration: none !important;
     transition: var(--bose-transition-fast);
     box-shadow: var(--bose-shadow-glow);
+    /* 🐛 [إصلاح اختفاء الكروت]: نفس تعطيل السحب الأصلي لكن على مستوى كل كارت لينك بمفرده،
+       ضمان إضافي لأن بعض المتصفحات (خصوصاً Safari) بتفعّل السحب الأصلي على الـ <a> نفسه
+       حتى لو الأب عنده user-drag:none. */
+    -webkit-user-drag: none;
+    user-drag: none;
 }
 
 .ticker-cat-item i {
