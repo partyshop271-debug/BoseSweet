@@ -252,6 +252,13 @@
         track.addEventListener('pointerup', onPointerUp);
         track.addEventListener('pointercancel', onPointerUp);
         track.addEventListener('pointerleave', onPointerUp);
+
+        // 🐛 [إصلاح جذري لاختفاء الكروت وقت السحب]: الروابط <a> عندها سحب أصلي (native
+        // drag & drop) مفعّل تلقائياً من المتصفح. لو العميلة بدأت تسحب وسط كارت، المتصفح
+        // ممكن يبدأ سحب أصلي للرابط بالتوازي مع سحب الـ JS بتاعنا، فيخفي الكارت الأصلي
+        // عشان يعرض "شبح" السحب (drag ghost) — وده اللي بيبان كاختفاء تام للتبويب.
+        // منع dragstart هنا هو الضمان النهائي حتى لو -webkit-user-drag اتجوهلت من أي متصفح.
+        track.addEventListener('dragstart', (e) => e.preventDefault());
     }
 
     /**
