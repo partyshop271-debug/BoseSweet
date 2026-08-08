@@ -55,16 +55,17 @@
 }
 
 .ticker-cat-item i {
+    /* 🔍 [تحسين +30%]: تكبير أيقونة تبويب الأقسام بنسبة 30% (كانت 30px/15px) لتبان بوضوح أكتر */
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 30px;
-    height: 30px;
+    width: 39px;
+    height: 39px;
     flex-shrink: 0;
     border-radius: 50%;
     background-color: rgba(255, 145, 164, 0.12);
     color: var(--bose-pink);
-    font-size: 15px;
+    font-size: 19.5px;
     transition: var(--bose-transition-fast);
 }
 
