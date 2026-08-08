@@ -122,11 +122,12 @@
     }
 
     /**
-     * 👑 [إصلاح جذري]: محرك تبويب الفئات أسفل زر "اطلب الآن" (Hero Categories Ticker)
-     * قبل كده كان التبويب "ثابت تماماً" ومسمى ticker بالغلط لأنه معندوش أي حركة تلقائية،
-     * والعميل محتاج يكتشف بنفسه إنه قابل للسحب. دلوقتي بيتحرك لوحده بسلاسة ولا نهائياً
-     * (المحتوى مكرر مرتين بالـ HTML لضمان عدم ظهور أي فراغ لحظة الالتفاف)، وبيوقف بس
-     * لحظة ما العميل يلمسه أو يسحبه يدوياً، ويكمل تلقائي تاني بعد ما يسيبه.
+     * 👑 [إصلاح بناءً على طلب صاحبة المتجر]: محرك تبويب الفئات أسفل زر "اطلب الآن" (Hero Categories Ticker)
+     * كان بيتحرك تلقائياً لوحده (auto-scroll) — تم إلغاء الحركة التلقائية بالكامل بناءً على طلب
+     * صريح. التبويب دلوقتي "ثابت تماماً" ومبيتحركش إلا لما العميل يسحبه بإيده فعلياً (pointer drag)،
+     * ولسه محتفظين بإحساس السحب الطبيعي (عطالة/momentum خفيفة بعد الإفلات) لأن ده استجابة
+     * لحركة العميل نفسه مش حركة تلقائية مستقلة. المحتوى لسه مكرر مرتين بالـ HTML عشان لو
+     * العميل سحب مسافة طويلة يفضل في حلقة متصلة من غير فراغ.
      */
     function setupHeroTickerDragEngine() {
         /** @type {HTMLElement|null} */
@@ -139,13 +140,10 @@
         let dragMoved = false;
         let startX = 0;
         let startPosX = 0;
-        let autoScrollActive = true;
-        let autoScrollSpeedCurrent = 0; // 🔧 [إصلاح السلاسة]: بيبدأ من 0 ويتسارع تدريجياً بدل قفزة مفاجئة
-        const AUTO_SCROLL_SPEED = 0.45; // بكسل لكل فريم - حركة ناعمة ومريحة للعين
-        // 🔧 [إصلاح جذري - سلاسة اللمس]: كانت الحركة بتتبع إصبع العميل 1:1 بالظبط من غير أي
+        // 🔧 [إصلاح سلاسة اللمس]: كانت الحركة بتتبع إصبع العميل 1:1 بالظبط من غير أي
         // عطالة (momentum)، فبتحس إنها "تقيلة" وبتقف فجأة لحظة رفع الإصبع بدل ما تكمل بسلاسة
-        // زي أي سلايدر طبيعي. دلوقتي بنتتبع سرعة السحب الفعلية ونكمل بيها لحظة الإفلات
-        // (momentum/inertia) وبنرجع للحركة التلقائية بتسارع تدريجي ناعم بدل قفزة سرعة مفاجئة.
+        // زي أي سلايدر طبيعي. بنتتبع سرعة السحب الفعلية ونكمل بيها لحظة الإفلات فقط
+        // (momentum/inertia) ثم تقف تماماً — من غير أي رجوع لحركة تلقائية.
         let lastMoveX = 0;
         let lastMoveTime = 0;
         let velocity = 0; // بكسل/مللي ثانية
@@ -172,7 +170,6 @@
             applyTransform();
             if (Math.abs(velocity) < 0.05) {
                 momentumActive = false;
-                setTimeout(() => { autoScrollActive = true; }, 250);
                 return;
             }
             requestAnimationFrame(runMomentumLoop);
@@ -182,7 +179,6 @@
         const onPointerDown = (e) => {
             isDragging = true;
             momentumActive = false;
-            autoScrollActive = false;
             dragMoved = false;
             startX = e.clientX;
             startPosX = posX;
@@ -221,12 +217,10 @@
                 track.releasePointerCapture(e.pointerId);
             }
 
-            // لو العميل سحب بسرعة ملحوظة، نكمل الحركة بعطالة طبيعية (momentum) بدل ما توقف فجأة
+            // لو العميل سحب بسرعة ملحوظة، نكمل الحركة بعطالة طبيعية (momentum) قبل ما توقف تماماً
             if (Math.abs(velocity) > 0.5) {
                 momentumActive = true;
                 requestAnimationFrame(runMomentumLoop);
-            } else {
-                setTimeout(() => { autoScrollActive = true; }, 250);
             }
 
             if (dragMoved) {
@@ -237,18 +231,6 @@
                 };
                 track.addEventListener('click', suppressClick, { capture: true, once: true });
             }
-        };
-
-        const runAutoScrollLoop = () => {
-            if (autoScrollActive && halfWidth > 0) {
-                // تسارع تدريجي ناعم بدل قفزة سرعة مفاجئة لحظة الرجوع من السحب اليدوي
-                autoScrollSpeedCurrent += (AUTO_SCROLL_SPEED - autoScrollSpeedCurrent) * 0.08;
-                posX -= autoScrollSpeedCurrent;
-                applyTransform();
-            } else {
-                autoScrollSpeedCurrent = 0;
-            }
-            requestAnimationFrame(runAutoScrollLoop);
         };
 
         recalcBounds();
@@ -270,11 +252,6 @@
         track.addEventListener('pointerup', onPointerUp);
         track.addEventListener('pointercancel', onPointerUp);
         track.addEventListener('pointerleave', onPointerUp);
-        // وقف الحركة التلقائية وقت مرور الماوس فوقها على الكمبيوتر (مريح لعين وقرار العميل)
-        track.addEventListener('mouseenter', () => { autoScrollActive = false; });
-        track.addEventListener('mouseleave', () => { if (!isDragging) autoScrollActive = true; });
-
-        requestAnimationFrame(runAutoScrollLoop);
     }
 
     /**
