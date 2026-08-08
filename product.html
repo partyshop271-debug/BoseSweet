@@ -505,7 +505,10 @@
                     <div id="bose-review-images-preview-zone" style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;"></div>
                 </div>
 
-                <button id="btn-submit-premium-review" type="button" style="background:var(--bose-pink); color:#fff; border:none; padding:12px 30px; border-radius:50px; font-weight:700; cursor:pointer; box-shadow:0 4px 12px rgba(255,145,164,0.2);">نشر المراجعة الملكية فوراً</button>
+                <button id="btn-submit-premium-review" type="button" style="background:var(--bose-pink); color:#fff; border:none; padding:12px 30px; border-radius:50px; font-weight:700; cursor:pointer; box-shadow:0 4px 12px rgba(255,145,164,0.2);">حفظ مراجعتك</button>
+                <p style="font-size:0.78rem; color:#111111; opacity:0.6; margin:10px 0 0 0; line-height:1.5;">
+                    <i class="fas fa-circle-info"></i> ملحوظة: مراجعتك بتتحفظ حالياً على جهازك/متصفحك فقط ومش بتتشارك مع باقي الزوار على المنتج، لحد ما يتفعّل نظام المراجعات المركزي للموقع.
+                </p>
             </div>
 
             <div id="bose-product-reviews-collection-list"></div>
@@ -530,7 +533,7 @@
             let currentProduct = null;
             let currentSelectedOptions = { flavorName: "كلاسيك" };
             let currentMasterQuantity = 1;
-            let uploadedImagesBase64 = [];
+            let uploadedImageUrls = [];
 
             // دالة محلية آمنة لحساب السعر لتأمين تشغيل الصفحة بشكل معزول في حال عدم تحميل المحرك الرئيسي
             function safeCalculatePrice(prod, opts) {
@@ -639,35 +642,50 @@
                 renderRelatedProducts(dbData);
             }
 
-            // 🛡️ [إصلاح جوهري]: تخزين مراجعات العملاء فعلياً في localStorage بدل
-            // عرضها في الـ DOM فقط ثم اختفاؤها بمجرد تحديث الصفحة. الحل مؤقت
-            // (بدون سيرفر) لحد ما يتوفر تخزين حقيقي على الخادم، لكنه على الأقل
-            // بيخلي مراجعة العميل تفضل ظاهرة له وللزوار التانيين على نفس الجهاز.
-            function getLocalReviewsStore() {
-                try {
-                    return JSON.parse(localStorage.getItem("bose_local_reviews") || "{}");
-                } catch (e) {
-                    return {};
-                }
-            }
+            // 🛡️ [إصلاح جوهري]: مراجعات العملاء بقت بتتسجل فعلياً في قاعدة البيانات
+            // (Supabase) عبر window.BoseSupabase.submitBoseReview بدل localStorage اللي
+            // كان بيخلي المراجعة تظهر لصاحبها بس على نفس جهازه، من غير ما تتشارك مع
+            // باقي الزوار خالص رغم إن الزرار كان بيقول "نُشرت". المراجعة الجديدة بتتسجل
+            // بحالة "قيد المراجعة" (is_approved=false) ومتظهرش لباقي الزوار إلا بعد
+            // اعتمادها من لوحة التحكم لاحقاً - وده بنوضحه صراحة في رسالة النجاح.
+            // sessionPendingReviews بتخلي العميل شايف مراجعته هو بس فوراً في نفس
+            // الزيارة (كمعاينة "قيد المراجعة")، من غير ما تتخزن فعلياً على جهازه.
+            let sessionPendingReviews = [];
 
-            function getLocalReviewsForCurrentProduct() {
+            async function fetchBackendReviewsForCurrentProduct() {
                 if (!currentProduct) return [];
-                const store = getLocalReviewsStore();
-                return store[currentProduct.slug] || [];
+                if (!window.BoseSupabase || typeof window.BoseSupabase.fetchApprovedReviews !== "function") return [];
+                try {
+                    const rows = await window.BoseSupabase.fetchApprovedReviews(currentProduct.slug);
+                    return (rows || []).map(r => ({
+                        user: r.user_name,
+                        rating: r.rating,
+                        comment: r.comment,
+                        images: r.images || []
+                    }));
+                } catch (e) {
+                    console.warn("⚠️ تعذر تحميل المراجعات من الخادم:", e);
+                    return [];
+                }
             }
 
-            function saveLocalReview(review) {
-                if (!currentProduct) return;
-                const store = getLocalReviewsStore();
-                if (!store[currentProduct.slug]) store[currentProduct.slug] = [];
-                store[currentProduct.slug].unshift(review);
-                try {
-                    localStorage.setItem("bose_local_reviews", JSON.stringify(store));
-                } catch (e) {
-                    // localStorage ممتلئ (غالباً بسبب صور كتيرة)، نتجاهل الحفظ بهدوء بدل كسر الصفحة
-                    console.warn("تعذر حفظ المراجعة محلياً:", e);
+            async function submitReviewToBackend(review) {
+                if (!currentProduct) return false;
+                if (!window.BoseSupabase || typeof window.BoseSupabase.submitBoseReview !== "function") {
+                    if (typeof window.showBoseToast === 'function') {
+                        window.showBoseToast("تعذر إرسال المراجعة حالياً، حاولي تحديث الصفحة أو المحاولة لاحقاً 🌸");
+                    }
+                    return false;
                 }
+                await window.BoseSupabase.submitBoseReview({
+                    productId: currentProduct.slug,
+                    userName: review.user,
+                    rating: review.rating,
+                    comment: review.comment,
+                    images: review.images
+                });
+                sessionPendingReviews.unshift({ ...review, pending: true });
+                return true;
             }
 
             function buildReviewCardHTML(rev) {
@@ -678,12 +696,15 @@
                 }
                 let imagesHTML = "";
                 if (rev.images && rev.images.length > 0) {
-                    imagesHTML = `<div class="review-attach-images-row">${rev.images.map(b64 => `<img class="review-attached-img" src="${b64}" loading="lazy">`).join("")}</div>`;
+                    imagesHTML = `<div class="review-attach-images-row">${rev.images.map(url => `<img class="review-attached-img" src="${url}" loading="lazy">`).join("")}</div>`;
                 }
+                const pendingBadge = rev.pending
+                    ? `<span style="font-size:0.72rem; font-weight:700; color:var(--bose-pink); background:rgba(255,145,164,0.1); padding:3px 10px; border-radius:50px; margin-right:8px;">قيد المراجعة</span>`
+                    : "";
                 return `
                     <div class="review-card-node" style="direction: rtl; text-align: right;">
                         <div class="review-user-meta">
-                            <h4 style="font-size: 0.95rem; font-weight: 700; margin: 0;">${escapeHTML(rev.user)}</h4>
+                            <h4 style="font-size: 0.95rem; font-weight: 700; margin: 0;">${escapeHTML(rev.user)}${pendingBadge}</h4>
                             <div class="review-stars-row">${starsHTML}</div>
                         </div>
                         <p style="font-size: 0.88rem; color: var(--bose-black); opacity: 0.85; line-height: 1.5; margin: 6px 0 0 0;">${escapeHTML(rev.comment)}</p>
@@ -692,15 +713,15 @@
                 `;
             }
 
-            function renderDynamicProductReviews() {
+            async function renderDynamicProductReviews() {
                 const reviewsListContainer = document.getElementById("bose-product-reviews-collection-list");
                 if (!reviewsListContainer || !currentProduct) return;
 
                 const catalogReviews = (currentProduct.reviews || []).map(rev => ({
                     user: rev.user, rating: rev.rating, comment: rev.comment, images: []
                 }));
-                const localReviews = getLocalReviewsForCurrentProduct();
-                const allReviews = localReviews.concat(catalogReviews);
+                const backendReviews = await fetchBackendReviewsForCurrentProduct();
+                const allReviews = sessionPendingReviews.concat(backendReviews, catalogReviews);
 
                 if (allReviews.length > 0) {
                     reviewsListContainer.innerHTML = allReviews.map(buildReviewCardHTML).join("");
@@ -855,41 +876,66 @@
             const imagesPicker = document.getElementById("bose-review-images-picker");
             const triggerImagesBtn = document.getElementById("btn-trigger-review-images");
             const previewContainer = document.getElementById("bose-review-images-preview-zone");
+            const submitReviewBtn = document.getElementById("btn-submit-premium-review");
+            const MAX_REVIEW_IMAGES = 3;
+            let isUploadingReviewImages = false;
 
             triggerImagesBtn.addEventListener("click", () => imagesPicker.click());
-            
-            imagesPicker.addEventListener("change", function() {
-                const files = Array.from(this.files);
-                files.forEach(file => {
-                    if (!file.type.startsWith("image/")) return;
-                    
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const img = new Image();
-                        img.src = e.target.result;
-                        img.onload = function() {
-                            // 🚀 [أداء فائق]: ضغط وتصغير الصورة تلقائياً لحفظ بيانات وبطارية هواتف العملاء
-                            const canvas = document.createElement("canvas");
-                            const MAX_WIDTH = 200;
-                            const scaleSize = MAX_WIDTH / img.width;
-                            canvas.width = MAX_WIDTH;
-                            canvas.height = img.height * scaleSize;
-                            
-                            const ctx = canvas.getContext("2d");
-                            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                            
-                            const compressedBase64 = canvas.toDataURL("image/jpeg", 0.7);
-                            uploadedImagesBase64.push(compressedBase64);
-                            
-                            const imgNode = document.createElement("img");
-                            imgNode.className = "review-attached-img";
-                            imgNode.src = compressedBase64;
-                            imgNode.loading = "lazy";
-                            previewContainer.appendChild(imgNode);
-                        };
-                    };
-                    reader.readAsDataURL(file);
-                });
+
+            /**
+             * 🛡️ [إصلاح تخزين الصور]: قبل كده كانت صور المراجعة بتتحفظ Base64 كاملة جوه
+             * localStorage، وده كان ممكن يضرب سقف تخزين المتصفح (~5-10MB) بسرعة مع أول
+             * كام مراجعة فيها صور ويكسر الصفحة بالكامل. دلوقتي بيتم رفع الصورة تلقائياً
+             * عبر الدالة الموحدة window.BoseSupabase.uploadBoseReferenceImage (نفس الدالة
+             * اللي بيستخدمها محاكي التورت بالظبط في cake-engine.js) بدل تكرار نفس كود
+             * الضغط والرفع لـ Cloudinary في كل ملف لوحده - وبيتحفظ رابط الصورة الراجع
+             * (secure_url) بس، مش الصورة نفسها.
+             */
+            async function uploadReviewImageToCloudinary(file) {
+                if (!window.BoseSupabase || typeof window.BoseSupabase.uploadBoseReferenceImage !== "function") {
+                    throw new Error("خدمة رفع الصور غير متاحة حالياً");
+                }
+                return window.BoseSupabase.uploadBoseReferenceImage(file);
+            }
+
+            imagesPicker.addEventListener("change", async function() {
+                const files = Array.from(this.files).filter(f => f.type.startsWith("image/"));
+                const remainingSlots = MAX_REVIEW_IMAGES - uploadedImageUrls.length;
+                if (remainingSlots <= 0) {
+                    if (typeof window.showBoseToast === 'function') window.showBoseToast(`أقصى عدد صور للمراجعة ${MAX_REVIEW_IMAGES} صور 🌸`);
+                    this.value = "";
+                    return;
+                }
+
+                const filesToUpload = files.slice(0, remainingSlots);
+                isUploadingReviewImages = true;
+                if (submitReviewBtn) submitReviewBtn.disabled = true;
+
+                for (const file of filesToUpload) {
+                    const placeholder = document.createElement("div");
+                    placeholder.className = "review-attached-img-loading";
+                    placeholder.style.cssText = "width:56px; height:56px; border-radius:10px; background:#FFF5F6; display:flex; align-items:center; justify-content:center; font-size:0.7rem; color:var(--bose-pink);";
+                    placeholder.textContent = "...";
+                    previewContainer.appendChild(placeholder);
+
+                    try {
+                        const url = await uploadReviewImageToCloudinary(file);
+                        uploadedImageUrls.push(url);
+                        const imgNode = document.createElement("img");
+                        imgNode.className = "review-attached-img";
+                        imgNode.src = url;
+                        imgNode.loading = "lazy";
+                        imgNode.style.cssText = "width:56px; height:56px; border-radius:10px; object-fit:cover;";
+                        placeholder.replaceWith(imgNode);
+                    } catch (err) {
+                        placeholder.remove();
+                        if (typeof window.showBoseToast === 'function') window.showBoseToast("تعذر رفع إحدى الصور، حاولي مرة أخرى 🌸");
+                    }
+                }
+
+                isUploadingReviewImages = false;
+                if (submitReviewBtn) submitReviewBtn.disabled = false;
+                this.value = "";
             });
 
             function escapeHTML(str) {
@@ -898,7 +944,14 @@
                 );
             }
 
-            document.getElementById("btn-submit-premium-review").addEventListener("click", () => {
+            document.getElementById("btn-submit-premium-review").addEventListener("click", async () => {
+                if (isUploadingReviewImages) {
+                    if (typeof window.showBoseToast === 'function') {
+                        window.showBoseToast("لسه بترفع الصور، ثواني وهنكمل 🌸");
+                    }
+                    return;
+                }
+
                 const userName = document.getElementById("bose-review-user-name").value.trim();
                 const comment = document.getElementById("bose-review-comment").value.trim();
                 const checkedRadio = document.querySelector('input[name="bose-star-rating"]:checked');
@@ -906,30 +959,41 @@
 
                 if (!userName || !comment) {
                     if (typeof window.showBoseToast === 'function') {
-                        window.showBoseToast("يرجى ملء جميع الحقول المطلوبة قبل النشر 🌸");
+                        window.showBoseToast("يرجى ملء جميع الحقول المطلوبة قبل الإرسال 🌸");
                     }
                     return;
                 }
 
-                saveLocalReview({
+                const submitBtnEl = document.getElementById("btn-submit-premium-review");
+                const originalSubmitLabel = submitBtnEl.textContent;
+                submitBtnEl.disabled = true;
+                submitBtnEl.textContent = "بيتم الإرسال...";
+
+                const wasSubmitted = await submitReviewToBackend({
                     user: userName,
                     rating: parseInt(rating, 10) || 5,
                     comment: comment,
-                    images: uploadedImagesBase64.slice()
+                    images: uploadedImageUrls.slice()
                 });
+
+                submitBtnEl.disabled = false;
+                submitBtnEl.textContent = originalSubmitLabel;
+
+                if (!wasSubmitted) return;
+
                 renderDynamicProductReviews();
 
                 document.getElementById('bose-review-user-name').value = "";
                 document.getElementById('bose-review-comment').value = "";
                 if (checkedRadio) checkedRadio.checked = false;
                 if (previewContainer) previewContainer.innerHTML = "";
-                uploadedImagesBase64 = [];
+                uploadedImageUrls = [];
                 
                 formWrapper.style.display = 'none';
                 toggleFormBtn.innerHTML = `<i class="fas fa-pen"></i> شاركنا تجربتك وتقييمك الفاخر`;
 
                 if (typeof window.showBoseToast === 'function') {
-                    window.showBoseToast("تم نشر مراجعتك الفاخرة بنجاح، شكراً لكِ 🌸");
+                    window.showBoseToast("تم إرسال مراجعتك بنجاح، هتظهر لباقي الزوار بعد اعتمادها من الإدارة 🌸");
                 }
             });
 
