@@ -203,7 +203,13 @@ function startEngineLogic() {
 
     document.querySelectorAll('input[name="cake_printing"]').forEach(radio => {
         radio.addEventListener('change', evaluateSimulatorState);
+        // 🐛 [إصلاح حرج]: toggleCakePhotoUploadSection كانت معرّفة فوق بس معندهاش
+        // أي استدعاء خالص، فقسم رفع الصورة كان يفضل مخفي دايماً حتى لو العميل
+        // اختار "صورة قابلة/غير قابلة للأكل" - يعني معندوش مكان فعلي يرفع فيه صورته.
+        radio.addEventListener('change', toggleCakePhotoUploadSection);
     });
+    // تشغيل الفحص مرة أولى عند تحميل الصفحة (لو فيه اختيار محفوظ مسبقاً)
+    toggleCakePhotoUploadSection();
 
     function initializeBoseLightboxGallery() {
         const track = document.getElementById('bose-portfolio-lightbox-track');
