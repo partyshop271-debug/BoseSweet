@@ -949,6 +949,34 @@
 
             const toggleFormBtn = document.getElementById("btn-toggle-review-form");
             const formWrapper = document.getElementById("bose-review-form-wrapper");
+
+            // 🛡️ [إصلاح النجوم]: التحديد نفسه (radio) كان شغال وبيتبعت صح مع المراجعة،
+            // بس معندوش أي CSS بيلوّن النجمة دهبي لما العميلة تختارها، فكان شكله وكأنه
+            // "مش شغال" رغم إن القيمة بتتسجل. الحل مستقل هنا في JS عشان يشتغل مضمون
+            // من غير ما يعتمد على أي ملف تنسيق خارجي.
+            const starRatingInputs = Array.from(document.querySelectorAll('input[name="bose-star-rating"]'));
+            function updateStarVisuals(selectedValue) {
+                starRatingInputs.forEach(inp => {
+                    const icon = inp.nextElementSibling ? inp.nextElementSibling.querySelector('i') : null;
+                    if (icon) {
+                        icon.style.color = parseInt(inp.value, 10) <= selectedValue ? 'var(--bose-gold)' : '#ccc';
+                    }
+                });
+            }
+            starRatingInputs.forEach(inp => {
+                inp.addEventListener('change', () => updateStarVisuals(parseInt(inp.value, 10)));
+                // معاينة فورية بالمرور بالماوس على الكمبيوتر (تجربة تفاعلية أفخم)
+                if (inp.nextElementSibling) {
+                    inp.nextElementSibling.addEventListener('mouseenter', () => updateStarVisuals(parseInt(inp.value, 10)));
+                }
+            });
+            const starsContainer = starRatingInputs[0] ? starRatingInputs[0].closest('div') : null;
+            if (starsContainer) {
+                starsContainer.addEventListener('mouseleave', () => {
+                    const checked = document.querySelector('input[name="bose-star-rating"]:checked');
+                    updateStarVisuals(checked ? parseInt(checked.value, 10) : 0);
+                });
+            }
             
             toggleFormBtn.addEventListener("click", () => {
                 if (formWrapper.style.display === "none") {
@@ -1075,6 +1103,7 @@
                 document.getElementById('bose-review-user-name').value = "";
                 document.getElementById('bose-review-comment').value = "";
                 if (checkedRadio) checkedRadio.checked = false;
+                updateStarVisuals(0);
                 if (previewContainer) previewContainer.innerHTML = "";
                 uploadedImageUrls = [];
                 
