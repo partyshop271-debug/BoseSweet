@@ -158,11 +158,19 @@ function startEngineLogic() {
             btnCartSubmit.style.display = "none";
         }
 
-        // 🛡️ حارس إعادة ضبط التمرير لتجربة مستخدم انسيابية ومريحة
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
+        // 🛡️ [إصلاح جذري]: كان بيرجع لأعلى الصفحة كلها (top:0) دايماً بعد "التالي"، من غير
+        // مراعاة لمكان العميل الحالي ولا مكان الخطوة الجديدة، فبيحس إنه اتلخبط ورجعله للهيدر
+        // بدل ما يوديه لبداية الخطوة الجاية بالظبط. دلوقتي بنمرر لبداية حاوية المحاكي نفسها
+        // (بارتفاع الهيدر الثابت مطروح منه) فيوصل بالظبط لأول الخطوة الجديدة مهما كان موقعه.
+        const wizardContainer = document.querySelector('.bose-simulator-layout') || activePanelToShow;
+        if (wizardContainer) {
+            const stickyHeaderOffset = 90; // ارتفاع الهيدر الثابت تقريباً
+            const targetY = wizardContainer.getBoundingClientRect().top + window.scrollY - stickyHeaderOffset;
+            window.scrollTo({
+                top: Math.max(targetY, 0),
+                behavior: 'smooth'
+            });
+        }
     }
 
     btnWizardNext.addEventListener('click', () => {

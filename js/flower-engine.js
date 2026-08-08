@@ -202,6 +202,17 @@
         if (dynamicPricingWidget) {
             dynamicPricingWidget.style.display = "block";
         }
+
+        // 🛡️ [إصلاح جذري]: زرار "التالي" هنا معندوش أي تمرير خالص، فالعميل بيضغط ويفضل واقف
+        // في نفس مكانه من غير ما يشوف بداية الخطوة الجديدة إلا لو نزل بنفسه يدور عليها.
+        // بنمرره الآن لبداية لوحة التحكم (نفس مكان الخطوات) بارتفاع الهيدر الثابت مطروح منه.
+        const activeStepPanel = document.querySelector('.bose-step-card-panel.active');
+        const scrollTarget = activeStepPanel || document.querySelector('.simulator-control-panel');
+        if (scrollTarget) {
+            const stickyHeaderOffset = 90;
+            const targetY = scrollTarget.getBoundingClientRect().top + window.scrollY - stickyHeaderOffset;
+            window.scrollTo({ top: Math.max(targetY, 0), behavior: 'smooth' });
+        }
     }
 
     /**

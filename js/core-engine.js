@@ -140,7 +140,16 @@
         let startX = 0;
         let startPosX = 0;
         let autoScrollActive = true;
+        let autoScrollSpeedCurrent = 0; // 🔧 [إصلاح السلاسة]: بيبدأ من 0 ويتسارع تدريجياً بدل قفزة مفاجئة
         const AUTO_SCROLL_SPEED = 0.45; // بكسل لكل فريم - حركة ناعمة ومريحة للعين
+        // 🔧 [إصلاح جذري - سلاسة اللمس]: كانت الحركة بتتبع إصبع العميل 1:1 بالظبط من غير أي
+        // عطالة (momentum)، فبتحس إنها "تقيلة" وبتقف فجأة لحظة رفع الإصبع بدل ما تكمل بسلاسة
+        // زي أي سلايدر طبيعي. دلوقتي بنتتبع سرعة السحب الفعلية ونكمل بيها لحظة الإفلات
+        // (momentum/inertia) وبنرجع للحركة التلقائية بتسارع تدريجي ناعم بدل قفزة سرعة مفاجئة.
+        let lastMoveX = 0;
+        let lastMoveTime = 0;
+        let velocity = 0; // بكسل/مللي ثانية
+        let momentumActive = false;
 
         const recalcBounds = () => {
             // النص متكرر مرتين، فنص عرض المحتوى هو طول الدورة الكاملة الواحدة
@@ -148,16 +157,38 @@
         };
 
         const applyTransform = () => {
+            if (halfWidth > 0) {
+                // تطبيع الموضع دايماً جوه الدورة عشان يمنع أي قفزة أو فراغ حتى أثناء السحب اليدوي السريع
+                while (posX <= -halfWidth) posX += halfWidth;
+                while (posX > 0) posX -= halfWidth;
+            }
             track.style.transform = `translate3d(${posX}px, 0, 0)`;
+        };
+
+        const runMomentumLoop = () => {
+            if (!momentumActive) return;
+            velocity *= 0.94; // احتكاك ناعم لإيقاف تدريجي طبيعي
+            posX += velocity;
+            applyTransform();
+            if (Math.abs(velocity) < 0.05) {
+                momentumActive = false;
+                setTimeout(() => { autoScrollActive = true; }, 250);
+                return;
+            }
+            requestAnimationFrame(runMomentumLoop);
         };
 
         /** @param {PointerEvent} e */
         const onPointerDown = (e) => {
             isDragging = true;
+            momentumActive = false;
             autoScrollActive = false;
             dragMoved = false;
             startX = e.clientX;
             startPosX = posX;
+            lastMoveX = e.clientX;
+            lastMoveTime = performance.now();
+            velocity = 0;
             track.classList.add('is-dragging');
             if (typeof track.setPointerCapture === 'function') {
                 track.setPointerCapture(e.pointerId);
@@ -171,6 +202,14 @@
             if (Math.abs(delta) > 6) dragMoved = true;
             posX = startPosX + delta;
             applyTransform();
+
+            const now = performance.now();
+            const dt = now - lastMoveTime;
+            if (dt > 0) {
+                velocity = (e.clientX - lastMoveX) / dt * 16.67; // تطبيع لسرعة بكسل/فريم (60fps)
+            }
+            lastMoveX = e.clientX;
+            lastMoveTime = now;
         };
 
         /** @param {PointerEvent} e */
@@ -181,8 +220,14 @@
             if (typeof track.releasePointerCapture === 'function') {
                 track.releasePointerCapture(e.pointerId);
             }
-            // نرجع نفعّل الحركة التلقائية تاني بعد ما العميل يسيب التبويب
-            setTimeout(() => { autoScrollActive = true; }, 900);
+
+            // لو العميل سحب بسرعة ملحوظة، نكمل الحركة بعطالة طبيعية (momentum) بدل ما توقف فجأة
+            if (Math.abs(velocity) > 0.5) {
+                momentumActive = true;
+                requestAnimationFrame(runMomentumLoop);
+            } else {
+                setTimeout(() => { autoScrollActive = true; }, 250);
+            }
 
             if (dragMoved) {
                 /** @param {MouseEvent} clickEvent */
@@ -196,10 +241,12 @@
 
         const runAutoScrollLoop = () => {
             if (autoScrollActive && halfWidth > 0) {
-                posX -= AUTO_SCROLL_SPEED;
-                // لما نوصل لنهاية الدورة الأولى، نرجع بالظبط لبداية الدورة التانية المطابقة تماماً = قفزة غير محسوسة بصرياً
-                if (posX <= -halfWidth) posX += halfWidth;
+                // تسارع تدريجي ناعم بدل قفزة سرعة مفاجئة لحظة الرجوع من السحب اليدوي
+                autoScrollSpeedCurrent += (AUTO_SCROLL_SPEED - autoScrollSpeedCurrent) * 0.08;
+                posX -= autoScrollSpeedCurrent;
                 applyTransform();
+            } else {
+                autoScrollSpeedCurrent = 0;
             }
             requestAnimationFrame(runAutoScrollLoop);
         };
@@ -508,13 +555,37 @@
      */
     function createProductCardHTML(product) {
         if (!product) return '';
-        const calculatedPrice = window.calculateProductFinalPrice(product, {});
         const rawImg = product.images ? product.images[0] : 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png';
         const safeImg = window.optimizeBoseImageUrl(rawImg, 400);
         const safeTitle = window.escapeBoseHTML(product.title);
         const safeFlavor = window.escapeBoseHTML(product.flavorName || '');
         const safeDesc = window.escapeBoseHTML(product.flavorDesc || (product.description ? product.description.substring(0, 80) + '...' : ''));
 
+        // 🛡️ [إصلاح جذري]: أي منتج "رئيسي" مرتبط بمحاكي تفاعلي (تورت مخصص / بوكيه ورد)
+        // معندوش سعر أو تفاصيل ثابتة أصلاً — سعره وتفاصيله بيتحددوا داخل المحاكي فقط.
+        // قبل كده كان الكارت بيوديه لصفحة منتج ثابتة (product.html) بسعر ووصف تقريبي غلط،
+        // وكأنه "تورتة جاهزة" منفصلة عن المحاكي. دلوقتي بيوديه للمحاكي مباشرة وبس، ومفيش
+        // زرار "إضافة للسلة" مباشر أو عداد كمية لأنه مش منطقي هنا خالص.
+        const isBuilderMaster = !!product.customBuilderUrl && product.builderType && product.builderType !== 'standard';
+
+        if (isBuilderMaster) {
+            return `
+                <div class="product-card-unified bose-builder-master-card" data-id="${product.id}" onclick="window.location.href='${product.customBuilderUrl}';" style="cursor:pointer;">
+                    <img src="${safeImg}" alt="${safeTitle}" class="product-card-img" width="300" height="300" loading="lazy" />
+                    <h3 class="product-card-title">${safeTitle}</h3>
+                    <span class="product-card-flavor-name">${safeFlavor}</span>
+                    <p class="product-card-desc">${safeDesc}</p>
+                    <div class="product-card-price">
+                        <span>أسعار تبدأ من ${Math.round(product.basePrice || product.price || 0)} جنيه</span>
+                    </div>
+                    <button class="btn-add-to-cart" onclick="event.stopPropagation(); window.location.href='${product.customBuilderUrl}';">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> ابدأ التصميم الآن
+                    </button>
+                </div>
+            `;
+        }
+
+        const calculatedPrice = window.calculateProductFinalPrice(product, {});
         const hasDiscount = !!(product.oldPrice && product.oldPrice > product.price);
         let discountBadgeHtml = '';
         let oldPriceHtml = '';
