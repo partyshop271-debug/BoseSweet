@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الواجهة الرئيسية | لوحة تحكم حلويات بوسي</title>
+    <meta name="robots" content="noindex, nofollow">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="css/admin-theme.css">
+    <link rel="stylesheet" href="css/admin-layout.css">
+</head>
+<body data-page="homepage">
+
+    <!-- شاشة تحميل تظهر لحد ما يتأكد من الجلسة -->
+    <div class="adm-auth-gate"><div class="adm-loading-spinner"></div></div>
+
+    <div class="adm-shell">
+        <div id="adm-shell-target"></div>
+
+        <main class="adm-main">
+            <div id="adm-topbar-target"></div>
+
+            <div class="adm-content" id="adm-page-content">
+
+                <div class="adm-card">
+                    <div class="adm-homepage-save-bar">
+                        <div>
+                            <h2>الواجهة الرئيسية</h2>
+                            <p>القوائم دي بتتحدّث على الموقع فور الحفظ. سلايدر الفئات بيتحدّث تلقائياً من صفحة الفئات.</p>
+                        </div>
+                        <button class="adm-btn adm-btn-primary" id="homepage-save-btn">
+                            <i class="fa-solid fa-floppy-disk"></i> حفظ كل التغييرات
+                        </button>
+                    </div>
+                </div>
+
+                <div id="homepage-loading" class="adm-card adm-mt-16"><div class="adm-loading-spinner"></div></div>
+
+                <div id="homepage-content" style="display: none;">
+
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header">
+                            <div><h2>الأكثر مبيعاً</h2><p>المنتجات اللي بتظهر في قسم "الأكثر مبيعاً" بالصفحة الرئيسية</p></div>
+                        </div>
+                        <div class="adm-curated-list" id="list-most-selling"></div>
+                        <div class="adm-curated-add-row">
+                            <select class="adm-select" id="select-most-selling"></select>
+                        </div>
+                    </div>
+
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header">
+                            <div><h2>وصل حديثاً</h2><p>المنتجات الجديدة اللي بتتعرض في قسم "وصل حديثاً"</p></div>
+                        </div>
+                        <div class="adm-curated-list" id="list-new-arrivals"></div>
+                        <div class="adm-curated-add-row">
+                            <select class="adm-select" id="select-new-arrivals"></select>
+                        </div>
+                    </div>
+
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header">
+                            <div><h2>منتجاتنا</h2><p>قسم "منتجاتنا" العام بالصفحة الرئيسية</p></div>
+                        </div>
+                        <div class="adm-curated-list" id="list-our-products"></div>
+                        <div class="adm-curated-add-row">
+                            <select class="adm-select" id="select-our-products"></select>
+                        </div>
+                    </div>
+
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header">
+                            <div><h2>بانر محاكي التورت</h2><p>الكارت اللي بيوجّه العميل لمحاكي التورت</p></div>
+                        </div>
+                        <div class="adm-form-grid">
+                            <div class="adm-field">
+                                <label for="cake-title">العنوان</label>
+                                <input type="text" class="adm-input" id="cake-title">
+                            </div>
+                            <div class="adm-field">
+                                <label for="cake-cta">نص الزرار</label>
+                                <input type="text" class="adm-input" id="cake-cta">
+                            </div>
+                        </div>
+                        <div class="adm-field">
+                            <label for="cake-description">الوصف</label>
+                            <textarea class="adm-textarea" id="cake-description"></textarea>
+                        </div>
+                        <div class="adm-field">
+                            <label for="cake-target">رابط الوجهة (target)</label>
+                            <input type="text" class="adm-input" id="cake-target" placeholder="cake-builder.html">
+                        </div>
+                        <div class="adm-field">
+                            <label>الصورة</label>
+                            <div class="adm-images-grid">
+                                <div class="adm-image-thumb-wrap">
+                                    <img id="cake-image-preview" alt="" style="display:none;">
+                                </div>
+                            </div>
+                            <label class="adm-image-upload-btn" for="cake-image-input">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                                <span id="cake-upload-label">استبدال الصورة</span>
+                            </label>
+                            <input type="file" id="cake-image-input" accept="image/*" hidden>
+                        </div>
+                    </div>
+
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header">
+                            <div><h2>بانر محاكي الورد</h2><p>الكارت اللي بيوجّه العميل لمحاكي الورد</p></div>
+                        </div>
+                        <div class="adm-form-grid">
+                            <div class="adm-field">
+                                <label for="flower-title">العنوان</label>
+                                <input type="text" class="adm-input" id="flower-title">
+                            </div>
+                            <div class="adm-field">
+                                <label for="flower-cta">نص الزرار</label>
+                                <input type="text" class="adm-input" id="flower-cta">
+                            </div>
+                        </div>
+                        <div class="adm-field">
+                            <label for="flower-description">الوصف</label>
+                            <textarea class="adm-textarea" id="flower-description"></textarea>
+                        </div>
+                        <div class="adm-field">
+                            <label for="flower-target">رابط الوجهة (target)</label>
+                            <input type="text" class="adm-input" id="flower-target" placeholder="flower-builder.html">
+                        </div>
+                        <div class="adm-field">
+                            <label>الصورة</label>
+                            <div class="adm-images-grid">
+                                <div class="adm-image-thumb-wrap">
+                                    <img id="flower-image-preview" alt="" style="display:none;">
+                                </div>
+                            </div>
+                            <label class="adm-image-upload-btn" for="flower-image-input">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                                <span id="flower-upload-label">استبدال الصورة</span>
+                            </label>
+                            <input type="file" id="flower-image-input" accept="image/*" hidden>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/admin-data.js"></script>
+    <script src="js/admin-auth-guard.js"></script>
+    <script src="js/admin-ui-utils.js"></script>
+    <script src="js/admin-shell.js"></script>
+    <script src="js/pages/homepage-page.js"></script>
+</body>
+</html>
