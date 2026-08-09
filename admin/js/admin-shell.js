@@ -33,7 +33,8 @@
             items: [
                 { key: "homepage", label: "الواجهة الرئيسية", icon: "fa-house", href: "homepage.html" },
                 { key: "categories", label: "الفئات", icon: "fa-layer-group", href: "categories.html" },
-                { key: "promotions", label: "العروض", icon: "fa-tags", href: "promotions.html" },
+                { key: "offers", label: "عروض المنتجات", icon: "fa-percent", href: "offers.html" },
+                { key: "promotions", label: "بانرات العروض", icon: "fa-tags", href: "promotions.html" },
             ],
         },
         {
@@ -54,7 +55,8 @@
         products: ["المنتجات", "إضافة وتعديل منتجات المتجر"],
         homepage: ["الواجهة الرئيسية", "التحكم في محتوى الصفحة الرئيسية للموقع"],
         categories: ["الفئات", "إدارة فئات المنتجات"],
-        promotions: ["العروض", "إدارة العروض والخصومات الظاهرة للعملاء"],
+        offers: ["عروض المنتجات", "تمييز منتجات موجودة كعليها عرض/خصم في الموقع"],
+        promotions: ["بانرات العروض", "إدارة بانرات وكروت العروض التسويقية الظاهرة للعملاء"],
         coupons: ["الكوبونات", "إنشاء وإدارة أكواد الخصم"],
         reviews: ["التقييمات", "اعتماد أو رفض تقييمات العملاء"],
         "shipping-zones": ["مناطق التوصيل", "إدارة المناطق ورسوم الشحن"],

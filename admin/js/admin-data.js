@@ -237,6 +237,48 @@
         if (error) throw error;
     }
 
+    /* ============================= العروض المميزة (صفحة offers.html) ============================= */
+    /**
+     * جدول offers منفصل تماماً عن store_settings.promotions: كل صف هنا هو
+     * ربط حقيقي (product_id FK) لمنتج موجود بالفعل في جدول products، مش
+     * كائن مستقل مكرر ببيانات خاصة بيه. الهدف: عرض "هذا المنتج عليه عرض"
+     * بدون تكرار المنتج كسطر منفصل بسعر مختلف في صفحة الفئة (المشكلة
+     * اللي كانت موجودة قبل كده في category.html على الموقع العام).
+     */
+
+    /** كل العروض مع بيانات المنتج المرتبط بيها (العنوان/الصورة/السعر/السعر القديم) */
+    async function getAllOffers() {
+        try {
+            const { data, error } = await client
+                .from("offers")
+                .select("*, products(id, title, images, price, old_price)")
+                .order("sort_order", { ascending: true });
+            if (error) throw error;
+            return data || [];
+        } catch (e) {
+            console.warn("تعذر جلب العروض:", e.message);
+            return [];
+        }
+    }
+
+    /** إضافة عرض جديد بربط منتج موجود (product_id لازم يكون id منتج حقيقي في جدول products) */
+    async function createOffer(offer) {
+        const { error } = await client.from("offers").insert(offer);
+        if (error) throw error;
+    }
+
+    /** تعديل ترتيب/منتج عرض موجود */
+    async function updateOffer(id, updates) {
+        const { error } = await client.from("offers").update(updates).eq("id", id);
+        if (error) throw error;
+    }
+
+    /** إزالة عرض (بيشيل الربط بس، مش بيحذف المنتج نفسه من products) */
+    async function deleteOffer(id) {
+        const { error } = await client.from("offers").delete().eq("id", id);
+        if (error) throw error;
+    }
+
     /* ============================= المنتجات والفئات (صفحة products.html) ============================= */
 
     /** كل الفئات مرتبة زي ما بتتعرض في الموقع */
@@ -305,6 +347,134 @@
         if (error) throw error;
     }
 
+    /* ============================= الكوبونات (صفحة coupons.html) ============================= */
+    /**
+     * المفتاح الأساسي هنا هو code نفسه (نص فريد)، مش id منفصل - نفس شكل
+     * جدول coupons في القاعدة. أي إنشاء بكود مستخدم قبل كده هيترفض من
+     * القاعدة (unique constraint على code) قبل ما يوصل لأي مكان تاني.
+     */
+
+    /** كل الكوبونات مرتبة أبجدياً */
+    async function getAllCoupons() {
+        try {
+            const { data, error } = await client
+                .from("coupons")
+                .select("*")
+                .order("code", { ascending: true });
+            if (error) throw error;
+            return data || [];
+        } catch (e) {
+            console.warn("تعذر جلب الكوبونات:", e.message);
+            return [];
+        }
+    }
+
+    /** إضافة كوبون جديد. coupon.code لازم يكون فريد */
+    async function createCoupon(coupon) {
+        const { error } = await client.from("coupons").insert(coupon);
+        if (error) throw error;
+    }
+
+    /** تعديل كوبون موجود (بالكود - الكود نفسه مينفعش يتغيّر بعد الإنشاء) */
+    async function updateCoupon(code, updates) {
+        const { error } = await client.from("coupons").update(updates).eq("code", code);
+        if (error) throw error;
+    }
+
+    /** حذف كوبون نهائياً */
+    async function deleteCoupon(code) {
+        const { error } = await client.from("coupons").delete().eq("code", code);
+        if (error) throw error;
+    }
+
+    /* ============================= التقييمات (صفحة reviews.html) ============================= */
+    /**
+     * كل تقييم بيدخل القاعدة بـ is_approved = false تلقائياً (من submitBoseReview
+     * في الموقع العام) ومش بيظهر للعملاء إلا بعد اعتماد صريح من هنا. مفيش حالة
+     * "مرفوض" منفصلة في القاعدة - الرفض هنا معناه حذف نهائي للتقييم.
+     */
+
+    /**
+     * كل التقييمات مع اسم المنتج المرتبط بيها.
+     * @param {{approved?: boolean}} filters - approved: true (معتمدة فقط) / false (قيد المراجعة فقط) / بدونها (الكل)
+     */
+    async function getAllReviews(filters = {}) {
+        try {
+            let query = client
+                .from("reviews")
+                .select("*, products(title)")
+                .order("created_at", { ascending: false });
+
+            if (filters.approved === true) query = query.eq("is_approved", true);
+            if (filters.approved === false) query = query.eq("is_approved", false);
+
+            const { data, error } = await query;
+            if (error) throw error;
+            return data || [];
+        } catch (e) {
+            console.warn("تعذر جلب التقييمات:", e.message);
+            return [];
+        }
+    }
+
+    /** اعتماد تقييم - يظهر فوراً للعملاء في صفحة المنتج */
+    async function approveReview(id) {
+        const { error } = await client.from("reviews").update({ is_approved: true }).eq("id", id);
+        if (error) throw error;
+    }
+
+    /** التراجع عن اعتماد تقييم معتمد بالفعل - يختفي من الموقع العام فوراً */
+    async function unapproveReview(id) {
+        const { error } = await client.from("reviews").update({ is_approved: false }).eq("id", id);
+        if (error) throw error;
+    }
+
+    /** حذف تقييم نهائياً (رفض) */
+    async function deleteReview(id) {
+        const { error } = await client.from("reviews").delete().eq("id", id);
+        if (error) throw error;
+    }
+
+    /* ============================= مناطق التوصيل (صفحة shipping-zones.html) ============================= */
+    /**
+     * كل صف هنا هو منطقة توصيل بسعرها الثابت. shipping_zone_id في جدول orders
+     * بيشاور على id هنا مباشرة - فحذف منطقة مرتبطة بطلبات سابقة هيترفض من
+     * القاعدة (foreign key) بدل ما يكسر سجل الطلبات القديمة.
+     */
+
+    /** كل مناطق التوصيل */
+    async function getAllShippingZones() {
+        try {
+            const { data, error } = await client
+                .from("shipping_zones")
+                .select("*")
+                .order("governorate", { ascending: true });
+            if (error) throw error;
+            return data || [];
+        } catch (e) {
+            console.warn("تعذر جلب مناطق التوصيل:", e.message);
+            return [];
+        }
+    }
+
+    /** إضافة منطقة توصيل جديدة. zone.id لازم يكون فريد (نص إنجليزي، زي: cairo-nasr-city) */
+    async function createShippingZone(zone) {
+        const { error } = await client.from("shipping_zones").insert(zone);
+        if (error) throw error;
+    }
+
+    /** تعديل منطقة توصيل موجودة */
+    async function updateShippingZone(id, updates) {
+        const { error } = await client.from("shipping_zones").update(updates).eq("id", id);
+        if (error) throw error;
+    }
+
+    /** حذف منطقة توصيل - هيفشل لو فيه طلبات سابقة مرتبطة بيها (foreign key) */
+    async function deleteShippingZone(id) {
+        const { error } = await client.from("shipping_zones").delete().eq("id", id);
+        if (error) throw error;
+    }
+
     // تصدير موحّد على window بنفس فلسفة الموقع العام (window.BoseSupabase)
     window.BoseAdmin = {
         client,
@@ -321,6 +491,10 @@
         createCategory,
         updateCategory,
         deleteCategory,
+        getAllOffers,
+        createOffer,
+        updateOffer,
+        deleteOffer,
         getAllProducts,
         createProduct,
         updateProduct,
@@ -329,5 +503,17 @@
         updateHomepageSettings,
         getPromotions,
         savePromotions,
+        getAllCoupons,
+        createCoupon,
+        updateCoupon,
+        deleteCoupon,
+        getAllReviews,
+        approveReview,
+        unapproveReview,
+        deleteReview,
+        getAllShippingZones,
+        createShippingZone,
+        updateShippingZone,
+        deleteShippingZone,
     };
 })();
