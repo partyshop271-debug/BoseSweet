@@ -561,6 +561,157 @@ html:not(.adm-ready) .adm-shell { display: none; }
 }
 html.adm-ready .adm-auth-gate { display: none; }
 
+/* =========================== صفحة الطلبات =========================== */
+
+.adm-orders-filters {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.adm-orders-search { min-width: 240px; width: auto; }
+.adm-orders-status-filter { width: auto; min-width: 150px; }
+
+.adm-clickable-row { cursor: pointer; }
+
+.adm-order-detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 18px;
+    padding: 16px;
+    background: var(--adm-bg-surface);
+    border: 1px solid var(--adm-border-soft);
+    border-radius: var(--adm-radius-md);
+}
+
+.adm-order-detail-grid > div { display: flex; flex-direction: column; gap: 4px; }
+.adm-order-detail-grid span { font-size: 0.74rem; color: var(--adm-text-muted); }
+.adm-order-detail-grid strong { font-size: 0.88rem; color: var(--adm-text-primary); font-weight: 700; }
+.adm-order-detail-full { grid-column: 1 / -1; }
+
+.adm-order-items-list {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.adm-order-item-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: var(--adm-bg-input);
+    border-radius: var(--adm-radius-sm);
+    font-size: 0.85rem;
+}
+
+.adm-order-item-meta {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--adm-text-muted);
+    margin-top: 2px;
+}
+
+.adm-order-totals {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid var(--adm-border-soft);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 0.85rem;
+}
+
+.adm-order-totals > div { display: flex; justify-content: space-between; color: var(--adm-text-secondary); }
+.adm-order-grand-total { font-size: 1rem; font-weight: 700; color: var(--adm-text-primary) !important; }
+.adm-order-grand-total span { color: var(--adm-text-primary) !important; }
+
+/* =========================== صفحة المنتجات =========================== */
+
+.adm-products-filters {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.adm-products-search { min-width: 200px; width: auto; }
+.adm-products-category-filter { width: auto; min-width: 150px; }
+
+.adm-table-actions {
+    display: flex;
+    gap: 6px;
+    justify-content: flex-end;
+}
+
+.adm-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: var(--adm-text-primary);
+    font-weight: 600;
+    margin-top: 26px;
+}
+
+.adm-checkbox-label input { width: 16px; height: 16px; accent-color: var(--adm-pink); cursor: pointer; }
+
+.adm-images-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.adm-image-thumb-wrap {
+    position: relative;
+    width: 72px;
+    height: 72px;
+}
+
+.adm-image-thumb-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: var(--adm-radius-sm);
+    border: 1px solid var(--adm-border-soft);
+}
+
+.adm-image-remove-btn {
+    position: absolute;
+    top: -6px;
+    left: -6px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--adm-danger);
+    color: #fff;
+    border: none;
+    font-size: 0.6rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.adm-image-upload-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 16px;
+    border: 1px dashed var(--adm-border);
+    border-radius: var(--adm-radius-sm);
+    color: var(--adm-text-secondary);
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--adm-transition);
+}
+
+.adm-image-upload-btn:hover { border-color: var(--adm-pink); color: var(--adm-pink); }
+
 /* =========================== الموبايل =========================== */
 
 .adm-mobile-topbar-toggle { display: none; }
@@ -586,4 +737,9 @@ html.adm-ready .adm-auth-gate { display: none; }
     }
     .adm-content { padding: 18px 16px 50px 16px; }
     .adm-topbar { padding: 0 16px; }
-  }
+    .adm-order-detail-grid { grid-template-columns: 1fr; }
+    .adm-orders-filters { width: 100%; }
+    .adm-orders-search, .adm-orders-status-filter { width: 100%; min-width: 0; }
+    .adm-products-filters { width: 100%; }
+    .adm-products-search, .adm-products-category-filter, #add-product-btn { width: 100%; min-width: 0; }
+}
