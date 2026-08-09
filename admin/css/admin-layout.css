@@ -712,6 +712,51 @@ html.adm-ready .adm-auth-gate { display: none; }
 
 .adm-image-upload-btn:hover { border-color: var(--adm-pink); color: var(--adm-pink); }
 
+/* =========================== الصفحة الرئيسية (المحرر) =========================== */
+
+.adm-curated-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.adm-curated-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    background: var(--adm-bg-input);
+    border-radius: var(--adm-radius-sm);
+    font-size: 0.85rem;
+}
+
+.adm-curated-item-thumb {
+    width: 36px; height: 36px;
+    border-radius: var(--adm-radius-sm);
+    object-fit: cover;
+    background: var(--adm-bg-hover);
+    flex-shrink: 0;
+}
+
+.adm-curated-item-title { flex: 1; font-weight: 600; color: var(--adm-text-primary); }
+.adm-curated-item-actions { display: flex; gap: 4px; }
+
+.adm-curated-add-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+.adm-curated-add-row .adm-select { flex: 1; }
+
+.adm-homepage-save-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
 /* =========================== الموبايل =========================== */
 
 .adm-mobile-topbar-toggle { display: none; }
