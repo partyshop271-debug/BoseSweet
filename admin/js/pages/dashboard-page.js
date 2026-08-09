@@ -15,6 +15,7 @@
 
     function statusBadge(status) {
         const meta = STATUS_LABELS[status] || { label: status || "غير محدد", cls: "neutral" };
+        // meta.label دايماً نص ثابت من القائمة فوق، مش محتاج escape - آمن.
         return `<span class="adm-badge ${meta.cls}">${meta.label}</span>`;
     }
 
@@ -53,10 +54,14 @@
             })}</td></tr>`;
             return;
         }
+        // ⚠️ order_number و customer_name جايين من فورم الشيك أوت العام (أي زبون بيملاها)
+        // لازم يتعقّموا بـ escapeHtml قبل innerHTML عشان محدش يقدر يحقن HTML/JS
+        // عن طريق اسمه في الطلب (stored XSS في لوحة الإدارة).
+        const esc = window.BoseAdminUI.escapeHtml;
         tbody.innerHTML = orders.map((o) => `
             <tr>
-                <td>#${o.order_number || o.id}</td>
-                <td>${o.customer_name || "—"}</td>
+                <td>#${esc(o.order_number || o.id)}</td>
+                <td>${esc(o.customer_name || "—")}</td>
                 <td>${o.grand_total ? Math.round(o.grand_total) + " ج.م" : "—"}</td>
                 <td>${statusBadge(o.status)}</td>
                 <td>${formatDate(o.created_at)}</td>
