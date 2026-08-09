@@ -100,6 +100,34 @@
         });
     }
 
+    /* ============================= حالات الطلب ============================= */
+
+    /**
+     * مصدر واحد لكل حالات الطلب (التسمية العربية + لون الشارة). أي صفحة
+     * محتاجة تعرض أو تفلتر بحالة الطلب (الداشبورد، صفحة الطلبات، وأي
+     * صفحة تانية بعدين) تستخدم من هنا بدل ما تعيد كتابة القائمة دي -
+     * كده لو ضفنا حالة جديدة أو غيّرنا تسمية، بتتغير في مكان واحد بس
+     * ومفيش احتمال إن صفحة تتحدث وصفحة تتنسى فيحصل تعارض في العرض.
+     */
+    const ORDER_STATUSES = [
+        { key: "pending", label: "قيد المراجعة", cls: "warning" },
+        { key: "confirmed", label: "مؤكد", cls: "info" },
+        { key: "preparing", label: "قيد التحضير", cls: "info" },
+        { key: "out_for_delivery", label: "في الطريق", cls: "info" },
+        { key: "delivered", label: "تم التسليم", cls: "success" },
+        { key: "cancelled", label: "ملغي", cls: "danger" },
+    ];
+
+    function orderStatusMeta(status) {
+        return ORDER_STATUSES.find((s) => s.key === status) || { key: status, label: status || "غير محدد", cls: "neutral" };
+    }
+
+    /** شارة حالة الطلب الجاهزة للعرض - status دايماً من القائمة الثابتة فوق، مش محتاج escape */
+    function orderStatusBadgeHTML(status) {
+        const meta = orderStatusMeta(status);
+        return `<span class="adm-badge ${meta.cls}">${meta.label}</span>`;
+    }
+
     /* ============================= مؤشر التحميل ============================= */
 
     function loadingSpinnerHTML() {
@@ -121,5 +149,8 @@
         confirmAction,
         loadingSpinnerHTML,
         emptyStateHTML,
+        ORDER_STATUSES,
+        orderStatusMeta,
+        orderStatusBadgeHTML,
     };
-})();
+})();ctiveOffers
