@@ -100,6 +100,28 @@
         });
     }
 
+    /* ============================= رفع الصور (Cloudinary) ============================= */
+
+    /**
+     * مصدر واحد لإعدادات ورفع الصور على Cloudinary. أي صفحة محتاجة ترفع صورة
+     * (منتجات، فئات، بانرات الصفحة الرئيسية...) تستخدم من هنا بدل ما تكرر
+     * الـ cloud name والـ upload preset في كل ملف صفحة لوحده.
+     */
+    const CLOUDINARY_CLOUD_NAME = "dyx4w0dr1";
+    const CLOUDINARY_UPLOAD_PRESET = "gct8i28h";
+    const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
+
+    async function uploadImageToCloudinary(file) {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+
+        const res = await fetch(CLOUDINARY_UPLOAD_URL, { method: "POST", body: formData });
+        if (!res.ok) throw new Error("فشل رفع الصورة");
+        const data = await res.json();
+        return data.secure_url;
+    }
+
     /* ============================= حالات الطلب ============================= */
 
     /**
@@ -152,5 +174,6 @@
         ORDER_STATUSES,
         orderStatusMeta,
         orderStatusBadgeHTML,
+        uploadImageToCloudinary,
     };
-})();ctiveOffers
+})();

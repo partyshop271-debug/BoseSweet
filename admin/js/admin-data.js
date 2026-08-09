@@ -181,6 +181,62 @@
         if (error) throw error;
     }
 
+    /* ============================= إعدادات المتجر (الصفحة الرئيسية) ============================= */
+
+    /** يرجّع كائن homepage بس من صف store_settings الوحيد (id=1) */
+    async function getHomepageSettings() {
+        try {
+            const { data, error } = await client
+                .from("store_settings")
+                .select("homepage")
+                .eq("id", 1)
+                .maybeSingle();
+            if (error) throw error;
+            return (data && data.homepage) || {};
+        } catch (e) {
+            console.warn("تعذر جلب إعدادات الصفحة الرئيسية:", e.message);
+            return {};
+        }
+    }
+
+    /**
+     * بتستبدل عمود homepage بالكامل بالكائن الممرر - الصفحة اللي بتنادي الدالة دي
+     * مسؤولة إنها تجيب القيم الحالية الأول وتعدّل عليها (مش تبعت كائن جزئي)
+     * عشان الحقول اللي الصفحة مش بتعدّل عليها (زي hero و pride) متتمسحش.
+     */
+    async function updateHomepageSettings(homepage) {
+        const { error } = await client
+            .from("store_settings")
+            .update({ homepage, updated_at: new Date().toISOString() })
+            .eq("id", 1);
+        if (error) throw error;
+    }
+
+    /** يرجّع مصفوفة العروض (promotions) من صف store_settings الوحيد */
+    async function getPromotions() {
+        try {
+            const { data, error } = await client
+                .from("store_settings")
+                .select("promotions")
+                .eq("id", 1)
+                .maybeSingle();
+            if (error) throw error;
+            return (data && data.promotions) || [];
+        } catch (e) {
+            console.warn("تعذر جلب العروض:", e.message);
+            return [];
+        }
+    }
+
+    /** بتستبدل مصفوفة العروض بالكامل - الصفحة اللي بتنادي الدالة دي بتبعت المصفوفة كاملة بعد التعديل */
+    async function savePromotions(promotions) {
+        const { error } = await client
+            .from("store_settings")
+            .update({ promotions, updated_at: new Date().toISOString() })
+            .eq("id", 1);
+        if (error) throw error;
+    }
+
     /* ============================= المنتجات والفئات (صفحة products.html) ============================= */
 
     /** كل الفئات مرتبة زي ما بتتعرض في الموقع */
@@ -196,6 +252,24 @@
             console.warn("تعذر جلب الفئات:", e.message);
             return [];
         }
+    }
+
+    /** إضافة فئة جديدة. category.id لازم يكون فريد (نص إنجليزي، زي: taswaq-cupcake) */
+    async function createCategory(category) {
+        const { error } = await client.from("categories").insert(category);
+        if (error) throw error;
+    }
+
+    /** تعديل فئة موجودة */
+    async function updateCategory(id, updates) {
+        const { error } = await client.from("categories").update(updates).eq("id", id);
+        if (error) throw error;
+    }
+
+    /** حذف فئة نهائياً - هيفشل لو فيه منتجات لسه مرتبطة بيها (foreign key) */
+    async function deleteCategory(id) {
+        const { error } = await client.from("categories").delete().eq("id", id);
+        if (error) throw error;
     }
 
     /** كل المنتجات مع اسم الفئة بتاعتها */
@@ -244,9 +318,16 @@
         getAllOrders,
         updateOrderStatus,
         getAllCategories,
+        createCategory,
+        updateCategory,
+        deleteCategory,
         getAllProducts,
         createProduct,
         updateProduct,
         deleteProduct,
+        getHomepageSettings,
+        updateHomepageSettings,
+        getPromotions,
+        savePromotions,
     };
 })();
