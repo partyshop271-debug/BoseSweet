@@ -9,25 +9,8 @@
 (function () {
     "use strict";
 
-    const CLOUDINARY_CLOUD_NAME = "dyx4w0dr1";
-    const CLOUDINARY_UPLOAD_PRESET = "gct8i28h";
-    const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
-
     let allProducts = [];
     let allCategories = [];
-
-    /* ============================= رفع الصور على Cloudinary ============================= */
-
-    async function uploadImageToCloudinary(file) {
-        const formData = new FormData();
-        formData.append("file", file);
-        formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
-
-        const res = await fetch(CLOUDINARY_UPLOAD_URL, { method: "POST", body: formData });
-        if (!res.ok) throw new Error("فشل رفع الصورة");
-        const data = await res.json();
-        return data.secure_url;
-    }
 
     /* ============================= الجدول ============================= */
 
@@ -250,7 +233,7 @@
             label.textContent = "جاري الرفع...";
             try {
                 for (const file of files) {
-                    const url = await uploadImageToCloudinary(file);
+                    const url = await window.BoseAdminUI.uploadImageToCloudinary(file);
                     images.push(url);
                 }
                 refreshImagesGrid();
