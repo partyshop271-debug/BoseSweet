@@ -21,7 +21,7 @@
     (async function redirectIfAlreadyLoggedIn() {
         if (!window.BoseAdmin) return;
         const adminInfo = await window.BoseAdmin.verifyIsAdmin();
-        if (adminInfo) window.location.href = "index.html";
+        if (adminInfo) window.location.href = "/admin/index.html";
     })();
 
     form.addEventListener("submit", async (e) => {
@@ -45,7 +45,7 @@
                 return;
             }
 
-            window.location.href = "index.html";
+            window.location.href = "/admin/index.html";
         } catch (err) {
             showError("البريد الإلكتروني أو كلمة المرور غير صحيحة.");
         } finally {
