@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المنتجات | لوحة تحكم حلويات بوسي</title>
+    <meta name="robots" content="noindex, nofollow">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="css/admin-theme.css">
+    <link rel="stylesheet" href="css/admin-layout.css">
+</head>
+<body data-page="products">
+
+    <!-- شاشة تحميل تظهر لحد ما يتأكد من الجلسة -->
+    <div class="adm-auth-gate"><div class="adm-loading-spinner"></div></div>
+
+    <div class="adm-shell">
+        <div id="adm-shell-target"></div>
+
+        <main class="adm-main">
+            <div id="adm-topbar-target"></div>
+
+            <div class="adm-content" id="adm-page-content">
+
+                <div class="adm-card">
+                    <div class="adm-card-header">
+                        <div>
+                            <h2>كل المنتجات</h2>
+                            <p>إضافة وتعديل وحذف منتجات المتجر</p>
+                        </div>
+                        <div class="adm-products-filters">
+                            <input type="text" class="adm-input adm-products-search" id="products-search-input"
+                                   placeholder="بحث بالاسم...">
+                            <select class="adm-select adm-products-category-filter" id="products-category-filter">
+                                <option value="">كل الفئات</option>
+                            </select>
+                            <button class="adm-btn adm-btn-primary" id="add-product-btn">
+                                <i class="fa-solid fa-plus"></i> منتج جديد
+                            </button>
+                        </div>
+                    </div>
+                    <div class="adm-table-wrapper">
+                        <table class="adm-table" id="products-table">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>الاسم</th>
+                                    <th>الفئة</th>
+                                    <th>السعر</th>
+                                    <th>السعر القديم</th>
+                                    <th>مميز</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="products-tbody">
+                                <tr><td colspan="7"><div class="adm-loading-spinner"></div></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/admin-data.js"></script>
+    <script src="js/admin-auth-guard.js"></script>
+    <script src="js/admin-ui-utils.js"></script>
+    <script src="js/admin-shell.js"></script>
+    <script src="js/pages/products-page.js"></script>
+</body>
+</html>
