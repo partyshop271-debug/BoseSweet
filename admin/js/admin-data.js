@@ -130,6 +130,94 @@
         }
     }
 
+    /* ============================= الطلبات (صفحة orders.html) ============================= */
+
+    /**
+     * كل الطلبات مع عناصرها (order_items)، الأحدث أولاً.
+     * @param {{status?: string, search?: string}} filters - status: فلترة بحالة معينة، search: بحث في رقم الطلب/اسم العميل/التليفون
+     */
+    async function getAllOrders(filters = {}) {
+        try {
+            let query = client
+                .from("orders")
+                .select("*, order_items(*)")
+                .order("created_at", { ascending: false });
+
+            if (filters.status) {
+                query = query.eq("status", filters.status);
+            }
+            if (filters.search && filters.search.trim()) {
+                const s = filters.search.trim();
+                query = query.or(
+                    `order_number.ilike.%${s}%,customer_name.ilike.%${s}%,phone1.ilike.%${s}%,phone2.ilike.%${s}%`
+                );
+            }
+
+            const { data, error } = await query;
+            if (error) throw error;
+            return data || [];
+        } catch (e) {
+            console.warn("تعذر جلب الطلبات:", e.message);
+            return [];
+        }
+    }
+
+    /** تحديث حالة طلب واحد (pending/confirmed/preparing/out_for_delivery/delivered/cancelled) */
+    async function updateOrderStatus(orderId, newStatus) {
+        const { error } = await client.from("orders").update({ status: newStatus }).eq("id", orderId);
+        if (error) throw error;
+    }
+
+    /* ============================= المنتجات والفئات (صفحة products.html) ============================= */
+
+    /** كل الفئات مرتبة زي ما بتتعرض في الموقع */
+    async function getAllCategories() {
+        try {
+            const { data, error } = await client
+                .from("categories")
+                .select("*")
+                .order("sort_order", { ascending: true });
+            if (error) throw error;
+            return data || [];
+        } catch (e) {
+            console.warn("تعذر جلب الفئات:", e.message);
+            return [];
+        }
+    }
+
+    /** كل المنتجات مع اسم الفئة بتاعتها */
+    async function getAllProducts() {
+        try {
+            const { data, error } = await client
+                .from("products")
+                .select("*, categories(title)")
+                .order("sort_order", { ascending: true });
+            if (error) throw error;
+            return data || [];
+        } catch (e) {
+            console.warn("تعذر جلب المنتجات:", e.message);
+            return [];
+        }
+    }
+
+    /** إضافة منتج جديد. product.id لازم يكون فريد (نص إنجليزي، زي: gateaux-royal) */
+    async function createProduct(product) {
+        const { error } = await client.from("products").insert(product);
+        if (error) throw error;
+    }
+
+    /** تعديل منتج موجود */
+    async function updateProduct(id, updates) {
+        const { error } = await client.from("products").update(updates).eq("id", id);
+        if (error) throw error;
+    }
+
+    /** حذف منتج نهائياً */
+    async function deleteProduct(id) {
+        const { error } = await client.from("products").delete().eq("id", id);
+        if (error) throw error;
+    }
+
     // تصدير موحّد على window بنفس فلسفة الموقع العام (window.BoseSupabase)
     window.BoseAdmin = {
         client,
@@ -140,5 +228,12 @@
         onAuthStateChange,
         getDashboardSummary,
         getRecentOrders,
+        getAllOrders,
+        updateOrderStatus,
+        getAllCategories,
+        getAllProducts,
+        createProduct,
+        updateProduct,
+        deleteProduct,
     };
 })();
