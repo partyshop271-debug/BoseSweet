@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بيانات المتجر | لوحة تحكم حلويات بوسي</title>
+    <meta name="robots" content="noindex, nofollow">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="css/admin-theme.css">
+    <link rel="stylesheet" href="css/admin-layout.css">
+</head>
+<body data-page="store-settings">
+
+    <!-- شاشة تحميل تظهر لحد ما يتأكد من الجلسة -->
+    <div class="adm-auth-gate"><div class="adm-loading-spinner"></div></div>
+
+    <div class="adm-shell">
+        <div id="adm-shell-target"></div>
+
+        <main class="adm-main">
+            <div id="adm-topbar-target"></div>
+
+            <div class="adm-content" id="adm-page-content">
+
+                <div class="adm-card">
+                    <div class="adm-homepage-save-bar">
+                        <div>
+                            <h2>بيانات المتجر</h2>
+                            <p>الإعدادات العامة، الـ SEO، وحسابات السوشيال ميديا</p>
+                        </div>
+                        <button class="adm-btn adm-btn-primary" id="settings-save-btn">
+                            <i class="fa-solid fa-floppy-disk"></i> حفظ كل التغييرات
+                        </button>
+                    </div>
+                </div>
+
+                <div id="settings-loading" class="adm-card adm-mt-16"><div class="adm-loading-spinner"></div></div>
+
+                <div id="settings-content" style="display: none;">
+
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header"><div><h2>بيانات المتجر</h2></div></div>
+                        <div class="adm-form-grid">
+                            <div class="adm-field">
+                                <label for="store-name">اسم المتجر</label>
+                                <input type="text" class="adm-input" id="store-name">
+                            </div>
+                            <div class="adm-field">
+                                <label for="store-phone">رقم الهاتف</label>
+                                <input type="text" class="adm-input" id="store-phone">
+                            </div>
+                        </div>
+                        <div class="adm-field">
+                            <label for="store-slogan">الشعار النصي (Slogan)</label>
+                            <input type="text" class="adm-input" id="store-slogan">
+                        </div>
+                        <div class="adm-field">
+                            <label for="store-currency">العملة</label>
+                            <input type="text" class="adm-input" id="store-currency" style="max-width: 160px;">
+                        </div>
+                        <div class="adm-field">
+                            <label>شعار المتجر (اللوجو)</label>
+                            <div class="adm-images-grid">
+                                <div class="adm-image-thumb-wrap"><img id="store-logo-preview" alt="" style="display:none;"></div>
+                            </div>
+                            <label class="adm-image-upload-btn" for="store-logo-input">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                                <span id="store-logo-upload-label">استبدال اللوجو</span>
+                            </label>
+                            <input type="file" id="store-logo-input" accept="image/*" hidden>
+                        </div>
+                    </div>
+
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header"><div><h2>ألوان الهوية البصرية</h2><p>بتتحكم في ألوان الموقع العام (مش لوحة التحكم)</p></div></div>
+                        <div class="adm-form-grid">
+                            <div class="adm-field">
+                                <label for="store-theme-primary">اللون الأساسي</label>
+                                <input type="color" class="adm-input" id="store-theme-primary">
+                            </div>
+                            <div class="adm-field">
+                                <label for="store-theme-secondary">اللون الثانوي</label>
+                                <input type="color" class="adm-input" id="store-theme-secondary">
+                            </div>
+                            <div class="adm-field">
+                                <label for="store-theme-text">لون النص</label>
+                                <input type="color" class="adm-input" id="store-theme-text">
+                            </div>
+                            <div class="adm-field">
+                                <label for="store-theme-background">لون الخلفية</label>
+                                <input type="color" class="adm-input" id="store-theme-background">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header"><div><h2>الاستلام من الفرع</h2></div></div>
+                        <div class="adm-field">
+                            <label for="store-pickup-address">عنوان الفرع</label>
+                            <textarea class="adm-textarea" id="store-pickup-address"></textarea>
+                        </div>
+                        <div class="adm-form-grid">
+                            <div class="adm-field">
+                                <label for="store-pickup-mapUrl">رابط الموقع على الخريطة</label>
+                                <input type="text" class="adm-input" id="store-pickup-mapUrl">
+                            </div>
+                            <div class="adm-field">
+                                <label for="store-pickup-shippingFee">رسوم إضافية عند الاستلام (ج.م)</label>
+                                <input type="number" step="0.01" class="adm-input" id="store-pickup-shippingFee">
+                            </div>
+                        </div>
+                        <div class="adm-field">
+                            <label for="store-pickup-message">رسالة توضيحية للعميل</label>
+                            <input type="text" class="adm-input" id="store-pickup-message">
+                        </div>
+                    </div>
+
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header"><div><h2>سياسة زيادة الأسعار</h2><p>زيادة مؤقتة على الأسعار المعروضة (مثلاً في المواسم)</p></div></div>
+                        <div class="adm-form-grid">
+                            <div class="adm-field">
+                                <label class="adm-checkbox-label">
+                                    <input type="checkbox" id="store-priceIncrease-enabled">
+                                    مفعّلة حالياً
+                                </label>
+                            </div>
+                            <div class="adm-field">
+                                <label for="store-priceIncrease-percent">نسبة الزيادة (%)</label>
+                                <input type="number" step="0.1" class="adm-input" id="store-priceIncrease-percent">
+                            </div>
+                            <div class="adm-field">
+                                <label for="store-priceIncrease-applyOn">تُطبّق على</label>
+                                <select class="adm-select" id="store-priceIncrease-applyOn">
+                                    <option value="menu-only">المنتجات العادية فقط</option>
+                                    <option value="all">كل الأسعار (بما فيها المحاكيات)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header"><div><h2>SEO</h2><p>بيانات ظهور الموقع في نتائج البحث ومشاركات السوشيال ميديا</p></div></div>
+                        <div class="adm-field">
+                            <label for="seo-title">عنوان الموقع (Title)</label>
+                            <input type="text" class="adm-input" id="seo-title">
+                        </div>
+                        <div class="adm-field">
+                            <label for="seo-description">الوصف (Description)</label>
+                            <textarea class="adm-textarea" id="seo-description"></textarea>
+                        </div>
+                        <div class="adm-field">
+                            <label for="seo-keywords">الكلمات المفتاحية</label>
+                            <input type="text" class="adm-input" id="seo-keywords" placeholder="افصل بينهم بفاصلة، مثال: حلويات، تورت، ورد">
+                        </div>
+                        <div class="adm-field">
+                            <label>صورة المشاركة (OG Image)</label>
+                            <div class="adm-images-grid">
+                                <div class="adm-image-thumb-wrap"><img id="seo-ogimage-preview" alt="" style="display:none;"></div>
+                            </div>
+                            <label class="adm-image-upload-btn" for="seo-ogimage-input">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                                <span id="seo-ogimage-upload-label">استبدال الصورة</span>
+                            </label>
+                            <input type="file" id="seo-ogimage-input" accept="image/*" hidden>
+                        </div>
+                    </div>
+
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header"><div><h2>السوشيال ميديا</h2></div></div>
+                        <div class="adm-form-grid">
+                            <div class="adm-field">
+                                <label for="social-facebook"><i class="fa-brands fa-facebook"></i> فيسبوك</label>
+                                <input type="text" class="adm-input" id="social-facebook">
+                            </div>
+                            <div class="adm-field">
+                                <label for="social-instagram"><i class="fa-brands fa-instagram"></i> إنستجرام</label>
+                                <input type="text" class="adm-input" id="social-instagram">
+                            </div>
+                            <div class="adm-field">
+                                <label for="social-tiktok"><i class="fa-brands fa-tiktok"></i> تيك توك</label>
+                                <input type="text" class="adm-input" id="social-tiktok">
+                            </div>
+                            <div class="adm-field">
+                                <label for="social-whatsapp"><i class="fa-brands fa-whatsapp"></i> واتساب</label>
+                                <input type="text" class="adm-input" id="social-whatsapp">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/admin-data.js"></script>
+    <script src="js/admin-auth-guard.js"></script>
+    <script src="js/admin-ui-utils.js"></script>
+    <script src="js/admin-shell.js"></script>
+    <script src="js/pages/settings-page.js"></script>
+</body>
+</html>

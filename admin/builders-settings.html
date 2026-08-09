@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إعدادات المحاكيات | لوحة تحكم حلويات بوسي</title>
+    <meta name="robots" content="noindex, nofollow">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="css/admin-theme.css">
+    <link rel="stylesheet" href="css/admin-layout.css">
+</head>
+<body data-page="builders-settings">
+
+    <!-- شاشة تحميل تظهر لحد ما يتأكد من الجلسة -->
+    <div class="adm-auth-gate"><div class="adm-loading-spinner"></div></div>
+
+    <div class="adm-shell">
+        <div id="adm-shell-target"></div>
+
+        <main class="adm-main">
+            <div id="adm-topbar-target"></div>
+
+            <div class="adm-content" id="adm-page-content">
+
+                <div class="adm-card">
+                    <div class="adm-homepage-save-bar">
+                        <div>
+                            <h2>إعدادات المحاكيات</h2>
+                            <p>أسعار وخيارات محاكي التورت ومحاكي الورد - أي تغيير هنا بينعكس على المحاكي مباشرة</p>
+                        </div>
+                        <button class="adm-btn adm-btn-primary" id="builders-save-btn">
+                            <i class="fa-solid fa-floppy-disk"></i> حفظ كل التغييرات
+                        </button>
+                    </div>
+                </div>
+
+                <div id="builders-loading" class="adm-card adm-mt-16"><div class="adm-loading-spinner"></div></div>
+
+                <div id="builders-content" style="display: none;">
+
+                    <!-- ============================= محاكي التورت ============================= -->
+
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header">
+                            <div><h2><i class="fa-solid fa-cake-candles"></i> محاكي التورت</h2><p>الإعدادات العامة والأسعار الأساسية</p></div>
+                            <label class="adm-checkbox-label">
+                                <input type="checkbox" id="cake-enabled">
+                                المحاكي مفعّل
+                            </label>
+                        </div>
+                        <div class="adm-form-grid">
+                            <div class="adm-field">
+                                <label for="cake-basePrice">السعر الأساسي (ج.م)</label>
+                                <input type="number" step="0.01" class="adm-input" id="cake-basePrice">
+                            </div>
+                            <div class="adm-field">
+                                <label for="cake-pricePerPerson">سعر الفرد الإضافي (ج.م)</label>
+                                <input type="number" step="0.01" class="adm-input" id="cake-pricePerPerson">
+                            </div>
+                        </div>
+                        <div class="adm-form-grid">
+                            <div class="adm-field">
+                                <label for="cake-persons-minimum">أقل عدد أفراد</label>
+                                <input type="number" class="adm-input" id="cake-persons-minimum">
+                            </div>
+                            <div class="adm-field">
+                                <label for="cake-persons-maximum">أكبر عدد أفراد</label>
+                                <input type="number" class="adm-input" id="cake-persons-maximum">
+                            </div>
+                            <div class="adm-field">
+                                <label for="cake-persons-step">الزيادة بين كل اختيار</label>
+                                <input type="number" class="adm-input" id="cake-persons-step">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header"><div><h2>أنواع التورت</h2><p>مثال: فانيليا، شوكولاتة، نصف ونصف</p></div></div>
+                        <div class="adm-curated-list" id="list-cake-types"></div>
+                        <button type="button" class="adm-btn adm-btn-outline adm-btn-sm" id="add-cake-type-btn"><i class="fa-solid fa-plus"></i> إضافة نوع</button>
+                    </div>
+
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header"><div><h2>خيارات الطباعة على التورتة</h2><p>السعر بجنيه لكل خيار</p></div></div>
+                        <div class="adm-curated-list" id="list-printing-options"></div>
+                        <button type="button" class="adm-btn adm-btn-outline adm-btn-sm" id="add-printing-option-btn"><i class="fa-solid fa-plus"></i> إضافة خيار</button>
+                    </div>
+
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header"><div><h2>أشكال التورتة</h2><p>أقل عدد أفراد متاح لكل شكل</p></div></div>
+                        <div class="adm-curated-list" id="list-shapes"></div>
+                        <button type="button" class="adm-btn adm-btn-outline adm-btn-sm" id="add-shape-btn"><i class="fa-solid fa-plus"></i> إضافة شكل</button>
+                    </div>
+
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header"><div><h2>نصوص المحاكي</h2><p>رسائل توضيحية بتظهر للعميل أثناء التصميم</p></div></div>
+                        <div class="adm-field">
+                            <label for="cake-text-pricingInfo">نص عن طريقة الحساب</label>
+                            <textarea class="adm-textarea" id="cake-text-pricingInfo"></textarea>
+                        </div>
+                        <div class="adm-field">
+                            <label for="cake-text-squareMinimum">تنويه أقل مقاس للشكل المربع</label>
+                            <input type="text" class="adm-input" id="cake-text-squareMinimum">
+                        </div>
+                        <div class="adm-field">
+                            <label for="cake-text-rectangleMinimum">تنويه أقل مقاس للشكل المستطيل</label>
+                            <input type="text" class="adm-input" id="cake-text-rectangleMinimum">
+                        </div>
+                        <div class="adm-field">
+                            <label for="cake-text-rectangleUpgrade">تفاصيل تنفيذ الشكل المستطيل</label>
+                            <input type="text" class="adm-input" id="cake-text-rectangleUpgrade">
+                        </div>
+                    </div>
+
+                    <!-- ============================= محاكي الورد ============================= -->
+
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header">
+                            <div><h2><i class="fa-solid fa-spa"></i> محاكي الورد</h2><p>الإعدادات العامة والأسعار الأساسية</p></div>
+                            <label class="adm-checkbox-label">
+                                <input type="checkbox" id="flower-enabled">
+                                المحاكي مفعّل
+                            </label>
+                        </div>
+                        <div class="adm-form-grid">
+                            <div class="adm-field">
+                                <label for="flower-basePrice">السعر الأساسي (ج.م)</label>
+                                <input type="number" step="0.01" class="adm-input" id="flower-basePrice">
+                            </div>
+                            <div class="adm-field">
+                                <label for="flower-baseFlowers">عدد الورود الأساسي</label>
+                                <input type="number" class="adm-input" id="flower-baseFlowers">
+                            </div>
+                            <div class="adm-field">
+                                <label for="flower-extraFlowerPrice">سعر الوردة الإضافية (ج.م)</label>
+                                <input type="number" step="0.01" class="adm-input" id="flower-extraFlowerPrice">
+                            </div>
+                        </div>
+                        <div class="adm-form-grid">
+                            <div class="adm-field">
+                                <label for="flower-giftCardPrice">سعر كارت الهدية (ج.م)</label>
+                                <input type="number" step="0.01" class="adm-input" id="flower-giftCardPrice">
+                            </div>
+                            <div class="adm-field">
+                                <label for="flower-photoPrintPrice">سعر طباعة الصورة (ج.م)</label>
+                                <input type="number" step="0.01" class="adm-input" id="flower-photoPrintPrice">
+                            </div>
+                            <div class="adm-field">
+                                <label for="flower-largeChocolateMinimumPrice">أقل سعر لبوكس شوكولاتة كبير (ج.م)</label>
+                                <input type="number" step="0.01" class="adm-input" id="flower-largeChocolateMinimumPrice">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header"><div><h2>أنواع الورد</h2><p>مثال: ورد طبيعي، ورد صناعي، ورد ستان</p></div></div>
+                        <div class="adm-curated-list" id="list-flower-types"></div>
+                        <button type="button" class="adm-btn adm-btn-outline adm-btn-sm" id="add-flower-type-btn"><i class="fa-solid fa-plus"></i> إضافة نوع</button>
+                    </div>
+
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header"><div><h2>أنواع التغليف</h2><p>السعر بجنيه لكل نوع</p></div></div>
+                        <div class="adm-curated-list" id="list-wrapping-types"></div>
+                        <button type="button" class="adm-btn adm-btn-outline adm-btn-sm" id="add-wrapping-type-btn"><i class="fa-solid fa-plus"></i> إضافة نوع تغليف</button>
+                    </div>
+
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header"><div><h2>أنواع الشوكولاتة المرافقة</h2><p>السعر بجنيه لكل نوع</p></div></div>
+                        <div class="adm-curated-list" id="list-chocolate-types"></div>
+                        <button type="button" class="adm-btn adm-btn-outline adm-btn-sm" id="add-chocolate-type-btn"><i class="fa-solid fa-plus"></i> إضافة نوع شوكولاتة</button>
+                    </div>
+
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header"><div><h2>فئات المبلغ المالي المرفق</h2><p>لو العميل حب يضيف مبلغ فلوس هدية مع الورد - المبلغ ورسوم إضافته</p></div></div>
+                        <div class="adm-curated-list" id="list-money-categories"></div>
+                        <button type="button" class="adm-btn adm-btn-outline adm-btn-sm" id="add-money-category-btn"><i class="fa-solid fa-plus"></i> إضافة فئة مبلغ</button>
+                    </div>
+
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/admin-data.js"></script>
+    <script src="js/admin-auth-guard.js"></script>
+    <script src="js/admin-ui-utils.js"></script>
+    <script src="js/admin-shell.js"></script>
+    <script src="js/pages/builders-page.js"></script>
+</body>
+</html>
