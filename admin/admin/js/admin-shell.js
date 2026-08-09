@@ -19,31 +19,31 @@
     const NAV_STRUCTURE = [
         {
             group: "نظرة عامة",
-            items: [{ key: "index", label: "الداشبورد", icon: "fa-gauge-high", href: "index.html" }],
+            items: [{ key: "index", label: "الداشبورد", icon: "fa-gauge-high", href: "/admin/index.html" }],
         },
         {
             group: "التشغيل اليومي",
             items: [
-                { key: "orders", label: "الطلبات", icon: "fa-receipt", href: "orders.html", badgeKey: "ordersToday" },
-                { key: "products", label: "المنتجات", icon: "fa-cake-candles", href: "products.html" },
+                { key: "orders", label: "الطلبات", icon: "fa-receipt", href: "/admin/orders.html", badgeKey: "ordersToday" },
+                { key: "products", label: "المنتجات", icon: "fa-cake-candles", href: "/admin/products.html" },
             ],
         },
         {
             group: "المحتوى",
             items: [
-                { key: "homepage", label: "الواجهة الرئيسية", icon: "fa-house", href: "homepage.html" },
-                { key: "categories", label: "الفئات", icon: "fa-layer-group", href: "categories.html" },
-                { key: "promotions", label: "العروض", icon: "fa-tags", href: "promotions.html" },
+                { key: "homepage", label: "الواجهة الرئيسية", icon: "fa-house", href: "/admin/homepage.html" },
+                { key: "categories", label: "الفئات", icon: "fa-layer-group", href: "/admin/categories.html" },
+                { key: "promotions", label: "العروض", icon: "fa-tags", href: "/admin/promotions.html" },
             ],
         },
         {
             group: "الإعدادات",
             items: [
-                { key: "coupons", label: "الكوبونات", icon: "fa-ticket", href: "coupons.html" },
-                { key: "reviews", label: "التقييمات", icon: "fa-star", href: "reviews.html", badgeKey: "pendingReviews" },
-                { key: "shipping-zones", label: "مناطق التوصيل", icon: "fa-truck-fast", href: "shipping-zones.html" },
-                { key: "builders-settings", label: "إعدادات المحاكيات", icon: "fa-palette", href: "builders-settings.html" },
-                { key: "store-settings", label: "بيانات المتجر", icon: "fa-store", href: "store-settings.html" },
+                { key: "coupons", label: "الكوبونات", icon: "fa-ticket", href: "/admin/coupons.html" },
+                { key: "reviews", label: "التقييمات", icon: "fa-star", href: "/admin/reviews.html", badgeKey: "pendingReviews" },
+                { key: "shipping-zones", label: "مناطق التوصيل", icon: "fa-truck-fast", href: "/admin/shipping-zones.html" },
+                { key: "builders-settings", label: "إعدادات المحاكيات", icon: "fa-palette", href: "/admin/builders-settings.html" },
+                { key: "store-settings", label: "بيانات المتجر", icon: "fa-store", href: "/admin/store-settings.html" },
             ],
         },
     ];
@@ -136,7 +136,7 @@
         if (logoutBtn) {
             logoutBtn.addEventListener("click", async () => {
                 await window.BoseAdmin.signOut();
-                window.location.href = "login.html";
+                window.location.href = "/admin/login.html";
             });
         }
 
