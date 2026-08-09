@@ -3,10 +3,31 @@
  * =====================================================================
  * 🧰 أدوات واجهة مشتركة لكل صفحات اللوحة: توست نجاح/خطأ، مودال تأكيد حذف،
  * ومؤشر تحميل. أي صفحة تحتاج واحدة منهم تستخدمها من هنا بدل ما تعيد كتابتها.
+ *
+ * ⚠️ أمان: أي نص ممكن يكون جاي من بيانات مستخدم (اسم منتج، اسم عميل...)
+ * لازم يتعقّم بـ escapeHtml قبل ما يتحط جوه innerHTML. الدوال هنا بتعمل
+ * الـ escape تلقائياً على النصوص اللي بتستقبلها عشان محدش ينسى.
  */
 
 (function () {
     "use strict";
+
+    /* ============================= تعقيم HTML ============================= */
+
+    /**
+     * بيحوّل أي نص لنسخة آمنة تتحط جوه innerHTML من غير ما تتفسر كـ HTML.
+     * لازم تتستخدم مع أي نص جاي من قاعدة البيانات أو من إدخال مستخدم
+     * قبل ما يتحط جوه template string هيتحط في innerHTML.
+     */
+    function escapeHtml(value) {
+        if (value === null || value === undefined) return "";
+        return String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#39;");
+    }
 
     /* ============================= التوست ============================= */
 
@@ -30,7 +51,7 @@
         const stack = ensureToastStack();
         const toast = document.createElement("div");
         toast.className = `adm-toast ${type}`;
-        toast.innerHTML = `<i class="fa-solid ${TOAST_ICONS[type] || TOAST_ICONS.info}"></i><span>${message}</span>`;
+        toast.innerHTML = `<i class="fa-solid ${TOAST_ICONS[type] || TOAST_ICONS.info}"></i><span>${escapeHtml(message)}</span>`;
         stack.appendChild(toast);
         setTimeout(() => {
             toast.style.opacity = "0";
@@ -52,14 +73,14 @@
             overlay.innerHTML = `
                 <div class="adm-modal" style="max-width: 400px;">
                     <div class="adm-modal-header">
-                        <h3>${opts.title}</h3>
+                        <h3>${escapeHtml(opts.title)}</h3>
                         <button class="adm-modal-close" data-role="cancel"><i class="fa-solid fa-xmark"></i></button>
                     </div>
-                    <p>${opts.message}</p>
+                    <p>${escapeHtml(opts.message)}</p>
                     <div class="adm-modal-actions">
                         <button class="adm-btn adm-btn-ghost" data-role="cancel">إلغاء</button>
                         <button class="adm-btn ${opts.danger ? "adm-btn-danger" : "adm-btn-primary"}" data-role="confirm">
-                            ${opts.confirmLabel || "تأكيد"}
+                            ${escapeHtml(opts.confirmLabel || "تأكيد")}
                         </button>
                     </div>
                 </div>`;
@@ -89,12 +110,13 @@
         return `
             <div class="adm-empty-state">
                 <i class="fa-solid ${icon}"></i>
-                <strong>${title}</strong>
-                <p>${text || ""}</p>
+                <strong>${escapeHtml(title)}</strong>
+                <p>${escapeHtml(text || "")}</p>
             </div>`;
     }
 
     window.BoseAdminUI = {
+        escapeHtml,
         showToast,
         confirmAction,
         loadingSpinnerHTML,

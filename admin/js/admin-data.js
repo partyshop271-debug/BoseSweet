@@ -28,6 +28,15 @@
         auth: { persistSession: true, autoRefreshToken: true },
     });
 
+    /**
+     * بتشيل أي حرف عنده معنى خاص في صياغة فلاتر PostgREST (,()."*)
+     * قبل ما ندخّل نص بحث المستخدم جوه .or(). من غير كده، فاصلة أو قوس
+     * في نص البحث ممكن يكسر صياغة الفلتر أو يغيّر شرط الاستعلام المقصود.
+     */
+    function sanitizeFilterValue(value) {
+        return value.replace(/[,()."*]/g, "");
+    }
+
     /* ============================= المصادقة (Auth) ============================= */
 
     async function signIn(email, password) {
@@ -147,10 +156,14 @@
                 query = query.eq("status", filters.status);
             }
             if (filters.search && filters.search.trim()) {
-                const s = filters.search.trim();
-                query = query.or(
-                    `order_number.ilike.%${s}%,customer_name.ilike.%${s}%,phone1.ilike.%${s}%,phone2.ilike.%${s}%`
-                );
+                // تعقيم نص البحث قبل تركيبه جوه صياغة .or() عشان فاصلة أو قوس
+                // مكتوبين من الأدمن ميكسروش الفلتر أو يغيّروا شرط الاستعلام.
+                const s = sanitizeFilterValue(filters.search.trim());
+                if (s) {
+                    query = query.or(
+                        `order_number.ilike.%${s}%,customer_name.ilike.%${s}%,phone1.ilike.%${s}%,phone2.ilike.%${s}%`
+                    );
+                }
             }
 
             const { data, error } = await query;
