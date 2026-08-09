@@ -1,56 +1,49 @@
-/**
- * login-page.js - منطق صفحة تسجيل الدخول فقط
- */
-(function () {
-    "use strict";
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول | لوحة تحكم حلويات بوسي</title>
+    <meta name="robots" content="noindex, nofollow">
 
-    const form = document.getElementById("login-form");
-    const errorBox = document.getElementById("login-error-box");
-    const submitBtn = document.getElementById("login-submit-btn");
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    function showError(message) {
-        errorBox.textContent = message;
-        errorBox.style.display = "block";
-    }
+    <link rel="stylesheet" href="/admin/css/admin-theme.css">
+    <link rel="stylesheet" href="/admin/css/admin-layout.css">
+</head>
+<body>
 
-    function hideError() {
-        errorBox.style.display = "none";
-    }
+    <div class="adm-login-wrapper">
+        <div class="adm-login-card">
+            <div class="adm-login-brand">
+                <div class="adm-login-brand-badge"><i class="fa-solid fa-cake-candles"></i></div>
+                <h1>لوحة تحكم حلويات بوسي</h1>
+                <p>سجّل دخولك للمتابعة إلى إدارة المتجر</p>
+            </div>
 
-    // لو أصلاً معاه جلسة أدمن سليمة، متعرضش اللوجين تاني - يوديه للداشبورد على طول
-    (async function redirectIfAlreadyLoggedIn() {
-        if (!window.BoseAdmin) return;
-        const adminInfo = await window.BoseAdmin.verifyIsAdmin();
-        if (adminInfo) window.location.href = "index.html";
-    })();
+            <div class="adm-login-error" id="login-error-box"></div>
 
-    form.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        hideError();
+            <form id="login-form">
+                <div class="adm-field">
+                    <label for="login-email">البريد الإلكتروني</label>
+                    <input type="email" id="login-email" class="adm-input" placeholder="you@example.com" required autocomplete="username">
+                </div>
+                <div class="adm-field">
+                    <label for="login-password">كلمة المرور</label>
+                    <input type="password" id="login-password" class="adm-input" placeholder="••••••••" required autocomplete="current-password">
+                </div>
+                <button type="submit" class="adm-btn adm-btn-primary adm-w-full" id="login-submit-btn" style="margin-top: 6px;">
+                    <i class="fa-solid fa-right-to-bracket"></i> دخول
+                </button>
+            </form>
+        </div>
+    </div>
 
-        const email = document.getElementById("login-email").value.trim();
-        const password = document.getElementById("login-password").value;
-
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الدخول...';
-
-        try {
-            await window.BoseAdmin.signIn(email, password);
-            const adminInfo = await window.BoseAdmin.verifyIsAdmin();
-
-            if (!adminInfo) {
-                // الحساب سجل دخول بنجاح في Auth لكنه مش موجود في جدول admins
-                await window.BoseAdmin.signOut();
-                showError("هذا الحساب غير مصرّح له بدخول لوحة التحكم.");
-                return;
-            }
-
-            window.location.href = "index.html";
-        } catch (err) {
-            showError("البريد الإلكتروني أو كلمة المرور غير صحيحة.");
-        } finally {
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> دخول';
-        }
-    });
-})();
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/admin/js/admin-data.js"></script>
+    <script src="/admin/js/pages/login-page.js"></script>
+</body>
+</html>
