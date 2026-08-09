@@ -105,7 +105,7 @@
             searchTerms: p.search_terms || [],
             featured: p.is_featured,
             rating: p.rating,
-            reviews: p.reviews || [],
+            reviews: p.seed_reviews || [],
         }));
 
         return {
