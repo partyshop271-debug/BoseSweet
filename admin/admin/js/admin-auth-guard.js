@@ -16,14 +16,14 @@
     async function guardCurrentPage() {
         if (!window.BoseAdmin) {
             console.error("❌ admin-data.js لازم يتحمل قبل admin-auth-guard.js");
-            window.location.href = "login.html";
+            window.location.href = "/admin/login.html";
             return;
         }
 
         try {
             const adminInfo = await window.BoseAdmin.verifyIsAdmin();
             if (!adminInfo) {
-                window.location.href = "login.html";
+                window.location.href = "/admin/login.html";
                 return;
             }
 
@@ -33,7 +33,7 @@
             document.dispatchEvent(new CustomEvent("BoseAdminReady", { detail: adminInfo }));
         } catch (e) {
             console.error("خطأ أثناء التحقق من الجلسة:", e);
-            window.location.href = "login.html";
+            window.location.href = "/admin/login.html";
         }
     }
 
@@ -41,7 +41,7 @@
     if (window.BoseAdmin) {
         window.BoseAdmin.onAuthStateChange((session) => {
             if (!session && document.documentElement.classList.contains("adm-ready")) {
-                window.location.href = "login.html";
+                window.location.href = "/admin/login.html";
             }
         });
     }
