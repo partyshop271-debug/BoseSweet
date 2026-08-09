@@ -4,20 +4,8 @@
 (function () {
     "use strict";
 
-    const STATUS_LABELS = {
-        pending: { label: "قيد المراجعة", cls: "warning" },
-        confirmed: { label: "مؤكد", cls: "info" },
-        preparing: { label: "قيد التحضير", cls: "info" },
-        out_for_delivery: { label: "في الطريق", cls: "info" },
-        delivered: { label: "تم التسليم", cls: "success" },
-        cancelled: { label: "ملغي", cls: "danger" },
-    };
-
-    function statusBadge(status) {
-        const meta = STATUS_LABELS[status] || { label: status || "غير محدد", cls: "neutral" };
-        // meta.label دايماً نص ثابت من القائمة فوق، مش محتاج escape - آمن.
-        return `<span class="adm-badge ${meta.cls}">${meta.label}</span>`;
-    }
+    // ملحوظة: تسميات وألوان حالة الطلب مصدرها الوحيد admin-ui-utils.js
+    // (orderStatusBadgeHTML) عشان تتشارك مع orders-page.js من غير تكرار.
 
     function formatDate(iso) {
         if (!iso) return "—";
@@ -63,7 +51,7 @@
                 <td>#${esc(o.order_number || o.id)}</td>
                 <td>${esc(o.customer_name || "—")}</td>
                 <td>${o.grand_total ? Math.round(o.grand_total) + " ج.م" : "—"}</td>
-                <td>${statusBadge(o.status)}</td>
+                <td>${window.BoseAdminUI.orderStatusBadgeHTML(o.status)}</td>
                 <td>${formatDate(o.created_at)}</td>
             </tr>
         `).join("");
