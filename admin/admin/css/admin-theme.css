@@ -1,0 +1,108 @@
+/**
+ * admin-theme.css
+ * =====================================================================
+ * 🎨 مصدر الهوية البصرية الوحيد للوحة تحكم حلويات بوسي (Dark Mode)
+ * أي تغيير لون أو مسافة أو خط هنا بينعكس على كل صفحات اللوحة فوراً.
+ * ممنوع أي صفحة تكتب لون بشكل مباشر (hex) - كله لازم يعدي من هنا.
+ * =====================================================================
+ *
+ * فلسفة الألوان: خلفية سودة دافية (مش أسود نقي #000 عشان الأسود النقي
+ * بيتعب العين على الشاشة في الجلسات الطويلة)، تباين نص مريح مش أبيض
+ * ناصع، ولون براند البمبي مستخدم كلمسة تمييز بس مش كخلفيات كبيرة.
+ */
+
+:root {
+    /* ---------- الخلفيات (من الأغمق للأفتح تدريجياً) ---------- */
+    --adm-bg-base: #131217;          /* خلفية الصفحة الأساسية */
+    --adm-bg-sidebar: #17161C;       /* القائمة الجانبية */
+    --adm-bg-surface: #1C1B22;       /* الكروت والجداول */
+    --adm-bg-surface-raised: #232128; /* عناصر فوق الكروت (مودال، دروب داون) */
+    --adm-bg-hover: #29272F;         /* حالة الـ hover */
+    --adm-bg-input: #1A1920;         /* خلفية الحقول */
+
+    /* ---------- الحدود ---------- */
+    --adm-border: #2C2A33;
+    --adm-border-soft: #232128;
+    --adm-border-focus: #FF91A4;
+
+    /* ---------- النصوص ---------- */
+    --adm-text-primary: #EFEDF2;     /* العناوين والنصوص الأساسية - مش أبيض ناصع */
+    --adm-text-secondary: #A8A5B3;   /* نصوص ثانوية، وصف، تسميات */
+    --adm-text-muted: #6F6C7A;       /* نصوص خافتة جداً (تواريخ، ملاحظات) */
+    --adm-text-on-accent: #1A1114;   /* نص فوق خلفية بمبي فاتحة */
+
+    /* ---------- ألوان البراند ---------- */
+    --adm-pink: #FF91A4;
+    --adm-pink-dim: #4A2B32;         /* بمبي غامق يستخدم كخلفية شارة/حالة */
+    --adm-pink-soft-bg: rgba(255, 145, 164, 0.1);
+    --adm-gold: #D4AF37;             /* لمسة ذهبية للتمييز النادر (زي بقية هوية الموقع) */
+
+    /* ---------- ألوان الحالة ---------- */
+    --adm-success: #4ADE80;
+    --adm-success-bg: rgba(74, 222, 128, 0.12);
+    --adm-warning: #FBBF24;
+    --adm-warning-bg: rgba(251, 191, 36, 0.12);
+    --adm-danger: #F87171;
+    --adm-danger-bg: rgba(248, 113, 113, 0.12);
+    --adm-info: #60A5FA;
+    --adm-info-bg: rgba(96, 165, 250, 0.12);
+
+    /* ---------- الظلال ---------- */
+    --adm-shadow-card: 0 4px 20px rgba(0, 0, 0, 0.35);
+    --adm-shadow-raised: 0 12px 40px rgba(0, 0, 0, 0.5);
+    --adm-shadow-focus: 0 0 0 3px rgba(255, 145, 164, 0.25);
+
+    /* ---------- الخطوط ---------- */
+    --adm-font: 'Cairo', sans-serif;
+
+    /* ---------- الهندسة ---------- */
+    --adm-radius-sm: 8px;
+    --adm-radius-md: 14px;
+    --adm-radius-lg: 20px;
+    --adm-radius-pill: 999px;
+    --adm-sidebar-width: 260px;
+    --adm-topbar-height: 68px;
+    --adm-transition: all 0.18s ease;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--adm-bg-base);
+    color: var(--adm-text-primary);
+    font-family: var(--adm-font);
+    font-variant-numeric: tabular-nums; /* أرقام الأسعار/الطلبات تفضل ثابتة العرض */
+    -webkit-font-smoothing: antialiased;
+    direction: rtl;
+}
+
+::selection {
+    background: var(--adm-pink);
+    color: var(--adm-text-on-accent);
+}
+
+/* سكرول بار هادي يناسب الدارك مود */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+    background: var(--adm-border);
+    border-radius: var(--adm-radius-pill);
+}
+::-webkit-scrollbar-thumb:hover { background: var(--adm-text-muted); }
+
+a { color: inherit; text-decoration: none; }
+
+h1, h2, h3, h4 {
+    margin: 0;
+    color: var(--adm-text-primary);
+    font-weight: 700;
+}
+
+p { margin: 0; color: var(--adm-text-secondary); line-height: 1.7; }
+
+/* احترام تفضيل تقليل الحركة لأي حد حساس تجاه الأنيميشن */
+@media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+}
