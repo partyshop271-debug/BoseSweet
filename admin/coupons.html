@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الكوبونات | لوحة تحكم حلويات بوسي</title>
+    <meta name="robots" content="noindex, nofollow">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="css/admin-theme.css">
+    <link rel="stylesheet" href="css/admin-layout.css">
+</head>
+<body data-page="coupons">
+
+    <!-- شاشة تحميل تظهر لحد ما يتأكد من الجلسة -->
+    <div class="adm-auth-gate"><div class="adm-loading-spinner"></div></div>
+
+    <div class="adm-shell">
+        <div id="adm-shell-target"></div>
+
+        <main class="adm-main">
+            <div id="adm-topbar-target"></div>
+
+            <div class="adm-content" id="adm-page-content">
+
+                <div class="adm-card">
+                    <div class="adm-card-header">
+                        <div>
+                            <h2>كل الكوبونات</h2>
+                            <p>إنشاء وإدارة أكواد الخصم اللي بيستخدمها العملاء عند إتمام الطلب</p>
+                        </div>
+                        <button class="adm-btn adm-btn-primary" id="add-coupon-btn">
+                            <i class="fa-solid fa-plus"></i> كوبون جديد
+                        </button>
+                    </div>
+                    <div class="adm-table-wrapper">
+                        <table class="adm-table" id="coupons-table">
+                            <thead>
+                                <tr>
+                                    <th>الكود</th>
+                                    <th>النوع</th>
+                                    <th>القيمة</th>
+                                    <th>الحالة</th>
+                                    <th>تاريخ الانتهاء</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="coupons-tbody">
+                                <tr><td colspan="6"><div class="adm-loading-spinner"></div></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/admin-data.js"></script>
+    <script src="js/admin-auth-guard.js"></script>
+    <script src="js/admin-ui-utils.js"></script>
+    <script src="js/admin-shell.js"></script>
+    <script src="js/pages/coupons-page.js"></script>
+</body>
+</html>
