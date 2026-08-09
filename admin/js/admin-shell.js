@@ -35,6 +35,7 @@
                 { key: "categories", label: "الفئات", icon: "fa-layer-group", href: "categories.html" },
                 { key: "offers", label: "عروض المنتجات", icon: "fa-percent", href: "offers.html" },
                 { key: "promotions", label: "بانرات العروض", icon: "fa-tags", href: "promotions.html" },
+                { key: "content-studio", label: "استوديو المحتوى", icon: "fa-feather-pointed", href: "content-studio.html" },
             ],
         },
         {
@@ -57,6 +58,7 @@
         categories: ["الفئات", "إدارة فئات المنتجات"],
         offers: ["عروض المنتجات", "تمييز منتجات موجودة كعليها عرض/خصم في الموقع"],
         promotions: ["بانرات العروض", "إدارة بانرات وكروت العروض التسويقية الظاهرة للعملاء"],
+        "content-studio": ["استوديو المحتوى", "توليد وتعديل أوصاف المنتجات والنكهات والفئات وصفحات السياسات بالذكاء الاصطناعي"],
         coupons: ["الكوبونات", "إنشاء وإدارة أكواد الخصم"],
         reviews: ["التقييمات", "اعتماد أو رفض تقييمات العملاء"],
         "shipping-zones": ["مناطق التوصيل", "إدارة المناطق ورسوم الشحن"],

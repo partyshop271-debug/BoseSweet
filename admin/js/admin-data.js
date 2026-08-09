@@ -435,6 +435,82 @@
         if (error) throw error;
     }
 
+    /* ============================= إعدادات المحاكيات (صفحة builders-settings.html) ============================= */
+    /**
+     * ⚠️ إصلاح حرج: الدالتين دول كانوا مستخدمين فعلياً من builders-page.js
+     * (window.BoseAdmin.getBuilderSettings / saveBuilderSettings) لكن مكنوش
+     * لهم أي تعريف هنا ولا في تصدير window.BoseAdmin - يعني صفحة إعدادات
+     * المحاكيات كانت هتكسر فوراً بمجرد فتحها (getBuilderSettings is not a
+     * function). الأعمدة cake_builder/flower_builder موجودة فعلاً في جدول
+     * store_settings وعليها بيانات حقيقية بالفعل - كانت بس مش متوصّلة هنا.
+     */
+
+    /** يرجّع إعدادات محاكي التورت والورد من صف store_settings الوحيد (id=1) */
+    async function getBuilderSettings() {
+        try {
+            const { data, error } = await client
+                .from("store_settings")
+                .select("cake_builder, flower_builder")
+                .eq("id", 1)
+                .maybeSingle();
+            if (error) throw error;
+            return {
+                cake_builder: (data && data.cake_builder) || {},
+                flower_builder: (data && data.flower_builder) || {},
+            };
+        } catch (e) {
+            console.warn("تعذر جلب إعدادات المحاكيات:", e.message);
+            return { cake_builder: {}, flower_builder: {} };
+        }
+    }
+
+    /** بتستبدل عمودي cake_builder و flower_builder بالكامل بالكائنين الممررين */
+    async function saveBuilderSettings({ cake_builder, flower_builder }) {
+        const { error } = await client
+            .from("store_settings")
+            .update({ cake_builder, flower_builder, updated_at: new Date().toISOString() })
+            .eq("id", 1);
+        if (error) throw error;
+    }
+
+    /* ============================= بيانات المتجر العامة (صفحة store-settings.html) ============================= */
+    /**
+     * ⚠️ إصلاح حرج (نفس مشكلة المحاكيات بالظبط): settings-page.js بينادي
+     * window.BoseAdmin.getStoreGeneralSettings / saveStoreGeneralSettings
+     * واللي مكنوش لهم أي تعريف هنا - صفحة "بيانات المتجر" كانت هتكسر فوراً
+     * بمجرد فتحها. الأعمدة store/seo/social موجودة بالفعل في store_settings
+     * (هي نفسها اللي الموقع العام بيقراها في core-engine.js/supabase-client.js).
+     */
+
+    /** يرجّع بيانات المتجر العامة + SEO + السوشيال ميديا من صف store_settings الوحيد */
+    async function getStoreGeneralSettings() {
+        try {
+            const { data, error } = await client
+                .from("store_settings")
+                .select("store, seo, social")
+                .eq("id", 1)
+                .maybeSingle();
+            if (error) throw error;
+            return {
+                store: (data && data.store) || {},
+                seo: (data && data.seo) || {},
+                social: (data && data.social) || {},
+            };
+        } catch (e) {
+            console.warn("تعذر جلب بيانات المتجر:", e.message);
+            return { store: {}, seo: {}, social: {} };
+        }
+    }
+
+    /** بتستبدل أعمدة store/seo/social بالكامل بالكائنات الممررة */
+    async function saveStoreGeneralSettings({ store, seo, social }) {
+        const { error } = await client
+            .from("store_settings")
+            .update({ store, seo, social, updated_at: new Date().toISOString() })
+            .eq("id", 1);
+        if (error) throw error;
+    }
+
     /* ============================= مناطق التوصيل (صفحة shipping-zones.html) ============================= */
     /**
      * كل صف هنا هو منطقة توصيل بسعرها الثابت. shipping_zone_id في جدول orders
@@ -473,6 +549,77 @@
     async function deleteShippingZone(id) {
         const { error } = await client.from("shipping_zones").delete().eq("id", id);
         if (error) throw error;
+    }
+
+    /* ============================= صفحات السياسات (content_pages) ============================= */
+    /**
+     * صفوف ثابتة (order-policy / privacy-policy / return-policy / terms-conditions)
+     * لكل واحدة id ثابت وعمود content نصي طويل. الموقع العام بيقرأها للعرض
+     * العام (public read) والتعديل هنا بس (admin write) - نفس فلسفة كل
+     * الجداول التانية.
+     */
+
+    /** كل صفحات السياسات/المعلومات الثابتة */
+    async function getAllContentPages() {
+        try {
+            const { data, error } = await client.from("content_pages").select("*").order("id", { ascending: true });
+            if (error) throw error;
+            return data || [];
+        } catch (e) {
+            console.warn("تعذر جلب صفحات السياسات:", e.message);
+            return [];
+        }
+    }
+
+    /** تعديل محتوى صفحة سياسة موجودة (id ثابت، مش بيتغيّر ولا بيتضاف صفوف جديدة من هنا) */
+    async function updateContentPage(id, content) {
+        const { error } = await client
+            .from("content_pages")
+            .update({ content, updated_at: new Date().toISOString() })
+            .eq("id", id);
+        if (error) throw error;
+    }
+
+    /* ============================= تحديث جماعي للمنتجات (استوديو المحتوى) ============================= */
+    /**
+     * تحديث نفس الحقل/الحقول على مجموعة منتجات دفعة واحدة (زي: تعميم وصف
+     * جديد على كل نكهات "الديسباسيتو" مرة واحدة) - استعلام واحد بدل ما نلف
+     * على كل id لوحده.
+     */
+    async function bulkUpdateProducts(ids, updates) {
+        if (!ids || !ids.length) return;
+        const { error } = await client.from("products").update(updates).in("id", ids);
+        if (error) throw error;
+    }
+
+    /* ============================= استوديو المحتوى (توليد بالذكاء الاصطناعي) ============================= */
+    /**
+     * بتنادي Edge Function اسمها generate-content بتوكن جلسة الأدمن الحالي
+     * (مش الـ publishable key بس) عشان الفنكشن يتأكد إن اللي بيطلب التوليد
+     * أدمن فعلاً. الفنكشن بترجع النص المقترح بس من غير أي حفظ تلقائي -
+     * الحفظ الفعلي بيتم بعدين بنفس دوال update العادية فوق (updateProduct/
+     * updateCategory/updateContentPage/bulkUpdateProducts) بعد ما الأدمن يوافق.
+     *
+     * @param {{scope: string, context?: object, regenerate?: boolean, previousAttempt?: string, feedback?: string}} payload
+     * @returns {Promise<string>} النص المولّد
+     */
+    async function generateContent(payload) {
+        const session = await getSession();
+        if (!session) throw new Error("لا توجد جلسة دخول صالحة");
+
+        const res = await fetch(`${SUPABASE_URL}/functions/v1/generate-content`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${session.access_token}`,
+                "apikey": SUPABASE_PUBLISHABLE_KEY,
+            },
+            body: JSON.stringify(payload),
+        });
+
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || "تعذر توليد المحتوى، حاول مرة أخرى");
+        return data.text;
     }
 
     // تصدير موحّد على window بنفس فلسفة الموقع العام (window.BoseSupabase)
@@ -515,5 +662,13 @@
         createShippingZone,
         updateShippingZone,
         deleteShippingZone,
+        getBuilderSettings,
+        saveBuilderSettings,
+        getStoreGeneralSettings,
+        saveStoreGeneralSettings,
+        getAllContentPages,
+        updateContentPage,
+        bulkUpdateProducts,
+        generateContent,
     };
 })();
