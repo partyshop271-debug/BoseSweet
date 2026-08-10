@@ -18,6 +18,12 @@ function loadTrustedCart() {
         const result = window.recalculateFullCart(cart);
         cart = result.cart;
         localStorage.setItem("bose_cart", JSON.stringify(cart));
+        // 🛡️ [إصلاح]: wasTampered كانت بترجع من الدالة وميتستخدمش خالص في أي مكان.
+        // دلوقتي بنسجلها على الأقل في الكونسول (وممكن تتربط لاحقاً بأي نظام
+        // تتبع/تحليلات) عشان محاولات التلاعب بالسعر متعديش من غير أي أثر.
+        if (result.wasTampered) {
+            console.warn("⚠️ تم اكتشاف واحتساب فرق في سعر عنصر بالسلة تلقائياً (تم تصحيحه بأمان).");
+        }
     }
     return cart;
 }
@@ -503,15 +509,25 @@ function processFinalBoseOrder(cart, storeData, method, shippingFee) {
 
     let fullAddressText = "استلام يدوي مباشر من مقر الفرع";
     let selectedZoneName = "فرع الكفاح الرئيسي";
-    
+    // 🛡️ [إصلاح حرج]: zoneSelect.value هو الـid الحقيقي لمنطقة الشحن (نص إنجليزي
+    // زي cairo-nasr-city) اللي checkout.html بيحطه كـvalue للـoption - قبل كده كان
+    // بيتعامل معاه غلط كأنه "اسم" ظاهر للعميل ويتحط في نص العنوان بدل الاسم
+    // الحقيقي للمنطقة (زي "مدينة نصر")، وكمان مكانش بيتسجل في قاعدة البيانات
+    // خالص (shippingZoneId كان بيتبعت null دايماً رغم وجود المنطقة الحقيقية).
+    // دلوقتي بيتفصل الاثنين: selectedZoneId (للقاعدة) و selectedZoneName (نص
+    // العنوان المقروء من نص الـoption نفسه، مش من الـvalue).
+    let selectedZoneId = "";
+
     if (method === "delivery") {
         if (zoneSelect && !zoneSelect.value) {
             showBoseCustomModal("يرجى تحديد المنطقة السكنية.");
             zoneSelect.focus();
             return;
         }
-        selectedZoneName = zoneSelect ? zoneSelect.value : "";
-        
+        selectedZoneId = zoneSelect ? zoneSelect.value : "";
+        const selectedOption = zoneSelect && zoneSelect.selectedOptions ? zoneSelect.selectedOptions[0] : null;
+        selectedZoneName = selectedOption ? selectedOption.textContent : selectedZoneId;
+
         const addressDetails = addressDetailsInput ? addressDetailsInput.value.trim() : "";
         if (addressDetails.length < 8) {
             showBoseCustomModal("يرجى كتابة العنوان السكني بالتفصيل لسلامة الشحن.");
@@ -566,6 +582,10 @@ function processFinalBoseOrder(cart, storeData, method, shippingFee) {
         phone2: sanitizedPhone2,
         deliveryMethod: method === "pickup" ? "استلام من الفرع" : "توصيل للمنزل",
         deliveryZone: selectedZoneName,
+        // 🛡️ [إصلاح حرج]: الـid الحقيقي لمنطقة الشحن (مطابق لجدول shipping_zones)
+        // بيتسجل هنا عشان saveBoseOrderToDatabase في supabase-client.js يقدر
+        // يبعته فعلياً بدل ما يفضل null دايماً في كل الطلبات المحفوظة.
+        shippingZoneId: method === "delivery" ? (selectedZoneId || null) : null,
         shippingFee: shippingFee,
         address: fullAddressText,
         date: `${orderDate.split('-')[2]} / ${orderDate.split('-')[1]} / ${orderDate.split('-')[0]}`,
@@ -612,7 +632,11 @@ function processFinalBoseOrder(cart, storeData, method, shippingFee) {
     // من غير أي أثر عندنا. دلوقتي بيتسجل فعلياً في قاعدة بيانات Supabase قبل
     // الانتقال لصفحة النجاح. لو الاتصال فشل (نت ضعيف مثلاً) البيع لا يتوقف
     // أبداً - واتساب فتح بالفعل فوق - وبنكمل التنقل بعد المحاولة سواء نجحت أو لأ.
-    if (window.BoseSupabase && typeof window.BoseSupabase.submitBoseOrderToDatabase === "function") {
+    // 🛡️ [إصلاح]: الشرط كان بيتأكد من وجود دالة مختلفة (submitBoseOrderToDatabase)
+    // بينما بينادي فعلياً على window.saveBoseOrderToDatabase - شغالة بالصدفة
+    // لأن الاتنين بيتعرّفوا مع بعض في supabase-client.js، لكن الفحص الصحيح
+    // لازم يكون على الدالة اللي بننادي عليها فعلياً.
+    if (typeof window.saveBoseOrderToDatabase === "function") {
         window.saveBoseOrderToDatabase(completedBoseOrderObject)
             .catch((err) => console.warn("⚠️ تعذر حفظ نسخة الطلب في قاعدة البيانات (البيع تم عبر واتساب بنجاح رغم ذلك):", err))
             .finally(finalizeNavigation);

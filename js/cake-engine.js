@@ -238,6 +238,11 @@ function startEngineLogic() {
         const closeLightbox = () => { lightboxOverlay.style.display = "none"; lightboxImg.src = ""; };
         if (lightboxClose) lightboxClose.onclick = closeLightbox;
         lightboxOverlay.onclick = (e) => { if (e.target === lightboxOverlay) closeLightbox(); };
+
+        // ♿ [إصلاح وصولية]: زرار Escape كان مش شغال خالص لقفل اللايت بوكس
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && lightboxOverlay.style.display === 'flex') closeLightbox();
+        });
     }
 
     btnCartSubmit.addEventListener('click', () => {
@@ -273,6 +278,15 @@ function startEngineLogic() {
             
             finalCartItem.finalPrice = window.calculateCustomCakePrice(currentPersons, { printingType: selectedPrinting });
             finalCartItem.type = "custom-cake";
+
+            // 🛡️ [إصلاح حرج]: صورة الطباعة اللي العميل رفعها (uploadedCakePhotoUrl)
+            // كانت بتتستخدم بس في المعاينة على الصفحة ومش بتتحط في عنصر السلة خالص،
+            // فالطلب كان بيوصل من غير الصورة تماماً لو العميل اختار طباعة صورة على
+            // التورتة. نفس آلية flower-engine.js بالظبط (finalCartItem.image).
+            if (selectedPrinting !== 'none' && uploadedCakePhotoUrl) {
+                finalCartItem.image = uploadedCakePhotoUrl;
+                finalCartItem.referenceImages = [uploadedCakePhotoUrl];
+            }
             
             boseCart.push(finalCartItem);
             localStorage.setItem('bose_cart', JSON.stringify(boseCart));

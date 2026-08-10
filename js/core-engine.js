@@ -209,6 +209,15 @@
         const recalcBounds = () => {
             // النص متكرر مرتين، فنص عرض المحتوى هو طول الدورة الكاملة الواحدة
             halfWidth = track.scrollWidth / 2;
+            // 🛡️ [إصلاح حرج - اختفاء التيكر نهائياً بعد أول لمسة]: لو العميل سحب
+            // التيكر قبل ما halfWidth يتحسب صح (مثلاً قبل ما خط Cairo يخلص تحميل)،
+            // كان posX بيتحرك من غير أي حد أعلى/أدنى (applyTransform بتتجاهل التطبيع
+            // لو halfWidth = 0)، فالتيكر كان بيتزحلق برا حدود الشاشة تماماً. وبعدين
+            // لما halfWidth يتصحح هنا، كنا بنحدّث الرقم بس من غير ما نعيد تطبيق
+            // الموضع، فالتيكر كان بيفضل واقف في مكانه الغلط (المختفي) للأبد. دلوقتي
+            // بنعيد تطبيق الموضع فوراً بعد أي تصحيح لحدود العرض عشان يرجع لموضعه
+            // الصحيح جوه الشاشة تلقائياً.
+            applyTransform();
         };
 
         const applyTransform = () => {
@@ -522,14 +531,20 @@
             syncDotsAndPosition();
         };
 
+        // 🖱️ السحب اليدوي بالماوس (ديسكتوب) فقط. الموبايل بيستخدم السكرول الأصلي
+        // للمتصفح (native overflow-x touch scrolling) اللي أصلاً مفعّل ومظبوط بـ
+        // scroll-snap فوق، وده سلس تلقائياً من غير أي تدخل جافاسكريبت.
         track.addEventListener('mousedown', onDragStart);
         track.addEventListener('mousemove', onDragMove);
         track.addEventListener('mouseup', onDragEnd);
         track.addEventListener('mouseleave', onDragEnd);
 
-        track.addEventListener('touchstart', onDragStart, { passive: true });
-        track.addEventListener('touchmove', onDragMove, { passive: true });
-        track.addEventListener('touchend', onDragEnd);
+        // 🛡️ [إصلاح ثقل السحب باللمس]: كان فيه تطبيق يدوي لـ scrollLeft فوق نفس
+        // العنصر اللي أصلاً native overflow-scroll، فالنظامين (سكرول المتصفح
+        // الطبيعي + تعديل الجافاسكريبت اليدوي لنفس القيمة) كانوا بيتعاركوا مع
+        // بعض في نفس اللحظة، وده اللي بيحس العميل بيه كسحب "تقيل" وغير سلس على
+        // الموبايل تحديداً. اتشالت الاستماعات اليدوية دي بالكامل والسكرول
+        // بالإصبع بقى معتمد 100% على سلوك المتصفح الأصلي السلس.
     }
 
     /**

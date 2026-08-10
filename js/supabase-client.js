@@ -300,7 +300,11 @@
             phone2: o.phone2,
             deliveryMethod: o.deliveryMethod === "استلام من الفرع" ? "pickup" : "delivery",
             address: o.address,
-            shippingZoneId: null, // اسم المنطقة نصي حالياً (o.deliveryZone)، مش id مطابق لجدول shipping_zones
+            // 🛡️ [إصلاح حرج]: cart-engine.js بقى بيبعت الـid الحقيقي لمنطقة الشحن
+            // (o.shippingZoneId) من قايمة shipping_zones فعلياً - كنا هنا بنتجاهله
+            // ونكتب null يدوياً بدل ما نستخدمه، فالإصلاح في cart-engine.js كان
+            // بيضيع في النص. دلوقتي بنمرره فعلياً لقاعدة البيانات.
+            shippingZoneId: o.shippingZoneId || null,
             scheduledDateRaw: o.scheduledDateISO || o.scheduledDate, // بصيغة YYYY-MM-DD بالفعل من <input type="date">
             scheduledTime: o.scheduledTime,
             notes: o.notes,
