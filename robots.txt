@@ -6,4 +6,13 @@ Disallow: /cart.html
 Disallow: /checkout.html
 Disallow: /order-success.html
 
-Sitemap: https://bose-sweet.vercel.app/sitemap.xml
+# 🛡️ لوحة التحكم الإدارية - ممنوع أرشفتها أو ظهورها لمحركات البحث نهائياً
+Disallow: /admin/
+
+# 🛡️ ملف بيانات قديم كان بيحتوي على أكواد الكوبونات وبيانات المتجر كاملة بصيغة
+# نصية مقروءة - كان بيسرّب أكواد الخصم لأي حد يعرف يفتح الرابط مباشرة، حتى لو
+# مفيش لينك ليه من أي صفحة. لازم الملف الفعلي يتحذف من الديبلوي كمان (مش بس
+# يتحجب من الأرشفة هنا) - راجع التقرير تحت.
+Disallow: /data/
+
+Sitemap: https://bose-sweet.vercel.app/sitemap.xmllishable
