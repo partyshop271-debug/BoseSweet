@@ -1,8 +1,8 @@
 /**
  * core-engine.js - المحرك المركزي العالمي وحارس البيانات والحسابات المالية
- * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية الملوكية المطورة V13.0
- * [تحديث شامل وتوافق تام]: حل كافة تنبيهات الأنواع الضمنية (Implicit Any Warnings)، 
- * توثيق المعاملات الموحد، ودعم تبويب الأقسام والسلايدرات بمرونة وأمان كامل.
+ * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية الملوكية المطورة V14.0
+ * [تحديث V14.0]: تفعيل الكاش الذكي بالتحقق من بصمة الإصدار (get_bose_data_version)
+ * بدل الاعتماد على صلاحية زمنية عمياء (15 دقيقة) فقط - راجع loadStoreDatabase().
  * محظور الحذف، الاختصار، الدمج، أو التبسيط نهائياً تماشياً مع فلسفة العلامة الفاخرة.
  */
 
@@ -29,24 +29,58 @@
     window.boseServerTimeOffset = 0; // فارق التوقيت بالمللي ثانية: (وقت الخادم - وقت جهاز العميل)
 
     /**
-     * جلب وقراءة قاعدة بيانات حلويات بوسي الموحدة - نظام الكاش الذكي الموفر للبيانات والباقة
-     * @returns {Promise<void>}
+     * 🧠 [V14.0 - كاش ذكي بالتحقق من الإصدار]: بدل ما كنا نعتمد بس على مرور
+     * 15 دقيقة عشان نعتبر الكاش "قديم"، دلوقتي بنسأل قاعدة البيانات سؤال رخيص
+     * جداً (get_bose_data_version - قيمة تاريخ واحدة بس، مش جدول كامل) عشان
+     * نعرف هل فعلاً حصل أي تعديل حقيقي (منتج/فئة/عرض/منطقة شحن/إعدادات متجر)
+     * من وقت آخر كاش محفوظ عندنا. لو مفيش تغيير، بنستخدم الكاش المحلي فوراً
+     * من غير ما نحمّل كل بيانات المتجر تاني (بيوفر استهلاك بيانات الموبايل
+     * وزمن التحميل بشكل ملموس، خصوصاً في الزيارات المتكررة لنفس العميل).
+     * 
+     * صمام أمان: لو التحقق نفسه فشل (مشكلة شبكة وقتية)، بنستخدم الكاش المحلي
+     * بأمان بدل ما نوقف الموقع، وهيتصحح تلقائياً في أول زيارة تانية ناجحة.
+     * وفيه سقف زمني قاسي (24 ساعة) كخط دفاع أخير حتى لو فشل التحقق باستمرار.
      */
     async function loadStoreDatabase() {
         if (window.BoseStoreData) return;
-        
+
         const cachedData = localStorage.getItem('bose_cached_store_data');
         const cachedTime = localStorage.getItem('bose_cached_store_time');
-        const cacheExpiry = 15 * 60 * 1000; // صلاحية الكاش 15 دقيقة لضمان حداثة الأسعار
+        const cachedVersion = localStorage.getItem('bose_cached_store_version');
+        const cacheHardExpiry = 24 * 60 * 60 * 1000; // صمام أمان أخير: يوم كامل بغض النظر عن نتيجة التحقق
+        const cacheWithinHardLimit = cachedData && cachedTime && (Date.now() - parseInt(cachedTime, 10) < cacheHardExpiry);
 
-        if (cachedData && cachedTime && (Date.now() - parseInt(cachedTime, 10) < cacheExpiry)) {
+        if (cacheWithinHardLimit) {
             try {
-                window.BoseStoreData = JSON.parse(cachedData);
-                initCoreFlow();
-                return;
+                let liveVersion = null;
+                let versionCheckSucceeded = false;
+
+                if (window.BoseSupabase && typeof window.BoseSupabase.getBoseDataVersion === "function") {
+                    try {
+                        const versionResult = await window.BoseSupabase.getBoseDataVersion();
+                        // الدالة بترجع timestamp مفرد (مش جدول)؛ PostgREST بيرجعه كقيمة خام
+                        // مباشرة أحياناً، أو كصف واحد جوه array حسب نسخة الـ REST - بنغطي الحالتين.
+                        liveVersion = Array.isArray(versionResult)
+                            ? (versionResult[0]?.get_bose_data_version ?? versionResult[0])
+                            : (versionResult?.get_bose_data_version ?? versionResult);
+                        versionCheckSucceeded = liveVersion !== null && liveVersion !== undefined;
+                    } catch (e) {
+                        versionCheckSucceeded = false;
+                    }
+                }
+
+                // لو التحقق فشل (مشكلة شبكة/RPC مش جاهزة) أو النسخة الحية طابقت المحفوظة
+                // محلياً: استخدم الكاش المحلي فوراً من غير أي تحميل كامل جديد.
+                if (!versionCheckSucceeded || String(liveVersion) === String(cachedVersion)) {
+                    window.BoseStoreData = JSON.parse(cachedData);
+                    initCoreFlow();
+                    return;
+                }
+                // وصلنا هنا يعني: التحقق نجح والنسخة اتغيرت فعلاً -> كمل تحت لجلب بيانات جديدة بالكامل
             } catch (e) {
                 localStorage.removeItem('bose_cached_store_data');
                 localStorage.removeItem('bose_cached_store_time');
+                localStorage.removeItem('bose_cached_store_version');
             }
         }
         
@@ -74,6 +108,26 @@
 
                 localStorage.setItem('bose_cached_store_data', JSON.stringify(window.BoseStoreData));
                 localStorage.setItem('bose_cached_store_time', String(Date.now()));
+
+                // 🧠 [V14.0]: تسجيل بصمة النسخة الحالية فور نجاح الجلب، عشان أي زيارة
+                // تانية (حتى لو بعد دقيقة واحدة) تقدر تتحقق بسرعة بدل ما تستنى 15 دقيقة.
+                // فشل هذا الطلب تحديداً (مش حرج) بيتجاهل بأمان ويفضل الموقع شغال عادي،
+                // وبس هيرجع يتحقق بطريقة أبطأ (تحميل كامل) في الزيارة الجاية.
+                if (window.BoseSupabase && typeof window.BoseSupabase.getBoseDataVersion === "function") {
+                    try {
+                        const versionResult = await window.BoseSupabase.getBoseDataVersion();
+                        const v = Array.isArray(versionResult)
+                            ? (versionResult[0]?.get_bose_data_version ?? versionResult[0])
+                            : (versionResult?.get_bose_data_version ?? versionResult);
+                        if (v !== null && v !== undefined) {
+                            localStorage.setItem('bose_cached_store_version', String(v));
+                        } else {
+                            localStorage.removeItem('bose_cached_store_version');
+                        }
+                    } catch (e) {
+                        localStorage.removeItem('bose_cached_store_version');
+                    }
+                }
                 
                 initCoreFlow();
                 return;
@@ -282,7 +336,7 @@
             const descEl = document.getElementById('categories-section-subtitle') || categoriesSection.querySelector('.bose-section-subtitle');
             
             if (titleEl) titleEl.textContent = "تسوق حسب الفئة";
-            if (descEl) descEl.textContent = "قسّمنا منيو حلويات بوسي لـ 12 فئة واضحة بالصور، عشان تلاقوا اللي بتحبوه من غير حيرة.";
+            if (descEl) descEl.textContent = "قسمنا منيو حلويات بوسي لـ 12 فئة واضحة بالصور، عشان تلاقوا اللي بتحبوه من غير حيرة.";
             
             const track = document.getElementById('categories-track') || categoriesSection.querySelector('.categories-track-slider') || categoriesSection.querySelector('[id*="track"]');
             if (track) {
@@ -327,11 +381,13 @@
      * 👑 [مصدر واحد للحقيقة]: قسم العروض بالرئيسية وصفحة كل العروض offers.html
      * بيستخدموا نفس المصدر بالظبط - أي منتج في قاعدة البيانات معاه oldPrice > price.
      * محدش بيكتب عروض يدوي تاني في أكتر من مكان، فمفيش احتمال تضارب أو نسيان.
+     * 🛡️ [V14.0]: بيستبعد المنتجات المتعلّمة "غير متاحة" (isAvailable === false)
+     * حتى لو عليها خصم فعلي - منتج نفدت كميته منطقي ميظهرش في واجهة العروض.
      */
     function getAllOfferProducts() {
         const data = window.BoseStoreData;
         if (!data || !data.products) return [];
-        return data.products.filter(/** @param {Object} p */ (p) => p.oldPrice && p.oldPrice > p.price);
+        return data.products.filter(/** @param {Object} p */ (p) => p.oldPrice && p.oldPrice > p.price && p.isAvailable !== false);
     }
     window.getAllOfferProducts = getAllOfferProducts;
 
@@ -585,15 +641,28 @@
             savingsHtml = `<span class="offer-savings-note">وفر ${Math.round(savingsAmount)} جنيه</span>`;
         }
 
+        // 🛡️ [V14.0]: منتج نفدت كميته (isAvailable === false) بيفضل ظاهر في الشبكة
+        // (عشان العميل يعرف إنه كان موجود ويرجع يسأل عليه) لكن بيتقفل زرار الإضافة
+        // للسلة وبتتحط شارة واضحة بدل ما يتباع منتج مش موجود فعلياً بالخطأ.
+        const isUnavailable = product.isAvailable === false;
+        const addToCartButtonHtml = isUnavailable
+            ? `<button class="btn-add-to-cart" disabled style="opacity:0.6; cursor:not-allowed;">
+                    <i class="fa-solid fa-ban"></i> نفدت الكمية حالياً
+               </button>`
+            : `<button class="btn-add-to-cart" onclick="window.handleBoseDirectAddToCart(this, '${product.id}')">
+                    <i class="fa-solid fa-basket-shopping"></i> اضافة للسلة
+               </button>`;
+
         return `
-            <div class="product-card-unified${hasDiscount ? ' bose-offer-card' : ''}" data-id="${product.id}" onclick="if(!event.target.closest('.product-card-qty-wrapper') && !event.target.closest('.btn-add-to-cart')){ window.location.href='product.html?slug=${encodeURIComponent(product.slug)}'; }" style="cursor:pointer;">
+            <div class="product-card-unified${hasDiscount ? ' bose-offer-card' : ''}${isUnavailable ? ' bose-unavailable-card' : ''}" data-id="${product.id}" onclick="if(!event.target.closest('.product-card-qty-wrapper') && !event.target.closest('.btn-add-to-cart')){ window.location.href='product.html?slug=${encodeURIComponent(product.slug)}'; }" style="cursor:pointer;">
                 ${discountBadgeHtml}
-                <img src="${safeImg}" alt="${safeTitle}" class="product-card-img" width="300" height="300" loading="lazy" />
+                ${isUnavailable ? `<div class="offer-badge" style="background:rgba(17,17,17,0.75);">نفدت الكمية</div>` : ''}
+                <img src="${safeImg}" alt="${safeTitle}" class="product-card-img" width="300" height="300" loading="lazy" style="${isUnavailable ? 'filter:grayscale(60%); opacity:0.75;' : ''}" />
                 <h3 class="product-card-title">${safeTitle}</h3>
                 <span class="product-card-flavor-name">${safeFlavor}</span>
                 <p class="product-card-desc">${safeDesc}</p>
                 
-                <div class="product-card-qty-wrapper">
+                <div class="product-card-qty-wrapper" style="${isUnavailable ? 'display:none;' : ''}">
                     <button class="btn-qty-plus" onclick="window.handleBoseCardQtyChange(this, 1)">+</button>
                     <input type="number" class="input-qty-value" value="1" min="1" readonly />
                     <button class="btn-qty-minus" onclick="window.handleBoseCardQtyChange(this, -1)">-</button>
@@ -604,9 +673,7 @@
                     <span>${Math.round(calculatedPrice)} جنيه</span>
                     ${savingsHtml}
                 </div>
-                <button class="btn-add-to-cart" onclick="window.handleBoseDirectAddToCart(this, '${product.id}')">
-                    <i class="fa-solid fa-basket-shopping"></i> اضافة للسلة
-                </button>
+                ${addToCartButtonHtml}
             </div>
         `;
     }
@@ -1240,6 +1307,15 @@
         if (!window.BoseStoreData || !buttonElement) return;
         const product = window.BoseStoreData.products ? window.BoseStoreData.products.find((/** @type {any} */ p) => p.id === productId || p.slug === productId) : null;
         if (!product) return;
+
+        // 🛡️ [V14.0]: حارس أخير يمنع إضافة منتج نفدت كميته للسلة حتى لو حصل أي
+        // استدعاء مباشر للدالة دي متجاوز لواجهة الزرار المعطّل في createProductCardHTML.
+        if (product.isAvailable === false) {
+            if (typeof window.showBoseGlobalToast === 'function') {
+                window.showBoseGlobalToast('عذراً، هذا الصنف نفدت كميته حالياً.');
+            }
+            return;
+        }
 
         const cardContainer = buttonElement.closest('.product-card-unified');
         let qty = 1;

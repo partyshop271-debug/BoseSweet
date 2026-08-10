@@ -106,6 +106,7 @@
             featured: p.is_featured,
             rating: p.rating,
             reviews: p.seed_reviews || [],
+            isAvailable: p.is_available !== false,
         }));
 
         return {
@@ -130,6 +131,22 @@
             offers: offers || [],
             shippingZones: shippingZones || [],
         };
+    }
+
+    /**
+     * 🕒 [كاش ذكي مع إبطال تلقائي]: بترجع "بصمة" وقت آخر تعديل مؤثر على بيانات
+     * الموقع العام (منتجات/فئات/عروض/مناطق شحن/إعدادات المتجر) من دالة قاعدة
+     * البيانات get_bose_data_version(). طلب صغير جداً (قيمة واحدة بس - timestamp
+     * مفرد، مش جدول) بيستخدمه core-engine.js عشان يقرر يفضل مستخدم الكاش المحلي
+     * (localStorage) ولا يجيب بيانات كاملة جديدة - بدل ما يستنى انتهاء صلاحية
+     * الكاش بالوقت بس زي ما كان قبل كده.
+     * 🛡️ الدالة دي متاحة لـ anon (اتأكدنا من صلاحيات EXECUTE في القاعدة)، ومحمية
+     * بـ SECURITY DEFINER + STABLE + search_path ثابت في تعريفها.
+     *
+     * @returns {Promise<string>} قيمة زمنية (ISO timestamp) تمثل آخر تحديث فعلي
+     */
+    async function getBoseDataVersion() {
+        return boseSupabaseRpc("get_bose_data_version", {});
     }
 
     /**
@@ -299,6 +316,7 @@
     // تصدير الدوال على window بنفس فلسفة الموقع الحالية (window.escapeBoseHTML...)
     window.BoseSupabase = {
         loadBoseStoreDataFromSupabase,
+        getBoseDataVersion,
         submitBoseOrderToDatabase,
         submitBoseReview,
         fetchApprovedReviews,
