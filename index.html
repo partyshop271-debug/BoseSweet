@@ -12,7 +12,14 @@
     <meta property="og:description" content="صمم تورتتك وبوكيهك بمحاكياتنا التفاعلية، وعيش تجربة تسوق حلويات بوسي الفاخرة.">
     <meta property="og:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
     <meta property="og:type" content="website">
-    <link rel="canonical" href="https://bosesweets.com">
+    <!-- 🛡️ [إصلاح حرج - SEO]: كان هنا رابط لدومين مختلف تماماً (bosesweets.com) بينما كل باقي
+         الموقع (sitemap.xml، صفحات السياسات، seo.canonical في قاعدة البيانات) بيتفقوا على
+         bose-sweet.vercel.app. تعارض الـ canonical بين دومينين بيلخبط محركات البحث ويقسّم
+         الـ SEO authority، وممكن يخلي جوجل يفهرس أو يفضّل نسخة غلط من الموقع. لو bosesweets.com
+         دومين حقيقي وناوي تتحول عليه فعلياً، الحل الصح وقتها هو 301 redirect من vercel.app
+         للدومين الجديد + تحديث sitemap.xml وseo.canonical في store_settings سوا، مش تغيير
+         السطر ده لوحده. لحد ما يحصل ده، وحّدنا كل حاجة على الدومين الفعلي المستخدم في كل مكان. -->
+    <link rel="canonical" href="https://bose-sweet.vercel.app/">
 
     <!-- ⚡ [إصلاح أداء]: preconnect ناقص كان بيأخر أول اتصال بمصادر الخط والصور والأيقونات -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

@@ -18,13 +18,13 @@
     <!-- 🐛 [إصلاح حرج]: خط Cairo وأيقونات Font Awesome كانوا غير محمّلين نهائياً بالصفحة دي -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/global.css?v=2026_production_v31.0">
-    <link rel="stylesheet" href="css/main.css?v=2026_production_v31.0">
+    <link rel="stylesheet" href="css/global.css?v=2026_production_v31.1">
+    <link rel="stylesheet" href="css/main.css?v=2026_production_v31.1">
     
     <!-- 👑 استدعاء المحرك المركزي العالمي في رأس الصفحة لتأمين الـ DOM ومنع وميض الألوان -->
     <!-- ⚡ [إصلاح أداء]: defer عشان السكريبت متوقفش رسم الصفحة -->
-    <script src="js/supabase-client.js?v=2026_production_v31.0" defer></script>
-    <script src="js/core-engine.js?v=2026_production_v31.0" defer></script>
+    <script src="js/supabase-client.js?v=2026_production_v31.1" defer></script>
+    <script src="js/core-engine.js?v=2026_production_v31.1" defer></script>
 
     <style>
         /* 🎨 الهندسة البصرية الخاصة بصفحة الفئة الديناميكية لمنع التكديس البصري */
@@ -432,11 +432,39 @@
                 headlineNode.textContent = categoryObj.title;
                 breadcrumbNode.textContent = categoryObj.title;
 
-                // 🛡️ [إصلاح حرج]: منتجات البوكسات/العروض المجمّعة (بادئة "promo-") كانت بتظهر هنا كأنها
+                // 🛡️ [إصلاح حرج - سابق]: منتجات البوكسات/العروض المجمّعة (بادئة "promo-") كانت بتظهر هنا كأنها
                 // منتج جديد منفصل بسعر مختلف لنفس النكهة، فيبان للعميل إنه تكرار غلط. مكانها الشرعي
                 // الوحيد هو قسم العروض بالرئيسية وصفحة offers.html فقط، مش شبكة الفئة العادية.
-                globalFilteredProducts = siteData.products.filter(p => p.category === categoryId && !String(p.id).startsWith('promo-'));
+                //
+                // 🛡️ [إصلاح حرج جديد]: المنتجات "الرئيسية" المرتبطة بمحاكي تفاعلي (تورت مخصص toort-custom-master
+                // / بوكيه ورد flowers-master) معندهاش سعر أو تفاصيل ثابتة أصلاً - سعرها بيتحدد جوه المحاكي بس.
+                // قبل الإصلاح ده، كانت الفئتين taswaq-toort و taswaq-flowers بيوصلهم زائر مباشرة عبر رابط
+                // (زي category.html?category=taswaq-toort الموجود فعلياً في sitemap.xml)، وكانت الصفحة
+                // بتعرض المنتج ده كـ "كارت عادي" بعداد كمية وزرار "إضافة للسلة" مباشر، فيتضاف للسلة كمنتج
+                // standard بسعر أساسي بس من غير أي تخصيص حقيقي (شكل/حجم/نكهة/عدد أفراد للتورت، نوع/عدد
+                // ورد للبوكيه) - نفس فحص isBuilderMaster المستخدم في core-engine.js (createProductCardHTML)
+                // وproduct.html (التحويل التلقائي) اتطبق هنا كمان عشان الصفحات الثلاثة تتفق مع بعضها.
+                globalFilteredProducts = siteData.products.filter(p =>
+                    p.category === categoryId &&
+                    !String(p.id).startsWith('promo-') &&
+                    !(p.customBuilderUrl && p.builderType && p.builderType !== 'standard')
+                );
                 globalStoreCurrency = siteData.store.currency || "EGP";
+
+                // 🛡️ [إصلاح حرج جديد]: لو الفئة دي بالكامل بتخص محاكي تفاعلي (زي "التورت" أو "الورد")
+                // فبعد الفلترة فوق هتبقى فاضية تماماً من غير أي منتج قياسي - بدل ما نعرض "لا توجد منتجات"
+                // مربكة للعميل، نوديه مباشرة لصفحة المحاكي الصحيحة (نفس سلوك product.html بالظبط).
+                if (globalFilteredProducts.length === 0) {
+                    const masterBuilderProduct = siteData.products.find(p =>
+                        p.category === categoryId && p.customBuilderUrl && p.builderType && p.builderType !== 'standard'
+                    );
+                    if (masterBuilderProduct) {
+                        window.location.replace(masterBuilderProduct.customBuilderUrl);
+                        return;
+                    }
+                    renderEmptyState("لا توجد منتجات متوفرة حالياً في هذه الفئة.");
+                    return;
+                }
                 
                 // الترتيب السلوكي الذكي للعميل
                 try {
@@ -457,13 +485,8 @@
                 } catch (e) {
                     console.warn("⚠️ فشل فرز المنتجات سلوكياً داخل الفئة.");
                 }
-                
-                if (globalFilteredProducts.length > 0) {
-                    descNode.textContent = globalFilteredProducts[0].description || `أفخر أنواع ${categoryObj.title} المصنوعة يدوياً بكل حب وشغف.`;
-                } else {
-                    renderEmptyState("لا توجد منتجات متوفرة حالياً في هذه الفئة.");
-                    return;
-                }
+
+                descNode.textContent = globalFilteredProducts[0].description || `أفخر أنواع ${categoryObj.title} المصنوعة يدوياً بكل حب وشغف.`;
 
                 const firstProduct = globalFilteredProducts[0];
 
