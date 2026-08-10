@@ -115,9 +115,18 @@
             summary.totalProducts = count || 0;
         } catch (e) { console.warn("تعذر جلب عدد المنتجات:", e.message); }
 
+        // 🛡️ [إصلاح - تصحيح مصدر البيانات]: كان بيتحسب هنا يدوياً من كل صفوف
+        // products بشرط old_price > price، وده رقم مختلف تماماً عن جدول offers
+        // الحقيقي اللي صفحة "عروض المنتجات" (offers.html) بتديره فعلياً - يعني
+        // الرقم في الداشبورد كان ممكن يكدب تماماً عن العدد الحقيقي اللي الأدمن
+        // ضبطه بنفسه. دلوقتي بيتعدّ مباشرة من جدول offers نفسه (نفس المصدر
+        // اللي offers-page.js بيستخدمه في getAllOffers) عن طريق count بسيط
+        // على مستوى القاعدة بدل سحب كل المنتجات وحسابهم في المتصفح.
         try {
-            const { data } = await client.from("products").select("id, price, old_price");
-            summary.activeOffers = (data || []).filter((p) => p.old_price && p.old_price > p.price).length;
+            const { count } = await client
+                .from("offers")
+                .select("id", { count: "exact", head: true });
+            summary.activeOffers = count || 0;
         } catch (e) { console.warn("تعذر جلب عدد العروض النشطة:", e.message); }
 
         return summary;
@@ -341,10 +350,54 @@
         if (error) throw error;
     }
 
-    /** حذف منتج نهائياً */
+    /**
+     * حذف منتج نهائياً.
+     * 🛡️ [إصلاح - تنظيف المراجع اليتيمة]: قبل كده كان بيحذف صف المنتج بس
+     * ويسيب وراه: (1) صف يتيم محتمل في جدول offers لو ربط عرض بالمنتج ده
+     * قبل الحذف، و(2) الـ id بتاعه فاضل عالق جوه store_settings.homepage
+     * (mostSelling/newArrivals/ourProducts) لأنها arrays من نصوص مش FK
+     * حقيقي - فمفيش أي قيد قاعدة بيانات يمنع أو ينظف المرجع ده تلقائياً.
+     * كان بيختفي "بصريًا بس" من الواجهة بفلتر .filter(Boolean) في
+     * homepage-page.js، لكن الـ id فضل مخزّن فعلياً ويكبر مع كل حذف.
+     * دلوقتي بيتعمل تنظيف فعلي للاتنين بعد نجاح حذف المنتج الأساسي، كل
+     * واحدة في try/catch منفصلة عشان فشل التنظيف (مثلاً صلاحيات) ميوقفش
+     * نجاح عملية الحذف الأساسية.
+     */
     async function deleteProduct(id) {
         const { error } = await client.from("products").delete().eq("id", id);
         if (error) throw error;
+
+        try {
+            await client.from("offers").delete().eq("product_id", id);
+        } catch (e) {
+            console.warn("تعذر تنظيف عروض المنتج المحذوف:", e.message);
+        }
+
+        try {
+            const { data } = await client
+                .from("store_settings")
+                .select("homepage")
+                .eq("id", 1)
+                .maybeSingle();
+            const homepage = data && data.homepage;
+            if (homepage) {
+                let changed = false;
+                ["mostSelling", "newArrivals", "ourProducts"].forEach((key) => {
+                    if (Array.isArray(homepage[key]) && homepage[key].includes(id)) {
+                        homepage[key] = homepage[key].filter((pid) => pid !== id);
+                        changed = true;
+                    }
+                });
+                if (changed) {
+                    await client
+                        .from("store_settings")
+                        .update({ homepage, updated_at: new Date().toISOString() })
+                        .eq("id", 1);
+                }
+            }
+        } catch (e) {
+            console.warn("تعذر تنظيف مراجع المنتج المحذوف من الصفحة الرئيسية:", e.message);
+        }
     }
 
     /* ============================= الكوبونات (صفحة coupons.html) ============================= */
