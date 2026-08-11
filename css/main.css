@@ -45,6 +45,38 @@
 .hero-categories-ticker-track.is-dragging {
     cursor: grabbing;
 }
+
+/* 🚨 [موحّد]: تبويبات اختيار الحجم — كانت معرّفة محلياً جوه category.html بس، فمكنش
+   ممكن استخدامها في product.html بدون تكرار الكود. نُقلت هنا لتصبح مصدر واحد مشترك
+   تستخدمه كل صفحات المنتج (كارت الفئة + صفحة المنتج المستقلة) بنفس الشكل بالظبط. */
+.bose-size-tabs-filter {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 35px;
+    direction: rtl;
+    flex-wrap: wrap;
+}
+
+.bose-filter-tab-pill {
+    font-family: 'Cairo', sans-serif;
+    font-weight: 700 !important;
+    font-size: 0.85rem;
+    padding: 10px 20px;
+    border: 1px solid rgba(255, 145, 164, 0.3);
+    background: #FFFFFF;
+    color: #111111;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bose-filter-tab-pill.active {
+    background-color: var(--bose-pink, #FF91A4);
+    color: #FFFFFF;
+    border-color: var(--bose-pink, #FF91A4);
+    box-shadow: 0 4px 12px rgba(255, 145, 164, 0.2);
+}
 /* [ملاحظة توافق]: الحركة التلقائية اتنقلت بالكامل لـ core-engine.js (requestAnimationFrame)
    بدل @keyframes CSS، عشان تقدر تستجيب للسحب اليدوي بسلاسة من غير أي قفزة أو تعارض
    بين حركة الـ CSS التلقائية وحركة سحب الجافاسكريبت. الـ @keyframes القديمة (boseSubnavAutoScroll)
