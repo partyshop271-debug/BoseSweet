@@ -301,6 +301,13 @@
 
         recalcBounds();
         window.addEventListener('resize', recalcBounds);
+        // 🛡️ [تحصين إضافي]: لو العميل رجع للصفحة عن طريق زرار "رجوع" في المتصفح
+        // (bfcache restore)، الصفحة بترجع من الذاكرة زي ما كانت من غير أي resize
+        // أو DOMContentLoaded جديد يشغّل recalcBounds، فممكن يفضل التيكر واقف على
+        // آخر حالة قديمة له (أو حتى halfWidth = 0 لو كانت الصفحة اتحفظت للـ bfcache
+        // في لحظة قبل أول حساب). إعادة الحساب هنا تضمن إنه دايماً يرجع لموضعه
+        // الصحيح فور ظهور الصفحة تاني بأي طريقة.
+        window.addEventListener('pageshow', recalcBounds);
         // 🔧 [إصلاح الفراغ الفارغ]: recalcBounds بيتنفذ الأول قبل ما خط Cairo وأيقونات
         // Font Awesome يخلصوا تحميل، فبيحسب عرض غلط ويعمل قفزة/فراغ لحظة اللف.
         // بنعيد الحساب تاني بعد ما كل الخطوط تخلص تحميل، وبعد أول فريمين كمان كضمان إضافي.
@@ -692,6 +699,16 @@
             </div>
         `;
     }
+
+    // 🛡️ [إصلاح معماري جذري]: createProductCardHTML كانت دالة "موحدة" بالاسم بس،
+    // من غير ما تكون متاحة فعلياً لأي صفحة تانية غير core-engine.js نفسه (مش معلقة
+    // على window). النتيجة: صفحات زي category.html و cart.html اضطرت تكتب نسخة
+    // خاصة بيها من نفس منطق الكارت يدوياً بدل ما تستدعي الدالة دي - وكل نسخة من
+    // النسخ دي ممكن تتصلح لوحدها وتفضل الباقي فيهم نفس المشكلة (بالظبط اللي حصل
+    // مع مشكلة "تكرار منتجات العروض"). تعليقها هنا على window بيخلي أي صفحة في
+    // الموقع كله تقدر تستخدم window.createProductCardHTML(product) بدل ما تعيد
+    // كتابة نفس الكود من الصفر.
+    window.createProductCardHTML = createProductCardHTML;
 
     /**
      * @param {HTMLElement} buttonElement
@@ -1322,6 +1339,20 @@
         if (!window.BoseStoreData || !buttonElement) return;
         const product = window.BoseStoreData.products ? window.BoseStoreData.products.find((/** @type {any} */ p) => p.id === productId || p.slug === productId) : null;
         if (!product) return;
+
+        // 🛡️ [إصلاح حرج - السلة كانت بتضيف التورت/البوكيه المخصص مباشرة من غير محاكي]:
+        // createProductCardHTML وحدها كانت بتتأكد إن المنتج "رئيسي مرتبط بمحاكي"
+        // (isBuilderMaster) قبل ما تعرض زرار "اضافة للسلة" أصلاً - أي استدعاء تاني
+        // لهذه الدالة من مكان مختلف (مثلاً كارت "منتجات مقترحة" داخل صفحة السلة أو
+        // صفحة منتج) كان بيعدي من غير أي فحص، فيضيف تورتة/بوكيه بسعر ووصف افتراضي
+        // فارغين تماماً بدون ما العميل يختار الطعم/الشكل/عدد الأفراد من المحاكي.
+        // الفحص دلوقتي بقى موجود جوه الدالة نفسها (مش بس جوه الكارت) عشان
+        // مفيش أي طريقة تانية تقدر تتحايل عليه مهما كان مصدر الاستدعاء.
+        const isBuilderMasterProduct = !!product.customBuilderUrl && product.builderType && product.builderType !== 'standard';
+        if (isBuilderMasterProduct) {
+            window.location.href = product.customBuilderUrl;
+            return;
+        }
 
         // 🛡️ [V14.0]: حارس أخير يمنع إضافة منتج نفدت كميته للسلة حتى لو حصل أي
         // استدعاء مباشر للدالة دي متجاوز لواجهة الزرار المعطّل في createProductCardHTML.
