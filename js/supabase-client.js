@@ -100,6 +100,12 @@
             basePrice: p.base_price,
             prices: p.prices || {},
             defaultSize: p.default_size,
+            // 🚨 [تفعيل عمود موجود فعلاً بقاعدة البيانات لكن كان غير مستخدم]: size_descriptions
+            // موجود جاهز في جدول products (لوصف مخصص لكل حجم زي الديسباسيتو) بس مكنش بيتحط
+            // في كائن المنتج هنا أصلاً، فمفيش أي صفحة كانت تقدر تستخدمه حتى لو اتكتب من
+            // لوحة التحكم. دلوقتي بيوصل للواجهة عشان صفحة المنتج تقدر تغيّر الوصف تلقائياً
+            // مع تغيير الحجم المختار.
+            sizeDescriptions: p.size_descriptions || {},
             builderType: p.builder_type,
             customBuilderUrl: p.custom_builder_url,
             searchTerms: p.search_terms || [],

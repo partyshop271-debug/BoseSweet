@@ -121,7 +121,15 @@ function renderBoseCartPage(storeData) {
                     if (cd.wrappingType && cd.wrappingType !== "none") specs.push(`<span><strong>التغليف:</strong> ${esc(cd.wrappingType)}</span>`);
                     if (cd.giftCardText && cd.giftCardText.trim() !== "") specs.push(`<span><strong>كارت الإهداء:</strong> "${esc(cd.giftCardText.trim())}"</span>`);
                 }
-                
+
+                // 👑 [إصلاح جذري - كارثة الأحجام]: المنتجات العادية (زي الديسباسيتو/القشطوطة)
+                // اللي عندها أكتر من حجم سعر لازم يظهر الحجم اللي العميل اختاره بوضوح جوه
+                // كارت السلة - قبل كده كان الفرق الوحيد بين الأحجام هو السعر بصمت، والعميل
+                // نفسه ميعرفش هو مشتري مقاس إيه غير لما الطلب يوصله فعلياً.
+                if (!isCakeBespoke && !isFlowerBespoke && cd.sizeLabel) {
+                    specs.push(`<span><strong>الحجم:</strong> ${esc(cd.sizeLabel)}</span>`);
+                }
+
                 if (specs.length > 0) {
                     customDetailsHTML = `<div class="cart-item-customizations-panel" style="font-size: 13px; color: #111111; background: rgba(255,145,164,0.04); padding: 10px; border-radius: 12px; margin: 6px 0; border-right: 3px solid #FF91A4; display: flex; flex-direction: column; gap: 4px; width: 100%; box-sizing: border-box; font-family: 'Cairo';">${specs.join("")}</div>`;
                 }
@@ -705,6 +713,12 @@ function buildBoseFormattedWhatsappInvoice(order) {
                 if (cd.cashAmount && cd.cashAmount > 0) msg += `   • الكاش المدمج جوه البوكيه: +${cd.cashAmount} EGP\n`;
                 if (cd.hasChocolate && cd.chocolateBudget && cd.chocolateBudget > 0) msg += `   • ميزانية الشوكولاتة الفاخرة: +${cd.chocolateBudget} EGP\n`;
                 if (cd.hasGiftCard && cd.giftCardText && cd.giftCardText.trim() !== "") msg += `   • كارت الإهداء: "${cd.giftCardText}"\n`;
+            }
+            // 👑 [إصلاح جذري - كارثة الأحجام]: لازم الحجم يظهر في فاتورة الواتساب اللي
+            // بيتفذ منها الطلب فعلياً في الفرع - قبل كده الحجم مكنش موجود هنا خالص،
+            // وكان ممكن يتنفذ الطلب بحجم غلط تماماً عن اللي دفع فيه العميل فعلاً.
+            if (item.type !== "custom-cake" && item.type !== "mini-cake" && item.type !== "custom-flower" && cd.sizeLabel) {
+                msg += `   • *الحجم المطلوب:* ${cd.sizeLabel}\n`;
             }
         }
 

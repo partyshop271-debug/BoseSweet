@@ -18,6 +18,18 @@
         window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
     }
     forceScrollToTop();
+
+    /**
+     * 👑 [إصلاح جذري - كارثة الأحجام]: خريطة أسماء الأحجام الموحدة لكل الموقع (مطابقة
+     * تماماً لنفس الأسماء المستخدمة في product.html/category.html). كانت هذه الأسماء
+     * مكررة محلياً في أكتر من ملف، وأهم من كده: كروت المنتجات في الصفحة الرئيسية
+     * وصفحة العروض وسلة "قد يعجبك أيضاً" كانت بتضيف المنتج للسلة بأرخص حجم (مثلث)
+     * تلقائياً من غير ما تدي العميل أي فرصة يختار الحجم المناسب - ده كان بيسبب خسارة
+     * فعلية في قيمة الطلب وارتباك للعميل لما يوصله منتج بحجم أصغر مما توقع. الخريطة دي
+     * بقت متاحة عالمياً (window.BOSE_SIZE_LABELS) عشان أي كارت منتج في أي مكان بالموقع
+     * يقدر يعرض تبويب اختيار الحجم بنفس الأسماء بالظبط.
+     */
+    window.BOSE_SIZE_LABELS = { triangle: "مثلث فردي", medium: "وسط تشارك ممتع", large: "كبير جمعات فاخرة" };
     document.addEventListener('DOMContentLoaded', forceScrollToTop);
     window.addEventListener('load', forceScrollToTop);
 
@@ -173,180 +185,22 @@
             });
         });
 
-        setupHeroTickerDragEngine();
-        
         document.dispatchEvent(new CustomEvent('BoseDatabaseLoaded', { detail: window.BoseStoreData }));
     }
 
     /**
-     * 👑 [إصلاح بناءً على طلب صاحبة المتجر]: محرك تبويب الفئات أسفل زر "اطلب الآن" (Hero Categories Ticker)
-     * كان بيتحرك تلقائياً لوحده (auto-scroll) — تم إلغاء الحركة التلقائية بالكامل بناءً على طلب
-     * صريح. التبويب دلوقتي "ثابت تماماً" ومبيتحركش إلا لما العميل يسحبه بإيده فعلياً (pointer drag)،
-     * ولسه محتفظين بإحساس السحب الطبيعي (عطالة/momentum خفيفة بعد الإفلات) لأن ده استجابة
-     * لحركة العميل نفسه مش حركة تلقائية مستقلة. المحتوى لسه مكرر مرتين بالـ HTML عشان لو
-     * العميل سحب مسافة طويلة يفضل في حلقة متصلة من غير فراغ.
+     * 👑👑 [إصلاح جذري نهائي - كارثة اختفاء التبويب أسفل "اطلب الآن"]: بعد 9 محاولات
+     * إصلاح سابقة فشلت جميعها (كل واحدة كانت بترقّع مشكلة تايمنج جديدة في نفس المحرك
+     * اليدوي بالـ JS اللي بيحسب موضع transform بنفسه)، تقرر إلغاء فكرة "محرك السحب
+     * اليدوي" بالكامل من جذورها بدل ما نضيف رقعة عاشرة. أي حل مبني على حساب موضع
+     * العنصر بالـ JS (posX/halfWidth/pointermove) عنده احتمال يفشل في توقيت معين
+     * (تحميل خط/أيقونة متأخر، تغيير viewport لحظة أول لمسة، bfcache، الخ) على جهاز
+     * أو متصفح معين مهما زودنا الحراسات. الحل الجذري: نسيب المتصفح نفسه يتحكم في
+     * التمرير الأفقي بشكل native (overflow-x: auto + scroll-snap في CSS) - مفيش أي
+     * transform بيتحسب بالـ JS خالص، فمفيش أي احتمال "يختفي" لأن مفيش كود بيحرّكه؛
+     * هو ببساطة صف عادي قابل للتمرير بإصبع العميل زي أي قائمة تانية في أي تطبيق.
+     * دالة setupHeroTickerDragEngine اتشالت بالكامل من هنا ومن استدعائها في initCoreFlow.
      */
-    function setupHeroTickerDragEngine() {
-        /** @type {HTMLElement|null} */
-        const track = document.querySelector('.hero-categories-ticker-track');
-        if (!track) return;
-
-        let posX = 0;
-        let halfWidth = 0;
-        let isDragging = false;
-        let dragMoved = false;
-        let startX = 0;
-        let startPosX = 0;
-        // 🔧 [إصلاح سلاسة اللمس]: كانت الحركة بتتبع إصبع العميل 1:1 بالظبط من غير أي
-        // عطالة (momentum)، فبتحس إنها "تقيلة" وبتقف فجأة لحظة رفع الإصبع بدل ما تكمل بسلاسة
-        // زي أي سلايدر طبيعي. بنتتبع سرعة السحب الفعلية ونكمل بيها لحظة الإفلات فقط
-        // (momentum/inertia) ثم تقف تماماً — من غير أي رجوع لحركة تلقائية.
-        let lastMoveX = 0;
-        let lastMoveTime = 0;
-        let velocity = 0; // بكسل/مللي ثانية
-        let momentumActive = false;
-
-        const recalcBounds = () => {
-            // النص متكرر مرتين، فنص عرض المحتوى هو طول الدورة الكاملة الواحدة
-            halfWidth = track.scrollWidth / 2;
-            // 🛡️ [إصلاح حرج - اختفاء التيكر نهائياً بعد أول لمسة]: لو العميل سحب
-            // التيكر قبل ما halfWidth يتحسب صح (مثلاً قبل ما خط Cairo يخلص تحميل)،
-            // كان posX بيتحرك من غير أي حد أعلى/أدنى (applyTransform بتتجاهل التطبيع
-            // لو halfWidth = 0)، فالتيكر كان بيتزحلق برا حدود الشاشة تماماً. وبعدين
-            // لما halfWidth يتصحح هنا، كنا بنحدّث الرقم بس من غير ما نعيد تطبيق
-            // الموضع، فالتيكر كان بيفضل واقف في مكانه الغلط (المختفي) للأبد. دلوقتي
-            // بنعيد تطبيق الموضع فوراً بعد أي تصحيح لحدود العرض عشان يرجع لموضعه
-            // الصحيح جوه الشاشة تلقائياً.
-            applyTransform();
-        };
-
-        const applyTransform = () => {
-            if (halfWidth > 0) {
-                // تطبيع الموضع دايماً جوه الدورة عشان يمنع أي قفزة أو فراغ حتى أثناء السحب اليدوي السريع
-                while (posX <= -halfWidth) posX += halfWidth;
-                while (posX > 0) posX -= halfWidth;
-            }
-            track.style.transform = `translate3d(${posX}px, 0, 0)`;
-        };
-
-        const runMomentumLoop = () => {
-            if (!momentumActive) return;
-            velocity *= 0.94; // احتكاك ناعم لإيقاف تدريجي طبيعي
-            posX += velocity;
-            applyTransform();
-            if (Math.abs(velocity) < 0.05) {
-                momentumActive = false;
-                return;
-            }
-            requestAnimationFrame(runMomentumLoop);
-        };
-
-        /** @param {PointerEvent} e */
-        const onPointerDown = (e) => {
-            // ضمان أخير: نتأكد إن الحدود محسوبة على القياس الحالي الفعلي للشاشة قبل
-            // ما نبدأ أي حركة سحب، تحديداً لو كانت آخر مرة اتحسبت فيها الحدود قبل أي
-            // تغيير مفاجئ في ارتفاع/عرض الـ viewport (شريط عنوان الموبايل مثلاً).
-            recalcBounds();
-            isDragging = true;
-            momentumActive = false;
-            dragMoved = false;
-            startX = e.clientX;
-            startPosX = posX;
-            lastMoveX = e.clientX;
-            lastMoveTime = performance.now();
-            velocity = 0;
-            track.classList.add('is-dragging');
-            if (typeof track.setPointerCapture === 'function') {
-                track.setPointerCapture(e.pointerId);
-            }
-        };
-
-        /** @param {PointerEvent} e */
-        const onPointerMove = (e) => {
-            if (!isDragging) return;
-            const delta = e.clientX - startX;
-            if (Math.abs(delta) > 6) dragMoved = true;
-            posX = startPosX + delta;
-            applyTransform();
-
-            const now = performance.now();
-            const dt = now - lastMoveTime;
-            if (dt > 0) {
-                velocity = (e.clientX - lastMoveX) / dt * 16.67; // تطبيع لسرعة بكسل/فريم (60fps)
-            }
-            lastMoveX = e.clientX;
-            lastMoveTime = now;
-        };
-
-        /** @param {PointerEvent} e */
-        const onPointerUp = (e) => {
-            if (!isDragging) return;
-            isDragging = false;
-            track.classList.remove('is-dragging');
-            if (typeof track.releasePointerCapture === 'function') {
-                track.releasePointerCapture(e.pointerId);
-            }
-
-            // لو العميل سحب بسرعة ملحوظة، نكمل الحركة بعطالة طبيعية (momentum) قبل ما توقف تماماً
-            if (Math.abs(velocity) > 0.5) {
-                momentumActive = true;
-                requestAnimationFrame(runMomentumLoop);
-            }
-
-            if (dragMoved) {
-                /** @param {MouseEvent} clickEvent */
-                const suppressClick = (clickEvent) => {
-                    clickEvent.preventDefault();
-                    clickEvent.stopPropagation();
-                };
-                track.addEventListener('click', suppressClick, { capture: true, once: true });
-            }
-        };
-
-        recalcBounds();
-        window.addEventListener('resize', recalcBounds);
-        // 🛡️ [إصلاح حرج - اختفاء التبويب لحظة أول لمسة]: على الموبايل، أول لمسة بتخلي
-        // شريط عنوان المتصفح يبدأ يختفي/يظهر فيتغيّر الـ viewport الفعلي، لكن المتصفحات
-        // مبتطلقش حدث 'resize' العادي في اللحظة دي - بتطلق 'resize' بتاع visualViewport
-        // بس (لو الـ API متاحة). من غير الاستماع له، halfWidth كانت بتفضل محسوبة على
-        // قياس قديم بالظبط لحظة أول تفاعل، فالتيكر يبان "بيختفي" لحظة اللمس. وبنعيد
-        // الحساب كمان في onPointerDown نفسها كضمان أخير حتى لو حصل أي تغيير مفاجئ
-        // في الحجم قبل أول لمسة مباشرة بأي شكل تاني.
-        if (window.visualViewport && typeof window.visualViewport.addEventListener === 'function') {
-            window.visualViewport.addEventListener('resize', recalcBounds);
-        }
-        // 🛡️ [تحصين إضافي]: لو العميل رجع للصفحة عن طريق زرار "رجوع" في المتصفح
-        // (bfcache restore)، الصفحة بترجع من الذاكرة زي ما كانت من غير أي resize
-        // أو DOMContentLoaded جديد يشغّل recalcBounds، فممكن يفضل التيكر واقف على
-        // آخر حالة قديمة له (أو حتى halfWidth = 0 لو كانت الصفحة اتحفظت للـ bfcache
-        // في لحظة قبل أول حساب). إعادة الحساب هنا تضمن إنه دايماً يرجع لموضعه
-        // الصحيح فور ظهور الصفحة تاني بأي طريقة.
-        window.addEventListener('pageshow', recalcBounds);
-        // 🔧 [إصلاح الفراغ الفارغ]: recalcBounds بيتنفذ الأول قبل ما خط Cairo وأيقونات
-        // Font Awesome يخلصوا تحميل، فبيحسب عرض غلط ويعمل قفزة/فراغ لحظة اللف.
-        // بنعيد الحساب تاني بعد ما كل الخطوط تخلص تحميل، وبعد أول فريمين كمان كضمان إضافي.
-        if (document.fonts && typeof document.fonts.ready?.then === 'function') {
-            document.fonts.ready.then(recalcBounds);
-        }
-        requestAnimationFrame(() => requestAnimationFrame(recalcBounds));
-        // ومراقبة أي تغيير فعلي في حجم المحتوى نفسه (صور اتحملت متأخر مثلاً)
-        if (typeof ResizeObserver === 'function') {
-            new ResizeObserver(() => recalcBounds()).observe(track);
-        }
-
-        track.addEventListener('pointerdown', onPointerDown);
-        track.addEventListener('pointermove', onPointerMove);
-        track.addEventListener('pointerup', onPointerUp);
-        track.addEventListener('pointercancel', onPointerUp);
-        track.addEventListener('pointerleave', onPointerUp);
-
-        // 🐛 [إصلاح جذري لاختفاء الكروت وقت السحب]: الروابط <a> عندها سحب أصلي (native
-        // drag & drop) مفعّل تلقائياً من المتصفح. لو العميلة بدأت تسحب وسط كارت، المتصفح
-        // ممكن يبدأ سحب أصلي للرابط بالتوازي مع سحب الـ JS بتاعنا، فيخفي الكارت الأصلي
-        // عشان يعرض "شبح" السحب (drag ghost) — وده اللي بيبان كاختفاء تام للتبويب.
-        // منع dragstart هنا هو الضمان النهائي حتى لو -webkit-user-drag اتجوهلت من أي متصفح.
-        track.addEventListener('dragstart', (e) => e.preventDefault());
-    }
 
     /**
      * ✍️ ضخ العناوين والوصف للأقسام الرئيسية لعلامة حلويات بوسي
@@ -664,7 +518,32 @@
             `;
         }
 
-        const calculatedPrice = window.calculateProductFinalPrice(product, {});
+        // 👑 [إصلاح جذري - كارثة الأحجام]: لو المنتج عنده أكتر من حجم سعر حقيقي (زي
+        // الديسباسيتو/القشطوطة: مثلث/وسط/كبير)، لازم يظهر تبويب اختيار حجم مصغر جوه
+        // الكارت نفسه في أي مكان يظهر فيه (الرئيسية، العروض، المقترحات) - مش بس في
+        // صفحة الفئة أو صفحة المنتج المستقلة. قبل كده كان العميل بيضغط "إضافة للسلة"
+        // من هنا فيتضاف تلقائياً بأرخص وأصغر حجم من غير أي تنبيه، وده اللي كانت
+        // صاحبة المتجر بتوصفه بـ"الكارثة".
+        const availableSizes = (product.prices && typeof product.prices === 'object') ? Object.keys(product.prices) : [];
+        const distinctSizePrices = new Set(availableSizes.map(s => product.prices[s]));
+        const hasMultipleSizes = availableSizes.length > 1 && distinctSizePrices.size > 1;
+        const defaultSizeKey = (product.defaultSize && availableSizes.includes(product.defaultSize)) ? product.defaultSize : (availableSizes[0] || null);
+
+        let sizeTabsHtml = '';
+        if (hasMultipleSizes) {
+            sizeTabsHtml = `
+                <div class="bose-mini-size-note"><i class="fa-solid fa-circle-info"></i> متاح بأحجام متعددة، اختار اللي يناسبك:</div>
+                <div class="bose-card-size-tabs" role="group" aria-label="اختيار الحجم">
+                    ${availableSizes.map(sizeKey => `
+                        <button type="button" class="bose-card-size-pill${sizeKey === defaultSizeKey ? ' active' : ''}"
+                                data-size-key="${sizeKey}"
+                                onclick="event.stopPropagation(); window.handleBoseCardSizeChange(this, '${product.id}')">${window.BOSE_SIZE_LABELS[sizeKey] || sizeKey}</button>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        const calculatedPrice = window.calculateProductFinalPrice(product, hasMultipleSizes ? { size: defaultSizeKey } : {});
         const hasDiscount = !!(product.oldPrice && product.oldPrice > product.price);
         let discountBadgeHtml = '';
         let oldPriceHtml = '';
@@ -690,13 +569,14 @@
                </button>`;
 
         return `
-            <div class="product-card-unified${hasDiscount ? ' bose-offer-card' : ''}${isUnavailable ? ' bose-unavailable-card' : ''}" data-id="${product.id}" onclick="if(!event.target.closest('.product-card-qty-wrapper') && !event.target.closest('.btn-add-to-cart')){ window.location.href='product.html?slug=${encodeURIComponent(product.slug)}'; }" style="cursor:pointer;">
+            <div class="product-card-unified${hasDiscount ? ' bose-offer-card' : ''}${isUnavailable ? ' bose-unavailable-card' : ''}" data-id="${product.id}" data-selected-size="${defaultSizeKey || ''}" onclick="if(!event.target.closest('.product-card-qty-wrapper') && !event.target.closest('.btn-add-to-cart') && !event.target.closest('.bose-card-size-tabs')){ window.location.href='product.html?slug=${encodeURIComponent(product.slug)}'; }" style="cursor:pointer;">
                 ${discountBadgeHtml}
                 ${isUnavailable ? `<div class="offer-badge" style="background:rgba(17,17,17,0.75);">نفدت الكمية</div>` : ''}
                 <img src="${safeImg}" alt="${safeTitle}" class="product-card-img" width="300" height="300" loading="lazy" style="${isUnavailable ? 'filter:grayscale(60%); opacity:0.75;' : ''}" />
                 <h3 class="product-card-title">${safeTitle}</h3>
                 <span class="product-card-flavor-name">${safeFlavor}</span>
                 <p class="product-card-desc">${safeDesc}</p>
+                ${sizeTabsHtml}
                 
                 <div class="product-card-qty-wrapper" style="${isUnavailable ? 'display:none;' : ''}">
                     <button class="btn-qty-plus" onclick="window.handleBoseCardQtyChange(this, 1)">+</button>
@@ -713,6 +593,35 @@
             </div>
         `;
     }
+
+    /**
+     * 👑 [إصلاح جذري - كارثة الأحجام]: تفعيل تبويب الحجم المصغر جوه أي كارت منتج
+     * (رئيسية/عروض/مقترحات) - بيحدث السعر المعروض لحظياً وبيسجل الحجم المختار
+     * على الكارت نفسه، عشان handleBoseDirectAddToCart يقرأه صح وقت الإضافة الفعلية.
+     * @param {HTMLElement} pillElement
+     * @param {string} productId
+     */
+    window.handleBoseCardSizeChange = function(pillElement, productId) {
+        if (!window.BoseStoreData || !pillElement) return;
+        const product = window.BoseStoreData.products ? window.BoseStoreData.products.find((/** @type {any} */ p) => p.id === productId || p.slug === productId) : null;
+        if (!product) return;
+
+        const card = pillElement.closest('.product-card-unified');
+        if (!card) return;
+        const sizeKey = pillElement.dataset.sizeKey;
+
+        card.querySelectorAll('.bose-card-size-pill').forEach((/** @type {HTMLElement} */ p) => p.classList.remove('active'));
+        pillElement.classList.add('active');
+        card.dataset.selectedSize = sizeKey;
+
+        const newPrice = window.calculateProductFinalPrice(product, { size: sizeKey });
+        const priceDisplay = card.querySelector('.product-card-price');
+        if (priceDisplay) {
+            priceDisplay.dataset.basePrice = String(newPrice);
+            const priceSpan = priceDisplay.querySelector('span');
+            if (priceSpan) priceSpan.textContent = `${Math.round(newPrice)} جنيه`;
+        }
+    };
 
     // 🛡️ [إصلاح معماري جذري]: createProductCardHTML كانت دالة "موحدة" بالاسم بس،
     // من غير ما تكون متاحة فعلياً لأي صفحة تانية غير core-engine.js نفسه (مش معلقة
@@ -1053,7 +962,13 @@
                 hasChocolate: !!opts.hasChocolate,
                 chocolateBudget: parseFloat(opts.chocolateBudget) || 0,
                 hasGiftCard: !!opts.hasGiftCard,
-                giftCardText: opts.giftCardText || ""
+                giftCardText: opts.giftCardText || "",
+                // 👑 [إصلاح جذري - كارثة الأحجام]: نخزن الحجم المختار فعلياً (لو المنتج
+                // بيدعم أكتر من حجم سعر) جوه بيانات عنصر السلة، عشان يظهر بوضوح في
+                // صفحة السلة وفي فاتورة الواتساب - بدل ما يختفي تماماً ويفضل السعر
+                // هو الفرق الوحيد الصامت بين حجم وحجم.
+                size: opts.size || null,
+                sizeLabel: opts.size ? (window.BOSE_SIZE_LABELS[opts.size] || opts.size) : ""
             }
         };
     };
@@ -1385,14 +1300,21 @@
             if (qtyInput) qty = parseInt(qtyInput.value, 10) || 1;
         }
 
+        // 👑 [إصلاح جذري - كارثة الأحجام]: نقرأ الحجم اللي العميل اختاره فعلياً من
+        // تبويب الحجم المصغر جوه الكارت (لو المنتج بيدعم أكتر من حجم) بدل ما نضيفه
+        // دايماً بأرخص حجم افتراضي زي ما كان بيحصل قبل كده في أي كارت خارج صفحة الفئة.
+        const selectedSize = cardContainer ? (cardContainer.dataset.selectedSize || null) : null;
+        const addOpts = selectedSize ? { size: selectedSize } : {};
+
         const rawCart = localStorage.getItem('bose_cart');
         let cart = rawCart ? JSON.parse(rawCart) : [];
-        const existingItem = cart.find((/** @type {any} */ item) => item.id === product.slug);
+        const cartLineId = selectedSize ? `${product.slug}-${selectedSize}` : product.slug;
+        const existingItem = cart.find((/** @type {any} */ item) => item.id === cartLineId);
         if (existingItem) {
             existingItem.quantity += qty;
         } else {
-            const newItem = window.createCartItem(product, {}, qty);
-            if (newItem) cart.push(newItem);
+            const newItem = window.createCartItem(product, addOpts, qty);
+            if (newItem) { newItem.id = cartLineId; cart.push(newItem); }
         }
 
         localStorage.setItem('bose_cart', JSON.stringify(cart));
@@ -1401,8 +1323,13 @@
         if (cardContainer) {
             /** @type {HTMLInputElement|null} */ const qtyInput = cardContainer.querySelector('.input-qty-value');
             const priceDisplay = cardContainer.querySelector('.product-card-price');
+            const finalUnitPrice = window.calculateProductFinalPrice(product, addOpts);
             if (qtyInput) qtyInput.value = "1";
-            if (priceDisplay) priceDisplay.textContent = `${Math.round(product.price)} جنيه`;
+            if (priceDisplay) {
+                const priceSpan = priceDisplay.querySelector('span');
+                if (priceSpan) priceSpan.textContent = `${Math.round(finalUnitPrice)} جنيه`;
+                else priceDisplay.textContent = `${Math.round(finalUnitPrice)} جنيه`;
+            }
         }
 
         const originalHtml = buttonElement.innerHTML;
