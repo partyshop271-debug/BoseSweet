@@ -48,6 +48,9 @@
                 <td>${missing ? "—" : money(p.price)}</td>
                 <td>${o.sort_order ?? 0}</td>
                 <td class="adm-table-actions">
+                    ${!missing ? `<a class="adm-btn adm-btn-ghost adm-btn-icon" href="products.html?edit=${e(p.id)}" title="تعديل صورة المنتج">
+                        <i class="fa-solid fa-image"></i>
+                    </a>` : ""}
                     <button class="adm-btn adm-btn-ghost adm-btn-icon" data-action="edit" data-id="${e(o.id)}" title="تعديل">
                         <i class="fa-solid fa-pen"></i>
                     </button>
@@ -186,4 +189,4 @@
         ]);
         renderTable();
     });
-})();
+})();isEdit
