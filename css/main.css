@@ -6,44 +6,34 @@
    ========================================================================== */
 
 /* ==========================================================================
-   NEW 1.5. تيكر الفئات السريع أسفل زر اطلب الآن (حركة جانبية تلقائية متصلة)
-   [ملاحظة تنظيف]: تم حذف نسخة مكررة قديمة هنا (.bose-categories-subnav-section
-   و .bose-subnav-pill) لأنها لم تكن مستخدمة في أي صفحة HTML أو أي ملف JS —
-   كانت كوداً ميتاً بالكامل. الـ @keyframes الخاصة بها اتنقلت تحت لأنها
-   نفسها المستخدمة فعلياً في التيكر الحي (.hero-categories-ticker-track).
+   NEW 1.5. تيكر الفئات السريع أسفل زر اطلب الآن
+   👑👑 [إصلاح جذري نهائي]: بعد 9 محاولات إصلاح سابقة فشلت لمحرك السحب اليدوي
+   بالـ JS (transform محسوب بالكود)، استبدلناه بالكامل بتمرير أفقي "native" بيتحكم
+   فيه المتصفح نفسه (overflow-x + scroll-snap) - مفيش أي JS بيحسب أو يحرّك موضع
+   العنصر خالص، فمفيش أي احتمال "يختفي" بسبب تايمنج أو حالة سباق. هو ببساطة صف
+   عادي قابل للتمرير بإصبع العميل، بالظبط زي أي قائمة سكرول موثوقة في أي تطبيق.
    ========================================================================== */
 .hero-categories-ticker-wrapper {
     width: 100%;
-    overflow: hidden;
     margin-top: 22px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+    overscroll-behavior-x: contain;
+    /* إخفاء شريط السكرول البصري مع إبقاء وظيفة التمرير شغالة بالكامل */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.hero-categories-ticker-wrapper::-webkit-scrollbar {
+    display: none;
 }
 
 .hero-categories-ticker-track {
     display: flex !important;
     gap: 10px !important;
     width: max-content !important;
-    will-change: transform;
-    cursor: grab;
-    user-select: none;
-    -webkit-user-select: none;
-    touch-action: pan-y; /* يسمح بالسحب الأفقي اليدوي هنا مع ترك التمرير العمودي للصفحة شغال طبيعي */
-    /* 🛡️ [تحصين إضافي - اختفاء التيكر عند أول لمسة]: على iOS Safari تحديدًا، سحب لمسي
-       سريع بيفعّل أحياناً "rubber-band" الأفقي الافتراضي حتى مع touch-action: pan-y،
-       فيدفع العنصر برا حدود الشاشة للحظة (يبان كاختفاء). overscroll-behavior-x: contain
-       يمنع المتصفح من تمرير أي حركة أفقية زيادة لأي عنصر أب، فتفضل الحركة محصورة جوه
-       التيكر نفسه فقط وتحت تحكم JS بالكامل. */
-    overscroll-behavior-x: contain;
-    /* 🐛 [إصلاح اختفاء الكروت وقت السحب]: عناصر الـ <a> عندها سحب أصلي (native drag & drop)
-       مفعّل تلقائياً من المتصفح. من غير تعطيله، أول ما العميلة تسحب كارت، بيتعارك نظام
-       السحب بتاعنا (JS pointer-drag) مع نظام المتصفح الأصلي لسحب الروابط، فالمتصفح بيخفي
-       العنصر الأصلي عشان يعرض "شبح" السحب بتاعه، وده اللي بيبان كأن الكارت اختفى تماماً
-       والمكان فضل فاضي. تعطيل user-drag هنا وعلى كل كارت بيمنع تضارب النظامين. */
-    -webkit-user-drag: none;
-    user-drag: none;
-}
-
-.hero-categories-ticker-track.is-dragging {
-    cursor: grabbing;
 }
 
 /* 🚨 [موحّد]: تبويبات اختيار الحجم — كانت معرّفة محلياً جوه category.html بس، فمكنش
@@ -97,11 +87,7 @@
     text-decoration: none !important;
     transition: var(--bose-transition-fast);
     box-shadow: var(--bose-shadow-glow);
-    /* 🐛 [إصلاح اختفاء الكروت]: نفس تعطيل السحب الأصلي لكن على مستوى كل كارت لينك بمفرده،
-       ضمان إضافي لأن بعض المتصفحات (خصوصاً Safari) بتفعّل السحب الأصلي على الـ <a> نفسه
-       حتى لو الأب عنده user-drag:none. */
-    -webkit-user-drag: none;
-    user-drag: none;
+    scroll-snap-align: start;
 }
 
 .ticker-cat-item i {
@@ -1609,4 +1595,24 @@
         animation-duration: 0.001ms !important;
         animation-iteration-count: 1 !important;
     }
+}
+/* ==========================================================================
+   👑 [إضافة - شروح توضيحية تفصيلية]: سطر تنبيه بالأحجام المتعددة أعلى تبويب
+   الحجم في صفحة الفئة، بنفس هوية الموقع، عشان العميل ميفوّتوش التبويب أصلاً.
+   ========================================================================== */
+.bose-size-filter-note {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-align: center;
+    background: rgba(255, 145, 164, 0.08);
+    color: var(--bose-pink, #FF91A4);
+    font-weight: 700;
+    font-size: 13.5px;
+    font-family: 'Cairo', sans-serif;
+    border-radius: 12px;
+    padding: 10px 16px;
+    margin: 0 auto 14px auto;
+    max-width: 480px;
 }

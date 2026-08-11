@@ -1878,3 +1878,190 @@ select.bose-form-control option,
         animation-duration: 1.4s !important;
     }
 }
+/* ==========================================================================
+   👑👑 [إضافة جذرية]: تصميم كامل لقسم "قد يعجبك أيضاً" في صفحة السلة
+   (كان القسم ده شغال بالـ JS بس من غير أي CSS خالص في الموقع كله - بيظهر
+   مكسور تماماً بلا أي تصميم). التصميم هنا موحّد مع هوية الموقع (وردي/أبيض/أسود)
+   وبيدعم كمان تبويب اختيار الحجم المصغر الجديد وسطر النكهة والوصف المختصر.
+   ========================================================================== */
+.bose-cart-horizontal-slider {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    padding: 4px 2px 16px 2px;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+.bose-cart-horizontal-slider::-webkit-scrollbar { display: none; }
+
+.bose-suggestion-micro-card {
+    position: relative;
+    flex: 0 0 220px;
+    scroll-snap-align: start;
+    background: var(--bose-white, #FFFFFF);
+    border: var(--bose-border-pink, 1px solid rgba(255,145,164,0.15));
+    border-radius: 18px;
+    box-shadow: var(--bose-shadow-glow, 0 8px 32px rgba(255,145,164,0.12));
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Cairo', sans-serif;
+    direction: rtl;
+    text-align: right;
+}
+
+.bose-suggestion-micro-card .offer-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 2;
+    background: var(--bose-pink, #FF91A4);
+    color: #FFFFFF;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 30px;
+}
+
+.bose-suggestion-image-wrapper {
+    width: 100%;
+    height: 130px;
+    overflow: hidden;
+    background: #fafafa;
+}
+.bose-suggestion-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.bose-suggestion-content-pane {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.bose-suggestion-title-text {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--bose-black, #111111);
+    line-height: 1.4;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+}
+
+.bose-suggestion-flavor-name {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--bose-pink, #FF91A4);
+}
+
+.bose-suggestion-desc-text {
+    margin: 0;
+    font-size: 11.5px;
+    color: #777777;
+    line-height: 1.5;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.bose-suggestion-rating-stars { color: var(--bose-gold, #D4AF37); font-size: 11px; }
+
+.bose-suggestion-footer-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 6px;
+    gap: 8px;
+}
+
+.bose-suggestion-price-tag {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--bose-pink, #FF91A4);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.bose-suggestion-old-price {
+    font-size: 11.5px;
+    color: #999999;
+    text-decoration: line-through;
+    font-weight: 600;
+}
+
+.btn-quick-add-to-cart {
+    background: var(--bose-pink, #FF91A4);
+    color: #FFFFFF;
+    border: none;
+    border-radius: 30px;
+    padding: 7px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    font-family: 'Cairo', sans-serif;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: var(--bose-transition-fast);
+    white-space: nowrap;
+}
+.btn-quick-add-to-cart:hover { background: var(--bose-white); color: var(--bose-pink); box-shadow: 0 0 0 1.5px var(--bose-pink); }
+
+/* ==========================================================================
+   👑 [مشترك بين كل كروت الموقع]: سطر التنبيه بالأحجام المتعددة + تبويب الحجم
+   المصغر جوه الكارت نفسه (رئيسية/عروض/مقترحات السلة) - نفس الأسلوب البصري
+   بالظبط زي تبويب الحجم الأصلي في صفحة الفئة/المنتج (bose-filter-tab-pill)
+   لكن بمقاس أصغر يناسب مساحة الكارت الضيقة.
+   ========================================================================== */
+.bose-mini-size-note {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--bose-pink, #FF91A4);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 4px;
+}
+
+.bose-card-size-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 2px 0 4px 0;
+}
+
+.bose-card-size-pill {
+    font-family: 'Cairo', sans-serif;
+    font-weight: 700;
+    font-size: 10.5px;
+    padding: 5px 10px;
+    border: 1px solid rgba(255, 145, 164, 0.35);
+    background: #FFFFFF;
+    color: var(--bose-black, #111111);
+    border-radius: 30px;
+    cursor: pointer;
+    transition: var(--bose-transition-fast);
+}
+
+.bose-card-size-pill.active {
+    background-color: var(--bose-pink, #FF91A4);
+    color: #FFFFFF;
+    border-color: var(--bose-pink, #FF91A4);
+}
+
+/* الكارت الموحد (createProductCardHTML) في الرئيسية/العروض بيحتاج نفس التبويب
+   بس المساحة عنده أوسع شوية - نعدّل الحجم بس هنا بدون تكرار باقي القواعد */
+.product-card-unified .bose-card-size-pill {
+    font-size: 12px;
+    padding: 6px 14px;
+}
