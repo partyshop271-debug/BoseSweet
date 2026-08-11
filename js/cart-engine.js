@@ -452,11 +452,12 @@ function injectBoseBranchBlock(storeData) {
     
     const addressText = storeData.store?.pickup?.address || "الكفاح شارع الوحدة المحلية بجوار صيدلية الدكتور أحمد مجدي وبجوار عيادة الدكتور علي";
     const mapLink = storeData.store?.pickup?.mapUrl || "https://maps.app.goo.gl/nAg4Y7vQ7hACvKGc8?g_st=ac";
-    
+    const escBranch = window.escapeBoseHTML || (s => s);
+
     branchDiv.innerHTML = `
         <h4 style="margin: 0 0 6px 0; font-size: 15px; color: #111111; font-weight: 700; font-family: 'Cairo';"><i class="fas fa-building" style="color: #FF91A4; margin-left: 6px;"></i> مقر الاستلام الرسمي للبراند:</h4>
-        <p style="margin: 0 0 12px 0; font-size: 13.5px; color: #111111; opacity: 0.8; line-height: 1.6; font-family: 'Cairo';">${addressText}</p>
-        <a href="${mapLink}" target="_blank" class="success-action-secondary-btn" style="padding: 8px 16px; font-size: 13px; font-weight: 700; border-radius: 8px; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; background: #FFFFFF; border: 1px solid #FF91A4; color: #111111; font-family: 'Cairo';">
+        <p style="margin: 0 0 12px 0; font-size: 13.5px; color: #111111; opacity: 0.8; line-height: 1.6; font-family: 'Cairo';">${escBranch(addressText)}</p>
+        <a href="${mapLink}" target="_blank" rel="noopener noreferrer" class="success-action-secondary-btn" style="padding: 8px 16px; font-size: 13px; font-weight: 700; border-radius: 8px; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; background: #FFFFFF; border: 1px solid #FF91A4; color: #111111; font-family: 'Cairo';">
             <i class="fas fa-map-marked-alt" style="color: #FF91A4;"></i> عرض الموقع على خرائط جوجل
         </a>
     `;
