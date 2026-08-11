@@ -31,14 +31,14 @@
     <!-- 🐛 [إصلاح حرج]: خط Cairo كان مُعرَّف في الـCSS بس مش متحمّل هنا خالص، فكانت الصفحة بترجع لخط النظام الافتراضي -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/global.css?v=2026_production_v31.3">
-    <link rel="stylesheet" href="css/main.css?v=2026_production_v31.3">
-    <link rel="stylesheet" href="css/simulators.css?v=2026_production_v31.3">
+    <link rel="stylesheet" href="css/global.css?v=2026_production_v32.0">
+    <link rel="stylesheet" href="css/main.css?v=2026_production_v32.0">
+    <link rel="stylesheet" href="css/simulators.css?v=2026_production_v32.0">
     
     <!-- استدعاء حارس المحرك المركزي العالمي في رأس الصفحة لمنع وميض الألوان وتأمين البيانات الموحدة -->
     <!-- ⚡ [إصلاح أداء]: defer عشان السكريبت متوقفش رسم الصفحة الأول (كان شغال Blocking) -->
-    <script src="js/supabase-client.js?v=2026_production_v31.3" defer></script>
-    <script src="js/core-engine.js?v=2026_production_v31.3" defer></script>
+    <script src="js/supabase-client.js?v=2026_production_v32.0" defer></script>
+    <script src="js/core-engine.js?v=2026_production_v32.0" defer></script>
 </head>
 <body class="bose-hardware-accelerated">
 
@@ -55,14 +55,14 @@
                 <p id="hero-description" class="bose-hero-desc bose-arabic-text">نختار كل مكوّن بعناية فائقة، لنصنع لمناسباتكم جودة تستاهل ثقتكم.</p>
                 <a id="hero-cta-btn" href="menu.html" class="bose-hero-btn" role="button">اطلب الآن</a>
                 
-                <!-- 🔄 تبويب أقسام المنيو الـ 12 أسفل زر اطلب الآن (ثابت تماماً، بيستجيب للسحب اليدوي فقط - بدون أي حركة تلقائية) -->
-                <!-- 🔧 [إصلاح بناءً على طلب صاحبة المتجر]: تم إلغاء الحركة التلقائية (auto-scroll) نهائياً من setupHeroTickerDragEngine
-                     في core-engine.js. التبويب دلوقتي واقف ثابت ومش بيتحرك إلا لما العميل يسحبه بإيده، مع الاحتفاظ بإحساس
-                     السحب الطبيعي (momentum خفيف بعد الإفلات) لأنه استجابة لحركة العميل نفسه. روابط التورت والورد بتوصل
-                     مباشرة لصفحة المحاكي التفاعلي بتاعها. -->
+                <!-- 🔄 تبويب أقسام المنيو الـ 12 أسفل زر اطلب الآن -->
+                <!-- 👑👑 [إصلاح جذري نهائي - بعد 9 محاولات سابقة فاشلة]: التبويب دلوقتي تمرير أفقي
+                     "native" 100% بيتحكم فيه المتصفح مباشرة (overflow-x + scroll-snap في main.css)،
+                     من غير أي JavaScript بيحسب أو يحرّك موضعه - فمستحيل يختفي بسبب أي مشكلة تايمنج
+                     تانية. المحتوى بقى مرة واحدة بس (شيلنا النسخة المكررة اللي كانت لازمة قبل كده
+                     بس للحلقة اللانهائية الاصطناعية بالـ JS، ومبقتش لها فايدة مع السكرول الطبيعي). -->
                 <div class="hero-categories-ticker-wrapper" aria-label="أقسام المنيو السريعة">
                     <div class="hero-categories-ticker-track" id="hero-categories-ticker">
-                        <!-- ⚠️ المحتوى مكرر مرتين بالتصميم عشان تتحقق حركة لا نهائية بدون أي فراغ لحظة الالتفاف (زي الشريط العلوي بالظبط) -->
                         <a href="cake-builder.html" class="ticker-cat-item"><i class="fas fa-birthday-cake"></i> التورت الفاخرة</a>
                         <a href="category.html?category=taswaq-gatowat" class="ticker-cat-item"><i class="fas fa-cheese"></i> الجاتوهات الملكية</a>
                         <a href="category.html?category=taswaq-qashtota" class="ticker-cat-item"><i class="fas fa-stroopwafel"></i> القشطوطة الغنية</a>
@@ -75,18 +75,6 @@
                         <a href="flower-builder.html" class="ticker-cat-item"><i class="fas fa-spa"></i> بوكيهات الورد</a>
                         <a href="category.html?category=taswaq-happiness-cups" class="ticker-cat-item"><i class="fas fa-ice-cream"></i> كبات السعادة</a>
                         <a href="category.html?category=taswaq-relax-box" class="ticker-cat-item"><i class="fas fa-gift"></i> بوكس الروقان</a>
-                        <a href="cake-builder.html" class="ticker-cat-item" aria-hidden="true" tabindex="-1"><i class="fas fa-birthday-cake"></i> التورت الفاخرة</a>
-                        <a href="category.html?category=taswaq-gatowat" class="ticker-cat-item" aria-hidden="true" tabindex="-1"><i class="fas fa-cheese"></i> الجاتوهات الملكية</a>
-                        <a href="category.html?category=taswaq-qashtota" class="ticker-cat-item" aria-hidden="true" tabindex="-1"><i class="fas fa-stroopwafel"></i> القشطوطة الغنية</a>
-                        <a href="category.html?category=taswaq-despacito" class="ticker-cat-item" aria-hidden="true" tabindex="-1"><i class="fas fa-box"></i> الديسباسيتو الفاخر</a>
-                        <a href="category.html?category=taswaq-cinabon" class="ticker-cat-item" aria-hidden="true" tabindex="-1"><i class="fas fa-cookie"></i> السينابون الطازج</a>
-                        <a href="category.html?category=taswaq-donuts" class="ticker-cat-item" aria-hidden="true" tabindex="-1"><i class="fas fa-ring"></i> الدوناتس الهشة</a>
-                        <a href="category.html?category=taswaq-red-velvet" class="ticker-cat-item" aria-hidden="true" tabindex="-1"><i class="fas fa-heart"></i> الريدڤيلڤت</a>
-                        <a href="category.html?category=taswaq-cupcake" class="ticker-cat-item" aria-hidden="true" tabindex="-1"><i class="fas fa-cookie-bite"></i> الكب كيك</a>
-                        <a href="category.html?category=taswaq-mini-cake" class="ticker-cat-item" aria-hidden="true" tabindex="-1"><i class="fas fa-cubes"></i> الميني تورت</a>
-                        <a href="flower-builder.html" class="ticker-cat-item" aria-hidden="true" tabindex="-1"><i class="fas fa-spa"></i> بوكيهات الورد</a>
-                        <a href="category.html?category=taswaq-happiness-cups" class="ticker-cat-item" aria-hidden="true" tabindex="-1"><i class="fas fa-ice-cream"></i> كبات السعادة</a>
-                        <a href="category.html?category=taswaq-relax-box" class="ticker-cat-item" aria-hidden="true" tabindex="-1"><i class="fas fa-gift"></i> بوكس الروقان</a>
                     </div>
                 </div>
             </div>

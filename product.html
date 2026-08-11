@@ -18,11 +18,11 @@
     <meta property="og:description" content="مكونات طبيعية 100% طازجة تليق بمناسباتكم السعيدة.">
     <meta property="og:type" content="product">
     
-    <link rel="stylesheet" href="css/global.css?v=2026_production_v31.3">
-    <link rel="stylesheet" href="css/main.css?v=2026_production_v31.3">
+    <link rel="stylesheet" href="css/global.css?v=2026_production_v32.0">
+    <link rel="stylesheet" href="css/main.css?v=2026_production_v32.0">
     
-    <script src="js/supabase-client.js?v=2026_production_v31.3" defer></script>
-    <script src="js/core-engine.js?v=2026_production_v31.3" defer></script>
+    <script src="js/supabase-client.js?v=2026_production_v32.0" defer></script>
+    <script src="js/core-engine.js?v=2026_production_v32.0" defer></script>
 
     <style>
         /* 🎨 الهندسة البصرية المعتمدة لمنع التكديس والتزام الألوان الحاكمة */
@@ -479,6 +479,7 @@
                      (مثلاً الديسباسيتو: مثلث/وسط/كبير) رغم إن نفس منطق الأحجام موجود ومستخدم في
                      category.html بالظبط. التبويب هنا بيظهر تلقائياً بس لو المنتج فعلاً عنده أكتر
                      من حجم سعر مختلف، وبيغيّر السعر (وأي وصف مخصص للحجم لو موجود) فوراً لحظة الاختيار. -->
+                <div id="bose-product-size-note" class="bose-size-filter-note" style="display:none; margin-bottom:10px;"><i class="fa-solid fa-circle-info"></i> ده الصنف متوفر بأكتر من حجم — اختاري اللي يناسبك 👇</div>
                 <div id="bose-product-size-tabs" class="bose-size-tabs-filter" style="display:none; margin-bottom:14px;"></div>
 
                 <div id="bose-product-price-text" class="product-price-large-display">0 EGP</div>
@@ -662,12 +663,14 @@
             const SIZE_TAB_LABELS = { triangle: "مثلث فردي", medium: "وسط تشارك ممتع", large: "كبير جمعات فاخرة" };
             function renderSizeTabs(availableSizes) {
                 const wrap = document.getElementById("bose-product-size-tabs");
+                const note = document.getElementById("bose-product-size-note");
                 if (!wrap) return;
 
                 const distinctPrices = new Set(availableSizes.map(s => currentProduct.prices[s]));
                 if (availableSizes.length < 2 || distinctPrices.size < 2) {
                     wrap.style.display = "none";
                     wrap.innerHTML = "";
+                    if (note) note.style.display = "none";
                     return;
                 }
 
@@ -676,6 +679,7 @@
                             data-size-key="${sizeKey}">${SIZE_TAB_LABELS[sizeKey] || sizeKey}</button>
                 `).join("");
                 wrap.style.display = "flex";
+                if (note) note.style.display = "flex";
 
                 wrap.querySelectorAll(".bose-filter-tab-pill").forEach(pill => {
                     pill.addEventListener("click", function () {
