@@ -146,12 +146,25 @@ function renderBoseCartPage(storeData) {
             const safeTitle = esc(item.title || "");
             const safeFlavorName = esc(cleanFlavorName || "");
 
+            // 🛡️ [إصلاح حرج]: كارت عنصر السلة كان div عادي بدون أي رابط - الصورة والعنوان
+            // معندهمش أي وسم <a> يوصل العميل لصفحة تفاصيل المنتج، فمفيش أي طريقة للعميل
+            // يرجع يشوف وصف/صور المنتج وهو بيراجع سلته قبل الشراء، وده بالظبط اللي كان
+            // بيصعب قرار الشراء عليه. بالنسبة لمنتجات المحاكي (تورت مخصص/بوكيه) معندهاش
+            // صفحة منتج ثابتة أصلاً (هي أساسًا صفحة محاكي)، فمفيش رابط ليها هنا عشان منوديش
+            // العميل لصفحة هتحوله فورًا برا السلة من غير فايدة حقيقية.
+            const linkStart = (!isCakeBespoke && !isFlowerBespoke && item.productSlug)
+                ? `<a href="product.html?slug=${encodeURIComponent(item.productSlug)}" style="text-decoration:none; color:inherit; display:contents;">`
+                : '';
+            const linkEnd = linkStart ? `</a>` : '';
+
             cartCard.innerHTML = `
                 <div style="display: flex; align-items: center; gap: 20px; flex: 1; min-width: 0;">
-                    <img src="${safeCartImg}" class="cart-item-image" alt="${safeTitle}" style="width: 120px; height: 120px; border-radius: 20px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(255,145,164,0.3);" loading="lazy">
+                    ${linkStart}
+                    <img src="${safeCartImg}" class="cart-item-image" alt="${safeTitle}" style="width: 120px; height: 120px; border-radius: 20px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(255,145,164,0.3); cursor: ${linkStart ? 'pointer' : 'default'};" loading="lazy">
                     <div style="display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 0; text-align: right;">
-                        <h3 class="cart-item-title" style="margin: 0; font-size: 16px; font-weight: 700; color: #111111; font-family: 'Cairo'; line-height: 1.4;">${safeTitle}</h3>
+                        <h3 class="cart-item-title" style="margin: 0; font-size: 16px; font-weight: 700; color: #111111; font-family: 'Cairo'; line-height: 1.4; cursor: ${linkStart ? 'pointer' : 'default'};">${safeTitle}</h3>
                         <span class="cart-item-flavor-name" style="font-size: 13.5px; color: #FF91A4; font-weight: 700; font-family: 'Cairo';">${safeFlavorName}</span>
+                        ${linkEnd}
                         ${customDetailsHTML}
                         
                         <div class="bose-qty-controller-box" style="display: flex; align-items: center; border: 1px solid rgba(255, 145, 164, 0.3); border-radius: 12px; width: max-content; margin-top: 8px; background: #FFFFFF; height: 38px; padding: 2px;">
