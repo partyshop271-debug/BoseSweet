@@ -111,15 +111,81 @@
     const CLOUDINARY_UPLOAD_PRESET = "gct8i28h";
     const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
 
+    /**
+     * ⚡ [إصلاح - بطء ظهور الصور]: الصور اللي بترفع من الموبايل مباشرة (كاميرا)
+     * غالباً 3-8 ميجا للصورة الواحدة، وكانت بترفع للـ Cloudinary من غير أي ضغط،
+     * يعني رفع كل صورة كان بياخد وقت طويل على نت الموبايل - ده اللي حاسس إنه
+     * "بطء ظهور التعديلات"، لأن التعديل عملياً لسه بيترفع. الدالة دي بتصغّر أي
+     * صورة لأقصى بعد 1600px وتضغطها JPEG قبل الرفع - بيقلل حجم الملف بشكل كبير
+     * (غالباً 70-90%) من غير فرق واضح بالعين في جودة العرض على الموقع (اللي أصلاً
+     * بيعرض بحد أقصى مشابه عبر optimizeBoseImageUrl). الصور بصيغة GIF بتتسيب
+     * زي ما هي (عشان الحركة)، والصور الصغيرة أصلاً (أقل من الحد) بتتسيب برضه.
+     */
+    function compressImageForUpload(file, maxDim = 1600, quality = 0.82) {
+        return new Promise((resolve) => {
+            if (!file || !file.type || !file.type.startsWith("image/") || file.type === "image/gif") {
+                resolve(file);
+                return;
+            }
+            const img = new Image();
+            const objectUrl = URL.createObjectURL(file);
+            img.onload = () => {
+                URL.revokeObjectURL(objectUrl);
+                const { width, height } = img;
+                if (width <= maxDim && height <= maxDim && file.size < 400 * 1024) {
+                    resolve(file);
+                    return;
+                }
+                const scale = Math.min(1, maxDim / Math.max(width, height));
+                const canvas = document.createElement("canvas");
+                canvas.width = Math.round(width * scale);
+                canvas.height = Math.round(height * scale);
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                canvas.toBlob((blob) => {
+                    if (!blob) { resolve(file); return; }
+                    resolve(new File([blob], file.name.replace(/\.(png|webp|heic|heif)$/i, ".jpg"), { type: "image/jpeg" }));
+                }, "image/jpeg", quality);
+            };
+            img.onerror = () => { URL.revokeObjectURL(objectUrl); resolve(file); };
+            img.src = objectUrl;
+        });
+    }
+
     async function uploadImageToCloudinary(file) {
+        const optimized = await compressImageForUpload(file);
         const formData = new FormData();
-        formData.append("file", file);
+        formData.append("file", optimized);
         formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
 
         const res = await fetch(CLOUDINARY_UPLOAD_URL, { method: "POST", body: formData });
         if (!res.ok) throw new Error("فشل رفع الصورة");
         const data = await res.json();
         return data.secure_url;
+    }
+
+    /**
+     * رفع أكتر من صورة بالتوازي (مش الواحدة ورا التانية) مع تقرير تقدّم اختياري
+     * onProgress(doneCount, totalCount) - بيسرّع رفع الصور المتعددة بشكل ملموس
+     * (مثلاً 5 صور كانت بتاخد وقت 5 صور متتالية، دلوقتي بتترفع مع بعض).
+     * أي صورة تفشل بترجع null في مكانها بدل ما توقف باقي الصور.
+     */
+    async function uploadImagesToCloudinary(files, onProgress) {
+        let done = 0;
+        const total = files.length;
+        const results = await Promise.all(files.map(async (file) => {
+            try {
+                const url = await uploadImageToCloudinary(file);
+                done += 1;
+                if (onProgress) onProgress(done, total);
+                return url;
+            } catch (e) {
+                done += 1;
+                if (onProgress) onProgress(done, total);
+                return null;
+            }
+        }));
+        return results;
     }
 
     /* ============================= حالات الطلب ============================= */
@@ -175,5 +241,7 @@
         orderStatusMeta,
         orderStatusBadgeHTML,
         uploadImageToCloudinary,
+        uploadImagesToCloudinary,
+        PLACEHOLDER_IMAGE_MARKER: "logo_igggsb",
     };
 })();
