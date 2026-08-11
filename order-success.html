@@ -8,21 +8,21 @@
     <meta name="robots" content="noindex, follow">
     
     <!-- ملفات التصميم الخارجية الموحدة والمستقلة -->
-    <link rel="stylesheet" href="css/global.css?v=2026_production_v30.0">
-    <link rel="stylesheet" href="css/main.css?v=2026_production_v30.0">
+    <link rel="stylesheet" href="css/global.css?v=2026_production_v31.3">
+    <link rel="stylesheet" href="css/main.css?v=2026_production_v31.3">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- استدعاء المحرك المركزي في رأس الصفحة حتمياً لإدارة التمهيد والبيانات المالية -->
-    <!-- 🛡️ [إصلاح المرحلة 1]: تمت إضافة رقم الإصدار ?v=2026_production_v30.0 هنا،
+    <!-- 🛡️ [إصلاح المرحلة 1]: تمت إضافة رقم الإصدار ?v=2026_production_v31.3 هنا،
          كانت هذه الصفحة الوحيدة في الموقع بدون رقم إصدار مما يعرّضها لعرض نسخة
          قديمة مخزّنة (Cache) من core-engine.js بعد أي تحديث مستقبلي للموقع. -->
-    <script src="js/supabase-client.js?v=2026_production_v30.0"></script>
-    <script src="js/core-engine.js?v=2026_production_v30.0"></script>
+    <script src="js/supabase-client.js?v=2026_production_v31.3"></script>
+    <script src="js/core-engine.js?v=2026_production_v31.3"></script>
     <!-- 🛡️ [إصلاح حرج - المرحلة 1]: هذه الصفحة كانت الوحيدة بين كل صفحات السلة/الدفع
          التي لا تحمّل cart-engine.js، فكانت دالة renderBoseSuccessPage المخصصة لها
          معطّلة تماماً ومعوّضة بسكريبت داخلي مكرر. تم حذف التكرار وربط الصفحة بالمحرك
          المركزي الموحد مثل cart.html وcheckout.html بالضبط. -->
-    <script src="js/cart-engine.js?v=2026_production_v30.0"></script>
+    <script src="js/cart-engine.js?v=2026_production_v31.3"></script>
 
     <style>
         /* 🎨 الهندسة البصرية المخصصة لصفحة نجاح الطلب الفاخرة */
@@ -253,7 +253,7 @@
             <p class="success-subheadline" style="font-size: 0.88rem; opacity: 0.7; margin: 5px 0 0 0;">📌 يرجى كبس زر الواتساب الفوري بالأسفل لتأكيد ومتابعة حالة الفاتورة اللوجستية وتحديد مواعيد التوصيل بدقة.</p>
 
             <div class="success-actions-row">
-                <a href="https://wa.me/201097238441" id="bose-success-whatsapp-btn" class="btn-success-whatsapp-trigger" target="_blank">
+                <a href="https://wa.me/201097238441" id="bose-success-whatsapp-btn" class="btn-success-whatsapp-trigger" target="_blank" rel="noopener noreferrer">
                     <i class="fab fa-whatsapp"></i> تأكيد الفاتورة عبر الواتساب
                 </a>
                 <a href="index.html" class="btn-success-home-anchor">

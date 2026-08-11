@@ -25,13 +25,13 @@
     <!-- 🐛 [إصلاح حرج]: خط Cairo وأيقونات Font Awesome كانوا غير محمّلين نهائياً بالصفحة دي -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/global.css?v=2026_production_v30.0">
-    <link rel="stylesheet" href="css/main.css?v=2026_production_v30.0">
+    <link rel="stylesheet" href="css/global.css?v=2026_production_v31.3">
+    <link rel="stylesheet" href="css/main.css?v=2026_production_v31.3">
     
     <!-- 👑 استدعاء المحرك المركزي الموحد للموقع في الرأس لتأمين الـ DOM ومنع وميض الألوان -->
     <!-- ⚡ [إصلاح أداء]: defer عشان السكريبت متوقفش رسم الصفحة -->
-    <script src="js/supabase-client.js?v=2026_production_v30.0" defer></script>
-    <script src="js/core-engine.js?v=2026_production_v30.0" defer></script>
+    <script src="js/supabase-client.js?v=2026_production_v31.3" defer></script>
+    <script src="js/core-engine.js?v=2026_production_v31.3" defer></script>
 
     <!-- 🎨 تخصيصات وتأمين الأبعاد القياسية للمنيو الشامل لمنع تداخل أو انضغاط العناصر -->
     <style>
@@ -299,12 +299,14 @@
 
                 const card = document.createElement("div");
                 card.className = "bose-menu-custom-card";
+                const escMenu = window.escapeBoseHTML || (s => s);
+                const safeCatTitle = escMenu(cat.title);
                 card.innerHTML = `
-                    <a href="${targetUrl}" class="bose-menu-img-wrap" aria-label="استعراض فئة ${cat.title}">
-                        <img src="${cat.image}" alt="${cat.title}" loading="lazy" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png'">
+                    <a href="${targetUrl}" class="bose-menu-img-wrap" aria-label="استعراض فئة ${safeCatTitle}">
+                        <img src="${cat.image}" alt="${safeCatTitle}" loading="lazy" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png'">
                     </a>
                     <a href="${targetUrl}" style="text-decoration:none;">
-                        <h3 class="bose-menu-title-node">${cat.title}</h3>
+                        <h3 class="bose-menu-title-node">${safeCatTitle}</h3>
                     </a>
                     <div>
                         <a href="${targetUrl}" class="bose-menu-action-trigger">

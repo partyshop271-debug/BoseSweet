@@ -18,11 +18,11 @@
     <meta property="og:description" content="مكونات طبيعية 100% طازجة تليق بمناسباتكم السعيدة.">
     <meta property="og:type" content="product">
     
-    <link rel="stylesheet" href="css/global.css?v=2026_production_v30.0">
-    <link rel="stylesheet" href="css/main.css?v=2026_production_v30.0">
+    <link rel="stylesheet" href="css/global.css?v=2026_production_v31.3">
+    <link rel="stylesheet" href="css/main.css?v=2026_production_v31.3">
     
-    <script src="js/supabase-client.js?v=2026_production_v30.0" defer></script>
-    <script src="js/core-engine.js?v=2026_production_v30.0" defer></script>
+    <script src="js/supabase-client.js?v=2026_production_v31.3" defer></script>
+    <script src="js/core-engine.js?v=2026_production_v31.3" defer></script>
 
     <style>
         /* 🎨 الهندسة البصرية المعتمدة لمنع التكديس والتزام الألوان الحاكمة */
@@ -461,7 +461,26 @@
                 
                 <h1 id="bose-product-title-text" class="product-main-headline">اسم المنتج</h1>
                 <span id="bose-product-flavor-text" class="product-flavor-subline">نكهة الصنف</span>
-                
+
+                <!-- 🛡️ [إصلاح حرج - العروض]: كانت صفحة المنتج المستقلة الوحيدة في الموقع اللي
+                     معندهاش أي إشارة للخصم (لا شارة ولا سعر قديم مشطوب)، فأي منتج عرض حقيقي
+                     (oldPrice > price) كان بيبان هنا بسعره النهائي بس وكأنه صنف عادي مختلف
+                     تماماً عن نفسه وهو ظاهر بخصم في قسم العروض/الرئيسية - وده اللي كان بيبان
+                     للعميل كـ"تكرار" غريب لنفس المنتج. الشارة والسعر القديم دلوقتي بيتفعّلوا هنا
+                     بنفس كلاسات main.css المستخدمة فعلاً في كل كروت الموقع (bose-offer-badge /
+                     product-old-price / offer-savings-note) فيبقى واضح إنه نفس المنتج بالظبط
+                     وعليه خصم حقيقي، مش صنف تاني. -->
+                <div id="bose-product-offer-row" style="display:none;">
+                    <span id="bose-product-offer-badge" class="bose-offer-badge"></span>
+                </div>
+
+                <!-- 🚨 [إصلاح حرج - الأحجام]: كانت صفحة المنتج المستقلة بتاخد سعر "الحجم الافتراضي"
+                     فقط (product.price) وتتجاهل باقي الأحجام الموجودة فعلياً في عمود products.prices
+                     (مثلاً الديسباسيتو: مثلث/وسط/كبير) رغم إن نفس منطق الأحجام موجود ومستخدم في
+                     category.html بالظبط. التبويب هنا بيظهر تلقائياً بس لو المنتج فعلاً عنده أكتر
+                     من حجم سعر مختلف، وبيغيّر السعر (وأي وصف مخصص للحجم لو موجود) فوراً لحظة الاختيار. -->
+                <div id="bose-product-size-tabs" class="bose-size-tabs-filter" style="display:none; margin-bottom:14px;"></div>
+
                 <div id="bose-product-price-text" class="product-price-large-display">0 EGP</div>
                 
                 <p id="bose-product-desc-text" class="product-story-paragraph">وصف قصة المكونات الفاخرة والطعم الأصلي المميز للقطعة...</p>
@@ -603,7 +622,7 @@
             }
 
             let currentProduct = null;
-            let currentSelectedOptions = { flavorName: "كلاسيك" };
+            let currentSelectedOptions = { flavorName: "كلاسيك", size: null };
             let currentMasterQuantity = 1;
             let uploadedImageUrls = [];
 
@@ -613,6 +632,73 @@
                     return window.calculateProductFinalPrice(prod, opts);
                 }
                 return prod.price || 0;
+            }
+
+            // 🛡️ [إصلاح حرج - العروض]: نفس شرط "hasDiscount" المستخدم في كل باقي الموقع
+            // (core-engine.js / category.html): oldPrice > price. لو المنتج المفتوح فعلاً
+            // عرض حقيقي، نظهر شارة الخصم والسعر القديم المشطوب هنا، بنفس الكلاسات المستخدمة
+            // في كل مكان تاني بالموقع - عشان تبقى نفس الهوية البصرية للعرض في كل مكان يظهر فيه.
+            function renderOfferBadge() {
+                const row = document.getElementById("bose-product-offer-row");
+                const badge = document.getElementById("bose-product-offer-badge");
+                if (!row || !badge || !currentProduct) return;
+
+                const hasDiscount = !!(currentProduct.oldPrice && currentProduct.oldPrice > currentProduct.price);
+                if (!hasDiscount) {
+                    row.style.display = "none";
+                    return;
+                }
+                const savings = currentProduct.oldPrice - currentProduct.price;
+                const discountPercent = Math.round((savings / currentProduct.oldPrice) * 100);
+                badge.textContent = `عرض خاص - خصم ${discountPercent}%`;
+                badge.style.position = "static"; // شارة ثابتة جوه الصفحة مش عايمة فوق صورة زي الكارت
+                row.style.display = "block";
+                row.style.marginBottom = "6px";
+            }
+
+            // 🚨 [إصلاح حرج - الأحجام]: تبويب اختيار الحجم بيظهر بس لو المنتج فعلاً عنده أكتر من
+            // حجم سعر مختلف حقيقي (زي الديسباسيتو: مثلث/وسط/كبير). لو المنتج عنده حجم واحد بس،
+            // التبويب بيفضل مخفي تماماً زي ما هو دلوقتي، من غير أي تغيير في باقي المنتجات.
+            const SIZE_TAB_LABELS = { triangle: "مثلث فردي", medium: "وسط تشارك ممتع", large: "كبير جمعات فاخرة" };
+            function renderSizeTabs(availableSizes) {
+                const wrap = document.getElementById("bose-product-size-tabs");
+                if (!wrap) return;
+
+                const distinctPrices = new Set(availableSizes.map(s => currentProduct.prices[s]));
+                if (availableSizes.length < 2 || distinctPrices.size < 2) {
+                    wrap.style.display = "none";
+                    wrap.innerHTML = "";
+                    return;
+                }
+
+                wrap.innerHTML = availableSizes.map(sizeKey => `
+                    <button type="button" class="bose-filter-tab-pill${sizeKey === currentSelectedOptions.size ? ' active' : ''}"
+                            data-size-key="${sizeKey}">${SIZE_TAB_LABELS[sizeKey] || sizeKey}</button>
+                `).join("");
+                wrap.style.display = "flex";
+
+                wrap.querySelectorAll(".bose-filter-tab-pill").forEach(pill => {
+                    pill.addEventListener("click", function () {
+                        if (this.dataset.sizeKey === currentSelectedOptions.size) return;
+                        wrap.querySelectorAll(".bose-filter-tab-pill").forEach(p => p.classList.remove("active"));
+                        this.classList.add("active");
+                        currentSelectedOptions.size = this.dataset.sizeKey;
+                        applyDescriptionForCurrentSize();
+                        updateLivePriceDisplay(window.BoseStoreData?.store?.currency || "EGP");
+                    });
+                });
+            }
+
+            // 🚨 [تحسين مكمّل]: لو المنتج عنده وصف مخصص لكل حجم (products.size_descriptions)
+            // نستخدمه، وإلا نرجع للوصف العام العادي - عشان الصفحة كلها (سعر + وصف) تتغير
+            // تلقائياً حسب الحجم اللي العميل بيختاره، مش السعر بس.
+            function applyDescriptionForCurrentSize() {
+                const descNode = document.getElementById("bose-product-desc-text");
+                if (!descNode || !currentProduct) return;
+                const perSize = currentProduct.sizeDescriptions && currentSelectedOptions.size
+                    ? currentProduct.sizeDescriptions[currentSelectedOptions.size]
+                    : null;
+                descNode.textContent = perSize || currentProduct.flavorDesc || currentProduct.description || "";
             }
 
             function initProductPage(dbData) {
@@ -647,7 +733,20 @@
                 }
                 
                 document.getElementById("bose-product-flavor-text").textContent = currentProduct.flavorName || "كلاسيك فاخر";
-                document.getElementById("bose-product-desc-text").textContent = currentProduct.flavorDesc || currentProduct.description || "";
+
+                // 🚨 [إصلاح حرج - الأحجام]: نحدد الحجم الابتدائي المختار (الافتراضي من قاعدة
+                // البيانات لو موجود، وإلا أول حجم متاح فعلياً في products.prices) قبل أي رسم للسعر
+                // أو الوصف، عشان كل حاجة في الصفحة تتزامن من أول لحظة تحميل.
+                const availableSizes = (currentProduct.prices && typeof currentProduct.prices === 'object')
+                    ? Object.keys(currentProduct.prices)
+                    : [];
+                currentSelectedOptions.size = (currentProduct.defaultSize && availableSizes.includes(currentProduct.defaultSize))
+                    ? currentProduct.defaultSize
+                    : (availableSizes[0] || null);
+
+                renderOfferBadge();
+                renderSizeTabs(availableSizes);
+                applyDescriptionForCurrentSize();
 
                 const defaultLogo = "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png";
                 const masterImg = currentProduct.image || (currentProduct.images && currentProduct.images[0] ? currentProduct.images[0] : defaultLogo);
@@ -690,7 +789,15 @@
                 const optionsRoot = document.getElementById("bose-product-customization-options-root");
                 optionsRoot.innerHTML = "";
                 
-                const relatedFlavors = dbData.products.filter(p => p.category === currentProduct.category && p.slug !== currentProduct.slug);
+                // 🛡️ [إصلاح حرج - العروض]: منتجات البوكسات/العروض المجمّعة (بادئة "promo-") كانت
+                // بتظهر هنا في قائمة "باقي نكهات القسم" جنب النكهات العادية بسعرها الكامل من غير
+                // أي تمييز - فكانت تبان للعميل كأنها نكهة تانية غريبة السعر، مش عرض خاص. نفس فحص
+                // "promo-" المستخدم فعلياً في category.html اتطبق هنا عشان الصفحتين يتفقوا مع بعض.
+                const relatedFlavors = dbData.products.filter(p =>
+                    p.category === currentProduct.category &&
+                    p.slug !== currentProduct.slug &&
+                    !String(p.id).startsWith('promo-')
+                );
                 
                 if (relatedFlavors.length > 0) {
                     const group = document.createElement("div");
