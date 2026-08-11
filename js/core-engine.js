@@ -243,6 +243,10 @@
 
         /** @param {PointerEvent} e */
         const onPointerDown = (e) => {
+            // ضمان أخير: نتأكد إن الحدود محسوبة على القياس الحالي الفعلي للشاشة قبل
+            // ما نبدأ أي حركة سحب، تحديداً لو كانت آخر مرة اتحسبت فيها الحدود قبل أي
+            // تغيير مفاجئ في ارتفاع/عرض الـ viewport (شريط عنوان الموبايل مثلاً).
+            recalcBounds();
             isDragging = true;
             momentumActive = false;
             dragMoved = false;
@@ -301,6 +305,16 @@
 
         recalcBounds();
         window.addEventListener('resize', recalcBounds);
+        // 🛡️ [إصلاح حرج - اختفاء التبويب لحظة أول لمسة]: على الموبايل، أول لمسة بتخلي
+        // شريط عنوان المتصفح يبدأ يختفي/يظهر فيتغيّر الـ viewport الفعلي، لكن المتصفحات
+        // مبتطلقش حدث 'resize' العادي في اللحظة دي - بتطلق 'resize' بتاع visualViewport
+        // بس (لو الـ API متاحة). من غير الاستماع له، halfWidth كانت بتفضل محسوبة على
+        // قياس قديم بالظبط لحظة أول تفاعل، فالتيكر يبان "بيختفي" لحظة اللمس. وبنعيد
+        // الحساب كمان في onPointerDown نفسها كضمان أخير حتى لو حصل أي تغيير مفاجئ
+        // في الحجم قبل أول لمسة مباشرة بأي شكل تاني.
+        if (window.visualViewport && typeof window.visualViewport.addEventListener === 'function') {
+            window.visualViewport.addEventListener('resize', recalcBounds);
+        }
         // 🛡️ [تحصين إضافي]: لو العميل رجع للصفحة عن طريق زرار "رجوع" في المتصفح
         // (bfcache restore)، الصفحة بترجع من الذاكرة زي ما كانت من غير أي resize
         // أو DOMContentLoaded جديد يشغّل recalcBounds، فممكن يفضل التيكر واقف على
@@ -1443,7 +1457,13 @@
         if (headerInjector) {
             const marqueeMessages = data.navigation?.topBarMessages || ["صنعناها بحب لتهديها لمن تحب", "توصيل طازج يومياً لجميع المناطق"];
             let marqueeItemsHtml = '';
-            marqueeMessages.forEach((/** @type {string} */ msg) => { marqueeItemsHtml += `<span class="bose-marquee-item">${msg}</span>`; });
+            // 🛡️ [تحصين إضافي - دفاع في العمق]: رسائل الشريط المتحرك بتيجي من لوحة
+            // التحكم (store_settings.navigation) وبتتحقن هنا لكل زائر في كل صفحة بالموقع
+            // من غير أي تعقيم. نفس مبدأ التحصين المطبّق فعلاً على باقي الحقول الإدارية
+            // في الموقع (زي عنوان الفرع في cart-engine.js) بيتطبق هنا كمان - حتى لو
+            // الحساب الإداري موثوق حالياً، أي اختراق مستقبلي لحساب الأدمن أو أي ثغرة
+            // تانية في لوحة التحكم مبتتحولش لسكريبت شغال على جهاز كل زائر للموقع.
+            marqueeMessages.forEach((/** @type {string} */ msg) => { marqueeItemsHtml += `<span class="bose-marquee-item">${window.escapeBoseHTML(msg)}</span>`; });
 
             headerInjector.innerHTML = `
                 <div id="top-bar-marquee" class="bose-top-bar-marquee-container" aria-label="شريط الإعلانات التسويقية">
@@ -1541,7 +1561,7 @@
                     </div>
 
                     <div class="sidebar-footer-contacts">
-                        <a href="https://wa.me/${window.toInternationalWhatsappNumber(data.social?.whatsapp || '201097238441')}" target="_blank" class="sidebar-contact-pill">
+                        <a href="https://wa.me/${window.toInternationalWhatsappNumber(data.social?.whatsapp || '201097238441')}" target="_blank" rel="noopener noreferrer" class="sidebar-contact-pill">
                             <i class="fa-brands fa-whatsapp"></i>
                             <span>راسلنا فوري عبر الواتساب</span>
                         </a>
@@ -1616,12 +1636,12 @@
                                 <img src="${window.optimizeBoseImageUrl(data.store?.logo || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', 150)}" alt="حلويات بوسي الفاخرة" class="footer-logo" width="80" height="80" />
                                 <span class="footer-title">حلويات بوسي</span>
                             </div>
-                            <p id="footer-about-text" class="footer-about-paragraph">${data.footer?.about || 'صنعناها بحب لتهديها لمن تحب'}</p>
+                            <p id="footer-about-text" class="footer-about-paragraph">${window.escapeBoseHTML(data.footer?.about || 'صنعناها بحب لتهديها لمن تحب')}</p>
                             <div id="footer-social-links" class="footer-social-wrapper">
-                                <a href="${data.social?.facebook || '#'}" target="_blank" class="footer-social-icon-btn"><i class="fa-brands fa-facebook-f"></i></a>
-                                <a href="${data.social?.instagram || '#'}" target="_blank" class="footer-social-icon-btn"><i class="fa-brands fa-instagram"></i></a>
-                                <a href="${data.social?.tiktok || '#'}" target="_blank" class="footer-social-icon-btn"><i class="fa-brands fa-tiktok"></i></a>
-                                <a href="https://wa.me/${window.toInternationalWhatsappNumber(data.social?.whatsapp || '201097238441')}" target="_blank" class="footer-social-icon-btn"><i class="fa-brands fa-whatsapp"></i></a>
+                                <a href="${data.social?.facebook || '#'}" target="_blank" rel="noopener noreferrer" class="footer-social-icon-btn"><i class="fa-brands fa-facebook-f"></i></a>
+                                <a href="${data.social?.instagram || '#'}" target="_blank" rel="noopener noreferrer" class="footer-social-icon-btn"><i class="fa-brands fa-instagram"></i></a>
+                                <a href="${data.social?.tiktok || '#'}" target="_blank" rel="noopener noreferrer" class="footer-social-icon-btn"><i class="fa-brands fa-tiktok"></i></a>
+                                <a href="https://wa.me/${window.toInternationalWhatsappNumber(data.social?.whatsapp || '201097238441')}" target="_blank" rel="noopener noreferrer" class="footer-social-icon-btn"><i class="fa-brands fa-whatsapp"></i></a>
                             </div>
                         </div>
                         <div class="footer-column-block">
@@ -1643,7 +1663,7 @@
                                 <li><a href="policies/terms.html">الشروط والأحكام</a></li>
                                 <li class="footer-contact-item" style="margin-top: 15px; display: flex; align-items: center; gap: 8px; font-size: 14px; color: #111111;">
                                     <i class="fa-solid fa-location-dot" style="color: #FF91A4;"></i>
-                                    <span>${data.store?.pickup?.address || 'العنوان الرئيسي'}</span>
+                                    <span>${window.escapeBoseHTML(data.store?.pickup?.address || 'العنوان الرئيسي')}</span>
                                 </li>
                             </ul>
                         </div>
