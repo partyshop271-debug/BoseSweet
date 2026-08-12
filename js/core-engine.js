@@ -246,6 +246,7 @@
         setupPrideCountersAnimation();
         setupAppInstallPopup();
         setupAppPromoBlockButtons();
+        injectAppPromoRealContent();
         
         requestAnimationFrame(() => {
             requestAnimationFrame(() => {
@@ -1540,6 +1541,54 @@
         const androidBtn = document.getElementById('app-promo-googleplay-btn');
         if (iosBtn) iosBtn.addEventListener('click', () => window.triggerBoseAppInstall());
         if (androidBtn) androidBtn.addEventListener('click', () => window.triggerBoseAppInstall());
+    }
+
+    /**
+     * 👑 [محتوى حقيقي - بلوك تحميل التطبيق]: الشاشة 1 (المنتجات) والشاشة 3 (السلة)
+     * جوه محاكي الموبايل كانت مجرد صناديق رمادية فاضية (Placeholder بصري بحت من غير
+     * أي بيانات حقيقية). الدالة دي بتاخد نفس منتجات "الأكثر مبيعاً" الحقيقية اللي
+     * ظاهرة فعلاً في قسم most-selling بالصفحة (من data.homepage.mostSelling) وتحقن
+     * صورها الحقيقية وأسمائها وأسعارها جوه الموبايل، عشان المعاينة تبقى انعكاس حقيقي
+     * للمنيو الفعلي بدل تصميم تجريدي وهمي.
+     */
+    function injectAppPromoRealContent() {
+        const data = window.BoseStoreData;
+        if (!data || !data.products) return;
+
+        const sourceIds = (data.homepage && (data.homepage.mostSelling || data.homepage.newArrivals)) || [];
+        const items = sourceIds
+            .map((/** @param {string} id */ id) => data.products.find((/** @type {any} */ p) => p.id === id || p.slug === id))
+            .filter(Boolean);
+
+        // 🛡️ لو مفيش عناصر متربطة في لوحة التحكم لسه، منسيبش الصناديق فاضية بلا داعي - نرجع لأول منتجات حقيقية موجودة في القاعدة
+        const products = (items.length ? items : data.products).slice(0, 4);
+        if (!products.length) return;
+
+        const gridEl = document.getElementById('app-promo-product-grid');
+        if (gridEl) {
+            gridEl.innerHTML = products.slice(0, 4).map((/** @type {any} */ p) => {
+                const img = window.optimizeBoseImageUrl(p.images ? p.images[0] : 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', 200);
+                const title = window.escapeBoseHTML(p.title || '');
+                return `<div class="mock-product-card"><img src="${img}" alt="${title}" loading="lazy" /><span class="mock-product-name">${title}</span></div>`;
+            }).join('');
+        }
+
+        const cartRowsEl = document.getElementById('app-promo-cart-rows');
+        if (cartRowsEl) {
+            cartRowsEl.innerHTML = products.slice(0, 2).map((/** @type {any} */ p) => {
+                const img = window.optimizeBoseImageUrl(p.images ? p.images[0] : 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', 100);
+                const title = window.escapeBoseHTML(p.title || '');
+                const price = Math.round(p.basePrice || p.price || 0);
+                return `
+                    <div class="mock-cart-row">
+                        <div class="mock-cart-thumb"><img src="${img}" alt="${title}" loading="lazy" /></div>
+                        <div class="mock-cart-lines">
+                            <span class="mock-cart-name">${title}</span>
+                            <span class="mock-cart-price">${price} جنيه</span>
+                        </div>
+                    </div>`;
+            }).join('');
+        }
     }
 
     function buildAndInjectGlobalComponents() {
