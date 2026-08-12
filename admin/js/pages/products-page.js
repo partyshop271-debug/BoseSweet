@@ -123,6 +123,9 @@
         return images.map((url, idx) => `
             <div class="adm-image-thumb-wrap" data-idx="${idx}">
                 <img src="${e(url)}" alt="">
+                ${idx === 0
+                    ? `<span class="adm-image-primary-badge" title="دي الصورة اللي بتظهر في كروت المنتج بالموقع">الرئيسية</span>`
+                    : `<button type="button" class="adm-image-set-primary-btn" data-idx="${idx}" title="اجعلها الصورة الرئيسية"><i class="fa-solid fa-star"></i></button>`}
                 <button type="button" class="adm-image-remove-btn" data-idx="${idx}"><i class="fa-solid fa-xmark"></i></button>
             </div>
         `).join("");
@@ -292,6 +295,14 @@
                     refreshImagesGrid();
                 });
             });
+            document.getElementById("pf-images-grid").querySelectorAll(".adm-image-set-primary-btn").forEach((btn) => {
+                btn.addEventListener("click", () => {
+                    const idx = Number(btn.getAttribute("data-idx"));
+                    const [chosen] = images.splice(idx, 1);
+                    images.unshift(chosen);
+                    refreshImagesGrid();
+                });
+            });
         }
         refreshImagesGrid();
 
@@ -318,7 +329,17 @@
                     label.textContent = `جاري الرفع... (${done}/${total})`;
                 });
                 const failedCount = urls.filter((u) => !u).length;
-                urls.filter(Boolean).forEach((url) => images.push(url));
+                const uploadedUrls = urls.filter(Boolean);
+                // 🛡️ [إصلاح جذري - سبب اختفاء الصور المرفوعة]: لو الصورة الوحيدة الموجودة
+                // لسه هي صورة اللوجو الافتراضية (المنتج "بدون صورة حقيقية")، أول صورة حقيقية
+                // بترفع دلوقتي بتحل محلها مباشرة بدل ما تتكوم وراها في images[1] - لأن كل
+                // كروت المنتج بالموقع بتعرض images[0] بس، فكانت الصورة الجديدة بترفع فعلاً
+                // وتتحفظ فعلاً، لكن تفضل "مخبية" وراء اللوجو القديم وميظهرش أي تغيير للعميل.
+                if (images.length && hasPlaceholderImage({ images }) && uploadedUrls.length) {
+                    images = uploadedUrls.concat(images.slice(1));
+                } else {
+                    uploadedUrls.forEach((url) => images.push(url));
+                }
                 refreshImagesGrid();
                 if (failedCount > 0) {
                     window.BoseAdminUI.showToast(`تعذر رفع ${failedCount} من ${files.length} صور`, "error");

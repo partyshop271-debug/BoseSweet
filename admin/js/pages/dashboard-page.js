@@ -13,13 +13,21 @@
         return d.toLocaleDateString("ar-EG", { day: "2-digit", month: "2-digit", year: "numeric" });
     }
 
+    function money(n) {
+        return `${Math.round(n || 0).toLocaleString("ar-EG")} ج.م`;
+    }
+
     function renderStats(summary) {
         const grid = document.getElementById("dashboard-stats-grid");
         const cards = [
-            { icon: "fa-receipt", cls: "pink", label: "طلبات اليوم", value: summary.ordersToday },
-            { icon: "fa-star", cls: "warning", label: "تقييمات بانتظار الاعتماد", value: summary.pendingReviews },
-            { icon: "fa-cake-candles", cls: "gold", label: "إجمالي المنتجات", value: summary.totalProducts },
-            { icon: "fa-tags", cls: "success", label: "عروض نشطة حالياً", value: summary.activeOffers },
+            { icon: "fa-receipt", cls: "pink", label: "طلبات اليوم", value: summary.ordersToday ?? 0 },
+            { icon: "fa-sack-dollar", cls: "success", label: "إيراد اليوم", value: money(summary.revenueToday) },
+            { icon: "fa-chart-line", cls: "gold", label: "إيراد آخر 30 يوم", value: money(summary.revenueMonth) },
+            { icon: "fa-scale-balanced", cls: "info", label: "متوسط قيمة الطلب (30 يوم)", value: money(summary.avgOrderValueMonth) },
+            { icon: "fa-hourglass-half", cls: "warning", label: "طلبات قيد المراجعة", value: summary.pendingOrders ?? 0 },
+            { icon: "fa-star", cls: "warning", label: "تقييمات بانتظار الاعتماد", value: summary.pendingReviews ?? 0 },
+            { icon: "fa-cake-candles", cls: "gold", label: "إجمالي المنتجات", value: summary.totalProducts ?? 0 },
+            { icon: "fa-tags", cls: "success", label: "عروض نشطة حالياً", value: summary.activeOffers ?? 0 },
         ];
         grid.innerHTML = cards.map((c) => `
             <div class="adm-stat-card">
@@ -29,6 +37,51 @@
                 </div>
                 <div class="adm-stat-icon ${c.cls}"><i class="fa-solid ${c.icon}"></i></div>
             </div>
+        `).join("");
+    }
+
+    /**
+     * 🛡️ [إضافة جديدة - تنبيهات فعلية]: كل الأرقام هنا كانت موجودة ومحسوبة
+     * فعلياً (إما من الداشبورد RPC أو من فلتر "بدون صورة حقيقية" الموجود أصلاً
+     * في صفحة المنتجات) لكن محدش كان بيلفت نظر صاحبة المتجر ليها غير لو
+     * فتحت الصفحة المعنية بنفسها وشافت. دلوقتي بتظهر كتنبيه فوري في أول
+     * صفحة بتفتحها كل يوم.
+     */
+    function renderAlerts({ missingPhotoCount, unavailableProducts, pendingOrders }) {
+        const card = document.getElementById("dashboard-alerts-card");
+        const list = document.getElementById("dashboard-alerts-list");
+        const alerts = [];
+
+        if (missingPhotoCount > 0) {
+            alerts.push({
+                icon: "fa-image", cls: "warning",
+                text: `${missingPhotoCount} منتج لسه شايل صورة اللوجو الافتراضية بدل صورة حقيقية`,
+                href: "products.html",
+            });
+        }
+        if (pendingOrders > 0) {
+            alerts.push({
+                icon: "fa-hourglass-half", cls: "warning",
+                text: `${pendingOrders} طلب لسه قيد المراجعة محتاج تأكيد`,
+                href: "orders.html",
+            });
+        }
+        if (unavailableProducts > 0) {
+            alerts.push({
+                icon: "fa-ban", cls: "danger",
+                text: `${unavailableProducts} منتج معلّم "غير متاح" حالياً - راجعيهم لو التوفر رجع`,
+                href: "products.html",
+            });
+        }
+
+        if (!alerts.length) { card.style.display = "none"; return; }
+        card.style.display = "";
+        list.innerHTML = alerts.map((a) => `
+            <a href="${a.href}" class="adm-alert-row">
+                <div class="adm-stat-icon ${a.cls}" style="width:36px; height:36px; font-size:0.9rem;"><i class="fa-solid ${a.icon}"></i></div>
+                <span>${a.text}</span>
+                <i class="fa-solid fa-chevron-left"></i>
+            </a>
         `).join("");
     }
 
@@ -58,11 +111,23 @@
     }
 
     async function init() {
+        let summary = {};
         try {
-            const summary = await window.BoseAdmin.getDashboardSummary();
+            summary = await window.BoseAdmin.getDashboardSummary();
             renderStats(summary);
         } catch (e) {
             window.BoseAdminUI.showToast("تعذر تحميل إحصائيات الداشبورد", "error");
+        }
+
+        try {
+            const missingPhotoCount = await window.BoseAdmin.getMissingPhotoProductsCount();
+            renderAlerts({
+                missingPhotoCount,
+                unavailableProducts: summary.unavailableProducts ?? 0,
+                pendingOrders: summary.pendingOrders ?? 0,
+            });
+        } catch (e) {
+            console.warn("تعذر بناء تنبيهات الداشبورد:", e.message);
         }
 
         try {
