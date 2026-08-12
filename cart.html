@@ -106,7 +106,7 @@ body {
 }
 .bose-suggestion-old-price {
     font-size: 0.85rem;
-    color: #999;
+    color: #111111;
     text-decoration: line-through;
     font-weight: 600;
     margin-left: 6px;
@@ -129,7 +129,7 @@ body {
     text-overflow: ellipsis;
 }
 .bose-suggestion-rating-stars {
-    color: #D4AF37; /* لمسة ذهبية ناعمة ورمزية لفخامة اللوجو */
+    color: #FF91A4; /* لمسة ذهبية ناعمة ورمزية لفخامة اللوجو */
     font-size: 0.85rem;
     display: flex;
     gap: 2px;
@@ -161,7 +161,7 @@ body {
     transition: all 0.25s ease;
 }
 .bose-suggestion-add-trigger:hover {
-    background: #ff788f; /* تعديل الهوفر للون البمبي الداكن بدلاً من الأسود المحظور */
+    background: #FF91A4; /* تعديل الهوفر للون البمبي الداكن بدلاً من الأسود المحظور */
     transform: translateY(-2px);
 }
 
@@ -189,7 +189,7 @@ body {
 .bose-spinner-loader {
     width: 45px;
     height: 45px;
-    border: 4px solid #FFF5F6;
+    border: 4px solid rgba(255, 145, 164, 0.08);
     border-top: 4px solid #FF91A4;
     border-radius: 50%;
     animation: boseCartSpinMaster 0.8s linear infinite;
@@ -209,7 +209,7 @@ body {
 <div id="bose-cart-global-overlay" class="bose-processing-overlay">
     <div style="text-align: center;">
         <div class="bose-spinner-loader"></div>
-        <p style="font-family: 'Cairo', sans-serif; font-size: 14px; font-weight: 700; color: #111111; margin-top: 14px;">جاري تحديث سلة بوسي الفاخرة...</p>
+        <p style="font-family: 'Cairo', sans-serif; font-size: 14px; font-weight: 700; color: #111111; margin-top: 14px;">جاري تحديث سلة حلويات بوسي الفاخرة...</p>
     </div>
 </div>
 
@@ -229,7 +229,7 @@ body {
         <div class="cart-items-list-wrapper">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; direction: rtl;">
                 <h3 style="font-size: 1.2rem; font-weight: 700; color: #111111;">الأصناف المحددة للطلب</h3>
-                <button id="btn-clear-cart" class="btn-clear-cart-node" style="font-family: 'Cairo', sans-serif; font-size: 0.88rem; font-weight: 700; color: #777; border: 1px solid rgba(255,145,164,0.3); padding: 8px 16px; border-radius: 30px; background: #FFFFFF; cursor: pointer; transition: 0.2s;">إفراغ السلة</button>
+                <button id="btn-clear-cart" class="btn-clear-cart-node" style="font-family: 'Cairo', sans-serif; font-size: 0.88rem; font-weight: 700; color: #111111; border: 1px solid rgba(255,145,164,0.3); padding: 8px 16px; border-radius: 30px; background: #FFFFFF; cursor: pointer; transition: 0.2s;">إفراغ السلة</button>
             </div>
 
             <!-- وسم حقن كروت السلة الأفقية الفخمة والمحمية ضد البتر -->
@@ -240,7 +240,7 @@ body {
                 <h4 class="product-option-title" style="margin-bottom: 14px; font-weight: 700; color: #111111; font-size: 1rem;">
                     <i class="fas fa-pen-fancy" style="color: #FF91A4; margin-left: 6px;"></i> عندك أي ملاحظات أو طلبات خاصة بالتحضير؟ (اختياري)
                 </h4>
-                <textarea id="checkout-order-notes-textarea" class="product-custom-input" placeholder="مثال: لو حابب نلغي المكسرات من حشوة التورتة عشان الحساسية، أو حابب نكلمك في التليفون قبل التوصيل بوقت كافٍ..." style="height: 100px; font-family: 'Cairo', sans-serif; font-size: 0.92rem; padding: 14px; border: 1px solid rgba(255,145,164,0.2); border-radius: 12px; resize: none; width: 100%; box-sizing: border-box; background: #FFF5F6; color: #111111;"></textarea>
+                <textarea id="checkout-order-notes-textarea" class="product-custom-input" placeholder="مثال: لو حابب نلغي المكسرات من حشوة التورتة عشان الحساسية، أو حابب نكلمك في التليفون قبل التوصيل بوقت كافٍ..." style="height: 100px; font-family: 'Cairo', sans-serif; font-size: 0.92rem; padding: 14px; border: 1px solid rgba(255,145,164,0.2); border-radius: 12px; resize: none; width: 100%; box-sizing: border-box; background: rgba(255, 145, 164, 0.08); color: #111111;"></textarea>
             </div>
         </div>
 
@@ -269,7 +269,7 @@ body {
                 </div>
                 <div class="pricing-row-node">
                     <span class="pricing-label-text">رسوم ومصاريف التوصيل:</span>
-                    <span id="summary-shipping-fee" class="pricing-value-text" style="color: #777; font-size: 0.88rem;">بتتحدد في خطوة الاستلام</span>
+                    <span id="summary-shipping-fee" class="pricing-value-text" style="color: #111111; font-size: 0.88rem;">بتتحدد في خطوة الاستلام</span>
                 </div>
                 <div class="summary-grand-total-row" style="border-top: 1px dashed rgba(255,145,164,0.3); padding-top: 16px;">
                     <span class="grand-total-label">الإجمالي النهائي التقريبي:</span>
@@ -290,7 +290,7 @@ body {
     <section class="bose-section-container" style="padding: 40px 0 0 0; margin-top: 40px; border-top: 1px dashed #FF91A4;">
         <div class="bose-section-header" style="text-align: right; margin-bottom: 20px; direction: rtl;">
             <h2 class="bose-section-title" style="font-size: 1.5rem; font-weight: 700; color: #111111; padding-bottom: 6px;">قد يعجبك أيضاً</h2>
-            <p class="bose-section-subtitle" style="font-size: 0.95rem; color: #777; margin-top: 2px;">أصناف مميزة بيقترحها عليك خبراء حلويات بوسي عشان تكمل بيها روعة اختيارك للنهارده.</p>
+            <p class="bose-section-subtitle" style="font-size: 0.95rem; color: #111111; margin-top: 2px;">أصناف مميزة بيقترحها عليك خبراء حلويات بوسي عشان تكمل بيها روعة اختيارك للنهارده.</p>
         </div>
         <div id="bose-cart-premium-suggestions-grid" class="bose-cart-horizontal-slider"></div>
     </section>

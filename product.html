@@ -167,9 +167,9 @@
         }
 
         .bose-badge-gold {
-            background: rgba(212, 175, 55, 0.08);
+            background: rgba(255, 145, 164, 0.08);
             color: var(--bose-gold);
-            border: 1px solid rgba(212, 175, 55, 0.2);
+            border: 1px solid rgba(255, 145, 164, 0.2);
         }
 
         .product-main-headline {
@@ -531,7 +531,7 @@
                     </div>
                     <div>
                         <label style="display:block; font-size:0.88rem; font-weight:700; margin-bottom:6px;">تقييمك بالنجوم للمنتج</label>
-                        <div style="display:flex; gap:10px; flex-direction:row-reverse; justify-content:flex-end; font-size:1.4rem; color:#ccc;">
+                        <div style="display:flex; gap:10px; flex-direction:row-reverse; justify-content:flex-end; font-size:1.4rem; color:#FF91A4;">
                             <input type="radio" id="st5" name="bose-star-rating" value="5" style="display:none;"><label for="st5" style="cursor:pointer;"><i class="fas fa-star"></i></label>
                             <input type="radio" id="st4" name="bose-star-rating" value="4" style="display:none;"><label for="st4" style="cursor:pointer;"><i class="fas fa-star"></i></label>
                             <input type="radio" id="st3" name="bose-star-rating" value="3" style="display:none;"><label for="st3" style="cursor:pointer;"><i class="fas fa-star"></i></label>
@@ -891,7 +891,7 @@
                 let starsHTML = "";
                 const safeRating = parseInt(rev.rating, 10) || 0;
                 for (let i = 1; i <= 5; i++) {
-                    starsHTML += `<i class="fas fa-star" style="color:${i <= safeRating ? 'var(--bose-gold)' : '#ccc'}"></i>`;
+                    starsHTML += `<i class="fas fa-star" style="color:${i <= safeRating ? 'var(--bose-gold)' : '#111111'}"></i>`;
                 }
                 let imagesHTML = "";
                 if (rev.images && rev.images.length > 0) {
@@ -1070,7 +1070,7 @@
                 starRatingInputs.forEach(inp => {
                     const icon = inp.nextElementSibling ? inp.nextElementSibling.querySelector('i') : null;
                     if (icon) {
-                        icon.style.color = parseInt(inp.value, 10) <= selectedValue ? 'var(--bose-gold)' : '#ccc';
+                        icon.style.color = parseInt(inp.value, 10) <= selectedValue ? 'var(--bose-gold)' : '#111111';
                     }
                 });
             }
@@ -1141,7 +1141,7 @@
                 for (const file of filesToUpload) {
                     const placeholder = document.createElement("div");
                     placeholder.className = "review-attached-img-loading";
-                    placeholder.style.cssText = "width:73px; height:73px; border-radius:10px; background:#FFF5F6; display:flex; align-items:center; justify-content:center; font-size:0.7rem; color:var(--bose-pink);";
+                    placeholder.style.cssText = "width:73px; height:73px; border-radius:10px; background:rgba(255, 145, 164, 0.08); display:flex; align-items:center; justify-content:center; font-size:0.7rem; color:var(--bose-pink);";
                     placeholder.textContent = "...";
                     previewContainer.appendChild(placeholder);
 
