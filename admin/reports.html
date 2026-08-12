@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الداشبورد | لوحة تحكم حلويات بوسي</title>
+    <title>التقارير | لوحة تحكم حلويات بوسي</title>
     <meta name="robots" content="noindex, nofollow">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="css/admin-theme.css">
     <link rel="stylesheet" href="css/admin-layout.css">
 </head>
-<body data-page="index">
+<body data-page="reports">
 
     <!-- شاشة تحميل تظهر لحد ما يتأكد من الجلسة -->
     <div class="adm-auth-gate"><div class="adm-loading-spinner"></div></div>
@@ -27,38 +27,44 @@
 
             <div class="adm-content" id="adm-page-content">
 
-                <div class="adm-stats-grid" id="dashboard-stats-grid">
-                    <!-- كروت الإحصائيات بتتبني ديناميكياً من dashboard-page.js -->
-                </div>
-
-                <div class="adm-card adm-mt-16" id="dashboard-alerts-card" style="display:none;">
+                <div class="adm-card">
                     <div class="adm-card-header">
-                        <div><h2><i class="fa-solid fa-bell"></i> يستحق انتباهك</h2></div>
+                        <div>
+                            <h2><i class="fa-solid fa-chart-line"></i> اتجاه المبيعات</h2>
+                            <p>عدد الطلبات والإيراد يوم بيوم (الطلبات الملغية مستبعدة)</p>
+                        </div>
+                        <div class="adm-gap-8">
+                            <select class="adm-select" id="reports-range-select" style="width:auto;">
+                                <option value="7">آخر 7 أيام</option>
+                                <option value="30" selected>آخر 30 يوم</option>
+                                <option value="90">آخر 90 يوم</option>
+                            </select>
+                        </div>
                     </div>
-                    <div id="dashboard-alerts-list"></div>
+                    <div id="reports-summary-row" class="adm-stats-grid" style="margin-bottom: 18px;"></div>
+                    <div id="reports-chart-wrap">
+                        <div class="adm-loading-spinner"></div>
+                    </div>
                 </div>
 
                 <div class="adm-card adm-mt-16">
                     <div class="adm-card-header">
                         <div>
-                            <h2>أحدث الطلبات</h2>
-                            <p>آخر 5 طلبات وصلت للمتجر</p>
+                            <h2><i class="fa-solid fa-crown"></i> أكتر المنتجات مبيعاً</h2>
+                            <p>حسب الكمية المباعة خلال نفس المدة المختارة فوق</p>
                         </div>
-                        <a href="orders.html" class="adm-btn adm-btn-outline adm-btn-sm">عرض كل الطلبات</a>
                     </div>
                     <div class="adm-table-wrapper">
-                        <table class="adm-table" id="recent-orders-table">
+                        <table class="adm-table">
                             <thead>
                                 <tr>
-                                    <th>رقم الطلب</th>
-                                    <th>العميل</th>
-                                    <th>الإجمالي</th>
-                                    <th>الحالة</th>
-                                    <th>التاريخ</th>
+                                    <th>المنتج</th>
+                                    <th>الكمية المباعة</th>
+                                    <th>الإيراد</th>
                                 </tr>
                             </thead>
-                            <tbody id="recent-orders-tbody">
-                                <tr><td colspan="5"><div class="adm-loading-spinner"></div></td></tr>
+                            <tbody id="reports-top-products-tbody">
+                                <tr><td colspan="3"><div class="adm-loading-spinner"></div></td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -73,6 +79,6 @@
     <script src="js/admin-auth-guard.js"></script>
     <script src="js/admin-ui-utils.js"></script>
     <script src="js/admin-shell.js"></script>
-    <script src="js/pages/dashboard-page.js"></script>
+    <script src="js/pages/reports-page.js"></script>
 </body>
 </html>
