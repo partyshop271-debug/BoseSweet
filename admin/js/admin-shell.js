@@ -19,7 +19,10 @@
     const NAV_STRUCTURE = [
         {
             group: "نظرة عامة",
-            items: [{ key: "index", label: "الداشبورد", icon: "fa-gauge-high", href: "index.html" }],
+            items: [
+                { key: "index", label: "الداشبورد", icon: "fa-gauge-high", href: "index.html" },
+                { key: "reports", label: "التقارير", icon: "fa-chart-line", href: "reports.html" },
+            ],
         },
         {
             group: "التشغيل اليومي",
@@ -52,6 +55,7 @@
 
     const PAGE_TITLES = {
         index: ["الداشبورد", "نظرة سريعة على أداء المتجر اليوم"],
+        reports: ["التقارير", "اتجاه المبيعات وأكتر المنتجات مبيعاً"],
         orders: ["الطلبات", "متابعة وتحديث حالة كل طلبات العملاء"],
         products: ["المنتجات", "إضافة وتعديل منتجات المتجر"],
         homepage: ["الواجهة الرئيسية", "التحكم في محتوى الصفحة الرئيسية للموقع"],

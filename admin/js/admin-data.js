@@ -82,54 +82,101 @@
      * ملخص سريع للداشبورد. مكتوبة بشكل دفاعي: لو جدول orders مسمى بشكل
      * مختلف في القاعدة الفعلية، بترجع 0 بدل ما توقف الداشبورد بالكامل.
      */
+    /**
+     * 🛡️ [إصلاح جذري - استخدام الجاهز بدل إعادة الاختراع]: الدالة دي قبل كده
+     * كانت بتعمل 4 استعلامات منفصلة يدوية وبترجع رقمين بس مفيدين فعلياً
+     * (طلبات النهاردة، تقييمات معلقة)، بينما كانت موجودة فعلياً في قاعدة
+     * البيانات دالة get_admin_dashboard_stats جاهزة ومبنية بعناية (إيراد
+     * النهاردة/الأسبوع/الشهر، متوسط قيمة الطلب، عدد الطلبات المعلقة، عدد
+     * المنتجات غير المتاحة) ومحدش كان بيستخدمها من أي صفحة في اللوحة. دلوقتي
+     * الداشبورد بيستخدمها مباشرة بدل ما يعيد نفس الحسابات بأسلوب أفقر.
+     */
     async function getDashboardSummary() {
-        const summary = {
-            ordersToday: 0,
-            pendingReviews: 0,
-            totalProducts: 0,
-            activeOffers: 0,
-        };
-
+        let stats = {};
         try {
-            const startOfToday = new Date();
-            startOfToday.setHours(0, 0, 0, 0);
-            const { count } = await client
-                .from("orders")
-                .select("id", { count: "exact", head: true })
-                .gte("created_at", startOfToday.toISOString());
-            summary.ordersToday = count || 0;
-        } catch (e) { console.warn("تعذر جلب طلبات اليوم:", e.message); }
+            const { data, error } = await client.rpc("get_admin_dashboard_stats");
+            if (error) throw error;
+            stats = data || {};
+        } catch (e) {
+            console.warn("تعذر جلب إحصائيات الداشبورد:", e.message);
+            stats = {
+                ordersToday: 0, ordersWeek: 0, revenueToday: 0, revenueWeek: 0, revenueMonth: 0,
+                avgOrderValueMonth: 0, pendingOrders: 0, pendingReviews: 0, totalProducts: 0,
+                unavailableProducts: 0,
+            };
+        }
 
-        try {
-            const { count } = await client
-                .from("reviews")
-                .select("id", { count: "exact", head: true })
-                .eq("is_approved", false);
-            summary.pendingReviews = count || 0;
-        } catch (e) { console.warn("تعذر جلب التقييمات المعلقة:", e.message); }
-
-        try {
-            const { count } = await client
-                .from("products")
-                .select("id", { count: "exact", head: true });
-            summary.totalProducts = count || 0;
-        } catch (e) { console.warn("تعذر جلب عدد المنتجات:", e.message); }
-
-        // 🛡️ [إصلاح - تصحيح مصدر البيانات]: كان بيتحسب هنا يدوياً من كل صفوف
-        // products بشرط old_price > price، وده رقم مختلف تماماً عن جدول offers
-        // الحقيقي اللي صفحة "عروض المنتجات" (offers.html) بتديره فعلياً - يعني
-        // الرقم في الداشبورد كان ممكن يكدب تماماً عن العدد الحقيقي اللي الأدمن
-        // ضبطه بنفسه. دلوقتي بيتعدّ مباشرة من جدول offers نفسه (نفس المصدر
-        // اللي offers-page.js بيستخدمه في getAllOffers) عن طريق count بسيط
-        // على مستوى القاعدة بدل سحب كل المنتجات وحسابهم في المتصفح.
+        // 🛡️ [إصلاح - تصحيح مصدر البيانات]: activeOffers في دالة get_admin_dashboard_stats
+        // نفسها بتتحسب من كل صفوف products بشرط old_price > price، وده رقم مختلف تماماً
+        // عن جدول offers الحقيقي اللي صفحة "عروض المنتجات" (offers.html) بتديره فعلياً -
+        // نفس اللبس اللي كان مصلّح هنا قبل كده. بنستبدلها بالعدد الحقيقي من جدول offers.
         try {
             const { count } = await client
                 .from("offers")
                 .select("id", { count: "exact", head: true });
-            summary.activeOffers = count || 0;
-        } catch (e) { console.warn("تعذر جلب عدد العروض النشطة:", e.message); }
+            stats.activeOffers = count || 0;
+        } catch (e) {
+            console.warn("تعذر جلب عدد العروض النشطة:", e.message);
+            stats.activeOffers = 0;
+        }
 
-        return summary;
+        return stats;
+    }
+
+    /** تقرير المبيعات اليومي لآخر p_days يوم (لرسم بياني بسيط في صفحة التقارير) */
+    async function getSalesReport(days = 30) {
+        try {
+            const { data, error } = await client.rpc("get_admin_sales_report", { p_days: days });
+            if (error) throw error;
+            return data || [];
+        } catch (e) {
+            console.warn("تعذر جلب تقرير المبيعات:", e.message);
+            return [];
+        }
+    }
+
+    /** أكتر المنتجات مبيعاً خلال آخر p_days يوم */
+    async function getTopProducts(days = 30, limit = 5) {
+        try {
+            const { data, error } = await client.rpc("get_admin_top_products", { p_days: days, p_limit: limit });
+            if (error) throw error;
+            return data || [];
+        } catch (e) {
+            console.warn("تعذر جلب أكتر المنتجات مبيعاً:", e.message);
+            return [];
+        }
+    }
+
+    /** سجل النشاط الإداري (آخر التعديلات اللي حصلت من اللوحة) */
+    async function getAuditLog(limit = 100) {
+        try {
+            const { data, error } = await client
+                .from("admin_audit_log")
+                .select("*")
+                .order("created_at", { ascending: false })
+                .limit(limit);
+            if (error) throw error;
+            return data || [];
+        } catch (e) {
+            console.warn("تعذر جلب سجل النشاط:", e.message);
+            return [];
+        }
+    }
+
+    /** عدد المنتجات اللي لسه شايلة صورة اللوجو الافتراضية بدل صورة حقيقية (لتنبيه الداشبورد) */
+    async function getMissingPhotoProductsCount() {
+        try {
+            const { data, error } = await client.from("products").select("id, images");
+            if (error) throw error;
+            const marker = "logo_igggsb";
+            return (data || []).filter((p) => {
+                const img = (p.images && p.images[0]) || "";
+                return !img || img.includes(marker);
+            }).length;
+        } catch (e) {
+            console.warn("تعذر جلب عدد المنتجات بدون صورة حقيقية:", e.message);
+            return 0;
+        }
     }
 
     /** آخر 5 طلبات لعرضها في الداشبورد */
@@ -684,6 +731,10 @@
         verifyIsAdmin,
         onAuthStateChange,
         getDashboardSummary,
+        getSalesReport,
+        getTopProducts,
+        getAuditLog,
+        getMissingPhotoProductsCount,
         getRecentOrders,
         getAllOrders,
         updateOrderStatus,
