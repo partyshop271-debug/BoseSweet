@@ -15,4 +15,4 @@ Disallow: /admin/
 # يتحجب من الأرشفة هنا) - راجع التقرير تحت.
 Disallow: /data/
 
-Sitemap: https://bose-sweet.vercel.app/sitemap.xmlript
+Sitemap: https://bose-sweet.vercel.app/sitemap.xml

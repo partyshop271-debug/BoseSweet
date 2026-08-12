@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+    <link rel="apple-touch-icon" href="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#FF91A4">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
@@ -456,7 +460,12 @@
             <div class="product-meta-details-pane">
                 <div class="bose-premium-badge-row">
                     <span id="bose-product-badge-cat" class="bose-badge-node bose-badge-pink">صنف فاخر</span>
-                    <span class="bose-badge-node bose-badge-gold"><i class="fas fa-star"></i> 4.9 تقييم ممتاز</span>
+                    <!-- 🛡️ [إصلاح مصداقية - SEO]: كانت الشارة دي رقم ثابت "4.9" مكتوب يدوياً في كل
+                         صفحة منتج بغض النظر عن وجود أي تقييمات حقيقية من عدمه - غير صحيح وممكن يخالف
+                         إرشادات جوجل لعرض تقييمات وهمية. دلوقتي بتتحسب حية من متوسط المراجعات الفعلية
+                         (المعتمدة من الإدارة + مراجعات البداية اللي كتبتها صاحبة المتجر) وبتختفي تماماً
+                         لو مفيش أي مراجعة حقيقية للمنتج ده لسه، بدل ما تدّعي رقم مالوش أساس. -->
+                    <span id="bose-product-rating-badge" class="bose-badge-node bose-badge-gold" style="display:none;"><i class="fas fa-star"></i> <span id="bose-product-rating-badge-text"></span></span>
                 </div>
                 
                 <h1 id="bose-product-title-text" class="product-main-headline">اسم المنتج</h1>
@@ -502,6 +511,19 @@
             </div>
         </div>
 
+        <!-- 🔍👑 [SEO/GEO - أسئلة شائعة خاصة بالمنتج]: القسم ده بيظهر بس لو المنتج عنده أسئلة
+             مكتوبة فعلياً من لوحة التحكم (products.faqs) - مفيش أي سؤال أو إجابة مُلفّقة هنا.
+             كل صفحة منتج بتاخد أسئلتها الخاصة بيها بس، مربوطة بنفس الصنف عبر FAQPage schema.org
+             (بيتحقن ديناميكياً في injectFaqStructuredData) - ده اللي بيدي جوجل والذكاء الاصطناعي
+             فرصة يجاوبوا على سؤال العميل مباشرة من نتيجة البحث نفسها قبل حتى ما يدخل الموقع. -->
+        <section class="reviews-premium-section" id="bose-product-faq-section" style="display:none;">
+            <div style="text-align: right; margin-bottom: 20px; direction: rtl;">
+                <h2 style="font-size: 1.3rem; font-weight: 700; color: var(--bose-black);">أسئلة شائعة عن الصنف ده</h2>
+                <p style="font-size: 0.88rem; color: var(--bose-black); opacity: 0.7; margin-top: 4px;">جمعنالك أكتر الأسئلة اللي بتتسأل عن الصنف ده تحديداً.</p>
+            </div>
+            <div id="bose-product-faq-list" style="display:flex; flex-direction:column; gap:10px;"></div>
+        </section>
+
         <section class="reviews-premium-section" style="margin-top: 50px;">
             <div style="text-align: right; margin-bottom: 25px; direction: rtl;">
                 <h2 style="font-size: 1.3rem; font-weight: 700; color: var(--bose-black); padding-bottom: 6px;">قد يعجبك أيضاً</h2>
@@ -511,51 +533,87 @@
             <div id="related-products-grid" class="bose-horizontal-suggestions-slider"></div>
         </section>
 
+        <!-- 👑👑 [إعادة بناء كاملة - قسم المراجعات]: القسم القديم كان بيفتح استمارة طويلة
+             (اسم + نجوم + تعليق + صور) مرة واحدة، وده أعلى نوع احتكاك بيقلل نسبة إتمام
+             المراجعات فعلياً حسب أبحاث سلوك المستخدم (كل حقل إضافي ظاهر من أول وهلة بيقلل
+             معدل إكمال أي استمارة). البناء الجديد بيعتمد على 3 مبادئ من علم النفس السلوكي:
+             1) الكشف التدريجي (Progressive Disclosure): بنسأل سؤال واحد بس الأول (كام نجمة؟)
+                وده أسهل تفاعل ممكن (ضغطة واحدة)، وبعدها بس تفتح باقي الحقول - أي التزام صغير
+                أولاني (micro-commitment) بيخلي إكمال الباقي أسهل نفسياً (مبدأ الاتساق/Consistency).
+             2) التوجيه حسب المشاعر (Sentiment Routing): تقييم منخفض (1-3 نجوم) بيوجّه العميل
+                فوراً لقناة دعم مباشرة (واتساب) بجانب حرية النشر العام، عشان نحل المشكلة بسرعة
+                بدل ما تفضل معلقة - بدون أي منع أو حذف لحقها في النشر العام (مفيش أي "قمع" للتقييم
+                السلبي، بس مساعدة إضافية معروضة).
+             3) تقليل تكلفة الكتابة (Reduce Cognitive Load): شرائح جاهزة (chips) تنضاف بضغطة
+                واحدة للتعليق بدل الكتابة من الصفر - أكبر سبب لهروب العميل من كتابة مراجعة هو
+                "مش عارفة أكتب إيه"، فبنديله بداية جاهزة يكمل عليها. -->
         <section class="reviews-premium-section">
             <div class="reviews-summary-row" style="direction: rtl;">
                 <div style="text-align: right;">
-                    <h2 style="font-size: 1.3rem; font-weight: 700; color: var(--bose-black);">مراجعات وتقييمات حلويات بوسي</h2>
-                    <p style="font-size: 0.88rem; color: var(--bose-black); opacity: 0.7; margin-top: 4px;">آراء وتجارب حقيقية شاركها معنا عملاؤنا الكرام بكل فخر واعتزاز بالجودة الفاخرة لمنتجاتنا.</p>
+                    <h2 style="font-size: 1.3rem; font-weight: 700; color: var(--bose-black);">مراجعات وتقييمات العملاء</h2>
+                    <div id="bose-reviews-summary-line" style="display:flex; align-items:center; gap:10px; margin-top: 8px;">
+                        <span id="bose-reviews-summary-empty" style="font-size: 0.88rem; color: var(--bose-black); opacity: 0.7;">لسه معندناش مراجعات على الصنف ده - يشرفنا تكوني أول وحدة توثّق تجربتها 🌸</span>
+                        <div id="bose-reviews-summary-filled" style="display:none; align-items:center; gap:8px;">
+                            <span id="bose-reviews-summary-stars" style="color:var(--bose-gold); font-size:1rem; letter-spacing:2px;"></span>
+                            <span id="bose-reviews-summary-text" style="font-size: 0.9rem; font-weight:700; color: var(--bose-black);"></span>
+                        </div>
+                    </div>
                 </div>
                 <button id="btn-toggle-review-form" class="btn-trigger-review-form" type="button">
-                    <i class="fas fa-pen"></i> شاركنا تجربتك وتقييمك الفاخر
+                    <i class="fas fa-pen"></i> شاركي رأيك في أقل من دقيقة
                 </button>
             </div>
 
             <div id="bose-review-form-wrapper" style="display: none; background: rgba(255, 145, 164, 0.03); border: 1px dashed var(--bose-pink); border-radius: 24px; padding: 24px; margin-bottom: 30px; direction: rtl;">
-                <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 16px;">مراجعتك الفاخرة للصنف</h3>
-                <div style="display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 16px;">
-                    <div>
-                        <label style="display:block; font-size:0.88rem; font-weight:700; margin-bottom:6px;">اسمك المحترم</label>
-                        <input id="bose-review-user-name" type="text" placeholder="يمكنك كتابة اسمك هنا..." style="width:100%; padding:12px; border-radius:12px; border:1px solid rgba(17,17,17,0.12); font-family:'Cairo'; box-sizing:border-box;">
+
+                <!-- الخطوة 1: سؤال واحد بس - كام نجمة؟ (أقل احتكاك ممكن) -->
+                <div id="bose-review-step-rating">
+                    <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 14px;">إيه رأيك في الصنف ده؟</h3>
+                    <div id="bose-review-stars-picker" style="display:flex; gap:12px; flex-direction:row-reverse; justify-content:flex-end; font-size:2rem; color:#111111;">
+                        <input type="radio" id="st5" name="bose-star-rating" value="5" style="display:none;"><label for="st5" style="cursor:pointer;"><i class="fas fa-star"></i></label>
+                        <input type="radio" id="st4" name="bose-star-rating" value="4" style="display:none;"><label for="st4" style="cursor:pointer;"><i class="fas fa-star"></i></label>
+                        <input type="radio" id="st3" name="bose-star-rating" value="3" style="display:none;"><label for="st3" style="cursor:pointer;"><i class="fas fa-star"></i></label>
+                        <input type="radio" id="st2" name="bose-star-rating" value="2" style="display:none;"><label for="st2" style="cursor:pointer;"><i class="fas fa-star"></i></label>
+                        <input type="radio" id="st1" name="bose-star-rating" value="1" style="display:none;"><label for="st1" style="cursor:pointer;"><i class="fas fa-star"></i></label>
                     </div>
-                    <div>
-                        <label style="display:block; font-size:0.88rem; font-weight:700; margin-bottom:6px;">تقييمك بالنجوم للمنتج</label>
-                        <div style="display:flex; gap:10px; flex-direction:row-reverse; justify-content:flex-end; font-size:1.4rem; color:#FF91A4;">
-                            <input type="radio" id="st5" name="bose-star-rating" value="5" style="display:none;"><label for="st5" style="cursor:pointer;"><i class="fas fa-star"></i></label>
-                            <input type="radio" id="st4" name="bose-star-rating" value="4" style="display:none;"><label for="st4" style="cursor:pointer;"><i class="fas fa-star"></i></label>
-                            <input type="radio" id="st3" name="bose-star-rating" value="3" style="display:none;"><label for="st3" style="cursor:pointer;"><i class="fas fa-star"></i></label>
-                            <input type="radio" id="st2" name="bose-star-rating" value="2" style="display:none;"><label for="st2" style="cursor:pointer;"><i class="fas fa-star"></i></label>
-                            <input type="radio" id="st1" name="bose-star-rating" value="1" style="display:none;"><label for="st1" style="cursor:pointer;"><i class="fas fa-star"></i></label>
-                        </div>
-                    </div>
-                </div>
-                <div style="margin-bottom: 16px;">
-                    <label style="display:block; font-size:0.88rem; font-weight:700; margin-bottom:6px;">رأيك وتجربتك بالتفصيل</label>
-                    <textarea id="bose-review-comment" placeholder="كيف كانت تجربتك لطعم وجودة المنتج؟ يسعدنا سماع رأيك الراقٍ..." style="width:100%; height:90px; padding:12px; border-radius:12px; border:1px solid rgba(17,17,17,0.12); font-family:'Cairo'; resize:none; box-sizing:border-box;"></textarea>
-                </div>
-                
-                <div style="margin-bottom: 20px;">
-                    <label style="display:block; font-size:0.88rem; font-weight:700; margin-bottom:6px;"><i class="fas fa-camera"></i> أضف صوراً حقيقية لالتقاط روعة الصنف (اختياري)</label>
-                    <input id="bose-review-images-picker" type="file" accept="image/*" multiple style="display: none;">
-                    <button id="btn-trigger-review-images" type="button" style="background:#fff; border:1px solid rgba(17,17,17,0.15); padding:8px 16px; border-radius:10px; cursor:pointer; font-size:0.85rem; font-weight:700;"><i class="fas fa-images" style="color:var(--bose-pink);"></i> اختيار الصور من جهازك</button>
-                    <div id="bose-review-images-preview-zone" style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;"></div>
                 </div>
 
-                <button id="btn-submit-premium-review" type="button" style="background:var(--bose-pink); color:#fff; border:none; padding:12px 30px; border-radius:50px; font-weight:700; cursor:pointer; box-shadow:0 4px 12px rgba(255,145,164,0.2);">حفظ مراجعتك</button>
-                <p style="font-size:0.78rem; color:#111111; opacity:0.6; margin:10px 0 0 0; line-height:1.5;">
-                    <i class="fas fa-circle-info"></i> ملحوظة: مراجعتك بتتراجع من فريقنا أولاً لضمان جودة المحتوى، وبتظهر لباقي الزوار على المنتج فور اعتمادها.
-                </p>
+                <!-- فرع التقييم المنخفض (1-3): تعاطف + قناة دعم مباشرة، مع إبقاء النشر العام متاح دايماً -->
+                <div id="bose-review-lowrating-branch" style="display:none; margin-top:18px; background:#fff; border:1px solid rgba(17,17,17,0.08); border-radius:16px; padding:18px;">
+                    <p style="font-size:0.92rem; font-weight:700; margin:0 0 8px 0;">آسفين إن التجربة متكنتش زي ما توقعتي 💔</p>
+                    <p style="font-size:0.85rem; opacity:0.75; margin:0 0 14px 0; line-height:1.6;">قوليلنا المشكلة كانت في إيه وهنحلها بسرعة معاكي مباشرة، وفي نفس الوقت تقدري كمان تكتبي مراجعتك هنا لو حابة تشاركيها مع باقي الزوار.</p>
+                    <a id="bose-review-lowrating-whatsapp" href="#" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; gap:8px; background:#25D366; color:#fff; padding:10px 20px; border-radius:50px; text-decoration:none; font-weight:700; font-size:0.88rem;">
+                        <i class="fab fa-whatsapp"></i> كلّمينا على واتساب دلوقتي
+                    </a>
+                </div>
+
+                <!-- الخطوة 2: بتتفتح بس بعد اختيار النجوم (كشف تدريجي) -->
+                <div id="bose-review-step-details" style="display:none; margin-top:20px;">
+                    <div id="bose-review-chips-row" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px;"></div>
+
+                    <div style="display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 16px;">
+                        <div>
+                            <label style="display:block; font-size:0.88rem; font-weight:700; margin-bottom:6px;">اسمك المحترم</label>
+                            <input id="bose-review-user-name" type="text" placeholder="يمكنك كتابة اسمك هنا..." style="width:100%; padding:12px; border-radius:12px; border:1px solid rgba(17,17,17,0.12); font-family:'Cairo'; box-sizing:border-box;">
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 16px;">
+                        <label style="display:block; font-size:0.88rem; font-weight:700; margin-bottom:6px;">تجربتك بالتفصيل (جملة واحدة تكفي)</label>
+                        <textarea id="bose-review-comment" placeholder="اضغطي على الاقتراحات فوق أو اكتبي رأيك بنفسك..." style="width:100%; height:90px; padding:12px; border-radius:12px; border:1px solid rgba(17,17,17,0.12); font-family:'Cairo'; resize:none; box-sizing:border-box;"></textarea>
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <label style="display:block; font-size:0.88rem; font-weight:700; margin-bottom:6px;"><i class="fas fa-camera"></i> أضف صوراً حقيقية لالتقاط روعة الصنف (اختياري)</label>
+                        <input id="bose-review-images-picker" type="file" accept="image/*" multiple style="display: none;">
+                        <button id="btn-trigger-review-images" type="button" style="background:#fff; border:1px solid rgba(17,17,17,0.15); padding:8px 16px; border-radius:10px; cursor:pointer; font-size:0.85rem; font-weight:700;"><i class="fas fa-images" style="color:var(--bose-pink);"></i> اختيار الصور من جهازك</button>
+                        <div id="bose-review-images-preview-zone" style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;"></div>
+                    </div>
+
+                    <button id="btn-submit-premium-review" type="button" style="background:var(--bose-pink); color:#fff; border:none; padding:12px 30px; border-radius:50px; font-weight:700; cursor:pointer; box-shadow:0 4px 12px rgba(255,145,164,0.2);">نشر مراجعتي</button>
+                    <p style="font-size:0.78rem; color:#111111; opacity:0.6; margin:10px 0 0 0; line-height:1.5;">
+                        <i class="fas fa-circle-info"></i> بتتراجع من فريقنا أولاً لضمان الجودة، وبعد اعتمادها هتساعد عملاء تانيين يختاروا صح 🌸
+                    </p>
+                </div>
             </div>
 
             <div id="bose-product-reviews-collection-list"></div>
@@ -834,11 +892,99 @@
 
                 updateLivePriceDisplay(dbData.store?.currency || "EGP");
                 renderDynamicProductReviews();
+                renderProductFaqs();
 
                 skeleton.style.display = "none";
                 contentView.style.display = "grid";
 
                 renderRelatedProducts(dbData);
+            }
+
+            /**
+             * 🔍👑 [SEO/GEO - أسئلة شائعة]: بترسم أسئلة المنتج الحقيقية المكتوبة من لوحة
+             * التحكم (لو موجودة) + بتحقن FAQPage schema.org مرتبطة بنفس صفحة المنتج ونفس
+             * الأسئلة بالظبط - القسم بيفضل مخفي تماماً لو المنتج لسه معندوش أسئلة متضافة.
+             */
+            function renderProductFaqs() {
+                const section = document.getElementById("bose-product-faq-section");
+                const list = document.getElementById("bose-product-faq-list");
+                if (!section || !list || !currentProduct) return;
+
+                const faqs = (currentProduct.faqs || []).filter(f => f.q && f.a);
+                if (faqs.length === 0) {
+                    section.style.display = "none";
+                    const old = document.getElementById("bose-faq-structured-data");
+                    if (old) old.remove();
+                    return;
+                }
+
+                list.innerHTML = faqs.map((f, idx) => `
+                    <details class="bose-faq-item" style="border:1px solid rgba(17,17,17,0.1); border-radius:14px; padding:14px 16px; direction:rtl;" ${idx === 0 ? "open" : ""}>
+                        <summary style="cursor:pointer; font-weight:700; font-size:0.95rem; color:var(--bose-black);">${escapeHTML(f.q)}</summary>
+                        <p style="margin:10px 0 0 0; font-size:0.88rem; opacity:0.85; line-height:1.6;">${escapeHTML(f.a)}</p>
+                    </details>
+                `).join("");
+                section.style.display = "block";
+
+                let script = document.getElementById("bose-faq-structured-data");
+                if (!script) {
+                    script = document.createElement("script");
+                    script.type = "application/ld+json";
+                    script.id = "bose-faq-structured-data";
+                    document.head.appendChild(script);
+                }
+                script.textContent = JSON.stringify({
+                    "@context": "https://schema.org",
+                    "@type": "FAQPage",
+                    "mainEntity": faqs.map(f => ({
+                        "@type": "Question",
+                        "name": f.q,
+                        "acceptedAnswer": { "@type": "Answer", "text": f.a }
+                    }))
+                });
+            }
+
+            /**
+             * 🔍👑 [SEO/GEO - بيانات Product/Offer/AggregateRating]: بتتحقن مرة واحدة هنا
+             * لكل صفحة منتج بقيم حقيقية 100% (سعر فعلي، توفر فعلي، ومتوسط تقييم محسوب من
+             * المراجعات الفعلية بس - مفيش أي AggregateRating بيتحقن أصلاً لو مفيش ولا مراجعة
+             * حقيقية واحدة، عشان نلتزم بإرشادات جوجل ومنمنعش أي "تقييم وهمي").
+             */
+            function injectProductStructuredData(ratingInfo) {
+                if (!currentProduct) return;
+                const unitPrice = safeCalculatePrice(currentProduct, currentSelectedOptions);
+                const productSchema = {
+                    "@context": "https://schema.org",
+                    "@type": "Product",
+                    "name": currentProduct.title + (currentProduct.flavorName ? ` - ${currentProduct.flavorName}` : ""),
+                    "image": (currentProduct.images && currentProduct.images.length ? currentProduct.images : [currentProduct.image]).filter(Boolean),
+                    "description": currentProduct.description || currentProduct.flavorDesc || "",
+                    "sku": String(currentProduct.id || currentProduct.slug),
+                    "brand": { "@type": "Brand", "name": (window.BoseStoreData?.store?.name) || "حلويات بوسي" },
+                    "offers": {
+                        "@type": "Offer",
+                        "url": window.location.href,
+                        "priceCurrency": window.BoseStoreData?.store?.currency || "EGP",
+                        "price": unitPrice,
+                        "availability": currentProduct.isAvailable !== false ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"
+                    }
+                };
+                if (ratingInfo && ratingInfo.count > 0) {
+                    productSchema.aggregateRating = {
+                        "@type": "AggregateRating",
+                        "ratingValue": ratingInfo.avg.toFixed(1),
+                        "reviewCount": ratingInfo.count
+                    };
+                }
+
+                let script = document.getElementById("bose-product-structured-data");
+                if (!script) {
+                    script = document.createElement("script");
+                    script.type = "application/ld+json";
+                    script.id = "bose-product-structured-data";
+                    document.head.appendChild(script);
+                }
+                script.textContent = JSON.stringify(productSchema);
             }
 
             // 🛡️ [إصلاح جوهري]: مراجعات العملاء بقت بتتسجل فعلياً في قاعدة البيانات
@@ -928,6 +1074,49 @@
                     reviewsListContainer.innerHTML = `
                         <p style="text-align:center; padding:30px 10px; font-size:0.9rem; opacity:0.6; font-weight:600;">لم يتم نشر مراجعات لهذا الصنف بعد. شاركنا رأيك الصادق لتكون أول من يوثق تجربته الفاخرة! 🌸</p>
                     `;
+                }
+
+                // 🔍👑 [مصداقية]: متوسط التقييم بيتحسب بس من المراجعات "المعتمدة فعلياً"
+                // (المعتمدة من الإدارة + مراجعات البداية اللي كتبتها صاحبة المتجر بنفسها) -
+                // مراجعة العميل لسه "قيد المراجعة" في نفس الجلسة (sessionPendingReviews) متتحسبش
+                // هنا عشان مفيش ضمان إنها هتتعتمد، وعشان زوار تانيين متشوفوش رقم اتغيّر بمراجعة
+                // لسه مش موثّقة فعلياً.
+                const ratedReviews = backendReviews.concat(catalogReviews).filter(r => r.rating);
+                const ratingInfo = ratedReviews.length > 0
+                    ? { avg: ratedReviews.reduce((s, r) => s + Number(r.rating), 0) / ratedReviews.length, count: ratedReviews.length }
+                    : null;
+                updateRatingBadgeAndSummary(ratingInfo);
+                injectProductStructuredData(ratingInfo);
+            }
+
+            function updateRatingBadgeAndSummary(ratingInfo) {
+                const badge = document.getElementById("bose-product-rating-badge");
+                const badgeText = document.getElementById("bose-product-rating-badge-text");
+                const summaryEmpty = document.getElementById("bose-reviews-summary-empty");
+                const summaryFilled = document.getElementById("bose-reviews-summary-filled");
+                const summaryStars = document.getElementById("bose-reviews-summary-stars");
+                const summaryText = document.getElementById("bose-reviews-summary-text");
+                if (!badge) return;
+
+                if (!ratingInfo) {
+                    badge.style.display = "none";
+                    if (summaryEmpty) summaryEmpty.style.display = "inline";
+                    if (summaryFilled) summaryFilled.style.display = "none";
+                    return;
+                }
+
+                const roundedAvg = Math.round(ratingInfo.avg * 10) / 10;
+                badgeText.textContent = `${roundedAvg.toFixed(1)} (${ratingInfo.count})`;
+                badge.style.display = "inline-flex";
+
+                if (summaryEmpty) summaryEmpty.style.display = "none";
+                if (summaryFilled) {
+                    summaryFilled.style.display = "inline-flex";
+                    const fullStars = Math.round(ratingInfo.avg);
+                    summaryStars.innerHTML = Array.from({ length: 5 }, (_, i) =>
+                        `<i class="fas fa-star" style="color:${i < fullStars ? 'var(--bose-gold)' : 'rgba(17,17,17,0.15)'}"></i>`
+                    ).join("");
+                    summaryText.textContent = `${roundedAvg.toFixed(1)} من 5 — ${ratingInfo.count} ${ratingInfo.count === 1 ? 'تقييم' : 'تقييمات'}`;
                 }
             }
 
@@ -1081,14 +1270,56 @@
                     inp.nextElementSibling.addEventListener('mouseenter', () => updateStarVisuals(parseInt(inp.value, 10)));
                 }
             });
-            const starsContainer = starRatingInputs[0] ? starRatingInputs[0].closest('div') : null;
+            const starsContainer = document.getElementById("bose-review-stars-picker");
             if (starsContainer) {
                 starsContainer.addEventListener('mouseleave', () => {
                     const checked = document.querySelector('input[name="bose-star-rating"]:checked');
                     updateStarVisuals(checked ? parseInt(checked.value, 10) : 0);
                 });
             }
-            
+
+            // 👑 [مبدأ الكشف التدريجي]: أول ما العميلة تختار عدد النجوم، بنفتح الخطوة
+            // التانية (الاسم/التعليق/الصور) - وبنفتح بالتوازي فرع الدعم المباشر لو
+            // التقييم 3 نجوم أو أقل (توجيه حسب المشاعر)، من غير ما نمنع النشر العام خالص.
+            const SENTIMENT_CHIPS = {
+                positive: ["الطعم كان رائع 😋", "التغليف كان أنيق 📦", "وصل في الميعاد ⏱️", "يستاهل السعر 💰", "هطلب تاني أكيد ✨"],
+                negative: ["الطعم مكنش زي المتوقع", "التغليف اتأثر في الطريق", "التوصيل اتأخر", "السعر غالي شوية"]
+            };
+            function buildLowRatingWhatsappLink() {
+                const phone = (window.BoseStoreData?.social?.whatsapp) || "201097238441";
+                const text = `مرحباً، عندي ملاحظة على طلب "${currentProduct?.title || ''}" حابة أشاركها معاكم 🌸`;
+                if (typeof window.buildWhatsappLink === "function") return window.buildWhatsappLink(phone, text);
+                return `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
+            }
+            function onRatingChosen(value) {
+                const stepDetails = document.getElementById("bose-review-step-details");
+                const lowBranch = document.getElementById("bose-review-lowrating-branch");
+                const chipsRow = document.getElementById("bose-review-chips-row");
+                const waLink = document.getElementById("bose-review-lowrating-whatsapp");
+
+                stepDetails.style.display = "block";
+                const isLow = value <= 3;
+                lowBranch.style.display = isLow ? "block" : "none";
+                if (isLow && waLink) waLink.href = buildLowRatingWhatsappLink();
+
+                const chips = isLow ? SENTIMENT_CHIPS.negative : SENTIMENT_CHIPS.positive;
+                chipsRow.innerHTML = chips.map(c => `<button type="button" class="bose-review-chip" data-chip="${escapeHTML(c)}" style="background:#fff; border:1px solid rgba(255,145,164,0.4); color:var(--bose-black); padding:6px 14px; border-radius:50px; font-size:0.78rem; font-weight:700; cursor:pointer;">+ ${c}</button>`).join("");
+                chipsRow.querySelectorAll(".bose-review-chip").forEach(chip => {
+                    chip.addEventListener("click", () => {
+                        const ta = document.getElementById("bose-review-comment");
+                        const text = chip.getAttribute("data-chip");
+                        ta.value = ta.value.trim() ? `${ta.value.trim()}، ${text}` : text;
+                        chip.disabled = true;
+                        chip.style.opacity = "0.4";
+                    });
+                });
+
+                stepDetails.scrollIntoView({ behavior: "smooth", block: "center" });
+            }
+            starRatingInputs.forEach(inp => {
+                inp.addEventListener('change', () => onRatingChosen(parseInt(inp.value, 10)));
+            });
+
             toggleFormBtn.addEventListener("click", () => {
                 if (formWrapper.style.display === "none") {
                     formWrapper.style.display = "block";
@@ -1096,7 +1327,7 @@
                     formWrapper.scrollIntoView({ behavior: "smooth", block: "center" });
                 } else {
                     formWrapper.style.display = "none";
-                    toggleFormBtn.innerHTML = `<i class="fas fa-pen"></i> شاركنا تجربتك وتقييمك الفاخر`;
+                    toggleFormBtn.innerHTML = `<i class="fas fa-pen"></i> شاركي رأيك في أقل من دقيقة`;
                 }
             });
 
@@ -1217,9 +1448,11 @@
                 updateStarVisuals(0);
                 if (previewContainer) previewContainer.innerHTML = "";
                 uploadedImageUrls = [];
-                
+                document.getElementById("bose-review-step-details").style.display = "none";
+                document.getElementById("bose-review-lowrating-branch").style.display = "none";
+
                 formWrapper.style.display = 'none';
-                toggleFormBtn.innerHTML = `<i class="fas fa-pen"></i> شاركنا تجربتك وتقييمك الفاخر`;
+                toggleFormBtn.innerHTML = `<i class="fas fa-pen"></i> شاركي رأيك في أقل من دقيقة`;
 
                 if (typeof window.showBoseToast === 'function') {
                     window.showBoseToast("تم إرسال مراجعتك بنجاح، هتظهر لباقي الزوار بعد اعتمادها من الإدارة 🌸");
