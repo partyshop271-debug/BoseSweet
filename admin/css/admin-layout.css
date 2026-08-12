@@ -280,6 +280,25 @@
 .adm-stat-icon.gold { background: rgba(212, 175, 55, 0.12); color: var(--adm-gold); }
 .adm-stat-icon.success { background: var(--adm-success-bg); color: var(--adm-success); }
 .adm-stat-icon.warning { background: var(--adm-warning-bg); color: var(--adm-warning); }
+.adm-stat-icon.info { background: var(--adm-info-bg); color: var(--adm-info); }
+.adm-stat-icon.danger { background: var(--adm-danger-bg); color: var(--adm-danger); }
+
+.adm-alert-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 6px;
+    border-bottom: 1px solid var(--adm-border-soft);
+    color: var(--adm-text-primary);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.88rem;
+    transition: var(--adm-transition);
+}
+.adm-alert-row:last-child { border-bottom: none; }
+.adm-alert-row:hover { background: var(--adm-bg-soft); }
+.adm-alert-row span { flex: 1; }
+.adm-alert-row i.fa-chevron-left { color: var(--adm-text-secondary); font-size: 0.75rem; }
 
 /* =========================== الأزرار =========================== */
 
@@ -696,6 +715,38 @@ html.adm-ready .adm-auth-gate { display: none; }
     justify-content: center;
 }
 
+.adm-image-primary-badge {
+    position: absolute;
+    bottom: -6px;
+    right: -6px;
+    left: -6px;
+    background: var(--adm-pink);
+    color: #fff;
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-align: center;
+    padding: 2px 0;
+    border-radius: 0 0 var(--adm-radius-sm) var(--adm-radius-sm);
+}
+
+.adm-image-set-primary-btn {
+    position: absolute;
+    bottom: -6px;
+    right: -6px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #fff;
+    color: var(--adm-text-secondary);
+    border: 1px solid var(--adm-border-soft);
+    font-size: 0.6rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.adm-image-set-primary-btn:hover { color: var(--adm-pink); border-color: var(--adm-pink); }
+
 .adm-image-upload-btn {
     display: inline-flex;
     align-items: center;
@@ -755,6 +806,21 @@ html.adm-ready .adm-auth-gate { display: none; }
     justify-content: space-between;
     gap: 12px;
     flex-wrap: wrap;
+}
+
+/* =========================== صفحة التقارير (رسم بياني) =========================== */
+
+.adm-chart-svg { display: block; }
+.adm-chart-baseline { stroke: var(--adm-border-soft); stroke-width: 1; }
+.adm-chart-bar { fill: var(--adm-pink); opacity: 0.85; transition: var(--adm-transition); }
+.adm-chart-bar-group:hover .adm-chart-bar { opacity: 1; fill: var(--adm-gold); }
+.adm-chart-labels {
+    display: flex;
+    justify-content: space-between;
+    color: var(--adm-text-secondary);
+    font-size: 0.78rem;
+    margin-top: 6px;
+    padding: 0 4px;
 }
 
 /* =========================== الموبايل =========================== */
