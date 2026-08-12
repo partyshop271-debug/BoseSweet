@@ -18,8 +18,8 @@
 :root {
     --bose-pink-light: rgba(255, 145, 164, 0.04);
     --bose-pink-shadow: 0 12px 40px rgba(255, 145, 164, 0.12);
-    --bose-gray-border: #EAEAEA;
-    --bose-gray-light: #F9F9F9;
+    --bose-gray-border: #FF91A4;
+    --bose-gray-light: #FFFFFF;
 }
 
 /* ==========================================================================
@@ -312,8 +312,8 @@
 }
 
 .bose-circular-qty-btn.btn-plus-style:hover {
-    background: #ff7d94 !important;
-    border-color: #ff7d94 !important;
+    background: #FF91A4 !important;
+    border-color: #FF91A4 !important;
 }
 
 .bose-numerical-input-display {
@@ -591,7 +591,7 @@
 }
 
 .premium-nav-btn.primary:hover {
-    background: #c22a5c !important;
+    background: #FF91A4 !important;
     transform: translateY(-2px);
 }
 

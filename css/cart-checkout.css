@@ -18,16 +18,16 @@
    اتغير اسمها هنا لـ --bose-border-pink-tint عشان توضّح إنها "درجة لون" مش "حد جاهز"،
    ومفيش أي تعارض تسمية بينها وبين global.css خالص دلوقتي. */
 :root {
-    --bose-cream: #FFF5F6;
-    --bose-soft-gray: #F9F9F9;
-    --bose-border-gray: #EAEAEA;
+    --bose-cream: rgba(255, 145, 164, 0.08);
+    --bose-soft-gray: rgba(255, 145, 164, 0.06);
+    --bose-border-gray: #FF91A4;
     --bose-border-pink-tint: rgba(255, 145, 164, 0.25);
-    --bose-success-green: #2ECC71;
-    --bose-success-text: #2d7a4d;
-    --bose-success-bg: rgba(46, 204, 113, 0.08);
-    --bose-error-red: #E74C3C;
-    --bose-error-text: #b83232;
-    --bose-error-bg: rgba(231, 76, 60, 0.05);
+    --bose-success-green: #FF91A4;
+    --bose-success-text: #FF91A4;
+    --bose-success-bg: rgba(255, 145, 164, 0.08);
+    --bose-error-red: #FF91A4;
+    --bose-error-text: #FF91A4;
+    --bose-error-bg: rgba(255, 145, 164, 0.05);
     --bose-soft-shadow: 0 12px 32px rgba(255, 145, 164, 0.08);
     --bose-hover-shadow: 0 16px 40px rgba(255, 145, 164, 0.15);
     --bose-radius: 16px;
@@ -336,7 +336,7 @@
     position: absolute;
     bottom: 4px;
     right: 4px;
-    background: rgba(212, 175, 55, 0.95); /* ذهبي فاخر متوافق مع البراند */
+    background: rgba(255, 145, 164, 0.95); /* ذهبي فاخر متوافق مع البراند */
     color: var(--bose-white);
     font-size: 0.65rem;
     font-family: var(--bose-font);
@@ -481,7 +481,7 @@
 
 .customization-label {
     font-weight: 600;
-    color: #666666;
+    color: #111111;
 }
 
 .customization-value {
@@ -498,8 +498,8 @@
 
 .customization-badge-node.gold-accent,
 .customization-badge-pill.gold-accent {
-    border-color: rgba(212, 175, 55, 0.3);
-    background-color: rgba(212, 175, 55, 0.05);
+    border-color: rgba(255, 145, 164, 0.3);
+    background-color: rgba(255, 145, 164, 0.05);
 }
 
 .customization-badge-node.gold-accent i,
@@ -509,13 +509,13 @@
 
 .customization-badge-node.money-accent,
 .customization-badge-pill.money-accent {
-    border-color: rgba(46, 204, 113, 0.25);
-    background-color: rgba(46, 204, 113, 0.04);
+    border-color: rgba(255, 145, 164, 0.25);
+    background-color: rgba(255, 145, 164, 0.04);
 }
 
 .customization-badge-node.money-accent i,
 .customization-badge-pill.money-accent i {
-    color: #2ecc71;
+    color: #FF91A4;
 }
 
 /* الرابط الخاص بصور العميل المرفوعة المرجعة من السيرفر */
@@ -566,7 +566,7 @@
 .cart-item-unit-price,
 .cart-item-unit-cost {
     font-size: 0.8rem;
-    color: #777777;
+    color: #111111;
 }
 
 .cart-item-total-cost,
@@ -728,7 +728,7 @@
 }
 
 .coupon-apply-trigger:hover {
-    background-color: #ff788f; /* درجة أغمق قليلاً تفاعلية ناعمة */
+    background-color: #FF91A4; /* درجة أغمق قليلاً تفاعلية ناعمة */
     transform: translateY(-1px);
     box-shadow: 0 6px 15px rgba(255, 145, 164, 0.25);
 }
@@ -750,14 +750,14 @@
     display: block;
     background-color: var(--bose-success-bg);
     color: var(--bose-success-text);
-    border: 1px solid rgba(46, 204, 113, 0.2);
+    border: 1px solid rgba(255, 145, 164, 0.2);
 }
 
 .coupon-status-toast.error {
     display: block;
     background-color: var(--bose-error-bg);
     color: var(--bose-error-text);
-    border: 1px solid rgba(231, 76, 60, 0.2);
+    border: 1px solid rgba(255, 145, 164, 0.2);
 }
 
 /* جدول تفاصيل الحسابات المالية */
@@ -778,7 +778,7 @@
     align-items: center;
     gap: 10px;
     font-size: 0.95rem;
-    color: #555555;
+    color: #111111;
 }
 
 .invoice-item-row.discount-row {
@@ -872,7 +872,7 @@
 .bose-primary-checkout-btn:hover,
 .premium-checkout-button:hover,
 .bose-action-button-full:hover {
-    background-color: #ff788f;
+    background-color: #FF91A4;
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(255, 145, 164, 0.35);
 }
@@ -1058,13 +1058,13 @@
    تاني... وهكذا "لعبة الخلد" في كل مرة إرسال. دلوقتي بنجمع كل الأخطاء مرة
    واحدة ونوريها تحت كل حقل غلط بالظبط، فالعميلة تقدر تصلح كل حاجة مرة واحدة. */
 .bose-field-capture.field-invalid {
-    border-color: #c0344a !important;
-    box-shadow: 0 0 0 3px rgba(192, 52, 74, 0.12) !important;
+    border-color: #FF91A4 !important;
+    box-shadow: 0 0 0 3px rgba(255, 145, 164, 0.12) !important;
 }
 
 .bose-field-error-msg {
     display: none;
-    color: #c0344a;
+    color: #FF91A4;
     font-size: 0.8rem;
     font-weight: 600;
     margin-top: 6px;
@@ -1382,7 +1382,7 @@ select.bose-form-control option,
     display: none;
     align-items: center;
     gap: 6px;
-    border: 1px solid rgba(46, 204, 113, 0.15);
+    border: 1px solid rgba(255, 145, 164, 0.15);
     flex-shrink: 0;
 }
 
@@ -1501,7 +1501,7 @@ select.bose-form-control option,
 
 .payment-instructions-box {
     font-size: 0.88rem; /* نص شروح كاش الدعم الصافي المبتور */
-    color: #444444;
+    color: #111111;
     line-height: 1.6;
 }
 
@@ -1939,7 +1939,7 @@ select.bose-form-control option,
     top: 10px;
     right: 10px;
     z-index: 2;
-    background: var(--bose-pink-text, #D6336C);
+    background: var(--bose-pink-text, #FF91A4);
     color: #FFFFFF;
     font-size: 11px;
     font-weight: 700;
@@ -1951,7 +1951,7 @@ select.bose-form-control option,
     width: 100%;
     height: 130px;
     overflow: hidden;
-    background: #fafafa;
+    background: #FFFFFF;
 }
 .bose-suggestion-image-wrapper img {
     width: 100%;
@@ -1982,13 +1982,13 @@ select.bose-form-control option,
 .bose-suggestion-flavor-name {
     font-size: 12.5px;
     font-weight: 700;
-    color: var(--bose-pink-text, #D6336C);
+    color: var(--bose-pink-text, #FF91A4);
 }
 
 .bose-suggestion-desc-text {
     margin: 0;
     font-size: 11.5px;
-    color: #777777;
+    color: #111111;
     line-height: 1.5;
     overflow: hidden;
     display: -webkit-box;
@@ -1996,7 +1996,7 @@ select.bose-form-control option,
     -webkit-box-orient: vertical;
 }
 
-.bose-suggestion-rating-stars { color: var(--bose-gold, #D4AF37); font-size: 11px; }
+.bose-suggestion-rating-stars { color: var(--bose-gold, #FF91A4); font-size: 11px; }
 
 .bose-suggestion-footer-row {
     display: flex;
@@ -2009,7 +2009,7 @@ select.bose-form-control option,
 .bose-suggestion-price-tag {
     font-size: 14px;
     font-weight: 700;
-    color: var(--bose-pink-text, #D6336C);
+    color: var(--bose-pink-text, #FF91A4);
     display: flex;
     align-items: center;
     gap: 6px;
@@ -2017,13 +2017,13 @@ select.bose-form-control option,
 
 .bose-suggestion-old-price {
     font-size: 11.5px;
-    color: #999999;
+    color: #111111;
     text-decoration: line-through;
     font-weight: 600;
 }
 
 .btn-quick-add-to-cart {
-    background: var(--bose-pink-text, #D6336C);
+    background: var(--bose-pink-text, #FF91A4);
     color: #FFFFFF;
     border: none;
     border-radius: 30px;
@@ -2049,7 +2049,7 @@ select.bose-form-control option,
 .bose-mini-size-note {
     font-size: 11px;
     font-weight: 700;
-    color: var(--bose-pink-text, #D6336C);
+    color: var(--bose-pink-text, #FF91A4);
     display: flex;
     align-items: center;
     gap: 5px;
@@ -2077,9 +2077,9 @@ select.bose-form-control option,
 }
 
 .bose-card-size-pill.active {
-    background-color: var(--bose-pink-text, #D6336C);
+    background-color: var(--bose-pink-text, #FF91A4);
     color: #FFFFFF;
-    border-color: var(--bose-pink-text, #D6336C);
+    border-color: var(--bose-pink-text, #FF91A4);
 }
 
 /* الكارت الموحد (createProductCardHTML) في الرئيسية/العروض بيحتاج نفس التبويب
