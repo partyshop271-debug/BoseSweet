@@ -131,6 +131,15 @@
         `).join("");
     }
 
+    /** أسئلة جاهزة شائعة عادةً في متاجر الحلويات - مجرد اقتراح سريع، النص والإجابة بتتحرر بالكامل بعد الإضافة */
+    const FAQ_QUICK_TEMPLATES = [
+        "المنتج ده بيتحضر إمتى بالظبط؟",
+        "إزاي أحافظ على طازجيته بعد الاستلام؟",
+        "ينفع أطلبه بحجم أو تخصيص مختلف؟",
+        "فيه توصيل لمنطقتي؟",
+        "هل يصلح لمناسبة/حفلة كبيرة؟",
+    ];
+
     const SIZE_KEYS = ["triangle", "medium", "large"];
     const SIZE_LABELS = { triangle: "مثلث فردي", medium: "وسط تشارك ممتع", large: "كبير جمعات فاخرة" };
     const BUILDER_TYPES = [
@@ -145,6 +154,7 @@
         let images = isEdit ? [...(product.images || [])] : [];
         const prices = isEdit ? { ...(product.prices || {}) } : {};
         const sizeDescriptions = isEdit ? { ...(product.size_descriptions || {}) } : {};
+        let faqs = isEdit ? (product.faqs || []).map((f) => ({ q: f.q || "", a: f.a || "" })) : [];
 
         const overlay = document.createElement("div");
         overlay.className = "adm-modal-overlay";
@@ -277,6 +287,20 @@
                         </div>
                     </details>
 
+                    <details class="adm-field" open style="margin-top: 6px;">
+                        <summary style="cursor:pointer; color: var(--adm-text-secondary); font-weight: 600; padding: 6px 0;">
+                            🔍 الأسئلة الشائعة الخاصة بهذا المنتج (بتظهر في صفحة المنتج وبتساعد في الظهور بمحركات البحث والذكاء الاصطناعي)
+                        </summary>
+                        <div style="padding-top: 10px; display: flex; flex-direction: column; gap: 10px;">
+                            <span class="adm-hint">اكتبي سؤال حقيقي بيتسأل كتير عن الصنف ده تحديداً (المكونات، الحفظ، المناسبات، التخصيص...) وجاوبيه بصدق. الأسئلة دي مختلفة عن أي منتج تاني.</span>
+                            <div id="pf-faq-quick-add" style="display:flex; flex-wrap:wrap; gap: 8px;">
+                                ${FAQ_QUICK_TEMPLATES.map((q, idx) => `<button type="button" class="adm-btn adm-btn-ghost" data-faq-template="${idx}" style="font-size:0.78rem; padding:6px 12px;">+ ${e(q)}</button>`).join("")}
+                            </div>
+                            <div id="pf-faq-rows"></div>
+                            <button type="button" class="adm-btn adm-btn-ghost" id="pf-faq-add-blank"><i class="fa-solid fa-plus"></i> سؤال جديد فاضي</button>
+                        </div>
+                    </details>
+
                     <div class="adm-modal-actions">
                         <button type="button" class="adm-btn adm-btn-ghost" data-role="close">إلغاء</button>
                         <button type="submit" class="adm-btn adm-btn-primary" id="pf-save-btn">حفظ المنتج</button>
@@ -305,6 +329,44 @@
             });
         }
         refreshImagesGrid();
+
+        function refreshFaqRows() {
+            const wrap = document.getElementById("pf-faq-rows");
+            wrap.innerHTML = faqs.map((f, idx) => `
+                <div class="adm-faq-row" data-idx="${idx}" style="border:1px solid rgba(17,17,17,0.1); border-radius:12px; padding:10px; display:flex; flex-direction:column; gap:6px;">
+                    <div style="display:flex; gap:8px; align-items:flex-start;">
+                        <input type="text" class="adm-input pf-faq-q" data-idx="${idx}" placeholder="السؤال" value="${e(f.q)}" style="flex:1;">
+                        <button type="button" class="adm-btn adm-btn-ghost pf-faq-remove" data-idx="${idx}" title="حذف"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                    <textarea class="adm-textarea pf-faq-a" data-idx="${idx}" placeholder="الإجابة">${e(f.a)}</textarea>
+                </div>
+            `).join("") || `<span class="adm-hint">مفيش أسئلة متضافة لسه - استخدمي الاقتراحات فوق أو زودي سؤال فاضي.</span>`;
+
+            wrap.querySelectorAll(".pf-faq-q").forEach((inp) => {
+                inp.addEventListener("input", () => { faqs[Number(inp.dataset.idx)].q = inp.value; });
+            });
+            wrap.querySelectorAll(".pf-faq-a").forEach((ta) => {
+                ta.addEventListener("input", () => { faqs[Number(ta.dataset.idx)].a = ta.value; });
+            });
+            wrap.querySelectorAll(".pf-faq-remove").forEach((btn) => {
+                btn.addEventListener("click", () => {
+                    faqs.splice(Number(btn.dataset.idx), 1);
+                    refreshFaqRows();
+                });
+            });
+        }
+        refreshFaqRows();
+
+        document.getElementById("pf-faq-add-blank").addEventListener("click", () => {
+            faqs.push({ q: "", a: "" });
+            refreshFaqRows();
+        });
+        document.querySelectorAll("[data-faq-template]").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                faqs.push({ q: FAQ_QUICK_TEMPLATES[Number(btn.getAttribute("data-faq-template"))], a: "" });
+                refreshFaqRows();
+            });
+        });
 
         const builderTypeSelect = document.getElementById("pf-builder-type");
         const builderUrlField = document.getElementById("pf-builder-url-field");
@@ -384,6 +446,7 @@
                     ? (document.getElementById("pf-builder-url").value.trim() || null)
                     : null,
                 search_terms: searchTerms,
+                faqs: faqs.filter((f) => f.q.trim() && f.a.trim()).map((f) => ({ q: f.q.trim(), a: f.a.trim() })),
                 prices: filledSizeKeys.length ? newPrices : {},
                 default_size: filledSizeKeys.length ? (filledSizeKeys.includes(product?.default_size) ? product.default_size : filledSizeKeys[0]) : null,
                 size_descriptions: filledSizeKeys.length
