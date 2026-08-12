@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مكافآتك | حلويات بوسي</title>
+
+    <!-- Meta Tags لتهيئة محركات البحث (SEO) للبراند الرقمي -->
+    <meta name="description" content="اعرفي رصيد نقاطك ومستواك في نادي مكافآت حلويات بوسي برقم هاتفك.">
+    <meta property="og:title" content="مكافآتك | حلويات بوسي">
+    <meta property="og:description" content="اعرفي رصيد نقاطك ومستواك في نادي مكافآت حلويات بوسي برقم هاتفك.">
+    <meta property="og:type" content="website">
+    <meta name="robots" content="noindex">
+
+    <!-- استدعاء ملفات التصميم الخارجية الموحدة والمستقلة للموقع -->
+    <link rel="stylesheet" href="css/global.css?v=2026_production_v32.0">
+    <link rel="stylesheet" href="css/main.css?v=2026_production_v32.0">
+
+    <!-- استدعاء المحرك المركزي الموحد في رأس الصفحة لتأمين الحقن والتوافق -->
+    <script src="js/supabase-client.js?v=2026_production_v32.0"></script>
+    <script src="js/core-engine.js?v=2026_production_v32.0"></script>
+
+    <style>
+        .rewards-page-wrapper { padding: 60px 20px 80px; max-width: 620px; margin: 0 auto; min-height: 70vh; font-family: 'Cairo', sans-serif; }
+        .rewards-page-header { text-align: center; margin-bottom: 35px; }
+        .rewards-page-header h1 { font-size: 1.9rem; font-weight: 800; color: var(--bose-black, #111); margin-bottom: 10px; }
+        .rewards-page-header p { color: var(--bose-black, #111); opacity: 0.75; font-size: 0.98rem; line-height: 1.7; }
+
+        .rewards-form-card { background: var(--bose-white, #fff); border: var(--bose-border-pink, 1px solid rgba(255,145,164,0.3)); border-radius: 20px; padding: 28px 24px; box-shadow: var(--bose-shadow-glow, 0 8px 24px rgba(255,145,164,0.12)); }
+        .rewards-form-field label { display: block; font-size: 0.88rem; font-weight: 700; color: var(--bose-black, #111); margin-bottom: 6px; }
+        .rewards-form-field input { width: 100%; box-sizing: border-box; padding: 13px 14px; border-radius: 12px; border: 1px solid rgba(17,17,17,0.15); font-family: 'Cairo', sans-serif; font-size: 0.95rem; direction: ltr; text-align: right; margin-bottom: 16px; }
+        .rewards-form-field input:focus { outline: none; border-color: var(--bose-pink, #FF91A4); }
+
+        .rewards-submit-btn { width: 100%; background: var(--bose-pink, #FF91A4); color: #fff; border: none; border-radius: 14px; padding: 14px; font-family: 'Cairo', sans-serif; font-weight: 800; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .rewards-submit-btn:disabled { opacity: 0.6; cursor: default; }
+
+        .rewards-result-box { margin-top: 26px; display: none; }
+        .rewards-error-msg { background: #fff2f4; color: #c0344a; border: 1px solid #ffc3ce; border-radius: 12px; padding: 14px 16px; font-size: 0.92rem; text-align: center; }
+
+        .rewards-tier-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--bose-gold, #D4AF37); color: #fff; padding: 8px 20px; border-radius: 30px; font-weight: 800; font-size: 1rem; margin-bottom: 20px; }
+        .rewards-points-row { display: flex; gap: 12px; margin-bottom: 20px; }
+        .rewards-points-card { flex: 1; background: #FFF5F7; border-radius: 14px; padding: 16px; text-align: center; }
+        .rewards-points-card .num { font-size: 1.6rem; font-weight: 800; color: var(--bose-pink, #FF91A4); display: block; }
+        .rewards-points-card .lbl { font-size: 0.78rem; opacity: 0.7; }
+
+        .rewards-progress-box { background: #FFF5F7; border-radius: 14px; padding: 16px 18px; }
+        .rewards-progress-box .progress-title { font-weight: 700; font-size: 0.92rem; margin-bottom: 10px; color: var(--bose-black, #111); }
+        .rewards-progress-track { width: 100%; height: 10px; background: #f0dbe0; border-radius: 10px; overflow: hidden; margin-bottom: 8px; }
+        .rewards-progress-fill { height: 100%; background: var(--bose-pink, #FF91A4); border-radius: 10px; }
+        .rewards-progress-note { font-size: 0.82rem; opacity: 0.75; }
+    </style>
+</head>
+<body>
+
+    <div id="bose-header-injector"></div>
+
+    <main class="rewards-page-wrapper">
+        <div class="rewards-page-header">
+            <h1><i class="fa-solid fa-gift" style="color: var(--bose-pink, #FF91A4);"></i> مكافآتك</h1>
+            <p>اكتبي رقم هاتفك اللي بتطلبي بيه عادةً، وشوفي نقاطك ومستواك في نادي مكافآت حلويات بوسي.</p>
+        </div>
+
+        <div class="rewards-form-card">
+            <form id="rewards-form">
+                <div class="rewards-form-field">
+                    <label for="rewards-phone">رقم الهاتف</label>
+                    <input type="tel" id="rewards-phone" placeholder="01xxxxxxxxx" required>
+                </div>
+                <button type="submit" class="rewards-submit-btn" id="rewards-submit-btn">
+                    <i class="fa-solid fa-star"></i> اعرضي رصيدي
+                </button>
+            </form>
+        </div>
+
+        <div id="rewards-result-box" class="rewards-result-box">
+            <div class="rewards-form-card" id="rewards-result-inner"></div>
+        </div>
+    </main>
+
+    <div id="bose-footer-injector"></div>
+
+    <script>
+        (function () {
+            function renderResult(row) {
+                const box = document.getElementById("rewards-result-box");
+                const inner = document.getElementById("rewards-result-inner");
+                box.style.display = "block";
+
+                if (!row || !row.found) {
+                    inner.innerHTML = `<div class="rewards-error-msg"><i class="fa-solid fa-circle-exclamation"></i> ${window.escapeBoseHTML(row && row.message ? row.message : "تعذر التحقق من رصيد المكافآت")}</div>`;
+                    return;
+                }
+
+                const untilFreeCake = row.orders_until_free_cake || 0;
+                const progressPct = Math.round(((5 - untilFreeCake) / 5) * 100);
+                const progressNote = untilFreeCake === 0
+                    ? "مبروك! معاكي تورتة مجانية مستحقة في طلبك الجاي 🎂"
+                    : `باقيلك ${untilFreeCake} ${untilFreeCake === 1 ? 'طلب' : 'طلبات'} عشان تكسبي تورتة مجانية`;
+
+                inner.innerHTML = `
+                    <div style="text-align:center;">
+                        <span class="rewards-tier-badge"><i class="fa-solid fa-crown"></i> ${window.escapeBoseHTML(row.tier || '')}</span>
+                    </div>
+                    <div class="rewards-points-row">
+                        <div class="rewards-points-card"><span class="num">${row.points || 0}</span><span class="lbl">نقطة</span></div>
+                        <div class="rewards-points-card"><span class="num">${row.total_orders || 0}</span><span class="lbl">طلب مكتمل</span></div>
+                        <div class="rewards-points-card"><span class="num">${Math.round(row.total_spent || 0)}</span><span class="lbl">جنيه إجمالي</span></div>
+                    </div>
+                    <div class="rewards-progress-box">
+                        <div class="progress-title"><i class="fa-solid fa-cake-candles"></i> تورتة مجانية كل 5 طلبات</div>
+                        <div class="rewards-progress-track"><div class="rewards-progress-fill" style="width:${progressPct}%;"></div></div>
+                        <div class="rewards-progress-note">${window.escapeBoseHTML(progressNote)}</div>
+                    </div>
+                `;
+            }
+
+            async function handleSubmit(e) {
+                e.preventDefault();
+                const btn = document.getElementById("rewards-submit-btn");
+                const phone = document.getElementById("rewards-phone").value.trim();
+
+                if (!window.BoseSupabase || typeof window.BoseSupabase.getBoseCustomerRewards !== "function") return;
+
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> بنجيب رصيدك...';
+
+                try {
+                    const result = await window.BoseSupabase.getBoseCustomerRewards(phone);
+                    renderResult(result);
+                } catch (err) {
+                    renderResult({ found: false, message: "حصل خطأ في الاتصال، حاولي مرة أخرى" });
+                } finally {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa-solid fa-star"></i> اعرضي رصيدي';
+                }
+            }
+
+            document.addEventListener("DOMContentLoaded", () => {
+                const form = document.getElementById("rewards-form");
+                if (form) form.addEventListener("submit", handleSubmit);
+
+                const params = new URLSearchParams(window.location.search);
+                const prefPhone = params.get("phone");
+                if (prefPhone) {
+                    document.getElementById("rewards-phone").value = prefPhone;
+                    handleSubmit(new Event("submit"));
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

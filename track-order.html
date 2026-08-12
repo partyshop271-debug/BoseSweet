@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تتبع طلبك | حلويات بوسي</title>
+
+    <!-- Meta Tags لتهيئة محركات البحث (SEO) للبراند الرقمي -->
+    <meta name="description" content="تابعي حالة طلبك من حلويات بوسي لحظة بلحظة بإدخال رقم الطلب ورقم الهاتف.">
+    <meta property="og:title" content="تتبع طلبك | حلويات بوسي">
+    <meta property="og:description" content="تابعي حالة طلبك من حلويات بوسي لحظة بلحظة بإدخال رقم الطلب ورقم الهاتف.">
+    <meta property="og:type" content="website">
+    <meta name="robots" content="noindex">
+
+    <!-- استدعاء ملفات التصميم الخارجية الموحدة والمستقلة للموقع -->
+    <link rel="stylesheet" href="css/global.css?v=2026_production_v32.0">
+    <link rel="stylesheet" href="css/main.css?v=2026_production_v32.0">
+
+    <!-- استدعاء المحرك المركزي الموحد في رأس الصفحة لتأمين الحقن والتوافق -->
+    <script src="js/supabase-client.js?v=2026_production_v32.0"></script>
+    <script src="js/core-engine.js?v=2026_production_v32.0"></script>
+
+    <style>
+        .track-page-wrapper { padding: 60px 20px 80px; max-width: 620px; margin: 0 auto; min-height: 70vh; font-family: 'Cairo', sans-serif; }
+        .track-page-header { text-align: center; margin-bottom: 35px; }
+        .track-page-header h1 { font-size: 1.9rem; font-weight: 800; color: var(--bose-black, #111); margin-bottom: 10px; }
+        .track-page-header p { color: var(--bose-black, #111); opacity: 0.75; font-size: 0.98rem; line-height: 1.7; }
+
+        .track-form-card { background: var(--bose-white, #fff); border: var(--bose-border-pink, 1px solid rgba(255,145,164,0.3)); border-radius: 20px; padding: 28px 24px; box-shadow: var(--bose-shadow-glow, 0 8px 24px rgba(255,145,164,0.12)); }
+        .track-form-field { margin-bottom: 16px; }
+        .track-form-field label { display: block; font-size: 0.88rem; font-weight: 700; color: var(--bose-black, #111); margin-bottom: 6px; }
+        .track-form-field input { width: 100%; box-sizing: border-box; padding: 13px 14px; border-radius: 12px; border: 1px solid rgba(17,17,17,0.15); font-family: 'Cairo', sans-serif; font-size: 0.95rem; direction: ltr; text-align: right; }
+        .track-form-field input:focus { outline: none; border-color: var(--bose-pink, #FF91A4); }
+
+        .track-submit-btn { width: 100%; background: var(--bose-pink, #FF91A4); color: #fff; border: none; border-radius: 14px; padding: 14px; font-family: 'Cairo', sans-serif; font-weight: 800; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: opacity 0.2s ease; }
+        .track-submit-btn:disabled { opacity: 0.6; cursor: default; }
+
+        .track-result-box { margin-top: 26px; display: none; }
+        .track-error-msg { background: #fff2f4; color: #c0344a; border: 1px solid #ffc3ce; border-radius: 12px; padding: 14px 16px; font-size: 0.92rem; text-align: center; }
+
+        .track-status-pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 18px; border-radius: 30px; font-weight: 800; font-size: 0.95rem; margin-bottom: 18px; }
+        .status-pending { background: #fff6e0; color: #a17400; }
+        .status-processing, .status-preparing { background: #e8f1ff; color: #1c5aa8; }
+        .status-ready { background: #eafaf0; color: #17824a; }
+        .status-delivering, .status-out_for_delivery { background: #f2eaff; color: #6b31c9; }
+        .status-delivered, .status-completed { background: #eafaf0; color: #17824a; }
+        .status-cancelled { background: #fdeaea; color: #c0344a; }
+
+        .track-order-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; }
+        .track-order-meta div { background: #FFF5F7; border-radius: 12px; padding: 12px 14px; }
+        .track-order-meta span { display: block; }
+        .track-order-meta .meta-label { font-size: 0.78rem; opacity: 0.65; margin-bottom: 4px; }
+        .track-order-meta .meta-value { font-weight: 700; color: var(--bose-black, #111); font-size: 0.92rem; }
+
+        .track-items-list { border-top: 1px dashed rgba(17,17,17,0.15); padding-top: 14px; }
+        .track-item-row { display: flex; justify-content: space-between; font-size: 0.9rem; padding: 6px 0; color: var(--bose-black, #111); }
+        .track-item-row .item-flavor { opacity: 0.65; font-size: 0.8rem; }
+        .track-total-row { display: flex; justify-content: space-between; font-weight: 800; font-size: 1.02rem; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(17,17,17,0.1); color: var(--bose-pink, #FF91A4); }
+    </style>
+</head>
+<body>
+
+    <div id="bose-header-injector"></div>
+
+    <main class="track-page-wrapper">
+        <div class="track-page-header">
+            <h1><i class="fa-solid fa-location-crosshairs" style="color: var(--bose-pink, #FF91A4);"></i> تتبعي طلبك</h1>
+            <p>أدخلي رقم الطلب ورقم الهاتف اللي استخدمتيه وقت الطلب عشان تعرفي حالته أول بأول.</p>
+        </div>
+
+        <div class="track-form-card">
+            <form id="track-order-form">
+                <div class="track-form-field">
+                    <label for="track-order-number">رقم الطلب</label>
+                    <input type="text" id="track-order-number" placeholder="مثال: 20260810-0003" required>
+                </div>
+                <div class="track-form-field">
+                    <label for="track-order-phone">رقم الهاتف</label>
+                    <input type="tel" id="track-order-phone" placeholder="01xxxxxxxxx" required>
+                </div>
+                <button type="submit" class="track-submit-btn" id="track-submit-btn">
+                    <i class="fa-solid fa-magnifying-glass"></i> اعرضي حالة الطلب
+                </button>
+            </form>
+        </div>
+
+        <div id="track-result-box" class="track-result-box">
+            <div class="track-form-card" id="track-result-inner"></div>
+        </div>
+    </main>
+
+    <div id="bose-footer-injector"></div>
+
+    <script>
+        (function () {
+            const STATUS_LABELS = {
+                pending: "بانتظار المراجعة",
+                processing: "جاري التحضير",
+                preparing: "جاري التحضير",
+                ready: "جاهز للاستلام/التوصيل",
+                out_for_delivery: "في الطريق ليكِ",
+                delivering: "في الطريق ليكِ",
+                delivered: "تم التسليم",
+                completed: "تم التسليم",
+                cancelled: "تم إلغاء الطلب",
+            };
+
+            function statusLabel(status) {
+                return STATUS_LABELS[status] || status || "غير محدد";
+            }
+
+            function renderResult(row) {
+                const box = document.getElementById("track-result-box");
+                const inner = document.getElementById("track-result-inner");
+                box.style.display = "block";
+
+                if (!row || !row.found) {
+                    inner.innerHTML = `<div class="track-error-msg"><i class="fa-solid fa-circle-exclamation"></i> ${window.escapeBoseHTML(row && row.message ? row.message : "تعذر التحقق من الطلب")}</div>`;
+                    return;
+                }
+
+                const items = Array.isArray(row.items) ? row.items : [];
+                const itemsHtml = items.map((it) => `
+                    <div class="track-item-row">
+                        <span>${window.escapeBoseHTML(it.title || "")} <span class="item-flavor">${it.flavor_name ? "(" + window.escapeBoseHTML(it.flavor_name) + ")" : ""}</span> × ${it.quantity || 1}</span>
+                        <span>${Math.round(it.line_total || 0)} جنيه</span>
+                    </div>
+                `).join("");
+
+                inner.innerHTML = `
+                    <span class="track-status-pill status-${window.escapeBoseHTML(row.status || '')}"><i class="fa-solid fa-circle" style="font-size:8px;"></i> ${window.escapeBoseHTML(statusLabel(row.status))}</span>
+                    <div class="track-order-meta">
+                        <div><span class="meta-label">رقم الطلب</span><span class="meta-value">${window.escapeBoseHTML(row.order_number || '')}</span></div>
+                        <div><span class="meta-label">طريقة الاستلام</span><span class="meta-value">${row.delivery_method === 'pickup' ? 'استلام من الفرع' : 'توصيل للمنزل'}</span></div>
+                        <div><span class="meta-label">التاريخ المطلوب</span><span class="meta-value">${window.escapeBoseHTML(row.scheduled_date || '-')}</span></div>
+                        <div><span class="meta-label">الميعاد</span><span class="meta-value">${window.escapeBoseHTML(row.scheduled_time || '-')}</span></div>
+                    </div>
+                    <div class="track-items-list">
+                        ${itemsHtml || '<p style="text-align:center; opacity:0.6; font-size:0.85rem;">لا توجد تفاصيل أصناف مسجلة</p>'}
+                        <div class="track-total-row"><span>الإجمالي</span><span>${Math.round(row.grand_total || 0)} جنيه</span></div>
+                    </div>
+                `;
+            }
+
+            async function handleSubmit(e) {
+                e.preventDefault();
+                const btn = document.getElementById("track-submit-btn");
+                const orderNumber = document.getElementById("track-order-number").value.trim();
+                const phone = document.getElementById("track-order-phone").value.trim();
+
+                if (!window.BoseSupabase || typeof window.BoseSupabase.trackBoseOrder !== "function") return;
+
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> بنبحث...';
+
+                try {
+                    const result = await window.BoseSupabase.trackBoseOrder(orderNumber, phone);
+                    renderResult(result);
+                } catch (err) {
+                    renderResult({ found: false, message: "حصل خطأ في الاتصال، حاولي مرة أخرى" });
+                } finally {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> اعرضي حالة الطلب';
+                }
+            }
+
+            document.addEventListener("DOMContentLoaded", () => {
+                const form = document.getElementById("track-order-form");
+                if (form) form.addEventListener("submit", handleSubmit);
+
+                // 🔗 لو جاية من صفحة نجاح الطلب أو من رابط جاهز، نعبي الحقول تلقائياً
+                const params = new URLSearchParams(window.location.search);
+                const prefOrder = params.get("order");
+                const prefPhone = params.get("phone");
+                if (prefOrder) document.getElementById("track-order-number").value = prefOrder;
+                if (prefPhone) document.getElementById("track-order-phone").value = prefPhone;
+                if (prefOrder && prefPhone) handleSubmit(new Event("submit"));
+            });
+        })();
+    </script>
+</body>
+</html>
