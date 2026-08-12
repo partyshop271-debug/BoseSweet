@@ -1721,6 +1721,13 @@
     font-size: 13.5px;
     padding: 10px 18px;
     border-radius: 40px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+.bose-app-promo-pill:hover, .bose-app-promo-pill:focus-visible {
+    background: rgba(255,255,255,0.3);
+    transform: translateY(-1px);
 }
 .bose-app-promo-pill i { color: var(--bose-gold, #D4AF37); }
 
