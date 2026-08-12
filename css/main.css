@@ -62,9 +62,9 @@
 }
 
 .bose-filter-tab-pill.active {
-    background-color: var(--bose-pink, #FF91A4);
+    background-color: var(--bose-pink-text, #D6336C);
     color: #FFFFFF;
-    border-color: var(--bose-pink, #FF91A4);
+    border-color: var(--bose-pink-text, #D6336C);
     box-shadow: 0 4px 12px rgba(255, 145, 164, 0.2);
 }
 /* [ملاحظة توافق]: الحركة التلقائية اتنقلت بالكامل لـ core-engine.js (requestAnimationFrame)
@@ -100,14 +100,14 @@
     flex-shrink: 0;
     border-radius: 50%;
     background-color: rgba(255, 145, 164, 0.12);
-    color: var(--bose-pink);
+    color: var(--bose-pink-text);
     font-size: 19.5px;
     transition: var(--bose-transition-fast);
 }
 
 .ticker-cat-item:hover {
-    border-color: var(--bose-pink);
-    background-color: var(--bose-pink);
+    border-color: var(--bose-pink-text);
+    background-color: var(--bose-pink-text);
     color: var(--bose-white) !important;
     transform: translateY(-2px);
 }
@@ -167,7 +167,7 @@
     position: absolute;
     top: 14px;
     right: 14px;
-    background-color: var(--bose-pink);
+    background-color: var(--bose-pink-text); /* 🛡️ لون أغمق لضمان تباين كافٍ - شارة الخصم مهمة تتقرأ بوضوح */
     color: var(--bose-white) !important;
     font-size: 12px;
     font-weight: 700;
@@ -203,7 +203,7 @@
     align-items: center;
     gap: 8px;
     margin-top: 10px;
-    color: var(--bose-pink);
+    color: var(--bose-pink-text);
     font-weight: 700;
     font-size: 14px;
     text-decoration: none;
@@ -267,7 +267,7 @@
 
 .search-modal-header .bose-nav-btn:hover {
     background-color: rgba(255, 145, 164, 0.15);
-    color: var(--bose-pink);
+    color: var(--bose-pink-text);
 }
 
 .search-input-wrapper {
@@ -309,7 +309,7 @@
     top: 50%;
     right: 18px;
     transform: translateY(-50%);
-    color: var(--bose-pink);
+    color: var(--bose-pink-text);
     font-size: 18px;
     pointer-events: none;
 }
@@ -381,7 +381,7 @@
     flex-shrink: 0;
     font-size: 14px;
     font-weight: 700;
-    color: var(--bose-pink);
+    color: var(--bose-pink-text);
     background-color: rgba(255, 145, 164, 0.1);
     padding: 6px 14px;
     border-radius: 50px;
@@ -491,7 +491,7 @@
 }
 
 .sidebar-close-btn:hover {
-    color: var(--bose-pink) !important;
+    color: var(--bose-pink-text) !important;
 }
 
 .sidebar-scrollable-content {
@@ -511,7 +511,7 @@
 .sidebar-section-title {
     font-size: 13px !important;
     font-weight: 700 !important;
-    color: var(--bose-pink) !important;
+    color: var(--bose-pink-text) !important;
     text-transform: uppercase !important;
     letter-spacing: 1.2px !important;
     padding: 0 16px 12px 16px !important;
@@ -549,7 +549,7 @@
 }
 
 .sidebar-link-item a i.main-icon {
-    color: var(--bose-pink) !important;
+    color: var(--bose-pink-text) !important;
     font-size: 18px !important;
     width: 24px !important;
     text-align: center !important;
@@ -564,12 +564,12 @@
 
 .sidebar-link-item a:hover {
     background-color: rgba(255, 145, 164, 0.06) !important;
-    color: var(--bose-pink) !important;
+    color: var(--bose-pink-text) !important;
     padding-right: 24px !important;
 }
 
 .sidebar-link-item a:hover i.arrow-icon {
-    color: var(--bose-pink) !important;
+    color: var(--bose-pink-text) !important;
     opacity: 1 !important;
     transform: translateX(-4px) !important;
 }
@@ -961,7 +961,7 @@
 
 .product-card-flavor-name {
     font-size: 0.98rem;
-    color: var(--bose-pink);
+    color: var(--bose-pink-text);
     font-weight: 600;
     margin-bottom: 8px;
     display: block;
@@ -1005,9 +1005,9 @@
 }
 
 .btn-qty-plus:hover, .btn-qty-minus:hover {
-    background-color: var(--bose-pink);
+    background-color: var(--bose-pink-text);
     color: var(--bose-white);
-    border-color: var(--bose-pink);
+    border-color: var(--bose-pink-text);
 }
 
 .input-qty-value {
@@ -1021,7 +1021,7 @@
 }
 
 .product-card-price {
-    color: var(--bose-pink);
+    color: var(--bose-pink-text);
     font-weight: 700;
     font-size: 1.15rem;
     text-align: center;
@@ -1036,7 +1036,7 @@
 
 .btn-add-to-cart {
     width: 100%;
-    background-color: var(--bose-pink);
+    background-color: var(--bose-pink-text); /* 🛡️ لون أغمق لضمان تباين كافٍ مع النص الأبيض - أهم زرار بالكارت */
     color: var(--bose-white);
     padding: 12px;
     border-radius: 16px;
@@ -1056,7 +1056,7 @@
 }
 
 .btn-add-to-cart:disabled {
-    background-color: var(--bose-pink) !important;
+    background-color: var(--bose-pink-text) !important;
     color: var(--bose-white) !important;
     opacity: 1 !important;
     cursor: not-allowed;
@@ -1072,7 +1072,7 @@
     display: inline-block;
     background: var(--bose-white) !important;
     border: 2px solid var(--bose-pink) !important;
-    color: var(--bose-pink) !important;
+    color: var(--bose-pink-text) !important;
     font-weight: 700;
     padding: 12px 36px;
     border-radius: 30px;
@@ -1083,7 +1083,7 @@
 }
 
 .btn-show-more-outline:hover {
-    background: var(--bose-pink) !important;
+    background: var(--bose-pink-text) !important;
     color: var(--bose-white) !important;
 }
 
@@ -1150,7 +1150,7 @@
     justify-content: center !important;
     opacity: 1 !important;
     visibility: visible !important; 
-    background-color: var(--bose-pink) !important; 
+    background-color: var(--bose-pink-text) !important; 
     color: var(--bose-white) !important; 
     font-weight: 700 !important; 
     padding: 15px 50px !important; 
@@ -1170,7 +1170,7 @@
 
 .bose-simulator-preview-cta-btn:hover, #cake-preview-cta:hover, #flower-preview-cta:hover, .bose-simulator-action-btn:hover {
     background-color: var(--bose-white) !important;
-    color: var(--bose-pink) !important;
+    color: var(--bose-pink-text) !important;
     border: 2px solid var(--bose-pink) !important;
     transform: translateY(-5px) !important;
     box-shadow: var(--bose-shadow-hover) !important;
@@ -1313,7 +1313,7 @@
 
 .pride-mini-tag {
     display: inline-block;
-    color: var(--bose-pink);
+    color: var(--bose-pink-text);
     font-weight: 700;
     margin-bottom: 10px;
     font-size: 15px;
@@ -1343,7 +1343,7 @@
 
 .stat-icon-wrapper {
     font-size: 2.2rem;
-    color: var(--bose-pink);
+    color: var(--bose-pink-text);
     margin-bottom: 10px;
 }
 
@@ -1464,7 +1464,7 @@
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    color: var(--bose-pink) !important;          
+    color: var(--bose-pink-text) !important;          
     background-color: var(--bose-white) !important;    
     box-shadow: var(--bose-shadow-glow) !important;    
     transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
@@ -1476,9 +1476,9 @@
 }
 
 .footer-social-icon-btn:hover {
-    background-color: var(--bose-pink) !important;     
+    background-color: var(--bose-pink-text) !important;     
     color: var(--bose-white) !important;           
-    border-color: var(--bose-pink) !important;         
+    border-color: var(--bose-pink-text) !important;         
     transform: translateY(-4px) !important;            
     box-shadow: var(--bose-shadow-hover) !important;
 }
@@ -1529,7 +1529,7 @@
 }
 
 .footer-links-ul li a:hover {
-    color: var(--bose-pink) !important;
+    color: var(--bose-pink-text) !important;
     opacity: 1 !important;
     padding-right: 6px !important;
 }
@@ -1607,7 +1607,7 @@
     gap: 8px;
     text-align: center;
     background: rgba(255, 145, 164, 0.08);
-    color: var(--bose-pink, #FF91A4);
+    color: var(--bose-pink-text, #D6336C);
     font-weight: 700;
     font-size: 13.5px;
     font-family: 'Cairo', sans-serif;
@@ -1759,7 +1759,7 @@
 
 .bose-app-store-btn-filled {
     background: #FFFFFF;
-    color: var(--bose-pink, #FF91A4);
+    color: var(--bose-pink-text, #D6336C);
     border-color: #FFFFFF;
 }
 .bose-app-store-btn-filled:hover { background: rgba(255,255,255,0.9); }
@@ -1812,7 +1812,7 @@
 .mock-app-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
 .mock-app-header img { width: 26px; height: 26px; border-radius: 50%; }
 .mock-app-header strong { font-size: 13px; color: var(--bose-black, #111); }
-.mock-hero-strip { background: rgba(255,145,164,0.12); color: var(--bose-pink, #FF91A4); font-size: 11px; font-weight: 700; text-align: center; padding: 10px; border-radius: 12px; margin-bottom: 12px; }
+.mock-hero-strip { background: rgba(255,145,164,0.12); color: var(--bose-pink-text, #D6336C); font-size: 11px; font-weight: 700; text-align: center; padding: 10px; border-radius: 12px; margin-bottom: 12px; }
 .mock-product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .mock-product-card { background: #f5f5f5; border: 1px solid rgba(255,145,164,0.15); border-radius: 12px; height: 78px; overflow: hidden; position: relative; }
 .mock-product-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -1823,7 +1823,7 @@
 .mock-progress-track { width: 100%; height: 8px; background: #eee; border-radius: 10px; margin-bottom: 16px; overflow: hidden; }
 .mock-progress-fill { width: 62%; height: 100%; background: var(--bose-pink, #FF91A4); border-radius: 10px; }
 .mock-reward-row { display: flex; align-items: center; gap: 8px; font-size: 11px; color: #333; background: #faf5f6; padding: 10px; border-radius: 10px; margin-bottom: 8px; }
-.mock-reward-row i { color: var(--bose-pink, #FF91A4); }
+.mock-reward-row i { color: var(--bose-pink-text, #D6336C); }
 
 .mock-cart-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
 .mock-cart-thumb { width: 46px; height: 46px; background: #f5f5f5; border-radius: 10px; flex-shrink: 0; overflow: hidden; }
@@ -1832,15 +1832,15 @@
 .mock-cart-lines span { display: block; height: 8px; background: #eee; border-radius: 4px; }
 .mock-cart-lines span:last-child { width: 50%; }
 .mock-cart-lines .mock-cart-name { height: auto; background: none; font-size: 11px; font-weight: 700; color: var(--bose-black, #111); border-radius: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.mock-cart-lines .mock-cart-price { height: auto; background: none; font-size: 10px; font-weight: 700; color: var(--bose-pink, #FF91A4); border-radius: 0; width: auto !important; }
-.mock-checkout-btn { width: 100%; background: var(--bose-pink, #FF91A4); color: #fff; border: none; border-radius: 30px; padding: 12px; font-family: 'Cairo', sans-serif; font-weight: 800; font-size: 12.5px; margin-top: 10px; }
+.mock-cart-lines .mock-cart-price { height: auto; background: none; font-size: 10px; font-weight: 700; color: var(--bose-pink-text, #D6336C); border-radius: 0; width: auto !important; }
+.mock-checkout-btn { width: 100%; background: var(--bose-pink-text, #D6336C); color: #fff; border: none; border-radius: 30px; padding: 12px; font-family: 'Cairo', sans-serif; font-weight: 800; font-size: 12.5px; margin-top: 10px; }
 
 /* ---------- أيقونات عائمة حوالين الموبايل ---------- */
 .bose-app-promo-float-badge {
     position: absolute;
     width: 48px; height: 48px;
     background: #FFFFFF;
-    color: var(--bose-pink, #FF91A4);
+    color: var(--bose-pink-text, #D6336C);
     border-radius: 50%;
     display: flex;
     align-items: center;

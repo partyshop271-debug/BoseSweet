@@ -130,8 +130,8 @@
 }
 
 .step-node.active {
-    background: var(--bose-pink) !important;
-    border-color: var(--bose-pink) !important;
+    background: var(--bose-pink-text) !important;
+    border-color: var(--bose-pink-text) !important;
     color: var(--bose-white) !important;
     box-shadow: 0 4px 15px rgba(255, 145, 164, 0.3) !important;
 }
@@ -139,7 +139,7 @@
 .step-node.completed {
     background: var(--bose-white) !important;
     border-color: var(--bose-pink) !important;
-    color: var(--bose-pink) !important;
+    color: var(--bose-pink-text) !important;
     box-shadow: none !important;
 }
 
@@ -170,7 +170,7 @@
 }
 
 .step-title i {
-    color: var(--bose-pink);
+    color: var(--bose-pink-text);
 }
 
 /* ==========================================================================
@@ -297,7 +297,7 @@
 .bose-circular-qty-btn.btn-minus-style {
     background: var(--bose-white) !important;
     border: 1.5px solid var(--bose-pink) !important;
-    color: var(--bose-pink) !important;
+    color: var(--bose-pink-text) !important;
 }
 
 .bose-circular-qty-btn.btn-minus-style:hover {
@@ -305,8 +305,8 @@
 }
 
 .bose-circular-qty-btn.btn-plus-style {
-    background: var(--bose-pink) !important;
-    border: 1.5px solid var(--bose-pink) !important;
+    background: var(--bose-pink-text) !important;
+    border: 1.5px solid var(--bose-pink-text) !important;
     color: var(--bose-white) !important;
     box-shadow: 0 4px 12px rgba(255, 145, 164, 0.2);
 }
@@ -348,7 +348,7 @@
 }
 
 .bose-embedded-price-text span {
-    color: var(--bose-pink);
+    color: var(--bose-pink-text);
     font-weight: 700;
 }
 
@@ -373,7 +373,7 @@
 
 .bose-photo-upload-zone i {
     font-size: 32px;
-    color: var(--bose-pink);
+    color: var(--bose-pink-text);
     margin-bottom: 10px;
     display: block;
 }
@@ -506,7 +506,7 @@
 }
 
 .price-item-row .item-value {
-    color: var(--bose-pink) !important;
+    color: var(--bose-pink-text) !important;
     font-weight: 700;
 }
 
@@ -531,7 +531,7 @@
 }
 
 .bose-invoice-addon-row span:last-child {
-    color: var(--bose-pink) !important;
+    color: var(--bose-pink-text) !important;
 }
 
 .grand-price-node {
@@ -552,7 +552,7 @@
 .grand-price-value {
     font-size: 24px !important;
     font-weight: 700 !important;
-    color: var(--bose-pink) !important;
+    color: var(--bose-pink-text) !important;
 }
 
 /* ==========================================================================
@@ -585,13 +585,13 @@
 }
 
 .premium-nav-btn.primary {
-    background: var(--bose-pink) !important;
+    background: var(--bose-pink-text) !important; /* 🛡️ لون أغمق لضمان تباين كافٍ - زرار "التالي" الأساسي في محاكيات التورت/الورد */
     color: var(--bose-white) !important;
     box-shadow: 0 4px 15px rgba(255, 145, 164, 0.25) !important;
 }
 
 .premium-nav-btn.primary:hover {
-    background: #ff7d94 !important;
+    background: #c22a5c !important;
     transform: translateY(-2px);
 }
 
@@ -708,7 +708,7 @@
     top: 15px; left: 20px;
     font-size: 28px;
     font-weight: 700;
-    color: var(--bose-pink);
+    color: var(--bose-pink-text);
     cursor: pointer;
     user-select: none;
     z-index: 10;

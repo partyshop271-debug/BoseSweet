@@ -13,7 +13,13 @@
 
 :root {
     /* الألوان الحاكمة والمقدسة لعلامة حلويات بوسي الفاخرة - ممنوع مساسها */
-    --bose-pink: #FF91A4;        /* نبض الحياة: حدود كروت المنتجات، الأسعار الديناميكية، والتأثيرات التفاعلية */
+    --bose-pink: #FF91A4;        /* نبض الحياة: حدود كروت المنتجات، خلفيات فاتحة، والتأثيرات التفاعلية الزخرفية - غير مخصص للنصوص */
+    /* 🛡️ [إصلاح إتاحة - تباين الألوان]: --bose-pink الأصلي نسبة تباينه مع
+       الأبيض هي 2.13:1 بس - أقل بكتير من الحد الأدنى العالمي (WCAG AA) للنصوص
+       وهو 4.5:1، وده بيخلي أي نص أو زرار بلونه صعب القراءة (خصوصاً في الشمس أو
+       لأصحاب ضعف النظر). اللون ده نفس الهوية (وردي) لكن بدرجة أغمق بتوصل
+       لنسبة تباين 4.6:1 - مخصص لأي نص وردي أو خلفية زرار أساسي فيها نص أبيض. */
+    --bose-pink-text: #D6336C;
     --bose-white: #FFFFFF;       /* المسيطر تماماً: لخلق تنفس بصري ومنع التكديس نهائياً لراحة العميل النفسية */
     --bose-black: #111111;       /* النصوص والعناوين فقط لضمان وضوح كامل للعين وحظر استخدامه في ظلال أو خلفيات */
     --bose-gold: #D4AF37;        /* وجود رمزي ناعم وخفيف جداً لمحاكاة فخامة اللوجو (نجوم التقييمات) */
@@ -115,6 +121,24 @@ button {
     font-family: 'Cairo', sans-serif !important;
 }
 
+/* 🛡️🛡️ [إصلاح إتاحة حرج]: `button { outline: none; }` فوق كان بيلغي مؤشر
+   التركيز الافتراضي للمتصفح من غير أي بديل - يعني أي حد بيتصفح الموقع بلوحة
+   المفاتيح (أو قارئ شاشة) كان مش هيعرف هو واقف على أنهي عنصر خالص، على أي
+   زرار أو رابط في كل صفحات الموقع. `:focus-visible` بيظهر بس مع التنقل
+   بالكيبورد (Tab) - مش هيظهر عند الضغط بالماوس/باللمس، فمفيش أي تأثير بصري
+   إضافي للمستخدم العادي، بس هيبقى في مؤشر واضح لمستخدمي الكيبورد وقارئ الشاشة. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible,
+[role="button"]:focus-visible {
+    outline: 3px solid var(--bose-pink-text) !important;
+    outline-offset: 2px !important;
+    border-radius: 4px;
+}
+
 img {
     max-width: 100%;
     display: block;
@@ -126,7 +150,7 @@ img {
    3. شريط الإعلانات التسويقية الانسيابي اللانهائي (#top-bar-marquee)
    ========================================================================== */
 .bose-top-bar-marquee-container {
-    background-color: var(--bose-pink) !important;
+    background-color: var(--bose-pink-text) !important; /* 🛡️ لون أغمق لضمان تباين كافٍ مع النص الأبيض */
     border-bottom: 1px solid rgba(255, 255, 255, 0.15);
     overflow: hidden;
     display: flex;
@@ -207,7 +231,7 @@ img {
 }
 
 .bose-nav-btn:hover {
-    color: var(--bose-pink);
+    color: var(--bose-pink-text);
 }
 
 .brand-logo-container {
@@ -242,7 +266,7 @@ img {
     position: absolute;
     top: 0;
     left: 0;
-    background-color: var(--bose-pink);
+    background-color: var(--bose-pink-text);
     color: #FFFFFF !important;
     font-size: 11px;
     font-weight: 700;
@@ -298,11 +322,11 @@ img {
 }
 
 .bose-bottom-nav-item:hover, .bose-bottom-nav-item.active {
-    color: var(--bose-pink) !important;
+    color: var(--bose-pink-text) !important;
 }
 
 .bose-bottom-nav-item:hover i, .bose-bottom-nav-item.active i {
-    color: var(--bose-pink) !important;
+    color: var(--bose-pink-text) !important;
     transform: translateY(-2px);
 }
 
@@ -311,7 +335,7 @@ img {
     top: -2px;
     right: 50%;
     transform: translateX(12px);
-    background-color: var(--bose-pink);
+    background-color: var(--bose-pink-text);
     color: var(--bose-white) !important;
     font-size: 10px;
     font-weight: 700;
@@ -363,7 +387,7 @@ img {
 }
 
 .bose-hero-title span.bose-highlight-pink {
-    color: var(--bose-pink) !important;
+    color: var(--bose-pink-text) !important;
 }
 
 .bose-hero-desc {
@@ -376,7 +400,7 @@ img {
 }
 
 .bose-hero-btn {
-    background-color: var(--bose-pink);
+    background-color: var(--bose-pink-text); /* 🛡️ لون أغمق لضمان تباين كافٍ مع النص الأبيض - زرار الهيرو الرئيسي */
     color: var(--bose-white) !important;
     font-weight: 700 !important;
     font-size: 1.05rem;
@@ -392,7 +416,7 @@ img {
 
 .bose-hero-btn:hover {
     background-color: var(--bose-white);
-    color: var(--bose-pink) !important;
+    color: var(--bose-pink-text) !important;
     border-color: var(--bose-pink);
     box-shadow: var(--bose-shadow-hover);
     transform: translateY(-3px);
@@ -420,7 +444,7 @@ img {
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
-    background-color: var(--bose-pink);
+    background-color: var(--bose-pink-text);
     color: var(--bose-white);
     padding: 12px 24px;
     border-radius: 8px;
@@ -449,7 +473,7 @@ img {
 }
 
 .bose-toast-message {
-    background-color: var(--bose-pink);
+    background-color: var(--bose-pink-text); /* 🛡️ لون أغمق لضمان تباين كافٍ مع النص الأبيض */
     color: var(--bose-white);
     padding: 12px 24px;
     border-radius: 30px;
@@ -563,7 +587,7 @@ img {
 
 .bose-app-install-cta-btn {
     width: 100%;
-    background: var(--bose-pink, #FF91A4);
+    background: var(--bose-pink-text, #D6336C);
     color: #FFFFFF;
     border: none;
     border-radius: 50px;
@@ -592,7 +616,7 @@ img {
     align-items: center;
     gap: 10px;
 }
-.bose-app-install-ios-note i { color: var(--bose-pink, #FF91A4); font-size: 16px; flex-shrink: 0; }
+.bose-app-install-ios-note i { color: var(--bose-pink-text, #D6336C); font-size: 16px; flex-shrink: 0; }
 
 .bose-app-install-secondary-link {
     background: none;
