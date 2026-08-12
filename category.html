@@ -18,13 +18,13 @@
     <!-- 🐛 [إصلاح حرج]: خط Cairo وأيقونات Font Awesome كانوا غير محمّلين نهائياً بالصفحة دي -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/global.css?v=2026_production_v31.3">
-    <link rel="stylesheet" href="css/main.css?v=2026_production_v31.3">
+    <link rel="stylesheet" href="css/global.css?v=2026_production_v32.0">
+    <link rel="stylesheet" href="css/main.css?v=2026_production_v32.0">
     
     <!-- 👑 استدعاء المحرك المركزي العالمي في رأس الصفحة لتأمين الـ DOM ومنع وميض الألوان -->
     <!-- ⚡ [إصلاح أداء]: defer عشان السكريبت متوقفش رسم الصفحة -->
-    <script src="js/supabase-client.js?v=2026_production_v31.3" defer></script>
-    <script src="js/core-engine.js?v=2026_production_v31.3" defer></script>
+    <script src="js/supabase-client.js?v=2026_production_v32.0" defer></script>
+    <script src="js/core-engine.js?v=2026_production_v32.0" defer></script>
 
     <style>
         /* 🎨 الهندسة البصرية الخاصة بصفحة الفئة الديناميكية لمنع التكديس البصري */
@@ -204,9 +204,34 @@
             margin: 6px 0;
         }
 
-        /* 🚨 [نُقلت]: تبويبات اختيار الحجم بقت متعرّفة مرة واحدة بس في main.css
-           (.bose-size-tabs-filter / .bose-filter-tab-pill) عشان product.html يقدر
-           يستخدم نفس الشكل بالظبط من غير تكرار الكود في كل صفحة. */
+        /* 🚨 التبويبات الفرعية لأصناف الديسباسيتو */
+        .bose-size-tabs-filter {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 35px;
+            direction: rtl;
+        }
+
+        .bose-filter-tab-pill {
+            font-family: 'Cairo', sans-serif;
+            font-weight: 700 !important;
+            font-size: 0.85rem;
+            padding: 10px 20px;
+            border: 1px solid rgba(255, 145, 164, 0.3);
+            background: #FFFFFF;
+            color: #111111;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .bose-filter-tab-pill.active {
+            background-color: var(--bose-pink, #FF91A4);
+            color: #FFFFFF;
+            border-color: var(--bose-pink, #FF91A4);
+            box-shadow: 0 4px 12px rgba(255, 145, 164, 0.2);
+        }
 
         /* العداد المطور المرن بتوزيع هندسي ملتزم: يمين (+) وسط (القيمة) يسار (-) */
         .product-card-qty-row {
@@ -345,6 +370,11 @@
         </div>
 
         <!-- تبويبات التصفح للأحجام والأبعاد لأصناف الديسباسيتو -->
+        <!-- 👑 [إضافة - شروح توضيحية تفصيلية]: العميل ممكن يفوّته إن الفئة دي أصلاً بيها
+             أكتر من حجم لو مالحظش التبويب من غير ما نلفت نظره ليه بوضوح. -->
+        <div id="bose-size-filter-note" class="bose-size-filter-note" style="display: none;">
+            <i class="fa-solid fa-circle-info"></i> عندنا أكتر من حجم من نفس الصنف — اختاري اللي يناسبك من هنا 👇
+        </div>
         <div id="bose-size-filter-row" class="bose-size-tabs-filter" style="display: none;">
             <button class="bose-filter-tab-pill active" data-filter-size="triangle" aria-label="عرض مقاس مثلث فردي">مثلث فردي</button>
             <button class="bose-filter-tab-pill" data-filter-size="medium" aria-label="عرض مقاس وسط تشارك ممتع">وسط تشارك ممتع</button>
@@ -372,6 +402,7 @@
             const descNode = document.getElementById('bose-category-description');
             const breadcrumbNode = document.getElementById('breadcrumb-active-category');
             const sizeFilterRow = document.getElementById('bose-size-filter-row');
+            const sizeFilterNote = document.getElementById('bose-size-filter-note');
             
             let activeSizeTab = "triangle";
             let globalFilteredProducts = [];
@@ -468,12 +499,15 @@
                 if (categoryId === "taswaq-cupcake") {
                     productsGrid.className = "category-products-grid layout-full-card";
                     sizeFilterRow.style.display = "none";
+                    sizeFilterNote.style.display = "none";
                 } else if (firstProduct && firstProduct.layout) {
                     productsGrid.className = `category-products-grid layout-${firstProduct.layout}`;
                     if (firstProduct.layout === "tabs") {
                         sizeFilterRow.style.display = "flex";
+                        sizeFilterNote.style.display = "flex";
                     } else {
                         sizeFilterRow.style.display = "none";
+                        sizeFilterNote.style.display = "none";
                     }
                 }
 

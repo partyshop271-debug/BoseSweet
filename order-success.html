@@ -8,21 +8,21 @@
     <meta name="robots" content="noindex, follow">
     
     <!-- ملفات التصميم الخارجية الموحدة والمستقلة -->
-    <link rel="stylesheet" href="css/global.css?v=2026_production_v31.3">
-    <link rel="stylesheet" href="css/main.css?v=2026_production_v31.3">
+    <link rel="stylesheet" href="css/global.css?v=2026_production_v32.0">
+    <link rel="stylesheet" href="css/main.css?v=2026_production_v32.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- استدعاء المحرك المركزي في رأس الصفحة حتمياً لإدارة التمهيد والبيانات المالية -->
-    <!-- 🛡️ [إصلاح المرحلة 1]: تمت إضافة رقم الإصدار ?v=2026_production_v31.3 هنا،
+    <!-- 🛡️ [إصلاح المرحلة 1]: تمت إضافة رقم الإصدار ?v=2026_production_v32.0 هنا،
          كانت هذه الصفحة الوحيدة في الموقع بدون رقم إصدار مما يعرّضها لعرض نسخة
          قديمة مخزّنة (Cache) من core-engine.js بعد أي تحديث مستقبلي للموقع. -->
-    <script src="js/supabase-client.js?v=2026_production_v31.3"></script>
-    <script src="js/core-engine.js?v=2026_production_v31.3"></script>
+    <script src="js/supabase-client.js?v=2026_production_v32.0"></script>
+    <script src="js/core-engine.js?v=2026_production_v32.0"></script>
     <!-- 🛡️ [إصلاح حرج - المرحلة 1]: هذه الصفحة كانت الوحيدة بين كل صفحات السلة/الدفع
          التي لا تحمّل cart-engine.js، فكانت دالة renderBoseSuccessPage المخصصة لها
          معطّلة تماماً ومعوّضة بسكريبت داخلي مكرر. تم حذف التكرار وربط الصفحة بالمحرك
          المركزي الموحد مثل cart.html وcheckout.html بالضبط. -->
-    <script src="js/cart-engine.js?v=2026_production_v31.3"></script>
+    <script src="js/cart-engine.js?v=2026_production_v32.0"></script>
 
     <style>
         /* 🎨 الهندسة البصرية المخصصة لصفحة نجاح الطلب الفاخرة */
