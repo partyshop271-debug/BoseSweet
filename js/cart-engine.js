@@ -31,7 +31,12 @@ function loadTrustedCart() {
 document.addEventListener("DOMContentLoaded", () => {
     // حقن واجهة التنبيهات الفاخرة المخصصة للبراند فوراً
     injectBoseCustomModalStyles();
-    
+
+    // 🛡️ [تحسين UX - تحقق شامل من فورم الشيك أوت]: تفعيل مسح رسالة الخطأ
+    // تلقائياً تحت أي حقل بمجرد ما العميلة تبدأ تصلحه - بدون انتظار إرسال
+    // الفورم تاني. آمن الاستدعاء في أي صفحة (بيتجاهل الحقول غير الموجودة).
+    boseInitCheckoutFieldErrorClearing();
+
     // ربط المحرك المركزي والانتظار حتى تهيئة قاعدة البيانات الأساسية لـ JSON لمنع ثغرة السباق البرمجي واختفاء الأصناف
     if (window.BoseStoreData && window.BoseStoreData.store) {
         initializeCartEngine(window.BoseStoreData);
@@ -41,6 +46,70 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+
+/**
+ * 🛡️ يعلّم حقل واحد كـ"غلط" (حدود حمراء + رسالة تحته) بدل ما نوقف الفورم
+ * كله عند أول خطأ - بيُستخدم مع boseShowAllCheckoutErrors عشان كل الأخطاء
+ * تتجمع وتتعرض مرة واحدة.
+ */
+function boseMarkFieldError(inputEl, message) {
+    if (!inputEl) return;
+    inputEl.classList.add("field-invalid");
+    inputEl.setAttribute("aria-invalid", "true");
+    const errEl = document.getElementById(`err-${inputEl.id}`);
+    if (errEl) {
+        const textSpan = errEl.querySelector("span") || errEl;
+        textSpan.textContent = message;
+        errEl.classList.add("is-visible");
+    }
+}
+
+/** 🛡️ يمسح علامة الخطأ من حقل واحد بمجرد ما العميلة تبدأ تعدّله */
+function boseClearFieldError(inputEl) {
+    if (!inputEl) return;
+    inputEl.classList.remove("field-invalid");
+    inputEl.removeAttribute("aria-invalid");
+    const errEl = document.getElementById(`err-${inputEl.id}`);
+    if (errEl) errEl.classList.remove("is-visible");
+}
+
+/**
+ * 🛡️🛡️ [تحسين UX - تحقق شامل من الفورم]: بتاخد كل أخطاء التحقق مجمّعة
+ * مرة واحدة (بدل ما توقف عند أول خطأ وتخلي العميلة تكتشف الأخطاء واحد
+ * واحد بمحاولات إرسال متكررة)، وتعلّم كل حقل غلط برسالته تحته، وتعمل
+ * تركيز+سكرول لأول حقل غلط، وتوريلها Toast مختصر يقولها فيه كام حقل محتاج مراجعة.
+ * @param {{input: HTMLElement, message: string}[]} errors
+ * @param {HTMLElement|null} firstInvalidInput
+ */
+function boseShowAllCheckoutErrors(errors, firstInvalidInput) {
+    errors.forEach(({ input, message }) => boseMarkFieldError(input, message));
+    if (firstInvalidInput) {
+        firstInvalidInput.scrollIntoView({ behavior: "smooth", block: "center" });
+        firstInvalidInput.focus({ preventScroll: true });
+    }
+    const summary = errors.length === 1
+        ? "فيه حقل واحد محتاج مراجعة، موضّح تحته بالتفصيل"
+        : `فيه ${errors.length} حقول محتاجة مراجعة، موضّحة تحت كل حقل بالتفصيل`;
+    if (typeof window.showBoseGlobalToast === "function") {
+        window.showBoseGlobalToast(summary);
+    } else {
+        showBoseCustomModal(summary);
+    }
+}
+
+/** 🛡️ تسجيل مستمعين لمسح خطأ أي حقل شيك أوت بمجرد ما العميلة تعدّله */
+function boseInitCheckoutFieldErrorClearing() {
+    const fieldIds = [
+        "checkout-customer-name", "checkout-customer-phone", "checkout-customer-phone-2",
+        "checkout-zone-select", "checkout-address-details", "checkout-delivery-date", "checkout-delivery-time",
+    ];
+    fieldIds.forEach((id) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener("input", () => boseClearFieldError(el));
+        el.addEventListener("change", () => boseClearFieldError(el));
+    });
+}
 
 /**
  * دالة التهيئة والتحكم الأساسية لمحرك السلة والطلب
@@ -501,32 +570,40 @@ function processFinalBoseOrder(cart, storeData, method, shippingFee) {
     const deliveryTimeInput = document.getElementById("checkout-delivery-time");
     const orderNotesInput = document.getElementById("checkout-order-notes-textarea");
 
+    // 🛡️🛡️ [تحسين UX - تحقق شامل من الفورم]: بدل ما نوقف عند أول خطأ (زي ما
+    // كان بيحصل قبل كده)، بنجمع كل الأخطاء في المصفوفة دي مرة واحدة، ونعرضهم
+    // كلهم تحت حقولهم دفعة واحدة بعد ما نخلص كل الفحوصات - عشان العميلة تصلح
+    // كل حاجة في محاولة واحدة مش خطوة بخطوة.
+    const validationErrors = [];
+    let firstInvalidInput = null;
+    function addValidationError(input, message) {
+        if (input) {
+            validationErrors.push({ input, message });
+            if (!firstInvalidInput) firstInvalidInput = input;
+        }
+    }
+
     const customerName = customerNameInput ? customerNameInput.value.trim() : "";
     if (customerName.length < 3) {
-        showBoseCustomModal("يرجى كتابة اسم صاحب الطلب بالكامل ثنائياً على الأقل.");
-        if (customerNameInput) customerNameInput.focus();
-        return;
+        addValidationError(customerNameInput, "يرجى كتابة اسم صاحب الطلب بالكامل ثنائياً على الأقل.");
     }
 
     const phone1 = customerPhoneInput ? customerPhoneInput.value.trim() : "";
-    if (typeof window.validateBosePhoneNumber === "function") {
-        if (!window.validateBosePhoneNumber(phone1)) {
-            showBoseCustomModal("يرجى إدخال رقم هاتف محمول مصري صحيح ومطابق للشبكة.");
-            if (customerPhoneInput) customerPhoneInput.focus();
-            return;
-        }
+    let sanitizedPhone1 = "";
+    if (typeof window.validateBosePhoneNumber === "function" && !window.validateBosePhoneNumber(phone1)) {
+        addValidationError(customerPhoneInput, "يرجى إدخال رقم هاتف محمول مصري صحيح ومطابق للشبكة.");
+    } else {
+        sanitizedPhone1 = typeof window.sanitizeBosePhoneNumber === "function" ? window.sanitizeBosePhoneNumber(phone1) : phone1;
     }
-    const sanitizedPhone1 = typeof window.sanitizeBosePhoneNumber === "function" ? window.sanitizeBosePhoneNumber(phone1) : phone1;
 
     let sanitizedPhone2 = "";
     if (customerPhone2Input && customerPhone2Input.value.trim() !== "") {
         const phone2 = customerPhone2Input.value.trim();
         if (typeof window.validateBosePhoneNumber === "function" && !window.validateBosePhoneNumber(phone2)) {
-            showBoseCustomModal("رقم الهاتف البديل غير صحيح، يرجى مراجعته أو مسحه ليبقى اختيارياً.");
-            customerPhone2Input.focus();
-            return;
+            addValidationError(customerPhone2Input, "رقم الهاتف البديل غير صحيح، يرجى مراجعته أو مسحه ليبقى اختيارياً.");
+        } else {
+            sanitizedPhone2 = typeof window.sanitizeBosePhoneNumber === "function" ? window.sanitizeBosePhoneNumber(phone2) : phone2;
         }
-        sanitizedPhone2 = typeof window.sanitizeBosePhoneNumber === "function" ? window.sanitizeBosePhoneNumber(phone2) : phone2;
     }
 
     let fullAddressText = "استلام يدوي مباشر من مقر الفرع";
@@ -542,29 +619,26 @@ function processFinalBoseOrder(cart, storeData, method, shippingFee) {
 
     if (method === "delivery") {
         if (zoneSelect && !zoneSelect.value) {
-            showBoseCustomModal("يرجى تحديد المنطقة السكنية.");
-            zoneSelect.focus();
-            return;
+            addValidationError(zoneSelect, "يرجى تحديد المنطقة السكنية.");
+        } else {
+            selectedZoneId = zoneSelect ? zoneSelect.value : "";
+            const selectedOption = zoneSelect && zoneSelect.selectedOptions ? zoneSelect.selectedOptions[0] : null;
+            selectedZoneName = selectedOption ? selectedOption.textContent : selectedZoneId;
         }
-        selectedZoneId = zoneSelect ? zoneSelect.value : "";
-        const selectedOption = zoneSelect && zoneSelect.selectedOptions ? zoneSelect.selectedOptions[0] : null;
-        selectedZoneName = selectedOption ? selectedOption.textContent : selectedZoneId;
 
         const addressDetails = addressDetailsInput ? addressDetailsInput.value.trim() : "";
         if (addressDetails.length < 8) {
-            showBoseCustomModal("يرجى كتابة العنوان السكني بالتفصيل لسلامة الشحن.");
-            if (addressDetailsInput) addressDetailsInput.focus();
-            return;
+            addValidationError(addressDetailsInput, "يرجى كتابة العنوان السكني بالتفصيل لسلامة الشحن.");
+        } else {
+            fullAddressText = `المنطقة: ${selectedZoneName} | تفصيل السكن: ${addressDetails}`;
         }
-        fullAddressText = `المنطقة: ${selectedZoneName} | تفصيل السكن: ${addressDetails}`;
     }
 
     const orderDate = deliveryDateInput ? deliveryDateInput.value : "";
     const orderTime = deliveryTimeInput ? deliveryTimeInput.value : "";
-    
+
     if (!orderDate || !orderTime) {
-        showBoseCustomModal("يرجى اختيار تاريخ وساعة الاستلام المناسبة لتجهيز طلبك.");
-        return;
+        addValidationError(!orderDate ? deliveryDateInput : deliveryTimeInput, "يرجى اختيار تاريخ وساعة الاستلام المناسبة لتجهيز طلبك.");
     }
 
     // 🛡️ [إصلاح - المرحلة 2]: تحديد هل السلة فيها منتج مخصص (تورت/ورد محاكي) عشان
@@ -574,7 +648,7 @@ function processFinalBoseOrder(cart, storeData, method, shippingFee) {
         ? window.boseCartHasCustomItem(cart)
         : false;
 
-    if (typeof window.validateBoseDeliverySchedule === "function") {
+    if (orderDate && orderTime && typeof window.validateBoseDeliverySchedule === "function") {
         const isScheduleValid = window.validateBoseDeliverySchedule(orderDate, orderTime, cartHasCustomItem);
         if (!isScheduleValid) {
             const fallbackMsg = cartHasCustomItem
@@ -583,9 +657,14 @@ function processFinalBoseOrder(cart, storeData, method, shippingFee) {
             const msg = cartHasCustomItem
                 ? (storeData.orderRules?.customPreparationTimeMessage || fallbackMsg)
                 : (storeData.orderRules?.preparationTimeMessage || fallbackMsg);
-            showBoseCustomModal(msg);
-            return;
+            addValidationError(deliveryTimeInput, msg);
         }
+    }
+
+    // 🚦 بعد تجميع كل الفحوصات: لو فيه أي خطأ نعرضهم كلهم دفعة واحدة ونوقف هنا
+    if (validationErrors.length > 0) {
+        boseShowAllCheckoutErrors(validationErrors, firstInvalidInput);
+        return;
     }
 
     // 🧮 [توحيد حسابي]: نفس المعادلة المستخدمة بالسلة وبصفحة الشحن بالظبط
