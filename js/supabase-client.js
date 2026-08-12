@@ -112,7 +112,6 @@
             featured: p.is_featured,
             rating: p.rating,
             reviews: p.seed_reviews || [],
-            faqs: p.faqs || [],
             isAvailable: p.is_available !== false,
         }));
 
