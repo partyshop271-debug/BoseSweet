@@ -244,19 +244,22 @@
                     <!-- الاسم بالكامل (إلزامي برمجياً بنسبة مئة بالمئة) -->
                     <div class="input-group-node">
                         <label for="checkout-customer-name">الاسم الكريم بالكامل <span class="required-indicator">*</span></label>
-                        <input type="text" id="checkout-customer-name" class="bose-field-capture" placeholder="اكتب الاسم بالكامل" required>
+                        <input type="text" id="checkout-customer-name" class="bose-field-capture" placeholder="اكتب الاسم بالكامل" required aria-describedby="err-checkout-customer-name">
+                        <span class="bose-field-error-msg" id="err-checkout-customer-name"><i class="fa-solid fa-circle-exclamation"></i><span></span></span>
                     </div>
 
                     <!-- رقم الهاتف الأساسي (إلزامي ومحمي للتحقق من خطوط مصر) -->
                     <div class="input-group-node">
                         <label for="checkout-customer-phone">رقم الهاتف الأساسي (الواتساب للتأكيد والتوصيل) <span class="required-indicator">*</span></label>
-                        <input type="tel" id="checkout-customer-phone" class="bose-field-capture" placeholder="اكتب رقم موبايلك الأساسي (01...)" required>
+                        <input type="tel" id="checkout-customer-phone" class="bose-field-capture" placeholder="اكتب رقم موبايلك الأساسي (01...)" required aria-describedby="err-checkout-customer-phone">
+                        <span class="bose-field-error-msg" id="err-checkout-customer-phone"><i class="fa-solid fa-circle-exclamation"></i><span></span></span>
                     </div>
 
                     <!-- رقم هاتف إضافي بديل (اختياري بالكامل لحماية التحويلات ومبيعات الموقع) -->
                     <div class="input-group-node">
                         <label for="checkout-customer-phone-2">رقم هاتف إضافي بديل (اختياري لتأمين وصول شحنتك الملكية)</label>
-                        <input type="tel" id="checkout-customer-phone-2" class="bose-field-capture" placeholder="اكتب رقم موبايل إضافي إن وجد لسلامة الشحن اللوجستي...">
+                        <input type="tel" id="checkout-customer-phone-2" class="bose-field-capture" placeholder="اكتب رقم موبايل إضافي إن وجد لسلامة الشحن اللوجستي..." aria-describedby="err-checkout-customer-phone-2">
+                        <span class="bose-field-error-msg" id="err-checkout-customer-phone-2"><i class="fa-solid fa-circle-exclamation"></i><span></span></span>
                     </div>
 
                     <!-- قسم تحديد طريقة ومسار الاستلام التفاعلي لبراند حلويات بوسي -->
@@ -275,26 +278,30 @@
                     <!-- 🗺️ قائمة اختيار المنطقة السكنية الدقيقة (المعرف متطابق 100% مع حسابات محرك السلة لفك الشلل) 🗺️ -->
                     <div id="shipping-zone-wrapper" class="input-group-node">
                         <label for="checkout-zone-select">المنطقة السكنية للتوصيل <span class="required-indicator">*</span></label>
-                        <select id="checkout-zone-select" class="bose-field-capture" style="appearance: none; -webkit-appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'24\' height=\'24\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%23FF91A4\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'><polyline points=\'6 9 12 15 18 9\'></polyline></svg>'); background-repeat: no-repeat; background-position: left 16px center; background-size: 16px; padding-left: 40px;" required>
+                        <select id="checkout-zone-select" class="bose-field-capture" style="appearance: none; -webkit-appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'24\' height=\'24\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%23FF91A4\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'><polyline points=\'6 9 12 15 18 9\'></polyline></svg>'); background-repeat: no-repeat; background-position: left 16px center; background-size: 16px; padding-left: 40px;" required aria-describedby="err-checkout-zone-select">
                             <option value="" disabled selected>اختر المنطقة السكنية للتوصيل</option>
                         </select>
+                        <span class="bose-field-error-msg" id="err-checkout-zone-select"><i class="fa-solid fa-circle-exclamation"></i><span></span></span>
                     </div>
 
                     <!-- العنوان بالتفصيل (يتغير نصه ووظيفته برمجياً لتسهيل تجربة المستهلك) -->
                     <div class="input-group-node">
                         <label for="checkout-address-details" id="bose-address-label-node">العنوان الفعلي بالتفصيل <span class="required-indicator">*</span></label>
-                        <textarea id="checkout-address-details" class="bose-field-capture" placeholder="شارع... منزل... علامة مميزة..." required></textarea>
+                        <textarea id="checkout-address-details" class="bose-field-capture" placeholder="شارع... منزل... علامة مميزة..." required aria-describedby="err-checkout-address-details"></textarea>
+                        <span class="bose-field-error-msg" id="err-checkout-address-details"><i class="fa-solid fa-circle-exclamation"></i><span></span></span>
                     </div>
 
                     <!-- ⏱️ قسم الجدولة الزمنية والموعد المحكوم بقواعد المعالجة وحارس الـ 24 ساعة تحضير صارم ⏱️ -->
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; width: 100%;">
                         <div class="input-group-node">
                             <label for="checkout-delivery-date">تاريخ الاستلام</label>
-                            <input type="date" id="checkout-delivery-date" class="bose-field-capture" required>
+                            <input type="date" id="checkout-delivery-date" class="bose-field-capture" required aria-describedby="err-checkout-delivery-date">
+                            <span class="bose-field-error-msg" id="err-checkout-delivery-date"><i class="fa-solid fa-circle-exclamation"></i><span></span></span>
                         </div>
                         <div class="input-group-node">
                             <label for="checkout-delivery-time">ساعة الاستلام</label>
-                            <input type="time" id="checkout-delivery-time" class="bose-field-capture" required>
+                            <input type="time" id="checkout-delivery-time" class="bose-field-capture" required aria-describedby="err-checkout-delivery-time">
+                            <span class="bose-field-error-msg" id="err-checkout-delivery-time"><i class="fa-solid fa-circle-exclamation"></i><span></span></span>
                         </div>
                     </div>
                     

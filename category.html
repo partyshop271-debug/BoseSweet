@@ -574,7 +574,7 @@
                     cardElement.innerHTML = `
                         ${discountBadgeHtml}
                         <a href="product.html?slug=${encodeURIComponent(product.slug)}" class="product-card-link" aria-label="عرض تفاصيل منتج ${safeTitle}">
-                            <img class="product-card-img" src="${product.image || (product.images ? product.images[0] : '')}" alt="${safeTitle}" loading="lazy">
+                            <img class="product-card-img" src="${window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(product.image || (product.images ? product.images[0] : ''), 450) : (product.image || (product.images ? product.images[0] : ''))}" alt="${safeTitle}" loading="lazy">
                             <h3 class="product-card-title">${safeTitle}</h3>
                             <span class="product-card-flavor-name">${safeFlavor}</span>
                             <p class="product-card-desc">${safeDesc}</p>

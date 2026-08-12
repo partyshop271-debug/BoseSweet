@@ -1031,7 +1031,7 @@
                     return `
                         <div class="product-card bose-product-card" data-slug="${prod.slug}" style="border:var(--bose-border-pink); border-radius:20px; background:var(--bose-white); overflow:hidden; padding:16px; display:flex; flex-direction:column; gap:10px; box-shadow:var(--bose-shadow-glow); text-align:right; direction:rtl;">
                             <a href="product.html?slug=${prod.slug}" style="text-decoration:none; display:block; overflow:hidden; border-radius:12px; height:220px;">
-                                <img class="product-card-img bose-product-image" src="${imgUrl}" alt="${prod.title}" style="width:100%; height:100%; object-fit:cover; display:block;" loading="lazy" onerror="this.src='${defaultLogo}';">
+                                <img class="product-card-img bose-product-image" src="${window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(imgUrl, 350) : imgUrl}" alt="${prod.title}" style="width:100%; height:100%; object-fit:cover; display:block;" loading="lazy" onerror="this.src='${defaultLogo}';">
                             </a>
                             <div class="bose-product-info" style="padding:0; display:flex; flex-direction:column; flex-grow:1; justify-content:space-between;">
                                 <h3 class="product-card-title bose-product-title" style="margin:4px 0 0 0; font-size:1.02rem; font-weight:700; color:var(--bose-black); line-height:1.4; min-height:2.8em; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">${prod.title}</h3>
