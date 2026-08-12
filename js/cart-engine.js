@@ -660,6 +660,20 @@ function processFinalBoseOrder(cart, storeData, method, shippingFee) {
     // لازم يكون على الدالة اللي بننادي عليها فعلياً.
     if (typeof window.saveBoseOrderToDatabase === "function") {
         window.saveBoseOrderToDatabase(completedBoseOrderObject)
+            .then((dbResult) => {
+                // 🛡️ [إصلاح حرج]: رقم الطلب الحقيقي المتولد في قاعدة البيانات
+                // (بصيغة YYYYMMDD-NNNN) كان بيتحسب وبيترجع من create_order_with_items
+                // لكن بيتضاع هنا تماماً من غير أي استخدام - orderNumber المعروض في
+                // صفحة النجاح كان دايماً رقم محلي (Timestamp) من جهاز العميل بس، مش
+                // نفس الرقم المسجل فعلياً في قاعدة البيانات. ده كان هيمنع أي نظام
+                // تتبع طلب حقيقي من الشغل لأن العميل معندوش الرقم الصح أصلاً. دلوقتي
+                // بنسجل الرقم الحقيقي في نفس كائن الطلب المحفوظ في localStorage
+                // عشان صفحة النجاح تقدر تعرضه وتربطه بصفحة تتبع الطلب.
+                if (dbResult && dbResult.orderNumber) {
+                    completedBoseOrderObject.dbOrderNumber = dbResult.orderNumber;
+                    localStorage.setItem("bose_last_order", JSON.stringify(completedBoseOrderObject));
+                }
+            })
             .catch((err) => console.warn("⚠️ تعذر حفظ نسخة الطلب في قاعدة البيانات (البيع تم عبر واتساب بنجاح رغم ذلك):", err))
             .finally(finalizeNavigation);
     } else {
@@ -771,6 +785,7 @@ function renderBoseSuccessPage(storeData) {
     // عنصران اختياريان حسب نسخة الصفحة - الكود بيتخطاهم بأمان لو مش موجودين
     const orderIdDisplay = document.getElementById("success-order-id-display");
     const customerWelcome = document.getElementById("success-customer-welcome");
+    const trackOrderBtn = document.getElementById("bose-success-track-btn");
 
     const showEmptyState = () => {
         if (receiptWrapper) {
@@ -795,6 +810,13 @@ function renderBoseSuccessPage(storeData) {
     if (orderIdDisplay) {
         orderIdDisplay.textContent = order.orderId || `#${order.orderNumber || ''}`;
         orderIdDisplay.style.display = "block";
+    }
+    // 🛡️ زرار "تتبعي طلبك" بيظهر بس لو الرقم الحقيقي المسجل في قاعدة البيانات
+    // (dbOrderNumber) وصل فعلاً - لو حفظ الطلب في القاعدة فشل (نت ضعيف مثلاً)
+    // منسيبش زرار بيودي لصفحة تتبع مش هتلاقي حاجة.
+    if (trackOrderBtn && order.dbOrderNumber && order.phone1) {
+        trackOrderBtn.href = `track-order.html?order=${encodeURIComponent(order.dbOrderNumber)}&phone=${encodeURIComponent(order.phone1)}`;
+        trackOrderBtn.style.display = "flex";
     }
     // 🐛 [إصلاح خلل وظيفي]: العنصر كان بيتقرأ من الـDOM بس مفيش أي كود
     // بيحط فيه اسم العميل فعلياً، فكانت خانة الترحيب بتفضل فاضية دايماً.

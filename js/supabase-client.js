@@ -292,6 +292,30 @@
     }
 
     /**
+     * 📦 تتبع الطلب: بيرجع حالة الطلب وتفاصيله لو رقم الطلب + رقم الهاتف مطابقين
+     * فعلياً لطلب حقيقي في القاعدة (نفس فلسفة validate_coupon: RPC آمن بدل SELECT
+     * مباشر على جدول orders المقفول بالكامل بـ RLS للأدمن فقط).
+     */
+    async function trackBoseOrder(orderNumber, phone) {
+        const result = await boseSupabaseRpc("track_order_by_number_and_phone", {
+            p_order_number: orderNumber,
+            p_phone: phone,
+        });
+        const row = Array.isArray(result) ? result[0] : result;
+        return row || { found: false, message: "تعذر التحقق من الطلب، حاولي مرة أخرى" };
+    }
+
+    /**
+     * 🎁 مكافآت العميل: بتحسب النقاط/المستوى فعلياً من إجمالي طلبات العميل
+     * الحقيقية المرتبطة برقم هاتفه (باستثناء الطلبات الملغاة) عبر RPC آمن.
+     */
+    async function getBoseCustomerRewards(phone) {
+        const result = await boseSupabaseRpc("get_customer_rewards", { p_phone: phone });
+        const row = Array.isArray(result) ? result[0] : result;
+        return row || { found: false, message: "تعذر التحقق من رصيد المكافآت، حاولي مرة أخرى" };
+    }
+
+    /**
      * 🔌 [نقطة الربط الجاهزة مسبقاً]: cart-engine.js بيستدعي بالفعل
      * window.saveBoseOrderToDatabase(completedBoseOrderObject) بعد فتح واتساب
      * مباشرة (كان hook فارغ من غير تنفيذ قبل كده). هنا التنفيذ الفعلي: بنحوّل
@@ -332,6 +356,8 @@
         fetchApprovedReviews,
         validateBoseCoupon,
         uploadBoseReferenceImage,
+        trackBoseOrder,
+        getBoseCustomerRewards,
     };
     // الاسم اللي cart-engine.js بينده عليه فعلياً (راجع processFinalBoseOrder)
     window.saveBoseOrderToDatabase = saveBoseOrderToDatabase;

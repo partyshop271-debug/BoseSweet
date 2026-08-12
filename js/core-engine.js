@@ -298,7 +298,7 @@
             if (track) {
                 track.innerHTML = data.homepage.categoriesSlider.map(/** @param {Object} cat */ (cat) => `
                     <div class="category-card-unified" onclick="window.location.href='category.html?category=${encodeURIComponent(cat.id)}'">
-                        <img src="${window.optimizeBoseImageUrl(cat.image, 250)}" alt="${window.escapeBoseHTML(cat.title)}" class="category-card-img" width="180" height="180" loading="lazy" />
+                        <img src="${window.optimizeBoseImageUrl(cat.image, 450)}" alt="${window.escapeBoseHTML(cat.title)}" class="category-card-img" width="180" height="180" loading="lazy" />
                         <div class="category-card-name">${window.escapeBoseHTML(cat.title)}</div>
                     </div>
                 `).join('');
@@ -1186,7 +1186,20 @@
         if (!url || typeof url !== "string") return url;
         if (!url.includes("res.cloudinary.com") || !url.includes("/upload/")) return url;
         const safeWidth = parseInt(String(width), 10) || 600;
-        const transform = `f_auto,q_auto,w_${safeWidth},c_limit`;
+        // 🛡️🛡️ [إصلاح جذري - جودة الصور الضبابية]: كنا بنطلب من Cloudinary نفس
+        // عرض الـ CSS المعروض بالبكسل بالظبط (180/250/300px..) من غير أي اعتبار
+        // لكثافة بكسل الشاشة (Device Pixel Ratio). شاشات الموبايل والتابلت
+        // الحديثة (Retina/2x/3x) بتعرض كل "بكسل CSS" بـ 2 أو 3 بكسل فعلي فيها،
+        // فكانت كل صور الموقع بتوصل بدقة أقل بكتير من دقة الشاشة الحقيقية وتظهر
+        // ضبابية/معتمة (خصوصاً في قسم "تسوق حسب الفئة" اللي كروته بتوصل لـ 420px
+        // ارتفاع فعلي بينما كان بيتطلب منها بس 250px). دلوقتي بنضرب العرض
+        // المطلوب في نسبة كثافة بكسل الجهاز الفعلية (بحد أقصى 3x لتفادي تحميل
+        // صور ضخمة بلا داعي وإهدار بيانات). كمان رفعنا q_auto العادي لـ
+        // q_auto:good كأرضية جودة أعلى تفادياً لأي ضغط عدواني زيادة عن اللزوم
+        // من وضع q_auto الافتراضي على صور فيها تفاصيل دقيقة (كريمة/زهور/تزيين).
+        const dpr = (typeof window !== "undefined" && window.devicePixelRatio) ? Math.min(window.devicePixelRatio, 3) : 2;
+        const targetWidth = Math.round(safeWidth * dpr);
+        const transform = `f_auto,q_auto:good,w_${targetWidth},c_limit`;
         if (url.includes("/upload/f_auto") || url.includes("/upload/q_auto")) return url;
         return url.replace("/upload/", `/upload/${transform}/`);
     };
@@ -1677,6 +1690,18 @@
                                 <li class="sidebar-link-item">
                                     <a href="cart.html">
                                         <span class="link-main-side"><i class="fa-solid fa-basket-shopping main-icon"></i>سلة التسوق</span>
+                                        <i class="fa-solid fa-chevron-left arrow-icon"></i>
+                                    </a>
+                                </li>
+                                <li class="sidebar-link-item">
+                                    <a href="track-order.html">
+                                        <span class="link-main-side"><i class="fa-solid fa-location-crosshairs main-icon"></i>تتبعي طلبك</span>
+                                        <i class="fa-solid fa-chevron-left arrow-icon"></i>
+                                    </a>
+                                </li>
+                                <li class="sidebar-link-item">
+                                    <a href="rewards.html">
+                                        <span class="link-main-side"><i class="fa-solid fa-gift main-icon"></i>مكافآتك</span>
                                         <i class="fa-solid fa-chevron-left arrow-icon"></i>
                                     </a>
                                 </li>
