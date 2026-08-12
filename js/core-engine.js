@@ -1482,6 +1482,79 @@
         if (data.seo && data.seo.title && document.title !== data.seo.title) {
             document.title = data.seo.title;
         }
+        injectBoseStructuredData(data);
+    }
+
+    /**
+     * 🔍👑 [SEO/GEO - بيانات مهيكلة Schema.org]: بيانات JSON-LD موحّدة (منظمة +
+     * نشاط تجاري محلي + موقع إلكتروني) بتتحقن في كل صفحة من هنا مركزياً، بقيم حية
+     * جايه فعلياً من إعدادات المتجر في قاعدة البيانات (اسم المتجر، اللوجو، الهاتف،
+     * روابط السوشيال ميديا، عنوان الاستلام) - مش بيانات ثابتة مكتوبة يدوياً هتفضل
+     * قديمة أول ما حد يغيّر حاجة من لوحة التحكم.
+     *
+     * ليه ده مهم:
+     * 1) هو الطريقة الرسمية اللي جوجل بيعتمد عليها عشان يعرض لوجو البراند بجانب
+     *    اسم الموقع في نتائج البحث (Organization.logo) بدل الأيقونة الافتراضية.
+     * 2) بيدي محركات البحث والذكاء الاصطناعي (ChatGPT/Perplexity/Google AI Overviews)
+     *    فهم واضح ومباشر لهوية النشاط التجاري (اسمه، نوعه Bakery، رقم تواصله،
+     *    حساباته الرسمية) بدل ما يحاولوا "يخمّنوا" ده من النص العادي - ده جوهر
+     *    الـ GEO (Generative Engine Optimization).
+     * 3) WebSite schema بيفتح الباب لظهور مربع بحث مباشر (Sitelinks Search Box)
+     *    جوه نتيجة جوجل نفسها.
+     */
+    function injectBoseStructuredData(data) {
+        try {
+            const store = data.store || {};
+            const social = data.social || {};
+            const seo = data.seo || {};
+            const pageUrl = window.location.origin + window.location.pathname;
+            const logoUrl = store.logo || "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png";
+            const storeName = store.name || "حلويات بوسي";
+
+            const sameAs = [social.facebook, social.instagram, social.tiktok].filter(Boolean);
+
+            const graph = [
+                {
+                    "@type": ["Organization", "Bakery"],
+                    "@id": window.location.origin + "/#organization",
+                    "name": storeName,
+                    "url": window.location.origin + "/",
+                    "logo": logoUrl,
+                    "image": logoUrl,
+                    "description": seo.description || store.slogan || "",
+                    ...(store.phone ? { "telephone": store.phone } : {}),
+                    ...(sameAs.length ? { "sameAs": sameAs } : {}),
+                    ...(store.pickup && store.pickup.address ? {
+                        "address": {
+                            "@type": "PostalAddress",
+                            "streetAddress": store.pickup.address,
+                            "addressCountry": "EG"
+                        }
+                    } : {})
+                },
+                {
+                    "@type": "WebSite",
+                    "@id": window.location.origin + "/#website",
+                    "url": window.location.origin + "/",
+                    "name": storeName,
+                    "publisher": { "@id": window.location.origin + "/#organization" },
+                    "inLanguage": "ar"
+                }
+            ];
+
+            const jsonLd = { "@context": "https://schema.org", "@graph": graph };
+
+            let script = document.getElementById("bose-structured-data");
+            if (!script) {
+                script = document.createElement("script");
+                script.type = "application/ld+json";
+                script.id = "bose-structured-data";
+                document.head.appendChild(script);
+            }
+            script.textContent = JSON.stringify(jsonLd);
+        } catch (e) {
+            // فشل حقن البيانات المهيكلة مش لازم يكسر الموقع - نتجاهله بأمان
+        }
     }
 
     /**
