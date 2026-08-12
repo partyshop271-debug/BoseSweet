@@ -118,17 +118,26 @@
      * من غير ما نحمّل كل بيانات المتجر تاني (بيوفر استهلاك بيانات الموبايل
      * وزمن التحميل بشكل ملموس، خصوصاً في الزيارات المتكررة لنفس العميل).
      * 
-     * صمام أمان: لو التحقق نفسه فشل (مشكلة شبكة وقتية)، بنستخدم الكاش المحلي
-     * بأمان بدل ما نوقف الموقع، وهيتصحح تلقائياً في أول زيارة تانية ناجحة.
-     * وفيه سقف زمني قاسي (24 ساعة) كخط دفاع أخير حتى لو فشل التحقق باستمرار.
+     * صمام أمان: لو التحقق نفسه فشل (مشكلة شبكة وقتية)، بنعيد المحاولة مرة واحدة
+     * قبل ما نستسلم ونستخدم الكاش المحلي. وفيه سقف زمني قاسي (ساعتين، بعد ما كان
+     * 24 ساعة) كخط دفاع أخير حتى لو فشل التحقق باستمرار - عشان أي تعديل من لوحة
+     * التحكم (خصوصاً صور المنتجات) يوصل للعميل بأسرع وقت ممكن حتى لو حصل عطل شبكة
+     * وقتي، بدل ما يفضل يوم كامل بالكاش القديم من غير أي طريقة للعميل يلاحظ.
+     *
+     * 🔧 [أداة تشخيص]: إضافة ?refresh=1 لأي رابط في الموقع بتتخطى الكاش المحلي
+     * بالكامل وتجيب أحدث نسخة من قاعدة البيانات مباشرة - مفيدة لصاحبة المتجر
+     * عشان تتأكد فوراً إن أي تعديل (خصوصاً صورة منتج) وصل فعلاً، من غير ما تحتاج
+     * تعتمد على "مسح الكاش" من إعدادات المتصفح (اللي أصلاً مش بيمسح localStorage
+     * في كل الحالات).
      */
     async function loadStoreDatabase() {
         if (window.BoseStoreData) return;
 
-        const cachedData = localStorage.getItem('bose_cached_store_data');
-        const cachedTime = localStorage.getItem('bose_cached_store_time');
-        const cachedVersion = localStorage.getItem('bose_cached_store_version');
-        const cacheHardExpiry = 24 * 60 * 60 * 1000; // صمام أمان أخير: يوم كامل بغض النظر عن نتيجة التحقق
+        const forceRefresh = new URLSearchParams(window.location.search).get('refresh') === '1';
+        const cachedData = forceRefresh ? null : localStorage.getItem('bose_cached_store_data');
+        const cachedTime = forceRefresh ? null : localStorage.getItem('bose_cached_store_time');
+        const cachedVersion = forceRefresh ? null : localStorage.getItem('bose_cached_store_version');
+        const cacheHardExpiry = 2 * 60 * 60 * 1000; // صمام أمان أخير: ساعتين بدل يوم كامل
         const cacheWithinHardLimit = cachedData && cachedTime && (Date.now() - parseInt(cachedTime, 10) < cacheHardExpiry);
 
         if (cacheWithinHardLimit) {
@@ -136,7 +145,8 @@
                 let liveVersion = null;
                 let versionCheckSucceeded = false;
 
-                if (window.BoseSupabase && typeof window.BoseSupabase.getBoseDataVersion === "function") {
+                /** محاولة واحدة لقراءة النسخة الحية - بترجع true/false على نجاحها */
+                async function attemptVersionCheck() {
                     try {
                         const versionResult = await window.BoseSupabase.getBoseDataVersion();
                         // الدالة بترجع timestamp مفرد (مش جدول)؛ PostgREST بيرجعه كقيمة خام
@@ -144,9 +154,22 @@
                         liveVersion = Array.isArray(versionResult)
                             ? (versionResult[0]?.get_bose_data_version ?? versionResult[0])
                             : (versionResult?.get_bose_data_version ?? versionResult);
-                        versionCheckSucceeded = liveVersion !== null && liveVersion !== undefined;
+                        return liveVersion !== null && liveVersion !== undefined;
                     } catch (e) {
-                        versionCheckSucceeded = false;
+                        return false;
+                    }
+                }
+
+                if (window.BoseSupabase && typeof window.BoseSupabase.getBoseDataVersion === "function") {
+                    versionCheckSucceeded = await attemptVersionCheck();
+                    // 🛡️ [إصلاح صلابة الكاش]: عطل شبكة وقتي واحد كان كافي يخلينا نستسلم
+                    // ونصدّق الكاش القديم بعمى لحد 24 ساعة - أي تعديل (خصوصاً صور
+                    // المنتجات) كان ممكن يفضل "مش ظاهر" للعميل لمدة يوم كامل من غير أي
+                    // سبب واضح. محاولة تانية سريعة بعد نص ثانية بتغطي أغلب حالات الفشل
+                    // الوقتي (شبكة موبايل متقطعة) قبل ما نلجأ فعلاً للكاش.
+                    if (!versionCheckSucceeded) {
+                        await new Promise((r) => setTimeout(r, 500));
+                        versionCheckSucceeded = await attemptVersionCheck();
                     }
                 }
 
@@ -560,7 +583,7 @@
      */
     function createProductCardHTML(product) {
         if (!product) return '';
-        const rawImg = product.images ? product.images[0] : 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png';
+        const rawImg = (product.images && product.images.length > 0 && product.images[0]) ? product.images[0] : 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png';
         const safeImg = window.optimizeBoseImageUrl(rawImg, 400);
         const safeTitle = window.escapeBoseHTML(product.title);
         const safeFlavor = window.escapeBoseHTML(product.flavorName || '');
@@ -1580,7 +1603,7 @@
         const gridEl = document.getElementById('app-promo-product-grid');
         if (gridEl) {
             gridEl.innerHTML = products.slice(0, 4).map((/** @type {any} */ p) => {
-                const img = window.optimizeBoseImageUrl(p.images ? p.images[0] : 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', 200);
+                const img = window.optimizeBoseImageUrl((p.images && p.images.length > 0 && p.images[0]) ? p.images[0] : 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', 200);
                 const title = window.escapeBoseHTML(p.title || '');
                 return `<div class="mock-product-card"><img src="${img}" alt="${title}" loading="lazy" /><span class="mock-product-name">${title}</span></div>`;
             }).join('');
@@ -1589,7 +1612,7 @@
         const cartRowsEl = document.getElementById('app-promo-cart-rows');
         if (cartRowsEl) {
             cartRowsEl.innerHTML = products.slice(0, 2).map((/** @type {any} */ p) => {
-                const img = window.optimizeBoseImageUrl(p.images ? p.images[0] : 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', 100);
+                const img = window.optimizeBoseImageUrl((p.images && p.images.length > 0 && p.images[0]) ? p.images[0] : 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', 100);
                 const title = window.escapeBoseHTML(p.title || '');
                 const price = Math.round(p.basePrice || p.price || 0);
                 return `
@@ -1902,7 +1925,7 @@
                     filtered.forEach((/** @type {any} */ p) => {
                         let targetUrl = (p.id === 'toort-custom-master' || p.slug === 'toort-custom-master') ? 'cake-builder.html' : 
                                         ((p.id === 'flowers-master' || p.slug === 'flowers-master') ? 'flower-builder.html' : `product.html?slug=${encodeURIComponent(p.slug)}`);
-                        const safeImg = window.optimizeBoseImageUrl(p.images ? p.images[0] : 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', 120);
+                        const safeImg = window.optimizeBoseImageUrl((p.images && p.images.length > 0 && p.images[0]) ? p.images[0] : 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', 120);
                         const safeTitle = window.escapeBoseHTML(p.title);
                         const safeFlavor = window.escapeBoseHTML(p.flavorName || '');
                         html += `
