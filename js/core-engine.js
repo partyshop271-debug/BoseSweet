@@ -20,6 +20,75 @@
     forceScrollToTop();
 
     /**
+     * 👑👑 [مرحلة جديدة - تحميل التطبيق]: ربط manifest.json فعلياً بكل صفحة في
+     * الموقع + تسجيل Service Worker. الملف كان موجود على السيرفر من زمان لكن
+     * ملحقش بأي صفحة HTML أبداً (مفيش أي <link rel="manifest"> في أي مكان)،
+     * فمتصفح Chrome/Android مكانش يقدر يعتبر الموقع "قابل للتثبيت" خالص - يعني
+     * زرار "ثبّتي التطبيق" في أي نافذة كان هيفضل شكلي بس بدون فايدة حقيقية.
+     * الحقن هنا بيتم فوراً من غير أي تأخير (قبل حتى تحميل بيانات المتجر) عشان
+     * يطبّق على كل صفحة في الموقع تلقائياً من نفس المكان، من غير ما نحتاج نعدّل
+     * الـ <head> بتاع كل صفحة HTML على حدة يدوياً (أكتر من 20 صفحة).
+     */
+    (function ensurePwaInstallability() {
+        if (!document.querySelector('link[rel="manifest"]')) {
+            const manifestLink = document.createElement('link');
+            manifestLink.rel = 'manifest';
+            manifestLink.href = '/manifest.json';
+            document.head.appendChild(manifestLink);
+        }
+        if (!document.querySelector('meta[name="theme-color"]')) {
+            const themeMeta = document.createElement('meta');
+            themeMeta.name = 'theme-color';
+            themeMeta.content = '#FF91A4';
+            document.head.appendChild(themeMeta);
+        }
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').catch(() => { /* فشل صامت - متأثرش على تجربة العميل العادية */ });
+            });
+        }
+    })();
+
+    /**
+     * 👑👑 [مرحلة جديدة - مشترك بين النافذة والبلوك الكبير]: نلقط حدث تثبيت الـ PWA
+     * مرة واحدة بس هنا فوق (بدري قبل أي حاجة تانية)، ونخزنه في متغير مشترك على
+     * مستوى الملف كله، عشان أي زرار تحميل تطبيق في أي مكان بالموقع (نافذة الترحيب
+     * أو البلوك الكبير في الرئيسية) يقدر يستخدم نفس التقاطة الحدث دي بالظبط -
+     * الحدث ده بيتفعّل مرة واحدة بس من المتصفح، فلازم نلقطه من نقطة مركزية وحيدة.
+     */
+    /** @type {any} */ let boseDeferredInstallPrompt = null;
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        boseDeferredInstallPrompt = e;
+    });
+    window.addEventListener('appinstalled', () => {
+        localStorage.setItem('bose_app_installed_flag', 'true');
+        const popup = document.getElementById('bose-app-install-popup-overlay');
+        if (popup) popup.remove();
+    });
+
+    /**
+     * دالة موحّدة لتفعيل تثبيت التطبيق - تُستخدم من نافذة الترحيب وأزرار البلوك
+     * الكبير في الرئيسية على حد سواء.
+     * ⚠️ [TODO لصاحبة المتجر]: لحد ما يبقى فيه تطبيق حقيقي منشور على Google Play
+     * و App Store، الزراير دي بتفعّل تثبيت الـ PWA بدل ما تفتح صفحة متجر حقيقية.
+     * لما يبقى فيه روابط متجر حقيقية، استبدلي محتوى الدالة دي بفتح الرابط المناسب
+     * حسب نظام تشغيل الجهاز (iOS → App Store link، Android → Google Play link).
+     */
+    window.triggerBoseAppInstall = async function() {
+        if (boseDeferredInstallPrompt) {
+            boseDeferredInstallPrompt.prompt();
+            const choice = await boseDeferredInstallPrompt.userChoice;
+            boseDeferredInstallPrompt = null;
+            if (choice && choice.outcome === 'accepted') {
+                localStorage.setItem('bose_app_installed_flag', 'true');
+            }
+        } else if (window.showBoseGlobalToast) {
+            window.showBoseGlobalToast('لتثبيت التطبيق، افتحي قائمة المتصفح واختاري "تثبيت التطبيق" أو "إضافة إلى الشاشة الرئيسية"');
+        }
+    };
+
+    /**
      * 👑 [إصلاح جذري - كارثة الأحجام]: خريطة أسماء الأحجام الموحدة لكل الموقع (مطابقة
      * تماماً لنفس الأسماء المستخدمة في product.html/category.html). كانت هذه الأسماء
      * مكررة محلياً في أكتر من ملف، وأهم من كده: كروت المنتجات في الصفحة الرئيسية
@@ -175,6 +244,8 @@
         setupOurProductsShowMore();
         injectSimulatorsPreviewData();
         setupPrideCountersAnimation();
+        setupAppInstallPopup();
+        setupAppPromoBlockButtons();
         
         requestAnimationFrame(() => {
             requestAnimationFrame(() => {
@@ -1374,6 +1445,101 @@
         if (data.seo && data.seo.title && document.title !== data.seo.title) {
             document.title = data.seo.title;
         }
+    }
+
+    /**
+     * 👑👑 [مرحلة جديدة - تحميل التطبيق]: نافذة ترحيبية بهوية حلويات بوسي بالكامل
+     * (وردي/أبيض/ذهبي، خط Cairo) بتظهر للعميل بعد ثواني من دخوله الموقع لأول مرة،
+     * بتستخدم شخصية الشيف بتاعة اللوجو (مش أي ماسكوت جاهز)، وبتدعو العميل يثبّت
+     * تطبيق الويب (PWA) بتاعنا على شاشته الرئيسية زي أي تطبيق عادي.
+     *
+     * ⚠️ [مهم للمطوّر/صاحبة المتجر]: الرابط ده أدناه بس Placeholder مؤقت بيشاور على
+     * اللوجو العادي - لازم يترفع ملف "assets/bose-mascot-character.png" (اللي جوه
+     * حزمة التسليم دي) على Cloudinary زي باقي الصور، وبعدين نستبدل قيمة الثابت
+     * MASCOT_IMAGE_URL تحت برابط الصورة الجديد.
+     */
+    const BOSE_APP_MASCOT_IMAGE_URL = "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"; // TODO: استبدلي بالرابط بعد رفع bose-mascot-character.png
+
+    function setupAppInstallPopup() {
+        // لو التطبيق شغال بالفعل كـ PWA مثبّت (standalone)، العميل مثبّته أصلاً - متعرضيش عليه يثبّته تاني
+        const alreadyInstalled = window.matchMedia && window.matchMedia('(display-mode: standalone)').matches;
+        if (alreadyInstalled) return;
+        if (localStorage.getItem('bose_app_installed_flag') === 'true') return;
+
+        // 👑 [تعديل بناءً على طلب صاحبة المتجر]: شلنا فكرة "متتكررش قبل 14 يوم" نهائياً.
+        // النافذة دلوقتي بتظهر في كل *دخول جديد* للموقع (فتح تبويب/متصفح جديد) طول
+        // ما العميل لسه ما ثبّتش التطبيق فعلياً - مفيش أي تأجيل زمني تاني. بنستخدم
+        // sessionStorage (مش localStorage) عشان نمنع بس ظهورها المزعج في كل صفحة
+        // تانية العميل يدخلها *جوه نفس الجلسة/التبويب الحالي* بعد ما قفلها فعلاً -
+        // لكن أي دخول جديد للموقع (تبويب جديد/فتح المتصفح تاني) هيوريها له تاني من الأول.
+        if (sessionStorage.getItem('bose_app_popup_dismissed_this_session') === 'true') return;
+
+        const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+
+        const closePopup = () => {
+            const popup = document.getElementById('bose-app-install-popup-overlay');
+            if (popup) popup.remove();
+            sessionStorage.setItem('bose_app_popup_dismissed_this_session', 'true');
+        };
+
+        const showPopup = () => {
+            // ضمان أخير: لو فتحت صفحة تانية في نفس الجلسة والنافذة ظهرت فعلاً قبل كده، منكررهاش
+            if (document.getElementById('bose-app-install-popup-overlay')) return;
+
+            const ctaHtml = isIOS
+                ? `<div class="bose-app-install-ios-note">
+                        <i class="fa-solid fa-arrow-up-from-bracket"></i>
+                        من متصفح Safari: اضغطي زر "المشاركة" تحت، واختاري <strong>"إضافة إلى الشاشة الرئيسية"</strong>
+                   </div>`
+                : `<button type="button" id="bose-app-install-cta-btn" class="bose-app-install-cta-btn">
+                        <i class="fa-solid fa-download"></i> ثبّتي التطبيق الآن
+                   </button>`;
+
+            const popupHtml = `
+                <div id="bose-app-install-popup-overlay" class="bose-app-install-popup-overlay">
+                    <div class="bose-app-install-popup-card" role="dialog" aria-modal="true" aria-label="تثبيت تطبيق حلويات بوسي">
+                        <button type="button" class="bose-app-install-close-btn" id="bose-app-install-close-btn" aria-label="إغلاق"><i class="fa-solid fa-xmark"></i></button>
+                        <img src="${BOSE_APP_MASCOT_IMAGE_URL}" alt="شيف حلويات بوسي" class="bose-app-install-mascot-img" width="180" height="180" loading="lazy" />
+                        <h3 class="bose-app-install-title">حمّلي تطبيقنا! 🎀</h3>
+                        <p class="bose-app-install-desc">اطلبي حلوياتك المفضلة في ثواني، واستلمي عروضنا الحصرية أول بأول من غير ما تفوتك حاجة</p>
+                        ${ctaHtml}
+                        <button type="button" class="bose-app-install-secondary-link" id="bose-app-install-later-btn">مش دلوقتي</button>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', popupHtml);
+
+            const overlay = document.getElementById('bose-app-install-popup-overlay');
+            const closeBtn = document.getElementById('bose-app-install-close-btn');
+            const laterBtn = document.getElementById('bose-app-install-later-btn');
+            const ctaBtn = document.getElementById('bose-app-install-cta-btn');
+
+            if (closeBtn) closeBtn.addEventListener('click', closePopup);
+            if (laterBtn) laterBtn.addEventListener('click', closePopup);
+            if (overlay) overlay.addEventListener('click', (e) => { if (e.target === overlay) closePopup(); });
+            if (ctaBtn) {
+                ctaBtn.addEventListener('click', async () => {
+                    await window.triggerBoseAppInstall();
+                    closePopup();
+                });
+            }
+        };
+
+        // نستنى شوية ثواني بعد التحميل الكامل عشان النافذة متبانش فجأة لحظة ما العميل
+        // لسه بيحمل الصفحة - إحساس أهدى واحترافي أكتر من ظهور فوري صادم
+        setTimeout(showPopup, 3500);
+    }
+
+    /**
+     * 👑 [مرحلة جديدة - البلوك الكبير]: تفعيل زراير App Store / Google Play في
+     * البلوك البصري الكبير بالصفحة الرئيسية - نفس الدالة الموحدة المستخدمة في
+     * نافذة الترحيب بالظبط.
+     */
+    function setupAppPromoBlockButtons() {
+        const iosBtn = document.getElementById('app-promo-appstore-btn');
+        const androidBtn = document.getElementById('app-promo-googleplay-btn');
+        if (iosBtn) iosBtn.addEventListener('click', () => window.triggerBoseAppInstall());
+        if (androidBtn) androidBtn.addEventListener('click', () => window.triggerBoseAppInstall());
     }
 
     function buildAndInjectGlobalComponents() {
