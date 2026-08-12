@@ -179,7 +179,7 @@ function renderBoseCartPage(storeData) {
                     if (cd.persons && parseInt(cd.persons, 10) > 0) specs.push(`<span><strong>عدد الأفراد:</strong> ${parseInt(cd.persons, 10)} فرد</span>`);
                     if (cd.printingType && cd.printingType !== "none") specs.push(`<span><strong>الطباعة:</strong> ${cd.printingType === 'edible' ? 'صورة صالحة للأكل' : 'صورة مجسمة غير صالحة للأكل'}</span>`);
                     if (cd.customMessage && cd.customMessage.trim() !== "") specs.push(`<span><strong>الرسالة المكتوبة:</strong> "${esc(cd.customMessage.trim())}"</span>`);
-                    if (cd.allergyNote && cd.allergyNote.trim() !== "") specs.push(`<span style="color:#D4AF37;"><strong>ملاحظة الحساسية:</strong> ${esc(cd.allergyNote.trim())}</span>`);
+                    if (cd.allergyNote && cd.allergyNote.trim() !== "") specs.push(`<span style="color:#FF91A4;"><strong>ملاحظة الحساسية:</strong> ${esc(cd.allergyNote.trim())}</span>`);
                 }
                 
                 if (isFlowerBespoke) {
