@@ -29,6 +29,13 @@
 
         container.innerHTML = items.map((item, idx) => `
             <div class="adm-curated-item" data-idx="${idx}">
+                ${opts.imageField ? `
+                <label class="adm-image-upload-btn" style="width:40px; height:40px; padding:0; overflow:hidden; flex-shrink:0;" title="صورة الخيار">
+                    <input type="file" accept="image/*" data-action="upload-image" hidden>
+                    ${item.image
+                        ? `<img src="${e(item.image)}" alt="" style="width:100%; height:100%; object-fit:cover;">`
+                        : `<i class="fa-solid fa-camera"></i>`}
+                </label>` : ""}
                 <input type="text" class="adm-input" style="flex:1;" data-field="name" value="${e(item.name || "")}" placeholder="الاسم">
                 ${opts.priceField ? `<input type="number" class="adm-input" style="width:100px;" data-field="price" value="${item.price ?? 0}" placeholder="السعر">` : ""}
                 ${opts.extraField ? `<input type="number" class="adm-input" style="width:130px;" data-field="${opts.extraField}" value="${item[opts.extraField] ?? 0}" placeholder="${opts.extraLabel}">` : ""}
@@ -51,6 +58,26 @@
                 renderNamedList(containerId, items, opts);
             });
         });
+        if (opts.imageField) {
+            container.querySelectorAll('[data-action="upload-image"]').forEach((input) => {
+                input.addEventListener("change", async () => {
+                    const file = input.files && input.files[0];
+                    if (!file) return;
+                    const idx = Number(input.closest("[data-idx]").getAttribute("data-idx"));
+                    const label = input.closest("label");
+                    const original = label.innerHTML;
+                    label.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+                    try {
+                        const url = await window.BoseAdminUI.uploadImageToCloudinary(file);
+                        items[idx].image = url;
+                        renderNamedList(containerId, items, opts);
+                    } catch (err) {
+                        window.BoseAdminUI.showToast("تعذر رفع الصورة", "error");
+                        label.innerHTML = original;
+                    }
+                });
+            });
+        }
     }
 
     function wireAddButton(buttonId, containerId, items, opts) {
@@ -142,19 +169,19 @@
         document.getElementById("cake-text-rectangleUpgrade").value = cakeBuilder.images.rectangleUpgrade || "";
 
         // القوائم
-        renderNamedList("list-cake-types", cakeBuilder.cakeTypes, {});
+        renderNamedList("list-cake-types", cakeBuilder.cakeTypes, { imageField: true });
         wireAddButton("add-cake-type-btn", "list-cake-types", cakeBuilder.cakeTypes, {});
 
-        renderNamedList("list-printing-options", cakeBuilder.printingOptions, { priceField: true });
+        renderNamedList("list-printing-options", cakeBuilder.printingOptions, { priceField: true, imageField: true });
         wireAddButton("add-printing-option-btn", "list-printing-options", cakeBuilder.printingOptions, { priceField: true });
 
-        renderNamedList("list-shapes", cakeBuilder.shapes, { extraField: "minimumPersons", extraLabel: "أقل عدد أفراد" });
+        renderNamedList("list-shapes", cakeBuilder.shapes, { extraField: "minimumPersons", extraLabel: "أقل عدد أفراد", imageField: true });
         wireAddButton("add-shape-btn", "list-shapes", cakeBuilder.shapes, { extraField: "minimumPersons", extraLabel: "أقل عدد أفراد" });
 
-        renderNamedList("list-flower-types", flowerBuilder.flowerTypes, {});
+        renderNamedList("list-flower-types", flowerBuilder.flowerTypes, { imageField: true });
         wireAddButton("add-flower-type-btn", "list-flower-types", flowerBuilder.flowerTypes, {});
 
-        renderNamedList("list-wrapping-types", flowerBuilder.wrappingTypes, { priceField: true });
+        renderNamedList("list-wrapping-types", flowerBuilder.wrappingTypes, { priceField: true, imageField: true });
         wireAddButton("add-wrapping-type-btn", "list-wrapping-types", flowerBuilder.wrappingTypes, { priceField: true });
 
         renderNamedList("list-chocolate-types", flowerBuilder.chocolateTypes, { priceField: true });
