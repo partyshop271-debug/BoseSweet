@@ -260,7 +260,7 @@
         const cloudName = window.BoseStoreData?.store?.cloudinaryCloudName || "dyx4w0dr1";
         const formData = new FormData();
         formData.append("file", compressedBlob, "bose_reference.jpg");
-        formData.append("upload_preset", "ml_default");
+        formData.append("upload_preset", "gct8i28h");
 
         const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
             method: "POST",
