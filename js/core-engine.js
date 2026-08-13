@@ -319,7 +319,8 @@
         }
 
         const categoriesSection = document.getElementById('categories-slider-section') || document.getElementById('categories-section') || document.querySelector('[id*="categories"]');
-        if (categoriesSection && data.homepage.categoriesSlider) {
+        const liveCategoriesList = window.getBoseCategoriesList();
+        if (categoriesSection && liveCategoriesList.length) {
             const titleEl = document.getElementById('categories-section-title') || categoriesSection.querySelector('.section-title') || categoriesSection.querySelector('h2');
             const descEl = document.getElementById('categories-section-subtitle') || categoriesSection.querySelector('.bose-section-subtitle');
             
@@ -328,7 +329,7 @@
             
             const track = document.getElementById('categories-track') || categoriesSection.querySelector('.categories-track-slider') || categoriesSection.querySelector('[id*="track"]');
             if (track) {
-                track.innerHTML = data.homepage.categoriesSlider.map(/** @param {Object} cat */ (cat) => `
+                track.innerHTML = liveCategoriesList.map(/** @param {Object} cat */ (cat) => `
                     <div class="category-card-unified" onclick="window.location.href='category.html?category=${encodeURIComponent(cat.id)}'">
                         <img src="${window.optimizeBoseImageUrl(cat.image, 450)}" alt="${window.escapeBoseHTML(cat.title)}" class="category-card-img" width="180" height="180" loading="lazy" />
                         <div class="category-card-name">${window.escapeBoseHTML(cat.title)}</div>
@@ -1244,6 +1245,34 @@
         const transform = `f_auto,q_auto:good,w_${targetWidth},c_limit`;
         if (url.includes("/upload/f_auto") || url.includes("/upload/q_auto")) return url;
         return url.replace("/upload/", `/upload/${transform}/`);
+    };
+
+    /**
+     * 🛡️ [إصلاح - مصدر واحد حي لصور الفئات]: بترجع قايمة الفئات جاهزة للعرض
+     * (id/title/image/builderType) مبنية مباشرة من جدول categories الحي
+     * (data.categories) بدل الاعتماد على نسخة homepage.categoriesSlider
+     * المحفوظة (snapshot) اللي كانت بتفضل قديمة لحد ما حد يفتح صفحة الهوم
+     * بيدج في لوحة التحكم ويدوس حفظ. النتيجة: أي صورة/عنوان فئة بيتغيّر من
+     * admin/categories.html بيظهر فوراً في الرئيسية والمنيو من غير أي خطوة
+     * تانية. بيرجع للـ snapshot القديم بس لو جدول categories وصل فاضي فعلاً
+     * (حماية من كسر الصفحة، مش السلوك المتوقع في الاستخدام العادي).
+     * @returns {Array<Object>}
+     */
+    window.getBoseCategoriesList = function() {
+        const data = window.BoseStoreData;
+        if (!data) return [];
+        if (Array.isArray(data.categories) && data.categories.length) {
+            return data.categories
+                .slice()
+                .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
+                .map((c) => ({
+                    id: c.id,
+                    title: c.title,
+                    image: c.image || "",
+                    builderType: c.builder_type || "standard",
+                }));
+        }
+        return (data.homepage && data.homepage.categoriesSlider) || [];
     };
 
     /**

@@ -106,6 +106,10 @@
             // لوحة التحكم. دلوقتي بيوصل للواجهة عشان صفحة المنتج تقدر تغيّر الوصف تلقائياً
             // مع تغيير الحجم المختار.
             sizeDescriptions: p.size_descriptions || {},
+            // 🖼️ [صور الأحجام المتعددة]: خريطة اختيارية { triangle: "url", medium: "url", ... }
+            // بتديك صورة مختلفة لكل حجم بدل ما كل الأحجام تشترك في نفس صورة images[0].
+            // لو الحجم مالوش صورة مخصصة، صفحة المنتج بترجع تلقائياً للصورة الافتراضية.
+            sizeImages: p.size_images || {},
             builderType: p.builder_type,
             customBuilderUrl: p.custom_builder_url,
             searchTerms: p.search_terms || [],
