@@ -868,6 +868,7 @@
 
 @media (max-width: 550px) {
     .products-grid, .bose-products-grid { grid-template-columns: 1fr !important; }
+    #our-products-grid.products-grid { grid-template-columns: 1fr !important; }
 }
 
 /* [إصلاح تعارض]: #most-selling-grid و #new-arrivals-grid بالتحديد لازم يبقوا
@@ -906,6 +907,13 @@
 }
 
 @media (max-width: 767px) {
+    /* 🛡️ [إصلاح أبعاد - تعارض أولوية]: قاعدة #our-products-grid.products-grid
+       (بمعرّف ID) عندها أولوية (specificity) أعلى من القاعدة العامة
+       ".products-grid { grid-template-columns: 1fr }" اللي عند 550px فوق -
+       يعني على الشاشات الضيقة جداً (أقل من 550px، زي iPhone SE) كان شبكة
+       "كل المنتجات" بتفضل عمودين رغم إن القاعدة العامة قصدها عمود واحد بس
+       على الشاشات الضيقة دي. بنضيف هنا قاعدة صريحة بنفس الأولوية (ID) عشان
+       فعلياً تنزل لعمود واحد تحت 550px زي باقي شبكات المنتجات بالظبط. */
     #our-products-grid.products-grid {
         display: grid !important;
         grid-template-columns: repeat(2, 1fr) !important; 
@@ -960,9 +968,19 @@
     transform: translateY(-4px);
 }
 
+/* 🛡️ [إصلاح أبعاد]: كانت height:220px ثابت موجود جنب aspect-ratio:1/1 في نفس
+   القاعدة - وحسب سلوك CSS القياسي، لو العنصر عنده عرض وارتفاع محددين الاثنين
+   (width:100% + height:220px)، خاصية aspect-ratio بتتجاهَل تماماً لأن الصندوق
+   بقى له أبعاد محددة بالفعل في الاتجاهين. يعني الصورة عمرها ما كانت مربعة
+   فعلياً زي ما كان مقصود - كانت بتاخد عرض العمود (اللي بيتغير حسب الشبكة:
+   عمودين على الموبايل ≈ 170-180px، أو كارت سلايدر أفقي 260px) مع ارتفاع ثابت
+   220px دايماً - يعني في شبكة العمودين على الموبايل كانت الصورة تقريباً مستطيلة
+   طولها 1.26 ضعف عرضها تقريباً، مش مربع، وده كان بيخلي بعض صور المنتجات (خصوصاً
+   التورت المستديرة) تتقص بشكل غير متوازن مع object-fit:cover. الحل: شلنا الـ
+   height الثابت وسيبنا aspect-ratio يتحكم فعلياً، فالصورة بقت مربعة حقيقية أياً
+   كان عرض الكارت في أي شبكة أو حجم شاشة. */
 .product-card-img {
     width: 100%;
-    height: 220px;
     aspect-ratio: 1 / 1;
     border-radius: 20px;
     display: block;
@@ -970,9 +988,7 @@
     object-fit: cover;
 }
 
-@media (min-width: 768px) { .product-card-img { height: 260px; } }
-@media (min-width: 1024px) { 
-    .product-card-img { height: 320px; } 
+@media (min-width: 1024px) {
     #most-selling-section .products-grid .product-card-unified,
     #new-arrivals-section .products-grid .product-card-unified {
         width: 100% !important;
@@ -1020,7 +1036,7 @@
     background-color: var(--bose-white);
     border: var(--bose-border-pink);
     color: var(--bose-black);
-    width: 32px; height: 32px;
+    width: 38px; height: 38px; /* 🛡️ [إصلاح مساحة اللمس]: كانت 32px - أقل من الحد الأدنى المتعارف عليه عالمياً لدقة اللمس على الموبايل (44px)، وده بيخلي زرار +/- الكمية في كارت المنتج الصغير سهل الضغط غلط جنب اللي جنبه خصوصاً في شبكة العمودين على الموبايل. رفعناه لـ38px (أقرب ما يكون للحد الموصى بيه من غير ما يكسر تناسق حجم الكارت الحالي). */
     border-radius: 50%;
     cursor: pointer;
     font-weight: 700;
@@ -1674,7 +1690,7 @@
 }
 
 .bose-app-promo-inner {
-    max-width: 1180px;
+    max-width: 1200px; /* 🛡️ [إصلاح أبعاد]: كان 1180px، أقل بـ20px من عرض كل باقي حاويات الموقع (1200px) - ده كان بيخلي محتوى القسم ده تحديداً مش متطابق أفقياً مع الأقسام اللي فوقه وتحته على شاشات الديسكتوب. */
     margin: 0 auto;
     display: flex;
     flex-direction: column-reverse;
