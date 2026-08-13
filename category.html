@@ -215,6 +215,19 @@
             gap: 12px;
             margin-bottom: 35px;
             direction: rtl;
+            /* 🛡️🛡️ [إصلاح UX حرج]: شريط الأحجام كان بيفضل مكانه فوق الصفحة وكروت
+               المنتجات بتتحرك تحت السكرول - فالعميلة كانت مضطرة تسكرول لفوق كل
+               مرة تغيّر الحجم، وبعدين تاني لتحت تشوف أثر التغيير على الكروت.
+               دلوقتي الشريط ثابت (Sticky) أعلى الشاشة طول وقت التصفح - قدام
+               عينها دايماً من غير أي سكرول إضافي. */
+            position: sticky;
+            top: 8px;
+            z-index: 15;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            padding: 10px 8px;
+            border-radius: 16px;
         }
 
         .bose-filter-tab-pill {
@@ -294,13 +307,22 @@
         }
 
         .product-card-price {
-            color: var(--bose-pink, #FF91A4);
-            font-weight: 700;
-            font-size: 1.2rem;
+            /* 🛡️ [تحسين وضوح]: السعر بقى جوه بوردر وخلفية مميزة، وخط أكبر وأوضح
+               بدل ما يكون مجرد نص عادي جنب زرار الإضافة. */
+            display: inline-flex;
+            flex-direction: column;
+            color: var(--bose-pink-text, var(--bose-pink, #FF91A4));
+            font-weight: 800;
+            font-size: 1.25rem;
+            border: 2px solid var(--bose-pink, #FF91A4);
+            background: rgba(255, 145, 164, 0.06);
+            border-radius: 12px;
+            padding: 6px 14px;
+            line-height: 1.3;
         }
 
         .bose-internal-add {
-            background: var(--bose-pink, #FF91A4);
+            background: var(--bose-pink-text, var(--bose-pink, #FF91A4));
             color: #FFFFFF;
             border: none;
             padding: 10px 20px;
@@ -308,6 +330,9 @@
             cursor: pointer;
             font-size: 0.85rem;
             font-weight: 700;
+            display: inline-block;
+            text-decoration: none;
+            white-space: nowrap;
             transition: background 0.2s, transform 0.1s;
         }
 
@@ -583,21 +608,23 @@
                         savingsHtml = `<span class="offer-savings-note">وفرت ${Math.round(savingsAmount)} ${globalStoreCurrency}</span>`;
                     }
 
-                    // 📐 الالتزام بالترتيب الهندسي الصارم: يمين (+) وسط (العدد) يسار (-) بالتوافق مع اتجاه RTL لصفحة المتجر
+                    // 🛡️🛡️ [إصلاح جذري - فقدان قيمة صفحة المنتج]: الكارت هنا كان بيسمح
+                    // بإتمام الشراء بالكامل (عداد + إضافة للسلة) من غير ما العميلة تدخل
+                    // صفحة المنتج (product.html) خالص - يعني ممكن متشوفش المراجعات ولا
+                    // المنتجات المقترحة ولا وصف الحجم التفصيلي أبداً. دلوقتي الكارت هنا
+                    // للتصفح والمقارنة السريعة بس (صورة + سعر حسب الحجم)، وزرار واحد
+                    // واضح بيودّي دايماً لصفحة المنتج حيث يتم الشراء الفعلي.
+                    const sizeImg = (product.sizeImages && defaultSize) ? product.sizeImages[defaultSize] : null;
+                    const cardImageUrl = sizeImg || product.image || (product.images ? product.images[0] : '');
+
                     cardElement.innerHTML = `
                         ${discountBadgeHtml}
                         <a href="product.html?slug=${encodeURIComponent(product.slug)}" class="product-card-link" aria-label="عرض تفاصيل منتج ${safeTitle}">
-                            <img class="product-card-img" src="${window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(product.image || (product.images ? product.images[0] : ''), 450) : (product.image || (product.images ? product.images[0] : ''))}" alt="${safeTitle}" loading="lazy">
+                            <img class="product-card-img" data-size-img="1" src="${window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(cardImageUrl, 450) : cardImageUrl}" alt="${safeTitle}" loading="lazy">
                             <h3 class="product-card-title">${safeTitle}</h3>
                             <span class="product-card-flavor-name">${safeFlavor}</span>
                             <p class="product-card-desc">${safeDesc}</p>
                         </a>
-                        
-                        <div class="product-card-qty-row">
-                            <button class="bose-internal-qty-btn bose-internal-plus" type="button" aria-label="زيادة الكمية">+</button>
-                            <input class="bose-internal-input" type="number" value="1" min="1" readonly aria-label="الكمية الحالية">
-                            <button class="bose-internal-qty-btn bose-internal-minus" type="button" aria-label="تقليل الكمية">-</button>
-                        </div>
 
                         <div class="product-card-bottom-row">
                             <div class="product-card-price" data-base-unit-price="${calculatedPrice}">
@@ -605,72 +632,12 @@
                                 <span class="current-price-value">${calculatedPrice} ${globalStoreCurrency}</span>
                                 ${savingsHtml}
                             </div>
-                            <button class="bose-internal-add" type="button" aria-label="إضافة منتج ${safeTitle} لسلة المشتريات">إضافة للسلة</button>
+                            <a href="product.html?slug=${encodeURIComponent(product.slug)}" class="bose-internal-add" aria-label="عرض تفاصيل وتقييمات منتج ${safeTitle}">عرض التفاصيل</a>
                         </div>
                     `;
 
-                    // ربط أحداث العداد بشكل مستقل وآمن لراحة العميل النفسية والبدنية
-                    const plusBtn = cardElement.querySelector('.bose-internal-plus');
-                    const minusBtn = cardElement.querySelector('.bose-internal-minus');
-                    const inputField = cardElement.querySelector('.bose-internal-input');
-                    const addBtn = cardElement.querySelector('.bose-internal-add');
-                    const priceDisplay = cardElement.querySelector('.product-card-price');
-
-                    plusBtn.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        let currentVal = parseInt(inputField.value, 10) || 1;
-                        inputField.value = currentVal + 1;
-                        updateCardPriceDisplay(priceDisplay, inputField.value);
-                    });
-
-                    minusBtn.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        let currentVal = parseInt(inputField.value, 10) || 1;
-                        if (currentVal > 1) {
-                            inputField.value = currentVal - 1;
-                            updateCardPriceDisplay(priceDisplay, inputField.value);
-                        }
-                    });
-
-                    addBtn.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        const finalQty = parseInt(inputField.value, 10) || 1;
-                        const currentSize = (categoryId !== "taswaq-cupcake" && product.prices) ? activeSizeTab : (product.defaultSize || "triangle");
-                        
-                        if (typeof window.createCartItem === 'function') {
-                            const cartItem = window.createCartItem(product, {size: currentSize}, finalQty);
-                            if (cartItem) {
-                                let rawCart = localStorage.getItem('bose_cart');
-                                let cart = rawCart ? JSON.parse(rawCart) : [];
-                                
-                                const existingIndex = cart.findIndex(item => item.productSlug === product.slug && item.type === cartItem.type && item.customDetails.size === cartItem.customDetails.size);
-                                if (existingIndex > -1) {
-                                    cart[existingIndex].quantity += finalQty;
-                                } else {
-                                    cart.push(cartItem);
-                                }
-                                
-                                localStorage.setItem('bose_cart', JSON.stringify(cart));
-                                if (typeof window.updateGlobalCartCounter === 'function') {
-                                    window.updateGlobalCartCounter();
-                                }
-                                
-                                const originalText = addBtn.textContent;
-                                addBtn.textContent = "تمت الإضافة للسلة";
-                                addBtn.style.backgroundColor = "#111111";
-                                setTimeout(() => {
-                                    addBtn.textContent = originalText;
-                                    addBtn.style.backgroundColor = "var(--bose-pink)";
-                                    inputField.value = 1; 
-                                    updateCardPriceDisplay(priceDisplay, 1);
-                                }, 1500);
-                            }
-                        }
-                    });
-
                     // 👑 [إصلاح جذري - كل الكارت قابل للمس]
                     cardElement.addEventListener('click', function(e) {
-                        if (e.target.closest('.product-card-qty-row') || e.target.closest('.bose-internal-add')) return;
                         window.location.href = `product.html?slug=${encodeURIComponent(product.slug)}`;
                     });
 
@@ -698,15 +665,31 @@
                     if (!cardNode) return;
 
                     const priceDisplay = cardNode.querySelector('.product-card-price');
-                    const inputField = cardNode.querySelector('.bose-internal-input');
-                    
+
                     const currentSize = (categoryId !== "taswaq-cupcake" && product.prices) ? activeSizeTab : (product.defaultSize || "triangle");
-                    
+
                     const newUnitPrice = typeof window.calculateProductFinalPrice === 'function' ? 
                         window.calculateProductFinalPrice(product, {size: currentSize}) : (product.price || 0);
                     
                     priceDisplay.setAttribute('data-base-unit-price', newUnitPrice);
-                    updateCardPriceDisplay(priceDisplay, inputField.value);
+                    updateCardPriceDisplay(priceDisplay, 1);
+
+                    // 🛡️🛡️ [إصلاح جذري - الصورة مش بتتغيّر مع الحجم]: كانت الصورة هنا ثابتة
+                    // دايماً حتى لو المنتج عنده صورة مختلفة مسجلة لكل حجم (product.sizeImages
+                    // - نفس البيانات اللي صفحة المنتج بتستخدمها بالفعل). دلوقتي بتتبدّل فوراً
+                    // مع أي تبديل تبويب حجم، بدون ما تحتاج العميلة تفتح صفحة المنتج لتشوف الفرق.
+                    const imgNode = cardNode.querySelector('.product-card-img[data-size-img]');
+                    if (imgNode && product.sizeImages && product.sizeImages[currentSize]) {
+                        const newImgUrl = product.sizeImages[currentSize];
+                        const optimizedUrl = window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(newImgUrl, 450) : newImgUrl;
+                        if (!imgNode.src.includes(encodeURI(newImgUrl)) && imgNode.getAttribute('src') !== optimizedUrl) {
+                            imgNode.style.opacity = '0.4';
+                            setTimeout(() => {
+                                imgNode.src = optimizedUrl;
+                                imgNode.style.opacity = '1';
+                            }, 120);
+                        }
+                    }
                 });
             }
 
