@@ -142,6 +142,12 @@
 
     const SIZE_KEYS = ["triangle", "medium", "large"];
     const SIZE_LABELS = { triangle: "مثلث", medium: "طاجن", large: "حجم عائلي" };
+
+    /** بطاقة معاينة صغيرة لصورة حجم واحد + زرار حذف، أو فاضية لو مفيش صورة مرفوعة له */
+    function sizeImageThumbHTML(key, url) {
+        if (!url) return "";
+        return `<div class="adm-image-thumb-wrap"><img src="${url}" alt=""><button type="button" class="adm-image-remove-btn" data-remove-size-image="${key}"><i class="fa-solid fa-xmark"></i></button></div>`;
+    }
     const BUILDER_TYPES = [
         { value: "standard", label: "منتج عادي" },
         { value: "cake-customizer", label: "محاكي التورت" },
@@ -154,6 +160,8 @@
         let images = isEdit ? [...(product.images || [])] : [];
         const prices = isEdit ? { ...(product.prices || {}) } : {};
         const sizeDescriptions = isEdit ? { ...(product.size_descriptions || {}) } : {};
+        // 🖼️ [صور الأحجام المتعددة]: نسخة قابلة للتعديل من خريطة { sizeKey: imageUrl }
+        let sizeImages = isEdit ? { ...(product.size_images || {}) } : {};
         let faqs = isEdit ? (product.faqs || []).map((f) => ({ q: f.q || "", a: f.a || "" })) : [];
 
         const overlay = document.createElement("div");
@@ -284,6 +292,24 @@
                                 </div>
                                 <span class="adm-hint">لو عبّيت أكتر من حجم، العميل هيقدر يختار بينهم في صفحة المنتج. أول حجم متعبّى بيبقى الافتراضي.</span>
                             </div>
+
+                            <div class="adm-field">
+                                <label>صور الأحجام (اختياري - لو مفيش صورة مخصصة للحجم، هيتعرض له صورة المنتج الأساسية فوق)</label>
+                                <div class="adm-form-grid" style="grid-template-columns: repeat(3, 1fr);" id="pf-size-images-grid">
+                                    ${SIZE_KEYS.map((key) => `
+                                        <div class="adm-field" data-size-image-field="${key}">
+                                            <label>${SIZE_LABELS[key]}</label>
+                                            <div class="adm-images-grid" id="pf-size-image-preview-${key}">${sizeImageThumbHTML(key, sizeImages[key])}</div>
+                                            <label class="adm-image-upload-btn" for="pf-size-image-input-${key}" style="font-size: 12px; padding: 6px 10px;">
+                                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                                                <span>${sizeImages[key] ? "استبدال" : "إضافة صورة"}</span>
+                                            </label>
+                                            <input type="file" id="pf-size-image-input-${key}" accept="image/*" hidden>
+                                        </div>
+                                    `).join("")}
+                                </div>
+                                <span class="adm-hint">مفيدة للمنتج اللي شكله بيختلف فعلياً حسب الحجم (زي التورت أو البوكسات).</span>
+                            </div>
                         </div>
                     </details>
 
@@ -329,6 +355,45 @@
             });
         }
         refreshImagesGrid();
+
+        // 🖼️ [صور الأحجام المتعددة]: زرار رفع وحذف مستقل لكل حجم من الثلاثة.
+        function refreshSizeImagePreview(key) {
+            document.getElementById(`pf-size-image-preview-${key}`).innerHTML = sizeImageThumbHTML(key, sizeImages[key]);
+            const uploadLabelSpan = document.querySelector(`label[for="pf-size-image-input-${key}"] span`);
+            if (uploadLabelSpan) uploadLabelSpan.textContent = sizeImages[key] ? "استبدال" : "إضافة صورة";
+            const removeBtn = document.querySelector(`[data-remove-size-image="${key}"]`);
+            if (removeBtn) {
+                removeBtn.addEventListener("click", () => {
+                    delete sizeImages[key];
+                    refreshSizeImagePreview(key);
+                });
+            }
+        }
+        SIZE_KEYS.forEach((key) => {
+            refreshSizeImagePreview(key);
+            document.getElementById(`pf-size-image-input-${key}`).addEventListener("change", async (evt) => {
+                const file = (evt.target.files || [])[0];
+                if (!file) return;
+                const uploadLabelSpan = document.querySelector(`label[for="pf-size-image-input-${key}"] span`);
+                const originalLabel = uploadLabelSpan ? uploadLabelSpan.textContent : "";
+                if (uploadLabelSpan) uploadLabelSpan.textContent = "جاري الرفع...";
+                try {
+                    const url = await window.BoseAdminUI.uploadImageToCloudinary(file);
+                    if (url) {
+                        sizeImages[key] = url;
+                        refreshSizeImagePreview(key);
+                    } else {
+                        window.BoseAdminUI.showToast("تعذر رفع صورة الحجم", "error");
+                        if (uploadLabelSpan) uploadLabelSpan.textContent = originalLabel;
+                    }
+                } catch (err) {
+                    window.BoseAdminUI.showToast("تعذر رفع صورة الحجم", "error");
+                    if (uploadLabelSpan) uploadLabelSpan.textContent = originalLabel;
+                } finally {
+                    evt.target.value = "";
+                }
+            });
+        });
 
         function refreshFaqRows() {
             const wrap = document.getElementById("pf-faq-rows");
@@ -451,6 +516,11 @@
                 default_size: filledSizeKeys.length ? (filledSizeKeys.includes(product?.default_size) ? product.default_size : filledSizeKeys[0]) : null,
                 size_descriptions: filledSizeKeys.length
                     ? Object.fromEntries(Object.entries(sizeDescriptions).filter(([k]) => filledSizeKeys.includes(k)))
+                    : {},
+                // 🖼️ [صور الأحجام المتعددة]: بنحفظ بس صور الأحجام اللي لسه ليها سعر متعبّى
+                // (لو الأدمن مسح سعر حجم، صورته المخصصة بتتشال معاه تلقائياً بدل ما تفضل يتيمة).
+                size_images: filledSizeKeys.length
+                    ? Object.fromEntries(Object.entries(sizeImages).filter(([k]) => filledSizeKeys.includes(k)))
                     : {},
                 images,
             };
