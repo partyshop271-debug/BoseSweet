@@ -519,6 +519,32 @@
     margin-bottom: 12px !important;
 }
 
+/* 👑 [تطوير القائمة الجانبية]: قسم "تسوّقي حسب الفئة" القابل للطي */
+.sidebar-expand-toggle {
+    width: 100%;
+    background: none;
+    border: none;
+    border-bottom: 1px dashed rgba(255, 145, 164, 0.2) !important;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    font-family: 'Cairo', sans-serif;
+}
+.sidebar-expand-toggle .toggle-chevron {
+    font-size: 11px;
+    transition: transform 0.25s ease;
+    text-transform: none;
+    letter-spacing: 0;
+}
+.sidebar-expand-toggle.expanded .toggle-chevron {
+    transform: rotate(180deg);
+}
+.sidebar-categories-collapse {
+    max-height: 320px;
+    overflow-y: auto;
+}
+
 .sidebar-links-list {
     list-style: none !important;
     padding: 0 !important;
