@@ -141,7 +141,7 @@
     ];
 
     const SIZE_KEYS = ["triangle", "medium", "large"];
-    const SIZE_LABELS = { triangle: "مثلث فردي", medium: "وسط تشارك ممتع", large: "كبير جمعات فاخرة" };
+    const SIZE_LABELS = { triangle: "مثلث", medium: "طاجن", large: "حجم عائلي" };
     const BUILDER_TYPES = [
         { value: "standard", label: "منتج عادي" },
         { value: "cake-customizer", label: "محاكي التورت" },
