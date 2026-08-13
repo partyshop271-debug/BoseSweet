@@ -16,7 +16,88 @@ function startEngineLogic() {
     const btnWizardPrev = document.getElementById('btn-wizard-prev');
     
     let currentActiveStep = 1;
-    const totalWizardStepsCount = 4;
+    const totalWizardStepsCount = 5;
+
+    // 🧠 [محاكي أذكى - المرحلة 1]: توليفات مقترحة حسب "الإحساس" المطلوب (مزاج المناسبة).
+    // بتحدد اقتراح شكل+نكهة بس (اختيار، مش قفل) عشان تقلل حيرة العميل اللي مش عنده
+    // ذوق محدد، وتخليه يحس إن حد بيساعده يختار بدل ما يقف قدام فورم فاضي.
+    const MOOD_PRESETS = {
+        celebratory: { shape: "circle", flavor: "chocolate", note: "توليفة مقترحة للاحتفالات: شكل دائري كلاسيكي مع نكهة الشوكولاتة الغنية. تقدري تعدلي أي اختيار في الخطوات الجاية." },
+        romantic: { shape: "heart", flavor: "half-half", note: "توليفة مقترحة للمناسبات الرومانسية: شكل قلب مع مزيج الفانيليا والشوكولاتة نصف ونصف. تقدري تعدلي أي اختيار في الخطوات الجاية." },
+        elegant: { shape: "circle", flavor: "vanilla", note: "توليفة مقترحة للأناقة البسيطة: شكل دائري أنيق مع نكهة الفانيليا الكلاسيكية. تقدري تعدلي أي اختيار في الخطوات الجاية." }
+    };
+
+    const FLAVOR_SENSORY_NOTES = {
+        vanilla: "فانيليا فرنسية ناعمة بقوام طري وخفيف.",
+        chocolate: "شوكولاتة بلجيكية غنية بطعم عميق ومكثف.",
+        "half-half": "مزيج متوازن بين نعومة الفانيليا وغنى الشوكولاتة في كل قطعة."
+    };
+
+    const purposeRadios = document.querySelectorAll('input[name="cake_purpose"]');
+    const moodRadios = document.querySelectorAll('input[name="cake_mood"]');
+    const moodNoteBox = document.getElementById('mood-suggestion-note');
+    const moodNoteText = document.getElementById('mood-suggestion-text');
+    const flavorSensoryNote = document.getElementById('flavor-sensory-note');
+    const printingDesignerNote = document.getElementById('printing-designer-note');
+    const messageStepTitle = document.getElementById('message-step-title');
+    const messageStepSubtitle = document.getElementById('message-step-subtitle');
+    const messageFieldLabel = document.getElementById('message-field-label');
+    const textCakeMessage = document.getElementById('text-cake-message');
+    const btnShareDesign = document.getElementById('btn-share-design');
+
+    function applyMoodPreset(moodValue) {
+        const preset = MOOD_PRESETS[moodValue];
+        if (!preset) {
+            if (moodNoteBox) moodNoteBox.classList.remove('show');
+            return;
+        }
+        const shapeRadio = document.querySelector(`input[name="cake_shape"][value="${preset.shape}"]`);
+        const flavorRadio = document.querySelector(`input[name="cake_flavor"][value="${preset.flavor}"]`);
+        if (shapeRadio) shapeRadio.checked = true;
+        if (flavorRadio) flavorRadio.checked = true;
+        if (moodNoteText) moodNoteText.textContent = preset.note;
+        if (moodNoteBox) moodNoteBox.classList.add('show');
+        updateFlavorSensoryNote();
+    }
+
+    function updateFlavorSensoryNote() {
+        if (!flavorSensoryNote) return;
+        const selectedFlavor = document.querySelector('input[name="cake_flavor"]:checked')?.value || 'vanilla';
+        flavorSensoryNote.textContent = FLAVOR_SENSORY_NOTES[selectedFlavor] || "";
+    }
+
+    function updateGiftModeWording() {
+        const isGift = document.querySelector('input[name="cake_purpose"]:checked')?.value === 'gift';
+        if (messageStepTitle) messageStepTitle.textContent = isGift ? "اكتبي رسالة الإهداء اللي هتفرّح بيها الشخص ده:" : "لو تفضل نكتب جملة معينة على سطح التورتة:";
+        if (messageStepSubtitle) messageStepSubtitle.textContent = isGift ? "كلمة حلوة من قلبك هتتكتب على التورتة، وعرفنا لو فيه أي ملاحظات حساسية طعام." : "سجل لنا العبارة أو الكلمة اللي تحب تشوفها، وعرفنا لو عندك أي ملاحظات بخصوص حساسية الطعام لضمان سلامتك الكاملة.";
+        if (messageFieldLabel) messageFieldLabel.textContent = isGift ? "رسالة الإهداء:" : "تحب نكتب إيه على التورتة؟";
+        if (textCakeMessage) textCakeMessage.placeholder = isGift ? "مثال: كل سنة وانتِ طيبة يا أغلى صديقة" : "مثال: عيد ميلاد سعيد يا بوسي";
+    }
+
+    moodRadios.forEach((radio) => {
+        radio.addEventListener('change', () => applyMoodPreset(radio.value));
+    });
+    purposeRadios.forEach((radio) => {
+        radio.addEventListener('change', updateGiftModeWording);
+    });
+    document.querySelectorAll('input[name="cake_flavor"]').forEach((radio) => {
+        radio.addEventListener('change', updateFlavorSensoryNote);
+    });
+    updateFlavorSensoryNote();
+    updateGiftModeWording();
+
+    if (btnShareDesign) {
+        btnShareDesign.addEventListener('click', () => {
+            const currentPersons = parseInt(inputPersons.value, 10) || 4;
+            const selectedShape = document.querySelector('input[name="cake_shape"]:checked')?.value || 'circle';
+            const selectedFlavor = document.querySelector('input[name="cake_flavor"]:checked')?.value || 'vanilla';
+            const shapeLabelMap = { circle: 'دائرية', heart: 'قلب', square: 'مربعة', rectangle: 'مستطيلة' };
+            const flavorLabelMap = { vanilla: 'فانيليا', chocolate: 'شوكولاتة', 'half-half': 'نصف ونصف' };
+            const priceNow = document.getElementById('display-dynamic-price')?.textContent || "";
+            const shareText = `شوف التصميم اللي عملته لتورتة حلويات بوسي 🎂\nالشكل: ${shapeLabelMap[selectedShape] || selectedShape}\nالنكهة: ${flavorLabelMap[selectedFlavor] || selectedFlavor}\nلـ ${currentPersons} فرد\nالسعر: ${priceNow}\nإيه رأيك؟`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(shareText)}`, '_blank', 'noopener,noreferrer');
+        });
+    }
 
     // 🛡️ [إصلاح حرج]: حالة رفع صورة الطباعة على التورتة (كانت الخانة موجودة
     // في الخطوة 3 بدون أي وسيلة فعلية لإرسال الصورة نفسها). نفس آلية الرفع
@@ -39,6 +120,10 @@ function startEngineLogic() {
         if (selectedPrinting === 'none') {
             uploadedCakePhotoUrl = "";
             if (cakePhotoPreviewImg) cakePhotoPreviewImg.style.display = 'none';
+        }
+        const printingDesignerNoteEl = document.getElementById('printing-designer-note');
+        if (printingDesignerNoteEl) {
+            printingDesignerNoteEl.classList.toggle('show', selectedPrinting === 'none');
         }
     }
 
@@ -252,7 +337,10 @@ function startEngineLogic() {
         let selectedPrinting = document.querySelector('input[name="cake_printing"]:checked')?.value || 'none';
         let messageText = document.getElementById('text-cake-message').value.trim();
         let allergyText = document.getElementById('text-cake-allergy').value.trim();
-        
+        let selectedPurpose = document.querySelector('input[name="cake_purpose"]:checked')?.value || 'self';
+        let selectedMood = document.querySelector('input[name="cake_mood"]:checked')?.value || '';
+        const moodLabelMap = { celebratory: 'احتفالي', romantic: 'رومانسي', elegant: 'أنيق وبسيط' };
+
         const masterProduct = window.BoseStoreData?.products?.find(p => p.slug === "toort-custom-master") || {
             slug: "toort-custom-master",
             title: "التورت",
@@ -267,7 +355,9 @@ function startEngineLogic() {
             printingType: selectedPrinting,
             customMessage: messageText,
             allergyNote: allergyText,
-            flavorName: "تصميم خاص حسب الطلب"
+            flavorName: "تصميم خاص حسب الطلب",
+            isGift: selectedPurpose === 'gift',
+            moodLabel: moodLabelMap[selectedMood] || ""
         };
 
         const finalCartItem = window.createCartItem(masterProduct, customOptions, 1);
@@ -307,7 +397,13 @@ function startEngineLogic() {
             document.querySelector('input[name="cake_shape"][value="circle"]').checked = true;
             document.querySelector('input[name="cake_flavor"][value="vanilla"]').checked = true;
             document.querySelector('input[name="cake_printing"][value="none"]').checked = true;
-            
+            document.querySelector('input[name="cake_purpose"][value="self"]').checked = true;
+            moodRadios.forEach((radio) => { radio.checked = false; });
+            if (moodNoteBox) moodNoteBox.classList.remove('show');
+            updateFlavorSensoryNote();
+            updateGiftModeWording();
+            toggleCakePhotoUploadSection();
+
             currentActiveStep = 1;
             syncWizardPanelsUI();
             evaluateSimulatorState();

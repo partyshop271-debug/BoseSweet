@@ -174,6 +174,8 @@ function renderBoseCartPage(storeData) {
                 const cd = item.customDetails;
 
                 if (isCakeBespoke) {
+                    if (cd.isGift) specs.push(`<span>🎁 <strong>هدية لحد تاني</strong></span>`);
+                    if (cd.moodLabel) specs.push(`<span><strong>الإحساس المطلوب:</strong> ${esc(cd.moodLabel)}</span>`);
                     if (cd.cakeType && cd.cakeType !== "none" && cd.cakeType !== "افتراضي") specs.push(`<span><strong>طعم الكيك:</strong> ${esc(cd.cakeType)}</span>`);
                     if (cd.shape && cd.shape !== "none") specs.push(`<span><strong>الشكل:</strong> ${cd.shape === 'circle' ? 'دائري' : cd.shape === 'heart' ? 'قلب' : cd.shape === 'square' ? 'مربع' : cd.shape === 'rectangle' ? 'مستطيل' : esc(cd.shape)}</span>`);
                     if (cd.persons && parseInt(cd.persons, 10) > 0) specs.push(`<span><strong>عدد الأفراد:</strong> ${parseInt(cd.persons, 10)} فرد</span>`);
@@ -183,6 +185,8 @@ function renderBoseCartPage(storeData) {
                 }
                 
                 if (isFlowerBespoke) {
+                    if (cd.isGift) specs.push(`<span>🎁 <strong>هدية لحد تاني</strong></span>`);
+                    if (cd.moodLabel) specs.push(`<span><strong>الإحساس المطلوب:</strong> ${esc(cd.moodLabel)}</span>`);
                     if (cd.flowerType && cd.flowerType !== "none") specs.push(`<span><strong>نوع الورد:</strong> ${cd.flowerType === 'natural' ? 'طبيعي نضر' : cd.flowerType === 'artificial' ? 'صناعي فاخر' : 'ستان مصنوع بحب'}</span>`);
                     if (cd.flowerCount && parseInt(cd.flowerCount, 10) > 0) specs.push(`<span><strong>عدد الورد:</strong> ${parseInt(cd.flowerCount, 10)} وردة</span>`);
                     if (cd.moneyAmount && parseInt(cd.moneyAmount, 10) > 0) specs.push(`<span><strong>الكاش المدمج:</strong> +${parseInt(cd.moneyAmount, 10)} جنيه</span>`);
@@ -787,6 +791,8 @@ function buildBoseFormattedWhatsappInvoice(order) {
         if (item.customDetails) {
             const cd = item.customDetails;
             if (item.type === "custom-cake" || item.type === "mini-cake") {
+                if (cd.isGift) msg += `   • 🎁 هدية لحد تاني\n`;
+                if (cd.moodLabel) msg += `   • الإحساس المطلوب: ${cd.moodLabel}\n`;
                 if (cd.cakeType && cd.cakeType !== "none" && cd.cakeType !== "افتراضي") msg += `   • طعم الكيك: ${cd.cakeType}\n`;
                 if (cd.shape && cd.shape !== "none") msg += `   • الشكل: ${cd.shape}\n`;
                 if (cd.persons && cd.persons > 0) msg += `   • الأفراد: لـ ${cd.persons} فرد\n`;
@@ -794,6 +800,8 @@ function buildBoseFormattedWhatsappInvoice(order) {
                 if (cd.customMessage && cd.customMessage.trim() !== "") msg += `   • النص: "${cd.customMessage}"\n`;
             }
             if (item.type === "custom-flower") {
+                if (cd.isGift) msg += `   • 🎁 هدية لحد تاني\n`;
+                if (cd.moodLabel) msg += `   • الإحساس المطلوب: ${cd.moodLabel}\n`;
                 // 🧾 [إصلاح - المرحلة 3]: cd.moneyAmount كان اسم حقل قديم بقى غير موجود
                 // خالص بعد توحيد بنية customDetails مع window.createCartItem (الاسم
                 // الصحيح دلوقتي هو cashAmount)، فكان الكاش مش هيظهر أبداً في فاتورة

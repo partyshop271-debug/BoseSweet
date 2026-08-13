@@ -35,7 +35,9 @@
     // الحالة الديناميكية الحالية لرحلة العميل داخل المحاكي
     let state = {
         currentActiveStep: 1,
-        totalSteps: 4,
+        totalSteps: 5,
+        purpose: "self",
+        mood: "",
         flowerType: "natural",
         flowerCount: 15,
         wrappingType: "classic",
@@ -425,7 +427,88 @@
                     if (hiddenTypeInput) hiddenTypeInput.value = state.flowerType;
                     saveCurrentState();
                     recalculatePrice();
+                    updateFlowerSensoryNote();
                 };
+            });
+        }
+
+        // 🧠 [محاكي أذكى - مطابق لمحاكي الكيك]: خطوة "لمين وليه؟" الجديدة
+        const purposeBtns = document.querySelectorAll("#flower-purpose-row .bose-iconic-btn-node");
+        const moodBtns = document.querySelectorAll("#flower-mood-row .bose-iconic-btn-node");
+        const moodNoteBox = document.getElementById("mood-suggestion-note");
+        const moodNoteText = document.getElementById("mood-suggestion-text");
+
+        const FLOWER_MOOD_PRESETS = {
+            celebratory: { type: "natural", note: "توليفة مقترحة للاحتفالات: ورد طبيعي نضر بألوان زاهية. تقدري تعدلي أي اختيار في الخطوات الجاية." },
+            romantic: { type: "satin", card: true, note: "توليفة مقترحة للمناسبات الرومانسية: ورد ستان راقٍ مع كارت إهداء. تقدري تعدلي أي اختيار في الخطوات الجاية." },
+            elegant: { type: "artificial", note: "توليفة مقترحة للأناقة البسيطة: ورد صناعي فاخر يدوم طويلاً. تقدري تعدلي أي اختيار في الخطوات الجاية." }
+        };
+
+        function applyFlowerMoodPreset(moodValue) {
+            const preset = FLOWER_MOOD_PRESETS[moodValue];
+            if (!preset) {
+                if (moodNoteBox) moodNoteBox.classList.remove("show");
+                return;
+            }
+            const typeBtn = document.querySelector(`#flower-type-iconic-row .bose-iconic-btn-node[data-value="${preset.type}"]`);
+            if (typeBtn) typeBtn.click();
+            if (preset.card && includeCardCheckbox) {
+                includeCardCheckbox.checked = true;
+                if (typeof includeCardCheckbox.onclick === "function") {
+                    includeCardCheckbox.onclick({ target: includeCardCheckbox });
+                }
+            }
+            if (moodNoteText) moodNoteText.textContent = preset.note;
+            if (moodNoteBox) moodNoteBox.classList.add("show");
+        }
+
+        purposeBtns.forEach(btn => {
+            btn.onclick = function () {
+                purposeBtns.forEach(b => b.classList.remove("active-selected"));
+                this.classList.add("active-selected");
+                state.purpose = this.getAttribute("data-value");
+                updateGiftModeWording();
+                saveCurrentState();
+            };
+        });
+        moodBtns.forEach(btn => {
+            btn.onclick = function () {
+                moodBtns.forEach(b => b.classList.remove("active-selected"));
+                this.classList.add("active-selected");
+                state.mood = this.getAttribute("data-value");
+                applyFlowerMoodPreset(state.mood);
+                saveCurrentState();
+            };
+        });
+
+        function updateGiftModeWording() {
+            const isGift = state.purpose === "gift";
+            const cardLabel = document.getElementById("gift-card-checkbox-label");
+            const cardTextLabel = document.getElementById("card-text-label");
+            const cardTextInput = document.getElementById("card-text");
+            if (cardLabel) cardLabel.textContent = isGift ? "تحبي تكتبي رسالة إهداء شيك تتقدم مع البوكيه؟" : "تحبي نكتب لكِ كارت إهداء شيك يتقدم مع البوكيه؟";
+            if (cardTextLabel) cardTextLabel.textContent = isGift ? "رسالة الإهداء:" : "اكتبي الكلام اللي حابة نكتبه على الكارت هنا:";
+            if (cardTextInput) cardTextInput.placeholder = isGift ? "مثال: كل سنة وانتِ طيبة يا أغلى صديقة" : "اكتبي مشاعرك الصادقة هنا ببراحة...";
+        }
+
+        const FLOWER_SENSORY_NOTES = {
+            natural: "ورد طازج ونضر، بيوصل مباشرة من أفضل مزارع الورد.",
+            artificial: "خامة فاخرة تحافظ على شكلها ورونقها لفترة أطول بكتير.",
+            satin: "لمسة ستان ناعمة وراقية تدي إحساس مختلف تماماً."
+        };
+        function updateFlowerSensoryNote() {
+            const noteEl = document.getElementById("flower-sensory-note");
+            if (noteEl) noteEl.textContent = FLOWER_SENSORY_NOTES[state.flowerType] || "";
+        }
+        updateFlowerSensoryNote();
+
+        const btnShareFlowerDesign = document.getElementById("btn-share-flower-design");
+        if (btnShareFlowerDesign) {
+            btnShareFlowerDesign.addEventListener("click", () => {
+                const typeLabelMap = { natural: "طبيعي نضر", artificial: "صناعي فاخر", satin: "ستان راقٍ" };
+                const priceNow = document.getElementById("bouquet-total-val")?.textContent || "";
+                const shareText = `شوفي التصميم اللي عملته لبوكيه ورد من حلويات بوسي 💐\nنوع الورد: ${typeLabelMap[state.flowerType] || state.flowerType}\nعدد الورد: ${state.flowerCount}\nالسعر: ${priceNow}\nإيه رأيك؟`;
+                window.open(`https://wa.me/?text=${encodeURIComponent(shareText)}`, "_blank", "noopener,noreferrer");
             });
         }
 
@@ -693,6 +776,7 @@
                 if (state.isUploading) return;
 
                 const flowerTypeName = state.flowerType === "natural" ? "ورد طبيعي نضر" : (state.flowerType === "artificial" ? "ورد صناعي فاخر" : "ورد ستان راقٍ");
+                const moodLabelMap = { celebratory: "احتفالي", romantic: "رومانسي", elegant: "أنيق وبسيط" };
                 // نفس شرط ظهور كارت الإهداء بالضبط المستخدم في recalculatePrice() أعلاه
                 const hasGiftCardFinal = !!(state.includeCard && state.cardText.trim() !== "");
 
@@ -712,7 +796,9 @@
                     photoCount: state.includePhoto ? state.photoCount : 0,
                     hasGiftCard: hasGiftCardFinal,
                     giftCardText: hasGiftCardFinal ? state.cardText : "",
-                    flavorName: `بوكيه مخصص (${flowerTypeName})`
+                    flavorName: `بوكيه مخصص (${flowerTypeName})`,
+                    isGift: state.purpose === "gift",
+                    moodLabel: moodLabelMap[state.mood] || ""
                 };
 
                 // 🧮 [توحيد إنشاء عنصر السلة]: استخدام window.createCartItem() الموحدة
