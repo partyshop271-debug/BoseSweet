@@ -397,22 +397,60 @@
         }
     }
 
+    /**
+     * 🛡️ [إصلاح - مزامنة سلايدر الفئات]: سلايدر الفئات في الصفحة الرئيسية
+     * (store_settings.homepage.categoriesSlider) مش عمود مرتبط لايف بجدول
+     * categories - هو "صورة مجمّدة" كانت بتتبني فقط جوه homepage-page.js
+     * لما الأدمن يفتح صفحة الرئيسية ويحفظها يدوياً. فتعديل/إضافة/حذف فئة
+     * من صفحة الفئات ما كانش بينعكس على الموقع خالص لحد ما حد يفتح صفحة
+     * الرئيسية ويحفظها تاني - وده اللي كان بيتقرا "الصور مش بتتحدث".
+     * الدالة دي بتعمل نفس البناء (buildCategoriesSliderFromCategories في
+     * homepage-page.js) وبتحفظه تلقائي بعد أي تعديل على الفئات، زي ما
+     * deleteProduct بالظبط بينظف مراجعه من homepage تلقائياً تحت.
+     * فشلها متعمد إنه ميوقفش نجاح عملية الفئة الأساسية (نفس نمط try/catch
+     * المستخدم في deleteProduct).
+     */
+    async function syncCategoriesSliderToHomepage() {
+        try {
+            const [{ data: cats }, { data: settingsRow }] = await Promise.all([
+                client.from("categories").select("*").order("sort_order", { ascending: true }),
+                client.from("store_settings").select("homepage").eq("id", 1).maybeSingle(),
+            ]);
+            const homepage = (settingsRow && settingsRow.homepage) || {};
+            homepage.categoriesSlider = (cats || []).map((c) => ({
+                id: c.id,
+                title: c.title,
+                image: c.image || "",
+                builderType: c.builder_type || "standard",
+            }));
+            await client
+                .from("store_settings")
+                .update({ homepage, updated_at: new Date().toISOString() })
+                .eq("id", 1);
+        } catch (e) {
+            console.warn("تعذر مزامنة سلايدر الفئات مع الصفحة الرئيسية:", e.message);
+        }
+    }
+
     /** إضافة فئة جديدة. category.id لازم يكون فريد (نص إنجليزي، زي: taswaq-cupcake) */
     async function createCategory(category) {
         const { error } = await client.from("categories").insert(category);
         if (error) throw error;
+        await syncCategoriesSliderToHomepage();
     }
 
     /** تعديل فئة موجودة */
     async function updateCategory(id, updates) {
         const { error } = await client.from("categories").update(updates).eq("id", id);
         if (error) throw error;
+        await syncCategoriesSliderToHomepage();
     }
 
     /** حذف فئة نهائياً - هيفشل لو فيه منتجات لسه مرتبطة بيها (foreign key) */
     async function deleteCategory(id) {
         const { error } = await client.from("categories").delete().eq("id", id);
         if (error) throw error;
+        await syncCategoriesSliderToHomepage();
     }
 
     /** كل المنتجات مع اسم الفئة بتاعتها */
