@@ -98,7 +98,7 @@
      * بقت متاحة عالمياً (window.BOSE_SIZE_LABELS) عشان أي كارت منتج في أي مكان بالموقع
      * يقدر يعرض تبويب اختيار الحجم بنفس الأسماء بالظبط.
      */
-    window.BOSE_SIZE_LABELS = { triangle: "مثلث فردي", medium: "وسط تشارك ممتع", large: "كبير جمعات فاخرة" };
+    window.BOSE_SIZE_LABELS = { triangle: "مثلث", medium: "طاجن", large: "حجم عائلي" };
     document.addEventListener('DOMContentLoaded', forceScrollToTop);
     window.addEventListener('load', forceScrollToTop);
 
@@ -114,21 +114,25 @@
      * 15 دقيقة عشان نعتبر الكاش "قديم"، دلوقتي بنسأل قاعدة البيانات سؤال رخيص
      * جداً (get_bose_data_version - قيمة تاريخ واحدة بس، مش جدول كامل) عشان
      * نعرف هل فعلاً حصل أي تعديل حقيقي (منتج/فئة/عرض/منطقة شحن/إعدادات متجر)
-     * من وقت آخر كاش محفوظ عندنا. لو مفيش تغيير، بنستخدم الكاش المحلي فوراً
-     * من غير ما نحمّل كل بيانات المتجر تاني (بيوفر استهلاك بيانات الموبايل
-     * وزمن التحميل بشكل ملموس، خصوصاً في الزيارات المتكررة لنفس العميل).
-     * 
-     * صمام أمان: لو التحقق نفسه فشل (مشكلة شبكة وقتية)، بنعيد المحاولة مرة واحدة
-     * قبل ما نستسلم ونستخدم الكاش المحلي. وفيه سقف زمني قاسي (ساعتين، بعد ما كان
-     * 24 ساعة) كخط دفاع أخير حتى لو فشل التحقق باستمرار - عشان أي تعديل من لوحة
-     * التحكم (خصوصاً صور المنتجات) يوصل للعميل بأسرع وقت ممكن حتى لو حصل عطل شبكة
-     * وقتي، بدل ما يفضل يوم كامل بالكاش القديم من غير أي طريقة للعميل يلاحظ.
+     * من وقت آخر كاش محفوظ عندنا.
+     *
+     * 👑👑 [إصلاح جذري - أداء الهيدر والقائمة الجانبية]: قبل كده كان الهيدر
+     * والقائمة الجانبية بالكامل (buildAndInjectGlobalComponents) بيستنوا طلب
+     * "التحقق من الإصدار" يخلص فعلياً من السيرفر قبل ما يظهروا - حتى لو كان
+     * عند العميلة كاش صالح 100%. يعني في أي اتصال بطيء، صفحة من غير هيدر ولا
+     * زرار قائمة ولا سلة لثواني حقيقية. دلوقتي (Stale-While-Revalidate):
+     * نعرض القائمة والهيدر وكل بيانات المتجر فوراً من الكاش المحلي، والتحقق
+     * من وجود تحديث بيحصل بهدوء تام في الخلفية من غير ما يأخر ظهور أي حاجة.
+     *
+     * صمام أمان: لو التحقق نفسه فشل (مشكلة شبكة وقتية)، بيعيد المحاولة مرة
+     * واحدة بعد نص ثانية قبل ما يستسلم لنفس الزيارة (ومفيش أي تأخير محسوس
+     * للعميلة أصلاً لأنه بيحصل في الخلفية). وفيه سقف زمني قاسي (ساعتين) كخط
+     * دفاع أخير عشان أي تعديل من لوحة التحكم (خصوصاً صور المنتجات) يوصل
+     * للعميل بأسرع وقت ممكن.
      *
      * 🔧 [أداة تشخيص]: إضافة ?refresh=1 لأي رابط في الموقع بتتخطى الكاش المحلي
      * بالكامل وتجيب أحدث نسخة من قاعدة البيانات مباشرة - مفيدة لصاحبة المتجر
-     * عشان تتأكد فوراً إن أي تعديل (خصوصاً صورة منتج) وصل فعلاً، من غير ما تحتاج
-     * تعتمد على "مسح الكاش" من إعدادات المتصفح (اللي أصلاً مش بيمسح localStorage
-     * في كل الحالات).
+     * عشان تتأكد فوراً إن أي تعديل وصل فعلاً.
      */
     async function loadStoreDatabase() {
         if (window.BoseStoreData) return;
@@ -137,50 +141,55 @@
         const cachedData = forceRefresh ? null : localStorage.getItem('bose_cached_store_data');
         const cachedTime = forceRefresh ? null : localStorage.getItem('bose_cached_store_time');
         const cachedVersion = forceRefresh ? null : localStorage.getItem('bose_cached_store_version');
-        const cacheHardExpiry = 2 * 60 * 60 * 1000; // صمام أمان أخير: ساعتين بدل يوم كامل
+        const cacheHardExpiry = 2 * 60 * 60 * 1000; // صمام أمان أخير: ساعتين
         const cacheWithinHardLimit = cachedData && cachedTime && (Date.now() - parseInt(cachedTime, 10) < cacheHardExpiry);
 
         if (cacheWithinHardLimit) {
             try {
-                let liveVersion = null;
-                let versionCheckSucceeded = false;
+                // نعرض فوراً من الكاش المحلي - مفيش أي استنى لأي طلب شبكة قبل ما
+                // تشوف العميلة الهيدر/القائمة/المنتجات.
+                window.BoseStoreData = JSON.parse(cachedData);
+                initCoreFlow();
 
-                /** محاولة واحدة لقراءة النسخة الحية - بترجع true/false على نجاحها */
-                async function attemptVersionCheck() {
-                    try {
-                        const versionResult = await window.BoseSupabase.getBoseDataVersion();
-                        // الدالة بترجع timestamp مفرد (مش جدول)؛ PostgREST بيرجعه كقيمة خام
-                        // مباشرة أحياناً، أو كصف واحد جوه array حسب نسخة الـ REST - بنغطي الحالتين.
-                        liveVersion = Array.isArray(versionResult)
-                            ? (versionResult[0]?.get_bose_data_version ?? versionResult[0])
-                            : (versionResult?.get_bose_data_version ?? versionResult);
-                        return liveVersion !== null && liveVersion !== undefined;
-                    } catch (e) {
-                        return false;
+                // التحقق من وجود تحديث بيحصل دلوقتي بهدوء في الخلفية - مش بيأخر
+                // ولا بيقاطع أي حاجة العميلة شايفاها بالفعل.
+                (async () => {
+                    if (!window.BoseSupabase || typeof window.BoseSupabase.getBoseDataVersion !== "function") return;
+
+                    /** محاولة واحدة لقراءة النسخة الحية - بترجع النسخة أو null على الفشل */
+                    async function attemptVersionCheck() {
+                        try {
+                            const versionResult = await window.BoseSupabase.getBoseDataVersion();
+                            const v = Array.isArray(versionResult)
+                                ? (versionResult[0]?.get_bose_data_version ?? versionResult[0])
+                                : (versionResult?.get_bose_data_version ?? versionResult);
+                            return (v !== null && v !== undefined) ? v : null;
+                        } catch (e) {
+                            return null;
+                        }
                     }
-                }
 
-                if (window.BoseSupabase && typeof window.BoseSupabase.getBoseDataVersion === "function") {
-                    versionCheckSucceeded = await attemptVersionCheck();
-                    // 🛡️ [إصلاح صلابة الكاش]: عطل شبكة وقتي واحد كان كافي يخلينا نستسلم
-                    // ونصدّق الكاش القديم بعمى لحد 24 ساعة - أي تعديل (خصوصاً صور
-                    // المنتجات) كان ممكن يفضل "مش ظاهر" للعميل لمدة يوم كامل من غير أي
-                    // سبب واضح. محاولة تانية سريعة بعد نص ثانية بتغطي أغلب حالات الفشل
-                    // الوقتي (شبكة موبايل متقطعة) قبل ما نلجأ فعلاً للكاش.
-                    if (!versionCheckSucceeded) {
+                    let liveVersion = await attemptVersionCheck();
+                    if (liveVersion === null) {
                         await new Promise((r) => setTimeout(r, 500));
-                        versionCheckSucceeded = await attemptVersionCheck();
+                        liveVersion = await attemptVersionCheck();
                     }
-                }
+                    if (liveVersion === null || String(liveVersion) === String(cachedVersion)) return;
 
-                // لو التحقق فشل (مشكلة شبكة/RPC مش جاهزة) أو النسخة الحية طابقت المحفوظة
-                // محلياً: استخدم الكاش المحلي فوراً من غير أي تحميل كامل جديد.
-                if (!versionCheckSucceeded || String(liveVersion) === String(cachedVersion)) {
-                    window.BoseStoreData = JSON.parse(cachedData);
-                    initCoreFlow();
-                    return;
-                }
-                // وصلنا هنا يعني: التحقق نجح والنسخة اتغيرت فعلاً -> كمل تحت لجلب بيانات جديدة بالكامل
+                    // النسخة اتغيرت فعلاً - نجيب البيانات الجديدة ونحدّث العناصر
+                    // الحية بهدوء من غير Reload كامل يقاطع تصفح العميلة.
+                    try {
+                        const freshData = await window.BoseSupabase.loadBoseStoreDataFromSupabase();
+                        window.BoseStoreData = freshData;
+                        localStorage.setItem('bose_cached_store_data', JSON.stringify(freshData));
+                        localStorage.setItem('bose_cached_store_time', String(Date.now()));
+                        localStorage.setItem('bose_cached_store_version', String(liveVersion));
+                        buildAndInjectGlobalComponents();
+                        document.dispatchEvent(new CustomEvent('BoseDatabaseLoaded', { detail: window.BoseStoreData }));
+                    } catch (e) { /* فشل التحديث الصامت في الخلفية - العميلة شغالة بالفعل بالنسخة المحفوظة الصالحة */ }
+                })();
+
+                return;
             } catch (e) {
                 localStorage.removeItem('bose_cached_store_data');
                 localStorage.removeItem('bose_cached_store_time');
@@ -906,8 +915,18 @@
         
         if (product) {
             price = product.price || product.basePrice || 0;
+            // 🚨🚨 [إصلاح جذري حرج - العروض بتلغي نفسها]: عمود "prices" (الخاص
+            // بالأحجام) ممكن يفضل فيه القيمة القديمة قبل الخصم غلط في البيانات
+            // (حصل فعلاً مع منتج "جاتوه كلاسيك" سابقاً) - فأي مكان بيمرر "size"
+            // كان بيلغي الخصم تماماً ويرجّع السعر القديم. الحل: نستخدم قيمة الحجم
+            // بس لو المقاسات فعلاً مختلفة عن بعضها (يعني المنتج multi-size حقيقي)،
+            // وإلا نفضل معتمدين على product.price الصحيح المحدث بعد أي خصم.
             if (product.prices && opts.size) {
-                price = product.prices[opts.size] || price;
+                const sizeValues = Object.values(product.prices);
+                const hasRealSizeVariation = new Set(sizeValues).size > 1;
+                if (hasRealSizeVariation) {
+                    price = product.prices[opts.size] || price;
+                }
             }
             const selectedPrinting = opts.printing || opts.printingType || 'none';
             if (selectedPrinting && selectedPrinting !== 'none') {
@@ -1757,6 +1776,27 @@
                     
                     <div class="sidebar-scrollable-content">
                         <div class="sidebar-menu-wrapper">
+                            <button type="button" id="sidebar-categories-toggle" class="sidebar-section-title sidebar-expand-toggle" aria-expanded="false">
+                                تسوّقي حسب الفئة
+                                <i class="fa-solid fa-chevron-down toggle-chevron"></i>
+                            </button>
+                            <ul class="sidebar-links-list sidebar-categories-collapse" id="sidebar-categories-list" style="display:none;">
+                                <li class="sidebar-link-item"><a href="cake-builder.html"><span class="link-main-side"><i class="fa-solid fa-birthday-cake main-icon"></i>التورت الفاخرة</span></a></li>
+                                <li class="sidebar-link-item"><a href="category.html?category=taswaq-gatowat"><span class="link-main-side"><i class="fa-solid fa-cheese main-icon"></i>الجاتوهات الملكية</span></a></li>
+                                <li class="sidebar-link-item"><a href="category.html?category=taswaq-qashtota"><span class="link-main-side"><i class="fa-solid fa-stroopwafel main-icon"></i>القشطوطة الغنية</span></a></li>
+                                <li class="sidebar-link-item"><a href="category.html?category=taswaq-despacito"><span class="link-main-side"><i class="fa-solid fa-box main-icon"></i>الديسباسيتو الفاخر</span></a></li>
+                                <li class="sidebar-link-item"><a href="category.html?category=taswaq-cinabon"><span class="link-main-side"><i class="fa-solid fa-cookie main-icon"></i>السينابون الطازج</span></a></li>
+                                <li class="sidebar-link-item"><a href="category.html?category=taswaq-donuts"><span class="link-main-side"><i class="fa-solid fa-ring main-icon"></i>الدوناتس الهشة</span></a></li>
+                                <li class="sidebar-link-item"><a href="category.html?category=taswaq-red-velvet"><span class="link-main-side"><i class="fa-solid fa-heart main-icon"></i>الريدڤيلڤت</span></a></li>
+                                <li class="sidebar-link-item"><a href="category.html?category=taswaq-cupcake"><span class="link-main-side"><i class="fa-solid fa-cookie-bite main-icon"></i>الكب كيك</span></a></li>
+                                <li class="sidebar-link-item"><a href="category.html?category=taswaq-mini-cake"><span class="link-main-side"><i class="fa-solid fa-cubes main-icon"></i>الميني تورت</span></a></li>
+                                <li class="sidebar-link-item"><a href="flower-builder.html"><span class="link-main-side"><i class="fa-solid fa-spa main-icon"></i>بوكيهات الورد</span></a></li>
+                                <li class="sidebar-link-item"><a href="category.html?category=taswaq-happiness-cups"><span class="link-main-side"><i class="fa-solid fa-ice-cream main-icon"></i>كبات السعادة</span></a></li>
+                                <li class="sidebar-link-item"><a href="category.html?category=taswaq-relax-box"><span class="link-main-side"><i class="fa-solid fa-gift main-icon"></i>بوكس الروقان</span></a></li>
+                            </ul>
+                        </div>
+
+                        <div class="sidebar-menu-wrapper" style="margin-top: 25px;">
                             <div class="sidebar-section-title">التصفح الفاخر</div>
                             <ul class="sidebar-links-list">
                                 <li class="sidebar-link-item">
@@ -1768,6 +1808,12 @@
                                 <li class="sidebar-link-item">
                                     <a href="menu.html">
                                         <span class="link-main-side"><i class="fa-solid fa-utensils main-icon"></i>المنيو الشامل</span>
+                                        <i class="fa-solid fa-chevron-left arrow-icon"></i>
+                                    </a>
+                                </li>
+                                <li class="sidebar-link-item">
+                                    <a href="offers.html">
+                                        <span class="link-main-side"><i class="fa-solid fa-tags main-icon"></i>العروض والخصومات</span>
                                         <i class="fa-solid fa-chevron-left arrow-icon"></i>
                                     </a>
                                 </li>
@@ -1816,6 +1862,30 @@
                                 <li class="sidebar-link-item">
                                     <a href="contact.html">
                                         <span class="link-main-side"><i class="fa-solid fa-phone-flip main-icon"></i>تواصل معنا</span>
+                                        <i class="fa-solid fa-chevron-left arrow-icon"></i>
+                                    </a>
+                                </li>
+                                <li class="sidebar-link-item">
+                                    <a href="policies/shipping-policy.html">
+                                        <span class="link-main-side"><i class="fa-solid fa-truck main-icon"></i>سياسة الشحن والتوصيل</span>
+                                        <i class="fa-solid fa-chevron-left arrow-icon"></i>
+                                    </a>
+                                </li>
+                                <li class="sidebar-link-item">
+                                    <a href="policies/refund-policy.html">
+                                        <span class="link-main-side"><i class="fa-solid fa-rotate-left main-icon"></i>سياسة الاسترجاع</span>
+                                        <i class="fa-solid fa-chevron-left arrow-icon"></i>
+                                    </a>
+                                </li>
+                                <li class="sidebar-link-item">
+                                    <a href="policies/privacy-policy.html">
+                                        <span class="link-main-side"><i class="fa-solid fa-shield-halved main-icon"></i>سياسة الخصوصية</span>
+                                        <i class="fa-solid fa-chevron-left arrow-icon"></i>
+                                    </a>
+                                </li>
+                                <li class="sidebar-link-item">
+                                    <a href="policies/terms.html">
+                                        <span class="link-main-side"><i class="fa-solid fa-file-contract main-icon"></i>الشروط والأحكام</span>
                                         <i class="fa-solid fa-chevron-left arrow-icon"></i>
                                     </a>
                                 </li>
@@ -1967,6 +2037,17 @@
 
         if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
         if (overlay) overlay.addEventListener('click', closeSidebar);
+
+        const categoriesToggle = document.getElementById('sidebar-categories-toggle');
+        const categoriesList = document.getElementById('sidebar-categories-list');
+        if (categoriesToggle && categoriesList) {
+            categoriesToggle.addEventListener('click', () => {
+                const isOpen = categoriesList.style.display === 'block';
+                categoriesList.style.display = isOpen ? 'none' : 'block';
+                categoriesToggle.setAttribute('aria-expanded', String(!isOpen));
+                categoriesToggle.classList.toggle('expanded', !isOpen);
+            });
+        }
 
         if (searchBtn && searchModal) {
             searchBtn.addEventListener('click', () => {
