@@ -328,13 +328,16 @@
             renderBoseMenuGrid(boseFallbackCategories);
 
             // مراجعة حية: إذا اكتمل تحميل المحرك المركزي وجلب الـ JSON، يُعيد بناء المنيو وتحديث الصور ديناميكياً
-            if (window.BoseStoreData && window.BoseStoreData.homepage) {
-                renderBoseMenuGrid(window.BoseStoreData.homepage.categoriesSlider);
+            // 🛡️ [إصلاح]: بنقرا الفئات من window.getBoseCategoriesList() (مصدر حي من
+            // جدول categories مباشرة) بدل homepage.categoriesSlider القديمة، عشان أي
+            // صورة/عنوان فئة يتحدث فوراً هنا زي الرئيسية بالظبط من غير أي خطوة تانية.
+            if (window.BoseStoreData && typeof window.getBoseCategoriesList === "function" && window.getBoseCategoriesList().length) {
+                renderBoseMenuGrid(window.getBoseCategoriesList());
             } else {
                 document.dispatchEvent(new CustomEvent('BoseDatabaseLoaded'));
                 document.addEventListener("BoseDatabaseLoaded", (e) => {
-                    if (window.BoseStoreData && window.BoseStoreData.homepage) {
-                        renderBoseMenuGrid(window.BoseStoreData.homepage.categoriesSlider);
+                    if (window.BoseStoreData && typeof window.getBoseCategoriesList === "function" && window.getBoseCategoriesList().length) {
+                        renderBoseMenuGrid(window.getBoseCategoriesList());
                     }
                 });
             }

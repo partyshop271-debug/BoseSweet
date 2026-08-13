@@ -432,7 +432,12 @@
                     return;
                 }
 
-                const categoryObj = siteData.homepage.categoriesSlider.find(cat => cat.id === categoryId);
+                // 🛡️ [إصلاح]: بنستخدم القايمة الحية (typeof window.getBoseCategoriesList) بدل
+                // homepage.categoriesSlider القديمة، عشان اسم/صورة الفئة يتزامن فوراً مع جدول categories.
+                const liveCatList = (typeof window.getBoseCategoriesList === "function" && window.getBoseCategoriesList().length)
+                    ? window.getBoseCategoriesList()
+                    : (siteData.homepage.categoriesSlider || []);
+                const categoryObj = liveCatList.find(cat => cat.id === categoryId);
                 if (!categoryObj) {
                     renderEmptyState("الصنف المطلوب غير متوفر حالياً.");
                     return;

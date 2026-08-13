@@ -746,6 +746,7 @@
                         this.classList.add("active");
                         currentSelectedOptions.size = this.dataset.sizeKey;
                         applyDescriptionForCurrentSize();
+                        applyImageForCurrentSize();
                         updateLivePriceDisplay(window.BoseStoreData?.store?.currency || "EGP");
                     });
                 });
@@ -761,6 +762,33 @@
                     ? currentProduct.sizeDescriptions[currentSelectedOptions.size]
                     : null;
                 descNode.textContent = perSize || currentProduct.flavorDesc || currentProduct.description || "";
+            }
+
+            // 🖼️ [صور الأحجام المتعددة]: لو المنتج عنده صورة مخصصة للحجم المختار حالياً
+            // (products.size_images)، بنبدّل الصورة الرئيسية والمصغّرة النشطة ليها. لو الحجم
+            // مالوش صورة مخصصة، منسيبش الصورة زي ما هي (الصورة الافتراضية للمنتج).
+            function applyImageForCurrentSize() {
+                if (!currentProduct) return;
+                const sizeImg = (currentProduct.sizeImages && currentSelectedOptions.size)
+                    ? currentProduct.sizeImages[currentSelectedOptions.size]
+                    : null;
+                if (!sizeImg) return;
+                const masterImgNode = document.getElementById("bose-master-gallery-image");
+                const optimize = (url, w) => (window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(url, w) : url);
+                if (masterImgNode) {
+                    masterImgNode.style.opacity = 0.5;
+                    setTimeout(() => {
+                        masterImgNode.src = optimize(sizeImg, 900);
+                        masterImgNode.dataset.fullsrc = sizeImg;
+                        masterImgNode.style.opacity = 1;
+                    }, 100);
+                }
+                const thumbnailsStrip = document.getElementById("bose-thumbnails-strip");
+                if (thumbnailsStrip) {
+                    thumbnailsStrip.querySelectorAll(".thumb-clip-node").forEach(t => {
+                        t.classList.toggle("active", t.dataset.imgUrl === sizeImg);
+                    });
+                }
             }
 
             function initProductPage(dbData) {
@@ -790,7 +818,11 @@
                 
                 const catBadge = document.getElementById("bose-product-badge-cat");
                 if (catBadge && currentProduct.category) {
-                    const foundCat = dbData.homepage.categoriesSlider.find(c => c.id === currentProduct.category);
+                    // 🛡️ [إصلاح]: نفس مصدر الفئات الحي (getBoseCategoriesList) بدل الـ snapshot القديم.
+                    const liveCatListForBadge = (typeof window.getBoseCategoriesList === "function" && window.getBoseCategoriesList().length)
+                        ? window.getBoseCategoriesList()
+                        : (dbData.homepage.categoriesSlider || []);
+                    const foundCat = liveCatListForBadge.find(c => c.id === currentProduct.category);
                     if (foundCat) catBadge.textContent = foundCat.title;
                 }
                 
@@ -847,6 +879,10 @@
                 } else {
                     thumbnailsStrip.innerHTML = "";
                 }
+
+                // 🖼️ [صور الأحجام المتعددة]: بعد بناء المعرض الافتراضي فوق، لو الحجم المختار
+                // ابتدائياً عنده صورة مخصصة، بنطبّقها دلوقتي (بعد ما الـ DOM جاهز).
+                applyImageForCurrentSize();
 
                 const optionsRoot = document.getElementById("bose-product-customization-options-root");
                 optionsRoot.innerHTML = "";
