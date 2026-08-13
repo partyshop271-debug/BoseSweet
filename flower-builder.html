@@ -25,6 +25,50 @@
     <link rel="stylesheet" href="css/global.css?v=2026_production_v32.0">
     <link rel="stylesheet" href="css/main.css?v=2026_production_v32.0">
     <link rel="stylesheet" href="css/simulators.css?v=2026_production_v32.0">
+    <style>
+        /* 🧠 [محاكي أذكى - مطابق لمحاكي الكيك] */
+        .bose-flavor-sensory-note {
+            font-size: 12.5px;
+            color: var(--bose-black);
+            opacity: 0.65;
+            text-align: center;
+            margin: 8px 0 0 0;
+            line-height: 1.4;
+        }
+        .bose-designer-note-bubble {
+            display: none;
+            align-items: flex-start;
+            gap: 10px;
+            background: var(--bose-pink-light);
+            border: 1px dashed var(--bose-pink);
+            border-radius: 16px;
+            padding: 14px 16px;
+            margin-top: 20px;
+            font-size: 13.5px;
+            color: var(--bose-black);
+            line-height: 1.6;
+        }
+        .bose-designer-note-bubble.show { display: flex; }
+        .bose-designer-note-bubble .note-icon { font-size: 18px; flex-shrink: 0; }
+        .bose-share-design-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            background: transparent;
+            border: 1.5px dashed var(--bose-pink);
+            color: var(--bose-pink);
+            font-family: 'Cairo';
+            font-weight: 700;
+            font-size: 14.5px;
+            padding: 13px;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 18px;
+        }
+        .bose-share-design-btn:hover { background: var(--bose-pink-light); }
+    </style>
 </head>
 <body>
 
@@ -50,16 +94,58 @@
             <span class="step-node" data-step-target="2">2</span>
             <span class="step-node" data-step-target="3">3</span>
             <span class="step-node" data-step-target="4">4</span>
+            <span class="step-node" data-step-target="5">5</span>
         </div>
 
         <div class="simulator-workspace">
             
             <!-- الجانب الأيمن: لوحة التحكم بالتخصيص والمراحل -->
             <div class="simulator-control-panel">
-                
-                <!-- الخطوة 1: نوع الورد ومقاس البوكيه وصورة التصميم -->
+
+                <!-- الخطوة 1 (جديدة): البوكيه ده لمين وإيه الإحساس المطلوب -->
                 <div class="bose-step-card-panel active" data-step="1">
-                    <h2 class="step-title"><i class="fa-solid fa-seedling"></i> الخطوة 1: أساس وتنسيق البوكيه</h2>
+                    <h2 class="step-title"><i class="fa-solid fa-heart"></i> الخطوة 1: البوكيه ده لمين؟</h2>
+
+                    <div class="bose-premium-template-box">
+                        <label class="premium-input-label">هنسهّلك الاختيار من أول خطوة.</label>
+                        <div class="bose-iconic-options-row" id="flower-purpose-row" style="grid-template-columns: repeat(2, 1fr);">
+                            <div class="bose-iconic-btn-node active-selected" data-value="self">
+                                <span class="btn-icon">💐</span>
+                                <span class="btn-label">لنفسي</span>
+                            </div>
+                            <div class="bose-iconic-btn-node" data-value="gift">
+                                <span class="btn-icon">🎁</span>
+                                <span class="btn-label">هدية لحد تاني</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bose-premium-template-box">
+                        <label class="premium-input-label">عايزة الإحساس يكون إيه؟ (اختياري، هيرشحلك توليفة جاهزة)</label>
+                        <div class="bose-iconic-options-row" id="flower-mood-row">
+                            <div class="bose-iconic-btn-node" data-value="celebratory">
+                                <span class="btn-icon">🎉</span>
+                                <span class="btn-label">احتفالي</span>
+                            </div>
+                            <div class="bose-iconic-btn-node" data-value="romantic">
+                                <span class="btn-icon">💕</span>
+                                <span class="btn-label">رومانسي</span>
+                            </div>
+                            <div class="bose-iconic-btn-node" data-value="elegant">
+                                <span class="btn-icon">✨</span>
+                                <span class="btn-label">أنيق وبسيط</span>
+                            </div>
+                        </div>
+                        <div class="bose-designer-note-bubble" id="mood-suggestion-note">
+                            <span class="note-icon">💡</span>
+                            <span id="mood-suggestion-text"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- الخطوة 2: نوع الورد ومقاس البوكيه وصورة التصميم -->
+                <div class="bose-step-card-panel" data-step="2">
+                    <h2 class="step-title"><i class="fa-solid fa-seedling"></i> الخطوة 2: أساس وتنسيق البوكيه</h2>
                     
                     <!-- قالب اختيار نوع الورد المستطيل الاحترافي لمنع التكدس -->
                     <div class="bose-premium-template-box">
@@ -79,6 +165,7 @@
                             </div>
                         </div>
                         <input type="hidden" id="flower-type" value="natural">
+                        <p class="bose-flavor-sensory-note" id="flower-sensory-note"></p>
                     </div>
 
                     <!-- قالب العداد الدائري المطور والسعر التحديثي اللحظي المدمج -->
@@ -112,9 +199,9 @@
                     </div>
                 </div>
 
-                <!-- الخطوة 2: شريط الستان والرسائل المطبوعة حرارياً -->
-                <div class="bose-step-card-panel" data-step="2">
-                    <h2 class="step-title"><i class="fa-solid fa-maximize"></i> الخطوة 2: شريط الستان والرسالة</h2>
+                <!-- الخطوة 3: شريط الستان والرسائل المطبوعة حرارياً -->
+                <div class="bose-step-card-panel" data-step="3">
+                    <h2 class="step-title"><i class="fa-solid fa-maximize"></i> الخطوة 3: شريط الستان والرسالة</h2>
                     
                     <div class="bose-premium-template-box" style="text-align: center; background: #FFFFFF; padding: 15px;">
                         <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="معاينة شريط الستان المطبوع حرارياً الفاخر من حلويات بوسي" style="width: 100%; max-width: 260px; border-radius: 16px; border: var(--bose-border-pink); box-shadow: var(--bose-pink-shadow);">
@@ -147,9 +234,9 @@
                     </div>
                 </div>
 
-                <!-- الخطوة 3: صورك الشخصية ومفاجأة الكاش -->
-                <div class="bose-step-card-panel" data-step="3">
-                    <h2 class="step-title"><i class="fa-solid fa-gift"></i> الخطوة 3: صورك الشخصية ومفاجأة الكاش</h2>
+                <!-- الخطوة 4: صورك الشخصية ومفاجأة الكاش -->
+                <div class="bose-step-card-panel" data-step="4">
+                    <h2 class="step-title"><i class="fa-solid fa-gift"></i> الخطوة 4: صورك الشخصية ومفاجأة الكاش</h2>
                     
                     <div class="bose-premium-template-box" style="text-align: center; background: #FFFFFF; padding: 15px;">
                         <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="معاينة لترتيب الصور الشخصية والكاش النظيف داخل بوكيه حلويات بوسي" style="width: 100%; max-width: 260px; border-radius: 16px; border: var(--bose-border-pink); box-shadow: var(--bose-pink-shadow);">
@@ -207,9 +294,9 @@
                     </div>
                 </div>
 
-                <!-- الخطوة 4: الشوكولاتة الفاخرة وكارت الإهداء والرسائل -->
-                <div class="bose-step-card-panel" data-step="4">
-                    <h2 class="step-title"><i class="fa-solid fa-cookie"></i> الخطوة 4: الشوكولاتة الفاخرة وكارت الإهداء</h2>
+                <!-- الخطوة 5: الشوكولاتة الفاخرة وكارت الإهداء والرسائل -->
+                <div class="bose-step-card-panel" data-step="5">
+                    <h2 class="step-title"><i class="fa-solid fa-cookie"></i> الخطوة 5: الشوكولاتة الفاخرة وكارت الإهداء</h2>
                     
                     <div class="bose-premium-template-box" style="text-align: center; background: #FFFFFF; padding: 15px;">
                         <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="ترتيب وتوزيع قطع الشوكولاتة الفاخرة والمستوردة داخل البوكيه من حلويات بوسي" style="width: 100%; max-width: 260px; border-radius: 16px; border: var(--bose-border-pink); box-shadow: var(--bose-pink-shadow);">
@@ -236,7 +323,7 @@
                     <div class="bose-premium-template-box">
                         <label class="premium-input-label bose-checkbox-label-tap">
                             <input type="checkbox" id="include-card">
-                            تحبي نكتب لكِ كارت إهداء شيك يتقدم مع البوكيه؟
+                            <span id="gift-card-checkbox-label">تحبي نكتب لكِ كارت إهداء شيك يتقدم مع البوكيه؟</span>
                         </label>
 
                         <div class="bose-counter-alignment-zone" style="margin-top: 10px; margin-bottom: 5px;">
@@ -246,9 +333,13 @@
                         </div>
 
                         <div id="card-text-section" class="custom-text-wrapper">
-                            <label class="premium-input-label" for="card-text">اكتبي الكلام اللي حابة نكتبه على الكارت هنا:</label>
+                            <label class="premium-input-label" for="card-text" id="card-text-label">اكتبي الكلام اللي حابة نكتبه على الكارت هنا:</label>
                             <textarea id="card-text" class="bose-premium-text-input bose-premium-textarea" placeholder="اكتبي مشاعرك الصادقة هنا ببراحة..."></textarea>
                         </div>
+
+                        <button type="button" class="bose-share-design-btn" id="btn-share-flower-design">
+                            <i class="fa-brands fa-whatsapp"></i> شاركي التصميم مع حد قبل ما تأكدي
+                        </button>
                     </div>
                 </div>
 

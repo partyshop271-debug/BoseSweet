@@ -375,6 +375,74 @@
             transform: translateY(-2px) !important;
             box-shadow: 0 12px 35px rgba(255, 145, 164, 0.55) !important;
         }
+
+        /* 🧠 [محاكي أذكى - الخطوة الجديدة "لمين وليه؟"] */
+        .bose-purpose-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+        .bose-mood-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 16px;
+        }
+        .bose-selection-card-inner .mood-emoji,
+        .bose-selection-card-inner .purpose-emoji {
+            font-size: 28px;
+            margin-bottom: 6px;
+            display: block;
+        }
+        .bose-flavor-sensory-note {
+            font-size: 12.5px;
+            color: var(--bose-black);
+            opacity: 0.65;
+            text-align: center;
+            margin: 6px 0 0 0;
+            line-height: 1.4;
+        }
+
+        /* 💬 ملاحظة المصمم السياقية */
+        .bose-designer-note-bubble {
+            display: none;
+            align-items: flex-start;
+            gap: 10px;
+            background: var(--bose-pink-light);
+            border: 1px dashed var(--bose-pink);
+            border-radius: 16px;
+            padding: 14px 16px;
+            margin-top: 20px;
+            font-size: 13.5px;
+            color: var(--bose-black);
+            line-height: 1.6;
+            animation: boseSmoothFadeIn 0.3s ease-out forwards;
+        }
+        .bose-designer-note-bubble.show { display: flex; }
+        .bose-designer-note-bubble .note-icon { font-size: 18px; flex-shrink: 0; }
+
+        /* 💌 زرار مشاركة التصميم */
+        .bose-share-design-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            background: transparent;
+            border: 1.5px dashed var(--bose-pink);
+            color: var(--bose-pink);
+            font-family: 'Cairo';
+            font-weight: 700;
+            font-size: 14.5px;
+            padding: 13px;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 18px;
+            transition: var(--bose-transition);
+        }
+        .bose-share-design-btn:hover {
+            background: var(--bose-pink-light);
+        }
     </style>
 </head>
 <body>
@@ -397,13 +465,51 @@
                 <span class="bose-progress-node" id="node-step-2">2</span>
                 <span class="bose-progress-node" id="node-step-3">3</span>
                 <span class="bose-progress-node" id="node-step-4">4</span>
+                <span class="bose-progress-node" id="node-step-5">5</span>
             </div>
 
             <div class="bose-step-wizard-card">
                 <form id="bose-interactive-cake-form" onsubmit="return false;">
-                    
-                    <!-- الخطوة 1 -->
+
+                    <!-- الخطوة 1 (جديدة) - لمين التورتة وإيه الإحساس المطلوب -->
                     <div class="bose-step-wizard-panel active-panel" id="panel-wizard-step-1">
+                        <h2 class="bose-wizard-title">التورتة دي لمين؟</h2>
+                        <p class="bose-wizard-subtitle">هنسهّل عليكِ الاختيار من أول خطوة.</p>
+
+                        <div class="bose-purpose-grid">
+                            <label class="bose-selection-card-label">
+                                <input type="radio" name="cake_purpose" value="self" checked>
+                                <div class="bose-selection-card-inner"><span class="purpose-emoji">🎂</span>لنفسي</div>
+                            </label>
+                            <label class="bose-selection-card-label">
+                                <input type="radio" name="cake_purpose" value="gift">
+                                <div class="bose-selection-card-inner"><span class="purpose-emoji">🎁</span>هدية لحد تاني</div>
+                            </label>
+                        </div>
+
+                        <h3 class="premium-input-label" style="margin-top:26px;">عايزة الإحساس يكون إيه؟ (اختياري، هيرشحلك توليفة جاهزة)</h3>
+                        <div class="bose-mood-grid">
+                            <label class="bose-selection-card-label">
+                                <input type="radio" name="cake_mood" value="celebratory">
+                                <div class="bose-selection-card-inner"><span class="mood-emoji">🎉</span>احتفالي</div>
+                            </label>
+                            <label class="bose-selection-card-label">
+                                <input type="radio" name="cake_mood" value="romantic">
+                                <div class="bose-selection-card-inner"><span class="mood-emoji">💕</span>رومانسي</div>
+                            </label>
+                            <label class="bose-selection-card-label">
+                                <input type="radio" name="cake_mood" value="elegant">
+                                <div class="bose-selection-card-inner"><span class="mood-emoji">✨</span>أنيق وبسيط</div>
+                            </label>
+                        </div>
+                        <div class="bose-designer-note-bubble" id="mood-suggestion-note">
+                            <span class="note-icon">💡</span>
+                            <span id="mood-suggestion-text"></span>
+                        </div>
+                    </div>
+
+                    <!-- الخطوة 2 -->
+                    <div class="bose-step-wizard-panel" id="panel-wizard-step-2">
                         <h2 class="bose-wizard-title">تورتة مناسبتك الفاخرة لـ كام فرد؟</h2>
                         <p class="bose-wizard-subtitle">حجم التورتة وسعرها بيتحدد بناءً على عدد الأفراد، يرجى اختيار العدد المناسب لضيوفك.</p>
                         
@@ -414,8 +520,8 @@
                         </div>
                     </div>
 
-                    <!-- الخطوة 2 -->
-                    <div class="bose-step-wizard-panel" id="panel-wizard-step-2">
+                    <!-- الخطوة 3 -->
+                    <div class="bose-step-wizard-panel" id="panel-wizard-step-3">
                         <h2 class="bose-wizard-title">تحب شكل التورتة الخارجي يكون إيه؟</h2>
                         <p class="bose-wizard-subtitle">اختر الشكل المفضل لك، علمًا بأن المقاس المربع والمستطيل بنفذه لعدد أفراد محدد لضمان روعة التنسيق الفاخر.</p>
                         
@@ -440,13 +546,13 @@
                         <div class="bose-alert-message" id="alert-shape-restriction"></div>
                     </div>
 
-                    <!-- الخطوة 3 -->
-                    <div class="bose-step-wizard-panel" id="panel-wizard-step-3">
+                    <!-- الخطوة 4 -->
+                    <div class="bose-step-wizard-panel" id="panel-wizard-step-4">
                         <h2 class="bose-wizard-title">نوع كيك مناسبتك وطباعة صورك الخاصة</h2>
                         <p class="bose-wizard-subtitle">لو تحب تختار طعم الكيك الأساسي، وتقدر كمان تضيف صورة مخصصة فوق سطح التورتة لتوثيق أسعد لحظاتك.</p>
                         
                         <h3 class="premium-input-label" style="margin-top:20px;">1. طعم ونوع الكيك الداخلي:</h3>
-                        <div class="bose-interactive-radio-grid" style="margin-bottom:24px;">
+                        <div class="bose-interactive-radio-grid" style="margin-bottom:8px;">
                             <label class="bose-selection-card-label">
                                 <input type="radio" name="cake_flavor" value="vanilla" checked>
                                 <div class="bose-selection-card-inner">فانيليا</div>
@@ -460,6 +566,8 @@
                                 <div class="bose-selection-card-inner">نصف ونصف</div>
                             </label>
                         </div>
+                        <p class="bose-flavor-sensory-note" id="flavor-sensory-note"></p>
+                        <div style="height:16px;"></div>
 
                         <h3 class="premium-input-label">2. تحب تضيف صورة مخصصة فوق التورتة؟</h3>
                         <div class="bose-interactive-radio-grid">
@@ -492,18 +600,26 @@
                                 <img id="cake-photo-preview-img" src="" class="bose-uploaded-image-preview" alt="معاينة الصورة المرفوعة" style="display:none;">
                             </div>
                         </div>
+                        <div class="bose-designer-note-bubble" id="printing-designer-note">
+                            <span class="note-icon">💡</span>
+                            <span>نصيحة صغيرة: صورة قابلة للأكل فوق التورتة بتدي شكل أفخم وتوثّق اللحظة بجمال.</span>
+                        </div>
                     </div>
 
-                    <!-- الخطوة 4 (تم التعديل والتصحيح اللغوي والإملائي بالكامل) -->
-                    <div class="bose-step-wizard-panel" id="panel-wizard-step-4">
-                        <h2 class="bose-wizard-title">لو تفضل نكتب جملة معينة على سطح التورتة:</h2>
-                        <p class="bose-wizard-subtitle">سجل لنا العبارة أو الكلمة اللي تحب تشوفها، وعرفنا لو عندك أي ملاحظات بخصوص حساسية الطعام لضمان سلامتك الكاملة.</p>
+                    <!-- الخطوة 5 (تم التعديل والتصحيح اللغوي والإملائي بالكامل) -->
+                    <div class="bose-step-wizard-panel" id="panel-wizard-step-5">
+                        <h2 class="bose-wizard-title" id="message-step-title">لو تفضل نكتب جملة معينة على سطح التورتة:</h2>
+                        <p class="bose-wizard-subtitle" id="message-step-subtitle">سجل لنا العبارة أو الكلمة اللي تحب تشوفها، وعرفنا لو عندك أي ملاحظات بخصوص حساسية الطعام لضمان سلامتك الكاملة.</p>
                         
-                        <h3 class="premium-input-label">تحب نكتب إيه على التورتة؟</h3>
+                        <h3 class="premium-input-label" id="message-field-label">تحب نكتب إيه على التورتة؟</h3>
                         <textarea class="bose-premium-textarea-field" id="text-cake-message" placeholder="مثال: عيد ميلاد سعيد يا بوسي" maxlength="100" style="margin-bottom:24px;"></textarea>
 
                         <h3 class="premium-input-label">لو عندك أي ملاحظات بخصوص الحساسية:</h3>
                         <textarea class="bose-premium-textarea-field" id="text-cake-allergy" placeholder="عرفنا هنا لو بتعاني من حساسية تجاه أي مكونات (مثل المكسرات) عشان نراعي ده بكل إتقان في المعمل" maxlength="150"></textarea>
+
+                        <button type="button" class="bose-share-design-btn" id="btn-share-design">
+                            <i class="fa-brands fa-whatsapp"></i> شاركي التصميم مع حد قبل ما تأكدي
+                        </button>
                     </div>
 
                     <div class="bose-wizard-navigation-buttons">
