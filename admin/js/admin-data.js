@@ -120,6 +120,20 @@
             stats.activeOffers = 0;
         }
 
+        // شارة "تذكير المراجعات المستحقة" - نفس شرط getReviewFollowups بالظبط لكن count بس
+        try {
+            const { count } = await client
+                .from("orders")
+                .select("id", { count: "exact", head: true })
+                .eq("status", "delivered")
+                .is("review_reminder_sent_at", null)
+                .lte("delivered_at", new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString());
+            stats.reviewFollowupsDue = count || 0;
+        } catch (e) {
+            console.warn("تعذر جلب عدد تذكيرات المراجعات المستحقة:", e.message);
+            stats.reviewFollowupsDue = 0;
+        }
+
         return stats;
     }
 
@@ -234,6 +248,37 @@
     /** تحديث حالة طلب واحد (pending/confirmed/preparing/out_for_delivery/delivered/cancelled) */
     async function updateOrderStatus(orderId, newStatus) {
         const { error } = await client.from("orders").update({ status: newStatus }).eq("id", orderId);
+        if (error) throw error;
+    }
+
+    /**
+     * 👑 [تذكير المراجعات]: الطلبات اللي اتسلمت من يوم (أو أكتر) ولسه محدش
+     * بعتلها تذكير مراجعة. delivered_at بيتسجل تلقائياً من trigger في قاعدة
+     * البيانات أول مرة الحالة تتحول delivered - مش بنحسبه هنا يدوياً.
+     */
+    async function getReviewFollowups() {
+        try {
+            const { data, error } = await client
+                .from("orders")
+                .select("id, order_number, customer_name, phone1, delivered_at, order_items(title, product_id)")
+                .eq("status", "delivered")
+                .is("review_reminder_sent_at", null)
+                .lte("delivered_at", new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
+                .order("delivered_at", { ascending: true });
+            if (error) throw error;
+            return data || [];
+        } catch (e) {
+            console.warn("تعذر جلب طلبات تذكير المراجعات:", e.message);
+            return [];
+        }
+    }
+
+    /** تسجيل إن تذكير المراجعة اتبعت للطلب ده - بيختفي من القائمة بعدها */
+    async function markReviewReminderSent(orderId) {
+        const { error } = await client
+            .from("orders")
+            .update({ review_reminder_sent_at: new Date().toISOString() })
+            .eq("id", orderId);
         if (error) throw error;
     }
 
@@ -738,6 +783,8 @@
         getRecentOrders,
         getAllOrders,
         updateOrderStatus,
+        getReviewFollowups,
+        markReviewReminderSent,
         getAllCategories,
         createCategory,
         updateCategory,

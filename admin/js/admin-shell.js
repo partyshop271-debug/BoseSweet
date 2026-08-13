@@ -29,6 +29,7 @@
             items: [
                 { key: "orders", label: "الطلبات", icon: "fa-receipt", href: "orders.html", badgeKey: "ordersToday" },
                 { key: "products", label: "المنتجات", icon: "fa-cake-candles", href: "products.html" },
+                { key: "review-followups", label: "تذكير المراجعات", icon: "fa-comment-dots", href: "review-followups.html", badgeKey: "reviewFollowupsDue" },
             ],
         },
         {
@@ -58,6 +59,7 @@
         reports: ["التقارير", "اتجاه المبيعات وأكتر المنتجات مبيعاً"],
         orders: ["الطلبات", "متابعة وتحديث حالة كل طلبات العملاء"],
         products: ["المنتجات", "إضافة وتعديل منتجات المتجر"],
+        "review-followups": ["تذكير المراجعات", "عملاء اتسلملهم طلبهم من يوم أو أكتر - ابعتيلهم تذكير مراجعة بضغطة واحدة"],
         homepage: ["الواجهة الرئيسية", "التحكم في محتوى الصفحة الرئيسية للموقع"],
         categories: ["الفئات", "إدارة فئات المنتجات"],
         offers: ["عروض المنتجات", "تمييز منتجات موجودة كعليها عرض/خصم في الموقع"],
