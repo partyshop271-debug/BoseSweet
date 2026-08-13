@@ -268,7 +268,10 @@
 
             const formData = new FormData();
             formData.append('file', compressedBlob, 'flower_compressed.jpg');
-            formData.append('upload_preset', 'ml_default');
+            // 🚨🚨 [إصلاح جذري حرج - نفس سبب فشل الرفع في محاكي التورت بالظبط]:
+            // "ml_default" مش preset حقيقي مفعّل على حساب Cloudinary بتاعنا. استخدمنا
+            // نفس الـ preset الحقيقي الشغال فعلياً في لوحة التحكم: "gct8i28h".
+            formData.append('upload_preset', 'gct8i28h');
 
             const res = await fetch(endpoint, { method: 'POST', body: formData });
             const resData = await res.json();
@@ -280,14 +283,15 @@
                 if (window.showBoseGlobalToast) window.showBoseGlobalToast("تم تأمين وحفظ الصورة بنجاح! ✨");
             }
         } catch (err) {
-            // Fallback في حال تعثر الشبكة أو السيرفر
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onloadend = () => {
-                state.photoUrl = reader.result;
-                if (photoPreviewImg) photoPreviewImg.src = reader.result;
-                if (photoPreviewContainer) photoPreviewContainer.style.display = "block";
-            };
+            // 🚨🚨 [إصلاح جذري حرج]: كان بيعمل Fallback صامت لصورة base64 عملاقة
+            // (نص طويل جداً يمثل الصورة كاملة) وبيوهم العميل إن الرفع "نجح" (المعاينة
+            // بتظهر عادي محلياً)، بينما في الحقيقة الصورة دي مش مرفوعة فعلياً على أي
+            // سيرفر حقيقي - النص الطويل ده كان بيوصل لرابط الواتساب فيكسره تماماً
+            // (روابط واتساب محدودة الطول) أو يوصل مقطوع/فاسد. الحل الصحيح: نوضح
+            // للعميل إن الرفع فشل فعلياً ونسيبها تحاول تاني، بدل حل وهمي بيبان شغال.
+            state.photoUrl = "";
+            if (photoPreviewContainer) photoPreviewContainer.style.display = "none";
+            if (window.showBoseGlobalToast) window.showBoseGlobalToast("تعذر رفع الصورة، تأكدي من الاتصال بالإنترنت وحاولي تاني.");
         } finally {
             state.isUploading = false;
             if (addToCartBtn) {

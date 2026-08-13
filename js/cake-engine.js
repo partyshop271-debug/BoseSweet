@@ -341,6 +341,27 @@ function startEngineLogic() {
         let selectedMood = document.querySelector('input[name="cake_mood"]:checked')?.value || '';
         const moodLabelMap = { celebratory: 'احتفالي', romantic: 'رومانسي', elegant: 'أنيق وبسيط' };
 
+        // 🚨🚨 [إصلاح جذري - صمام أمان ضد وصول الطلب بصورة غلط]: قبل كده لو
+        // العميلة اختارت "طباعة صورة" لكن الرفع فشل أو لسه شغال، كان بيكمل
+        // الطلب عادي بصورة العرض التوضيحي بدل صورتها الحقيقية من غير أي تنبيه -
+        // بالظبط اللي كانت صاحبة المتجر بتشتكي منه في رسالة الواتساب. دلوقتي
+        // بنوقف الإضافة للسلة فعلياً في الحالتين ونطلب منها تنتظر أو تعيد المحاولة.
+        if (selectedPrinting !== 'none') {
+            if (isUploadingCakePhoto) {
+                if (typeof window.showBoseGlobalToast === 'function') {
+                    window.showBoseGlobalToast("لسه بيتم رفع صورتك، استني ثواني وبعدين اضغطي إضافة للسلة.");
+                }
+                return;
+            }
+            if (!uploadedCakePhotoUrl) {
+                if (typeof window.showBoseGlobalToast === 'function') {
+                    window.showBoseGlobalToast("من فضلك ارفعي صورة التصميم المطلوب طباعته على التورتة أولاً.");
+                }
+                if (cakePhotoUploadZone) cakePhotoUploadZone.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+        }
+
         const masterProduct = window.BoseStoreData?.products?.find(p => p.slug === "toort-custom-master") || {
             slug: "toort-custom-master",
             title: "التورت",

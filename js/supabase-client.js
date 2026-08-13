@@ -272,7 +272,14 @@
         const cloudName = window.BoseStoreData?.store?.cloudinaryCloudName || "dyx4w0dr1";
         const formData = new FormData();
         formData.append("file", compressedBlob, "bose_reference.jpg");
-        formData.append("upload_preset", "ml_default");
+        // 🚨🚨 [إصلاح جذري حرج - سبب فشل رفع صور الطباعة بالكامل]: كان هنا preset
+        // اسمه "ml_default" - ده اسم افتراضي بس مش مفعّل فعلياً كـ Unsigned Upload
+        // Preset على حساب Cloudinary بتاع المتجر، فأي محاولة رفع كانت بترجع خطأ
+        // مباشرة من Cloudinary نفسه (401/400) قبل ما توصل حتى لمرحلة حفظ الصورة -
+        // وده سبب فشل رفع صور الطباعة على التورت والورد بالكامل. لوحة التحكم
+        // (admin-ui-utils.js) بترفع صور المنتجات بنجاح لأنها بتستخدم preset حقيقي
+        // مفعّل فعلاً على نفس الحساب: "gct8i28h" - استخدمنا نفس القيمة هنا بالظبط.
+        formData.append("upload_preset", "gct8i28h");
 
         const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
             method: "POST",
