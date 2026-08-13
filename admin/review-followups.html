@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تذكير المراجعات | لوحة تحكم حلويات بوسي</title>
+    <meta name="robots" content="noindex, nofollow">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="css/admin-theme.css">
+    <link rel="stylesheet" href="css/admin-layout.css">
+</head>
+<body data-page="review-followups">
+
+    <!-- شاشة تحميل تظهر لحد ما يتأكد من الجلسة -->
+    <div class="adm-auth-gate"><div class="adm-loading-spinner"></div></div>
+
+    <div class="adm-shell">
+        <div id="adm-shell-target"></div>
+
+        <main class="adm-main">
+            <div id="adm-topbar-target"></div>
+
+            <div class="adm-content" id="adm-page-content">
+
+                <div class="adm-card" style="margin-bottom: 18px; background: rgba(255,145,164,0.05);">
+                    <p style="margin:0; font-size:0.9rem; line-height:1.7;">
+                        <i class="fa-solid fa-circle-info" style="color: var(--bose-pink, #FF91A4);"></i>
+                        القائمة دي بتوريلك تلقائياً أي طلب اتسجّل "تم التسليم" من يوم كامل أو أكتر ولسه محدش بعتله تذكير.
+                        اضغطي "ابعتي على واتساب" - هيفتح واتساب برسالة جاهزة تقولك تعدّليها لو حبيتي وتبعتيها، وبعد ما تبعتي
+                        اضغطي "تم الإرسال" عشان الطلب يختفي من هنا. ملحوظة: الإرسال نفسه بيتم يدوياً بضغطة واحدة بتاعتك -
+                        مفيش نظام هنا لسه بيبعت رسايل تلقائي من غير ما تضغطي إنتِ.
+                    </p>
+                </div>
+
+                <div class="adm-card">
+                    <div class="adm-card-header">
+                        <div>
+                            <h2>تذكير المراجعات المستحقة</h2>
+                            <p>عملاء اتسلمهم طلبهم من يوم أو أكتر</p>
+                        </div>
+                        <button class="adm-btn adm-btn-outline" id="followups-refresh-btn"><i class="fa-solid fa-rotate"></i> تحديث</button>
+                    </div>
+                    <div class="adm-table-wrapper">
+                        <table class="adm-table" id="followups-table">
+                            <thead>
+                                <tr>
+                                    <th>رقم الطلب</th>
+                                    <th>العميل</th>
+                                    <th>الأصناف</th>
+                                    <th>اتسلم من</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="followups-tbody">
+                                <tr><td colspan="5"><div class="adm-loading-spinner"></div></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/admin-data.js"></script>
+    <script src="js/admin-auth-guard.js"></script>
+    <script src="js/admin-ui-utils.js"></script>
+    <script src="js/admin-shell.js"></script>
+    <script src="js/pages/review-followups-page.js"></script>
+</body>
+</html>
