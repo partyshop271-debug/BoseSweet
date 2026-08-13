@@ -380,9 +380,9 @@
             <i class="fa-solid fa-circle-info"></i> عندنا أكتر من حجم من نفس الصنف — اختاري اللي يناسبك من هنا 👇
         </div>
         <div id="bose-size-filter-row" class="bose-size-tabs-filter" style="display: none;">
-            <button class="bose-filter-tab-pill active" data-filter-size="triangle" aria-label="عرض مقاس مثلث فردي">مثلث فردي</button>
-            <button class="bose-filter-tab-pill" data-filter-size="medium" aria-label="عرض مقاس وسط تشارك ممتع">وسط تشارك ممتع</button>
-            <button class="bose-filter-tab-pill" data-filter-size="large" aria-label="عرض مقاس كبير جمعات فاخرة">كبير جمعات فاخرة</button>
+            <button class="bose-filter-tab-pill active" data-filter-size="triangle" aria-label="عرض مقاس مثلث">مثلث</button>
+            <button class="bose-filter-tab-pill" data-filter-size="medium" aria-label="عرض مقاس طاجن">طاجن</button>
+            <button class="bose-filter-tab-pill" data-filter-size="large" aria-label="عرض مقاس حجم عائلي">حجم عائلي</button>
         </div>
 
         <!-- حاوية الشبكة الهندسية للمنتجات المعزولة -->
@@ -554,6 +554,10 @@
                     const hasDiscount = !!(product.oldPrice && product.oldPrice > product.price);
                     cardElement.className = 'product-card' + (hasDiscount ? ' bose-offer-card' : '');
                     cardElement.setAttribute('data-slug', product.slug);
+                    // 👑 [إصلاح جذري - كل الكارت قابل للمس]: الكارت كله بيودي لصفحة
+                    // المنتج لو العميلة دوست في أي مكان فاضي منه - مش لازم بالظبط
+                    // على الصورة أو الاسم. العداد وزرار الإضافة للسلة استثناء مقصود.
+                    cardElement.style.cursor = 'pointer';
 
                     // 🛡️ [إصلاح أمني]: escapeBoseHTML كان متاح ومستخدم في كل مكان تاني بالموقع،
                     // لكن هذا الملف كان بيحقن title/flavorName/flavorDesc في innerHTML مباشرة
@@ -657,6 +661,12 @@
                                 }, 1500);
                             }
                         }
+                    });
+
+                    // 👑 [إصلاح جذري - كل الكارت قابل للمس]
+                    cardElement.addEventListener('click', function(e) {
+                        if (e.target.closest('.product-card-qty-row') || e.target.closest('.bose-internal-add')) return;
+                        window.location.href = `product.html?slug=${encodeURIComponent(product.slug)}`;
                     });
 
                     productsGrid.appendChild(cardElement);

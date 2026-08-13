@@ -718,7 +718,7 @@
             // 🚨 [إصلاح حرج - الأحجام]: تبويب اختيار الحجم بيظهر بس لو المنتج فعلاً عنده أكتر من
             // حجم سعر مختلف حقيقي (زي الديسباسيتو: مثلث/وسط/كبير). لو المنتج عنده حجم واحد بس،
             // التبويب بيفضل مخفي تماماً زي ما هو دلوقتي، من غير أي تغيير في باقي المنتجات.
-            const SIZE_TAB_LABELS = { triangle: "مثلث فردي", medium: "وسط تشارك ممتع", large: "كبير جمعات فاخرة" };
+            const SIZE_TAB_LABELS = { triangle: "مثلث", medium: "طاجن", large: "حجم عائلي" };
             function renderSizeTabs(availableSizes) {
                 const wrap = document.getElementById("bose-product-size-tabs");
                 const note = document.getElementById("bose-product-size-note");
@@ -1218,7 +1218,7 @@
                     const calcPrice = Math.round(prod.price);
                     
                     return `
-                        <div class="product-card bose-product-card" data-slug="${prod.slug}" style="border:var(--bose-border-pink); border-radius:20px; background:var(--bose-white); overflow:hidden; padding:16px; display:flex; flex-direction:column; gap:10px; box-shadow:var(--bose-shadow-glow); text-align:right; direction:rtl;">
+                        <div class="product-card bose-product-card" data-slug="${prod.slug}" style="cursor:pointer; border:var(--bose-border-pink); border-radius:20px; background:var(--bose-white); overflow:hidden; padding:16px; display:flex; flex-direction:column; gap:10px; box-shadow:var(--bose-shadow-glow); text-align:right; direction:rtl;" onclick="window.location.href='product.html?slug=${encodeURIComponent(prod.slug)}';">
                             <a href="product.html?slug=${prod.slug}" style="text-decoration:none; display:block; overflow:hidden; border-radius:12px; height:220px;">
                                 <img class="product-card-img bose-product-image" src="${window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(imgUrl, 350) : imgUrl}" alt="${prod.title}" style="width:100%; height:100%; object-fit:cover; display:block;" loading="lazy" onerror="this.src='${defaultLogo}';">
                             </a>
