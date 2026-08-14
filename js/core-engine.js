@@ -1625,13 +1625,8 @@
      * (وردي/أبيض/ذهبي، خط Cairo) بتظهر للعميل بعد ثواني من دخوله الموقع لأول مرة،
      * بتستخدم شخصية الشيف بتاعة اللوجو (مش أي ماسكوت جاهز)، وبتدعو العميل يثبّت
      * تطبيق الويب (PWA) بتاعنا على شاشته الرئيسية زي أي تطبيق عادي.
-     *
-     * ⚠️ [مهم للمطوّر/صاحبة المتجر]: الرابط ده أدناه بس Placeholder مؤقت بيشاور على
-     * اللوجو العادي - لازم يترفع ملف "assets/bose-mascot-character.png" (اللي جوه
-     * حزمة التسليم دي) على Cloudinary زي باقي الصور، وبعدين نستبدل قيمة الثابت
-     * MASCOT_IMAGE_URL تحت برابط الصورة الجديد.
      */
-    const BOSE_APP_MASCOT_IMAGE_URL = "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"; // TODO: استبدلي بالرابط بعد رفع bose-mascot-character.png
+    const BOSE_APP_MASCOT_IMAGE_URL = "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1786730325/AIRetouch_20260814_205609610_knvazu.jpg";
 
     function setupAppInstallPopup() {
         // لو التطبيق شغال بالفعل كـ PWA مثبّت (standalone)، العميل مثبّته أصلاً - متعرضيش عليه يثبّته تاني
