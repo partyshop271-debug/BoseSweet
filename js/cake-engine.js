@@ -1,9 +1,9 @@
 /**
- * المحرك البرمجي المطور والمصحح لمحاكي التورت V4.0 - حلويات بوسي
- * يضمن التوافق وحل مشكلة ثبات السكرول وإعادة توجيه الصفحة لبدايتها آلياً
- * V4.0: إضافة خطوة المناسبة (وترشيح الشكل المناسب)، صورة تصميم مطلوب تقليده،
- * كارت إهداء التورت، خطوة ملخص/مفردات نهائية، وصور المعرض/البانر ديناميكية
- * من لوحة التحكم بدل ما تكون ثابتة على شعار المتجر.
+ * المحرك البرمجي المطور والمصحح لمحاكي التورت V6.0 - حلويات بوسي
+ * V6.0: إعادة بناء كاملة للخطوات - كل خطوة قرار واحد بس (11 خطوة بدل 6)،
+ * حذف خطوة "لنفسي / هدية"، أرقام خطوات قابلة للّمس للقفز لأي خطوة، شرح
+ * توضيحي منبثق (Popover) لكل اختيار، اختفاء الهيدر بعد الخطوة الأولى لتقليل
+ * السكرول، ومشاركة تصميم التورتة عبر رابط حقيقي على الموقع نفسه بدل نص خام.
  */
 
 function startEngineLogic() {
@@ -20,7 +20,8 @@ function startEngineLogic() {
     const btnWizardPrev = document.getElementById('btn-wizard-prev');
 
     let currentActiveStep = 1;
-    const totalWizardStepsCount = 6;
+    const totalWizardStepsCount = 11;
+    const OCCASION_STEP = 2;
 
     const config = window.BoseStoreData?.cakeBuilder || {
         basePrice: 580,
@@ -35,11 +36,8 @@ function startEngineLogic() {
     };
 
     /* ==================================================================
-       🖼️ [صور المحاكي الديناميكية]: البانر الرئيسي ومعرض "تورت شرفت
-       عملاءنا" كانوا ثابتين على شعار المتجر مكرر 4 مرات بدون أي مكان في
-       لوحة التحكم لتغييرهم - دلوقتي بيتقروا من إعدادات المحاكي
-       (cakeBuilder.heroImage / cakeBuilder.portfolioGallery) اللي بقى
-       ليها قسم مخصص في لوحة التحكم (builders-settings.html).
+       🖼️ [صور المحاكي الديناميكية]: زي ما كان بالظبط - البانر ومعرض الإلهام
+       بيتقروا من إعدادات المحاكي في لوحة التحكم.
        ================================================================== */
     function renderCakeGalleryAndHero() {
         const heroImg = document.querySelector('.bose-main-hero-hook img');
@@ -56,8 +54,6 @@ function startEngineLogic() {
                     return `<div class="bose-portfolio-img-node"><img src="${url}" alt="${alt}" loading="lazy"></div>`;
                 }).join("");
             } else {
-                // لو صاحبة المتجر لسه ما ضافتش صور المعرض من لوحة التحكم، منسيبش
-                // الخطوة الأولى فاضية بصمت - رسالة بسيطة أحسن من فراغ محير.
                 track.innerHTML = `<p class="bose-gallery-empty-note">هنضيف هنا قريب مجموعة من أجمل التورت اللي عملناها لعملائنا 🎂</p>`;
             }
         }
@@ -65,11 +61,7 @@ function startEngineLogic() {
     renderCakeGalleryAndHero();
 
     /* ==================================================================
-       🎉 [مناسبة التورتة - نسخة V5.0]: بدل قائمة مناسبات جاهزة (عيد ميلاد/عيد
-       أم/فرح...) بتقفل العميل جوه تصنيف محدود، دلوقتي العميل بيكتب مناسبته
-       بكلامه هو في خانة نص حرة - وده أصدق وأدق، لأنه بيوصفلنا فعلاً "عيد
-       ميلاد ابني الصغير" أو "خطوبتي أنا" مش مجرد كلمة "عيد ميلاد" عامة.
-       هنستخدم النص ده حرفياً بعد كده في الملخص، وفي فاتورة السلة والواتساب.
+       🎉 [مناسبة التورتة]: خانة نص حرة (دلوقتي في خطوتها المستقلة رقم 2).
        ================================================================== */
     const occasionInput = document.getElementById('input-cake-occasion');
     const occasionRequiredHint = document.getElementById('occasion-required-hint');
@@ -92,12 +84,7 @@ function startEngineLogic() {
         "half-half": "مزيج متوازن بين نعومة الفانيليا وغنى الشوكولاتة في كل قطعة."
     };
 
-    const purposeRadios = document.querySelectorAll('input[name="cake_purpose"]');
     const flavorSensoryNote = document.getElementById('flavor-sensory-note');
-    const messageStepTitle = document.getElementById('message-step-title');
-    const messageStepSubtitle = document.getElementById('message-step-subtitle');
-    const messageFieldLabel = document.getElementById('message-field-label');
-    const textCakeMessage = document.getElementById('text-cake-message');
     const btnShareDesign = document.getElementById('btn-share-design');
 
     function updateFlavorSensoryNote() {
@@ -105,43 +92,60 @@ function startEngineLogic() {
         const selectedFlavor = document.querySelector('input[name="cake_flavor"]:checked')?.value || 'vanilla';
         flavorSensoryNote.textContent = FLAVOR_SENSORY_NOTES[selectedFlavor] || "";
     }
-
-    function updateGiftModeWording() {
-        const isGift = document.querySelector('input[name="cake_purpose"]:checked')?.value === 'gift';
-        if (messageStepTitle) messageStepTitle.textContent = isGift ? "اكتبي رسالة الإهداء اللي هتفرّح بيها الشخص ده:" : "لو تفضل نكتب جملة معينة على سطح التورتة:";
-        if (messageStepSubtitle) messageStepSubtitle.textContent = isGift ? "كلمة حلوة من قلبك هتتكتب على التورتة، وعرفنا لو فيه أي ملاحظات حساسية طعام." : "سجل لنا العبارة أو الكلمة اللي تحب تشوفها، وعرفنا لو عندك أي ملاحظات بخصوص حساسية الطعام لضمان سلامتك الكاملة.";
-        if (messageFieldLabel) messageFieldLabel.textContent = isGift ? "رسالة الإهداء:" : "تحب نكتب إيه على التورتة؟";
-        if (textCakeMessage) textCakeMessage.placeholder = isGift ? "مثال: كل سنة وانتِ طيبة يا أغلى صديقة" : "مثال: عيد ميلاد سعيد يا بوسي";
-    }
-
-    purposeRadios.forEach((radio) => {
-        radio.addEventListener('change', updateGiftModeWording);
-    });
     document.querySelectorAll('input[name="cake_flavor"]').forEach((radio) => {
         radio.addEventListener('change', updateFlavorSensoryNote);
     });
     updateFlavorSensoryNote();
-    updateGiftModeWording();
-
-    if (btnShareDesign) {
-        btnShareDesign.addEventListener('click', () => {
-            const currentPersons = parseInt(inputPersons.value, 10) || 4;
-            const selectedShape = document.querySelector('input[name="cake_shape"]:checked')?.value || 'circle';
-            const selectedFlavor = document.querySelector('input[name="cake_flavor"]:checked')?.value || 'vanilla';
-            const shapeLabelMap = { circle: 'دائرية', heart: 'قلب', square: 'مربعة', rectangle: 'مستطيلة' };
-            const flavorLabelMap = { vanilla: 'فانيليا', chocolate: 'شوكولاتة', 'half-half': 'نصف ونصف' };
-            const priceNow = document.getElementById('display-dynamic-price')?.textContent || "";
-            const shareText = `شوف التصميم اللي عملته لتورتة حلويات بوسي 🎂\nالشكل: ${shapeLabelMap[selectedShape] || selectedShape}\nالنكهة: ${flavorLabelMap[selectedFlavor] || selectedFlavor}\nلـ ${currentPersons} فرد\nالسعر: ${priceNow}\nإيه رأيك؟`;
-            window.open(`https://wa.me/?text=${encodeURIComponent(shareText)}`, '_blank', 'noopener,noreferrer');
-        });
-    }
 
     /* ==================================================================
-       📐 [إشعار توضيحي دائم لمقاسات الشكل]: قبل كده كان فيه بس تنبيه
-       مؤقت (6 ثواني) بيظهر لو العميل اختار شكل غير متاح لعدد الأفراد
-       الحالي. دلوقتي فيه كمان ملاحظة ثابتة تحت خطوة اختيار الشكل نفسها
-       بتوضح من الأول أقل عدد أفراد لكل شكل (خصوصاً المربع والمستطيل)
-       قبل ما العميل يحتاج يتفاجأ بتنبيه لاحقاً.
+       ℹ️ [شرح توضيحي منبثق لكل اختيار]: بوكس واحد مشترك بيتغير محتواه
+       حسب أي زرار ⓘ اتضغط، بحجم مضغوط قريب لحجم الكارت (مش شاشة كاملة).
+       ================================================================== */
+    const INFO_CONTENT = {
+        "shape-circle": { title: "دائرة 🔵", text: "الشكل الكلاسيكي الأشهر والأسهل في التوزيع على الضيوف، بيناسب كل المناسبات ومتاح من 4 أفراد." },
+        "shape-heart": { title: "قلب ❤️", text: "شكل مثالي للمناسبات الرومانسية زي عيد الحب والخطوبة، بيدي إحساس شخصي ومميز، متاح من 4 أفراد." },
+        "shape-square": { title: "مربع ◻️", text: "شكل عصري وأنيق بيدي تقطيع منظم ومريح للتجمعات الكبيرة، متاح من 16 فرد." },
+        "shape-rectangle": { title: "مستطيل ▭", text: "الأفضل للحفلات الكبيرة والتجمعات الواسعة لأنه بيدي أكبر مساحة تقطيع، متاح من 20 فرد." },
+        "flavor-vanilla": { title: "فانيليا 🌼", text: "فانيليا فرنسية ناعمة بقوام طري وخفيف - اختيار كلاسيكي بيعجب الكبير والصغير." },
+        "flavor-chocolate": { title: "شوكولاتة 🍫", text: "شوكولاتة بلجيكية غنية بطعم عميق ومكثف - مثالية لعشاق الشوكولاتة الحقيقيين." },
+        "flavor-half-half": { title: "نصف ونصف 🎂", text: "مزيج متوازن بين نعومة الفانيليا وغنى الشوكولاتة في كل قطعة - الأفضل لو ضيوفك أذواقهم مختلفة." },
+        "printing-none": { title: "بدون صور", text: "تصميم كلاسيكي أنيق من غير طباعة أي صورة على السطح - مناسب لو حابة شكل بسيط وفخم." },
+        "printing-edible": { title: "صورة قابلة للأكل 🍽️", text: "صورة حقيقية بتتطبع بحبر مصرح باستخدامه في الأطعمة وتتاكل عادي مع التورتة، بسعر إضافي 60 جنيه." },
+        "printing-non-edible": { title: "صورة غير قابلة للأكل 🖼️", text: "صورة بتتطبع على شريحة بلاستيك رقيقة بتتحط فوق التورتة كديكور (متاكلش)، بسعر إضافي 15 جنيه." }
+    };
+
+    const infoBackdrop = document.getElementById('bose-info-popover-backdrop');
+    const infoTitleEl = document.getElementById('bose-info-popover-title');
+    const infoTextEl = document.getElementById('bose-info-popover-text');
+    const infoCloseBtn = document.getElementById('bose-info-popover-close');
+
+    function openInfoPopover(key) {
+        const data = INFO_CONTENT[key];
+        if (!data || !infoBackdrop) return;
+        infoTitleEl.textContent = data.title;
+        infoTextEl.textContent = data.text;
+        infoBackdrop.classList.add('show');
+    }
+    function closeInfoPopover() {
+        if (infoBackdrop) infoBackdrop.classList.remove('show');
+    }
+    if (infoCloseBtn) infoCloseBtn.addEventListener('click', closeInfoPopover);
+    if (infoBackdrop) {
+        infoBackdrop.addEventListener('click', (e) => { if (e.target === infoBackdrop) closeInfoPopover(); });
+    }
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && infoBackdrop && infoBackdrop.classList.contains('show')) closeInfoPopover();
+    });
+    document.querySelectorAll('.bose-info-badge').forEach((badge) => {
+        badge.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            openInfoPopover(badge.dataset.infoKey);
+        });
+    });
+
+    /* ==================================================================
+       📐 [إشعار توضيحي دائم لمقاسات الشكل]
        ================================================================== */
     function renderShapeSizeNote() {
         const noteBox = document.getElementById('shape-size-permanent-note');
@@ -157,9 +161,7 @@ function startEngineLogic() {
     }
     renderShapeSizeNote();
 
-    // 🛡️ [إصلاح حرج]: حالة رفع صورة الطباعة على التورتة (كانت الخانة موجودة
-    // في الخطوة 3 بدون أي وسيلة فعلية لإرسال الصورة نفسها). نفس آلية الرفع
-    // المستخدمة في flower-engine.js بالظبط عبر الدالة الموحّدة في supabase-client.js
+    /* صورة الطباعة على التورتة */
     let uploadedCakePhotoUrl = "";
     let isUploadingCakePhoto = false;
 
@@ -174,7 +176,6 @@ function startEngineLogic() {
         if (cakePhotoUploadSection) {
             cakePhotoUploadSection.style.display = (selectedPrinting !== 'none') ? 'block' : 'none';
         }
-        // لو العميل رجع اختار "بدون صور" بعد ما رفع صورة، نمسح الصورة المرفوعة
         if (selectedPrinting === 'none') {
             uploadedCakePhotoUrl = "";
             if (cakePhotoPreviewImg) cakePhotoPreviewImg.style.display = 'none';
@@ -218,12 +219,7 @@ function startEngineLogic() {
         });
     }
 
-    /* ==================================================================
-       🖼️ [صورة تصميم تورتة مطلوب تقليدها - ميزة جديدة]: مختلفة تماماً عن
-       صورة "الطباعة على السطح" اللي فوق - هنا العميل بيبعت صورة تورتة
-       شافها (عندنا أو في أي مكان) وعايز نقرب تصميمنا منها قد الإمكان،
-       مش صورة تتطبع حرفياً على التورتة. نفس آلية الرفع الموحدة بالظبط.
-       ================================================================== */
+    /* صورة تصميم مطلوب تقليده */
     let uploadedReplicaPhotoUrl = "";
     let isUploadingReplicaPhoto = false;
 
@@ -282,11 +278,7 @@ function startEngineLogic() {
         });
     }
 
-    /* ==================================================================
-       💌 [كارت إهداء التورت - ميزة جديدة]: نفس فكرة كارت إهداء الورد
-       بالظبط (كارت ورقي بيتطبع ويتقدم مع الطلب)، بسعر مستقل خاص بالتورت
-       من إعدادات المحاكي (افتراضياً 30 جنيه).
-       ================================================================== */
+    /* كارت إهداء التورت */
     const giftCardToggle = document.getElementById('cake-giftcard-toggle');
     const giftCardTextSection = document.getElementById('cake-giftcard-text-section');
     const giftCardTextInput = document.getElementById('cake-giftcard-text');
@@ -317,9 +309,9 @@ function startEngineLogic() {
 
         const squareData = config.shapes.find(s => s.id === 'square') || { minimumPersons: 16 };
         const rectData = config.shapes.find(s => s.id === 'rectangle') || { minimumPersons: 20 };
-        
+
         let alertText = "";
-        
+
         if (selectedShape === 'square' && currentPersons < squareData.minimumPersons) {
             alertText = window.BoseStoreData?.cakeBuilder?.images?.squareMinimum || "المقاس المربع يبدأ من 16 فرد";
             document.querySelector('input[name="cake_shape"][value="circle"]').checked = true;
@@ -329,7 +321,7 @@ function startEngineLogic() {
             document.querySelector('input[name="cake_shape"][value="circle"]').checked = true;
             selectedShape = 'circle';
         }
-        
+
         if (alertText !== "") {
             alertBox.textContent = alertText;
             alertBox.style.display = "block";
@@ -337,27 +329,47 @@ function startEngineLogic() {
                 alertBox.style.display = "none";
             }, 6000);
         }
-        
+
         const finalDynamicPrice = window.calculateCustomCakePrice(currentPersons, {
             printingType: selectedPrinting,
             hasGiftCard: hasGiftCardNow
         });
-        
+
         if (priceLabel) {
             priceLabel.textContent = `سعر التورتة الحالي لـ ${currentPersons} أفراد هو:`;
         }
-        
+
         priceDisplay.textContent = `${Math.round(finalDynamicPrice)} جنيه`;
 
         renderOrderSummary(currentPersons, selectedShape, selectedPrinting, hasGiftCardNow, finalDynamicPrice);
     }
 
-    /* ==================================================================
-       🧾 [خطوة الملخص الجديدة]: مفردات تفصيلية لكل بند وسعره، معروضة في
-       آخر خطوة قبل زرار "إضافة للسلة" مباشرة - نفس فلسفة الفاتورة الجانبية
-       في محاكي الورد (bose-invoice-addon-row) لكن كخطوة مستقلة بدل شريط
-       جانبي، لأن محاكي التورت أحادي العمود.
-       ================================================================== */
+    function buildDesignSnapshot(currentPersons, selectedShape, selectedPrinting, hasGiftCardNow, grandTotal) {
+        const shapeLabelMap = { circle: 'دائرة', heart: 'قلب', square: 'مربع', rectangle: 'مستطيل' };
+        const flavorLabelMap = { vanilla: 'فانيليا', chocolate: 'شوكولاتة', 'half-half': 'نصف ونصف' };
+        const printingLabelMap = { none: 'بدون طباعة صورة', edible: 'طباعة صورة صالحة للأكل', 'non-edible': 'طباعة صورة غير صالحة للأكل' };
+        const selectedFlavor = document.querySelector('input[name="cake_flavor"]:checked')?.value || 'vanilla';
+        const messageText = document.getElementById('text-cake-message')?.value.trim() || "";
+        const allergyText = document.getElementById('text-cake-allergy')?.value.trim() || "";
+        const occasionText = getOccasionText();
+
+        return {
+            shapeLabel: shapeLabelMap[selectedShape] || selectedShape,
+            flavorLabel: flavorLabelMap[selectedFlavor] || selectedFlavor,
+            persons: currentPersons,
+            occasion: occasionText,
+            printingLabel: printingLabelMap[selectedPrinting] || printingLabelMap.none,
+            printImageUrl: (selectedPrinting !== 'none') ? uploadedCakePhotoUrl : "",
+            replicaImageUrl: uploadedReplicaPhotoUrl || "",
+            message: messageText,
+            hasGiftCard: hasGiftCardNow,
+            price: Math.round(grandTotal),
+            createdAt: new Date().toISOString()
+        };
+    }
+
+    let lastKnownSnapshot = null;
+
     function renderOrderSummary(currentPersons, selectedShape, selectedPrinting, hasGiftCardNow, grandTotal) {
         const summaryList = document.getElementById('cake-order-summary-list');
         const summaryTotalEl = document.getElementById('cake-order-summary-total');
@@ -367,14 +379,9 @@ function startEngineLogic() {
         const flavorLabelMap = { vanilla: 'فانيليا', chocolate: 'شوكولاتة', 'half-half': 'نصف ونصف' };
         const selectedFlavor = document.querySelector('input[name="cake_flavor"]:checked')?.value || 'vanilla';
         const occasionText = getOccasionText();
-        const selectedPurpose = document.querySelector('input[name="cake_purpose"]:checked')?.value || 'self';
 
         const minPersons = config.persons.minimum;
         const pricePerPerson = config.pricePerPerson || 145;
-        // 🧾 [صدق في العرض]: بنعرض على العميلة سعر مقاس التورتة اللي هي اختارته
-        // كرقم واحد نهائي، من غير ما نفكّكه لـ"أساسي + إضافي" - هي مش محتاجة
-        // تعرف تفاصيل حساباتنا الداخلية، هي محتاجة تعرف: اخترتِ تورتة لكام فرد
-        // وقد إيه سعرها، هذا كل شيء.
         const sizePortionPrice = config.basePrice + (Math.max(0, currentPersons - minPersons) * pricePerPerson);
 
         let printingLabel = "بدون طباعة صورة";
@@ -391,9 +398,6 @@ function startEngineLogic() {
         if (occasionText) {
             rows.push({ label: `المناسبة`, value: occasionText });
         }
-        if (selectedPurpose === 'gift') {
-            rows.push({ label: `الغرض`, value: `🎁 هدية لحد تاني` });
-        }
         if (selectedPrinting !== 'none') {
             rows.push({ label: printingLabel, value: `+ ${printingFee} جنيه` });
         }
@@ -406,13 +410,64 @@ function startEngineLogic() {
 
         summaryList.innerHTML = rows.map(r => `<div class="price-item-row"><span>${r.label}:</span><span class="item-value">${r.value}</span></div>`).join('');
         if (summaryTotalEl) summaryTotalEl.textContent = `${Math.round(grandTotal)} جنيه`;
+
+        lastKnownSnapshot = buildDesignSnapshot(currentPersons, selectedShape, selectedPrinting, hasGiftCardNow, grandTotal);
+    }
+
+    /* ==================================================================
+       🔗 [مشاركة التصميم عبر رابط الموقع]: بدل ما كنا بنبعت نص خام على
+       واتساب، دلوقتي بنحفظ لقطة من التصميم في قاعدة البيانات عبر RPC آمن،
+       ونبني رابط design-view.html?id=... بيفتح صفحة على الموقع نفسه فيها
+       كل تفاصيل الطلب - أي حد يفتح الرابط يشوف التصميم من غير ما يقدر
+       يشوف تصاميم عملاء تانيين.
+       ================================================================== */
+    if (btnShareDesign) {
+        btnShareDesign.addEventListener('click', async () => {
+            if (!window.BoseSupabase || typeof window.BoseSupabase.createSharedCakeDesign !== 'function') {
+                if (typeof window.showBoseGlobalToast === 'function') {
+                    window.showBoseGlobalToast("تعذر تجهيز رابط المشاركة الآن، حاولي تحديث الصفحة.");
+                }
+                return;
+            }
+            const originalLabel = btnShareDesign.innerHTML;
+            btnShareDesign.disabled = true;
+            btnShareDesign.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> بنجهز رابط التصميم...';
+            try {
+                const snapshot = lastKnownSnapshot || {};
+                const newId = await window.BoseSupabase.createSharedCakeDesign(snapshot);
+                if (!newId) throw new Error("no id returned");
+                const shareUrl = `${window.location.origin}${window.location.pathname.replace('cake-builder.html', 'design-view.html')}?id=${newId}`;
+                const shareText = `شوف تصميم التورتة اللي عملتهولك من حلويات بوسي 🎂\n${shareUrl}`;
+                window.open(`https://wa.me/?text=${encodeURIComponent(shareText)}`, '_blank', 'noopener,noreferrer');
+            } catch (err) {
+                if (typeof window.showBoseGlobalToast === 'function') {
+                    window.showBoseGlobalToast("تعذر تجهيز رابط المشاركة الآن، حاولي مرة أخرى.");
+                }
+            } finally {
+                btnShareDesign.disabled = false;
+                btnShareDesign.innerHTML = originalLabel;
+            }
+        });
+    }
+
+    /* ==================================================================
+       🧭 [إخفاء الهيدر بعد الخطوة الأولى]: البانر الكبير ومقدمة الصفحة
+       بيختفوا بمجرد ما العميلة تتعدى الخطوة الأولى، عشان يوفروا مساحة
+       فعلية على الشاشة لباقي الخطوات - ويرجعوا يظهروا لو رجعت لخطوة 1.
+       ================================================================== */
+    const heroEl = document.getElementById('bose-cake-hero');
+    const introEl = document.getElementById('bose-cake-intro');
+    function toggleHeroVisibilityForStep() {
+        const shouldCollapse = currentActiveStep !== 1;
+        if (heroEl) heroEl.classList.toggle('bose-collapsed-hero', shouldCollapse);
+        if (introEl) introEl.classList.toggle('bose-collapsed-hero', shouldCollapse);
     }
 
     function syncWizardPanelsUI() {
         for (let i = 1; i <= totalWizardStepsCount; i++) {
             const panel = document.getElementById(`panel-wizard-step-${i}`);
             const node = document.getElementById(`node-step-${i}`);
-            
+
             if (panel) panel.classList.remove('active-panel');
             if (node) {
                 node.classList.remove('active', 'done');
@@ -420,12 +475,12 @@ function startEngineLogic() {
                 else if (i < currentActiveStep) node.classList.add('done');
             }
         }
-        
+
         const activePanelToShow = document.getElementById(`panel-wizard-step-${currentActiveStep}`);
         if (activePanelToShow) activePanelToShow.classList.add('active-panel');
-        
+
         btnWizardPrev.disabled = (currentActiveStep === 1);
-        
+
         if (currentActiveStep === totalWizardStepsCount) {
             btnWizardNext.style.display = "none";
             btnCartSubmit.style.display = "block";
@@ -435,13 +490,17 @@ function startEngineLogic() {
             btnCartSubmit.style.display = "none";
         }
 
-        // 🛡️ [إصلاح جذري]: كان بيرجع لأعلى الصفحة كلها (top:0) دايماً بعد "التالي"، من غير
-        // مراعاة لمكان العميل الحالي ولا مكان الخطوة الجديدة، فبيحس إنه اتلخبط ورجعله للهيدر
-        // بدل ما يوديه لبداية الخطوة الجاية بالظبط. دلوقتي بنمرر لبداية حاوية المحاكي نفسها
-        // (بارتفاع الهيدر الثابت مطروح منه) فيوصل بالظبط لأول الخطوة الجديدة مهما كان موقعه.
+        toggleHeroVisibilityForStep();
+
+        // إبقاء الرقم النشط ظاهر جوه شريط الخطوات القابل للسكرول الأفقي
+        const activeNode = document.getElementById(`node-step-${currentActiveStep}`);
+        if (activeNode && typeof activeNode.scrollIntoView === 'function') {
+            activeNode.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
+
         const wizardContainer = document.querySelector('.bose-simulator-layout') || activePanelToShow;
         if (wizardContainer) {
-            const stickyHeaderOffset = 90; // ارتفاع الهيدر الثابت تقريباً
+            const stickyHeaderOffset = 90;
             const targetY = wizardContainer.getBoundingClientRect().top + window.scrollY - stickyHeaderOffset;
             window.scrollTo({
                 top: Math.max(targetY, 0),
@@ -450,10 +509,9 @@ function startEngineLogic() {
         }
     }
 
-    // 🛡️ [تحقق قبل الانتقال]: خطوة 1 لازم يكون فيها نص مناسبة مكتوب قبل ما
-    // نسمح للعميلة تكمل - من غير كده هنفقد أهم معلومة بتبني عليها التورتة كلها.
+    // 🛡️ [تحقق قبل الانتقال]: خطوة المناسبة (رقم 2) لازم تتكتب قبل الاستمرار
     function validateCurrentStepBeforeAdvance() {
-        if (currentActiveStep === 1) {
+        if (currentActiveStep === OCCASION_STEP) {
             if (getOccasionText() === "") {
                 if (occasionRequiredHint) occasionRequiredHint.classList.add('show');
                 if (occasionInput) {
@@ -486,6 +544,42 @@ function startEngineLogic() {
         }
     });
 
+    /* ==================================================================
+       🔢 [أرقام الخطوات القابلة للّمس]: أي رقم بتضغطي عليه بيوديكي
+       للخطوة دي على طول - ما عدا لو المناسبة (خطوة 2) لسه فاضية ومحاولة
+       تقفزي لخطوة بعدها، وقتها بنرجعك تكمليها الأول.
+       ================================================================== */
+    function jumpToStep(targetStep) {
+        if (targetStep === currentActiveStep) return;
+        if (targetStep > OCCASION_STEP && getOccasionText() === "") {
+            currentActiveStep = OCCASION_STEP;
+            syncWizardPanelsUI();
+            if (occasionRequiredHint) occasionRequiredHint.classList.add('show');
+            if (occasionInput) occasionInput.focus();
+            if (typeof window.showBoseGlobalToast === 'function') {
+                window.showBoseGlobalToast("محتاجين نعرف مناسبة التورتة الأول قبل ما تكملي باقي الاختيارات 🎂");
+            }
+            return;
+        }
+        currentActiveStep = targetStep;
+        syncWizardPanelsUI();
+        evaluateSimulatorState();
+    }
+
+    document.querySelectorAll('.bose-progress-node').forEach((node, idx) => {
+        const stepNum = idx + 1;
+        node.setAttribute('role', 'button');
+        node.setAttribute('tabindex', '0');
+        node.setAttribute('aria-label', `الذهاب للخطوة ${stepNum}`);
+        node.addEventListener('click', () => jumpToStep(stepNum));
+        node.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                jumpToStep(stepNum);
+            }
+        });
+    });
+
     btnMinus.addEventListener('click', () => {
         let current = parseInt(inputPersons.value, 10) || config.persons.minimum;
         if (current > config.persons.minimum) {
@@ -508,12 +602,8 @@ function startEngineLogic() {
 
     document.querySelectorAll('input[name="cake_printing"]').forEach(radio => {
         radio.addEventListener('change', evaluateSimulatorState);
-        // 🐛 [إصلاح حرج]: toggleCakePhotoUploadSection كانت معرّفة فوق بس معندهاش
-        // أي استدعاء خالص، فقسم رفع الصورة كان يفضل مخفي دايماً حتى لو العميل
-        // اختار "صورة قابلة/غير قابلة للأكل" - يعني معندوش مكان فعلي يرفع فيه صورته.
         radio.addEventListener('change', toggleCakePhotoUploadSection);
     });
-    // تشغيل الفحص مرة أولى عند تحميل الصفحة (لو فيه اختيار محفوظ مسبقاً)
     toggleCakePhotoUploadSection();
     toggleReplicaUploadSection();
 
@@ -537,7 +627,6 @@ function startEngineLogic() {
         if (lightboxClose) lightboxClose.onclick = closeLightbox;
         lightboxOverlay.onclick = (e) => { if (e.target === lightboxOverlay) closeLightbox(); };
 
-        // ♿ [إصلاح وصولية]: زرار Escape كان مش شغال خالص لقفل اللايت بوكس
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && lightboxOverlay.style.display === 'flex') closeLightbox();
         });
@@ -550,16 +639,13 @@ function startEngineLogic() {
         let selectedPrinting = document.querySelector('input[name="cake_printing"]:checked')?.value || 'none';
         let messageText = document.getElementById('text-cake-message').value.trim();
         let allergyText = document.getElementById('text-cake-allergy').value.trim();
-        let selectedPurpose = document.querySelector('input[name="cake_purpose"]:checked')?.value || 'self';
         const occasionText = getOccasionText();
         const wantsReplica = !!(replicaToggle && replicaToggle.checked);
         const wantsGiftCard = !!(giftCardToggle && giftCardToggle.checked);
         const giftCardText = wantsGiftCard ? (giftCardTextInput?.value || "").trim() : "";
 
-        // 🛡️ صمام أمان أخير: لو حصل وعادت العميلة خطوة 1 ومسحت النص بعد ما
-        // كانت اجتازت التحقق، منمنعش الإضافة للسلة من غير مناسبة مكتوبة.
         if (occasionText === "") {
-            currentActiveStep = 1;
+            currentActiveStep = OCCASION_STEP;
             syncWizardPanelsUI();
             if (occasionRequiredHint) occasionRequiredHint.classList.add('show');
             if (occasionInput) occasionInput.focus();
@@ -569,11 +655,6 @@ function startEngineLogic() {
             return;
         }
 
-        // 🚨🚨 [إصلاح جذري - صمام أمان ضد وصول الطلب بصورة غلط]: قبل كده لو
-        // العميلة اختارت "طباعة صورة" لكن الرفع فشل أو لسه شغال، كان بيكمل
-        // الطلب عادي بصورة العرض التوضيحي بدل صورتها الحقيقية من غير أي تنبيه -
-        // بالظبط اللي كانت صاحبة المتجر بتشتكي منه في رسالة الواتساب. دلوقتي
-        // بنوقف الإضافة للسلة فعلياً في الحالتين ونطلب منها تنتظر أو تعيد المحاولة.
         if (selectedPrinting !== 'none') {
             if (isUploadingCakePhoto) {
                 if (typeof window.showBoseGlobalToast === 'function') {
@@ -590,7 +671,6 @@ function startEngineLogic() {
             }
         }
 
-        // 🛡️ نفس صمام الأمان بالظبط لصورة التصميم المطلوب تقليده
         if (wantsReplica) {
             if (isUploadingReplicaPhoto) {
                 if (typeof window.showBoseGlobalToast === 'function') {
@@ -630,7 +710,6 @@ function startEngineLogic() {
             customMessage: messageText,
             allergyNote: allergyText,
             flavorName: "تصميم خاص حسب الطلب",
-            isGift: selectedPurpose === 'gift',
             occasionLabel: occasionText,
             hasReplicaDesign: wantsReplica && !!uploadedReplicaPhotoUrl,
             hasGiftCard: wantsGiftCard && giftCardText !== "",
@@ -640,21 +719,17 @@ function startEngineLogic() {
         };
 
         const finalCartItem = window.createCartItem(masterProduct, customOptions, 1);
-        
+
         if (finalCartItem) {
             let localCartRaw = localStorage.getItem('bose_cart');
             let boseCart = localCartRaw ? JSON.parse(localCartRaw) : [];
-            
+
             finalCartItem.finalPrice = window.calculateCustomCakePrice(currentPersons, {
                 printingType: selectedPrinting,
                 hasGiftCard: customOptions.hasGiftCard
             });
             finalCartItem.type = "custom-cake";
 
-            // 🛡️ [إصلاح حرج]: صورة الطباعة والصورة المرجعية للتقليد بيتحطوا في
-            // referenceImages من غير تكرار نفس الرابط مرتين لو نفس الصورة -
-            // وصورة الغلاف (image) بتفضّل صورة "التقليد" لو موجودة لأنها أوضح
-            // تعبيراً عن شكل التصميم النهائي المطلوب من صورة الطباعة الفردية.
             const refImages = [];
             if (customOptions.hasReplicaDesign && uploadedReplicaPhotoUrl) refImages.push(uploadedReplicaPhotoUrl);
             if (selectedPrinting !== 'none' && uploadedCakePhotoUrl && uploadedCakePhotoUrl !== uploadedReplicaPhotoUrl) refImages.push(uploadedCakePhotoUrl);
@@ -662,27 +737,26 @@ function startEngineLogic() {
                 finalCartItem.image = refImages[0];
                 finalCartItem.referenceImages = refImages;
             }
-            
+
             boseCart.push(finalCartItem);
             localStorage.setItem('bose_cart', JSON.stringify(boseCart));
-            
+
             if (typeof window.updateGlobalCartCounter === 'function') {
                 window.updateGlobalCartCounter();
             }
-            
+
             if (typeof window.showBoseGlobalToast === 'function') {
                 window.showBoseGlobalToast("تمت إضافة تصميم تورتتك الفريد إلى السلة بنجاح.");
             } else {
                 alert("تمت إضافة المنتج إلى السلة.");
             }
-            
+
             document.getElementById('text-cake-message').value = "";
             document.getElementById('text-cake-allergy').value = "";
             inputPersons.value = config.persons.minimum;
             document.querySelector('input[name="cake_shape"][value="circle"]').checked = true;
             document.querySelector('input[name="cake_flavor"][value="vanilla"]').checked = true;
             document.querySelector('input[name="cake_printing"][value="none"]').checked = true;
-            document.querySelector('input[name="cake_purpose"][value="self"]').checked = true;
             if (occasionInput) occasionInput.value = "";
             if (occasionRequiredHint) occasionRequiredHint.classList.remove('show');
             if (replicaToggle) replicaToggle.checked = false;
@@ -691,7 +765,6 @@ function startEngineLogic() {
             uploadedCakePhotoUrl = "";
             uploadedReplicaPhotoUrl = "";
             updateFlavorSensoryNote();
-            updateGiftModeWording();
             toggleCakePhotoUploadSection();
             toggleReplicaUploadSection();
             toggleGiftCardSection();
@@ -710,17 +783,10 @@ function startEngineLogic() {
     initializeBoseLightboxGallery();
 }
 
-// 🛡️ [إصلاح Race Condition - المرحلة 4]: window.onBoseDatabaseReady مش معرّفة
-// خالص في core-engine.js (كانت موجودة بس في نسخة قديمة V3)، فالكود القديم هنا
-// كان بيرجع دايماً لـ DOMContentLoaded كحل بديل، اللي ممكن يشتغل قبل ما بيانات
-// المتجر توصل فعلياً فتظهر أسعار افتراضية بدل الحقيقية للحظة. الحل: نفس النمط
-// المستخدم فعلاً وبنجاح في flower-engine.js - نتأكد إن window.BoseStoreData
-// جاهزة فوراً، وإلا ننتظر الحدث الحقيقي اللي core-engine.js بيبعته فعلاً
-// (BoseDatabaseLoaded) بدل دالة وهمية غير موجودة.
 if (window.BoseStoreData && window.BoseStoreData.store) {
     startEngineLogic();
 } else {
     document.addEventListener("BoseDatabaseLoaded", () => {
         startEngineLogic();
     });
-            }
+}

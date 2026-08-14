@@ -358,6 +358,27 @@
         });
     }
 
+    /**
+     * 🔗 [مشاركة تصميم التورت عبر رابط الموقع]: بتحفظ لقطة من اختيارات العميل
+     * الحالية في المحاكي في جدول shared_cake_designs عبر RPC آمن (create_shared_cake_design)
+     * وترجع الـ id بس - مفيش أي وصول مباشر للجدول من المتصفح. الرابط النهائي
+     * اللي بيتشارك بيبقى design-view.html?id=<id> وبيفتح صفحة على الموقع نفسه
+     * بتعرض تفاصيل التصميم من غير ما تكشف بيانات أي تصميم تاني.
+     */
+    async function createSharedCakeDesign(designSnapshot) {
+        const result = await boseSupabaseRpc("create_shared_cake_design", { p_design: designSnapshot });
+        // RPC بترجع uuid واحد (سكالار) - PostgREST بيرجعه كـ نص مباشر أو جوه مصفوفة حسب الحالة
+        if (Array.isArray(result)) return result[0]?.create_shared_cake_design || result[0];
+        return result;
+    }
+
+    /** 🔗 قراءة تصميم متشارك بالـ id بتاعه فقط (زي منطق trackBoseOrder بالظبط) */
+    async function getSharedCakeDesign(designId) {
+        const result = await boseSupabaseRpc("get_shared_cake_design", { p_id: designId });
+        if (Array.isArray(result)) return result[0]?.get_shared_cake_design ?? result[0] ?? null;
+        return result;
+    }
+
     // تصدير الدوال على window بنفس فلسفة الموقع الحالية (window.escapeBoseHTML...)
     window.BoseSupabase = {
         loadBoseStoreDataFromSupabase,
@@ -369,6 +390,8 @@
         uploadBoseReferenceImage,
         trackBoseOrder,
         getBoseCustomerRewards,
+        createSharedCakeDesign,
+        getSharedCakeDesign,
     };
     // الاسم اللي cart-engine.js بينده عليه فعلياً (راجع processFinalBoseOrder)
     window.saveBoseOrderToDatabase = saveBoseOrderToDatabase;
