@@ -3,9 +3,10 @@
  * =====================================================================
  * نطاق النسخة دي: قوائم المنتجات المختارة (الأكثر مبيعاً / وصل حديثاً /
  * منتجاتنا)، بانرات محاكي التورت والورد، شلال المنتجات المتحرك (صوره
- * وسرعته وتشغيله/إيقافه)، والشريط العلوي المتحرك بأعلى الهيدر (رسائله
- * وسرعته وتشغيله/إيقافه). حقول أقل تغيّراً زي نص الهيرو وإحصائيات
- * "الفخر والاعتزاز" والفيديوهات مش متضمنة هنا لحد ما تحتاجها.
+ * وسرعته وتشغيله/إيقافه - كل صور الشلال دلوقتي روابط مباشرة بسيطة، مش
+ * مربوطة بمنتجات)، والشريط العلوي المتحرك بأعلى الهيدر (رسائله وسرعته
+ * وتشغيله/إيقافه). حقول أقل تغيّراً زي نص الهيرو وإحصائيات "الفخر
+ * والاعتزاز" والفيديوهات مش متضمنة هنا لحد ما تحتاجها.
  *
  * "سلايدر الفئات" على الرئيسية بيتبنى تلقائياً من جدول categories وقت
  * الحفظ (نفس id/title/image/builder_type) - كده الفئات ليها مصدر واحد بس
@@ -181,8 +182,8 @@
     /* ============================= شلال المنتجات المتحرك ============================= */
 
     const WATERFALL_COLUMNS = [
-        { key: "leftColumnImages", listId: "list-waterfall-left", selectId: "select-waterfall-left-product", uploadInputId: "waterfall-left-image-input", uploadLabelId: "waterfall-left-upload-label" },
-        { key: "rightColumnImages", listId: "list-waterfall-right", selectId: "select-waterfall-right-product", uploadInputId: "waterfall-right-image-input", uploadLabelId: "waterfall-right-upload-label" },
+        { key: "leftColumnImages", listId: "list-waterfall-left", urlInputId: "waterfall-left-url-input", urlBtnId: "waterfall-left-add-url-btn", uploadInputId: "waterfall-left-image-input", uploadLabelId: "waterfall-left-upload-label" },
+        { key: "rightColumnImages", listId: "list-waterfall-right", urlInputId: "waterfall-right-url-input", urlBtnId: "waterfall-right-add-url-btn", uploadInputId: "waterfall-right-image-input", uploadLabelId: "waterfall-right-upload-label" },
     ];
 
     function renderWaterfallColumn(colDef) {
@@ -195,12 +196,10 @@
         } else {
             container.innerHTML = items.map((item, idx) => {
                 const img = typeof item === "object" ? item.image : item;
-                const linkedProduct = typeof item === "object" && item.slug ? allProducts.find((p) => p.slug === item.slug) : null;
-                const title = linkedProduct ? linkedProduct.title : "صورة مستقلة (بدون ربط بمنتج)";
                 return `
                 <div class="adm-curated-item" data-idx="${idx}">
                     <img src="${e(img)}" class="adm-curated-item-thumb" alt="">
-                    <span class="adm-curated-item-title">${e(title)}</span>
+                    <span class="adm-curated-item-title">${e(img)}</span>
                     <div class="adm-curated-item-actions">
                         <button type="button" class="adm-btn adm-btn-ghost adm-btn-icon" data-action="up" title="تحريك لأعلى" ${idx === 0 ? "disabled" : ""}>
                             <i class="fa-solid fa-arrow-up"></i>
@@ -231,31 +230,31 @@
                 renderWaterfallColumn(colDef);
             });
         });
-
-        refreshWaterfallSelect(colDef);
     }
 
-    function refreshWaterfallSelect(colDef) {
-        const select = document.getElementById(colDef.selectId);
-        const e = window.BoseAdminUI.escapeHtml;
-        select.innerHTML = `<option value="">اختاري منتج لإضافة صورته...</option>` +
-            allProducts.map((p) => `<option value="${e(p.id)}">${e(p.title)}</option>`).join("");
+    function addWaterfallImage(colDef, url) {
+        const trimmed = (url || "").trim();
+        if (!trimmed) return;
+        if (!/^https?:\/\//i.test(trimmed)) {
+            window.BoseAdminUI.showToast("الرابط لازم يبدأ بـ http:// أو https://", "error");
+            return;
+        }
+        waterfallState[colDef.key].push({ image: trimmed });
+        renderWaterfallColumn(colDef);
     }
 
     function wireWaterfallControls() {
         WATERFALL_COLUMNS.forEach((colDef) => {
-            document.getElementById(colDef.selectId).addEventListener("change", (evt) => {
-                const productId = evt.target.value;
-                if (!productId) return;
-                const product = allProducts.find((p) => p.id === productId);
-                if (!product || !product.images || !product.images[0]) {
-                    window.BoseAdminUI.showToast("المنتج ده مفيهوش صورة متاحة", "error");
-                    evt.target.value = "";
-                    return;
+            document.getElementById(colDef.urlBtnId).addEventListener("click", () => {
+                const input = document.getElementById(colDef.urlInputId);
+                addWaterfallImage(colDef, input.value);
+                input.value = "";
+            });
+            document.getElementById(colDef.urlInputId).addEventListener("keydown", (evt) => {
+                if (evt.key === "Enter") {
+                    evt.preventDefault();
+                    document.getElementById(colDef.urlBtnId).click();
                 }
-                waterfallState[colDef.key].push({ image: product.images[0], slug: product.slug });
-                evt.target.value = "";
-                renderWaterfallColumn(colDef);
             });
 
             document.getElementById(colDef.uploadInputId).addEventListener("change", async (evt) => {
@@ -266,8 +265,7 @@
                 label.textContent = "جاري الرفع...";
                 try {
                     const url = await window.BoseAdminUI.uploadImageToCloudinary(file);
-                    // صورة مستقلة مش مربوطة بمنتج - مفيش slug
-                    waterfallState[colDef.key].push({ image: url, slug: "" });
+                    waterfallState[colDef.key].push({ image: url });
                     renderWaterfallColumn(colDef);
                 } catch (err) {
                     window.BoseAdminUI.showToast("تعذر رفع الصورة", "error");
