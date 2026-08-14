@@ -867,20 +867,29 @@
     margin-top: 6px;
 }
 
+/* 🛡️ [إصلاح جذري - كارتين جنب بعض أكبر من الشاشة]: 1fr في CSS Grid مش معناها
+   "قسّم المساحة بالتساوي ولو المحتوى أكبر" - افتراضياً كل عمود grid عنده حد
+   أدنى ضمني = حجم أكبر محتوى جواه ما يقدرش يتقلص عنه (زي عداد الكمية بأزرارها
+   الدائرية الثابتة، أو نص السعر) - فلو المحتوى ده أعرض من نصيب العمود الفعلي،
+   العمود كله (وبالتالي الشبكة والصفحة) كانت بتتوسع وتكسر حدود الشاشة عشان
+   "تسع" المحتوى ده، حتى لو التصميم أصلاً عمودين بس. الحل القياسي: minmax(0, 1fr)
+   بدل 1fr وحدها - بتقول لكل عمود "اتقلص لحد ما تحتاج فعلاً، وسيب المحتوى جواك
+   يتقلص أو يتقص هو اللي يتصرف، مش الشبكة كلها". التصميم (عمودين جنب بعض) فضل
+   بالظبط زي ما هو، بس دلوقتي بيتقلص صح جوه حدود الشاشة بدل ما يكسرها. */
 .products-grid, .bose-products-grid {
     display: grid !important;
-    grid-template-columns: repeat(4, 1fr) !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
     gap: 20px !important;
     width: 100% !important;
 }
 
 @media (max-width: 1023px) {
-    .products-grid, .bose-products-grid { grid-template-columns: repeat(2, 1fr) !important; }
+    .products-grid, .bose-products-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
 }
 
 @media (max-width: 550px) {
-    .products-grid, .bose-products-grid { grid-template-columns: 1fr !important; }
-    #our-products-grid.products-grid { grid-template-columns: 1fr !important; }
+    .products-grid, .bose-products-grid { grid-template-columns: minmax(0, 1fr) !important; }
+    #our-products-grid.products-grid { grid-template-columns: minmax(0, 1fr) !important; }
 }
 
 /* [إصلاح تعارض]: #most-selling-grid و #new-arrivals-grid بالتحديد لازم يبقوا
@@ -953,7 +962,7 @@
        فعلياً تنزل لعمود واحد تحت 550px زي باقي شبكات المنتجات بالظبط. */
     #our-products-grid.products-grid {
         display: grid !important;
-        grid-template-columns: repeat(2, 1fr) !important; 
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important; 
         gap: 14px !important;
         width: 100% !important;
         padding: 0 !important;
@@ -963,6 +972,7 @@
 
 .product-card-unified {
     width: 100%;
+    min-width: 0; /* 🛡️ يسمح للكارت (كعنصر جوه grid) إنه يتقلص فعلياً لعرض عموده بدل ما ياخد حجمه الطبيعي (min-content) ويدفع الشبكة تتوسع */
     height: auto;
     background-color: var(--bose-white) !important;
     border: var(--bose-border-pink) !important;
@@ -973,6 +983,7 @@
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
+    overflow: hidden; /* أي محتوى جواه لسه أعرض من الكارت (نادر بعد minmax) بيتقص جوه حدود الكارت بدل ما يطلع بره حدود الشاشة */
 }
 
 .product-card-unified:hover {
