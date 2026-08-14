@@ -11,9 +11,6 @@ function startEngineLogic() {
     const btnMinus = document.getElementById('btn-persons-minus');
     const btnPlus = document.getElementById('btn-persons-plus');
     const alertBox = document.getElementById('alert-shape-restriction');
-    const priceDisplay = document.getElementById('display-dynamic-price');
-    const priceLabel = document.getElementById('display-dynamic-label');
-    const btnCartSubmit = document.getElementById('btn-cake-submit-cart');
     const btnCartSubmitSummary = document.getElementById('btn-cake-submit-cart-summary');
 
     const btnWizardNext = document.getElementById('btn-wizard-next');
@@ -335,12 +332,6 @@ function startEngineLogic() {
             hasGiftCard: hasGiftCardNow
         });
 
-        if (priceLabel) {
-            priceLabel.textContent = `سعر التورتة الحالي لـ ${currentPersons} أفراد هو:`;
-        }
-
-        priceDisplay.textContent = `${Math.round(finalDynamicPrice)} جنيه`;
-
         renderOrderSummary(currentPersons, selectedShape, selectedPrinting, hasGiftCardNow, finalDynamicPrice);
     }
 
@@ -483,11 +474,9 @@ function startEngineLogic() {
 
         if (currentActiveStep === totalWizardStepsCount) {
             btnWizardNext.style.display = "none";
-            btnCartSubmit.style.display = "block";
         } else {
             btnWizardNext.style.display = "block";
             btnWizardNext.textContent = "التالي";
-            btnCartSubmit.style.display = "none";
         }
 
         toggleHeroVisibilityForStep();
@@ -775,7 +764,6 @@ function startEngineLogic() {
         }
     }
 
-    btnCartSubmit.addEventListener('click', submitCakeToCart);
     if (btnCartSubmitSummary) btnCartSubmitSummary.addEventListener('click', submitCakeToCart);
 
     syncWizardPanelsUI();
