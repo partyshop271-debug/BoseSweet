@@ -12,9 +12,6 @@
 
     let currentOrders = [];
     let searchDebounceTimer = null;
-    let currentPage = 1;
-    const PAGE_SIZE = 50;
-    let lastTotalCount = 0;
 
     /* ============================= الجدول ============================= */
 
@@ -165,24 +162,15 @@
 
     /* ============================= التحميل والفلترة ============================= */
 
-    async function loadOrders(resetPage = false) {
-        if (resetPage) currentPage = 1;
-
+    async function loadOrders() {
         const tbody = document.getElementById("orders-tbody");
         tbody.innerHTML = `<tr><td colspan="6"><div class="adm-loading-spinner"></div></td></tr>`;
 
         const status = document.getElementById("orders-status-filter").value;
         const search = document.getElementById("orders-search-input").value.trim();
 
-        const { rows, totalCount } = await window.BoseAdmin.getAllOrders({ status, search }, currentPage, PAGE_SIZE);
-        currentOrders = rows;
-        lastTotalCount = totalCount;
+        currentOrders = await window.BoseAdmin.getAllOrders({ status, search });
         renderTable();
-        window.BoseAdminUI.renderPaginationControls(
-            document.getElementById("orders-pagination"),
-            { page: currentPage, pageSize: PAGE_SIZE, totalCount },
-            (newPage) => { currentPage = newPage; loadOrders(); }
-        );
     }
 
     function buildStatusFilterOptions() {
@@ -195,9 +183,9 @@
     function wireControls() {
         document.getElementById("orders-search-input").addEventListener("input", () => {
             clearTimeout(searchDebounceTimer);
-            searchDebounceTimer = setTimeout(() => loadOrders(true), 350);
+            searchDebounceTimer = setTimeout(loadOrders, 350);
         });
-        document.getElementById("orders-status-filter").addEventListener("change", () => loadOrders(true));
+        document.getElementById("orders-status-filter").addEventListener("change", loadOrders);
     }
 
     document.addEventListener("BoseAdminReady", async () => {

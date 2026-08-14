@@ -11,8 +11,6 @@
     "use strict";
 
     let currentReviews = [];
-    let currentPage = 1;
-    const PAGE_SIZE = 50;
 
     function starsHTML(rating) {
         const full = Math.max(0, Math.min(5, Math.round(rating || 0)));
@@ -130,23 +128,15 @@
         return {};
     }
 
-    async function loadReviews(resetPage = false) {
-        if (resetPage) currentPage = 1;
-
+    async function loadReviews() {
         const tbody = document.getElementById("reviews-tbody");
         tbody.innerHTML = `<tr><td colspan="7"><div class="adm-loading-spinner"></div></td></tr>`;
-        const { rows, totalCount } = await window.BoseAdmin.getAllReviews(currentFilterValue(), currentPage, PAGE_SIZE);
-        currentReviews = rows;
+        currentReviews = await window.BoseAdmin.getAllReviews(currentFilterValue());
         renderTable();
-        window.BoseAdminUI.renderPaginationControls(
-            document.getElementById("reviews-pagination"),
-            { page: currentPage, pageSize: PAGE_SIZE, totalCount },
-            (newPage) => { currentPage = newPage; loadReviews(); }
-        );
     }
 
     document.addEventListener("BoseAdminReady", async () => {
-        document.getElementById("reviews-status-filter").addEventListener("change", () => loadReviews(true));
+        document.getElementById("reviews-status-filter").addEventListener("change", loadReviews);
         await loadReviews();
     });
 })();

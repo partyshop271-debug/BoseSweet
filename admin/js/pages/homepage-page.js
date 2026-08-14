@@ -2,13 +2,18 @@
  * homepage-page.js - منطق صفحة الواجهة الرئيسية فقط
  * =====================================================================
  * نطاق النسخة دي: قوائم المنتجات المختارة (الأكثر مبيعاً / وصل حديثاً /
- * منتجاتنا) وبانرات محاكي التورت والورد - دي الحقول اللي بتتغيّر باستمرار
- * فعلياً. حقول أقل تغيّراً زي نص الهيرو، إحصائيات "الفخر والاعتزاز"،
- * وصور الـ waterfall والفيديوهات مش متضمنة هنا لحد ما تحتاجها.
+ * منتجاتنا)، بانرات محاكي التورت والورد، شلال المنتجات المتحرك (صوره
+ * وسرعته وتشغيله/إيقافه)، والشريط العلوي المتحرك بأعلى الهيدر (رسائله
+ * وسرعته وتشغيله/إيقافه). حقول أقل تغيّراً زي نص الهيرو وإحصائيات
+ * "الفخر والاعتزاز" والفيديوهات مش متضمنة هنا لحد ما تحتاجها.
  *
  * "سلايدر الفئات" على الرئيسية بيتبنى تلقائياً من جدول categories وقت
  * الحفظ (نفس id/title/image/builder_type) - كده الفئات ليها مصدر واحد بس
  * (صفحة categories.html)، ومفيش نسخة تانية تتنسى تتحدّث لوحدها.
+ *
+ * ملحوظة مهمة: الشريط العلوي المتحرك مخزّن في عمود منفصل (store_settings.navigation)
+ * مش homepage، فبيتحمّل ويتحفظ عبر getNavigationSettings/updateNavigationSettings
+ * بشكل مستقل تماماً عن باقي الصفحة - زرار الحفظ الموحّد بيحفظ الاتنين مع بعض.
  */
 (function () {
     "use strict";
@@ -21,11 +26,32 @@
         { key: "ourProducts", containerId: "list-our-products", selectId: "select-our-products" },
     ];
 
+    // مجموعة رسائل جاهزة مرتبطة فعلياً بمنتجات وخدمات الموقع، بتظهر كاقتراحات
+    // سريعة للشريط العلوي عشان تسهّل الاختيار بدل الكتابة من الصفر كل مرة.
+    const TOPBAR_SUGGESTED_MESSAGES = [
+        "صممي تورتة أحلامك بنفسك مع محاكي التورت 🎂",
+        "اطلبي تورتتك في خطوة واحدة بس - سريع وسهل ⚡",
+        "بوكيهات ورد طازجة مصممة خصيصاً ليكِ 💐",
+        "توصيل طازج يومياً لجميع المناطق 🚚",
+        "كل حلوياتنا بتتحضر طازة يوم الطلب",
+        "جربي الريدفلفت... طعم مختلف تماماً",
+        "كوبونات وعروض حصرية تنتظرك 🏷️",
+        "برنامج المكافآت: اجمعي نقاط مع كل طلب 🎁",
+        "تقدري تتبعي طلبك لحظة بلحظة من صفحة تتبع الطلب",
+        "كارت إهداء ورقي فاخر مع كل تورتة مميزة",
+        "الديسباسيتو الفاخر... تجربة تستاهل التجربة",
+        "صنعناها بحب لتهديها لمن تحب 💕",
+    ];
+
     let homepageData = {};
+    let navigationData = {};
     let allProducts = [];
     let allCategories = [];
     // نسخة قابلة للتعديل من كل قائمة (arrays of product ids) بنبني عليها العرض والحفظ
     let curatedState = {};
+    // نسخ قابلة للتعديل لصور الشلال (كل عنصر { image, slug? }) ورسائل الشريط العلوي
+    let waterfallState = { leftColumnImages: [], rightColumnImages: [] };
+    let topBarMessagesState = [];
 
     function productTitle(id) {
         const p = allProducts.find((p) => p.id === id);
@@ -152,6 +178,191 @@
         });
     }
 
+    /* ============================= شلال المنتجات المتحرك ============================= */
+
+    const WATERFALL_COLUMNS = [
+        { key: "leftColumnImages", listId: "list-waterfall-left", selectId: "select-waterfall-left-product", uploadInputId: "waterfall-left-image-input", uploadLabelId: "waterfall-left-upload-label" },
+        { key: "rightColumnImages", listId: "list-waterfall-right", selectId: "select-waterfall-right-product", uploadInputId: "waterfall-right-image-input", uploadLabelId: "waterfall-right-upload-label" },
+    ];
+
+    function renderWaterfallColumn(colDef) {
+        const e = window.BoseAdminUI.escapeHtml;
+        const container = document.getElementById(colDef.listId);
+        const items = waterfallState[colDef.key] || [];
+
+        if (!items.length) {
+            container.innerHTML = `<p class="adm-order-item-meta" style="padding: 6px 2px;">مفيش صور مضافة للعمود ده لسه.</p>`;
+        } else {
+            container.innerHTML = items.map((item, idx) => {
+                const img = typeof item === "object" ? item.image : item;
+                const linkedProduct = typeof item === "object" && item.slug ? allProducts.find((p) => p.slug === item.slug) : null;
+                const title = linkedProduct ? linkedProduct.title : "صورة مستقلة (بدون ربط بمنتج)";
+                return `
+                <div class="adm-curated-item" data-idx="${idx}">
+                    <img src="${e(img)}" class="adm-curated-item-thumb" alt="">
+                    <span class="adm-curated-item-title">${e(title)}</span>
+                    <div class="adm-curated-item-actions">
+                        <button type="button" class="adm-btn adm-btn-ghost adm-btn-icon" data-action="up" title="تحريك لأعلى" ${idx === 0 ? "disabled" : ""}>
+                            <i class="fa-solid fa-arrow-up"></i>
+                        </button>
+                        <button type="button" class="adm-btn adm-btn-ghost adm-btn-icon" data-action="down" title="تحريك لأسفل" ${idx === items.length - 1 ? "disabled" : ""}>
+                            <i class="fa-solid fa-arrow-down"></i>
+                        </button>
+                        <button type="button" class="adm-btn adm-btn-ghost adm-btn-icon" data-action="remove" title="إزالة">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                </div>`;
+            }).join("");
+        }
+
+        container.querySelectorAll("[data-action]").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                const idx = Number(btn.closest("[data-idx]").getAttribute("data-idx"));
+                const action = btn.getAttribute("data-action");
+                const list = waterfallState[colDef.key];
+                if (action === "remove") {
+                    list.splice(idx, 1);
+                } else if (action === "up" && idx > 0) {
+                    [list[idx - 1], list[idx]] = [list[idx], list[idx - 1]];
+                } else if (action === "down" && idx < list.length - 1) {
+                    [list[idx + 1], list[idx]] = [list[idx], list[idx + 1]];
+                }
+                renderWaterfallColumn(colDef);
+            });
+        });
+
+        refreshWaterfallSelect(colDef);
+    }
+
+    function refreshWaterfallSelect(colDef) {
+        const select = document.getElementById(colDef.selectId);
+        const e = window.BoseAdminUI.escapeHtml;
+        select.innerHTML = `<option value="">اختاري منتج لإضافة صورته...</option>` +
+            allProducts.map((p) => `<option value="${e(p.id)}">${e(p.title)}</option>`).join("");
+    }
+
+    function wireWaterfallControls() {
+        WATERFALL_COLUMNS.forEach((colDef) => {
+            document.getElementById(colDef.selectId).addEventListener("change", (evt) => {
+                const productId = evt.target.value;
+                if (!productId) return;
+                const product = allProducts.find((p) => p.id === productId);
+                if (!product || !product.images || !product.images[0]) {
+                    window.BoseAdminUI.showToast("المنتج ده مفيهوش صورة متاحة", "error");
+                    evt.target.value = "";
+                    return;
+                }
+                waterfallState[colDef.key].push({ image: product.images[0], slug: product.slug });
+                evt.target.value = "";
+                renderWaterfallColumn(colDef);
+            });
+
+            document.getElementById(colDef.uploadInputId).addEventListener("change", async (evt) => {
+                const file = evt.target.files && evt.target.files[0];
+                if (!file) return;
+                const label = document.getElementById(colDef.uploadLabelId);
+                const originalLabel = label.textContent;
+                label.textContent = "جاري الرفع...";
+                try {
+                    const url = await window.BoseAdminUI.uploadImageToCloudinary(file);
+                    // صورة مستقلة مش مربوطة بمنتج - مفيش slug
+                    waterfallState[colDef.key].push({ image: url, slug: "" });
+                    renderWaterfallColumn(colDef);
+                } catch (err) {
+                    window.BoseAdminUI.showToast("تعذر رفع الصورة", "error");
+                } finally {
+                    label.textContent = originalLabel;
+                    evt.target.value = "";
+                }
+            });
+        });
+    }
+
+    /* ============================= الشريط العلوي المتحرك ============================= */
+
+    function renderTopBarMessages() {
+        const e = window.BoseAdminUI.escapeHtml;
+        const container = document.getElementById("list-topbar-messages");
+
+        if (!topBarMessagesState.length) {
+            container.innerHTML = `<p class="adm-order-item-meta" style="padding: 6px 2px;">مفيش رسائل مضافة لسه.</p>`;
+        } else {
+            container.innerHTML = topBarMessagesState.map((msg, idx) => `
+                <div class="adm-curated-item" data-idx="${idx}">
+                    <span class="adm-curated-item-title">${e(msg)}</span>
+                    <div class="adm-curated-item-actions">
+                        <button type="button" class="adm-btn adm-btn-ghost adm-btn-icon" data-action="up" title="تحريك لأعلى" ${idx === 0 ? "disabled" : ""}>
+                            <i class="fa-solid fa-arrow-up"></i>
+                        </button>
+                        <button type="button" class="adm-btn adm-btn-ghost adm-btn-icon" data-action="down" title="تحريك لأسفل" ${idx === topBarMessagesState.length - 1 ? "disabled" : ""}>
+                            <i class="fa-solid fa-arrow-down"></i>
+                        </button>
+                        <button type="button" class="adm-btn adm-btn-ghost adm-btn-icon" data-action="remove" title="إزالة">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                </div>`).join("");
+        }
+
+        container.querySelectorAll("[data-action]").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                const idx = Number(btn.closest("[data-idx]").getAttribute("data-idx"));
+                const action = btn.getAttribute("data-action");
+                if (action === "remove") {
+                    topBarMessagesState.splice(idx, 1);
+                } else if (action === "up" && idx > 0) {
+                    [topBarMessagesState[idx - 1], topBarMessagesState[idx]] = [topBarMessagesState[idx], topBarMessagesState[idx - 1]];
+                } else if (action === "down" && idx < topBarMessagesState.length - 1) {
+                    [topBarMessagesState[idx + 1], topBarMessagesState[idx]] = [topBarMessagesState[idx], topBarMessagesState[idx + 1]];
+                }
+                renderTopBarMessages();
+            });
+        });
+
+        renderTopBarSuggestions();
+    }
+
+    function addTopBarMessage(text) {
+        const trimmed = (text || "").trim();
+        if (!trimmed) return;
+        if (topBarMessagesState.includes(trimmed)) {
+            window.BoseAdminUI.showToast("الرسالة دي مضافة بالفعل", "error");
+            return;
+        }
+        topBarMessagesState.push(trimmed);
+        renderTopBarMessages();
+    }
+
+    function renderTopBarSuggestions() {
+        const e = window.BoseAdminUI.escapeHtml;
+        const container = document.getElementById("topbar-suggestions");
+        container.innerHTML = TOPBAR_SUGGESTED_MESSAGES.map((msg) => {
+            const alreadyAdded = topBarMessagesState.includes(msg);
+            return `<button type="button" class="adm-suggestion-chip" data-suggestion="${e(msg)}" ${alreadyAdded ? "disabled" : ""}>
+                ${alreadyAdded ? '<i class="fa-solid fa-check"></i>' : '<i class="fa-solid fa-plus"></i>'} ${e(msg)}
+            </button>`;
+        }).join("");
+
+        container.querySelectorAll("[data-suggestion]").forEach((chip) => {
+            chip.addEventListener("click", () => addTopBarMessage(chip.getAttribute("data-suggestion")));
+        });
+    }
+
+    function wireTopBarControls() {
+        document.getElementById("topbar-add-message-btn").addEventListener("click", () => {
+            const input = document.getElementById("topbar-new-message");
+            addTopBarMessage(input.value);
+            input.value = "";
+        });
+        document.getElementById("topbar-new-message").addEventListener("keydown", (evt) => {
+            if (evt.key === "Enter") {
+                evt.preventDefault();
+                document.getElementById("topbar-add-message-btn").click();
+            }
+        });
+    }
+
     /* ============================= الحفظ ============================= */
 
     /** بيبني سلايدر الفئات تلقائياً من جدول categories - مصدر وحيد، مفيش تكرار يدوي */
@@ -173,6 +384,9 @@
             const cakePreviewImg = document.getElementById("cake-image-preview").getAttribute("data-image") || homepageData.cakePreview?.image || "";
             const flowerPreviewImg = document.getElementById("flower-image-preview").getAttribute("data-image") || homepageData.flowerPreview?.image || "";
 
+            const waterfallSpeed = Number(document.getElementById("waterfall-speed").value) || 57.2;
+            const waterfallEnabled = document.getElementById("waterfall-enabled").checked;
+
             const updated = {
                 ...homepageData,
                 mostSelling: curatedState.mostSelling,
@@ -181,10 +395,28 @@
                 cakePreview: { ...readBannerForm("cake", cakePreviewImg), image: cakePreviewImg },
                 flowerPreview: { ...readBannerForm("flower", flowerPreviewImg), image: flowerPreviewImg },
                 categoriesSlider: buildCategoriesSliderFromCategories(),
+                waterfall: {
+                    ...(homepageData.waterfall || {}),
+                    leftColumnImages: waterfallState.leftColumnImages,
+                    rightColumnImages: waterfallState.rightColumnImages,
+                    speedSeconds: waterfallSpeed,
+                    enabled: waterfallEnabled,
+                },
             };
 
-            await window.BoseAdmin.updateHomepageSettings(updated);
+            const updatedNavigation = {
+                ...navigationData,
+                topBarMessages: topBarMessagesState,
+                topBarSpeedSeconds: Number(document.getElementById("topbar-speed").value) || 44,
+                topBarEnabled: document.getElementById("topbar-enabled").checked,
+            };
+
+            await Promise.all([
+                window.BoseAdmin.updateHomepageSettings(updated),
+                window.BoseAdmin.updateNavigationSettings(updatedNavigation),
+            ]);
             homepageData = updated;
+            navigationData = updatedNavigation;
             window.BoseAdminUI.showToast("تم حفظ تعديلات الصفحة الرئيسية", "success");
         } catch (err) {
             window.BoseAdminUI.showToast("تعذر حفظ التعديلات", "error");
@@ -197,8 +429,9 @@
     /* ============================= التحميل ============================= */
 
     async function init() {
-        [homepageData, allProducts, allCategories] = await Promise.all([
+        [homepageData, navigationData, allProducts, allCategories] = await Promise.all([
             window.BoseAdmin.getHomepageSettings(),
+            window.BoseAdmin.getNavigationSettings(),
             window.BoseAdmin.getAllProducts(),
             window.BoseAdmin.getAllCategories(),
         ]);
@@ -216,6 +449,23 @@
         fillBannerForm("flower", homepageData.flowerPreview);
         wireBannerImageUpload("cake");
         wireBannerImageUpload("flower");
+
+        // شلال المنتجات المتحرك
+        waterfallState = {
+            leftColumnImages: [...(homepageData.waterfall?.leftColumnImages || [])],
+            rightColumnImages: [...(homepageData.waterfall?.rightColumnImages || [])],
+        };
+        document.getElementById("waterfall-speed").value = homepageData.waterfall?.speedSeconds ?? 57.2;
+        document.getElementById("waterfall-enabled").checked = homepageData.waterfall?.enabled !== false;
+        WATERFALL_COLUMNS.forEach(renderWaterfallColumn);
+        wireWaterfallControls();
+
+        // الشريط العلوي المتحرك
+        topBarMessagesState = [...(navigationData.topBarMessages || [])];
+        document.getElementById("topbar-speed").value = navigationData.topBarSpeedSeconds ?? 44;
+        document.getElementById("topbar-enabled").checked = navigationData.topBarEnabled !== false;
+        renderTopBarMessages();
+        wireTopBarControls();
 
         document.getElementById("homepage-save-btn").addEventListener("click", handleSaveAll);
         document.getElementById("homepage-content").style.display = "";
