@@ -501,6 +501,16 @@
 .adm-empty-state strong { display: block; color: var(--adm-text-secondary); font-size: 0.95rem; margin-bottom: 6px; }
 .adm-empty-state p { font-size: 0.82rem; max-width: 320px; margin: 0 auto; }
 
+.adm-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 16px 0 4px;
+}
+.adm-pagination-info { font-size: 0.82rem; color: var(--adm-text-muted); white-space: nowrap; }
+.adm-pagination .adm-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
 .adm-loading-spinner {
     width: 26px; height: 26px;
     border: 3px solid var(--adm-border);
