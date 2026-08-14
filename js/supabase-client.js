@@ -110,6 +110,12 @@
             // بتديك صورة مختلفة لكل حجم بدل ما كل الأحجام تشترك في نفس صورة images[0].
             // لو الحجم مالوش صورة مخصصة، صفحة المنتج بترجع تلقائياً للصورة الافتراضية.
             sizeImages: p.size_images || {},
+            // 🚨 [حل جذري لمشكلة "العميل مش فاهم الكمية"]: quantity_note عمود جديد
+            // بيوضح بالظبط إيه اللي السعر بيغطيه (مثال: "دستة كاملة = 12 قطعة").
+            // بيوصل هنا فاضي (null) لأي منتج لسه متعرفش الوصف بتاعه، فمفيش أي كسر
+            // أو نص فاضي بيتعرض غلط - الواجهة (createProductCardHTML وصفحة المنتج)
+            // بترسم البادچ ده بس لو فيه نص فعلي.
+            quantityNote: p.quantity_note || null,
             builderType: p.builder_type,
             customBuilderUrl: p.custom_builder_url,
             searchTerms: p.search_terms || [],

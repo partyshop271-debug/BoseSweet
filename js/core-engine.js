@@ -20,6 +20,70 @@
     forceScrollToTop();
 
     /**
+     * ℹ️👑 [نظام الشروح التوضيحية الموحد للموقع كله]: كان الشرح المنبثق (Popover)
+     * موجود جوه cake-builder.html بس، بمنطق محلي مربوط بديكشنري ثابت من مفاتيح
+     * معروفة مقدماً. المشكلة إن ده مبيصلحش لبقية الموقع لأن معظم كروت المنتجات
+     * والمحتوى بيتبني ديناميكياً بعد تحميل بيانات المتجر (مش موجود وقت تحميل
+     * الصفحة). الحل هنا: نظام واحد مشترك على مستوى الموقع كله، بيتحقن مرة واحدة
+     * في <body> فور تحميل الصفحة (زي ensurePwaInstallability بالظبط)، وبيستخدم
+     * event delegation على document بدل ما يربط listener لكل زرار لوحده - فأي
+     * زرار ⓘ حتى لو اتحقن بعد كده جوه كارت منتج، بيشتغل تلقائياً من غير أي كود
+     * إضافي. أي جزء في الموقع يقدر يستخدمه بس بإضافة:
+     * <button class="bose-info-badge-inline" data-bose-info-title="..." data-bose-info-text="...">ⓘ</button>
+     * أو برمجياً: window.BoseInfoPopover.open("العنوان", "النص التوضيحي").
+     */
+    (function ensureBoseInfoPopoverSystem() {
+        if (document.getElementById('bose-global-info-popover-backdrop')) return;
+
+        const backdrop = document.createElement('div');
+        backdrop.id = 'bose-global-info-popover-backdrop';
+        backdrop.className = 'bose-info-popover-backdrop';
+        backdrop.innerHTML = `
+            <div class="bose-info-popover-box" role="dialog" aria-modal="true" aria-labelledby="bose-global-info-popover-title">
+                <button type="button" class="bose-info-popover-close" id="bose-global-info-popover-close" aria-label="إغلاق الشرح">&times;</button>
+                <h4 id="bose-global-info-popover-title"></h4>
+                <p id="bose-global-info-popover-text"></p>
+            </div>
+        `;
+
+        function mountBackdrop() {
+            if (document.body) document.body.appendChild(backdrop);
+            else document.addEventListener('DOMContentLoaded', () => document.body.appendChild(backdrop));
+        }
+        mountBackdrop();
+
+        function openPopover(title, text) {
+            const titleEl = document.getElementById('bose-global-info-popover-title');
+            const textEl = document.getElementById('bose-global-info-popover-text');
+            if (!titleEl || !textEl || !text) return;
+            titleEl.textContent = title || 'توضيح';
+            textEl.textContent = text;
+            backdrop.classList.add('show');
+        }
+        function closePopover() {
+            backdrop.classList.remove('show');
+        }
+
+        backdrop.addEventListener('click', (e) => { if (e.target === backdrop) closePopover(); });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && backdrop.classList.contains('show')) closePopover();
+        });
+        // 🛡️ [تفويض حدث واحد على مستوى الصفحة كلها]: يشتغل مع أي زرار ⓘ حالي أو
+        // هيتحقن لاحقاً (كروت منتجات، صفحة تشيك أوت، أي مكان جديد) من غير أي setup إضافي.
+        document.addEventListener('click', (e) => {
+            const closeBtn = e.target.closest('#bose-global-info-popover-close');
+            if (closeBtn) { closePopover(); return; }
+            const badge = e.target.closest('[data-bose-info-text]');
+            if (!badge) return;
+            e.preventDefault();
+            e.stopPropagation();
+            openPopover(badge.dataset.boseInfoTitle, badge.dataset.boseInfoText);
+        });
+
+        window.BoseInfoPopover = { open: openPopover, close: closePopover };
+    })();
+
+    /**
      * 👑👑 [مرحلة جديدة - تحميل التطبيق]: ربط manifest.json فعلياً بكل صفحة في
      * الموقع + تسجيل Service Worker. الملف كان موجود على السيرفر من زمان لكن
      * ملحقش بأي صفحة HTML أبداً (مفيش أي <link rel="manifest"> في أي مكان)،
@@ -686,6 +750,14 @@
         // 🛡️ [V14.0]: منتج نفدت كميته (isAvailable === false) بيفضل ظاهر في الشبكة
         // (عشان العميل يعرف إنه كان موجود ويرجع يسأل عليه) لكن بيتقفل زرار الإضافة
         // للسلة وبتتحط شارة واضحة بدل ما يتباع منتج مش موجود فعلياً بالخطأ.
+        // 🎂 [حل مشكلة "العميل مش فاهم الكمية"]: لو المنتج عنده quantity_note حقيقي
+        // من لوحة التحكم (مثال: "دستة كاملة = 12 قطعة")، بيتعرض هنا دايماً وبشكل
+        // واضح جنب السعر - مش مخفي جوه ⓘ اختياري - عشان دي حقيقة أساسية لازم كل
+        // عميل يشوفها من غير ما يحتاج يكتشفها بنفسه.
+        const quantityNoteHtml = product.quantityNote
+            ? `<div class="bose-qty-clarity-note"><i class="fa-solid fa-circle-info"></i><span>${window.escapeBoseHTML(product.quantityNote)}</span></div>`
+            : '';
+
         const isUnavailable = product.isAvailable === false;
         const addToCartButtonHtml = isUnavailable
             ? `<button class="btn-add-to-cart" disabled style="opacity:0.6; cursor:not-allowed;">
@@ -704,6 +776,7 @@
                 <span class="product-card-flavor-name">${safeFlavor}</span>
                 <p class="product-card-desc">${safeDesc}</p>
                 ${sizeTabsHtml}
+                ${quantityNoteHtml}
                 
                 <div class="product-card-qty-wrapper" style="${isUnavailable ? 'display:none;' : ''}">
                     <button class="btn-qty-plus" onclick="window.handleBoseCardQtyChange(this, 1)">+</button>
