@@ -22,13 +22,13 @@
          بدل شكلهم الطبيعي المتناسق في باقي صفحات الموقع. -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/global.css?v=2026_production_v32.0">
-    <link rel="stylesheet" href="css/main.css?v=2026_production_v32.0">
-    <link rel="stylesheet" href="css/simulators.css?v=2026_production_v32.0">
+    <link rel="stylesheet" href="css/global.css?v=2026_production_v33.0">
+    <link rel="stylesheet" href="css/main.css?v=2026_production_v33.0">
+    <link rel="stylesheet" href="css/simulators.css?v=2026_production_v33.0">
     <!-- ⚡ [توحيد نمط التحميل - المرحلة 4]: defer + رقم إصدار موحّد زي باقي صفحات
          الموقع بالظبط، بدل التحميل الحاجز (Blocking) اللي كان هنا قبل كده. -->
-    <script src="js/supabase-client.js?v=2026_production_v32.0" defer></script>
-    <script src="js/core-engine.js?v=2026_production_v32.0" defer></script>
+    <script src="js/supabase-client.js?v=2026_production_v33.0" defer></script>
+    <script src="js/core-engine.js?v=2026_production_v33.0" defer></script>
     
     <style>
         .bose-simulator-layout {
@@ -109,8 +109,8 @@
             transform: translateY(-50%);
         }
         .bose-progress-node {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             background-color: var(--bose-white);
             border: 2px solid var(--bose-gray-border);
@@ -118,7 +118,7 @@
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            font-size: 15px;
+            font-size: 14px;
             color: var(--bose-black);
             z-index: 2;
             transition: var(--bose-transition);
@@ -257,8 +257,6 @@
         }
         .bose-portfolio-img-node {
             flex-shrink: 0;
-            /* 🔍 [تحسين تجربة المستخدم +30%]: تكبير صور سابقة الأعمال بنسبة 30% (كانت 220px)
-               عشان العميل يقدر يميز التفاصيل من أول نظرة قبل حتى ما يكبّرها باللايت بوكس */
             width: 286px;
             height: 286px;
             border-radius: 18px;
@@ -308,8 +306,7 @@
             color: var(--bose-black);
         }
 
-        /* 🔍 [تحسين جذري]: اللايت بوكس دلوقتي بيملي الشاشة تقريباً (بدل ما كان مربع صغير
-           بـ 90%/80vh) عشان العميل يقدر يشوف أدق تفاصيل التصميم بوضوح تام قبل ما يطلب تورتته. */
+        /* 🔍 [تحسين جذري]: اللايت بوكس دلوقتي بيملي الشاشة تقريباً */
         .bose-lightbox-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(17, 17, 17, 0.9); backdrop-filter: blur(6px);
@@ -334,10 +331,6 @@
             z-index: 2;
         }
 
-        /* 🛡️ [إصلاح جذري]: شريط التنقل السفلي العام (.bose-bottom-nav-bar) بيتحقن في كل صفحة
-           بـ z-index: 50000 وبنفس bottom:0 بالظبط، فكان بيطلع فوق شريط سعر التورتة هنا
-           (z-index: 1000) ويغطي عليه تماماً. صفحة المحاكي عندها زرار تأكيد وسعر مخصص أوضح
-           وأهم من التنقل العام، فبنخفي الشريط العام هنا فقط ونسيب مكانه بالكامل لسعر التورتة. */
         .bose-bottom-nav-bar { display: none !important; }
 
         .dynamic-tracker-bar {
@@ -376,7 +369,6 @@
             box-shadow: 0 12px 35px rgba(255, 145, 164, 0.55) !important;
         }
 
-        /* 🧠 [محاكي أذكى - الخطوة الجديدة "لمين وليه؟"] */
         .bose-purpose-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -403,7 +395,6 @@
             line-height: 1.4;
         }
 
-        /* 💬 ملاحظة المصمم السياقية */
         .bose-designer-note-bubble {
             display: none;
             align-items: flex-start;
@@ -421,7 +412,6 @@
         .bose-designer-note-bubble.show { display: flex; }
         .bose-designer-note-bubble .note-icon { font-size: 18px; flex-shrink: 0; }
 
-        /* 💌 زرار مشاركة التصميم */
         .bose-share-design-btn {
             display: flex;
             align-items: center;
@@ -442,6 +432,70 @@
         }
         .bose-share-design-btn:hover {
             background: var(--bose-pink-light);
+        }
+
+        /* 📐 [ملاحظة ثابتة لمقاسات الأشكال] */
+        .bose-shape-size-note {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            background: var(--bose-pink-light);
+            border: 1px dashed var(--bose-pink);
+            border-radius: 14px;
+            padding: 12px 16px;
+            margin-top: 16px;
+            font-size: 13px;
+            color: var(--bose-black);
+            opacity: 0.85;
+            line-height: 1.5;
+        }
+
+        /* 📝 [عنوان فرعي داخل الخطوة] */
+        .bose-sub-section-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--bose-black);
+            margin: 26px 0 10px 0;
+        }
+        .bose-sub-section-title:first-of-type { margin-top: 0; }
+
+        /* 🧾 [خطوة ملخص الطلب النهائية] */
+        .bose-order-summary-card {
+            background: var(--bose-white);
+            border: 1px solid rgba(255,145,164,0.2);
+            border-radius: 18px;
+            padding: 18px 20px;
+        }
+        .bose-order-summary-card .price-item-row {
+            padding: 6px 0;
+            border-bottom: 1px dashed rgba(255,145,164,0.2);
+        }
+        .bose-order-summary-card .price-item-row:last-child { border-bottom: none; }
+        .bose-order-summary-total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 2px solid var(--bose-pink);
+            margin-top: 14px;
+            padding-top: 14px;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--bose-black);
+        }
+        .bose-order-summary-total-row span:last-child { color: var(--bose-pink); }
+        .bose-inline-add-to-cart-btn {
+            background: linear-gradient(135deg, var(--bose-pink), #FF91A4) !important;
+            color: var(--bose-white) !important;
+            border: none !important;
+            padding: 16px !important;
+            font-size: 16.5px !important;
+            font-weight: 700 !important;
+            border-radius: 50px !important;
+            cursor: pointer !important;
+            font-family: 'Cairo' !important;
+            width: 100%;
+            margin-top: 22px;
+            box-shadow: 0 8px 30px rgba(255, 145, 164, 0.4) !important;
         }
     </style>
 </head>
@@ -466,15 +520,16 @@
                 <span class="bose-progress-node" id="node-step-3">3</span>
                 <span class="bose-progress-node" id="node-step-4">4</span>
                 <span class="bose-progress-node" id="node-step-5">5</span>
+                <span class="bose-progress-node" id="node-step-6">6</span>
             </div>
 
             <div class="bose-step-wizard-card">
                 <form id="bose-interactive-cake-form" onsubmit="return false;">
 
-                    <!-- الخطوة 1 (جديدة) - لمين التورتة وإيه الإحساس المطلوب -->
+                    <!-- الخطوة 1 - لمين التورتة، مناسبتها، وإيه الإحساس المطلوب -->
                     <div class="bose-step-wizard-panel active-panel" id="panel-wizard-step-1">
-                        <h2 class="bose-wizard-title">التورتة دي لمين؟</h2>
-                        <p class="bose-wizard-subtitle">هنسهّل عليكِ الاختيار من أول خطوة.</p>
+                        <h2 class="bose-wizard-title">التورتة دي لمين ولإيه المناسبة؟</h2>
+                        <p class="bose-wizard-subtitle">هنسهّل عليكِ الاختيار من أول خطوة، وهنرشحلك شكل يناسب مناسبتك تقدري تعدليه براحتك بعدين.</p>
 
                         <div class="bose-purpose-grid">
                             <label class="bose-selection-card-label">
@@ -487,7 +542,16 @@
                             </label>
                         </div>
 
-                        <h3 class="premium-input-label" style="margin-top:26px;">عايزة الإحساس يكون إيه؟ (اختياري، هيرشحلك توليفة جاهزة)</h3>
+                        <!-- 🎉 [مناسبة التورتة الجديدة]: قائمة الأزرار بتتبني ديناميكياً من
+                             إعدادات المحاكي (cake-engine.js) عشان تبقى قابلة للتعديل من لوحة التحكم -->
+                        <h3 class="bose-sub-section-title">التورتة دي بمناسبة إيه؟ (اختياري، هيرشحلك شكل مناسب)</h3>
+                        <div class="bose-mood-grid" id="cake-occasion-row"></div>
+                        <div class="bose-designer-note-bubble" id="occasion-suggestion-note">
+                            <span class="note-icon">🎉</span>
+                            <span id="occasion-suggestion-text"></span>
+                        </div>
+
+                        <h3 class="bose-sub-section-title">عايزة الإحساس يكون إيه؟ (اختياري، هيرشحلك توليفة جاهزة)</h3>
                         <div class="bose-mood-grid">
                             <label class="bose-selection-card-label">
                                 <input type="radio" name="cake_mood" value="celebratory">
@@ -543,15 +607,17 @@
                                 <div class="bose-selection-card-inner">مستطيل</div>
                             </label>
                         </div>
+                        <!-- 📐 [إشعار توضيحي دائم لمقاسات الشكل] -->
+                        <div class="bose-shape-size-note" id="shape-size-permanent-note"></div>
                         <div class="bose-alert-message" id="alert-shape-restriction"></div>
                     </div>
 
                     <!-- الخطوة 4 -->
                     <div class="bose-step-wizard-panel" id="panel-wizard-step-4">
                         <h2 class="bose-wizard-title">نوع كيك مناسبتك وطباعة صورك الخاصة</h2>
-                        <p class="bose-wizard-subtitle">لو تحب تختار طعم الكيك الأساسي، وتقدر كمان تضيف صورة مخصصة فوق سطح التورتة لتوثيق أسعد لحظاتك.</p>
+                        <p class="bose-wizard-subtitle">اختاري طعم الكيك الأساسي، وتقدري كمان تضيفي صورة مخصصة فوق سطح التورتة، أو تبعتي صورة تورتة عايزة نقرب تصميمنا منها.</p>
                         
-                        <h3 class="premium-input-label" style="margin-top:20px;">1. طعم ونوع الكيك الداخلي:</h3>
+                        <h3 class="bose-sub-section-title" style="margin-top:0;">1. طعم ونوع الكيك الداخلي:</h3>
                         <div class="bose-interactive-radio-grid" style="margin-bottom:8px;">
                             <label class="bose-selection-card-label">
                                 <input type="radio" name="cake_flavor" value="vanilla" checked>
@@ -567,9 +633,8 @@
                             </label>
                         </div>
                         <p class="bose-flavor-sensory-note" id="flavor-sensory-note"></p>
-                        <div style="height:16px;"></div>
 
-                        <h3 class="premium-input-label">2. تحب تضيف صورة مخصصة فوق التورتة؟</h3>
+                        <h3 class="bose-sub-section-title">2. تحب تضيف صورة مخصصة فوق التورتة؟</h3>
                         <div class="bose-interactive-radio-grid">
                             <label class="bose-selection-card-label">
                                 <input type="radio" name="cake_printing" value="none" checked>
@@ -585,10 +650,6 @@
                             </label>
                         </div>
 
-                        <!-- 🐛 [إصلاح حرج]: قسم رفع صورة الطباعة كان غايب تماماً من الصفحة رغم إن
-                             cake-engine.js فيه كل منطق الرفع والمعاينة جاهز ومربوط بنفس الآلية
-                             المستخدمة في محاكي الورد (Cloudinary عبر uploadBoseReferenceImage) -
-                             العميل كان مفيش قدامه أي مكان فعلي يرفع بيه صورته اللي عايز يطبعها. -->
                         <div class="bose-premium-template-box" id="cake-photo-upload-section" style="display:none; margin-top:18px;">
                             <label class="premium-input-label" id="cake-photo-upload-label" for="cake-photo-file">اضغط هنا وارفع الصورة اللي حابب نطبعها على التورتة</label>
                             <div class="bose-photo-upload-zone" id="bose-cake-photo-upload-zone">
@@ -600,25 +661,74 @@
                                 <img id="cake-photo-preview-img" src="" class="bose-uploaded-image-preview" alt="معاينة الصورة المرفوعة" style="display:none;">
                             </div>
                         </div>
-                        <div class="bose-designer-note-bubble" id="printing-designer-note">
+
+                        <!-- 🖼️ [صورة تصميم مطلوب تقليده - ميزة جديدة]: مستقلة تماماً عن صورة
+                             الطباعة اللي فوق - هنا العميل بيبعت صورة تورتة عايز شكل تصميمه يشبهها. -->
+                        <h3 class="bose-sub-section-title">3. حابب تبعتلنا صورة تورتة عايز نعملها تشبهها؟</h3>
+                        <label class="premium-input-label bose-checkbox-label-tap">
+                            <input type="checkbox" id="cake-replica-toggle">
+                            عندي صورة تورتة عجباني وعايز نقرب تصميمنا منها قد الإمكان
+                        </label>
+                        <div class="bose-designer-note-bubble show" style="margin-top:10px;">
                             <span class="note-icon">💡</span>
-                            <span>نصيحة صغيرة: صورة قابلة للأكل فوق التورتة بتدي شكل أفخم وتوثّق اللحظة بجمال.</span>
+                            <span>هنحاول نقرب التصميم قد الإمكان، مع مراعاة إن التنفيذ اليدوي ممكن يختلف شوية عن الصورة الأصلية.</span>
+                        </div>
+                        <div class="bose-premium-template-box" id="cake-replica-upload-section" style="display:none; margin-top:14px;">
+                            <label class="premium-input-label" id="cake-replica-upload-label" for="cake-replica-file">اضغط هنا وارفع صورة التورتة اللي عايز نقرب تصميمنا منها</label>
+                            <div class="bose-photo-upload-zone" id="bose-cake-replica-upload-zone">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                                <span class="card-label">اضغط هنا وارفع الصورة</span>
+                                <input type="file" id="cake-replica-file" accept="image/*">
+                            </div>
+                            <div id="cake-replica-preview-container">
+                                <img id="cake-replica-preview-img" src="" class="bose-uploaded-image-preview" alt="معاينة صورة التصميم المرجعية" style="display:none;">
+                            </div>
                         </div>
                     </div>
 
-                    <!-- الخطوة 5 (تم التعديل والتصحيح اللغوي والإملائي بالكامل) -->
+                    <!-- الخطوة 5 -->
                     <div class="bose-step-wizard-panel" id="panel-wizard-step-5">
                         <h2 class="bose-wizard-title" id="message-step-title">لو تفضل نكتب جملة معينة على سطح التورتة:</h2>
                         <p class="bose-wizard-subtitle" id="message-step-subtitle">سجل لنا العبارة أو الكلمة اللي تحب تشوفها، وعرفنا لو عندك أي ملاحظات بخصوص حساسية الطعام لضمان سلامتك الكاملة.</p>
                         
-                        <h3 class="premium-input-label" id="message-field-label">تحب نكتب إيه على التورتة؟</h3>
+                        <h3 class="bose-sub-section-title" style="margin-top:0;" id="message-field-label">تحب نكتب إيه على التورتة؟</h3>
                         <textarea class="bose-premium-textarea-field" id="text-cake-message" placeholder="مثال: عيد ميلاد سعيد يا بوسي" maxlength="100" style="margin-bottom:24px;"></textarea>
 
-                        <h3 class="premium-input-label">لو عندك أي ملاحظات بخصوص الحساسية:</h3>
+                        <h3 class="bose-sub-section-title">لو عندك أي ملاحظات بخصوص الحساسية:</h3>
                         <textarea class="bose-premium-textarea-field" id="text-cake-allergy" placeholder="عرفنا هنا لو بتعاني من حساسية تجاه أي مكونات (مثل المكسرات) عشان نراعي ده بكل إتقان في المعمل" maxlength="150"></textarea>
+
+                        <!-- 💌 [كارت إهداء التورت - ميزة جديدة] -->
+                        <h3 class="bose-sub-section-title">حابب نضيفلك كارت إهداء ورقي يتقدم مع التورتة؟</h3>
+                        <label class="premium-input-label bose-checkbox-label-tap">
+                            <input type="checkbox" id="cake-giftcard-toggle">
+                            آه، حابب نطبعلك كارت إهداء ونحضره مع التورتة
+                        </label>
+                        <div id="cake-giftcard-price-note" style="margin-top:10px;"></div>
+                        <div id="cake-giftcard-text-section" class="custom-text-wrapper" style="margin-top:12px;">
+                            <label class="premium-input-label" for="cake-giftcard-text">اكتب الكلام اللي حابب نكتبه على الكارت هنا:</label>
+                            <textarea id="cake-giftcard-text" class="bose-premium-text-input bose-premium-textarea" placeholder="اكتب مشاعرك الصادقة هنا ببراحة..."></textarea>
+                        </div>
 
                         <button type="button" class="bose-share-design-btn" id="btn-share-design">
                             <i class="fa-brands fa-whatsapp"></i> شاركي التصميم مع حد قبل ما تأكدي
+                        </button>
+                    </div>
+
+                    <!-- الخطوة 6 - ملخص الطلب النهائي (مفردات تفصيلية) -->
+                    <div class="bose-step-wizard-panel" id="panel-wizard-step-6">
+                        <h2 class="bose-wizard-title">ملخص طلبك</h2>
+                        <p class="bose-wizard-subtitle">راجعي كل تفاصيل تورتتك وسعرها بالمفردات قبل ما تأكدي الطلب.</p>
+
+                        <div class="bose-order-summary-card">
+                            <div id="cake-order-summary-list"></div>
+                            <div class="bose-order-summary-total-row">
+                                <span>الإجمالي الكلي:</span>
+                                <span id="cake-order-summary-total">0 جنيه</span>
+                            </div>
+                        </div>
+
+                        <button type="button" class="bose-inline-add-to-cart-btn" id="btn-cake-submit-cart-summary">
+                            <i class="fa-solid fa-cart-plus"></i> تأكيد وإضافة للسلة
                         </button>
                     </div>
 
@@ -659,6 +769,6 @@
 
     <div id="bose-footer-injector"></div>
 
-    <script src="js/cake-engine.js?v=2026_production_v32.0" defer></script>
+    <script src="js/cake-engine.js?v=2026_production_v33.0" defer></script>
 </body>
 </html>
