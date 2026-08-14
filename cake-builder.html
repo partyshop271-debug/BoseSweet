@@ -33,7 +33,7 @@
         .bose-simulator-layout {
             max-width: 800px;
             margin: 0 auto;
-            padding: 20px 16px 150px 16px;
+            padding: 20px 16px 60px 16px;
         }
         .bose-main-hero-hook {
             width: 100%;
@@ -525,42 +525,6 @@
 
         .bose-bottom-nav-bar { display: none !important; }
 
-        .dynamic-tracker-bar {
-            position: fixed; bottom: 0; left: 0; right: 0;
-            background-color: var(--bose-white); border-top: var(--bose-border-pink);
-            padding: 14px 24px; box-shadow: 0 -10px 40px rgba(255, 145, 164, 0.15); z-index: 51000;
-        }
-        .tracker-flex-container {
-            max-width: 800px; margin: 0 auto; display: flex;
-            flex-direction: column; align-items: center; justify-content: center; gap: 12px;
-            text-align: center;
-        }
-        .tracker-price-info { display: flex; flex-direction: column; align-items: center; }
-        .tracker-price-info .label { font-size: 14px; font-weight: 700; color: var(--bose-black); opacity: 0.8; }
-        .tracker-price-info .price-display { font-size: 26px; font-weight: 700; color: var(--bose-pink); margin-top: 3px; }
-
-        .bose-master-luxury-cta {
-            background: linear-gradient(135deg, var(--bose-pink), #FF91A4) !important;
-            color: var(--bose-white) !important;
-            border: none !important;
-            padding: 14px 60px !important;
-            font-size: 17px !important;
-            font-weight: 700 !important;
-            border-radius: 50px !important;
-            cursor: pointer !important;
-            font-family: 'Cairo' !important;
-            transition: var(--bose-transition) !important;
-            box-shadow: 0 8px 30px rgba(255, 145, 164, 0.4) !important;
-            display: none;
-            width: 100%;
-            max-width: 320px;
-            box-sizing: border-box;
-        }
-        .bose-master-luxury-cta:hover {
-            transform: translateY(-2px) !important;
-            box-shadow: 0 12px 35px rgba(255, 145, 164, 0.55) !important;
-        }
-
         .bose-flavor-sensory-note {
             font-size: 12.5px;
             color: var(--bose-black);
@@ -983,16 +947,6 @@
             </div>
         </div>
     </main>
-
-    <div class="dynamic-tracker-bar">
-        <div class="tracker-flex-container">
-            <div class="tracker-price-info">
-                <span class="label" id="display-dynamic-label">سعر التورتة الحالي لـ 4 أفراد هو:</span>
-                <span class="price-display" id="display-dynamic-price">580 جنيه</span>
-            </div>
-            <button type="button" class="bose-master-luxury-cta" id="btn-cake-submit-cart">تأكيد وإضافة للسلة</button>
-        </div>
-    </div>
 
     <div class="bose-lightbox-overlay" id="bose-lightbox-container">
         <div class="bose-lightbox-card">
