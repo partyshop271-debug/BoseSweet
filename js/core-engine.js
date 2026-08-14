@@ -1499,7 +1499,7 @@
                 <div id="bose-app-install-popup-overlay" class="bose-app-install-popup-overlay">
                     <div class="bose-app-install-popup-card" role="dialog" aria-modal="true" aria-label="تثبيت تطبيق حلويات بوسي">
                         <button type="button" class="bose-app-install-close-btn" id="bose-app-install-close-btn" aria-label="إغلاق"><i class="fa-solid fa-xmark"></i></button>
-                        <img src="${BOSE_APP_MASCOT_IMAGE_URL}" alt="شيف حلويات بوسي" class="bose-app-install-mascot-img" width="180" height="180" loading="lazy" />
+                        <img src="${BOSE_APP_MASCOT_IMAGE_URL}" alt="شيف حلويات بوسي" class="bose-app-install-mascot-img" loading="lazy" style="width:78%;max-width:300px;height:auto;object-fit:contain;display:block;margin:0 auto;" />
                         <h3 class="bose-app-install-title">حمّلي تطبيقنا! 🎀</h3>
                         <p class="bose-app-install-desc">اطلبي حلوياتك المفضلة في ثواني، واستلمي عروضنا الحصرية أول بأول من غير ما تفوتك حاجة</p>
                         ${ctaHtml}
