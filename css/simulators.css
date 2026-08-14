@@ -71,7 +71,7 @@
     max-height: 480px;
     aspect-ratio: 16 / 9; /* منع الـ CLS واهتزاز الصفحة أثناء تحميل الصورة */
     object-fit: cover;
-    border-radius: 24px;
+    border-radius: var(--bose-radius-md);
     box-shadow: var(--bose-pink-shadow);
     border: var(--bose-border-pink);
 }
@@ -179,7 +179,7 @@
 .bose-premium-template-box {
     background: var(--bose-white);
     border: var(--bose-border-pink);
-    border-radius: 20px;
+    border-radius: var(--bose-radius-md);
     padding: 20px;
     margin-bottom: 24px;
     box-shadow: 0 6px 20px rgba(255, 145, 164, 0.02);
@@ -212,7 +212,7 @@
 .bose-iconic-btn-node {
     background: var(--bose-white) !important;
     border: 1.5px solid var(--bose-gray-border) !important;
-    border-radius: 12px !important;
+    border-radius: var(--bose-radius-md) !important; /* 🛡️ بلاطة اختيار (أيقونة + نص) = زاوية متوسطة زي أي كارت، مش كبسولة، عشان شكلها مربّع/عمودي مش زرار مستطيل عريض */
     padding: 16px 12px !important;
     text-align: center;
     cursor: pointer;
@@ -271,7 +271,7 @@
     gap: 14px;
     background: var(--bose-white);
     padding: 6px 12px;
-    border-radius: 30px;
+    border-radius: var(--bose-radius-pill);
     border: 1.5px solid rgba(255, 145, 164, 0.2);
     box-sizing: border-box;
 }
@@ -332,7 +332,7 @@
     padding: 12px;
     background: var(--bose-pink-light);
     border: 1px solid rgba(255, 145, 164, 0.2);
-    border-radius: 12px;
+    border-radius: var(--bose-radius-md);
     text-align: center;
     width: 100%;
     max-width: 320px;
@@ -357,7 +357,7 @@
    ========================================================================== */
 .bose-photo-upload-zone {
     border: 2px dashed var(--bose-pink);
-    border-radius: 16px;
+    border-radius: var(--bose-radius-md);
     padding: 24px;
     text-align: center;
     background: var(--bose-white);
@@ -395,7 +395,7 @@
     width: 140px;
     aspect-ratio: 1; /* الحفاظ على الأبعاد الثابتة لمنع قفزات عناصر الصفحة */
     object-fit: cover;
-    border-radius: 12px;
+    border-radius: var(--bose-radius-sm);
     border: var(--bose-border-pink);
     box-shadow: 0 4px 12px rgba(255, 145, 164, 0.1);
 }
@@ -424,7 +424,7 @@
 .bose-premium-text-input {
     width: 100%;
     border: 1.5px solid var(--bose-gray-border);
-    border-radius: 12px;
+    border-radius: var(--bose-radius-sm);
     padding: 12px 16px;
     font-size: 0.95rem;
     font-weight: 600;
@@ -473,7 +473,7 @@
     z-index: 100;
     background: var(--bose-white) !important;
     border: var(--bose-border-pink) !important;
-    border-radius: 24px !important;
+    border-radius: var(--bose-radius-md) !important;
     padding: 26px !important;
     box-shadow: var(--bose-pink-shadow) !important;
     box-sizing: border-box;
@@ -522,7 +522,7 @@
     align-items: center;
     background: var(--bose-pink-light) !important;
     padding: 12px 16px !important;
-    border-radius: 12px !important;
+    border-radius: var(--bose-radius-sm) !important;
     font-size: 14px !important;
     font-weight: 700 !important;
     border: 1px solid rgba(255, 145, 164, 0.15) !important;
@@ -569,7 +569,7 @@
 
 .premium-nav-btn {
     padding: 12px 32px !important;
-    border-radius: 14px !important;
+    border-radius: var(--bose-radius-pill) !important;
     font-weight: 700 !important;
     font-size: 0.95rem !important;
     cursor: pointer !important;
@@ -648,7 +648,7 @@
 
 .horizontal-swipe-slider::-webkit-scrollbar-thumb {
     background: rgba(255, 145, 164, 0.2);
-    border-radius: 10px;
+    border-radius: var(--bose-radius-sm);
 }
 
 .portfolio-item-card {
@@ -656,7 +656,7 @@
     scroll-snap-align: start;
     cursor: pointer;
     background: var(--bose-white);
-    border-radius: 18px;
+    border-radius: var(--bose-radius-md);
     border: 1px solid var(--bose-gray-border);
     overflow: hidden;
     transition: border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1),
@@ -693,7 +693,7 @@
 
 .bose-popup-content {
     background: var(--bose-white);
-    border-radius: 24px;
+    border-radius: var(--bose-radius-md);
     padding: 20px;
     max-width: 600px;
     width: 100%;
@@ -719,7 +719,7 @@
     max-height: 480px;
     aspect-ratio: 16 / 9;
     object-fit: cover;
-    border-radius: 16px;
+    border-radius: var(--bose-radius-md);
     border: 1px solid rgba(255, 145, 164, 0.2);
     display: block;
 }
@@ -745,7 +745,7 @@
     }
     .simulator-header h1 { font-size: 1.7rem !important; }
     .bose-iconic-options-row { gap: 10px; }
-    .bose-iconic-btn-node { padding: 12px 6px !important; border-radius: 10px !important; }
+    .bose-iconic-btn-node { padding: 12px 6px !important; border-radius: var(--bose-radius-md) !important; }
     .bose-iconic-btn-node .btn-icon { font-size: 18px; }
     .bose-iconic-btn-node .btn-label { font-size: 12px; }
     .simulator-actions-bar { flex-direction: column-reverse; gap: 12px; }

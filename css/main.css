@@ -56,7 +56,7 @@
     border: 1px solid rgba(255, 145, 164, 0.3);
     background: #FFFFFF;
     color: #111111;
-    border-radius: 50px;
+    border-radius: var(--bose-radius-pill);
     cursor: pointer;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -78,7 +78,7 @@
     gap: 10px;
     padding: 9px 20px 9px 10px;
     border: var(--bose-border-pink);
-    border-radius: 50px;
+    border-radius: var(--bose-radius-pill);
     background-color: rgba(255, 255, 255, 0.9);
     color: var(--bose-black) !important;
     font-weight: 600;
@@ -148,7 +148,7 @@
     scroll-snap-align: center !important;
     background-color: var(--bose-white) !important;
     border: var(--bose-border-thick) !important;
-    border-radius: 24px !important;
+    border-radius: var(--bose-radius-md) !important;
     padding: 16px;
     box-shadow: var(--bose-shadow-glow) !important;
     display: flex;
@@ -172,7 +172,7 @@
     font-size: 12px;
     font-weight: 700;
     padding: 4px 12px;
-    border-radius: 20px;
+    border-radius: var(--bose-radius-sm);
     z-index: 2;
     box-shadow: 0 4px 10px rgba(255, 145, 164, 0.3);
 }
@@ -278,7 +278,7 @@
     flex-shrink: 0;
     background-color: var(--bose-white);
     border: var(--bose-border-thick);
-    border-radius: 50px;
+    border-radius: var(--bose-radius-pill); /* 🛡️ صندوق بحث = شكل كبسولة زي زرار/تاب حسب المقياس */
     box-shadow: var(--bose-shadow-glow);
     padding: 4px;
 }
@@ -332,7 +332,7 @@
     gap: 14px;
     padding: 10px;
     border: var(--bose-border-pink);
-    border-radius: 16px;
+    border-radius: var(--bose-radius-md);
     background-color: var(--bose-white);
     box-shadow: var(--bose-shadow-glow);
     transition: var(--bose-transition-fast);
@@ -347,7 +347,7 @@
 .search-result-img {
     width: 56px;
     height: 56px;
-    border-radius: 12px;
+    border-radius: var(--bose-radius-sm);
     object-fit: cover;
     flex-shrink: 0;
 }
@@ -384,7 +384,7 @@
     color: var(--bose-pink-text);
     background-color: rgba(255, 145, 164, 0.1);
     padding: 6px 14px;
-    border-radius: 50px;
+    border-radius: var(--bose-radius-pill);
     white-space: nowrap;
 }
 
@@ -414,7 +414,7 @@
     .search-result-img {
         width: 65px;
         height: 65px;
-        border-radius: 14px;
+        border-radius: var(--bose-radius-sm);
     }
     .search-result-name {
         font-size: 17px;
@@ -563,7 +563,7 @@
     font-size: 16px !important;
     font-weight: 600 !important;
     color: var(--bose-black) !important;
-    border-radius: 16px !important;
+    border-radius: var(--bose-radius-md) !important;
     transition: var(--bose-transition-fast) !important;
     box-sizing: border-box !important;
 }
@@ -616,7 +616,7 @@
     gap: 12px !important;
     width: 100% !important;
     padding: 14px !important;
-    border-radius: 18px !important;
+    border-radius: var(--bose-radius-pill) !important;
     font-size: 15px !important;
     font-weight: 700 !important;
     box-sizing: border-box !important;
@@ -737,7 +737,7 @@
     min-height: 240px;
     max-height: 330px;
     object-fit: cover !important;
-    border-radius: 24px;
+    border-radius: var(--bose-radius-md);
     border: var(--bose-border-pink);
     display: block;
 }
@@ -746,7 +746,7 @@
 .waterfall-img-link {
     display: block;
     text-decoration: none;
-    border-radius: 24px;
+    border-radius: var(--bose-radius-md);
     transition: transform 0.25s ease;
 }
 
@@ -780,7 +780,7 @@
     width: 100% !important;
     max-width: 420px !important;
     height: 580px !important;
-    border-radius: 32px !important;
+    border-radius: var(--bose-radius-md) !important;
     overflow: hidden !important;
     border: var(--bose-border-thick) !important;
     box-shadow: var(--bose-shadow-hover) !important;
@@ -845,7 +845,7 @@
     transform: translateX(-50%);
     width: 65px; height: 3.5px;
     background-color: var(--bose-pink);
-    border-radius: 4px;
+    border-radius: var(--bose-radius-pill); /* شريط زخرفي صغير - كبسولة كاملة */
 }
 
 .bose-section-subtitle {
@@ -953,7 +953,7 @@
     height: auto;
     background-color: var(--bose-white) !important;
     border: var(--bose-border-pink) !important;
-    border-radius: 24px !important;
+    border-radius: var(--bose-radius-md) !important;
     padding: 18px;
     box-shadow: var(--bose-shadow-glow) !important; 
     transition: var(--bose-transition-fast) !important;
@@ -982,7 +982,7 @@
 .product-card-img {
     width: 100%;
     aspect-ratio: 1 / 1;
-    border-radius: 20px;
+    border-radius: var(--bose-radius-md);
     display: block;
     margin-bottom: 14px;
     object-fit: cover;
@@ -1027,7 +1027,7 @@
     margin-bottom: 14px;
     direction: rtl !important; 
     border: var(--bose-border-pink);
-    border-radius: 30px;
+    border-radius: var(--bose-radius-pill);
     padding: 4px 8px;
     background-color: rgba(255, 145, 164, 0.03); 
 }
@@ -1070,7 +1070,7 @@
     margin-bottom: 14px;
     border: 1px dashed rgba(255, 145, 164, 0.3);
     padding: 4px 12px;
-    border-radius: 12px;
+    border-radius: var(--bose-radius-sm);
     display: inline-block;
     align-self: center;
     background-color: rgba(255, 145, 164, 0.01);
@@ -1081,7 +1081,7 @@
     background-color: var(--bose-pink-text); /* 🛡️ لون أغمق لضمان تباين كافٍ مع النص الأبيض - أهم زرار بالكارت */
     color: var(--bose-white);
     padding: 12px;
-    border-radius: 16px;
+    border-radius: var(--bose-radius-pill);
     font-weight: 700;
     cursor: pointer;
     transition: var(--bose-transition-fast);
@@ -1117,7 +1117,7 @@
     color: var(--bose-pink-text) !important;
     font-weight: 700;
     padding: 12px 36px;
-    border-radius: 30px;
+    border-radius: var(--bose-radius-pill);
     cursor: pointer;
     transition: background-color 0.3s ease, color 0.3s ease;
     opacity: 1 !important;
@@ -1138,7 +1138,7 @@
     padding: 50px 24px !important;
     background-color: var(--bose-white) !important;
     border: var(--bose-border-thick) !important; 
-    border-radius: 28px !important; 
+    border-radius: var(--bose-radius-md) !important; 
     box-shadow: var(--bose-shadow-glow) !important;
     display: flex !important;
     flex-direction: column !important;
@@ -1164,7 +1164,7 @@
     width: 100% !important;
     height: auto !important; 
     object-fit: contain !important;
-    border-radius: 20px !important;
+    border-radius: var(--bose-radius-md) !important;
     border: var(--bose-border-pink) !important;
     margin: 0 auto !important;
     display: block !important;
@@ -1196,7 +1196,7 @@
     color: var(--bose-white) !important; 
     font-weight: 700 !important; 
     padding: 15px 50px !important; 
-    border-radius: 35px !important; 
+    border-radius: var(--bose-radius-pill) !important; 
     border: 2px solid var(--bose-white) !important; 
     text-decoration: none !important; 
     margin: 12px auto 0 auto !important; 
@@ -1268,7 +1268,7 @@
 .category-card-unified {
     background-color: var(--bose-white) !important;
     border: var(--bose-border-pink) !important;
-    border-radius: 28px !important;
+    border-radius: var(--bose-radius-md) !important;
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -1371,7 +1371,7 @@
 .bose-stat-card {
     background-color: var(--bose-white);
     border: var(--bose-border-pink);
-    border-radius: 24px;
+    border-radius: var(--bose-radius-md);
     padding: 26px;
     text-align: center;
     box-shadow: var(--bose-shadow-glow);
@@ -1543,7 +1543,7 @@
     width: 45px !important;
     height: 2.5px !important;
     background-color: var(--bose-pink) !important;
-    border-radius: 2px !important;
+    border-radius: var(--bose-radius-pill) !important; /* شريط زخرفي صغير - كبسولة كاملة زي نظيره فوق */
 }
 
 @media (min-width: 768px) {
@@ -1624,7 +1624,7 @@
 .bose-slider-dot.active {
     background-color: var(--bose-pink) !important;
     width: 26px !important; 
-    border-radius: 6px !important;
+    border-radius: var(--bose-radius-pill) !important;
 }
 
 /* ==========================================================================
@@ -1653,7 +1653,7 @@
     font-weight: 700;
     font-size: 13.5px;
     font-family: 'Cairo', sans-serif;
-    border-radius: 12px;
+    border-radius: var(--bose-radius-sm);
     padding: 10px 16px;
     margin: 0 auto 14px auto;
     max-width: 480px;
@@ -1722,7 +1722,7 @@
     font-weight: 700;
     font-size: 13px;
     padding: 7px 16px;
-    border-radius: 30px;
+    border-radius: var(--bose-radius-pill);
     margin-bottom: 16px;
 }
 .bose-app-promo-eyebrow i { color: var(--bose-gold, #FF91A4); }
@@ -1762,7 +1762,7 @@
     font-weight: 700;
     font-size: 13.5px;
     padding: 10px 18px;
-    border-radius: 40px;
+    border-radius: var(--bose-radius-pill);
     text-decoration: none;
     cursor: pointer;
     transition: background 0.2s ease, transform 0.2s ease;
@@ -1789,7 +1789,7 @@
     border: 1.5px solid #FFFFFF;
     color: #FFFFFF;
     font-family: 'Cairo', sans-serif;
-    border-radius: 40px;
+    border-radius: var(--bose-radius-pill);
     padding: 11px 22px;
     cursor: pointer;
     transition: var(--bose-transition-fast, all 0.25s ease);
@@ -1854,28 +1854,28 @@
 .mock-app-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
 .mock-app-header img { width: 26px; height: 26px; border-radius: 50%; }
 .mock-app-header strong { font-size: 13px; color: var(--bose-black, #111); }
-.mock-hero-strip { background: rgba(255,145,164,0.12); color: var(--bose-pink-text, #FF91A4); font-size: 11px; font-weight: 700; text-align: center; padding: 10px; border-radius: 12px; margin-bottom: 12px; }
+.mock-hero-strip { background: rgba(255,145,164,0.12); color: var(--bose-pink-text, #FF91A4); font-size: 11px; font-weight: 700; text-align: center; padding: 10px; border-radius: var(--bose-radius-sm); margin-bottom: 12px; }
 .mock-product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.mock-product-card { background: #FFFFFF; border: 1px solid rgba(255,145,164,0.15); border-radius: 12px; height: 78px; overflow: hidden; position: relative; }
+.mock-product-card { background: #FFFFFF; border: 1px solid rgba(255,145,164,0.15); border-radius: var(--bose-radius-sm); height: 78px; overflow: hidden; position: relative; }
 .mock-product-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .mock-product-card .mock-product-name { position: absolute; inset: auto 0 0 0; background: linear-gradient(0deg, rgba(0,0,0,0.55), transparent); color: #fff; font-size: 8.5px; font-weight: 700; padding: 3px 6px 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 .mock-rewards-title { font-size: 15px; font-weight: 800; color: var(--bose-black, #111); margin-bottom: 12px; }
-.mock-points-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--bose-gold, #FF91A4); color: #fff; font-size: 12px; font-weight: 800; padding: 6px 14px; border-radius: 30px; margin-bottom: 14px; }
-.mock-progress-track { width: 100%; height: 8px; background: #FFFFFF; border-radius: 10px; margin-bottom: 16px; overflow: hidden; }
-.mock-progress-fill { width: 62%; height: 100%; background: var(--bose-pink, #FF91A4); border-radius: 10px; }
-.mock-reward-row { display: flex; align-items: center; gap: 8px; font-size: 11px; color: #111111; background: rgba(255, 145, 164, 0.08); padding: 10px; border-radius: 10px; margin-bottom: 8px; }
+.mock-points-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--bose-gold, #FF91A4); color: #fff; font-size: 12px; font-weight: 800; padding: 6px 14px; border-radius: var(--bose-radius-pill); margin-bottom: 14px; }
+.mock-progress-track { width: 100%; height: 8px; background: #FFFFFF; border-radius: var(--bose-radius-pill); margin-bottom: 16px; overflow: hidden; }
+.mock-progress-fill { width: 62%; height: 100%; background: var(--bose-pink, #FF91A4); border-radius: var(--bose-radius-pill); }
+.mock-reward-row { display: flex; align-items: center; gap: 8px; font-size: 11px; color: #111111; background: rgba(255, 145, 164, 0.08); padding: 10px; border-radius: var(--bose-radius-sm); margin-bottom: 8px; }
 .mock-reward-row i { color: var(--bose-pink-text, #FF91A4); }
 
 .mock-cart-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-.mock-cart-thumb { width: 46px; height: 46px; background: #FFFFFF; border-radius: 10px; flex-shrink: 0; overflow: hidden; }
+.mock-cart-thumb { width: 46px; height: 46px; background: #FFFFFF; border-radius: var(--bose-radius-sm); flex-shrink: 0; overflow: hidden; }
 .mock-cart-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .mock-cart-lines { display: flex; flex-direction: column; gap: 6px; flex: 1; }
 .mock-cart-lines span { display: block; height: 8px; background: #FFFFFF; border-radius: 4px; }
 .mock-cart-lines span:last-child { width: 50%; }
 .mock-cart-lines .mock-cart-name { height: auto; background: none; font-size: 11px; font-weight: 700; color: var(--bose-black, #111); border-radius: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .mock-cart-lines .mock-cart-price { height: auto; background: none; font-size: 10px; font-weight: 700; color: var(--bose-pink-text, #FF91A4); border-radius: 0; width: auto !important; }
-.mock-checkout-btn { width: 100%; background: var(--bose-pink-text, #FF91A4); color: #fff; border: none; border-radius: 30px; padding: 12px; font-family: 'Cairo', sans-serif; font-weight: 800; font-size: 12.5px; margin-top: 10px; }
+.mock-checkout-btn { width: 100%; background: var(--bose-pink-text, #FF91A4); color: #fff; border: none; border-radius: var(--bose-radius-pill); padding: 12px; font-family: 'Cairo', sans-serif; font-weight: 800; font-size: 12.5px; margin-top: 10px; }
 
 /* ---------- أيقونات عائمة حوالين الموبايل ---------- */
 .bose-app-promo-float-badge {

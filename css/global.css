@@ -33,6 +33,18 @@
     /* صمامات أمان أنميشن السلاسة والتوقيت البصري */
     --bose-transition-fast: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     --bose-transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+
+    /* 🛡️ [إصلاح أبعاد - مقياس زوايا موحّد]: كانت الزوايا (border-radius) في
+       السايت كله بـ18 قيمة مختلفة عشوائية (من 2px لحد 50px) من غير أي منطق
+       واضح - كارت بـ12px وكارت تاني شبهه بـ24px، وزرار بـ10px وزرار تاني بـ30px،
+       من غير سبب بصري واضح للفرق. دلوقتي 3 مستويات بس، وكل عنصر في السايت
+       اتنقل لأقرب مستوى يناسب نوعه (تفاصيل التطبيق موضحة في تعليقات كل ملف):
+       - عناصر صغيرة (حقول إدخال، شارات، أيقونات صغيرة): زاوية خفيفة.
+       - كروت وصور وحاويات (كارت منتج، مودال، قسم): زاوية متوسطة.
+       - أزرار وتابات فقط: كبسولة كاملة (نص دائرية بالكامل). */
+    --bose-radius-sm: 8px;
+    --bose-radius-md: 16px;
+    --bose-radius-pill: 999px;
 }
 
 /* ==========================================================================
@@ -412,7 +424,7 @@ img {
     font-weight: 700 !important;
     font-size: 1.05rem;
     padding: 14px 48px;
-    border-radius: 50px;
+    border-radius: var(--bose-radius-pill); /* 🛡️ زرار = كبسولة كاملة حسب المقياس الموحّد */
     transition: var(--bose-transition-fast);
     border: 2px solid transparent;
     display: inline-flex;
@@ -454,7 +466,7 @@ img {
     background-color: var(--bose-pink-text);
     color: var(--bose-white);
     padding: 12px 24px;
-    border-radius: 8px;
+    border-radius: var(--bose-radius-pill); /* 🛡️ [إصلاح تناسق]: كان 8px بينما رسالة toast التانية بالضبط (.bose-toast-message) كانت 30px لنفس نوع العنصر - دلوقتي الاتنين كبسولة موحّدة */
     box-shadow: var(--bose-shadow-hover);
     z-index: 99999;
     direction: rtl;
@@ -483,7 +495,7 @@ img {
     background-color: var(--bose-pink-text); /* 🛡️ لون أغمق لضمان تباين كافٍ مع النص الأبيض */
     color: var(--bose-white);
     padding: 12px 24px;
-    border-radius: 30px;
+    border-radius: var(--bose-radius-pill);
     font-weight: 700;
     font-size: 14px;
     text-align: center;
@@ -536,7 +548,7 @@ img {
     width: 100%;
     max-width: 420px;
     background: var(--bose-white, #FFFFFF);
-    border-radius: 28px 28px 0 0;
+    border-radius: var(--bose-radius-md) var(--bose-radius-md) 0 0; /* 🛡️ حاوية/مودال = زاوية متوسطة حسب المقياس الموحّد */
     padding: 28px 24px 30px 24px;
     text-align: center;
     font-family: 'Cairo', sans-serif;
@@ -547,7 +559,7 @@ img {
 
 @media (min-width: 640px) {
     .bose-app-install-popup-overlay { align-items: center; padding: 20px; }
-    .bose-app-install-popup-card { border-radius: 28px; }
+    .bose-app-install-popup-card { border-radius: var(--bose-radius-md); }
 }
 
 .bose-app-install-close-btn {
@@ -597,7 +609,7 @@ img {
     background: var(--bose-pink-text, #FF91A4);
     color: #FFFFFF;
     border: none;
-    border-radius: 50px;
+    border-radius: var(--bose-radius-pill);
     padding: 15px 20px;
     font-family: 'Cairo', sans-serif;
     font-weight: 800;
@@ -615,7 +627,7 @@ img {
 .bose-app-install-ios-note {
     background: rgba(255, 145, 164, 0.08);
     color: var(--bose-black, #111111);
-    border-radius: 14px;
+    border-radius: var(--bose-radius-md);
     padding: 14px 16px;
     font-size: 13px;
     line-height: 1.8;

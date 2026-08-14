@@ -30,7 +30,7 @@
     --bose-error-bg: rgba(255, 145, 164, 0.05);
     --bose-soft-shadow: 0 12px 32px rgba(255, 145, 164, 0.08);
     --bose-hover-shadow: 0 16px 40px rgba(255, 145, 164, 0.15);
-    --bose-radius: 16px;
+    --bose-radius: var(--bose-radius-md, 16px); /* 🛡️ [إصلاح تناسق]: كانت 16px ثابتة محلياً هنا، دلوقتي بترجع لنفس المقياس الموحّد المعرّف في global.css (--bose-radius-md) عشان تتغير كل الكروت في الموقع سوا لو الفريق غيّر المقياس مستقبلاً بدل ما تفضل الصفحة دي منفصلة برقمها الخاص. */
     --bose-font: 'Cairo', sans-serif;
 }
 
@@ -139,7 +139,7 @@
     width: 60px;
     height: 4px;
     background-color: var(--bose-pink);
-    border-radius: 10px;
+    border-radius: var(--bose-radius-pill);
 }
 
 @media (min-width: 992px) {
@@ -229,7 +229,7 @@
     background-color: var(--bose-white);
     color: var(--bose-pink-text);
     border: 1.5px solid var(--bose-pink);
-    border-radius: 30px;
+    border-radius: var(--bose-radius-pill);
     padding: 10px 24px;
     font-family: var(--bose-font);
     font-weight: 700;
@@ -307,7 +307,7 @@
 .cart-item-media-box {
     width: 120px;
     height: 120px;
-    border-radius: 12px;
+    border-radius: var(--bose-radius-sm);
     overflow: hidden;
     border: 2px solid var(--bose-cream);
     background-color: var(--bose-cream);
@@ -342,7 +342,7 @@
     font-family: var(--bose-font);
     font-weight: 700;
     padding: 2px 6px;
-    border-radius: 6px;
+    border-radius: var(--bose-radius-sm);
     box-shadow: 0 2px 5px rgba(17, 17, 17, 0.1);
     z-index: 2;
     display: flex;
@@ -403,7 +403,7 @@
     color: var(--bose-pink-text);
     background: var(--bose-cream);
     padding: 3px 10px;
-    border-radius: 20px;
+    border-radius: var(--bose-radius-sm);
     border: 1px solid rgba(255, 145, 164, 0.2);
 }
 
@@ -439,7 +439,7 @@
     margin-top: 6px;
     width: 100%;
     background: var(--bose-soft-gray);
-    border-radius: 10px;
+    border-radius: var(--bose-radius-md);
     padding: 12px 14px;
     border-right: 3px solid var(--bose-pink); /* علامة فخامة ملونة تدل على التخصيص */
 }
@@ -466,7 +466,7 @@
     font-weight: 600;
     font-size: 0.8rem;
     padding: 6px 12px;
-    border-radius: 20px;
+    border-radius: var(--bose-radius-sm);
     border: 1px solid rgba(255, 145, 164, 0.15);
     display: inline-flex;
     align-items: center;
@@ -531,7 +531,7 @@
                 color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     background: var(--bose-cream);
     padding: 4px 8px;
-    border-radius: 6px;
+    border-radius: var(--bose-radius-sm);
     border: 1px solid rgba(255, 145, 164, 0.15);
 }
 
@@ -584,7 +584,7 @@
     display: flex;
     align-items: center;
     border: 1px solid var(--bose-border-gray);
-    border-radius: 8px;
+    border-radius: var(--bose-radius-pill);
     background: var(--bose-white);
     overflow: hidden;
     padding: 2px;
@@ -692,7 +692,7 @@
     flex: 1;
     background-color: var(--bose-white);
     border: 1px solid var(--bose-border-gray);
-    border-radius: 8px;
+    border-radius: var(--bose-radius-sm);
     padding: 0 15px;
     height: 44px;
     font-family: var(--bose-font);
@@ -713,7 +713,7 @@
     background-color: var(--bose-pink-text); /* 🛡️ لون أغمق لضمان تباين كافٍ (4.6:1) مع النص الأبيض فوقه */
     color: var(--bose-white);
     border: none;
-    border-radius: 8px;
+    border-radius: var(--bose-radius-pill);
     padding: 0 20px;
     height: 44px;
     font-family: var(--bose-font);
@@ -741,7 +741,7 @@
     margin-top: -12px;
     margin-bottom: 15px;
     padding: 6px 12px;
-    border-radius: 8px;
+    border-radius: var(--bose-radius-pill);
     display: none;
     word-break: break-word;
 }
@@ -851,7 +851,7 @@
     background-color: var(--bose-pink-text); /* 🛡️ لون أغمق لضمان تباين كافٍ مع النص الأبيض - كان زرار تأكيد الطلب أقل عنصر وضوحاً بالصفحة */
     color: var(--bose-white);
     border: none;
-    border-radius: 12px;
+    border-radius: var(--bose-radius-pill);
     font-family: var(--bose-font);
     font-weight: 700;
     font-size: 1.1rem;
@@ -927,7 +927,7 @@
     background-color: var(--bose-cream);
     color: var(--bose-pink-text);
     border: 1px solid rgba(255, 145, 164, 0.2);
-    border-radius: 30px;
+    border-radius: var(--bose-radius-pill);
     padding: 12px 20px;
 }
 
@@ -1031,7 +1031,7 @@
 .bose-field-capture {
     background-color: var(--bose-white);
     border: 1.5px solid var(--bose-border-gray);
-    border-radius: 8px;
+    border-radius: var(--bose-radius-sm);
     height: 48px;
     padding: 0 16px;
     font-family: var(--bose-font);
@@ -1142,7 +1142,7 @@ select.bose-form-control option,
 .btn-fulfillment-node {
     background-color: var(--bose-white);
     border: 2px solid var(--bose-border-gray);
-    border-radius: 12px;
+    border-radius: var(--bose-radius-md);
     padding: 16px;
     cursor: pointer;
     text-align: center;
@@ -1228,7 +1228,7 @@ select.bose-form-control option,
 #bose-pickup-location-block {
     background-color: var(--bose-cream);
     border: 1px dashed var(--bose-pink);
-    border-radius: 14px;
+    border-radius: var(--bose-radius-md);
     padding: 16px;
     margin-bottom: 20px;
 }
@@ -1307,7 +1307,7 @@ select.bose-form-control option,
 .bose-upload-progress-container {
     border: 1px solid rgba(255, 145, 164, 0.25);
     background-color: var(--bose-white);
-    border-radius: 14px;
+    border-radius: var(--bose-radius-md);
     padding: 14px;
     margin-top: 15px;
     display: none;
@@ -1347,7 +1347,7 @@ select.bose-form-control option,
     width: 100%;
     height: 6px;
     background-color: var(--bose-soft-gray);
-    border-radius: 20px;
+    border-radius: var(--bose-radius-pill);
     overflow: hidden;
     margin-top: 12px;
     margin-bottom: 4px;
@@ -1365,7 +1365,7 @@ select.bose-form-control option,
     height: 100%;
     width: 0%;
     background-color: var(--bose-pink);
-    border-radius: 20px;
+    border-radius: var(--bose-radius-pill);
     transition: width 0.2s ease;
 }
 
@@ -1375,7 +1375,7 @@ select.bose-form-control option,
     background-color: var(--bose-success-bg);
     color: var(--bose-success-text);
     padding: 4px 12px;
-    border-radius: 8px;
+    border-radius: var(--bose-radius-sm);
     font-family: var(--bose-font);
     font-weight: 700;
     font-size: 0.8rem;
@@ -1401,7 +1401,7 @@ select.bose-form-control option,
 .cloudinary-preview-thumbnail {
     width: 55px;
     height: 55px;
-    border-radius: 8px;
+    border-radius: var(--bose-radius-sm);
     object-fit: cover;
     border: 1px solid var(--bose-border-pink-tint);
     display: none;
@@ -1415,7 +1415,7 @@ select.bose-form-control option,
     width: 100%;
     max-height: 200px;
     aspect-ratio: 16 / 9;
-    border-radius: 12px;
+    border-radius: var(--bose-radius-md);
     overflow: hidden;
     margin-top: 10px;
     border: 1px solid var(--bose-border-pink-tint);
@@ -1457,7 +1457,7 @@ select.bose-form-control option,
 
 .payment-method-accordion-item {
     border: 1px solid rgba(255, 145, 164, 0.18);
-    border-radius: 12px;
+    border-radius: var(--bose-radius-md);
     overflow: hidden;
     transition: border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -1526,7 +1526,7 @@ select.bose-form-control option,
 
 .review-items-container::-webkit-scrollbar-thumb {
     background: rgba(255, 145, 164, 0.3);
-    border-radius: 10px;
+    border-radius: var(--bose-radius-sm);
 }
 
 .review-item-compact-row,
@@ -1552,7 +1552,7 @@ select.bose-form-control option,
     font-size: 0.8rem;
     width: 24px;
     height: 24px;
-    border-radius: 6px;
+    border-radius: var(--bose-radius-sm);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1568,7 +1568,7 @@ select.bose-form-control option,
     width: 100%;
     background-color: var(--bose-white);
     border: 1px solid var(--bose-border-gray);
-    border-radius: 24px;
+    border-radius: var(--bose-radius-md);
     padding: 40px 25px;
     text-align: center;
     box-shadow: var(--bose-soft-shadow);
@@ -1602,7 +1602,7 @@ select.bose-form-control option,
 .order-reference-card {
     background: var(--bose-soft-gray);
     border: 1px dashed var(--bose-pink);
-    border-radius: 12px;
+    border-radius: var(--bose-radius-md);
     padding: 16px;
     width: 100%;
     display: flex;
@@ -1623,7 +1623,7 @@ select.bose-form-control option,
 .success-invoice-receipt-card {
     background-color: var(--bose-cream);
     border: 1.5px dashed rgba(255, 145, 164, 0.3);
-    border-radius: 16px;
+    border-radius: var(--bose-radius-md);
     padding: 20px;
     text-align: right;
     margin-bottom: 35px;
@@ -1696,7 +1696,7 @@ select.bose-form-control option,
     color: var(--bose-white);
     border: none;
     padding: 14px 24px;
-    border-radius: 50px;
+    border-radius: var(--bose-radius-pill);
     font-size: 0.95rem;
     font-weight: 700;
     cursor: pointer;
@@ -1718,7 +1718,7 @@ select.bose-form-control option,
     color: rgba(17, 17, 17, 0.7);
     border: 1px solid rgba(17, 17, 17, 0.12);
     padding: 14px 24px;
-    border-radius: 50px;
+    border-radius: var(--bose-radius-pill);
     font-size: 0.95rem;
     font-weight: 700;
     cursor: pointer;
@@ -1924,7 +1924,7 @@ select.bose-form-control option,
     scroll-snap-align: start;
     background: var(--bose-white, #FFFFFF);
     border: var(--bose-border-pink, 1px solid rgba(255,145,164,0.15));
-    border-radius: 18px;
+    border-radius: var(--bose-radius-md);
     box-shadow: var(--bose-shadow-glow, 0 8px 32px rgba(255,145,164,0.12));
     overflow: hidden;
     display: flex;
@@ -1944,7 +1944,7 @@ select.bose-form-control option,
     font-size: 11px;
     font-weight: 700;
     padding: 4px 10px;
-    border-radius: 30px;
+    border-radius: var(--bose-radius-sm);
 }
 
 .bose-suggestion-image-wrapper {
@@ -2026,7 +2026,7 @@ select.bose-form-control option,
     background: var(--bose-pink-text, #FF91A4);
     color: #FFFFFF;
     border: none;
-    border-radius: 30px;
+    border-radius: var(--bose-radius-pill);
     padding: 7px 14px;
     font-size: 12px;
     font-weight: 700;
@@ -2071,7 +2071,7 @@ select.bose-form-control option,
     border: 1px solid rgba(255, 145, 164, 0.35);
     background: #FFFFFF;
     color: var(--bose-black, #111111);
-    border-radius: 30px;
+    border-radius: var(--bose-radius-pill);
     cursor: pointer;
     transition: var(--bose-transition-fast);
 }
