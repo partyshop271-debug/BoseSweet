@@ -492,6 +492,10 @@
                 <div id="bose-product-size-tabs" class="bose-size-tabs-filter" style="display:none; margin-bottom:14px;"></div>
 
                 <div id="bose-product-price-text" class="product-price-large-display">0 EGP</div>
+                <!-- 🎂 [حل مشكلة "العميل مش فاهم الكمية"]: نفس البادچ الظاهر دايماً في كارت
+                     المنتج، بيتحط هنا كمان جنب السعر الرئيسي في صفحة المنتج المستقلة نفسها -
+                     راجع renderQuantityNote() تحت وعمود quantity_note في قاعدة البيانات. -->
+                <div id="bose-product-quantity-note" class="bose-qty-clarity-note" style="display:none;"><i class="fa-solid fa-circle-info"></i><span id="bose-product-quantity-note-text"></span></div>
                 
                 <p id="bose-product-desc-text" class="product-story-paragraph">وصف قصة المكونات الفاخرة والطعم الأصلي المميز للقطعة...</p>
                 
@@ -697,6 +701,22 @@
             // (core-engine.js / category.html): oldPrice > price. لو المنتج المفتوح فعلاً
             // عرض حقيقي، نظهر شارة الخصم والسعر القديم المشطوب هنا، بنفس الكلاسات المستخدمة
             // في كل مكان تاني بالموقع - عشان تبقى نفس الهوية البصرية للعرض في كل مكان يظهر فيه.
+            // 🎂 [حل مشكلة "العميل مش فاهم الكمية"]: quantity_note بييجي من لوحة التحكم
+            // (عمود جديد في جدول products) وبيتعرض هنا دايماً وبشكل واضح - مش جوه أي
+            // بوكس اختياري - عشان لو السعر ده بيغطي دستة كاملة (12 قطعة) مثلاً، العميل
+            // يعرف ده من أول لحظة يفتح فيها صفحة المنتج، قبل حتى ما يفكر يضيف للسلة.
+            function renderQuantityNote() {
+                const wrapper = document.getElementById("bose-product-quantity-note");
+                const textEl = document.getElementById("bose-product-quantity-note-text");
+                if (!wrapper || !textEl || !currentProduct) return;
+                if (currentProduct.quantityNote) {
+                    textEl.textContent = currentProduct.quantityNote;
+                    wrapper.style.display = "flex";
+                } else {
+                    wrapper.style.display = "none";
+                }
+            }
+
             function renderOfferBadge() {
                 const row = document.getElementById("bose-product-offer-row");
                 const badge = document.getElementById("bose-product-offer-badge");
@@ -841,6 +861,7 @@
                 renderOfferBadge();
                 renderSizeTabs(availableSizes);
                 applyDescriptionForCurrentSize();
+                renderQuantityNote();
 
                 const defaultLogo = "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png";
                 const masterImg = currentProduct.image || (currentProduct.images && currentProduct.images[0] ? currentProduct.images[0] : defaultLogo);
