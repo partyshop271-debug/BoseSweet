@@ -654,3 +654,98 @@ img {
     cursor: pointer;
     text-decoration: underline;
 }
+/* ==========================================================================
+   ℹ️👑 [نظام الشروح التوضيحية الموحد للموقع كله] — راجع ensureBoseInfoPopoverSystem
+   في core-engine.js. نفس الروح البصرية المستخدمة في محاكي التورت بالظبط، بس
+   دلوقتي متاحة لأي صفحة/كارت في الموقع من غير تكرار كود.
+   ========================================================================== */
+.bose-info-popover-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(17, 17, 17, 0.55);
+    backdrop-filter: blur(3px);
+    z-index: 70000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+.bose-info-popover-backdrop.show { display: flex; }
+.bose-info-popover-box {
+    background: var(--bose-white);
+    border: 2px solid var(--bose-pink);
+    border-radius: 20px;
+    padding: 20px;
+    width: 100%;
+    max-width: 300px;
+    min-height: 120px;
+    box-shadow: var(--bose-shadow-hover);
+    position: relative;
+    animation: bosePopoverPop 0.22s ease-out forwards;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+@keyframes bosePopoverPop {
+    from { opacity: 0; transform: scale(0.85); }
+    to { opacity: 1; transform: scale(1); }
+}
+.bose-info-popover-box h4 { margin: 0 0 8px 0; font-size: 16px; font-weight: 700; color: var(--bose-pink-text); }
+.bose-info-popover-box p { margin: 0; font-size: 13.5px; line-height: 1.7; color: var(--bose-black); }
+.bose-info-popover-close {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(255, 145, 164, 0.12);
+    border: none;
+    color: var(--bose-pink-text);
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* زرار ⓘ عام يتحط جنب أي عنصر (سطر نص، خيار، عنوان حقل) لفتح شرح إضافي اختياري */
+.bose-info-badge-inline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--bose-white);
+    border: 1.5px solid var(--bose-pink);
+    color: var(--bose-pink-text);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    flex-shrink: 0;
+    margin: 0 4px;
+    padding: 0;
+    vertical-align: middle;
+}
+
+/* 🎂 [حل مشكلة "العميل مش فاهم الكمية"]: بادچ دايماً ظاهر (مش محتاج ضغطة) بيوضح
+   جنب السعر مباشرة إيه اللي السعر ده بيغطيه فعلاً - راجع quantity_note في جدول
+   products. متعمد إنه مش جوه بوكس منبثق اختياري عشان أول عميل يشتري أونلاين
+   يشوفه من غير ما يحتاج يكتشفه بنفسه. */
+.bose-qty-clarity-note {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 145, 164, 0.10);
+    color: var(--bose-black);
+    border: 1px solid rgba(255, 145, 164, 0.35);
+    border-radius: var(--bose-radius-sm, 8px);
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.5;
+    margin: 6px 0;
+}
+.bose-qty-clarity-note i { color: var(--bose-pink-text); flex-shrink: 0; }
