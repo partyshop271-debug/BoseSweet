@@ -231,12 +231,50 @@
             </div>`;
     }
 
+    /* ============================= الترقيم (Pagination) ============================= */
+
+    /**
+     * 🛡️ [إصلاح - تحميل الجداول الكبيرة على دفعات]: getAllOrders/getAllReviews في
+     * admin-data.js كانوا بيسحبوا الجدول بالكامل من غير حد أقصى - مع نمو المتجر
+     * (مئات/آلاف الطلبات) ده هيبقى أبطأ تدريجياً ويستهلك bandwidth أكتر من اللازم
+     * في كل فتح للصفحة. الدالة دي عنصر ترقيم بسيط مشترك (زرار سابق/تالي + "من
+     * إجمالي كام") تستخدمه أي صفحة عندها نتيجة مقسّمة لصفحات من القاعدة.
+     * @param {HTMLElement} container - العنصر اللي هيتحط جواه الترقيم
+     * @param {{page: number, pageSize: number, totalCount: number}} state
+     * @param {(newPage: number) => void} onPageChange
+     */
+    function renderPaginationControls(container, { page, pageSize, totalCount }, onPageChange) {
+        if (!container) return;
+        const totalPages = Math.max(1, Math.ceil((totalCount || 0) / pageSize));
+        if (totalCount <= pageSize) {
+            container.innerHTML = "";
+            return;
+        }
+        const from = totalCount === 0 ? 0 : (page - 1) * pageSize + 1;
+        const to = Math.min(page * pageSize, totalCount);
+        container.innerHTML = `
+            <div class="adm-pagination">
+                <button type="button" class="adm-btn adm-btn-ghost" data-page-action="prev" ${page <= 1 ? "disabled" : ""}>
+                    <i class="fa-solid fa-chevron-right"></i> السابق
+                </button>
+                <span class="adm-pagination-info">${from}–${to} من ${totalCount}</span>
+                <button type="button" class="adm-btn adm-btn-ghost" data-page-action="next" ${page >= totalPages ? "disabled" : ""}>
+                    التالي <i class="fa-solid fa-chevron-left"></i>
+                </button>
+            </div>`;
+        const prevBtn = container.querySelector('[data-page-action="prev"]');
+        const nextBtn = container.querySelector('[data-page-action="next"]');
+        if (prevBtn) prevBtn.addEventListener("click", () => onPageChange(page - 1));
+        if (nextBtn) nextBtn.addEventListener("click", () => onPageChange(page + 1));
+    }
+
     window.BoseAdminUI = {
         escapeHtml,
         showToast,
         confirmAction,
         loadingSpinnerHTML,
         emptyStateHTML,
+        renderPaginationControls,
         ORDER_STATUSES,
         orderStatusMeta,
         orderStatusBadgeHTML,
