@@ -560,14 +560,20 @@
         if (!waterfallData) return;
 
         /**
-         * كل صورة في الشلال دلوقتي مرتبطة بمنتج حقيقي (image + slug) بدل ما تكون
-         * صورة زخرفية مقطوعة عن أي منتج. الضغط على أي صورة يوصل العميل مباشرة
-         * لصفحة المنتج المستقلة الخاصة بيها.
+         * كل صورة في الشلال دلوقتي رابط مباشر بسيط (image فقط) - مش مربوطة
+         * بمنتج حقيقي. لسه بندعم الشكل القديم (image + slug) لو موجود في
+         * بيانات قديمة عشان ميتكسرش أي حاجة، بس الإضافة من لوحة التحكم
+         * دلوقتي بتحفظ روابط مباشرة بس.
          * @param {Array<Object|string>} items
          */
         const buildWaterfallItemsHtml = (items) => items.map((item) => {
-            const isLinked = item && typeof item === 'object' && item.slug;
-            const imgSrc = isLinked ? item.image : item;
+            // 🛡️ [إصلاح حرج]: الصور المرفوعة يدوياً من لوحة التحكم (من غير ربط
+            // بمنتج) بتتخزن ككائن { image, slug: "" } مش نص خام زي الشكل القديم.
+            // كنا بنستخرج الصورة بس لو فيه slug، فأي صورة من غير ربط كانت بتاخد
+            // الكائن كله كـ src وتظهر مكسورة. دلوقتي بنستخرج image صح في الحالتين.
+            const isObject = item && typeof item === 'object';
+            const imgSrc = isObject ? item.image : item;
+            const isLinked = isObject && !!item.slug;
             const imgTag = `<img src="${window.optimizeBoseImageUrl(imgSrc, 300)}" alt="منتج فاخر حلويات بوسي" class="waterfall-img" width="220" height="220" loading="lazy" />`;
             return isLinked
                 ? `<a href="product.html?slug=${encodeURIComponent(item.slug)}" class="waterfall-img-link" aria-label="عرض تفاصيل المنتج">${imgTag}</a>`
