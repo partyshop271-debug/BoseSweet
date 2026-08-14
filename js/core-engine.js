@@ -1445,6 +1445,31 @@
         if (data.seo && data.seo.title && document.title !== data.seo.title) {
             document.title = data.seo.title;
         }
+        applyDynamicAppIcon(data.store?.logo);
+    }
+
+    /**
+     * 👑 [أيقونة التطبيق من لوحة التحكم]: ملف manifest.json بقى بيتولّد لحظياً
+     * من "شعار المتجر" في لوحة التحكم (api/manifest.js)، لكن أيقونة التبويب
+     * (favicon) وأيقونة "إضافة للشاشة الرئيسية" على آيفون (apple-touch-icon)
+     * بيتقروا من روابط <link> ثابتة في كل صفحة HTML على حدة - فبنحدّثهم هنا
+     * كمان لحظياً من نفس اللوجو عشان الهوية تفضل متطابقة في كل مكان بمجرد
+     * ما صاحبة المتجر تستبدل اللوجو من لوحة التحكم.
+     */
+    function applyDynamicAppIcon(logoUrl) {
+        if (!logoUrl || typeof logoUrl !== "string") return;
+        const iconUrl = window.optimizeBoseImageUrl(logoUrl, 192);
+        const setLink = (rel) => {
+            let link = document.querySelector(`link[rel="${rel}"]`);
+            if (!link) {
+                link = document.createElement("link");
+                link.rel = rel;
+                document.head.appendChild(link);
+            }
+            if (link.href !== iconUrl) link.href = iconUrl;
+        };
+        setLink("icon");
+        setLink("apple-touch-icon");
     }
 
     /**
