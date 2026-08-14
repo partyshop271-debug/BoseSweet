@@ -1042,6 +1042,56 @@
     min-height: 45px;
 }
 
+/* 🛡️ [إصلاح جذري - تشوه بصري لمنتجات الأحجام المتعددة]: التعليق الأصلي هنا
+   كان في cart-checkout.css بيقول إن القواعد دي "مشتركة بين كل كروت الموقع" -
+   لكن فعلياً cart-checkout.css متحمّل بس في cart.html/checkout.html. أي منتج
+   بأحجام متعددة (زي الديسباسيتو/القشطوطة) بيظهر بتبويب الحجم ده جوه كارته في
+   index.html أو offers.html كان بيطلع من غير أي تنسيق خالص (أزرار افتراضية
+   من المتصفح، بلا حدود ولا لون ولا مقاس) لأن الصفحتين دول مش محملين
+   cart-checkout.css أصلاً - وده كان سبب إضافي للتشوه البصري في قسم المنيو،
+   مش بس مسألة المقاسات. نقلنا القواعد هنا لـ main.css (متحمّل في كل صفحات
+   الموقع) عشان تشتغل فعلاً في أي مكان بيظهر فيه الكارت الموحد. */
+.bose-mini-size-note {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--bose-pink-text, #FF91A4);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 4px;
+}
+
+.bose-card-size-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 2px 0 4px 0;
+}
+
+.bose-card-size-pill {
+    font-family: 'Cairo', sans-serif;
+    font-weight: 700;
+    font-size: 10.5px;
+    padding: 5px 10px;
+    border: 1px solid rgba(255, 145, 164, 0.35);
+    background: #FFFFFF;
+    color: var(--bose-black, #111111);
+    border-radius: var(--bose-radius-pill);
+    cursor: pointer;
+    transition: var(--bose-transition-fast);
+}
+
+.bose-card-size-pill.active {
+    background-color: var(--bose-pink-text, #FF91A4);
+    color: #FFFFFF;
+    border-color: var(--bose-pink-text, #FF91A4);
+}
+
+.product-card-unified .bose-card-size-pill {
+    font-size: 12px;
+    padding: 6px 14px;
+}
+
 .product-card-qty-wrapper {
     display: flex;
     align-items: center;
@@ -1126,6 +1176,108 @@
     color: var(--bose-white) !important;
     opacity: 1 !important;
     cursor: not-allowed;
+}
+
+/* 🛡️ [إصلاح بصري - كارت رفيع/طويل/مضغوط]: الحل السابق (minmax) منع الكارت
+   إنه يكسر حدود الشاشة، لكن سيبه لسه بمقاسات العنصر الكاملة (بادينج 18px،
+   عنوان 20px، عداد كمية بأزرار 38px...) جوه عمود ضيق أصلاً (~140-160px على
+   أغلب الموبايلات) - فبقى فعلياً "نفس الكارت الكبير" لكن متقلص جوه مساحة
+   أصغر بكتير من اللي مصمم لها، وده اللي كان بيدي إحساس "رفيع وطويل ومضغوط".
+   الحل الصح مش تقليص إجباري (زي اللي عملناه قبل كده) لكن تصغير مقاسات
+   المحتوى نفسه (خط، حشو، أزرار) عشان تتناسب طبيعياً مع عرض عمود العمودين -
+   بدون ما نغيّر التصميم (لسه كارتين جنب بعض، لسه نفس العناصر بالظبط). */
+@media (max-width: 767px) {
+    #our-products-grid.products-grid .product-card-unified,
+    #all-offers-grid.products-grid .product-card-unified {
+        padding: 12px;
+        gap: 4px;
+    }
+
+    #our-products-grid.products-grid .product-card-img,
+    #all-offers-grid.products-grid .product-card-img {
+        margin-bottom: 8px;
+    }
+
+    #our-products-grid.products-grid .product-card-title,
+    #all-offers-grid.products-grid .product-card-title {
+        font-size: 0.92rem;
+        margin: 0 0 2px 0;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    #our-products-grid.products-grid .product-card-flavor-name,
+    #all-offers-grid.products-grid .product-card-flavor-name {
+        font-size: 0.78rem;
+        margin-bottom: 2px;
+    }
+
+    #our-products-grid.products-grid .product-card-desc,
+    #all-offers-grid.products-grid .product-card-desc {
+        font-size: 0.74rem;
+        line-height: 1.4;
+        min-height: 0;
+        margin: 0 0 8px 0;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    #our-products-grid.products-grid .bose-mini-size-note,
+    #all-offers-grid.products-grid .bose-mini-size-note {
+        font-size: 0.7rem;
+        margin-bottom: 6px;
+    }
+
+    #our-products-grid.products-grid .product-card-qty-wrapper,
+    #all-offers-grid.products-grid .product-card-qty-wrapper {
+        gap: 4px;
+        padding: 2px 4px;
+        margin-bottom: 8px;
+    }
+
+    #our-products-grid.products-grid .btn-qty-plus,
+    #our-products-grid.products-grid .btn-qty-minus,
+    #all-offers-grid.products-grid .btn-qty-plus,
+    #all-offers-grid.products-grid .btn-qty-minus {
+        width: 30px;
+        height: 30px;
+        flex-shrink: 0;
+    }
+
+    #our-products-grid.products-grid .input-qty-value,
+    #all-offers-grid.products-grid .input-qty-value {
+        width: 22px;
+        font-size: 13px;
+    }
+
+    #our-products-grid.products-grid .product-card-price,
+    #all-offers-grid.products-grid .product-card-price {
+        font-size: 0.95rem;
+        padding: 3px 8px;
+        margin-bottom: 8px;
+    }
+
+    #our-products-grid.products-grid .product-old-price,
+    #all-offers-grid.products-grid .product-old-price {
+        font-size: 0.75rem;
+    }
+
+    #our-products-grid.products-grid .offer-savings-note,
+    #all-offers-grid.products-grid .offer-savings-note {
+        font-size: 0.68rem;
+        display: block;
+    }
+
+    #our-products-grid.products-grid .btn-add-to-cart,
+    #all-offers-grid.products-grid .btn-add-to-cart {
+        padding: 9px 6px;
+        font-size: 0.78rem;
+        gap: 5px;
+    }
 }
 
 .bose-show-more-container {
@@ -1928,4 +2080,4 @@
 @media (max-width: 480px) {
     .bose-app-promo-phone-frame { width: 200px; height: 410px; }
     .bose-app-promo-float-badge { width: 40px; height: 40px; font-size: 15px; }
-   }
+}
