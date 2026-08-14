@@ -212,22 +212,14 @@
     /* ============================= الطلبات (صفحة orders.html) ============================= */
 
     /**
-     * 🛡️ [إصلاح - ترقيم الطلبات]: كانت بتسحب كل صفوف orders (مع order_items
-     * المتداخلة) دفعة واحدة من غير حد أقصى - آمن جداً على 77 منتج، لكن الطلبات
-     * بتتراكم للأبد مع كل يوم شغل حقيقي (على عكس المنتجات اللي عددها محدود
-     * بطبيعة القائمة)، فده أكتر جدول هيكبر مع الوقت وأول حاجة هتلاحظي بطؤها.
-     * دلوقتي بتجيب صفحة واحدة بس (50 طلب افتراضياً) مع العدد الكلي الحقيقي
-     * (count: "exact") عشان orders-page.js يعرض ترقيم حقيقي بدل تحميل كل حاجة.
+     * كل الطلبات مع عناصرها (order_items)، الأحدث أولاً.
      * @param {{status?: string, search?: string}} filters - status: فلترة بحالة معينة، search: بحث في رقم الطلب/اسم العميل/التليفون
-     * @param {number} page - رقم الصفحة (بادئ من 1)
-     * @param {number} pageSize - عدد الطلبات في الصفحة الواحدة
-     * @returns {Promise<{rows: Array, totalCount: number}>}
      */
-    async function getAllOrders(filters = {}, page = 1, pageSize = 50) {
+    async function getAllOrders(filters = {}) {
         try {
             let query = client
                 .from("orders")
-                .select("*, order_items(*)", { count: "exact" })
+                .select("*, order_items(*)")
                 .order("created_at", { ascending: false });
 
             if (filters.status) {
@@ -244,13 +236,12 @@
                 }
             }
 
-            const from = (page - 1) * pageSize;
-            const { data, error, count } = await query.range(from, from + pageSize - 1);
+            const { data, error } = await query;
             if (error) throw error;
-            return { rows: data || [], totalCount: count || 0 };
+            return data || [];
         } catch (e) {
             console.warn("تعذر جلب الطلبات:", e.message);
-            return { rows: [], totalCount: 0 };
+            return [];
         }
     }
 
@@ -318,6 +309,31 @@
         const { error } = await client
             .from("store_settings")
             .update({ homepage, updated_at: new Date().toISOString() })
+            .eq("id", 1);
+        if (error) throw error;
+    }
+
+    /** يرجّع كائن navigation بس من صف store_settings الوحيد (الشريط العلوي المتحرك وغيره) */
+    async function getNavigationSettings() {
+        try {
+            const { data, error } = await client
+                .from("store_settings")
+                .select("navigation")
+                .eq("id", 1)
+                .maybeSingle();
+            if (error) throw error;
+            return (data && data.navigation) || {};
+        } catch (e) {
+            console.warn("تعذر جلب إعدادات الشريط العلوي:", e.message);
+            return {};
+        }
+    }
+
+    /** بتستبدل عمود navigation بالكامل - نفس مبدأ updateHomepageSettings بالظبط */
+    async function updateNavigationSettings(navigation) {
+        const { error } = await client
+            .from("store_settings")
+            .update({ navigation, updated_at: new Date().toISOString() })
             .eq("id", 1);
         if (error) throw error;
     }
@@ -587,31 +603,25 @@
      */
 
     /**
-     * 🛡️ [إصلاح - ترقيم التقييمات]: نفس منطق ترقيم getAllOrders بالظبط - جدول
-     * reviews بيكبر مع كل عميل يقيّم، فبيتحمّل صفحة واحدة بس (count: "exact"
-     * للعدد الحقيقي) بدل الجدول كله في كل فتح للصفحة.
+     * كل التقييمات مع اسم المنتج المرتبط بيها.
      * @param {{approved?: boolean}} filters - approved: true (معتمدة فقط) / false (قيد المراجعة فقط) / بدونها (الكل)
-     * @param {number} page - رقم الصفحة (بادئ من 1)
-     * @param {number} pageSize - عدد التقييمات في الصفحة الواحدة
-     * @returns {Promise<{rows: Array, totalCount: number}>}
      */
-    async function getAllReviews(filters = {}, page = 1, pageSize = 50) {
+    async function getAllReviews(filters = {}) {
         try {
             let query = client
                 .from("reviews")
-                .select("*, products(title)", { count: "exact" })
+                .select("*, products(title)")
                 .order("created_at", { ascending: false });
 
             if (filters.approved === true) query = query.eq("is_approved", true);
             if (filters.approved === false) query = query.eq("is_approved", false);
 
-            const from = (page - 1) * pageSize;
-            const { data, error, count } = await query.range(from, from + pageSize - 1);
+            const { data, error } = await query;
             if (error) throw error;
-            return { rows: data || [], totalCount: count || 0 };
+            return data || [];
         } catch (e) {
             console.warn("تعذر جلب التقييمات:", e.message);
-            return { rows: [], totalCount: 0 };
+            return [];
         }
     }
 
@@ -852,6 +862,8 @@
         deleteProduct,
         getHomepageSettings,
         updateHomepageSettings,
+        getNavigationSettings,
+        updateNavigationSettings,
         getPromotions,
         savePromotions,
         getAllCoupons,
