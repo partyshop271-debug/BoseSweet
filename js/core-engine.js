@@ -1068,6 +1068,12 @@
                 printingType: opts.printingType || opts.printing || "none",
                 customMessage: opts.customMessage || "",
                 allergyNote: opts.allergyNote || "",
+                // 🐛 [إصلاح خلل موجود من قبل]: isGift وoccasionLabel كانا بيترسلوا من
+                // محاكي التورت جوه customOptions لكن معندهمش أي سطر هنا كانوا بيتقروا
+                // منه - يعني كانوا بيتمسحوا بصمت ومحدش كان بيشوفهم في السلة ولا فاتورة
+                // الواتساب، رغم إن العميلة فعلاً بتختارهم/بتكتبهم.
+                isGift: !!opts.isGift,
+                occasionLabel: opts.occasionLabel || "",
                 flowerType: opts.flowerType || "none",
                 flowerCount: parseInt(opts.flowerCount, 10) || 0,
                 cashAmount: parseFloat(opts.cashAmount) || 0,
@@ -1078,6 +1084,12 @@
                 chocolateBudget: parseFloat(opts.chocolateBudget) || 0,
                 hasGiftCard: !!opts.hasGiftCard,
                 giftCardText: opts.giftCardText || "",
+                // 🖼️ [تمييز نوع كل صورة]: صورة "الطباعة على السطح" وصورة "التصميم
+                // المرجعي المطلوب تقريبه" مختلفتان تماماً في الغرض - بنخزنهم منفصلين
+                // بدل قايمة واحدة مجهولة، عشان فاتورة الواتساب تقدر توضح لكل واحدة
+                // غرضها بالظبط بدل ما تظهر كـ"صورة مرجعية" عامة غامضة.
+                printImageUrl: opts.printImageUrl || "",
+                replicaImageUrl: opts.replicaImageUrl || "",
                 // 👑 [إصلاح جذري - كارثة الأحجام]: نخزن الحجم المختار فعلياً (لو المنتج
                 // بيدعم أكتر من حجم سعر) جوه بيانات عنصر السلة، عشان يظهر بوضوح في
                 // صفحة السلة وفي فاتورة الواتساب - بدل ما يختفي تماماً ويفضل السعر

@@ -47,71 +47,44 @@ function startEngineLogic() {
             heroImg.src = config.heroImage;
         }
         const track = document.getElementById('bose-portfolio-lightbox-track');
-        if (track && Array.isArray(config.portfolioGallery) && config.portfolioGallery.length > 0) {
-            track.innerHTML = config.portfolioGallery.map((item) => {
-                const url = (item && item.image) || "";
-                if (!url) return "";
-                const alt = (item && (item.alt || item.name)) ? String(item.alt || item.name).replace(/"/g, '&quot;') : "روائع حلويات بوسي";
-                return `<div class="bose-portfolio-img-node"><img src="${url}" alt="${alt}" loading="lazy"></div>`;
-            }).join("");
+        if (track) {
+            if (Array.isArray(config.portfolioGallery) && config.portfolioGallery.length > 0) {
+                track.innerHTML = config.portfolioGallery.map((item) => {
+                    const url = (item && item.image) || "";
+                    if (!url) return "";
+                    const alt = (item && (item.alt || item.name)) ? String(item.alt || item.name).replace(/"/g, '&quot;') : "روائع حلويات بوسي";
+                    return `<div class="bose-portfolio-img-node"><img src="${url}" alt="${alt}" loading="lazy"></div>`;
+                }).join("");
+            } else {
+                // لو صاحبة المتجر لسه ما ضافتش صور المعرض من لوحة التحكم، منسيبش
+                // الخطوة الأولى فاضية بصمت - رسالة بسيطة أحسن من فراغ محير.
+                track.innerHTML = `<p class="bose-gallery-empty-note">هنضيف هنا قريب مجموعة من أجمل التورت اللي عملناها لعملائنا 🎂</p>`;
+            }
         }
     }
     renderCakeGalleryAndHero();
 
     /* ==================================================================
-       🎉 [خطوة المناسبة الجديدة]: بترشح شكل مناسب حسب مناسبة التورتة
-       (مولود، فرح، عيد ميلاد...) - نفس فلسفة توليفات "الإحساس" تحت، لكن
-       أوضح وأقرب لواقع طلبات العميل الفعلية. القائمة قابلة للتعديل من
-       لوحة التحكم (cakeBuilder.occasions)، ولو فاضية بنستخدم قائمة
-       احتياطية مطابقة تماماً للقيم الافتراضية في قاعدة البيانات.
+       🎉 [مناسبة التورتة - نسخة V5.0]: بدل قائمة مناسبات جاهزة (عيد ميلاد/عيد
+       أم/فرح...) بتقفل العميل جوه تصنيف محدود، دلوقتي العميل بيكتب مناسبته
+       بكلامه هو في خانة نص حرة - وده أصدق وأدق، لأنه بيوصفلنا فعلاً "عيد
+       ميلاد ابني الصغير" أو "خطوبتي أنا" مش مجرد كلمة "عيد ميلاد" عامة.
+       هنستخدم النص ده حرفياً بعد كده في الملخص، وفي فاتورة السلة والواتساب.
        ================================================================== */
-    const DEFAULT_OCCASIONS = [
-        { id: "boy", name: "مولود ولد", icon: "👶💙", suggestedShape: "circle" },
-        { id: "girl", name: "مولودة بنت", icon: "👶💗", suggestedShape: "heart" },
-        { id: "wedding", name: "فرح وخطوبة", icon: "💍", suggestedShape: "circle" },
-        { id: "birthday", name: "عيد ميلاد", icon: "🎂", suggestedShape: "circle" },
-        { id: "mothers-day", name: "عيد الأم", icon: "💐", suggestedShape: "heart" },
-        { id: "new-year", name: "رأس السنة", icon: "🎉", suggestedShape: "circle" }
-    ];
-    const occasionsList = (Array.isArray(config.occasions) && config.occasions.length > 0) ? config.occasions : DEFAULT_OCCASIONS;
-    const occasionRow = document.getElementById('cake-occasion-row');
-    if (occasionRow) {
-        occasionRow.innerHTML = occasionsList.map((occ) => `
-            <label class="bose-selection-card-label">
-                <input type="radio" name="cake_occasion" value="${occ.id}" data-shape="${occ.suggestedShape || ''}" data-name="${(occ.name || '').replace(/"/g, '&quot;')}">
-                <div class="bose-selection-card-inner"><span class="mood-emoji">${occ.icon || '🎂'}</span>${occ.name || ''}</div>
-            </label>`).join('');
-    }
-    const occasionRadios = document.querySelectorAll('input[name="cake_occasion"]');
-    const occasionNoteBox = document.getElementById('occasion-suggestion-note');
-    const occasionNoteText = document.getElementById('occasion-suggestion-text');
-    let selectedOccasionLabel = "";
+    const occasionInput = document.getElementById('input-cake-occasion');
+    const occasionRequiredHint = document.getElementById('occasion-required-hint');
 
-    function applyOccasionPreset(radioEl) {
-        selectedOccasionLabel = radioEl.getAttribute('data-name') || "";
-        const suggestedShape = radioEl.getAttribute('data-shape');
-        if (suggestedShape) {
-            const shapeRadio = document.querySelector(`input[name="cake_shape"][value="${suggestedShape}"]`);
-            if (shapeRadio) shapeRadio.checked = true;
-        }
-        if (occasionNoteText) {
-            occasionNoteText.textContent = `اقترحنالك شكل يناسب "${selectedOccasionLabel}"، وتقدر تغيّريه بنفسك من خطوة "الشكل" لو حابة.`;
-        }
-        if (occasionNoteBox) occasionNoteBox.classList.add('show');
-        evaluateSimulatorState();
+    function getOccasionText() {
+        return (occasionInput?.value || "").trim();
     }
-    occasionRadios.forEach((radio) => {
-        radio.addEventListener('change', () => applyOccasionPreset(radio));
-    });
-
-    // 🧠 [محاكي أذكى - المرحلة 1]: توليفات مقترحة حسب "الإحساس" المطلوب (مزاج المناسبة).
-    // بتحدد اقتراح شكل+نكهة بس (اختيار، مش قفل) عشان تقلل حيرة العميل اللي مش عنده
-    // ذوق محدد، وتخليه يحس إن حد بيساعده يختار بدل ما يقف قدام فورم فاضي.
-    const MOOD_PRESETS = {
-        celebratory: { shape: "circle", flavor: "chocolate", note: "توليفة مقترحة للاحتفالات: شكل دائري كلاسيكي مع نكهة الشوكولاتة الغنية. تقدري تعدلي أي اختيار في الخطوات الجاية." },
-        romantic: { shape: "heart", flavor: "half-half", note: "توليفة مقترحة للمناسبات الرومانسية: شكل قلب مع مزيج الفانيليا والشوكولاتة نصف ونصف. تقدري تعدلي أي اختيار في الخطوات الجاية." },
-        elegant: { shape: "circle", flavor: "vanilla", note: "توليفة مقترحة للأناقة البسيطة: شكل دائري أنيق مع نكهة الفانيليا الكلاسيكية. تقدري تعدلي أي اختيار في الخطوات الجاية." }
-    };
+    if (occasionInput) {
+        occasionInput.addEventListener('input', () => {
+            if (occasionInput.value.trim() !== "" && occasionRequiredHint) {
+                occasionRequiredHint.classList.remove('show');
+            }
+            evaluateSimulatorState();
+        });
+    }
 
     const FLAVOR_SENSORY_NOTES = {
         vanilla: "فانيليا فرنسية ناعمة بقوام طري وخفيف.",
@@ -120,30 +93,12 @@ function startEngineLogic() {
     };
 
     const purposeRadios = document.querySelectorAll('input[name="cake_purpose"]');
-    const moodRadios = document.querySelectorAll('input[name="cake_mood"]');
-    const moodNoteBox = document.getElementById('mood-suggestion-note');
-    const moodNoteText = document.getElementById('mood-suggestion-text');
     const flavorSensoryNote = document.getElementById('flavor-sensory-note');
     const messageStepTitle = document.getElementById('message-step-title');
     const messageStepSubtitle = document.getElementById('message-step-subtitle');
     const messageFieldLabel = document.getElementById('message-field-label');
     const textCakeMessage = document.getElementById('text-cake-message');
     const btnShareDesign = document.getElementById('btn-share-design');
-
-    function applyMoodPreset(moodValue) {
-        const preset = MOOD_PRESETS[moodValue];
-        if (!preset) {
-            if (moodNoteBox) moodNoteBox.classList.remove('show');
-            return;
-        }
-        const shapeRadio = document.querySelector(`input[name="cake_shape"][value="${preset.shape}"]`);
-        const flavorRadio = document.querySelector(`input[name="cake_flavor"][value="${preset.flavor}"]`);
-        if (shapeRadio) shapeRadio.checked = true;
-        if (flavorRadio) flavorRadio.checked = true;
-        if (moodNoteText) moodNoteText.textContent = preset.note;
-        if (moodNoteBox) moodNoteBox.classList.add('show');
-        updateFlavorSensoryNote();
-    }
 
     function updateFlavorSensoryNote() {
         if (!flavorSensoryNote) return;
@@ -159,9 +114,6 @@ function startEngineLogic() {
         if (textCakeMessage) textCakeMessage.placeholder = isGift ? "مثال: كل سنة وانتِ طيبة يا أغلى صديقة" : "مثال: عيد ميلاد سعيد يا بوسي";
     }
 
-    moodRadios.forEach((radio) => {
-        radio.addEventListener('change', () => applyMoodPreset(radio.value));
-    });
     purposeRadios.forEach((radio) => {
         radio.addEventListener('change', updateGiftModeWording);
     });
@@ -414,12 +366,16 @@ function startEngineLogic() {
         const shapeLabelMap = { circle: 'دائرة', heart: 'قلب', square: 'مربع', rectangle: 'مستطيل' };
         const flavorLabelMap = { vanilla: 'فانيليا', chocolate: 'شوكولاتة', 'half-half': 'نصف ونصف' };
         const selectedFlavor = document.querySelector('input[name="cake_flavor"]:checked')?.value || 'vanilla';
-        const selectedOccasionEl = document.querySelector('input[name="cake_occasion"]:checked');
+        const occasionText = getOccasionText();
         const selectedPurpose = document.querySelector('input[name="cake_purpose"]:checked')?.value || 'self';
 
         const minPersons = config.persons.minimum;
-        const extraPersons = Math.max(0, currentPersons - minPersons);
         const pricePerPerson = config.pricePerPerson || 145;
+        // 🧾 [صدق في العرض]: بنعرض على العميلة سعر مقاس التورتة اللي هي اختارته
+        // كرقم واحد نهائي، من غير ما نفكّكه لـ"أساسي + إضافي" - هي مش محتاجة
+        // تعرف تفاصيل حساباتنا الداخلية، هي محتاجة تعرف: اخترتِ تورتة لكام فرد
+        // وقد إيه سعرها، هذا كل شيء.
+        const sizePortionPrice = config.basePrice + (Math.max(0, currentPersons - minPersons) * pricePerPerson);
 
         let printingLabel = "بدون طباعة صورة";
         let printingFee = 0;
@@ -430,13 +386,10 @@ function startEngineLogic() {
         }
 
         const rows = [
-            { label: `التورتة الأساسية (${shapeLabelMap[selectedShape] || selectedShape}، ${flavorLabelMap[selectedFlavor] || selectedFlavor}) لـ ${minPersons} فرد`, value: `${config.basePrice} جنيه` }
+            { label: `تورتة ${shapeLabelMap[selectedShape] || selectedShape} بنكهة ${flavorLabelMap[selectedFlavor] || selectedFlavor} لـ ${currentPersons} فرد`, value: `${Math.round(sizePortionPrice)} جنيه` }
         ];
-        if (extraPersons > 0) {
-            rows.push({ label: `${extraPersons} فرد إضافي × ${pricePerPerson} جنيه`, value: `+ ${extraPersons * pricePerPerson} جنيه` });
-        }
-        if (selectedOccasionEl) {
-            rows.push({ label: `المناسبة`, value: selectedOccasionEl.getAttribute('data-name') || '' });
+        if (occasionText) {
+            rows.push({ label: `المناسبة`, value: occasionText });
         }
         if (selectedPurpose === 'gift') {
             rows.push({ label: `الغرض`, value: `🎁 هدية لحد تاني` });
@@ -497,7 +450,27 @@ function startEngineLogic() {
         }
     }
 
+    // 🛡️ [تحقق قبل الانتقال]: خطوة 1 لازم يكون فيها نص مناسبة مكتوب قبل ما
+    // نسمح للعميلة تكمل - من غير كده هنفقد أهم معلومة بتبني عليها التورتة كلها.
+    function validateCurrentStepBeforeAdvance() {
+        if (currentActiveStep === 1) {
+            if (getOccasionText() === "") {
+                if (occasionRequiredHint) occasionRequiredHint.classList.add('show');
+                if (occasionInput) {
+                    occasionInput.focus();
+                    occasionInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+                if (typeof window.showBoseGlobalToast === 'function') {
+                    window.showBoseGlobalToast("محتاجين نعرف مناسبة التورتة الأول عشان نقدر نكمل معاكِ 🎂");
+                }
+                return false;
+            }
+        }
+        return true;
+    }
+
     btnWizardNext.addEventListener('click', () => {
+        if (!validateCurrentStepBeforeAdvance()) return;
         if (currentActiveStep < totalWizardStepsCount) {
             currentActiveStep++;
             syncWizardPanelsUI();
@@ -578,11 +551,23 @@ function startEngineLogic() {
         let messageText = document.getElementById('text-cake-message').value.trim();
         let allergyText = document.getElementById('text-cake-allergy').value.trim();
         let selectedPurpose = document.querySelector('input[name="cake_purpose"]:checked')?.value || 'self';
-        let selectedMood = document.querySelector('input[name="cake_mood"]:checked')?.value || '';
-        const moodLabelMap = { celebratory: 'احتفالي', romantic: 'رومانسي', elegant: 'أنيق وبسيط' };
+        const occasionText = getOccasionText();
         const wantsReplica = !!(replicaToggle && replicaToggle.checked);
         const wantsGiftCard = !!(giftCardToggle && giftCardToggle.checked);
         const giftCardText = wantsGiftCard ? (giftCardTextInput?.value || "").trim() : "";
+
+        // 🛡️ صمام أمان أخير: لو حصل وعادت العميلة خطوة 1 ومسحت النص بعد ما
+        // كانت اجتازت التحقق، منمنعش الإضافة للسلة من غير مناسبة مكتوبة.
+        if (occasionText === "") {
+            currentActiveStep = 1;
+            syncWizardPanelsUI();
+            if (occasionRequiredHint) occasionRequiredHint.classList.add('show');
+            if (occasionInput) occasionInput.focus();
+            if (typeof window.showBoseGlobalToast === 'function') {
+                window.showBoseGlobalToast("محتاجين نعرف مناسبة التورتة الأول عشان نقدر نكمل معاكِ 🎂");
+            }
+            return;
+        }
 
         // 🚨🚨 [إصلاح جذري - صمام أمان ضد وصول الطلب بصورة غلط]: قبل كده لو
         // العميلة اختارت "طباعة صورة" لكن الرفع فشل أو لسه شغال، كان بيكمل
@@ -646,11 +631,12 @@ function startEngineLogic() {
             allergyNote: allergyText,
             flavorName: "تصميم خاص حسب الطلب",
             isGift: selectedPurpose === 'gift',
-            moodLabel: moodLabelMap[selectedMood] || "",
-            occasionLabel: selectedOccasionLabel,
+            occasionLabel: occasionText,
             hasReplicaDesign: wantsReplica && !!uploadedReplicaPhotoUrl,
             hasGiftCard: wantsGiftCard && giftCardText !== "",
-            giftCardText: giftCardText
+            giftCardText: giftCardText,
+            printImageUrl: (selectedPrinting !== 'none') ? uploadedCakePhotoUrl : "",
+            replicaImageUrl: (wantsReplica && uploadedReplicaPhotoUrl) ? uploadedReplicaPhotoUrl : ""
         };
 
         const finalCartItem = window.createCartItem(masterProduct, customOptions, 1);
@@ -697,11 +683,8 @@ function startEngineLogic() {
             document.querySelector('input[name="cake_flavor"][value="vanilla"]').checked = true;
             document.querySelector('input[name="cake_printing"][value="none"]').checked = true;
             document.querySelector('input[name="cake_purpose"][value="self"]').checked = true;
-            moodRadios.forEach((radio) => { radio.checked = false; });
-            occasionRadios.forEach((radio) => { radio.checked = false; });
-            selectedOccasionLabel = "";
-            if (moodNoteBox) moodNoteBox.classList.remove('show');
-            if (occasionNoteBox) occasionNoteBox.classList.remove('show');
+            if (occasionInput) occasionInput.value = "";
+            if (occasionRequiredHint) occasionRequiredHint.classList.remove('show');
             if (replicaToggle) replicaToggle.checked = false;
             if (giftCardToggle) giftCardToggle.checked = false;
             if (giftCardTextInput) giftCardTextInput.value = "";

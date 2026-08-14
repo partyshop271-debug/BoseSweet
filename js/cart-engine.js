@@ -175,7 +175,7 @@ function renderBoseCartPage(storeData) {
 
                 if (isCakeBespoke) {
                     if (cd.isGift) specs.push(`<span>🎁 <strong>هدية لحد تاني</strong></span>`);
-                    if (cd.moodLabel) specs.push(`<span><strong>الإحساس المطلوب:</strong> ${esc(cd.moodLabel)}</span>`);
+                    if (cd.occasionLabel && cd.occasionLabel.trim() !== "") specs.push(`<span><strong>المناسبة:</strong> ${esc(cd.occasionLabel.trim())}</span>`);
                     if (cd.cakeType && cd.cakeType !== "none" && cd.cakeType !== "افتراضي") specs.push(`<span><strong>طعم الكيك:</strong> ${esc(cd.cakeType)}</span>`);
                     if (cd.shape && cd.shape !== "none") specs.push(`<span><strong>الشكل:</strong> ${cd.shape === 'circle' ? 'دائري' : cd.shape === 'heart' ? 'قلب' : cd.shape === 'square' ? 'مربع' : cd.shape === 'rectangle' ? 'مستطيل' : esc(cd.shape)}</span>`);
                     if (cd.persons && parseInt(cd.persons, 10) > 0) specs.push(`<span><strong>عدد الأفراد:</strong> ${parseInt(cd.persons, 10)} فرد</span>`);
@@ -777,6 +777,7 @@ function buildBoseFormattedWhatsappInvoice(order) {
     msg += `📦 *تفاصيل الأصناف المخصصة:* \n\n`;
 
     order.items.forEach((item, idx) => {
+        const isCakeBespoke = item.type === "custom-cake" || item.type === "mini-cake" || item.productSlug === "toort-custom-master" || item.productSlug === "mini-cake-two-person";
         msg += `${idx + 1}. 🌟 *${item.title}* (${item.flavorName || 'جاهز وفريش'})\n`;
         // 🛡️ [إصلاح حرج - رسالة واتساب بتقول "1 قطعة" بدل الدستة/العبوة الحقيقية]:
         // item.quantity هو عدد "الوحدات" اللي طلبها العميل (دستة، عبوة، تورتة... إلخ)
@@ -792,12 +793,21 @@ function buildBoseFormattedWhatsappInvoice(order) {
             const cd = item.customDetails;
             if (item.type === "custom-cake" || item.type === "mini-cake") {
                 if (cd.isGift) msg += `   • 🎁 هدية لحد تاني\n`;
-                if (cd.moodLabel) msg += `   • الإحساس المطلوب: ${cd.moodLabel}\n`;
+                if (cd.occasionLabel && cd.occasionLabel.trim() !== "") msg += `   • المناسبة: ${cd.occasionLabel.trim()}\n`;
                 if (cd.cakeType && cd.cakeType !== "none" && cd.cakeType !== "افتراضي") msg += `   • طعم الكيك: ${cd.cakeType}\n`;
                 if (cd.shape && cd.shape !== "none") msg += `   • الشكل: ${cd.shape}\n`;
                 if (cd.persons && cd.persons > 0) msg += `   • الأفراد: لـ ${cd.persons} فرد\n`;
                 if (cd.printingType && cd.printingType !== "none") msg += `   • طباعة صورة: ${cd.printingType === 'edible' ? 'قابلة للأكل' : 'غير قابلة للأكل'}\n`;
                 if (cd.customMessage && cd.customMessage.trim() !== "") msg += `   • النص: "${cd.customMessage}"\n`;
+                if (cd.allergyNote && cd.allergyNote.trim() !== "") msg += `   • ⚠️ ملاحظة حساسية: ${cd.allergyNote.trim()}\n`;
+                if (cd.hasGiftCard && cd.giftCardText && cd.giftCardText.trim() !== "") msg += `   • كارت إهداء: "${cd.giftCardText.trim()}"\n`;
+                // 🖼️ [تمييز الصور - إصلاح جذري]: قبل كده كل الصور المرفوعة كانت
+                // بتظهر في قايمة واحدة مجهولة "صورة مرجعية 1 / 2" من غير أي توضيح
+                // أنهي صورة للطباعة فعلياً على التورتة وأنهي صورة هي بس مصدر إلهام
+                // للتصميم - ده كان ممكن يخلط على الفرع ويطبع الصورة الغلط. دلوقتي
+                // كل صورة بيها سطر واضح بيقول غرضها بالظبط.
+                if (cd.printImageUrl) msg += `   🖨️ *الصورة المطلوب طباعتها على التورتة:* ${cd.printImageUrl}\n`;
+                if (cd.replicaImageUrl) msg += `   🎨 *صورة التصميم اللي عايزين نقرب شكل التورتة منها:* ${cd.replicaImageUrl}\n`;
             }
             if (item.type === "custom-flower") {
                 if (cd.isGift) msg += `   • 🎁 هدية لحد تاني\n`;
@@ -823,18 +833,21 @@ function buildBoseFormattedWhatsappInvoice(order) {
             }
         }
 
-        // 🛡️ [إصلاح حرج]: أي صورة رفعها العميل (تصميم تورتة مطلوب طباعتها،
-        // أو صورة بوكيه مرجعية) كانت بتتحفظ كرابط Cloudinary حقيقي جوه
-        // item.image لكن ما كانتش بتوصل خالص لنص فاتورة الواتساب، فالفرع
-        // كان بيستلم طلب "صورة" من غير أي صورة معاه فعلياً. دلوقتي أي رابط
-        // Cloudinary حقيقي (مش لوجو الموقع الافتراضي) بيظهر كسطر واضح قابل
-        // للفتح المباشر من واتساب.
+        // 🛡️ [إصلاح حرج]: أي صورة رفعها العميل (بوكيه مرجعي مثلاً) كانت بتتحفظ
+        // كرابط Cloudinary حقيقي جوه item.image لكن ما كانتش بتوصل خالص لنص
+        // فاتورة الواتساب. دلوقتي أي رابط Cloudinary حقيقي (مش لوجو الموقع
+        // الافتراضي) بيظهر كسطر واضح قابل للفتح المباشر من واتساب - ما عدا
+        // أصناف التورت المخصص، لأن صورها الاثنتين (الطباعة/التصميم المرجعي)
+        // اتوضحت بالفعل بسطرين منفصلين فوق، وتكرارها هنا هيرجع نفس اللخبطة
+        // القديمة (صورة "مرجعية" مجهولة الغرض).
         const refImageUrls = [];
-        if (item.image && typeof item.image === "string" && item.image.startsWith("http") && !item.image.includes("logo_igggsb")) {
-            refImageUrls.push(item.image);
-        }
-        if (Array.isArray(item.referenceImages)) {
-            item.referenceImages.forEach(u => { if (u && typeof u === "string" && u.startsWith("http")) refImageUrls.push(u); });
+        if (!isCakeBespoke) {
+            if (item.image && typeof item.image === "string" && item.image.startsWith("http") && !item.image.includes("logo_igggsb")) {
+                refImageUrls.push(item.image);
+            }
+            if (Array.isArray(item.referenceImages)) {
+                item.referenceImages.forEach(u => { if (u && typeof u === "string" && u.startsWith("http")) refImageUrls.push(u); });
+            }
         }
         refImageUrls.forEach((url, i) => {
             msg += `   🖼️ *صورة مرجعية${refImageUrls.length > 1 ? ' ' + (i + 1) : ''}:* ${url}\n`;
