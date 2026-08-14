@@ -147,6 +147,82 @@
                         </div>
                     </div>
 
+                    <!-- ============================= شلال المنتجات المتحرك ============================= -->
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header">
+                            <div><h2><i class="fa-solid fa-water"></i> شلال المنتجات المتحرك</h2><p>عمودا الصور اللي بيتحركوا باستمرار في الصفحة الرئيسية (فوق وتحت)</p></div>
+                            <label class="adm-checkbox-label">
+                                <input type="checkbox" id="waterfall-enabled">
+                                الحركة شغالة
+                            </label>
+                        </div>
+                        <div class="adm-field">
+                            <label for="waterfall-speed">سرعة الحركة (بالثانية)</label>
+                            <p class="adm-hint" style="margin-bottom:8px;">رقم أصغر = حركة أسرع. الافتراضي 57.2 ثانية.</p>
+                            <input type="number" step="0.1" min="10" max="200" class="adm-input" id="waterfall-speed" style="max-width:160px;">
+                        </div>
+
+                        <div class="adm-form-grid">
+                            <div>
+                                <h3 class="adm-sub-heading">العمود الأيمن (لأعلى)</h3>
+                                <div class="adm-curated-list" id="list-waterfall-left"></div>
+                                <div class="adm-curated-add-row">
+                                    <select class="adm-select" id="select-waterfall-left-product"></select>
+                                </div>
+                                <label class="adm-image-upload-btn adm-mt-8" for="waterfall-left-image-input">
+                                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                                    <span id="waterfall-left-upload-label">أو ارفعي صورة مباشرة (بدون ربط بمنتج)</span>
+                                </label>
+                                <input type="file" id="waterfall-left-image-input" accept="image/*" hidden>
+                            </div>
+                            <div>
+                                <h3 class="adm-sub-heading">العمود الأيسر (لأسفل)</h3>
+                                <div class="adm-curated-list" id="list-waterfall-right"></div>
+                                <div class="adm-curated-add-row">
+                                    <select class="adm-select" id="select-waterfall-right-product"></select>
+                                </div>
+                                <label class="adm-image-upload-btn adm-mt-8" for="waterfall-right-image-input">
+                                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                                    <span id="waterfall-right-upload-label">أو ارفعي صورة مباشرة (بدون ربط بمنتج)</span>
+                                </label>
+                                <input type="file" id="waterfall-right-image-input" accept="image/*" hidden>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ============================= الشريط العلوي المتحرك ============================= -->
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header">
+                            <div><h2><i class="fa-solid fa-bullhorn"></i> الشريط العلوي المتحرك (الإعلانات)</h2><p>الشريط اللي بيظهر أعلى الهيدر في كل صفحات الموقع</p></div>
+                            <label class="adm-checkbox-label">
+                                <input type="checkbox" id="topbar-enabled">
+                                الحركة شغالة
+                            </label>
+                        </div>
+                        <div class="adm-field">
+                            <label for="topbar-speed">سرعة الحركة (بالثانية)</label>
+                            <p class="adm-hint" style="margin-bottom:8px;">رقم أصغر = حركة أسرع. الافتراضي 44 ثانية.</p>
+                            <input type="number" step="0.5" min="10" max="120" class="adm-input" id="topbar-speed" style="max-width:160px;">
+                        </div>
+
+                        <div class="adm-field">
+                            <label>الرسائل الحالية في الشريط</label>
+                            <div class="adm-curated-list" id="list-topbar-messages"></div>
+                            <div class="adm-curated-add-row">
+                                <input type="text" class="adm-input" id="topbar-new-message" placeholder="اكتبي رسالة جديدة هنا...">
+                                <button type="button" class="adm-btn adm-btn-outline adm-btn-sm" id="topbar-add-message-btn">
+                                    <i class="fa-solid fa-plus"></i> إضافة
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="adm-field">
+                            <label>نصوص مقترحة (اضغطي لإضافة أي نص للشريط)</label>
+                            <p class="adm-hint" style="margin-bottom:10px;">مجموعة رسائل جاهزة مرتبطة بمنتجات وخدمات الموقع فعلاً.</p>
+                            <div class="adm-suggestion-chips" id="topbar-suggestions"></div>
+                        </div>
+                    </div>
+
                 </div>
 
             </div>
