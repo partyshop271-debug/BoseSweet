@@ -117,6 +117,27 @@
                     <div class="adm-order-grand-total"><span>الإجمالي الكلي</span><span>${money(order.grand_total)}</span></div>
                 </div>
 
+                <!-- 💵 [عربون/دفع مقدم] -->
+                <div class="adm-order-totals" style="margin-top: 10px; border-top: 1px dashed #eee; padding-top: 10px;">
+                    <div>
+                        <span>${order.delivery_method === "delivery" ? "المبلغ الكامل المطلوب (توصيل)" : "عربون تأكيد الحجز (50%)"}</span>
+                        <span>${money(order.deposit_amount)}</span>
+                    </div>
+                    <div>
+                        <span>حالة الدفع</span>
+                        <span>${order.deposit_status === "confirmed"
+                            ? `<span class="adm-badge success">تم تأكيد استلام المبلغ${order.deposit_confirmed_at ? " - " + new Date(order.deposit_confirmed_at).toLocaleString("ar-EG") : ""}</span>`
+                            : `<span class="adm-badge warning">بانتظار تأكيد الاستلام</span>`}</span>
+                    </div>
+                </div>
+                ${order.deposit_status !== "confirmed" ? `
+                <div class="adm-mt-16">
+                    <button type="button" class="adm-btn adm-btn-primary" id="order-confirm-deposit-btn" style="width:100%;">
+                        ✅ تأكيد استلام ${order.delivery_method === "delivery" ? "المبلغ" : "العربون"} (${money(order.deposit_amount)})
+                    </button>
+                </div>
+                ` : ""}
+
                 <div class="adm-field adm-mt-16">
                     <label for="order-status-select">حالة الطلب</label>
                     <select class="adm-select" id="order-status-select">
@@ -139,6 +160,24 @@
             if (evt.target === overlay) close();
             if (evt.target.closest('[data-role="close"]')) close();
         });
+
+        const confirmDepositBtn = document.getElementById("order-confirm-deposit-btn");
+        if (confirmDepositBtn) {
+            confirmDepositBtn.addEventListener("click", async () => {
+                confirmDepositBtn.disabled = true;
+                confirmDepositBtn.textContent = "جاري التأكيد...";
+                try {
+                    await window.BoseAdmin.confirmOrderDeposit(order.id);
+                    window.BoseAdminUI.showToast("تم تأكيد استلام المبلغ وانتقل الطلب لحالة مؤكد", "success");
+                    close();
+                    await loadOrders();
+                } catch (err) {
+                    window.BoseAdminUI.showToast("تعذر تأكيد استلام المبلغ", "error");
+                    confirmDepositBtn.disabled = false;
+                    confirmDepositBtn.textContent = "✅ تأكيد استلام المبلغ";
+                }
+            });
+        }
 
         document.getElementById("order-status-save-btn").addEventListener("click", async () => {
             const newStatus = document.getElementById("order-status-select").value;
