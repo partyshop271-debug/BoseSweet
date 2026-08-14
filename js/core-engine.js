@@ -413,7 +413,10 @@
         if (count === 0) return;
 
         for (let i = 0; i < cards.length; i++) {
-            /** @type {HTMLElement} */ (cards[i]).style.scrollSnapAlign = 'center';
+            // 🛡️ لازم تتفق مع scroll-snap-align:start في main.css (كارت واحد
+            // كامل يبدأ من حافة الشاشة) - لو فضلت center هنا هتتعارض مع القاعدة
+            // اللي في الـ CSS وتخلي حساب موقع الدوت (syncDotsAndPosition تحت) غلط.
+            /** @type {HTMLElement} */ (cards[i]).style.scrollSnapAlign = 'start';
         }
 
         let dotsContainer = document.getElementById(dotsContainerId) || (section ? section.querySelector('.bose-dots-container') : null);
