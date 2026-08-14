@@ -98,7 +98,7 @@
      * بقت متاحة عالمياً (window.BOSE_SIZE_LABELS) عشان أي كارت منتج في أي مكان بالموقع
      * يقدر يعرض تبويب اختيار الحجم بنفس الأسماء بالظبط.
      */
-    window.BOSE_SIZE_LABELS = { triangle: "مثلث", medium: "طاجن", large: "حجم عائلي" };
+    window.BOSE_SIZE_LABELS = { triangle: "مثلث فردي", medium: "وسط تشارك ممتع", large: "كبير جمعات فاخرة" };
     document.addEventListener('DOMContentLoaded', forceScrollToTop);
     window.addEventListener('load', forceScrollToTop);
 
@@ -114,82 +114,50 @@
      * 15 دقيقة عشان نعتبر الكاش "قديم"، دلوقتي بنسأل قاعدة البيانات سؤال رخيص
      * جداً (get_bose_data_version - قيمة تاريخ واحدة بس، مش جدول كامل) عشان
      * نعرف هل فعلاً حصل أي تعديل حقيقي (منتج/فئة/عرض/منطقة شحن/إعدادات متجر)
-     * من وقت آخر كاش محفوظ عندنا.
-     *
-     * 👑👑 [إصلاح جذري - أداء الهيدر والقائمة الجانبية]: قبل كده كان الهيدر
-     * والقائمة الجانبية بالكامل (buildAndInjectGlobalComponents) بيستنوا طلب
-     * "التحقق من الإصدار" يخلص فعلياً من السيرفر قبل ما يظهروا - حتى لو كان
-     * عند العميلة كاش صالح 100%. يعني في أي اتصال بطيء، صفحة من غير هيدر ولا
-     * زرار قائمة ولا سلة لثواني حقيقية. دلوقتي (Stale-While-Revalidate):
-     * نعرض القائمة والهيدر وكل بيانات المتجر فوراً من الكاش المحلي، والتحقق
-     * من وجود تحديث بيحصل بهدوء تام في الخلفية من غير ما يأخر ظهور أي حاجة.
-     *
-     * صمام أمان: لو التحقق نفسه فشل (مشكلة شبكة وقتية)، بيعيد المحاولة مرة
-     * واحدة بعد نص ثانية قبل ما يستسلم لنفس الزيارة (ومفيش أي تأخير محسوس
-     * للعميلة أصلاً لأنه بيحصل في الخلفية). وفيه سقف زمني قاسي (ساعتين) كخط
-     * دفاع أخير عشان أي تعديل من لوحة التحكم (خصوصاً صور المنتجات) يوصل
-     * للعميل بأسرع وقت ممكن.
-     *
-     * 🔧 [أداة تشخيص]: إضافة ?refresh=1 لأي رابط في الموقع بتتخطى الكاش المحلي
-     * بالكامل وتجيب أحدث نسخة من قاعدة البيانات مباشرة - مفيدة لصاحبة المتجر
-     * عشان تتأكد فوراً إن أي تعديل وصل فعلاً.
+     * من وقت آخر كاش محفوظ عندنا. لو مفيش تغيير، بنستخدم الكاش المحلي فوراً
+     * من غير ما نحمّل كل بيانات المتجر تاني (بيوفر استهلاك بيانات الموبايل
+     * وزمن التحميل بشكل ملموس، خصوصاً في الزيارات المتكررة لنفس العميل).
+     * 
+     * صمام أمان: لو التحقق نفسه فشل (مشكلة شبكة وقتية)، بنستخدم الكاش المحلي
+     * بأمان بدل ما نوقف الموقع، وهيتصحح تلقائياً في أول زيارة تانية ناجحة.
+     * وفيه سقف زمني قاسي (24 ساعة) كخط دفاع أخير حتى لو فشل التحقق باستمرار.
      */
     async function loadStoreDatabase() {
         if (window.BoseStoreData) return;
 
-        const forceRefresh = new URLSearchParams(window.location.search).get('refresh') === '1';
-        const cachedData = forceRefresh ? null : localStorage.getItem('bose_cached_store_data');
-        const cachedTime = forceRefresh ? null : localStorage.getItem('bose_cached_store_time');
-        const cachedVersion = forceRefresh ? null : localStorage.getItem('bose_cached_store_version');
-        const cacheHardExpiry = 2 * 60 * 60 * 1000; // صمام أمان أخير: ساعتين
+        const cachedData = localStorage.getItem('bose_cached_store_data');
+        const cachedTime = localStorage.getItem('bose_cached_store_time');
+        const cachedVersion = localStorage.getItem('bose_cached_store_version');
+        const cacheHardExpiry = 24 * 60 * 60 * 1000; // صمام أمان أخير: يوم كامل بغض النظر عن نتيجة التحقق
         const cacheWithinHardLimit = cachedData && cachedTime && (Date.now() - parseInt(cachedTime, 10) < cacheHardExpiry);
 
         if (cacheWithinHardLimit) {
             try {
-                // نعرض فوراً من الكاش المحلي - مفيش أي استنى لأي طلب شبكة قبل ما
-                // تشوف العميلة الهيدر/القائمة/المنتجات.
-                window.BoseStoreData = JSON.parse(cachedData);
-                initCoreFlow();
+                let liveVersion = null;
+                let versionCheckSucceeded = false;
 
-                // التحقق من وجود تحديث بيحصل دلوقتي بهدوء في الخلفية - مش بيأخر
-                // ولا بيقاطع أي حاجة العميلة شايفاها بالفعل.
-                (async () => {
-                    if (!window.BoseSupabase || typeof window.BoseSupabase.getBoseDataVersion !== "function") return;
-
-                    /** محاولة واحدة لقراءة النسخة الحية - بترجع النسخة أو null على الفشل */
-                    async function attemptVersionCheck() {
-                        try {
-                            const versionResult = await window.BoseSupabase.getBoseDataVersion();
-                            const v = Array.isArray(versionResult)
-                                ? (versionResult[0]?.get_bose_data_version ?? versionResult[0])
-                                : (versionResult?.get_bose_data_version ?? versionResult);
-                            return (v !== null && v !== undefined) ? v : null;
-                        } catch (e) {
-                            return null;
-                        }
-                    }
-
-                    let liveVersion = await attemptVersionCheck();
-                    if (liveVersion === null) {
-                        await new Promise((r) => setTimeout(r, 500));
-                        liveVersion = await attemptVersionCheck();
-                    }
-                    if (liveVersion === null || String(liveVersion) === String(cachedVersion)) return;
-
-                    // النسخة اتغيرت فعلاً - نجيب البيانات الجديدة ونحدّث العناصر
-                    // الحية بهدوء من غير Reload كامل يقاطع تصفح العميلة.
+                if (window.BoseSupabase && typeof window.BoseSupabase.getBoseDataVersion === "function") {
                     try {
-                        const freshData = await window.BoseSupabase.loadBoseStoreDataFromSupabase();
-                        window.BoseStoreData = freshData;
-                        localStorage.setItem('bose_cached_store_data', JSON.stringify(freshData));
-                        localStorage.setItem('bose_cached_store_time', String(Date.now()));
-                        localStorage.setItem('bose_cached_store_version', String(liveVersion));
-                        buildAndInjectGlobalComponents();
-                        document.dispatchEvent(new CustomEvent('BoseDatabaseLoaded', { detail: window.BoseStoreData }));
-                    } catch (e) { /* فشل التحديث الصامت في الخلفية - العميلة شغالة بالفعل بالنسخة المحفوظة الصالحة */ }
-                })();
+                        const versionResult = await window.BoseSupabase.getBoseDataVersion();
+                        // الدالة بترجع timestamp مفرد (مش جدول)؛ PostgREST بيرجعه كقيمة خام
+                        // مباشرة أحياناً، أو كصف واحد جوه array حسب نسخة الـ REST - بنغطي الحالتين.
+                        liveVersion = Array.isArray(versionResult)
+                            ? (versionResult[0]?.get_bose_data_version ?? versionResult[0])
+                            : (versionResult?.get_bose_data_version ?? versionResult);
+                        versionCheckSucceeded = liveVersion !== null && liveVersion !== undefined;
+                    } catch (e) {
+                        versionCheckSucceeded = false;
+                    }
+                }
 
-                return;
+                // لو التحقق فشل (مشكلة شبكة/RPC مش جاهزة) أو النسخة الحية طابقت المحفوظة
+                // محلياً: استخدم الكاش المحلي فوراً من غير أي تحميل كامل جديد.
+                if (!versionCheckSucceeded || String(liveVersion) === String(cachedVersion)) {
+                    window.BoseStoreData = JSON.parse(cachedData);
+                    initCoreFlow();
+                    return;
+                }
+                // وصلنا هنا يعني: التحقق نجح والنسخة اتغيرت فعلاً -> كمل تحت لجلب بيانات جديدة بالكامل
             } catch (e) {
                 localStorage.removeItem('bose_cached_store_data');
                 localStorage.removeItem('bose_cached_store_time');
@@ -278,7 +246,6 @@
         setupPrideCountersAnimation();
         setupAppInstallPopup();
         setupAppPromoBlockButtons();
-        injectAppPromoRealContent();
         
         requestAnimationFrame(() => {
             requestAnimationFrame(() => {
@@ -319,8 +286,7 @@
         }
 
         const categoriesSection = document.getElementById('categories-slider-section') || document.getElementById('categories-section') || document.querySelector('[id*="categories"]');
-        const liveCategoriesList = window.getBoseCategoriesList();
-        if (categoriesSection && liveCategoriesList.length) {
+        if (categoriesSection && data.homepage.categoriesSlider) {
             const titleEl = document.getElementById('categories-section-title') || categoriesSection.querySelector('.section-title') || categoriesSection.querySelector('h2');
             const descEl = document.getElementById('categories-section-subtitle') || categoriesSection.querySelector('.bose-section-subtitle');
             
@@ -329,9 +295,9 @@
             
             const track = document.getElementById('categories-track') || categoriesSection.querySelector('.categories-track-slider') || categoriesSection.querySelector('[id*="track"]');
             if (track) {
-                track.innerHTML = liveCategoriesList.map(/** @param {Object} cat */ (cat) => `
+                track.innerHTML = data.homepage.categoriesSlider.map(/** @param {Object} cat */ (cat) => `
                     <div class="category-card-unified" onclick="window.location.href='category.html?category=${encodeURIComponent(cat.id)}'">
-                        <img src="${window.optimizeBoseImageUrl(cat.image, 450)}" alt="${window.escapeBoseHTML(cat.title)}" class="category-card-img" width="180" height="180" loading="lazy" />
+                        <img src="${window.optimizeBoseImageUrl(cat.image, 250)}" alt="${window.escapeBoseHTML(cat.title)}" class="category-card-img" width="180" height="180" loading="lazy" />
                         <div class="category-card-name">${window.escapeBoseHTML(cat.title)}</div>
                     </div>
                 `).join('');
@@ -413,10 +379,7 @@
         if (count === 0) return;
 
         for (let i = 0; i < cards.length; i++) {
-            // 🛡️ لازم تتفق مع scroll-snap-align:start في main.css (كارت واحد
-            // كامل يبدأ من حافة الشاشة) - لو فضلت center هنا هتتعارض مع القاعدة
-            // اللي في الـ CSS وتخلي حساب موقع الدوت (syncDotsAndPosition تحت) غلط.
-            /** @type {HTMLElement} */ (cards[i]).style.scrollSnapAlign = 'start';
+            /** @type {HTMLElement} */ (cards[i]).style.scrollSnapAlign = 'center';
         }
 
         let dotsContainer = document.getElementById(dotsContainerId) || (section ? section.querySelector('.bose-dots-container') : null);
@@ -596,7 +559,7 @@
      */
     function createProductCardHTML(product) {
         if (!product) return '';
-        const rawImg = (product.images && product.images.length > 0 && product.images[0]) ? product.images[0] : 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png';
+        const rawImg = product.images ? product.images[0] : 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png';
         const safeImg = window.optimizeBoseImageUrl(rawImg, 400);
         const safeTitle = window.escapeBoseHTML(product.title);
         const safeFlavor = window.escapeBoseHTML(product.flavorName || '');
@@ -919,18 +882,8 @@
         
         if (product) {
             price = product.price || product.basePrice || 0;
-            // 🚨🚨 [إصلاح جذري حرج - العروض بتلغي نفسها]: عمود "prices" (الخاص
-            // بالأحجام) ممكن يفضل فيه القيمة القديمة قبل الخصم غلط في البيانات
-            // (حصل فعلاً مع منتج "جاتوه كلاسيك" سابقاً) - فأي مكان بيمرر "size"
-            // كان بيلغي الخصم تماماً ويرجّع السعر القديم. الحل: نستخدم قيمة الحجم
-            // بس لو المقاسات فعلاً مختلفة عن بعضها (يعني المنتج multi-size حقيقي)،
-            // وإلا نفضل معتمدين على product.price الصحيح المحدث بعد أي خصم.
             if (product.prices && opts.size) {
-                const sizeValues = Object.values(product.prices);
-                const hasRealSizeVariation = new Set(sizeValues).size > 1;
-                if (hasRealSizeVariation) {
-                    price = product.prices[opts.size] || price;
-                }
+                price = product.prices[opts.size] || price;
             }
             const selectedPrinting = opts.printing || opts.printingType || 'none';
             if (selectedPrinting && selectedPrinting !== 'none') {
@@ -1071,12 +1024,6 @@
                 printingType: opts.printingType || opts.printing || "none",
                 customMessage: opts.customMessage || "",
                 allergyNote: opts.allergyNote || "",
-                // 🐛 [إصلاح خلل موجود من قبل]: isGift وoccasionLabel كانا بيترسلوا من
-                // محاكي التورت جوه customOptions لكن معندهمش أي سطر هنا كانوا بيتقروا
-                // منه - يعني كانوا بيتمسحوا بصمت ومحدش كان بيشوفهم في السلة ولا فاتورة
-                // الواتساب، رغم إن العميلة فعلاً بتختارهم/بتكتبهم.
-                isGift: !!opts.isGift,
-                occasionLabel: opts.occasionLabel || "",
                 flowerType: opts.flowerType || "none",
                 flowerCount: parseInt(opts.flowerCount, 10) || 0,
                 cashAmount: parseFloat(opts.cashAmount) || 0,
@@ -1087,12 +1034,6 @@
                 chocolateBudget: parseFloat(opts.chocolateBudget) || 0,
                 hasGiftCard: !!opts.hasGiftCard,
                 giftCardText: opts.giftCardText || "",
-                // 🖼️ [تمييز نوع كل صورة]: صورة "الطباعة على السطح" وصورة "التصميم
-                // المرجعي المطلوب تقريبه" مختلفتان تماماً في الغرض - بنخزنهم منفصلين
-                // بدل قايمة واحدة مجهولة، عشان فاتورة الواتساب تقدر توضح لكل واحدة
-                // غرضها بالظبط بدل ما تظهر كـ"صورة مرجعية" عامة غامضة.
-                printImageUrl: opts.printImageUrl || "",
-                replicaImageUrl: opts.replicaImageUrl || "",
                 // 👑 [إصلاح جذري - كارثة الأحجام]: نخزن الحجم المختار فعلياً (لو المنتج
                 // بيدعم أكتر من حجم سعر) جوه بيانات عنصر السلة، عشان يظهر بوضوح في
                 // صفحة السلة وفي فاتورة الواتساب - بدل ما يختفي تماماً ويفضل السعر
@@ -1244,50 +1185,9 @@
         if (!url || typeof url !== "string") return url;
         if (!url.includes("res.cloudinary.com") || !url.includes("/upload/")) return url;
         const safeWidth = parseInt(String(width), 10) || 600;
-        // 🛡️🛡️ [إصلاح جذري - جودة الصور الضبابية]: كنا بنطلب من Cloudinary نفس
-        // عرض الـ CSS المعروض بالبكسل بالظبط (180/250/300px..) من غير أي اعتبار
-        // لكثافة بكسل الشاشة (Device Pixel Ratio). شاشات الموبايل والتابلت
-        // الحديثة (Retina/2x/3x) بتعرض كل "بكسل CSS" بـ 2 أو 3 بكسل فعلي فيها،
-        // فكانت كل صور الموقع بتوصل بدقة أقل بكتير من دقة الشاشة الحقيقية وتظهر
-        // ضبابية/معتمة (خصوصاً في قسم "تسوق حسب الفئة" اللي كروته بتوصل لـ 420px
-        // ارتفاع فعلي بينما كان بيتطلب منها بس 250px). دلوقتي بنضرب العرض
-        // المطلوب في نسبة كثافة بكسل الجهاز الفعلية (بحد أقصى 3x لتفادي تحميل
-        // صور ضخمة بلا داعي وإهدار بيانات). كمان رفعنا q_auto العادي لـ
-        // q_auto:good كأرضية جودة أعلى تفادياً لأي ضغط عدواني زيادة عن اللزوم
-        // من وضع q_auto الافتراضي على صور فيها تفاصيل دقيقة (كريمة/زهور/تزيين).
-        const dpr = (typeof window !== "undefined" && window.devicePixelRatio) ? Math.min(window.devicePixelRatio, 3) : 2;
-        const targetWidth = Math.round(safeWidth * dpr);
-        const transform = `f_auto,q_auto:good,w_${targetWidth},c_limit`;
+        const transform = `f_auto,q_auto,w_${safeWidth},c_limit`;
         if (url.includes("/upload/f_auto") || url.includes("/upload/q_auto")) return url;
         return url.replace("/upload/", `/upload/${transform}/`);
-    };
-
-    /**
-     * 🛡️ [إصلاح - مصدر واحد حي لصور الفئات]: بترجع قايمة الفئات جاهزة للعرض
-     * (id/title/image/builderType) مبنية مباشرة من جدول categories الحي
-     * (data.categories) بدل الاعتماد على نسخة homepage.categoriesSlider
-     * المحفوظة (snapshot) اللي كانت بتفضل قديمة لحد ما حد يفتح صفحة الهوم
-     * بيدج في لوحة التحكم ويدوس حفظ. النتيجة: أي صورة/عنوان فئة بيتغيّر من
-     * admin/categories.html بيظهر فوراً في الرئيسية والمنيو من غير أي خطوة
-     * تانية. بيرجع للـ snapshot القديم بس لو جدول categories وصل فاضي فعلاً
-     * (حماية من كسر الصفحة، مش السلوك المتوقع في الاستخدام العادي).
-     * @returns {Array<Object>}
-     */
-    window.getBoseCategoriesList = function() {
-        const data = window.BoseStoreData;
-        if (!data) return [];
-        if (Array.isArray(data.categories) && data.categories.length) {
-            return data.categories
-                .slice()
-                .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
-                .map((c) => ({
-                    id: c.id,
-                    title: c.title,
-                    image: c.image || "",
-                    builderType: c.builder_type || "standard",
-                }));
-        }
-        return (data.homepage && data.homepage.categoriesSlider) || [];
     };
 
     /**
@@ -1545,79 +1445,6 @@
         if (data.seo && data.seo.title && document.title !== data.seo.title) {
             document.title = data.seo.title;
         }
-        injectBoseStructuredData(data);
-    }
-
-    /**
-     * 🔍👑 [SEO/GEO - بيانات مهيكلة Schema.org]: بيانات JSON-LD موحّدة (منظمة +
-     * نشاط تجاري محلي + موقع إلكتروني) بتتحقن في كل صفحة من هنا مركزياً، بقيم حية
-     * جايه فعلياً من إعدادات المتجر في قاعدة البيانات (اسم المتجر، اللوجو، الهاتف،
-     * روابط السوشيال ميديا، عنوان الاستلام) - مش بيانات ثابتة مكتوبة يدوياً هتفضل
-     * قديمة أول ما حد يغيّر حاجة من لوحة التحكم.
-     *
-     * ليه ده مهم:
-     * 1) هو الطريقة الرسمية اللي جوجل بيعتمد عليها عشان يعرض لوجو البراند بجانب
-     *    اسم الموقع في نتائج البحث (Organization.logo) بدل الأيقونة الافتراضية.
-     * 2) بيدي محركات البحث والذكاء الاصطناعي (ChatGPT/Perplexity/Google AI Overviews)
-     *    فهم واضح ومباشر لهوية النشاط التجاري (اسمه، نوعه Bakery، رقم تواصله،
-     *    حساباته الرسمية) بدل ما يحاولوا "يخمّنوا" ده من النص العادي - ده جوهر
-     *    الـ GEO (Generative Engine Optimization).
-     * 3) WebSite schema بيفتح الباب لظهور مربع بحث مباشر (Sitelinks Search Box)
-     *    جوه نتيجة جوجل نفسها.
-     */
-    function injectBoseStructuredData(data) {
-        try {
-            const store = data.store || {};
-            const social = data.social || {};
-            const seo = data.seo || {};
-            const pageUrl = window.location.origin + window.location.pathname;
-            const logoUrl = store.logo || "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png";
-            const storeName = store.name || "حلويات بوسي";
-
-            const sameAs = [social.facebook, social.instagram, social.tiktok].filter(Boolean);
-
-            const graph = [
-                {
-                    "@type": ["Organization", "Bakery"],
-                    "@id": window.location.origin + "/#organization",
-                    "name": storeName,
-                    "url": window.location.origin + "/",
-                    "logo": logoUrl,
-                    "image": logoUrl,
-                    "description": seo.description || store.slogan || "",
-                    ...(store.phone ? { "telephone": store.phone } : {}),
-                    ...(sameAs.length ? { "sameAs": sameAs } : {}),
-                    ...(store.pickup && store.pickup.address ? {
-                        "address": {
-                            "@type": "PostalAddress",
-                            "streetAddress": store.pickup.address,
-                            "addressCountry": "EG"
-                        }
-                    } : {})
-                },
-                {
-                    "@type": "WebSite",
-                    "@id": window.location.origin + "/#website",
-                    "url": window.location.origin + "/",
-                    "name": storeName,
-                    "publisher": { "@id": window.location.origin + "/#organization" },
-                    "inLanguage": "ar"
-                }
-            ];
-
-            const jsonLd = { "@context": "https://schema.org", "@graph": graph };
-
-            let script = document.getElementById("bose-structured-data");
-            if (!script) {
-                script = document.createElement("script");
-                script.type = "application/ld+json";
-                script.id = "bose-structured-data";
-                document.head.appendChild(script);
-            }
-            script.textContent = JSON.stringify(jsonLd);
-        } catch (e) {
-            // فشل حقن البيانات المهيكلة مش لازم يكسر الموقع - نتجاهله بأمان
-        }
     }
 
     /**
@@ -1625,8 +1452,13 @@
      * (وردي/أبيض/ذهبي، خط Cairo) بتظهر للعميل بعد ثواني من دخوله الموقع لأول مرة،
      * بتستخدم شخصية الشيف بتاعة اللوجو (مش أي ماسكوت جاهز)، وبتدعو العميل يثبّت
      * تطبيق الويب (PWA) بتاعنا على شاشته الرئيسية زي أي تطبيق عادي.
+     *
+     * ⚠️ [مهم للمطوّر/صاحبة المتجر]: الرابط ده أدناه بس Placeholder مؤقت بيشاور على
+     * اللوجو العادي - لازم يترفع ملف "assets/bose-mascot-character.png" (اللي جوه
+     * حزمة التسليم دي) على Cloudinary زي باقي الصور، وبعدين نستبدل قيمة الثابت
+     * MASCOT_IMAGE_URL تحت برابط الصورة الجديد.
      */
-    const BOSE_APP_MASCOT_IMAGE_URL = "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1786730325/AIRetouch_20260814_205609610_knvazu.jpg";
+    const BOSE_APP_MASCOT_IMAGE_URL = "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"; // TODO: استبدلي بالرابط بعد رفع bose-mascot-character.png
 
     function setupAppInstallPopup() {
         // لو التطبيق شغال بالفعل كـ PWA مثبّت (standalone)، العميل مثبّته أصلاً - متعرضيش عليه يثبّته تاني
@@ -1710,54 +1542,6 @@
         if (androidBtn) androidBtn.addEventListener('click', () => window.triggerBoseAppInstall());
     }
 
-    /**
-     * 👑 [محتوى حقيقي - بلوك تحميل التطبيق]: الشاشة 1 (المنتجات) والشاشة 3 (السلة)
-     * جوه محاكي الموبايل كانت مجرد صناديق رمادية فاضية (Placeholder بصري بحت من غير
-     * أي بيانات حقيقية). الدالة دي بتاخد نفس منتجات "الأكثر مبيعاً" الحقيقية اللي
-     * ظاهرة فعلاً في قسم most-selling بالصفحة (من data.homepage.mostSelling) وتحقن
-     * صورها الحقيقية وأسمائها وأسعارها جوه الموبايل، عشان المعاينة تبقى انعكاس حقيقي
-     * للمنيو الفعلي بدل تصميم تجريدي وهمي.
-     */
-    function injectAppPromoRealContent() {
-        const data = window.BoseStoreData;
-        if (!data || !data.products) return;
-
-        const sourceIds = (data.homepage && (data.homepage.mostSelling || data.homepage.newArrivals)) || [];
-        const items = sourceIds
-            .map((/** @param {string} id */ id) => data.products.find((/** @type {any} */ p) => p.id === id || p.slug === id))
-            .filter(Boolean);
-
-        // 🛡️ لو مفيش عناصر متربطة في لوحة التحكم لسه، منسيبش الصناديق فاضية بلا داعي - نرجع لأول منتجات حقيقية موجودة في القاعدة
-        const products = (items.length ? items : data.products).slice(0, 4);
-        if (!products.length) return;
-
-        const gridEl = document.getElementById('app-promo-product-grid');
-        if (gridEl) {
-            gridEl.innerHTML = products.slice(0, 4).map((/** @type {any} */ p) => {
-                const img = window.optimizeBoseImageUrl((p.images && p.images.length > 0 && p.images[0]) ? p.images[0] : 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', 200);
-                const title = window.escapeBoseHTML(p.title || '');
-                return `<div class="mock-product-card"><img src="${img}" alt="${title}" loading="lazy" /><span class="mock-product-name">${title}</span></div>`;
-            }).join('');
-        }
-
-        const cartRowsEl = document.getElementById('app-promo-cart-rows');
-        if (cartRowsEl) {
-            cartRowsEl.innerHTML = products.slice(0, 2).map((/** @type {any} */ p) => {
-                const img = window.optimizeBoseImageUrl((p.images && p.images.length > 0 && p.images[0]) ? p.images[0] : 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', 100);
-                const title = window.escapeBoseHTML(p.title || '');
-                const price = Math.round(p.basePrice || p.price || 0);
-                return `
-                    <div class="mock-cart-row">
-                        <div class="mock-cart-thumb"><img src="${img}" alt="${title}" loading="lazy" /></div>
-                        <div class="mock-cart-lines">
-                            <span class="mock-cart-name">${title}</span>
-                            <span class="mock-cart-price">${price} جنيه</span>
-                        </div>
-                    </div>`;
-            }).join('');
-        }
-    }
-
     function buildAndInjectGlobalComponents() {
         const data = window.BoseStoreData;
         if (!data) return;
@@ -1815,27 +1599,6 @@
                     
                     <div class="sidebar-scrollable-content">
                         <div class="sidebar-menu-wrapper">
-                            <button type="button" id="sidebar-categories-toggle" class="sidebar-section-title sidebar-expand-toggle" aria-expanded="false">
-                                تسوّقي حسب الفئة
-                                <i class="fa-solid fa-chevron-down toggle-chevron"></i>
-                            </button>
-                            <ul class="sidebar-links-list sidebar-categories-collapse" id="sidebar-categories-list" style="display:none;">
-                                <li class="sidebar-link-item"><a href="cake-builder.html"><span class="link-main-side"><i class="fa-solid fa-birthday-cake main-icon"></i>التورت الفاخرة</span></a></li>
-                                <li class="sidebar-link-item"><a href="category.html?category=taswaq-gatowat"><span class="link-main-side"><i class="fa-solid fa-cheese main-icon"></i>الجاتوهات الملكية</span></a></li>
-                                <li class="sidebar-link-item"><a href="category.html?category=taswaq-qashtota"><span class="link-main-side"><i class="fa-solid fa-stroopwafel main-icon"></i>القشطوطة الغنية</span></a></li>
-                                <li class="sidebar-link-item"><a href="category.html?category=taswaq-despacito"><span class="link-main-side"><i class="fa-solid fa-box main-icon"></i>الديسباسيتو الفاخر</span></a></li>
-                                <li class="sidebar-link-item"><a href="category.html?category=taswaq-cinabon"><span class="link-main-side"><i class="fa-solid fa-cookie main-icon"></i>السينابون الطازج</span></a></li>
-                                <li class="sidebar-link-item"><a href="category.html?category=taswaq-donuts"><span class="link-main-side"><i class="fa-solid fa-ring main-icon"></i>الدوناتس الهشة</span></a></li>
-                                <li class="sidebar-link-item"><a href="category.html?category=taswaq-red-velvet"><span class="link-main-side"><i class="fa-solid fa-heart main-icon"></i>الريدڤيلڤت</span></a></li>
-                                <li class="sidebar-link-item"><a href="category.html?category=taswaq-cupcake"><span class="link-main-side"><i class="fa-solid fa-cookie-bite main-icon"></i>الكب كيك</span></a></li>
-                                <li class="sidebar-link-item"><a href="category.html?category=taswaq-mini-cake"><span class="link-main-side"><i class="fa-solid fa-cubes main-icon"></i>الميني تورت</span></a></li>
-                                <li class="sidebar-link-item"><a href="flower-builder.html"><span class="link-main-side"><i class="fa-solid fa-spa main-icon"></i>بوكيهات الورد</span></a></li>
-                                <li class="sidebar-link-item"><a href="category.html?category=taswaq-happiness-cups"><span class="link-main-side"><i class="fa-solid fa-ice-cream main-icon"></i>كبات السعادة</span></a></li>
-                                <li class="sidebar-link-item"><a href="category.html?category=taswaq-relax-box"><span class="link-main-side"><i class="fa-solid fa-gift main-icon"></i>بوكس الروقان</span></a></li>
-                            </ul>
-                        </div>
-
-                        <div class="sidebar-menu-wrapper" style="margin-top: 25px;">
                             <div class="sidebar-section-title">التصفح الفاخر</div>
                             <ul class="sidebar-links-list">
                                 <li class="sidebar-link-item">
@@ -1847,12 +1610,6 @@
                                 <li class="sidebar-link-item">
                                     <a href="menu.html">
                                         <span class="link-main-side"><i class="fa-solid fa-utensils main-icon"></i>المنيو الشامل</span>
-                                        <i class="fa-solid fa-chevron-left arrow-icon"></i>
-                                    </a>
-                                </li>
-                                <li class="sidebar-link-item">
-                                    <a href="offers.html">
-                                        <span class="link-main-side"><i class="fa-solid fa-tags main-icon"></i>العروض والخصومات</span>
                                         <i class="fa-solid fa-chevron-left arrow-icon"></i>
                                     </a>
                                 </li>
@@ -1874,18 +1631,6 @@
                                         <i class="fa-solid fa-chevron-left arrow-icon"></i>
                                     </a>
                                 </li>
-                                <li class="sidebar-link-item">
-                                    <a href="track-order.html">
-                                        <span class="link-main-side"><i class="fa-solid fa-location-crosshairs main-icon"></i>تتبعي طلبك</span>
-                                        <i class="fa-solid fa-chevron-left arrow-icon"></i>
-                                    </a>
-                                </li>
-                                <li class="sidebar-link-item">
-                                    <a href="rewards.html">
-                                        <span class="link-main-side"><i class="fa-solid fa-gift main-icon"></i>مكافآتك</span>
-                                        <i class="fa-solid fa-chevron-left arrow-icon"></i>
-                                    </a>
-                                </li>
                             </ul>
                         </div>
 
@@ -1901,30 +1646,6 @@
                                 <li class="sidebar-link-item">
                                     <a href="contact.html">
                                         <span class="link-main-side"><i class="fa-solid fa-phone-flip main-icon"></i>تواصل معنا</span>
-                                        <i class="fa-solid fa-chevron-left arrow-icon"></i>
-                                    </a>
-                                </li>
-                                <li class="sidebar-link-item">
-                                    <a href="policies/shipping-policy.html">
-                                        <span class="link-main-side"><i class="fa-solid fa-truck main-icon"></i>سياسة الشحن والتوصيل</span>
-                                        <i class="fa-solid fa-chevron-left arrow-icon"></i>
-                                    </a>
-                                </li>
-                                <li class="sidebar-link-item">
-                                    <a href="policies/refund-policy.html">
-                                        <span class="link-main-side"><i class="fa-solid fa-rotate-left main-icon"></i>سياسة الاسترجاع</span>
-                                        <i class="fa-solid fa-chevron-left arrow-icon"></i>
-                                    </a>
-                                </li>
-                                <li class="sidebar-link-item">
-                                    <a href="policies/privacy-policy.html">
-                                        <span class="link-main-side"><i class="fa-solid fa-shield-halved main-icon"></i>سياسة الخصوصية</span>
-                                        <i class="fa-solid fa-chevron-left arrow-icon"></i>
-                                    </a>
-                                </li>
-                                <li class="sidebar-link-item">
-                                    <a href="policies/terms.html">
-                                        <span class="link-main-side"><i class="fa-solid fa-file-contract main-icon"></i>الشروط والأحكام</span>
                                         <i class="fa-solid fa-chevron-left arrow-icon"></i>
                                     </a>
                                 </li>
@@ -2077,17 +1798,6 @@
         if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
         if (overlay) overlay.addEventListener('click', closeSidebar);
 
-        const categoriesToggle = document.getElementById('sidebar-categories-toggle');
-        const categoriesList = document.getElementById('sidebar-categories-list');
-        if (categoriesToggle && categoriesList) {
-            categoriesToggle.addEventListener('click', () => {
-                const isOpen = categoriesList.style.display === 'block';
-                categoriesList.style.display = isOpen ? 'none' : 'block';
-                categoriesToggle.setAttribute('aria-expanded', String(!isOpen));
-                categoriesToggle.classList.toggle('expanded', !isOpen);
-            });
-        }
-
         if (searchBtn && searchModal) {
             searchBtn.addEventListener('click', () => {
                 searchModal.classList.add('active');
@@ -2118,7 +1828,7 @@
                     filtered.forEach((/** @type {any} */ p) => {
                         let targetUrl = (p.id === 'toort-custom-master' || p.slug === 'toort-custom-master') ? 'cake-builder.html' : 
                                         ((p.id === 'flowers-master' || p.slug === 'flowers-master') ? 'flower-builder.html' : `product.html?slug=${encodeURIComponent(p.slug)}`);
-                        const safeImg = window.optimizeBoseImageUrl((p.images && p.images.length > 0 && p.images[0]) ? p.images[0] : 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', 120);
+                        const safeImg = window.optimizeBoseImageUrl(p.images ? p.images[0] : 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', 120);
                         const safeTitle = window.escapeBoseHTML(p.title);
                         const safeFlavor = window.escapeBoseHTML(p.flavorName || '');
                         html += `
