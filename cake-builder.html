@@ -8,44 +8,44 @@
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#FF91A4">
     <title>تصميم تورتتك الخاصة | حلويات بوسي</title>
-    <meta name="description" content="ميزة حصرية تتيح للعميل تصميم تورتته بنفسه واختيار كل التفاصيل التي يريدها قبل تنفيذها.">
-    
-    <!-- ⚡ preconnect لتسريع أول اتصال بمصادر الخط والصور والأيقونات -->
+    <meta name="description" content="ميزة حصرية تتيح للعميل تصميم تورتته بنفسه واختيار كل التفاصيل التي يريدها قبل تنفيذها، خطوة بخطوة بشرح واضح لكل اختيار.">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
 
-    <!-- 🐛 [إصلاح حرج]: main.css وخط Cairo وأيقونات Font Awesome كانوا غايبين تماماً من هذه الصفحة
-         (المحاكي هو الصفحة الوحيدة اللي محملتش main.css)، وده كان سبب ظهور الهيدر والقائمة الجانبية
-         والفوتر (المحقونين ديناميكياً عبر core-engine.js) بدون أي تنسيق - يعني متكدسين فوق بعض
-         بدل شكلهم الطبيعي المتناسق في باقي صفحات الموقع. -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/global.css?v=2026_production_v33.0">
-    <link rel="stylesheet" href="css/main.css?v=2026_production_v33.0">
-    <link rel="stylesheet" href="css/simulators.css?v=2026_production_v33.0">
-    <!-- ⚡ [توحيد نمط التحميل - المرحلة 4]: defer + رقم إصدار موحّد زي باقي صفحات
-         الموقع بالظبط، بدل التحميل الحاجز (Blocking) اللي كان هنا قبل كده. -->
-    <script src="js/supabase-client.js?v=2026_production_v33.0" defer></script>
-    <script src="js/core-engine.js?v=2026_production_v33.0" defer></script>
-    
+    <link rel="stylesheet" href="css/global.css?v=2026_production_v34.0">
+    <link rel="stylesheet" href="css/main.css?v=2026_production_v34.0">
+    <link rel="stylesheet" href="css/simulators.css?v=2026_production_v34.0">
+    <script src="js/supabase-client.js?v=2026_production_v34.0" defer></script>
+    <script src="js/core-engine.js?v=2026_production_v34.0" defer></script>
+
     <style>
+        /* ==================================================================
+           🧭 [إعادة بناء المحاكي - نسخة V6.0]: كل خطوة دلوقتي قرار واحد بس،
+           عشان تقدر تظهر كاملة قدام العميل من غير سكرول طويل، ومحتوى الهيدر
+           (الصورة الكبيرة والمقدمة) بيختفي بعد الخطوة الأولى عشان يوفّر مساحة
+           للشاشة لباقي الخطوات (شوف toggleHeroVisibilityForStep في JS).
+           ================================================================== */
         .bose-simulator-layout {
             max-width: 800px;
             margin: 0 auto;
-            padding: 30px 16px 160px 16px;
+            padding: 20px 16px 150px 16px;
         }
         .bose-main-hero-hook {
             width: 100%;
-            height: 45vh;
-            min-height: 280px;
-            max-height: 500px;
+            height: 32vh;
+            min-height: 200px;
+            max-height: 340px;
             border-radius: 24px;
             overflow: hidden;
             border: var(--bose-border-pink);
             box-shadow: var(--bose-shadow-glow);
-            margin-bottom: 35px;
+            margin-bottom: 22px;
+            transition: max-height 0.3s ease, margin 0.3s ease, opacity 0.3s ease;
         }
         .bose-main-hero-hook img {
             width: 100%;
@@ -53,30 +53,45 @@
             object-fit: cover;
             display: block;
         }
+        .bose-main-hero-hook.bose-collapsed-hero {
+            max-height: 0;
+            min-height: 0;
+            margin-bottom: 0;
+            border: none;
+            box-shadow: none;
+            opacity: 0;
+        }
         .bose-intro-block {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 22px;
+            transition: max-height 0.3s ease, margin 0.3s ease, opacity 0.3s ease;
+            overflow: hidden;
         }
         .bose-intro-block h1 {
-            font-size: 32px;
+            font-size: 28px;
             font-weight: 700;
             color: var(--bose-black);
-            margin: 0 0 14px 0;
+            margin: 0 0 10px 0;
         }
         .bose-intro-block p {
-            font-size: 16px;
+            font-size: 15px;
             color: var(--bose-black);
-            line-height: 1.7;
+            line-height: 1.6;
             margin: 0;
         }
-        
+        .bose-intro-block.bose-collapsed-hero {
+            max-height: 0;
+            margin: 0;
+            opacity: 0;
+        }
+
         .bose-step-wizard-card {
             background-color: var(--bose-white);
             border: var(--bose-border-pink);
             border-radius: 24px;
-            padding: 30px;
+            padding: 24px;
             box-shadow: var(--bose-shadow-glow);
-            margin-bottom: 30px;
+            margin-bottom: 22px;
         }
         .bose-step-wizard-panel {
             display: none;
@@ -89,28 +104,35 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        
+
+        /* 🔢 [أرقام الخطوات القابلة للّمس]: كل رقم دلوقتي زرار حقيقي بيوديك
+           للخطوة اللي تختارها مباشرة، مع سكرول أفقي لو عدد الخطوات كتر عن
+           المساحة المتاحة عشان يفضل كل رقم واضح وسهل اللمس (44px تقريباً). */
         .bose-stepper-progress-bar {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-start;
             align-items: center;
-            margin-bottom: 35px;
+            margin-bottom: 28px;
             position: relative;
+            overflow-x: auto;
+            gap: 4px;
+            padding: 4px 2px 10px 2px;
+            scrollbar-width: thin;
         }
         .bose-stepper-progress-bar::before {
             content: '';
             position: absolute;
-            top: 50%;
+            top: 22px;
             left: 0;
             right: 0;
             height: 2px;
             background-color: var(--bose-gray-border);
             z-index: 1;
-            transform: translateY(-50%);
         }
         .bose-progress-node {
-            width: 36px;
-            height: 36px;
+            width: 40px;
+            height: 40px;
+            min-width: 40px;
             border-radius: 50%;
             background-color: var(--bose-white);
             border: 2px solid var(--bose-gray-border);
@@ -122,6 +144,12 @@
             color: var(--bose-black);
             z-index: 2;
             transition: var(--bose-transition);
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .bose-progress-node:hover {
+            border-color: var(--bose-pink);
+            transform: translateY(-1px);
         }
         .bose-progress-node.active {
             border-color: var(--bose-pink) !important;
@@ -136,16 +164,16 @@
         }
 
         .bose-wizard-title {
-            font-size: 20px;
+            font-size: 19px;
             font-weight: 700;
             color: var(--bose-black);
-            margin: 0 0 8px 0;
+            margin: 0 0 6px 0;
         }
         .bose-wizard-subtitle {
-            font-size: 14px;
+            font-size: 13.5px;
             color: var(--bose-black);
             opacity: 0.8;
-            margin: 0 0 24px 0;
+            margin: 0 0 16px 0;
             line-height: 1.6;
         }
 
@@ -154,7 +182,7 @@
             align-items: center;
             justify-content: center;
             max-width: 260px;
-            margin: 30px auto;
+            margin: 24px auto;
             border: 2px solid var(--bose-pink);
             border-radius: 50px;
             overflow: hidden;
@@ -189,7 +217,7 @@
         .bose-interactive-radio-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 16px;
+            gap: 14px;
         }
         .bose-selection-card-label {
             position: relative;
@@ -206,7 +234,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 22px 16px;
+            padding: 20px 16px;
             background-color: var(--bose-white);
             border: 1px solid rgba(255, 145, 164, 0.25);
             border-radius: 18px;
@@ -221,9 +249,94 @@
             box-shadow: var(--bose-shadow-glow);
         }
 
+        /* ℹ️ [شرح توضيحي منبثق لكل اختيار]: زرار صغير على كل كارت بيفتح
+           بوكس شرح "بحجم مربع" (مش شاشة كاملة) قريب من حجم الكارت نفسه،
+           بنفس روح الملاحظة الثابتة اللي كانت موجودة لمقاسات الشكل قبل كده. */
+        .bose-info-badge {
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: var(--bose-white);
+            border: 1.5px solid var(--bose-pink);
+            color: var(--bose-pink);
+            font-size: 13px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 3;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+        }
+        .bose-info-popover-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(17,17,17,0.55);
+            backdrop-filter: blur(3px);
+            z-index: 70000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .bose-info-popover-backdrop.show {
+            display: flex;
+        }
+        .bose-info-popover-box {
+            background: var(--bose-white);
+            border: 2px solid var(--bose-pink);
+            border-radius: 20px;
+            padding: 20px;
+            width: 100%;
+            max-width: 280px;
+            min-height: 140px;
+            box-shadow: var(--bose-shadow-hover);
+            position: relative;
+            animation: bosePopoverPop 0.22s ease-out forwards;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        @keyframes bosePopoverPop {
+            from { opacity: 0; transform: scale(0.85); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .bose-info-popover-box h4 {
+            margin: 0 0 8px 0;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--bose-pink);
+        }
+        .bose-info-popover-box p {
+            margin: 0;
+            font-size: 13.5px;
+            line-height: 1.7;
+            color: var(--bose-black);
+        }
+        .bose-info-popover-close {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--bose-pink-light);
+            border: none;
+            color: var(--bose-pink);
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .bose-premium-textarea-field {
             width: 100%;
-            height: 110px;
+            height: 105px;
             border: 2px solid var(--bose-pink) !important;
             border-radius: 18px !important;
             padding: 16px;
@@ -243,15 +356,13 @@
             transform: translateY(-1px);
         }
 
-        /* 🖼️ [معرض الإلهام - خطوة 1]: نفس شكل السلايدر الأفقي القديم بالظبط لكن
-           جوه الخطوة الأولى نفسها بدل شريط منفصل تحت المحاكي، عشان العميل يشوف
-           شغلنا فوراً من أول لحظة، وسكرول أفقي بس (مش رأسي) يحافظ على ارتفاع
-           الخطوة مضغوط وكله ظاهر قدامها من غير سكرول طويل. */
+        /* 🖼️ [معرض الإلهام - خطوة 1]: الصور دلوقتي أكبر 20% من قبل، بظل أقوى
+           يدّيها إحساس "منبثقة" فوق الكارت، وكل صورة بتفتح بملء الشاشة عند الضغط. */
         .bose-step1-gallery-scroller {
             display: flex;
             gap: 14px;
             overflow-x: auto;
-            padding: 6px 4px 14px 4px;
+            padding: 8px 4px 16px 4px;
             margin-top: 4px;
             scroll-snap-type: x proximity;
         }
@@ -265,16 +376,6 @@
             padding: 20px 4px;
             margin: 0;
         }
-        .bose-occasion-explainer-text {
-            font-size: 13.5px;
-            color: var(--bose-black);
-            opacity: 0.75;
-            line-height: 1.7;
-            background: var(--bose-pink-light);
-            border-radius: 14px;
-            padding: 12px 16px;
-            margin: 12px 0 16px 0;
-        }
         .bose-field-required-hint {
             display: none;
             font-size: 12.5px;
@@ -286,33 +387,96 @@
 
         .bose-portfolio-img-node {
             flex-shrink: 0;
-            width: 220px;
-            height: 220px;
-            border-radius: 18px;
+            width: 264px;
+            height: 264px;
+            border-radius: 20px;
             overflow: hidden;
             border: 1px solid var(--bose-gray-border);
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 10px 26px rgba(255, 145, 164, 0.28);
         }
         @media (max-width: 480px) {
-            .bose-portfolio-img-node { width: 170px; height: 170px; }
+            .bose-portfolio-img-node { width: 204px; height: 204px; }
         }
-        .bose-portfolio-img-node:hover {
-            transform: scale(1.04);
+        .bose-portfolio-img-node:hover,
+        .bose-portfolio-img-node:active {
+            transform: scale(1.04) translateY(-3px);
+            box-shadow: 0 16px 34px rgba(255, 145, 164, 0.4);
         }
         .bose-portfolio-img-node img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
+        .bose-gallery-tap-hint {
+            text-align: center;
+            font-size: 12.5px;
+            color: var(--bose-black);
+            opacity: 0.55;
+            margin: 4px 0 0 0;
+        }
+
+        /* ⚡ [اختصار الطلب في خطوة واحدة] */
+        .bose-quick-shortcut-card {
+            background: linear-gradient(135deg, var(--bose-pink-light), #fff);
+            border: 2px dashed var(--bose-pink);
+            border-radius: 20px;
+            padding: 18px 20px;
+            margin: 18px 0 24px 0;
+            text-align: center;
+        }
+        .bose-quick-shortcut-card .quick-icon {
+            font-size: 26px;
+            margin-bottom: 6px;
+            display: block;
+        }
+        .bose-quick-shortcut-card h3 {
+            margin: 0 0 8px 0;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--bose-black);
+        }
+        .bose-quick-shortcut-card p {
+            margin: 0 0 14px 0;
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--bose-black);
+            opacity: 0.85;
+        }
+        .bose-quick-shortcut-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--bose-pink), #FF91A4);
+            color: var(--bose-white) !important;
+            font-weight: 700;
+            font-size: 14.5px;
+            padding: 13px 26px;
+            border-radius: 50px;
+            text-decoration: none;
+            box-shadow: 0 8px 24px rgba(255, 145, 164, 0.4);
+            transition: var(--bose-transition);
+        }
+        .bose-quick-shortcut-btn:hover {
+            transform: translateY(-2px);
+        }
+        .bose-or-divider {
+            text-align: center;
+            font-size: 12.5px;
+            color: var(--bose-black);
+            opacity: 0.5;
+            margin: 4px 0 18px 0;
+            position: relative;
+        }
 
         .bose-wizard-navigation-buttons {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 30px;
+            margin-top: 26px;
             border-top: 1px solid rgba(255,145,164,0.12);
-            padding-top: 20px;
+            padding-top: 18px;
             gap: 14px;
         }
         .bose-nav-action-btn {
@@ -335,7 +499,6 @@
             color: var(--bose-black);
         }
 
-        /* 🔍 [تحسين جذري]: اللايت بوكس دلوقتي بيملي الشاشة تقريباً */
         .bose-lightbox-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(17, 17, 17, 0.9); backdrop-filter: blur(6px);
@@ -365,17 +528,17 @@
         .dynamic-tracker-bar {
             position: fixed; bottom: 0; left: 0; right: 0;
             background-color: var(--bose-white); border-top: var(--bose-border-pink);
-            padding: 16px 24px; box-shadow: 0 -10px 40px rgba(255, 145, 164, 0.15); z-index: 51000;
+            padding: 14px 24px; box-shadow: 0 -10px 40px rgba(255, 145, 164, 0.15); z-index: 51000;
         }
         .tracker-flex-container {
             max-width: 800px; margin: 0 auto; display: flex;
-            flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+            flex-direction: column; align-items: center; justify-content: center; gap: 12px;
             text-align: center;
         }
         .tracker-price-info { display: flex; flex-direction: column; align-items: center; }
-        .tracker-price-info .label { font-size: 15px; font-weight: 700; color: var(--bose-black); opacity: 0.8; }
-        .tracker-price-info .price-display { font-size: 28px; font-weight: 700; color: var(--bose-pink); margin-top: 4px; }
-        
+        .tracker-price-info .label { font-size: 14px; font-weight: 700; color: var(--bose-black); opacity: 0.8; }
+        .tracker-price-info .price-display { font-size: 26px; font-weight: 700; color: var(--bose-pink); margin-top: 3px; }
+
         .bose-master-luxury-cta {
             background: linear-gradient(135deg, var(--bose-pink), #FF91A4) !important;
             color: var(--bose-white) !important;
@@ -398,23 +561,12 @@
             box-shadow: 0 12px 35px rgba(255, 145, 164, 0.55) !important;
         }
 
-        .bose-purpose-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
-            margin-bottom: 28px;
-        }
-        .bose-selection-card-inner .purpose-emoji {
-            font-size: 28px;
-            margin-bottom: 6px;
-            display: block;
-        }
         .bose-flavor-sensory-note {
             font-size: 12.5px;
             color: var(--bose-black);
             opacity: 0.65;
             text-align: center;
-            margin: 6px 0 0 0;
+            margin: 10px 0 0 0;
             line-height: 1.4;
         }
 
@@ -425,14 +577,16 @@
             background: var(--bose-pink-light);
             border: 1px dashed var(--bose-pink);
             border-radius: 16px;
-            padding: 14px 16px;
-            margin-top: 20px;
-            font-size: 13.5px;
+            padding: 13px 16px;
+            margin-top: 16px;
+            margin-bottom: 4px;
+            font-size: 13px;
             color: var(--bose-black);
             line-height: 1.6;
             animation: boseSmoothFadeIn 0.3s ease-out forwards;
         }
         .bose-designer-note-bubble.show { display: flex; }
+        .bose-designer-note-bubble.bose-step-motivation { margin-top: 0; margin-bottom: 18px; }
         .bose-designer-note-bubble .note-icon { font-size: 18px; flex-shrink: 0; }
 
         .bose-share-design-btn {
@@ -450,14 +604,17 @@
             padding: 13px;
             border-radius: 50px;
             cursor: pointer;
-            margin-top: 18px;
+            margin-top: 6px;
             transition: var(--bose-transition);
         }
         .bose-share-design-btn:hover {
             background: var(--bose-pink-light);
         }
+        .bose-share-design-btn:disabled {
+            opacity: 0.6;
+            cursor: default;
+        }
 
-        /* 📐 [ملاحظة ثابتة لمقاسات الأشكال] */
         .bose-shape-size-note {
             display: none;
             flex-direction: column;
@@ -466,23 +623,21 @@
             border: 1px dashed var(--bose-pink);
             border-radius: 14px;
             padding: 12px 16px;
-            margin-top: 16px;
+            margin-top: 14px;
             font-size: 13px;
             color: var(--bose-black);
             opacity: 0.85;
             line-height: 1.5;
         }
 
-        /* 📝 [عنوان فرعي داخل الخطوة] */
         .bose-sub-section-title {
             font-size: 15px;
             font-weight: 700;
             color: var(--bose-black);
-            margin: 26px 0 10px 0;
+            margin: 22px 0 10px 0;
         }
         .bose-sub-section-title:first-of-type { margin-top: 0; }
 
-        /* 🧾 [خطوة ملخص الطلب النهائية] */
         .bose-order-summary-card {
             background: var(--bose-white);
             border: 1px solid rgba(255,145,164,0.2);
@@ -517,7 +672,7 @@
             cursor: pointer !important;
             font-family: 'Cairo' !important;
             width: 100%;
-            margin-top: 22px;
+            margin-top: 18px;
             box-shadow: 0 8px 30px rgba(255, 145, 164, 0.4) !important;
         }
     </style>
@@ -527,61 +682,84 @@
     <div id="bose-header-injector"></div>
 
     <main>
-        <div class="bose-main-hero-hook">
+        <div class="bose-main-hero-hook" id="bose-cake-hero">
             <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="تصميم تورتة فاخرة حسب الطلب">
         </div>
 
         <div class="bose-simulator-layout">
-            <div class="bose-intro-block">
+            <div class="bose-intro-block" id="bose-cake-intro">
                 <h1>محاكي التورت</h1>
-                <p>ميزة حصرية تتيح للعميل تصميم تورتته بنفسه واختيار كل التفاصيل التي يريدها قبل تنفيذها بلمسات فنية متكاملة تناسب فخامة مناسبتكم السعيدة.</p>
+                <p>خطوة بخطوة، هنساعدك تصممي تورتتك بنفسك بكل سهولة - كل خطوة قرار واحد بس، وهتلاقي شرح بسيط جنب كل اختيار.</p>
             </div>
 
-            <div class="bose-stepper-progress-bar">
+            <div class="bose-stepper-progress-bar" id="bose-stepper-progress-bar">
                 <span class="bose-progress-node active" id="node-step-1">1</span>
                 <span class="bose-progress-node" id="node-step-2">2</span>
                 <span class="bose-progress-node" id="node-step-3">3</span>
                 <span class="bose-progress-node" id="node-step-4">4</span>
                 <span class="bose-progress-node" id="node-step-5">5</span>
                 <span class="bose-progress-node" id="node-step-6">6</span>
+                <span class="bose-progress-node" id="node-step-7">7</span>
+                <span class="bose-progress-node" id="node-step-8">8</span>
+                <span class="bose-progress-node" id="node-step-9">9</span>
+                <span class="bose-progress-node" id="node-step-10">10</span>
+                <span class="bose-progress-node" id="node-step-11">11</span>
             </div>
 
             <div class="bose-step-wizard-card">
                 <form id="bose-interactive-cake-form" onsubmit="return false;">
 
-                    <!-- الخطوة 1 - إلهام من شغلنا اللي فات، وحكاية مناسبتك بكلامك -->
+                    <!-- الخطوة 1 - إلهام + اختصار الطلب السريع -->
                     <div class="bose-step-wizard-panel active-panel" id="panel-wizard-step-1">
                         <h2 class="bose-wizard-title">يلا نبدأ بشوية إلهام من شغلنا 🎂</h2>
-                        <p class="bose-wizard-subtitle">دي مجموعة من التورت اللي عملناها بحب لعملائنا في مناسبات مختلفة، خدي جولة سريعة وشوفي إيه اللي يعجبك.</p>
+                        <p class="bose-wizard-subtitle">دي مجموعة من التورت اللي عملناها بحب لعملائنا، خدي جولة سريعة وشوفي إيه اللي يعجبك - اضغطي على أي صورة عشان تكبر وتملأ الشاشة.</p>
 
-                        <div class="bose-step1-gallery-scroller" id="bose-portfolio-lightbox-track"></div>
-
-                        <div class="bose-purpose-grid" style="margin-top:26px;">
-                            <label class="bose-selection-card-label">
-                                <input type="radio" name="cake_purpose" value="self" checked>
-                                <div class="bose-selection-card-inner"><span class="purpose-emoji">🎂</span>لنفسي</div>
-                            </label>
-                            <label class="bose-selection-card-label">
-                                <input type="radio" name="cake_purpose" value="gift">
-                                <div class="bose-selection-card-inner"><span class="purpose-emoji">🎁</span>هدية لحد تاني</div>
-                            </label>
+                        <div class="bose-designer-note-bubble show bose-step-motivation">
+                            <span class="note-icon">🎨</span>
+                            <span>كل تصميم إحنا بنعمله بيتحط فيه وقت وحب حقيقي، خدي وقتك وانتِ بتتفرجي، هتلاقي أفكار تلهمك لتورتتك.</span>
                         </div>
 
-                        <h3 class="bose-sub-section-title">دلوقتي احكيلنا... التورتة دي بمناسبة إيه؟</h3>
-                        <p class="bose-occasion-explainer-text">
-                            كل تورتة عندنا بتتفصّل على مقاس مناسبتها؛ تورتة عيد ميلاد لطفل صغير غير تورتة عيد ميلاد لشخص كبير،
-                            وتورتة عيد الأم غير تورتة فرح غير تورتة خطوبة. لما تكتبيلنا مناسبتك بالظبط، هنقدر نختار لك
-                            الألوان والتفاصيل والإحساس اللي يليق بيها فعلاً، مش تصميم عام بيتكرر لأي حد.
-                        </p>
+                        <div class="bose-step1-gallery-scroller" id="bose-portfolio-lightbox-track"></div>
+                        <p class="bose-gallery-tap-hint">👆 اضغطي على أي صورة لتكبيرها بملء الشاشة</p>
+
+                        <div class="bose-or-divider">— أو —</div>
+                        <div class="bose-quick-shortcut-card">
+                            <span class="quick-icon">⚡</span>
+                            <h3>مستعجلة أو مش عايزة تختاري كل التفاصيل؟</h3>
+                            <p>تقدري تطلبي تورتتك في خطوة واحدة بس: اختاري عدد الأفراد، اكتبي أي ملاحظات (زي سكر خفيف أو حساسية)، وارفعي صورة لو حابة - وسيبي الباقي علينا.</p>
+                            <a href="cake-quick-order.html" class="bose-quick-shortcut-btn">اطلبي في خطوة واحدة <i class="fa-solid fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+
+                    <!-- الخطوة 2 - مناسبة التورتة -->
+                    <div class="bose-step-wizard-panel" id="panel-wizard-step-2">
+                        <h2 class="bose-wizard-title">دلوقتي احكيلنا... التورتة دي بمناسبة إيه؟</h2>
+                        <p class="bose-wizard-subtitle">كل تورتة عندنا بتتفصّل على مقاس مناسبتها؛ كل ما تكتبي بالتفصيل، كل ما هنقدر نختارلك التفاصيل اللي تليق فعلاً.</p>
+
+                        <div class="bose-designer-note-bubble show bose-step-motivation">
+                            <span class="note-icon">💛</span>
+                            <span>مناسبتك هي أساس كل تفاصيل التصميم - وصفها بدقة هيخلي التورتة تلمس قلب اللي هتشوفها فعلاً.</span>
+                        </div>
+
                         <textarea class="bose-premium-textarea-field" id="input-cake-occasion" placeholder="مثال: عيد ميلاد ابني الصغير هيتم 5 سنين، أو عيد ميلاد صاحبتي، أو حفلة خطوبتي..." maxlength="200" style="height:90px;"></textarea>
                         <p class="bose-field-required-hint" id="occasion-required-hint">من فضلك اكتبي لنا مناسبة التورتة الأول عشان نقدر نكمل معاكِ.</p>
+                    </div>
 
-                        <h3 class="bose-sub-section-title">حابة تبعتيلنا صورة تورتة عجباكِ؟</h3>
+                    <!-- الخطوة 3 - صورة تصميم مطلوب تقليده -->
+                    <div class="bose-step-wizard-panel" id="panel-wizard-step-3">
+                        <h2 class="bose-wizard-title">حابة تبعتيلنا صورة تورتة عجباكِ؟</h2>
+                        <p class="bose-wizard-subtitle">لو شفتي تصميم عجبك في أي مكان، ابعتيهولنا وهنحاول نقرب تصميمنا منه قد الإمكان.</p>
+
+                        <div class="bose-designer-note-bubble show bose-step-motivation">
+                            <span class="note-icon">📸</span>
+                            <span>لو عندك صورة عجباكِ، شاركينا بيها دلوقتي - هتوفري وقت كبير وهنقرب من ذوقك بأعلى دقة ممكنة. الخطوة دي اختيارية تماماً.</span>
+                        </div>
+
                         <label class="premium-input-label bose-checkbox-label-tap">
                             <input type="checkbox" id="cake-replica-toggle">
                             آه، عندي صورة تورتة شفتها وعايزة نقرب تصميمنا منها قد الإمكان
                         </label>
-                        <div class="bose-designer-note-bubble show" style="margin-top:10px;">
+                        <div class="bose-designer-note-bubble show" style="margin-top:14px;">
                             <span class="note-icon">💡</span>
                             <span>هنحاول نقرب التصميم قد الإمكان، مع مراعاة إن التنفيذ اليدوي ممكن يختلف شوية عن الصورة الأصلية.</span>
                         </div>
@@ -598,11 +776,16 @@
                         </div>
                     </div>
 
-                    <!-- الخطوة 2 -->
-                    <div class="bose-step-wizard-panel" id="panel-wizard-step-2">
+                    <!-- الخطوة 4 - عدد الأفراد -->
+                    <div class="bose-step-wizard-panel" id="panel-wizard-step-4">
                         <h2 class="bose-wizard-title">تورتة مناسبتك الفاخرة لـ كام فرد؟</h2>
                         <p class="bose-wizard-subtitle">حجم التورتة وسعرها بيتحدد بناءً على عدد الأفراد، يرجى اختيار العدد المناسب لضيوفك.</p>
-                        
+
+                        <div class="bose-designer-note-bubble show bose-step-motivation">
+                            <span class="note-icon">🎉</span>
+                            <span>اختاري العدد المناسب لضيوفك، وإحنا هنظبطلك التورتة بالظبط على المقاس ده من غير أي هدر.</span>
+                        </div>
+
                         <div class="bose-giant-qty-wrapper">
                             <button type="button" id="btn-persons-minus">-</button>
                             <input type="number" id="input-cake-persons" value="4" min="4" max="250" step="2" readonly>
@@ -610,67 +793,95 @@
                         </div>
                     </div>
 
-                    <!-- الخطوة 3 -->
-                    <div class="bose-step-wizard-panel" id="panel-wizard-step-3">
+                    <!-- الخطوة 5 - شكل التورتة -->
+                    <div class="bose-step-wizard-panel" id="panel-wizard-step-5">
                         <h2 class="bose-wizard-title">تحب شكل التورتة الخارجي يكون إيه؟</h2>
-                        <p class="bose-wizard-subtitle">اختر الشكل المفضل لك، علمًا بأن المقاس المربع والمستطيل بنفذه لعدد أفراد محدد لضمان روعة التنسيق الفاخر.</p>
-                        
+                        <p class="bose-wizard-subtitle">اضغطي على ⓘ جنب أي شكل لو حابة تعرفي أكتر عنه قبل ما تختاري.</p>
+
+                        <div class="bose-designer-note-bubble show bose-step-motivation">
+                            <span class="note-icon">✨</span>
+                            <span>الشكل بيديّ للتورتة شخصيتها - اختاري إللي يعبّر عن مناسبتك أكتر.</span>
+                        </div>
+
                         <div class="bose-interactive-radio-grid">
                             <label class="bose-selection-card-label">
+                                <button type="button" class="bose-info-badge" data-info-key="shape-circle">ⓘ</button>
                                 <input type="radio" name="cake_shape" value="circle" checked>
                                 <div class="bose-selection-card-inner">دائرة</div>
                             </label>
                             <label class="bose-selection-card-label">
+                                <button type="button" class="bose-info-badge" data-info-key="shape-heart">ⓘ</button>
                                 <input type="radio" name="cake_shape" value="heart">
                                 <div class="bose-selection-card-inner">قلب</div>
                             </label>
                             <label class="bose-selection-card-label">
+                                <button type="button" class="bose-info-badge" data-info-key="shape-square">ⓘ</button>
                                 <input type="radio" name="cake_shape" value="square">
                                 <div class="bose-selection-card-inner">مربع</div>
                             </label>
                             <label class="bose-selection-card-label">
+                                <button type="button" class="bose-info-badge" data-info-key="shape-rectangle">ⓘ</button>
                                 <input type="radio" name="cake_shape" value="rectangle">
                                 <div class="bose-selection-card-inner">مستطيل</div>
                             </label>
                         </div>
-                        <!-- 📐 [إشعار توضيحي دائم لمقاسات الشكل] -->
                         <div class="bose-shape-size-note" id="shape-size-permanent-note"></div>
                         <div class="bose-alert-message" id="alert-shape-restriction"></div>
                     </div>
 
-                    <!-- الخطوة 4 -->
-                    <div class="bose-step-wizard-panel" id="panel-wizard-step-4">
-                        <h2 class="bose-wizard-title">نوع كيك مناسبتك وطباعة صورك الخاصة</h2>
-                        <p class="bose-wizard-subtitle">اختاري طعم الكيك الأساسي، وتقدري كمان تضيفي صورة مخصصة فوق سطح التورتة لو حابة.</p>
-                        
-                        <h3 class="bose-sub-section-title" style="margin-top:0;">1. طعم ونوع الكيك الداخلي:</h3>
-                        <div class="bose-interactive-radio-grid" style="margin-bottom:8px;">
+                    <!-- الخطوة 6 - النكهة -->
+                    <div class="bose-step-wizard-panel" id="panel-wizard-step-6">
+                        <h2 class="bose-wizard-title">طعم ونوع الكيك الداخلي</h2>
+                        <p class="bose-wizard-subtitle">اختاري طعم الكيك الأساسي - اضغطي ⓘ لمعرفة تفاصيل كل نكهة.</p>
+
+                        <div class="bose-designer-note-bubble show bose-step-motivation">
+                            <span class="note-icon">😋</span>
+                            <span>النكهة سر التجربة - كل نكهة عندنا متقنة بعناية فائقة، اختاري إللي هيبهر ضيوفك.</span>
+                        </div>
+
+                        <div class="bose-interactive-radio-grid">
                             <label class="bose-selection-card-label">
+                                <button type="button" class="bose-info-badge" data-info-key="flavor-vanilla">ⓘ</button>
                                 <input type="radio" name="cake_flavor" value="vanilla" checked>
                                 <div class="bose-selection-card-inner">فانيليا</div>
                             </label>
                             <label class="bose-selection-card-label">
+                                <button type="button" class="bose-info-badge" data-info-key="flavor-chocolate">ⓘ</button>
                                 <input type="radio" name="cake_flavor" value="chocolate">
                                 <div class="bose-selection-card-inner">شوكولاتة</div>
                             </label>
                             <label class="bose-selection-card-label">
+                                <button type="button" class="bose-info-badge" data-info-key="flavor-half-half">ⓘ</button>
                                 <input type="radio" name="cake_flavor" value="half-half">
                                 <div class="bose-selection-card-inner">نصف ونصف</div>
                             </label>
                         </div>
                         <p class="bose-flavor-sensory-note" id="flavor-sensory-note"></p>
+                    </div>
 
-                        <h3 class="bose-sub-section-title">2. تحب تضيف صورة مخصصة فوق التورتة؟</h3>
+                    <!-- الخطوة 7 - طباعة صورة على التورتة -->
+                    <div class="bose-step-wizard-panel" id="panel-wizard-step-7">
+                        <h2 class="bose-wizard-title">تحب تضيف صورة مخصصة فوق التورتة؟</h2>
+                        <p class="bose-wizard-subtitle">تقدري تطبعي صورة حقيقية فوق سطح التورتة لو حابة، أو تستمري من غيرها عادي.</p>
+
+                        <div class="bose-designer-note-bubble show bose-step-motivation">
+                            <span class="note-icon">🖼️</span>
+                            <span>صورة مطبوعة على سطح التورتة بتضيف لمسة شخصية فريدة مش هتتكرر عند حد تاني.</span>
+                        </div>
+
                         <div class="bose-interactive-radio-grid">
                             <label class="bose-selection-card-label">
+                                <button type="button" class="bose-info-badge" data-info-key="printing-none">ⓘ</button>
                                 <input type="radio" name="cake_printing" value="none" checked>
                                 <div class="bose-selection-card-inner">بدون صور</div>
                             </label>
                             <label class="bose-selection-card-label">
+                                <button type="button" class="bose-info-badge" data-info-key="printing-edible">ⓘ</button>
                                 <input type="radio" name="cake_printing" value="edible">
                                 <div class="bose-selection-card-inner">صورة قابلة للأكل (+60 ج)</div>
                             </label>
                             <label class="bose-selection-card-label">
+                                <button type="button" class="bose-info-badge" data-info-key="printing-non-edible">ⓘ</button>
                                 <input type="radio" name="cake_printing" value="non-edible">
                                 <div class="bose-selection-card-inner">صورة غير قابلة للأكل (+15 ج)</div>
                             </label>
@@ -689,19 +900,42 @@
                         </div>
                     </div>
 
-                    <!-- الخطوة 5 -->
-                    <div class="bose-step-wizard-panel" id="panel-wizard-step-5">
-                        <h2 class="bose-wizard-title" id="message-step-title">لو تفضل نكتب جملة معينة على سطح التورتة:</h2>
-                        <p class="bose-wizard-subtitle" id="message-step-subtitle">سجل لنا العبارة أو الكلمة اللي تحب تشوفها، وعرفنا لو عندك أي ملاحظات بخصوص حساسية الطعام لضمان سلامتك الكاملة.</p>
-                        
-                        <h3 class="bose-sub-section-title" style="margin-top:0;" id="message-field-label">تحب نكتب إيه على التورتة؟</h3>
-                        <textarea class="bose-premium-textarea-field" id="text-cake-message" placeholder="مثال: عيد ميلاد سعيد يا بوسي" maxlength="100" style="margin-bottom:24px;"></textarea>
+                    <!-- الخطوة 8 - رسالة على التورتة -->
+                    <div class="bose-step-wizard-panel" id="panel-wizard-step-8">
+                        <h2 class="bose-wizard-title">لو تفضلي نكتب جملة معينة على سطح التورتة:</h2>
+                        <p class="bose-wizard-subtitle">سجلي لنا العبارة أو الكلمة اللي تحبي تشوفيها على التورتة - الخطوة دي اختيارية.</p>
 
-                        <h3 class="bose-sub-section-title">لو عندك أي ملاحظات بخصوص الحساسية:</h3>
+                        <div class="bose-designer-note-bubble show bose-step-motivation">
+                            <span class="note-icon">💌</span>
+                            <span>كلمة صغيرة بتفرق كتير - اكتبيها بصدق وهتتحط بخط جميل يليق بيها.</span>
+                        </div>
+
+                        <textarea class="bose-premium-textarea-field" id="text-cake-message" placeholder="مثال: عيد ميلاد سعيد يا بوسي" maxlength="100"></textarea>
+                    </div>
+
+                    <!-- الخطوة 9 - ملاحظات الحساسية -->
+                    <div class="bose-step-wizard-panel" id="panel-wizard-step-9">
+                        <h2 class="bose-wizard-title">لو عندك أي ملاحظات بخصوص الحساسية:</h2>
+                        <p class="bose-wizard-subtitle">عرفينا هنا لو بتعاني من حساسية تجاه أي مكونات، عشان نراعي ده بكل إتقان في المعمل.</p>
+
+                        <div class="bose-designer-note-bubble show bose-step-motivation">
+                            <span class="note-icon">🛡️</span>
+                            <span>سلامتك أولويتنا - أي ملاحظة تقوليها هنراعيها بدقة تامة أثناء التحضير.</span>
+                        </div>
+
                         <textarea class="bose-premium-textarea-field" id="text-cake-allergy" placeholder="عرفنا هنا لو بتعاني من حساسية تجاه أي مكونات (مثل المكسرات) عشان نراعي ده بكل إتقان في المعمل" maxlength="150"></textarea>
+                    </div>
 
-                        <!-- 💌 [كارت إهداء التورت - ميزة جديدة] -->
-                        <h3 class="bose-sub-section-title">حابب نضيفلك كارت إهداء ورقي يتقدم مع التورتة؟</h3>
+                    <!-- الخطوة 10 - كارت إهداء -->
+                    <div class="bose-step-wizard-panel" id="panel-wizard-step-10">
+                        <h2 class="bose-wizard-title">حابة نضيفلك كارت إهداء ورقي يتقدم مع التورتة؟</h2>
+                        <p class="bose-wizard-subtitle">لمسة إضافية اختيارية بتخلي اللحظة أجمل.</p>
+
+                        <div class="bose-designer-note-bubble show bose-step-motivation">
+                            <span class="note-icon">🎁</span>
+                            <span>كارت إهداء ورقي بيخلي اللحظة أجمل - اختياري بس بيفرق كتير في الإحساس.</span>
+                        </div>
+
                         <label class="premium-input-label bose-checkbox-label-tap">
                             <input type="checkbox" id="cake-giftcard-toggle">
                             آه، حابب نطبعلك كارت إهداء ونحضره مع التورتة
@@ -711,16 +945,17 @@
                             <label class="premium-input-label" for="cake-giftcard-text">اكتب الكلام اللي حابب نكتبه على الكارت هنا:</label>
                             <textarea id="cake-giftcard-text" class="bose-premium-text-input bose-premium-textarea" placeholder="اكتب مشاعرك الصادقة هنا ببراحة..."></textarea>
                         </div>
-
-                        <button type="button" class="bose-share-design-btn" id="btn-share-design">
-                            <i class="fa-brands fa-whatsapp"></i> شاركي التصميم مع حد قبل ما تأكدي
-                        </button>
                     </div>
 
-                    <!-- الخطوة 6 - ملخص الطلب النهائي (مفردات تفصيلية) -->
-                    <div class="bose-step-wizard-panel" id="panel-wizard-step-6">
+                    <!-- الخطوة 11 - ملخص الطلب النهائي + مشاركة التصميم -->
+                    <div class="bose-step-wizard-panel" id="panel-wizard-step-11">
                         <h2 class="bose-wizard-title">ملخص طلبك</h2>
                         <p class="bose-wizard-subtitle">راجعي كل تفاصيل تورتتك وسعرها بالمفردات قبل ما تأكدي الطلب.</p>
+
+                        <div class="bose-designer-note-bubble show bose-step-motivation">
+                            <span class="note-icon">🧾</span>
+                            <span>كدة خلصنا! راجعي كل حاجة بالمفردات تحت، وابعتي رابط تصميمك لحد يشوفه قبل ما تأكدي لو حابة رأي حد تاني.</span>
+                        </div>
 
                         <div class="bose-order-summary-card">
                             <div id="cake-order-summary-list"></div>
@@ -729,6 +964,10 @@
                                 <span id="cake-order-summary-total">0 جنيه</span>
                             </div>
                         </div>
+
+                        <button type="button" class="bose-share-design-btn" id="btn-share-design">
+                            <i class="fa-brands fa-whatsapp"></i> شاركي رابط التصميم مع حد قبل ما تأكدي
+                        </button>
 
                         <button type="button" class="bose-inline-add-to-cart-btn" id="btn-cake-submit-cart-summary">
                             <i class="fa-solid fa-cart-plus"></i> تأكيد وإضافة للسلة
@@ -762,8 +1001,17 @@
         </div>
     </div>
 
+    <!-- ℹ️ بوكس الشرح التوضيحي المنبثق لكل اختيار -->
+    <div class="bose-info-popover-backdrop" id="bose-info-popover-backdrop">
+        <div class="bose-info-popover-box">
+            <button type="button" class="bose-info-popover-close" id="bose-info-popover-close">&times;</button>
+            <h4 id="bose-info-popover-title"></h4>
+            <p id="bose-info-popover-text"></p>
+        </div>
+    </div>
+
     <div id="bose-footer-injector"></div>
 
-    <script src="js/cake-engine.js?v=2026_production_v33.0" defer></script>
+    <script src="js/cake-engine.js?v=2026_production_v34.0" defer></script>
 </body>
 </html>

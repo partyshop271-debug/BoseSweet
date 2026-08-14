@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="icon" type="image/png" href="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+    <link rel="apple-touch-icon" href="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#FF91A4">
+    <title>اطلبي تورتتك في خطوة واحدة | حلويات بوسي</title>
+    <meta name="description" content="اطلبي تورتتك بأسرع وأبسط طريقة: عدد الأفراد وملاحظاتك وصورة اختيارية بس، وسيبي الباقي علينا.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/global.css?v=2026_production_v34.0">
+    <link rel="stylesheet" href="css/main.css?v=2026_production_v34.0">
+    <link rel="stylesheet" href="css/simulators.css?v=2026_production_v34.0">
+    <script src="js/supabase-client.js?v=2026_production_v34.0" defer></script>
+    <script src="js/core-engine.js?v=2026_production_v34.0" defer></script>
+
+    <style>
+        /* ==================================================================
+           ⚡ [صفحة الطلب السريع]: مصممة لعميل مستعجل أو مش فاهم خطوات المحاكي -
+           كل حاجة في شاشة واحدة، من غير خطوات، من غير تعقيد، شرح واضح تحت
+           كل حقل مباشرة.
+           ================================================================== */
+        .bose-quick-layout {
+            max-width: 640px;
+            margin: 0 auto;
+            padding: 26px 16px 150px 16px;
+        }
+        .bose-quick-header {
+            text-align: center;
+            margin-bottom: 26px;
+        }
+        .bose-quick-header .quick-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--bose-pink-light);
+            color: var(--bose-pink);
+            font-weight: 700;
+            font-size: 13px;
+            padding: 6px 16px;
+            border-radius: 50px;
+            margin-bottom: 12px;
+        }
+        .bose-quick-header h1 {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--bose-black);
+            margin: 0 0 10px 0;
+        }
+        .bose-quick-header p {
+            font-size: 14.5px;
+            color: var(--bose-black);
+            opacity: 0.8;
+            line-height: 1.7;
+            margin: 0;
+        }
+
+        .bose-quick-section {
+            background: var(--bose-white);
+            border: var(--bose-border-pink);
+            border-radius: 22px;
+            padding: 22px;
+            box-shadow: var(--bose-shadow-glow);
+            margin-bottom: 18px;
+        }
+        .bose-quick-section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 16.5px;
+            font-weight: 700;
+            color: var(--bose-black);
+            margin: 0 0 6px 0;
+        }
+        .bose-quick-section-title .step-num {
+            width: 30px;
+            height: 30px;
+            min-width: 30px;
+            border-radius: 50%;
+            background: var(--bose-pink);
+            color: var(--bose-white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        .bose-quick-section-help {
+            font-size: 13px;
+            color: var(--bose-black);
+            opacity: 0.7;
+            line-height: 1.6;
+            margin: 0 0 16px 40px;
+        }
+
+        .bose-giant-qty-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            max-width: 260px;
+            margin: 6px auto 4px auto;
+            border: 2px solid var(--bose-pink);
+            border-radius: 50px;
+            overflow: hidden;
+            background: var(--bose-white);
+            box-shadow: var(--bose-shadow-glow);
+        }
+        .bose-giant-qty-wrapper button {
+            background: none;
+            border: none;
+            width: 70px;
+            height: 60px;
+            font-size: 26px;
+            font-weight: 700;
+            cursor: pointer;
+            color: var(--bose-pink);
+            transition: background 0.2s;
+        }
+        .bose-giant-qty-wrapper button:hover { background-color: var(--bose-pink-light); }
+        .bose-giant-qty-wrapper input {
+            width: 100%;
+            height: 60px;
+            border: none;
+            text-align: center;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--bose-black);
+            background: transparent;
+        }
+        .bose-quick-persons-hint {
+            text-align: center;
+            font-size: 13px;
+            color: var(--bose-black);
+            opacity: 0.65;
+            margin: 0 0 40px;
+        }
+
+        .bose-premium-textarea-field {
+            width: 100%;
+            height: 110px;
+            border: 2px solid var(--bose-pink) !important;
+            border-radius: 18px !important;
+            padding: 16px;
+            font-family: 'Cairo', sans-serif !important;
+            font-size: 15px !important;
+            font-weight: 600 !important;
+            color: var(--bose-black) !important;
+            background-color: var(--bose-white) !important;
+            box-shadow: var(--bose-shadow-glow) !important;
+            resize: none;
+            box-sizing: border-box;
+            outline: none;
+            transition: var(--bose-transition);
+        }
+        .bose-quick-notes-examples {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .bose-quick-notes-examples button {
+            background: var(--bose-pink-light);
+            border: 1px dashed var(--bose-pink);
+            color: var(--bose-black);
+            font-family: 'Cairo';
+            font-size: 12.5px;
+            font-weight: 600;
+            padding: 8px 14px;
+            border-radius: 50px;
+            cursor: pointer;
+        }
+
+        .bose-quick-summary-bar {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background-color: var(--bose-white); border-top: var(--bose-border-pink);
+            padding: 14px 24px; box-shadow: 0 -10px 40px rgba(255, 145, 164, 0.15); z-index: 51000;
+        }
+        .bose-quick-summary-inner {
+            max-width: 640px; margin: 0 auto; display: flex;
+            align-items: center; justify-content: space-between; gap: 14px;
+        }
+        .bose-quick-price-info { display: flex; flex-direction: column; }
+        .bose-quick-price-info .label { font-size: 12.5px; font-weight: 700; color: var(--bose-black); opacity: 0.8; }
+        .bose-quick-price-info .price-display { font-size: 24px; font-weight: 700; color: var(--bose-pink); }
+        .bose-quick-confirm-btn {
+            background: linear-gradient(135deg, var(--bose-pink), #FF91A4) !important;
+            color: var(--bose-white) !important;
+            border: none !important;
+            padding: 15px 32px !important;
+            font-size: 15.5px !important;
+            font-weight: 700 !important;
+            border-radius: 50px !important;
+            cursor: pointer !important;
+            font-family: 'Cairo' !important;
+            box-shadow: 0 8px 30px rgba(255, 145, 164, 0.4) !important;
+            white-space: nowrap;
+        }
+
+        .bose-quick-back-link {
+            display: block;
+            text-align: center;
+            margin-top: 6px;
+            font-size: 13px;
+            color: var(--bose-black);
+            opacity: 0.6;
+            text-decoration: underline;
+        }
+        .bose-bottom-nav-bar { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <div id="bose-header-injector"></div>
+
+    <main>
+        <div class="bose-quick-layout">
+            <div class="bose-quick-header">
+                <span class="quick-badge"><i class="fa-solid fa-bolt"></i> الطريقة الأسرع</span>
+                <h1>اطلبي تورتتك في خطوة واحدة</h1>
+                <p>الصفحة دي لو مستعجلة أو مش عايزة تدخلي في كل تفاصيل التصميم. اختاري عدد الأفراد، اكتبي أي ملاحظات، وارفعي صورة لو حابة - وسيبي كل باقي التفاصيل علينا، هنجهز لك تورتة رائعة تليق بمناسبتك.</p>
+            </div>
+
+            <form id="bose-quick-order-form" onsubmit="return false;">
+
+                <div class="bose-quick-section">
+                    <h2 class="bose-quick-section-title"><span class="step-num">1</span> عدد الأفراد</h2>
+                    <p class="bose-quick-section-help">التورتة بتتحدد حجمها وسعرها حسب عدد الأفراد - اضغطي + أو - لاختيار العدد المناسب لضيوفك.</p>
+                    <div class="bose-giant-qty-wrapper">
+                        <button type="button" id="qo-btn-persons-minus">-</button>
+                        <input type="number" id="qo-input-persons" value="4" min="4" max="250" step="2" readonly>
+                        <button type="button" id="qo-btn-persons-plus">+</button>
+                    </div>
+                    <p class="bose-quick-persons-hint">هنختار لك أنسب شكل ونكهة كلاسيكية تناسب أي مناسبة.</p>
+                </div>
+
+                <div class="bose-quick-section">
+                    <h2 class="bose-quick-section-title"><span class="step-num">2</span> أي ملاحظات أو مشاكل صحية؟</h2>
+                    <p class="bose-quick-section-help">اكتبي هنا أي حاجة محتاجين نعرفها - زي حساسية من مكون معين، أو إنك عايزة سكر خفيف، أو أي طلب خاص. الحقل ده اختياري.</p>
+                    <textarea class="bose-premium-textarea-field" id="qo-notes" placeholder="مثال: عايزة سكر خفيف، وعندي حساسية من المكسرات..." maxlength="300"></textarea>
+                    <div class="bose-quick-notes-examples">
+                        <button type="button" data-note="عايزة سكر خفيف من فضلكم">سكر خفيف</button>
+                        <button type="button" data-note="عندي حساسية من المكسرات">حساسية مكسرات</button>
+                        <button type="button" data-note="عندي حساسية من اللاكتوز/الألبان">حساسية لاكتوز</button>
+                    </div>
+                </div>
+
+                <div class="bose-quick-section">
+                    <h2 class="bose-quick-section-title"><span class="step-num">3</span> صورة تورتة عجباكِ (اختياري)</h2>
+                    <p class="bose-quick-section-help">لو حابة نتقرب من شكل معين شفتيه، ارفعي صورته وهنحاول نقربها قد الإمكان.</p>
+                    <div class="bose-premium-template-box">
+                        <label class="premium-input-label" id="qo-photo-upload-label" for="qo-photo-file">اضغطي هنا وارفعي الصورة</label>
+                        <div class="bose-photo-upload-zone" id="qo-photo-upload-zone">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                            <span class="card-label">اضغطي هنا وارفعي الصورة</span>
+                            <input type="file" id="qo-photo-file" accept="image/*">
+                        </div>
+                        <div id="qo-photo-preview-container">
+                            <img id="qo-photo-preview-img" src="" class="bose-uploaded-image-preview" alt="معاينة الصورة المرفوعة" style="display:none;">
+                        </div>
+                    </div>
+                </div>
+
+                <a href="cake-builder.html" class="bose-quick-back-link">أو فضّلي تختاري كل تفاصيل التصميم بنفسك من هنا</a>
+            </form>
+        </div>
+    </main>
+
+    <div class="bose-quick-summary-bar">
+        <div class="bose-quick-summary-inner">
+            <div class="bose-quick-price-info">
+                <span class="label" id="qo-price-label">سعر التورتة الحالي لـ 4 أفراد هو:</span>
+                <span class="price-display" id="qo-price-display">580 جنيه</span>
+            </div>
+            <button type="button" class="bose-quick-confirm-btn" id="qo-btn-confirm">تأكيد الحجز <i class="fa-solid fa-check"></i></button>
+        </div>
+    </div>
+
+    <div id="bose-footer-injector"></div>
+
+    <script src="js/cake-quick-engine.js?v=2026_production_v34.0" defer></script>
+</body>
+</html>

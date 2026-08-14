@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+    <link rel="apple-touch-icon" href="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#FF91A4">
+    <title>تصميم تورتة متشارك | حلويات بوسي</title>
+    <meta name="description" content="شوف تفاصيل تصميم التورتة اللي اتشارك معاك من حلويات بوسي.">
+    <meta name="robots" content="noindex">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/global.css?v=2026_production_v34.0">
+    <link rel="stylesheet" href="css/main.css?v=2026_production_v34.0">
+    <script src="js/supabase-client.js?v=2026_production_v34.0" defer></script>
+    <script src="js/core-engine.js?v=2026_production_v34.0" defer></script>
+
+    <style>
+        .bose-shared-layout {
+            max-width: 560px;
+            margin: 0 auto;
+            padding: 30px 16px 60px 16px;
+        }
+        .bose-shared-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--bose-pink-light);
+            color: var(--bose-pink);
+            font-weight: 700;
+            font-size: 13px;
+            padding: 6px 16px;
+            border-radius: 50px;
+            margin-bottom: 14px;
+        }
+        .bose-shared-card {
+            background: var(--bose-white);
+            border: var(--bose-border-pink);
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: var(--bose-shadow-glow);
+        }
+        .bose-shared-image {
+            width: 100%;
+            max-height: 320px;
+            object-fit: cover;
+            border-radius: 18px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .bose-shared-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--bose-black);
+            margin: 0 0 6px 0;
+        }
+        .bose-shared-subtitle {
+            font-size: 14px;
+            color: var(--bose-black);
+            opacity: 0.75;
+            margin: 0 0 20px 0;
+            line-height: 1.6;
+        }
+        .bose-shared-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px dashed rgba(255,145,164,0.25);
+            font-size: 14.5px;
+        }
+        .bose-shared-row:last-of-type { border-bottom: none; }
+        .bose-shared-row .row-label { color: var(--bose-black); opacity: 0.7; font-weight: 600; }
+        .bose-shared-row .row-value { color: var(--bose-black); font-weight: 700; text-align: left; }
+        .bose-shared-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 2px solid var(--bose-pink);
+            margin-top: 14px;
+            padding-top: 14px;
+            font-size: 19px;
+            font-weight: 700;
+            color: var(--bose-black);
+        }
+        .bose-shared-total span:last-child { color: var(--bose-pink); }
+
+        .bose-shared-cta-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 26px;
+        }
+        .bose-shared-cta-primary, .bose-shared-cta-secondary {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 15px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 15px;
+            text-decoration: none;
+            font-family: 'Cairo';
+            cursor: pointer;
+            border: none;
+        }
+        .bose-shared-cta-primary {
+            background: linear-gradient(135deg, var(--bose-pink), #FF91A4);
+            color: var(--bose-white) !important;
+            box-shadow: 0 8px 30px rgba(255, 145, 164, 0.4);
+        }
+        .bose-shared-cta-secondary {
+            background: var(--bose-white);
+            border: 1.5px solid var(--bose-gray-border) !important;
+            color: var(--bose-black) !important;
+        }
+
+        .bose-shared-state-msg {
+            text-align: center;
+            padding: 60px 20px;
+            font-size: 15px;
+            color: var(--bose-black);
+            opacity: 0.75;
+            line-height: 1.8;
+        }
+        .bose-shared-state-msg i { font-size: 34px; color: var(--bose-pink); display: block; margin-bottom: 14px; }
+    </style>
+</head>
+<body>
+
+    <div id="bose-header-injector"></div>
+
+    <main>
+        <div class="bose-shared-layout">
+            <span class="bose-shared-badge"><i class="fa-solid fa-share-nodes"></i> تصميم متشارك</span>
+
+            <div id="bose-shared-loading" class="bose-shared-state-msg">
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                بنجهزلك تفاصيل التصميم...
+            </div>
+
+            <div id="bose-shared-notfound" class="bose-shared-state-msg" style="display:none;">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                معلش، الرابط ده مش شغال أو التصميم مش موجود. تقدري تبدئي تصميم تورتتك الخاصة من عندنا مباشرة.
+                <div class="bose-shared-cta-group" style="margin-top:20px;">
+                    <a href="cake-builder.html" class="bose-shared-cta-primary"><i class="fa-solid fa-cake-candles"></i> صممي تورتتك دلوقتي</a>
+                </div>
+            </div>
+
+            <div id="bose-shared-content" class="bose-shared-card" style="display:none;">
+                <img id="bose-shared-image" class="bose-shared-image" src="" alt="تصميم التورتة المتشارك">
+                <h1 class="bose-shared-title">تصميم تورتة من حلويات بوسي 🎂</h1>
+                <p class="bose-shared-subtitle" id="bose-shared-occasion-line"></p>
+
+                <div id="bose-shared-rows"></div>
+
+                <div class="bose-shared-total">
+                    <span>السعر التقريبي:</span>
+                    <span id="bose-shared-price">-</span>
+                </div>
+
+                <div class="bose-shared-cta-group">
+                    <button type="button" class="bose-shared-cta-primary" id="btn-order-like-this">
+                        <i class="fa-brands fa-whatsapp"></i> اطلبي تورتة زي دي دلوقتي
+                    </button>
+                    <a href="cake-builder.html" class="bose-shared-cta-secondary">
+                        <i class="fa-solid fa-palette"></i> صممي تورتتك انتِ كمان
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="bose-footer-injector"></div>
+
+    <script src="js/design-view-engine.js?v=2026_production_v34.0" defer></script>
+</body>
+</html>
