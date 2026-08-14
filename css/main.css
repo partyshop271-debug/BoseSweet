@@ -668,38 +668,47 @@
 
 /* ==========================================================================
    8. قسم شلال المنتجات الفخم (#waterfall-section)
-   🛡️ [إصلاح جذري - القسم ثابت دلوقتي بالكامل]: القسم ده كان "شلال" متحرك
-   فعلياً: عمودين من الصور بيتحركوا تلقائياً لفوق ولتحت للأبد، جوه حاوية
-   ارتفاعها ثابت (700px) ومعاها overflow:hidden. عشان وهم الحركة اللانهائية
-   يشتغل، كل عمود كان بيتكرر مرتين (leftHtml + leftHtml في core-engine.js).
-   النتيجة: أي كارت بيدخل/يخرج من حواف القسم كان بيتقص فعلياً كل لحظة (طبيعة
-   أي شلال متحرك)، والعمودين بيتحركوا بسرعات/بدايات مختلفة فبيبانوا مش
-   متساويين في الطول - وده اللي كان حاسس إنه "أبعاد غلط" و"بره الشاشة"
-   و"الشاشة بتتحرك شمال ويمين". الحل: شلنا الحركة والتكرار نهائياً، وخلينا
-   الحاوية ترتفع تلقائياً حسب المحتوى (overflow:visible) عشان كل صورة تظهر
-   كاملة من غير أي قص.
    ========================================================================== */
 .bose-waterfall-section-container {
     position: relative;
+    overflow: hidden;
     width: 100%;
     background-color: var(--bose-white);
+}
+
+.bose-waterfall-section-container::before,
+.bose-waterfall-section-container::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0;
+    height: 80px;
+    z-index: 2;
+    pointer-events: none;
+}
+.bose-waterfall-section-container::before {
+    top: 0;
+    background: linear-gradient(to bottom, var(--bose-white) 0%, rgba(255, 255, 255, 0) 100%);
+}
+.bose-waterfall-section-container::after {
+    bottom: 0;
+    background: linear-gradient(to top, var(--bose-white) 0%, rgba(255, 255, 255, 0) 100%);
 }
 
 .waterfall-container {
     display: flex !important;
     justify-content: space-between !important;
-    align-items: flex-start !important;
     gap: 15px !important;
     width: 100%;
-    height: auto;
-    overflow: visible;
+    height: 700px;
+    overflow: hidden;
     position: relative;
-    padding: 20px 10px;
+    padding: 0 10px;
 }
 
 @media (min-width: 1024px) {
-    .waterfall-container {
-        padding: 20px;
+    .waterfall-container { 
+        height: 1000px;
+        padding: 0 20px;
     }
 }
 
@@ -712,18 +721,21 @@
     gap: 15px !important;
 }
 
-/* الحركة التلقائية (boseWaterfallUp/Down) اتشالت نهائياً - القسم ثابت 100% */
-.waterfall-up,
+.waterfall-up {
+    animation: boseWaterfallUp 57.2s linear infinite !important;
+    will-change: transform;
+}
+
 .waterfall-down {
-    animation: none !important;
-    transform: none !important;
-    will-change: auto;
+    animation: boseWaterfallDown 57.2s linear infinite !important;
+    will-change: transform;
 }
 
 .waterfall-col img {
     width: 100% !important;
-    aspect-ratio: 3 / 4;
     height: auto !important;
+    min-height: 240px;
+    max-height: 330px;
     object-fit: cover !important;
     border-radius: var(--bose-radius-md);
     border: var(--bose-border-pink);
@@ -740,6 +752,16 @@
 
 .waterfall-img-link:hover {
     transform: scale(1.02);
+}
+
+@keyframes boseWaterfallUp {
+    0% { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(0, -50%, 0); }
+}
+
+@keyframes boseWaterfallDown {
+    0% { transform: translate3d(0, -50%, 0); }
+    100% { transform: translate3d(0, 0, 0); }
 }
 
 /* ==========================================================================
@@ -1607,11 +1629,16 @@
 }
 
 /* ==========================================================================
-   17. [شُغلت هنا سابقاً قاعدة prefers-reduced-motion الخاصة بالشلال]
-   الشلال بقى ثابت 100% لكل الزوار دلوقتي (مفيش أي حركة تلقائية أصلاً)،
-   فمبقاش فيه داعي لقاعدة تقليل حركة خاصة بيه. باقي أقسام تقليل الحركة
-   (لو موجودة) موجودة في ملفاتها الأصلية (global.css / simulators.css).
+   17. دعم تقليل الحركة لذوي الاحتياجات الحركية والبصرية (prefers-reduced-motion)
+   يوقف التيكرات والشلال اللانهائيين فقط، مع إبقاء كل المحتوى ظاهراً بالكامل.
    ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+    .waterfall-up,
+    .waterfall-down {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+    }
+}
 /* ==========================================================================
    👑 [إضافة - شروح توضيحية تفصيلية]: سطر تنبيه بالأحجام المتعددة أعلى تبويب
    الحجم في صفحة الفئة، بنفس هوية الموقع، عشان العميل ميفوّتوش التبويب أصلاً.
