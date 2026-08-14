@@ -574,14 +574,17 @@
                 : imgTag;
         }).join('');
 
+        // 🛡️ [إصلاح جذري - القسم بقى ثابت]: كان بيتكرر نفس المحتوى مرتين
+        // (leftHtml + leftHtml) جوه حاوية بحركة أنيميشن لانهائية عشان يعمل وهم
+        // "الشلال المتحرك للأبد" - وده اللي كان بيسبب قص الكروت عند الحواف
+        // وعدم تساوي طول العمودين. دلوقتي القسم ثابت 100%، فبنحقن كل صورة مرة
+        // واحدة بس، وكل صورة بتظهر كاملة من غير أي قص أو حركة.
         if (leftCol && waterfallData.leftColumnImages) {
-            const leftHtml = buildWaterfallItemsHtml(waterfallData.leftColumnImages);
-            leftCol.innerHTML = `<div class="waterfall-up">${leftHtml} ${leftHtml}</div>`;
+            leftCol.innerHTML = buildWaterfallItemsHtml(waterfallData.leftColumnImages);
         }
 
         if (rightCol && waterfallData.rightColumnImages) {
-            const rightHtml = buildWaterfallItemsHtml(waterfallData.rightColumnImages);
-            rightCol.innerHTML = `<div class="waterfall-down">${rightHtml} ${rightHtml}</div>`;
+            rightCol.innerHTML = buildWaterfallItemsHtml(waterfallData.rightColumnImages);
         }
     }
 
