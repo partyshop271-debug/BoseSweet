@@ -853,4 +853,4 @@ html.adm-ready .adm-auth-gate { display: none; }
     .adm-orders-search, .adm-orders-status-filter { width: 100%; min-width: 0; }
     .adm-products-filters { width: 100%; }
     .adm-products-search, .adm-products-category-filter, #add-product-btn { width: 100%; min-width: 0; }
-}
+        }
