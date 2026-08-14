@@ -340,6 +340,31 @@
                     </div>
                 </div>
 
+                <!-- 💵 [عربون/دفع مقدم] بوكس تعليمات الدفع - بيتحدث تلقائياً حسب طريقة الاستلام المختارة -->
+                <div id="bose-deposit-payment-box" style="margin-top: 16px; padding: 16px; border-radius: 14px; background: rgba(255, 145, 164, 0.06); border: 1px solid #FF91A4; direction: rtl; text-align: right; font-family: 'Cairo';">
+                    <!-- خيار "عربون / دفع كامل" - يظهر بس مع استلام من الفرع (التوصيل دايماً كامل المبلغ) -->
+                    <div id="bose-pay-choice-row" style="display: none; gap: 8px; margin-bottom: 12px;">
+                        <button type="button" id="bose-pay-choice-deposit" class="bose-pay-choice-btn active" style="flex:1; padding: 8px 6px; border-radius: 10px; border: 1px solid #FF91A4; background: #FF91A4; color: #fff; font-weight: 700; font-size: 0.82rem; cursor: pointer; font-family: 'Cairo';">عربون 50%</button>
+                        <button type="button" id="bose-pay-choice-full" class="bose-pay-choice-btn" style="flex:1; padding: 8px 6px; border-radius: 10px; border: 1px solid #FF91A4; background: #fff; color: #FF91A4; font-weight: 700; font-size: 0.82rem; cursor: pointer; font-family: 'Cairo';">أدفع المبلغ بالكامل</button>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                        <span id="bose-deposit-label" style="font-weight: 700; color: #111111; font-size: 0.95rem;">المبلغ المطلوب دفعه الآن لتأكيد الحجز:</span>
+                        <span id="bose-deposit-amount" style="font-weight: 800; color: #FF91A4; font-size: 1.15rem;">0 EGP</span>
+                    </div>
+                    <div id="bose-deposit-remaining-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; opacity: 0.75; font-size: 0.85rem;">
+                        <span>الباقي يُدفع عند الاستلام:</span>
+                        <span id="bose-deposit-remaining-amount">0 EGP</span>
+                    </div>
+                    <div style="border-top: 1px dashed rgba(255, 145, 164, 0.3); padding-top: 10px; font-size: 0.85rem; color: #111111; opacity: 0.85; line-height: 1.7;">
+                        💳 حوّلي المبلغ <strong>كاش أو InstaPay</strong> على رقمنا:
+                        <span style="display: inline-flex; align-items: center; gap: 6px; font-weight: 800; color: #FF91A4; direction: ltr;">
+                            <span id="bose-deposit-phone-number">—</span>
+                            <button type="button" id="bose-copy-deposit-phone" title="نسخ الرقم" style="border: none; background: rgba(255,145,164,0.15); color: #FF91A4; border-radius: 6px; padding: 2px 8px; cursor: pointer; font-size: 0.8rem;"><i class="far fa-copy"></i></button>
+                        </span>
+                        <br>ثم ابعتي لقطة شاشة التحويل على واتساب بعد إتمام الحجز وهنأكد طلبك فوراً.
+                    </div>
+                </div>
+
                 <!-- زر الإجراء الحاسم والمعتمد بالمعرف الصريح لتشغيل صياغة الفاتورة الملكية -->
                 <button type="button" id="btn-submit-order-final" class="bose-primary-checkout-btn">
                     <i class="fas fa-lock"></i> حجز وتأكيد الفاتورة الملكية

@@ -254,6 +254,26 @@
                 </div>
             </div>
 
+            <!-- 💵 [عربون/دفع مقدم] نفس بوكس تعليمات الدفع الموجود في checkout.html، هنا بيتعبى من بيانات الطلب المحفوظة -->
+            <div id="bose-deposit-payment-box" style="display:none; margin: 4px 0 0 0; padding: 16px; border-radius: 14px; background: rgba(255, 145, 164, 0.06); border: 1px solid #FF91A4; direction: rtl; text-align: right; font-family: 'Cairo';">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                    <span id="bose-deposit-label" style="font-weight: 700; color: #111111; font-size: 0.95rem;">المبلغ المطلوب دفعه الآن لتأكيد الحجز:</span>
+                    <span id="bose-deposit-amount" style="font-weight: 800; color: #FF91A4; font-size: 1.15rem;">0 EGP</span>
+                </div>
+                <div id="bose-deposit-remaining-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; opacity: 0.75; font-size: 0.85rem;">
+                    <span>الباقي يُدفع عند الاستلام:</span>
+                    <span id="bose-deposit-remaining-amount">0 EGP</span>
+                </div>
+                <div style="border-top: 1px dashed rgba(255, 145, 164, 0.3); padding-top: 10px; font-size: 0.85rem; color: #111111; opacity: 0.85; line-height: 1.7;">
+                    💳 حوّلي المبلغ <strong>كاش أو InstaPay</strong> على رقمنا:
+                    <span style="display: inline-flex; align-items: center; gap: 6px; font-weight: 800; color: #FF91A4; direction: ltr;">
+                        <span id="bose-deposit-phone-number">—</span>
+                        <button type="button" id="bose-copy-deposit-phone" title="نسخ الرقم" style="border: none; background: rgba(255,145,164,0.15); color: #FF91A4; border-radius: 6px; padding: 2px 8px; cursor: pointer; font-size: 0.8rem;"><i class="far fa-copy"></i></button>
+                    </span>
+                    <br>ثم ابعتي لقطة شاشة التحويل على واتساب فور إتمامه وهنأكد حجزك فوراً.
+                </div>
+            </div>
+
             <p class="success-subheadline" style="font-size: 0.88rem; opacity: 0.7; margin: 5px 0 0 0;">📌 يرجى كبس زر الواتساب الفوري بالأسفل لتأكيد ومتابعة حالة الفاتورة اللوجستية وتحديد مواعيد التوصيل بدقة.</p>
 
             <div class="success-actions-row">
