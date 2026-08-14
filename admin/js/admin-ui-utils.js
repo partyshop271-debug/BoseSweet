@@ -198,6 +198,7 @@
      * ومفيش احتمال إن صفحة تتحدث وصفحة تتنسى فيحصل تعارض في العرض.
      */
     const ORDER_STATUSES = [
+        { key: "awaiting_deposit", label: "بانتظار تأكيد العربون", cls: "warning" },
         { key: "pending", label: "قيد المراجعة", cls: "warning" },
         { key: "confirmed", label: "مؤكد", cls: "info" },
         { key: "preparing", label: "قيد التحضير", cls: "info" },

@@ -134,6 +134,18 @@
             stats.reviewFollowupsDue = 0;
         }
 
+        // 💵 [عربون/دفع مقدم] شارة "بانتظار تأكيد العربون" - نفس شرط getAwaitingDepositCount بس هنا كجزء من الملخص العام
+        try {
+            const { count } = await client
+                .from("orders")
+                .select("id", { count: "exact", head: true })
+                .eq("deposit_status", "pending");
+            stats.awaitingDepositCount = count || 0;
+        } catch (e) {
+            console.warn("تعذر جلب عدد طلبات العربون بانتظار التأكيد:", e.message);
+            stats.awaitingDepositCount = 0;
+        }
+
         return stats;
     }
 
@@ -252,6 +264,35 @@
     }
 
     /**
+     * 💵 [عربون/دفع مقدم]: بعد ما العميلة تحوّل العربون (أو كامل المبلغ لو
+     * توصيل) وتبعت صورة التحويل على واتساب، الإدارة بتضغط الزرار ده يدوياً
+     * بعد ما تتأكد إن الفلوس وصلت فعلاً - بيسجل وقت التأكيد وينقل الطلب من
+     * "بانتظار تأكيد العربون" لحالة "مؤكد" عشان يبدأ التجهيز.
+     */
+    async function confirmOrderDeposit(orderId) {
+        const { error } = await client
+            .from("orders")
+            .update({ deposit_status: "confirmed", deposit_confirmed_at: new Date().toISOString(), status: "confirmed" })
+            .eq("id", orderId);
+        if (error) throw error;
+    }
+
+    /** عدد الطلبات اللي لسه بانتظار تأكيد العربون - يُستخدم كبادج في الشريط الجانبي/الداشبورد */
+    async function getAwaitingDepositCount() {
+        try {
+            const { count, error } = await client
+                .from("orders")
+                .select("id", { count: "exact", head: true })
+                .eq("deposit_status", "pending");
+            if (error) throw error;
+            return count || 0;
+        } catch (e) {
+            console.warn("تعذر جلب عدد طلبات العربون بانتظار التأكيد:", e.message);
+            return 0;
+        }
+    }
+
+    /**
      * 👑 [تذكير المراجعات]: الطلبات اللي اتسلمت من يوم (أو أكتر) ولسه محدش
      * بعتلها تذكير مراجعة. delivered_at بيتسجل تلقائياً من trigger في قاعدة
      * البيانات أول مرة الحالة تتحول delivered - مش بنحسبه هنا يدوياً.
@@ -309,31 +350,6 @@
         const { error } = await client
             .from("store_settings")
             .update({ homepage, updated_at: new Date().toISOString() })
-            .eq("id", 1);
-        if (error) throw error;
-    }
-
-    /** يرجّع كائن navigation بس من صف store_settings الوحيد (الشريط العلوي المتحرك وغيره) */
-    async function getNavigationSettings() {
-        try {
-            const { data, error } = await client
-                .from("store_settings")
-                .select("navigation")
-                .eq("id", 1)
-                .maybeSingle();
-            if (error) throw error;
-            return (data && data.navigation) || {};
-        } catch (e) {
-            console.warn("تعذر جلب إعدادات الشريط العلوي:", e.message);
-            return {};
-        }
-    }
-
-    /** بتستبدل عمود navigation بالكامل - نفس مبدأ updateHomepageSettings بالظبط */
-    async function updateNavigationSettings(navigation) {
-        const { error } = await client
-            .from("store_settings")
-            .update({ navigation, updated_at: new Date().toISOString() })
             .eq("id", 1);
         if (error) throw error;
     }
@@ -846,6 +862,8 @@
         getRecentOrders,
         getAllOrders,
         updateOrderStatus,
+        confirmOrderDeposit,
+        getAwaitingDepositCount,
         getReviewFollowups,
         markReviewReminderSent,
         getAllCategories,
@@ -862,8 +880,6 @@
         deleteProduct,
         getHomepageSettings,
         updateHomepageSettings,
-        getNavigationSettings,
-        updateNavigationSettings,
         getPromotions,
         savePromotions,
         getAllCoupons,
