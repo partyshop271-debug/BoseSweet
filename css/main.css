@@ -874,7 +874,20 @@
 /* [إصلاح تعارض]: #most-selling-grid و #new-arrivals-grid بالتحديد لازم يبقوا
    سلايدر أفقي حقيقي (زي العروض والفئات بالظبط) مش شبكة ثابتة متعددة الصفوف --
    القاعدة العامة فوق كانت بتلغي محاولة core-engine.js يحولهم لسلايدر أفقي
-   بسبب الـ !important، فكانت الدوتس بتظهر تحت شبكة أصلاً مش بتتحرك. */
+   بسبب الـ !important، فكانت الدوتس بتظهر تحت شبكة أصلاً مش بتتحرك.
+
+   🛡️ [إصلاح جذري - الشاشة بتتحرك شمال يمين والكروت مقطوعة]: كان فيه قاعدتين
+   منفصلتين بتستهدفوا نفس كروت #most-selling-grid/#new-arrivals-grid بنفس درجة
+   الأولوية تقريباً (specificity) بس بقيم متعارضة: القاعدة هنا كانت بتحدد
+   scroll-snap-align:start وعرض كارت ثابت (260px)، بينما قاعدة تانية جوه
+   @media(max-width:767px) تحت (اتشالت دلوقتي) كانت بتحدد scroll-snap-align:center
+   وعرض 85vw لنفس الكروت بالظبط - وبما إن سيلكتور القاعدة التانية كان بيحتوي
+   على كلاس إضافي (.product-card-unified) كانت أولويته أعلى شوية فكانت هي
+   اللي بتكسب فعلياً، يعني كل كارت كان بيتمركز (center) في نص الشاشة بدل ما
+   يبدأ من حافتها (start) - فكنت شايف نص الكارت اللي فات + نص الكارت الجاي
+   في نفس اللحظة بدل كارت واحد كامل، وده اللي كان حاسس إن "الشاشة بتتحرك
+   شمال ويمين" والكروت "مقطوعة/مضغوطة". الحل: توحيد كل قواعد السلايدر ده في
+   مكان واحد بس (هنا) بقيمة واحدة متسقة لكل من العرض ومحاذاة السناب. */
 #most-selling-grid.bose-products-grid,
 #new-arrivals-grid.bose-products-grid {
     display: flex !important;
@@ -883,8 +896,10 @@
     overflow-y: hidden !important;
     flex-wrap: nowrap !important;
     scroll-snap-type: x mandatory !important;
+    scroll-behavior: smooth !important;
     -webkit-overflow-scrolling: touch !important;
     scrollbar-width: none !important;
+    padding: 4px 4px 20px !important;
 }
 
 #most-selling-grid.bose-products-grid::-webkit-scrollbar,
@@ -892,17 +907,27 @@
     display: none;
 }
 
-#most-selling-grid.bose-products-grid > *,
-#new-arrivals-grid.bose-products-grid > * {
+#most-selling-grid.bose-products-grid > .product-card-unified,
+#new-arrivals-grid.bose-products-grid > .product-card-unified {
     flex: 0 0 auto !important;
     scroll-snap-align: start !important;
+    scroll-snap-stop: always !important;
     width: 260px !important;
 }
 
-@media (max-width: 550px) {
-    #most-selling-grid.bose-products-grid > *,
-    #new-arrivals-grid.bose-products-grid > * {
-        width: 78vw !important;
+@media (max-width: 767px) {
+    #most-selling-grid.bose-products-grid > .product-card-unified,
+    #new-arrivals-grid.bose-products-grid > .product-card-unified {
+        /* عرض الكارت أقل شوية من عرض الشاشة عشان يبين "لمحة" بسيطة من الكارت
+           الجاي على الحافة (تصميم مقصود)، بدل ما يتقص نص الكارتين مع بعض */
+        width: 82vw !important;
+    }
+}
+
+@media (max-width: 400px) {
+    #most-selling-grid.bose-products-grid > .product-card-unified,
+    #new-arrivals-grid.bose-products-grid > .product-card-unified {
+        width: 86vw !important;
     }
 }
 
@@ -921,30 +946,6 @@
         width: 100% !important;
         padding: 0 !important;
         justify-content: center !important;
-    }
-
-    #most-selling-section .products-grid,
-    #new-arrivals-section .products-grid {
-        display: flex !important;
-        overflow-x: auto !important;
-        scroll-behavior: smooth !important;
-        scroll-snap-type: x mandatory !important; 
-        gap: 20px !important;
-        padding: 20px 6px !important;
-        width: 100% !important;
-        -webkit-overflow-scrolling: touch;
-    }
-    
-    #most-selling-section .products-grid::-webkit-scrollbar,
-    #new-arrivals-section .products-grid::-webkit-scrollbar {
-        display: none !important;
-    }
-    
-    #most-selling-section .products-grid .product-card-unified,
-    #new-arrivals-section .products-grid .product-card-unified {
-        width: 85vw !important; 
-        flex-shrink: 0 !important; 
-        scroll-snap-align: center !important; 
     }
 }
 
@@ -1904,4 +1905,4 @@
 @media (max-width: 480px) {
     .bose-app-promo-phone-frame { width: 200px; height: 410px; }
     .bose-app-promo-float-badge { width: 40px; height: 40px; font-size: 15px; }
-}
+   }
