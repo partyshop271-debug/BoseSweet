@@ -501,16 +501,6 @@
 .adm-empty-state strong { display: block; color: var(--adm-text-secondary); font-size: 0.95rem; margin-bottom: 6px; }
 .adm-empty-state p { font-size: 0.82rem; max-width: 320px; margin: 0 auto; }
 
-.adm-pagination {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
-    padding: 16px 0 4px;
-}
-.adm-pagination-info { font-size: 0.82rem; color: var(--adm-text-muted); white-space: nowrap; }
-.adm-pagination .adm-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-
 .adm-loading-spinner {
     width: 26px; height: 26px;
     border: 3px solid var(--adm-border);
@@ -574,6 +564,42 @@
 .adm-flex-between { display: flex; align-items: center; justify-content: space-between; }
 .adm-gap-8 { display: flex; align-items: center; gap: 8px; }
 .adm-mt-16 { margin-top: 16px; }
+.adm-mt-8 { margin-top: 8px; display: inline-flex; }
+
+/* =========================== الصفحة الرئيسية - الشلال والشريط العلوي =========================== */
+.adm-sub-heading {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--adm-text-primary);
+    margin: 0 0 10px 0;
+}
+
+.adm-suggestion-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.adm-suggestion-chip {
+    background: var(--adm-bg-input);
+    border: 1px dashed var(--adm-border);
+    color: var(--adm-text-secondary);
+    font-family: inherit;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 8px 14px;
+    border-radius: var(--adm-radius-pill, 999px);
+    cursor: pointer;
+    transition: var(--adm-transition);
+}
+.adm-suggestion-chip:hover {
+    border-color: var(--adm-pink);
+    color: var(--adm-pink);
+}
+.adm-suggestion-chip:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
 .adm-w-full { width: 100%; }
 
 /* =========================== بوابة التحقق من الجلسة =========================== */
