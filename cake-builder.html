@@ -243,22 +243,51 @@
             transform: translateY(-1px);
         }
 
-        .bose-portfolio-gallery-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--bose-black);
-            margin: 40px 0 16px 0;
-        }
-        .bose-portfolio-scroller-track {
+        /* 🖼️ [معرض الإلهام - خطوة 1]: نفس شكل السلايدر الأفقي القديم بالظبط لكن
+           جوه الخطوة الأولى نفسها بدل شريط منفصل تحت المحاكي، عشان العميل يشوف
+           شغلنا فوراً من أول لحظة، وسكرول أفقي بس (مش رأسي) يحافظ على ارتفاع
+           الخطوة مضغوط وكله ظاهر قدامها من غير سكرول طويل. */
+        .bose-step1-gallery-scroller {
             display: flex;
-            gap: 16px;
+            gap: 14px;
             overflow-x: auto;
-            padding: 10px 4px 20px 4px;
+            padding: 6px 4px 14px 4px;
+            margin-top: 4px;
+            scroll-snap-type: x proximity;
         }
+        .bose-step1-gallery-scroller .bose-portfolio-img-node {
+            scroll-snap-align: start;
+        }
+        .bose-gallery-empty-note {
+            font-size: 13.5px;
+            color: var(--bose-black);
+            opacity: 0.6;
+            padding: 20px 4px;
+            margin: 0;
+        }
+        .bose-occasion-explainer-text {
+            font-size: 13.5px;
+            color: var(--bose-black);
+            opacity: 0.75;
+            line-height: 1.7;
+            background: var(--bose-pink-light);
+            border-radius: 14px;
+            padding: 12px 16px;
+            margin: 12px 0 16px 0;
+        }
+        .bose-field-required-hint {
+            display: none;
+            font-size: 12.5px;
+            color: #e0457b;
+            font-weight: 700;
+            margin: 8px 2px 0 2px;
+        }
+        .bose-field-required-hint.show { display: block; }
+
         .bose-portfolio-img-node {
             flex-shrink: 0;
-            width: 286px;
-            height: 286px;
+            width: 220px;
+            height: 220px;
             border-radius: 18px;
             overflow: hidden;
             border: 1px solid var(--bose-gray-border);
@@ -266,7 +295,7 @@
             transition: transform 0.2s;
         }
         @media (max-width: 480px) {
-            .bose-portfolio-img-node { width: 221px; height: 221px; }
+            .bose-portfolio-img-node { width: 170px; height: 170px; }
         }
         .bose-portfolio-img-node:hover {
             transform: scale(1.04);
@@ -375,12 +404,6 @@
             gap: 16px;
             margin-bottom: 28px;
         }
-        .bose-mood-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 16px;
-        }
-        .bose-selection-card-inner .mood-emoji,
         .bose-selection-card-inner .purpose-emoji {
             font-size: 28px;
             margin-bottom: 6px;
@@ -526,12 +549,14 @@
             <div class="bose-step-wizard-card">
                 <form id="bose-interactive-cake-form" onsubmit="return false;">
 
-                    <!-- الخطوة 1 - لمين التورتة، مناسبتها، وإيه الإحساس المطلوب -->
+                    <!-- الخطوة 1 - إلهام من شغلنا اللي فات، وحكاية مناسبتك بكلامك -->
                     <div class="bose-step-wizard-panel active-panel" id="panel-wizard-step-1">
-                        <h2 class="bose-wizard-title">التورتة دي لمين ولإيه المناسبة؟</h2>
-                        <p class="bose-wizard-subtitle">هنسهّل عليكِ الاختيار من أول خطوة، وهنرشحلك شكل يناسب مناسبتك تقدري تعدليه براحتك بعدين.</p>
+                        <h2 class="bose-wizard-title">يلا نبدأ بشوية إلهام من شغلنا 🎂</h2>
+                        <p class="bose-wizard-subtitle">دي مجموعة من التورت اللي عملناها بحب لعملائنا في مناسبات مختلفة، خدي جولة سريعة وشوفي إيه اللي يعجبك.</p>
 
-                        <div class="bose-purpose-grid">
+                        <div class="bose-step1-gallery-scroller" id="bose-portfolio-lightbox-track"></div>
+
+                        <div class="bose-purpose-grid" style="margin-top:26px;">
                             <label class="bose-selection-card-label">
                                 <input type="radio" name="cake_purpose" value="self" checked>
                                 <div class="bose-selection-card-inner"><span class="purpose-emoji">🎂</span>لنفسي</div>
@@ -542,33 +567,34 @@
                             </label>
                         </div>
 
-                        <!-- 🎉 [مناسبة التورتة الجديدة]: قائمة الأزرار بتتبني ديناميكياً من
-                             إعدادات المحاكي (cake-engine.js) عشان تبقى قابلة للتعديل من لوحة التحكم -->
-                        <h3 class="bose-sub-section-title">التورتة دي بمناسبة إيه؟ (اختياري، هيرشحلك شكل مناسب)</h3>
-                        <div class="bose-mood-grid" id="cake-occasion-row"></div>
-                        <div class="bose-designer-note-bubble" id="occasion-suggestion-note">
-                            <span class="note-icon">🎉</span>
-                            <span id="occasion-suggestion-text"></span>
-                        </div>
+                        <h3 class="bose-sub-section-title">دلوقتي احكيلنا... التورتة دي بمناسبة إيه؟</h3>
+                        <p class="bose-occasion-explainer-text">
+                            كل تورتة عندنا بتتفصّل على مقاس مناسبتها؛ تورتة عيد ميلاد لطفل صغير غير تورتة عيد ميلاد لشخص كبير،
+                            وتورتة عيد الأم غير تورتة فرح غير تورتة خطوبة. لما تكتبيلنا مناسبتك بالظبط، هنقدر نختار لك
+                            الألوان والتفاصيل والإحساس اللي يليق بيها فعلاً، مش تصميم عام بيتكرر لأي حد.
+                        </p>
+                        <textarea class="bose-premium-textarea-field" id="input-cake-occasion" placeholder="مثال: عيد ميلاد ابني الصغير هيتم 5 سنين، أو عيد ميلاد صاحبتي، أو حفلة خطوبتي..." maxlength="200" style="height:90px;"></textarea>
+                        <p class="bose-field-required-hint" id="occasion-required-hint">من فضلك اكتبي لنا مناسبة التورتة الأول عشان نقدر نكمل معاكِ.</p>
 
-                        <h3 class="bose-sub-section-title">عايزة الإحساس يكون إيه؟ (اختياري، هيرشحلك توليفة جاهزة)</h3>
-                        <div class="bose-mood-grid">
-                            <label class="bose-selection-card-label">
-                                <input type="radio" name="cake_mood" value="celebratory">
-                                <div class="bose-selection-card-inner"><span class="mood-emoji">🎉</span>احتفالي</div>
-                            </label>
-                            <label class="bose-selection-card-label">
-                                <input type="radio" name="cake_mood" value="romantic">
-                                <div class="bose-selection-card-inner"><span class="mood-emoji">💕</span>رومانسي</div>
-                            </label>
-                            <label class="bose-selection-card-label">
-                                <input type="radio" name="cake_mood" value="elegant">
-                                <div class="bose-selection-card-inner"><span class="mood-emoji">✨</span>أنيق وبسيط</div>
-                            </label>
-                        </div>
-                        <div class="bose-designer-note-bubble" id="mood-suggestion-note">
+                        <h3 class="bose-sub-section-title">حابة تبعتيلنا صورة تورتة عجباكِ؟</h3>
+                        <label class="premium-input-label bose-checkbox-label-tap">
+                            <input type="checkbox" id="cake-replica-toggle">
+                            آه، عندي صورة تورتة شفتها وعايزة نقرب تصميمنا منها قد الإمكان
+                        </label>
+                        <div class="bose-designer-note-bubble show" style="margin-top:10px;">
                             <span class="note-icon">💡</span>
-                            <span id="mood-suggestion-text"></span>
+                            <span>هنحاول نقرب التصميم قد الإمكان، مع مراعاة إن التنفيذ اليدوي ممكن يختلف شوية عن الصورة الأصلية.</span>
+                        </div>
+                        <div class="bose-premium-template-box" id="cake-replica-upload-section" style="display:none; margin-top:14px;">
+                            <label class="premium-input-label" id="cake-replica-upload-label" for="cake-replica-file">اضغطي هنا وارفعي صورة التورتة اللي عايزة نقرب تصميمنا منها</label>
+                            <div class="bose-photo-upload-zone" id="bose-cake-replica-upload-zone">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                                <span class="card-label">اضغطي هنا وارفعي الصورة</span>
+                                <input type="file" id="cake-replica-file" accept="image/*">
+                            </div>
+                            <div id="cake-replica-preview-container">
+                                <img id="cake-replica-preview-img" src="" class="bose-uploaded-image-preview" alt="معاينة صورة التصميم المرجعية" style="display:none;">
+                            </div>
                         </div>
                     </div>
 
@@ -615,7 +641,7 @@
                     <!-- الخطوة 4 -->
                     <div class="bose-step-wizard-panel" id="panel-wizard-step-4">
                         <h2 class="bose-wizard-title">نوع كيك مناسبتك وطباعة صورك الخاصة</h2>
-                        <p class="bose-wizard-subtitle">اختاري طعم الكيك الأساسي، وتقدري كمان تضيفي صورة مخصصة فوق سطح التورتة، أو تبعتي صورة تورتة عايزة نقرب تصميمنا منها.</p>
+                        <p class="bose-wizard-subtitle">اختاري طعم الكيك الأساسي، وتقدري كمان تضيفي صورة مخصصة فوق سطح التورتة لو حابة.</p>
                         
                         <h3 class="bose-sub-section-title" style="margin-top:0;">1. طعم ونوع الكيك الداخلي:</h3>
                         <div class="bose-interactive-radio-grid" style="margin-bottom:8px;">
@@ -659,29 +685,6 @@
                             </div>
                             <div id="cake-photo-preview-container">
                                 <img id="cake-photo-preview-img" src="" class="bose-uploaded-image-preview" alt="معاينة الصورة المرفوعة" style="display:none;">
-                            </div>
-                        </div>
-
-                        <!-- 🖼️ [صورة تصميم مطلوب تقليده - ميزة جديدة]: مستقلة تماماً عن صورة
-                             الطباعة اللي فوق - هنا العميل بيبعت صورة تورتة عايز شكل تصميمه يشبهها. -->
-                        <h3 class="bose-sub-section-title">3. حابب تبعتلنا صورة تورتة عايز نعملها تشبهها؟</h3>
-                        <label class="premium-input-label bose-checkbox-label-tap">
-                            <input type="checkbox" id="cake-replica-toggle">
-                            عندي صورة تورتة عجباني وعايز نقرب تصميمنا منها قد الإمكان
-                        </label>
-                        <div class="bose-designer-note-bubble show" style="margin-top:10px;">
-                            <span class="note-icon">💡</span>
-                            <span>هنحاول نقرب التصميم قد الإمكان، مع مراعاة إن التنفيذ اليدوي ممكن يختلف شوية عن الصورة الأصلية.</span>
-                        </div>
-                        <div class="bose-premium-template-box" id="cake-replica-upload-section" style="display:none; margin-top:14px;">
-                            <label class="premium-input-label" id="cake-replica-upload-label" for="cake-replica-file">اضغط هنا وارفع صورة التورتة اللي عايز نقرب تصميمنا منها</label>
-                            <div class="bose-photo-upload-zone" id="bose-cake-replica-upload-zone">
-                                <i class="fa-solid fa-cloud-arrow-up"></i>
-                                <span class="card-label">اضغط هنا وارفع الصورة</span>
-                                <input type="file" id="cake-replica-file" accept="image/*">
-                            </div>
-                            <div id="cake-replica-preview-container">
-                                <img id="cake-replica-preview-img" src="" class="bose-uploaded-image-preview" alt="معاينة صورة التصميم المرجعية" style="display:none;">
                             </div>
                         </div>
                     </div>
@@ -738,14 +741,6 @@
                     </div>
 
                 </form>
-            </div>
-
-            <h3 class="bose-portfolio-gallery-title"><i class="fa-solid fa-wand-magic-sparkles" style="color:var(--bose-pink); margin-left:6px;"></i> تورت شرفت عملاءنا في كل مناسباتهم السعيدة:</h3>
-            <div class="bose-portfolio-scroller-track" id="bose-portfolio-lightbox-track">
-                <div class="bose-portfolio-img-node"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=p1" alt="روائع حلويات بوسي"></div>
-                <div class="bose-portfolio-img-node"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=p2" alt="تورتة مصممة فاخرة"></div>
-                <div class="bose-portfolio-img-node"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=p3" alt="تخصيص كامل للتورت"></div>
-                <div class="bose-portfolio-img-node"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png?v=p4" alt="معمل حلويات بوسي"></div>
             </div>
         </div>
     </main>
