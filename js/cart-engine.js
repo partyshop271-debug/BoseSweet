@@ -453,6 +453,7 @@ function renderBoseCheckoutPage(storeData) {
     
     let currentShippingMethod = "pickup"; 
     let selectedShippingFee = 0;
+    let payFullSelected = false;
 
     if (pickupBtn) {
         pickupBtn.onclick = () => {
@@ -465,7 +466,7 @@ function renderBoseCheckoutPage(storeData) {
             
             injectBoseBranchBlock(storeData);
             selectedShippingFee = 0;
-            recalculateCheckoutInvoice(cart, storeData, selectedShippingFee);
+            recalculateCheckoutInvoice(cart, storeData, selectedShippingFee, currentShippingMethod, payFullSelected);
         };
     }
 
@@ -506,16 +507,50 @@ function renderBoseCheckoutPage(storeData) {
             }
         }
         selectedShippingFee = fee;
-        recalculateCheckoutInvoice(cart, storeData, selectedShippingFee);
+        recalculateCheckoutInvoice(cart, storeData, selectedShippingFee, currentShippingMethod, payFullSelected);
     }
 
+    // 💵 [عربون/دفع مقدم]: زراري اختيار "عربون 50%" أو "دفع كامل" - بتظهر
+    // مع استلام من الفرع بس (التوصيل دايماً كامل المبلغ، مفيش خيار هناك).
+    const payChoiceDepositBtn = document.getElementById("bose-pay-choice-deposit");
+    const payChoiceFullBtn = document.getElementById("bose-pay-choice-full");
+    function setPayFullChoice(value) {
+        payFullSelected = value;
+        if (payChoiceDepositBtn) {
+            payChoiceDepositBtn.classList.toggle("active", !value);
+            payChoiceDepositBtn.style.background = !value ? "#FF91A4" : "#fff";
+            payChoiceDepositBtn.style.color = !value ? "#fff" : "#FF91A4";
+        }
+        if (payChoiceFullBtn) {
+            payChoiceFullBtn.classList.toggle("active", value);
+            payChoiceFullBtn.style.background = value ? "#FF91A4" : "#fff";
+            payChoiceFullBtn.style.color = value ? "#fff" : "#FF91A4";
+        }
+        recalculateCheckoutInvoice(cart, storeData, selectedShippingFee, currentShippingMethod, payFullSelected);
+    }
+    if (payChoiceDepositBtn) payChoiceDepositBtn.onclick = () => setPayFullChoice(false);
+    if (payChoiceFullBtn) payChoiceFullBtn.onclick = () => setPayFullChoice(true);
+
     if (pickupBtn) pickupBtn.click();
+
+    const copyPhoneBtn = document.getElementById("bose-copy-deposit-phone");
+    if (copyPhoneBtn) {
+        copyPhoneBtn.onclick = () => {
+            const num = document.getElementById("bose-deposit-phone-number")?.textContent?.trim();
+            if (num && navigator.clipboard) {
+                navigator.clipboard.writeText(num).then(() => {
+                    copyPhoneBtn.innerHTML = '<i class="fas fa-check"></i>';
+                    setTimeout(() => { copyPhoneBtn.innerHTML = '<i class="far fa-copy"></i>'; }, 1500);
+                }).catch(() => {});
+            }
+        };
+    }
 
     const submitOrderBtn = document.getElementById("btn-submit-order-final");
     if (submitOrderBtn) {
         submitOrderBtn.onclick = (e) => {
             e.preventDefault();
-            processFinalBoseOrder(cart, storeData, currentShippingMethod, selectedShippingFee);
+            processFinalBoseOrder(cart, storeData, currentShippingMethod, selectedShippingFee, payFullSelected);
         };
     }
 }
@@ -546,7 +581,53 @@ function injectBoseBranchBlock(storeData) {
     insertionPoint.parentNode.insertBefore(branchDiv, insertionPoint);
 }
 
-function recalculateCheckoutInvoice(cart, storeData, shippingFee) {
+/**
+ * 💵 [عربون/دفع مقدم]: قاعدة العمل الأساسية:
+ * - استلام من الفرع: عربون 50% افتراضياً، لكن العميلة تقدر تختار تدفع كامل المبلغ.
+ * - توصيل للمنزل: كامل المبلغ مقدماً دايماً وقت تأكيد الحجز (مفيش خيار عربون هنا).
+ * نفس المعادلة بالظبط متكررة في create_order_with_items على قاعدة البيانات
+ * (مصدر الحقيقة الفعلي)، هنا بنحسبها بس عشان نعرضها فوراً للعميلة قبل
+ * ما الطلب يتسجل، ولإنشاء رسالة واتساب فورية.
+ */
+function calculateBoseDepositAmount(grandTotal, method, payFull) {
+    const total = parseFloat(grandTotal) || 0;
+    if (method === "delivery" || payFull) {
+        return { depositAmount: Math.round(total * 100) / 100, remainingAmount: 0 };
+    }
+    const deposit = Math.round((total * 0.5) * 100) / 100;
+    return { depositAmount: deposit, remainingAmount: Math.round((total - deposit) * 100) / 100 };
+}
+
+function updateBoseDepositPaymentBox(storeData, grandTotal, method, payFull) {
+    const amountEl = document.getElementById("bose-deposit-amount");
+    const remainingRow = document.getElementById("bose-deposit-remaining-row");
+    const remainingAmountEl = document.getElementById("bose-deposit-remaining-amount");
+    const labelEl = document.getElementById("bose-deposit-label");
+    const phoneEl = document.getElementById("bose-deposit-phone-number");
+    const payChoiceRow = document.getElementById("bose-pay-choice-row");
+    if (!amountEl) return;
+
+    if (payChoiceRow) payChoiceRow.style.display = method === "delivery" ? "none" : "flex";
+
+    const { depositAmount, remainingAmount } = calculateBoseDepositAmount(grandTotal, method, payFull);
+    amountEl.textContent = depositAmount.toFixed(2) + " EGP";
+
+    if (method === "delivery") {
+        if (labelEl) labelEl.textContent = "المبلغ الكامل المطلوب دفعه الآن لتأكيد الحجز (توصيل):";
+        if (remainingRow) remainingRow.style.display = "none";
+    } else if (payFull) {
+        if (labelEl) labelEl.textContent = "المبلغ الكامل المطلوب دفعه الآن (اخترتِ الدفع الكامل):";
+        if (remainingRow) remainingRow.style.display = "none";
+    } else {
+        if (labelEl) labelEl.textContent = "عربون تأكيد الحجز المطلوب الآن (50%):";
+        if (remainingRow) remainingRow.style.display = "flex";
+        if (remainingAmountEl) remainingAmountEl.textContent = remainingAmount.toFixed(2) + " EGP";
+    }
+
+    if (phoneEl) phoneEl.textContent = storeData?.store?.phone || "01097238441";
+}
+
+function recalculateCheckoutInvoice(cart, storeData, shippingFee, method, payFull) {
     const subtotalDisplay = document.getElementById("summary-subtotal");
     const shippingDisplay = document.getElementById("summary-shipping-fee");
     const grandTotalDisplay = document.getElementById("summary-grand-total");
@@ -562,9 +643,11 @@ function recalculateCheckoutInvoice(cart, storeData, shippingFee) {
     if (grandTotalDisplay) {
         grandTotalDisplay.textContent = invoice.grandTotal + " EGP";
     }
+
+    updateBoseDepositPaymentBox(storeData, invoice.grandTotal, method || "pickup", payFull);
 }
 
-function processFinalBoseOrder(cart, storeData, method, shippingFee) {
+function processFinalBoseOrder(cart, storeData, method, shippingFee, payFull) {
     const customerNameInput = document.getElementById("checkout-customer-name");
     const customerPhoneInput = document.getElementById("checkout-customer-phone");
     const customerPhone2Input = document.getElementById("checkout-customer-phone-2");
@@ -703,6 +786,14 @@ function processFinalBoseOrder(cart, storeData, method, shippingFee) {
         notes: orderNotesInput ? orderNotesInput.value.trim() : "لا توجد ملاحظات إضافية",
         items: cart
     };
+
+    // 💵 [عربون/دفع مقدم]: نحسب المبلغ المطلوب دفعه الآن حسب طريقة الاستلام
+    // ونضيفه لكائن الطلب - بيستخدم في رسالة الواتساب وصفحة النجاح.
+    const boseDepositCalc = calculateBoseDepositAmount(finalGrandTotalCalculated, method, payFull);
+    completedBoseOrderObject.depositAmount = boseDepositCalc.depositAmount;
+    completedBoseOrderObject.remainingAmount = boseDepositCalc.remainingAmount;
+    completedBoseOrderObject.paymentPhone = storeData.store?.phone || "01097238441";
+    completedBoseOrderObject.payFull = !!payFull;
 
     // 🤝 سد ثغرة الأصفار وتوحيد الذاكرة متبادلة التوافق تماماً
     localStorage.setItem("bose_last_order", JSON.stringify(completedBoseOrderObject));
@@ -858,7 +949,19 @@ function buildBoseFormattedWhatsappInvoice(order) {
 
     msg += `📝 *ملاحظات:* ${order.notes}\n`;
     msg += `--------------------------------------------------\n`;
-    msg += `👑 *المجموع المالي النهائي والمطلوب:* ${order.grandTotal} EGP 👑\n`;
+    msg += `👑 *المجموع المالي النهائي:* ${order.grandTotal} EGP 👑\n`;
+    // 💵 [عربون/دفع مقدم]: توضيح صريح لطريقة ووقت الدفع - استلام = عربون 50%
+    // والباقي عند الاستلام، توصيل = كامل المبلغ مقدماً وقت تأكيد الحجز.
+    if (order.depositAmount !== undefined) {
+        if (order.remainingAmount > 0) {
+            msg += `💳 *عربون تأكيد الحجز المطلوب الآن:* ${order.depositAmount} EGP (كاش أو InstaPay على ${order.paymentPhone})\n`;
+            msg += `🧾 *الباقي عند الاستلام:* ${order.remainingAmount} EGP\n`;
+        } else {
+            const fullReason = order.deliveryMethod === "توصيل للمنزل" ? "توصيل" : "دفع كامل باختيارها";
+            msg += `💳 *المبلغ الكامل المطلوب الآن (${fullReason}):* ${order.depositAmount} EGP (كاش أو InstaPay على ${order.paymentPhone})\n`;
+        }
+        msg += `📸 من فضلك ابعتي لقطة شاشة التحويل هنا فور إتمامه وهنأكد الحجز فوراً.\n`;
+    }
     msg += `--------------------------------------------------\n`;
     msg += `🤝 شكرًا لاختياركم الفاخر لـ حلويات بوسي. صنعناها بحب لتهديها لمن تحب. ✨`;
     
@@ -923,6 +1026,41 @@ function renderBoseSuccessPage(storeData) {
     if (customerWelcome && order.customerName) {
         customerWelcome.textContent = `أهلاً بيك يا ${order.customerName} 🌸`;
         customerWelcome.style.display = "block";
+    }
+
+    // 💵 [عربون/دفع مقدم]: عرض نفس بوكس تعليمات الدفع اللي ظهر في checkout.html
+    // هنا كمان، معبّى من بيانات الطلب المحفوظة فعلياً وقت التأكيد.
+    const depositBox = document.getElementById("bose-deposit-payment-box");
+    if (depositBox && order.depositAmount !== undefined) {
+        depositBox.style.display = "block";
+        const depAmountEl = document.getElementById("bose-deposit-amount");
+        const depLabelEl = document.getElementById("bose-deposit-label");
+        const depRemainingRow = document.getElementById("bose-deposit-remaining-row");
+        const depRemainingEl = document.getElementById("bose-deposit-remaining-amount");
+        const depPhoneEl = document.getElementById("bose-deposit-phone-number");
+        if (depAmountEl) depAmountEl.textContent = order.depositAmount + " EGP";
+        if (depPhoneEl) depPhoneEl.textContent = order.paymentPhone || "01097238441";
+        if (order.remainingAmount > 0) {
+            if (depLabelEl) depLabelEl.textContent = "عربون تأكيد الحجز المطلوب الآن (50%):";
+            if (depRemainingRow) depRemainingRow.style.display = "flex";
+            if (depRemainingEl) depRemainingEl.textContent = order.remainingAmount + " EGP";
+        } else {
+            const fullReason = order.deliveryMethod === "توصيل للمنزل" ? "توصيل" : "دفع كامل باختيارها";
+            if (depLabelEl) depLabelEl.textContent = `المبلغ الكامل المطلوب الآن (${fullReason}):`;
+            if (depRemainingRow) depRemainingRow.style.display = "none";
+        }
+        const copyBtn = document.getElementById("bose-copy-deposit-phone");
+        if (copyBtn) {
+            copyBtn.onclick = () => {
+                const num = depPhoneEl?.textContent?.trim();
+                if (num && navigator.clipboard) {
+                    navigator.clipboard.writeText(num).then(() => {
+                        copyBtn.innerHTML = '<i class="fas fa-check"></i>';
+                        setTimeout(() => { copyBtn.innerHTML = '<i class="far fa-copy"></i>'; }, 1500);
+                    }).catch(() => {});
+                }
+            };
+        }
     }
 
     const purchasedSlugs = [];
