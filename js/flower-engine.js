@@ -322,6 +322,24 @@
         // بنفس القرار المتبع في core-engine.js بالظبط. state.totalPrice هيتحدث تلقائياً
         // بالقيم الجديدة عند نداء recalculatePrice() في نهاية الدالة دي.
 
+        // 🖼️ [صور المحاكي الديناميكية]: البانر الرئيسي ومعرض "بوكيهات شرفت
+        // عملائنا" كانوا ثابتين على شعار المتجر مكرر 4 مرات، بدون أي مكان في
+        // لوحة التحكم لتغييرهم. دلوقتي بيتقروا من fbConfig.heroImage/
+        // portfolioGallery (نفس آلية cake-engine.js بالظبط) - وبما إن الرندرة
+        // دي بتحصل هنا في أول الدالة، أي كود تحت بيدور على .portfolio-item-card
+        // هيلاقي العناصر الجديدة جاهزة عادي (نفس الـ scope المتزامن).
+        const heroImg = document.querySelector('.hero-banner-frame');
+        if (heroImg && fbConfig.heroImage) heroImg.src = fbConfig.heroImage;
+        const portfolioTrack = document.getElementById('portfolio-swipe-slider');
+        if (portfolioTrack && Array.isArray(fbConfig.portfolioGallery) && fbConfig.portfolioGallery.length > 0) {
+            portfolioTrack.innerHTML = fbConfig.portfolioGallery.map((item, idx) => {
+                const url = (item && item.image) || "";
+                if (!url) return "";
+                const alt = (item && (item.alt || item.name)) ? String(item.alt || item.name).replace(/"/g, '&quot;') : "بوكيه فاخر من حلويات بوسي";
+                return `<div class="portfolio-item-card" data-index="${idx + 1}"><img src="${url}" class="portfolio-item-img" alt="${alt}" loading="lazy"></div>`;
+            }).join("");
+        }
+
         flowerCountInput = document.getElementById('flower-count');
         includePhotoCheckbox = document.getElementById('include-photo');
         photoFileInput = document.getElementById('photo-file');
