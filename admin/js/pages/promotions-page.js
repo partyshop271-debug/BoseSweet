@@ -272,9 +272,16 @@
                 return;
             }
 
+            // 🛡️ [إصلاح - إزالة مرجع منتج وهمي]: كان هنا "productId: id" - بيوهم إن
+            // العرض مرتبط بمنتج حقيقي في جدول products، بينما id هنا هو سلاج العرض
+            // نفسه بس (زي promo-cinabon-5plus1)، مش id منتج فعلي. الموقع العام أصلاً
+            // مش بيعرض promotions في أي مكان دلوقتي (اتأكدنا)، فمفيش كسر حالي، لكن
+            // سيبان الحقل ده كان هيسبب بالظبط نفس مشكلة "تكرار المنتج" القديمة لو حد
+            // استخدمه بعدين كأنه FK حقيقي. لو حبيتي لاحقاً تربطي عرض بمنتج حقيقي
+            // موجود فعلاً، استخدمي صفحة "عروض المنتجات" (offers.html) اللي مصممة
+            // لده بالظبط عبر جدول offers الحقيقي.
             const payload = {
                 id,
-                productId: id,
                 title: document.getElementById("pf-title").value.trim(),
                 description: document.getElementById("pf-description").value.trim(),
                 category: document.getElementById("pf-category").value || null,
