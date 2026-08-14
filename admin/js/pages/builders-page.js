@@ -21,6 +21,77 @@
         return "opt-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
     }
 
+    /* ============================= مناسبات التورت (اسم + إيموجي + شكل مقترح) ============================= */
+
+    function renderOccasionsList(items, shapesList) {
+        const e = window.BoseAdminUI.escapeHtml;
+        const container = document.getElementById("list-cake-occasions");
+        const shapeOptions = (shapesList || []).map((s) => `<option value="${e(s.id || "")}">${e(s.name || s.id || "")}</option>`).join("");
+
+        container.innerHTML = items.map((item, idx) => `
+            <div class="adm-curated-item" data-idx="${idx}">
+                <input type="text" class="adm-input" style="width:56px; text-align:center;" data-field="icon" value="${e(item.icon || "")}" placeholder="🎂" maxlength="4">
+                <input type="text" class="adm-input" style="flex:1;" data-field="name" value="${e(item.name || "")}" placeholder="اسم المناسبة">
+                <select class="adm-input" style="width:140px;" data-field="suggestedShape">${shapeOptions}</select>
+                <button type="button" class="adm-btn adm-btn-ghost adm-btn-icon" data-action="remove" title="حذف">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>`).join("") || `<p class="adm-order-item-meta" style="padding: 4px 2px;">مفيش مناسبات مضافة لسه.</p>`;
+
+        container.querySelectorAll("select[data-field]").forEach((sel) => {
+            const idx = Number(sel.closest("[data-idx]").getAttribute("data-idx"));
+            sel.value = items[idx].suggestedShape || "";
+        });
+        container.querySelectorAll("[data-field]").forEach((input) => {
+            const evtName = input.tagName === "SELECT" ? "change" : "input";
+            input.addEventListener(evtName, () => {
+                const idx = Number(input.closest("[data-idx]").getAttribute("data-idx"));
+                const field = input.getAttribute("data-field");
+                items[idx][field] = input.value;
+            });
+        });
+        container.querySelectorAll('[data-action="remove"]').forEach((btn) => {
+            btn.addEventListener("click", () => {
+                const idx = Number(btn.closest("[data-idx]").getAttribute("data-idx"));
+                items.splice(idx, 1);
+                renderOccasionsList(items, shapesList);
+            });
+        });
+    }
+
+    /* ============================= صورة واحدة (بانر رئيسي) ============================= */
+
+    function renderSingleImageSlot(containerId, currentUrl, onChange) {
+        const container = document.getElementById(containerId);
+        container.innerHTML = `
+            <div class="adm-curated-item" style="align-items:center;">
+                <label class="adm-image-upload-btn" style="width:90px; height:90px; padding:0; overflow:hidden; flex-shrink:0;" title="صورة البانر">
+                    <input type="file" accept="image/*" data-action="upload-hero" hidden>
+                    ${currentUrl
+                        ? `<img src="${currentUrl}" alt="" style="width:100%; height:100%; object-fit:cover;">`
+                        : `<i class="fa-solid fa-camera"></i>`}
+                </label>
+                <span class="adm-order-item-meta">${currentUrl ? "اضغط على الصورة لتغييرها" : "اضغط لرفع صورة البانر"}</span>
+            </div>`;
+
+        const input = container.querySelector('[data-action="upload-hero"]');
+        input.addEventListener("change", async () => {
+            const file = input.files && input.files[0];
+            if (!file) return;
+            const label = container.querySelector("label");
+            const original = label.innerHTML;
+            label.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+            try {
+                const url = await window.BoseAdminUI.uploadImageToCloudinary(file);
+                onChange(url);
+                renderSingleImageSlot(containerId, url, onChange);
+            } catch (err) {
+                window.BoseAdminUI.showToast("تعذر رفع الصورة", "error");
+                label.innerHTML = original;
+            }
+        });
+    }
+
     /* ============================= قائمة مسمّاة عامة (اسم + سعر/حقل إضافي اختياري) ============================= */
 
     function renderNamedList(containerId, items, opts = {}) {
@@ -144,11 +215,16 @@
         cakeBuilder.shapes = cakeBuilder.shapes || [];
         cakeBuilder.persons = cakeBuilder.persons || { minimum: 4, maximum: 100, step: 2 };
         cakeBuilder.images = cakeBuilder.images || {};
+        cakeBuilder.giftCard = cakeBuilder.giftCard || { enabled: true, price: 30 };
+        cakeBuilder.referenceUpload = cakeBuilder.referenceUpload || { enabled: true, note: "" };
+        cakeBuilder.occasions = cakeBuilder.occasions || [];
+        cakeBuilder.portfolioGallery = cakeBuilder.portfolioGallery || [];
 
         flowerBuilder.flowerTypes = flowerBuilder.flowerTypes || [];
         flowerBuilder.wrappingTypes = flowerBuilder.wrappingTypes || [];
         flowerBuilder.chocolateTypes = flowerBuilder.chocolateTypes || [];
         flowerBuilder.moneyCategories = flowerBuilder.moneyCategories || [];
+        flowerBuilder.portfolioGallery = flowerBuilder.portfolioGallery || [];
 
         // تفعيل/إيقاف المحاكي
         document.getElementById("cake-enabled").checked = cakeBuilder.enabled !== false;
@@ -161,6 +237,11 @@
             "basePrice", "baseFlowers", "giftCardPrice", "photoPrintPrice",
             "extraFlowerPrice", "largeChocolateMinimumPrice",
         ]);
+
+        // كارت إهداء التورت + صورة التصميم المرجعية
+        document.getElementById("cake-giftcard-enabled").checked = cakeBuilder.giftCard.enabled !== false;
+        document.getElementById("cake-giftCard-price").value = cakeBuilder.giftCard.price ?? 30;
+        document.getElementById("cake-replicaUpload-note").value = cakeBuilder.referenceUpload.note || "";
 
         // نصوص محاكي التورت
         document.getElementById("cake-text-pricingInfo").value = cakeBuilder.images.pricingInfo || "";
@@ -178,6 +259,21 @@
         renderNamedList("list-shapes", cakeBuilder.shapes, { extraField: "minimumPersons", extraLabel: "أقل عدد أفراد", imageField: true });
         wireAddButton("add-shape-btn", "list-shapes", cakeBuilder.shapes, { extraField: "minimumPersons", extraLabel: "أقل عدد أفراد" });
 
+        // مناسبات التورت
+        renderOccasionsList(cakeBuilder.occasions, cakeBuilder.shapes);
+        document.getElementById("add-cake-occasion-btn").addEventListener("click", () => {
+            cakeBuilder.occasions.push({ id: genId(), name: "", icon: "🎂", suggestedShape: (cakeBuilder.shapes[0] && cakeBuilder.shapes[0].id) || "circle" });
+            renderOccasionsList(cakeBuilder.occasions, cakeBuilder.shapes);
+        });
+
+        // صور محاكي التورت (بانر + معرض)
+        renderSingleImageSlot("cake-hero-image-slot", cakeBuilder.heroImage || "", (url) => { cakeBuilder.heroImage = url; });
+        renderNamedList("list-cake-gallery", cakeBuilder.portfolioGallery, { imageField: true });
+        document.getElementById("add-cake-gallery-btn").addEventListener("click", () => {
+            cakeBuilder.portfolioGallery.push({ image: "", name: "" });
+            renderNamedList("list-cake-gallery", cakeBuilder.portfolioGallery, { imageField: true });
+        });
+
         renderNamedList("list-flower-types", flowerBuilder.flowerTypes, { imageField: true });
         wireAddButton("add-flower-type-btn", "list-flower-types", flowerBuilder.flowerTypes, {});
 
@@ -191,6 +287,14 @@
         document.getElementById("add-money-category-btn").addEventListener("click", () => {
             flowerBuilder.moneyCategories.push({ amount: 0, fee: 0 });
             renderMoneyCategories(flowerBuilder.moneyCategories);
+        });
+
+        // صور محاكي الورد (بانر + معرض)
+        renderSingleImageSlot("flower-hero-image-slot", flowerBuilder.heroImage || "", (url) => { flowerBuilder.heroImage = url; });
+        renderNamedList("list-flower-gallery", flowerBuilder.portfolioGallery, { imageField: true });
+        document.getElementById("add-flower-gallery-btn").addEventListener("click", () => {
+            flowerBuilder.portfolioGallery.push({ image: "", name: "" });
+            renderNamedList("list-flower-gallery", flowerBuilder.portfolioGallery, { imageField: true });
         });
 
         document.getElementById("builders-save-btn").addEventListener("click", handleSaveAll);
@@ -216,9 +320,20 @@
                     rectangleMinimum: document.getElementById("cake-text-rectangleMinimum").value.trim(),
                     rectangleUpgrade: document.getElementById("cake-text-rectangleUpgrade").value.trim(),
                 },
+                giftCard: {
+                    enabled: document.getElementById("cake-giftcard-enabled").checked,
+                    price: parseFloat(document.getElementById("cake-giftCard-price").value) || 0,
+                },
+                referenceUpload: {
+                    ...cakeBuilder.referenceUpload,
+                    note: document.getElementById("cake-replicaUpload-note").value.trim(),
+                },
                 cakeTypes: cakeBuilder.cakeTypes,
                 printingOptions: cakeBuilder.printingOptions,
                 shapes: cakeBuilder.shapes,
+                occasions: cakeBuilder.occasions,
+                heroImage: cakeBuilder.heroImage || "",
+                portfolioGallery: cakeBuilder.portfolioGallery,
             };
 
             const updatedFlower = {
@@ -232,6 +347,8 @@
                 wrappingTypes: flowerBuilder.wrappingTypes,
                 chocolateTypes: flowerBuilder.chocolateTypes,
                 moneyCategories: flowerBuilder.moneyCategories,
+                heroImage: flowerBuilder.heroImage || "",
+                portfolioGallery: flowerBuilder.portfolioGallery,
             };
 
             await window.BoseAdmin.saveBuilderSettings({ cake_builder: updatedCake, flower_builder: updatedFlower });
