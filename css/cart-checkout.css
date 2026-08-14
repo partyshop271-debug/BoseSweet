@@ -2040,51 +2040,8 @@ select.bose-form-control option,
 }
 .btn-quick-add-to-cart:hover { background: var(--bose-white); color: var(--bose-pink-text); box-shadow: 0 0 0 1.5px var(--bose-pink); }
 
-/* ==========================================================================
-   👑 [مشترك بين كل كروت الموقع]: سطر التنبيه بالأحجام المتعددة + تبويب الحجم
-   المصغر جوه الكارت نفسه (رئيسية/عروض/مقترحات السلة) - نفس الأسلوب البصري
-   بالظبط زي تبويب الحجم الأصلي في صفحة الفئة/المنتج (bose-filter-tab-pill)
-   لكن بمقاس أصغر يناسب مساحة الكارت الضيقة.
-   ========================================================================== */
-.bose-mini-size-note {
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--bose-pink-text, #FF91A4);
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    margin-top: 4px;
-}
-
-.bose-card-size-tabs {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin: 2px 0 4px 0;
-}
-
-.bose-card-size-pill {
-    font-family: 'Cairo', sans-serif;
-    font-weight: 700;
-    font-size: 10.5px;
-    padding: 5px 10px;
-    border: 1px solid rgba(255, 145, 164, 0.35);
-    background: #FFFFFF;
-    color: var(--bose-black, #111111);
-    border-radius: var(--bose-radius-pill);
-    cursor: pointer;
-    transition: var(--bose-transition-fast);
-}
-
-.bose-card-size-pill.active {
-    background-color: var(--bose-pink-text, #FF91A4);
-    color: #FFFFFF;
-    border-color: var(--bose-pink-text, #FF91A4);
-}
-
-/* الكارت الموحد (createProductCardHTML) في الرئيسية/العروض بيحتاج نفس التبويب
-   بس المساحة عنده أوسع شوية - نعدّل الحجم بس هنا بدون تكرار باقي القواعد */
-.product-card-unified .bose-card-size-pill {
-    font-size: 12px;
-    padding: 6px 14px;
-}
+/* 🛡️ [نُقلت]: قواعد .bose-mini-size-note / .bose-card-size-tabs /
+   .bose-card-size-pill كانت هنا بس، رغم إنها "مشتركة بين كل كروت الموقع" -
+   لكن الملف ده متحمّل بس في cart.html/checkout.html، فكانت بتظهر بلا أي
+   تنسيق في أي صفحة تانية (index.html, offers.html...). اتنقلت لـ main.css
+   (متحمّل في كل صفحات الموقع) عشان تشتغل فعلاً في كل مكان. */
