@@ -430,16 +430,28 @@
 /* ==========================================================================
    6. القائمة الجانبية الملوكية المطورة (Sidebar Drawer UI)
    ========================================================================== */
+/* 🛡️ [إصلاح جذري - الواجهة بتتحرك شمال ويمين + كروت مقطوعة]: كانت القائمة
+   بتتخبى بـ right:-340px، وبما إن العنصر position:fixed (بيتحسب بالنسبة
+   لحدود الشاشة نفسها مش لـ body)، كان overflow-x:hidden اللي على body
+   (في global.css) مالوش أي تأثير عليه خالص - فالمتصفح كان بيحسب عرض
+   المستند الفعلي = عرض الشاشة + 340px الإضافية دي (مكان القائمة المخبأة)،
+   وده كان بيخلي المتصفح يسمح بسحب الصفحة كلها أفقياً ~340px (تظهر وترجع)،
+   وأي كارت أو نص في حافة الشاشة كان بيتقص وقت السحب ده. الحل: بدل ما نحرك
+   العنصر بره الشاشة بـ right (خاصية layout بتوسّع عرض المستند)، بنستخدم
+   transform (خاصية بصرية بحتة مش محسوبة ضمن أبعاد المستند خالص) فمفيش أي
+   احتمال يتوسع عرض الصفحة تاني بسبب القائمة دي وهي مقفولة. */
 .bose-sidebar-drawer {
     position: fixed !important;
     top: 0 !important;
-    right: -340px !important; 
+    right: 0 !important;
     width: 340px !important;
+    max-width: 85vw !important; /* حماية إضافية على الشاشات الأصغر من 340px */
     height: 100vh !important;
     background-color: var(--bose-white) !important;
     z-index: 60000 !important;
     box-shadow: -12px 0 45px rgba(255, 145, 164, 0.16) !important;
-    transition: right 0.45s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    transform: translateX(100%) !important;
+    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1) !important;
     display: flex !important;
     flex-direction: column !important;
     border-left: var(--bose-border-pink) !important;
@@ -447,7 +459,7 @@
 }
 
 .bose-sidebar-drawer.open {
-    right: 0 !important;
+    transform: translateX(0) !important;
 }
 
 .sidebar-header {
