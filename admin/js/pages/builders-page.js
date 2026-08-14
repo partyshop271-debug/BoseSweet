@@ -21,43 +21,6 @@
         return "opt-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
     }
 
-    /* ============================= مناسبات التورت (اسم + إيموجي + شكل مقترح) ============================= */
-
-    function renderOccasionsList(items, shapesList) {
-        const e = window.BoseAdminUI.escapeHtml;
-        const container = document.getElementById("list-cake-occasions");
-        const shapeOptions = (shapesList || []).map((s) => `<option value="${e(s.id || "")}">${e(s.name || s.id || "")}</option>`).join("");
-
-        container.innerHTML = items.map((item, idx) => `
-            <div class="adm-curated-item" data-idx="${idx}">
-                <input type="text" class="adm-input" style="width:56px; text-align:center;" data-field="icon" value="${e(item.icon || "")}" placeholder="🎂" maxlength="4">
-                <input type="text" class="adm-input" style="flex:1;" data-field="name" value="${e(item.name || "")}" placeholder="اسم المناسبة">
-                <select class="adm-input" style="width:140px;" data-field="suggestedShape">${shapeOptions}</select>
-                <button type="button" class="adm-btn adm-btn-ghost adm-btn-icon" data-action="remove" title="حذف">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>`).join("") || `<p class="adm-order-item-meta" style="padding: 4px 2px;">مفيش مناسبات مضافة لسه.</p>`;
-
-        container.querySelectorAll("select[data-field]").forEach((sel) => {
-            const idx = Number(sel.closest("[data-idx]").getAttribute("data-idx"));
-            sel.value = items[idx].suggestedShape || "";
-        });
-        container.querySelectorAll("[data-field]").forEach((input) => {
-            const evtName = input.tagName === "SELECT" ? "change" : "input";
-            input.addEventListener(evtName, () => {
-                const idx = Number(input.closest("[data-idx]").getAttribute("data-idx"));
-                const field = input.getAttribute("data-field");
-                items[idx][field] = input.value;
-            });
-        });
-        container.querySelectorAll('[data-action="remove"]').forEach((btn) => {
-            btn.addEventListener("click", () => {
-                const idx = Number(btn.closest("[data-idx]").getAttribute("data-idx"));
-                items.splice(idx, 1);
-                renderOccasionsList(items, shapesList);
-            });
-        });
-    }
 
     /* ============================= صورة واحدة (بانر رئيسي) ============================= */
 
@@ -217,7 +180,6 @@
         cakeBuilder.images = cakeBuilder.images || {};
         cakeBuilder.giftCard = cakeBuilder.giftCard || { enabled: true, price: 30 };
         cakeBuilder.referenceUpload = cakeBuilder.referenceUpload || { enabled: true, note: "" };
-        cakeBuilder.occasions = cakeBuilder.occasions || [];
         cakeBuilder.portfolioGallery = cakeBuilder.portfolioGallery || [];
 
         flowerBuilder.flowerTypes = flowerBuilder.flowerTypes || [];
@@ -258,13 +220,6 @@
 
         renderNamedList("list-shapes", cakeBuilder.shapes, { extraField: "minimumPersons", extraLabel: "أقل عدد أفراد", imageField: true });
         wireAddButton("add-shape-btn", "list-shapes", cakeBuilder.shapes, { extraField: "minimumPersons", extraLabel: "أقل عدد أفراد" });
-
-        // مناسبات التورت
-        renderOccasionsList(cakeBuilder.occasions, cakeBuilder.shapes);
-        document.getElementById("add-cake-occasion-btn").addEventListener("click", () => {
-            cakeBuilder.occasions.push({ id: genId(), name: "", icon: "🎂", suggestedShape: (cakeBuilder.shapes[0] && cakeBuilder.shapes[0].id) || "circle" });
-            renderOccasionsList(cakeBuilder.occasions, cakeBuilder.shapes);
-        });
 
         // صور محاكي التورت (بانر + معرض)
         renderSingleImageSlot("cake-hero-image-slot", cakeBuilder.heroImage || "", (url) => { cakeBuilder.heroImage = url; });
@@ -331,7 +286,7 @@
                 cakeTypes: cakeBuilder.cakeTypes,
                 printingOptions: cakeBuilder.printingOptions,
                 shapes: cakeBuilder.shapes,
-                occasions: cakeBuilder.occasions,
+                occasions: [],
                 heroImage: cakeBuilder.heroImage || "",
                 portfolioGallery: cakeBuilder.portfolioGallery,
             };
