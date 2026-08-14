@@ -1,6 +1,9 @@
 /**
- * المحرك البرمجي المطور والمصحح لمحاكي التورت V3.8 - حلويات بوسي
+ * المحرك البرمجي المطور والمصحح لمحاكي التورت V4.0 - حلويات بوسي
  * يضمن التوافق وحل مشكلة ثبات السكرول وإعادة توجيه الصفحة لبدايتها آلياً
+ * V4.0: إضافة خطوة المناسبة (وترشيح الشكل المناسب)، صورة تصميم مطلوب تقليده،
+ * كارت إهداء التورت، خطوة ملخص/مفردات نهائية، وصور المعرض/البانر ديناميكية
+ * من لوحة التحكم بدل ما تكون ثابتة على شعار المتجر.
  */
 
 function startEngineLogic() {
@@ -11,12 +14,95 @@ function startEngineLogic() {
     const priceDisplay = document.getElementById('display-dynamic-price');
     const priceLabel = document.getElementById('display-dynamic-label');
     const btnCartSubmit = document.getElementById('btn-cake-submit-cart');
-    
+    const btnCartSubmitSummary = document.getElementById('btn-cake-submit-cart-summary');
+
     const btnWizardNext = document.getElementById('btn-wizard-next');
     const btnWizardPrev = document.getElementById('btn-wizard-prev');
-    
+
     let currentActiveStep = 1;
-    const totalWizardStepsCount = 5;
+    const totalWizardStepsCount = 6;
+
+    const config = window.BoseStoreData?.cakeBuilder || {
+        basePrice: 580,
+        pricePerPerson: 145,
+        persons: { minimum: 4, maximum: 250, step: 2 },
+        shapes: [
+            { id: "circle", minimumPersons: 4 },
+            { id: "heart", minimumPersons: 4 },
+            { id: "square", minimumPersons: 16 },
+            { id: "rectangle", minimumPersons: 20 }
+        ]
+    };
+
+    /* ==================================================================
+       🖼️ [صور المحاكي الديناميكية]: البانر الرئيسي ومعرض "تورت شرفت
+       عملاءنا" كانوا ثابتين على شعار المتجر مكرر 4 مرات بدون أي مكان في
+       لوحة التحكم لتغييرهم - دلوقتي بيتقروا من إعدادات المحاكي
+       (cakeBuilder.heroImage / cakeBuilder.portfolioGallery) اللي بقى
+       ليها قسم مخصص في لوحة التحكم (builders-settings.html).
+       ================================================================== */
+    function renderCakeGalleryAndHero() {
+        const heroImg = document.querySelector('.bose-main-hero-hook img');
+        if (heroImg && config.heroImage) {
+            heroImg.src = config.heroImage;
+        }
+        const track = document.getElementById('bose-portfolio-lightbox-track');
+        if (track && Array.isArray(config.portfolioGallery) && config.portfolioGallery.length > 0) {
+            track.innerHTML = config.portfolioGallery.map((item) => {
+                const url = (item && item.image) || "";
+                if (!url) return "";
+                const alt = (item && (item.alt || item.name)) ? String(item.alt || item.name).replace(/"/g, '&quot;') : "روائع حلويات بوسي";
+                return `<div class="bose-portfolio-img-node"><img src="${url}" alt="${alt}" loading="lazy"></div>`;
+            }).join("");
+        }
+    }
+    renderCakeGalleryAndHero();
+
+    /* ==================================================================
+       🎉 [خطوة المناسبة الجديدة]: بترشح شكل مناسب حسب مناسبة التورتة
+       (مولود، فرح، عيد ميلاد...) - نفس فلسفة توليفات "الإحساس" تحت، لكن
+       أوضح وأقرب لواقع طلبات العميل الفعلية. القائمة قابلة للتعديل من
+       لوحة التحكم (cakeBuilder.occasions)، ولو فاضية بنستخدم قائمة
+       احتياطية مطابقة تماماً للقيم الافتراضية في قاعدة البيانات.
+       ================================================================== */
+    const DEFAULT_OCCASIONS = [
+        { id: "boy", name: "مولود ولد", icon: "👶💙", suggestedShape: "circle" },
+        { id: "girl", name: "مولودة بنت", icon: "👶💗", suggestedShape: "heart" },
+        { id: "wedding", name: "فرح وخطوبة", icon: "💍", suggestedShape: "circle" },
+        { id: "birthday", name: "عيد ميلاد", icon: "🎂", suggestedShape: "circle" },
+        { id: "mothers-day", name: "عيد الأم", icon: "💐", suggestedShape: "heart" },
+        { id: "new-year", name: "رأس السنة", icon: "🎉", suggestedShape: "circle" }
+    ];
+    const occasionsList = (Array.isArray(config.occasions) && config.occasions.length > 0) ? config.occasions : DEFAULT_OCCASIONS;
+    const occasionRow = document.getElementById('cake-occasion-row');
+    if (occasionRow) {
+        occasionRow.innerHTML = occasionsList.map((occ) => `
+            <label class="bose-selection-card-label">
+                <input type="radio" name="cake_occasion" value="${occ.id}" data-shape="${occ.suggestedShape || ''}" data-name="${(occ.name || '').replace(/"/g, '&quot;')}">
+                <div class="bose-selection-card-inner"><span class="mood-emoji">${occ.icon || '🎂'}</span>${occ.name || ''}</div>
+            </label>`).join('');
+    }
+    const occasionRadios = document.querySelectorAll('input[name="cake_occasion"]');
+    const occasionNoteBox = document.getElementById('occasion-suggestion-note');
+    const occasionNoteText = document.getElementById('occasion-suggestion-text');
+    let selectedOccasionLabel = "";
+
+    function applyOccasionPreset(radioEl) {
+        selectedOccasionLabel = radioEl.getAttribute('data-name') || "";
+        const suggestedShape = radioEl.getAttribute('data-shape');
+        if (suggestedShape) {
+            const shapeRadio = document.querySelector(`input[name="cake_shape"][value="${suggestedShape}"]`);
+            if (shapeRadio) shapeRadio.checked = true;
+        }
+        if (occasionNoteText) {
+            occasionNoteText.textContent = `اقترحنالك شكل يناسب "${selectedOccasionLabel}"، وتقدر تغيّريه بنفسك من خطوة "الشكل" لو حابة.`;
+        }
+        if (occasionNoteBox) occasionNoteBox.classList.add('show');
+        evaluateSimulatorState();
+    }
+    occasionRadios.forEach((radio) => {
+        radio.addEventListener('change', () => applyOccasionPreset(radio));
+    });
 
     // 🧠 [محاكي أذكى - المرحلة 1]: توليفات مقترحة حسب "الإحساس" المطلوب (مزاج المناسبة).
     // بتحدد اقتراح شكل+نكهة بس (اختيار، مش قفل) عشان تقلل حيرة العميل اللي مش عنده
@@ -38,7 +124,6 @@ function startEngineLogic() {
     const moodNoteBox = document.getElementById('mood-suggestion-note');
     const moodNoteText = document.getElementById('mood-suggestion-text');
     const flavorSensoryNote = document.getElementById('flavor-sensory-note');
-    const printingDesignerNote = document.getElementById('printing-designer-note');
     const messageStepTitle = document.getElementById('message-step-title');
     const messageStepSubtitle = document.getElementById('message-step-subtitle');
     const messageFieldLabel = document.getElementById('message-field-label');
@@ -99,6 +184,27 @@ function startEngineLogic() {
         });
     }
 
+    /* ==================================================================
+       📐 [إشعار توضيحي دائم لمقاسات الشكل]: قبل كده كان فيه بس تنبيه
+       مؤقت (6 ثواني) بيظهر لو العميل اختار شكل غير متاح لعدد الأفراد
+       الحالي. دلوقتي فيه كمان ملاحظة ثابتة تحت خطوة اختيار الشكل نفسها
+       بتوضح من الأول أقل عدد أفراد لكل شكل (خصوصاً المربع والمستطيل)
+       قبل ما العميل يحتاج يتفاجأ بتنبيه لاحقاً.
+       ================================================================== */
+    function renderShapeSizeNote() {
+        const noteBox = document.getElementById('shape-size-permanent-note');
+        if (!noteBox) return;
+        const squareData = (config.shapes || []).find(s => s.id === 'square');
+        const rectData = (config.shapes || []).find(s => s.id === 'rectangle');
+        const squareText = config.images?.squareMinimum || (squareData ? `المقاس المربع يبدأ من ${squareData.minimumPersons} فرد` : "");
+        const rectText = config.images?.rectangleMinimum || (rectData ? `المقاس المستطيل يبدأ من ${rectData.minimumPersons} فرد` : "");
+        const lines = [squareText, rectText].filter(Boolean);
+        if (lines.length === 0) { noteBox.style.display = 'none'; return; }
+        noteBox.innerHTML = lines.map(t => `<span>📐 ${t}</span>`).join('');
+        noteBox.style.display = 'flex';
+    }
+    renderShapeSizeNote();
+
     // 🛡️ [إصلاح حرج]: حالة رفع صورة الطباعة على التورتة (كانت الخانة موجودة
     // في الخطوة 3 بدون أي وسيلة فعلية لإرسال الصورة نفسها). نفس آلية الرفع
     // المستخدمة في flower-engine.js بالظبط عبر الدالة الموحّدة في supabase-client.js
@@ -120,10 +226,6 @@ function startEngineLogic() {
         if (selectedPrinting === 'none') {
             uploadedCakePhotoUrl = "";
             if (cakePhotoPreviewImg) cakePhotoPreviewImg.style.display = 'none';
-        }
-        const printingDesignerNoteEl = document.getElementById('printing-designer-note');
-        if (printingDesignerNoteEl) {
-            printingDesignerNoteEl.classList.toggle('show', selectedPrinting === 'none');
         }
     }
 
@@ -164,24 +266,103 @@ function startEngineLogic() {
         });
     }
 
-    const config = window.BoseStoreData?.cakeBuilder || {
-        basePrice: 580,
-        pricePerPerson: 145,
-        persons: { minimum: 4, maximum: 250, step: 2 },
-        shapes: [
-            { id: "circle", minimumPersons: 4 },
-            { id: "heart", minimumPersons: 4 },
-            { id: "square", minimumPersons: 16 },
-            { id: "rectangle", minimumPersons: 20 }
-        ]
-    };
+    /* ==================================================================
+       🖼️ [صورة تصميم تورتة مطلوب تقليدها - ميزة جديدة]: مختلفة تماماً عن
+       صورة "الطباعة على السطح" اللي فوق - هنا العميل بيبعت صورة تورتة
+       شافها (عندنا أو في أي مكان) وعايز نقرب تصميمنا منها قد الإمكان،
+       مش صورة تتطبع حرفياً على التورتة. نفس آلية الرفع الموحدة بالظبط.
+       ================================================================== */
+    let uploadedReplicaPhotoUrl = "";
+    let isUploadingReplicaPhoto = false;
+
+    const replicaToggle = document.getElementById('cake-replica-toggle');
+    const replicaUploadSection = document.getElementById('cake-replica-upload-section');
+    const replicaUploadZone = document.getElementById('bose-cake-replica-upload-zone');
+    const replicaFileInput = document.getElementById('cake-replica-file');
+    const replicaPreviewImg = document.getElementById('cake-replica-preview-img');
+    const replicaUploadLabel = document.getElementById('cake-replica-upload-label');
+
+    function toggleReplicaUploadSection() {
+        const isChecked = !!(replicaToggle && replicaToggle.checked);
+        if (replicaUploadSection) replicaUploadSection.style.display = isChecked ? 'block' : 'none';
+        if (!isChecked) {
+            uploadedReplicaPhotoUrl = "";
+            if (replicaPreviewImg) replicaPreviewImg.style.display = 'none';
+        }
+    }
+    if (replicaToggle) {
+        replicaToggle.addEventListener('change', toggleReplicaUploadSection);
+    }
+    if (replicaUploadZone && replicaFileInput) {
+        replicaUploadZone.addEventListener('click', () => replicaFileInput.click());
+        replicaFileInput.addEventListener('change', async function () {
+            const file = this.files && this.files[0];
+            if (!file) return;
+            if (!window.BoseSupabase || typeof window.BoseSupabase.uploadBoseReferenceImage !== 'function') {
+                if (typeof window.showBoseGlobalToast === 'function') {
+                    window.showBoseGlobalToast("تعذر تحميل خدمة رفع الصور، حاول تحديث الصفحة.");
+                }
+                return;
+            }
+            isUploadingReplicaPhoto = true;
+            if (replicaUploadLabel) replicaUploadLabel.textContent = "بيتم رفع الصورة الآن...";
+            try {
+                uploadedReplicaPhotoUrl = await window.BoseSupabase.uploadBoseReferenceImage(file, (txt) => {
+                    if (replicaUploadLabel) replicaUploadLabel.textContent = txt;
+                });
+                if (replicaPreviewImg) {
+                    replicaPreviewImg.src = uploadedReplicaPhotoUrl;
+                    replicaPreviewImg.style.display = 'block';
+                }
+                if (replicaUploadLabel) replicaUploadLabel.textContent = "تم رفع الصورة بنجاح ✓ (اضغط لتغييرها)";
+                if (typeof window.showBoseGlobalToast === 'function') {
+                    window.showBoseGlobalToast("تم رفع صورة التصميم بنجاح! ✨");
+                }
+            } catch (err) {
+                uploadedReplicaPhotoUrl = "";
+                if (replicaUploadLabel) replicaUploadLabel.textContent = "فشل الرفع، اضغط للمحاولة مرة أخرى";
+                if (typeof window.showBoseGlobalToast === 'function') {
+                    window.showBoseGlobalToast("تعذر رفع الصورة، تأكدي من الاتصال بالإنترنت وحاولي تاني.");
+                }
+            } finally {
+                isUploadingReplicaPhoto = false;
+            }
+        });
+    }
+
+    /* ==================================================================
+       💌 [كارت إهداء التورت - ميزة جديدة]: نفس فكرة كارت إهداء الورد
+       بالظبط (كارت ورقي بيتطبع ويتقدم مع الطلب)، بسعر مستقل خاص بالتورت
+       من إعدادات المحاكي (افتراضياً 30 جنيه).
+       ================================================================== */
+    const giftCardToggle = document.getElementById('cake-giftcard-toggle');
+    const giftCardTextSection = document.getElementById('cake-giftcard-text-section');
+    const giftCardTextInput = document.getElementById('cake-giftcard-text');
+    const giftCardPriceNote = document.getElementById('cake-giftcard-price-note');
+    const cakeGiftCardPrice = parseFloat(config.giftCard?.price) || 30;
+
+    if (giftCardPriceNote) {
+        giftCardPriceNote.innerHTML = `<p class="bose-embedded-price-text">سعر إضافة وطباعة كارت الإهداء الفخم هو <span>${cakeGiftCardPrice} جنيه</span></p>`;
+    }
+    function toggleGiftCardSection() {
+        const isChecked = !!(giftCardToggle && giftCardToggle.checked);
+        if (giftCardTextSection) giftCardTextSection.style.display = isChecked ? 'block' : 'none';
+        evaluateSimulatorState();
+    }
+    if (giftCardToggle) {
+        giftCardToggle.addEventListener('change', toggleGiftCardSection);
+    }
+    if (giftCardTextInput) {
+        giftCardTextInput.addEventListener('input', evaluateSimulatorState);
+    }
 
     function evaluateSimulatorState() {
         let currentPersons = parseInt(inputPersons.value, 10) || config.persons.minimum;
         let selectedShapeElement = document.querySelector('input[name="cake_shape"]:checked');
         let selectedShape = selectedShapeElement ? selectedShapeElement.value : 'circle';
         let selectedPrinting = document.querySelector('input[name="cake_printing"]:checked')?.value || 'none';
-        
+        const hasGiftCardNow = !!(giftCardToggle && giftCardToggle.checked && giftCardTextInput && giftCardTextInput.value.trim() !== "");
+
         const squareData = config.shapes.find(s => s.id === 'square') || { minimumPersons: 16 };
         const rectData = config.shapes.find(s => s.id === 'rectangle') || { minimumPersons: 20 };
         
@@ -206,7 +387,8 @@ function startEngineLogic() {
         }
         
         const finalDynamicPrice = window.calculateCustomCakePrice(currentPersons, {
-            printingType: selectedPrinting
+            printingType: selectedPrinting,
+            hasGiftCard: hasGiftCardNow
         });
         
         if (priceLabel) {
@@ -214,6 +396,63 @@ function startEngineLogic() {
         }
         
         priceDisplay.textContent = `${Math.round(finalDynamicPrice)} جنيه`;
+
+        renderOrderSummary(currentPersons, selectedShape, selectedPrinting, hasGiftCardNow, finalDynamicPrice);
+    }
+
+    /* ==================================================================
+       🧾 [خطوة الملخص الجديدة]: مفردات تفصيلية لكل بند وسعره، معروضة في
+       آخر خطوة قبل زرار "إضافة للسلة" مباشرة - نفس فلسفة الفاتورة الجانبية
+       في محاكي الورد (bose-invoice-addon-row) لكن كخطوة مستقلة بدل شريط
+       جانبي، لأن محاكي التورت أحادي العمود.
+       ================================================================== */
+    function renderOrderSummary(currentPersons, selectedShape, selectedPrinting, hasGiftCardNow, grandTotal) {
+        const summaryList = document.getElementById('cake-order-summary-list');
+        const summaryTotalEl = document.getElementById('cake-order-summary-total');
+        if (!summaryList) return;
+
+        const shapeLabelMap = { circle: 'دائرة', heart: 'قلب', square: 'مربع', rectangle: 'مستطيل' };
+        const flavorLabelMap = { vanilla: 'فانيليا', chocolate: 'شوكولاتة', 'half-half': 'نصف ونصف' };
+        const selectedFlavor = document.querySelector('input[name="cake_flavor"]:checked')?.value || 'vanilla';
+        const selectedOccasionEl = document.querySelector('input[name="cake_occasion"]:checked');
+        const selectedPurpose = document.querySelector('input[name="cake_purpose"]:checked')?.value || 'self';
+
+        const minPersons = config.persons.minimum;
+        const extraPersons = Math.max(0, currentPersons - minPersons);
+        const pricePerPerson = config.pricePerPerson || 145;
+
+        let printingLabel = "بدون طباعة صورة";
+        let printingFee = 0;
+        if (selectedPrinting !== 'none') {
+            const printOpt = (config.printingOptions || []).find(p => p.id === selectedPrinting);
+            printingFee = printOpt ? printOpt.price : (selectedPrinting === 'edible' ? 60 : 15);
+            printingLabel = selectedPrinting === 'edible' ? 'طباعة صورة صالحة للأكل' : 'طباعة صورة غير صالحة للأكل';
+        }
+
+        const rows = [
+            { label: `التورتة الأساسية (${shapeLabelMap[selectedShape] || selectedShape}، ${flavorLabelMap[selectedFlavor] || selectedFlavor}) لـ ${minPersons} فرد`, value: `${config.basePrice} جنيه` }
+        ];
+        if (extraPersons > 0) {
+            rows.push({ label: `${extraPersons} فرد إضافي × ${pricePerPerson} جنيه`, value: `+ ${extraPersons * pricePerPerson} جنيه` });
+        }
+        if (selectedOccasionEl) {
+            rows.push({ label: `المناسبة`, value: selectedOccasionEl.getAttribute('data-name') || '' });
+        }
+        if (selectedPurpose === 'gift') {
+            rows.push({ label: `الغرض`, value: `🎁 هدية لحد تاني` });
+        }
+        if (selectedPrinting !== 'none') {
+            rows.push({ label: printingLabel, value: `+ ${printingFee} جنيه` });
+        }
+        if (replicaToggle && replicaToggle.checked) {
+            rows.push({ label: `صورة تصميم مرفقة لتقريب الشكل`, value: uploadedReplicaPhotoUrl ? `✓ تم الإرفاق` : `لسه محتاجة ترفعي الصورة` });
+        }
+        if (hasGiftCardNow) {
+            rows.push({ label: `كارت إهداء مطبوع`, value: `+ ${cakeGiftCardPrice} جنيه` });
+        }
+
+        summaryList.innerHTML = rows.map(r => `<div class="price-item-row"><span>${r.label}:</span><span class="item-value">${r.value}</span></div>`).join('');
+        if (summaryTotalEl) summaryTotalEl.textContent = `${Math.round(grandTotal)} جنيه`;
     }
 
     function syncWizardPanelsUI() {
@@ -303,6 +542,7 @@ function startEngineLogic() {
     });
     // تشغيل الفحص مرة أولى عند تحميل الصفحة (لو فيه اختيار محفوظ مسبقاً)
     toggleCakePhotoUploadSection();
+    toggleReplicaUploadSection();
 
     function initializeBoseLightboxGallery() {
         const track = document.getElementById('bose-portfolio-lightbox-track');
@@ -330,7 +570,7 @@ function startEngineLogic() {
         });
     }
 
-    btnCartSubmit.addEventListener('click', () => {
+    function submitCakeToCart() {
         let currentPersons = parseInt(inputPersons.value, 10) || config.persons.minimum;
         let selectedShape = document.querySelector('input[name="cake_shape"]:checked')?.value || 'circle';
         let selectedFlavor = document.querySelector('input[name="cake_flavor"]:checked')?.value || 'vanilla';
@@ -340,6 +580,9 @@ function startEngineLogic() {
         let selectedPurpose = document.querySelector('input[name="cake_purpose"]:checked')?.value || 'self';
         let selectedMood = document.querySelector('input[name="cake_mood"]:checked')?.value || '';
         const moodLabelMap = { celebratory: 'احتفالي', romantic: 'رومانسي', elegant: 'أنيق وبسيط' };
+        const wantsReplica = !!(replicaToggle && replicaToggle.checked);
+        const wantsGiftCard = !!(giftCardToggle && giftCardToggle.checked);
+        const giftCardText = wantsGiftCard ? (giftCardTextInput?.value || "").trim() : "";
 
         // 🚨🚨 [إصلاح جذري - صمام أمان ضد وصول الطلب بصورة غلط]: قبل كده لو
         // العميلة اختارت "طباعة صورة" لكن الرفع فشل أو لسه شغال، كان بيكمل
@@ -362,6 +605,31 @@ function startEngineLogic() {
             }
         }
 
+        // 🛡️ نفس صمام الأمان بالظبط لصورة التصميم المطلوب تقليده
+        if (wantsReplica) {
+            if (isUploadingReplicaPhoto) {
+                if (typeof window.showBoseGlobalToast === 'function') {
+                    window.showBoseGlobalToast("لسه بيتم رفع صورة التصميم، استني ثواني وبعدين اضغطي إضافة للسلة.");
+                }
+                return;
+            }
+            if (!uploadedReplicaPhotoUrl) {
+                if (typeof window.showBoseGlobalToast === 'function') {
+                    window.showBoseGlobalToast("من فضلك ارفعي صورة التورتة اللي عايزة نقرب تصميمك منها أولاً.");
+                }
+                if (replicaUploadZone) replicaUploadZone.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+        }
+
+        if (wantsGiftCard && giftCardText === "") {
+            if (typeof window.showBoseGlobalToast === 'function') {
+                window.showBoseGlobalToast("من فضلك اكتبي الكلام اللي حابة نكتبه على كارت الإهداء.");
+            }
+            if (giftCardTextInput) giftCardTextInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        }
+
         const masterProduct = window.BoseStoreData?.products?.find(p => p.slug === "toort-custom-master") || {
             slug: "toort-custom-master",
             title: "التورت",
@@ -378,7 +646,11 @@ function startEngineLogic() {
             allergyNote: allergyText,
             flavorName: "تصميم خاص حسب الطلب",
             isGift: selectedPurpose === 'gift',
-            moodLabel: moodLabelMap[selectedMood] || ""
+            moodLabel: moodLabelMap[selectedMood] || "",
+            occasionLabel: selectedOccasionLabel,
+            hasReplicaDesign: wantsReplica && !!uploadedReplicaPhotoUrl,
+            hasGiftCard: wantsGiftCard && giftCardText !== "",
+            giftCardText: giftCardText
         };
 
         const finalCartItem = window.createCartItem(masterProduct, customOptions, 1);
@@ -387,16 +659,22 @@ function startEngineLogic() {
             let localCartRaw = localStorage.getItem('bose_cart');
             let boseCart = localCartRaw ? JSON.parse(localCartRaw) : [];
             
-            finalCartItem.finalPrice = window.calculateCustomCakePrice(currentPersons, { printingType: selectedPrinting });
+            finalCartItem.finalPrice = window.calculateCustomCakePrice(currentPersons, {
+                printingType: selectedPrinting,
+                hasGiftCard: customOptions.hasGiftCard
+            });
             finalCartItem.type = "custom-cake";
 
-            // 🛡️ [إصلاح حرج]: صورة الطباعة اللي العميل رفعها (uploadedCakePhotoUrl)
-            // كانت بتتستخدم بس في المعاينة على الصفحة ومش بتتحط في عنصر السلة خالص،
-            // فالطلب كان بيوصل من غير الصورة تماماً لو العميل اختار طباعة صورة على
-            // التورتة. نفس آلية flower-engine.js بالظبط (finalCartItem.image).
-            if (selectedPrinting !== 'none' && uploadedCakePhotoUrl) {
-                finalCartItem.image = uploadedCakePhotoUrl;
-                finalCartItem.referenceImages = [uploadedCakePhotoUrl];
+            // 🛡️ [إصلاح حرج]: صورة الطباعة والصورة المرجعية للتقليد بيتحطوا في
+            // referenceImages من غير تكرار نفس الرابط مرتين لو نفس الصورة -
+            // وصورة الغلاف (image) بتفضّل صورة "التقليد" لو موجودة لأنها أوضح
+            // تعبيراً عن شكل التصميم النهائي المطلوب من صورة الطباعة الفردية.
+            const refImages = [];
+            if (customOptions.hasReplicaDesign && uploadedReplicaPhotoUrl) refImages.push(uploadedReplicaPhotoUrl);
+            if (selectedPrinting !== 'none' && uploadedCakePhotoUrl && uploadedCakePhotoUrl !== uploadedReplicaPhotoUrl) refImages.push(uploadedCakePhotoUrl);
+            if (refImages.length > 0) {
+                finalCartItem.image = refImages[0];
+                finalCartItem.referenceImages = refImages;
             }
             
             boseCart.push(finalCartItem);
@@ -420,16 +698,29 @@ function startEngineLogic() {
             document.querySelector('input[name="cake_printing"][value="none"]').checked = true;
             document.querySelector('input[name="cake_purpose"][value="self"]').checked = true;
             moodRadios.forEach((radio) => { radio.checked = false; });
+            occasionRadios.forEach((radio) => { radio.checked = false; });
+            selectedOccasionLabel = "";
             if (moodNoteBox) moodNoteBox.classList.remove('show');
+            if (occasionNoteBox) occasionNoteBox.classList.remove('show');
+            if (replicaToggle) replicaToggle.checked = false;
+            if (giftCardToggle) giftCardToggle.checked = false;
+            if (giftCardTextInput) giftCardTextInput.value = "";
+            uploadedCakePhotoUrl = "";
+            uploadedReplicaPhotoUrl = "";
             updateFlavorSensoryNote();
             updateGiftModeWording();
             toggleCakePhotoUploadSection();
+            toggleReplicaUploadSection();
+            toggleGiftCardSection();
 
             currentActiveStep = 1;
             syncWizardPanelsUI();
             evaluateSimulatorState();
         }
-    });
+    }
+
+    btnCartSubmit.addEventListener('click', submitCakeToCart);
+    if (btnCartSubmitSummary) btnCartSubmitSummary.addEventListener('click', submitCakeToCart);
 
     syncWizardPanelsUI();
     evaluateSimulatorState();
@@ -449,4 +740,4 @@ if (window.BoseStoreData && window.BoseStoreData.store) {
     document.addEventListener("BoseDatabaseLoaded", () => {
         startEngineLogic();
     });
-}
+            }
