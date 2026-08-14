@@ -117,6 +117,49 @@
                         </div>
                     </div>
 
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header">
+                            <div><h2><i class="fa-solid fa-gift"></i> كارت إهداء التورت</h2><p>كارت ورقي مطبوع يتقدم مع التورتة، زي كارت إهداء الورد بالظبط</p></div>
+                            <label class="adm-checkbox-label">
+                                <input type="checkbox" id="cake-giftcard-enabled">
+                                الخيار متاح للعميل
+                            </label>
+                        </div>
+                        <div class="adm-form-grid">
+                            <div class="adm-field">
+                                <label for="cake-giftCard-price">سعر كارت الإهداء (ج.م)</label>
+                                <input type="number" step="0.01" class="adm-input" id="cake-giftCard-price">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header"><div><h2><i class="fa-solid fa-image"></i> صورة تصميم مطلوب تقليده</h2><p>يسمح للعميل يبعت صورة تورتة عايز نقرب تصميمنا منها</p></div></div>
+                        <div class="adm-field">
+                            <label for="cake-replicaUpload-note">نص توضيحي يظهر للعميل تحت الخيار ده</label>
+                            <textarea class="adm-textarea" id="cake-replicaUpload-note"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header"><div><h2><i class="fa-solid fa-cake-candles"></i> مناسبات التورتة</h2><p>لما العميل يختار مناسبة، بنرشحله شكل مناسب لها تلقائياً (زي فرح، عيد ميلاد، مولود...)</p></div></div>
+                        <div class="adm-curated-list" id="list-cake-occasions"></div>
+                        <button type="button" class="adm-btn adm-btn-outline adm-btn-sm" id="add-cake-occasion-btn"><i class="fa-solid fa-plus"></i> إضافة مناسبة</button>
+                    </div>
+
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header"><div><h2><i class="fa-solid fa-images"></i> صور محاكي التورت</h2><p>صورة البانر الرئيسي، ومعرض "تورت شرفت عملاءنا" اللي بيظهر تحت المحاكي - أي صورة هنا بتتحدث على الموقع فوراً بعد الحفظ</p></div></div>
+                        <div class="adm-field">
+                            <label>صورة البانر الرئيسي</label>
+                            <div class="adm-curated-list" id="cake-hero-image-slot"></div>
+                        </div>
+                        <div class="adm-field">
+                            <label>معرض "تورت شرفت عملاءنا" (الاسم هنا بيتحط كنص بديل alt للصورة)</label>
+                            <div class="adm-curated-list" id="list-cake-gallery"></div>
+                            <button type="button" class="adm-btn adm-btn-outline adm-btn-sm" id="add-cake-gallery-btn"><i class="fa-solid fa-plus"></i> إضافة صورة للمعرض</button>
+                        </div>
+                    </div>
+
                     <!-- ============================= محاكي الورد ============================= -->
 
                     <div class="adm-card adm-mt-16">
@@ -179,6 +222,19 @@
                         <div class="adm-card-header"><div><h2>فئات المبلغ المالي المرفق</h2><p>لو العميل حب يضيف مبلغ فلوس هدية مع الورد - المبلغ ورسوم إضافته</p></div></div>
                         <div class="adm-curated-list" id="list-money-categories"></div>
                         <button type="button" class="adm-btn adm-btn-outline adm-btn-sm" id="add-money-category-btn"><i class="fa-solid fa-plus"></i> إضافة فئة مبلغ</button>
+                    </div>
+
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header"><div><h2><i class="fa-solid fa-images"></i> صور محاكي الورد</h2><p>صورة البانر الرئيسي، ومعرض "بوكيهات شرفت عملائنا" اللي بيظهر تحت المحاكي - أي صورة هنا بتتحدث على الموقع فوراً بعد الحفظ</p></div></div>
+                        <div class="adm-field">
+                            <label>صورة البانر الرئيسي</label>
+                            <div class="adm-curated-list" id="flower-hero-image-slot"></div>
+                        </div>
+                        <div class="adm-field">
+                            <label>معرض "بوكيهات شرفت عملائنا" (الاسم هنا بيتحط كنص بديل alt للصورة)</label>
+                            <div class="adm-curated-list" id="list-flower-gallery"></div>
+                            <button type="button" class="adm-btn adm-btn-outline adm-btn-sm" id="add-flower-gallery-btn"><i class="fa-solid fa-plus"></i> إضافة صورة للمعرض</button>
+                        </div>
                     </div>
 
                 </div>
