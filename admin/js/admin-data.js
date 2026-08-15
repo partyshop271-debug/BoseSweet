@@ -354,45 +354,6 @@
         if (error) throw error;
     }
 
-    /**
-     * 🚨🚨 [إصلاح جذري حرج - قسم "الشريط العلوي المتحرك" كان بيكسّر صفحة الرئيسية بالكامل]:
-     * homepage-page.js بينادي window.BoseAdmin.getNavigationSettings() و updateNavigationSettings()
-     * لتحميل/حفظ رسائل وسرعة وتشغيل الشريط الإعلاني - لكن الدالتين دول معرّفتش هنا خالص من
-     * قبل، فأي فتح لصفحة "الواجهة الرئيسية" في لوحة التحكم كان بيرمي خطأ JS فوراً عند التحميل
-     * (`window.BoseAdmin.getNavigationSettings is not a function`) - يعني الصفحة كلها كانت
-     * بتفشل تحمل (مش بس قسم الشريط)، والحفظ (Promise.all) كان هيفشل كمان لو حصل بشكل جزئي.
-     * نفس بالظبط نمط getHomepageSettings/updateHomepageSettings فوق - عمود navigation
-     * الفعلي في store_settings (id=1) موجود ومتعمر بالبيانات الصح بالفعل، كان بس ناقص
-     * دالتين القراءة/الكتابة هنا.
-     */
-    async function getNavigationSettings() {
-        try {
-            const { data, error } = await client
-                .from("store_settings")
-                .select("navigation")
-                .eq("id", 1)
-                .maybeSingle();
-            if (error) throw error;
-            return (data && data.navigation) || {};
-        } catch (e) {
-            console.warn("تعذر جلب إعدادات التنقل/الشريط العلوي:", e.message);
-            return {};
-        }
-    }
-
-    /**
-     * بتستبدل عمود navigation بالكامل بالكائن الممرر - الصفحة اللي بتنادي الدالة دي
-     * مسؤولة إنها تجيب القيم الحالية الأول وتعدّل عليها (مش تبعت كائن جزئي) عشان الحقول
-     * اللي الصفحة مش بتعدّل عليها (زي menuItems و showCart و showSearch) متتمسحش.
-     */
-    async function updateNavigationSettings(navigation) {
-        const { error } = await client
-            .from("store_settings")
-            .update({ navigation, updated_at: new Date().toISOString() })
-            .eq("id", 1);
-        if (error) throw error;
-    }
-
     /** يرجّع مصفوفة العروض (promotions) من صف store_settings الوحيد */
     async function getPromotions() {
         try {
@@ -919,8 +880,6 @@
         deleteProduct,
         getHomepageSettings,
         updateHomepageSettings,
-        getNavigationSettings,
-        updateNavigationSettings,
         getPromotions,
         savePromotions,
         getAllCoupons,
