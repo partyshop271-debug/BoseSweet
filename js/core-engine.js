@@ -773,8 +773,21 @@
                     <i class="fa-solid fa-basket-shopping"></i> اضافة للسلة
                </button>`;
 
+        // 🚨🚨 [إصلاح جذري حرج - كارثة "حجم" وهمي في فاتورة الواتساب - أخطر بقعة في
+        // الموقع كله]: data-selected-size كانت بتتحط بـ defaultSizeKey دايماً حتى لو
+        // hasMultipleSizes=false (يعني تبويب اختيار الحجم نفسه مش ظاهر أصلاً للعميل -
+        // sizeTabsHtml فاضية في الحالة دي). ده كان معناه إن أي منتج عنده كائن prices
+        // بمفاتيح متعددة لكن كلها بنفس السعر بالظبط (زي "الميني تورت": triangle/medium/large
+        // الثلاثة بـ154 جنيه) كان بيتضاف للسلة بحجم وهمي "مثلث" مثلاً من غير ما العميل
+        // يشوف أو يختار أي حجم خالص - وهو بالظبط سبب وصول "مثلث"/"طاجن" غلط تماماً في
+        // فاتورة واتساب لمنتجات زي الميني تورت أصلاً معندهاش أحجام حقيقية. دلوقتي
+        // data-selected-size بتتربط فقط لو فيه فرق سعر حقيقي بين الأحجام
+        // (hasMultipleSizes=true) - بالظبط نفس شرط ظهور تبويب الحجم نفسه، عشان
+        // مفيش قيمة تتسرب من غير ما العميل يشوفها أو يختارها فعلياً. هذا الكارت
+        // (createProductCardHTML) هو المصدر المستخدم في كل مكان بالموقع (الرئيسية،
+        // الفئات، العروض، المقترحات) - فالإصلاح هنا بيغطي كل الأماكن دفعة واحدة.
         return `
-            <div class="product-card-unified${hasDiscount ? ' bose-offer-card' : ''}${isUnavailable ? ' bose-unavailable-card' : ''}" data-id="${product.id}" data-selected-size="${defaultSizeKey || ''}" onclick="if(!event.target.closest('.product-card-qty-wrapper') && !event.target.closest('.btn-add-to-cart') && !event.target.closest('.bose-card-size-tabs')){ window.location.href='product.html?slug=${encodeURIComponent(product.slug)}'; }" style="cursor:pointer;">
+            <div class="product-card-unified${hasDiscount ? ' bose-offer-card' : ''}${isUnavailable ? ' bose-unavailable-card' : ''}" data-id="${product.id}" data-selected-size="${hasMultipleSizes ? (defaultSizeKey || '') : ''}" onclick="if(!event.target.closest('.product-card-qty-wrapper') && !event.target.closest('.btn-add-to-cart') && !event.target.closest('.bose-card-size-tabs')){ window.location.href='product.html?slug=${encodeURIComponent(product.slug)}'; }" style="cursor:pointer;">
                 ${discountBadgeHtml}
                 ${isUnavailable ? `<div class="offer-badge" style="background:rgba(17,17,17,0.75);">نفدت الكمية</div>` : ''}
                 <img src="${safeImg}" alt="${safeTitle}" class="product-card-img" width="300" height="300" loading="lazy" style="${isUnavailable ? 'filter:grayscale(60%); opacity:0.75;' : ''}" />
