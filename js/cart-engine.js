@@ -181,7 +181,13 @@ function renderBoseCartPage(storeData) {
                     if (cd.persons && parseInt(cd.persons, 10) > 0) specs.push(`<span><strong>عدد الأفراد:</strong> ${parseInt(cd.persons, 10)} فرد</span>`);
                     if (cd.printingType && cd.printingType !== "none") specs.push(`<span><strong>الطباعة:</strong> ${cd.printingType === 'edible' ? 'صورة صالحة للأكل' : 'صورة مجسمة غير صالحة للأكل'}</span>`);
                     if (cd.customMessage && cd.customMessage.trim() !== "") specs.push(`<span><strong>الرسالة المكتوبة:</strong> "${esc(cd.customMessage.trim())}"</span>`);
-                    if (cd.allergyNote && cd.allergyNote.trim() !== "") specs.push(`<span style="color:#FF91A4;"><strong>ملاحظة الحساسية:</strong> ${esc(cd.allergyNote.trim())}</span>`);
+                    // 🛡️ [إصلاح - تصنيف غلط لحقل الملاحظات]: حقل الملاحظات في صفحة "الطلب
+                    // السريع" (cake-quick-order.html) عنوانه صراحة "أي ملاحظات أو مشاكل صحية؟"
+                    // وبيقبل طلبات عادية زي "سكر خفيف" مش بس حساسيات فعلية - لكنه كان بيتخزن
+                    // وبيتعرض في كل مكان (السلة/الواتساب/لوحة التحكم) تحت تسمية "ملاحظة حساسية"
+                    // حصراً، وده ممكن يوهم الفرع إنها حساسية طبية لازم تتاخد بجدية استثنائية،
+                    // أو العكس يقلل من قيمة طلب فعلي مش حساسية. التسمية دلوقتي أعم وتغطي الحالتين.
+                    if (cd.allergyNote && cd.allergyNote.trim() !== "") specs.push(`<span style="color:#FF91A4;"><strong>⚠️ ملاحظات وحساسية:</strong> ${esc(cd.allergyNote.trim())}</span>`);
                 }
                 
                 if (isFlowerBespoke) {
@@ -219,8 +225,18 @@ function renderBoseCartPage(storeData) {
                 }
             }
 
+            // 🛡️ [إصلاح - خلط اسم النكهة في صفحة السلة]: كان الشرط هنا بيجبر أي صنف
+            // "تورت مخصص" أو "بوكيه مخصص" على تجاهل flavorName الصحيح والواضح اللي
+            // اتحط له وقت الإنشاء (زي "تصميم خاص حسب الطلب" أو "بوكيه مخصص (نوع الورد)")
+            // ويدوّر بدله على منتج بعنوان toort-custom-master/flowers-master في قاعدة
+            // البيانات - وهو صف تقني بس (نقطة دخول للمحاكي) مالوش نكهة حقيقية أصلاً،
+            // فكان بيظهر للعميل "جاهز وفريش" أو قيمة فاضية غريبة تحت التورت/البوكيه
+            // المخصص بتاعه في صفحة السلة، رغم إن رسالة الواتساب نفسها كانت بتظهر صح
+            // (لأنها بتقرا item.flavorName مباشرة من غير المرور على المنطق ده). دلوقتي
+            // بنستخدم flavorName الأصلي الصحيح دايماً، وبنلجأ للبحث في قاعدة البيانات
+            // بس لو هو فعلاً فاضي/غير صالح - نفس المعيار المستخدم في المنتجات العادية.
             let cleanFlavorName = item.flavorName;
-            if (!cleanFlavorName || cleanFlavorName === "افتراضي" || cleanFlavorName === "none" || isCakeBespoke || isFlowerBespoke) {
+            if (!cleanFlavorName || cleanFlavorName === "افتراضي" || cleanFlavorName === "none") {
                 if (storeData && storeData.products) {
                     const matchedDbProd = storeData.products.find(p => p.slug === item.productSlug);
                     cleanFlavorName = matchedDbProd ? matchedDbProd.flavorName : "جاهز وفريش";
@@ -929,7 +945,7 @@ function buildBoseFormattedWhatsappInvoice(order) {
                 if (cd.persons && cd.persons > 0) msg += `   • الأفراد: لـ ${cd.persons} فرد\n`;
                 if (cd.printingType && cd.printingType !== "none") msg += `   • طباعة صورة: ${cd.printingType === 'edible' ? 'قابلة للأكل' : 'غير قابلة للأكل'}\n`;
                 if (cd.customMessage && cd.customMessage.trim() !== "") msg += `   • النص: "${cd.customMessage}"\n`;
-                if (cd.allergyNote && cd.allergyNote.trim() !== "") msg += `   • ⚠️ ملاحظة حساسية: ${cd.allergyNote.trim()}\n`;
+                if (cd.allergyNote && cd.allergyNote.trim() !== "") msg += `   • ⚠️ ملاحظات وحساسية: ${cd.allergyNote.trim()}\n`;
                 if (cd.hasGiftCard && cd.giftCardText && cd.giftCardText.trim() !== "") msg += `   • كارت إهداء: "${cd.giftCardText.trim()}"\n`;
                 // 🖼️ [تمييز الصور - إصلاح جذري]: قبل كده كل الصور المرفوعة كانت
                 // بتظهر في قايمة واحدة مجهولة "صورة مرجعية 1 / 2" من غير أي توضيح
@@ -988,6 +1004,22 @@ function buildBoseFormattedWhatsappInvoice(order) {
 
     msg += `📝 *ملاحظات:* ${order.notes}\n`;
     msg += `--------------------------------------------------\n`;
+    // 🧾 [إصلاح - اختفاء تفاصيل الحساب المالي]: الرسالة كانت بتقفز مباشرة من قايمة
+    // المنتجات لـ"المجموع النهائي" من غير أي سطر يوضح إجمالي المنتجات قبل الخصم،
+    // ولا مصاريف التوصيل، ولا قيمة/كود أي كوبون خصم اتطبق - رغم إن كل القيم دي
+    // كانت محسوبة ومحفوظة فعلياً جوه بيانات الطلب (order.subtotal/discountAmount/
+    // couponCode/shippingFee) ومش بتوصل للفرع خالص. ده كان بيخلي فريق المبيعات
+    // مش قادر يتأكد ليه المجموع أقل من المتوقع (خصم كوبون؟ غلطة حسابية؟)، ولا
+    // يعرف يتابع استخدام أكواد الخصم من واقع رسايل الطلبات نفسها.
+    if (order.subtotal !== undefined && order.subtotal !== null) {
+        msg += `🧮 *إجمالي المنتجات قبل الخصم:* ${order.subtotal} EGP\n`;
+    }
+    if (order.discountAmount && parseFloat(order.discountAmount) > 0) {
+        msg += `🏷️ *خصم كوبون${order.couponCode ? ` (${order.couponCode})` : ''}:* -${order.discountAmount} EGP\n`;
+    }
+    if (order.shippingFee && parseFloat(order.shippingFee) > 0) {
+        msg += `🚚 *مصاريف التوصيل:* ${order.shippingFee} EGP\n`;
+    }
     msg += `👑 *المجموع المالي النهائي:* ${order.grandTotal} EGP 👑\n`;
     // 💵 [عربون/دفع مقدم]: توضيح صريح لطريقة ووقت الدفع - استلام = عربون 50%
     // والباقي عند الاستلام، توصيل = كامل المبلغ مقدماً وقت تأكيد الحجز.

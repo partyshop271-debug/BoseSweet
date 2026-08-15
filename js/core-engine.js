@@ -1852,11 +1852,27 @@
      * البلوك البصري الكبير بالصفحة الرئيسية - نفس الدالة الموحدة المستخدمة في
      * نافذة الترحيب بالظبط.
      */
+    /**
+     * 👑 [إصلاح جذري - صدق مع العميل]: كان في زرارين منفصلين (Apple/Google Play)
+     * كل واحد بيعمل نفس حاجة triggerBoseAppInstall بالظبط - بقى زرار واحد بس
+     * (app-promo-install-btn) بنفس سلوك النافذة المنبثقة الصادقة: على آيفون
+     * (اللي أصلاً مش بيدعم بروميت التثبيت التلقائي من متصفح Safari) بنوري تعليمات
+     * حقيقية دقيقة (زرار المشاركة → إضافة للشاشة الرئيسية) بدل ما نسيبها تفتح
+     * توست عام مش دقيق كفاية لصفاري تحديداً.
+     */
     function setupAppPromoBlockButtons() {
-        const iosBtn = document.getElementById('app-promo-appstore-btn');
-        const androidBtn = document.getElementById('app-promo-googleplay-btn');
-        if (iosBtn) iosBtn.addEventListener('click', () => window.triggerBoseAppInstall());
-        if (androidBtn) androidBtn.addEventListener('click', () => window.triggerBoseAppInstall());
+        const installBtn = document.getElementById('app-promo-install-btn');
+        if (!installBtn) return;
+        const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+        installBtn.addEventListener('click', () => {
+            if (isIOS) {
+                if (window.showBoseGlobalToast) {
+                    window.showBoseGlobalToast('من متصفح Safari: اضغطي زر "المشاركة" تحت، واختاري "إضافة إلى الشاشة الرئيسية"');
+                }
+            } else {
+                window.triggerBoseAppInstall();
+            }
+        });
     }
 
     /**
