@@ -116,6 +116,10 @@
             // أو نص فاضي بيتعرض غلط - الواجهة (createProductCardHTML وصفحة المنتج)
             // بترسم البادچ ده بس لو فيه نص فعلي.
             quantityNote: p.quantity_note || null,
+            // 🚨 [توضيح كمية مختلف لكل حجم]: زي sizeDescriptions بالظبط، بس لبادچ الكمية
+            // نفسه (مثال: الديسباسيتو مثلث/طاجن/حجم عائلي - كل حجم له توضيح مختلف).
+            // لو الحجم المختار مالوش نص هنا، الواجهة بترجع تلقائياً لـ quantityNote العادي.
+            sizeQuantityNotes: p.size_quantity_notes || {},
             builderType: p.builder_type,
             customBuilderUrl: p.custom_builder_url,
             searchTerms: p.search_terms || [],
