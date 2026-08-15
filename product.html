@@ -1108,8 +1108,18 @@
             async function submitReviewToBackend(review) {
                 if (!currentProduct) return false;
                 if (!window.BoseSupabase || typeof window.BoseSupabase.submitBoseReview !== "function") {
-                    if (typeof window.showBoseToast === 'function') {
-                        window.showBoseToast("تعذر إرسال المراجعة حالياً، حاولي تحديث الصفحة أو المحاولة لاحقاً 🌸");
+                    // 🚨🚨 [إصلاح جذري حرج - كل رسائل التنبيه في صفحة المنتج كانت صامتة تماماً]:
+                    // كل استدعاءات التنبيه في هذا الملف كانت بتنادي على "window.showBoseToast"
+                    // - دالة مش موجودة خالص في أي مكان بالموقع (الاسم الحقيقي المعرّف فعلياً في
+                    // core-engine.js هو window.showBoseGlobalToast). وبسبب فحص الأمان
+                    // `typeof ... === 'function'` قبل كل نداء، كان الكود بيفشل بصمت تام من غير
+                    // أي خطأ في الـconsole حتى - يعني 8 رسائل تنبيه مختلفة في الصفحة دي كانت
+                    // بتختفي نهائياً ومحدش كان بيلاحظ، من ضمنها أهم رسالة على الإطلاق: تأكيد
+                    // "تمت الإضافة للسلة بنجاح" - العميلة كانت بتضغط الزرار ومفيش أي تأكيد
+                    // بصري بيوضح إن الإضافة نجحت فعلاً. دلوقتي كل الاستدعاءات بتنادي الاسم
+                    // الحقيقي الصحيح.
+                    if (typeof window.showBoseGlobalToast === 'function') {
+                        window.showBoseGlobalToast("تعذر إرسال المراجعة حالياً، حاولي تحديث الصفحة أو المحاولة لاحقاً 🌸");
                     }
                     return false;
                 }
@@ -1286,8 +1296,8 @@
                             window.updateGlobalCartCounter();
                         }
                         document.dispatchEvent(new CustomEvent('BoseCartUpdated'));
-                        if (typeof window.showBoseToast === 'function') {
-                            window.showBoseToast(`تمت إضافة ${currentMasterQuantity} من ${currentProduct.title} بنجاح لراحتك 🌸`);
+                        if (typeof window.showBoseGlobalToast === 'function') {
+                            window.showBoseGlobalToast(`تمت إضافة ${currentMasterQuantity} من ${currentProduct.title} بنجاح لراحتك 🌸`);
                         }
                     }
                 } else {
@@ -1325,8 +1335,8 @@
                     if (typeof window.updateGlobalCartCounter === "function") {
                         window.updateGlobalCartCounter();
                     }
-                    if (typeof window.showBoseToast === 'function') {
-                        window.showBoseToast(`تمت إضافة المنتج بنجاح لراحتك 🌸`);
+                    if (typeof window.showBoseGlobalToast === 'function') {
+                        window.showBoseGlobalToast(`تمت إضافة المنتج بنجاح لراحتك 🌸`);
                     }
                 }
             });
@@ -1491,7 +1501,7 @@
                 const files = Array.from(this.files).filter(f => f.type.startsWith("image/"));
                 const remainingSlots = MAX_REVIEW_IMAGES - uploadedImageUrls.length;
                 if (remainingSlots <= 0) {
-                    if (typeof window.showBoseToast === 'function') window.showBoseToast(`أقصى عدد صور للمراجعة ${MAX_REVIEW_IMAGES} صور 🌸`);
+                    if (typeof window.showBoseGlobalToast === 'function') window.showBoseGlobalToast(`أقصى عدد صور للمراجعة ${MAX_REVIEW_IMAGES} صور 🌸`);
                     this.value = "";
                     return;
                 }
@@ -1519,7 +1529,7 @@
                         placeholder.replaceWith(imgNode);
                     } catch (err) {
                         placeholder.remove();
-                        if (typeof window.showBoseToast === 'function') window.showBoseToast("تعذر رفع إحدى الصور، حاولي مرة أخرى 🌸");
+                        if (typeof window.showBoseGlobalToast === 'function') window.showBoseGlobalToast("تعذر رفع إحدى الصور، حاولي مرة أخرى 🌸");
                     }
                 }
 
@@ -1536,8 +1546,8 @@
 
             document.getElementById("btn-submit-premium-review").addEventListener("click", async () => {
                 if (isUploadingReviewImages) {
-                    if (typeof window.showBoseToast === 'function') {
-                        window.showBoseToast("لسه بترفع الصور، ثواني وهنكمل 🌸");
+                    if (typeof window.showBoseGlobalToast === 'function') {
+                        window.showBoseGlobalToast("لسه بترفع الصور، ثواني وهنكمل 🌸");
                     }
                     return;
                 }
@@ -1548,8 +1558,8 @@
                 const rating = checkedRadio ? checkedRadio.value : "5";
 
                 if (!userName || !comment) {
-                    if (typeof window.showBoseToast === 'function') {
-                        window.showBoseToast("يرجى ملء جميع الحقول المطلوبة قبل الإرسال 🌸");
+                    if (typeof window.showBoseGlobalToast === 'function') {
+                        window.showBoseGlobalToast("يرجى ملء جميع الحقول المطلوبة قبل الإرسال 🌸");
                     }
                     return;
                 }
@@ -1585,8 +1595,8 @@
                 formWrapper.style.display = 'none';
                 toggleFormBtn.innerHTML = `<i class="fas fa-pen"></i> شاركي رأيك في أقل من دقيقة`;
 
-                if (typeof window.showBoseToast === 'function') {
-                    window.showBoseToast("تم إرسال مراجعتك بنجاح، هتظهر لباقي الزوار بعد اعتمادها من الإدارة 🌸");
+                if (typeof window.showBoseGlobalToast === 'function') {
+                    window.showBoseGlobalToast("تم إرسال مراجعتك بنجاح، هتظهر لباقي الزوار بعد اعتمادها من الإدارة 🌸");
                 }
             });
 
