@@ -421,7 +421,7 @@
         const ourProductsSection = document.getElementById('our-products-section');
         if (ourProductsSection) {
             const titleEl = document.getElementById('our-products-main-heading') || ourProductsSection.querySelector('h2');
-            if (titleEl) titleEl.textContent = "منيو حلويات بوسي";
+            if (titleEl) titleEl.textContent = "منتجاتنا";
             const descEl = document.getElementById('our-products-description') || ourProductsSection.querySelector('.bose-section-subtitle');
             if (descEl) descEl.textContent = "منيو حلويات بوسي بالكامل: تشكيلة غنية، بنحضرها طازة كل يوم بمكونات طبيعية 100%.";
         }
@@ -734,6 +734,15 @@
             `;
         }
 
+        // 🖼️🛡️ [إصلاح جذري - الصورة مش بتتغيّر مع الحجم]: الكارت هنا كان دايماً
+        // بيعرض images[0] بس، حتى لو المنتج (زي الديسباسيتو والريدڤيلڤت) عنده
+        // صورة مختلفة مسجلة لكل حجم في product.sizeImages (نفس البيانات اللي
+        // صفحة المنتج وصفحة الفئة بيستخدموها بالفعل). دلوقتي بيبدأ بصورة الحجم
+        // الافتراضي المختار لو موجودة، وبيترك data-size-img عشان handleBoseCardSizeChange
+        // يقدر يبدّلها لحظياً لما العميل يغيّر تبويب الحجم.
+        const defaultSizeImgRaw = (product.sizeImages && defaultSizeKey && product.sizeImages[defaultSizeKey]) ? product.sizeImages[defaultSizeKey] : rawImg;
+        const cardImg = window.optimizeBoseImageUrl(defaultSizeImgRaw, 400);
+
         const calculatedPrice = window.calculateProductFinalPrice(product, hasMultipleSizes ? { size: defaultSizeKey } : {});
         const hasDiscount = !!(product.oldPrice && product.oldPrice > product.price);
         let discountBadgeHtml = '';
@@ -771,7 +780,7 @@
             <div class="product-card-unified${hasDiscount ? ' bose-offer-card' : ''}${isUnavailable ? ' bose-unavailable-card' : ''}" data-id="${product.id}" data-selected-size="${defaultSizeKey || ''}" onclick="if(!event.target.closest('.product-card-qty-wrapper') && !event.target.closest('.btn-add-to-cart') && !event.target.closest('.bose-card-size-tabs')){ window.location.href='product.html?slug=${encodeURIComponent(product.slug)}'; }" style="cursor:pointer;">
                 ${discountBadgeHtml}
                 ${isUnavailable ? `<div class="offer-badge" style="background:rgba(17,17,17,0.75);">نفدت الكمية</div>` : ''}
-                <img src="${safeImg}" alt="${safeTitle}" class="product-card-img" width="300" height="300" loading="lazy" style="${isUnavailable ? 'filter:grayscale(60%); opacity:0.75;' : ''}" />
+                <img src="${cardImg}" alt="${safeTitle}" class="product-card-img" data-size-img="1" width="300" height="300" loading="lazy" style="${isUnavailable ? 'filter:grayscale(60%); opacity:0.75;' : ''}" />
                 <h3 class="product-card-title">${safeTitle}</h3>
                 <span class="product-card-flavor-name">${safeFlavor}</span>
                 <p class="product-card-desc">${safeDesc}</p>
@@ -820,6 +829,25 @@
             priceDisplay.dataset.basePrice = String(newPrice);
             const priceSpan = priceDisplay.querySelector('span');
             if (priceSpan) priceSpan.textContent = `${Math.round(newPrice)} جنيه`;
+        }
+
+        // 🖼️🛡️ [إصلاح جذري - الصورة مش بتتغيّر مع الحجم]: نفس الإصلاح المطبّق في
+        // category.html، لكن هنا في المحرك الموحد اللي بيغذي كروت الرئيسية/العروض/
+        // المقترحات كلها. لو المنتج عنده صورة مسجلة للحجم الجديد في sizeImages
+        // بنبدّلها بفيد بسيط، ولو مفيش صورة مخصصة لهذا الحجم بتفضل الصورة الحالية
+        // زي ما هي (مفيش أي كسر أو صورة فاضية).
+        const imgNode = card.querySelector('.product-card-img[data-size-img]');
+        if (imgNode && product.sizeImages && product.sizeImages[sizeKey]) {
+            const newImgUrl = product.sizeImages[sizeKey];
+            const optimizedUrl = window.optimizeBoseImageUrl(newImgUrl, 400);
+            if (imgNode.getAttribute('src') !== optimizedUrl) {
+                imgNode.style.transition = 'opacity 0.15s ease';
+                imgNode.style.opacity = '0.4';
+                setTimeout(() => {
+                    imgNode.src = optimizedUrl;
+                    imgNode.style.opacity = '1';
+                }, 120);
+            }
         }
     };
 
@@ -876,9 +904,25 @@
 
         const ourProductsGrid = document.getElementById('our-products-grid');
         if (ourProductsGrid && data.homepage.ourProducts) {
-            const initialItems = data.homepage.ourProducts.slice(0, 4).map(/** @param {string} id */ (id) => data.products.find((/** @type {any} */ p) => p.id === id || p.slug === id)).filter(Boolean);
+            const initialItems = data.homepage.ourProducts.slice(0, 4).map(/** @param {string} id */ (id) => data.products.find((/** @type {any} */ p) => p.id === id || p.slug === id)).filter(Boolean).filter(isSingleSizeProduct);
             ourProductsGrid.innerHTML = initialItems.map((/** @type {any} */ p) => createProductCardHTML(p)).join('');
         }
+    }
+
+    // 🛡️👑 [إصلاح جذري - "منتجاتنا" كارت ممطوط]: قسم "منتجاتنا" في الرئيسية
+    // (عمودين جنب بعض بس) اتصمم من الأول على أساس كل الكروت نفس الارتفاع بالظبط.
+    // منتج بيه أكتر من حجم حقيقي (زي الديسباسيتو والريدڤيلڤت) بيضيف بلوك تبويبات
+    // الحجم كامل (bose-mini-size-note + bose-card-size-tabs) جوه الكارت، فبيبقى
+    // أطول من الكارت المجاور ليه بشكل واضح ومقصوص العين - ده "الكارت الممطوط".
+    // الفلتر هنا بيمنع أي منتج متعدد الأحجام إنه يظهر في القسم ده خالص - سواء في
+    // العرض الأول أو زرار "استعرض المزيد" - حتى لو اتضاف بالغلط من لوحة التحكم
+    // في homepage.ourProducts مستقبلاً، فمفيش أي احتمال يرجع "الكارت الممطوط" تاني.
+    /** @param {any} product */
+    function isSingleSizeProduct(product) {
+        if (!product) return false;
+        const availableSizes = (product.prices && typeof product.prices === 'object') ? Object.keys(product.prices) : [];
+        const distinctSizePrices = new Set(availableSizes.map(s => product.prices[s]));
+        return !(availableSizes.length > 1 && distinctSizePrices.size > 1);
     }
 
     function setupOurProductsShowMore() {
@@ -895,7 +939,7 @@
             e.preventDefault();
             // 🛡️ [تحصين]: منع كسر JS لو ourProducts لسه مش متملي في لوحة التحكم
             if (!data.homepage || !data.homepage.ourProducts) return;
-            const allItems = data.homepage.ourProducts.map(/** @param {string} id */ (id) => data.products.find((/** @type {any} */ p) => p.id === id || p.slug === id)).filter(Boolean);
+            const allItems = data.homepage.ourProducts.map(/** @param {string} id */ (id) => data.products.find((/** @type {any} */ p) => p.id === id || p.slug === id)).filter(Boolean).filter(isSingleSizeProduct);
             ourProductsGrid.innerHTML = allItems.map((/** @type {any} */ p) => createProductCardHTML(p)).join('');
             showMoreBtn.style.setProperty('display', 'none', 'important'); 
         });
