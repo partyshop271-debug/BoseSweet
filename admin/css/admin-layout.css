@@ -351,6 +351,17 @@
     white-space: nowrap;
 }
 
+.adm-sortable-th {
+    cursor: pointer;
+    user-select: none;
+    transition: var(--adm-transition);
+}
+.adm-sortable-th i { font-size: 0.7rem; margin-inline-start: 4px; opacity: 0.5; }
+.adm-sortable-th:hover { color: var(--adm-text-primary); }
+.adm-sortable-th:hover i { opacity: 0.9; }
+.adm-sortable-th-active { color: var(--adm-pink); }
+.adm-sortable-th-active i { opacity: 1; color: var(--adm-pink); }
+
 .adm-table tbody td {
     padding: 14px;
     border-bottom: 1px solid var(--adm-border-soft);
