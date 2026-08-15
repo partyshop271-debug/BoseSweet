@@ -627,7 +627,23 @@ html.adm-ready .adm-auth-gate { display: none; }
 .adm-orders-search { min-width: 240px; width: auto; }
 .adm-orders-status-filter { width: auto; min-width: 150px; }
 
+.adm-orders-bulk-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    margin: 0 0 12px;
+    background: var(--adm-danger-bg);
+    border: 1px solid var(--adm-danger);
+    border-radius: 10px;
+    font-weight: 600;
+    color: var(--adm-danger);
+}
+.adm-orders-bulk-bar .adm-btn { margin-inline-start: auto; }
+.adm-orders-bulk-bar .adm-btn-ghost { margin-inline-start: 0; }
+
 .adm-clickable-row { cursor: pointer; }
+.adm-clickable-row td.adm-orders-checkbox-cell { cursor: default; }
 
 .adm-order-detail-grid {
     display: grid;
