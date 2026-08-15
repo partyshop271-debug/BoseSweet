@@ -1214,9 +1214,29 @@
                 if (typeof window.createCartItem === "function") {
                     const cartItemObj = window.createCartItem(currentProduct, currentSelectedOptions, currentMasterQuantity);
                     if (cartItemObj) {
+                        // 🚨🚨 [إصلاح جذري حرج - اختفاء الحجم الأغلى عند الإضافة من صفحة المنتج]:
+                        // كان التحقق من "هل الصنف ده موجود بالفعل في السلة" بيقارن بس
+                        // productSlug + flavorName - من غير الحجم المختار خالص. يعني لو
+                        // العميل ضغط "إضافة للسلة" بحجم "مثلث" (الأرخص) وبعدين غيّر رأيه
+                        // واختار "حجم عائلي" (الأغلى) وضغط إضافة تاني من نفس الصفحة، كان
+                        // بيتزود العدد بس على السطر الأول القديم بسعر وحجم المثلث، وحجم
+                        // العائلي اللي اختاره فعلاً كان بيضيع تماماً بصمت - يعني الفرع كان
+                        // ممكن ينفذ حجم غلط تماماً عن اللي العميل دفع/طلب فيه فعلاً. دلوقتي
+                        // بنستخدم نفس منطق تمييز الأسطر المستخدم في كارت المنتجات
+                        // (product.slug + الحجم لو موجود) عشان كل حجم يتضاف كسطر منفصل
+                        // بحجمه وسعره الصح، ويتزود العدد بس لو نفس المنتج بنفس الحجم بالظبط.
+                        // نعدّل الـid بس لو ده صنف عادي (id الافتراضي = مجرد الـslug بدون أي
+                        // طابع زمني مميز) - عشان منلمسش الـid الفريد اللي createCartItem نفسه
+                        // بيولّده للأصناف المخصصة فعلاً (توبينج/طباعة مختلفة لكل عملية إضافة).
+                        const isDefaultStandardId = cartItemObj.id === String(currentProduct.slug || currentProduct.id);
+                        const cartLineId = (isDefaultStandardId && currentSelectedOptions.size)
+                            ? `${currentProduct.slug}-${currentSelectedOptions.size}`
+                            : cartItemObj.id;
+                        cartItemObj.id = cartLineId;
+
                         const rawCart = localStorage.getItem("bose_cart");
                         let cartArr = rawCart ? JSON.parse(rawCart) : [];
-                        const existingIdx = cartArr.findIndex(item => item.productSlug === cartItemObj.productSlug && item.flavorName === cartItemObj.flavorName);
+                        const existingIdx = cartArr.findIndex(item => item.id === cartLineId);
                         
                         if (existingIdx > -1) {
                             cartArr[existingIdx].quantity += currentMasterQuantity;
@@ -1238,9 +1258,17 @@
                     const rawCart = localStorage.getItem("bose_cart");
                     let cartArr = rawCart ? JSON.parse(rawCart) : [];
                     
-                    const finalUnitPrice = currentProduct.price;
+                    // نفس إصلاح الحجم المطبق فوق في المسار الأساسي - الـfallback ده نادراً ما
+                    // بيتفعّل (لو createCartItem مش محمّلة أصلاً)، لكن سيبناه بمنطق تمييز غلط
+                    // كان ممكن يكرر نفس مشكلة اختفاء الحجم.
+                    const finalUnitPrice = currentSelectedOptions.size && currentProduct.prices
+                        ? (currentProduct.prices[currentSelectedOptions.size] || currentProduct.price)
+                        : currentProduct.price;
+                    const fallbackId = currentSelectedOptions.size
+                        ? `${currentProduct.slug}-${currentSelectedOptions.size}`
+                        : String(currentProduct.id || currentProduct.slug);
                     const fallbackItem = {
-                        id: String(currentProduct.id || currentProduct.slug),
+                        id: fallbackId,
                         productSlug: currentProduct.slug,
                         title: currentProduct.title,
                         flavorName: currentProduct.flavorName || "كلاسيك",
@@ -1249,7 +1277,7 @@
                         image: currentProduct.image || (currentProduct.images ? currentProduct.images[0] : "")
                     };
                     
-                    const existingIdx = cartArr.findIndex(item => item.productSlug === fallbackItem.productSlug);
+                    const existingIdx = cartArr.findIndex(item => item.id === fallbackId);
                     if (existingIdx > -1) {
                         cartArr[existingIdx].quantity += currentMasterQuantity;
                     } else {
