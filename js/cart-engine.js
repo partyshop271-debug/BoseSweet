@@ -263,7 +263,7 @@ function renderBoseCartPage(storeData) {
                     
                     <div style="text-align: left; font-family: 'Cairo';">
                         <span class="qty-multiplication-label" style="display: ${item.quantity > 1 ? 'block' : 'none'}; font-size: 12px; color: #111111; opacity: 0.6; direction: ltr;">${finalProductPrice.toFixed(2)} × ${item.quantity}</span>
-                        <div class="cart-item-total-price" style="font-size: 18px; font-weight: 700; color: #FF91A4; white-space: nowrap;">${totalItemCost.toFixed(2)} <span style="font-size: 12px; font-weight: 700; color: #111111;">جنيه</span></div>
+                        <div class="cart-item-total-price" style="font-size: 18px; font-weight: 700; color: #FF91A4; white-space: nowrap;">${totalItemCost.toFixed(2)} <span style="font-size: 12px; font-weight: 700; color: #111111;">EGP</span></div>
                     </div>
                 </div>
             `;
@@ -287,7 +287,7 @@ function renderBoseCartPage(storeData) {
             multiLabel.style.display = item.quantity > 1 ? "block" : "none";
         }
         if (totalDisplay) {
-            totalDisplay.innerHTML = `${totalItemCost.toFixed(2)} <span style="font-size: 12px; font-weight: 700; color: #111111;">جنيه</span>`;
+            totalDisplay.innerHTML = `${totalItemCost.toFixed(2)} <span style="font-size: 12px; font-weight: 700; color: #111111;">EGP</span>`;
         }
     }
     
@@ -364,14 +364,14 @@ function updateCartSummary(cart, storeData) {
     // نفس المعادلة محلياً هنا (كانت بتفرق فعلياً عن checkout عند أي تعديل مستقبلي).
     const invoice = window.calculateBoseInvoice(cart, storeData, 0);
     
-    if (subtotalDisplay) subtotalDisplay.textContent = invoice.subtotal.toFixed(2) + " جنيه";
+    if (subtotalDisplay) subtotalDisplay.textContent = invoice.subtotal.toFixed(2) + " EGP";
     if (itemsCountDisplay) itemsCountDisplay.textContent = invoice.itemsCount;
     
     const discountDisplay = document.getElementById("summary-discount");
-    if (discountDisplay) discountDisplay.textContent = invoice.discount.toFixed(2) + " جنيه";
+    if (discountDisplay) discountDisplay.textContent = invoice.discount.toFixed(2) + " EGP";
     
     if (grandTotalDisplay) {
-        grandTotalDisplay.textContent = invoice.grandTotal + " جنيه";
+        grandTotalDisplay.textContent = invoice.grandTotal + " EGP";
     }
     
     const promoInput = document.getElementById("coupon-input");
@@ -550,37 +550,7 @@ function renderBoseCheckoutPage(storeData) {
     if (submitOrderBtn) {
         submitOrderBtn.onclick = (e) => {
             e.preventDefault();
-            // 🛡️ [حماية من الضغط المتكرر/السبام]: منع ضغط الزرار أكتر من مرة أثناء
-            // إرسال نفس الطلب (double-submit)، وحد أدنى ٣٠ ثانية بين محاولتين
-            // لإرسال طلب جديد من نفس الجهاز.
-            if (submitOrderBtn.disabled) return;
-            // 🛡️ [فحص حقل الفخ]: لو الحقل المخفي اتملى، ده بوت شبه مؤكد - بنتجاهل
-            // الطلب بصمت (من غير أي رسالة خطأ تفيد البوت إن فيه فحص أصلاً).
-            const hpField = document.getElementById("checkout-hp-field");
-            if (hpField && hpField.value.trim() !== "") return;
-            const rl = window.boseCheckClientRateLimit ? window.boseCheckClientRateLimit("order-submit", 30000) : { allowed: true };
-            if (!rl.allowed) {
-                if (typeof window.showBoseGlobalToast === "function") {
-                    window.showBoseGlobalToast(`يرجى الانتظار ${rl.secondsLeft} ثانية قبل إرسال طلب جديد.`, "error");
-                }
-                return;
-            }
-            const originalBtnHtml = submitOrderBtn.innerHTML;
-            submitOrderBtn.disabled = true;
-            submitOrderBtn.style.opacity = "0.6";
-            submitOrderBtn.style.pointerEvents = "none";
-            Promise.resolve(processFinalBoseOrder(cart, storeData, currentShippingMethod, selectedShippingFee, payFullSelected))
-                .catch(() => {})
-                .finally(() => {
-                    // بنسيب الزرار متعطل لو التنقل الفعلي لصفحة النجاح هيحصل عادي؛
-                    // بس لو حصل خطأ وقف قبل التنقل، لازم نرجّع الزرار قابل للاستخدام.
-                    setTimeout(() => {
-                        submitOrderBtn.disabled = false;
-                        submitOrderBtn.style.opacity = "";
-                        submitOrderBtn.style.pointerEvents = "";
-                        submitOrderBtn.innerHTML = originalBtnHtml;
-                    }, 4000);
-                });
+            processFinalBoseOrder(cart, storeData, currentShippingMethod, selectedShippingFee, payFullSelected);
         };
     }
 }
@@ -640,7 +610,7 @@ function updateBoseDepositPaymentBox(storeData, grandTotal, method, payFull) {
     if (payChoiceRow) payChoiceRow.style.display = method === "delivery" ? "none" : "flex";
 
     const { depositAmount, remainingAmount } = calculateBoseDepositAmount(grandTotal, method, payFull);
-    amountEl.textContent = depositAmount.toFixed(2) + " جنيه";
+    amountEl.textContent = depositAmount.toFixed(2) + " EGP";
 
     if (method === "delivery") {
         if (labelEl) labelEl.textContent = "المبلغ الكامل المطلوب دفعه الآن لتأكيد الحجز (توصيل):";
@@ -651,7 +621,7 @@ function updateBoseDepositPaymentBox(storeData, grandTotal, method, payFull) {
     } else {
         if (labelEl) labelEl.textContent = "عربون تأكيد الحجز المطلوب الآن (50%):";
         if (remainingRow) remainingRow.style.display = "flex";
-        if (remainingAmountEl) remainingAmountEl.textContent = remainingAmount.toFixed(2) + " جنيه";
+        if (remainingAmountEl) remainingAmountEl.textContent = remainingAmount.toFixed(2) + " EGP";
     }
 
     if (phoneEl) phoneEl.textContent = storeData?.store?.phone || "01097238441";
@@ -665,13 +635,13 @@ function recalculateCheckoutInvoice(cart, storeData, shippingFee, method, payFul
     // 🧮 [توحيد حسابي]: نفس دالة السلة بالظبط، فرق الشحن بس بيتمرر كباراميتر
     const invoice = window.calculateBoseInvoice(cart, storeData, shippingFee);
 
-    if (subtotalDisplay) subtotalDisplay.textContent = invoice.subtotal.toFixed(2) + " جنيه";
+    if (subtotalDisplay) subtotalDisplay.textContent = invoice.subtotal.toFixed(2) + " EGP";
     if (shippingDisplay) {
-        shippingDisplay.textContent = invoice.shippingFee === 0 ? "مجاناً" : invoice.shippingFee.toFixed(2) + " جنيه";
+        shippingDisplay.textContent = invoice.shippingFee === 0 ? "مجاناً" : invoice.shippingFee.toFixed(2) + " EGP";
     }
     
     if (grandTotalDisplay) {
-        grandTotalDisplay.textContent = invoice.grandTotal + " جنيه";
+        grandTotalDisplay.textContent = invoice.grandTotal + " EGP";
     }
 
     updateBoseDepositPaymentBox(storeData, invoice.grandTotal, method || "pickup", payFull);
@@ -885,87 +855,82 @@ function processFinalBoseOrder(cart, storeData, method, shippingFee, payFull) {
     }
 }
 
-/**
- * 🏷️ [تحديد وحدة البيع الحقيقية لكل صنف]: كل تصنيف منتجات عندنا بيتباع بوحدة
- * قياس مختلفة (دستة/طاجن/قطعة/كب) ومكتوبة أصلاً في عنوان أو نكهة المنتج في
- * حالات، وناقصة في حالات تانية. الدالة دي بترجع اسم الوحدة الصريح بس لما يكون
- * فعلاً ناقص من عنوان/نكهة المنتج، عشان سطر الصنف في رسالة الواتساب يوضح
- * بالظبط "عايز إيه بأنهي كمية" من غير أي لبس أو تخمين من الفرع وقت التنفيذ.
- */
-function getBoseItemUnitLabel(item) {
-    const slug = item.productSlug || "";
-    if (item.type === "custom-cake") return "تورتة مخصصة (تصميم خاص)";
-    if (item.type === "custom-flower") return "بوكيه ورد مخصص (تصميم خاص)";
-    if (item.type === "mini-cake" || slug.startsWith("mini-cake")) return "تورتة ميني كاملة";
-    if (slug.startsWith("despacito-")) return "طاجن ديسباسيتو";
-    if (slug.startsWith("qashtota-")) return "طاجن قشطوطة";
-    if (slug.startsWith("cinabon-") && !slug.startsWith("promo-")) return "قطعة سينابون";
-    if (slug.startsWith("donuts-") && !slug.startsWith("promo-")) return "قطعة دوناتس";
-    if (slug.startsWith("happiness-cups-")) return "كب سعادة";
-    if (slug.startsWith("gateaux-")) return "دستة جاتوه";
-    // ملحوظة: الكب كيك والريدڤيلڤت والبوكسات الترويجية وبوكس الروقان مالهمش
-    // داعي لوحدة إضافية هنا، لأن الوحدة أصلاً مكتوبة بوضوح جوه اسم المنتج أو
-    // النكهة بتاعته (مثال: "دستة ميكس"، "ريدڤيلڤت - طاجن الروقان"، "بوكس 3 طاجن...").
-    return null;
-}
-
 function buildBoseFormattedWhatsappInvoice(order) {
-    // 🛡️ [إعادة هيكلة كاملة]: الرسالة دي مش فاتورة بتتبعت للعميل - هي أمر تنفيذ
-    // بيروح لخدمة المبيعات/الفرع علشان تجهّز الطلب بالظبط زي ما اتطلب. لازم
-    // تبقى واضحة وتفصيلية 100% في الصنف والنوع والكمية، وخالية تماماً من أي
-    // كلمة إنجليزي أو أي نص موجّه للعميل (ترحيب/شكر/تعليمات) مالوش لازمة هنا.
-    let msg = `📋 *طلب جديد - حلويات بوسي*\n`;
+    let msg = `✨ *فاتورة حجز طلبية فاخرة - حلويات بوسي (BoseSweets)* ✨\n`;
     msg += `--------------------------------------------------\n`;
-    msg += `🧾 *رقم الطلب:* ${order.orderId}\n`;
-    msg += `👤 *اسم العميل:* ${order.customerName}\n`;
-    msg += `📞 *رقم الهاتف:* ${order.phone1}\n`;
-    msg += `🚗 *طريقة الاستلام:* ${order.deliveryMethod}\n`;
-    msg += `📍 *العنوان:* ${order.address}\n`;
-    msg += `📅 *الموعد المطلوب:* ${order.scheduledDate} الساعة ${order.scheduledTime}\n`;
+    msg += `🧾 *رقم المعاملة:* ${order.orderId}\n`;
+    msg += `👤 *العميل:* ${order.customerName}\n`;
+    msg += `📞 *رقم الاتصال:* ${order.phone1}\n`;
+    msg += `🚗 *مسار الاستلام:* ${order.deliveryMethod}\n`;
+    msg += `📍 *التفاصيل الجغرافية:* ${order.address}\n`;
+    msg += `📅 *موعد الاستلام:* ${order.scheduledDate} الساعة ${order.scheduledTime}\n`;
     msg += `--------------------------------------------------\n`;
-    msg += `📦 *الأصناف المطلوبة:*\n\n`;
+    msg += `📦 *تفاصيل الأصناف المخصصة:* \n\n`;
 
     order.items.forEach((item, idx) => {
         const isCakeBespoke = item.type === "custom-cake" || item.type === "mini-cake" || item.productSlug === "toort-custom-master" || item.productSlug === "mini-cake-two-person";
-        const unitLabel = getBoseItemUnitLabel(item);
-        // 🎯 [صياغة صريحة للصنف والكمية]: بدل ما يتقال "عدد الوحدات: ×2" من غير
-        // ما يحدد الوحدة دي إيه، السطر دلوقتي بيقول بوضوح "المطلوب: طاجن قشطوطة
-        // - النكهة × الكمية" - نفس بالظبط الوحدة اللي بيتباع بيها المنتج فعلياً.
-        const itemLabel = unitLabel ? `${unitLabel} - ${item.title}` : item.title;
-        msg += `${idx + 1}. *المطلوب:* ${itemLabel} (${item.flavorName || 'جاهز وفريش'}) × ${item.quantity}\n`;
-        msg += `   *سعر الوحدة:* ${parseFloat(item.finalPrice).toFixed(2)} جنيه\n`;
+        msg += `${idx + 1}. 🌟 *${item.title}* (${item.flavorName || 'جاهز وفريش'})\n`;
+        // 🛡️ [إصلاح حرج - رسالة واتساب بتقول "1 قطعة" بدل الدستة/العبوة الحقيقية]:
+        // item.quantity هو عدد "الوحدات" اللي طلبها العميل (دستة، عبوة، تورتة... إلخ)
+        // مش عدد القطع الفردية جوه الوحدة الواحدة. كلمة "قطعة" الثابتة هنا كانت بتوهم
+        // الفرع إن العميل طلب قطعة واحدة فعلياً حتى لو المنتج نفسه "دستة (12 قطعة)"،
+        // لأن اسم واسم الوحدة الحقيقيين موجودين بالفعل جوه عنوان المنتج (item.title)
+        // ومفيش داعي إطلاقاً لتأكيد/تخمين وحدة تانية جنبه ممكن تكون غلط. النص الجديد
+        // بيوضح إنه "عدد الوحدات" (×) بدل ما يخترع وحدة قياس قد تكون غلط.
+        msg += `   *عدد الوحدات المطلوبة:* ×${item.quantity}\n`;
+        msg += `   *سعر الوحدة الشامل:* ${parseFloat(item.finalPrice).toFixed(2)} EGP\n`;
         
         if (item.customDetails) {
             const cd = item.customDetails;
             if (item.type === "custom-cake" || item.type === "mini-cake") {
-                if (cd.isGift) msg += `   • هدية لحد تاني\n`;
+                if (cd.isGift) msg += `   • 🎁 هدية لحد تاني\n`;
                 if (cd.occasionLabel && cd.occasionLabel.trim() !== "") msg += `   • المناسبة: ${cd.occasionLabel.trim()}\n`;
                 if (cd.cakeType && cd.cakeType !== "none" && cd.cakeType !== "افتراضي") msg += `   • طعم الكيك: ${cd.cakeType}\n`;
                 if (cd.shape && cd.shape !== "none") msg += `   • الشكل: ${cd.shape}\n`;
                 if (cd.persons && cd.persons > 0) msg += `   • الأفراد: لـ ${cd.persons} فرد\n`;
                 if (cd.printingType && cd.printingType !== "none") msg += `   • طباعة صورة: ${cd.printingType === 'edible' ? 'قابلة للأكل' : 'غير قابلة للأكل'}\n`;
                 if (cd.customMessage && cd.customMessage.trim() !== "") msg += `   • النص: "${cd.customMessage}"\n`;
-                if (cd.allergyNote && cd.allergyNote.trim() !== "") msg += `   • ملاحظة حساسية: ${cd.allergyNote.trim()}\n`;
+                if (cd.allergyNote && cd.allergyNote.trim() !== "") msg += `   • ⚠️ ملاحظة حساسية: ${cd.allergyNote.trim()}\n`;
                 if (cd.hasGiftCard && cd.giftCardText && cd.giftCardText.trim() !== "") msg += `   • كارت إهداء: "${cd.giftCardText.trim()}"\n`;
+                // 🖼️ [تمييز الصور - إصلاح جذري]: قبل كده كل الصور المرفوعة كانت
+                // بتظهر في قايمة واحدة مجهولة "صورة مرجعية 1 / 2" من غير أي توضيح
+                // أنهي صورة للطباعة فعلياً على التورتة وأنهي صورة هي بس مصدر إلهام
+                // للتصميم - ده كان ممكن يخلط على الفرع ويطبع الصورة الغلط. دلوقتي
+                // كل صورة بيها سطر واضح بيقول غرضها بالظبط.
                 if (cd.printImageUrl) msg += `   🖨️ *الصورة المطلوب طباعتها على التورتة:* ${cd.printImageUrl}\n`;
                 if (cd.replicaImageUrl) msg += `   🎨 *صورة التصميم اللي عايزين نقرب شكل التورتة منها:* ${cd.replicaImageUrl}\n`;
             }
             if (item.type === "custom-flower") {
-                if (cd.isGift) msg += `   • هدية لحد تاني\n`;
+                if (cd.isGift) msg += `   • 🎁 هدية لحد تاني\n`;
                 if (cd.moodLabel) msg += `   • الإحساس المطلوب: ${cd.moodLabel}\n`;
+                // 🧾 [إصلاح - المرحلة 3]: cd.moneyAmount كان اسم حقل قديم بقى غير موجود
+                // خالص بعد توحيد بنية customDetails مع window.createCartItem (الاسم
+                // الصحيح دلوقتي هو cashAmount)، فكان الكاش مش هيظهر أبداً في فاتورة
+                // الواتساب رغم إن العميل دفعه فعلاً. بالإضافة لإضافة تفاصيل شريط
+                // الستان وميزانية الشوكولاتة وعدد الصور المطبوعة اللي كانت ناقصة.
                 if (cd.flowerType && cd.flowerType !== "none") msg += `   • نوع الورد: ${cd.flowerType}\n`;
                 if (cd.flowerCount && cd.flowerCount > 0) msg += `   • التعداد: ${cd.flowerCount} وردة\n`;
                 if (cd.hasSatinRibbon && cd.satinRibbonText && cd.satinRibbonText.trim() !== "") msg += `   • شريط ستان مطبوع حرارياً: "${cd.satinRibbonText}"\n`;
                 if (cd.photoCount && cd.photoCount > 0) msg += `   • صور شخصية مطبوعة: ${cd.photoCount} صورة\n`;
-                if (cd.cashAmount && cd.cashAmount > 0) msg += `   • الكاش المدمج جوه البوكيه: +${cd.cashAmount} جنيه\n`;
-                if (cd.hasChocolate && cd.chocolateBudget && cd.chocolateBudget > 0) msg += `   • ميزانية الشوكولاتة الفاخرة: +${cd.chocolateBudget} جنيه\n`;
+                if (cd.cashAmount && cd.cashAmount > 0) msg += `   • الكاش المدمج جوه البوكيه: +${cd.cashAmount} EGP\n`;
+                if (cd.hasChocolate && cd.chocolateBudget && cd.chocolateBudget > 0) msg += `   • ميزانية الشوكولاتة الفاخرة: +${cd.chocolateBudget} EGP\n`;
                 if (cd.hasGiftCard && cd.giftCardText && cd.giftCardText.trim() !== "") msg += `   • كارت الإهداء: "${cd.giftCardText}"\n`;
             }
+            // 👑 [إصلاح جذري - كارثة الأحجام]: لازم الحجم يظهر في فاتورة الواتساب اللي
+            // بيتفذ منها الطلب فعلياً في الفرع - قبل كده الحجم مكنش موجود هنا خالص،
+            // وكان ممكن يتنفذ الطلب بحجم غلط تماماً عن اللي دفع فيه العميل فعلاً.
             if (item.type !== "custom-cake" && item.type !== "mini-cake" && item.type !== "custom-flower" && cd.sizeLabel) {
                 msg += `   • *الحجم المطلوب:* ${cd.sizeLabel}\n`;
             }
         }
 
+        // 🛡️ [إصلاح حرج]: أي صورة رفعها العميل (بوكيه مرجعي مثلاً) كانت بتتحفظ
+        // كرابط Cloudinary حقيقي جوه item.image لكن ما كانتش بتوصل خالص لنص
+        // فاتورة الواتساب. دلوقتي أي رابط Cloudinary حقيقي (مش لوجو الموقع
+        // الافتراضي) بيظهر كسطر واضح قابل للفتح المباشر من واتساب - ما عدا
+        // أصناف التورت المخصص، لأن صورها الاثنتين (الطباعة/التصميم المرجعي)
+        // اتوضحت بالفعل بسطرين منفصلين فوق، وتكرارها هنا هيرجع نفس اللخبطة
+        // القديمة (صورة "مرجعية" مجهولة الغرض).
         const refImageUrls = [];
         if (!isCakeBespoke) {
             if (item.image && typeof item.image === "string" && item.image.startsWith("http") && !item.image.includes("logo_igggsb")) {
@@ -984,19 +949,22 @@ function buildBoseFormattedWhatsappInvoice(order) {
 
     msg += `📝 *ملاحظات:* ${order.notes}\n`;
     msg += `--------------------------------------------------\n`;
-    msg += `💰 *الإجمالي:* ${order.grandTotal} جنيه\n`;
+    msg += `👑 *المجموع المالي النهائي:* ${order.grandTotal} EGP 👑\n`;
     // 💵 [عربون/دفع مقدم]: توضيح صريح لطريقة ووقت الدفع - استلام = عربون 50%
     // والباقي عند الاستلام، توصيل = كامل المبلغ مقدماً وقت تأكيد الحجز.
     if (order.depositAmount !== undefined) {
         if (order.remainingAmount > 0) {
-            msg += `💳 *عربون تأكيد الحجز المطلوب الآن:* ${order.depositAmount} جنيه (كاش أو انستاباي على ${order.paymentPhone})\n`;
-            msg += `🧾 *الباقي عند الاستلام:* ${order.remainingAmount} جنيه\n`;
+            msg += `💳 *عربون تأكيد الحجز المطلوب الآن:* ${order.depositAmount} EGP (كاش أو InstaPay على ${order.paymentPhone})\n`;
+            msg += `🧾 *الباقي عند الاستلام:* ${order.remainingAmount} EGP\n`;
         } else {
             const fullReason = order.deliveryMethod === "توصيل للمنزل" ? "توصيل" : "دفع كامل باختيارها";
-            msg += `💳 *المبلغ الكامل المطلوب الآن (${fullReason}):* ${order.depositAmount} جنيه (كاش أو انستاباي على ${order.paymentPhone})\n`;
+            msg += `💳 *المبلغ الكامل المطلوب الآن (${fullReason}):* ${order.depositAmount} EGP (كاش أو InstaPay على ${order.paymentPhone})\n`;
         }
+        msg += `📸 من فضلك ابعتي لقطة شاشة التحويل هنا فور إتمامه وهنأكد الحجز فوراً.\n`;
     }
-
+    msg += `--------------------------------------------------\n`;
+    msg += `🤝 شكرًا لاختياركم الفاخر لـ حلويات بوسي. صنعناها بحب لتهديها لمن تحب. ✨`;
+    
     return msg;
 }
 
@@ -1070,12 +1038,12 @@ function renderBoseSuccessPage(storeData) {
         const depRemainingRow = document.getElementById("bose-deposit-remaining-row");
         const depRemainingEl = document.getElementById("bose-deposit-remaining-amount");
         const depPhoneEl = document.getElementById("bose-deposit-phone-number");
-        if (depAmountEl) depAmountEl.textContent = order.depositAmount + " جنيه";
+        if (depAmountEl) depAmountEl.textContent = order.depositAmount + " EGP";
         if (depPhoneEl) depPhoneEl.textContent = order.paymentPhone || "01097238441";
         if (order.remainingAmount > 0) {
             if (depLabelEl) depLabelEl.textContent = "عربون تأكيد الحجز المطلوب الآن (50%):";
             if (depRemainingRow) depRemainingRow.style.display = "flex";
-            if (depRemainingEl) depRemainingEl.textContent = order.remainingAmount + " جنيه";
+            if (depRemainingEl) depRemainingEl.textContent = order.remainingAmount + " EGP";
         } else {
             const fullReason = order.deliveryMethod === "توصيل للمنزل" ? "توصيل" : "دفع كامل باختيارها";
             if (depLabelEl) depLabelEl.textContent = `المبلغ الكامل المطلوب الآن (${fullReason}):`;
@@ -1104,7 +1072,7 @@ function renderBoseSuccessPage(storeData) {
                 return `
                 <div class="receipt-item-node">
                     <span class="receipt-item-name">${escR(item.title)} <span style="font-weight:400; opacity:0.6; font-size:0.8rem;">(×${item.quantity})</span><span style="display:block; font-size:0.75rem; font-weight:700; color:var(--bose-pink); margin-top:2px;">${escR(item.flavorName || 'جاهز وفريش')}</span></span>
-                    <span class="receipt-item-price">${(item.finalPrice * item.quantity).toFixed(2)} جنيه</span>
+                    <span class="receipt-item-price">${(item.finalPrice * item.quantity).toFixed(2)} EGP</span>
                 </div>
             `;
             }).join("");
@@ -1113,7 +1081,7 @@ function renderBoseSuccessPage(storeData) {
         }
     }
 
-    if (grandTotalDisplay) grandTotalDisplay.textContent = (order.grandTotal || 0) + " جنيه";
+    if (grandTotalDisplay) grandTotalDisplay.textContent = (order.grandTotal || 0) + " EGP";
 
     let whatsappUrl = "";
     if (whatsappBtn) {

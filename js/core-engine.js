@@ -624,23 +624,23 @@
         if (!waterfallData) return;
 
         /**
-         * كل صورة في الشلال بترفع أو تتلصق برابط مباشر، ومعاها اختيارياً
-         * `link` (رابط كامل زي product.html?slug=... بيتبني تلقائياً من
-         * لوحة التحكم لما تختار اسم منتج حقيقي) بيحدد وجهة الضغط على
-         * الصورة. لسه بندعم الشكل القديم (image + slug) لو موجود في بيانات
-         * قديمة عشان ميتكسرش أي حاجة.
+         * كل صورة في الشلال دلوقتي رابط مباشر بسيط (image فقط) - مش مربوطة
+         * بمنتج حقيقي. لسه بندعم الشكل القديم (image + slug) لو موجود في
+         * بيانات قديمة عشان ميتكسرش أي حاجة، بس الإضافة من لوحة التحكم
+         * دلوقتي بتحفظ روابط مباشرة بس.
          * @param {Array<Object|string>} items
          */
         const buildWaterfallItemsHtml = (items) => items.map((item) => {
+            // 🛡️ [إصلاح حرج]: الصور المرفوعة يدوياً من لوحة التحكم (من غير ربط
+            // بمنتج) بتتخزن ككائن { image, slug: "" } مش نص خام زي الشكل القديم.
+            // كنا بنستخرج الصورة بس لو فيه slug، فأي صورة من غير ربط كانت بتاخد
+            // الكائن كله كـ src وتظهر مكسورة. دلوقتي بنستخرج image صح في الحالتين.
             const isObject = item && typeof item === 'object';
             const imgSrc = isObject ? item.image : item;
-            // بنقبل link (الشكل الجديد) أو slug (الشكل القديم) كمصدر لرابط الوجهة
-            const destinationLink = isObject
-                ? (item.link || (item.slug ? `product.html?slug=${encodeURIComponent(item.slug)}` : ''))
-                : '';
+            const isLinked = isObject && !!item.slug;
             const imgTag = `<img src="${window.optimizeBoseImageUrl(imgSrc, 300)}" alt="منتج فاخر حلويات بوسي" class="waterfall-img" width="220" height="220" loading="lazy" />`;
-            return destinationLink
-                ? `<a href="${destinationLink}" class="waterfall-img-link" aria-label="عرض تفاصيل المنتج">${imgTag}</a>`
+            return isLinked
+                ? `<a href="product.html?slug=${encodeURIComponent(item.slug)}" class="waterfall-img-link" aria-label="عرض تفاصيل المنتج">${imgTag}</a>`
                 : imgTag;
         }).join('');
 
@@ -754,14 +754,8 @@
         // من لوحة التحكم (مثال: "دستة كاملة = 12 قطعة")، بيتعرض هنا دايماً وبشكل
         // واضح جنب السعر - مش مخفي جوه ⓘ اختياري - عشان دي حقيقة أساسية لازم كل
         // عميل يشوفها من غير ما يحتاج يكتشفها بنفسه.
-        // 🚨 [توضيح كمية لكل حجم]: لو المنتج عنده sizeQuantityNotes للحجم الافتراضي المختار
-        // (زي الديسباسيتو: "ده سعر المثلث."/"ده سعر الطاجن."/"ده سعر الحجم العائلي.")
-        // نستخدمه، وإلا نرجع لـ quantityNote العام العادي.
-        const initialQuantityNoteText = (product.sizeQuantityNotes && defaultSizeKey && product.sizeQuantityNotes[defaultSizeKey])
-            ? product.sizeQuantityNotes[defaultSizeKey]
-            : product.quantityNote;
-        const quantityNoteHtml = initialQuantityNoteText
-            ? `<div class="bose-qty-clarity-note"><i class="fa-solid fa-circle-info"></i><span>${window.escapeBoseHTML(initialQuantityNoteText)}</span></div>`
+        const quantityNoteHtml = product.quantityNote
+            ? `<div class="bose-qty-clarity-note"><i class="fa-solid fa-circle-info"></i><span>${window.escapeBoseHTML(product.quantityNote)}</span></div>`
             : '';
 
         const isUnavailable = product.isAvailable === false;
@@ -773,21 +767,8 @@
                     <i class="fa-solid fa-basket-shopping"></i> اضافة للسلة
                </button>`;
 
-        // 🚨🚨 [إصلاح جذري حرج - كارثة "حجم" وهمي في فاتورة الواتساب - أخطر بقعة في
-        // الموقع كله]: data-selected-size كانت بتتحط بـ defaultSizeKey دايماً حتى لو
-        // hasMultipleSizes=false (يعني تبويب اختيار الحجم نفسه مش ظاهر أصلاً للعميل -
-        // sizeTabsHtml فاضية في الحالة دي). ده كان معناه إن أي منتج عنده كائن prices
-        // بمفاتيح متعددة لكن كلها بنفس السعر بالظبط (زي "الميني تورت": triangle/medium/large
-        // الثلاثة بـ154 جنيه) كان بيتضاف للسلة بحجم وهمي "مثلث" مثلاً من غير ما العميل
-        // يشوف أو يختار أي حجم خالص - وهو بالظبط سبب وصول "مثلث"/"طاجن" غلط تماماً في
-        // فاتورة واتساب لمنتجات زي الميني تورت أصلاً معندهاش أحجام حقيقية. دلوقتي
-        // data-selected-size بتتربط فقط لو فيه فرق سعر حقيقي بين الأحجام
-        // (hasMultipleSizes=true) - بالظبط نفس شرط ظهور تبويب الحجم نفسه، عشان
-        // مفيش قيمة تتسرب من غير ما العميل يشوفها أو يختارها فعلياً. هذا الكارت
-        // (createProductCardHTML) هو المصدر المستخدم في كل مكان بالموقع (الرئيسية،
-        // الفئات، العروض، المقترحات) - فالإصلاح هنا بيغطي كل الأماكن دفعة واحدة.
         return `
-            <div class="product-card-unified${hasDiscount ? ' bose-offer-card' : ''}${isUnavailable ? ' bose-unavailable-card' : ''}" data-id="${product.id}" data-selected-size="${hasMultipleSizes ? (defaultSizeKey || '') : ''}" onclick="if(!event.target.closest('.product-card-qty-wrapper') && !event.target.closest('.btn-add-to-cart') && !event.target.closest('.bose-card-size-tabs')){ window.location.href='product.html?slug=${encodeURIComponent(product.slug)}'; }" style="cursor:pointer;">
+            <div class="product-card-unified${hasDiscount ? ' bose-offer-card' : ''}${isUnavailable ? ' bose-unavailable-card' : ''}" data-id="${product.id}" data-selected-size="${defaultSizeKey || ''}" onclick="if(!event.target.closest('.product-card-qty-wrapper') && !event.target.closest('.btn-add-to-cart') && !event.target.closest('.bose-card-size-tabs')){ window.location.href='product.html?slug=${encodeURIComponent(product.slug)}'; }" style="cursor:pointer;">
                 ${discountBadgeHtml}
                 ${isUnavailable ? `<div class="offer-badge" style="background:rgba(17,17,17,0.75);">نفدت الكمية</div>` : ''}
                 <img src="${safeImg}" alt="${safeTitle}" class="product-card-img" width="300" height="300" loading="lazy" style="${isUnavailable ? 'filter:grayscale(60%); opacity:0.75;' : ''}" />
@@ -839,27 +820,6 @@
             priceDisplay.dataset.basePrice = String(newPrice);
             const priceSpan = priceDisplay.querySelector('span');
             if (priceSpan) priceSpan.textContent = `${Math.round(newPrice)} جنيه`;
-        }
-
-        // 🚨 [توضيح كمية لكل حجم]: لما العميل يغيّر الحجم من الكارت نفسه (بدون ما يفتح
-        // صفحة المنتج)، لازم توضيح الكمية جنب السعر يتغيّر معاه فوراً بنفس المنطق
-        // (مثال: يبدّل من "ده سعر المثلث." لـ "ده سعر الطاجن." لما يختار حجم الطاجن).
-        const qtyNoteWrapper = card.querySelector('.bose-qty-clarity-note');
-        const qtyNoteText = (product.sizeQuantityNotes && product.sizeQuantityNotes[sizeKey])
-            ? product.sizeQuantityNotes[sizeKey]
-            : product.quantityNote;
-        if (qtyNoteText) {
-            if (qtyNoteWrapper) {
-                const span = qtyNoteWrapper.querySelector('span');
-                if (span) span.textContent = qtyNoteText;
-            } else {
-                const sizeTabs = card.querySelector('.bose-card-size-tabs');
-                if (sizeTabs) {
-                    sizeTabs.insertAdjacentHTML('afterend', `<div class="bose-qty-clarity-note"><i class="fa-solid fa-circle-info"></i><span>${window.escapeBoseHTML(qtyNoteText)}</span></div>`);
-                }
-            }
-        } else if (qtyNoteWrapper) {
-            qtyNoteWrapper.remove();
         }
     };
 
@@ -1437,34 +1397,6 @@
     };
 
     /**
-     * 🛡️ [حماية بسيطة من السبام]: تمنع إرسال نفس نوع الفورم (طلب/تقييم) أكتر
-     * من مرة خلال فترة زمنية قصيرة من نفس الجهاز/المتصفح. حماية جهة العميل
-     * فقط (deterrent بسيط ضد ضغط متكرر بالغلط أو بوت بسيط) - مش بديل عن حماية
-     * حقيقية جهة السيرفر (rate limiting على مستوى الشبكة)، لكنها بتقلل ضغط
-     * السبام العرضي على لوحة التحكم فورًا وبدون أي بنية تحتية إضافية.
-     * @param {string} key - معرف فريد لنوع العملية (مثلاً "order-submit" أو "review-submit")
-     * @param {number} minIntervalMs - أقل فاصل زمني مسموح بين محاولتين (بالميلي ثانية)
-     * @returns {{allowed: boolean, secondsLeft: number}}
-     */
-    window.boseCheckClientRateLimit = function(key, minIntervalMs) {
-        const storageKey = `bose_ratelimit_${key}`;
-        try {
-            const lastTs = parseInt(localStorage.getItem(storageKey) || "0", 10);
-            const now = Date.now();
-            const elapsed = now - lastTs;
-            if (lastTs && elapsed < minIntervalMs) {
-                return { allowed: false, secondsLeft: Math.ceil((minIntervalMs - elapsed) / 1000) };
-            }
-            localStorage.setItem(storageKey, String(now));
-            return { allowed: true, secondsLeft: 0 };
-        } catch (e) {
-            // لو localStorage مش متاح (وضع تصفح خاص مثلاً)، نسمح بالعملية عادي
-            // بدل ما نمنع عميل حقيقي من إتمام طلبه.
-            return { allowed: true, secondsLeft: 0 };
-        }
-    };
-
-    /**
      * @param {string} dateStr
      * @param {string} timeStr
      * @returns {boolean}
@@ -1525,22 +1457,10 @@
         const product = window.BoseStoreData.products?.find((/** @type {any} */ p) => p.slug === item.productSlug);
         if (!product) return parseFloat(item.finalPrice) || 0;
 
-        // 🚨🚨 [إصلاح جذري حرج - كارثة فقدان سعر الحجم عند إعادة الحساب]: كانت
-        // الدالة دي مبتمررش "size" خالص لـ calculateProductFinalPrice، فأي منتج
-        // عنده أحجام سعرية مختلفة (مثلث/طاجن/حجم عائلي) كان سعره يرجع فوراً لسعر
-        // الحجم الأساسي (product.price) بمجرد ما العميل يفتح السلة/الشيك أوت تاني
-        // بعد الإضافة - بصمت تام وبدون أي تحذير حقيقي، رغم إنه دفع في سعر حجم أكبر.
-        // كمان extraToppingPrice/printingPrice (خاصة التورت الصغير) كانت بتتقرا من
-        // item.extraToppingPrice/item.printingPrice على مستوى العنصر مباشرة، لكن
-        // window.createCartItem أصلاً بيحفظهم جوه customDetails بس - يعني كانت
-        // دايماً undefined هنا. كل القيم دلوقتي بتتقرا من نفس المصدر اللي
-        // createCartItem بيحفظهم فيه فعلياً (item.customDetails) عشان السعر
-        // المُعاد حسابه يطابق تماماً السعر اللي العميل شافه ودفع فيه وقت الإضافة.
         return window.calculateProductFinalPrice(product, {
-            size: details.size,
             printing: details.printingType,
-            extraToppingPrice: details.extraToppingPrice,
-            printingPrice: details.printingPrice
+            extraToppingPrice: item.extraToppingPrice,
+            printingPrice: item.printingPrice
         });
     };
 
@@ -1880,27 +1800,11 @@
      * البلوك البصري الكبير بالصفحة الرئيسية - نفس الدالة الموحدة المستخدمة في
      * نافذة الترحيب بالظبط.
      */
-    /**
-     * 👑 [إصلاح جذري - صدق مع العميل]: كان في زرارين منفصلين (Apple/Google Play)
-     * كل واحد بيعمل نفس حاجة triggerBoseAppInstall بالظبط - بقى زرار واحد بس
-     * (app-promo-install-btn) بنفس سلوك النافذة المنبثقة الصادقة: على آيفون
-     * (اللي أصلاً مش بيدعم بروميت التثبيت التلقائي من متصفح Safari) بنوري تعليمات
-     * حقيقية دقيقة (زرار المشاركة → إضافة للشاشة الرئيسية) بدل ما نسيبها تفتح
-     * توست عام مش دقيق كفاية لصفاري تحديداً.
-     */
     function setupAppPromoBlockButtons() {
-        const installBtn = document.getElementById('app-promo-install-btn');
-        if (!installBtn) return;
-        const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
-        installBtn.addEventListener('click', () => {
-            if (isIOS) {
-                if (window.showBoseGlobalToast) {
-                    window.showBoseGlobalToast('من متصفح Safari: اضغطي زر "المشاركة" تحت، واختاري "إضافة إلى الشاشة الرئيسية"');
-                }
-            } else {
-                window.triggerBoseAppInstall();
-            }
-        });
+        const iosBtn = document.getElementById('app-promo-appstore-btn');
+        const androidBtn = document.getElementById('app-promo-googleplay-btn');
+        if (iosBtn) iosBtn.addEventListener('click', () => window.triggerBoseAppInstall());
+        if (androidBtn) androidBtn.addEventListener('click', () => window.triggerBoseAppInstall());
     }
 
     /**
@@ -2004,7 +1908,7 @@
                 <div id="bose-sidebar-drawer" class="bose-sidebar-drawer" aria-hidden="true">
                     <div class="sidebar-header">
                         <div class="sidebar-logo-container">
-                            <img src="${window.optimizeBoseImageUrl(data.store?.logo || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', 150)}" alt="لوجو حلويات بوسي" class="sidebar-logo" width="80" height="80" loading="lazy" />
+                            <img src="${window.optimizeBoseImageUrl(data.store?.logo || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', 150)}" alt="لوجو حلويات بوسي" class="sidebar-logo" width="80" height="80" />
                             <span class="sidebar-brand-name">حلويات بوسي</span>
                         </div>
                         <button id="sidebar-close-btn" class="sidebar-close-btn" aria-label="إغلاق القائمة">
@@ -2204,7 +2108,7 @@
                     <div class="footer-grid-layout">
                         <div class="footer-column-block">
                             <div class="footer-brand-meta">
-                                <img src="${window.optimizeBoseImageUrl(data.store?.logo || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', 150)}" alt="حلويات بوسي الفاخرة" class="footer-logo" width="80" height="80" loading="lazy" />
+                                <img src="${window.optimizeBoseImageUrl(data.store?.logo || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', 150)}" alt="حلويات بوسي الفاخرة" class="footer-logo" width="80" height="80" />
                                 <span class="footer-title">حلويات بوسي</span>
                             </div>
                             <p id="footer-about-text" class="footer-about-paragraph">${window.escapeBoseHTML(data.footer?.about || 'صنعناها بحب لتهديها لمن تحب')}</p>

@@ -597,22 +597,34 @@ function startEngineLogic() {
     toggleReplicaUploadSection();
 
     function initializeBoseLightboxGallery() {
-        const track = document.getElementById('bose-portfolio-lightbox-track');
         const lightboxOverlay = document.getElementById('bose-lightbox-container');
         const lightboxImg = document.getElementById('bose-lightbox-img');
         const lightboxClose = document.getElementById('bose-lightbox-close-btn');
 
-        if (!track || !lightboxOverlay || !lightboxImg) return;
+        if (!lightboxOverlay || !lightboxImg) return;
 
-        track.addEventListener('click', (e) => {
-            const clickedImg = e.target.closest('img');
-            if (clickedImg) {
-                lightboxImg.src = clickedImg.src;
-                lightboxOverlay.style.display = "flex";
-            }
+        const openLightbox = (src) => {
+            if (!src) return;
+            lightboxImg.src = src;
+            lightboxOverlay.style.display = "flex";
+        };
+        const closeLightbox = () => { lightboxOverlay.style.display = "none"; lightboxImg.src = ""; };
+
+        // 🖼️👑 [كل صور المحاكي بقت بتفتح بملء الشاشة عند الضغط]: قبل كده كان
+        // ده مقصور على صور معرض الإلهام (الخطوة 1) بس. دلوقتي أي صورة حقيقية
+        // في صفحة المحاكي - الصورة الرئيسية فوق، صور معرض الإلهام، معاينة
+        // الصورة المرجعية (نسخة طبق الأصل)، ومعاينة صورة الطباعة على التورتة -
+        // بتفتح بنفس الطريقة عن طريق تفويض حدث واحد على مستوى الصفحة، عشان
+        // العميل يقدر يتأكد من تفاصيل أي صورة (خصوصاً اللي هو رافعها بنفسه)
+        // من غير ما يحتاج يخمّن أو يزوم بإصبعه.
+        document.addEventListener('click', (e) => {
+            const img = e.target.closest(
+                '.bose-main-hero-hook img, #bose-portfolio-lightbox-track img, #cake-photo-preview-img, #cake-replica-preview-img'
+            );
+            if (!img || !img.src) return;
+            openLightbox(img.src);
         });
 
-        const closeLightbox = () => { lightboxOverlay.style.display = "none"; lightboxImg.src = ""; };
         if (lightboxClose) lightboxClose.onclick = closeLightbox;
         lightboxOverlay.onclick = (e) => { if (e.target === lightboxOverlay) closeLightbox(); };
 
