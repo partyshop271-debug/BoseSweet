@@ -491,7 +491,7 @@
                 <div id="bose-product-size-note" class="bose-size-filter-note" style="display:none; margin-bottom:10px;"><i class="fa-solid fa-circle-info"></i> ده الصنف متوفر بأكتر من حجم — اختاري اللي يناسبك 👇</div>
                 <div id="bose-product-size-tabs" class="bose-size-tabs-filter" style="display:none; margin-bottom:14px;"></div>
 
-                <div id="bose-product-price-text" class="product-price-large-display">0 جنيه</div>
+                <div id="bose-product-price-text" class="product-price-large-display">0 EGP</div>
                 <!-- 🎂 [حل مشكلة "العميل مش فاهم الكمية"]: نفس البادچ الظاهر دايماً في كارت
                      المنتج، بيتحط هنا كمان جنب السعر الرئيسي في صفحة المنتج المستقلة نفسها -
                      راجع renderQuantityNote() تحت وعمود quantity_note في قاعدة البيانات. -->
@@ -604,10 +604,6 @@
                     <div style="margin-bottom: 16px;">
                         <label style="display:block; font-size:0.88rem; font-weight:700; margin-bottom:6px;">تجربتك بالتفصيل (جملة واحدة تكفي)</label>
                         <textarea id="bose-review-comment" placeholder="اضغطي على الاقتراحات فوق أو اكتبي رأيك بنفسك..." style="width:100%; height:90px; padding:12px; border-radius:12px; border:1px solid rgba(17,17,17,0.12); font-family:'Cairo'; resize:none; box-sizing:border-box;"></textarea>
-                        <div style="position:absolute; left:-9999px; top:-9999px; height:0; overflow:hidden;" aria-hidden="true">
-                            <label for="bose-review-hp">اتركي هذا الحقل فارغاً</label>
-                            <input type="text" id="bose-review-hp" name="bose-review-hp" tabindex="-1" autocomplete="off">
-                        </div>
                     </div>
 
                     <div style="margin-bottom: 20px;">
@@ -689,18 +685,7 @@
             }
 
             let currentProduct = null;
-            // 🚨🚨 [إصلاح جذري حرج - كارثة النكهة الغلط في رسالة الواتساب]: كان هنا
-            // flavorName مكتوبة يدوياً وثابتة "كلاسيك" من غير أي علاقة بالمنتج الحقيقي
-            // المفتوح. createCartItem بيدّي الأولوية دايماً لـ opts.flavorName لو موجودة
-            // (`opts.flavorName || opts.cakeType || product.flavorName`)، يعني كل صنف
-            // كان بيتضاف للسلة بنكهة "كلاسيك" ثابتة حتى لو المنتج فعلياً "دسباسيتو
-            // بستاشيو" أو أي نكهة تانية - فرسالة الواتساب اللي بتوصل للفرع كانت بتقول
-            // نكهة غلط تماماً مع كل عملية إضافة سلة تقريباً. مفيش داعي لهذا الحقل هنا
-            // أصلاً: النكهة بتتحدد فعلياً باختيار صفحة منتج مختلفة بالكامل (كل نكهة =
-            // صنف منفصل بصفحته الخاصة في قاعدة البيانات)، فالمصدر الصحيح الوحيد هو
-            // دايماً currentProduct.flavorName - وده بالظبط اللي createCartItem
-            // بيرجعله تلقائياً لو ملقاش قيمة هنا.
-            let currentSelectedOptions = { size: null };
+            let currentSelectedOptions = { flavorName: "كلاسيك", size: null };
             let currentMasterQuantity = 1;
             let uploadedImageUrls = [];
 
@@ -724,16 +709,8 @@
                 const wrapper = document.getElementById("bose-product-quantity-note");
                 const textEl = document.getElementById("bose-product-quantity-note-text");
                 if (!wrapper || !textEl || !currentProduct) return;
-                // 🚨 [توضيح كمية لكل حجم]: لو المنتج عنده sizeQuantityNotes للحجم المختار
-                // حالياً (زي الديسباسيتو: "ده سعر المثلث."/"ده سعر الطاجن."/"ده سعر الحجم
-                // العائلي.") نستخدمه، وإلا نرجع لـ quantityNote العام العادي - بالظبط نفس
-                // منطق applyDescriptionForCurrentSize بتاع الوصف.
-                const perSizeNote = currentProduct.sizeQuantityNotes && currentSelectedOptions.size
-                    ? currentProduct.sizeQuantityNotes[currentSelectedOptions.size]
-                    : null;
-                const noteText = perSizeNote || currentProduct.quantityNote;
-                if (noteText) {
-                    textEl.textContent = noteText;
+                if (currentProduct.quantityNote) {
+                    textEl.textContent = currentProduct.quantityNote;
                     wrapper.style.display = "flex";
                 } else {
                     wrapper.style.display = "none";
@@ -790,8 +767,7 @@
                         currentSelectedOptions.size = this.dataset.sizeKey;
                         applyDescriptionForCurrentSize();
                         applyImageForCurrentSize();
-                        renderQuantityNote();
-                        updateLivePriceDisplay("جنيه");
+                        updateLivePriceDisplay(window.BoseStoreData?.store?.currency || "EGP");
                     });
                 });
             }
@@ -878,23 +854,9 @@
                 const availableSizes = (currentProduct.prices && typeof currentProduct.prices === 'object')
                     ? Object.keys(currentProduct.prices)
                     : [];
-                // 🚨🚨 [إصلاح جذري حرج - كارثة "حجم" وهمي في رسالة الواتساب]: كان بيتحدد
-                // حجم افتراضي (availableSizes[0]) لمجرد إن المنتج عنده كائن prices بعدة
-                // مفاتيح، حتى لو كل المفاتيح دي بنفس السعر بالظبط - يعني مش "أحجام" حقيقية
-                // للعميل يختار بينها أصلاً (بالظبط زي "الميني تورت": عندها prices بمفاتيح
-                // triangle/medium/large لكن الثلاثة بنفس السعر بالظبط لأنها منتج تاني
-                // بيتقسم فعلياً بعدد الأفراد مش بحجم). نفس شرط "hasMultipleSizes" المستخدم
-                // فعلاً في renderSizeTabs (تحت) و core-engine.js/cart.html لإخفاء تبويبات
-                // الحجم لما مفيش فرق سعر حقيقي - نطبّقه هنا كمان قبل ما نحدد
-                // currentSelectedOptions.size، عشان مفيش أي "مثلث"/"طاجن" وهمي يتسرب لفاتورة
-                // الواتساب لمنتج أصلاً معندوش أحجام حقيقية يختار العميل بينها.
-                const distinctSizePricesAtInit = new Set(availableSizes.map(s => currentProduct.prices[s]));
-                const hasRealMultipleSizes = availableSizes.length > 1 && distinctSizePricesAtInit.size > 1;
-                currentSelectedOptions.size = hasRealMultipleSizes
-                    ? ((currentProduct.defaultSize && availableSizes.includes(currentProduct.defaultSize))
-                        ? currentProduct.defaultSize
-                        : (availableSizes[0] || null))
-                    : null;
+                currentSelectedOptions.size = (currentProduct.defaultSize && availableSizes.includes(currentProduct.defaultSize))
+                    ? currentProduct.defaultSize
+                    : (availableSizes[0] || null);
 
                 renderOfferBadge();
                 renderSizeTabs(availableSizes);
@@ -969,7 +931,7 @@
                             ${relatedFlavors.map(opt => `
                                 <div class="custom-selectable-card" data-slug="${opt.slug}">
                                     <span class="card-primary-txt">${opt.flavorName}</span>
-                                    <span class="card-secondary-txt">${Math.round(opt.price)} جنيه</span>
+                                    <span class="card-secondary-txt">${Math.round(opt.price)} EGP</span>
                                 </div>
                             `).join("")}
                         </div>
@@ -985,7 +947,7 @@
                     optionsRoot.appendChild(group);
                 }
 
-                updateLivePriceDisplay("جنيه");
+                updateLivePriceDisplay(dbData.store?.currency || "EGP");
                 renderDynamicProductReviews();
                 renderProductFaqs();
 
@@ -1112,18 +1074,8 @@
             async function submitReviewToBackend(review) {
                 if (!currentProduct) return false;
                 if (!window.BoseSupabase || typeof window.BoseSupabase.submitBoseReview !== "function") {
-                    // 🚨🚨 [إصلاح جذري حرج - كل رسائل التنبيه في صفحة المنتج كانت صامتة تماماً]:
-                    // كل استدعاءات التنبيه في هذا الملف كانت بتنادي على "window.showBoseToast"
-                    // - دالة مش موجودة خالص في أي مكان بالموقع (الاسم الحقيقي المعرّف فعلياً في
-                    // core-engine.js هو window.showBoseGlobalToast). وبسبب فحص الأمان
-                    // `typeof ... === 'function'` قبل كل نداء، كان الكود بيفشل بصمت تام من غير
-                    // أي خطأ في الـconsole حتى - يعني 8 رسائل تنبيه مختلفة في الصفحة دي كانت
-                    // بتختفي نهائياً ومحدش كان بيلاحظ، من ضمنها أهم رسالة على الإطلاق: تأكيد
-                    // "تمت الإضافة للسلة بنجاح" - العميلة كانت بتضغط الزرار ومفيش أي تأكيد
-                    // بصري بيوضح إن الإضافة نجحت فعلاً. دلوقتي كل الاستدعاءات بتنادي الاسم
-                    // الحقيقي الصحيح.
-                    if (typeof window.showBoseGlobalToast === 'function') {
-                        window.showBoseGlobalToast("تعذر إرسال المراجعة حالياً، حاولي تحديث الصفحة أو المحاولة لاحقاً 🌸");
+                    if (typeof window.showBoseToast === 'function') {
+                        window.showBoseToast("تعذر إرسال المراجعة حالياً، حاولي تحديث الصفحة أو المحاولة لاحقاً 🌸");
                     }
                     return false;
                 }
@@ -1146,11 +1098,7 @@
                 }
                 let imagesHTML = "";
                 if (rev.images && rev.images.length > 0) {
-                    imagesHTML = `<div class="review-attach-images-row">${rev.images.map(url => {
-                        const safeUrl = escapeHTML(window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(url, 200) : url);
-                        const safeFull = escapeHTML(url);
-                        return `<img class="review-attached-img" src="${safeUrl}" data-fullsrc="${safeFull}" loading="lazy">`;
-                    }).join("")}</div>`;
+                    imagesHTML = `<div class="review-attach-images-row">${rev.images.map(url => `<img class="review-attached-img" src="${window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(url, 200) : url}" data-fullsrc="${url}" loading="lazy">`).join("")}</div>`;
                 }
                 const pendingBadge = rev.pending
                     ? `<span style="font-size:0.72rem; font-weight:700; color:var(--bose-pink); background:rgba(255,145,164,0.1); padding:3px 10px; border-radius:50px; margin-right:8px;">قيد المراجعة</span>`
@@ -1239,14 +1187,14 @@
             document.getElementById("btn-qty-master-plus").addEventListener("click", () => {
                 currentMasterQuantity++;
                 document.getElementById("input-qty-master-value").value = currentMasterQuantity;
-                updateLivePriceDisplay("جنيه");
+                updateLivePriceDisplay(window.BoseStoreData?.store?.currency || "EGP");
             });
 
             document.getElementById("btn-qty-master-minus").addEventListener("click", () => {
                 if (currentMasterQuantity > 1) {
                     currentMasterQuantity--;
                     document.getElementById("input-qty-master-value").value = currentMasterQuantity;
-                    updateLivePriceDisplay("جنيه");
+                    updateLivePriceDisplay(window.BoseStoreData?.store?.currency || "EGP");
                 }
             });
 
@@ -1257,41 +1205,9 @@
                 if (typeof window.createCartItem === "function") {
                     const cartItemObj = window.createCartItem(currentProduct, currentSelectedOptions, currentMasterQuantity);
                     if (cartItemObj) {
-                        // 🚨🚨 [إصلاح جذري حرج - صورة غلط في رسالة الواتساب]: createCartItem
-                        // بياخد الصورة دايماً من product.images[0] (أول صورة افتراضية جوه
-                        // بيانات المنتج الخام) - لكن applyImageForCurrentSize() (فوق) كانت
-                        // بتغيّر الصورة المعروضة فعلياً على الشاشة (بناءً على الحجم المختار
-                        // من products.size_images) من غير ما تحدّث currentProduct.images
-                        // نفسها. يعني لو العميل بيشوف فعلياً صورة "الحجم العائلي" وضغط إضافة
-                        // للسلة، كانت بتترسل صورة "الحجم الافتراضي/الأول" في فاتورة الواتساب
-                        // بدل الصورة اللي هو شايفها وطلبها فعلياً - وده بالظبط سبب وصول صورة
-                        // مختلفة عن المنتج المطلوب مع كل عملية إضافة تقريباً. دلوقتي بنستخدم
-                        // نفس الصورة المعروضة فعلياً على الشاشة لحظة الضغط على "إضافة للسلة".
-                        const displayedImgUrl = document.getElementById("bose-master-gallery-image")?.dataset?.fullsrc;
-                        if (displayedImgUrl) cartItemObj.image = displayedImgUrl;
-                        // 🚨🚨 [إصلاح جذري حرج - اختفاء الحجم الأغلى عند الإضافة من صفحة المنتج]:
-                        // كان التحقق من "هل الصنف ده موجود بالفعل في السلة" بيقارن بس
-                        // productSlug + flavorName - من غير الحجم المختار خالص. يعني لو
-                        // العميل ضغط "إضافة للسلة" بحجم "مثلث" (الأرخص) وبعدين غيّر رأيه
-                        // واختار "حجم عائلي" (الأغلى) وضغط إضافة تاني من نفس الصفحة، كان
-                        // بيتزود العدد بس على السطر الأول القديم بسعر وحجم المثلث، وحجم
-                        // العائلي اللي اختاره فعلاً كان بيضيع تماماً بصمت - يعني الفرع كان
-                        // ممكن ينفذ حجم غلط تماماً عن اللي العميل دفع/طلب فيه فعلاً. دلوقتي
-                        // بنستخدم نفس منطق تمييز الأسطر المستخدم في كارت المنتجات
-                        // (product.slug + الحجم لو موجود) عشان كل حجم يتضاف كسطر منفصل
-                        // بحجمه وسعره الصح، ويتزود العدد بس لو نفس المنتج بنفس الحجم بالظبط.
-                        // نعدّل الـid بس لو ده صنف عادي (id الافتراضي = مجرد الـslug بدون أي
-                        // طابع زمني مميز) - عشان منلمسش الـid الفريد اللي createCartItem نفسه
-                        // بيولّده للأصناف المخصصة فعلاً (توبينج/طباعة مختلفة لكل عملية إضافة).
-                        const isDefaultStandardId = cartItemObj.id === String(currentProduct.slug || currentProduct.id);
-                        const cartLineId = (isDefaultStandardId && currentSelectedOptions.size)
-                            ? `${currentProduct.slug}-${currentSelectedOptions.size}`
-                            : cartItemObj.id;
-                        cartItemObj.id = cartLineId;
-
                         const rawCart = localStorage.getItem("bose_cart");
                         let cartArr = rawCart ? JSON.parse(rawCart) : [];
-                        const existingIdx = cartArr.findIndex(item => item.id === cartLineId);
+                        const existingIdx = cartArr.findIndex(item => item.productSlug === cartItemObj.productSlug && item.flavorName === cartItemObj.flavorName);
                         
                         if (existingIdx > -1) {
                             cartArr[existingIdx].quantity += currentMasterQuantity;
@@ -1304,8 +1220,8 @@
                             window.updateGlobalCartCounter();
                         }
                         document.dispatchEvent(new CustomEvent('BoseCartUpdated'));
-                        if (typeof window.showBoseGlobalToast === 'function') {
-                            window.showBoseGlobalToast(`تمت إضافة ${currentMasterQuantity} من ${currentProduct.title} بنجاح لراحتك 🌸`);
+                        if (typeof window.showBoseToast === 'function') {
+                            window.showBoseToast(`تمت إضافة ${currentMasterQuantity} من ${currentProduct.title} بنجاح لراحتك 🌸`);
                         }
                     }
                 } else {
@@ -1313,17 +1229,9 @@
                     const rawCart = localStorage.getItem("bose_cart");
                     let cartArr = rawCart ? JSON.parse(rawCart) : [];
                     
-                    // نفس إصلاح الحجم المطبق فوق في المسار الأساسي - الـfallback ده نادراً ما
-                    // بيتفعّل (لو createCartItem مش محمّلة أصلاً)، لكن سيبناه بمنطق تمييز غلط
-                    // كان ممكن يكرر نفس مشكلة اختفاء الحجم.
-                    const finalUnitPrice = currentSelectedOptions.size && currentProduct.prices
-                        ? (currentProduct.prices[currentSelectedOptions.size] || currentProduct.price)
-                        : currentProduct.price;
-                    const fallbackId = currentSelectedOptions.size
-                        ? `${currentProduct.slug}-${currentSelectedOptions.size}`
-                        : String(currentProduct.id || currentProduct.slug);
+                    const finalUnitPrice = currentProduct.price;
                     const fallbackItem = {
-                        id: fallbackId,
+                        id: String(currentProduct.id || currentProduct.slug),
                         productSlug: currentProduct.slug,
                         title: currentProduct.title,
                         flavorName: currentProduct.flavorName || "كلاسيك",
@@ -1332,7 +1240,7 @@
                         image: currentProduct.image || (currentProduct.images ? currentProduct.images[0] : "")
                     };
                     
-                    const existingIdx = cartArr.findIndex(item => item.id === fallbackId);
+                    const existingIdx = cartArr.findIndex(item => item.productSlug === fallbackItem.productSlug);
                     if (existingIdx > -1) {
                         cartArr[existingIdx].quantity += currentMasterQuantity;
                     } else {
@@ -1343,8 +1251,8 @@
                     if (typeof window.updateGlobalCartCounter === "function") {
                         window.updateGlobalCartCounter();
                     }
-                    if (typeof window.showBoseGlobalToast === 'function') {
-                        window.showBoseGlobalToast(`تمت إضافة المنتج بنجاح لراحتك 🌸`);
+                    if (typeof window.showBoseToast === 'function') {
+                        window.showBoseToast(`تمت إضافة المنتج بنجاح لراحتك 🌸`);
                     }
                 }
             });
@@ -1354,7 +1262,7 @@
                 if (!relatedGrid || !dbData || !dbData.products) return;
 
                 const suggestionsList = dbData.products.filter(p => p.slug !== currentProduct.slug).slice(0, 5);
-                const currency = "جنيه";
+                const currency = dbData.store?.currency || "EGP";
                 const defaultLogo = dbData.store?.logo || "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png";
 
                 if (suggestionsList.length === 0) {
@@ -1509,7 +1417,7 @@
                 const files = Array.from(this.files).filter(f => f.type.startsWith("image/"));
                 const remainingSlots = MAX_REVIEW_IMAGES - uploadedImageUrls.length;
                 if (remainingSlots <= 0) {
-                    if (typeof window.showBoseGlobalToast === 'function') window.showBoseGlobalToast(`أقصى عدد صور للمراجعة ${MAX_REVIEW_IMAGES} صور 🌸`);
+                    if (typeof window.showBoseToast === 'function') window.showBoseToast(`أقصى عدد صور للمراجعة ${MAX_REVIEW_IMAGES} صور 🌸`);
                     this.value = "";
                     return;
                 }
@@ -1537,7 +1445,7 @@
                         placeholder.replaceWith(imgNode);
                     } catch (err) {
                         placeholder.remove();
-                        if (typeof window.showBoseGlobalToast === 'function') window.showBoseGlobalToast("تعذر رفع إحدى الصور، حاولي مرة أخرى 🌸");
+                        if (typeof window.showBoseToast === 'function') window.showBoseToast("تعذر رفع إحدى الصور، حاولي مرة أخرى 🌸");
                     }
                 }
 
@@ -1554,25 +1462,11 @@
 
             document.getElementById("btn-submit-premium-review").addEventListener("click", async () => {
                 if (isUploadingReviewImages) {
-                    if (typeof window.showBoseGlobalToast === 'function') {
-                        window.showBoseGlobalToast("لسه بترفع الصور، ثواني وهنكمل 🌸");
+                    if (typeof window.showBoseToast === 'function') {
+                        window.showBoseToast("لسه بترفع الصور، ثواني وهنكمل 🌸");
                     }
                     return;
                 }
-
-                // 🛡️ [حماية بسيطة من السبام]: حد أدنى ٢٠ ثانية بين محاولتين لإرسال
-                // تقييم من نفس الجهاز - بيمنع الإرسال المتكرر بالغلط أو من بوت بسيط.
-                const reviewRl = window.boseCheckClientRateLimit ? window.boseCheckClientRateLimit("review-submit", 20000) : { allowed: true };
-                if (!reviewRl.allowed) {
-                    if (typeof window.showBoseGlobalToast === 'function') {
-                        window.showBoseGlobalToast(`يرجى الانتظار ${reviewRl.secondsLeft} ثانية قبل إرسال تقييم جديد 🌸`);
-                    }
-                    return;
-                }
-                // 🛡️ [حقل فخ للبوتات]: لو الحقل المخفي bose-review-hp اتملى، نتجاهل
-                // المحاولة بصمت.
-                const reviewHp = document.getElementById("bose-review-hp");
-                if (reviewHp && reviewHp.value.trim() !== "") return;
 
                 const userName = document.getElementById("bose-review-user-name").value.trim();
                 const comment = document.getElementById("bose-review-comment").value.trim();
@@ -1580,8 +1474,8 @@
                 const rating = checkedRadio ? checkedRadio.value : "5";
 
                 if (!userName || !comment) {
-                    if (typeof window.showBoseGlobalToast === 'function') {
-                        window.showBoseGlobalToast("يرجى ملء جميع الحقول المطلوبة قبل الإرسال 🌸");
+                    if (typeof window.showBoseToast === 'function') {
+                        window.showBoseToast("يرجى ملء جميع الحقول المطلوبة قبل الإرسال 🌸");
                     }
                     return;
                 }
@@ -1617,8 +1511,8 @@
                 formWrapper.style.display = 'none';
                 toggleFormBtn.innerHTML = `<i class="fas fa-pen"></i> شاركي رأيك في أقل من دقيقة`;
 
-                if (typeof window.showBoseGlobalToast === 'function') {
-                    window.showBoseGlobalToast("تم إرسال مراجعتك بنجاح، هتظهر لباقي الزوار بعد اعتمادها من الإدارة 🌸");
+                if (typeof window.showBoseToast === 'function') {
+                    window.showBoseToast("تم إرسال مراجعتك بنجاح، هتظهر لباقي الزوار بعد اعتمادها من الإدارة 🌸");
                 }
             });
 

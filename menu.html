@@ -124,12 +124,15 @@
         
         .bose-menu-img-wrap {
             width: 100%;
-            aspect-ratio: 1 / 1;
+            height: 280px;
             border-radius: 16px;
             overflow: hidden;
             background: var(--bose-cream);
             display: block;
         }
+        
+        @media (min-width: 768px) { .bose-menu-img-wrap { height: 330px; } }
+        @media (min-width: 1024px) { .bose-menu-img-wrap { height: 420px; } }
         
         .bose-menu-img-wrap img {
             width: 100%;

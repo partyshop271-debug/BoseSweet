@@ -265,11 +265,11 @@ body {
                 </div>
                 <div class="pricing-row-node">
                     <span class="pricing-label-text">المجموع الصافي للمشتريات:</span>
-                    <span id="cart-subtotal-value" class="pricing-value-text" style="color: #111111; font-weight: 700;">0 جنيه</span>
+                    <span id="cart-subtotal-value" class="pricing-value-text" style="color: #111111; font-weight: 700;">0 EGP</span>
                 </div>
                 <div class="pricing-row-node">
                     <span class="pricing-label-text">الخصم المطبق:</span>
-                    <span id="summary-discount" class="pricing-value-text" style="color: #FF91A4; font-weight: 700;">0 جنيه</span>
+                    <span id="summary-discount" class="pricing-value-text" style="color: #FF91A4; font-weight: 700;">0 EGP</span>
                 </div>
                 <div class="pricing-row-node">
                     <span class="pricing-label-text">رسوم ومصاريف التوصيل:</span>
@@ -277,7 +277,7 @@ body {
                 </div>
                 <div class="summary-grand-total-row" style="border-top: 1px dashed rgba(255,145,164,0.3); padding-top: 16px;">
                     <span class="grand-total-label">الإجمالي النهائي التقريبي:</span>
-                    <span id="cart-grand-total-value" class="total-value-display" style="color: #FF91A4; font-weight: 700; font-size: 1.5rem;">0 جنيه</span>
+                    <span id="cart-grand-total-value" class="total-value-display" style="color: #FF91A4; font-weight: 700; font-size: 1.5rem;">0 EGP</span>
                 </div>
             </div>
 
@@ -334,7 +334,7 @@ document.addEventListener("DOMContentLoaded", () => {
             !(p.customBuilderUrl && p.builderType && p.builderType !== 'standard')
         ).slice(0, 5);
 
-        const currency = "جنيه";
+        const currency = dbData.store?.currency || "EGP";
 
         if (finalSuggestions.length === 0) {
             targetGrid.innerHTML = `<p style="text-align:center; width:100%; font-weight:700; padding:20px; opacity:0.6;">تصفح قائمتنا الشاملة عبر المنيو لاستكشاف المزيد من المفاجآت 🌸</p>`;
@@ -371,18 +371,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>
             ` : '';
 
-            // 🚨 [توضيح كمية لكل حجم]: نفس المنطق المستخدم في createProductCardHTML
-            // وproduct.html بالظبط - لو المنتج عنده sizeQuantityNotes للحجم الافتراضي
-            // المختار (زي الديسباسيتو: "ده سعر المثلث."/"ده سعر الطاجن."/"ده سعر
-            // الحجم العائلي.") نعرضه، وإلا نرجع لـ quantityNote العام. كان ناقص هنا
-            // تماماً رغم إن الكارت ده بيسمح بالإضافة المباشرة للسلة بحجم مختلف.
-            const initialQtyNoteText = (prod.sizeQuantityNotes && defaultSizeKey && prod.sizeQuantityNotes[defaultSizeKey])
-                ? prod.sizeQuantityNotes[defaultSizeKey]
-                : prod.quantityNote;
-            const qtyNoteHTML = initialQtyNoteText
-                ? `<div class="bose-qty-clarity-note"><i class="fa-solid fa-circle-info"></i><span>${secureEscape(initialQtyNoteText)}</span></div>`
-                : '';
-
             // 🛡️ [إصلاح حرج]: إظهار شارة الخصم والسعر القديم المشطوب لو المنتج المقترح
             // عليه عرض فعلي (oldPrice > price) - نفس تنسيق باقي الموقع بالظبط، بدل ما
             // يظهر هنا بسعره الحالي بس وكأنه منتج عادي ما عليهوش أي خصم.
@@ -407,7 +395,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         ${safeFlavor ? `<span class="bose-suggestion-flavor-name">${safeFlavor}</span>` : ''}
                         ${safeDesc ? `<p class="bose-suggestion-desc-text">${safeDesc}</p>` : ''}
                         ${sizeTabsHTML}
-                        ${qtyNoteHTML}
                         <div class="bose-suggestion-footer-row">
                             <span class="bose-suggestion-price-tag">${oldPriceHTML}${Math.round(calculatedPrice)} ${currency}</span>
                             <button class="btn-quick-add-to-cart bose-suggestion-add-trigger" aria-label="إضافة سريعة صنف ${secureEscape(prod.title)}">
@@ -436,24 +423,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 const newPrice = window.calculateProductFinalPrice(product, { size: pill.dataset.sizeKey });
                 const priceTag = card.querySelector('.bose-suggestion-price-tag');
                 if (priceTag) priceTag.textContent = `${Math.round(newPrice)} ${currency}`;
-
-                // 🚨 [توضيح كمية لكل حجم]: تحديث النص فوراً لحظة تغيير الحجم من نفس
-                // الكارت، بنفس منطق core-engine.js وproduct.html.
-                const qtyNoteWrapper = card.querySelector('.bose-qty-clarity-note');
-                const qtyNoteText = (product.sizeQuantityNotes && product.sizeQuantityNotes[pill.dataset.sizeKey])
-                    ? product.sizeQuantityNotes[pill.dataset.sizeKey]
-                    : product.quantityNote;
-                if (qtyNoteText) {
-                    if (qtyNoteWrapper) {
-                        const span = qtyNoteWrapper.querySelector('span');
-                        if (span) span.textContent = qtyNoteText;
-                    } else {
-                        const sizeTabsEl = card.querySelector('.bose-card-size-tabs');
-                        if (sizeTabsEl) sizeTabsEl.insertAdjacentHTML('afterend', `<div class="bose-qty-clarity-note"><i class="fa-solid fa-circle-info"></i><span>${secureEscape(qtyNoteText)}</span></div>`);
-                    }
-                } else if (qtyNoteWrapper) {
-                    qtyNoteWrapper.remove();
-                }
             });
         });
 

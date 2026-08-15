@@ -44,7 +44,6 @@
 
         .track-status-pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 18px; border-radius: 30px; font-weight: 800; font-size: 0.95rem; margin-bottom: 18px; }
         .status-pending { background: rgba(255, 145, 164, 0.08); color: #FF91A4; }
-        .status-awaiting_deposit { background: rgba(255, 145, 164, 0.08); color: #FF91A4; }
         .status-processing, .status-preparing { background: rgba(255, 145, 164, 0.08); color: #FF91A4; }
         .status-ready { background: rgba(255, 145, 164, 0.08); color: #FF91A4; }
         .status-delivering, .status-out_for_delivery { background: rgba(255, 145, 164, 0.08); color: #FF91A4; }
@@ -99,10 +98,8 @@
     <script>
         (function () {
             const STATUS_LABELS = {
-                awaiting_deposit: "بانتظار تأكيد العربون",
-                pending: "قيد المراجعة",
+                pending: "بانتظار المراجعة",
                 processing: "جاري التحضير",
-                confirmed: "مؤكد",
                 preparing: "جاري التحضير",
                 ready: "جاهز للاستلام/التوصيل",
                 out_for_delivery: "في الطريق ليكِ",
