@@ -1538,6 +1538,15 @@
             totalDisplayItems += isBespokeOrCustom ? 1 : (parseInt(item.quantity, 10) || 1);
         });
         cartCountBadges.forEach((badge) => badge.textContent = String(totalDisplayItems));
+
+        // 🛒 [سلة عائمة]: تبديل حالة الفقاعة العائمة بين "فاضية" (وميض تحفيزي مستمر
+        // يشجع العميل يضيف منتجات) و"فيها أصناف" (الوميض بيقف ويثبت اللون عشان
+        // العميل يركز على العدد الحقيقي ويكمل طلبه براحة).
+        const floatingCartBtn = document.getElementById('bose-floating-cart-btn');
+        if (floatingCartBtn) {
+            floatingCartBtn.classList.toggle('is-empty', totalDisplayItems === 0);
+            floatingCartBtn.classList.toggle('has-items', totalDisplayItems > 0);
+        }
     };
 
     /**
@@ -2139,6 +2148,29 @@
                 </a>
             `;
             document.body.appendChild(bottomNav);
+        }
+
+        // 🛒 [سلة عائمة ثابتة]: فقاعة سلة عائمة فوق التبويب السفلي، ثابتة في مكانها طول
+        // ما العميل بيتصفح الموقع، وقريبة من إبهامه عشان توصله بسهولة من غير ما يدور
+        // عليها. طول ما السلة فاضية بتعمل وميض/نبض هادي يلفت نظر العميل ويشجعه إنه
+        // يضيف منتجات. أول ما يبقى فيها صنف، الوميض بيقف ويظهر بس عداد العدد بوضوح.
+        // مبنية على نفس ستايل الكارت (بمبي/أبيض) وبتتحدث لحظياً زي أي عداد سلة تاني
+        // بالموقع لأنها بتستخدم نفس كلاس nav-cart-badge اللي updateGlobalCartCounter شغالة عليه.
+        if (!document.querySelector('.bose-floating-cart-btn')) {
+            const currentPageForFab = (window.location.pathname.split('/').pop() || 'index.html');
+            if (currentPageForFab !== 'cart.html' && currentPageForFab !== 'checkout.html') {
+                const floatingCartBtn = document.createElement('a');
+                floatingCartBtn.href = 'cart.html';
+                floatingCartBtn.className = 'bose-floating-cart-btn is-empty';
+                floatingCartBtn.id = 'bose-floating-cart-btn';
+                floatingCartBtn.setAttribute('aria-label', 'سلة المشتريات - اضغطي هنا لمراجعة السلة وإتمام الطلب');
+                floatingCartBtn.innerHTML = `
+                    <span class="bose-floating-cart-pulse"></span>
+                    <i class="fa-solid fa-basket-shopping"></i>
+                    <span id="floating-cart-count" class="nav-cart-badge bose-floating-cart-badge">0</span>
+                `;
+                document.body.appendChild(floatingCartBtn);
+            }
         }
 
         const footerInjector = document.getElementById('bose-footer-injector');

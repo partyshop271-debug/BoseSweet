@@ -266,6 +266,11 @@ function renderBoseCartPage(storeData) {
                         <div class="cart-item-total-price" style="font-size: 18px; font-weight: 700; color: #FF91A4; white-space: nowrap;">${totalItemCost.toFixed(2)} <span style="font-size: 12px; font-weight: 700; color: #111111;">EGP</span></div>
                     </div>
                 </div>
+
+                <div class="cart-item-completion-hint" style="grid-column: 1 / -1; display: flex; align-items: flex-start; gap: 8px; margin-top: 4px; padding: 10px 14px; background: rgba(255,145,164,0.06); border: 1px dashed rgba(255,145,164,0.35); border-radius: 12px; font-family: 'Cairo';">
+                    <i class="fa-solid fa-circle-info" style="color: #FF91A4; font-size: 13px; margin-top: 2px;"></i>
+                    <span style="font-size: 12.5px; line-height: 1.6; color: #111111; opacity: 0.85;">الصنف ده اتحفظ في سلتك، بس طلبك لسه ما بعتش. كمّلي لآخر الصفحة ودوسي على "الانتقال لإتمام الطلب"، وبعدين زرار تأكيد الطلب في صفحة الدفع، عشان تفاصيل طلبك توصلنا فورًا على الواتساب ونبدأ نجهزهولك.</span>
+                </div>
             `;
             
             fragment.appendChild(cartCard);
