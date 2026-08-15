@@ -1483,6 +1483,42 @@
         return { cart: fixedCart, wasTampered };
     };
 
+    /**
+     * 🛡️ [إصلاح حرج]: نظام رسائل التنبيه المؤقتة (toast) - كان بيتنادى عليه في
+     * أكتر من 8 أماكن في الموقع (تمت الإضافة للسلة، تم إرسال المراجعة، إلخ)
+     * بس الدالة نفسها كانت مش متعرّفة في أي مكان، يعني كل الرسائل دي كانت
+     * بتفشل بصمت (typeof === 'function' بيرجع false) والعميل ملوش أي تأكيد
+     * بصري إن الإضافة للسلة نجحت غير رقم صغير في شارة السلة بالزاوية.
+     * الـ CSS الخاص بالتصميم (#bose-toast-container / .bose-toast-message)
+     * كان جاهز فعلاً من قبل في global.css - هنا بس بنوصّله بمنطق JS شغال.
+     */
+    window.showBoseToast = function (message, duration = 3200) {
+        if (!message) return;
+        let container = document.getElementById('bose-toast-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'bose-toast-container';
+            document.body.appendChild(container);
+        }
+
+        const toast = document.createElement('div');
+        toast.className = 'bose-toast-message';
+        toast.textContent = message;
+        container.appendChild(toast);
+
+        // فريم إضافي قبل إضافة is-visible عشان الـ transition يشتغل فعلاً
+        // (لو ضفناها في نفس الفريم، المتصفح مش هيعمل انتقال من الحالة الابتدائية)
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => toast.classList.add('is-visible'));
+        });
+
+        setTimeout(() => {
+            toast.classList.remove('is-visible');
+            toast.classList.add('is-leaving');
+            setTimeout(() => toast.remove(), 420);
+        }, duration);
+    };
+
     window.updateGlobalCartCounter = function() {
         const cartCountBadges = document.querySelectorAll('#nav-cart-count, .nav-cart-badge');
         if (cartCountBadges.length === 0) return;
