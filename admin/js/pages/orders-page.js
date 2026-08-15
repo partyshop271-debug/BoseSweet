@@ -83,7 +83,7 @@
         if (cd.persons && cd.persons > 0) lines.push(`عدد الأفراد: ${e(String(cd.persons))}`);
         if (cd.printingType && cd.printingType !== "none") lines.push(`طباعة صورة: ${cd.printingType === "edible" ? "قابلة للأكل" : "غير قابلة للأكل"}`);
         if (cd.customMessage && cd.customMessage.trim()) lines.push(`النص المطلوب كتابته: "${e(cd.customMessage.trim())}"`);
-        if (cd.allergyNote && cd.allergyNote.trim()) lines.push(`⚠️ ملاحظة حساسية: ${e(cd.allergyNote.trim())}`);
+        if (cd.allergyNote && cd.allergyNote.trim()) lines.push(`⚠️ ملاحظات وحساسية: ${e(cd.allergyNote.trim())}`);
         if (cd.hasGiftCard && cd.giftCardText && cd.giftCardText.trim()) lines.push(`كارت إهداء: "${e(cd.giftCardText.trim())}"`);
         if (cd.flowerType && cd.flowerType !== "none") lines.push(`نوع الورد: ${e(cd.flowerType)}`);
         if (cd.flowerCount && cd.flowerCount > 0) lines.push(`عدد الورد: ${e(String(cd.flowerCount))} وردة`);
