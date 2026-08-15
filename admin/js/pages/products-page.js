@@ -222,6 +222,17 @@
                         </div>
                     </div>
 
+                    <!-- 🎂 [حل مشكلة "العميل مش فاهم الكمية"]: نص قصير بيتعرض دايماً وبشكل واضح
+                         جنب السعر في كارت المنتج وصفحة المنتج (مش مخفي جوه أي شرح اختياري) -
+                         مهم بالذات لمنتجات "العروض/البوكسات" (promo-*) اللي بتتغير محتوياتها من
+                         وقت للتاني: كل ما تتعدّل عناصر عرض من هنا، لازم التوضيح يتحدّث معاها. -->
+                    <div class="adm-field">
+                        <label for="pf-quantity-note">توضيح الكمية (بيظهر دايماً جنب السعر)</label>
+                        <input type="text" class="adm-input" id="pf-quantity-note" value="${isEdit ? e(product.quantity_note || "") : ""}"
+                               placeholder="مثال: السعر ده لدستة كاملة (12 قطعة)، أو: البوكس ده فيه 6 طواجن (3 ديسباسيتو + 3 قشطوطة)">
+                        <span class="adm-hint">اسيبه فاضي لو مفيش لبس ممكن يحصل. مهم جداً لأي منتج "عرض/بوكس" مكوّن من عناصر مختلفة - حدّثه كل ما تغيّري محتويات العرض.</span>
+                    </div>
+
                     <div class="adm-form-grid">
                         <div class="adm-field">
                             <label for="pf-sort-order">ترتيب العرض</label>
@@ -503,6 +514,7 @@
                 description: document.getElementById("pf-description").value.trim() || null,
                 price: parseFloat(document.getElementById("pf-price").value) || 0,
                 old_price: document.getElementById("pf-old-price").value ? parseFloat(document.getElementById("pf-old-price").value) : null,
+                quantity_note: document.getElementById("pf-quantity-note").value.trim() || null,
                 sort_order: parseInt(document.getElementById("pf-sort-order").value, 10) || 0,
                 is_featured: document.getElementById("pf-featured").checked,
                 is_available: document.getElementById("pf-available").checked,
