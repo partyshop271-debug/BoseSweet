@@ -160,6 +160,11 @@
         let images = isEdit ? [...(product.images || [])] : [];
         const prices = isEdit ? { ...(product.prices || {}) } : {};
         const sizeDescriptions = isEdit ? { ...(product.size_descriptions || {}) } : {};
+        // 🎂 [توضيح كمية مختلف لكل حجم]: زي sizeDescriptions بالظبط، بس لبادچ الكمية
+        // اللي بيظهر جنب السعر (مثال: الديسباسيتو - "ده سعر المثلث."/"ده سعر الطاجن."/
+        // "ده سعر الحجم العائلي."). لو حجم معين مالوش نص هنا، الواجهة بترجع تلقائياً
+        // لتوضيح الكمية العام (pf-quantity-note) تحت.
+        const sizeQuantityNotes = isEdit ? { ...(product.size_quantity_notes || {}) } : {};
         // 🖼️ [صور الأحجام المتعددة]: نسخة قابلة للتعديل من خريطة { sizeKey: imageUrl }
         let sizeImages = isEdit ? { ...(product.size_images || {}) } : {};
         let faqs = isEdit ? (product.faqs || []).map((f) => ({ q: f.q || "", a: f.a || "" })) : [];
@@ -302,6 +307,20 @@
                                     `).join("")}
                                 </div>
                                 <span class="adm-hint">لو عبّيت أكتر من حجم، العميل هيقدر يختار بينهم في صفحة المنتج. أول حجم متعبّى بيبقى الافتراضي.</span>
+                            </div>
+
+                            <div class="adm-field">
+                                <label>توضيح الكمية لكل حجم (اختياري - لو المنتج بيتباع بأحجام مختلفة زي الديسباسيتو)</label>
+                                <div class="adm-form-grid" style="grid-template-columns: repeat(3, 1fr);">
+                                    ${SIZE_KEYS.map((key) => `
+                                        <div class="adm-field">
+                                            <label for="pf-size-qty-note-${key}">${SIZE_LABELS[key]}</label>
+                                            <input type="text" class="adm-input" id="pf-size-qty-note-${key}"
+                                                   value="${e(sizeQuantityNotes[key] || "")}" placeholder="مثال: ده سعر ${SIZE_LABELS[key]}.">
+                                        </div>
+                                    `).join("")}
+                                </div>
+                                <span class="adm-hint">لو اسبتها فاضية لحجم معين، توضيح الكمية العام فوق هو اللي هيتعرض بدلها لما العميل يختار الحجم ده.</span>
                             </div>
 
                             <div class="adm-field">
@@ -528,6 +547,16 @@
                 default_size: filledSizeKeys.length ? (filledSizeKeys.includes(product?.default_size) ? product.default_size : filledSizeKeys[0]) : null,
                 size_descriptions: filledSizeKeys.length
                     ? Object.fromEntries(Object.entries(sizeDescriptions).filter(([k]) => filledSizeKeys.includes(k)))
+                    : {},
+                // 🎂 [توضيح كمية مختلف لكل حجم]: بنقرأ القيمة الحالية من كل حقل نص وقت
+                // الحفظ (مش من الكائن sizeQuantityNotes القديم) عشان أي تعديل كتبته
+                // الأدمن في الحقول يتحفظ فعلياً، وبنحفظ بس مفاتيح الأحجام اللي لسه ليها سعر.
+                size_quantity_notes: filledSizeKeys.length
+                    ? Object.fromEntries(
+                        filledSizeKeys
+                            .map((k) => [k, (document.getElementById(`pf-size-qty-note-${k}`)?.value || "").trim()])
+                            .filter(([, v]) => v)
+                      )
                     : {},
                 // 🖼️ [صور الأحجام المتعددة]: بنحفظ بس صور الأحجام اللي لسه ليها سعر متعبّى
                 // (لو الأدمن مسح سعر حجم، صورته المخصصة بتتشال معاه تلقائياً بدل ما تفضل يتيمة).
