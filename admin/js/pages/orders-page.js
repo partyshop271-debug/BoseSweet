@@ -12,6 +12,7 @@
 
     let currentOrders = [];
     let searchDebounceTimer = null;
+    let selectedIds = new Set();
 
     /* ============================= الجدول ============================= */
 
@@ -30,17 +31,25 @@
         const tbody = document.getElementById("orders-tbody");
         const e = window.BoseAdminUI.escapeHtml;
 
+        // بنشيل من التحديد أي ID مبقاش موجود في النتيجة الحالية (بعد فلترة/بحث جديد)
+        const visibleIds = new Set(currentOrders.map((o) => o.id));
+        selectedIds.forEach((id) => { if (!visibleIds.has(id)) selectedIds.delete(id); });
+
         if (!currentOrders.length) {
-            tbody.innerHTML = `<tr><td colspan="6">${window.BoseAdminUI.emptyStateHTML({
+            tbody.innerHTML = `<tr><td colspan="7">${window.BoseAdminUI.emptyStateHTML({
                 icon: "fa-receipt",
                 title: "مفيش طلبات مطابقة",
                 text: "جرّب تغيّر الفلتر أو امسح نص البحث.",
             })}</td></tr>`;
+            updateBulkBar();
             return;
         }
 
         tbody.innerHTML = currentOrders.map((o) => `
             <tr class="adm-clickable-row" data-id="${e(o.id)}">
+                <td class="adm-orders-checkbox-cell">
+                    <input type="checkbox" class="adm-order-row-checkbox" data-id="${e(o.id)}" ${selectedIds.has(o.id) ? "checked" : ""}>
+                </td>
                 <td>#${e(o.order_number || o.id)}</td>
                 <td>${e(o.customer_name || "—")}</td>
                 <td>${e(o.phone1 || "—")}</td>
@@ -51,11 +60,42 @@
         `).join("");
 
         tbody.querySelectorAll("tr[data-id]").forEach((row) => {
-            row.addEventListener("click", () => {
+            row.addEventListener("click", (evt) => {
+                if (evt.target.closest(".adm-order-row-checkbox")) return;
                 const order = currentOrders.find((o) => o.id === row.getAttribute("data-id"));
                 if (order) openOrderModal(order);
             });
         });
+
+        tbody.querySelectorAll(".adm-order-row-checkbox").forEach((cb) => {
+            cb.addEventListener("change", () => {
+                const id = cb.getAttribute("data-id");
+                if (cb.checked) selectedIds.add(id); else selectedIds.delete(id);
+                updateBulkBar();
+                syncSelectAllCheckbox();
+            });
+        });
+
+        updateBulkBar();
+        syncSelectAllCheckbox();
+    }
+
+    function syncSelectAllCheckbox() {
+        const selectAll = document.getElementById("orders-select-all");
+        if (!selectAll || !currentOrders.length) { if (selectAll) selectAll.checked = false; return; }
+        selectAll.checked = currentOrders.every((o) => selectedIds.has(o.id));
+    }
+
+    function updateBulkBar() {
+        const bar = document.getElementById("orders-bulk-bar");
+        const countEl = document.getElementById("orders-bulk-count");
+        if (!bar || !countEl) return;
+        if (selectedIds.size > 0) {
+            bar.style.display = "flex";
+            countEl.textContent = `${selectedIds.size} طلب محدد`;
+        } else {
+            bar.style.display = "none";
+        }
     }
 
     /* ============================= مودال تفاصيل الطلب ============================= */
@@ -148,6 +188,9 @@
                 </div>
 
                 <div class="adm-modal-actions">
+                    <button type="button" class="adm-btn adm-btn-danger" id="order-delete-btn" style="margin-inline-end:auto;">
+                        <i class="fa-solid fa-trash"></i> حذف الطلب
+                    </button>
                     <button type="button" class="adm-btn adm-btn-ghost" data-role="close">إغلاق</button>
                     <button type="button" class="adm-btn adm-btn-primary" id="order-status-save-btn">تحديث الحالة</button>
                 </div>
@@ -179,6 +222,31 @@
             });
         }
 
+        document.getElementById("order-delete-btn").addEventListener("click", async () => {
+            const confirmed = await window.BoseAdminUI.confirmAction({
+                title: "تأكيد حذف الطلب",
+                message: `هل أنت متأكدة من حذف الطلب #${order.order_number || order.id} نهائياً؟ الإجراء ده هيمسح كل تفاصيل الطلب ومش هينفع يتراجع.`,
+                confirmLabel: "حذف نهائي",
+                danger: true,
+            });
+            if (!confirmed) return;
+
+            const btn = document.getElementById("order-delete-btn");
+            btn.disabled = true;
+            btn.textContent = "جاري الحذف...";
+            try {
+                await window.BoseAdmin.deleteOrder(order.id);
+                window.BoseAdminUI.showToast("تم حذف الطلب", "success");
+                selectedIds.delete(order.id);
+                close();
+                await loadOrders();
+            } catch (err) {
+                window.BoseAdminUI.showToast("تعذر حذف الطلب", "error");
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fa-solid fa-trash"></i> حذف الطلب`;
+            }
+        });
+
         document.getElementById("order-status-save-btn").addEventListener("click", async () => {
             const newStatus = document.getElementById("order-status-select").value;
             const btn = document.getElementById("order-status-save-btn");
@@ -203,7 +271,7 @@
 
     async function loadOrders() {
         const tbody = document.getElementById("orders-tbody");
-        tbody.innerHTML = `<tr><td colspan="6"><div class="adm-loading-spinner"></div></td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7"><div class="adm-loading-spinner"></div></td></tr>`;
 
         const status = document.getElementById("orders-status-filter").value;
         const search = document.getElementById("orders-search-input").value.trim();
@@ -225,6 +293,74 @@
             searchDebounceTimer = setTimeout(loadOrders, 350);
         });
         document.getElementById("orders-status-filter").addEventListener("change", loadOrders);
+
+        document.getElementById("orders-select-all").addEventListener("change", (evt) => {
+            if (evt.target.checked) {
+                currentOrders.forEach((o) => selectedIds.add(o.id));
+            } else {
+                currentOrders.forEach((o) => selectedIds.delete(o.id));
+            }
+            renderTable();
+        });
+
+        document.getElementById("orders-bulk-clear-btn").addEventListener("click", () => {
+            selectedIds.clear();
+            renderTable();
+        });
+
+        document.getElementById("orders-bulk-delete-btn").addEventListener("click", async () => {
+            const count = selectedIds.size;
+            if (!count) return;
+            const confirmed = await window.BoseAdminUI.confirmAction({
+                title: "تأكيد الحذف الجماعي",
+                message: `هل أنت متأكدة من حذف ${count} طلب نهائياً؟ الإجراء ده مش هينفع يتراجع.`,
+                confirmLabel: "حذف نهائي",
+                danger: true,
+            });
+            if (!confirmed) return;
+
+            const btn = document.getElementById("orders-bulk-delete-btn");
+            btn.disabled = true;
+            btn.textContent = "جاري الحذف...";
+            try {
+                const deleted = await window.BoseAdmin.deleteOrders(Array.from(selectedIds));
+                window.BoseAdminUI.showToast(`تم حذف ${deleted} طلب`, "success");
+                selectedIds.clear();
+                await loadOrders();
+            } catch (err) {
+                window.BoseAdminUI.showToast("تعذر حذف الطلبات المحددة", "error");
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fa-solid fa-trash"></i> حذف المحدد`;
+            }
+        });
+
+        document.getElementById("orders-delete-cancelled-btn").addEventListener("click", async () => {
+            const btn = document.getElementById("orders-delete-cancelled-btn");
+            btn.disabled = true;
+            try {
+                const cancelledOrders = await window.BoseAdmin.getAllOrders({ status: "cancelled" });
+                if (!cancelledOrders.length) {
+                    window.BoseAdminUI.showToast("مفيش طلبات ملغية حالياً", "success");
+                    return;
+                }
+                const confirmed = await window.BoseAdminUI.confirmAction({
+                    title: "تأكيد حذف الطلبات الملغية",
+                    message: `في ${cancelledOrders.length} طلب ملغي هيتم حذفهم نهائياً. الإجراء ده مش هينفع يتراجع.`,
+                    confirmLabel: "حذف الكل",
+                    danger: true,
+                });
+                if (!confirmed) return;
+
+                const deleted = await window.BoseAdmin.deleteOrders(cancelledOrders.map((o) => o.id));
+                window.BoseAdminUI.showToast(`تم حذف ${deleted} طلب ملغي`, "success");
+                await loadOrders();
+            } catch (err) {
+                window.BoseAdminUI.showToast("تعذر حذف الطلبات الملغية", "error");
+            } finally {
+                btn.disabled = false;
+            }
+        });
     }
 
     document.addEventListener("BoseAdminReady", async () => {
