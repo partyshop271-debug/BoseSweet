@@ -754,8 +754,14 @@
         // من لوحة التحكم (مثال: "دستة كاملة = 12 قطعة")، بيتعرض هنا دايماً وبشكل
         // واضح جنب السعر - مش مخفي جوه ⓘ اختياري - عشان دي حقيقة أساسية لازم كل
         // عميل يشوفها من غير ما يحتاج يكتشفها بنفسه.
-        const quantityNoteHtml = product.quantityNote
-            ? `<div class="bose-qty-clarity-note"><i class="fa-solid fa-circle-info"></i><span>${window.escapeBoseHTML(product.quantityNote)}</span></div>`
+        // 🚨 [توضيح كمية لكل حجم]: لو المنتج عنده sizeQuantityNotes للحجم الافتراضي المختار
+        // (زي الديسباسيتو: "ده سعر المثلث."/"ده سعر الطاجن."/"ده سعر الحجم العائلي.")
+        // نستخدمه، وإلا نرجع لـ quantityNote العام العادي.
+        const initialQuantityNoteText = (product.sizeQuantityNotes && defaultSizeKey && product.sizeQuantityNotes[defaultSizeKey])
+            ? product.sizeQuantityNotes[defaultSizeKey]
+            : product.quantityNote;
+        const quantityNoteHtml = initialQuantityNoteText
+            ? `<div class="bose-qty-clarity-note"><i class="fa-solid fa-circle-info"></i><span>${window.escapeBoseHTML(initialQuantityNoteText)}</span></div>`
             : '';
 
         const isUnavailable = product.isAvailable === false;
@@ -820,6 +826,27 @@
             priceDisplay.dataset.basePrice = String(newPrice);
             const priceSpan = priceDisplay.querySelector('span');
             if (priceSpan) priceSpan.textContent = `${Math.round(newPrice)} جنيه`;
+        }
+
+        // 🚨 [توضيح كمية لكل حجم]: لما العميل يغيّر الحجم من الكارت نفسه (بدون ما يفتح
+        // صفحة المنتج)، لازم توضيح الكمية جنب السعر يتغيّر معاه فوراً بنفس المنطق
+        // (مثال: يبدّل من "ده سعر المثلث." لـ "ده سعر الطاجن." لما يختار حجم الطاجن).
+        const qtyNoteWrapper = card.querySelector('.bose-qty-clarity-note');
+        const qtyNoteText = (product.sizeQuantityNotes && product.sizeQuantityNotes[sizeKey])
+            ? product.sizeQuantityNotes[sizeKey]
+            : product.quantityNote;
+        if (qtyNoteText) {
+            if (qtyNoteWrapper) {
+                const span = qtyNoteWrapper.querySelector('span');
+                if (span) span.textContent = qtyNoteText;
+            } else {
+                const sizeTabs = card.querySelector('.bose-card-size-tabs');
+                if (sizeTabs) {
+                    sizeTabs.insertAdjacentHTML('afterend', `<div class="bose-qty-clarity-note"><i class="fa-solid fa-circle-info"></i><span>${window.escapeBoseHTML(qtyNoteText)}</span></div>`);
+                }
+            }
+        } else if (qtyNoteWrapper) {
+            qtyNoteWrapper.remove();
         }
     };
 
