@@ -653,9 +653,8 @@ html.adm-ready .adm-auth-gate { display: none; }
 
 .adm-order-item-row {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
-    gap: 10px;
     padding: 10px 14px;
     background: var(--adm-bg-input);
     border-radius: var(--adm-radius-sm);
@@ -667,35 +666,6 @@ html.adm-ready .adm-auth-gate { display: none; }
     font-size: 0.75rem;
     color: var(--adm-text-muted);
     margin-top: 2px;
-}
-
-.adm-order-item-custom-details {
-    margin-top: 8px;
-    padding-top: 8px;
-    border-top: 1px dashed var(--adm-border-soft);
-}
-
-.adm-order-item-custom-details ul {
-    margin: 0;
-    padding: 0 18px 0 0;
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-    font-size: 0.78rem;
-    color: var(--adm-text-body, #333);
-}
-
-.adm-order-item-images {
-    margin-top: 6px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    font-size: 0.78rem;
-}
-
-.adm-order-item-images a {
-    color: var(--adm-primary, #FF91A4);
-    text-decoration: underline;
 }
 
 .adm-order-totals {
