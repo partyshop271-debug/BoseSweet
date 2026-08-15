@@ -22,9 +22,9 @@
     <!-- استدعاء ملفات التنسيق الفاخرة والمعزولة للبراند -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/global.css?v=2026_production_v32.0">
-    <link rel="stylesheet" href="css/main.css?v=2026_production_v32.0">
-    <link rel="stylesheet" href="css/simulators.css?v=2026_production_v32.0">
+    <link rel="stylesheet" href="css/global.css?v=2026_production_v35.0">
+    <link rel="stylesheet" href="css/main.css?v=2026_production_v35.0">
+    <link rel="stylesheet" href="css/simulators.css?v=2026_production_v35.0">
     <style>
         /* 🧠 [محاكي أذكى - مطابق لمحاكي الكيك] */
         .bose-flavor-sensory-note {
@@ -88,13 +88,22 @@
             <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="بوكيه ورد فاخر وتنسيقات هدايا راقية من حلويات بوسي" class="hero-banner-frame" loading="eager">
         </div>
 
-        <!-- شريط مؤشرات الخطوات التفاعلية المطور -->
+        <!-- شريط مؤشرات الخطوات التفاعلية المطور
+             📏👑 [توحيد فلسفة "قرار واحد لكل خطوة" مع محاكي التورت]: بعد حذف خطوة
+             "لنفسي/هدية" وتقسيم الخطوات المجمّعة (نوع الورد + العدد + الصورة كانوا
+             خطوة واحدة، وبرضه الصور الشخصية + الكاش، والشوكولاتة + كارت الإهداء)،
+             بقى عندنا 9 خطوات قرار + خطوة خلاصة أخيرة = 10 بالظبط. -->
         <div class="simulator-steps-indicator" role="navigation" aria-label="خطوات تصميم البوكيه">
             <span class="step-node active" data-step-target="1">1</span>
             <span class="step-node" data-step-target="2">2</span>
             <span class="step-node" data-step-target="3">3</span>
             <span class="step-node" data-step-target="4">4</span>
             <span class="step-node" data-step-target="5">5</span>
+            <span class="step-node" data-step-target="6">6</span>
+            <span class="step-node" data-step-target="7">7</span>
+            <span class="step-node" data-step-target="8">8</span>
+            <span class="step-node" data-step-target="9">9</span>
+            <span class="step-node" data-step-target="10">10</span>
         </div>
 
         <div class="simulator-workspace">
@@ -102,26 +111,16 @@
             <!-- الجانب الأيمن: لوحة التحكم بالتخصيص والمراحل -->
             <div class="simulator-control-panel">
 
-                <!-- الخطوة 1 (جديدة): البوكيه ده لمين وإيه الإحساس المطلوب -->
+                <!-- الخطوة 1: الإحساس المطلوب من الباقة
+                     🗑️👑 [حذف خطوة "لمين البوكيه ده؟" (لنفسي/هدية)]: بنفس فلسفة محاكي
+                     التورت V6.0 اللي شالها من هناك خالص - الخطوة كانت بتضيف قرار زيادة
+                     من غير ما تأثر فعلياً على أي سعر أو تفصيلة في الطلب، فبتزود الاحتكاك
+                     من غير فايدة حقيقية للعميل. باقي خطوات المحاكي اتزاحت رقم واحد لفوق. -->
                 <div class="bose-step-card-panel active" data-step="1">
-                    <h2 class="step-title"><i class="fa-solid fa-heart"></i> الخطوة 1: البوكيه ده لمين؟</h2>
+                    <h2 class="step-title"><i class="fa-solid fa-heart"></i> الخطوة 1: إيه الإحساس المطلوب؟</h2>
 
                     <div class="bose-premium-template-box">
-                        <label class="premium-input-label">هنسهّلك الاختيار من أول خطوة.</label>
-                        <div class="bose-iconic-options-row" id="flower-purpose-row" style="grid-template-columns: repeat(2, 1fr);">
-                            <div class="bose-iconic-btn-node active-selected" data-value="self">
-                                <span class="btn-icon">💐</span>
-                                <span class="btn-label">لنفسي</span>
-                            </div>
-                            <div class="bose-iconic-btn-node" data-value="gift">
-                                <span class="btn-icon">🎁</span>
-                                <span class="btn-label">هدية لحد تاني</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="bose-premium-template-box">
-                        <label class="premium-input-label">عايزة الإحساس يكون إيه؟ (اختياري، هيرشحلك توليفة جاهزة)</label>
+                        <label class="premium-input-label">عايزة الإحساس يكون إيه؟ (اختياري، هيرشحلك توليفة جاهزة تقدري تعدليها بعد كده براحتك)</label>
                         <div class="bose-iconic-options-row" id="flower-mood-row">
                             <div class="bose-iconic-btn-node" data-value="celebratory">
                                 <span class="btn-icon">🎉</span>
@@ -140,13 +139,19 @@
                             <span class="note-icon">💡</span>
                             <span id="mood-suggestion-text"></span>
                         </div>
+                        <!-- ℹ️ [شرح توضيحي دائم - مش منبثق تلقائياً، اختياري بالضغط فقط]:
+                             راجع window.BoseInfoPopover في core-engine.js - نفس النظام المستخدم
+                             في باقي الموقع، بيشتغل تلقائياً على أي زرار بالـ data attributes دي. -->
+                        <button type="button" class="bose-info-badge-inline"
+                                data-bose-info-title="هل اختيار الإحساس ده إجباري؟"
+                                data-bose-info-text="لأ خالص، الاختيار ده اختياري بالكامل. لو اخترتي حاجة، هنرشحلك بس نوع ورد وإضافات مناسبة كبداية، وتقدري تغيّري أي اختيار منها بنفسك في أي خطوة جاية براحتك. لو مش عايزة ترشيح، سيبي الخطوة دي وكملي عادي.">ⓘ</button>
                     </div>
                 </div>
 
-                <!-- الخطوة 2: نوع الورد ومقاس البوكيه وصورة التصميم -->
+                <!-- الخطوة 2: نوع الورد -->
                 <div class="bose-step-card-panel" data-step="2">
-                    <h2 class="step-title"><i class="fa-solid fa-seedling"></i> الخطوة 2: أساس وتنسيق البوكيه</h2>
-                    
+                    <h2 class="step-title"><i class="fa-solid fa-seedling"></i> الخطوة 2: نوع الورد</h2>
+
                     <!-- قالب اختيار نوع الورد المستطيل الاحترافي لمنع التكدس -->
                     <div class="bose-premium-template-box">
                         <label class="premium-input-label" for="flower-type">تحب نوع الورد يكون إيه؟</label>
@@ -166,7 +171,15 @@
                         </div>
                         <input type="hidden" id="flower-type" value="natural">
                         <p class="bose-flavor-sensory-note" id="flower-sensory-note"></p>
+                        <button type="button" class="bose-info-badge-inline"
+                                data-bose-info-title="إيه الفرق بين الأنواع التلاتة؟"
+                                data-bose-info-text="الورد الطبيعي بيوصلك طازة من المزرعة مباشرة بس عمره الافتراضي أيام معدودة زي أي ورد طبيعي. الورد الصناعي الفاخر خامته بتحافظ على شكلها ورونقها لفترة أطول بكتير وممكن تحتفظي بيه كذكرى. ورد الستان لمسة ناعمة وراقية مختلفة تماماً عن الورد التقليدي - مناسب كهدية مميزة تفضل شكلها زي ما هي.">ⓘ</button>
                     </div>
+                </div>
+
+                <!-- الخطوة 3: عدد الورد والسعر اللحظي -->
+                <div class="bose-step-card-panel" data-step="3">
+                    <h2 class="step-title"><i class="fa-solid fa-flower"></i> الخطوة 3: عدد الورد</h2>
 
                     <!-- قالب العداد الدائري المطور والسعر التحديثي اللحظي المدمج -->
                     <div class="bose-premium-template-box">
@@ -177,13 +190,21 @@
                                 <input type="text" id="flower-count" class="bose-numerical-input-display" value="15" readonly>
                                 <button type="button" class="bose-circular-qty-btn btn-minus-style" id="flower-minus" aria-label="نقصان عدد الورد">-</button>
                             </div>
-                            
+
                             <!-- السعر اللحظي الموضع المحدث ديناميكياً داخل نفس كارت الخطوة منعاً للتشتت -->
                             <div class="bose-embedded-price-box">
                                 <p class="bose-embedded-price-text" id="bose-embedded-price-display">سعر هذا البوكيه الذي يحتوي على 15 وردة هو <span>400 جنيه</span></p>
                             </div>
                         </div>
+                        <button type="button" class="bose-info-badge-inline"
+                                data-bose-info-title="ليه أقل عدد 15 وردة؟"
+                                data-bose-info-text="أقل عدد بنشتغل بيه 15 وردة عشان ده أقل حد يدّي شكل تنسيق فخم ومليان بصرياً - أي عدد أقل من كده بيبقى شكله متباعد وضعيف بصرياً في الباقة. تقدري تزودي العدد براحتك والسعر هيتحدث لحظياً قدامك فوق.">ⓘ</button>
                     </div>
+                </div>
+
+                <!-- الخطوة 4: صورة التصميم المرجعية -->
+                <div class="bose-step-card-panel" data-step="4">
+                    <h2 class="step-title"><i class="fa-solid fa-image"></i> الخطوة 4: صورة تصميم تحبي نقلدها؟</h2>
 
                     <!-- قالب رفع صورة التصميم المرجعية المؤمّن لـ Cloudinary -->
                     <div class="bose-premium-template-box">
@@ -196,15 +217,18 @@
                         <div id="photo-preview-container">
                             <img id="photo-preview-img" src="" class="bose-uploaded-image-preview" alt="معاينة الصورة المرفوعة">
                         </div>
+                        <button type="button" class="bose-info-badge-inline"
+                                data-bose-info-title="الخطوة دي إجبارية؟"
+                                data-bose-info-text="لأ، الخطوة دي اختيارية تماماً. لو مفيش صورة معينة في بالك، سيبي الخطوة دي وكملي عادي وهنجهزلك تنسيق فاخر بذوقنا. لو رفعتي صورة، هنحاول نقرب التصميم قد الإمكان مع مراعاة إن التنفيذ اليدوي ممكن يختلف شوية عن الصورة الأصلية.">ⓘ</button>
                     </div>
                 </div>
 
-                <!-- الخطوة 3: شريط الستان والرسائل المطبوعة حرارياً -->
-                <div class="bose-step-card-panel" data-step="3">
-                    <h2 class="step-title"><i class="fa-solid fa-maximize"></i> الخطوة 3: شريط الستان والرسالة</h2>
+                <!-- الخطوة 5: شريط الستان والرسائل المطبوعة حرارياً -->
+                <div class="bose-step-card-panel" data-step="5">
+                    <h2 class="step-title"><i class="fa-solid fa-maximize"></i> الخطوة 5: شريط الستان والرسالة</h2>
                     
                     <div class="bose-premium-template-box" style="text-align: center; background: #FFFFFF; padding: 15px;">
-                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="معاينة شريط الستان المطبوع حرارياً الفاخر من حلويات بوسي" style="width: 100%; max-width: 260px; border-radius: 16px; border: var(--bose-border-pink); box-shadow: var(--bose-pink-shadow);">
+                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="معاينة شريط الستان المطبوع حرارياً الفاخر من حلويات بوسي" class="bose-step-illustration-img">
                     </div>
 
                     <div class="bose-premium-template-box">
@@ -231,15 +255,18 @@
                             <label class="premium-input-label" for="ribbon-text-input">اكتبي العبارة اللي حابة تطبعيها على الشريط هنا:</label>
                             <input type="text" id="ribbon-text-input" class="bose-premium-text-input" placeholder="مثال: عيد ميلاد سعيد يا أغلى الحبايب" maxlength="60">
                         </div>
+                        <button type="button" class="bose-info-badge-inline"
+                                data-bose-info-title="التغليف والشريط الأساسي بفلوس؟"
+                                data-bose-info-text="لأ، التغليف الكلاسيك الراقي بلون البمبي الفاخر بتاعنا مجاني وجزء أساسي من كل باقة. الـ50 جنيه دي بس مقابل طباعة كلام مخصوص حراري على الشريط لو حبيتي - لو مش عايزة كلام مطبوع، سيبي الخطوة دي وكملي من غير أي تكلفة إضافية.">ⓘ</button>
                     </div>
                 </div>
 
-                <!-- الخطوة 4: صورك الشخصية ومفاجأة الكاش -->
-                <div class="bose-step-card-panel" data-step="4">
-                    <h2 class="step-title"><i class="fa-solid fa-gift"></i> الخطوة 4: صورك الشخصية ومفاجأة الكاش</h2>
+                <!-- الخطوة 6: الصور الشخصية جوه البوكيه -->
+                <div class="bose-step-card-panel" data-step="6">
+                    <h2 class="step-title"><i class="fa-solid fa-images"></i> الخطوة 6: صور شخصية جوه الباقة</h2>
                     
                     <div class="bose-premium-template-box" style="text-align: center; background: #FFFFFF; padding: 15px;">
-                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="معاينة لترتيب الصور الشخصية والكاش النظيف داخل بوكيه حلويات بوسي" style="width: 100%; max-width: 260px; border-radius: 16px; border: var(--bose-border-pink); box-shadow: var(--bose-pink-shadow);">
+                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="معاينة لترتيب الصور الشخصية داخل بوكيه حلويات بوسي" class="bose-step-illustration-img">
                     </div>
 
                     <div class="bose-premium-template-box">
@@ -255,7 +282,7 @@
                         </div>
 
                         <div id="photo-upload-section" class="custom-text-wrapper">
-                            <p class="bose-upload-info-note">سيتم اعتماد الصورة المرجعية المرفوعة في الخطوة الأولى للطباعة التذكارية الشيك 📸</p>
+                            <p class="bose-upload-info-note">سيتم اعتماد الصورة المرجعية المرفوعة في الخطوة الرابعة للطباعة التذكارية الشيك 📸</p>
                             <div class="bose-counter-inline-row">
                                 <label class="premium-input-label" style="margin: 0;">حابة تضيفي كام صورة؟</label>
                                 <div class="bose-counter-wrapper sub-counter-box">
@@ -265,6 +292,18 @@
                                 </div>
                             </div>
                         </div>
+                        <button type="button" class="bose-info-badge-inline"
+                                data-bose-info-title="محتاجة أرفع صورة تانية هنا؟"
+                                data-bose-info-text="لأ، مش محتاجة ترفعي حاجة تانية في الخطوة دي - بنستخدم نفس الصورة اللي رفعتيها في خطوة \"صورة تصميم تحبي نقلدها\" (لو رفعتي واحدة). السعر هنا 15 جنيه لكل نسخة مطبوعة ومنسقة جوه الباقة، وتقدري تختاري تطبعي كذا نسخة بالعداد فوق.">ⓘ</button>
+                    </div>
+                </div>
+
+                <!-- الخطوة 7: مفاجأة الكاش -->
+                <div class="bose-step-card-panel" data-step="7">
+                    <h2 class="step-title"><i class="fa-solid fa-sack-dollar"></i> الخطوة 7: مفاجأة كاش</h2>
+                    
+                    <div class="bose-premium-template-box" style="text-align: center; background: #FFFFFF; padding: 15px;">
+                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="معاينة لترتيب الكاش النظيف داخل بوكيه حلويات بوسي" class="bose-step-illustration-img">
                     </div>
 
                     <div class="bose-premium-template-box">
@@ -291,15 +330,18 @@
                                 </div>
                             </div>
                         </div>
+                        <button type="button" class="bose-info-badge-inline"
+                                data-bose-info-title="فيه عمولة على المبلغ ده؟"
+                                data-bose-info-text="لأ، مفيش أي عمولة أو مصاريف إضافية على مبلغ الكاش - المبلغ اللي بتكتبيه هو المبلغ اللي بيوصل بالظبط جوه الباقة زي ما هو. ده بس تنسيق وترتيب للفلوس بشكل شيك جوه الورد، مش رسوم خدمة.">ⓘ</button>
                     </div>
                 </div>
 
-                <!-- الخطوة 5: الشوكولاتة الفاخرة وكارت الإهداء والرسائل -->
-                <div class="bose-step-card-panel" data-step="5">
-                    <h2 class="step-title"><i class="fa-solid fa-cookie"></i> الخطوة 5: الشوكولاتة الفاخرة وكارت الإهداء</h2>
+                <!-- الخطوة 8: الشوكولاتة الفاخرة -->
+                <div class="bose-step-card-panel" data-step="8">
+                    <h2 class="step-title"><i class="fa-solid fa-cookie"></i> الخطوة 8: شوكولاتة فاخرة</h2>
                     
                     <div class="bose-premium-template-box" style="text-align: center; background: #FFFFFF; padding: 15px;">
-                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="ترتيب وتوزيع قطع الشوكولاتة الفاخرة والمستوردة داخل البوكيه من حلويات بوسي" style="width: 100%; max-width: 260px; border-radius: 16px; border: var(--bose-border-pink); box-shadow: var(--bose-pink-shadow);">
+                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="ترتيب وتوزيع قطع الشوكولاتة الفاخرة والمستوردة داخل البوكيه من حلويات بوسي" class="bose-step-illustration-img">
                     </div>
 
                     <div class="bose-premium-template-box">
@@ -318,17 +360,25 @@
                                 </div>
                             </div>
                         </div>
+                        <button type="button" class="bose-info-badge-inline"
+                                data-bose-info-title="إيه نوع الشوكولاتة اللي هتتحط؟"
+                                data-bose-info-text="بنشتريلك شوكولاتة فاخرة ومستوردة بالميزانية اللي تحدديها بالظبط، وبنرتبها جوه الباقة بشكل شيك يليق بالتنسيق. مفيش رسوم إضافية غير الميزانية اللي بتكتبيها.">ⓘ</button>
                     </div>
+                </div>
 
+                <!-- الخطوة 9: كارت الإهداء -->
+                <div class="bose-step-card-panel" data-step="9">
+                    <h2 class="step-title"><i class="fa-solid fa-note-sticky"></i> الخطوة 9: كارت إهداء</h2>
+                    
                     <div class="bose-premium-template-box">
                         <label class="premium-input-label bose-checkbox-label-tap">
                             <input type="checkbox" id="include-card">
-                            <span id="gift-card-checkbox-label">تحبي نكتب لكِ كارت إهداء شيك يتقدم مع البوكيه؟</span>
+                            <span id="gift-card-checkbox-label">حابة نكتب لكِ كارت إهداء شيك يتقدم مع البوكيه؟</span>
                         </label>
 
                         <div class="bose-counter-alignment-zone" style="margin-top: 10px; margin-bottom: 5px;">
                             <div class="bose-embedded-price-box" id="bose-card-price-display" style="max-width: 100%;">
-                                <p class="bose-embedded-price-text">سعر إضافة وتخطيط كارت الإهداء الفخم هو <span>20 جنيه</span></p>
+                                <p class="bose-embedded-price-text">سعر إضافة وتخطيط كارت الإهداء الفخم هو <span>30 جنيه</span></p>
                             </div>
                         </div>
 
@@ -336,10 +386,25 @@
                             <label class="premium-input-label" for="card-text" id="card-text-label">اكتبي الكلام اللي حابة نكتبه على الكارت هنا:</label>
                             <textarea id="card-text" class="bose-premium-text-input bose-premium-textarea" placeholder="اكتبي مشاعرك الصادقة هنا ببراحة..."></textarea>
                         </div>
+                        <button type="button" class="bose-info-badge-inline"
+                                data-bose-info-title="كارت الإهداء ده إيه بالظبط؟"
+                                data-bose-info-text="كارت ورقي فاخر بيتقدم مع الباقة، بنكتب عليه الكلام اللي تكتبيه لينا بخط شيك، بسعر 30 جنيه (نفس سعر كارت الإهداء في محاكي التورت بالظبط). لو مش عايزة كارت، سيبي الخطوة دي عادي.">ⓘ</button>
 
                         <button type="button" class="bose-share-design-btn" id="btn-share-flower-design">
                             <i class="fa-brands fa-whatsapp"></i> شاركي التصميم مع حد قبل ما تأكدي
                         </button>
+                    </div>
+                </div>
+
+                <!-- الخطوة 10: الخلاصة - مراجعة كل الاختيارات قبل الإضافة للسلة
+                     📋👑 [كل اختيار في خطوة الخلاصة]: خطوة جديدة كلياً بتلخص كل قرار
+                     اتخد في الخطوات السابقة في مكان واحد، قبل ما العميلة تضيف للسلة -
+                     بنفس فلسفة "من غير ما تحتاجي تدوري أو تضغطي على حاجة عشان تتأكدي". -->
+                <div class="bose-step-card-panel" data-step="10">
+                    <h2 class="step-title"><i class="fa-solid fa-list-check"></i> الخطوة 10: خلاصة طلبك</h2>
+                    <p class="bose-wizard-subtitle" style="text-align:center; margin-bottom:14px;">راجعي كل اختياراتك هنا قبل ما تضيفي الباقة للسلة - أي حاجة عايزة تغيريها، دوسي على رقم الخطوة فوق ورجعيلها.</p>
+                    <div class="bose-premium-template-box">
+                        <div id="flower-summary-list" class="bose-order-summary-list"></div>
                     </div>
                 </div>
 
@@ -411,8 +476,8 @@
 
     <!-- استدعاء المحركات والملفات البرمجية المنفصلة والمعزولة ذكياً بالتتابع القياسي الصحيح -->
     <!-- ⚡ [توحيد نمط التحميل - المرحلة 4]: defer + رقم إصدار موحّد زي باقي صفحات الموقع -->
-    <script src="js/supabase-client.js?v=2026_production_v32.0" defer></script>
-    <script src="js/core-engine.js?v=2026_production_v32.0" defer></script>
-    <script src="js/flower-engine.js?v=2026_production_v32.0" defer></script>
+    <script src="js/supabase-client.js?v=2026_production_v35.0" defer></script>
+    <script src="js/core-engine.js?v=2026_production_v35.0" defer></script>
+    <script src="js/flower-engine.js?v=2026_production_v35.0" defer></script>
 </body>
 </html>
