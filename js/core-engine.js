@@ -1484,10 +1484,22 @@
         const product = window.BoseStoreData.products?.find((/** @type {any} */ p) => p.slug === item.productSlug);
         if (!product) return parseFloat(item.finalPrice) || 0;
 
+        // 🚨🚨 [إصلاح جذري حرج - كارثة فقدان سعر الحجم عند إعادة الحساب]: كانت
+        // الدالة دي مبتمررش "size" خالص لـ calculateProductFinalPrice، فأي منتج
+        // عنده أحجام سعرية مختلفة (مثلث/طاجن/حجم عائلي) كان سعره يرجع فوراً لسعر
+        // الحجم الأساسي (product.price) بمجرد ما العميل يفتح السلة/الشيك أوت تاني
+        // بعد الإضافة - بصمت تام وبدون أي تحذير حقيقي، رغم إنه دفع في سعر حجم أكبر.
+        // كمان extraToppingPrice/printingPrice (خاصة التورت الصغير) كانت بتتقرا من
+        // item.extraToppingPrice/item.printingPrice على مستوى العنصر مباشرة، لكن
+        // window.createCartItem أصلاً بيحفظهم جوه customDetails بس - يعني كانت
+        // دايماً undefined هنا. كل القيم دلوقتي بتتقرا من نفس المصدر اللي
+        // createCartItem بيحفظهم فيه فعلياً (item.customDetails) عشان السعر
+        // المُعاد حسابه يطابق تماماً السعر اللي العميل شافه ودفع فيه وقت الإضافة.
         return window.calculateProductFinalPrice(product, {
+            size: details.size,
             printing: details.printingType,
-            extraToppingPrice: item.extraToppingPrice,
-            printingPrice: item.printingPrice
+            extraToppingPrice: details.extraToppingPrice,
+            printingPrice: details.printingPrice
         });
     };
 

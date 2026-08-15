@@ -185,13 +185,24 @@ function renderBoseCartPage(storeData) {
                 }
                 
                 if (isFlowerBespoke) {
+                    // 🚨 [إصلاح جذري - أسماء حقول قديمة ميتة]: الأسطر دي كانت بتقرا
+                    // cd.moneyAmount / cd.chocolatePieces / cd.wrappingType - أسماء
+                    // حقول قديمة اتغيرت فعلياً في window.createCartItem لـ cashAmount
+                    // و hasChocolate+chocolateBudget، وcd.wrappingType مش بيتخزن أصلاً
+                    // في customDetails. النتيجة كانت إن الكاش المدمج وميزانية الشوكولاتة
+                    // (رغم إنهم بيتحسبوا صح في السعر) كانوا بيختفوا تماماً من عرض تفاصيل
+                    // الصنف في صفحة السلة - العميل مكانش شايف اللي هو داخلهم فعلياً في
+                    // البوكيه، ومفيش سطر تغليف كان هيظهر خالص لأن الحقل نفسه مش موجود.
+                    // كمان أضفنا هنا شريط الستان المطبوع وعدد الصور الشخصية اللي كانوا
+                    // بيظهروا في فاتورة الواتساب بس ومش في صفحة السلة نفسها.
                     if (cd.isGift) specs.push(`<span>🎁 <strong>هدية لحد تاني</strong></span>`);
                     if (cd.moodLabel) specs.push(`<span><strong>الإحساس المطلوب:</strong> ${esc(cd.moodLabel)}</span>`);
                     if (cd.flowerType && cd.flowerType !== "none") specs.push(`<span><strong>نوع الورد:</strong> ${cd.flowerType === 'natural' ? 'طبيعي نضر' : cd.flowerType === 'artificial' ? 'صناعي فاخر' : 'ستان مصنوع بحب'}</span>`);
                     if (cd.flowerCount && parseInt(cd.flowerCount, 10) > 0) specs.push(`<span><strong>عدد الورد:</strong> ${parseInt(cd.flowerCount, 10)} وردة</span>`);
-                    if (cd.moneyAmount && parseInt(cd.moneyAmount, 10) > 0) specs.push(`<span><strong>الكاش المدمج:</strong> +${parseInt(cd.moneyAmount, 10)} جنيه</span>`);
-                    if (cd.chocolatePieces && parseInt(cd.chocolatePieces, 10) > 0) specs.push(`<span><strong>قطع الشوكولاتة:</strong> ${parseInt(cd.chocolatePieces, 10)} قطعة</span>`);
-                    if (cd.wrappingType && cd.wrappingType !== "none") specs.push(`<span><strong>التغليف:</strong> ${esc(cd.wrappingType)}</span>`);
+                    if (cd.cashAmount && parseInt(cd.cashAmount, 10) > 0) specs.push(`<span><strong>الكاش المدمج:</strong> +${parseInt(cd.cashAmount, 10)} جنيه</span>`);
+                    if (cd.hasChocolate && cd.chocolateBudget && parseInt(cd.chocolateBudget, 10) > 0) specs.push(`<span><strong>ميزانية الشوكولاتة:</strong> +${parseInt(cd.chocolateBudget, 10)} جنيه</span>`);
+                    if (cd.hasSatinRibbon && cd.satinRibbonText && cd.satinRibbonText.trim() !== "") specs.push(`<span><strong>شريط ستان مطبوع:</strong> "${esc(cd.satinRibbonText.trim())}"</span>`);
+                    if (cd.photoCount && parseInt(cd.photoCount, 10) > 0) specs.push(`<span><strong>صور شخصية مطبوعة:</strong> ${parseInt(cd.photoCount, 10)} صورة</span>`);
                     if (cd.giftCardText && cd.giftCardText.trim() !== "") specs.push(`<span><strong>كارت الإهداء:</strong> "${esc(cd.giftCardText.trim())}"</span>`);
                 }
 
@@ -550,7 +561,32 @@ function renderBoseCheckoutPage(storeData) {
     if (submitOrderBtn) {
         submitOrderBtn.onclick = (e) => {
             e.preventDefault();
-            processFinalBoseOrder(cart, storeData, currentShippingMethod, selectedShippingFee, payFullSelected);
+            // 🛡️ [إصلاح - منع طلبات مكررة]: مفيش أي حماية قبل كده من الضغط/التاب
+            // المزدوج على زرار التأكيد (شائع جداً على الموبايل أو مع نت بطيء) -
+            // كان كل ضغطة زيادة بتنفذ processFinalBoseOrder من جديد بالكامل: بتفتح
+            // تاب واتساب تاني برقم طلب مختلف وبتسجل صف طلب مكرر كامل في قاعدة
+            // البيانات. دلوقتي بنعطل الزرار فوراً أول ما يتضغط عشان أي ضغطة زيادة
+            // متعملش حاجة، حتى لو فورم فيه أخطاء تحقق هيتفعّل تاني تلقائياً.
+            if (submitOrderBtn.dataset.submitting === "true") return;
+            submitOrderBtn.dataset.submitting = "true";
+            const originalBtnContent = submitOrderBtn.innerHTML;
+            submitOrderBtn.disabled = true;
+            submitOrderBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري تأكيد الحجز...';
+            const reEnableSubmitBtn = () => {
+                submitOrderBtn.dataset.submitting = "false";
+                submitOrderBtn.disabled = false;
+                submitOrderBtn.innerHTML = originalBtnContent;
+            };
+            try {
+                const hadValidationErrors = processFinalBoseOrder(cart, storeData, currentShippingMethod, selectedShippingFee, payFullSelected);
+                // لو الفورم فيه أخطاء تحقق، processFinalBoseOrder بترجع true وبتوقف
+                // من غير ما تكمل الطلب - لازم نرجّع الزرار شغال فوراً عشان العميلة
+                // تقدر تصلح الأخطاء وتضغط تاني، مش تفضل الزرار معطل للأبد.
+                if (hadValidationErrors) reEnableSubmitBtn();
+            } catch (err) {
+                reEnableSubmitBtn();
+                throw err;
+            }
         };
     }
 }
@@ -749,9 +785,10 @@ function processFinalBoseOrder(cart, storeData, method, shippingFee, payFull) {
     }
 
     // 🚦 بعد تجميع كل الفحوصات: لو فيه أي خطأ نعرضهم كلهم دفعة واحدة ونوقف هنا
+    // (بترجع true عشان اللي بينادي الدالة يعرف يرجّع الزرار شغال تاني)
     if (validationErrors.length > 0) {
         boseShowAllCheckoutErrors(validationErrors, firstInvalidInput);
-        return;
+        return true;
     }
 
     // 🧮 [توحيد حسابي]: نفس المعادلة المستخدمة بالسلة وبصفحة الشحن بالظبط
@@ -962,9 +999,11 @@ function buildBoseFormattedWhatsappInvoice(order) {
         }
         msg += `📸 من فضلك ابعتي لقطة شاشة التحويل هنا فور إتمامه وهنأكد الحجز فوراً.\n`;
     }
-    msg += `--------------------------------------------------\n`;
-    msg += `🤝 شكرًا لاختياركم الفاخر لـ حلويات بوسي. صنعناها بحب لتهديها لمن تحب. ✨`;
-    
+    // 🛡️ [إصلاح - رسالة تشغيلية بحتة للمبيعات]: الرسالة دي موجّهة لفريق المبيعات
+    // لتنفيذ الطلب، مش رسالة تُقرأ من العميل - فمفيش أي داعي لأي سطر شكر/تقدير
+    // (كان هنا سطر "🤝 شكرًا لاختياركم..." اتشال بالكامل). دور الرسالة الوحيد هو
+    // تسليم كل تفاصيل وبيانات العميل والطلب بدقة، وخلاص.
+
     return msg;
 }
 
