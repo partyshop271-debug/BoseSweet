@@ -1941,7 +1941,7 @@ select.bose-form-control option,
     z-index: 2;
     background: var(--bose-pink-text, #FF91A4);
     color: #FFFFFF;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
     padding: 4px 10px;
     border-radius: var(--bose-radius-sm);
@@ -1996,7 +1996,7 @@ select.bose-form-control option,
     -webkit-box-orient: vertical;
 }
 
-.bose-suggestion-rating-stars { color: var(--bose-gold, #FF91A4); font-size: 11px; }
+.bose-suggestion-rating-stars { color: var(--bose-gold, #FF91A4); font-size: 12px; }
 
 .bose-suggestion-footer-row {
     display: flex;

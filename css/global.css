@@ -293,7 +293,7 @@ img {
     left: 0;
     background-color: var(--bose-pink-text);
     color: #FFFFFF !important;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
     min-width: 20px;
     height: 20px;
@@ -338,7 +338,7 @@ img {
     align-items: center !important;
     justify-content: center !important;
     color: var(--bose-black) !important;
-    font-size: 11px !important;
+    font-size: 12px !important;
     font-weight: 600 !important;
     text-decoration: none !important;
     gap: 3px !important;
@@ -369,7 +369,7 @@ img {
     transform: translateX(12px);
     background-color: var(--bose-pink-text);
     color: var(--bose-white) !important;
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 700;
     min-width: 16px;
     height: 16px;

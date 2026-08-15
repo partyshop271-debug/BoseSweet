@@ -901,20 +901,16 @@
 
 @media (max-width: 550px) {
     .products-grid, .bose-products-grid { grid-template-columns: minmax(0, 1fr) !important; }
-    /* 🚨🚨 [إصلاح جذري حرج - كانت قاعدة تانية بمعرّف ID بعيد في الملف (تحت) بتتعارض
-       مع القاعدة دي وتكسبها]: القاعدة دي هنا بتحدد عمود واحد صح تحت 550px - لكن
-       كان فيه قاعدة تانية لاحقاً في الملف بنفس السيلكتور بالظبط
-       (#our-products-grid.products-grid) داخل @media(max-width:767px) بتحدد
-       عمودين صراحة! وبما إن الاتنين بنفس درجة التخصيص (specificity)، الأولوية
-       بتتحدد بترتيب الظهور في الملف - والقاعدة التانية (عمودين) كانت جاية بعد
-       دي في الملف، فكانت هي اللي بتكسب فعلياً على أي شاشة أضيق من 550px (زي
-       iPhone SE) رغم إن القاعدة هنا بتقصد عمود واحد. عمودين على شاشة بعرض
-       ~320-375px يعني عمود فعلي ~140-160px بس - مساحة صغيرة جداً لكارت منتج
-       كامل (عنوان + وصف + سعر + عداد كمية + زرار)، وده سبب رئيسي لإحساس "الكارت
-       الطويل الممطوط والصورة المضغوطة" اللي وصفتيه. شلنا القاعدة المتعارضة
-       التانية نهائياً (كانت زيادة عن الحاجة أصلاً)، فدلوقتي القاعدة هنا بس هي
-       اللي بتتحكم، وعمود واحد فعلياً بيظهر تحت 550px زي ما كان مقصود من الأول. */
-    #our-products-grid.products-grid { grid-template-columns: minmax(0, 1fr) !important; }
+    /* 🛡️ [تحديث تصميم - قسم "منيو حلويات بوسي" تحديدًا]: بعد المراجعة، القرار
+       اتغيّر عمدًا هنا: قسم المنيو (#our-products-grid) لازم يفضل كارتين جنب
+       بعض حتى على أصغر الشاشات (زي iPhone SE ~375px) - شكل احترافي بيقدّم
+       المنتجات، مش عمود واحد طولاني. الحل الصح مش الرجوع لعمود واحد (كان بيدي
+       إحساس أسوأ بصريًا)، لكن الاعتماد على التصغير الدقيق لمقاسات المحتوى
+       (خط/حشو/أزرار) الموجود بالفعل جوه @media(max-width:767px) تحت - ده هو
+       اللي بيخلي كارت بعرض ~150-170px يبان احترافي مش مضغوط: صورة مربعة صافية
+       (aspect-ratio:1/1 + object-fit:cover دايماً)، عنوان بحد أقصى سطرين
+       بدون قطع نص فجأة (ellipsis)، وسعر/زرار بمقاس متناسب مع العمود. */
+    #our-products-grid.products-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 12px !important; }
 }
 
 /* [إصلاح تعارض]: #most-selling-grid و #new-arrivals-grid بالتحديد لازم يبقوا
@@ -1060,7 +1056,7 @@
    مش بس مسألة المقاسات. نقلنا القواعد هنا لـ main.css (متحمّل في كل صفحات
    الموقع) عشان تشتغل فعلاً في أي مكان بيظهر فيه الكارت الموحد. */
 .bose-mini-size-note {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
     color: var(--bose-pink-text, #FF91A4);
     display: flex;
@@ -1163,6 +1159,7 @@
     background-color: var(--bose-pink-text); /* 🛡️ لون أغمق لضمان تباين كافٍ مع النص الأبيض - أهم زرار بالكارت */
     color: var(--bose-white);
     padding: 12px;
+    min-height: 44px; /* 🛡️ [إتاحة اللمس]: حد أدنى ٤٤px طبقاً لمعايير Apple/Google لضمان سهولة الضغط بإصبع بدون أخطاء */
     border-radius: var(--bose-radius-pill);
     font-weight: 700;
     cursor: pointer;
@@ -1172,6 +1169,7 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
+    box-sizing: border-box;
 }
 
 .btn-add-to-cart:hover {
@@ -1214,6 +1212,7 @@
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     #our-products-grid.products-grid .product-card-flavor-name,
@@ -1232,6 +1231,7 @@
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     #our-products-grid.products-grid .bose-mini-size-note,
