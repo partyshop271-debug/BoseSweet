@@ -58,6 +58,37 @@ function startEngineLogic() {
     renderCakeGalleryAndHero();
 
     /* ==================================================================
+       🖼️👑 [صور كروت الاختيار من لوحة التحكم - إصلاح جذري]: كارت الشكل/النكهة/
+       نوع الطباعة كان نص بس، حتى لو الأدمن رفع صورة فعلياً من لوحة التحكم -
+       الصورة كانت بتتحفظ في قاعدة البيانات بس مالهاش أي مكان تتعرض فيه على
+       الموقع. الدالة دي بتدور على كل radio في الگريدات التلاتة دي، وتجيب
+       العنصر المطابق ليه بالـ id من config.shapes/cakeTypes/printingOptions،
+       ولو عنده image فعلي بتحقنه جوه .bose-selection-card-inner كصورة صغيرة
+       دائرية فوق النص - من غير ما تلمس أي حاجة تانية في الكارت (مفيش أي تعديل
+       على منطق الاختيار أو ترتيب input/button اللي اتصلح قبل كده).
+       ================================================================== */
+    function applyBoseOptionCardImages(radioName, itemsArray) {
+        if (!Array.isArray(itemsArray) || itemsArray.length === 0) return;
+        document.querySelectorAll(`input[name="${radioName}"]`).forEach((radio) => {
+            const match = itemsArray.find((item) => item && item.id === radio.value);
+            if (!match || !match.image) return;
+            const inner = radio.parentElement?.querySelector('.bose-selection-card-inner');
+            if (!inner) return;
+            let img = inner.querySelector('img.bose-option-card-thumb');
+            if (!img) {
+                img = document.createElement('img');
+                img.className = 'bose-option-card-thumb';
+                img.alt = '';
+                inner.insertBefore(img, inner.firstChild);
+            }
+            img.src = match.image;
+        });
+    }
+    applyBoseOptionCardImages('cake_shape', config.shapes);
+    applyBoseOptionCardImages('cake_flavor', config.cakeTypes);
+    applyBoseOptionCardImages('cake_printing', config.printingOptions);
+
+    /* ==================================================================
        🎉 [مناسبة التورتة]: خانة نص حرة (دلوقتي في خطوتها المستقلة رقم 2).
        ================================================================== */
     const occasionInput = document.getElementById('input-cake-occasion');

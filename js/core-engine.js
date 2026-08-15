@@ -1097,7 +1097,11 @@
         const baseFlowers = parseInt(fbConfig.baseFlowers, 10) || 15;
         const extraFlowerPrice = parseFloat(fbConfig.extraFlowerPrice) || 35;
         const photoPrintPrice = parseFloat(fbConfig.photoPrintPrice) || 15;
-        const giftCardPrice = parseFloat(fbConfig.giftCardPrice) || 20;
+        // 💰👑 [توحيد سعر كارت الإهداء مع محاكي التورت]: القيمة الاحتياطية هنا كانت
+        // 20 وبقت 30 - نفس التعديل المطبق في flowerConfig.giftCardPrice بملف
+        // flower-engine.js، عشان الحارس المركزي هنا (اللي بيتأكد من السعر وقت
+        // الإضافة للسلة والتشيك أوت) يفضل مطابق تماماً للسعر المعروض للعميل.
+        const giftCardPrice = parseFloat(fbConfig.giftCardPrice) || 30;
         // ملحوظة: مفيش حقل رسمي لسعر شريط الستان المطبوع (satinRibbonPrice) داخل
         // flowerBuilder بالـ JSON حالياً - فضّلنا نسيبه ثابت 50 بدل ما نخمّن ربطه بحقل
         // تاني (زي wrappingTypes) معناه مختلف، لحد ما يتضاف حقل مخصص له فعلياً.
