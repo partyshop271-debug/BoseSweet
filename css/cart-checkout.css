@@ -309,7 +309,7 @@
     height: 120px;
     border-radius: var(--bose-radius-sm);
     overflow: hidden;
-    border: 2px solid var(--bose-cream);
+    border: 2px solid var(--bose-border-gray);
     background-color: var(--bose-cream);
     display: flex;
     align-items: center;
@@ -577,6 +577,10 @@
     font-size: 1.25rem;
     color: var(--bose-pink-text);
     white-space: nowrap;
+    border: 1px solid var(--bose-border-gray);
+    border-radius: 10px;
+    padding: 3px 10px;
+    display: inline-block;
 }
 
 /* محرك تغيير الكمية التفاعلي المزدوج التوافق لعدم كسر الـ JS */
@@ -597,7 +601,8 @@
 .qty-control-trigger,
 .bose-qty-btn {
     background: none;
-    border: none;
+    border: 1px solid var(--bose-border-gray);
+    border-radius: 50%;
     width: 34px;
     height: 100%;
     display: flex;
@@ -1456,7 +1461,7 @@ select.bose-form-control option,
 }
 
 .payment-method-accordion-item {
-    border: 1px solid rgba(255, 145, 164, 0.18);
+    border: 1px solid var(--bose-border-gray);
     border-radius: var(--bose-radius-md);
     overflow: hidden;
     transition: border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1);

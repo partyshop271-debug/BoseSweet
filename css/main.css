@@ -575,9 +575,11 @@
     font-size: 16px !important;
     font-weight: 600 !important;
     color: var(--bose-black) !important;
+    border: var(--bose-border-pink) !important;
     border-radius: var(--bose-radius-md) !important;
     transition: var(--bose-transition-fast) !important;
     box-sizing: border-box !important;
+    margin-bottom: 2px !important;
 }
 
 .link-main-side {
@@ -1142,7 +1144,7 @@
     font-size: 1.15rem;
     text-align: center;
     margin-bottom: 14px;
-    border: 1px dashed rgba(255, 145, 164, 0.3);
+    border: var(--bose-border-pink);
     padding: 4px 12px;
     border-radius: var(--bose-radius-sm);
     display: inline-block;
