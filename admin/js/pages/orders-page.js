@@ -60,56 +60,6 @@
 
     /* ============================= مودال تفاصيل الطلب ============================= */
 
-    /**
-     * 🛡️ [إصلاح فجوة تنفيذ حرجة]: قبل كده كل تفاصيل الطلب المخصص (طعم التورتة،
-     * الشكل، عدد الأفراد، النص المطلوب كتابته، ملاحظة الحساسية، كارت الإهداء،
-     * تفاصيل الورد، الحجم المختار للمنتجات متعددة الأحجام) كانت موجودة فعلياً
-     * في قاعدة البيانات لكن مالهاش أي عرض هنا - غاية ما كان بيظهر هو نص عام
-     * "طلب مخصص (محاكي)" وعدد الصور بس من غير روابطها. يعني لو أي حد في الفريق
-     * بيشتغل من لوحة التحكم مباشرة (مش من رسالة الواتساب) كان مستحيل ينفذ الطلب
-     * صح. دلوقتي كل التفاصيل المخزنة بتتعرض بالكامل هنا بالظبط زي رسالة الواتساب.
-     */
-    function orderItemCustomDetailsHTML(item) {
-        const e = window.BoseAdminUI.escapeHtml;
-        const cd = item.custom_details || {};
-        if (!cd || Object.keys(cd).length === 0) return "";
-        const lines = [];
-
-        if (cd.isGift) lines.push("🎁 هدية لحد تاني");
-        if (cd.occasionLabel) lines.push(`المناسبة: ${e(cd.occasionLabel)}`);
-        if (cd.cakeType && cd.cakeType !== "none" && cd.cakeType !== "افتراضي") lines.push(`طعم الكيك: ${e(cd.cakeType)}`);
-        if (cd.shape && cd.shape !== "none") lines.push(`الشكل: ${e(cd.shape)}`);
-        if (cd.persons) lines.push(`الأفراد: لـ ${e(String(cd.persons))} فرد`);
-        if (cd.printingType && cd.printingType !== "none") lines.push(`طباعة صورة: ${cd.printingType === "edible" ? "قابلة للأكل" : "غير قابلة للأكل"}`);
-        if (cd.customMessage) lines.push(`النص المطلوب على التورتة: "${e(cd.customMessage)}"`);
-        if (cd.allergyNote) lines.push(`⚠️ ملاحظة حساسية: ${e(cd.allergyNote)}`);
-        if (cd.sizeLabel) lines.push(`الحجم المطلوب: ${e(cd.sizeLabel)}`);
-        if (cd.flowerType && cd.flowerType !== "none") lines.push(`نوع الورد: ${e(cd.flowerType)}`);
-        if (cd.flowerCount) lines.push(`عدد الورد: ${e(String(cd.flowerCount))} وردة`);
-        if (cd.moodLabel) lines.push(`الإحساس المطلوب: ${e(cd.moodLabel)}`);
-        if (cd.hasSatinRibbon && cd.satinRibbonText) lines.push(`شريط ستان مطبوع: "${e(cd.satinRibbonText)}"`);
-        if (cd.photoCount) lines.push(`صور شخصية مطبوعة: ${e(String(cd.photoCount))} صورة`);
-        if (cd.cashAmount) lines.push(`كاش مدمج جوه البوكيه: +${e(String(cd.cashAmount))} جنيه`);
-        if (cd.hasChocolate && cd.chocolateBudget) lines.push(`ميزانية شوكولاتة فاخرة: +${e(String(cd.chocolateBudget))} جنيه`);
-        if (cd.hasGiftCard && cd.giftCardText) lines.push(`كارت إهداء: "${e(cd.giftCardText)}"`);
-
-        const imageLines = [];
-        if (cd.printImageUrl) imageLines.push(`<a href="${e(cd.printImageUrl)}" target="_blank" rel="noopener noreferrer">🖨️ الصورة المطلوب طباعتها على التورتة</a>`);
-        if (cd.replicaImageUrl) imageLines.push(`<a href="${e(cd.replicaImageUrl)}" target="_blank" rel="noopener noreferrer">🎨 صورة التصميم المرجعي</a>`);
-        if (Array.isArray(item.reference_images)) {
-            item.reference_images.forEach((url, i) => {
-                if (url) imageLines.push(`<a href="${e(url)}" target="_blank" rel="noopener noreferrer">🖼️ صورة مرجعية${item.reference_images.length > 1 ? " " + (i + 1) : ""}</a>`);
-            });
-        }
-
-        if (lines.length === 0 && imageLines.length === 0) return "";
-        return `
-            <div class="adm-order-item-custom-details">
-                ${lines.length ? `<ul>${lines.map((l) => `<li>${l}</li>`).join("")}</ul>` : ""}
-                ${imageLines.length ? `<div class="adm-order-item-images">${imageLines.join(" · ")}</div>` : ""}
-            </div>`;
-    }
-
     function orderItemRowHTML(item) {
         const e = window.BoseAdminUI.escapeHtml;
         const isCustom = item.custom_details && Object.keys(item.custom_details).length > 0;
@@ -120,8 +70,8 @@
                     <span class="adm-order-item-meta">
                         ${item.flavor_name ? e(item.flavor_name) + " · " : ""}الكمية: ${item.quantity}
                         ${isCustom ? " · طلب مخصص (محاكي)" : ""}
+                        ${item.reference_images && item.reference_images.length ? ` · ${item.reference_images.length} صورة مرجعية` : ""}
                     </span>
-                    ${orderItemCustomDetailsHTML(item)}
                 </div>
                 <div>${money(item.line_total)}</div>
             </div>`;

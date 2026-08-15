@@ -47,20 +47,16 @@
      * فتحت الصفحة المعنية بنفسها وشافت. دلوقتي بتظهر كتنبيه فوري في أول
      * صفحة بتفتحها كل يوم.
      */
-    function renderAlerts({ missingPhotoCount, unavailableProducts, pendingOrders, awaitingDepositCount, reviewFollowupsDue }) {
+    function renderAlerts({ missingPhotoCount, unavailableProducts, pendingOrders }) {
         const card = document.getElementById("dashboard-alerts-card");
         const list = document.getElementById("dashboard-alerts-list");
         const alerts = [];
 
-        // 🛡️ [إصلاح فجوة]: الرقمين دول كانا بيتحسبوا فعلياً من admin-data.js لكن
-        // محدش كان بيعرضهم في أي مكان بالداشبورد - يعني طلب بانتظار تأكيد
-        // العربون أو مراجعة مستحقة كان ممكن يفضل شهور من غير ما حد يلاحظه غير
-        // لو فتحت صفحة الطلبات/المراجعات بنفسها وشافته بالصدفة.
-        if (awaitingDepositCount > 0) {
+        if (missingPhotoCount > 0) {
             alerts.push({
-                icon: "fa-money-bill-wave", cls: "warning",
-                text: `${awaitingDepositCount} طلب بانتظار تأكيد العربون`,
-                href: "orders.html",
+                icon: "fa-image", cls: "warning",
+                text: `${missingPhotoCount} منتج لسه شايل صورة اللوجو الافتراضية بدل صورة حقيقية`,
+                href: "products.html",
             });
         }
         if (pendingOrders > 0) {
@@ -68,20 +64,6 @@
                 icon: "fa-hourglass-half", cls: "warning",
                 text: `${pendingOrders} طلب لسه قيد المراجعة محتاج تأكيد`,
                 href: "orders.html",
-            });
-        }
-        if (reviewFollowupsDue > 0) {
-            alerts.push({
-                icon: "fa-star-half-stroke", cls: "info",
-                text: `${reviewFollowupsDue} عميل جاهز يتبعت له تذكير تقييم`,
-                href: "review-followups.html",
-            });
-        }
-        if (missingPhotoCount > 0) {
-            alerts.push({
-                icon: "fa-image", cls: "warning",
-                text: `${missingPhotoCount} منتج لسه شايل صورة اللوجو الافتراضية بدل صورة حقيقية`,
-                href: "products.html",
             });
         }
         if (unavailableProducts > 0) {
@@ -143,8 +125,6 @@
                 missingPhotoCount,
                 unavailableProducts: summary.unavailableProducts ?? 0,
                 pendingOrders: summary.pendingOrders ?? 0,
-                awaitingDepositCount: summary.awaitingDepositCount ?? 0,
-                reviewFollowupsDue: summary.reviewFollowupsDue ?? 0,
             });
         } catch (e) {
             console.warn("تعذر بناء تنبيهات الداشبورد:", e.message);

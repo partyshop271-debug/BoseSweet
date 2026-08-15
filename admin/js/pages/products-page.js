@@ -5,21 +5,12 @@
  * تمييز) + قسم "إعدادات متقدمة" قابل للطي: التوفر (is_available)، نوع
  * المنتج/محاكي التخصيص (builder_type + custom_builder_url)، كلمات بحث
  * إضافية (search_terms)، والأحجام المتعددة بأسعارها (prices/default_size).
- *
- * تحسينات سرعة الوصول: عمود "النكهة" ظاهر في الجدول (مش مخفي جوه المودال
- * بس) عشان تبان المنتجات المتشابهة الاسم بسهولة، البحث بيغطي النكهة
- * وكلمات البحث الإضافية مش الاسم بس، رؤوس الجدول (الاسم/النكهة/الفئة/
- * السعر) قابلة للترتيب بالضغط عليها، وزرار "نسخ" بجنب كل منتج بيفتح
- * منتج جديد فاضي البيانات معبّاة من منتج موجود (مفيد جداً لإضافة نكهة أو
- * حجم جديد لنفس التصميم من غير ما تدخلي كل الحقول من الأول).
  */
 (function () {
     "use strict";
 
     let allProducts = [];
     let allCategories = [];
-    // ترتيب الجدول الحالي (بالضغط على رأس أي عمود قابل للترتيب) - null يعني الترتيب الافتراضي (sort_order)
-    let currentSort = { key: null, dir: "asc" };
 
     /* ============================= الجدول ============================= */
 
@@ -44,34 +35,12 @@
         const categoryId = document.getElementById("products-category-filter").value;
         const onlyMissingPhotos = document.getElementById("products-missing-photo-filter")?.checked;
 
-        let result = allProducts.filter((p) => {
-            // 🔎 [تحسين البحث]: كان بيبحث بالاسم بس، فمنتجين اسمهم زي اسم الفئة (زي
-            // "التورت" في فئة "التورت") ما كانش فيه طريقة تميّزهم عن بعض غير بفتح كل
-            // واحد لوحده. دلوقتي البحث بيغطي النكهة وكلمات البحث الإضافية كمان.
-            const haystack = [p.title, p.flavor_name, ...(p.search_terms || [])].filter(Boolean).join(" ").toLowerCase();
-            const matchesSearch = !search || haystack.includes(search);
+        return allProducts.filter((p) => {
+            const matchesSearch = !search || (p.title || "").toLowerCase().includes(search);
             const matchesCategory = !categoryId || p.category_id === categoryId;
             const matchesPhoto = !onlyMissingPhotos || hasPlaceholderImage(p);
             return matchesSearch && matchesCategory && matchesPhoto;
         });
-
-        if (currentSort.key) {
-            const dir = currentSort.dir === "asc" ? 1 : -1;
-            result = [...result].sort((a, b) => {
-                let va, vb;
-                if (currentSort.key === "category") {
-                    va = categoryTitle(a); vb = categoryTitle(b);
-                } else if (currentSort.key === "price") {
-                    va = a.price || 0; vb = b.price || 0;
-                    return (va - vb) * dir;
-                } else {
-                    va = a[currentSort.key] || ""; vb = b[currentSort.key] || "";
-                }
-                return String(va).localeCompare(String(vb), "ar") * dir;
-            });
-        }
-
-        return result;
     }
 
     function renderTable() {
@@ -79,13 +48,8 @@
         const e = window.BoseAdminUI.escapeHtml;
         const products = getFilteredProducts();
 
-        const countEl = document.getElementById("products-results-count");
-        if (countEl) {
-            countEl.textContent = `عدد النتائج: ${products.length} من إجمالي ${allProducts.length} منتج`;
-        }
-
         if (!products.length) {
-            tbody.innerHTML = `<tr><td colspan="8">${window.BoseAdminUI.emptyStateHTML({
+            tbody.innerHTML = `<tr><td colspan="7">${window.BoseAdminUI.emptyStateHTML({
                 icon: "fa-cake-candles",
                 title: "مفيش منتجات مطابقة",
                 text: "جرّب تغيّر الفلتر أو أضف منتج جديد.",
@@ -100,7 +64,6 @@
             <tr>
                 <td>${thumb ? `<img src="${e(thumb)}" class="adm-table-thumb" alt="">` : `<div class="adm-table-thumb"></div>`}</td>
                 <td>${e(p.title)} ${needsPhoto ? `<span class="adm-badge warning" title="لسه شايل صورة اللوجو الافتراضية، محتاج صورة حقيقية">بدون صورة حقيقية</span>` : ""}</td>
-                <td>${p.flavor_name ? e(p.flavor_name) : `<span class="adm-badge" title="مفيش نكهة متسجلة للمنتج ده - يفضّل تضيفيها عشان تقدري تميّزيه بسهولة">بدون نكهة</span>`}</td>
                 <td>${e(categoryTitle(p))}</td>
                 <td>${Math.round(p.price)} ج.م</td>
                 <td>${p.old_price ? Math.round(p.old_price) + " ج.م" : "—"}</td>
@@ -108,9 +71,6 @@
                 <td class="adm-table-actions">
                     <button class="adm-btn adm-btn-ghost adm-btn-icon" data-action="edit" data-id="${e(p.id)}" title="تعديل">
                         <i class="fa-solid fa-pen"></i>
-                    </button>
-                    <button class="adm-btn adm-btn-ghost adm-btn-icon" data-action="duplicate" data-id="${e(p.id)}" title="نسخ كمنتج جديد (مفيد لإضافة نكهة/حجم جديد بسرعة)">
-                        <i class="fa-solid fa-copy"></i>
                     </button>
                     <button class="adm-btn adm-btn-ghost adm-btn-icon" data-action="delete" data-id="${e(p.id)}" title="حذف">
                         <i class="fa-solid fa-trash"></i>
@@ -125,44 +85,8 @@
                 if (product) openProductModal(product);
             });
         });
-        tbody.querySelectorAll('[data-action="duplicate"]').forEach((btn) => {
-            btn.addEventListener("click", () => {
-                const product = allProducts.find((p) => p.id === btn.getAttribute("data-id"));
-                if (product) openProductModal(null, product);
-            });
-        });
         tbody.querySelectorAll('[data-action="delete"]').forEach((btn) => {
             btn.addEventListener("click", () => handleDelete(btn.getAttribute("data-id")));
-        });
-    }
-
-    /** بتحدّث سهم الترتيب في رؤوس الجدول عشان يبان العمود المرتّب بيه دلوقتي واتجاهه */
-    function updateSortHeadersUI() {
-        document.querySelectorAll(".adm-sortable-th").forEach((th) => {
-            const icon = th.querySelector("i");
-            const key = th.getAttribute("data-sort");
-            if (key === currentSort.key) {
-                icon.className = currentSort.dir === "asc" ? "fa-solid fa-sort-up" : "fa-solid fa-sort-down";
-                th.classList.add("adm-sortable-th-active");
-            } else {
-                icon.className = "fa-solid fa-sort";
-                th.classList.remove("adm-sortable-th-active");
-            }
-        });
-    }
-
-    function wireSortHeaders() {
-        document.querySelectorAll(".adm-sortable-th").forEach((th) => {
-            th.addEventListener("click", () => {
-                const key = th.getAttribute("data-sort");
-                if (currentSort.key === key) {
-                    currentSort.dir = currentSort.dir === "asc" ? "desc" : "asc";
-                } else {
-                    currentSort = { key, dir: "asc" };
-                }
-                updateSortHeadersUI();
-                renderTable();
-            });
         });
     }
 
@@ -230,35 +154,24 @@
         { value: "flower-customizer", label: "محاكي الورد" },
     ];
 
-    function openProductModal(product, duplicateSource) {
+    function openProductModal(product) {
         const isEdit = !!product;
-        // prefill = مصدر البيانات اللي هنعبّي بيها الفورم مبدئياً: المنتج نفسه لو
-        // بنعدّل، أو منتج تاني بالكامل لو بننسخه كأساس لمنتج جديد (نفس الفئة/الوصف/
-        // الصور... الخ فيما عدا المعرّف والاسم)، أو مفيش حاجة لو منتج جديد فاضي.
-        const prefill = product || duplicateSource || null;
-        const isDuplicate = !isEdit && !!duplicateSource;
         const e = window.BoseAdminUI.escapeHtml;
-        let images = prefill ? [...(prefill.images || [])] : [];
-        const prices = prefill ? { ...(prefill.prices || {}) } : {};
-        const sizeDescriptions = prefill ? { ...(prefill.size_descriptions || {}) } : {};
-        // 🎂 [توضيح كمية مختلف لكل حجم]: زي sizeDescriptions بالظبط، بس لبادچ الكمية
-        // اللي بيظهر جنب السعر (مثال: الديسباسيتو - "ده سعر المثلث."/"ده سعر الطاجن."/
-        // "ده سعر الحجم العائلي."). لو حجم معين مالوش نص هنا، الواجهة بترجع تلقائياً
-        // لتوضيح الكمية العام (pf-quantity-note) تحت.
-        const sizeQuantityNotes = prefill ? { ...(prefill.size_quantity_notes || {}) } : {};
+        let images = isEdit ? [...(product.images || [])] : [];
+        const prices = isEdit ? { ...(product.prices || {}) } : {};
+        const sizeDescriptions = isEdit ? { ...(product.size_descriptions || {}) } : {};
         // 🖼️ [صور الأحجام المتعددة]: نسخة قابلة للتعديل من خريطة { sizeKey: imageUrl }
-        let sizeImages = prefill ? { ...(prefill.size_images || {}) } : {};
-        let faqs = prefill ? (prefill.faqs || []).map((f) => ({ q: f.q || "", a: f.a || "" })) : [];
+        let sizeImages = isEdit ? { ...(product.size_images || {}) } : {};
+        let faqs = isEdit ? (product.faqs || []).map((f) => ({ q: f.q || "", a: f.a || "" })) : [];
 
         const overlay = document.createElement("div");
         overlay.className = "adm-modal-overlay";
         overlay.innerHTML = `
             <div class="adm-modal" style="max-width: 640px;">
                 <div class="adm-modal-header">
-                    <h3>${isEdit ? "تعديل منتج" : (isDuplicate ? "نسخ منتج (هيتحفظ كمنتج جديد)" : "منتج جديد")}</h3>
+                    <h3>${isEdit ? "تعديل منتج" : "منتج جديد"}</h3>
                     <button class="adm-modal-close" data-role="close"><i class="fa-solid fa-xmark"></i></button>
                 </div>
-                ${isDuplicate ? `<p class="adm-hint" style="margin: -8px 20px 14px 20px;">بيانات المنتج "${e(duplicateSource.title)}" اتنسخت هنا كنقطة بداية - غيّري المعرّف والاسم والنكهة/السعر حسب الحاجة واحفظي.</p>` : ""}
 
                 <form id="product-form">
                     <div class="adm-form-grid">
@@ -272,40 +185,40 @@
                             <label for="pf-category">الفئة</label>
                             <select class="adm-select" id="pf-category" required>
                                 <option value="">اختر فئة</option>
-                                ${categoryOptionsHTML(prefill?.category_id)}
+                                ${categoryOptionsHTML(product?.category_id)}
                             </select>
                         </div>
                     </div>
 
                     <div class="adm-field">
                         <label for="pf-title">اسم المنتج</label>
-                        <input type="text" class="adm-input" id="pf-title" value="${isDuplicate ? e(prefill.title + " - نسخة") : (prefill ? e(prefill.title) : "")}" required>
+                        <input type="text" class="adm-input" id="pf-title" value="${isEdit ? e(product.title) : ""}" required>
                     </div>
 
                     <div class="adm-form-grid">
                         <div class="adm-field">
                             <label for="pf-flavor-name">اسم النكهة (اختياري)</label>
-                            <input type="text" class="adm-input" id="pf-flavor-name" value="${prefill ? e(prefill.flavor_name || "") : ""}">
+                            <input type="text" class="adm-input" id="pf-flavor-name" value="${isEdit ? e(product.flavor_name || "") : ""}">
                         </div>
                         <div class="adm-field">
                             <label for="pf-flavor-desc">وصف النكهة (اختياري)</label>
-                            <input type="text" class="adm-input" id="pf-flavor-desc" value="${prefill ? e(prefill.flavor_desc || "") : ""}">
+                            <input type="text" class="adm-input" id="pf-flavor-desc" value="${isEdit ? e(product.flavor_desc || "") : ""}">
                         </div>
                     </div>
 
                     <div class="adm-field">
                         <label for="pf-description">الوصف</label>
-                        <textarea class="adm-textarea" id="pf-description">${prefill ? e(prefill.description || "") : ""}</textarea>
+                        <textarea class="adm-textarea" id="pf-description">${isEdit ? e(product.description || "") : ""}</textarea>
                     </div>
 
                     <div class="adm-form-grid">
                         <div class="adm-field">
                             <label for="pf-price">السعر</label>
-                            <input type="number" step="0.01" min="0" class="adm-input" id="pf-price" value="${prefill ? prefill.price : ""}" required>
+                            <input type="number" step="0.01" min="0" class="adm-input" id="pf-price" value="${isEdit ? product.price : ""}" required>
                         </div>
                         <div class="adm-field">
                             <label for="pf-old-price">السعر القديم (اختياري - لعرض خصم)</label>
-                            <input type="number" step="0.01" min="0" class="adm-input" id="pf-old-price" value="${prefill && prefill.old_price ? prefill.old_price : ""}">
+                            <input type="number" step="0.01" min="0" class="adm-input" id="pf-old-price" value="${isEdit && product.old_price ? product.old_price : ""}">
                         </div>
                     </div>
 
@@ -315,7 +228,7 @@
                          وقت للتاني: كل ما تتعدّل عناصر عرض من هنا، لازم التوضيح يتحدّث معاها. -->
                     <div class="adm-field">
                         <label for="pf-quantity-note">توضيح الكمية (بيظهر دايماً جنب السعر)</label>
-                        <input type="text" class="adm-input" id="pf-quantity-note" value="${prefill ? e(prefill.quantity_note || "") : ""}"
+                        <input type="text" class="adm-input" id="pf-quantity-note" value="${isEdit ? e(product.quantity_note || "") : ""}"
                                placeholder="مثال: السعر ده لدستة كاملة (12 قطعة)، أو: البوكس ده فيه 6 طواجن (3 ديسباسيتو + 3 قشطوطة)">
                         <span class="adm-hint">اسيبه فاضي لو مفيش لبس ممكن يحصل. مهم جداً لأي منتج "عرض/بوكس" مكوّن من عناصر مختلفة - حدّثه كل ما تغيّري محتويات العرض.</span>
                     </div>
@@ -323,11 +236,11 @@
                     <div class="adm-form-grid">
                         <div class="adm-field">
                             <label for="pf-sort-order">ترتيب العرض</label>
-                            <input type="number" class="adm-input" id="pf-sort-order" value="${prefill ? (prefill.sort_order ?? 0) : 0}">
+                            <input type="number" class="adm-input" id="pf-sort-order" value="${isEdit ? (product.sort_order ?? 0) : 0}">
                         </div>
                         <div class="adm-field">
                             <label class="adm-checkbox-label">
-                                <input type="checkbox" id="pf-featured" ${prefill && prefill.is_featured ? "checked" : ""}>
+                                <input type="checkbox" id="pf-featured" ${isEdit && product.is_featured ? "checked" : ""}>
                                 منتج مميز (يظهر في "الأكثر مبيعاً")
                             </label>
                         </div>
@@ -350,22 +263,22 @@
 
                         <div style="padding-top: 10px; display: flex; flex-direction: column; gap: 14px;">
                             <label class="adm-checkbox-label">
-                                <input type="checkbox" id="pf-available" ${!prefill || prefill.is_available !== false ? "checked" : ""}>
+                                <input type="checkbox" id="pf-available" ${!isEdit || product.is_available !== false ? "checked" : ""}>
                                 المنتج متاح للطلب حالياً
                             </label>
 
                             <div class="adm-field">
                                 <label for="pf-builder-type">نوع المنتج</label>
                                 <select class="adm-select" id="pf-builder-type">
-                                    ${BUILDER_TYPES.map((bt) => `<option value="${bt.value}" ${prefill && prefill.builder_type === bt.value ? "selected" : ""}>${bt.label}</option>`).join("")}
+                                    ${BUILDER_TYPES.map((bt) => `<option value="${bt.value}" ${isEdit && product.builder_type === bt.value ? "selected" : ""}>${bt.label}</option>`).join("")}
                                 </select>
                                 <span class="adm-hint">لو مش "منتج عادي"، المنتج ده بيفتح محاكي التخصيص بدل صفحة منتج عادية - لازم تحدد رابط المحاكي تحت وإلا هيتعامل كمنتج عادي عادي.</span>
                             </div>
 
-                            <div class="adm-field" id="pf-builder-url-field" style="${!prefill || prefill.builder_type === "standard" || !prefill.builder_type ? "display:none;" : ""}">
+                            <div class="adm-field" id="pf-builder-url-field" style="${!isEdit || product.builder_type === "standard" || !product.builder_type ? "display:none;" : ""}">
                                 <label for="pf-builder-url">رابط صفحة المحاكي</label>
                                 <input type="text" class="adm-input" id="pf-builder-url"
-                                       value="${prefill ? e(prefill.custom_builder_url || "") : ""}"
+                                       value="${isEdit ? e(product.custom_builder_url || "") : ""}"
                                        placeholder="مثال: cake-builder.html">
                                 <span class="adm-hint">لازم يتحدد وإلا المنتج مش هيفتح المحاكي أبداً حتى لو نوعه اتغيّر فوق.</span>
                             </div>
@@ -373,7 +286,7 @@
                             <div class="adm-field">
                                 <label for="pf-search-terms">كلمات بحث إضافية (اختياري - افصل بفاصلة)</label>
                                 <input type="text" class="adm-input" id="pf-search-terms"
-                                       value="${prefill ? e((prefill.search_terms || []).join('، ')) : ""}"
+                                       value="${isEdit ? e((product.search_terms || []).join('، ')) : ""}"
                                        placeholder="مثال: تورتة عيد ميلاد، كيك شوكولاتة">
                             </div>
 
@@ -389,20 +302,6 @@
                                     `).join("")}
                                 </div>
                                 <span class="adm-hint">لو عبّيت أكتر من حجم، العميل هيقدر يختار بينهم في صفحة المنتج. أول حجم متعبّى بيبقى الافتراضي.</span>
-                            </div>
-
-                            <div class="adm-field">
-                                <label>توضيح الكمية لكل حجم (اختياري - لو المنتج بيتباع بأحجام مختلفة زي الديسباسيتو)</label>
-                                <div class="adm-form-grid" style="grid-template-columns: repeat(3, 1fr);">
-                                    ${SIZE_KEYS.map((key) => `
-                                        <div class="adm-field">
-                                            <label for="pf-size-qty-note-${key}">${SIZE_LABELS[key]}</label>
-                                            <input type="text" class="adm-input" id="pf-size-qty-note-${key}"
-                                                   value="${e(sizeQuantityNotes[key] || "")}" placeholder="مثال: ده سعر ${SIZE_LABELS[key]}.">
-                                        </div>
-                                    `).join("")}
-                                </div>
-                                <span class="adm-hint">لو اسبتها فاضية لحجم معين، توضيح الكمية العام فوق هو اللي هيتعرض بدلها لما العميل يختار الحجم ده.</span>
                             </div>
 
                             <div class="adm-field">
@@ -626,19 +525,9 @@
                 search_terms: searchTerms,
                 faqs: faqs.filter((f) => f.q.trim() && f.a.trim()).map((f) => ({ q: f.q.trim(), a: f.a.trim() })),
                 prices: filledSizeKeys.length ? newPrices : {},
-                default_size: filledSizeKeys.length ? (filledSizeKeys.includes(prefill?.default_size) ? prefill.default_size : filledSizeKeys[0]) : null,
+                default_size: filledSizeKeys.length ? (filledSizeKeys.includes(product?.default_size) ? product.default_size : filledSizeKeys[0]) : null,
                 size_descriptions: filledSizeKeys.length
                     ? Object.fromEntries(Object.entries(sizeDescriptions).filter(([k]) => filledSizeKeys.includes(k)))
-                    : {},
-                // 🎂 [توضيح كمية مختلف لكل حجم]: بنقرأ القيمة الحالية من كل حقل نص وقت
-                // الحفظ (مش من الكائن sizeQuantityNotes القديم) عشان أي تعديل كتبته
-                // الأدمن في الحقول يتحفظ فعلياً، وبنحفظ بس مفاتيح الأحجام اللي لسه ليها سعر.
-                size_quantity_notes: filledSizeKeys.length
-                    ? Object.fromEntries(
-                        filledSizeKeys
-                            .map((k) => [k, (document.getElementById(`pf-size-qty-note-${k}`)?.value || "").trim()])
-                            .filter(([, v]) => v)
-                      )
                     : {},
                 // 🖼️ [صور الأحجام المتعددة]: بنحفظ بس صور الأحجام اللي لسه ليها سعر متعبّى
                 // (لو الأدمن مسح سعر حجم، صورته المخصصة بتتشال معاه تلقائياً بدل ما تفضل يتيمة).
@@ -698,7 +587,6 @@
         document.getElementById("products-category-filter").addEventListener("change", renderTable);
         document.getElementById("products-missing-photo-filter").addEventListener("change", renderTable);
         document.getElementById("add-product-btn").addEventListener("click", () => openProductModal(null));
-        wireSortHeaders();
     }
 
     /**
