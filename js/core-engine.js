@@ -1437,6 +1437,34 @@
     };
 
     /**
+     * 🛡️ [حماية بسيطة من السبام]: تمنع إرسال نفس نوع الفورم (طلب/تقييم) أكتر
+     * من مرة خلال فترة زمنية قصيرة من نفس الجهاز/المتصفح. حماية جهة العميل
+     * فقط (deterrent بسيط ضد ضغط متكرر بالغلط أو بوت بسيط) - مش بديل عن حماية
+     * حقيقية جهة السيرفر (rate limiting على مستوى الشبكة)، لكنها بتقلل ضغط
+     * السبام العرضي على لوحة التحكم فورًا وبدون أي بنية تحتية إضافية.
+     * @param {string} key - معرف فريد لنوع العملية (مثلاً "order-submit" أو "review-submit")
+     * @param {number} minIntervalMs - أقل فاصل زمني مسموح بين محاولتين (بالميلي ثانية)
+     * @returns {{allowed: boolean, secondsLeft: number}}
+     */
+    window.boseCheckClientRateLimit = function(key, minIntervalMs) {
+        const storageKey = `bose_ratelimit_${key}`;
+        try {
+            const lastTs = parseInt(localStorage.getItem(storageKey) || "0", 10);
+            const now = Date.now();
+            const elapsed = now - lastTs;
+            if (lastTs && elapsed < minIntervalMs) {
+                return { allowed: false, secondsLeft: Math.ceil((minIntervalMs - elapsed) / 1000) };
+            }
+            localStorage.setItem(storageKey, String(now));
+            return { allowed: true, secondsLeft: 0 };
+        } catch (e) {
+            // لو localStorage مش متاح (وضع تصفح خاص مثلاً)، نسمح بالعملية عادي
+            // بدل ما نمنع عميل حقيقي من إتمام طلبه.
+            return { allowed: true, secondsLeft: 0 };
+        }
+    };
+
+    /**
      * @param {string} dateStr
      * @param {string} timeStr
      * @returns {boolean}
@@ -1976,7 +2004,7 @@
                 <div id="bose-sidebar-drawer" class="bose-sidebar-drawer" aria-hidden="true">
                     <div class="sidebar-header">
                         <div class="sidebar-logo-container">
-                            <img src="${window.optimizeBoseImageUrl(data.store?.logo || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', 150)}" alt="لوجو حلويات بوسي" class="sidebar-logo" width="80" height="80" />
+                            <img src="${window.optimizeBoseImageUrl(data.store?.logo || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', 150)}" alt="لوجو حلويات بوسي" class="sidebar-logo" width="80" height="80" loading="lazy" />
                             <span class="sidebar-brand-name">حلويات بوسي</span>
                         </div>
                         <button id="sidebar-close-btn" class="sidebar-close-btn" aria-label="إغلاق القائمة">
@@ -2176,7 +2204,7 @@
                     <div class="footer-grid-layout">
                         <div class="footer-column-block">
                             <div class="footer-brand-meta">
-                                <img src="${window.optimizeBoseImageUrl(data.store?.logo || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', 150)}" alt="حلويات بوسي الفاخرة" class="footer-logo" width="80" height="80" />
+                                <img src="${window.optimizeBoseImageUrl(data.store?.logo || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', 150)}" alt="حلويات بوسي الفاخرة" class="footer-logo" width="80" height="80" loading="lazy" />
                                 <span class="footer-title">حلويات بوسي</span>
                             </div>
                             <p id="footer-about-text" class="footer-about-paragraph">${window.escapeBoseHTML(data.footer?.about || 'صنعناها بحب لتهديها لمن تحب')}</p>

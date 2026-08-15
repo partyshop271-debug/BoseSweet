@@ -550,7 +550,37 @@ function renderBoseCheckoutPage(storeData) {
     if (submitOrderBtn) {
         submitOrderBtn.onclick = (e) => {
             e.preventDefault();
-            processFinalBoseOrder(cart, storeData, currentShippingMethod, selectedShippingFee, payFullSelected);
+            // 🛡️ [حماية من الضغط المتكرر/السبام]: منع ضغط الزرار أكتر من مرة أثناء
+            // إرسال نفس الطلب (double-submit)، وحد أدنى ٣٠ ثانية بين محاولتين
+            // لإرسال طلب جديد من نفس الجهاز.
+            if (submitOrderBtn.disabled) return;
+            // 🛡️ [فحص حقل الفخ]: لو الحقل المخفي اتملى، ده بوت شبه مؤكد - بنتجاهل
+            // الطلب بصمت (من غير أي رسالة خطأ تفيد البوت إن فيه فحص أصلاً).
+            const hpField = document.getElementById("checkout-hp-field");
+            if (hpField && hpField.value.trim() !== "") return;
+            const rl = window.boseCheckClientRateLimit ? window.boseCheckClientRateLimit("order-submit", 30000) : { allowed: true };
+            if (!rl.allowed) {
+                if (typeof window.showBoseGlobalToast === "function") {
+                    window.showBoseGlobalToast(`يرجى الانتظار ${rl.secondsLeft} ثانية قبل إرسال طلب جديد.`, "error");
+                }
+                return;
+            }
+            const originalBtnHtml = submitOrderBtn.innerHTML;
+            submitOrderBtn.disabled = true;
+            submitOrderBtn.style.opacity = "0.6";
+            submitOrderBtn.style.pointerEvents = "none";
+            Promise.resolve(processFinalBoseOrder(cart, storeData, currentShippingMethod, selectedShippingFee, payFullSelected))
+                .catch(() => {})
+                .finally(() => {
+                    // بنسيب الزرار متعطل لو التنقل الفعلي لصفحة النجاح هيحصل عادي؛
+                    // بس لو حصل خطأ وقف قبل التنقل، لازم نرجّع الزرار قابل للاستخدام.
+                    setTimeout(() => {
+                        submitOrderBtn.disabled = false;
+                        submitOrderBtn.style.opacity = "";
+                        submitOrderBtn.style.pointerEvents = "";
+                        submitOrderBtn.innerHTML = originalBtnHtml;
+                    }, 4000);
+                });
         };
     }
 }
