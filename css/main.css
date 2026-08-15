@@ -876,23 +876,11 @@
    بدل 1fr وحدها - بتقول لكل عمود "اتقلص لحد ما تحتاج فعلاً، وسيب المحتوى جواك
    يتقلص أو يتقص هو اللي يتصرف، مش الشبكة كلها". التصميم (عمودين جنب بعض) فضل
    بالظبط زي ما هو، بس دلوقتي بيتقلص صح جوه حدود الشاشة بدل ما يكسرها. */
-/* 🚨🚨 [إصلاح جذري حرج - كروت "منيو حلويات بوسي" طويلة وممطوطة]: قواعد الشبكة
-   هنا كانت من غير أي align-items خالص - والسلوك الافتراضي لـ CSS Grid (بعكس
-   Flexbox اللي بيبان بديهي أكتر) هو "stretch": كل عنصر جوه صف واحد بيتمطط
-   تلقائياً لارتفاع أطول عنصر في نفس الصف. يعني لو كارت منتج بيعرض تبويبات
-   حجم متعددة ("متاح بأحجام متعددة") أو وصف أطول من الكارت جنبه، كل الكروت التانية
-   في نفس الصف كانت بتتمطط قسراً لنفس ارتفاعه - حتى لو محتواها الطبيعي أقصر
-   بكتير - وده بالظبط سبب إحساس "المطة الغريبة" والكروت "الطويلة جداً" اللي
-   وصفتيها. الحل: align-items:start بيقول لكل كارت "خد ارتفاعك الطبيعي بس،
-   من غير أي تمطيط قسري من الصف"، فكل كارت يرجع لحجمه الحقيقي حسب محتواه هو،
-   والصورة المربعة (aspect-ratio:1/1) جواه ترجع تبان مربعة صافية زي ما هي فعلاً
-   بدل ما تبان "مضغوطة" داخل مساحة رأسية فاضية زيادة عن حجمها الطبيعي. */
 .products-grid, .bose-products-grid {
     display: grid !important;
     grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
     gap: 20px !important;
     width: 100% !important;
-    align-items: start !important;
 }
 
 @media (max-width: 1023px) {
@@ -901,16 +889,7 @@
 
 @media (max-width: 550px) {
     .products-grid, .bose-products-grid { grid-template-columns: minmax(0, 1fr) !important; }
-    /* 🛡️ [تحديث تصميم - قسم "منيو حلويات بوسي" تحديدًا]: بعد المراجعة، القرار
-       اتغيّر عمدًا هنا: قسم المنيو (#our-products-grid) لازم يفضل كارتين جنب
-       بعض حتى على أصغر الشاشات (زي iPhone SE ~375px) - شكل احترافي بيقدّم
-       المنتجات، مش عمود واحد طولاني. الحل الصح مش الرجوع لعمود واحد (كان بيدي
-       إحساس أسوأ بصريًا)، لكن الاعتماد على التصغير الدقيق لمقاسات المحتوى
-       (خط/حشو/أزرار) الموجود بالفعل جوه @media(max-width:767px) تحت - ده هو
-       اللي بيخلي كارت بعرض ~150-170px يبان احترافي مش مضغوط: صورة مربعة صافية
-       (aspect-ratio:1/1 + object-fit:cover دايماً)، عنوان بحد أقصى سطرين
-       بدون قطع نص فجأة (ellipsis)، وسعر/زرار بمقاس متناسب مع العمود. */
-    #our-products-grid.products-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 12px !important; }
+    #our-products-grid.products-grid { grid-template-columns: minmax(0, 1fr) !important; }
 }
 
 /* [إصلاح تعارض]: #most-selling-grid و #new-arrivals-grid بالتحديد لازم يبقوا
@@ -973,6 +952,23 @@
     }
 }
 
+@media (max-width: 767px) {
+    /* 🛡️ [إصلاح أبعاد - تعارض أولوية]: قاعدة #our-products-grid.products-grid
+       (بمعرّف ID) عندها أولوية (specificity) أعلى من القاعدة العامة
+       ".products-grid { grid-template-columns: 1fr }" اللي عند 550px فوق -
+       يعني على الشاشات الضيقة جداً (أقل من 550px، زي iPhone SE) كان شبكة
+       "كل المنتجات" بتفضل عمودين رغم إن القاعدة العامة قصدها عمود واحد بس
+       على الشاشات الضيقة دي. بنضيف هنا قاعدة صريحة بنفس الأولوية (ID) عشان
+       فعلياً تنزل لعمود واحد تحت 550px زي باقي شبكات المنتجات بالظبط. */
+    #our-products-grid.products-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important; 
+        gap: 14px !important;
+        width: 100% !important;
+        padding: 0 !important;
+        justify-content: center !important;
+    }
+}
 
 .product-card-unified {
     width: 100%;
@@ -1056,7 +1052,7 @@
    مش بس مسألة المقاسات. نقلنا القواعد هنا لـ main.css (متحمّل في كل صفحات
    الموقع) عشان تشتغل فعلاً في أي مكان بيظهر فيه الكارت الموحد. */
 .bose-mini-size-note {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
     color: var(--bose-pink-text, #FF91A4);
     display: flex;
@@ -1159,7 +1155,6 @@
     background-color: var(--bose-pink-text); /* 🛡️ لون أغمق لضمان تباين كافٍ مع النص الأبيض - أهم زرار بالكارت */
     color: var(--bose-white);
     padding: 12px;
-    min-height: 44px; /* 🛡️ [إتاحة اللمس]: حد أدنى ٤٤px طبقاً لمعايير Apple/Google لضمان سهولة الضغط بإصبع بدون أخطاء */
     border-radius: var(--bose-radius-pill);
     font-weight: 700;
     cursor: pointer;
@@ -1169,7 +1164,6 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    box-sizing: border-box;
 }
 
 .btn-add-to-cart:hover {
@@ -1212,7 +1206,6 @@
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
-        text-overflow: ellipsis;
     }
 
     #our-products-grid.products-grid .product-card-flavor-name,
@@ -1231,7 +1224,6 @@
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
-        text-overflow: ellipsis;
     }
 
     #our-products-grid.products-grid .bose-mini-size-note,
@@ -1909,7 +1901,7 @@
     border-radius: var(--bose-radius-pill);
     margin-bottom: 16px;
 }
-.bose-app-promo-eyebrow i { color: var(--bose-app-accent, #FFDD87); }
+.bose-app-promo-eyebrow i { color: var(--bose-gold, #FF91A4); }
 
 .bose-app-promo-title {
     font-size: clamp(28px, 5vw, 40px);
@@ -1940,13 +1932,8 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    /* 🛡️ [إصلاح وضوح - أزرار البلوك التسويقي للتطبيق]: كانت خلفية الزرار
-       شفافة جداً (0.16 بس) فوق نفس اللون الوردي بتاع خلفية القسم كله - يعني
-       الزرار نفسه بالكاد كان بيتفرق عن الخلفية ومحدش هيلاحظ إنه قابل للضغط
-       غير لما يمرر الماوس عليه فعلياً (خاصية hover مش متاحة أصلاً على الموبايل).
-       رفعنا الشفافية شوية عشان الزرار يبان بوضوح كعنصر منفصل من أول لحظة. */
-    background: rgba(255,255,255,0.24);
-    border: 1px solid rgba(255,255,255,0.5);
+    background: rgba(255,255,255,0.16);
+    border: 1px solid rgba(255,255,255,0.3);
     color: #FFFFFF;
     font-weight: 700;
     font-size: 13.5px;
@@ -1957,19 +1944,10 @@
     transition: background 0.2s ease, transform 0.2s ease;
 }
 .bose-app-promo-pill:hover, .bose-app-promo-pill:focus-visible {
-    background: rgba(255,255,255,0.38);
+    background: rgba(255,255,255,0.3);
     transform: translateY(-1px);
 }
-/* 🛡️🛡️ [إصلاح جذري - أيقونات شبه مختفية]: --bose-gold معرّف عالمياً في
-   global.css بنفس لون --bose-pink بالظبط (#FF91A4) - قصده الأصلي كان تأثير
-   وردي خفيف جداً على خلفيات بيضاء (نجوم التقييمات). هنا كانت بتتستخدم فوق
-   خلفية القسم الوردية نفسها (أو زرار شبه شفاف فوقها) - يعني أيقونة وردية على
-   خلفية وردية طابقها بالظبط، فكانت الأيقونة (شاحنة/شنطة/هدية) بتختفي تقريباً
-   كما هو ظاهر في لقطة الشاشة. دلوقتي بتستخدم لون ذهبي حقيقي مميز بيبان بوضوح
-   فوق الوردي ومختلف عن النص الأبيض المجاور له، بدل التوكن العام غير المناسب هنا.
-   لاحظي إننا معملناش أي تعديل على --bose-gold نفسه في global.css عشان
-   الاستخدامات التانية الصح ليه (نجوم التقييمات على خلفية بيضاء) متتأثرش خالص. */
-.bose-app-promo-pill i { color: var(--bose-app-accent, #FFDD87); }
+.bose-app-promo-pill i { color: var(--bose-gold, #FF91A4); }
 
 .bose-app-promo-store-btns {
     display: flex;
@@ -2003,17 +1981,6 @@
     border-color: #FFFFFF;
 }
 .bose-app-store-btn-filled:hover { background: rgba(255,255,255,0.9); }
-
-/* 🛡️ [صدق مع العميل]: توضيح صغير تحت زرار "ثبّتي التطبيق دلوقتي" الموحّد -
-   عشان يكون واضح من أول لحظة إن التثبيت مباشر من المتصفح للشاشة الرئيسية،
-   من غير أي وهم إنه تحميل من متجر تطبيقات رسمي. */
-.bose-app-promo-install-note {
-    color: rgba(255,255,255,0.82);
-    font-size: 12.5px;
-    margin: 10px 0 0 0;
-    text-align: center;
-}
-@media (min-width: 992px) { .bose-app-promo-install-note { text-align: right; } }
 
 /* ---------- موبايل الديمو مع شاشات متبدلة تلقائياً ---------- */
 .bose-app-promo-phone-col { position: relative; display: flex; justify-content: center; }

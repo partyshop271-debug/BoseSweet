@@ -57,7 +57,11 @@
     opacity: 0.85;
 }
 
-/* البانر التأسيسي الفخم عالي الإضاءة والنقاء */
+/* البانر التأسيسي الفخم عالي الإضاءة والنقاء
+   📏👑 [توحيد أبعاد الصورة الرئيسية مع محاكي التورت]: نفس القيم بالظبط
+   المستخدمة في .bose-main-hero-hook بمحاكي التورت (بعد تكبيرها 30%)، عشان
+   الصورة الرئيسية تحس إنها "نفس الحاجة" في المحاكيين الاتنين. القيم القديمة
+   هنا كانت: aspect-ratio: 16/9؛ max-height: 480px (من غير حد أدنى للارتفاع). */
 .simulator-hero-banner-wrapper {
     width: 100%;
     text-align: center;
@@ -67,14 +71,111 @@
 
 .hero-banner-frame {
     width: 100%;
-    height: auto;
-    max-height: 480px;
-    aspect-ratio: 16 / 9; /* منع الـ CLS واهتزاز الصفحة أثناء تحميل الصورة */
+    height: 41.6vh;
+    min-height: 260px;
+    max-height: 442px;
     object-fit: cover;
     border-radius: var(--bose-radius-md);
     box-shadow: var(--bose-pink-shadow);
     border: var(--bose-border-pink);
+    display: block;
+    /* 🖼️ [تكبير بملء الشاشة عند الضغط]: راجع wireUpAllFlowerLightboxImages في
+       flower-engine.js - الصورة الرئيسية بقت تفتح بملء الشاشة زي باقي صور
+       المحاكي عند الضغط عليها، بالظبط زي محاكي التورت. */
+    cursor: pointer;
 }
+
+/* 🖼️ [صور توضيحية موحدة لكل خطوة في محاكي الورد]: كانت الأبعاد قبل كده Inline
+   ومكررة في كل خطوة على حدة - دلوقتي كلاس واحد مشترك، ونفس فلسفة محاكي التورت:
+   كل صورة قابلة للضغط عليها لتكبيرها بملء الشاشة (راجع wireUpAllFlowerLightboxImages
+   في flower-engine.js). */
+/* 🖼️👑 [صور الاختيارات من لوحة التحكم - إصلاح جذري]: كارت النكهة/الشكل/نوع
+   الورد كان نص بس من غير أي مكان لعرض الصورة، حتى لو الأدمن رفع صورة فعلياً
+   من لوحة التحكم (list-cake-types/list-shapes/list-printing-options/
+   list-flower-types) - الصورة كانت بتتحفظ في قاعدة البيانات بس مالهاش أي
+   مكان تتعرض فيه على الموقع خالص. راجع applyBoseOptionCardImages في
+   cake-engine.js وflower-engine.js - بتحقن الصورة دي جوه الكارت المطابق
+   تلقائياً بعد ما بيانات المتجر تتحمل. */
+.bose-selection-card-inner {
+    overflow: hidden; /* 🖼️ [صورة كبيرة حتى الحواف]: عشان الصورة تتقص بشكل نضيف مع
+       زوايا الكارت المدورة، مش تعمل مربع صغير جوه فراغ. */
+}
+/* 🖼️👑 [صورة كبيرة واضحة بدل الأيقونة الصغيرة - بنفس حجم كروت معرض الإلهام]:
+   الصورة بتاخد عرض الكارت بالكامل حتى الحواف (بتخرج بره الـ padding العادي
+   بمارجن سالب)، بنسبة عرض-لارتفاع تربيعية زي كروت المعرض بالظبط، والاسم
+   النصي بيفضل تحتها كتسمية توضيحية. لو مفيش صورة مرفوعة للاختيار ده، الكارت
+   بيفضل نص بس زي ما كان بالظبط - العنصر مش بيتحقن خالص لحد ما تتوفر صورة. */
+.bose-option-card-thumb {
+    width: calc(100% + 32px);
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    margin: -20px -16px 12px -16px;
+    border-radius: 0;
+}
+/* 🖼️ [نفس فكرة الصورة الكبيرة، بس متظبطة على حشو كارت محاكي الورد المختلف
+   (16px 12px بدل 20px 16px بمحاكي التورت)]: عشان الصورة تفضل ملاصقة تماماً
+   لحواف الكارت من غير أي فجوة بيضاء حواليها في محاكي الورد بالذات. */
+.bose-iconic-btn-node .bose-option-card-thumb {
+    margin: -16px -12px 10px -12px;
+    width: calc(100% + 24px);
+}
+
+.bose-step-illustration-img {
+    width: 100%;
+    max-width: 260px;
+    border-radius: 16px;
+    border: var(--bose-border-pink);
+    box-shadow: var(--bose-pink-shadow);
+    cursor: pointer;
+}
+
+/* 📋👑 [خطوة الخلاصة - محاكي الورد]: كل سطر بيوضح اختيار واحد + زرار تعديل
+   بيرجّع العميلة لنفس الخطوة. نفس فلسفة "كل حاجة ظاهرة قدام العميل" المتبعة
+   في كل الموقع - بدون طي/إخفاء لأي تفصيلة. */
+.bose-order-summary-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.bose-order-summary-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    background: #fff;
+    border: 1px solid rgba(255, 145, 164, 0.25);
+    border-radius: var(--bose-radius-sm, 10px);
+    padding: 10px 14px;
+}
+.bose-order-summary-row-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+.bose-order-summary-row-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--bose-pink-text);
+}
+.bose-order-summary-row-value {
+    font-size: 13.5px;
+    color: var(--bose-black);
+    word-break: break-word;
+}
+.bose-order-summary-edit-btn {
+    flex-shrink: 0;
+    background: var(--bose-pink-light);
+    border: 1px solid var(--bose-pink);
+    color: var(--bose-pink-text);
+    font-family: 'Cairo';
+    font-weight: 700;
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 50px;
+    cursor: pointer;
+}
+.bose-order-summary-edit-btn:hover { background: var(--bose-pink); color: #fff; }
 
 /* تقسيم مساحة العمل لجزأين متوازنين (أدوات التحكم واللوحة الجانبية) */
 .simulator-workspace {
@@ -214,6 +315,7 @@
     border: 1.5px solid var(--bose-gray-border) !important;
     border-radius: var(--bose-radius-md) !important; /* 🛡️ بلاطة اختيار (أيقونة + نص) = زاوية متوسطة زي أي كارت، مش كبسولة، عشان شكلها مربّع/عمودي مش زرار مستطيل عريض */
     padding: 16px 12px !important;
+    overflow: hidden; /* 🖼️ [صورة كبيرة حتى الحواف] راجع applyBoseOptionCardImages */
     text-align: center;
     cursor: pointer;
     transition: border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1),
@@ -398,6 +500,10 @@
     border-radius: var(--bose-radius-sm);
     border: var(--bose-border-pink);
     box-shadow: 0 4px 12px rgba(255, 145, 164, 0.1);
+    /* 🖼️ [تكبير بملء الشاشة عند الضغط]: راجع initializeBoseLightboxGallery في
+       cake-engine.js - أي صورة معاينة مرفوعة (مرجعية أو للطباعة) بقت تفتح بملء
+       الشاشة زي باقي صور المحاكي، عشان العميل يتأكد من تفاصيل صورته اللي رفعها. */
+    cursor: pointer;
 }
 
 .bose-checkbox-label-tap {
