@@ -491,7 +491,7 @@
                 <div id="bose-product-size-note" class="bose-size-filter-note" style="display:none; margin-bottom:10px;"><i class="fa-solid fa-circle-info"></i> ده الصنف متوفر بأكتر من حجم — اختاري اللي يناسبك 👇</div>
                 <div id="bose-product-size-tabs" class="bose-size-tabs-filter" style="display:none; margin-bottom:14px;"></div>
 
-                <div id="bose-product-price-text" class="product-price-large-display">0 EGP</div>
+                <div id="bose-product-price-text" class="product-price-large-display">0 جنيه</div>
                 <!-- 🎂 [حل مشكلة "العميل مش فاهم الكمية"]: نفس البادچ الظاهر دايماً في كارت
                      المنتج، بيتحط هنا كمان جنب السعر الرئيسي في صفحة المنتج المستقلة نفسها -
                      راجع renderQuantityNote() تحت وعمود quantity_note في قاعدة البيانات. -->
@@ -709,8 +709,16 @@
                 const wrapper = document.getElementById("bose-product-quantity-note");
                 const textEl = document.getElementById("bose-product-quantity-note-text");
                 if (!wrapper || !textEl || !currentProduct) return;
-                if (currentProduct.quantityNote) {
-                    textEl.textContent = currentProduct.quantityNote;
+                // 🚨 [توضيح كمية لكل حجم]: لو المنتج عنده sizeQuantityNotes للحجم المختار
+                // حالياً (زي الديسباسيتو: "ده سعر المثلث."/"ده سعر الطاجن."/"ده سعر الحجم
+                // العائلي.") نستخدمه، وإلا نرجع لـ quantityNote العام العادي - بالظبط نفس
+                // منطق applyDescriptionForCurrentSize بتاع الوصف.
+                const perSizeNote = currentProduct.sizeQuantityNotes && currentSelectedOptions.size
+                    ? currentProduct.sizeQuantityNotes[currentSelectedOptions.size]
+                    : null;
+                const noteText = perSizeNote || currentProduct.quantityNote;
+                if (noteText) {
+                    textEl.textContent = noteText;
                     wrapper.style.display = "flex";
                 } else {
                     wrapper.style.display = "none";
@@ -767,7 +775,8 @@
                         currentSelectedOptions.size = this.dataset.sizeKey;
                         applyDescriptionForCurrentSize();
                         applyImageForCurrentSize();
-                        updateLivePriceDisplay(window.BoseStoreData?.store?.currency || "EGP");
+                        renderQuantityNote();
+                        updateLivePriceDisplay("جنيه");
                     });
                 });
             }
@@ -931,7 +940,7 @@
                             ${relatedFlavors.map(opt => `
                                 <div class="custom-selectable-card" data-slug="${opt.slug}">
                                     <span class="card-primary-txt">${opt.flavorName}</span>
-                                    <span class="card-secondary-txt">${Math.round(opt.price)} EGP</span>
+                                    <span class="card-secondary-txt">${Math.round(opt.price)} جنيه</span>
                                 </div>
                             `).join("")}
                         </div>
@@ -947,7 +956,7 @@
                     optionsRoot.appendChild(group);
                 }
 
-                updateLivePriceDisplay(dbData.store?.currency || "EGP");
+                updateLivePriceDisplay("جنيه");
                 renderDynamicProductReviews();
                 renderProductFaqs();
 
@@ -1187,14 +1196,14 @@
             document.getElementById("btn-qty-master-plus").addEventListener("click", () => {
                 currentMasterQuantity++;
                 document.getElementById("input-qty-master-value").value = currentMasterQuantity;
-                updateLivePriceDisplay(window.BoseStoreData?.store?.currency || "EGP");
+                updateLivePriceDisplay("جنيه");
             });
 
             document.getElementById("btn-qty-master-minus").addEventListener("click", () => {
                 if (currentMasterQuantity > 1) {
                     currentMasterQuantity--;
                     document.getElementById("input-qty-master-value").value = currentMasterQuantity;
-                    updateLivePriceDisplay(window.BoseStoreData?.store?.currency || "EGP");
+                    updateLivePriceDisplay("جنيه");
                 }
             });
 
@@ -1262,7 +1271,7 @@
                 if (!relatedGrid || !dbData || !dbData.products) return;
 
                 const suggestionsList = dbData.products.filter(p => p.slug !== currentProduct.slug).slice(0, 5);
-                const currency = dbData.store?.currency || "EGP";
+                const currency = "جنيه";
                 const defaultLogo = dbData.store?.logo || "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png";
 
                 if (suggestionsList.length === 0) {
