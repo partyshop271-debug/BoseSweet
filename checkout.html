@@ -244,7 +244,15 @@
                 <h3 class="checkout-pane-title"><i class="fas fa-truck-ramp-box" style="color:var(--bose-pink);"></i> البيانات اللوجستية وموعد الاستلام</h3>
                 
                 <form id="bose-checkout-fields-form" class="form-inputs-stack" onsubmit="return false;">
-                    
+
+                    <!-- 🛡️ [حقل فخ للبوتات - Honeypot]: مخفي تمامًا عن أي مستخدم حقيقي (حتى
+                         قارئ الشاشة عبر aria-hidden وtabindex=-1)، لكن البوتات البدائية اللي
+                         بتملأ كل حقول الفورم بتقع فيه. لو اتملى، الطلب بيتجاهل بصمت. -->
+                    <div style="position:absolute; left:-9999px; top:-9999px; height:0; overflow:hidden;" aria-hidden="true">
+                        <label for="checkout-hp-field">اتركي هذا الحقل فارغاً</label>
+                        <input type="text" id="checkout-hp-field" name="checkout-hp-field" tabindex="-1" autocomplete="off">
+                    </div>
+
                     <!-- الاسم بالكامل (إلزامي برمجياً بنسبة مئة بالمئة) -->
                     <div class="input-group-node">
                         <label for="checkout-customer-name">الاسم الكريم بالكامل <span class="required-indicator">*</span></label>
