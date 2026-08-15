@@ -35,7 +35,7 @@
                         </div>
                         <div class="adm-products-filters">
                             <input type="text" class="adm-input adm-products-search" id="products-search-input"
-                                   placeholder="بحث بالاسم أو النكهة...">
+                                   placeholder="بحث بالاسم...">
                             <select class="adm-select adm-products-category-filter" id="products-category-filter">
                                 <option value="">كل الفئات</option>
                             </select>
@@ -53,21 +53,19 @@
                             <thead>
                                 <tr>
                                     <th></th>
-                                    <th class="adm-sortable-th" data-sort="title">الاسم <i class="fa-solid fa-sort"></i></th>
-                                    <th class="adm-sortable-th" data-sort="flavor_name">النكهة <i class="fa-solid fa-sort"></i></th>
-                                    <th class="adm-sortable-th" data-sort="category">الفئة <i class="fa-solid fa-sort"></i></th>
-                                    <th class="adm-sortable-th" data-sort="price">السعر <i class="fa-solid fa-sort"></i></th>
+                                    <th>الاسم</th>
+                                    <th>الفئة</th>
+                                    <th>السعر</th>
                                     <th>السعر القديم</th>
                                     <th>مميز</th>
                                     <th></th>
                                 </tr>
                             </thead>
                             <tbody id="products-tbody">
-                                <tr><td colspan="8"><div class="adm-loading-spinner"></div></td></tr>
+                                <tr><td colspan="7"><div class="adm-loading-spinner"></div></td></tr>
                             </tbody>
                         </table>
                     </div>
-                    <p class="adm-hint" id="products-results-count" style="margin-top:10px;"></p>
                 </div>
 
             </div>
