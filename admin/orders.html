@@ -39,12 +39,25 @@
                             <select class="adm-select adm-orders-status-filter" id="orders-status-filter">
                                 <option value="">كل الحالات</option>
                             </select>
+                            <button type="button" class="adm-btn adm-btn-danger" id="orders-delete-cancelled-btn">
+                                <i class="fa-solid fa-broom"></i> حذف كل الملغي
+                            </button>
                         </div>
                     </div>
+
+                    <div class="adm-orders-bulk-bar" id="orders-bulk-bar" style="display:none;">
+                        <span id="orders-bulk-count">0 طلب محدد</span>
+                        <button type="button" class="adm-btn adm-btn-ghost" id="orders-bulk-clear-btn">إلغاء التحديد</button>
+                        <button type="button" class="adm-btn adm-btn-danger" id="orders-bulk-delete-btn">
+                            <i class="fa-solid fa-trash"></i> حذف المحدد
+                        </button>
+                    </div>
+
                     <div class="adm-table-wrapper">
                         <table class="adm-table" id="orders-table">
                             <thead>
                                 <tr>
+                                    <th style="width:36px;"><input type="checkbox" id="orders-select-all"></th>
                                     <th>رقم الطلب</th>
                                     <th>العميل</th>
                                     <th>الهاتف</th>
@@ -54,7 +67,7 @@
                                 </tr>
                             </thead>
                             <tbody id="orders-tbody">
-                                <tr><td colspan="6"><div class="adm-loading-spinner"></div></td></tr>
+                                <tr><td colspan="7"><div class="adm-loading-spinner"></div></td></tr>
                             </tbody>
                         </table>
                     </div>
