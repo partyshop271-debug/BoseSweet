@@ -277,6 +277,30 @@
         if (error) throw error;
     }
 
+    /**
+     * حذف طلب واحد نهائياً (وعناصره order_items بتتمسح تلقائي معاه - في
+     * الداتابيز الـ foreign key متعمول ON DELETE CASCADE). بيُستخدم لتنظيف
+     * الطلبات الملغية أو الطلبات الوهمية اللي بتتعمل للتجربة.
+     */
+    async function deleteOrder(orderId) {
+        const { error } = await client.from("orders").delete().eq("id", orderId);
+        if (error) throw error;
+    }
+
+    /**
+     * حذف مجموعة طلبات دفعة واحدة (تحديد متعدد من جدول الطلبات، أو مسح
+     * سريع لكل الطلبات الملغية). بيرجع عدد الطلبات اللي اتمسحت فعلاً.
+     */
+    async function deleteOrders(orderIds) {
+        if (!orderIds || !orderIds.length) return 0;
+        const { error, count } = await client
+            .from("orders")
+            .delete({ count: "exact" })
+            .in("id", orderIds);
+        if (error) throw error;
+        return count || 0;
+    }
+
     /** عدد الطلبات اللي لسه بانتظار تأكيد العربون - يُستخدم كبادج في الشريط الجانبي/الداشبورد */
     async function getAwaitingDepositCount() {
         try {
@@ -861,6 +885,8 @@
         getMissingPhotoProductsCount,
         getRecentOrders,
         getAllOrders,
+        deleteOrder,
+        deleteOrders,
         updateOrderStatus,
         confirmOrderDeposit,
         getAwaitingDepositCount,
