@@ -60,48 +60,53 @@
 
     /* ============================= مودال تفاصيل الطلب ============================= */
 
-    // 🚨🚨 [إصلاح جذري حرج - أهم تفاصيل الطلب المخصص كانت غير مرئية تماماً في لوحة
-    // التحكم]: getAllOrders بيجيب custom_details كاملة من قاعدة البيانات فعلياً
-    // (select("*, order_items(*)"))، لكن الواجهة هنا كانت بتتجاهلها تماماً وبتعرض
-    // بس نص عام "طلب مخصص (محاكي)" من غير أي تفاصيل - يعني نص الكتابة على التورتة،
-    // ملاحظة الحساسية، نوع الكيك/الشكل/عدد الأفراد، تفاصيل بوكيه الورد، روابط صور
-    // الطباعة/التصميم المرجعي... كل ده كان موجود فعلياً في قاعدة البيانات لكن
-    // لوحة التحكم (مصدر الحقيقة الدائم للفرع) ما كانتش بتوريه أبداً - الاعتماد
-    // كان بالكامل على رسالة الواتساب اللحظية بس، فلو ضاعت الرسالة أو حد احتاج
-    // يرجع لتفاصيل طلب قديم من لوحة التحكم نفسها، مفيش أي طريقة يشوف بيها التفاصيل
-    // دي خالص. الدالة دي بترسم كل حقول custom_details الفعلية (بنفس منطق فاتورة
-    // الواتساب في cart-engine.js) مع تعقيم كامل (e()) لأي نص كتبه العميل بنفسه.
-    function customDetailsHTML(cd) {
+    /**
+     * 🛡️ [إصلاح فجوة تنفيذ حرجة]: قبل كده كل تفاصيل الطلب المخصص (طعم التورتة،
+     * الشكل، عدد الأفراد، النص المطلوب كتابته، ملاحظة الحساسية، كارت الإهداء،
+     * تفاصيل الورد، الحجم المختار للمنتجات متعددة الأحجام) كانت موجودة فعلياً
+     * في قاعدة البيانات لكن مالهاش أي عرض هنا - غاية ما كان بيظهر هو نص عام
+     * "طلب مخصص (محاكي)" وعدد الصور بس من غير روابطها. يعني لو أي حد في الفريق
+     * بيشتغل من لوحة التحكم مباشرة (مش من رسالة الواتساب) كان مستحيل ينفذ الطلب
+     * صح. دلوقتي كل التفاصيل المخزنة بتتعرض بالكامل هنا بالظبط زي رسالة الواتساب.
+     */
+    function orderItemCustomDetailsHTML(item) {
         const e = window.BoseAdminUI.escapeHtml;
-        if (!cd || !Object.keys(cd).length) return "";
+        const cd = item.custom_details || {};
+        if (!cd || Object.keys(cd).length === 0) return "";
         const lines = [];
 
         if (cd.isGift) lines.push("🎁 هدية لحد تاني");
-        if (cd.occasionLabel && cd.occasionLabel.trim()) lines.push(`المناسبة: ${e(cd.occasionLabel.trim())}`);
+        if (cd.occasionLabel) lines.push(`المناسبة: ${e(cd.occasionLabel)}`);
         if (cd.cakeType && cd.cakeType !== "none" && cd.cakeType !== "افتراضي") lines.push(`طعم الكيك: ${e(cd.cakeType)}`);
-        if (cd.shape && cd.shape !== "none" && cd.shape !== "circle") lines.push(`الشكل: ${e(cd.shape)}`);
-        if (cd.persons && cd.persons > 0) lines.push(`عدد الأفراد: ${e(String(cd.persons))}`);
+        if (cd.shape && cd.shape !== "none") lines.push(`الشكل: ${e(cd.shape)}`);
+        if (cd.persons) lines.push(`الأفراد: لـ ${e(String(cd.persons))} فرد`);
         if (cd.printingType && cd.printingType !== "none") lines.push(`طباعة صورة: ${cd.printingType === "edible" ? "قابلة للأكل" : "غير قابلة للأكل"}`);
-        if (cd.customMessage && cd.customMessage.trim()) lines.push(`النص المطلوب كتابته: "${e(cd.customMessage.trim())}"`);
-        if (cd.allergyNote && cd.allergyNote.trim()) lines.push(`⚠️ ملاحظات وحساسية: ${e(cd.allergyNote.trim())}`);
-        if (cd.hasGiftCard && cd.giftCardText && cd.giftCardText.trim()) lines.push(`كارت إهداء: "${e(cd.giftCardText.trim())}"`);
+        if (cd.customMessage) lines.push(`النص المطلوب على التورتة: "${e(cd.customMessage)}"`);
+        if (cd.allergyNote) lines.push(`⚠️ ملاحظة حساسية: ${e(cd.allergyNote)}`);
+        if (cd.sizeLabel) lines.push(`الحجم المطلوب: ${e(cd.sizeLabel)}`);
         if (cd.flowerType && cd.flowerType !== "none") lines.push(`نوع الورد: ${e(cd.flowerType)}`);
-        if (cd.flowerCount && cd.flowerCount > 0) lines.push(`عدد الورد: ${e(String(cd.flowerCount))} وردة`);
-        if (cd.hasSatinRibbon && cd.satinRibbonText && cd.satinRibbonText.trim()) lines.push(`شريط ستان مطبوع: "${e(cd.satinRibbonText.trim())}"`);
-        if (cd.photoCount && cd.photoCount > 0) lines.push(`صور شخصية مطبوعة: ${e(String(cd.photoCount))} صورة`);
-        if (cd.cashAmount && cd.cashAmount > 0) lines.push(`كاش مدمج جوه البوكيه: +${e(String(cd.cashAmount))} EGP`);
-        if (cd.hasChocolate && cd.chocolateBudget && cd.chocolateBudget > 0) lines.push(`ميزانية شوكولاتة: +${e(String(cd.chocolateBudget))} EGP`);
-        if (cd.sizeLabel) lines.push(`الحجم: ${e(cd.sizeLabel)}`);
+        if (cd.flowerCount) lines.push(`عدد الورد: ${e(String(cd.flowerCount))} وردة`);
+        if (cd.moodLabel) lines.push(`الإحساس المطلوب: ${e(cd.moodLabel)}`);
+        if (cd.hasSatinRibbon && cd.satinRibbonText) lines.push(`شريط ستان مطبوع: "${e(cd.satinRibbonText)}"`);
+        if (cd.photoCount) lines.push(`صور شخصية مطبوعة: ${e(String(cd.photoCount))} صورة`);
+        if (cd.cashAmount) lines.push(`كاش مدمج جوه البوكيه: +${e(String(cd.cashAmount))} جنيه`);
+        if (cd.hasChocolate && cd.chocolateBudget) lines.push(`ميزانية شوكولاتة فاخرة: +${e(String(cd.chocolateBudget))} جنيه`);
+        if (cd.hasGiftCard && cd.giftCardText) lines.push(`كارت إهداء: "${e(cd.giftCardText)}"`);
 
-        const imageLinks = [];
-        if (cd.printImageUrl) imageLinks.push(`<a href="${e(cd.printImageUrl)}" target="_blank" rel="noopener">🖨️ صورة الطباعة على التورتة</a>`);
-        if (cd.replicaImageUrl) imageLinks.push(`<a href="${e(cd.replicaImageUrl)}" target="_blank" rel="noopener">🎨 صورة التصميم المرجعي</a>`);
+        const imageLines = [];
+        if (cd.printImageUrl) imageLines.push(`<a href="${e(cd.printImageUrl)}" target="_blank" rel="noopener noreferrer">🖨️ الصورة المطلوب طباعتها على التورتة</a>`);
+        if (cd.replicaImageUrl) imageLines.push(`<a href="${e(cd.replicaImageUrl)}" target="_blank" rel="noopener noreferrer">🎨 صورة التصميم المرجعي</a>`);
+        if (Array.isArray(item.reference_images)) {
+            item.reference_images.forEach((url, i) => {
+                if (url) imageLines.push(`<a href="${e(url)}" target="_blank" rel="noopener noreferrer">🖼️ صورة مرجعية${item.reference_images.length > 1 ? " " + (i + 1) : ""}</a>`);
+            });
+        }
 
-        if (!lines.length && !imageLinks.length) return "";
+        if (lines.length === 0 && imageLines.length === 0) return "";
         return `
             <div class="adm-order-item-custom-details">
-                ${lines.map((l) => `<div>${l}</div>`).join("")}
-                ${imageLinks.length ? `<div>${imageLinks.join(" · ")}</div>` : ""}
+                ${lines.length ? `<ul>${lines.map((l) => `<li>${l}</li>`).join("")}</ul>` : ""}
+                ${imageLines.length ? `<div class="adm-order-item-images">${imageLines.join(" · ")}</div>` : ""}
             </div>`;
     }
 
@@ -110,13 +115,13 @@
         const isCustom = item.custom_details && Object.keys(item.custom_details).length > 0;
         return `
             <div class="adm-order-item-row">
-                <div style="flex:1;">
+                <div>
                     <strong>${e(item.title)}</strong>
                     <span class="adm-order-item-meta">
                         ${item.flavor_name ? e(item.flavor_name) + " · " : ""}الكمية: ${item.quantity}
-                        ${item.reference_images && item.reference_images.length ? ` · ${item.reference_images.length} صورة مرجعية` : ""}
+                        ${isCustom ? " · طلب مخصص (محاكي)" : ""}
                     </span>
-                    ${isCustom ? customDetailsHTML(item.custom_details) : ""}
+                    ${orderItemCustomDetailsHTML(item)}
                 </div>
                 <div>${money(item.line_total)}</div>
             </div>`;
