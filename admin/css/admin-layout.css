@@ -653,12 +653,13 @@ html.adm-ready .adm-auth-gate { display: none; }
 
 .adm-order-item-row {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     padding: 10px 14px;
     background: var(--adm-bg-input);
     border-radius: var(--adm-radius-sm);
     font-size: 0.85rem;
+    gap: 10px;
 }
 
 .adm-order-item-meta {
@@ -666,6 +667,25 @@ html.adm-ready .adm-auth-gate { display: none; }
     font-size: 0.75rem;
     color: var(--adm-text-muted);
     margin-top: 2px;
+}
+
+/* 🚨 [إصلاح - تفاصيل الطلب المخصص]: صندوق صغير بيعرض كل حقول custom_details
+   (نص الكتابة، الحساسية، الشكل، تفاصيل الورد...) جوه سطر المنتج في مودال الطلب،
+   بدل ما تفضل مخفية تماماً عن لوحة التحكم. */
+.adm-order-item-custom-details {
+    margin-top: 6px;
+    padding: 8px 10px;
+    background: var(--adm-bg-surface);
+    border: 1px dashed var(--adm-border);
+    border-radius: var(--adm-radius-sm);
+    font-size: 0.78rem;
+    line-height: 1.7;
+    color: var(--adm-text-secondary);
+}
+
+.adm-order-item-custom-details a {
+    color: var(--adm-pink);
+    text-decoration: underline;
 }
 
 .adm-order-totals {
