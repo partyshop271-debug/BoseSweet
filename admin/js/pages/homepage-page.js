@@ -3,10 +3,11 @@
  * =====================================================================
  * نطاق النسخة دي: قوائم المنتجات المختارة (الأكثر مبيعاً / وصل حديثاً /
  * منتجاتنا)، بانرات محاكي التورت والورد، شلال المنتجات المتحرك (صوره
- * وسرعته وتشغيله/إيقافه - كل صور الشلال دلوقتي روابط مباشرة بسيطة، مش
- * مربوطة بمنتجات)، والشريط العلوي المتحرك بأعلى الهيدر (رسائله وسرعته
- * وتشغيله/إيقافه). حقول أقل تغيّراً زي نص الهيرو وإحصائيات "الفخر
- * والاعتزاز" والفيديوهات مش متضمنة هنا لحد ما تحتاجها.
+ * وسرعته وتشغيله/إيقافه - كل صورة بترفع أو تتلصق برابط مباشر، مع إمكانية
+ * اختيارية لربطها باسم منتج حقيقي عشان توصل لصفحته لما تتضغط)، والشريط
+ * العلوي المتحرك بأعلى الهيدر (رسائله وسرعته وتشغيله/إيقافه). حقول أقل
+ * تغيّراً زي نص الهيرو وإحصائيات "الفخر والاعتزاز" والفيديوهات مش
+ * متضمنة هنا لحد ما تحتاجها.
  *
  * "سلايدر الفئات" على الرئيسية بيتبنى تلقائياً من جدول categories وقت
  * الحفظ (نفس id/title/image/builder_type) - كده الفئات ليها مصدر واحد بس
@@ -182,8 +183,8 @@
     /* ============================= شلال المنتجات المتحرك ============================= */
 
     const WATERFALL_COLUMNS = [
-        { key: "leftColumnImages", listId: "list-waterfall-left", urlInputId: "waterfall-left-url-input", urlBtnId: "waterfall-left-add-url-btn", uploadInputId: "waterfall-left-image-input", uploadLabelId: "waterfall-left-upload-label" },
-        { key: "rightColumnImages", listId: "list-waterfall-right", urlInputId: "waterfall-right-url-input", urlBtnId: "waterfall-right-add-url-btn", uploadInputId: "waterfall-right-image-input", uploadLabelId: "waterfall-right-upload-label" },
+        { key: "leftColumnImages", listId: "list-waterfall-left", urlInputId: "waterfall-left-url-input", linkInputId: "waterfall-left-link-input", datalistId: "waterfall-left-product-list", urlBtnId: "waterfall-left-add-url-btn", uploadInputId: "waterfall-left-image-input", uploadLabelId: "waterfall-left-upload-label" },
+        { key: "rightColumnImages", listId: "list-waterfall-right", urlInputId: "waterfall-right-url-input", linkInputId: "waterfall-right-link-input", datalistId: "waterfall-right-product-list", urlBtnId: "waterfall-right-add-url-btn", uploadInputId: "waterfall-right-image-input", uploadLabelId: "waterfall-right-upload-label" },
     ];
 
     function renderWaterfallColumn(colDef) {
@@ -196,11 +197,17 @@
         } else {
             container.innerHTML = items.map((item, idx) => {
                 const img = typeof item === "object" ? item.image : item;
+                const link = typeof item === "object" ? item.link : "";
+                const linkedProduct = link ? allProducts.find((p) => link.includes(encodeURIComponent(p.slug)) || link.includes(p.slug)) : null;
+                const subtitle = linkedProduct ? `هتوصل لـ: ${linkedProduct.title}` : (link ? `رابط: ${link}` : "صورة من غير رابط");
                 return `
                 <div class="adm-curated-item" data-idx="${idx}">
                     <img src="${e(img)}" class="adm-curated-item-thumb" alt="">
-                    <span class="adm-curated-item-title">${e(img)}</span>
+                    <span class="adm-curated-item-title">${e(subtitle)}</span>
                     <div class="adm-curated-item-actions">
+                        <button type="button" class="adm-btn adm-btn-ghost adm-btn-icon" data-action="link" title="تعديل رابط الوجهة">
+                            <i class="fa-solid fa-link"></i>
+                        </button>
                         <button type="button" class="adm-btn adm-btn-ghost adm-btn-icon" data-action="up" title="تحريك لأعلى" ${idx === 0 ? "disabled" : ""}>
                             <i class="fa-solid fa-arrow-up"></i>
                         </button>
@@ -222,6 +229,14 @@
                 const list = waterfallState[colDef.key];
                 if (action === "remove") {
                     list.splice(idx, 1);
+                } else if (action === "link") {
+                    const currentItem = list[idx];
+                    const currentLink = typeof currentItem === "object" ? (currentItem.link || "") : "";
+                    const typed = window.prompt("اكتبي اسم المنتج اللي هتوصل له الصورة دي عند الضغط (أو رابط مباشر)، أو سيبيها فاضية عشان تشيلي الرابط:", currentLink);
+                    if (typed === null) return; // اتلغى
+                    const resolvedLink = resolveWaterfallLink(typed);
+                    const img = typeof currentItem === "object" ? currentItem.image : currentItem;
+                    list[idx] = resolvedLink ? { image: img, link: resolvedLink } : { image: img };
                 } else if (action === "up" && idx > 0) {
                     [list[idx - 1], list[idx]] = [list[idx], list[idx - 1]];
                 } else if (action === "down" && idx < list.length - 1) {
@@ -232,23 +247,54 @@
         });
     }
 
-    function addWaterfallImage(colDef, url) {
+    /**
+     * بتحوّل النص اللي اتكتب في خانة "اسم المنتج / الرابط" لرابط فعلي:
+     * - لو النص مطابق (بالظبط أو قريب) لاسم منتج حقيقي → بنبني رابط صفحته تلقائياً.
+     * - لو النص شكله رابط (فيه http أو .html) → بنستخدمه زي ما هو.
+     * - لو فاضي → مفيش رابط خالص (الصورة تظهر بس من غير ما توصل لحد).
+     */
+    function resolveWaterfallLink(rawText) {
+        const trimmed = (rawText || "").trim();
+        if (!trimmed) return "";
+        const matchedProduct = allProducts.find((p) => (p.title || "").trim() === trimmed);
+        if (matchedProduct) return `product.html?slug=${encodeURIComponent(matchedProduct.slug)}`;
+        if (/^https?:\/\//i.test(trimmed) || trimmed.includes(".html")) return trimmed;
+        // مطابقة تقريبية لو اسم المنتج مكتوب بصيغة قريبة من الأصل
+        const partialMatch = allProducts.find((p) => (p.title || "").includes(trimmed) || trimmed.includes(p.title || "\u0000"));
+        if (partialMatch) return `product.html?slug=${encodeURIComponent(partialMatch.slug)}`;
+        window.BoseAdminUI.showToast("معرفناش نلاقي منتج بالاسم ده، الصورة هتتضاف من غير رابط", "error");
+        return "";
+    }
+
+    function addWaterfallImage(colDef, url, linkText) {
         const trimmed = (url || "").trim();
         if (!trimmed) return;
         if (!/^https?:\/\//i.test(trimmed)) {
-            window.BoseAdminUI.showToast("الرابط لازم يبدأ بـ http:// أو https://", "error");
+            window.BoseAdminUI.showToast("رابط الصورة لازم يبدأ بـ http:// أو https://", "error");
             return;
         }
-        waterfallState[colDef.key].push({ image: trimmed });
+        const link = resolveWaterfallLink(linkText);
+        const entry = link ? { image: trimmed, link } : { image: trimmed };
+        waterfallState[colDef.key].push(entry);
         renderWaterfallColumn(colDef);
+    }
+
+    function fillWaterfallDatalist(colDef) {
+        const e = window.BoseAdminUI.escapeHtml;
+        const datalist = document.getElementById(colDef.datalistId);
+        datalist.innerHTML = allProducts.map((p) => `<option value="${e(p.title)}"></option>`).join("");
     }
 
     function wireWaterfallControls() {
         WATERFALL_COLUMNS.forEach((colDef) => {
+            fillWaterfallDatalist(colDef);
+
             document.getElementById(colDef.urlBtnId).addEventListener("click", () => {
-                const input = document.getElementById(colDef.urlInputId);
-                addWaterfallImage(colDef, input.value);
-                input.value = "";
+                const urlInput = document.getElementById(colDef.urlInputId);
+                const linkInput = document.getElementById(colDef.linkInputId);
+                addWaterfallImage(colDef, urlInput.value, linkInput.value);
+                urlInput.value = "";
+                linkInput.value = "";
             });
             document.getElementById(colDef.urlInputId).addEventListener("keydown", (evt) => {
                 if (evt.key === "Enter") {
@@ -264,8 +310,11 @@
                 const originalLabel = label.textContent;
                 label.textContent = "جاري الرفع...";
                 try {
-                    const url = await window.BoseAdminUI.uploadImageToCloudinary(file);
-                    waterfallState[colDef.key].push({ image: url });
+                    const uploadedUrl = await window.BoseAdminUI.uploadImageToCloudinary(file);
+                    const linkInput = document.getElementById(colDef.linkInputId);
+                    const link = resolveWaterfallLink(linkInput.value);
+                    waterfallState[colDef.key].push(link ? { image: uploadedUrl, link } : { image: uploadedUrl });
+                    linkInput.value = "";
                     renderWaterfallColumn(colDef);
                 } catch (err) {
                     window.BoseAdminUI.showToast("تعذر رفع الصورة", "error");
