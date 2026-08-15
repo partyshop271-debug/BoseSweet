@@ -383,7 +383,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 : '';
 
             return `
-                <div class="bose-suggestion-micro-card" data-slug="${prod.slug}" data-selected-size="${defaultSizeKey || ''}" style="cursor:pointer;" onclick="if(!event.target.closest('.bose-card-size-tabs') && !event.target.closest('.btn-quick-add-to-cart')){ window.location.href='product.html?slug=${encodeURIComponent(prod.slug)}'; }">
+                <!-- 🚨🚨 [إصلاح جذري حرج - نفس كارثة "الحجم" الوهمي]: data-selected-size كانت
+                     بتتحط بـ defaultSizeKey دايماً حتى لو hasMultipleSizes=false (يعني تبويب
+                     الحجم نفسه مخفي وملوش أي ظهور للعميل) - فكانت قيمة الحجم الوهمي (زي
+                     "مثلث" لمنتج "الميني تورت" اللي أحجامه كلها بنفس السعر أصلاً) بتتسرب صامتة
+                     لسطر السلة/فاتورة الواتساب عند الإضافة السريعة من هنا، رغم إن العميل ماشافش
+                     ولا اختار أي حجم خالص. دلوقتي منربطش data-selected-size إلا لو فيه فرق سعر
+                     حقيقي بين الأحجام (hasMultipleSizes=true) بالظبط زي شرط إظهار التبويب نفسه. -->
+                <div class="bose-suggestion-micro-card" data-slug="${prod.slug}" data-selected-size="${hasMultipleSizes ? (defaultSizeKey || '') : ''}" style="cursor:pointer;" onclick="if(!event.target.closest('.bose-card-size-tabs') && !event.target.closest('.btn-quick-add-to-cart')){ window.location.href='product.html?slug=${encodeURIComponent(prod.slug)}'; }">
                     ${discountBadgeHTML}
                     <a href="product.html?slug=${encodeURIComponent(prod.slug)}" class="bose-suggestion-image-wrapper" style="display:block;">
                         <img src="${window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(imgUrl, 300) : imgUrl}" alt="${secureEscape(prod.title)}" loading="lazy" width="300" height="200" onerror="this.src='${defaultLogo}';">

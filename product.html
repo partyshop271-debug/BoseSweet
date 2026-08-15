@@ -685,7 +685,18 @@
             }
 
             let currentProduct = null;
-            let currentSelectedOptions = { flavorName: "كلاسيك", size: null };
+            // 🚨🚨 [إصلاح جذري حرج - كارثة النكهة الغلط في رسالة الواتساب]: كان هنا
+            // flavorName مكتوبة يدوياً وثابتة "كلاسيك" من غير أي علاقة بالمنتج الحقيقي
+            // المفتوح. createCartItem بيدّي الأولوية دايماً لـ opts.flavorName لو موجودة
+            // (`opts.flavorName || opts.cakeType || product.flavorName`)، يعني كل صنف
+            // كان بيتضاف للسلة بنكهة "كلاسيك" ثابتة حتى لو المنتج فعلياً "دسباسيتو
+            // بستاشيو" أو أي نكهة تانية - فرسالة الواتساب اللي بتوصل للفرع كانت بتقول
+            // نكهة غلط تماماً مع كل عملية إضافة سلة تقريباً. مفيش داعي لهذا الحقل هنا
+            // أصلاً: النكهة بتتحدد فعلياً باختيار صفحة منتج مختلفة بالكامل (كل نكهة =
+            // صنف منفصل بصفحته الخاصة في قاعدة البيانات)، فالمصدر الصحيح الوحيد هو
+            // دايماً currentProduct.flavorName - وده بالظبط اللي createCartItem
+            // بيرجعله تلقائياً لو ملقاش قيمة هنا.
+            let currentSelectedOptions = { size: null };
             let currentMasterQuantity = 1;
             let uploadedImageUrls = [];
 
@@ -863,9 +874,23 @@
                 const availableSizes = (currentProduct.prices && typeof currentProduct.prices === 'object')
                     ? Object.keys(currentProduct.prices)
                     : [];
-                currentSelectedOptions.size = (currentProduct.defaultSize && availableSizes.includes(currentProduct.defaultSize))
-                    ? currentProduct.defaultSize
-                    : (availableSizes[0] || null);
+                // 🚨🚨 [إصلاح جذري حرج - كارثة "حجم" وهمي في رسالة الواتساب]: كان بيتحدد
+                // حجم افتراضي (availableSizes[0]) لمجرد إن المنتج عنده كائن prices بعدة
+                // مفاتيح، حتى لو كل المفاتيح دي بنفس السعر بالظبط - يعني مش "أحجام" حقيقية
+                // للعميل يختار بينها أصلاً (بالظبط زي "الميني تورت": عندها prices بمفاتيح
+                // triangle/medium/large لكن الثلاثة بنفس السعر بالظبط لأنها منتج تاني
+                // بيتقسم فعلياً بعدد الأفراد مش بحجم). نفس شرط "hasMultipleSizes" المستخدم
+                // فعلاً في renderSizeTabs (تحت) و core-engine.js/cart.html لإخفاء تبويبات
+                // الحجم لما مفيش فرق سعر حقيقي - نطبّقه هنا كمان قبل ما نحدد
+                // currentSelectedOptions.size، عشان مفيش أي "مثلث"/"طاجن" وهمي يتسرب لفاتورة
+                // الواتساب لمنتج أصلاً معندوش أحجام حقيقية يختار العميل بينها.
+                const distinctSizePricesAtInit = new Set(availableSizes.map(s => currentProduct.prices[s]));
+                const hasRealMultipleSizes = availableSizes.length > 1 && distinctSizePricesAtInit.size > 1;
+                currentSelectedOptions.size = hasRealMultipleSizes
+                    ? ((currentProduct.defaultSize && availableSizes.includes(currentProduct.defaultSize))
+                        ? currentProduct.defaultSize
+                        : (availableSizes[0] || null))
+                    : null;
 
                 renderOfferBadge();
                 renderSizeTabs(availableSizes);
@@ -1214,6 +1239,18 @@
                 if (typeof window.createCartItem === "function") {
                     const cartItemObj = window.createCartItem(currentProduct, currentSelectedOptions, currentMasterQuantity);
                     if (cartItemObj) {
+                        // 🚨🚨 [إصلاح جذري حرج - صورة غلط في رسالة الواتساب]: createCartItem
+                        // بياخد الصورة دايماً من product.images[0] (أول صورة افتراضية جوه
+                        // بيانات المنتج الخام) - لكن applyImageForCurrentSize() (فوق) كانت
+                        // بتغيّر الصورة المعروضة فعلياً على الشاشة (بناءً على الحجم المختار
+                        // من products.size_images) من غير ما تحدّث currentProduct.images
+                        // نفسها. يعني لو العميل بيشوف فعلياً صورة "الحجم العائلي" وضغط إضافة
+                        // للسلة، كانت بتترسل صورة "الحجم الافتراضي/الأول" في فاتورة الواتساب
+                        // بدل الصورة اللي هو شايفها وطلبها فعلياً - وده بالظبط سبب وصول صورة
+                        // مختلفة عن المنتج المطلوب مع كل عملية إضافة تقريباً. دلوقتي بنستخدم
+                        // نفس الصورة المعروضة فعلياً على الشاشة لحظة الضغط على "إضافة للسلة".
+                        const displayedImgUrl = document.getElementById("bose-master-gallery-image")?.dataset?.fullsrc;
+                        if (displayedImgUrl) cartItemObj.image = displayedImgUrl;
                         // 🚨🚨 [إصلاح جذري حرج - اختفاء الحجم الأغلى عند الإضافة من صفحة المنتج]:
                         // كان التحقق من "هل الصنف ده موجود بالفعل في السلة" بيقارن بس
                         // productSlug + flavorName - من غير الحجم المختار خالص. يعني لو
