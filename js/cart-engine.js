@@ -181,34 +181,17 @@ function renderBoseCartPage(storeData) {
                     if (cd.persons && parseInt(cd.persons, 10) > 0) specs.push(`<span><strong>عدد الأفراد:</strong> ${parseInt(cd.persons, 10)} فرد</span>`);
                     if (cd.printingType && cd.printingType !== "none") specs.push(`<span><strong>الطباعة:</strong> ${cd.printingType === 'edible' ? 'صورة صالحة للأكل' : 'صورة مجسمة غير صالحة للأكل'}</span>`);
                     if (cd.customMessage && cd.customMessage.trim() !== "") specs.push(`<span><strong>الرسالة المكتوبة:</strong> "${esc(cd.customMessage.trim())}"</span>`);
-                    // 🛡️ [إصلاح - تصنيف غلط لحقل الملاحظات]: حقل الملاحظات في صفحة "الطلب
-                    // السريع" (cake-quick-order.html) عنوانه صراحة "أي ملاحظات أو مشاكل صحية؟"
-                    // وبيقبل طلبات عادية زي "سكر خفيف" مش بس حساسيات فعلية - لكنه كان بيتخزن
-                    // وبيتعرض في كل مكان (السلة/الواتساب/لوحة التحكم) تحت تسمية "ملاحظة حساسية"
-                    // حصراً، وده ممكن يوهم الفرع إنها حساسية طبية لازم تتاخد بجدية استثنائية،
-                    // أو العكس يقلل من قيمة طلب فعلي مش حساسية. التسمية دلوقتي أعم وتغطي الحالتين.
-                    if (cd.allergyNote && cd.allergyNote.trim() !== "") specs.push(`<span style="color:#FF91A4;"><strong>⚠️ ملاحظات وحساسية:</strong> ${esc(cd.allergyNote.trim())}</span>`);
+                    if (cd.allergyNote && cd.allergyNote.trim() !== "") specs.push(`<span style="color:#FF91A4;"><strong>ملاحظة الحساسية:</strong> ${esc(cd.allergyNote.trim())}</span>`);
                 }
                 
                 if (isFlowerBespoke) {
-                    // 🚨 [إصلاح جذري - أسماء حقول قديمة ميتة]: الأسطر دي كانت بتقرا
-                    // cd.moneyAmount / cd.chocolatePieces / cd.wrappingType - أسماء
-                    // حقول قديمة اتغيرت فعلياً في window.createCartItem لـ cashAmount
-                    // و hasChocolate+chocolateBudget، وcd.wrappingType مش بيتخزن أصلاً
-                    // في customDetails. النتيجة كانت إن الكاش المدمج وميزانية الشوكولاتة
-                    // (رغم إنهم بيتحسبوا صح في السعر) كانوا بيختفوا تماماً من عرض تفاصيل
-                    // الصنف في صفحة السلة - العميل مكانش شايف اللي هو داخلهم فعلياً في
-                    // البوكيه، ومفيش سطر تغليف كان هيظهر خالص لأن الحقل نفسه مش موجود.
-                    // كمان أضفنا هنا شريط الستان المطبوع وعدد الصور الشخصية اللي كانوا
-                    // بيظهروا في فاتورة الواتساب بس ومش في صفحة السلة نفسها.
                     if (cd.isGift) specs.push(`<span>🎁 <strong>هدية لحد تاني</strong></span>`);
                     if (cd.moodLabel) specs.push(`<span><strong>الإحساس المطلوب:</strong> ${esc(cd.moodLabel)}</span>`);
                     if (cd.flowerType && cd.flowerType !== "none") specs.push(`<span><strong>نوع الورد:</strong> ${cd.flowerType === 'natural' ? 'طبيعي نضر' : cd.flowerType === 'artificial' ? 'صناعي فاخر' : 'ستان مصنوع بحب'}</span>`);
                     if (cd.flowerCount && parseInt(cd.flowerCount, 10) > 0) specs.push(`<span><strong>عدد الورد:</strong> ${parseInt(cd.flowerCount, 10)} وردة</span>`);
-                    if (cd.cashAmount && parseInt(cd.cashAmount, 10) > 0) specs.push(`<span><strong>الكاش المدمج:</strong> +${parseInt(cd.cashAmount, 10)} جنيه</span>`);
-                    if (cd.hasChocolate && cd.chocolateBudget && parseInt(cd.chocolateBudget, 10) > 0) specs.push(`<span><strong>ميزانية الشوكولاتة:</strong> +${parseInt(cd.chocolateBudget, 10)} جنيه</span>`);
-                    if (cd.hasSatinRibbon && cd.satinRibbonText && cd.satinRibbonText.trim() !== "") specs.push(`<span><strong>شريط ستان مطبوع:</strong> "${esc(cd.satinRibbonText.trim())}"</span>`);
-                    if (cd.photoCount && parseInt(cd.photoCount, 10) > 0) specs.push(`<span><strong>صور شخصية مطبوعة:</strong> ${parseInt(cd.photoCount, 10)} صورة</span>`);
+                    if (cd.moneyAmount && parseInt(cd.moneyAmount, 10) > 0) specs.push(`<span><strong>الكاش المدمج:</strong> +${parseInt(cd.moneyAmount, 10)} جنيه</span>`);
+                    if (cd.chocolatePieces && parseInt(cd.chocolatePieces, 10) > 0) specs.push(`<span><strong>قطع الشوكولاتة:</strong> ${parseInt(cd.chocolatePieces, 10)} قطعة</span>`);
+                    if (cd.wrappingType && cd.wrappingType !== "none") specs.push(`<span><strong>التغليف:</strong> ${esc(cd.wrappingType)}</span>`);
                     if (cd.giftCardText && cd.giftCardText.trim() !== "") specs.push(`<span><strong>كارت الإهداء:</strong> "${esc(cd.giftCardText.trim())}"</span>`);
                 }
 
@@ -225,18 +208,8 @@ function renderBoseCartPage(storeData) {
                 }
             }
 
-            // 🛡️ [إصلاح - خلط اسم النكهة في صفحة السلة]: كان الشرط هنا بيجبر أي صنف
-            // "تورت مخصص" أو "بوكيه مخصص" على تجاهل flavorName الصحيح والواضح اللي
-            // اتحط له وقت الإنشاء (زي "تصميم خاص حسب الطلب" أو "بوكيه مخصص (نوع الورد)")
-            // ويدوّر بدله على منتج بعنوان toort-custom-master/flowers-master في قاعدة
-            // البيانات - وهو صف تقني بس (نقطة دخول للمحاكي) مالوش نكهة حقيقية أصلاً،
-            // فكان بيظهر للعميل "جاهز وفريش" أو قيمة فاضية غريبة تحت التورت/البوكيه
-            // المخصص بتاعه في صفحة السلة، رغم إن رسالة الواتساب نفسها كانت بتظهر صح
-            // (لأنها بتقرا item.flavorName مباشرة من غير المرور على المنطق ده). دلوقتي
-            // بنستخدم flavorName الأصلي الصحيح دايماً، وبنلجأ للبحث في قاعدة البيانات
-            // بس لو هو فعلاً فاضي/غير صالح - نفس المعيار المستخدم في المنتجات العادية.
             let cleanFlavorName = item.flavorName;
-            if (!cleanFlavorName || cleanFlavorName === "افتراضي" || cleanFlavorName === "none") {
+            if (!cleanFlavorName || cleanFlavorName === "افتراضي" || cleanFlavorName === "none" || isCakeBespoke || isFlowerBespoke) {
                 if (storeData && storeData.products) {
                     const matchedDbProd = storeData.products.find(p => p.slug === item.productSlug);
                     cleanFlavorName = matchedDbProd ? matchedDbProd.flavorName : "جاهز وفريش";
@@ -290,7 +263,7 @@ function renderBoseCartPage(storeData) {
                     
                     <div style="text-align: left; font-family: 'Cairo';">
                         <span class="qty-multiplication-label" style="display: ${item.quantity > 1 ? 'block' : 'none'}; font-size: 12px; color: #111111; opacity: 0.6; direction: ltr;">${finalProductPrice.toFixed(2)} × ${item.quantity}</span>
-                        <div class="cart-item-total-price" style="font-size: 18px; font-weight: 700; color: #FF91A4; white-space: nowrap;">${totalItemCost.toFixed(2)} <span style="font-size: 12px; font-weight: 700; color: #111111;">EGP</span></div>
+                        <div class="cart-item-total-price" style="font-size: 18px; font-weight: 700; color: #FF91A4; white-space: nowrap;">${totalItemCost.toFixed(2)} <span style="font-size: 12px; font-weight: 700; color: #111111;">جنيه</span></div>
                     </div>
                 </div>
             `;
@@ -314,7 +287,7 @@ function renderBoseCartPage(storeData) {
             multiLabel.style.display = item.quantity > 1 ? "block" : "none";
         }
         if (totalDisplay) {
-            totalDisplay.innerHTML = `${totalItemCost.toFixed(2)} <span style="font-size: 12px; font-weight: 700; color: #111111;">EGP</span>`;
+            totalDisplay.innerHTML = `${totalItemCost.toFixed(2)} <span style="font-size: 12px; font-weight: 700; color: #111111;">جنيه</span>`;
         }
     }
     
@@ -391,14 +364,14 @@ function updateCartSummary(cart, storeData) {
     // نفس المعادلة محلياً هنا (كانت بتفرق فعلياً عن checkout عند أي تعديل مستقبلي).
     const invoice = window.calculateBoseInvoice(cart, storeData, 0);
     
-    if (subtotalDisplay) subtotalDisplay.textContent = invoice.subtotal.toFixed(2) + " EGP";
+    if (subtotalDisplay) subtotalDisplay.textContent = invoice.subtotal.toFixed(2) + " جنيه";
     if (itemsCountDisplay) itemsCountDisplay.textContent = invoice.itemsCount;
     
     const discountDisplay = document.getElementById("summary-discount");
-    if (discountDisplay) discountDisplay.textContent = invoice.discount.toFixed(2) + " EGP";
+    if (discountDisplay) discountDisplay.textContent = invoice.discount.toFixed(2) + " جنيه";
     
     if (grandTotalDisplay) {
-        grandTotalDisplay.textContent = invoice.grandTotal + " EGP";
+        grandTotalDisplay.textContent = invoice.grandTotal + " جنيه";
     }
     
     const promoInput = document.getElementById("coupon-input");
@@ -577,32 +550,7 @@ function renderBoseCheckoutPage(storeData) {
     if (submitOrderBtn) {
         submitOrderBtn.onclick = (e) => {
             e.preventDefault();
-            // 🛡️ [إصلاح - منع طلبات مكررة]: مفيش أي حماية قبل كده من الضغط/التاب
-            // المزدوج على زرار التأكيد (شائع جداً على الموبايل أو مع نت بطيء) -
-            // كان كل ضغطة زيادة بتنفذ processFinalBoseOrder من جديد بالكامل: بتفتح
-            // تاب واتساب تاني برقم طلب مختلف وبتسجل صف طلب مكرر كامل في قاعدة
-            // البيانات. دلوقتي بنعطل الزرار فوراً أول ما يتضغط عشان أي ضغطة زيادة
-            // متعملش حاجة، حتى لو فورم فيه أخطاء تحقق هيتفعّل تاني تلقائياً.
-            if (submitOrderBtn.dataset.submitting === "true") return;
-            submitOrderBtn.dataset.submitting = "true";
-            const originalBtnContent = submitOrderBtn.innerHTML;
-            submitOrderBtn.disabled = true;
-            submitOrderBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري تأكيد الحجز...';
-            const reEnableSubmitBtn = () => {
-                submitOrderBtn.dataset.submitting = "false";
-                submitOrderBtn.disabled = false;
-                submitOrderBtn.innerHTML = originalBtnContent;
-            };
-            try {
-                const hadValidationErrors = processFinalBoseOrder(cart, storeData, currentShippingMethod, selectedShippingFee, payFullSelected);
-                // لو الفورم فيه أخطاء تحقق، processFinalBoseOrder بترجع true وبتوقف
-                // من غير ما تكمل الطلب - لازم نرجّع الزرار شغال فوراً عشان العميلة
-                // تقدر تصلح الأخطاء وتضغط تاني، مش تفضل الزرار معطل للأبد.
-                if (hadValidationErrors) reEnableSubmitBtn();
-            } catch (err) {
-                reEnableSubmitBtn();
-                throw err;
-            }
+            processFinalBoseOrder(cart, storeData, currentShippingMethod, selectedShippingFee, payFullSelected);
         };
     }
 }
@@ -662,7 +610,7 @@ function updateBoseDepositPaymentBox(storeData, grandTotal, method, payFull) {
     if (payChoiceRow) payChoiceRow.style.display = method === "delivery" ? "none" : "flex";
 
     const { depositAmount, remainingAmount } = calculateBoseDepositAmount(grandTotal, method, payFull);
-    amountEl.textContent = depositAmount.toFixed(2) + " EGP";
+    amountEl.textContent = depositAmount.toFixed(2) + " جنيه";
 
     if (method === "delivery") {
         if (labelEl) labelEl.textContent = "المبلغ الكامل المطلوب دفعه الآن لتأكيد الحجز (توصيل):";
@@ -673,7 +621,7 @@ function updateBoseDepositPaymentBox(storeData, grandTotal, method, payFull) {
     } else {
         if (labelEl) labelEl.textContent = "عربون تأكيد الحجز المطلوب الآن (50%):";
         if (remainingRow) remainingRow.style.display = "flex";
-        if (remainingAmountEl) remainingAmountEl.textContent = remainingAmount.toFixed(2) + " EGP";
+        if (remainingAmountEl) remainingAmountEl.textContent = remainingAmount.toFixed(2) + " جنيه";
     }
 
     if (phoneEl) phoneEl.textContent = storeData?.store?.phone || "01097238441";
@@ -687,13 +635,13 @@ function recalculateCheckoutInvoice(cart, storeData, shippingFee, method, payFul
     // 🧮 [توحيد حسابي]: نفس دالة السلة بالظبط، فرق الشحن بس بيتمرر كباراميتر
     const invoice = window.calculateBoseInvoice(cart, storeData, shippingFee);
 
-    if (subtotalDisplay) subtotalDisplay.textContent = invoice.subtotal.toFixed(2) + " EGP";
+    if (subtotalDisplay) subtotalDisplay.textContent = invoice.subtotal.toFixed(2) + " جنيه";
     if (shippingDisplay) {
-        shippingDisplay.textContent = invoice.shippingFee === 0 ? "مجاناً" : invoice.shippingFee.toFixed(2) + " EGP";
+        shippingDisplay.textContent = invoice.shippingFee === 0 ? "مجاناً" : invoice.shippingFee.toFixed(2) + " جنيه";
     }
     
     if (grandTotalDisplay) {
-        grandTotalDisplay.textContent = invoice.grandTotal + " EGP";
+        grandTotalDisplay.textContent = invoice.grandTotal + " جنيه";
     }
 
     updateBoseDepositPaymentBox(storeData, invoice.grandTotal, method || "pickup", payFull);
@@ -801,10 +749,9 @@ function processFinalBoseOrder(cart, storeData, method, shippingFee, payFull) {
     }
 
     // 🚦 بعد تجميع كل الفحوصات: لو فيه أي خطأ نعرضهم كلهم دفعة واحدة ونوقف هنا
-    // (بترجع true عشان اللي بينادي الدالة يعرف يرجّع الزرار شغال تاني)
     if (validationErrors.length > 0) {
         boseShowAllCheckoutErrors(validationErrors, firstInvalidInput);
-        return true;
+        return;
     }
 
     // 🧮 [توحيد حسابي]: نفس المعادلة المستخدمة بالسلة وبصفحة الشحن بالظبط
@@ -908,84 +855,87 @@ function processFinalBoseOrder(cart, storeData, method, shippingFee, payFull) {
     }
 }
 
+/**
+ * 🏷️ [تحديد وحدة البيع الحقيقية لكل صنف]: كل تصنيف منتجات عندنا بيتباع بوحدة
+ * قياس مختلفة (دستة/طاجن/قطعة/كب) ومكتوبة أصلاً في عنوان أو نكهة المنتج في
+ * حالات، وناقصة في حالات تانية. الدالة دي بترجع اسم الوحدة الصريح بس لما يكون
+ * فعلاً ناقص من عنوان/نكهة المنتج، عشان سطر الصنف في رسالة الواتساب يوضح
+ * بالظبط "عايز إيه بأنهي كمية" من غير أي لبس أو تخمين من الفرع وقت التنفيذ.
+ */
+function getBoseItemUnitLabel(item) {
+    const slug = item.productSlug || "";
+    if (item.type === "custom-cake") return "تورتة مخصصة (تصميم خاص)";
+    if (item.type === "custom-flower") return "بوكيه ورد مخصص (تصميم خاص)";
+    if (item.type === "mini-cake" || slug.startsWith("mini-cake")) return "تورتة ميني كاملة";
+    if (slug.startsWith("despacito-")) return "طاجن ديسباسيتو";
+    if (slug.startsWith("qashtota-")) return "طاجن قشطوطة";
+    if (slug.startsWith("cinabon-") && !slug.startsWith("promo-")) return "قطعة سينابون";
+    if (slug.startsWith("donuts-") && !slug.startsWith("promo-")) return "قطعة دوناتس";
+    if (slug.startsWith("happiness-cups-")) return "كب سعادة";
+    if (slug.startsWith("gateaux-")) return "دستة جاتوه";
+    // ملحوظة: الكب كيك والريدڤيلڤت والبوكسات الترويجية وبوكس الروقان مالهمش
+    // داعي لوحدة إضافية هنا، لأن الوحدة أصلاً مكتوبة بوضوح جوه اسم المنتج أو
+    // النكهة بتاعته (مثال: "دستة ميكس"، "ريدڤيلڤت - طاجن الروقان"، "بوكس 3 طاجن...").
+    return null;
+}
+
 function buildBoseFormattedWhatsappInvoice(order) {
-    let msg = `✨ *فاتورة حجز طلبية فاخرة - حلويات بوسي (BoseSweets)* ✨\n`;
+    // 🛡️ [إعادة هيكلة كاملة]: الرسالة دي مش فاتورة بتتبعت للعميل - هي أمر تنفيذ
+    // بيروح لخدمة المبيعات/الفرع علشان تجهّز الطلب بالظبط زي ما اتطلب. لازم
+    // تبقى واضحة وتفصيلية 100% في الصنف والنوع والكمية، وخالية تماماً من أي
+    // كلمة إنجليزي أو أي نص موجّه للعميل (ترحيب/شكر/تعليمات) مالوش لازمة هنا.
+    let msg = `📋 *طلب جديد - حلويات بوسي*\n`;
     msg += `--------------------------------------------------\n`;
-    msg += `🧾 *رقم المعاملة:* ${order.orderId}\n`;
-    msg += `👤 *العميل:* ${order.customerName}\n`;
-    msg += `📞 *رقم الاتصال:* ${order.phone1}\n`;
-    msg += `🚗 *مسار الاستلام:* ${order.deliveryMethod}\n`;
-    msg += `📍 *التفاصيل الجغرافية:* ${order.address}\n`;
-    msg += `📅 *موعد الاستلام:* ${order.scheduledDate} الساعة ${order.scheduledTime}\n`;
+    msg += `🧾 *رقم الطلب:* ${order.orderId}\n`;
+    msg += `👤 *اسم العميل:* ${order.customerName}\n`;
+    msg += `📞 *رقم الهاتف:* ${order.phone1}\n`;
+    msg += `🚗 *طريقة الاستلام:* ${order.deliveryMethod}\n`;
+    msg += `📍 *العنوان:* ${order.address}\n`;
+    msg += `📅 *الموعد المطلوب:* ${order.scheduledDate} الساعة ${order.scheduledTime}\n`;
     msg += `--------------------------------------------------\n`;
-    msg += `📦 *تفاصيل الأصناف المخصصة:* \n\n`;
+    msg += `📦 *الأصناف المطلوبة:*\n\n`;
 
     order.items.forEach((item, idx) => {
         const isCakeBespoke = item.type === "custom-cake" || item.type === "mini-cake" || item.productSlug === "toort-custom-master" || item.productSlug === "mini-cake-two-person";
-        msg += `${idx + 1}. 🌟 *${item.title}* (${item.flavorName || 'جاهز وفريش'})\n`;
-        // 🛡️ [إصلاح حرج - رسالة واتساب بتقول "1 قطعة" بدل الدستة/العبوة الحقيقية]:
-        // item.quantity هو عدد المرات اللي طلب فيها العميل نفس الصنف ده بالظبط (دستة
-        // كاملة، تورتة، بوكيه... إلخ) - مش عدد قطع فردية جوه الصنف الواحد. النوع
-        // الحقيقي للصنف (دستة/تورتة/بوكيه/جاتوه/مثلث/طاجن...) موجود بالفعل جوه عنوان
-        // المنتج نفسه (item.title) فوق. 🚨 [إصلاح إضافي]: كلمة "وحدة/وحدات" هنا كانت
-        // بتوهم إن في نوع منتج اسمه "وحدة" أصلاً - مفيش حاجة زي كده في قائمة المنتجات
-        // (اللي فيها كبات/تورت/بوكيهات/جاتوهات/مثلثات/طواجن بس). النص الجديد بيستخدم
-        // "الكمية" و"الواحد" بدل "الوحدة/الوحدات" - كلمتين عامتين بيوضحوا العدد
-        // والسعر لكل نسخة من غير ما يخترعوا نوع منتج غير موجود عندنا.
-        msg += `   *الكمية المطلوبة:* ×${item.quantity}\n`;
-        msg += `   *سعر الواحد الشامل:* ${parseFloat(item.finalPrice).toFixed(2)} EGP\n`;
+        const unitLabel = getBoseItemUnitLabel(item);
+        // 🎯 [صياغة صريحة للصنف والكمية]: بدل ما يتقال "عدد الوحدات: ×2" من غير
+        // ما يحدد الوحدة دي إيه، السطر دلوقتي بيقول بوضوح "المطلوب: طاجن قشطوطة
+        // - النكهة × الكمية" - نفس بالظبط الوحدة اللي بيتباع بيها المنتج فعلياً.
+        const itemLabel = unitLabel ? `${unitLabel} - ${item.title}` : item.title;
+        msg += `${idx + 1}. *المطلوب:* ${itemLabel} (${item.flavorName || 'جاهز وفريش'}) × ${item.quantity}\n`;
+        msg += `   *سعر الوحدة:* ${parseFloat(item.finalPrice).toFixed(2)} جنيه\n`;
         
         if (item.customDetails) {
             const cd = item.customDetails;
             if (item.type === "custom-cake" || item.type === "mini-cake") {
-                if (cd.isGift) msg += `   • 🎁 هدية لحد تاني\n`;
+                if (cd.isGift) msg += `   • هدية لحد تاني\n`;
                 if (cd.occasionLabel && cd.occasionLabel.trim() !== "") msg += `   • المناسبة: ${cd.occasionLabel.trim()}\n`;
                 if (cd.cakeType && cd.cakeType !== "none" && cd.cakeType !== "افتراضي") msg += `   • طعم الكيك: ${cd.cakeType}\n`;
                 if (cd.shape && cd.shape !== "none") msg += `   • الشكل: ${cd.shape}\n`;
                 if (cd.persons && cd.persons > 0) msg += `   • الأفراد: لـ ${cd.persons} فرد\n`;
                 if (cd.printingType && cd.printingType !== "none") msg += `   • طباعة صورة: ${cd.printingType === 'edible' ? 'قابلة للأكل' : 'غير قابلة للأكل'}\n`;
                 if (cd.customMessage && cd.customMessage.trim() !== "") msg += `   • النص: "${cd.customMessage}"\n`;
-                if (cd.allergyNote && cd.allergyNote.trim() !== "") msg += `   • ⚠️ ملاحظات وحساسية: ${cd.allergyNote.trim()}\n`;
+                if (cd.allergyNote && cd.allergyNote.trim() !== "") msg += `   • ملاحظة حساسية: ${cd.allergyNote.trim()}\n`;
                 if (cd.hasGiftCard && cd.giftCardText && cd.giftCardText.trim() !== "") msg += `   • كارت إهداء: "${cd.giftCardText.trim()}"\n`;
-                // 🖼️ [تمييز الصور - إصلاح جذري]: قبل كده كل الصور المرفوعة كانت
-                // بتظهر في قايمة واحدة مجهولة "صورة مرجعية 1 / 2" من غير أي توضيح
-                // أنهي صورة للطباعة فعلياً على التورتة وأنهي صورة هي بس مصدر إلهام
-                // للتصميم - ده كان ممكن يخلط على الفرع ويطبع الصورة الغلط. دلوقتي
-                // كل صورة بيها سطر واضح بيقول غرضها بالظبط.
                 if (cd.printImageUrl) msg += `   🖨️ *الصورة المطلوب طباعتها على التورتة:* ${cd.printImageUrl}\n`;
                 if (cd.replicaImageUrl) msg += `   🎨 *صورة التصميم اللي عايزين نقرب شكل التورتة منها:* ${cd.replicaImageUrl}\n`;
             }
             if (item.type === "custom-flower") {
-                if (cd.isGift) msg += `   • 🎁 هدية لحد تاني\n`;
+                if (cd.isGift) msg += `   • هدية لحد تاني\n`;
                 if (cd.moodLabel) msg += `   • الإحساس المطلوب: ${cd.moodLabel}\n`;
-                // 🧾 [إصلاح - المرحلة 3]: cd.moneyAmount كان اسم حقل قديم بقى غير موجود
-                // خالص بعد توحيد بنية customDetails مع window.createCartItem (الاسم
-                // الصحيح دلوقتي هو cashAmount)، فكان الكاش مش هيظهر أبداً في فاتورة
-                // الواتساب رغم إن العميل دفعه فعلاً. بالإضافة لإضافة تفاصيل شريط
-                // الستان وميزانية الشوكولاتة وعدد الصور المطبوعة اللي كانت ناقصة.
                 if (cd.flowerType && cd.flowerType !== "none") msg += `   • نوع الورد: ${cd.flowerType}\n`;
                 if (cd.flowerCount && cd.flowerCount > 0) msg += `   • التعداد: ${cd.flowerCount} وردة\n`;
                 if (cd.hasSatinRibbon && cd.satinRibbonText && cd.satinRibbonText.trim() !== "") msg += `   • شريط ستان مطبوع حرارياً: "${cd.satinRibbonText}"\n`;
                 if (cd.photoCount && cd.photoCount > 0) msg += `   • صور شخصية مطبوعة: ${cd.photoCount} صورة\n`;
-                if (cd.cashAmount && cd.cashAmount > 0) msg += `   • الكاش المدمج جوه البوكيه: +${cd.cashAmount} EGP\n`;
-                if (cd.hasChocolate && cd.chocolateBudget && cd.chocolateBudget > 0) msg += `   • ميزانية الشوكولاتة الفاخرة: +${cd.chocolateBudget} EGP\n`;
+                if (cd.cashAmount && cd.cashAmount > 0) msg += `   • الكاش المدمج جوه البوكيه: +${cd.cashAmount} جنيه\n`;
+                if (cd.hasChocolate && cd.chocolateBudget && cd.chocolateBudget > 0) msg += `   • ميزانية الشوكولاتة الفاخرة: +${cd.chocolateBudget} جنيه\n`;
                 if (cd.hasGiftCard && cd.giftCardText && cd.giftCardText.trim() !== "") msg += `   • كارت الإهداء: "${cd.giftCardText}"\n`;
             }
-            // 👑 [إصلاح جذري - كارثة الأحجام]: لازم الحجم يظهر في فاتورة الواتساب اللي
-            // بيتفذ منها الطلب فعلياً في الفرع - قبل كده الحجم مكنش موجود هنا خالص،
-            // وكان ممكن يتنفذ الطلب بحجم غلط تماماً عن اللي دفع فيه العميل فعلاً.
             if (item.type !== "custom-cake" && item.type !== "mini-cake" && item.type !== "custom-flower" && cd.sizeLabel) {
                 msg += `   • *الحجم المطلوب:* ${cd.sizeLabel}\n`;
             }
         }
 
-        // 🛡️ [إصلاح حرج]: أي صورة رفعها العميل (بوكيه مرجعي مثلاً) كانت بتتحفظ
-        // كرابط Cloudinary حقيقي جوه item.image لكن ما كانتش بتوصل خالص لنص
-        // فاتورة الواتساب. دلوقتي أي رابط Cloudinary حقيقي (مش لوجو الموقع
-        // الافتراضي) بيظهر كسطر واضح قابل للفتح المباشر من واتساب - ما عدا
-        // أصناف التورت المخصص، لأن صورها الاثنتين (الطباعة/التصميم المرجعي)
-        // اتوضحت بالفعل بسطرين منفصلين فوق، وتكرارها هنا هيرجع نفس اللخبطة
-        // القديمة (صورة "مرجعية" مجهولة الغرض).
         const refImageUrls = [];
         if (!isCakeBespoke) {
             if (item.image && typeof item.image === "string" && item.image.startsWith("http") && !item.image.includes("logo_igggsb")) {
@@ -1004,39 +954,18 @@ function buildBoseFormattedWhatsappInvoice(order) {
 
     msg += `📝 *ملاحظات:* ${order.notes}\n`;
     msg += `--------------------------------------------------\n`;
-    // 🧾 [إصلاح - اختفاء تفاصيل الحساب المالي]: الرسالة كانت بتقفز مباشرة من قايمة
-    // المنتجات لـ"المجموع النهائي" من غير أي سطر يوضح إجمالي المنتجات قبل الخصم،
-    // ولا مصاريف التوصيل، ولا قيمة/كود أي كوبون خصم اتطبق - رغم إن كل القيم دي
-    // كانت محسوبة ومحفوظة فعلياً جوه بيانات الطلب (order.subtotal/discountAmount/
-    // couponCode/shippingFee) ومش بتوصل للفرع خالص. ده كان بيخلي فريق المبيعات
-    // مش قادر يتأكد ليه المجموع أقل من المتوقع (خصم كوبون؟ غلطة حسابية؟)، ولا
-    // يعرف يتابع استخدام أكواد الخصم من واقع رسايل الطلبات نفسها.
-    if (order.subtotal !== undefined && order.subtotal !== null) {
-        msg += `🧮 *إجمالي المنتجات قبل الخصم:* ${order.subtotal} EGP\n`;
-    }
-    if (order.discountAmount && parseFloat(order.discountAmount) > 0) {
-        msg += `🏷️ *خصم كوبون${order.couponCode ? ` (${order.couponCode})` : ''}:* -${order.discountAmount} EGP\n`;
-    }
-    if (order.shippingFee && parseFloat(order.shippingFee) > 0) {
-        msg += `🚚 *مصاريف التوصيل:* ${order.shippingFee} EGP\n`;
-    }
-    msg += `👑 *المجموع المالي النهائي:* ${order.grandTotal} EGP 👑\n`;
+    msg += `💰 *الإجمالي:* ${order.grandTotal} جنيه\n`;
     // 💵 [عربون/دفع مقدم]: توضيح صريح لطريقة ووقت الدفع - استلام = عربون 50%
     // والباقي عند الاستلام، توصيل = كامل المبلغ مقدماً وقت تأكيد الحجز.
     if (order.depositAmount !== undefined) {
         if (order.remainingAmount > 0) {
-            msg += `💳 *عربون تأكيد الحجز المطلوب الآن:* ${order.depositAmount} EGP (كاش أو InstaPay على ${order.paymentPhone})\n`;
-            msg += `🧾 *الباقي عند الاستلام:* ${order.remainingAmount} EGP\n`;
+            msg += `💳 *عربون تأكيد الحجز المطلوب الآن:* ${order.depositAmount} جنيه (كاش أو انستاباي على ${order.paymentPhone})\n`;
+            msg += `🧾 *الباقي عند الاستلام:* ${order.remainingAmount} جنيه\n`;
         } else {
             const fullReason = order.deliveryMethod === "توصيل للمنزل" ? "توصيل" : "دفع كامل باختيارها";
-            msg += `💳 *المبلغ الكامل المطلوب الآن (${fullReason}):* ${order.depositAmount} EGP (كاش أو InstaPay على ${order.paymentPhone})\n`;
+            msg += `💳 *المبلغ الكامل المطلوب الآن (${fullReason}):* ${order.depositAmount} جنيه (كاش أو انستاباي على ${order.paymentPhone})\n`;
         }
-        msg += `📸 من فضلك ابعتي لقطة شاشة التحويل هنا فور إتمامه وهنأكد الحجز فوراً.\n`;
     }
-    // 🛡️ [إصلاح - رسالة تشغيلية بحتة للمبيعات]: الرسالة دي موجّهة لفريق المبيعات
-    // لتنفيذ الطلب، مش رسالة تُقرأ من العميل - فمفيش أي داعي لأي سطر شكر/تقدير
-    // (كان هنا سطر "🤝 شكرًا لاختياركم..." اتشال بالكامل). دور الرسالة الوحيد هو
-    // تسليم كل تفاصيل وبيانات العميل والطلب بدقة، وخلاص.
 
     return msg;
 }
@@ -1111,12 +1040,12 @@ function renderBoseSuccessPage(storeData) {
         const depRemainingRow = document.getElementById("bose-deposit-remaining-row");
         const depRemainingEl = document.getElementById("bose-deposit-remaining-amount");
         const depPhoneEl = document.getElementById("bose-deposit-phone-number");
-        if (depAmountEl) depAmountEl.textContent = order.depositAmount + " EGP";
+        if (depAmountEl) depAmountEl.textContent = order.depositAmount + " جنيه";
         if (depPhoneEl) depPhoneEl.textContent = order.paymentPhone || "01097238441";
         if (order.remainingAmount > 0) {
             if (depLabelEl) depLabelEl.textContent = "عربون تأكيد الحجز المطلوب الآن (50%):";
             if (depRemainingRow) depRemainingRow.style.display = "flex";
-            if (depRemainingEl) depRemainingEl.textContent = order.remainingAmount + " EGP";
+            if (depRemainingEl) depRemainingEl.textContent = order.remainingAmount + " جنيه";
         } else {
             const fullReason = order.deliveryMethod === "توصيل للمنزل" ? "توصيل" : "دفع كامل باختيارها";
             if (depLabelEl) depLabelEl.textContent = `المبلغ الكامل المطلوب الآن (${fullReason}):`;
@@ -1145,7 +1074,7 @@ function renderBoseSuccessPage(storeData) {
                 return `
                 <div class="receipt-item-node">
                     <span class="receipt-item-name">${escR(item.title)} <span style="font-weight:400; opacity:0.6; font-size:0.8rem;">(×${item.quantity})</span><span style="display:block; font-size:0.75rem; font-weight:700; color:var(--bose-pink); margin-top:2px;">${escR(item.flavorName || 'جاهز وفريش')}</span></span>
-                    <span class="receipt-item-price">${(item.finalPrice * item.quantity).toFixed(2)} EGP</span>
+                    <span class="receipt-item-price">${(item.finalPrice * item.quantity).toFixed(2)} جنيه</span>
                 </div>
             `;
             }).join("");
@@ -1154,7 +1083,7 @@ function renderBoseSuccessPage(storeData) {
         }
     }
 
-    if (grandTotalDisplay) grandTotalDisplay.textContent = (order.grandTotal || 0) + " EGP";
+    if (grandTotalDisplay) grandTotalDisplay.textContent = (order.grandTotal || 0) + " جنيه";
 
     let whatsappUrl = "";
     if (whatsappBtn) {
