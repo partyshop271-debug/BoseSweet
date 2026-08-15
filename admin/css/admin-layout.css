@@ -351,17 +351,6 @@
     white-space: nowrap;
 }
 
-.adm-sortable-th {
-    cursor: pointer;
-    user-select: none;
-    transition: var(--adm-transition);
-}
-.adm-sortable-th i { font-size: 0.7rem; margin-inline-start: 4px; opacity: 0.5; }
-.adm-sortable-th:hover { color: var(--adm-text-primary); }
-.adm-sortable-th:hover i { opacity: 0.9; }
-.adm-sortable-th-active { color: var(--adm-pink); }
-.adm-sortable-th-active i { opacity: 1; color: var(--adm-pink); }
-
 .adm-table tbody td {
     padding: 14px;
     border-bottom: 1px solid var(--adm-border-soft);
@@ -666,11 +655,11 @@ html.adm-ready .adm-auth-gate { display: none; }
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
+    gap: 10px;
     padding: 10px 14px;
     background: var(--adm-bg-input);
     border-radius: var(--adm-radius-sm);
     font-size: 0.85rem;
-    gap: 10px;
 }
 
 .adm-order-item-meta {
@@ -680,22 +669,32 @@ html.adm-ready .adm-auth-gate { display: none; }
     margin-top: 2px;
 }
 
-/* 🚨 [إصلاح - تفاصيل الطلب المخصص]: صندوق صغير بيعرض كل حقول custom_details
-   (نص الكتابة، الحساسية، الشكل، تفاصيل الورد...) جوه سطر المنتج في مودال الطلب،
-   بدل ما تفضل مخفية تماماً عن لوحة التحكم. */
 .adm-order-item-custom-details {
-    margin-top: 6px;
-    padding: 8px 10px;
-    background: var(--adm-bg-surface);
-    border: 1px dashed var(--adm-border);
-    border-radius: var(--adm-radius-sm);
-    font-size: 0.78rem;
-    line-height: 1.7;
-    color: var(--adm-text-secondary);
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--adm-border-soft);
 }
 
-.adm-order-item-custom-details a {
-    color: var(--adm-pink);
+.adm-order-item-custom-details ul {
+    margin: 0;
+    padding: 0 18px 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    font-size: 0.78rem;
+    color: var(--adm-text-body, #333);
+}
+
+.adm-order-item-images {
+    margin-top: 6px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 0.78rem;
+}
+
+.adm-order-item-images a {
+    color: var(--adm-primary, #FF91A4);
     text-decoration: underline;
 }
 
