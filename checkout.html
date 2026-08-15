@@ -327,16 +327,16 @@
                 <div class="summary-pricing-table" style="margin: 0; padding: 0; border: none; display: flex; flex-direction: column; gap: 14px;">
                     <div class="pricing-row-node" style="display: flex; justify-content: space-between;">
                         <span class="pricing-label-text">صافي قيمة الأصناف:</span>
-                        <span id="summary-subtotal" class="pricing-value-text" style="font-weight: 700; color: #111111;">0 EGP</span>
+                        <span id="summary-subtotal" class="pricing-value-text" style="font-weight: 700; color: #111111;">0 جنيه</span>
                     </div>
                     <div class="pricing-row-node" style="display: flex; justify-content: space-between;">
                         <span class="pricing-label-text">رسوم ومصاريف الشحن:</span>
-                        <span id="summary-shipping-fee" class="pricing-value-text" style="font-weight: 700; color: #FF91A4;">0 EGP</span>
+                        <span id="summary-shipping-fee" class="pricing-value-text" style="font-weight: 700; color: #FF91A4;">0 جنيه</span>
                     </div>
                     
                     <div class="summary-grand-total-row" style="border-top: 1px dashed rgba(255, 145, 164, 0.25); padding-top: 18px; display: flex; justify-content: space-between; align-items: center;">
                         <span class="grand-total-label" style="font-weight: 700; color: #111111;">العائد المالي (المقرّب كلياً):</span>
-                        <span id="summary-grand-total" class="total-value-display" style="font-size: 1.5rem; font-weight: 700; color: #FF91A4;">0 EGP</span>
+                        <span id="summary-grand-total" class="total-value-display" style="font-size: 1.5rem; font-weight: 700; color: #FF91A4;">0 جنيه</span>
                     </div>
                 </div>
 
@@ -349,14 +349,14 @@
                     </div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
                         <span id="bose-deposit-label" style="font-weight: 700; color: #111111; font-size: 0.95rem;">المبلغ المطلوب دفعه الآن لتأكيد الحجز:</span>
-                        <span id="bose-deposit-amount" style="font-weight: 800; color: #FF91A4; font-size: 1.15rem;">0 EGP</span>
+                        <span id="bose-deposit-amount" style="font-weight: 800; color: #FF91A4; font-size: 1.15rem;">0 جنيه</span>
                     </div>
                     <div id="bose-deposit-remaining-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; opacity: 0.75; font-size: 0.85rem;">
                         <span>الباقي يُدفع عند الاستلام:</span>
-                        <span id="bose-deposit-remaining-amount">0 EGP</span>
+                        <span id="bose-deposit-remaining-amount">0 جنيه</span>
                     </div>
                     <div style="border-top: 1px dashed rgba(255, 145, 164, 0.3); padding-top: 10px; font-size: 0.85rem; color: #111111; opacity: 0.85; line-height: 1.7;">
-                        💳 حوّلي المبلغ <strong>كاش أو InstaPay</strong> على رقمنا:
+                        💳 حوّلي المبلغ <strong>كاش أو انستاباي</strong> على رقمنا:
                         <span style="display: inline-flex; align-items: center; gap: 6px; font-weight: 800; color: #FF91A4; direction: ltr;">
                             <span id="bose-deposit-phone-number">—</span>
                             <button type="button" id="bose-copy-deposit-phone" title="نسخ الرقم" style="border: none; background: rgba(255,145,164,0.15); color: #FF91A4; border-radius: 6px; padding: 2px 8px; cursor: pointer; font-size: 0.8rem;"><i class="far fa-copy"></i></button>
@@ -409,7 +409,7 @@
                 compactHook.innerHTML = cartArr.map(item => `
                     <div class="invoice-item-compact-node">
                         <span><strong>${escSafe(item.title)}</strong> <span style="opacity:0.6;">(×${item.quantity})</span><span style="display:block; font-size:0.75rem; color:var(--bose-pink); font-weight:700;">${escSafe(item.flavorName || 'جاهز وفريش')}</span></span>
-                        <span style="font-weight:700; color:var(--bose-pink);">${parseFloat((item.finalPrice * item.quantity).toFixed(2))} EGP</span>
+                        <span style="font-weight:700; color:var(--bose-pink);">${parseFloat((item.finalPrice * item.quantity).toFixed(2))} جنيه</span>
                     </div>
                 `).join("");
             }
@@ -434,7 +434,7 @@
                     siteData.shippingZones.forEach(zone => {
                         const opt = document.createElement('option');
                         opt.value = zone.id;
-                        opt.textContent = `${zone.area} (+${zone.price} EGP)`;
+                        opt.textContent = `${zone.area} (+${zone.price} جنيه)`;
                         zoneSelect.appendChild(opt);
                     });
                     zoneSelect.dataset.populated = "true";
