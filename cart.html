@@ -343,7 +343,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
         targetGrid.innerHTML = finalSuggestions.map(prod => {
             const defaultLogo = "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png";
-            const imgUrl = prod.images && prod.images[0] ? prod.images[0] : (prod.image || defaultLogo);
+            const baseImgUrl = prod.images && prod.images[0] ? prod.images[0] : (prod.image || defaultLogo);
+
+            // 👑 [إصلاح جذري - كارثة الأحجام] (مكرر تحت) بيحدد defaultSizeKey - محتاجينه
+            // هنا الأول عشان نحدد صورة البداية الصح لو المنتج عنده صورة مخصصة لكل حجم
+            // (زي الديسباسيتو/الريدڤيلڤت) بدل ما نعرض images[0] دايماً بغض النظر عن الحجم.
+            const suggestAvailableSizes = (prod.prices && typeof prod.prices === 'object') ? Object.keys(prod.prices) : [];
+            const suggestDefaultSizeKey = (prod.defaultSize && suggestAvailableSizes.includes(prod.defaultSize)) ? prod.defaultSize : (suggestAvailableSizes[0] || null);
+            const imgUrl = (prod.sizeImages && suggestDefaultSizeKey && prod.sizeImages[suggestDefaultSizeKey]) ? prod.sizeImages[suggestDefaultSizeKey] : baseImgUrl;
 
             // 👑 [إصلاح جذري - المقترحات كانت "كارت مبتور"]: قبل كده الكارت هنا كان
             // بيوري بس الاسم والسعر وزرار إضافة سريعة، من غير أي إشارة للنكهة أو
@@ -386,7 +393,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div class="bose-suggestion-micro-card" data-slug="${prod.slug}" data-selected-size="${defaultSizeKey || ''}" style="cursor:pointer;" onclick="if(!event.target.closest('.bose-card-size-tabs') && !event.target.closest('.btn-quick-add-to-cart')){ window.location.href='product.html?slug=${encodeURIComponent(prod.slug)}'; }">
                     ${discountBadgeHTML}
                     <a href="product.html?slug=${encodeURIComponent(prod.slug)}" class="bose-suggestion-image-wrapper" style="display:block;">
-                        <img src="${window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(imgUrl, 300) : imgUrl}" alt="${secureEscape(prod.title)}" loading="lazy" width="300" height="200" onerror="this.src='${defaultLogo}';">
+                        <img src="${window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(imgUrl, 300) : imgUrl}" alt="${secureEscape(prod.title)}" data-size-img="1" loading="lazy" width="300" height="200" onerror="this.src='${defaultLogo}';">
                     </a>
                     <div class="bose-suggestion-content-pane">
                         <a href="product.html?slug=${encodeURIComponent(prod.slug)}" style="text-decoration:none; color:inherit;">
@@ -423,6 +430,24 @@ document.addEventListener("DOMContentLoaded", () => {
                 const newPrice = window.calculateProductFinalPrice(product, { size: pill.dataset.sizeKey });
                 const priceTag = card.querySelector('.bose-suggestion-price-tag');
                 if (priceTag) priceTag.textContent = `${Math.round(newPrice)} ${currency}`;
+
+                // 🖼️🛡️ [إصلاح جذري - الصورة مش بتتغيّر مع الحجم]: نفس إصلاح
+                // core-engine.js و category.html - كارت المقترحات هنا كان بيسيب
+                // نفس صورة images[0] ثابتة حتى لو المنتج (الديسباسيتو/الريدڤيلڤت)
+                // عنده صورة مختلفة مسجلة لكل حجم في product.sizeImages.
+                const imgNode = card.querySelector('.bose-suggestion-image-wrapper img[data-size-img]');
+                if (imgNode && product.sizeImages && product.sizeImages[pill.dataset.sizeKey]) {
+                    const newImgUrl = product.sizeImages[pill.dataset.sizeKey];
+                    const optimizedUrl = window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(newImgUrl, 300) : newImgUrl;
+                    if (imgNode.getAttribute('src') !== optimizedUrl) {
+                        imgNode.style.transition = 'opacity 0.15s ease';
+                        imgNode.style.opacity = '0.4';
+                        setTimeout(() => {
+                            imgNode.src = optimizedUrl;
+                            imgNode.style.opacity = '1';
+                        }, 120);
+                    }
+                }
             });
         });
 
