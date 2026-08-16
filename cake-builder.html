@@ -17,12 +17,12 @@
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/global.css?v=2026_production_v35.0">
-    <link rel="stylesheet" href="css/main.css?v=2026_production_v35.0">
-    <link rel="stylesheet" href="css/simulators.css?v=2026_production_v35.0">
-    <script src="js/supabase-client.js?v=2026_production_v35.0" defer></script>
-    <script src="js/favorites-engine.js?v=2026_production_v35.0" defer></script>
-    <script src="js/core-engine.js?v=2026_production_v35.0" defer></script>
+    <link rel="stylesheet" href="css/global.css?v=2026_production_v36.0">
+    <link rel="stylesheet" href="css/main.css?v=2026_production_v36.0">
+    <link rel="stylesheet" href="css/simulators.css?v=2026_production_v36.0">
+    <script src="js/supabase-client.js?v=2026_production_v36.0" defer></script>
+    <script src="js/favorites-engine.js?v=2026_production_v36.0" defer></script>
+    <script src="js/core-engine.js?v=2026_production_v36.0" defer></script>
 
     <style>
         /* ==================================================================
@@ -563,6 +563,18 @@
             display: flex; align-items: center; justify-content: center;
             position: relative;
         }
+        /* 💥👑 [حركة "الانبثاق" الفعلية عند فتح أي صورة]: بدل ما تظهر بلمح
+           البصر من غير أي إحساس بالحركة، بترتد بصريًا (pop) من حجم أصغر
+           وشفافية أقل لحجمها الطبيعي الكامل - إحساس حقيقي إنها "قفزت"
+           وملت الشاشة، مش مجرد تبديل display فجائي. */
+        @keyframes boseLightboxPopIn {
+            0% { transform: scale(0.55); opacity: 0; }
+            60% { transform: scale(1.03); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .bose-lightbox-card.bose-lightbox-pop-in {
+            animation: boseLightboxPopIn 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+        }
         .bose-lightbox-card img {
             max-width: 100%; max-height: 100%; width: auto; height: auto;
             border-radius: 14px; object-fit: contain; display: block;
@@ -1019,6 +1031,6 @@
 
     <div id="bose-footer-injector"></div>
 
-    <script src="js/cake-engine.js?v=2026_production_v35.0" defer></script>
+    <script src="js/cake-engine.js?v=2026_production_v36.0" defer></script>
 </body>
 </html>
