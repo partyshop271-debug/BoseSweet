@@ -663,6 +663,101 @@
             line-height: 1.5;
         }
 
+        /* ✅ [شارة تأكيد الاختيار]: تغيير لون البوردر لوحده مش كفاية توضيح -
+           كل كارت مختار (شكل/نكهة/نوع طباعة) دلوقتي بيظهر عليه شارة ✅ واضحة
+           في الزاوية، عشان العميلة تتأكد ١٠٠٪ إن اختيارها اتسجل فعلاً، مش
+           مجرد تلوين خفيف ممكن يتفوت في نظرة سريعة. */
+        .bose-selected-checkmark {
+            position: absolute;
+            top: -9px;
+            right: -9px;
+            width: 27px;
+            height: 27px;
+            border-radius: 50%;
+            background: var(--bose-pink);
+            color: var(--bose-white);
+            font-size: 13px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            z-index: 4;
+        }
+        .bose-selection-card-label input:checked ~ .bose-selected-checkmark {
+            display: flex;
+            animation: boseCheckPop 0.25s ease-out;
+        }
+        @keyframes boseCheckPop {
+            0% { transform: scale(0); opacity: 0; }
+            70% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+
+        /* 🔒 [حالة قفل مرئية لمقاسات الشكل]: مربع/مستطيل بيبانوا باهتين
+           وعليهم قفل لو عدد الأفراد الحالي أقل من المطلوب، عشان العميلة
+           تعرف الاختيار مش متاح *قبل* ما تضغطي، مش تتفاجئي بعد الضغط. */
+        .bose-selection-card-label.bose-option-locked .bose-selection-card-inner {
+            opacity: 0.45;
+            cursor: not-allowed;
+            background: #F2F2F2;
+        }
+        .bose-option-lock-caption {
+            display: block;
+            text-align: center;
+            font-size: 11.5px;
+            font-weight: 700;
+            color: var(--bose-pink);
+            margin-top: 7px;
+            line-height: 1.4;
+        }
+        /* هزّة انتباه لما العميلة تضغط على كارت مقفول - عشان يبان واضح إن
+           في سبب، مش مجرد إن الاختيار "مبيحصلش" في صمت. */
+        @keyframes boseShapeShake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-6px); }
+            40% { transform: translateX(6px); }
+            60% { transform: translateX(-4px); }
+            80% { transform: translateX(4px); }
+        }
+        .bose-selection-card-label.bose-shake-alert .bose-selection-card-inner {
+            animation: boseShapeShake 0.4s ease-in-out;
+            border-color: #E74C3C !important;
+        }
+
+        /* 📌 [تنويه: الصور مجرد أمثلة للإلهام] */
+        .bose-image-example-note {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            background: rgba(0,0,0,0.03);
+            border: 1px dashed rgba(0,0,0,0.15);
+            border-radius: 14px;
+            padding: 11px 14px;
+            margin-top: 12px;
+            font-size: 12.5px;
+            color: var(--bose-black);
+            opacity: 0.8;
+            line-height: 1.55;
+        }
+        .bose-image-example-note .note-icon { flex-shrink: 0; }
+
+        /* توضيح أوضح لصندوق التنبيه اللي كان قبل كده من غير أي تنسيق خالص -
+           فكان بيظهر كنص عادي مالوش شكل، فكان سهل إنه يتفوت أو يتحس وكأنه
+           "رجوع صامت". دلوقتي بقى بارز بوضوح كتحذير حقيقي. */
+        .bose-alert-message {
+            display: none;
+            background: #FDEDEC;
+            border: 1.5px solid #E74C3C;
+            border-radius: 14px;
+            padding: 13px 16px;
+            margin-top: 14px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #C0392B;
+            line-height: 1.6;
+            animation: boseSmoothFadeIn 0.25s ease-out;
+        }
+
         .bose-sub-section-title {
             font-size: 15px;
             font-weight: 700;
@@ -754,6 +849,10 @@
 
                         <div class="bose-step1-gallery-scroller" id="bose-portfolio-lightbox-track"></div>
                         <p class="bose-gallery-tap-hint">👆 اضغطي على أي صورة لتكبيرها بملء الشاشة</p>
+                        <div class="bose-image-example-note">
+                            <span class="note-icon">📌</span>
+                            <span>الصور دي كلها شغل حقيقي عملناه لعملاء قبل كده، وهي مجرد أمثلة لإلهامك مش تصميم جاهز هنكرره - في الآخر هنعمل التورتة اللي انتِ فعلاً عايزاها، مش نسخة طبق الأصل من أي صورة هنا.</span>
+                        </div>
 
                         <div class="bose-or-divider">— أو —</div>
                         <div class="bose-quick-shortcut-card">
@@ -836,29 +935,36 @@
                             <span>الشكل بيديّ للتورتة شخصيتها - اختاري إللي يعبّر عن مناسبتك أكتر.</span>
                         </div>
 
+                        <p class="bose-gallery-tap-hint">👆 اضغطي ⓘ لمعرفة أكتر، والصور فوق الكروت مجرد أمثلة لإلهامك مش نسخة طبق الأصل هتتنفذلك.</p>
+
                         <div class="bose-interactive-radio-grid">
                             <label class="bose-selection-card-label">
                                 <input type="radio" name="cake_shape" value="circle" checked>
                                 <div class="bose-selection-card-inner">دائرة</div>
+                                <span class="bose-selected-checkmark">✓</span>
                                 <button type="button" class="bose-info-badge" data-info-key="shape-circle">ⓘ</button>
                             </label>
                             <label class="bose-selection-card-label">
                                 <input type="radio" name="cake_shape" value="heart">
                                 <div class="bose-selection-card-inner">قلب</div>
+                                <span class="bose-selected-checkmark">✓</span>
                                 <button type="button" class="bose-info-badge" data-info-key="shape-heart">ⓘ</button>
                             </label>
                             <label class="bose-selection-card-label">
                                 <input type="radio" name="cake_shape" value="square">
                                 <div class="bose-selection-card-inner">مربع</div>
+                                <span class="bose-selected-checkmark">✓</span>
                                 <button type="button" class="bose-info-badge" data-info-key="shape-square">ⓘ</button>
+                                <span class="bose-option-lock-caption" id="shape-square-caption"></span>
                             </label>
                             <label class="bose-selection-card-label">
                                 <input type="radio" name="cake_shape" value="rectangle">
                                 <div class="bose-selection-card-inner">مستطيل</div>
+                                <span class="bose-selected-checkmark">✓</span>
                                 <button type="button" class="bose-info-badge" data-info-key="shape-rectangle">ⓘ</button>
+                                <span class="bose-option-lock-caption" id="shape-rectangle-caption"></span>
                             </label>
                         </div>
-                        <div class="bose-shape-size-note" id="shape-size-permanent-note"></div>
                         <div class="bose-alert-message" id="alert-shape-restriction"></div>
                     </div>
 
@@ -876,20 +982,27 @@
                             <label class="bose-selection-card-label">
                                 <input type="radio" name="cake_flavor" value="vanilla" checked>
                                 <div class="bose-selection-card-inner">فانيليا</div>
+                                <span class="bose-selected-checkmark">✓</span>
                                 <button type="button" class="bose-info-badge" data-info-key="flavor-vanilla">ⓘ</button>
                             </label>
                             <label class="bose-selection-card-label">
                                 <input type="radio" name="cake_flavor" value="chocolate">
                                 <div class="bose-selection-card-inner">شوكولاتة</div>
+                                <span class="bose-selected-checkmark">✓</span>
                                 <button type="button" class="bose-info-badge" data-info-key="flavor-chocolate">ⓘ</button>
                             </label>
                             <label class="bose-selection-card-label">
                                 <input type="radio" name="cake_flavor" value="half-half">
                                 <div class="bose-selection-card-inner">نصف ونصف</div>
+                                <span class="bose-selected-checkmark">✓</span>
                                 <button type="button" class="bose-info-badge" data-info-key="flavor-half-half">ⓘ</button>
                             </label>
                         </div>
                         <p class="bose-flavor-sensory-note" id="flavor-sensory-note"></p>
+                        <div class="bose-image-example-note">
+                            <span class="note-icon">📌</span>
+                            <span>الصور على الكروت (لو موجودة) مجرد نماذج توضيحية لشكل النكهة، مش تمثيل حرفي للتورتة النهائية.</span>
+                        </div>
                     </div>
 
                     <!-- الخطوة 7 - طباعة صورة على التورتة -->
@@ -906,18 +1019,25 @@
                             <label class="bose-selection-card-label">
                                 <input type="radio" name="cake_printing" value="none" checked>
                                 <div class="bose-selection-card-inner">بدون صور</div>
+                                <span class="bose-selected-checkmark">✓</span>
                                 <button type="button" class="bose-info-badge" data-info-key="printing-none">ⓘ</button>
                             </label>
                             <label class="bose-selection-card-label">
                                 <input type="radio" name="cake_printing" value="edible">
                                 <div class="bose-selection-card-inner">صورة قابلة للأكل (+60 ج)</div>
+                                <span class="bose-selected-checkmark">✓</span>
                                 <button type="button" class="bose-info-badge" data-info-key="printing-edible">ⓘ</button>
                             </label>
                             <label class="bose-selection-card-label">
                                 <input type="radio" name="cake_printing" value="non-edible">
                                 <div class="bose-selection-card-inner">صورة غير قابلة للأكل (+15 ج)</div>
+                                <span class="bose-selected-checkmark">✓</span>
                                 <button type="button" class="bose-info-badge" data-info-key="printing-non-edible">ⓘ</button>
                             </label>
+                        </div>
+                        <div class="bose-image-example-note">
+                            <span class="note-icon">📌</span>
+                            <span>الصورة اللي هترفعيها هنا هي اللي هتتطبع فعلياً زي ما هي - الشرح ده بيوضح بس نوع الطباعة، مش شكل تصميم جاهز.</span>
                         </div>
 
                         <div class="bose-premium-template-box" id="cake-photo-upload-section" style="display:none; margin-top:18px;">
@@ -975,6 +1095,10 @@
                         </label>
                         <div id="cake-giftcard-price-note" style="margin-top:10px;"></div>
                         <div id="cake-giftcard-gallery" class="bose-giftcard-gallery-scroller"></div>
+                        <div class="bose-image-example-note" id="cake-giftcard-gallery-note" style="display:none;">
+                            <span class="note-icon">📌</span>
+                            <span>الصور دي نماذج سابقة لشكل الكارت، والخط أو التنسيق بالظبط ممكن يختلف شوية عند التنفيذ الفعلي.</span>
+                        </div>
                         <div id="cake-giftcard-text-section" class="custom-text-wrapper" style="margin-top:12px;">
                             <label class="premium-input-label" for="cake-giftcard-text">اكتب الكلام اللي حابب نكتبه على الكارت هنا:</label>
                             <textarea id="cake-giftcard-text" class="bose-premium-text-input bose-premium-textarea" placeholder="اكتب مشاعرك الصادقة هنا ببراحة..."></textarea>
