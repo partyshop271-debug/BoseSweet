@@ -512,6 +512,18 @@
 
         track.addEventListener('scroll', syncDotsAndPosition);
 
+        // 🛡️ [إصلاح ربط الدوتس]: كان الدوت النشط بيتحدث بس مع حدث scroll - لو
+        // العميل غيّر اتجاه الموبايل (portrait/landscape) أو غيّر حجم الشاشة
+        // (بيغيّر عرض الكارت عند نقاط التوقف 1023/767/550/400px) من غير ما
+        // يسحب السلايدر بعدها، كان الدوت القديم بيفضل مضيء غلط لحد أول سحبة
+        // جديدة. أضفنا مزامنة على resize كمان (بعد تأخير بسيط عشان الأبعاد
+        // تستقر) عشان الدوت يفضل مرتبط صح بموقع الكارت الفعلي دايماً.
+        let resizeSyncTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeSyncTimer);
+            resizeSyncTimer = setTimeout(syncDotsAndPosition, 150);
+        });
+
         if (dotsContainer) {
             dotsContainer.addEventListener('click', (e) => {
                 const target = /** @type {HTMLElement} */ (e.target);
@@ -904,21 +916,24 @@
 
         const ourProductsGrid = document.getElementById('our-products-grid');
         if (ourProductsGrid && data.homepage.ourProducts) {
-            const initialItems = data.homepage.ourProducts.slice(0, 4).map(/** @param {string} id */ (id) => data.products.find((/** @type {any} */ p) => p.id === id || p.slug === id)).filter(Boolean);
+            const initialItems = data.homepage.ourProducts.slice(0, 4).map(/** @param {string} id */ (id) => data.products.find((/** @type {any} */ p) => p.id === id || p.slug === id)).filter(Boolean).filter(isSingleSizeProduct);
             ourProductsGrid.innerHTML = initialItems.map((/** @type {any} */ p) => createProductCardHTML(p)).join('');
         }
     }
 
-    // 🛡️👑 [إصلاح جذري - "منتجاتنا" كارت ممطوط + كارت ناقص]: كان فيه فلتر هنا
-    // بيمنع أي منتج متعدد الأحجام (زي الديسباسيتو والريدڤيلڤت) من الظهور في
-    // القسم ده خالص، عشان بلوك تبويبات الحجم بتاعه كان بيخلي كارته أطول من
-    // الكارت المجاور، و CSS Grid كان بيمدد (stretch) كل الكروت في نفس الصف
-    // لنفس الارتفاع - ده اللي كان "الكارت الممطوط". بس الفلتر ده كان بيسبب
-    // مشكلة تانية: لو حد من الـ 8 منتجات المختارين من لوحة التحكم كان متعدد
-    // الأحجام، كان بيتشال من غير بديل - يعني يظهر 7 كروت بس مش 8. الحل الصح
-    // اتنقل لجذر المشكلة في css/main.css (align-items:start بدل stretch)،
-    // فكل كارت بقى ياخد ارتفاعه الطبيعي بس من غير ما يتأثر بالكارت جنبه -
-    // فمعادش فيه داعي نمنع منتجات متعددة الأحجام من الظهور هنا خالص.
+    // 🛡️👑 [قسم "منتجاتنا"]: بناءً على طلب صاحبة المتجر، أي منتج متعدد الأحجام
+    // (زي الديسباسيتو والريدڤيلڤت) بيتشال من القسم ده تحديداً عشان بلوك تبويبات
+    // الحجم بتاعه بيخلي طول الكارت زيادة عن اللزوم. القسم ده لازم يفضل يعرض
+    // منتجات مفردة الحجم بس عشان الكروت تفضل قصيرة ومتسقة. لازم لوحة التحكم
+    // تختار 8 منتجات مفردة الحجم بالظبط في homepage.ourProducts عشان يظهروا
+    // 8 كروت كاملين هنا (أي منتج متعدد أحجام من ضمن الاختيار هيتشال من غير بديل).
+    /** @param {any} product */
+    function isSingleSizeProduct(product) {
+        if (!product) return false;
+        const availableSizes = (product.prices && typeof product.prices === 'object') ? Object.keys(product.prices) : [];
+        const distinctSizePrices = new Set(availableSizes.map(s => product.prices[s]));
+        return !(availableSizes.length > 1 && distinctSizePrices.size > 1);
+    }
 
     function setupOurProductsShowMore() {
         const showMoreBtn = document.getElementById('our-products-show-more-btn');
@@ -934,7 +949,7 @@
             e.preventDefault();
             // 🛡️ [تحصين]: منع كسر JS لو ourProducts لسه مش متملي في لوحة التحكم
             if (!data.homepage || !data.homepage.ourProducts) return;
-            const allItems = data.homepage.ourProducts.map(/** @param {string} id */ (id) => data.products.find((/** @type {any} */ p) => p.id === id || p.slug === id)).filter(Boolean);
+            const allItems = data.homepage.ourProducts.map(/** @param {string} id */ (id) => data.products.find((/** @type {any} */ p) => p.id === id || p.slug === id)).filter(Boolean).filter(isSingleSizeProduct);
             ourProductsGrid.innerHTML = allItems.map((/** @type {any} */ p) => createProductCardHTML(p)).join('');
             showMoreBtn.style.setProperty('display', 'none', 'important'); 
         });
@@ -1578,9 +1593,9 @@
         });
         cartCountBadges.forEach((badge) => badge.textContent = String(totalDisplayItems));
 
-        // 🛒 [سلة عائمة]: تبديل حالة الفقاعة العائمة بين "فاضية" (وميض تحفيزي مستمر
-        // يشجع العميل يضيف منتجات) و"فيها أصناف" (الوميض بيقف ويثبت اللون عشان
-        // العميل يركز على العدد الحقيقي ويكمل طلبه براحة).
+        // 🛒 [سلة عائمة]: تبديل حالة الفقاعة العائمة بين "فيها أصناف" (وميض تنبيهي
+        // مستمر يفكّر العميل إنه لسه لازم يكمّل طلبه) و"فاضية" (الوميض بيقف تماماً
+        // لأنه مفيش داعي نلفت نظره لسلة لسه ملهاش محتوى).
         const floatingCartBtn = document.getElementById('bose-floating-cart-btn');
         if (floatingCartBtn) {
             floatingCartBtn.classList.toggle('is-empty', totalDisplayItems === 0);
