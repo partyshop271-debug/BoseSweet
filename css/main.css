@@ -1010,6 +1010,46 @@
     flex-direction: column;
     box-sizing: border-box;
     overflow: hidden; /* أي محتوى جواه لسه أعرض من الكارت (نادر بعد minmax) بيتقص جوه حدود الكارت بدل ما يطلع بره حدود الشاشة */
+    position: relative; /* 💗 مرجع تموضع زرار القلب العائم */
+}
+
+/* 💗 [نظام المفضلة]: زرار قلب دائري عائم في الركن العلوي المقابل لشارة
+   الخصم/نفدت الكمية (top:14/right:14) عشان محدش يغطي التاني بصرياً. */
+.bose-fav-btn {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    z-index: 3;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: none;
+    background-color: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 3px 10px rgba(17, 17, 17, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    transition: var(--bose-transition-fast);
+}
+
+.bose-fav-btn i {
+    font-size: 15px;
+    color: var(--bose-black);
+    transition: var(--bose-transition-fast);
+}
+
+.bose-fav-btn:hover {
+    transform: scale(1.08);
+}
+
+.bose-fav-btn.is-active {
+    background-color: var(--bose-pink-text);
+}
+
+.bose-fav-btn.is-active i {
+    color: var(--bose-white);
 }
 
 .product-card-unified:hover {

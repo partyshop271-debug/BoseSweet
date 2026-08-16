@@ -1907,10 +1907,12 @@ select.bose-form-control option,
     }
 }
 /* ==========================================================================
-   👑👑 [إضافة جذرية]: تصميم كامل لقسم "قد يعجبك أيضاً" في صفحة السلة
-   (كان القسم ده شغال بالـ JS بس من غير أي CSS خالص في الموقع كله - بيظهر
-   مكسور تماماً بلا أي تصميم). التصميم هنا موحّد مع هوية الموقع (وردي/أبيض/أسود)
-   وبيدعم كمان تبويب اختيار الحجم المصغر الجديد وسطر النكهة والوصف المختصر.
+   👑👑 [توحيد الكارت]: قسم "قد يعجبك أيضاً" في صفحة السلة بقى بيستخدم نفس
+   الكارت الموحد (product-card-unified من createProductCardHTML) المستخدم
+   في كل صفحة تانية بالموقع (رئيسية/فئة/عروض/مفضلة) - مش نسخة "مصغّرة" منفصلة
+   بتصميم وسلوك مختلف شوية عن الباقي. القواعد هنا بتحدد بس عرض ثابت لكل كارت
+   جوه السلايدر الأفقي (زي سلايدر "الأكثر مبيعاً" بالرئيسية بالظبط)، والتصميم
+   الفعلي للكارت نفسه جاي من main.css بلا أي تكرار.
    ========================================================================== */
 .bose-cart-horizontal-slider {
     display: flex;
@@ -1923,127 +1925,18 @@ select.bose-form-control option,
 }
 .bose-cart-horizontal-slider::-webkit-scrollbar { display: none; }
 
-.bose-suggestion-micro-card {
-    position: relative;
-    flex: 0 0 220px;
+.bose-cart-horizontal-slider > .product-card-unified {
+    flex: 0 0 240px;
+    width: 240px;
     scroll-snap-align: start;
-    background: var(--bose-white, #FFFFFF);
-    border: var(--bose-border-pink, 1px solid rgba(255,145,164,0.15));
-    border-radius: var(--bose-radius-md);
-    box-shadow: var(--bose-shadow-glow, 0 8px 32px rgba(255,145,164,0.12));
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    font-family: 'Cairo', sans-serif;
-    direction: rtl;
-    text-align: right;
 }
 
-.bose-suggestion-micro-card .offer-badge {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    z-index: 2;
-    background: var(--bose-pink-text, #FF91A4);
-    color: #FFFFFF;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 4px 10px;
-    border-radius: var(--bose-radius-sm);
+@media (max-width: 480px) {
+    .bose-cart-horizontal-slider > .product-card-unified {
+        flex: 0 0 200px;
+        width: 200px;
+    }
 }
-
-.bose-suggestion-image-wrapper {
-    width: 100%;
-    height: 130px;
-    overflow: hidden;
-    background: #FFFFFF;
-}
-.bose-suggestion-image-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
-
-.bose-suggestion-content-pane {
-    padding: 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.bose-suggestion-title-text {
-    margin: 0;
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--bose-black, #111111);
-    line-height: 1.4;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-}
-
-.bose-suggestion-flavor-name {
-    font-size: 12.5px;
-    font-weight: 700;
-    color: var(--bose-pink-text, #FF91A4);
-}
-
-.bose-suggestion-desc-text {
-    margin: 0;
-    font-size: 11.5px;
-    color: #111111;
-    line-height: 1.5;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-}
-
-.bose-suggestion-rating-stars { color: var(--bose-gold, #FF91A4); font-size: 11px; }
-
-.bose-suggestion-footer-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 6px;
-    gap: 8px;
-}
-
-.bose-suggestion-price-tag {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--bose-pink-text, #FF91A4);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.bose-suggestion-old-price {
-    font-size: 11.5px;
-    color: #111111;
-    text-decoration: line-through;
-    font-weight: 600;
-}
-
-.btn-quick-add-to-cart {
-    background: var(--bose-pink-text, #FF91A4);
-    color: #FFFFFF;
-    border: none;
-    border-radius: var(--bose-radius-pill);
-    padding: 7px 14px;
-    font-size: 12px;
-    font-weight: 700;
-    font-family: 'Cairo', sans-serif;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    transition: var(--bose-transition-fast);
-    white-space: nowrap;
-}
-.btn-quick-add-to-cart:hover { background: var(--bose-white); color: var(--bose-pink-text); box-shadow: 0 0 0 1.5px var(--bose-pink); }
 
 /* 🛡️ [نُقلت]: قواعد .bose-mini-size-note / .bose-card-size-tabs /
    .bose-card-size-pill كانت هنا بس، رغم إنها "مشتركة بين كل كروت الموقع" -
