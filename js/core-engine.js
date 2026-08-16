@@ -336,6 +336,7 @@
         renderDynamicWaterfall();
         renderOffersSection();
         renderAllOffersPage();
+        renderBoseFavoritesPage();
         renderHomepageProductGrids();
         setupOurProductsShowMore();
         injectSimulatorsPreviewData();
@@ -628,6 +629,38 @@
         grid.innerHTML = offersData.map(/** @param {Object} offer */ (offer) => createProductCardHTML(offer)).join('');
     }
 
+    /**
+     * 💗 صفحة المفضلة المستقلة favorites.html - بتقرا قائمة الـ IDs المحفوظة محلياً
+     * من window.getBoseFavorites() وبتقارنها بأحدث نسخة حية من بيانات المنتجات
+     * (مش نسخة قديمة مخزّنة)، فلو صاحبة المتجر غيّرت سعر/صورة/توفر منتج بعدين،
+     * العميلة بتشوف أحدث حالة له في مفضلتها دايماً - مش تفاصيل قديمة. بتستخدم
+     * نفس createProductCardHTML الموحدة، فزرار القلب والسعر وكل حاجة متطابقة
+     * 100% مع باقي الموقع من غير أي كود مكرر.
+     */
+    function renderBoseFavoritesPage() {
+        const grid = document.getElementById('bose-favorites-grid');
+        if (!grid) return;
+
+        const data = window.BoseStoreData;
+        const emptyState = document.getElementById('bose-favorites-empty-state');
+        if (!data || !data.products) return;
+
+        const favIds = typeof window.getBoseFavorites === 'function' ? window.getBoseFavorites() : [];
+        const favProducts = favIds
+            .map((id) => data.products.find((p) => String(p.id) === String(id)))
+            .filter(Boolean);
+
+        if (favProducts.length === 0) {
+            grid.innerHTML = '';
+            if (emptyState) emptyState.style.display = 'block';
+            return;
+        }
+
+        if (emptyState) emptyState.style.display = 'none';
+        grid.innerHTML = favProducts.map((/** @type {Object} */ p) => createProductCardHTML(p)).join('');
+    }
+    window.renderBoseFavoritesPage = renderBoseFavoritesPage;
+
     function renderDynamicWaterfall() {
         const leftCol = document.getElementById('waterfall-left-col');
         const rightCol = document.getElementById('waterfall-right-col');
@@ -788,10 +821,22 @@
                     <i class="fa-solid fa-basket-shopping"></i> اضافة للسلة
                </button>`;
 
+        // 💗 [نظام المفضلة]: زرار قلب دائري بيظهر في الركن العلوي المقابل لشارة
+        // الخصم/نفدت الكمية (عشان ما يتعارضش معاها بصرياً) في كل كارت منتج قياسي
+        // بأي مكان بالموقع (رئيسية، فئة، عروض، مقترحات). الحالة (ممتلئ/فاضي)
+        // بتتقرأ فوراً من localStorage عبر window.isBoseFavorite لو محرك المفضلة
+        // متحمّل، وبتتحدّث حياً لحظة الضغط عبر window.toggleBoseFavorite.
+        const isFav = typeof window.isBoseFavorite === 'function' && window.isBoseFavorite(product.id);
+        const favBtnHtml = `
+            <button type="button" class="bose-fav-btn${isFav ? ' is-active' : ''}" data-fav-id="${product.id}" aria-label="${isFav ? 'إزالة من المفضلة' : 'إضافة للمفضلة'}" onclick="event.stopPropagation(); if(window.toggleBoseFavorite){ window.toggleBoseFavorite('${product.id}', this); }">
+                <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
+            </button>`;
+
         return `
-            <div class="product-card-unified${hasDiscount ? ' bose-offer-card' : ''}${isUnavailable ? ' bose-unavailable-card' : ''}" data-id="${product.id}" data-selected-size="${defaultSizeKey || ''}" onclick="if(!event.target.closest('.product-card-qty-wrapper') && !event.target.closest('.btn-add-to-cart') && !event.target.closest('.bose-card-size-tabs')){ window.location.href='product.html?slug=${encodeURIComponent(product.slug)}'; }" style="cursor:pointer;">
+            <div class="product-card-unified${hasDiscount ? ' bose-offer-card' : ''}${isUnavailable ? ' bose-unavailable-card' : ''}" data-id="${product.id}" data-selected-size="${defaultSizeKey || ''}" onclick="if(!event.target.closest('.product-card-qty-wrapper') && !event.target.closest('.btn-add-to-cart') && !event.target.closest('.bose-card-size-tabs') && !event.target.closest('.bose-fav-btn')){ window.location.href='product.html?slug=${encodeURIComponent(product.slug)}'; }" style="cursor:pointer;">
                 ${discountBadgeHtml}
                 ${isUnavailable ? `<div class="offer-badge" style="background:rgba(17,17,17,0.75);">نفدت الكمية</div>` : ''}
+                ${favBtnHtml}
                 <img src="${cardImg}" alt="${safeTitle}" class="product-card-img" data-size-img="1" width="300" height="300" loading="lazy" style="${isUnavailable ? 'filter:grayscale(60%); opacity:0.75;' : ''}" />
                 <h3 class="product-card-title">${safeTitle}</h3>
                 <span class="product-card-flavor-name">${safeFlavor}</span>
@@ -2019,6 +2064,10 @@
                         <button id="nav-search-btn" class="bose-nav-btn" aria-label="البحث عن صنف أو نكهة">
                             <i class="fa-solid fa-magnifying-glass"></i>
                         </button>
+                        <a href="favorites.html" class="nav-cart-icon-wrapper" aria-label="عرض المفضلة">
+                            <i class="fa-solid fa-heart bose-nav-btn" style="padding:0;"></i>
+                            <span id="nav-fav-count" class="nav-cart-count-badge nav-fav-count-badge" style="display:none;">0</span>
+                        </a>
                         <a href="cart.html" class="nav-cart-icon-wrapper" aria-label="عرض سلة المشتريات">
                             <i class="fa-solid fa-bag-shopping bose-nav-btn" style="padding:0;"></i>
                             <span id="nav-cart-count" class="nav-cart-count-badge">0</span>
@@ -2077,6 +2126,12 @@
                                 <li class="sidebar-link-item">
                                     <a href="offers.html">
                                         <span class="link-main-side"><i class="fa-solid fa-tags main-icon"></i>العروض والخصومات</span>
+                                        <i class="fa-solid fa-chevron-left arrow-icon"></i>
+                                    </a>
+                                </li>
+                                <li class="sidebar-link-item">
+                                    <a href="favorites.html">
+                                        <span class="link-main-side"><i class="fa-solid fa-heart main-icon"></i>المفضلة</span>
                                         <i class="fa-solid fa-chevron-left arrow-icon"></i>
                                     </a>
                                 </li>
