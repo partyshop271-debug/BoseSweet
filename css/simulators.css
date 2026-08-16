@@ -840,7 +840,17 @@
     position: relative;
     box-sizing: border-box;
     text-align: center;
-    animation: boseStepFade 0.3s ease forwards;
+}
+/* 💥👑 [حركة "الانبثاق" الفعلية - نفس آلية محاكي التورت بالظبط]: بتتفعل عن
+   طريق JS بإضافة الكلاس ده من جديد في كل مرة تتفتح فيها صورة، عشان الحركة
+   تتكرر من الأول في كل ضغطة، مش مرة واحدة بس أول ما الصفحة تحمل. */
+@keyframes boseLightboxPopIn {
+    0% { transform: scale(0.55); opacity: 0; }
+    60% { transform: scale(1.03); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+}
+.bose-popup-content.bose-lightbox-pop-in {
+    animation: boseLightboxPopIn 0.38s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .modal-close-btn {
