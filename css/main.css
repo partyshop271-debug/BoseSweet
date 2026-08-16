@@ -143,9 +143,20 @@
     display: none !important;
 }
 
+/* 🛡️👑 [إصلاح جذري - الدوتس مش بترتبط صح بالكروت]: قاعدة العرض الثابت
+   (290px) ومحاذاة السناب المركزية (center) هنا كانت بتتطبق على *أي* كارت
+   منتج عليه خصم في *أي* مكان بالموقع - مش بس في سلايدر العروض - لأن كلاس
+   bose-offer-card بيتضاف تلقائياً على product-card-unified نفسه كل ما
+   hasDiscount=true (شوف createProductCardHTML). يعني لو منتج مخصوم ظهر في
+   سلايدر "الأكثر مبيعاً" أو "وصل حديثاً"، كان بياخد عرض 290px ثابت ومحاذاة
+   center بدل العرض المتجاوب (260px/82vw) ومحاذاة start اللي باقي كروت نفس
+   السلايدر بتاخدها - فحساب موقع الدوت النشط في setupBoseUnifiedSliderEngine
+   (اللي بيعتمد على عرض كارت واحد ثابت لكل الكروت) كان بيغلط، والدوتس كانت
+   بتبان "مش مرتبطة" أو "مش بتتحرك صح" مع الكروت الفعلية. الحل: نخصص عرض
+   الـ290px ومحاذاة الـcenter لسلايدر العروض بس (#offers-slider-track)، وتفضل
+   باقي الشكليات (الحدود/الظل) عامة زي ما هي عشان شارة الخصم تفضل بارزة في أي
+   مكان تاني. */
 .bose-offer-card {
-    flex: 0 0 290px !important;
-    scroll-snap-align: center !important;
     background-color: var(--bose-white) !important;
     border: var(--bose-border-thick) !important;
     border-radius: var(--bose-radius-md) !important;
@@ -156,6 +167,10 @@
     position: relative;
     overflow: hidden;
     transition: var(--bose-transition-fast);
+}
+
+#offers-slider-track .bose-offer-card {
+    flex: 0 0 290px !important;
 }
 
 .bose-offer-card:hover {
@@ -1802,9 +1817,19 @@
 
 .bose-slider-dot {
     display: inline-block !important;
-    margin: 0 4px !important;
     width: 10px !important;
     height: 10px !important;
+    /* 🛡️ [إصلاح استجابة اللمس]: كان حجم منطقة اللمس الفعلية للدوت 10px بس (زائد
+       4px مارجن) - أصغر بكتير من الحد الأدنى المتعارف عليه عالمياً لدقة اللمس
+       على الموبايل (~44px)، فكانت لمسات كتير بتفوت الدوت. الحشو هنا بيوسّع
+       الصندوق القابل للمس فعلياً لحوالي 30px من غير ما يغيّر شكل الدوت البصري
+       الصغير نفسه - background-clip:content-box بيخلي اللون يتلوّن جوه منطقة
+       المحتوى (10px) بس، بينما الصندوق كله (المسؤول عن استقبال اللمس/الكليك)
+       بقى أكبر بكتير. */
+    padding: 10px !important;
+    box-sizing: content-box !important;
+    background-clip: content-box !important;
+    margin: 0 !important;
     border-radius: 50% !important;
     background-color: rgba(255, 145, 164, 0.25) !important;
     cursor: pointer !important;

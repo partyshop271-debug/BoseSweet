@@ -430,9 +430,9 @@ img {
     border: 2px solid var(--bose-white);
 }
 
-/* حلقة الوميض الهادي اللي بتلفت نظر العميل طول ما السلة لسه فاضية، وبتقف
-   تلقائياً أول ما يضيف أي صنف عشان مبقاش فيه داعي نستمر نلفت نظره. */
-.bose-floating-cart-btn.is-empty .bose-floating-cart-pulse {
+/* 🛒 [وميض السلة]: حلقة الوميض بتشتغل طول ما فيه أصناف في السلة عشان تلفت
+   نظر العميل إنه لسه لازم يكمّل طلبه، وبتقف تلقائياً لما السلة تكون فاضية. */
+.bose-floating-cart-btn.has-items .bose-floating-cart-pulse {
     position: absolute;
     inset: 0;
     border-radius: 50%;
@@ -440,7 +440,7 @@ img {
     animation: boseFloatingCartPulse 2.2s ease-out infinite;
 }
 
-.bose-floating-cart-btn.has-items .bose-floating-cart-pulse {
+.bose-floating-cart-btn.is-empty .bose-floating-cart-pulse {
     display: none;
 }
 
