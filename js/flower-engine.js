@@ -367,6 +367,10 @@
      * ⚙️ تهيئة المحرك وربط الأحداث
      */
     function initializeFlowerEngine() {
+        // 🛡️ [تحصين الترتيب - نفس فلسفة cake-engine.js بالظبط]: نافذة تكبير
+        // الصور بقت أول حاجة بتتفعل قبل أي كود تاني ممكن يرمي استثناء.
+        wireUpAllFlowerLightboxImages();
+
         // 🧮 [توحيد مصدر الأسعار - المرحلة 3]: تحديث flowerConfig من
         // window.BoseStoreData.flowerBuilder فور جاهزية قاعدة البيانات، بنفس أسماء
         // الحقول وبنفس القيم الاحتياطية المستخدمة حرفياً في core-engine.js
@@ -847,12 +851,32 @@
         // الرئيسية فوق، صور توضيح كل خطوة، معاينة الصورة المرفوعة، وصور المعرض -
         // بتفتح بنفس المودال عن طريق تفويض حدث واحد على مستوى الصفحة، بنفس روح
         // initializeBoseLightboxGallery في cake-engine.js.
-        const portfolioModal = document.getElementById('portfolio-popup-modal');
-        const modalImg = document.getElementById('modal-display-img');
-        const modalCard = portfolioModal ? portfolioModal.querySelector('.bose-popup-content') : null;
-        const modalClose = document.getElementById('modal-close-node');
+        const portfolioModal0 = document.getElementById('portfolio-popup-modal');
+        const modalImg0 = document.getElementById('modal-display-img');
 
         function wireUpAllFlowerLightboxImages() {
+            // 🛡️👑 [تحصين جذري - نفس آلية cake-engine.js بالظبط]: لو المودال
+            // الثابت مش موجود في الصفحة لأي سبب، بنبنيه من الصفر بالجافاسكريبت
+            // نفسه - الميزة متفضلش رهينة تزامن الـ HTML مع الـ JS.
+            let portfolioModal = portfolioModal0;
+            let modalImg = modalImg0;
+            let modalClose = document.getElementById('modal-close-node');
+            if (!portfolioModal || !modalImg) {
+                portfolioModal = document.createElement('div');
+                portfolioModal.className = 'bose-popup-modal';
+                portfolioModal.id = 'portfolio-popup-modal';
+                portfolioModal.setAttribute('aria-hidden', 'true');
+                portfolioModal.style.cssText = 'display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(17,17,17,0.9);backdrop-filter:blur(6px);z-index:999999;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;';
+                portfolioModal.innerHTML = `
+                    <div class="bose-popup-content" style="background:#FFFFFF;border-radius:16px;padding:20px;max-width:90vw;max-height:90vh;position:relative;box-sizing:border-box;text-align:center;">
+                        <span class="modal-close-btn" id="modal-close-node" style="position:absolute;top:10px;left:16px;font-size:28px;font-weight:700;cursor:pointer;" aria-label="إغلاق المعاينة">×</span>
+                        <img id="modal-display-img" src="" class="modal-img-frame" style="max-width:100%;max-height:80vh;object-fit:contain;border-radius:10px;" alt="معاينة فخمة ومكبرة لسابقة أعمال حلويات بوسي">
+                    </div>`;
+                document.body.appendChild(portfolioModal);
+                modalImg = document.getElementById('modal-display-img');
+                modalClose = document.getElementById('modal-close-node');
+            }
+            const modalCard = portfolioModal.querySelector('.bose-popup-content');
             if (!portfolioModal || !modalImg) return;
 
             const openFlowerLightbox = (src) => {
@@ -884,13 +908,17 @@
             // بنفس آلية applyBoseOptionCardImages في محاكي التورت) ماكانتش
             // داخلة خالص. دلوقتي أي صورة حقيقية جوه لوحة التحكم كلها
             // (.simulator-control-panel) بأي خطوة بتفتح بملء الشاشة تلقائيًا.
+            //
+            // 🛡️ [تفويض على window في مرحلة الـ capture]: عشان محدش يقدر يوقف
+            // الحدث قبل ما يوصلنا، أيًا كان ترتيب باقي الأكواد في الصفحة.
             const isOpenableGalleryImage = (img) => {
                 if (!img || img === modalImg) return false;
                 return !!(img.closest('.simulator-control-panel') || img.classList.contains('hero-banner-frame'));
             };
 
-            document.addEventListener('click', (e) => {
-                const img = /** @type {HTMLElement} */ (e.target).closest ? /** @type {HTMLElement} */ (e.target).closest('img') : null;
+            window.addEventListener('click', (e) => {
+                const target = /** @type {HTMLElement} */ (e.target);
+                const img = target && target.closest ? target.closest('img') : null;
                 if (!img || !isOpenableGalleryImage(img) || !img.src) return;
                 const wrappingLabel = img.closest('label');
                 if (wrappingLabel) { e.preventDefault(); e.stopPropagation(); }
@@ -905,7 +933,6 @@
                 if (e.key === 'Escape' && portfolioModal.style.display === 'flex') closeFlowerLightbox();
             });
         }
-        wireUpAllFlowerLightboxImages();
 
         // إضافة كائن البوكيه المعزول بداخل سلة المشتريات الموحدة
         if (addToCartBtn) {

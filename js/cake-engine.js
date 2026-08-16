@@ -655,12 +655,36 @@ function startEngineLogic() {
     toggleReplicaUploadSection();
 
     function initializeBoseLightboxGallery() {
-        const lightboxOverlay = document.getElementById('bose-lightbox-container');
-        const lightboxImg = document.getElementById('bose-lightbox-img');
-        const lightboxCard = lightboxOverlay ? lightboxOverlay.querySelector('.bose-lightbox-card') : null;
-        const lightboxClose = document.getElementById('bose-lightbox-close-btn');
+        let lightboxOverlay = document.getElementById('bose-lightbox-container');
+        let lightboxImg = document.getElementById('bose-lightbox-img');
+        let lightboxClose = document.getElementById('bose-lightbox-close-btn');
 
-        if (!lightboxOverlay || !lightboxImg) return;
+        // 🛡️👑 [تحصين جذري - النافذة بقت بتبني نفسها بنفسها لو مش موجودة]: قبل
+        // كده الميزة دي كانت معتمدة بالكامل على وجود الـ HTML الثابت بتاع
+        // #bose-lightbox-container في نفس الصفحة - لو لأي سبب (نسخة قديمة
+        // متبقاش متزامنة، خطأ نشر، تعديل يدوي...) العنصر ده مش موجود فعليًا
+        // في الصفحة اللي بتوصل للعميلة، كانت الدالة كلها بترجع فورًا (return)
+        // من غير ما تربط أي حدث ضغط خالص - يعني كل صور المحاكي، حتى القديمة
+        // اللي كانت شغالة زمان، بتوقف عن الاستجابة تمامًا من غير أي تحذير.
+        // دلوقتي لو العنصر مش لاقيه، الجافاسكريبت نفسه بيبني نافذة التكبير
+        // كاملة من الصفر ويحقنها في الصفحة - فالميزة تفضل شغالة 100% مهما
+        // كانت حالة الـ HTML المنشور، بدل ما تكون رهينة تزامن يدوي بين الملفات.
+        if (!lightboxOverlay || !lightboxImg) {
+            lightboxOverlay = document.createElement('div');
+            lightboxOverlay.className = 'bose-lightbox-overlay';
+            lightboxOverlay.id = 'bose-lightbox-container';
+            lightboxOverlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(17,17,17,0.9);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;z-index:999999;padding:20px;box-sizing:border-box;';
+            lightboxOverlay.innerHTML = `
+                <div class="bose-lightbox-card" style="background:#FFFFFF;padding:10px;border-radius:20px;width:100%;height:100%;max-width:1400px;display:flex;align-items:center;justify-content:center;position:relative;">
+                    <button type="button" class="bose-lightbox-close" id="bose-lightbox-close-btn" style="position:absolute;top:14px;left:14px;background:#FF91A4;color:#FFFFFF;border:none;width:44px;height:44px;border-radius:50%;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;">&times;</button>
+                    <img src="" id="bose-lightbox-img" alt="معاينة الصورة الفاخرة" style="max-width:100%;max-height:100%;width:auto;height:auto;border-radius:14px;object-fit:contain;display:block;">
+                </div>`;
+            document.body.appendChild(lightboxOverlay);
+            lightboxImg = document.getElementById('bose-lightbox-img');
+            lightboxClose = document.getElementById('bose-lightbox-close-btn');
+        }
+
+        const lightboxCard = lightboxOverlay.querySelector('.bose-lightbox-card');
 
         const openLightbox = (src) => {
             if (!src) return;
@@ -692,17 +716,18 @@ function startEngineLogic() {
         // حالية أو مستقبلية - بتفتح بملء الشاشة تلقائيًا، من غير ما نحتاج نسرد
         // كل عنصر بالاسم يدويًا في كل مرة نضيف صورة جديدة.
         //
-        // 🛡️ [تحصين مزدوج ضد أي تعارض في الأحداث]: بالإضافة للتفويض العام على
-        // document (اللي ممكن ينكسر لو أي كود تاني في الصفحة عمل stopPropagation
-        // في المنتصف)، بنربط استماع مباشر كمان على كل صورة وقت إنشائها فعليًا -
-        // عشان الميزة متفضلش معلقة على افتراض إن الحدث هيوصل لآخر الصفحة سليم.
+        // 🛡️ [تحصين مزدوج ضد أي تعارض في الأحداث]: التفويض هنا بقى على
+        // window (مش document بس) وفي مرحلة الـ capture (المرحلة الأولى قبل
+        // أي معالج تاني في الصفحة) - عشان محدش يقدر يوقف الحدث بـ
+        // stopPropagation قبل ما يوصلنا، أيًا كان ترتيب باقي الأكواد.
         const isOpenableGalleryImage = (img) => {
             if (!img || img.id === 'bose-lightbox-img') return false;
             return !!(img.closest('.bose-step-wizard-card') || img.closest('.bose-main-hero-hook'));
         };
 
-        document.addEventListener('click', (e) => {
-            const img = /** @type {HTMLElement} */ (e.target).closest ? /** @type {HTMLElement} */ (e.target).closest('img') : null;
+        window.addEventListener('click', (e) => {
+            const target = /** @type {HTMLElement} */ (e.target);
+            const img = target && target.closest ? target.closest('img') : null;
             if (!img || !isOpenableGalleryImage(img) || !img.src) return;
             // 🛡️ لو الصورة جوه label بتحدد اختيار (شكل/نكهة/طباعة)، بنمنع إن
             // الضغط على الصورة نفسها يغيّر الاختيار بالغلط - العميلة بتكبّر
