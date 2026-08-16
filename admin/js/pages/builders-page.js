@@ -179,6 +179,7 @@
         cakeBuilder.persons = cakeBuilder.persons || { minimum: 4, maximum: 100, step: 2 };
         cakeBuilder.images = cakeBuilder.images || {};
         cakeBuilder.giftCard = cakeBuilder.giftCard || { enabled: true, price: 30 };
+        cakeBuilder.giftCard.images = cakeBuilder.giftCard.images || [];
         cakeBuilder.referenceUpload = cakeBuilder.referenceUpload || { enabled: true, note: "" };
         cakeBuilder.portfolioGallery = cakeBuilder.portfolioGallery || [];
 
@@ -187,6 +188,7 @@
         flowerBuilder.chocolateTypes = flowerBuilder.chocolateTypes || [];
         flowerBuilder.moneyCategories = flowerBuilder.moneyCategories || [];
         flowerBuilder.portfolioGallery = flowerBuilder.portfolioGallery || [];
+        flowerBuilder.giftCardImages = flowerBuilder.giftCardImages || [];
 
         // تفعيل/إيقاف المحاكي
         document.getElementById("cake-enabled").checked = cakeBuilder.enabled !== false;
@@ -229,6 +231,16 @@
             renderNamedList("list-cake-gallery", cakeBuilder.portfolioGallery, { imageField: true });
         });
 
+        // 🎁🖼️ [معرض نماذج كارت الإهداء المطبوع - محاكي التورت]: نفس آلية معرض
+        // "تورت شرفت عملاءنا" بالظبط، بس مخزنة جوه cakeBuilder.giftCard.images
+        // (مش على مستوى cakeBuilder نفسه) عشان تفضل مرتبطة منطقياً بإعدادات
+        // كارت الإهداء نفسها.
+        renderNamedList("list-cake-giftcard-gallery", cakeBuilder.giftCard.images, { imageField: true });
+        document.getElementById("add-cake-giftcard-gallery-btn").addEventListener("click", () => {
+            cakeBuilder.giftCard.images.push({ image: "", name: "" });
+            renderNamedList("list-cake-giftcard-gallery", cakeBuilder.giftCard.images, { imageField: true });
+        });
+
         renderNamedList("list-flower-types", flowerBuilder.flowerTypes, { imageField: true });
         wireAddButton("add-flower-type-btn", "list-flower-types", flowerBuilder.flowerTypes, {});
 
@@ -250,6 +262,16 @@
         document.getElementById("add-flower-gallery-btn").addEventListener("click", () => {
             flowerBuilder.portfolioGallery.push({ image: "", name: "" });
             renderNamedList("list-flower-gallery", flowerBuilder.portfolioGallery, { imageField: true });
+        });
+
+        // 🎁🖼️ [معرض نماذج كارت الإهداء المطبوع - محاكي الورد]: نفس فكرة معرض
+        // محاكي التورت بالظبط، مخزنة هنا على مستوى flowerBuilder.giftCardImages
+        // (بما إن كارت إهداء الورد أصلاً بياخد حقوله كحقول مستوية زي giftCardPrice،
+        // مش object متداخل زي محاكي التورت).
+        renderNamedList("list-flower-giftcard-gallery", flowerBuilder.giftCardImages, { imageField: true });
+        document.getElementById("add-flower-giftcard-gallery-btn").addEventListener("click", () => {
+            flowerBuilder.giftCardImages.push({ image: "", name: "" });
+            renderNamedList("list-flower-giftcard-gallery", flowerBuilder.giftCardImages, { imageField: true });
         });
 
         document.getElementById("builders-save-btn").addEventListener("click", handleSaveAll);
@@ -278,6 +300,7 @@
                 giftCard: {
                     enabled: document.getElementById("cake-giftcard-enabled").checked,
                     price: parseFloat(document.getElementById("cake-giftCard-price").value) || 0,
+                    images: cakeBuilder.giftCard.images,
                 },
                 referenceUpload: {
                     ...cakeBuilder.referenceUpload,
@@ -304,6 +327,7 @@
                 moneyCategories: flowerBuilder.moneyCategories,
                 heroImage: flowerBuilder.heroImage || "",
                 portfolioGallery: flowerBuilder.portfolioGallery,
+                giftCardImages: flowerBuilder.giftCardImages,
             };
 
             await window.BoseAdmin.saveBuilderSettings({ cake_builder: updatedCake, flower_builder: updatedFlower });

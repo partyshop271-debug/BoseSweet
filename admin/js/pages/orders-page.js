@@ -100,20 +100,83 @@
 
     /* ============================= مودال تفاصيل الطلب ============================= */
 
+    const SHAPE_LABELS = { circle: "دائري", heart: "قلب", square: "مربع", rectangle: "مستطيل" };
+    const PRINTING_LABELS = { edible: "صورة صالحة للأكل", "non-edible": "صورة مجسمة غير صالحة للأكل" };
+    const FLOWER_TYPE_LABELS = { natural: "طبيعي نضر", artificial: "صناعي فاخر", satin: "ستان مصنوع بحب" };
+
+    /**
+     * 🐛🖼️ [إصلاح جذري - تفاصيل الطلب المخصص كانت مش ظاهرة خالص للأدمن]: المودال
+     * قبل كده كان بيكتفي بتاج عام "طلب مخصص (محاكي)" من غير أي تفاصيل فعلية -
+     * يعني الفرع معندوش أي طريقة يرجع يشوف مناسبة/نكهة/شكل التورتة، نص كارت
+     * الإهداء، ملاحظة الحساسية، أو حتى روابط الصور المرفوعة (المرجعية/الطباعة)
+     * بعد إتمام الطلب، غير لو رسالة الواتساب الأصلية اتحفظت أو محدش مسحها.
+     * البيانات دي كانت بالفعل محفوظة كاملة في custom_details (JSONB) في القاعدة
+     * من أول يوم - المشكلة كانت في العرض بس، مش في التخزين.
+     */
+    function customDetailsBlockHTML(item) {
+        const e = window.BoseAdminUI.escapeHtml;
+        const cd = item.custom_details || {};
+        if (!cd || Object.keys(cd).length === 0) return "";
+
+        const isCake = item.item_type === "custom-cake" || item.item_type === "mini-cake";
+        const isFlower = item.item_type === "custom-flower";
+        const rows = [];
+
+        if (isCake) {
+            if (cd.occasionLabel) rows.push(["المناسبة", e(cd.occasionLabel)]);
+            if (cd.cakeType && cd.cakeType !== "none") rows.push(["طعم الكيك", e(cd.cakeType)]);
+            if (cd.shape) rows.push(["الشكل", SHAPE_LABELS[cd.shape] || e(cd.shape)]);
+            if (cd.persons) rows.push(["عدد الأفراد", `${cd.persons} فرد`]);
+            if (cd.printingType && cd.printingType !== "none") rows.push(["الطباعة", PRINTING_LABELS[cd.printingType] || e(cd.printingType)]);
+            if (cd.customMessage) rows.push(["الرسالة المكتوبة", `"${e(cd.customMessage)}"`]);
+            if (cd.allergyNote) rows.push(["⚠️ ملاحظة حساسية", e(cd.allergyNote)]);
+            if (cd.hasGiftCard && cd.giftCardText) rows.push(["كارت إهداء مطبوع", `"${e(cd.giftCardText)}"`]);
+        } else if (isFlower) {
+            if (cd.moodLabel) rows.push(["الإحساس المطلوب", e(cd.moodLabel)]);
+            if (cd.flowerType && cd.flowerType !== "none") rows.push(["نوع الورد", FLOWER_TYPE_LABELS[cd.flowerType] || e(cd.flowerType)]);
+            if (cd.flowerCount) rows.push(["عدد الورد", `${cd.flowerCount} وردة`]);
+            if (cd.cashAmount) rows.push(["الكاش المدمج", `+${cd.cashAmount} ج.م`]);
+            if (cd.hasChocolate && cd.chocolateBudget) rows.push(["ميزانية الشوكولاتة", `+${cd.chocolateBudget} ج.م`]);
+            if (cd.hasGiftCard && cd.giftCardText) rows.push(["كارت الإهداء", `"${e(cd.giftCardText)}"`]);
+        } else if (cd.sizeLabel) {
+            rows.push(["الحجم", e(cd.sizeLabel)]);
+        }
+
+        const photoLinks = [];
+        if (cd.printImageUrl) photoLinks.push(`<a href="${e(cd.printImageUrl)}" target="_blank" rel="noopener"><img src="${e(cd.printImageUrl)}" alt="صورة الطباعة" loading="lazy" style="width:52px;height:52px;border-radius:8px;object-fit:cover;"></a>`);
+        if (cd.replicaImageUrl) photoLinks.push(`<a href="${e(cd.replicaImageUrl)}" target="_blank" rel="noopener"><img src="${e(cd.replicaImageUrl)}" alt="صورة التصميم المرجعي" loading="lazy" style="width:52px;height:52px;border-radius:8px;object-fit:cover;"></a>`);
+        if (item.reference_images && item.reference_images.length) {
+            item.reference_images.forEach((url) => {
+                photoLinks.push(`<a href="${e(url)}" target="_blank" rel="noopener"><img src="${e(url)}" alt="صورة مرجعية" loading="lazy" style="width:52px;height:52px;border-radius:8px;object-fit:cover;"></a>`);
+            });
+        }
+
+        if (rows.length === 0 && photoLinks.length === 0) return "";
+
+        return `
+            <div class="adm-order-item-custom-details" style="font-size:12.5px; color:#111; background:rgba(255,145,164,0.05); padding:8px 10px; border-radius:10px; margin-top:6px; border-right:3px solid #FF91A4; display:flex; flex-direction:column; gap:3px;">
+                ${rows.map(([label, val]) => `<div><strong>${label}:</strong> ${val}</div>`).join("")}
+                ${photoLinks.length ? `<div style="display:flex; gap:6px; margin-top:4px; flex-wrap:wrap;">${photoLinks.join("")}</div>` : ""}
+            </div>`;
+    }
+
     function orderItemRowHTML(item) {
         const e = window.BoseAdminUI.escapeHtml;
         const isCustom = item.custom_details && Object.keys(item.custom_details).length > 0;
         return `
-            <div class="adm-order-item-row">
-                <div>
-                    <strong>${e(item.title)}</strong>
-                    <span class="adm-order-item-meta">
-                        ${item.flavor_name ? e(item.flavor_name) + " · " : ""}الكمية: ${item.quantity}
-                        ${isCustom ? " · طلب مخصص (محاكي)" : ""}
-                        ${item.reference_images && item.reference_images.length ? ` · ${item.reference_images.length} صورة مرجعية` : ""}
-                    </span>
+            <div class="adm-order-item-row" style="flex-direction: column; align-items: stretch;">
+                <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+                    <div>
+                        <strong>${e(item.title)}</strong>
+                        <span class="adm-order-item-meta">
+                            ${item.flavor_name ? e(item.flavor_name) + " · " : ""}الكمية: ${item.quantity}
+                            ${isCustom ? " · طلب مخصص (محاكي)" : ""}
+                            ${item.reference_images && item.reference_images.length ? ` · ${item.reference_images.length} صورة مرجعية` : ""}
+                        </span>
+                    </div>
+                    <div>${money(item.line_total)}</div>
                 </div>
-                <div>${money(item.line_total)}</div>
+                ${customDetailsBlockHTML(item)}
             </div>`;
     }
 
