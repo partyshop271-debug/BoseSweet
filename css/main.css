@@ -1007,11 +1007,16 @@
    كان عرض الكارت في أي شبكة أو حجم شاشة. */
 .product-card-img {
     width: 100%;
+    height: auto;
     aspect-ratio: 1 / 1;
+    min-height: 0;
+    max-height: none;
     border-radius: var(--bose-radius-md);
     display: block;
+    flex-shrink: 0;
     margin-bottom: 14px;
     object-fit: cover;
+    object-position: center;
 }
 
 @media (min-width: 1024px) {
