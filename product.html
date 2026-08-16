@@ -26,6 +26,7 @@
     <link rel="stylesheet" href="css/main.css?v=2026_production_v32.0">
     
     <script src="js/supabase-client.js?v=2026_production_v32.0" defer></script>
+    <script src="js/favorites-engine.js?v=2026_production_v32.0" defer></script>
     <script src="js/core-engine.js?v=2026_production_v32.0" defer></script>
 
     <style>
@@ -81,6 +82,19 @@
             object-fit: cover;
             display: block;
             transition: opacity 0.3s ease;
+        }
+
+        /* 💗 [نظام المفضلة]: نسخة مكبّرة من زرار القلب الموحد (bose-fav-btn من
+           main.css)، ظاهرة فوق صورة المعرض الرئيسية مباشرة بدل جوه كارت صغير. */
+        .bose-fav-btn-large {
+            top: 16px;
+            left: 16px;
+            width: 46px;
+            height: 46px;
+            z-index: 5;
+        }
+        .bose-fav-btn-large i {
+            font-size: 20px;
         }
 
         /* 🔍 [لايت بوكس جديد]: نافذة منبثقة تملي الشاشة لعرض صورة المنتج بأدق تفاصيلها عند الضغط */
@@ -454,6 +468,12 @@
                 <div class="master-image-frame" id="bose-master-gallery-frame">
                     <img id="bose-master-gallery-image" src="" alt="صورة المنتج الفاخر" loading="eager">
                 </div>
+                <!-- 💗 [نظام المفضلة]: نفس زرار القلب المستخدم في كروت المنتجات (bose-fav-btn)
+                     لكن مكبّر شوية هنا فوق صورة المعرض الرئيسية - data-fav-id وحالة is-active
+                     بيتحطوا من renderProductPage() بعد ما بيانات المنتج توصل فعلياً. -->
+                <button type="button" id="bose-product-fav-btn" class="bose-fav-btn bose-fav-btn-large" aria-label="إضافة للمفضلة">
+                    <i class="fa-regular fa-heart"></i>
+                </button>
                 <div id="bose-thumbnails-strip" class="thumbnails-strip-flow"></div>
             </div>
 
@@ -835,6 +855,30 @@
 
                 document.getElementById("bose-product-title-text").textContent = currentProduct.title;
                 document.title = `${currentProduct.title} | حلويات بوسي الفاخرة`;
+
+                // 💗 [نظام المفضلة]: تفعيل حالة القلب فوق صورة المنتج حسب localStorage
+                // وربط الضغطة بـ toggleBoseFavorite الموحدة (نفس المحرك اللي كروت الموقع
+                // كله بتستخدمه)، مرة واحدة بس عشان ما يتكررش المستمع لو الصفحة اتحدثت.
+                const favBtn = document.getElementById("bose-product-fav-btn");
+                if (favBtn && !favBtn.dataset.favWired) {
+                    favBtn.dataset.favWired = "1";
+                    favBtn.setAttribute("data-fav-id", currentProduct.id);
+                    const syncFavBtnState = () => {
+                        const isFav = typeof window.isBoseFavorite === "function" && window.isBoseFavorite(currentProduct.id);
+                        favBtn.classList.toggle("is-active", isFav);
+                        favBtn.setAttribute("aria-label", isFav ? "إزالة من المفضلة" : "إضافة للمفضلة");
+                        const icon = favBtn.querySelector("i");
+                        if (icon) {
+                            icon.classList.toggle("fa-solid", isFav);
+                            icon.classList.toggle("fa-regular", !isFav);
+                        }
+                    };
+                    syncFavBtnState();
+                    favBtn.addEventListener("click", () => {
+                        if (window.toggleBoseFavorite) window.toggleBoseFavorite(currentProduct.id, favBtn);
+                        syncFavBtnState();
+                    });
+                }
                 
                 const catBadge = document.getElementById("bose-product-badge-cat");
                 if (catBadge && currentProduct.category) {

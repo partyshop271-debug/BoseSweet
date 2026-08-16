@@ -28,6 +28,7 @@
     <!-- 👑 استدعاء المحرك المركزي العالمي في رأس الصفحة لتأمين الـ DOM ومنع وميض الألوان -->
     <!-- ⚡ [إصلاح أداء]: defer عشان السكريبت متوقفش رسم الصفحة -->
     <script src="js/supabase-client.js?v=2026_production_v32.0" defer></script>
+    <script src="js/favorites-engine.js?v=2026_production_v32.0" defer></script>
     <script src="js/core-engine.js?v=2026_production_v32.0" defer></script>
 
     <style>
@@ -617,8 +618,18 @@
                     const sizeImg = (product.sizeImages && defaultSize) ? product.sizeImages[defaultSize] : null;
                     const cardImageUrl = sizeImg || product.image || (product.images ? product.images[0] : '');
 
+                    // 💗 [نظام المفضلة]: نفس زرار القلب المستخدم في createProductCardHTML
+                    // الموحدة (core-engine.js)، مطبّق هنا كمان لأن هذا الملف عنده نسخة
+                    // منفصلة من كارت المنتج (راجع التعليق فوق عن سبب الانفصال ده).
+                    const isFav = typeof window.isBoseFavorite === 'function' && window.isBoseFavorite(product.id);
+                    const favBtnHtml = `
+                        <button type="button" class="bose-fav-btn${isFav ? ' is-active' : ''}" data-fav-id="${product.id}" aria-label="${isFav ? 'إزالة من المفضلة' : 'إضافة للمفضلة'}" onclick="event.stopPropagation(); if(window.toggleBoseFavorite){ window.toggleBoseFavorite('${product.id}', this); }">
+                            <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
+                        </button>`;
+
                     cardElement.innerHTML = `
                         ${discountBadgeHtml}
+                        ${favBtnHtml}
                         <a href="product.html?slug=${encodeURIComponent(product.slug)}" class="product-card-link" aria-label="عرض تفاصيل منتج ${safeTitle}">
                             <img class="product-card-img" data-size-img="1" src="${window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(cardImageUrl, 450) : cardImageUrl}" alt="${safeTitle}" loading="lazy">
                             <h3 class="product-card-title">${safeTitle}</h3>

@@ -34,7 +34,11 @@ body {
     padding: 0;
 }
 
-/* 🔄 هندسة مجرى الحركة الأفقي للمقترحات الذكية لمنع التراص البصري وثبات الأبعاد */
+/* 🔄 هندسة مجرى الحركة الأفقي للمقترحات الذكية لمنع التراص البصري وثبات الأبعاد.
+   👑 [توحيد الكارت]: كروت "قد يعجبك أيضاً" بقت product-card-unified الموحدة
+   نفسها (نفس المستخدمة في كل الموقع)، فالتصميم الفعلي للكارت جاي من main.css -
+   القواعد هنا بتحدد بس عرض ثابت لكل كارت جوه السلايدر الأفقي (نفس فكرة سلايدر
+   "الأكثر مبيعاً" بالرئيسية بالظبط)، بدل تصميم كارت "مصغّر" منفصل كان قبل كده. */
 .bose-cart-horizontal-slider {
     display: flex !important;
     flex-direction: row !important;
@@ -53,120 +57,17 @@ body {
     display: none !important;
 }
 
-/* كارت المقترحات الذكية الفاخر والمنعزل بصرياً */
-.bose-cart-horizontal-slider .bose-suggestion-micro-card {
-    flex: 0 0 300px !important;
-    width: 300px !important;
-    max-width: 300px !important;
-    box-sizing: border-box !important;
+.bose-cart-horizontal-slider > .product-card-unified {
+    flex: 0 0 260px !important;
+    width: 260px !important;
     scroll-snap-align: start;
-    background: #FFFFFF !important;
-    border: 1px solid rgba(255, 145, 164, 0.3) !important; /* إطار ناعم بلون نبض الحياة */
-    border-radius: 24px !important;
-    overflow: hidden;
-    padding: 0 !important;
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: space-between;
-    box-shadow: 0 8px 32px rgba(255, 145, 164, 0.06) !important; /* ظلال ناعمة بمبي خالية من أي سواد */
-    transition: transform 0.3s ease, box-shadow 0.3s ease !important;
-    position: relative;
 }
-.bose-cart-horizontal-slider .bose-suggestion-micro-card:hover {
-    transform: translateY(-6px) !important;
-    box-shadow: 0 12px 32px rgba(255, 145, 164, 0.12) !important;
-    border-color: #FF91A4 !important;
-}
-.bose-suggestion-image-wrapper {
-    width: 100%;
-    height: 200px;
-    overflow: hidden;
-    position: relative;
-    background: #FFFFFF;
-}
-.bose-suggestion-image-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s ease;
-}
-.bose-suggestion-micro-card:hover .bose-suggestion-image-wrapper img {
-    transform: scale(1.05);
-}
-/* 🛡️ [إصلاح جديد]: شارة الخصم لأي منتج مقترح عليه عرض فعلي - نفس منطق باقي
-   الموقع (oldPrice > price) بدل ما يظهر بسعره العادي وكأنه منتج بلا عرض. */
-.bose-suggestion-micro-card .offer-badge {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    background: #FF91A4;
-    color: #FFFFFF;
-    font-size: 0.72rem;
-    font-weight: 700;
-    padding: 4px 12px;
-    border-radius: 30px;
-    z-index: 2;
-    box-shadow: 0 4px 10px rgba(255, 145, 164, 0.35);
-}
-.bose-suggestion-old-price {
-    font-size: 0.85rem;
-    color: #111111;
-    text-decoration: line-through;
-    font-weight: 600;
-    margin-left: 6px;
-}
-.bose-suggestion-content-pane {
-    padding: 18px;
-    text-align: right;
-    direction: rtl;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-.bose-suggestion-title-text {
-    margin: 0;
-    font-size: 1.1rem;
-    font-weight: 700 !important; /* قفل وزن الخط عند 700 كحد أقصى للعناوين */
-    color: #111111;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-.bose-suggestion-rating-stars {
-    color: #FF91A4; /* لمسة ذهبية ناعمة ورمزية لفخامة اللوجو */
-    font-size: 0.85rem;
-    display: flex;
-    gap: 2px;
-}
-.bose-suggestion-footer-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 6px;
-}
-.bose-suggestion-price-tag {
-    font-size: 1.15rem;
-    font-weight: 700;
-    color: #FF91A4; /* السعر بلون نبض الحياة البمبي */
-}
-.bose-suggestion-add-trigger {
-    background: #FF91A4;
-    color: #FFFFFF;
-    border: none;
-    padding: 8px 18px;
-    border-radius: 30px;
-    font-family: 'Cairo', sans-serif;
-    font-size: 0.85rem;
-    font-weight: 700;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    transition: all 0.25s ease;
-}
-.bose-suggestion-add-trigger:hover {
-    background: #FF91A4; /* تعديل الهوفر للون البمبي الداكن بدلاً من الأسود المحظور */
-    transform: translateY(-2px);
+
+@media (max-width: 480px) {
+    .bose-cart-horizontal-slider > .product-card-unified {
+        flex: 0 0 210px !important;
+        width: 210px !important;
+    }
 }
 
 /* 👑 أمان وتأمين راحة المعالجة اللحظية للسلة لمنع وميض الصفحة 👑 */
@@ -205,6 +106,7 @@ body {
 </style>
 <!-- استدعاء المحرك المركزي الموحد حارس الحسابات وحاقن الهيدر والفوتر آلياً أولاً -->
 <script src="js/supabase-client.js?v=2026_production_v32.0" defer></script>
+<script src="js/favorites-engine.js?v=2026_production_v32.0" defer></script>
 <script src="js/core-engine.js?v=2026_production_v32.0" defer></script>
 </head>
 <body class="bose-hardware-accelerated">
@@ -311,11 +213,6 @@ body {
 <script>
 document.addEventListener("DOMContentLoaded", () => {
 
-    const secureEscape = (str) => {
-        if (!str) return '';
-        return str.toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    };
-
     const renderStrictSuggestionsGrid = (dbData) => {
         const targetGrid = document.getElementById("bose-cart-premium-suggestions-grid");
         if (!targetGrid || !dbData || !dbData.products) return;
@@ -328,175 +225,37 @@ document.addEventListener("DOMContentLoaded", () => {
         // ورد) من قسم "قد يعجبك أيضاً". منتجات المحاكي دي معندهاش سعر أو تفاصيل ثابتة
         // أصلاً، وكانت بتظهر هنا كأي منتج عادي وتتضاف للسلة مباشرة بزرار "إضافة سريعة"
         // من غير ما العميل يفتح المحاكي أو يختار طعم/شكل/عدد أفراد - وده كان بالظبط
-        // سبب "التورتة اللي بتتضاف من غير محاكي".
+        // سبب "التورتة اللي بتتضاف من غير محاكي". فحص isBuilderMaster نفسه موجود
+        // كمان داخل createProductCardHTML كحماية إضافية (دفاع في العمق).
         const finalSuggestions = dbData.products.filter(p =>
             !cartSlugs.includes(p.slug) &&
             !(p.customBuilderUrl && p.builderType && p.builderType !== 'standard')
         ).slice(0, 5);
-
-        const currency = dbData.store?.currency || "EGP";
 
         if (finalSuggestions.length === 0) {
             targetGrid.innerHTML = `<p style="text-align:center; width:100%; font-weight:700; padding:20px; opacity:0.6;">تصفح قائمتنا الشاملة عبر المنيو لاستكشاف المزيد من المفاجآت 🌸</p>`;
             return;
         }
 
-        targetGrid.innerHTML = finalSuggestions.map(prod => {
-            const defaultLogo = "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png";
-            const baseImgUrl = prod.images && prod.images[0] ? prod.images[0] : (prod.image || defaultLogo);
+        // 👑👑 [توحيد الكارت]: بدل ما الملف ده يبني نسخته الخاصة من كارت المنتج
+        // (كود مكرر بمنطق وتصميم شبه-متطابق لكن منفصل تماماً عن باقي الموقع)،
+        // بقى بيستخدم createProductCardHTML الموحدة زي أي كارت تاني بالموقع
+        // (رئيسية/فئة/عروض/مفضلة) - يعني نفس تبويبات الأحجام، نفس شارة الخصم/
+        // "نفدت الكمية"، ونفس زرار المفضلة 💗 بقى موجود هنا تلقائياً من غير أي
+        // كود إضافي، لأنه جزء من الكارت الموحد نفسه.
+        targetGrid.innerHTML = finalSuggestions.map(prod => window.createProductCardHTML(prod)).join("");
 
-            // 👑 [إصلاح جذري - كارثة الأحجام] (مكرر تحت) بيحدد defaultSizeKey - محتاجينه
-            // هنا الأول عشان نحدد صورة البداية الصح لو المنتج عنده صورة مخصصة لكل حجم
-            // (زي الديسباسيتو/الريدڤيلڤت) بدل ما نعرض images[0] دايماً بغض النظر عن الحجم.
-            const suggestAvailableSizes = (prod.prices && typeof prod.prices === 'object') ? Object.keys(prod.prices) : [];
-            const suggestDefaultSizeKey = (prod.defaultSize && suggestAvailableSizes.includes(prod.defaultSize)) ? prod.defaultSize : (suggestAvailableSizes[0] || null);
-            const imgUrl = (prod.sizeImages && suggestDefaultSizeKey && prod.sizeImages[suggestDefaultSizeKey]) ? prod.sizeImages[suggestDefaultSizeKey] : baseImgUrl;
-
-            // 👑 [إصلاح جذري - المقترحات كانت "كارت مبتور"]: قبل كده الكارت هنا كان
-            // بيوري بس الاسم والسعر وزرار إضافة سريعة، من غير أي إشارة للنكهة أو
-            // وصف مختصر أو أحجام متعددة - العميل كان بيضيف منتج للسلة وهو ملهوش
-            // أي فكرة عن تفاصيله الحقيقية. دلوقتي بيظهر نفس البيانات الأساسية
-            // الموجودة في أي كارت منتج تاني بالموقع (نكهة + سطر وصف مختصر جداً).
-            const safeFlavor = secureEscape(prod.flavorName || '');
-            const safeDesc = secureEscape(prod.flavorDesc || (prod.description ? prod.description.substring(0, 60) + '...' : ''));
-
-            // 👑 [إصلاح جذري - كارثة الأحجام]: لو المنتج المقترح عنده أكتر من حجم
-            // سعر حقيقي (زي الديسباسيتو)، لازم يظهر اختيار الحجم هنا كمان قبل
-            // الإضافة السريعة - نفس بالظبط اللي طبّقناه في createProductCardHTML.
-            const availableSizes = (prod.prices && typeof prod.prices === 'object') ? Object.keys(prod.prices) : [];
-            const distinctSizePrices = new Set(availableSizes.map(s => prod.prices[s]));
-            const hasMultipleSizes = availableSizes.length > 1 && distinctSizePrices.size > 1;
-            const defaultSizeKey = (prod.defaultSize && availableSizes.includes(prod.defaultSize)) ? prod.defaultSize : (availableSizes[0] || null);
-            const calculatedPrice = window.calculateProductFinalPrice ? window.calculateProductFinalPrice(prod, hasMultipleSizes ? { size: defaultSizeKey } : {}) : (window.calculateBosePrice ? window.calculateBosePrice(prod.price, "menu-only") : prod.price);
-
-            const sizeTabsHTML = hasMultipleSizes ? `
-                <div class="bose-mini-size-note"><i class="fa-solid fa-circle-info"></i> متاح بأحجام متعددة:</div>
-                <div class="bose-card-size-tabs" role="group" aria-label="اختيار الحجم">
-                    ${availableSizes.map(sizeKey => `
-                        <button type="button" class="bose-card-size-pill${sizeKey === defaultSizeKey ? ' active' : ''}" data-size-key="${sizeKey}">${(window.BOSE_SIZE_LABELS && window.BOSE_SIZE_LABELS[sizeKey]) || sizeKey}</button>
-                    `).join('')}
-                </div>
-            ` : '';
-
-            // 🛡️ [إصلاح حرج]: إظهار شارة الخصم والسعر القديم المشطوب لو المنتج المقترح
-            // عليه عرض فعلي (oldPrice > price) - نفس تنسيق باقي الموقع بالظبط، بدل ما
-            // يظهر هنا بسعره الحالي بس وكأنه منتج عادي ما عليهوش أي خصم.
-            const hasDiscount = !!(prod.oldPrice && prod.oldPrice > prod.price);
-            const discountBadgeHTML = hasDiscount
-                ? `<div class="offer-badge">خصم ${Math.round(((prod.oldPrice - prod.price) / prod.oldPrice) * 100)}%</div>`
-                : '';
-            const oldPriceHTML = hasDiscount
-                ? `<span class="bose-suggestion-old-price">${Math.round(prod.oldPrice)} ${currency}</span>`
-                : '';
-
-            return `
-                <div class="bose-suggestion-micro-card" data-slug="${prod.slug}" data-selected-size="${defaultSizeKey || ''}" style="cursor:pointer;" onclick="if(!event.target.closest('.bose-card-size-tabs') && !event.target.closest('.btn-quick-add-to-cart')){ window.location.href='product.html?slug=${encodeURIComponent(prod.slug)}'; }">
-                    ${discountBadgeHTML}
-                    <a href="product.html?slug=${encodeURIComponent(prod.slug)}" class="bose-suggestion-image-wrapper" style="display:block;">
-                        <img src="${window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(imgUrl, 300) : imgUrl}" alt="${secureEscape(prod.title)}" data-size-img="1" loading="lazy" width="300" height="200" onerror="this.src='${defaultLogo}';">
-                    </a>
-                    <div class="bose-suggestion-content-pane">
-                        <a href="product.html?slug=${encodeURIComponent(prod.slug)}" style="text-decoration:none; color:inherit;">
-                            <h4 class="bose-suggestion-title-text">${secureEscape(prod.title)}</h4>
-                        </a>
-                        ${safeFlavor ? `<span class="bose-suggestion-flavor-name">${safeFlavor}</span>` : ''}
-                        ${safeDesc ? `<p class="bose-suggestion-desc-text">${safeDesc}</p>` : ''}
-                        ${sizeTabsHTML}
-                        <div class="bose-suggestion-footer-row">
-                            <span class="bose-suggestion-price-tag">${oldPriceHTML}${Math.round(calculatedPrice)} ${currency}</span>
-                            <button class="btn-quick-add-to-cart bose-suggestion-add-trigger" aria-label="إضافة سريعة صنف ${secureEscape(prod.title)}">
-                                <i class="fas fa-plus"></i> إضافة
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }).join("");
-
-        // تفعيل أزرار اختيار الحجم داخل كل كارت مقترح (تحديث السعر لحظياً + تسجيل الاختيار)
-        targetGrid.querySelectorAll('.bose-card-size-pill').forEach(pill => {
-            pill.addEventListener('click', (e) => {
-                e.preventDefault();
-                const card = pill.closest('.bose-suggestion-micro-card');
-                if (!card) return;
-                const slug = card.dataset.slug;
-                const product = dbData.products.find(p => p.slug === slug);
-                if (!product) return;
-
-                card.querySelectorAll('.bose-card-size-pill').forEach(p => p.classList.remove('active'));
-                pill.classList.add('active');
-                card.dataset.selectedSize = pill.dataset.sizeKey;
-
-                const newPrice = window.calculateProductFinalPrice(product, { size: pill.dataset.sizeKey });
-                const priceTag = card.querySelector('.bose-suggestion-price-tag');
-                if (priceTag) priceTag.textContent = `${Math.round(newPrice)} ${currency}`;
-
-                // 🖼️🛡️ [إصلاح جذري - الصورة مش بتتغيّر مع الحجم]: نفس إصلاح
-                // core-engine.js و category.html - كارت المقترحات هنا كان بيسيب
-                // نفس صورة images[0] ثابتة حتى لو المنتج (الديسباسيتو/الريدڤيلڤت)
-                // عنده صورة مختلفة مسجلة لكل حجم في product.sizeImages.
-                const imgNode = card.querySelector('.bose-suggestion-image-wrapper img[data-size-img]');
-                if (imgNode && product.sizeImages && product.sizeImages[pill.dataset.sizeKey]) {
-                    const newImgUrl = product.sizeImages[pill.dataset.sizeKey];
-                    const optimizedUrl = window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(newImgUrl, 300) : newImgUrl;
-                    if (imgNode.getAttribute('src') !== optimizedUrl) {
-                        imgNode.style.transition = 'opacity 0.15s ease';
-                        imgNode.style.opacity = '0.4';
-                        setTimeout(() => {
-                            imgNode.src = optimizedUrl;
-                            imgNode.style.opacity = '1';
-                        }, 120);
-                    }
+        // بعد أي إضافة فعلية للسلة من كارت مقترح (الزرار الموحد بيستدعي
+        // window.handleBoseDirectAddToCart تلقائياً بنفسه)، لازم قائمة أصناف
+        // السلة الحقيقية أعلى الصفحة تتحدّث فوراً، والمنتج اللي اتضاف يختفي من
+        // نفس قائمة "قد يعجبك أيضاً" (بقى في السلة فعلاً، مش منطقي يفضل مقترح).
+        targetGrid.querySelectorAll('.btn-add-to-cart').forEach(btn => {
+            if (btn.disabled) return; // منتج نفدت كميته - مفيش إضافة تحصل أصلاً
+            btn.addEventListener('click', () => {
+                if (typeof window.initializeCartEngine === "function") {
+                    window.initializeCartEngine(dbData);
                 }
-            });
-        });
-
-        // تفعيل مستمعي كروت المقترحات يدوياً وبطريقة معزولة تمنع وميض وتصفير الصفحة
-        targetGrid.querySelectorAll('.btn-quick-add-to-cart').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                const card = btn.closest('.bose-suggestion-micro-card');
-                const slug = card ? card.dataset.slug : null;
-                const product = dbData.products.find(p => p.slug === slug);
-
-                // 🛡️ [تحصين إضافي]: حتى مع الفلترة فوق، أي منتج مرتبط بمحاكي بيتحول
-                // لصفحة المحاكي بدل ما يتضاف مباشرة بسعر افتراضي غلط - مفيش أي طريقة
-                // تقدر تتحايل بيها على الفحص ده مهما كان مصدر الاستدعاء.
-                if (product && product.customBuilderUrl && product.builderType && product.builderType !== 'standard') {
-                    window.location.href = product.customBuilderUrl;
-                    return;
-                }
-
-                if (product && window.createCartItem) {
-                    // 👑 [إصلاح جذري - كارثة الأحجام]: نضيف بالحجم اللي العميل اختاره
-                    // فعلياً من تبويب الحجم جوه الكارت (لو موجود) بدل ما نضيف دايماً
-                    // بأرخص حجم افتراضي زي ما كان بيحصل قبل كده.
-                    const selectedSize = card ? (card.dataset.selectedSize || null) : null;
-                    const addOpts = selectedSize ? { size: selectedSize } : {};
-                    const standardItem = window.createCartItem(product, addOpts, 1);
-                    if (standardItem) {
-                        const lineId = selectedSize ? `${product.slug}-${selectedSize}` : product.slug;
-                        standardItem.id = lineId;
-                        const rawCartItems = localStorage.getItem("bose_cart");
-                        let cartList = rawCartItems ? JSON.parse(rawCartItems) : [];
-                        const existIdx = cartList.findIndex(item => item.id === lineId);
-                        if (existIdx > -1) cartList[existIdx].quantity += 1;
-                        else cartList.push(standardItem);
-                        localStorage.setItem("bose_cart", JSON.stringify(cartList));
-                        if (window.updateGlobalCartCounter) window.updateGlobalCartCounter();
-
-                        // تفعيل التحديث الموضعي اللحظي مع الإشعار بمبي الفخامة دون كسر أو شلل الصفحة
-                        if (window.showBoseGlobalToast) {
-                            window.showBoseGlobalToast(`تمت إضافة ${product.title} إلى سلة المشتريات.`);
-                        }
-
-                        // رندرة السلة الجانبية لحظياً دون الفقد أو وميض الصفحة
-                        if (typeof window.initializeCartEngine === "function") {
-                            window.initializeCartEngine(dbData);
-                        }
-                        renderStrictSuggestionsGrid(dbData);
-                    }
-                }
+                renderStrictSuggestionsGrid(dbData);
             });
         });
     };

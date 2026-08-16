@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+    <link rel="apple-touch-icon" href="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#FF91A4">
+    <title>مفضلتي | حلويات بوسي</title>
+
+    <!-- 🔍 صفحة شخصية بحتة (محتواها مختلف تماماً من زائر لآخر حسب متصفحه) -
+         مفيش أي قيمة أرشفة حقيقية ليها لمحركات البحث، فبنمنع الفهرسة صراحةً. -->
+    <meta name="description" content="كل الأصناف اللي عجبتك من حلويات بوسي في مكان واحد، جاهزة تضيفيها للسلة في أي وقت.">
+    <meta name="robots" content="noindex, nofollow">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/global.css?v=2026_production_v32.0">
+    <link rel="stylesheet" href="css/main.css?v=2026_production_v32.0">
+
+    <!-- 👑 نفس المحرك المركزي العالمي - renderBoseFavoritesPage() جواه بيستخدم
+         نفس createProductCardHTML الموحدة اللي بتغذي كارت الرئيسية والعروض. -->
+    <script src="js/supabase-client.js?v=2026_production_v32.0" defer></script>
+    <script src="js/favorites-engine.js?v=2026_production_v32.0" defer></script>
+    <script src="js/core-engine.js?v=2026_production_v32.0" defer></script>
+
+    <style>
+        .fav-page-hero {
+            padding: 50px 20px 30px 20px;
+            text-align: center;
+            background: linear-gradient(rgba(255, 145, 164, 0.06), rgba(255, 145, 164, 0.01));
+        }
+        .fav-page-hero .fav-page-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background-color: rgba(255, 145, 164, 0.1);
+            color: var(--bose-pink);
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            border: 1px solid rgba(255, 145, 164, 0.2);
+        }
+        .fav-page-hero h1 {
+            font-size: 30px;
+            color: var(--bose-black);
+            margin: 0 0 12px 0;
+        }
+        .fav-page-hero p {
+            font-size: 15px;
+            color: var(--bose-black);
+            opacity: 0.8;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+        .fav-page-wrapper {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 16px 70px 16px;
+            box-sizing: border-box;
+        }
+        #bose-favorites-grid.products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 16px;
+        }
+        @media (min-width: 640px) {
+            #bose-favorites-grid.products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+                gap: 22px;
+            }
+        }
+        #bose-favorites-empty-state {
+            display: none;
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--bose-black);
+            opacity: 0.8;
+        }
+        #bose-favorites-empty-state i {
+            font-size: 2.8rem;
+            color: var(--bose-pink);
+            margin-bottom: 18px;
+            display: block;
+        }
+        #bose-favorites-empty-state h2 {
+            font-size: 1.2rem;
+            margin: 0 0 8px 0;
+            color: var(--bose-black);
+        }
+        #bose-favorites-empty-state p {
+            font-size: 0.95rem;
+            max-width: 420px;
+            margin: 0 auto 22px auto;
+            line-height: 1.7;
+            opacity: 0.85;
+        }
+        #bose-favorites-empty-state .fav-empty-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background-color: var(--bose-pink);
+            color: #FFFFFF !important;
+            padding: 12px 28px;
+            border-radius: var(--bose-radius-pill, 999px);
+            font-weight: 700;
+            font-size: 0.95rem;
+            text-decoration: none;
+            box-shadow: var(--bose-shadow-glow);
+            transition: var(--bose-transition-fast);
+        }
+        #bose-favorites-empty-state .fav-empty-cta:hover {
+            box-shadow: var(--bose-shadow-hover);
+            transform: translateY(-2px);
+        }
+        /* ⏳ هيكل تحميل بسيط لحد ما بيانات المتجر توصل، عشان الصفحة متبانش فاضية
+           للحظة قبل ما renderBoseFavoritesPage تشتغل. */
+        #bose-favorites-loading {
+            text-align: center;
+            padding: 60px 20px;
+            opacity: 0.6;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="bose-header-injector"></div>
+
+    <main>
+        <section class="fav-page-hero">
+            <span class="fav-page-badge"><i class="fa-solid fa-heart"></i> مفضلتك الخاصة</span>
+            <h1>مفضلتي</h1>
+            <p>كل الأصناف اللي وقعتي في غرامها محفوظة هنا في مكان واحد، جاهزة تضيفيها لسلتك في أي وقت من غير ما تدوري عليها تاني.</p>
+        </section>
+
+        <div class="fav-page-wrapper">
+            <div id="bose-favorites-loading">جاري تحضير مفضلتك...</div>
+
+            <div id="bose-favorites-grid" class="bose-products-grid products-grid"></div>
+
+            <div id="bose-favorites-empty-state">
+                <i class="fa-regular fa-heart"></i>
+                <h2>مفضلتك لسه فاضية</h2>
+                <p>اضغطي على شكل القلب 🤍 اللي فوق أي صنف عاجبك أثناء تصفحك، وهيتحفظلك هنا عشان ترجعيله بسهولة وقت ما تحبي.</p>
+                <a href="menu.html" class="fav-empty-cta"><i class="fa-solid fa-utensils"></i> يلا نتصفح المنيو</a>
+            </div>
+        </div>
+    </main>
+
+    <div id="bose-footer-injector"></div>
+
+    <script>
+        // ⏳ لحظة ما البيانات توصل وrenderBoseFavoritesPage تشتغل فعلياً (من داخل
+        // core-engine.js)، بنخفي هيكل التحميل - سواء طلعت الشبكة فيها كروت أو
+        // ظهرت حالة "فاضية"، الاتنين معناهم إن الرسم الفعلي حصل وخلص.
+        document.addEventListener('BoseDatabaseLoaded', function () {
+            const loadingNode = document.getElementById('bose-favorites-loading');
+            if (loadingNode) loadingNode.style.display = 'none';
+        });
+    </script>
+
+</body>
+</html>
