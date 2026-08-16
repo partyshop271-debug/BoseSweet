@@ -99,7 +99,8 @@
                         <i class="fa-solid fa-arrow-right-from-bracket"></i> تسجيل الخروج
                     </button>
                 </div>
-            </aside>`;
+            </aside>
+            <div class="adm-sidebar-backdrop" id="adm-sidebar-backdrop"></div>`;
     }
 
     function buildTopbar(currentPage, adminInfo) {
@@ -152,13 +153,36 @@
 
         const mobileToggle = document.getElementById("adm-mobile-toggle");
         const sidebar = document.getElementById("adm-sidebar");
+        const backdrop = document.getElementById("adm-sidebar-backdrop");
+
+        // 🐛 [إصلاح - القائمة الجانبية على الموبايل كانت بتظهر فوق المحتوى مباشرة
+        // من غير أي طبقة تعتيم (Backdrop) بينها وبين محتوى الصفحة، فكان الاتنين
+        // (القائمة والمحتوى) بيظهروا مختلطين مع بعض بصرياً بدل ما تبقى القائمة
+        // نافذة منبثقة واضحة فوق خلفية معتّمة - ده اللي كان بيدي إحساس إن الصفحة
+        // "مش متظبطة للموبايل". دلوقتي بنضيف طبقة تعتيم بتتفعّل مع فتح القائمة،
+        // وبنقفل سكرول الصفحة اللي وراها لحد ما تتقفل تاني (نفس سلوك أي قائمة
+        // جانبية قياسية)، وبنخليها تتقفل بضغطة عليها زي الضغط بره القائمة بالظبط.
+        function closeSidebar() {
+            sidebar.classList.remove("open");
+            if (backdrop) backdrop.classList.remove("open");
+            document.body.classList.remove("adm-sidebar-lock");
+        }
+        function openSidebar() {
+            sidebar.classList.add("open");
+            if (backdrop) backdrop.classList.add("open");
+            document.body.classList.add("adm-sidebar-lock");
+        }
+
         if (mobileToggle && sidebar) {
-            mobileToggle.addEventListener("click", () => sidebar.classList.toggle("open"));
+            mobileToggle.addEventListener("click", () => {
+                sidebar.classList.contains("open") ? closeSidebar() : openSidebar();
+            });
             document.addEventListener("click", (e) => {
                 if (sidebar.classList.contains("open") && !sidebar.contains(e.target) && e.target !== mobileToggle && !mobileToggle.contains(e.target)) {
-                    sidebar.classList.remove("open");
+                    closeSidebar();
                 }
             });
+            if (backdrop) backdrop.addEventListener("click", closeSidebar);
         }
     }
 
