@@ -851,15 +851,27 @@
         // الرئيسية فوق، صور توضيح كل خطوة، معاينة الصورة المرفوعة، وصور المعرض -
         // بتفتح بنفس المودال عن طريق تفويض حدث واحد على مستوى الصفحة، بنفس روح
         // initializeBoseLightboxGallery في cake-engine.js.
-        const portfolioModal0 = document.getElementById('portfolio-popup-modal');
-        const modalImg0 = document.getElementById('modal-display-img');
-
+        //
+        // 🐛💥 [إصلاح جذري - كسر كامل لمحاكي الورد بالكامل عند التحميل]: كان فيه
+        // خطأ خطير هنا - `portfolioModal0`/`modalImg0` كانا متعرّفين بـ const برّه
+        // الدالة (في نهاية initializeFlowerEngine، بعد أكتر من 400 سطر)، لكن
+        // الدالة اللي بتستخدمهم (wireUpAllFlowerLightboxImages) كانت بتتنادى في
+        // أول سطر فعلي في initializeFlowerEngine بالظبط - يعني قبل ما التنفيذ
+        // يوصل خالص للسطر اللي فيه الـ const، فبيرمي استثناء
+        // "Cannot access 'portfolioModal0' before initialization" (TDZ) مباشرة.
+        // الاستثناء ده مكانش متلقّط بأي try/catch في نقطة النداء، فكان بيوقف
+        // initializeFlowerEngine كلها فورًا من أول سطر - يعني كل حاجة بعد كده
+        // في الدالة (تسعير، اختيار الأنواع، رفع الصور، وربط زرار "أضيفي للسلة")
+        // مكانتش بتتنفذ خالص، وكان محاكي الورد بالكامل بيقف عن الاستجابة بصمت من
+        // غير أي رسالة خطأ ظاهرة للعميلة. الحل: بنجيب العناصر مباشرة جوه الدالة
+        // نفسها (زي initializeBoseLightboxGallery في cake-engine.js بالظبط) بدل
+        // ما نعتمد على متغيرات من سكوب خارجي ممكن يتنفذ بعدها بترتيب مختلف.
         function wireUpAllFlowerLightboxImages() {
             // 🛡️👑 [تحصين جذري - نفس آلية cake-engine.js بالظبط]: لو المودال
             // الثابت مش موجود في الصفحة لأي سبب، بنبنيه من الصفر بالجافاسكريبت
             // نفسه - الميزة متفضلش رهينة تزامن الـ HTML مع الـ JS.
-            let portfolioModal = portfolioModal0;
-            let modalImg = modalImg0;
+            let portfolioModal = document.getElementById('portfolio-popup-modal');
+            let modalImg = document.getElementById('modal-display-img');
             let modalClose = document.getElementById('modal-close-node');
             if (!portfolioModal || !modalImg) {
                 portfolioModal = document.createElement('div');
@@ -913,7 +925,11 @@
             // الحدث قبل ما يوصلنا، أيًا كان ترتيب باقي الأكواد في الصفحة.
             const isOpenableGalleryImage = (img) => {
                 if (!img || img === modalImg) return false;
-                return !!(img.closest('.simulator-control-panel') || img.classList.contains('hero-banner-frame'));
+                // 🐛🖼️ [إصلاح - معرض سابقة الأعمال برّه .simulator-control-panel]:
+                // قسم "بوكيهات شرفت عملائنا" (.portfolio-section) في الصفحة مش
+                // جوه لوحة التحكم أصلاً - هو قسم منفصل تحت المحاكي كله - فكان
+                // الشرط القديم بيرفض صوره دايمًا حتى لو كل حاجة تانية سليمة.
+                return !!(img.closest('.simulator-control-panel') || img.closest('.portfolio-section') || img.classList.contains('hero-banner-frame'));
             };
 
             window.addEventListener('click', (e) => {
