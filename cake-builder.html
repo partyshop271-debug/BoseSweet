@@ -259,6 +259,53 @@
             box-shadow: var(--bose-shadow-glow);
         }
 
+        /* ✅👑 [توضيح أكبر لتأكيد الاختيار]: مش كفاية شارة صغيرة في الزاوية -
+           دلوقتي كارت كل اختيار مختار بيظهر جواه شريط واضح "✅ مُختار" بلون
+           صريح، جزء من الكارت نفسه مش عنصر عائم صغير ممكن يتفوت. */
+        .bose-selected-checkmark {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            margin-top: 8px;
+            background: var(--bose-pink);
+            color: var(--bose-white);
+            font-size: 11.5px;
+            font-weight: 800;
+            padding: 5px 12px;
+            border-radius: 20px;
+            white-space: nowrap;
+        }
+        .bose-selection-card-label input:checked + .bose-selection-card-inner .bose-selected-checkmark {
+            display: inline-flex;
+            animation: boseCheckPop 0.25s ease-out;
+        }
+        @keyframes boseCheckPop {
+            0% { transform: scale(0.6); opacity: 0; }
+            70% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+
+        /* ✅ [سطر تأكيد ثابت تحت كل مجموعة اختيار]: ملخص واضح بالنص بيقول
+           للعميلة اختيارها الحالي بالظبط، بيتحدّث فوراً مع أي تغيير - عشان
+           يبقى في تأكيد مقروء واضح غير معتمد بس على شكل الكارت أو الشارة. */
+        .bose-current-selection-line {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            text-align: center;
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--bose-black);
+            background: var(--bose-pink-light);
+            border: 1px solid rgba(255, 145, 164, 0.3);
+            border-radius: 30px;
+            padding: 10px 16px;
+            margin-top: 14px;
+        }
+        .bose-current-selection-line strong { color: var(--bose-pink-text, var(--bose-pink)); }
+
         /* ℹ️ [شرح توضيحي منبثق لكل اختيار]: زرار صغير على كل كارت بيفتح
            بوكس شرح "بحجم مربع" (مش شاشة كاملة) قريب من حجم الكارت نفسه،
            بنفس روح الملاحظة الثابتة اللي كانت موجودة لمقاسات الشكل قبل كده. */
@@ -663,36 +710,6 @@
             line-height: 1.5;
         }
 
-        /* ✅ [شارة تأكيد الاختيار]: تغيير لون البوردر لوحده مش كفاية توضيح -
-           كل كارت مختار (شكل/نكهة/نوع طباعة) دلوقتي بيظهر عليه شارة ✅ واضحة
-           في الزاوية، عشان العميلة تتأكد ١٠٠٪ إن اختيارها اتسجل فعلاً، مش
-           مجرد تلوين خفيف ممكن يتفوت في نظرة سريعة. */
-        .bose-selected-checkmark {
-            position: absolute;
-            top: -9px;
-            right: -9px;
-            width: 27px;
-            height: 27px;
-            border-radius: 50%;
-            background: var(--bose-pink);
-            color: var(--bose-white);
-            font-size: 13px;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-            z-index: 4;
-        }
-        .bose-selection-card-label input:checked ~ .bose-selected-checkmark {
-            display: flex;
-            animation: boseCheckPop 0.25s ease-out;
-        }
-        @keyframes boseCheckPop {
-            0% { transform: scale(0); opacity: 0; }
-            70% { transform: scale(1.2); opacity: 1; }
-            100% { transform: scale(1); }
-        }
-
         /* 🔒 [حالة قفل مرئية لمقاسات الشكل]: مربع/مستطيل بيبانوا باهتين
            وعليهم قفل لو عدد الأفراد الحالي أقل من المطلوب، عشان العميلة
            تعرف الاختيار مش متاح *قبل* ما تضغطي، مش تتفاجئي بعد الضغط. */
@@ -940,31 +957,28 @@
                         <div class="bose-interactive-radio-grid">
                             <label class="bose-selection-card-label">
                                 <input type="radio" name="cake_shape" value="circle" checked>
-                                <div class="bose-selection-card-inner">دائرة</div>
-                                <span class="bose-selected-checkmark">✓</span>
+                                <div class="bose-selection-card-inner">دائرة<span class="bose-selected-checkmark">✅ مُختار</span></div>
                                 <button type="button" class="bose-info-badge" data-info-key="shape-circle">ⓘ</button>
                             </label>
                             <label class="bose-selection-card-label">
                                 <input type="radio" name="cake_shape" value="heart">
-                                <div class="bose-selection-card-inner">قلب</div>
-                                <span class="bose-selected-checkmark">✓</span>
+                                <div class="bose-selection-card-inner">قلب<span class="bose-selected-checkmark">✅ مُختار</span></div>
                                 <button type="button" class="bose-info-badge" data-info-key="shape-heart">ⓘ</button>
                             </label>
                             <label class="bose-selection-card-label">
                                 <input type="radio" name="cake_shape" value="square">
-                                <div class="bose-selection-card-inner">مربع</div>
-                                <span class="bose-selected-checkmark">✓</span>
+                                <div class="bose-selection-card-inner">مربع<span class="bose-selected-checkmark">✅ مُختار</span></div>
                                 <button type="button" class="bose-info-badge" data-info-key="shape-square">ⓘ</button>
                                 <span class="bose-option-lock-caption" id="shape-square-caption"></span>
                             </label>
                             <label class="bose-selection-card-label">
                                 <input type="radio" name="cake_shape" value="rectangle">
-                                <div class="bose-selection-card-inner">مستطيل</div>
-                                <span class="bose-selected-checkmark">✓</span>
+                                <div class="bose-selection-card-inner">مستطيل<span class="bose-selected-checkmark">✅ مُختار</span></div>
                                 <button type="button" class="bose-info-badge" data-info-key="shape-rectangle">ⓘ</button>
                                 <span class="bose-option-lock-caption" id="shape-rectangle-caption"></span>
                             </label>
                         </div>
+                        <p class="bose-current-selection-line" id="shape-current-selection-line"></p>
                         <div class="bose-alert-message" id="alert-shape-restriction"></div>
                     </div>
 
@@ -981,23 +995,21 @@
                         <div class="bose-interactive-radio-grid">
                             <label class="bose-selection-card-label">
                                 <input type="radio" name="cake_flavor" value="vanilla" checked>
-                                <div class="bose-selection-card-inner">فانيليا</div>
-                                <span class="bose-selected-checkmark">✓</span>
+                                <div class="bose-selection-card-inner">فانيليا<span class="bose-selected-checkmark">✅ مُختار</span></div>
                                 <button type="button" class="bose-info-badge" data-info-key="flavor-vanilla">ⓘ</button>
                             </label>
                             <label class="bose-selection-card-label">
                                 <input type="radio" name="cake_flavor" value="chocolate">
-                                <div class="bose-selection-card-inner">شوكولاتة</div>
-                                <span class="bose-selected-checkmark">✓</span>
+                                <div class="bose-selection-card-inner">شوكولاتة<span class="bose-selected-checkmark">✅ مُختار</span></div>
                                 <button type="button" class="bose-info-badge" data-info-key="flavor-chocolate">ⓘ</button>
                             </label>
                             <label class="bose-selection-card-label">
                                 <input type="radio" name="cake_flavor" value="half-half">
-                                <div class="bose-selection-card-inner">نصف ونصف</div>
-                                <span class="bose-selected-checkmark">✓</span>
+                                <div class="bose-selection-card-inner">نصف ونصف<span class="bose-selected-checkmark">✅ مُختار</span></div>
                                 <button type="button" class="bose-info-badge" data-info-key="flavor-half-half">ⓘ</button>
                             </label>
                         </div>
+                        <p class="bose-current-selection-line" id="flavor-current-selection-line"></p>
                         <p class="bose-flavor-sensory-note" id="flavor-sensory-note"></p>
                         <div class="bose-image-example-note">
                             <span class="note-icon">📌</span>
@@ -1018,23 +1030,21 @@
                         <div class="bose-interactive-radio-grid">
                             <label class="bose-selection-card-label">
                                 <input type="radio" name="cake_printing" value="none" checked>
-                                <div class="bose-selection-card-inner">بدون صور</div>
-                                <span class="bose-selected-checkmark">✓</span>
+                                <div class="bose-selection-card-inner">بدون صور<span class="bose-selected-checkmark">✅ مُختار</span></div>
                                 <button type="button" class="bose-info-badge" data-info-key="printing-none">ⓘ</button>
                             </label>
                             <label class="bose-selection-card-label">
                                 <input type="radio" name="cake_printing" value="edible">
-                                <div class="bose-selection-card-inner">صورة قابلة للأكل (+60 ج)</div>
-                                <span class="bose-selected-checkmark">✓</span>
+                                <div class="bose-selection-card-inner">صورة قابلة للأكل (+60 ج)<span class="bose-selected-checkmark">✅ مُختار</span></div>
                                 <button type="button" class="bose-info-badge" data-info-key="printing-edible">ⓘ</button>
                             </label>
                             <label class="bose-selection-card-label">
                                 <input type="radio" name="cake_printing" value="non-edible">
-                                <div class="bose-selection-card-inner">صورة غير قابلة للأكل (+15 ج)</div>
-                                <span class="bose-selected-checkmark">✓</span>
+                                <div class="bose-selection-card-inner">صورة غير قابلة للأكل (+15 ج)<span class="bose-selected-checkmark">✅ مُختار</span></div>
                                 <button type="button" class="bose-info-badge" data-info-key="printing-non-edible">ⓘ</button>
                             </label>
                         </div>
+                        <p class="bose-current-selection-line" id="printing-current-selection-line"></p>
                         <div class="bose-image-example-note">
                             <span class="note-icon">📌</span>
                             <span>الصورة اللي هترفعيها هنا هي اللي هتتطبع فعلياً زي ما هي - الشرح ده بيوضح بس نوع الطباعة، مش شكل تصميم جاهز.</span>
