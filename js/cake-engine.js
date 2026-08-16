@@ -316,6 +316,23 @@ function startEngineLogic() {
     if (giftCardPriceNote) {
         giftCardPriceNote.innerHTML = `<p class="bose-embedded-price-text">سعر إضافة وطباعة كارت الإهداء الفخم هو <span>${cakeGiftCardPrice} جنيه</span></p>`;
     }
+
+    // 🖼️👑 [معرض نماذج كارت الإهداء المطبوع]: نفس آلية applyBoseOptionCardImages/
+    // renderCakeGalleryAndHero بالظبط - بيتقروا من config.giftCard.images (لو
+    // الأدمن رفعها من لوحة التحكم) وبيتعرضوا كشريط صور صغير تحت سطر السعر، عشان
+    // العميلة تشوف شكل الكارت المطبوع فعلياً قبل ما تقرر تضيفه.
+    const giftCardGallery = document.getElementById('cake-giftcard-gallery');
+    if (giftCardGallery) {
+        const giftCardImages = Array.isArray(config.giftCard?.images) ? config.giftCard.images : [];
+        if (giftCardImages.length > 0) {
+            giftCardGallery.innerHTML = giftCardImages.map((item) => {
+                const url = (item && item.image) || "";
+                if (!url) return "";
+                const alt = (item && (item.alt || item.name)) ? String(item.alt || item.name).replace(/"/g, '&quot;') : "نموذج كارت إهداء حلويات بوسي";
+                return `<div class="bose-giftcard-img-node"><img src="${url}" alt="${alt}" loading="lazy"></div>`;
+            }).join("");
+        }
+    }
     function toggleGiftCardSection() {
         const isChecked = !!(giftCardToggle && giftCardToggle.checked);
         if (giftCardTextSection) giftCardTextSection.style.display = isChecked ? 'block' : 'none';
@@ -650,7 +667,7 @@ function startEngineLogic() {
         // من غير ما يحتاج يخمّن أو يزوم بإصبعه.
         document.addEventListener('click', (e) => {
             const img = e.target.closest(
-                '.bose-main-hero-hook img, #bose-portfolio-lightbox-track img, #cake-photo-preview-img, #cake-replica-preview-img'
+                '.bose-main-hero-hook img, #bose-portfolio-lightbox-track img, #cake-photo-preview-img, #cake-replica-preview-img, #cake-giftcard-gallery img'
             );
             if (!img || !img.src) return;
             openLightbox(img.src);

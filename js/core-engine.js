@@ -1132,6 +1132,16 @@
             price += printingFee;
         }
         if (options.wrappingPrice) price += parseFloat(options.wrappingPrice) || 0;
+        // 🐛💳 [إصلاح جذري - سعر كارت الإهداء كان بيختفي من الإجمالي]: الحارس المركزي
+        // هنا (المستخدم فعلياً وقت الإضافة للسلة) كان بيتجاهل خيار hasGiftCard تماماً
+        // رغم إنه بيتبعت له من محاكي التورت، وده عكس calculateCustomFlowerPrice اللي
+        // بيضيف giftCardPrice بشكل صحيح - فكانت العميلة بتشوف سطر "+30 جنيه" في
+        // ملخص الطلب لكن الإجمالي الفعلي المحسوب والمخزن في السلة معندوش ده الفرق،
+        // يعني بتتحاسب أقل من سعر طلبها الحقيقي بـ30 جنيه في كل مرة تختار الكارت.
+        if (options.hasGiftCard) {
+            const giftCardPrice = parseFloat(config?.giftCard?.price) || 30;
+            price += giftCardPrice;
+        }
         return window.calculateBosePrice(price, "menu-only");
     };
 
@@ -1499,7 +1509,15 @@
         const details = item.customDetails || {};
 
         if (item.type === "custom-cake") {
-            return window.calculateCustomCakePrice(details.persons, { printingType: details.printingType });
+            // 🐛💳 [إصلاح جذري - نفس خلل كارت الإهداء لكن في حارس الأمان وقت التشيك
+            // أوت]: الدالة دي هي اللي بتتأكد إن سعر كل عنصر في السلة "موثوق" فعلاً
+            // (مش متلاعب فيه) قبل إتمام الطلب - كانت بتعيد حساب سعر التورت المخصص من
+            // غير ما تبعت hasGiftCard خالص، يعني حتى بعد إصلاح calculateCustomCakePrice
+            // نفسها، أي عنصر فيه كارت إهداء كان هيتحسب سعره التقديري هنا من غير الـ30
+            // جنيه، والفرق ده كان هيتعامل معاه كـ"تلاعب بالسعر" ويتفرض عليه السعر الأقل
+            // تلقائياً، أو في أسوأ الأحوال يمنع إتمام الطلب - فكارت الإهداء كان مقضي
+            // عليه يختفي حتى لو العميلة والموقع اتفقوا عليه صح في المحاكي.
+            return window.calculateCustomCakePrice(details.persons, { printingType: details.printingType, hasGiftCard: details.hasGiftCard });
         }
         if (item.type === "custom-flower") {
             return window.calculateCustomFlowerPrice(details.flowerCount, {

@@ -182,6 +182,22 @@ function renderBoseCartPage(storeData) {
                     if (cd.printingType && cd.printingType !== "none") specs.push(`<span><strong>الطباعة:</strong> ${cd.printingType === 'edible' ? 'صورة صالحة للأكل' : 'صورة مجسمة غير صالحة للأكل'}</span>`);
                     if (cd.customMessage && cd.customMessage.trim() !== "") specs.push(`<span><strong>الرسالة المكتوبة:</strong> "${esc(cd.customMessage.trim())}"</span>`);
                     if (cd.allergyNote && cd.allergyNote.trim() !== "") specs.push(`<span style="color:#FF91A4;"><strong>ملاحظة الحساسية:</strong> ${esc(cd.allergyNote.trim())}</span>`);
+                    // 🐛💳 [إصلاح جذري - كارت الإهداء كان بيختفي تماماً من ملخص السلة]: قسم
+                    // isCakeBespoke هنا معندوش أي سطر لـ hasGiftCard/giftCardText من الأساس
+                    // (بعكس قسم isFlowerBespoke تحت اللي عنده السطر ده)، رغم إن العميلة فعلاً
+                    // اختارت الكارت وكتبت نصه وقت التصميم، وكان ظاهر لها كسطر سعر منفصل في
+                    // محاكي التورت - فلما توصل السلة يختفي الكارت ونصه وسعره تماماً وكأنها
+                    // معملتش الاختيار ده أبداً.
+                    if (cd.hasGiftCard && cd.giftCardText && cd.giftCardText.trim() !== "") specs.push(`<span><strong>كارت إهداء مطبوع:</strong> "${esc(cd.giftCardText.trim())}"</span>`);
+                    // 🐛🖼️ [إصلاح جذري - صور المرفقات كانت مش ظاهرة في السلة خالص]: صورتي
+                    // "التصميم المرجعي" (اللي عايزة نقرب شكل التورتة منها) و"الطباعة على
+                    // التورتة" كانتا موجودتين بس كرابط نص خام جوه رسالة الواتساب - العميلة
+                    // نفسها لما تفتح صفحة السلة وتراجع طلبها كان معندهاش أي تأكيد بصري إن
+                    // صورتها فعلاً اترفعت واتحفظت مع طلبها، غير الصورة الرئيسية بس (اللي
+                    // ممكن تبقى واحدة بس من الاتنين لو رفعت الاتنين مع بعض). دلوقتي بنعرض
+                    // thumbnail حقيقي قابل للضغط (بيفتح بملء الشاشة) لكل صورة مرفقة فعلياً.
+                    if (cd.replicaImageUrl) specs.push(`<span class="cart-item-attached-photo"><strong>صورة التصميم المرجعي:</strong><br><a href="${esc(cd.replicaImageUrl)}" target="_blank" rel="noopener"><img src="${esc(cd.replicaImageUrl)}" alt="صورة التصميم المرجعي" loading="lazy" style="width:64px;height:64px;border-radius:10px;object-fit:cover;margin-top:4px;cursor:pointer;border:1px solid rgba(255,145,164,0.3);"></a></span>`);
+                    if (cd.printImageUrl) specs.push(`<span class="cart-item-attached-photo"><strong>صورة الطباعة على التورتة:</strong><br><a href="${esc(cd.printImageUrl)}" target="_blank" rel="noopener"><img src="${esc(cd.printImageUrl)}" alt="صورة الطباعة على التورتة" loading="lazy" style="width:64px;height:64px;border-radius:10px;object-fit:cover;margin-top:4px;cursor:pointer;border:1px solid rgba(255,145,164,0.3);"></a></span>`);
                 }
                 
                 if (isFlowerBespoke) {

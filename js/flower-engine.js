@@ -378,6 +378,23 @@
         flowerConfig.extraFlowerPrice = parseFloat(fbConfig.extraFlowerPrice) || flowerConfig.extraFlowerPrice;
         flowerConfig.photoPrintPrice = parseFloat(fbConfig.photoPrintPrice) || flowerConfig.photoPrintPrice;
         flowerConfig.giftCardPrice = parseFloat(fbConfig.giftCardPrice) || flowerConfig.giftCardPrice;
+
+        // 🖼️👑 [معرض نماذج كارت الإهداء المطبوع - محاكي الورد]: نفس آلية معرض
+        // سابقة الأعمال فوق بالظبط، بس بيتقرا من fbConfig.giftCardImages وبيتعرض
+        // كشريط صور صغير جوه خطوة كارت الإهداء نفسها (بدل ما تكون العميلة "شغالة
+        // بالتخمين" وهي مش شايفة شكل الكارت النهائي قبل ما تختاره).
+        const giftCardGalleryTrack = document.getElementById('flower-giftcard-gallery');
+        if (giftCardGalleryTrack) {
+            const giftCardImages = Array.isArray(fbConfig.giftCardImages) ? fbConfig.giftCardImages : [];
+            if (giftCardImages.length > 0) {
+                giftCardGalleryTrack.innerHTML = giftCardImages.map((item) => {
+                    const url = (item && item.image) || "";
+                    if (!url) return "";
+                    const alt = (item && (item.alt || item.name)) ? String(item.alt || item.name).replace(/"/g, '&quot;') : "نموذج كارت إهداء حلويات بوسي";
+                    return `<div class="bose-giftcard-img-node"><img src="${url}" alt="${alt}" loading="lazy"></div>`;
+                }).join("");
+            }
+        }
         // satinRibbonPrice تفضل ثابتة (50) لعدم وجود حقل رسمي مخصص لها بالـ JSON حالياً،
         // بنفس القرار المتبع في core-engine.js بالظبط. state.totalPrice هيتحدث تلقائياً
         // بالقيم الجديدة عند نداء recalculatePrice() في نهاية الدالة دي.
@@ -850,7 +867,7 @@
 
             document.addEventListener('click', (e) => {
                 const img = e.target.closest(
-                    '.hero-banner-frame, .portfolio-item-card img, .bose-step-illustration-img, #photo-preview-img'
+                    '.hero-banner-frame, .portfolio-item-card img, .bose-step-illustration-img, #photo-preview-img, #flower-giftcard-gallery img'
                 );
                 if (!img || !img.src) return;
                 openFlowerLightbox(img.src);
