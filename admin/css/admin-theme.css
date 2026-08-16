@@ -78,6 +78,11 @@ html, body {
     direction: rtl;
 }
 
+/* 🐛 [إصلاح - قفل سكرول الخلفية وقت فتح القائمة الجانبية على الموبايل] */
+body.adm-sidebar-lock {
+    overflow: hidden;
+}
+
 ::selection {
     background: var(--adm-pink);
     color: var(--adm-text-on-accent);

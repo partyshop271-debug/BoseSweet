@@ -900,6 +900,24 @@ html.adm-ready .adm-auth-gate { display: none; }
         box-shadow: var(--adm-shadow-raised);
     }
     .adm-sidebar.open { transform: translateX(0); }
+
+    /* 🐛 [إصلاح - طبقة تعتيم خلف القائمة الجانبية]: كانت القائمة (z-index:50)
+       بتظهر فوق المحتوى مباشرة من غير طبقة تعتيم بينها وبينه، فيبان الاتنين
+       متداخلين مع بعض بدل ما تبقى القائمة نافذة واضحة منفصلة عن الصفحة. */
+    .adm-sidebar-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.55);
+        backdrop-filter: blur(3px);
+        z-index: 45;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.25s ease;
+    }
+    .adm-sidebar-backdrop.open {
+        opacity: 1;
+        pointer-events: auto;
+    }
     .adm-mobile-topbar-toggle {
         display: flex; align-items: center; justify-content: center;
         width: 38px; height: 38px;
