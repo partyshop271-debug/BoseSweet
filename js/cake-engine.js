@@ -183,21 +183,77 @@ function startEngineLogic() {
     });
 
     /* ==================================================================
-       📐 [إشعار توضيحي دائم لمقاسات الشكل]
+       📐🔒 [توضيح دائم لمقاسات الشكل + حالة القفل المرئية]: بدل ما التوضيح
+       يكون سطر عام تحت الگريد كله، دلوقتي كل كارت (مربع/مستطيل) له تعليق
+       ثابت تحته بيقول من كام فرد متاح - ظاهر دايماً بغض النظر عن العدد
+       الحالي، عشان العميلة تعرف السبب من غير ما تحتاج تضغط الأول. بالإضافة
+       لكده، updateShapeLockVisuals() بتحط شكل باهت + مؤشر "ممنوع" على
+       الكارت وقت ما يكون العدد الحالي أقل من المطلوب - عشان يبان واضح
+       *قبل* الضغط إن الاختيار مش متاح دلوقتي، مش يترفض في صمت بعد الضغط.
        ================================================================== */
-    function renderShapeSizeNote() {
-        const noteBox = document.getElementById('shape-size-permanent-note');
-        if (!noteBox) return;
-        const squareData = (config.shapes || []).find(s => s.id === 'square');
-        const rectData = (config.shapes || []).find(s => s.id === 'rectangle');
-        const squareText = config.images?.squareMinimum || (squareData ? `المقاس المربع يبدأ من ${squareData.minimumPersons} فرد` : "");
-        const rectText = config.images?.rectangleMinimum || (rectData ? `المقاس المستطيل يبدأ من ${rectData.minimumPersons} فرد` : "");
-        const lines = [squareText, rectText].filter(Boolean);
-        if (lines.length === 0) { noteBox.style.display = 'none'; return; }
-        noteBox.innerHTML = lines.map(t => `<span>📐 ${t}</span>`).join('');
-        noteBox.style.display = 'flex';
+    const squareCaptionEl = document.getElementById('shape-square-caption');
+    const rectCaptionEl = document.getElementById('shape-rectangle-caption');
+
+    function getShapeMinimums() {
+        const squareData = (config.shapes || []).find(s => s.id === 'square') || { minimumPersons: 16 };
+        const rectData = (config.shapes || []).find(s => s.id === 'rectangle') || { minimumPersons: 20 };
+        return { squareMin: squareData.minimumPersons, rectMin: rectData.minimumPersons };
     }
-    renderShapeSizeNote();
+
+    function renderShapeCaptions() {
+        const { squareMin, rectMin } = getShapeMinimums();
+        if (squareCaptionEl) squareCaptionEl.textContent = `🔒 متاح من ${squareMin} فرد فأكتر`;
+        if (rectCaptionEl) rectCaptionEl.textContent = `🔒 متاح من ${rectMin} فرد فأكتر`;
+    }
+    renderShapeCaptions();
+
+    function updateShapeLockVisuals(currentPersons) {
+        const { squareMin, rectMin } = getShapeMinimums();
+        const squareLabel = document.querySelector('input[name="cake_shape"][value="square"]')?.closest('.bose-selection-card-label');
+        const rectLabel = document.querySelector('input[name="cake_shape"][value="rectangle"]')?.closest('.bose-selection-card-label');
+        if (squareLabel) squareLabel.classList.toggle('bose-option-locked', currentPersons < squareMin);
+        if (rectLabel) rectLabel.classList.toggle('bose-option-locked', currentPersons < rectMin);
+    }
+
+    // ⚠️ رسالة واضحة + هزّة انتباه على الكارت نفسه لما العميلة تحاول تختار
+    // شكل مقفول - بدل ما الاختيار يرجع للدائرة في صمت من غير أي شرح.
+    let shapeAlertHideTimer = null;
+    function showShapeLockAlert(shapeValue, minPersons) {
+        const label = document.querySelector(`input[name="cake_shape"][value="${shapeValue}"]`)?.closest('.bose-selection-card-label');
+        if (label) {
+            label.classList.remove('bose-shake-alert');
+            void label.offsetWidth; // إعادة تشغيل الأنيميشن حتى لو كانت شغالة أصلاً
+            label.classList.add('bose-shake-alert');
+            setTimeout(() => label.classList.remove('bose-shake-alert'), 450);
+        }
+        const shapeNameMap = { square: 'المربع', rectangle: 'المستطيل' };
+        const overrideText = shapeValue === 'square'
+            ? window.BoseStoreData?.cakeBuilder?.images?.squareMinimum
+            : window.BoseStoreData?.cakeBuilder?.images?.rectangleUpgrade;
+        const text = overrideText || `شكل ${shapeNameMap[shapeValue] || ''} متاح بس من ${minPersons} فرد فأكتر عشان التقطيع والتنسيق يطلعوا مظبوطين. ارجعي لخطوة عدد الأفراد وزوّدي العدد لو حابة تختاريه.`;
+        if (alertBox) {
+            alertBox.textContent = `🔒 ${text}`;
+            alertBox.style.display = "block";
+            clearTimeout(shapeAlertHideTimer);
+            shapeAlertHideTimer = setTimeout(() => { alertBox.style.display = "none"; }, 6000);
+        }
+    }
+
+    // بنمنع اختيار الشكل المقفول من أصله عند الضغط (بدل ما نسيبه يتحدد
+    // وبعدين يرجع دائرة بصمت) - كده مفيش "فلاش" مربك، وفي رسالة + هزّة
+    // واضحة بتوضح السبب فوراً لحظة الضغط نفسها.
+    document.querySelectorAll('input[name="cake_shape"]').forEach((radio) => {
+        radio.addEventListener('click', (e) => {
+            if (radio.value !== 'square' && radio.value !== 'rectangle') return;
+            const currentPersons = parseInt(inputPersons.value, 10) || config.persons.minimum;
+            const { squareMin, rectMin } = getShapeMinimums();
+            const min = radio.value === 'square' ? squareMin : rectMin;
+            if (currentPersons < min) {
+                e.preventDefault();
+                showShapeLockAlert(radio.value, min);
+            }
+        });
+    });
 
     /* صورة الطباعة على التورتة */
     let uploadedCakePhotoUrl = "";
@@ -332,6 +388,7 @@ function startEngineLogic() {
     // الأدمن رفعها من لوحة التحكم) وبيتعرضوا كشريط صور صغير تحت سطر السعر، عشان
     // العميلة تشوف شكل الكارت المطبوع فعلياً قبل ما تقرر تضيفه.
     const giftCardGallery = document.getElementById('cake-giftcard-gallery');
+    const giftCardGalleryNote = document.getElementById('cake-giftcard-gallery-note');
     if (giftCardGallery) {
         const giftCardImages = Array.isArray(config.giftCard?.images) ? config.giftCard.images : [];
         if (giftCardImages.length > 0) {
@@ -341,6 +398,7 @@ function startEngineLogic() {
                 const alt = (item && (item.alt || item.name)) ? String(item.alt || item.name).replace(/"/g, '&quot;') : "نموذج كارت إهداء حلويات بوسي";
                 return `<div class="bose-giftcard-img-node"><img src="${url}" alt="${alt}" loading="lazy"></div>`;
             }).join("");
+            if (giftCardGalleryNote) giftCardGalleryNote.style.display = "flex";
         }
     }
     function toggleGiftCardSection() {
@@ -365,25 +423,20 @@ function startEngineLogic() {
         const squareData = config.shapes.find(s => s.id === 'square') || { minimumPersons: 16 };
         const rectData = config.shapes.find(s => s.id === 'rectangle') || { minimumPersons: 20 };
 
-        let alertText = "";
-
+        // 🛡️ شبكة أمان: لو عدد الأفراد قلّ *بعد* ما كان شكل مربع/مستطيل
+        // متحدد فعلاً (مش وقت الضغط نفسه)، برضو بنرجعها للدائرة ونوضح السبب
+        // بنفس الرسالة المنسّقة - مش بس نص عادي بيتفوت.
         if (selectedShape === 'square' && currentPersons < squareData.minimumPersons) {
-            alertText = window.BoseStoreData?.cakeBuilder?.images?.squareMinimum || "المقاس المربع يبدأ من 16 فرد";
             document.querySelector('input[name="cake_shape"][value="circle"]').checked = true;
             selectedShape = 'circle';
+            showShapeLockAlert('square', squareData.minimumPersons);
         } else if (selectedShape === 'rectangle' && currentPersons < rectData.minimumPersons) {
-            alertText = window.BoseStoreData?.cakeBuilder?.images?.rectangleUpgrade || "عشان تطلع معاك التورتة المستطيلة مظبوطة وبأفضل تنسيق، أقل مقاس بنقدر ننفذه للشكل ده هو 20 فرد.";
             document.querySelector('input[name="cake_shape"][value="circle"]').checked = true;
             selectedShape = 'circle';
+            showShapeLockAlert('rectangle', rectData.minimumPersons);
         }
 
-        if (alertText !== "") {
-            alertBox.textContent = alertText;
-            alertBox.style.display = "block";
-            setTimeout(() => {
-                alertBox.style.display = "none";
-            }, 6000);
-        }
+        updateShapeLockVisuals(currentPersons);
 
         const finalDynamicPrice = window.calculateCustomCakePrice(currentPersons, {
             printingType: selectedPrinting,
