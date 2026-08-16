@@ -849,6 +849,7 @@
         // initializeBoseLightboxGallery في cake-engine.js.
         const portfolioModal = document.getElementById('portfolio-popup-modal');
         const modalImg = document.getElementById('modal-display-img');
+        const modalCard = portfolioModal ? portfolioModal.querySelector('.bose-popup-content') : null;
         const modalClose = document.getElementById('modal-close-node');
 
         function wireUpAllFlowerLightboxImages() {
@@ -859,19 +860,42 @@
                 modalImg.src = src;
                 portfolioModal.style.display = "flex";
                 portfolioModal.setAttribute("aria-hidden", "false");
+                // 👑💥 [حركة "الانبثاق" الفعلية - نفس آلية محاكي التورت بالظبط]
+                if (modalCard) {
+                    modalCard.classList.remove('bose-lightbox-pop-in');
+                    void modalCard.offsetWidth;
+                    modalCard.classList.add('bose-lightbox-pop-in');
+                } else {
+                    modalImg.classList.remove('bose-lightbox-pop-in');
+                    void modalImg.offsetWidth;
+                    modalImg.classList.add('bose-lightbox-pop-in');
+                }
+                document.body.style.overflow = 'hidden';
             };
             const closeFlowerLightbox = () => {
                 portfolioModal.style.display = "none";
                 portfolioModal.setAttribute("aria-hidden", "true");
+                document.body.style.overflow = '';
+            };
+
+            // 🐛🖼️ [إصلاح جذري - "منبثقة بس مش بتتحرك من مكانها"]: قائمة الصور
+            // القابلة للتكبير كانت محصورة في selectors محددة بس - صور كروت
+            // الاختيار (إحساس الباقة/نوع الورد.. إلخ، اللي بتتحقن ديناميكيًا
+            // بنفس آلية applyBoseOptionCardImages في محاكي التورت) ماكانتش
+            // داخلة خالص. دلوقتي أي صورة حقيقية جوه لوحة التحكم كلها
+            // (.simulator-control-panel) بأي خطوة بتفتح بملء الشاشة تلقائيًا.
+            const isOpenableGalleryImage = (img) => {
+                if (!img || img === modalImg) return false;
+                return !!(img.closest('.simulator-control-panel') || img.classList.contains('hero-banner-frame'));
             };
 
             document.addEventListener('click', (e) => {
-                const img = e.target.closest(
-                    '.hero-banner-frame, .portfolio-item-card img, .bose-step-illustration-img, #photo-preview-img, #flower-giftcard-gallery img'
-                );
-                if (!img || !img.src) return;
+                const img = /** @type {HTMLElement} */ (e.target).closest ? /** @type {HTMLElement} */ (e.target).closest('img') : null;
+                if (!img || !isOpenableGalleryImage(img) || !img.src) return;
+                const wrappingLabel = img.closest('label');
+                if (wrappingLabel) { e.preventDefault(); e.stopPropagation(); }
                 openFlowerLightbox(img.src);
-            });
+            }, true);
 
             if (modalClose) modalClose.onclick = closeFlowerLightbox;
             portfolioModal.onclick = function (e) {

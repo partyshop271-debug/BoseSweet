@@ -32,6 +32,16 @@ function startEngineLogic() {
         ]
     };
 
+    // 🛡️ [تحصين الترتيب - نافذة تكبير الصور بقت أول حاجة بتتفعل]: قبل كده
+    // initializeBoseLightboxGallery() كانت آخر سطر ينفّذ في الدالة كلها -
+    // فلو أي كود تاني قبلها (في أي خطوة من الخطوات التالتاشر) رمى استثناء
+    // غير متوقع لأي سبب، كل اللي بعده - بما فيه تفعيل نافذة التكبير - كان
+    // مبيتنفذش خالص من غير ما يظهر أي خطأ واضح للعميل، وكان بيبان وكأن
+    // "الضغط عالصورة مش بيعمل حاجة" رغم إن الكود نفسه سليم. دلوقتي بتتفعل
+    // فورًا (الدالة معرّفة بـ function فبتترفع/hoisted تلقائيًا) عشان الميزة
+    // دي بالذات - أهم حاجة بصريًا للعميلة - تفضل شغالة دايمًا مهما حصل بعدها.
+    initializeBoseLightboxGallery();
+
     /* ==================================================================
        🖼️ [صور المحاكي الديناميكية]: زي ما كان بالظبط - البانر ومعرض الإلهام
        بيتقروا من إعدادات المحاكي في لوحة التحكم.
@@ -647,6 +657,7 @@ function startEngineLogic() {
     function initializeBoseLightboxGallery() {
         const lightboxOverlay = document.getElementById('bose-lightbox-container');
         const lightboxImg = document.getElementById('bose-lightbox-img');
+        const lightboxCard = lightboxOverlay ? lightboxOverlay.querySelector('.bose-lightbox-card') : null;
         const lightboxClose = document.getElementById('bose-lightbox-close-btn');
 
         if (!lightboxOverlay || !lightboxImg) return;
@@ -655,23 +666,51 @@ function startEngineLogic() {
             if (!src) return;
             lightboxImg.src = src;
             lightboxOverlay.style.display = "flex";
+            // 👑💥 [حركة "الانبثاق" الفعلية]: بدل ما الصورة تظهر فجأة بلمح البصر،
+            // بترتد بصريًا من نص حجمها لحجمها الطبيعي (pop) عشان تحس فعلاً إنها
+            // "قفزت" وملت الشاشة قدامك، مش مجرد ظهور مفاجئ بلا حركة.
+            if (lightboxCard) {
+                lightboxCard.classList.remove('bose-lightbox-pop-in');
+                // إعادة تشغيل الأنيميشن حتى لو اتفتحت نفس الصورة مرتين متتاليتين
+                void lightboxCard.offsetWidth;
+                lightboxCard.classList.add('bose-lightbox-pop-in');
+            }
+            document.body.style.overflow = 'hidden';
         };
-        const closeLightbox = () => { lightboxOverlay.style.display = "none"; lightboxImg.src = ""; };
+        const closeLightbox = () => {
+            lightboxOverlay.style.display = "none";
+            lightboxImg.src = "";
+            document.body.style.overflow = '';
+        };
 
-        // 🖼️👑 [كل صور المحاكي بقت بتفتح بملء الشاشة عند الضغط]: قبل كده كان
-        // ده مقصور على صور معرض الإلهام (الخطوة 1) بس. دلوقتي أي صورة حقيقية
-        // في صفحة المحاكي - الصورة الرئيسية فوق، صور معرض الإلهام، معاينة
-        // الصورة المرجعية (نسخة طبق الأصل)، ومعاينة صورة الطباعة على التورتة -
-        // بتفتح بنفس الطريقة عن طريق تفويض حدث واحد على مستوى الصفحة، عشان
-        // العميل يقدر يتأكد من تفاصيل أي صورة (خصوصاً اللي هو رافعها بنفسه)
-        // من غير ما يحتاج يخمّن أو يزوم بإصبعه.
+        // 🖼️👑 [إصلاح جذري - "منبثقة بس مش بتتحرك من مكانها"]: قبل كده كانت قائمة
+        // الصور القابلة للتكبير محصورة في شوية selectors محددة بس (الهيرو، معرض
+        // الإلهام، معاينة الرفع، معرض كارت الإهداء) - يعني صور كروت الاختيار
+        // نفسها (الشكل/النكهة/نوع الطباعة، اللي بتتحقن من applyBoseOptionCardImages)
+        // ماكانتش داخلة في القائمة دي خالص، فمكنش لها أي سلوك تكبير. دلوقتي أي
+        // صورة حقيقية جوه بطاقة المحاكي كلها (.bose-step-wizard-card) بأي خطوة -
+        // حالية أو مستقبلية - بتفتح بملء الشاشة تلقائيًا، من غير ما نحتاج نسرد
+        // كل عنصر بالاسم يدويًا في كل مرة نضيف صورة جديدة.
+        //
+        // 🛡️ [تحصين مزدوج ضد أي تعارض في الأحداث]: بالإضافة للتفويض العام على
+        // document (اللي ممكن ينكسر لو أي كود تاني في الصفحة عمل stopPropagation
+        // في المنتصف)، بنربط استماع مباشر كمان على كل صورة وقت إنشائها فعليًا -
+        // عشان الميزة متفضلش معلقة على افتراض إن الحدث هيوصل لآخر الصفحة سليم.
+        const isOpenableGalleryImage = (img) => {
+            if (!img || img.id === 'bose-lightbox-img') return false;
+            return !!(img.closest('.bose-step-wizard-card') || img.closest('.bose-main-hero-hook'));
+        };
+
         document.addEventListener('click', (e) => {
-            const img = e.target.closest(
-                '.bose-main-hero-hook img, #bose-portfolio-lightbox-track img, #cake-photo-preview-img, #cake-replica-preview-img, #cake-giftcard-gallery img'
-            );
-            if (!img || !img.src) return;
+            const img = /** @type {HTMLElement} */ (e.target).closest ? /** @type {HTMLElement} */ (e.target).closest('img') : null;
+            if (!img || !isOpenableGalleryImage(img) || !img.src) return;
+            // 🛡️ لو الصورة جوه label بتحدد اختيار (شكل/نكهة/طباعة)، بنمنع إن
+            // الضغط على الصورة نفسها يغيّر الاختيار بالغلط - العميلة بتكبّر
+            // الصورة تتفرج، مش بالضرورة تختار من أول لمسة.
+            const wrappingLabel = img.closest('label');
+            if (wrappingLabel) { e.preventDefault(); e.stopPropagation(); }
             openLightbox(img.src);
-        });
+        }, true);
 
         if (lightboxClose) lightboxClose.onclick = closeLightbox;
         lightboxOverlay.onclick = (e) => { if (e.target === lightboxOverlay) closeLightbox(); };
@@ -828,7 +867,6 @@ function startEngineLogic() {
 
     syncWizardPanelsUI();
     evaluateSimulatorState();
-    initializeBoseLightboxGallery();
 }
 
 if (window.BoseStoreData && window.BoseStoreData.store) {
