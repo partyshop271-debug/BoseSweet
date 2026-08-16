@@ -403,6 +403,31 @@
         if (error) throw error;
     }
 
+    /** يرجّع كائن navigation (الشريط العلوي المتحرك) من صف store_settings الوحيد */
+    async function getNavigationSettings() {
+        try {
+            const { data, error } = await client
+                .from("store_settings")
+                .select("navigation")
+                .eq("id", 1)
+                .maybeSingle();
+            if (error) throw error;
+            return (data && data.navigation) || {};
+        } catch (e) {
+            console.warn("تعذر جلب إعدادات الشريط العلوي:", e.message);
+            return {};
+        }
+    }
+
+    /** بتستبدل عمود navigation بالكامل بالكائن الممرر */
+    async function updateNavigationSettings(navigation) {
+        const { error } = await client
+            .from("store_settings")
+            .update({ navigation, updated_at: new Date().toISOString() })
+            .eq("id", 1);
+        if (error) throw error;
+    }
+
     /* ============================= العروض المميزة (صفحة offers.html) ============================= */
     /**
      * جدول offers منفصل تماماً عن store_settings.promotions: كل صف هنا هو
@@ -906,6 +931,8 @@
         deleteProduct,
         getHomepageSettings,
         updateHomepageSettings,
+        getNavigationSettings,
+        updateNavigationSettings,
         getPromotions,
         savePromotions,
         getAllCoupons,
