@@ -136,6 +136,62 @@ function startEngineLogic() {
     updateFlavorSensoryNote();
 
     /* ==================================================================
+       ✅ [توضيح أكبر لتأكيد الاختيار]: شارة "✅ مُختار" جوه الكارت مش كفاية
+       لوحدها - دلوقتي كل مجموعة اختيار (شكل/نكهة/نوع طباعة) ليها كمان سطر
+       ملخص ثابت بالنص تحتها بيقول الاختيار الحالي بالظبط، بيتحدّث فوراً،
+       بالإضافة لرسالة تأكيد سريعة (toast) لما العميلة تغيّر اختيارها -
+       عشان يبقى مفيش أي لبس خالص إن الاختيار اتسجل واتفهم صح.
+       ================================================================== */
+    const SHAPE_LABELS = { circle: 'دائرة', heart: 'قلب', square: 'مربع', rectangle: 'مستطيل' };
+    const FLAVOR_LABELS = { vanilla: 'فانيليا', chocolate: 'شوكولاتة', 'half-half': 'نصف ونصف' };
+    const PRINTING_LABELS = { none: 'بدون طباعة صورة', edible: 'صورة قابلة للأكل', 'non-edible': 'صورة غير قابلة للأكل' };
+
+    const shapeSelectionLine = document.getElementById('shape-current-selection-line');
+    const flavorSelectionLine = document.getElementById('flavor-current-selection-line');
+    const printingSelectionLine = document.getElementById('printing-current-selection-line');
+
+    function updateSelectionLine(el, labelsMap, value) {
+        if (!el) return;
+        const label = labelsMap[value] || value;
+        el.innerHTML = `✅ اختياركِ الحالي: <strong>${label}</strong>`;
+    }
+
+    function refreshAllSelectionLines() {
+        const shapeVal = document.querySelector('input[name="cake_shape"]:checked')?.value || 'circle';
+        const flavorVal = document.querySelector('input[name="cake_flavor"]:checked')?.value || 'vanilla';
+        const printingVal = document.querySelector('input[name="cake_printing"]:checked')?.value || 'none';
+        updateSelectionLine(shapeSelectionLine, SHAPE_LABELS, shapeVal);
+        updateSelectionLine(flavorSelectionLine, FLAVOR_LABELS, flavorVal);
+        updateSelectionLine(printingSelectionLine, PRINTING_LABELS, printingVal);
+    }
+    refreshAllSelectionLines();
+
+    document.querySelectorAll('input[name="cake_shape"]').forEach((radio) => {
+        radio.addEventListener('change', () => {
+            refreshAllSelectionLines();
+            if (typeof window.showBoseGlobalToast === 'function') {
+                window.showBoseGlobalToast(`تم اختيار الشكل: ${SHAPE_LABELS[radio.value] || radio.value} ✅`);
+            }
+        });
+    });
+    document.querySelectorAll('input[name="cake_flavor"]').forEach((radio) => {
+        radio.addEventListener('change', () => {
+            refreshAllSelectionLines();
+            if (typeof window.showBoseGlobalToast === 'function') {
+                window.showBoseGlobalToast(`تم اختيار النكهة: ${FLAVOR_LABELS[radio.value] || radio.value} ✅`);
+            }
+        });
+    });
+    document.querySelectorAll('input[name="cake_printing"]').forEach((radio) => {
+        radio.addEventListener('change', () => {
+            refreshAllSelectionLines();
+            if (typeof window.showBoseGlobalToast === 'function') {
+                window.showBoseGlobalToast(`تم اختيار نوع الطباعة: ${PRINTING_LABELS[radio.value] || radio.value} ✅`);
+            }
+        });
+    });
+
+    /* ==================================================================
        ℹ️ [شرح توضيحي منبثق لكل اختيار]: بوكس واحد مشترك بيتغير محتواه
        حسب أي زرار ⓘ اتضغط، بحجم مضغوط قريب لحجم الكارت (مش شاشة كاملة).
        ================================================================== */
@@ -829,6 +885,19 @@ function startEngineLogic() {
                 return;
             }
             if (!uploadedCakePhotoUrl) {
+                // 🛡️👑 [إصلاح جذري: رسالة "الصورة مش مرفوعة" كانت بتظهر من غير
+                // ما تودّي العميلة لمكان الرفع أصلاً]: العميلة كانت ممكن ترفع
+                // "صورة تصميم تقريبية" في خطوة 3 (اختيارية، غرضها مختلف تماماً)
+                // وتفتكر إنها كده خلصت، بينما صورة الطباعة الفعلية (خطوة 7)
+                // لسه فاضية. المشكلة الحقيقية إن الكود كان بيحاول
+                // scrollIntoView على عنصر جوه خطوة 7 وإحنا واقفين في خطوة 11
+                // (الملخص) - والخطوة 7 مخفية (display:none) لأنها مش الخطوة
+                // النشطة، فالسكرول مكانش بيعمل حاجة خالص والعميلة تفضل واقفة
+                // مكانها من غير ما تعرف تحل المشكلة إزاي. دلوقتي بننقلها فعلياً
+                // لخطوة 7 الأول (بنفس أسلوب فحص المناسبة تماماً) وبعدين نضمّن
+                // مكان الرفع نفسه.
+                currentActiveStep = 7;
+                syncWizardPanelsUI();
                 if (typeof window.showBoseGlobalToast === 'function') {
                     window.showBoseGlobalToast("من فضلك ارفعي صورة التصميم المطلوب طباعته على التورتة أولاً.");
                 }
@@ -845,6 +914,9 @@ function startEngineLogic() {
                 return;
             }
             if (!uploadedReplicaPhotoUrl) {
+                // 🛡️ نفس الإصلاح بالظبط لصورة التصميم المرجعية (خطوة 3).
+                currentActiveStep = 3;
+                syncWizardPanelsUI();
                 if (typeof window.showBoseGlobalToast === 'function') {
                     window.showBoseGlobalToast("من فضلك ارفعي صورة التورتة اللي عايزة نقرب تصميمك منها أولاً.");
                 }
@@ -854,6 +926,9 @@ function startEngineLogic() {
         }
 
         if (wantsGiftCard && giftCardText === "") {
+            // 🛡️ ونفس الإصلاح لكارت الإهداء (خطوة 10).
+            currentActiveStep = 10;
+            syncWizardPanelsUI();
             if (typeof window.showBoseGlobalToast === 'function') {
                 window.showBoseGlobalToast("من فضلك اكتبي الكلام اللي حابة نكتبه على كارت الإهداء.");
             }
@@ -953,4 +1028,4 @@ if (window.BoseStoreData && window.BoseStoreData.store) {
     document.addEventListener("BoseDatabaseLoaded", () => {
         startEngineLogic();
     });
-}
+        }
