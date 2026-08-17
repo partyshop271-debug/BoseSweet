@@ -276,16 +276,20 @@
                 </div>
             </div>
 
-            <p class="success-subheadline" style="font-size: 0.88rem; opacity: 0.7; margin: 5px 0 0 0;">📌 دوسي زرار الواتساب بالأسفل، وهيفتحلك واتساب مع رسالة طلبك جاهزة بالكامل.</p>
-            <p class="success-subheadline" style="font-size: 0.88rem; margin: 4px 0 0 0; color: #FF91A4; font-weight: 800;">⚠️ مهم: طلبك مش هيوصلنا إلا لما تدوسي على زرار الإرسال (▶) جوه واتساب نفسه. فتح واتساب لوحده مش كفاية.</p>
-            <p class="success-subheadline" style="font-size: 0.82rem; margin: 2px 0 0 0; opacity: 0.65;">📸 أو دوسي "إرسال الفاتورة كصورة احترافية" وهنجهزلك نسخة مصورة ومختومة من فاتورتك تتبعت جاهزة على واتساب.</p>
+            <p class="success-subheadline" style="font-size: 0.88rem; opacity: 0.7; margin: 5px 0 0 0;">📌 دوسي زرار "إرسال الفاتورة" بالأسفل، وهيفتحلك واتساب مع فاتورة طلبك جاهزة عشان تبعتيها.</p>
+
+            <!-- 🐛 [إصلاح - زرار كان بيتوه وسط رسائل تحذيرية]: قبل كده كان في زرارين
+            منفصلين (فتح واتساب برسالة نصية / إرسال الفاتورة كصورة) مع نص تحذيري
+            بارز حواليهم بيدي انطباع إن في حاجة غلط أو معقدة. دلوقتي زرار واحد بس
+            بيبعت الفاتورة كصورة واضحة لواتساب، باسم عادي وبسيط "إرسال الفاتورة" من
+            غير أي تنبيه يخوف العميلة - نفس تجربة أي زرار إرسال طبيعي. زرار واتساب
+            القديم اتسيب موجود في الصفحة بس مخفي (display:none) لأن كود cart-engine.js
+            لسه بيستخدمه داخلياً لتجهيز رابط واتساب الاحتياطي، من غير ما يظهر للعميلة. -->
+            <a href="https://wa.me/201097238441" id="bose-success-whatsapp-btn" style="display:none;" target="_blank" rel="noopener noreferrer">فتح واتساب</a>
 
             <div class="success-actions-row">
-                <a href="https://wa.me/201097238441" id="bose-success-whatsapp-btn" class="btn-success-whatsapp-trigger" target="_blank" rel="noopener noreferrer">
-                    <i class="fab fa-whatsapp"></i> فتح واتساب لإرسال الطلب
-                </a>
-                <button type="button" id="bose-invoice-image-btn" class="btn-success-whatsapp-trigger" style="background-color: var(--bose-black, #111111);">
-                    <i class="fas fa-camera-retro"></i> إرسال الفاتورة كصورة احترافية
+                <button type="button" id="bose-invoice-image-btn" class="btn-success-whatsapp-trigger">
+                    <i class="fab fa-whatsapp"></i> إرسال الفاتورة
                 </button>
                 <a href="track-order.html" id="bose-success-track-btn" class="btn-success-home-anchor" style="display:none; background-color: var(--bose-white, #fff); color: var(--bose-pink, #FF91A4); border: 2px solid var(--bose-pink, #FF91A4);">
                     <i class="fas fa-location-crosshairs"></i> تتبعي طلبك

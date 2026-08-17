@@ -705,7 +705,16 @@
             }
 
             let currentProduct = null;
-            let currentSelectedOptions = { flavorName: "كلاسيك", size: null };
+            // 🐛 [إصلاح حرج - النكهة الغلط في فاتورة الواتساب]: كانت currentSelectedOptions
+            // بتتعرّف من أول الصفحة بقيمة ثابتة flavorName: "كلاسيك" ومفيش أي سطر بعد كده
+            // بيحدّثها لنكهة المنتج الحقيقي اللي فتح العميل صفحته فعلاً (دارك نوتيلا، كراميل...).
+            // window.createCartItem بيدي أولوية لـ opts.flavorName لو موجودة (بيفترض إنها اختيار
+            // العميل الفعلي)، فكانت أي إضافة للسلة من صفحة منتج (product.html) بتسجّل النكهة
+            // "كلاسيك" ثابتة دايماً بغض النظر عن نكهة المنتج الحقيقية - وده سبب وصول فواتير
+            // واتساب فيها نكهة غلط. النكهات هنا أصلاً منتجات منفصلة تماماً (كل نكهة لها slug
+            // وflavorName خاص بيها في قاعدة البيانات)، فمفيش داعي لتحديد flavorName هنا خالص -
+            // بنسيبها فاضية عشان تاخد نكهة المنتج الحقيقية تلقائياً من product.flavorName.
+            let currentSelectedOptions = { size: null };
             let currentMasterQuantity = 1;
             let uploadedImageUrls = [];
 
