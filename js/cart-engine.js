@@ -941,15 +941,15 @@ function getBoseArabicShapeName(shape) {
 
 function buildBoseFormattedWhatsappInvoice(order) {
     let msg = `✨ *فاتورة حجز طلبية فاخرة - حلويات بوسي (BoseSweets)* ✨\n`;
-    msg += `--------------------------------------------------\n`;
+    msg += `--------------------------------------------------\n\n`;
     msg += `🧾 *رقم المعاملة:* ${order.orderId}\n`;
     msg += `👤 *العميل:* ${order.customerName}\n`;
     msg += `📞 *رقم الاتصال:* ${order.phone1}\n`;
     msg += `🚗 *مسار الاستلام:* ${order.deliveryMethod}\n`;
     msg += `📍 *التفاصيل الجغرافية:* ${order.address}\n`;
-    msg += `📅 *موعد الاستلام:* ${order.scheduledDate} الساعة ${formatBoseTimeToEgyptian12Hour(order.scheduledTime)}\n`;
+    msg += `📅 *موعد الاستلام:* ${order.scheduledDate} الساعة ${formatBoseTimeToEgyptian12Hour(order.scheduledTime)}\n\n`;
     msg += `--------------------------------------------------\n`;
-    msg += `📦 *تفاصيل الأصناف المخصصة:* \n\n`;
+    msg += `📦 *تفاصيل الأصناف المطلوبة:*\n\n`;
 
     order.items.forEach((item, idx) => {
         const isCakeBespoke = item.type === "custom-cake" || item.type === "mini-cake" || item.productSlug === "toort-custom-master" || item.productSlug === "mini-cake-two-person";
@@ -965,8 +965,12 @@ function buildBoseFormattedWhatsappInvoice(order) {
         // المطلوبة" لكل الأصناف مهما كانت، بقت التسمية مخصصة لاسم المنتج نفسه
         // (مثال: "العدد المطلوب من التورت"، "العدد المطلوب من القشطوطة")
         // عشان توضح فوراً وبدقة إحنا بنعد ايه بالظبط لكل صنف في الفاتورة.
-        msg += `   *العدد المطلوب من ${item.title}:* ×${item.quantity}\n`;
-        msg += `   *سعر الوحدة الشامل:* ${parseFloat(item.finalPrice).toFixed(2)} EGP\n`;
+        msg += `   • *العدد المطلوب من ${item.title}:* ×${item.quantity}\n`;
+        // 🏷️ [إصلاح - سعر باسم المنتج بدل تسمية عامة "سعر الوحدة الشامل"]: التسمية
+        // العامة القديمة كانت مش واضحة سعر ايه بالظبط لما في أكتر من صنف في نفس
+        // الفاتورة. دلوقتي السعر بيتقال جنب اسم الصنف نفسه (زي "سعر تورتة ديسباسيتو")
+        // بنفس أسلوب سطر الكمية فوقه، عشان الفرع يعرف فوراً وبدقة سعر أنهي صنف بالظبط.
+        msg += `   • *سعر ${item.title}:* ${parseFloat(item.finalPrice).toFixed(2)} EGP\n`;
         
         if (item.customDetails) {
             const cd = item.customDetails;
@@ -977,7 +981,10 @@ function buildBoseFormattedWhatsappInvoice(order) {
                 if (cd.shape && cd.shape !== "none") msg += `   • الشكل: ${getBoseArabicShapeName(cd.shape)}\n`;
                 if (cd.persons && cd.persons > 0) msg += `   • الأفراد: لـ ${cd.persons} فرد\n`;
                 if (cd.printingType && cd.printingType !== "none") msg += `   • طباعة صورة: ${cd.printingType === 'edible' ? 'قابلة للأكل' : 'غير قابلة للأكل'}\n`;
-                if (cd.customMessage && cd.customMessage.trim() !== "") msg += `   • النص: "${cd.customMessage}"\n`;
+                // 🏷️ [إصلاح - وضوح سطر "النص"]: التسمية القديمة "النص:" لوحدها ما
+                // كانتش بتوضح إن النص ده هيتكتب فعلاً على التورتة نفسها (وليس مثلاً
+                // كارت إهداء منفصل، اللي ليه سطره الخاص تحت). بقت التسمية صريحة.
+                if (cd.customMessage && cd.customMessage.trim() !== "") msg += `   • النص المطلوب كتابته على التورتة: "${cd.customMessage}"\n`;
                 if (cd.allergyNote && cd.allergyNote.trim() !== "") msg += `   • ⚠️ ملاحظة حساسية: ${cd.allergyNote.trim()}\n`;
                 if (cd.hasGiftCard && cd.giftCardText && cd.giftCardText.trim() !== "") msg += `   • كارت إهداء: "${cd.giftCardText.trim()}"\n`;
                 // 🖼️ [تمييز الصور - إصلاح جذري]: قبل كده كل الصور المرفوعة كانت
@@ -1032,10 +1039,11 @@ function buildBoseFormattedWhatsappInvoice(order) {
             msg += `   🖼️ *صورة مرجعية${refImageUrls.length > 1 ? ' ' + (i + 1) : ''}:* ${url}\n`;
         });
 
-        msg += `   ---------------------------\n`;
+        msg += `   ---------------------------\n\n`;
     });
 
-    msg += `📝 *ملاحظات:* ${order.notes}\n`;
+    msg += `--------------------------------------------------\n`;
+    msg += `📝 *ملاحظات:* ${order.notes}\n\n`;
     msg += `--------------------------------------------------\n`;
     msg += `👑 *المجموع المالي النهائي:* ${order.grandTotal} EGP 👑\n`;
     // 💵 [عربون/دفع مقدم]: توضيح صريح لطريقة ووقت الدفع - استلام = عربون 50%
@@ -1050,7 +1058,7 @@ function buildBoseFormattedWhatsappInvoice(order) {
         }
         msg += `📸 من فضلك ابعتي لقطة شاشة التحويل هنا فور إتمامه وهنأكد الحجز فوراً.\n`;
     }
-    msg += `--------------------------------------------------\n`;
+    msg += `\n--------------------------------------------------\n`;
     msg += `🤝 شكرًا لاختياركم الفاخر لـ حلويات بوسي. صنعناها بحب لتهديها لمن تحب. ✨`;
     
     return msg;
@@ -1179,35 +1187,17 @@ function renderBoseSuccessPage(storeData) {
         whatsappBtn.href = whatsappUrl;
     }
 
-    // 🖼️ [جديد - فاتورة احترافية كصورة]: زر اختياري بيبني صورة فاتورة منسّقة
-    // (لوجو + ألوان الماركة + ختم رسمي) من نفس بيانات الطلب، وبيحاول يبعتها
-    // مباشرة لواتساب في ضغطة واحدة (Web Share API على الموبايل)، وبيرجع
-    // لتنزيل الصورة + فتح واتساب بالنص كخطة بديلة لو المتصفح مش بيدعم المشاركة.
+    // 🗑️ [إصلاح - حذف صورة الفاتورة]: كان في زرار بيولّد صورة فاتورة (Canvas) ويحاول
+    // يبعتها لواتساب عبر Web Share API، وعلى الأجهزة اللي مش بتدعم المشاركة كان
+    // بيلجأ لتنزيل الصورة بصمت وفتح واتساب بالنص العادي بجانبها - يعني الصورة كانت
+    // بتفضل غير مستخدمة فعلياً غير لو العميل رجع للمتصفح تاني بعد ما يكون خلاص بعت
+    // الفاتورة النصية لواتساب، وقتها الأوردر يكون وصل بالفعل ومفيش داعي للصورة.
+    // دلوقتي زرار "إرسال الفاتورة" بيفتح واتساب مباشرة بنص الفاتورة الكامل والواضح -
+    // بدون أي خطوة وسيطة أو ملف صورة زيادة.
     const invoiceImageBtn = document.getElementById("bose-invoice-image-btn");
-    if (invoiceImageBtn && typeof window.generateBoseInvoiceImageBlob === "function") {
-        invoiceImageBtn.addEventListener("click", async () => {
-            const originalHTML = invoiceImageBtn.innerHTML;
-            invoiceImageBtn.disabled = true;
-            invoiceImageBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري تجهيز الفاتورة...';
-            try {
-                const blob = await window.generateBoseInvoiceImageBlob(order, storeData?.store || {});
-                const fileName = `bose-invoice-${order.orderId || "order"}.png`;
-                const wasShared = await window.shareOrDownloadBoseInvoiceImage(blob, fileName, order.whatsappMessage || "");
-                if (!wasShared) {
-                    if (typeof window.showBoseToast === "function") {
-                        window.showBoseToast("📥 تم تنزيل صورة الفاتورة - أرفقيها في محادثة واتساب اللي فتحناها لك.");
-                    }
-                    if (whatsappUrl) window.open(whatsappUrl, "_blank");
-                }
-            } catch (e) {
-                console.warn("⚠️ تعذر توليد صورة الفاتورة الاحترافية.", e);
-                if (typeof window.showBoseToast === "function") {
-                    window.showBoseToast("⚠️ حصلت مشكلة في تجهيز صورة الفاتورة، جرّبي تاني.");
-                }
-            } finally {
-                invoiceImageBtn.disabled = false;
-                invoiceImageBtn.innerHTML = originalHTML;
-            }
+    if (invoiceImageBtn) {
+        invoiceImageBtn.addEventListener("click", () => {
+            if (whatsappUrl) window.open(whatsappUrl, "_blank");
         });
     }
 
