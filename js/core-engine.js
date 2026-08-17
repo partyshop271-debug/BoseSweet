@@ -1636,6 +1636,46 @@
         }, duration);
     };
 
+    /**
+     * 🌸🌸 [نظام يتفاعل مع العميل ويتعرّف عليه]: "ملف تعريف العميل" بيتحفظ
+     * محلياً في جهاز العميل (localStorage) بمجرد ما يخلّص أول طلب بنجاح -
+     * اسمه، أرقام هاتفه، تفاصيل عنوانه، منطقته، وملاحظاته (حساسية/سكر خفيف +
+     * ملاحظات الشحن). الهدف إن العميل ميضطرش يكتب نفس البيانات من الأول في
+     * كل مرة، وإن الموقع "يفتكره" ويرحب بيه باسمه لما يرجع تاني (راجع نداء
+     * showBoseToast في نهاية buildAndInjectGlobalComponents تحت).
+     * @param {{name: string, phone1?: string, phone2?: string, deliveryMethod?: string, zoneId?: string, addressDetails?: string, orderNotes?: string, shippingNotes?: string}} profileData
+     */
+    window.saveBoseCustomerProfile = function(profileData) {
+        if (!profileData || !profileData.name) return;
+        try {
+            localStorage.setItem('bose_customer_profile', JSON.stringify({
+                name: profileData.name,
+                phone1: profileData.phone1 || "",
+                phone2: profileData.phone2 || "",
+                deliveryMethod: profileData.deliveryMethod || "",
+                zoneId: profileData.zoneId || "",
+                addressDetails: profileData.addressDetails || "",
+                orderNotes: profileData.orderNotes || "",
+                shippingNotes: profileData.shippingNotes || "",
+                savedAt: Date.now()
+            }));
+        } catch (e) { /* تجاهل بأمان لو التخزين المحلي ممتلئ أو غير متاح */ }
+    };
+
+    /**
+     * @returns {null | {name: string, phone1: string, phone2: string, deliveryMethod: string, zoneId: string, addressDetails: string, orderNotes: string, shippingNotes: string}}
+     */
+    window.getBoseCustomerProfile = function() {
+        try {
+            const raw = localStorage.getItem('bose_customer_profile');
+            if (!raw) return null;
+            const parsed = JSON.parse(raw);
+            return (parsed && parsed.name) ? parsed : null;
+        } catch (e) {
+            return null;
+        }
+    };
+
     window.updateGlobalCartCounter = function() {
         const cartCountBadges = document.querySelectorAll('#nav-cart-count, .nav-cart-badge');
         if (cartCountBadges.length === 0) return;
@@ -2346,6 +2386,22 @@
                 </footer>
             `;
         }
+
+        // 🌸🌸 [نظام يتفاعل مع العميل ويتعرّف عليه]: لو عندنا "ملف تعريف" محفوظ
+        // للعميل ده من طلب سابق (راجع saveBoseCustomerProfile)، بنرحّب بيه باسمه
+        // كإشعار علوي فور دخوله الموقع - مرة واحدة بس لكل جلسة تصفح (sessionStorage)
+        // عشان الترحيب ميتكررش في كل صفحة يتنقل لها جوه نفس الزيارة.
+        try {
+            const welcomeProfile = typeof window.getBoseCustomerProfile === "function" ? window.getBoseCustomerProfile() : null;
+            if (welcomeProfile && welcomeProfile.name && !sessionStorage.getItem('bose_welcome_shown')) {
+                sessionStorage.setItem('bose_welcome_shown', '1');
+                setTimeout(() => {
+                    if (typeof window.showBoseToast === "function") {
+                        window.showBoseToast(`أهلاً بعودتك يا ${welcomeProfile.name} 🌸 وحشتينا!`, 4200);
+                    }
+                }, 700);
+            }
+        } catch (e) { /* تجاهل بأمان */ }
     }
 
     function setupHeaderAndSidebarEvents() {

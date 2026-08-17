@@ -347,6 +347,14 @@
      */
     async function saveBoseOrderToDatabase(completedBoseOrderObject) {
         const o = completedBoseOrderObject;
+        // 🌸 [نظام التعرّف على العميل - المرحلة 2]: عمود الملاحظات في قاعدة
+        // البيانات واحد بس (notes)، فمفيش عمود منفصل لملاحظات الشحن. عشان ملاحظة
+        // الشحن متضيعش من سجل الطلب المحفوظ فعلياً في قاعدة البيانات (حتى لو
+        // ظهرت في فاتورة الواتساب في سطر منفصل)، بندمجها هنا كسطر إضافي واضح
+        // جوه نص الملاحظات المرسل لقاعدة البيانات.
+        const combinedNotes = (o.shippingNotes && o.shippingNotes.trim() !== "")
+            ? `${o.notes || "لا توجد ملاحظات إضافية"}\n🚚 ملاحظات التوصيل: ${o.shippingNotes.trim()}`
+            : o.notes;
         return submitBoseOrderToDatabase({
             customerName: o.customerName,
             phone1: o.phone1,
@@ -360,7 +368,7 @@
             shippingZoneId: o.shippingZoneId || null,
             scheduledDateRaw: o.scheduledDateISO || o.scheduledDate, // بصيغة YYYY-MM-DD بالفعل من <input type="date">
             scheduledTime: o.scheduledTime,
-            notes: o.notes,
+            notes: combinedNotes,
             couponCode: o.couponCode || null,
             subtotal: parseFloat(o.subtotal) || ((o.grandTotal || 0) - (o.shippingFee || 0)),
             shippingFee: o.shippingFee || 0,

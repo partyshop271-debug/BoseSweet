@@ -722,6 +722,11 @@ function processFinalBoseOrder(cart, storeData, method, shippingFee, payFull) {
     const deliveryDateInput = document.getElementById("checkout-delivery-date");
     const deliveryTimeInput = document.getElementById("checkout-delivery-time");
     const orderNotesInput = document.getElementById("checkout-order-notes-textarea");
+    // 🌸 [نظام التعرّف على العميل - المرحلة 2]: حقل جديد مخصص لملاحظات الشحن/التوصيل
+    // (زي علامة مميزة على المنزل، كود بوابة، أو وقت مفضّل للمندوب) منفصل عن ملاحظات
+    // الحساسية/السكر العامة، عشان الاتنين يوصلوا واضحين لفريق التوصيل بدل ما يتلخبطوا
+    // في سطر واحد.
+    const shippingNotesInput = document.getElementById("checkout-shipping-notes-textarea");
 
     // 🛡️🛡️ [تحسين UX - تحقق شامل من الفورم]: بدل ما نوقف عند أول خطأ (زي ما
     // كان بيحصل قبل كده)، بنجمع كل الأخطاء في المصفوفة دي مرة واحدة، ونعرضهم
@@ -850,8 +855,32 @@ function processFinalBoseOrder(cart, storeData, method, shippingFee, payFull) {
         couponCode: invoice.couponCode || null,
         grandTotal: finalGrandTotalCalculated,
         notes: orderNotesInput ? orderNotesInput.value.trim() : "لا توجد ملاحظات إضافية",
+        // 🌸 [نظام التعرّف على العميل - المرحلة 2]: ملاحظات الشحن/التوصيل بتتسجل
+        // كحقل منفصل في فاتورة الواتساب (راجع buildBoseFormattedWhatsappInvoice)
+        // عشان توصل واضحة لوحدها للمندوب، وكمان بتتحفظ في ملف العميل المحلي تحت.
+        shippingNotes: shippingNotesInput ? shippingNotesInput.value.trim() : "",
         items: cart
     };
+
+    // 🌸🌸 [نظام يتفاعل مع العميل ويتعرّف عليه]: بمجرد ما البيانات عدّت كل
+    // التحقق بنجاح، بنحفظ "ملف تعريف العميل" في جهازه محلياً (localStorage) -
+    // الاسم، أرقام الهاتف، تفاصيل العنوان، المنطقة، ملاحظة الحساسية/السكر،
+    // وملاحظات الشحن. المرة الجاية اللي يفتح فيها صفحة إتمام الطلب، هنلاقي
+    // كل الحقول دي اتملت لوحدها تلقائياً (راجع initializeLocalConfig في
+    // checkout.html) فمش هيضطر يكتبها تاني، وكمان بيتعرض له ترحيب بالاسم لما
+    // يدخل الموقع تاني (راجع buildAndInjectGlobalComponents في core-engine.js).
+    if (typeof window.saveBoseCustomerProfile === "function") {
+        window.saveBoseCustomerProfile({
+            name: customerName,
+            phone1: sanitizedPhone1,
+            phone2: sanitizedPhone2,
+            deliveryMethod: method,
+            zoneId: selectedZoneId || "",
+            addressDetails: (method === "delivery" && addressDetailsInput) ? addressDetailsInput.value.trim() : "",
+            orderNotes: orderNotesInput ? orderNotesInput.value.trim() : "",
+            shippingNotes: shippingNotesInput ? shippingNotesInput.value.trim() : ""
+        });
+    }
 
     // 💵 [عربون/دفع مقدم]: نحسب المبلغ المطلوب دفعه الآن حسب طريقة الاستلام
     // ونضيفه لكائن الطلب - بيستخدم في رسالة الواتساب وصفحة النجاح.
@@ -954,12 +983,23 @@ function getBoseArabicShapeName(shape) {
 
 function buildBoseFormattedWhatsappInvoice(order) {
     let msg = `✨ *فاتورة حجز طلبية فاخرة - حلويات بوسي (BoseSweets)* ✨\n`;
+    // 🌸 [نظام يتفاعل مع العميل]: ترحيب مباشر باسم العميل بالظبط أول رسالة
+    // الواتساب، بدل ما يكون اسمه مجرد سطر بيانات جوه الفاتورة زي أي حقل تاني.
+    if (order.customerName) {
+        msg += `🌸 أهلاً يا *${order.customerName}*، شكراً لثقتك في حلويات بوسي! دي فاتورة حجزك 👇\n\n`;
+    }
     msg += `--------------------------------------------------\n\n`;
     msg += `🧾 *رقم المعاملة:* ${order.orderId}\n`;
     msg += `👤 *العميل:* ${order.customerName}\n`;
     msg += `📞 *رقم الاتصال:* ${order.phone1}\n`;
     msg += `🚗 *مسار الاستلام:* ${order.deliveryMethod}\n`;
     msg += `📍 *التفاصيل الجغرافية:* ${order.address}\n`;
+    // 🌸 [نظام التعرّف على العميل - المرحلة 2]: ملاحظات الشحن/التوصيل (لو
+    // موجودة) بتظهر كسطر مستقل وواضح بدل ما تتلخبط جوه ملاحظات الحساسية/السكر
+    // العامة تحت في نهاية الفاتورة.
+    if (order.shippingNotes && order.shippingNotes.trim() !== "") {
+        msg += `🚚 *ملاحظات التوصيل:* ${order.shippingNotes.trim()}\n`;
+    }
     msg += `📅 *موعد الاستلام:* ${order.scheduledDate} الساعة ${formatBoseTimeToEgyptian12Hour(order.scheduledTime)}\n\n`;
     msg += `--------------------------------------------------\n`;
     msg += `📦 *تفاصيل الأصناف المطلوبة:*\n\n`;
@@ -1056,7 +1096,7 @@ function buildBoseFormattedWhatsappInvoice(order) {
     });
 
     msg += `--------------------------------------------------\n`;
-    msg += `📝 *ملاحظات:* ${order.notes}\n\n`;
+    msg += `📝 *ملاحظات عن الحساسية / تفضيل السكر أو أي طلب خاص:* ${order.notes}\n\n`;
     msg += `--------------------------------------------------\n`;
     msg += `👑 *المجموع المالي النهائي:* ${order.grandTotal} EGP 👑\n`;
     // 💵 [عربون/دفع مقدم]: توضيح صريح لطريقة ووقت الدفع - استلام = عربون 50%
