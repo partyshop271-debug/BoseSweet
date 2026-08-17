@@ -270,12 +270,14 @@ img {
     display: flex;
     align-items: center;
     gap: 8px;
+    min-width: 0; /* يسمح لاسم العلامة جوه العنصر ده إنه يتقلص/يتقطع بـ ellipsis بدل ما يدفع باقي عناصر الهيدر ويسبب تراكب */
 }
 
 .brand-logo-img {
     height: 42px;
     width: 42px;
     object-fit: contain;
+    flex-shrink: 0;
 }
 
 .brand-name-display {
@@ -283,6 +285,8 @@ img {
     font-weight: 700;
     color: var(--bose-black);
     white-space: nowrap !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .nav-cart-icon-wrapper {
@@ -315,23 +319,58 @@ img {
 /* 🐛 [إصلاح حرج - تكدّس الهيدر على الشاشات الضيقة]: على الشاشات الأصغر من
    ~400px، مجموع عرض محتوى الهيدر (زرار القائمة + اللوجو + اسم "حلويات بوسي"
    في header-right-side، زائد البحث والمفضلة والسلة في header-left-side)
-   كان بيتخطى عرض الشاشة الفعلي. ما فيش flex-wrap ولا تقليص معرّف للمحتوى،
-   فبدل ما يلف لسطر تاني، كان طرف كل مجموعة (اسم العلامة من ناحية وأيقونة
-   البحث من الناحية التانية) بيتصادم ويتراكب فوق بعضه بالظبط في نص الهيدر
-   - وده اللي ظاهر في السكرين شوت (النص متراكب مع الأيقونة). الحل: نخفي
-   اسم العلامة النصي على الشاشات الضيقة ونسيب اللوجو لوحده كافٍ للتعريف
-   بالهوية (نفس النمط المتبع في أغلب مواقع التجارة الإلكترونية على الموبايل)،
-   ونقلل الـ padding والمسافات شوية عشان نضمن مساحة أمان إضافية.
+   كان بيتخطى عرض الشاشة الفعلي. الحل القديم كان بيخفي اسم العلامة بالكامل
+   على الموبايل (display:none) - وده غلط لأن اسم "حلويات بوسي" لازم يفضل ظاهر
+   للعميلة في كل الصفحات. 🛡️ [إصلاح - رجوع اسم العلامة للهيدر بدون تكدّس]:
+   دلوقتي بدل الإخفاء، بيتقلّص اللوجو والمسافات وحجم الخط شوية، وأهم حاجة إن
+   اسم العلامة بقى له max-width محسوب بدقة (باقي عرض الهيدر بعد خصم زرار
+   القائمة واللوجو من ناحية، وأيقونات البحث/المفضلة/السلة من الناحية التانية)
+   فمهما ضاق العرض، النص بياخد بالظبط المساحة المتاحة وبيتقطع بـ "..." (ellipsis
+   معرّفة فوق في .brand-name-display) بدل ما يتصادم أو يتراكب مع أي عنصر تاني.
    ========================================================================== */
 @media (max-width: 480px) {
     .bose-sticky-header {
-        padding: 14px 12px;
+        padding: 14px 10px;
     }
     .header-right-side, .header-left-side {
+        gap: 4px;
+    }
+    .header-right-side {
+        min-width: 0;
+        flex: 1 1 auto;
+    }
+    .header-left-side {
+        flex-shrink: 0;
+    }
+    .brand-logo-container {
         gap: 6px;
     }
+    .brand-logo-img {
+        height: 34px;
+        width: 34px;
+    }
     .brand-name-display {
-        display: none;
+        font-size: 14px;
+        max-width: 30vw;
+    }
+    .bose-nav-btn {
+        font-size: 19px;
+        padding: 5px;
+    }
+    .nav-cart-icon-wrapper {
+        width: 38px;
+        height: 38px;
+    }
+}
+
+@media (max-width: 360px) {
+    .brand-name-display {
+        font-size: 12.5px;
+        max-width: 24vw;
+    }
+    .brand-logo-img {
+        height: 30px;
+        width: 30px;
     }
 }
 
