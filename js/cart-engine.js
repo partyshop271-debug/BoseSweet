@@ -722,10 +722,10 @@ function processFinalBoseOrder(cart, storeData, method, shippingFee, payFull) {
     const deliveryDateInput = document.getElementById("checkout-delivery-date");
     const deliveryTimeInput = document.getElementById("checkout-delivery-time");
     const orderNotesInput = document.getElementById("checkout-order-notes-textarea");
-    // 🌸 [نظام التعرّف على العميل - المرحلة 2]: حقل جديد مخصص لملاحظات الشحن/التوصيل
-    // (زي علامة مميزة على المنزل، كود بوابة، أو وقت مفضّل للمندوب) منفصل عن ملاحظات
-    // الحساسية/السكر العامة، عشان الاتنين يوصلوا واضحين لفريق التوصيل بدل ما يتلخبطوا
-    // في سطر واحد.
+    // 🌸 [نظام التعرّف على العميل]: حقل جديد مخصص لملاحظات الشحن/التوصيل (زي
+    // علامة مميزة على المنزل، كود بوابة، أو وقت مفضّل للمندوب) منفصل عن ملاحظات
+    // الحساسية/السكر العامة، عشان الاتنين يوصلوا واضحين لفريق التوصيل بدل ما
+    // يتلخبطوا في سطر واحد.
     const shippingNotesInput = document.getElementById("checkout-shipping-notes-textarea");
 
     // 🛡️🛡️ [تحسين UX - تحقق شامل من الفورم]: بدل ما نوقف عند أول خطأ (زي ما
@@ -855,9 +855,9 @@ function processFinalBoseOrder(cart, storeData, method, shippingFee, payFull) {
         couponCode: invoice.couponCode || null,
         grandTotal: finalGrandTotalCalculated,
         notes: orderNotesInput ? orderNotesInput.value.trim() : "لا توجد ملاحظات إضافية",
-        // 🌸 [نظام التعرّف على العميل - المرحلة 2]: ملاحظات الشحن/التوصيل بتتسجل
-        // كحقل منفصل في فاتورة الواتساب (راجع buildBoseFormattedWhatsappInvoice)
-        // عشان توصل واضحة لوحدها للمندوب، وكمان بتتحفظ في ملف العميل المحلي تحت.
+        // 🌸 [نظام التعرّف على العميل]: ملاحظات الشحن/التوصيل بتتسجل كحقل منفصل
+        // في فاتورة الواتساب (راجع buildBoseFormattedWhatsappInvoice) عشان توصل
+        // واضحة لوحدها للمندوب، وكمان بتتحفظ في ملف العميل المحلي تحت.
         shippingNotes: shippingNotesInput ? shippingNotesInput.value.trim() : "",
         items: cart
     };
@@ -983,7 +983,7 @@ function getBoseArabicShapeName(shape) {
 
 function buildBoseFormattedWhatsappInvoice(order) {
     let msg = `✨ *فاتورة حجز طلبية فاخرة - حلويات بوسي (BoseSweets)* ✨\n`;
-    // 🌸 [نظام يتفاعل مع العميل]: ترحيب مباشر باسم العميل بالظبط أول رسالة
+    // 🌸 [نظام التعرّف على العميل]: ترحيب مباشر باسم العميل بالظبط أول رسالة
     // الواتساب، بدل ما يكون اسمه مجرد سطر بيانات جوه الفاتورة زي أي حقل تاني.
     if (order.customerName) {
         msg += `🌸 أهلاً يا *${order.customerName}*، شكراً لثقتك في حلويات بوسي! دي فاتورة حجزك 👇\n\n`;
@@ -994,9 +994,9 @@ function buildBoseFormattedWhatsappInvoice(order) {
     msg += `📞 *رقم الاتصال:* ${order.phone1}\n`;
     msg += `🚗 *مسار الاستلام:* ${order.deliveryMethod}\n`;
     msg += `📍 *التفاصيل الجغرافية:* ${order.address}\n`;
-    // 🌸 [نظام التعرّف على العميل - المرحلة 2]: ملاحظات الشحن/التوصيل (لو
-    // موجودة) بتظهر كسطر مستقل وواضح بدل ما تتلخبط جوه ملاحظات الحساسية/السكر
-    // العامة تحت في نهاية الفاتورة.
+    // 🌸 [نظام التعرّف على العميل]: ملاحظات الشحن/التوصيل (لو موجودة) بتظهر
+    // كسطر مستقل وواضح بدل ما تتلخبط جوه ملاحظات الحساسية/السكر العامة تحت
+    // في نهاية الفاتورة.
     if (order.shippingNotes && order.shippingNotes.trim() !== "") {
         msg += `🚚 *ملاحظات التوصيل:* ${order.shippingNotes.trim()}\n`;
     }
