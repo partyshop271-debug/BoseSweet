@@ -1484,6 +1484,219 @@
 }
 
 /* ==========================================================================
+   11-B. 🎬👑 التطوير البصري والحركي لكتل عرض المحاكيات (الورد/التورت)
+   الهدف: كل بلوك يعبّر بصرياً عن الميزة التنافسية الصريحة لصاحبة المتجر
+   (تورت بجودة وقيمة ملهاش منافس / ورد طبيعي حقيقي حصري في الفرافرة) بدل ما
+   يكون مجرد صورة+نص+زرار ثابتين تماماً زي أي بلوك تاني.
+   🛡️ [أمان]: مفيش أي تعديل على الـ IDs (#cake-preview-img/title/desc/cta و
+   #flower-preview-img/title/desc/cta) اللي بيغذيها injectSimulatorsPreviewData
+   في core-engine.js من لوحة التحكم - كل الإضافات عناصر جديدة بس حواليها.
+   .bose-isolated-backdrop-framework كان ديف فاضي تماماً بلا أي تنسيق قبل كده
+   (اتأكد بالبحث الشامل في كل ملفات الـ CSS) - دلوقتي بقاله وظيفة بصرية فعلية.
+   ========================================================================== */
+
+.preview-builder-block, .bose-isolated-simulator-card {
+    position: relative !important;
+    isolation: isolate;
+}
+
+/* توهج خلفي هادئ ومتحرك ببطء خلف الكارت بالكامل */
+.bose-isolated-backdrop-framework {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+    border-radius: inherit;
+}
+.bose-isolated-backdrop-framework::before,
+.bose-isolated-backdrop-framework::after {
+    content: '';
+    position: absolute;
+    width: 260px;
+    height: 260px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 145, 164, 0.16) 0%, rgba(255, 145, 164, 0) 70%);
+    animation: boseBackdropDrift 9s ease-in-out infinite;
+}
+.bose-isolated-backdrop-framework::before { top: -60px; inset-inline-end: -40px; }
+.bose-isolated-backdrop-framework::after { bottom: -60px; inset-inline-start: -40px; animation-delay: -4.5s; }
+
+@keyframes boseBackdropDrift {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(-16px, 14px) scale(1.12); }
+}
+
+/* أيقونات عائمة زخرفية خفيفة تعبّر عن هوية كل بلوك */
+.bose-simulator-decor {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+}
+.bose-simulator-float-icon {
+    position: absolute;
+    color: var(--bose-pink);
+    opacity: 0.15;
+    animation: boseFloatIcon 6s ease-in-out infinite;
+}
+.bose-simulator-float-icon.icon-1 { top: 8%; inset-inline-end: 6%; font-size: 34px; animation-delay: 0s; }
+.bose-simulator-float-icon.icon-2 { bottom: 12%; inset-inline-end: 16%; font-size: 22px; animation-delay: -2s; }
+.bose-simulator-float-icon.icon-3 { top: 16%; inset-inline-start: 8%; font-size: 26px; animation-delay: -4s; }
+
+@keyframes boseFloatIcon {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-14px) rotate(8deg); }
+}
+
+.simulator-card-inner-layout, .bose-simulator-decor { position: relative; }
+.simulator-card-inner-layout { z-index: 1; }
+
+/* شارة الميزة التنافسية العائمة فوق الصورة + النبضة الذهبية */
+.bose-simulator-image-wrap {
+    position: relative;
+    display: inline-block;
+    max-width: 100%;
+}
+.bose-simulator-exclusive-badge {
+    position: absolute;
+    top: -14px;
+    inset-inline-start: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: linear-gradient(135deg, var(--bose-nav-icon-gold, #C9972E), var(--bose-pink-text)) !important;
+    color: var(--bose-white) !important;
+    font-size: 12.5px;
+    font-weight: 700;
+    padding: 8px 16px;
+    border-radius: var(--bose-radius-pill);
+    box-shadow: 0 6px 18px rgba(201, 151, 46, 0.35);
+    z-index: 2;
+    white-space: nowrap;
+    animation: boseBadgePulse 2.4s ease-in-out infinite;
+}
+.bose-simulator-exclusive-badge i { font-size: 12px; }
+
+@keyframes boseBadgePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* تسمية صغيرة (Eyebrow) فوق العنوان لتوضيح الميزة التنافسية فوراً */
+.bose-simulator-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--bose-pink-text) !important;
+    font-weight: 700 !important;
+    font-size: 13.5px !important;
+    margin-bottom: 8px;
+}
+
+/* قائمة نقاط القيمة التنافسية تحت الوصف مباشرة */
+.bose-simulator-feature-list {
+    list-style: none;
+    margin: 0 0 24px 0 !important;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: right !important;
+    width: 100%;
+}
+.bose-simulator-feature-list li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--bose-black);
+}
+.bose-simulator-feature-list i {
+    color: var(--bose-pink-text);
+    font-size: 15px;
+    flex-shrink: 0;
+}
+
+/* تكبير خفيف وميل للصورة عند مرور الماوس عليها */
+#cake-preview-img, #flower-preview-img {
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+.bose-simulator-image-wrap:hover #cake-preview-img,
+.bose-simulator-image-wrap:hover #flower-preview-img {
+    transform: scale(1.035) rotate(-1deg) !important;
+}
+
+/* لمعة متحركة دورية فوق زرار الدعوة للفعل عشان تلفت الانتباه له بشكل مستمر */
+.bose-simulator-action-btn, #cake-preview-cta, #flower-preview-cta {
+    position: relative !important;
+    overflow: hidden !important;
+}
+.bose-simulator-action-btn::after, #cake-preview-cta::after, #flower-preview-cta::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    inset-inline-start: -60%;
+    width: 40%;
+    height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+    transform: skewX(-20deg);
+    animation: boseCtaShine 3.2s ease-in-out infinite;
+    pointer-events: none;
+}
+@keyframes boseCtaShine {
+    0% { inset-inline-start: -60%; }
+    35%, 100% { inset-inline-start: 130%; }
+}
+
+/* ظهور تدريجي للبلوك بالكامل + تتابع ظهور نقاط القيمة عند الوصول له بالتمرير
+   (التفعيل عن طريق IntersectionObserver في setupSimulatorPreviewAnimations
+   بملف core-engine.js واللي بيضيف كلاس bose-in-view) */
+.bose-simulator-reveal {
+    opacity: 0;
+    transform: translateY(36px);
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.bose-simulator-reveal.bose-in-view {
+    opacity: 1;
+    transform: translateY(0);
+}
+.bose-simulator-reveal .bose-simulator-feature-list li {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.bose-simulator-reveal.bose-in-view .bose-simulator-feature-list li:nth-child(1) { transition-delay: 0.25s; }
+.bose-simulator-reveal.bose-in-view .bose-simulator-feature-list li:nth-child(2) { transition-delay: 0.4s; }
+.bose-simulator-reveal.bose-in-view .bose-simulator-feature-list li:nth-child(3) { transition-delay: 0.55s; }
+.bose-simulator-reveal.bose-in-view .bose-simulator-feature-list li {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@media (max-width: 600px) {
+    .bose-simulator-float-icon.icon-2 { display: none; }
+    .bose-simulator-exclusive-badge { font-size: 11px; padding: 6px 12px; inset-inline-start: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .bose-isolated-backdrop-framework::before,
+    .bose-isolated-backdrop-framework::after,
+    .bose-simulator-float-icon,
+    .bose-simulator-exclusive-badge,
+    .bose-simulator-action-btn::after,
+    #cake-preview-cta::after,
+    #flower-preview-cta::after {
+        animation: none !important;
+    }
+    .bose-simulator-reveal,
+    .bose-simulator-reveal .bose-simulator-feature-list li {
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ==========================================================================
    12. كروت الفئات (Categories Slider UI)
    ========================================================================== */
 .bose-categories-slider-section {
