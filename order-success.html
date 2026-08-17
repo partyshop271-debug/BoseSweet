@@ -27,8 +27,10 @@
          التي لا تحمّل cart-engine.js، فكانت دالة renderBoseSuccessPage المخصصة لها
          معطّلة تماماً ومعوّضة بسكريبت داخلي مكرر. تم حذف التكرار وربط الصفحة بالمحرك
          المركزي الموحد مثل cart.html وcheckout.html بالضبط. -->
-    <script src="js/invoice-image-generator.js?v=2026_production_v38.0"></script>
-    <script src="js/cart-engine.js?v=2026_production_v38.0"></script>
+    <!-- 🗑️ [إصلاح - حذف صورة الفاتورة]: تم حذف تحميل invoice-image-generator.js -
+         الصفحة بقت بتعتمد بس على نص الفاتورة الجاهز من cart-engine.js لفتح واتساب
+         مباشرة، بدون توليد أي صورة فاتورة زيادة (كانت غير مفيدة عملياً). -->
+    <script src="js/cart-engine.js?v=2026_production_v38.1"></script>
 
     <style>
         /* 🎨 الهندسة البصرية المخصصة لصفحة نجاح الطلب الفاخرة */
