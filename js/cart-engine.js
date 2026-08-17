@@ -908,6 +908,37 @@ function processFinalBoseOrder(cart, storeData, method, shippingFee, payFull) {
     }
 }
 
+// 🕒 [إصلاح - التوقيت المصري]: كان وقت الاستلام بيتكتب في فاتورة الواتساب زي
+// ما هو مخزّن في الـ<input type="time"> بالظبط (صيغة 24 ساعة، مثال "20:40")،
+// وده مش الشكل اللي بيتفاهم بيه الفرع أو العميل عادةً. الدالة دي بتحوّله لصيغة
+// 12 ساعة مصرية مألوفة مع توضيح "صباحاً/مساءً" جنبها (مثال: "8:40 مساءً").
+function formatBoseTimeToEgyptian12Hour(time24) {
+    if (!time24 || typeof time24 !== "string" || !time24.includes(":")) return time24 || "";
+    const [hStr, mStr] = time24.split(":");
+    let hours = parseInt(hStr, 10);
+    const minutes = parseInt(mStr, 10);
+    if (isNaN(hours) || isNaN(minutes)) return time24;
+    const period = hours >= 12 ? "مساءً" : "صباحاً";
+    let hours12 = hours % 12;
+    if (hours12 === 0) hours12 = 12;
+    const minutesPadded = String(minutes).padStart(2, "0");
+    return `${hours12}:${minutesPadded} ${period}`;
+}
+
+// 🔷 [إصلاح - أشكال التورت بالعربي]: كانت قيمة الشكل التقنية بالإنجليزي
+// (circle/heart/square/rectangle) بتتكتب زي ما هي في فاتورة الواتساب اللي
+// بتوصل للعميل وللفرع، بدل اسمها العربي المفهوم. نفس الخريطة المستخدمة فعلياً
+// في عرض السلة (cart.html) اتوحدت هنا عشان تتطبق في الفاتورة كمان.
+function getBoseArabicShapeName(shape) {
+    const shapeMap = {
+        circle: "دائري",
+        heart: "قلب",
+        square: "مربع",
+        rectangle: "مستطيل"
+    };
+    return shapeMap[shape] || shape;
+}
+
 function buildBoseFormattedWhatsappInvoice(order) {
     let msg = `✨ *فاتورة حجز طلبية فاخرة - حلويات بوسي (BoseSweets)* ✨\n`;
     msg += `--------------------------------------------------\n`;
@@ -916,7 +947,7 @@ function buildBoseFormattedWhatsappInvoice(order) {
     msg += `📞 *رقم الاتصال:* ${order.phone1}\n`;
     msg += `🚗 *مسار الاستلام:* ${order.deliveryMethod}\n`;
     msg += `📍 *التفاصيل الجغرافية:* ${order.address}\n`;
-    msg += `📅 *موعد الاستلام:* ${order.scheduledDate} الساعة ${order.scheduledTime}\n`;
+    msg += `📅 *موعد الاستلام:* ${order.scheduledDate} الساعة ${formatBoseTimeToEgyptian12Hour(order.scheduledTime)}\n`;
     msg += `--------------------------------------------------\n`;
     msg += `📦 *تفاصيل الأصناف المخصصة:* \n\n`;
 
@@ -930,7 +961,11 @@ function buildBoseFormattedWhatsappInvoice(order) {
         // لأن اسم واسم الوحدة الحقيقيين موجودين بالفعل جوه عنوان المنتج (item.title)
         // ومفيش داعي إطلاقاً لتأكيد/تخمين وحدة تانية جنبه ممكن تكون غلط. النص الجديد
         // بيوضح إنه "عدد الوحدات" (×) بدل ما يخترع وحدة قياس قد تكون غلط.
-        msg += `   *عدد الوحدات المطلوبة:* ×${item.quantity}\n`;
+        // 🏷️ [إصلاح - تسمية الكمية حسب المنتج]: بدل تسمية عامة "عدد الوحدات
+        // المطلوبة" لكل الأصناف مهما كانت، بقت التسمية مخصصة لاسم المنتج نفسه
+        // (مثال: "العدد المطلوب من التورت"، "العدد المطلوب من القشطوطة")
+        // عشان توضح فوراً وبدقة إحنا بنعد ايه بالظبط لكل صنف في الفاتورة.
+        msg += `   *العدد المطلوب من ${item.title}:* ×${item.quantity}\n`;
         msg += `   *سعر الوحدة الشامل:* ${parseFloat(item.finalPrice).toFixed(2)} EGP\n`;
         
         if (item.customDetails) {
@@ -939,7 +974,7 @@ function buildBoseFormattedWhatsappInvoice(order) {
                 if (cd.isGift) msg += `   • 🎁 هدية لحد تاني\n`;
                 if (cd.occasionLabel && cd.occasionLabel.trim() !== "") msg += `   • المناسبة: ${cd.occasionLabel.trim()}\n`;
                 if (cd.cakeType && cd.cakeType !== "none" && cd.cakeType !== "افتراضي") msg += `   • طعم الكيك: ${cd.cakeType}\n`;
-                if (cd.shape && cd.shape !== "none") msg += `   • الشكل: ${cd.shape}\n`;
+                if (cd.shape && cd.shape !== "none") msg += `   • الشكل: ${getBoseArabicShapeName(cd.shape)}\n`;
                 if (cd.persons && cd.persons > 0) msg += `   • الأفراد: لـ ${cd.persons} فرد\n`;
                 if (cd.printingType && cd.printingType !== "none") msg += `   • طباعة صورة: ${cd.printingType === 'edible' ? 'قابلة للأكل' : 'غير قابلة للأكل'}\n`;
                 if (cd.customMessage && cd.customMessage.trim() !== "") msg += `   • النص: "${cd.customMessage}"\n`;
@@ -1142,6 +1177,38 @@ function renderBoseSuccessPage(storeData) {
             ? window.buildWhatsappLink(storeData?.store?.phone || '01097238441', order.whatsappMessage)
             : whatsappBtn.href;
         whatsappBtn.href = whatsappUrl;
+    }
+
+    // 🖼️ [جديد - فاتورة احترافية كصورة]: زر اختياري بيبني صورة فاتورة منسّقة
+    // (لوجو + ألوان الماركة + ختم رسمي) من نفس بيانات الطلب، وبيحاول يبعتها
+    // مباشرة لواتساب في ضغطة واحدة (Web Share API على الموبايل)، وبيرجع
+    // لتنزيل الصورة + فتح واتساب بالنص كخطة بديلة لو المتصفح مش بيدعم المشاركة.
+    const invoiceImageBtn = document.getElementById("bose-invoice-image-btn");
+    if (invoiceImageBtn && typeof window.generateBoseInvoiceImageBlob === "function") {
+        invoiceImageBtn.addEventListener("click", async () => {
+            const originalHTML = invoiceImageBtn.innerHTML;
+            invoiceImageBtn.disabled = true;
+            invoiceImageBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري تجهيز الفاتورة...';
+            try {
+                const blob = await window.generateBoseInvoiceImageBlob(order, storeData?.store || {});
+                const fileName = `bose-invoice-${order.orderId || "order"}.png`;
+                const wasShared = await window.shareOrDownloadBoseInvoiceImage(blob, fileName, order.whatsappMessage || "");
+                if (!wasShared) {
+                    if (typeof window.showBoseToast === "function") {
+                        window.showBoseToast("📥 تم تنزيل صورة الفاتورة - أرفقيها في محادثة واتساب اللي فتحناها لك.");
+                    }
+                    if (whatsappUrl) window.open(whatsappUrl, "_blank");
+                }
+            } catch (e) {
+                console.warn("⚠️ تعذر توليد صورة الفاتورة الاحترافية.", e);
+                if (typeof window.showBoseToast === "function") {
+                    window.showBoseToast("⚠️ حصلت مشكلة في تجهيز صورة الفاتورة، جرّبي تاني.");
+                }
+            } finally {
+                invoiceImageBtn.disabled = false;
+                invoiceImageBtn.innerHTML = originalHTML;
+            }
+        });
     }
 
     // 🚀 [إصلاح المرحلة 1 - تطبيق نص المواصفة]: فتح الواتساب تلقائياً فور تحميل
