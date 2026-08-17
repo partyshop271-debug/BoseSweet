@@ -550,23 +550,46 @@ function startEngineLogic() {
             printingLabel = selectedPrinting === 'edible' ? 'طباعة صورة صالحة للأكل' : 'طباعة صورة غير صالحة للأكل';
         }
 
+        // 🖊️👑 [زرار "تعديل" جنب كل بند - موحّد مع محاكي الورد]: كل سطر معاه
+        // step target بيرجّع العميلة لنفس الخطوة تعدّلها، بنفس فلسفة خطوة
+        // الخلاصة في محاكي الورد بالظبط (renderFlowerSummary).
         const rows = [
-            { label: `تورتة ${shapeLabelMap[selectedShape] || selectedShape} بنكهة ${flavorLabelMap[selectedFlavor] || selectedFlavor} لـ ${currentPersons} فرد`, value: `${Math.round(sizePortionPrice)} جنيه` }
+            { step: 4, label: `عدد الأفراد`, value: `${currentPersons} فرد` },
+            { step: 5, label: `شكل التورتة`, value: shapeLabelMap[selectedShape] || selectedShape },
+            { step: 6, label: `نكهة التورتة`, value: flavorLabelMap[selectedFlavor] || selectedFlavor }
         ];
         if (occasionText) {
-            rows.push({ label: `المناسبة`, value: occasionText });
+            rows.push({ step: 2, label: `المناسبة`, value: occasionText });
         }
         if (selectedPrinting !== 'none') {
-            rows.push({ label: printingLabel, value: `+ ${printingFee} جنيه` });
+            rows.push({ step: 7, label: printingLabel, value: `+ ${printingFee} جنيه` });
         }
         if (replicaToggle && replicaToggle.checked) {
-            rows.push({ label: `صورة تصميم مرفقة لتقريب الشكل`, value: uploadedReplicaPhotoUrl ? `✓ تم الإرفاق` : `لسه محتاجة ترفعي الصورة` });
+            rows.push({ step: 3, label: `صورة تصميم مرفقة لتقريب الشكل`, value: uploadedReplicaPhotoUrl ? `✓ تم الإرفاق` : `لسه محتاجة ترفعي الصورة` });
         }
         if (hasGiftCardNow) {
-            rows.push({ label: `كارت إهداء مطبوع`, value: `+ ${cakeGiftCardPrice} جنيه` });
+            rows.push({ step: 10, label: `كارت إهداء مطبوع`, value: `+ ${cakeGiftCardPrice} جنيه` });
         }
+        // 🃏 [سطر السعر الأساسي]: بيوضح سعر المقاس نفسه لوحده تحت البنود، بدون
+        // زرار تعديل لأنه مجموع تلقائي (مش قرار منفصل) بيتحدث مع كل تغيير فوق.
+        rows.push({ step: null, label: `سعر المقاس والتنفيذ الأساسي`, value: `${Math.round(sizePortionPrice)} جنيه` });
 
-        summaryList.innerHTML = rows.map(r => `<div class="price-item-row"><span>${r.label}:</span><span class="item-value">${r.value}</span></div>`).join('');
+        const esc = window.escapeBoseHTML || (s => s);
+        summaryList.innerHTML = rows.map(r => `
+            <div class="bose-order-summary-row">
+                <div class="bose-order-summary-row-text">
+                    <span class="bose-order-summary-row-label">${esc(r.label)}</span>
+                    <span class="bose-order-summary-row-value">${esc(r.value)}</span>
+                </div>
+                ${r.step ? `<button type="button" class="bose-order-summary-edit-btn" data-step-target="${r.step}">تعديل</button>` : ''}
+            </div>
+        `).join('');
+        summaryList.querySelectorAll('.bose-order-summary-edit-btn').forEach(btn => {
+            btn.onclick = () => {
+                const target = parseInt(btn.getAttribute('data-step-target'), 10);
+                if (!isNaN(target) && typeof jumpToStep === 'function') jumpToStep(target);
+            };
+        });
         if (summaryTotalEl) summaryTotalEl.textContent = `${Math.round(grandTotal)} جنيه`;
 
         lastKnownSnapshot = buildDesignSnapshot(currentPersons, selectedShape, selectedPrinting, hasGiftCardNow, grandTotal);

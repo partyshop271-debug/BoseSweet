@@ -40,11 +40,10 @@
     // الحالة الديناميكية الحالية لرحلة العميل داخل المحاكي
     let state = {
         currentActiveStep: 1,
-        // 🗑️👑 [حذف خطوة "لنفسي/هدية"]: بنفس فلسفة محاكي التورت V6.0. باقي
-        // الخطوات اتقسّمت لخطوة قرار واحد لكل خطوة (كانت 5 خطوات مجمّعة، بقت
-        // 9 خطوات قرار + خطوة خلاصة أخيرة = 10 بالظبط).
-        totalSteps: 10,
-        mood: "",
+        // 🗑️👑 [حذف خطوة "لنفسي/هدية" وخطوة "الإحساس المطلوب"]: بنفس فلسفة محاكي
+        // التورت V6.0. باقي الخطوات اتقسّمت لخطوة قرار واحد لكل خطوة (بقى عندنا
+        // 8 خطوات قرار + خطوة خلاصة أخيرة = 9 بالظبط).
+        totalSteps: 9,
         flowerType: "natural",
         flowerCount: 15,
         wrappingType: "classic",
@@ -72,7 +71,7 @@
     let includeCashCheckbox, cashMasterBlock, cashIntegrationCounterBlock, moneyAmountDisplay;
     let includeChocolateCheckbox, chocolateBudgetMasterBlock, chocolateBudgetDisplay;
     let photoCountInput, dynamicAddonsArea, embeddedPriceDisplay, bosePhotosPriceDisplay, boseCardPriceDisplay;
-    let btnNext, btnPrev, stepsPanels, stepsIndicators, iconicBtns, hiddenTypeInput, dynamicPricingWidget;
+    let btnNext, btnPrev, stepsPanels, stepsIndicators, flowerTypeRadios, hiddenTypeInput, dynamicPricingWidget;
 
     /**
      * 🛡️ حفظ وتأمين الحالة التفاعلية الحالية للعميل منعاً لفقد الخيارات
@@ -183,7 +182,6 @@
 
         const esc = window.escapeBoseHTML || (s => s);
         const flowerTypeLabels = { natural: "ورد طبيعي نضر", artificial: "ورد صناعي فاخر", satin: "ورد ستان راقٍ" };
-        const moodLabelMap = { celebratory: "احتفالي", romantic: "رومانسي", elegant: "أنيق وبسيط" };
 
         const rows = [];
         const addRow = (step, label, value) => {
@@ -198,15 +196,14 @@
             `);
         };
 
-        addRow(1, "الإحساس المطلوب", state.mood ? (moodLabelMap[state.mood] || state.mood) : "من غير ترشيح معين");
-        addRow(2, "نوع الورد", flowerTypeLabels[state.flowerType] || state.flowerType);
-        addRow(3, "عدد الورد", `${state.flowerCount} وردة`);
-        addRow(4, "صورة تصميم مرجعية", activeBase64ImageInMemory ? "مرفوعة ✓" : "لم تُرفع");
-        addRow(5, "شريط الستان", state.includeRibbonText && state.ribbonText.trim() !== "" ? `مطبوع عليه: "${state.ribbonText.trim()}"` : "بدون كلام مطبوع (تغليف كلاسيك مجاني فقط)");
-        addRow(6, "صور شخصية داخل الباقة", state.includePhoto ? `${state.photoCount} صورة مطبوعة` : "غير مطلوبة");
-        addRow(7, "مفاجأة كاش", (state.includeCash && state.moneyAmount > 0) ? `${state.moneyAmount} جنيه` : "غير مطلوبة");
-        addRow(8, "شوكولاتة فاخرة", state.includeChocolate && state.chocolateBudget > 0 ? `ميزانية ${state.chocolateBudget} جنيه` : "غير مطلوبة");
-        addRow(9, "كارت إهداء", (state.includeCard && state.cardText.trim() !== "") ? `مكتوب عليه: "${state.cardText.trim()}"` : "بدون كارت");
+        addRow(1, "نوع الورد", flowerTypeLabels[state.flowerType] || state.flowerType);
+        addRow(2, "عدد الورد", `${state.flowerCount} وردة`);
+        addRow(3, "صورة تصميم مرجعية", activeBase64ImageInMemory ? "مرفوعة ✓" : "لم تُرفع");
+        addRow(4, "شريط الستان", state.includeRibbonText && state.ribbonText.trim() !== "" ? `مطبوع عليه: "${state.ribbonText.trim()}"` : "بدون كلام مطبوع (تغليف كلاسيك مجاني فقط)");
+        addRow(5, "صور شخصية داخل الباقة", state.includePhoto ? `${state.photoCount} صورة مطبوعة` : "غير مطلوبة");
+        addRow(6, "مفاجأة كاش", (state.includeCash && state.moneyAmount > 0) ? `${state.moneyAmount} جنيه` : "غير مطلوبة");
+        addRow(7, "شوكولاتة فاخرة", state.includeChocolate && state.chocolateBudget > 0 ? `ميزانية ${state.chocolateBudget} جنيه` : "غير مطلوبة");
+        addRow(8, "كارت إهداء", (state.includeCard && state.cardText.trim() !== "") ? `مكتوب عليه: "${state.cardText.trim()}"` : "بدون كارت");
 
         list.innerHTML = rows.join("");
 
@@ -264,6 +261,15 @@
         if (dynamicPricingWidget) {
             dynamicPricingWidget.style.display = "block";
         }
+
+        // 🖼️ [اختفاء البانر والمقدمة بعد الخطوة الأولى - نفس آلية محاكي التورت
+        // بالظبط]: بيوفروا مساحة فعلية للشاشة لباقي الخطوات، ويرجعوا يظهروا لو
+        // العميلة رجعت للخطوة الأولى تاني.
+        const flowerHeroEl = document.getElementById('bose-flower-hero');
+        const flowerIntroEl = document.getElementById('bose-flower-intro');
+        const shouldCollapseHero = state.currentActiveStep !== 1;
+        if (flowerHeroEl) flowerHeroEl.classList.toggle('bose-collapsed-hero', shouldCollapseHero);
+        if (flowerIntroEl) flowerIntroEl.classList.toggle('bose-collapsed-hero', shouldCollapseHero);
 
         // 🛡️ [إصلاح جذري]: زرار "التالي" هنا معندوش أي تمرير خالص، فالعميل بيضغط ويفضل واقف
         // في نفس مكانه من غير ما يشوف بداية الخطوة الجديدة إلا لو نزل بنفسه يدور عليها.
@@ -412,13 +418,25 @@
         const heroImg = document.querySelector('.hero-banner-frame');
         if (heroImg && fbConfig.heroImage) heroImg.src = fbConfig.heroImage;
         const portfolioTrack = document.getElementById('portfolio-swipe-slider');
-        if (portfolioTrack && Array.isArray(fbConfig.portfolioGallery) && fbConfig.portfolioGallery.length > 0) {
-            portfolioTrack.innerHTML = fbConfig.portfolioGallery.map((item, idx) => {
+        const inspirationTrack = document.getElementById('flower-inspiration-gallery-track');
+        if (Array.isArray(fbConfig.portfolioGallery) && fbConfig.portfolioGallery.length > 0) {
+            const galleryHtml = fbConfig.portfolioGallery.map((item) => {
                 const url = (item && item.image) || "";
                 if (!url) return "";
                 const alt = (item && (item.alt || item.name)) ? String(item.alt || item.name).replace(/"/g, '&quot;') : "بوكيه فاخر من حلويات بوسي";
-                return `<div class="portfolio-item-card" data-index="${idx + 1}"><img src="${url}" class="portfolio-item-img" alt="${alt}" loading="lazy"></div>`;
+                return `<div class="bose-portfolio-img-node"><img src="${url}" alt="${alt}" loading="lazy"></div>`;
             }).join("");
+            if (inspirationTrack) inspirationTrack.innerHTML = galleryHtml;
+            if (portfolioTrack) {
+                portfolioTrack.innerHTML = fbConfig.portfolioGallery.map((item, idx) => {
+                    const url = (item && item.image) || "";
+                    if (!url) return "";
+                    const alt = (item && (item.alt || item.name)) ? String(item.alt || item.name).replace(/"/g, '&quot;') : "بوكيه فاخر من حلويات بوسي";
+                    return `<div class="portfolio-item-card" data-index="${idx + 1}"><img src="${url}" class="portfolio-item-img" alt="${alt}" loading="lazy"></div>`;
+                }).join("");
+            }
+        } else if (inspirationTrack) {
+            inspirationTrack.innerHTML = '<p class="bose-gallery-empty-note">هنضيف قريب صور حقيقية من شغلنا هنا.</p>';
         }
 
         // 🖼️👑 [صور كروت نوع الورد من لوحة التحكم - إصلاح جذري]: نفس المشكلة
@@ -427,16 +445,22 @@
         // حقيقية، حتى لو الأدمن رفعها من list-flower-types بلوحة التحكم. هنا
         // الكارت مش label+radio زي محاكي التورت، لكن div بـ data-value، فبنحقن
         // الصورة قبل أيقونة الإيموجي مباشرة (بتفضل الصورة هي الظاهرة).
+        // 🃏👑 [صور كروت نوع الورد]: بعد توحيد شكل الكروت مع محاكي التورت
+        // (bose-selection-card-label > input[radio] + bose-selection-card-inner)،
+        // بنحقن صورة الأدمن (لو موجودة) جوه .bose-selection-card-inner بنفس
+        // منطق applyBoseOptionCardImages في محاكي التورت.
         if (Array.isArray(fbConfig.flowerTypes)) {
-            document.querySelectorAll('#flower-type-iconic-row .bose-iconic-btn-node').forEach((node) => {
-                const match = fbConfig.flowerTypes.find((item) => item && item.id === node.getAttribute('data-value'));
+            document.querySelectorAll('#flower-type-iconic-row input[name="flower_type"]').forEach((input) => {
+                const match = fbConfig.flowerTypes.find((item) => item && item.id === input.value);
                 if (!match || !match.image) return;
-                let img = node.querySelector('img.bose-option-card-thumb');
+                const inner = input.nextElementSibling;
+                if (!inner || !inner.classList.contains('bose-selection-card-inner')) return;
+                let img = inner.querySelector('img.bose-option-card-thumb');
                 if (!img) {
                     img = document.createElement('img');
                     img.className = 'bose-option-card-thumb';
                     img.alt = '';
-                    node.insertBefore(img, node.firstChild);
+                    inner.insertBefore(img, inner.firstChild);
                 }
                 img.src = match.image;
             });
@@ -477,7 +501,7 @@
         btnPrev = document.getElementById("btn-prev");
         stepsPanels = document.querySelectorAll(".bose-step-card-panel");
         stepsIndicators = document.querySelectorAll(".simulator-steps-indicator .step-node");
-        iconicBtns = document.querySelectorAll("#flower-type-iconic-row .bose-iconic-btn-node");
+        flowerTypeRadios = document.querySelectorAll('#flower-type-iconic-row input[name="flower_type"]');
         hiddenTypeInput = document.getElementById("flower-type");
         dynamicPricingWidget = document.getElementById("bose-dynamic-pricing-widget");
 
@@ -540,62 +564,23 @@
         }
         if (chocolateBudgetDisplay) chocolateBudgetDisplay.value = state.chocolateBudget;
 
-        // ربط أحداث أزرار نوع الورد الكروي الفخم
-        if (iconicBtns.length > 0) {
-            iconicBtns.forEach(btn => {
-                btn.classList.toggle("active-selected", btn.getAttribute("data-value") === state.flowerType);
-                btn.onclick = function () {
-                    iconicBtns.forEach(b => b.classList.remove("active-selected"));
-                    this.classList.add("active-selected");
-                    state.flowerType = this.getAttribute("data-value");
+        // 🃏👑 [ربط كروت نوع الورد - موحّد مع أسلوب اختيار الشكل في محاكي التورت]:
+        // بدل ما كان type="button" div بأحداث click، دلوقتي radio حقيقي، فبنستخدم
+        // change listener على كل الكروت، ونحدّث سطر التأكيد + الوصف الحسي تحتها.
+        if (flowerTypeRadios.length > 0) {
+            flowerTypeRadios.forEach(radio => {
+                radio.checked = (radio.value === state.flowerType);
+                radio.addEventListener('change', function () {
+                    if (!this.checked) return;
+                    state.flowerType = this.value;
                     if (hiddenTypeInput) hiddenTypeInput.value = state.flowerType;
                     saveCurrentState();
                     recalculatePrice();
                     updateFlowerSensoryNote();
-                };
+                    updateFlowerTypeSelectionLine();
+                });
             });
         }
-
-        // 🧠 [محاكي أذكى - مطابق لمحاكي الكيك]: خطوة الإحساس المطلوب
-        // 🗑️ [حذف "لمين البوكيه ده؟"]: purposeBtns وupdateGiftModeWording اتشالوا
-        // من هنا بالكامل - راجع الشرح في تعريف state.totalSteps فوق.
-        const moodBtns = document.querySelectorAll("#flower-mood-row .bose-iconic-btn-node");
-        const moodNoteBox = document.getElementById("mood-suggestion-note");
-        const moodNoteText = document.getElementById("mood-suggestion-text");
-
-        const FLOWER_MOOD_PRESETS = {
-            celebratory: { type: "natural", note: "توليفة مقترحة للاحتفالات: ورد طبيعي نضر بألوان زاهية. تقدري تعدلي أي اختيار في الخطوات الجاية." },
-            romantic: { type: "satin", card: true, note: "توليفة مقترحة للمناسبات الرومانسية: ورد ستان راقٍ مع كارت إهداء. تقدري تعدلي أي اختيار في الخطوات الجاية." },
-            elegant: { type: "artificial", note: "توليفة مقترحة للأناقة البسيطة: ورد صناعي فاخر يدوم طويلاً. تقدري تعدلي أي اختيار في الخطوات الجاية." }
-        };
-
-        function applyFlowerMoodPreset(moodValue) {
-            const preset = FLOWER_MOOD_PRESETS[moodValue];
-            if (!preset) {
-                if (moodNoteBox) moodNoteBox.classList.remove("show");
-                return;
-            }
-            const typeBtn = document.querySelector(`#flower-type-iconic-row .bose-iconic-btn-node[data-value="${preset.type}"]`);
-            if (typeBtn) typeBtn.click();
-            if (preset.card && includeCardCheckbox) {
-                includeCardCheckbox.checked = true;
-                if (typeof includeCardCheckbox.onclick === "function") {
-                    includeCardCheckbox.onclick({ target: includeCardCheckbox });
-                }
-            }
-            if (moodNoteText) moodNoteText.textContent = preset.note;
-            if (moodNoteBox) moodNoteBox.classList.add("show");
-        }
-
-        moodBtns.forEach(btn => {
-            btn.onclick = function () {
-                moodBtns.forEach(b => b.classList.remove("active-selected"));
-                this.classList.add("active-selected");
-                state.mood = this.getAttribute("data-value");
-                applyFlowerMoodPreset(state.mood);
-                saveCurrentState();
-            };
-        });
 
         const FLOWER_SENSORY_NOTES = {
             natural: "ورد طازج ونضر، بيوصل مباشرة من أفضل مزارع الورد.",
@@ -607,6 +592,13 @@
             if (noteEl) noteEl.textContent = FLOWER_SENSORY_NOTES[state.flowerType] || "";
         }
         updateFlowerSensoryNote();
+
+        const FLOWER_TYPE_LABELS = { natural: "ورد طبيعي نضر", artificial: "ورد صناعي فاخر", satin: "ورد ستان راقٍ" };
+        function updateFlowerTypeSelectionLine() {
+            const lineEl = document.getElementById("flower-type-current-selection-line");
+            if (lineEl) lineEl.innerHTML = `اختيارك الحالي: <strong>${FLOWER_TYPE_LABELS[state.flowerType] || state.flowerType}</strong>`;
+        }
+        updateFlowerTypeSelectionLine();
 
         const btnShareFlowerDesign = document.getElementById("btn-share-flower-design");
         if (btnShareFlowerDesign) {
@@ -956,7 +948,6 @@
                 if (state.isUploading) return;
 
                 const flowerTypeName = state.flowerType === "natural" ? "ورد طبيعي نضر" : (state.flowerType === "artificial" ? "ورد صناعي فاخر" : "ورد ستان راقٍ");
-                const moodLabelMap = { celebratory: "احتفالي", romantic: "رومانسي", elegant: "أنيق وبسيط" };
                 // نفس شرط ظهور كارت الإهداء بالضبط المستخدم في recalculatePrice() أعلاه
                 const hasGiftCardFinal = !!(state.includeCard && state.cardText.trim() !== "");
 
@@ -976,12 +967,9 @@
                     photoCount: state.includePhoto ? state.photoCount : 0,
                     hasGiftCard: hasGiftCardFinal,
                     giftCardText: hasGiftCardFinal ? state.cardText : "",
-                    flavorName: `بوكيه مخصص (${flowerTypeName})`,
-                    // 🗑️ [حذف isGift]: كان مرتبط بخطوة "لنفسي/هدية" المحذوفة - راجع
-                    // شرح state.totalSteps فوق. cart-engine.js لسه فيه شرط عرض
-                    // `if (cd.isGift)` بس هيفضل مجرد كود ميت آمن (مش بيتفعّل) لأن
-                    // الحقل ده مبقاش بيتبعت خالص من هنا.
-                    moodLabel: moodLabelMap[state.mood] || ""
+                    flavorName: `بوكيه مخصص (${flowerTypeName})`
+                    // 🗑️ [حذف isGift وmoodLabel]: كانوا مرتبطين بخطوتَي "لنفسي/هدية"
+                    // و"الإحساس المطلوب" المحذوفتين - راجع شرح state.totalSteps فوق.
                 };
 
                 // 🧮 [توحيد إنشاء عنصر السلة]: استخدام window.createCartItem() الموحدة
