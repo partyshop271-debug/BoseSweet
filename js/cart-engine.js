@@ -172,6 +172,19 @@ function renderBoseCartPage(storeData) {
     // رندرة السلة الشاملة من الذاكرة المحلية الموحدة bose_cart
     function buildFullCartUI() {
         const cart = loadTrustedCart();
+
+        // 🐛 [إصلاح - عدادات السلة (الهيدر/الشريط السفلي/الفقاعة العائمة) كانت
+        // بتفضل عالقة على قيمة قديمة]: buildFullCartUI() هي الدالة اللي فعلياً
+        // بترسم محتوى صفحة السلة من أحدث بيانات localStorage - وبتتكرر مش بس
+        // عند أول تحميل، لكن كمان عند رجوع الصفحة من bfcache (حدث pageshow في
+        // أول الملف). المشكلة إن تحديث العدادات (updateGlobalCartCounter) كان
+        // مربوط بس بأحداث تفاعل العميلة اليدوية (زيادة/نقصان/حذف صنف) - مش
+        // بعملية الرندرة نفسها. فلو السلة اتفضّت من مكان تاني تماماً (زي صفحة
+        // نجاح الطلب بعد إرسال الفاتورة) وبعدين العميلة رجعت لصفحة السلة (حتى
+        // لو من الكاش)، المحتوى المعروض كان بيتحدّث صح (فاضي فعلاً) لكن أرقام
+        // العدادات في الهيدر/الشريط السفلي كانت بتفضل زي ما هي من قبل. الحل:
+        // استدعاء العدادات هنا في كل مرة السلة بترتسم، مش بس عند تفاعل يدوي.
+        if (typeof window.updateGlobalCartCounter === "function") window.updateGlobalCartCounter();
         
         if (clearCartBtn) {
             clearCartBtn.style.display = cart.length > 0 ? "block" : "none";
@@ -1080,7 +1093,6 @@ function renderBoseSuccessPage(storeData) {
     const dateLbl = document.getElementById("bose-receipt-date-lbl");
     const receiptWrapper = document.getElementById("bose-receipt-items-container");
     const grandTotalDisplay = document.getElementById("bose-receipt-grand-total");
-    const whatsappBtn = document.getElementById("bose-success-whatsapp-btn");
     // عنصران اختياريان حسب نسخة الصفحة - الكود بيتخطاهم بأمان لو مش موجودين
     const orderIdDisplay = document.getElementById("success-order-id-display");
     const customerWelcome = document.getElementById("success-customer-welcome");
@@ -1179,38 +1191,13 @@ function renderBoseSuccessPage(storeData) {
 
     if (grandTotalDisplay) grandTotalDisplay.textContent = (order.grandTotal || 0) + " EGP";
 
-    let whatsappUrl = "";
-    if (whatsappBtn) {
-        whatsappUrl = order.whatsappMessage
-            ? window.buildWhatsappLink(storeData?.store?.phone || '01097238441', order.whatsappMessage)
-            : whatsappBtn.href;
-        whatsappBtn.href = whatsappUrl;
-    }
-
-    // 🗑️ [إصلاح - حذف صورة الفاتورة]: كان في زرار بيولّد صورة فاتورة (Canvas) ويحاول
-    // يبعتها لواتساب عبر Web Share API، وعلى الأجهزة اللي مش بتدعم المشاركة كان
-    // بيلجأ لتنزيل الصورة بصمت وفتح واتساب بالنص العادي بجانبها - يعني الصورة كانت
-    // بتفضل غير مستخدمة فعلياً غير لو العميل رجع للمتصفح تاني بعد ما يكون خلاص بعت
-    // الفاتورة النصية لواتساب، وقتها الأوردر يكون وصل بالفعل ومفيش داعي للصورة.
-    // دلوقتي زرار "إرسال الفاتورة" بيفتح واتساب مباشرة بنص الفاتورة الكامل والواضح -
-    // بدون أي خطوة وسيطة أو ملف صورة زيادة.
-    const invoiceImageBtn = document.getElementById("bose-invoice-image-btn");
-    if (invoiceImageBtn) {
-        invoiceImageBtn.addEventListener("click", () => {
-            if (whatsappUrl) window.open(whatsappUrl, "_blank");
-        });
-    }
-
-    // 🐛 [إصلاح حرج - زرار "إرسال الفاتورة كصورة" ما كانش بيظهر/يتلاحظ إلا بعد
-    // إرسال الفاتورة فعلاً على واتساب]: كان في فتح تلقائي لواتساب بعد 600ms بس من
-    // تحميل الصفحة (window.open). على الموبايل، رابط wa.me بيفتح تطبيق واتساب نفسه
-    // فوراً ويودي العميل برا صفحة نجاح الطلب بالكامل قبل ما تلاقي عينه حتى تقع على
-    // زرار "إرسال الفاتورة كصورة احترافية" - فكان بيبان ليها إنه "مش موجود" أصلاً
-    // إلا لو رجعت للمتصفح تاني بعد ما تبعت الرسالة العادية بالفعل. الحل: إلغاء
-    // الفتح التلقائي بالكامل والاكتفاء بالزرارين اليدويين المعروضين بوضوح فوق
-    // بعض - كده العميلة تقدر تختار ترسل كنص أو كصورة، وتشوف الخيارين الاتنين
-    // فعلياً قبل ما تتنقل لواتساب.
-    
+    // 🗑️ [إصلاح - حذف زرار "إرسال الفاتورة" وصورة الفاتورة]: فاتورة الواتساب
+    // بتتفتح تلقائياً بالفعل لحظة تأكيد الطلب من صفحة الدفع نفسها (checkout)،
+    // قبل ما العميلة توصل للصفحة دي بخطوة - فمفيش أي حاجة "لسه محتاجة إرسال"
+    // هنا، والزرار القديم (ومنطق توليد صورة الفاتورة اللي كان مربوط بيه) كانا
+    // بيوهموا العميلة إن فيه خطوة تانية ناقصة رغم إن طلبها وصل بالفعل. الإجراء
+    // الوحيد المفيد فعلياً في الصفحة دي هو متابعة حالة الطلب (زرار "تتبعي طلبك"
+    // تحت، بيتفعّل تلقائياً لو رقم الطلب الحقيقي من قاعدة البيانات وصل).
 
     // 🗄️ [إصلاح المرحلة 1]: نسخة احتياطية اختيارية لتسجيل الطلب خارج المتصفح لمنع
     // ضياعه لو فشل واتساب أو مسح العميل الكاش قبل التأكيد. للتفعيل: عرّف
