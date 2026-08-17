@@ -2452,4 +2452,30 @@
     } else {
         loadStoreDatabase();
     }
+
+    // 🐛👑 [إصلاح جذري - عدادات السلة/المفضلة بتفضل عالقة على رقم قديم بعد
+    // "الرجوع" لصفحة سابقة]: نفس مشكلة bfcache اللي اتصلحت قبل كده في
+    // cart-engine.js (راجع pageshow هناك) - لكن الإصلاح ده كان مقصور بس على
+    // صفحة السلة نفسها. الحقيقة إن المشكلة عامة في كل صفحات الموقع، لأن
+    // core-engine.js (اللي بيحقن الهيدر والشريط السفلي وعدادات السلة/المفضلة
+    // في كل صفحة) كان بيشتغل فقط عند حدث DOMContentLoaded - وده حدث بيحصل مرة
+    // واحدة بس عند أول تحميل حقيقي للصفحة من السيرفر. لو العميلة أضافت منتج
+    // من صفحة تانية وبعدين دوست "رجوع" في المتصفح، المتصفح (خصوصاً على
+    // الموبايل) بيرجّع "لقطة" قديمة مجمّدة من الصفحة زي ما كانت بالظبط قبل ما
+    // تسيبها - يعني بالعداد القديم (أو صفر لو كانت السلة فاضية وقتها) - رغم إن
+    // بيانات السلة/المفضلة الحقيقية في localStorage سليمة ومحدّثة 100%. الحل:
+    // حدث `pageshow` بيتفعّل دايماً لما الصفحة تظهر للعميلة (تحميل جديد أو
+    // استرجاع من الكاش)، وخاصية `event.persisted` بتحدد إنها كانت استرجاع من
+    // الكاش. في الحالة دي بس، بنعيد حساب وعرض عدادي السلة والمفضلة من أحدث
+    // نسخة localStorage فوراً - نفس اللي كان هيحصل لو الصفحة اتحمّلت من جديد.
+    window.addEventListener('pageshow', function (event) {
+        if (!event.persisted) return;
+        if (typeof window.updateGlobalCartCounter === 'function') window.updateGlobalCartCounter();
+        if (typeof window.updateFavoritesBadge === 'function') window.updateFavoritesBadge();
+        // لو العميلة رجعت لصفحة المفضلة نفسها من الكاش وكانت شالت/ضافت منتج من
+        // مكان تاني، نعيد رسم شبكة المفضلة كمان مش بس العداد.
+        if (typeof window.renderBoseFavoritesPage === 'function' && document.getElementById('bose-favorites-grid')) {
+            window.renderBoseFavoritesPage();
+        }
+    });
 })();
