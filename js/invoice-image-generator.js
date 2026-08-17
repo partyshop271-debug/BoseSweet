@@ -1,23 +1,24 @@
 /**
- * 🧾 مولّد صورة الفاتورة الاحترافية - حلويات بوسي (BoseSweets)
+ * 🧾 مولّد صورة الفاتورة - حلويات بوسي (BoseSweets)
  * ==========================================================
- * الهدف: بناء صورة PNG منسّقة واحترافية (بشعار الماركة وألوانها وختم رسمي)
- * من بيانات الطلب نفسها اللي بتتبني منها رسالة الواتساب النصية، عشان تتبعت
- * للعميل كصورة فاتورة حقيقية بدل نص عادي.
+ * الهدف: بناء صورة PNG منسّقة (بشعار الماركة وألوانها وختم رسمي) من بيانات
+ * الطلب نفسها اللي بتتبني منها رسالة الواتساب النصية، عشان تتبعت للعميل
+ * وللفرع كصورة فاتورة حقيقية واضحة بدل نص عادي.
  *
- * ⚠️ ملاحظة تقنية مهمة (حد تقني حقيقي، مش تقصير في الكود):
- * روابط واتساب (wa.me / api.whatsapp.com) بتفتح تطبيق واتساب مع نص جاهز
- * بس، وما فيهاش أي طريقة برمجية (من متصفح عادي بدون سيرفر/باقة واتساب
- * الرسمية المدفوعة) لإرفاق صورة تلقائياً جوه نفس الرسالة من غير أي لمسة
- * من العميل - ده قيد من واتساب نفسه مش قصور في الموقع. الحل الأقرب فعلياً
- * لإرسال "تلقائي" هو:
- *   1) على الموبايل (لو المتصفح بيدعم Web Share API بالملفات): بنستخدم
- *      navigator.share() فبتفتح شاشة المشاركة الحقيقية بتاعة الموبايل ومنها
- *      العميل بيدوس على واتساب مرة واحدة وتتبعت الصورة+النص مباشرة - أقرب حاجة
- *      لإرسال تلقائي ممكنة فعلياً بدون سيرفر.
- *   2) لو المتصفح مش بيدعمها (أغلب متصفحات الديسكتوب): بننزّل الصورة تلقائياً
- *      على جهاز العميل ونفتح واتساب بنفس النص المنسق، والعميل بيرفق الصورة
- *      بضغطة واحدة من مرفقاته.
+ * 🖼️ [تحسين - دقة ووضوح واحترافية الصورة]: تحديثات على الصورة عشان تبقى
+ * مرجع بصري كامل وموثوق للفرع، مش بس تكرار للنص:
+ *   1) كل صنف عادي (له نكهة/صورة حقيقية مخزنة في قاعدة البيانات) بيظهر جنبه
+ *      صورة المنتج الحقيقية نفسها كمصغّرة - عشان أي خطأ نصي محتمل في النكهة
+ *      يبقى واضح وملحوظ بصرياً فوراً للفرع قبل ما ينفذ الطلب، مش مجرد نص
+ *      ممكن يتقرا غلط أو يتلخبط.
+ *   2) لأصناف التورت المخصص: أي صورة طباعة/تصميم مرجعي رفعها العميل بتتعرض
+ *      كمصغّرة حقيقية جوه الفاتورة نفسها (مش مجرد رابط نصي طويل زي الأول) -
+ *      عشان الفرع يشوف التصميم المطلوب فوراً من غير ما يفتح أي رابط خارجي.
+ *   3) رقم الطلب بقى شارة (badge) بارزة ومنفصلة تحت اسم المتجر مباشرة، عشان
+ *      يبقى أسهل حاجة يتلاقط بيها الطلب في أي مراجعة سريعة.
+ *   4) دقة الرسم اتزودت (RENDER_SCALE) عشان الكلام يفضل واضح وحاد حتى بعد
+ *      ضغط واتساب للصورة، والنكهة بقت سطر منفصل بلون الماركة تحت اسم الصنف
+ *      بدل ما تكون ملزوقة في نفس السطر - وضوح أعلى لكل كلمة.
  */
 
 (function () {
@@ -25,8 +26,8 @@
     const BRAND_BLACK = "#111111";
     const BRAND_GOLD = "#D4AF37";
     const BRAND_LOGO_FALLBACK = "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png";
-    const CANVAS_WIDTH = 720;
-    const RENDER_SCALE = 2; // دقة أعلى (Retina) للصورة النهائية
+    const CANVAS_WIDTH = 760;
+    const RENDER_SCALE = 3; // دقة أعلى (Retina+) عشان الكلام يفضل واضح بعد ضغط واتساب
 
     function loadImageSafe(url) {
         return new Promise((resolve) => {
@@ -75,7 +76,7 @@
 
     /**
      * يبني قائمة "أسطر" تفاصيل مخصصة لكل صنف (نفس منطق فاتورة الواتساب النصية)
-     * كل سطر عبارة عن {label, value} هيتعرض كنقطة تفصيلية تحت اسم الصنف.
+     * كل سطر عبارة عن نص هيتعرض كنقطة تفصيلية تحت اسم الصنف.
      */
     function buildItemDetailLines(item) {
         const lines = [];
@@ -110,6 +111,29 @@
             }
         }
         return lines;
+    }
+
+    /**
+     * يحدد أي صور حقيقية مرتبطة بالصنف لازم تتعرض كمصغرات داخل الفاتورة:
+     * - أصناف عادية: صورة المنتج/النكهة الحقيقية نفسها (مش شعار افتراضي).
+     * - أصناف التورت المخصص: صورة الطباعة وصورة التصميم المرجعي المرفوعتين.
+     */
+    function getItemThumbnailSpecs(item) {
+        const cd = item.customDetails || {};
+        const isCakeBespoke = item.type === "custom-cake" || item.type === "mini-cake" ||
+            item.productSlug === "toort-custom-master" || item.productSlug === "mini-cake-two-person";
+
+        if (isCakeBespoke) {
+            const specs = [];
+            if (cd.printImageUrl) specs.push({ label: "🖨️ صورة الطباعة على التورتة", url: cd.printImageUrl });
+            if (cd.replicaImageUrl && cd.replicaImageUrl !== cd.printImageUrl) specs.push({ label: "🎨 صورة التصميم المرجعي", url: cd.replicaImageUrl });
+            return specs;
+        }
+
+        if (item.image && typeof item.image === "string" && item.image.startsWith("http") && !item.image.includes("logo_igggsb")) {
+            return [{ label: null, url: item.image }];
+        }
+        return [];
     }
 
     /** يرسم ختم دائري رسمي بألوان الماركة، مايل شوية زي الأختام الحقيقية */
@@ -150,6 +174,35 @@
         ctx.restore();
     }
 
+    /** يرسم صورة مصغرة بزوايا دائرية داخل مربع محدد، مع إطار رفيع بلون الماركة */
+    function drawRoundedThumb(ctx, img, x, y, size, radius) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(x + radius, y);
+        ctx.arcTo(x + size, y, x + size, y + size, radius);
+        ctx.arcTo(x + size, y + size, x, y + size, radius);
+        ctx.arcTo(x, y + size, x, y, radius);
+        ctx.arcTo(x, y, x + size, y, radius);
+        ctx.closePath();
+        ctx.clip();
+        // نغطي المساحة بالكامل (cover) بدل تشويه الصورة
+        const ratio = Math.max(size / img.width, size / img.height);
+        const drawW = img.width * ratio, drawH = img.height * ratio;
+        ctx.drawImage(img, x + (size - drawW) / 2, y + (size - drawH) / 2, drawW, drawH);
+        ctx.restore();
+
+        ctx.beginPath();
+        ctx.moveTo(x + radius, y);
+        ctx.arcTo(x + size, y, x + size, y + size, radius);
+        ctx.arcTo(x + size, y + size, x, y + size, radius);
+        ctx.arcTo(x, y + size, x, y, radius);
+        ctx.arcTo(x, y, x + size, y, radius);
+        ctx.closePath();
+        ctx.strokeStyle = "rgba(255,145,164,0.5)";
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+    }
+
     /**
      * الدالة الرئيسية: بتاخد كائن الطلب (نفس الشكل المستخدم في buildBoseFormattedWhatsappInvoice)
      * وبيانات المتجر (logo/name) وترجع Promise<Blob> لصورة PNG جاهزة.
@@ -173,14 +226,17 @@
 
         const FONT_LABEL = "700 14px Cairo, Arial, sans-serif";
         const FONT_VALUE = "400 14px Cairo, Arial, sans-serif";
-        const FONT_ITEM_TITLE = "800 16px Cairo, Arial, sans-serif";
+        const FONT_ITEM_TITLE = "800 17px Cairo, Arial, sans-serif";
+        const FONT_FLAVOR = "700 14px Cairo, Arial, sans-serif";
         const FONT_DETAIL = "400 13px Cairo, Arial, sans-serif";
         const LINE_H = 23;
         const DETAIL_LINE_H = 20;
+        const THUMB_SIZE = 68;
+        const THUMB_GAP = 14;
+        const REF_THUMB_SIZE = 84;
 
         // ---------- تمريرة القياس: نحسب ارتفاع كل صنف فعلياً قبل الرسم ----------
         const metaFields = [
-            ["رقم المعاملة: ", order.orderId || ""],
             ["العميل: ", order.customerName || ""],
             ["رقم الاتصال: ", order.phone1 || ""],
             ["مسار الاستلام: ", order.deliveryMethod || ""],
@@ -196,8 +252,17 @@
             return { label, lines };
         });
 
+        // نحمّل كل صور المنتجات/المراجع المطلوبة قبل الرسم، عشان نعرف نحسب
+        // ارتفاع كل بلوك بدقة قبل ما نبدأ نرسم فعلياً على الكانفاس.
+        const itemThumbSpecs = items.map((item) => getItemThumbnailSpecs(item));
+        const itemThumbImages = await Promise.all(
+            itemThumbSpecs.map((specs) => Promise.all(specs.map((s) => loadImageSafe(
+                window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(s.url, 200) : s.url
+            ))))
+        );
+
         let itemsHeight = 0;
-        const itemsWrapped = items.map((item) => {
+        const itemsWrapped = items.map((item, idx) => {
             const detailLines = buildItemDetailLines(item);
             const wrappedDetails = [];
             detailLines.forEach((d) => {
@@ -205,15 +270,26 @@
             });
             const qtyLabel = `العدد المطلوب من ${item.title}: ×${item.quantity}`;
             const priceLabel = `سعر الوحدة: ${parseFloat(item.finalPrice || 0).toFixed(2)} EGP`;
-            const titleLines = wrapText(measureCtx, `${item.title}${item.flavorName ? " — " + item.flavorName : ""}`, FONT_ITEM_TITLE, contentWidth - 16);
-            const blockHeight = 14 + titleLines.length * 22 + 2 * DETAIL_LINE_H + wrappedDetails.length * DETAIL_LINE_H + 16;
+            const titleLines = wrapText(measureCtx, `${idx + 1}. ${item.title}`, FONT_ITEM_TITLE, contentWidth - THUMB_SIZE - THUMB_GAP - 16);
+            const flavorText = item.flavorName || "جاهز وفريش";
+            const flavorLines = wrapText(measureCtx, flavorText, FONT_FLAVOR, contentWidth - THUMB_SIZE - THUMB_GAP - 16);
+
+            const textBlockHeight = titleLines.length * 24 + flavorLines.length * 20 + 6 + 2 * DETAIL_LINE_H + wrappedDetails.length * DETAIL_LINE_H;
+            const specs = itemThumbSpecs[idx];
+            const images = itemThumbImages[idx];
+            const hasMainThumb = specs.length > 0 && !specs[0].label; // صورة منتج عادية (بدون تسمية) فقط
+            const mainThumbHeight = hasMainThumb ? THUMB_SIZE : 0;
+            const refSpecs = hasMainThumb ? [] : specs; // مراجع التورت (بتسمية) بتترسم كصف منفصل تحت
+            const refRowHeight = refSpecs.length > 0 ? (REF_THUMB_SIZE + 30 + 10) : 0;
+
+            const blockHeight = 14 + Math.max(textBlockHeight, mainThumbHeight) + refRowHeight + 18;
             itemsHeight += blockHeight;
-            return { item, titleLines, qtyLabel, priceLabel, wrappedDetails, blockHeight };
+            return { item, idx, titleLines, flavorLines, qtyLabel, priceLabel, wrappedDetails, blockHeight, specs, images, hasMainThumb, refSpecs };
         });
 
         const notesLines = order.notes ? wrapText(measureCtx, "📝 ملاحظات: " + order.notes, FONT_VALUE, contentWidth) : [];
 
-        const HEADER_HEIGHT = 175;
+        const HEADER_HEIGHT = 210; // شعار + اسم المتجر + شارة رقم الطلب
         const META_BLOCK_TOP_PAD = 20;
         const SECTION_TITLE_H = 46;
         const TOTALS_BLOCK_H = (order.depositAmount !== undefined ? 150 : 70);
@@ -239,12 +315,12 @@
         ctx.strokeRect(8, 8, CANVAS_WIDTH - 16, totalHeight - 16);
 
         const centerX = CANVAS_WIDTH / 2;
-        let y = 50;
+        let y = 54;
 
         const logoUrl = storeInfo.logo || BRAND_LOGO_FALLBACK;
         const logoImg = await loadImageSafe(logoUrl);
         if (logoImg) {
-            const size = 64;
+            const size = 68;
             ctx.save();
             ctx.beginPath();
             ctx.arc(centerX, y, size / 2, 0, Math.PI * 2);
@@ -257,18 +333,46 @@
             ctx.strokeStyle = BRAND_PINK;
             ctx.lineWidth = 2;
             ctx.stroke();
-            y += 46;
+            y += 48;
         }
 
         ctx.textAlign = "center";
         ctx.fillStyle = BRAND_BLACK;
-        ctx.font = "800 26px Cairo, Arial, sans-serif";
+        ctx.font = "800 27px Cairo, Arial, sans-serif";
         ctx.fillText(storeInfo.name || "حلويات بوسي", centerX, y);
-        y += 24;
+        y += 22;
         ctx.font = "700 13px Cairo, Arial, sans-serif";
         ctx.fillStyle = BRAND_PINK;
-        ctx.fillText("BoseSweets ✨ فاتورة حجز طلبية فاخرة", centerX, y);
+        ctx.fillText("BoseSweets ✨ فاتورة حجز طلبية", centerX, y);
         y += 30;
+
+        // 🏷️ [شارة رقم الطلب]: بارزة ومنفصلة عشان تتلاقط بسرعة في أي مراجعة -
+        // بدل ما تكون سطر عادي وسط باقي بيانات العميل.
+        const orderBadgeText = `رقم الطلب: ${order.orderId || "—"}`;
+        ctx.font = "800 15px Cairo, Arial, sans-serif";
+        const badgeTextWidth = ctx.measureText(orderBadgeText).width;
+        const badgePadX = 18, badgeH = 34;
+        const badgeW = badgeTextWidth + badgePadX * 2;
+        const badgeX = centerX - badgeW / 2, badgeY = y - badgeH / 2 - 4;
+        ctx.beginPath();
+        ctx.moveTo(badgeX + badgeH / 2, badgeY);
+        ctx.arcTo(badgeX + badgeW, badgeY, badgeX + badgeW, badgeY + badgeH, badgeH / 2);
+        ctx.arcTo(badgeX + badgeW, badgeY + badgeH, badgeX, badgeY + badgeH, badgeH / 2);
+        ctx.arcTo(badgeX, badgeY + badgeH, badgeX, badgeY, badgeH / 2);
+        ctx.arcTo(badgeX, badgeY, badgeX + badgeW, badgeY, badgeH / 2);
+        ctx.closePath();
+        ctx.fillStyle = BRAND_PINK;
+        ctx.fill();
+        ctx.fillStyle = "#FFFFFF";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(orderBadgeText, centerX, badgeY + badgeH / 2 + 1);
+        ctx.textBaseline = "alphabetic";
+        y += 26;
+        ctx.font = "400 12px Cairo, Arial, sans-serif";
+        ctx.fillStyle = "#777777";
+        ctx.fillText(order.date || "", centerX, y);
+        y += 24;
 
         function drawDivider() {
             ctx.beginPath();
@@ -311,7 +415,8 @@
         ctx.fillText("📦 تفاصيل الأصناف المطلوبة", rightX, y);
         y += 30;
 
-        itemsWrapped.forEach(({ titleLines, qtyLabel, priceLabel, wrappedDetails, blockHeight }) => {
+        for (const entry of itemsWrapped) {
+            const { titleLines, flavorLines, qtyLabel, priceLabel, wrappedDetails, blockHeight, images, hasMainThumb, refSpecs } = entry;
             const cardTop = y - 20;
             ctx.fillStyle = "rgba(255,145,164,0.06)";
             ctx.beginPath();
@@ -325,26 +430,60 @@
             ctx.closePath();
             ctx.fill();
 
+            // صورة المنتج الحقيقية (لو متاحة) - على يمين الكارت، بجانب العنوان
+            let textRight = rightX;
+            if (hasMainThumb && images[0]) {
+                const thumbX = cardX + cardW - THUMB_SIZE - 14;
+                const thumbY = cardTop + 14;
+                drawRoundedThumb(ctx, images[0], thumbX, thumbY, THUMB_SIZE, 12);
+                textRight = thumbX - THUMB_GAP;
+            }
+
             ctx.textAlign = "right";
             ctx.font = FONT_ITEM_TITLE;
             ctx.fillStyle = BRAND_BLACK;
-            titleLines.forEach((line) => { ctx.fillText(line, rightX, y); y += 22; });
+            titleLines.forEach((line) => { ctx.fillText(line, textRight, y); y += 24; });
+
+            ctx.font = FONT_FLAVOR;
+            ctx.fillStyle = BRAND_PINK;
+            flavorLines.forEach((line) => { ctx.fillText(line, textRight, y); y += 20; });
+            y += 6;
 
             ctx.font = "700 13px Cairo, Arial, sans-serif";
-            ctx.fillStyle = BRAND_PINK;
-            ctx.fillText(qtyLabel, rightX, y);
+            ctx.fillStyle = "#555555";
+            ctx.fillText(qtyLabel, textRight, y);
             y += DETAIL_LINE_H;
             ctx.fillStyle = BRAND_BLACK;
             ctx.font = FONT_DETAIL;
-            ctx.fillText(priceLabel, rightX, y);
+            ctx.fillText(priceLabel, textRight, y);
             y += DETAIL_LINE_H;
 
             ctx.font = FONT_DETAIL;
             ctx.fillStyle = "#444444";
-            wrappedDetails.forEach((line) => { ctx.fillText(line, rightX - 4, y); y += DETAIL_LINE_H; });
+            wrappedDetails.forEach((line) => { ctx.fillText(line, textRight - 4, y); y += DETAIL_LINE_H; });
 
-            y += 16;
-        });
+            // مصغرات مرجعية للتورت المخصص (صورة الطباعة/التصميم) - صف منفصل تحت النص
+            if (refSpecs.length > 0) {
+                y += 8;
+                let thumbX = cardX + cardW - 14 - REF_THUMB_SIZE;
+                refSpecs.forEach((spec, i) => {
+                    const img = images[i];
+                    if (img) {
+                        drawRoundedThumb(ctx, img, thumbX, y, REF_THUMB_SIZE, 12);
+                        ctx.textAlign = "center";
+                        ctx.font = "600 11px Cairo, Arial, sans-serif";
+                        ctx.fillStyle = "#666666";
+                        wrapText(measureCtx, spec.label, "600 11px Cairo, Arial, sans-serif", REF_THUMB_SIZE + 20).forEach((l, li) => {
+                            ctx.fillText(l, thumbX + REF_THUMB_SIZE / 2, y + REF_THUMB_SIZE + 16 + li * 13);
+                        });
+                        thumbX -= REF_THUMB_SIZE + 16;
+                    }
+                });
+                y += REF_THUMB_SIZE + 30;
+            }
+
+            y = cardTop + blockHeight + 18;
+        }
 
         if (notesLines.length) {
             drawDivider();
@@ -388,7 +527,7 @@
         ctx.textAlign = "center";
         ctx.font = "700 14px Cairo, Arial, sans-serif";
         ctx.fillStyle = BRAND_BLACK;
-        ctx.fillText("🌸 شكراً لثقتكم الفاخرة بينا", centerX, y + 60);
+        ctx.fillText("🌸 شكراً لثقتكم بينا", centerX, y + 60);
         ctx.font = "400 12px Cairo, Arial, sans-serif";
         ctx.fillStyle = "#777777";
         ctx.fillText(storeInfo.phone || "01097238441", centerX, y + 84);
