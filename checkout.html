@@ -222,9 +222,9 @@
     </style>
 
     <!-- المحرك العام (يُستدعى أولاً في رأس كل الصفحات لقراءة قاعدة البيانات) -->
-    <script src="js/supabase-client.js?v=2026_production_v37.0" defer></script>
+    <script src="js/supabase-client.js?v=2026_production_v38.0" defer></script>
     <script src="js/favorites-engine.js?v=2026_production_v37.0" defer></script>
-    <script src="js/core-engine.js?v=2026_production_v37.0" defer></script>
+    <script src="js/core-engine.js?v=2026_production_v38.0" defer></script>
 </head>
 <body class="bose-hardware-accelerated Pw-checkout-view">
 
@@ -296,6 +296,14 @@
                         <span class="bose-field-error-msg" id="err-checkout-address-details"><i class="fa-solid fa-circle-exclamation"></i><span></span></span>
                     </div>
 
+                    <!-- 🌸 [نظام التعرّف على العميل - المرحلة 2]: ملاحظات مخصصة للشحن/التوصيل
+                         (زي علامة مميزة على المنزل، كود بوابة، أو وقت مفضّل لاستلام المندوب)
+                         منفصلة عن ملاحظات الحساسية/السكر تحت، عشان توصل واضحة لفريق التوصيل. -->
+                    <div class="input-group-node">
+                        <label for="checkout-shipping-notes-textarea">ملاحظات إضافية للتوصيل (اختياري)</label>
+                        <textarea id="checkout-shipping-notes-textarea" class="bose-field-capture" placeholder="مثال: الدور التالت شقة يمين، اتصل قبل ما توصل بربع ساعة..."></textarea>
+                    </div>
+
                     <!-- ⏱️ قسم الجدولة الزمنية والموعد المحكوم بقواعد المعالجة وحارس الـ 24 ساعة تحضير صارم ⏱️ -->
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; width: 100%;">
                         <div class="input-group-node">
@@ -312,6 +320,14 @@
                     
                     <!-- نص رسالة حارس الوقت التوضيحي المستدعى ديناميكياً من حقل قاعدة البيانات لمنع التشتيت -->
                     <p id="checkout-preparation-message" style="font-size: 0.82rem; color: var(--bose-pink); font-weight: 600; margin: 4px 4px 0 0; line-height: 1.5; text-align: right;"></p>
+
+                    <!-- 🌸 [نظام التعرّف على العميل - المرحلة 2]: ملاحظات عامة عن الطلب،
+                         خصوصاً تفضيل سكر خفيف أو أي حساسية معينة، عشان الفرع يجهّز الطلب
+                         بمراعاتها فعلياً - بتتحفظ في ملف العميل وتتعبى تلقائياً في المرة الجاية. -->
+                    <div class="input-group-node">
+                        <label for="checkout-order-notes-textarea">ملاحظات عن الطلب (سكر خفيف، حساسية معينة، أو أي طلب خاص) - اختياري</label>
+                        <textarea id="checkout-order-notes-textarea" class="bose-field-capture" placeholder="مثال: من فضلكم سكر خفيف، أو عندي حساسية من المكسرات..."></textarea>
+                    </div>
                 </form>
             </div>
 
@@ -385,7 +401,7 @@
     <div id="bose-footer-injector"></div>
 
     <!-- ⚡ استدعاء محرك السلة وإتمام عمليات الحساب والدفع والربط اللوجستي المركزي (js/cart-engine.js) ⚡ -->
-    <script src="js/cart-engine.js?v=2026_production_v38.0" defer></script>
+    <script src="js/cart-engine.js?v=2026_production_v39.0" defer></script>
 
     <!-- 🔮 سكريبت التزامن الدفاعي المحلي لربط وحقن الواجهات وضمان فك شلل حقول الصفحة دون تعارض خارجي 🔮 -->
     <script>
@@ -399,6 +415,30 @@
             const methodPickupBtn = document.getElementById("method-pickup");
             const datePicker = document.getElementById("checkout-delivery-date");
             const zoneSelect = document.getElementById("checkout-zone-select");
+
+            // 🌸🌸 [نظام يتفاعل مع العميل ويتعرّف عليه]: لو عندنا بيانات عميل محفوظة
+            // من طلب سابق على نفس الجهاز (راجع saveBoseCustomerProfile في core-engine.js)،
+            // بنعبي بيها حقول الفورم البسيطة فوراً - الاسم، أرقام الهاتف، تفاصيل
+            // العنوان، وملاحظاته عن الحساسية/السكر وملاحظات التوصيل - عشان ميضطرش
+            // يكتبها من الأول تاني. العميل لسه قادر يعدّل أي حقل عادي زي ما هو، وده
+            // بيحصل قبل تفعيل زرار "توصيل"/اختيار المنطقة تحت (اللي محتاج المناطق
+            // تتحمّل الأول من قاعدة البيانات).
+            if (typeof window.getBoseCustomerProfile === "function") {
+                const savedProfile = window.getBoseCustomerProfile();
+                if (savedProfile) {
+                    const nameInput = document.getElementById("checkout-customer-name");
+                    const phone1Input = document.getElementById("checkout-customer-phone");
+                    const phone2Input = document.getElementById("checkout-customer-phone-2");
+                    const orderNotesInputEl = document.getElementById("checkout-order-notes-textarea");
+                    const shippingNotesInputEl = document.getElementById("checkout-shipping-notes-textarea");
+                    if (nameInput && !nameInput.value) nameInput.value = savedProfile.name || "";
+                    if (phone1Input && !phone1Input.value) phone1Input.value = savedProfile.phone1 || "";
+                    if (phone2Input && !phone2Input.value) phone2Input.value = savedProfile.phone2 || "";
+                    if (addressInput && !addressInput.value) addressInput.value = savedProfile.addressDetails || "";
+                    if (orderNotesInputEl && !orderNotesInputEl.value) orderNotesInputEl.value = savedProfile.orderNotes || "";
+                    if (shippingNotesInputEl && !shippingNotesInputEl.value) shippingNotesInputEl.value = savedProfile.shippingNotes || "";
+                }
+            }
 
             // 1. قراءة كائنات السلة ورندرتها في الإيصال الجانبي الفاخر لراحة العميل البصرية
             const rawCart = localStorage.getItem("bose_cart");
@@ -477,6 +517,21 @@
                 // تشغيل الرندرة المبدئية والربط مع محرك السلة القياسي المطور
                 if (typeof window.initializeCartEngine === "function") {
                     window.initializeCartEngine(siteData);
+                }
+
+                // 🌸 [نظام التعرّف على العميل]: لو العميل اختار "توصيل للمنزل" في طلب
+                // سابق، بنفعّل زرار التوصيل تلقائياً ونختار له نفس منطقته المحفوظة -
+                // لازم يحصل بعد initializeCartEngine فوق، لأنها هي اللي بتفعّل "استلام
+                // من الفرع" كافتراضي أولاً وبتربط كل أحداث الأزرار والحساب المالي.
+                if (typeof window.getBoseCustomerProfile === "function") {
+                    const deliveryProfile = window.getBoseCustomerProfile();
+                    if (deliveryProfile && deliveryProfile.deliveryMethod === "delivery" && methodDeliveryBtn) {
+                        methodDeliveryBtn.click();
+                        if (deliveryProfile.zoneId && zoneSelect) {
+                            zoneSelect.value = deliveryProfile.zoneId;
+                            zoneSelect.dispatchEvent(new Event('change'));
+                        }
+                    }
                 }
             }
 
