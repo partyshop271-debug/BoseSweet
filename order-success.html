@@ -235,12 +235,15 @@
                 <i class="fas fa-check"></i>
             </div>
 
+            <!-- 🐛 [إصلاح جوهري]: العنوان القديم "تم تسجيل طلبك بنجاح!" كان فعلياً
+                 دقيق تقنياً (فاتورة الواتساب بتتفتح تلقائياً في خطوة الدفع نفسها
+                 قبل الوصول للصفحة دي بخطوة) لكن التناقض الحقيقي كان في وجود زرار
+                 "إرسال الفاتورة" تاني تحت بيوهم العميلة إن فيه خطوة إرسال ناقصة -
+                 تم حذف الزرار ده نهائياً (شوفي ملاحظة renderBoseSuccessPage في
+                 cart-engine.js). النص هنا بقى بيوضح إن واتساب اتفتح بالفعل. -->
             <h1 class="success-headline">تم تسجيل طلبك بنجاح!</h1>
-            <!-- 🛡️ [إصلاح المرحلة 1]: عنصر ترحيب باسم العميل مطابق للمواصفة الرسمية
-                 (h3#success-customer-welcome) - كان الكود الخاص بتعبئته موجوداً وجاهزاً
-                 في cart-engine.js لكن العنصر نفسه كان غائباً من الصفحة فعلياً. -->
             <h3 id="success-customer-welcome" class="success-subheadline" style="display:none; font-weight:700; color:var(--bose-pink, #FF91A4); margin:0;"></h3>
-            <p class="success-subheadline">🌸 يسعدنا جداً اختيارك الفاخر اليوم. تم حجز وتوثيق عناصر طلبك بنجاح ومستعدون لبدء الخبز والتحضير بكل شغف وتوصيله بأعلى دقة تحافظ على شكل ونضارة طلبك.</p>
+            <p class="success-subheadline">🌸 يسعدنا جداً اختيارك الفاخر اليوم. تم حجز وتوثيق عناصر طلبك بنجاح، وفتحنا لك واتساب بفاتورتك جاهزة. مستعدون لبدء الخبز والتحضير بكل شغف فور تأكيد استلامها.</p>
 
             <div class="order-summary-receipt-box">
                 <div class="receipt-header-row">
@@ -278,22 +281,16 @@
                 </div>
             </div>
 
-            <p class="success-subheadline" style="font-size: 0.88rem; opacity: 0.7; margin: 5px 0 0 0;">📌 دوسي زرار "إرسال الفاتورة" بالأسفل، وهيفتحلك واتساب مع فاتورة طلبك جاهزة عشان تبعتيها.</p>
-
-            <!-- 🐛 [إصلاح - زرار كان بيتوه وسط رسائل تحذيرية]: قبل كده كان في زرارين
-            منفصلين (فتح واتساب برسالة نصية / إرسال الفاتورة كصورة) مع نص تحذيري
-            بارز حواليهم بيدي انطباع إن في حاجة غلط أو معقدة. دلوقتي زرار واحد بس
-            بيبعت الفاتورة كصورة واضحة لواتساب، باسم عادي وبسيط "إرسال الفاتورة" من
-            غير أي تنبيه يخوف العميلة - نفس تجربة أي زرار إرسال طبيعي. زرار واتساب
-            القديم اتسيب موجود في الصفحة بس مخفي (display:none) لأن كود cart-engine.js
-            لسه بيستخدمه داخلياً لتجهيز رابط واتساب الاحتياطي، من غير ما يظهر للعميلة. -->
-            <a href="https://wa.me/201097238441" id="bose-success-whatsapp-btn" style="display:none;" target="_blank" rel="noopener noreferrer">فتح واتساب</a>
-
+            <!-- 🐛 [إصلاح جوهري - زرار "إرسال الفاتورة" كان غير منطقي هنا]: فاتورة
+            الواتساب بتتفتح تلقائياً بالفعل لحظة تأكيد الطلب من صفحة الدفع (checkout)
+            نفسها - قبل ما العميلة توصل لصفحة النجاح دي أصلاً بخطوة. يعني العميلة
+            بتكون خلاص شافت واتساب وفاتورتها الجاهزة قبل ما تشوف الصفحة دي، فوجود
+            زرار "إرسال الفاتورة" تاني هنا كان بيوهمها إن الطلب لسه محتاج خطوة إرسال
+            تانية من الأول - ربكة وتوتر من غير أي داعي فعلي. الزرار اتشال، والفعل
+            المنطقي الوحيد المطلوب من العميلة هنا هو إنها تتابع حالة طلبها، فبقى
+            زرار "تتبعي طلبك" هو الإجراء الأساسي المعروض. -->
             <div class="success-actions-row">
-                <button type="button" id="bose-invoice-image-btn" class="btn-success-whatsapp-trigger">
-                    <i class="fab fa-whatsapp"></i> إرسال الفاتورة
-                </button>
-                <a href="track-order.html" id="bose-success-track-btn" class="btn-success-home-anchor" style="display:none; background-color: var(--bose-white, #fff); color: var(--bose-pink, #FF91A4); border: 2px solid var(--bose-pink, #FF91A4);">
+                <a href="track-order.html" id="bose-success-track-btn" class="btn-success-whatsapp-trigger" style="display:none;">
                     <i class="fas fa-location-crosshairs"></i> تتبعي طلبك
                 </a>
                 <a href="index.html" class="btn-success-home-anchor">
