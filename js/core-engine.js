@@ -342,6 +342,7 @@
         injectSimulatorsPreviewData();
         setupSimulatorPreviewAnimations();
         setupPrideCountersAnimation();
+        setupPrideTimelineReveal();
         setupAppInstallPopup();
         setupAppPromoBlockButtons();
         injectAppPromoRealContent();
@@ -1069,6 +1070,16 @@
         revealBlocks.forEach((/** @type {Element} */ block) => observer.observe(block));
     }
 
+    /**
+     * 🛡️👑 [إصلاح ازدواجية العداد]: قبل كده كان فيه نسختين بيحركوا نفس أرقام
+     * قسم الفخر والاعتزاز في نفس الوقت - نسخة هنا بتتفعل بالسكرول (IntersectionObserver)،
+     * ونسخة تانية Inline جوه index.html بتتفعل فور جهوزية البيانات (onBoseDatabaseReady)
+     * من غير أي علاقة بمكان العميل في الصفحة. النتيجة: لو العميل يوصل للقسم بعد
+     * ما البيانات جهزت، الرقم كان بيتصفر ويتعد من الأول تاني قدامه - إحساس إن
+     * حاجة "بايظة" بدل ما يبني ثقة. دلوقتي دالة واحدة بس هي مصدر الحقيقة
+     * الوحيد لكل حاجة في القسم ده (الأرقام + التسميات القادمة من لوحة التحكم)،
+     * والسكريبت الـ Inline اتشال بالكامل من index.html.
+     */
     function setupPrideCountersAnimation() {
         const prideSection = document.getElementById('pride-section');
         if (!prideSection || !window.BoseStoreData?.homepage?.pride?.stats) return;
@@ -1097,6 +1108,14 @@
             }, stepTime);
         };
 
+        // 🏷️ تحديث التسميات القادمة من لوحة التحكم (كانت بس بتتحدث في السكريبت
+        // الـ Inline المحذوف - دلوقتي بقت جزء من نفس الدالة عشان تفضل متزامنة
+        // مع تحريك الأرقام بدل ما تكون منطق منفصل في مكان تاني بالكامل).
+        Object.keys(statsData).forEach((key) => {
+            const labelEl = document.getElementById(`stat-${key}-label`);
+            if (labelEl && statsData[key].label) labelEl.textContent = statsData[key].label;
+        });
+
         const observer = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
                 if (entry.isIntersecting) {
@@ -1113,6 +1132,33 @@
         }, { threshold: 0.3 });
 
         observer.observe(prideSection);
+    }
+
+    /**
+     * 🎬 [ظهور متتابع لعقد التايم لاين في قسم الفخر والاعتزاز]: كل محطة في
+     * الحكاية (.bose-timeline-item) بتتراقب لوحدها وتظهر بحركة بسيطة أول ما
+     * توصل لشاشة العميل، عشان الإحساس يبقى إن الحكاية بتتحكي قدامه خطوة خطوة
+     * أثناء نزوله بالسكرول - مش كل حاجة تظهر مرة واحدة كتلة واحدة جامدة.
+     */
+    function setupPrideTimelineReveal() {
+        const timelineItems = document.querySelectorAll('.bose-timeline-item');
+        if (!timelineItems.length) return;
+
+        if (!('IntersectionObserver' in window)) {
+            timelineItems.forEach((/** @type {Element} */ item) => item.classList.add('bose-in-view'));
+            return;
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('bose-in-view');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.35 });
+
+        timelineItems.forEach((/** @type {Element} */ item) => observer.observe(item));
     }
 
     /**
