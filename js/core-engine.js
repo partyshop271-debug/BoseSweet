@@ -340,6 +340,7 @@
         renderHomepageProductGrids();
         setupOurProductsShowMore();
         injectSimulatorsPreviewData();
+        setupSimulatorPreviewAnimations();
         setupPrideCountersAnimation();
         setupAppInstallPopup();
         setupAppPromoBlockButtons();
@@ -1037,6 +1038,35 @@
                 if (preview.target) ctaEl.href = preview.target;
             }
         }
+    }
+
+    /**
+     * 🎬👑 [حركة الظهور التدريجي لبلوكي محاكي التورت ومحاكي الورد]: بتفعّل كلاس
+     * bose-in-view على كل بلوك (.bose-simulator-reveal) أول ما يوصله نظر العميل
+     * أثناء التمرير، عشان البلوك كله ونقاط القيمة التنافسية جواه يظهروا بحركة
+     * منظمة ومتتابعة بدل ما يكونوا ثابتين من أول ما الصفحة تحمل. نفس فلسفة
+     * setupPrideCountersAnimation (IntersectionObserver + unobserve بعد التفعيل
+     * مرة واحدة فقط) عشان مفيش أي استهلاك زيادة للمعالج بعد أول ظهور.
+     */
+    function setupSimulatorPreviewAnimations() {
+        const revealBlocks = document.querySelectorAll('.bose-simulator-reveal');
+        if (!revealBlocks.length) return;
+
+        if (!('IntersectionObserver' in window)) {
+            revealBlocks.forEach((/** @type {Element} */ block) => block.classList.add('bose-in-view'));
+            return;
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('bose-in-view');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.25 });
+
+        revealBlocks.forEach((/** @type {Element} */ block) => observer.observe(block));
     }
 
     function setupPrideCountersAnimation() {
