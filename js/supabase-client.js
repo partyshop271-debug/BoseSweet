@@ -175,7 +175,17 @@
      */
     async function submitBoseOrderToDatabase(orderPayload) {
         const items = (orderPayload.items || []).map((item) => ({
-            product_id: item.slug || item.productId || null,
+            // 🚨🚨 [إصلاح جذري حرج - سبب ضياع كل الطلبات من قاعدة البيانات]: عنصر
+            // السلة اللي بيبنيه window.createCartItem() في core-engine.js بيخزن
+            // معرّف المنتج تحت اسم "productSlug" بالظبط - لكن هنا كان الكود بيدور
+            // على "item.slug" و"item.productId" اللي مش موجودين خالص في شكل العنصر
+            // الحقيقي. النتيجة: product_id كان بيوصل null دايماً لأي منتج جاهز عادي
+            // (مش تورت/ورد مخصص)، فدالة create_order_with_items في القاعدة كانت
+            // بترفض الطلب بالكامل برسالة "عنصر بدون معرّف منتج صحيح" ولا يتسجل أي
+            // شيء - مع إن واتساب كان بيتفتح وبيوصلها الطلب عادي (لأنه بيحصل قبل
+            // محاولة الحفظ في القاعدة)، فكانت الطلبات "توصل" لكن الداشبورد
+            // والتقارير وصفحة الطلبات كلها تفضل صفر لأن مفيش حاجة بتتسجل فعلياً.
+            product_id: item.productSlug || item.slug || item.productId || null,
             item_type: item.type || "ready-made",
             title: item.title,
             flavor_name: item.flavorName || null,
