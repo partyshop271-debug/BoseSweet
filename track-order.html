@@ -98,16 +98,23 @@
 
     <script>
         (function () {
+            // 🔗 [توحيد مع لوحة التحكم]: نفس قائمة الحالات الموجودة في المصدر
+            // الواحد admin/js/admin-ui-utils.js (ORDER_STATUSES) بالظبط، بنفس
+            // المفاتيح والتسميات - عشان العميلة تشوف نفس اسم الحالة اللي شايفاه
+            // المديرة بالظبط، ومفيش مفتاح حالة (زي awaiting_deposit) يفضل من
+            // غير ترجمة عربي فيظهر خام زي ما هو من الباك اند.
             const STATUS_LABELS = {
-                pending: "بانتظار المراجعة",
-                processing: "جاري التحضير",
-                preparing: "جاري التحضير",
+                awaiting_deposit: "بانتظار تأكيد العربون",
+                pending: "قيد المراجعة",
+                confirmed: "مؤكد",
+                preparing: "قيد التحضير",
+                processing: "قيد التحضير",
                 ready: "جاهز للاستلام/التوصيل",
-                out_for_delivery: "في الطريق ليكِ",
-                delivering: "في الطريق ليكِ",
+                out_for_delivery: "في الطريق",
+                delivering: "في الطريق",
                 delivered: "تم التسليم",
                 completed: "تم التسليم",
-                cancelled: "تم إلغاء الطلب",
+                cancelled: "ملغي",
             };
 
             function statusLabel(status) {
