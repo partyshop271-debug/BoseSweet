@@ -151,69 +151,6 @@
         });
     }
 
-    /* ============================= أنواع الورد (3 قيم ثابتة + صورة فقط) ============================= */
-
-    // 🐛🖼️👑 [إصلاح جذري - "لو ضفنا نوع ورد جديد بتختفي صور كل الأنواع"]:
-    // السبب الحقيقي كان إن الموقع نفسه (flower-builder.html) عنده 3 أزرار
-    // اختيار نوع ورد ثابتة ومكتوبة يدوي في الصفحة (natural/artificial/satin)
-    // مفيش أي طريقة تقنية تضيفي بيها نوع رابع يظهر فعلياً للعميلة - القائمة
-    // القديمة هنا كانت بتسمحلك "تضيفي" عنصر جديد بزرار "إضافة نوع"، لكن العنصر
-    // الجديد ده كان بياخد id عشوائي (opt-xxxxx) مش هيتطابق أبداً مع أي من الـ3
-    // قيم الحقيقية (natural/artificial/satin) اللي محاكي الورد بيدور عليها فعلياً
-    // عشان يعرض صورة كل نوع - يعني العنصر الجديد كان بيتحفظ في قاعدة البيانات
-    // من غير ما يظهر في أي مكان، ومع كل ضغطة "إضافة" جديدة كانت القائمة بتتلخبط
-    // أكتر (عناصر بلا أسماء ولا صور ظاهرة) وبتوهم إن "الصور اتمسحت" رغم إنها
-    // موجودة فعلياً بس مربوطة بعنصر تاني غلط. الحل الحقيقي: قائمة ثابتة بـ3
-    // عناصر بالظبط (بنفس الـid اللي محاكي الورد بيدور عليه)، صورة لكل واحد
-    // بس - من غير أي زرار إضافة أو حذف يقدر يكسّر الربط.
-    const FIXED_FLOWER_TYPES = [
-        { id: "natural", label: "🌸 ورد طبيعي نضر" },
-        { id: "artificial", label: "✨ ورد صناعي فاخر" },
-        { id: "satin", label: "🎀 ورد ستان راقٍ" },
-    ];
-
-    function normalizeFixedFlowerTypes(items) {
-        const existing = Array.isArray(items) ? items : [];
-        return FIXED_FLOWER_TYPES.map((fixed) => {
-            const found = existing.find((it) => it && it.id === fixed.id);
-            return { id: fixed.id, name: fixed.label, image: (found && found.image) || "" };
-        });
-    }
-
-    function renderFixedFlowerTypeImages(containerId, items) {
-        const e = window.BoseAdminUI.escapeHtml;
-        const container = document.getElementById(containerId);
-        container.innerHTML = items.map((item, idx) => `
-            <div class="adm-curated-item" data-idx="${idx}">
-                <label class="adm-image-upload-btn" style="width:56px; height:56px; padding:0; overflow:hidden; flex-shrink:0;" title="صورة ${e(item.name)}">
-                    <input type="file" accept="image/*" data-action="upload-image" hidden>
-                    ${item.image
-                        ? `<img src="${e(item.image)}" alt="" style="width:100%; height:100%; object-fit:cover;">`
-                        : `<i class="fa-solid fa-camera"></i>`}
-                </label>
-                <span class="adm-order-item-meta" style="flex:1;">${e(item.name)}</span>
-            </div>`).join("");
-
-        container.querySelectorAll('[data-action="upload-image"]').forEach((input) => {
-            input.addEventListener("change", async () => {
-                const file = input.files && input.files[0];
-                if (!file) return;
-                const idx = Number(input.closest("[data-idx]").getAttribute("data-idx"));
-                const label = input.closest("label");
-                const original = label.innerHTML;
-                label.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
-                try {
-                    const url = await window.BoseAdminUI.uploadImageToCloudinary(file);
-                    items[idx].image = url;
-                    renderFixedFlowerTypeImages(containerId, items);
-                } catch (err) {
-                    window.BoseAdminUI.showToast("تعذر رفع الصورة", "error");
-                    label.innerHTML = original;
-                }
-            });
-        });
-    }
-
     /* ============================= التحميل والربط ============================= */
 
     function fillNumberFields(prefix, obj, fields) {
@@ -246,7 +183,7 @@
         cakeBuilder.referenceUpload = cakeBuilder.referenceUpload || { enabled: true, note: "" };
         cakeBuilder.portfolioGallery = cakeBuilder.portfolioGallery || [];
 
-        flowerBuilder.flowerTypes = normalizeFixedFlowerTypes(flowerBuilder.flowerTypes);
+        flowerBuilder.flowerTypes = flowerBuilder.flowerTypes || [];
         flowerBuilder.wrappingTypes = flowerBuilder.wrappingTypes || [];
         flowerBuilder.chocolateTypes = flowerBuilder.chocolateTypes || [];
         flowerBuilder.moneyCategories = flowerBuilder.moneyCategories || [];
@@ -304,7 +241,8 @@
             renderNamedList("list-cake-giftcard-gallery", cakeBuilder.giftCard.images, { imageField: true });
         });
 
-        renderFixedFlowerTypeImages("list-flower-types", flowerBuilder.flowerTypes);
+        renderNamedList("list-flower-types", flowerBuilder.flowerTypes, { imageField: true });
+        wireAddButton("add-flower-type-btn", "list-flower-types", flowerBuilder.flowerTypes, {});
 
         renderNamedList("list-wrapping-types", flowerBuilder.wrappingTypes, { priceField: true, imageField: true });
         wireAddButton("add-wrapping-type-btn", "list-wrapping-types", flowerBuilder.wrappingTypes, { priceField: true });
