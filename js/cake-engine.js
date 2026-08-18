@@ -123,7 +123,6 @@ function startEngineLogic() {
     };
 
     const flavorSensoryNote = document.getElementById('flavor-sensory-note');
-    const btnShareDesign = document.getElementById('btn-share-design');
 
     function updateFlavorSensoryNote() {
         if (!flavorSensoryNote) return;
@@ -593,42 +592,6 @@ function startEngineLogic() {
         if (summaryTotalEl) summaryTotalEl.textContent = `${Math.round(grandTotal)} جنيه`;
 
         lastKnownSnapshot = buildDesignSnapshot(currentPersons, selectedShape, selectedPrinting, hasGiftCardNow, grandTotal);
-    }
-
-    /* ==================================================================
-       🔗 [مشاركة التصميم عبر رابط الموقع]: بدل ما كنا بنبعت نص خام على
-       واتساب، دلوقتي بنحفظ لقطة من التصميم في قاعدة البيانات عبر RPC آمن،
-       ونبني رابط design-view.html?id=... بيفتح صفحة على الموقع نفسه فيها
-       كل تفاصيل الطلب - أي حد يفتح الرابط يشوف التصميم من غير ما يقدر
-       يشوف تصاميم عملاء تانيين.
-       ================================================================== */
-    if (btnShareDesign) {
-        btnShareDesign.addEventListener('click', async () => {
-            if (!window.BoseSupabase || typeof window.BoseSupabase.createSharedCakeDesign !== 'function') {
-                if (typeof window.showBoseGlobalToast === 'function') {
-                    window.showBoseGlobalToast("تعذر تجهيز رابط المشاركة الآن، حاولي تحديث الصفحة.");
-                }
-                return;
-            }
-            const originalLabel = btnShareDesign.innerHTML;
-            btnShareDesign.disabled = true;
-            btnShareDesign.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> بنجهز رابط التصميم...';
-            try {
-                const snapshot = lastKnownSnapshot || {};
-                const newId = await window.BoseSupabase.createSharedCakeDesign(snapshot);
-                if (!newId) throw new Error("no id returned");
-                const shareUrl = `${window.location.origin}${window.location.pathname.replace('cake-builder.html', 'design-view.html')}?id=${newId}`;
-                const shareText = `شوف تصميم التورتة اللي عملتهولك من حلويات بوسي 🎂\n${shareUrl}`;
-                window.open(`https://wa.me/?text=${encodeURIComponent(shareText)}`, '_blank', 'noopener,noreferrer');
-            } catch (err) {
-                if (typeof window.showBoseGlobalToast === 'function') {
-                    window.showBoseGlobalToast("تعذر تجهيز رابط المشاركة الآن، حاولي مرة أخرى.");
-                }
-            } finally {
-                btnShareDesign.disabled = false;
-                btnShareDesign.innerHTML = originalLabel;
-            }
-        });
     }
 
     /* ==================================================================

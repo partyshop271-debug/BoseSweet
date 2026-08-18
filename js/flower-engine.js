@@ -76,7 +76,8 @@
     let includeRibbonTextCheckbox, ribbonTextSection, ribbonTextInput, ribbonStepPriceDisplay;
     let includeCashCheckbox, cashMasterBlock, cashIntegrationCounterBlock, moneyAmountDisplay;
     let includeChocolateCheckbox, chocolateBudgetMasterBlock, chocolateBudgetDisplay;
-    let photoCountInput, dynamicAddonsArea, embeddedPriceDisplay, bosePhotosPriceDisplay, boseCardPriceDisplay;
+    let photoCountInput, embeddedPriceDisplay, bosePhotosPriceDisplay, boseCardPriceDisplay;
+    let flowerPriceLineCount, flowerPriceLineValue;
     let btnNext, btnPrev, stepsPanels, stepsIndicators, flowerTypeRadios, hiddenTypeInput, dynamicPricingWidget;
     // 🛡️👑 [عناصر رفع الصور الشخصية المستقلة - خطوة 5]
     let personalPhotoFileInput, personalPhotoPreviewList, personalPhotoProgressNote;
@@ -153,28 +154,16 @@
             boseCardPriceDisplay.style.display = state.includeCard ? "block" : "none";
         }
 
-        // رندرة الفاتورة الجانبية بتنسيق فاخر صريح وواضح للعين
-        if (dynamicAddonsArea) {
-            let html = "";
-            if (extraFlowers > 0) {
-                html += `<div class="bose-invoice-addon-row"><span>الورد الإضافي (${extraFlowers} وردة):</span><span>+ ${extraCost} جنيه</span></div>`;
-            }
-            if (ribbonCost > 0) {
-                html += `<div class="bose-invoice-addon-row"><span>شريط ستان بكلام مخصوص:</span><span>+ ${flowerConfig.satinRibbonPrice} جنيه</span></div>`;
-            }
-            if (photoCost > 0) {
-                html += `<div class="bose-invoice-addon-row"><span>الصور الشخصية المترتبة (${state.photoCount}):</span><span>+ ${photoCost} جنيه</span></div>`;
-            }
-            if (cardCost > 0) {
-                html += `<div class="bose-invoice-addon-row"><span>كارت إهداء شيك مكتوب:</span><span>+ ${flowerConfig.giftCardPrice} جنيه</span></div>`;
-            }
-            if (state.moneyAmount > 0) {
-                html += `<div class="bose-invoice-addon-row"><span>مفاجأة الكاش جوه البوكيه:</span><span>+ ${state.moneyAmount} جنيه</span></div>`;
-            }
-            if (state.chocolateBudget > 0) {
-                html += `<div class="bose-invoice-addon-row"><span>ميزانية الشوكولاتة الفخمة:</span><span>+ ${state.chocolateBudget} جنيه</span></div>`;
-            }
-            dynamicAddonsArea.innerHTML = html;
+        // 💰👑 [حساب واحد بسيط - مش خطوتين "أساسي" و"إضافي"]: بدل الفاتورة
+        // الجانبية المقسّمة لبنود منفصلة (كانت بتسبب تشتيت وتوتر من غير داعي)،
+        // بنعرض جملة واحدة بس: سعر البوكيه بعدد الورد المختار. المجموع الكلي
+        // (اللي فيه أي إضافات زي الكارت/الشريط/الصور/الكاش/الشوكولاتة) بيتحدث
+        // في مكانه الوحيد (bouquetTotalVal) فوق - رقم نهائي واحد من غير تفصيل.
+        if (flowerPriceLineCount) flowerPriceLineCount.textContent = state.flowerCount;
+        if (flowerPriceLineValue) {
+            const currentCountCost = flowerConfig.basePrice + (extraFlowers * flowerConfig.extraFlowerPrice);
+            let finalCountCost = window.calculateBosePrice ? window.calculateBosePrice(currentCountCost, "menu-only") : currentCountCost;
+            flowerPriceLineValue.textContent = `${Math.round(finalCountCost)} جنيه`;
         }
     }
 
@@ -206,7 +195,11 @@
 
         addRow(1, "نوع الورد", flowerTypeLabels[state.flowerType] || state.flowerType);
         addRow(2, "عدد الورد", `${state.flowerCount} وردة`);
-        addRow(3, "صورة تصميم مرجعية", activeBase64ImageInMemory ? "مرفوعة ✓" : "لم تُرفع");
+        // 🐛👑 [إصلاح - كانت بتفحص activeBase64ImageInMemory (متغير احتياطي
+        // لحفظ الصورة في sessionStorage) بدل الحالة الفعلية الحالية state.photoUrl
+        // - فكانت بتقول "لم تُرفع" حتى لو الصورة اترفعت فعلياً بنجاح على Cloudinary
+        // وظهرت معاينتها، لمجرد إن الجلسة اتحفظت/اترجعت بطريقة معينة.]
+        addRow(3, "صورة تصميم مرجعية", state.photoUrl ? "مرفوعة ✓" : "لم تُرفع");
         addRow(4, "شريط الستان", state.includeRibbonText && state.ribbonText.trim() !== "" ? `مطبوع عليه: "${state.ribbonText.trim()}"` : "بدون كلام مطبوع (تغليف كلاسيك مجاني فقط)");
         addRow(5, "صور شخصية داخل الباقة", state.includePhoto ? `${state.photoCount} صورة مطبوعة` : "غير مطلوبة");
         addRow(6, "مفاجأة كاش", (state.includeCash && state.moneyAmount > 0) ? `${state.moneyAmount} جنيه` : "غير مطلوبة");
@@ -279,16 +272,29 @@
         if (flowerHeroEl) flowerHeroEl.classList.toggle('bose-collapsed-hero', shouldCollapseHero);
         if (flowerIntroEl) flowerIntroEl.classList.toggle('bose-collapsed-hero', shouldCollapseHero);
 
-        // 🛡️ [إصلاح جذري]: زرار "التالي" هنا معندوش أي تمرير خالص، فالعميل بيضغط ويفضل واقف
-        // في نفس مكانه من غير ما يشوف بداية الخطوة الجديدة إلا لو نزل بنفسه يدور عليها.
-        // بنمرره الآن لبداية لوحة التحكم (نفس مكان الخطوات) بارتفاع الهيدر الثابت مطروح منه.
-        const activeStepPanel = document.querySelector('.bose-step-card-panel.active');
-        const scrollTarget = activeStepPanel || document.querySelector('.simulator-control-panel');
-        if (scrollTarget) {
-            const stickyHeaderOffset = 90;
-            const targetY = scrollTarget.getBoundingClientRect().top + window.scrollY - stickyHeaderOffset;
-            window.scrollTo({ top: Math.max(targetY, 0), behavior: 'smooth' });
-        }
+        // 🐛👑 [إصلاح جذري - كانت الصفحة بتوقف في آخر الخطوة الجديدة بدل أولها]:
+        // الحساب اليدوي القديم (getBoundingClientRect + window.scrollY - offset)
+        // كان بيتحسب بمجرد تبديل كلاس "active" فورًا، من غير ما ياخد وقته إن
+        // أي تغييرات تانية بتحصل في نفس اللحظة (زي اختفاء البانر فوق بـ
+        // transition) تخلص أولاً - فكانت النتيجة أحياناً رقم غلط تمامًا يوصل
+        // بيها لآخر الصفحة (قسم "بوكيهات شرفت عملائنا") بدل أول الخطوة الجديدة
+        // فعلاً. الحل الأصح والأثبت: نستخدم scrollIntoView() المدمجة في
+        // المتصفح نفسه (بتحسب المكان الصحيح لحظة التنفيذ مباشرة، مش حساب يدوي
+        // قابل للخطأ) مع scroll-margin-top على الكارت نفسه (في simulators.css)
+        // بدل الـoffset اليدوي، وبنأجلها بـrequestAnimationFrame مزدوج عشان
+        // نضمن إن كل تغييرات الـDOM والـlayout المصاحبة خلصت فعلاً الأول.
+        // 🎯 [هدف تمرير ثابت زي محاكي التورت بالظبط]: بنمرر لـ.simulator-workspace
+        // (الحاوية الثابتة اللي مالهاش أي علاقة بارتفاع الخطوة النشطة نفسها)
+        // بدل الكارت النشط مباشرة - نفس بالظبط الأسلوب المستخدم في
+        // cake-engine.js (.bose-simulator-layout) واللي بيشتغل صح هناك.
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                const scrollTarget = document.querySelector('.simulator-workspace') || document.querySelector('.bose-step-card-panel.active');
+                if (scrollTarget && typeof scrollTarget.scrollIntoView === 'function') {
+                    scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
     }
 
     /**
@@ -382,46 +388,75 @@
     // كعنصر جديد في state.personalPhotos، لحد ما توصل للعدد اللي اختارته
     // العميلة في العداد. نفس أسلوب الضغط والرفع لـCloudinary المستخدم في
     // صورة التصميم بالظبط، عشان يبقى نفس مستوى الجودة والموثوقية.
-    async function uploadPersonalPhoto(file) {
-        if (!file) return;
-        if (state.personalPhotos.length >= state.photoCount) {
+    // 🛡️👑📸 [رفع دفعة واحدة - إصلاح جذري]: كان الـinput بياخد ملف واحد بس
+    // في كل مرة (input بدون multiple)، فكانت العميلة مضطرة تختار صورة، تستنى
+    // ترفع، ترجع تفتح المعرض تاني، تختار الصورة اللي بعدها... وهكذا لحد ما
+    // توصل للعدد اللي اختارته - تجربة متعبة ومنفّرة. دلوقتي الـinput بياخد
+    // كذا صورة مرة واحدة (multiple)، والدالة دي بترفعهم واحدة ورا التانية
+    // تلقائياً من غير ما تحتاج العميلة تتدخل بين كل صورة والتانية.
+    async function uploadPersonalPhotosBatch(fileList) {
+        const files = Array.from(fileList || []).filter(Boolean);
+        if (files.length === 0) return;
+
+        const remainingSlots = state.photoCount - state.personalPhotos.length;
+        if (remainingSlots <= 0) {
             if (window.showBoseGlobalToast) window.showBoseGlobalToast(`وصلتي للعدد اللي اخترتيه (${state.photoCount}) - زودي العدد فوق لو حابة ترفعي أكتر.`);
             return;
         }
+
+        const filesToUpload = files.slice(0, remainingSlots);
+        if (files.length > remainingSlots && window.showBoseGlobalToast) {
+            window.showBoseGlobalToast(`هنرفع أول ${remainingSlots} صورة بس دلوقتي، عشان العدد المختار ${state.photoCount} - زودي العدد فوق لو حابة ترفعي أكتر من كده.`);
+        }
+
         state.isUploading = true;
         if (addToCartBtn) {
             addToCartBtn.disabled = true;
-            addToCartBtn.textContent = "بنجيب لكِ أعلى جودة للصورة...";
+            addToCartBtn.textContent = "بنرفعلك الصور...";
         }
-        try {
-            const compressedBlob = await compressImageFile(file);
-            const cloudName = window.BoseStoreData?.store?.cloudinaryCloudName || 'dyx4w0dr1';
-            const endpoint = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
-            const formData = new FormData();
-            formData.append('file', compressedBlob, 'flower_personal_photo.jpg');
-            formData.append('upload_preset', 'gct8i28h');
 
-            const res = await fetch(endpoint, { method: 'POST', body: formData });
-            const resData = await res.json();
+        let successCount = 0;
+        for (const file of filesToUpload) {
+            try {
+                const compressedBlob = await compressImageFile(file);
+                const cloudName = window.BoseStoreData?.store?.cloudinaryCloudName || 'dyx4w0dr1';
+                const endpoint = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
+                const formData = new FormData();
+                formData.append('file', compressedBlob, 'flower_personal_photo.jpg');
+                formData.append('upload_preset', 'gct8i28h');
 
-            if (resData && resData.secure_url) {
-                state.personalPhotos.push(resData.secure_url);
-                renderPersonalPhotoPreviewList();
-                if (window.showBoseGlobalToast) window.showBoseGlobalToast("تم تأمين وحفظ الصورة بنجاح! ✨");
+                const res = await fetch(endpoint, { method: 'POST', body: formData });
+                const resData = await res.json();
+
+                if (resData && resData.secure_url) {
+                    state.personalPhotos.push(resData.secure_url);
+                    successCount++;
+                    renderPersonalPhotoPreviewList();
+                }
+            } catch (err) {
+                // 🛡️ نكمل رفع باقي الصور في القائمة حتى لو صورة واحدة فشلت،
+                // بدل ما نوقف رفع كل الدفعة بسبب صورة واحدة بس.
+            }
+        }
+
+        state.isUploading = false;
+        if (addToCartBtn) {
+            addToCartBtn.disabled = false;
+            addToCartBtn.textContent = "اضافة للسلة";
+        }
+
+        if (window.showBoseGlobalToast) {
+            if (successCount === filesToUpload.length && successCount > 0) {
+                window.showBoseGlobalToast(successCount > 1 ? `تم رفع الصور الـ${successCount} بنجاح! ✨` : "تم تأمين وحفظ الصورة بنجاح! ✨");
+            } else if (successCount > 0) {
+                window.showBoseGlobalToast(`اترفع ${successCount} من ${filesToUpload.length} - جزء من الصور فشل، حاولي ترفعيه تاني.`);
             } else {
-                if (window.showBoseGlobalToast) window.showBoseGlobalToast("تعذر رفع الصورة، تأكدي من الاتصال بالإنترنت وحاولي تاني.");
+                window.showBoseGlobalToast("تعذر رفع الصور، تأكدي من الاتصال بالإنترنت وحاولي تاني.");
             }
-        } catch (err) {
-            if (window.showBoseGlobalToast) window.showBoseGlobalToast("تعذر رفع الصورة، تأكدي من الاتصال بالإنترنت وحاولي تاني.");
-        } finally {
-            state.isUploading = false;
-            if (addToCartBtn) {
-                addToCartBtn.disabled = false;
-                addToCartBtn.textContent = "اضافة للسلة";
-            }
-            saveCurrentState();
-            recalculatePrice();
         }
+
+        saveCurrentState();
+        recalculatePrice();
     }
 
     // 🛡️📸 [عرض/تحديث قايمة معاينة الصور الشخصية المرفوعة + سطر التقدّم]:
@@ -583,8 +618,9 @@
         moneyCategorySelect = document.getElementById('money-category');
         bouquetTotalVal = document.getElementById('bouquet-total-val');
         addToCartBtn = document.getElementById('add-to-cart-btn');
-        dynamicAddonsArea = document.getElementById('bose-dynamic-addons-injection-area');
         embeddedPriceDisplay = document.getElementById('bose-embedded-price-display');
+        flowerPriceLineCount = document.getElementById('flower-price-line-count');
+        flowerPriceLineValue = document.getElementById('flower-price-line-value');
 
         includeRibbonTextCheckbox = document.getElementById('include-ribbon-text');
         ribbonTextSection = document.getElementById('ribbon-text-section');
@@ -715,16 +751,6 @@
         }
         updateFlowerTypeSelectionLine();
 
-        const btnShareFlowerDesign = document.getElementById("btn-share-flower-design");
-        if (btnShareFlowerDesign) {
-            btnShareFlowerDesign.addEventListener("click", () => {
-                const typeLabelMap = { natural: "طبيعي نضر", artificial: "صناعي فاخر", satin: "ستان راقٍ" };
-                const priceNow = document.getElementById("bouquet-total-val")?.textContent || "";
-                const shareText = `شوفي التصميم اللي عملته لبوكيه ورد من حلويات بوسي 💐\nنوع الورد: ${typeLabelMap[state.flowerType] || state.flowerType}\nعدد الورد: ${state.flowerCount}\nالسعر: ${priceNow}\nإيه رأيك؟`;
-                window.open(`https://wa.me/?text=${encodeURIComponent(shareText)}`, "_blank", "noopener,noreferrer");
-            });
-        }
-
         const minusBtn = document.getElementById('flower-minus');
         const plusBtn = document.getElementById('flower-plus');
 
@@ -824,13 +850,14 @@
             };
         }
 
-        // 🛡️👑📸 [رفع الصور الشخصية المستقل - خطوة 5]: كل مرة العميلة ترفع
-        // صورة، بتتضاف لمصفوفة state.personalPhotos، ونصفّر قيمة الـinput
-        // عشان تقدر ترفع نفس الملف تاني لو حبت أو تختار ملف جديد فوراً.
+        // 🛡️👑📸 [رفع الصور الشخصية دفعة واحدة - خطوة 5]: العميلة تقدر تختار
+        // كذا صورة مع بعض من معرض جهازها (input بقى multiple)، وكلهم بيترفعوا
+        // تلقائياً واحدة ورا التانية بضغطة واحدة بس. بنصفّر قيمة الـinput
+        // بعدها عشان تقدر ترفع نفس الملفات تاني لو حبت أو تختار ملفات جديدة.
         if (personalPhotoFileInput) {
             personalPhotoFileInput.onchange = (e) => {
-                const file = e.target.files[0];
-                if (file) uploadPersonalPhoto(file);
+                const files = e.target.files;
+                if (files && files.length > 0) uploadPersonalPhotosBatch(files);
                 personalPhotoFileInput.value = "";
             };
         }
