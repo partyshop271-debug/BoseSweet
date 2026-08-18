@@ -14,6 +14,10 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <title>تفاصيل المنتج الفاخر | حلويات بوسي</title>
+    <!-- 🛡️ [SEO - Canonical ديناميكي]: نفس مبدأ category.html - الصفحة بتتفتح بروابط
+         متعددة (product.html?slug=X لكل منتج)، فمحتاجة canonical يتحدّث بالـ slug الصحيح
+         بعد ما بيانات المنتج تجهز (شوفي دالة updateCanonicalTag في نص الصفحة). -->
+    <link rel="canonical" id="bose-canonical-tag" href="https://bose-sweet.vercel.app/product.html">
     
     <meta name="description" content="استمتع بتذوق القيمة والجودة العالية لأصناف حلويات بوسي الفاخرة المجهزة يومياً بمكونات طبيعية 100% طازجة تليق بمناسباتكم السعيدة.">
     
@@ -27,7 +31,7 @@
     
     <script src="js/supabase-client.js?v=2026_production_v38.0" defer></script>
     <script src="js/favorites-engine.js?v=2026_production_v37.0" defer></script>
-    <script src="js/core-engine.js?v=2026_production_v41.0" defer></script>
+    <script src="js/core-engine.js?v=2026_production_v38.0" defer></script>
 
     <style>
         /* 🎨 الهندسة البصرية المعتمدة لمنع التكديس والتزام الألوان الحاكمة */
@@ -864,6 +868,11 @@
 
                 document.getElementById("bose-product-title-text").textContent = currentProduct.title;
                 document.title = `${currentProduct.title} | حلويات بوسي الفاخرة`;
+
+                // 🛡️ [SEO - تحديث Canonical]: نفس مبدأ category.html - بنحدّث الوسم بسلاج
+                // المنتج الحالي بالظبط عشان جوجل يفهرس رابط واحد رسمي لكل منتج.
+                const canonicalTag = document.getElementById("bose-canonical-tag");
+                if (canonicalTag) canonicalTag.setAttribute("href", `https://bose-sweet.vercel.app/product.html?slug=${encodeURIComponent(currentSlug)}`);
 
                 // 💗 [نظام المفضلة]: تفعيل حالة القلب فوق صورة المنتج حسب localStorage
                 // وربط الضغطة بـ toggleBoseFavorite الموحدة (نفس المحرك اللي كروت الموقع

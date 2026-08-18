@@ -23,7 +23,7 @@
     <!-- استدعاء المحرك المركزي الموحد في رأس الصفحة لتأمين الحقن والتوافق -->
     <script src="js/supabase-client.js?v=2026_production_v38.0"></script>
     <script src="js/favorites-engine.js?v=2026_production_v37.0"></script>
-    <script src="js/core-engine.js?v=2026_production_v41.0"></script>
+    <script src="js/core-engine.js?v=2026_production_v38.0"></script>
 
     <style>
         .track-page-wrapper { padding: 60px 20px 80px; max-width: 620px; margin: 0 auto; min-height: 70vh; font-family: 'Cairo', sans-serif; }
@@ -98,23 +98,16 @@
 
     <script>
         (function () {
-            // 🔗 [توحيد مع لوحة التحكم]: نفس قائمة الحالات الموجودة في المصدر
-            // الواحد admin/js/admin-ui-utils.js (ORDER_STATUSES) بالظبط، بنفس
-            // المفاتيح والتسميات - عشان العميلة تشوف نفس اسم الحالة اللي شايفاه
-            // المديرة بالظبط، ومفيش مفتاح حالة (زي awaiting_deposit) يفضل من
-            // غير ترجمة عربي فيظهر خام زي ما هو من الباك اند.
             const STATUS_LABELS = {
-                awaiting_deposit: "بانتظار تأكيد العربون",
-                pending: "قيد المراجعة",
-                confirmed: "مؤكد",
-                preparing: "قيد التحضير",
-                processing: "قيد التحضير",
+                pending: "بانتظار المراجعة",
+                processing: "جاري التحضير",
+                preparing: "جاري التحضير",
                 ready: "جاهز للاستلام/التوصيل",
-                out_for_delivery: "في الطريق",
-                delivering: "في الطريق",
+                out_for_delivery: "في الطريق ليكِ",
+                delivering: "في الطريق ليكِ",
                 delivered: "تم التسليم",
                 completed: "تم التسليم",
-                cancelled: "ملغي",
+                cancelled: "تم إلغاء الطلب",
             };
 
             function statusLabel(status) {

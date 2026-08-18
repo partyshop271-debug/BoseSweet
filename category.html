@@ -8,6 +8,11 @@
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#FF91A4">
     <title>تصفح الأصناف الفاخرة | حلويات بوسي</title>
+    <!-- 🛡️ [SEO - Canonical ديناميكي]: الصفحة دي بتتفتح بروابط متعددة (category.html?category=X
+         لكل فئة)، فمن غير canonical بيقول لجوجل إن كل رابط ده نسخة مستقلة معتبرة، ممكن يتعامل
+         معاها كمحتوى مكرر ويقلل ترتيبها. الوسم بيتحدّث فعليًا بالـ ID الصحيح بعد ما بيانات الفئة
+         تجهز (شوفي دالة updateCanonicalTag في نص الصفحة) - القيمة هنا Placeholder بس لحد التحديث. -->
+    <link rel="canonical" id="bose-canonical-tag" href="https://bose-sweet.vercel.app/category.html">
     
     <!-- 🔍 إعدادات تحسين محركات البحث والأرشفة الفاخرة SEO -->
     <meta name="description" content="استمتع بتصفح تشكيلة حلويات بوسي الفاخرة المجهزة يومياً بمكونات طبيعية 100% طازجة تليق بمناسباتكم السعيدة.">
@@ -29,7 +34,7 @@
     <!-- ⚡ [إصلاح أداء]: defer عشان السكريبت متوقفش رسم الصفحة -->
     <script src="js/supabase-client.js?v=2026_production_v38.0" defer></script>
     <script src="js/favorites-engine.js?v=2026_production_v37.0" defer></script>
-    <script src="js/core-engine.js?v=2026_production_v41.0" defer></script>
+    <script src="js/core-engine.js?v=2026_production_v38.0" defer></script>
 
     <style>
         /* 🎨 الهندسة البصرية الخاصة بصفحة الفئة الديناميكية لمنع التكديس البصري */
@@ -472,6 +477,12 @@
                 document.title = `${categoryObj.title} الفاخرة | حلويات بوسي`;
                 headlineNode.textContent = categoryObj.title;
                 breadcrumbNode.textContent = categoryObj.title;
+
+                // 🛡️ [SEO - تحديث Canonical]: بنحدّث الوسم بنفس رابط الفئة الحالية بالظبط
+                // (categoryId من الـ URL) عشان جوجل يعرف إن ده الرابط الرسمي المعتمد لنفس
+                // المحتوى، مش نسخة مكررة من صفحة category.html العامة.
+                const canonicalTag = document.getElementById("bose-canonical-tag");
+                if (canonicalTag) canonicalTag.setAttribute("href", `https://bose-sweet.vercel.app/category.html?category=${encodeURIComponent(categoryId)}`);
 
                 // 🛡️ [إصلاح حرج - سابق]: منتجات البوكسات/العروض المجمّعة (بادئة "promo-") كانت بتظهر هنا كأنها
                 // منتج جديد منفصل بسعر مختلف لنفس النكهة، فيبان للعميل إنه تكرار غلط. مكانها الشرعي
