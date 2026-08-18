@@ -40,28 +40,20 @@
     // الحالة الديناميكية الحالية لرحلة العميل داخل المحاكي
     let state = {
         currentActiveStep: 1,
-        // 🗑️👑 [حذف خطوة "لنفسي/هدية" وخطوة "الإحساس المطلوب"]: بنفس فلسفة محاكي
-        // التورت V6.0. 🃏👑 [فصل خطوة "نوع الورد" عن معرض الإلهام]: بقت خطوة
-        // مستقلة بذاتها بدل ما تكون مدموجة مع صور المعرض في نفس الخطوة - بقى
-        // عندنا 9 خطوات قرار + خطوة خلاصة أخيرة = 10 بالظبط.
+        // 🗑️👑 [حذف خطوة "لنفسي/هدية"]: بنفس فلسفة محاكي التورت V6.0. باقي
+        // الخطوات اتقسّمت لخطوة قرار واحد لكل خطوة (كانت 5 خطوات مجمّعة، بقت
+        // 9 خطوات قرار + خطوة خلاصة أخيرة = 10 بالظبط).
         totalSteps: 10,
+        mood: "",
         flowerType: "natural",
         flowerCount: 15,
         wrappingType: "classic",
-        wrappingCost: 0,
-        wrappingLabel: "تغليف كلاسيك راقٍ (مجاني)",
         ribbonColor: "pink",
         includeRibbonText: false,
         ribbonText: "",
         includePhoto: false,
         photoCount: 1,
         photoUrl: "",
-        // 🛡️👑 [إصلاح جذري حرج - فصل الصور الشخصية عن صورة التصميم]: كانت
-        // خطوة "صور شخصية جوه الباقة" (5) بتعيد استخدام نفس photoUrl المرفوعة
-        // في خطوة "صورة تصميم تحبي نقلدها" (3) - غرضان مختلفان تماماً اتلخبطوا
-        // في متغير واحد. personalPhotos دلوقتي مصفوفة مستقلة تماماً، كل عنصر
-        // فيها صورة شخصية حقيقية رفعتها العميلة بنفسها في خطوة 5.
-        personalPhotos: [],
         includeCash: false,
         moneyAmount: 0,
         moneyCategoryAmount: 0,
@@ -79,11 +71,8 @@
     let includeRibbonTextCheckbox, ribbonTextSection, ribbonTextInput, ribbonStepPriceDisplay;
     let includeCashCheckbox, cashMasterBlock, cashIntegrationCounterBlock, moneyAmountDisplay;
     let includeChocolateCheckbox, chocolateBudgetMasterBlock, chocolateBudgetDisplay;
-    let photoCountInput, embeddedPriceDisplay, bosePhotosPriceDisplay, boseCardPriceDisplay;
-    let flowerPriceLineCount, flowerPriceLineValue;
-    let btnNext, btnPrev, stepsPanels, stepsIndicators, flowerTypeRadios, hiddenTypeInput, dynamicPricingWidget;
-    // 🛡️👑 [عناصر رفع الصور الشخصية المستقلة - خطوة 5]
-    let personalPhotoFileInput, personalPhotoPreviewList, personalPhotoProgressNote;
+    let photoCountInput, dynamicAddonsArea, embeddedPriceDisplay, bosePhotosPriceDisplay, boseCardPriceDisplay;
+    let btnNext, btnPrev, stepsPanels, stepsIndicators, iconicBtns, hiddenTypeInput, dynamicPricingWidget;
 
     /**
      * 🛡️ حفظ وتأمين الحالة التفاعلية الحالية للعميل منعاً لفقد الخيارات
@@ -113,13 +102,9 @@
         let ribbonCost = state.includeRibbonText ? flowerConfig.satinRibbonPrice : 0;
         let photoCost = state.includePhoto ? (state.photoCount * flowerConfig.photoPrintPrice) : 0;
         let cardCost = (state.includeCard && state.cardText.trim() !== "") ? flowerConfig.giftCardPrice : 0;
-        // 🎁👑 [تسعير التغليف الحقيقي]: سعر نوع التغليف المختار من لوحة التحكم
-        // (لو الأدمن مضافتش أنواع تغليف مدفوعة، بيفضل 0 زي التغليف الكلاسيك
-        // المجاني اللي كان موجود من الأول).
-        let wrappingCost = state.wrappingCost || 0;
 
         // 1. حساب تكلفة الخدمة والتنسيق القابلة لزيادة السعر الرسمية
-        let servicePrice = flowerConfig.basePrice + extraCost + ribbonCost + photoCost + cardCost + wrappingCost;
+        let servicePrice = flowerConfig.basePrice + extraCost + ribbonCost + photoCost + cardCost;
 
         // استدعاء دالة الزيادة الرسمية من المحرك المركزي الموحد لتوحيد السياسة المالية للموقع إن وجدت
         let finalServicePrice = window.calculateBosePrice ? window.calculateBosePrice(servicePrice, "menu-only") : servicePrice;
@@ -161,27 +146,28 @@
             boseCardPriceDisplay.style.display = state.includeCard ? "block" : "none";
         }
 
-        // 💰👑 [حساب واحد بسيط - مش خطوتين "أساسي" و"إضافي"]: بدل الفاتورة
-        // الجانبية المقسّمة لبنود منفصلة (كانت بتسبب تشتيت وتوتر من غير داعي)،
-        // بنعرض جملة واحدة بس: سعر البوكيه بعدد الورد المختار. المجموع الكلي
-        // (اللي فيه أي إضافات زي الكارت/الشريط/الصور/الكاش/الشوكولاتة) بيتحدث
-        // في مكانه الوحيد (bouquetTotalVal) فوق - رقم نهائي واحد من غير تفصيل.
-        if (flowerPriceLineCount) flowerPriceLineCount.textContent = state.flowerCount;
-        if (flowerPriceLineValue) {
-            const currentCountCost = flowerConfig.basePrice + (extraFlowers * flowerConfig.extraFlowerPrice);
-            let finalCountCost = window.calculateBosePrice ? window.calculateBosePrice(currentCountCost, "menu-only") : currentCountCost;
-            flowerPriceLineValue.textContent = `${Math.round(finalCountCost)} جنيه`;
-        }
-
-        // تحديث سعر التغليف المختار (لو فيه سعر أعلى من الكلاسيك المجاني)
-        const wrappingPriceLine = document.getElementById('bose-wrapping-price-display');
-        if (wrappingPriceLine) {
-            if (wrappingCost > 0) {
-                wrappingPriceLine.style.display = "block";
-                wrappingPriceLine.innerHTML = `<p class="bose-embedded-price-text">سعر تغليف "${state.wrappingLabel || ''}" هو <span>${Math.round(wrappingCost)} جنيه</span></p>`;
-            } else {
-                wrappingPriceLine.style.display = "none";
+        // رندرة الفاتورة الجانبية بتنسيق فاخر صريح وواضح للعين
+        if (dynamicAddonsArea) {
+            let html = "";
+            if (extraFlowers > 0) {
+                html += `<div class="bose-invoice-addon-row"><span>الورد الإضافي (${extraFlowers} وردة):</span><span>+ ${extraCost} جنيه</span></div>`;
             }
+            if (ribbonCost > 0) {
+                html += `<div class="bose-invoice-addon-row"><span>شريط ستان بكلام مخصوص:</span><span>+ ${flowerConfig.satinRibbonPrice} جنيه</span></div>`;
+            }
+            if (photoCost > 0) {
+                html += `<div class="bose-invoice-addon-row"><span>الصور الشخصية المترتبة (${state.photoCount}):</span><span>+ ${photoCost} جنيه</span></div>`;
+            }
+            if (cardCost > 0) {
+                html += `<div class="bose-invoice-addon-row"><span>كارت إهداء شيك مكتوب:</span><span>+ ${flowerConfig.giftCardPrice} جنيه</span></div>`;
+            }
+            if (state.moneyAmount > 0) {
+                html += `<div class="bose-invoice-addon-row"><span>مفاجأة الكاش جوه البوكيه:</span><span>+ ${state.moneyAmount} جنيه</span></div>`;
+            }
+            if (state.chocolateBudget > 0) {
+                html += `<div class="bose-invoice-addon-row"><span>ميزانية الشوكولاتة الفخمة:</span><span>+ ${state.chocolateBudget} جنيه</span></div>`;
+            }
+            dynamicAddonsArea.innerHTML = html;
         }
     }
 
@@ -197,6 +183,7 @@
 
         const esc = window.escapeBoseHTML || (s => s);
         const flowerTypeLabels = { natural: "ورد طبيعي نضر", artificial: "ورد صناعي فاخر", satin: "ورد ستان راقٍ" };
+        const moodLabelMap = { celebratory: "احتفالي", romantic: "رومانسي", elegant: "أنيق وبسيط" };
 
         const rows = [];
         const addRow = (step, label, value) => {
@@ -211,18 +198,13 @@
             `);
         };
 
+        addRow(1, "الإحساس المطلوب", state.mood ? (moodLabelMap[state.mood] || state.mood) : "من غير ترشيح معين");
         addRow(2, "نوع الورد", flowerTypeLabels[state.flowerType] || state.flowerType);
         addRow(3, "عدد الورد", `${state.flowerCount} وردة`);
-        // 🐛👑 [إصلاح - كانت بتفحص activeBase64ImageInMemory (متغير احتياطي
-        // لحفظ الصورة في sessionStorage) بدل الحالة الفعلية الحالية state.photoUrl
-        // - فكانت بتقول "لم تُرفع" حتى لو الصورة اترفعت فعلياً بنجاح على Cloudinary
-        // وظهرت معاينتها، لمجرد إن الجلسة اتحفظت/اترجعت بطريقة معينة.]
-        addRow(4, "صورة تصميم مرجعية", state.photoUrl ? "مرفوعة ✓" : "لم تُرفع");
-        const wrappingSummaryParts = [state.wrappingLabel || "تغليف كلاسيك راقٍ (مجاني)"];
-        if (state.includeRibbonText && state.ribbonText.trim() !== "") wrappingSummaryParts.push(`شريط مطبوع عليه: "${state.ribbonText.trim()}"`);
-        addRow(5, "التغليف وشريط الستان", wrappingSummaryParts.join(" - "));
+        addRow(4, "صورة تصميم مرجعية", activeBase64ImageInMemory ? "مرفوعة ✓" : "لم تُرفع");
+        addRow(5, "شريط الستان", state.includeRibbonText && state.ribbonText.trim() !== "" ? `مطبوع عليه: "${state.ribbonText.trim()}"` : "بدون كلام مطبوع (تغليف كلاسيك مجاني فقط)");
         addRow(6, "صور شخصية داخل الباقة", state.includePhoto ? `${state.photoCount} صورة مطبوعة` : "غير مطلوبة");
-        addRow(7, "مفاجأة كاش", (state.includeCash && state.moneyAmount > 0) ? `${state.moneyAmount} جنيه (فئة ${state.moneyCategoryAmount || state.moneyAmount} جنيه)` : "غير مطلوبة");
+        addRow(7, "مفاجأة كاش", (state.includeCash && state.moneyAmount > 0) ? `${state.moneyAmount} جنيه` : "غير مطلوبة");
         addRow(8, "شوكولاتة فاخرة", state.includeChocolate && state.chocolateBudget > 0 ? `ميزانية ${state.chocolateBudget} جنيه` : "غير مطلوبة");
         addRow(9, "كارت إهداء", (state.includeCard && state.cardText.trim() !== "") ? `مكتوب عليه: "${state.cardText.trim()}"` : "بدون كارت");
 
@@ -283,38 +265,16 @@
             dynamicPricingWidget.style.display = "block";
         }
 
-        // 🖼️ [اختفاء البانر والمقدمة بعد الخطوة الأولى - نفس آلية محاكي التورت
-        // بالظبط]: بيوفروا مساحة فعلية للشاشة لباقي الخطوات، ويرجعوا يظهروا لو
-        // العميلة رجعت للخطوة الأولى تاني.
-        const flowerHeroEl = document.getElementById('bose-flower-hero');
-        const flowerIntroEl = document.getElementById('bose-flower-intro');
-        const shouldCollapseHero = state.currentActiveStep !== 1;
-        if (flowerHeroEl) flowerHeroEl.classList.toggle('bose-collapsed-hero', shouldCollapseHero);
-        if (flowerIntroEl) flowerIntroEl.classList.toggle('bose-collapsed-hero', shouldCollapseHero);
-
-        // 🐛👑 [إصلاح جذري - كانت الصفحة بتوقف في آخر الخطوة الجديدة بدل أولها]:
-        // الحساب اليدوي القديم (getBoundingClientRect + window.scrollY - offset)
-        // كان بيتحسب بمجرد تبديل كلاس "active" فورًا، من غير ما ياخد وقته إن
-        // أي تغييرات تانية بتحصل في نفس اللحظة (زي اختفاء البانر فوق بـ
-        // transition) تخلص أولاً - فكانت النتيجة أحياناً رقم غلط تمامًا يوصل
-        // بيها لآخر الصفحة (قسم "بوكيهات شرفت عملائنا") بدل أول الخطوة الجديدة
-        // فعلاً. الحل الأصح والأثبت: نستخدم scrollIntoView() المدمجة في
-        // المتصفح نفسه (بتحسب المكان الصحيح لحظة التنفيذ مباشرة، مش حساب يدوي
-        // قابل للخطأ) مع scroll-margin-top على الكارت نفسه (في simulators.css)
-        // بدل الـoffset اليدوي، وبنأجلها بـrequestAnimationFrame مزدوج عشان
-        // نضمن إن كل تغييرات الـDOM والـlayout المصاحبة خلصت فعلاً الأول.
-        // 🎯 [هدف تمرير ثابت زي محاكي التورت بالظبط]: بنمرر لـ.simulator-workspace
-        // (الحاوية الثابتة اللي مالهاش أي علاقة بارتفاع الخطوة النشطة نفسها)
-        // بدل الكارت النشط مباشرة - نفس بالظبط الأسلوب المستخدم في
-        // cake-engine.js (.bose-simulator-layout) واللي بيشتغل صح هناك.
-        requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-                const scrollTarget = document.querySelector('.simulator-workspace') || document.querySelector('.bose-step-card-panel.active');
-                if (scrollTarget && typeof scrollTarget.scrollIntoView === 'function') {
-                    scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
+        // 🛡️ [إصلاح جذري]: زرار "التالي" هنا معندوش أي تمرير خالص، فالعميل بيضغط ويفضل واقف
+        // في نفس مكانه من غير ما يشوف بداية الخطوة الجديدة إلا لو نزل بنفسه يدور عليها.
+        // بنمرره الآن لبداية لوحة التحكم (نفس مكان الخطوات) بارتفاع الهيدر الثابت مطروح منه.
+        const activeStepPanel = document.querySelector('.bose-step-card-panel.active');
+        const scrollTarget = activeStepPanel || document.querySelector('.simulator-control-panel');
+        if (scrollTarget) {
+            const stickyHeaderOffset = 90;
+            const targetY = scrollTarget.getBoundingClientRect().top + window.scrollY - stickyHeaderOffset;
+            window.scrollTo({ top: Math.max(targetY, 0), behavior: 'smooth' });
+        }
     }
 
     /**
@@ -403,134 +363,6 @@
         }
     }
 
-    // 🛡️👑📸 [رفع مستقل تماماً للصور الشخصية - خطوة 5]: منفصل عن
-    // uploadReferenceImage (خطوة 3) بالكامل - كل صورة بترفع هنا بتتضاف
-    // كعنصر جديد في state.personalPhotos، لحد ما توصل للعدد اللي اختارته
-    // العميلة في العداد. نفس أسلوب الضغط والرفع لـCloudinary المستخدم في
-    // صورة التصميم بالظبط، عشان يبقى نفس مستوى الجودة والموثوقية.
-    // 🛡️👑📸 [رفع دفعة واحدة - إصلاح جذري]: كان الـinput بياخد ملف واحد بس
-    // في كل مرة (input بدون multiple)، فكانت العميلة مضطرة تختار صورة، تستنى
-    // ترفع، ترجع تفتح المعرض تاني، تختار الصورة اللي بعدها... وهكذا لحد ما
-    // توصل للعدد اللي اختارته - تجربة متعبة ومنفّرة. دلوقتي الـinput بياخد
-    // كذا صورة مرة واحدة (multiple)، والدالة دي بترفعهم واحدة ورا التانية
-    // تلقائياً من غير ما تحتاج العميلة تتدخل بين كل صورة والتانية.
-    async function uploadPersonalPhotosBatch(fileList) {
-        const files = Array.from(fileList || []).filter(Boolean);
-        if (files.length === 0) return;
-
-        const remainingSlots = state.photoCount - state.personalPhotos.length;
-        if (remainingSlots <= 0) {
-            if (window.showBoseGlobalToast) window.showBoseGlobalToast(`وصلتي للعدد اللي اخترتيه (${state.photoCount}) - زودي العدد فوق لو حابة ترفعي أكتر.`);
-            return;
-        }
-
-        const filesToUpload = files.slice(0, remainingSlots);
-        if (files.length > remainingSlots && window.showBoseGlobalToast) {
-            window.showBoseGlobalToast(`هنرفع أول ${remainingSlots} صورة بس دلوقتي، عشان العدد المختار ${state.photoCount} - زودي العدد فوق لو حابة ترفعي أكتر من كده.`);
-        }
-
-        state.isUploading = true;
-        if (addToCartBtn) {
-            addToCartBtn.disabled = true;
-            addToCartBtn.textContent = "بنرفعلك الصور...";
-        }
-
-        let successCount = 0;
-        for (const file of filesToUpload) {
-            try {
-                const compressedBlob = await compressImageFile(file);
-                const cloudName = window.BoseStoreData?.store?.cloudinaryCloudName || 'dyx4w0dr1';
-                const endpoint = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
-                const formData = new FormData();
-                formData.append('file', compressedBlob, 'flower_personal_photo.jpg');
-                formData.append('upload_preset', 'gct8i28h');
-
-                const res = await fetch(endpoint, { method: 'POST', body: formData });
-                const resData = await res.json();
-
-                if (resData && resData.secure_url) {
-                    state.personalPhotos.push(resData.secure_url);
-                    successCount++;
-                    renderPersonalPhotoPreviewList();
-                }
-            } catch (err) {
-                // 🛡️ نكمل رفع باقي الصور في القائمة حتى لو صورة واحدة فشلت،
-                // بدل ما نوقف رفع كل الدفعة بسبب صورة واحدة بس.
-            }
-        }
-
-        state.isUploading = false;
-        if (addToCartBtn) {
-            addToCartBtn.disabled = false;
-            addToCartBtn.textContent = "اضافة للسلة";
-        }
-
-        if (window.showBoseGlobalToast) {
-            if (successCount === filesToUpload.length && successCount > 0) {
-                window.showBoseGlobalToast(successCount > 1 ? `تم رفع الصور الـ${successCount} بنجاح! ✨` : "تم تأمين وحفظ الصورة بنجاح! ✨");
-            } else if (successCount > 0) {
-                window.showBoseGlobalToast(`اترفع ${successCount} من ${filesToUpload.length} - جزء من الصور فشل، حاولي ترفعيه تاني.`);
-            } else {
-                window.showBoseGlobalToast("تعذر رفع الصور، تأكدي من الاتصال بالإنترنت وحاولي تاني.");
-            }
-        }
-
-        saveCurrentState();
-        recalculatePrice();
-    }
-
-    // 🛡️📸 [عرض/تحديث قايمة معاينة الصور الشخصية المرفوعة + سطر التقدّم]:
-    // كل صورة بيها زرار حذف صغير لو العميلة غيّرت رأيها، وسطر تحت بيوضح
-    // كام صورة اتضافت من إجمالي العدد المختار.
-    function renderPersonalPhotoPreviewList() {
-        if (!personalPhotoPreviewList) return;
-        personalPhotoPreviewList.innerHTML = state.personalPhotos.map((url, i) => `
-            <div class="bose-personal-photo-thumb-node">
-                <img src="${url}" alt="صورة شخصية مرفوعة ${i + 1}">
-                <button type="button" class="bose-personal-photo-thumb-remove" data-photo-index="${i}" aria-label="حذف الصورة">✕</button>
-            </div>
-        `).join("");
-        personalPhotoPreviewList.querySelectorAll('.bose-personal-photo-thumb-remove').forEach((btn) => {
-            btn.onclick = (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                const idx = parseInt(btn.dataset.photoIndex, 10);
-                state.personalPhotos.splice(idx, 1);
-                renderPersonalPhotoPreviewList();
-                saveCurrentState();
-            };
-        });
-        if (personalPhotoProgressNote) {
-            const uploaded = state.personalPhotos.length;
-            personalPhotoProgressNote.textContent = uploaded >= state.photoCount
-                ? `تمام، رفعتي كل الصور المطلوبة (${uploaded}/${state.photoCount}) ✅`
-                : `اترفع ${uploaded} من ${state.photoCount} - كمّلي رفع الباقي فوق`;
-        }
-    }
-
-    // 🌸💡 [10 معلومات ملهمة وحقيقية عن الورد]: بتتعرض عشوائياً كل مرة تدخل
-    // فيها العميلة الصفحة - بديل خفيف الدم عن سؤال الحساسية اللي اتشال نهائياً
-    // (راجع شرح الإزالة في flower-builder.html). المعلومات دي عرض فقط - مش
-    // بتتسجل ولا بتظهر في فاتورة الورد أو أي مكان تاني إطلاقاً.
-    const FLOWER_FUN_FACTS = [
-        "تعرفي إن الورد الأحمر اللي هتختاريه دلوقتي ظل لقرون طويلة الرمز العالمي الأول للحب والعاطفة الجيّاشة؟ 🌹💕",
-        "لو حابة تبعتي رسالة صداقة وفرح، اختاري الورد الأصفر - رمزه التفاؤل والود، مش الغيرة زي ما شايع غلط أحياناً 💛✨",
-        "لو الباقة لعروسة أو مناسبة نقية، الورد الأبيض هيكون اختيار موفق - رمز النقاء والبراءة، وعشان كده بيتصدّر حفلات الزفاف 🤍👰",
-        "حابة تبعتي امتنان وتقدير لحد غالي؟ الورد الوردي (البمبي) هو لغته بالظبط 🌸💌",
-        "يهمك تعرفي إن زراعة الورد يرجع أصلها لأكتر من 5000 سنة في الصين القديمة؟ باقتك فيها تاريخ طويل 🏺🌿",
-        "معلومة لطيفة ليكِ: قديماً كان عدد الورد في الباقة له معنى - وردة واحدة تقول «حب من أول نظرة»، ودستة كاملة كانت دعوة رومانسية كاملة 💐💍",
-        "لو حابة تعرفي، ماء الورد اللي بيتحط في عطورنا وحلوياتنا الشرقية مستخلص من نفس الورد اللي هتختاريه دلوقتي 🌷🍯",
-        "باقتك ممكن تكون من ورد مسافر - أكبر إنتاج عالمي للورد الطازج بييجي من هولندا وكولومبيا وإكوادور 🌍✈️",
-        "مفاجأة ليكِ: الورد من نفس العائلة النباتية اللي فيها التفاح والفراولة واللوز 🍎🍓",
-        "نصيحة منّا ليكِ لو عايزة باقتك تعيش أطول: قطعي ساق الورد بزاوية مائلة تحت الميه، هيطوّل عمرها في الفازة كتير 💧🌹"
-    ];
-    function renderRandomFlowerFunFact() {
-        const el = document.getElementById("bose-flower-fun-fact-text");
-        if (!el) return;
-        const fact = FLOWER_FUN_FACTS[Math.floor(Math.random() * FLOWER_FUN_FACTS.length)];
-        el.textContent = fact;
-    }
-
     /**
      * ⚙️ تهيئة المحرك وربط الأحداث
      */
@@ -550,27 +382,6 @@
         flowerConfig.extraFlowerPrice = parseFloat(fbConfig.extraFlowerPrice) || flowerConfig.extraFlowerPrice;
         flowerConfig.photoPrintPrice = parseFloat(fbConfig.photoPrintPrice) || flowerConfig.photoPrintPrice;
         flowerConfig.giftCardPrice = parseFloat(fbConfig.giftCardPrice) || flowerConfig.giftCardPrice;
-
-        // 🎁👑 [تسعير التغليف الحقيقي - إصلاح جذري]: قبل كده كان فيه select مخفي
-        // ثابت على "classic" بس، وقائمة أنواع التغليف اللي الأدمن بيضيفها من لوحة
-        // التحكم (list-wrapping-types بسعرها وصورتها) معندهاش أي مكان تتعرض فيه
-        // أو تأثر على السعر خالص - يعني الأدمن كانت تقدر "تحفظ" أسعار تغليف
-        // من غير ما تتفعل فعلياً في أي مكان. دلوقتي بيتم بناء كروت اختيار حقيقية
-        // من fbConfig.wrappingTypes وبتأثر فعلياً على السعر النهائي.
-        const wrappingTypesConfig = Array.isArray(fbConfig.wrappingTypes) ? fbConfig.wrappingTypes.filter(w => w && w.name) : [];
-        const wrappingRow = document.getElementById('flower-wrapping-type-row');
-        if (wrappingRow && wrappingTypesConfig.length > 0) {
-            wrappingRow.innerHTML = wrappingTypesConfig.map((w, idx) => {
-                const price = parseFloat(w.price) || 0;
-                const priceLabel = price > 0 ? ` (+${price} جنيه)` : " (مجاني)";
-                const imgHtml = w.image ? `<img src="${w.image}" alt="" class="bose-option-card-thumb">` : "";
-                return `
-                    <label class="bose-selection-card-label">
-                        <input type="radio" name="wrapping_type_choice" value="${idx}" ${idx === 0 ? "checked" : ""}>
-                        <div class="bose-selection-card-inner">${imgHtml}🎁 ${window.escapeBoseHTML ? window.escapeBoseHTML(w.name) : w.name}${priceLabel}<span class="bose-selected-checkmark">✅ مُختار</span></div>
-                    </label>`;
-            }).join("");
-        }
 
         // 🖼️👑 [معرض نماذج كارت الإهداء المطبوع - محاكي الورد]: نفس آلية معرض
         // سابقة الأعمال فوق بالظبط، بس بيتقرا من fbConfig.giftCardImages وبيتعرض
@@ -601,25 +412,13 @@
         const heroImg = document.querySelector('.hero-banner-frame');
         if (heroImg && fbConfig.heroImage) heroImg.src = fbConfig.heroImage;
         const portfolioTrack = document.getElementById('portfolio-swipe-slider');
-        const inspirationTrack = document.getElementById('flower-inspiration-gallery-track');
-        if (Array.isArray(fbConfig.portfolioGallery) && fbConfig.portfolioGallery.length > 0) {
-            const galleryHtml = fbConfig.portfolioGallery.map((item) => {
+        if (portfolioTrack && Array.isArray(fbConfig.portfolioGallery) && fbConfig.portfolioGallery.length > 0) {
+            portfolioTrack.innerHTML = fbConfig.portfolioGallery.map((item, idx) => {
                 const url = (item && item.image) || "";
                 if (!url) return "";
                 const alt = (item && (item.alt || item.name)) ? String(item.alt || item.name).replace(/"/g, '&quot;') : "بوكيه فاخر من حلويات بوسي";
-                return `<div class="bose-portfolio-img-node"><img src="${url}" alt="${alt}" loading="lazy"></div>`;
+                return `<div class="portfolio-item-card" data-index="${idx + 1}"><img src="${url}" class="portfolio-item-img" alt="${alt}" loading="lazy"></div>`;
             }).join("");
-            if (inspirationTrack) inspirationTrack.innerHTML = galleryHtml;
-            if (portfolioTrack) {
-                portfolioTrack.innerHTML = fbConfig.portfolioGallery.map((item, idx) => {
-                    const url = (item && item.image) || "";
-                    if (!url) return "";
-                    const alt = (item && (item.alt || item.name)) ? String(item.alt || item.name).replace(/"/g, '&quot;') : "بوكيه فاخر من حلويات بوسي";
-                    return `<div class="portfolio-item-card" data-index="${idx + 1}"><img src="${url}" class="portfolio-item-img" alt="${alt}" loading="lazy"></div>`;
-                }).join("");
-            }
-        } else if (inspirationTrack) {
-            inspirationTrack.innerHTML = '<p class="bose-gallery-empty-note">هنضيف قريب صور حقيقية من شغلنا هنا.</p>';
         }
 
         // 🖼️👑 [صور كروت نوع الورد من لوحة التحكم - إصلاح جذري]: نفس المشكلة
@@ -628,22 +427,16 @@
         // حقيقية، حتى لو الأدمن رفعها من list-flower-types بلوحة التحكم. هنا
         // الكارت مش label+radio زي محاكي التورت، لكن div بـ data-value، فبنحقن
         // الصورة قبل أيقونة الإيموجي مباشرة (بتفضل الصورة هي الظاهرة).
-        // 🃏👑 [صور كروت نوع الورد]: بعد توحيد شكل الكروت مع محاكي التورت
-        // (bose-selection-card-label > input[radio] + bose-selection-card-inner)،
-        // بنحقن صورة الأدمن (لو موجودة) جوه .bose-selection-card-inner بنفس
-        // منطق applyBoseOptionCardImages في محاكي التورت.
         if (Array.isArray(fbConfig.flowerTypes)) {
-            document.querySelectorAll('#flower-type-iconic-row input[name="flower_type"]').forEach((input) => {
-                const match = fbConfig.flowerTypes.find((item) => item && item.id === input.value);
+            document.querySelectorAll('#flower-type-iconic-row .bose-iconic-btn-node').forEach((node) => {
+                const match = fbConfig.flowerTypes.find((item) => item && item.id === node.getAttribute('data-value'));
                 if (!match || !match.image) return;
-                const inner = input.nextElementSibling;
-                if (!inner || !inner.classList.contains('bose-selection-card-inner')) return;
-                let img = inner.querySelector('img.bose-option-card-thumb');
+                let img = node.querySelector('img.bose-option-card-thumb');
                 if (!img) {
                     img = document.createElement('img');
                     img.className = 'bose-option-card-thumb';
                     img.alt = '';
-                    inner.insertBefore(img, inner.firstChild);
+                    node.insertBefore(img, node.firstChild);
                 }
                 img.src = match.image;
             });
@@ -659,9 +452,8 @@
         moneyCategorySelect = document.getElementById('money-category');
         bouquetTotalVal = document.getElementById('bouquet-total-val');
         addToCartBtn = document.getElementById('add-to-cart-btn');
+        dynamicAddonsArea = document.getElementById('bose-dynamic-addons-injection-area');
         embeddedPriceDisplay = document.getElementById('bose-embedded-price-display');
-        flowerPriceLineCount = document.getElementById('flower-price-line-count');
-        flowerPriceLineValue = document.getElementById('flower-price-line-value');
 
         includeRibbonTextCheckbox = document.getElementById('include-ribbon-text');
         ribbonTextSection = document.getElementById('ribbon-text-section');
@@ -680,15 +472,12 @@
         chocolateBudgetMasterBlock = document.getElementById('chocolate-budget-master-block');
         chocolateBudgetDisplay = document.getElementById('chocolate-budget-display');
         photoCountInput = document.getElementById('photo-count-input');
-        personalPhotoFileInput = document.getElementById('personal-photo-file');
-        personalPhotoPreviewList = document.getElementById('personal-photo-preview-list');
-        personalPhotoProgressNote = document.getElementById('personal-photo-progress-note');
 
         btnNext = document.getElementById("btn-next");
         btnPrev = document.getElementById("btn-prev");
         stepsPanels = document.querySelectorAll(".bose-step-card-panel");
         stepsIndicators = document.querySelectorAll(".simulator-steps-indicator .step-node");
-        flowerTypeRadios = document.querySelectorAll('#flower-type-iconic-row input[name="flower_type"]');
+        iconicBtns = document.querySelectorAll("#flower-type-iconic-row .bose-iconic-btn-node");
         hiddenTypeInput = document.getElementById("flower-type");
         dynamicPricingWidget = document.getElementById("bose-dynamic-pricing-widget");
 
@@ -713,10 +502,6 @@
                     parsed.photoUrl = activeBase64ImageInMemory;
                 }
                 state = { ...state, ...parsed };
-                // 🛡️ [توافق مع حالات محفوظة قديمة]: أي حالة محفوظة قبل إضافة
-                // مصفوفة الصور الشخصية المستقلة مبيبقاش فيها الحقل ده خالص -
-                // بنضمن إنه دايماً مصفوفة صحيحة بدل undefined.
-                if (!Array.isArray(state.personalPhotos)) state.personalPhotos = [];
             }
         } catch (e) {}
 
@@ -737,7 +522,6 @@
             photoPreviewImg.src = state.photoUrl;
             if (photoPreviewContainer) photoPreviewContainer.style.display = "block";
         }
-        renderPersonalPhotoPreviewList();
         if (includeCardCheckbox) {
             includeCardCheckbox.checked = state.includeCard;
             const cardSec = document.getElementById('card-text-section');
@@ -756,23 +540,62 @@
         }
         if (chocolateBudgetDisplay) chocolateBudgetDisplay.value = state.chocolateBudget;
 
-        // 🃏👑 [ربط كروت نوع الورد - موحّد مع أسلوب اختيار الشكل في محاكي التورت]:
-        // بدل ما كان type="button" div بأحداث click، دلوقتي radio حقيقي، فبنستخدم
-        // change listener على كل الكروت، ونحدّث سطر التأكيد + الوصف الحسي تحتها.
-        if (flowerTypeRadios.length > 0) {
-            flowerTypeRadios.forEach(radio => {
-                radio.checked = (radio.value === state.flowerType);
-                radio.addEventListener('change', function () {
-                    if (!this.checked) return;
-                    state.flowerType = this.value;
+        // ربط أحداث أزرار نوع الورد الكروي الفخم
+        if (iconicBtns.length > 0) {
+            iconicBtns.forEach(btn => {
+                btn.classList.toggle("active-selected", btn.getAttribute("data-value") === state.flowerType);
+                btn.onclick = function () {
+                    iconicBtns.forEach(b => b.classList.remove("active-selected"));
+                    this.classList.add("active-selected");
+                    state.flowerType = this.getAttribute("data-value");
                     if (hiddenTypeInput) hiddenTypeInput.value = state.flowerType;
                     saveCurrentState();
                     recalculatePrice();
                     updateFlowerSensoryNote();
-                    updateFlowerTypeSelectionLine();
-                });
+                };
             });
         }
+
+        // 🧠 [محاكي أذكى - مطابق لمحاكي الكيك]: خطوة الإحساس المطلوب
+        // 🗑️ [حذف "لمين البوكيه ده؟"]: purposeBtns وupdateGiftModeWording اتشالوا
+        // من هنا بالكامل - راجع الشرح في تعريف state.totalSteps فوق.
+        const moodBtns = document.querySelectorAll("#flower-mood-row .bose-iconic-btn-node");
+        const moodNoteBox = document.getElementById("mood-suggestion-note");
+        const moodNoteText = document.getElementById("mood-suggestion-text");
+
+        const FLOWER_MOOD_PRESETS = {
+            celebratory: { type: "natural", note: "توليفة مقترحة للاحتفالات: ورد طبيعي نضر بألوان زاهية. تقدري تعدلي أي اختيار في الخطوات الجاية." },
+            romantic: { type: "satin", card: true, note: "توليفة مقترحة للمناسبات الرومانسية: ورد ستان راقٍ مع كارت إهداء. تقدري تعدلي أي اختيار في الخطوات الجاية." },
+            elegant: { type: "artificial", note: "توليفة مقترحة للأناقة البسيطة: ورد صناعي فاخر يدوم طويلاً. تقدري تعدلي أي اختيار في الخطوات الجاية." }
+        };
+
+        function applyFlowerMoodPreset(moodValue) {
+            const preset = FLOWER_MOOD_PRESETS[moodValue];
+            if (!preset) {
+                if (moodNoteBox) moodNoteBox.classList.remove("show");
+                return;
+            }
+            const typeBtn = document.querySelector(`#flower-type-iconic-row .bose-iconic-btn-node[data-value="${preset.type}"]`);
+            if (typeBtn) typeBtn.click();
+            if (preset.card && includeCardCheckbox) {
+                includeCardCheckbox.checked = true;
+                if (typeof includeCardCheckbox.onclick === "function") {
+                    includeCardCheckbox.onclick({ target: includeCardCheckbox });
+                }
+            }
+            if (moodNoteText) moodNoteText.textContent = preset.note;
+            if (moodNoteBox) moodNoteBox.classList.add("show");
+        }
+
+        moodBtns.forEach(btn => {
+            btn.onclick = function () {
+                moodBtns.forEach(b => b.classList.remove("active-selected"));
+                this.classList.add("active-selected");
+                state.mood = this.getAttribute("data-value");
+                applyFlowerMoodPreset(state.mood);
+                saveCurrentState();
+            };
+        });
 
         const FLOWER_SENSORY_NOTES = {
             natural: "ورد طازج ونضر، بيوصل مباشرة من أفضل مزارع الورد.",
@@ -785,49 +608,14 @@
         }
         updateFlowerSensoryNote();
 
-        const FLOWER_TYPE_LABELS = { natural: "ورد طبيعي نضر", artificial: "ورد صناعي فاخر", satin: "ورد ستان راقٍ" };
-        function updateFlowerTypeSelectionLine() {
-            const lineEl = document.getElementById("flower-type-current-selection-line");
-            if (lineEl) lineEl.innerHTML = `اختيارك الحالي: <strong>${FLOWER_TYPE_LABELS[state.flowerType] || state.flowerType}</strong>`;
-        }
-        updateFlowerTypeSelectionLine();
-
-        // 🎁👑 [ربط كروت اختيار نوع التغليف الحقيقية بالسعر]
-        const wrappingRadios = document.querySelectorAll('#flower-wrapping-type-row input[name="wrapping_type_choice"]');
-        const wrappingSelectionLine = document.getElementById('flower-wrapping-current-selection-line');
-        function applyWrappingSelection(radio) {
-            const idx = parseInt(radio.value, 10);
-            const match = wrappingTypesConfig[idx];
-            if (match) {
-                state.wrappingType = match.name;
-                state.wrappingCost = parseFloat(match.price) || 0;
-                state.wrappingLabel = match.name;
-            } else {
-                state.wrappingType = "classic";
-                state.wrappingCost = 0;
-                state.wrappingLabel = "تغليف كلاسيك راقٍ (مجاني)";
-            }
-            if (wrappingSelectionLine) wrappingSelectionLine.innerHTML = `اختيارك الحالي: <strong>${state.wrappingLabel}</strong>`;
-        }
-        if (wrappingRadios.length > 0) {
-            wrappingRadios.forEach(radio => {
-                radio.addEventListener('change', function () {
-                    if (!this.checked) return;
-                    applyWrappingSelection(this);
-                    saveCurrentState();
-                    recalculatePrice();
-                });
+        const btnShareFlowerDesign = document.getElementById("btn-share-flower-design");
+        if (btnShareFlowerDesign) {
+            btnShareFlowerDesign.addEventListener("click", () => {
+                const typeLabelMap = { natural: "طبيعي نضر", artificial: "صناعي فاخر", satin: "ستان راقٍ" };
+                const priceNow = document.getElementById("bouquet-total-val")?.textContent || "";
+                const shareText = `شوفي التصميم اللي عملته لبوكيه ورد من حلويات بوسي 💐\nنوع الورد: ${typeLabelMap[state.flowerType] || state.flowerType}\nعدد الورد: ${state.flowerCount}\nالسعر: ${priceNow}\nإيه رأيك؟`;
+                window.open(`https://wa.me/?text=${encodeURIComponent(shareText)}`, "_blank", "noopener,noreferrer");
             });
-            // تطبيق الاختيار الأول افتراضياً (أو الاختيار المحفوظ لو موجود ومتاح لسه)
-            let restored = false;
-            if (state.wrappingType && wrappingTypesConfig.length > 0) {
-                const savedIdx = wrappingTypesConfig.findIndex(w => w.name === state.wrappingType);
-                if (savedIdx >= 0) {
-                    const radioToCheck = document.querySelector(`#flower-wrapping-type-row input[value="${savedIdx}"]`);
-                    if (radioToCheck) { radioToCheck.checked = true; applyWrappingSelection(radioToCheck); restored = true; }
-                }
-            }
-            if (!restored) applyWrappingSelection(wrappingRadios[0]);
         }
 
         const minusBtn = document.getElementById('flower-minus');
@@ -873,21 +661,17 @@
         }
 
         // الملحقات والصور الشخصية
-        // 🛡️👑 [إصلاح جذري حرج]: كان توقيف الخانة هنا بيمسح state.photoUrl -
-        // وده صورة التصميم بتاعة خطوة 3 (بوكيه نعمل زيه)، مالهاش أي علاقة
-        // بخطوة الصور الشخصية دي. دلوقتي بيمسح state.personalPhotos بس
-        // (مصفوفة الصور الشخصية المستقلة)، وصورة التصميم فضلة زي ما هي.
         if (includePhotoCheckbox) {
             includePhotoCheckbox.onclick = (e) => {
                 state.includePhoto = e.target.checked;
                 const uploadSectionDOM = document.getElementById('photo-upload-section');
                 if (uploadSectionDOM) uploadSectionDOM.style.display = state.includePhoto ? "block" : "none";
                 if (!state.includePhoto) {
+                    state.photoUrl = "";
                     state.photoCount = 1;
-                    state.personalPhotos = [];
                     if (photoCountInput) photoCountInput.value = 1;
-                    if (personalPhotoFileInput) personalPhotoFileInput.value = "";
-                    renderPersonalPhotoPreviewList();
+                    if (photoFileInput) photoFileInput.value = "";
+                    if (photoPreviewContainer) photoPreviewContainer.style.display = "none";
                 }
                 saveCurrentState();
                 recalculatePrice();
@@ -902,7 +686,6 @@
                 if (photoCountInput) photoCountInput.value = state.photoCount;
                 saveCurrentState();
                 recalculatePrice();
-                renderPersonalPhotoPreviewList();
             };
         }
         if (photoCountMinus) {
@@ -910,15 +693,8 @@
                 if (state.photoCount > 1) {
                     state.photoCount--;
                     if (photoCountInput) photoCountInput.value = state.photoCount;
-                    // 🛡️ لو العدد الجديد بقى أقل من الصور المرفوعة فعلياً،
-                    // بنقص الصور الزيادة من آخر المصفوفة عشان يفضل العدد
-                    // متزامن دايماً مع الرفع الفعلي.
-                    if (state.personalPhotos.length > state.photoCount) {
-                        state.personalPhotos = state.personalPhotos.slice(0, state.photoCount);
-                    }
                     saveCurrentState();
                     recalculatePrice();
-                    renderPersonalPhotoPreviewList();
                 }
             };
         }
@@ -926,18 +702,6 @@
         if (photoFileInput) {
             photoFileInput.onchange = (e) => {
                 if (e.target.files[0]) uploadReferenceImage(e.target.files[0]);
-            };
-        }
-
-        // 🛡️👑📸 [رفع الصور الشخصية دفعة واحدة - خطوة 5]: العميلة تقدر تختار
-        // كذا صورة مع بعض من معرض جهازها (input بقى multiple)، وكلهم بيترفعوا
-        // تلقائياً واحدة ورا التانية بضغطة واحدة بس. بنصفّر قيمة الـinput
-        // بعدها عشان تقدر ترفع نفس الملفات تاني لو حبت أو تختار ملفات جديدة.
-        if (personalPhotoFileInput) {
-            personalPhotoFileInput.onchange = (e) => {
-                const files = e.target.files;
-                if (files && files.length > 0) uploadPersonalPhotosBatch(files);
-                personalPhotoFileInput.value = "";
             };
         }
 
@@ -1191,14 +955,8 @@
             addToCartBtn.onclick = function () {
                 if (state.isUploading) return;
 
-                // 🛡️👑📸 [تحقق - الصور الشخصية]: لو العميلة فعّلت الخيار لازم
-                // ترفع صورة واحدة على الأقل فعلياً (مش بس تختار عدد وتسيبه).
-                if (state.includePhoto && state.personalPhotos.length === 0) {
-                    if (window.showBoseGlobalToast) window.showBoseGlobalToast("من فضلك ارفعي صورة شخصية واحدة على الأقل، أو ألغي اختيار إضافة الصور الشخصية.");
-                    return;
-                }
-
                 const flowerTypeName = state.flowerType === "natural" ? "ورد طبيعي نضر" : (state.flowerType === "artificial" ? "ورد صناعي فاخر" : "ورد ستان راقٍ");
+                const moodLabelMap = { celebratory: "احتفالي", romantic: "رومانسي", elegant: "أنيق وبسيط" };
                 // نفس شرط ظهور كارت الإهداء بالضبط المستخدم في recalculatePrice() أعلاه
                 const hasGiftCardFinal = !!(state.includeCard && state.cardText.trim() !== "");
 
@@ -1215,24 +973,15 @@
                     hasChocolate: state.includeChocolate,
                     chocolateBudget: state.includeChocolate ? state.chocolateBudget : 0,
                     cashAmount: state.moneyAmount,
-                    // 💵👑 [تصليح فاتورة الكاش - فئة الأوراق النقدية]: كان مبلغ الكاش
-                    // بيتبعت من غير أي إشارة لفئة الورقة اللي اخترتها العميلة (10/20/50..)
-                    // فمكانش فيه أي طريقة نعرف بيها نرتب المبلغ بفئة إيه وقت التنفيذ.
-                    // دلوقتي بتتبعت الفئة صريحة مع المبلغ.
-                    cashDenomination: state.includeCash ? (state.moneyCategoryAmount || 0) : 0,
-                    wrappingType: state.wrappingType,
-                    wrappingLabel: state.wrappingLabel,
-                    wrappingCost: state.wrappingCost || 0,
                     photoCount: state.includePhoto ? state.photoCount : 0,
-                    // 🛡️👑 [إصلاح جذري - الصور الشخصية الحقيقية بتتبعت هنا]: مصفوفة
-                    // روابط الصور اللي رفعتها العميلة فعلياً في خطوة 5 - مستقلة
-                    // تماماً عن صورة التصميم (finalCartItem.image تحت).
-                    personalPhotoUrls: state.includePhoto ? state.personalPhotos : [],
                     hasGiftCard: hasGiftCardFinal,
                     giftCardText: hasGiftCardFinal ? state.cardText : "",
-                    flavorName: `بوكيه مخصص (${flowerTypeName})`
-                    // 🗑️ [حذف isGift وmoodLabel]: كانوا مرتبطين بخطوتَي "لنفسي/هدية"
-                    // و"الإحساس المطلوب" المحذوفتين - راجع شرح state.totalSteps فوق.
+                    flavorName: `بوكيه مخصص (${flowerTypeName})`,
+                    // 🗑️ [حذف isGift]: كان مرتبط بخطوة "لنفسي/هدية" المحذوفة - راجع
+                    // شرح state.totalSteps فوق. cart-engine.js لسه فيه شرط عرض
+                    // `if (cd.isGift)` بس هيفضل مجرد كود ميت آمن (مش بيتفعّل) لأن
+                    // الحقل ده مبقاش بيتبعت خالص من هنا.
+                    moodLabel: moodLabelMap[state.mood] || ""
                 };
 
                 // 🧮 [توحيد إنشاء عنصر السلة]: استخدام window.createCartItem() الموحدة
@@ -1284,10 +1033,6 @@
         // تشغيل الرندرة الأولية للمحاكي فور اكتمال الربط الموضعي
         recalculatePrice();
         updateActiveStepUI();
-
-        // 🌸💡 [معلومة عشوائية عن الورد]: بتتعرض مرة واحدة عند دخول الصفحة -
-        // راجع تعريف FLOWER_FUN_FACTS فوق لتفاصيل السبب والاستبدال.
-        renderRandomFlowerFunFact();
     }
 
     /**

@@ -246,32 +246,14 @@ function renderBoseCartPage(storeData) {
                 }
                 
                 if (isFlowerBespoke) {
-                    // 🐛💵👑 [إصلاح جذري - القسم ده كان بيقرا أسماء حقول قديمة ماتتخزنش
-                    // فعلياً في customDetails خالص (moneyAmount بدل cashAmount،
-                    // chocolatePieces بدل chocolateBudget، wrappingType كسلسلة نصية بدل
-                    // الشكل الفعلي)، وكمان isGift/moodLabel كانا مرتبطين بخطوتين اتشالوا
-                    // من زمان من المحاكي - فكانت كل تفاصيل الكاش/الشوكولاتة/التغليف
-                    // بتختفي بصمت من صفحة السلة تماماً حتى لو العميلة اختارتها فعلاً
-                    // وظهرت في فاتورة الواتساب بس. دلوقتي بيقرا نفس أسماء الحقول الحقيقية
-                    // المخزنة في core-engine.js (window.createCartItem) بالظبط.
+                    if (cd.isGift) specs.push(`<span>🎁 <strong>هدية لحد تاني</strong></span>`);
+                    if (cd.moodLabel) specs.push(`<span><strong>الإحساس المطلوب:</strong> ${esc(cd.moodLabel)}</span>`);
                     if (cd.flowerType && cd.flowerType !== "none") specs.push(`<span><strong>نوع الورد:</strong> ${cd.flowerType === 'natural' ? 'طبيعي نضر' : cd.flowerType === 'artificial' ? 'صناعي فاخر' : 'ستان مصنوع بحب'}</span>`);
                     if (cd.flowerCount && parseInt(cd.flowerCount, 10) > 0) specs.push(`<span><strong>عدد الورد:</strong> ${parseInt(cd.flowerCount, 10)} وردة</span>`);
-                    if (cd.wrappingCost && parseFloat(cd.wrappingCost) > 0) specs.push(`<span><strong>التغليف:</strong> ${esc(cd.wrappingLabel || cd.wrappingType || '')} (+${parseFloat(cd.wrappingCost)} جنيه)</span>`);
-                    if (cd.hasSatinRibbon && cd.satinRibbonText && cd.satinRibbonText.trim() !== "") specs.push(`<span><strong>شريط ستان مطبوع:</strong> "${esc(cd.satinRibbonText.trim())}"</span>`);
-                    if (cd.photoCount && parseInt(cd.photoCount, 10) > 0) specs.push(`<span><strong>صور شخصية داخل الباقة:</strong> ${parseInt(cd.photoCount, 10)} صورة</span>`);
-                    // 💵👑 [كاش مبلغ + فئة]: السطر ده كان دايماً فاضي (راجع الشرح فوق) -
-                    // دلوقتي بيعرض المبلغ الحقيقي المخزن (cashAmount) وفئة الأوراق
-                    // النقدية اللي هيترتب بيها (cashDenomination) بجانب بعض بوضوح.
-                    if (cd.cashAmount && parseInt(cd.cashAmount, 10) > 0) {
-                        const denomLabel = cd.cashDenomination && parseInt(cd.cashDenomination, 10) > 0 ? ` (فئة ${parseInt(cd.cashDenomination, 10)} جنيه)` : "";
-                        specs.push(`<span><strong>كاش مبلغ:</strong> ${parseInt(cd.cashAmount, 10)} جنيه${denomLabel}</span>`);
-                    }
-                    if (cd.hasChocolate && cd.chocolateBudget && parseFloat(cd.chocolateBudget) > 0) specs.push(`<span><strong>شوكولاتة فاخرة:</strong> ميزانية ${parseFloat(cd.chocolateBudget)} جنيه</span>`);
-                    if (cd.hasGiftCard && cd.giftCardText && cd.giftCardText.trim() !== "") specs.push(`<span><strong>كارت الإهداء:</strong> "${esc(cd.giftCardText.trim())}"</span>`);
-                    if (Array.isArray(cd.personalPhotoUrls) && cd.personalPhotoUrls.length > 0) {
-                        const thumbs = cd.personalPhotoUrls.map(u => `<a href="${esc(u)}" target="_blank" rel="noopener"><img src="${esc(u)}" alt="صورة شخصية جوه الباقة" loading="lazy" style="width:48px;height:48px;border-radius:8px;object-fit:cover;margin-inline-end:4px;cursor:pointer;border:1px solid rgba(255,145,164,0.3);"></a>`).join("");
-                        specs.push(`<span class="cart-item-attached-photo"><strong>صور شخصية مرفوعة:</strong><br>${thumbs}</span>`);
-                    }
+                    if (cd.moneyAmount && parseInt(cd.moneyAmount, 10) > 0) specs.push(`<span><strong>الكاش المدمج:</strong> +${parseInt(cd.moneyAmount, 10)} جنيه</span>`);
+                    if (cd.chocolatePieces && parseInt(cd.chocolatePieces, 10) > 0) specs.push(`<span><strong>قطع الشوكولاتة:</strong> ${parseInt(cd.chocolatePieces, 10)} قطعة</span>`);
+                    if (cd.wrappingType && cd.wrappingType !== "none") specs.push(`<span><strong>التغليف:</strong> ${esc(cd.wrappingType)}</span>`);
+                    if (cd.giftCardText && cd.giftCardText.trim() !== "") specs.push(`<span><strong>كارت الإهداء:</strong> "${esc(cd.giftCardText.trim())}"</span>`);
                 }
 
                 // 👑 [إصلاح جذري - كارثة الأحجام]: المنتجات العادية (زي الديسباسيتو/القشطوطة)
@@ -529,25 +511,6 @@ function renderBoseCheckoutPage(storeData) {
         return;
     }
 
-    // 🌸🛡️ [إصلاح - إلغاء أي إشارة لحساسية من الورد نهائياً]: الأكل سؤال
-    // الحساسية عنه مهم وله داعي حقيقي (الناس بتاكل كل يوم وبتتعرض لأطعمة
-    // ممكن تأذيها)، لكن الورد شيء ثانوي تماماً - وفيه ناس عايشة حياتها كلها
-    // من غيره. سؤالها عن "حساسية من الورد" بيخلق قلق وتوتر من غير أي داعي
-    // حقيقي، فمبنسألش عنه إطلاقاً. لو السلة كلها بوكيهات ورد مخصص من غير
-    // أي تورت/حلويات، بنستبدل تسمية حقل الملاحظات بنص عام عن أي طلب خاص
-    // بدل ما تفضل كلمة "سكر" (خاصة بالأكل) ظاهرة في طلب مفيهوش أكل أصلاً -
-    // من غير أي ذكر لكلمة حساسية خالص. لو السلة فيها الاتنين (ورد + تورت/
-    // حلويات مع بعض) بيفضل النص الأصلي الشامل لأنه لسه صحيح ومنطقي هنا.
-    const orderNotesLabelEl = document.getElementById("bose-order-notes-label");
-    const orderNotesTextareaEl = document.getElementById("checkout-order-notes-textarea");
-    if (orderNotesLabelEl && orderNotesTextareaEl && typeof window.boseGetCartItemsComposition === "function") {
-        const composition = window.boseGetCartItemsComposition(cart);
-        if (composition.hasFlowerItem && !composition.hasFoodItem) {
-            orderNotesLabelEl.textContent = "ملاحظات خاصة بطلب الورد (أي طلب أو تعليمات إضافية) - اختياري";
-            orderNotesTextareaEl.placeholder = "مثال: حابة الباقة تتسلم في وقت معين، أو أي تعليمات تانية...";
-        }
-    }
-
     const pickupBtn = document.getElementById("method-pickup");
     const deliveryBtn = document.getElementById("method-delivery");
     const shippingZoneWrapper = document.getElementById("shipping-zone-wrapper");
@@ -651,9 +614,9 @@ function renderBoseCheckoutPage(storeData) {
 
     const submitOrderBtn = document.getElementById("btn-submit-order-final");
     if (submitOrderBtn) {
-        submitOrderBtn.onclick = async (e) => {
+        submitOrderBtn.onclick = (e) => {
             e.preventDefault();
-            await processFinalBoseOrder(cart, storeData, currentShippingMethod, selectedShippingFee, payFullSelected);
+            processFinalBoseOrder(cart, storeData, currentShippingMethod, selectedShippingFee, payFullSelected);
         };
     }
 }
@@ -750,7 +713,7 @@ function recalculateCheckoutInvoice(cart, storeData, shippingFee, method, payFul
     updateBoseDepositPaymentBox(storeData, invoice.grandTotal, method || "pickup", payFull);
 }
 
-async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFull) {
+function processFinalBoseOrder(cart, storeData, method, shippingFee, payFull) {
     const customerNameInput = document.getElementById("checkout-customer-name");
     const customerPhoneInput = document.getElementById("checkout-customer-phone");
     const customerPhone2Input = document.getElementById("checkout-customer-phone-2");
@@ -862,28 +825,17 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFu
         return;
     }
 
-    // 🛡️🆔 [إصلاح حرج - توحيد رقم الطلب]: التاب الفاضية بتتفتح هنا فوراً -
-    // لسه جوه نفس اللقطة المتزامنة لضغطة الزرار، قبل أي await - عشان متصفحات
-    // الموبايل (خصوصاً Safari/iOS) ماتحجبهاش. رابط واتساب الحقيقي هيتحط جواها
-    // (waTab.location.href) تحت بعد ما نجيب رقم الطلب الحقيقي من قاعدة
-    // البيانات - بدل ما نفتح واتساب فوراً برقم عشوائي محلي مختلف تماماً عن
-    // الرقم اللي هيتسجل فعلياً في القاعدة (ده كان سبب إن رقم فاتورة الواتساب
-    // ورقم صفحة تتبع الطلب يطلعوا رقمين مختلفين لنفس الطلب).
-    const waTab = window.open("", "_blank");
-
     // 🧮 [توحيد حسابي]: نفس المعادلة المستخدمة بالسلة وبصفحة الشحن بالظبط
     const invoice = window.calculateBoseInvoice(cart, storeData, shippingFee);
     const finalGrandTotalCalculated = invoice.grandTotal;
 
-    // 🆔 [رقم احتياطي مؤقت]: بيتستخدم بس لو تسجيل الطلب في قاعدة البيانات فشل
-    // (نت ضعيف مثلاً) - عشان البيع يكمل برضه ومتقفش الشاشة، لكن الحالة
-    // الطبيعية إن ده بيتستبدل تحت بالرقم الحقيقي (YYYYMMDD-NNNN) قبل ما
-    // فاتورة الواتساب تتبني أصلاً.
+    // 🆔 [إصلاح حرج]: رقم طلب فريد فعلياً (طابع زمني + عشوائي) بدل رقم
+    // 4 خانات القديم اللي كان احتمال تصادمه وارد وقريب جداً.
     const orderIdGenerated = window.generateBoseOrderId ? window.generateBoseOrderId() : `${Date.now()}`;
 
     const completedBoseOrderObject = {
         orderNumber: orderIdGenerated,
-        orderId: orderIdGenerated,
+        orderId: `BOSE-${orderIdGenerated}`,
         customerName: customerName,
         phone1: sanitizedPhone1,
         phone2: sanitizedPhone2,
@@ -940,37 +892,10 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFu
 
     // 🤝 سد ثغرة الأصفار وتوحيد الذاكرة متبادلة التوافق تماماً
     localStorage.setItem("bose_last_order", JSON.stringify(completedBoseOrderObject));
-
-    // 🛡️🆔 [إصلاح حرج - توحيد رقم الطلب]: قبل ما نبني نص فاتورة الواتساب أو
-    // نفتحها، بنستنى تسجيل الطلب في قاعدة البيانات الأول عشان نجيب رقم الطلب
-    // الحقيقي (YYYYMMDD-NNNN) ونستخدمه هو نفسه بالظبط في: فاتورة الواتساب،
-    // صفحة النجاح، وصفحة تتبع الطلب - بدل رقم عشوائي محلي (كان بيتولد فوراً
-    // وبيتبعت في واتساب قبل ما الطلب حتى يتسجل في القاعدة) منفصل تماماً عن
-    // الرقم الحقيقي المسجل فعلياً، وده كان يمنع العميلة من تتبع طلبها لأن
-    // الرقم اللي معاها في الفاتورة مش نفس الرقم اللي القاعدة عارفاه.
-    // 🛡️ [الشرط بيتأكد من الدالة اللي بننادي عليها فعلياً: window.saveBoseOrderToDatabase]
-    let dbSaveSucceeded = false;
-    if (typeof window.saveBoseOrderToDatabase === "function") {
-        try {
-            const dbResult = await window.saveBoseOrderToDatabase(completedBoseOrderObject);
-            if (dbResult && dbResult.orderNumber) {
-                completedBoseOrderObject.orderNumber = dbResult.orderNumber;
-                completedBoseOrderObject.orderId = dbResult.orderNumber;
-                completedBoseOrderObject.dbOrderNumber = dbResult.orderNumber;
-                dbSaveSucceeded = true;
-            }
-        } catch (err) {
-            // 🛡️ لو حفظ الطلب في القاعدة فشل (نت ضعيف مثلاً) البيع لا يتوقف
-            // أبداً - بنكمل برقم الطلب المحلي المؤقت اللي اتولد فوق، وواتساب
-            // هيتفتح برضه، بس مبيبقاش فيه زرار "تتبعي طلبك" في صفحة النجاح
-            // (لأن القاعدة معندهاش سجل فعلي يتربط بيه).
-            console.warn("⚠️ تعذر حفظ نسخة الطلب في قاعدة البيانات قبل إرسال واتساب (البيع هيكمل برقم مؤقت):", err);
-        }
-    }
-
+    
     const whatsappMessageText = buildBoseFormattedWhatsappInvoice(completedBoseOrderObject);
     const brandWhatsappNumber = storeData.store?.phone || "01097238441";
-
+    
     // ربط الرسالة بالـ object لضمان عدم حدوث شلل لزر الإرسال البديل بصفحة النجاح
     completedBoseOrderObject.whatsappMessage = whatsappMessageText;
     localStorage.setItem("bose_last_order", JSON.stringify(completedBoseOrderObject));
@@ -978,21 +903,51 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFu
     localStorage.removeItem("bose_active_coupon");
     if (typeof window.updateGlobalCartCounter === "function") window.updateGlobalCartCounter();
 
-    // 🗄️ التاب كانت اتفتحت فاضية فوق لحظة الضغط على الزرار (عشان تفلت من حجب
-    // النوافذ)، فدلوقتي بس بنوجّهها لرابط واتساب برقم الطلب الصحيح. لو
-    // بشكل نادر التاب مكانتش اتفتحت (حجب المتصفح للمحاولة الأولى نفسها)،
-    // بنحاول فتح نافذة عادية كخطة بديلة أخيرة.
-    const waLink = window.buildWhatsappLink(brandWhatsappNumber, whatsappMessageText);
-    if (waTab) {
-        waTab.location.href = waLink;
-    } else {
-        window.open(waLink, "_blank");
-    }
+    // 🗄️ [إصلاح حرج]: بنفتح واتساب فوراً هنا (Synchronous) عشان متصفحات
+    // الموبايل (خصوصاً Safari/iOS) ماتحجبش النافذة، لأنها بتشترط إن فتح
+    // النافذة يحصل مباشرة جوه حدث ضغطة الزر بدون أي انتظار قبله.
+    window.open(window.buildWhatsappLink(brandWhatsappNumber, whatsappMessageText), "_blank");
+    // 🛡️ [إصلاح تكرار فتح واتساب]: واتساب اتفتح بالفعل هنا لحظة تأكيد الطلب،
+    // فبنسجل نفس علامة "تم الفتح تلقائياً" اللي بتقرأها renderBoseSuccessPage()
+    // في order-success.html فوراً، عشان الصفحة متفتحش واتساب مرة تانية لوحدها
+    // لحظة وصول العميل ليها (كان بيفتح تابين واتساب لكل طلب).
     try {
-        sessionStorage.setItem("bose_whatsapp_auto_opened_" + completedBoseOrderObject.orderNumber, "1");
+        sessionStorage.setItem("bose_whatsapp_auto_opened_" + orderIdGenerated, "1");
     } catch (e) { /* تجاهل بأمان لو الجلسة غير متاحة */ }
 
-    window.location.href = "order-success.html";
+    const finalizeNavigation = () => { window.location.href = "order-success.html"; };
+
+    // 🛡️ [إصلاح حرج]: قبل كده كان الطلب موجود بس في localStorage الخاص
+    // بجهاز العميل + نص رسالة واتساب، ولو حصل أي حاجة (popup اتحجب، العميل
+    // قفل التاب قبل الإرسال، أو مسح بيانات المتصفح) الطلب كان بيضيع نهائياً
+    // من غير أي أثر عندنا. دلوقتي بيتسجل فعلياً في قاعدة بيانات Supabase قبل
+    // الانتقال لصفحة النجاح. لو الاتصال فشل (نت ضعيف مثلاً) البيع لا يتوقف
+    // أبداً - واتساب فتح بالفعل فوق - وبنكمل التنقل بعد المحاولة سواء نجحت أو لأ.
+    // 🛡️ [إصلاح]: الشرط كان بيتأكد من وجود دالة مختلفة (submitBoseOrderToDatabase)
+    // بينما بينادي فعلياً على window.saveBoseOrderToDatabase - شغالة بالصدفة
+    // لأن الاتنين بيتعرّفوا مع بعض في supabase-client.js، لكن الفحص الصحيح
+    // لازم يكون على الدالة اللي بننادي عليها فعلياً.
+    if (typeof window.saveBoseOrderToDatabase === "function") {
+        window.saveBoseOrderToDatabase(completedBoseOrderObject)
+            .then((dbResult) => {
+                // 🛡️ [إصلاح حرج]: رقم الطلب الحقيقي المتولد في قاعدة البيانات
+                // (بصيغة YYYYMMDD-NNNN) كان بيتحسب وبيترجع من create_order_with_items
+                // لكن بيتضاع هنا تماماً من غير أي استخدام - orderNumber المعروض في
+                // صفحة النجاح كان دايماً رقم محلي (Timestamp) من جهاز العميل بس، مش
+                // نفس الرقم المسجل فعلياً في قاعدة البيانات. ده كان هيمنع أي نظام
+                // تتبع طلب حقيقي من الشغل لأن العميل معندوش الرقم الصح أصلاً. دلوقتي
+                // بنسجل الرقم الحقيقي في نفس كائن الطلب المحفوظ في localStorage
+                // عشان صفحة النجاح تقدر تعرضه وتربطه بصفحة تتبع الطلب.
+                if (dbResult && dbResult.orderNumber) {
+                    completedBoseOrderObject.dbOrderNumber = dbResult.orderNumber;
+                    localStorage.setItem("bose_last_order", JSON.stringify(completedBoseOrderObject));
+                }
+            })
+            .catch((err) => console.warn("⚠️ تعذر حفظ نسخة الطلب في قاعدة البيانات (البيع تم عبر واتساب بنجاح رغم ذلك):", err))
+            .finally(finalizeNavigation);
+    } else {
+        finalizeNavigation();
+    }
 }
 
 // 🕒 [إصلاح - التوقيت المصري]: كان وقت الاستلام بيتكتب في فاتورة الواتساب زي
@@ -1026,34 +981,6 @@ function getBoseArabicShapeName(shape) {
     return shapeMap[shape] || shape;
 }
 
-// 🌸🛡️ [إصلاح جذري حرج - نوع الورد كان بيتكتب إنجليزي خام في فاتورة الواتساب]:
-// customDetails.flowerType بيتخزن بقيمته التقنية الخام (natural/artificial/satin)
-// - نفس المفاتيح المستخدمة في محاكي الورد نفسه (flower-engine.js) - وكانت
-// بتتكتب زي ما هي بالظبط في الفاتورة اللي بتوصل للفرع والعميل ("نوع الورد:
-// natural") بدل اسمها العربي المفهوم. نفس الخريطة المستخدمة فعلياً في محاكي
-// الورد (FLOWER_TYPE_LABELS) اتوحدت هنا.
-function getBoseArabicFlowerTypeName(flowerType) {
-    const flowerTypeMap = {
-        natural: "ورد طبيعي نضر",
-        artificial: "ورد صناعي فاخر",
-        satin: "ورد ستان راقٍ"
-    };
-    return flowerTypeMap[flowerType] || flowerType;
-}
-
-// 🏷️🌸 [تسمية العدد بوحدة واضحة حسب نوع الصنف]: أصناف المتجر الجاهزة (دستة/
-// بوكس/طاجن/كب...) بيبقى اسم الوحدة جزء من عنوان المنتج نفسه أصلاً (زي
-// "دستة الجاتوه الكلاسيك")، فسطر "العدد المطلوب من {العنوان}" بيوضح الوحدة
-// ضمناً بالفعل. لكن التورت والورد المخصصَين عنوانهم عام ("التورت"/"الورد")
-// من غير أي وحدة عد واضحة - فبيتقال هنا وحدة العد الحقيقية بالاسم (بوكيه/
-// تورتة) عشان الفرع يعرف بالظبط بيعد إيه، من غير أي تخمين أو لبس.
-function getBoseItemUnitNoun(item) {
-    if (item.type === "custom-flower" || item.productSlug === "flowers-master") return "بوكيه";
-    if (item.type === "custom-cake" || item.productSlug === "toort-custom-master") return "تورتة";
-    if (item.type === "mini-cake") return "تورتة ميني";
-    return "";
-}
-
 function buildBoseFormattedWhatsappInvoice(order) {
     let msg = `✨ *فاتورة حجز طلبية فاخرة - حلويات بوسي (BoseSweets)* ✨\n`;
     // 🌸 [نظام التعرّف على العميل]: ترحيب مباشر باسم العميل بالظبط أول رسالة
@@ -1079,43 +1006,28 @@ function buildBoseFormattedWhatsappInvoice(order) {
 
     order.items.forEach((item, idx) => {
         const isCakeBespoke = item.type === "custom-cake" || item.type === "mini-cake" || item.productSlug === "toort-custom-master" || item.productSlug === "mini-cake-two-person";
-        const isFlowerBespoke = item.type === "custom-flower" || item.productSlug === "flowers-master";
-
-        // 🌸🏷️ [إصلاح - عنوان مكرر ومربك للورد]: العنوان الأصلي للورد عام
-        // ("الورد") وflavorName بيحتوي على نفس نوع الورد متكرر جوه قوسين
-        // ("بوكيه مخصص (ورد طبيعي نضر)")، فكان بيطلع "الورد (بوكيه مخصص
-        // (ورد طبيعي نضر))" - عنوان مزدوج ومربك. دلوقتي عنوان الورد المخصص
-        // بقى واضح ومباشر، ونوع الورد نفسه بيتقال مرة واحدة بس في قايمة
-        // الاختيارات تحت (بدل التكرار في العنوان والجسم مع بعض).
-        const displayTitle = isFlowerBespoke ? "بوكيه ورد مخصص" : item.title;
-        const flavorSuffix = (!isFlowerBespoke && item.flavorName) ? ` (${item.flavorName})` : (!isFlowerBespoke ? ' (جاهز وفريش)' : '');
-        msg += `${idx + 1}. 🌟 *${displayTitle}*${flavorSuffix}\n`;
-
-        // 🏷️🌸 [عدد بوحدة واضحة]: التورت/الورد المخصصَين عنوانهم عام من غير
-        // وحدة عد واضحة جواه (عكس الأصناف الجاهزة زي "دستة الجاتوه..." اللي
-        // اسمها بيوضح الوحدة أصلاً) - فبنقول وحدة العد بالاسم صراحة هنا
-        // (بوكيه/تورتة) بدل سطر "×N" مجرد بيسيب الفرع يخمن يعدوا إيه بالظبط.
-        const unitNoun = getBoseItemUnitNoun(item);
-        if (unitNoun) {
-            msg += `   • *العدد المطلوب:* ${item.quantity} ${unitNoun}\n`;
-        } else {
-            // 🛡️ [إصلاح حرج - رسالة واتساب بتقول "1 قطعة" بدل الدستة/العبوة الحقيقية]:
-            // item.quantity هو عدد "الوحدات" اللي طلبها العميل (دستة، عبوة، تورتة... إلخ)
-            // مش عدد القطع الفردية جوه الوحدة الواحدة. اسم الوحدة الحقيقي موجود بالفعل
-            // جوه عنوان المنتج (item.title) زي "دستة/بوكس/طاجن/كب" فمفيش داعي لتخمين
-            // وحدة تانية جنبه ممكن تكون غلط.
-            msg += `   • *العدد المطلوب من ${item.title}:* ×${item.quantity}\n`;
-        }
+        msg += `${idx + 1}. 🌟 *${item.title}* (${item.flavorName || 'جاهز وفريش'})\n`;
+        // 🛡️ [إصلاح حرج - رسالة واتساب بتقول "1 قطعة" بدل الدستة/العبوة الحقيقية]:
+        // item.quantity هو عدد "الوحدات" اللي طلبها العميل (دستة، عبوة، تورتة... إلخ)
+        // مش عدد القطع الفردية جوه الوحدة الواحدة. كلمة "قطعة" الثابتة هنا كانت بتوهم
+        // الفرع إن العميل طلب قطعة واحدة فعلياً حتى لو المنتج نفسه "دستة (12 قطعة)"،
+        // لأن اسم واسم الوحدة الحقيقيين موجودين بالفعل جوه عنوان المنتج (item.title)
+        // ومفيش داعي إطلاقاً لتأكيد/تخمين وحدة تانية جنبه ممكن تكون غلط. النص الجديد
+        // بيوضح إنه "عدد الوحدات" (×) بدل ما يخترع وحدة قياس قد تكون غلط.
+        // 🏷️ [إصلاح - تسمية الكمية حسب المنتج]: بدل تسمية عامة "عدد الوحدات
+        // المطلوبة" لكل الأصناف مهما كانت، بقت التسمية مخصصة لاسم المنتج نفسه
+        // (مثال: "العدد المطلوب من التورت"، "العدد المطلوب من القشطوطة")
+        // عشان توضح فوراً وبدقة إحنا بنعد ايه بالظبط لكل صنف في الفاتورة.
+        msg += `   • *العدد المطلوب من ${item.title}:* ×${item.quantity}\n`;
         // 🏷️ [إصلاح - سعر باسم المنتج بدل تسمية عامة "سعر الوحدة الشامل"]: التسمية
         // العامة القديمة كانت مش واضحة سعر ايه بالظبط لما في أكتر من صنف في نفس
         // الفاتورة. دلوقتي السعر بيتقال جنب اسم الصنف نفسه (زي "سعر تورتة ديسباسيتو")
         // بنفس أسلوب سطر الكمية فوقه، عشان الفرع يعرف فوراً وبدقة سعر أنهي صنف بالظبط.
-        msg += `   • *سعر ${displayTitle}:* ${parseFloat(item.finalPrice).toFixed(2)} EGP\n`;
-
+        msg += `   • *سعر ${item.title}:* ${parseFloat(item.finalPrice).toFixed(2)} EGP\n`;
+        
         if (item.customDetails) {
             const cd = item.customDetails;
             if (item.type === "custom-cake" || item.type === "mini-cake") {
-                msg += `   ┈┈┈ *اختيارات التورتة* ┈┈┈\n`;
                 if (cd.isGift) msg += `   • 🎁 هدية لحد تاني\n`;
                 if (cd.occasionLabel && cd.occasionLabel.trim() !== "") msg += `   • المناسبة: ${cd.occasionLabel.trim()}\n`;
                 if (cd.cakeType && cd.cakeType !== "none" && cd.cakeType !== "افتراضي") msg += `   • طعم الكيك: ${cd.cakeType}\n`;
@@ -1136,28 +1048,21 @@ function buildBoseFormattedWhatsappInvoice(order) {
                 if (cd.printImageUrl) msg += `   🖨️ *الصورة المطلوب طباعتها على التورتة:* ${cd.printImageUrl}\n`;
                 if (cd.replicaImageUrl) msg += `   🎨 *صورة التصميم اللي عايزين نقرب شكل التورتة منها:* ${cd.replicaImageUrl}\n`;
             }
-            if (isFlowerBespoke) {
-                // 🌸🛠️ [إصلاح جذري - تنظيم وتمييز اختيارات الورد]: قايمة اختيارات
-                // واحدة واضحة بعنوان فاصل بدل ما تتخلط جوه باقي تفاصيل الصنف -
-                // كل اختيار سطر مستقل بأيقونة مميزة، بدون أي تكرار مع العنوان فوق.
-                msg += `   ┈┈┈ *اختيارات الباقة* ┈┈┈\n`;
-                // 🐛🛡️ [إصلاح جذري حرج - نوع الورد كان بيتكتب إنجليزي خام]: راجع شرح
-                // getBoseArabicFlowerTypeName فوق - كان بيطبع "natural" بدل "ورد طبيعي نضر".
-                if (cd.flowerType && cd.flowerType !== "none") msg += `   🌷 *نوع الورد:* ${getBoseArabicFlowerTypeName(cd.flowerType)}\n`;
-                if (cd.flowerCount && cd.flowerCount > 0) msg += `   🌷 *تعداد الورد جوه الباقة:* ${cd.flowerCount} وردة\n`;
-                if (cd.hasSatinRibbon && cd.satinRibbonText && cd.satinRibbonText.trim() !== "") msg += `   🎀 *شريط ستان مطبوع حرارياً بعبارة:* "${cd.satinRibbonText}"\n`;
-                // 🎁👑 [تسعير التغليف الحقيقي في الفاتورة]
-                if (cd.wrappingCost && cd.wrappingCost > 0) msg += `   🎁 *تغليف ${cd.wrappingLabel || cd.wrappingType}:* +${cd.wrappingCost} EGP\n`;
-                // 💵👑 [إصلاح جذري - كاش مبلغ كذا، فئة كذا]: قبل كده كان بيظهر المبلغ
-                // بس من غير أي إشارة لفئة الأوراق النقدية اللي المفروض نرتب بيها المبلغ
-                // فعلياً جوه الباقة وقت التنفيذ - دلوقتي فئة الورقة (لو محددة) بتتكتب
-                // صريح جنب المبلغ عشان الفرع يعرف يرتب بالظبط بأنهي فئة.
-                if (cd.cashAmount && cd.cashAmount > 0) {
-                    const denomLine = cd.cashDenomination && cd.cashDenomination > 0 ? ` (فئة ${cd.cashDenomination} جنيه)` : "";
-                    msg += `   💵 *كاش مبلغ ${cd.cashAmount} EGP${denomLine} مدمج جوه البوكيه*\n`;
-                }
-                if (cd.hasChocolate && cd.chocolateBudget && cd.chocolateBudget > 0) msg += `   🍫 *ميزانية شوكولاتة فاخرة مدمجة:* +${cd.chocolateBudget} EGP\n`;
-                if (cd.hasGiftCard && cd.giftCardText && cd.giftCardText.trim() !== "") msg += `   💌 *كارت إهداء بعبارة:* "${cd.giftCardText}"\n`;
+            if (item.type === "custom-flower") {
+                if (cd.isGift) msg += `   • 🎁 هدية لحد تاني\n`;
+                if (cd.moodLabel) msg += `   • الإحساس المطلوب: ${cd.moodLabel}\n`;
+                // 🧾 [إصلاح - المرحلة 3]: cd.moneyAmount كان اسم حقل قديم بقى غير موجود
+                // خالص بعد توحيد بنية customDetails مع window.createCartItem (الاسم
+                // الصحيح دلوقتي هو cashAmount)، فكان الكاش مش هيظهر أبداً في فاتورة
+                // الواتساب رغم إن العميل دفعه فعلاً. بالإضافة لإضافة تفاصيل شريط
+                // الستان وميزانية الشوكولاتة وعدد الصور المطبوعة اللي كانت ناقصة.
+                if (cd.flowerType && cd.flowerType !== "none") msg += `   • نوع الورد: ${cd.flowerType}\n`;
+                if (cd.flowerCount && cd.flowerCount > 0) msg += `   • التعداد: ${cd.flowerCount} وردة\n`;
+                if (cd.hasSatinRibbon && cd.satinRibbonText && cd.satinRibbonText.trim() !== "") msg += `   • شريط ستان مطبوع حرارياً: "${cd.satinRibbonText}"\n`;
+                if (cd.photoCount && cd.photoCount > 0) msg += `   • صور شخصية مطبوعة: ${cd.photoCount} صورة\n`;
+                if (cd.cashAmount && cd.cashAmount > 0) msg += `   • الكاش المدمج جوه البوكيه: +${cd.cashAmount} EGP\n`;
+                if (cd.hasChocolate && cd.chocolateBudget && cd.chocolateBudget > 0) msg += `   • ميزانية الشوكولاتة الفاخرة: +${cd.chocolateBudget} EGP\n`;
+                if (cd.hasGiftCard && cd.giftCardText && cd.giftCardText.trim() !== "") msg += `   • كارت الإهداء: "${cd.giftCardText}"\n`;
             }
             // 👑 [إصلاح جذري - كارثة الأحجام]: لازم الحجم يظهر في فاتورة الواتساب اللي
             // بيتفذ منها الطلب فعلياً في الفرع - قبل كده الحجم مكنش موجود هنا خالص،
@@ -1167,34 +1072,15 @@ function buildBoseFormattedWhatsappInvoice(order) {
             }
         }
 
-        // 🌸🖼️🛡️ [إصلاح جذري - فصل صورة التصميم عن الصور الشخصية]: قبل كده
-        // نفس الصورة كانت بتُستخدم لغرضين مختلفين (تصميم الباقة + طباعة
-        // شخصية) لأن خطوة 5 في المحاكي كانت بتعيد استخدام صورة خطوة 3 -
-        // اتصلح ده جذرياً في flower-builder.html/flower-engine.js: كل غرض
-        // بقى له رفع مستقل تماماً، فهنا كل واحدة بتظهر بسطرها الخاص وغرضها
-        // الحقيقي بس، من غير أي خلط.
-        const flowerDesignRefUrl = (isFlowerBespoke && item.image && typeof item.image === "string" && item.image.startsWith("http") && !item.image.includes("logo_igggsb"))
-            ? item.image
-            : "";
-        if (flowerDesignRefUrl) {
-            msg += `   🎨 *صورة تصميم الباقة اللي عايزين نقرب شكل التنسيق منها قد الإمكان (مش تمثيل حرفي 100%):* ${flowerDesignRefUrl}\n`;
-        }
-        const personalPhotoUrls = (isFlowerBespoke && item.customDetails && Array.isArray(item.customDetails.personalPhotoUrls)) ? item.customDetails.personalPhotoUrls : [];
-        if (personalPhotoUrls.length > 0) {
-            msg += `   📸 *الصور الشخصية المطلوب طباعتها وترتيبها جوه الباقة (${personalPhotoUrls.length} صورة):*\n`;
-            personalPhotoUrls.forEach((url, i) => {
-                msg += `      ↳ صورة ${i + 1}: ${url}\n`;
-            });
-        }
-
         // 🛡️ [إصلاح حرج]: أي صورة رفعها العميل (بوكيه مرجعي مثلاً) كانت بتتحفظ
         // كرابط Cloudinary حقيقي جوه item.image لكن ما كانتش بتوصل خالص لنص
         // فاتورة الواتساب. دلوقتي أي رابط Cloudinary حقيقي (مش لوجو الموقع
         // الافتراضي) بيظهر كسطر واضح قابل للفتح المباشر من واتساب - ما عدا
-        // أصناف التورت المخصص (صورها اتوضحت بسطرين منفصلين فوق) وأصناف الورد
-        // المخصص (اتوضحت بغرضها بالظبط فوق مباشرة).
+        // أصناف التورت المخصص، لأن صورها الاثنتين (الطباعة/التصميم المرجعي)
+        // اتوضحت بالفعل بسطرين منفصلين فوق، وتكرارها هنا هيرجع نفس اللخبطة
+        // القديمة (صورة "مرجعية" مجهولة الغرض).
         const refImageUrls = [];
-        if (!isCakeBespoke && !isFlowerBespoke) {
+        if (!isCakeBespoke) {
             if (item.image && typeof item.image === "string" && item.image.startsWith("http") && !item.image.includes("logo_igggsb")) {
                 refImageUrls.push(item.image);
             }
@@ -1209,18 +1095,8 @@ function buildBoseFormattedWhatsappInvoice(order) {
         msg += `   ---------------------------\n\n`;
     });
 
-    // 🌸📝🛡️ [إصلاح - إلغاء أي إشارة لحساسية من الورد نهائياً]: زي ما اتوضح في
-    // renderBoseCheckoutPage فوق - مبنسألش عن حساسية من الورد إطلاقاً لأنها
-    // بتخلق قلق من غير داعي حقيقي. التسمية هنا بتتغير حسب محتوى السلة فعلياً،
-    // من غير أي ذكر لكلمة حساسية لطلب الورد البحت.
-    const notesComposition = (typeof window !== "undefined" && typeof window.boseGetCartItemsComposition === "function")
-        ? window.boseGetCartItemsComposition(order.items)
-        : { hasFlowerItem: false, hasFoodItem: true };
-    const notesLabel = (notesComposition.hasFlowerItem && !notesComposition.hasFoodItem)
-        ? "ملاحظات خاصة بطلب الورد (أي طلب أو تعليمات إضافية)"
-        : "ملاحظات عن الحساسية / تفضيل السكر أو أي طلب خاص";
     msg += `--------------------------------------------------\n`;
-    msg += `📝 *${notesLabel}:* ${order.notes}\n\n`;
+    msg += `📝 *ملاحظات عن الحساسية / تفضيل السكر أو أي طلب خاص:* ${order.notes}\n\n`;
     msg += `--------------------------------------------------\n`;
     msg += `👑 *المجموع المالي النهائي:* ${order.grandTotal} EGP 👑\n`;
     // 💵 [عربون/دفع مقدم]: توضيح صريح لطريقة ووقت الدفع - استلام = عربون 50%
