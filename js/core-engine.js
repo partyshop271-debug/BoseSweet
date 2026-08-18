@@ -1621,6 +1621,22 @@
         );
     };
 
+    // 🌸 [تخصيص ملاحظات السكر/الحساسية حسب محتوى السلة]: التسمية العامة
+    // "سكر خفيف / حساسية معينة" في checkout.html معناها فعلياً للحلويات
+    // بس - العميلة اللي بتطلب بوكيه ورد مخصص فقط (من غير أي تورت/حلويات)
+    // مالهاش أي داعي تشوف كلمة "سكر" ضمن ملاحظات طلبها، ده بيلخبط ومش
+    // منطقي. الدالة دي بترجع تصنيف بسيط للسلة يستخدمه checkout.html
+    // (وأي صفحة تانية محتاجة نفس التمييز) عشان يغيّر تسمية الحقل ديناميكيًا.
+    window.boseGetCartItemsComposition = function(cart) {
+        if (!Array.isArray(cart) || cart.length === 0) {
+            return { hasFlowerItem: false, hasFoodItem: false };
+        }
+        const isFlowerItem = (item) => item.type === "custom-flower" || item.productSlug === "flowers-master";
+        const hasFlowerItem = cart.some(isFlowerItem);
+        const hasFoodItem = cart.some(item => !isFlowerItem(item));
+        return { hasFlowerItem, hasFoodItem };
+    };
+
     /**
      * @param {Object} item
      * @returns {number}
