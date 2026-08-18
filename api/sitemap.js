@@ -49,8 +49,18 @@ function toDateOnly(isoTimestamp) {
     return (isoTimestamp || new Date().toISOString()).slice(0, 10);
 }
 
-function urlEntry(loc, lastmod, priority) {
-    return `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <priority>${priority}</priority>\n  </url>`;
+// 🖼️ [SEO - صور Sitemap]: بيهرّب أي حرف ممكن يكسر XML لو كان موجود في رابط الصورة
+// (زي & اللي بتتحول لازم &amp; جوه XML صحيح).
+function escapeXml(str) {
+    return String(str || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+function urlEntry(loc, lastmod, priority, images) {
+    const imageTags = (images || [])
+        .filter(Boolean)
+        .map((img) => `\n    <image:image>\n      <image:loc>${escapeXml(img)}</image:loc>\n    </image:image>`)
+        .join("");
+    return `  <url>\n    <loc>${escapeXml(loc)}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <priority>${priority}</priority>${imageTags}\n  </url>`;
 }
 
 module.exports = async function handler(req, res) {
@@ -58,19 +68,24 @@ module.exports = async function handler(req, res) {
         const today = toDateOnly(new Date().toISOString());
 
         const [categories, products] = await Promise.all([
-            fetchTable("categories?select=id,updated_at"),
+            fetchTable("categories?select=id,updated_at,image"),
             // 🛡️ منتجات المحاكيات (custom-builder) مش صفحات منتج حقيقية - بترجّع
             // العميل لصفحة المحاكي فوراً (نفس شرط product.html بالظبط) فمفيش
             // داعي تتحط في الخريطة أصلاً.
-            fetchTable("products?select=id,updated_at,builder_type&or=(builder_type.is.null,builder_type.eq.standard)"),
+            // ملحوظة: مفيش عمود "slug" منفصل في جدول products أصلاً — الموقع كله (js/supabase-client.js
+            // rebuiltProducts: slug: p.id) بيستخدم الـ id نفسه كـ "slug" في كل مكان. الرابط
+            // القديم product.html?slug=${p.id} كان صح فعلاً وهو نفس القيمة اللي product.html
+            // بيدور بيها (p.slug === currentSlug، وslug هنا = id) — سيبناه زي ما هو، والإضافة
+            // الوحيدة هنا هي صور المنتج لكل رابط.
+            fetchTable("products?select=id,images,updated_at,builder_type&or=(builder_type.is.null,builder_type.eq.standard)"),
         ]);
 
         const entries = [];
         STATIC_PAGES.forEach((p) => entries.push(urlEntry(SITE_BASE + p.path, today, p.priority)));
-        categories.forEach((c) => entries.push(urlEntry(`${SITE_BASE}/category.html?category=${c.id}`, toDateOnly(c.updated_at), "0.7")));
-        products.forEach((p) => entries.push(urlEntry(`${SITE_BASE}/product.html?slug=${p.id}`, toDateOnly(p.updated_at), "0.6")));
+        categories.forEach((c) => entries.push(urlEntry(`${SITE_BASE}/category.html?category=${c.id}`, toDateOnly(c.updated_at), "0.7", [c.image])));
+        products.forEach((p) => entries.push(urlEntry(`${SITE_BASE}/product.html?slug=${p.id}`, toDateOnly(p.updated_at), "0.6", p.images)));
 
-        const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries.join("\n")}\n</urlset>\n`;
+        const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n${entries.join("\n")}\n</urlset>\n`;
 
         res.setHeader("Content-Type", "application/xml; charset=utf-8");
         // 🕐 [تحديث حي بدون ضغط زيادة على القاعدة]: بيتخزّن مؤقتاً على شبكة Vercel
