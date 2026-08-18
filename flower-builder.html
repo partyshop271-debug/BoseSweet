@@ -24,7 +24,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/global.css?v=2026_production_v39.0">
     <link rel="stylesheet" href="css/main.css?v=2026_production_v38.0">
-    <link rel="stylesheet" href="css/simulators.css?v=2026_production_v38.0">
+    <link rel="stylesheet" href="css/simulators.css?v=2026_production_v40.0">
     <style>
         /* 🧠 [محاكي أذكى - مطابق لمحاكي الكيك] */
         .bose-flavor-sensory-note {
@@ -50,24 +50,6 @@
         }
         .bose-designer-note-bubble.show { display: flex; }
         .bose-designer-note-bubble .note-icon { font-size: 18px; flex-shrink: 0; }
-        .bose-share-design-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            width: 100%;
-            background: transparent;
-            border: 1.5px dashed var(--bose-pink);
-            color: var(--bose-pink);
-            font-family: 'Cairo';
-            font-weight: 700;
-            font-size: 14.5px;
-            padding: 13px;
-            border-radius: 50px;
-            cursor: pointer;
-            margin-top: 18px;
-        }
-        .bose-share-design-btn:hover { background: var(--bose-pink-light); }
     </style>
 </head>
 <body>
@@ -207,12 +189,12 @@
 
                     <div class="bose-designer-note-bubble show">
                         <span class="note-icon">📸</span>
-                        <span>لو شفتي تصميم عجباكِ في أي مكان، شاركينا بيه دلوقتي - هنحاول نقرب تصميمنا منه قد الإمكان. الخطوة دي اختيارية تمامًا.</span>
+                        <span>لو عاجبك بوكيه ورد معين، ارفعيه هنا وهنعمل لك زيه بقد الإمكان.</span>
                     </div>
 
                     <!-- قالب رفع صورة التصميم المرجعية المؤمّن لـ Cloudinary -->
                     <div class="bose-premium-template-box">
-                        <label class="premium-input-label" for="photo-file">لو عندك صورة بوكيه/تنسيق ورد معجبة بيه وحابة نعملك زيه، ارفعيها هنا ونقرّب التنفيذ منه قد الإمكان. (دي صورة تصميم بس - مش صورة شخصية، الصور الشخصية للطباعة جوه الباقة ليها خطوة منفصلة تالت)</label>
+                        <label class="premium-input-label" for="photo-file">ارفعي صورة البوكيه اللي عجبكِ هنا:</label>
                         <div class="bose-photo-upload-zone" id="bose-photo-upload-zone">
                             <i class="fa-solid fa-cloud-arrow-up"></i>
                             <span class="card-label">اضغطي هنا وارفعي الصورة</span>
@@ -284,7 +266,7 @@
                          إعادة استخدام صورة التصميم. -->
                     <div class="bose-designer-note-bubble show">
                         <span class="note-icon">📷</span>
-                        <span>دي صوركِ الشخصية إنتِ (أو أي صور حابة نطبعها فعلياً) هنرتبها جوه الباقة بشكل شيك - مختلفة تماماً عن صورة التصميم اللي رفعتيها (لو رفعتي) في الخطوة اللي فاتت. اختاري كام صورة عايزة، وارفعيهم واحدة واحدة تحت.</span>
+                        <span>عندك صور عايزة تطبعيها؟ ابعتيها وهنطبعها ونلصقها لك بشكل شيك جوه البوكيه بتاعك.</span>
                     </div>
                     
                     <div class="bose-premium-template-box" style="text-align: center; background: #FFFFFF; padding: 15px;">
@@ -317,18 +299,18 @@
                                  photo-file (صورة التصميم في خطوة 3) - كل صورة شخصية بترفع
                                  هنا فعلياً وبتتخزن في state.personalPhotos، لحد ما توصل
                                  للعدد المختار فوق. -->
-                            <label class="premium-input-label" for="personal-photo-file" id="personal-photo-upload-label">ارفعي صورة شخصية هنا (كرري نفس الخطوة لحد ما توصلي للعدد المختار فوق)</label>
+                            <label class="premium-input-label" for="personal-photo-file" id="personal-photo-upload-label">اختاري كل صورك دفعة واحدة وارفعيهم مرة واحدة:</label>
                             <div class="bose-photo-upload-zone" id="bose-personal-photo-upload-zone">
                                 <i class="fa-solid fa-cloud-arrow-up"></i>
-                                <span class="card-label">اضغطي هنا وارفعي صورة</span>
-                                <input type="file" id="personal-photo-file" accept="image/*">
+                                <span class="card-label">اضغطي هنا وارفعي صورك</span>
+                                <input type="file" id="personal-photo-file" accept="image/*" multiple>
                             </div>
                             <div id="personal-photo-preview-list" class="bose-personal-photo-preview-list"></div>
                             <p class="bose-upload-info-note" id="personal-photo-progress-note"></p>
                         </div>
                         <button type="button" class="bose-info-badge-inline"
                                 data-bose-info-title="إيه الفرق بين الصورة دي وصورة التصميم؟"
-                                data-bose-info-text="مختلفتان تماماً. صورة خطوة \"تصميم تحبي نقلدها\" هي صورة باقة/تنسيق ورد بنحاول نقرّب شكل الباقة كلها منها. أما الصور هنا فهي صوركِ الشخصية (أو أي صور تانية حابة نطبعها فعلياً) وترتيبها جوه الباقة كديكور تذكاري - لازم ترفعي كل صورة بنفسك هنا، مش نفس صورة التصميم.">ⓘ</button>
+                                data-bose-info-text="دي صوركِ الشخصية بس، مختلفة تماماً عن صورة التصميم اللي رفعتيها في الخطوة اللي فاتت.">ⓘ</button>
                     </div>
                 </div>
 
@@ -440,10 +422,6 @@
                         <button type="button" class="bose-info-badge-inline"
                                 data-bose-info-title="كارت الإهداء ده إيه بالظبط؟"
                                 data-bose-info-text="كارت ورقي فاخر بيتقدم مع الباقة، بنكتب عليه الكلام اللي تكتبيه لينا بخط شيك، بسعر 30 جنيه (نفس سعر كارت الإهداء في محاكي التورت بالظبط). لو مش عايزة كارت، سيبي الخطوة دي عادي.">ⓘ</button>
-
-                        <button type="button" class="bose-share-design-btn" id="btn-share-flower-design">
-                            <i class="fa-brands fa-whatsapp"></i> شاركي التصميم مع حد قبل ما تأكدي
-                        </button>
                     </div>
                 </div>
 
@@ -457,19 +435,16 @@
                     <div class="bose-premium-template-box">
                         <div id="flower-summary-list" class="bose-order-summary-list"></div>
 
-                        <!-- 💰👑 [تفاصيل الحساب اللحظي - بقت جزء من كارت الخلاصة الأخيرة
-                             بدل شريط جانبي ثابت طول الرحلة، بنفس فلسفة محاكي التورت]. -->
+                        <!-- 💰👑 [تبسيط جذري - حساب واحد مش خطوتين]: كان فيه "سعر أساسي" +
+                             قائمة إضافات منفصلة تحتها - ده كان بيقسم حساب الورد على خطوتين
+                             ويسبب تشتيت وتوتر من غير داعي حقيقي. دلوقتي جملة واحدة بس بتقول
+                             سعر البوكيه بعدد الورد المختار، وتحتها المجموع الكلي النهائي اللي
+                             شامل أي إضافات اختارتها العميلة (كارت/شريط/صور/كاش/شوكولاتة) في
+                             رقم واحد نهائي، من غير أي تفصيل أو تقسيم يشتت. -->
                         <div class="sticky-summary-widget bose-summary-embedded" id="bose-dynamic-pricing-widget" style="display: none;">
-                            <h3 class="summary-title"><i class="fa-solid fa-receipt"></i> تفاصيل الحساب اللحظي</h3>
+                            <h3 class="summary-title"><i class="fa-solid fa-receipt"></i> السعر</h3>
 
-                            <div class="price-breakdown-list">
-                                <div class="price-item-row">
-                                    <span class="item-label">سعر الورد الأساسي:</span>
-                                    <span class="item-value" id="base-price-val">400 جنيه</span>
-                                </div>
-                                <!-- حاوية حقن الإضافات والملحقات والعملات النقدية ديناميكياً بدون تكرار للـ DOM -->
-                                <div id="bose-dynamic-addons-injection-area" class="bose-dynamic-injection-box"></div>
-                            </div>
+                            <p class="bose-embedded-price-text" id="bose-flower-single-price-line" style="text-align:center;">سعر بوكيه ورد في <span id="flower-price-line-count">15</span> وردة ثمنه <span id="flower-price-line-value">400 جنيه</span></p>
 
                             <div class="grand-price-node">
                                 <span class="grand-price-label">المجموع الكلي:</span>
@@ -529,6 +504,6 @@
     <script src="js/supabase-client.js?v=2026_production_v38.0" defer></script>
     <script src="js/favorites-engine.js?v=2026_production_v37.0" defer></script>
     <script src="js/core-engine.js?v=2026_production_v38.0" defer></script>
-    <script src="js/flower-engine.js?v=2026_production_v38.0" defer></script>
+    <script src="js/flower-engine.js?v=2026_production_v40.0" defer></script>
 </body>
 </html>

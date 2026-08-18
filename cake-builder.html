@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/global.css?v=2026_production_v39.0">
     <link rel="stylesheet" href="css/main.css?v=2026_production_v38.0">
-    <link rel="stylesheet" href="css/simulators.css?v=2026_production_v38.0">
+    <link rel="stylesheet" href="css/simulators.css?v=2026_production_v40.0">
     <script src="js/supabase-client.js?v=2026_production_v38.0" defer></script>
     <script src="js/favorites-engine.js?v=2026_production_v37.0" defer></script>
     <script src="js/core-engine.js?v=2026_production_v38.0" defer></script>
@@ -669,32 +669,6 @@
         .bose-designer-note-bubble.bose-step-motivation { margin-top: 0; margin-bottom: 18px; }
         .bose-designer-note-bubble .note-icon { font-size: 18px; flex-shrink: 0; }
 
-        .bose-share-design-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            width: 100%;
-            background: transparent;
-            border: 1.5px dashed var(--bose-pink);
-            color: var(--bose-pink);
-            font-family: 'Cairo';
-            font-weight: 700;
-            font-size: 14.5px;
-            padding: 13px;
-            border-radius: 50px;
-            cursor: pointer;
-            margin-top: 6px;
-            transition: var(--bose-transition);
-        }
-        .bose-share-design-btn:hover {
-            background: var(--bose-pink-light);
-        }
-        .bose-share-design-btn:disabled {
-            opacity: 0.6;
-            cursor: default;
-        }
-
         .bose-shape-size-note {
             display: none;
             flex-direction: column;
@@ -1122,7 +1096,7 @@
 
                         <div class="bose-designer-note-bubble show bose-step-motivation">
                             <span class="note-icon">🧾</span>
-                            <span>كدة خلصنا! راجعي كل حاجة بالمفردات تحت، وابعتي رابط تصميمك لحد يشوفه قبل ما تأكدي لو حابة رأي حد تاني.</span>
+                            <span>كدة خلصنا! راجعي كل حاجة بالمفردات تحت وأكدي طلبك.</span>
                         </div>
 
                         <div class="bose-order-summary-card">
@@ -1132,10 +1106,6 @@
                                 <span id="cake-order-summary-total">0 جنيه</span>
                             </div>
                         </div>
-
-                        <button type="button" class="bose-share-design-btn" id="btn-share-design">
-                            <i class="fa-brands fa-whatsapp"></i> شاركي رابط التصميم مع حد قبل ما تأكدي
-                        </button>
 
                         <button type="button" class="bose-inline-add-to-cart-btn" id="btn-cake-submit-cart-summary">
                             <i class="fa-solid fa-cart-plus"></i> تأكيد وإضافة للسلة
@@ -1170,6 +1140,6 @@
 
     <div id="bose-footer-injector"></div>
 
-    <script src="js/cake-engine.js?v=2026_production_v38.0" defer></script>
+    <script src="js/cake-engine.js?v=2026_production_v40.0" defer></script>
 </body>
 </html>
