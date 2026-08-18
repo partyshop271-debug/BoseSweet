@@ -246,14 +246,32 @@ function renderBoseCartPage(storeData) {
                 }
                 
                 if (isFlowerBespoke) {
-                    if (cd.isGift) specs.push(`<span>🎁 <strong>هدية لحد تاني</strong></span>`);
-                    if (cd.moodLabel) specs.push(`<span><strong>الإحساس المطلوب:</strong> ${esc(cd.moodLabel)}</span>`);
+                    // 🐛💵👑 [إصلاح جذري - القسم ده كان بيقرا أسماء حقول قديمة ماتتخزنش
+                    // فعلياً في customDetails خالص (moneyAmount بدل cashAmount،
+                    // chocolatePieces بدل chocolateBudget، wrappingType كسلسلة نصية بدل
+                    // الشكل الفعلي)، وكمان isGift/moodLabel كانا مرتبطين بخطوتين اتشالوا
+                    // من زمان من المحاكي - فكانت كل تفاصيل الكاش/الشوكولاتة/التغليف
+                    // بتختفي بصمت من صفحة السلة تماماً حتى لو العميلة اختارتها فعلاً
+                    // وظهرت في فاتورة الواتساب بس. دلوقتي بيقرا نفس أسماء الحقول الحقيقية
+                    // المخزنة في core-engine.js (window.createCartItem) بالظبط.
                     if (cd.flowerType && cd.flowerType !== "none") specs.push(`<span><strong>نوع الورد:</strong> ${cd.flowerType === 'natural' ? 'طبيعي نضر' : cd.flowerType === 'artificial' ? 'صناعي فاخر' : 'ستان مصنوع بحب'}</span>`);
                     if (cd.flowerCount && parseInt(cd.flowerCount, 10) > 0) specs.push(`<span><strong>عدد الورد:</strong> ${parseInt(cd.flowerCount, 10)} وردة</span>`);
-                    if (cd.moneyAmount && parseInt(cd.moneyAmount, 10) > 0) specs.push(`<span><strong>الكاش المدمج:</strong> +${parseInt(cd.moneyAmount, 10)} جنيه</span>`);
-                    if (cd.chocolatePieces && parseInt(cd.chocolatePieces, 10) > 0) specs.push(`<span><strong>قطع الشوكولاتة:</strong> ${parseInt(cd.chocolatePieces, 10)} قطعة</span>`);
-                    if (cd.wrappingType && cd.wrappingType !== "none") specs.push(`<span><strong>التغليف:</strong> ${esc(cd.wrappingType)}</span>`);
-                    if (cd.giftCardText && cd.giftCardText.trim() !== "") specs.push(`<span><strong>كارت الإهداء:</strong> "${esc(cd.giftCardText.trim())}"</span>`);
+                    if (cd.wrappingCost && parseFloat(cd.wrappingCost) > 0) specs.push(`<span><strong>التغليف:</strong> ${esc(cd.wrappingLabel || cd.wrappingType || '')} (+${parseFloat(cd.wrappingCost)} جنيه)</span>`);
+                    if (cd.hasSatinRibbon && cd.satinRibbonText && cd.satinRibbonText.trim() !== "") specs.push(`<span><strong>شريط ستان مطبوع:</strong> "${esc(cd.satinRibbonText.trim())}"</span>`);
+                    if (cd.photoCount && parseInt(cd.photoCount, 10) > 0) specs.push(`<span><strong>صور شخصية داخل الباقة:</strong> ${parseInt(cd.photoCount, 10)} صورة</span>`);
+                    // 💵👑 [كاش مبلغ + فئة]: السطر ده كان دايماً فاضي (راجع الشرح فوق) -
+                    // دلوقتي بيعرض المبلغ الحقيقي المخزن (cashAmount) وفئة الأوراق
+                    // النقدية اللي هيترتب بيها (cashDenomination) بجانب بعض بوضوح.
+                    if (cd.cashAmount && parseInt(cd.cashAmount, 10) > 0) {
+                        const denomLabel = cd.cashDenomination && parseInt(cd.cashDenomination, 10) > 0 ? ` (فئة ${parseInt(cd.cashDenomination, 10)} جنيه)` : "";
+                        specs.push(`<span><strong>كاش مبلغ:</strong> ${parseInt(cd.cashAmount, 10)} جنيه${denomLabel}</span>`);
+                    }
+                    if (cd.hasChocolate && cd.chocolateBudget && parseFloat(cd.chocolateBudget) > 0) specs.push(`<span><strong>شوكولاتة فاخرة:</strong> ميزانية ${parseFloat(cd.chocolateBudget)} جنيه</span>`);
+                    if (cd.hasGiftCard && cd.giftCardText && cd.giftCardText.trim() !== "") specs.push(`<span><strong>كارت الإهداء:</strong> "${esc(cd.giftCardText.trim())}"</span>`);
+                    if (Array.isArray(cd.personalPhotoUrls) && cd.personalPhotoUrls.length > 0) {
+                        const thumbs = cd.personalPhotoUrls.map(u => `<a href="${esc(u)}" target="_blank" rel="noopener"><img src="${esc(u)}" alt="صورة شخصية جوه الباقة" loading="lazy" style="width:48px;height:48px;border-radius:8px;object-fit:cover;margin-inline-end:4px;cursor:pointer;border:1px solid rgba(255,145,164,0.3);"></a>`).join("");
+                        specs.push(`<span class="cart-item-attached-photo"><strong>صور شخصية مرفوعة:</strong><br>${thumbs}</span>`);
+                    }
                 }
 
                 // 👑 [إصلاح جذري - كارثة الأحجام]: المنتجات العادية (زي الديسباسيتو/القشطوطة)
@@ -1128,7 +1146,16 @@ function buildBoseFormattedWhatsappInvoice(order) {
                 if (cd.flowerType && cd.flowerType !== "none") msg += `   🌷 *نوع الورد:* ${getBoseArabicFlowerTypeName(cd.flowerType)}\n`;
                 if (cd.flowerCount && cd.flowerCount > 0) msg += `   🌷 *تعداد الورد جوه الباقة:* ${cd.flowerCount} وردة\n`;
                 if (cd.hasSatinRibbon && cd.satinRibbonText && cd.satinRibbonText.trim() !== "") msg += `   🎀 *شريط ستان مطبوع حرارياً بعبارة:* "${cd.satinRibbonText}"\n`;
-                if (cd.cashAmount && cd.cashAmount > 0) msg += `   💵 *كاش مدمج جوه البوكيه:* +${cd.cashAmount} EGP\n`;
+                // 🎁👑 [تسعير التغليف الحقيقي في الفاتورة]
+                if (cd.wrappingCost && cd.wrappingCost > 0) msg += `   🎁 *تغليف ${cd.wrappingLabel || cd.wrappingType}:* +${cd.wrappingCost} EGP\n`;
+                // 💵👑 [إصلاح جذري - كاش مبلغ كذا، فئة كذا]: قبل كده كان بيظهر المبلغ
+                // بس من غير أي إشارة لفئة الأوراق النقدية اللي المفروض نرتب بيها المبلغ
+                // فعلياً جوه الباقة وقت التنفيذ - دلوقتي فئة الورقة (لو محددة) بتتكتب
+                // صريح جنب المبلغ عشان الفرع يعرف يرتب بالظبط بأنهي فئة.
+                if (cd.cashAmount && cd.cashAmount > 0) {
+                    const denomLine = cd.cashDenomination && cd.cashDenomination > 0 ? ` (فئة ${cd.cashDenomination} جنيه)` : "";
+                    msg += `   💵 *كاش مبلغ ${cd.cashAmount} EGP${denomLine} مدمج جوه البوكيه*\n`;
+                }
                 if (cd.hasChocolate && cd.chocolateBudget && cd.chocolateBudget > 0) msg += `   🍫 *ميزانية شوكولاتة فاخرة مدمجة:* +${cd.chocolateBudget} EGP\n`;
                 if (cd.hasGiftCard && cd.giftCardText && cd.giftCardText.trim() !== "") msg += `   💌 *كارت إهداء بعبارة:* "${cd.giftCardText}"\n`;
             }

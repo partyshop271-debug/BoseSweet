@@ -41,12 +41,15 @@
     let state = {
         currentActiveStep: 1,
         // 🗑️👑 [حذف خطوة "لنفسي/هدية" وخطوة "الإحساس المطلوب"]: بنفس فلسفة محاكي
-        // التورت V6.0. باقي الخطوات اتقسّمت لخطوة قرار واحد لكل خطوة (بقى عندنا
-        // 8 خطوات قرار + خطوة خلاصة أخيرة = 9 بالظبط).
-        totalSteps: 9,
+        // التورت V6.0. 🃏👑 [فصل خطوة "نوع الورد" عن معرض الإلهام]: بقت خطوة
+        // مستقلة بذاتها بدل ما تكون مدموجة مع صور المعرض في نفس الخطوة - بقى
+        // عندنا 9 خطوات قرار + خطوة خلاصة أخيرة = 10 بالظبط.
+        totalSteps: 10,
         flowerType: "natural",
         flowerCount: 15,
         wrappingType: "classic",
+        wrappingCost: 0,
+        wrappingLabel: "تغليف كلاسيك راقٍ (مجاني)",
         ribbonColor: "pink",
         includeRibbonText: false,
         ribbonText: "",
@@ -110,9 +113,13 @@
         let ribbonCost = state.includeRibbonText ? flowerConfig.satinRibbonPrice : 0;
         let photoCost = state.includePhoto ? (state.photoCount * flowerConfig.photoPrintPrice) : 0;
         let cardCost = (state.includeCard && state.cardText.trim() !== "") ? flowerConfig.giftCardPrice : 0;
+        // 🎁👑 [تسعير التغليف الحقيقي]: سعر نوع التغليف المختار من لوحة التحكم
+        // (لو الأدمن مضافتش أنواع تغليف مدفوعة، بيفضل 0 زي التغليف الكلاسيك
+        // المجاني اللي كان موجود من الأول).
+        let wrappingCost = state.wrappingCost || 0;
 
         // 1. حساب تكلفة الخدمة والتنسيق القابلة لزيادة السعر الرسمية
-        let servicePrice = flowerConfig.basePrice + extraCost + ribbonCost + photoCost + cardCost;
+        let servicePrice = flowerConfig.basePrice + extraCost + ribbonCost + photoCost + cardCost + wrappingCost;
 
         // استدعاء دالة الزيادة الرسمية من المحرك المركزي الموحد لتوحيد السياسة المالية للموقع إن وجدت
         let finalServicePrice = window.calculateBosePrice ? window.calculateBosePrice(servicePrice, "menu-only") : servicePrice;
@@ -165,6 +172,17 @@
             let finalCountCost = window.calculateBosePrice ? window.calculateBosePrice(currentCountCost, "menu-only") : currentCountCost;
             flowerPriceLineValue.textContent = `${Math.round(finalCountCost)} جنيه`;
         }
+
+        // تحديث سعر التغليف المختار (لو فيه سعر أعلى من الكلاسيك المجاني)
+        const wrappingPriceLine = document.getElementById('bose-wrapping-price-display');
+        if (wrappingPriceLine) {
+            if (wrappingCost > 0) {
+                wrappingPriceLine.style.display = "block";
+                wrappingPriceLine.innerHTML = `<p class="bose-embedded-price-text">سعر تغليف "${state.wrappingLabel || ''}" هو <span>${Math.round(wrappingCost)} جنيه</span></p>`;
+            } else {
+                wrappingPriceLine.style.display = "none";
+            }
+        }
     }
 
     /**
@@ -193,18 +211,20 @@
             `);
         };
 
-        addRow(1, "نوع الورد", flowerTypeLabels[state.flowerType] || state.flowerType);
-        addRow(2, "عدد الورد", `${state.flowerCount} وردة`);
+        addRow(2, "نوع الورد", flowerTypeLabels[state.flowerType] || state.flowerType);
+        addRow(3, "عدد الورد", `${state.flowerCount} وردة`);
         // 🐛👑 [إصلاح - كانت بتفحص activeBase64ImageInMemory (متغير احتياطي
         // لحفظ الصورة في sessionStorage) بدل الحالة الفعلية الحالية state.photoUrl
         // - فكانت بتقول "لم تُرفع" حتى لو الصورة اترفعت فعلياً بنجاح على Cloudinary
         // وظهرت معاينتها، لمجرد إن الجلسة اتحفظت/اترجعت بطريقة معينة.]
-        addRow(3, "صورة تصميم مرجعية", state.photoUrl ? "مرفوعة ✓" : "لم تُرفع");
-        addRow(4, "شريط الستان", state.includeRibbonText && state.ribbonText.trim() !== "" ? `مطبوع عليه: "${state.ribbonText.trim()}"` : "بدون كلام مطبوع (تغليف كلاسيك مجاني فقط)");
-        addRow(5, "صور شخصية داخل الباقة", state.includePhoto ? `${state.photoCount} صورة مطبوعة` : "غير مطلوبة");
-        addRow(6, "مفاجأة كاش", (state.includeCash && state.moneyAmount > 0) ? `${state.moneyAmount} جنيه` : "غير مطلوبة");
-        addRow(7, "شوكولاتة فاخرة", state.includeChocolate && state.chocolateBudget > 0 ? `ميزانية ${state.chocolateBudget} جنيه` : "غير مطلوبة");
-        addRow(8, "كارت إهداء", (state.includeCard && state.cardText.trim() !== "") ? `مكتوب عليه: "${state.cardText.trim()}"` : "بدون كارت");
+        addRow(4, "صورة تصميم مرجعية", state.photoUrl ? "مرفوعة ✓" : "لم تُرفع");
+        const wrappingSummaryParts = [state.wrappingLabel || "تغليف كلاسيك راقٍ (مجاني)"];
+        if (state.includeRibbonText && state.ribbonText.trim() !== "") wrappingSummaryParts.push(`شريط مطبوع عليه: "${state.ribbonText.trim()}"`);
+        addRow(5, "التغليف وشريط الستان", wrappingSummaryParts.join(" - "));
+        addRow(6, "صور شخصية داخل الباقة", state.includePhoto ? `${state.photoCount} صورة مطبوعة` : "غير مطلوبة");
+        addRow(7, "مفاجأة كاش", (state.includeCash && state.moneyAmount > 0) ? `${state.moneyAmount} جنيه (فئة ${state.moneyCategoryAmount || state.moneyAmount} جنيه)` : "غير مطلوبة");
+        addRow(8, "شوكولاتة فاخرة", state.includeChocolate && state.chocolateBudget > 0 ? `ميزانية ${state.chocolateBudget} جنيه` : "غير مطلوبة");
+        addRow(9, "كارت إهداء", (state.includeCard && state.cardText.trim() !== "") ? `مكتوب عليه: "${state.cardText.trim()}"` : "بدون كارت");
 
         list.innerHTML = rows.join("");
 
@@ -493,16 +513,16 @@
     // (راجع شرح الإزالة في flower-builder.html). المعلومات دي عرض فقط - مش
     // بتتسجل ولا بتظهر في فاتورة الورد أو أي مكان تاني إطلاقاً.
     const FLOWER_FUN_FACTS = [
-        "الورد الأحمر ظل لقرون طويلة الرمز العالمي الأول للحب والعاطفة الجيّاشة 🌹",
-        "الورد الأصفر بيرمز للصداقة والفرحة والتفاؤل - مش للغيرة زي ما شايع غلط أحياناً 💛",
-        "الورد الأبيض رمز النقاء والبراءة، وعشان كده بيتقدم كتير في حفلات الزفاف 🤍",
-        "الورد الوردي (البمبي) رمز الامتنان والتقدير واللطف بين الناس 🌸",
-        "أقدم أثر لزراعة الورد يرجع لأكتر من 5000 سنة في الصين القديمة 🏺",
-        "قديماً كان عدد الورود في الباقة له معنى: وردة واحدة = حب من أول نظرة، ودستة كاملة = دعوة رومانسية 💐",
-        "ماء الورد بيتم استخلاصه من الورد نفسه من قرون طويلة، ومستخدم في العطور والحلويات الشرقية 🌷",
-        "أكبر إنتاج عالمي للورد الطازج بييجي من هولندا وكولومبيا وإكوادور 🌍",
-        "الورد جزء من نفس العائلة النباتية اللي فيها التفاح والفراولة واللوز - مفاجأة صح؟ 🍎",
-        "تقطيع ساق الورد بزاوية مائلة تحت الميه بيطوّل عمر الباقة في الفازة لفترة أطول بكتير 💧"
+        "تعرفي إن الورد الأحمر اللي هتختاريه دلوقتي ظل لقرون طويلة الرمز العالمي الأول للحب والعاطفة الجيّاشة؟ 🌹💕",
+        "لو حابة تبعتي رسالة صداقة وفرح، اختاري الورد الأصفر - رمزه التفاؤل والود، مش الغيرة زي ما شايع غلط أحياناً 💛✨",
+        "لو الباقة لعروسة أو مناسبة نقية، الورد الأبيض هيكون اختيار موفق - رمز النقاء والبراءة، وعشان كده بيتصدّر حفلات الزفاف 🤍👰",
+        "حابة تبعتي امتنان وتقدير لحد غالي؟ الورد الوردي (البمبي) هو لغته بالظبط 🌸💌",
+        "يهمك تعرفي إن زراعة الورد يرجع أصلها لأكتر من 5000 سنة في الصين القديمة؟ باقتك فيها تاريخ طويل 🏺🌿",
+        "معلومة لطيفة ليكِ: قديماً كان عدد الورد في الباقة له معنى - وردة واحدة تقول «حب من أول نظرة»، ودستة كاملة كانت دعوة رومانسية كاملة 💐💍",
+        "لو حابة تعرفي، ماء الورد اللي بيتحط في عطورنا وحلوياتنا الشرقية مستخلص من نفس الورد اللي هتختاريه دلوقتي 🌷🍯",
+        "باقتك ممكن تكون من ورد مسافر - أكبر إنتاج عالمي للورد الطازج بييجي من هولندا وكولومبيا وإكوادور 🌍✈️",
+        "مفاجأة ليكِ: الورد من نفس العائلة النباتية اللي فيها التفاح والفراولة واللوز 🍎🍓",
+        "نصيحة منّا ليكِ لو عايزة باقتك تعيش أطول: قطعي ساق الورد بزاوية مائلة تحت الميه، هيطوّل عمرها في الفازة كتير 💧🌹"
     ];
     function renderRandomFlowerFunFact() {
         const el = document.getElementById("bose-flower-fun-fact-text");
@@ -530,6 +550,27 @@
         flowerConfig.extraFlowerPrice = parseFloat(fbConfig.extraFlowerPrice) || flowerConfig.extraFlowerPrice;
         flowerConfig.photoPrintPrice = parseFloat(fbConfig.photoPrintPrice) || flowerConfig.photoPrintPrice;
         flowerConfig.giftCardPrice = parseFloat(fbConfig.giftCardPrice) || flowerConfig.giftCardPrice;
+
+        // 🎁👑 [تسعير التغليف الحقيقي - إصلاح جذري]: قبل كده كان فيه select مخفي
+        // ثابت على "classic" بس، وقائمة أنواع التغليف اللي الأدمن بيضيفها من لوحة
+        // التحكم (list-wrapping-types بسعرها وصورتها) معندهاش أي مكان تتعرض فيه
+        // أو تأثر على السعر خالص - يعني الأدمن كانت تقدر "تحفظ" أسعار تغليف
+        // من غير ما تتفعل فعلياً في أي مكان. دلوقتي بيتم بناء كروت اختيار حقيقية
+        // من fbConfig.wrappingTypes وبتأثر فعلياً على السعر النهائي.
+        const wrappingTypesConfig = Array.isArray(fbConfig.wrappingTypes) ? fbConfig.wrappingTypes.filter(w => w && w.name) : [];
+        const wrappingRow = document.getElementById('flower-wrapping-type-row');
+        if (wrappingRow && wrappingTypesConfig.length > 0) {
+            wrappingRow.innerHTML = wrappingTypesConfig.map((w, idx) => {
+                const price = parseFloat(w.price) || 0;
+                const priceLabel = price > 0 ? ` (+${price} جنيه)` : " (مجاني)";
+                const imgHtml = w.image ? `<img src="${w.image}" alt="" class="bose-option-card-thumb">` : "";
+                return `
+                    <label class="bose-selection-card-label">
+                        <input type="radio" name="wrapping_type_choice" value="${idx}" ${idx === 0 ? "checked" : ""}>
+                        <div class="bose-selection-card-inner">${imgHtml}🎁 ${window.escapeBoseHTML ? window.escapeBoseHTML(w.name) : w.name}${priceLabel}<span class="bose-selected-checkmark">✅ مُختار</span></div>
+                    </label>`;
+            }).join("");
+        }
 
         // 🖼️👑 [معرض نماذج كارت الإهداء المطبوع - محاكي الورد]: نفس آلية معرض
         // سابقة الأعمال فوق بالظبط، بس بيتقرا من fbConfig.giftCardImages وبيتعرض
@@ -750,6 +791,44 @@
             if (lineEl) lineEl.innerHTML = `اختيارك الحالي: <strong>${FLOWER_TYPE_LABELS[state.flowerType] || state.flowerType}</strong>`;
         }
         updateFlowerTypeSelectionLine();
+
+        // 🎁👑 [ربط كروت اختيار نوع التغليف الحقيقية بالسعر]
+        const wrappingRadios = document.querySelectorAll('#flower-wrapping-type-row input[name="wrapping_type_choice"]');
+        const wrappingSelectionLine = document.getElementById('flower-wrapping-current-selection-line');
+        function applyWrappingSelection(radio) {
+            const idx = parseInt(radio.value, 10);
+            const match = wrappingTypesConfig[idx];
+            if (match) {
+                state.wrappingType = match.name;
+                state.wrappingCost = parseFloat(match.price) || 0;
+                state.wrappingLabel = match.name;
+            } else {
+                state.wrappingType = "classic";
+                state.wrappingCost = 0;
+                state.wrappingLabel = "تغليف كلاسيك راقٍ (مجاني)";
+            }
+            if (wrappingSelectionLine) wrappingSelectionLine.innerHTML = `اختيارك الحالي: <strong>${state.wrappingLabel}</strong>`;
+        }
+        if (wrappingRadios.length > 0) {
+            wrappingRadios.forEach(radio => {
+                radio.addEventListener('change', function () {
+                    if (!this.checked) return;
+                    applyWrappingSelection(this);
+                    saveCurrentState();
+                    recalculatePrice();
+                });
+            });
+            // تطبيق الاختيار الأول افتراضياً (أو الاختيار المحفوظ لو موجود ومتاح لسه)
+            let restored = false;
+            if (state.wrappingType && wrappingTypesConfig.length > 0) {
+                const savedIdx = wrappingTypesConfig.findIndex(w => w.name === state.wrappingType);
+                if (savedIdx >= 0) {
+                    const radioToCheck = document.querySelector(`#flower-wrapping-type-row input[value="${savedIdx}"]`);
+                    if (radioToCheck) { radioToCheck.checked = true; applyWrappingSelection(radioToCheck); restored = true; }
+                }
+            }
+            if (!restored) applyWrappingSelection(wrappingRadios[0]);
+        }
 
         const minusBtn = document.getElementById('flower-minus');
         const plusBtn = document.getElementById('flower-plus');
@@ -1136,6 +1215,14 @@
                     hasChocolate: state.includeChocolate,
                     chocolateBudget: state.includeChocolate ? state.chocolateBudget : 0,
                     cashAmount: state.moneyAmount,
+                    // 💵👑 [تصليح فاتورة الكاش - فئة الأوراق النقدية]: كان مبلغ الكاش
+                    // بيتبعت من غير أي إشارة لفئة الورقة اللي اخترتها العميلة (10/20/50..)
+                    // فمكانش فيه أي طريقة نعرف بيها نرتب المبلغ بفئة إيه وقت التنفيذ.
+                    // دلوقتي بتتبعت الفئة صريحة مع المبلغ.
+                    cashDenomination: state.includeCash ? (state.moneyCategoryAmount || 0) : 0,
+                    wrappingType: state.wrappingType,
+                    wrappingLabel: state.wrappingLabel,
+                    wrappingCost: state.wrappingCost || 0,
                     photoCount: state.includePhoto ? state.photoCount : 0,
                     // 🛡️👑 [إصلاح جذري - الصور الشخصية الحقيقية بتتبعت هنا]: مصفوفة
                     // روابط الصور اللي رفعتها العميلة فعلياً في خطوة 5 - مستقلة
