@@ -514,6 +514,46 @@
     cursor: pointer;
 }
 
+/* 📸👑 [قائمة معاينة الصور الشخصية المتعددة - خطوة 5 محاكي الورد]: كل صورة
+   شخصية مرفوعة بتظهر كمصغّرة مستقلة جوه شبكة، مع زرار حذف صغير فوقها -
+   منفصلة تماماً عن صورة تصميم الباقة (خطوة 3) اللي ليها معاينة مفردة لوحدها. */
+.bose-personal-photo-preview-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 12px;
+}
+.bose-personal-photo-thumb-node {
+    position: relative;
+    width: 84px;
+    height: 84px;
+}
+.bose-personal-photo-thumb-node img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: var(--bose-radius-sm);
+    border: var(--bose-border-pink);
+    cursor: pointer;
+}
+.bose-personal-photo-thumb-remove {
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--bose-black);
+    color: var(--bose-white);
+    border: 1.5px solid var(--bose-white);
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+}
+
 .bose-checkbox-label-tap {
     display: flex;
     align-items: center;
