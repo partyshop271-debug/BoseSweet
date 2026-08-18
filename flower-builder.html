@@ -88,6 +88,18 @@
             <p>اعمل بوكيه الورد اللي على ذوقك خطوة بخطوة، واختاره بالتفصيل اللي يفرح قلب اللي هتديهوله.</p>
         </div>
 
+        <!-- 🌸💡 [معلومة ملهمة عن الورد - عشوائية مع كل دخول للصفحة]: بدل ما نسأل
+             العميلة عن حساسية من الورد (سؤال بيخوّف من غير داعي - الورد شيء
+             ثانوي في حياة الناس، عكس الأكل اللي سؤاله عن الحساسية مهم وله داعي
+             حقيقي)، بنستبدلها بلمسة خفيفة وممتعة: معلومة حقيقية عن الورد بتتغيّر
+             عشوائياً كل مرة تدخل فيها الصفحة - من غير أي تسجيل أو ظهور في فاتورة
+             الورد نهائياً، مجرد لمسة تجربة لطيفة أثناء التصميم. راجع
+             renderRandomFlowerFunFact() في js/flower-engine.js. -->
+        <div class="bose-designer-note-bubble show" id="bose-flower-fun-fact-bubble">
+            <span class="note-icon">🌸</span>
+            <span id="bose-flower-fun-fact-text"></span>
+        </div>
+
         <!-- شريط مؤشرات الخطوات التفاعلية المطور
              📏👑 [توحيد فلسفة "قرار واحد لكل خطوة" مع محاكي التورت]: بعد حذف خطوة
              "لنفسي/هدية" وخطوة "الإحساس المطلوب" (كانت بتضيف قرار زيادة من غير
@@ -200,7 +212,7 @@
 
                     <!-- قالب رفع صورة التصميم المرجعية المؤمّن لـ Cloudinary -->
                     <div class="bose-premium-template-box">
-                        <label class="premium-input-label" for="photo-file">لو عندك صورة بوكيه معجبة بيها وحابة نعملك زيها، ارفعيها هنا ونفذها لكِ بالظبط.</label>
+                        <label class="premium-input-label" for="photo-file">لو عندك صورة بوكيه/تنسيق ورد معجبة بيه وحابة نعملك زيه، ارفعيها هنا ونقرّب التنفيذ منه قد الإمكان. (دي صورة تصميم بس - مش صورة شخصية، الصور الشخصية للطباعة جوه الباقة ليها خطوة منفصلة تالت)</label>
                         <div class="bose-photo-upload-zone" id="bose-photo-upload-zone">
                             <i class="fa-solid fa-cloud-arrow-up"></i>
                             <span class="card-label">اضغطي هنا وارفعي الصورة</span>
@@ -262,9 +274,17 @@
                 <div class="bose-step-card-panel" data-step="5">
                     <h2 class="step-title"><i class="fa-solid fa-images"></i> الخطوة 5: صور شخصية جوه الباقة</h2>
 
+                    <!-- 🛡️🐛 [إصلاح جذري حرج - خلط صورة التصميم بالصور الشخصية]: كانت
+                         الخطوة دي بتقول للعميلة إننا هنطبع نفس صورة "التصميم" اللي
+                         رفعتها في الخطوة اللي فاتت (خطوة 3) - وده غلط تماماً. صورة
+                         التصميم هي صورة باقة/تنسيق ورد بنحاول نقرّب شكل الباقة كلها
+                         منها، بينما الصور هنا المفروض تكون صور العميلة الشخصية (أو
+                         أي صور تانية حابة تطبعها فعلياً) وترتيبها كديكور تذكاري جوه
+                         الباقة - غرض مختلف تماماً ولازم ترفعها هي بنفسها هنا، مش
+                         إعادة استخدام صورة التصميم. -->
                     <div class="bose-designer-note-bubble show">
                         <span class="note-icon">📷</span>
-                        <span>صور شخصية مرتبة جوه الباقة بشكل شيك بتضيف لمسة حقيقية ومميزة - اختيارية تمامًا.</span>
+                        <span>دي صوركِ الشخصية إنتِ (أو أي صور حابة نطبعها فعلياً) هنرتبها جوه الباقة بشكل شيك - مختلفة تماماً عن صورة التصميم اللي رفعتيها (لو رفعتي) في الخطوة اللي فاتت. اختاري كام صورة عايزة، وارفعيهم واحدة واحدة تحت.</span>
                     </div>
                     
                     <div class="bose-premium-template-box" style="text-align: center; background: #FFFFFF; padding: 15px;">
@@ -279,24 +299,36 @@
 
                         <div class="bose-counter-alignment-zone" style="margin-top: 10px; margin-bottom: 5px;">
                             <div class="bose-embedded-price-box" id="bose-photos-price-display" style="max-width: 100%;">
-                                <p class="bose-embedded-price-text">سعر طباعة وتنسيق الصور الشخصية هو <span>15 جنيه</span></p>
+                                <p class="bose-embedded-price-text">سعر طباعة وتنسيق الصورة الشخصية الواحدة هو <span>15 جنيه</span></p>
                             </div>
                         </div>
 
                         <div id="photo-upload-section" class="custom-text-wrapper">
-                            <p class="bose-upload-info-note">سيتم اعتماد الصورة المرجعية المرفوعة في الخطوة الثالثة للطباعة التذكارية الشيك 📸</p>
                             <div class="bose-counter-inline-row">
-                                <label class="premium-input-label" style="margin: 0;">حابة تضيفي كام صورة؟</label>
+                                <label class="premium-input-label" style="margin: 0;">حابة تطبعي كام صورة؟</label>
                                 <div class="bose-counter-wrapper sub-counter-box">
                                     <button type="button" class="bose-circular-qty-btn btn-plus-style" id="photo-count-plus">+</button>
                                     <input type="text" id="photo-count-input" class="bose-numerical-input-display" value="1" style="width: 50px;" readonly>
                                     <button type="button" class="bose-circular-qty-btn btn-minus-style" id="photo-count-minus">-</button>
                                 </div>
                             </div>
+
+                            <!-- 🛡️👑 [الرفع الحقيقي المستقل للصور الشخصية]: منفصل تماماً عن
+                                 photo-file (صورة التصميم في خطوة 3) - كل صورة شخصية بترفع
+                                 هنا فعلياً وبتتخزن في state.personalPhotos، لحد ما توصل
+                                 للعدد المختار فوق. -->
+                            <label class="premium-input-label" for="personal-photo-file" id="personal-photo-upload-label">ارفعي صورة شخصية هنا (كرري نفس الخطوة لحد ما توصلي للعدد المختار فوق)</label>
+                            <div class="bose-photo-upload-zone" id="bose-personal-photo-upload-zone">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                                <span class="card-label">اضغطي هنا وارفعي صورة</span>
+                                <input type="file" id="personal-photo-file" accept="image/*">
+                            </div>
+                            <div id="personal-photo-preview-list" class="bose-personal-photo-preview-list"></div>
+                            <p class="bose-upload-info-note" id="personal-photo-progress-note"></p>
                         </div>
                         <button type="button" class="bose-info-badge-inline"
-                                data-bose-info-title="محتاجة أرفع صورة تانية هنا؟"
-                                data-bose-info-text="لأ، مش محتاجة ترفعي حاجة تانية في الخطوة دي - بنستخدم نفس الصورة اللي رفعتيها في خطوة \"صورة تصميم تحبي نقلدها\" (لو رفعتي واحدة). السعر هنا 15 جنيه لكل نسخة مطبوعة ومنسقة جوه الباقة، وتقدري تختاري تطبعي كذا نسخة بالعداد فوق.">ⓘ</button>
+                                data-bose-info-title="إيه الفرق بين الصورة دي وصورة التصميم؟"
+                                data-bose-info-text="مختلفتان تماماً. صورة خطوة \"تصميم تحبي نقلدها\" هي صورة باقة/تنسيق ورد بنحاول نقرّب شكل الباقة كلها منها. أما الصور هنا فهي صوركِ الشخصية (أو أي صور تانية حابة نطبعها فعلياً) وترتيبها جوه الباقة كديكور تذكاري - لازم ترفعي كل صورة بنفسك هنا، مش نفس صورة التصميم.">ⓘ</button>
                     </div>
                 </div>
 
