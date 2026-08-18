@@ -602,6 +602,27 @@ img {
     transform: translateY(-3px);
 }
 
+/* 🔗 [رابط خفيف "إزاي أطلب؟"]: نص صغير تحت زرار الهيرو مباشرة، مش زرار تاني
+   يتنافس بصريًا مع "اطلب الآن" - بيودي بسكرول ناعم لقسم دليل الطلب تحت في
+   نفس الصفحة، عشان أي عميلة تقدر توصله بسرعة من غير ما نكدس الهيدر بزرار جديد. */
+.bose-hero-howto-hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 14px;
+    color: var(--bose-pink-text) !important;
+    font-size: 0.85rem;
+    font-weight: 600;
+    opacity: 0.85;
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-underline-offset: 3px;
+    transition: var(--bose-transition-fast);
+}
+.bose-hero-howto-hint:hover {
+    opacity: 1;
+}
+
 /* ==========================================================================
    17. دعم تقليل الحركة لذوي الاحتياجات الحركية والبصرية (prefers-reduced-motion)
    يوقف حركة الشريط العلوي اللانهائي فقط للعملاء اللي فعّلوا "تقليل الحركة"

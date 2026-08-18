@@ -177,49 +177,41 @@
 }
 .bose-order-summary-edit-btn:hover { background: var(--bose-pink); color: #fff; }
 
-/* تقسيم مساحة العمل لجزأين متوازنين (أدوات التحكم واللوحة الجانبية)
-   📐👑 [توحيد التخطيط مع محاكي التورت]: بعد نقل شريط السعر اللحظي ليصبح
-   جزء من كارت خطوة الخلاصة الأخيرة (بدل شريط جانبي ثابت طول الوقت)، بقى
-   عمود واحد بس زي محاكي التورت بالظبط - مفيش عمودين متجاورين. */
+/* تقسيم مساحة العمل لجزأين متوازنين (أدوات التحكم واللوحة الجانبية) */
 .simulator-workspace {
-    display: block;
-    scroll-margin-top: 100px;
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 40px;
+    align-items: start;
 }
 
 /* ==========================================================================
    3. خطوات التخصيص التفاعلية ومؤشر التقدم المطور (Premium Stepper)
    ========================================================================== */
-/* 🔢👑 [توحيد شكل أرقام الخطوات مع محاكي التورت]: بدل التوزيع المتلاصق
-   (space-between) اللي كان بيضغط كل الدوائر في مساحة ضيقة على الموبايل لما
-   عدد الخطوات يزيد، بقى نفس أسلوب محاكي التورت بالظبط: سكرول أفقي بحجم دائرة
-   ثابت وواضح (40px تقريباً) وكل رقم زرار حقيقي قابل للمس بسهولة. */
 .simulator-steps-indicator {
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-between;
     align-items: center;
-    margin-bottom: 28px;
+    margin-bottom: 35px;
     position: relative;
-    overflow-x: auto;
-    gap: 4px;
-    padding: 4px 2px 10px 2px;
-    scrollbar-width: thin;
+    padding: 0 10px;
 }
 
 .simulator-steps-indicator::before {
     content: '';
     position: absolute;
-    top: 22px;
+    top: 50%;
     left: 0;
     right: 0;
     height: 2px;
     background-color: var(--bose-gray-border);
     z-index: 1;
+    transform: translateY(-50%);
 }
 
 .step-node {
-    width: 40px;
-    height: 40px;
-    min-width: 40px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     background: var(--bose-white) !important;
     border: 2px solid var(--bose-gray-border) !important;
@@ -228,7 +220,7 @@
     align-items: center;
     justify-content: center;
     font-weight: 700;
-    font-size: 0.95rem;
+    font-size: 1rem;
     z-index: 2;
     transition: background-color 0.25s cubic-bezier(0.16, 1, 0.3, 1),
                 border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1),
@@ -236,7 +228,6 @@
                 box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     cursor: pointer;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-    -webkit-tap-highlight-color: transparent;
 }
 
 .step-node.active {
@@ -262,11 +253,6 @@
 .bose-step-card-panel.active {
     display: block !important;
     animation: boseStepFade 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    /* 🧭👑 [إصلاح - التنقل بين الخطوات كان بيوقف في آخر الخطوة الجديدة بدل
-       أولها]: بنستخدم scroll-margin-top مع scrollIntoView في الجافاسكريبت
-       (بدل حساب يدوي بالبكسل كان بيدي نتيجة غلط أحياناً) عشان نضمن إن أول
-       الخطوة يظهر تحت الهيدر الثابت مباشرة، مش أي نقطة عشوائية تانية. */
-    scroll-margin-top: 100px;
 }
 
 @keyframes boseStepFade {
@@ -520,46 +506,6 @@
     cursor: pointer;
 }
 
-/* 📸👑 [قائمة معاينة الصور الشخصية المتعددة - خطوة 5 محاكي الورد]: كل صورة
-   شخصية مرفوعة بتظهر كمصغّرة مستقلة جوه شبكة، مع زرار حذف صغير فوقها -
-   منفصلة تماماً عن صورة تصميم الباقة (خطوة 3) اللي ليها معاينة مفردة لوحدها. */
-.bose-personal-photo-preview-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 12px;
-}
-.bose-personal-photo-thumb-node {
-    position: relative;
-    width: 84px;
-    height: 84px;
-}
-.bose-personal-photo-thumb-node img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: var(--bose-radius-sm);
-    border: var(--bose-border-pink);
-    cursor: pointer;
-}
-.bose-personal-photo-thumb-remove {
-    position: absolute;
-    top: -8px;
-    left: -8px;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background: var(--bose-black);
-    color: var(--bose-white);
-    border: 1.5px solid var(--bose-white);
-    font-size: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    padding: 0;
-}
-
 .bose-checkbox-label-tap {
     display: flex;
     align-items: center;
@@ -648,6 +594,32 @@
     color: var(--bose-black) !important;
     font-size: 1.15rem !important;
     font-weight: 700 !important;
+}
+
+.price-breakdown-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.price-item-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--bose-black) !important;
+}
+
+.price-item-row .item-value {
+    color: var(--bose-pink-text) !important;
+    font-weight: 700;
+}
+
+.bose-dynamic-injection-box {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
 .bose-invoice-addon-row {
@@ -846,19 +818,14 @@
     object-fit: cover;
 }
 
-/* واجهة الـ Popup المنبثقة النظيفة لسابقة الأعمال
-   🖼️👑 [توحيد ملء الشاشة مع محاكي التورت]: كانت الصورة المنبثقة هنا بتظهر
-   مضغوطة وصغيرة (max-width:600px + الصورة مقصوصة بـaspect-ratio 16/9) بعكس
-   محاكي التورت اللي بتاعه بيملأ الشاشة بالكامل (bose-lightbox-overlay في
-   cake-builder.html). دلوقتي نفس أبعاد وسلوك محاكي التورت بالظبط: خلفية غامقة
-   90%، والصورة تاخد لحد 90vw/90vh وتظهر كاملة من غير أي قص. */
+/* واجهة الـ Popup المنبثقة النظيفة لسابقة الأعمال */
 .bose-popup-modal {
     display: none;
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(17, 17, 17, 0.9);
-    backdrop-filter: blur(6px);
-    z-index: 999999;
+    background: rgba(17, 17, 17, 0.4);
+    backdrop-filter: blur(4px); /* زيادة التركيز البصري ومنع التشتيت */
+    z-index: 50000;
     align-items: center;
     justify-content: center;
     padding: 20px;
@@ -869,9 +836,8 @@
     background: var(--bose-white);
     border-radius: var(--bose-radius-md);
     padding: 20px;
-    max-width: 90vw;
-    max-height: 90vh;
-    width: auto;
+    max-width: 600px;
+    width: 100%;
     position: relative;
     box-sizing: border-box;
     text-align: center;
@@ -900,15 +866,13 @@
 }
 
 .modal-img-frame {
-    max-width: 100%;
-    max-height: 80vh;
-    width: auto;
-    height: auto;
-    object-fit: contain;
+    width: 100%;
+    max-height: 480px;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
     border-radius: var(--bose-radius-md);
     border: 1px solid rgba(255, 145, 164, 0.2);
     display: block;
-    margin: 0 auto;
 }
 
 /* ==========================================================================
@@ -984,221 +948,4 @@
 .portfolio-section img,
 .hero-banner-frame {
     pointer-events: auto !important;
-}
-
-/* ==========================================================================
-   12. 🃏👑 [كروت اختيار مشتركة - موحّدة بين محاكي التورت ومحاكي الورد]
-   نفس الكروت المستخدمة لاختيار شكل التورتة في محاكي التورت، منقولة هنا
-   عشان تتستخدم بالظبط بنفس الأبعاد والمقاسات في اختيار نوع الورد كمان -
-   مصدر تصميم واحد بدل نسخ الكود في الصفحتين، فأي تعديل هنا بينعكس على
-   الاتنين تلقائيًا ويفضلوا متطابقين بصريًا مهما حصل تعديل مستقبلي.
-   ========================================================================== */
-.bose-interactive-radio-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 14px;
-}
-.bose-selection-card-label {
-    position: relative;
-    cursor: pointer;
-}
-.bose-selection-card-label input {
-    position: absolute;
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-.bose-selection-card-inner {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px 16px;
-    background-color: var(--bose-white);
-    border: 1px solid rgba(255, 145, 164, 0.25);
-    border-radius: 18px;
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--bose-black);
-    transition: var(--bose-transition-fast);
-}
-.bose-selection-card-label input:checked + .bose-selection-card-inner {
-    background-color: var(--bose-pink-light);
-    border: var(--bose-border-thick);
-    box-shadow: var(--bose-shadow-glow);
-}
-.bose-selected-checkmark {
-    display: none;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    margin-top: 8px;
-    background: var(--bose-pink);
-    color: var(--bose-white);
-    font-size: 11.5px;
-    font-weight: 800;
-    padding: 5px 12px;
-    border-radius: 20px;
-    white-space: nowrap;
-}
-.bose-selection-card-label input:checked + .bose-selection-card-inner .bose-selected-checkmark {
-    display: inline-flex;
-    animation: boseCheckPop 0.25s ease-out;
-}
-@keyframes boseCheckPop {
-    0% { transform: scale(0.6); opacity: 0; }
-    70% { transform: scale(1.05); opacity: 1; }
-    100% { transform: scale(1); }
-}
-.bose-current-selection-line {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    text-align: center;
-    font-size: 13.5px;
-    font-weight: 700;
-    color: var(--bose-black);
-    background: var(--bose-pink-light);
-    border: 1px solid rgba(255, 145, 164, 0.3);
-    border-radius: 30px;
-    padding: 10px 16px;
-    margin-top: 14px;
-}
-.bose-current-selection-line strong { color: var(--bose-pink-text, var(--bose-pink)); }
-
-/* ⓘ زرار الشرح التوضيحي وهو متحط جوه كارت اختيار (نفس ⓘ محاكي التورت بالظبط
-   بس بيستخدم نظام BoseInfoPopover المشترك المستخدم بالفعل في محاكي الورد) */
-.bose-selection-card-label .bose-info-badge-inline {
-    position: absolute;
-    top: -8px;
-    left: -8px;
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    background: var(--bose-white);
-    border: 1.5px solid var(--bose-pink);
-    color: var(--bose-pink);
-    font-size: 13px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 3;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-    margin: 0;
-}
-
-/* ==========================================================================
-   13. 📐👑 [توحيد كامل للتخطيط مع محاكي التورت - محاكي الورد]
-   ========================================================================== */
-/* 🃏 كارت خطوات موحّد: نفس بالظبط .bose-step-wizard-card في محاكي التورت،
-   بيلف كل خطوات محاكي الورد في كارت واحد أبيض بحدود بمبي وزوايا دائرية،
-   بدل ما كانت الخطوات عايمة من غير أي كارت خارجي يجمعها. */
-.bose-step-wizard-card {
-    background-color: var(--bose-white);
-    border: var(--bose-border-pink);
-    border-radius: 24px;
-    padding: 24px;
-    box-shadow: var(--bose-shadow-glow);
-    margin-bottom: 22px;
-    box-sizing: border-box;
-}
-
-/* 🖼️ [اختفاء البانر والمقدمة بعد الخطوة الأولى - نفس آلية محاكي التورت
-   بالظبط]: بيوفروا مساحة فعلية للشاشة لباقي الخطوات، ويرجعوا يظهروا لو
-   العميلة رجعت للخطوة الأولى تاني. راجع toggleFlowerHeroVisibility في
-   flower-engine.js. */
-.simulator-hero-banner-wrapper,
-.simulator-header {
-    overflow: hidden;
-    max-height: 640px;
-    transition: max-height 0.3s ease, margin 0.3s ease, opacity 0.3s ease;
-}
-.simulator-hero-banner-wrapper.bose-collapsed-hero,
-.simulator-header.bose-collapsed-hero {
-    max-height: 0;
-    margin: 0;
-    opacity: 0;
-}
-
-/* 💰 [شريط السعر اللحظي - بقى جزء من كارت خطوة الخلاصة الأخيرة، مش شريط
-   جانبي ثابت طول رحلة العميل]: بنلغي التموضع اللاصق (sticky) لما يتحط جوه
-   خطوة الخلاصة، بنفس فلسفة محاكي التورت اللي بيوضح السعر بالتفصيل في آخر
-   خطوة بس. */
-.bose-summary-embedded {
-    position: static !important;
-    top: auto !important;
-    z-index: auto !important;
-    width: 100% !important;
-    margin-top: 16px;
-}
-
-/* 🖼️👑 [معرض إلهام موحّد - نفس أبعاد معرض إلهام محاكي التورت بالظبط]:
-   صور كبيرة قابلة للسحب أفقيًا (264px، أو 204px على الموبايل الصغير)، كل
-   صورة بتفتح بملء الشاشة عند الضغط عليها. */
-.bose-step1-gallery-scroller {
-    display: flex;
-    gap: 14px;
-    overflow-x: auto;
-    padding: 8px 4px 16px 4px;
-    margin-top: 4px;
-    scroll-snap-type: x proximity;
-}
-.bose-step1-gallery-scroller .bose-portfolio-img-node {
-    scroll-snap-align: start;
-}
-.bose-portfolio-img-node {
-    flex-shrink: 0;
-    width: 264px;
-    height: 264px;
-    border-radius: 20px;
-    overflow: hidden;
-    border: 1px solid var(--bose-gray-border);
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-    box-shadow: 0 10px 26px rgba(255, 145, 164, 0.28);
-}
-.bose-portfolio-img-node:hover,
-.bose-portfolio-img-node:active {
-    transform: scale(1.04) translateY(-3px);
-    box-shadow: 0 16px 34px rgba(255, 145, 164, 0.4);
-}
-.bose-portfolio-img-node img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-@media (max-width: 480px) {
-    .bose-portfolio-img-node { width: 204px; height: 204px; }
-}
-.bose-gallery-tap-hint {
-    text-align: center;
-    font-size: 12.5px;
-    color: var(--bose-black);
-    opacity: 0.55;
-    margin: 4px 0 0 0;
-}
-.bose-image-example-note {
-    display: flex;
-    align-items: flex-start;
-    gap: 8px;
-    background: rgba(0,0,0,0.03);
-    border: 1px dashed rgba(0,0,0,0.15);
-    border-radius: 14px;
-    padding: 11px 14px;
-    margin-top: 12px;
-    font-size: 12.5px;
-    color: var(--bose-black);
-    opacity: 0.8;
-    line-height: 1.55;
-}
-.bose-image-example-note .note-icon { flex-shrink: 0; }
-.bose-gallery-empty-note {
-    font-size: 13.5px;
-    color: var(--bose-black);
-    opacity: 0.6;
-    padding: 20px 4px;
-    margin: 0;
 }
