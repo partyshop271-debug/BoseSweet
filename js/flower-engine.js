@@ -53,6 +53,12 @@
         includePhoto: false,
         photoCount: 1,
         photoUrl: "",
+        // 🛡️👑 [إصلاح جذري حرج - فصل الصور الشخصية عن صورة التصميم]: كانت
+        // خطوة "صور شخصية جوه الباقة" (5) بتعيد استخدام نفس photoUrl المرفوعة
+        // في خطوة "صورة تصميم تحبي نقلدها" (3) - غرضان مختلفان تماماً اتلخبطوا
+        // في متغير واحد. personalPhotos دلوقتي مصفوفة مستقلة تماماً، كل عنصر
+        // فيها صورة شخصية حقيقية رفعتها العميلة بنفسها في خطوة 5.
+        personalPhotos: [],
         includeCash: false,
         moneyAmount: 0,
         moneyCategoryAmount: 0,
@@ -72,6 +78,8 @@
     let includeChocolateCheckbox, chocolateBudgetMasterBlock, chocolateBudgetDisplay;
     let photoCountInput, dynamicAddonsArea, embeddedPriceDisplay, bosePhotosPriceDisplay, boseCardPriceDisplay;
     let btnNext, btnPrev, stepsPanels, stepsIndicators, flowerTypeRadios, hiddenTypeInput, dynamicPricingWidget;
+    // 🛡️👑 [عناصر رفع الصور الشخصية المستقلة - خطوة 5]
+    let personalPhotoFileInput, personalPhotoPreviewList, personalPhotoProgressNote;
 
     /**
      * 🛡️ حفظ وتأمين الحالة التفاعلية الحالية للعميل منعاً لفقد الخيارات
@@ -369,6 +377,105 @@
         }
     }
 
+    // 🛡️👑📸 [رفع مستقل تماماً للصور الشخصية - خطوة 5]: منفصل عن
+    // uploadReferenceImage (خطوة 3) بالكامل - كل صورة بترفع هنا بتتضاف
+    // كعنصر جديد في state.personalPhotos، لحد ما توصل للعدد اللي اختارته
+    // العميلة في العداد. نفس أسلوب الضغط والرفع لـCloudinary المستخدم في
+    // صورة التصميم بالظبط، عشان يبقى نفس مستوى الجودة والموثوقية.
+    async function uploadPersonalPhoto(file) {
+        if (!file) return;
+        if (state.personalPhotos.length >= state.photoCount) {
+            if (window.showBoseGlobalToast) window.showBoseGlobalToast(`وصلتي للعدد اللي اخترتيه (${state.photoCount}) - زودي العدد فوق لو حابة ترفعي أكتر.`);
+            return;
+        }
+        state.isUploading = true;
+        if (addToCartBtn) {
+            addToCartBtn.disabled = true;
+            addToCartBtn.textContent = "بنجيب لكِ أعلى جودة للصورة...";
+        }
+        try {
+            const compressedBlob = await compressImageFile(file);
+            const cloudName = window.BoseStoreData?.store?.cloudinaryCloudName || 'dyx4w0dr1';
+            const endpoint = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
+            const formData = new FormData();
+            formData.append('file', compressedBlob, 'flower_personal_photo.jpg');
+            formData.append('upload_preset', 'gct8i28h');
+
+            const res = await fetch(endpoint, { method: 'POST', body: formData });
+            const resData = await res.json();
+
+            if (resData && resData.secure_url) {
+                state.personalPhotos.push(resData.secure_url);
+                renderPersonalPhotoPreviewList();
+                if (window.showBoseGlobalToast) window.showBoseGlobalToast("تم تأمين وحفظ الصورة بنجاح! ✨");
+            } else {
+                if (window.showBoseGlobalToast) window.showBoseGlobalToast("تعذر رفع الصورة، تأكدي من الاتصال بالإنترنت وحاولي تاني.");
+            }
+        } catch (err) {
+            if (window.showBoseGlobalToast) window.showBoseGlobalToast("تعذر رفع الصورة، تأكدي من الاتصال بالإنترنت وحاولي تاني.");
+        } finally {
+            state.isUploading = false;
+            if (addToCartBtn) {
+                addToCartBtn.disabled = false;
+                addToCartBtn.textContent = "اضافة للسلة";
+            }
+            saveCurrentState();
+            recalculatePrice();
+        }
+    }
+
+    // 🛡️📸 [عرض/تحديث قايمة معاينة الصور الشخصية المرفوعة + سطر التقدّم]:
+    // كل صورة بيها زرار حذف صغير لو العميلة غيّرت رأيها، وسطر تحت بيوضح
+    // كام صورة اتضافت من إجمالي العدد المختار.
+    function renderPersonalPhotoPreviewList() {
+        if (!personalPhotoPreviewList) return;
+        personalPhotoPreviewList.innerHTML = state.personalPhotos.map((url, i) => `
+            <div class="bose-personal-photo-thumb-node">
+                <img src="${url}" alt="صورة شخصية مرفوعة ${i + 1}">
+                <button type="button" class="bose-personal-photo-thumb-remove" data-photo-index="${i}" aria-label="حذف الصورة">✕</button>
+            </div>
+        `).join("");
+        personalPhotoPreviewList.querySelectorAll('.bose-personal-photo-thumb-remove').forEach((btn) => {
+            btn.onclick = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const idx = parseInt(btn.dataset.photoIndex, 10);
+                state.personalPhotos.splice(idx, 1);
+                renderPersonalPhotoPreviewList();
+                saveCurrentState();
+            };
+        });
+        if (personalPhotoProgressNote) {
+            const uploaded = state.personalPhotos.length;
+            personalPhotoProgressNote.textContent = uploaded >= state.photoCount
+                ? `تمام، رفعتي كل الصور المطلوبة (${uploaded}/${state.photoCount}) ✅`
+                : `اترفع ${uploaded} من ${state.photoCount} - كمّلي رفع الباقي فوق`;
+        }
+    }
+
+    // 🌸💡 [10 معلومات ملهمة وحقيقية عن الورد]: بتتعرض عشوائياً كل مرة تدخل
+    // فيها العميلة الصفحة - بديل خفيف الدم عن سؤال الحساسية اللي اتشال نهائياً
+    // (راجع شرح الإزالة في flower-builder.html). المعلومات دي عرض فقط - مش
+    // بتتسجل ولا بتظهر في فاتورة الورد أو أي مكان تاني إطلاقاً.
+    const FLOWER_FUN_FACTS = [
+        "الورد الأحمر ظل لقرون طويلة الرمز العالمي الأول للحب والعاطفة الجيّاشة 🌹",
+        "الورد الأصفر بيرمز للصداقة والفرحة والتفاؤل - مش للغيرة زي ما شايع غلط أحياناً 💛",
+        "الورد الأبيض رمز النقاء والبراءة، وعشان كده بيتقدم كتير في حفلات الزفاف 🤍",
+        "الورد الوردي (البمبي) رمز الامتنان والتقدير واللطف بين الناس 🌸",
+        "أقدم أثر لزراعة الورد يرجع لأكتر من 5000 سنة في الصين القديمة 🏺",
+        "قديماً كان عدد الورود في الباقة له معنى: وردة واحدة = حب من أول نظرة، ودستة كاملة = دعوة رومانسية 💐",
+        "ماء الورد بيتم استخلاصه من الورد نفسه من قرون طويلة، ومستخدم في العطور والحلويات الشرقية 🌷",
+        "أكبر إنتاج عالمي للورد الطازج بييجي من هولندا وكولومبيا وإكوادور 🌍",
+        "الورد جزء من نفس العائلة النباتية اللي فيها التفاح والفراولة واللوز - مفاجأة صح؟ 🍎",
+        "تقطيع ساق الورد بزاوية مائلة تحت الميه بيطوّل عمر الباقة في الفازة لفترة أطول بكتير 💧"
+    ];
+    function renderRandomFlowerFunFact() {
+        const el = document.getElementById("bose-flower-fun-fact-text");
+        if (!el) return;
+        const fact = FLOWER_FUN_FACTS[Math.floor(Math.random() * FLOWER_FUN_FACTS.length)];
+        el.textContent = fact;
+    }
+
     /**
      * ⚙️ تهيئة المحرك وربط الأحداث
      */
@@ -496,6 +603,9 @@
         chocolateBudgetMasterBlock = document.getElementById('chocolate-budget-master-block');
         chocolateBudgetDisplay = document.getElementById('chocolate-budget-display');
         photoCountInput = document.getElementById('photo-count-input');
+        personalPhotoFileInput = document.getElementById('personal-photo-file');
+        personalPhotoPreviewList = document.getElementById('personal-photo-preview-list');
+        personalPhotoProgressNote = document.getElementById('personal-photo-progress-note');
 
         btnNext = document.getElementById("btn-next");
         btnPrev = document.getElementById("btn-prev");
@@ -526,6 +636,10 @@
                     parsed.photoUrl = activeBase64ImageInMemory;
                 }
                 state = { ...state, ...parsed };
+                // 🛡️ [توافق مع حالات محفوظة قديمة]: أي حالة محفوظة قبل إضافة
+                // مصفوفة الصور الشخصية المستقلة مبيبقاش فيها الحقل ده خالص -
+                // بنضمن إنه دايماً مصفوفة صحيحة بدل undefined.
+                if (!Array.isArray(state.personalPhotos)) state.personalPhotos = [];
             }
         } catch (e) {}
 
@@ -546,6 +660,7 @@
             photoPreviewImg.src = state.photoUrl;
             if (photoPreviewContainer) photoPreviewContainer.style.display = "block";
         }
+        renderPersonalPhotoPreviewList();
         if (includeCardCheckbox) {
             includeCardCheckbox.checked = state.includeCard;
             const cardSec = document.getElementById('card-text-section');
@@ -653,17 +768,21 @@
         }
 
         // الملحقات والصور الشخصية
+        // 🛡️👑 [إصلاح جذري حرج]: كان توقيف الخانة هنا بيمسح state.photoUrl -
+        // وده صورة التصميم بتاعة خطوة 3 (بوكيه نعمل زيه)، مالهاش أي علاقة
+        // بخطوة الصور الشخصية دي. دلوقتي بيمسح state.personalPhotos بس
+        // (مصفوفة الصور الشخصية المستقلة)، وصورة التصميم فضلة زي ما هي.
         if (includePhotoCheckbox) {
             includePhotoCheckbox.onclick = (e) => {
                 state.includePhoto = e.target.checked;
                 const uploadSectionDOM = document.getElementById('photo-upload-section');
                 if (uploadSectionDOM) uploadSectionDOM.style.display = state.includePhoto ? "block" : "none";
                 if (!state.includePhoto) {
-                    state.photoUrl = "";
                     state.photoCount = 1;
+                    state.personalPhotos = [];
                     if (photoCountInput) photoCountInput.value = 1;
-                    if (photoFileInput) photoFileInput.value = "";
-                    if (photoPreviewContainer) photoPreviewContainer.style.display = "none";
+                    if (personalPhotoFileInput) personalPhotoFileInput.value = "";
+                    renderPersonalPhotoPreviewList();
                 }
                 saveCurrentState();
                 recalculatePrice();
@@ -678,6 +797,7 @@
                 if (photoCountInput) photoCountInput.value = state.photoCount;
                 saveCurrentState();
                 recalculatePrice();
+                renderPersonalPhotoPreviewList();
             };
         }
         if (photoCountMinus) {
@@ -685,8 +805,15 @@
                 if (state.photoCount > 1) {
                     state.photoCount--;
                     if (photoCountInput) photoCountInput.value = state.photoCount;
+                    // 🛡️ لو العدد الجديد بقى أقل من الصور المرفوعة فعلياً،
+                    // بنقص الصور الزيادة من آخر المصفوفة عشان يفضل العدد
+                    // متزامن دايماً مع الرفع الفعلي.
+                    if (state.personalPhotos.length > state.photoCount) {
+                        state.personalPhotos = state.personalPhotos.slice(0, state.photoCount);
+                    }
                     saveCurrentState();
                     recalculatePrice();
+                    renderPersonalPhotoPreviewList();
                 }
             };
         }
@@ -694,6 +821,17 @@
         if (photoFileInput) {
             photoFileInput.onchange = (e) => {
                 if (e.target.files[0]) uploadReferenceImage(e.target.files[0]);
+            };
+        }
+
+        // 🛡️👑📸 [رفع الصور الشخصية المستقل - خطوة 5]: كل مرة العميلة ترفع
+        // صورة، بتتضاف لمصفوفة state.personalPhotos، ونصفّر قيمة الـinput
+        // عشان تقدر ترفع نفس الملف تاني لو حبت أو تختار ملف جديد فوراً.
+        if (personalPhotoFileInput) {
+            personalPhotoFileInput.onchange = (e) => {
+                const file = e.target.files[0];
+                if (file) uploadPersonalPhoto(file);
+                personalPhotoFileInput.value = "";
             };
         }
 
@@ -947,6 +1085,13 @@
             addToCartBtn.onclick = function () {
                 if (state.isUploading) return;
 
+                // 🛡️👑📸 [تحقق - الصور الشخصية]: لو العميلة فعّلت الخيار لازم
+                // ترفع صورة واحدة على الأقل فعلياً (مش بس تختار عدد وتسيبه).
+                if (state.includePhoto && state.personalPhotos.length === 0) {
+                    if (window.showBoseGlobalToast) window.showBoseGlobalToast("من فضلك ارفعي صورة شخصية واحدة على الأقل، أو ألغي اختيار إضافة الصور الشخصية.");
+                    return;
+                }
+
                 const flowerTypeName = state.flowerType === "natural" ? "ورد طبيعي نضر" : (state.flowerType === "artificial" ? "ورد صناعي فاخر" : "ورد ستان راقٍ");
                 // نفس شرط ظهور كارت الإهداء بالضبط المستخدم في recalculatePrice() أعلاه
                 const hasGiftCardFinal = !!(state.includeCard && state.cardText.trim() !== "");
@@ -965,6 +1110,10 @@
                     chocolateBudget: state.includeChocolate ? state.chocolateBudget : 0,
                     cashAmount: state.moneyAmount,
                     photoCount: state.includePhoto ? state.photoCount : 0,
+                    // 🛡️👑 [إصلاح جذري - الصور الشخصية الحقيقية بتتبعت هنا]: مصفوفة
+                    // روابط الصور اللي رفعتها العميلة فعلياً في خطوة 5 - مستقلة
+                    // تماماً عن صورة التصميم (finalCartItem.image تحت).
+                    personalPhotoUrls: state.includePhoto ? state.personalPhotos : [],
                     hasGiftCard: hasGiftCardFinal,
                     giftCardText: hasGiftCardFinal ? state.cardText : "",
                     flavorName: `بوكيه مخصص (${flowerTypeName})`
@@ -1021,6 +1170,10 @@
         // تشغيل الرندرة الأولية للمحاكي فور اكتمال الربط الموضعي
         recalculatePrice();
         updateActiveStepUI();
+
+        // 🌸💡 [معلومة عشوائية عن الورد]: بتتعرض مرة واحدة عند دخول الصفحة -
+        // راجع تعريف FLOWER_FUN_FACTS فوق لتفاصيل السبب والاستبدال.
+        renderRandomFlowerFunFact();
     }
 
     /**

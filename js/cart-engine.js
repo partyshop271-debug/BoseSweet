@@ -511,19 +511,22 @@ function renderBoseCheckoutPage(storeData) {
         return;
     }
 
-    // 🌸 [إصلاح - ملاحظات السكر/الحساسية مش منطقية لطلب ورد بحت]: لو السلة
-    // كلها بوكيهات ورد مخصص من غير أي تورت/حلويات، بنستبدل تسمية الحقل
-    // وplaceholder بنص مناسب للورد (حساسية من نوع زهور معينة، تعليمات
-    // خاصة بالباقة) بدل ما تفضل كلمة "سكر" ظاهرة في طلب مفيهوش أكل أصلاً.
-    // لو السلة فيها الاتنين (ورد + تورت/حلويات مع بعض) بيفضل النص الأصلي
-    // الشامل لأنه لسه صحيح ومنطقي في الحالة دي.
+    // 🌸🛡️ [إصلاح - إلغاء أي إشارة لحساسية من الورد نهائياً]: الأكل سؤال
+    // الحساسية عنه مهم وله داعي حقيقي (الناس بتاكل كل يوم وبتتعرض لأطعمة
+    // ممكن تأذيها)، لكن الورد شيء ثانوي تماماً - وفيه ناس عايشة حياتها كلها
+    // من غيره. سؤالها عن "حساسية من الورد" بيخلق قلق وتوتر من غير أي داعي
+    // حقيقي، فمبنسألش عنه إطلاقاً. لو السلة كلها بوكيهات ورد مخصص من غير
+    // أي تورت/حلويات، بنستبدل تسمية حقل الملاحظات بنص عام عن أي طلب خاص
+    // بدل ما تفضل كلمة "سكر" (خاصة بالأكل) ظاهرة في طلب مفيهوش أكل أصلاً -
+    // من غير أي ذكر لكلمة حساسية خالص. لو السلة فيها الاتنين (ورد + تورت/
+    // حلويات مع بعض) بيفضل النص الأصلي الشامل لأنه لسه صحيح ومنطقي هنا.
     const orderNotesLabelEl = document.getElementById("bose-order-notes-label");
     const orderNotesTextareaEl = document.getElementById("checkout-order-notes-textarea");
     if (orderNotesLabelEl && orderNotesTextareaEl && typeof window.boseGetCartItemsComposition === "function") {
         const composition = window.boseGetCartItemsComposition(cart);
         if (composition.hasFlowerItem && !composition.hasFoodItem) {
-            orderNotesLabelEl.textContent = "ملاحظات خاصة بطلب الورد (حساسية من نوع زهور معينة، أو أي طلب خاص) - اختياري";
-            orderNotesTextareaEl.placeholder = "مثال: عندي حساسية من ورد الياسمين، أو محتاجة الباقة تتغلف بشكل معين...";
+            orderNotesLabelEl.textContent = "ملاحظات خاصة بطلب الورد (أي طلب أو تعليمات إضافية) - اختياري";
+            orderNotesTextareaEl.placeholder = "مثال: حابة الباقة تتسلم في وقت معين، أو أي تعليمات تانية...";
         }
     }
 
@@ -1137,24 +1140,24 @@ function buildBoseFormattedWhatsappInvoice(order) {
             }
         }
 
-        // 🌸🖼️🛡️ [إصلاح جذري - صورة الورد المرجعية كانت بتظهر عامة من غير أي
-        // توضيح لغرضها]: نفس الصورة المرفوعة في محاكي الورد ليها غرضان ممكنين
-        // في نفس الوقت (راجع flower-builder.html خطوة 3 وخطوة 5): (1) صورة
-        // "تصميم" العميلة عايزة نقرب شكل الباقة منه، و(2) لو اختارت صور شخصية
-        // مطبوعة جوه الباقة (cd.photoCount > 0)، فهي نفس الصورة دي اللي هتتطبع
-        // وترتب داخل الباقة. قبل كده كانت تظهر كسطر عام واحد "صورة مرجعية" من
-        // غير أي شرح أي الغرضين ده، فكان ممكن الفرع يطبعها أو يتجاهلها غلط.
-        // دلوقتي بيتوضح الغرض (أو الغرضين مع بعض) صراحة.
-        const flowerRefImageUrl = (isFlowerBespoke && item.image && typeof item.image === "string" && item.image.startsWith("http") && !item.image.includes("logo_igggsb"))
+        // 🌸🖼️🛡️ [إصلاح جذري - فصل صورة التصميم عن الصور الشخصية]: قبل كده
+        // نفس الصورة كانت بتُستخدم لغرضين مختلفين (تصميم الباقة + طباعة
+        // شخصية) لأن خطوة 5 في المحاكي كانت بتعيد استخدام صورة خطوة 3 -
+        // اتصلح ده جذرياً في flower-builder.html/flower-engine.js: كل غرض
+        // بقى له رفع مستقل تماماً، فهنا كل واحدة بتظهر بسطرها الخاص وغرضها
+        // الحقيقي بس، من غير أي خلط.
+        const flowerDesignRefUrl = (isFlowerBespoke && item.image && typeof item.image === "string" && item.image.startsWith("http") && !item.image.includes("logo_igggsb"))
             ? item.image
             : "";
-        if (flowerRefImageUrl) {
-            const hasPersonalPhotoPrint = item.customDetails && item.customDetails.photoCount > 0;
-            msg += `   🖼️ *الصورة المرفوعة:* ${flowerRefImageUrl}\n`;
-            msg += `      ↳ 🎨 صورة تصميم الباقة اللي عايزين نقرب شكل التنسيق منها قد الإمكان (مش تمثيل حرفي 100%)\n`;
-            if (hasPersonalPhotoPrint) {
-                msg += `      ↳ 📸 نفس الصورة دي كمان مطلوب طباعتها وترتيبها شيك داخل الباقة (${item.customDetails.photoCount} نسخة)\n`;
-            }
+        if (flowerDesignRefUrl) {
+            msg += `   🎨 *صورة تصميم الباقة اللي عايزين نقرب شكل التنسيق منها قد الإمكان (مش تمثيل حرفي 100%):* ${flowerDesignRefUrl}\n`;
+        }
+        const personalPhotoUrls = (isFlowerBespoke && item.customDetails && Array.isArray(item.customDetails.personalPhotoUrls)) ? item.customDetails.personalPhotoUrls : [];
+        if (personalPhotoUrls.length > 0) {
+            msg += `   📸 *الصور الشخصية المطلوب طباعتها وترتيبها جوه الباقة (${personalPhotoUrls.length} صورة):*\n`;
+            personalPhotoUrls.forEach((url, i) => {
+                msg += `      ↳ صورة ${i + 1}: ${url}\n`;
+            });
         }
 
         // 🛡️ [إصلاح حرج]: أي صورة رفعها العميل (بوكيه مرجعي مثلاً) كانت بتتحفظ
@@ -1179,15 +1182,15 @@ function buildBoseFormattedWhatsappInvoice(order) {
         msg += `   ---------------------------\n\n`;
     });
 
-    // 🌸📝 [إصلاح - ملاحظات "السكر" مش منطقية لطلب ورد بحت]: التسمية العامة
-    // كانت ثابتة "الحساسية / تفضيل السكر" حتى لو الطلب كله بوكيهات ورد من
-    // غير أي أكل خالص - وده مربك وغير منطقي للفرع وللعميلة. دلوقتي التسمية
-    // بتتغير حسب محتوى السلة فعلياً.
+    // 🌸📝🛡️ [إصلاح - إلغاء أي إشارة لحساسية من الورد نهائياً]: زي ما اتوضح في
+    // renderBoseCheckoutPage فوق - مبنسألش عن حساسية من الورد إطلاقاً لأنها
+    // بتخلق قلق من غير داعي حقيقي. التسمية هنا بتتغير حسب محتوى السلة فعلياً،
+    // من غير أي ذكر لكلمة حساسية لطلب الورد البحت.
     const notesComposition = (typeof window !== "undefined" && typeof window.boseGetCartItemsComposition === "function")
         ? window.boseGetCartItemsComposition(order.items)
         : { hasFlowerItem: false, hasFoodItem: true };
     const notesLabel = (notesComposition.hasFlowerItem && !notesComposition.hasFoodItem)
-        ? "ملاحظات خاصة بطلب الورد (حساسية من نوع زهور معينة، أو أي طلب خاص)"
+        ? "ملاحظات خاصة بطلب الورد (أي طلب أو تعليمات إضافية)"
         : "ملاحظات عن الحساسية / تفضيل السكر أو أي طلب خاص";
     msg += `--------------------------------------------------\n`;
     msg += `📝 *${notesLabel}:* ${order.notes}\n\n`;

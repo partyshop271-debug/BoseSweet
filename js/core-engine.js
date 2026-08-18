@@ -1364,6 +1364,13 @@
                 hasSatinRibbon: !!opts.hasSatinRibbon,
                 satinRibbonText: opts.satinRibbonText || "",
                 photoCount: parseInt(opts.photoCount, 10) || 0,
+                // 🛡️👑📸 [إصلاح جذري حرج - فصل الصور الشخصية عن صورة التصميم]: قبل
+                // كده كانت خطوة "صور شخصية جوه الباقة" بتعيد استخدام نفس صورة
+                // التصميم (item.image) من غير أي رفع حقيقي مستقل، فمكانش فيه أي
+                // مكان لتخزين الصور الشخصية الحقيقية أصلاً. دلوقتي كل صورة شخصية
+                // رفعتها العميلة فعلياً (راجع flower-engine.js) بتتخزن هنا كمصفوفة
+                // مستقلة تماماً عن item.image (اللي فضل مخصص لصورة التصميم بس).
+                personalPhotoUrls: Array.isArray(opts.personalPhotoUrls) ? opts.personalPhotoUrls.filter(u => typeof u === "string" && u.startsWith("http")) : [],
                 hasChocolate: !!opts.hasChocolate,
                 chocolateBudget: parseFloat(opts.chocolateBudget) || 0,
                 hasGiftCard: !!opts.hasGiftCard,
