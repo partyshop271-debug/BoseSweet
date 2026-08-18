@@ -183,6 +183,7 @@
    عمود واحد بس زي محاكي التورت بالظبط - مفيش عمودين متجاورين. */
 .simulator-workspace {
     display: block;
+    scroll-margin-top: 100px;
 }
 
 /* ==========================================================================
@@ -261,6 +262,11 @@
 .bose-step-card-panel.active {
     display: block !important;
     animation: boseStepFade 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    /* 🧭👑 [إصلاح - التنقل بين الخطوات كان بيوقف في آخر الخطوة الجديدة بدل
+       أولها]: بنستخدم scroll-margin-top مع scrollIntoView في الجافاسكريبت
+       (بدل حساب يدوي بالبكسل كان بيدي نتيجة غلط أحياناً) عشان نضمن إن أول
+       الخطوة يظهر تحت الهيدر الثابت مباشرة، مش أي نقطة عشوائية تانية. */
+    scroll-margin-top: 100px;
 }
 
 @keyframes boseStepFade {
@@ -644,32 +650,6 @@
     font-weight: 700 !important;
 }
 
-.price-breakdown-list {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-}
-
-.price-item-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--bose-black) !important;
-}
-
-.price-item-row .item-value {
-    color: var(--bose-pink-text) !important;
-    font-weight: 700;
-}
-
-.bose-dynamic-injection-box {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
 .bose-invoice-addon-row {
     display: flex;
     justify-content: space-between;
@@ -866,14 +846,19 @@
     object-fit: cover;
 }
 
-/* واجهة الـ Popup المنبثقة النظيفة لسابقة الأعمال */
+/* واجهة الـ Popup المنبثقة النظيفة لسابقة الأعمال
+   🖼️👑 [توحيد ملء الشاشة مع محاكي التورت]: كانت الصورة المنبثقة هنا بتظهر
+   مضغوطة وصغيرة (max-width:600px + الصورة مقصوصة بـaspect-ratio 16/9) بعكس
+   محاكي التورت اللي بتاعه بيملأ الشاشة بالكامل (bose-lightbox-overlay في
+   cake-builder.html). دلوقتي نفس أبعاد وسلوك محاكي التورت بالظبط: خلفية غامقة
+   90%، والصورة تاخد لحد 90vw/90vh وتظهر كاملة من غير أي قص. */
 .bose-popup-modal {
     display: none;
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(17, 17, 17, 0.4);
-    backdrop-filter: blur(4px); /* زيادة التركيز البصري ومنع التشتيت */
-    z-index: 50000;
+    background: rgba(17, 17, 17, 0.9);
+    backdrop-filter: blur(6px);
+    z-index: 999999;
     align-items: center;
     justify-content: center;
     padding: 20px;
@@ -884,8 +869,9 @@
     background: var(--bose-white);
     border-radius: var(--bose-radius-md);
     padding: 20px;
-    max-width: 600px;
-    width: 100%;
+    max-width: 90vw;
+    max-height: 90vh;
+    width: auto;
     position: relative;
     box-sizing: border-box;
     text-align: center;
@@ -914,13 +900,15 @@
 }
 
 .modal-img-frame {
-    width: 100%;
-    max-height: 480px;
-    aspect-ratio: 16 / 9;
-    object-fit: cover;
+    max-width: 100%;
+    max-height: 80vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
     border-radius: var(--bose-radius-md);
     border: 1px solid rgba(255, 145, 164, 0.2);
     display: block;
+    margin: 0 auto;
 }
 
 /* ==========================================================================
