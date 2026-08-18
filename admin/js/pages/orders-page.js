@@ -132,7 +132,6 @@
             if (cd.allergyNote) rows.push(["⚠️ ملاحظة حساسية", e(cd.allergyNote)]);
             if (cd.hasGiftCard && cd.giftCardText) rows.push(["كارت إهداء مطبوع", `"${e(cd.giftCardText)}"`]);
         } else if (isFlower) {
-            if (cd.moodLabel) rows.push(["الإحساس المطلوب", e(cd.moodLabel)]);
             if (cd.flowerType && cd.flowerType !== "none") rows.push(["نوع الورد", FLOWER_TYPE_LABELS[cd.flowerType] || e(cd.flowerType)]);
             if (cd.flowerCount) rows.push(["عدد الورد", `${cd.flowerCount} وردة`]);
             if (cd.cashAmount) rows.push(["الكاش المدمج", `+${cd.cashAmount} ج.م`]);
@@ -145,7 +144,22 @@
         const photoLinks = [];
         if (cd.printImageUrl) photoLinks.push(`<a href="${e(cd.printImageUrl)}" target="_blank" rel="noopener"><img src="${e(cd.printImageUrl)}" alt="صورة الطباعة" loading="lazy" style="width:52px;height:52px;border-radius:8px;object-fit:cover;"></a>`);
         if (cd.replicaImageUrl) photoLinks.push(`<a href="${e(cd.replicaImageUrl)}" target="_blank" rel="noopener"><img src="${e(cd.replicaImageUrl)}" alt="صورة التصميم المرجعي" loading="lazy" style="width:52px;height:52px;border-radius:8px;object-fit:cover;"></a>`);
-        if (item.reference_images && item.reference_images.length) {
+        // 🛡️👑📸 [إصلاح - صورة تصميم الباقة والصور الشخصية كانتا مش ظاهرين هنا
+        // خالص]: item.image هي صورة التصميم اللي رفعتها العميلة في خطوة 3
+        // (بوكيه نعمل زيه) - مكانتش بتتعرض في لوحة التحكم أصلاً. وcd.personalPhotoUrls
+        // هي الصور الشخصية الحقيقية المرفوعة في خطوة 5 (منفصلة تماماً عن صورة
+        // التصميم - راجع شرح الفصل في js/flower-engine.js).
+        if (isFlower && item.reference_images && item.reference_images.length) {
+            item.reference_images.forEach((url) => {
+                photoLinks.push(`<a href="${e(url)}" target="_blank" rel="noopener"><img src="${e(url)}" alt="صورة تصميم الباقة" loading="lazy" style="width:52px;height:52px;border-radius:8px;object-fit:cover;border:2px solid #FF91A4;"></a>`);
+            });
+        }
+        if (isFlower && Array.isArray(cd.personalPhotoUrls)) {
+            cd.personalPhotoUrls.forEach((url) => {
+                photoLinks.push(`<a href="${e(url)}" target="_blank" rel="noopener"><img src="${e(url)}" alt="صورة شخصية للطباعة" loading="lazy" style="width:52px;height:52px;border-radius:8px;object-fit:cover;border:2px solid #111;"></a>`);
+            });
+        }
+        if (!isFlower && item.reference_images && item.reference_images.length) {
             item.reference_images.forEach((url) => {
                 photoLinks.push(`<a href="${e(url)}" target="_blank" rel="noopener"><img src="${e(url)}" alt="صورة مرجعية" loading="lazy" style="width:52px;height:52px;border-radius:8px;object-fit:cover;"></a>`);
             });
