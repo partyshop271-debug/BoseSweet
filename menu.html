@@ -335,7 +335,11 @@
             if (window.BoseStoreData && typeof window.getBoseCategoriesList === "function" && window.getBoseCategoriesList().length) {
                 renderBoseMenuGrid(window.getBoseCategoriesList());
             } else {
-                document.dispatchEvent(new CustomEvent('BoseDatabaseLoaded'));
+                // 🛡️ [إصلاح - سطر بلا فايدة]: هنا كان فيه dispatchEvent بيطلق حدث
+                // BoseDatabaseLoaded فورًا قبل حتى ما نسجل المستمع اللي تحته مباشرة -
+                // يعني كان بيطلق في الفراغ من غير أي حد يسمعه (كود ميت من غير أي
+                // تأثير فعلي). الحدث الحقيقي اللي فيه بيانات المتجر فعلاً بيتطلق من
+                // core-engine.js لما التحميل يخلص فعلًا - وده اللي المستمع تحت بيسمعه صح.
                 document.addEventListener("BoseDatabaseLoaded", (e) => {
                     if (window.BoseStoreData && typeof window.getBoseCategoriesList === "function" && window.getBoseCategoriesList().length) {
                         renderBoseMenuGrid(window.getBoseCategoriesList());

@@ -1002,7 +1002,10 @@
                     group.querySelectorAll(".custom-selectable-card").forEach(card => {
                         card.addEventListener("click", function() {
                             if (this.dataset.slug !== currentProduct.slug) {
-                                window.location.href = `product.html?slug=${this.dataset.slug}`;
+                                // 🛡️ [إصلاح - توحيد بناء الرابط]: كل مكان تاني بالموقع بيبني رابط
+                                // المنتج بـ encodeURIComponent(slug) دايمًا كإجراء احترازي - هنا كان
+                                // ناقص، فلو أي سلاج فيه حرف خاص مستقبلاً كان ممكن يكسر الرابط.
+                                window.location.href = `product.html?slug=${encodeURIComponent(this.dataset.slug)}`;
                             }
                         });
                     });
@@ -1323,7 +1326,15 @@
                 const relatedGrid = document.getElementById("related-products-grid");
                 if (!relatedGrid || !dbData || !dbData.products) return;
 
-                const suggestionsList = dbData.products.filter(p => p.slug !== currentProduct.slug).slice(0, 5);
+                // 🛡️ [إصلاح - اقتراح منتج بسعر غلط]: نفس الفحص المستخدم في كل مكان تاني
+                // بالموقع (category.html / core-engine.js / cart.html) لاستبعاد منتجات
+                // المحاكي "الرئيسية" (تورت مخصص/بوكيه ورد) - دي معندهاش سعر ثابت أصلاً
+                // (السعر بيتحدد جوه المحاكي بس)، فكانت بتظهر هنا كاقتراح بسعر "0 EGP"
+                // مربك، رغم إن الضغط عليها كان هيوديها للمحاكي صح على أي حال.
+                const suggestionsList = dbData.products.filter(p =>
+                    p.slug !== currentProduct.slug &&
+                    !(p.customBuilderUrl && p.builderType && p.builderType !== 'standard')
+                ).slice(0, 5);
                 const currency = dbData.store?.currency || "EGP";
                 const defaultLogo = dbData.store?.logo || "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png";
 
@@ -1338,7 +1349,7 @@
                     
                     return `
                         <div class="product-card bose-product-card" data-slug="${prod.slug}" style="cursor:pointer; border:var(--bose-border-pink); border-radius:20px; background:var(--bose-white); overflow:hidden; padding:16px; display:flex; flex-direction:column; gap:10px; box-shadow:var(--bose-shadow-glow); text-align:right; direction:rtl;" onclick="window.location.href='product.html?slug=${encodeURIComponent(prod.slug)}';">
-                            <a href="product.html?slug=${prod.slug}" style="text-decoration:none; display:block; overflow:hidden; border-radius:12px; height:220px;">
+                            <a href="product.html?slug=${encodeURIComponent(prod.slug)}" style="text-decoration:none; display:block; overflow:hidden; border-radius:12px; height:220px;">
                                 <img class="product-card-img bose-product-image" src="${window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(imgUrl, 350) : imgUrl}" alt="${prod.title}" style="width:100%; height:100%; object-fit:cover; display:block;" loading="lazy" onerror="this.src='${defaultLogo}';">
                             </a>
                             <div class="bose-product-info" style="padding:0; display:flex; flex-direction:column; flex-grow:1; justify-content:space-between;">
@@ -1349,7 +1360,7 @@
                                     <div class="product-card-price bose-product-price" style="font-size:1.08rem; font-weight:700; color:var(--bose-pink);">
                                         ${calcPrice} ${currency}
                                     </div>
-                                    <a href="product.html?slug=${prod.slug}" class="bose-product-action-btn" style="text-decoration:none; text-align:center; width:100%; box-sizing:border-box; background:var(--bose-pink); color:var(--bose-white); padding:10px; border-radius:50px; font-weight:700; font-size:0.85rem; display:block;">
+                                    <a href="product.html?slug=${encodeURIComponent(prod.slug)}" class="bose-product-action-btn" style="text-decoration:none; text-align:center; width:100%; box-sizing:border-box; background:var(--bose-pink); color:var(--bose-white); padding:10px; border-radius:50px; font-weight:700; font-size:0.85rem; display:block;">
                                         استعراض وتخصيص الصنف
                                     </a>
                                 </div>
