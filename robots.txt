@@ -1,6 +1,28 @@
 User-agent: *
 Allow: /
 
+# 🤖👑 [GEO - السماح صراحةً لزواحف الذكاء الاصطناعي]: من غير سطر "Allow: /" واضح لكل
+# واحد منهم، بعض الزواحف دي بتاخد الحذر الافتراضي وتقلل زحفها. ده مش بيضمن الترشيح
+# لكنه شرط لازم - لو الزاحف اتحجب، الموقع مش هيظهر في إجابات الذكاء الاصطناعي خالص.
+User-agent: GPTBot
+Allow: /
+User-agent: ChatGPT-User
+Allow: /
+User-agent: OAI-SearchBot
+Allow: /
+User-agent: ClaudeBot
+Allow: /
+User-agent: Claude-Web
+Allow: /
+User-agent: anthropic-ai
+Allow: /
+User-agent: PerplexityBot
+Allow: /
+User-agent: Google-Extended
+Allow: /
+User-agent: CCBot
+Allow: /
+
 # صفحات خاصة بالعميل نفسه (سلة، دفع، نجاح الطلب) - لا داعي لأرشفتها في نتائج البحث
 Disallow: /cart.html
 Disallow: /checkout.html

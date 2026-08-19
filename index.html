@@ -37,13 +37,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/global.css?v=2026_production_v39.0">
     <link rel="stylesheet" href="css/main.css?v=2026_production_v38.0">
-    <link rel="stylesheet" href="css/simulators.css?v=2026_production_v38.0">
+    <link rel="stylesheet" href="css/simulators.css?v=2026_production_v40.0">
     
     <!-- استدعاء حارس المحرك المركزي العالمي في رأس الصفحة لمنع وميض الألوان وتأمين البيانات الموحدة -->
     <!-- ⚡ [إصلاح أداء]: defer عشان السكريبت متوقفش رسم الصفحة الأول (كان شغال Blocking) -->
     <script src="js/supabase-client.js?v=2026_production_v38.0" defer></script>
     <script src="js/favorites-engine.js?v=2026_production_v37.0" defer></script>
-    <script src="js/core-engine.js?v=2026_production_v38.0" defer></script>
+    <script src="js/core-engine.js?v=2026_production_v41.0" defer></script>
 </head>
 <body class="bose-hardware-accelerated">
 
@@ -59,7 +59,6 @@
                 <h1 id="hero-title" class="bose-hero-title">عقد من <span class="bose-highlight-yellow" style="color:#FF91A4;">التميز</span> في صناعة الحلويات</h1>
                 <p id="hero-description" class="bose-hero-desc bose-arabic-text">نختار كل مكوّن بعناية فائقة، لنصنع لمناسباتكم جودة تستاهل ثقتكم.</p>
                 <a id="hero-cta-btn" href="menu.html" class="bose-hero-btn" role="button">اطلب الآن</a>
-                <a href="#howto-order-section" class="bose-hero-howto-hint"><i class="fas fa-circle-question"></i> مش عارفة تطلبي إزاي؟ من هنا</a>
                 
                 <!-- 🔄 تبويب أقسام المنيو الـ 12 أسفل زر اطلب الآن -->
                 <!-- 👑👑 [إصلاح جذري نهائي - بعد 9 محاولات سابقة فاشلة]: التبويب دلوقتي تمرير أفقي
@@ -86,7 +85,7 @@
             </div>
         </section>
 
-        <!-- SECTION 02: شلال المنتجات البصري الأنيق المستمر الحركة (أول Hook بصري صامد) -->
+        <!-- WATERFALL: قسم شلال المنتجات البصري الأنيق المستمر الحركة (أول Hook بصري صامد) -->
         <section id="waterfall-section" class="bose-waterfall-section-container" aria-label="شلال منتجات حلويات بوسي البصري">
             <div class="waterfall-overlay-top"></div>
             <div class="waterfall-container">
@@ -94,23 +93,9 @@
                 <div id="waterfall-right-col" class="waterfall-col waterfall-down"></div>
             </div>
             <div class="waterfall-overlay-bottom"></div>
-            <p class="waterfall-caption"><i class="fas fa-heart" aria-hidden="true"></i> كل قطعة بتشوفيها هنا اتعملت بإيد حرفي بوسي</p>
         </section>
 
-        <!-- SECTION 03: تسوق حسب الفئة الملوكي المطور (نقلناه هنا قريب من الأول عشان يساعد العميل يتوجه بسرعة - إيماءات السحب واللمس المرنة لعملاء الهواتف) -->
-        <section id="categories-slider-section" class="bose-section-container bose-categories-slider-section" aria-labelledby="categories-section-title">
-            <div class="bose-section-header">
-                <h2 id="categories-section-title" class="bose-section-title">تسوق حسب الفئة</h2>
-                <p id="categories-section-subtitle" class="bose-section-subtitle bose-arabic-text">قسمنا منيو حلويات بوسي لـ 12 فئة واضحة بالصور، عشان تلاقوا اللي بتحبوه من غير حيرة.</p>
-            </div>
-            <div id="categories-slider-wrapper" class="bose-categories-slider-wrapper">
-                <!-- مجرى الحركة الأفقي المرن المانع للفراغات والوميض نهائياً -->
-                <div id="categories-track" class="categories-track-slider"></div>
-            </div>
-            <div id="categories-dots-container" class="categories-slider-dots"></div>
-        </section>
-
-        <!-- 🏷️ SECTION 04: قسم العروض والخصومات الفاخرة المنسق أفقياً بسلايدر تلقائي -->
+        <!-- 🏷️ OFFERS SECTION: قسم العروض والخصومات الفاخرة المنسق أفقياً بسلايدر تلقائي (بعد الشلال وقبل الأكثر مبيعاً) -->
         <section id="offers-carousel-section" class="bose-section-container bose-offers-section bose-offers-slider-section" aria-labelledby="offers-main-heading">
             <div class="bose-section-header">
                 <div class="bose-section-badge"><i class="fas fa-percentage"></i> عروض حصريّة</div>
@@ -129,274 +114,10 @@
             <div id="offers-dots-container" class="bose-dots-container"></div>
         </section>
 
-        <!-- SECTION 05: الأكثر مبيعاً (شبكة مستقرة وموزعة بدقة هندسية كاملة) -->
-        <section id="most-selling-section" class="bose-section-container" aria-labelledby="most-selling-main-heading">
-            <div class="bose-section-header">
-                <h2 id="most-selling-main-heading" class="bose-section-title">الأكثر مبيعاً</h2>
-                <p id="most-selling-description" class="bose-section-subtitle bose-arabic-text">الأصناف اللي كسبت ثقة عملائنا من سنين وبيطلبوها ويرجعوا يطلبوها تاني: نكهات مظبوطة بالملي، جربوها بنفسكم.</p>
-            </div>
-            <!-- شبكة الأكثر مبيعاً (8 كروت كاملة ومستقرة هندسياً بالمحرك) -->
-            <div id="most-selling-grid" class="bose-products-grid products-grid"></div>
-            <div id="most-selling-dots-container" class="bose-dots-container" hidden></div>
-        </section>
-
-        <!-- 🎥 SECTION 06: سيمفونية الطعم (فيديو الشوكولاتة والصوصات دافئة السيلان - تحميل كسول Lazy) -->
-        <section id="symphony-video-section" class="bose-video-showcase-section" aria-labelledby="symphony-main-heading">
-            <div class="bose-section-header">
-                <h2 id="symphony-main-heading" class="bose-section-title">سيمفونية الطعم</h2>
-                <p id="symphony-description" class="bose-section-subtitle">بنهتم بكل تفصيلة عشان طعمها يعجبكم: صوصات سايحة، خامات طبيعية فريش، وتحضير يدوي بحب كل يوم، عشان توصلكم طازة.</p>
-            </div>
-            <div class="bose-video-player-frame bose-lazy-video-frame">
-                <iframe 
-                    data-src="https://player.cloudinary.com/embed/?cloud_name=dyx4w0dr1&public_id=VID20260424210523_oviixh&autoplay=true&muted=true&loop=true&player%5Bfluid%5D=true&player%5Bcontrols%5D=false" 
-                    style="width: 100%; height: 100%; border: none; position: absolute; top: 0; left: 0;" 
-                    allow="autoplay; fullscreen; encrypted-media" 
-                    loading="lazy"
-                    title="فيديو سيمفونية الطعم حلويات بوسي">
-                </iframe>
-            </div>
-        </section>
-
-        <!-- SECTION 07: بلوك عرض محاكي التورت الكبرى (مطهر بالكامل من عيوب الإزاحة والضغط البصري) -->
-        <section id="cake-preview-section" class="preview-builder-block bose-isolated-simulator-card bose-simulator-reveal" aria-labelledby="cake-preview-title">
-            <div class="bose-isolated-backdrop-framework"></div>
-            <div class="bose-simulator-decor" aria-hidden="true">
-                <i class="fas fa-birthday-cake bose-simulator-float-icon icon-1"></i>
-                <i class="fas fa-gem bose-simulator-float-icon icon-2"></i>
-                <i class="fas fa-star bose-simulator-float-icon icon-3"></i>
-            </div>
-            <div class="simulator-card-inner-layout">
-                <div class="bose-simulator-image-wrap">
-                    <span class="bose-simulator-exclusive-badge"><i class="fas fa-crown"></i> قيمة وجودة ملهاش منافس</span>
-                    <img id="cake-preview-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="محاكي وتصميم التورت الحصري لعلامة حلويات بوسي" width="450" height="380" loading="lazy">
-                </div>
-                <div class="simulator-text-content">
-                    <span class="bose-simulator-eyebrow"><i class="fas fa-award"></i> تصميم مخصص 100% حسب ذوقك</span>
-                    <h2 id="cake-preview-title" class="bose-simulator-title">محاكي التورت</h2>
-                    <p id="cake-preview-desc" class="bose-simulator-desc bose-arabic-text">التورتة عندنا مش حلوى وخلاص، دي قطعة بنصمملها مخصوص تفرح صاحب المناسبة. اختاروا الحجم والنكهة والشكل، وسيبوا الباقي علينا.</p>
-                    <ul class="bose-simulator-feature-list">
-                        <li><i class="fas fa-check-circle"></i> مقادير طازة وطبيعية 100% في كل قطعة</li>
-                        <li><i class="fas fa-check-circle"></i> أي حجم، نكهة، أو شكل تتخيله - بنصممهولك</li>
-                        <li><i class="fas fa-check-circle"></i> جودة وقيمة مفيش زيها في الفرافرة كلها</li>
-                    </ul>
-                    <a id="cake-preview-cta" href="cake-builder.html" class="bose-simulator-action-btn" role="button">تصميم التورتة الآن</a>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECTION 08: منتجاتنا (التوزيع الثنائي الصارم ومنع أنصاف الكروت المشوهة) -->
-        <section id="our-products-section" class="bose-section-container" aria-labelledby="our-products-main-heading">
-            <div class="bose-section-header">
-                <h2 id="our-products-main-heading" class="bose-section-title">منتجاتنا</h2>
-                <p id="our-products-description" class="bose-section-subtitle bose-arabic-text">منيو حلويات بوسي بالكامل: تشكيلة غنية، بنحضرها طازة كل يوم بمكونات طبيعية 100%. من الكب كيك الصغير لحد بوكسات الضيافة الكبيرة، من غير أي تنازل عن الجودة.</p>
-            </div>
-            <!-- العرض الأولي يبدأ من 4 كروت (صفين متوازيين) ثم ينفتح للـ 8 كروت كاملة ومستقرة -->
-            <div id="our-products-grid" class="bose-products-grid products-grid"></div>
-            <div class="bose-show-more-container">
-                <button id="our-products-show-more-btn" class="bose-product-action-btn" aria-label="استعراض المزيد من منتجاتنا الفاخرة">استعرض المزيد</button>
-            </div>
-        </section>
-
-        <!-- 🎥 SECTION 09: عقد من الإتقان (فيديو دوران التورتة وتقفيل المطبخ الملكي القياسي - تحميل كسول Lazy) -->
-        <section id="excellence-video-section" class="bose-video-showcase-section" aria-labelledby="excellence-main-heading">
-            <div class="bose-section-header">
-                <h2 id="excellence-main-heading" class="bose-section-title">عقد من الإتقان</h2>
-                <p id="excellence-description" class="bose-section-subtitle">وراء كل قطعة حلوى، قصة حب وإتقان. بنشتغل عليها بذمة ونظافة، عشان تستاهلوا الأفضل.</p>
-            </div>
-            <div class="bose-video-player-frame bose-lazy-video-frame">
-                <iframe 
-                    data-src="https://player.cloudinary.com/embed/?cloud_name=dyx4w0dr1&public_id=lv_0_%D9%A2%D9%A0%D9%A2%D9%A6%D9%A0%D9%A4%D9%A1%D9%A8%D9%A1%D9%A1%D9%A0%D9%A8%D9%A0%D9%A9_g2bv90&autoplay=true&muted=true&loop=true&player%5Bfluid%5D=true&player%5Bcontrols%5D=false" 
-                    style="width: 100%; height: 100%; border: none; position: absolute; top: 0; left: 0;" 
-                    allow="autoplay; fullscreen; encrypted-media" 
-                    loading="lazy"
-                    title="فيديو كواليس عقد من الإتقان حلويات بوسي">
-                </iframe>
-            </div>
-        </section>
-
-        <!-- SECTION 10: وصل حديثاً (6 كروت بنكهات حصرية متوازنة مريحة للعين) -->
-        <section id="new-arrivals-section" class="bose-section-container" aria-labelledby="new-arrivals-main-heading">
-            <div class="bose-section-header">
-                <h2 id="new-arrivals-main-heading" class="bose-section-title">وصل حديثاً</h2>
-                <p id="new-arrivals-description" class="bose-section-subtitle bose-arabic-text">هنا هتلاقوا أحدث الأفكار اللي طورناها شهور كاملة، عشان تخطف قلبكم من أول معلقة. جربوا النكهات الجديدة، وقولوا لنا رأيكم.</p>
-            </div>
-            <div id="new-arrivals-grid" class="bose-products-grid products-grid"></div>
-            <div id="new-arrivals-dots-container" class="bose-dots-container" hidden></div>
-        </section>
-
-        <!-- SECTION 11: بلوك عرض محاكي الورد والهدايا ومفآجات الكاش الكبرى (ميزة تنافسية صريحة ومؤهلة) -->
-        <section id="flower-preview-section" class="preview-builder-block bose-isolated-simulator-card bose-simulator-reveal" aria-labelledby="flower-preview-title">
-            <div class="bose-isolated-backdrop-framework"></div>
-            <div class="bose-simulator-decor" aria-hidden="true">
-                <i class="fas fa-spa bose-simulator-float-icon icon-1"></i>
-                <i class="fas fa-heart bose-simulator-float-icon icon-2"></i>
-                <i class="fas fa-star bose-simulator-float-icon icon-3"></i>
-            </div>
-            <div class="simulator-card-inner-layout">
-                <div class="bose-simulator-image-wrap">
-                    <span class="bose-simulator-exclusive-badge"><i class="fas fa-leaf"></i> حصريًا: ورد طبيعي حقيقي</span>
-                    <img id="flower-preview-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="تنسيق بوكيهات الورد والمال الفاخرة حسب الطلب" width="450" height="380" loading="lazy">
-                </div>
-                <div class="simulator-text-content">
-                    <span class="bose-simulator-eyebrow"><i class="fas fa-award"></i> الوحيدين في الفرافرة اللي بيقدموه</span>
-                    <h2 id="flower-preview-title" class="bose-simulator-title">محاكي الورد</h2>
-                    <p id="flower-preview-desc" class="bose-simulator-desc bose-arabic-text">عشان الهدية تطلع من القلب، اختاروا الورد اللي يعجبكم -طبيعي، صناعي، أو ستان فخم- وضيفوا كارت إهداء، شوكولاتة، أو مفاجأة كاش. التفاصيل كلها في إيدكم.</p>
-                    <ul class="bose-simulator-feature-list">
-                        <li><i class="fas fa-check-circle"></i> ورد طبيعي حقيقي - مفيش حد تاني بيوفره في الفرافرة</li>
-                        <li><i class="fas fa-check-circle"></i> بدائل صناعي وستان فاخر لعشاق الديمومة</li>
-                        <li><i class="fas fa-check-circle"></i> إضافات هدايا: كارت إهداء، شوكولاتة، أو مفاجأة كاش</li>
-                    </ul>
-                    <a id="flower-preview-cta" href="flower-builder.html" class="bose-simulator-action-btn" role="button">تصميم البوكيه الآن</a>
-                </div>
-            </div>
-        </section>
-
-        <!-- ==========================================================================
-             SECTION 12: بلوك تحميل التطبيق الكبير 👑👑 [مرحلة جديدة]: بلوك بصري فاخر بهوية بوسي
-             الكاملة (وردي/ذهبي/أبيض)، مستوحى من فكرة نفس النمط اللي صاحبة المتجر بعتته
-             (عنوان + مميزات + زرارين متجر + موبايل بيعرض شاشات التطبيق بتتبدل + أيقونات
-             عائمة) لكن بتصميم وحركة وألوان بوسي الخاصة تماماً، مُوجّه لجيل ألفا/Z.
-             📍 [إعادة ترتيب]: البلوك ده كان أول قسم في الرئيسية (فوق شلال المنتجات)،
-             اتنقل هنا تحت محاكي الورد مباشرة بناءً على طلب صاحبة المتجر.
-             ⚠️ زراير المتجرين حالياً بتفعّل تثبيت الـ PWA (زي نافذة الترحيب) لحد ما
-             يبقى فيه تطبيق حقيقي منشور على المتجرين - التفاصيل في ملف الشرح المرفق.
-             ✅ [محتوى حقيقي]: شاشات الموبايل الثلاث بقت بتتغذى بمنتجات حقيقية فعلية من
-             البيانات الحية (data.homepage.mostSelling) عن طريق injectAppPromoRealContent()
-             في core-engine.js، بدل الصناديق الرمادية الفاضية اللي كانت مجرد Placeholder.
-             ========================================================================== -->
-        <section id="app-promo-section" class="bose-app-promo-section" aria-label="حمّلي تطبيق حلويات بوسي">
-            <div class="bose-app-promo-inner">
-                <div class="bose-app-promo-text-col">
-                    <span class="bose-app-promo-eyebrow"><i class="fa-solid fa-mobile-screen-button"></i> تطبيقنا الآن بين إيديكي</span>
-                    <h2 class="bose-app-promo-title">تسوّقي بذكاء مع تطبيق حلويات بوسي</h2>
-                    <p class="bose-app-promo-desc">اطلبي حلوياتك المفضلة في ثواني، تابعي طلبك أول بأول، واكسبي نقاط ومكافآت حصرية مع كل طلب - كل ده في تطبيق واحد بين إيديكي.</p>
-
-                    <div class="bose-app-promo-pills">
-                        <a href="track-order.html" class="bose-app-promo-pill"><i class="fa-solid fa-truck-fast"></i> تتبعي طلبك لحظة بلحظة</a>
-                        <a href="menu.html" class="bose-app-promo-pill"><i class="fa-solid fa-bag-shopping"></i> تسوّق سهل وسريع</a>
-                        <a href="rewards.html" class="bose-app-promo-pill"><i class="fa-solid fa-gift"></i> مكافآت حصرية لعملائنا</a>
-                    </div>
-
-                    <div class="bose-app-promo-store-btns">
-                        <button type="button" class="bose-app-store-btn" id="app-promo-appstore-btn" aria-label="تحميل من App Store">
-                            <i class="fa-brands fa-apple"></i>
-                            <span><small>حمّليه من</small>App Store</span>
-                        </button>
-                        <button type="button" class="bose-app-store-btn bose-app-store-btn-filled" id="app-promo-googleplay-btn" aria-label="تحميل من Google Play">
-                            <i class="fa-brands fa-google-play"></i>
-                            <span><small>حمّليه من</small>Google Play</span>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="bose-app-promo-phone-col">
-                    <div class="bose-app-promo-phone-frame">
-                        <div class="bose-app-promo-phone-notch"></div>
-                        <div class="bose-app-promo-screen bose-screen-1">
-                            <div class="mock-status-bar"><span>9:41</span><i class="fa-solid fa-signal"></i></div>
-                            <div class="mock-app-header"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="" loading="lazy" /> <strong>حلويات بوسي</strong></div>
-                            <div class="mock-hero-strip">صنعناها بحب لتهديها لمن تحب 💗</div>
-                            <div id="app-promo-product-grid" class="mock-product-grid">
-                                <div class="mock-product-card"></div>
-                                <div class="mock-product-card"></div>
-                                <div class="mock-product-card"></div>
-                                <div class="mock-product-card"></div>
-                            </div>
-                        </div>
-                        <div class="bose-app-promo-screen bose-screen-2">
-                            <div class="mock-status-bar"><span>9:41</span><i class="fa-solid fa-signal"></i></div>
-                            <div class="mock-rewards-title">مكافآتك</div>
-                            <div class="mock-points-badge"><i class="fa-solid fa-star"></i> 850 نقطة</div>
-                            <div class="mock-progress-track"><div class="mock-progress-fill"></div></div>
-                            <div class="mock-reward-row"><i class="fa-solid fa-gift"></i> خصم 50 جنيه على طلبك الجاي</div>
-                            <div class="mock-reward-row"><i class="fa-solid fa-cake-candles"></i> تورتة مجانية بعد 5 طلبات</div>
-                        </div>
-                        <div class="bose-app-promo-screen bose-screen-3">
-                            <div class="mock-status-bar"><span>9:41</span><i class="fa-solid fa-signal"></i></div>
-                            <div class="mock-rewards-title">سلتك</div>
-                            <div id="app-promo-cart-rows">
-                                <div class="mock-cart-row"><div class="mock-cart-thumb"></div><div class="mock-cart-lines"><span></span><span></span></div></div>
-                                <div class="mock-cart-row"><div class="mock-cart-thumb"></div><div class="mock-cart-lines"><span></span><span></span></div></div>
-                            </div>
-                            <button class="mock-checkout-btn">تأكيد الطلب</button>
-                        </div>
-                    </div>
-
-                    <div class="bose-app-promo-float-badge badge-pos-1"><i class="fa-solid fa-gift"></i></div>
-                    <div class="bose-app-promo-float-badge badge-pos-2"><i class="fa-solid fa-star"></i></div>
-                    <div class="bose-app-promo-float-badge badge-pos-3"><i class="fa-solid fa-truck-fast"></i></div>
-                    <div class="bose-app-promo-float-badge badge-pos-4"><i class="fa-solid fa-cake-candles"></i></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECTION 13: الفخر والاعتزاز (تايم لاين سردي لحكاية المتجر - كل رقم بقى محطة
-             في رحلة موضّح جنبها معناها للعميل، بدل ما تكون كروت أرقام مجردة بلا سياق) -->
-        <section id="pride-section" class="bose-pride-statistics-section" aria-labelledby="pride-main-title">
-            <div class="bose-pride-container">
-                <div class="bose-pride-text-block">
-                    <span class="pride-mini-tag"><i class="fas fa-crown"></i> حكايتنا معاكم بالأرقام</span>
-                    <h2 id="pride-main-title">الفخر والاعتزاز</h2>
-                    <p id="pride-main-text" class="bose-arabic-text">حكايتنا بدأت معاكم من أكتر من عقد، وكل رقم جاي دلوقتي مش تفاخر - ده أثر حقيقي لثقتكم فينا سنة ورا سنة. اتفرجوا على الرحلة:</p>
-                </div>
-                <div class="bose-timeline-wrap" id="bose-counters-framework-trigger">
-                    <div class="bose-timeline-item">
-                        <div class="bose-timeline-node"><i class="fas fa-flag" aria-hidden="true"></i></div>
-                        <div class="bose-timeline-content">
-                            <span id="stat-years-label" class="bose-timeline-kicker">سنوات خبرة</span>
-                            <div id="pride-stat-years" data-stat="years" class="bose-timeline-number">0</div>
-                            <h3 class="bose-timeline-title">من هنا بدأت الحكاية</h3>
-                            <p class="bose-timeline-context bose-arabic-text">أكتر من عقد كامل بنصمم فيه أحلى اللحظات لعملائنا، خبرة اتراكمت سنة ورا سنة من غير أي تنازل عن الجودة.</p>
-                        </div>
-                    </div>
-                    <div class="bose-timeline-item">
-                        <div class="bose-timeline-node"><i class="fas fa-users" aria-hidden="true"></i></div>
-                        <div class="bose-timeline-content">
-                            <span id="stat-customers-label" class="bose-timeline-kicker">عميل</span>
-                            <div id="pride-stat-customers" data-stat="customers" class="bose-timeline-number">0</div>
-                            <h3 class="bose-timeline-title">ثقة كبرت معانا خطوة خطوة</h3>
-                            <p class="bose-timeline-context bose-arabic-text">كل عميل جديد بييجي غالبًا بترشيح حد جربنا قبل كده - وده أصدق شهادة على شغلنا.</p>
-                        </div>
-                    </div>
-                    <div class="bose-timeline-item">
-                        <div class="bose-timeline-node"><i class="fas fa-shopping-cart" aria-hidden="true"></i></div>
-                        <div class="bose-timeline-content">
-                            <span id="stat-orders-label" class="bose-timeline-kicker">طلب ناجح</span>
-                            <div id="pride-stat-orders" data-stat="orders" class="bose-timeline-number">0</div>
-                            <h3 class="bose-timeline-title">التزام في كل طلب من غير استثناء</h3>
-                            <p class="bose-timeline-context bose-arabic-text">كل طلب من الطلبات دي وصل في ميعاده وبنفس المواصفات المتفق عليها بالظبط.</p>
-                        </div>
-                    </div>
-                    <div class="bose-timeline-item">
-                        <div class="bose-timeline-node"><i class="fas fa-birthday-cake" aria-hidden="true"></i></div>
-                        <div class="bose-timeline-content">
-                            <span id="stat-cakes-label" class="bose-timeline-kicker">التورت المصممة</span>
-                            <div id="pride-stat-cakes" data-stat="cakes" class="bose-timeline-number">0</div>
-                            <h3 class="bose-timeline-title">تورتة مختلفة لكل مناسبة</h3>
-                            <p class="bose-timeline-context bose-arabic-text">من أعياد الميلاد لحفلات الخطوبة والتخرج، كل تورتة صممناها كانت بتفاصيل تخص صاحبها هو بس.</p>
-                        </div>
-                    </div>
-                    <div class="bose-timeline-item">
-                        <div class="bose-timeline-node"><i class="fas fa-heart" aria-hidden="true"></i></div>
-                        <div class="bose-timeline-content">
-                            <span id="stat-bouquets-label" class="bose-timeline-kicker">منسقة بحب</span>
-                            <div id="pride-stat-bouquets" data-stat="bouquets" class="bose-timeline-number">0</div>
-                            <h3 class="bose-timeline-title">ورد بيوصل الإحساس زي ما هو</h3>
-                            <p class="bose-timeline-context bose-arabic-text">كل بوكيه اتنسق بحب عشان الهدية توصل بالظبط زي ما حسيتوها.</p>
-                        </div>
-                    </div>
-                </div>
-                <p class="bose-timeline-closing"><i class="fas fa-infinity" aria-hidden="true"></i> ولسه الحكاية مستمرة معاكم</p>
-            </div>
-        </section>
-
-        <!-- 🎓 SECTION 14: أول مرة تطلب معانا؟ - الدليل التعليمي الكامل لخطوات الشراء
-             📍 [إعادة ترتيب]: كان القسم ده رابع قسم في الصفحة (بعد العروض مباشرة)،
-             قبل ما العميل يشوف أغلب المنتجات أصلاً - نقلناه هنا لآخر الصفحة عشان
-             يبقى جسر عملي للطلب بعد ما العميل يكون اتفرج على كل حاجة واقتنع، مش
-             عائق نص التصفح. بيشرح للعميل اللي بيطلب أونلاين لأول مرة رحلته كاملة
-             خطوة بخطوة من اختيار المنتج لحد استلام الطلب، وطريقة تأكيد الطلب على
-             واتساب وطريقة الدفع بالتفصيل. -->
+        <!-- 🎓 SECTION 02C: أول مرة تطلب معانا؟ - الدليل التعليمي الكامل لخطوات الشراء
+             (بعد قسم العروض والخصومات مباشرة وقبل الأكثر مبيعاً - بيشرح للعميل اللي
+             بيطلب أونلاين لأول مرة رحلته كاملة خطوة بخطوة من اختيار المنتج لحد
+             استلام الطلب، وطريقة تأكيد الطلب على واتساب وطريقة الدفع بالتفصيل) -->
         <section id="howto-order-section" class="bose-section-container bose-howto-section" aria-labelledby="howto-order-heading">
             <div class="bose-section-header">
                 <div class="bose-howto-badge"><i class="fas fa-graduation-cap"></i> دليلك الكامل للطلب</div>
@@ -497,6 +218,310 @@
                     <h4>طريقة الدفع</h4>
                     <p>تحويل كاش أو InstaPay على رقم المتجر - عربون 50% لو استلام من الفرع، أو المبلغ كامل مقدماً لو هيتوصّل لباب البيت.</p>
                 </div>
+            </div>
+        </section>
+
+        <!-- SECTION 03: الأكثر مبيعاً (شبكة مستقرة وموزعة بدقة هندسية كاملة) -->
+        <section id="most-selling-section" class="bose-section-container" aria-labelledby="most-selling-main-heading">
+            <div class="bose-section-header">
+                <h2 id="most-selling-main-heading" class="bose-section-title">الأكثر مبيعاً</h2>
+                <p id="most-selling-description" class="bose-section-subtitle bose-arabic-text">دي الأصناف اللي بتطلبوها وتحبوها من سنين، نكهات مظبوطة بالملي، بقت رمز ثقتكم فينا.</p>
+            </div>
+            <!-- شبكة الأكثر مبيعاً (8 كروت كاملة ومستقرة هندسياً بالمحرك) -->
+            <div id="most-selling-grid" class="bose-products-grid products-grid"></div>
+            <div id="most-selling-dots-container" class="bose-dots-container" hidden></div>
+        </section>
+
+        <!-- 🎥 SECTION 02A: سيمفونية الطعم (فيديو الشوكولاتة والصوصات دافئة السيلان) -->
+        <section id="symphony-video-section" class="bose-video-showcase-section" aria-labelledby="symphony-main-heading">
+            <div class="bose-section-header">
+                <h2 id="symphony-main-heading" class="bose-section-title">سيمفونية الطعم</h2>
+                <p id="symphony-description" class="bose-section-subtitle">بنهتم بكل تفصيلة عشان طعمها يعجبكم: صوصات سايحة، خامات طبيعية فريش، وتحضير يدوي بحب كل يوم، عشان توصلكم طازة.</p>
+            </div>
+            <div class="bose-video-player-frame">
+                <iframe 
+                    src="https://player.cloudinary.com/embed/?cloud_name=dyx4w0dr1&public_id=VID20260424210523_oviixh&autoplay=true&muted=true&loop=true&player%5Bfluid%5D=true&player%5Bcontrols%5D=false" 
+                    style="width: 100%; height: 100%; border: none; position: absolute; top: 0; left: 0;" 
+                    allow="autoplay; fullscreen; encrypted-media" 
+                    title="فيديو سيمفونية الطعم حلويات بوسي">
+                </iframe>
+            </div>
+        </section>
+
+        <!-- SECTION 04: بلوك عرض محاكي التورت الكبرى (مطهر بالكامل من عيوب الإزاحة والضغط البصري) -->
+        <section id="cake-preview-section" class="preview-builder-block bose-isolated-simulator-card bose-simulator-reveal" aria-labelledby="cake-preview-title">
+            <div class="bose-isolated-backdrop-framework"></div>
+            <div class="bose-simulator-decor" aria-hidden="true">
+                <i class="fas fa-birthday-cake bose-simulator-float-icon icon-1"></i>
+                <i class="fas fa-gem bose-simulator-float-icon icon-2"></i>
+                <i class="fas fa-star bose-simulator-float-icon icon-3"></i>
+            </div>
+            <div class="simulator-card-inner-layout">
+                <div class="bose-simulator-image-wrap">
+                    <span class="bose-simulator-exclusive-badge"><i class="fas fa-crown"></i> قيمة وجودة ملهاش منافس</span>
+                    <img id="cake-preview-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="محاكي وتصميم التورت الحصري لعلامة حلويات بوسي" width="450" height="380" loading="lazy">
+                </div>
+                <div class="simulator-text-content">
+                    <span class="bose-simulator-eyebrow"><i class="fas fa-award"></i> تصميم مخصص 100% حسب ذوقك</span>
+                    <h2 id="cake-preview-title" class="bose-simulator-title">محاكي التورت</h2>
+                    <p id="cake-preview-desc" class="bose-simulator-desc bose-arabic-text">التورتة عندنا مش حلوى وخلاص، دي قطعة بنصمملها مخصوص تفرح صاحب المناسبة. اختاروا الحجم والنكهة والشكل، وسيبوا الباقي علينا.</p>
+                    <ul class="bose-simulator-feature-list">
+                        <li><i class="fas fa-check-circle"></i> مقادير طازة وطبيعية 100% في كل قطعة</li>
+                        <li><i class="fas fa-check-circle"></i> أي حجم، نكهة، أو شكل تتخيله - بنصممهولك</li>
+                        <li><i class="fas fa-check-circle"></i> جودة وقيمة مفيش زيها في الفرافرة كلها</li>
+                    </ul>
+                    <a id="cake-preview-cta" href="cake-builder.html" class="bose-simulator-action-btn" role="button">تصميم التورتة الآن</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 06: منتجاتنا (التوزيع الثنائي الصارم ومنع أنصاف الكروت المشوهة) -->
+        <section id="our-products-section" class="bose-section-container" aria-labelledby="our-products-main-heading">
+            <div class="bose-section-header">
+                <h2 id="our-products-main-heading" class="bose-section-title">منتجاتنا</h2>
+                <p id="our-products-description" class="bose-section-subtitle bose-arabic-text">منيو حلويات بوسي بالكامل: تشكيلة غنية، بنحضرها طازة كل يوم بمكونات طبيعية 100%. من الكب كيك الصغير لحد بوكسات الضيافة الكبيرة، من غير أي تنازل عن الجودة.</p>
+            </div>
+            <!-- العرض الأولي يبدأ من 4 كروت (صفين متوازيين) ثم ينفتح للـ 8 كروت كاملة ومستقرة -->
+            <div id="our-products-grid" class="bose-products-grid products-grid"></div>
+            <div class="bose-show-more-container">
+                <button id="our-products-show-more-btn" class="bose-product-action-btn" aria-label="استعراض المزيد من منتجاتنا الفاخرة">استعرض المزيد</button>
+            </div>
+        </section>
+
+        <!-- 🎥 SECTION 02B: عقد من الإتقان (فيديو دوران التورتة وتقفيل المطبخ الملكي القياسي) -->
+        <section id="excellence-video-section" class="bose-video-showcase-section" aria-labelledby="excellence-main-heading">
+            <div class="bose-section-header">
+                <h2 id="excellence-main-heading" class="bose-section-title">عقد من الإتقان</h2>
+                <p id="excellence-description" class="bose-section-subtitle">وراء كل قطعة حلوى، قصة حب وإتقان. بنشتغل عليها بذمة ونظافة، عشان تستاهلوا الأفضل.</p>
+            </div>
+            <div class="bose-video-player-frame">
+                <iframe 
+                    src="https://player.cloudinary.com/embed/?cloud_name=dyx4w0dr1&public_id=lv_0_%D9%A2%D9%A0%D9%A2%D9%A6%D9%A0%D9%A4%D9%A1%D9%A8%D9%A1%D9%A1%D9%A0%D9%A8%D9%A0%D9%A9_g2bv90&autoplay=true&muted=true&loop=true&player%5Bfluid%5D=true&player%5Bcontrols%5D=false" 
+                    style="width: 100%; height: 100%; border: none; position: absolute; top: 0; left: 0;" 
+                    allow="autoplay; fullscreen; encrypted-media" 
+                    title="فيديو كواليس عقد من الإتقان حلويات بوسي">
+                </iframe>
+            </div>
+        </section>
+
+        <!-- SECTION 05: وصل حديثاً (6 كروت بنكهات حصرية متوازنة مريحة للعين) -->
+        <section id="new-arrivals-section" class="bose-section-container" aria-labelledby="new-arrivals-main-heading">
+            <div class="bose-section-header">
+                <h2 id="new-arrivals-main-heading" class="bose-section-title">وصل حديثاً</h2>
+                <p id="new-arrivals-description" class="bose-section-subtitle bose-arabic-text">هنا هتلاقوا أحدث الأفكار اللي طورناها شهور كاملة، عشان تخطف قلبكم من أول معلقة. جربوا النكهات الجديدة، وقولوا لنا رأيكم.</p>
+            </div>
+            <div id="new-arrivals-grid" class="bose-products-grid products-grid"></div>
+            <div id="new-arrivals-dots-container" class="bose-dots-container" hidden></div>
+        </section>
+
+        <!-- SECTION 07: بلوك عرض محاكي الورد والهدايا ومفآجات الكاش الكبرى (ميزة تنافسية صريحة ومؤهلة) -->
+        <section id="flower-preview-section" class="preview-builder-block bose-isolated-simulator-card bose-simulator-reveal" aria-labelledby="flower-preview-title">
+            <div class="bose-isolated-backdrop-framework"></div>
+            <div class="bose-simulator-decor" aria-hidden="true">
+                <i class="fas fa-spa bose-simulator-float-icon icon-1"></i>
+                <i class="fas fa-heart bose-simulator-float-icon icon-2"></i>
+                <i class="fas fa-star bose-simulator-float-icon icon-3"></i>
+            </div>
+            <div class="simulator-card-inner-layout">
+                <div class="bose-simulator-image-wrap">
+                    <span class="bose-simulator-exclusive-badge"><i class="fas fa-leaf"></i> حصريًا: ورد طبيعي حقيقي</span>
+                    <img id="flower-preview-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="تنسيق بوكيهات الورد والمال الفاخرة حسب الطلب" width="450" height="380" loading="lazy">
+                </div>
+                <div class="simulator-text-content">
+                    <span class="bose-simulator-eyebrow"><i class="fas fa-award"></i> الوحيدين في الفرافرة اللي بيقدموه</span>
+                    <h2 id="flower-preview-title" class="bose-simulator-title">محاكي الورد</h2>
+                    <p id="flower-preview-desc" class="bose-simulator-desc bose-arabic-text">عشان الهدية تطلع من القلب، اختاروا الورد اللي يعجبكم -طبيعي، صناعي، أو ستان فخم- وضيفوا كارت إهداء، شوكولاتة، أو مفاجأة كاش. التفاصيل كلها في إيدكم.</p>
+                    <ul class="bose-simulator-feature-list">
+                        <li><i class="fas fa-check-circle"></i> ورد طبيعي حقيقي - مفيش حد تاني بيوفره في الفرافرة</li>
+                        <li><i class="fas fa-check-circle"></i> بدائل صناعي وستان فاخر لعشاق الديمومة</li>
+                        <li><i class="fas fa-check-circle"></i> إضافات هدايا: كارت إهداء، شوكولاتة، أو مفاجأة كاش</li>
+                    </ul>
+                    <a id="flower-preview-cta" href="flower-builder.html" class="bose-simulator-action-btn" role="button">تصميم البوكيه الآن</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================================================
+             👑👑 [مرحلة جديدة - بلوك تحميل التطبيق الكبير]: بلوك بصري فاخر بهوية بوسي
+             الكاملة (وردي/ذهبي/أبيض)، مستوحى من فكرة نفس النمط اللي صاحبة المتجر بعتته
+             (عنوان + مميزات + زرارين متجر + موبايل بيعرض شاشات التطبيق بتتبدل + أيقونات
+             عائمة) لكن بتصميم وحركة وألوان بوسي الخاصة تماماً، مُوجّه لجيل ألفا/Z.
+             📍 [إعادة ترتيب]: البلوك ده كان أول قسم في الرئيسية (فوق شلال المنتجات)،
+             اتنقل هنا تحت محاكي الورد مباشرة بناءً على طلب صاحبة المتجر.
+             ⚠️ زراير المتجرين حالياً بتفعّل تثبيت الـ PWA (زي نافذة الترحيب) لحد ما
+             يبقى فيه تطبيق حقيقي منشور على المتجرين - التفاصيل في ملف الشرح المرفق.
+             ✅ [محتوى حقيقي]: شاشات الموبايل الثلاث بقت بتتغذى بمنتجات حقيقية فعلية من
+             البيانات الحية (data.homepage.mostSelling) عن طريق injectAppPromoRealContent()
+             في core-engine.js، بدل الصناديق الرمادية الفاضية اللي كانت مجرد Placeholder.
+             ========================================================================== -->
+        <section id="app-promo-section" class="bose-app-promo-section" aria-label="حمّلي تطبيق حلويات بوسي">
+            <div class="bose-app-promo-inner">
+                <div class="bose-app-promo-text-col">
+                    <span class="bose-app-promo-eyebrow"><i class="fa-solid fa-mobile-screen-button"></i> تطبيقنا الآن بين إيديكي</span>
+                    <h2 class="bose-app-promo-title">تسوّقي بذكاء مع تطبيق حلويات بوسي</h2>
+                    <p class="bose-app-promo-desc">اطلبي حلوياتك المفضلة في ثواني، تابعي طلبك أول بأول، واكسبي نقاط ومكافآت حصرية مع كل طلب - كل ده في تطبيق واحد بين إيديكي.</p>
+
+                    <div class="bose-app-promo-pills">
+                        <a href="track-order.html" class="bose-app-promo-pill"><i class="fa-solid fa-truck-fast"></i> تتبعي طلبك لحظة بلحظة</a>
+                        <a href="menu.html" class="bose-app-promo-pill"><i class="fa-solid fa-bag-shopping"></i> تسوّق سهل وسريع</a>
+                        <a href="rewards.html" class="bose-app-promo-pill"><i class="fa-solid fa-gift"></i> مكافآت حصرية لعملائنا</a>
+                    </div>
+
+                    <div class="bose-app-promo-store-btns">
+                        <button type="button" class="bose-app-store-btn" id="app-promo-appstore-btn" aria-label="تحميل من App Store">
+                            <i class="fa-brands fa-apple"></i>
+                            <span><small>حمّليه من</small>App Store</span>
+                        </button>
+                        <button type="button" class="bose-app-store-btn bose-app-store-btn-filled" id="app-promo-googleplay-btn" aria-label="تحميل من Google Play">
+                            <i class="fa-brands fa-google-play"></i>
+                            <span><small>حمّليه من</small>Google Play</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bose-app-promo-phone-col">
+                    <div class="bose-app-promo-phone-frame">
+                        <div class="bose-app-promo-phone-notch"></div>
+                        <div class="bose-app-promo-screen bose-screen-1">
+                            <div class="mock-status-bar"><span>9:41</span><i class="fa-solid fa-signal"></i></div>
+                            <div class="mock-app-header"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="" /> <strong>حلويات بوسي</strong></div>
+                            <div class="mock-hero-strip">صنعناها بحب لتهديها لمن تحب 💗</div>
+                            <div id="app-promo-product-grid" class="mock-product-grid">
+                                <div class="mock-product-card"></div>
+                                <div class="mock-product-card"></div>
+                                <div class="mock-product-card"></div>
+                                <div class="mock-product-card"></div>
+                            </div>
+                        </div>
+                        <div class="bose-app-promo-screen bose-screen-2">
+                            <div class="mock-status-bar"><span>9:41</span><i class="fa-solid fa-signal"></i></div>
+                            <div class="mock-rewards-title">مكافآتك</div>
+                            <div class="mock-points-badge"><i class="fa-solid fa-star"></i> 850 نقطة</div>
+                            <div class="mock-progress-track"><div class="mock-progress-fill"></div></div>
+                            <div class="mock-reward-row"><i class="fa-solid fa-gift"></i> خصم 50 جنيه على طلبك الجاي</div>
+                            <div class="mock-reward-row"><i class="fa-solid fa-cake-candles"></i> تورتة مجانية بعد 5 طلبات</div>
+                        </div>
+                        <div class="bose-app-promo-screen bose-screen-3">
+                            <div class="mock-status-bar"><span>9:41</span><i class="fa-solid fa-signal"></i></div>
+                            <div class="mock-rewards-title">سلتك</div>
+                            <div id="app-promo-cart-rows">
+                                <div class="mock-cart-row"><div class="mock-cart-thumb"></div><div class="mock-cart-lines"><span></span><span></span></div></div>
+                                <div class="mock-cart-row"><div class="mock-cart-thumb"></div><div class="mock-cart-lines"><span></span><span></span></div></div>
+                            </div>
+                            <button class="mock-checkout-btn">تأكيد الطلب</button>
+                        </div>
+                    </div>
+
+                    <div class="bose-app-promo-float-badge badge-pos-1"><i class="fa-solid fa-gift"></i></div>
+                    <div class="bose-app-promo-float-badge badge-pos-2"><i class="fa-solid fa-star"></i></div>
+                    <div class="bose-app-promo-float-badge badge-pos-3"><i class="fa-solid fa-truck-fast"></i></div>
+                    <div class="bose-app-promo-float-badge badge-pos-4"><i class="fa-solid fa-cake-candles"></i></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 08: الفخر والاعتزاز (تايم لاين سردي لحكاية المتجر - كل رقم بقى محطة
+             في رحلة موضّح جنبها معناها للعميل، بدل ما تكون كروت أرقام مجردة بلا سياق) -->
+        <section id="pride-section" class="bose-pride-statistics-section" aria-labelledby="pride-main-title">
+            <div class="bose-pride-container">
+                <div class="bose-pride-text-block">
+                    <span class="pride-mini-tag"><i class="fas fa-crown"></i> حكايتنا معاكم بالأرقام</span>
+                    <h2 id="pride-main-title">الفخر والاعتزاز</h2>
+                    <p id="pride-main-text" class="bose-arabic-text">حكايتنا بدأت معاكم من أكتر من عقد، وكل رقم جاي دلوقتي مش تفاخر - ده أثر حقيقي لثقتكم فينا سنة ورا سنة. اتفرجوا على الرحلة:</p>
+                </div>
+                <div class="bose-timeline-wrap" id="bose-counters-framework-trigger">
+                    <div class="bose-timeline-item">
+                        <div class="bose-timeline-node"><i class="fas fa-flag" aria-hidden="true"></i></div>
+                        <div class="bose-timeline-content">
+                            <span id="stat-years-label" class="bose-timeline-kicker">سنوات خبرة</span>
+                            <div id="pride-stat-years" data-stat="years" class="bose-timeline-number">0</div>
+                            <h3 class="bose-timeline-title">من هنا بدأت الحكاية</h3>
+                            <p class="bose-timeline-context bose-arabic-text">أكتر من عقد كامل بنصمم فيه أحلى اللحظات لعملائنا، خبرة اتراكمت سنة ورا سنة من غير أي تنازل عن الجودة.</p>
+                        </div>
+                    </div>
+                    <div class="bose-timeline-item">
+                        <div class="bose-timeline-node"><i class="fas fa-users" aria-hidden="true"></i></div>
+                        <div class="bose-timeline-content">
+                            <span id="stat-customers-label" class="bose-timeline-kicker">عميل</span>
+                            <div id="pride-stat-customers" data-stat="customers" class="bose-timeline-number">0</div>
+                            <h3 class="bose-timeline-title">ثقة كبرت معانا خطوة خطوة</h3>
+                            <p class="bose-timeline-context bose-arabic-text">كل عميل جديد بييجي غالبًا بترشيح حد جربنا قبل كده - وده أصدق شهادة على شغلنا.</p>
+                        </div>
+                    </div>
+                    <div class="bose-timeline-item">
+                        <div class="bose-timeline-node"><i class="fas fa-shopping-cart" aria-hidden="true"></i></div>
+                        <div class="bose-timeline-content">
+                            <span id="stat-orders-label" class="bose-timeline-kicker">طلب ناجح</span>
+                            <div id="pride-stat-orders" data-stat="orders" class="bose-timeline-number">0</div>
+                            <h3 class="bose-timeline-title">التزام في كل طلب من غير استثناء</h3>
+                            <p class="bose-timeline-context bose-arabic-text">كل طلب من الطلبات دي وصل في ميعاده وبنفس المواصفات المتفق عليها بالظبط.</p>
+                        </div>
+                    </div>
+                    <div class="bose-timeline-item">
+                        <div class="bose-timeline-node"><i class="fas fa-birthday-cake" aria-hidden="true"></i></div>
+                        <div class="bose-timeline-content">
+                            <span id="stat-cakes-label" class="bose-timeline-kicker">التورت المصممة</span>
+                            <div id="pride-stat-cakes" data-stat="cakes" class="bose-timeline-number">0</div>
+                            <h3 class="bose-timeline-title">تورتة مختلفة لكل مناسبة</h3>
+                            <p class="bose-timeline-context bose-arabic-text">من أعياد الميلاد لحفلات الخطوبة والتخرج، كل تورتة صممناها كانت بتفاصيل تخص صاحبها هو بس.</p>
+                        </div>
+                    </div>
+                    <div class="bose-timeline-item">
+                        <div class="bose-timeline-node"><i class="fas fa-heart" aria-hidden="true"></i></div>
+                        <div class="bose-timeline-content">
+                            <span id="stat-bouquets-label" class="bose-timeline-kicker">منسقة بحب</span>
+                            <div id="pride-stat-bouquets" data-stat="bouquets" class="bose-timeline-number">0</div>
+                            <h3 class="bose-timeline-title">ورد بيوصل الإحساس زي ما هو</h3>
+                            <p class="bose-timeline-context bose-arabic-text">كل بوكيه اتنسق بحب عشان الهدية توصل بالظبط زي ما حسيتوها.</p>
+                        </div>
+                    </div>
+                </div>
+                <p class="bose-timeline-closing"><i class="fas fa-infinity" aria-hidden="true"></i> ولسه الحكاية مستمرة معاكم</p>
+            </div>
+        </section>
+
+        <!-- SECTION 09: تسوق حسب الفئة الملوكي المطور (إيماءات السحب واللمس المرنة لعملاء الهواتف) -->
+        <section id="categories-slider-section" class="bose-section-container bose-categories-slider-section" aria-labelledby="categories-section-title">
+            <div class="bose-section-header">
+                <h2 id="categories-section-title" class="bose-section-title">تسوق حسب الفئة</h2>
+                <p id="categories-section-subtitle" class="bose-section-subtitle bose-arabic-text">قسمنا منيو حلويات بوسي لـ 12 فئة واضحة بالصور، عشان تلاقوا اللي بتحبوه من غير حيرة.</p>
+            </div>
+            <div id="categories-slider-wrapper" class="bose-categories-slider-wrapper">
+                <!-- مجرى الحركة الأفقي المرن المانع للفراغات والوميض نهائياً -->
+                <div id="categories-track" class="categories-track-slider"></div>
+            </div>
+            <div id="categories-dots-container" class="categories-slider-dots"></div>
+        </section>
+
+        <!-- SECTION 10: أسئلة شائعة - محتوى ظاهر يطابق FAQPage schema المحقون من core-engine.js
+             👑 [GEO]: القسم ده مش بس لراحة العميل - ده أهم عنصر لتصدر نتائج بحث الذكاء
+             الاصطناعي (ChatGPT/Perplexity/Google AI Overview) لأنها بتفضل تقتبس من صفحات
+             فيها إجابات صريحة سؤال وجواب بدل فقرات تسويقية عامة. -->
+        <section id="bose-faq-section" class="bose-section-container" aria-labelledby="faq-section-title">
+            <div class="bose-section-header">
+                <h2 id="faq-section-title" class="bose-section-title">أسئلة شائعة</h2>
+            </div>
+            <div class="bose-faq-list" style="max-width:760px; margin:0 auto; display:flex; flex-direction:column; gap:12px;">
+                <details class="bose-faq-item" style="background:#fff; border:1px solid #f0d9de; border-radius:14px; padding:16px 18px;">
+                    <summary style="cursor:pointer; font-weight:700; color:#7a2e40;">إزاي أقدر أطلب من حلويات بوسي؟</summary>
+                    <p class="bose-arabic-text" style="margin-top:10px; color:#555;">تقدري تتصفحي المنتجات على الموقع وتختاري اللي يعجبك، أو تصممي تورتة أو بوكيه ورد بنفسك عن طريق المحاكي التفاعلي، وبعدها تكمّلي طلبك وهيتواصل معاكِ فريقنا على واتساب لتأكيد التفاصيل والدفع.</p>
+                </details>
+                <details class="bose-faq-item" style="background:#fff; border:1px solid #f0d9de; border-radius:14px; padding:16px 18px;">
+                    <summary style="cursor:pointer; font-weight:700; color:#7a2e40;">المكونات اللي بتستخدموها آمنة وطبيعية؟</summary>
+                    <p class="bose-arabic-text" style="margin-top:10px; color:#555;">نعم، كل منتجاتنا بتتحضر بمكونات طبيعية طازجة، وخالية تماماً من أي إضافات تجارية ضارة، لأن الأمان الصحي جزء أساسي من فلسفة حلويات بوسي من أول يوم.</p>
+                </details>
+                <details class="bose-faq-item" style="background:#fff; border:1px solid #f0d9de; border-radius:14px; padding:16px 18px;">
+                    <summary style="cursor:pointer; font-weight:700; color:#7a2e40;">إيه طرق الدفع المتاحة؟</summary>
+                    <p class="bose-arabic-text" style="margin-top:10px; color:#555;">الدفع بيتم كاش أو عن طريق InstaPay، وبعد التحويل بتبعتي لقطة شاشة على واتساب وهيتم تأكيد طلبك فوراً.</p>
+                </details>
+                <details class="bose-faq-item" style="background:#fff; border:1px solid #f0d9de; border-radius:14px; padding:16px 18px;">
+                    <summary style="cursor:pointer; font-weight:700; color:#7a2e40;">فيه توصيل ولا استلام من المحل بس؟</summary>
+                    <p class="bose-arabic-text" style="margin-top:10px; color:#555;">الاتنين متاحين - تقدري تختاري التوصيل لباب البيت أو الاستلام مباشرة، حسب الأسهل لك وقت إتمام الطلب.</p>
+                </details>
+                <details class="bose-faq-item" style="background:#fff; border:1px solid #f0d9de; border-radius:14px; padding:16px 18px;">
+                    <summary style="cursor:pointer; font-weight:700; color:#7a2e40;">أقدر أصمم تورتة أو بوكيه ورد بنفسي؟</summary>
+                    <p class="bose-arabic-text" style="margin-top:10px; color:#555;">أيوة، عندنا محاكي تفاعلي مخصص لتصميم التورتات وبوكيهات الورد خطوة بخطوة حسب ذوقك ومناسبتك، وتقدري تشوفي السعر بيتغير مباشرة مع كل اختيار.</p>
+                </details>
             </div>
         </section>
 
