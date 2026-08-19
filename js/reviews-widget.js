@@ -34,15 +34,18 @@
         const productSlug = cfg.slug;
 
         mount.innerHTML = `
-            <div class="reviews-summary-row" style="direction: rtl;">
-                <div style="text-align: right;">
-                    <h2 style="font-size: 1.3rem; font-weight: 700; color: var(--bose-black);">${escapeHTML(heading)}</h2>
-                    <p style="font-size: 0.88rem; color: var(--bose-black); opacity: 0.7; margin: 6px 0 0 0;">${escapeHTML(subtext)}</p>
-                    <div id="bose-simreview-summary-line" style="display:flex; align-items:center; gap:10px; margin-top: 10px;">
-                        <span id="bose-simreview-summary-empty" style="font-size: 0.88rem; color: var(--bose-black); opacity: 0.7;">لسه معندناش مراجعات على التجربة دي - يشرفنا تكوني أول وحدة توثّق تجربتها 🌸</span>
-                        <div id="bose-simreview-summary-filled" style="display:none; align-items:center; gap:8px;">
-                            <span id="bose-simreview-summary-stars" style="color:var(--bose-gold); font-size:1rem; letter-spacing:2px;"></span>
-                            <span id="bose-simreview-summary-text" style="font-size: 0.9rem; font-weight:700; color: var(--bose-black);"></span>
+            <div class="reviews-summary-row reviews-hero-card" style="direction: rtl;">
+                <div style="text-align: right; display:flex; gap:14px; align-items:flex-start;">
+                    <div class="reviews-hero-icon" aria-hidden="true"><i class="fas fa-heart"></i></div>
+                    <div>
+                        <h2 style="font-size: 1.25rem; font-weight: 800; color: var(--bose-black); margin:0;">${escapeHTML(heading)}</h2>
+                        <p style="font-size: 0.88rem; color: var(--bose-black); opacity: 0.72; margin: 6px 0 0 0; line-height:1.6;">${escapeHTML(subtext)}</p>
+                        <div id="bose-simreview-summary-line" style="display:flex; align-items:center; gap:10px; margin-top: 12px;">
+                            <span id="bose-simreview-summary-empty" style="font-size: 0.85rem; font-weight:700; color: var(--bose-pink);"><i class="fas fa-star"></i> يشرفنا تكوني أول وحدة توثّق تجربتها 🌸</span>
+                            <div id="bose-simreview-summary-filled" style="display:none; align-items:center; gap:8px;">
+                                <span id="bose-simreview-summary-stars" style="color:var(--bose-gold); font-size:1rem; letter-spacing:2px;"></span>
+                                <span id="bose-simreview-summary-text" style="font-size: 0.9rem; font-weight:700; color: var(--bose-black);"></span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -82,8 +85,8 @@
                         </div>
                     </div>
                     <div style="margin-bottom: 16px;">
-                        <label style="display:block; font-size:0.88rem; font-weight:700; margin-bottom:6px;">تجربتك بالتفصيل (جملة واحدة تكفي)</label>
-                        <textarea id="bose-simreview-comment" placeholder="اضغطي على الاقتراحات فوق أو اكتبي رأيك بنفسك..." style="width:100%; height:90px; padding:12px; border-radius:12px; border:1px solid rgba(17,17,17,0.12); font-family:'Cairo'; resize:none; box-sizing:border-box;"></textarea>
+                        <label style="display:block; font-size:0.88rem; font-weight:700; margin-bottom:6px;">قوليلنا تجربتك بالتفصيل</label>
+                        <textarea id="bose-simreview-comment" placeholder="اضغطي على الاقتراحات فوق للبدء، أو اكتبي رأيك بنفسك - قوليلنا أي حاجة حابة تشاركيها، قد ما حبيتي 🌸" style="width:100%; height:110px; padding:12px; border-radius:12px; border:1px solid rgba(17,17,17,0.12); font-family:'Cairo'; resize:vertical; box-sizing:border-box;"></textarea>
                     </div>
 
                     <div style="margin-bottom: 20px;">
@@ -129,13 +132,25 @@
                 if (typeof window.showBoseToast === "function") window.showBoseToast("تعذر إرسال المراجعة حالياً، حاولي تحديث الصفحة أو المحاولة لاحقاً 🌸");
                 return false;
             }
-            await window.BoseSupabase.submitBoseReview({
-                productId: productSlug,
-                userName: review.user,
-                rating: review.rating,
-                comment: review.comment,
-                images: review.images,
-            });
+            // 🛡️ [حماية دفاعية]: قبل كده الكود هنا ماكانش فيه try/catch، فأي خطأ راجع
+            // من الشبكة أو من القاعدة كان بيوقف الدالة فجأة (exception غير ملتقطة)
+            // من غير ما يوصل لأي كود بعده - ده اللي كان بيخلي الزر يفضل عالق على
+            // "بيتم الإرسال..." للأبد من غير أي رسالة توضح للعميلة إن فيه مشكلة.
+            // دلوقتي أي فشل (حتى لو مستقبلاً لسبب تاني) بيتلقّط، يوريها رسالة واضحة،
+            // ويرجّع الزر لحالته الطبيعية عشان تقدر تحاول تاني.
+            try {
+                await window.BoseSupabase.submitBoseReview({
+                    productId: productSlug,
+                    userName: review.user,
+                    rating: review.rating,
+                    comment: review.comment,
+                    images: review.images,
+                });
+            } catch (err) {
+                console.warn("⚠️ تعذر إرسال المراجعة:", err);
+                if (typeof window.showBoseToast === "function") window.showBoseToast("حصلت مشكلة وإحنا بنبعت مراجعتك، ممكن تحاولي تاني؟ 🌸");
+                return false;
+            }
             sessionPendingReviews.unshift({ ...review, pending: true });
             return true;
         }
