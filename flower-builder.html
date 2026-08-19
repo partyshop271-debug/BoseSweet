@@ -155,21 +155,13 @@
                     <!-- قالب اختيار نوع الورد المستطيل الاحترافي لمنع التكدس -->
                     <div class="bose-premium-template-box">
                         <label class="premium-input-label" for="flower-type">تحب نوع الورد يكون إيه؟</label>
-                        <div class="bose-iconic-options-row" id="flower-type-iconic-row">
-                            <div class="bose-iconic-btn-node active-selected" data-value="natural">
-                                <span class="btn-icon">🌸</span>
-                                <span class="btn-label">ورد طبيعي نضر</span>
-                            </div>
-                            <div class="bose-iconic-btn-node" data-value="artificial">
-                                <span class="btn-icon">✨</span>
-                                <span class="btn-label">ورد صناعي فاخر</span>
-                            </div>
-                            <div class="bose-iconic-btn-node" data-value="satin">
-                                <span class="btn-icon">🎀</span>
-                                <span class="btn-label">ورد ستان راقٍ</span>
-                            </div>
-                        </div>
-                        <input type="hidden" id="flower-type" value="natural">
+                        <!-- 🌸👑 [شبكة أنواع ديناميكية بالكامل من لوحة التحكم]: الصف ده بيتبني
+                             بالكامل عن طريق js/flower-engine.js (renderFlowerTypeOptions) من
+                             قائمة أنواع الورد المُدارة بالأدمن - مفيش أي كارت ثابت مكتوب هنا
+                             يدوياً، عشان أي نوع تضيفه/تحذفه الأدمن يظهر فوراً من غير أي تعديل
+                             على الصفحة دي. -->
+                        <div class="bose-iconic-options-row bose-flower-type-grid" id="flower-type-iconic-row"></div>
+                        <input type="hidden" id="flower-type" value="">
                         <p class="bose-flavor-sensory-note" id="flower-sensory-note"></p>
                         <button type="button" class="bose-info-badge-inline"
                                 data-bose-info-title="إيه الفرق بين الأنواع التلاتة؟"
@@ -232,14 +224,6 @@
                     </div>
 
                     <div class="bose-premium-template-box">
-                        <!-- قيم صامتة ومثبتة دائمًا للتغليف الكلاسيكي الراقٍ والمجاني لراحة العميل النفسية -->
-                        <select id="wrapping-type" style="display: none;">
-                            <option value="classic" selected>تغليف كلاسيك راقٍ</option>
-                        </select>
-                        <select id="ribbon-color" style="display: none;">
-                            <option value="pink" selected>بمبي بوسي الفاخر</option>
-                        </select>
-
                         <label class="premium-input-label bose-checkbox-label-tap">
                             <input type="checkbox" id="include-ribbon-text">
                             حابة نكتب لكِ كلام مخصوص مطبوع على شريط الستان؟
