@@ -1412,8 +1412,8 @@
         // الإضافة للسلة والتشيك أوت) يفضل مطابق تماماً للسعر المعروض للعميل.
         const giftCardPrice = parseFloat(fbConfig.giftCardPrice) || 30;
         // ملحوظة: مفيش حقل رسمي لسعر شريط الستان المطبوع (satinRibbonPrice) داخل
-        // flowerBuilder بالـ JSON حالياً - فضّلنا نسيبه ثابت 50 بدل ما نخمّن ربطه بحقل
-        // تاني (زي wrappingTypes) معناه مختلف، لحد ما يتضاف حقل مخصص له فعلياً.
+        // flowerBuilder بالـ JSON حالياً - فضّلنا نسيبه ثابت 50 لحد ما يتضاف حقل
+        // مخصص له فعلياً.
         const satinRibbonPrice = 50;
 
         const safeFlowerCount = parseInt(String(flowerCount), 10) || baseFlowers;
@@ -1423,12 +1423,6 @@
         const safePhotoCount = parseInt(options.photoCount, 10) || 0;
         if (options.hasPhotos && safePhotoCount > 0) servicePrice += safePhotoCount * photoPrintPrice; 
         if (options.hasGiftCard) servicePrice += giftCardPrice; 
-        // 🎁👑 [تسعير التغليف الحقيقي - حارس مركزي]: نفس منطق flower-engine.js
-        // بالظبط - سعر نوع التغليف المختار (0 لو التغليف الكلاسيك المجاني أو
-        // مفيش نوع محدد) بيتضاف هنا كمان عشان الحارس المركزي يفضل مطابق تماماً
-        // للسعر المعروض للعميل وقت التصميم.
-        const safeWrappingCost = parseFloat(options.wrappingCost) || 0;
-        servicePrice += safeWrappingCost;
         const finalServicePrice = window.calculateBosePrice(servicePrice, "menu-only");
         
         const safeCashAmount = parseFloat(options.cashAmount) || 0;
@@ -1493,10 +1487,6 @@
                 cashAmount: parseFloat(opts.cashAmount) || 0,
                 // 💵👑 [تصليح فاتورة الكاش - فئة الأوراق النقدية]
                 cashDenomination: parseFloat(opts.cashDenomination) || 0,
-                // 🎁👑 [تسعير التغليف الحقيقي]
-                wrappingType: opts.wrappingType || "classic",
-                wrappingLabel: opts.wrappingLabel || "",
-                wrappingCost: parseFloat(opts.wrappingCost) || 0,
                 hasSatinRibbon: !!opts.hasSatinRibbon,
                 satinRibbonText: opts.satinRibbonText || "",
                 photoCount: parseInt(opts.photoCount, 10) || 0,
@@ -1817,7 +1807,6 @@
                 hasPhotos: details.photoCount > 0,
                 hasGiftCard: details.hasGiftCard,
                 cashAmount: details.cashAmount,
-                wrappingCost: details.wrappingCost,
                 chocolateBudget: details.hasChocolate ? details.chocolateBudget : 0
             });
         }
