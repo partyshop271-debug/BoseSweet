@@ -7,12 +7,12 @@
     <link rel="apple-touch-icon" href="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#FF91A4">
-    <title>مكافآتك | حلويات بوسي</title>
+    <title>نادي مكافآت بوسي | حلويات بوسي</title>
 
     <!-- Meta Tags لتهيئة محركات البحث (SEO) للبراند الرقمي -->
-    <meta name="description" content="اعرفي رصيد نقاطك ومستواك في نادي مكافآت حلويات بوسي برقم هاتفك.">
-    <meta property="og:title" content="مكافآتك | حلويات بوسي">
-    <meta property="og:description" content="اعرفي رصيد نقاطك ومستواك في نادي مكافآت حلويات بوسي برقم هاتفك.">
+    <meta name="description" content="اعرفي رصيدك في نادي مكافآت حلويات بوسي: خصومات تلقائية على كل طلب وقسيمة شراء بـ300 جنيه كل 10 طلبات.">
+    <meta property="og:title" content="نادي مكافآت بوسي | حلويات بوسي">
+    <meta property="og:description" content="اعرفي رصيدك في نادي مكافآت حلويات بوسي برقم هاتفك.">
     <meta property="og:type" content="website">
     <meta name="robots" content="noindex">
 
@@ -26,59 +26,133 @@
     <script src="js/core-engine.js?v=2026_production_v38.0"></script>
 
     <style>
-        .rewards-page-wrapper { padding: 60px 20px 80px; max-width: 620px; margin: 0 auto; min-height: 70vh; font-family: 'Cairo', sans-serif; }
-        .rewards-page-header { text-align: center; margin-bottom: 35px; }
-        .rewards-page-header h1 { font-size: 1.9rem; font-weight: 800; color: var(--bose-black, #111); margin-bottom: 10px; }
-        .rewards-page-header p { color: var(--bose-black, #111); opacity: 0.75; font-size: 0.98rem; line-height: 1.7; }
+        .rw-wrap { padding: 50px 18px 90px; max-width: 720px; margin: 0 auto; min-height: 70vh; font-family: 'Cairo', sans-serif; }
 
-        .rewards-form-card { background: var(--bose-white, #fff); border: var(--bose-border-pink, 1px solid rgba(255,145,164,0.3)); border-radius: 20px; padding: 28px 24px; box-shadow: var(--bose-shadow-glow, 0 8px 24px rgba(255,145,164,0.12)); }
-        .rewards-form-field label { display: block; font-size: 0.88rem; font-weight: 700; color: var(--bose-black, #111); margin-bottom: 6px; }
-        .rewards-form-field input { width: 100%; box-sizing: border-box; padding: 13px 14px; border-radius: 12px; border: 1px solid rgba(17,17,17,0.15); font-family: 'Cairo', sans-serif; font-size: 0.95rem; direction: ltr; text-align: right; margin-bottom: 16px; }
-        .rewards-form-field input:focus { outline: none; border-color: var(--bose-pink, #FF91A4); }
+        /* ===== Hero ===== */
+        .rw-hero { text-align: center; margin-bottom: 34px; position: relative; }
+        .rw-hero-icon { width: 76px; height: 76px; border-radius: 50%; background: linear-gradient(135deg, #FF91A4, #ffb3c1); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; box-shadow: 0 10px 26px rgba(255,145,164,0.35); animation: rwFloat 3.2s ease-in-out infinite; }
+        .rw-hero-icon i { font-size: 2rem; color: #fff; }
+        @keyframes rwFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+        .rw-hero h1 { font-size: 1.85rem; font-weight: 800; color: #111; margin: 0 0 10px; }
+        .rw-hero p { color: #111; opacity: 0.72; font-size: 0.97rem; line-height: 1.75; max-width: 480px; margin: 0 auto; }
 
-        .rewards-submit-btn { width: 100%; background: var(--bose-pink, #FF91A4); color: #fff; border: none; border-radius: 14px; padding: 14px; font-family: 'Cairo', sans-serif; font-weight: 800; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .rewards-submit-btn:disabled { opacity: 0.6; cursor: default; }
+        /* ===== Explainer strip (3 tiers + voucher) ===== */
+        .rw-explainer { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 28px 0; }
+        .rw-explainer-card { background: #fff; border: 1px solid rgba(255,145,164,0.25); border-radius: 16px; padding: 14px 8px; text-align: center; transition: transform .25s ease; }
+        .rw-explainer-card:hover { transform: translateY(-4px); }
+        .rw-explainer-card .rw-exp-num { display: block; font-size: 1.5rem; font-weight: 800; color: #FF91A4; }
+        .rw-explainer-card .rw-exp-lbl { font-size: 0.72rem; color: #111; opacity: 0.75; font-weight: 700; margin-top: 4px; display: block; line-height: 1.4; }
+        .rw-explainer-card.rw-voucher-card { background: linear-gradient(135deg, rgba(212,175,55,0.12), rgba(212,175,55,0.04)); border-color: rgba(212,175,55,0.4); }
+        .rw-explainer-card.rw-voucher-card .rw-exp-num { color: #b8860b; font-size: 1.15rem; }
+        @media (max-width: 560px) { .rw-explainer { grid-template-columns: repeat(2, 1fr); } }
 
-        .rewards-result-box { margin-top: 26px; display: none; }
-        .rewards-error-msg { background: rgba(255, 145, 164, 0.08); color: #FF91A4; border: 1px solid rgba(255, 145, 164, 0.3); border-radius: 12px; padding: 14px 16px; font-size: 0.92rem; text-align: center; }
+        /* ===== Form ===== */
+        .rw-form-card { background: #fff; border: 1px solid rgba(255,145,164,0.3); border-radius: 20px; padding: 26px 22px; box-shadow: 0 8px 24px rgba(255,145,164,0.12); }
+        .rw-form-card label { display: block; font-size: 0.88rem; font-weight: 700; color: #111; margin-bottom: 7px; }
+        .rw-form-card input { width: 100%; box-sizing: border-box; padding: 14px 15px; border-radius: 12px; border: 1px solid rgba(17,17,17,0.15); font-family: 'Cairo', sans-serif; font-size: 0.97rem; direction: ltr; text-align: right; margin-bottom: 16px; transition: border-color .2s; }
+        .rw-form-card input:focus { outline: none; border-color: #FF91A4; }
+        .rw-submit-btn { width: 100%; background: linear-gradient(135deg, #FF91A4, #ff7d95); color: #fff; border: none; border-radius: 14px; padding: 15px; font-family: 'Cairo', sans-serif; font-weight: 800; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: opacity .2s; }
+        .rw-submit-btn:disabled { opacity: 0.6; cursor: default; }
 
-        .rewards-tier-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--bose-gold, #FF91A4); color: #fff; padding: 8px 20px; border-radius: 30px; font-weight: 800; font-size: 1rem; margin-bottom: 20px; }
-        .rewards-points-row { display: flex; gap: 12px; margin-bottom: 20px; }
-        .rewards-points-card { flex: 1; background: rgba(255, 145, 164, 0.08); border-radius: 14px; padding: 16px; text-align: center; }
-        .rewards-points-card .num { font-size: 1.6rem; font-weight: 800; color: var(--bose-pink, #FF91A4); display: block; }
-        .rewards-points-card .lbl { font-size: 0.78rem; opacity: 0.7; }
+        /* ===== Result ===== */
+        .rw-result-box { margin-top: 24px; display: none; animation: rwFadeIn .5s ease; }
+        @keyframes rwFadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        .rw-error-msg { background: rgba(255, 145, 164, 0.08); color: #FF91A4; border: 1px solid rgba(255, 145, 164, 0.3); border-radius: 12px; padding: 16px; font-size: 0.93rem; text-align: center; font-weight: 700; }
 
-        .rewards-progress-box { background: rgba(255, 145, 164, 0.08); border-radius: 14px; padding: 16px 18px; }
-        .rewards-progress-box .progress-title { font-weight: 700; font-size: 0.92rem; margin-bottom: 10px; color: var(--bose-black, #111); }
-        .rewards-progress-track { width: 100%; height: 10px; background: rgba(255, 145, 164, 0.15); border-radius: 10px; overflow: hidden; margin-bottom: 8px; }
-        .rewards-progress-fill { height: 100%; background: var(--bose-pink, #FF91A4); border-radius: 10px; }
-        .rewards-progress-note { font-size: 0.82rem; opacity: 0.75; }
+        .rw-summary-badge { text-align: center; margin-bottom: 22px; }
+        .rw-summary-badge .rw-order-count { font-size: 2.4rem; font-weight: 800; color: #FF91A4; display: block; line-height: 1; }
+        .rw-summary-badge .rw-order-count-lbl { font-size: 0.85rem; color: #111; opacity: 0.7; font-weight: 700; }
+
+        /* Cycle progress (positions 1..7) */
+        .rw-cycle-box { background: rgba(255,145,164,0.06); border-radius: 16px; padding: 20px 18px; margin-bottom: 16px; }
+        .rw-cycle-title { font-weight: 800; font-size: 0.95rem; color: #111; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+        .rw-cycle-dots { display: flex; justify-content: space-between; align-items: center; position: relative; margin-bottom: 12px; }
+        .rw-cycle-dots::before { content:''; position:absolute; top: 15px; right: 15px; left: 15px; height: 3px; background: rgba(255,145,164,0.2); z-index: 0; }
+        .rw-cycle-dot-wrap { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; }
+        .rw-cycle-dot { width: 32px; height: 32px; border-radius: 50%; background: #fff; border: 2px solid rgba(255,145,164,0.3); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 800; color: #999; transition: all .3s; }
+        .rw-cycle-dot.rw-dot-done { background: #FF91A4; border-color: #FF91A4; color: #fff; }
+        .rw-cycle-dot.rw-dot-current { background: #fff; border-color: #FF91A4; color: #FF91A4; box-shadow: 0 0 0 5px rgba(255,145,164,0.18); animation: rwPulse 1.6s ease-in-out infinite; }
+        .rw-cycle-dot.rw-dot-reward { border-color: #d4af37; }
+        .rw-cycle-dot.rw-dot-reward.rw-dot-done { background: #d4af37; border-color: #d4af37; }
+        @keyframes rwPulse { 0%,100% { box-shadow: 0 0 0 5px rgba(255,145,164,0.18); } 50% { box-shadow: 0 0 0 9px rgba(255,145,164,0.08); } }
+        .rw-cycle-dot-lbl { font-size: 0.65rem; color: #111; opacity: 0.6; font-weight: 700; }
+        .rw-cycle-note { text-align: center; font-size: 0.88rem; color: #111; opacity: 0.85; font-weight: 700; line-height: 1.7; }
+        .rw-cycle-note .rw-highlight { color: #FF91A4; }
+
+        /* Voucher progress (1..10) */
+        .rw-voucher-progress-box { background: rgba(212,175,55,0.07); border: 1px solid rgba(212,175,55,0.25); border-radius: 16px; padding: 18px; margin-bottom: 16px; }
+        .rw-vp-title { font-weight: 800; font-size: 0.92rem; color: #111; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+        .rw-vp-title i { color: #b8860b; }
+        .rw-vp-track { width: 100%; height: 12px; background: rgba(212,175,55,0.15); border-radius: 10px; overflow: hidden; margin-bottom: 8px; }
+        .rw-vp-fill { height: 100%; background: linear-gradient(90deg, #d4af37, #f0ce6b); border-radius: 10px; transition: width .8s ease; }
+        .rw-vp-note { font-size: 0.85rem; color: #111; opacity: 0.8; font-weight: 700; text-align: center; }
+
+        /* Active vouchers list */
+        .rw-vouchers-list-title { font-weight: 800; font-size: 0.95rem; color: #111; margin: 20px 0 10px; display: flex; align-items: center; gap: 8px; }
+        .rw-voucher-item { display: flex; align-items: center; justify-content: space-between; background: #fff; border: 1px dashed rgba(212,175,55,0.5); border-radius: 12px; padding: 12px 14px; margin-bottom: 10px; }
+        .rw-voucher-item .rw-v-left { display: flex; flex-direction: column; gap: 3px; }
+        .rw-voucher-item .rw-v-code { font-weight: 800; font-size: 0.95rem; color: #111; direction: ltr; text-align: right; }
+        .rw-voucher-item .rw-v-meta { font-size: 0.76rem; color: #111; opacity: 0.65; }
+        .rw-voucher-item .rw-v-amount { font-weight: 800; color: #b8860b; font-size: 1.05rem; }
+        .rw-copy-btn { background: rgba(255,145,164,0.1); border: none; border-radius: 8px; padding: 8px 10px; color: #FF91A4; cursor: pointer; font-size: 0.85rem; margin-inline-start: 8px; }
+
+        /* How it works accordion-ish list */
+        .rw-howto { margin-top: 30px; background: #fff; border: 1px solid rgba(255,145,164,0.2); border-radius: 18px; padding: 22px 20px; }
+        .rw-howto h2 { font-size: 1.05rem; font-weight: 800; color: #111; margin: 0 0 16px; display:flex; align-items:center; gap:8px; }
+        .rw-howto-step { display: flex; gap: 12px; margin-bottom: 14px; align-items: flex-start; }
+        .rw-howto-step:last-child { margin-bottom: 0; }
+        .rw-howto-step .rw-hs-num { flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%; background: rgba(255,145,164,0.12); color: #FF91A4; font-weight: 800; font-size: 0.82rem; display: flex; align-items: center; justify-content: center; }
+        .rw-howto-step p { margin: 0; font-size: 0.88rem; color: #111; opacity: 0.82; line-height: 1.7; }
     </style>
 </head>
 <body>
 
     <div id="bose-header-injector"></div>
 
-    <main class="rewards-page-wrapper">
-        <div class="rewards-page-header">
-            <h1><i class="fa-solid fa-gift" style="color: var(--bose-pink, #FF91A4);"></i> مكافآتك</h1>
-            <p>اكتبي رقم هاتفك اللي بتطلبي بيه عادةً، وشوفي نقاطك ومستواك في نادي مكافآت حلويات بوسي.</p>
+    <main class="rw-wrap">
+        <div class="rw-hero">
+            <div class="rw-hero-icon"><i class="fa-solid fa-crown"></i></div>
+            <h1>نادي مكافآت بوسي</h1>
+            <p>كل ما تطلبي أكتر، كل ما تكسبي أكتر - خصومات تلقائية على طلباتك وقسيمة شراء حقيقية بدون أي تعقيد.</p>
         </div>
 
-        <div class="rewards-form-card">
+        <div class="rw-explainer">
+            <div class="rw-explainer-card"><span class="rw-exp-num">5%</span><span class="rw-exp-lbl">خصم على طلبك رقم 3</span></div>
+            <div class="rw-explainer-card"><span class="rw-exp-num">10%</span><span class="rw-exp-lbl">خصم على طلبك رقم 5</span></div>
+            <div class="rw-explainer-card"><span class="rw-exp-num">15%</span><span class="rw-exp-lbl">خصم على طلبك رقم 7</span></div>
+            <div class="rw-explainer-card rw-voucher-card"><span class="rw-exp-num">300 ج</span><span class="rw-exp-lbl">قسيمة شراء كل 10 طلبات</span></div>
+        </div>
+
+        <div class="rw-form-card">
             <form id="rewards-form">
-                <div class="rewards-form-field">
-                    <label for="rewards-phone">رقم الهاتف</label>
-                    <input type="tel" id="rewards-phone" placeholder="01xxxxxxxxx" required>
-                </div>
-                <button type="submit" class="rewards-submit-btn" id="rewards-submit-btn">
+                <label for="rewards-phone">اكتبي رقم هاتفك اللي بتطلبي بيه عادةً</label>
+                <input type="tel" id="rewards-phone" placeholder="01xxxxxxxxx" required>
+                <button type="submit" class="rw-submit-btn" id="rewards-submit-btn">
                     <i class="fa-solid fa-star"></i> اعرضي رصيدي
                 </button>
             </form>
         </div>
 
-        <div id="rewards-result-box" class="rewards-result-box">
-            <div class="rewards-form-card" id="rewards-result-inner"></div>
+        <div id="rewards-result-box" class="rw-result-box"></div>
+
+        <div class="rw-howto">
+            <h2><i class="fa-solid fa-circle-info" style="color:#FF91A4;"></i> إزاي يشتغل نظام المكافآت؟</h2>
+            <div class="rw-howto-step">
+                <div class="rw-hs-num">1</div>
+                <p>مع كل طلب بتأكديه، بنعد ترتيبه ضمن "دورة" مكوّنة من 7 طلبات - طلبك رقم 3 في الدورة بياخد خصم 5%، رقم 5 بياخد 10%، ورقم 7 بياخد 15% تلقائيًا من غير ما تحتاجي أي كود.</p>
+            </div>
+            <div class="rw-howto-step">
+                <div class="rw-hs-num">2</div>
+                <p>بعد ما الدورة تخلص (يعني بعد الطلب السابع)، بتبدأ دورة جديدة من الأول تلقائيًا، وهكذا مع كل طلباتك.</p>
+            </div>
+            <div class="rw-howto-step">
+                <div class="rw-hs-num">3</div>
+                <p>بشكل مستقل، كل 10 طلبات (العاشر، العشرين، الثلاثين...) بناخد لك قسيمة شراء حقيقية بقيمة 300 جنيه، صالحة لمدة شهرين من تاريخ استلام الطلب، تقدري تستخدميها في أي طلب جاي.</p>
+            </div>
+            <div class="rw-howto-step">
+                <div class="rw-hs-num">4</div>
+                <p>الخصم بيتطبق تلقائيًا وقت إتمام الطلب بمجرد ما تكتبي رقم هاتفك في صفحة الدفع، وقسيمة الـ300 جنيه هتلاقيها هنا وتقدري تكتبي كودها في نفس صفحة الدفع.</p>
+            </div>
         </div>
     </main>
 
@@ -86,41 +160,106 @@
 
     <script>
         (function () {
+            function esc(s) { return window.escapeBoseHTML ? window.escapeBoseHTML(s) : s; }
+
+            function renderCycleDots(position, nextPct) {
+                const tiers = { 3: 5, 5: 10, 7: 15 };
+                let html = '<div class="rw-cycle-dots">';
+                for (let i = 1; i <= 7; i++) {
+                    const isReward = !!tiers[i];
+                    let cls = "rw-cycle-dot";
+                    if (isReward) cls += " rw-dot-reward";
+                    let content = i;
+                    if (i < position) { cls += " rw-dot-done"; content = '<i class="fa-solid fa-check"></i>'; }
+                    else if (i === position) { cls += " rw-dot-current"; }
+                    html += `<div class="rw-cycle-dot-wrap">
+                        <div class="${cls}">${content}</div>
+                        <span class="rw-cycle-dot-lbl">${isReward ? tiers[i] + '%' : ''}</span>
+                    </div>`;
+                }
+                html += '</div>';
+                return html;
+            }
+
             function renderResult(row) {
                 const box = document.getElementById("rewards-result-box");
-                const inner = document.getElementById("rewards-result-inner");
                 box.style.display = "block";
 
                 if (!row || !row.found) {
-                    inner.innerHTML = `<div class="rewards-error-msg"><i class="fa-solid fa-circle-exclamation"></i> ${window.escapeBoseHTML(row && row.message ? row.message : "تعذر التحقق من رصيد المكافآت")}</div>`;
+                    box.innerHTML = `<div class="rw-form-card"><div class="rw-error-msg"><i class="fa-solid fa-circle-exclamation"></i> ${esc(row && row.message ? row.message : "تعذر التحقق من رصيد المكافآت")}</div></div>`;
                     return;
                 }
 
-                const untilFreeCake = row.orders_until_free_cake || 0;
-                const progressPct = Math.round(((5 - untilFreeCake) / 5) * 100);
-                const progressNote = untilFreeCake === 0
-                    ? "مبروك! معاكي تورتة مجانية مستحقة في طلبك الجاي 🎂"
-                    : `باقيلك ${untilFreeCake} ${untilFreeCake === 1 ? 'طلب' : 'طلبات'} عشان تكسبي تورتة مجانية`;
+                const totalOrders = row.total_orders || 0;
+                const position = row.loyalty_position || 1;
+                const nextPct = row.next_discount_percent || 0;
+                const untilDiscount = row.orders_until_next_discount || 0;
+                const untilVoucher = row.orders_until_next_voucher || 10;
+                const vouchers = Array.isArray(row.active_vouchers) ? row.active_vouchers : [];
 
-                inner.innerHTML = `
-                    <div style="text-align:center;">
-                        <span class="rewards-tier-badge"><i class="fa-solid fa-crown"></i> ${window.escapeBoseHTML(row.tier || '')}</span>
+                let cycleNote;
+                if (nextPct > 0) {
+                    cycleNote = `طلبك الجاي (رقم ${totalOrders + 1}) هياخد خصم تلقائي <span class="rw-highlight">${nextPct}%</span> 🎉`;
+                } else {
+                    cycleNote = `باقيلك <span class="rw-highlight">${untilDiscount}</span> ${untilDiscount === 1 ? 'طلب' : 'طلبات'} كمان عشان تكسبي خصم على طلبك`;
+                }
+
+                const voucherProgressPct = Math.round(((10 - untilVoucher) / 10) * 100);
+                const voucherNote = untilVoucher === 10 && totalOrders > 0 && totalOrders % 10 === 0
+                    ? "مبروك! وصلتي لمرحلة قسيمة الـ300 جنيه 🎁"
+                    : `باقيلك <b>${untilVoucher}</b> ${untilVoucher === 1 ? 'طلب' : 'طلبات'} عشان تكسبي قسيمة شراء بـ300 جنيه`;
+
+                let vouchersHtml = "";
+                if (vouchers.length > 0) {
+                    vouchersHtml = `<div class="rw-vouchers-list-title"><i class="fa-solid fa-ticket" style="color:#b8860b;"></i> قسايمك النشطة (${vouchers.length})</div>`;
+                    vouchers.forEach(v => {
+                        const expiry = v.expires_at ? new Date(v.expires_at).toLocaleDateString('ar-EG', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
+                        vouchersHtml += `<div class="rw-voucher-item">
+                            <div class="rw-v-left">
+                                <span class="rw-v-code">${esc(v.code)}</span>
+                                <span class="rw-v-meta">صالحة لحد ${esc(expiry)}</span>
+                            </div>
+                            <div style="display:flex; align-items:center;">
+                                <span class="rw-v-amount">${Math.round(v.remaining_amount || 0)} ج</span>
+                                <button type="button" class="rw-copy-btn" data-code="${esc(v.code)}"><i class="fa-regular fa-copy"></i></button>
+                            </div>
+                        </div>`;
+                    });
+                }
+
+                box.innerHTML = `
+                    <div class="rw-summary-badge">
+                        <span class="rw-order-count">${totalOrders}</span>
+                        <span class="rw-order-count-lbl">${totalOrders === 1 ? 'طلب مكتمل' : 'طلبات مكتملة'}</span>
                     </div>
-                    <div class="rewards-points-row">
-                        <div class="rewards-points-card"><span class="num">${row.points || 0}</span><span class="lbl">نقطة</span></div>
-                        <div class="rewards-points-card"><span class="num">${row.total_orders || 0}</span><span class="lbl">طلب مكتمل</span></div>
-                        <div class="rewards-points-card"><span class="num">${Math.round(row.total_spent || 0)}</span><span class="lbl">جنيه إجمالي</span></div>
+                    <div class="rw-cycle-box">
+                        <div class="rw-cycle-title"><i class="fa-solid fa-rotate" style="color:#FF91A4;"></i> دورة الخصم الحالية (كل 7 طلبات)</div>
+                        ${renderCycleDots(position, nextPct)}
+                        <div class="rw-cycle-note">${cycleNote}</div>
                     </div>
-                    <div class="rewards-progress-box">
-                        <div class="progress-title"><i class="fa-solid fa-cake-candles"></i> تورتة مجانية كل 5 طلبات</div>
-                        <div class="rewards-progress-track"><div class="rewards-progress-fill" style="width:${progressPct}%;"></div></div>
-                        <div class="rewards-progress-note">${window.escapeBoseHTML(progressNote)}</div>
+                    <div class="rw-voucher-progress-box">
+                        <div class="rw-vp-title"><i class="fa-solid fa-gift"></i> قسيمة الـ300 جنيه</div>
+                        <div class="rw-vp-track"><div class="rw-vp-fill" style="width:${voucherProgressPct}%;"></div></div>
+                        <div class="rw-vp-note">${voucherNote}</div>
                     </div>
+                    ${vouchersHtml}
                 `;
+
+                box.querySelectorAll(".rw-copy-btn").forEach(btn => {
+                    btn.addEventListener("click", () => {
+                        const code = btn.getAttribute("data-code");
+                        if (code && navigator.clipboard) {
+                            navigator.clipboard.writeText(code).then(() => {
+                                btn.innerHTML = '<i class="fa-solid fa-check"></i>';
+                                setTimeout(() => { btn.innerHTML = '<i class="fa-regular fa-copy"></i>'; }, 1500);
+                            }).catch(() => {});
+                        }
+                    });
+                });
             }
 
             async function handleSubmit(e) {
-                e.preventDefault();
+                if (e && e.preventDefault) e.preventDefault();
                 const btn = document.getElementById("rewards-submit-btn");
                 const phone = document.getElementById("rewards-phone").value.trim();
 
@@ -148,7 +287,7 @@
                 const prefPhone = params.get("phone");
                 if (prefPhone) {
                     document.getElementById("rewards-phone").value = prefPhone;
-                    handleSubmit(new Event("submit"));
+                    handleSubmit(null);
                 }
             });
         })();

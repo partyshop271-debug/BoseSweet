@@ -260,11 +260,28 @@
                         <span class="bose-field-error-msg" id="err-checkout-customer-phone"><i class="fa-solid fa-circle-exclamation"></i><span></span></span>
                     </div>
 
+                    <!-- 🎁 [نظام نقاط الولاء]: بيظهر تلقائياً بمجرد ما رقم الهاتف الأساسي يتأكد
+                         إنه رقم مصري صحيح - بيوضح للعميلة فوراً إمّا إنها كسبت خصم تلقائي على
+                         الطلب ده، أو باقيلها كام طلب بالظبط على الخصم أو القسيمة الجاية. -->
+                    <div id="bose-checkout-loyalty-banner" style="display:none;"></div>
+
                     <!-- رقم هاتف إضافي بديل (اختياري بالكامل لحماية التحويلات ومبيعات الموقع) -->
                     <div class="input-group-node">
                         <label for="checkout-customer-phone-2">رقم هاتف إضافي بديل (اختياري لتأمين وصول شحنتك الملكية)</label>
                         <input type="tel" id="checkout-customer-phone-2" class="bose-field-capture" placeholder="اكتب رقم موبايل إضافي إن وجد لسلامة الشحن اللوجستي..." aria-describedby="err-checkout-customer-phone-2">
                         <span class="bose-field-error-msg" id="err-checkout-customer-phone-2"><i class="fa-solid fa-circle-exclamation"></i><span></span></span>
+                    </div>
+
+                    <!-- 🎁 [نظام نقاط الولاء]: قسيمة الولاء (300 جنيه، بتتكسب كل 10 طلبات) -
+                         اختيارية، بتظهر جنبها القسائم النشطة المتاحة على رقم العميلة تلقائياً
+                         بمجرد التأكد من رقم الهاتف، مع زرار سريع لتعبئة الكود. -->
+                    <div class="input-group-node">
+                        <label for="checkout-voucher-code">عندك قسيمة ولاء؟ اكتبي كودها هنا (اختياري)</label>
+                        <div style="display:flex; gap:8px;">
+                            <input type="text" id="checkout-voucher-code" class="bose-field-capture" placeholder="مثال: BOSE-XXXXXX" style="flex:1; text-transform:uppercase;">
+                            <button type="button" id="btn-apply-loyalty-voucher" style="white-space:nowrap; background:#FF91A4; color:#fff; border:none; border-radius:10px; padding:0 18px; font-family:'Cairo',sans-serif; font-weight:700; cursor:pointer;">تفعيل</button>
+                        </div>
+                        <div id="checkout-voucher-message" style="font-size:0.85rem; margin-top:6px;"></div>
                     </div>
 
                     <!-- قسم تحديد طريقة ومسار الاستلام التفاعلي لبراند حلويات بوسي -->

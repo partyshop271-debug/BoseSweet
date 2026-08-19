@@ -38,7 +38,55 @@
     <link rel="stylesheet" href="css/global.css?v=2026_production_v39.0">
     <link rel="stylesheet" href="css/main.css?v=2026_production_v38.0">
     <link rel="stylesheet" href="css/simulators.css?v=2026_production_v38.0">
-    
+
+    <!-- 🎁 [نظام نقاط الولاء]: تنسيقات مخصصة للقسم التفاعلي الجديد في الصفحة الرئيسية -
+         مفصولة هنا (بدل main.css المشترك) عشان تبقى معزولة وسهلة المراجعة والتعديل لاحقاً. -->
+    <style>
+        .bose-loyalty-teaser-section { padding: 70px 20px; background: linear-gradient(160deg, rgba(255,145,164,0.06), rgba(212,175,55,0.04)); }
+        .bose-loyalty-teaser-inner { max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 50px; align-items: center; }
+        @media (max-width: 900px) { .bose-loyalty-teaser-inner { grid-template-columns: 1fr; gap: 34px; } }
+
+        .bose-loyalty-teaser-eyebrow { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,145,164,0.12); color: #FF91A4; font-weight: 800; font-size: 0.8rem; padding: 8px 16px; border-radius: 30px; margin-bottom: 16px; }
+        .bose-loyalty-teaser-title { font-size: 1.9rem; font-weight: 800; color: #111; margin: 0 0 14px; line-height: 1.35; }
+        .bose-loyalty-teaser-desc { font-size: 0.98rem; color: #111; opacity: 0.75; line-height: 1.8; margin: 0 0 22px; max-width: 480px; }
+
+        .bose-loyalty-tier-chips { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 22px; }
+        .bose-loyalty-chip { background: #fff; border: 1px solid rgba(255,145,164,0.3); border-radius: 14px; padding: 10px 16px; display: flex; flex-direction: column; align-items: center; min-width: 78px; box-shadow: 0 4px 14px rgba(255,145,164,0.1); transition: transform .25s; }
+        .bose-loyalty-chip:hover { transform: translateY(-4px); }
+        .bose-loyalty-chip .chip-num { font-weight: 800; color: #FF91A4; font-size: 1.15rem; }
+        .bose-loyalty-chip .chip-lbl { font-size: 0.7rem; color: #111; opacity: 0.65; font-weight: 700; }
+        .bose-loyalty-chip-gold { border-color: rgba(212,175,55,0.4); background: linear-gradient(135deg, rgba(212,175,55,0.1), #fff); }
+        .bose-loyalty-chip-gold .chip-num { color: #b8860b; font-size: 0.95rem; }
+
+        .bose-loyalty-teaser-link { display: inline-flex; align-items: center; gap: 8px; color: #FF91A4; font-weight: 800; font-size: 0.92rem; text-decoration: none; }
+        .bose-loyalty-teaser-link i { transition: transform .2s; }
+        .bose-loyalty-teaser-link:hover i { transform: translateX(-4px); }
+
+        .bose-loyalty-widget-card { position: relative; background: #fff; border-radius: 24px; padding: 32px 26px; box-shadow: 0 16px 40px rgba(255,145,164,0.18); overflow: hidden; text-align: center; }
+        .bose-loyalty-widget-glow { position: absolute; top: -60px; left: -60px; width: 160px; height: 160px; background: radial-gradient(circle, rgba(255,145,164,0.25), transparent 70%); animation: bltGlowMove 5s ease-in-out infinite; }
+        @keyframes bltGlowMove { 0%,100% { transform: translate(0,0); } 50% { transform: translate(30px, 20px); } }
+
+        .bose-loyalty-widget-icon { width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg,#FF91A4,#ffb3c1); display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; animation: bltFloat 3s ease-in-out infinite; }
+        .bose-loyalty-widget-icon i { color: #fff; font-size: 1.5rem; }
+        @keyframes bltFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+        .bose-loyalty-widget-card h3 { font-size: 1.05rem; font-weight: 800; color: #111; margin: 0 0 6px; position: relative; }
+        .bose-loyalty-widget-card > div > p { font-size: 0.85rem; color: #111; opacity: 0.65; margin: 0 0 18px; position: relative; }
+
+        .bose-loyalty-widget-input-row { display: flex; gap: 8px; position: relative; }
+        .bose-loyalty-widget-input-row input { flex: 1; padding: 13px 14px; border-radius: 12px; border: 1px solid rgba(17,17,17,0.15); font-family: 'Cairo', sans-serif; font-size: 0.92rem; direction: ltr; text-align: right; }
+        .bose-loyalty-widget-input-row input:focus { outline: none; border-color: #FF91A4; }
+        .bose-loyalty-widget-input-row button { background: #FF91A4; color: #fff; border: none; border-radius: 12px; width: 48px; cursor: pointer; font-size: 1rem; flex-shrink: 0; }
+        .bose-loyalty-widget-error { color: #FF91A4; font-size: 0.8rem; font-weight: 700; margin-top: 10px; min-height: 1em; }
+
+        .bose-loyalty-widget-result { text-align: center; animation: bltFadeIn .4s ease; }
+        @keyframes bltFadeIn { from { opacity:0; transform: translateY(8px);} to { opacity:1; transform: translateY(0);} }
+        .bose-loyalty-widget-result .blt-order-num { font-size: 2.1rem; font-weight: 800; color: #FF91A4; display: block; line-height: 1; }
+        .bose-loyalty-widget-result .blt-order-lbl { font-size: 0.78rem; color: #111; opacity: 0.65; font-weight: 700; margin-bottom: 16px; display: block; }
+        .bose-loyalty-widget-result .blt-msg { background: rgba(255,145,164,0.08); border: 1px solid rgba(255,145,164,0.25); border-radius: 12px; padding: 12px 14px; font-size: 0.86rem; font-weight: 700; color: #111; line-height: 1.6; margin-bottom: 14px; }
+        .bose-loyalty-widget-result .blt-msg.blt-msg-gold { background: rgba(212,175,55,0.1); border-color: rgba(212,175,55,0.3); }
+        .bose-loyalty-widget-result .blt-more-link { color: #FF91A4; font-weight: 800; font-size: 0.85rem; text-decoration: none; }
+    </style>
+
     <!-- استدعاء حارس المحرك المركزي العالمي في رأس الصفحة لمنع وميض الألوان وتأمين البيانات الموحدة -->
     <!-- ⚡ [إصلاح أداء]: defer عشان السكريبت متوقفش رسم الصفحة الأول (كان شغال Blocking) -->
     <script src="js/supabase-client.js?v=2026_production_v38.0" defer></script>
@@ -306,10 +354,10 @@
                         <div class="bose-app-promo-screen bose-screen-2">
                             <div class="mock-status-bar"><span>9:41</span><i class="fa-solid fa-signal"></i></div>
                             <div class="mock-rewards-title">مكافآتك</div>
-                            <div class="mock-points-badge"><i class="fa-solid fa-star"></i> 850 نقطة</div>
+                            <div class="mock-points-badge"><i class="fa-solid fa-star"></i> طلبك القادم رقم 5</div>
                             <div class="mock-progress-track"><div class="mock-progress-fill"></div></div>
-                            <div class="mock-reward-row"><i class="fa-solid fa-gift"></i> خصم 50 جنيه على طلبك الجاي</div>
-                            <div class="mock-reward-row"><i class="fa-solid fa-cake-candles"></i> تورتة مجانية بعد 5 طلبات</div>
+                            <div class="mock-reward-row"><i class="fa-solid fa-percent"></i> خصم 10% تلقائي على الطلب الجاي</div>
+                            <div class="mock-reward-row"><i class="fa-solid fa-gift"></i> قسيمة 300 جنيه كل 10 طلبات</div>
                         </div>
                         <div class="bose-app-promo-screen bose-screen-3">
                             <div class="mock-status-bar"><span>9:41</span><i class="fa-solid fa-signal"></i></div>
@@ -326,6 +374,46 @@
                     <div class="bose-app-promo-float-badge badge-pos-2"><i class="fa-solid fa-star"></i></div>
                     <div class="bose-app-promo-float-badge badge-pos-3"><i class="fa-solid fa-truck-fast"></i></div>
                     <div class="bose-app-promo-float-badge badge-pos-4"><i class="fa-solid fa-cake-candles"></i></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 🎁 [نظام نقاط الولاء]: قسم تفاعلي حقيقي (مش مجرد موك أب) في الصفحة الرئيسية -
+             بيوضح نظام المكافآت بالكامل ببساطة، وبيسمح للعميلة تكتب رقمها وتشوف
+             فورًا هي واصلة لفين بالظبط في رحلة الولاء بتاعتها، بنفس منطق rewards.html
+             لكن في نسخة مصغّرة ومدمجة داخل الصفحة الرئيسية مباشرة. -->
+        <section id="loyalty-teaser-section" class="bose-loyalty-teaser-section" aria-labelledby="loyalty-teaser-heading">
+            <div class="bose-loyalty-teaser-inner">
+                <div class="bose-loyalty-teaser-text-col">
+                    <span class="bose-loyalty-teaser-eyebrow"><i class="fa-solid fa-crown"></i> نادي مكافآت بوسي</span>
+                    <h2 id="loyalty-teaser-heading" class="bose-loyalty-teaser-title">كل ما تطلبي أكتر، كل ما تكسبي أكتر</h2>
+                    <p class="bose-loyalty-teaser-desc">خصومات تلقائية على طلباتك من غير أي كود، وقسيمة شراء حقيقية بـ300 جنيه كل 10 طلبات - النظام كله واضح وبسيط وموجود قدامك دايماً.</p>
+
+                    <div class="bose-loyalty-tier-chips">
+                        <div class="bose-loyalty-chip"><span class="chip-num">5%</span><span class="chip-lbl">الطلب 3</span></div>
+                        <div class="bose-loyalty-chip"><span class="chip-num">10%</span><span class="chip-lbl">الطلب 5</span></div>
+                        <div class="bose-loyalty-chip"><span class="chip-num">15%</span><span class="chip-lbl">الطلب 7</span></div>
+                        <div class="bose-loyalty-chip bose-loyalty-chip-gold"><span class="chip-num">300ج</span><span class="chip-lbl">كل 10 طلبات</span></div>
+                    </div>
+
+                    <a href="rewards.html" class="bose-loyalty-teaser-link">اعرفي كل التفاصيل <i class="fa-solid fa-arrow-left"></i></a>
+                </div>
+
+                <div class="bose-loyalty-teaser-widget-col">
+                    <div class="bose-loyalty-widget-card">
+                        <div class="bose-loyalty-widget-glow"></div>
+                        <div id="loyalty-widget-form-state">
+                            <div class="bose-loyalty-widget-icon"><i class="fa-solid fa-gift"></i></div>
+                            <h3>وصلتي لفين في رحلة الولاء؟</h3>
+                            <p>اكتبي رقم تليفونك وشوفي فورًا</p>
+                            <div class="bose-loyalty-widget-input-row">
+                                <input type="tel" id="loyalty-widget-phone" placeholder="01xxxxxxxxx" aria-label="رقم الهاتف">
+                                <button type="button" id="loyalty-widget-submit-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+                            </div>
+                            <div id="loyalty-widget-error" class="bose-loyalty-widget-error"></div>
+                        </div>
+                        <div id="loyalty-widget-result-state" class="bose-loyalty-widget-result" style="display:none;"></div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -539,5 +627,78 @@
 
     <!-- 🏢 بروتوكول الهيكل الموحد المعتمد: حاوية حقن الفوتر المعتمد ذو اللون الفاتح الخالص لتأمين التنفس البصري -->
     <div id="bose-footer-injector"></div>
+
+    <!-- 🎁 [نظام نقاط الولاء]: تفعيل الودجت التفاعلي الشخصي في الصفحة الرئيسية -
+         نسخة مصغّرة من نفس منطق rewards.html، بتستخدم نفس get_customer_rewards RPC. -->
+    <script>
+        (function () {
+            function esc(s) { return window.escapeBoseHTML ? window.escapeBoseHTML(s) : s; }
+
+            function renderWidgetResult(row) {
+                const formState = document.getElementById("loyalty-widget-form-state");
+                const resultState = document.getElementById("loyalty-widget-result-state");
+                if (!formState || !resultState) return;
+
+                const totalOrders = row.total_orders || 0;
+                const nextPct = row.next_discount_percent || 0;
+                const untilDiscount = row.orders_until_next_discount || 0;
+                const untilVoucher = row.orders_until_next_voucher || 10;
+
+                let msgHtml, msgClass = "";
+                if (nextPct > 0) {
+                    msgHtml = `🎉 طلبك الجاي (رقم ${totalOrders + 1}) هياخد خصم تلقائي <b>${nextPct}%</b> من غير أي كود!`;
+                } else if (untilVoucher === 1 || (totalOrders + 1) % 10 === 0) {
+                    msgHtml = `🎁 ده طلبك الجاي! بعد استلامه هتاخدي قسيمة شراء بـ300 جنيه`;
+                    msgClass = " blt-msg-gold";
+                } else {
+                    msgHtml = `باقيلك <b>${untilDiscount}</b> ${untilDiscount === 1 ? 'طلب' : 'طلبات'} بس عشان تكسبي خصم على طلبك الجاي`;
+                }
+
+                resultState.innerHTML = `
+                    <span class="blt-order-num">${totalOrders}</span>
+                    <span class="blt-order-lbl">${totalOrders === 1 ? 'طلب مكتمل معانا' : 'طلبات مكتملة معانا'}</span>
+                    <div class="blt-msg${msgClass}">${msgHtml}</div>
+                    <a href="rewards.html?phone=${encodeURIComponent(document.getElementById('loyalty-widget-phone').value.trim())}" class="blt-more-link">شوفي كل التفاصيل والقسايم بتاعتك <i class="fa-solid fa-arrow-left"></i></a>
+                `;
+                formState.style.display = "none";
+                resultState.style.display = "block";
+            }
+
+            async function handleWidgetLookup() {
+                const phoneInput = document.getElementById("loyalty-widget-phone");
+                const errorBox = document.getElementById("loyalty-widget-error");
+                const btn = document.getElementById("loyalty-widget-submit-btn");
+                if (!phoneInput || !btn) return;
+
+                const phone = phoneInput.value.trim();
+                if (errorBox) errorBox.textContent = "";
+
+                if (!window.BoseSupabase || typeof window.BoseSupabase.getBoseCustomerRewards !== "function") return;
+
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+                try {
+                    const row = await window.BoseSupabase.getBoseCustomerRewards(phone);
+                    if (!row || !row.found) {
+                        if (errorBox) errorBox.textContent = (row && row.message) || "من فضلك اكتبي رقم هاتف مصري صحيح";
+                        return;
+                    }
+                    renderWidgetResult(row);
+                } catch (err) {
+                    if (errorBox) errorBox.textContent = "حصل خطأ في الاتصال، حاولي مرة أخرى";
+                } finally {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i>';
+                }
+            }
+
+            document.addEventListener("DOMContentLoaded", () => {
+                const btn = document.getElementById("loyalty-widget-submit-btn");
+                const phoneInput = document.getElementById("loyalty-widget-phone");
+                if (btn) btn.addEventListener("click", handleWidgetLookup);
+                if (phoneInput) phoneInput.addEventListener("keydown", (e) => { if (e.key === "Enter") handleWidgetLookup(); });
+            });
+        })();
+    </script>
 </body>
 </html>
