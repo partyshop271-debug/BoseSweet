@@ -182,8 +182,8 @@
     /* ============================= شلال المنتجات المتحرك ============================= */
 
     const WATERFALL_COLUMNS = [
-        { key: "leftColumnImages", listId: "list-waterfall-left", urlInputId: "waterfall-left-url-input", urlBtnId: "waterfall-left-add-url-btn", uploadInputId: "waterfall-left-image-input", uploadLabelId: "waterfall-left-upload-label" },
-        { key: "rightColumnImages", listId: "list-waterfall-right", urlInputId: "waterfall-right-url-input", urlBtnId: "waterfall-right-add-url-btn", uploadInputId: "waterfall-right-image-input", uploadLabelId: "waterfall-right-upload-label" },
+        { key: "leftColumnImages", listId: "list-waterfall-left", urlInputId: "waterfall-left-url-input", urlBtnId: "waterfall-left-add-url-btn", uploadInputId: "waterfall-left-image-input", uploadLabelId: "waterfall-left-upload-label", productSelectId: "waterfall-left-product-select", productBtnId: "waterfall-left-add-product-btn" },
+        { key: "rightColumnImages", listId: "list-waterfall-right", urlInputId: "waterfall-right-url-input", urlBtnId: "waterfall-right-add-url-btn", uploadInputId: "waterfall-right-image-input", uploadLabelId: "waterfall-right-upload-label", productSelectId: "waterfall-right-product-select", productBtnId: "waterfall-right-add-product-btn" },
     ];
 
     function renderWaterfallColumn(colDef) {
@@ -196,10 +196,18 @@
         } else {
             container.innerHTML = items.map((item, idx) => {
                 const img = typeof item === "object" ? item.image : item;
+                const linkedSlug = typeof item === "object" ? item.slug : null;
+                const linkedProduct = linkedSlug ? allProducts.find((p) => p.slug === linkedSlug) : null;
+                // 🛡️ [وضوح الحالة]: كل صورة بتوضح فورًا هل هي مربوطة بمنتج حقيقي (هتبقى
+                // قابلة للضغط في الرئيسية) ولا صورة تزيينية بس (مش هتبقى رابط) - بدل ما
+                // تكتشف صاحبة المتجر ده متأخر بعد النشر.
+                const badge = linkedProduct
+                    ? `<span class="adm-badge success" style="margin-inline-start:6px;"><i class="fa-solid fa-link"></i> ${e(linkedProduct.title)}</span>`
+                    : `<span class="adm-badge neutral" style="margin-inline-start:6px;">صورة تزيينية - بلا رابط</span>`;
                 return `
                 <div class="adm-curated-item" data-idx="${idx}">
                     <img src="${e(img)}" class="adm-curated-item-thumb" alt="">
-                    <span class="adm-curated-item-title">${e(img)}</span>
+                    <span class="adm-curated-item-title">${badge}</span>
                     <div class="adm-curated-item-actions">
                         <button type="button" class="adm-btn adm-btn-ghost adm-btn-icon" data-action="up" title="تحريك لأعلى" ${idx === 0 ? "disabled" : ""}>
                             <i class="fa-solid fa-arrow-up"></i>
@@ -232,6 +240,18 @@
         });
     }
 
+    /** بيملأ قائمة اختيار المنتج لكل عمود بكل منتجات المتجر (بيانها اسم + معاينة صورة). */
+    function refreshWaterfallProductSelect(colDef) {
+        const select = document.getElementById(colDef.productSelectId);
+        if (!select) return;
+        const e = window.BoseAdminUI.escapeHtml;
+        select.innerHTML = `<option value="">اختاري منتج لإضافته كصورة قابلة للضغط...</option>` +
+            allProducts
+                .filter((p) => p.images && p.images[0] && p.slug)
+                .map((p) => `<option value="${e(p.slug)}">${e(p.title)}</option>`)
+                .join("");
+    }
+
     function addWaterfallImage(colDef, url) {
         const trimmed = (url || "").trim();
         if (!trimmed) return;
@@ -245,6 +265,24 @@
 
     function wireWaterfallControls() {
         WATERFALL_COLUMNS.forEach((colDef) => {
+            refreshWaterfallProductSelect(colDef);
+
+            // 🛡️ [الطريقة الموصى بيها]: اختيار منتج حقيقي بياخد صورته وسلاجه مع بعض
+            // تلقائيًا - أبسط طريقة وأضمن واحدة إن الصورة تبقى فعلاً رابط شغال.
+            document.getElementById(colDef.productBtnId).addEventListener("click", () => {
+                const select = document.getElementById(colDef.productSelectId);
+                const slug = select.value;
+                if (!slug) return;
+                const product = allProducts.find((p) => p.slug === slug);
+                if (!product || !product.images || !product.images[0]) {
+                    window.BoseAdminUI.showToast("المنتج ده معندوش صورة متاحة", "error");
+                    return;
+                }
+                waterfallState[colDef.key].push({ image: product.images[0], slug: product.slug });
+                renderWaterfallColumn(colDef);
+                select.value = "";
+            });
+
             document.getElementById(colDef.urlBtnId).addEventListener("click", () => {
                 const input = document.getElementById(colDef.urlInputId);
                 addWaterfallImage(colDef, input.value);
