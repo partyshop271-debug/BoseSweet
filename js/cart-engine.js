@@ -532,6 +532,15 @@ function renderBoseCheckoutPage(storeData) {
         return;
     }
 
+    // 🎁 [نظام نقاط الولاء]: حالة عامة بسيطة بتتحدّث لما رقم الهاتف يتأكد صحيح
+    // (خصم تلقائي حسب ترتيب الطلب) ولما قسيمة ولاء صحيحة تتطبق - بيقرأها
+    // recalculateCheckoutInvoice/processFinalBoseOrder عشان يعرضوا وياخدوا
+    // بالهم منها بالظبط زي كوبون الخصم العادي.
+    window.BoseLoyaltyState = {
+        discountAmount: 0, discountPercent: 0, totalOrders: 0, nextOrderNumber: 0,
+        voucherDiscountAmount: 0, voucherCode: null, voucherRemaining: 0
+    };
+
     const pickupBtn = document.getElementById("method-pickup");
     const deliveryBtn = document.getElementById("method-delivery");
     const shippingZoneWrapper = document.getElementById("shipping-zone-wrapper");
@@ -617,6 +626,113 @@ function renderBoseCheckoutPage(storeData) {
     }
     if (payChoiceDepositBtn) payChoiceDepositBtn.onclick = () => setPayFullChoice(false);
     if (payChoiceFullBtn) payChoiceFullBtn.onclick = () => setPayFullChoice(true);
+
+    // 🎁🎁 [نظام نقاط الولاء]: بمجرد ما رقم الهاتف الأساسي يبقى رقم مصري صحيح
+    // (11 رقم يبدأ بـ 01)، بنسأل الباك إند (get_customer_rewards) عن ترتيب
+    // الطلب ده بالظبط للعميلة دي، ولو فيه خصم تلقائي مستحق بنطبّقه فوراً في
+    // الفاتورة ونوضحه لها ببانر واضح، أو نوريها باقيلها كام طلب على الخصم الجاي.
+    const phone1InputForLoyalty = document.getElementById("checkout-customer-phone");
+    const loyaltyBanner = document.getElementById("bose-checkout-loyalty-banner");
+    let loyaltyLookupTimer = null;
+    let lastCheckedLoyaltyPhone = "";
+
+    function renderLoyaltyBanner(html) {
+        if (!loyaltyBanner) return;
+        if (!html) { loyaltyBanner.style.display = "none"; loyaltyBanner.innerHTML = ""; return; }
+        loyaltyBanner.style.display = "block";
+        loyaltyBanner.innerHTML = html;
+    }
+
+    async function runLoyaltyLookup(rawPhone) {
+        const cleanPhone = (rawPhone || "").replace(/[\s\-\(\)\+]/g, "");
+        if (!/^01[0125][0-9]{8}$/.test(cleanPhone) || cleanPhone === lastCheckedLoyaltyPhone) return;
+        lastCheckedLoyaltyPhone = cleanPhone;
+
+        if (!window.BoseSupabase || typeof window.BoseSupabase.getBoseCustomerRewards !== "function") return;
+        try {
+            const row = await window.BoseSupabase.getBoseCustomerRewards(cleanPhone);
+            if (!row || !row.found) { renderLoyaltyBanner(""); return; }
+
+            const nextOrderNumber = (row.total_orders || 0) + 1;
+            window.BoseLoyaltyState.totalOrders = row.total_orders || 0;
+            window.BoseLoyaltyState.nextOrderNumber = nextOrderNumber;
+            window.BoseLoyaltyState.discountPercent = row.next_discount_percent || 0;
+
+            const invoiceNow = window.calculateBoseInvoice(cart, storeData, selectedShippingFee, 0, window.BoseLoyaltyState.voucherDiscountAmount);
+            window.BoseLoyaltyState.discountAmount = row.next_discount_percent > 0
+                ? parseFloat((invoiceNow.subtotal * (row.next_discount_percent / 100)).toFixed(2))
+                : 0;
+
+            let bannerHtml = "";
+            const styleBase = "border-radius:12px; padding:12px 14px; font-size:0.88rem; font-weight:700; margin-bottom:16px; display:flex; align-items:center; gap:8px;";
+            if (row.next_discount_percent > 0) {
+                bannerHtml = `<div style="${styleBase} background:rgba(46,158,91,0.1); color:#2e9e5b; border:1px solid rgba(46,158,91,0.3);">
+                    <i class="fa-solid fa-star"></i> مبروك! ده طلبك رقم ${nextOrderNumber}، وهياخد خصم تلقائي ${row.next_discount_percent}% 🎉</div>`;
+            } else if (row.orders_until_next_voucher === 1 || nextOrderNumber % 10 === 0) {
+                bannerHtml = `<div style="${styleBase} background:rgba(255,145,164,0.08); color:#FF91A4; border:1px solid rgba(255,145,164,0.3);">
+                    <i class="fa-solid fa-gift"></i> ده طلبك رقم ${nextOrderNumber}! بعد استلامه هتاخدي قسيمة شراء 300 جنيه صالحة لمدة شهرين 🎁</div>`;
+            } else if (row.orders_until_next_discount > 0) {
+                bannerHtml = `<div style="${styleBase} background:rgba(255,145,164,0.08); color:#FF91A4; border:1px solid rgba(255,145,164,0.3);">
+                    <i class="fa-solid fa-heart"></i> باقيلك ${row.orders_until_next_discount} ${row.orders_until_next_discount === 1 ? 'طلب' : 'طلبات'} بعد ده عشان تاخدي خصم على طلبك الجاي</div>`;
+            }
+            if (Array.isArray(row.active_vouchers) && row.active_vouchers.length > 0) {
+                bannerHtml += `<div style="${styleBase} background:rgba(212,175,55,0.1); color:#b8860b; border:1px solid rgba(212,175,55,0.3);">
+                    <i class="fa-solid fa-ticket"></i> عندك ${row.active_vouchers.length} قسيمة ولاء نشطة - اكتبي كودها في الحقل تحت عشان تستخدميها</div>`;
+            }
+            renderLoyaltyBanner(bannerHtml);
+            recalculateCheckoutInvoice(cart, storeData, selectedShippingFee, currentShippingMethod, payFullSelected);
+        } catch (err) {
+            console.warn("⚠️ تعذر جلب رصيد الولاء:", err);
+        }
+    }
+
+    if (phone1InputForLoyalty) {
+        phone1InputForLoyalty.addEventListener("input", () => {
+            clearTimeout(loyaltyLookupTimer);
+            loyaltyLookupTimer = setTimeout(() => runLoyaltyLookup(phone1InputForLoyalty.value), 600);
+        });
+        if (phone1InputForLoyalty.value) runLoyaltyLookup(phone1InputForLoyalty.value);
+    }
+
+    // 🎁 [نظام نقاط الولاء]: تفعيل كود قسيمة الولاء (300 جنيه) - محتاج رقم
+    // الهاتف الأساسي صحيح الأول عشان نتأكد إن القسيمة فعلاً بتاعة نفس العميلة.
+    const voucherApplyBtn = document.getElementById("btn-apply-loyalty-voucher");
+    const voucherInput = document.getElementById("checkout-voucher-code");
+    const voucherMsg = document.getElementById("checkout-voucher-message");
+    if (voucherApplyBtn && voucherInput) {
+        voucherApplyBtn.onclick = async () => {
+            const code = voucherInput.value.trim();
+            const phone = phone1InputForLoyalty ? phone1InputForLoyalty.value.trim() : "";
+            if (!code) return;
+            if (!window.BoseSupabase || typeof window.BoseSupabase.validateBoseLoyaltyVoucher !== "function") return;
+
+            voucherApplyBtn.disabled = true;
+            voucherApplyBtn.textContent = "بنتأكد...";
+            try {
+                const result = await window.BoseSupabase.validateBoseLoyaltyVoucher(code, phone);
+                if (result && result.is_valid) {
+                    window.BoseLoyaltyState.voucherCode = code.toUpperCase();
+                    window.BoseLoyaltyState.voucherRemaining = result.remaining_amount || 0;
+                    const invoiceNow = window.calculateBoseInvoice(cart, storeData, selectedShippingFee, window.BoseLoyaltyState.discountAmount, 0);
+                    window.BoseLoyaltyState.voucherDiscountAmount = Math.min(
+                        result.remaining_amount || 0,
+                        Math.max(0, invoiceNow.subtotal + selectedShippingFee - invoiceNow.discount)
+                    );
+                    if (voucherMsg) { voucherMsg.style.color = "#2e9e5b"; voucherMsg.textContent = "✅ " + (result.message || "تم تفعيل القسيمة"); }
+                } else {
+                    window.BoseLoyaltyState.voucherCode = null;
+                    window.BoseLoyaltyState.voucherDiscountAmount = 0;
+                    if (voucherMsg) { voucherMsg.style.color = "#FF91A4"; voucherMsg.textContent = "⚠️ " + ((result && result.message) || "كود القسيمة غير صحيح"); }
+                }
+                recalculateCheckoutInvoice(cart, storeData, selectedShippingFee, currentShippingMethod, payFullSelected);
+            } catch (err) {
+                if (voucherMsg) { voucherMsg.style.color = "#FF91A4"; voucherMsg.textContent = "⚠️ تعذر التحقق من القسيمة، حاولي تاني"; }
+            } finally {
+                voucherApplyBtn.disabled = false;
+                voucherApplyBtn.textContent = "تفعيل";
+            }
+        };
+    }
 
     if (pickupBtn) pickupBtn.click();
 
@@ -718,20 +834,58 @@ function recalculateCheckoutInvoice(cart, storeData, shippingFee, method, payFul
     const subtotalDisplay = document.getElementById("summary-subtotal");
     const shippingDisplay = document.getElementById("summary-shipping-fee");
     const grandTotalDisplay = document.getElementById("summary-grand-total");
-    
-    // 🧮 [توحيد حسابي]: نفس دالة السلة بالظبط، فرق الشحن بس بيتمرر كباراميتر
-    const invoice = window.calculateBoseInvoice(cart, storeData, shippingFee);
+
+    // 🎁 [نظام نقاط الولاء]: بنمرر الخصم التلقائي (حسب ترتيب الطلب) وخصم قسيمة
+    // الولاء (لو اتفعّلت) عشان يظهروا كبند واضح ويتحسب بيهم الإجمالي الكلي هنا
+    // بنفس الطريقة اللي هتتحسب بيها فعلياً في create_order_with_items بالباك إند.
+    const loyaltyState = window.BoseLoyaltyState || { discountAmount: 0, voucherDiscountAmount: 0 };
+    const invoice = window.calculateBoseInvoice(cart, storeData, shippingFee, loyaltyState.discountAmount, loyaltyState.voucherDiscountAmount);
 
     if (subtotalDisplay) subtotalDisplay.textContent = invoice.subtotal.toFixed(2) + " EGP";
     if (shippingDisplay) {
         shippingDisplay.textContent = invoice.shippingFee === 0 ? "مجاناً" : invoice.shippingFee.toFixed(2) + " EGP";
     }
-    
+
+    renderBoseLoyaltyDiscountRows(invoice);
+
     if (grandTotalDisplay) {
         grandTotalDisplay.textContent = invoice.grandTotal + " EGP";
     }
 
     updateBoseDepositPaymentBox(storeData, invoice.grandTotal, method || "pickup", payFull);
+}
+
+/**
+ * 🎁 [نظام نقاط الولاء]: بيحقن (أو يشيل) بندين اختياريين في جدول ملخص الفاتورة
+ * بصفحة إتمام الطلب - "خصم الولاء التلقائي" و"قسيمة الولاء" - بيظهروا بس لما
+ * تكون قيمتهم أكبر من صفر، عشان الفاتورة تفضل بسيطة وواضحة للعميلة كل مرة.
+ */
+function renderBoseLoyaltyDiscountRows(invoice) {
+    const table = document.querySelector(".summary-pricing-table");
+    if (!table) return;
+    let wrapper = document.getElementById("bose-loyalty-discount-rows");
+    if (!wrapper) {
+        wrapper = document.createElement("div");
+        wrapper.id = "bose-loyalty-discount-rows";
+        const grandTotalRow = document.querySelector(".summary-grand-total-row");
+        if (grandTotalRow) table.insertBefore(wrapper, grandTotalRow);
+        else table.appendChild(wrapper);
+    }
+
+    let rowsHtml = "";
+    if (invoice.loyaltyDiscountAmount > 0) {
+        rowsHtml += `<div class="pricing-row-node" style="display: flex; justify-content: space-between;">
+            <span class="pricing-label-text"><i class="fa-solid fa-star" style="color:#FF91A4;"></i> خصم الولاء التلقائي:</span>
+            <span style="font-weight: 700; color: #2e9e5b;">- ${invoice.loyaltyDiscountAmount.toFixed(2)} EGP</span>
+        </div>`;
+    }
+    if (invoice.voucherDiscountAmount > 0) {
+        rowsHtml += `<div class="pricing-row-node" style="display: flex; justify-content: space-between;">
+            <span class="pricing-label-text"><i class="fa-solid fa-gift" style="color:#FF91A4;"></i> قسيمة الولاء:</span>
+            <span style="font-weight: 700; color: #2e9e5b;">- ${invoice.voucherDiscountAmount.toFixed(2)} EGP</span>
+        </div>`;
+    }
+    wrapper.innerHTML = rowsHtml;
 }
 
 function processFinalBoseOrder(cart, storeData, method, shippingFee, payFull) {
@@ -847,7 +1001,11 @@ function processFinalBoseOrder(cart, storeData, method, shippingFee, payFull) {
     }
 
     // 🧮 [توحيد حسابي]: نفس المعادلة المستخدمة بالسلة وبصفحة الشحن بالظبط
-    const invoice = window.calculateBoseInvoice(cart, storeData, shippingFee);
+    // (🎁 نظام نقاط الولاء: هنا كمان بنضيف الخصم التلقائي وخصم قسيمة الولاء
+    // لو موجودين، عشان المبلغ المطلوب دفعه فعلياً والمرسل في فاتورة الواتساب
+    // يطابق بالظبط اللي هيتحسب في قاعدة البيانات، مش يفاجئ العميلة برقم مختلف)
+    const loyaltyStateForOrder = window.BoseLoyaltyState || { discountAmount: 0, voucherDiscountAmount: 0 };
+    const invoice = window.calculateBoseInvoice(cart, storeData, shippingFee, loyaltyStateForOrder.discountAmount, loyaltyStateForOrder.voucherDiscountAmount);
     const finalGrandTotalCalculated = invoice.grandTotal;
 
     // 🆔 [إصلاح حرج]: رقم طلب فريد فعلياً (طابع زمني + عشوائي) بدل رقم
@@ -874,6 +1032,14 @@ function processFinalBoseOrder(cart, storeData, method, shippingFee, payFull) {
         subtotal: invoice.subtotal,
         discountAmount: invoice.discount,
         couponCode: invoice.couponCode || null,
+        // 🎁 [نظام نقاط الولاء]: كود القسيمة (لو اتفعّل) بيترسل للباك إند عشان
+        // create_order_with_items يتحقق منه بنفسه ويخصم رصيده فعلياً. القيمتين
+        // تحت تقدير فوري من نفس معادلة الباك إند عشان تظهر في فاتورة الواتساب
+        // اللي بتتفتح فوراً (قبل ما رد قاعدة البيانات المؤكد يوصل أصلاً)،
+        // وبيتم استبدالهم بالقيمة المؤكدة فعلياً بعد الحفظ تحت.
+        loyaltyVoucherCode: loyaltyStateForOrder.voucherCode || null,
+        loyaltyDiscountAmount: invoice.loyaltyDiscountAmount || 0,
+        voucherAmountUsed: invoice.voucherDiscountAmount || 0,
         grandTotal: finalGrandTotalCalculated,
         notes: orderNotesInput ? orderNotesInput.value.trim() : "لا توجد ملاحظات إضافية",
         // 🌸 [نظام التعرّف على العميل]: ملاحظات الشحن/التوصيل بتتسجل كحقل منفصل
@@ -961,6 +1127,13 @@ function processFinalBoseOrder(cart, storeData, method, shippingFee, payFull) {
                 // عشان صفحة النجاح تقدر تعرضه وتربطه بصفحة تتبع الطلب.
                 if (dbResult && dbResult.orderNumber) {
                     completedBoseOrderObject.dbOrderNumber = dbResult.orderNumber;
+                    // 🎁 [نظام نقاط الولاء]: القيم دي هي المؤكدة فعلياً من قاعدة البيانات
+                    // (مصدر الحقيقة) - بتتسجل هنا عشان صفحة النجاح تقدر تعرض للعميلة
+                    // بالظبط الخصم اللي اتطبق، أو تبشّرها لو الطلب ده حقق لها قسيمة الـ300 جنيه.
+                    completedBoseOrderObject.loyaltyDiscountPercent = dbResult.loyaltyDiscountPercent || 0;
+                    completedBoseOrderObject.loyaltyDiscountAmount = dbResult.loyaltyDiscountAmount || 0;
+                    completedBoseOrderObject.voucherAmountUsed = dbResult.voucherAmountUsed || 0;
+                    completedBoseOrderObject.isLoyaltyMilestone = !!dbResult.isLoyaltyMilestone;
                     localStorage.setItem("bose_last_order", JSON.stringify(completedBoseOrderObject));
                 }
             })
@@ -1123,6 +1296,15 @@ function buildBoseFormattedWhatsappInvoice(order) {
     msg += `--------------------------------------------------\n`;
     msg += `📝 *ملاحظات عن الحساسية / تفضيل السكر أو أي طلب خاص:* ${order.notes}\n\n`;
     msg += `--------------------------------------------------\n`;
+    // 🎁 [نظام نقاط الولاء]: خصم الولاء التلقائي وخصم قسيمة الولاء (لو اتطبقوا)
+    // بيظهروا كسطرين واضحين هنا قبل المجموع النهائي، عشان العميلة تشوف بعينها
+    // إنها فعلاً اخدت مكافأتها ومش مجرد خصم مخفي.
+    if (order.loyaltyDiscountAmount && order.loyaltyDiscountAmount > 0) {
+        msg += `🌟 *خصم الولاء التلقائي:* -${parseFloat(order.loyaltyDiscountAmount).toFixed(2)} EGP\n`;
+    }
+    if (order.voucherAmountUsed && order.voucherAmountUsed > 0) {
+        msg += `🎁 *قسيمة الولاء المستخدمة:* -${parseFloat(order.voucherAmountUsed).toFixed(2)} EGP\n`;
+    }
     msg += `👑 *المجموع المالي النهائي:* ${order.grandTotal} EGP 👑\n`;
     // 💵 [عربون/دفع مقدم]: توضيح صريح لطريقة ووقت الدفع - استلام = عربون 50%
     // والباقي عند الاستلام، توصيل = كامل المبلغ مقدماً وقت تأكيد الحجز.
@@ -1199,6 +1381,44 @@ function renderBoseSuccessPage(storeData) {
     if (customerWelcome && order.customerName) {
         customerWelcome.textContent = `أهلاً بيك يا ${order.customerName} 🌸`;
         customerWelcome.style.display = "block";
+    }
+
+    // 🎁 [نظام نقاط الولاء]: بيوضح للعميلة فوراً لو الطلب ده كسب لها خصم تلقائي،
+    // أو حقق لها قسيمة شراء الـ300 جنيه (بعد الاستلام) - القيم دي مؤكدة فعلياً
+    // من قاعدة البيانات (راجع processFinalBoseOrder → dbResult) مش تقدير محلي.
+    const loyaltyCard = document.getElementById("bose-loyalty-success-card");
+    if (loyaltyCard) {
+        const loyaltyDiscountAmount = parseFloat(order.loyaltyDiscountAmount) || 0;
+        const loyaltyDiscountPercent = parseFloat(order.loyaltyDiscountPercent) || 0;
+        const voucherAmountUsed = parseFloat(order.voucherAmountUsed) || 0;
+        const isMilestone = !!order.isLoyaltyMilestone;
+
+        const cardBaseStyle = "margin: 16px 0 0 0; padding: 16px 18px; border-radius: 14px; direction: rtl; text-align: right; font-family: 'Cairo'; font-size: 0.9rem; font-weight: 700; display:flex; align-items:center; gap:10px;";
+        let cardHtml = "";
+
+        if (loyaltyDiscountAmount > 0) {
+            cardHtml += `<div style="${cardBaseStyle} background: rgba(46,158,91,0.08); border: 1px solid rgba(46,158,91,0.3); color:#2e9e5b;">
+                <i class="fa-solid fa-star" style="font-size:1.2rem;"></i>
+                <span>استفدتِ من خصم الولاء التلقائي (${loyaltyDiscountPercent}%) بقيمة ${loyaltyDiscountAmount.toFixed(2)} جنيه على الطلب ده 🎉</span>
+            </div>`;
+        }
+        if (voucherAmountUsed > 0) {
+            cardHtml += `<div style="${cardBaseStyle} background: rgba(212,175,55,0.08); border: 1px solid rgba(212,175,55,0.3); color:#b8860b;">
+                <i class="fa-solid fa-ticket" style="font-size:1.2rem;"></i>
+                <span>استخدمتِ قسيمة ولاء بقيمة ${voucherAmountUsed.toFixed(2)} جنيه في الطلب ده 🎁</span>
+            </div>`;
+        }
+        if (isMilestone) {
+            cardHtml += `<div style="${cardBaseStyle} background: rgba(255,145,164,0.08); border: 1px solid rgba(255,145,164,0.3); color:#FF91A4;">
+                <i class="fa-solid fa-gift" style="font-size:1.2rem;"></i>
+                <span>مبروك! الطلب ده وصّلك لمرحلة قسيمة شراء بـ300 جنيه - هتوصلك تلقائياً بعد استلام طلبك، وهتلاقيها في <a href="rewards.html?phone=${encodeURIComponent(order.phone1 || '')}" style="color:#FF91A4; text-decoration:underline;">صفحة نادي المكافآت</a> صالحة لمدة شهرين 🎉</span>
+            </div>`;
+        }
+
+        if (cardHtml) {
+            loyaltyCard.innerHTML = cardHtml;
+            loyaltyCard.style.display = "block";
+        }
     }
 
     // 💵 [عربون/دفع مقدم]: عرض نفس بوكس تعليمات الدفع اللي ظهر في checkout.html

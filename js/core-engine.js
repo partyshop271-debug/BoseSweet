@@ -1600,9 +1600,16 @@
      * @param {number} shippingFee
      * @returns {{subtotal: number, discount: number, shippingFee: number, grandTotal: number, itemsCount: number}}
      */
-    window.calculateBoseInvoice = function(cart, storeData, shippingFee) {
+    window.calculateBoseInvoice = function(cart, storeData, shippingFee, loyaltyDiscountAmount, voucherDiscountAmount) {
         const safeCart = Array.isArray(cart) ? cart : [];
         const safeShippingFee = parseFloat(String(shippingFee)) || 0;
+        // 🎁 [نظام نقاط الولاء]: خصم تلقائي حسب ترتيب الطلب (5%/10%/15%) وخصم
+        // قسيمة الولاء (300 جنيه كل 10 طلبات) - بيتحسبوا في checkout.html بمجرد
+        // ما رقم الهاتف يتأكد صحيح (عن طريق get_customer_rewards/validate_loyalty_voucher)
+        // ويترسلوا هنا كباراميتر اختياري عشان يظهروا كبند منفصل وواضح للعميلة
+        // قبل ما تأكد الطلب، بدل ما يتطبقوا بصمت في قاعدة البيانات بس.
+        const safeLoyaltyDiscount = parseFloat(String(loyaltyDiscountAmount)) || 0;
+        const safeVoucherDiscount = parseFloat(String(voucherDiscountAmount)) || 0;
 
         let subtotal = 0;
         let itemsCount = 0;
@@ -1614,7 +1621,7 @@
         });
         subtotal = parseFloat(subtotal.toFixed(4));
 
-        let discount = 0;
+        let couponDiscount = 0;
         let activeCouponCode = null;
         try {
             // 🛡️ [إصلاح أمني]: بيانات الكوبون النشط بقت جاية من نتيجة تحقق آمن عبر
@@ -1626,21 +1633,25 @@
             if (rawActiveCoupon) {
                 const activeCoupon = JSON.parse(rawActiveCoupon);
                 if (activeCoupon && activeCoupon.code) {
-                    discount = window.calculateCouponDiscount(subtotal, activeCoupon);
+                    couponDiscount = window.calculateCouponDiscount(subtotal, activeCoupon);
                     activeCouponCode = activeCoupon.code;
                 }
             }
         } catch (e) {
-            discount = 0;
+            couponDiscount = 0;
             activeCouponCode = null;
         }
-        discount = parseFloat(discount.toFixed(4));
+        couponDiscount = parseFloat(couponDiscount.toFixed(4));
 
+        const discount = parseFloat((couponDiscount + safeLoyaltyDiscount + safeVoucherDiscount).toFixed(4));
         const grandTotal = Math.round(Math.max(0, subtotal - discount) + safeShippingFee);
 
         return {
             subtotal: subtotal,
             discount: discount,
+            couponDiscount: couponDiscount,
+            loyaltyDiscountAmount: safeLoyaltyDiscount,
+            voucherDiscountAmount: safeVoucherDiscount,
             shippingFee: safeShippingFee,
             grandTotal: grandTotal,
             itemsCount: itemsCount,

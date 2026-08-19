@@ -217,6 +217,9 @@
             p_grand_total: parseFloat(orderPayload.grandTotal) || 0,
             p_items: items,
             p_pay_full: !!orderPayload.payFull,
+            // 🎁 [نظام نقاط الولاء]: كود قسيمة الولاء (لو العميلة عندها واحدة نشطة
+            // ودخلته) - الباك إند بيتحقق منه ومن ملكيته لنفس رقم الهاتف بنفسه.
+            p_voucher_code: orderPayload.loyaltyVoucherCode || null,
         });
 
         const row = Array.isArray(result) ? result[0] : result;
@@ -225,7 +228,24 @@
             orderNumber: row.order_number,
             depositAmount: row.deposit_amount,
             grandTotal: row.grand_total,
+            // 🎁 [نظام نقاط الولاء]: القيم الحقيقية المحسوبة والمؤكدة من قاعدة
+            // البيانات (مصدر الحقيقة الوحيد) - بتتسجل في الطلب المحلي عشان تتعرض
+            // للعميلة في صفحة النجاح وفاتورة الواتساب.
+            loyaltyDiscountPercent: row.loyalty_discount_percent || 0,
+            loyaltyDiscountAmount: row.loyalty_discount_amount || 0,
+            voucherAmountUsed: row.voucher_amount_used || 0,
+            isLoyaltyMilestone: !!row.is_loyalty_milestone,
         };
+    }
+
+    /**
+     * 🎁 [نظام نقاط الولاء]: التحقق من صلاحية كود قسيمة الولاء (300 جنيه) قبل
+     * تطبيقه في السلة - بيتأكد إنه فعلاً بتاع نفس رقم الهاتف ولسه ساري ومعاه رصيد.
+     * @returns {Promise<{is_valid: boolean, message: string, remaining_amount: number|null, expires_at: string|null}>}
+     */
+    async function validateBoseLoyaltyVoucher(code, phone) {
+        const result = await boseSupabaseRpc("validate_loyalty_voucher", { p_code: code, p_phone: phone });
+        return Array.isArray(result) ? result[0] : result;
     }
 
     /**
@@ -386,6 +406,8 @@
             grandTotal: o.grandTotal,
             items: o.items || [],
             payFull: !!o.payFull,
+            // 🎁 [نظام نقاط الولاء]: كود قسيمة الولاء لو العميلة طبّقته في السلة
+            loyaltyVoucherCode: o.loyaltyVoucherCode || null,
         });
     }
 
@@ -400,6 +422,7 @@
         uploadBoseReferenceImage,
         trackBoseOrder,
         getBoseCustomerRewards,
+        validateBoseLoyaltyVoucher,
     };
     // الاسم اللي cart-engine.js بينده عليه فعلياً (راجع processFinalBoseOrder)
     window.saveBoseOrderToDatabase = saveBoseOrderToDatabase;
