@@ -1160,7 +1160,7 @@
                 }
                 let imagesHTML = "";
                 if (rev.images && rev.images.length > 0) {
-                    imagesHTML = `<div class="review-attach-images-row">${rev.images.map(url => `<img class="review-attached-img" src="${window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(url, 200) : url}" data-fullsrc="${url}" loading="lazy">`).join("")}</div>`;
+                    imagesHTML = `<div class="review-attach-images-row">${rev.images.map(url => `<img class="review-attached-img" src="${window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(url, 200) : url}" data-fullsrc="${url}" loading="lazy" alt="صورة مرفقة من تقييم عميل لمنتج ${window.escapeBoseHTML ? window.escapeBoseHTML(currentProduct.title) : ''}">`).join("")}</div>`;
                 }
                 const pendingBadge = rev.pending
                     ? `<span style="font-size:0.72rem; font-weight:700; color:var(--bose-pink); background:rgba(255,145,164,0.1); padding:3px 10px; border-radius:50px; margin-right:8px;">قيد المراجعة</span>`
