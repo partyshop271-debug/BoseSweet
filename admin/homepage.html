@@ -166,6 +166,18 @@
                             <div>
                                 <h3 class="adm-sub-heading">العمود الأيمن (لأعلى)</h3>
                                 <div class="adm-curated-list" id="list-waterfall-left"></div>
+                                <!-- 🛡️ [إصلاح - الصور بقت روابط لصفحات المنتجات]: قبل كده كان فيه طريقة واحدة
+                                     بس لإضافة صورة (رابط مباشر أو رفع ملف)، ومفيهاش أي ربط بمنتج حقيقي - فكل
+                                     صور الشلال كانت بتظهر في الرئيسية من غير أي رابط تضغطي عليه. دلوقتي أول
+                                     وأهم طريقة هي اختيار منتج من القائمة: بتاخد صورته الحقيقية تلقائيًا وتربطها
+                                     بصفحته في نفس الوقت - مفيش احتمال إن الصورة والرابط يبقوا متعارضين. -->
+                                <div class="adm-curated-add-row">
+                                    <select class="adm-select" id="waterfall-left-product-select"></select>
+                                    <button type="button" class="adm-btn adm-btn-primary adm-btn-sm" id="waterfall-left-add-product-btn">
+                                        <i class="fa-solid fa-link"></i> إضافة كرابط منتج
+                                    </button>
+                                </div>
+                                <p class="adm-hint" style="margin: 10px 0 4px;">أو أضيفي صورة تزيينية من غير رابط (مش هتبقى قابلة للضغط):</p>
                                 <div class="adm-curated-add-row">
                                     <input type="text" class="adm-input" id="waterfall-left-url-input" placeholder="الصقي رابط صورة مباشر هنا...">
                                     <button type="button" class="adm-btn adm-btn-outline adm-btn-sm" id="waterfall-left-add-url-btn">
@@ -181,6 +193,13 @@
                             <div>
                                 <h3 class="adm-sub-heading">العمود الأيسر (لأسفل)</h3>
                                 <div class="adm-curated-list" id="list-waterfall-right"></div>
+                                <div class="adm-curated-add-row">
+                                    <select class="adm-select" id="waterfall-right-product-select"></select>
+                                    <button type="button" class="adm-btn adm-btn-primary adm-btn-sm" id="waterfall-right-add-product-btn">
+                                        <i class="fa-solid fa-link"></i> إضافة كرابط منتج
+                                    </button>
+                                </div>
+                                <p class="adm-hint" style="margin: 10px 0 4px;">أو أضيفي صورة تزيينية من غير رابط (مش هتبقى قابلة للضغط):</p>
                                 <div class="adm-curated-add-row">
                                     <input type="text" class="adm-input" id="waterfall-right-url-input" placeholder="الصقي رابط صورة مباشر هنا...">
                                     <button type="button" class="adm-btn adm-btn-outline adm-btn-sm" id="waterfall-right-add-url-btn">
