@@ -2,7 +2,7 @@
  * builders-page.js - منطق صفحة إعدادات المحاكيات فقط
  * =====================================================================
  * كل قوائم الاختيارات هنا (أنواع التورت، خيارات الطباعة، الأشكال، أنواع
- * الورد، التغليف، الشوكولاتة) شكلها واحد بالظبط (اسم + سعر اختياري + حقل
+ * الورد) شكلها واحد بالظبط (اسم + سعر اختياري + حقل
  * إضافي اختياري)، فبدل ما تتكرر ست مرات، فيه دالة واحدة renderNamedList
  * بتبني وتدير أي قائمة منهم. فئة "التصنيفات المالية" (moneyCategories)
  * بس شكلها مختلف (رسوم/مبلغ من غير اسم) فليها دالة منفصلة بسيطة.
@@ -184,8 +184,6 @@
         cakeBuilder.portfolioGallery = cakeBuilder.portfolioGallery || [];
 
         flowerBuilder.flowerTypes = flowerBuilder.flowerTypes || [];
-        flowerBuilder.wrappingTypes = flowerBuilder.wrappingTypes || [];
-        flowerBuilder.chocolateTypes = flowerBuilder.chocolateTypes || [];
         flowerBuilder.moneyCategories = flowerBuilder.moneyCategories || [];
         flowerBuilder.portfolioGallery = flowerBuilder.portfolioGallery || [];
         flowerBuilder.giftCardImages = flowerBuilder.giftCardImages || [];
@@ -243,12 +241,6 @@
 
         renderNamedList("list-flower-types", flowerBuilder.flowerTypes, { imageField: true });
         wireAddButton("add-flower-type-btn", "list-flower-types", flowerBuilder.flowerTypes, {});
-
-        renderNamedList("list-wrapping-types", flowerBuilder.wrappingTypes, { priceField: true, imageField: true });
-        wireAddButton("add-wrapping-type-btn", "list-wrapping-types", flowerBuilder.wrappingTypes, { priceField: true });
-
-        renderNamedList("list-chocolate-types", flowerBuilder.chocolateTypes, { priceField: true });
-        wireAddButton("add-chocolate-type-btn", "list-chocolate-types", flowerBuilder.chocolateTypes, { priceField: true });
 
         renderMoneyCategories(flowerBuilder.moneyCategories);
         document.getElementById("add-money-category-btn").addEventListener("click", () => {
@@ -322,8 +314,6 @@
                     "extraFlowerPrice", "largeChocolateMinimumPrice",
                 ]),
                 flowerTypes: flowerBuilder.flowerTypes,
-                wrappingTypes: flowerBuilder.wrappingTypes,
-                chocolateTypes: flowerBuilder.chocolateTypes,
                 moneyCategories: flowerBuilder.moneyCategories,
                 heroImage: flowerBuilder.heroImage || "",
                 portfolioGallery: flowerBuilder.portfolioGallery,
