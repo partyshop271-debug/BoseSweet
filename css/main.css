@@ -723,38 +723,6 @@
     background: linear-gradient(to top, var(--bose-white) 0%, rgba(255, 255, 255, 0) 100%);
 }
 
-/* 💬 [ربط الشلال البصري بمعنى]: قبل كده كان القسم ده ديكور بصري بحت من غير أي نص -
-   جميل كـ Hook لكن مفيهوش رسالة. كارت شفاف صغير في النص بيربط الحركة بمعنى مباشر
-   من غير ما يقاطع أو يبطّئ حركة الأعمدة نفسها. */
-.waterfall-caption {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 3;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(255, 255, 255, 0.82);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    border: var(--bose-border-pink);
-    color: var(--bose-black);
-    font-weight: 700;
-    font-size: 13.5px;
-    padding: 10px 20px;
-    border-radius: var(--bose-radius-pill);
-    box-shadow: var(--bose-shadow-hover);
-    text-align: center;
-    max-width: 88%;
-    pointer-events: none;
-}
-.waterfall-caption i { color: var(--bose-pink-text); }
-
-@media (min-width: 768px) {
-    .waterfall-caption { font-size: 15px; padding: 12px 26px; }
-}
-
 .waterfall-container {
     display: flex !important;
     justify-content: space-between !important;
