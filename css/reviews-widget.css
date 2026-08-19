@@ -1,0 +1,74 @@
+/* ⭐ مراجعات العملاء - نفس تصميم قسم المراجعات في product.html، منقول هنا عشان
+   يتشارك بين صفحات المحاكيات (cake-builder.html + flower-builder.html) بدل ما
+   يتكرر كـ <style> داخلي في كل صفحة لوحدها. شوفي js/reviews-widget.js للسلوك. */
+
+.reviews-premium-section {
+    margin-top: 60px;
+    border-top: 1px dashed rgba(255, 145, 164, 0.25);
+    padding-top: 40px;
+}
+
+.reviews-summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.btn-trigger-review-form {
+    background: transparent;
+    color: var(--bose-black);
+    border: 1px solid rgba(17, 17, 17, 0.15);
+    padding: 10px 20px;
+    border-radius: 50px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-trigger-review-form:hover {
+    background: rgba(17, 17, 17, 0.03);
+    border-color: var(--bose-pink);
+}
+
+.review-card-node {
+    background: var(--bose-white);
+    border: 1px solid rgba(255, 145, 164, 0.15);
+    border-radius: 18px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 16px rgba(255, 145, 164, 0.02);
+}
+
+.review-user-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.review-stars-row {
+    color: var(--bose-gold);
+    font-size: 0.85rem;
+    display: flex;
+    gap: 2px;
+}
+
+.review-attach-images-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+}
+
+.review-attached-img {
+    width: 78px;
+    height: 78px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 1px solid rgba(17, 17, 17, 0.08);
+    cursor: zoom-in;
+}
