@@ -20,6 +20,67 @@
     forceScrollToTop();
 
     /**
+     * 📊👑 [نمو - تركيب أدوات القياس]: كان الموقع كله من غير أي أداة قياس -
+     * مفيش Google Analytics ولا Facebook Pixel ولا TikTok Pixel، يعني مفيش أي
+     * طريقة نعرف بيها فعلياً مين بيدخل الموقع، مين بيشتري، ومفيش إمكانية نعمل
+     * إعلانات ممولة تستهدف بيها متابعين السوشيال ميديا (23K+ فيسبوك) بدقة.
+     * بيتحقن هنا مرة واحدة بنفس منطق حقن الـ structured data تحت -
+     * أي صفحة عميل بتحمّل core-engine.js (كل الموقع ما عدا لوحة التحكم) بتاخد
+     * القياس تلقائياً من غير ما نلمس الـ 19 صفحة يدوياً واحدة واحدة.
+     * ⚠️ TikTok Pixel و Facebook Pixel لسه مش متركبين - محتاجين الـ IDs بتاعتهم
+     * (لسه مش واصلة)، أماكنهم محجوزة تحت وجاهزة، سطر واحد بس هيتضاف لما توصل.
+     */
+    (function ensureBoseAnalytics() {
+        // --- Google Analytics 4 ---
+        const GA4_MEASUREMENT_ID = "G-46D1CS3WLB"; // بسي-سويتس - من حساب المستخدمة على analytics.google.com
+        if (GA4_MEASUREMENT_ID && !window.gtag) {
+            const gaScript = document.createElement("script");
+            gaScript.async = true;
+            gaScript.src = `https://www.googletagmanager.com/gtag/js?id=${GA4_MEASUREMENT_ID}`;
+            document.head.appendChild(gaScript);
+            window.dataLayer = window.dataLayer || [];
+            window.gtag = function () { window.dataLayer.push(arguments); };
+            window.gtag("js", new Date());
+            window.gtag("config", GA4_MEASUREMENT_ID);
+        }
+
+        // --- Facebook Pixel ---
+        const FB_PIXEL_ID = "1867395257564538"; // BoseSweetsWebsite - من Facebook Events Manager
+        if (FB_PIXEL_ID && !window.fbq) {
+            !function (f, b, e, v, n, t, s) {
+                if (f.fbq) return; n = f.fbq = function () {
+                    n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+                };
+                if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = "2.0";
+                n.queue = []; t = b.createElement(e); t.async = !0; t.src = v;
+                s = b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t, s);
+            }(window, document, "script", "https://connect.facebook.net/en_US/fbevents.js");
+            window.fbq("init", FB_PIXEL_ID);
+            window.fbq("track", "PageView");
+        }
+
+        // --- TikTok Pixel ---
+        const TT_PIXEL_ID = "DA2LEG3C77U7HHC75ADG"; // BoseSweetsWebsite - من TikTok Events Manager
+        if (TT_PIXEL_ID && !window.ttq) {
+            !function (w, d, t) {
+                w.TiktokAnalyticsObject = t; var ttq = w[t] = w[t] || [];
+                ttq.methods = ["page", "track", "identify", "instances", "debug", "on", "off", "once", "ready", "alias", "group", "enableCookie", "disableCookie", "holdConsent", "revokeConsent", "grantConsent"];
+                ttq.setAndDefer = function (t, e) { t[e] = function () { t.push([e].concat(Array.prototype.slice.call(arguments, 0))); }; };
+                for (var i = 0; i < ttq.methods.length; i++) ttq.setAndDefer(ttq, ttq.methods[i]);
+                ttq.instance = function (t) { for (var e = ttq._i[t] || [], n = 0; n < ttq.methods.length; n++) ttq.setAndDefer(e, ttq.methods[n]); return e; };
+                ttq.load = function (e, n) {
+                    var r = "https://analytics.tiktok.com/i18n/pixel/events.js", o = n && n.partner;
+                    ttq._i = ttq._i || {}; ttq._i[e] = []; ttq._i[e]._u = r; ttq._t = ttq._t || {}; ttq._t[e] = +new Date; ttq._o = ttq._o || {}; ttq._o[e] = n || {};
+                    n = document.createElement("script"); n.type = "text/javascript"; n.async = !0; n.src = r + "?sdkid=" + e + "&lib=" + t;
+                    e = document.getElementsByTagName("script")[0]; e.parentNode.insertBefore(n, e);
+                };
+                ttq.load(TT_PIXEL_ID);
+                ttq.page();
+            }(window, document, "ttq");
+        }
+    })();
+
+    /**
      * ℹ️👑 [نظام الشروح التوضيحية الموحد للموقع كله]: كان الشرح المنبثق (Popover)
      * موجود جوه cake-builder.html بس، بمنطق محلي مربوط بديكشنري ثابت من مفاتيح
      * معروفة مقدماً. المشكلة إن ده مبيصلحش لبقية الموقع لأن معظم كروت المنتجات
@@ -341,7 +402,6 @@
         setupOurProductsShowMore();
         injectSimulatorsPreviewData();
         setupSimulatorPreviewAnimations();
-        setupLazyVideoLoading();
         setupPrideCountersAnimation();
         setupPrideTimelineReveal();
         setupAppInstallPopup();
@@ -399,7 +459,7 @@
             if (track) {
                 track.innerHTML = liveCategoriesList.map(/** @param {Object} cat */ (cat) => `
                     <div class="category-card-unified" onclick="window.location.href='category.html?category=${encodeURIComponent(cat.id)}'">
-                        <img src="${window.optimizeBoseImageUrl(cat.image, 450)}" alt="${window.escapeBoseHTML(cat.title)}" class="category-card-img" width="180" height="180" loading="lazy" />
+                        <img src="${window.optimizeBoseImageUrl(cat.image, 450)}" alt="${window.escapeBoseHTML(cat.title)} | حلويات بوسي" class="category-card-img" width="180" height="180" loading="lazy" />
                         <div class="category-card-name">${window.escapeBoseHTML(cat.title)}</div>
                     </div>
                 `).join('');
@@ -480,11 +540,6 @@
         const count = cards.length;
         if (count === 0) return;
 
-        // 🛡️ [أساس إصلاح اتجاه السحب]: بنحدد اتجاه العنصر مرة واحدة هنا،
-        // ونستخدمه لتصحيح إشارة (+/-) كل عملية scrollTo/scrollBy تحت - بدل
-        // ما نفترض LTR زي أي كود سلايدر عادي جاهز من الإنترنت مش مبني لموقع RTL.
-        const isRTL = window.getComputedStyle(track).direction === 'rtl';
-
         for (let i = 0; i < cards.length; i++) {
             // 🛡️ لازم تتفق مع scroll-snap-align:start في main.css (كارت واحد
             // كامل يبدأ من حافة الشاشة) - لو فضلت center هنا هتتعارض مع القاعدة
@@ -505,20 +560,10 @@
 
         const dots = dotsContainer ? dotsContainer.querySelectorAll('.bose-slider-dot') : [];
 
-        // 🛡️👑 [إصلاح جذري - عدم مزامنة الدوتس]: الموقع كله direction:rtl، وكل
-        // المتصفحات الحديثة (Chrome/Safari/Firefox) بتطبّق معيار الـ scrollLeft
-        // في RTL بحيث يبدأ من 0 عند أول كارت (يمين الشاشة) وبيبقى بالسالب كل
-        // ما العميل يسحب لكروت تالية (بيتأكد ده تجريبياً على Chromium). يعني
-        // scrollLeft بيرجع أرقام زي 0, -320, -640... مش 0, 320, 640 زي الافتراض
-        // القديم. كان الكود القديم بيقسم القيمة السالبة دي على عرض الكارت
-        // فيطلعله index سالب، وبعدين شرط "لو أقل من صفر خليه صفر" كان بيثبّت
-        // الدوت الأول مضيء طول الوقت مهما سحب العميل لأي كارت. الحل: نستخدم
-        // Math.abs() في القراءة عشان يشتغل صح في الحالتين (RTL بالسالب أو أي
-        // حالة LTR مستقبلية بالموجب) من غير ما نحتاج نفرّق بينهم أصلاً.
         const syncDotsAndPosition = () => {
             const cardEl = /** @type {HTMLElement} */ (cards[0]);
             const cardWidth = cardEl.offsetWidth + parseInt(window.getComputedStyle(track).gap || '20', 10);
-            const scrollPosition = Math.abs(track.scrollLeft);
+            const scrollPosition = track.scrollLeft;
             let activeIndex = Math.round(scrollPosition / cardWidth);
             
             if (activeIndex < 0) activeIndex = 0;
@@ -553,11 +598,7 @@
                     const cardEl = /** @type {HTMLElement} */ (cards[0]);
                     const cardWidth = cardEl.offsetWidth + parseInt(window.getComputedStyle(track).gap || '20', 10);
                     track.style.scrollBehavior = 'smooth';
-                    // 🛡️ لازم نضرب في (isRTL ? -1 : 1) - غير كده في RTL أي index
-                    // غير الصفر بيبقى رقم موجب برّه المدى المسموح (0 لحد -maxScroll)
-                    // فالمتصفح كان بيتجاهله تمامًا ويرجّع الدوت لمكانه (زي ما مفيش
-                    // ضغطة حصلت أصلاً) بدل ما يوديه للكارت المطلوب.
-                    track.scrollTo({ left: cardWidth * index * (isRTL ? -1 : 1), behavior: 'smooth' });
+                    track.scrollTo({ left: cardWidth * index, behavior: 'smooth' });
                 }
             });
         }
@@ -572,23 +613,16 @@
                     return cardEl.offsetWidth + parseInt(window.getComputedStyle(track).gap || '20', 10);
                 };
                 
-                // 🛡️👑 [إصلاح - زرار "التالي" كان مش بيعمل حاجة خالص وزرار "السابق"
-                // كان بيشتغل عكسه]: بنفس منطق الدوتس بالظبط - "التالي" لازم يودي
-                // لكارت لاحق (يعني scrollLeft يزيد سالبية في RTL)، فلازم يضرب في
-                // -1 مش +1. كان زرار "التالي" (+step) بيحاول يتخطى الحد الأقصى
-                // المسموح (0) فالمتصفح كان بيرفضه ويسيب المكان زي ما هو، وزرار
-                // "السابق" (-step) كان صدفة بيودي "قدام" مش "ورا" لإن اتجاهه
-                // مطابق لاتجاه RTL الصحيح من غير قصد.
                 nextBtn.addEventListener('click', (e) => {
                     e.preventDefault();
                     track.style.scrollBehavior = 'smooth';
-                    track.scrollBy({ left: getScrollStep() * (isRTL ? -1 : 1), behavior: 'smooth' });
+                    track.scrollBy({ left: getScrollStep(), behavior: 'smooth' });
                 });
                 
                 prevBtn.addEventListener('click', (e) => {
                     e.preventDefault();
                     track.style.scrollBehavior = 'smooth';
-                    track.scrollBy({ left: getScrollStep() * (isRTL ? 1 : -1), behavior: 'smooth' });
+                    track.scrollBy({ left: -getScrollStep(), behavior: 'smooth' });
                 });
             }
         }
@@ -769,7 +803,7 @@
         if (isBuilderMaster) {
             return `
                 <div class="product-card-unified bose-builder-master-card" data-id="${product.id}" onclick="window.location.href='${product.customBuilderUrl}';" style="cursor:pointer;">
-                    <img src="${safeImg}" alt="${safeTitle}" class="product-card-img" width="300" height="300" loading="lazy" />
+                    <img src="${safeImg}" alt="${safeTitle} | حلويات بوسي" class="product-card-img" width="300" height="300" loading="lazy" />
                     <h3 class="product-card-title">${safeTitle}</h3>
                     <span class="product-card-flavor-name">${safeFlavor}</span>
                     <p class="product-card-desc">${safeDesc}</p>
@@ -866,7 +900,7 @@
                 ${discountBadgeHtml}
                 ${isUnavailable ? `<div class="offer-badge" style="background:rgba(17,17,17,0.75);">نفدت الكمية</div>` : ''}
                 ${favBtnHtml}
-                <img src="${cardImg}" alt="${safeTitle}" class="product-card-img" data-size-img="1" width="300" height="300" loading="lazy" style="${isUnavailable ? 'filter:grayscale(60%); opacity:0.75;' : ''}" />
+                <img src="${cardImg}" alt="${safeFlavor ? safeTitle + ' - ' + safeFlavor : safeTitle} | حلويات بوسي" class="product-card-img" data-size-img="1" width="300" height="300" loading="lazy" style="${isUnavailable ? 'filter:grayscale(60%); opacity:0.75;' : ''}" />
                 <h3 class="product-card-title">${safeTitle}</h3>
                 <span class="product-card-flavor-name">${safeFlavor}</span>
                 <p class="product-card-desc">${safeDesc}</p>
@@ -1076,42 +1110,6 @@
      * setupPrideCountersAnimation (IntersectionObserver + unobserve بعد التفعيل
      * مرة واحدة فقط) عشان مفيش أي استهلاك زيادة للمعالج بعد أول ظهور.
      */
-    /**
-     * 🎬 [تحميل كسول للفيديوهين]: بدل ما فيديو "سيمفونية الطعم" و"عقد من الإتقان"
-     * يتحملوا ويشتغلوا فور فتح الصفحة وهما لسه تحت خالص برّه الشاشة (استهلاك
-     * بيانات وأداء من غير داعي، خصوصًا على موبايل)، بننتظر لحد ما الفريم يوصل
-     * فعليًا لمسافة قريبة من الشاشة (rootMargin) وبعدين بس نحط الـ src الحقيقي
-     * من data-src ونفعّل كلاس bose-video-loaded عشان يظهر بحركة ناعمة بدل
-     * السكيلتون النابض.
-     */
-    function setupLazyVideoLoading() {
-        const frames = document.querySelectorAll('.bose-lazy-video-frame');
-        if (!frames.length) return;
-
-        const loadFrame = (/** @type {Element} */ frame) => {
-            const iframe = frame.querySelector('iframe[data-src]');
-            if (!iframe || iframe.getAttribute('src')) return;
-            iframe.setAttribute('src', iframe.getAttribute('data-src'));
-            iframe.addEventListener('load', () => frame.classList.add('bose-video-loaded'), { once: true });
-        };
-
-        if (!('IntersectionObserver' in window)) {
-            frames.forEach(loadFrame);
-            return;
-        }
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    loadFrame(entry.target);
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { rootMargin: '400px 0px' });
-
-        frames.forEach((/** @type {Element} */ frame) => observer.observe(frame));
-    }
-
     function setupSimulatorPreviewAnimations() {
         const revealBlocks = document.querySelectorAll('.bose-simulator-reveal');
         if (!revealBlocks.length) return;
@@ -1362,6 +1360,12 @@
         const safePhotoCount = parseInt(options.photoCount, 10) || 0;
         if (options.hasPhotos && safePhotoCount > 0) servicePrice += safePhotoCount * photoPrintPrice; 
         if (options.hasGiftCard) servicePrice += giftCardPrice; 
+        // 🎁👑 [تسعير التغليف الحقيقي - حارس مركزي]: نفس منطق flower-engine.js
+        // بالظبط - سعر نوع التغليف المختار (0 لو التغليف الكلاسيك المجاني أو
+        // مفيش نوع محدد) بيتضاف هنا كمان عشان الحارس المركزي يفضل مطابق تماماً
+        // للسعر المعروض للعميل وقت التصميم.
+        const safeWrappingCost = parseFloat(options.wrappingCost) || 0;
+        servicePrice += safeWrappingCost;
         const finalServicePrice = window.calculateBosePrice(servicePrice, "menu-only");
         
         const safeCashAmount = parseFloat(options.cashAmount) || 0;
@@ -1424,9 +1428,22 @@
                 flowerType: opts.flowerType || "none",
                 flowerCount: parseInt(opts.flowerCount, 10) || 0,
                 cashAmount: parseFloat(opts.cashAmount) || 0,
+                // 💵👑 [تصليح فاتورة الكاش - فئة الأوراق النقدية]
+                cashDenomination: parseFloat(opts.cashDenomination) || 0,
+                // 🎁👑 [تسعير التغليف الحقيقي]
+                wrappingType: opts.wrappingType || "classic",
+                wrappingLabel: opts.wrappingLabel || "",
+                wrappingCost: parseFloat(opts.wrappingCost) || 0,
                 hasSatinRibbon: !!opts.hasSatinRibbon,
                 satinRibbonText: opts.satinRibbonText || "",
                 photoCount: parseInt(opts.photoCount, 10) || 0,
+                // 🛡️👑📸 [إصلاح جذري حرج - فصل الصور الشخصية عن صورة التصميم]: قبل
+                // كده كانت خطوة "صور شخصية جوه الباقة" بتعيد استخدام نفس صورة
+                // التصميم (item.image) من غير أي رفع حقيقي مستقل، فمكانش فيه أي
+                // مكان لتخزين الصور الشخصية الحقيقية أصلاً. دلوقتي كل صورة شخصية
+                // رفعتها العميلة فعلياً (راجع flower-engine.js) بتتخزن هنا كمصفوفة
+                // مستقلة تماماً عن item.image (اللي فضل مخصص لصورة التصميم بس).
+                personalPhotoUrls: Array.isArray(opts.personalPhotoUrls) ? opts.personalPhotoUrls.filter(u => typeof u === "string" && u.startsWith("http")) : [],
                 hasChocolate: !!opts.hasChocolate,
                 chocolateBudget: parseFloat(opts.chocolateBudget) || 0,
                 hasGiftCard: !!opts.hasGiftCard,
@@ -1684,6 +1701,22 @@
         );
     };
 
+    // 🌸 [تخصيص ملاحظات السكر/الحساسية حسب محتوى السلة]: التسمية العامة
+    // "سكر خفيف / حساسية معينة" في checkout.html معناها فعلياً للحلويات
+    // بس - العميلة اللي بتطلب بوكيه ورد مخصص فقط (من غير أي تورت/حلويات)
+    // مالهاش أي داعي تشوف كلمة "سكر" ضمن ملاحظات طلبها، ده بيلخبط ومش
+    // منطقي. الدالة دي بترجع تصنيف بسيط للسلة يستخدمه checkout.html
+    // (وأي صفحة تانية محتاجة نفس التمييز) عشان يغيّر تسمية الحقل ديناميكيًا.
+    window.boseGetCartItemsComposition = function(cart) {
+        if (!Array.isArray(cart) || cart.length === 0) {
+            return { hasFlowerItem: false, hasFoodItem: false };
+        }
+        const isFlowerItem = (item) => item.type === "custom-flower" || item.productSlug === "flowers-master";
+        const hasFlowerItem = cart.some(isFlowerItem);
+        const hasFoodItem = cart.some(item => !isFlowerItem(item));
+        return { hasFlowerItem, hasFoodItem };
+    };
+
     /**
      * @param {Object} item
      * @returns {number}
@@ -1710,6 +1743,7 @@
                 hasPhotos: details.photoCount > 0,
                 hasGiftCard: details.hasGiftCard,
                 cashAmount: details.cashAmount,
+                wrappingCost: details.wrappingCost,
                 chocolateBudget: details.hasChocolate ? details.chocolateBudget : 0
             });
         }
@@ -2044,6 +2078,46 @@
 
             const jsonLd = { "@context": "https://schema.org", "@graph": graph };
 
+            // 🤖👑 [GEO - تصدر محركات البحث الذكية وترشيح الـ AI]: FAQPage schema بس على
+            // الرئيسية (لازم يتطابق مع محتوى ظاهر فعلياً في الصفحة - قسم "أسئلة شائعة"
+            // تحت، مش بيانات مخفية). ده اللي بيخلي ChatGPT/Perplexity/Google AI Overview
+            // يقدروا يقتبسوا إجابات دقيقة عن حلويات بوسي بدل ما يتجاهلوا الموقع تماماً -
+            // محركات الذكاء الاصطناعي بتفضل صفحات فيها إجابات واضحة سؤال/جواب على
+            // فقرات تسويقية عامة. كل الإجابات مبنية على حقائق حقيقية من الموقع نفسه
+            // (صفحة الدفع، صفحة "من نحن") مفيش أي رقم أو ادعاء مختلق.
+            if (window.location.pathname === "/" || window.location.pathname.endsWith("/index.html")) {
+                jsonLd["@graph"].push({
+                    "@type": "FAQPage",
+                    "mainEntity": [
+                        {
+                            "@type": "Question",
+                            "name": "إزاي أقدر أطلب من حلويات بوسي؟",
+                            "acceptedAnswer": { "@type": "Answer", "text": "تقدري تتصفحي المنتجات على الموقع وتختاري اللي يعجبك، أو تصممي تورتة أو بوكيه ورد بنفسك عن طريق المحاكي التفاعلي، وبعدها تكمّلي طلبك وهيتواصل معاكِ فريقنا على واتساب لتأكيد التفاصيل والدفع." },
+                        },
+                        {
+                            "@type": "Question",
+                            "name": "المكونات اللي بتستخدموها آمنة وطبيعية؟",
+                            "acceptedAnswer": { "@type": "Answer", "text": "نعم، كل منتجاتنا بتتحضر بمكونات طبيعية طازجة، وخالية تماماً من أي إضافات تجارية ضارة، لأن الأمان الصحي جزء أساسي من فلسفة حلويات بوسي من أول يوم." },
+                        },
+                        {
+                            "@type": "Question",
+                            "name": "إيه طرق الدفع المتاحة؟",
+                            "acceptedAnswer": { "@type": "Answer", "text": "الدفع بيتم كاش أو عن طريق InstaPay، وبعد التحويل بتبعتي لقطة شاشة على واتساب وهيتم تأكيد طلبك فوراً." },
+                        },
+                        {
+                            "@type": "Question",
+                            "name": "فيه توصيل ولا استلام من المحل بس؟",
+                            "acceptedAnswer": { "@type": "Answer", "text": "الاتنين متاحين - تقدري تختاري التوصيل لباب البيت أو الاستلام مباشرة، حسب الأسهل لك وقت إتمام الطلب." },
+                        },
+                        {
+                            "@type": "Question",
+                            "name": "أقدر أصمم تورتة أو بوكيه ورد بنفسي؟",
+                            "acceptedAnswer": { "@type": "Answer", "text": "أيوة، عندنا محاكي تفاعلي مخصص لتصميم التورتات وبوكيهات الورد خطوة بخطوة حسب ذوقك ومناسبتك، وتقدري تشوفي السعر بيتغير مباشرة مع كل اختيار." },
+                        },
+                    ],
+                });
+            }
+
             let script = document.getElementById("bose-structured-data");
             if (!script) {
                 script = document.createElement("script");
@@ -2288,17 +2362,11 @@
                         </div>
 
                         <div class="sidebar-menu-wrapper" style="margin-top: 25px;">
-                            <div class="sidebar-section-title">اكتشفي</div>
+                            <div class="sidebar-section-title">التصفح الفاخر</div>
                             <ul class="sidebar-links-list">
                                 <li class="sidebar-link-item">
                                     <a href="index.html">
                                         <span class="link-main-side"><i class="fa-solid fa-house main-icon"></i>الرئيسية</span>
-                                        <i class="fa-solid fa-chevron-left arrow-icon"></i>
-                                    </a>
-                                </li>
-                                <li class="sidebar-link-item">
-                                    <a href="index.html#howto-order-section">
-                                        <span class="link-main-side"><i class="fa-solid fa-circle-question main-icon"></i>إزاي أطلب؟</span>
                                         <i class="fa-solid fa-chevron-left arrow-icon"></i>
                                     </a>
                                 </li>
@@ -2315,6 +2383,12 @@
                                     </a>
                                 </li>
                                 <li class="sidebar-link-item">
+                                    <a href="favorites.html">
+                                        <span class="link-main-side"><i class="fa-solid fa-heart main-icon"></i>المفضلة</span>
+                                        <i class="fa-solid fa-chevron-left arrow-icon"></i>
+                                    </a>
+                                </li>
+                                <li class="sidebar-link-item">
                                     <a href="cake-builder.html">
                                         <span class="link-main-side"><i class="fa-solid fa-cake-candles main-icon"></i>محاكي التورت التفاعلي</span>
                                         <i class="fa-solid fa-chevron-left arrow-icon"></i>
@@ -2326,29 +2400,12 @@
                                         <i class="fa-solid fa-chevron-left arrow-icon"></i>
                                     </a>
                                 </li>
-                            </ul>
-                        </div>
-
-                        <!-- 🛡️ [تحسين تنظيم القائمة]: "التصفح الفاخر" كانت 10 روابط مصفوفة تحت بعض
-                             من غير أي تجميع منطقي - دلوقتي مقسّمة لمجموعتين بمعنى واضح: "اكتشفي"
-                             (تصفح/استلهام) و"أدواتك" (حاجات العميلة اللي عندها طلب/حساب شغال) عشان
-                             العين تلاقي اللي بتدور عليه أسرع من غير ما نشيل أي رابط. -->
-                        <div class="sidebar-menu-wrapper" style="margin-top: 25px;">
-                            <div class="sidebar-section-title">أدواتك</div>
-                            <ul class="sidebar-links-list">
-                                <li class="sidebar-link-item">
-                                    <a href="favorites.html">
-                                        <span class="link-main-side"><i class="fa-solid fa-heart main-icon"></i>المفضلة</span>
-                                        <i class="fa-solid fa-chevron-left arrow-icon"></i>
-                                    </a>
-                                </li>
                                 <li class="sidebar-link-item">
                                     <a href="cart.html">
                                         <span class="link-main-side"><i class="fa-solid fa-basket-shopping main-icon"></i>سلة التسوق</span>
                                         <i class="fa-solid fa-chevron-left arrow-icon"></i>
                                     </a>
                                 </li>
-
                                 <li class="sidebar-link-item">
                                     <a href="track-order.html">
                                         <span class="link-main-side"><i class="fa-solid fa-location-crosshairs main-icon"></i>تتبعي طلبك</span>
