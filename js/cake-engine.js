@@ -831,7 +831,11 @@ function startEngineLogic() {
         // stopPropagation قبل ما يوصلنا، أيًا كان ترتيب باقي الأكواد.
         const isOpenableGalleryImage = (img) => {
             if (!img || img.id === 'bose-lightbox-img') return false;
-            return !!(img.closest('.bose-step-wizard-card') || img.closest('.bose-main-hero-hook'));
+            // 🖼️ [صور المراجعات بقت قابلة للتكبير كمان]: قسم "قيّمي تجربتك" في آخر
+            // الصفحة (.reviews-premium-section) مش جوه .bose-step-wizard-card ولا
+            // .bose-main-hero-hook، فكانت صور العميلات المرفقة مع مراجعاتهم بتفضل
+            // صغيرة وغير قابلة للضغط - رغم إن كل صورة تانية في المحاكي منبثقة.
+            return !!(img.closest('.bose-step-wizard-card') || img.closest('.bose-main-hero-hook') || img.closest('.reviews-premium-section'));
         };
 
         window.addEventListener('click', (e) => {

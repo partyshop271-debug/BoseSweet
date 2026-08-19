@@ -950,7 +950,10 @@
                 // قسم "بوكيهات شرفت عملائنا" (.portfolio-section) في الصفحة مش
                 // جوه لوحة التحكم أصلاً - هو قسم منفصل تحت المحاكي كله - فكان
                 // الشرط القديم بيرفض صوره دايمًا حتى لو كل حاجة تانية سليمة.
-                return !!(img.closest('.simulator-control-panel') || img.closest('.portfolio-section') || img.classList.contains('hero-banner-frame'));
+                // 🖼️ [صور المراجعات بقت قابلة للتكبير كمان]: قسم "قيّمي تجربتك"
+                // (.reviews-premium-section) مش جوه أي من الحاويات القديمة دي، فكانت
+                // صور العميلات المرفقة مع مراجعاتهم بتفضل صغيرة وغير قابلة للضغط.
+                return !!(img.closest('.simulator-control-panel') || img.closest('.portfolio-section') || img.classList.contains('hero-banner-frame') || img.closest('.reviews-premium-section'));
             };
 
             window.addEventListener('click', (e) => {
