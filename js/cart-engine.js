@@ -246,13 +246,34 @@ function renderBoseCartPage(storeData) {
                 }
                 
                 if (isFlowerBespoke) {
-                    if (cd.isGift) specs.push(`<span>🎁 <strong>هدية لحد تاني</strong></span>`);
                     if (cd.moodLabel) specs.push(`<span><strong>الإحساس المطلوب:</strong> ${esc(cd.moodLabel)}</span>`);
-                    if (cd.flowerType && cd.flowerType !== "none") specs.push(`<span><strong>نوع الورد:</strong> ${cd.flowerType === 'natural' ? 'طبيعي نضر' : cd.flowerType === 'artificial' ? 'صناعي فاخر' : 'ستان مصنوع بحب'}</span>`);
+                    // 🐛🌸👑 [إصلاح جذري - أسماء أنواع الورد كانت مكتوبة يدوياً بس]: بعد ما بقت
+                    // أنواع الورد تُدار بالكامل من لوحة التحكم (list-flower-types)، الاسم
+                    // الحقيقي للنوع بقى موجود في window.BoseStoreData.flowerBuilder.flowerTypes
+                    // بدل ثلاث قيم ثابتة مكتوبة هنا - فبنبحث فيها الأول، ولو مفيش قائمة أدمن
+                    // (أو النوع مش موجود فيها) بنرجع لنفس الأسماء الافتراضية القديمة كاحتياطي.
+                    if (cd.flowerType && cd.flowerType !== "none") {
+                        const fbTypes = window.BoseStoreData?.flowerBuilder?.flowerTypes;
+                        const match = Array.isArray(fbTypes) ? fbTypes.find(t => t && t.id === cd.flowerType) : null;
+                        const defaultNames = { natural: "طبيعي نضر", artificial: "صناعي فاخر", satin: "ستان راقٍ" };
+                        const typeName = match ? match.name : (defaultNames[cd.flowerType] || cd.flowerType);
+                        specs.push(`<span><strong>نوع الورد:</strong> ${esc(typeName)}</span>`);
+                    }
                     if (cd.flowerCount && parseInt(cd.flowerCount, 10) > 0) specs.push(`<span><strong>عدد الورد:</strong> ${parseInt(cd.flowerCount, 10)} وردة</span>`);
-                    if (cd.moneyAmount && parseInt(cd.moneyAmount, 10) > 0) specs.push(`<span><strong>الكاش المدمج:</strong> +${parseInt(cd.moneyAmount, 10)} جنيه</span>`);
-                    if (cd.chocolatePieces && parseInt(cd.chocolatePieces, 10) > 0) specs.push(`<span><strong>قطع الشوكولاتة:</strong> ${parseInt(cd.chocolatePieces, 10)} قطعة</span>`);
-                    if (cd.wrappingType && cd.wrappingType !== "none") specs.push(`<span><strong>التغليف:</strong> ${esc(cd.wrappingType)}</span>`);
+                    // 🐛💰👑 [إصلاح جذري - الكاش والشوكولاتة ماكانوش بيظهروا في السلة خالص]:
+                    // الحقول هنا كانت بتقرا cd.moneyAmount وcd.chocolatePieces، لكن
+                    // customOptionsObj في flower-engine.js فعلياً بيبعت cashAmount
+                    // وchocolateBudget (بنفس الأسماء اللي بيقرأها الحارس المركزي
+                    // window.createCartItem/calculateCustomFlowerPrice) - فالشرطين دول
+                    // كانوا دايماً false وماكانش أي منهم بيظهر للعميلة في صفحة السلة،
+                    // رغم إنها فعلاً دفعت مقابلهم.
+                    if (cd.cashAmount && parseInt(cd.cashAmount, 10) > 0) specs.push(`<span><strong>مفاجأة الكاش المدمجة:</strong> ${parseInt(cd.cashAmount, 10)} جنيه</span>`);
+                    if (cd.chocolateBudget && parseInt(cd.chocolateBudget, 10) > 0) specs.push(`<span><strong>ميزانية الشوكولاتة الفاخرة:</strong> ${parseInt(cd.chocolateBudget, 10)} جنيه</span>`);
+                    // 🐛👑 [إضافة حقول كانت مدفوعة بس مش ظاهرة في السلة خالص]: شريط الستان
+                    // المطبوع وعدد الصور الشخصية كانا بيتحسبوا في السعر وبيظهروا في فاتورة
+                    // الواتساب، لكن صفحة السلة نفسها ماكانتش بتعرضهم للعميلة أبداً.
+                    if (cd.hasSatinRibbon && cd.satinRibbonText && cd.satinRibbonText.trim() !== "") specs.push(`<span><strong>شريط ستان مطبوع:</strong> "${esc(cd.satinRibbonText.trim())}"</span>`);
+                    if (cd.photoCount && parseInt(cd.photoCount, 10) > 0) specs.push(`<span><strong>صور شخصية مطبوعة:</strong> ${parseInt(cd.photoCount, 10)} صورة</span>`);
                     if (cd.giftCardText && cd.giftCardText.trim() !== "") specs.push(`<span><strong>كارت الإهداء:</strong> "${esc(cd.giftCardText.trim())}"</span>`);
                 }
 
@@ -1049,14 +1070,18 @@ function buildBoseFormattedWhatsappInvoice(order) {
                 if (cd.replicaImageUrl) msg += `   🎨 *صورة التصميم اللي عايزين نقرب شكل التورتة منها:* ${cd.replicaImageUrl}\n`;
             }
             if (item.type === "custom-flower") {
-                if (cd.isGift) msg += `   • 🎁 هدية لحد تاني\n`;
                 if (cd.moodLabel) msg += `   • الإحساس المطلوب: ${cd.moodLabel}\n`;
-                // 🧾 [إصلاح - المرحلة 3]: cd.moneyAmount كان اسم حقل قديم بقى غير موجود
-                // خالص بعد توحيد بنية customDetails مع window.createCartItem (الاسم
-                // الصحيح دلوقتي هو cashAmount)، فكان الكاش مش هيظهر أبداً في فاتورة
-                // الواتساب رغم إن العميل دفعه فعلاً. بالإضافة لإضافة تفاصيل شريط
-                // الستان وميزانية الشوكولاتة وعدد الصور المطبوعة اللي كانت ناقصة.
-                if (cd.flowerType && cd.flowerType !== "none") msg += `   • نوع الورد: ${cd.flowerType}\n`;
+                // 🐛🌸👑 [إصلاح جذري - نوع الورد كان بيطبع في فاتورة الواتساب باسمه
+                // الداخلي الخام (زي "natural" بالإنجليزي، أو معرّف عشوائي زي "opt-xxxx"
+                // لأي نوع تضيفه الأدمن دلوقتي) بدل اسمه العربي الحقيقي - المطبخ/الفرع
+                // كان بياخد رسالة مش مفهومة. بنبحث عن الاسم الحقيقي في قائمة أنواع
+                // الورد المُدارة من لوحة التحكم، ولو مش لاقيينه بنرجع لاسم افتراضي.
+                if (cd.flowerType && cd.flowerType !== "none") {
+                    const fbTypes = window.BoseStoreData?.flowerBuilder?.flowerTypes;
+                    const match = Array.isArray(fbTypes) ? fbTypes.find(t => t && t.id === cd.flowerType) : null;
+                    const defaultNames = { natural: "ورد طبيعي نضر", artificial: "ورد صناعي فاخر", satin: "ورد ستان راقٍ" };
+                    msg += `   • نوع الورد: ${match ? match.name : (defaultNames[cd.flowerType] || cd.flowerType)}\n`;
+                }
                 if (cd.flowerCount && cd.flowerCount > 0) msg += `   • التعداد: ${cd.flowerCount} وردة\n`;
                 if (cd.hasSatinRibbon && cd.satinRibbonText && cd.satinRibbonText.trim() !== "") msg += `   • شريط ستان مطبوع حرارياً: "${cd.satinRibbonText}"\n`;
                 if (cd.photoCount && cd.photoCount > 0) msg += `   • صور شخصية مطبوعة: ${cd.photoCount} صورة\n`;

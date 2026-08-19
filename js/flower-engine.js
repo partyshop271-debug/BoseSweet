@@ -37,6 +37,30 @@
         satinRibbonPrice: 50
     };
 
+    // 🌸👑 [أنواع ورد افتراضية]: تُستخدم فقط لو الأدمن لسه ما ضافش أي نوع من
+    // لوحة التحكم (list-flower-types) - عشان الموقع ميفضلش من غير أي خيار
+    // ظاهر للعميلة أبداً. بمجرد ما الأدمن يضيف نوع واحد على الأقل، القائمة
+    // دي بتتجاهل خالص وبيتعرض بس اللي الأدمن ضافه/رتبه بلوحة التحكم.
+    const DEFAULT_FLOWER_TYPES = [
+        { id: "natural", name: "ورد طبيعي نضر", icon: "🌸", description: "ورد طازج ونضر، بيوصل مباشرة من أفضل مزارع الورد." },
+        { id: "artificial", name: "ورد صناعي فاخر", icon: "✨", description: "خامة فاخرة تحافظ على شكلها ورونقها لفترة أطول بكتير." },
+        { id: "satin", name: "ورد ستان راقٍ", icon: "🎀", description: "لمسة ستان ناعمة وراقية تدي إحساس مختلف تماماً." }
+    ];
+
+    // 🌸👑 [مصدر الحقيقة الحالي لأنواع الورد]: بتتحدد فور تحميل إعدادات
+    // المتجر (إما قائمة الأدمن الحقيقية أو DEFAULT_FLOWER_TYPES كاحتياطي)،
+    // وكل مكان تاني في الملف (الملخص، مشاركة التصميم، إضافة للسلة، الملاحظة
+    // الحسية) بيرجع لنفس القائمة دي بدل أي قيم مكتوبة يدوياً متفرقة.
+    let currentFlowerTypesList = DEFAULT_FLOWER_TYPES;
+
+    function getFlowerTypeById(id) {
+        return currentFlowerTypesList.find((t) => t && t.id === id) || null;
+    }
+    function getFlowerTypeName(id) {
+        const t = getFlowerTypeById(id);
+        return t ? t.name : (id || "");
+    }
+
     // الحالة الديناميكية الحالية لرحلة العميل داخل المحاكي
     let state = {
         currentActiveStep: 1,
@@ -47,8 +71,6 @@
         mood: "",
         flowerType: "natural",
         flowerCount: 15,
-        wrappingType: "classic",
-        ribbonColor: "pink",
         includeRibbonText: false,
         ribbonText: "",
         includePhoto: false,
@@ -182,7 +204,6 @@
         if (!list) return;
 
         const esc = window.escapeBoseHTML || (s => s);
-        const flowerTypeLabels = { natural: "ورد طبيعي نضر", artificial: "ورد صناعي فاخر", satin: "ورد ستان راقٍ" };
         const moodLabelMap = { celebratory: "احتفالي", romantic: "رومانسي", elegant: "أنيق وبسيط" };
 
         const rows = [];
@@ -199,7 +220,7 @@
         };
 
         addRow(1, "الإحساس المطلوب", state.mood ? (moodLabelMap[state.mood] || state.mood) : "من غير ترشيح معين");
-        addRow(2, "نوع الورد", flowerTypeLabels[state.flowerType] || state.flowerType);
+        addRow(2, "نوع الورد", getFlowerTypeName(state.flowerType));
         addRow(3, "عدد الورد", `${state.flowerCount} وردة`);
         addRow(4, "صورة تصميم مرجعية", activeBase64ImageInMemory ? "مرفوعة ✓" : "لم تُرفع");
         addRow(5, "شريط الستان", state.includeRibbonText && state.ribbonText.trim() !== "" ? `مطبوع عليه: "${state.ribbonText.trim()}"` : "بدون كلام مطبوع (تغليف كلاسيك مجاني فقط)");
@@ -421,27 +442,6 @@
             }).join("");
         }
 
-        // 🖼️👑 [صور كروت نوع الورد من لوحة التحكم - إصلاح جذري]: نفس المشكلة
-        // بالظبط اللي اتصلحت في محاكي التورت (applyBoseOptionCardImages) - كارت
-        // "ورد طبيعي/صناعي/ستان" كان أيقونة إيموجي بس من غير أي مكان لعرض صورة
-        // حقيقية، حتى لو الأدمن رفعها من list-flower-types بلوحة التحكم. هنا
-        // الكارت مش label+radio زي محاكي التورت، لكن div بـ data-value، فبنحقن
-        // الصورة قبل أيقونة الإيموجي مباشرة (بتفضل الصورة هي الظاهرة).
-        if (Array.isArray(fbConfig.flowerTypes)) {
-            document.querySelectorAll('#flower-type-iconic-row .bose-iconic-btn-node').forEach((node) => {
-                const match = fbConfig.flowerTypes.find((item) => item && item.id === node.getAttribute('data-value'));
-                if (!match || !match.image) return;
-                let img = node.querySelector('img.bose-option-card-thumb');
-                if (!img) {
-                    img = document.createElement('img');
-                    img.className = 'bose-option-card-thumb';
-                    img.alt = '';
-                    node.insertBefore(img, node.firstChild);
-                }
-                img.src = match.image;
-            });
-        }
-
         flowerCountInput = document.getElementById('flower-count');
         includePhotoCheckbox = document.getElementById('include-photo');
         photoFileInput = document.getElementById('photo-file');
@@ -477,8 +477,6 @@
         btnPrev = document.getElementById("btn-prev");
         stepsPanels = document.querySelectorAll(".bose-step-card-panel");
         stepsIndicators = document.querySelectorAll(".simulator-steps-indicator .step-node");
-        iconicBtns = document.querySelectorAll("#flower-type-iconic-row .bose-iconic-btn-node");
-        hiddenTypeInput = document.getElementById("flower-type");
         dynamicPricingWidget = document.getElementById("bose-dynamic-pricing-widget");
 
         // تغذية القائمة المنسدلة ديناميكياً للفئات النقدية
@@ -540,10 +538,38 @@
         }
         if (chocolateBudgetDisplay) chocolateBudgetDisplay.value = state.chocolateBudget;
 
-        // ربط أحداث أزرار نوع الورد الكروي الفخم
-        if (iconicBtns.length > 0) {
+        // 🌸👑 [رسم أنواع الورد ديناميكياً من لوحة التحكم]: بدل 3 كروت
+        // مكتوبة يدوياً وثابتة في الـ HTML، بنبني الكروت كلها هنا من
+        // fbConfig.flowerTypes (أو DEFAULT_FLOWER_TYPES لو الأدمن لسه ما
+        // ضافش حاجة) - فأي نوع تضيفه الأدمن (حتى لو مش "ورد" أصلاً، زي بوكس
+        // شوكولاتة أو بوكيه صور) بيظهر فوراً كخيار حقيقي قدام العميلة بصورته
+        // واسمه، وأي نوع تحذفه الأدمن بيختفي فوراً من غير أي تعديل كود.
+        renderFlowerTypeOptions();
+
+        function renderFlowerTypeOptions() {
+            const row = document.getElementById("flower-type-iconic-row");
+            if (!row) return;
+
+            const adminList = Array.isArray(fbConfig.flowerTypes) ? fbConfig.flowerTypes.filter(t => t && t.name) : [];
+            currentFlowerTypesList = adminList.length > 0 ? adminList : DEFAULT_FLOWER_TYPES;
+
+            // لو النوع المحفوظ في الحالة السابقة اتحذف من لوحة التحكم، بنرجع
+            // تلقائياً لأول نوع متاح حالياً عشان الحالة تفضل صحيحة دايماً.
+            if (!getFlowerTypeById(state.flowerType) && currentFlowerTypesList.length > 0) {
+                state.flowerType = currentFlowerTypesList[0].id;
+            }
+
+            row.innerHTML = currentFlowerTypesList.map((item) => `
+                <div class="bose-iconic-btn-node${item.id === state.flowerType ? " active-selected" : ""}" data-value="${item.id}">
+                    ${item.image ? `<img src="${item.image}" alt="" class="bose-option-card-thumb">` : `<span class="btn-icon">${item.icon || "🌷"}</span>`}
+                    <span class="btn-label">${item.name}</span>
+                </div>`).join("");
+
+            hiddenTypeInput = document.getElementById("flower-type");
+            if (hiddenTypeInput) hiddenTypeInput.value = state.flowerType;
+
+            iconicBtns = row.querySelectorAll(".bose-iconic-btn-node");
             iconicBtns.forEach(btn => {
-                btn.classList.toggle("active-selected", btn.getAttribute("data-value") === state.flowerType);
                 btn.onclick = function () {
                     iconicBtns.forEach(b => b.classList.remove("active-selected"));
                     this.classList.add("active-selected");
@@ -554,6 +580,8 @@
                     updateFlowerSensoryNote();
                 };
             });
+
+            updateFlowerSensoryNote();
         }
 
         // 🧠 [محاكي أذكى - مطابق لمحاكي الكيك]: خطوة الإحساس المطلوب
@@ -597,23 +625,16 @@
             };
         });
 
-        const FLOWER_SENSORY_NOTES = {
-            natural: "ورد طازج ونضر، بيوصل مباشرة من أفضل مزارع الورد.",
-            artificial: "خامة فاخرة تحافظ على شكلها ورونقها لفترة أطول بكتير.",
-            satin: "لمسة ستان ناعمة وراقية تدي إحساس مختلف تماماً."
-        };
         function updateFlowerSensoryNote() {
             const noteEl = document.getElementById("flower-sensory-note");
-            if (noteEl) noteEl.textContent = FLOWER_SENSORY_NOTES[state.flowerType] || "";
+            if (noteEl) noteEl.textContent = (getFlowerTypeById(state.flowerType) || {}).description || "";
         }
-        updateFlowerSensoryNote();
 
         const btnShareFlowerDesign = document.getElementById("btn-share-flower-design");
         if (btnShareFlowerDesign) {
             btnShareFlowerDesign.addEventListener("click", () => {
-                const typeLabelMap = { natural: "طبيعي نضر", artificial: "صناعي فاخر", satin: "ستان راقٍ" };
                 const priceNow = document.getElementById("bouquet-total-val")?.textContent || "";
-                const shareText = `شوفي التصميم اللي عملته لبوكيه ورد من حلويات بوسي 💐\nنوع الورد: ${typeLabelMap[state.flowerType] || state.flowerType}\nعدد الورد: ${state.flowerCount}\nالسعر: ${priceNow}\nإيه رأيك؟`;
+                const shareText = `شوفي التصميم اللي عملته لبوكيه ورد من حلويات بوسي 💐\nنوع الورد: ${getFlowerTypeName(state.flowerType)}\nعدد الورد: ${state.flowerCount}\nالسعر: ${priceNow}\nإيه رأيك؟`;
                 window.open(`https://wa.me/?text=${encodeURIComponent(shareText)}`, "_blank", "noopener,noreferrer");
             });
         }
@@ -955,7 +976,7 @@
             addToCartBtn.onclick = function () {
                 if (state.isUploading) return;
 
-                const flowerTypeName = state.flowerType === "natural" ? "ورد طبيعي نضر" : (state.flowerType === "artificial" ? "ورد صناعي فاخر" : "ورد ستان راقٍ");
+                const flowerTypeName = getFlowerTypeName(state.flowerType);
                 const moodLabelMap = { celebratory: "احتفالي", romantic: "رومانسي", elegant: "أنيق وبسيط" };
                 // نفس شرط ظهور كارت الإهداء بالضبط المستخدم في recalculatePrice() أعلاه
                 const hasGiftCardFinal = !!(state.includeCard && state.cardText.trim() !== "");
