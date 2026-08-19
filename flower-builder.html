@@ -25,6 +25,7 @@
     <link rel="stylesheet" href="css/global.css?v=2026_production_v39.0">
     <link rel="stylesheet" href="css/main.css?v=2026_production_v38.0">
     <link rel="stylesheet" href="css/simulators.css?v=2026_production_v38.0">
+    <link rel="stylesheet" href="css/reviews-widget.css?v=2026_production_v1.0">
     <style>
         /* 🧠 [محاكي أذكى - مطابق لمحاكي الكيك] */
         .bose-flavor-sensory-note {
@@ -447,6 +448,11 @@
             </div>
         </section>
 
+        <!-- ⭐ [حل جذري]: مكان مراجعات خاص بتجربة تصميم البوكيه من المحاكي - قبل كده
+             محدش كان يقدر يوصل لأي قسم مراجعات لأي طلب اتصمم من هنا (شوفي شرح
+             المشكلة الكامل في تعليق أول js/reviews-widget.js). -->
+        <section class="reviews-premium-section" id="bose-flower-reviews-mount"></section>
+
     </main>
 
     <!-- النافذة المنبثقة التفاعلية النظيفة تماماً لعرض سابقة الأعمال -->
@@ -466,5 +472,17 @@
     <script src="js/favorites-engine.js?v=2026_production_v37.0" defer></script>
     <script src="js/core-engine.js?v=2026_production_v38.0" defer></script>
     <script src="js/flower-engine.js?v=2026_production_v38.0" defer></script>
+    <script src="js/reviews-widget.js?v=2026_production_v1.0" defer></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            window.initBoseReviewsWidget({
+                mountId: "bose-flower-reviews-mount",
+                slug: "flowers-master",
+                title: "تصميم بوكيه مخصص",
+                heading: "قيّمي تجربة تصميم بوكيهك",
+                subtext: "شاركينا رأيك في تجربة تصميم الورد بنفسك من المحاكي - رأيك بيفرق مع عميلات تانية زيك.",
+            });
+        });
+    </script>
 </body>
 </html>

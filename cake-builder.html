@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="css/global.css?v=2026_production_v39.0">
     <link rel="stylesheet" href="css/main.css?v=2026_production_v38.0">
     <link rel="stylesheet" href="css/simulators.css?v=2026_production_v38.0">
+    <link rel="stylesheet" href="css/reviews-widget.css?v=2026_production_v1.0">
     <script src="js/supabase-client.js?v=2026_production_v38.0" defer></script>
     <script src="js/favorites-engine.js?v=2026_production_v37.0" defer></script>
     <script src="js/core-engine.js?v=2026_production_v38.0" defer></script>
@@ -1150,6 +1151,11 @@
                 </form>
             </div>
         </div>
+
+        <!-- ⭐ [حل جذري]: مكان مراجعات خاص بتجربة تصميم التورتة من المحاكي - قبل كده
+             محدش كان يقدر يوصل لأي قسم مراجعات لأي طلب اتصمم من هنا (شوفي شرح
+             المشكلة الكامل في تعليق أول js/reviews-widget.js). -->
+        <section class="reviews-premium-section" id="bose-cake-reviews-mount"></section>
     </main>
 
     <div class="bose-lightbox-overlay" id="bose-lightbox-container">
@@ -1171,5 +1177,17 @@
     <div id="bose-footer-injector"></div>
 
     <script src="js/cake-engine.js?v=2026_production_v38.0" defer></script>
+    <script src="js/reviews-widget.js?v=2026_production_v1.0" defer></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            window.initBoseReviewsWidget({
+                mountId: "bose-cake-reviews-mount",
+                slug: "toort-custom-master",
+                title: "تصميم تورتة مخصصة",
+                heading: "قيّمي تجربة تصميم تورتتك",
+                subtext: "شاركينا رأيك في تجربة تصميم التورتة بنفسك من المحاكي - رأيك بيفرق مع عميلات تانية زيك.",
+            });
+        });
+    </script>
 </body>
 </html>
