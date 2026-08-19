@@ -310,6 +310,21 @@
     margin-top: 15px;
 }
 
+/* 🌸👑 [شبكة أنواع الورد - محاكي الورد]: بما إن عدد الأنواع بقى مفتوح
+   بالكامل من لوحة التحكم (مش 3 ثابتين)، الصف القديم (3 أعمدة إجبارية) كان
+   هيتكدس أو يبقى ضيق أوي مع أي عدد مختلف. هنا شبكة مرنة بتاخد أي عدد
+   خيارات وتوزعهم تلقائياً بمسافات أوسع بين الكروت من الصف العادي. */
+.bose-iconic-options-row.bose-flower-type-grid {
+    grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
+    gap: 20px;
+}
+@media (max-width: 480px) {
+    .bose-iconic-options-row.bose-flower-type-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+    }
+}
+
 .bose-iconic-btn-node {
     background: var(--bose-white) !important;
     border: 1.5px solid var(--bose-gray-border) !important;
