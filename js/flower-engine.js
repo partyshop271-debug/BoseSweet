@@ -68,7 +68,6 @@
         // الخطوات اتقسّمت لخطوة قرار واحد لكل خطوة (كانت 5 خطوات مجمّعة، بقت
         // 9 خطوات قرار + خطوة خلاصة أخيرة = 10 بالظبط).
         totalSteps: 10,
-        mood: "",
         flowerType: "natural",
         flowerCount: 15,
         includeRibbonText: false,
@@ -94,7 +93,7 @@
     let includeCashCheckbox, cashMasterBlock, cashIntegrationCounterBlock, moneyAmountDisplay;
     let includeChocolateCheckbox, chocolateBudgetMasterBlock, chocolateBudgetDisplay;
     let photoCountInput, dynamicAddonsArea, embeddedPriceDisplay, bosePhotosPriceDisplay, boseCardPriceDisplay;
-    let btnNext, btnPrev, stepsPanels, stepsIndicators, iconicBtns, hiddenTypeInput, dynamicPricingWidget;
+    let btnNext, btnPrev, stepsPanels, stepsIndicators, iconicBtns, hiddenTypeInput, heroEl, introEl;
 
     /**
      * 🛡️ حفظ وتأمين الحالة التفاعلية الحالية للعميل منعاً لفقد الخيارات
@@ -199,98 +198,90 @@
      * "كل حاجة ظاهرة قدام العميل من غير ما يحتاج يدور عليها" المتبعة في باقي
      * الموقع - العميلة تتأكد من كل تفاصيل طلبها في مكان واحد قبل ما تضيفه للسلة.
      */
+    /* 🧾👑 [سمتريه محاكي التورت]: نفس تنسيق "مراجعة السعر بالمفردات" بالحرف
+       المستخدم في renderOrderSummary بمحاكي التورت (price-item-row لكل سطر +
+       سطر إجمالي بارز) بدل التنسيق القديم المختلف (bose-order-summary-row).
+       التعديل بقى بالضغط على رقم الخطوة فوق (bose-progress-node) بدل زرار
+       "تعديل" منفصل جوه كل سطر - نفس فلسفة محاكي التورت بالظبط. */
     function renderFlowerSummary() {
         const list = document.getElementById("flower-summary-list");
         if (!list) return;
 
         const esc = window.escapeBoseHTML || (s => s);
-        const moodLabelMap = { celebratory: "احتفالي", romantic: "رومانسي", elegant: "أنيق وبسيط" };
+        const extraFlowers = Math.max(0, state.flowerCount - flowerConfig.baseFlowers);
 
         const rows = [];
-        const addRow = (step, label, value) => {
-            rows.push(`
-                <div class="bose-order-summary-row">
-                    <div class="bose-order-summary-row-text">
-                        <span class="bose-order-summary-row-label">${esc(label)}</span>
-                        <span class="bose-order-summary-row-value">${esc(value)}</span>
-                    </div>
-                    <button type="button" class="bose-order-summary-edit-btn" data-step-target="${step}">تعديل</button>
-                </div>
-            `);
+        const addRow = (label, value) => {
+            rows.push(`<div class="price-item-row"><span>${esc(label)}:</span><span class="item-value">${esc(value)}</span></div>`);
         };
 
-        addRow(1, "الإحساس المطلوب", state.mood ? (moodLabelMap[state.mood] || state.mood) : "من غير ترشيح معين");
-        addRow(2, "نوع الورد", getFlowerTypeName(state.flowerType));
-        addRow(3, "عدد الورد", `${state.flowerCount} وردة`);
-        addRow(4, "صورة تصميم مرجعية", activeBase64ImageInMemory ? "مرفوعة ✓" : "لم تُرفع");
-        addRow(5, "شريط الستان", state.includeRibbonText && state.ribbonText.trim() !== "" ? `مطبوع عليه: "${state.ribbonText.trim()}"` : "بدون كلام مطبوع (تغليف كلاسيك مجاني فقط)");
-        addRow(6, "صور شخصية داخل الباقة", state.includePhoto ? `${state.photoCount} صورة مطبوعة` : "غير مطلوبة");
-        addRow(7, "مفاجأة كاش", (state.includeCash && state.moneyAmount > 0) ? `${state.moneyAmount} جنيه` : "غير مطلوبة");
-        addRow(8, "شوكولاتة فاخرة", state.includeChocolate && state.chocolateBudget > 0 ? `ميزانية ${state.chocolateBudget} جنيه` : "غير مطلوبة");
-        addRow(9, "كارت إهداء", (state.includeCard && state.cardText.trim() !== "") ? `مكتوب عليه: "${state.cardText.trim()}"` : "بدون كارت");
+        addRow(`بوكيه ${getFlowerTypeName(state.flowerType)} (${state.flowerCount} وردة)`, `${Math.round(flowerConfig.basePrice + extraFlowers * flowerConfig.extraFlowerPrice)} جنيه`);
+        if (state.includeRibbonText && state.ribbonText.trim() !== "") {
+            addRow("شريط ستان مطبوع", `+ ${flowerConfig.satinRibbonPrice} جنيه`);
+        }
+        if (state.includePhoto) {
+            addRow(`صور شخصية داخل الباقة (${state.photoCount})`, `+ ${state.photoCount * flowerConfig.photoPrintPrice} جنيه`);
+        }
+        if (state.includeCard && state.cardText.trim() !== "") {
+            addRow("كارت إهداء مطبوع", `+ ${flowerConfig.giftCardPrice} جنيه`);
+        }
+        if (state.includeCash && state.moneyAmount > 0) {
+            addRow("مفاجأة كاش جوه البوكيه", `${state.moneyAmount} جنيه`);
+        }
+        if (state.includeChocolate && state.chocolateBudget > 0) {
+            addRow("ميزانية شوكولاتة فاخرة", `${state.chocolateBudget} جنيه`);
+        }
 
         list.innerHTML = rows.join("");
-
-        list.querySelectorAll(".bose-order-summary-edit-btn").forEach(btn => {
-            btn.onclick = () => {
-                const target = parseInt(btn.getAttribute("data-step-target"), 10);
-                if (!isNaN(target)) {
-                    state.currentActiveStep = target;
-                    updateActiveStepUI();
-                }
-            };
-        });
     }
 
     /**
      * 🗺️ حارس التحكم وتوجيه خطوات الـ Stepper ذكياً
      */
     function updateActiveStepUI() {
-        if (stepsPanels.length > 0) {
-            stepsPanels.forEach(panel => {
-                const stepNum = parseInt(panel.getAttribute("data-step"), 10);
-                panel.classList.toggle("active", stepNum === state.currentActiveStep);
-            });
+        // 👑 [سمتريه محاكي التورت]: نفس منطق panel-wizard-step-N / node-step-N
+        // بالحرف، بدل ما تكون كل خطوة بتتحدد بـ data-step على العنصر نفسه.
+        for (let i = 1; i <= state.totalSteps; i++) {
+            const panel = document.getElementById(`panel-wizard-step-${i}`);
+            const node = document.getElementById(`node-step-${i}`);
+            if (panel) panel.classList.remove('active-panel');
+            if (node) {
+                node.classList.remove('active', 'done');
+                if (i === state.currentActiveStep) node.classList.add('active');
+                else if (i < state.currentActiveStep) node.classList.add('done');
+            }
         }
+        const activePanelToShow = document.getElementById(`panel-wizard-step-${state.currentActiveStep}`);
+        if (activePanelToShow) activePanelToShow.classList.add('active-panel');
 
-        if (stepsIndicators.length > 0) {
-            stepsIndicators.forEach(node => {
-                const nodeNum = parseInt(node.getAttribute("data-step-target"), 10);
-                if (nodeNum === state.currentActiveStep) {
-                    node.className = "step-node active";
-                } else if (nodeNum < state.currentActiveStep) {
-                    node.className = "step-node completed";
-                } else {
-                    node.className = "step-node";
-                }
-            });
-        }
-
-        if (btnPrev) btnPrev.style.display = (state.currentActiveStep === 1) ? "none" : "inline-flex";
+        // 🛡️ [سمتريه محاكي التورت]: زرار "السابق" بيتعطّل (disabled) بدل ما
+        // يختفي تماماً في خطوة 1 - نفس سلوك محاكي التورت بالظبط.
+        if (btnPrev) btnPrev.disabled = (state.currentActiveStep === 1);
 
         if (state.currentActiveStep === state.totalSteps) {
             if (btnNext) btnNext.style.display = "none";
-            if (addToCartBtn) {
-                addToCartBtn.style.display = "inline-flex";
-                addToCartBtn.textContent = "اضافة للسلة";
-            }
             // 📋 [خطوة الخلاصة]: بنعيد رسم ملخص الاختيارات في كل مرة العميلة توصل
             // للخطوة الأخيرة، عشان يفضل مطابق لآخر تعديل عملته في أي خطوة سابقة.
             renderFlowerSummary();
         } else {
-            if (btnNext) btnNext.style.display = "inline-flex";
-            if (addToCartBtn) addToCartBtn.style.display = "none";
+            if (btnNext) btnNext.style.display = "block";
         }
 
-        if (dynamicPricingWidget) {
-            dynamicPricingWidget.style.display = "block";
+        // 🧭👑 [سمتريه محاكي التورت]: نفس آلية إخفاء الهيرو والمقدمة بعد
+        // الخطوة الأولى بالظبط (toggleHeroVisibilityForStep في cake-engine.js).
+        const shouldCollapseHero = state.currentActiveStep !== 1;
+        if (heroEl) heroEl.classList.toggle('bose-collapsed-hero', shouldCollapseHero);
+        if (introEl) introEl.classList.toggle('bose-collapsed-hero', shouldCollapseHero);
+
+        // إبقاء الرقم النشط ظاهر جوه شريط الخطوات القابل للسكرول الأفقي
+        const activeNode = document.getElementById(`node-step-${state.currentActiveStep}`);
+        if (activeNode && typeof activeNode.scrollIntoView === 'function') {
+            activeNode.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         }
 
-        // 🛡️ [إصلاح جذري]: زرار "التالي" هنا معندوش أي تمرير خالص، فالعميل بيضغط ويفضل واقف
-        // في نفس مكانه من غير ما يشوف بداية الخطوة الجديدة إلا لو نزل بنفسه يدور عليها.
-        // بنمرره الآن لبداية لوحة التحكم (نفس مكان الخطوات) بارتفاع الهيدر الثابت مطروح منه.
-        const activeStepPanel = document.querySelector('.bose-step-card-panel.active');
-        const scrollTarget = activeStepPanel || document.querySelector('.simulator-control-panel');
+        // 🛡️ [تمرير تلقائي لبداية بطاقة الخطوات]: نفس آلية محاكي التورت
+        // بالظبط - بيمرر لبداية .bose-simulator-layout بارتفاع الهيدر الثابت مطروح منه.
+        const scrollTarget = document.querySelector('.bose-simulator-layout');
         if (scrollTarget) {
             const stickyHeaderOffset = 90;
             const targetY = scrollTarget.getBoundingClientRect().top + window.scrollY - stickyHeaderOffset;
@@ -432,14 +423,22 @@
         // هيلاقي العناصر الجديدة جاهزة عادي (نفس الـ scope المتزامن).
         const heroImg = document.querySelector('.hero-banner-frame');
         if (heroImg && fbConfig.heroImage) heroImg.src = fbConfig.heroImage;
-        const portfolioTrack = document.getElementById('portfolio-swipe-slider');
-        if (portfolioTrack && Array.isArray(fbConfig.portfolioGallery) && fbConfig.portfolioGallery.length > 0) {
-            portfolioTrack.innerHTML = fbConfig.portfolioGallery.map((item, idx) => {
-                const url = (item && item.image) || "";
-                if (!url) return "";
-                const alt = (item && (item.alt || item.name)) ? String(item.alt || item.name).replace(/"/g, '&quot;') : "بوكيه فاخر من حلويات بوسي";
-                return `<div class="portfolio-item-card" data-index="${idx + 1}"><img src="${url}" class="portfolio-item-img" alt="${alt}" loading="lazy"></div>`;
-            }).join("");
+        // 🖼️👑 [سمتريه محاكي التورت]: نفس مكان وحجم معرض الإلهام بالظبط
+        // (bose-step1-gallery-scroller جوه خطوة 1) بدل قسم "سابقة الأعمال"
+        // المنفصل تحت الصفحة كلها - نفس آلية renderCakeGalleryAndHero
+        // بمحاكي التورت بالحرف.
+        const portfolioTrack = document.getElementById('bose-flower-portfolio-lightbox-track');
+        if (portfolioTrack) {
+            if (Array.isArray(fbConfig.portfolioGallery) && fbConfig.portfolioGallery.length > 0) {
+                portfolioTrack.innerHTML = fbConfig.portfolioGallery.map((item) => {
+                    const url = (item && item.image) || "";
+                    if (!url) return "";
+                    const alt = (item && (item.alt || item.name)) ? String(item.alt || item.name).replace(/"/g, '&quot;') : "روائع حلويات بوسي";
+                    return `<div class="bose-portfolio-img-node"><img src="${url}" alt="${alt}" loading="lazy"></div>`;
+                }).join("");
+            } else {
+                portfolioTrack.innerHTML = `<p class="bose-gallery-empty-note">هنضيف هنا قريب مجموعة من أجمل البوكيهات اللي عملناها لعملائنا 💐</p>`;
+            }
         }
 
         flowerCountInput = document.getElementById('flower-count');
@@ -475,9 +474,14 @@
 
         btnNext = document.getElementById("btn-next");
         btnPrev = document.getElementById("btn-prev");
-        stepsPanels = document.querySelectorAll(".bose-step-card-panel");
-        stepsIndicators = document.querySelectorAll(".simulator-steps-indicator .step-node");
-        dynamicPricingWidget = document.getElementById("bose-dynamic-pricing-widget");
+        // 👑 [سمتريه محاكي التورت]: نفس أسماء كلاسات الخطوات والمؤشرات
+        // بالحرف اللي بيستخدمها محاكي التورت (bose-step-wizard-panel /
+        // bose-progress-node) بدل الأسماء المنفصلة القديمة الخاصة بمحاكي
+        // الورد لوحده (bose-step-card-panel / step-node).
+        stepsPanels = document.querySelectorAll(".bose-step-wizard-panel");
+        stepsIndicators = document.querySelectorAll(".bose-progress-node");
+        heroEl = document.getElementById("bose-flower-hero");
+        introEl = document.getElementById("bose-flower-intro");
 
         // تغذية القائمة المنسدلة ديناميكياً للفئات النقدية
         if (moneyCategorySelect) {
@@ -584,47 +588,9 @@
             updateFlowerSensoryNote();
         }
 
-        // 🧠 [محاكي أذكى - مطابق لمحاكي الكيك]: خطوة الإحساس المطلوب
-        // 🗑️ [حذف "لمين البوكيه ده؟"]: purposeBtns وupdateGiftModeWording اتشالوا
-        // من هنا بالكامل - راجع الشرح في تعريف state.totalSteps فوق.
-        const moodBtns = document.querySelectorAll("#flower-mood-row .bose-iconic-btn-node");
-        const moodNoteBox = document.getElementById("mood-suggestion-note");
-        const moodNoteText = document.getElementById("mood-suggestion-text");
-
-        const FLOWER_MOOD_PRESETS = {
-            celebratory: { type: "natural", note: "توليفة مقترحة للاحتفالات: ورد طبيعي نضر بألوان زاهية. تقدري تعدلي أي اختيار في الخطوات الجاية." },
-            romantic: { type: "satin", card: true, note: "توليفة مقترحة للمناسبات الرومانسية: ورد ستان راقٍ مع كارت إهداء. تقدري تعدلي أي اختيار في الخطوات الجاية." },
-            elegant: { type: "artificial", note: "توليفة مقترحة للأناقة البسيطة: ورد صناعي فاخر يدوم طويلاً. تقدري تعدلي أي اختيار في الخطوات الجاية." }
-        };
-
-        function applyFlowerMoodPreset(moodValue) {
-            const preset = FLOWER_MOOD_PRESETS[moodValue];
-            if (!preset) {
-                if (moodNoteBox) moodNoteBox.classList.remove("show");
-                return;
-            }
-            const typeBtn = document.querySelector(`#flower-type-iconic-row .bose-iconic-btn-node[data-value="${preset.type}"]`);
-            if (typeBtn) typeBtn.click();
-            if (preset.card && includeCardCheckbox) {
-                includeCardCheckbox.checked = true;
-                if (typeof includeCardCheckbox.onclick === "function") {
-                    includeCardCheckbox.onclick({ target: includeCardCheckbox });
-                }
-            }
-            if (moodNoteText) moodNoteText.textContent = preset.note;
-            if (moodNoteBox) moodNoteBox.classList.add("show");
-        }
-
-        moodBtns.forEach(btn => {
-            btn.onclick = function () {
-                moodBtns.forEach(b => b.classList.remove("active-selected"));
-                this.classList.add("active-selected");
-                state.mood = this.getAttribute("data-value");
-                applyFlowerMoodPreset(state.mood);
-                saveCurrentState();
-            };
-        });
-
+        // 🗑️ [حذف خطوة "الإحساس المطلوب" بالكامل]: بناءً على طلب مباشر -
+        // moodBtns / moodNoteBox / FLOWER_MOOD_PRESETS / applyFlowerMoodPreset
+        // وstate.mood اتشالوا من هنا خالص.
         function updateFlowerSensoryNote() {
             const noteEl = document.getElementById("flower-sensory-note");
             if (noteEl) noteEl.textContent = (getFlowerTypeById(state.flowerType) || {}).description || "";
@@ -855,12 +821,23 @@
                 }
             };
         }
+        // 🔢👑 [سمتريه محاكي التورت]: أرقام الخطوات مبنية على ترتيبها في
+        // الصفحة (node-step-1..10) بدل data-step-target - نفس منطق jumpToStep
+        // بمحاكي التورت بالحرف.
         if (stepsIndicators.length > 0) {
-            stepsIndicators.forEach(node => {
+            stepsIndicators.forEach((node, idx) => {
+                const targetStep = idx + 1;
+                node.setAttribute('role', 'button');
+                node.setAttribute('tabindex', '0');
+                node.setAttribute('aria-label', `الذهاب للخطوة ${targetStep}`);
                 node.onclick = function () {
-                    const target = parseInt(this.getAttribute("data-step-target"), 10);
-                    if (!isNaN(target)) {
-                        state.currentActiveStep = target;
+                    state.currentActiveStep = targetStep;
+                    updateActiveStepUI();
+                };
+                node.onkeydown = function (e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        state.currentActiveStep = targetStep;
                         updateActiveStepUI();
                     }
                 };
@@ -887,73 +864,53 @@
         // غير أي رسالة خطأ ظاهرة للعميلة. الحل: بنجيب العناصر مباشرة جوه الدالة
         // نفسها (زي initializeBoseLightboxGallery في cake-engine.js بالظبط) بدل
         // ما نعتمد على متغيرات من سكوب خارجي ممكن يتنفذ بعدها بترتيب مختلف.
+        /* 🖼️👑 [سمتريه محاكي التورت]: نفس نافذة initializeBoseLightboxGallery
+           بمحاكي التورت بالحرف - صورة تنبثق (pop-in) وتملأ الشاشة (لا مودال
+           صغير مقصوص)، ونفس الحاويات القابلة للتكبير
+           (.bose-step-wizard-card / .bose-main-hero-hook / .reviews-premium-section)
+           بدل الأسماء المنفصلة القديمة الخاصة بمحاكي الورد لوحده. */
         function wireUpAllFlowerLightboxImages() {
-            // 🛡️👑 [تحصين جذري - نفس آلية cake-engine.js بالظبط]: لو المودال
-            // الثابت مش موجود في الصفحة لأي سبب، بنبنيه من الصفر بالجافاسكريبت
-            // نفسه - الميزة متفضلش رهينة تزامن الـ HTML مع الـ JS.
-            let portfolioModal = document.getElementById('portfolio-popup-modal');
-            let modalImg = document.getElementById('modal-display-img');
-            let modalClose = document.getElementById('modal-close-node');
-            if (!portfolioModal || !modalImg) {
-                portfolioModal = document.createElement('div');
-                portfolioModal.className = 'bose-popup-modal';
-                portfolioModal.id = 'portfolio-popup-modal';
-                portfolioModal.setAttribute('aria-hidden', 'true');
-                portfolioModal.style.cssText = 'display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(17,17,17,0.9);backdrop-filter:blur(6px);z-index:999999;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;';
-                portfolioModal.innerHTML = `
-                    <div class="bose-popup-content" style="background:#FFFFFF;border-radius:16px;padding:20px;max-width:90vw;max-height:90vh;position:relative;box-sizing:border-box;text-align:center;">
-                        <span class="modal-close-btn" id="modal-close-node" style="position:absolute;top:10px;left:16px;font-size:28px;font-weight:700;cursor:pointer;" aria-label="إغلاق المعاينة">×</span>
-                        <img id="modal-display-img" src="" class="modal-img-frame" style="max-width:100%;max-height:80vh;object-fit:contain;border-radius:10px;" alt="معاينة فخمة ومكبرة لسابقة أعمال حلويات بوسي">
-                    </div>`;
-                document.body.appendChild(portfolioModal);
-                modalImg = document.getElementById('modal-display-img');
-                modalClose = document.getElementById('modal-close-node');
-            }
-            const modalCard = portfolioModal.querySelector('.bose-popup-content');
-            if (!portfolioModal || !modalImg) return;
+            let lightboxOverlay = document.getElementById('bose-lightbox-container');
+            let lightboxImg = document.getElementById('bose-lightbox-img');
+            let lightboxClose = document.getElementById('bose-lightbox-close-btn');
 
-            const openFlowerLightbox = (src) => {
+            if (!lightboxOverlay || !lightboxImg) {
+                lightboxOverlay = document.createElement('div');
+                lightboxOverlay.className = 'bose-lightbox-overlay';
+                lightboxOverlay.id = 'bose-lightbox-container';
+                lightboxOverlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(17,17,17,0.9);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;z-index:999999;padding:20px;box-sizing:border-box;';
+                lightboxOverlay.innerHTML = `
+                    <div class="bose-lightbox-card" style="background:#FFFFFF;padding:10px;border-radius:20px;width:100%;height:100%;max-width:1400px;display:flex;align-items:center;justify-content:center;position:relative;">
+                        <button type="button" class="bose-lightbox-close" id="bose-lightbox-close-btn" style="position:absolute;top:14px;left:14px;background:#FF91A4;color:#FFFFFF;border:none;width:44px;height:44px;border-radius:50%;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;">&times;</button>
+                        <img src="" id="bose-lightbox-img" alt="معاينة الصورة الفاخرة" style="max-width:100%;max-height:100%;width:auto;height:auto;border-radius:14px;object-fit:contain;display:block;">
+                    </div>`;
+                document.body.appendChild(lightboxOverlay);
+                lightboxImg = document.getElementById('bose-lightbox-img');
+                lightboxClose = document.getElementById('bose-lightbox-close-btn');
+            }
+
+            const lightboxCard = lightboxOverlay.querySelector('.bose-lightbox-card');
+
+            const openLightbox = (src) => {
                 if (!src) return;
-                modalImg.src = src;
-                portfolioModal.style.display = "flex";
-                portfolioModal.setAttribute("aria-hidden", "false");
-                // 👑💥 [حركة "الانبثاق" الفعلية - نفس آلية محاكي التورت بالظبط]
-                if (modalCard) {
-                    modalCard.classList.remove('bose-lightbox-pop-in');
-                    void modalCard.offsetWidth;
-                    modalCard.classList.add('bose-lightbox-pop-in');
-                } else {
-                    modalImg.classList.remove('bose-lightbox-pop-in');
-                    void modalImg.offsetWidth;
-                    modalImg.classList.add('bose-lightbox-pop-in');
+                lightboxImg.src = src;
+                lightboxOverlay.style.display = "flex";
+                if (lightboxCard) {
+                    lightboxCard.classList.remove('bose-lightbox-pop-in');
+                    void lightboxCard.offsetWidth;
+                    lightboxCard.classList.add('bose-lightbox-pop-in');
                 }
                 document.body.style.overflow = 'hidden';
             };
-            const closeFlowerLightbox = () => {
-                portfolioModal.style.display = "none";
-                portfolioModal.setAttribute("aria-hidden", "true");
+            const closeLightbox = () => {
+                lightboxOverlay.style.display = "none";
+                lightboxImg.src = "";
                 document.body.style.overflow = '';
             };
 
-            // 🐛🖼️ [إصلاح جذري - "منبثقة بس مش بتتحرك من مكانها"]: قائمة الصور
-            // القابلة للتكبير كانت محصورة في selectors محددة بس - صور كروت
-            // الاختيار (إحساس الباقة/نوع الورد.. إلخ، اللي بتتحقن ديناميكيًا
-            // بنفس آلية applyBoseOptionCardImages في محاكي التورت) ماكانتش
-            // داخلة خالص. دلوقتي أي صورة حقيقية جوه لوحة التحكم كلها
-            // (.simulator-control-panel) بأي خطوة بتفتح بملء الشاشة تلقائيًا.
-            //
-            // 🛡️ [تفويض على window في مرحلة الـ capture]: عشان محدش يقدر يوقف
-            // الحدث قبل ما يوصلنا، أيًا كان ترتيب باقي الأكواد في الصفحة.
             const isOpenableGalleryImage = (img) => {
-                if (!img || img === modalImg) return false;
-                // 🐛🖼️ [إصلاح - معرض سابقة الأعمال برّه .simulator-control-panel]:
-                // قسم "بوكيهات شرفت عملائنا" (.portfolio-section) في الصفحة مش
-                // جوه لوحة التحكم أصلاً - هو قسم منفصل تحت المحاكي كله - فكان
-                // الشرط القديم بيرفض صوره دايمًا حتى لو كل حاجة تانية سليمة.
-                // 🖼️ [صور المراجعات بقت قابلة للتكبير كمان]: قسم "قيّمي تجربتك"
-                // (.reviews-premium-section) مش جوه أي من الحاويات القديمة دي، فكانت
-                // صور العميلات المرفقة مع مراجعاتهم بتفضل صغيرة وغير قابلة للضغط.
-                return !!(img.closest('.simulator-control-panel') || img.closest('.portfolio-section') || img.classList.contains('hero-banner-frame') || img.closest('.reviews-premium-section'));
+                if (!img || img.id === 'bose-lightbox-img') return false;
+                return !!(img.closest('.bose-step-wizard-card') || img.closest('.bose-main-hero-hook') || img.closest('.reviews-premium-section'));
             };
 
             window.addEventListener('click', (e) => {
@@ -962,15 +919,14 @@
                 if (!img || !isOpenableGalleryImage(img) || !img.src) return;
                 const wrappingLabel = img.closest('label');
                 if (wrappingLabel) { e.preventDefault(); e.stopPropagation(); }
-                openFlowerLightbox(img.src);
+                openLightbox(img.src);
             }, true);
 
-            if (modalClose) modalClose.onclick = closeFlowerLightbox;
-            portfolioModal.onclick = function (e) {
-                if (e.target === this) closeFlowerLightbox();
-            };
+            if (lightboxClose) lightboxClose.onclick = closeLightbox;
+            lightboxOverlay.onclick = (e) => { if (e.target === lightboxOverlay) closeLightbox(); };
+
             document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && portfolioModal.style.display === 'flex') closeFlowerLightbox();
+                if (e.key === 'Escape' && lightboxOverlay.style.display === 'flex') closeLightbox();
             });
         }
 
@@ -980,7 +936,6 @@
                 if (state.isUploading) return;
 
                 const flowerTypeName = getFlowerTypeName(state.flowerType);
-                const moodLabelMap = { celebratory: "احتفالي", romantic: "رومانسي", elegant: "أنيق وبسيط" };
                 // نفس شرط ظهور كارت الإهداء بالضبط المستخدم في recalculatePrice() أعلاه
                 const hasGiftCardFinal = !!(state.includeCard && state.cardText.trim() !== "");
 
@@ -1005,7 +960,10 @@
                     // شرح state.totalSteps فوق. cart-engine.js لسه فيه شرط عرض
                     // `if (cd.isGift)` بس هيفضل مجرد كود ميت آمن (مش بيتفعّل) لأن
                     // الحقل ده مبقاش بيتبعت خالص من هنا.
-                    moodLabel: moodLabelMap[state.mood] || ""
+                    // 🗑️ [حذف خطوة "الإحساس المطلوب"]: moodLabel فضل "" ثابتة
+                    // للتوافق مع أي كود قديم بيقرا الحقل ده، بس مفيش أي واجهة
+                    // بتحدّثه تاني.
+                    moodLabel: ""
                 };
 
                 // 🧮 [توحيد إنشاء عنصر السلة]: استخدام window.createCartItem() الموحدة
