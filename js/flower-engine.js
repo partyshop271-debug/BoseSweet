@@ -419,6 +419,19 @@
      * ⚙️ تهيئة المحرك وربط الأحداث
      */
     function initializeFlowerEngine() {
+        // 🐛👑👑 [إصلاح كارثي: انهيار الدالة كلها من أول سطر فعلي]: fbConfig
+        // كانت بتتقرا هنا (خطوة الكاروسيل التلقائي) قبل تعريفها بـ const في
+        // نص الدالة تحت بكتير - وده بيرمي ReferenceError فوري (Temporal Dead
+        // Zone) لأن متغيرات const/let مبيصحش يتقروا قبل سطر تعريفهم حتى لو
+        // جوه نفس الـ function scope. النتيجة: initializeFlowerEngine() كانت
+        // بتوقف وتنهار من أول استخدام لـ fbConfig، فكل كود بعده - تفعيل زرار
+        // التالي/السابق، أرقام الخطوات (الدوتس) القابلة للضغط، وحتى تشغيل
+        // كاروسيل المعلومات نفسه (اللي هو سبب الانهيار) - مكانش بينفذ خالص من
+        // غير أي خطأ ظاهر للعميلة، فكانت تحس إن الموقع "واقف". الحل: نقلنا
+        // تعريف fbConfig لأول سطر فعلي في الدالة (قبل أي استخدام له)، بنفس
+        // ترتيب cake-engine.js بالظبط (config بيتعرف قبل أي نداء تاني).
+        const fbConfig = window.BoseStoreData?.flowerBuilder || {};
+
         // 🛡️ [تحصين الترتيب - نفس فلسفة cake-engine.js بالظبط]: نافذة تكبير
         // الصور بقت أول حاجة بتتفعل قبل أي كود تاني ممكن يرمي استثناء.
         wireUpAllFlowerLightboxImages();
@@ -455,12 +468,13 @@
         // الحقول وبنفس القيم الاحتياطية المستخدمة حرفياً في core-engine.js
         // (window.calculateCustomFlowerPrice) عشان يفضل سعر المحاكي المعروض للعميل
         // مطابق تماماً لسعر الحارس المركزي اللي بيتأكد منه بعدين في صفحة السلة.
-        const fbConfig = window.BoseStoreData?.flowerBuilder || {};
+        // (fbConfig نفسه بقى معرّف فوق في أول الدالة - راجع الملحوظة هناك)
         flowerConfig.basePrice = parseFloat(fbConfig.basePrice) || flowerConfig.basePrice;
         flowerConfig.baseFlowers = parseInt(fbConfig.baseFlowers, 10) || flowerConfig.baseFlowers;
         flowerConfig.extraFlowerPrice = parseFloat(fbConfig.extraFlowerPrice) || flowerConfig.extraFlowerPrice;
         flowerConfig.photoPrintPrice = parseFloat(fbConfig.photoPrintPrice) || flowerConfig.photoPrintPrice;
         flowerConfig.giftCardPrice = parseFloat(fbConfig.giftCardPrice) || flowerConfig.giftCardPrice;
+        flowerConfig.satinRibbonPrice = parseFloat(fbConfig.satinRibbonPrice) || flowerConfig.satinRibbonPrice;
 
         // 🖼️👑 [معرض نماذج كارت الإهداء المطبوع - محاكي الورد]: نفس آلية معرض
         // سابقة الأعمال فوق بالظبط، بس بيتقرا من fbConfig.giftCardImages وبيتعرض
@@ -478,9 +492,12 @@
                 }).join("");
             }
         }
-        // satinRibbonPrice تفضل ثابتة (50) لعدم وجود حقل رسمي مخصص لها بالـ JSON حالياً،
-        // بنفس القرار المتبع في core-engine.js بالظبط. state.totalPrice هيتحدث تلقائياً
-        // بالقيم الجديدة عند نداء recalculatePrice() في نهاية الدالة دي.
+        // 💰👑 [حقل رسمي لسعر طباعة شريط الستان]: satinRibbonPrice بقى بيتقرا من
+        // لوحة التحكم (fbConfig.satinRibbonPrice) بدل القيمة الثابتة 50 القديمة -
+        // نفس التعديل مطبّق في core-engine.js (window.calculateCustomFlowerPrice)
+        // عشان يفضل سعر المحاكي المعروض للعميل مطابق تماماً لسعر الحارس المركزي.
+        // state.totalPrice هيتحدث تلقائياً بالقيمة الجديدة عند نداء recalculatePrice()
+        // في نهاية الدالة دي.
 
         // 🖼️ [صور المحاكي الديناميكية]: البانر الرئيسي ومعرض "بوكيهات شرفت
         // عملائنا" كانوا ثابتين على شعار المتجر مكرر 4 مرات، بدون أي مكان في

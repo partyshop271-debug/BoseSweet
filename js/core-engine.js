@@ -1411,10 +1411,11 @@
         // flower-engine.js، عشان الحارس المركزي هنا (اللي بيتأكد من السعر وقت
         // الإضافة للسلة والتشيك أوت) يفضل مطابق تماماً للسعر المعروض للعميل.
         const giftCardPrice = parseFloat(fbConfig.giftCardPrice) || 30;
-        // ملحوظة: مفيش حقل رسمي لسعر شريط الستان المطبوع (satinRibbonPrice) داخل
-        // flowerBuilder بالـ JSON حالياً - فضّلنا نسيبه ثابت 50 لحد ما يتضاف حقل
-        // مخصص له فعلياً.
-        const satinRibbonPrice = 50;
+        // 💰👑 [حقل رسمي لسعر شريط الستان المطبوع]: satinRibbonPrice بقى بيتقرا من
+        // flowerBuilder.satinRibbonPrice (لوحة التحكم) بدل القيمة الثابتة 50 -
+        // نفس التعديل في flowerConfig.satinRibbonPrice بملف flower-engine.js
+        // عشان الحارس المركزي هنا يفضل مطابق تماماً لسعر المحاكي المعروض للعميل.
+        const satinRibbonPrice = parseFloat(fbConfig.satinRibbonPrice) || 50;
 
         const safeFlowerCount = parseInt(String(flowerCount), 10) || baseFlowers;
         const extraFlowers = Math.max(0, safeFlowerCount - baseFlowers);
@@ -2355,7 +2356,10 @@
 
             // ⚙️ [تحكم في سرعة الشريط العلوي وتشغيله/إيقافه من لوحة التحكم]:
             // بيتقرا من navigation.topBarSpeedSeconds و navigation.topBarEnabled.
-            const topBarSpeed = Number(data.navigation?.topBarSpeedSeconds) > 0 ? Number(data.navigation.topBarSpeedSeconds) : 44;
+            // 🐛👑 [إبطاء الافتراضي 50%]: كان 44 (القيمة الافتراضية فقط، تُستخدم
+            // لو الأدمن لسه ما حفظتش قيمة مخصصة بنفسها) - ضاعفناها لـ 88 عشان
+            // تتطابق مع نفس التعديل في css/global.css (.bose-top-bar-marquee-track).
+            const topBarSpeed = Number(data.navigation?.topBarSpeedSeconds) > 0 ? Number(data.navigation.topBarSpeedSeconds) : 88;
             const topBarEnabled = data.navigation?.topBarEnabled !== false;
             const topBarTrackStyle = `animation-duration:${topBarSpeed}s !important; animation-play-state:${topBarEnabled ? 'running' : 'paused'} !important;`;
 
