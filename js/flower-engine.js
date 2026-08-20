@@ -207,7 +207,8 @@
                 html += `<div class="bose-invoice-addon-row"><span>كارت إهداء شيك مكتوب:</span><span>+ ${flowerConfig.giftCardPrice} جنيه</span></div>`;
             }
             if (state.moneyAmount > 0) {
-                html += `<div class="bose-invoice-addon-row"><span>مفاجأة الكاش جوه البوكيه:</span><span>+ ${state.moneyAmount} جنيه</span></div>`;
+                const denomLabel = state.moneyCategoryAmount > 0 ? ` (فئة ${state.moneyCategoryAmount} جنيه)` : "";
+                html += `<div class="bose-invoice-addon-row"><span>فلوس كاش جوه الباقة${denomLabel}:</span><span>+ ${state.moneyAmount} جنيه</span></div>`;
             }
             if (state.chocolateBudget > 0) {
                 html += `<div class="bose-invoice-addon-row"><span>ميزانية الشوكولاتة الفخمة:</span><span>+ ${state.chocolateBudget} جنيه</span></div>`;
@@ -256,7 +257,8 @@
             addRow("كارت إهداء مطبوع", `+ ${flowerConfig.giftCardPrice} جنيه`);
         }
         if (state.includeCash && state.moneyAmount > 0) {
-            addRow("مفاجأة كاش جوه البوكيه", `${state.moneyAmount} جنيه`);
+            const denomLabel = state.moneyCategoryAmount > 0 ? ` (فئة ${state.moneyCategoryAmount} جنيه)` : "";
+            addRow(`فلوس كاش جوه الباقة${denomLabel}`, `${state.moneyAmount} جنيه`);
         }
         if (state.includeChocolate && state.chocolateBudget > 0) {
             addRow("ميزانية شوكولاتة فاخرة", `${state.chocolateBudget} جنيه`);
@@ -424,13 +426,16 @@
         // 💡👑 [شريط المعلومات الدوّار - 10 معلومات حقيقية ومفيدة عن تجربة
         // طلب الورد]: بتتغير تلقائياً كل 6 ثواني، وبتجاوب على أسئلة شائعة
         // (الفرق بين الأنواع، التغليف، المفاجآت، الدفع، التعديل...) قبل ما
-        // العميلة تحتاج تسأل عنها أصلاً.
+        // العميلة تحتاج تسأل عنها أصلاً. المحتوى دلوقتي قابل للتعديل بالكامل
+        // من لوحة التحكم (fbConfig.infoCarouselTips) - القائمة المكتوبة هنا
+        // بقت مجرد احتياطي افتراضي لو الأدمن لسه ما ضافتش/عدلتش حاجة.
         if (typeof window.initBoseInfoCarousel === "function") {
+            const adminTips = Array.isArray(fbConfig.infoCarouselTips) ? fbConfig.infoCarouselTips.filter(t => t && t.title && t.text) : [];
             window.initBoseInfoCarousel({
                 trackId: "bose-flower-info-carousel-track",
                 progressId: "bose-flower-info-carousel-progress",
                 intervalMs: 6000,
-                tips: [
+                tips: adminTips.length > 0 ? adminTips : [
                     { title: "ورد طازة حسب الطلب 🌸", text: "الورد الطبيعي بيوصلنا من المزرعة وبيتنسق بعد تأكيد طلبك مباشرة - مش باقة جاهزة مخزّنة." },
                     { title: "إيه الفرق بين الأنواع؟", text: "الورد الصناعي والستان بيحافظوا على شكلهم لفترة أطول من الطبيعي، وممكن يفضلوا كذكرى تحتفظي بيها." },
                     { title: "التغليف مجاني دايماً 🎀", text: "التغليف الكلاسيك الفاخر جزء أساسي من كل باقة من غير أي تكلفة إضافية - مهما كان نوع الورد أو عدده." },
@@ -547,7 +552,7 @@
 
         // تغذية القائمة المنسدلة ديناميكياً للفئات النقدية
         if (moneyCategorySelect) {
-            let optionsHtml = `<option value="0" selected>اختار فئة الفلوس النقدية...</option>`;
+            let optionsHtml = `<option value="0" selected>اختاري فئة الورقة النقدية...</option>`;
             const categories = window.BoseStoreData?.flowerBuilder?.moneyCategories || [
                 {amount:5}, {amount:10}, {amount:20}, {amount:50}, {amount:100}, {amount:200}
             ];
@@ -603,6 +608,7 @@
             if (chocolateBudgetMasterBlock) chocolateBudgetMasterBlock.style.display = state.includeChocolate ? "block" : "none";
         }
         if (chocolateBudgetDisplay) chocolateBudgetDisplay.value = state.chocolateBudget;
+        updateCashSelectionLine();
 
         // 🌸👑 [رسم أنواع الورد ديناميكياً من لوحة التحكم]: بدل 3 كروت
         // مكتوبة يدوياً وثابتة في الـ HTML، بنبني الكروت كلها هنا من
@@ -661,6 +667,19 @@
             if (!lineEl) return;
             const typeName = getFlowerTypeName(state.flowerType);
             lineEl.innerHTML = typeName ? `✅ اختياركِ الحالي: <strong>${typeName}</strong>` : "";
+        }
+
+        // 💰👑 [توضيح كامل - خطوة الكاش]: سطر تأكيد حي بيقول للعميلة بالنص
+        // هنحط لها كام وبأنهي فئة، بنفس فلسفة سطر تأكيد نوع الورد فوق - عشان
+        // متحسّش إنها "مش فاهمة" اختيارها وصل لفين.
+        function updateCashSelectionLine() {
+            const lineEl = document.getElementById("cash-current-selection-line");
+            if (!lineEl) return;
+            if (state.includeCash && state.moneyAmount > 0 && state.moneyCategoryAmount > 0) {
+                lineEl.innerHTML = `✅ هنحط لكِ <strong>${state.moneyAmount} جنيه</strong> جوه الباقة، مرتبة بفئة <strong>${state.moneyCategoryAmount} جنيه</strong>`;
+            } else {
+                lineEl.innerHTML = "";
+            }
         }
 
         // 🗑️ [حذف خطوة "الإحساس المطلوب" بالكامل]: بناءً على طلب مباشر -
@@ -801,6 +820,7 @@
                 }
                 saveCurrentState();
                 recalculatePrice();
+                updateCashSelectionLine();
             };
         }
 
@@ -818,6 +838,7 @@
                 if (moneyAmountDisplay) moneyAmountDisplay.value = state.moneyAmount;
                 saveCurrentState();
                 recalculatePrice();
+                updateCashSelectionLine();
             };
         }
 
@@ -830,6 +851,7 @@
                 if (moneyAmountDisplay) moneyAmountDisplay.value = state.moneyAmount;
                 saveCurrentState();
                 recalculatePrice();
+                updateCashSelectionLine();
             };
         }
         if (billMinus) {
@@ -840,6 +862,7 @@
                     if (moneyAmountDisplay) moneyAmountDisplay.value = state.moneyAmount;
                     saveCurrentState();
                     recalculatePrice();
+                    updateCashSelectionLine();
                 }
             };
         }

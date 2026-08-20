@@ -46,12 +46,16 @@ function startEngineLogic() {
     // التورت]: بتتغير تلقائياً كل 6 ثواني، وبتجاوب على أسئلة شائعة (التحضير
     // الفريش، مطابقة التصميم، أقل عدد أفراد لكل شكل، الدفع، التعديل...) قبل
     // ما العميلة تحتاج تسأل عنها أصلاً - نفس المكوّن المستخدم في محاكي الورد.
+    // المحتوى دلوقتي قابل للتعديل بالكامل من لوحة التحكم
+    // (config.infoCarouselTips) - القائمة المكتوبة هنا بقت مجرد احتياطي
+    // افتراضي لو الأدمن لسه ما ضافتش/عدلتش حاجة.
     if (typeof window.initBoseInfoCarousel === "function") {
+        const adminCakeTips = Array.isArray(config.infoCarouselTips) ? config.infoCarouselTips.filter(t => t && t.title && t.text) : [];
         window.initBoseInfoCarousel({
             trackId: "bose-cake-info-carousel-track",
             progressId: "bose-cake-info-carousel-progress",
             intervalMs: 6000,
-            tips: [
+            tips: adminCakeTips.length > 0 ? adminCakeTips : [
                 { title: "تحضير فريش 100% 🎂", text: "كل تورتة بنبدأ تحضيرها بعد تأكيد طلبك مباشرة - مفيش تورت جاهز مخزّن من قبل." },
                 { title: "التصميم قريب من الصورة", text: "لو رفعتي صورة تصميم عجباكِ، بنحاول نقرب منها قد الإمكان مع مراعاة إن التنفيذ اليدوي ممكن يختلف شوية." },
                 { title: "ليه في أقل عدد أفراد لكل شكل؟", text: "كل شكل تورتة ليه أقل عدد أفراد مناسب له عشان الشكل النهائي يطلع متوازن ومحترف بصرياً." },
