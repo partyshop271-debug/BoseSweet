@@ -315,7 +315,7 @@
    هيتكدس أو يبقى ضيق أوي مع أي عدد مختلف. هنا شبكة مرنة بتاخد أي عدد
    خيارات وتوزعهم تلقائياً بمسافات أوسع بين الكروت من الصف العادي. */
 .bose-iconic-options-row.bose-flower-type-grid {
-    grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(148px, 1fr));
     gap: 20px;
 }
 @media (max-width: 480px) {
@@ -326,10 +326,11 @@
 }
 
 .bose-iconic-btn-node {
+    position: relative;
     background: var(--bose-white) !important;
     border: 1.5px solid var(--bose-gray-border) !important;
     border-radius: var(--bose-radius-md) !important; /* 🛡️ بلاطة اختيار (أيقونة + نص) = زاوية متوسطة زي أي كارت، مش كبسولة، عشان شكلها مربّع/عمودي مش زرار مستطيل عريض */
-    padding: 16px 12px !important;
+    padding: 20px 14px !important;
     overflow: hidden; /* 🖼️ [صورة كبيرة حتى الحواف] راجع applyBoseOptionCardImages */
     text-align: center;
     cursor: pointer;
@@ -345,12 +346,12 @@
 }
 
 .bose-iconic-btn-node .btn-icon {
-    font-size: 22px;
+    font-size: 26px;
     transition: transform 0.25s ease;
 }
 
 .bose-iconic-btn-node .btn-label {
-    font-size: 14px;
+    font-size: 15.5px;
     font-weight: 700;
     color: var(--bose-black);
 }
@@ -361,15 +362,62 @@
 }
 
 .bose-iconic-btn-node.active-selected {
-    border-color: var(--bose-pink) !important;
-    box-shadow: 0 8px 24px rgba(255, 145, 164, 0.1) !important;
-    background: var(--bose-white) !important;
+    border: var(--bose-border-thick) !important;
+    box-shadow: var(--bose-shadow-glow) !important;
+    background: var(--bose-pink-light) !important;
     transform: scale(1.02);
 }
 
 .bose-iconic-btn-node.active-selected .btn-icon {
     transform: scale(1.15);
 }
+
+/* ✅👑 [توضيح أكبر لتأكيد الاختيار - نفس فلسفة كروت شكل/نكهة التورت]: مش
+   كفاية بس تغيير لون البوردر - دلوقتي شارة "✅ مُختار" واضحة بتظهر جوه
+   الكارت المختار، بالإضافة لسطر تأكيد ثابت تحت الشبكة بيقول للعميلة
+   بالنص هي اختارت إيه بالظبط. */
+.bose-iconic-selected-checkmark {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    margin-top: 6px;
+    background: var(--bose-pink);
+    color: var(--bose-white);
+    font-size: 11px;
+    font-weight: 800;
+    padding: 4px 11px;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+.bose-iconic-btn-node.active-selected .bose-iconic-selected-checkmark {
+    display: inline-flex;
+    animation: boseCheckPop 0.25s ease-out;
+}
+@keyframes boseCheckPop {
+    0% { transform: scale(0.6); opacity: 0; }
+    70% { transform: scale(1.05); opacity: 1; }
+    100% { transform: scale(1); }
+}
+
+/* ✅ [سطر تأكيد ثابت تحت شبكة الاختيار]: نفس مكوّن محاكي التورت (شكل/نكهة)
+   بالحرف - بيتحدّث فوراً مع أي تغيير في الاختيار. */
+.bose-current-selection-line {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    text-align: center;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--bose-black);
+    background: var(--bose-pink-light);
+    border: 1px solid rgba(255, 145, 164, 0.3);
+    border-radius: 30px;
+    padding: 10px 16px;
+    margin-top: 14px;
+}
+.bose-current-selection-line strong { color: var(--bose-pink-text, var(--bose-pink)); }
 
 /* ==========================================================================
    5. 🎯 هندسة العدادات الذكية وإطار السعر الموضع التوضيحي المطور
@@ -1082,6 +1130,11 @@
     background-color: var(--bose-white) !important;
     color: var(--bose-pink) !important;
 }
+/* 🧠👑 [رقم خطوة "متخطّاة" ذكياً]: بتظهر باهتة على شريط الخطوات لما تكون
+   خطوة "كام وردة؟" مش منطقية لنوع الباقة المختار حالياً (سعر ثابت). */
+.bose-progress-node.skipped {
+    opacity: 0.4;
+}
 
 .bose-wizard-title {
     font-size: 19px;
@@ -1288,4 +1341,84 @@
 @media (max-width: 767px) {
     .bose-simulator-layout { padding: 16px 12px 50px 12px; }
     .bose-step-wizard-card { padding: 18px; }
+}
+
+/* ==========================================================================
+   💡👑 [شريط معلومات دوّار مشترك - محاكي التورت ومحاكي الورد]: بيظهر أول ما
+   العميلة تدخل المحاكي (فوق شريط الخطوات)، وبيعرض معلومات حقيقية ومفيدة
+   بتتغير تلقائياً - نفس المكوّن بالحرف في المحاكيين الاتنين، محتواه بس
+   بيختلف (JS منفصل لكل محاكي: cake-engine.js / flower-engine.js).
+   ========================================================================== */
+.bose-info-carousel {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: linear-gradient(135deg, var(--bose-pink-light), var(--bose-white));
+    border: 1.5px solid rgba(255, 145, 164, 0.35);
+    border-radius: 20px;
+    padding: 16px 18px 20px 18px;
+    margin-bottom: 22px;
+    box-shadow: var(--bose-shadow-glow);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+.bose-info-carousel-icon {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--bose-pink);
+    color: var(--bose-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    box-shadow: 0 4px 14px rgba(255, 145, 164, 0.4);
+}
+.bose-info-carousel-track {
+    flex: 1;
+    min-width: 0;
+}
+.bose-info-carousel-slide {
+    display: none;
+}
+.bose-info-carousel-slide.active {
+    display: block;
+    animation: boseInfoCarouselFade 0.45s ease;
+}
+.bose-info-carousel-slide strong {
+    display: block;
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--bose-pink-text, var(--bose-pink));
+    margin-bottom: 3px;
+}
+.bose-info-carousel-slide span {
+    display: block;
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--bose-black);
+}
+@keyframes boseInfoCarouselFade {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.bose-info-carousel-progress-track {
+    position: absolute;
+    bottom: 0; right: 0; left: 0;
+    height: 3px;
+    background: rgba(255, 145, 164, 0.15);
+}
+.bose-info-carousel-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--bose-pink);
+}
+@media (max-width: 480px) {
+    .bose-info-carousel { padding: 13px 14px 17px 14px; gap: 11px; }
+    .bose-info-carousel-icon { width: 34px; height: 34px; font-size: 15px; }
+    .bose-info-carousel-slide strong { font-size: 12px; }
+    .bose-info-carousel-slide span { font-size: 12px; }
 }
