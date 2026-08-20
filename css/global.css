@@ -188,7 +188,11 @@ img {
     display: flex;
     align-items: center;
     padding: 12px 0;
-    font-size: 14px;
+    /* 🐛👑 [تكبير الخط 30%]: كان 14px - العميلة أبلغت إن حجم رسائل الشريط
+       المتحرك صغير وصعب القراءة، فكبرناه 30% (14 × 1.3 ≈ 18) - الحاوية
+       ارتفاعها ثابت 44px وبتوسط المحتوى بـ flex فمفيش قص أو تصادم مع باقي
+       عناصر الهيدر (top:44px الهيدر تحته، وقيم toast اللي بتحسب من 44px). */
+    font-size: 18px;
     font-weight: 600;
     white-space: nowrap !important;
     direction: ltr;
@@ -206,7 +210,14 @@ img {
     flex-wrap: nowrap !important;
     width: max-content !important;
     will-change: transform;
-    animation: boseMarqueeReverse 44s linear infinite !important;
+    /* 🐛👑 [إبطاء الحركة 50%]: كانت 44s - العميلة أبلغت إن الشريط بيتحرك
+       سريع جداً، فضاعفنا مدة الأنيميشن لـ 88s (يعني نص السرعة بالظبط) -
+       ده الافتراضي فقط المستخدم لو مفيش قيمة مخصصة محفوظة من لوحة التحكم
+       (navigation.topBarSpeedSeconds في core-engine.js بيغلب هذا الافتراضي
+       لو الأدمن غيّرت "سرعة الشريط" بنفسها من قبل من صفحة الرئيسية بلوحة
+       التحكم - لازم تتأكد إن القيمة المحفوظة هناك اتغيرت هي كمان لو كانت
+       معدّلة يدوياً قبل كده). */
+    animation: boseMarqueeReverse 88s linear infinite !important;
 }
 
 .bose-marquee-item {
