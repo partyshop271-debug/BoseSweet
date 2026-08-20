@@ -48,8 +48,13 @@
         .status-processing, .status-preparing { background: rgba(255, 145, 164, 0.08); color: #FF91A4; }
         .status-ready { background: rgba(255, 145, 164, 0.08); color: #FF91A4; }
         .status-delivering, .status-out_for_delivery { background: rgba(255, 145, 164, 0.08); color: #FF91A4; }
-        .status-delivered, .status-completed { background: rgba(255, 145, 164, 0.08); color: #FF91A4; }
-        .status-cancelled { background: rgba(255, 145, 164, 0.08); color: #FF91A4; }
+        /* 🛡️ [إصلاح وضوح - كل الحالات كانت بنفس اللون الوردي بالظبط]: العميلة كانت
+           بتحتاج تقرا النص بعناية عشان تفرق بين "اتلغى" و"اتسلم بنجاح" - مفيش أي
+           إشارة بصرية سريعة. دلوقتي في تمييز واضح: أخضر للنجاح، رمادي/أحمر للإلغاء،
+           والألوان الوردية فضلت للحالات "لسه شغالة" (بانتظار/تحضير/جاهز/في الطريق)
+           عشان تفضل متسقة مع هوية البراند طول رحلة الطلب العادية. */
+        .status-delivered, .status-completed { background: rgba(46, 158, 91, 0.1); color: #2e9e5b; }
+        .status-cancelled { background: rgba(17, 17, 17, 0.06); color: #6b6b6b; }
 
         .track-order-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; }
         .track-order-meta div { background: rgba(255, 145, 164, 0.08); border-radius: 12px; padding: 12px 14px; }
@@ -132,8 +137,15 @@
                     </div>
                 `).join("");
 
+                // 🛡️ [إصلاح وصول - أيقونة مختلفة مش لون بس]: الاعتماد على اللون
+                // وحده لتمييز الحالة مشكلة لعميلة عندها عمى ألوان جزئي - دلوقتي
+                // في أيقونة مختلفة كمان لحالتي النجاح والإلغاء تحديدًا.
+                const statusIcon = row.status === 'delivered' || row.status === 'completed'
+                    ? 'fa-circle-check'
+                    : (row.status === 'cancelled' ? 'fa-circle-xmark' : 'fa-circle');
+
                 inner.innerHTML = `
-                    <span class="track-status-pill status-${window.escapeBoseHTML(row.status || '')}"><i class="fa-solid fa-circle" style="font-size:8px;"></i> ${window.escapeBoseHTML(statusLabel(row.status))}</span>
+                    <span class="track-status-pill status-${window.escapeBoseHTML(row.status || '')}"><i class="fa-solid ${statusIcon}" style="font-size:${statusIcon === 'fa-circle' ? '8px' : '14px'};"></i> ${window.escapeBoseHTML(statusLabel(row.status))}</span>
                     <div class="track-order-meta">
                         <div><span class="meta-label">رقم الطلب</span><span class="meta-value">${window.escapeBoseHTML(row.order_number || '')}</span></div>
                         <div><span class="meta-label">طريقة الاستلام</span><span class="meta-value">${row.delivery_method === 'pickup' ? 'استلام من الفرع' : 'توصيل للمنزل'}</span></div>
