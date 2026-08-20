@@ -139,18 +139,19 @@
         });
     }
 
-    /* ============================= فئات المبالغ (محاكي الورد - money gift card) ============================= */
-
+    /* ============================= فئات الورقة النقدية (محاكي الورد - money gift card) ============================= */
+    // 🗑️ [حذف حقل "رسوم الإضافة" الميت]: مفيش أي عمولة أو رسوم على أي فئة -
+    // ده مؤكد في نص الشرح اللي بيشوفه العميل في المحاكي نفسه (ⓘ خطوة الكاش).
+    // الحقل ده كان موجود بس مالوش أي استخدام حقيقي في محاكي الورد.
     function renderMoneyCategories(items) {
         const container = document.getElementById("list-money-categories");
         container.innerHTML = items.map((item, idx) => `
             <div class="adm-curated-item" data-idx="${idx}">
-                <input type="number" class="adm-input" style="flex:1;" data-field="amount" value="${item.amount ?? 0}" placeholder="المبلغ (ج.م)">
-                <input type="number" class="adm-input" style="flex:1;" data-field="fee" value="${item.fee ?? 0}" placeholder="رسوم الإضافة (ج.م)">
+                <input type="number" class="adm-input" style="flex:1;" data-field="amount" value="${item.amount ?? 0}" placeholder="فئة الورقة (ج.م) - مثال: 50">
                 <button type="button" class="adm-btn adm-btn-ghost adm-btn-icon" data-action="remove" title="حذف">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
-            </div>`).join("") || `<p class="adm-order-item-meta" style="padding: 4px 2px;">مفيش فئات مبالغ مضافة لسه.</p>`;
+            </div>`).join("") || `<p class="adm-order-item-meta" style="padding: 4px 2px;">مفيش فئات مضافة لسه.</p>`;
 
         container.querySelectorAll("[data-field]").forEach((input) => {
             input.addEventListener("input", () => {
@@ -164,6 +165,113 @@
                 renderMoneyCategories(items);
             });
         });
+    }
+
+    /* ============================= المعلومات الدوّارة (شريط 💡 لكل محاكي) =============================
+       نفس فكرة قائمة رسائل الشريط العلوي (topbar) بالظبط - عنوان + نص + إعادة
+       ترتيب بالأسهم + حذف، بالإضافة لصف اقتراحات جاهزة (chips) تضيف
+       المعلومة المقترحة بضغطة واحدة بدل ما الأدمن تكتب من الصفر. عاملة كـ
+       factory عشان تخدم محاكي التورت ومحاكي الورد من نفس الكود بالظبط. */
+
+    // 💡 [نفس المعلومات الافتراضية بالحرف المستخدمة في js/cake-engine.js و
+    // js/flower-engine.js]: لو الأدمن ما عدّلش حاجة، دي نفس المعلومات اللي
+    // العميلة شايفاها فعلاً في المحاكي (fallback)، وهي كمان مصدر الاقتراحات
+    // الجاهزة هنا - لازم تتحدّث في المكانين مع بعض لو المحتوى الافتراضي اتغيّر.
+    const CAKE_TIP_SUGGESTIONS = [
+        { title: "تحضير فريش 100% 🎂", text: "كل تورتة بنبدأ تحضيرها بعد تأكيد طلبك مباشرة - مفيش تورت جاهز مخزّن من قبل." },
+        { title: "التصميم قريب من الصورة", text: "لو رفعتي صورة تصميم عجباكِ، بنحاول نقرب منها قد الإمكان مع مراعاة إن التنفيذ اليدوي ممكن يختلف شوية." },
+        { title: "ليه في أقل عدد أفراد لكل شكل؟", text: "كل شكل تورتة ليه أقل عدد أفراد مناسب له عشان الشكل النهائي يطلع متوازن ومحترف بصرياً." },
+        { title: "كارت إهداء بخط شيك 🎁", text: "تقدري تضيفي كارت إهداء مكتوب بخط شيك بسعر بسيط - لمسة صغيرة بتفرق كتير في الإحساس." },
+        { title: "الدفعة المقدمة", text: "تقدري تأكدي طلبك بدفعة مقدمة أو الدفع كامل، والباقي بيتحصّل عند الاستلام." },
+        { title: "تأكيد سريع على واتساب ✅", text: "بعد إضافة التورتة للسلة، هيتفتح واتساب تلقائي بكل تفاصيل طلبك عشان فريقنا يأكد عليه بسرعة." },
+        { title: "التعديل من غير خسارة", text: "تقدري ترجعي لأي خطوة فاتت وتعدلي فيها براحتك بالضغط على رقمها فوق - وباقي اختياراتك بتفضل زي ما هي." },
+        { title: "جودة المكونات", text: "بنستخدم مكونات مختارة بعناية عشان الطعم يكون في نفس مستوى جمال الشكل." },
+        { title: "السعر قدامك أول بأول 💰", text: "هتشوفي السعر بيتحدث لحظياً مع كل اختيار تعمليه، من غير أي مفاجآت في الآخر." },
+        { title: "آراء عميلاتنا", text: "قبل ما تأكدي، تقدري تشوفي تقييمات حقيقية من عميلات جربوا نفس تجربة التصميم قبل كده." },
+    ];
+    const FLOWER_TIP_SUGGESTIONS = [
+        { title: "ورد طازة حسب الطلب 🌸", text: "الورد الطبيعي بيوصلنا من المزرعة وبيتنسق بعد تأكيد طلبك مباشرة - مش باقة جاهزة مخزّنة." },
+        { title: "إيه الفرق بين الأنواع؟", text: "الورد الصناعي والستان بيحافظوا على شكلهم لفترة أطول من الطبيعي، وممكن يفضلوا كذكرى تحتفظي بيها." },
+        { title: "التغليف مجاني دايماً 🎀", text: "التغليف الكلاسيك الفاخر جزء أساسي من كل باقة من غير أي تكلفة إضافية - مهما كان نوع الورد أو عدده." },
+        { title: "مفاجآت جوه الباقة", text: "تقدري تضيفي كاش أو شوكولاتة فاخرة جوه الباقة، وبيوصل بالمبلغ أو الميزانية اللي تحدديها بالظبط من غير أي رسوم زيادة." },
+        { title: "صور شخصية تذكارية 📸", text: "تقدري تطبعي صور شخصية وترتبيها جوه الباقة - لمسة بتحول الهدية للحظة تفضل شكلها في الدماغ." },
+        { title: "كارت إهداء بخط شيك", text: "كلمة صغيرة على كارت أو شريط الستان بتخلي الباقة تحس إنها مكتوبة خصيصي لحد معين." },
+        { title: "ليه بنبدأ من 15 وردة؟", text: "أقل عدد بنشتغل بيه 15 وردة عشان ده أقل حد يدّي شكل تنسيق فخم ومليان بصرياً، مش متباعد." },
+        { title: "السعر قدامك أول بأول 💰", text: "هتشوفي السعر بيتحدث لحظياً مع كل اختيار تعمليه، من غير أي مفاجآت في الآخر." },
+        { title: "تأكيد سريع على واتساب ✅", text: "بعد إضافة الباقة للسلة، هيتفتح واتساب تلقائي بكل تفاصيل طلبك عشان فريقنا يأكد عليه بسرعة." },
+        { title: "التعديل من غير خسارة", text: "تقدري ترجعي لأي خطوة فاتت وتعدلي فيها براحتك بالضغط على رقمها فوق - وباقي اختياراتك بتفضل زي ما هي." },
+    ];
+
+    function createTipsListController(listContainerId, suggestionsContainerId, items, suggestionPool) {
+        const e = window.BoseAdminUI.escapeHtml;
+
+        function render() {
+            const listEl = document.getElementById(listContainerId);
+            listEl.innerHTML = items.map((item, idx) => `
+                <div class="adm-curated-item" data-idx="${idx}" style="flex-direction:column; align-items:stretch; gap:8px;">
+                    <div style="display:flex; gap:8px; align-items:center;">
+                        <input type="text" class="adm-input" style="flex:1;" data-field="title" value="${e(item.title || "")}" placeholder="عنوان المعلومة">
+                        <div class="adm-curated-item-actions">
+                            <button type="button" class="adm-btn adm-btn-ghost adm-btn-icon" data-action="up" title="لأعلى" ${idx === 0 ? "disabled" : ""}><i class="fa-solid fa-arrow-up"></i></button>
+                            <button type="button" class="adm-btn adm-btn-ghost adm-btn-icon" data-action="down" title="لأسفل" ${idx === items.length - 1 ? "disabled" : ""}><i class="fa-solid fa-arrow-down"></i></button>
+                            <button type="button" class="adm-btn adm-btn-ghost adm-btn-icon" data-action="remove" title="حذف"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                    </div>
+                    <textarea class="adm-input" style="width:100%; min-height:56px;" data-field="text" placeholder="النص التفصيلي">${e(item.text || "")}</textarea>
+                </div>`).join("") || `<p class="adm-order-item-meta" style="padding: 4px 2px;">مفيش معلومات مضافة لسه - استخدمي الاقتراحات تحت أو أضيفي معلومتك بنفسك.</p>`;
+
+            listEl.querySelectorAll("[data-field]").forEach((input) => {
+                input.addEventListener("input", () => {
+                    const idx = Number(input.closest("[data-idx]").getAttribute("data-idx"));
+                    items[idx][input.getAttribute("data-field")] = input.value;
+                });
+            });
+            listEl.querySelectorAll("[data-action]").forEach((btn) => {
+                btn.addEventListener("click", () => {
+                    const idx = Number(btn.closest("[data-idx]").getAttribute("data-idx"));
+                    const action = btn.getAttribute("data-action");
+                    if (action === "remove") items.splice(idx, 1);
+                    else if (action === "up" && idx > 0) [items[idx - 1], items[idx]] = [items[idx], items[idx - 1]];
+                    else if (action === "down" && idx < items.length - 1) [items[idx + 1], items[idx]] = [items[idx], items[idx + 1]];
+                    render();
+                });
+            });
+
+            renderSuggestions();
+        }
+
+        function renderSuggestions() {
+            const container = document.getElementById(suggestionsContainerId);
+            container.innerHTML = suggestionPool.map((tip) => {
+                const alreadyAdded = items.some((it) => it.title === tip.title);
+                return `<button type="button" class="adm-suggestion-chip" data-suggestion-title="${e(tip.title)}" ${alreadyAdded ? "disabled" : ""}>
+                    ${alreadyAdded ? '<i class="fa-solid fa-check"></i>' : '<i class="fa-solid fa-plus"></i>'} ${e(tip.title)}
+                </button>`;
+            }).join("");
+            container.querySelectorAll("[data-suggestion-title]").forEach((chip) => {
+                chip.addEventListener("click", () => {
+                    const title = chip.getAttribute("data-suggestion-title");
+                    const tip = suggestionPool.find((t) => t.title === title);
+                    if (!tip || items.some((it) => it.title === tip.title)) return;
+                    items.push({ title: tip.title, text: tip.text });
+                    render();
+                });
+            });
+        }
+
+        function addManual(title, text) {
+            const trimmedTitle = (title || "").trim();
+            const trimmedText = (text || "").trim();
+            if (!trimmedTitle || !trimmedText) {
+                window.BoseAdminUI.showToast("لازم تكتبي عنوان ونص المعلومة الاتنين", "error");
+                return false;
+            }
+            items.push({ title: trimmedTitle, text: trimmedText });
+            render();
+            return true;
+        }
+
+        return { render, addManual };
     }
 
     /* ============================= التحميل والربط ============================= */
@@ -197,11 +305,13 @@
         cakeBuilder.giftCard.images = cakeBuilder.giftCard.images || [];
         cakeBuilder.referenceUpload = cakeBuilder.referenceUpload || { enabled: true, note: "" };
         cakeBuilder.portfolioGallery = cakeBuilder.portfolioGallery || [];
+        cakeBuilder.infoCarouselTips = Array.isArray(cakeBuilder.infoCarouselTips) ? cakeBuilder.infoCarouselTips : [];
 
         flowerBuilder.flowerTypes = flowerBuilder.flowerTypes || [];
         flowerBuilder.moneyCategories = flowerBuilder.moneyCategories || [];
         flowerBuilder.portfolioGallery = flowerBuilder.portfolioGallery || [];
         flowerBuilder.giftCardImages = flowerBuilder.giftCardImages || [];
+        flowerBuilder.infoCarouselTips = Array.isArray(flowerBuilder.infoCarouselTips) ? flowerBuilder.infoCarouselTips : [];
 
         // تفعيل/إيقاف المحاكي
         document.getElementById("cake-enabled").checked = cakeBuilder.enabled !== false;
@@ -254,6 +364,18 @@
             renderNamedList("list-cake-giftcard-gallery", cakeBuilder.giftCard.images, { imageField: true });
         });
 
+        // 💡 [المعلومات الدوّارة - محاكي التورت]
+        const cakeTipsController = createTipsListController("list-cake-info-tips", "cake-tip-suggestions", cakeBuilder.infoCarouselTips, CAKE_TIP_SUGGESTIONS);
+        cakeTipsController.render();
+        document.getElementById("cake-add-tip-btn").addEventListener("click", () => {
+            const titleInput = document.getElementById("cake-new-tip-title");
+            const textInput = document.getElementById("cake-new-tip-text");
+            if (cakeTipsController.addManual(titleInput.value, textInput.value)) {
+                titleInput.value = "";
+                textInput.value = "";
+            }
+        });
+
         // 🌸👑 [ذكاء الخطوة رقم 3 - عدد الورد]: كل نوع دلوقتي معاه سعر ثابت
         // اختياري + مفتاح "بيتحسب بعدد الورد؟". لو اتشال التفعيل (يعني نوع
         // زي بوكيه فراشات/كاش/شوكولاتة مقفول مش هيتغير عدده)، محاكي الورد
@@ -272,8 +394,20 @@
 
         renderMoneyCategories(flowerBuilder.moneyCategories);
         document.getElementById("add-money-category-btn").addEventListener("click", () => {
-            flowerBuilder.moneyCategories.push({ amount: 0, fee: 0 });
+            flowerBuilder.moneyCategories.push({ amount: 0 });
             renderMoneyCategories(flowerBuilder.moneyCategories);
+        });
+
+        // 💡 [المعلومات الدوّارة - محاكي الورد]
+        const flowerTipsController = createTipsListController("list-flower-info-tips", "flower-tip-suggestions", flowerBuilder.infoCarouselTips, FLOWER_TIP_SUGGESTIONS);
+        flowerTipsController.render();
+        document.getElementById("flower-add-tip-btn").addEventListener("click", () => {
+            const titleInput = document.getElementById("flower-new-tip-title");
+            const textInput = document.getElementById("flower-new-tip-text");
+            if (flowerTipsController.addManual(titleInput.value, textInput.value)) {
+                titleInput.value = "";
+                textInput.value = "";
+            }
         });
 
         // صور محاكي الورد (بانر + معرض)
@@ -332,6 +466,7 @@
                 occasions: [],
                 heroImage: cakeBuilder.heroImage || "",
                 portfolioGallery: cakeBuilder.portfolioGallery,
+                infoCarouselTips: cakeBuilder.infoCarouselTips,
             };
 
             const updatedFlower = {
@@ -346,6 +481,7 @@
                 heroImage: flowerBuilder.heroImage || "",
                 portfolioGallery: flowerBuilder.portfolioGallery,
                 giftCardImages: flowerBuilder.giftCardImages,
+                infoCarouselTips: flowerBuilder.infoCarouselTips,
             };
 
             await window.BoseAdmin.saveBuilderSettings({ cake_builder: updatedCake, flower_builder: updatedFlower });
