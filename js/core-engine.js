@@ -2828,3 +2828,81 @@
         }
     });
 })();
+
+/**
+ * 💡👑 [شريط معلومات دوّار مشترك - محاكي التورت ومحاكي الورد]: كارت واحد
+ * بيعرض معلومة مفيدة وحقيقية، وبيتنقل تلقائياً للمعلومة اللي بعدها كل
+ * فترة زمنية، مع شريط تقدّم رفيع بيوضح توقيت الانتقال - نفس المكوّن
+ * بالحرف مستخدم في المحاكيين الاتنين عشان العميلة تحس إنها نفس التجربة.
+ * بيتوقف تلقائياً لو العميلة حطت إيدها/الماوس عليه، وبيكمل لما تسيبه،
+ * وبيتقدم خطوة لو ضغطت عليه يدوياً.
+ */
+(function () {
+    "use strict";
+
+    window.initBoseInfoCarousel = function (opts) {
+        const trackId = opts && opts.trackId;
+        const progressId = opts && opts.progressId;
+        const tips = (opts && opts.tips) || [];
+        const intervalMs = (opts && opts.intervalMs) || 6000;
+
+        const track = document.getElementById(trackId);
+        if (!track || !Array.isArray(tips) || tips.length === 0) return;
+
+        const esc = window.escapeBoseHTML || (s => s);
+        track.innerHTML = tips.map((t, i) => `
+            <div class="bose-info-carousel-slide${i === 0 ? " active" : ""}">
+                <strong>${esc(t.title || "")}</strong>
+                <span>${esc(t.text || "")}</span>
+            </div>`).join("");
+
+        const slides = track.querySelectorAll(".bose-info-carousel-slide");
+        const progressFill = progressId ? document.getElementById(progressId) : null;
+        const container = track.closest(".bose-info-carousel");
+        const prefersReducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        let idx = 0;
+        let timer = null;
+
+        function showSlide(newIdx) {
+            slides.forEach(s => s.classList.remove("active"));
+            slides[newIdx].classList.add("active");
+            idx = newIdx;
+            if (progressFill && !prefersReducedMotion) {
+                progressFill.style.transition = "none";
+                progressFill.style.width = "0%";
+                void progressFill.offsetWidth;
+                progressFill.style.transition = `width ${intervalMs}ms linear`;
+                progressFill.style.width = "100%";
+            }
+        }
+
+        function goNext() {
+            showSlide((idx + 1) % slides.length);
+        }
+
+        function start() {
+            stop();
+            if (prefersReducedMotion || slides.length < 2) return;
+            timer = setInterval(goNext, intervalMs);
+        }
+        function stop() {
+            if (timer) clearInterval(timer);
+            timer = null;
+        }
+
+        if (container) {
+            container.addEventListener("mouseenter", stop);
+            container.addEventListener("mouseleave", () => { showSlide(idx); start(); });
+            container.addEventListener("click", () => { goNext(); start(); });
+            container.setAttribute("tabindex", "0");
+            container.setAttribute("role", "group");
+            container.addEventListener("keydown", (e) => {
+                if (e.key === "Enter" || e.key === " ") { e.preventDefault(); goNext(); start(); }
+            });
+        }
+
+        showSlide(0);
+        start();
+    };
+})();

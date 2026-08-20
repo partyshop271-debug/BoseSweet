@@ -115,17 +115,40 @@
     }
 
     /**
+     * 🧠👑 [الخطوة الذكية - عدد الورد]: نوع الباقة هو اللي بيقرر هل خطوة "كام
+     * وردة؟" تظهر أصلاً ولا لأ. أي نوع باقة من لوحة التحكم معاه usesFlowerCount
+     * = false (يعني نوع زي بوكيه فراشات/بوكيه صور/بوكيه فلوس مقفول مش بيتغير
+     * عدده) بيخلي الخطوة دي تتخطى تلقائياً، والسعر بيتحسب من السعر الثابت
+     * المسجل على النوع نفسه بدل معادلة "سعر أساسي + سعر الوردة الإضافية".
+     */
+    const FLOWER_COUNT_STEP = 3;
+    function typeUsesFlowerCount() {
+        const t = getFlowerTypeById(state.flowerType);
+        return !t || t.usesFlowerCount !== false;
+    }
+
+    /**
      * 🧮 محرك الفحص المالي لأسعار البوكيه - مطور كلياً لمنع تحميل ميزانية الكاش أو الشوكولاتة أي رسوم
      */
     function recalculatePrice() {
+        const usesCount = typeUsesFlowerCount();
         let extraFlowers = Math.max(0, state.flowerCount - flowerConfig.baseFlowers);
-        let extraCost = extraFlowers * flowerConfig.extraFlowerPrice;
+        let bouquetBaseCost;
+        if (usesCount) {
+            bouquetBaseCost = flowerConfig.basePrice + (extraFlowers * flowerConfig.extraFlowerPrice);
+        } else {
+            // نوع باقة بسعر ثابت (زي بوكيه فراشات/صور) - بناخد السعر المسجل
+            // له في لوحة التحكم، وإلا السعر الأساسي العام كاحتياطي.
+            const typeItem = getFlowerTypeById(state.flowerType);
+            bouquetBaseCost = (typeItem && typeItem.price > 0) ? typeItem.price : flowerConfig.basePrice;
+        }
+        let extraCost = usesCount ? (extraFlowers * flowerConfig.extraFlowerPrice) : 0;
         let ribbonCost = state.includeRibbonText ? flowerConfig.satinRibbonPrice : 0;
         let photoCost = state.includePhoto ? (state.photoCount * flowerConfig.photoPrintPrice) : 0;
         let cardCost = (state.includeCard && state.cardText.trim() !== "") ? flowerConfig.giftCardPrice : 0;
 
         // 1. حساب تكلفة الخدمة والتنسيق القابلة لزيادة السعر الرسمية
-        let servicePrice = flowerConfig.basePrice + extraCost + ribbonCost + photoCost + cardCost;
+        let servicePrice = bouquetBaseCost + ribbonCost + photoCost + cardCost;
 
         // استدعاء دالة الزيادة الرسمية من المحرك المركزي الموحد لتوحيد السياسة المالية للموقع إن وجدت
         let finalServicePrice = window.calculateBosePrice ? window.calculateBosePrice(servicePrice, "menu-only") : servicePrice;
@@ -142,7 +165,8 @@
             bouquetTotalVal.textContent = `${Math.round(total)} جنيه`;
         }
 
-        // تحديث نص السعر التوضيحي بداخل كارت الخطوة الأولى
+        // تحديث نص السعر التوضيحي بداخل كارت الخطوة الأولى (خطوة "كام وردة؟"
+        // بس - مش هتظهر أصلاً لو النوع مش بيتحسب بعدد الورد)
         if (embeddedPriceDisplay) {
             const currentCountCost = flowerConfig.basePrice + (extraFlowers * flowerConfig.extraFlowerPrice);
             let finalCountCost = window.calculateBosePrice ? window.calculateBosePrice(currentCountCost, "menu-only") : currentCountCost;
@@ -215,7 +239,13 @@
             rows.push(`<div class="price-item-row"><span>${esc(label)}:</span><span class="item-value">${esc(value)}</span></div>`);
         };
 
-        addRow(`بوكيه ${getFlowerTypeName(state.flowerType)} (${state.flowerCount} وردة)`, `${Math.round(flowerConfig.basePrice + extraFlowers * flowerConfig.extraFlowerPrice)} جنيه`);
+        if (typeUsesFlowerCount()) {
+            addRow(`بوكيه ${getFlowerTypeName(state.flowerType)} (${state.flowerCount} وردة)`, `${Math.round(flowerConfig.basePrice + extraFlowers * flowerConfig.extraFlowerPrice)} جنيه`);
+        } else {
+            const typeItem = getFlowerTypeById(state.flowerType);
+            const flatPrice = (typeItem && typeItem.price > 0) ? typeItem.price : flowerConfig.basePrice;
+            addRow(`${getFlowerTypeName(state.flowerType)}`, `${Math.round(flatPrice)} جنيه`);
+        }
         if (state.includeRibbonText && state.ribbonText.trim() !== "") {
             addRow("شريط ستان مطبوع", `+ ${flowerConfig.satinRibbonPrice} جنيه`);
         }
@@ -239,6 +269,13 @@
      * 🗺️ حارس التحكم وتوجيه خطوات الـ Stepper ذكياً
      */
     function updateActiveStepUI() {
+        // 🧠👑 [حارس أمان لخطوة "كام وردة؟" الذكية]: لو بأي شكل (تغيير نوع
+        // الباقة وإحنا واقفين في الخطوة دي، أو استرجاع حالة محفوظة قديمة)
+        // العميلة لقت نفسها في خطوة العدد وهي مش منطقية لنوع الباقة الحالي،
+        // بننقلها تلقائياً للخطوة اللي بعدها.
+        if (state.currentActiveStep === FLOWER_COUNT_STEP && !typeUsesFlowerCount()) {
+            state.currentActiveStep = FLOWER_COUNT_STEP + 1;
+        }
         // 👑 [سمتريه محاكي التورت]: نفس منطق panel-wizard-step-N / node-step-N
         // بالحرف، بدل ما تكون كل خطوة بتتحدد بـ data-step على العنصر نفسه.
         for (let i = 1; i <= state.totalSteps; i++) {
@@ -246,7 +283,8 @@
             const node = document.getElementById(`node-step-${i}`);
             if (panel) panel.classList.remove('active-panel');
             if (node) {
-                node.classList.remove('active', 'done');
+                node.classList.remove('active', 'done', 'skipped');
+                if (i === FLOWER_COUNT_STEP && !typeUsesFlowerCount()) node.classList.add('skipped');
                 if (i === state.currentActiveStep) node.classList.add('active');
                 else if (i < state.currentActiveStep) node.classList.add('done');
             }
@@ -382,6 +420,30 @@
         // 🛡️ [تحصين الترتيب - نفس فلسفة cake-engine.js بالظبط]: نافذة تكبير
         // الصور بقت أول حاجة بتتفعل قبل أي كود تاني ممكن يرمي استثناء.
         wireUpAllFlowerLightboxImages();
+
+        // 💡👑 [شريط المعلومات الدوّار - 10 معلومات حقيقية ومفيدة عن تجربة
+        // طلب الورد]: بتتغير تلقائياً كل 6 ثواني، وبتجاوب على أسئلة شائعة
+        // (الفرق بين الأنواع، التغليف، المفاجآت، الدفع، التعديل...) قبل ما
+        // العميلة تحتاج تسأل عنها أصلاً.
+        if (typeof window.initBoseInfoCarousel === "function") {
+            window.initBoseInfoCarousel({
+                trackId: "bose-flower-info-carousel-track",
+                progressId: "bose-flower-info-carousel-progress",
+                intervalMs: 6000,
+                tips: [
+                    { title: "ورد طازة حسب الطلب 🌸", text: "الورد الطبيعي بيوصلنا من المزرعة وبيتنسق بعد تأكيد طلبك مباشرة - مش باقة جاهزة مخزّنة." },
+                    { title: "إيه الفرق بين الأنواع؟", text: "الورد الصناعي والستان بيحافظوا على شكلهم لفترة أطول من الطبيعي، وممكن يفضلوا كذكرى تحتفظي بيها." },
+                    { title: "التغليف مجاني دايماً 🎀", text: "التغليف الكلاسيك الفاخر جزء أساسي من كل باقة من غير أي تكلفة إضافية - مهما كان نوع الورد أو عدده." },
+                    { title: "مفاجآت جوه الباقة", text: "تقدري تضيفي كاش أو شوكولاتة فاخرة جوه الباقة، وبيوصل بالمبلغ أو الميزانية اللي تحدديها بالظبط من غير أي رسوم زيادة." },
+                    { title: "صور شخصية تذكارية 📸", text: "تقدري تطبعي صور شخصية وترتبيها جوه الباقة - لمسة بتحول الهدية للحظة تفضل شكلها في الدماغ." },
+                    { title: "كارت إهداء بخط شيك", text: "كلمة صغيرة على كارت أو شريط الستان بتخلي الباقة تحس إنها مكتوبة خصيصي لحد معين." },
+                    { title: "ليه بنبدأ من 15 وردة؟", text: "أقل عدد بنشتغل بيه 15 وردة عشان ده أقل حد يدّي شكل تنسيق فخم ومليان بصرياً، مش متباعد." },
+                    { title: "السعر قدامك أول بأول 💰", text: "هتشوفي السعر بيتحدث لحظياً مع كل اختيار تعمليه، من غير أي مفاجآت في الآخر." },
+                    { title: "تأكيد سريع على واتساب ✅", text: "بعد إضافة الباقة للسلة، هيتفتح واتساب تلقائي بكل تفاصيل طلبك عشان فريقنا يأكد عليه بسرعة." },
+                    { title: "التعديل من غير خسارة", text: "تقدري ترجعي لأي خطوة فاتت وتعدلي فيها براحتك بالضغط على رقمها فوق - وباقي اختياراتك بتفضل زي ما هي." },
+                ],
+            });
+        }
 
         // 🧮 [توحيد مصدر الأسعار - المرحلة 3]: تحديث flowerConfig من
         // window.BoseStoreData.flowerBuilder فور جاهزية قاعدة البيانات، بنفس أسماء
@@ -567,6 +629,7 @@
                 <div class="bose-iconic-btn-node${item.id === state.flowerType ? " active-selected" : ""}" data-value="${item.id}">
                     ${item.image ? `<img src="${item.image}" alt="" class="bose-option-card-thumb">` : `<span class="btn-icon">${item.icon || "🌷"}</span>`}
                     <span class="btn-label">${item.name}</span>
+                    <span class="bose-iconic-selected-checkmark">✅ مُختار</span>
                 </div>`).join("");
 
             hiddenTypeInput = document.getElementById("flower-type");
@@ -582,10 +645,22 @@
                     saveCurrentState();
                     recalculatePrice();
                     updateFlowerSensoryNote();
+                    updateFlowerTypeSelectionLine();
                 };
             });
 
             updateFlowerSensoryNote();
+            updateFlowerTypeSelectionLine();
+        }
+
+        // ✅👑 [توضيح أكبر لتأكيد الاختيار - نفس فلسفة سطر التأكيد في محاكي
+        // التورت]: بيقول للعميلة بالنص هي اختارت نوع الورد إيه بالظبط، بيتحدّث
+        // فوراً مع أي تغيير.
+        function updateFlowerTypeSelectionLine() {
+            const lineEl = document.getElementById("flower-type-current-selection-line");
+            if (!lineEl) return;
+            const typeName = getFlowerTypeName(state.flowerType);
+            lineEl.innerHTML = typeName ? `✅ اختياركِ الحالي: <strong>${typeName}</strong>` : "";
         }
 
         // 🗑️ [حذف خطوة "الإحساس المطلوب" بالكامل]: بناءً على طلب مباشر -
@@ -805,18 +880,30 @@
         }
 
         // أزرار التحكم في التصفح والـ Stepper
+        // 🧠👑 [تخطي ذكي لخطوة "كام وردة؟"]: لو نوع الباقة المختار سعره ثابت
+        // (usesFlowerCount: false من لوحة التحكم)، خطوة العدد دي مالهاش معنى
+        // خالص - فبنتخطاها تلقائياً في الاتجاهين (تالي/سابق) وعند الضغط على
+        // رقمها في الشريط، بدل ما تفضل ظاهرة وهي مش منطقية لنوع الباقة ده.
+        function resolveStepTarget(target, movingForward) {
+            if (target === FLOWER_COUNT_STEP && !typeUsesFlowerCount()) {
+                return movingForward ? FLOWER_COUNT_STEP + 1 : FLOWER_COUNT_STEP - 1;
+            }
+            return target;
+        }
         if (btnNext) {
             btnNext.onclick = () => {
-                if (state.currentActiveStep < state.totalSteps) {
-                    state.currentActiveStep++;
+                const next = resolveStepTarget(state.currentActiveStep + 1, true);
+                if (next <= state.totalSteps) {
+                    state.currentActiveStep = next;
                     updateActiveStepUI();
                 }
             };
         }
         if (btnPrev) {
             btnPrev.onclick = () => {
-                if (state.currentActiveStep > 1) {
-                    state.currentActiveStep--;
+                const prev = resolveStepTarget(state.currentActiveStep - 1, false);
+                if (prev >= 1) {
+                    state.currentActiveStep = prev;
                     updateActiveStepUI();
                 }
             };
@@ -831,13 +918,13 @@
                 node.setAttribute('tabindex', '0');
                 node.setAttribute('aria-label', `الذهاب للخطوة ${targetStep}`);
                 node.onclick = function () {
-                    state.currentActiveStep = targetStep;
+                    state.currentActiveStep = resolveStepTarget(targetStep, targetStep >= state.currentActiveStep);
                     updateActiveStepUI();
                 };
                 node.onkeydown = function (e) {
                     if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault();
-                        state.currentActiveStep = targetStep;
+                        state.currentActiveStep = resolveStepTarget(targetStep, targetStep >= state.currentActiveStep);
                         updateActiveStepUI();
                     }
                 };
