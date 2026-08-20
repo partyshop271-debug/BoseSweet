@@ -24,7 +24,7 @@
          خطوة 1، نافذة تكبير بملء الشاشة، مراجعة السعر بالمفردات) - نفس
          القواعد بالحرف اللي بيستخدمها محاكي التورت، فالصفحتين بيطلعوا بنفس
          الشكل بالظبط بدل ما كل واحدة تكون لها هوية بصرية منفصلة. -->
-    <link rel="stylesheet" href="css/simulators.css?v=2026_production_v39.0">
+    <link rel="stylesheet" href="css/simulators.css?v=2026_production_v40.0">
     <link rel="stylesheet" href="css/reviews-widget.css?v=2026_production_v1.1">
     <style>
         /* 🧠 [محاكي أذكى - مطابق لمحاكي الكيك] */
@@ -97,6 +97,18 @@
                 <p>اعمل بوكيه الورد اللي على ذوقك خطوة بخطوة - كل خطوة قرار واحد بس، وهتلاقي شرح بسيط جنب كل اختيار.</p>
             </div>
 
+            <!-- 💡👑 [شريط معلومات دوّار مفيدة]: 10 معلومات حقيقية عن تجربة
+                 طلب الورد بتتغير تلقائياً كل ما العميلة تدخل المحاكي - بتبني
+                 ثقتها وتجاوب على أسئلة شائعة قبل ما تسألها. المحتوى بيتحقن
+                 من initFlowerInfoCarousel() في js/flower-engine.js. -->
+            <div class="bose-info-carousel" id="bose-flower-info-carousel">
+                <div class="bose-info-carousel-icon">💡</div>
+                <div class="bose-info-carousel-track" id="bose-flower-info-carousel-track"></div>
+                <div class="bose-info-carousel-progress-track">
+                    <div class="bose-info-carousel-progress-fill" id="bose-flower-info-carousel-progress"></div>
+                </div>
+            </div>
+
             <!-- 🔢 [أرقام الخطوات القابلة للّمس]: نفس شريط محاكي التورت بالظبط -
                  كل رقم زرار حقيقي بيوديكي للخطوة اللي تختاريها مباشرة. -->
             <div class="bose-stepper-progress-bar" id="bose-flower-stepper-progress-bar">
@@ -142,11 +154,17 @@
                         <h2 class="bose-wizard-title">تحب نوع الورد يكون إيه؟</h2>
                         <p class="bose-wizard-subtitle">اضغطي ⓘ لمعرفة الفرق بين كل نوع قبل ما تختاري.</p>
 
+                        <div class="bose-designer-note-bubble show bose-step-motivation">
+                            <span class="note-icon">🌸</span>
+                            <span>نوع الورد بيحدد إحساس الباقة كلها - خدي وقتك في الاختيار، وهتلاقي علامة ✅ واضحة على النوع اللي تختاريه.</span>
+                        </div>
+
                         <!-- قالب اختيار نوع الورد - بيتبني بالكامل من لوحة التحكم -->
                         <div class="bose-premium-template-box">
                             <div class="bose-iconic-options-row bose-flower-type-grid" id="flower-type-iconic-row"></div>
                             <input type="hidden" id="flower-type" value="">
                             <p class="bose-flavor-sensory-note" id="flower-sensory-note"></p>
+                            <p class="bose-current-selection-line" id="flower-type-current-selection-line"></p>
                             <button type="button" class="bose-info-badge-inline"
                                     data-bose-info-title="إيه الفرق بين الأنواع؟"
                                     data-bose-info-text="الورد الطبيعي بيوصلك طازة من المزرعة مباشرة بس عمره الافتراضي أيام معدودة زي أي ورد طبيعي. الورد الصناعي الفاخر خامته بتحافظ على شكلها ورونقها لفترة أطول بكتير وممكن تحتفظي بيه كذكرى. ورد الستان لمسة ناعمة وراقية مختلفة تماماً عن الورد التقليدي - مناسب كهدية مميزة تفضل شكلها زي ما هي.">ⓘ</button>
@@ -157,6 +175,11 @@
                     <div class="bose-step-wizard-panel" id="panel-wizard-step-3" data-step="3">
                         <h2 class="bose-wizard-title">تحبي البوكيه يكون فيه كام وردة؟</h2>
                         <p class="bose-wizard-subtitle">بنبدأ من 15 وردة لتنسيق فخم ومليان.</p>
+
+                        <div class="bose-designer-note-bubble show bose-step-motivation">
+                            <span class="note-icon">🌷</span>
+                            <span>كل ما زاد عدد الورد، كل ما الباقة بانت أفخم وأمتلى - زودي براحتك وشوفي السعر بيتحدث لحظياً قدامك.</span>
+                        </div>
 
                         <div class="bose-premium-template-box">
                             <div class="bose-counter-alignment-zone">
@@ -207,6 +230,11 @@
                         <h2 class="bose-wizard-title">شريط الستان والرسالة</h2>
                         <p class="bose-wizard-subtitle">التغليف الكلاسيك مجاني دايماً - الخطوة دي بس لو حابة كلام مخصوص مطبوع.</p>
 
+                        <div class="bose-designer-note-bubble show bose-step-motivation">
+                            <span class="note-icon">🎀</span>
+                            <span>كلمة صغيرة على الشريط بتخلي الباقة تحس إنها مكتوبة خصيصي - اختياري بس بيفرق كتير في الإحساس.</span>
+                        </div>
+
                         <div class="bose-premium-template-box" style="text-align: center; background: #FFFFFF; padding: 15px;">
                             <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="معاينة شريط الستان المطبوع حرارياً الفاخر من حلويات بوسي" class="bose-step-illustration-img" loading="lazy">
                         </div>
@@ -237,6 +265,11 @@
                     <div class="bose-step-wizard-panel" id="panel-wizard-step-6" data-step="6">
                         <h2 class="bose-wizard-title">صور شخصية جوه الباقة</h2>
                         <p class="bose-wizard-subtitle">لمسة تذكارية اختيارية تترتب جوه البوكيه بشكل شيك.</p>
+
+                        <div class="bose-designer-note-bubble show bose-step-motivation">
+                            <span class="note-icon">📸</span>
+                            <span>صورة شخصية جوه الباقة بتحولها لهدية تذكارية تفضل شكلها في الدماغ مش بس شكل الورد.</span>
+                        </div>
 
                         <div class="bose-premium-template-box" style="text-align: center; background: #FFFFFF; padding: 15px;">
                             <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="معاينة لترتيب الصور الشخصية داخل بوكيه حلويات بوسي" class="bose-step-illustration-img" loading="lazy">
@@ -275,6 +308,11 @@
                     <div class="bose-step-wizard-panel" id="panel-wizard-step-7" data-step="7">
                         <h2 class="bose-wizard-title">مفاجأة كاش</h2>
                         <p class="bose-wizard-subtitle">بنرتبها لكِ جوه البوكيه من غير أي مصاريف زيادة وعمولات.</p>
+
+                        <div class="bose-designer-note-bubble show bose-step-motivation">
+                            <span class="note-icon">💰</span>
+                            <span>مفاجأة الكاش لمسة عملية بيحبها كتير من العملاء - المبلغ اللي بتحدديه بيوصل بالظبط زي ما هو من غير أي خصم.</span>
+                        </div>
 
                         <div class="bose-premium-template-box" style="text-align: center; background: #FFFFFF; padding: 15px;">
                             <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="معاينة لترتيب الكاش النظيف داخل بوكيه حلويات بوسي" class="bose-step-illustration-img" loading="lazy">
@@ -315,6 +353,11 @@
                         <h2 class="bose-wizard-title">شوكولاتة فاخرة</h2>
                         <p class="bose-wizard-subtitle">اكتبي الميزانية اللي حباها واحنا هنشتري ونرتبها لكِ.</p>
 
+                        <div class="bose-designer-note-bubble show bose-step-motivation">
+                            <span class="note-icon">🍫</span>
+                            <span>لمسة حلوة إضافية جوه الباقة - بنشتريلك شوكولاتة فاخرة فعلاً بنفس الميزانية اللي تحدديها من غير أي رسوم زيادة.</span>
+                        </div>
+
                         <div class="bose-premium-template-box" style="text-align: center; background: #FFFFFF; padding: 15px;">
                             <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="ترتيب وتوزيع قطع الشوكولاتة الفاخرة والمستوردة داخل البوكيه من حلويات بوسي" class="bose-step-illustration-img" loading="lazy">
                         </div>
@@ -345,6 +388,11 @@
                     <div class="bose-step-wizard-panel" id="panel-wizard-step-9" data-step="9">
                         <h2 class="bose-wizard-title">حابة نضيفلك كارت إهداء ورقي يتقدم مع البوكيه؟</h2>
                         <p class="bose-wizard-subtitle">لمسة إضافية اختيارية بتخلي اللحظة أجمل.</p>
+
+                        <div class="bose-designer-note-bubble show bose-step-motivation">
+                            <span class="note-icon">🎁</span>
+                            <span>كارت إهداء ورقي شيك بيتكتب عليه كلامك بخط جميل - لمسة صغيرة بتفرق كتير في الإحساس.</span>
+                        </div>
 
                         <div class="bose-premium-template-box">
                             <label class="premium-input-label bose-checkbox-label-tap">
@@ -380,7 +428,7 @@
 
                         <div class="bose-designer-note-bubble show bose-step-motivation">
                             <span class="note-icon">🧾</span>
-                            <span>كدة خلصنا! راجعي كل حاجة بالمفردات تحت، وابعتي رابط تصميمك لحد يشوفه قبل ما تأكدي لو حابة رأي حد تاني - أي حاجة عايزة تغيريها، دوسي على رقم الخطوة فوق ورجعيلها.</span>
+                            <span>كدة خلصنا! راجعي كل حاجة بالمفردات تحت، ولو حابة رأي حد تاني تقدري تبعتيله رابط تصميمك - القرار كله ليكِ. أي حاجة عايزة تغيريها، دوسي على رقم الخطوة فوق ورجعيلها.</span>
                         </div>
 
                         <div class="bose-order-summary-card">
@@ -392,7 +440,7 @@
                         </div>
 
                         <button type="button" class="bose-share-design-btn" id="btn-share-flower-design">
-                            <i class="fa-brands fa-whatsapp"></i> شاركي التصميم مع حد قبل ما تأكدي
+                            <i class="fa-brands fa-whatsapp"></i> شاركي التصميم مع حد (اختياري)
                         </button>
 
                         <button type="button" class="bose-inline-add-to-cart-btn" id="add-to-cart-btn">
@@ -430,8 +478,8 @@
     <!-- استدعاء المحركات والملفات البرمجية المنفصلة والمعزولة ذكياً بالتتابع القياسي الصحيح -->
     <script src="js/supabase-client.js?v=2026_production_v39.0" defer></script>
     <script src="js/favorites-engine.js?v=2026_production_v37.0" defer></script>
-    <script src="js/core-engine.js?v=2026_production_v38.0" defer></script>
-    <script src="js/flower-engine.js?v=2026_production_v39.0" defer></script>
+    <script src="js/core-engine.js?v=2026_production_v40.0" defer></script>
+    <script src="js/flower-engine.js?v=2026_production_v40.0" defer></script>
     <script src="js/reviews-widget.js?v=2026_production_v1.1" defer></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {

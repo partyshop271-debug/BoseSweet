@@ -19,11 +19,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/global.css?v=2026_production_v39.0">
     <link rel="stylesheet" href="css/main.css?v=2026_production_v38.0">
-    <link rel="stylesheet" href="css/simulators.css?v=2026_production_v38.0">
+    <link rel="stylesheet" href="css/simulators.css?v=2026_production_v40.0">
     <link rel="stylesheet" href="css/reviews-widget.css?v=2026_production_v1.1">
     <script src="js/supabase-client.js?v=2026_production_v39.0" defer></script>
     <script src="js/favorites-engine.js?v=2026_production_v37.0" defer></script>
-    <script src="js/core-engine.js?v=2026_production_v38.0" defer></script>
+    <script src="js/core-engine.js?v=2026_production_v40.0" defer></script>
 
     <style>
         /* ==================================================================
@@ -838,6 +838,18 @@
                 <p>خطوة بخطوة، هنساعدك تصممي تورتتك بنفسك بكل سهولة - كل خطوة قرار واحد بس، وهتلاقي شرح بسيط جنب كل اختيار.</p>
             </div>
 
+            <!-- 💡👑 [شريط معلومات دوّار مفيدة]: 10 معلومات حقيقية عن تجربة
+                 طلب التورت بتتغير تلقائياً كل ما العميلة تدخل المحاكي - بتبني
+                 ثقتها وتجاوب على أسئلة شائعة قبل ما تسألها. المحتوى بيتحقن
+                 من initCakeInfoCarousel() في js/cake-engine.js. -->
+            <div class="bose-info-carousel" id="bose-cake-info-carousel">
+                <div class="bose-info-carousel-icon">💡</div>
+                <div class="bose-info-carousel-track" id="bose-cake-info-carousel-track"></div>
+                <div class="bose-info-carousel-progress-track">
+                    <div class="bose-info-carousel-progress-fill" id="bose-cake-info-carousel-progress"></div>
+                </div>
+            </div>
+
             <div class="bose-stepper-progress-bar" id="bose-stepper-progress-bar">
                 <span class="bose-progress-node active" id="node-step-1">1</span>
                 <span class="bose-progress-node" id="node-step-2">2</span>
@@ -1123,7 +1135,7 @@
 
                         <div class="bose-designer-note-bubble show bose-step-motivation">
                             <span class="note-icon">🧾</span>
-                            <span>كدة خلصنا! راجعي كل حاجة بالمفردات تحت، وابعتي رابط تصميمك لحد يشوفه قبل ما تأكدي لو حابة رأي حد تاني.</span>
+                            <span>كدة خلصنا! راجعي كل حاجة بالمفردات تحت، ولو حابة رأي حد تاني تقدري تبعتيله رابط تصميمك - القرار كله ليكِ.</span>
                         </div>
 
                         <div class="bose-order-summary-card">
@@ -1135,7 +1147,7 @@
                         </div>
 
                         <button type="button" class="bose-share-design-btn" id="btn-share-design">
-                            <i class="fa-brands fa-whatsapp"></i> شاركي رابط التصميم مع حد قبل ما تأكدي
+                            <i class="fa-brands fa-whatsapp"></i> شاركي رابط التصميم مع حد (اختياري)
                         </button>
 
                         <button type="button" class="bose-inline-add-to-cart-btn" id="btn-cake-submit-cart-summary">
@@ -1176,7 +1188,7 @@
 
     <div id="bose-footer-injector"></div>
 
-    <script src="js/cake-engine.js?v=2026_production_v39.0" defer></script>
+    <script src="js/cake-engine.js?v=2026_production_v40.0" defer></script>
     <script src="js/reviews-widget.js?v=2026_production_v1.1" defer></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
