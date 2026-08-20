@@ -304,14 +304,23 @@
                         </div>
                     </div>
 
-                    <!-- الخطوة 7: مفاجأة الكاش -->
+                    <!-- الخطوة 7: بوكيه الفلوس (مفاجأة كاش)
+                         📖👑 [توضيح كامل للعميلة اللي بتجرب أول مرة]: العنوان
+                         والشرح والليبلز كلها اتبسطت لحد ما تبقى مفهومة 100%
+                         حتى لو العميلة سمعت عن الفكرة دي أول مرة في حياتها. -->
                     <div class="bose-step-wizard-panel" id="panel-wizard-step-7" data-step="7">
-                        <h2 class="bose-wizard-title">مفاجأة كاش</h2>
-                        <p class="bose-wizard-subtitle">بنرتبها لكِ جوه البوكيه من غير أي مصاريف زيادة وعمولات.</p>
+                        <h2 class="bose-wizard-title">حابة نضيفلك فلوس (كاش) جوه الباقة؟</h2>
+                        <p class="bose-wizard-subtitle">دي لمسة هدية بسيطة - بنرتبلك مبلغ فلوس حقيقي جوه البوكيه نفسه، بنفس المبلغ اللي هتختاريه بالظبط من غير أي خصم أو مصاريف زيادة.</p>
 
                         <div class="bose-designer-note-bubble show bose-step-motivation">
-                            <span class="note-icon">💰</span>
-                            <span>مفاجأة الكاش لمسة عملية بيحبها كتير من العملاء - المبلغ اللي بتحدديه بيوصل بالظبط زي ما هو من غير أي خصم.</span>
+                            <span class="note-icon">💡</span>
+                            <span>
+                                <strong style="display:block; margin-bottom:4px;">إزاي بتشتغل الخطوة دي؟ (3 خطوات بسيطة)</strong>
+                                <b>1)</b> فعّلي الاختيار تحت لو حابة تضيفي فلوس.<br>
+                                <b>2)</b> اختاري "فئة الورقة" - يعني كل ورقة نقدية هتستخدمها في الترتيب هتبقى بكام (مثلاً فئة 10 جنيه يعني هنرتبلك المبلغ بورقات العشرة جنيه).<br>
+                                <b>3)</b> حددي المبلغ الإجمالي اللي حابة تحطيه باستخدام + و -.<br>
+                                وهنرتبلك المبلغ ده جوه الباقة بنفس الفئة اللي اخترتيها بالظبط.
+                            </span>
                         </div>
 
                         <div class="bose-premium-template-box" style="text-align: center; background: #FFFFFF; padding: 15px;">
@@ -321,18 +330,20 @@
                         <div class="bose-premium-template-box">
                             <label class="premium-input-label bose-checkbox-label-tap">
                                 <input type="checkbox" id="include-cash-toggle">
-                                تحبي نجهز لكِ مفاجأة كاش جوه البوكيه؟
+                                آه، حابة نضيف مبلغ فلوس جوه الباقة
                             </label>
 
                             <div id="cash-master-integration-block" class="custom-text-wrapper">
                                 <div style="margin-bottom: 15px;">
-                                    <label class="premium-input-label" for="money-category">تحديد فئة الأوراق النقدية المطلوبة للتنسيق:</label>
+                                    <label class="premium-input-label" for="money-category">الخطوة الأولى: الورقة الواحدة تبقى بكام؟</label>
+                                    <p class="bose-flavor-sensory-note" style="margin:0 0 10px 0; text-align:right;">يعني لو اخترتي فئة 10 جنيه مثلاً، هنرتب المبلغ اللي هتحدديه بعد شوية بورقات الـ10 جنيه.</p>
                                     <select id="money-category" class="bose-premium-text-input">
-                                        <option value="0" selected>اختار فئة الفلوس النقدية...</option>
+                                        <option value="0" selected>اختاري فئة الورقة النقدية...</option>
                                     </select>
                                 </div>
                                 <div id="cash-integration-counter-block">
-                                    <label class="premium-input-label">اكتبي مبلغ الكاش اللي حابة تحطيه جوه البوكيه:</label>
+                                    <label class="premium-input-label">الخطوة التانية: تحبي تحطي مبلغ إجمالي كام؟</label>
+                                    <p class="bose-flavor-sensory-note" style="margin:0 0 10px 0; text-align:right;">دوسي + لزيادة المبلغ أو - لتقليله، وهيتزوّد بنفس فئة الورقة اللي اخترتيها فوق.</p>
                                     <div class="bose-counter-alignment-zone">
                                         <div class="bose-counter-wrapper">
                                             <button type="button" class="bose-circular-qty-btn btn-plus-style" id="bill-plus">+</button>
@@ -340,11 +351,12 @@
                                             <button type="button" class="bose-circular-qty-btn btn-minus-style" id="bill-minus">-</button>
                                         </div>
                                     </div>
+                                    <p class="bose-current-selection-line" id="cash-current-selection-line"></p>
                                 </div>
                             </div>
                             <button type="button" class="bose-info-badge-inline"
                                     data-bose-info-title="فيه عمولة على المبلغ ده؟"
-                                    data-bose-info-text="لأ، مفيش أي عمولة أو مصاريف إضافية على مبلغ الكاش - المبلغ اللي بتكتبيه هو المبلغ اللي بيوصل بالظبط جوه الباقة زي ما هو. ده بس تنسيق وترتيب للفلوس بشكل شيك جوه الورد، مش رسوم خدمة.">ⓘ</button>
+                                    data-bose-info-text="لأ، مفيش أي عمولة أو مصاريف إضافية على مبلغ الكاش - المبلغ اللي بتحدديه هو المبلغ اللي بيوصل بالظبط جوه الباقة زي ما هو. فئة الورقة اللي بتختاريها بتحدد بس شكل ترتيب الفلوس (ورقات كبيرة قليلة أو ورقات صغيرة أكتر)، مش بتغيّر في المبلغ الكلي أو بتضيف أي رسوم.">ⓘ</button>
                         </div>
                     </div>
 
@@ -479,7 +491,7 @@
     <script src="js/supabase-client.js?v=2026_production_v39.0" defer></script>
     <script src="js/favorites-engine.js?v=2026_production_v37.0" defer></script>
     <script src="js/core-engine.js?v=2026_production_v40.0" defer></script>
-    <script src="js/flower-engine.js?v=2026_production_v40.0" defer></script>
+    <script src="js/flower-engine.js?v=2026_production_v41.0" defer></script>
     <script src="js/reviews-widget.js?v=2026_production_v1.1" defer></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
