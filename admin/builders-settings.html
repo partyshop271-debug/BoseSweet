@@ -118,6 +118,29 @@
                     </div>
 
                     <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header"><div><h2><i class="fa-solid fa-lightbulb"></i> المعلومات الدوّارة (أول ما تدخل العميلة المحاكي)</h2><p>شريط بيعرض معلومة مفيدة وبيتغيّر تلقائياً كل شوية - بيساعد عميلة بتجرب أول مرة تفهم كل حاجة قبل ما تسأل. رتّبيهم بالترتيب اللي تحبيه بالأسهم.</p></div></div>
+                        <div class="adm-field">
+                            <label>المعلومات الحالية</label>
+                            <div class="adm-curated-list" id="list-cake-info-tips"></div>
+                        </div>
+                        <div class="adm-field">
+                            <label>إضافة معلومة جديدة يدوياً</label>
+                            <div class="adm-curated-add-row" style="flex-direction:column; align-items:stretch;">
+                                <input type="text" class="adm-input" id="cake-new-tip-title" placeholder="عنوان قصير (مثال: تحضير فريش 100%)">
+                                <textarea class="adm-input" id="cake-new-tip-text" style="min-height:56px; margin-top:8px;" placeholder="النص التفصيلي اللي هتشوفه العميلة"></textarea>
+                                <button type="button" class="adm-btn adm-btn-outline adm-btn-sm" id="cake-add-tip-btn" style="margin-top:8px; align-self:flex-start;">
+                                    <i class="fa-solid fa-plus"></i> إضافة
+                                </button>
+                            </div>
+                        </div>
+                        <div class="adm-field">
+                            <label>معلومات مقترحة (اضغطي لإضافة أي معلومة جاهزة)</label>
+                            <p class="adm-hint" style="margin-bottom:10px;">مجموعة معلومات جاهزة ومفيدة فعلاً عن تجربة طلب التورت - تقدري تعدليها بعد الإضافة براحتك.</p>
+                            <div class="adm-suggestion-chips" id="cake-tip-suggestions"></div>
+                        </div>
+                    </div>
+
+                    <div class="adm-card adm-mt-16">
                         <div class="adm-card-header">
                             <div><h2><i class="fa-solid fa-gift"></i> كارت إهداء التورت</h2><p>كارت ورقي مطبوع يتقدم مع التورتة، زي كارت إهداء الورد بالظبط</p></div>
                             <label class="adm-checkbox-label">
@@ -211,9 +234,32 @@
                     </div>
 
                     <div class="adm-card adm-mt-16">
-                        <div class="adm-card-header"><div><h2>فئات المبلغ المالي المرفق</h2><p>لو العميل حب يضيف مبلغ فلوس هدية مع الورد - المبلغ ورسوم إضافته</p></div></div>
+                        <div class="adm-card-header"><div><h2>فئات الورقة النقدية</h2><p>الفئات المتاحة لترتيب مبلغ الكاش جوه البوكيه (مثال: فئة 5 جنيه، 10 جنيه، 50 جنيه) - العميلة بتختار فئة، وبعدين بتحدد المبلغ الإجمالي، وإحنا بنرتبه لها بورقات من نفس الفئة اللي اختارتها. مفيش أي رسوم إضافية على أي فئة.</p></div></div>
                         <div class="adm-curated-list" id="list-money-categories"></div>
                         <button type="button" class="adm-btn adm-btn-outline adm-btn-sm" id="add-money-category-btn"><i class="fa-solid fa-plus"></i> إضافة فئة مبلغ</button>
+                    </div>
+
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header"><div><h2><i class="fa-solid fa-lightbulb"></i> المعلومات الدوّارة (أول ما تدخل العميلة المحاكي)</h2><p>شريط بيعرض معلومة مفيدة وبيتغيّر تلقائياً كل شوية - بيساعد عميلة بتجرب أول مرة تفهم كل حاجة قبل ما تسأل. رتّبيهم بالترتيب اللي تحبيه بالأسهم.</p></div></div>
+                        <div class="adm-field">
+                            <label>المعلومات الحالية</label>
+                            <div class="adm-curated-list" id="list-flower-info-tips"></div>
+                        </div>
+                        <div class="adm-field">
+                            <label>إضافة معلومة جديدة يدوياً</label>
+                            <div class="adm-curated-add-row" style="flex-direction:column; align-items:stretch;">
+                                <input type="text" class="adm-input" id="flower-new-tip-title" placeholder="عنوان قصير (مثال: التغليف مجاني دايماً)">
+                                <textarea class="adm-input" id="flower-new-tip-text" style="min-height:56px; margin-top:8px;" placeholder="النص التفصيلي اللي هتشوفه العميلة"></textarea>
+                                <button type="button" class="adm-btn adm-btn-outline adm-btn-sm" id="flower-add-tip-btn" style="margin-top:8px; align-self:flex-start;">
+                                    <i class="fa-solid fa-plus"></i> إضافة
+                                </button>
+                            </div>
+                        </div>
+                        <div class="adm-field">
+                            <label>معلومات مقترحة (اضغطي لإضافة أي معلومة جاهزة)</label>
+                            <p class="adm-hint" style="margin-bottom:10px;">مجموعة معلومات جاهزة ومفيدة فعلاً عن تجربة طلب الورد - تقدري تعدليها بعد الإضافة براحتك.</p>
+                            <div class="adm-suggestion-chips" id="flower-tip-suggestions"></div>
+                        </div>
                     </div>
 
                     <div class="adm-card adm-mt-16">
