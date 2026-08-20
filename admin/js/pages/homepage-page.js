@@ -443,7 +443,7 @@
             const updatedNavigation = {
                 ...navigationData,
                 topBarMessages: topBarMessagesState,
-                topBarSpeedSeconds: Number(document.getElementById("topbar-speed").value) || 44,
+                topBarSpeedSeconds: Number(document.getElementById("topbar-speed").value) || 88,
                 topBarEnabled: document.getElementById("topbar-enabled").checked,
             };
 
@@ -497,8 +497,12 @@
         wireWaterfallControls();
 
         // الشريط العلوي المتحرك
+        // 🐛👑 [الافتراضي بقى 88 بدل 44 - أبطأ 50%]: لو الخانة دي شايلة رقم
+        // اتحفظ يدوياً قبل كده (مش القيمة الفاضية/الافتراضية)، هي اللي
+        // بتتقرا هنا وهتفضل تحكم في السرعة الفعلية - غيّري الرقم يدوياً هنا
+        // كمان لو كان معدّل قبل كده عشان يبقى أبطأ فعلياً على الموقع الحي.
         topBarMessagesState = [...(navigationData.topBarMessages || [])];
-        document.getElementById("topbar-speed").value = navigationData.topBarSpeedSeconds ?? 44;
+        document.getElementById("topbar-speed").value = navigationData.topBarSpeedSeconds ?? 88;
         document.getElementById("topbar-enabled").checked = navigationData.topBarEnabled !== false;
         renderTopBarMessages();
         wireTopBarControls();

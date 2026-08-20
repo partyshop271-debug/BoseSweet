@@ -312,6 +312,12 @@
         flowerBuilder.portfolioGallery = flowerBuilder.portfolioGallery || [];
         flowerBuilder.giftCardImages = flowerBuilder.giftCardImages || [];
         flowerBuilder.infoCarouselTips = Array.isArray(flowerBuilder.infoCarouselTips) ? flowerBuilder.infoCarouselTips : [];
+        // 💰👑 [حقل جديد]: أول مرة يتفتح فيها هذا الحقل (لسه ماتحفظش قبل كده)،
+        // بنعرض نفس القيمة الاحتياطية (50) المستخدمة فعلياً في flower-engine.js
+        // و core-engine.js، بدل ما تشوف الأدمن خانة فاضية وتفتكر إن السعر صفر.
+        if (flowerBuilder.satinRibbonPrice === undefined || flowerBuilder.satinRibbonPrice === null) {
+            flowerBuilder.satinRibbonPrice = 50;
+        }
 
         // تفعيل/إيقاف المحاكي
         document.getElementById("cake-enabled").checked = cakeBuilder.enabled !== false;
@@ -322,7 +328,7 @@
         fillNumberFields("cake-persons", cakeBuilder.persons, ["minimum", "maximum", "step"]);
         fillNumberFields("flower", flowerBuilder, [
             "basePrice", "baseFlowers", "giftCardPrice", "photoPrintPrice",
-            "extraFlowerPrice", "largeChocolateMinimumPrice",
+            "extraFlowerPrice", "satinRibbonPrice",
         ]);
 
         // كارت إهداء التورت + صورة التصميم المرجعية
@@ -337,14 +343,24 @@
         document.getElementById("cake-text-rectangleUpgrade").value = cakeBuilder.images.rectangleUpgrade || "";
 
         // القوائم
-        renderNamedList("list-cake-types", cakeBuilder.cakeTypes, { imageField: true });
-        wireAddButton("add-cake-type-btn", "list-cake-types", cakeBuilder.cakeTypes, {});
+        // 🐛👑 [إصلاح: اختفاء الصور بعد "إضافة نوع"]: كل زوج render/wireAddButton
+        // كان بياخد كائن opts مكتوب مرتين (مرة للعرض، مرة تانية ناقصة لزرار
+        // الإضافة) - أي حقل يتنسى في نسخة الزرار (زي imageField أو checkboxLabel)
+        // كان بيختفي من الصف كله بعد أول ضغطة "إضافة" لأن wireAddButton بيعيد
+        // الرسم بنفس الـ opts الناقصة اللي اتبعتله. الحل: كائن opts واحد مشترك
+        // لكل قائمة، يتبعت لنفس الاتنين، فمفيش احتمال يتنسى حقل في نسخة وينسي
+        // في التانية.
+        const cakeTypesOpts = { imageField: true };
+        renderNamedList("list-cake-types", cakeBuilder.cakeTypes, cakeTypesOpts);
+        wireAddButton("add-cake-type-btn", "list-cake-types", cakeBuilder.cakeTypes, cakeTypesOpts);
 
-        renderNamedList("list-printing-options", cakeBuilder.printingOptions, { priceField: true, imageField: true });
-        wireAddButton("add-printing-option-btn", "list-printing-options", cakeBuilder.printingOptions, { priceField: true });
+        const printingOptionsOpts = { priceField: true, imageField: true };
+        renderNamedList("list-printing-options", cakeBuilder.printingOptions, printingOptionsOpts);
+        wireAddButton("add-printing-option-btn", "list-printing-options", cakeBuilder.printingOptions, printingOptionsOpts);
 
-        renderNamedList("list-shapes", cakeBuilder.shapes, { extraField: "minimumPersons", extraLabel: "أقل عدد أفراد", imageField: true });
-        wireAddButton("add-shape-btn", "list-shapes", cakeBuilder.shapes, { extraField: "minimumPersons", extraLabel: "أقل عدد أفراد" });
+        const shapesOpts = { extraField: "minimumPersons", extraLabel: "أقل عدد أفراد", imageField: true };
+        renderNamedList("list-shapes", cakeBuilder.shapes, shapesOpts);
+        wireAddButton("add-shape-btn", "list-shapes", cakeBuilder.shapes, shapesOpts);
 
         // صور محاكي التورت (بانر + معرض)
         renderSingleImageSlot("cake-hero-image-slot", cakeBuilder.heroImage || "", (url) => { cakeBuilder.heroImage = url; });
@@ -381,16 +397,14 @@
         // زي بوكيه فراشات/كاش/شوكولاتة مقفول مش هيتغير عدده)، محاكي الورد
         // هيتخطى خطوة "كام وردة؟" تلقائياً ويحسب السعر من السعر الثابت هنا
         // بدل معادلة الورد الإضافي - راجع flower-engine.js (usesFlowerCount).
-        renderNamedList("list-flower-types", flowerBuilder.flowerTypes, {
+        const flowerTypesOpts = {
             imageField: true,
             priceField: true,
             checkboxField: "usesFlowerCount",
             checkboxLabel: "بيتحسب بعدد الورد",
-        });
-        wireAddButton("add-flower-type-btn", "list-flower-types", flowerBuilder.flowerTypes, {
-            priceField: true,
-            checkboxField: "usesFlowerCount",
-        });
+        };
+        renderNamedList("list-flower-types", flowerBuilder.flowerTypes, flowerTypesOpts);
+        wireAddButton("add-flower-type-btn", "list-flower-types", flowerBuilder.flowerTypes, flowerTypesOpts);
 
         renderMoneyCategories(flowerBuilder.moneyCategories);
         document.getElementById("add-money-category-btn").addEventListener("click", () => {
@@ -474,7 +488,7 @@
                 enabled: document.getElementById("flower-enabled").checked,
                 ...readNumberFields("flower", [
                     "basePrice", "baseFlowers", "giftCardPrice", "photoPrintPrice",
-                    "extraFlowerPrice", "largeChocolateMinimumPrice",
+                    "extraFlowerPrice", "satinRibbonPrice",
                 ]),
                 flowerTypes: flowerBuilder.flowerTypes,
                 moneyCategories: flowerBuilder.moneyCategories,
