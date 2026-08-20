@@ -73,6 +73,11 @@
                 <input type="text" class="adm-input" style="flex:1;" data-field="name" value="${e(item.name || "")}" placeholder="الاسم">
                 ${opts.priceField ? `<input type="number" class="adm-input" style="width:100px;" data-field="price" value="${item.price ?? 0}" placeholder="السعر">` : ""}
                 ${opts.extraField ? `<input type="number" class="adm-input" style="width:130px;" data-field="${opts.extraField}" value="${item[opts.extraField] ?? 0}" placeholder="${opts.extraLabel}">` : ""}
+                ${opts.checkboxField ? `
+                <label style="display:flex; align-items:center; gap:6px; font-size:12px; white-space:nowrap; flex-shrink:0;" title="${opts.checkboxLabel || ""}">
+                    <input type="checkbox" data-checkbox-field="${opts.checkboxField}" ${item[opts.checkboxField] !== false ? "checked" : ""}>
+                    ${opts.checkboxLabel || ""}
+                </label>` : ""}
                 <button type="button" class="adm-btn adm-btn-ghost adm-btn-icon" data-action="remove" title="حذف">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
@@ -85,6 +90,15 @@
                 items[idx][field] = field === "name" ? input.value : (parseFloat(input.value) || 0);
             });
         });
+        if (opts.checkboxField) {
+            container.querySelectorAll("[data-checkbox-field]").forEach((input) => {
+                input.addEventListener("change", () => {
+                    const idx = Number(input.closest("[data-idx]").getAttribute("data-idx"));
+                    const field = input.getAttribute("data-checkbox-field");
+                    items[idx][field] = input.checked;
+                });
+            });
+        }
         container.querySelectorAll('[data-action="remove"]').forEach((btn) => {
             btn.addEventListener("click", () => {
                 const idx = Number(btn.closest("[data-idx]").getAttribute("data-idx"));
@@ -119,6 +133,7 @@
             const newItem = { id: genId(), name: "" };
             if (opts.priceField) newItem.price = 0;
             if (opts.extraField) newItem[opts.extraField] = 0;
+            if (opts.checkboxField) newItem[opts.checkboxField] = true;
             items.push(newItem);
             renderNamedList(containerId, items, opts);
         });
@@ -239,8 +254,21 @@
             renderNamedList("list-cake-giftcard-gallery", cakeBuilder.giftCard.images, { imageField: true });
         });
 
-        renderNamedList("list-flower-types", flowerBuilder.flowerTypes, { imageField: true });
-        wireAddButton("add-flower-type-btn", "list-flower-types", flowerBuilder.flowerTypes, {});
+        // 🌸👑 [ذكاء الخطوة رقم 3 - عدد الورد]: كل نوع دلوقتي معاه سعر ثابت
+        // اختياري + مفتاح "بيتحسب بعدد الورد؟". لو اتشال التفعيل (يعني نوع
+        // زي بوكيه فراشات/كاش/شوكولاتة مقفول مش هيتغير عدده)، محاكي الورد
+        // هيتخطى خطوة "كام وردة؟" تلقائياً ويحسب السعر من السعر الثابت هنا
+        // بدل معادلة الورد الإضافي - راجع flower-engine.js (usesFlowerCount).
+        renderNamedList("list-flower-types", flowerBuilder.flowerTypes, {
+            imageField: true,
+            priceField: true,
+            checkboxField: "usesFlowerCount",
+            checkboxLabel: "بيتحسب بعدد الورد",
+        });
+        wireAddButton("add-flower-type-btn", "list-flower-types", flowerBuilder.flowerTypes, {
+            priceField: true,
+            checkboxField: "usesFlowerCount",
+        });
 
         renderMoneyCategories(flowerBuilder.moneyCategories);
         document.getElementById("add-money-category-btn").addEventListener("click", () => {
