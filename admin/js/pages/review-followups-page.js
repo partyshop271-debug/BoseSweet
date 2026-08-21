@@ -47,12 +47,15 @@
         return found ? found.product_id : null;
     }
 
+    /** رابط تقييم جوجل الرسمي لصفحة "حلويات بوسي" على الخرائط - ثابت لكل الطلبات */
+    const GOOGLE_REVIEW_LINK = "https://g.page/r/Ca7yD4O1cGT3EBI/review";
+
     function buildReminderMessage(order) {
         const storeUrl = window.location.origin;
         const slug = firstReviewableSlug(order.order_items);
         const link = slug ? `${storeUrl}/product.html?slug=${slug}` : storeUrl;
         const firstName = (order.customer_name || "").trim().split(" ")[0] || "";
-        return `أهلاً ${firstName} 🌸 نورتينا بطلبك من حلويات بوسي! لو عندك دقيقة، هيسعدنا رأيك في الصنف من هنا:\n${link}\nرأيك بيفرق فعلاً لعملاء تانيين زيك 💕`;
+        return `أهلاً ${firstName} 🌸 نورتينا بطلبك من حلويات بوسي!\n\nلو عندك دقيقة، هيسعدنا رأيك على جوجل (بيساعد عملاء تانيين يلاقونا):\n${GOOGLE_REVIEW_LINK}\n\nوكمان تقدري تقيّمي الصنف نفسه هنا:\n${link}\n\nرأيك بيفرق فعلاً معانا 💕`;
     }
 
     function buildWhatsappUrl(order) {
