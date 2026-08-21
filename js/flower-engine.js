@@ -7,7 +7,7 @@
 (function () {
     "use strict";
 
-    // مفاتيح التخزين الموحدة لعلامة حلويات بوسي الفاخرة لضمان التزامن المطلق
+    // مفاتيح التخزين الموحدة لعلامة بوسي الفاخرة لضمان التزامن المطلق
     const CART_STORAGE_KEY = 'bose_cart';
     const FLOWER_STATE_STORAGE_KEY = 'bose_flower_builder_state';
     const BASE64_IMAGE_SESSION_KEY = 'bose_active_base64_image_session';
@@ -151,7 +151,9 @@
         let servicePrice = bouquetBaseCost + ribbonCost + photoCost + cardCost;
 
         // استدعاء دالة الزيادة الرسمية من المحرك المركزي الموحد لتوحيد السياسة المالية للموقع إن وجدت
-        let finalServicePrice = window.calculateBosePrice ? window.calculateBosePrice(servicePrice, "menu-only") : servicePrice;
+        // 💰🛡️ [إصلاح] سياق "builder" مش "menu-only" - الورد المخصص مش منتج عادي،
+        // ولازم يتطابق مع نفس المنطق في calculateCustomFlowerPrice و create_order_with_items.
+        let finalServicePrice = window.calculateBosePrice ? window.calculateBosePrice(servicePrice, "builder") : servicePrice;
 
         // 2. الكاش والشوكولاتة تُحسب كقيم صافية 100% بدون أي رسوم معالجة لثقة العميل
         // 🛡️ [إصلاح مالي]: القيمة المخزنة في state.totalPrice (اللي بتتحط في finalPrice
@@ -169,7 +171,7 @@
         // بس - مش هتظهر أصلاً لو النوع مش بيتحسب بعدد الورد)
         if (embeddedPriceDisplay) {
             const currentCountCost = flowerConfig.basePrice + (extraFlowers * flowerConfig.extraFlowerPrice);
-            let finalCountCost = window.calculateBosePrice ? window.calculateBosePrice(currentCountCost, "menu-only") : currentCountCost;
+            let finalCountCost = window.calculateBosePrice ? window.calculateBosePrice(currentCountCost, "builder") : currentCountCost;
             embeddedPriceDisplay.innerHTML = `سعر هذا البوكيه الذي يحتوي على ${state.flowerCount} وردة هو <span>${Math.round(finalCountCost)} جنيه</span>`;
         }
 
