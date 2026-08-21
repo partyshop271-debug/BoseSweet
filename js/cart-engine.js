@@ -984,12 +984,24 @@ function processFinalBoseOrder(cart, storeData, method, shippingFee, payFull) {
     if (orderDate && orderTime && typeof window.validateBoseDeliverySchedule === "function") {
         const isScheduleValid = window.validateBoseDeliverySchedule(orderDate, orderTime, cartHasCustomItem);
         if (!isScheduleValid) {
-            const fallbackMsg = cartHasCustomItem
-                ? "التورت والورد المخصص عبر المحاكي بيحتاج حجز قبل موعد التسليم بأسبوع كامل (7 أيام) على الأقل."
-                : "نحتاج إلى وقت كافٍ لتجهيز طلبك بأفضل جودة ممكنة، لذلك لا يمكن اختيار موعد قبل 24 ساعة.";
-            const msg = cartHasCustomItem
-                ? (storeData.orderRules?.customPreparationTimeMessage || fallbackMsg)
-                : (storeData.orderRules?.preparationTimeMessage || fallbackMsg);
+            // 🕘👑 [رسالة خطأ دقيقة حسب سبب الرفض الفعلي]: لو الوقت واقع بره نطاق
+            // 9ص-10م، الرسالة توضح ده تحديداً بدل ما تفضل تقول "قبل 48 ساعة" وهي
+            // مش المشكلة الحقيقية (العميل اختار تاريخ بعيد كفاية بس بساعة متأخرة).
+            const businessStart = storeData.orderRules?.businessHoursStart || "09:00";
+            const businessEnd = storeData.orderRules?.businessHoursEnd || "22:00";
+            const isOutsideHours = orderTime < businessStart || orderTime > businessEnd;
+
+            let msg;
+            if (isOutsideHours) {
+                msg = `مواعيد الاستلام والتوصيل متاحة بس من ${businessStart} صباحاً لحد ${businessEnd} مساءً - يرجى اختيار ساعة تانية.`;
+            } else {
+                const fallbackMsg = cartHasCustomItem
+                    ? "التورت والورد المخصص عبر المحاكي بيحتاج حجز قبل موعد التسليم بأسبوع كامل (7 أيام) على الأقل."
+                    : "نحتاج إلى وقت كافٍ لتجهيز طلبك بأفضل جودة ممكنة، لذلك لا يمكن اختيار موعد قبل 48 ساعة.";
+                msg = cartHasCustomItem
+                    ? (storeData.orderRules?.customPreparationTimeMessage || fallbackMsg)
+                    : (storeData.orderRules?.preparationTimeMessage || fallbackMsg);
+            }
             addValidationError(deliveryTimeInput, msg);
         }
     }

@@ -80,6 +80,22 @@
 
         const settings = (settingsRows && settingsRows[0]) || {};
 
+        // 🔥👑 [بادج "الأكثر مبيعاً" التلقائي - بيانات حقيقية]: get_public_bestsellers
+        // RPC آمن للعرض العلني (بيرجع الـ product_id بس، من غير أي أرقام إيراد أو
+        // مبيعات فعلية - دي بيانات تجارية حساسة ملهاش داعي تتعرض للعملاء). لو
+        // الـ RPC لسه ما اتضافش في قاعدة البيانات (قبل تشغيل ملف الـ SQL الجديد)،
+        // بترجع مصفوفة فاضية بهدوء من غير ما توقف تحميل باقي الموقع.
+        let bestSellerIds = [];
+        try {
+            const badgeSettings = settings.badge_settings || {};
+            const days = badgeSettings.bestSellerDays || 30;
+            const limit = badgeSettings.bestSellerLimit || 8;
+            const rows = await boseSupabaseRpc("get_public_bestsellers", { p_days: days, p_limit: limit });
+            bestSellerIds = Array.isArray(rows) ? rows.map((r) => r.product_id) : [];
+        } catch (e) {
+            bestSellerIds = [];
+        }
+
         // إعادة تجميع كل منتج بنفس المفاتيح المستخدمة حالياً في core-engine.js
         // 🛡️ [أمان الشكل]: oldPrice/reviews/layout مضافين هنا دفاعياً - لو الأعمدة دي
         // مش موجودة في جدول products لسه، بترجع undefined عادي زي ما كانت، ومفيش
@@ -123,6 +139,10 @@
             rating: p.rating,
             reviews: p.seed_reviews || [],
             isAvailable: p.is_available !== false,
+            // 🆕👑 [بادج "وصل حديثاً" التلقائي]: تاريخ إضافة المنتج الحقيقي من
+            // قاعدة البيانات - core-engine.js بيقارنه بعدد أيام "newArrivalDays"
+            // من الإعدادات (badgeSettings) عشان يحدد هل لسه يستاهل البادج ولا لأ.
+            createdAt: p.created_at || null,
         }));
 
         return {
@@ -142,6 +162,9 @@
             // كـ object/array فاضي كحد أدنى آمن حتى لو العمود لسه فاضي في القاعدة.
             homepage: settings.homepage || {},
             promotions: settings.promotions || [],
+            // 🆕🔥👑 [إعدادات البادجات التلقائية + قايمة الأكثر مبيعاً الحقيقية]
+            badgeSettings: settings.badge_settings || {},
+            bestSellerIds: bestSellerIds,
             categories: categories || [],
             products: rebuiltProducts,
             offers: offers || [],

@@ -858,6 +858,40 @@
     }
 
     /**
+     * 🏷️👑 [نظام البادجات التلقائي الموحّد]: بادچ واحد بس فوق أي كارت منتج،
+     * باولوية ثابتة (نفدت الكمية > عرض > الأكثر مبيعاً > وصل حديثاً) - عشان
+     * منتج ممكن ينطبق عليه أكتر من حالة (مثلاً عرض + وصل حديثاً) يفضل بادچ
+     * واحد واضح مش كذا بادچ فوق بعض في نفس الركن. البادجات كلها مبنية على
+     * بيانات حقيقية (is_available، oldPrice/price، bestSellerIds من مبيعات
+     * فعلية عبر get_public_bestsellers، وcreatedAt الحقيقي) - مفيش أي بادچ
+     * بيتحط يدوياً.
+     * @param {Object} product
+     * @returns {{text:string, cls:string, icon:string}|null}
+     */
+    function getBoseProductBadge(product) {
+        if (product.isAvailable === false) {
+            return { text: 'نفدت الكمية', cls: 'bose-badge-outofstock', icon: 'fa-ban' };
+        }
+        if (product.oldPrice && product.oldPrice > product.price) {
+            const discountPercent = Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100);
+            return { text: `خصم ${discountPercent}%`, cls: 'bose-badge-offer', icon: 'fa-tag' };
+        }
+        const bestSellerIds = (window.BoseStoreData && window.BoseStoreData.bestSellerIds) || [];
+        if (bestSellerIds.includes(product.id)) {
+            return { text: 'الأكثر مبيعاً', cls: 'bose-badge-bestseller', icon: 'fa-fire' };
+        }
+        const badgeSettings = (window.BoseStoreData && window.BoseStoreData.badgeSettings) || {};
+        const newArrivalDays = Number(badgeSettings.newArrivalDays) > 0 ? Number(badgeSettings.newArrivalDays) : 14;
+        if (product.createdAt) {
+            const ageMs = Date.now() - new Date(product.createdAt).getTime();
+            if (ageMs >= 0 && ageMs <= newArrivalDays * 24 * 60 * 60 * 1000) {
+                return { text: 'وصل حديثاً', cls: 'bose-badge-new', icon: 'fa-sparkles' };
+            }
+        }
+        return null;
+    }
+
+    /**
      * 👑 [محرك موحد وحيد لكل كروت المنتجات في الموقع كله]
      * أي منتج معاه oldPrice أكبر من price بيتحول تلقائياً وفي كل مكان يظهر فيه
      * (فئة، أكثر مبيعاً، وصل حديثاً، صفحة العروض) لكارت "عليه عرض" واضح بشارة خصم
@@ -934,16 +968,17 @@
 
         const calculatedPrice = window.calculateProductFinalPrice(product, hasMultipleSizes ? { size: defaultSizeKey } : {});
         const hasDiscount = !!(product.oldPrice && product.oldPrice > product.price);
-        let discountBadgeHtml = '';
         let oldPriceHtml = '';
         let savingsHtml = '';
         if (hasDiscount) {
             const savingsAmount = product.oldPrice - product.price;
-            const discountPercent = Math.round((savingsAmount / product.oldPrice) * 100);
-            discountBadgeHtml = `<div class="offer-badge bose-offer-badge">خصم ${discountPercent}%</div>`;
             oldPriceHtml = `<span class="product-old-price">${Math.round(product.oldPrice)} جنيه</span>`;
             savingsHtml = `<span class="offer-savings-note">وفر ${Math.round(savingsAmount)} جنيه</span>`;
         }
+        const cardBadge = getBoseProductBadge(product);
+        const cardBadgeHtml = cardBadge
+            ? `<div class="bose-product-badge ${cardBadge.cls}"><i class="fa-solid ${cardBadge.icon}" style="font-size:10px; margin-left:4px;"></i>${cardBadge.text}</div>`
+            : '';
 
         // 🛡️ [V14.0]: منتج نفدت كميته (isAvailable === false) بيفضل ظاهر في الشبكة
         // (عشان العميل يعرف إنه كان موجود ويرجع يسأل عليه) لكن بيتقفل زرار الإضافة
@@ -978,8 +1013,7 @@
 
         return `
             <div class="product-card-unified${hasDiscount ? ' bose-offer-card' : ''}${isUnavailable ? ' bose-unavailable-card' : ''}" data-id="${product.id}" data-selected-size="${defaultSizeKey || ''}" onclick="if(!event.target.closest('.product-card-qty-wrapper') && !event.target.closest('.btn-add-to-cart') && !event.target.closest('.bose-card-size-tabs') && !event.target.closest('.bose-fav-btn')){ window.location.href='product.html?slug=${encodeURIComponent(product.slug)}'; }" style="cursor:pointer;">
-                ${discountBadgeHtml}
-                ${isUnavailable ? `<div class="offer-badge" style="background:rgba(17,17,17,0.75);">نفدت الكمية</div>` : ''}
+                ${cardBadgeHtml}
                 ${favBtnHtml}
                 <img src="${cardImg}" alt="${safeFlavor ? safeTitle + ' - ' + safeFlavor : safeTitle} | حلويات بوسي" class="product-card-img" data-size-img="1" width="300" height="300" loading="lazy" style="${isUnavailable ? 'filter:grayscale(60%); opacity:0.75;' : ''}" />
                 <h3 class="product-card-title">${safeTitle}</h3>
@@ -1800,10 +1834,21 @@
         const currentDateTime = new Date(Date.now() + (window.boseServerTimeOffset || 0));
         if (selectedDateTime <= currentDateTime) return false;
         const rules = window.BoseStoreData?.orderRules || {};
+        // 🕘👑 [قاعدة أقل مدة تحضير]: 48 ساعة افتراضياً لكل المنتجات العادية (بدل
+        // 24 قديماً)، والمحاكيات فضلت بقاعدتها المنفصلة (أسبوع) زي ما هي.
         const requiredHours = isCustomOrder
             ? (rules.minPreparationTimeHoursCustom || 168) - 0.05
-            : (rules.minPreparationTimeHours || 24) - 0.05;
-        return (selectedDateTime.getTime() - currentDateTime.getTime()) / (1000 * 60 * 60) >= requiredHours;
+            : (rules.minPreparationTimeHours || 48) - 0.05;
+        if ((selectedDateTime.getTime() - currentDateTime.getTime()) / (1000 * 60 * 60) < requiredHours) return false;
+
+        // 🕘👑 [نطاق ساعات الاستلام/التوصيل]: مفيش أي استلام أو توصيل قبل 9 صباحاً
+        // أو بعد 10 مساءً، في كل المنتجات (عادية أو محاكي) - قابل للتحكم من
+        // لوحة التحكم (orderRules.businessHoursStart/End)، الافتراضي 09:00-22:00.
+        const businessStart = rules.businessHoursStart || "09:00";
+        const businessEnd = rules.businessHoursEnd || "22:00";
+        if (timeStr < businessStart || timeStr > businessEnd) return false;
+
+        return true;
     };
 
     // 🛡️ [إصلاح - المرحلة 2]: دالة مشتركة موحّدة لتحديد هل السلة فيها منتج مخصص
