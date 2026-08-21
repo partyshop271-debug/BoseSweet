@@ -1531,7 +1531,7 @@ function renderBoseSuccessPage(storeData) {
 
 /**
  * =========================================================================
- * 👑 4. محرك النوافذ المنبثقة الفاخرة لعلامة بوسي (Bose Custom Luxury Modals)
+ * 👑 4. محرك النوافذ المنبثقة الفاخرة لعلامة حلويات بوسي (Bose Custom Luxury Modals)
  * =========================================================================
  */
 function injectBoseCustomModalStyles() {

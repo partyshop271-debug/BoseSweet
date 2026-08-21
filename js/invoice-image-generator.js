@@ -59,19 +59,44 @@
         return lines;
     }
 
+    // 🛡️ [إصلاح - استقلالية عن cart-engine.js]: الملف ده بقى بيتحمّل في صفحة
+    // الأدمن (admin/orders.html) كمان مش بس في checkout للعميل، ومحتاج نفس
+    // منطق تنسيق الوقت/الشكل اللي موجود أصلاً في js/cart-engine.js بالظبط -
+    // بدل ما نحمّل ملف cart-engine.js الضخم بالكامل (مبني للـcheckout فقط
+    // وممكن يسبب تأثيرات جانبية غير مرغوبة لو اشتغل في صفحة الأدمن)، بنكرر
+    // نفس الدالتين الصغيرتين محلياً هنا. لو window.formatBoseTimeToEgyptian12Hour
+    // أو window.getBoseArabicShapeName موجودين فعلاً (الصفحة دي بتحمّل
+    // cart-engine.js زي صفحات العميل)، بيتستخدموا هم عادي عشان يفضل مصدر
+    // الحقيقة واحد - النسخة المحلية دي بديل احتياطي بس.
+    function localFormatTime12Hour(time24) {
+        if (!time24 || typeof time24 !== "string" || !time24.includes(":")) return time24 || "";
+        const [hStr, mStr] = time24.split(":");
+        let hours = parseInt(hStr, 10);
+        const minutes = parseInt(mStr, 10);
+        if (isNaN(hours) || isNaN(minutes)) return time24;
+        const period = hours >= 12 ? "مساءً" : "صباحاً";
+        let hours12 = hours % 12;
+        if (hours12 === 0) hours12 = 12;
+        return `${hours12}:${String(minutes).padStart(2, "0")} ${period}`;
+    }
+
+    function localArabicShapeName(shape) {
+        const map = { circle: "دائري", heart: "قلب", square: "مربع", rectangle: "مستطيل" };
+        return map[shape] || shape;
+    }
+
     function formatTimeSafe(time24) {
         if (typeof window.formatBoseTimeToEgyptian12Hour === "function") {
             return window.formatBoseTimeToEgyptian12Hour(time24);
         }
-        return time24 || "";
+        return localFormatTime12Hour(time24);
     }
 
     function shapeNameSafe(shape) {
         if (typeof window.getBoseArabicShapeName === "function") {
             return window.getBoseArabicShapeName(shape);
         }
-        const map = { circle: "دائري", heart: "قلب", square: "مربع", rectangle: "مستطيل" };
-        return map[shape] || shape;
+        return localArabicShapeName(shape);
     }
 
     /**

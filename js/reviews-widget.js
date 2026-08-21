@@ -164,7 +164,7 @@
             let imagesHTML = "";
             if (rev.images && rev.images.length > 0) {
                 imagesHTML = `<div class="review-attach-images-row">${rev.images
-                    .map((url) => `<img class="review-attached-img" src="${window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(url, 200) : url}" data-fullsrc="${url}" loading="lazy" alt="صورة مرفقة من تقييم عميلة">`)
+                    .map((url) => `<img class="review-attached-img" src="${escapeHTML(window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(url, 200) : url)}" data-fullsrc="${escapeHTML(url)}" loading="lazy" alt="صورة مرفقة من تقييم عميلة">`)
                     .join("")}</div>`;
             }
             const pendingBadge = rev.pending
