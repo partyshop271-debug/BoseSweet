@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+    <link rel="apple-touch-icon" href="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#FF91A4">
+    <title>حلويات بوسي | كل الروابط في مكان واحد</title>
+
+    <meta name="description" content="كل روابط حلويات بوسي في صفحة واحدة: المتجر، محاكي التورت والورد، نادي المكافآت، تتبع الطلب، وحسابات السوشيال ميديا.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://bose-sweet.vercel.app/link-in-bio.html">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0; font-family: 'Cairo', sans-serif; direction: rtl;
+            background: linear-gradient(180deg, #FFF6F8 0%, #FFFFFF 55%);
+            color: #111; min-height: 100vh;
+        }
+        .lib-wrap { max-width: 480px; margin: 0 auto; padding: 40px 20px 60px; }
+
+        .lib-logo { width: 92px; height: 92px; border-radius: 50%; display: block; margin: 0 auto 16px; object-fit: cover; box-shadow: 0 10px 26px rgba(255,145,164,0.3); border: 3px solid #fff; }
+        .lib-brand { text-align: center; font-size: 1.4rem; font-weight: 800; margin: 0 0 4px; }
+        .lib-slogan { text-align: center; font-size: 0.9rem; opacity: 0.7; margin: 0 0 28px; line-height: 1.6; }
+
+        .lib-links { display: flex; flex-direction: column; gap: 12px; }
+        .lib-link {
+            display: flex; align-items: center; gap: 12px; background: #fff; border: 1px solid rgba(255,145,164,0.25);
+            border-radius: 16px; padding: 15px 18px; text-decoration: none; color: #111; font-weight: 700; font-size: 0.96rem;
+            box-shadow: 0 4px 14px rgba(255,145,164,0.08); transition: transform .2s ease, box-shadow .2s ease;
+        }
+        .lib-link:active { transform: scale(0.98); }
+        .lib-link .lib-link-icon {
+            width: 40px; height: 40px; border-radius: 12px; background: rgba(255,145,164,0.12); color: #FF91A4;
+            display: flex; align-items: center; justify-content: center; font-size: 1.05rem; flex-shrink: 0;
+        }
+        .lib-link.lib-link-primary { background: linear-gradient(135deg, #FF91A4, #ff7d95); color: #fff; border: none; }
+        .lib-link.lib-link-primary .lib-link-icon { background: rgba(255,255,255,0.22); color: #fff; }
+        .lib-link.lib-link-gold .lib-link-icon { background: rgba(212,175,55,0.15); color: #b8860b; }
+        .lib-link-text { flex: 1; }
+        .lib-link-sub { display: block; font-size: 0.74rem; font-weight: 600; opacity: 0.65; margin-top: 2px; }
+        .lib-link-arrow { opacity: 0.4; font-size: 0.85rem; }
+
+        .lib-socials { display: flex; justify-content: center; gap: 14px; margin-top: 30px; }
+        .lib-social-btn {
+            width: 46px; height: 46px; border-radius: 50%; background: #fff; border: 1px solid rgba(17,17,17,0.08);
+            display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: #111; text-decoration: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        }
+        .lib-social-btn.fb { color: #1877F2; }
+        .lib-social-btn.ig { color: #E1306C; }
+        .lib-social-btn.tt { color: #111; }
+        .lib-social-btn.wa { color: #25D366; }
+
+        .lib-footer { text-align: center; margin-top: 34px; font-size: 0.76rem; opacity: 0.55; }
+        .lib-loading { text-align: center; padding: 60px 0; opacity: 0.5; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+    <div class="lib-wrap">
+        <div id="lib-loading" class="lib-loading">جاري التحميل...</div>
+
+        <div id="lib-content" style="display:none;">
+            <img class="lib-logo" id="lib-logo" alt="حلويات بوسي">
+            <h1 class="lib-brand" id="lib-brand">حلويات بوسي</h1>
+            <p class="lib-slogan" id="lib-slogan">تورت، حلويات، وورد يوصلك طازة وبأحلى شكل</p>
+
+            <div class="lib-links">
+                <a class="lib-link lib-link-primary" href="index.html">
+                    <span class="lib-link-icon"><i class="fa-solid fa-store"></i></span>
+                    <span class="lib-link-text">الموقع الرئيسي<span class="lib-link-sub">تصفحي كل المنتجات واطلبي أونلاين</span></span>
+                    <i class="fa-solid fa-chevron-left lib-link-arrow"></i>
+                </a>
+                <a class="lib-link" href="menu.html">
+                    <span class="lib-link-icon"><i class="fa-solid fa-cake-candles"></i></span>
+                    <span class="lib-link-text">القائمة كاملة<span class="lib-link-sub">كل الفئات: تورت، جاتوهات، كب كيك، ورد وأكتر</span></span>
+                    <i class="fa-solid fa-chevron-left lib-link-arrow"></i>
+                </a>
+                <a class="lib-link" href="offers.html">
+                    <span class="lib-link-icon"><i class="fa-solid fa-percent"></i></span>
+                    <span class="lib-link-text">العروض الحالية<span class="lib-link-sub">أحلى الأسعار على منتجات مختارة</span></span>
+                    <i class="fa-solid fa-chevron-left lib-link-arrow"></i>
+                </a>
+                <a class="lib-link" href="cake-builder.html">
+                    <span class="lib-link-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
+                    <span class="lib-link-text">صممي تورتة مخصوصة<span class="lib-link-sub">اختاري الشكل والنكهة والمقاس</span></span>
+                    <i class="fa-solid fa-chevron-left lib-link-arrow"></i>
+                </a>
+                <a class="lib-link" href="flower-builder.html">
+                    <span class="lib-link-icon"><i class="fa-solid fa-spa"></i></span>
+                    <span class="lib-link-text">صممي بوكيه ورد<span class="lib-link-sub">طبيعي، صناعي، أو ساتان - بلمستك</span></span>
+                    <i class="fa-solid fa-chevron-left lib-link-arrow"></i>
+                </a>
+                <a class="lib-link lib-link-gold" href="rewards.html">
+                    <span class="lib-link-icon"><i class="fa-solid fa-crown"></i></span>
+                    <span class="lib-link-text">نادي مكافآت بوسي<span class="lib-link-sub">اعرفي رصيدك وقسايمك بس برقم تليفونك</span></span>
+                    <i class="fa-solid fa-chevron-left lib-link-arrow"></i>
+                </a>
+                <a class="lib-link" href="track-order.html">
+                    <span class="lib-link-icon"><i class="fa-solid fa-truck-fast"></i></span>
+                    <span class="lib-link-text">تتبعي طلبك<span class="lib-link-sub">اعرفي طلبك وصل فين</span></span>
+                    <i class="fa-solid fa-chevron-left lib-link-arrow"></i>
+                </a>
+                <a class="lib-link" id="lib-whatsapp-link" href="#" target="_blank" rel="noopener">
+                    <span class="lib-link-icon" style="background: rgba(37,211,102,0.14); color:#25D366;"><i class="fa-brands fa-whatsapp"></i></span>
+                    <span class="lib-link-text">كلمينا على واتساب<span class="lib-link-sub">لأي استفسار أو طلب خاص</span></span>
+                    <i class="fa-solid fa-chevron-left lib-link-arrow"></i>
+                </a>
+            </div>
+
+            <div class="lib-socials" id="lib-socials"></div>
+
+            <p class="lib-footer">© <span id="lib-year"></span> حلويات بوسي - كل الحقوق محفوظة</p>
+        </div>
+    </div>
+
+    <script src="js/supabase-client.js?v=2026_production_v42.0"></script>
+    <script>
+        (function () {
+            "use strict";
+
+            const FALLBACK_LOGO = "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png";
+            const FALLBACK_WHATSAPP = "201097238441";
+
+            function buildWhatsappLink(rawNumber) {
+                const digits = String(rawNumber || FALLBACK_WHATSAPP).replace(/\D/g, "");
+                const withCountryCode = digits.startsWith("20") ? digits : `20${digits.replace(/^0/, "")}`;
+                return `https://wa.me/${withCountryCode}?text=${encodeURIComponent("أهلاً، عايزة أستفسر عن حلويات بوسي")}`;
+            }
+
+            function renderSocials(social) {
+                const wrap = document.getElementById("lib-socials");
+                const items = [
+                    { key: "facebook", icon: "fa-brands fa-facebook-f", cls: "fb", url: social.facebook },
+                    { key: "instagram", icon: "fa-brands fa-instagram", cls: "ig", url: social.instagram },
+                    { key: "tiktok", icon: "fa-brands fa-tiktok", cls: "tt", url: social.tiktok },
+                ];
+                wrap.innerHTML = items
+                    .filter((it) => it.url)
+                    .map((it) => `<a class="lib-social-btn ${it.cls}" href="${it.url}" target="_blank" rel="noopener"><i class="${it.icon}"></i></a>`)
+                    .join("");
+            }
+
+            async function init() {
+                let store = {};
+                let social = {};
+                try {
+                    if (window.BoseSupabase && window.BoseSupabase.loadBoseStoreDataFromSupabase) {
+                        const data = await window.BoseSupabase.loadBoseStoreDataFromSupabase();
+                        store = data.store || {};
+                        social = data.social || {};
+                    }
+                } catch (e) {
+                    console.warn("تعذر تحميل بيانات المتجر، هيتم استخدام القيم الافتراضية:", e.message);
+                }
+
+                document.getElementById("lib-logo").src = store.logo || FALLBACK_LOGO;
+                if (store.name) document.getElementById("lib-brand").textContent = store.name;
+                if (store.slogan) document.getElementById("lib-slogan").textContent = store.slogan;
+                document.getElementById("lib-whatsapp-link").href = buildWhatsappLink(social.whatsapp || store.phone);
+                renderSocials(social);
+                document.getElementById("lib-year").textContent = new Date().getFullYear();
+
+                document.getElementById("lib-loading").style.display = "none";
+                document.getElementById("lib-content").style.display = "";
+            }
+
+            init();
+        })();
+    </script>
+</body>
+</html>
