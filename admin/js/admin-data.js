@@ -755,12 +755,12 @@
      * (هي نفسها اللي الموقع العام بيقراها في core-engine.js/supabase-client.js).
      */
 
-    /** يرجّع بيانات المتجر العامة + SEO + السوشيال ميديا من صف store_settings الوحيد */
+    /** يرجّع بيانات المتجر العامة + SEO + السوشيال ميديا + قواعد الطلب/التوقيت + إعدادات البادجات من صف store_settings الوحيد */
     async function getStoreGeneralSettings() {
         try {
             const { data, error } = await client
                 .from("store_settings")
-                .select("store, seo, social")
+                .select("store, seo, social, order_rules, badge_settings")
                 .eq("id", 1)
                 .maybeSingle();
             if (error) throw error;
@@ -768,18 +768,25 @@
                 store: (data && data.store) || {},
                 seo: (data && data.seo) || {},
                 social: (data && data.social) || {},
+                orderRules: (data && data.order_rules) || {},
+                badgeSettings: (data && data.badge_settings) || {},
             };
         } catch (e) {
             console.warn("تعذر جلب بيانات المتجر:", e.message);
-            return { store: {}, seo: {}, social: {} };
+            return { store: {}, seo: {}, social: {}, orderRules: {}, badgeSettings: {} };
         }
     }
 
-    /** بتستبدل أعمدة store/seo/social بالكامل بالكائنات الممررة */
-    async function saveStoreGeneralSettings({ store, seo, social }) {
+    /** بتستبدل أعمدة store/seo/social/order_rules/badge_settings بالكامل بالكائنات الممررة */
+    async function saveStoreGeneralSettings({ store, seo, social, orderRules, badgeSettings }) {
         const { error } = await client
             .from("store_settings")
-            .update({ store, seo, social, updated_at: new Date().toISOString() })
+            .update({
+                store, seo, social,
+                order_rules: orderRules,
+                badge_settings: badgeSettings,
+                updated_at: new Date().toISOString(),
+            })
             .eq("id", 1);
         if (error) throw error;
     }
