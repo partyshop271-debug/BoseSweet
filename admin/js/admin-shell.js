@@ -100,7 +100,7 @@
                 <div class="adm-sidebar-brand">
                     <div class="adm-sidebar-brand-badge"><i class="fa-solid fa-cake-candles"></i></div>
                     <div class="adm-sidebar-brand-text">
-                        <strong>لوحة تحكم بوسي</strong>
+                        <strong>لوحة تحكم حلويات بوسي</strong>
                         <span>إدارة المتجر</span>
                     </div>
                 </div>
