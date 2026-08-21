@@ -755,12 +755,12 @@
      * (هي نفسها اللي الموقع العام بيقراها في core-engine.js/supabase-client.js).
      */
 
-    /** يرجّع بيانات المتجر العامة + SEO + السوشيال ميديا + قواعد الطلب/التوقيت + إعدادات البادجات من صف store_settings الوحيد */
+    /** يرجّع بيانات المتجر العامة + SEO + السوشيال ميديا من صف store_settings الوحيد */
     async function getStoreGeneralSettings() {
         try {
             const { data, error } = await client
                 .from("store_settings")
-                .select("store, seo, social, order_rules, badge_settings")
+                .select("store, seo, social")
                 .eq("id", 1)
                 .maybeSingle();
             if (error) throw error;
@@ -768,25 +768,18 @@
                 store: (data && data.store) || {},
                 seo: (data && data.seo) || {},
                 social: (data && data.social) || {},
-                orderRules: (data && data.order_rules) || {},
-                badgeSettings: (data && data.badge_settings) || {},
             };
         } catch (e) {
             console.warn("تعذر جلب بيانات المتجر:", e.message);
-            return { store: {}, seo: {}, social: {}, orderRules: {}, badgeSettings: {} };
+            return { store: {}, seo: {}, social: {} };
         }
     }
 
-    /** بتستبدل أعمدة store/seo/social/order_rules/badge_settings بالكامل بالكائنات الممررة */
-    async function saveStoreGeneralSettings({ store, seo, social, orderRules, badgeSettings }) {
+    /** بتستبدل أعمدة store/seo/social بالكامل بالكائنات الممررة */
+    async function saveStoreGeneralSettings({ store, seo, social }) {
         const { error } = await client
             .from("store_settings")
-            .update({
-                store, seo, social,
-                order_rules: orderRules,
-                badge_settings: badgeSettings,
-                updated_at: new Date().toISOString(),
-            })
+            .update({ store, seo, social, updated_at: new Date().toISOString() })
             .eq("id", 1);
         if (error) throw error;
     }
@@ -870,241 +863,6 @@
         if (!ids || !ids.length) return;
         const { error } = await client.from("products").update(updates).in("id", ids);
         if (error) throw error;
-    }
-
-    /* ============================= برنامج الولاء (إعدادات الولاء / متابعة العملاء / القسائم الصادرة) ============================= */
-    /**
-     * كل إعدادات دائرة الولاء (نسب الخصم لكل ترتيب في الدورة، طول الدورة،
-     * كل قد إيه طلب تتكسب قسيمة هدية، قيمتها، ومدة صلاحيتها) متخزنة في
-     * عمود واحد store_settings.loyalty بالشكل:
-     *   { enabled, cycle_length, tiers: {"3":5,"5":10,"7":15}, milestone_every, voucher_amount, voucher_validity_months }
-     * نفس الـ RPCs اللي بتحسب خصم كل طلب (create_order_with_items)، بترجع
-     * رصيد العميل للموقع العام (get_customer_rewards)، وبتصدر قسيمة الهدية
-     * تلقائياً عند التسليم (trigger handle_loyalty_milestone_delivery) بتقرأ
-     * من العمود ده مباشرة - أي تعديل هنا بينعكس فوراً على كل الحسابات من
-     * غير أي كود إضافي أو تعديل في القاعدة.
-     */
-
-    /** يرجّع كائن loyalty بس من صف store_settings الوحيد (id=1) */
-    async function getLoyaltySettings() {
-        try {
-            const { data, error } = await client
-                .from("store_settings")
-                .select("loyalty")
-                .eq("id", 1)
-                .maybeSingle();
-            if (error) throw error;
-            return (data && data.loyalty) || {};
-        } catch (e) {
-            console.warn("تعذر جلب إعدادات الولاء:", e.message);
-            return {};
-        }
-    }
-
-    /** بتستبدل عمود loyalty بالكامل بالكائن الممرر */
-    async function saveLoyaltySettings(loyalty) {
-        const { error } = await client
-            .from("store_settings")
-            .update({ loyalty, updated_at: new Date().toISOString() })
-            .eq("id", 1);
-        if (error) throw error;
-    }
-
-    /**
-     * نفس تعقيم رقم الهاتف المستخدم داخل القاعدة (create_order_with_items /
-     * get_customer_rewards) عشان أي بحث هنا يطابق بالظبط نفس المنطق اللي
-     * بيتحسب عليه تسلسل الولاء الفعلي - أي فرق بسيط في التعقيم (مسافة،
-     * شرطة، +٢٠...) كان ممكن يخلي الأدمن يشوف نتيجة مختلفة عن اللي العميل شايفها.
-     */
-    function cleanEgyptianPhone(phone) {
-        return String(phone || "").trim().replace(/[\s\-()+]/g, "");
-    }
-
-    /**
-     * 🔍 [صفحة متابعة العملاء]: بتدوّر برقم تليفون عميل وترجع كل حاجة
-     * محتاجاها الصفحة دفعة واحدة - كل طلباته من الأحدث (بتفاصيل عناصرها)،
-     * قسايم الهدية بتاعته (نشطة ومنتهية/متصرفة)، وموقعه الحالي في دائرة
-     * الولاء (نفس منطق get_customer_rewards بالظبط، محسوب هنا محلياً عشان
-     * الصفحة تقدر كمان تعرض تفاصيل كل طلب اللي الـ RPC العام للعميل النهائي
-     * مايرجّعهاش لأسباب خصوصية).
-     */
-    async function getCustomerLoyaltyProfile(phone) {
-        const cleanPhone = cleanEgyptianPhone(phone);
-        if (!/^01[0125][0-9]{8}$/.test(cleanPhone)) {
-            throw new Error("رقم الهاتف غير صحيح، يرجى إدخال رقم مصري صحيح (يبدأ بـ 01...)");
-        }
-
-        const [ordersRes, vouchersRes, loyalty] = await Promise.all([
-            client
-                .from("orders")
-                .select("*, order_items(*)")
-                .or(`phone1.eq.${cleanPhone},phone2.eq.${cleanPhone}`)
-                .order("created_at", { ascending: false }),
-            client
-                .from("loyalty_vouchers")
-                .select("*")
-                .eq("phone", cleanPhone)
-                .order("issued_at", { ascending: false }),
-            getLoyaltySettings(),
-        ]);
-
-        if (ordersRes.error) throw ordersRes.error;
-        if (vouchersRes.error) throw vouchersRes.error;
-
-        const orders = ordersRes.data || [];
-        const vouchers = vouchersRes.data || [];
-
-        // مهم: كل صف في orders هنا هو فاتورة/طلب مستقل قائم بذاته - حتى لو
-        // احتوى على عناصر كتير (مثلاً 20 منتج) في نفس الفاتورة، فده لسه
-        // "طلب واحد" في تسلسل الولاء. تسلسل الولاء بيتحسب بعدد صفوف orders
-        // (غير الملغاة) لنفس رقم الهاتف - مش بعدد عناصر order_items - بالظبط
-        // زي ما create_order_with_items و get_customer_rewards بيحسبوا في القاعدة.
-        const nonCancelledOrders = orders.filter((o) => o.status !== "cancelled");
-        const totalOrders = nonCancelledOrders.length;
-
-        const cycleLength = Math.max(1, parseInt(loyalty.cycle_length, 10) || 7);
-        const tiers = loyalty.tiers || { "3": 5, "5": 10, "7": 15 };
-        const milestoneEvery = Math.max(1, parseInt(loyalty.milestone_every, 10) || 10);
-
-        const nextSeq = totalOrders + 1;
-        const nextPos = ((nextSeq - 1) % cycleLength) + 1;
-        const nextIsMilestone = nextSeq % milestoneEvery === 0;
-        const nextPct = nextIsMilestone ? 0 : (parseInt(tiers[String(nextPos)], 10) || 0);
-
-        return {
-            cleanPhone,
-            orders,
-            vouchers,
-            totalOrders,
-            nextOrderSequence: nextSeq,
-            nextCyclePosition: nextPos,
-            nextDiscountPercent: nextPct,
-            nextIsMilestone,
-            cycleLength,
-            tiers,
-            milestoneEvery,
-        };
-    }
-
-    /**
-     * 🎁 [صفحة القسائم الصادرة]: كل قسايم الهدية اللي اتكسبت عبر دائرة الولاء
-     * (سواء لسه نشطة، خلصت، أو انتهت صلاحيتها) بترتيب الأحدث أولاً - مع رقم
-     * طلب الكسب ورقم آخر طلب اتصرفت فيه (لو موجودين) عشان الصفحة تعرضهم
-     * كروابط مفهومة من غير استعلام إضافي لكل صف. الفلترة بالكود أو رقم الهاتف.
-     */
-    async function getAllLoyaltyVouchers(filters = {}) {
-        try {
-            let query = client
-                .from("loyalty_vouchers")
-                .select(`
-                    *,
-                    earned_order:orders!loyalty_vouchers_earned_order_id_fkey(order_number),
-                    last_used_order:orders!loyalty_vouchers_last_used_order_id_fkey(order_number)
-                `)
-                .order("issued_at", { ascending: false });
-
-            if (filters.search && filters.search.trim()) {
-                const s = sanitizeFilterValue(filters.search.trim());
-                if (s) {
-                    query = query.or(`code.ilike.%${s}%,phone.ilike.%${s}%`);
-                }
-            }
-
-            const { data, error } = await query;
-            if (error) throw error;
-            return data || [];
-        } catch (e) {
-            console.warn("تعذر جلب القسائم الصادرة:", e.message);
-            return [];
-        }
-    }
-
-    /**
-     * 📝 سجل نشاط إداري عام - بيتحط في admin_audit_log (نفس الجدول اللي
-     * صفحة "سجل النشاط" بتقرأ منه). admin_id و admin_name بيتملوا تلقائياً
-     * بواسطة trigger على مستوى القاعدة (trg_fill_audit_log_admin) من جلسة
-     * تسجيل الدخول الحالية - مش محتاجين نبعتهم يدوياً من هنا.
-     */
-    async function logAdminAction(action, entityType, entityId, entityLabel, details = {}) {
-        try {
-            const { error } = await client.from("admin_audit_log").insert({
-                action, entity_type: entityType, entity_id: entityId ? String(entityId) : null,
-                entity_label: entityLabel || null, details,
-            });
-            if (error) throw error;
-        } catch (e) {
-            console.warn("تعذر تسجيل الحدث في سجل النشاط:", e.message);
-        }
-    }
-
-    /**
-     * 🎁 [إجراء يدوي - منح قسيمة]: بتصدر قسيمة هدية لعميلة بشكل يدوي (خارج
-     * دورة الولاء التلقائية) - مفيدة في حالات استثنائية زي تعويض عميلة عن
-     * مشكلة في طلب. الكود بيتولد بنفس دالة توليد الأكواد المستخدمة في
-     * الإصدار التلقائي (generate_loyalty_voucher_code) عشان يفضل بنفس
-     * الصيغة (HADYA-XXXXXX)، لكن earned_order_id بيفضل فاضي (NULL) عشان
-     * يبان واضح إنها قسيمة يدوية مش مكسوبة من طلب حقيقي.
-     */
-    async function grantManualLoyaltyVoucher(phone, amount, validityMonths) {
-        const cleanPhone = cleanEgyptianPhone(phone);
-        if (!/^01[0125][0-9]{8}$/.test(cleanPhone)) {
-            throw new Error("رقم الهاتف غير صحيح، يرجى إدخال رقم مصري صحيح (يبدأ بـ 01...)");
-        }
-        if (!amount || amount <= 0) {
-            throw new Error("قيمة القسيمة لازم تكون رقم أكبر من صفر");
-        }
-
-        const { data: codeData, error: codeError } = await client.rpc("generate_loyalty_voucher_code");
-        if (codeError) throw codeError;
-        const code = codeData;
-
-        const expiresAt = new Date();
-        expiresAt.setMonth(expiresAt.getMonth() + (parseInt(validityMonths, 10) || 2));
-
-        const { data, error } = await client
-            .from("loyalty_vouchers")
-            .insert({
-                phone: cleanPhone, code, amount, remaining_amount: amount,
-                earned_order_id: null, issued_at: new Date().toISOString(), expires_at: expiresAt.toISOString(),
-            })
-            .select()
-            .single();
-        if (error) throw error;
-
-        await logAdminAction("منح قسيمة ولاء يدوية", "loyalty_voucher", data.id, code, { phone: cleanPhone, amount });
-        return data;
-    }
-
-    /**
-     * 🚫 [إجراء يدوي - إلغاء قسيمة]: بنعمل "إلغاء" عن طريق تصفير تاريخ
-     * الصلاحية بدل حذف الصف نفسه - كده القسيمة بتظهر فوراً كـ"منتهية
-     * الصلاحية" في كل الشاشات (customer-lookup / loyalty-vouchers) وبيبطل
-     * استخدامها تلقائياً في create_order_with_items (اللي بيرفض أي قسيمة
-     * expires_at ≤ now())، من غير ما نفقد أي سجل تاريخي عن القسيمة.
-     */
-    async function voidLoyaltyVoucher(voucherId, code) {
-        const { error } = await client
-            .from("loyalty_vouchers")
-            .update({ expires_at: new Date().toISOString() })
-            .eq("id", voucherId);
-        if (error) throw error;
-        await logAdminAction("إلغاء قسيمة ولاء يدوياً", "loyalty_voucher", voucherId, code);
-    }
-
-    /**
-     * 🔢 [إجراء يدوي - تعديل ترتيب عميلة في دورة الولاء]: ترتيب الولاء
-     * بيتحسب حياً من عدد صفوف orders اللي حالتها مش 'cancelled' لنفس رقم
-     * الهاتف (بالظبط زي ما create_order_with_items بيحسبها وقت أي طلب
-     * جديد) - فمفيش عمود منفصل لـ"الترتيب" يتغيّر لوحده. الطريقة الوحيدة
-     * اللي بتأثر فعلياً على حساب الترتيب المستقبلي هي تغيير حالة طلب معيّن
-     * من/إلى 'cancelled' - فده اللي الدالة دي بتعمله، مع تسجيل الإجراء.
-     */
-    async function setOrderExcludedFromLoyalty(orderId, orderNumber, exclude) {
-        await updateOrderStatus(orderId, exclude ? "cancelled" : "delivered");
-        await logAdminAction(
-            exclude ? "استبعاد طلب من عدّاد الولاء (إلغاء الطلب)" : "إرجاع طلب لعدّاد الولاء (استعادة كـ«تم التسليم»)",
-            "order", orderId, orderNumber
-        );
     }
 
     /* ============================= استوديو المحتوى (توليد بالذكاء الاصطناعي) ============================= */
@@ -1197,13 +955,5 @@
         updateContentPage,
         bulkUpdateProducts,
         generateContent,
-        getLoyaltySettings,
-        saveLoyaltySettings,
-        cleanEgyptianPhone,
-        getCustomerLoyaltyProfile,
-        getAllLoyaltyVouchers,
-        grantManualLoyaltyVoucher,
-        voidLoyaltyVoucher,
-        setOrderExcludedFromLoyalty,
     };
 })();

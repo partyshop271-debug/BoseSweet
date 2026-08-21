@@ -43,14 +43,6 @@
             ],
         },
         {
-            group: "برنامج الولاء",
-            items: [
-                { key: "loyalty-settings", label: "إعدادات الولاء", icon: "fa-crown", href: "loyalty-settings.html" },
-                { key: "customer-lookup", label: "متابعة العملاء", icon: "fa-magnifying-glass", href: "customer-lookup.html" },
-                { key: "loyalty-vouchers", label: "القسائم الصادرة", icon: "fa-gift", href: "loyalty-vouchers.html" },
-            ],
-        },
-        {
             group: "الإعدادات",
             items: [
                 { key: "coupons", label: "الكوبونات", icon: "fa-ticket", href: "coupons.html" },
@@ -78,9 +70,6 @@
         "shipping-zones": ["مناطق التوصيل", "إدارة المناطق ورسوم الشحن"],
         "builders-settings": ["إعدادات المحاكيات", "ضبط محاكي التورت والورد"],
         "store-settings": ["بيانات المتجر", "الإعدادات العامة، SEO، والسوشيال ميديا"],
-        "loyalty-settings": ["إعدادات الولاء", "نسب الخصم، قيمة قسيمة الهدية، مدة صلاحيتها، وعدد الطلبات في الدورة"],
-        "customer-lookup": ["متابعة العملاء", "دوّري برقم تليفون العميل: كام طلب عنده، فين وصل في دائرة الولاء، وقسايمه"],
-        "loyalty-vouchers": ["القسائم الصادرة", "كل قسايم الهدية اللي اتكسبت، مين استخدمها، وقد إيه فلوس اتصرفت من خلالها"],
     };
 
     function buildSidebar(currentPage) {
@@ -100,7 +89,7 @@
                 <div class="adm-sidebar-brand">
                     <div class="adm-sidebar-brand-badge"><i class="fa-solid fa-cake-candles"></i></div>
                     <div class="adm-sidebar-brand-text">
-                        <strong>لوحة تحكم حلويات بوسي</strong>
+                        <strong>لوحة تحكم بوسي</strong>
                         <span>إدارة المتجر</span>
                     </div>
                 </div>
