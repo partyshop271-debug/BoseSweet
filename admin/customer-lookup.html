@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>متابعة العملاء | لوحة تحكم حلويات بوسي</title>
+    <meta name="robots" content="noindex, nofollow">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="css/admin-theme.css">
+    <link rel="stylesheet" href="css/admin-layout.css">
+
+    <style>
+        .clk-search-bar { display: flex; gap: 10px; align-items: flex-start; flex-wrap: wrap; }
+        .clk-search-bar input { flex: 1; min-width: 220px; direction: ltr; text-align: right; }
+        .clk-cycle-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .clk-cycle-dot {
+            min-width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
+            font-size: 0.78rem; font-weight: 800; background: var(--adm-bg-hover); color: var(--adm-text-secondary); padding: 0 6px; position: relative;
+        }
+        .clk-cycle-dot.has-discount { background: var(--adm-success-bg); color: var(--adm-success); }
+        .clk-cycle-dot.is-milestone { background: linear-gradient(135deg, #d4af37, #f0ce6b); color: #3a2e00; }
+        .clk-cycle-dot.is-next { outline: 2px solid var(--adm-pink); outline-offset: 2px; }
+        .clk-voucher-item { display: flex; align-items: center; justify-content: space-between; background: var(--adm-bg-hover); border-radius: 12px; padding: 10px 14px; margin-bottom: 8px; }
+        .clk-voucher-item .code { font-weight: 800; direction: ltr; text-align: right; }
+        .clk-voucher-item .meta { font-size: 0.76rem; color: var(--adm-text-muted); }
+        .clk-order-row { cursor: pointer; }
+        .clk-order-items-row td { background: var(--adm-bg-hover); padding: 10px 16px; }
+        .clk-order-items-row ul { margin: 0; padding-inline-start: 18px; font-size: 0.82rem; }
+        .clk-voucher-void-btn { border: none; background: none; color: var(--adm-danger); font-size: 0.76rem; font-weight: 700; cursor: pointer; padding: 4px 8px; }
+        .clk-order-action-btn { border: none; background: var(--adm-bg-hover); color: var(--adm-text-secondary); font-size: 0.72rem; font-weight: 700; cursor: pointer; padding: 5px 9px; border-radius: 8px; white-space: nowrap; }
+        .clk-order-action-btn.restore { background: var(--adm-success-bg); color: var(--adm-success); }
+    </style>
+</head>
+<body data-page="customer-lookup">
+
+    <!-- شاشة تحميل تظهر لحد ما يتأكد من الجلسة -->
+    <div class="adm-auth-gate"><div class="adm-loading-spinner"></div></div>
+
+    <div class="adm-shell">
+        <div id="adm-shell-target"></div>
+
+        <main class="adm-main">
+            <div id="adm-topbar-target"></div>
+
+            <div class="adm-content" id="adm-page-content">
+
+                <div class="adm-card">
+                    <div class="adm-card-header">
+                        <div>
+                            <h2>متابعة العملاء</h2>
+                            <p>دوّري برقم تليفون العميلة عشان تشوفي كام طلب عندها، فين وصلت في دورة الولاء، وقسايمها النشطة</p>
+                        </div>
+                    </div>
+                    <div class="clk-search-bar">
+                        <input type="text" class="adm-input" id="clk-phone-input" placeholder="01xxxxxxxxx" maxlength="11" inputmode="numeric">
+                        <button type="button" class="adm-btn adm-btn-primary" id="clk-search-btn">
+                            <i class="fa-solid fa-magnifying-glass"></i> بحث
+                        </button>
+                    </div>
+                    <div id="clk-error" class="adm-hint" style="color: var(--adm-danger); display:none; margin-top:10px;"></div>
+                </div>
+
+                <div id="clk-loading" class="adm-card adm-mt-16" style="display:none;"><div class="adm-loading-spinner"></div></div>
+
+                <div id="clk-empty" class="adm-card adm-mt-16">
+                    <div class="adm-empty-state">
+                        <i class="fa-solid fa-user-magnifying-glass"></i>
+                        <strong>دوّري برقم تليفون</strong>
+                        <p>هتظهر هنا كل بيانات العميلة: طلباتها، موقعها في دورة الولاء، وقسايمها</p>
+                    </div>
+                </div>
+
+                <div id="clk-results" style="display:none;">
+
+                    <div class="adm-stats-grid adm-mt-16" id="clk-stats-grid"></div>
+
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header">
+                            <div>
+                                <h2>موقعها في دورة الخصم</h2>
+                                <p id="clk-cycle-note"></p>
+                            </div>
+                        </div>
+                        <div class="clk-cycle-row" id="clk-cycle-row"></div>
+                    </div>
+
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header">
+                            <div><h2>قسايم الهدية</h2></div>
+                            <button type="button" class="adm-btn adm-btn-ghost" id="clk-grant-voucher-btn">
+                                <i class="fa-solid fa-plus"></i> منح قسيمة يدوية
+                            </button>
+                        </div>
+                        <div id="clk-grant-voucher-form" style="display:none; background: var(--adm-bg-hover); border-radius: 12px; padding: 14px; margin-bottom: 14px;">
+                            <div class="adm-form-grid">
+                                <div class="adm-field">
+                                    <label for="clk-grant-amount">قيمة القسيمة (ج.م)</label>
+                                    <input type="number" min="1" step="1" class="adm-input" id="clk-grant-amount">
+                                </div>
+                                <div class="adm-field">
+                                    <label for="clk-grant-validity">مدة الصلاحية (بالشهور)</label>
+                                    <input type="number" min="1" step="1" class="adm-input" id="clk-grant-validity" value="2">
+                                </div>
+                            </div>
+                            <div style="display:flex; gap:10px;">
+                                <button type="button" class="adm-btn adm-btn-primary" id="clk-grant-confirm-btn">تأكيد المنح</button>
+                                <button type="button" class="adm-btn adm-btn-ghost" id="clk-grant-cancel-btn">إلغاء</button>
+                            </div>
+                            <p class="adm-hint" style="margin-top:8px;">القسيمة دي هتتصدر فوراً خارج دورة الولاء التلقائية - استخدميها في الحالات الاستثنائية بس (تعويض عميلة مثلاً)</p>
+                        </div>
+                        <div id="clk-vouchers-list"></div>
+                    </div>
+
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header"><div><h2>سجل الطلبات</h2><p>كل طلب هنا فاتورة مستقلة بذاتها - اضغطي على أي طلب لعرض عناصره</p></div></div>
+                        <div class="adm-table-wrapper">
+                            <table class="adm-table" id="clk-orders-table">
+                                <thead>
+                                    <tr>
+                                        <th>رقم الطلب</th>
+                                        <th>التاريخ</th>
+                                        <th>الحالة</th>
+                                        <th>ترتيبه في الولاء</th>
+                                        <th>خصم الولاء</th>
+                                        <th>قسيمة مستخدمة</th>
+                                        <th>الإجمالي</th>
+                                        <th>إجراء</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="clk-orders-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/admin-data.js"></script>
+    <script src="js/admin-auth-guard.js"></script>
+    <script src="js/admin-ui-utils.js"></script>
+    <script src="js/admin-shell.js"></script>
+    <script src="js/pages/customer-lookup-page.js"></script>
+</body>
+</html>

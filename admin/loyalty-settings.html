@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إعدادات الولاء | لوحة تحكم حلويات بوسي</title>
+    <meta name="robots" content="noindex, nofollow">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="css/admin-theme.css">
+    <link rel="stylesheet" href="css/admin-layout.css">
+
+    <style>
+        /* عناصر خاصة بجدول شرائح الولاء (تليفة "الترتيب داخل الدورة → نسبة الخصم") */
+        .lset-tiers-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+        .lset-tiers-table th { text-align: right; font-size: 0.78rem; color: var(--adm-text-muted); padding: 6px 8px; }
+        .lset-tiers-table td { padding: 6px 8px; }
+        .lset-tiers-table input { width: 100%; box-sizing: border-box; }
+        .lset-tiers-row-delete { background: none; border: none; color: var(--adm-danger); cursor: pointer; font-size: 0.95rem; padding: 6px; }
+        .lset-preview-cycle { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+        .lset-preview-dot {
+            min-width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
+            font-size: 0.78rem; font-weight: 800; background: var(--adm-bg-hover); color: var(--adm-text-secondary); padding: 0 6px;
+        }
+        .lset-preview-dot.has-discount { background: var(--adm-success-bg); color: var(--adm-success); }
+        .lset-preview-dot.is-milestone { background: linear-gradient(135deg, #d4af37, #f0ce6b); color: #3a2e00; }
+    </style>
+</head>
+<body data-page="loyalty-settings">
+
+    <!-- شاشة تحميل تظهر لحد ما يتأكد من الجلسة -->
+    <div class="adm-auth-gate"><div class="adm-loading-spinner"></div></div>
+
+    <div class="adm-shell">
+        <div id="adm-shell-target"></div>
+
+        <main class="adm-main">
+            <div id="adm-topbar-target"></div>
+
+            <div class="adm-content" id="adm-page-content">
+
+                <div class="adm-card">
+                    <div class="adm-homepage-save-bar">
+                        <div>
+                            <h2>إعدادات الولاء</h2>
+                            <p>نسب الخصم، طول دورة الخصم، عدد الطلبات لقسيمة الهدية، قيمتها، ومدة صلاحيتها - بتتطبق تلقائياً على كل طلب جديد من غير أي تعديل تاني</p>
+                        </div>
+                        <button class="adm-btn adm-btn-primary" id="lset-save-btn">
+                            <i class="fa-solid fa-floppy-disk"></i> حفظ الإعدادات
+                        </button>
+                    </div>
+                </div>
+
+                <div id="lset-loading" class="adm-card adm-mt-16"><div class="adm-loading-spinner"></div></div>
+
+                <div id="lset-content" style="display: none;">
+
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header">
+                            <div>
+                                <h2>تفعيل برنامج الولاء</h2>
+                                <p>لو اتقفل، كل الطلبات الجديدة هتتحسب بدون أي خصم أو تراكم ولاء لحد ما يتفعّل تاني</p>
+                            </div>
+                        </div>
+                        <label class="adm-checkbox-label">
+                            <input type="checkbox" id="lset-enabled">
+                            برنامج الولاء مفعّل حالياً
+                        </label>
+                    </div>
+
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header">
+                            <div>
+                                <h2>دورة نسب الخصم</h2>
+                                <p>كل عميلة بتاخد نسبة خصم تلقائية على طلبها حسب ترتيبه داخل الدورة (مثلاً: الطلب الثالث 5%، الخامس 10%، السابع 15%، وبعدها الدورة بتتكرر من الأول)</p>
+                            </div>
+                        </div>
+
+                        <div class="adm-field" style="max-width: 260px;">
+                            <label for="lset-cycle-length">عدد الطلبات في دورة الخصم</label>
+                            <input type="number" min="1" step="1" class="adm-input" id="lset-cycle-length">
+                            <span class="adm-hint">بعد ما العميلة توصل لآخر رقم في الدورة، الترقيم بيرجع من الأول تاني</span>
+                        </div>
+
+                        <table class="lset-tiers-table" id="lset-tiers-table">
+                            <thead>
+                                <tr>
+                                    <th style="width:45%;">ترتيب الطلب داخل الدورة</th>
+                                    <th style="width:45%;">نسبة الخصم (%)</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="lset-tiers-tbody"></tbody>
+                        </table>
+                        <button type="button" class="adm-btn adm-btn-ghost" id="lset-add-tier-btn">
+                            <i class="fa-solid fa-plus"></i> إضافة نسبة خصم جديدة
+                        </button>
+
+                        <div class="adm-field adm-mt-16" style="margin-bottom:0;">
+                            <label>معاينة الدورة</label>
+                            <div class="lset-preview-cycle" id="lset-preview-cycle"></div>
+                            <span class="adm-hint">🥇 المربع الذهبي = طلب قسيمة الهدية (بيتجاهل نسبة الخصم العادية في نفس الطلب)</span>
+                        </div>
+                    </div>
+
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header">
+                            <div>
+                                <h2>قسيمة الهدية (كل عدد معيّن من الطلبات)</h2>
+                                <p>بتتصرف تلقائياً وبتتقيّد برقم هاتف العميلة أول ما طلب الوصول للرقم ده يوصل لحالة "تم التسليم"</p>
+                            </div>
+                        </div>
+                        <div class="adm-form-grid">
+                            <div class="adm-field">
+                                <label for="lset-milestone-every">عدد الطلبات في دورة قسيمة الهدية</label>
+                                <input type="number" min="1" step="1" class="adm-input" id="lset-milestone-every">
+                                <span class="adm-hint">مثال: 10 يعني كل طلب رقم 10 و20 و30... بتتكسب فيه قسيمة جديدة</span>
+                            </div>
+                            <div class="adm-field">
+                                <label for="lset-voucher-amount">قيمة القسيمة (ج.م)</label>
+                                <input type="number" min="0" step="1" class="adm-input" id="lset-voucher-amount">
+                            </div>
+                            <div class="adm-field">
+                                <label for="lset-voucher-validity">مدة صلاحية القسيمة (بالشهور)</label>
+                                <input type="number" min="1" step="1" class="adm-input" id="lset-voucher-validity">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/admin-data.js"></script>
+    <script src="js/admin-auth-guard.js"></script>
+    <script src="js/admin-ui-utils.js"></script>
+    <script src="js/admin-shell.js"></script>
+    <script src="js/pages/loyalty-settings-page.js"></script>
+</body>
+</html>
