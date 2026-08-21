@@ -16,6 +16,9 @@
     
     <!-- 🔍 إعدادات تحسين محركات البحث والأرشفة الفاخرة SEO -->
     <meta name="description" content="استمتع بتصفح تشكيلة حلويات بوسي الفاخرة المجهزة يومياً بمكونات طبيعية 100% طازجة تليق بمناسباتكم السعيدة.">
+    <meta property="og:title" content="تصفح الأصناف الفاخرة | حلويات بوسي">
+    <meta property="og:description" content="استمتع بتصفح تشكيلة حلويات بوسي الفاخرة المجهزة يومياً بمكونات طبيعية 100% طازجة تليق بمناسباتكم السعيدة.">
+    <meta property="og:type" content="website">
     
     <!-- ⚡ [إصلاح أداء]: preconnect ناقص كان بيأخر أول اتصال بمصادر الخط والصور والأيقونات -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -477,6 +480,20 @@
                 document.title = `${categoryObj.title} الفاخرة | حلويات بوسي`;
                 headlineNode.textContent = categoryObj.title;
                 breadcrumbNode.textContent = categoryObj.title;
+
+                // 🔍 [SEO - وصف مخصص لكل قسم]: نفس مبدأ product.html - قبل كده كل الأقسام
+                // (تورت، ورد، كب كيك...) كانت بتشترك في meta description واحد عام للصفحة
+                // كلها. دلوقتي كل قسم بياخد وصف فيه اسمه الحقيقي، فجوجل يقدر يميّز نتيجة
+                // "الجاتوهات الملكية" عن نتيجة "بوكيهات الورد" في نتائج البحث.
+                (function updateBoseCategoryMeta() {
+                    const catDesc = `تسوقي ${categoryObj.title} من حلويات بوسي - تشكيلة فاخرة بمكونات طبيعية 100%، تحضير طازة يومياً وتوصيل لباب البيت.`;
+                    const metaDesc = document.querySelector('meta[name="description"]');
+                    if (metaDesc) metaDesc.setAttribute("content", catDesc);
+                    const ogTitle = document.querySelector('meta[property="og:title"]');
+                    if (ogTitle) ogTitle.setAttribute("content", `${categoryObj.title} الفاخرة | حلويات بوسي`);
+                    const ogDesc = document.querySelector('meta[property="og:description"]');
+                    if (ogDesc) ogDesc.setAttribute("content", catDesc);
+                })();
 
                 // 🛡️ [SEO - تحديث Canonical]: بنحدّث الوسم بنفس رابط الفئة الحالية بالظبط
                 // (categoryId من الـ URL) عشان جوجل يعرف إن ده الرابط الرسمي المعتمد لنفس
