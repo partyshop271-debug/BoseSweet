@@ -81,6 +81,60 @@
     })();
 
     /**
+     * 🛒👑 [نمو - تذكير بالسلة]: العميلة بتتصفح، تحط منتجات في السلة، وتتشتت (مكالمة،
+     * إشعار تاني) - وترجع تاني بعد شوية من غير ما تكمل. بدل ما نسيبها تنسى، لو رجعت
+     * للموقع وفي عربة منسية من زيارة سابقة (مش الزيارة الحالية - عشان متتكررش كل ثانية)
+     * بيظهرلها شريط لطيف فوق يفكّرها وبيوديها للسلة بضغطة واحدة.
+     * ملحوظة: ده تذكير على الموقع نفسه بس (مفيش بريد إلكتروني ولا SMS - الموقع مش
+     * بيجمع إيميلات أصلاً)، فمش "استرجاع سلة متروكة" كامل بالمعنى الاحترافي، لكنه بديل
+     * بسيط وآمن ما دام مفيش بنية تحتية لإيميلات/SMS في الموقع.
+     */
+    (function ensureBoseCartReminder() {
+        const skipPages = ["/cart.html", "/checkout.html", "/order-success.html"];
+        if (skipPages.some((p) => window.location.pathname.endsWith(p))) return;
+
+        try {
+            const rawCart = localStorage.getItem("bose_cart");
+            const cart = rawCart ? JSON.parse(rawCart) : [];
+            if (!Array.isArray(cart) || cart.length === 0) return;
+
+            const lastSeenKey = "bose_cart_reminder_last_shown";
+            const lastVisitKey = "bose_last_visit_ts";
+            const now = Date.now();
+            const lastVisit = parseInt(sessionStorage.getItem(lastVisitKey) || "0", 10);
+            const isReturningVisit = !sessionStorage.getItem(lastVisitKey); // أول تحميل في تبويب/جلسة جديدة = عودة محتملة
+            sessionStorage.setItem(lastVisitKey, String(now));
+
+            const lastShown = parseInt(localStorage.getItem(lastSeenKey) || "0", 10);
+            const hoursSinceShown = (now - lastShown) / 36e5;
+            if (!isReturningVisit || hoursSinceShown < 6) return; // مش أكتر من مرة كل 6 ساعات، ومش على كل صفحة تنقل جوه نفس الزيارة
+
+            const itemsCount = cart.reduce((sum, it) => sum + (it.quantity || 1), 0);
+            const banner = document.createElement("div");
+            banner.setAttribute("dir", "rtl");
+            banner.style.cssText = "position:fixed; bottom:14px; left:14px; right:14px; max-width:420px; margin:0 auto; background:#fff; border:1px solid var(--bose-pink, #FF91A4); border-radius:16px; box-shadow:0 8px 24px rgba(0,0,0,0.15); padding:14px 16px; z-index:99998; display:flex; align-items:center; gap:12px; font-family:inherit;";
+            banner.innerHTML = `
+                <span style="font-size:1.6rem;">🛍️</span>
+                <span style="flex:1; font-size:0.88rem; color:#333;">لسه ${itemsCount} منتج مستني في سلتك - كمّلي طلبك قبل ما ينفد!</span>
+                <button id="bose-cart-reminder-go" style="background:var(--bose-pink,#FF91A4); color:#fff; border:none; border-radius:10px; padding:8px 14px; font-size:0.82rem; font-weight:700; white-space:nowrap; cursor:pointer;">للسلة</button>
+                <button id="bose-cart-reminder-close" aria-label="إغلاق" style="background:none; border:none; font-size:1.1rem; color:#999; cursor:pointer; padding:0 4px;">×</button>
+            `;
+            document.body.appendChild(banner);
+            localStorage.setItem(lastSeenKey, String(now));
+
+            document.getElementById("bose-cart-reminder-go").addEventListener("click", () => {
+                window.location.href = "/cart.html";
+            });
+            document.getElementById("bose-cart-reminder-close").addEventListener("click", () => {
+                banner.remove();
+            });
+            setTimeout(() => { if (banner.isConnected) banner.remove(); }, 12000);
+        } catch (e) {
+            // فشل التذكير مش لازم يكسر أي حاجة تانية في الموقع
+        }
+    })();
+
+    /**
      * ℹ️👑 [نظام الشروح التوضيحية الموحد للموقع كله]: كان الشرح المنبثق (Popover)
      * موجود جوه cake-builder.html بس، بمنطق محلي مربوط بديكشنري ثابت من مفاتيح
      * معروفة مقدماً. المشكلة إن ده مبيصلحش لبقية الموقع لأن معظم كروت المنتجات
