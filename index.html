@@ -92,6 +92,7 @@
     <script src="js/supabase-client.js?v=2026_production_v39.0" defer></script>
     <script src="js/favorites-engine.js?v=2026_production_v37.0" defer></script>
     <script src="js/core-engine.js?v=2026_production_v42.0" defer></script>
+    <script src="js/loyalty-config.js?v=2026_production_v1.0" defer></script>
 </head>
 <body class="bose-hardware-accelerated">
 
@@ -386,9 +387,15 @@
                 <div class="bose-loyalty-teaser-text-col">
                     <span class="bose-loyalty-teaser-eyebrow"><i class="fa-solid fa-crown"></i> نادي مكافآت بوسي</span>
                     <h2 id="loyalty-teaser-heading" class="bose-loyalty-teaser-title">كل ما تطلبي أكتر، كل ما تكسبي أكتر</h2>
-                    <p class="bose-loyalty-teaser-desc">خصومات تلقائية على طلباتك من غير أي كود، وقسيمة شراء حقيقية بـ300 جنيه كل 10 طلبات - النظام كله واضح وبسيط وموجود قدامك دايماً.</p>
+                    <!-- 🛡️ [إصلاح جذري - ديناميكية القسم]: الوصف والشرائح تحت دي قيم
+                         افتراضية بتظهر فورًا قبل ما بيانات القاعدة توصل (عشان محدش
+                         يشوف فراغ)، وبعدين renderLoyaltyTeaserSection() تحت بتستبدلها
+                         فعليًا بالأرقام الحقيقية اللي مخزّنة في store_settings.loyalty
+                         بمجرد ما تجهز - فأي تعديل من لوحة التحكم (loyalty-settings.html)
+                         يوصل هنا تلقائيًا من غير أي تدخل يدوي في الكود تاني. -->
+                    <p class="bose-loyalty-teaser-desc" id="loyalty-teaser-desc">خصومات تلقائية على طلباتك من غير أي كود، وقسيمة شراء حقيقية بـ300 جنيه كل 10 طلبات - النظام كله واضح وبسيط وموجود قدامك دايماً.</p>
 
-                    <div class="bose-loyalty-tier-chips">
+                    <div class="bose-loyalty-tier-chips" id="loyalty-tier-chips">
                         <div class="bose-loyalty-chip"><span class="chip-num">5%</span><span class="chip-lbl">الطلب 3</span></div>
                         <div class="bose-loyalty-chip"><span class="chip-num">10%</span><span class="chip-lbl">الطلب 5</span></div>
                         <div class="bose-loyalty-chip"><span class="chip-num">15%</span><span class="chip-lbl">الطلب 7</span></div>
@@ -633,6 +640,29 @@
         (function () {
             function esc(s) { return window.escapeBoseHTML ? window.escapeBoseHTML(s) : s; }
 
+            // 🛡️ [إصلاح جذري - ديناميكية قسم نادي المكافآت في الرئيسية]: بترسم
+            // الوصف وشرائح النسب من نفس إعدادات لوحة التحكم الحية (نفس المصدر
+            // اللي بتقرأ منه rewards.html بالظبط عبر loyalty-config.js) بدل
+            // الأرقام الثابتة اللي كانت مكتوبة يدوياً هنا قبل كده.
+            function renderLoyaltyTeaserSection() {
+                if (typeof window.getBoseLoyaltyConfig !== "function" || !window.BoseStoreData) return;
+
+                const config = window.getBoseLoyaltyConfig();
+                const descEl = document.getElementById("loyalty-teaser-desc");
+                const chipsEl = document.getElementById("loyalty-tier-chips");
+
+                if (descEl) {
+                    descEl.textContent = `خصومات تلقائية على طلباتك من غير أي كود، وقسيمة شراء حقيقية بـ${config.voucherAmount} جنيه كل ${config.milestoneEvery} طلبات - النظام كله واضح وبسيط وموجود قدامك دايماً.`;
+                }
+
+                if (chipsEl && typeof window.getSortedLoyaltyTiers === "function") {
+                    const tiers = window.getSortedLoyaltyTiers(config);
+                    let html = tiers.map((t) => `<div class="bose-loyalty-chip"><span class="chip-num">${esc(String(t.percent))}%</span><span class="chip-lbl">الطلب ${esc(String(t.position))}</span></div>`).join("");
+                    html += `<div class="bose-loyalty-chip bose-loyalty-chip-gold"><span class="chip-num">${esc(String(config.voucherAmount))}ج</span><span class="chip-lbl">كل ${esc(String(config.milestoneEvery))} طلبات</span></div>`;
+                    chipsEl.innerHTML = html;
+                }
+            }
+
             function renderWidgetResult(row) {
                 const formState = document.getElementById("loyalty-widget-form-state");
                 const resultState = document.getElementById("loyalty-widget-result-state");
@@ -697,6 +727,14 @@
                 if (btn) btn.addEventListener("click", handleWidgetLookup);
                 if (phoneInput) phoneInput.addEventListener("keydown", (e) => { if (e.key === "Enter") handleWidgetLookup(); });
             });
+
+            // البيانات ممكن توصل قبل أو بعد ما الصفحة تخلص تحميل حسب الكاش
+            // المحلي (راجع loadStoreDatabase في core-engine.js) - فبنغطي
+            // الحالتين: نرسم فورًا لو البيانات موجودة بالفعل، وبنستمع كمان
+            // لحدث BoseDatabaseLoaded عشان أي تحديث هادئ في الخلفية (لما نسخة
+            // القاعدة تتغيّر) يحدّث القسم ده تلقائيًا بردو من غير Reload.
+            if (window.BoseStoreData) renderLoyaltyTeaserSection();
+            document.addEventListener("BoseDatabaseLoaded", renderLoyaltyTeaserSection);
         })();
     </script>
 </body>

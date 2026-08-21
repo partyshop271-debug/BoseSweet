@@ -52,7 +52,7 @@
                 <p style="font-size: 0.95rem; color: var(--bose-black); margin-bottom: 25px; line-height: 1.6; min-height: 50px;">
                     حابب تسأل عن الأسعار، المنيو، أو تتابع تفاصيل وحالة أوردرك الحالي؟ خدمة العملاء جاهزة تجاوبك على طول.
                 </p>
-                <a href="https://wa.me/201097238441" target="_blank" rel="noopener" style="display: inline-block; background-color: var(--bose-pink); color: #FFFFFF; padding: 12px 25px; border-radius: 12px; text-decoration: none; font-weight: 700; font-size: 1rem; width: 100%; box-sizing: border-box; transition: transform 0.2s ease;">
+                <a href="https://wa.me/201097238441" id="contact-whatsapp-link-general" target="_blank" rel="noopener" style="display: inline-block; background-color: var(--bose-pink); color: #FFFFFF; padding: 12px 25px; border-radius: 12px; text-decoration: none; font-weight: 700; font-size: 1rem; width: 100%; box-sizing: border-box; transition: transform 0.2s ease;">
                     تحدث مع خدمة العملاء
                 </a>
             </div>
@@ -66,7 +66,7 @@
                 <p style="font-size: 0.95rem; color: var(--bose-black); margin-bottom: 25px; line-height: 1.6; min-height: 50px;">
                     عندك مناسبة سعيدة وحابب تعمل تورتة أو بوكيه بشكل وتفاصيل معينة؟ شاركنا فكرتك وبنحضرها لك بكل احترافية.
                 </p>
-                <a href="https://wa.me/201097238441?text=%D8%AD%D8%A7%D8%A8%D8%A8%20%D8%A7%D8%AF%D8%B1%D8%AF%D8%B4%20%D9%85%D8%B9%20%D8%AE%D8%AF%D9%85%D8%A9%20%D8%A7%D9%84%D8%B9%D9%85%D9%84%D8%A7%D8%A1%20%D8%B9%D9%86%20%D8%AA%D8%AC%D9%87%D9%8A%D8%B2%20%D8%B7%D9%84%D8%A8%20%D8%AE%D8%A7%D8%B5%20%D9%84%D9%85%D9%86%D8%A7%D8%B3%D8%A8%D8%A9" target="_blank" rel="noopener" style="display: inline-block; background-color: var(--bose-white); color: var(--bose-black); border: var(--bose-border-thick); padding: 10px 25px; border-radius: 12px; text-decoration: none; font-weight: 700; font-size: 1rem; width: 100%; box-sizing: border-box; transition: all 0.3s ease;">
+                <a href="https://wa.me/201097238441?text=%D8%AD%D8%A7%D8%A8%D8%A8%20%D8%A7%D8%AF%D8%B1%D8%AF%D8%B4%20%D9%85%D8%B9%20%D8%AE%D8%AF%D9%85%D8%A9%20%D8%A7%D9%84%D8%B9%D9%85%D9%84%D8%A7%D8%A1%20%D8%B9%D9%86%20%D8%AA%D8%AC%D9%87%D9%8A%D8%B2%20%D8%B7%D9%84%D8%A8%20%D8%AE%D8%A7%D8%B5%20%D9%84%D9%85%D9%86%D8%A7%D8%B3%D8%A8%D8%A9" id="contact-whatsapp-link-custom" target="_blank" rel="noopener" style="display: inline-block; background-color: var(--bose-white); color: var(--bose-black); border: var(--bose-border-thick); padding: 10px 25px; border-radius: 12px; text-decoration: none; font-weight: 700; font-size: 1rem; width: 100%; box-sizing: border-box; transition: all 0.3s ease;">
                     اطلب تصميمك الخاص
                 </a>
             </div>
@@ -119,6 +119,35 @@
 
     <!-- وسم الحقن الموحد للفوتر القياسي للموقع -->
     <div id="bose-footer-injector"></div>
+
+    <!-- 🛡️ [إصلاح جذري - ديناميكية رقم الواتساب]: زراير الواتساب فوق مكتوبين
+         برقم ثابت كـ Placeholder بس (عشان يشتغلوا فورًا حتى قبل ما بيانات
+         القاعدة توصل). السكريبت ده بيستبدل الرقم فعليًا برقم social.whatsapp
+         الحقيقي من store_settings بمجرد ما البيانات تجهز - بنفس الدالة
+         toInternationalWhatsappNumber المستخدمة في الهيدر/الفوتر الموحدين
+         بـ core-engine.js - عشان لو الأدمن غيّر رقم التواصل من لوحة التحكم
+         يوصل هنا تلقائيًا من غير أي تعديل يدوي في الكود. -->
+    <script>
+        (function () {
+            function syncContactWhatsappLinks() {
+                if (!window.BoseStoreData || typeof window.toInternationalWhatsappNumber !== "function") return;
+                const whatsappNumber = window.BoseStoreData.social?.whatsapp || "201097238441";
+                const intl = window.toInternationalWhatsappNumber(whatsappNumber);
+
+                const generalLink = document.getElementById("contact-whatsapp-link-general");
+                if (generalLink) generalLink.href = `https://wa.me/${intl}`;
+
+                const customLink = document.getElementById("contact-whatsapp-link-custom");
+                if (customLink) {
+                    const presetText = "حابب ادردش مع خدمة العملاء عن تجهيز طلب خاص لمناسبة";
+                    customLink.href = `https://wa.me/${intl}?text=${encodeURIComponent(presetText)}`;
+                }
+            }
+
+            if (window.BoseStoreData) syncContactWhatsappLinks();
+            document.addEventListener("BoseDatabaseLoaded", syncContactWhatsappLinks);
+        })();
+    </script>
 
 </body>
 </html>

@@ -24,6 +24,7 @@
     <script src="js/supabase-client.js?v=2026_production_v39.0"></script>
     <script src="js/favorites-engine.js?v=2026_production_v37.0"></script>
     <script src="js/core-engine.js?v=2026_production_v38.0"></script>
+    <script src="js/loyalty-config.js?v=2026_production_v1.0"></script>
 
     <style>
         .rw-wrap { padding: 50px 18px 90px; max-width: 720px; margin: 0 auto; min-height: 70vh; font-family: 'Cairo', sans-serif; }
@@ -116,7 +117,11 @@
             <p>كل ما تطلبي أكتر، كل ما تكسبي أكتر - خصومات تلقائية على طلباتك وقسيمة شراء حقيقية بدون أي تعقيد.</p>
         </div>
 
-        <div class="rw-explainer">
+        <!-- 🛡️ [إصلاح جذري - ديناميكية القسم]: نفس القيم الافتراضية بتظهر فورًا
+             كـ Placeholder، وبعدين renderLoyaltyExplainerAndHowto() تحت بتستبدلها
+             بالأرقام الحقيقية من store_settings.loyalty (نفس مصدر تيزر الرئيسية
+             عبر loyalty-config.js) بمجرد ما تجهز. -->
+        <div class="rw-explainer" id="rw-explainer-cards">
             <div class="rw-explainer-card"><span class="rw-exp-num">5%</span><span class="rw-exp-lbl">خصم على طلبك رقم 3</span></div>
             <div class="rw-explainer-card"><span class="rw-exp-num">10%</span><span class="rw-exp-lbl">خصم على طلبك رقم 5</span></div>
             <div class="rw-explainer-card"><span class="rw-exp-num">15%</span><span class="rw-exp-lbl">خصم على طلبك رقم 7</span></div>
@@ -139,19 +144,19 @@
             <h2><i class="fa-solid fa-circle-info" style="color:#FF91A4;"></i> إزاي يشتغل نظام المكافآت؟</h2>
             <div class="rw-howto-step">
                 <div class="rw-hs-num">1</div>
-                <p>مع كل طلب بتأكديه، بنعد ترتيبه ضمن "دورة" مكوّنة من 7 طلبات - طلبك رقم 3 في الدورة بياخد خصم 5%، رقم 5 بياخد 10%، ورقم 7 بياخد 15% تلقائيًا من غير ما تحتاجي أي كود.</p>
+                <p id="rw-howto-step-1">مع كل طلب بتأكديه، بنعد ترتيبه ضمن "دورة" مكوّنة من 7 طلبات - طلبك رقم 3 في الدورة بياخد خصم 5%، رقم 5 بياخد 10%، ورقم 7 بياخد 15% تلقائيًا من غير ما تحتاجي أي كود.</p>
             </div>
             <div class="rw-howto-step">
                 <div class="rw-hs-num">2</div>
-                <p>بعد ما الدورة تخلص (يعني بعد الطلب السابع)، بتبدأ دورة جديدة من الأول تلقائيًا، وهكذا مع كل طلباتك.</p>
+                <p id="rw-howto-step-2">بعد ما الدورة تخلص (يعني بعد الطلب السابع)، بتبدأ دورة جديدة من الأول تلقائيًا، وهكذا مع كل طلباتك.</p>
             </div>
             <div class="rw-howto-step">
                 <div class="rw-hs-num">3</div>
-                <p>بشكل مستقل، كل 10 طلبات (العاشر، العشرين، الثلاثين...) بناخد لك قسيمة شراء حقيقية بقيمة 300 جنيه، صالحة لمدة شهرين من تاريخ استلام الطلب، تقدري تستخدميها في أي طلب جاي.</p>
+                <p id="rw-howto-step-3">بشكل مستقل، كل 10 طلبات (العاشر، العشرين، الثلاثين...) بناخد لك قسيمة شراء حقيقية بقيمة 300 جنيه، صالحة لمدة شهرين من تاريخ استلام الطلب، تقدري تستخدميها في أي طلب جاي.</p>
             </div>
             <div class="rw-howto-step">
                 <div class="rw-hs-num">4</div>
-                <p>الخصم بيتطبق تلقائيًا وقت إتمام الطلب بمجرد ما تكتبي رقم هاتفك في صفحة الدفع، وقسيمة الـ300 جنيه هتلاقيها هنا وتقدري تكتبي كودها في نفس صفحة الدفع.</p>
+                <p id="rw-howto-step-4">الخصم بيتطبق تلقائيًا وقت إتمام الطلب بمجرد ما تكتبي رقم هاتفك في صفحة الدفع، وقسيمة الـ300 جنيه هتلاقيها هنا وتقدري تكتبي كودها في نفس صفحة الدفع.</p>
             </div>
         </div>
     </main>
@@ -162,10 +167,14 @@
         (function () {
             function esc(s) { return window.escapeBoseHTML ? window.escapeBoseHTML(s) : s; }
 
+            // 🛡️ [إصلاح جذري]: بترسم النقاط بعدد "دورة الخصم" الحقيقي وتيجاته
+            // الفعلية من store_settings.loyalty (نفس مصدر تيزر الرئيسية) بدل
+            // الرقم 7 والشرائح {3:5, 5:10, 7:15} اللي كانت مكتوبة يدوياً هنا.
             function renderCycleDots(position, nextPct) {
-                const tiers = { 3: 5, 5: 10, 7: 15 };
+                const config = (typeof window.getBoseLoyaltyConfig === "function") ? window.getBoseLoyaltyConfig() : { cycleLength: 7, tiers: { "3": 5, "5": 10, "7": 15 } };
+                const tiers = config.tiers || {};
                 let html = '<div class="rw-cycle-dots">';
-                for (let i = 1; i <= 7; i++) {
+                for (let i = 1; i <= config.cycleLength; i++) {
                     const isReward = !!tiers[i];
                     let cls = "rw-cycle-dot";
                     if (isReward) cls += " rw-dot-reward";
@@ -181,6 +190,50 @@
                 return html;
             }
 
+            // 🛡️ [إصلاح جذري - ديناميكية القسم]: بترسم كروت الشرح العلوية، خطوات
+            // "إزاي يشتغل النظام"، وعنوان الدورة من نفس إعدادات لوحة التحكم
+            // الحية - بدل النصوص/الأرقام الثابتة اللي كانت مكتوبة يدوياً في
+            // الصفحة قبل كده وممكن تختلف عن اللي محفوظ فعليًا في القاعدة.
+            function renderLoyaltyExplainerAndHowto() {
+                if (typeof window.getBoseLoyaltyConfig !== "function" || !window.BoseStoreData) return;
+                const config = window.getBoseLoyaltyConfig();
+                const tiers = (typeof window.getSortedLoyaltyTiers === "function") ? window.getSortedLoyaltyTiers(config) : [];
+                const monthsTxt = window.formatArabicMonths ? window.formatArabicMonths(config.voucherValidityMonths) : `${config.voucherValidityMonths} شهر`;
+
+                const cardsEl = document.getElementById("rw-explainer-cards");
+                if (cardsEl) {
+                    let html = tiers.map((t) => `<div class="rw-explainer-card"><span class="rw-exp-num">${t.percent}%</span><span class="rw-exp-lbl">خصم على طلبك رقم ${t.position}</span></div>`).join("");
+                    html += `<div class="rw-explainer-card rw-voucher-card"><span class="rw-exp-num">${config.voucherAmount} ج</span><span class="rw-exp-lbl">قسيمة شراء كل ${config.milestoneEvery} طلبات</span></div>`;
+                    cardsEl.innerHTML = html;
+                }
+
+                const cycleTitleEl = document.getElementById("rw-cycle-title");
+                if (cycleTitleEl) {
+                    cycleTitleEl.innerHTML = `<i class="fa-solid fa-rotate" style="color:#FF91A4;"></i> دورة الخصم الحالية (كل ${config.cycleLength} طلبات)`;
+                }
+
+                const step1 = document.getElementById("rw-howto-step-1");
+                if (step1) {
+                    const tiersSentence = tiers.map((t) => `طلبك رقم ${t.position} في الدورة بياخد خصم ${t.percent}%`).join("، ");
+                    step1.textContent = `مع كل طلب بتأكديه، بنعد ترتيبه ضمن "دورة" مكوّنة من ${config.cycleLength} طلبات - ${tiersSentence} تلقائيًا من غير ما تحتاجي أي كود.`;
+                }
+
+                const step2 = document.getElementById("rw-howto-step-2");
+                if (step2) {
+                    step2.textContent = `بعد ما الدورة تخلص (يعني بعد الطلب رقم ${config.cycleLength})، بتبدأ دورة جديدة من الأول تلقائيًا، وهكذا مع كل طلباتك.`;
+                }
+
+                const step3 = document.getElementById("rw-howto-step-3");
+                if (step3) {
+                    step3.textContent = `بشكل مستقل، كل ${config.milestoneEvery} طلبات بناخد لك قسيمة شراء حقيقية بقيمة ${config.voucherAmount} جنيه، صالحة لمدة ${monthsTxt} من تاريخ استلام الطلب، تقدري تستخدميها في أي طلب جاي.`;
+                }
+
+                const step4 = document.getElementById("rw-howto-step-4");
+                if (step4) {
+                    step4.textContent = `الخصم بيتطبق تلقائيًا وقت إتمام الطلب بمجرد ما تكتبي رقم هاتفك في صفحة الدفع، وقسيمة الـ${config.voucherAmount} جنيه هتلاقيها هنا وتقدري تكتبي كودها في نفس صفحة الدفع.`;
+                }
+            }
+
             function renderResult(row) {
                 const box = document.getElementById("rewards-result-box");
                 box.style.display = "block";
@@ -190,11 +243,15 @@
                     return;
                 }
 
+                const loyaltyConfig = (typeof window.getBoseLoyaltyConfig === "function") ? window.getBoseLoyaltyConfig() : { milestoneEvery: 10, voucherAmount: 300 };
+                const milestoneEvery = loyaltyConfig.milestoneEvery;
+                const voucherAmount = loyaltyConfig.voucherAmount;
+
                 const totalOrders = row.total_orders || 0;
                 const position = row.loyalty_position || 1;
                 const nextPct = row.next_discount_percent || 0;
                 const untilDiscount = row.orders_until_next_discount || 0;
-                const untilVoucher = row.orders_until_next_voucher || 10;
+                const untilVoucher = row.orders_until_next_voucher || milestoneEvery;
                 const vouchers = Array.isArray(row.active_vouchers) ? row.active_vouchers : [];
 
                 let cycleNote;
@@ -204,10 +261,10 @@
                     cycleNote = `باقيلك <span class="rw-highlight">${untilDiscount}</span> ${untilDiscount === 1 ? 'طلب' : 'طلبات'} كمان عشان تكسبي خصم على طلبك`;
                 }
 
-                const voucherProgressPct = Math.round(((10 - untilVoucher) / 10) * 100);
-                const voucherNote = untilVoucher === 10 && totalOrders > 0 && totalOrders % 10 === 0
-                    ? "مبروك! وصلتي لمرحلة قسيمة الـ300 جنيه 🎁"
-                    : `باقيلك <b>${untilVoucher}</b> ${untilVoucher === 1 ? 'طلب' : 'طلبات'} عشان تكسبي قسيمة شراء بـ300 جنيه`;
+                const voucherProgressPct = Math.round(((milestoneEvery - untilVoucher) / milestoneEvery) * 100);
+                const voucherNote = untilVoucher === milestoneEvery && totalOrders > 0 && totalOrders % milestoneEvery === 0
+                    ? `مبروك! وصلتي لمرحلة قسيمة الـ${voucherAmount} جنيه 🎁`
+                    : `باقيلك <b>${untilVoucher}</b> ${untilVoucher === 1 ? 'طلب' : 'طلبات'} عشان تكسبي قسيمة شراء بـ${voucherAmount} جنيه`;
 
                 let vouchersHtml = "";
                 if (vouchers.length > 0) {
@@ -233,12 +290,12 @@
                         <span class="rw-order-count-lbl">${totalOrders === 1 ? 'طلب مكتمل' : 'طلبات مكتملة'}</span>
                     </div>
                     <div class="rw-cycle-box">
-                        <div class="rw-cycle-title"><i class="fa-solid fa-rotate" style="color:#FF91A4;"></i> دورة الخصم الحالية (كل 7 طلبات)</div>
+                        <div class="rw-cycle-title" id="rw-cycle-title"><i class="fa-solid fa-rotate" style="color:#FF91A4;"></i> دورة الخصم الحالية (كل 7 طلبات)</div>
                         ${renderCycleDots(position, nextPct)}
                         <div class="rw-cycle-note">${cycleNote}</div>
                     </div>
                     <div class="rw-voucher-progress-box">
-                        <div class="rw-vp-title"><i class="fa-solid fa-gift"></i> قسيمة الـ300 جنيه</div>
+                        <div class="rw-vp-title"><i class="fa-solid fa-gift"></i> قسيمة الـ${voucherAmount} جنيه</div>
                         <div class="rw-vp-track"><div class="rw-vp-fill" style="width:${voucherProgressPct}%;"></div></div>
                         <div class="rw-vp-note">${voucherNote}</div>
                     </div>
@@ -290,6 +347,12 @@
                     handleSubmit(null);
                 }
             });
+
+            // نفس نمط تيزر الرئيسية: نرسم فورًا لو البيانات موجودة بالفعل،
+            // ونستمع لحدث BoseDatabaseLoaded عشان أي تحديث لاحق (تعديل من
+            // لوحة التحكم يوصل عبر فحص النسخة في الخلفية) يحدّث الصفحة تلقائيًا.
+            if (window.BoseStoreData) renderLoyaltyExplainerAndHowto();
+            document.addEventListener("BoseDatabaseLoaded", renderLoyaltyExplainerAndHowto);
         })();
     </script>
 </body>

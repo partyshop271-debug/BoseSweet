@@ -12,6 +12,11 @@
     <link rel="preconnect" href="https://res.cloudinary.com">
     <link rel="icon" href="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;800&display=swap" rel="stylesheet">
+    <!-- 🛡️ [إصلاح جذري - ديناميكية رقم الواتساب]: الصفحة دي مستقلة عن core-engine.js
+         (مفيش هيدر/فوتر موحد هنا)، فبنحمّل supabase-client.js لوحده بس عشان
+         نقدر نقرأ social.whatsapp الحقيقي من store_settings ونحدّث بيه رابط
+         الواتساب تحت - بدل الرقم الثابت اللي كان مكتوب يدوياً. -->
+    <script src="js/supabase-client.js?v=2026_production_v1.0"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -99,6 +104,29 @@
     </div>
 
     <div class="lib-footer">حلويات بوسي - الفرافرة، الوادي الجديد</div>
+
+    <script>
+        (function () {
+            function toIntl(phone) {
+                const digits = String(phone || "").replace(/[^\d]/g, "");
+                if (digits.startsWith("20")) return digits;
+                if (digits.startsWith("0")) return "20" + digits.slice(1);
+                return digits || "201097238441";
+            }
+
+            async function syncWhatsappLink() {
+                const link = document.getElementById("lib-whatsapp-link");
+                if (!link || !window.BoseSupabase || typeof window.BoseSupabase.loadBoseStoreDataFromSupabase !== "function") return;
+                try {
+                    const data = await window.BoseSupabase.loadBoseStoreDataFromSupabase();
+                    const number = (data && data.social && data.social.whatsapp) || "201097238441";
+                    link.href = `https://wa.me/${toIntl(number)}`;
+                } catch (e) { /* الصفحة تفضل شغالة بالرقم الافتراضي لو فشل الاتصال بالقاعدة */ }
+            }
+
+            syncWhatsappLink();
+        })();
+    </script>
 
 </body>
 </html>
