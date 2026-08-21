@@ -7,7 +7,7 @@
 (function () {
     "use strict";
 
-    // مفاتيح التخزين الموحدة لعلامة بوسي الفاخرة لضمان التزامن المطلق
+    // مفاتيح التخزين الموحدة لعلامة حلويات بوسي الفاخرة لضمان التزامن المطلق
     const CART_STORAGE_KEY = 'bose_cart';
     const FLOWER_STATE_STORAGE_KEY = 'bose_flower_builder_state';
     const BASE64_IMAGE_SESSION_KEY = 'bose_active_base64_image_session';

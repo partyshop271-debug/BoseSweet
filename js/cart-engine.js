@@ -1488,6 +1488,41 @@ function renderBoseSuccessPage(storeData) {
 
     if (grandTotalDisplay) grandTotalDisplay.textContent = (order.grandTotal || 0) + " EGP";
 
+    // 🧾 [إضافة اختيارية - مرجع شخصي للعميلة]: زرار تحميل صورة فاتورة اختياري
+    // للحفظ الشخصي - مختلف تمامًا عن زرار "إرسال الفاتورة" القديم اللي اتشال
+    // (راجع تعليق order-success.html). بيظهر بس لو الطلب فعلاً فيه أصناف
+    // (نفس شرط عرض الإيصال نفسه)، وبيستخدم نفس مولّد الصورة المستخدم في
+    // لوحة التحكم (js/invoice-image-generator.js) - المُدخلات هنا (order,
+    // storeData.store) نفس الشكل camelCase بالظبط اللي المولّد مبني عليه
+    // أصلاً، فمفيش أي تحويل شكل بيانات مطلوب زي اللي احتجناه في الأدمن.
+    const downloadInvoiceBtn = document.getElementById("bose-download-invoice-image-btn");
+    if (downloadInvoiceBtn && order.items && order.items.length > 0 && typeof window.generateBoseInvoiceImageBlob === "function") {
+        downloadInvoiceBtn.style.display = "inline-flex";
+        downloadInvoiceBtn.addEventListener("click", async () => {
+            const originalHTML = downloadInvoiceBtn.innerHTML;
+            downloadInvoiceBtn.disabled = true;
+            downloadInvoiceBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التجهيز...';
+            try {
+                const blob = await window.generateBoseInvoiceImageBlob(order, storeData.store || {});
+                if (!blob) throw new Error("تعذر توليد الصورة");
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `فاتورة-حلويات-بوسي-${order.orderNumber || ''}.png`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                setTimeout(() => URL.revokeObjectURL(url), 4000);
+            } catch (e) {
+                console.error("⚠️ تعذر تحميل صورة الفاتورة.", e);
+            } finally {
+                downloadInvoiceBtn.disabled = false;
+                downloadInvoiceBtn.innerHTML = originalHTML;
+            }
+        });
+    }
+
+
     // 🗑️ [إصلاح - حذف زرار "إرسال الفاتورة" وصورة الفاتورة]: فاتورة الواتساب
     // بتتفتح تلقائياً بالفعل لحظة تأكيد الطلب من صفحة الدفع نفسها (checkout)،
     // قبل ما العميلة توصل للصفحة دي بخطوة - فمفيش أي حاجة "لسه محتاجة إرسال"
@@ -1531,7 +1566,7 @@ function renderBoseSuccessPage(storeData) {
 
 /**
  * =========================================================================
- * 👑 4. محرك النوافذ المنبثقة الفاخرة لعلامة بوسي (Bose Custom Luxury Modals)
+ * 👑 4. محرك النوافذ المنبثقة الفاخرة لعلامة حلويات بوسي (Bose Custom Luxury Modals)
  * =========================================================================
  */
 function injectBoseCustomModalStyles() {
