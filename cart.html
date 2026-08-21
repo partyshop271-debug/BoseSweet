@@ -139,6 +139,16 @@ body {
                 <button id="btn-clear-cart" class="btn-clear-cart-node" style="font-family: 'Cairo', sans-serif; font-size: 0.88rem; font-weight: 700; color: #111111; border: 1px solid rgba(255,145,164,0.3); padding: 8px 16px; border-radius: 30px; background: #FFFFFF; cursor: pointer; transition: 0.2s;">إفراغ السلة</button>
             </div>
 
+            <!-- ⚠️ تنبيه العزل بين المنتجات المخصصة (تورت/ورد محاكي) والمنتجات العادية:
+                 يظهر تلقائيًا بس لو السلة فيها الاتنين مع بعض، عشان العميلة تعرف قبل
+                 ما تكمل إن المنتجات العادية هتتسلّم مع المخصص في نفس الموعد المتأخر. -->
+            <div id="mixed-order-warning-banner" style="display:none; align-items:flex-start; gap:10px; background: rgba(255,145,164,0.1); border: 1px solid rgba(255,145,164,0.4); border-radius: 14px; padding: 14px 16px; margin-bottom: 18px; direction: rtl;">
+                <i class="fas fa-triangle-exclamation" style="color:#FF91A4; margin-top:2px;"></i>
+                <p style="margin:0; font-size:0.88rem; font-weight:600; color:#111111; line-height:1.6;">
+                    طلبك فيه صنف تورت أو ورد مخصص من المحاكي، فهو محتاج وقت تحضير أطول (أسبوع كامل تقريبًا). المنتجات العادية الموجودة معاه في نفس السلة هتتسلّم <strong>مع</strong> المخصص في نفس الموعد المتأخر، مش هتوصلك لوحدها بدري. لو حابة تستلمي المنتجات العادية بسرعة، الأفضل تعمليها أوردر منفصل.
+                </p>
+            </div>
+
             <!-- وسم حقن كروت السلة الأفقية الفخمة والمحمية ضد البتر -->
             <div id="cart-items-wrapper" class="cart-items-collection"></div>
 

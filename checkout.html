@@ -339,6 +339,15 @@
                     <!-- نص رسالة حارس الوقت التوضيحي المستدعى ديناميكياً من حقل قاعدة البيانات لمنع التشتيت -->
                     <p id="checkout-preparation-message" style="font-size: 0.82rem; color: var(--bose-pink); font-weight: 600; margin: 4px 4px 0 0; line-height: 1.5; text-align: right;"></p>
 
+                    <!-- ⚠️ تنبيه العزل بين المنتجات المخصصة (تورت/ورد محاكي) والمنتجات العادية:
+                         يظهر تلقائيًا بس لو السلة فيها الاتنين مع بعض. -->
+                    <div id="checkout-mixed-order-warning-banner" style="display:none; align-items:flex-start; gap:10px; background: rgba(255,145,164,0.1); border: 1px solid rgba(255,145,164,0.4); border-radius: 14px; padding: 14px 16px; margin-top: 4px; direction: rtl;">
+                        <i class="fas fa-triangle-exclamation" style="color:#FF91A4; margin-top:2px;"></i>
+                        <p style="margin:0; font-size:0.85rem; font-weight:600; color:#111111; line-height:1.6;">
+                            طلبك فيه صنف تورت أو ورد مخصص من المحاكي، فهو محتاج وقت تحضير أطول (أسبوع كامل تقريبًا). المنتجات العادية الموجودة معاه في نفس الطلب هتتسلّم <strong>مع</strong> المخصص في نفس الموعد المتأخر، مش هتوصلك لوحدها بدري.
+                        </p>
+                    </div>
+
                     <!-- 🌸 [نظام التعرّف على العميل]: ملاحظات عامة عن الطلب، خصوصاً تفضيل سكر
                          خفيف أو أي حساسية معينة، عشان الفرع يجهّز الطلب بمراعاتها فعلياً -
                          بتتحفظ في ملف العميل وتتعبى تلقائياً في المرة الجاية. -->
@@ -522,6 +531,16 @@
                     prepMsgNode.textContent = hasCustomItemForDate
                         ? (siteData.orderRules?.customPreparationTimeMessage || "التورت والورد المخصص عبر المحاكي بيحتاج حجز قبل موعد التسليم بأسبوع كامل (7 أيام) على الأقل.")
                         : (siteData.orderRules?.preparationTimeMessage || "نحتاج إلى وقت كافٍ لتجهيز طلبك بأفضل جودة ممكنة، لذلك لا يمكن اختيار موعد قبل 24 ساعة من وقت تأكيد الطلب.");
+                }
+
+                // ⚠️ [عزل الطلبات المختلطة]: إظهار تنبيه المزج بين المخصص والعادي هنا كمان
+                // (مش بس في صفحة السلة) عشان العميلة تشوفه في آخر لحظة قبل تأكيد الطلب.
+                const checkoutMixedBanner = document.getElementById("checkout-mixed-order-warning-banner");
+                if (checkoutMixedBanner) {
+                    const isMixedOrderCheckout = typeof window.boseCartHasMixedRegularAndCustom === "function"
+                        ? window.boseCartHasMixedRegularAndCustom(cartArrForDate)
+                        : false;
+                    checkoutMixedBanner.style.display = isMixedOrderCheckout ? "flex" : "none";
                 }
 
                 // ضبط حامي التاريخ ليكون أول موعد متاح فعلياً حسب نوع الطلب (بكرة للعادي، بعد أسبوع للمخصص)
