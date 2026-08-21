@@ -49,7 +49,7 @@
         const products = getFilteredProducts();
 
         if (!products.length) {
-            tbody.innerHTML = `<tr><td colspan="7">${window.BoseAdminUI.emptyStateHTML({
+            tbody.innerHTML = `<tr><td colspan="8">${window.BoseAdminUI.emptyStateHTML({
                 icon: "fa-cake-candles",
                 title: "مفيش منتجات مطابقة",
                 text: "جرّب تغيّر الفلتر أو أضف منتج جديد.",
@@ -60,6 +60,7 @@
         tbody.innerHTML = products.map((p) => {
             const thumb = (p.images && p.images[0]) || "";
             const needsPhoto = hasPlaceholderImage(p);
+            const isAvailable = p.is_available !== false;
             return `
             <tr>
                 <td>${thumb ? `<img src="${e(thumb)}" class="adm-table-thumb" alt="">` : `<div class="adm-table-thumb"></div>`}</td>
@@ -68,6 +69,14 @@
                 <td>${Math.round(p.price)} ج.م</td>
                 <td>${p.old_price ? Math.round(p.old_price) + " ج.م" : "—"}</td>
                 <td>${p.is_featured ? `<span class="adm-badge success">مميز</span>` : "—"}</td>
+                <td>
+                    <button class="adm-btn adm-btn-ghost adm-btn-sm" data-action="toggle-availability" data-id="${e(p.id)}"
+                            title="${isAvailable ? 'اضغط لتعليمه نفدت الكمية' : 'اضغط لإعادته متاح'}">
+                        ${isAvailable
+                            ? `<span class="adm-badge success"><i class="fa-solid fa-circle-check"></i> متاح</span>`
+                            : `<span class="adm-badge danger"><i class="fa-solid fa-ban"></i> نفدت الكمية</span>`}
+                    </button>
+                </td>
                 <td class="adm-table-actions">
                     <button class="adm-btn adm-btn-ghost adm-btn-icon" data-action="edit" data-id="${e(p.id)}" title="تعديل">
                         <i class="fa-solid fa-pen"></i>
@@ -87,6 +96,31 @@
         });
         tbody.querySelectorAll('[data-action="delete"]').forEach((btn) => {
             btn.addEventListener("click", () => handleDelete(btn.getAttribute("data-id")));
+        });
+        // 🔴🟢👑 [تبديل سريع للتوفر من الجدول مباشرة]: قبل كده الإعداد ده كان
+        // مدفون جوه "إعدادات متقدمة" القابلة للطي في فورم التعديل الكامل - يعني
+        // وقت الزحمة (نفدت كمية منتج فجأة) كان محتاج فتح الفورم كامل، تنزيل
+        // للقسم المطوي، تفعيل التبديل، ثم حفظ. دلوقتي زرار واحد في الجدول نفسه.
+        tbody.querySelectorAll('[data-action="toggle-availability"]').forEach((btn) => {
+            btn.addEventListener("click", async () => {
+                const id = btn.getAttribute("data-id");
+                const product = allProducts.find((p) => p.id === id);
+                if (!product) return;
+                const nextAvailable = product.is_available === false;
+                btn.disabled = true;
+                try {
+                    await window.BoseAdmin.updateProduct(id, { is_available: nextAvailable });
+                    product.is_available = nextAvailable;
+                    renderTable();
+                    window.BoseAdminUI.showToast(
+                        nextAvailable ? "المنتج بقى متاح تاني" : "المنتج اتعلّم إنه نفدت الكمية",
+                        "success"
+                    );
+                } catch (err) {
+                    window.BoseAdminUI.showToast("تعذر تحديث حالة التوفر", "error");
+                    btn.disabled = false;
+                }
+            });
         });
     }
 
