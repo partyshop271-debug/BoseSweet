@@ -98,77 +98,6 @@
         }
     }
 
-    /* ============================= تحميل صورة الفاتورة (للاستخدام الداخلي فقط) ============================= */
-    /**
-     * 🧾 [أداة داخلية جديدة]: زرار في مودال الطلب بيولّد نفس صورة الفاتورة اللي
-     * كانت بتتعرض قديماً للعميلة (وكانت بتلخبطها لأنها كانت بتظهر بعد ما تكون
-     * خلصت وبعتت فاتورة الواتساب فعلاً - راجع تعليق order-success.html). دلوقتي
-     * الصورة أداة داخلية للفريق بس وقت تجهيز الطلب، عشان يشوف صور المنتجات
-     * الحقيقية وصور التصميم المرجعي اللي العميل رفعها بشكل واضح ومباشر من غير
-     * ما يفتح كل رابط لوحده - العميلة نفسها لا تشوف الزرار ده ولا الصورة خالص.
-     *
-     * صف الطلب من قاعدة البيانات (order + order_items) شكله snake_case مختلف
-     * عن الشكل اللي js/invoice-image-generator.js اتبنى عليه أصلاً (camelCase،
-     * نفس شكل completedBoseOrderObject في checkout عند العميل) - الدالة دي
-     * بتحوّل من شكل لشكل قبل ما تنادي المولّد، من غير أي تغيير في المولّد نفسه.
-     */
-    function mapDbOrderToInvoiceShape(order) {
-        const items = (order.order_items || []).map((item) => ({
-            title: item.title,
-            flavorName: item.flavor_name || "",
-            quantity: item.quantity,
-            finalPrice: item.unit_price,
-            type: item.item_type,
-            productSlug: item.product_id,
-            customDetails: item.custom_details || {},
-            image: (item.reference_images && item.reference_images[0]) || "",
-        }));
-
-        return {
-            orderId: order.order_number || order.id,
-            customerName: order.customer_name || "",
-            phone1: order.phone1 || "",
-            deliveryMethod: DELIVERY_LABELS[order.delivery_method] || order.delivery_method || "",
-            address: order.address || "",
-            scheduledDate: order.scheduled_date || "",
-            scheduledTime: order.scheduled_time || "",
-            items,
-        };
-    }
-
-    async function handleDownloadInvoiceImage(order, btn) {
-        const originalHTML = btn.innerHTML;
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التجهيز...';
-        try {
-            const storeSettings = await window.BoseAdmin.getStoreGeneralSettings();
-            const storeInfo = {
-                logo: storeSettings.store.logo || "",
-                name: storeSettings.store.name || "حلويات بوسي",
-                phone: storeSettings.store.phone || "",
-            };
-            const mappedOrder = mapDbOrderToInvoiceShape(order);
-            const blob = await window.generateBoseInvoiceImageBlob(mappedOrder, storeInfo);
-            if (!blob) throw new Error("تعذر توليد الصورة");
-
-            // تحميل مباشر على جهاز الأدمن - بدون أي محاولة مشاركة (Web Share)،
-            // لأن الاستخدام هنا داخلي بحت وقت التجهيز، مش لحظة مشاركة اجتماعية.
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = `فاتورة-طلب-${order.order_number || order.id}.png`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            setTimeout(() => URL.revokeObjectURL(url), 4000);
-        } catch (err) {
-            window.BoseAdminUI.showToast("تعذر تحميل صورة الفاتورة", "error");
-        } finally {
-            btn.disabled = false;
-            btn.innerHTML = originalHTML;
-        }
-    }
-
     /* ============================= مودال تفاصيل الطلب ============================= */
 
     const SHAPE_LABELS = { circle: "دائري", heart: "قلب", square: "مربع", rectangle: "مستطيل" };
@@ -264,14 +193,6 @@
                     <button class="adm-modal-close" data-role="close"><i class="fa-solid fa-xmark"></i></button>
                 </div>
 
-                <!-- 🧾 [أداة داخلية]: صورة فاتورة مرجعية للفريق وقت التجهيز - مرجع
-                     بصري بس (صور المنتجات/التصميم المرفق)، العميلة لا تراها. -->
-                <div class="adm-mt-16">
-                    <button type="button" class="adm-btn adm-btn-outline" id="order-download-invoice-btn" style="width:100%;">
-                        <i class="fa-solid fa-file-image"></i> تحميل صورة الفاتورة (للفريق فقط)
-                    </button>
-                </div>
-
                 <div class="adm-order-detail-grid">
                     <div><span>اسم العميل</span><strong>${e(order.customer_name || "—")}</strong></div>
                     <div><span>الهاتف</span><strong>${e(order.phone1 || "—")}${order.phone2 ? " / " + e(order.phone2) : ""}</strong></div>
@@ -344,10 +265,6 @@
         overlay.addEventListener("click", (evt) => {
             if (evt.target === overlay) close();
             if (evt.target.closest('[data-role="close"]')) close();
-        });
-
-        document.getElementById("order-download-invoice-btn").addEventListener("click", (evt) => {
-            handleDownloadInvoiceImage(order, evt.currentTarget);
         });
 
         const confirmDepositBtn = document.getElementById("order-confirm-deposit-btn");

@@ -12,8 +12,6 @@
     let store = {};
     let seo = {};
     let social = {};
-    let orderRules = {};
-    let badgeSettings = {};
 
     function fillField(id, value) {
         const el = document.getElementById(id);
@@ -87,8 +85,6 @@
         store = settings.store || {};
         seo = settings.seo || {};
         social = settings.social || {};
-        orderRules = settings.orderRules || {};
-        badgeSettings = settings.badgeSettings || {};
 
         store.theme = store.theme || {};
         store.pickup = store.pickup || {};
@@ -112,19 +108,6 @@
         fillField("store-pickup-mapUrl", store.pickup.mapUrl);
         fillField("store-pickup-message", store.pickup.message);
         fillField("store-pickup-shippingFee", store.pickup.shippingFee ?? 0);
-
-        // قواعد التوقيت وأقل مدة تحضير
-        fillField("rules-minPreparationTimeHours", orderRules.minPreparationTimeHours ?? 48);
-        fillField("rules-minPreparationTimeHoursCustom", orderRules.minPreparationTimeHoursCustom ?? 168);
-        fillField("rules-businessHoursStart", orderRules.businessHoursStart || "09:00");
-        fillField("rules-businessHoursEnd", orderRules.businessHoursEnd || "22:00");
-        fillField("rules-preparationTimeMessage", orderRules.preparationTimeMessage);
-        fillField("rules-customPreparationTimeMessage", orderRules.customPreparationTimeMessage);
-
-        // إعدادات البادجات التلقائية
-        fillField("badges-newArrivalDays", badgeSettings.newArrivalDays ?? 14);
-        fillField("badges-bestSellerDays", badgeSettings.bestSellerDays ?? 30);
-        fillField("badges-bestSellerLimit", badgeSettings.bestSellerLimit ?? 8);
 
         // زيادة الأسعار
         document.getElementById("store-priceIncrease-enabled").checked = !!store.priceIncrease.enabled;
@@ -198,35 +181,10 @@
                 whatsapp: readField("social-whatsapp"),
             };
 
-            const updatedOrderRules = {
-                ...orderRules,
-                minPreparationTimeHours: readNumberField("rules-minPreparationTimeHours") || 48,
-                minPreparationTimeHoursCustom: readNumberField("rules-minPreparationTimeHoursCustom") || 168,
-                businessHoursStart: readField("rules-businessHoursStart") || "09:00",
-                businessHoursEnd: readField("rules-businessHoursEnd") || "22:00",
-                preparationTimeMessage: readField("rules-preparationTimeMessage"),
-                customPreparationTimeMessage: readField("rules-customPreparationTimeMessage"),
-            };
-
-            const updatedBadgeSettings = {
-                ...badgeSettings,
-                newArrivalDays: readNumberField("badges-newArrivalDays") || 14,
-                bestSellerDays: readNumberField("badges-bestSellerDays") || 30,
-                bestSellerLimit: readNumberField("badges-bestSellerLimit") || 8,
-            };
-
-            await window.BoseAdmin.saveStoreGeneralSettings({
-                store: updatedStore,
-                seo: updatedSeo,
-                social: updatedSocial,
-                orderRules: updatedOrderRules,
-                badgeSettings: updatedBadgeSettings,
-            });
+            await window.BoseAdmin.saveStoreGeneralSettings({ store: updatedStore, seo: updatedSeo, social: updatedSocial });
             store = updatedStore;
             seo = updatedSeo;
             social = updatedSocial;
-            orderRules = updatedOrderRules;
-            badgeSettings = updatedBadgeSettings;
             window.BoseAdminUI.showToast("تم حفظ بيانات المتجر", "success");
         } catch (err) {
             window.BoseAdminUI.showToast("تعذر حفظ البيانات", "error");
