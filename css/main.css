@@ -178,38 +178,18 @@
     transform: translateY(-4px);
 }
 
-/* 🏷️👑 [نظام البادجات الموحّد]: كلاس أساسي واحد لكل بادچ فوق كارت المنتج
-   (نفدت الكمية / عرض / الأكثر مبيعاً / وصل حديثاً) - نفس الموضع والحجم لكل
-   بادچ، ولون مختلف لكل حالة عشان تتفرق بصرياً بسرعة. قبل كده شارة "نفدت
-   الكمية" كانت بتتكتب بكلاس من غير أي تنسيق خالص (bug حقيقي) - ده اللي
-   بيصلحها كمان. */
-.bose-product-badge,
 .bose-offer-badge {
     position: absolute;
     top: 14px;
     right: 14px;
-    display: inline-flex;
-    align-items: center;
+    background-color: var(--bose-pink-text); /* 🛡️ لون أغمق لضمان تباين كافٍ - شارة الخصم مهمة تتقرأ بوضوح */
     color: var(--bose-white) !important;
     font-size: 12px;
     font-weight: 700;
     padding: 4px 12px;
     border-radius: var(--bose-radius-sm);
     z-index: 2;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-}
-.bose-badge-offer {
-    background-color: var(--bose-pink-text); /* 🛡️ لون أغمق لضمان تباين كافٍ */
     box-shadow: 0 4px 10px rgba(255, 145, 164, 0.3);
-}
-.bose-badge-outofstock {
-    background-color: rgba(17, 17, 17, 0.78);
-}
-.bose-badge-bestseller {
-    background-color: #e08b1f;
-}
-.bose-badge-new {
-    background-color: #2e9e5b;
 }
 
 /* 🏷️ [إصلاح جذري لمشكلة تكرار منتجات العروض]: نفس الكلاسات دي بتشتغل تلقائياً
