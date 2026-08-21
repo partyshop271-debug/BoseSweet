@@ -330,7 +330,7 @@
                         </div>
                         <div class="input-group-node">
                             <label for="checkout-delivery-time">ساعة الاستلام</label>
-                            <input type="time" id="checkout-delivery-time" class="bose-field-capture" required aria-describedby="err-checkout-delivery-time">
+                            <input type="time" id="checkout-delivery-time" class="bose-field-capture" required aria-describedby="err-checkout-delivery-time" min="09:00" max="22:00">
                             <span class="bose-field-error-msg" id="err-checkout-delivery-time"><i class="fa-solid fa-circle-exclamation"></i><span></span></span>
                         </div>
                     </div>
@@ -435,6 +435,7 @@
             const methodDeliveryBtn = document.getElementById("method-delivery");
             const methodPickupBtn = document.getElementById("method-pickup");
             const datePicker = document.getElementById("checkout-delivery-date");
+            const timePicker = document.getElementById("checkout-delivery-time");
             const zoneSelect = document.getElementById("checkout-zone-select");
 
             // 🌸🌸 [نظام يتفاعل مع العميل ويتعرّف عليه]: لو عندنا بيانات عميل محفوظة
@@ -518,13 +519,25 @@
                     : false;
                 const leadDays = hasCustomItemForDate
                     ? Math.ceil((siteData.orderRules?.minPreparationTimeHoursCustom || 168) / 24)
-                    : Math.ceil((siteData.orderRules?.minPreparationTimeHours || 24) / 24);
+                    : Math.ceil((siteData.orderRules?.minPreparationTimeHours || 48) / 24);
+
+                // 🕘👑 [نطاق ساعات الاستلام/التوصيل]: بيتضبط ديناميكياً من إعدادات لوحة
+                // التحكم (orderRules.businessHoursStart/End)، الافتراضي 09:00-22:00 -
+                // يطبّق على كل الطلبات (عادية ومحاكي) بلا استثناء.
+                const businessStart = siteData.orderRules?.businessHoursStart || "09:00";
+                const businessEnd = siteData.orderRules?.businessHoursEnd || "22:00";
+                if (timePicker) {
+                    timePicker.min = businessStart;
+                    timePicker.max = businessEnd;
+                }
 
                 // سحب نص حارس الوقت الصحيح المطابق لنوع الطلب لتعريف العميل برحلة الإتقان الصادقة للبراند
                 if (prepMsgNode) {
-                    prepMsgNode.textContent = hasCustomItemForDate
+                    const hoursNote = `مواعيد الاستلام والتوصيل متاحة بس من ${businessStart} صباحاً لحد ${businessEnd} مساءً.`;
+                    prepMsgNode.textContent = (hasCustomItemForDate
                         ? (siteData.orderRules?.customPreparationTimeMessage || "التورت والورد المخصص عبر المحاكي بيحتاج حجز قبل موعد التسليم بأسبوع كامل (7 أيام) على الأقل.")
-                        : (siteData.orderRules?.preparationTimeMessage || "نحتاج إلى وقت كافٍ لتجهيز طلبك بأفضل جودة ممكنة، لذلك لا يمكن اختيار موعد قبل 24 ساعة من وقت تأكيد الطلب.");
+                        : (siteData.orderRules?.preparationTimeMessage || "نحتاج إلى وقت كافٍ لتجهيز طلبك بأفضل جودة ممكنة، لذلك لا يمكن اختيار موعد قبل 48 ساعة من وقت تأكيد الطلب.")
+                    ) + " " + hoursNote;
                 }
 
                 // ضبط حامي التاريخ ليكون أول موعد متاح فعلياً حسب نوع الطلب (بكرة للعادي، بعد أسبوع للمخصص)
