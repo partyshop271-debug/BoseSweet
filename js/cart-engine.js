@@ -168,10 +168,20 @@ function initializeCartEngine(storeData) {
 function renderBoseCartPage(storeData) {
     const cartWrapper = document.getElementById("cart-items-wrapper");
     const clearCartBtn = document.getElementById("btn-clear-cart") || document.querySelector("button.btn-clear-all-cart");
+    const mixedWarningBanner = document.getElementById("mixed-order-warning-banner");
     
     // رندرة السلة الشاملة من الذاكرة المحلية الموحدة bose_cart
     function buildFullCartUI() {
         const cart = loadTrustedCart();
+
+        // ⚠️ [عزل الطلبات المختلطة]: إظهار/إخفاء تنبيه المزج بين المخصص والعادي
+        // في كل مرة السلة بترتسم من جديد (إضافة/حذف/تعديل كمية).
+        if (mixedWarningBanner) {
+            const isMixedOrder = typeof window.boseCartHasMixedRegularAndCustom === "function"
+                ? window.boseCartHasMixedRegularAndCustom(cart)
+                : false;
+            mixedWarningBanner.style.display = isMixedOrder ? "flex" : "none";
+        }
 
         // 🐛 [إصلاح - عدادات السلة (الهيدر/الشريط السفلي/الفقاعة العائمة) كانت
         // بتفضل عالقة على قيمة قديمة]: buildFullCartUI() هي الدالة اللي فعلياً

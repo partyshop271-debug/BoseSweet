@@ -1825,6 +1825,24 @@
         );
     };
 
+    // 🛡️🎂 [عزل الطلبات المختلطة]: السلة اللي فيها تورت/ورد مخصص (بيتحجز على
+    // موعد بعد أسبوع) بجانب منتجات عادية (المفروض تتسلّم أسرع بكتير) بتاخد
+    // كلها نفس الموعد المتأخر حاليًا - قرار صاحبة المتجر: نسمح بالخلط لكن
+    // لازم نوضّح للعميلة بشفافية إن منتجاتها العادية هتتأخر معاه، مش تتفاجئ
+    // بعد ما تأكد الطلب. الدالة دي بترجع true بس لو فيه الاتنين مع بعض (مخصص
+    // + عادي)، مش لو السلة كلها مخصصة أو كلها عادية.
+    window.boseCartHasMixedRegularAndCustom = function(cart) {
+        if (!Array.isArray(cart) || cart.length === 0) return false;
+        if (!window.boseCartHasCustomItem(cart)) return false;
+        return cart.some(item =>
+            item.type !== "custom-cake" &&
+            item.type !== "mini-cake" &&
+            item.type !== "custom-flower" &&
+            item.productSlug !== "toort-custom-master" &&
+            item.productSlug !== "flowers-master"
+        );
+    };
+
     // 🌸 [تخصيص ملاحظات السكر/الحساسية حسب محتوى السلة]: التسمية العامة
     // "سكر خفيف / حساسية معينة" في checkout.html معناها فعلياً للحلويات
     // بس - العميلة اللي بتطلب بوكيه ورد مخصص فقط (من غير أي تورت/حلويات)
