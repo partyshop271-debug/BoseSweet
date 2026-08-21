@@ -142,6 +142,15 @@
             // كـ object/array فاضي كحد أدنى آمن حتى لو العمود لسه فاضي في القاعدة.
             homepage: settings.homepage || {},
             promotions: settings.promotions || [],
+            // 🛡️ [إصلاح جذري - قسم نادي المكافآت]: نفس مشكلة homepage/promotions القديمة
+            // بالظبط بتكرر هنا مع loyalty. العمود موجود وبيتحدّث فعلاً من لوحة
+            // التحكم (loyalty-settings.html → saveLoyaltySettings)، لكنه ماكانش
+            // بيتم تمريره أبداً في الكائن الراجع من هنا، فكل صفحة في الموقع
+            // (تيزر الرئيسية + rewards.html) كانت مضطرة تكتب نسب الخصم ومبلغ
+            // القسيمة يدويًا Hardcoded في الـ HTML/JS بتاعتها بدل ما تقرأها من
+            // القاعدة - فأي تعديل من الأدمن في شرائح الولاء ماكانش يوصل للعميل
+            // أبداً مهما كان. دلوقتي بيرجع فعليًا زي باقي الأقسام.
+            loyalty: settings.loyalty || {},
             categories: categories || [],
             products: rebuiltProducts,
             offers: offers || [],

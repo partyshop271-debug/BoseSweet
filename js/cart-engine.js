@@ -663,14 +663,21 @@ function renderBoseCheckoutPage(storeData) {
                 ? parseFloat((invoiceNow.subtotal * (row.next_discount_percent / 100)).toFixed(2))
                 : 0;
 
+            // 🛡️ [إصلاح جذري]: بتقرأ مبلغ القسيمة/طول الدورة/كل قد إيه بتتكسب
+            // القسيمة من نفس إعدادات لوحة التحكم الحية (loyalty-config.js) بدل
+            // الأرقام الثابتة (300 جنيه / شهرين / كل 10 طلبات) اللي كانت
+            // مكتوبة يدوياً هنا وممكن تختلف عن اللي فعليًا محفوظ في القاعدة.
+            const loyaltyCfg = (typeof window.getBoseLoyaltyConfig === "function") ? window.getBoseLoyaltyConfig() : { milestoneEvery: 10, voucherAmount: 300, voucherValidityMonths: 2 };
+            const voucherMonthsTxt = window.formatArabicMonths ? window.formatArabicMonths(loyaltyCfg.voucherValidityMonths) : `${loyaltyCfg.voucherValidityMonths} شهر`;
+
             let bannerHtml = "";
             const styleBase = "border-radius:12px; padding:12px 14px; font-size:0.88rem; font-weight:700; margin-bottom:16px; display:flex; align-items:center; gap:8px;";
             if (row.next_discount_percent > 0) {
                 bannerHtml = `<div style="${styleBase} background:rgba(46,158,91,0.1); color:#2e9e5b; border:1px solid rgba(46,158,91,0.3);">
                     <i class="fa-solid fa-star"></i> مبروك! ده طلبك رقم ${nextOrderNumber}، وهياخد خصم تلقائي ${row.next_discount_percent}% 🎉</div>`;
-            } else if (row.orders_until_next_voucher === 1 || nextOrderNumber % 10 === 0) {
+            } else if (row.orders_until_next_voucher === 1 || nextOrderNumber % loyaltyCfg.milestoneEvery === 0) {
                 bannerHtml = `<div style="${styleBase} background:rgba(255,145,164,0.08); color:#FF91A4; border:1px solid rgba(255,145,164,0.3);">
-                    <i class="fa-solid fa-gift"></i> ده طلبك رقم ${nextOrderNumber}! بعد استلامه هتاخدي قسيمة شراء 300 جنيه صالحة لمدة شهرين 🎁</div>`;
+                    <i class="fa-solid fa-gift"></i> ده طلبك رقم ${nextOrderNumber}! بعد استلامه هتاخدي قسيمة شراء ${loyaltyCfg.voucherAmount} جنيه صالحة لمدة ${voucherMonthsTxt} 🎁</div>`;
             } else if (row.orders_until_next_discount > 0) {
                 bannerHtml = `<div style="${styleBase} background:rgba(255,145,164,0.08); color:#FF91A4; border:1px solid rgba(255,145,164,0.3);">
                     <i class="fa-solid fa-heart"></i> باقيلك ${row.orders_until_next_discount} ${row.orders_until_next_discount === 1 ? 'طلب' : 'طلبات'} بعد ده عشان تاخدي خصم على طلبك الجاي</div>`;
@@ -1409,9 +1416,14 @@ function renderBoseSuccessPage(storeData) {
             </div>`;
         }
         if (isMilestone) {
+            // 🛡️ [إصلاح جذري]: مبلغ القسيمة ومدة صلاحيتها بيتقروا من إعدادات
+            // لوحة التحكم الحية (loyalty-config.js) بدل الأرقام الثابتة اللي
+            // كانت مكتوبة هنا يدوياً.
+            const loyaltyCfg = (typeof window.getBoseLoyaltyConfig === "function") ? window.getBoseLoyaltyConfig() : { voucherAmount: 300, voucherValidityMonths: 2 };
+            const voucherMonthsTxt = window.formatArabicMonths ? window.formatArabicMonths(loyaltyCfg.voucherValidityMonths) : `${loyaltyCfg.voucherValidityMonths} شهر`;
             cardHtml += `<div style="${cardBaseStyle} background: rgba(255,145,164,0.08); border: 1px solid rgba(255,145,164,0.3); color:#FF91A4;">
                 <i class="fa-solid fa-gift" style="font-size:1.2rem;"></i>
-                <span>مبروك! الطلب ده وصّلك لمرحلة قسيمة شراء بـ300 جنيه - هتوصلك تلقائياً بعد استلام طلبك، وهتلاقيها في <a href="rewards.html?phone=${encodeURIComponent(order.phone1 || '')}" style="color:#FF91A4; text-decoration:underline;">صفحة نادي المكافآت</a> صالحة لمدة شهرين 🎉</span>
+                <span>مبروك! الطلب ده وصّلك لمرحلة قسيمة شراء بـ${loyaltyCfg.voucherAmount} جنيه - هتوصلك تلقائياً بعد استلام طلبك، وهتلاقيها في <a href="rewards.html?phone=${encodeURIComponent(order.phone1 || '')}" style="color:#FF91A4; text-decoration:underline;">صفحة نادي المكافآت</a> صالحة لمدة ${voucherMonthsTxt} 🎉</span>
             </div>`;
         }
 
