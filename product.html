@@ -32,8 +32,6 @@
     <script src="js/supabase-client.js?v=2026_production_v39.0" defer></script>
     <script src="js/favorites-engine.js?v=2026_production_v37.0" defer></script>
     <script src="js/core-engine.js?v=2026_production_v38.0" defer></script>
-    <script src="js/trust-badges.js?v=1" defer></script>
-    <script src="js/cart-reminder.js?v=1" defer></script>
 
     <style>
         /* 🎨 الهندسة البصرية المعتمدة لمنع التكديس والتزام الألوان الحاكمة */
@@ -537,9 +535,14 @@
                     <button id="btn-add-to-cart-master-trigger" class="btn-add-to-cart-master" type="button">
                         <i class="fas fa-shopping-bag"></i> إضافة لسلة المشتريات
                     </button>
+                </div>
 
-                    <!-- 🛡️ شارات الثقة (دفع آمن / جودة مضمونة / توصيل سريع / تواصل مباشر) -->
-                    <div id="bose-trust-badges-injector"></div>
+                <!-- 🛡️ [شارات ثقة]: صف صغير تحت زرار الإضافة للسلة مباشرة - أقرب نقطة لحظة
+                     اتخاذ قرار الشراء، وده أهم مكان لتقليل تردد العميلة الأخير قبل الدفع. -->
+                <div class="bose-trust-badges-row" style="display:flex; flex-wrap:wrap; gap:14px; margin-top:14px; direction:rtl;">
+                    <span style="display:flex; align-items:center; gap:6px; font-size:0.82rem; color:var(--bose-black); opacity:0.75;"><i class="fa-solid fa-leaf" style="color:var(--bose-pink);"></i> مكونات طبيعية 100%</span>
+                    <span style="display:flex; align-items:center; gap:6px; font-size:0.82rem; color:var(--bose-black); opacity:0.75;"><i class="fa-solid fa-kitchen-set" style="color:var(--bose-pink);"></i> تحضير طازة يومياً</span>
+                    <span style="display:flex; align-items:center; gap:6px; font-size:0.82rem; color:var(--bose-black); opacity:0.75;"><i class="fa-brands fa-whatsapp" style="color:var(--bose-pink);"></i> تأكيد الطلب مباشرة على واتساب</span>
                 </div>
             </div>
         </div>

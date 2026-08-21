@@ -330,7 +330,7 @@
                         </div>
                         <div class="input-group-node">
                             <label for="checkout-delivery-time">ساعة الاستلام</label>
-                            <input type="time" id="checkout-delivery-time" class="bose-field-capture" required aria-describedby="err-checkout-delivery-time" min="09:00" max="22:00">
+                            <input type="time" id="checkout-delivery-time" class="bose-field-capture" required aria-describedby="err-checkout-delivery-time">
                             <span class="bose-field-error-msg" id="err-checkout-delivery-time"><i class="fa-solid fa-circle-exclamation"></i><span></span></span>
                         </div>
                     </div>
@@ -410,9 +410,6 @@
                 <a href="menu.html" class="bose-continue-shopping-anchor" style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 15px; text-align: center; font-weight: 600; font-size: 0.92rem; color: rgba(17, 17, 17, 0.5); text-decoration: none;">
                     <i class="fas fa-arrow-right"></i> العودة للمنيو الشامل واستعراض الأصناف
                 </a>
-
-                <!-- 🛡️ شارات الثقة (دفع آمن / جودة مضمونة / توصيل سريع / تواصل مباشر) -->
-                <div id="bose-trust-badges-injector"></div>
             </div>
         </div>
     </main>
@@ -421,7 +418,6 @@
     <div id="bose-footer-injector"></div>
 
     <!-- ⚡ استدعاء محرك السلة وإتمام عمليات الحساب والدفع والربط اللوجستي المركزي (js/cart-engine.js) ⚡ -->
-    <script src="js/trust-badges.js?v=1" defer></script>
     <script src="js/cart-engine.js?v=2026_production_v39.0" defer></script>
 
     <!-- 🔮 سكريبت التزامن الدفاعي المحلي لربط وحقن الواجهات وضمان فك شلل حقول الصفحة دون تعارض خارجي 🔮 -->
@@ -435,7 +431,6 @@
             const methodDeliveryBtn = document.getElementById("method-delivery");
             const methodPickupBtn = document.getElementById("method-pickup");
             const datePicker = document.getElementById("checkout-delivery-date");
-            const timePicker = document.getElementById("checkout-delivery-time");
             const zoneSelect = document.getElementById("checkout-zone-select");
 
             // 🌸🌸 [نظام يتفاعل مع العميل ويتعرّف عليه]: لو عندنا بيانات عميل محفوظة
@@ -519,25 +514,13 @@
                     : false;
                 const leadDays = hasCustomItemForDate
                     ? Math.ceil((siteData.orderRules?.minPreparationTimeHoursCustom || 168) / 24)
-                    : Math.ceil((siteData.orderRules?.minPreparationTimeHours || 48) / 24);
-
-                // 🕘👑 [نطاق ساعات الاستلام/التوصيل]: بيتضبط ديناميكياً من إعدادات لوحة
-                // التحكم (orderRules.businessHoursStart/End)، الافتراضي 09:00-22:00 -
-                // يطبّق على كل الطلبات (عادية ومحاكي) بلا استثناء.
-                const businessStart = siteData.orderRules?.businessHoursStart || "09:00";
-                const businessEnd = siteData.orderRules?.businessHoursEnd || "22:00";
-                if (timePicker) {
-                    timePicker.min = businessStart;
-                    timePicker.max = businessEnd;
-                }
+                    : Math.ceil((siteData.orderRules?.minPreparationTimeHours || 24) / 24);
 
                 // سحب نص حارس الوقت الصحيح المطابق لنوع الطلب لتعريف العميل برحلة الإتقان الصادقة للبراند
                 if (prepMsgNode) {
-                    const hoursNote = `مواعيد الاستلام والتوصيل متاحة بس من ${businessStart} صباحاً لحد ${businessEnd} مساءً.`;
-                    prepMsgNode.textContent = (hasCustomItemForDate
+                    prepMsgNode.textContent = hasCustomItemForDate
                         ? (siteData.orderRules?.customPreparationTimeMessage || "التورت والورد المخصص عبر المحاكي بيحتاج حجز قبل موعد التسليم بأسبوع كامل (7 أيام) على الأقل.")
-                        : (siteData.orderRules?.preparationTimeMessage || "نحتاج إلى وقت كافٍ لتجهيز طلبك بأفضل جودة ممكنة، لذلك لا يمكن اختيار موعد قبل 48 ساعة من وقت تأكيد الطلب.")
-                    ) + " " + hoursNote;
+                        : (siteData.orderRules?.preparationTimeMessage || "نحتاج إلى وقت كافٍ لتجهيز طلبك بأفضل جودة ممكنة، لذلك لا يمكن اختيار موعد قبل 24 ساعة من وقت تأكيد الطلب.");
                 }
 
                 // ضبط حامي التاريخ ليكون أول موعد متاح فعلياً حسب نوع الطلب (بكرة للعادي، بعد أسبوع للمخصص)
