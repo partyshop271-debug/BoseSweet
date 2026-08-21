@@ -38,8 +38,12 @@
         .lib-link:active { transform: scale(0.98); }
         .lib-link .lib-icon { font-size: 1.3rem; width: 28px; text-align: center; flex-shrink: 0; }
         .lib-link.lib-primary { background: #FF91A4; color: #fff; border-color: #FF91A4; }
-        .lib-social-row { display: flex; gap: 16px; margin-top: 28px; }
-        .lib-social-row a { color: #7a2e40; font-size: 1.5rem; opacity: 0.8; }
+        .lib-link.lib-google { background: #fff; border-color: #4285F4; }
+        .lib-link.lib-google .lib-icon { color: #4285F4; }
+        .lib-link .lib-icon svg { width: 22px; height: 22px; display: block; }
+        .lib-link.lib-facebook .lib-icon { color: #1877F2; }
+        .lib-link.lib-instagram .lib-icon { color: #d6249f; }
+        .lib-link.lib-tiktok .lib-icon { color: #000; }
         .lib-footer { margin-top: 24px; font-size: 0.72rem; color: #999; }
     </style>
 </head>
@@ -64,16 +68,27 @@
         <a class="lib-link" id="lib-whatsapp-link" href="https://wa.me/201097238441" target="_blank" rel="noopener">
             <span class="lib-icon">💬</span> اطلبي على واتساب مباشرة
         </a>
-    </div>
-
-    <div class="lib-social-row" id="lib-social-row">
-        <a href="https://www.facebook.com/share/1H1vVMHyu9/" target="_blank" rel="noopener" aria-label="فيسبوك"><i class="fa-brands fa-facebook"></i></a>
-        <a href="https://www.instagram.com/bose_sweets" target="_blank" rel="noopener" aria-label="انستجرام"><i class="fa-brands fa-instagram"></i></a>
-        <a href="https://www.tiktok.com/@bosesweets1" target="_blank" rel="noopener" aria-label="تيك توك"><i class="fa-brands fa-tiktok"></i></a>
+        <a class="lib-link lib-google" href="https://g.page/r/Ca7yD4O1cGT3EBI/review" target="_blank" rel="noopener">
+            <span class="lib-icon">⭐</span> قيّمينا على جوجل
+        </a>
+        <a class="lib-link" href="/index.html">
+            <span class="lib-icon">🌐</span> زوري موقعنا الإلكتروني
+        </a>
+        <a class="lib-link lib-facebook" href="https://www.facebook.com/share/1H1vVMHyu9/" target="_blank" rel="noopener">
+            <span class="lib-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-8h2.7l.4-3.1h-3.1V8c0-.9.25-1.5 1.55-1.5H16.7V3.7C16.4 3.65 15.4 3.55 14.2 3.55c-2.5 0-4.2 1.5-4.2 4.35V9.9H7.3V13h2.7v8h3.5z"/></svg></span>
+            تابعينا على فيسبوك
+        </a>
+        <a class="lib-link lib-instagram" href="https://www.instagram.com/bose_sweets" target="_blank" rel="noopener">
+            <span class="lib-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none"/></svg></span>
+            تابعينا على إنستجرام
+        </a>
+        <a class="lib-link lib-tiktok" href="https://www.tiktok.com/@bosesweets1" target="_blank" rel="noopener">
+            <span class="lib-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 3c.35 2.1 1.7 3.6 3.9 3.8v3.1c-1.4 0-2.7-.45-3.9-1.25v6.15c0 3.15-2.55 5.7-5.7 5.7S5.1 17.95 5.1 14.8s2.55-5.7 5.7-5.7c.35 0 .7.03 1.03.1v3.2a2.6 2.6 0 0 0-1.03-.21 2.6 2.6 0 1 0 2.6 2.6V3h3.1z"/></svg></span>
+            تابعينا على تيك توك
+        </a>
     </div>
 
     <div class="lib-footer">حلويات بوسي - الفرافرة، الوادي الجديد</div>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </body>
 </html>
