@@ -1,7 +1,8 @@
 {
   "rewrites": [
     { "source": "/sitemap.xml", "destination": "/api/sitemap" },
-    { "source": "/product-feed.xml", "destination": "/api/product-feed" }
+    { "source": "/product-feed.xml", "destination": "/api/product-feed" },
+    { "source": "/link", "destination": "/linkinbio.html" }
   ],
   "headers": [
     {
