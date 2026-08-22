@@ -24,33 +24,34 @@
 
     /* ============================= صورة واحدة (بانر رئيسي) ============================= */
 
-    function renderSingleImageSlot(containerId, currentUrl, onChange) {
+    function renderSingleImageSlot(containerId, currentUrl, onChange, label) {
+        const title = label || "صورة البانر";
         const container = document.getElementById(containerId);
         container.innerHTML = `
             <div class="adm-curated-item" style="align-items:center;">
-                <label class="adm-image-upload-btn" style="width:90px; height:90px; padding:0; overflow:hidden; flex-shrink:0;" title="صورة البانر">
+                <label class="adm-image-upload-btn" style="width:90px; height:90px; padding:0; overflow:hidden; flex-shrink:0;" title="${title}">
                     <input type="file" accept="image/*" data-action="upload-hero" hidden>
                     ${currentUrl
                         ? `<img src="${currentUrl}" alt="" style="width:100%; height:100%; object-fit:cover;">`
                         : `<i class="fa-solid fa-camera"></i>`}
                 </label>
-                <span class="adm-order-item-meta">${currentUrl ? "اضغط على الصورة لتغييرها" : "اضغط لرفع صورة البانر"}</span>
+                <span class="adm-order-item-meta">${currentUrl ? "اضغط على الصورة لتغييرها" : `اضغط لرفع ${title}`}</span>
             </div>`;
 
         const input = container.querySelector('[data-action="upload-hero"]');
         input.addEventListener("change", async () => {
             const file = input.files && input.files[0];
             if (!file) return;
-            const label = container.querySelector("label");
-            const original = label.innerHTML;
-            label.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+            const lbl = container.querySelector("label");
+            const original = lbl.innerHTML;
+            lbl.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
             try {
                 const url = await window.BoseAdminUI.uploadImageToCloudinary(file);
                 onChange(url);
-                renderSingleImageSlot(containerId, url, onChange);
+                renderSingleImageSlot(containerId, url, onChange, label);
             } catch (err) {
                 window.BoseAdminUI.showToast("تعذر رفع الصورة", "error");
-                label.innerHTML = original;
+                lbl.innerHTML = original;
             }
         });
     }
@@ -439,6 +440,14 @@
             renderNamedList("list-flower-gallery", flowerBuilder.portfolioGallery, { imageField: true });
         });
 
+        // 🖼️👑 [صور خطوات محاكي الورد الأربعة]: كل خطوة ليها صورة توضيحية
+        // خاصة بيها دلوقتي بدل شعار المتجر المكرر - كل واحدة مخزنة كحقل
+        // مستقل على مستوى flowerBuilder نفسه (نفس مستوى heroImage بالظبط).
+        renderSingleImageSlot("flower-satin-image-slot", flowerBuilder.satinRibbonImage || "", (url) => { flowerBuilder.satinRibbonImage = url; }, "صورة خطوة شريط الستان");
+        renderSingleImageSlot("flower-photos-image-slot", flowerBuilder.personalPhotoImage || "", (url) => { flowerBuilder.personalPhotoImage = url; }, "صورة خطوة الصور الشخصية");
+        renderSingleImageSlot("flower-cash-image-slot", flowerBuilder.cashImage || "", (url) => { flowerBuilder.cashImage = url; }, "صورة خطوة بوكيه الفلوس");
+        renderSingleImageSlot("flower-chocolate-image-slot", flowerBuilder.chocolateImage || "", (url) => { flowerBuilder.chocolateImage = url; }, "صورة خطوة الشوكولاتة الفاخرة");
+
         // 🎁🖼️ [معرض نماذج كارت الإهداء المطبوع - محاكي الورد]: نفس فكرة معرض
         // محاكي التورت بالظبط، مخزنة هنا على مستوى flowerBuilder.giftCardImages
         // (بما إن كارت إهداء الورد أصلاً بياخد حقوله كحقول مستوية زي giftCardPrice،
@@ -506,6 +515,10 @@
                 heroImage: flowerBuilder.heroImage || "",
                 portfolioGallery: flowerBuilder.portfolioGallery,
                 giftCardImages: flowerBuilder.giftCardImages,
+                satinRibbonImage: flowerBuilder.satinRibbonImage || "",
+                personalPhotoImage: flowerBuilder.personalPhotoImage || "",
+                cashImage: flowerBuilder.cashImage || "",
+                chocolateImage: flowerBuilder.chocolateImage || "",
                 infoCarouselTips: flowerBuilder.infoCarouselTips,
                 infoCarouselEnabled: document.getElementById("flower-info-carousel-enabled").checked,
                 infoCarouselSpeedSeconds: parseFloat(document.getElementById("flower-info-carousel-speed").value) || 6,
