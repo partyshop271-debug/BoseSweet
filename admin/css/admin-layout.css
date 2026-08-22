@@ -385,6 +385,34 @@
 .adm-badge.info { background: var(--adm-info-bg); color: var(--adm-info); }
 .adm-badge.neutral { background: var(--adm-bg-hover); color: var(--adm-text-secondary); }
 
+/* 🧹 [2.2 تبسيط شلال المنتجات]: قائمة قابلة للطي لطرق الإضافة الثانوية
+   (رابط مباشر / رفع من الجهاز) عشان متبقاش ظاهرة طول الوقت جنب طريقة
+   الاختيار من المنتجات الموصى بها. */
+.adm-collapsible-methods {
+    margin-top: 10px;
+    border: 1px dashed var(--adm-border);
+    border-radius: 10px;
+    padding: 10px 12px;
+}
+.adm-collapsible-methods summary {
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--adm-text-secondary);
+    list-style: none;
+}
+.adm-collapsible-methods summary::-webkit-details-marker { display: none; }
+.adm-collapsible-methods summary::before {
+    content: "\f107";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    margin-left: 6px;
+    display: inline-block;
+    transition: transform 0.2s ease;
+}
+.adm-collapsible-methods[open] summary::before { transform: rotate(180deg); }
+.adm-collapsible-methods[open] summary { color: var(--adm-pink); margin-bottom: 4px; }
+
 /* =========================== الفورمات =========================== */
 
 .adm-field { display: flex; flex-direction: column; gap: 7px; margin-bottom: 16px; }
