@@ -86,14 +86,19 @@ function startEngineLogic() {
     function renderCakeGalleryAndHero() {
         const heroImg = document.querySelector('.bose-main-hero-hook img');
         if (heroImg && config.heroImage) {
-            heroImg.src = config.heroImage;
+            heroImg.src = window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(config.heroImage, 800) : config.heroImage;
         }
         const track = document.getElementById('bose-portfolio-lightbox-track');
         if (track) {
             if (Array.isArray(config.portfolioGallery) && config.portfolioGallery.length > 0) {
                 track.innerHTML = config.portfolioGallery.map((item) => {
-                    const url = (item && item.image) || "";
-                    if (!url) return "";
+                    const rawUrl = (item && item.image) || "";
+                    if (!rawUrl) return "";
+                    // 🖼️ [تحسين استهلاك البيانات]: كانت الصورة بتتحمّل بحجمها الكامل
+                    // من Cloudinary زي باقي الموقع قبل الإصلاح ده. عرض 700px بيدي
+                    // جودة كفاية حتى في وضع التكبير (lightbox) من غير تحميل الحجم
+                    // الأصلي الضخم بلا داعي.
+                    const url = window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(rawUrl, 700) : rawUrl;
                     const alt = (item && (item.alt || item.name)) ? String(item.alt || item.name).replace(/"/g, '&quot;') : "روائع حلويات بوسي";
                     return `<div class="bose-portfolio-img-node"><img src="${url}" alt="${alt}" loading="lazy"></div>`;
                 }).join("");
@@ -128,7 +133,7 @@ function startEngineLogic() {
                 img.alt = '';
                 inner.insertBefore(img, inner.firstChild);
             }
-            img.src = match.image;
+            img.src = window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(match.image, 150) : match.image;
         });
     }
     applyBoseOptionCardImages('cake_shape', config.shapes);
@@ -507,8 +512,9 @@ function startEngineLogic() {
         const giftCardImages = Array.isArray(config.giftCard?.images) ? config.giftCard.images : [];
         if (giftCardImages.length > 0) {
             giftCardGallery.innerHTML = giftCardImages.map((item) => {
-                const url = (item && item.image) || "";
-                if (!url) return "";
+                const rawUrl = (item && item.image) || "";
+                if (!rawUrl) return "";
+                const url = window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(rawUrl, 700) : rawUrl;
                 const alt = (item && (item.alt || item.name)) ? String(item.alt || item.name).replace(/"/g, '&quot;') : "نموذج كارت إهداء حلويات بوسي";
                 return `<div class="bose-giftcard-img-node"><img src="${url}" alt="${alt}" loading="lazy"></div>`;
             }).join("");

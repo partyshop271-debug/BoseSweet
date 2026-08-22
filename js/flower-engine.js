@@ -494,7 +494,7 @@
                     const url = (item && item.image) || "";
                     if (!url) return "";
                     const alt = (item && (item.alt || item.name)) ? String(item.alt || item.name).replace(/"/g, '&quot;') : "نموذج كارت إهداء حلويات بوسي";
-                    return `<div class="bose-giftcard-img-node"><img src="${url}" alt="${alt}" loading="lazy"></div>`;
+                    return `<div class="bose-giftcard-img-node"><img src="${window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(url, 700) : url}" alt="${alt}" loading="lazy"></div>`;
                 }).join("");
             }
         }
@@ -512,7 +512,7 @@
         // دي بتحصل هنا في أول الدالة، أي كود تحت بيدور على .portfolio-item-card
         // هيلاقي العناصر الجديدة جاهزة عادي (نفس الـ scope المتزامن).
         const heroImg = document.querySelector('.hero-banner-frame');
-        if (heroImg && fbConfig.heroImage) heroImg.src = fbConfig.heroImage;
+        if (heroImg && fbConfig.heroImage) heroImg.src = window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(fbConfig.heroImage, 800) : fbConfig.heroImage;
 
         // 🖼️👑 [صور خطوات المحاكي القابلة للتعديل من لوحة التحكم]: كانت الأربع
         // خطوات دي (شريط الستان، الصور الشخصية، بوكيه الفلوس، الشوكولاتة
@@ -532,7 +532,7 @@
             const url = stepIllustrationMap[elId];
             if (url) {
                 const el = document.getElementById(elId);
-                if (el) el.src = url;
+                if (el) el.src = window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(url, 500) : url;
             }
         });
         // 🖼️👑 [سمتريه محاكي التورت]: نفس مكان وحجم معرض الإلهام بالظبط
@@ -546,7 +546,7 @@
                     const url = (item && item.image) || "";
                     if (!url) return "";
                     const alt = (item && (item.alt || item.name)) ? String(item.alt || item.name).replace(/"/g, '&quot;') : "روائع حلويات بوسي";
-                    return `<div class="bose-portfolio-img-node"><img src="${url}" alt="${alt}" loading="lazy"></div>`;
+                    return `<div class="bose-portfolio-img-node"><img src="${window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(url, 700) : url}" alt="${alt}" loading="lazy"></div>`;
                 }).join("");
             } else {
                 portfolioTrack.innerHTML = `<p class="bose-gallery-empty-note">هنضيف هنا قريب مجموعة من أجمل البوكيهات اللي عملناها لعملائنا 💐</p>`;
@@ -678,7 +678,7 @@
 
             row.innerHTML = currentFlowerTypesList.map((item) => `
                 <div class="bose-iconic-btn-node${item.id === state.flowerType ? " active-selected" : ""}" data-value="${item.id}">
-                    ${item.image ? `<img src="${item.image}" alt="" class="bose-option-card-thumb">` : `<span class="btn-icon">${item.icon || "🌷"}</span>`}
+                    ${item.image ? `<img src="${window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(item.image, 150) : item.image}" alt="" class="bose-option-card-thumb">` : `<span class="btn-icon">${item.icon || "🌷"}</span>`}
                     <span class="btn-label">${item.name}</span>
                     <span class="bose-iconic-selected-checkmark">✅ مُختار</span>
                 </div>`).join("");
