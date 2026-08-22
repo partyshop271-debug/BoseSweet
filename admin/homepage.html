@@ -177,18 +177,24 @@
                                         <i class="fa-solid fa-link"></i> إضافة كرابط منتج
                                     </button>
                                 </div>
-                                <p class="adm-hint" style="margin: 10px 0 4px;">أو أضيفي صورة تزيينية من غير رابط (مش هتبقى قابلة للضغط):</p>
-                                <div class="adm-curated-add-row">
-                                    <input type="text" class="adm-input" id="waterfall-left-url-input" placeholder="الصقي رابط صورة مباشر هنا...">
-                                    <button type="button" class="adm-btn adm-btn-outline adm-btn-sm" id="waterfall-left-add-url-btn">
-                                        <i class="fa-solid fa-plus"></i> إضافة
-                                    </button>
-                                </div>
-                                <label class="adm-image-upload-btn adm-mt-8" for="waterfall-left-image-input">
-                                    <i class="fa-solid fa-cloud-arrow-up"></i>
-                                    <span id="waterfall-left-upload-label">أو ارفعي صورة من جهازك</span>
-                                </label>
-                                <input type="file" id="waterfall-left-image-input" accept="image/*" hidden>
+                                <!-- 🧹 [2.2 تبسيط]: طريقتا الرابط المباشر والرفع من الجهاز نادرتا الاستخدام
+                                     (الطريقة الموصى بها هي اختيار منتج فوق) - اتلمّوا جوه قائمة قابلة للطي
+                                     بدل ما يظهروا مفتوحين طول الوقت جنب بعض. -->
+                                <details class="adm-collapsible-methods">
+                                    <summary>طرق إضافة أخرى (رابط صورة مباشر أو رفع من الجهاز)</summary>
+                                    <p class="adm-hint" style="margin: 10px 0 4px;">أضيفي صورة تزيينية من غير رابط (مش هتبقى قابلة للضغط):</p>
+                                    <div class="adm-curated-add-row">
+                                        <input type="text" class="adm-input" id="waterfall-left-url-input" placeholder="الصقي رابط صورة مباشر هنا...">
+                                        <button type="button" class="adm-btn adm-btn-outline adm-btn-sm" id="waterfall-left-add-url-btn">
+                                            <i class="fa-solid fa-plus"></i> إضافة
+                                        </button>
+                                    </div>
+                                    <label class="adm-image-upload-btn adm-mt-8" for="waterfall-left-image-input">
+                                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                                        <span id="waterfall-left-upload-label">أو ارفعي صورة من جهازك</span>
+                                    </label>
+                                    <input type="file" id="waterfall-left-image-input" accept="image/*" hidden>
+                                </details>
                             </div>
                             <div>
                                 <h3 class="adm-sub-heading">العمود الأيسر (لأسفل)</h3>
@@ -199,18 +205,21 @@
                                         <i class="fa-solid fa-link"></i> إضافة كرابط منتج
                                     </button>
                                 </div>
-                                <p class="adm-hint" style="margin: 10px 0 4px;">أو أضيفي صورة تزيينية من غير رابط (مش هتبقى قابلة للضغط):</p>
-                                <div class="adm-curated-add-row">
-                                    <input type="text" class="adm-input" id="waterfall-right-url-input" placeholder="الصقي رابط صورة مباشر هنا...">
-                                    <button type="button" class="adm-btn adm-btn-outline adm-btn-sm" id="waterfall-right-add-url-btn">
-                                        <i class="fa-solid fa-plus"></i> إضافة
-                                    </button>
-                                </div>
-                                <label class="adm-image-upload-btn adm-mt-8" for="waterfall-right-image-input">
-                                    <i class="fa-solid fa-cloud-arrow-up"></i>
-                                    <span id="waterfall-right-upload-label">أو ارفعي صورة من جهازك</span>
-                                </label>
-                                <input type="file" id="waterfall-right-image-input" accept="image/*" hidden>
+                                <details class="adm-collapsible-methods">
+                                    <summary>طرق إضافة أخرى (رابط صورة مباشر أو رفع من الجهاز)</summary>
+                                    <p class="adm-hint" style="margin: 10px 0 4px;">أضيفي صورة تزيينية من غير رابط (مش هتبقى قابلة للضغط):</p>
+                                    <div class="adm-curated-add-row">
+                                        <input type="text" class="adm-input" id="waterfall-right-url-input" placeholder="الصقي رابط صورة مباشر هنا...">
+                                        <button type="button" class="adm-btn adm-btn-outline adm-btn-sm" id="waterfall-right-add-url-btn">
+                                            <i class="fa-solid fa-plus"></i> إضافة
+                                        </button>
+                                    </div>
+                                    <label class="adm-image-upload-btn adm-mt-8" for="waterfall-right-image-input">
+                                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                                        <span id="waterfall-right-upload-label">أو ارفعي صورة من جهازك</span>
+                                    </label>
+                                    <input type="file" id="waterfall-right-image-input" accept="image/*" hidden>
+                                </details>
                             </div>
                         </div>
                     </div>
