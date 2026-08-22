@@ -322,7 +322,7 @@
                     <div class="bose-app-promo-pills">
                         <a href="track-order.html" class="bose-app-promo-pill"><i class="fa-solid fa-truck-fast"></i> تتبعي طلبك لحظة بلحظة</a>
                         <a href="menu.html" class="bose-app-promo-pill"><i class="fa-solid fa-bag-shopping"></i> تسوّق سهل وسريع</a>
-                        <a href="rewards.html" class="bose-app-promo-pill"><i class="fa-solid fa-gift"></i> مكافآت حصرية لعملائنا</a>
+                        <a href="rewards.html" class="bose-app-promo-pill" id="app-promo-rewards-pill"><i class="fa-solid fa-gift"></i> مكافآت حصرية لعملائنا</a>
                     </div>
 
                     <div class="bose-app-promo-store-btns">
@@ -351,13 +351,13 @@
                                 <div class="mock-product-card"></div>
                             </div>
                         </div>
-                        <div class="bose-app-promo-screen bose-screen-2">
+                        <div class="bose-app-promo-screen bose-screen-2" id="app-promo-loyalty-screen">
                             <div class="mock-status-bar"><span>9:41</span><i class="fa-solid fa-signal"></i></div>
                             <div class="mock-rewards-title">مكافآتك</div>
-                            <div class="mock-points-badge"><i class="fa-solid fa-star"></i> طلبك القادم رقم 5</div>
+                            <div class="mock-points-badge" id="app-promo-points-badge"><i class="fa-solid fa-star"></i> طلبك القادم رقم 5</div>
                             <div class="mock-progress-track"><div class="mock-progress-fill"></div></div>
-                            <div class="mock-reward-row"><i class="fa-solid fa-percent"></i> خصم 10% تلقائي على الطلب الجاي</div>
-                            <div class="mock-reward-row"><i class="fa-solid fa-gift"></i> قسيمة 300 جنيه كل 10 طلبات</div>
+                            <div class="mock-reward-row" id="app-promo-discount-row"><i class="fa-solid fa-percent"></i> خصم 10% تلقائي على الطلب الجاي</div>
+                            <div class="mock-reward-row" id="app-promo-voucher-row"><i class="fa-solid fa-gift"></i> قسيمة 300 جنيه كل 10 طلبات</div>
                         </div>
                         <div class="bose-app-promo-screen bose-screen-3">
                             <div class="mock-status-bar"><span>9:41</span><i class="fa-solid fa-signal"></i></div>
@@ -648,6 +648,26 @@
                 if (typeof window.getBoseLoyaltyConfig !== "function" || !window.BoseStoreData) return;
 
                 const config = window.getBoseLoyaltyConfig();
+                const sectionEl = document.getElementById("loyalty-teaser-section");
+                const promoPillEl = document.getElementById("app-promo-rewards-pill");
+                const promoScreenEl = document.getElementById("app-promo-loyalty-screen");
+
+                // 🛡️ [إصلاح جذري - احترام تفعيل/تعطيل البرنامج]: لوحة التحكم
+                // (loyalty-settings.html) فيها مفتاح "enabled" حقيقي، لكن قبل كده
+                // ولا صفحة في الواجهة كانت بتشيك عليه - فلو الأدمن عطّلت برنامج
+                // الولاء بالكامل، كان قسم التيزر في الرئيسية (وكارت المكافآت في
+                // موك أب التطبيق) لسه بيظهروا وكأن البرنامج شغال. دلوقتي القسمين
+                // بيختفوا فعليًا لو enabled=false، بدل ما يعرضوا وعد وهمي للعميلة.
+                if (!config.enabled) {
+                    if (sectionEl) sectionEl.style.display = "none";
+                    if (promoPillEl) promoPillEl.style.display = "none";
+                    if (promoScreenEl) promoScreenEl.style.display = "none";
+                    return;
+                }
+                if (sectionEl) sectionEl.style.display = "";
+                if (promoPillEl) promoPillEl.style.display = "";
+                if (promoScreenEl) promoScreenEl.style.display = "";
+
                 const descEl = document.getElementById("loyalty-teaser-desc");
                 const chipsEl = document.getElementById("loyalty-tier-chips");
 
@@ -655,11 +675,35 @@
                     descEl.textContent = `خصومات تلقائية على طلباتك من غير أي كود، وقسيمة شراء حقيقية بـ${config.voucherAmount} جنيه كل ${config.milestoneEvery} طلبات - النظام كله واضح وبسيط وموجود قدامك دايماً.`;
                 }
 
-                if (chipsEl && typeof window.getSortedLoyaltyTiers === "function") {
-                    const tiers = window.getSortedLoyaltyTiers(config);
+                const tiers = (typeof window.getSortedLoyaltyTiers === "function") ? window.getSortedLoyaltyTiers(config) : [];
+
+                if (chipsEl) {
                     let html = tiers.map((t) => `<div class="bose-loyalty-chip"><span class="chip-num">${esc(String(t.percent))}%</span><span class="chip-lbl">الطلب ${esc(String(t.position))}</span></div>`).join("");
                     html += `<div class="bose-loyalty-chip bose-loyalty-chip-gold"><span class="chip-num">${esc(String(config.voucherAmount))}ج</span><span class="chip-lbl">كل ${esc(String(config.milestoneEvery))} طلبات</span></div>`;
                     chipsEl.innerHTML = html;
+                }
+
+                // 🛡️ [إصلاح جذري - نفس المصدر الحي لموك أب التطبيق]: كارت "مكافآتك"
+                // جوه صورة الموبايل التوضيحية (قسم تحميل التطبيق) كان بيكتب أرقام
+                // ثابتة يدوياً (10%، 300 جنيه، كل 10 طلبات) منفصلة تماماً عن نفس
+                // الإعدادات اللي القسم فوق بيقرأها - فلو الأدمن غيّرت أي رقم من
+                // لوحة التحكم، الموك أب كان فاضل قديم وبيقول كلام مختلف عن الحقيقة.
+                // دلوقتي بيرسم من نفس config بالظبط.
+                const bestTier = tiers.length ? tiers[tiers.length - 1] : null;
+                const pointsBadgeEl = document.getElementById("app-promo-points-badge");
+                const discountRowEl = document.getElementById("app-promo-discount-row");
+                const voucherRowEl = document.getElementById("app-promo-voucher-row");
+
+                if (pointsBadgeEl) {
+                    pointsBadgeEl.innerHTML = `<i class="fa-solid fa-star"></i> طلبك القادم رقم ${esc(String(bestTier ? bestTier.position : config.cycleLength))}`;
+                }
+                if (discountRowEl) {
+                    discountRowEl.innerHTML = bestTier
+                        ? `<i class="fa-solid fa-percent"></i> خصم ${esc(String(bestTier.percent))}% تلقائي على الطلب الجاي`
+                        : `<i class="fa-solid fa-percent"></i> خصومات تلقائية على طلباتك`;
+                }
+                if (voucherRowEl) {
+                    voucherRowEl.innerHTML = `<i class="fa-solid fa-gift"></i> قسيمة ${esc(String(config.voucherAmount))} جنيه كل ${esc(String(config.milestoneEvery))} طلبات`;
                 }
             }
 
