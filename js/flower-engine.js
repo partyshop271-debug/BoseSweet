@@ -513,6 +513,27 @@
         // هيلاقي العناصر الجديدة جاهزة عادي (نفس الـ scope المتزامن).
         const heroImg = document.querySelector('.hero-banner-frame');
         if (heroImg && fbConfig.heroImage) heroImg.src = fbConfig.heroImage;
+
+        // 🖼️👑 [صور خطوات المحاكي القابلة للتعديل من لوحة التحكم]: كانت الأربع
+        // خطوات دي (شريط الستان، الصور الشخصية، بوكيه الفلوس، الشوكولاتة
+        // الفاخرة) بتعرض شعار المتجر نفسه مكرر كـ"صورة توضيحية" ثابتة في
+        // HTML بدون أي مكان في لوحة التحكم لتغييرها - دلوقتي كل واحدة بتتقرا
+        // من fbConfig.<field>Image (نفس آلية heroImage/portfolioGallery
+        // بالظبط) ولو الأدمن لسه ما رفعتش صورة حقيقية، بتفضل صورة الشعار
+        // الافتراضية اللي موجودة أصلاً في الـ HTML كـ fallback بدل ما تختفي.
+        const stepIllustrationMap = {
+            "flower-step-satin-illustration": fbConfig.satinRibbonImage,
+            "flower-step-photos-illustration": fbConfig.personalPhotoImage,
+            "flower-step-cash-illustration": fbConfig.cashImage,
+            "flower-step-chocolate-illustration": fbConfig.chocolateImage,
+        };
+        Object.keys(stepIllustrationMap).forEach((elId) => {
+            const url = stepIllustrationMap[elId];
+            if (url) {
+                const el = document.getElementById(elId);
+                if (el) el.src = url;
+            }
+        });
         // 🖼️👑 [سمتريه محاكي التورت]: نفس مكان وحجم معرض الإلهام بالظبط
         // (bose-step1-gallery-scroller جوه خطوة 1) بدل قسم "سابقة الأعمال"
         // المنفصل تحت الصفحة كلها - نفس آلية renderCakeGalleryAndHero
