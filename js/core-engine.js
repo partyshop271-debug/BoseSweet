@@ -1473,9 +1473,28 @@
         // عشان الحارس المركزي هنا يفضل مطابق تماماً لسعر المحاكي المعروض للعميل.
         const satinRibbonPrice = parseFloat(fbConfig.satinRibbonPrice) || 50;
 
+        // 🐛💰👑 [إصلاح جذري - أنواع الورد ذات السعر الثابت كانت بتتحاسب غلط هنا]:
+        // من لما محاكي الورد بقى بيسمح للأدمن يضيف نوع باقة جديد بسعر ثابت
+        // (usesFlowerCount: false، زي "بوكيه فراشات" أو "بوكيه صور") - flower-engine.js
+        // بيحسب سعره صح فعلاً (بيستخدم السعر الثابت المسجل للنوع)، لكن الحارس
+        // المركزي هنا كان لسه بيتجاهل نوع الباقة تماماً ويحسب دايماً بمعادلة "سعر
+        // أساسي + سعر الوردة الإضافية" - يعني أي طلب بنوع باقة ثابت السعر كان سعره
+        // النهائي المسجل فعلياً في السلة/الطلب يختلف تماماً عن السعر اللي شافته
+        // وقبلته العميلة في المحاكي. دلوقتي بيدور على نوع الباقة (options.flowerType)
+        // في نفس قائمة fbConfig.flowerTypes، وبيحترم usesFlowerCount زي flower-engine.js
+        // بالحرف.
+        const flowerTypesList = Array.isArray(fbConfig.flowerTypes) ? fbConfig.flowerTypes : [];
+        const selectedType = options.flowerType ? flowerTypesList.find((t) => t && t.id === options.flowerType) : null;
+        const usesFlowerCount = !selectedType || selectedType.usesFlowerCount !== false;
+
         const safeFlowerCount = parseInt(String(flowerCount), 10) || baseFlowers;
         const extraFlowers = Math.max(0, safeFlowerCount - baseFlowers);
-        let servicePrice = basePrice + (extraFlowers * extraFlowerPrice);
+        let servicePrice;
+        if (usesFlowerCount) {
+            servicePrice = basePrice + (extraFlowers * extraFlowerPrice);
+        } else {
+            servicePrice = (selectedType && selectedType.price > 0) ? parseFloat(selectedType.price) : basePrice;
+        }
         if (options.hasSatinRibbon) servicePrice += satinRibbonPrice; 
         const safePhotoCount = parseInt(options.photoCount, 10) || 0;
         if (options.hasPhotos && safePhotoCount > 0) servicePrice += safePhotoCount * photoPrintPrice; 
@@ -1880,6 +1899,7 @@
         }
         if (item.type === "custom-flower") {
             return window.calculateCustomFlowerPrice(details.flowerCount, {
+                flowerType: details.flowerType,
                 hasSatinRibbon: details.hasSatinRibbon,
                 photoCount: details.photoCount,
                 hasPhotos: details.photoCount > 0,
