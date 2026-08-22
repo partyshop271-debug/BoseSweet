@@ -17,11 +17,16 @@
 (function () {
     "use strict";
 
+    // 🐛 [إصلاح - 2026-08-22]: كانت buildHTML بتفترض إن كل الأيقونات من نوع
+    // "fa-solid" وتحقن البادئة دي تلقائيًا (`fa-solid ${b.icon}`) - وده بيمنع
+    // استخدام أيقونات العلامات التجارية (زي واتساب اللي محتاجة "fa-brands"
+    // مش "fa-solid"). دلوقتي حقل icon بياخد الكلاس الكامل (زي "fa-solid fa-lock"
+    // أو "fa-brands fa-whatsapp") عشان يشتغل مع أي نوع أيقونة.
     const DEFAULT_BADGES = [
-        { icon: "fa-lock", label: "دفع آمن", sub: "عربون أو كامل المبلغ بأمان" },
-        { icon: "fa-award", label: "جودة مضمونة", sub: "خامات طازة يومياً" },
-        { icon: "fa-truck-fast", label: "توصيل سريع", sub: "لكل مناطق الوادي الجديد" },
-        { icon: "fa-headset", label: "تواصل مباشر", sub: "رد سريع على واتساب" },
+        { icon: "fa-solid fa-lock", label: "دفع آمن", sub: "عربون أو كامل المبلغ بأمان" },
+        { icon: "fa-solid fa-award", label: "جودة مضمونة", sub: "خامات طازة يومياً" },
+        { icon: "fa-solid fa-truck-fast", label: "توصيل سريع", sub: "لكل مناطق الوادي الجديد" },
+        { icon: "fa-solid fa-headset", label: "تواصل مباشر", sub: "رد سريع على واتساب" },
     ];
 
     const STYLE_ID = "bose-trust-badges-style";
@@ -32,7 +37,7 @@
         style.id = STYLE_ID;
         style.textContent = `
             .btb-wrap {
-                display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+                display: grid; grid-template-columns: repeat(var(--btb-count, 4), 1fr); gap: 8px;
                 padding: 16px 4px; margin: 18px 0; font-family: 'Cairo', sans-serif;
             }
             .btb-item { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; }
@@ -59,9 +64,9 @@
             <div class="btb-wrap">
                 ${badges.map((b) => `
                     <div class="btb-item">
-                        <div class="btb-icon"><i class="fa-solid ${b.icon}"></i></div>
+                        <div class="btb-icon"><i class="${b.icon}"></i></div>
                         <span class="btb-label">${b.label}</span>
-                        <span class="btb-sub">${b.sub}</span>
+                        <span class="btb-sub">${b.sub || ""}</span>
                     </div>
                 `).join("")}
             </div>`;
@@ -70,7 +75,12 @@
     function renderInto(target, badges) {
         if (!target) return;
         injectStyleOnce();
-        target.innerHTML = buildHTML(badges || DEFAULT_BADGES);
+        const list = badges || DEFAULT_BADGES;
+        // 🐛 [إصلاح - 2026-08-22]: الشبكة كانت 4 أعمدة ثابتة دايمًا، فأي استدعاء
+        // بعدد شارات مختلف (زي 3 في صفحة المنتج) كان بيسيب عمود فاضي وشكل غير
+        // متزن. دلوقتي عدد الأعمدة بيتظبط تلقائيًا حسب عدد الشارات الفعلي.
+        target.style.setProperty("--btb-count", Math.max(1, Math.min(list.length, 4)));
+        target.innerHTML = buildHTML(list);
     }
 
     function autoInject() {
