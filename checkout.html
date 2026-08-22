@@ -23,7 +23,7 @@
     <!-- 🐛 [إصلاح حرج]: خط Cairo وأيقونات Font Awesome كانوا غير محمّلين نهائياً في أهم صفحة تحويل بالموقع -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/global.css?v=2026_production_v39.0">
+    <link rel="stylesheet" href="css/global.css?v=2026_production_v42.0">
     <link rel="stylesheet" href="css/main.css?v=2026_production_v38.0">
     <link rel="stylesheet" href="css/cart-checkout.css?v=2026_production_v37.0">
     
@@ -428,7 +428,7 @@
     <div id="bose-footer-injector"></div>
 
     <!-- ⚡ استدعاء محرك السلة وإتمام عمليات الحساب والدفع والربط اللوجستي المركزي (js/cart-engine.js) ⚡ -->
-    <script src="js/cart-engine.js?v=2026_production_v39.0" defer></script>
+    <script src="js/cart-engine.js?v=2026_production_v43.0" defer></script>
 
     <!-- 🔮 سكريبت التزامن الدفاعي المحلي لربط وحقن الواجهات وضمان فك شلل حقول الصفحة دون تعارض خارجي 🔮 -->
     <script>
@@ -512,6 +512,25 @@
                 }
 
                 const prepMsgNode = document.getElementById("checkout-preparation-message");
+                const deliveryTimeInputEl = document.getElementById("checkout-delivery-time");
+
+                // 🛡️🕘 [تفعيل حد ساعات الاستلام فعليًا]: قبل كده كان حقل الساعة
+                // <input type="time"> من غير أي حد أدنى/أقصى، يعني العميلة تقدر
+                // تختار أي ساعة (حتى 3 الفجر) حتى لو الأدمن حطت 9ص–10م في
+                // إعدادات المتجر - الإعداد كان موجود بس مش متطبّق فعليًا. دلوقتي
+                // بيتقرأ businessHoursStart/businessHoursEnd من قاعدة البيانات
+                // (بدائل 09:00/22:00 لو مش محفوظين) وبيتحط كـ min/max على الحقل
+                // نفسه (تلميح المتصفح)، بالإضافة لفحص صريح وقت تأكيد الطلب في
+                // processFinalBoseOrder (راجع cart-engine.js) لأن دعم min/max في
+                // input[type=time] مش متسق 100% في كل المتصفحات (خصوصًا موبايل)،
+                // فالفحص الملزم الحقيقي لازم يكون صريح مش معتمد على تلميح الحقل بس.
+                const bhStart = siteData.orderRules?.businessHoursStart || "09:00";
+                const bhEnd = siteData.orderRules?.businessHoursEnd || "22:00";
+                if (deliveryTimeInputEl) {
+                    deliveryTimeInputEl.min = bhStart;
+                    deliveryTimeInputEl.max = bhEnd;
+                }
+                window.boseCheckoutBusinessHours = { start: bhStart, end: bhEnd };
 
                 // 🛡️ [إصلاح - المرحلة 2]: قبل كده كان حامي التاريخ بيفرض بكرة (24 ساعة)
                 // كأول موعد متاح دايماً، حتى للتورت والورد المخصص اللي محتاج فعلياً
@@ -535,8 +554,7 @@
 
                 // ⚠️ [عزل الطلبات المختلطة]: إظهار تنبيه المزج بين المخصص والعادي هنا كمان
                 // (مش بس في صفحة السلة) عشان العميلة تشوفه في آخر لحظة قبل تأكيد الطلب.
-                const checkoutMixedBanner = document.getElementById("checkout-mixed-order-warning-banner");
-                if (checkoutMixedBanner) {
+                const checkoutMixedBanner = document.getElementById("checkout-mixed-order-warning-banner");                if (checkoutMixedBanner) {
                     const isMixedOrderCheckout = typeof window.boseCartHasMixedRegularAndCustom === "function"
                         ? window.boseCartHasMixedRegularAndCustom(cartArrForDate)
                         : false;
