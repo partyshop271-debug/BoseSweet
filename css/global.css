@@ -653,23 +653,29 @@ img {
    ========================================================================== */
 .bose-global-toast-error {
     position: fixed;
-    /* 🛡️ [إصلاح مكان الظهور]: كانت الرسالة ملتصقة بأسفل الشاشة (bottom:20px)
-       فمافيش ضمان إن العميل يشوفها لو كان قد اسكرول لأي مكان في الصفحة أو
-       الشاشة طويلة، وكمان كانت بتتغطى بالـ bottom-nav-bar على الموبايل.
-       دلوقتي بتظهر ثابتة تحت الهيدر مباشرة (top-bar-marquee 44px + الهيدر
-       76px = 120px) فبتفضل ظاهرة فوق الصفحة أياً كان مكان العميل فيها. */
-    top: 130px;
+    /* 🛡️🆕 [الإشعار بقى فوق الهيدر مش تحته]: كان الإشعار بيظهر تحت شريط
+       الإعلانات + الهيدر (top:130px) يعني العميل لازم يشوف الهيدر الأول
+       وبعدين الإشعار جواه. دلوقتي بيظهر فوق كل حاجة في أعلى الشاشة تماماً
+       (فوق شريط الإعلانات وفوق الهيدر نفسه) زي إشعارات التطبيقات
+       الاحترافية - z-index أعلى من الهيدر (5000) وشريط الإعلانات (5500)
+       بمسافة كبيرة فمفيش أي احتمال يتغطى. safe-area-inset لضمان مسافة
+       صح فوق فتحة الكاميرا/الشق في الموبايلات الحديثة.
+    */
+    top: calc(env(safe-area-inset-top, 0px) + 12px);
     left: 50%;
     transform: translateX(-50%);
     background-color: var(--bose-pink-text);
     color: var(--bose-white);
-    padding: 12px 24px;
-    border-radius: var(--bose-radius-pill); /* 🛡️ [إصلاح تناسق]: كان 8px بينما رسالة toast التانية بالضبط (.bose-toast-message) كانت 30px لنفس نوع العنصر - دلوقتي الاتنين كبسولة موحّدة */
-    box-shadow: var(--bose-shadow-hover);
-    z-index: 99999;
+    padding: 14px 22px;
+    border-radius: var(--bose-radius-pill);
+    box-shadow: 0 10px 34px rgba(0, 0, 0, 0.22);
+    z-index: 999999;
     direction: rtl;
-    font-size: 14px;
-    max-width: 90vw;
+    font-family: var(--bose-font, 'Cairo', sans-serif);
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.5;
+    max-width: min(92vw, 460px);
     text-align: center;
 }
 
@@ -678,20 +684,21 @@ img {
    ========================================================================== */
 #bose-toast-container {
     position: fixed;
-    /* 🛡️ [إصلاح مكان الظهور - على مستوى الموقع كله]: كانت رسائل التنبيه
-       (زي "تمت الإضافة للسلة") بتظهر bottom:80px فوق الـ bottom-nav-bar
-       بالظبط، يعني العميل كان لازم يكون واقف/قريب من أسفل الشاشة عشان
-       يشوفها، ولو كان فاتح صفحة طويلة وعامل اسكرول لفوق ممكن تفوته الرسالة
-       تماماً. دلوقتي بتظهر ثابتة تحت الهيدر (top-bar-marquee 44px + الهيدر
-       76px = 120px) في كل صفحات الموقع، فالعميل يشوفها فوراً مهما كان
-       مكانه في الصفحة. */
-    top: 130px;
+    /* 🛡️🆕 [الإشعارات فوق الهيدر - في كل صفحات الموقع]: قبل كده كانت
+       الإشعارات ("تمت الإضافة للسلة"، إلخ) بتظهر أسفل الهيدر (top:130px)،
+       يعني بصرياً "جوه" الصفحة تحت شريط التنقل. دلوقتي بتظهر عايمة فوق
+       الهيدر تماماً في أعلى الشاشة (نفس منطق البانرات الاحترافية في تطبيقات
+       الموبايل) - z-index أعلى بكتير من شريط الإعلانات (5500) والهيدر
+       (5000) فمفيش تصادم أو تغطية أبداً مهما كانت الصفحة. لو ظهر أكتر من
+       إشعار في نفس الوقت بيترصّوا فوق بعض بمسافة واضحة (gap) مش مكدسين. */
+    top: calc(env(safe-area-inset-top, 0px) + 12px);
     left: 50%;
     transform: translateX(-50%);
+    width: min(92vw, 460px);
     z-index: 999999;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
     pointer-events: none;
     font-family: var(--bose-font, 'Cairo', sans-serif);
 }
@@ -699,19 +706,17 @@ img {
 .bose-toast-message {
     background-color: var(--bose-pink-text); /* 🛡️ لون أغمق لضمان تباين كافٍ مع النص الأبيض */
     color: var(--bose-white);
-    padding: 12px 24px;
-    border-radius: var(--bose-radius-pill);
+    padding: 14px 22px;
+    border-radius: 16px; /* 🆕 كبسولة مربعة الحواف الناعمة بدل الشكل الطويل الضيق - أريح للعين مع نصوص أطول ومش بتحس إنها "مكدسة" في شكل شريط رفيع */
     font-weight: 700;
-    font-size: 14px;
+    font-size: 15px;
+    line-height: 1.55; /* 🆕 مسافة أوضح بين الأسطر لو الرسالة طويلة وعملت لفة سطرين */
     text-align: center;
-    box-shadow: 0 8px 32px rgba(255, 145, 164, 0.3);
+    box-shadow: 0 10px 34px rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.4);
     direction: rtl;
     opacity: 0;
-    /* 🛡️ اتجاه الحركة اتعكس ليتناسب مع مكان الظهور الجديد تحت الهيدر: دلوقتي
-       الرسالة بتنزل من فوق (بدل ما كانت بتطلع من تحت لما كانت bottom) وبتخرج
-       لفوق تاني بنفس الاتجاه بدل ما تتضارب بصرياً مع مكانها الجديد. */
-    transform: translateY(-20px);
+    transform: translateY(-16px);
     transition: opacity 0.4s ease, transform 0.4s ease;
     pointer-events: auto;
 }
