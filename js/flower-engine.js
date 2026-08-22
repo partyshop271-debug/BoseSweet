@@ -446,10 +446,14 @@
         // بقت مجرد احتياطي افتراضي لو الأدمن لسه ما ضافتش/عدلتش حاجة.
         if (typeof window.initBoseInfoCarousel === "function") {
             const adminTips = Array.isArray(fbConfig.infoCarouselTips) ? fbConfig.infoCarouselTips.filter(t => t && t.title && t.text) : [];
+            // 🛡️👑 [إدارة كاملة من لوحة التحكم - سرعة/حجم/إيقاف]: نفس الإصلاح
+            // المطبّق في cake-engine.js بالحرف - راجع التعليق هناك.
             window.initBoseInfoCarousel({
                 trackId: "bose-flower-info-carousel-track",
                 progressId: "bose-flower-info-carousel-progress",
-                intervalMs: 6000,
+                intervalMs: (Number(fbConfig.infoCarouselSpeedSeconds) > 0 ? Number(fbConfig.infoCarouselSpeedSeconds) : 6) * 1000,
+                fontSize: Number(fbConfig.infoCarouselFontSize) > 0 ? Number(fbConfig.infoCarouselFontSize) : 13,
+                enabled: fbConfig.infoCarouselEnabled !== false,
                 tips: adminTips.length > 0 ? adminTips : [
                     { title: "ورد طازة حسب الطلب 🌸", text: "الورد الطبيعي بيوصلنا من المزرعة وبيتنسق بعد تأكيد طلبك مباشرة - مش باقة جاهزة مخزّنة." },
                     { title: "إيه الفرق بين الأنواع؟", text: "الورد الصناعي والستان بيحافظوا على شكلهم لفترة أطول من الطبيعي، وممكن يفضلوا كذكرى تحتفظي بيها." },

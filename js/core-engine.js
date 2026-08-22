@@ -2438,8 +2438,29 @@
             const topBarEnabled = data.navigation?.topBarEnabled !== false;
             const topBarTrackStyle = `animation-duration:${topBarSpeed}s !important; animation-play-state:${topBarEnabled ? 'running' : 'paused'} !important;`;
 
+            // 🛡️👑 [إدارة كاملة للشريط - حجمه وإيقافه فعلياً]: قبل كده "إيقاف"
+            // الشريط من لوحة التحكم كان بيوقّف حركة السحب بس (animation-play-state)
+            // ويسيبه ظاهر وثابت ومكانه محجوز فوق الهيدر - مش إيقاف حقيقي. ومفيش
+            // أي تحكم في حجم خط الشريط أصلاً. دلوقتي:
+            // 1) حجم الخط (navigation.topBarFontSize) بيتحكم فيه الأدمن، وارتفاع
+            //    الشريط بيتحسب تلقائياً منه بنفس النسبة اللي كانت مضبوطة يدويًا
+            //    قبل كده (18px خط ↔ 44px ارتفاع)، عشان الشكل يفضل متناسق مهما
+            //    الحجم اتغيّر.
+            // 2) لو "topBarEnabled" = false دلوقتي الشريط بيختفي بالكامل فعليًا
+            //    (مش بس بيوقف عن الحركة) وارتفاعه بيبقى صفر، والهيدر والمحتوى
+            //    اللي تحته بيرتفعوا تلقائيًا يملوا المكان الفاضي - عبر متغيرات
+            //    CSS (--bose-topbar-height/--bose-topbar-font-size) بتتظبط هنا
+            //    وكل من .bose-sticky-header و body في global.css بيقروا منها
+            //    بدل الأرقام الثابتة القديمة (44px / 120px)، فأي قيمة يختارها
+            //    الأدمن بتنعكس فورًا على كل الصفحة من غير أي تصادم أو قص محتوى.
+            const topBarFontSize = Number(data.navigation?.topBarFontSize) > 0 ? Number(data.navigation.topBarFontSize) : 18;
+            const topBarHeight = topBarEnabled ? (Math.round(topBarFontSize * 2) + 8) : 0;
+            document.documentElement.style.setProperty('--bose-topbar-height', topBarHeight + 'px');
+            document.documentElement.style.setProperty('--bose-topbar-font-size', topBarFontSize + 'px');
+            const topBarContainerStyle = topBarEnabled ? '' : 'display:none !important;';
+
             headerInjector.innerHTML = `
-                <div id="top-bar-marquee" class="bose-top-bar-marquee-container" aria-label="شريط الإعلانات التسويقية">
+                <div id="top-bar-marquee" class="bose-top-bar-marquee-container" style="${topBarContainerStyle}" aria-hidden="${topBarEnabled ? 'false' : 'true'}" aria-label="شريط الإعلانات التسويقية">
                     <div class="bose-top-bar-marquee-track" style="${topBarTrackStyle}">
                         ${marqueeItemsHtml} ${marqueeItemsHtml}
                     </div>
@@ -2924,9 +2945,30 @@
         const progressId = opts && opts.progressId;
         const tips = (opts && opts.tips) || [];
         const intervalMs = (opts && opts.intervalMs) || 6000;
+        const enabled = !(opts && opts.enabled === false);
+        const fontSize = (opts && Number(opts.fontSize) > 0) ? Number(opts.fontSize) : null;
 
         const track = document.getElementById(trackId);
-        if (!track || !Array.isArray(tips) || tips.length === 0) return;
+        if (!track) return;
+        const container = track.closest(".bose-info-carousel");
+
+        // 🛡️👑 [إيقاف حقيقي من لوحة التحكم]: لو الأدمن قفلت "الشريط ظاهر
+        // ومُفعّل" لمحاكي التورت أو الورد، الشريط بيختفي بالكامل (مش بس
+        // بيوقف عن التغيير) - نفس منطق الشريط العلوي المتحرك في الرئيسية.
+        if (!enabled) {
+            if (container) container.style.display = "none";
+            return;
+        }
+        if (container) container.style.display = "";
+
+        if (!Array.isArray(tips) || tips.length === 0) return;
+
+        // 🛡️👑 [حجم الخط ديناميكي من لوحة التحكم]: بيتظبط عبر متغير CSS على
+        // الحاوية نفسها (--bose-info-carousel-font-size) بدل رقم ثابت -
+        // راجع css/simulators.css.
+        if (container && fontSize) {
+            container.style.setProperty("--bose-info-carousel-font-size", fontSize + "px");
+        }
 
         const esc = window.escapeBoseHTML || (s => s);
         track.innerHTML = tips.map((t, i) => `
@@ -2937,7 +2979,6 @@
 
         const slides = track.querySelectorAll(".bose-info-carousel-slide");
         const progressFill = progressId ? document.getElementById(progressId) : null;
-        const container = track.closest(".bose-info-carousel");
         const prefersReducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
         let idx = 0;

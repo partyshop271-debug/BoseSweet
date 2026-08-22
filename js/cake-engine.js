@@ -51,10 +51,18 @@ function startEngineLogic() {
     // افتراضي لو الأدمن لسه ما ضافتش/عدلتش حاجة.
     if (typeof window.initBoseInfoCarousel === "function") {
         const adminCakeTips = Array.isArray(config.infoCarouselTips) ? config.infoCarouselTips.filter(t => t && t.title && t.text) : [];
+        // 🛡️👑 [إدارة كاملة من لوحة التحكم - سرعة/حجم/إيقاف]: قبل كده الفاصل
+        // الزمني (6 ثواني) وحجم الخط كانوا أرقام ثابتة في الكود، ومفيش أي طريقة
+        // لإخفاء الشريط بالكامل غير حذف كل المعلومات يدوياً. دلوقتي الثلاثة
+        // بيتقروا من config.infoCarouselEnabled/SpeedSeconds/FontSize (لوحة
+        // التحكم → المحاكيات) بنفس منطق الشريط العلوي المتحرك في الرئيسية.
+        const cakeInfoEnabled = config.infoCarouselEnabled !== false;
         window.initBoseInfoCarousel({
             trackId: "bose-cake-info-carousel-track",
             progressId: "bose-cake-info-carousel-progress",
-            intervalMs: 6000,
+            intervalMs: (Number(config.infoCarouselSpeedSeconds) > 0 ? Number(config.infoCarouselSpeedSeconds) : 6) * 1000,
+            fontSize: Number(config.infoCarouselFontSize) > 0 ? Number(config.infoCarouselFontSize) : 13,
+            enabled: cakeInfoEnabled,
             tips: adminCakeTips.length > 0 ? adminCakeTips : [
                 { title: "تحضير فريش 100% 🎂", text: "كل تورتة بنبدأ تحضيرها بعد تأكيد طلبك مباشرة - مفيش تورت جاهز مخزّن من قبل." },
                 { title: "التصميم قريب من الصورة", text: "لو رفعتي صورة تصميم عجباكِ، بنحاول نقرب منها قد الإمكان مع مراعاة إن التنفيذ اليدوي ممكن يختلف شوية." },
