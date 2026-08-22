@@ -276,28 +276,51 @@ function startEngineLogic() {
        الكارت وقت ما يكون العدد الحالي أقل من المطلوب - عشان يبان واضح
        *قبل* الضغط إن الاختيار مش متاح دلوقتي، مش يترفض في صمت بعد الضغط.
        ================================================================== */
-    const squareCaptionEl = document.getElementById('shape-square-caption');
-    const rectCaptionEl = document.getElementById('shape-rectangle-caption');
+    // 🆕 [تعميم القفل + "تفاصيل تنفيذ الشكل" على الأربع أشكال مش المربع
+    // والمستطيل بس]: قبل كده الكابشن/الهزّة/رسالة القفل كانت متسحبة يدوي
+    // على square/rectangle فقط. دلوقتي بتتبني تلقائياً من config.shapes
+    // (نفس القايمة اللي الأدمن بتتحكم فيها لكل شكل) فلو الأدمن رفعت
+    // minimumPersons لأي شكل (حتى دائرة أو قلب) هيتقفل صح بنفس المنطق
+    // ونفس رسالة التنفيذ المخصصة بتاعته - من غير أي كود إضافي.
+    const shapeCaptionEls = {
+        circle: document.getElementById('shape-circle-caption'),
+        heart: document.getElementById('shape-heart-caption'),
+        square: document.getElementById('shape-square-caption'),
+        rectangle: document.getElementById('shape-rectangle-caption'),
+    };
+    const shapeNameMap = { circle: 'الدائرة', heart: 'القلب', square: 'المربع', rectangle: 'المستطيل' };
+    // كل شكل ليه حقل "تفاصيل تنفيذ الشكل" مستقل (Upgrade)، وبيرجع لحقل
+    // "التنويه" القديم (Minimum) لو موجود من إعداد سابق عشان محدش يفقد
+    // نص كان مكتوب أصلاً، وبعدين لرسالة عامة افتراضية لو مفيش أي نص.
+    function getShapeOverrideText(shapeId) {
+        const images = window.BoseStoreData?.cakeBuilder?.images || {};
+        return images[`${shapeId}Upgrade`] || images[`${shapeId}Minimum`] || "";
+    }
 
     function getShapeMinimums() {
-        const squareData = (config.shapes || []).find(s => s.id === 'square') || { minimumPersons: 16 };
-        const rectData = (config.shapes || []).find(s => s.id === 'rectangle') || { minimumPersons: 20 };
-        return { squareMin: squareData.minimumPersons, rectMin: rectData.minimumPersons };
+        const map = {};
+        (config.shapes || []).forEach((s) => { map[s.id] = s.minimumPersons; });
+        return map;
     }
 
     function renderShapeCaptions() {
-        const { squareMin, rectMin } = getShapeMinimums();
-        if (squareCaptionEl) squareCaptionEl.textContent = `🔒 متاح من ${squareMin} فرد فأكتر`;
-        if (rectCaptionEl) rectCaptionEl.textContent = `🔒 متاح من ${rectMin} فرد فأكتر`;
+        const minimums = getShapeMinimums();
+        Object.keys(shapeCaptionEls).forEach((shapeId) => {
+            const el = shapeCaptionEls[shapeId];
+            const min = minimums[shapeId];
+            if (el && min) el.textContent = `🔒 متاح من ${min} فرد فأكتر`;
+        });
     }
     renderShapeCaptions();
 
     function updateShapeLockVisuals(currentPersons) {
-        const { squareMin, rectMin } = getShapeMinimums();
-        const squareLabel = document.querySelector('input[name="cake_shape"][value="square"]')?.closest('.bose-selection-card-label');
-        const rectLabel = document.querySelector('input[name="cake_shape"][value="rectangle"]')?.closest('.bose-selection-card-label');
-        if (squareLabel) squareLabel.classList.toggle('bose-option-locked', currentPersons < squareMin);
-        if (rectLabel) rectLabel.classList.toggle('bose-option-locked', currentPersons < rectMin);
+        const minimums = getShapeMinimums();
+        Object.keys(shapeCaptionEls).forEach((shapeId) => {
+            const min = minimums[shapeId];
+            if (!min) return;
+            const label = document.querySelector(`input[name="cake_shape"][value="${shapeId}"]`)?.closest('.bose-selection-card-label');
+            if (label) label.classList.toggle('bose-option-locked', currentPersons < min);
+        });
     }
 
     // ⚠️ رسالة واضحة + هزّة انتباه على الكارت نفسه لما العميلة تحاول تختار
@@ -311,10 +334,7 @@ function startEngineLogic() {
             label.classList.add('bose-shake-alert');
             setTimeout(() => label.classList.remove('bose-shake-alert'), 450);
         }
-        const shapeNameMap = { square: 'المربع', rectangle: 'المستطيل' };
-        const overrideText = shapeValue === 'square'
-            ? window.BoseStoreData?.cakeBuilder?.images?.squareMinimum
-            : window.BoseStoreData?.cakeBuilder?.images?.rectangleUpgrade;
+        const overrideText = getShapeOverrideText(shapeValue);
         const text = overrideText || `شكل ${shapeNameMap[shapeValue] || ''} متاح بس من ${minPersons} فرد فأكتر عشان التقطيع والتنسيق يطلعوا مظبوطين. ارجعي لخطوة عدد الأفراد وزوّدي العدد لو حابة تختاريه.`;
         if (alertBox) {
             alertBox.textContent = `🔒 ${text}`;
@@ -326,13 +346,14 @@ function startEngineLogic() {
 
     // بنمنع اختيار الشكل المقفول من أصله عند الضغط (بدل ما نسيبه يتحدد
     // وبعدين يرجع دائرة بصمت) - كده مفيش "فلاش" مربك، وفي رسالة + هزّة
-    // واضحة بتوضح السبب فوراً لحظة الضغط نفسها.
+    // واضحة بتوضح السبب فوراً لحظة الضغط نفسها. بتشتغل دلوقتي على أي
+    // شكل ليه minimumPersons > 0 مش المربع والمستطيل بس.
     document.querySelectorAll('input[name="cake_shape"]').forEach((radio) => {
         radio.addEventListener('click', (e) => {
-            if (radio.value !== 'square' && radio.value !== 'rectangle') return;
+            const minimums = getShapeMinimums();
+            const min = minimums[radio.value];
+            if (!min) return;
             const currentPersons = parseInt(inputPersons.value, 10) || config.persons.minimum;
-            const { squareMin, rectMin } = getShapeMinimums();
-            const min = radio.value === 'square' ? squareMin : rectMin;
             if (currentPersons < min) {
                 e.preventDefault();
                 showShapeLockAlert(radio.value, min);

@@ -905,7 +905,7 @@ function renderBoseLoyaltyDiscountRows(invoice) {
     wrapper.innerHTML = rowsHtml;
 }
 
-function processFinalBoseOrder(cart, storeData, method, shippingFee, payFull) {
+async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFull) {
     const customerNameInput = document.getElementById("checkout-customer-name");
     const customerPhoneInput = document.getElementById("checkout-customer-phone");
     const customerPhone2Input = document.getElementById("checkout-customer-phone-2");
@@ -1003,11 +1003,27 @@ function processFinalBoseOrder(cart, storeData, method, shippingFee, payFull) {
         if (!isScheduleValid) {
             const fallbackMsg = cartHasCustomItem
                 ? "التورت والورد المخصص عبر المحاكي بيحتاج حجز قبل موعد التسليم بأسبوع كامل (7 أيام) على الأقل."
-                : "نحتاج إلى وقت كافٍ لتجهيز طلبك بأفضل جودة ممكنة، لذلك لا يمكن اختيار موعد قبل 24 ساعة.";
+                : "نحتاج إلى وقت كافٍ لتجهيز طلبك بأفضل جودة ممكنة، لذلك لا يمكن اختيار موعد قبل 48 ساعة.";
             const msg = cartHasCustomItem
                 ? (storeData.orderRules?.customPreparationTimeMessage || fallbackMsg)
                 : (storeData.orderRules?.preparationTimeMessage || fallbackMsg);
             addValidationError(deliveryTimeInput, msg);
+        }
+    }
+
+    // 🛡️🕘 [تفعيل حد ساعات الاستلام فعليًا - الفحص الملزم]: min/max على حقل
+    // <input type="time"> في checkout.html هو تلميح للمتصفح بس ومش مضمون
+    // إنه يمنع العميلة فعليًا في كل الأجهزة (خصوصًا موبايل)، فالفحص الحقيقي
+    // اللي بيوقف تأكيد الطلب لازم يكون هنا صراحة. بيقارن نص الوقت المُدخل
+    // (صيغة "HH:MM") بحدود businessHoursStart/businessHoursEnd المحفوظة في
+    // إعدادات المتجر (بدائل 09:00/22:00 لو مش محفوظين).
+    if (orderTime) {
+        const bhStart = storeData.orderRules?.businessHoursStart || "09:00";
+        const bhEnd = storeData.orderRules?.businessHoursEnd || "22:00";
+        if (orderTime < bhStart || orderTime > bhEnd) {
+            const bhStartDisplay = typeof formatBoseTimeToEgyptian12Hour === "function" ? formatBoseTimeToEgyptian12Hour(bhStart) : bhStart;
+            const bhEndDisplay = typeof formatBoseTimeToEgyptian12Hour === "function" ? formatBoseTimeToEgyptian12Hour(bhEnd) : bhEnd;
+            addValidationError(deliveryTimeInput, `مواعيد الاستلام متاحة بس من ${bhStartDisplay} لحد ${bhEndDisplay}، يرجى اختيار ساعة جوه النطاق ده.`);
         }
     }
 
@@ -1096,10 +1112,56 @@ function processFinalBoseOrder(cart, storeData, method, shippingFee, payFull) {
 
     // 🤝 سد ثغرة الأصفار وتوحيد الذاكرة متبادلة التوافق تماماً
     localStorage.setItem("bose_last_order", JSON.stringify(completedBoseOrderObject));
-    
+
+    // 🐛👑 [إصلاح جذري: رقم الطلب في فاتورة الواتساب كان دايماً مختلف عن
+    // الرقم الحقيقي المسجل في قاعدة البيانات]: قبل كده كان واتساب بيتفتح
+    // فوراً برقم مؤقت (Timestamp من جهاز العميل، مثال BOSE-1755... ) قبل
+    // ما ننتظر رد قاعدة البيانات، وبعدين لما الرقم الحقيقي (بصيغة
+    // YYYYMMDD-NNNN) كان بيوصل بعد ثواني كان بيتسجل بس في dbOrderNumber
+    // من غير ما يستخدم في فاتورة الواتساب اللي وصلت للعميلة والفرع أصلاً -
+    // فكان فيه رقمين مختلفين لنفس الطلب: واحد في الفاتورة وواحد في صفحة
+    // التتبع. الحل: بنفتح تاب فاضي فوراً هنا (Synchronous) عشان نضمن إن
+    // Safari/iOS ما يحجبوش (لازم فتح التاب يحصل مباشرة جوه حدث الضغطة من
+    // غير أي await قبله)، وبعدين بننتظر رد قاعدة البيانات الحقيقي، ونبني
+    // فاتورة الواتساب بالرقم الحقيقي بالظبط، وبعدين نوجّه نفس التاب المفتوح
+    // لرابط واتساب - فالرقم اللي في الفاتورة يبقى مطابق 100% لرقم صفحة
+    // التتبع لأنهم بقوا نفس الرقم فعلياً مش مجرد نفس الشكل.
+    const boseWhatsappBlankTab = window.open("", "_blank");
+
+    // 🛡️ [إصلاح]: الشرط كان بيتأكد من وجود دالة مختلفة (submitBoseOrderToDatabase)
+    // بينما بينادي فعلياً على window.saveBoseOrderToDatabase - شغالة بالصدفة
+    // لأن الاتنين بيتعرّفوا مع بعض في supabase-client.js، لكن الفحص الصحيح
+    // لازم يكون على الدالة اللي بننادي عليها فعلياً.
+    if (typeof window.saveBoseOrderToDatabase === "function") {
+        try {
+            const dbResult = await window.saveBoseOrderToDatabase(completedBoseOrderObject);
+            if (dbResult && dbResult.orderNumber) {
+                // 🛡️ [إصلاح حرج]: الرقم الحقيقي من قاعدة البيانات بقى هو نفسه
+                // orderNumber/orderId المستخدمين في بناء فاتورة الواتساب تحت -
+                // مش مجرد قيمة إضافية بتتسجل من غير استخدام زي ما كان بيحصل.
+                completedBoseOrderObject.dbOrderNumber = dbResult.orderNumber;
+                completedBoseOrderObject.orderNumber = dbResult.orderNumber;
+                completedBoseOrderObject.orderId = dbResult.orderNumber;
+                // 🎁 [نظام نقاط الولاء]: القيم دي هي المؤكدة فعلياً من قاعدة البيانات
+                // (مصدر الحقيقة) - بتتسجل هنا عشان صفحة النجاح تقدر تعرض للعميلة
+                // بالظبط الخصم اللي اتطبق، أو تبشّرها لو الطلب ده حقق لها قسيمة الـ300 جنيه.
+                completedBoseOrderObject.loyaltyDiscountPercent = dbResult.loyaltyDiscountPercent || 0;
+                completedBoseOrderObject.loyaltyDiscountAmount = dbResult.loyaltyDiscountAmount || 0;
+                completedBoseOrderObject.voucherAmountUsed = dbResult.voucherAmountUsed || 0;
+                completedBoseOrderObject.isLoyaltyMilestone = !!dbResult.isLoyaltyMilestone;
+            }
+        } catch (err) {
+            // 🛡️ لو الاتصال فشل (نت ضعيف مثلاً) البيع لا يتوقف أبداً - بنكمل
+            // بالرقم المؤقت المولّد محلياً (orderIdGenerated) كحل احتياطي، وواتساب
+            // بيتفتح بيه عادي، لكنه هيبقى مختلف عن قاعدة البيانات في هذه الحالة
+            // النادرة بس (فشل حفظ فعلي)، مش في المسار العادي الناجح.
+            console.warn("⚠️ تعذر حفظ الطلب في قاعدة البيانات (البيع هيتم عبر واتساب بالرقم المؤقت رغم ذلك):", err);
+        }
+    }
+
     const whatsappMessageText = buildBoseFormattedWhatsappInvoice(completedBoseOrderObject);
     const brandWhatsappNumber = storeData.store?.phone || "01097238441";
-    
+
     // ربط الرسالة بالـ object لضمان عدم حدوث شلل لزر الإرسال البديل بصفحة النجاح
     completedBoseOrderObject.whatsappMessage = whatsappMessageText;
     localStorage.setItem("bose_last_order", JSON.stringify(completedBoseOrderObject));
@@ -1107,58 +1169,26 @@ function processFinalBoseOrder(cart, storeData, method, shippingFee, payFull) {
     localStorage.removeItem("bose_active_coupon");
     if (typeof window.updateGlobalCartCounter === "function") window.updateGlobalCartCounter();
 
-    // 🗄️ [إصلاح حرج]: بنفتح واتساب فوراً هنا (Synchronous) عشان متصفحات
-    // الموبايل (خصوصاً Safari/iOS) ماتحجبش النافذة، لأنها بتشترط إن فتح
-    // النافذة يحصل مباشرة جوه حدث ضغطة الزر بدون أي انتظار قبله.
-    window.open(window.buildWhatsappLink(brandWhatsappNumber, whatsappMessageText), "_blank");
+    const whatsappLink = window.buildWhatsappLink(brandWhatsappNumber, whatsappMessageText);
+    if (boseWhatsappBlankTab) {
+        boseWhatsappBlankTab.location.href = whatsappLink;
+    } else {
+        // فallback نادر لو المتصفح رفض حتى فتح التاب الفاضي الأول (بعض إعدادات
+        // الحجب المتشددة جداً) - آخر محاولة بفتح مباشر عادي.
+        window.open(whatsappLink, "_blank");
+    }
+
     // 🛡️ [إصلاح تكرار فتح واتساب]: واتساب اتفتح بالفعل هنا لحظة تأكيد الطلب،
     // فبنسجل نفس علامة "تم الفتح تلقائياً" اللي بتقرأها renderBoseSuccessPage()
     // في order-success.html فوراً، عشان الصفحة متفتحش واتساب مرة تانية لوحدها
-    // لحظة وصول العميل ليها (كان بيفتح تابين واتساب لكل طلب).
+    // لحظة وصول العميل ليها (كان بيفتح تابين واتساب لكل طلب). بتتسجل بنفس
+    // orderIdGenerated المحلي دايماً (مش الرقم الحقيقي) عشان order-success.html
+    // بيقرأها بنفس القيمة دي.
     try {
         sessionStorage.setItem("bose_whatsapp_auto_opened_" + orderIdGenerated, "1");
     } catch (e) { /* تجاهل بأمان لو الجلسة غير متاحة */ }
 
-    const finalizeNavigation = () => { window.location.href = "order-success.html"; };
-
-    // 🛡️ [إصلاح حرج]: قبل كده كان الطلب موجود بس في localStorage الخاص
-    // بجهاز العميل + نص رسالة واتساب، ولو حصل أي حاجة (popup اتحجب، العميل
-    // قفل التاب قبل الإرسال، أو مسح بيانات المتصفح) الطلب كان بيضيع نهائياً
-    // من غير أي أثر عندنا. دلوقتي بيتسجل فعلياً في قاعدة بيانات Supabase قبل
-    // الانتقال لصفحة النجاح. لو الاتصال فشل (نت ضعيف مثلاً) البيع لا يتوقف
-    // أبداً - واتساب فتح بالفعل فوق - وبنكمل التنقل بعد المحاولة سواء نجحت أو لأ.
-    // 🛡️ [إصلاح]: الشرط كان بيتأكد من وجود دالة مختلفة (submitBoseOrderToDatabase)
-    // بينما بينادي فعلياً على window.saveBoseOrderToDatabase - شغالة بالصدفة
-    // لأن الاتنين بيتعرّفوا مع بعض في supabase-client.js، لكن الفحص الصحيح
-    // لازم يكون على الدالة اللي بننادي عليها فعلياً.
-    if (typeof window.saveBoseOrderToDatabase === "function") {
-        window.saveBoseOrderToDatabase(completedBoseOrderObject)
-            .then((dbResult) => {
-                // 🛡️ [إصلاح حرج]: رقم الطلب الحقيقي المتولد في قاعدة البيانات
-                // (بصيغة YYYYMMDD-NNNN) كان بيتحسب وبيترجع من create_order_with_items
-                // لكن بيتضاع هنا تماماً من غير أي استخدام - orderNumber المعروض في
-                // صفحة النجاح كان دايماً رقم محلي (Timestamp) من جهاز العميل بس، مش
-                // نفس الرقم المسجل فعلياً في قاعدة البيانات. ده كان هيمنع أي نظام
-                // تتبع طلب حقيقي من الشغل لأن العميل معندوش الرقم الصح أصلاً. دلوقتي
-                // بنسجل الرقم الحقيقي في نفس كائن الطلب المحفوظ في localStorage
-                // عشان صفحة النجاح تقدر تعرضه وتربطه بصفحة تتبع الطلب.
-                if (dbResult && dbResult.orderNumber) {
-                    completedBoseOrderObject.dbOrderNumber = dbResult.orderNumber;
-                    // 🎁 [نظام نقاط الولاء]: القيم دي هي المؤكدة فعلياً من قاعدة البيانات
-                    // (مصدر الحقيقة) - بتتسجل هنا عشان صفحة النجاح تقدر تعرض للعميلة
-                    // بالظبط الخصم اللي اتطبق، أو تبشّرها لو الطلب ده حقق لها قسيمة الـ300 جنيه.
-                    completedBoseOrderObject.loyaltyDiscountPercent = dbResult.loyaltyDiscountPercent || 0;
-                    completedBoseOrderObject.loyaltyDiscountAmount = dbResult.loyaltyDiscountAmount || 0;
-                    completedBoseOrderObject.voucherAmountUsed = dbResult.voucherAmountUsed || 0;
-                    completedBoseOrderObject.isLoyaltyMilestone = !!dbResult.isLoyaltyMilestone;
-                    localStorage.setItem("bose_last_order", JSON.stringify(completedBoseOrderObject));
-                }
-            })
-            .catch((err) => console.warn("⚠️ تعذر حفظ نسخة الطلب في قاعدة البيانات (البيع تم عبر واتساب بنجاح رغم ذلك):", err))
-            .finally(finalizeNavigation);
-    } else {
-        finalizeNavigation();
-    }
+    window.location.href = "order-success.html";
 }
 
 // 🕒 [إصلاح - التوقيت المصري]: كان وقت الاستلام بيتكتب في فاتورة الواتساب زي
