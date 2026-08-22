@@ -1390,14 +1390,14 @@
 }
 .bose-info-carousel-slide strong {
     display: block;
-    font-size: 13px;
+    font-size: var(--bose-info-carousel-font-size, 13px);
     font-weight: 800;
     color: var(--bose-pink-text, var(--bose-pink));
     margin-bottom: 3px;
 }
 .bose-info-carousel-slide span {
     display: block;
-    font-size: 13px;
+    font-size: var(--bose-info-carousel-font-size, 13px);
     line-height: 1.65;
     color: var(--bose-black);
 }
@@ -1419,6 +1419,6 @@
 @media (max-width: 480px) {
     .bose-info-carousel { padding: 13px 14px 17px 14px; gap: 11px; }
     .bose-info-carousel-icon { width: 34px; height: 34px; font-size: 15px; }
-    .bose-info-carousel-slide strong { font-size: 12px; }
-    .bose-info-carousel-slide span { font-size: 12px; }
+    .bose-info-carousel-slide strong { font-size: calc(var(--bose-info-carousel-font-size, 13px) - 1px); }
+    .bose-info-carousel-slide span { font-size: calc(var(--bose-info-carousel-font-size, 13px) - 1px); }
 }
