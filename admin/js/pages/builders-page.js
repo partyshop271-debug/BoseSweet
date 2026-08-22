@@ -382,6 +382,9 @@
         });
 
         // 💡 [المعلومات الدوّارة - محاكي التورت]
+        document.getElementById("cake-info-carousel-enabled").checked = cakeBuilder.infoCarouselEnabled !== false;
+        document.getElementById("cake-info-carousel-speed").value = cakeBuilder.infoCarouselSpeedSeconds ?? 6;
+        document.getElementById("cake-info-carousel-font-size").value = cakeBuilder.infoCarouselFontSize ?? 13;
         const cakeTipsController = createTipsListController("list-cake-info-tips", "cake-tip-suggestions", cakeBuilder.infoCarouselTips, CAKE_TIP_SUGGESTIONS);
         cakeTipsController.render();
         document.getElementById("cake-add-tip-btn").addEventListener("click", () => {
@@ -414,6 +417,9 @@
         });
 
         // 💡 [المعلومات الدوّارة - محاكي الورد]
+        document.getElementById("flower-info-carousel-enabled").checked = flowerBuilder.infoCarouselEnabled !== false;
+        document.getElementById("flower-info-carousel-speed").value = flowerBuilder.infoCarouselSpeedSeconds ?? 6;
+        document.getElementById("flower-info-carousel-font-size").value = flowerBuilder.infoCarouselFontSize ?? 13;
         const flowerTipsController = createTipsListController("list-flower-info-tips", "flower-tip-suggestions", flowerBuilder.infoCarouselTips, FLOWER_TIP_SUGGESTIONS);
         flowerTipsController.render();
         document.getElementById("flower-add-tip-btn").addEventListener("click", () => {
@@ -483,6 +489,9 @@
                 heroImage: cakeBuilder.heroImage || "",
                 portfolioGallery: cakeBuilder.portfolioGallery,
                 infoCarouselTips: cakeBuilder.infoCarouselTips,
+                infoCarouselEnabled: document.getElementById("cake-info-carousel-enabled").checked,
+                infoCarouselSpeedSeconds: parseFloat(document.getElementById("cake-info-carousel-speed").value) || 6,
+                infoCarouselFontSize: parseFloat(document.getElementById("cake-info-carousel-font-size").value) || 13,
             };
 
             const updatedFlower = {
@@ -498,6 +507,9 @@
                 portfolioGallery: flowerBuilder.portfolioGallery,
                 giftCardImages: flowerBuilder.giftCardImages,
                 infoCarouselTips: flowerBuilder.infoCarouselTips,
+                infoCarouselEnabled: document.getElementById("flower-info-carousel-enabled").checked,
+                infoCarouselSpeedSeconds: parseFloat(document.getElementById("flower-info-carousel-speed").value) || 6,
+                infoCarouselFontSize: parseFloat(document.getElementById("flower-info-carousel-font-size").value) || 13,
             };
 
             await window.BoseAdmin.saveBuilderSettings({ cake_builder: updatedCake, flower_builder: updatedFlower });

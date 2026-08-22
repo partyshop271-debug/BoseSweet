@@ -444,6 +444,7 @@
                 ...navigationData,
                 topBarMessages: topBarMessagesState,
                 topBarSpeedSeconds: Number(document.getElementById("topbar-speed").value) || 88,
+                topBarFontSize: Number(document.getElementById("topbar-font-size").value) || 18,
                 topBarEnabled: document.getElementById("topbar-enabled").checked,
             };
 
@@ -503,6 +504,7 @@
         // كمان لو كان معدّل قبل كده عشان يبقى أبطأ فعلياً على الموقع الحي.
         topBarMessagesState = [...(navigationData.topBarMessages || [])];
         document.getElementById("topbar-speed").value = navigationData.topBarSpeedSeconds ?? 88;
+        document.getElementById("topbar-font-size").value = navigationData.topBarFontSize ?? 18;
         document.getElementById("topbar-enabled").checked = navigationData.topBarEnabled !== false;
         renderTopBarMessages();
         wireTopBarControls();
