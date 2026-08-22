@@ -526,6 +526,7 @@
             "flower-step-photos-illustration": fbConfig.personalPhotoImage,
             "flower-step-cash-illustration": fbConfig.cashImage,
             "flower-step-chocolate-illustration": fbConfig.chocolateImage,
+            "flower-step-giftcard-illustration": fbConfig.giftCardStepImage,
         };
         Object.keys(stepIllustrationMap).forEach((elId) => {
             const url = stepIllustrationMap[elId];
