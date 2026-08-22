@@ -713,16 +713,28 @@
                 const resultState = document.getElementById("loyalty-widget-result-state");
                 if (!formState || !resultState) return;
 
+                // 🛡️ [إصلاح جذري - مزامنة ودجت البحث السريع مع إعدادات الولاء الحية]:
+                // كان الكود هنا بيستخدم رقم 10 ثابت (Hardcoded) كطول لدورة القسيمة
+                // ونص "300 جنيه" ثابت كمان، منفصلين تمامًا عن milestone_every و
+                // voucher_amount الحقيقيين المحفوظين في لوحة التحكم. فلو الأدمن
+                // غيّرت الدورة (زي عندنا دلوقتي: كل 12 طلب مش 10)، الودجت كان بيقول
+                // للعميلة "ده طلبك الجاي هتاخدي القسيمة" في طلب غلط (كل رقم بيقبل
+                // القسمة على 10 بدل 12). دلوقتي بيقرا نفس config الحي اللي باقي
+                // الصفحة بتستخدمه عبر getBoseLoyaltyConfig() بدل الأرقام الثابتة.
+                const loyaltyCfg = (typeof window.getBoseLoyaltyConfig === "function")
+                    ? window.getBoseLoyaltyConfig()
+                    : { milestoneEvery: 10, voucherAmount: 300 };
+
                 const totalOrders = row.total_orders || 0;
                 const nextPct = row.next_discount_percent || 0;
                 const untilDiscount = row.orders_until_next_discount || 0;
-                const untilVoucher = row.orders_until_next_voucher || 10;
+                const untilVoucher = row.orders_until_next_voucher || loyaltyCfg.milestoneEvery;
 
                 let msgHtml, msgClass = "";
                 if (nextPct > 0) {
                     msgHtml = `🎉 طلبك الجاي (رقم ${totalOrders + 1}) هياخد خصم تلقائي <b>${nextPct}%</b> من غير أي كود!`;
-                } else if (untilVoucher === 1 || (totalOrders + 1) % 10 === 0) {
-                    msgHtml = `🎁 ده طلبك الجاي! بعد استلامه هتاخدي قسيمة شراء بـ300 جنيه`;
+                } else if (untilVoucher === 1 || (totalOrders + 1) % loyaltyCfg.milestoneEvery === 0) {
+                    msgHtml = `🎁 ده طلبك الجاي! بعد استلامه هتاخدي قسيمة شراء بـ${esc(String(loyaltyCfg.voucherAmount))} جنيه`;
                     msgClass = " blt-msg-gold";
                 } else {
                     msgHtml = `باقيلك <b>${untilDiscount}</b> ${untilDiscount === 1 ? 'طلب' : 'طلبات'} بس عشان تكسبي خصم على طلبك الجاي`;
