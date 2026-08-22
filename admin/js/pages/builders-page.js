@@ -63,32 +63,36 @@
         const container = document.getElementById(containerId);
 
         container.innerHTML = items.map((item, idx) => `
-            <div class="adm-curated-item" data-idx="${idx}">
-                ${opts.imageField ? `
-                <label class="adm-image-upload-btn" style="width:40px; height:40px; padding:0; overflow:hidden; flex-shrink:0;" title="صورة الخيار">
-                    <input type="file" accept="image/*" data-action="upload-image" hidden>
-                    ${item.image
-                        ? `<img src="${e(item.image)}" alt="" style="width:100%; height:100%; object-fit:cover;">`
-                        : `<i class="fa-solid fa-camera"></i>`}
-                </label>` : ""}
-                <input type="text" class="adm-input" style="flex:1;" data-field="name" value="${e(item.name || "")}" placeholder="الاسم">
-                ${opts.priceField ? `<input type="number" class="adm-input" style="width:100px;" data-field="price" value="${item.price ?? 0}" placeholder="السعر">` : ""}
-                ${opts.extraField ? `<input type="number" class="adm-input" style="width:130px;" data-field="${opts.extraField}" value="${item[opts.extraField] ?? 0}" placeholder="${opts.extraLabel}">` : ""}
-                ${opts.checkboxField ? `
-                <label style="display:flex; align-items:center; gap:6px; font-size:12px; white-space:nowrap; flex-shrink:0;" title="${opts.checkboxLabel || ""}">
-                    <input type="checkbox" data-checkbox-field="${opts.checkboxField}" ${item[opts.checkboxField] !== false ? "checked" : ""}>
-                    ${opts.checkboxLabel || ""}
-                </label>` : ""}
-                <button type="button" class="adm-btn adm-btn-ghost adm-btn-icon" data-action="remove" title="حذف">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
+            <div class="adm-curated-item" data-idx="${idx}" ${opts.descriptionField ? 'style="flex-direction:column; align-items:stretch; gap:8px;"' : ""}>
+                <div style="display:flex; align-items:center; gap:8px; width:100%;">
+                    ${opts.imageField ? `
+                    <label class="adm-image-upload-btn" style="width:40px; height:40px; padding:0; overflow:hidden; flex-shrink:0;" title="صورة الخيار">
+                        <input type="file" accept="image/*" data-action="upload-image" hidden>
+                        ${item.image
+                            ? `<img src="${e(item.image)}" alt="" style="width:100%; height:100%; object-fit:cover;">`
+                            : `<i class="fa-solid fa-camera"></i>`}
+                    </label>` : ""}
+                    <input type="text" class="adm-input" style="flex:1;" data-field="name" value="${e(item.name || "")}" placeholder="الاسم">
+                    ${opts.priceField ? `<input type="number" class="adm-input" style="width:100px;" data-field="price" value="${item.price ?? 0}" placeholder="السعر">` : ""}
+                    ${opts.extraField ? `<input type="number" class="adm-input" style="width:130px;" data-field="${opts.extraField}" value="${item[opts.extraField] ?? 0}" placeholder="${opts.extraLabel}">` : ""}
+                    ${opts.checkboxField ? `
+                    <label style="display:flex; align-items:center; gap:6px; font-size:12px; white-space:nowrap; flex-shrink:0;" title="${opts.checkboxLabel || ""}">
+                        <input type="checkbox" data-checkbox-field="${opts.checkboxField}" ${item[opts.checkboxField] !== false ? "checked" : ""}>
+                        ${opts.checkboxLabel || ""}
+                    </label>` : ""}
+                    <button type="button" class="adm-btn adm-btn-ghost adm-btn-icon" data-action="remove" title="حذف">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                ${opts.descriptionField ? `
+                <textarea class="adm-input" style="width:100%; min-height:48px;" data-field="description" placeholder="وصف قصير بيظهر للعميلة لما تدوس على ⓘ بجانب الخيار ده">${e(item.description || "")}</textarea>` : ""}
             </div>`).join("") || `<p class="adm-order-item-meta" style="padding: 4px 2px;">مفيش خيارات مضافة لسه.</p>`;
 
         container.querySelectorAll("[data-field]").forEach((input) => {
             input.addEventListener("input", () => {
                 const idx = Number(input.closest("[data-idx]").getAttribute("data-idx"));
                 const field = input.getAttribute("data-field");
-                items[idx][field] = field === "name" ? input.value : (parseFloat(input.value) || 0);
+                items[idx][field] = (field === "name" || field === "description") ? input.value : (parseFloat(input.value) || 0);
             });
         });
         if (opts.checkboxField) {
@@ -352,15 +356,15 @@
         // الرسم بنفس الـ opts الناقصة اللي اتبعتله. الحل: كائن opts واحد مشترك
         // لكل قائمة، يتبعت لنفس الاتنين، فمفيش احتمال يتنسى حقل في نسخة وينسي
         // في التانية.
-        const cakeTypesOpts = { imageField: true };
+        const cakeTypesOpts = { imageField: true, descriptionField: true };
         renderNamedList("list-cake-types", cakeBuilder.cakeTypes, cakeTypesOpts);
         wireAddButton("add-cake-type-btn", "list-cake-types", cakeBuilder.cakeTypes, cakeTypesOpts);
 
-        const printingOptionsOpts = { priceField: true, imageField: true };
+        const printingOptionsOpts = { priceField: true, imageField: true, descriptionField: true };
         renderNamedList("list-printing-options", cakeBuilder.printingOptions, printingOptionsOpts);
         wireAddButton("add-printing-option-btn", "list-printing-options", cakeBuilder.printingOptions, printingOptionsOpts);
 
-        const shapesOpts = { extraField: "minimumPersons", extraLabel: "أقل عدد أفراد", imageField: true };
+        const shapesOpts = { extraField: "minimumPersons", extraLabel: "أقل عدد أفراد", imageField: true, descriptionField: true };
         renderNamedList("list-shapes", cakeBuilder.shapes, shapesOpts);
         wireAddButton("add-shape-btn", "list-shapes", cakeBuilder.shapes, shapesOpts);
 
@@ -407,6 +411,7 @@
             priceField: true,
             checkboxField: "usesFlowerCount",
             checkboxLabel: "بيتحسب بعدد الورد",
+            descriptionField: true,
         };
         renderNamedList("list-flower-types", flowerBuilder.flowerTypes, flowerTypesOpts);
         wireAddButton("add-flower-type-btn", "list-flower-types", flowerBuilder.flowerTypes, flowerTypesOpts);
