@@ -452,6 +452,7 @@
         renderSingleImageSlot("flower-photos-image-slot", flowerBuilder.personalPhotoImage || "", (url) => { flowerBuilder.personalPhotoImage = url; }, "صورة خطوة الصور الشخصية");
         renderSingleImageSlot("flower-cash-image-slot", flowerBuilder.cashImage || "", (url) => { flowerBuilder.cashImage = url; }, "صورة خطوة بوكيه الفلوس");
         renderSingleImageSlot("flower-chocolate-image-slot", flowerBuilder.chocolateImage || "", (url) => { flowerBuilder.chocolateImage = url; }, "صورة خطوة الشوكولاتة الفاخرة");
+        renderSingleImageSlot("flower-giftcard-image-slot", flowerBuilder.giftCardStepImage || "", (url) => { flowerBuilder.giftCardStepImage = url; }, "صورة خطوة كارت الإهداء");
 
         // 🎁🖼️ [معرض نماذج كارت الإهداء المطبوع - محاكي الورد]: نفس فكرة معرض
         // محاكي التورت بالظبط، مخزنة هنا على مستوى flowerBuilder.giftCardImages
@@ -524,6 +525,7 @@
                 personalPhotoImage: flowerBuilder.personalPhotoImage || "",
                 cashImage: flowerBuilder.cashImage || "",
                 chocolateImage: flowerBuilder.chocolateImage || "",
+                giftCardStepImage: flowerBuilder.giftCardStepImage || "",
                 infoCarouselTips: flowerBuilder.infoCarouselTips,
                 infoCarouselEnabled: document.getElementById("flower-info-carousel-enabled").checked,
                 infoCarouselSpeedSeconds: parseFloat(document.getElementById("flower-info-carousel-speed").value) || 6,
