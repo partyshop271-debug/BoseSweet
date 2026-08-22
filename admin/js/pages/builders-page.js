@@ -338,8 +338,9 @@
 
         // نصوص محاكي التورت
         document.getElementById("cake-text-pricingInfo").value = cakeBuilder.images.pricingInfo || "";
-        document.getElementById("cake-text-squareMinimum").value = cakeBuilder.images.squareMinimum || "";
-        document.getElementById("cake-text-rectangleMinimum").value = cakeBuilder.images.rectangleMinimum || "";
+        document.getElementById("cake-text-circleUpgrade").value = cakeBuilder.images.circleUpgrade || "";
+        document.getElementById("cake-text-heartUpgrade").value = cakeBuilder.images.heartUpgrade || "";
+        document.getElementById("cake-text-squareUpgrade").value = cakeBuilder.images.squareUpgrade || cakeBuilder.images.squareMinimum || "";
         document.getElementById("cake-text-rectangleUpgrade").value = cakeBuilder.images.rectangleUpgrade || "";
 
         // القوائم
@@ -461,8 +462,9 @@
                 images: {
                     ...cakeBuilder.images,
                     pricingInfo: document.getElementById("cake-text-pricingInfo").value.trim(),
-                    squareMinimum: document.getElementById("cake-text-squareMinimum").value.trim(),
-                    rectangleMinimum: document.getElementById("cake-text-rectangleMinimum").value.trim(),
+                    circleUpgrade: document.getElementById("cake-text-circleUpgrade").value.trim(),
+                    heartUpgrade: document.getElementById("cake-text-heartUpgrade").value.trim(),
+                    squareUpgrade: document.getElementById("cake-text-squareUpgrade").value.trim(),
                     rectangleUpgrade: document.getElementById("cake-text-rectangleUpgrade").value.trim(),
                 },
                 giftCard: {
