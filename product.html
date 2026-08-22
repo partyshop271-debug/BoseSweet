@@ -32,6 +32,8 @@
     <script src="js/supabase-client.js?v=2026_production_v39.0" defer></script>
     <script src="js/favorites-engine.js?v=2026_production_v37.0" defer></script>
     <script src="js/core-engine.js?v=2026_production_v38.0" defer></script>
+    <script src="js/cart-reminder.js?v=1" defer></script>
+    <script src="js/trust-badges.js?v=1" defer></script>
 
     <style>
         /* 🎨 الهندسة البصرية المعتمدة لمنع التكديس والتزام الألوان الحاكمة */
@@ -538,12 +540,10 @@
                 </div>
 
                 <!-- 🛡️ [شارات ثقة]: صف صغير تحت زرار الإضافة للسلة مباشرة - أقرب نقطة لحظة
-                     اتخاذ قرار الشراء، وده أهم مكان لتقليل تردد العميلة الأخير قبل الدفع. -->
-                <div class="bose-trust-badges-row" style="display:flex; flex-wrap:wrap; gap:14px; margin-top:14px; direction:rtl;">
-                    <span style="display:flex; align-items:center; gap:6px; font-size:0.82rem; color:var(--bose-black); opacity:0.75;"><i class="fa-solid fa-leaf" style="color:var(--bose-pink);"></i> مكونات طبيعية 100%</span>
-                    <span style="display:flex; align-items:center; gap:6px; font-size:0.82rem; color:var(--bose-black); opacity:0.75;"><i class="fa-solid fa-kitchen-set" style="color:var(--bose-pink);"></i> تحضير طازة يومياً</span>
-                    <span style="display:flex; align-items:center; gap:6px; font-size:0.82rem; color:var(--bose-black); opacity:0.75;"><i class="fa-brands fa-whatsapp" style="color:var(--bose-pink);"></i> تأكيد الطلب مباشرة على واتساب</span>
-                </div>
+                     اتخاذ قرار الشراء، وده أهم مكان لتقليل تردد العميلة الأخير قبل الدفع.
+                     🔁 [2026-08-22] بقى بيستخدم المكوّن المشترك js/trust-badges.js بدل HTML
+                     ثابت مكرر هنا - بمحتوى مخصص لصفحة المنتج (نفس الرسائل التلاتة الأصلية). -->
+                <div id="bose-product-trust-badges"></div>
             </div>
         </div>
 
@@ -1605,6 +1605,21 @@
                         <a href="menu.html" style="display: inline-block; margin-top: 20px; color: var(--bose-pink); text-decoration: none; font-weight: 700; font-family:'Cairo', sans-serif;">العودة لتصفح المنيو الشامل بالكامل</a>
                     </div>
                 `;
+            }
+        });
+    </script>
+
+    <!-- 🛡️ [شارات ثقة صفحة المنتج]: استدعاء يدوي للمكوّن المشترك js/trust-badges.js
+         برسائل خاصة بصفحة المنتج بدل الشارات الافتراضية العامة (id مختلف عن
+         المحقن التلقائي عشان مفيش تعارض/إعادة رسم مزدوجة). -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            if (window.BoseTrustBadges) {
+                window.BoseTrustBadges.renderInto(document.getElementById("bose-product-trust-badges"), [
+                    { icon: "fa-solid fa-leaf", label: "مكونات طبيعية 100%" },
+                    { icon: "fa-solid fa-kitchen-set", label: "تحضير طازة يومياً" },
+                    { icon: "fa-brands fa-whatsapp", label: "تأكيد الطلب مباشرة على واتساب" },
+                ]);
             }
         });
     </script>

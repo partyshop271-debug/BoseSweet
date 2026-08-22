@@ -38,6 +38,7 @@
     <script src="js/supabase-client.js?v=2026_production_v39.0" defer></script>
     <script src="js/favorites-engine.js?v=2026_production_v37.0" defer></script>
     <script src="js/core-engine.js?v=2026_production_v38.0" defer></script>
+    <script src="js/cart-reminder.js?v=1" defer></script>
 
     <style>
         /* 🎨 الهندسة البصرية الخاصة بصفحة الفئة الديناميكية لمنع التكديس البصري */
@@ -228,10 +229,16 @@
                المنتجات بتتحرك تحت السكرول - فالعميلة كانت مضطرة تسكرول لفوق كل
                مرة تغيّر الحجم، وبعدين تاني لتحت تشوف أثر التغيير على الكروت.
                دلوقتي الشريط ثابت (Sticky) أعلى الشاشة طول وقت التصفح - قدام
-               عينها دايماً من غير أي سكرول إضافي. */
+               عينها دايماً من غير أي سكرول إضافي.
+               🐛 [إصلاح - البند 6.3-ج]: كان الشريط بيستخدم top:8px وz-index:15،
+               وده بيخليه يستقر تحت الهيدر الثابت (.bose-sticky-header، fixed
+               بارتفاع 76px بعد الشريط العلوي، z-index:5000) لما تعملي سكرول -
+               فيختفي وراه بدل ما يفضل ظاهر. دلوقتي top بقى بعد نهاية الهيدر
+               الثابت فعليًا (نفس المعادلة المستخدمة في padding-top للصفحة كلها)
+               وz-index اتزود عشان يفضل ظاهر فوق أي محتوى تحته. */
             position: sticky;
-            top: 8px;
-            z-index: 15;
+            top: calc(var(--bose-topbar-height, 44px) + 76px + 8px);
+            z-index: 4000;
             background: rgba(255, 255, 255, 0.92);
             backdrop-filter: blur(6px);
             -webkit-backdrop-filter: blur(6px);
