@@ -224,6 +224,65 @@
                         </div>
                     </div>
 
+                    <!-- ============================= الأقسام اللي فيها فيديوهات ============================= -->
+                    <!-- 🎥 [2026-08-23]: قسمي فيديو الصفحة الرئيسية ("سيمفونية الطعم" و"عقد من
+                         الإتقان") كانا Hardcoded بالكامل في كود الموقع (الفيديو والعنوان والوصف)
+                         - محتاجة تدخلي الكود عشان تغيّري أي فيديو. دلوقتي بيتاداروا زي الصور
+                         بالظبط من هنا: رفع مباشر من جهازك أو الكاميرا، مع تحسين تلقائي للجودة
+                         واستهلاك البيانات وقت العرض (نفس مبدأ الصور بالظبط: أعلى جودة ممكنة بأقل
+                         حجم نقل، عن طريق معايير Cloudinary الرسمية q_auto/f_auto). -->
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header">
+                            <div><h2><i class="fa-solid fa-video"></i> الأقسام اللي فيها فيديوهات</h2><p>فيديوهات الصفحة الرئيسية - بترفع بنفس سهولة الصور، وبتتحسّن تلقائيًا وقت العرض (أعلى جودة بأقل استهلاك بيانات ممكن)</p></div>
+                        </div>
+
+                        <div class="adm-field">
+                            <h3 class="adm-sub-heading">سيمفونية الطعم</h3>
+                            <div class="adm-form-grid">
+                                <div class="adm-field">
+                                    <label for="video-symphony-title">العنوان</label>
+                                    <input type="text" class="adm-input" id="video-symphony-title">
+                                </div>
+                            </div>
+                            <div class="adm-field">
+                                <label for="video-symphony-description">الوصف</label>
+                                <textarea class="adm-textarea" id="video-symphony-description"></textarea>
+                            </div>
+                            <div class="adm-field">
+                                <label>الفيديو الحالي</label>
+                                <video id="video-symphony-preview" class="adm-video-preview-thumb" muted loop playsinline></video>
+                                <label class="adm-image-upload-btn adm-mt-8" for="video-symphony-input">
+                                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                                    <span id="video-symphony-upload-label">استبدال الفيديو</span>
+                                </label>
+                                <input type="file" id="video-symphony-input" accept="video/*" hidden>
+                            </div>
+                        </div>
+
+                        <div class="adm-field adm-mt-16" style="border-top:1px solid var(--adm-border); padding-top:16px;">
+                            <h3 class="adm-sub-heading">عقد من الإتقان</h3>
+                            <div class="adm-form-grid">
+                                <div class="adm-field">
+                                    <label for="video-excellence-title">العنوان</label>
+                                    <input type="text" class="adm-input" id="video-excellence-title">
+                                </div>
+                            </div>
+                            <div class="adm-field">
+                                <label for="video-excellence-description">الوصف</label>
+                                <textarea class="adm-textarea" id="video-excellence-description"></textarea>
+                            </div>
+                            <div class="adm-field">
+                                <label>الفيديو الحالي</label>
+                                <video id="video-excellence-preview" class="adm-video-preview-thumb" muted loop playsinline></video>
+                                <label class="adm-image-upload-btn adm-mt-8" for="video-excellence-input">
+                                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                                    <span id="video-excellence-upload-label">استبدال الفيديو</span>
+                                </label>
+                                <input type="file" id="video-excellence-input" accept="video/*" hidden>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- ============================= الشريط العلوي المتحرك ============================= -->
                     <div class="adm-card adm-mt-16">
                         <div class="adm-card-header">
