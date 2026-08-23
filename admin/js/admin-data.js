@@ -632,6 +632,30 @@
         }
     }
 
+    /**
+     * 💰 [تعديل جماعي لسعر منتجات مختلفة دفعة واحدة]: على عكس bulkUpdateProducts
+     * (اللي بيحط نفس القيمة بالظبط على كل المنتجات المحددة - مفيد لنص/فئة)،
+     * هنا كل منتج بياخد سعر مختلف محسوب مسبقاً (زيادة/تنقيص بمبلغ أو نسبة
+     * مبني على سعره الأصلي هو) - فمحتاجين استعلام تحديث منفصل لكل منتج،
+     * كلهم بيتنفذوا مع بعض بالتوازي (مش واحد ورا التاني) لسرعة أعلى.
+     * items: [{ id, price }]. بيرجّع { successCount, failedIds }.
+     */
+    async function bulkSetProductPrices(items) {
+        if (!items || !items.length) return { successCount: 0, failedIds: [] };
+        const results = await Promise.all(items.map(async (item) => {
+            try {
+                const { error } = await client.from("products").update({ price: item.price }).eq("id", item.id);
+                if (error) throw error;
+                return { id: item.id, ok: true };
+            } catch (e) {
+                console.warn(`تعذر تحديث سعر المنتج ${item.id}:`, e.message);
+                return { id: item.id, ok: false };
+            }
+        }));
+        const failedIds = results.filter((r) => !r.ok).map((r) => r.id);
+        return { successCount: results.length - failedIds.length, failedIds };
+    }
+
     /* ============================= الكوبونات (صفحة coupons.html) ============================= */
     /**
      * المفتاح الأساسي هنا هو code نفسه (نص فريد)، مش id منفصل - نفس شكل
@@ -670,6 +694,41 @@
     async function deleteCoupon(code) {
         const { error } = await client.from("coupons").delete().eq("code", code);
         if (error) throw error;
+    }
+
+    /**
+     * 📊 [تقرير استخدام الكوبونات]: مفيش عمود عداد استخدام على جدول coupons
+     * نفسه، فبنحسبه هنا مباشرة من جدول orders (اللي فيه coupon_code لكل
+     * طلب استخدم كوبون + discount_amount الفعلي اللي اتخصم بيه) - بنجيب كل
+     * الطلبات اللي ليها كوبون مرة واحدة، ونجمّعها محلياً حسب الكود، عشان
+     * نتجنب استعلام منفصل لكل كوبون على حدة. الطلبات الملغاة (status=cancelled)
+     * مستبعدة من الحساب لأنها مش استخدام فعلي حقيقي للخصم.
+     * بيرجّع Map: { code -> { usageCount, totalDiscount, lastUsedAt } }
+     */
+    async function getCouponUsageStats() {
+        try {
+            const { data, error } = await client
+                .from("orders")
+                .select("coupon_code, discount_amount, created_at, status")
+                .not("coupon_code", "is", null)
+                .neq("status", "cancelled");
+            if (error) throw error;
+            const stats = {};
+            (data || []).forEach((o) => {
+                const code = o.coupon_code;
+                if (!code) return;
+                if (!stats[code]) stats[code] = { usageCount: 0, totalDiscount: 0, lastUsedAt: null };
+                stats[code].usageCount += 1;
+                stats[code].totalDiscount += Number(o.discount_amount) || 0;
+                if (!stats[code].lastUsedAt || new Date(o.created_at) > new Date(stats[code].lastUsedAt)) {
+                    stats[code].lastUsedAt = o.created_at;
+                }
+            });
+            return stats;
+        } catch (e) {
+            console.warn("تعذر جلب تقرير استخدام الكوبونات:", e.message);
+            return {};
+        }
     }
 
     /* ============================= التقييمات (صفحة reviews.html) ============================= */
@@ -1184,6 +1243,7 @@
         createProduct,
         updateProduct,
         deleteProduct,
+        bulkSetProductPrices,
         getHomepageSettings,
         updateHomepageSettings,
         getNavigationSettings,
@@ -1194,6 +1254,7 @@
         createCoupon,
         updateCoupon,
         deleteCoupon,
+        getCouponUsageStats,
         getAllReviews,
         approveReview,
         unapproveReview,
