@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="../css/main.css?v=2026_production_v38.0">
     
     <!-- المحرك المركزي العالمي وحارس البيانات المالي (يُستدعى مبكراً في الرأس لحقن الخطوط والألوان الحاكمة) -->
+    <script src="../js/supabase-client.js?v=2026_production_v39.0"></script>
     <script src="../js/core-engine.js?v=2026_production_v38.0"></script>
 
     <style>
@@ -153,8 +154,8 @@
         </section>
 
         <!-- حاوية محتوى السياسة الهندسي المنظم -->
-        <section class="policy-content-wrapper">
-            
+        <section class="policy-content-wrapper" id="policy-dynamic-content">
+            <template id="policy-static-fallback">
             <!-- كارت 1: طبيعة المنتجات الطازجة -->
             <div class="policy-card">
                 <h2><i class="fa-solid fa-cake-candles"></i> طبيعة منتجاتنا الفاخرة</h2>
@@ -188,7 +189,7 @@
                 <p>هدفنا الأسمى هو راحتك النفسية ورضاك التام. إذا كان لديك أي استفسار أو واجهت أي مشكلة أثناء رحلة الشراء، نحن هنا لنسمعك ونتعامل معك بكل ود واحترام متبادل كعميل محترم للعلامة التجارية.</p>
                 <p>يمكنك دائماً الضغط على زر الواتساب المتواجد في الموقع للتحدث مباشرة مع فريق الإدارة والفرع لتسوية أي ملاحظات وتأكيد حقوقك بسرعة متناهية السلاسة.</p>
             </div>
-
+            </template>
         </section>
     </main>
 
@@ -207,6 +208,33 @@
         document.addEventListener("DOMContentLoaded", () => {
             console.log("🌸 صفحة سياسة الاسترجاع متوافقة ومستقرة كلياً مع نظام حلويات بوسي الإنتاجي V3.");
         });
+    </script>
+
+    <!-- 🆕 [5.2 - محتوى ديناميكي من لوحة التحكم]: لو الأدمن كتب محتوى فعلي
+         لصفحة السياسة دي، بيظهر هنا بدل الكروت الثابتة. لو لسه فاضي، بيفضل
+         النص الحالي زي ما هو بالظبط. -->
+    <script>
+        (function () {
+            async function loadDynamicPolicyContent() {
+                const container = document.getElementById("policy-dynamic-content");
+                const fallback = document.getElementById("policy-static-fallback");
+                if (!container || !fallback) return;
+                if (!window.BoseSupabase || typeof window.BoseSupabase.getBoseContentPage !== "function") {
+                    container.appendChild(fallback.content.cloneNode(true));
+                    return;
+                }
+                const page = await window.BoseSupabase.getBoseContentPage("return-policy");
+                const dbContent = (page && page.content || "").trim();
+                if (!dbContent) {
+                    container.appendChild(fallback.content.cloneNode(true));
+                    return;
+                }
+                const escape = window.escapeBoseHTML || ((s) => String(s));
+                const paragraphs = dbContent.split(/\n{2,}/).map((p) => `<p>${escape(p).replace(/\n/g, "<br>")}</p>`).join("");
+                container.innerHTML = `<div class="policy-card">${paragraphs}</div>`;
+            }
+            loadDynamicPolicyContent();
+        })();
     </script>
 </body>
 </html>

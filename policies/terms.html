@@ -29,6 +29,7 @@
     <link rel="stylesheet" href="../css/main.css?v=2026_production_v38.0">
     
     <!-- المحرك المركزي العالمي وعمليات الفحص المالي -->
+    <script src="../js/supabase-client.js?v=2026_production_v39.0"></script>
     <script src="../js/core-engine.js?v=2026_production_v38.0"></script>
     
     <style>
@@ -253,8 +254,8 @@
             <p>نوضح لكم القواعد المتبادلة التي تضمن أرقى تجربة تسوق آمنة وفخمة تليق بتقديركم وثقتكم في علامتنا التجارية.</p>
         </div>
 
-        <div class="policy-content-grid">
-            
+        <div class="policy-content-grid" id="policy-dynamic-content">
+            <template id="policy-static-fallback">
             <!-- البند الأول: تمهيد وهوية الخدمة -->
             <section class="policy-section-card">
                 <h2><i class="fa-solid fa-cookie-bite"></i> 1. الهوية الرسمية وقبول الشروط</h2>
@@ -340,6 +341,7 @@
                 <h4>تأكيد فوري بالواتساب</h4>
                 <p>ربط فوري يضمن صياغة الفاتورة وإرسال تفاصيلها ومراجعتها بالملي.</p>
             </div>
+            </template>
         </div>
 
     </main>
@@ -347,5 +349,31 @@
     <!-- وسم حاقن الفوتر المقدس الموحد لجميع صفحات حلويات بوسي لخلق تنفس بصري مريح -->
     <div id="bose-footer-injector"></div>
 
+    <!-- 🆕 [5.2 - محتوى ديناميكي من لوحة التحكم]: لو الأدمن كتب محتوى فعلي
+         لصفحة السياسة دي، بيظهر هنا بدل الكروت الثابتة. لو لسه فاضي، بيفضل
+         النص القانوني الحالي زي ما هو بالظبط. -->
+    <script>
+        (function () {
+            async function loadDynamicPolicyContent() {
+                const container = document.getElementById("policy-dynamic-content");
+                const fallback = document.getElementById("policy-static-fallback");
+                if (!container || !fallback) return;
+                if (!window.BoseSupabase || typeof window.BoseSupabase.getBoseContentPage !== "function") {
+                    container.appendChild(fallback.content.cloneNode(true));
+                    return;
+                }
+                const page = await window.BoseSupabase.getBoseContentPage("terms-conditions");
+                const dbContent = (page && page.content || "").trim();
+                if (!dbContent) {
+                    container.appendChild(fallback.content.cloneNode(true));
+                    return;
+                }
+                const escape = window.escapeBoseHTML || ((s) => String(s));
+                const paragraphs = dbContent.split(/\n{2,}/).map((p) => `<p>${escape(p).replace(/\n/g, "<br>")}</p>`).join("");
+                container.innerHTML = `<section class="policy-section-card">${paragraphs}</section>`;
+            }
+            loadDynamicPolicyContent();
+        })();
+    </script>
 </body>
 </html>
