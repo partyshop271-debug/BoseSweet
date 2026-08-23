@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>كارت الشكر ونادي مكافآت حلويات بوسي</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Rakkas&display=swap">
+<style>
+  :root{
+    --pink: #FF91A4;
+    --pink-deep: #E24C63;
+    --coral: #E3505A;
+    --cream: #FFF6F1;
+    --cream-deep: #FDE9D8;
+    --gold: #C9972E;
+    --gold-light: #E3B968;
+    --ink: #2B1E20;
+    --ink-soft: #7A6165;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:'Cairo', sans-serif;
+    background:#e8e2df;
+    padding:40px 20px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:28px;
+  }
+  .page-title{ text-align:center; color:#3A2A2E; margin-bottom:6px; }
+  .page-title h1{font-size:1.4rem; font-weight:800;}
+  .page-title p{font-size:.85rem; color:#7A6165; margin-top:4px;}
+
+  .card-row{ display:flex; gap:24px; flex-wrap:wrap; justify-content:center; }
+
+  /* ===== card base: standard CR80 size 85.6mm x 54mm ===== */
+  .card{
+    width:85.6mm; height:54mm;
+    border-radius:4mm;
+    position:relative;
+    overflow:hidden;
+    box-shadow:0 10px 28px rgba(43,30,32,0.22);
+    font-family:'Cairo', sans-serif;
+  }
+
+  /* ---------- FRONT: thank you side ---------- */
+  .front{
+    background:
+      radial-gradient(circle at 50% -10%, rgba(255,255,255,0.9) 0%, transparent 45%),
+      linear-gradient(160deg, var(--cream) 0%, var(--cream-deep) 100%);
+  }
+  .front .frame-outer{ position:absolute; inset:3.6mm; border:0.9pt solid var(--pink); border-radius:3mm; }
+  .front .frame-inner{ position:absolute; inset:4.5mm; border:0.4pt solid var(--gold-light); border-radius:2.4mm; }
+
+  .front .corner{ position:absolute; width:5mm; height:5mm; opacity:.9; }
+  .front .corner.tl{ top:4.2mm; left:4.2mm; transform:rotate(0deg); }
+  .front .corner.tr{ top:4.2mm; right:4.2mm; transform:scaleX(-1); }
+  .front .corner.bl{ bottom:4.2mm; left:4.2mm; transform:scaleY(-1); }
+  .front .corner.br{ bottom:4.2mm; right:4.2mm; transform:scale(-1,-1); }
+
+  .front .content{
+    position:absolute; inset:0;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding:5mm 6mm;
+  }
+  .front .crown{ width:6mm; height:6mm; margin-bottom:0.8mm; }
+
+  .front .ribbon{
+    position:relative;
+    padding:1.6mm 6mm;
+    margin:1mm 0 1.6mm;
+  }
+  .front .ribbon-shape{
+    position:absolute; inset:0; z-index:0;
+  }
+  .front .brand{
+    position:relative; z-index:1;
+    font-family:'Rakkas', 'Cairo', serif;
+    font-size:16.5pt;
+    font-weight:400;
+    color:var(--coral);
+    letter-spacing:.2px;
+    line-height:1;
+  }
+  .front .sparkle{ position:absolute; top:50%; transform:translateY(-50%); width:3mm; height:3mm; z-index:1; }
+  .front .sparkle-left{ left:1.2mm; }
+  .front .sparkle-right{ right:1.2mm; }
+
+  .front .divider{ display:flex; align-items:center; gap:1.6mm; margin:.6mm 0 1.4mm; }
+  .front .divider .line{ width:6mm; height:0.5pt; background:var(--pink); }
+  .front .divider .dot{ width:1.1mm; height:1.1mm; border-radius:50%; background:var(--gold); }
+
+  .front .thanks{
+    font-size:6.7pt; font-weight:700; color:var(--ink);
+    line-height:1.55; max-width:66mm;
+  }
+  .front .slogan{
+    margin-top:1.8mm;
+    font-family:'Rakkas', 'Cairo', serif;
+    font-size:8pt; font-weight:400;
+    color:var(--gold);
+    letter-spacing:.2px;
+  }
+
+  /* ---------- BACK: loyalty tracker side ---------- */
+  .back{
+    background: var(--cream);
+    padding:3.6mm 4.6mm 3mm;
+    display:flex; flex-direction:column;
+    position:relative;
+  }
+  .back .top-strip{
+    position:absolute; top:0; right:0; left:0; height:1.4mm;
+    background:linear-gradient(90deg, var(--pink), var(--gold-light), var(--pink));
+  }
+  .back .top-row{ display:flex; justify-content:space-between; align-items:flex-start; margin-top:1.4mm; }
+  .back .club-title{
+    font-family:'Rakkas', 'Cairo', serif;
+    font-size:9.6pt; font-weight:400; color:var(--pink-deep);
+    max-width:52mm; line-height:1.15;
+  }
+  .back .club-sub{
+    font-size:6.2pt; color:var(--ink-soft); font-weight:600;
+    margin-top:0.7mm; max-width:48mm; line-height:1.45;
+  }
+  .back .id-box{
+    font-size:5.6pt; color:var(--ink-soft); text-align:left;
+    border:0.5pt dashed var(--pink); border-radius:2mm;
+    padding:1.6mm 2mm; min-width:20mm;
+  }
+  .back .id-box div{font-weight:700; color:var(--ink); font-size:6.4pt; margin-top:.8mm;}
+
+  .stamps{ display:flex; justify-content:space-between; align-items:center; margin:2.8mm 0 1mm; position:relative; }
+  .stamps::before{
+    content:""; position:absolute; top:50%; right:2%; left:2%; height:1px;
+    background:repeating-linear-gradient(to left, var(--gold-light) 0 3px, transparent 3px 6px);
+    z-index:0;
+  }
+  .stamp{
+    width:6.6mm; height:6.6mm; border-radius:50%;
+    border:1pt solid var(--pink);
+    background:#fff;
+    display:flex; align-items:center; justify-content:center;
+    font-size:6.2pt; font-weight:700; color:var(--pink-deep);
+    position:relative; z-index:1;
+  }
+  .stamp.milestone{
+    border:1.3pt solid var(--gold);
+    background:var(--cream-deep);
+    color:#8A6317;
+    width:7.8mm; height:7.8mm; font-size:6.8pt;
+  }
+
+  .tier-labels{ display:flex; justify-content:space-between; margin-top:.5mm; }
+  .tier-labels span{ font-size:5.1pt; color:var(--ink-soft); font-weight:700; width:6.6mm; text-align:center; }
+  .tier-labels span.hl{ color:var(--pink-deep); }
+
+  .back .bottom-row{ margin-top:auto; display:flex; justify-content:space-between; align-items:flex-end; padding-top:2mm; }
+  .back .rule-text{ font-size:6pt; color:var(--ink-soft); line-height:1.5; max-width:50mm; font-weight:600; }
+  .qr-wrap{ display:flex; flex-direction:column; align-items:center; gap:0.8mm; }
+  .qr{
+    width:11mm; height:11mm; border:0.6pt solid var(--pink); border-radius:1.5mm;
+    display:flex; align-items:center; justify-content:center;
+    background:#fff; overflow:hidden; padding:0.6mm;
+  }
+  .qr img, .qr canvas{ width:100%; height:100%; image-rendering:pixelated; }
+  .qr-caption{ font-size:4.4pt; color:var(--ink-soft); font-weight:700; text-align:center; line-height:1.3; }
+
+  .note{
+    max-width:720px; background:#fff; border-radius:12px; padding:16px 20px;
+    font-size:.82rem; color:#3A2A2E; line-height:1.9; box-shadow:0 2px 10px rgba(0,0,0,0.06);
+  }
+
+  @media print{
+    body{background:#fff; padding:0;}
+    .page-title, .note{display:none;}
+    .card{box-shadow:none;}
+  }
+</style>
+</head>
+<body>
+
+  <div class="page-title">
+    <h1>كارت الشكر + كارت نادي المكافآت — حلويات بوسي</h1>
+    <p>وش الكارت: شكر • ضهر الكارت: تتبّع نقاط الولاء — بألوان وخط هوية اللوجو الأصلي</p>
+  </div>
+
+  <div class="card-row">
+
+    <!-- FRONT -->
+    <div class="card front">
+      <div class="frame-outer"></div>
+      <div class="frame-inner"></div>
+
+      <!-- gold flourish corners -->
+      <svg class="corner tl" viewBox="0 0 60 60">
+        <path d="M4 40 Q4 4 40 4" stroke="#FF91A4" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <circle cx="4" cy="40" r="2.4" fill="#FF91A4"/>
+        <circle cx="40" cy="4" r="2.4" fill="#FF91A4"/>
+      </svg>
+      <svg class="corner tr" viewBox="0 0 60 60">
+        <path d="M4 40 Q4 4 40 4" stroke="#FF91A4" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <circle cx="4" cy="40" r="2.4" fill="#FF91A4"/>
+        <circle cx="40" cy="4" r="2.4" fill="#FF91A4"/>
+      </svg>
+      <svg class="corner bl" viewBox="0 0 60 60">
+        <path d="M4 40 Q4 4 40 4" stroke="#FF91A4" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <circle cx="4" cy="40" r="2.4" fill="#FF91A4"/>
+        <circle cx="40" cy="4" r="2.4" fill="#FF91A4"/>
+      </svg>
+      <svg class="corner br" viewBox="0 0 60 60">
+        <path d="M4 40 Q4 4 40 4" stroke="#FF91A4" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <circle cx="4" cy="40" r="2.4" fill="#FF91A4"/>
+        <circle cx="40" cy="4" r="2.4" fill="#FF91A4"/>
+      </svg>
+
+      <div class="content">
+        <!-- small gold crown, echoing the logo -->
+        <svg class="crown" viewBox="0 0 100 70">
+          <path d="M10 55 L18 22 L35 42 L50 12 L65 42 L82 22 L90 55 Z" fill="#C9972E"/>
+          <rect x="8" y="55" width="84" height="8" rx="2" fill="#C9972E"/>
+          <circle cx="50" cy="10" r="6" fill="#C9972E"/>
+        </svg>
+
+        <div class="ribbon">
+          <svg class="sparkle sparkle-left" viewBox="0 0 24 24"><path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5 Z" fill="#E3B968"/></svg>
+          <svg class="ribbon-shape" viewBox="0 0 300 60" preserveAspectRatio="none">
+            <path d="M0 10 L300 10 L288 30 L300 50 L0 50 L12 30 Z" fill="#FFE3E9" stroke="#FF91A4" stroke-width="1.5"/>
+          </svg>
+          <div class="brand">حلويات بوسي</div>
+          <svg class="sparkle sparkle-right" viewBox="0 0 24 24"><path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5 Z" fill="#E3B968"/></svg>
+        </div>
+
+        <div class="divider">
+          <span class="line"></span><span class="dot"></span><span class="line"></span>
+        </div>
+
+        <div class="thanks">شكراً لاختيارك حلويات بوسي تكون جزء من يومك، وبنتمنالك يوم جميل<br>تعاملك معانا أسعدنا فعلاً، وفي انتظار نتشرّف بيك تاني قريب 💗</div>
+        <div class="slogan">صنعناها بحب لتهديها لمن تحب</div>
+      </div>
+    </div>
+
+    <!-- BACK -->
+    <div class="card back">
+      <div class="top-strip"></div>
+      <div class="top-row">
+        <div>
+          <div class="club-title">نادي مكافآت حلويات بوسي</div>
+          <div class="club-sub">كل طلب = خطوة جديدة في الكارت. اجمعي نقاطك واقبضي خصمك في طلبك الجاي!</div>
+        </div>
+        <div class="id-box">
+          اسم العميل
+          <div>____________</div>
+        </div>
+      </div>
+
+      <div class="stamps">
+        <div class="stamp">١</div>
+        <div class="stamp">٢</div>
+        <div class="stamp milestone">٣</div>
+        <div class="stamp">٤</div>
+        <div class="stamp">٥</div>
+        <div class="stamp milestone">٦</div>
+        <div class="stamp">٧</div>
+        <div class="stamp">٨</div>
+        <div class="stamp milestone">٩</div>
+      </div>
+      <div class="tier-labels">
+        <span></span><span></span>
+        <span class="hl">خصم ٥٪</span>
+        <span></span><span></span>
+        <span class="hl">خصم ١٠٪</span>
+        <span></span><span></span>
+        <span class="hl">خصم ١٥٪</span>
+      </div>
+
+      <div class="bottom-row">
+        <div class="rule-text">
+          كل ٩ طلبات = دورة خصم جديدة (٣/٦/٩). كل ١٢ طلب إجمالي = قسيمة ٣٠٠ جنيه لمدة شهرين.
+          تابعي رصيدك بالظبط أونلاين 👉
+        </div>
+        <div class="qr-wrap">
+          <div class="qr" id="bose-qr-box"></div>
+          <div class="qr-caption">امسحي<br>لمتابعة نقاطك</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="note">
+    التصميم دلوقتي متوازن على الهوية الحقيقية: اللون الوردي <b>#FF91A4</b> هو السائد فعليًا (الإطار، الزخارف، الشريط،
+    الختامات)، والدهبي بقى لمسة بسيطة جدًا (التاج بس). الاسم مكتوب كامل "حلويات بوسي" بخط <b>Rakkas</b> بلون الكورال
+    زي اللوجو، وضهر الكارت "نادي مكافآت حلويات بوسي" بالاسم الكامل برضو.
+    <br><br>
+    آخر تحديث طبّق: (١) هامش أمان ٣.٦مم من حافة الكارت لأي انزياح وقت القص، (٢) مستوى تصحيح أخطاء أعلى للـQR (H) عشان
+    يفضل شغال حتى لو الكارت اتخدش في المحفظة، (٣) نص الضهر اتلخّص وكبر عشان يتقرا بسهولة، (٤) شرارتين دهبيتين صغيرتين
+    حوالين اسم العلامة كلمسة ودّية بسيطة تفتكر بزخارف اللوجو الأصلي.
+    <br><br>
+    <b>⚠️ قبل الطباعة الفعلية:</b> افتحي الملف ده وإنت متصلة بالإنترنت (عشان خطوط Cairo وRakkas تحمّل صح من
+    Google Fonts)، وبعدين اعملي "طباعة" واختاري "Save as PDF" بدل ما تدّي الملف الأصلي (HTML) للمطبعة مباشرة —
+    كده الخطوط والـQR بيتضمنوا جوه الـPDF نفسه بالظبط زي ما شايفاهم هنا.
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script>
+    // رابط عام واحد لصفحة الولاء - نفس اللينك على كل الكروت المطبوعة بالجملة،
+    // العميلة بتكتب رقم موبايلها هي بنفسها في الصفحة عشان تشوف نقاطها.
+    if (typeof QRCode !== "undefined") {
+      new QRCode(document.getElementById("bose-qr-box"), {
+        text: "https://bose-sweet.vercel.app/rewards.html",
+        width: 160,
+        height: 160,
+        colorDark: "#2B1E20",
+        colorLight: "#FFFFFF",
+        correctLevel: QRCode.CorrectLevel.H
+      });
+    }
+  </script>
+
+</body>
+</html>
