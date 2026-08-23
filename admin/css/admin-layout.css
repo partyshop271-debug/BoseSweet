@@ -738,6 +738,23 @@ html.adm-ready .adm-auth-gate { display: none; }
 .adm-products-search { min-width: 200px; width: auto; }
 .adm-products-category-filter { width: auto; min-width: 150px; }
 
+/* 💰 [تعديل السعر الجماعي]: شريط تحديد بنفس تخطيط شريط الطلبات الجماعي، لكن
+   بألوان محايدة/وردية بدل الأحمر - لأن العملية هنا تعديل سعر، مش حذف. */
+.adm-products-bulk-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    margin: 0 0 12px;
+    background: rgba(214, 51, 132, 0.08);
+    border: 1px solid var(--adm-pink);
+    border-radius: 10px;
+    font-weight: 600;
+    color: var(--adm-text-primary);
+}
+.adm-products-bulk-bar .adm-btn { margin-inline-start: auto; }
+.adm-products-bulk-bar .adm-btn-ghost { margin-inline-start: 0; }
+
 .adm-table-actions {
     display: flex;
     gap: 6px;
