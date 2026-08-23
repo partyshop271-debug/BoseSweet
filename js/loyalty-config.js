@@ -11,8 +11,21 @@
  * الحية اللي حفظتها لوحة التحكم، من مكان واحد بس - فأي صفحة جديدة تتبني
  * بعد كده تاخد نفس الرقم الصح تلقائيًا من غير ما تعيد كتابته.
  *
- * لازم يتحمّل بعد core-engine.js (عشان window.BoseStoreData يكون معرّف)
- * وقبل أي كود صفحة بيستخدم getBoseLoyaltyConfig/getSortedLoyaltyTiers.
+ * 🚨🛡️ [تصحيح - الملاحظة القديمة هنا كانت غلط وسببت باگ حقيقي]: الملف ده
+ * ما بيقراش window.BoseStoreData إلا *جوه* الدوال تحت، وقت ما حد ينادي
+ * getBoseLoyaltyConfig() فعليًا - مش وقت تحميل السكريبت نفسه. يعني معندوش
+ * أي تبعية حقيقية تخليه يتحمّل بعد core-engine.js.
+ *
+ * العكس هو الصح: لازم يتحمّل *قبل* core-engine.js (شوفي index.html/rewards.html)
+ * - لأن core-engine.js ممكن يطلق حدث "BoseDatabaseLoaded" بشكل فوري ومتزامن
+ * (لو فيه cache صالح، وهي الحالة الشائعة) وقت ما هو نفسه لسه بيتنفذ، فلو
+ * loyalty-config.js متحمّلش قبله، أي كود بيسمع للحدث ده هيلاقي
+ * getBoseLoyaltyConfig مش موجودة لسه ويفشل بصمت. ده بالظبط اللي كان بيسبب
+ * ظهور أرقام الولاء القديمة الثابتة (5%/الطلب3، إلخ) بدل الأرقام الحقيقية
+ * من لوحة التحكم في index.html.
+ *
+ * القاعدة البسيطة: أي صفحة تستخدم getBoseLoyaltyConfig/getSortedLoyaltyTiers
+ * لازم تحمّل السكريبت ده قبل core-engine.js في ترتيب الـ <script> tags.
  */
 (function () {
     "use strict";
