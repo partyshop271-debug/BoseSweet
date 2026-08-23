@@ -72,6 +72,18 @@
         return { email: session.user.email, displayName: data.display_name || session.user.email };
     }
 
+    /**
+     * 🆕 [5.5 - تغيير كلمة المرور من لوحة التحكم]: بتغيّر كلمة مرور الأدمن
+     * اللي عامل تسجيل دخول حالياً. مبنية على client.auth.updateUser بتاع
+     * Supabase Auth، اللي بيشتغل على الجلسة الحالية المصادَق عليها فعلاً
+     * (نفس آلية أي تحديث بيانات مستخدم في Supabase) - مفيش حاجة إضافية
+     * محتاجة تتضاف في القاعدة، الـ RLS/Auth مبني على كده أصلاً.
+     */
+    async function updatePassword(newPassword) {
+        const { error } = await client.auth.updateUser({ password: newPassword });
+        if (error) throw error;
+    }
+
     function onAuthStateChange(callback) {
         client.auth.onAuthStateChange((_event, session) => callback(session));
     }
@@ -1144,6 +1156,7 @@
         signOut,
         getSession,
         verifyIsAdmin,
+        updatePassword,
         onAuthStateChange,
         getDashboardSummary,
         getSalesReport,

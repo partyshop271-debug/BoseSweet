@@ -106,6 +106,9 @@
                 </div>
                 <nav class="adm-nav">${groupsHTML}</nav>
                 <div class="adm-sidebar-footer">
+                    <button class="adm-logout-btn adm-change-password-btn" id="adm-change-password-btn" style="margin-bottom:8px;">
+                        <i class="fa-solid fa-key"></i> تغيير كلمة المرور
+                    </button>
                     <button class="adm-logout-btn" id="adm-logout-btn">
                         <i class="fa-solid fa-arrow-right-from-bracket"></i> تسجيل الخروج
                     </button>
@@ -153,6 +156,64 @@
         }
     }
 
+    /**
+     * 🆕 [5.5 - تغيير كلمة المرور]: مودال بسيط (كلمة مرور جديدة + تأكيدها)
+     * بيستخدم updatePassword في admin-data.js. بيتفتح من زرار الشريط الجانبي
+     * الموجود في كل صفحات اللوحة (نفس مكان "تسجيل الخروج").
+     */
+    function openChangePasswordModal() {
+        const ui = window.BoseAdminUI;
+        if (!ui) return;
+        const overlay = document.createElement("div");
+        overlay.className = "adm-modal-overlay";
+        overlay.innerHTML = `
+            <div class="adm-modal" style="max-width: 400px;">
+                <div class="adm-modal-header">
+                    <h3>تغيير كلمة المرور</h3>
+                    <button class="adm-modal-close" data-role="cancel"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="adm-field">
+                    <label>كلمة المرور الجديدة</label>
+                    <input type="password" id="adm-new-password" class="adm-input" autocomplete="new-password" placeholder="6 حروف/أرقام على الأقل" />
+                </div>
+                <div class="adm-field">
+                    <label>تأكيد كلمة المرور الجديدة</label>
+                    <input type="password" id="adm-new-password-confirm" class="adm-input" autocomplete="new-password" />
+                </div>
+                <div class="adm-modal-actions">
+                    <button class="adm-btn adm-btn-ghost" data-role="cancel">إلغاء</button>
+                    <button class="adm-btn adm-btn-primary" id="adm-save-new-password">حفظ</button>
+                </div>
+            </div>`;
+        document.body.appendChild(overlay);
+
+        function close() { overlay.remove(); }
+        overlay.addEventListener("click", (e) => {
+            if (e.target === overlay) close();
+            if (e.target.closest("[data-role='cancel']")) close();
+        });
+
+        overlay.querySelector("#adm-save-new-password").addEventListener("click", async () => {
+            const pass1 = overlay.querySelector("#adm-new-password").value;
+            const pass2 = overlay.querySelector("#adm-new-password-confirm").value;
+            if (!pass1 || pass1.length < 6) {
+                ui.showToast("كلمة المرور لازم تكون 6 حروف/أرقام على الأقل", "error");
+                return;
+            }
+            if (pass1 !== pass2) {
+                ui.showToast("كلمتا المرور مش متطابقتين", "error");
+                return;
+            }
+            try {
+                await window.BoseAdmin.updatePassword(pass1);
+                ui.showToast("اتغيّرت كلمة المرور بنجاح", "success");
+                close();
+            } catch (err) {
+                ui.showToast(err.message || "حصل خطأ أثناء تغيير كلمة المرور", "error");
+            }
+        });
+    }
+
     function wireInteractions() {
         const logoutBtn = document.getElementById("adm-logout-btn");
         if (logoutBtn) {
@@ -160,6 +221,11 @@
                 await window.BoseAdmin.signOut();
                 window.location.href = "login.html";
             });
+        }
+
+        const changePasswordBtn = document.getElementById("adm-change-password-btn");
+        if (changePasswordBtn) {
+            changePasswordBtn.addEventListener("click", openChangePasswordModal);
         }
 
         const mobileToggle = document.getElementById("adm-mobile-toggle");
