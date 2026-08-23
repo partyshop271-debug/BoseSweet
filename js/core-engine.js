@@ -1633,7 +1633,23 @@
      */
     window.buildWhatsappLink = function(phone, text) {
         const intlNumber = window.toInternationalWhatsappNumber(phone);
-        return `https://wa.me/${intlNumber}?text=${encodeURIComponent(text || "")}`;
+        const encodedText = encodeURIComponent(text || "");
+        const fallbackUrl = `https://wa.me/${intlNumber}?text=${encodedText}`;
+
+        // 🆕 [تفضيل واتساب بيزنس الرسمي على أندرويد]: لو الجهاز أندرويد، بنطلب
+        // فتح تطبيق واتساب بيزنس الرسمي (com.whatsapp.w4b) تحديدًا، بدل ما
+        // نسيب أندرويد يعرض قائمة اختيار بين كل تطبيق مسجّل كمعالج لروابط
+        // واتساب على الجهاز (ده بيشمل أي تطبيق استنساخ/مضاعفة تطبيقات
+        // (App Cloner/Parallel Space) متثبت على الجهاز برضه، مش بس واتساب
+        // الشخصي). لو التطبيق مش متثبت، أندرويد بيرجع تلقائي لرابط الـ
+        // fallback العادي (نفس اللي كنا بنستخدمه قبل كده). على iOS
+        // والديسكتوب مفيش طريقة موثوقة نجبر بيها متصفح الويب يفتح تطبيق
+        // بعينه، فبيفضل الرابط العادي زي ما هو.
+        const isAndroid = /Android/i.test((navigator && navigator.userAgent) || "");
+        if (isAndroid) {
+            return `intent://send?phone=${intlNumber}&text=${encodedText}#Intent;scheme=whatsapp;package=com.whatsapp.w4b;S.browser_fallback_url=${encodeURIComponent(fallbackUrl)};end`;
+        }
+        return fallbackUrl;
     };
 
     /**
@@ -2661,7 +2677,7 @@
                     </div>
 
                     <div class="sidebar-footer-contacts">
-                        <a href="https://wa.me/${window.toInternationalWhatsappNumber(data.social?.whatsapp || '201097238441')}" target="_blank" rel="noopener noreferrer" class="sidebar-contact-pill">
+                        <a href="${window.buildWhatsappLink(data.social?.whatsapp || '201097238441', '')}" target="_blank" rel="noopener noreferrer" class="sidebar-contact-pill">
                             <i class="fa-brands fa-whatsapp"></i>
                             <span>راسلنا فوري عبر الواتساب</span>
                         </a>
@@ -2719,7 +2735,7 @@
                     <i class="fas fa-tags"></i>
                     <span>العروض</span>
                 </a>
-                <a href="https://wa.me/${window.toInternationalWhatsappNumber(data.social?.whatsapp || '201097238441')}" target="_blank" rel="noopener noreferrer" class="bottom-nav-item bose-bottom-nav-item whatsapp-item">
+                <a href="${window.buildWhatsappLink(data.social?.whatsapp || '201097238441', '')}" target="_blank" rel="noopener noreferrer" class="bottom-nav-item bose-bottom-nav-item whatsapp-item">
                     <i class="fab fa-whatsapp"></i>
                     <span>الواتساب</span>
                 </a>
@@ -2772,7 +2788,7 @@
                                 <a href="${data.social?.facebook || '#'}" target="_blank" rel="noopener noreferrer" class="footer-social-icon-btn"><i class="fa-brands fa-facebook-f"></i></a>
                                 <a href="${data.social?.instagram || '#'}" target="_blank" rel="noopener noreferrer" class="footer-social-icon-btn"><i class="fa-brands fa-instagram"></i></a>
                                 <a href="${data.social?.tiktok || '#'}" target="_blank" rel="noopener noreferrer" class="footer-social-icon-btn"><i class="fa-brands fa-tiktok"></i></a>
-                                <a href="https://wa.me/${window.toInternationalWhatsappNumber(data.social?.whatsapp || '201097238441')}" target="_blank" rel="noopener noreferrer" class="footer-social-icon-btn"><i class="fa-brands fa-whatsapp"></i></a>
+                                <a href="${window.buildWhatsappLink(data.social?.whatsapp || '201097238441', '')}" target="_blank" rel="noopener noreferrer" class="footer-social-icon-btn"><i class="fa-brands fa-whatsapp"></i></a>
                             </div>
                         </div>
                         <div class="footer-column-block">

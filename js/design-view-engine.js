@@ -88,7 +88,10 @@
             orderBtn.addEventListener('click', () => {
                 const shareUrl = window.location.href;
                 const text = `عايزة أطلب تورتة زي التصميم ده من حلويات بوسي 🎂\n${shareUrl}`;
-                window.open(`https://wa.me/201097238441?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer');
+                const link = (typeof window.buildWhatsappLink === "function")
+                    ? window.buildWhatsappLink('201097238441', text)
+                    : `https://wa.me/201097238441?text=${encodeURIComponent(text)}`;
+                window.open(link, '_blank', 'noopener,noreferrer');
             });
         }
 
