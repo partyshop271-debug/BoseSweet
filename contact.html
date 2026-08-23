@@ -103,10 +103,10 @@
                     </div>
                     <p style="font-size: 0.95rem; color: var(--bose-black); line-height: 1.7; margin-bottom: 20px;">
                         لو حابب تشرفنا وتستلم الأوردر بنفسك، تقدر تستلمه من مكان تحضير الشغل في: 
-                        <strong style="display: block; margin-top: 5px; color: var(--bose-black);">الكفاح - شارع الوحدة المحلية - بجوار صيدلية الدكتور أحمد مجدي وبجوار عيادة الدكتور علي.</strong>
-                        <span style="display: block; margin-top: 8px; color: var(--bose-pink); font-weight: 600;">⚠️ ملحوظة مهمة: بننسق ميعاد الاستلام مع بعض الأول بعد تأكيد الأوردر، عشان نجهزلك حاجتك وتكون فريش ولحظة وصولك يطلعلك المندوب من خدمة العملاء يسلمها لك مخصوص.</span>
+                        <strong id="contact-pickup-address" style="display: block; margin-top: 5px; color: var(--bose-black);">الكفاح - شارع الوحدة المحلية - بجوار صيدلية الدكتور أحمد مجدي وبجوار عيادة الدكتور علي.</strong>
+                        <span id="contact-pickup-message" style="display: block; margin-top: 8px; color: var(--bose-pink); font-weight: 600;">⚠️ ملحوظة مهمة: بننسق ميعاد الاستلام مع بعض الأول بعد تأكيد الأوردر، عشان نجهزلك حاجتك وتكون فريش ولحظة وصولك يطلعلك المندوب من خدمة العملاء يسلمها لك مخصوص.</span>
                     </p>
-                    <a href="https://maps.app.goo.gl/nAg4Y7vQ7hACvKGc8?g_st=ac" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; justify-content: center; background-color: var(--bose-white); color: var(--bose-black); border: 1px solid var(--bose-pink); padding: 8px 15px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 0.9rem; transition: all 0.3s ease; box-shadow: var(--bose-shadow-glow);" onmouseover="this.style.backgroundColor='var(--bose-pink)'; this.style.color='#FFFFFF';" onmouseout="this.style.backgroundColor='var(--bose-white)'; this.style.color='var(--bose-black)';">
+                    <a href="https://maps.app.goo.gl/nAg4Y7vQ7hACvKGc8?g_st=ac" id="contact-pickup-map-link" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; justify-content: center; background-color: var(--bose-white); color: var(--bose-black); border: 1px solid var(--bose-pink); padding: 8px 15px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 0.9rem; transition: all 0.3s ease; box-shadow: var(--bose-shadow-glow);" onmouseover="this.style.backgroundColor='var(--bose-pink)'; this.style.color='#FFFFFF';" onmouseout="this.style.backgroundColor='var(--bose-white)'; this.style.color='var(--bose-black)';">
                         <i class="fa-solid fa-map-location-dot" style="margin-left: 6px;"></i>
                         موقع نقطة الاستلام على الخريطة
                     </a>
@@ -144,8 +144,34 @@
                 }
             }
 
-            if (window.BoseStoreData) syncContactWhatsappLinks();
+            // 🆕 [5.4 - استكمال ديناميكية صفحة "تواصل معنا"]: عنوان نقطة الاستلام
+            // ورابط الخريطة كانوا نص ثابت في الصفحة، رغم إن نفس البيانات دي
+            // (store_settings.store.pickup) موجودة أصلاً ومستخدمة حية في صفحة
+            // الشيك أوت (cart-engine.js). نفس المصدر هنا، مع الإبقاء على النص
+            // الحالي كقيمة احتياطية لو الأدمن لسه محدّدش بيانات الاستلام.
+            function syncContactPickupInfo() {
+                if (!window.BoseStoreData) return;
+                const pickup = window.BoseStoreData.store?.pickup || {};
+
+                const addressEl = document.getElementById("contact-pickup-address");
+                if (addressEl && pickup.address) {
+                    addressEl.textContent = pickup.address;
+                }
+
+                const messageEl = document.getElementById("contact-pickup-message");
+                if (messageEl && pickup.message) {
+                    messageEl.textContent = pickup.message;
+                }
+
+                const mapLink = document.getElementById("contact-pickup-map-link");
+                if (mapLink && pickup.mapUrl) {
+                    mapLink.href = pickup.mapUrl;
+                }
+            }
+
+            if (window.BoseStoreData) { syncContactWhatsappLinks(); syncContactPickupInfo(); }
             document.addEventListener("BoseDatabaseLoaded", syncContactWhatsappLinks);
+            document.addEventListener("BoseDatabaseLoaded", syncContactPickupInfo);
         })();
     </script>
 
