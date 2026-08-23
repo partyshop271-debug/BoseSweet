@@ -778,6 +778,20 @@ html.adm-ready .adm-auth-gate { display: none; }
     border: 1px solid var(--adm-border-soft);
 }
 
+/* 🎥 [رفع فيديوهات الأقسام - 2026-08-23]: معاينة الفيديو الحالي قبل استبداله -
+   أكبر من مصغّرة الصورة العادية (72px) عشان يبان محتوى الفيديو بوضوح. */
+.adm-video-preview-thumb {
+    display: block;
+    width: 100%;
+    max-width: 280px;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: var(--adm-radius-sm);
+    border: 1px solid var(--adm-border-soft);
+    background: var(--adm-bg-input);
+    margin-bottom: 8px;
+}
+
 .adm-image-remove-btn {
     position: absolute;
     top: -6px;
