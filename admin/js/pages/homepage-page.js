@@ -58,7 +58,33 @@
 
     function productTitle(id) {
         const p = allProducts.find((p) => p.id === id);
-        return p ? p.title : id;
+        return p ? productPickerLabel(p) : id;
+    }
+
+    /**
+     * 🐛🛡️ [إصلاح جذري - "مش عارفة دي أنهي نكهة"]: كل صفوف نفس الفئة (زي كل
+     * نكهات "القشطوطة") بيكون عمود title بتاعها متطابق حرفيًا (هو اسم الفئة
+     * نفسه)، فأي قائمة كانت بتعرض p.title بس (شلال المنتجات، القوائم
+     * المختارة) كانت بتطلع للأدمن نفس الاسم مكرر عشرات المرات من غير أي طريقة
+     * تفرّق بيها - فعليًا مستحيل تختار الصورة الصح. الاسم الحقيقي المميز
+     * لكل صف مخزّن في عمود flavor_name (زي "لوتس"، "بيستاشيو"...) لكن محدش
+     * كان بيعرضه في أي قائمة اختيار. دلوقتي كل قوائم اختيار المنتج في الصفحة
+     * دي بتستخدم الدالة الموحدة دي، فبتوضح النكهة (لو مختلفة عن الاسم) والسعر
+     * مع بعض، فتبقى كل نكهة واضحة ومميزة عن باقي نكهات نفس الصنف.
+     */
+    function productPickerLabel(p) {
+        const title = (p.title || p.id || "").trim();
+        const flavor = (p.flavor_name || "").trim();
+        const price = p.price !== null && p.price !== undefined && p.price !== "" ? Number(p.price) : null;
+
+        let label = title || p.id;
+        if (flavor && flavor !== title) {
+            label += ` - ${flavor}`;
+        }
+        if (price !== null && !isNaN(price)) {
+            label += ` (${price}ج)`;
+        }
+        return label;
     }
 
     function productThumb(id) {
@@ -123,7 +149,7 @@
         const available = allProducts.filter((p) => !currentIds.has(p.id));
 
         select.innerHTML = `<option value="">اختر منتج لإضافته...</option>` +
-            available.map((p) => `<option value="${e(p.id)}">${e(p.title)}</option>`).join("");
+            available.map((p) => `<option value="${e(p.id)}">${e(productPickerLabel(p))}</option>`).join("");
     }
 
     function wireCuratedListControls() {
@@ -261,7 +287,7 @@
         select.innerHTML = `<option value="">اختاري منتج لإضافته كصورة قابلة للضغط...</option>` +
             allProducts
                 .filter((p) => p.images && p.images[0] && p.id)
-                .map((p) => `<option value="${e(p.id)}">${e(p.title)}</option>`)
+                .map((p) => `<option value="${e(p.id)}">${e(productPickerLabel(p))}</option>`)
                 .join("");
     }
 
