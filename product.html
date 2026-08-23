@@ -480,6 +480,9 @@
                 <button type="button" id="bose-product-fav-btn" class="bose-fav-btn bose-fav-btn-large" aria-label="إضافة للمفضلة">
                     <i class="fa-regular fa-heart"></i>
                 </button>
+                <button type="button" class="bose-info-badge-inline" style="position:absolute; top:14px; right:14px; background:#fff; z-index:3;"
+                        data-bose-info-title="زرار المفضلة ده بيعمل إيه؟"
+                        data-bose-info-text="بيحفظلك الصنف ده في قائمة مفضلاتك عشان ترجعيله بسهولة بعدين من غير ما تدوّري عليه تاني - مش بيضيفه للسلة ولا بيحجزلك حاجة. تقدري تشوفي كل مفضلاتك من أيقونة القلب في الهيدر.">ⓘ</button>
                 <div id="bose-thumbnails-strip" class="thumbnails-strip-flow"></div>
             </div>
 
@@ -514,7 +517,11 @@
                      (مثلاً الديسباسيتو: مثلث/وسط/كبير) رغم إن نفس منطق الأحجام موجود ومستخدم في
                      category.html بالظبط. التبويب هنا بيظهر تلقائياً بس لو المنتج فعلاً عنده أكتر
                      من حجم سعر مختلف، وبيغيّر السعر (وأي وصف مخصص للحجم لو موجود) فوراً لحظة الاختيار. -->
-                <div id="bose-product-size-note" class="bose-size-filter-note" style="display:none; margin-bottom:10px;"><i class="fa-solid fa-circle-info"></i> ده الصنف متوفر بأكتر من حجم — اختاري اللي يناسبك 👇</div>
+                <div id="bose-product-size-note" class="bose-size-filter-note" style="display:none; margin-bottom:10px;"><i class="fa-solid fa-circle-info"></i> ده الصنف متوفر بأكتر من حجم — اختاري اللي يناسبك 👇
+                    <button type="button" class="bose-info-badge-inline"
+                            data-bose-info-title="اختيار الحجم بيأثر على إيه؟"
+                            data-bose-info-text="كل حجم من الأحجام دي له سعر مختلف، وبمجرد ما تختاري حجم هيتحدث السعر فوق فوراً ليطابق اختيارك. تقدري تغيّري الحجم في أي وقت قبل ما تضيفي الصنف للسلة.">ⓘ</button>
+                </div>
                 <div id="bose-product-size-tabs" class="bose-size-tabs-filter" style="display:none; margin-bottom:14px;"></div>
 
                 <div id="bose-product-price-text" class="product-price-large-display">0 EGP</div>
@@ -537,6 +544,9 @@
                     <button id="btn-add-to-cart-master-trigger" class="btn-add-to-cart-master" type="button">
                         <i class="fas fa-shopping-bag"></i> إضافة لسلة المشتريات
                     </button>
+                    <button type="button" class="bose-info-badge-inline"
+                            data-bose-info-title="بعد ما أضيف للسلة هيحصل إيه؟"
+                            data-bose-info-text="دوسي + و- لتحديد الكمية اللي حابة تطلبيها من الصنف ده، وبعد ما تضغطي إضافة لسلة المشتريات هتلاقيه في سلتك تقدري تراجعيه وتعدّلي فيه براحتك، وتحددي موعد الاستلام أو التوصيل بعد كده في خطوة إتمام الطلب.">ⓘ</button>
                 </div>
 
                 <!-- 🛡️ [شارات ثقة]: صف صغير تحت زرار الإضافة للسلة مباشرة - أقرب نقطة لحظة
@@ -992,7 +1002,11 @@
                     const group = document.createElement("div");
                     group.className = "option-group-wrapper";
                     group.innerHTML = `
-                        <label class="option-group-title"><i class="fas fa-cookie-bite" style="color:var(--bose-pink);"></i> استكشف باقي نكهات القسم الفريدة</label>
+                        <label class="option-group-title"><i class="fas fa-cookie-bite" style="color:var(--bose-pink);"></i> استكشف باقي نكهات القسم الفريدة
+                            <button type="button" class="bose-info-badge-inline"
+                                    data-bose-info-title="إيه الكروت دي؟"
+                                    data-bose-info-text="دي نكهات تانية من نفس القسم اللي انتِ بتتصفحيه دلوقتي. اضغطي على أي كارت منها عشان تتنقلي مباشرة لصفحته وتشوفي تفاصيله وسعره، من غير ما تحتاجي ترجعي تدوّري تاني في المنيو.">ⓘ</button>
+                        </label>
                         <div class="custom-cards-flex-row">
                             <div class="custom-selectable-card selected" data-slug="${currentProduct.slug}">
                                 <span class="card-primary-txt">${currentProduct.flavorName || 'كلاسيك'}</span>

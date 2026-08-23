@@ -277,7 +277,11 @@
                          اختيارية، بتظهر جنبها القسائم النشطة المتاحة على رقم العميلة تلقائياً
                          بمجرد التأكد من رقم الهاتف، مع زرار سريع لتعبئة الكود. -->
                     <div class="input-group-node">
-                        <label for="checkout-voucher-code">عندك قسيمة ولاء؟ اكتبي كودها هنا (اختياري)</label>
+                        <label for="checkout-voucher-code">عندك قسيمة ولاء؟ اكتبي كودها هنا (اختياري)
+                            <button type="button" class="bose-info-badge-inline"
+                                    data-bose-info-title="قسيمة الولاء دي إيه؟"
+                                    data-bose-info-text="قسيمة الولاء بتتكسب تلقائياً كل ما تكمّلي عدد معين من الطلبات معانا، وبتدّيكِ خصم على طلب جديد. لو عندك رقم هاتف مسجّل ومعاكِ قسيمة نشطة، هتلاقيها ظاهرة تلقائياً هنا بعد ما تكتبي رقمك فوق. القسيمة دي مختلفة عن كود الخصم العادي اللي بتكتبيه في صفحة السلة.">ⓘ</button>
+                        </label>
                         <div style="display:flex; gap:8px;">
                             <input type="text" id="checkout-voucher-code" class="bose-field-capture" placeholder="مثال: BOSE-XXXXXX" style="flex:1; text-transform:uppercase;">
                             <button type="button" id="btn-apply-loyalty-voucher" style="white-space:nowrap; background:#FF91A4; color:#fff; border:none; border-radius:10px; padding:0 18px; font-family:'Cairo',sans-serif; font-weight:700; cursor:pointer;">تفعيل</button>
@@ -287,7 +291,11 @@
 
                     <!-- قسم تحديد طريقة ومسار الاستلام التفاعلي لبراند حلويات بوسي -->
                     <div class="input-group-node">
-                        <label>كيف ترغب في استلام الطلب؟ <span class="required-indicator">*</span></label>
+                        <label>كيف ترغب في استلام الطلب؟ <span class="required-indicator">*</span>
+                            <button type="button" class="bose-info-badge-inline"
+                                    data-bose-info-title="إيه الفرق بين الاتنين؟"
+                                    data-bose-info-text="التوصيل للمنزل: بنوصّلك الطلب لعنوانك بعد ما تختاري منطقتك السكنية، وعليه رسوم توصيل بتتحدد حسب المنطقة ولازم يتدفع كامل المبلغ. الاستلام من الفرع: تيجي تستلمي طلبك بنفسك من الفرع من غير أي رسوم توصيل، وتقدري كمان تختاري تدفعي عربون بس وتكملي الباقي وقت الاستلام.">ⓘ</button>
+                        </label>
                         <div class="fulfillment-methods-flex">
                             <button type="button" id="method-delivery" class="btn-fulfillment-node active">
                                 <i class="fas fa-shipping-fast"></i> أرغب في التوصيل للمنزل
@@ -325,7 +333,11 @@
                     <!-- ⏱️ قسم الجدولة الزمنية والموعد المحكوم بقواعد المعالجة وحارس الـ 24 ساعة تحضير صارم ⏱️ -->
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; width: 100%;">
                         <div class="input-group-node">
-                            <label for="checkout-delivery-date">تاريخ الاستلام</label>
+                            <label for="checkout-delivery-date">تاريخ الاستلام
+                                <button type="button" class="bose-info-badge-inline"
+                                        data-bose-info-title="ليه مش كل التواريخ متاحة؟"
+                                        data-bose-info-text="محتاجين على الأقل 48 ساعة من دلوقتي عشان نجهز طلبك بجودة عالية (لو طلبك فيه تورت أو ورد من المحاكي، الوقت المطلوب أسبوع كامل تقريباً). كمان الاستلام والتوصيل بيكونوا بس من الساعة 9 الصبح لحد 10 بالليل، فأي وقت خارج النطاق ده مش هيتقبل.">ⓘ</button>
+                            </label>
                             <input type="date" id="checkout-delivery-date" class="bose-field-capture" required aria-describedby="err-checkout-delivery-date">
                             <span class="bose-field-error-msg" id="err-checkout-delivery-date"><i class="fa-solid fa-circle-exclamation"></i><span></span></span>
                         </div>
@@ -392,7 +404,11 @@
                         <button type="button" id="bose-pay-choice-full" class="bose-pay-choice-btn" style="flex:1; padding: 8px 6px; border-radius: 10px; border: 1px solid #FF91A4; background: #fff; color: #FF91A4; font-weight: 700; font-size: 0.82rem; cursor: pointer; font-family: 'Cairo';">أدفع المبلغ بالكامل</button>
                     </div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                        <span id="bose-deposit-label" style="font-weight: 700; color: #111111; font-size: 0.95rem;">المبلغ المطلوب دفعه الآن لتأكيد الحجز:</span>
+                        <span id="bose-deposit-label" style="font-weight: 700; color: #111111; font-size: 0.95rem;">المبلغ المطلوب دفعه الآن لتأكيد الحجز:
+                            <button type="button" class="bose-info-badge-inline"
+                                    data-bose-info-title="ليه لازم أحوّل مبلغ الآن؟"
+                                    data-bose-info-text="التحويل ده بيأكد حجز طلبك ويخلينا نبدأ التحضير فوراً. حوّلي المبلغ الموضح تحت كاش أو InstaPay على رقمنا، وابعتي لقطة شاشة التحويل على واتساب بعد ما تدوسي زرار الحجز - وطلبك يتأكد فور ما نستلم إثبات التحويل.">ⓘ</button>
+                        </span>
                         <span id="bose-deposit-amount" style="font-weight: 800; color: #FF91A4; font-size: 1.15rem;">0 EGP</span>
                     </div>
                     <div id="bose-deposit-remaining-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; opacity: 0.75; font-size: 0.85rem;">

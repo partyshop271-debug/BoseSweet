@@ -135,7 +135,11 @@ body {
         <!-- الجانب الأيمن: قائمة الأصناف المشتراة من السلة -->
         <div class="cart-items-list-wrapper">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; direction: rtl;">
-                <h3 style="font-size: 1.2rem; font-weight: 700; color: #111111;">الأصناف المحددة للطلب</h3>
+                <h3 style="font-size: 1.2rem; font-weight: 700; color: #111111; display:flex; align-items:center;">الأصناف المحددة للطلب
+                    <button type="button" class="bose-info-badge-inline"
+                            data-bose-info-title="أقدر أعدّل الأصناف هنا؟"
+                            data-bose-info-text="أيوة، تقدري تزوّدي أو تقلّلي كمية أي صنف من الأزرار جنبه مباشرة، أو تشيليه خالص من السلة، وهيتحدث السعر الإجمالي تلقائياً. الأصناف المخصصة من محاكي التورت أو الورد تقدري تعدّلي تفاصيلها بالرجوع لصفحة المحاكي من زرار التعديل الموجود على الصنف نفسه.">ⓘ</button>
+                </h3>
                 <button id="btn-clear-cart" class="btn-clear-cart-node" style="font-family: 'Cairo', sans-serif; font-size: 0.88rem; font-weight: 700; color: #111111; border: 1px solid rgba(255,145,164,0.3); padding: 8px 16px; border-radius: 30px; background: #FFFFFF; cursor: pointer; transition: 0.2s;">إفراغ السلة</button>
             </div>
 
@@ -168,6 +172,9 @@ body {
             <div class="coupon-form-container">
                 <input type="text" id="coupon-input" class="coupon-input-field" placeholder="عندك كود خصم؟ اكتبه هنا...">
                 <button type="button" id="btn-apply-coupon" class="coupon-apply-trigger">تطبيق</button>
+                <button type="button" class="bose-info-badge-inline"
+                        data-bose-info-title="عندي كود خصم منين؟"
+                        data-bose-info-text="لو معاكِ كود خصم أو قسيمة ولاء من عرض سابق أو من نظام نقاط الولاء، اكتبيه في الخانة دي واضغطي تطبيق وهيتخصم من إجمالي الطلب فوراً قبل ما تكمّلي لصفحة إتمام الطلب. لو مفيش كود، تجاهلي الخانة دي وكمّلي عادي.">ⓘ</button>
             </div>
             <div id="coupon-message" class="coupon-status-toast"></div>
 
@@ -185,7 +192,11 @@ body {
                     <span id="summary-discount" class="pricing-value-text" style="color: #FF91A4; font-weight: 700;">0 EGP</span>
                 </div>
                 <div class="pricing-row-node">
-                    <span class="pricing-label-text">رسوم ومصاريف التوصيل:</span>
+                    <span class="pricing-label-text">رسوم ومصاريف التوصيل:
+                        <button type="button" class="bose-info-badge-inline"
+                                data-bose-info-title="ليه رسوم التوصيل مش ظاهرة دلوقتي؟"
+                                data-bose-info-text="رسوم التوصيل بتختلف حسب منطقتك السكنية، فبنعرضها بالظبط بعد ما تختاري منطقتك في خطوة إتمام الطلب الجاية. لو هتستلمي بنفسك من الفرع بدل التوصيل، مفيش أي رسوم توصيل خالص.">ⓘ</button>
+                    </span>
                     <span id="summary-shipping-fee" class="pricing-value-text" style="color: #111111; font-size: 0.88rem;">بتتحدد في خطوة الاستلام</span>
                 </div>
                 <div class="summary-grand-total-row" style="border-top: 1px dashed rgba(255,145,164,0.3); padding-top: 16px;">
