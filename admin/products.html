@@ -48,10 +48,19 @@
                             </button>
                         </div>
                     </div>
+                    <div class="adm-products-bulk-bar" id="products-bulk-bar" style="display:none;">
+                        <span id="products-bulk-count">0 منتج محدد</span>
+                        <button type="button" class="adm-btn adm-btn-ghost" id="products-bulk-clear-btn">إلغاء التحديد</button>
+                        <button type="button" class="adm-btn adm-btn-primary" id="products-bulk-price-btn">
+                            <i class="fa-solid fa-tags"></i> تعديل السعر جماعياً
+                        </button>
+                    </div>
+
                     <div class="adm-table-wrapper">
                         <table class="adm-table" id="products-table">
                             <thead>
                                 <tr>
+                                    <th style="width:36px;"><input type="checkbox" id="products-select-all"></th>
                                     <th></th>
                                     <th>الاسم</th>
                                     <th>الفئة</th>
@@ -63,7 +72,7 @@
                                 </tr>
                             </thead>
                             <tbody id="products-tbody">
-                                <tr><td colspan="7"><div class="adm-loading-spinner"></div></td></tr>
+                                <tr><td colspan="8"><div class="adm-loading-spinner"></div></td></tr>
                             </tbody>
                         </table>
                     </div>
