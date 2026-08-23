@@ -10,6 +10,9 @@
     "use strict";
 
     let allCoupons = [];
+    // 📊 [تقرير استخدام الكوبونات]: خريطة { code -> { usageCount, totalDiscount, lastUsedAt } }
+    // محسوبة من جدول orders الفعلي، مش عمود مخزّن على جدول coupons نفسه.
+    let usageStats = {};
 
     const TYPE_LABELS = { percent: "نسبة مئوية", fixed: "مبلغ ثابت" };
 
@@ -25,6 +28,19 @@
         return expired ? `<span class="adm-badge danger">${label} (منتهي)</span>` : label;
     }
 
+    function formatUsage(code) {
+        const stat = usageStats[code];
+        if (!stat || !stat.usageCount) {
+            return { count: `<span class="adm-order-item-meta">0</span>`, discount: "—", last: "—" };
+        }
+        const lastLabel = new Date(stat.lastUsedAt).toLocaleDateString("ar-EG", { day: "2-digit", month: "2-digit", year: "numeric" });
+        return {
+            count: `<strong>${stat.usageCount}</strong>`,
+            discount: `${Math.round(stat.totalDiscount)} ج.م`,
+            last: lastLabel,
+        };
+    }
+
     /* ============================= الجدول ============================= */
 
     function renderTable() {
@@ -32,7 +48,7 @@
         const e = window.BoseAdminUI.escapeHtml;
 
         if (!allCoupons.length) {
-            tbody.innerHTML = `<tr><td colspan="6">${window.BoseAdminUI.emptyStateHTML({
+            tbody.innerHTML = `<tr><td colspan="9">${window.BoseAdminUI.emptyStateHTML({
                 icon: "fa-ticket",
                 title: "مفيش كوبونات مضافة لسه",
                 text: "ابدأ بإضافة أول كود خصم من زرار \"كوبون جديد\".",
@@ -40,7 +56,9 @@
             return;
         }
 
-        tbody.innerHTML = allCoupons.map((c) => `
+        tbody.innerHTML = allCoupons.map((c) => {
+            const usage = formatUsage(c.code);
+            return `
             <tr>
                 <td><strong>${e(c.code)}</strong></td>
                 <td>${e(TYPE_LABELS[c.type] || c.type)}</td>
@@ -52,6 +70,9 @@
                     </button>
                 </td>
                 <td>${formatExpiry(c.expires_at)}</td>
+                <td>${usage.count}</td>
+                <td>${usage.discount}</td>
+                <td>${usage.last}</td>
                 <td class="adm-table-actions">
                     <button class="adm-btn adm-btn-ghost adm-btn-icon" data-action="edit" data-code="${e(c.code)}" title="تعديل">
                         <i class="fa-solid fa-pen"></i>
@@ -60,7 +81,8 @@
                         <i class="fa-solid fa-trash"></i>
                     </button>
                 </td>
-            </tr>`).join("");
+            </tr>`;
+        }).join("");
 
         tbody.querySelectorAll('[data-action="edit"]').forEach((btn) => {
             btn.addEventListener("click", () => {
@@ -231,8 +253,13 @@
 
     async function loadCoupons() {
         const tbody = document.getElementById("coupons-tbody");
-        tbody.innerHTML = `<tr><td colspan="6"><div class="adm-loading-spinner"></div></td></tr>`;
-        allCoupons = await window.BoseAdmin.getAllCoupons();
+        tbody.innerHTML = `<tr><td colspan="9"><div class="adm-loading-spinner"></div></td></tr>`;
+        const [coupons, stats] = await Promise.all([
+            window.BoseAdmin.getAllCoupons(),
+            window.BoseAdmin.getCouponUsageStats(),
+        ]);
+        allCoupons = coupons;
+        usageStats = stats;
         renderTable();
     }
 

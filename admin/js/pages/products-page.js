@@ -11,6 +11,7 @@
 
     let allProducts = [];
     let allCategories = [];
+    let selectedIds = new Set();
 
     /* ============================= الجدول ============================= */
 
@@ -48,12 +49,17 @@
         const e = window.BoseAdminUI.escapeHtml;
         const products = getFilteredProducts();
 
+        // بنشيل من التحديد أي منتج مبقاش موجود في النتيجة الحالية (بعد فلترة/بحث جديد)
+        const visibleIds = new Set(products.map((p) => p.id));
+        selectedIds.forEach((id) => { if (!visibleIds.has(id)) selectedIds.delete(id); });
+
         if (!products.length) {
-            tbody.innerHTML = `<tr><td colspan="8">${window.BoseAdminUI.emptyStateHTML({
+            tbody.innerHTML = `<tr><td colspan="9">${window.BoseAdminUI.emptyStateHTML({
                 icon: "fa-cake-candles",
                 title: "مفيش منتجات مطابقة",
                 text: "جرّب تغيّر الفلتر أو أضف منتج جديد.",
             })}</td></tr>`;
+            updateBulkBar();
             return;
         }
 
@@ -63,6 +69,7 @@
             const isAvailable = p.is_available !== false;
             return `
             <tr>
+                <td class="adm-orders-checkbox-cell"><input type="checkbox" class="adm-product-row-checkbox" data-id="${e(p.id)}" ${selectedIds.has(p.id) ? "checked" : ""}></td>
                 <td>${thumb ? `<img src="${e(thumb)}" class="adm-table-thumb" alt="">` : `<div class="adm-table-thumb"></div>`}</td>
                 <td>${e(p.title)} ${needsPhoto ? `<span class="adm-badge warning" title="لسه شايل صورة اللوجو الافتراضية، محتاج صورة حقيقية">بدون صورة حقيقية</span>` : ""}</td>
                 <td>${e(categoryTitle(p))}</td>
@@ -76,6 +83,11 @@
                             ? `<span class="adm-badge success"><i class="fa-solid fa-circle-check"></i> متاح</span>`
                             : `<span class="adm-badge danger"><i class="fa-solid fa-ban"></i> نفدت الكمية</span>`}
                     </button>
+                    ${p.stock_quantity !== null && p.stock_quantity !== undefined
+                        ? `<div class="adm-order-item-meta" style="margin-top:4px;" title="الكمية المتتبعة في المخزون">
+                             📦 ${p.stock_quantity <= 3 ? `<span style="color:var(--adm-danger); font-weight:700;">${p.stock_quantity}</span>` : p.stock_quantity}
+                           </div>`
+                        : ""}
                 </td>
                 <td class="adm-table-actions">
                     <button class="adm-btn adm-btn-ghost adm-btn-icon" data-action="edit" data-id="${e(p.id)}" title="تعديل">
@@ -121,6 +133,150 @@
                     btn.disabled = false;
                 }
             });
+        });
+
+        tbody.querySelectorAll(".adm-product-row-checkbox").forEach((cb) => {
+            cb.addEventListener("change", () => {
+                const id = cb.getAttribute("data-id");
+                if (cb.checked) selectedIds.add(id); else selectedIds.delete(id);
+                updateBulkBar();
+                syncSelectAllCheckbox();
+            });
+        });
+
+        updateBulkBar();
+        syncSelectAllCheckbox();
+    }
+
+    function syncSelectAllCheckbox() {
+        const selectAll = document.getElementById("products-select-all");
+        const products = getFilteredProducts();
+        if (!selectAll || !products.length) { if (selectAll) selectAll.checked = false; return; }
+        selectAll.checked = products.every((p) => selectedIds.has(p.id));
+    }
+
+    function updateBulkBar() {
+        const bar = document.getElementById("products-bulk-bar");
+        const countEl = document.getElementById("products-bulk-count");
+        if (!bar || !countEl) return;
+        if (selectedIds.size > 0) {
+            bar.style.display = "flex";
+            countEl.textContent = `${selectedIds.size} منتج محدد`;
+        } else {
+            bar.style.display = "none";
+        }
+    }
+
+    /* ============================= مودال تعديل السعر الجماعي ============================= */
+
+    const BULK_PRICE_MODES = [
+        { value: "set", label: "تحديد سعر واحد ثابت لكل المنتجات المحددة" },
+        { value: "increase_amount", label: "زيادة السعر بمبلغ ثابت (ج.م)" },
+        { value: "decrease_amount", label: "تنقيص السعر بمبلغ ثابت (ج.م)" },
+        { value: "increase_percent", label: "زيادة السعر بنسبة مئوية (%)" },
+        { value: "decrease_percent", label: "تنقيص السعر بنسبة مئوية (%)" },
+    ];
+
+    function computeNewPrice(currentPrice, mode, value) {
+        let next;
+        switch (mode) {
+            case "set": next = value; break;
+            case "increase_amount": next = currentPrice + value; break;
+            case "decrease_amount": next = currentPrice - value; break;
+            case "increase_percent": next = currentPrice * (1 + value / 100); break;
+            case "decrease_percent": next = currentPrice * (1 - value / 100); break;
+            default: next = currentPrice;
+        }
+        // 🛡️ السعر مينفعش يبقى صفر أو سالب (لو التنقيص كان أكبر من السعر الأصلي)
+        return Math.max(1, Math.round(next));
+    }
+
+    function openBulkPriceModal() {
+        const e = window.BoseAdminUI.escapeHtml;
+        const targetProducts = allProducts.filter((p) => selectedIds.has(p.id));
+        if (!targetProducts.length) return;
+
+        const overlay = document.createElement("div");
+        overlay.className = "adm-modal-overlay";
+        overlay.innerHTML = `
+            <div class="adm-modal" style="max-width: 460px;">
+                <div class="adm-modal-header">
+                    <h3>تعديل السعر جماعياً</h3>
+                    <button class="adm-modal-close" data-role="close"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <form id="bulk-price-form">
+                    <span class="adm-hint">هيتطبّق التعديل على ${targetProducts.length} منتج محدد.</span>
+                    <div class="adm-field" style="margin-top:10px;">
+                        <label for="bp-mode">نوع التعديل</label>
+                        <select class="adm-select" id="bp-mode">
+                            ${BULK_PRICE_MODES.map((m) => `<option value="${m.value}">${e(m.label)}</option>`).join("")}
+                        </select>
+                    </div>
+                    <div class="adm-field">
+                        <label for="bp-value" id="bp-value-label">القيمة</label>
+                        <input type="number" step="0.01" min="0" class="adm-input" id="bp-value" required>
+                        <span class="adm-hint">السعر مش هينزل عن 1 ج.م حتى لو التنقيص كان أكبر من السعر الأصلي.</span>
+                    </div>
+                    <div class="adm-modal-actions">
+                        <button type="button" class="adm-btn adm-btn-ghost" data-role="close">إلغاء</button>
+                        <button type="submit" class="adm-btn adm-btn-primary" id="bp-save-btn">تطبيق التعديل</button>
+                    </div>
+                </form>
+            </div>`;
+        document.body.appendChild(overlay);
+
+        function close() { overlay.remove(); }
+        overlay.addEventListener("click", (evt) => {
+            if (evt.target === overlay) close();
+            if (evt.target.closest('[data-role="close"]')) close();
+        });
+
+        document.getElementById("bulk-price-form").addEventListener("submit", async (evt) => {
+            evt.preventDefault();
+            const saveBtn = document.getElementById("bp-save-btn");
+            const mode = document.getElementById("bp-mode").value;
+            const value = parseFloat(document.getElementById("bp-value").value);
+            if (isNaN(value) || value < 0) {
+                window.BoseAdminUI.showToast("القيمة لازم تكون رقم موجب", "error");
+                return;
+            }
+
+            const confirmed = await window.BoseAdminUI.confirmAction({
+                title: "تأكيد التعديل الجماعي",
+                message: `هيتم تعديل سعر ${targetProducts.length} منتج دفعة واحدة. الإجراء ده مش هينفع يتراجع تلقائياً.`,
+                confirmLabel: "تطبيق",
+                danger: false,
+            });
+            if (!confirmed) return;
+
+            saveBtn.disabled = true;
+            saveBtn.textContent = "جاري التطبيق...";
+
+            const items = targetProducts.map((p) => ({
+                id: p.id,
+                price: computeNewPrice(p.price, mode, value),
+            }));
+
+            try {
+                const { successCount, failedIds } = await window.BoseAdmin.bulkSetProductPrices(items);
+                items.forEach((item) => {
+                    if (failedIds.includes(item.id)) return;
+                    const product = allProducts.find((p) => p.id === item.id);
+                    if (product) product.price = item.price;
+                });
+                selectedIds.clear();
+                close();
+                renderTable();
+                if (failedIds.length) {
+                    window.BoseAdminUI.showToast(`اتعدّل سعر ${successCount} منتج، وتعذر تعديل ${failedIds.length}`, "error");
+                } else {
+                    window.BoseAdminUI.showToast(`تم تعديل سعر ${successCount} منتج`, "success");
+                }
+            } catch (err) {
+                window.BoseAdminUI.showToast("تعذر تطبيق التعديل الجماعي", "error");
+                saveBtn.disabled = false;
+                saveBtn.textContent = "تطبيق التعديل";
+            }
         });
     }
 
@@ -254,6 +410,18 @@
                             <label for="pf-old-price">السعر القديم (اختياري - لعرض خصم)</label>
                             <input type="number" step="0.01" min="0" class="adm-input" id="pf-old-price" value="${isEdit && product.old_price ? product.old_price : ""}">
                         </div>
+                    </div>
+
+                    <!-- 📦 [نظام المخزون]: حقل اختياري بالكامل - سيبه فاضي = مخزون غير متتبع
+                         (زي كل المنتجات الحالية، مفيش أي تغيير في سلوكهم). لو اتحطت فيه قيمة،
+                         الكمية دي بتتحدث يدوياً من هنا فقط (مفيش خصم تلقائي وقت الطلب حالياً)،
+                         ولو وصلت لصفر أو أقل، المنتج بيتعلّم "نفدت الكمية" تلقائياً عند الحفظ. -->
+                    <div class="adm-field">
+                        <label for="pf-stock-quantity">الكمية في المخزون (اختياري)</label>
+                        <input type="number" step="1" min="0" class="adm-input" id="pf-stock-quantity"
+                               value="${isEdit && product.stock_quantity !== null && product.stock_quantity !== undefined ? product.stock_quantity : ""}"
+                               placeholder="سيبه فاضي لو مش بتتبعي مخزون المنتج ده">
+                        <span class="adm-hint">لو اتحطت قيمة وبقت صفر، المنتج هيتعلّم "نفدت الكمية" تلقائياً. الكمية بتتحدث يدوياً بس - مفيش خصم تلقائي مع كل طلب.</span>
                     </div>
 
                     <!-- 🎂 [حل مشكلة "العميل مش فاهم الكمية"]: نص قصير بيتعرض دايماً وبشكل واضح
@@ -540,6 +708,15 @@
             const searchTerms = document.getElementById("pf-search-terms").value
                 .split(/[,،]/).map((t) => t.trim()).filter(Boolean);
 
+            // 📦 [نظام المخزون]: فاضي = null (غير متتبع، سلوك زي الأول بالظبط).
+            // لو اتحطت قيمة ووصلت لصفر أو أقل، بنفرض is_available=false تلقائياً
+            // بغض النظر عن حالة الـ checkbox - عشان المنتج ميفضلش شغال بالغلط
+            // وهو خلصان فعلياً من المخزون.
+            const stockRaw = document.getElementById("pf-stock-quantity").value;
+            const stockQuantity = stockRaw !== "" ? Math.max(0, parseInt(stockRaw, 10) || 0) : null;
+            let isAvailable = document.getElementById("pf-available").checked;
+            if (stockQuantity !== null && stockQuantity <= 0) isAvailable = false;
+
             const payload = {
                 category_id: document.getElementById("pf-category").value,
                 title: document.getElementById("pf-title").value.trim(),
@@ -549,9 +726,10 @@
                 price: parseFloat(document.getElementById("pf-price").value) || 0,
                 old_price: document.getElementById("pf-old-price").value ? parseFloat(document.getElementById("pf-old-price").value) : null,
                 quantity_note: document.getElementById("pf-quantity-note").value.trim() || null,
+                stock_quantity: stockQuantity,
                 sort_order: parseInt(document.getElementById("pf-sort-order").value, 10) || 0,
                 is_featured: document.getElementById("pf-featured").checked,
-                is_available: document.getElementById("pf-available").checked,
+                is_available: isAvailable,
                 builder_type: document.getElementById("pf-builder-type").value,
                 custom_builder_url: document.getElementById("pf-builder-type").value !== "standard"
                     ? (document.getElementById("pf-builder-url").value.trim() || null)
@@ -603,7 +781,7 @@
 
     async function loadProducts() {
         const tbody = document.getElementById("products-tbody");
-        tbody.innerHTML = `<tr><td colspan="7"><div class="adm-loading-spinner"></div></td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="9"><div class="adm-loading-spinner"></div></td></tr>`;
         allProducts = await window.BoseAdmin.getAllProducts();
         renderTable();
     }
@@ -621,6 +799,18 @@
         document.getElementById("products-category-filter").addEventListener("change", renderTable);
         document.getElementById("products-missing-photo-filter").addEventListener("change", renderTable);
         document.getElementById("add-product-btn").addEventListener("click", () => openProductModal(null));
+
+        document.getElementById("products-select-all").addEventListener("change", (evt) => {
+            const products = getFilteredProducts();
+            if (evt.target.checked) products.forEach((p) => selectedIds.add(p.id));
+            else products.forEach((p) => selectedIds.delete(p.id));
+            renderTable();
+        });
+        document.getElementById("products-bulk-clear-btn").addEventListener("click", () => {
+            selectedIds.clear();
+            renderTable();
+        });
+        document.getElementById("products-bulk-price-btn").addEventListener("click", openBulkPriceModal);
     }
 
     /**
