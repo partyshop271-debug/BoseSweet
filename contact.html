@@ -130,17 +130,16 @@
     <script>
         (function () {
             function syncContactWhatsappLinks() {
-                if (!window.BoseStoreData || typeof window.toInternationalWhatsappNumber !== "function") return;
+                if (!window.BoseStoreData || typeof window.buildWhatsappLink !== "function") return;
                 const whatsappNumber = window.BoseStoreData.social?.whatsapp || "201097238441";
-                const intl = window.toInternationalWhatsappNumber(whatsappNumber);
 
                 const generalLink = document.getElementById("contact-whatsapp-link-general");
-                if (generalLink) generalLink.href = `https://wa.me/${intl}`;
+                if (generalLink) generalLink.href = window.buildWhatsappLink(whatsappNumber, "");
 
                 const customLink = document.getElementById("contact-whatsapp-link-custom");
                 if (customLink) {
                     const presetText = "حابب ادردش مع خدمة العملاء عن تجهيز طلب خاص لمناسبة";
-                    customLink.href = `https://wa.me/${intl}?text=${encodeURIComponent(presetText)}`;
+                    customLink.href = window.buildWhatsappLink(whatsappNumber, presetText);
                 }
             }
 

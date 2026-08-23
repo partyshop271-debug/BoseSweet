@@ -114,13 +114,26 @@
                 return digits || "201097238441";
             }
 
+            // 🆕 [تفضيل واتساب بيزنس الرسمي على أندرويد]: نفس الإصلاح المطبّق
+            // في window.buildWhatsappLink بـ core-engine.js - الصفحة دي مستقلة
+            // عنه فمحتاجة نسخة صغيرة منه هنا بدل ما نحمّل core-engine.js كامل
+            // لصفحة بسيطة زي دي.
+            function buildLinkinbioWhatsappUrl(intlNumber) {
+                const fallbackUrl = `https://wa.me/${intlNumber}`;
+                const isAndroid = /Android/i.test(navigator.userAgent || "");
+                if (isAndroid) {
+                    return `intent://send?phone=${intlNumber}#Intent;scheme=whatsapp;package=com.whatsapp.w4b;S.browser_fallback_url=${encodeURIComponent(fallbackUrl)};end`;
+                }
+                return fallbackUrl;
+            }
+
             async function syncWhatsappLink() {
                 const link = document.getElementById("lib-whatsapp-link");
                 if (!link || !window.BoseSupabase || typeof window.BoseSupabase.loadBoseStoreDataFromSupabase !== "function") return;
                 try {
                     const data = await window.BoseSupabase.loadBoseStoreDataFromSupabase();
                     const number = (data && data.social && data.social.whatsapp) || "201097238441";
-                    link.href = `https://wa.me/${toIntl(number)}`;
+                    link.href = buildLinkinbioWhatsappUrl(toIntl(number));
                 } catch (e) { /* الصفحة تفضل شغالة بالرقم الافتراضي لو فشل الاتصال بالقاعدة */ }
             }
 
