@@ -60,6 +60,9 @@
 
     function buildWhatsappUrl(order) {
         const intl = toInternational(order.phone1);
+        if (window.BoseAdminUI && typeof window.BoseAdminUI.buildWhatsappUrl === "function") {
+            return window.BoseAdminUI.buildWhatsappUrl(intl, buildReminderMessage(order));
+        }
         return `https://wa.me/${intl}?text=${encodeURIComponent(buildReminderMessage(order))}`;
     }
 
