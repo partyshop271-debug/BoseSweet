@@ -117,7 +117,7 @@
                 <p class="bcr-title">لسه في ${count} ${itemWord} في سلتك</p>
                 <p class="bcr-sub">بإجمالي ${total.toLocaleString("ar-EG")} جنيه - أكملي طلبك قبل ما ينفد المخزون</p>
             </span>
-            <a class="bcr-cta" href="cart.html">أكملي طلبك</a>
+            <a class="bcr-cta" href="/cart.html">أكملي طلبك</a>
             <button type="button" class="bcr-close" aria-label="إغلاق التذكير"><i class="fa-solid fa-xmark"></i></button>
         `;
         document.body.appendChild(banner);

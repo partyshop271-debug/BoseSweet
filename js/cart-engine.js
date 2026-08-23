@@ -205,7 +205,7 @@ function renderBoseCartPage(storeData) {
                 <div class="empty-cart-message-block" style="text-align: center; padding: 60px 20px; background: #FFFFFF;">
                     <i class="fas fa-shopping-bag" style="font-size: 48px; color: #FF91A4; margin-bottom: 20px; display: block; opacity: 0.6;"></i>
                     <p style="font-size: 18px; font-weight: 700; color: #111111; font-family: 'Cairo'; margin-bottom: 20px;">سلة المشتريات فارغة حالياً</p>
-                    <a href="menu.html" class="bose-btn-primary" style="display: inline-block; background: #FF91A4; color: #FFFFFF; padding: 12px 30px; border-radius: 12px; text-decoration: none; font-weight: 700; font-family: 'Cairo'; box-shadow: 0 8px 32px rgba(255, 145, 164, 0.15);">تصفح المنيو الشامل</a>
+                    <a href="/menu.html" class="bose-btn-primary" style="display: inline-block; background: #FF91A4; color: #FFFFFF; padding: 12px 30px; border-radius: 12px; text-decoration: none; font-weight: 700; font-family: 'Cairo'; box-shadow: 0 8px 32px rgba(255, 145, 164, 0.15);">تصفح المنيو الشامل</a>
                 </div>
             `;
             updateCartSummary(cart, storeData);
@@ -326,7 +326,7 @@ function renderBoseCartPage(storeData) {
             // صفحة منتج ثابتة أصلاً (هي أساسًا صفحة محاكي)، فمفيش رابط ليها هنا عشان منوديش
             // العميل لصفحة هتحوله فورًا برا السلة من غير فايدة حقيقية.
             const linkStart = (!isCakeBespoke && !isFlowerBespoke && item.productSlug)
-                ? `<a href="product.html?slug=${encodeURIComponent(item.productSlug)}" style="text-decoration:none; color:inherit; display:contents;">`
+                ? `<a href="/product.html?slug=${encodeURIComponent(item.productSlug)}" style="text-decoration:none; color:inherit; display:contents;">`
                 : '';
             const linkEnd = linkStart ? `</a>` : '';
 
@@ -538,7 +538,7 @@ function renderBoseCheckoutPage(storeData) {
     const cart = loadTrustedCart();
     
     if (cart.length === 0 && !window.location.pathname.includes("order-success.html")) {
-        window.location.href = "cart.html";
+        window.location.href = "/cart.html";
         return;
     }
 
@@ -1188,7 +1188,7 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFu
         sessionStorage.setItem("bose_whatsapp_auto_opened_" + orderIdGenerated, "1");
     } catch (e) { /* تجاهل بأمان لو الجلسة غير متاحة */ }
 
-    window.location.href = "order-success.html";
+    window.location.href = "/order-success.html";
 }
 
 // 🕒 [إصلاح - التوقيت المصري]: كان وقت الاستلام بيتكتب في فاتورة الواتساب زي
@@ -1463,7 +1463,7 @@ function renderBoseSuccessPage(storeData) {
             const voucherMonthsTxt = window.formatArabicMonths ? window.formatArabicMonths(loyaltyCfg.voucherValidityMonths) : `${loyaltyCfg.voucherValidityMonths} شهر`;
             cardHtml += `<div style="${cardBaseStyle} background: rgba(255,145,164,0.08); border: 1px solid rgba(255,145,164,0.3); color:#FF91A4;">
                 <i class="fa-solid fa-gift" style="font-size:1.2rem;"></i>
-                <span>مبروك! الطلب ده وصّلك لمرحلة قسيمة شراء بـ${loyaltyCfg.voucherAmount} جنيه - هتوصلك تلقائياً بعد استلام طلبك، وهتلاقيها في <a href="rewards.html?phone=${encodeURIComponent(order.phone1 || '')}" style="color:#FF91A4; text-decoration:underline;">صفحة نادي المكافآت</a> صالحة لمدة ${voucherMonthsTxt} 🎉</span>
+                <span>مبروك! الطلب ده وصّلك لمرحلة قسيمة شراء بـ${loyaltyCfg.voucherAmount} جنيه - هتوصلك تلقائياً بعد استلام طلبك، وهتلاقيها في <a href="/rewards.html?phone=${encodeURIComponent(order.phone1 || '')}" style="color:#FF91A4; text-decoration:underline;">صفحة نادي المكافآت</a> صالحة لمدة ${voucherMonthsTxt} 🎉</span>
             </div>`;
         }
 

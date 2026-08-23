@@ -413,7 +413,7 @@ function startEngineLogic() {
                     if (cakePhotoUploadLabel) cakePhotoUploadLabel.textContent = txt;
                 });
                 if (cakePhotoPreviewImg) {
-                    cakePhotoPreviewImg.src = uploadedCakePhotoUrl;
+                    cakePhotoPreviewImg.src = window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(uploadedCakePhotoUrl, 300) : uploadedCakePhotoUrl;
                     cakePhotoPreviewImg.style.display = 'block';
                 }
                 if (cakePhotoUploadLabel) cakePhotoUploadLabel.textContent = "تم رفع الصورة بنجاح ✓ (اضغط لتغييرها)";
@@ -472,7 +472,7 @@ function startEngineLogic() {
                     if (replicaUploadLabel) replicaUploadLabel.textContent = txt;
                 });
                 if (replicaPreviewImg) {
-                    replicaPreviewImg.src = uploadedReplicaPhotoUrl;
+                    replicaPreviewImg.src = window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(uploadedReplicaPhotoUrl, 300) : uploadedReplicaPhotoUrl;
                     replicaPreviewImg.style.display = 'block';
                 }
                 if (replicaUploadLabel) replicaUploadLabel.textContent = "تم رفع الصورة بنجاح ✓ (اضغط لتغييرها)";
@@ -861,7 +861,7 @@ function startEngineLogic() {
 
         const openLightbox = (src) => {
             if (!src) return;
-            lightboxImg.src = src;
+            lightboxImg.src = window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(src, 1400) : src;
             lightboxOverlay.style.display = "flex";
             // 👑💥 [حركة "الانبثاق" الفعلية]: بدل ما الصورة تظهر فجأة بلمح البصر،
             // بترتد بصريًا من نص حجمها لحجمها الطبيعي (pop) عشان تحس فعلاً إنها

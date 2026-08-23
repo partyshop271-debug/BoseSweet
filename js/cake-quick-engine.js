@@ -154,7 +154,7 @@ function startQuickOrderEngine() {
             window.showBoseGlobalToast("تم حجز تورتتك بنجاح! تقدري تكملي طلبك من السلة دلوقتي.");
         }
 
-        window.location.href = "cart.html";
+        window.location.href = "/cart.html";
     }
 
     if (btnConfirm) btnConfirm.addEventListener('click', submitQuickOrder);

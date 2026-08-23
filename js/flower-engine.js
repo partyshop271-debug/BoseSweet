@@ -392,7 +392,7 @@
 
             if (resData && resData.secure_url) {
                 state.photoUrl = resData.secure_url;
-                if (photoPreviewImg) photoPreviewImg.src = resData.secure_url;
+                if (photoPreviewImg) photoPreviewImg.src = window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(resData.secure_url, 300) : resData.secure_url;
                 if (photoPreviewContainer) photoPreviewContainer.style.display = "block";
                 if (window.showBoseGlobalToast) window.showBoseGlobalToast("تم تأمين وحفظ الصورة بنجاح! ✨");
             }
@@ -633,7 +633,7 @@
         }
         if (photoCountInput) photoCountInput.value = state.photoCount;
         if (state.photoUrl && photoPreviewImg) {
-            photoPreviewImg.src = state.photoUrl;
+            photoPreviewImg.src = window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(state.photoUrl, 300) : state.photoUrl;
             if (photoPreviewContainer) photoPreviewContainer.style.display = "block";
         }
         if (includeCardCheckbox) {
@@ -1048,7 +1048,7 @@
 
             const openLightbox = (src) => {
                 if (!src) return;
-                lightboxImg.src = src;
+                lightboxImg.src = window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(src, 1400) : src;
                 lightboxOverlay.style.display = "flex";
                 if (lightboxCard) {
                     lightboxCard.classList.remove('bose-lightbox-pop-in');
@@ -1162,7 +1162,7 @@
                 } catch (e) {}
 
                 setTimeout(() => {
-                    window.location.href = "cart.html";
+                    window.location.href = "/cart.html";
                 }, 400);
             };
         }

@@ -473,7 +473,7 @@
             const track = document.getElementById('categories-track') || categoriesSection.querySelector('.categories-track-slider') || categoriesSection.querySelector('[id*="track"]');
             if (track) {
                 track.innerHTML = liveCategoriesList.map(/** @param {Object} cat */ (cat) => `
-                    <div class="category-card-unified" onclick="window.location.href='category.html?category=${encodeURIComponent(cat.id)}'">
+                    <div class="category-card-unified" onclick="window.location.href='/category.html?category=${encodeURIComponent(cat.id)}'">
                         <img src="${window.optimizeBoseImageUrl(cat.image, 450)}" alt="${window.escapeBoseHTML(cat.title)} | حلويات بوسي" class="category-card-img" width="180" height="180" loading="lazy" />
                         <div class="category-card-name">${window.escapeBoseHTML(cat.title)}</div>
                     </div>
@@ -789,7 +789,7 @@
             const isLinked = isObject && !!item.slug;
             const imgTag = `<img src="${window.optimizeBoseImageUrl(imgSrc, 300)}" alt="منتج فاخر حلويات بوسي" class="waterfall-img" width="220" height="220" loading="lazy" />`;
             return isLinked
-                ? `<a href="product.html?slug=${encodeURIComponent(item.slug)}" class="waterfall-img-link" aria-label="عرض تفاصيل المنتج">${imgTag}</a>`
+                ? `<a href="/product.html?slug=${encodeURIComponent(item.slug)}" class="waterfall-img-link" aria-label="عرض تفاصيل المنتج">${imgTag}</a>`
                 : imgTag;
         }).join('');
 
@@ -937,7 +937,7 @@
             </button>`;
 
         return `
-            <div class="product-card-unified${hasDiscount ? ' bose-offer-card' : ''}${isUnavailable ? ' bose-unavailable-card' : ''}" data-id="${product.id}" data-selected-size="${defaultSizeKey || ''}" onclick="if(!event.target.closest('.product-card-qty-wrapper') && !event.target.closest('.btn-add-to-cart') && !event.target.closest('.bose-card-size-tabs') && !event.target.closest('.bose-fav-btn')){ window.location.href='product.html?slug=${encodeURIComponent(product.slug)}'; }" style="cursor:pointer;">
+            <div class="product-card-unified${hasDiscount ? ' bose-offer-card' : ''}${isUnavailable ? ' bose-unavailable-card' : ''}" data-id="${product.id}" data-selected-size="${defaultSizeKey || ''}" onclick="if(!event.target.closest('.product-card-qty-wrapper') && !event.target.closest('.btn-add-to-cart') && !event.target.closest('.bose-card-size-tabs') && !event.target.closest('.bose-fav-btn')){ window.location.href='/product.html?slug=${encodeURIComponent(product.slug)}'; }" style="cursor:pointer;">
                 ${discountBadgeHtml}
                 ${isUnavailable ? `<div class="offer-badge" style="background:rgba(17,17,17,0.75);">نفدت الكمية</div>` : ''}
                 ${favBtnHtml}
@@ -1140,6 +1140,42 @@
                 ctaEl.textContent = preview.cta;
                 if (preview.target) ctaEl.href = preview.target;
             }
+        }
+
+        // 🎥 [إدارة فيديوهات الصفحة الرئيسية من لوحة التحكم - 2026-08-23]: نفس
+        // فيديوهين "سيمفونية الطعم" و"عقد من الإتقان" كانوا Hardcoded بالكامل.
+        // دلوقتي لو صاحبة المتجر رفعت فيديو جديد/عدّلت العنوان أو الوصف من
+        // اللوحة، بيتقروا من homepage.videoSections هنا ويستبدلوا المحتوى
+        // الافتراضي - مع نفس تحسين الجودة/استهلاك البيانات (q_auto/f_auto)
+        // المطبّق أصلاً على الفيديوهين الافتراضيين. لو مفيش بيانات محفوظة
+        // (أول نشر للميزة دي)، الفيديو الافتراضي الحالي بيفضل شغال زي ما هو
+        // من غير أي تغيير.
+        const VIDEO_SECTIONS_MAP = {
+            symphony: { sectionId: 'symphony-video-section', titleId: 'symphony-main-heading', descId: 'symphony-description', iframeId: 'symphony-video-iframe' },
+            excellence: { sectionId: 'excellence-video-section', titleId: 'excellence-main-heading', descId: 'excellence-description', iframeId: 'excellence-video-iframe' },
+        };
+        if (data.homepage.videoSections) {
+            Object.keys(VIDEO_SECTIONS_MAP).forEach((key) => {
+                const cfg = VIDEO_SECTIONS_MAP[key];
+                const saved = data.homepage.videoSections[key];
+                if (!saved) return;
+                const titleEl = document.getElementById(cfg.titleId);
+                const descEl = document.getElementById(cfg.descId);
+                const iframeEl = document.getElementById(cfg.iframeId);
+                if (titleEl && saved.title) titleEl.textContent = saved.title;
+                if (descEl && saved.description) descEl.textContent = saved.description;
+                if (iframeEl && saved.publicId) {
+                    const params = [
+                        'cloud_name=dyx4w0dr1',
+                        `public_id=${encodeURIComponent(saved.publicId)}`,
+                        'autoplay=true', 'muted=true', 'loop=true',
+                        'player%5Bfluid%5D=true', 'player%5Bcontrols%5D=false',
+                        'source%5Btransformation%5D%5B0%5D%5Bquality%5D=auto',
+                        'source%5Btransformation%5D%5B0%5D%5Bfetch_format%5D=auto',
+                    ];
+                    iframeEl.setAttribute('data-src', `https://player.cloudinary.com/embed/?${params.join('&')}`);
+                }
+            });
         }
     }
 
@@ -2451,7 +2487,7 @@
                         <button id="mobile-menu-toggle" class="bose-nav-btn" aria-label="فتح القائمة الجانبية">
                             <i class="fa-solid fa-bars-staggered"></i>
                         </button>
-                        <a href="index.html" class="brand-logo-container">
+                        <a href="/index.html" class="brand-logo-container">
                             <img id="bose-store-logo" src="${window.optimizeBoseImageUrl(data.store?.logo || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', 150)}" alt="لوجو حلويات بوسي الفاخرة" class="brand-logo-img" width="80" height="80" />
                             <span class="brand-name-display">حلويات بوسي</span>
                         </a>
@@ -2460,11 +2496,11 @@
                         <button id="nav-search-btn" class="bose-nav-btn" aria-label="البحث عن صنف أو نكهة">
                             <i class="fa-solid fa-magnifying-glass"></i>
                         </button>
-                        <a href="favorites.html" class="nav-cart-icon-wrapper" aria-label="عرض المفضلة">
+                        <a href="/favorites.html" class="nav-cart-icon-wrapper" aria-label="عرض المفضلة">
                             <i class="fa-solid fa-heart bose-nav-btn" style="padding:0;"></i>
                             <span id="nav-fav-count" class="nav-cart-count-badge nav-fav-count-badge" style="display:none;">0</span>
                         </a>
-                        <a href="cart.html" class="nav-cart-icon-wrapper" aria-label="عرض سلة المشتريات">
+                        <a href="/cart.html" class="nav-cart-icon-wrapper" aria-label="عرض سلة المشتريات">
                             <i class="fa-solid fa-bag-shopping bose-nav-btn" style="padding:0;"></i>
                             <span id="nav-cart-count" class="nav-cart-count-badge">0</span>
                         </a>
@@ -2489,18 +2525,18 @@
                                 <i class="fa-solid fa-chevron-down toggle-chevron"></i>
                             </button>
                             <ul class="sidebar-links-list sidebar-categories-collapse" id="sidebar-categories-list" style="display:none;">
-                                <li class="sidebar-link-item"><a href="cake-builder.html"><span class="link-main-side"><i class="fa-solid fa-birthday-cake main-icon"></i>التورت الفاخرة</span></a></li>
-                                <li class="sidebar-link-item"><a href="category.html?category=taswaq-gatowat"><span class="link-main-side"><i class="fa-solid fa-cheese main-icon"></i>الجاتوهات الملكية</span></a></li>
-                                <li class="sidebar-link-item"><a href="category.html?category=taswaq-qashtota"><span class="link-main-side"><i class="fa-solid fa-stroopwafel main-icon"></i>القشطوطة الغنية</span></a></li>
-                                <li class="sidebar-link-item"><a href="category.html?category=taswaq-despacito"><span class="link-main-side"><i class="fa-solid fa-box main-icon"></i>الديسباسيتو الفاخر</span></a></li>
-                                <li class="sidebar-link-item"><a href="category.html?category=taswaq-cinabon"><span class="link-main-side"><i class="fa-solid fa-cookie main-icon"></i>السينابون الطازج</span></a></li>
-                                <li class="sidebar-link-item"><a href="category.html?category=taswaq-donuts"><span class="link-main-side"><i class="fa-solid fa-ring main-icon"></i>الدوناتس الهشة</span></a></li>
-                                <li class="sidebar-link-item"><a href="category.html?category=taswaq-red-velvet"><span class="link-main-side"><i class="fa-solid fa-heart main-icon"></i>الريدڤيلڤت</span></a></li>
-                                <li class="sidebar-link-item"><a href="category.html?category=taswaq-cupcake"><span class="link-main-side"><i class="fa-solid fa-cookie-bite main-icon"></i>الكب كيك</span></a></li>
-                                <li class="sidebar-link-item"><a href="category.html?category=taswaq-mini-cake"><span class="link-main-side"><i class="fa-solid fa-cubes main-icon"></i>الميني تورت</span></a></li>
-                                <li class="sidebar-link-item"><a href="flower-builder.html"><span class="link-main-side"><i class="fa-solid fa-spa main-icon"></i>بوكيهات الورد</span></a></li>
-                                <li class="sidebar-link-item"><a href="category.html?category=taswaq-happiness-cups"><span class="link-main-side"><i class="fa-solid fa-ice-cream main-icon"></i>كبات السعادة</span></a></li>
-                                <li class="sidebar-link-item"><a href="category.html?category=taswaq-relax-box"><span class="link-main-side"><i class="fa-solid fa-gift main-icon"></i>بوكس الروقان</span></a></li>
+                                <li class="sidebar-link-item"><a href="/cake-builder.html"><span class="link-main-side"><i class="fa-solid fa-birthday-cake main-icon"></i>التورت الفاخرة</span></a></li>
+                                <li class="sidebar-link-item"><a href="/category.html?category=taswaq-gatowat"><span class="link-main-side"><i class="fa-solid fa-cheese main-icon"></i>الجاتوهات الملكية</span></a></li>
+                                <li class="sidebar-link-item"><a href="/category.html?category=taswaq-qashtota"><span class="link-main-side"><i class="fa-solid fa-stroopwafel main-icon"></i>القشطوطة الغنية</span></a></li>
+                                <li class="sidebar-link-item"><a href="/category.html?category=taswaq-despacito"><span class="link-main-side"><i class="fa-solid fa-box main-icon"></i>الديسباسيتو الفاخر</span></a></li>
+                                <li class="sidebar-link-item"><a href="/category.html?category=taswaq-cinabon"><span class="link-main-side"><i class="fa-solid fa-cookie main-icon"></i>السينابون الطازج</span></a></li>
+                                <li class="sidebar-link-item"><a href="/category.html?category=taswaq-donuts"><span class="link-main-side"><i class="fa-solid fa-ring main-icon"></i>الدوناتس الهشة</span></a></li>
+                                <li class="sidebar-link-item"><a href="/category.html?category=taswaq-red-velvet"><span class="link-main-side"><i class="fa-solid fa-heart main-icon"></i>الريدڤيلڤت</span></a></li>
+                                <li class="sidebar-link-item"><a href="/category.html?category=taswaq-cupcake"><span class="link-main-side"><i class="fa-solid fa-cookie-bite main-icon"></i>الكب كيك</span></a></li>
+                                <li class="sidebar-link-item"><a href="/category.html?category=taswaq-mini-cake"><span class="link-main-side"><i class="fa-solid fa-cubes main-icon"></i>الميني تورت</span></a></li>
+                                <li class="sidebar-link-item"><a href="/flower-builder.html"><span class="link-main-side"><i class="fa-solid fa-spa main-icon"></i>بوكيهات الورد</span></a></li>
+                                <li class="sidebar-link-item"><a href="/category.html?category=taswaq-happiness-cups"><span class="link-main-side"><i class="fa-solid fa-ice-cream main-icon"></i>كبات السعادة</span></a></li>
+                                <li class="sidebar-link-item"><a href="/category.html?category=taswaq-relax-box"><span class="link-main-side"><i class="fa-solid fa-gift main-icon"></i>بوكس الروقان</span></a></li>
                             </ul>
                         </div>
 
@@ -2508,37 +2544,37 @@
                             <div class="sidebar-section-title">اكتشفي</div>
                             <ul class="sidebar-links-list">
                                 <li class="sidebar-link-item">
-                                    <a href="index.html">
+                                    <a href="/index.html">
                                         <span class="link-main-side"><i class="fa-solid fa-house main-icon"></i>الرئيسية</span>
                                         <i class="fa-solid fa-chevron-left arrow-icon"></i>
                                     </a>
                                 </li>
                                 <li class="sidebar-link-item">
-                                    <a href="index.html#howto-order-section">
+                                    <a href="/index.html#howto-order-section">
                                         <span class="link-main-side"><i class="fa-solid fa-circle-question main-icon"></i>إزاي أطلب؟</span>
                                         <i class="fa-solid fa-chevron-left arrow-icon"></i>
                                     </a>
                                 </li>
                                 <li class="sidebar-link-item">
-                                    <a href="menu.html">
+                                    <a href="/menu.html">
                                         <span class="link-main-side"><i class="fa-solid fa-utensils main-icon"></i>المنيو الشامل</span>
                                         <i class="fa-solid fa-chevron-left arrow-icon"></i>
                                     </a>
                                 </li>
                                 <li class="sidebar-link-item">
-                                    <a href="offers.html">
+                                    <a href="/offers.html">
                                         <span class="link-main-side"><i class="fa-solid fa-tags main-icon"></i>العروض والخصومات</span>
                                         <i class="fa-solid fa-chevron-left arrow-icon"></i>
                                     </a>
                                 </li>
                                 <li class="sidebar-link-item">
-                                    <a href="cake-builder.html">
+                                    <a href="/cake-builder.html">
                                         <span class="link-main-side"><i class="fa-solid fa-cake-candles main-icon"></i>محاكي التورت التفاعلي</span>
                                         <i class="fa-solid fa-chevron-left arrow-icon"></i>
                                     </a>
                                 </li>
                                 <li class="sidebar-link-item">
-                                    <a href="flower-builder.html">
+                                    <a href="/flower-builder.html">
                                         <span class="link-main-side"><i class="fa-solid fa-seedling main-icon"></i>محاكي الورد الخاص</span>
                                         <i class="fa-solid fa-chevron-left arrow-icon"></i>
                                     </a>
@@ -2554,26 +2590,26 @@
                             <div class="sidebar-section-title">أدواتك</div>
                             <ul class="sidebar-links-list">
                                 <li class="sidebar-link-item">
-                                    <a href="favorites.html">
+                                    <a href="/favorites.html">
                                         <span class="link-main-side"><i class="fa-solid fa-heart main-icon"></i>المفضلة</span>
                                         <i class="fa-solid fa-chevron-left arrow-icon"></i>
                                     </a>
                                 </li>
                                 <li class="sidebar-link-item">
-                                    <a href="cart.html">
+                                    <a href="/cart.html">
                                         <span class="link-main-side"><i class="fa-solid fa-basket-shopping main-icon"></i>سلة التسوق</span>
                                         <i class="fa-solid fa-chevron-left arrow-icon"></i>
                                     </a>
                                 </li>
 
                                 <li class="sidebar-link-item">
-                                    <a href="track-order.html">
+                                    <a href="/track-order.html">
                                         <span class="link-main-side"><i class="fa-solid fa-location-crosshairs main-icon"></i>تتبعي طلبك</span>
                                         <i class="fa-solid fa-chevron-left arrow-icon"></i>
                                     </a>
                                 </li>
                                 <li class="sidebar-link-item">
-                                    <a href="rewards.html">
+                                    <a href="/rewards.html">
                                         <span class="link-main-side"><i class="fa-solid fa-gift main-icon"></i>مكافآتك</span>
                                         <i class="fa-solid fa-chevron-left arrow-icon"></i>
                                     </a>
@@ -2585,37 +2621,37 @@
                             <div class="sidebar-section-title">روابط المعرفة</div>
                             <ul class="sidebar-links-list">
                                 <li class="sidebar-link-item">
-                                    <a href="about.html">
+                                    <a href="/about.html">
                                         <span class="link-main-side"><i class="fa-solid fa-heart-pulse main-icon"></i>مَنْ نحن</span>
                                         <i class="fa-solid fa-chevron-left arrow-icon"></i>
                                     </a>
                                 </li>
                                 <li class="sidebar-link-item">
-                                    <a href="contact.html">
+                                    <a href="/contact.html">
                                         <span class="link-main-side"><i class="fa-solid fa-phone-flip main-icon"></i>تواصل معنا</span>
                                         <i class="fa-solid fa-chevron-left arrow-icon"></i>
                                     </a>
                                 </li>
                                 <li class="sidebar-link-item">
-                                    <a href="policies/shipping-policy.html">
+                                    <a href="/policies/shipping-policy.html">
                                         <span class="link-main-side"><i class="fa-solid fa-truck main-icon"></i>سياسة الشحن والتوصيل</span>
                                         <i class="fa-solid fa-chevron-left arrow-icon"></i>
                                     </a>
                                 </li>
                                 <li class="sidebar-link-item">
-                                    <a href="policies/refund-policy.html">
+                                    <a href="/policies/refund-policy.html">
                                         <span class="link-main-side"><i class="fa-solid fa-rotate-left main-icon"></i>سياسة الاسترجاع</span>
                                         <i class="fa-solid fa-chevron-left arrow-icon"></i>
                                     </a>
                                 </li>
                                 <li class="sidebar-link-item">
-                                    <a href="policies/privacy-policy.html">
+                                    <a href="/policies/privacy-policy.html">
                                         <span class="link-main-side"><i class="fa-solid fa-shield-halved main-icon"></i>سياسة الخصوصية</span>
                                         <i class="fa-solid fa-chevron-left arrow-icon"></i>
                                     </a>
                                 </li>
                                 <li class="sidebar-link-item">
-                                    <a href="policies/terms.html">
+                                    <a href="/policies/terms.html">
                                         <span class="link-main-side"><i class="fa-solid fa-file-contract main-icon"></i>الشروط والأحكام</span>
                                         <i class="fa-solid fa-chevron-left arrow-icon"></i>
                                     </a>
@@ -2657,6 +2693,14 @@
         // تماماً في أي صفحة تانية (منتج، فئة، سلة، دفع...). دلوقتي بيتحقن تلقائياً في كل صفحة
         // محملة core-engine.js، وزرار "العروض" بقى بيوجه لصفحة العروض المستقلة الحقيقية
         // offers.html بدل ما يعمل Scroll جوه الرئيسية بس (اللي أصلاً معندهاش تأثير في أي صفحة تانية).
+        //
+        // 🐛🛡️ [إصلاح جذري - 2026-08-23]: كل الروابط جوه core-engine.js (الشريط السفلي،
+        // القائمة الجانبية، الفوتر) كانت مكتوبة كروابط نسبية بدون "/" في الأول (زي
+        // href="cart.html")، وده بيشتغل صح بس لو الصفحة الحالية في جذر الموقع مباشرة.
+        // أي صفحة جوه مجلد فرعي (زي policies/privacy-policy.html) كانت بتخلي الرابط ده
+        // يترجم غلط لمسار زي "/policies/cart.html" (مش موجود أصلاً) بدل "/cart.html"
+        // الصح - فأي ضغطة من جوه صفحات السياسات كانت بتوديك لصفحة خطأ 404. دلوقتي كل
+        // الروابط في الملف ده بقت مطلقة (بتبدأ بـ "/") فبتشتغل صح من أي عمق مجلد.
         if (!document.querySelector('.bose-bottom-nav-bar')) {
             const currentPage = (window.location.pathname.split('/').pop() || 'index.html');
             const isHome = currentPage === '' || currentPage === 'index.html';
@@ -2667,11 +2711,11 @@
             bottomNav.className = 'bose-bottom-nav bose-bottom-nav-bar';
             bottomNav.setAttribute('aria-label', 'التنقل السفلي السريع');
             bottomNav.innerHTML = `
-                <a href="index.html" class="bottom-nav-item bose-bottom-nav-item${isHome ? ' active' : ''}">
+                <a href="/index.html" class="bottom-nav-item bose-bottom-nav-item${isHome ? ' active' : ''}">
                     <i class="fas fa-home"></i>
                     <span>الرئيسية</span>
                 </a>
-                <a href="offers.html" class="bottom-nav-item bose-bottom-nav-item${isOffers ? ' active' : ''}">
+                <a href="/offers.html" class="bottom-nav-item bose-bottom-nav-item${isOffers ? ' active' : ''}">
                     <i class="fas fa-tags"></i>
                     <span>العروض</span>
                 </a>
@@ -2679,7 +2723,7 @@
                     <i class="fab fa-whatsapp"></i>
                     <span>الواتساب</span>
                 </a>
-                <a href="cart.html" class="bottom-nav-item bose-bottom-nav-item cart-item${isCart ? ' active' : ''}">
+                <a href="/cart.html" class="bottom-nav-item bose-bottom-nav-item cart-item${isCart ? ' active' : ''}">
                     <div class="nav-cart-icon-wrap">
                         <i class="fas fa-shopping-bag"></i>
                         <span class="nav-cart-badge bose-bottom-nav-badge">0</span>
@@ -2734,20 +2778,20 @@
                         <div class="footer-column-block">
                             <h3 class="footer-heading-title">روابط سريعة</h3>
                             <ul class="footer-links-ul">
-                                <li><a href="index.html">الرئيسية</a></li>
-                                <li><a href="menu.html">المنيو الشامل</a></li>
-                                <li><a href="cake-builder.html">محاكي التورت</a></li>
-                                <li><a href="flower-builder.html">محاكي الورد</a></li>
-                                <li><a href="cart.html">سلة التسوق</a></li>
+                                <li><a href="/index.html">الرئيسية</a></li>
+                                <li><a href="/menu.html">المنيو الشامل</a></li>
+                                <li><a href="/cake-builder.html">محاكي التورت</a></li>
+                                <li><a href="/flower-builder.html">محاكي الورد</a></li>
+                                <li><a href="/cart.html">سلة التسوق</a></li>
                             </ul>
                         </div>
                         <div class="footer-column-block">
                             <h3 class="footer-heading-title">وثائق وسياسات</h3>
                             <ul class="footer-links-ul">
-                                <li><a href="policies/privacy-policy.html">سياسة الخصوصية</a></li>
-                                <li><a href="policies/refund-policy.html">سياسة الاسترجاع المالي</a></li>
-                                <li><a href="policies/shipping-policy.html">سياسة الشحن والتوصيل</a></li>
-                                <li><a href="policies/terms.html">الشروط والأحكام</a></li>
+                                <li><a href="/policies/privacy-policy.html">سياسة الخصوصية</a></li>
+                                <li><a href="/policies/refund-policy.html">سياسة الاسترجاع المالي</a></li>
+                                <li><a href="/policies/shipping-policy.html">سياسة الشحن والتوصيل</a></li>
+                                <li><a href="/policies/terms.html">الشروط والأحكام</a></li>
                                 <li class="footer-contact-item" style="margin-top: 15px; display: flex; align-items: center; gap: 8px; font-size: 14px; color: #111111;">
                                     <i class="fa-solid fa-location-dot" style="color: #FF91A4;"></i>
                                     <span>${window.escapeBoseHTML(data.store?.pickup?.address || 'العنوان الرئيسي')}</span>
