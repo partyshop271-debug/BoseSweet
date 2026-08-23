@@ -128,6 +128,83 @@
             font-weight: 600;
         }
 
+        /* Real Numbers Strip */
+        .about-stats-strip {
+            max-width: 720px;
+            margin: 0 auto 50px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+        }
+
+        .about-stat-card {
+            background-color: var(--bose-white);
+            border: var(--bose-border-pink);
+            border-radius: 18px;
+            padding: 22px 16px;
+            text-align: center;
+            box-shadow: var(--bose-shadow-glow);
+        }
+
+        .about-stat-card i {
+            color: var(--bose-pink);
+            font-size: 22px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .about-stat-number {
+            display: block;
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--bose-black);
+            line-height: 1.2;
+        }
+
+        .about-stat-label {
+            display: block;
+            font-size: 13px;
+            color: #111111;
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+
+        /* Real Photo Gallery */
+        .about-gallery-section {
+            max-width: 960px;
+            margin: 0 auto 60px auto;
+            padding: 0 20px;
+        }
+
+        .about-gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+        }
+
+        .about-gallery-item {
+            margin: 0;
+            border-radius: 18px;
+            overflow: hidden;
+            border: var(--bose-border-pink);
+            box-shadow: var(--bose-shadow-glow);
+        }
+
+        .about-gallery-item img {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            display: block;
+        }
+
+        .about-gallery-item figcaption {
+            padding: 10px 12px;
+            font-size: 13px;
+            color: var(--bose-black);
+            text-align: center;
+        }
+
         /* Pillars Section */
         .pillars-section {
             background-color: rgba(255, 145, 164, 0.02);
@@ -195,6 +272,21 @@
             .story-block-header h2 {
                 font-size: 20px;
             }
+            .about-stats-strip {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+                margin-bottom: 35px;
+            }
+            .about-stat-card {
+                padding: 16px 10px;
+            }
+            .about-stat-number {
+                font-size: 22px;
+            }
+            .about-gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
         }
     </style>
 </head>
@@ -205,87 +297,28 @@
 
     <!-- About Main Content -->
     <main class="about-page-main">
-        
-        <!-- Hero Section -->
+
+        <!-- Hero Section (يتملى ديناميكيًا من إعدادات لوحة التحكم) -->
         <section class="about-hero">
-            <div class="about-hero-badge">عقد من الحب والتميز</div>
-            <h1 id="about-main-title">حكايتنا.. من قلب أم لـ <span>شركاء النجاح</span></h1>
-            <p>قصة لم تُكتب لتكون مجرد تجارة، بل رحلة ممتلئة بالصدق، الأمان، والبحث المستمر عن الجودة الفاخرة التي تستحقها عائلتكم.</p>
+            <div class="about-hero-badge" id="about-hero-badge">عقد من الحب والتميز</div>
+            <h1 id="about-main-title">حكايتنا.. من قلب أم لـ <span id="about-hero-highlight">شركاء النجاح</span></h1>
+            <p id="about-hero-subtitle">قصة لم تُكتب لتكون مجرد تجارة، بل رحلة ممتلئة بالصدق، الأمان، والبحث المستمر عن الجودة الفاخرة التي تستحقها عائلتكم.</p>
         </section>
 
-        <!-- Main Narrative Container -->
-        <section class="story-container">
-            
-            <!-- Block 1: The Spark of Love & Fear -->
-            <div class="story-block">
-                <div class="story-block-header">
-                    <i class="fa-solid fa-heart"></i>
-                    <h2>بداية صعبة.. ولحظة غيرت كل شيء</h2>
-                </div>
-                <div class="story-text-content">
-                    دايماً بيبقى فيه لحظة في الحياة بتغير كل حاجة.. ولحظتنا إحنا بدأت من أصعب وقت ممكن يمر بيه أي بيت. في مكان بعيد وهادي، مكان كان يفتقر لكل الجودة والجمال والحلويات اللي بنتمناها لأولادنا، حصلت لبنتي الصغيرة وهي عندها شهرين بس حادثة حريق صعبة جداً.. لحظة غيرت حياتنا وكل تفاصيلنا، وسابت أثر كبير على صحتها وبشرتها الضعيفة.
-                    <br><br>
-                    بنتي كانت ضعيفة جداً تجاه الحلويات وبتحبها بجنون، وبصفتي أم.. كنت بلف الدنيا وأدور على أي حاجة تفرح قلبها الصغير وتكون آمنة عليها بنسبة 100% وفي نفس الوقت طعمها يسعدها. بس للأسف، مالقيتش اللي بدور عليه.. المكان حوالينا كان خالي تماماً من الجودة والأمان اللي بنتي محتاجاهم.
-                </div>
-            </div>
+        <!-- Real Numbers Strip (تظهر بس لو فيه أرقام مضافة من لوحة التحكم) -->
+        <section class="about-stats-strip" id="about-stats-strip" hidden></section>
 
-            <!-- Block 2: The Pivot to Professionalism -->
-            <div class="story-block">
-                <div class="story-block-header">
-                    <i class="fa-solid fa-graduation-cap"></i>
-                    <h2>نقطة التحول.. الشغف والدراسة (2010 - 2014)</h2>
-                </div>
-                <div class="story-text-content">
-                    من وسط حيرتي كأم، اتولدت فكرة غيرت كل حاجة: 
-                    <div class="story-quote">
-                        <p>"طب وليه ما أتعلمش بنفسي وأعمل لبنتي كل اللي بتتمناه؟"</p>
-                    </div>
-                    بدأت أعمل بإيدي في البيت، الفرحة اللي شفتها في عين بنتي نقلتها لأصحابها وجيراننا وقرايبنا.. الكل انبهر وحس بالحب والجودة اللي في كل قطمة. ومن هنا، حسيت بمسؤولية أكبر.. ليه ما أطورش الشغف ده وأدرس الموضوع بشكل أكاديمي واحترافي؟ عشان أقدر أساعد كل أم تانية بتمر بنفس حيرتي، ونفسها تفرح أولادها بمنتج فخم وآمن يطمن قلبها.
-                    <br><br>
-                    وبالفعل، من سنة 2010 لحد 2014، ركزت كل مجهودي على الدراسة والتعلم.. أخدت كورسات متخصصة في تصنيع الحلويات، اتعلمت أسس التسعير العادل والتغليف الفاخر اللي بيحافظ على المنتج، ودرست إدارة الأعمال والتسويق.. اتعلمت وطورت مهاراتي في كل تفصيلة عشان لما أقدم لكم حاجة، تكون على أعلى مستوى من الاحترافية.
-                </div>
-            </div>
+        <!-- Main Narrative Container (يتملى ديناميكيًا) -->
+        <section class="story-container" id="about-story-container"></section>
 
-            <!-- Block 3: Continuous Trust -->
-            <div class="story-block">
-                <div class="story-block-header">
-                    <i class="fa-solid fa-award"></i>
-                    <h2>الرحلة مستمرة.. وعمرنا ما خذلناكم (منذ 2014 وحتى اليوم)</h2>
-                </div>
-                <div class="story-text-content">
-                    في سنة 2014، انطلقنا رسمياً باسم <strong>حلويات بوسي</strong>. والنهاردة، وإحنا بنبص لرحلتنا الممتدة دي، بنكون فخورين بكل لحظة تعب وبكل خطوة مشيناها معاكم.
-                    <br><br>
-                    بقالنا سنين طويلة بنقدم أعلى كواليتي وأرقى جودة.. قدرنا نفرح قلوب أمهات كتير، ونبقى "شركاء السعادة" في آلاف البيوت والمناسبات الراقية. والحمد لله، وسام الشرف اللي بنتشرف بيه دايماً هو إننا طوال مسيرتنا دي كلها ما جالناش فيدباك سلبي واحد!
-                    <br><br>
-                    ولحد الوقت الحالي، وطول ما إحنا مكملين، بنطور في نفسنا وفي منتجاتنا بكل حب، عشان نفضل دايماً عند حسن ظنكم، ونقدم لكم الأمان والطعم الأصيل والفخامة اللي تليق بيكم وبعائلتكم.
-                </div>
-            </div>
-
+        <!-- Real Photo Gallery (تظهر بس لو فيه صور مضافة من لوحة التحكم) -->
+        <section class="about-gallery-section" id="about-gallery-section" hidden>
+            <div class="about-gallery-grid" id="about-gallery-grid"></div>
         </section>
 
-        <!-- Brand Core Values (Our Commitment to Luxury & Quality) -->
+        <!-- Brand Core Values (يتملى ديناميكيًا) -->
         <section class="pillars-section">
-            <div class="pillars-grid">
-                
-                <div class="pillar-card">
-                    <div class="pillar-icon"><i class="fa-solid fa-shield-halved"></i></div>
-                    <h3>أمان بنسبة 100%</h3>
-                    <p>نهتم بأدق التفاصيل الصحية؛ مكوناتنا طبيعية، طازجة، وخالية تماماً من الإضافات التجارية الضارة.</p>
-                </div>
-
-                <div class="pillar-card">
-                    <div class="pillar-icon"><i class="fa-solid fa-gem"></i></div>
-                    <h3>جودة فاخرة</h3>
-                    <p>دراستنا الأكاديمية وخبرتنا الطويلة تنعكس على مظهر وطعم كل قطعة نصنعها لكم بحب.</p>
-                </div>
-
-                <div class="pillar-card">
-                    <div class="pillar-icon"><i class="fa-solid fa-handshake"></i></div>
-                    <h3>شراكة صادقة</h3>
-                    <p>لا نبحث عن البيع السريع، بل نسعى لنكون الشريك الصادق والداعم لكل مناسبة جميلة في بيوتكم.</p>
-                </div>
-
-            </div>
+            <div class="pillars-grid" id="about-pillars-grid"></div>
         </section>
 
     </main>
@@ -297,5 +330,104 @@
     <script src="js/supabase-client.js?v=2026_production_v39.0"></script>
     <script src="js/favorites-engine.js?v=2026_production_v37.0"></script>
     <script src="js/core-engine.js?v=2026_production_v38.0"></script>
+
+    <!--
+        🆕 [صفحة "من نحن" بقت ديناميكية]: كل النصوص والصور اللي هنا كانت
+        قبل كده Hardcoded بالكامل - دلوقتي بتتقرا من عمود about بجدول
+        store_settings (نفس مصدر باقي الصفحة الرئيسية)، وقابلة للتعديل من
+        لوحة التحكم (صفحة "من نحن" الجديدة). القصة الحالية اتحطت كقيمة
+        افتراضية في القاعدة نفسها، فالصفحة هتفضل زي ما هي بالظبط لحد ما
+        العميلة تفتح لوحة التحكم وتعدّل أي جزء بنفسها.
+    -->
+    <script>
+        (function () {
+            function e(v) { return window.escapeBoseHTML ? window.escapeBoseHTML(v) : String(v == null ? "" : v); }
+
+            function renderHero(about) {
+                const badgeEl = document.getElementById("about-hero-badge");
+                const highlightEl = document.getElementById("about-hero-highlight");
+                const titleEl = document.getElementById("about-main-title");
+                const subtitleEl = document.getElementById("about-hero-subtitle");
+
+                if (about.heroBadge) badgeEl.textContent = about.heroBadge;
+                if (about.heroTitleHighlight) highlightEl.textContent = about.heroTitleHighlight;
+                if (about.heroTitlePrefix) {
+                    titleEl.childNodes[0].textContent = about.heroTitlePrefix;
+                }
+                if (about.heroSubtitle) subtitleEl.textContent = about.heroSubtitle;
+            }
+
+            function renderStats(stats) {
+                const strip = document.getElementById("about-stats-strip");
+                const items = Array.isArray(stats) ? stats.filter((s) => s && (s.number || s.label)) : [];
+                if (!items.length) { strip.hidden = true; strip.innerHTML = ""; return; }
+                strip.innerHTML = items.map((s) => `
+                    <div class="about-stat-card">
+                        ${s.icon ? `<i class="fa-solid ${e(s.icon)}"></i>` : ""}
+                        <span class="about-stat-number">${e(s.number || "")}</span>
+                        <span class="about-stat-label">${e(s.label || "")}</span>
+                    </div>`).join("");
+                strip.hidden = false;
+            }
+
+            function renderStoryBlocks(blocks) {
+                const container = document.getElementById("about-story-container");
+                const items = Array.isArray(blocks) ? blocks : [];
+                container.innerHTML = items.map((block) => {
+                    const paragraphs = (Array.isArray(block.paragraphs) ? block.paragraphs : []).filter(Boolean);
+                    const introHtml = block.intro ? `${e(block.intro)} ` : "";
+                    const quoteHtml = block.quote ? `<div class="story-quote"><p>"${e(block.quote)}"</p></div>` : "";
+                    const paragraphsHtml = paragraphs.map((p) => e(p)).join("<br><br>");
+                    return `
+                    <div class="story-block">
+                        <div class="story-block-header">
+                            ${block.icon ? `<i class="fa-solid ${e(block.icon)}"></i>` : ""}
+                            <h2>${e(block.title || "")}</h2>
+                        </div>
+                        <div class="story-text-content">
+                            ${introHtml}${quoteHtml}${paragraphsHtml}
+                        </div>
+                    </div>`;
+                }).join("");
+            }
+
+            function renderGallery(gallery) {
+                const section = document.getElementById("about-gallery-section");
+                const grid = document.getElementById("about-gallery-grid");
+                const items = Array.isArray(gallery) ? gallery.filter((g) => g && g.image) : [];
+                if (!items.length) { section.hidden = true; grid.innerHTML = ""; return; }
+                grid.innerHTML = items.map((g) => `
+                    <figure class="about-gallery-item">
+                        <img src="${e(g.image)}" alt="${e(g.caption || 'حلويات بوسي')}" loading="lazy">
+                        ${g.caption ? `<figcaption>${e(g.caption)}</figcaption>` : ""}
+                    </figure>`).join("");
+                section.hidden = false;
+            }
+
+            function renderPillars(pillars) {
+                const grid = document.getElementById("about-pillars-grid");
+                const items = Array.isArray(pillars) ? pillars : [];
+                grid.innerHTML = items.map((p) => `
+                    <div class="pillar-card">
+                        <div class="pillar-icon">${p.icon ? `<i class="fa-solid ${e(p.icon)}"></i>` : ""}</div>
+                        <h3>${e(p.title || "")}</h3>
+                        <p>${e(p.text || "")}</p>
+                    </div>`).join("");
+            }
+
+            function renderAboutPage() {
+                const about = (window.BoseStoreData && window.BoseStoreData.about) || {};
+                if (Object.keys(about).length === 0) return; // لسه مفيش بيانات وصلت - سيبي القيم الافتراضية في الـ HTML
+                renderHero(about);
+                renderStats(about.stats);
+                renderStoryBlocks(about.storyBlocks);
+                renderGallery(about.gallery);
+                renderPillars(about.pillars);
+            }
+
+            if (window.BoseStoreData) renderAboutPage();
+            document.addEventListener("BoseDatabaseLoaded", renderAboutPage);
+        })();
+    </script>
 </body>
 </html>
