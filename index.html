@@ -89,11 +89,39 @@
 
     <!-- استدعاء حارس المحرك المركزي العالمي في رأس الصفحة لمنع وميض الألوان وتأمين البيانات الموحدة -->
     <!-- ⚡ [إصلاح أداء]: defer عشان السكريبت متوقفش رسم الصفحة الأول (كان شغال Blocking) -->
+    <!--
+        🚨🛡️ [إصلاح جذري - ترتيب حرج، ممنوع تتغيّر]: قسم "نادي المكافآت" في نص
+        الصفحة كان بيعرض أرقام قديمة/ثابتة (5% الطلب 3، 10% الطلب 5، 15% الطلب 7،
+        300ج كل 10 طلبات) بدل الأرقام الحقيقية من لوحة التحكم - مش بسبب أي خطأ في
+        منطق الحساب، لكن بسبب ترتيب تحميل السكريبتات بالظبط.
+
+        السبب: كل السكريبتات دي defer، فبتتنفذ بالترتيب المكتوبة بيه هنا. لما
+        core-engine.js يشتغل، بينادي loadStoreDatabase() فورًا ومباشرة (مش بعد
+        DOMContentLoaded زي ما يبدو من الكود - وقت ما السكريبت ده يشتغل، الصفحة
+        خلصت اتحللت بالفعل)، ولو فيه نسخة محفوظة (cache) صالحة (الحالة الشائعة -
+        أي زيارة خلال ساعتين)، بيرسم البيانات ويطلق حدث "BoseDatabaseLoaded"
+        فورًا و *بشكل متزامن* (Synchronous) - يعني *قبل* ما يوصل دور
+        loyalty-config.js في قائمة الـ defer أصلاً. الكود اللي بيسمع لحدث
+        BoseDatabaseLoaded (آخر الصفحة) كان بيحاول يستخدم window.getBoseLoyaltyConfig()
+        فيلقاها لسه مش موجودة، فبيسيب فورًا من غير ما يعمل حاجة - فتفضل الأرقام
+        الافتراضية الثابتة المكتوبة يدويًا في الـ HTML ظاهرة للعميلة للأبد.
+
+        الحل: loyalty-config.js لازم يتحمّل *قبل* core-engine.js مش بعده -
+        وده آمن 100% لأنه بيعرّف بس دوال (getBoseLoyaltyConfig/getSortedLoyaltyTiers)
+        وما بيقراش window.BoseStoreData إلا لما حد ينادي الدالة فعليًا، مش وقت
+        التحميل. فمفيش أي تبعية حقيقية تربطه بترتيبه بعد core-engine.js -
+        العكس هو الصح.
+
+        ⚠️ لو حد هيضيف سكريبت defer جديد أو يغيّر الترتيب هنا تاني: خلّي
+        loyalty-config.js دايمًا قبل core-engine.js، ولو مش متأكد جرّب افتحي
+        الصفحة، امسحي الكاش من localStorage (أو زوري الرابط بـ ?refresh=1)،
+        وشوفي هل قسم "نادي المكافآت" بيتحدث بالأرقام الصح ولا لأ.
+    -->
     <script src="js/supabase-client.js?v=2026_production_v39.0" defer></script>
     <script src="js/favorites-engine.js?v=2026_production_v37.0" defer></script>
+    <script src="js/loyalty-config.js?v=2026_production_v2.0" defer></script>
     <script src="js/core-engine.js?v=2026_production_v42.0" defer></script>
     <script src="js/cart-reminder.js?v=1" defer></script>
-    <script src="js/loyalty-config.js?v=2026_production_v1.0" defer></script>
 </head>
 <body class="bose-hardware-accelerated">
 
@@ -648,7 +676,15 @@
             // اللي بتقرأ منه rewards.html بالظبط عبر loyalty-config.js) بدل
             // الأرقام الثابتة اللي كانت مكتوبة يدوياً هنا قبل كده.
             function renderLoyaltyTeaserSection() {
-                if (typeof window.getBoseLoyaltyConfig !== "function" || !window.BoseStoreData) return;
+                // 🛡️ [شبكة أمان - راجعي الملاحظة الكبيرة جنب سكريبتات <head> فوق]:
+                // لو getBoseLoyaltyConfig لسه مش موجودة وقت ما الحدث اتطلق (مشكلة
+                // ترتيب تحميل سكريبتات)، منسيبش القسم عالق على الأرقام الافتراضية
+                // للأبد - نجرب تاني بعد لحظة بسيطة بدل ما نرجع فورًا ونسيبها كده.
+                if (typeof window.getBoseLoyaltyConfig !== "function") {
+                    setTimeout(renderLoyaltyTeaserSection, 200);
+                    return;
+                }
+                if (!window.BoseStoreData) return;
 
                 const config = window.getBoseLoyaltyConfig();
                 const sectionEl = document.getElementById("loyalty-teaser-section");
