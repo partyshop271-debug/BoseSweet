@@ -4,9 +4,11 @@
  * نطاق النسخة دي: قوائم المنتجات المختارة (الأكثر مبيعاً / وصل حديثاً /
  * منتجاتنا)، بانرات محاكي التورت والورد، شلال المنتجات المتحرك (صوره
  * وسرعته وتشغيله/إيقافه - كل صور الشلال دلوقتي روابط مباشرة بسيطة، مش
- * مربوطة بمنتجات)، والشريط العلوي المتحرك بأعلى الهيدر (رسائله وسرعته
- * وتشغيله/إيقافه). حقول أقل تغيّراً زي نص الهيرو وإحصائيات "الفخر
- * والاعتزاز" والفيديوهات مش متضمنة هنا لحد ما تحتاجها.
+ * مربوطة بمنتجات)، فيديوهات الصفحة الرئيسية (سيمفونية الطعم/عقد من الإتقان
+ * - عنوان ووصف وفيديو كل قسم، بترفع لـ Cloudinary وبتتحسّن تلقائيًا وقت
+ * العرض عبر q_auto/f_auto)، والشريط العلوي المتحرك بأعلى الهيدر (رسائله
+ * وسرعته وتشغيله/إيقافه). حقول أقل تغيّراً زي نص الهيرو وإحصائيات "الفخر
+ * والاعتزاز" مش متضمنة هنا لحد ما تحتاجها.
  *
  * "سلايدر الفئات" على الرئيسية بيتبنى تلقائياً من جدول categories وقت
  * الحفظ (نفس id/title/image/builder_type) - كده الفئات ليها مصدر واحد بس
@@ -197,7 +199,13 @@
             container.innerHTML = items.map((item, idx) => {
                 const img = typeof item === "object" ? item.image : item;
                 const linkedSlug = typeof item === "object" ? item.slug : null;
-                const linkedProduct = linkedSlug ? allProducts.find((p) => p.slug === linkedSlug) : null;
+                // 🐛 [إصلاح جذري - 2026-08-23]: جدول المنتجات الحقيقي في القاعدة
+                // معندوش عمود اسمه "slug" أصلاً (اتأكد بالفحص المباشر على القاعدة
+                // الحية) - المعرّف الحقيقي الوحيد لكل منتج هو "id". القيمة اللي
+                // بتتخزن هنا تحت اسم "slug" (اسم الحقل فضل زي ما هو عشان يتوافق
+                // مع باقي الموقع اللي بيقرأ رابط ?slug= بالفعل) بقت هي id المنتج
+                // الحقيقي، فالمطابقة هنا لازم تبقى على p.id مش p.slug.
+                const linkedProduct = linkedSlug ? allProducts.find((p) => p.id === linkedSlug) : null;
                 // 🛡️ [وضوح الحالة]: كل صورة بتوضح فورًا هل هي مربوطة بمنتج حقيقي (هتبقى
                 // قابلة للضغط في الرئيسية) ولا صورة تزيينية بس (مش هتبقى رابط) - بدل ما
                 // تكتشف صاحبة المتجر ده متأخر بعد النشر.
@@ -245,10 +253,15 @@
         const select = document.getElementById(colDef.productSelectId);
         if (!select) return;
         const e = window.BoseAdminUI.escapeHtml;
+        // 🐛🛡️ [إصلاح حرج - 2026-08-23]: القائمة دي كانت بتفلتر على p.slug، وده
+        // عمود مش موجود خالص في جدول المنتجات الحقيقي (اتأكد بالفحص المباشر على
+        // القاعدة الحية) - يعني الفلتر ده كان بيستبعد كل منتج من غير استثناء،
+        // فمكانش بيفضل غير الخيار الافتراضي بس. المعرّف الحقيقي هو "id"، فبقينا
+        // نفلتر ونحفظ عليه بدل slug.
         select.innerHTML = `<option value="">اختاري منتج لإضافته كصورة قابلة للضغط...</option>` +
             allProducts
-                .filter((p) => p.images && p.images[0] && p.slug)
-                .map((p) => `<option value="${e(p.slug)}">${e(p.title)}</option>`)
+                .filter((p) => p.images && p.images[0] && p.id)
+                .map((p) => `<option value="${e(p.id)}">${e(p.title)}</option>`)
                 .join("");
     }
 
@@ -271,14 +284,14 @@
             // تلقائيًا - أبسط طريقة وأضمن واحدة إن الصورة تبقى فعلاً رابط شغال.
             document.getElementById(colDef.productBtnId).addEventListener("click", () => {
                 const select = document.getElementById(colDef.productSelectId);
-                const slug = select.value;
-                if (!slug) return;
-                const product = allProducts.find((p) => p.slug === slug);
+                const selectedId = select.value;
+                if (!selectedId) return;
+                const product = allProducts.find((p) => p.id === selectedId);
                 if (!product || !product.images || !product.images[0]) {
                     window.BoseAdminUI.showToast("المنتج ده معندوش صورة متاحة", "error");
                     return;
                 }
-                waterfallState[colDef.key].push({ image: product.images[0], slug: product.slug });
+                waterfallState[colDef.key].push({ image: product.images[0], slug: product.id });
                 renderWaterfallColumn(colDef);
                 select.value = "";
             });
@@ -399,6 +412,76 @@
         });
     }
 
+    /* ============================= الأقسام اللي فيها فيديوهات ============================= */
+
+    // 🎥 [2026-08-23]: القيم الافتراضية هنا هي نفس الفيديو/العنوان/الوصف الحقيقي
+    // اللي كان Hardcoded في index.html قبل الميزة دي - عشان لو صاحبة المتجر فتحت
+    // اللوحة قبل ما تغيّر أي حاجة، تلاقي الفورم معبّي بالفيديو الشغال فعليًا
+    // دلوقتي على الموقع، مش فاضي.
+    const VIDEO_SECTIONS = [
+        {
+            key: "symphony",
+            defaultPublicId: "VID20260424210523_oviixh",
+            defaultTitle: "سيمفونية الطعم",
+            defaultDescription: "بنهتم بكل تفصيلة عشان طعمها يعجبكم: صوصات سايحة، خامات طبيعية فريش، وتحضير يدوي بحب كل يوم، عشان توصلكم طازة.",
+        },
+        {
+            key: "excellence",
+            defaultPublicId: "lv_0_٢٠٢٦٠٤١٨١١٠٨٠٩_g2bv90",
+            defaultTitle: "عقد من الإتقان",
+            defaultDescription: "وراء كل قطعة حلوى، قصة حب وإتقان. بنشتغل عليها بذمة ونظافة، عشان تستاهلوا الأفضل.",
+        },
+    ];
+
+    let videoSectionsState = {};
+
+    function fillVideoForm(section) {
+        const saved = videoSectionsState[section.key] || {};
+        document.getElementById(`video-${section.key}-title`).value = saved.title || section.defaultTitle;
+        document.getElementById(`video-${section.key}-description`).value = saved.description || section.defaultDescription;
+        const publicId = saved.publicId || section.defaultPublicId;
+        const preview = document.getElementById(`video-${section.key}-preview`);
+        // 🐛🛡️ [إصلاح جودة المعاينة - نفس منطق q_auto/f_auto]: بنستخدم رابط تسليم
+        // فيديو Cloudinary العادي (مش المشغّل embed) للمعاينة الصغيرة جوه اللوحة،
+        // بعرض محدود 400px عشان تحميل خفيف وسريع للمعاينة بس - العرض الحقيقي
+        // للعميلة بيستخدم المشغّل الكامل مع q_auto/f_auto زي ما هو مبني في
+        // buildBoseVideoEmbedUrl.
+        preview.src = `https://res.cloudinary.com/dyx4w0dr1/video/upload/q_auto,f_auto,w_400/${encodeURIComponent(publicId)}.mp4`;
+        preview.setAttribute("data-public-id", publicId);
+    }
+
+    function readVideoForm(section) {
+        const preview = document.getElementById(`video-${section.key}-preview`);
+        return {
+            title: document.getElementById(`video-${section.key}-title`).value.trim() || section.defaultTitle,
+            description: document.getElementById(`video-${section.key}-description`).value.trim() || section.defaultDescription,
+            publicId: preview.getAttribute("data-public-id") || section.defaultPublicId,
+        };
+    }
+
+    function wireVideoUpload(section) {
+        document.getElementById(`video-${section.key}-input`).addEventListener("change", async (evt) => {
+            const file = evt.target.files && evt.target.files[0];
+            if (!file) return;
+            const label = document.getElementById(`video-${section.key}-upload-label`);
+            const originalLabel = label.textContent;
+            try {
+                const publicId = await window.BoseAdminUI.uploadVideoToCloudinary(file, (percent) => {
+                    label.textContent = `جاري الرفع... ${percent}%`;
+                });
+                const preview = document.getElementById(`video-${section.key}-preview`);
+                preview.src = `https://res.cloudinary.com/dyx4w0dr1/video/upload/q_auto,f_auto,w_400/${encodeURIComponent(publicId)}.mp4`;
+                preview.setAttribute("data-public-id", publicId);
+                window.BoseAdminUI.showToast("تم رفع الفيديو بنجاح - متنسيش تحفظي التغييرات", "success");
+            } catch (err) {
+                window.BoseAdminUI.showToast("تعذر رفع الفيديو، تأكدي من الاتصال بالإنترنت وحاولي تاني", "error");
+            } finally {
+                label.textContent = originalLabel;
+                evt.target.value = "";
+            }
+        });
+    }
+
     /* ============================= الحفظ ============================= */
 
     /** بيبني سلايدر الفئات تلقائياً من جدول categories - مصدر وحيد، مفيش تكرار يدوي */
@@ -438,6 +521,7 @@
                     speedSeconds: waterfallSpeed,
                     enabled: waterfallEnabled,
                 },
+                videoSections: Object.fromEntries(VIDEO_SECTIONS.map((section) => [section.key, readVideoForm(section)])),
             };
 
             const updatedNavigation = {
@@ -496,6 +580,13 @@
         document.getElementById("waterfall-enabled").checked = homepageData.waterfall?.enabled !== false;
         WATERFALL_COLUMNS.forEach(renderWaterfallColumn);
         wireWaterfallControls();
+
+        // الأقسام اللي فيها فيديوهات
+        videoSectionsState = { ...(homepageData.videoSections || {}) };
+        VIDEO_SECTIONS.forEach((section) => {
+            fillVideoForm(section);
+            wireVideoUpload(section);
+        });
 
         // الشريط العلوي المتحرك
         // 🐛👑 [الافتراضي بقى 88 بدل 44 - أبطأ 50%]: لو الخانة دي شايلة رقم
