@@ -188,6 +188,93 @@
         return results;
     }
 
+    /* ============================= رفع الفيديوهات (Cloudinary) ============================= */
+
+    /**
+     * 🎥 [رفع فيديوهات الأقسام - 2026-08-23]: نفس الحساب على Cloudinary
+     * (cloud name وupload preset) بتاع رفع الصور، بس على مسار الفيديو
+     * المخصص (/video/upload) بدل الصور. الفيديو مش بيتضغط في المتصفح قبل
+     * الرفع زي الصور (ضغط فيديو حقيقي في المتصفح تقيل ومعقد وغير موثوق) -
+     * بدل كده، الملف الأصلي بيترفع زي ما هو، والتوفير الحقيقي في استهلاك
+     * البيانات بيحصل وقت العرض للعميلة: كل رابط فيديو بيتبني بمعامِلين
+     * "quality=auto" و"fetch_format=auto" (توصية Cloudinary الرسمية) اللي
+     * بيخلّوا Cloudinary تلقائيًا تختار أنسب توازن جودة/حجم لكل جهاز، وأنسب
+     * صيغة (WebM/MP4..) لكل متصفح - غالبًا بتقلل حجم النقل الفعلي للعميلة
+     * بنسبة كبيرة من غير أي فرق ملحوظ في الجودة. بيستخدم XMLHttpRequest بدل
+     * fetch عشان نقدر نبلّغ نسبة تقدّم رفع حقيقية (ملفات الفيديو أكبر بكتير
+     * من الصور فبتاخد وقت، فمهم العميلة تشوف تقدّم حقيقي مش رسالة "بيرفع"
+     * ثابتة من غير تحديث).
+     */
+    const CLOUDINARY_VIDEO_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/video/upload`;
+    const MAX_VIDEO_UPLOAD_BYTES = 100 * 1024 * 1024; // 100 ميجا - حد تحذيري لا يمنع الرفع
+
+    /**
+     * بترفع فيديو وترجّع public_id بتاعه (مش secure_url) - عشان ده اللي محتاجه
+     * مشغّل فيديو Cloudinary (player.cloudinary.com/embed) لبناء رابط العرض.
+     * onProgress(percent) اختيارية بتتنادى بنسبة مئوية 0-100 أثناء الرفع.
+     */
+    function uploadVideoToCloudinary(file, onProgress) {
+        return new Promise((resolve, reject) => {
+            if (file && file.size > MAX_VIDEO_UPLOAD_BYTES) {
+                console.warn(`فيديو كبير نسبيًا (${(file.size / (1024 * 1024)).toFixed(1)} ميجا) - الرفع والمعالجة هياخدوا وقت أطول.`);
+            }
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+            formData.append("resource_type", "video");
+
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", CLOUDINARY_VIDEO_UPLOAD_URL, true);
+            xhr.upload.onprogress = (evt) => {
+                if (onProgress && evt.lengthComputable) {
+                    onProgress(Math.round((evt.loaded / evt.total) * 100));
+                }
+            };
+            xhr.onload = () => {
+                if (xhr.status < 200 || xhr.status >= 300) {
+                    reject(new Error("فشل رفع الفيديو"));
+                    return;
+                }
+                try {
+                    const data = JSON.parse(xhr.responseText);
+                    if (!data.public_id) { reject(new Error("رد غير متوقع من Cloudinary")); return; }
+                    resolve(data.public_id);
+                } catch (e) {
+                    reject(new Error("تعذرت قراءة رد الرفع"));
+                }
+            };
+            xhr.onerror = () => reject(new Error("تعذر الاتصال بخدمة رفع الفيديو"));
+            xhr.send(formData);
+        });
+    }
+
+    /**
+     * بتبني رابط عرض Cloudinary Video Player (نفس الشكل المستخدم فعليًا في
+     * قسمي الفيديو بالصفحة الرئيسية) من public_id + إعدادات تشغيل. الإضافة
+     * المهمة هنا هي معاملات "source[transformation][0][quality]=auto" و
+     * "fetch_format=auto" (توثيق Cloudinary الرسمي: أفضل توازن جودة/حجم +
+     * أنسب صيغة تلقائيًا لكل متصفح) عشان أي فيديو يتضاف من هنا يتوصّل بأقل
+     * استهلاك بيانات ممكن من غير التضحية بالجودة.
+     */
+    function buildBoseVideoEmbedUrl(publicId, opts) {
+        const o = opts || {};
+        const autoplay = o.autoplay !== false;
+        const muted = o.muted !== false;
+        const loop = o.loop !== false;
+        const params = [
+            `cloud_name=${CLOUDINARY_CLOUD_NAME}`,
+            `public_id=${encodeURIComponent(publicId)}`,
+            `autoplay=${autoplay}`,
+            `muted=${muted}`,
+            `loop=${loop}`,
+            `player%5Bfluid%5D=true`,
+            `player%5Bcontrols%5D=false`,
+            `source%5Btransformation%5D%5B0%5D%5Bquality%5D=auto`,
+            `source%5Btransformation%5D%5B0%5D%5Bfetch_format%5D=auto`,
+        ];
+        return `https://player.cloudinary.com/embed/?${params.join("&")}`;
+    }
+
     /* ============================= حالات الطلب ============================= */
 
     /**
@@ -243,6 +330,8 @@
         orderStatusBadgeHTML,
         uploadImageToCloudinary,
         uploadImagesToCloudinary,
+        uploadVideoToCloudinary,
+        buildBoseVideoEmbedUrl,
         PLACEHOLDER_IMAGE_MARKER: "logo_igggsb",
     };
 })();
