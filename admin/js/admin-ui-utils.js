@@ -319,6 +319,30 @@
             </div>`;
     }
 
+    /**
+     * 🆕 [إصلاح - فتح واتساب بيزنس الرسمي بدل قائمة اختيار عشوائية]: صاحبة
+     * المتجر عندها أكتر من تطبيق مسجّل كمعالج لروابط واتساب على جهازها
+     * (شخصي + نسخة تانية)، فرابط wa.me العادي كان بيخلي أندرويد يعرض قائمة
+     * اختيار في كل مرة، ومش دايمًا بتختار نسخة واتساب بيزنس الرسمية اللي
+     * عليها رقم المتجر. الحل: لو الجهاز أندرويد، نطلب فتح واتساب بيزنس
+     * الرسمي تحديدًا (com.whatsapp.w4b) بدل ما نسيب أندرويد يختار، مع رجوع
+     * تلقائي لرابط wa.me العادي لو التطبيق ده مش متثبت أو الجهاز مش أندرويد
+     * (iOS/ديسكتوب - مفيش طريقة موثوقة نجبر بيها متصفح الويب يفتح تطبيق
+     * بعينه هناك).
+     * @param {string} intlPhone - الرقم بصيغة دولية بدون + (مثال: 201097238441)
+     * @param {string} text
+     * @returns {string}
+     */
+    function buildWhatsappUrl(intlPhone, text) {
+        const encodedText = encodeURIComponent(text || "");
+        const fallbackUrl = `https://wa.me/${intlPhone}?text=${encodedText}`;
+        const isAndroid = /Android/i.test((navigator && navigator.userAgent) || "");
+        if (isAndroid) {
+            return `intent://send?phone=${intlPhone}&text=${encodedText}#Intent;scheme=whatsapp;package=com.whatsapp.w4b;S.browser_fallback_url=${encodeURIComponent(fallbackUrl)};end`;
+        }
+        return fallbackUrl;
+    }
+
     window.BoseAdminUI = {
         escapeHtml,
         showToast,
@@ -332,6 +356,7 @@
         uploadImagesToCloudinary,
         uploadVideoToCloudinary,
         buildBoseVideoEmbedUrl,
+        buildWhatsappUrl,
         PLACEHOLDER_IMAGE_MARKER: "logo_igggsb",
     };
 })();
