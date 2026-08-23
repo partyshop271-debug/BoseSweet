@@ -433,6 +433,22 @@
     }
 
     // تصدير الدوال على window بنفس فلسفة الموقع الحالية (window.escapeBoseHTML...)
+    /**
+     * 🆕 [5.2 - صفحات السياسات الديناميكية]: بترجع محتوى صفحة سياسة واحدة
+     * (id ثابت من جدول content_pages) - قراءة عامة (public SELECT في الـ RLS)
+     * زي أي جدول كتالوج تاني. الصفحات نفسها بتحتفظ بنصها الثابت الحالي
+     * كـ fallback لو المحتوى في القاعدة لسه فاضي (متسجّلش من لوحة التحكم بعد).
+     */
+    async function getBoseContentPage(id) {
+        try {
+            const rows = await boseSupabaseFetch(`/content_pages?id=eq.${encodeURIComponent(id)}&select=content,updated_at`);
+            return (rows && rows[0]) || null;
+        } catch (err) {
+            console.warn("تعذر جلب محتوى صفحة السياسة:", err.message);
+            return null;
+        }
+    }
+
     window.BoseSupabase = {
         loadBoseStoreDataFromSupabase,
         getBoseDataVersion,
@@ -444,6 +460,7 @@
         trackBoseOrder,
         getBoseCustomerRewards,
         validateBoseLoyaltyVoucher,
+        getBoseContentPage,
     };
     // الاسم اللي cart-engine.js بينده عليه فعلياً (راجع processFinalBoseOrder)
     window.saveBoseOrderToDatabase = saveBoseOrderToDatabase;
