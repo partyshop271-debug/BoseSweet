@@ -41,6 +41,9 @@
                             <h2>كل القسائم الصادرة</h2>
                             <p>كل قسايم الهدية اللي اتكسبت عبر دورة الولاء - مين استخدمها، قد إيه فلوس اتصرفت من خلالها، والمنتهية صلاحيتها</p>
                         </div>
+                        <button class="adm-btn adm-btn-primary" id="lv-issue-btn">
+                            <i class="fa-solid fa-plus"></i> إصدار قسيمة يدوي
+                        </button>
                         <div class="lv-filters">
                             <input type="text" class="adm-input" id="lv-search-input" placeholder="بحث بالكود / رقم التليفون...">
                             <select class="adm-select" id="lv-status-filter">
@@ -64,10 +67,11 @@
                                     <th>تاريخ الصدور</th>
                                     <th>تنتهي في</th>
                                     <th>الحالة</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody id="lv-tbody">
-                                <tr><td colspan="9"><div class="adm-loading-spinner"></div></td></tr>
+                                <tr><td colspan="10"><div class="adm-loading-spinner"></div></td></tr>
                             </tbody>
                         </table>
                     </div>
