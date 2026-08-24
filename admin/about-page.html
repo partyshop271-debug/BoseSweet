@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>صفحة من نحن | لوحة تحكم حلويات بوسي</title>
+    <meta name="robots" content="noindex, nofollow">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="css/admin-theme.css">
+    <link rel="stylesheet" href="css/admin-layout.css">
+</head>
+<body data-page="about-page">
+
+    <!-- شاشة تحميل تظهر لحد ما يتأكد من الجلسة -->
+    <div class="adm-auth-gate"><div class="adm-loading-spinner"></div></div>
+
+    <div class="adm-shell">
+        <div id="adm-shell-target"></div>
+
+        <main class="adm-main">
+            <div id="adm-topbar-target"></div>
+
+            <div class="adm-content" id="adm-page-content">
+
+                <div class="adm-card">
+                    <div class="adm-homepage-save-bar">
+                        <div>
+                            <h2>صفحة "من نحن"</h2>
+                            <p>كل تعديل هنا بيتحدّث على صفحة about.html في الموقع فور الحفظ.</p>
+                        </div>
+                        <button class="adm-btn adm-btn-primary" id="about-save-btn">
+                            <i class="fa-solid fa-floppy-disk"></i> حفظ كل التغييرات
+                        </button>
+                    </div>
+                </div>
+
+                <div id="about-loading" class="adm-card adm-mt-16"><div class="adm-loading-spinner"></div></div>
+
+                <div id="about-content" style="display: none;">
+
+                    <!-- ============================= الهيرو ============================= -->
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header">
+                            <div><h2><i class="fa-solid fa-star"></i> الهيرو (أعلى الصفحة)</h2><p>البادچ الصغير، العنوان الرئيسي (بجزئه المميز بالبمبي)، والوصف تحته</p></div>
+                        </div>
+                        <div class="adm-form-grid">
+                            <div class="adm-field">
+                                <label for="about-hero-badge">نص البادچ الصغير</label>
+                                <input type="text" class="adm-input" id="about-hero-badge" placeholder="عقد من الحب والتميز">
+                            </div>
+                        </div>
+                        <div class="adm-form-grid">
+                            <div class="adm-field">
+                                <label for="about-hero-title-prefix">بداية العنوان (بلون عادي)</label>
+                                <input type="text" class="adm-input" id="about-hero-title-prefix" placeholder="حكايتنا.. من قلب أم لـ">
+                            </div>
+                            <div class="adm-field">
+                                <label for="about-hero-title-highlight">تكملة العنوان (تظهر بالبمبي)</label>
+                                <input type="text" class="adm-input" id="about-hero-title-highlight" placeholder="شركاء النجاح">
+                            </div>
+                        </div>
+                        <div class="adm-field">
+                            <label for="about-hero-subtitle">الوصف تحت العنوان</label>
+                            <textarea class="adm-textarea" id="about-hero-subtitle"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- ============================= الإحصائيات الحقيقية ============================= -->
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header">
+                            <div><h2><i class="fa-solid fa-chart-simple"></i> الإحصائيات الحقيقية</h2><p>الشريط اللي بيظهر تحت الهيرو (زي "10 سنين خبرة"، "10,000+ عميل"). لو اتسابت فاضية، الشريط ده بيختفي تلقائيًا من الصفحة.</p></div>
+                        </div>
+                        <div id="about-stats-list"></div>
+                        <button type="button" class="adm-btn adm-btn-outline adm-repeater-add-btn" id="about-add-stat-btn">
+                            <i class="fa-solid fa-plus"></i> إضافة إحصائية
+                        </button>
+                    </div>
+
+                    <!-- ============================= بلوكات القصة ============================= -->
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header">
+                            <div><h2><i class="fa-solid fa-book-open"></i> محتوى القصة</h2><p>كل بلوك بيظهر ككارت مستقل في الصفحة - له عنوان، مقدمة اختيارية، اقتباس اختياري، وفقرات النص</p></div>
+                        </div>
+                        <div id="about-story-list"></div>
+                        <button type="button" class="adm-btn adm-btn-outline adm-repeater-add-btn" id="about-add-story-btn">
+                            <i class="fa-solid fa-plus"></i> إضافة بلوك قصة جديد
+                        </button>
+                    </div>
+
+                    <!-- ============================= معرض الصور الحقيقي ============================= -->
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header">
+                            <div><h2><i class="fa-solid fa-images"></i> معرض الصور الحقيقي</h2><p>لو اتسابت فاضية، قسم المعرض بيختفي تلقائيًا من الصفحة</p></div>
+                        </div>
+                        <div id="about-gallery-list"></div>
+                        <label class="adm-image-upload-btn" for="about-gallery-image-input">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                            <span id="about-gallery-upload-label">إضافة صورة جديدة للمعرض</span>
+                        </label>
+                        <input type="file" id="about-gallery-image-input" accept="image/*" hidden>
+                    </div>
+
+                    <!-- ============================= قيم العلامة التجارية ============================= -->
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header">
+                            <div><h2><i class="fa-solid fa-heart"></i> قيم العلامة التجارية</h2><p>الكروت الثلاثة (أو أكتر) اللي بتظهر في آخر الصفحة (زي "الجودة"، "الأمان"، "الشغف")</p></div>
+                        </div>
+                        <div id="about-pillars-list"></div>
+                        <button type="button" class="adm-btn adm-btn-outline adm-repeater-add-btn" id="about-add-pillar-btn">
+                            <i class="fa-solid fa-plus"></i> إضافة قيمة جديدة
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/admin-data.js"></script>
+    <script src="js/admin-auth-guard.js"></script>
+    <script src="js/admin-ui-utils.js"></script>
+    <script src="js/admin-shell.js"></script>
+    <script src="js/pages/about-page.js"></script>
+</body>
+</html>
