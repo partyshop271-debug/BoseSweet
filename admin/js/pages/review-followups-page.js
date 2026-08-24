@@ -145,7 +145,8 @@
         return `https://wa.me/${intl}?text=${encodeURIComponent(buildReminderMessage(order))}`;
     }
 
-    /** كود كوبون فريد وغير متوقّع لكل عميلة - عشان يفضل عملياً خاص بيها هي بس */
+    /** كود كوبون فريد وسهل الطباعة للعميلة - الحماية الحقيقية دلوقتي بقت
+     *  bound_phone + max_uses (مش مجرد كود صعب التخمين زي قبل كده) */
     function generateReviewCouponCode(order) {
         const phoneDigits = sanitizePhone(order.phone1).replace(/\D/g, "").slice(-4) || "0000";
         const random = Math.random().toString(36).slice(2, 6).toUpperCase();
@@ -167,7 +168,7 @@
 
         const confirmed = await window.BoseAdminUI.confirmAction({
             title: "إصدار كوبون التقييم",
-            message: `هيتعمل كوبون خصم ${REVIEW_COUPON_PERCENT}٪ لمرة واحدة، صالح ${REVIEW_COUPON_VALID_DAYS} يوم، خاص بـ${order.customer_name || customerNoun}. استخدمي الزرار ده بس بعد ما تستلمي فعلاً سكرين شوت ${possessivePronoun} على جوجل.`,
+            message: `هيتعمل كوبون خصم ${REVIEW_COUPON_PERCENT}٪ مربوط برقم موبايل ${order.customer_name || customerNoun} بس (محدّش تاني هيقدر يستخدمه)، صالح ${REVIEW_COUPON_VALID_DAYS} يوم ولمرة واحدة بالظبط. استخدمي الزرار ده بس بعد ما تستلمي فعلاً سكرين شوت ${possessivePronoun} على جوجل.`,
             confirmLabel: "تأكيد الإصدار",
         });
         if (!confirmed) return;
@@ -176,13 +177,24 @@
         const expiresAt = new Date(Date.now() + REVIEW_COUPON_VALID_DAYS * 24 * 60 * 60 * 1000);
 
         try {
+            // 🛡️ [حماية حقيقية على مستوى القاعدة - مش مجرد كود صعب التخمين]:
+            // bound_phone بيربط الكود برقم موبايل العميلة بالظبط (مينفعش حد
+            // تاني يستخدمه حتى لو عرف الكود بالصدفة)، وmax_uses=1 بيمنع
+            // استخدامه أكتر من مرة حتى من نفس الرقم. الاتنين بيتفحصوا ذرّياً
+            // (atomic) جوه create_order_with_items وقت إتمام الطلب فعلياً.
             await window.BoseAdmin.createCoupon({
                 code,
                 type: "percent",
                 value: REVIEW_COUPON_PERCENT,
                 is_active: true,
                 expires_at: expiresAt.toISOString(),
+                max_uses: 1,
+                bound_phone: sanitizePhone(order.phone1).replace(/\D/g, "").slice(-10),
             });
+
+            // 🧠 [ذاكرة عميل]: تسجيل إن العميل ده قيّم فعلاً على جوجل - عشان
+            // مايتسألش تاني في أي طلب جاي مهما كان عدد طلباته بعد كده
+            await window.BoseAdmin.markCustomerGoogleReviewed(order.phone1, order.customer_name);
 
             const message = buildReviewCouponMessage(code);
             try {
@@ -248,8 +260,11 @@
     }
 
     async function handleMarkSent(orderId) {
+        const order = currentFollowups.find((o) => o.id === orderId);
         try {
-            await window.BoseAdmin.markReviewReminderSent(orderId);
+            // بنبعت اسم العميل ورقم موبايله كمان عشان يتسجلوا في ذاكرة العميل
+            // (customer_review_status) - ده اللي بيشغّل فترة التبريد ٤٥ يوم
+            await window.BoseAdmin.markReviewReminderSent(orderId, order && order.customer_name, order && order.phone1);
             window.BoseAdminUI.showToast("تم تسجيل إرسال التذكير", "success");
             await loadFollowups();
         } catch (e) {
