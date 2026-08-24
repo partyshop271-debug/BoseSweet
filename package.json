@@ -1,0 +1,12 @@
+{
+  "name": "bosesweet-main",
+  "version": "1.0.0",
+  "private": true,
+  "description": "حلويات بوسي - الموقع ولوحة التحكم (بدون build حقيقي وقت التشغيل، فقط تصغير الأصول وقت النشر)",
+  "scripts": {
+    "build": "node scripts/minify.js"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2"
+  }
+}
