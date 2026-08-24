@@ -132,15 +132,12 @@
             stats.activeOffers = 0;
         }
 
-        // شارة "تذكير المراجعات المستحقة" - نفس شرط getReviewFollowups بالظبط لكن count بس
+        // شارة "تذكير المراجعات المستحقة" - بنستخدم نفس دالة getReviewFollowups
+        // بالظبط (بعد فلترة العملاء اللي قيّموا فعلاً أو لسه في فترة التبريد)
+        // عشان الرقم في الشارة يتطابق فعليًا مع عدد الصفوف اللي هتظهر في الصفحة
         try {
-            const { count } = await client
-                .from("orders")
-                .select("id", { count: "exact", head: true })
-                .eq("status", "delivered")
-                .is("review_reminder_sent_at", null)
-                .lte("delivered_at", new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString());
-            stats.reviewFollowupsDue = count || 0;
+            const followups = await getReviewFollowups();
+            stats.reviewFollowupsDue = followups.length;
         } catch (e) {
             console.warn("تعذر جلب عدد تذكيرات المراجعات المستحقة:", e.message);
             stats.reviewFollowupsDue = 0;
@@ -329,20 +326,44 @@
     }
 
     /**
-     * 👑 [تذكير المراجعات]: الطلبات اللي اتسلمت من يوم (أو أكتر) ولسه محدش
-     * بعتلها تذكير مراجعة. delivered_at بيتسجل تلقائياً من trigger في قاعدة
-     * البيانات أول مرة الحالة تتحول delivered - مش بنحسبه هنا يدوياً.
-     */
-    /**
-     * 👑 [تذكير المراجعات]: الطلبات اللي اتسلمت من يوم (أو أكتر) ولسه محدش
-     * بعتلها تذكير مراجعة. delivered_at بيتسجل تلقائياً من trigger في قاعدة
-     * البيانات أول مرة الحالة تتحول delivered - مش بنحسبه هنا يدوياً.
+     * 👑 [تذكير المراجعات - نسخة ذكية]: الطلبات اللي اتسلمت من يوم (أو أكتر)
+     * ولسه محدش بعتلها تذكير مراجعة، بعد استبعاد اتنين حالة:
+     * (١) عميل اتأكد فعلاً إنه قيّمنا على جوجل قبل كده (google_reviewed=true) -
+     *     ماينفعش نطلب منه يقيّم تاني.
+     * (٢) عميل اتبعتله طلب مراجعة (لأي طلب من طلباته) خلال آخر ٤٥ يوم - عشان
+     *     العميل اللي بيطلب أكتر من مرة في الأسبوع/الشهر ميوصلوش رسالة "قيّمنا"
+     *     مع كل طلب، ده بيبقى مزعج. الرقم ٤٥ قابل للتعديل من REVIEW_COOLDOWN_DAYS.
+     *
+     * الاستبعاد ده بيتحسب من جدول customer_review_status الجديد (مفتاحه رقم
+     * الموبايل)، مش من جدول orders نفسه - عشان الذاكرة تبقى "عن العميل"
+     * مش "عن الطلب" (لو مسحناها من orders هتتصفّر مع كل طلب جديد وده غلط).
      *
      * 🛡️ [إضافة صورة المنتج للشخصنة]: order_items.product_id مش عليه Foreign
      * Key رسمي لجدول products (نص عادي)، فـ PostgREST مش بيقدر يعمل embed
      * تلقائي بينهم. فبنجيب أول صورة لكل منتج في دفعة تانية بـ .in() على
      * الـ product_id بتوع الطلبات دي، وبندمجها يدوي على كل order_item.
      */
+    const REVIEW_COOLDOWN_DAYS = 45;
+
+    /**
+     * 🛡️ [إصلاح "الطلب الزومبي"]: لو مش حطينا سقف لعمر الطلب، ممكن يحصل الآتي -
+     * عميلة طلبت مرتين قريب من بعض، اتبعتلها تذكير للطلب الأول بس (فسجّلنا
+     * فترة التبريد على مستوى رقمها)، والطلب التاني (اللي محدش بعته تذكير له
+     * تحديدًا) هيفضل مخبّي لحد ما الـ٤٥ يوم يخلصوا - وبعدين يطلع تاني في
+     * القائمة وكأنه طلب جديد، رغم إن تسليمه بقاله شهر ونص! ده مربك وملهوش
+     * فايدة عملية (محدش بيقيّم منتج بعد شهر من استلامه). فبنحط سقف أقصى:
+     * أي طلب اتسلم من أكتر من REVIEW_MAX_AGE_DAYS ومحدش بعتله تذكير، يعتبر
+     * "فات عليه الأوان" ومش بيدخل القائمة خالص بدل ما يرجع يطلع بشكل غريب.
+     */
+    const REVIEW_MAX_AGE_DAYS = 30;
+
+    /** توحيد شكل رقم الموبايل (آخر ١٠ أرقام بس، بدون صفر أو كود دولة) عشان
+     *  نفس الرقم يتطابق حتى لو اتكتب بصيغ مختلفة في طلبات مختلفة */
+    function canonicalPhoneKey(phone) {
+        const digits = (phone || "").replace(/\D/g, "");
+        return digits.slice(-10);
+    }
+
     async function getReviewFollowups() {
         try {
             const { data, error } = await client
@@ -351,9 +372,30 @@
                 .eq("status", "delivered")
                 .is("review_reminder_sent_at", null)
                 .lte("delivered_at", new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
+                .gte("delivered_at", new Date(Date.now() - REVIEW_MAX_AGE_DAYS * 24 * 60 * 60 * 1000).toISOString())
                 .order("delivered_at", { ascending: true });
             if (error) throw error;
-            const orders = data || [];
+            let orders = data || [];
+
+            // فلترة العملاء اللي قيّموا فعلاً أو اتبعتلهم طلب مراجعة مؤخراً
+            const phoneKeys = [...new Set(orders.map((o) => canonicalPhoneKey(o.phone1)).filter(Boolean))];
+            if (phoneKeys.length) {
+                const { data: statuses, error: statusErr } = await client
+                    .from("customer_review_status")
+                    .select("phone, google_reviewed, last_review_request_at")
+                    .in("phone", phoneKeys);
+                if (!statusErr && statuses) {
+                    const cooldownCutoff = Date.now() - REVIEW_COOLDOWN_DAYS * 24 * 60 * 60 * 1000;
+                    const statusByPhone = Object.fromEntries(statuses.map((s) => [s.phone, s]));
+                    orders = orders.filter((o) => {
+                        const status = statusByPhone[canonicalPhoneKey(o.phone1)];
+                        if (!status) return true;
+                        if (status.google_reviewed) return false;
+                        if (status.last_review_request_at && new Date(status.last_review_request_at).getTime() > cooldownCutoff) return false;
+                        return true;
+                    });
+                }
+            }
 
             const productIds = [...new Set(
                 orders.flatMap((o) => (o.order_items || []).map((it) => it.product_id).filter(Boolean))
@@ -381,12 +423,38 @@
         }
     }
 
-    /** تسجيل إن تذكير المراجعة اتبعت للطلب ده - بيختفي من القائمة بعدها */
-    async function markReviewReminderSent(orderId) {
+    /** تسجيل إن تذكير المراجعة اتبعت للطلب ده - بيختفي من القائمة بعدها،
+     *  وبيسجل كمان على مستوى العميل (رقم الموبايل) عشان فترة التبريد تشتغل
+     *  حتى لو العميل ده طلب تاني بعدين بطلب مختلف */
+    async function markReviewReminderSent(orderId, customerName, phone) {
         const { error } = await client
             .from("orders")
             .update({ review_reminder_sent_at: new Date().toISOString() })
             .eq("id", orderId);
+        if (error) throw error;
+
+        const phoneKey = canonicalPhoneKey(phone);
+        if (phoneKey) {
+            await client.from("customer_review_status").upsert({
+                phone: phoneKey,
+                customer_name: customerName || null,
+                last_review_request_at: new Date().toISOString(),
+                updated_at: new Date().toISOString(),
+            }, { onConflict: "phone" });
+        }
+    }
+
+    /** تسجيل إن العميل ده قيّمنا فعلاً على جوجل (بعد ما تستلمي سكرين شوت
+     *  ويتصدرلها كوبون) - بعد كده مش هيظهر تاني في قائمة التذكير أبداً */
+    async function markCustomerGoogleReviewed(phone, customerName) {
+        const phoneKey = canonicalPhoneKey(phone);
+        if (!phoneKey) return;
+        const { error } = await client.from("customer_review_status").upsert({
+            phone: phoneKey,
+            customer_name: customerName || null,
+            google_reviewed: true,
+            updated_at: new Date().toISOString(),
+        }, { onConflict: "phone" });
         if (error) throw error;
     }
 
@@ -1296,6 +1364,7 @@
         getAwaitingDepositCount,
         getReviewFollowups,
         markReviewReminderSent,
+        markCustomerGoogleReviewed,
         getAllCategories,
         createCategory,
         updateCategory,
