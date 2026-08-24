@@ -333,6 +333,16 @@
      * بعتلها تذكير مراجعة. delivered_at بيتسجل تلقائياً من trigger في قاعدة
      * البيانات أول مرة الحالة تتحول delivered - مش بنحسبه هنا يدوياً.
      */
+    /**
+     * 👑 [تذكير المراجعات]: الطلبات اللي اتسلمت من يوم (أو أكتر) ولسه محدش
+     * بعتلها تذكير مراجعة. delivered_at بيتسجل تلقائياً من trigger في قاعدة
+     * البيانات أول مرة الحالة تتحول delivered - مش بنحسبه هنا يدوياً.
+     *
+     * 🛡️ [إضافة صورة المنتج للشخصنة]: order_items.product_id مش عليه Foreign
+     * Key رسمي لجدول products (نص عادي)، فـ PostgREST مش بيقدر يعمل embed
+     * تلقائي بينهم. فبنجيب أول صورة لكل منتج في دفعة تانية بـ .in() على
+     * الـ product_id بتوع الطلبات دي، وبندمجها يدوي على كل order_item.
+     */
     async function getReviewFollowups() {
         try {
             const { data, error } = await client
@@ -343,7 +353,28 @@
                 .lte("delivered_at", new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
                 .order("delivered_at", { ascending: true });
             if (error) throw error;
-            return data || [];
+            const orders = data || [];
+
+            const productIds = [...new Set(
+                orders.flatMap((o) => (o.order_items || []).map((it) => it.product_id).filter(Boolean))
+            )];
+            if (productIds.length) {
+                const { data: products, error: prodErr } = await client
+                    .from("products")
+                    .select("id, images")
+                    .in("id", productIds);
+                if (!prodErr && products) {
+                    const imageByProductId = Object.fromEntries(
+                        products.map((p) => [p.id, (p.images || [])[0] || null])
+                    );
+                    orders.forEach((o) => {
+                        (o.order_items || []).forEach((it) => {
+                            it.image = it.product_id ? imageByProductId[it.product_id] || null : null;
+                        });
+                    });
+                }
+            }
+            return orders;
         } catch (e) {
             console.warn("تعذر جلب طلبات تذكير المراجعات:", e.message);
             return [];
