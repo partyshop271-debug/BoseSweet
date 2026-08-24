@@ -1178,6 +1178,40 @@
         );
     }
 
+    /* ============================= صفحة "من نحن" (about.html) ============================= */
+    /**
+     * كل محتوى صفحة "من نحن" (البادچ والعنوان في الهيرو، الإحصائيات الحقيقية،
+     * بلوكات القصة بنصوصها واقتباساتها، معرض الصور، وقيم العلامة التجارية)
+     * متخزن في عمود واحد store_settings.about بنفس فلسفة homepage/loyalty
+     * بالظبط. about.html (الصفحة العامة) بيقرأ منه مباشرة عن طريق
+     * window.BoseStoreData.about - فأي حفظ هنا بينعكس على الموقع فورًا.
+     */
+
+    /** يرجّع كائن about بس من صف store_settings الوحيد (id=1) */
+    async function getAboutPageSettings() {
+        try {
+            const { data, error } = await client
+                .from("store_settings")
+                .select("about")
+                .eq("id", 1)
+                .maybeSingle();
+            if (error) throw error;
+            return (data && data.about) || {};
+        } catch (e) {
+            console.warn("تعذر جلب محتوى صفحة من نحن:", e.message);
+            return {};
+        }
+    }
+
+    /** بتستبدل عمود about بالكامل بالكائن الممرر */
+    async function saveAboutPageSettings(about) {
+        const { error } = await client
+            .from("store_settings")
+            .update({ about, updated_at: new Date().toISOString() })
+            .eq("id", 1);
+        if (error) throw error;
+    }
+
     /* ============================= استوديو المحتوى (توليد بالذكاء الاصطناعي) ============================= */
     /**
      * بتنادي Edge Function اسمها generate-content بتوكن جلسة الأدمن الحالي
@@ -1269,6 +1303,8 @@
         saveStoreGeneralSettings,
         getAllContentPages,
         updateContentPage,
+        getAboutPageSettings,
+        saveAboutPageSettings,
         bulkUpdateProducts,
         generateContent,
         getLoyaltySettings,

@@ -36,6 +36,7 @@
             group: "المحتوى",
             items: [
                 { key: "homepage", label: "الواجهة الرئيسية", icon: "fa-house", href: "homepage.html" },
+                { key: "about-page", label: "صفحة من نحن", icon: "fa-heart", href: "about-page.html" },
                 { key: "categories", label: "الفئات", icon: "fa-layer-group", href: "categories.html" },
                 { key: "offers", label: "عروض المنتجات", icon: "fa-percent", href: "offers.html" },
                 { key: "promotions", label: "بانرات العروض", icon: "fa-tags", href: "promotions.html" },
@@ -69,6 +70,7 @@
         products: ["المنتجات", "إضافة وتعديل منتجات المتجر"],
         "review-followups": ["تذكير المراجعات", "عملاء اتسلملهم طلبهم من يوم أو أكتر - ابعتيلهم تذكير مراجعة بضغطة واحدة"],
         homepage: ["الواجهة الرئيسية", "التحكم في محتوى الصفحة الرئيسية للموقع"],
+        "about-page": ["صفحة \"من نحن\"", "القصة، الإحصائيات الحقيقية، قيم العلامة التجارية، ومعرض الصور"],
         categories: ["الفئات", "إدارة فئات المنتجات"],
         offers: ["عروض المنتجات", "تمييز منتجات موجودة كعليها عرض/خصم في الموقع"],
         promotions: ["بانرات العروض", "إدارة بانرات وكروت العروض التسويقية الظاهرة للعملاء"],
