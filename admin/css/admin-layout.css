@@ -910,6 +910,28 @@ html.adm-ready .adm-auth-gate { display: none; }
 }
 .adm-curated-item-actions { display: flex; gap: 4px; flex-shrink: 0; }
 
+/* بطاقة عنصر متعدد الحقول (بلوك قصة/صورة معرض/قيمة/إحصائية) - لصفحات زي about-page */
+.adm-repeater-card {
+    background: var(--adm-bg-input);
+    border: 1px solid var(--adm-border-soft);
+    border-radius: var(--adm-radius-sm);
+    padding: 16px;
+    margin-bottom: 14px;
+}
+.adm-repeater-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+.adm-repeater-card-header strong {
+    color: var(--adm-text-secondary);
+    font-size: 0.8rem;
+}
+.adm-repeater-card-actions { display: flex; gap: 4px; flex-shrink: 0; }
+.adm-repeater-add-btn { width: 100%; justify-content: center; margin-top: 4px; }
+
 .adm-curated-add-row {
     display: flex;
     gap: 10px;
