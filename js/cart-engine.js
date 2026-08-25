@@ -1117,16 +1117,21 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFu
     // الرقم الحقيقي المسجل في قاعدة البيانات]: قبل كده كان واتساب بيتفتح
     // فوراً برقم مؤقت (Timestamp من جهاز العميل، مثال BOSE-1755... ) قبل
     // ما ننتظر رد قاعدة البيانات، وبعدين لما الرقم الحقيقي (بصيغة
-    // YYYYMMDD-NNNN) كان بيوصل بعد ثواني كان بيتسجل بس في dbOrderNumber
-    // من غير ما يستخدم في فاتورة الواتساب اللي وصلت للعميلة والفرع أصلاً -
-    // فكان فيه رقمين مختلفين لنفس الطلب: واحد في الفاتورة وواحد في صفحة
-    // التتبع. الحل: بنفتح تاب فاضي فوراً هنا (Synchronous) عشان نضمن إن
-    // Safari/iOS ما يحجبوش (لازم فتح التاب يحصل مباشرة جوه حدث الضغطة من
-    // غير أي await قبله)، وبعدين بننتظر رد قاعدة البيانات الحقيقي، ونبني
-    // فاتورة الواتساب بالرقم الحقيقي بالظبط، وبعدين نوجّه نفس التاب المفتوح
-    // لرابط واتساب - فالرقم اللي في الفاتورة يبقى مطابق 100% لرقم صفحة
-    // التتبع لأنهم بقوا نفس الرقم فعلياً مش مجرد نفس الشكل.
-    const boseWhatsappBlankTab = window.open("", "_blank");
+    // 🛡️🐛👑 [إصلاح جذري - المرحلة 2 - سبب فشل واتساب حتى بعد إصلاح رابط
+    // wa.me]: كان هنا قبل كده تاب فاضي بيتفتح فوراً بـwindow.open("", "_blank")
+    // وبعدين (بعد انتظار رد قاعدة البيانات) بنوجّهه لرابط واتساب عن طريق
+    // location.href. اتضح فعلياً (لقطة شاشة حقيقية من عميلة بتستخدم متصفح
+    // سناب شات الداخلي) إن المتصفحات الداخلية دي (سناب شات/إنستجرام/فيسبوك)
+    // بترفض وبتمنع صراحة إعادة توجيه تاب اتفتح مسبقاً بالطريقة دي (بتوريه
+    // "about:blank#blocked" - رفض واضح من المتصفح نفسه، مش مجرد فشل صامت) -
+    // المشكلة مش في شكل الرابط (اتصلح في المرحلة الأولى) لكن في **آلية الفتح
+    // نفسها**. الحل الجذري: نشيل فكرة "افتحي تاب فاضي واستني" خالص، ونخلي
+    // إرسال فاتورة الواتساب **ضغطة حقيقية ومباشرة من العميلة نفسها** على رابط
+    // فعلي (<a href>) في صفحة النجاح - وده الفعل الوحيد اللي كل المتصفحات
+    // بتسمح بيه دايماً بدون استثناء لأنه فعل مستخدم حقيقي مباشر، مش كود بيتحكم
+    // في نافذة لوحده. صفحة النجاح (order-success.html) بقت فيها زرار "إرسال
+    // الفاتورة على واتساب" ظاهر وواضح دايماً كخطوة أساسية مطلوبة من العميلة -
+    // مش مجرد نسخة احتياطية اختيارية.
 
     // 🛡️ [إصلاح]: الشرط كان بيتأكد من وجود دالة مختلفة (submitBoseOrderToDatabase)
     // بينما بينادي فعلياً على window.saveBoseOrderToDatabase - شغالة بالصدفة
@@ -1172,7 +1177,7 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFu
     const whatsappMessageText = encodedLength > 3000
         ? buildBoseCondensedWhatsappInvoice(completedBoseOrderObject)
         : fullWhatsappMessageText;
-    const brandWhatsappNumber = storeData.store?.phone || "01097238441";
+
 
     // ربط الرسالة بالـ object لضمان عدم حدوث شلل لزر الإرسال البديل بصفحة النجاح
     // (بنحفظ نفس النص اللي فعلاً هيتفتح بيه واتساب، كامل أو مختصر حسب الحالة)
@@ -1183,25 +1188,12 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFu
     localStorage.removeItem("bose_active_coupon");
     if (typeof window.updateGlobalCartCounter === "function") window.updateGlobalCartCounter();
 
-    const whatsappLink = window.buildWhatsappLink(brandWhatsappNumber, whatsappMessageText);
-    if (boseWhatsappBlankTab) {
-        boseWhatsappBlankTab.location.href = whatsappLink;
-    } else {
-        // فallback نادر لو المتصفح رفض حتى فتح التاب الفاضي الأول (بعض إعدادات
-        // الحجب المتشددة جداً) - آخر محاولة بفتح مباشر عادي.
-        window.open(whatsappLink, "_blank");
-    }
-
-    // 🛡️ [إصلاح تكرار فتح واتساب]: واتساب اتفتح بالفعل هنا لحظة تأكيد الطلب،
-    // فبنسجل نفس علامة "تم الفتح تلقائياً" اللي بتقرأها renderBoseSuccessPage()
-    // في order-success.html فوراً، عشان الصفحة متفتحش واتساب مرة تانية لوحدها
-    // لحظة وصول العميل ليها (كان بيفتح تابين واتساب لكل طلب). بتتسجل بنفس
-    // orderIdGenerated المحلي دايماً (مش الرقم الحقيقي) عشان order-success.html
-    // بيقرأها بنفس القيمة دي.
-    try {
-        sessionStorage.setItem("bose_whatsapp_auto_opened_" + orderIdGenerated, "1");
-    } catch (e) { /* تجاهل بأمان لو الجلسة غير متاحة */ }
-
+    // 🛡️🐛👑 [إصلاح جذري - المرحلة 2]: من غير أي محاولة فتح تاب هنا خالص -
+    // العميلة هتوصل لصفحة النجاح وهتلاقي زرار "إرسال الفاتورة على واتساب"
+    // واضح وظاهر، وضغطها عليه هي فعلياً هي اللي بتفتح واتساب (فعل مستخدم
+    // حقيقي مباشر، مش كود بيحاول يتحكم في نافذة لوحده) - ده بيشتغل موثوق
+    // في كل المتصفحات بدون استثناء، حتى المتصفحات الداخلية المتشددة زي
+    // سناب شات وإنستجرام وفيسبوك اللي كانت بترفض آلية "التاب الفاضي" القديمة.
     window.location.href = "/order-success.html";
 }
 
@@ -1462,22 +1454,22 @@ function renderBoseSuccessPage(storeData) {
         return;
     }
 
-    // 🛡️🐛👑 [إصلاح جذري]: زرار "إرسال فاتورة الطلب على واتساب" - شبكة أمان
-    // دايماً ظاهرة (مش بس وقت الفشل) لأن مفيش طريقة موثوقة نتأكد بيها 100%
-    // إن الفتح التلقائي في checkout.html نجح فعلياً عند العميلة (خصوصاً في
-    // المتصفحات الداخلية اللي ممكن تمنع فتح تاب جديد بصمت). بيستخدم بالظبط
-    // نفس نص الفاتورة المحفوظ (order.whatsappMessage) - نفس النص اللي
-    // اتفتح بيه واتساب أول مرة، من غير أي إعادة حساب.
+    // 🛡️🐛👑 [إصلاح جذري]: زرار "إرسال فاتورة الطلب على واتساب" - دلوقتي هو
+    // الخطوة الأساسية المطلوبة من العميلة (مش مجرد نسخة احتياطية)، لأن
+    // المحاولة التلقائية في checkout.html اتشالت خالص (كانت بترفضها متصفحات
+    // زي سناب شات/إنستجرام/فيسبوك الداخلية برفض صريح - راجع كومنت
+    // processFinalBoseOrder). بنحط href حقيقي على الرابط مباشرة (مش JS بس)
+    // عشان يشتغل حتى لو المتصفح بيمنع window.open تماماً - أي متصفح بيقدر
+    // يفتح رابط https عادي بضغطة مستخدم حقيقية زي دي.
     if (resendWhatsappBtn && order.whatsappMessage) {
         resendWhatsappBtn.style.display = "flex";
-        resendWhatsappBtn.onclick = (e) => {
-            e.preventDefault();
-            const phone = order.paymentPhone || "01097238441";
-            const link = typeof window.buildWhatsappLink === "function"
-                ? window.buildWhatsappLink(phone, order.whatsappMessage)
-                : `https://wa.me/2${phone}?text=${encodeURIComponent(order.whatsappMessage)}`;
-            window.open(link, "_blank");
-        };
+        const phone = order.paymentPhone || "01097238441";
+        const link = typeof window.buildWhatsappLink === "function"
+            ? window.buildWhatsappLink(phone, order.whatsappMessage)
+            : `https://wa.me/2${phone}?text=${encodeURIComponent(order.whatsappMessage)}`;
+        resendWhatsappBtn.setAttribute("href", link);
+        resendWhatsappBtn.setAttribute("target", "_blank");
+        resendWhatsappBtn.setAttribute("rel", "noopener noreferrer");
     }
 
     if (orderNumLbl) orderNumLbl.textContent = `رقم طلب الفاتورة: #${order.orderNumber || '0000'}`;
