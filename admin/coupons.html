@@ -33,9 +33,15 @@
                             <h2>كل الكوبونات</h2>
                             <p>إنشاء وإدارة أكواد الخصم اللي بيستخدمها العملاء عند إتمام الطلب</p>
                         </div>
-                        <button class="adm-btn adm-btn-primary" id="add-coupon-btn">
-                            <i class="fa-solid fa-plus"></i> كوبون جديد
-                        </button>
+                        <div style="display:flex; align-items:center; gap:16px;">
+                            <label class="adm-checkbox-label" style="white-space:nowrap;">
+                                <input type="checkbox" id="show-archived-toggle">
+                                عرض المؤرشفة
+                            </label>
+                            <button class="adm-btn adm-btn-primary" id="add-coupon-btn">
+                                <i class="fa-solid fa-plus"></i> كوبون جديد
+                            </button>
+                        </div>
                     </div>
                     <div class="adm-table-wrapper">
                         <table class="adm-table" id="coupons-table">
