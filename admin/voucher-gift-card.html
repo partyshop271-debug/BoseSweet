@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>كارت هدية القسيمة | حلويات بوسي</title>
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Rakkas&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<link rel="stylesheet" href="css/admin-theme.css">
+<link rel="stylesheet" href="css/admin-layout.css">
+
+<style>
+  :root{
+    --pink: #FF91A4;
+    --pink-deep: #E24C63;
+    --coral: #E3505A;
+    --cream: #FFF6F1;
+    --cream-deep: #FDE9D8;
+    --gold: #C9972E;
+    --gold-light: #E3B968;
+    --ink: #2B1E20;
+    --ink-soft: #7A6165;
+  }
+  body{ background: var(--adm-bg, #f4f0ee); font-family:'Cairo', sans-serif; }
+  .vgc-page{
+    min-height:100vh;
+    display:flex; flex-direction:column; align-items:center; gap:24px;
+    padding:32px 16px;
+  }
+  .vgc-toolbar{
+    display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:center;
+  }
+
+  /* ============ الكارت نفسه - نسبة مربعة تقريبًا، مناسبة لمشاركتها كصورة على واتساب ============ */
+  .vgc-card{
+    width: 480px;
+    max-width: 92vw;
+    aspect-ratio: 4 / 5;
+    position: relative;
+    border-radius: 22px;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 50% -10%, rgba(255,255,255,0.9) 0%, transparent 45%),
+      linear-gradient(160deg, var(--cream) 0%, var(--cream-deep) 100%);
+    box-shadow: 0 24px 50px rgba(43,30,32,0.25);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding: 34px 30px;
+    text-align:center;
+  }
+  .vgc-frame-outer{ position:absolute; inset:14px; border:2px solid var(--pink); border-radius:18px; }
+  .vgc-frame-inner{ position:absolute; inset:20px; border:1px solid var(--gold-light); border-radius:14px; }
+
+  .vgc-crown{ width:44px; height:44px; margin-bottom: 6px; position:relative; z-index:1; }
+  .vgc-brand{
+    font-family:'Rakkas','Cairo',serif;
+    font-size: 26px;
+    color: var(--coral);
+    position:relative; z-index:1;
+    margin-bottom: 4px;
+  }
+  .vgc-divider{ display:flex; align-items:center; gap:8px; margin: 6px 0 14px; position:relative; z-index:1; }
+  .vgc-divider .line{ width:34px; height:1px; background: var(--pink); }
+  .vgc-divider .dot{ width:5px; height:5px; border-radius:50%; background: var(--gold); }
+
+  .vgc-headline{
+    font-size: 15px; font-weight:800; color: var(--ink);
+    position:relative; z-index:1; margin-bottom: 4px;
+  }
+  .vgc-subheadline{
+    font-size: 12px; font-weight:600; color: var(--ink-soft);
+    position:relative; z-index:1; margin-bottom: 18px;
+  }
+
+  .vgc-amount-badge{
+    position:relative; z-index:1;
+    background: linear-gradient(135deg, var(--pink), var(--pink-deep));
+    color:#fff;
+    border-radius: 16px;
+    padding: 14px 30px;
+    margin-bottom: 18px;
+    box-shadow: 0 10px 24px rgba(226,76,99,0.35);
+  }
+  .vgc-amount-badge .num{ font-size: 34px; font-weight:800; line-height:1; }
+  .vgc-amount-badge .cur{ font-size: 13px; font-weight:700; opacity:.9; }
+
+  .vgc-code-box{
+    position:relative; z-index:1;
+    background:#fff;
+    border: 1.5px dashed var(--gold);
+    border-radius: 12px;
+    padding: 10px 22px;
+    margin-bottom: 14px;
+    direction: ltr;
+  }
+  .vgc-code-box .code{
+    font-family: 'Cairo', sans-serif;
+    font-size: 20px; font-weight:800; letter-spacing: 1px; color: var(--ink);
+  }
+
+  .vgc-expiry{
+    font-size: 11.5px; font-weight:700; color: var(--ink-soft);
+    position:relative; z-index:1;
+  }
+
+  .vgc-hint-card{
+    max-width: 480px;
+    background:#fff;
+    border-radius: 12px;
+    padding: 14px 18px;
+    font-size: 0.85rem;
+    color: #3A2A2E;
+    line-height: 1.8;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  }
+</style>
+</head>
+<body data-page="voucher-notifications">
+
+<div class="adm-auth-gate"><div class="adm-loading-spinner"></div></div>
+
+<div class="vgc-page" id="vgc-root" style="display:none;">
+
+    <div class="vgc-toolbar">
+        <button class="adm-btn adm-btn-primary" id="vgc-download-btn">
+            <i class="fa-solid fa-download"></i> تحميل الكارت كصورة
+        </button>
+        <button class="adm-btn adm-btn-ghost" id="vgc-back-btn">
+            <i class="fa-solid fa-arrow-right"></i> رجوع
+        </button>
+    </div>
+
+    <div class="vgc-card" id="vgc-card">
+        <div class="vgc-frame-outer"></div>
+        <div class="vgc-frame-inner"></div>
+
+        <svg class="vgc-crown" viewBox="0 0 100 70">
+            <path d="M10 55 L18 22 L35 42 L50 12 L65 42 L82 22 L90 55 Z" fill="#C9972E"/>
+            <rect x="8" y="55" width="84" height="8" rx="2" fill="#C9972E"/>
+            <circle cx="50" cy="10" r="6" fill="#C9972E"/>
+        </svg>
+
+        <div class="vgc-brand">حلويات بوسي</div>
+        <div class="vgc-divider"><span class="line"></span><span class="dot"></span><span class="line"></span></div>
+
+        <div class="vgc-headline" id="vgc-headline">هدية بسيطة مننا ليكِ 🎁</div>
+        <div class="vgc-subheadline" id="vgc-subheadline">قسيمة شراء تقدري تستخدميها في طلبك الجاي</div>
+
+        <div class="vgc-amount-badge">
+            <div class="num" id="vgc-amount">300</div>
+            <div class="cur">جنيه مصري</div>
+        </div>
+
+        <div class="vgc-code-box">
+            <div class="code" id="vgc-code">HADYA-XXXXXX</div>
+        </div>
+
+        <div class="vgc-expiry" id="vgc-expiry">صالحة لغاية --/--/----</div>
+    </div>
+
+    <div class="vgc-hint-card">
+        <i class="fa-solid fa-circle-info"></i>
+        اضغطي "تحميل الكارت كصورة"، وبعدين ارفعي الصورة كمرفق في نفس محادثة الواتساب بتاعت العميلة. الكارت ده للعرض
+        بس - الكود الحقيقي المفعّل هو اللي العميلة هتكتبه في خانة الكوبون وقت الشيك أوت.
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/admin-data.js"></script>
+<script src="js/admin-auth-guard.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+    document.addEventListener("BoseAdminReady", function () {
+        document.querySelector(".adm-auth-gate").style.display = "none";
+        document.getElementById("vgc-root").style.display = "flex";
+
+        const params = new URLSearchParams(window.location.search);
+        const code = params.get("code") || "—";
+        const amount = params.get("amount") || "0";
+        const expires = params.get("expires") || "";
+        const name = params.get("name") || "";
+
+        document.getElementById("vgc-code").textContent = code;
+        document.getElementById("vgc-amount").textContent = amount;
+        if (name) {
+            document.getElementById("vgc-headline").textContent = `مبروك يا ${name} 🎁`;
+        }
+        if (expires) {
+            const d = new Date(expires);
+            const label = d.toLocaleDateString("ar-EG", { day: "2-digit", month: "2-digit", year: "numeric" });
+            document.getElementById("vgc-expiry").textContent = `صالحة لغاية ${label}`;
+        }
+
+        document.getElementById("vgc-back-btn").addEventListener("click", function () {
+            window.close();
+            // لو مقفلش (مفتوحة مش من تبويب جديد) رجّعها للصفحة اللي قبلها
+            setTimeout(function () { window.history.back(); }, 150);
+        });
+
+        document.getElementById("vgc-download-btn").addEventListener("click", function () {
+            const btn = document.getElementById("vgc-download-btn");
+            btn.disabled = true;
+            btn.textContent = "جاري التجهيز...";
+            html2canvas(document.getElementById("vgc-card"), { scale: 3, backgroundColor: null }).then(function (canvas) {
+                const link = document.createElement("a");
+                link.download = `bosesweet-gift-${code}.png`;
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-download"></i> تحميل الكارت كصورة';
+            }).catch(function () {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-download"></i> تحميل الكارت كصورة';
+                alert("تعذر تجهيز الصورة، جربي تاني");
+            });
+        });
+    });
+</script>
+
+</body>
+</html>
