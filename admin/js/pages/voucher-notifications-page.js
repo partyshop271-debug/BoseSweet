@@ -39,10 +39,7 @@
     }
 
     function buildWhatsappUrl(v) {
-        // 🛡️ [تحصين دفاعي]: intl مبني من رقم متحقّق منه سيرفرياً (create_order_with_items
-        // بيرفض أي رقم مش مصري صحيح قبل ما القسيمة تتصدر أصلاً)، لكن بنعمل encodeURIComponent
-        // هنا كمان كخط دفاع إضافي قبل الحقن في href - زيادة أمان مش بديل عن التحقق الحقيقي.
-        const intl = encodeURIComponent(toInternational(v.phone));
+        const intl = toInternational(v.phone);
         const message = buildNotifyMessage(v);
         if (window.BoseAdminUI && typeof window.BoseAdminUI.buildWhatsappUrl === "function") {
             return window.BoseAdminUI.buildWhatsappUrl(intl, message);
