@@ -41,6 +41,31 @@
         };
     }
 
+    /** بادجات صغيرة توضّح أي قيود حقيقية مفعّلة على الكوبون - القيود دي بتتفحص
+     *  فعليًا وقت إتمام الطلب جوه create_order_with_items (مش شكلية بس) */
+    function formatRestrictions(c) {
+        const badges = [];
+        if (c.max_uses !== null && c.max_uses !== undefined) {
+            const used = c.used_count || 0;
+            const exhausted = used >= c.max_uses;
+            badges.push(`<span class="adm-badge ${exhausted ? "danger" : "neutral"}" title="عدد مرات الاستخدام المسموحة">
+                <i class="fa-solid fa-hashtag"></i> ${used}/${c.max_uses}
+            </span>`);
+        }
+        if (c.bound_phone) {
+            badges.push(`<span class="adm-badge neutral" title="مربوط برقم موبايل: ${window.BoseAdminUI.escapeHtml(c.bound_phone)}" style="direction:ltr;">
+                <i class="fa-solid fa-lock"></i> ${window.BoseAdminUI.escapeHtml(c.bound_phone)}
+            </span>`);
+        }
+        if (c.min_order_value) {
+            badges.push(`<span class="adm-badge neutral" title="حد أدنى لقيمة الطلب">
+                <i class="fa-solid fa-sack-dollar"></i> ${Math.round(c.min_order_value)}+ ج.م
+            </span>`);
+        }
+        if (!badges.length) return `<span class="adm-order-item-meta">بدون قيود</span>`;
+        return `<div style="display:flex; flex-direction:column; gap:4px; align-items:flex-start;">${badges.join("")}</div>`;
+    }
+
     /* ============================= الجدول ============================= */
 
     function renderTable() {
@@ -48,7 +73,7 @@
         const e = window.BoseAdminUI.escapeHtml;
 
         if (!allCoupons.length) {
-            tbody.innerHTML = `<tr><td colspan="9">${window.BoseAdminUI.emptyStateHTML({
+            tbody.innerHTML = `<tr><td colspan="10">${window.BoseAdminUI.emptyStateHTML({
                 icon: "fa-ticket",
                 title: "مفيش كوبونات مضافة لسه",
                 text: "ابدأ بإضافة أول كود خصم من زرار \"كوبون جديد\".",
@@ -63,6 +88,7 @@
                 <td><strong>${e(c.code)}</strong></td>
                 <td>${e(TYPE_LABELS[c.type] || c.type)}</td>
                 <td>${formatValue(c)}</td>
+                <td>${formatRestrictions(c)}</td>
                 <td>
                     <button class="adm-btn adm-btn-ghost adm-btn-icon" data-action="toggle" data-code="${e(c.code)}"
                             title="${c.is_active ? "إيقاف الكوبون" : "تفعيل الكوبون"}">
@@ -182,6 +208,35 @@
                         </div>
                     </div>
 
+                    <div class="adm-form-divider" style="margin: 16px 0; border-top: 1px dashed rgba(0,0,0,0.1);"></div>
+                    <p style="font-size:0.82rem; color: var(--adm-text-muted, #7a7a7a); margin: 0 0 12px;">
+                        <i class="fa-solid fa-shield-halved"></i> قيود اختيارية - بتتفحص فعليًا وقت إتمام الطلب، مش شكلية بس
+                    </p>
+
+                    <div class="adm-form-grid">
+                        <div class="adm-field">
+                            <label for="cf-max-uses">حد أقصى لعدد مرات الاستخدام (اختياري)</label>
+                            <input type="number" min="1" step="1" class="adm-input" id="cf-max-uses"
+                                   value="${isEdit && coupon.max_uses !== null && coupon.max_uses !== undefined ? coupon.max_uses : ""}"
+                                   placeholder="بدون حد">
+                            ${isEdit && coupon.used_count ? `<span class="adm-hint">اتستخدم ${e(String(coupon.used_count))} مرة لحد دلوقتي</span>` : ""}
+                        </div>
+                        <div class="adm-field">
+                            <label for="cf-min-order">حد أدنى لقيمة الطلب بالجنيه (اختياري)</label>
+                            <input type="number" min="0" step="0.01" class="adm-input" id="cf-min-order"
+                                   value="${isEdit && coupon.min_order_value !== null && coupon.min_order_value !== undefined ? coupon.min_order_value : ""}"
+                                   placeholder="بدون حد أدنى">
+                        </div>
+                    </div>
+
+                    <div class="adm-field">
+                        <label for="cf-bound-phone">مربوط برقم موبايل معيّن (اختياري)</label>
+                        <input type="tel" class="adm-input" id="cf-bound-phone" style="direction:ltr;"
+                               value="${isEdit && coupon.bound_phone ? e(coupon.bound_phone) : ""}"
+                               placeholder="مثال: 01012345678">
+                        <span class="adm-hint">لو اتحطّ، الكود ده مش هيشتغل إلا لعميل برقم الموبايل ده بالظبط</span>
+                    </div>
+
                     <div class="adm-modal-actions">
                         <button type="button" class="adm-btn adm-btn-ghost" data-role="close">إلغاء</button>
                         <button type="submit" class="adm-btn adm-btn-primary" id="cf-save-btn">حفظ الكوبون</button>
@@ -213,12 +268,29 @@
             }
 
             const expiresRaw = document.getElementById("cf-expires").value;
+            const maxUsesRaw = document.getElementById("cf-max-uses").value;
+            const minOrderRaw = document.getElementById("cf-min-order").value;
+            const boundPhoneRaw = document.getElementById("cf-bound-phone").value.trim();
+            // توحيد شكل رقم الموبايل زي بالظبط ما بتفحصه دالة create_order_with_items
+            // في القاعدة (v_clean_phone) عشان المطابقة تنجح فعليًا وقت الطلب
+            const boundPhoneClean = boundPhoneRaw.replace(/[\s\-()+]/g, "");
+
+            if (boundPhoneRaw && !/^01[0125][0-9]{8}$/.test(boundPhoneClean)) {
+                window.BoseAdminUI.showToast("رقم الموبايل المربوط لازم يكون رقم مصري صحيح (01...)", "error");
+                saveBtn.disabled = false;
+                saveBtn.textContent = "حفظ الكوبون";
+                return;
+            }
+
             const payload = {
                 type,
                 value,
                 is_active: document.getElementById("cf-active").checked,
                 // نهاية اليوم المختار (23:59:59) عشان الكوبون يفضل شغال طول آخر يوم في صلاحيته
                 expires_at: expiresRaw ? new Date(`${expiresRaw}T23:59:59`).toISOString() : null,
+                max_uses: maxUsesRaw ? parseInt(maxUsesRaw, 10) : null,
+                min_order_value: minOrderRaw ? parseFloat(minOrderRaw) : null,
+                bound_phone: boundPhoneRaw ? boundPhoneClean : null,
             };
 
             try {

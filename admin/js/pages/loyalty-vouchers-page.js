@@ -103,11 +103,15 @@
                 <td>${formatDate(v.expires_at)}</td>
                 <td>${statusBadgeHTML(status)}</td>
                 <td class="adm-table-actions">
+                    <button class="adm-btn adm-btn-ghost adm-btn-icon" data-action="edit" data-id="${e(v.id)}" title="تعديل الرصيد أو تاريخ الانتهاء"><i class="fa-solid fa-pen"></i></button>
                     ${canRevoke ? `<button class="adm-btn adm-btn-ghost adm-btn-icon" data-action="revoke" data-id="${e(v.id)}" title="إلغاء القسيمة"><i class="fa-solid fa-ban"></i></button>` : ""}
                 </td>
             </tr>`;
         }).join("");
 
+        tbody.querySelectorAll('[data-action="edit"]').forEach((btn) => {
+            btn.addEventListener("click", () => openEditModal(btn.getAttribute("data-id")));
+        });
         tbody.querySelectorAll('[data-action="revoke"]').forEach((btn) => {
             btn.addEventListener("click", () => handleRevoke(btn.getAttribute("data-id")));
         });
@@ -131,6 +135,81 @@
         } catch (e) {
             window.BoseAdminUI.showToast("تعذر إلغاء القسيمة", "error");
         }
+    }
+
+    /* ============================= مودال التعديل ============================= */
+
+    function openEditModal(voucherId) {
+        const voucher = allVouchers.find((v) => v.id === voucherId);
+        if (!voucher) return;
+
+        const overlay = document.createElement("div");
+        overlay.className = "adm-modal-overlay";
+        const currentExpiryValue = voucher.expires_at ? new Date(voucher.expires_at).toISOString().slice(0, 10) : "";
+
+        overlay.innerHTML = `
+            <div class="adm-modal" style="max-width: 440px;">
+                <div class="adm-modal-header">
+                    <h3>تعديل القسيمة ${window.BoseAdminUI.escapeHtml(voucher.code)}</h3>
+                    <button class="adm-modal-close" data-role="close"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <p style="font-size:0.82rem; color: var(--adm-text-muted, #7a7a7a); margin: 0 0 14px;">
+                    الكود ورقم الموبايل والقيمة الأصلية ثابتين ومينفعش يتغيّروا - تقدري بس تعدّلي الرصيد المتبقي وتاريخ الانتهاء.
+                </p>
+                <form id="lv-edit-form">
+                    <div class="adm-field">
+                        <label for="lv-ef-remaining">الرصيد المتبقي (جنيه) - من أصل ${money(voucher.amount)}</label>
+                        <input type="number" min="0" max="${voucher.amount}" step="1" class="adm-input" id="lv-ef-remaining" value="${voucher.remaining_amount}" required>
+                    </div>
+                    <div class="adm-field">
+                        <label for="lv-ef-expires">تاريخ الانتهاء</label>
+                        <input type="date" class="adm-input" id="lv-ef-expires" value="${currentExpiryValue}" required>
+                    </div>
+                    <div class="adm-modal-actions">
+                        <button type="button" class="adm-btn adm-btn-ghost" data-role="close">إلغاء</button>
+                        <button type="submit" class="adm-btn adm-btn-primary" id="lv-ef-save-btn">حفظ التعديل</button>
+                    </div>
+                </form>
+            </div>`;
+        document.body.appendChild(overlay);
+
+        function close() { overlay.remove(); }
+        overlay.addEventListener("click", (evt) => {
+            if (evt.target === overlay) close();
+            if (evt.target.closest('[data-role="close"]')) close();
+        });
+
+        document.getElementById("lv-edit-form").addEventListener("submit", async (evt) => {
+            evt.preventDefault();
+            const saveBtn = document.getElementById("lv-ef-save-btn");
+            saveBtn.disabled = true;
+            saveBtn.textContent = "جاري الحفظ...";
+
+            const remainingRaw = document.getElementById("lv-ef-remaining").value;
+            const expiresRaw = document.getElementById("lv-ef-expires").value;
+            const remainingAmount = parseFloat(remainingRaw);
+
+            if (isNaN(remainingAmount) || remainingAmount < 0 || remainingAmount > voucher.amount) {
+                window.BoseAdminUI.showToast(`الرصيد لازم يكون بين 0 و${voucher.amount}`, "error");
+                saveBtn.disabled = false;
+                saveBtn.textContent = "حفظ التعديل";
+                return;
+            }
+
+            try {
+                await window.BoseAdmin.updateLoyaltyVoucher(voucherId, {
+                    remainingAmount,
+                    expiresAt: new Date(`${expiresRaw}T23:59:59`).toISOString(),
+                });
+                window.BoseAdminUI.showToast("تم تعديل القسيمة", "success");
+                close();
+                await loadVouchers();
+            } catch (err) {
+                window.BoseAdminUI.showToast(err.message || "تعذر حفظ التعديل", "error");
+                saveBtn.disabled = false;
+                saveBtn.textContent = "حفظ التعديل";
+            }
+        });
     }
 
     /* ============================= مودال الإصدار اليدوي ============================= */
