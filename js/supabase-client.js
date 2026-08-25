@@ -238,6 +238,15 @@
             // 🎁 [نظام نقاط الولاء]: كود قسيمة الولاء (لو العميلة عندها واحدة نشطة
             // ودخلته) - الباك إند بيتحقق منه ومن ملكيته لنفس رقم الهاتف بنفسه.
             p_voucher_code: orderPayload.loyaltyVoucherCode || null,
+            // 🛡️🔧 [إصلاح جذري]: قبل كده الباراميترات دي ما كانتش بتتبعت خالص،
+            // فـ PostgREST كان بيستدعي نسخة قديمة من الدالة (من غير تتبع مصدر
+            // العميل) بدل النسخة الجديدة اللي فيها upsert_customer_on_order -
+            // يعني جدول customers مكنش بيتحدث خالص من أي طلب حقيقي. دلوقتي
+            // بنبعتهم دايماً (حتى لو null) عشان تتحقق مطابقة الدالة الصحيحة
+            // فعلياً، وتشتغل ميزة تتبع مصدر العميل اللي مبنية بالفعل في لوحة التحكم.
+            p_attribution_source: orderPayload.attributionSource || null,
+            p_attribution_medium: orderPayload.attributionMedium || null,
+            p_attribution_detail: orderPayload.attributionDetail || null,
         });
 
         const row = Array.isArray(result) ? result[0] : result;
@@ -253,6 +262,15 @@
             loyaltyDiscountAmount: row.loyalty_discount_amount || 0,
             voucherAmountUsed: row.voucher_amount_used || 0,
             isLoyaltyMilestone: !!row.is_loyalty_milestone,
+            // 🛡️🔧 [إصلاح جذري - مصدر الحقيقة المالي]: القيم دي هي المؤكدة
+            // فعلياً من قاعدة البيانات بعد تطبيق كل شروط الكوبون (حد أدنى/
+            // ربط برقم/سقف خصم/إلخ) - المفروض تستبدل بيها أي رقم كان محسوب
+            // محلياً في السلة قبل الحفظ، عشان فاتورة الواتساب وصفحة النجاح
+            // يعرضوا المبلغ الحقيقي المطلوب دفعه بالظبط مش تقدير محلي ممكن
+            // يكون اختلف (مثلاً لو الكوبون اتضح إنه مش سارٍ فعلياً وقت الحفظ).
+            confirmedSubtotal: row.subtotal,
+            confirmedShippingFee: row.shipping_fee,
+            confirmedDiscountAmount: row.discount_amount,
         };
     }
 
@@ -367,9 +385,23 @@
         return data.secure_url;
     }
 
-    /** 🏷️ التحقق من كوبون عبر الدالة الآمنة (بدون كشف كل الأكواد) */
-    async function validateBoseCoupon(code) {
-        const result = await boseSupabaseRpc("validate_coupon", { p_code: code });
+    /**
+     * 🏷️ التحقق من كوبون عبر الدالة الآمنة (بدون كشف كل الأكواد)
+     * 🛡️🔧 [إصلاح جذري]: قبل كده الدالة دي كانت بتبعت الكود لوحده من غير
+     * رقم هاتف ولا قيمة سلة - فأي كوبون مربوط برقم موبايل كان يترفض تلقائياً
+     * دايماً (مستحيل يتطبق من واجهة العميل خالص)، وأي حد أدنى لقيمة الطلب
+     * كان بيتجاهله الفحص بالكامل. دلوقتي بتقبل phone و subtotal اختياريين
+     * وتبعتهم فعلياً لدالة القاعدة عشان الفحوصات التانية تشتغل صح.
+     * @param {string} code
+     * @param {string|null} phone
+     * @param {number|null} subtotal
+     */
+    async function validateBoseCoupon(code, phone, subtotal) {
+        const result = await boseSupabaseRpc("validate_coupon", {
+            p_code: code,
+            p_phone: phone || null,
+            p_subtotal: (subtotal === undefined || subtotal === null) ? null : parseFloat(subtotal),
+        });
         const row = Array.isArray(result) ? result[0] : result;
         return row || { is_valid: false, message: "تعذر التحقق من الكود" };
     }
@@ -438,6 +470,11 @@
             payFull: !!o.payFull,
             // 🎁 [نظام نقاط الولاء]: كود قسيمة الولاء لو العميلة طبّقته في السلة
             loyaltyVoucherCode: o.loyaltyVoucherCode || null,
+            // 🧭 [نظام تتبع مصدر العملاء]: مرّرة لو موجودة (مش متسجلة من الفرونت
+            // إند لسه دلوقتي، بس بقت شغالة فعلياً وقت وصولها من أي مصدر مستقبلي)
+            attributionSource: o.attributionSource || null,
+            attributionMedium: o.attributionMedium || null,
+            attributionDetail: o.attributionDetail || null,
         });
     }
 

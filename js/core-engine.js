@@ -1001,6 +1001,15 @@
         } else {
             discount = safeSubtotal * (value / 100);
         }
+        // 🆕 [سقف أقصى للخصم]: لو الكوبون عليه maxDiscountAmount (مفيدة خصوصاً
+        // مع النوع "نسبة مئوية" عشان طلب كبير جداً ميدّيش خصم مبالغ فيه)، بيتطبق
+        // هنا بعد الحساب مباشرة - نفس المنطق بالظبط اللي بيطبقه create_order_with_items
+        // في القاعدة، عشان الرقم المعروض للعميلة يطابق اللي هيتسجل فعلياً.
+        const maxDiscountAmount = coupon.maxDiscountAmount !== undefined && coupon.maxDiscountAmount !== null
+            ? parseFloat(coupon.maxDiscountAmount) : null;
+        if (maxDiscountAmount !== null && !isNaN(maxDiscountAmount)) {
+            discount = Math.min(discount, maxDiscountAmount);
+        }
         return Math.max(0, Math.min(discount, safeSubtotal));
     };
 

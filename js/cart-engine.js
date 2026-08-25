@@ -495,8 +495,20 @@ function updateCartSummary(cart, storeData) {
                 promoBtn.disabled = true;
                 promoBtn.textContent = "بيتم التحقق...";
 
+                // 🛡️🔧 [إصلاح جذري]: قبل كده الكود كان بيتبعت لوحده من غير قيمة
+                // السلة ولا رقم هاتف - فأي كوبون عليه "حد أدنى لقيمة الطلب" كان
+                // بيتجاهَل تماماً (يظهر ناجح حتى لو السلة أقل من الحد)، وأي كوبون
+                // "مربوط برقم موبايل" كان يترفض هنا دايماً ومفيش فرصة تانية يتفحص
+                // بيها. دلوقتي بنبعت الـ subtotal الحقيقي دايماً، وبنبعت رقم الهاتف
+                // لو العميل عنده بيانات محفوظة من زيارة سابقة (getBoseCustomerProfile) -
+                // لو مفيش هاتف متاح دلوقتي، برضه هيتفحص تاني بدقة قبل تأكيد الطلب
+                // في الشيك أوت (راجع processFinalBoseOrder) قبل ما يتحسب أي مبلغ نهائي.
+                const currentSubtotalForValidation = window.calculateBoseInvoice(cart, storeData, 0).subtotal;
+                const savedProfileForValidation = typeof window.getBoseCustomerProfile === "function" ? window.getBoseCustomerProfile() : null;
+                const phoneForValidation = savedProfileForValidation && savedProfileForValidation.phone1 ? savedProfileForValidation.phone1 : null;
+
                 try {
-                    const result = await window.BoseSupabase.validateBoseCoupon(code);
+                    const result = await window.BoseSupabase.validateBoseCoupon(code, phoneForValidation, currentSubtotalForValidation);
                     if (result && result.is_valid) {
                         // ⚠️ ملحوظة: أسماء الحقول دي (discount_type/discount_value) افتراض
                         // منطقي بناءً على استخدام calculateCouponDiscount(subtotal, {type, value}).
@@ -504,7 +516,11 @@ function updateCartSummary(cart, storeData) {
                         // دالة validate_coupon في قاعدة البيانات، وتعدلها هنا لو مختلفة.
                         const discountType = result.discount_type || result.type || "percent";
                         const discountValue = parseFloat(result.discount_value ?? result.value ?? 0) || 0;
-                        localStorage.setItem("bose_active_coupon", JSON.stringify({ code, type: discountType, value: discountValue }));
+                        // 🆕 [سقف أقصى للخصم]: لو الكوبون عليه سقف (max_discount_amount)،
+                        // بيتخزن جنب النوع والقيمة عشان calculateCouponDiscount يطبقه.
+                        const maxDiscountAmount = result.max_discount_amount !== null && result.max_discount_amount !== undefined
+                            ? parseFloat(result.max_discount_amount) : null;
+                        localStorage.setItem("bose_active_coupon", JSON.stringify({ code, type: discountType, value: discountValue, maxDiscountAmount }));
                         couponMsg.className = "coupon-status-toast success";
                         couponMsg.textContent = discountType === "fixed"
                             ? `✅ تمام، خصم الكوبون اتطبق: ${discountValue} جنيه`
@@ -1033,6 +1049,44 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFu
         return;
     }
 
+    // 🛡️🔧🆕 [إصلاح جذري - إعادة تحقق نهائية من الكوبون]: الكوبون اللي اتفعّل
+    // في صفحة السلة اتفحص وقتها برقم هاتف/قيمة سلة مبدئيين (أو من غير هاتف
+    // خالص لو أول زيارة). دلوقتي وصلنا لحظة عندنا فيها البيانات الحقيقية 100%
+    // (رقم الهاتف المكتوب فعلاً + قيمة السلة النهائية)، فبنعيد التحقق منه تاني
+    // هنا قبل ما نحسب أي إجمالي أو نبني فاتورة واتساب - عشان لو الكوبون طلع
+    // فعلياً مش سارٍ (مربوط برقم مختلف، أو السلة تحت الحد الأدنى، أو انتهت
+    // صلاحيته من ثانية لثانية)، نوقف العميلة ونوضحلها بدل ما نخليها تكمل
+    // بفاتورة فيها خصم وهمي هيتشال بصمت وقت الحفظ الفعلي في القاعدة.
+    const rawActiveCouponCheck = localStorage.getItem("bose_active_coupon");
+    if (rawActiveCouponCheck && window.BoseSupabase && typeof window.BoseSupabase.validateBoseCoupon === "function") {
+        try {
+            const activeCouponCheck = JSON.parse(rawActiveCouponCheck);
+            if (activeCouponCheck && activeCouponCheck.code) {
+                const subtotalForRecheck = window.calculateBoseInvoice(cart, storeData, 0).subtotal;
+                const recheckResult = await window.BoseSupabase.validateBoseCoupon(activeCouponCheck.code, sanitizedPhone1, subtotalForRecheck);
+                if (!recheckResult || !recheckResult.is_valid) {
+                    localStorage.removeItem("bose_active_coupon");
+                    const couponMsgEl = document.getElementById("coupon-message");
+                    if (couponMsgEl) {
+                        couponMsgEl.className = "coupon-status-toast error";
+                        couponMsgEl.textContent = (recheckResult && recheckResult.message) || "⚠️ كود الخصم مبقاش شغال، شيلناه من طلبك.";
+                    }
+                    if (typeof window.showBoseGlobalToast === "function") {
+                        window.showBoseGlobalToast((recheckResult && recheckResult.message) || "كود الخصم مبقاش شغال - راجعي طلبك وأكدي تاني");
+                    }
+                    if (typeof recalculateCheckoutInvoice === "function") recalculateCheckoutInvoice(cart, storeData, shippingFee, method, payFull);
+                    return;
+                }
+            }
+        } catch (e) {
+            // لو التحقق فشل لأي سبب تقني (مشكلة نت مثلاً)، الأمان المالي الحقيقي
+            // مضمون أصلاً من نفس الفحص جوه create_order_with_items وقت الحفظ -
+            // فمنعطلش تأكيد الطلب هنا، بس بنسيب الرقم النهائي يتصحح تلقائياً
+            // بعد الحفظ (راجع استبدال grandTotal بالقيمة المؤكدة تحت).
+            console.warn("⚠️ تعذر إعادة التحقق من الكوبون قبل التأكيد النهائي:", e);
+        }
+    }
+
     // 🧮 [توحيد حسابي]: نفس المعادلة المستخدمة بالسلة وبصفحة الشحن بالظبط
     // (🎁 نظام نقاط الولاء: هنا كمان بنضيف الخصم التلقائي وخصم قسيمة الولاء
     // لو موجودين، عشان المبلغ المطلوب دفعه فعلياً والمرسل في فاتورة الواتساب
@@ -1154,6 +1208,30 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFu
                 completedBoseOrderObject.loyaltyDiscountAmount = dbResult.loyaltyDiscountAmount || 0;
                 completedBoseOrderObject.voucherAmountUsed = dbResult.voucherAmountUsed || 0;
                 completedBoseOrderObject.isLoyaltyMilestone = !!dbResult.isLoyaltyMilestone;
+
+                // 🛡️🔧👑 [إصلاح جذري - مصدر الحقيقة المالي]: قبل كده الكود هنا كان
+                // بيسجل قيم الولاء بس من رد القاعدة، ويسيب grandTotal وdepositAmount
+                // زي ما اتحسبوا محلياً في السلة قبل الحفظ. لو الكوبون طلع فعلياً مش
+                // سارٍ وقت الحفظ (نادر بعد التحقق المزدوج فوق، لكن وارد - مثلاً race
+                // condition على max_uses بين عميلتين في نفس اللحظة)، كانت فاتورة
+                // الواتساب وصفحة "تم الطلب" هتعرض للعميلة رقم أقل من اللي فعلياً
+                // هيتحصّل ويتسجل في لوحة التحكم - تناقض حقيقي ممكن يسبب نزاع. دلوقتي
+                // بنستبدل كل الأرقام المالية بالقيم المؤكدة الراجعة فعلياً من
+                // create_order_with_items (مصدر الحقيقة الوحيد)، ونعيد حساب العربون/
+                // الباقي على أساسها بدل القيمة المحسوبة محلياً قبل الحفظ. ده كمان
+                // بيضمن إن زرار "إعادة إرسال الفاتورة" (لو العميلة استخدمته لاحقاً من
+                // صفحة النجاح) هيبعت نفس الرقم الصحيح بالظبط، مش رقم قديم مختلف.
+                if (dbResult.grandTotal !== undefined && dbResult.grandTotal !== null) {
+                    completedBoseOrderObject.grandTotal = dbResult.grandTotal;
+                }
+                if (dbResult.confirmedDiscountAmount !== undefined && dbResult.confirmedDiscountAmount !== null) {
+                    completedBoseOrderObject.discountAmount = dbResult.confirmedDiscountAmount;
+                }
+                if (dbResult.depositAmount !== undefined && dbResult.depositAmount !== null) {
+                    const confirmedGrandTotal = parseFloat(completedBoseOrderObject.grandTotal) || 0;
+                    completedBoseOrderObject.depositAmount = dbResult.depositAmount;
+                    completedBoseOrderObject.remainingAmount = Math.max(0, confirmedGrandTotal - (parseFloat(dbResult.depositAmount) || 0));
+                }
             }
         } catch (err) {
             // 🛡️ لو الاتصال فشل (نت ضعيف مثلاً) البيع لا يتوقف أبداً - بنكمل
