@@ -771,13 +771,13 @@
      * القاعدة (unique constraint على code) قبل ما يوصل لأي مكان تاني.
      */
 
-    /** كل الكوبونات مرتبة أبجدياً */
-    async function getAllCoupons() {
+    /** كل الكوبونات مرتبة أبجدياً. افتراضياً بيستبعد الكوبونات المؤرشفة (راجع
+     *  archiveCoupon تحت) - مرّر includeArchived=true لو محتاج تشوفها كلها. */
+    async function getAllCoupons(includeArchived) {
         try {
-            const { data, error } = await client
-                .from("coupons")
-                .select("*")
-                .order("code", { ascending: true });
+            let query = client.from("coupons").select("*").order("code", { ascending: true });
+            if (!includeArchived) query = query.eq("is_archived", false);
+            const { data, error } = await query;
             if (error) throw error;
             return data || [];
         } catch (e) {
@@ -798,9 +798,23 @@
         if (error) throw error;
     }
 
-    /** حذف كوبون نهائياً */
+    /** حذف كوبون نهائياً (لا يمكن التراجع) */
     async function deleteCoupon(code) {
         const { error } = await client.from("coupons").delete().eq("code", code);
+        if (error) throw error;
+    }
+
+    /** 🆕 [أرشفة بدل حذف نهائي]: الكود بيختفي من القائمة النشطة ومستحيل
+     *  يتفعّل تاني (validate_coupon بيرفضه بمجرد is_archived=true)، لكن سجله
+     *  وتاريخ استخدامه يفضلوا محفوظين بالكامل - عكس الحذف النهائي. */
+    async function archiveCoupon(code) {
+        const { error } = await client.from("coupons").update({ is_archived: true, is_active: false }).eq("code", code);
+        if (error) throw error;
+    }
+
+    /** استرجاع كوبون من الأرشيف (بيرجع is_archived=false بس مش is_active - لازم تفعيله يدوياً بعدها) */
+    async function unarchiveCoupon(code) {
+        const { error } = await client.from("coupons").update({ is_archived: false }).eq("code", code);
         if (error) throw error;
     }
 
@@ -1492,6 +1506,8 @@
         createCoupon,
         updateCoupon,
         deleteCoupon,
+        archiveCoupon,
+        unarchiveCoupon,
         getCouponUsageStats,
         getAllReviews,
         approveReview,
