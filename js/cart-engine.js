@@ -1159,11 +1159,25 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFu
         }
     }
 
-    const whatsappMessageText = buildBoseFormattedWhatsappInvoice(completedBoseOrderObject);
+    const fullWhatsappMessageText = buildBoseFormattedWhatsappInvoice(completedBoseOrderObject);
+
+    // 🛡️🐛 [إصلاح جذري - حماية إضافية ضد الروابط الطويلة جداً]: لو النص الكامل
+    // (بعد الترميز لرابط واتساب) بيتعدى ٣٠٠٠ حرف تقريباً (بيحصل بسهولة مع
+    // أصناف مخصصة كتير أو صور مرجعية متعددة)، بنستخدم النسخة المختصرة
+    // (buildBoseCondensedWhatsappInvoice فوق) في رابط واتساب الفعلي بدل الطويلة
+    // - عشان نضمن إن الرابط يفتح بنجاح في كل المتصفحات مهما كانت. النص الكامل
+    // بالتفاصيل والصور بيفضل محفوظ زي ما هو في قاعدة البيانات (custom_details/
+    // reference_images) وفي صفحة تتبع الطلب، فمفيش أي معلومة بتضيع.
+    const encodedLength = encodeURIComponent(fullWhatsappMessageText).length;
+    const whatsappMessageText = encodedLength > 3000
+        ? buildBoseCondensedWhatsappInvoice(completedBoseOrderObject)
+        : fullWhatsappMessageText;
     const brandWhatsappNumber = storeData.store?.phone || "01097238441";
 
     // ربط الرسالة بالـ object لضمان عدم حدوث شلل لزر الإرسال البديل بصفحة النجاح
+    // (بنحفظ نفس النص اللي فعلاً هيتفتح بيه واتساب، كامل أو مختصر حسب الحالة)
     completedBoseOrderObject.whatsappMessage = whatsappMessageText;
+    completedBoseOrderObject.whatsappMessageFull = fullWhatsappMessageText;
     localStorage.setItem("bose_last_order", JSON.stringify(completedBoseOrderObject));
 
     localStorage.removeItem("bose_active_coupon");
@@ -1371,6 +1385,43 @@ function buildBoseFormattedWhatsappInvoice(order) {
     return msg;
 }
 
+// 🛡️🐛 [إصلاح جذري - حماية إضافية ضد فشل فتح واتساب في الطلبات الكبيرة]:
+// طلبات فيها أكتر من صنف مخصص (تورت/ورد) بصور مرجعية بتولّد نص فاتورة طويل
+// جداً (رابط wa.me النهائي ممكن يوصل لآلاف الحروف) - حتى بعد إصلاح رابط
+// intent://، لسه ممكن بعض المتصفحات (خصوصاً المتصفحات الداخلية جوه تطبيقات
+// السوشيال ميديا) تتعثر مع روابط طويلة جداً. الدالة دي بتبني نسخة مختصرة
+// من الفاتورة (بيانات العميل + كل صنف باسمه وسعره وكميته بس، من غير تفاصيل
+// التخصيص الطويلة ولا روابط الصور) + توجّه الفرع لصفحة تتبع الطلب لمشاهدة
+// كل التفاصيل والصور كاملة (محفوظة بالفعل في قاعدة البيانات مع الطلب).
+// بتتستخدم بس لو النص الكامل طويل جداً (راجع processFinalBoseOrder تحت).
+function buildBoseCondensedWhatsappInvoice(order) {
+    let msg = `✨ *فاتورة حجز مختصرة - حلويات بوسي* ✨\n`;
+    msg += `(الطلب فيه تفاصيل/صور كتير، فهنبعت نسخة مختصرة هنا - كل التفاصيل والصور الكاملة موجودة في رابط تتبع الطلب تحت 👇)\n\n`;
+    msg += `--------------------------------------------------\n`;
+    msg += `🧾 *رقم المعاملة:* ${order.orderId}\n`;
+    msg += `👤 *العميل:* ${order.customerName}\n`;
+    msg += `📞 *رقم الاتصال:* ${order.phone1}\n`;
+    msg += `🚗 *مسار الاستلام:* ${order.deliveryMethod}\n`;
+    msg += `📍 *التفاصيل الجغرافية:* ${order.address}\n`;
+    msg += `📅 *موعد الاستلام:* ${order.scheduledDate} الساعة ${formatBoseTimeToEgyptian12Hour(order.scheduledTime)}\n\n`;
+    msg += `--------------------------------------------------\n`;
+    msg += `📦 *الأصناف:*\n`;
+    order.items.forEach((item, idx) => {
+        msg += `${idx + 1}. ${item.title} ×${item.quantity} — ${parseFloat(item.finalPrice).toFixed(2)} EGP\n`;
+    });
+    msg += `--------------------------------------------------\n`;
+    msg += `👑 *المجموع النهائي:* ${order.grandTotal} EGP\n`;
+    if (order.depositAmount !== undefined) {
+        msg += `💳 *المطلوب دفعه الآن:* ${order.depositAmount} EGP (كاش أو InstaPay على ${order.paymentPhone})\n`;
+    }
+    if (order.dbOrderNumber) {
+        const siteOrigin = (typeof window !== "undefined" && window.location && window.location.origin) ? window.location.origin : "https://bose-sweet.vercel.app";
+        msg += `\n🔗 *كل تفاصيل التخصيص والصور المرفوعة:*\n${siteOrigin}/track-order.html?order=${encodeURIComponent(order.dbOrderNumber)}&phone=${encodeURIComponent(order.phone1)}\n`;
+    }
+    msg += `\n📸 من فضلك ابعتي لقطة شاشة التحويل هنا فور إتمامه وهنأكد الحجز فوراً.`;
+    return msg;
+}
+
 /**
  * =========================================================================
  * 🧾 3. محرك وإدارة صفحة نجاح الطلب وإصدار الفاتورة (order-success.html)
@@ -1391,6 +1442,7 @@ function renderBoseSuccessPage(storeData) {
     const orderIdDisplay = document.getElementById("success-order-id-display");
     const customerWelcome = document.getElementById("success-customer-welcome");
     const trackOrderBtn = document.getElementById("bose-success-track-btn");
+    const resendWhatsappBtn = document.getElementById("bose-resend-whatsapp-btn");
 
     const showEmptyState = () => {
         if (receiptWrapper) {
@@ -1408,6 +1460,24 @@ function renderBoseSuccessPage(storeData) {
         console.error("⚠️ فشل قراءة أو معالجة إيصال الفاتورة الأخيرة.", e);
         showEmptyState();
         return;
+    }
+
+    // 🛡️🐛👑 [إصلاح جذري]: زرار "إرسال فاتورة الطلب على واتساب" - شبكة أمان
+    // دايماً ظاهرة (مش بس وقت الفشل) لأن مفيش طريقة موثوقة نتأكد بيها 100%
+    // إن الفتح التلقائي في checkout.html نجح فعلياً عند العميلة (خصوصاً في
+    // المتصفحات الداخلية اللي ممكن تمنع فتح تاب جديد بصمت). بيستخدم بالظبط
+    // نفس نص الفاتورة المحفوظ (order.whatsappMessage) - نفس النص اللي
+    // اتفتح بيه واتساب أول مرة، من غير أي إعادة حساب.
+    if (resendWhatsappBtn && order.whatsappMessage) {
+        resendWhatsappBtn.style.display = "flex";
+        resendWhatsappBtn.onclick = (e) => {
+            e.preventDefault();
+            const phone = order.paymentPhone || "01097238441";
+            const link = typeof window.buildWhatsappLink === "function"
+                ? window.buildWhatsappLink(phone, order.whatsappMessage)
+                : `https://wa.me/2${phone}?text=${encodeURIComponent(order.whatsappMessage)}`;
+            window.open(link, "_blank");
+        };
     }
 
     if (orderNumLbl) orderNumLbl.textContent = `رقم طلب الفاتورة: #${order.orderNumber || '0000'}`;
