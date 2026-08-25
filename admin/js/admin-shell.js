@@ -49,6 +49,7 @@
                 { key: "loyalty-settings", label: "إعدادات الولاء", icon: "fa-crown", href: "loyalty-settings.html" },
                 { key: "customer-lookup", label: "متابعة العملاء", icon: "fa-magnifying-glass", href: "customer-lookup.html" },
                 { key: "loyalty-vouchers", label: "القسائم الصادرة", icon: "fa-gift", href: "loyalty-vouchers.html" },
+                { key: "voucher-notifications", label: "تنبيه القسائم", icon: "fa-bell", href: "voucher-notifications.html", badgeKey: "vouchersUnnotified" },
             ],
         },
         {
@@ -83,6 +84,7 @@
         "loyalty-settings": ["إعدادات الولاء", "نسب الخصم، قيمة قسيمة الهدية، مدة صلاحيتها، وعدد الطلبات في الدورة"],
         "customer-lookup": ["متابعة العملاء", "دوّري برقم تليفون العميل: كام طلب عنده، فين وصل في دائرة الولاء، وقسايمه"],
         "loyalty-vouchers": ["القسائم الصادرة", "كل قسايم الهدية اللي اتكسبت، مين استخدمها، وقد إيه فلوس اتصرفت من خلالها"],
+        "voucher-notifications": ["تنبيه القسائم", "قسائم نشطة لسه محدش قال للعميل بيها - ابعتيله كارت الهدية بضغطة واحدة"],
     };
 
     function buildSidebar(currentPage) {

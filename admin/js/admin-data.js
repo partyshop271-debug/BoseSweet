@@ -143,6 +143,15 @@
             stats.reviewFollowupsDue = 0;
         }
 
+        // شارة "قسائم لسه محدش اتقالها" - نفس منطق getUnnotifiedVouchers بالظبط
+        try {
+            const unnotified = await getUnnotifiedVouchers();
+            stats.vouchersUnnotified = unnotified.length;
+        } catch (e) {
+            console.warn("تعذر جلب عدد القسائم اللي لسه محدش اتقالها:", e.message);
+            stats.vouchersUnnotified = 0;
+        }
+
         // 💵 [عربون/دفع مقدم] شارة "بانتظار تأكيد العربون" - نفس شرط getAwaitingDepositCount بس هنا كجزء من الملخص العام
         try {
             const { count } = await client
@@ -1190,6 +1199,91 @@
     }
 
     /**
+     * 🎁 [إصدار قسيمة يدوي]: القسائم بتتصدر تلقائياً من النظام كل ١٢ طلب،
+     * لكن أحياناً محتاجة تصدّري قسيمة يدوي (تعويض عميلة، مكافأة استثنائية،
+     * أو أي سبب تجاري). earned_order_id بيفضل null عشان نعرف إنها صدرت يدوي
+     * مش من دورة الولاء - بيتفرق عن القسائم التلقائية في العرض بعدين لو حبينا.
+     * الكود بيتولّد من نفس دالة القاعدة اللي بتستخدمها دورة الولاء التلقائية
+     * (generate_loyalty_voucher_code) عشان يفضل بنفس الشكل ومضمون إنه فريد.
+     */
+    async function issueLoyaltyVoucher({ phone, amount, expiresAt }) {
+        const cleanPhone = (phone || "").replace(/[\s\-()+]/g, "");
+        if (!/^01[0125][0-9]{8}$/.test(cleanPhone)) {
+            throw new Error("رقم الموبايل غير صحيح");
+        }
+        const { data: codeData, error: codeErr } = await client.rpc("generate_loyalty_voucher_code");
+        if (codeErr) throw codeErr;
+        const code = codeData;
+
+        const { error } = await client.from("loyalty_vouchers").insert({
+            phone: cleanPhone,
+            code,
+            amount,
+            remaining_amount: amount,
+            expires_at: expiresAt,
+            earned_order_id: null,
+        });
+        if (error) throw error;
+        return code;
+    }
+
+    /**
+     * ✏️ [تعديل قسيمة موجودة]: بنسمح بتعديل الرصيد المتبقي وتاريخ الانتهاء
+     * بس - مش الكود ولا رقم الموبايل ولا القيمة الأصلية (amount)، عشان دول
+     * بيانات هوية/تدقيق أساسية ميصحش تتغيّر بعد الإصدار. الحالات العملية
+     * لتعديل الرصيد: تصحيح غلطة، أو تعويض إضافي لعميلة. تعديل الانتهاء:
+     * مد الصلاحية لعميلة طلبت مهلة أكتر.
+     */
+    async function updateLoyaltyVoucher(voucherId, { remainingAmount, expiresAt }) {
+        const patch = {};
+        if (remainingAmount !== undefined && remainingAmount !== null) patch.remaining_amount = remainingAmount;
+        if (expiresAt !== undefined && expiresAt !== null) patch.expires_at = expiresAt;
+        if (!Object.keys(patch).length) return;
+        const { error } = await client.from("loyalty_vouchers").update(patch).eq("id", voucherId);
+        if (error) throw error;
+    }
+
+    /**
+     * 🎁 [صفحة تنبيه القسائم]: قسائم نشطة (رصيدها لسه موجود ولسه ما انتهتش)
+     * ومحدش قالها للعميل لحد دلوقتي (notified_at is null). دي شغالة سواء
+     * القسيمة اتصدرت تلقائي من دورة الـ١٢ طلب أو يدوي من زرار "إصدار قسيمة".
+     */
+    async function getUnnotifiedVouchers() {
+        try {
+            const { data, error } = await client
+                .from("loyalty_vouchers")
+                .select("id, phone, code, amount, remaining_amount, expires_at, issued_at, earned_order:orders!loyalty_vouchers_earned_order_id_fkey(order_number, customer_name)")
+                .is("notified_at", null)
+                .gt("remaining_amount", 0)
+                .gt("expires_at", new Date().toISOString())
+                .order("issued_at", { ascending: true });
+            if (error) throw error;
+            return data || [];
+        } catch (e) {
+            console.warn("تعذر جلب القسائم اللي لسه محدش اتقالها:", e.message);
+            return [];
+        }
+    }
+
+    async function markVoucherNotified(voucherId) {
+        const { error } = await client
+            .from("loyalty_vouchers")
+            .update({ notified_at: new Date().toISOString() })
+            .eq("id", voucherId);
+        if (error) throw error;
+    }
+
+    /** إلغاء قسيمة (بتصفير الرصيد المتبقي بدل الحذف النهائي - عشان يفضل أثرها
+     *  في سجل "إجمالي المصروف من القسائم" وسجل الاستخدام واضح وقابل للمراجعة) */
+    async function revokeLoyaltyVoucher(voucherId) {
+        const { error } = await client
+            .from("loyalty_vouchers")
+            .update({ remaining_amount: 0 })
+            .eq("id", voucherId);
+        if (error) throw error;
+    }
+
+    /**
      * 📝 سجل نشاط إداري عام - بيتحط في admin_audit_log (نفس الجدول اللي
      * صفحة "سجل النشاط" بتقرأ منه). admin_id و admin_name بيتملوا تلقائياً
      * بواسطة trigger على مستوى القاعدة (trg_fill_audit_log_admin) من جلسة
@@ -1412,6 +1506,11 @@
         cleanEgyptianPhone,
         getCustomerLoyaltyProfile,
         getAllLoyaltyVouchers,
+        issueLoyaltyVoucher,
+        updateLoyaltyVoucher,
+        getUnnotifiedVouchers,
+        markVoucherNotified,
+        revokeLoyaltyVoucher,
         grantManualLoyaltyVoucher,
         voidLoyaltyVoucher,
         setOrderExcludedFromLoyalty,
