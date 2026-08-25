@@ -10,6 +10,7 @@
     "use strict";
 
     let allCoupons = [];
+    let showArchived = false;
     // 📊 [تقرير استخدام الكوبونات]: خريطة { code -> { usageCount, totalDiscount, lastUsedAt } }
     // محسوبة من جدول orders الفعلي، مش عمود مخزّن على جدول coupons نفسه.
     let usageStats = {};
@@ -62,6 +63,31 @@
                 <i class="fa-solid fa-sack-dollar"></i> ${Math.round(c.min_order_value)}+ ج.م
             </span>`);
         }
+        // 🆕 القيود الجديدة - نفس فلسفة الشارات: بتعكس فحوصات حقيقية شغالة
+        // فعلياً في validate_coupon و create_order_with_items، مش شكلية.
+        if (c.max_discount_amount !== null && c.max_discount_amount !== undefined) {
+            badges.push(`<span class="adm-badge neutral" title="أقصى قيمة خصم بالجنيه">
+                <i class="fa-solid fa-hand-holding-dollar"></i> سقف ${Math.round(c.max_discount_amount)} ج.م
+            </span>`);
+        }
+        if (c.first_order_only) {
+            badges.push(`<span class="adm-badge neutral" title="بيشتغل بس لو دي أول طلب حقيقي لنفس رقم الهاتف">
+                <i class="fa-solid fa-star"></i> أول طلب فقط
+            </span>`);
+        }
+        if (c.starts_at) {
+            const startDate = new Date(c.starts_at);
+            const notStartedYet = startDate.getTime() > Date.now();
+            const label = startDate.toLocaleDateString("ar-EG", { day: "2-digit", month: "2-digit", year: "numeric" });
+            badges.push(`<span class="adm-badge ${notStartedYet ? "warning" : "neutral"}" title="تاريخ بداية السريان">
+                <i class="fa-solid fa-hourglass-start"></i> ${notStartedYet ? "يبدأ في" : "بدأ في"} ${label}
+            </span>`);
+        }
+        if (c.is_archived) {
+            badges.push(`<span class="adm-badge danger" title="مؤرشف - مش شغال ومش هيظهر للعميل">
+                <i class="fa-solid fa-box-archive"></i> مؤرشف
+            </span>`);
+        }
         if (!badges.length) return `<span class="adm-order-item-meta">بدون قيود</span>`;
         return `<div style="display:flex; flex-direction:column; gap:4px; align-items:flex-start;">${badges.join("")}</div>`;
     }
@@ -84,14 +110,14 @@
         tbody.innerHTML = allCoupons.map((c) => {
             const usage = formatUsage(c.code);
             return `
-            <tr>
+            <tr${c.is_archived ? ' style="opacity:0.6;"' : ""}>
                 <td><strong>${e(c.code)}</strong></td>
                 <td>${e(TYPE_LABELS[c.type] || c.type)}</td>
                 <td>${formatValue(c)}</td>
                 <td>${formatRestrictions(c)}</td>
                 <td>
                     <button class="adm-btn adm-btn-ghost adm-btn-icon" data-action="toggle" data-code="${e(c.code)}"
-                            title="${c.is_active ? "إيقاف الكوبون" : "تفعيل الكوبون"}">
+                            title="${c.is_active ? "إيقاف الكوبون" : "تفعيل الكوبون"}" ${c.is_archived ? "disabled" : ""}>
                         <i class="fa-solid ${c.is_active ? "fa-toggle-on" : "fa-toggle-off"}" style="color: ${c.is_active ? "var(--adm-success)" : "var(--adm-text-muted)"}; font-size: 1.2rem;"></i>
                     </button>
                 </td>
@@ -103,7 +129,15 @@
                     <button class="adm-btn adm-btn-ghost adm-btn-icon" data-action="edit" data-code="${e(c.code)}" title="تعديل">
                         <i class="fa-solid fa-pen"></i>
                     </button>
-                    <button class="adm-btn adm-btn-ghost adm-btn-icon" data-action="delete" data-code="${e(c.code)}" title="حذف">
+                    ${c.is_archived
+                        ? `<button class="adm-btn adm-btn-ghost adm-btn-icon" data-action="unarchive" data-code="${e(c.code)}" title="استرجاع من الأرشيف">
+                            <i class="fa-solid fa-box-open"></i>
+                        </button>`
+                        : `<button class="adm-btn adm-btn-ghost adm-btn-icon" data-action="archive" data-code="${e(c.code)}" title="أرشفة (بدل الحذف النهائي - السجل والإحصائيات تفضل محفوظة)">
+                            <i class="fa-solid fa-box-archive"></i>
+                        </button>`
+                    }
+                    <button class="adm-btn adm-btn-ghost adm-btn-icon" data-action="delete" data-code="${e(c.code)}" title="حذف نهائي (لا يمكن التراجع)">
                         <i class="fa-solid fa-trash"></i>
                     </button>
                 </td>
@@ -122,6 +156,12 @@
         tbody.querySelectorAll('[data-action="toggle"]').forEach((btn) => {
             btn.addEventListener("click", () => handleToggleActive(btn.getAttribute("data-code")));
         });
+        tbody.querySelectorAll('[data-action="archive"]').forEach((btn) => {
+            btn.addEventListener("click", () => handleArchive(btn.getAttribute("data-code")));
+        });
+        tbody.querySelectorAll('[data-action="unarchive"]').forEach((btn) => {
+            btn.addEventListener("click", () => handleUnarchive(btn.getAttribute("data-code")));
+        });
     }
 
     async function handleToggleActive(code) {
@@ -139,8 +179,8 @@
 
     async function handleDelete(code) {
         const confirmed = await window.BoseAdminUI.confirmAction({
-            title: "تأكيد الحذف",
-            message: `هل أنت متأكد من حذف كوبون "${code}"؟ الإجراء ده نهائي.`,
+            title: "تأكيد الحذف النهائي",
+            message: `هل أنت متأكد من حذف كوبون "${code}" نهائياً؟ الإجراء ده مينفعش يترجع - لو عايز تشيله من القائمة النشطة بس مع الاحتفاظ بسجله وإحصائياته، استخدم زرار "أرشفة" بدل كده.`,
             confirmLabel: "حذف نهائي",
             danger: true,
         });
@@ -155,13 +195,44 @@
         }
     }
 
+    /** 🆕 [أرشفة]: البديل الآمن للحذف النهائي - الكود بيبقى غير قابل للاستخدام
+     *  فوراً (زي is_active=false بالظبط) لكن بيختفي كمان من القائمة النشطة،
+     *  مع الاحتفاظ الكامل بسجله وتاريخ استخدامه وإحصائياته. */
+    async function handleArchive(code) {
+        const confirmed = await window.BoseAdminUI.confirmAction({
+            title: "أرشفة الكوبون",
+            message: `هل تريد أرشفة كوبون "${code}"؟ هيختفي من القائمة النشطة ومستحيل يتفعّل تاني، لكن سجل استخدامه هيفضل محفوظ ويمكن استرجاعه لاحقاً.`,
+            confirmLabel: "أرشفة",
+        });
+        if (!confirmed) return;
+
+        try {
+            await window.BoseAdmin.archiveCoupon(code);
+            window.BoseAdminUI.showToast("تم أرشفة الكوبون", "success");
+            await loadCoupons();
+        } catch (e) {
+            window.BoseAdminUI.showToast("تعذر أرشفة الكوبون", "error");
+        }
+    }
+
+    async function handleUnarchive(code) {
+        try {
+            await window.BoseAdmin.unarchiveCoupon(code);
+            window.BoseAdminUI.showToast("تم استرجاع الكوبون من الأرشيف - لسه محتاج تفعّله يدوياً", "success");
+            await loadCoupons();
+        } catch (e) {
+            window.BoseAdminUI.showToast("تعذر استرجاع الكوبون", "error");
+        }
+    }
+
     /* ============================= مودال إضافة/تعديل ============================= */
 
     function openCouponModal(coupon) {
         const isEdit = !!coupon;
         const e = window.BoseAdminUI.escapeHtml;
-        // تاريخ الانتهاء المخزّن timestamptz، والحقل input[type=date] محتاج YYYY-MM-DD بس
+        // تاريخ الانتهاء/البداية المخزّن timestamptz، والحقل input[type=date] محتاج YYYY-MM-DD بس
         const expiryDateValue = isEdit && coupon.expires_at ? coupon.expires_at.slice(0, 10) : "";
+        const startsDateValue = isEdit && coupon.starts_at ? coupon.starts_at.slice(0, 10) : "";
 
         const overlay = document.createElement("div");
         overlay.className = "adm-modal-overlay";
@@ -201,11 +272,17 @@
                             <span class="adm-hint">سيبه فاضي لكوبون بدون تاريخ انتهاء</span>
                         </div>
                         <div class="adm-field">
-                            <label class="adm-checkbox-label">
-                                <input type="checkbox" id="cf-active" ${!isEdit || coupon.is_active ? "checked" : ""}>
-                                الكوبون مفعّل ويمكن استخدامه الآن
-                            </label>
+                            <label for="cf-starts">تاريخ البداية (اختياري)</label>
+                            <input type="date" class="adm-input" id="cf-starts" value="${startsDateValue}">
+                            <span class="adm-hint">سيبه فاضي عشان الكود يشتغل من لحظة الحفظ</span>
                         </div>
+                    </div>
+
+                    <div class="adm-field">
+                        <label class="adm-checkbox-label">
+                            <input type="checkbox" id="cf-active" ${!isEdit || coupon.is_active ? "checked" : ""}>
+                            الكوبون مفعّل ويمكن استخدامه الآن
+                        </label>
                     </div>
 
                     <div class="adm-form-divider" style="margin: 16px 0; border-top: 1px dashed rgba(0,0,0,0.1);"></div>
@@ -226,6 +303,23 @@
                             <input type="number" min="0" step="0.01" class="adm-input" id="cf-min-order"
                                    value="${isEdit && coupon.min_order_value !== null && coupon.min_order_value !== undefined ? coupon.min_order_value : ""}"
                                    placeholder="بدون حد أدنى">
+                        </div>
+                    </div>
+
+                    <div class="adm-form-grid">
+                        <div class="adm-field">
+                            <label for="cf-max-discount">أقصى قيمة خصم بالجنيه (اختياري)</label>
+                            <input type="number" min="0" step="0.01" class="adm-input" id="cf-max-discount"
+                                   value="${isEdit && coupon.max_discount_amount !== null && coupon.max_discount_amount !== undefined ? coupon.max_discount_amount : ""}"
+                                   placeholder="بدون سقف">
+                            <span class="adm-hint">مفيدة خصوصاً مع "نسبة مئوية" عشان طلب كبير جداً ميدّيش خصم مبالغ فيه</span>
+                        </div>
+                        <div class="adm-field">
+                            <label class="adm-checkbox-label" style="margin-top: 28px;">
+                                <input type="checkbox" id="cf-first-order" ${isEdit && coupon.first_order_only ? "checked" : ""}>
+                                لأول طلب فقط
+                            </label>
+                            <span class="adm-hint">هيشتغل بس لو دي أول طلب حقيقي (غير ملغي) لنفس رقم الهاتف - يتطلب إدخال رقم الهاتف</span>
                         </div>
                     </div>
 
@@ -268,8 +362,11 @@
             }
 
             const expiresRaw = document.getElementById("cf-expires").value;
+            const startsRaw = document.getElementById("cf-starts").value;
             const maxUsesRaw = document.getElementById("cf-max-uses").value;
             const minOrderRaw = document.getElementById("cf-min-order").value;
+            const maxDiscountRaw = document.getElementById("cf-max-discount").value;
+            const firstOrderOnly = document.getElementById("cf-first-order").checked;
             const boundPhoneRaw = document.getElementById("cf-bound-phone").value.trim();
             // توحيد شكل رقم الموبايل زي بالظبط ما بتفحصه دالة create_order_with_items
             // في القاعدة (v_clean_phone) عشان المطابقة تنجح فعليًا وقت الطلب
@@ -282,14 +379,26 @@
                 return;
             }
 
+            // نهاية اليوم المختار (23:59:59) لتاريخ الانتهاء، وبداية اليوم (00:00:00) لتاريخ البداية
+            const startsAtIso = startsRaw ? new Date(`${startsRaw}T00:00:00`).toISOString() : null;
+            const expiresAtIso = expiresRaw ? new Date(`${expiresRaw}T23:59:59`).toISOString() : null;
+            if (startsAtIso && expiresAtIso && new Date(startsAtIso) >= new Date(expiresAtIso)) {
+                window.BoseAdminUI.showToast("تاريخ البداية لازم يكون قبل تاريخ الانتهاء", "error");
+                saveBtn.disabled = false;
+                saveBtn.textContent = "حفظ الكوبون";
+                return;
+            }
+
             const payload = {
                 type,
                 value,
                 is_active: document.getElementById("cf-active").checked,
-                // نهاية اليوم المختار (23:59:59) عشان الكوبون يفضل شغال طول آخر يوم في صلاحيته
-                expires_at: expiresRaw ? new Date(`${expiresRaw}T23:59:59`).toISOString() : null,
+                expires_at: expiresAtIso,
+                starts_at: startsAtIso,
                 max_uses: maxUsesRaw ? parseInt(maxUsesRaw, 10) : null,
                 min_order_value: minOrderRaw ? parseFloat(minOrderRaw) : null,
+                max_discount_amount: maxDiscountRaw ? parseFloat(maxDiscountRaw) : null,
+                first_order_only: firstOrderOnly,
                 bound_phone: boundPhoneRaw ? boundPhoneClean : null,
             };
 
@@ -325,9 +434,9 @@
 
     async function loadCoupons() {
         const tbody = document.getElementById("coupons-tbody");
-        tbody.innerHTML = `<tr><td colspan="9"><div class="adm-loading-spinner"></div></td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="10"><div class="adm-loading-spinner"></div></td></tr>`;
         const [coupons, stats] = await Promise.all([
-            window.BoseAdmin.getAllCoupons(),
+            window.BoseAdmin.getAllCoupons(showArchived),
             window.BoseAdmin.getCouponUsageStats(),
         ]);
         allCoupons = coupons;
@@ -337,6 +446,13 @@
 
     document.addEventListener("BoseAdminReady", async () => {
         document.getElementById("add-coupon-btn").addEventListener("click", () => openCouponModal(null));
+        const archivedToggle = document.getElementById("show-archived-toggle");
+        if (archivedToggle) {
+            archivedToggle.addEventListener("change", async () => {
+                showArchived = archivedToggle.checked;
+                await loadCoupons();
+            });
+        }
         await loadCoupons();
     });
 })();
