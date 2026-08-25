@@ -1138,8 +1138,18 @@
         // "طلب واحد" في تسلسل الولاء. تسلسل الولاء بيتحسب بعدد صفوف orders
         // (غير الملغاة) لنفس رقم الهاتف - مش بعدد عناصر order_items - بالظبط
         // زي ما create_order_with_items و get_customer_rewards بيحسبوا في القاعدة.
-        const nonCancelledOrders = orders.filter((o) => o.status !== "cancelled");
-        const totalOrders = nonCancelledOrders.length;
+        //
+        // 🛡️ [تعديل ثغرة الولاء - جزء ٣]: كان الفلتر هنا `status !== "cancelled"`
+        // بس، يعني طلب لسه "بانتظار تأكيد العربون" (متأكدش دفعه من لوحة التحكم)
+        // كان يظهر هنا وكأنه محسوب فعلاً في تسلسل الولاء - رغم إن القاعدة نفسها
+        // (create_order_with_items + get_customer_rewards بعد التعديل) بقت
+        // بتحسب بس من الطلبات اللي deposit_status = 'confirmed'. ده كان يخلي
+        // صفحة متابعة العملاء في الأدمن تعرض للموظفة رقم/موضع مختلف عن الحقيقي.
+        // دلوقتي نفس المعيار بالظبط في كل مكان: بس الطلبات المؤكد دفعها.
+        const confirmedOrders = orders.filter(
+            (o) => o.deposit_status === "confirmed" && o.loyalty_excluded !== true
+        );
+        const totalOrders = confirmedOrders.length;
 
         const cycleLength = Math.max(1, parseInt(loyalty.cycle_length, 10) || 7);
         const tiers = loyalty.tiers || { "3": 5, "5": 10, "7": 15 };
