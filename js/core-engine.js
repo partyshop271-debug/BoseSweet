@@ -499,6 +499,54 @@
 
 
     /**
+     * 👑 [6.3-أ - توحيد جزئي]: شارة الخصم + السعر القديم + جملة التوفير كانت
+     * مكررة حرفيًا نفس المنطق في createProductCardHTML هنا وفي category.html
+     * (اللي عنده كارت منتج منفصل عمدًا - بدون إضافة مباشرة للسلة، راجع تعليق
+     * buildBoseFavButtonHTML تحت لتفاصيل ليه الكارتين مختلفين). دلوقتي المنطق
+     * في مكان واحد بس، وأي تغيير في شكل الشارة هيتحدث تلقائيًا في كل مكان.
+     * @param {Object} product
+     * @param {{currencyLabel?: string, savingsVerb?: string}} [opts]
+     * @returns {{hasDiscount: boolean, discountBadgeHtml: string, oldPriceHtml: string, savingsHtml: string}}
+     */
+    function buildBoseDiscountBadgeMarkup(product, opts) {
+        const currencyLabel = (opts && opts.currencyLabel) || 'جنيه';
+        const savingsVerb = (opts && opts.savingsVerb) || 'وفر';
+        const hasDiscount = !!(product && product.oldPrice && product.oldPrice > product.price);
+        if (!hasDiscount) {
+            return { hasDiscount: false, discountBadgeHtml: '', oldPriceHtml: '', savingsHtml: '' };
+        }
+        const savingsAmount = product.oldPrice - product.price;
+        const discountPercent = Math.round((savingsAmount / product.oldPrice) * 100);
+        return {
+            hasDiscount: true,
+            discountBadgeHtml: `<div class="offer-badge bose-offer-badge">خصم ${discountPercent}%</div>`,
+            oldPriceHtml: `<span class="product-old-price">${Math.round(product.oldPrice)} ${currencyLabel}</span>`,
+            savingsHtml: `<span class="offer-savings-note">${savingsVerb} ${Math.round(savingsAmount)} ${currencyLabel}</span>`,
+        };
+    }
+    window.buildBoseDiscountBadgeMarkup = buildBoseDiscountBadgeMarkup;
+
+    /**
+     * 👑 [6.3-أ - توحيد جزئي]: زرار المفضلة (القلب) كان مكررًا حرفيًا نفس الكود
+     * في createProductCardHTML هنا وفي category.html. التوحيد الكامل لكارت
+     * المنتج بالكامل بين الملفين اتفحص ورفض عمدًا: كارت category.html مصمم
+     * بفلتر حجم جماعي واحد فوق الشبكة كلها (بدل تبويبات حجم داخل كل كارت)
+     * وبدون زرار "إضافة للسلة"/عداد مباشر (بيودّي دايمًا لصفحة المنتج أولاً) -
+     * فرق تصميم حقيقي مقصود، مش تكرار كود بالغلط. اللي اتوحد هو الجزء المكرر
+     * فعليًا بس (الشارة فوق وزرار القلب ده).
+     * @param {string} productId
+     * @returns {string}
+     */
+    function buildBoseFavButtonHTML(productId) {
+        const isFav = typeof window.isBoseFavorite === 'function' && window.isBoseFavorite(productId);
+        return `
+            <button type="button" class="bose-fav-btn${isFav ? ' is-active' : ''}" data-fav-id="${productId}" aria-label="${isFav ? 'إزالة من المفضلة' : 'إضافة للمفضلة'}" onclick="event.stopPropagation(); if(window.toggleBoseFavorite){ window.toggleBoseFavorite('${productId}', this); }">
+                <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
+            </button>`;
+    }
+    window.buildBoseFavButtonHTML = buildBoseFavButtonHTML;
+
+    /**
      * 👑 [محرك موحد وحيد لكل كروت المنتجات في الموقع كله]
      * أي منتج معاه oldPrice أكبر من price بيتحول تلقائياً وفي كل مكان يظهر فيه
      * (فئة، أكثر مبيعاً، وصل حديثاً، صفحة العروض) لكارت "عليه عرض" واضح بشارة خصم
@@ -574,17 +622,7 @@
         const cardImg = window.optimizeBoseImageUrl(defaultSizeImgRaw, 400);
 
         const calculatedPrice = window.calculateProductFinalPrice(product, hasMultipleSizes ? { size: defaultSizeKey } : {});
-        const hasDiscount = !!(product.oldPrice && product.oldPrice > product.price);
-        let discountBadgeHtml = '';
-        let oldPriceHtml = '';
-        let savingsHtml = '';
-        if (hasDiscount) {
-            const savingsAmount = product.oldPrice - product.price;
-            const discountPercent = Math.round((savingsAmount / product.oldPrice) * 100);
-            discountBadgeHtml = `<div class="offer-badge bose-offer-badge">خصم ${discountPercent}%</div>`;
-            oldPriceHtml = `<span class="product-old-price">${Math.round(product.oldPrice)} جنيه</span>`;
-            savingsHtml = `<span class="offer-savings-note">وفر ${Math.round(savingsAmount)} جنيه</span>`;
-        }
+        const { hasDiscount, discountBadgeHtml, oldPriceHtml, savingsHtml } = buildBoseDiscountBadgeMarkup(product);
 
         // 🛡️ [V14.0]: منتج نفدت كميته (isAvailable === false) بيفضل ظاهر في الشبكة
         // (عشان العميل يعرف إنه كان موجود ويرجع يسأل عليه) لكن بيتقفل زرار الإضافة
@@ -611,11 +649,7 @@
         // بأي مكان بالموقع (رئيسية، فئة، عروض، مقترحات). الحالة (ممتلئ/فاضي)
         // بتتقرأ فوراً من localStorage عبر window.isBoseFavorite لو محرك المفضلة
         // متحمّل، وبتتحدّث حياً لحظة الضغط عبر window.toggleBoseFavorite.
-        const isFav = typeof window.isBoseFavorite === 'function' && window.isBoseFavorite(product.id);
-        const favBtnHtml = `
-            <button type="button" class="bose-fav-btn${isFav ? ' is-active' : ''}" data-fav-id="${product.id}" aria-label="${isFav ? 'إزالة من المفضلة' : 'إضافة للمفضلة'}" onclick="event.stopPropagation(); if(window.toggleBoseFavorite){ window.toggleBoseFavorite('${product.id}', this); }">
-                <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
-            </button>`;
+        const favBtnHtml = buildBoseFavButtonHTML(product.id);
 
         return `
             <div class="product-card-unified${hasDiscount ? ' bose-offer-card' : ''}${isUnavailable ? ' bose-unavailable-card' : ''}" data-id="${product.id}" data-selected-size="${defaultSizeKey || ''}" onclick="if(!event.target.closest('.product-card-qty-wrapper') && !event.target.closest('.btn-add-to-cart') && !event.target.closest('.bose-card-size-tabs') && !event.target.closest('.bose-fav-btn')){ window.location.href='/product.html?slug=${encodeURIComponent(product.slug)}'; }" style="cursor:pointer;">
@@ -1712,12 +1746,10 @@
      * بتستخدم شخصية الشيف بتاعة اللوجو (مش أي ماسكوت جاهز)، وبتدعو العميل يثبّت
      * تطبيق الويب (PWA) بتاعنا على شاشته الرئيسية زي أي تطبيق عادي.
      *
-     * ⚠️ [مهم للمطوّر/صاحبة المتجر]: الرابط ده أدناه بس Placeholder مؤقت بيشاور على
-     * اللوجو العادي - لازم يترفع ملف "assets/bose-mascot-character.png" (اللي جوه
-     * حزمة التسليم دي) على Cloudinary زي باقي الصور، وبعدين نستبدل قيمة الثابت
-     * MASCOT_IMAGE_URL تحت برابط الصورة الجديد.
+     * ✅ [تم]: رابط الصورة تحت هو صورة الماسكوت الحقيقية اللي اترفعت على
+     * Cloudinary فعليًا (مش اللوجو العادي زي قبل كده).
      */
-    const BOSE_APP_MASCOT_IMAGE_URL = "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"; // TODO: استبدلي بالرابط بعد رفع bose-mascot-character.png
+    const BOSE_APP_MASCOT_IMAGE_URL = "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1786737186/dkbsnvtpa2wadni34tr8.jpg";
 
     function setupAppInstallPopup() {
         // لو التطبيق شغال بالفعل كـ PWA مثبّت (standalone)، العميل مثبّته أصلاً - متعرضيش عليه يثبّته تاني
