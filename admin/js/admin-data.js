@@ -143,12 +143,17 @@
             stats.reviewFollowupsDue = 0;
         }
 
-        // شارة "قسائم لسه محدش اتقالها" - نفس منطق getUnnotifiedVouchers بالظبط
+        // شارة "قسائم/بطاقات لسه محدش اتقالها" - مجموع النوعين مع بعض (قسائم
+        // الولاء + بطاقات الهدايا) عشان الرقم في الشارة يعكس أي حاجة مستنية
+        // فعلياً، أياً كان نوعها - نفس منطق getUnnotifiedVouchers/GiftCards بالظبط
         try {
-            const unnotified = await getUnnotifiedVouchers();
-            stats.vouchersUnnotified = unnotified.length;
+            const [unnotifiedVouchers, unnotifiedGiftCards] = await Promise.all([
+                getUnnotifiedVouchers(),
+                getUnnotifiedGiftCards(),
+            ]);
+            stats.vouchersUnnotified = unnotifiedVouchers.length + unnotifiedGiftCards.length;
         } catch (e) {
-            console.warn("تعذر جلب عدد القسائم اللي لسه محدش اتقالها:", e.message);
+            console.warn("تعذر جلب عدد القسائم/البطاقات اللي لسه محدش اتقالها:", e.message);
             stats.vouchersUnnotified = 0;
         }
 
@@ -1307,6 +1312,119 @@
         if (error) throw error;
     }
 
+    /* ============================= 🎁 بطاقات الهدايا المُباعة (gift_cards) ============================= */
+    /**
+     * بطاقات هدايا اشتراها عملاء بفلوسهم الفعلية (منتج فعلي عليه is_gift_card=true
+     * في جدول products) - مختلفة تماماً عن قسائم الولاء (اللي هي مكافأة مجانية).
+     * بتتصدر تلقائياً عبر trigger (handle_gift_card_purchase_delivery) لما طلب فيه
+     * منتج بطاقة هدية يوصل لحالة "delivered" بعد تأكيد الدفع. نفس نمط دوال قسائم
+     * الولاء فوق بالظبط، عشان تجربة الإدارة تتوحّد.
+     */
+
+    async function getAllGiftCards(filters = {}) {
+        try {
+            let query = client
+                .from("gift_cards")
+                .select(`
+                    *,
+                    purchase_order:orders!gift_cards_purchase_order_id_fkey(order_number, customer_name),
+                    last_used_order:orders!gift_cards_last_used_order_id_fkey(order_number)
+                `)
+                .order("issued_at", { ascending: false });
+
+            if (filters.search && filters.search.trim()) {
+                const s = sanitizeFilterValue(filters.search.trim());
+                if (s) {
+                    query = query.or(`code.ilike.%${s}%,purchaser_phone.ilike.%${s}%`);
+                }
+            }
+
+            const { data, error } = await query;
+            if (error) throw error;
+            return data || [];
+        } catch (e) {
+            console.warn("تعذر جلب بطاقات الهدايا:", e.message);
+            return [];
+        }
+    }
+
+    /**
+     * 🎁 [إصدار بطاقة هدية يدوي]: البطاقات بتتصدر تلقائياً لما عميل يشتري منتج
+     * بطاقة هدية ويستلمه، لكن أحياناً محتاجة تصدّري واحدة يدوي (تعويض، هدية
+     * ترويجية، اتفاق تليفوني). purchase_order_id بيفضل null عشان نعرف إنها
+     * صدرت يدوي مش من عملية شراء حقيقية. الكود بيتولّد من generate_gift_card_code
+     * (نفس الدالة اللي بيستخدمها الإصدار التلقائي) عشان يفضل بنفس الشكل.
+     */
+    async function issueManualGiftCard({ phone, amount, expiresAt }) {
+        const cleanPhone = (phone || "").replace(/[\s\-()+]/g, "");
+        if (!/^01[0125][0-9]{8}$/.test(cleanPhone)) {
+            throw new Error("رقم الموبايل غير صحيح");
+        }
+        const { data: codeData, error: codeErr } = await client.rpc("generate_gift_card_code");
+        if (codeErr) throw codeErr;
+        const code = codeData;
+
+        const { error } = await client.from("gift_cards").insert({
+            code,
+            amount,
+            remaining_amount: amount,
+            purchaser_phone: cleanPhone,
+            purchase_order_id: null,
+            expires_at: expiresAt,
+        });
+        if (error) throw error;
+        await logAdminAction("إصدار بطاقة هدية يدوية", "gift_card", code, code, { phone: cleanPhone, amount });
+        return code;
+    }
+
+    /** ✏️ تعديل بطاقة هدية موجودة - الرصيد المتبقي وتاريخ الانتهاء بس، نفس
+     *  فلسفة تعديل قسيمة الولاء بالظبط (الكود/القيمة الأصلية/رقم المشتري ثوابت) */
+    async function updateGiftCard(giftCardId, { remainingAmount, expiresAt }) {
+        const patch = {};
+        if (remainingAmount !== undefined && remainingAmount !== null) patch.remaining_amount = remainingAmount;
+        if (expiresAt !== undefined && expiresAt !== null) patch.expires_at = expiresAt;
+        if (!Object.keys(patch).length) return;
+        const { error } = await client.from("gift_cards").update(patch).eq("id", giftCardId);
+        if (error) throw error;
+    }
+
+    /** إلغاء بطاقة هدية (تصفير الرصيد المتبقي، نفس منطق إلغاء قسيمة الولاء) */
+    async function voidGiftCard(giftCardId, code) {
+        const { error } = await client
+            .from("gift_cards")
+            .update({ remaining_amount: 0 })
+            .eq("id", giftCardId);
+        if (error) throw error;
+        await logAdminAction("إلغاء بطاقة هدية يدوياً", "gift_card", giftCardId, code || null);
+    }
+
+    /** بطاقات هدايا نشطة (رصيد موجود + لسه ما انتهتش) ومحدش قال للمشتري بكودها
+     *  لحد دلوقتي (notified_at is null) - نفس منطق قسائم الولاء بالظبط. */
+    async function getUnnotifiedGiftCards() {
+        try {
+            const { data, error } = await client
+                .from("gift_cards")
+                .select("id, purchaser_phone, code, amount, remaining_amount, expires_at, issued_at, purchase_order:orders!gift_cards_purchase_order_id_fkey(order_number, customer_name)")
+                .is("notified_at", null)
+                .gt("remaining_amount", 0)
+                .gt("expires_at", new Date().toISOString())
+                .order("issued_at", { ascending: true });
+            if (error) throw error;
+            return data || [];
+        } catch (e) {
+            console.warn("تعذر جلب بطاقات الهدايا اللي لسه محدش اتقالها:", e.message);
+            return [];
+        }
+    }
+
+    async function markGiftCardNotified(giftCardId) {
+        const { error } = await client
+            .from("gift_cards")
+            .update({ notified_at: new Date().toISOString() })
+            .eq("id", giftCardId);
+        if (error) throw error;
+    }
+
     /**
      * 📝 سجل نشاط إداري عام - بيتحط في admin_audit_log (نفس الجدول اللي
      * صفحة "سجل النشاط" بتقرأ منه). admin_id و admin_name بيتملوا تلقائياً
@@ -1539,6 +1657,12 @@
         revokeLoyaltyVoucher,
         grantManualLoyaltyVoucher,
         voidLoyaltyVoucher,
+        getAllGiftCards,
+        issueManualGiftCard,
+        updateGiftCard,
+        voidGiftCard,
+        getUnnotifiedGiftCards,
+        markGiftCardNotified,
         setOrderExcludedFromLoyalty,
     };
 })();
