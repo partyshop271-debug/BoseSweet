@@ -37,7 +37,7 @@
     <!-- ⚡ [إصلاح أداء]: defer عشان السكريبت متوقفش رسم الصفحة -->
     <script src="js/supabase-client.js?v=2026_production_v39.0" defer></script>
     <script src="js/favorites-engine.js?v=2026_production_v37.0" defer></script>
-    <script src="js/core-engine.js?v=2027_production_v43.0" defer></script>
+    <script src="js/core-engine.js?v=2027_production_v45.0" defer></script>
     <script src="js/cart-reminder.js?v=1" defer></script>
 
     <style>
@@ -617,7 +617,9 @@
                     // بخصم في قسم العروض. تم توحيد شكل شارة الخصم هنا مع نفس كلاسات main.css
                     // (bose-offer-card / bose-offer-badge / product-old-price / offer-savings-note)
                     // المستخدمة فعلياً في كل باقي الموقع.
-                    const hasDiscount = !!(product.oldPrice && product.oldPrice > product.price);
+                    // 👑 [6.3-أ]: منطق الشارة نفسه دلوقتي بييجي من buildBoseDiscountBadgeMarkup
+                    // الموحدة في core-engine.js بدل نسخة محلية مكررة هنا.
+                    const { hasDiscount, discountBadgeHtml, oldPriceHtml, savingsHtml } = window.buildBoseDiscountBadgeMarkup(product, { currencyLabel: globalStoreCurrency, savingsVerb: 'وفرت' });
                     cardElement.className = 'product-card' + (hasDiscount ? ' bose-offer-card' : '');
                     cardElement.setAttribute('data-slug', product.slug);
                     // 👑 [إصلاح جذري - كل الكارت قابل للمس]: الكارت كله بيودي لصفحة
@@ -633,16 +635,7 @@
                     const safeFlavor = esc(product.flavorName || '');
                     const safeDesc = esc(product.flavorDesc || '');
 
-                    let discountBadgeHtml = '';
-                    let oldPriceHtml = '';
-                    let savingsHtml = '';
-                    if (hasDiscount) {
-                        const savingsAmount = product.oldPrice - product.price;
-                        const discountPercent = Math.round((savingsAmount / product.oldPrice) * 100);
-                        discountBadgeHtml = `<div class="offer-badge bose-offer-badge">خصم ${discountPercent}%</div>`;
-                        oldPriceHtml = `<span class="product-old-price">${Math.round(product.oldPrice)} ${globalStoreCurrency}</span>`;
-                        savingsHtml = `<span class="offer-savings-note">وفرت ${Math.round(savingsAmount)} ${globalStoreCurrency}</span>`;
-                    }
+
 
                     // 🛡️🛡️ [إصلاح جذري - فقدان قيمة صفحة المنتج]: الكارت هنا كان بيسمح
                     // بإتمام الشراء بالكامل (عداد + إضافة للسلة) من غير ما العميلة تدخل
@@ -653,14 +646,11 @@
                     const sizeImg = (product.sizeImages && defaultSize) ? product.sizeImages[defaultSize] : null;
                     const cardImageUrl = sizeImg || product.image || (product.images ? product.images[0] : '');
 
-                    // 💗 [نظام المفضلة]: نفس زرار القلب المستخدم في createProductCardHTML
-                    // الموحدة (core-engine.js)، مطبّق هنا كمان لأن هذا الملف عنده نسخة
-                    // منفصلة من كارت المنتج (راجع التعليق فوق عن سبب الانفصال ده).
-                    const isFav = typeof window.isBoseFavorite === 'function' && window.isBoseFavorite(product.id);
-                    const favBtnHtml = `
-                        <button type="button" class="bose-fav-btn${isFav ? ' is-active' : ''}" data-fav-id="${product.id}" aria-label="${isFav ? 'إزالة من المفضلة' : 'إضافة للمفضلة'}" onclick="event.stopPropagation(); if(window.toggleBoseFavorite){ window.toggleBoseFavorite('${product.id}', this); }">
-                            <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
-                        </button>`;
+                    // 💗 [نظام المفضلة - 6.3-أ]: زرار القلب دلوقتي بييجي من buildBoseFavButtonHTML
+                    // الموحدة في core-engine.js (نفس الزرار المستخدم في createProductCardHTML)
+                    // بدل نسخة محلية مكررة هنا. الملف ده لسه عنده كارت منفصل عمدًا (راجع
+                    // تعليق buildBoseFavButtonHTML نفسها في core-engine.js لسبب الانفصال).
+                    const favBtnHtml = window.buildBoseFavButtonHTML(product.id);
 
                     cardElement.innerHTML = `
                         ${discountBadgeHtml}
