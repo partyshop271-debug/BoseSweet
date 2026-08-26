@@ -1136,6 +1136,17 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFu
         items: cart
     };
 
+    // 🧭🆕 [4.1 - نظام تتبع مصدر الزيارات]: بيانات أول لمسة (first-touch) المحفوظة
+    // من زيارة العميلة الأولى للموقع (راجع captureBoseAttribution في core-engine.js) -
+    // بتترسل هنا لـ saveBoseOrderToDatabase في supabase-client.js عشان توصل فعلياً
+    // لـ create_order_with_items ← upsert_customer_on_order وتتسجل في جدول customers.
+    const boseAttribution = typeof window.getBoseAttribution === "function" ? window.getBoseAttribution() : null;
+    if (boseAttribution) {
+        completedBoseOrderObject.attributionSource = boseAttribution.source || null;
+        completedBoseOrderObject.attributionMedium = boseAttribution.medium || null;
+        completedBoseOrderObject.attributionDetail = boseAttribution.detail || null;
+    }
+
     // 🌸🌸 [نظام يتفاعل مع العميل ويتعرّف عليه]: بمجرد ما البيانات عدّت كل
     // التحقق بنجاح، بنحفظ "ملف تعريف العميل" في جهازه محلياً (localStorage) -
     // الاسم، أرقام الهاتف، تفاصيل العنوان، المنطقة، ملاحظة الحساسية/السكر،

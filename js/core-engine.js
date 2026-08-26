@@ -14,6 +14,67 @@
         history.scrollRestoration = 'manual';
     }
 
+    /**
+     * 🧭🆕 [4.1 - نظام تتبع مصدر الزيارات]: بيتقرأ مرة واحدة بس (أول لمسة/first-touch)
+     * على أي صفحة تدخلها العميلة لأول مرة، ومتتغيرش بعد كده حتى لو دخلت
+     * الموقع تاني من مصدر مختلف - نفس فلسفة عمود first_source/first_medium/first_detail
+     * في جدول customers (upsert_customer_on_order بيتجاهل أي تحديث ليهم بعد أول
+     * إدراج، فمنطقي إن التخزين المحلي هنا يطابقها بنفس المنطق بدل ما يبعت قيمة
+     * مختلفة في كل طلب لعميلة موجودة بالفعل).
+     * أولوية القراءة: UTM params الصريحة (utm_source/utm_medium/utm_campaign أو utm_content)
+     * ← لو مفيش، بنحاول نستنتج من الـ referrer (فيسبوك/انستجرام/تيكتوك/واتساب/جوجل)
+     * ← ولو مفيش أي حاجة، بتتسجل "direct" (زيارة مباشرة، مفيش رابط قبلها).
+     */
+    function captureBoseAttribution() {
+        try {
+            if (localStorage.getItem('bose_attribution')) return; // أول لمسة محفوظة بالفعل، منسيبهاش
+
+            const params = new URLSearchParams(window.location.search);
+            let source = params.get('utm_source');
+            let medium = params.get('utm_medium');
+            let detail = params.get('utm_content') || params.get('utm_campaign');
+
+            if (!source) {
+                const ref = document.referrer || "";
+                if (ref) {
+                    let refHost = "";
+                    try { refHost = new URL(ref).hostname.replace(/^www\./, ''); } catch (e) { refHost = ""; }
+                    if (/facebook\.com|fb\.com/.test(refHost)) { source = "facebook"; medium = "social"; }
+                    else if (/instagram\.com/.test(refHost)) { source = "instagram"; medium = "social"; }
+                    else if (/tiktok\.com/.test(refHost)) { source = "tiktok"; medium = "social"; }
+                    else if (/wa\.me|whatsapp\.com/.test(refHost)) { source = "whatsapp"; medium = "social"; }
+                    else if (/google\./.test(refHost)) { source = "google"; medium = "organic"; }
+                    else if (refHost) { source = refHost; medium = "referral"; }
+                    detail = detail || (refHost || null);
+                }
+            }
+
+            if (!source) { source = "direct"; medium = medium || "none"; }
+
+            localStorage.setItem('bose_attribution', JSON.stringify({
+                source: source,
+                medium: medium || null,
+                detail: detail || null,
+                capturedAt: Date.now()
+            }));
+        } catch (e) { /* تجاهل بأمان لو التخزين المحلي ممتلئ أو غير متاح */ }
+    }
+    captureBoseAttribution();
+
+    /**
+     * @returns {{source: string, medium: string|null, detail: string|null}|null}
+     */
+    window.getBoseAttribution = function() {
+        try {
+            const raw = localStorage.getItem('bose_attribution');
+            if (!raw) return null;
+            const parsed = JSON.parse(raw);
+            return (parsed && parsed.source) ? parsed : null;
+        } catch (e) {
+            return null;
+        }
+    };
+
     function forceScrollToTop() {
         window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
     }
