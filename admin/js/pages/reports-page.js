@@ -87,6 +87,59 @@
         `;
     }
 
+    /**
+     * 🧭🆕 [4.1-ب - عرض مصادر العملاء]: قائمة بسيطة (بار أفقي مرسوم بـ div عادي،
+     * بدون أي مكتبة، زي فلسفة الرسم البياني اللي فوق) لكل مصدر وعدد العميلات
+     * الجداد الجايين منه. أيقونة مختلفة لكل مصدر معروف عشان تتقرا بسرعة.
+     */
+    function attributionIcon(source) {
+        const map = {
+            facebook: "fa-facebook",
+            instagram: "fa-instagram",
+            tiktok: "fa-tiktok",
+            whatsapp: "fa-whatsapp",
+            google: "fa-google",
+            direct: "fa-arrow-right-to-bracket",
+        };
+        return map[source] ? `fa-brands ${map[source]}` : "fa-solid fa-link";
+    }
+    function attributionLabel(source) {
+        const map = {
+            facebook: "فيسبوك", instagram: "انستجرام", tiktok: "تيك توك",
+            whatsapp: "واتساب", google: "جوجل", direct: "زيارة مباشرة",
+        };
+        return map[source] || source;
+    }
+
+    function renderAttribution(rows) {
+        const wrap = document.getElementById("reports-attribution-wrap");
+        const e = window.BoseAdminUI.escapeHtml;
+        if (!rows.length) {
+            wrap.innerHTML = window.BoseAdminUI.emptyStateHTML({
+                icon: "fa-compass",
+                title: "مفيش عميلات جداد كفاية لسه",
+                text: "هيظهر هنا أول ما تدخل عميلة جديدة من مصدر معروف.",
+            });
+            return;
+        }
+        const total = rows.reduce((sum, r) => sum + r.count, 0);
+        wrap.innerHTML = rows.map((r) => {
+            const pct = total > 0 ? Math.round((r.count / total) * 100) : 0;
+            return `
+                <div style="margin-bottom: 14px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; font-size:0.86rem;">
+                        <span style="display:flex; align-items:center; gap:8px; font-weight:700; color: var(--adm-text-secondary);">
+                            <i class="${attributionIcon(r.source)}"></i> ${e(attributionLabel(r.source))}
+                        </span>
+                        <span style="color: var(--adm-text-muted);">${r.count} عميلة (${pct}%)</span>
+                    </div>
+                    <div style="background: var(--adm-bg-hover); border-radius: 8px; height: 10px; overflow:hidden;">
+                        <div style="background: var(--adm-pink); height:100%; width:${pct}%; border-radius: 8px;"></div>
+                    </div>
+                </div>`;
+        }).join("");
+    }
+
     function renderTopProducts(rows) {
         const tbody = document.getElementById("reports-top-products-tbody");
         const e = window.BoseAdminUI.escapeHtml;
@@ -111,15 +164,18 @@
         document.getElementById("reports-chart-wrap").innerHTML = '<div class="adm-loading-spinner"></div>';
         document.getElementById("reports-top-products-tbody").innerHTML =
             '<tr><td colspan="3"><div class="adm-loading-spinner"></div></td></tr>';
+        document.getElementById("reports-attribution-wrap").innerHTML = '<div class="adm-loading-spinner"></div>';
 
-        const [salesRows, topProducts] = await Promise.all([
+        const [salesRows, topProducts, attributionRows] = await Promise.all([
             window.BoseAdmin.getSalesReport(days),
             window.BoseAdmin.getTopProducts(days, 8),
+            window.BoseAdmin.getCustomerAttributionBreakdown(days),
         ]);
 
         renderSummary(salesRows);
         renderChart(salesRows);
         renderTopProducts(topProducts);
+        renderAttribution(attributionRows);
     }
 
     function wireControls() {
