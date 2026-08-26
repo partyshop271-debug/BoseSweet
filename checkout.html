@@ -224,7 +224,7 @@
     <!-- المحرك العام (يُستدعى أولاً في رأس كل الصفحات لقراءة قاعدة البيانات) -->
     <script src="js/supabase-client.js?v=2026_production_v39.0" defer></script>
     <script src="js/favorites-engine.js?v=2026_production_v37.0" defer></script>
-    <script src="js/core-engine.js?v=2026_production_v43.0" defer></script>
+    <script src="js/core-engine.js?v=2027_production_v43.0" defer></script>
     <script src="js/loyalty-config.js?v=2026_production_v1.0" defer></script>
 </head>
 <body class="bose-hardware-accelerated Pw-checkout-view">
@@ -444,7 +444,7 @@
     <div id="bose-footer-injector"></div>
 
     <!-- ⚡ استدعاء محرك السلة وإتمام عمليات الحساب والدفع والربط اللوجستي المركزي (js/cart-engine.js) ⚡ -->
-    <script src="js/cart-engine.js?v=2026_production_v43.0" defer></script>
+    <script src="js/cart-engine.js?v=2027_production_v43.0" defer></script>
 
     <!-- 🔮 سكريبت التزامن الدفاعي المحلي لربط وحقن الواجهات وضمان فك شلل حقول الصفحة دون تعارض خارجي 🔮 -->
     <script>
@@ -547,6 +547,26 @@
                     deliveryTimeInputEl.max = bhEnd;
                 }
                 window.boseCheckoutBusinessHours = { start: bhStart, end: bhEnd };
+
+                // 🆕 [8.2 - اتساق نص التلميح مع القيمة الحقيقية]: التلميح جنب حقل
+                // التاريخ كان بيقول نص ثابت مكتوب يدوياً ("9 الصبح لحد 10 بالليل")
+                // بغض النظر عن قيمة businessHoursStart/End الفعلية المحفوظة في
+                // لوحة التحكم - لو الأدمن غيّرت المواعيد من هناك، التلميح كان
+                // هيفضل يقول الرقم القديم رغم إن الفحص الفعلي (فوق) بيستخدم الرقم
+                // الجديد صح. دلوقتي بيتبنى النص من نفس bhStart/bhEnd الحقيقيين.
+                const dateInfoBadge = document.querySelector('[aria-describedby="err-checkout-delivery-date"]')
+                    ?.closest(".input-group-node")?.querySelector(".bose-info-badge-inline");
+                if (dateInfoBadge) {
+                    const fmtHour = (t) => {
+                        const [h, m] = (t || "").split(":").map(Number);
+                        if (isNaN(h) || isNaN(m)) return t;
+                        const period = h >= 12 ? "مساءً" : "صباحاً";
+                        let h12 = h % 12; if (h12 === 0) h12 = 12;
+                        return m === 0 ? `${h12} ${period}` : `${h12}:${String(m).padStart(2, "0")} ${period}`;
+                    };
+                    dateInfoBadge.setAttribute("data-bose-info-text",
+                        `محتاجين على الأقل 48 ساعة من دلوقتي عشان نجهز طلبك بجودة عالية (لو طلبك فيه تورت أو ورد من المحاكي، الوقت المطلوب أسبوع كامل تقريباً). كمان الاستلام والتوصيل بيكونوا بس من الساعة ${fmtHour(bhStart)} لحد ${fmtHour(bhEnd)}، فأي وقت خارج النطاق ده مش هيتقبل.`);
+                }
 
                 // 🛡️ [إصلاح - المرحلة 2]: قبل كده كان حامي التاريخ بيفرض بكرة (24 ساعة)
                 // كأول موعد متاح دايماً، حتى للتورت والورد المخصص اللي محتاج فعلياً

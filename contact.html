@@ -23,7 +23,7 @@
     <!-- استدعاء المحرك المركزي الموحد في رأس الصفحة لتأمين الحقن والتوافق -->
     <script src="js/supabase-client.js?v=2026_production_v39.0"></script>
     <script src="js/favorites-engine.js?v=2026_production_v37.0"></script>
-    <script src="js/core-engine.js?v=2026_production_v43.0"></script>
+    <script src="js/core-engine.js?v=2027_production_v43.0"></script>
 </head>
 <body>
 
@@ -115,6 +115,22 @@
             </div>
         </div>
 
+        <!-- 🆕 [8.2 - مواعيد استقبال الطلبات]: بتترجم قيم businessHoursStart/End
+             المضبوطة فعلاً من لوحة التحكم (نفس القيم اللي بتستخدم للتحقق من صحة
+             ميعاد الاستلام في الشيك أوت - راجع cart-engine.js) - بدل ما تفضل
+             حبيسة جوه رسالة خطأ بتظهر بس لو العميلة اختارت وقت غلط، بقت
+             معلنة وواضحة هنا من الأول. القيم الظاهرة تحت احتياطية (تطابق
+             الإعداد الحالي 9 صباحاً - 10 مساءً) لحد ما بيانات القاعدة توصل. -->
+        <div class="working-hours-section" style="margin-top: 50px; text-align: center;">
+            <div style="display: inline-flex; align-items: center; gap: 12px; background-color: var(--bose-white); border: var(--bose-border-pink); border-radius: 16px; padding: 18px 30px; box-shadow: var(--bose-shadow-glow);">
+                <i class="fa-solid fa-clock" style="color: var(--bose-pink); font-size: 1.4rem;"></i>
+                <div style="text-align: right;">
+                    <strong style="display: block; font-size: 1rem; color: var(--bose-black);">مواعيد استقبال الطلبات (استلام وتوصيل)</strong>
+                    <span id="contact-business-hours" style="font-size: 0.9rem; color: var(--bose-black); opacity: 0.85;">يوميًا من 9:00 صباحاً لحد 10:00 مساءً</span>
+                </div>
+            </div>
+        </div>
+
     </main>
 
     <!-- وسم الحقن الموحد للفوتر القياسي للموقع -->
@@ -168,9 +184,36 @@
                 }
             }
 
-            if (window.BoseStoreData) { syncContactWhatsappLinks(); syncContactPickupInfo(); }
+            // 🆕 [8.2 - إعلان مواعيد استقبال الطلبات]: نفس منطق تحويل الوقت لصيغة
+            // 12 ساعة مصرية المستخدم في فاتورة الواتساب (formatBoseTimeToEgyptian12Hour
+            // في cart-engine.js) - منسوخ هنا محلياً بدل استدعاء الملف كله، لأن
+            // contact.html أصلاً مبني على تحميل core-engine.js بس من غير cart-engine.js.
+            function formatTimeToEgyptian12Hour(time24) {
+                if (!time24 || typeof time24 !== "string" || !time24.includes(":")) return null;
+                const [hStr, mStr] = time24.split(":");
+                let hours = parseInt(hStr, 10);
+                const minutes = parseInt(mStr, 10);
+                if (isNaN(hours) || isNaN(minutes)) return null;
+                const period = hours >= 12 ? "مساءً" : "صباحاً";
+                let hours12 = hours % 12;
+                if (hours12 === 0) hours12 = 12;
+                return `${hours12}:${String(minutes).padStart(2, "0")} ${period}`;
+            }
+            function syncContactBusinessHours() {
+                if (!window.BoseStoreData) return;
+                const rules = window.BoseStoreData.orderRules || {};
+                const startDisplay = formatTimeToEgyptian12Hour(rules.businessHoursStart);
+                const endDisplay = formatTimeToEgyptian12Hour(rules.businessHoursEnd);
+                const hoursEl = document.getElementById("contact-business-hours");
+                if (hoursEl && startDisplay && endDisplay) {
+                    hoursEl.textContent = `يوميًا من ${startDisplay} لحد ${endDisplay}`;
+                }
+            }
+
+            if (window.BoseStoreData) { syncContactWhatsappLinks(); syncContactPickupInfo(); syncContactBusinessHours(); }
             document.addEventListener("BoseDatabaseLoaded", syncContactWhatsappLinks);
             document.addEventListener("BoseDatabaseLoaded", syncContactPickupInfo);
+            document.addEventListener("BoseDatabaseLoaded", syncContactBusinessHours);
         })();
     </script>
 
