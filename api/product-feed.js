@@ -57,6 +57,13 @@ module.exports = async function handler(req, res) {
                 const link = `${SITE_BASE}/product.html?slug=${p.id}`;
                 const desc = p.flavor_desc || p.description || `${p.title} من حلويات بوسي - مكونات طبيعية 100% وتحضير طازة يومياً.`;
                 const availability = p.is_available === false ? "out of stock" : "in stock";
+                // 🛡️ [إصلاح - تحذير "الكمية غير موجودة" في Meta Commerce Manager]: فيسبوك/
+                // انستجرام بيحتاجوا رقم كمية صريح (مش بس حالة متوفر/مش متوفر) عشان يفعّلوا
+                // الشراء المباشر جوه المتجر عندهم. مفيش عمود كمية فعلي في جدول المنتجات
+                // (حلويات بوسي بتستقبل الطلبات عبر واتساب مش عبر checkout داخل فيسبوك)،
+                // فبنبعت رقم كبير ثابت (999) للمنتج المتوفر و0 للي نفدت كميته - يكفي لإسكات
+                // التحذير ده من غير ما يعني إننا فاتحين شراء فعلي جوه فيسبوك.
+                const inventoryQty = p.is_available === false ? 0 : 999;
                 const extraImages = p.images.slice(1, 11).map((img) => `\n      <g:additional_image_link>${escapeXml(img)}</g:additional_image_link>`).join("");
                 return `    <item>
       <g:id>${escapeXml(p.id)}</g:id>
@@ -65,6 +72,7 @@ module.exports = async function handler(req, res) {
       <link>${escapeXml(link)}</link>
       <g:image_link>${escapeXml(p.images[0])}</g:image_link>${extraImages}
       <g:availability>${availability}</g:availability>
+      <g:inventory>${inventoryQty}</g:inventory>
       <g:price>${Math.round(p.price)} EGP</g:price>
       ${p.old_price && p.old_price > p.price ? `<g:sale_price>${Math.round(p.price)} EGP</g:sale_price>\n      <g:price>${Math.round(p.old_price)} EGP</g:price>` : ""}
       <g:brand>حلويات بوسي</g:brand>
