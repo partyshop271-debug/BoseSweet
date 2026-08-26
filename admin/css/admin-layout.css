@@ -384,6 +384,10 @@
 .adm-badge.danger { background: var(--adm-danger-bg); color: var(--adm-danger); }
 .adm-badge.info { background: var(--adm-info-bg); color: var(--adm-info); }
 .adm-badge.neutral { background: var(--adm-bg-hover); color: var(--adm-text-secondary); }
+/* 🆕 [تمييز نوع القسيمة/البطاقة]: مستخدمة في صفحة "تنبيه القسائم" الموحّدة
+   عشان تفرّق بصرياً بين قسيمة ولاء (وردي) وبطاقة هدية مباعة (ذهبي) */
+.adm-badge.pink { background: var(--adm-pink-soft-bg); color: var(--adm-pink); }
+.adm-badge.gold { background: rgba(212, 175, 55, 0.12); color: var(--adm-gold); }
 
 /* 🧹 [2.2 تبسيط شلال المنتجات]: قائمة قابلة للطي لطرق الإضافة الثانوية
    (رابط مباشر / رفع من الجهاز) عشان متبقاش ظاهرة طول الوقت جنب طريقة
