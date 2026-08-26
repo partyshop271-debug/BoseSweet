@@ -74,8 +74,9 @@ module.exports = async function handler(req, res) {
       <g:availability>${availability}</g:availability>
       <g:inventory>${inventoryQty}</g:inventory>
       <g:quantity_to_sell_on_facebook>${inventoryQty}</g:quantity_to_sell_on_facebook>
-      <g:price>${Math.round(p.price)} EGP</g:price>
-      ${p.old_price && p.old_price > p.price ? `<g:sale_price>${Math.round(p.price)} EGP</g:sale_price>\n      <g:price>${Math.round(p.old_price)} EGP</g:price>` : ""}
+      ${p.old_price && p.old_price > p.price
+          ? `<g:price>${Math.round(p.old_price)} EGP</g:price>\n      <g:sale_price>${Math.round(p.price)} EGP</g:sale_price>`
+          : `<g:price>${Math.round(p.price)} EGP</g:price>`}
       <g:brand>حلويات بوسي</g:brand>
       <g:condition>new</g:condition>
       <g:product_type>${cdata(catMap[p.category_id] || "حلويات")}</g:product_type>
