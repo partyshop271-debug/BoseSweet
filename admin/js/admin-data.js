@@ -196,6 +196,37 @@
         }
     }
 
+    /**
+     * 🧭🆕 [4.1-ب - عرض مصادر العملاء]: تجميع أول لمسة (first_source/first_medium)
+     * لكل عميلة أول طلب ليها وقع جوه آخر p_days يوم - عشان نعرف العملاء الجداد
+     * جايين منين فعليًا (فيسبوك/انستجرام/تيكتوك/واتساب/جوجل/زيارة مباشرة...).
+     * جدول customers صغير (كل صف = عميلة واحدة مش كل طلب)، فقراءة مباشرة
+     * وتجميع في الفرونت إند أبسط وأسرع من عمل RPC/SQL منفصل لحجم البيانات ده -
+     * نفس فلسفة getAuditLog تحت (قراءة مباشرة من جدول بدل RPC لما يكون منطقي).
+     * الوصول متاح فعلاً عبر RLS policy "admins can select customers" الموجودة.
+     */
+    async function getCustomerAttributionBreakdown(days = 30) {
+        try {
+            const sinceIso = new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString();
+            const { data, error } = await client
+                .from("customers")
+                .select("first_source, first_medium, first_order_at")
+                .gte("first_order_at", sinceIso);
+            if (error) throw error;
+            const rows = data || [];
+            const counts = {};
+            rows.forEach((r) => {
+                const key = r.first_source || "غير معروف";
+                if (!counts[key]) counts[key] = { source: key, medium: r.first_medium || null, count: 0 };
+                counts[key].count += 1;
+            });
+            return Object.values(counts).sort((a, b) => b.count - a.count);
+        } catch (e) {
+            console.warn("تعذر جلب تجميع مصادر العملاء:", e.message);
+            return [];
+        }
+    }
+
     /** سجل النشاط الإداري (آخر التعديلات اللي حصلت من اللوحة) */
     async function getAuditLog(limit = 100) {
         try {
@@ -1589,6 +1620,7 @@
         getDashboardSummary,
         getSalesReport,
         getTopProducts,
+        getCustomerAttributionBreakdown,
         getAuditLog,
         getMissingPhotoProductsCount,
         getRecentOrders,
