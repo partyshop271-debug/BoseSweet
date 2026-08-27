@@ -1239,6 +1239,13 @@
                     title: c.title,
                     image: c.image || "",
                     builderType: c.builder_type || "standard",
+                    // 🚨 [إصلاح حرج - الوصف العام للفئة]: كان الحقل ده ناقص هنا تمامًا، فأي
+                    // صفحة فئة (category.html) بتحاول تجيب categoryObj.description كانت
+                    // دايمًا بتلاقيه undefined وتقع تلقائيًا (fallback) على وصف أول منتج
+                    // في الفئة حسب الترتيب - يعني مثلاً فئة "الجاتوهات" كانت بتعرض وصف
+                    // منتج "جاتوه ملكي" (أول منتج بترتيب 1) كأنه الوصف العام للفئة كلها،
+                    // بدل الوصف العام الحقيقي المكتوب فعليًا في جدول categories.
+                    description: c.description || "",
                 }));
         }
         return (data.homepage && data.homepage.categoriesSlider) || [];

@@ -116,6 +116,10 @@
             // أو نص فاضي بيتعرض غلط - الواجهة (createProductCardHTML وصفحة المنتج)
             // بترسم البادچ ده بس لو فيه نص فعلي.
             quantityNote: p.quantity_note || null,
+            // ✨ [مميزات المنتج]: مصفوفة اختيارية [{icon, text}] بتتحط من قاعدة البيانات
+            // لكل منتج على حدة - بتوصل فاضية ([]) لأي منتج لسه معندهوش بيانات، فمفيش
+            // أي كسر في صفحة المنتج (renderProductHighlights بيتأكد منها قبل ما يعرضها).
+            highlights: p.highlights || [],
             builderType: p.builder_type,
             customBuilderUrl: p.custom_builder_url,
             searchTerms: p.search_terms || [],
