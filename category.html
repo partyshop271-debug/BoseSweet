@@ -13,6 +13,23 @@
          معاها كمحتوى مكرر ويقلل ترتيبها. الوسم بيتحدّث فعليًا بالـ ID الصحيح بعد ما بيانات الفئة
          تجهز (شوفي دالة updateCanonicalTag في نص الصفحة) - القيمة هنا Placeholder بس لحد التحديث. -->
     <link rel="canonical" id="bose-canonical-tag" href="https://bose-sweet.vercel.app/category.html">
+    <!-- 🛡️👑 [SEO/GEO - Canonical فوري لفئات المحاكي]: فئات "ورد" و"تورت" (taswaq-flowers /
+         taswaq-toort) بيتم تحويل الزائر منها فوراً لصفحة المحاكي المخصصة عن طريق JS بعد ما بيانات
+         المنتجات تجهز (شوفي initCategoryRendering تحت). المشكلة إن أي بوت/محرك بحث مش بيستنى تنفيذ
+         الـ JS وينتظر التحويل ده كان بيشوف صفحة category.html فاضية شكلياً للفئة دي، من غير أي ربط
+         واضح بصفحة المحاكي الحقيقية. الكود ده بيحدد الـ canonical فوراً من الـ URL (مش لازم ننتظر
+         تحميل بيانات المتجر) عشان أي بوت يعرف من أول لحظة إن المحتوى الرسمي لفئة الورد/التورت
+         موجود فعلياً في flower-builder.html / cake-builder.html. -->
+    <script>
+        (function bosePreResolveBuilderCanonical() {
+            var catId = new URLSearchParams(window.location.search).get("category");
+            var builderMap = { "taswaq-flowers": "flower-builder.html", "taswaq-toort": "cake-builder.html" };
+            if (catId && builderMap[catId]) {
+                var tag = document.getElementById("bose-canonical-tag");
+                if (tag) tag.setAttribute("href", "https://bose-sweet.vercel.app/" + builderMap[catId]);
+            }
+        })();
+    </script>
     
     <!-- 🔍 إعدادات تحسين محركات البحث والأرشفة الفاخرة SEO -->
     <meta name="description" content="استمتع بتصفح تشكيلة حلويات بوسي الفاخرة المجهزة يومياً بمكونات طبيعية 100% طازجة تليق بمناسباتكم السعيدة.">
@@ -492,8 +509,15 @@
                 // (تورت، ورد، كب كيك...) كانت بتشترك في meta description واحد عام للصفحة
                 // كلها. دلوقتي كل قسم بياخد وصف فيه اسمه الحقيقي، فجوجل يقدر يميّز نتيجة
                 // "الجاتوهات الملكية" عن نتيجة "بوكيهات الورد" في نتائج البحث.
+                // 🛡️👑 [إصلاح لاحق]: كان النص هنا بيتجاهل categoryObj.description الحقيقي
+                // المكتوب فعلياً في لوحة التحكم (لو موجود) ويستخدم نص عام قالبي دايماً -
+                // يعني حتى الفئات اللي أدمن كتبلها وصف كويس ومفصّل (زي الجاتوهات) كان
+                // الوصف ده بيروح في نص الصفحة بس ومبيوصلش لمحرك البحث نفسه. دلوقتي أول
+                // أولوية للوصف الحقيقي المكتوب، وبعدين fallback للنص العام لو مفيش وصف.
                 (function updateBoseCategoryMeta() {
-                    const catDesc = `تسوقي ${categoryObj.title} من حلويات بوسي - تشكيلة فاخرة بمكونات طبيعية 100%، تحضير طازة يومياً وتوصيل لباب البيت.`;
+                    const catDesc = (categoryObj.description && categoryObj.description.trim())
+                        ? categoryObj.description.trim()
+                        : `تسوقي ${categoryObj.title} من حلويات بوسي - تشكيلة فاخرة بمكونات طبيعية 100%، تحضير طازة يومياً وتوصيل لباب البيت.`;
                     const metaDesc = document.querySelector('meta[name="description"]');
                     if (metaDesc) metaDesc.setAttribute("content", catDesc);
                     const ogTitle = document.querySelector('meta[property="og:title"]');

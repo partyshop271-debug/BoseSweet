@@ -1202,6 +1202,76 @@
                 subtext: "شاركينا رأيك في تجربة تصميم التورتة بنفسك من المحاكي - رأيك بيفرق مع عميلات تانية زيك.",
             });
         });
+
+        /**
+         * 🔍👑 [SEO/GEO - بيانات Product/Offer/AggregateRating لمحاكي التورت]:
+         * نفس الإصلاح اللي اتعمل في flower-builder.html بالضبط - كانت الصفحة
+         * دي كمان من غير أي Schema.org رغم إنها صفحة المنتج الفعلية للتورت
+         * المخصص. اتحطت هنا كمان عشان الاتساق ومنع نفس المشكلة تتكرر لاحقاً.
+         */
+        (function injectBoseCakeStructuredData() {
+            function computeRatingInfo(reviews) {
+                const rated = (reviews || []).filter(r => Number(r.rating) > 0);
+                if (!rated.length) return null;
+                const avg = rated.reduce((s, r) => s + Number(r.rating), 0) / rated.length;
+                return { avg, count: rated.length };
+            }
+
+            async function buildAndInject() {
+                const storeName = (window.BoseStoreData && window.BoseStoreData.store && window.BoseStoreData.store.name) || "حلويات بوسي";
+                const currency = (window.BoseStoreData && window.BoseStoreData.store && window.BoseStoreData.store.currency) || "EGP";
+                const basePrice = (window.BoseStoreData && window.BoseStoreData.cakeBuilder && window.BoseStoreData.cakeBuilder.basePrice) || 580;
+
+                const schema = {
+                    "@context": "https://schema.org",
+                    "@type": "Product",
+                    "name": "تورتة مخصصة - محاكي التورت التفاعلي",
+                    "image": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+                    "description": "تصميم تورتة بالكامل حسب الطلب - النكهة والشكل وعدد الأفراد وطباعة الصورة والرسالة المكتوبة، وكل خطوة بتحدد السعر لحظياً.",
+                    "brand": { "@type": "Brand", "name": storeName },
+                    "offers": {
+                        "@type": "Offer",
+                        "url": window.location.href,
+                        "priceCurrency": currency,
+                        "price": basePrice,
+                        "priceValidUntil": (function () { const d = new Date(); d.setMonth(d.getMonth() + 3); return d.toISOString().slice(0, 10); })(),
+                        "availability": "https://schema.org/InStock",
+                        "description": `يبدأ من ${basePrice} جنيه لأقل عدد أفراد، والسعر بيتحدث حسب العدد والإضافات المختارة`
+                    }
+                };
+
+                try {
+                    if (window.BoseSupabase && typeof window.BoseSupabase.fetchApprovedReviews === "function") {
+                        const reviews = await window.BoseSupabase.fetchApprovedReviews("toort-custom-master");
+                        const ratingInfo = computeRatingInfo(reviews);
+                        if (ratingInfo) {
+                            schema.aggregateRating = {
+                                "@type": "AggregateRating",
+                                "ratingValue": ratingInfo.avg.toFixed(1),
+                                "reviewCount": ratingInfo.count
+                            };
+                        }
+                    }
+                } catch (e) {
+                    // تجاهل بصمت - الصفحة تفضل شغالة حتى لو فشل جلب التقييمات
+                }
+
+                let script = document.getElementById("bose-cake-structured-data");
+                if (!script) {
+                    script = document.createElement("script");
+                    script.type = "application/ld+json";
+                    script.id = "bose-cake-structured-data";
+                    document.head.appendChild(script);
+                }
+                script.textContent = JSON.stringify(schema);
+            }
+
+            if (window.BoseStoreData) {
+                buildAndInject();
+            } else {
+                document.addEventListener("BoseDatabaseLoaded", buildAndInject);
+            }
+        })();
     </script>
 </body>
 </html>

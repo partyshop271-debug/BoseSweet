@@ -515,6 +515,79 @@
                 subtext: "شاركينا رأيك في تجربة تصميم الورد بنفسك من المحاكي - رأيك بيفرق مع عميلات تانية زيك.",
             });
         });
+
+        /**
+         * 🔍👑 [SEO/GEO - بيانات Product/Offer/AggregateRating لمحاكي الورد]:
+         * الصفحة دي كانت الوحيدة (مع محاكي التورت) اللي مفيهاش أي Schema.org،
+         * رغم إنها صفحة "المنتج" الفعلية للورد على الموقع كله - أي أداة/AI بتقرا
+         * بيانات منظّمة (زي جوجل) كانت بتشوفها HTML عادي بس، من غير أي تأكيد رسمي
+         * إن ده منتج بيتباع فعلاً بسعر حقيقي. نفس باترن product.html بالظبط: سعر
+         * البداية الحقيقي من الإعدادات + تقييم حقيقي محسوب من مراجعات "flowers-master"
+         * فعلاً (مفيش AggregateRating بيتحقن لو مفيش ولا مراجعة معتمدة واحدة).
+         */
+        (function injectBoseFlowerStructuredData() {
+            function computeRatingInfo(reviews) {
+                const rated = (reviews || []).filter(r => Number(r.rating) > 0);
+                if (!rated.length) return null;
+                const avg = rated.reduce((s, r) => s + Number(r.rating), 0) / rated.length;
+                return { avg, count: rated.length };
+            }
+
+            async function buildAndInject() {
+                const storeName = (window.BoseStoreData && window.BoseStoreData.store && window.BoseStoreData.store.name) || "حلويات بوسي";
+                const currency = (window.BoseStoreData && window.BoseStoreData.store && window.BoseStoreData.store.currency) || "EGP";
+                const basePrice = (window.BoseStoreData && window.BoseStoreData.flowerBuilder && window.BoseStoreData.flowerBuilder.basePrice) || 400;
+
+                const schema = {
+                    "@context": "https://schema.org",
+                    "@type": "Product",
+                    "name": "بوكيه ورد مخصص - محاكي الورد التفاعلي",
+                    "image": ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"],
+                    "description": "تصميم بوكيه ورد بالكامل حسب الطلب - ورد طبيعي أو صناعي فاخر أو ورد ستان، مع خيارات إضافية زي الشوكولاتة والصور الشخصية وكارت الهدية.",
+                    "brand": { "@type": "Brand", "name": storeName },
+                    "offers": {
+                        "@type": "Offer",
+                        "url": window.location.href,
+                        "priceCurrency": currency,
+                        "price": basePrice,
+                        "priceValidUntil": (function () { const d = new Date(); d.setMonth(d.getMonth() + 3); return d.toISOString().slice(0, 10); })(),
+                        "availability": "https://schema.org/InStock",
+                        "description": `يبدأ من ${basePrice} جنيه لباقة ١٥ وردة، والسعر بيتحدث حسب العدد والإضافات المختارة`
+                    }
+                };
+
+                try {
+                    if (window.BoseSupabase && typeof window.BoseSupabase.fetchApprovedReviews === "function") {
+                        const reviews = await window.BoseSupabase.fetchApprovedReviews("flowers-master");
+                        const ratingInfo = computeRatingInfo(reviews);
+                        if (ratingInfo) {
+                            schema.aggregateRating = {
+                                "@type": "AggregateRating",
+                                "ratingValue": ratingInfo.avg.toFixed(1),
+                                "reviewCount": ratingInfo.count
+                            };
+                        }
+                    }
+                } catch (e) {
+                    // تجاهل بصمت - الصفحة تفضل شغالة حتى لو فشل جلب التقييمات
+                }
+
+                let script = document.getElementById("bose-flower-structured-data");
+                if (!script) {
+                    script = document.createElement("script");
+                    script.type = "application/ld+json";
+                    script.id = "bose-flower-structured-data";
+                    document.head.appendChild(script);
+                }
+                script.textContent = JSON.stringify(schema);
+            }
+
+            if (window.BoseStoreData) {
+                buildAndInject();
+            } else {
+                document.addEventListener("BoseDatabaseLoaded", buildAndInject);
+            }
+        })();
     </script>
 </body>
 </html>
