@@ -212,21 +212,77 @@
             display: block;
         }
 
+        /* 🎂 [وضوح السعر]: الفارقة المنقّطة والمسافة بقوا تحت ملحوظة الكمية (لو موجودة)
+           بدل ما يبقوا تحت السعر مباشرة - عشان السعر وملحوظة "لكل دستة/12 قطعة" يتقروا
+           كوحدة بصرية واحدة، مش السعر لوحده وبعدين ملحوظة صغيرة منفصلة تحته. */
+        .product-price-block {
+            border-bottom: 1px dashed rgba(255, 145, 164, 0.25);
+            padding-bottom: 16px;
+            margin-bottom: 20px;
+        }
+
         .product-price-large-display {
             font-size: 1.8rem;
             font-weight: 700;
             color: var(--bose-pink);
-            margin-bottom: 20px;
-            border-bottom: 1px dashed rgba(255, 145, 164, 0.25);
-            padding-bottom: 16px;
+            margin-bottom: 6px;
         }
 
-        .product-story-paragraph {
+        .product-price-block .product-price-large-display:last-child {
+            margin-bottom: 0;
+        }
+
+        #bose-product-quantity-note.bose-qty-clarity-note {
+            font-size: 0.85rem;
+            margin: 0;
+            border-radius: 0;
+            background: transparent;
+            border: none;
+            padding: 0;
+        }
+
+        /* ✨ [مميزات المنتج]: صف صغير من الشارات الحقيقية الخاصة بهذا المنتج تحديدًا
+           (مش شريط عام للموقع كله) - بيظهر بس لو المنتج عنده highlights فعلية. */
+        .product-highlights-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 0 0 20px 0;
+        }
+
+        .product-highlight-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--bose-black);
+            background: rgba(255, 145, 164, 0.08);
+            border: 1px solid rgba(255, 145, 164, 0.25);
+            border-radius: 30px;
+            padding: 5px 12px;
+        }
+
+        /* 📖 [تنظيم الوصف]: الحاوية بتتقسم لعدة فقرات قصيرة (جملة أو اتنين لكل فقرة)
+           بدل فقرة واحدة طويلة مكدسة - نفس النص الأصلي بالظبط بدون حذف أو اختصار
+           أو تبسيط، بس منظم بصريًا عشان يتقرا بسهولة على الموبايل. راجع
+           renderStructuredDescription() تحت. */
+        #bose-product-desc-text {
+            margin: 0 0 24px 0;
+        }
+
+        #bose-product-desc-text .product-story-paragraph {
             font-size: 0.92rem;
             color: var(--bose-black);
             opacity: 0.85;
-            line-height: 1.6;
-            margin: 0 0 24px 0;
+            line-height: 1.7;
+            margin: 0 0 10px 0;
+            padding-right: 14px;
+            border-right: 3px solid rgba(255, 145, 164, 0.25);
+        }
+
+        #bose-product-desc-text .product-story-paragraph:last-child {
+            margin-bottom: 0;
         }
 
         /* كروت خيارات التخصيص للميني كيك والأصناف القياسية */
@@ -524,13 +580,19 @@
                 </div>
                 <div id="bose-product-size-tabs" class="bose-size-tabs-filter" style="display:none; margin-bottom:14px;"></div>
 
-                <div id="bose-product-price-text" class="product-price-large-display">0 EGP</div>
-                <!-- 🎂 [حل مشكلة "العميل مش فاهم الكمية"]: نفس البادچ الظاهر دايماً في كارت
-                     المنتج، بيتحط هنا كمان جنب السعر الرئيسي في صفحة المنتج المستقلة نفسها -
-                     راجع renderQuantityNote() تحت وعمود quantity_note في قاعدة البيانات. -->
-                <div id="bose-product-quantity-note" class="bose-qty-clarity-note" style="display:none;"><i class="fa-solid fa-circle-info"></i><span id="bose-product-quantity-note-text"></span></div>
+                <!-- 🎂 [وضوح السعر]: السعر وملحوظة الكمية ("لكل دستة/12 قطعة" مثلاً) اتلمّوا
+                     في بلوك واحد بخط فاصل تحته، عشان يتقروا كوحدة بصرية واحدة من أول نظرة -
+                     مش رقم سعر كبير لوحده وملحوظة صغيرة منفصلة تحته سهل تتفوت. الخط الفاصل
+                     موجود على البلوك نفسه (مش على السعر ولا الملحوظة) عشان يفضل ظاهر بشكل
+                     سليم حتى لو المنتج معندهوش quantity_note أصلاً. -->
+                <div class="product-price-block">
+                    <div id="bose-product-price-text" class="product-price-large-display">0 EGP</div>
+                    <div id="bose-product-quantity-note" class="bose-qty-clarity-note" style="display:none;"><i class="fa-solid fa-circle-info"></i><span id="bose-product-quantity-note-text"></span></div>
+                </div>
                 
-                <p id="bose-product-desc-text" class="product-story-paragraph">وصف قصة المكونات الفاخرة والطعم الأصلي المميز للقطعة...</p>
+                <div id="bose-product-highlights" class="product-highlights-row" style="display:none;"></div>
+
+                <div id="bose-product-desc-text"><p class="product-story-paragraph">وصف قصة المكونات الفاخرة والطعم الأصلي المميز للقطعة...</p></div>
                 
                 <div id="bose-product-customization-options-root" class="customization-options-box"></div>
 
@@ -823,16 +885,66 @@
                 });
             }
 
+            // ✨ [مميزات المنتج]: صف شارات صغيرة خاصة بالمنتج ده تحديدًا (مش شريط عام
+            // للموقع كله زي شريط "مكونات طبيعية 100%" في الهيدر). بيظهر بس لو المنتج
+            // عنده products.highlights فعلية (مصفوفة {icon, text}) - غير كده بيفضل مخفي
+            // تمامًا زي ما هو دلوقتي، من غير أي تغيير في باقي المنتجات اللي لسه معندهاش
+            // البيانات دي.
+            function renderProductHighlights() {
+                const row = document.getElementById("bose-product-highlights");
+                if (!row || !currentProduct) return;
+                const items = Array.isArray(currentProduct.highlights) ? currentProduct.highlights : [];
+                if (!items.length) {
+                    row.style.display = "none";
+                    row.innerHTML = "";
+                    return;
+                }
+                row.innerHTML = "";
+                items.forEach((h) => {
+                    const pill = document.createElement("span");
+                    pill.className = "product-highlight-pill";
+                    pill.textContent = `${h.icon || ""} ${h.text || ""}`.trim();
+                    row.appendChild(pill);
+                });
+                row.style.display = "flex";
+            }
+
+            // 📖 [تنظيم الوصف بدون تغيير المحتوى]: النص الأصلي (من flavor_desc أو description
+            // أو وصف الحجم المخصص) بيتقسم لفقرات حسب نهاية كل جملة (نقطة + مسافة) وكل فقرة
+            // بتترسم في <p> منفصلة بمسافة ومسطرة جانبية خفيفة - ده تقسيم بصري بحت وقت
+            // العرض فقط، مفيش ولا حرف واحد بيتحذف أو يتغيّر أو يتلخّص من النص المخزّن في
+            // قاعدة البيانات. لو المنتج مالوش جمل متعددة (نص قصير)، بيتعرض كفقرة واحدة
+            // زي ما كان بالظبط - سلوك آمن ومطابق للسابق لأي منتج تاني.
+            function renderStructuredDescription(rawText) {
+                const descNode = document.getElementById("bose-product-desc-text");
+                if (!descNode) return;
+                descNode.innerHTML = "";
+                const text = (rawText || "").trim();
+                if (!text) return;
+
+                // تقسيم على أساس نهاية الجملة العربية/الإنجليزية (نقطة تليها مسافة أو نهاية
+                // النص) - بيحافظ على النقطة نفسها في نهاية كل جزء، ومفيش أي تعديل لحروف النص.
+                const sentences = text.match(/[^.]+\.(?=\s|$)|[^.]+$/g) || [text];
+                sentences
+                    .map(s => s.trim())
+                    .filter(Boolean)
+                    .forEach(sentence => {
+                        const p = document.createElement("p");
+                        p.className = "product-story-paragraph";
+                        p.textContent = sentence;
+                        descNode.appendChild(p);
+                    });
+            }
+
             // 🚨 [تحسين مكمّل]: لو المنتج عنده وصف مخصص لكل حجم (products.size_descriptions)
             // نستخدمه، وإلا نرجع للوصف العام العادي - عشان الصفحة كلها (سعر + وصف) تتغير
             // تلقائياً حسب الحجم اللي العميل بيختاره، مش السعر بس.
             function applyDescriptionForCurrentSize() {
-                const descNode = document.getElementById("bose-product-desc-text");
-                if (!descNode || !currentProduct) return;
+                if (!currentProduct) return;
                 const perSize = currentProduct.sizeDescriptions && currentSelectedOptions.size
                     ? currentProduct.sizeDescriptions[currentSelectedOptions.size]
                     : null;
-                descNode.textContent = perSize || currentProduct.flavorDesc || currentProduct.description || "";
+                renderStructuredDescription(perSize || currentProduct.flavorDesc || currentProduct.description || "");
             }
 
             // 🖼️ [صور الأحجام المتعددة]: لو المنتج عنده صورة مخصصة للحجم المختار حالياً
@@ -926,7 +1038,24 @@
                     if (foundCat) catBadge.textContent = foundCat.title;
                 }
                 
-                document.getElementById("bose-product-flavor-text").textContent = currentProduct.flavorName || "كلاسيك فاخر";
+                // 🛡️ [إصلاح - عنوان فرعي مكرر بلا فائدة]: لو flavorName مطابق لاسم المنتج
+                // نفسه (title) - زي "جاتوه كلاسيك" تحت عنوان "جاتوه كلاسيك" بالظبط - السطر
+                // ده بيبقى تكرار محض من غير أي معلومة جديدة، فبيتخفي تمامًا. بيفضل ظاهر
+                // بس لو فعلاً بيحمل تفصيلة مختلفة عن الاسم (نكهة/تفصيلة حقيقية).
+                (function renderFlavorSubline() {
+                    const sublineNode = document.getElementById("bose-product-flavor-text");
+                    if (!sublineNode) return;
+                    const flavor = (currentProduct.flavorName || "").trim();
+                    const title = (currentProduct.title || "").trim();
+                    if (!flavor || flavor === title) {
+                        sublineNode.style.display = "none";
+                    } else {
+                        sublineNode.textContent = flavor;
+                        sublineNode.style.display = "block";
+                    }
+                })();
+
+                renderProductHighlights();
 
                 // 🚨 [إصلاح حرج - الأحجام]: نحدد الحجم الابتدائي المختار (الافتراضي من قاعدة
                 // البيانات لو موجود، وإلا أول حجم متاح فعلياً في products.prices) قبل أي رسم للسعر
