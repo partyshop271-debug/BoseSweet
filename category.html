@@ -438,101 +438,9 @@
 
     <!-- 👑 المحرك البرمجي المتكامل والمستقل لصفحة الفئة 👑 -->
     <script>
-        // 🔍🔍 [SEO/GEO - محتوى ثابت فوري لكل قسم]: قبل الإصلاح ده، العنوان والوصف
-        // ووصف الفئة كانوا بيتحدّدوا بس بعد ما بيانات المتجر توصل من Supabase (حدث
-        // BoseDatabaseLoaded) - يعني أي بوت أو أداة فهرسة سريعة بتقرا HTML/DOM الأول
-        // من غير ما تستنى طلبات الشبكة غير المتزامنة كانت بتشوف "جاري التحميل..."
-        // بس، من غير أي كلمة مفتاحية حقيقية (زي "ورد") تدل على محتوى الصفحة. الخريطة
-        // دي ثابتة جوه الصفحة نفسها (مفيش شبكة/انتظار) وبتتطبق فوراً في أول سطر تنفيذ،
-        // فأي نص "ظاهر" في الصفحة يبقى صحيح ومطابق للفئة من أول لحظة - قبل ما بيانات
-        // Supabase الحية توصل أصلاً (اللي بتيجي بعدين وتؤكد/تحدّث نفس النص لو المنتج
-        // اتغيّر اسمه من لوحة التحكم، فمفيش تعارض ولا تكرار).
-        const BOSE_CATEGORY_STATIC_SEO = {
-            "taswaq-toort": {
-                title: "التورت",
-                desc: "تورت فاخر بطبقات كريمة وحشوات متنوعة (شوكولاتة، فراولة، بندق)، بيتحضّر طازة يومياً ومتاح بأحجام مختلفة تناسب أي مناسبة."
-            },
-            "taswaq-gatowat": {
-                title: "الجاتوهات",
-                desc: "جاتوهات ملكية فاخرة بتشطيبات دقيقة ونكهات غنية، مثالية للأعياد والمناسبات الكبيرة والهدايا الفاخرة."
-            },
-            "taswaq-qashtota": {
-                title: "القشطوطة",
-                desc: "قشطوطة طرية بطبقات قشطة وكراميل، من أكتر الأصناف اللي بيطلبها عملاء حلويات بوسي لحلاوة طعمها المميز."
-            },
-            "taswaq-despacito": {
-                title: "الديسباسيتو",
-                desc: "ديسباسيتو غني بطبقات الشوكولاتة والمكسرات، متاح بمقاسات مثلث وطاجن وحجم عائلي حسب احتياجك."
-            },
-            "taswaq-cinabon": {
-                title: "السينابون",
-                desc: "سينابون طازة ساخن بحشوة قرفة وتغطية كريمة جبنة، بيتحضّر أول بأول عشان يوصلك بأحلى طعم وقوام."
-            },
-            "taswaq-donuts": {
-                title: "الدوناتس",
-                desc: "دوناتس بتغطيات وحشوات متنوعة (شوكولاتة، فراولة، كراميل)، مناسبة كهدية سريعة أو ضيافة يومية."
-            },
-            "taswaq-red-velvet": {
-                title: "الريدڤيلڤت",
-                desc: "ريدڤيلڤت بطعمه المميز وقوامه الطري مع كريمة الجبنة الأصلية، متاح بمقاسات مثلث وطاجن وحجم عائلي."
-            },
-            "taswaq-cupcake": {
-                title: "الكب كيك",
-                desc: "كب كيك بنكهات متعددة وتزيين أنيق، اختيار مثالي لتوزيعات المناسبات والهدايا الصغيرة الفاخرة."
-            },
-            "taswaq-mini-cake": {
-                title: "الميني تورت",
-                desc: "ميني تورت بمقاس فردي أنيق ونفس جودة التورت الكبير، مناسب كهدية شخصية أو تجربة سريعة."
-            },
-            "taswaq-flowers": {
-                title: "الورد",
-                desc: "بوكيهات ورد جاهزة ومخصصة بكل الأنواع: ورد طبيعي حقيقي، ورد صناعي عالي الجودة، وورد ساتان مصنوع يدوياً - بالإضافة لتصميم بوكيه ورد مخصص بالكامل حسب طلبك من خلال محاكي تصميم البوكيه التفاعلي."
-            },
-            "taswaq-happiness-cups": {
-                title: "كبات السعادة",
-                desc: "كبات السعادة تشكيلة حلويات متنوعة في كوب واحد، اختيار عملي وأنيق للضيافة والهدايا الصغيرة."
-            },
-            "taswaq-relax-box": {
-                title: "بوكس الروقان",
-                desc: "بوكس الروقان تشكيلة مختارة من أفضل الحلويات في عبوة واحدة فاخرة، جاهزة للهدية أو التدليل الشخصي."
-            },
-            "bose-gift-cards": {
-                title: "بطاقات الهدايا",
-                desc: "بطاقات هدايا حلويات بوسي بقيم مختلفة، هدية مرنة تسيب للمُهدى إليه حرية اختيار اللي يعجبه من الحلويات أو الورد."
-            }
-        };
-
-        function applyBoseStaticCategorySEO(categoryId) {
-            const staticInfo = BOSE_CATEGORY_STATIC_SEO[categoryId];
-            if (!staticInfo) return;
-
-            document.title = `${staticInfo.title} الفاخرة | حلويات بوسي`;
-
-            const metaDesc = document.querySelector('meta[name="description"]');
-            if (metaDesc) metaDesc.setAttribute("content", `تسوقي ${staticInfo.title} من حلويات بوسي - ${staticInfo.desc}`);
-            const ogTitle = document.querySelector('meta[property="og:title"]');
-            if (ogTitle) ogTitle.setAttribute("content", `${staticInfo.title} الفاخرة | حلويات بوسي`);
-            const ogDesc = document.querySelector('meta[property="og:description"]');
-            if (ogDesc) ogDesc.setAttribute("content", `تسوقي ${staticInfo.title} من حلويات بوسي - ${staticInfo.desc}`);
-
-            const canonicalTag = document.getElementById("bose-canonical-tag");
-            if (canonicalTag) canonicalTag.setAttribute("href", `https://bose-sweet.vercel.app/category.html?category=${encodeURIComponent(categoryId)}`);
-
-            const headlineEl = document.getElementById('bose-category-headline');
-            const descEl = document.getElementById('bose-category-description');
-            const breadcrumbEl = document.getElementById('breadcrumb-active-category');
-            if (headlineEl) headlineEl.textContent = staticInfo.title;
-            if (descEl) descEl.textContent = staticInfo.desc;
-            if (breadcrumbEl) breadcrumbEl.textContent = staticInfo.title;
-        }
-
         document.addEventListener("DOMContentLoaded", function() {
             const urlParams = new URLSearchParams(window.location.search);
             const categoryId = urlParams.get('category');
-
-            // 👑 بيتنفّذ فوراً هنا - قبل أي انتظار لبيانات Supabase - عشان أول حاجة
-            // تتقرا في الصفحة تبقى وصف حقيقي فيه اسم الفئة (زي "ورد")، مش نص تحميل عام.
-            if (categoryId) applyBoseStaticCategorySEO(categoryId);
 
             const productsGrid = document.getElementById('bose-category-products-grid');
             const headlineNode = document.getElementById('bose-category-headline');
@@ -654,7 +562,7 @@
                     console.warn("⚠️ فشل فرز المنتجات سلوكياً داخل الفئة.");
                 }
 
-                descNode.textContent = globalFilteredProducts[0].description || `أفخر أنواع ${categoryObj.title} المصنوعة يدوياً بكل حب وشغف.`;
+                descNode.textContent = categoryObj.description || globalFilteredProducts[0].description || `أفخر أنواع ${categoryObj.title} المصنوعة يدوياً بكل حب وشغف.`;
 
                 const firstProduct = globalFilteredProducts[0];
 
