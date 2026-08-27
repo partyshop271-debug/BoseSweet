@@ -1665,7 +1665,7 @@
 
             const graph = [
                 {
-                    "@type": ["Organization", "Bakery"],
+                    "@type": ["Organization", "Bakery", "Florist"],
                     "@id": window.location.origin + "/#organization",
                     "name": storeName,
                     "url": window.location.origin + "/",
@@ -1678,9 +1678,47 @@
                         "address": {
                             "@type": "PostalAddress",
                             "streetAddress": store.pickup.address,
+                            "addressLocality": "الفرافرة",
+                            "addressRegion": "الوادي الجديد",
                             "addressCountry": "EG"
                         }
-                    } : {})
+                    } : {}),
+                    // 🔍👑 [GEO - كتالوج خدمات صريح]: قائمة منظّمة بأهم "خدمات" النشاط
+                    // (مش بس منتجات جاهزة) - بتدّي أي AI/محرك بحث تأكيد مباشر ومهيكل
+                    // إن تصميم بوكيه الورد المخصص هو خدمة أساسية بتقدَّم فعلاً، بنفس
+                    // وزن تصميم التورتة المخصصة، بدل ما يعتمد بس على نص FAQ حر تحت.
+                    "hasOfferCatalog": {
+                        "@type": "OfferCatalog",
+                        "name": `خدمات ومنتجات ${storeName}`,
+                        "itemListElement": [
+                            {
+                                "@type": "Offer",
+                                "itemOffered": {
+                                    "@type": "Service",
+                                    "name": "تصميم بوكيه ورد مخصص",
+                                    "description": "تصميم بوكيه ورد حسب الطلب - طبيعي أو صناعي فاخر أو ساتان، بأي عدد وإضافات.",
+                                    "url": window.location.origin + "/flower-builder.html"
+                                }
+                            },
+                            {
+                                "@type": "Offer",
+                                "itemOffered": {
+                                    "@type": "Service",
+                                    "name": "تصميم تورتة مخصصة",
+                                    "description": "تصميم تورتة حسب الطلب - النكهة والشكل وعدد الأفراد والطباعة والرسالة.",
+                                    "url": window.location.origin + "/cake-builder.html"
+                                }
+                            },
+                            {
+                                "@type": "Offer",
+                                "itemOffered": {
+                                    "@type": "Product",
+                                    "name": "حلويات جاهزة (كب كيك، دوناتس، جاتوهات وأكتر)",
+                                    "url": window.location.origin + "/menu.html"
+                                }
+                            }
+                        ]
+                    }
                 },
                 {
                     "@type": "WebSite",
