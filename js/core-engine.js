@@ -1790,8 +1790,12 @@
             const font = document.createElement('link'); font.rel = 'stylesheet'; font.href = 'https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap';
             document.head.append(p1, p2, font);
         }
-        if (!document.querySelector('link[href*="font-awesome"]')) {
-            const fa = document.createElement('link'); fa.rel = 'stylesheet'; fa.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css';
+        /* 🛡️ [إصلاح جذري - اختفاء الأيقونات]: الأيقونات بقت مُستضافة محليًا (/vendor/fontawesome/)
+           بدل CDN خارجي، فالشرط هنا لازم يتعرّف على المسار الجديد "fontawesome" (من غير شرطة)
+           مش بس القديم "font-awesome" (بشرطة) - غير كده كان هيفضل يحقن رابط الـCDN القديم
+           من جديد في كل صفحة ويرجّع نفس مشكلة الاعتماد على مصدر خارجي واحد. */
+        if (!document.querySelector('link[href*="fontawesome"], link[href*="font-awesome"]')) {
+            const fa = document.createElement('link'); fa.rel = 'stylesheet'; fa.href = '/vendor/fontawesome/css/all.min.css?v=2026_local_v1.0';
             document.head.appendChild(fa);
         }
         // 🛡️ [إصلاح - المرحلة 3]: manifest.json كان موجود كملف بس مش متربط بأي صفحة،
