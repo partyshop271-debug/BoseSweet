@@ -23,8 +23,14 @@
     <!-- استدعاء المحرك المركزي الموحد في رأس الصفحة لتأمين الحقن والتوافق -->
     <script src="js/supabase-client.js?v=2026_production_v39.0"></script>
     <script src="js/favorites-engine.js?v=2026_production_v37.0"></script>
+    <!-- 🛡️🆕 [إصلاح ترتيب]: loyalty-config.js لازم يتحمّل *قبل* core-engine.js (شوفي
+         التعليق الكامل داخل js/loyalty-config.js) - لو حصل العكس، core-engine.js
+         ممكن يطلق حدث BoseDatabaseLoaded بشكل متزامن قبل ما getBoseLoyaltyConfig
+         تتعرّف أصلاً، فكل أرقام صفحة نادي المكافآت (نسب الخصم، عدد الطلبات
+         للمكافأة، قيمة القسيمة) كانت بترجع لأرقام افتراضية ثابتة بدل الأرقام
+         الحقيقية المحفوظة من لوحة التحكم. -->
+    <script src="js/loyalty-config.js?v=2026_production_v2.0"></script>
     <script src="js/core-engine.js?v=2027_production_v45.0"></script>
-    <script src="js/loyalty-config.js?v=2026_production_v1.0"></script>
 
     <style>
         .rw-wrap { padding: 50px 18px 90px; max-width: 720px; margin: 0 auto; min-height: 70vh; font-family: 'Cairo', sans-serif; }

@@ -171,9 +171,16 @@
                 </div>
 
                 <div class="bose-shared-cta-group">
-                    <button type="button" class="bose-shared-cta-primary" id="btn-order-like-this">
+                    <!-- 🛡️🆕 [إصلاح]: كان زرار <button> بيفتح واتساب عن طريق window.open()
+                         المُشغّل بـ JavaScript وقت الضغط - نفس النمط اللي اتأكد قبل كده إن
+                         متصفحات الفتح الداخلي (إنستجرام/سناب شات) بترفضه صراحةً (راجع
+                         الإصلاح المطابق في order-success.html/cart-engine.js). الصفحة دي
+                         بالذات (رابط متشارك) هي أعلى مكان في الموقع معرّض للمتصفح الداخلي،
+                         فبقى <a> برابط href حقيقي بيتحط عليه مباشرة قبل الضغط - يشتغل حتى
+                         لو المتصفح بيمنع window.open تمامًا. -->
+                    <a href="#" class="bose-shared-cta-primary" id="btn-order-like-this" target="_blank" rel="noopener noreferrer" style="display:none;">
                         <i class="fa-brands fa-whatsapp"></i> اطلبي تورتة زي دي دلوقتي
-                    </button>
+                    </a>
                     <a href="cake-builder.html" class="bose-shared-cta-secondary">
                         <i class="fa-solid fa-palette"></i> صممي تورتتك انتِ كمان
                     </a>
