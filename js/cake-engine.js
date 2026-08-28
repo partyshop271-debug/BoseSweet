@@ -642,6 +642,16 @@ function startEngineLogic() {
        ونبني رابط design-view.html?id=... بيفتح صفحة على الموقع نفسه فيها
        كل تفاصيل الطلب - أي حد يفتح الرابط يشوف التصميم من غير ما يقدر
        يشوف تصاميم عملاء تانيين.
+
+       🛡️🆕 [إصلاح - الحل المضمون]: قبل كده كان الزرار بيستدعي window.open()
+       *بعد* انتظار نتيجة الـ RPC (await createSharedCakeDesign) - وده بيكسر
+       سلسلة "لمسة المستخدم الحقيقية" اللي المتصفحات (خصوصًا الفتح الداخلي
+       زي إنستجرام/سناب شات) بتشترطها عشان تسمح بفتح نافذة/تاب جديد؛ أي وقت
+       انتظار شبكة بينهم كافي إن المتصفح يرفض الفتح بصمت. الحل المضمون: مفيش
+       أي فتح تلقائي خالص بعد الـ await. بدل كده، بمجرد ما الرابط يجهز، بنستبدل
+       الزرار برابط <a href> حقيقي وواضح ("افتحي واتساب دلوقتي") والعميلة
+       بنفسها بتضغط عليه - ضغطة جديدة ومباشرة على رابط حقيقي، فبيشتغل مضمون
+       100% في كل المتصفحات من غير أي استثناء.
        ================================================================== */
     if (btnShareDesign) {
         btnShareDesign.addEventListener('click', async () => {
@@ -660,12 +670,23 @@ function startEngineLogic() {
                 if (!newId) throw new Error("no id returned");
                 const shareUrl = `${window.location.origin}${window.location.pathname.replace('cake-builder.html', 'design-view.html')}?id=${newId}`;
                 const shareText = `شوف تصميم التورتة اللي عملتهولك من حلويات بوسي 🎂\n${shareUrl}`;
-                window.open(`https://wa.me/?text=${encodeURIComponent(shareText)}`, '_blank', 'noopener,noreferrer');
+                const waLink = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
+
+                // الرابط جاهز - نستبدل الزرار برابط <a> حقيقي بدل ما نحاول نفتحه
+                // تلقائيًا بـ JS (اللي كان ممكن يتحجب في متصفحات الفتح الداخلي).
+                const realLink = document.createElement('a');
+                realLink.href = waLink;
+                realLink.target = '_blank';
+                realLink.rel = 'noopener noreferrer';
+                realLink.className = btnShareDesign.className;
+                realLink.style.textDecoration = 'none';
+                realLink.id = 'btn-share-design-ready';
+                realLink.innerHTML = '<i class="fa-brands fa-whatsapp"></i> افتحي واتساب دلوقتي';
+                btnShareDesign.replaceWith(realLink);
             } catch (err) {
                 if (typeof window.showBoseGlobalToast === 'function') {
                     window.showBoseGlobalToast("تعذر تجهيز رابط المشاركة الآن، حاولي مرة أخرى.");
                 }
-            } finally {
                 btnShareDesign.disabled = false;
                 btnShareDesign.innerHTML = originalLabel;
             }
