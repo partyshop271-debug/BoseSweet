@@ -2063,7 +2063,7 @@
      * ✅ [تم]: رابط الصورة تحت هو صورة الماسكوت الحقيقية اللي اترفعت على
      * Cloudinary فعليًا (مش اللوجو العادي زي قبل كده).
      */
-    const BOSE_APP_MASCOT_IMAGE_URL = "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1786737186/dkbsnvtpa2wadni34tr8.jpg";
+    const BOSE_APP_MASCOT_IMAGE_URL = "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1787925413/1786711441254_r3nmln.jpg";
 
     function setupAppInstallPopup() {
         // لو التطبيق شغال بالفعل كـ PWA مثبّت (standalone)، العميل مثبّته أصلاً - متعرضيش عليه يثبّته تاني
