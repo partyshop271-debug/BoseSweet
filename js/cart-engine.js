@@ -7,13 +7,31 @@
  */
 
 /**
+ * 🛡️ [إصلاح]: حد أقصى منطقي لكمية القطعة الواحدة في السلة، لأن كل منتجاتنا
+ * يدوية التحضير (تورت/ورد) ومفيش معنى لكمية غير منطقية (100+) بضغطة زرار متكررة.
+ * الرقم قابل للتعديل من مكان واحد هنا لو احتجنا نغيّره مستقبلاً.
+ */
+const MAX_CART_ITEM_QUANTITY = 20;
+
+/**
  * 🛡️ تحميل السلة من localStorage مع إعادة حساب كل سعر من بيانات المتجر
  * الموثوقة قبل عرضه أو استخدامه في أي حساب إجمالي أو رسالة طلب نهائية.
  * تُستخدم في كل مكان بدل القراءة المباشرة من localStorage.
  */
 function loadTrustedCart() {
-    const rawCart = localStorage.getItem("bose_cart");
-    let cart = rawCart ? JSON.parse(rawCart) : [];
+    let cart = [];
+    try {
+        const rawCart = localStorage.getItem("bose_cart");
+        cart = rawCart ? JSON.parse(rawCart) : [];
+        if (!Array.isArray(cart)) cart = [];
+    } catch (parseErr) {
+        // 🛡️ [إصلاح]: لو بيانات السلة المحفوظة اتلخبطت لأي سبب (كراش وقت
+        // الكتابة، إضافة متصفح متدخلة، تعديل يدوي...)، منرجعش نكسر الصفحة -
+        // بنرجع سلة فاضية ونمسح القيمة التالفة عشان متتكررش المشكلة تاني.
+        console.warn("⚠️ بيانات السلة المحفوظة كانت تالفة، تم تصفيرها بأمان:", parseErr);
+        try { localStorage.removeItem("bose_cart"); } catch (e) {}
+        cart = [];
+    }
     if (typeof window.recalculateFullCart === "function") {
         const result = window.recalculateFullCart(cart);
         cart = result.cart;
@@ -404,6 +422,13 @@ function renderBoseCartPage(storeData) {
         const finalProductPrice = parseFloat(item.finalPrice || 0);
         
         if (target.classList.contains("btn-qty-plus")) {
+            // 🛡️ [إصلاح]: منع تجاوز الحد الأقصى المنطقي للكمية بدل الزيادة اللانهائية.
+            if (item.quantity >= MAX_CART_ITEM_QUANTITY) {
+                if (typeof window.showBoseGlobalToast === "function") {
+                    window.showBoseGlobalToast(`أقصى كمية ممكنة للقطعة الواحدة هي ${MAX_CART_ITEM_QUANTITY}. لو محتاجة كمية أكبر، تواصلي معانا مباشرة على واتساب.`);
+                }
+                return;
+            }
             item.quantity += 1;
             localStorage.setItem("bose_cart", JSON.stringify(cart));
             if (typeof window.updateGlobalCartCounter === "function") window.updateGlobalCartCounter();
@@ -1714,13 +1739,13 @@ function renderBoseSuccessPage(storeData) {
     }
 
 
-    // 🗑️ [إصلاح - حذف زرار "إرسال الفاتورة" وصورة الفاتورة]: فاتورة الواتساب
-    // بتتفتح تلقائياً بالفعل لحظة تأكيد الطلب من صفحة الدفع نفسها (checkout)،
-    // قبل ما العميلة توصل للصفحة دي بخطوة - فمفيش أي حاجة "لسه محتاجة إرسال"
-    // هنا، والزرار القديم (ومنطق توليد صورة الفاتورة اللي كان مربوط بيه) كانا
-    // بيوهموا العميلة إن فيه خطوة تانية ناقصة رغم إن طلبها وصل بالفعل. الإجراء
-    // الوحيد المفيد فعلياً في الصفحة دي هو متابعة حالة الطلب (زرار "تتبعي طلبك"
-    // تحت، بيتفعّل تلقائياً لو رقم الطلب الحقيقي من قاعدة البيانات وصل).
+    // 🧾 [تحديث توثيق]: الفقرة القديمة هنا كانت بتقول إن زرار "إرسال الفاتورة"
+    // اتشال نهائياً بافتراض إن فتح واتساب التلقائي من checkout.html مضمون
+    // دايماً - ده اتغيّر بعد كده: الزرار رجع تاني كشبكة أمان دايمة الظهور (شوف
+    // الكومنت "🛡️🐛👑 [إصلاح جذري]" فوق مباشرة قبل بلوك resendWhatsappBtn،
+    // وده المرجع الصحيح الحالي لسبب وسلوك الزرار). الإجراء التاني المفيد في
+    // الصفحة دي هو متابعة حالة الطلب (زرار "تتبعي طلبك"، بيتفعّل تلقائياً لو
+    // رقم الطلب الحقيقي من قاعدة البيانات وصل).
 
     // 🗄️ [إصلاح المرحلة 1]: نسخة احتياطية اختيارية لتسجيل الطلب خارج المتصفح لمنع
     // ضياعه لو فشل واتساب أو مسح العميل الكاش قبل التأكيد. للتفعيل: عرّف

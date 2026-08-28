@@ -165,17 +165,38 @@
         // الدوت الأول مضيء طول الوقت مهما سحب العميل لأي كارت. الحل: نستخدم
         // Math.abs() في القراءة عشان يشتغل صح في الحالتين (RTL بالسالب أو أي
         // حالة LTR مستقبلية بالموجب) من غير ما نحتاج نفرّق بينهم أصلاً.
-        const syncDotsAndPosition = () => {
+        // 🛡️⚡ [إصلاح أداء]: قبل كده الدالة كانت بتقرأ cardEl.offsetWidth و
+        // getComputedStyle(track).gap في كل مرة scroll event يطلق - وده بيحصل
+        // عشرات المرات في الثانية أثناء السحب (خصوصاً أثناء الـmomentum scroll
+        // على الموبايل)، وكل قراءة زي دي بتجبر المتصفح يعمل reflow/recalculate
+        // للتخطيط بالكامل (forced synchronous layout) - ده سبب أساسي لتقطيع
+        // (jank) ملموس أثناء تمرير الأصابع على السلايدر. الحل: نحسب عرض الكارت
+        // مرة واحدة بس (ونعيد حسابه فقط عند تغيير حجم الشاشة الفعلي، مش مع كل
+        // حركة سحب)، ونأجل شغل الـDOM (تحديث الدوتس) لأقرب إطار رسم عبر
+        // requestAnimationFrame بدل ما ينفذ فورًا مع كل نبضة scroll.
+        let cachedCardWidth = null;
+        function recomputeCardWidth() {
             const cardEl = /** @type {HTMLElement} */ (cards[0]);
-            const cardWidth = cardEl.offsetWidth + parseInt(window.getComputedStyle(track).gap || '20', 10);
-            const scrollPosition = Math.abs(track.scrollLeft);
-            let activeIndex = Math.round(scrollPosition / cardWidth);
-            
-            if (activeIndex < 0) activeIndex = 0;
-            if (activeIndex >= count) activeIndex = count - 1;
+            cachedCardWidth = cardEl.offsetWidth + parseInt(window.getComputedStyle(track).gap || '20', 10);
+        }
+        recomputeCardWidth();
 
-            dots.forEach((/** @type {Element} */ dot, /** @type {number} */ idx) => {
-                dot.classList.toggle('active', idx === activeIndex);
+        let syncRafPending = false;
+        const syncDotsAndPosition = () => {
+            if (syncRafPending) return;
+            syncRafPending = true;
+            requestAnimationFrame(() => {
+                syncRafPending = false;
+                const cardWidth = cachedCardWidth || 1;
+                const scrollPosition = Math.abs(track.scrollLeft);
+                let activeIndex = Math.round(scrollPosition / cardWidth);
+
+                if (activeIndex < 0) activeIndex = 0;
+                if (activeIndex >= count) activeIndex = count - 1;
+
+                dots.forEach((/** @type {Element} */ dot, /** @type {number} */ idx) => {
+                    dot.classList.toggle('active', idx === activeIndex);
+                });
             });
         };
 
@@ -190,7 +211,10 @@
         let resizeSyncTimer;
         window.addEventListener('resize', () => {
             clearTimeout(resizeSyncTimer);
-            resizeSyncTimer = setTimeout(syncDotsAndPosition, 150);
+            resizeSyncTimer = setTimeout(() => {
+                recomputeCardWidth();
+                syncDotsAndPosition();
+            }, 150);
         });
 
         if (dotsContainer) {

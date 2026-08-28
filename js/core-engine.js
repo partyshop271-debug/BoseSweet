@@ -9,6 +9,77 @@
 (function() {
     "use strict";
 
+    /**
+     * 🛡️🆕 [إصلاح]: شبكة أمان عامة (Global Error Handler) - قبل كده لو حصل خطأ
+     * غير متوقع في أي مكان في رحلة الشراء (تحميل، كارت، تشيك أوت)، الصفحة كانت
+     * "بتقف بصمت" من غير أي رسالة للعميلة، وهي حاسة إن حاجة اتعطلت بس مش عارفة
+     * تعمل إيه. دلوقتي أي خطأ غير متوقع (window.onerror) أو Promise مرفوضة من
+     * غير معالجة (unhandledrejection) بتظهر بانر واحد بسيط تحت الشاشة يوجّه
+     * العميلة لإكمال طلبها مباشرة على واتساب بدل ما تفضل واقفة مش عارفة تكمل.
+     * البانر بيظهر مرة واحدة بس في نفس تحميل الصفحة (مش هيتكرر مع كل خطأ لاحق)،
+     * ومكتوب Inline بالكامل (مش معتمد على أي CSS/JS تاني) عشان يشتغل حتى لو
+     * الخطأ نفسه كان في تحميل ملف تاني في الصفحة.
+     */
+    (function setupBoseGlobalErrorNet() {
+        let alreadyShown = false;
+        const FALLBACK_WHATSAPP_NUMBER = "201097238441";
+
+        function showGlobalErrorBanner() {
+            if (alreadyShown) return;
+            alreadyShown = true;
+
+            try {
+                const waLink = (typeof window.buildWhatsappLink === "function")
+                    ? window.buildWhatsappLink(FALLBACK_WHATSAPP_NUMBER, "أهلاً، حصل عندي مشكلة في الموقع وحابة أكمل طلبي معاكم من هنا 🌸")
+                    : `https://wa.me/${FALLBACK_WHATSAPP_NUMBER}?text=${encodeURIComponent("أهلاً، حصل عندي مشكلة في الموقع وحابة أكمل طلبي معاكم من هنا 🌸")}`;
+
+                const banner = document.createElement("div");
+                banner.setAttribute("dir", "rtl");
+                banner.style.cssText = "position:fixed;left:0;right:0;bottom:0;z-index:2147483647;background:#111111;color:#ffffff;font-family:Tahoma,Arial,sans-serif;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 -2px 12px rgba(0,0,0,0.25);flex-wrap:wrap;";
+
+                const msg = document.createElement("span");
+                msg.style.cssText = "font-size:14px;line-height:1.5;flex:1;min-width:200px;";
+                msg.textContent = "حصل عندنا خطأ غير متوقع في الصفحة 🙏 ماتقلقيش، تقدري تكملي طلبك بسهولة على واتساب مباشرة.";
+
+                const link = document.createElement("a");
+                link.href = waLink;
+                link.target = "_blank";
+                link.rel = "noopener noreferrer";
+                link.textContent = "أكملي طلبك على واتساب";
+                link.style.cssText = "background:#FF91A4;color:#111111;font-weight:700;text-decoration:none;padding:8px 16px;border-radius:8px;white-space:nowrap;font-size:14px;";
+
+                const closeBtn = document.createElement("button");
+                closeBtn.textContent = "✕";
+                closeBtn.setAttribute("aria-label", "إغلاق");
+                closeBtn.style.cssText = "background:transparent;border:none;color:#ffffff;font-size:16px;cursor:pointer;padding:4px 8px;";
+                closeBtn.onclick = function() { banner.remove(); };
+
+                banner.appendChild(msg);
+                banner.appendChild(link);
+                banner.appendChild(closeBtn);
+
+                const attach = function() {
+                    if (document.body) document.body.appendChild(banner);
+                };
+                if (document.body) attach();
+                else document.addEventListener("DOMContentLoaded", attach);
+            } catch (bannerErr) {
+                // لو حتى إظهار البانر نفسه فشل، سيبها تفضل صامتة بدل ما تكسر أي حاجة تانية.
+                console.error("⚠️ فشل عرض بانر الطوارئ نفسه:", bannerErr);
+            }
+        }
+
+        window.addEventListener("error", function(event) {
+            console.error("⚠️ [شبكة أمان عامة] خطأ غير متوقع في الصفحة:", event.error || event.message);
+            showGlobalErrorBanner();
+        });
+
+        window.addEventListener("unhandledrejection", function(event) {
+            console.error("⚠️ [شبكة أمان عامة] Promise مرفوضة من غير معالجة:", event.reason);
+            showGlobalErrorBanner();
+        });
+    })();
+
     // 1. [صمام أمان الأداء]: حظر استعادة السكرول التلقائية لسرعة التصفح لراحة العميل النفسية
     if ('scrollRestoration' in history) {
         history.scrollRestoration = 'manual';
@@ -1468,9 +1539,20 @@
     window.updateGlobalCartCounter = function() {
         const cartCountBadges = document.querySelectorAll('#nav-cart-count, .nav-cart-badge');
         if (cartCountBadges.length === 0) return;
-        
-        const rawCart = localStorage.getItem('bose_cart');
-        const cart = rawCart ? JSON.parse(rawCart) : [];
+
+        // 🛡️ [إصلاح]: الدالة دي بتشتغل في كل صفحة (تحديث عداد السلة في الهيدر)،
+        // فلو بيانات bose_cart المحفوظة اتلخبطت لأي سبب، كانت هتكسر رندرة
+        // الهيدر بالكامل في كل صفحات الموقع - دلوقتي بترجع سلة فاضية بأمان
+        // بدل ما توقف تنفيذ باقي كود الصفحة.
+        let cart = [];
+        try {
+            const rawCart = localStorage.getItem('bose_cart');
+            cart = rawCart ? JSON.parse(rawCart) : [];
+            if (!Array.isArray(cart)) cart = [];
+        } catch (e) {
+            console.warn("⚠️ بيانات السلة المحفوظة كانت تالفة أثناء تحديث عداد الهيدر.", e);
+            cart = [];
+        }
         let totalDisplayItems = 0;
         cart.forEach((/** @type {any} */ item) => {
             // ملاحظة: المنتجات المخصصة (تورت/ورد) بيتولد لها id بالشكل `${slug}-${Date.now()}`
@@ -1564,14 +1646,27 @@
         const selectedSize = cardContainer ? (cardContainer.dataset.selectedSize || null) : null;
         const addOpts = selectedSize ? { size: selectedSize } : {};
 
-        const rawCart = localStorage.getItem('bose_cart');
-        let cart = rawCart ? JSON.parse(rawCart) : [];
+        // 🛡️ [إصلاح]: لو بيانات السلة المحفوظة تالفة، منمنعش العميلة من الإضافة -
+        // بنرجع سلة فاضية ونكمل عادي بدل ما الضغطة على "أضف للسلة" تفشل بصمت.
+        let cart = [];
+        try {
+            const rawCart = localStorage.getItem('bose_cart');
+            cart = rawCart ? JSON.parse(rawCart) : [];
+            if (!Array.isArray(cart)) cart = [];
+        } catch (e) {
+            console.warn("⚠️ بيانات السلة المحفوظة كانت تالفة أثناء الإضافة، تم البدء بسلة فاضية.", e);
+            cart = [];
+        }
         const cartLineId = selectedSize ? `${product.slug}-${selectedSize}` : product.slug;
+        // 🛡️ [إصلاح]: نفس الحد الأقصى المنطقي المطبّق في صفحة السلة (20 قطعة)،
+        // عشان العميلة متقدرش تتخطاه حتى وهي لسه في صفحة المنتج/الفئة.
+        const MAX_QTY_FROM_PRODUCT_CARD = 20;
         const existingItem = cart.find((/** @type {any} */ item) => item.id === cartLineId);
         if (existingItem) {
-            existingItem.quantity += qty;
+            existingItem.quantity = Math.min(existingItem.quantity + qty, MAX_QTY_FROM_PRODUCT_CARD);
         } else {
-            const newItem = window.createCartItem(product, addOpts, qty);
+            const cappedQty = Math.min(qty, MAX_QTY_FROM_PRODUCT_CARD);
+            const newItem = window.createCartItem(product, addOpts, cappedQty);
             if (newItem) { newItem.id = cartLineId; cart.push(newItem); }
         }
 
