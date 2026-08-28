@@ -1400,7 +1400,15 @@
                 document.getElementById("bose-product-price-text").textContent = `${totalPrice} ${currency}`;
             }
 
+            // 🛡️ [إصلاح]: حد أقصى منطقي للكمية (20) لأن المنتجات يدوية التحضير.
+            const MAX_PRODUCT_PAGE_QUANTITY = 20;
             document.getElementById("btn-qty-master-plus").addEventListener("click", () => {
+                if (currentMasterQuantity >= MAX_PRODUCT_PAGE_QUANTITY) {
+                    if (typeof window.showBoseToast === "function") {
+                        window.showBoseToast(`أقصى كمية ممكنة للقطعة الواحدة هي ${MAX_PRODUCT_PAGE_QUANTITY}. لو محتاجة كمية أكبر، تواصلي معانا مباشرة على واتساب.`);
+                    }
+                    return;
+                }
                 currentMasterQuantity++;
                 document.getElementById("input-qty-master-value").value = currentMasterQuantity;
                 updateLivePriceDisplay(window.BoseStoreData?.store?.currency || "EGP");
@@ -1421,12 +1429,21 @@
                 if (typeof window.createCartItem === "function") {
                     const cartItemObj = window.createCartItem(currentProduct, currentSelectedOptions, currentMasterQuantity);
                     if (cartItemObj) {
-                        const rawCart = localStorage.getItem("bose_cart");
-                        let cartArr = rawCart ? JSON.parse(rawCart) : [];
+                        // 🛡️ [إصلاح]: لو بيانات السلة تالفة، منمنعش العميلة من الإضافة -
+                        // نبدأ بسلة فاضية بدل ما زرار "أضف للسلة" يفشل بصمت.
+                        let cartArr = [];
+                        try {
+                            const rawCart = localStorage.getItem("bose_cart");
+                            cartArr = rawCart ? JSON.parse(rawCart) : [];
+                            if (!Array.isArray(cartArr)) cartArr = [];
+                        } catch (e) {
+                            console.warn("⚠️ بيانات السلة المحفوظة كانت تالفة، تم البدء بسلة فاضية.", e);
+                            cartArr = [];
+                        }
                         const existingIdx = cartArr.findIndex(item => item.productSlug === cartItemObj.productSlug && item.flavorName === cartItemObj.flavorName);
                         
                         if (existingIdx > -1) {
-                            cartArr[existingIdx].quantity += currentMasterQuantity;
+                            cartArr[existingIdx].quantity = Math.min(cartArr[existingIdx].quantity + currentMasterQuantity, MAX_PRODUCT_PAGE_QUANTITY);
                         } else {
                             cartArr.push(cartItemObj);
                         }
@@ -1442,8 +1459,17 @@
                     }
                 } else {
                     // Fallback محلي آمن في حال عدم تحميل الملفات الأخرى
-                    const rawCart = localStorage.getItem("bose_cart");
-                    let cartArr = rawCart ? JSON.parse(rawCart) : [];
+                    // 🛡️ [إصلاح]: نفس الحماية من بيانات السلة التالفة، حتى في مسار
+                    // الـfallback الاحتياطي ده.
+                    let cartArr = [];
+                    try {
+                        const rawCart = localStorage.getItem("bose_cart");
+                        cartArr = rawCart ? JSON.parse(rawCart) : [];
+                        if (!Array.isArray(cartArr)) cartArr = [];
+                    } catch (e) {
+                        console.warn("⚠️ بيانات السلة المحفوظة كانت تالفة، تم البدء بسلة فاضية.", e);
+                        cartArr = [];
+                    }
                     
                     const finalUnitPrice = currentProduct.price;
                     const fallbackItem = {
@@ -1458,7 +1484,7 @@
                     
                     const existingIdx = cartArr.findIndex(item => item.productSlug === fallbackItem.productSlug);
                     if (existingIdx > -1) {
-                        cartArr[existingIdx].quantity += currentMasterQuantity;
+                        cartArr[existingIdx].quantity = Math.min(cartArr[existingIdx].quantity + currentMasterQuantity, MAX_PRODUCT_PAGE_QUANTITY);
                     } else {
                         cartArr.push(fallbackItem);
                     }

@@ -239,8 +239,16 @@ document.addEventListener("DOMContentLoaded", () => {
         const targetGrid = document.getElementById("bose-cart-premium-suggestions-grid");
         if (!targetGrid || !dbData || !dbData.products) return;
 
-        const rawCart = localStorage.getItem("bose_cart");
-        const currentCart = rawCart ? JSON.parse(rawCart) : [];
+        // 🛡️ [إصلاح]: لو بيانات السلة تالفة، مانخليش قسم "قد يعجبك أيضاً" يفشل
+        // بالكامل - بنعتبرها سلة فاضية ونكمل عرض الاقتراحات عادي.
+        let currentCart = [];
+        try {
+            const rawCart = localStorage.getItem("bose_cart");
+            currentCart = rawCart ? JSON.parse(rawCart) : [];
+            if (!Array.isArray(currentCart)) currentCart = [];
+        } catch (e) {
+            currentCart = [];
+        }
         const cartSlugs = currentCart.map(item => item.productSlug);
 
         // 🛡️ [إصلاح حرج]: استبعاد أي منتج "رئيسي" مرتبط بمحاكي تفاعلي (تورت مخصص/بوكيه

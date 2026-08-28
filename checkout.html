@@ -336,7 +336,7 @@
                             <label for="checkout-delivery-date">تاريخ الاستلام
                                 <button type="button" class="bose-info-badge-inline"
                                         data-bose-info-title="ليه مش كل التواريخ متاحة؟"
-                                        data-bose-info-text="محتاجين على الأقل 48 ساعة من دلوقتي عشان نجهز طلبك بجودة عالية (لو طلبك فيه تورت أو ورد من المحاكي، الوقت المطلوب أسبوع كامل تقريباً). كمان الاستلام والتوصيل بيكونوا بس من الساعة 9 الصبح لحد 10 بالليل، فأي وقت خارج النطاق ده مش هيتقبل.">ⓘ</button>
+                                        data-bose-info-text="محتاجين على الأقل 24 ساعة من دلوقتي عشان نجهز طلبك بجودة عالية (لو طلبك فيه تورت أو ورد من المحاكي، الوقت المطلوب أسبوع كامل تقريباً). كمان الاستلام والتوصيل بيكونوا بس من الساعة 9 الصبح لحد 10 بالليل، فأي وقت خارج النطاق ده مش هيتقبل.">ⓘ</button>
                             </label>
                             <input type="date" id="checkout-delivery-date" class="bose-field-capture" required aria-describedby="err-checkout-delivery-date">
                             <span class="bose-field-error-msg" id="err-checkout-delivery-date"><i class="fa-solid fa-circle-exclamation"></i><span></span></span>
@@ -484,8 +484,18 @@
             }
 
             // 1. قراءة كائنات السلة ورندرتها في الإيصال الجانبي الفاخر لراحة العميل البصرية
-            const rawCart = localStorage.getItem("bose_cart");
-            const cartArr = rawCart ? JSON.parse(rawCart) : [];
+            // 🛡️ [إصلاح]: صفحة الشيك أوت هي أهم صفحة في رحلة الشراء - لو بيانات
+            // السلة المحفوظة تالفة لأي سبب، مانخليش الصفحة كلها تفشل بصمت
+            // وتمنع العميلة من إتمام طلبها. نرجع سلة فاضية بأمان بدل الانهيار.
+            let cartArr = [];
+            try {
+                const rawCart = localStorage.getItem("bose_cart");
+                cartArr = rawCart ? JSON.parse(rawCart) : [];
+                if (!Array.isArray(cartArr)) cartArr = [];
+            } catch (e) {
+                console.warn("⚠️ بيانات السلة المحفوظة كانت تالفة في صفحة الشيك أوت.", e);
+                cartArr = [];
+            }
 
             if (cartArr.length > 0 && compactHook) {
                 // 🛡️ [إصلاح أمني]: item.title/flavorName كانوا بيتحقنوا في innerHTML من غير
@@ -554,6 +564,15 @@
                 // لوحة التحكم - لو الأدمن غيّرت المواعيد من هناك، التلميح كان
                 // هيفضل يقول الرقم القديم رغم إن الفحص الفعلي (فوق) بيستخدم الرقم
                 // الجديد صح. دلوقتي بيتبنى النص من نفس bhStart/bhEnd الحقيقيين.
+                //
+                // 🐛🛡️ [إصلاح إضافي - نفس المرض القديم كان لسه موجود جزئياً]: الإصلاح
+                // اللي فات وحّد جزء الساعات بس (bhStart/bhEnd)، لكن سايب رقم "48
+                // ساعة" مكتوب يدوي هنا وفي الـHTML الأصلي تحت (data-bose-info-text)،
+                // بينما القيمة الحقيقية لوقت التحضير العادي (minPreparationTimeHours)
+                // بقت 24 من الجلسة اللي فاتت - يعني التلميح كان لسه بيقول رقم غلط
+                // رغم إصلاح الساعات. دلوقتي الرقم بيتقرأ حي من siteData.orderRules
+                // بدل ما يتكتب يدوي، بنفس منطق leadDays المستخدم تحت لحساب أقرب
+                // تاريخ متاح فعليًا - عشان مايحصلش نفس التضارب تاني لو الرقم اتغيّر.
                 const dateInfoBadge = document.querySelector('[aria-describedby="err-checkout-delivery-date"]')
                     ?.closest(".input-group-node")?.querySelector(".bose-info-badge-inline");
                 if (dateInfoBadge) {
@@ -564,8 +583,9 @@
                         let h12 = h % 12; if (h12 === 0) h12 = 12;
                         return m === 0 ? `${h12} ${period}` : `${h12}:${String(m).padStart(2, "0")} ${period}`;
                     };
+                    const minPrepHoursForTooltip = siteData.orderRules?.minPreparationTimeHours || 24;
                     dateInfoBadge.setAttribute("data-bose-info-text",
-                        `محتاجين على الأقل 48 ساعة من دلوقتي عشان نجهز طلبك بجودة عالية (لو طلبك فيه تورت أو ورد من المحاكي، الوقت المطلوب أسبوع كامل تقريباً). كمان الاستلام والتوصيل بيكونوا بس من الساعة ${fmtHour(bhStart)} لحد ${fmtHour(bhEnd)}، فأي وقت خارج النطاق ده مش هيتقبل.`);
+                        `محتاجين على الأقل ${minPrepHoursForTooltip} ساعة من دلوقتي عشان نجهز طلبك بجودة عالية (لو طلبك فيه تورت أو ورد من المحاكي، الوقت المطلوب أسبوع كامل تقريباً). كمان الاستلام والتوصيل بيكونوا بس من الساعة ${fmtHour(bhStart)} لحد ${fmtHour(bhEnd)}، فأي وقت خارج النطاق ده مش هيتقبل.`);
                 }
 
                 // 🛡️ [إصلاح - المرحلة 2]: قبل كده كان حامي التاريخ بيفرض بكرة (24 ساعة)
@@ -573,7 +593,13 @@
                 // أسبوع كامل حسب "الشروط والأحكام" الرسمية وتأكيد صاحب المتجر. دلوقتي
                 // بيتفحص محتوى السلة الفعلي ويحدد أول موعد متاح صح حسب نوع الطلب.
                 const rawCartForDate = localStorage.getItem("bose_cart");
-                const cartArrForDate = rawCartForDate ? JSON.parse(rawCartForDate) : [];
+                let cartArrForDate = [];
+                try {
+                    cartArrForDate = rawCartForDate ? JSON.parse(rawCartForDate) : [];
+                    if (!Array.isArray(cartArrForDate)) cartArrForDate = [];
+                } catch (e) {
+                    cartArrForDate = [];
+                }
                 const hasCustomItemForDate = typeof window.boseCartHasCustomItem === "function"
                     ? window.boseCartHasCustomItem(cartArrForDate)
                     : false;
