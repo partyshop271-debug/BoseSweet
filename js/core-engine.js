@@ -1409,6 +1409,90 @@
     };
 
     /**
+     * 📖✨ [أداة موحدة: "قراءة المزيد" لأي نص طويل في الموقع]: بتقيس الارتفاع
+     * الحقيقي لعنصر بعد ما يترسم، ولو طلع أطول من collapsedHeight بيتقص بصريًا
+     * (مع تظليل تدريجي في الآخر) ويظهر زرار تبديل "قراءة المزيد ↔ عرض أقل".
+     * لو النص قصير أصلاً مفيش أي تقصير ولا زرار. مصممة عشان تتستخدم في أي صفحة
+     * فيها نص طويل (وصف المنتج، فقرات "من نحن"، ...إلخ) بنفس الشكل والسلوك.
+     *
+     * 🐛 [إصلاح باج حقيقي - القياس كان بيحصل بدري جدًا]: كان القياس بيحصل
+     * فورًا وقت الرسم، قبل ما يخلص تحميل خط Cairo (اللي بيتحمّل بـ
+     * font-display:swap فبيبان بخط احتياطي الأول) وقبل ما الصور اللي فوق
+     * النص تخلص تحميل - فالارتفاع الحقيقي كان بيتقاس غلط (أصغر من الحقيقة)،
+     * فنصوص طويلة جدًا كانت بتفلت من الشرط وتتعرض كاملة من غير تقصير ولا زرار
+     * "قراءة المزيد" خالص، خصوصًا على نت بطيء. الحل: كل عنصر بيتسجّل في قائمة
+     * وبيتعاد قياسه تلقائيًا تاني بعد ما الخط يخلص تحميل فعليًا (document.fonts.ready)
+     * وبعد ما الصفحة تخلص تحميل بالكامل (window load، للصور) - وبيحافظ على
+     * اختيار العميل لو كانت فعلاً ضغطت "قراءة المزيد" قبل كده (مبترجعش تتقفل
+     * تحته من غير ما تحس).
+     * @param {HTMLElement} el
+     * @param {number} collapsedHeight
+     */
+    window.__boseReadMoreTargets = window.__boseReadMoreTargets || new Map();
+    let boseReadMoreListenersAttached = false;
+    function boseReadMoreRemeasureAll() {
+        window.__boseReadMoreTargets.forEach(function (collapsedHeight, el) {
+            if (el && el.isConnected) {
+                window.initBoseReadMore(el, collapsedHeight);
+            } else {
+                window.__boseReadMoreTargets.delete(el);
+            }
+        });
+    }
+    window.initBoseReadMore = function (el, collapsedHeight) {
+        if (!el) return;
+        window.__boseReadMoreTargets.set(el, collapsedHeight);
+
+        if (!boseReadMoreListenersAttached) {
+            boseReadMoreListenersAttached = true;
+            if (document.fonts && document.fonts.ready) {
+                document.fonts.ready.then(function () {
+                    requestAnimationFrame(boseReadMoreRemeasureAll);
+                });
+            }
+            window.addEventListener("load", function () {
+                requestAnimationFrame(boseReadMoreRemeasureAll);
+            });
+        }
+
+        // لو العميل فاتحة الوصف بالفعل (ضغطت "قراءة المزيد")، منسيبهاش ونقفله
+        // تحتها لما القياس يتعاد بعد تحميل الخط/الصور.
+        if (el._boseReadMoreBtn && el._boseReadMoreBtn.getAttribute("aria-expanded") === "true") {
+            return;
+        }
+
+        if (el._boseReadMoreBtn) {
+            el._boseReadMoreBtn.remove();
+            el._boseReadMoreBtn = null;
+        }
+        el.classList.remove("bose-readmore-collapsed", "bose-readmore-expanded");
+        el.style.maxHeight = "";
+
+        const fullHeight = el.scrollHeight;
+        if (fullHeight <= collapsedHeight + 24) return; // النص قصير أصلاً، مفيش داعي لزرار
+
+        el.classList.add("bose-readmore-collapsed");
+        el.style.maxHeight = collapsedHeight + "px";
+
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "bose-read-more-btn";
+        btn.setAttribute("aria-expanded", "false");
+        btn.innerHTML = `<span>قراءة المزيد</span><i class="fa-solid fa-chevron-down"></i>`;
+        btn.addEventListener("click", function () {
+            const expanded = el.classList.toggle("bose-readmore-expanded");
+            el.classList.toggle("bose-readmore-collapsed", !expanded);
+            el.style.maxHeight = expanded ? el.scrollHeight + "px" : collapsedHeight + "px";
+            btn.classList.toggle("is-expanded", expanded);
+            btn.setAttribute("aria-expanded", expanded ? "true" : "false");
+            btn.querySelector("span").textContent = expanded ? "عرض أقل" : "قراءة المزيد";
+        });
+
+        el.insertAdjacentElement("afterend", btn);
+        el._boseReadMoreBtn = btn;
+    };
+
+    /**
      * @param {string} str
      * @returns {string}
      */
@@ -2110,8 +2194,8 @@
                             <i class="fa-solid fa-bars-staggered"></i>
                         </button>
                         <a href="/index.html" class="brand-logo-container">
-                            <img id="bose-store-logo" src="${window.optimizeBoseImageUrl(data.store?.logo || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', 150)}" alt="لوجو حلويات بوسي الفاخرة" class="brand-logo-img" width="80" height="80" />
-                            <span class="brand-name-display">حلويات بوسي</span>
+                            <img id="bose-store-logo" src="${window.optimizeBoseImageUrl(data.store?.logo || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', 150)}" alt="لوجو ${window.escapeBoseHTML(data.store?.name || 'حلويات بوسي')} الفاخرة" class="brand-logo-img" width="80" height="80" />
+                            <span class="brand-name-display" title="${window.escapeBoseHTML(data.store?.name || 'حلويات بوسي')}">${window.escapeBoseHTML(data.store?.name || 'حلويات بوسي')}</span>
                         </a>
                     </div>
                     <div class="header-left-side">
@@ -2132,8 +2216,8 @@
                 <div id="bose-sidebar-drawer" class="bose-sidebar-drawer" aria-hidden="true">
                     <div class="sidebar-header">
                         <div class="sidebar-logo-container">
-                            <img src="${window.optimizeBoseImageUrl(data.store?.logo || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', 150)}" alt="لوجو حلويات بوسي" class="sidebar-logo" width="80" height="80" />
-                            <span class="sidebar-brand-name">حلويات بوسي</span>
+                            <img src="${window.optimizeBoseImageUrl(data.store?.logo || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', 150)}" alt="لوجو ${window.escapeBoseHTML(data.store?.name || 'حلويات بوسي')}" class="sidebar-logo" width="80" height="80" />
+                            <span class="sidebar-brand-name">${window.escapeBoseHTML(data.store?.name || 'حلويات بوسي')}</span>
                         </div>
                         <button id="sidebar-close-btn" class="sidebar-close-btn" aria-label="إغلاق القائمة">
                             <i class="fa-solid fa-xmark"></i>
@@ -2386,8 +2470,8 @@
                     <div class="footer-grid-layout">
                         <div class="footer-column-block">
                             <div class="footer-brand-meta">
-                                <img src="${window.optimizeBoseImageUrl(data.store?.logo || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', 150)}" alt="حلويات بوسي الفاخرة" class="footer-logo" width="80" height="80" />
-                                <span class="footer-title">حلويات بوسي</span>
+                                <img src="${window.optimizeBoseImageUrl(data.store?.logo || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', 150)}" alt="${window.escapeBoseHTML(data.store?.name || 'حلويات بوسي')} الفاخرة" class="footer-logo" width="80" height="80" />
+                                <span class="footer-title">${window.escapeBoseHTML(data.store?.name || 'حلويات بوسي')}</span>
                             </div>
                             <p id="footer-about-text" class="footer-about-paragraph">${window.escapeBoseHTML(data.footer?.about || 'صنعناها بحب لتهديها لمن تحب')}</p>
                             <div id="footer-social-links" class="footer-social-wrapper">
@@ -2421,7 +2505,7 @@
                             </ul>
                         </div>
                     </div>
-                    <p class="footer-copyright-block">جميع الحقوق محفوظة &copy; <span id="footer-year-display">2026</span> لعلامة حلويات بوسي الفاخرة.</p>
+                    <p class="footer-copyright-block">جميع الحقوق محفوظة &copy; <span id="footer-year-display">2026</span> لعلامة ${window.escapeBoseHTML(data.store?.name || 'حلويات بوسي')} الفاخرة.</p>
                 </footer>
             `;
         }
