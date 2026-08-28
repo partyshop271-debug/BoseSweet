@@ -80,6 +80,80 @@
         });
     })();
 
+    /**
+     * 🛡️🆕 [شبكة أمان الأيقونات]: كل أيقونات الموقع (السلة، المفضلة، الفوتر،
+     * التابات، +/-) بتيجي من ملف واحد خارجي (Font Awesome عبر cdnjs.cloudflare.com).
+     * لو النت بطيء أو الاتصال بالمصدر ده تحديدًا فشل لحظة تحميل الصفحة، كل
+     * الأيقونات دي بتختفي مع بعض فورًا (نفس النص شكلها فاضية) رغم إن باقي
+     * الصفحة (الصور، النصوص) بيشتغل عادي - لأنها مش بتعتمد على المصدر ده.
+     * الحل هنا: بعد ما الصفحة تخلص تحميل، بنتأكد فعليًا إن خط الأيقونات
+     * اتحمّل ونجح (مش بس إن السطر اتنفذ)، ولو مانجحش بنجرب مصادر بديلة تانية
+     * (jsdelivr، وبعدها unpkg لو التانية كمان فشلت) واحد ورا التاني تلقائيًا
+     * - من غير ما العميلة تحتاج تعمل ريفريش أو تلاحظ أي حاجة. 3 مصادر مختلفة
+     * تمامًا (سيرفرات مختلفة) بيقلل جدًا احتمال إن الثلاثة كلهم يفشلوا مع
+     * بعض في نفس اللحظة، حتى على نت ضعيف جدًا.
+     * 🛡️ [حد أقصى معروف]: ده تخفيف قوي مش حل نهائي 100% - أي حل قائم على
+     * مصدر خارجي (مهما كان عدد البدائل) يفضل عنده احتمال ولو ضئيل إنه يفشل.
+     * الحل الجذري الوحيد هو استضافة ملفات الخط على دومين الموقع نفسه، وده
+     * محتاج تحميل ملفات ثنائية حقيقية (woff2) مش ممكن دلوقتي من بيئة الشات
+     * دي (مفيش وصول إنترنت حقيقي لتنزيل ملفات ثنائية) - فلاجيته للمستخدمة
+     * كخطوة تالية لو حبت (عبر Claude Code أو جلسة عندها الصلاحية دي).
+     */
+    (function setupBoseFontAwesomeFallback() {
+        const FALLBACK_SOURCES = [
+            "https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css",
+            "https://unpkg.com/@fortawesome/fontawesome-free@6.4.0/css/all.min.css",
+        ];
+
+        function isFontAwesomeWorking() {
+            const test = document.createElement("i");
+            test.className = "fa-solid fa-heart";
+            test.style.cssText = "position:absolute;left:-9999px;visibility:hidden;";
+            document.body.appendChild(test);
+            const family = getComputedStyle(test, "::before").fontFamily || "";
+            document.body.removeChild(test);
+            return /Font Awesome/i.test(family);
+        }
+
+        function loadSource(url, id) {
+            if (document.getElementById(id)) return;
+            const link = document.createElement("link");
+            link.id = id;
+            link.rel = "stylesheet";
+            link.href = url;
+            document.head.appendChild(link);
+        }
+
+        function tryNextFallback(sourceIndex) {
+            if (sourceIndex >= FALLBACK_SOURCES.length) return; // خلصنا كل البدائل المتاحة
+
+            loadSource(FALLBACK_SOURCES[sourceIndex], "bose-fa-fallback-" + sourceIndex);
+
+            setTimeout(function() {
+                if (!isFontAwesomeWorking()) {
+                    tryNextFallback(sourceIndex + 1);
+                }
+            }, 1800);
+        }
+
+        function checkAndFallback() {
+            try {
+                if (!isFontAwesomeWorking()) {
+                    tryNextFallback(0);
+                }
+            } catch (e) {
+                // لو حتى الفحص نفسه فشل لأي سبب، نحاول من أول مصدر بديل احتياطًا بدل ما نسيب الأيقونات فاضية
+                tryNextFallback(0);
+            }
+        }
+
+        // بنستنى ثانيتين بعد اكتمال تحميل الصفحة عشان نديله فرصة عادلة يحمّل من
+        // المصدر الأساسي الأول (ممكن يكون بس بطيء مش فاشل خالص) قبل ما نحكم عليه.
+        window.addEventListener("load", function() {
+            setTimeout(checkAndFallback, 2000);
+        });
+    })();
+
     // 1. [صمام أمان الأداء]: حظر استعادة السكرول التلقائية لسرعة التصفح لراحة العميل النفسية
     if ('scrollRestoration' in history) {
         history.scrollRestoration = 'manual';
