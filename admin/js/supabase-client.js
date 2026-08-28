@@ -196,6 +196,10 @@
      * تظهر للعامة إلا بعد اعتماد الإدارة من لوحة التحكم لاحقاً.
      */
     async function submitBoseReview({ productId, userName, rating, comment, images }) {
+        // 🐛🛡️ [إصلاح]: نفس مشكلة النسخة العامة من الدالة دي في js/supabase-client.js -
+        // POST بيضيف صف فعلي في القاعدة، فمينفعش يتكرر تلقائيًا لو الرد ضاع بعد
+        // نجاح فعلي على السيرفر. retries=0 صراحة لمنع تسجيل نفس المراجعة أكتر
+        // من مرة بصمت.
         return boseSupabaseFetch("/reviews", {
             method: "POST",
             headers: { Prefer: "return=representation" },
@@ -209,7 +213,7 @@
                     is_approved: false,
                 },
             ]),
-        });
+        }, 0);
     }
 
     /** ⭐ جلب المراجعات المعتمدة فقط لمنتج معيّن */
