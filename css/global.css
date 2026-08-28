@@ -300,14 +300,14 @@ img {
 }
 
 .brand-logo-img {
-    height: 42px;
-    width: 42px;
+    height: 48px;
+    width: 48px;
     object-fit: contain;
     flex-shrink: 0;
 }
 
 .brand-name-display {
-    font-size: 18px;
+    font-size: 22px;
     font-weight: 700;
     color: var(--bose-black);
     white-space: nowrap !important;
@@ -375,11 +375,11 @@ img {
         gap: 6px;
     }
     .brand-logo-img {
-        height: 34px;
-        width: 34px;
+        height: 40px;
+        width: 40px;
     }
     .brand-name-display {
-        font-size: 16px; /* 🐛 [إصلاح] كان 14px مع max-width:30vw تقديري بيقص المساحة الحقيقية - رفعناه شوية بعد ما بقى الاسم بياخد المساحة الفعلية المتاحة عبر flex بدل vw */
+        font-size: 19px; /* 🐛 [تكبير أكتر بطلب العميلة] كان 16px، رفعناه عشان اسم العلامة يبان أبرز */
     }
     .bose-nav-btn {
         font-size: 19px;
@@ -393,11 +393,11 @@ img {
 
 @media (max-width: 360px) {
     .brand-name-display {
-        font-size: 14px; /* 🐛 [إصلاح] كان 12.5px مع max-width:24vw تقديري - رفعناه بعد إلغاء الـmax-width الثابت */
+        font-size: 17px; /* 🐛 [تكبير أكتر بطلب العميلة] كان 14px، رفعناه عشان اسم العلامة يبان أبرز */
     }
     .brand-logo-img {
-        height: 30px;
-        width: 30px;
+        height: 36px;
+        width: 36px;
     }
 }
 
