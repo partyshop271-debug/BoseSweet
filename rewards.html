@@ -17,7 +17,9 @@
     <meta name="robots" content="noindex">
 
     <!-- استدعاء ملفات التصميم الخارجية الموحدة والمستقلة للموقع -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" fetchpriority="high">
+    <!-- [إصلاح جذري نهائي]: الأيقونات بقت مُستضافة محليًا داخل الموقع نفسه (vendor/fontawesome)
+         بدل الاعتماد على أي CDN خارجي (cdnjs/jsdelivr/unpkg) - مفيش نقطة فشل خارجية تانية خالص. -->
+    <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css?v=2026_local_v1.0" fetchpriority="high">
     <link rel="stylesheet" href="css/global.css?v=2026_production_v42.0">
     <link rel="stylesheet" href="css/main.css?v=2026_production_v38.0">
 
