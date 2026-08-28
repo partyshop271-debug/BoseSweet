@@ -358,6 +358,58 @@
             margin-bottom: 0;
         }
 
+        /* 📖✨ [وصف قابل للطي - "قراءة المزيد"]: لو الوصف طويل، بيتقص بصريًا لارتفاع
+           محدد مع تظليل تدريجي (fade) في الآخر، وبيظهر زرار "قراءة المزيد" تحته.
+           لو الوصف قصير أصلاً، مفيش أي تقصير ولا زرار بيظهر خالص - القياس بيحصل
+           فعليًا وقت العرض عن طريق initBoseReadMore(). النص الأصلي نفسه من غير أي
+           حذف أو تغيير في أي حالة. */
+        #bose-product-desc-text.bose-read-more-collapsed {
+            max-height: 150px;
+            overflow: hidden;
+            position: relative;
+            transition: max-height 0.35s ease;
+        }
+
+        #bose-product-desc-text.bose-read-more-collapsed::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 46px;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0), #fff);
+            pointer-events: none;
+        }
+
+        #bose-product-desc-text.bose-read-more-expanded {
+            max-height: 2000px;
+            transition: max-height 0.35s ease;
+        }
+
+        .bose-read-more-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin: 2px 0 20px 0;
+            padding: 0;
+            background: none;
+            border: none;
+            color: var(--bose-pink);
+            font-size: 0.86rem;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        .bose-read-more-btn i {
+            font-size: 0.72rem;
+            transition: transform 0.25s ease;
+        }
+
+        .bose-read-more-btn.is-expanded i {
+            transform: rotate(180deg);
+        }
+
         /* كروت خيارات التخصيص للميني كيك والأصناف القياسية */
         .customization-options-box {
             display: flex;
@@ -1028,6 +1080,44 @@
             // العرض فقط، مفيش ولا حرف واحد بيتحذف أو يتغيّر أو يتلخّص من النص المخزّن في
             // قاعدة البيانات. لو المنتج مالوش جمل متعددة (نص قصير)، بيتعرض كفقرة واحدة
             // زي ما كان بالظبط - سلوك آمن ومطابق للسابق لأي منتج تاني.
+            /**
+             * 📖✨ [قابلية طي الوصف الطويل - "قراءة المزيد"]: بتتقاس المساحة الحقيقية
+             * اللي الوصف محتاجها فعليًا بعد ما يترسم، ولو أطول من الحد المسموح بيتقص
+             * بصريًا مع زرار تبديل. لو الوصف أصلاً قصير مبيتلمسش خالص (مفيش زرار،
+             * مفيش تقصير). بتتصفّر أي حالة سابقة (زرار قديم من وصف/حجم سابق) الأول
+             * عشان تتقاس المساحة الحقيقية للنص الجديد من غير تأثير بقايا حالة قديمة.
+             */
+            function initBoseReadMore(el, collapsedHeight) {
+                if (!el) return;
+                if (el._boseReadMoreBtn) {
+                    el._boseReadMoreBtn.remove();
+                    el._boseReadMoreBtn = null;
+                }
+                el.classList.remove("bose-read-more-collapsed", "bose-read-more-expanded");
+                el.style.maxHeight = "";
+
+                const fullHeight = el.scrollHeight;
+                if (fullHeight <= collapsedHeight + 24) return; // الوصف قصير أصلاً، مفيش داعي لزرار
+
+                el.classList.add("bose-read-more-collapsed");
+
+                const btn = document.createElement("button");
+                btn.type = "button";
+                btn.className = "bose-read-more-btn";
+                btn.setAttribute("aria-expanded", "false");
+                btn.innerHTML = `<span>قراءة المزيد</span><i class="fa-solid fa-chevron-down"></i>`;
+                btn.addEventListener("click", function () {
+                    const expanded = el.classList.toggle("bose-read-more-expanded");
+                    el.classList.toggle("bose-read-more-collapsed", !expanded);
+                    btn.classList.toggle("is-expanded", expanded);
+                    btn.setAttribute("aria-expanded", expanded ? "true" : "false");
+                    btn.querySelector("span").textContent = expanded ? "عرض أقل" : "قراءة المزيد";
+                });
+
+                el.insertAdjacentElement("afterend", btn);
+                el._boseReadMoreBtn = btn;
+            }
+
             function renderStructuredDescription(rawText) {
                 const descNode = document.getElementById("bose-product-desc-text");
                 if (!descNode) return;
@@ -1058,6 +1148,7 @@
                     ? currentProduct.sizeDescriptions[currentSelectedOptions.size]
                     : null;
                 renderStructuredDescription(perSize || currentProduct.flavorDesc || currentProduct.description || "");
+                initBoseReadMore(document.getElementById("bose-product-desc-text"), 150);
             }
 
             // 🖼️ [صور الأحجام المتعددة]: لو المنتج عنده صورة مخصصة للحجم المختار حالياً
