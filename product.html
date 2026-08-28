@@ -215,15 +215,65 @@
         /* 🎂 [وضوح السعر]: الفارقة المنقّطة والمسافة بقوا تحت ملحوظة الكمية (لو موجودة)
            بدل ما يبقوا تحت السعر مباشرة - عشان السعر وملحوظة "لكل دستة/12 قطعة" يتقروا
            كوحدة بصرية واحدة، مش السعر لوحده وبعدين ملحوظة صغيرة منفصلة تحته. */
+        /* 🔥 [شارة خصم زاهية فوق الصورة]: مختلفة تماماً عن هوية الموقع الوردية الهادية
+           بقصد - عشان "تصرخ" بصريًا وتلفت النظر فورًا إن فيه عرض حقيقي، بدل ما تندمج
+           مع باقي عناصر الصفحة. لون أحمر/برتقالي متدرج + دوران خفيف + ظل قوي. */
+        .bose-image-offer-ribbon {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: linear-gradient(135deg, #ff3d5a, #ff7a3d);
+            color: #fff;
+            font-size: 0.95rem;
+            font-weight: 800;
+            padding: 8px 16px;
+            border-radius: 12px;
+            box-shadow: 0 6px 18px rgba(255, 61, 90, 0.4);
+            z-index: 3;
+            transform: rotate(-4deg);
+            letter-spacing: 0.3px;
+        }
+
+        /* 💰 [مقارنة السعر]: السعر القديم مشطوب + مقدار التوفير الصريح بالجنيه، جوه
+           بطاقة السعر نفسها - عشان العميلة تشوف الفرق بالأرقام مش تتخيله من نسبة مئوية. */
+        .product-price-savings-row {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            margin-bottom: 4px;
+        }
+
+        .product-price-savings-row .old-price-strike {
+            text-decoration: line-through;
+            color: rgba(17, 17, 17, 0.45);
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .product-savings-note-big {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 61, 90, 0.1);
+            color: #ff3d5a;
+            font-size: 0.85rem;
+            font-weight: 800;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-top: 4px;
+        }
+
         .product-price-block {
-            border-bottom: 1px dashed rgba(255, 145, 164, 0.25);
-            padding-bottom: 16px;
+            background: rgba(255, 145, 164, 0.06);
+            border: 1px solid rgba(255, 145, 164, 0.25);
+            border-radius: 18px;
+            padding: 16px 18px;
             margin-bottom: 20px;
         }
 
         .product-price-large-display {
-            font-size: 1.8rem;
-            font-weight: 700;
+            font-size: 1.9rem;
+            font-weight: 800;
             color: var(--bose-pink);
             margin-bottom: 6px;
         }
@@ -243,6 +293,29 @@
 
         /* ✨ [مميزات المنتج]: صف صغير من الشارات الحقيقية الخاصة بهذا المنتج تحديدًا
            (مش شريط عام للموقع كله) - بيظهر بس لو المنتج عنده highlights فعلية. */
+        /* 🗂️ [بطاقة تفاصيل موحدة]: الشارات + الوصف + اختيار الحجم بقوا جوه بطاقة واحدة
+           بخلفية وبوردر مشترك، بدل ما يكونوا عناصر منفصلة على الخلفية البيضاء - عشان
+           تدي إحساس "كل تفاصيل المنتج ده مجمّعة في مكان واحد مرتب" بمجرد ما العميلة
+           تنزل تحت زرار الإضافة للسلة. */
+        .product-details-unified-card {
+            background: var(--bose-white);
+            border: 1px solid rgba(17, 17, 17, 0.08);
+            border-radius: 18px;
+            padding: 20px 18px;
+            margin-top: 28px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+        }
+
+        .product-details-unified-card-title {
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--bose-black);
+            margin: 0 0 14px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
         .product-highlights-row {
             display: flex;
             flex-wrap: wrap;
@@ -346,32 +419,33 @@
         /* أزرار الإجراء والتحكم اللمسي الفاخر بالكمية */
         .actions-purchase-integration-row {
             display: flex;
-            gap: 16px;
-            align-items: center;
+            flex-direction: column;
+            gap: 12px;
             margin-top: 10px;
-            flex-wrap: wrap;
         }
 
         .qty-picker-capsule {
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
+            gap: 24px;
             border: 1px solid var(--bose-pink);
             border-radius: 50px;
             background: var(--bose-white);
-            padding: 4px 12px;
-            width: 140px;
+            padding: 10px 20px;
+            width: 100%;
             box-sizing: border-box;
         }
 
         .qty-picker-capsule button {
-            background: none;
+            background: rgba(255, 145, 164, 0.1);
             border: none;
-            color: var(--bose-black);
-            font-size: 1.3rem;
-            font-weight: 700;
-            width: 32px;
-            height: 32px;
+            color: var(--bose-pink);
+            font-size: 1.5rem;
+            font-weight: 800;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -379,24 +453,24 @@
         }
 
         .qty-picker-capsule input {
-            width: 40px;
+            width: 50px;
             text-align: center;
             border: none;
-            font-size: 1rem;
-            font-weight: 700;
+            font-size: 1.15rem;
+            font-weight: 800;
             color: var(--bose-black);
             background: transparent;
             outline: none;
         }
 
         .btn-add-to-cart-master {
-            flex-grow: 1;
+            width: 100%;
             background: var(--bose-pink);
             color: var(--bose-white);
             border: none;
-            padding: 14px 28px;
+            padding: 16px 28px;
             border-radius: 50px;
-            font-size: 0.95rem;
+            font-size: 1rem;
             font-weight: 700;
             cursor: pointer;
             display: flex;
@@ -405,7 +479,7 @@
             gap: 10px;
             transition: 0.2s ease;
             box-shadow: 0 6px 20px rgba(255, 145, 164, 0.2);
-            min-width: 200px;
+            box-sizing: border-box;
         }
 
         .btn-add-to-cart-master:hover {
@@ -529,6 +603,7 @@
             <div class="premium-gallery-showcase">
                 <div class="master-image-frame" id="bose-master-gallery-frame">
                     <img id="bose-master-gallery-image" src="" alt="صورة المنتج الفاخر" loading="eager">
+                    <span id="bose-product-image-offer-ribbon" class="bose-image-offer-ribbon" style="display:none;"></span>
                 </div>
                 <!-- 💗 [نظام المفضلة]: نفس زرار القلب المستخدم في كروت المنتجات (bose-fav-btn)
                      لكن مكبّر شوية هنا فوق صورة المعرض الرئيسية - data-fav-id وحالة is-active
@@ -568,47 +643,59 @@
                     <span id="bose-product-offer-badge" class="bose-offer-badge"></span>
                 </div>
 
-                <!-- 🚨 [إصلاح حرج - الأحجام]: كانت صفحة المنتج المستقلة بتاخد سعر "الحجم الافتراضي"
-                     فقط (product.price) وتتجاهل باقي الأحجام الموجودة فعلياً في عمود products.prices
-                     (مثلاً الديسباسيتو: مثلث/وسط/كبير) رغم إن نفس منطق الأحجام موجود ومستخدم في
-                     category.html بالظبط. التبويب هنا بيظهر تلقائياً بس لو المنتج فعلاً عنده أكتر
-                     من حجم سعر مختلف، وبيغيّر السعر (وأي وصف مخصص للحجم لو موجود) فوراً لحظة الاختيار. -->
-                <div id="bose-product-size-note" class="bose-size-filter-note" style="display:none; margin-bottom:10px;"><i class="fa-solid fa-circle-info"></i> ده الصنف متوفر بأكتر من حجم — اختاري اللي يناسبك 👇
-                    <button type="button" class="bose-info-badge-inline"
-                            data-bose-info-title="اختيار الحجم بيأثر على إيه؟"
-                            data-bose-info-text="كل حجم من الأحجام دي له سعر مختلف، وبمجرد ما تختاري حجم هيتحدث السعر فوق فوراً ليطابق اختيارك. تقدري تغيّري الحجم في أي وقت قبل ما تضيفي الصنف للسلة.">ⓘ</button>
-                </div>
-                <div id="bose-product-size-tabs" class="bose-size-tabs-filter" style="display:none; margin-bottom:14px;"></div>
-
-                <!-- 🎂 [وضوح السعر]: السعر وملحوظة الكمية ("لكل دستة/12 قطعة" مثلاً) اتلمّوا
-                     في بلوك واحد بخط فاصل تحته، عشان يتقروا كوحدة بصرية واحدة من أول نظرة -
-                     مش رقم سعر كبير لوحده وملحوظة صغيرة منفصلة تحته سهل تتفوت. الخط الفاصل
-                     موجود على البلوك نفسه (مش على السعر ولا الملحوظة) عشان يفضل ظاهر بشكل
-                     سليم حتى لو المنتج معندهوش quantity_note أصلاً. -->
+                <!-- 🎂 [وضوح السعر]: السعر وملحوظة الكمية ("لكل دستة/12 قطعة" مثلاً) بقوا جوه
+                     بطاقة واحدة بخلفية وبوردر عشان يتقروا كوحدة بصرية احترافية واضحة من أول نظرة. -->
                 <div class="product-price-block">
-                    <div id="bose-product-price-text" class="product-price-large-display">0 EGP</div>
+                    <div class="product-price-savings-row">
+                        <div id="bose-product-price-text" class="product-price-large-display">0 EGP</div>
+                        <span id="bose-product-old-price-text" class="old-price-strike" style="display:none;"></span>
+                    </div>
+                    <span id="bose-product-savings-note" class="product-savings-note-big" style="display:none;"></span>
                     <div id="bose-product-quantity-note" class="bose-qty-clarity-note" style="display:none;"><i class="fa-solid fa-circle-info"></i><span id="bose-product-quantity-note-text"></span></div>
                 </div>
-                
-                <div id="bose-product-highlights" class="product-highlights-row" style="display:none;"></div>
 
-                <div id="bose-product-desc-text"><p class="product-story-paragraph">وصف قصة المكونات الفاخرة والطعم الأصلي المميز للقطعة...</p></div>
-                
-                <div id="bose-product-customization-options-root" class="customization-options-box"></div>
-
+                <!-- 🛒 [ترتيب قرار الشراء]: الكمية وزرار الإضافة للسلة بقوا فوق مباشرة تحت
+                     السعر، عشان تبقى أول حاجة العميلة تتفاعل معاها - قبل ما تنزل تقرا باقي
+                     التفاصيل. راجع actions-purchase-integration-row في CSS: بقت عمودية،
+                     كل عنصر ياخد العرض الكامل وارتفاع أكبر يريح اللمس. -->
                 <div class="actions-purchase-integration-row">
                     <div class="qty-picker-capsule">
                         <button id="btn-qty-master-plus" type="button" aria-label="زيادة الكمية">+</button>
                         <input id="input-qty-master-value" type="number" value="1" min="1" readonly aria-label="الكمية الحالية">
                         <button id="btn-qty-master-minus" type="button" aria-label="تقليل الكمية">-</button>
                     </div>
-                    
+
                     <button id="btn-add-to-cart-master-trigger" class="btn-add-to-cart-master" type="button">
                         <i class="fas fa-shopping-bag"></i> إضافة لسلة المشتريات
                     </button>
-                    <button type="button" class="bose-info-badge-inline"
+                    <button type="button" class="bose-info-badge-inline" style="align-self:center;"
                             data-bose-info-title="بعد ما أضيف للسلة هيحصل إيه؟"
                             data-bose-info-text="دوسي + و- لتحديد الكمية اللي حابة تطلبيها من الصنف ده، وبعد ما تضغطي إضافة لسلة المشتريات هتلاقيه في سلتك تقدري تراجعيه وتعدّلي فيه براحتك، وتحددي موعد الاستلام أو التوصيل بعد كده في خطوة إتمام الطلب.">ⓘ</button>
+                </div>
+
+                <!-- 🗂️ [بطاقة تفاصيل موحدة]: كل تفاصيل الصنف (الأحجام المتاحة، المميزات،
+                     الوصف، خيارات التخصيص/النكهات) بقوا مجمّعين جوه بطاقة واحدة مرتبة
+                     تحت زرار الإضافة للسلة، بدل ما يكونوا عناصر متفرقة على الصفحة. -->
+                <div class="product-details-unified-card">
+                    <div class="product-details-unified-card-title"><i class="fa-solid fa-circle-info" style="color:var(--bose-pink);"></i> كل تفاصيل الصنف ده</div>
+
+                    <!-- 🚨 [إصلاح حرج - الأحجام]: كانت صفحة المنتج المستقلة بتاخد سعر "الحجم الافتراضي"
+                         فقط (product.price) وتتجاهل باقي الأحجام الموجودة فعلياً في عمود products.prices
+                         (مثلاً الديسباسيتو: مثلث/وسط/كبير) رغم إن نفس منطق الأحجام موجود ومستخدم في
+                         category.html بالظبط. التبويب هنا بيظهر تلقائياً بس لو المنتج فعلاً عنده أكتر
+                         من حجم سعر مختلف، وبيغيّر السعر (وأي وصف مخصص للحجم لو موجود) فوراً لحظة الاختيار. -->
+                    <div id="bose-product-size-note" class="bose-size-filter-note" style="display:none; margin-bottom:10px;"><i class="fa-solid fa-circle-info"></i> ده الصنف متوفر بأكتر من حجم — اختاري اللي يناسبك 👇
+                        <button type="button" class="bose-info-badge-inline"
+                                data-bose-info-title="اختيار الحجم بيأثر على إيه؟"
+                                data-bose-info-text="كل حجم من الأحجام دي له سعر مختلف، وبمجرد ما تختاري حجم هيتحدث السعر فوق فوراً ليطابق اختيارك. تقدري تغيّري الحجم في أي وقت قبل ما تضيفي الصنف للسلة.">ⓘ</button>
+                    </div>
+                    <div id="bose-product-size-tabs" class="bose-size-tabs-filter" style="display:none; margin-bottom:14px;"></div>
+
+                    <div id="bose-product-highlights" class="product-highlights-row" style="display:none;"></div>
+
+                    <div id="bose-product-desc-text"><p class="product-story-paragraph">وصف قصة المكونات الفاخرة والطعم الأصلي المميز للقطعة...</p></div>
+
+                    <div id="bose-product-customization-options-root" class="customization-options-box"></div>
                 </div>
 
                 <!-- 🛡️ [شارات ثقة]: صف صغير تحت زرار الإضافة للسلة مباشرة - أقرب نقطة لحظة
@@ -833,11 +920,17 @@
             function renderOfferBadge() {
                 const row = document.getElementById("bose-product-offer-row");
                 const badge = document.getElementById("bose-product-offer-badge");
+                const ribbon = document.getElementById("bose-product-image-offer-ribbon");
+                const oldPriceEl = document.getElementById("bose-product-old-price-text");
+                const savingsEl = document.getElementById("bose-product-savings-note");
                 if (!row || !badge || !currentProduct) return;
 
                 const hasDiscount = !!(currentProduct.oldPrice && currentProduct.oldPrice > currentProduct.price);
                 if (!hasDiscount) {
                     row.style.display = "none";
+                    if (ribbon) ribbon.style.display = "none";
+                    if (oldPriceEl) oldPriceEl.style.display = "none";
+                    if (savingsEl) savingsEl.style.display = "none";
                     return;
                 }
                 const savings = currentProduct.oldPrice - currentProduct.price;
@@ -846,6 +939,26 @@
                 badge.style.position = "static"; // شارة ثابتة جوه الصفحة مش عايمة فوق صورة زي الكارت
                 row.style.display = "block";
                 row.style.marginBottom = "6px";
+
+                // 🔥 [شارة زاهية فوق الصورة]: نفس نسبة الخصم بس بشكل أكبر وألوان لافتة،
+                // فوق الصورة الرئيسية مباشرة - عشان العميلة تلاحظ العرض من أول ثانية
+                // تفتح فيها صفحة المنتج، قبل حتى ما تقرا السعر.
+                if (ribbon) {
+                    ribbon.textContent = `خصم ${discountPercent}% 🔥`;
+                    ribbon.style.display = "inline-block";
+                }
+
+                // 💰 [السعر القديم + التوفير بالجنيه]: بدل ما العميلة تشوف نسبة مئوية بس،
+                // بتشوف السعر الأصلي مشطوب جنب السعر الجديد، وتحته جملة صريحة بمقدار
+                // التوفير بالجنيه - عشان تحس إنها كسبت فلوس فعلية مش رقم مجرد.
+                if (oldPriceEl) {
+                    oldPriceEl.textContent = `${currentProduct.oldPrice} EGP`;
+                    oldPriceEl.style.display = "inline-block";
+                }
+                if (savingsEl) {
+                    savingsEl.innerHTML = `<i class="fa-solid fa-tag"></i> وفرتي ${savings} جنيه`;
+                    savingsEl.style.display = "inline-flex";
+                }
             }
 
             // 🚨 [إصلاح حرج - الأحجام]: تبويب اختيار الحجم بيظهر بس لو المنتج فعلاً عنده أكتر من
