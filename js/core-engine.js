@@ -2063,7 +2063,12 @@
      * ✅ [تم]: رابط الصورة تحت هو صورة الماسكوت الحقيقية اللي اترفعت على
      * Cloudinary فعليًا (مش اللوجو العادي زي قبل كده).
      */
-    const BOSE_APP_MASCOT_IMAGE_URL = "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1787925413/1786711441254_r3nmln.jpg";
+    // 🎨 [تحسين شكل الصورة - طلب صاحبة المتجر]: نفس الصورة الأصلية بالظبط، لكن
+    // بنضيف باراميترز Cloudinary لجودة/دقة أعلى عند التسليم (نفس أسلوب q_auto/f_auto
+    // المستخدم بالفعل مع الفيديوهات في الموقع) - بيخلي الصورة أوضح وأنضف لما تتعرض
+    // بحجم أكبر من قبل، من غير ما نرفع أي ملف جديد. w_500 بيطلب نسخة أعلى دقة عشان
+    // تبقى واضحة (retina) حتى بعد التكبير الجديد في الـ CSS.
+    const BOSE_APP_MASCOT_IMAGE_URL = "https://res.cloudinary.com/dyx4w0dr1/image/upload/f_auto,q_auto,w_500/v1787925413/1786711441254_r3nmln.jpg";
 
     function setupAppInstallPopup() {
         // لو التطبيق شغال بالفعل كـ PWA مثبّت (standalone)، العميل مثبّته أصلاً - متعرضيش عليه يثبّته تاني
@@ -2104,7 +2109,9 @@
                 <div id="bose-app-install-popup-overlay" class="bose-app-install-popup-overlay">
                     <div class="bose-app-install-popup-card" role="dialog" aria-modal="true" aria-label="تثبيت تطبيق حلويات بوسي">
                         <button type="button" class="bose-app-install-close-btn" id="bose-app-install-close-btn" aria-label="إغلاق"><i class="fa-solid fa-xmark"></i></button>
-                        <img src="${BOSE_APP_MASCOT_IMAGE_URL}" alt="شيف حلويات بوسي" class="bose-app-install-mascot-img" width="180" height="180" loading="lazy" />
+                        <div class="bose-app-install-mascot-wrapper">
+                            <img src="${BOSE_APP_MASCOT_IMAGE_URL}" alt="شيف حلويات بوسي" class="bose-app-install-mascot-img" width="210" height="210" loading="lazy" />
+                        </div>
                         <h3 class="bose-app-install-title">حمّلي تطبيقنا! 🎀</h3>
                         <p class="bose-app-install-desc">اطلبي حلوياتك المفضلة في ثواني، واستلمي عروضنا الحصرية أول بأول من غير ما تفوتك حاجة</p>
                         ${ctaHtml}
