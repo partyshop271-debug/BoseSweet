@@ -740,7 +740,18 @@
             btnShareFlowerDesign.addEventListener("click", () => {
                 const priceNow = document.getElementById("bouquet-total-val")?.textContent || "";
                 const shareText = `شوفي التصميم اللي عملته لبوكيه ورد من حلويات بوسي 💐\nنوع الورد: ${getFlowerTypeName(state.flowerType)}\nعدد الورد: ${state.flowerCount}\nالسعر: ${priceNow}\nإيه رأيك؟`;
-                window.open(`https://wa.me/?text=${encodeURIComponent(shareText)}`, "_blank", "noopener,noreferrer");
+                // 🛡️🆕 [إصلاح]: window.open() بيتحجب صراحةً في متصفحات الفتح الداخلي
+                // (إنستجرام/سناب شات) - رابط <a> حقيقي بيتنقّل بيه المتصفح مباشرة
+                // (مش نافذة منبثقة عبر JS) بيشتغل حتى لو window.open ممنوع تمامًا.
+                // النص هنا بيتغيّر حسب اختيارات العميلة الحالية فمينفعش href ثابت
+                // من الأول، فبنبنيه وقت الضغط بالظبط وبنحاكي ضغطة حقيقية عليه.
+                const tempLink = document.createElement("a");
+                tempLink.href = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
+                tempLink.target = "_blank";
+                tempLink.rel = "noopener noreferrer";
+                document.body.appendChild(tempLink);
+                tempLink.click();
+                tempLink.remove();
             });
         }
 

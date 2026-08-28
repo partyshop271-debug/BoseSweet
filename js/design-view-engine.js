@@ -84,15 +84,21 @@
             priceEl.textContent = design.price ? `${Math.round(design.price)} جنيه` : "بيتحدد عند التأكيد";
         }
 
+        // 🛡️🆕 [إصلاح]: كان الرابط بيتفتح عن طريق window.open() المُشغّل بـ JS
+        // وقت الضغط - متصفحات الفتح الداخلي (إنستجرام/سناب شات) بترفض النمط ده
+        // صراحةً (نفس السبب اللي كان بيمنع رسالة فاتورة الطلب من الفتح في
+        // checkout.html قبل كده). دلوقتي بنحط href حقيقي على الرابط مباشرة (مش
+        // JS بس) عشان يشتغل حتى لو المتصفح بيمنع window.open تمامًا - أي متصفح
+        // بيقدر يفتح رابط https عادي بضغطة مستخدم حقيقية زي دي. الصفحة دي بالذات
+        // (بتتفتح من رابط متشارك) هي أعلى مكان في الموقع معرّض للمتصفح الداخلي.
         if (orderBtn) {
-            orderBtn.addEventListener('click', () => {
-                const shareUrl = window.location.href;
-                const text = `عايزة أطلب تورتة زي التصميم ده من حلويات بوسي 🎂\n${shareUrl}`;
-                const link = (typeof window.buildWhatsappLink === "function")
-                    ? window.buildWhatsappLink('201097238441', text)
-                    : `https://wa.me/201097238441?text=${encodeURIComponent(text)}`;
-                window.open(link, '_blank', 'noopener,noreferrer');
-            });
+            const shareUrl = window.location.href;
+            const text = `عايزة أطلب تورتة زي التصميم ده من حلويات بوسي 🎂\n${shareUrl}`;
+            const link = (typeof window.buildWhatsappLink === "function")
+                ? window.buildWhatsappLink('201097238441', text)
+                : `https://wa.me/201097238441?text=${encodeURIComponent(text)}`;
+            orderBtn.setAttribute('href', link);
+            orderBtn.style.display = 'flex';
         }
 
         if (loadingEl) loadingEl.style.display = 'none';
