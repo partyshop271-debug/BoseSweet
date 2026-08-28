@@ -966,3 +966,55 @@ img {
     margin: 6px 0;
 }
 .bose-qty-clarity-note i { color: var(--bose-pink-text); flex-shrink: 0; }
+
+/* ==========================================================================
+   📖✨ [أداة موحدة: "قراءة المزيد" لأي نص طويل] - راجع window.initBoseReadMore
+   في core-engine.js. الكلاسات دي عامة (مش مرتبطة بصفحة معينة) عشان تتستخدم
+   في وصف المنتج وصفحة "من نحن" وأي نص طويل تاني مستقبلاً بنفس الشكل بالظبط.
+   الارتفاع نفسه بيتحدد من الـ JS (inline style)، الكلاسات دي بس مسؤولة عن
+   القص البصري والتظليل التدريجي (fade) والانتقال الناعم.
+   ========================================================================== */
+.bose-readmore-collapsed {
+    overflow: hidden;
+    position: relative;
+    transition: max-height 0.35s ease;
+}
+
+.bose-readmore-collapsed::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 46px;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0), #fff);
+    pointer-events: none;
+}
+
+.bose-readmore-expanded {
+    transition: max-height 0.35s ease;
+}
+
+.bose-read-more-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin: 2px 0 20px 0;
+    padding: 0;
+    background: none;
+    border: none;
+    color: var(--bose-pink);
+    font-size: 0.86rem;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.bose-read-more-btn i {
+    font-size: 0.72rem;
+    transition: transform 0.25s ease;
+}
+
+.bose-read-more-btn.is-expanded i {
+    transform: rotate(180deg);
+}
