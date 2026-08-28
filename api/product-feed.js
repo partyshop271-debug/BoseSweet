@@ -42,8 +42,18 @@ module.exports = async function handler(req, res) {
     try {
         // 🛡️ نفس شرط sitemap.js بالظبط: منتجات المحاكيات (builder_type != standard) مالهاش
         // سعر ثابت ولا صفحة منتج حقيقية، فمش منطقي تتحط في كتالوج تسوق بسعر تقريبي غلط.
+        // 🐛 [إصلاح حرج - نفس اسم المنتج لكل النكهات في كتالوج واتساب/فيسبوك]: كل
+        // نكهة في الموقع مخزّنة كصف منتج منفصل بنفس عمود title (مثلاً "القشطوطة")
+        // واسم النكهة الفعلي (نوتيلا/كراميل...) متخزن في عمود flavor_name منفصل
+        // (نفس اللي بيتعرض في الموقع في .product-card-flavor-name تحت اسم المنتج
+        // مباشرة). الكويري هنا كانت بتجيب flavor_desc بس ومش flavor_name، وبعدين
+        // الـ <title> في الفيد كان بياخد p.title لوحده - فكل نكهات نفس المنتج
+        // كانت بتظهر في كتالوج واتساب/فيسبوك/تيك توك بنفس الاسم بالظبط من غير أي
+        // تمييز، والعميل ميعرفش يفرّق بينهم. دلوقتي العنوان بيدمج الاثنين
+        // ("القشطوطة نوتيلا"، "القشطوطة كراميل"...) زي ما هو مطلوب بالظبط، ولو
+        // منتج مالوش نكهة مخصصة (flavor_name فاضي أو نفس اسم المنتج) بيفضل زي ما هو.
         const products = await fetchTable(
-            "products?select=id,title,description,flavor_desc,images,price,old_price,is_available,category_id&or=(builder_type.is.null,builder_type.eq.standard)"
+            "products?select=id,title,flavor_name,description,flavor_desc,images,price,old_price,is_available,category_id&or=(builder_type.is.null,builder_type.eq.standard)"
         );
         const categories = await fetchTable("categories?select=id,title");
         const catMap = {};
@@ -54,8 +64,13 @@ module.exports = async function handler(req, res) {
             .map((p) => {
                 // ملحوظة: مفيش عمود "slug" منفصل - الموقع كله بيستخدم id نفسه كـ "slug"
                 // (js/supabase-client.js: slug: p.id) - نفس الرابط المستخدم في كل مكان.
+                // نفس اسم النكهة الفعلي المعروض على كارت المنتج في الموقع (ملهوش داعي
+                // يتكرر لو كان فعلاً نفس اسم المنتج، عشان منتجات من غير نكهات متعددة
+                // متطلعش بعنوان مكرر زي "التورتة التورتة").
+                const flavorName = (p.flavor_name || "").trim();
+                const combinedTitle = (flavorName && flavorName !== p.title) ? `${p.title} ${flavorName}` : p.title;
                 const link = `${SITE_BASE}/product.html?slug=${p.id}`;
-                const desc = p.flavor_desc || p.description || `${p.title} من حلويات بوسي - مكونات طبيعية 100% وتحضير طازة يومياً.`;
+                const desc = p.flavor_desc || p.description || `${combinedTitle} من حلويات بوسي - مكونات طبيعية 100% وتحضير طازة يومياً.`;
                 const availability = p.is_available === false ? "out of stock" : "in stock";
                 // 🛡️ [إصلاح - تحذير "الكمية غير موجودة" في Meta Commerce Manager]: فيسبوك/
                 // انستجرام بيحتاجوا رقم كمية صريح (مش بس حالة متوفر/مش متوفر) عشان يفعّلوا
@@ -67,7 +82,7 @@ module.exports = async function handler(req, res) {
                 const extraImages = p.images.slice(1, 11).map((img) => `\n      <g:additional_image_link>${escapeXml(img)}</g:additional_image_link>`).join("");
                 return `    <item>
       <g:id>${escapeXml(p.id)}</g:id>
-      <title>${cdata(p.title)}</title>
+      <title>${cdata(combinedTitle)}</title>
       <description>${cdata(desc)}</description>
       <link>${escapeXml(link)}</link>
       <g:image_link>${escapeXml(p.images[0])}</g:image_link>${extraImages}
