@@ -734,6 +734,7 @@
                     <h3 class="product-card-title">${safeTitle}</h3>
                     <span class="product-card-flavor-name">${safeFlavor}</span>
                     <p class="product-card-desc">${safeDesc}</p>
+                    <button type="button" class="bose-desc-toggle-btn" hidden aria-expanded="false" onclick="event.stopPropagation(); window.toggleBoseCardDesc(this);">اظهار المزيد</button>
                     <div class="product-card-price">
                         <span>أسعار تبدأ من ${Math.round(product.basePrice || product.price || 0)} جنيه</span>
                     </div>
@@ -817,6 +818,7 @@
                 <h3 class="product-card-title">${safeTitle}</h3>
                 <span class="product-card-flavor-name">${safeFlavor}</span>
                 <p class="product-card-desc">${safeDesc}</p>
+                <button type="button" class="bose-desc-toggle-btn" hidden aria-expanded="false" onclick="event.stopPropagation(); window.toggleBoseCardDesc(this);">اظهار المزيد</button>
                 ${sizeTabsHtml}
                 ${quantityNoteHtml}
                 
@@ -893,6 +895,87 @@
     // الموقع كله تقدر تستخدم window.createProductCardHTML(product) بدل ما تعيد
     // كتابة نفس الكود من الصفر.
     window.createProductCardHTML = createProductCardHTML;
+
+    /**
+     * 📏 [إصلاح - كارت وصف طويل بيكسر ارتفاع الصف]: النص الأصلي (flavorDesc)
+     * بيفضل موجود كامل زي ما هو في الـHTML (مفيش تقصير فعلي للنص)، لكن بصرياً
+     * مقصوص لـ3 أسطر بس بـCSS (line-clamp). زرار "اظهار المزيد/اظهار أقل"
+     * ده بيبدّل كلاس bose-desc-expanded على فقرة الوصف عشان يوريها كاملة أو
+     * يرجعها مقصوصة. مستخدم من كل كروت المنتج (core-engine.js + category.html).
+     * @param {HTMLElement} btn
+     */
+    window.toggleBoseCardDesc = function(btn) {
+        if (!btn) return;
+        // 🛡️ [يدعم أكتر من شكل كارت]: كارت core-engine.js الفقرة والزرار جنب
+        // بعض مباشرة (previousElementSibling كافي)، لكن كارت category.html
+        // الفقرة جوه <a> لف حواليها والزرار بره الـ<a> - فبندوّر جوه أقرب
+        // حاوية كارت معروفة (product-card-unified / product-card / بطاقة
+        // المحاكي) عن أول ‎.product-card-desc بدل الاعتماد على ترتيب الأشقاء.
+        const cardWrap = btn.closest('.product-card-unified, .product-card, .bose-builder-master-card') || btn.parentElement;
+        const desc = cardWrap ? cardWrap.querySelector('.product-card-desc') : null;
+        if (!desc || !desc.classList || !desc.classList.contains('product-card-desc')) return;
+        const expanded = desc.classList.toggle('bose-desc-expanded');
+        btn.textContent = expanded ? 'اظهار أقل' : 'اظهار المزيد';
+        btn.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+    };
+
+    /**
+     * زرار "اظهار المزيد" لازم يظهر بس لو النص فعلاً مقصوص (أطول من 3 أسطر) -
+     * مش كل الأوصاف طويلة كده، فمفيش داعي نوري زرار فاضي المعنى على كارت
+     * وصفه أصلاً قصير وماخدش أكتر من سطرين. بنتأكد بقياس فعلي (scrollHeight
+     * أكبر من clientHeight) بعد ما المتصفح يحسب التخطيط فعلياً.
+     * @param {HTMLElement} descEl
+     */
+    function checkBoseDescOverflow(descEl) {
+        // 🛡️ نفس منطق البحث في toggleBoseCardDesc: الزرار مش دايماً الشقيق
+        // المباشر التالي (كارت category.html بيلف الفقرة جوه <a>)، فبندوّر
+        // جوه أقرب حاوية كارت معروفة عن الزرار المناظر لنفس الوصف.
+        const cardWrap = descEl.closest('.product-card-unified, .product-card, .bose-builder-master-card') || descEl.parentElement;
+        const btn = cardWrap ? cardWrap.querySelector('.bose-desc-toggle-btn') : null;
+        if (!btn) return;
+        // لو العميل فاتح الوصف بالفعل (bose-desc-expanded)، سيبي الزرار زي ما هو
+        if (descEl.classList.contains('bose-desc-expanded')) return;
+        const isOverflowing = descEl.scrollHeight > descEl.clientHeight + 1;
+        btn.hidden = !isOverflowing;
+    }
+
+    /**
+     * مراقب واحد بيغطي كل الموقع (بدل ما كل صفحة/دالة رندر تستدعي فحص يدوي):
+     * أي كارت منتج جديد بيتضاف لأي مكان في الصفحة (رئيسية/عروض/فئة/سلة/
+     * مقترحات...) بيتفحص وصفه تلقائياً فور إضافته. بيشتغل مرة واحدة بس لكل
+     * صفحة (window.__boseDescObserverInit) عشان ميتسجلش أكتر من observer.
+     */
+    function initBoseDescToggleObserver() {
+        if (window.__boseDescObserverInit) return;
+        window.__boseDescObserverInit = true;
+
+        const scanNode = (node, toCheck) => {
+            if (!node || node.nodeType !== 1) return;
+            if (node.classList && node.classList.contains('product-card-desc')) toCheck.push(node);
+            if (node.querySelectorAll) node.querySelectorAll('.product-card-desc').forEach(d => toCheck.push(d));
+        };
+
+        const observer = new MutationObserver((mutations) => {
+            const toCheck = [];
+            mutations.forEach(m => m.addedNodes.forEach(node => scanNode(node, toCheck)));
+            if (toCheck.length) {
+                requestAnimationFrame(() => toCheck.forEach(checkBoseDescOverflow));
+            }
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
+
+        // لما عرض الشاشة يتغيّر (تدوير الموبايل، تغيير حجم نافذة الديسكتوب)،
+        // عدد الأسطر اللي بتتقص عندها ممكن يتغيّر، فبنعيد فحص كل الأوصاف
+        // الظاهرة حالياً (بدون إعادة توسيعها لو كانت مفتوحة بالفعل).
+        let resizeTimer = null;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                document.querySelectorAll('.product-card-desc').forEach(checkBoseDescOverflow);
+            }, 200);
+        });
+    }
+    initBoseDescToggleObserver();
 
     /**
      * @param {HTMLElement} buttonElement
