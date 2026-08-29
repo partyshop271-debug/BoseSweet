@@ -564,6 +564,11 @@ function startEngineLogic() {
         });
 
         renderOrderSummary(currentPersons, selectedShape, selectedPrinting, hasGiftCardNow, finalDynamicPrice);
+
+        // 💾 [حفظ تلقائي مستمر]: كل مرة الحالة بتتقيّم فيها (كل تغيير حقيقي
+        // في أي اختيار) بنحفظ نسخة محدّثة من التصميم كامل - راجعي شرح
+        // saveCakeDraftToStorage تحت لتفاصيل السبب.
+        saveCakeDraftToStorage();
     }
 
     function buildDesignSnapshot(currentPersons, selectedShape, selectedPrinting, hasGiftCardNow, grandTotal) {
@@ -1102,13 +1107,148 @@ function startEngineLogic() {
             currentActiveStep = 1;
             syncWizardPanelsUI();
             evaluateSimulatorState();
+
+            // 💾 [تنظيف بعد نجاح الإضافة]: التصميم دلوقتي جوه السلة فعليًا،
+            // فمفيش داعي نفضل محتفظين بمسودته - لو مسحناهاش، أي زيارة تانية
+            // لنفس صفحة المحاكي خلال 24 ساعة هتحاول "تسترجع" تصميم اتضاف
+            // للسلة بالفعل، وده مربك أكتر منه مفيد.
+            if (typeof window.clearBoseCakeDraft === 'function') window.clearBoseCakeDraft();
         }
     }
 
     if (btnCartSubmitSummary) btnCartSubmitSummary.addEventListener('click', submitCakeToCart);
 
+    /* ==================================================================
+       💾👑 [حفظ واسترجاع تلقائي لتصميم التورتة - طلب صاحبة المتجر]: لو
+       العميلة خرجت بالغلط من المحاكي (زرار رجوع بالتليفون، قفل التطبيق،
+       الصفحة اتعملها reload تلقائي بسبب ضعف رام الجهاز، ضغطت لينك تاني
+       بالغلط...) كانت كل اختياراتها في الـ11 خطوة بتتمسح بالكامل وترجعها
+       لأول خطوة من غير أي تحذير - إحباط حقيقي ومعقول إنه يخليها تسيب
+       الطلب خالص. الحل: بنحفظ نسخة كاملة من كل اختيار في localStorage
+       أول بأول (كل مرة تتغير فيها أي حاجة - راجعي نداء saveCakeDraftToStorage
+       جوه evaluateSimulatorState فوق)، ولو العميلة رجعت لنفس صفحة المحاكي
+       خلال 24 ساعة، بنسترجعلها تصميمها بالظبط من نفس الخطوة اللي وصلتلها.
+       ملحوظة: الصور المرفوعة (uploadedCakePhotoUrl/uploadedReplicaPhotoUrl)
+       بترفع فورًا على Cloudinary وقت اختيارها وبترجع كـ URL نصي بسيط (مش
+       ملف خام) - فتقدر تتحفظ وتترجع بسهولة زي أي نص عادي من غير أي تعقيد
+       أو حجم كبير في localStorage.
+       ================================================================== */
+    const CAKE_DRAFT_STORAGE_KEY = 'bose_cake_builder_draft_v1';
+    const CAKE_DRAFT_MAX_AGE_MS = 24 * 60 * 60 * 1000; // 24 ساعة - بعدها التصميم يعتبر قديم ومنعرضهوش
+
+    function saveCakeDraftToStorage() {
+        try {
+            const draft = {
+                savedAt: Date.now(),
+                step: currentActiveStep,
+                occasion: getOccasionText(),
+                persons: inputPersons ? inputPersons.value : config.persons.minimum,
+                shape: document.querySelector('input[name="cake_shape"]:checked')?.value || 'circle',
+                flavor: document.querySelector('input[name="cake_flavor"]:checked')?.value || 'vanilla',
+                printing: document.querySelector('input[name="cake_printing"]:checked')?.value || 'none',
+                message: document.getElementById('text-cake-message')?.value || '',
+                allergy: document.getElementById('text-cake-allergy')?.value || '',
+                replicaChecked: !!(replicaToggle && replicaToggle.checked),
+                replicaImageUrl: uploadedReplicaPhotoUrl || '',
+                giftCardChecked: !!(giftCardToggle && giftCardToggle.checked),
+                giftCardText: giftCardTextInput ? giftCardTextInput.value : '',
+                printImageUrl: uploadedCakePhotoUrl || ''
+            };
+            localStorage.setItem(CAKE_DRAFT_STORAGE_KEY, JSON.stringify(draft));
+        } catch (e) { /* تجاهل بأمان لو التخزين المحلي ممتلئ أو غير متاح */ }
+    }
+
+    function clearCakeDraftFromStorage() {
+        try { localStorage.removeItem(CAKE_DRAFT_STORAGE_KEY); } catch (e) { /* تجاهل بأمان */ }
+    }
+    // 🛡️ متاحة لباقي الملف (submitCakeToCart بعد نجاح الإضافة للسلة بيمسح المسودة)
+    window.clearBoseCakeDraft = clearCakeDraftFromStorage;
+
+    function restoreCakeDraftFromStorage() {
+        let draft = null;
+        try {
+            const raw = localStorage.getItem(CAKE_DRAFT_STORAGE_KEY);
+            if (!raw) return;
+            draft = JSON.parse(raw);
+        } catch (e) { return; }
+        if (!draft || !draft.savedAt) return;
+        if ((Date.now() - draft.savedAt) > CAKE_DRAFT_MAX_AGE_MS) {
+            clearCakeDraftFromStorage();
+            return;
+        }
+        // 🛡️ لازم يكون فيه على الأقل تقدّم حقيقي (مش مجرد فتح الصفحة ومغادرتها
+        // فورًا من غير أي اختيار) قبل ما نعرض على العميلة استرجاع تصميم قديم
+        const hasRealProgress = (draft.step && draft.step > 1) || draft.occasion || draft.message || draft.allergy || draft.replicaImageUrl || draft.printImageUrl;
+        if (!hasRealProgress) return;
+
+        try {
+            if (occasionInput) occasionInput.value = draft.occasion || '';
+            if (inputPersons) inputPersons.value = draft.persons || config.persons.minimum;
+            if (draft.shape) {
+                const shapeRadio = document.querySelector(`input[name="cake_shape"][value="${draft.shape}"]`);
+                if (shapeRadio) shapeRadio.checked = true;
+            }
+            if (draft.flavor) {
+                const flavorRadio = document.querySelector(`input[name="cake_flavor"][value="${draft.flavor}"]`);
+                if (flavorRadio) flavorRadio.checked = true;
+            }
+            if (draft.printing) {
+                const printingRadio = document.querySelector(`input[name="cake_printing"][value="${draft.printing}"]`);
+                if (printingRadio) printingRadio.checked = true;
+            }
+            const messageEl = document.getElementById('text-cake-message');
+            if (messageEl) messageEl.value = draft.message || '';
+            const allergyEl = document.getElementById('text-cake-allergy');
+            if (allergyEl) allergyEl.value = draft.allergy || '';
+
+            if (draft.replicaImageUrl) {
+                uploadedReplicaPhotoUrl = draft.replicaImageUrl;
+                if (replicaToggle) replicaToggle.checked = !!draft.replicaChecked;
+                if (replicaPreviewImg) {
+                    replicaPreviewImg.src = window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(uploadedReplicaPhotoUrl, 300) : uploadedReplicaPhotoUrl;
+                    replicaPreviewImg.style.display = 'block';
+                }
+                if (replicaUploadLabel) replicaUploadLabel.textContent = "تم رفع الصورة بنجاح ✓ (اضغط لتغييرها)";
+            }
+            if (draft.printImageUrl) {
+                uploadedCakePhotoUrl = draft.printImageUrl;
+                if (cakePhotoPreviewImg) {
+                    cakePhotoPreviewImg.src = window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(uploadedCakePhotoUrl, 300) : uploadedCakePhotoUrl;
+                    cakePhotoPreviewImg.style.display = 'block';
+                }
+                if (cakePhotoUploadLabel) cakePhotoUploadLabel.textContent = "تم رفع الصورة بنجاح ✓ (اضغط لتغييرها)";
+            }
+            if (giftCardToggle) giftCardToggle.checked = !!draft.giftCardChecked;
+            if (giftCardTextInput) giftCardTextInput.value = draft.giftCardText || '';
+
+            toggleCakePhotoUploadSection();
+            toggleReplicaUploadSection();
+            toggleGiftCardSection();
+            updateFlavorSensoryNote();
+
+            currentActiveStep = Math.min(Math.max(parseInt(draft.step, 10) || 1, 1), totalWizardStepsCount);
+            syncWizardPanelsUI();
+            evaluateSimulatorState();
+
+            if (typeof window.showBoseGlobalToast === 'function') {
+                window.showBoseGlobalToast("استكملنا لك تصميم تورتتك من نفس الخطوة اللي وصلتيها 🎂");
+            }
+        } catch (e) {
+            // تجاهل بأمان - لو أي حقل مش موجود لأي سبب، الصفحة تفضل شغالة عادي بالخطوة الأولى
+        }
+    }
+
+    // 📝 [حفظ فوري لحقول النص]: مش كل الحقول بتاخد evaluateSimulatorState (زي
+    // خانة الرسالة وملاحظات الحساسية)، فبنحفظ المسودة مباشرة عند أي كتابة فيها.
+    const cakeMessageInputEl = document.getElementById('text-cake-message');
+    const cakeAllergyInputEl = document.getElementById('text-cake-allergy');
+    if (cakeMessageInputEl) cakeMessageInputEl.addEventListener('input', saveCakeDraftToStorage);
+    if (cakeAllergyInputEl) cakeAllergyInputEl.addEventListener('input', saveCakeDraftToStorage);
+    if (giftCardTextInput) giftCardTextInput.addEventListener('input', saveCakeDraftToStorage);
+
     syncWizardPanelsUI();
     evaluateSimulatorState();
+    restoreCakeDraftFromStorage();
 }
 
 if (window.BoseStoreData && window.BoseStoreData.store) {
