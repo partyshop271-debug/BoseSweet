@@ -46,12 +46,14 @@
         {
             page: ['index.html'], mode: 'click',
             selector: '#mobile-menu-toggle',
+            hint: 'دوسي على أيقونة الثلاث خطوط ☰ اللي فوق يمين الشاشة',
             title: 'القائمة الجانبية',
             text: 'الزرار ده بيفتحلك القائمة الجانبية، وفيها كل أقسام الموقع مجمّعة. دوسي عليه.'
         },
         {
             page: ['index.html'], mode: 'click', delayBeforeShow: 300,
             selector: '#sidebar-categories-toggle',
+            hint: 'دوسي على كلمة "تسوّقي حسب الفئة" اللي في القائمة',
             title: 'تسوّقي حسب الفئة',
             text: 'من هنا تقدري تشوفي كل الـ12 فئة عندنا (تورت، ورد، كب كيك، دوناتس...) في مكان واحد. دوسي هنا تفتحيها.'
         },
@@ -63,31 +65,31 @@
         },
         {
             page: ['index.html'], mode: 'info',
-            selector: 'a[href="/offers.html"]',
+            selector: '#sidebar-link-offers',
             title: 'العروض والخصومات',
             text: 'من هنا تشوفي كل عروضنا والخصومات النشطة دلوقتي في صفحة واحدة.'
         },
         {
             page: ['index.html'], mode: 'info',
-            selector: 'a[href="/rewards.html"]',
+            selector: '#sidebar-link-rewards',
             title: 'مكافآتك',
             text: 'وده نظام المكافآت بتاعنا - هنشرحلك تفاصيله كمان شوية.'
         },
         {
             page: ['index.html'], mode: 'info',
-            selector: 'a[href="/track-order.html"]',
+            selector: '#sidebar-link-track-order',
             title: 'تتبعي طلبك',
             text: 'بعد ما تطلبي، تقدري تتابعي حالة طلبك في أي وقت من هنا.'
         },
         {
             page: ['index.html'], mode: 'info',
-            selector: 'a[href="/cake-builder.html"]',
+            selector: '#sidebar-link-cake-builder',
             title: 'صممي تورتتك بنفسك',
             text: 'عايزة تورتة مناسبة بالظبط لمناسبتك؟ من هنا تختاري الحجم والنكهة والشكل بنفسك.'
         },
         {
             page: ['index.html'], mode: 'info',
-            selector: 'a[href="/flower-builder.html"]',
+            selector: '#sidebar-link-flower-builder',
             title: 'صممي بوكيه الورد بنفسك',
             text: 'وبالظبط زي التورت، تقدري تصممي بوكيه ورد مخصص بنفسك من هنا.'
         },
@@ -100,6 +102,7 @@
         {
             page: ['index.html'], mode: 'click',
             selector: '#sidebar-close-btn',
+            hint: 'دوسي على علامة الـ✕ اللي فوق يمين القائمة',
             title: 'قفل القائمة',
             text: 'تمام، خلصنا من القائمة الجانبية. دوسي هنا تقفليها.'
         },
@@ -108,6 +111,7 @@
         {
             page: ['index.html'], mode: 'click',
             selector: '#nav-search-btn',
+            hint: 'دوسي على أيقونة العدسة 🔍 اللي فوق الشاشة',
             title: 'ابحثي عن أي صنف',
             text: 'مش عايزة تفتحي المنيو كله؟ دوسي على أيقونة البحث دي.'
         },
@@ -120,6 +124,7 @@
         {
             page: ['index.html'], mode: 'click',
             selector: '#search-modal-close',
+            hint: 'دوسي على علامة الـ✕ اللي فوق يمين شاشة البحث',
             title: 'قفل البحث',
             text: 'ولما تخلصي بحث، دوسي هنا تقفلي.'
         },
@@ -204,12 +209,14 @@
         {
             page: ['menu.html'], mode: 'click',
             selector: '.bose-menu-custom-card',
+            hint: 'دوسي على أي كارت فئة زي اللي قدامك دلوقتي',
             title: 'اختاري فئة',
             text: 'تمام! خلصنا كل حاجة في الموقع. دلوقتي هنعمل طلب حقيقي مع بعض خطوة بخطوة. دوسي على أي فئة زي دي.'
         },
         {
             page: ['category.html'], mode: 'click',
             selector: '.product-card',
+            hint: 'دوسي على أي منتج زي اللي قدامك دلوقتي',
             title: 'اختاري الصنف',
             text: 'دوسي على أي منتج زي ده عشان تشوفي تفاصيله وسعره بالكامل.'
         },
@@ -234,6 +241,7 @@
         {
             page: ['product.html'], mode: 'click',
             selector: '#btn-add-to-cart-master-trigger',
+            hint: 'دوسي على الزرار الوردي المكتوب عليه "أضيفي للسلة" تحت السعر',
             title: 'ضيفيه لسلتك',
             text: 'بعد ما تحددي اللي يناسبك، دوسي هنا عشان تضيفي المنتج ده لسلتك.'
         },
@@ -241,7 +249,8 @@
             anyPage: true, mode: 'click', delayBeforeShow: 550,
             selector: '.nav-cart-icon-wrapper[href="/cart.html"]',
             title: 'دي سلتك دلوقتي! 🎉',
-            text: 'شوفي، بقى فيها رقم دلوقتي. دوسي عليها عشان نراجع طلبك مع بعض.'
+            text: 'شوفي، بقى فيها رقم دلوقتي. دوسي عليها عشان نراجع طلبك مع بعض.',
+            hint: 'دوسي على أيقونة الشنطة 🛍 اللي فوق يمين الشاشة وعليها رقم دلوقتي'
         },
         {
             page: ['cart.html'], mode: 'info',
@@ -264,6 +273,7 @@
         {
             page: ['cart.html'], mode: 'click',
             selector: '#btn-proceed-to-checkout',
+            hint: 'دوسي على الزرار المكتوب عليه "كمّلي طلبك" تحت الفاتورة',
             title: 'كمّلي طلبك',
             text: 'لما تراجعي كل حاجة، دوسي هنا عشان تكتبي بياناتك وتحددي التوصيل أو الاستلام.'
         },
@@ -300,6 +310,7 @@
         {
             page: ['checkout.html'], mode: 'click',
             selector: '#btn-submit-order-final',
+            hint: 'دوسي على الزرار المكتوب عليه "اطلبي دلوقتي" في آخر الصفحة',
             title: 'اطلبي دلوقتي',
             text: 'لما تراجعي كل حاجة، دوسي هنا - هيتفتحلك واتساب فيه فاتورتك جاهزة. متنسيش تدوسي إرسال جوه واتساب نفسه عشان الطلب يوصلنا فعلاً.'
         },
@@ -349,11 +360,23 @@
     let activeOverlayEls = null;
     let activeClickHandler = null;
     let waitTimer = null;
+    let activeTargetEl = null;
+    let activeRepositionRAF = null;
+    let repositionTimer = null;
+    let activeScrollHandler = null;
 
     function removeOverlay() {
         if (activeOverlayEls) { activeOverlayEls.forEach(el => el.remove()); activeOverlayEls = null; }
         if (activeClickHandler) { document.removeEventListener('click', activeClickHandler, true); activeClickHandler = null; }
         if (waitTimer) { clearTimeout(waitTimer); waitTimer = null; }
+        if (repositionTimer) { cancelAnimationFrame(repositionTimer); repositionTimer = null; }
+        activeRepositionRAF = null;
+        if (activeScrollHandler) {
+            window.removeEventListener('scroll', activeScrollHandler, true);
+            window.removeEventListener('resize', activeScrollHandler, true);
+            activeScrollHandler = null;
+        }
+        activeTargetEl = null;
     }
 
     function showToast(msg) {
@@ -376,7 +399,7 @@
         const style = document.createElement('style');
         style.id = 'bose-tour-styles';
         style.textContent = `
-            .bose-tour-highlight-box{position:fixed;z-index:99998;pointer-events:none;border-radius:14px;box-shadow:0 0 0 9999px rgba(17,17,17,.62);border:3px solid #FF91A4;transition:top .3s ease,left .3s ease,width .3s ease,height .3s ease;}
+            .bose-tour-highlight-box{position:fixed;z-index:99998;pointer-events:none;border-radius:14px;box-shadow:0 0 0 9999px rgba(17,17,17,.62);border:3px solid #FF91A4;}
             .bose-tour-tooltip{position:fixed;z-index:99999;background:#fff;border-radius:16px;padding:16px 18px;box-shadow:0 8px 30px rgba(0,0,0,.25);max-width:300px;font-family:'Cairo',sans-serif;direction:rtl;text-align:right;animation:boseTourPop .25s ease;}
             @keyframes boseTourPop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
             .bose-tour-progress-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
@@ -402,8 +425,29 @@
         (function tick() {
             const el = document.querySelector(selector);
             if (el) { cb(el); return; }
-            if (Date.now() - start > (timeoutMs || 7000)) { if (onTimeout) onTimeout(); return; }
-            waitTimer = setTimeout(tick, 250);
+            if (Date.now() - start > (timeoutMs || 8000)) { if (onTimeout) onTimeout(); return; }
+            waitTimer = setTimeout(tick, 200);
+        })();
+    }
+
+    // 🧭 [استقرار المكان الحقيقي]: بنستنى الـrect بتاع العنصر يفضل ثابت
+    // (نفس top/left/width/height) لعدد فريمات متتالية بدل ما نفترض إن مدة
+    // معينة (زي 380ms) كافية دايمًا. ده بيحل مشكلة إن الجولة كانت بتاخد
+    // مكان العنصر وهو لسه بيتحرك (سكرول smooth لسه شغال، سايدبار لسه بيفتح
+    // بالأنيميشن، أو صور لسه بتحمّل وبتزّق المحتوى لتحت) فتطلع الإطار
+    // والكارت في مكان غلط تمامًا. بنحط سقف أقصى للانتظار عشان الجولة
+    // ماتفضلش واقفة لو في حركة مستمرة (زي أنيميشن لا نهائي) مش هتستقر خالص.
+    function waitForStableRect(el, cb, maxWaitMs) {
+        const start = Date.now();
+        let lastKey = null;
+        let stableTicks = 0;
+        (function frame() {
+            if (!document.body.contains(el)) { cb(el.getBoundingClientRect()); return; }
+            const r = el.getBoundingClientRect();
+            const key = Math.round(r.top) + ':' + Math.round(r.left) + ':' + Math.round(r.width) + ':' + Math.round(r.height);
+            if (key === lastKey) stableTicks++; else { stableTicks = 0; lastKey = key; }
+            if (stableTicks >= 3 || Date.now() - start > (maxWaitMs || 1500)) { cb(r); return; }
+            requestAnimationFrame(frame);
         })();
     }
 
@@ -415,18 +459,46 @@
             step.selector,
             el => renderSpotlight(el, step, stepIndex),
             // العنصر مش موجود على الصفحة دي (اختلاف نسخة/حالة معينة) - منسيبش
-            // الجولة عالقة، نتخطى الخطوة دي تلقائيًا ونكمل اللي بعدها.
-            () => handleAdvance(stepIndex, stepIndex + 1),
+            // الجولة عالقة، نتخطى الخطوة دي تلقائيًا ونكمل اللي بعدها، ونقول
+            // للعميلة إن ده اللي حصل بدل ما الجولة تختفي من غير تفسير.
+            () => { showToast('معلش، خطوة في الجولة اتخطّت تلقائيًا 🙏'); handleAdvance(stepIndex, stepIndex + 1); },
             step.timeoutMs
         );
         if (step.delayBeforeShow) setTimeout(proceed, step.delayBeforeShow); else proceed();
+    }
+
+    // 🔄 [التتبع اللحظي]: طول ما الخطوة دي ظاهرة، بنفضل نتابع مكان العنصر
+    // الحقيقي (سكرول يدوي من العميلة، تغيير حجم الشاشة، أو صور/خطوط لسه
+    // بتحمّل وبتزّق المحتوى) وبنحرّك الإطار والكارت يعيشوا فوقه بالظبط -
+    // بدل ما ناخد مكانه مرة واحدة بس ونسيبه يخرج عن مكانه لو الصفحة اتحركت.
+    function updateOverlayPosition() {
+        if (!activeTargetEl || !activeOverlayEls) return;
+        const [box, tooltip] = activeOverlayEls;
+        const rect = activeTargetEl.getBoundingClientRect();
+        const pad = 8;
+        box.style.top = (rect.top - pad) + 'px';
+        box.style.left = (rect.left - pad) + 'px';
+        box.style.width = (rect.width + pad * 2) + 'px';
+        box.style.height = (rect.height + pad * 2) + 'px';
+
+        const tRect = tooltip.getBoundingClientRect();
+        let top = rect.bottom + pad + 14;
+        if (top + tRect.height > window.innerHeight - 10) top = Math.max(10, rect.top - tRect.height - 14 - pad);
+        let left = rect.left + rect.width / 2 - tRect.width / 2;
+        left = Math.max(10, Math.min(left, window.innerWidth - tRect.width - 10));
+        tooltip.style.top = top + 'px';
+        tooltip.style.left = left + 'px';
     }
 
     function renderSpotlight(el, step, stepIndex) {
         injectStylesOnce();
         el.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-        setTimeout(() => {
+        // بنستنى الترتيب يستقر فعليًا (بعد السكرول، وبعد أي أنيميشن فتح
+        // قائمة/مودال) قبل ما نرسم أي حاجة - ده هو الإصلاح الأساسي لمشكلة
+        // "بيقف في مكان غلط".
+        waitForStableRect(el, () => {
+            if (!document.body.contains(el)) { handleAdvance(stepIndex, stepIndex + 1); return; }
             const rect = el.getBoundingClientRect();
             const pad = 8;
             const box = document.createElement('div');
@@ -441,6 +513,7 @@
             const isInfo = step.mode === 'info';
             const isLast = stepIndex === total - 1;
             const percent = Math.round(((stepIndex + 1) / total) * 100);
+            const hintText = step.hint || 'دوسي على العنصر المضيء بالإطار الوردي';
 
             const tooltip = document.createElement('div');
             tooltip.className = 'bose-tour-tooltip';
@@ -453,7 +526,7 @@
                 <p class="bose-tour-tooltip-text">${step.text}</p>
                 ${isInfo
                     ? `<button type="button" class="bose-tour-next-btn" data-bose-tour-next="1">${isLast ? 'إنهاء الجولة 🎉' : 'التالي'} <i class="fa-solid fa-arrow-left"></i></button>`
-                    : `<div class="bose-tour-tap-hint"><i class="fa-solid fa-hand-pointer"></i> دوسي على العنصر المضيء بالإطار الوردي</div>`
+                    : `<div class="bose-tour-tap-hint"><i class="fa-solid fa-hand-pointer"></i> ${hintText}</div>`
                 }
                 <div class="bose-tour-bottom-row">
                     <button type="button" class="bose-tour-skip-btn" data-bose-tour-skip="1">إنهاء الجولة</button>
@@ -461,16 +534,20 @@
             `;
             document.body.appendChild(tooltip);
 
-            // تموضع الكارت فوق أو تحت العنصر المضاء حسب المساحة المتاحة، وميخرجش برة الشاشة أفقياً
-            const tRect = tooltip.getBoundingClientRect();
-            let top = rect.bottom + pad + 14;
-            if (top + tRect.height > window.innerHeight - 10) top = Math.max(10, rect.top - tRect.height - 14 - pad);
-            let left = rect.left + rect.width / 2 - tRect.width / 2;
-            left = Math.max(10, Math.min(left, window.innerWidth - tRect.width - 10));
-            tooltip.style.top = top + 'px';
-            tooltip.style.left = left + 'px';
-
             activeOverlayEls = [box, tooltip];
+            activeTargetEl = el;
+            updateOverlayPosition();
+
+            // 🔄 بنربط التتبع اللحظي بالسكرول (على النافذة وعلى أي حاوية
+            // بتسكرول جوانية زي القائمة الجانبية) وبتغيير حجم الشاشة، وكمان
+            // بنعمل فحص دوري بسيط كشبكة أمان لأي حركة مش ناتجة عن سكرول أو
+            // تغيير حجم (زي صورة اتأخرت في التحميل وزقّت المحتوى).
+            activeRepositionRAF = () => { updateOverlayPosition(); repositionTimer = requestAnimationFrame(activeRepositionRAF); };
+            repositionTimer = requestAnimationFrame(activeRepositionRAF);
+            activeScrollHandler = () => updateOverlayPosition();
+            window.addEventListener('scroll', activeScrollHandler, true);
+            window.addEventListener('resize', activeScrollHandler, true);
+
             tooltip.querySelector('[data-bose-tour-skip]').addEventListener('click', () => endTour(false));
 
             if (isInfo) {
@@ -491,7 +568,7 @@
                 };
                 document.addEventListener('click', activeClickHandler, true);
             }
-        }, 380);
+        }, step.mode === 'info' ? 900 : 1500);
     }
 
     // 🔀 [الانتقال بين الخطوات]: بيحدث حالة الجولة، وبيقرر هل نكمل نعرض

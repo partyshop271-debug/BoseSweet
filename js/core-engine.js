@@ -2379,19 +2379,19 @@
                                     </a>
                                 </li>
                                 <li class="sidebar-link-item">
-                                    <a href="/offers.html">
+                                    <a href="/offers.html" id="sidebar-link-offers">
                                         <span class="link-main-side"><i class="fa-solid fa-tags main-icon"></i>العروض والخصومات</span>
                                         <i class="fa-solid fa-chevron-left arrow-icon"></i>
                                     </a>
                                 </li>
                                 <li class="sidebar-link-item">
-                                    <a href="/cake-builder.html">
+                                    <a href="/cake-builder.html" id="sidebar-link-cake-builder">
                                         <span class="link-main-side"><i class="fa-solid fa-cake-candles main-icon"></i>محاكي التورت التفاعلي</span>
                                         <i class="fa-solid fa-chevron-left arrow-icon"></i>
                                     </a>
                                 </li>
                                 <li class="sidebar-link-item">
-                                    <a href="/flower-builder.html">
+                                    <a href="/flower-builder.html" id="sidebar-link-flower-builder">
                                         <span class="link-main-side"><i class="fa-solid fa-seedling main-icon"></i>محاكي الورد الخاص</span>
                                         <i class="fa-solid fa-chevron-left arrow-icon"></i>
                                     </a>
@@ -2420,13 +2420,13 @@
                                 </li>
 
                                 <li class="sidebar-link-item">
-                                    <a href="/track-order.html">
+                                    <a href="/track-order.html" id="sidebar-link-track-order">
                                         <span class="link-main-side"><i class="fa-solid fa-location-crosshairs main-icon"></i>تتبعي طلبك</span>
                                         <i class="fa-solid fa-chevron-left arrow-icon"></i>
                                     </a>
                                 </li>
                                 <li class="sidebar-link-item">
-                                    <a href="/rewards.html">
+                                    <a href="/rewards.html" id="sidebar-link-rewards">
                                         <span class="link-main-side"><i class="fa-solid fa-gift main-icon"></i>مكافآتك</span>
                                         <i class="fa-solid fa-chevron-left arrow-icon"></i>
                                     </a>
