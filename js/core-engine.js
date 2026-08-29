@@ -2367,7 +2367,7 @@
                                     </a>
                                 </li>
                                 <li class="sidebar-link-item">
-                                    <a href="/index.html#howto-order-section">
+                                    <a href="/index.html#howto-order-section" data-start-bose-tour="1">
                                         <span class="link-main-side"><i class="fa-solid fa-circle-question main-icon"></i>إزاي أطلب؟</span>
                                         <i class="fa-solid fa-chevron-left arrow-icon"></i>
                                     </a>
