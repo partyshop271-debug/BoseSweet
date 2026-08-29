@@ -1127,13 +1127,57 @@
     display: block;
 }
 
+/* 📏 [إصلاح - كارت "جاتوه ملكي" بيكسر ارتفاع كل الصف]: النص هنا كان بيتعرض
+   كامل من غير أي سقف ارتفاع (كان فيه min-height بس مفيش max-height/قص)،
+   فأي منتج وصفه طويل (زي "جاتوه ملكي") كان بيخلي كارته أطول من كل الكروت
+   حواليه - وبما إن كروت #most-selling-grid/#new-arrivals-grid صف flex عادي
+   (align-items:stretch افتراضياً)، كل الكروت التانية في نفس الشاشة كانت
+   بتتمطط لنفس الارتفاع الزيادة معاه، فيبقى الصف كله شكله مش احترافي.
+   الحل: قص النص بصرياً لـ3 أسطر بس (line-clamp) مع سقف ارتفاع، والنص الكامل
+   يفضل موجود في الـHTML زي ما هو (بدون تقصير فعلي) - بيظهر بالكامل لما
+   العميل يضغط زرار "اظهار المزيد" (.bose-desc-expanded تحت). */
 .product-card-desc {
     font-size: 0.88rem;
     color: var(--bose-black);
     opacity: 0.8;
     line-height: 1.6;
-    margin: 0 0 16px 0;
+    margin: 0 0 6px 0;
     min-height: 45px;
+    max-height: calc(1.6em * 3);
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+.product-card-desc.bose-desc-expanded {
+    max-height: none;
+    overflow: visible;
+    display: block;
+    -webkit-line-clamp: unset;
+}
+
+.bose-desc-toggle-btn {
+    display: block;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0 0 12px 0;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--bose-pink-text, #FF91A4);
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    width: fit-content;
+}
+
+.bose-desc-toggle-btn:hover {
+    opacity: 0.8;
+}
+
+.bose-desc-toggle-btn[hidden] {
+    display: none;
 }
 
 /* 🛡️ [إصلاح جذري - تشوه بصري لمنتجات الأحجام المتعددة]: التعليق الأصلي هنا
