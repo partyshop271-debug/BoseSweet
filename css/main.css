@@ -2549,6 +2549,45 @@
     opacity: 0.8;
 }
 
+/* 🎯 [الجولة التفاعلية]: زرار الدعوة الرئيسي فوق قسم "إزاي أطلب؟" - الخيار
+   الأول والأوضح (تجربة حية مباشرة على الموقع)، والخطوات النصية تحته تفضل
+   موجودة كمرجع/بديل لمن تفضل القراءة بدل المشاهدة. */
+.bose-howto-tour-cta-wrap {
+    max-width: 560px;
+    margin: 0 auto 36px;
+    text-align: center;
+}
+
+.bose-howto-tour-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bose-pink-text, #FF91A4);
+    color: #FFFFFF;
+    font-family: 'Cairo', sans-serif;
+    font-weight: 800;
+    font-size: 1rem;
+    border: none;
+    padding: 14px 30px;
+    border-radius: var(--bose-radius-pill);
+    cursor: pointer;
+    box-shadow: var(--bose-shadow-glow);
+    transition: var(--bose-transition-fast);
+}
+
+.bose-howto-tour-cta-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--bose-shadow-hover);
+}
+
+.bose-howto-tour-cta-hint {
+    margin: 12px 0 0 0;
+    font-size: 0.85rem;
+    color: var(--bose-black);
+    opacity: 0.7;
+    line-height: 1.7;
+}
+
 .bose-howto-timeline {
     max-width: 720px;
     margin: 0 auto;
