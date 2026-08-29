@@ -900,6 +900,30 @@ img {
     cursor: pointer;
     text-decoration: underline;
 }
+
+/* 🆕👑 [اختيار "متظهرش تاني" - طلب صاحبة المتجر]: checkbox صغير تحت زرار "مش دلوقتي"
+   بيدي العميلة تحكم كامل - لو حطت صح، النافذة متفضلش تظهرلها أبداً في أي زيارة
+   جاية (بعكس القفل العادي اللي بيرجع يظهر تاني في أول جلسة/تبويب جديد). */
+.bose-app-install-dont-show-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    margin-top: 10px;
+    cursor: pointer;
+    color: #6b6b6b;
+    font-family: 'Cairo', sans-serif;
+    font-size: 12.5px;
+    font-weight: 600;
+    user-select: none;
+}
+.bose-app-install-dont-show-label input[type="checkbox"] {
+    width: 15px;
+    height: 15px;
+    accent-color: var(--bose-pink-text, #FF91A4);
+    cursor: pointer;
+    margin: 0;
+}
 /* ==========================================================================
    ℹ️👑 [نظام الشروح التوضيحية الموحد للموقع كله] — راجع ensureBoseInfoPopoverSystem
    في core-engine.js. نفس الروح البصرية المستخدمة في محاكي التورت بالظبط، بس
