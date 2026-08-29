@@ -49,13 +49,13 @@
          بدل الاعتماد على أي CDN خارجي (cdnjs/jsdelivr/unpkg) - مفيش نقطة فشل خارجية تانية خالص. -->
     <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css?v=2026_local_v1.0" fetchpriority="high">
     <link rel="stylesheet" href="css/global.css?v=2026_production_v43.1">
-    <link rel="stylesheet" href="css/main.css?v=2026_production_v38.0">
+    <link rel="stylesheet" href="css/main.css?v=2026_production_v39.0">
     
     <!-- 👑 استدعاء المحرك المركزي العالمي في رأس الصفحة لتأمين الـ DOM ومنع وميض الألوان -->
     <!-- ⚡ [إصلاح أداء]: defer عشان السكريبت متوقفش رسم الصفحة -->
     <script src="js/supabase-client.js?v=2026_production_v39.0" defer></script>
     <script src="js/favorites-engine.js?v=2026_production_v37.0" defer></script>
-    <script src="js/core-engine.js?v=2027_production_v48.1" defer></script>
+    <script src="js/core-engine.js?v=2027_production_v49.0" defer></script>
     <script src="js/cart-reminder.js?v=1" defer></script>
 
     <style>
@@ -229,11 +229,49 @@
             margin-bottom: 4px;
         }
 
+        /* 📏 [إصلاح - كارت وصف طويل بيكسر ارتفاع الصف]: نفس إصلاح main.css
+           (راجع الشرح الكامل هناك) - قص بصري لـ3 أسطر + زرار "اظهار المزيد"
+           اختياري بدل تكبير الكارت كله. */
         .product-card-desc {
             font-size: 0.85rem;
             color: #111111;
             line-height: 1.4;
-            margin: 6px 0;
+            margin: 6px 0 4px 0;
+            max-height: calc(1.4em * 3);
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+
+        .product-card-desc.bose-desc-expanded {
+            max-height: none;
+            overflow: visible;
+            display: block;
+            -webkit-line-clamp: unset;
+        }
+
+        .bose-desc-toggle-btn {
+            display: block;
+            background: none;
+            border: none;
+            padding: 0;
+            margin: 0 0 8px 0;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--bose-pink, #FF91A4);
+            cursor: pointer;
+            text-decoration: underline;
+            text-underline-offset: 2px;
+            width: fit-content;
+        }
+
+        .bose-desc-toggle-btn:hover {
+            opacity: 0.8;
+        }
+
+        .bose-desc-toggle-btn[hidden] {
+            display: none;
         }
 
         /* 🚨 التبويبات الفرعية لأصناف الديسباسيتو */
@@ -686,6 +724,7 @@
                             <span class="product-card-flavor-name">${safeFlavor}</span>
                             <p class="product-card-desc">${safeDesc}</p>
                         </a>
+                        <button type="button" class="bose-desc-toggle-btn" hidden aria-expanded="false" onclick="event.preventDefault(); event.stopPropagation(); window.toggleBoseCardDesc(this);">اظهار المزيد</button>
 
                         <div class="product-card-bottom-row">
                             <div class="product-card-price" data-base-unit-price="${calculatedPrice}">
