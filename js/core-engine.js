@@ -2076,6 +2076,13 @@
         if (alreadyInstalled) return;
         if (localStorage.getItem('bose_app_installed_flag') === 'true') return;
 
+        // 🛡️👑 [إصلاح - طلب صاحبة المتجر]: النافذة دي بتقفل شاشة السلة/الدفع بالكامل
+        // (overlay بملء الشاشة) في أهم وأحرج خطوتين في رحلة الشراء - العميلة ممكن
+        // تحس إن الموقع "معلّق" أو إن فيه مشكلة وهي في نص إتمام طلبها. منمنعش النافذة
+        // من الظهور خالص في السلة وصفحة الدفع.
+        const currentPath = window.location.pathname;
+        if (currentPath.endsWith('/cart.html') || currentPath.endsWith('/checkout.html')) return;
+
         // 👑 [تعديل بناءً على طلب صاحبة المتجر]: شلنا فكرة "متتكررش قبل 14 يوم" نهائياً.
         // النافذة دلوقتي بتظهر في كل *دخول جديد* للموقع (فتح تبويب/متصفح جديد) طول
         // ما العميل لسه ما ثبّتش التطبيق فعلياً - مفيش أي تأجيل زمني تاني. بنستخدم
@@ -2084,10 +2091,20 @@
         // لكن أي دخول جديد للموقع (تبويب جديد/فتح المتصفح تاني) هيوريها له تاني من الأول.
         if (sessionStorage.getItem('bose_app_popup_dismissed_this_session') === 'true') return;
 
+        // 🆕👑 [تعديل بناءً على طلب صاحبة المتجر]: زودنا اختيار "متظهرش تاني" دائم -
+        // لو العميلة حطت صح جنبها وقفلت النافذة، بنسجل علامة دائمة في localStorage
+        // ومتفضلش تظهرلها تاني في أي زيارة جاية أبداً (بعكس sessionStorage اللي
+        // بيتصفر مع كل جلسة/تبويب جديد).
+        if (localStorage.getItem('bose_app_popup_permanently_dismissed') === 'true') return;
+
         const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
 
         const closePopup = () => {
             const popup = document.getElementById('bose-app-install-popup-overlay');
+            const dontShowCheckbox = document.getElementById('bose-app-install-dont-show-again');
+            if (dontShowCheckbox && dontShowCheckbox.checked) {
+                localStorage.setItem('bose_app_popup_permanently_dismissed', 'true');
+            }
             if (popup) popup.remove();
             sessionStorage.setItem('bose_app_popup_dismissed_this_session', 'true');
         };
@@ -2116,6 +2133,10 @@
                         <p class="bose-app-install-desc">اطلبي حلوياتك المفضلة في ثواني، واستلمي عروضنا الحصرية أول بأول من غير ما تفوتك حاجة</p>
                         ${ctaHtml}
                         <button type="button" class="bose-app-install-secondary-link" id="bose-app-install-later-btn">مش دلوقتي</button>
+                        <label class="bose-app-install-dont-show-label" for="bose-app-install-dont-show-again">
+                            <input type="checkbox" id="bose-app-install-dont-show-again" />
+                            <span>متظهرش تاني</span>
+                        </label>
                     </div>
                 </div>
             `;
