@@ -1608,6 +1608,84 @@
         return data.text;
     }
 
+    /* ============================= الجولة التفاعلية (tour.html) ============================= */
+
+    /**
+     * كل خطوات الجولة (المفعّلة والموقوفة) مرتبة بترتيب العرض الفعلي -
+     * هنا الأدمن بيشوف كل حاجة بعكس الموقع العام اللي بيشوف المفعّل بس.
+     */
+    async function getAllTourSteps() {
+        try {
+            const { data, error } = await client
+                .from("tour_steps")
+                .select("*")
+                .order("step_order", { ascending: true });
+            if (error) throw error;
+            return data || [];
+        } catch (e) {
+            console.warn("تعذر جلب خطوات الجولة:", e.message);
+            return [];
+        }
+    }
+
+    /** إضافة خطوة جديدة في آخر الترتيب (step_order بيتحدد من الصفحة نفسها) */
+    async function createTourStep(step) {
+        const { error } = await client.from("tour_steps").insert(step);
+        if (error) throw error;
+    }
+
+    async function updateTourStep(id, updates) {
+        const { error } = await client
+            .from("tour_steps")
+            .update({ ...updates, updated_at: new Date().toISOString() })
+            .eq("id", id);
+        if (error) throw error;
+    }
+
+    async function deleteTourStep(id) {
+        const { error } = await client.from("tour_steps").delete().eq("id", id);
+        if (error) throw error;
+    }
+
+    /**
+     * 🔀 [إعادة ترتيب]: بتاخد مصفوفة [{id, step_order}, ...] وتحدّث ترتيب
+     * كل خطوة دفعة واحدة (بعد سحب/إفلات أو ضغط أسهم لأعلى/أسفل في الواجهة).
+     * كل تحديث سطر لوحده بدل RPC واحدة عشان مفيش دالة SQL جاهزة لتحديث
+     * دفعة (bulk upsert) هنا - العدد صغير (~50 خطوة) فمفيش مشكلة أداء حقيقية.
+     */
+    async function reorderTourSteps(orderedIdList) {
+        for (let i = 0; i < orderedIdList.length; i++) {
+            const { error } = await client
+                .from("tour_steps")
+                .update({ step_order: i + 1, updated_at: new Date().toISOString() })
+                .eq("id", orderedIdList[i]);
+            if (error) throw error;
+        }
+    }
+
+    /**
+     * 📊 [تحليلات ترك الجولة]: بترجع كل أحداث الجولة الخام في نطاق زمني
+     * معين - التجميع (funnel، نسب الترك لكل خطوة) بيحصل في tour-page.js
+     * نفسه بدل دالة SQL منفصلة، عشان حجم البيانات المتوقع لمتجر واحد صغير
+     * نسبيًا ومفيش داعي لتعقيد إضافي دلوقتي.
+     */
+    async function getTourAnalyticsEvents(sinceIso) {
+        try {
+            let query = client
+                .from("tour_analytics_events")
+                .select("event_type, step_order, step_title, page_file, session_id, created_at")
+                .order("created_at", { ascending: true })
+                .limit(20000);
+            if (sinceIso) query = query.gte("created_at", sinceIso);
+            const { data, error } = await query;
+            if (error) throw error;
+            return data || [];
+        } catch (e) {
+            console.warn("تعذر جلب تحليلات الجولة:", e.message);
+            return [];
+        }
+    }
+
     // تصدير موحّد على window بنفس فلسفة الموقع العام (window.BoseSupabase)
     window.BoseAdmin = {
         client,
@@ -1696,5 +1774,11 @@
         getUnnotifiedGiftCards,
         markGiftCardNotified,
         setOrderExcludedFromLoyalty,
+        getAllTourSteps,
+        createTourStep,
+        updateTourStep,
+        deleteTourStep,
+        reorderTourSteps,
+        getTourAnalyticsEvents,
     };
 })();
