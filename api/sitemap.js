@@ -26,6 +26,8 @@ const STATIC_PAGES = [
     { path: "/cake-builder.html", priority: "0.8" },
     { path: "/cake-quick-order.html", priority: "0.7" },
     { path: "/flower-builder.html", priority: "0.8" },
+    { path: "/rewards.html", priority: "0.6" },
+    { path: "/track-order.html", priority: "0.5" },
     { path: "/about.html", priority: "0.6" },
     { path: "/contact.html", priority: "0.6" },
     { path: "/policies/privacy-policy.html", priority: "0.3" },
