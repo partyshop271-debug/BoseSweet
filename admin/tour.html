@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الجولة التفاعلية | لوحة تحكم حلويات بوسي</title>
+    <meta name="robots" content="noindex, nofollow">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css?v=2026_local_v1.0" fetchpriority="high">
+
+    <link rel="stylesheet" href="css/admin-theme.css">
+    <link rel="stylesheet" href="css/admin-layout.css">
+    <style>
+        /* خاص بصفحة الجولة فقط - تبويبين بسيطين + شريط تقدّم للـfunnel */
+        .tour-tabs { display: flex; gap: 6px; border-bottom: 1px solid var(--adm-border); margin-bottom: 18px; }
+        .tour-tab-btn {
+            background: none; border: none; cursor: pointer; font-family: 'Cairo', sans-serif;
+            font-size: 0.92rem; font-weight: 700; color: var(--adm-text-muted);
+            padding: 10px 16px; border-bottom: 2px solid transparent; margin-bottom: -1px;
+        }
+        .tour-tab-btn.active { color: var(--adm-pink); border-bottom-color: var(--adm-pink); }
+        .tour-tab-panel { display: none; }
+        .tour-tab-panel.active { display: block; }
+        .tour-reorder-cell { display: flex; flex-direction: column; gap: 2px; align-items: center; }
+        .tour-reorder-cell button { background: none; border: none; cursor: pointer; color: var(--adm-text-muted); font-size: 0.85rem; padding: 2px 6px; }
+        .tour-reorder-cell button:hover { color: var(--adm-pink); }
+        .tour-reorder-cell button:disabled { opacity: 0.25; cursor: not-allowed; }
+        .tour-funnel-row { display: grid; grid-template-columns: 34px 1fr 90px 90px 90px 90px 130px; gap: 10px; align-items: center; padding: 10px 12px; border-bottom: 1px solid var(--adm-border); font-size: 0.85rem; }
+        .tour-funnel-row.head { font-weight: 800; color: var(--adm-text-muted); font-size: 0.76rem; border-bottom: 2px solid var(--adm-border); }
+        .tour-funnel-bar-track { height: 6px; border-radius: 4px; background: rgba(255,145,164,.15); overflow: hidden; margin-top: 4px; }
+        .tour-funnel-bar-fill { height: 100%; background: var(--adm-pink); border-radius: 4px; }
+        .tour-funnel-dropoff { font-weight: 800; }
+        .tour-funnel-dropoff.high { color: var(--adm-danger, #e05656); }
+        .tour-funnel-dropoff.mid { color: var(--adm-warning, #d99a2b); }
+        .tour-funnel-dropoff.low { color: var(--adm-success, #2f9e5c); }
+        .tour-mode-badge { font-size: 0.72rem; font-weight: 800; padding: 3px 8px; border-radius: 20px; }
+        .tour-mode-badge.click { background: rgba(255,145,164,.15); color: #d94f6c; }
+        .tour-mode-badge.info { background: rgba(90,150,255,.15); color: #3a72d1; }
+        .tour-selector-code { font-family: monospace; font-size: 0.78rem; background: var(--adm-bg-input); padding: 2px 6px; border-radius: 6px; }
+    </style>
+</head>
+<body data-page="tour">
+
+    <!-- شاشة تحميل تظهر لحد ما يتأكد من الجلسة -->
+    <div class="adm-auth-gate"><div class="adm-loading-spinner"></div></div>
+
+    <div class="adm-shell">
+        <div id="adm-shell-target"></div>
+
+        <main class="adm-main">
+            <div id="adm-topbar-target"></div>
+
+            <div class="adm-content" id="adm-page-content">
+
+                <div class="tour-tabs">
+                    <button type="button" class="tour-tab-btn active" data-tab="steps">خطوات الجولة</button>
+                    <button type="button" class="tour-tab-btn" data-tab="analytics">إحصائيات الجولة</button>
+                </div>
+
+                <!-- =========================== تبويب: خطوات الجولة =========================== -->
+                <div class="tour-tab-panel active" id="tour-panel-steps">
+                    <div class="adm-card">
+                        <div class="adm-card-header">
+                            <div>
+                                <h2>خطوات الجولة التفاعلية</h2>
+                                <p>كل خطوة بتضيء عنصر حقيقي في الموقع - عدّلي النص أو رتّبي الخطوات من غير ما تلمسي كود. الترتيب هنا هو نفس ترتيب ظهورها للعميلة بالظبط.</p>
+                            </div>
+                            <button class="adm-btn adm-btn-primary" id="add-step-btn">
+                                <i class="fa-solid fa-plus"></i> إضافة خطوة
+                            </button>
+                        </div>
+                        <div class="adm-hint" style="padding: 0 20px 16px 20px;">
+                            <i class="fa-solid fa-circle-info"></i>
+                            <strong>selector</strong> لازم يكون نفس الـ CSS selector الموجود فعليًا في كود صفحة الموقع (زي <code>#btn-add-to-cart-master-trigger</code>) - لو اتغيّر اسم العنصر في الكود يومًا ما، لازم يتحدّث هنا كمان وإلا الخطوة هتتخطى تلقائيًا (وهيظهر ده في تبويب الإحصائيات كـ"تخطي تلقائي").
+                        </div>
+                        <div class="adm-table-wrapper">
+                            <table class="adm-table" id="tour-steps-table">
+                                <thead>
+                                    <tr>
+                                        <th>الترتيب</th>
+                                        <th>الصفحة</th>
+                                        <th>النوع</th>
+                                        <th>العنصر (selector)</th>
+                                        <th>العنوان</th>
+                                        <th>مفعّلة</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tour-steps-tbody">
+                                    <tr><td colspan="7"><div class="adm-loading-spinner"></div></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- =========================== تبويب: إحصائيات الجولة =========================== -->
+                <div class="tour-tab-panel" id="tour-panel-analytics">
+                    <div class="adm-card">
+                        <div class="adm-card-header">
+                            <div>
+                                <h2><i class="fa-solid fa-chart-column"></i> ملخص الجولة</h2>
+                                <p>عدد مرات بدء الجولة، إنهاؤها بالكامل، والترك الفعلي (سواء بزرار "إنهاء الجولة" أو بترك الموقع فجأة)</p>
+                            </div>
+                            <div class="adm-gap-8">
+                                <select class="adm-select" id="tour-range-select" style="width:auto;">
+                                    <option value="7">آخر 7 أيام</option>
+                                    <option value="30" selected>آخر 30 يوم</option>
+                                    <option value="90">آخر 90 يوم</option>
+                                    <option value="0">كل الفترة</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="tour-summary-grid" class="adm-stats-grid" style="margin: 0 20px 20px 20px;"></div>
+                    </div>
+
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header">
+                            <div>
+                                <h2><i class="fa-solid fa-route"></i> عند أي خطوة العميلات بيسيبوا الجولة فعليًا</h2>
+                                <p>"شوفتها" = عدد مرات ظهور الخطوة فعليًا. "تركوا هنا" = ضغطوا "إنهاء الجولة" أو قفلوا الموقع وهم لسه في الخطوة دي. "استمروا" = النسبة اللي كملت للخطوة اللي بعدها.</p>
+                            </div>
+                        </div>
+                        <div id="tour-funnel-wrap" style="padding: 0 20px 20px 20px;">
+                            <div class="adm-loading-spinner"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/admin-data.js"></script>
+    <script src="js/admin-auth-guard.js"></script>
+    <script src="js/admin-ui-utils.js"></script>
+    <script src="js/admin-shell.js"></script>
+    <script src="js/pages/tour-page.js"></script>
+</body>
+</html>
