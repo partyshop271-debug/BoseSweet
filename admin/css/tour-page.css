@@ -1,0 +1,115 @@
+/**
+ * tour-page.css
+ * =====================================================================
+ * ستايل خاص بصفحة "الجولة التفاعلية" فقط (تبويبات + شريط الـfunnel) -
+ * منفصل عن admin-layout.css عشان الملف الرئيسي ما يتضخّمش بحاجة
+ * مستخدمة في صفحة واحدة بس.
+ */
+
+/* ============================= التبويبات ============================= */
+
+.adm-tour-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 18px;
+    border-bottom: 1px solid var(--adm-border);
+    padding-bottom: 0;
+}
+
+.adm-tour-tab-btn {
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--adm-text-secondary);
+    font-family: var(--adm-font);
+    font-size: 0.9rem;
+    font-weight: 700;
+    padding: 10px 6px 12px 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    transition: var(--adm-transition);
+}
+
+.adm-tour-tab-btn:hover { color: var(--adm-text-primary); }
+
+.adm-tour-tab-btn.active {
+    color: var(--adm-pink);
+    border-bottom-color: var(--adm-pink);
+}
+
+/* ============================= صف خطوة قابل للسحب ============================= */
+
+.adm-tour-drag-handle {
+    cursor: grab;
+    color: var(--adm-text-muted);
+    text-align: center;
+}
+.adm-tour-drag-handle:active { cursor: grabbing; }
+
+.adm-tour-step-row.dragging { opacity: 0.4; }
+.adm-tour-step-row.drag-over-top { box-shadow: inset 0 2px 0 var(--adm-pink); }
+.adm-tour-step-row.drag-over-bottom { box-shadow: inset 0 -2px 0 var(--adm-pink); }
+
+/* ============================= الـfunnel ============================= */
+
+.adm-tour-funnel-row {
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr) 110px;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 4px;
+    border-bottom: 1px solid var(--adm-border-soft);
+}
+.adm-tour-funnel-row:last-child { border-bottom: none; }
+
+.adm-tour-funnel-index {
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: var(--adm-text-muted);
+    text-align: center;
+}
+
+.adm-tour-funnel-main { min-width: 0; }
+
+.adm-tour-funnel-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--adm-text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 6px;
+}
+
+.adm-tour-funnel-bar-track {
+    height: 10px;
+    border-radius: 6px;
+    background: var(--adm-bg-input);
+    overflow: hidden;
+}
+
+.adm-tour-funnel-bar-fill {
+    height: 100%;
+    border-radius: 6px;
+    background: linear-gradient(90deg, var(--adm-pink), var(--adm-gold));
+    transition: width 0.3s ease;
+}
+
+.adm-tour-funnel-bar-fill.danger-drop { background: linear-gradient(90deg, var(--adm-danger), #ffb199); }
+
+.adm-tour-funnel-stats {
+    text-align: left;
+    font-size: 0.76rem;
+    color: var(--adm-text-secondary);
+    line-height: 1.5;
+    white-space: nowrap;
+}
+.adm-tour-funnel-stats strong { color: var(--adm-text-primary); font-size: 0.85rem; }
+.adm-tour-funnel-stats .drop-note { color: var(--adm-danger); font-weight: 700; }
+
+@media (max-width: 640px) {
+    .adm-tour-funnel-row { grid-template-columns: 26px minmax(0, 1fr) 84px; gap: 8px; }
+    .adm-tour-funnel-stats { font-size: 0.68rem; }
+}
