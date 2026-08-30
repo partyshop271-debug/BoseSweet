@@ -8,8 +8,8 @@
  * (js/supabase-client.js) - مفيش أي سر جديد. الحماية الحقيقية بالكامل
  * على مستوى RLS في قاعدة البيانات (راجع 01_admin_setup.sql).
  *
- * لازم يتحمل بعد مكتبة supabase-js من الـ CDN وقبل أي ملف تاني في اللوحة:
- * <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+ * لازم يتحمل بعد مكتبة supabase-js المُستضافة محليًا وقبل أي ملف تاني في اللوحة:
+ * <script src="../vendor/supabase-js/supabase.js"></script>
  * <script src="js/admin-data.js"></script>
  */
 
