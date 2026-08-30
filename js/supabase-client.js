@@ -507,6 +507,87 @@
         }
     }
 
+    /**
+     * 🧭 [نظام الجولة القابل للتعديل]: بترجع كل خطوات الجولة المفعّلة
+     * (is_active=true) مرتبة بالظبط زي ما لازم تتنفذ. لو الجدول فاضي أو
+     * فشل الاتصال، بترجع null - وguided-tour.js عنده نسخة احتياطية
+     * (BOSE_TOUR_STEPS_FALLBACK) عشان الجولة تفضل شغالة حتى لو القاعدة
+     * مش متاحة أو لسه ما اتعملهاش migration.
+     */
+    async function fetchBoseTourSteps() {
+        try {
+            const rows = await boseSupabaseFetch("/tour_steps?is_active=eq.true&select=*&order=step_order.asc");
+            if (!rows || !rows.length) return null;
+            return rows.map((r) => ({
+                page: r.any_page ? undefined : (r.page || []),
+                anyPage: !!r.any_page,
+                mode: r.mode,
+                selector: r.selector,
+                hint: r.hint || undefined,
+                title: r.title,
+                text: r.body_text,
+                delayBeforeShow: r.delay_before_show || 0,
+                timeoutMs: r.timeout_ms || undefined,
+            }));
+        } catch (err) {
+            console.warn("تعذر جلب خطوات الجولة من القاعدة، هيتم استخدام النسخة الاحتياطية:", err.message);
+            return null;
+        }
+    }
+
+    /**
+     * 📊 [تحليلات ترك الجولة]: تسجيل حدث واحد أثناء الجولة (بداية، عرض
+     * خطوة، تخطي، إنهاء...). مفيش أي انتظار حرج على النتيجة - لو فشل
+     * التسجيل (شبكة ضعيفة مثلاً)، الجولة نفسها لازم تكمل عادي للعميلة
+     * من غير أي تأثير، فبنبلعها بصمت (best-effort logging فقط).
+     */
+    async function logBoseTourEvent(event) {
+        try {
+            await boseSupabaseFetch("/tour_analytics_events", {
+                method: "POST",
+                headers: { Prefer: "return=minimal" },
+                body: JSON.stringify({
+                    session_id: event.sessionId,
+                    event_type: event.eventType,
+                    step_order: event.stepOrder ?? null,
+                    step_selector: event.stepSelector || null,
+                    step_title: event.stepTitle || null,
+                    page_file: event.pageFile || null,
+                }),
+            }, 0); // 0 = من غير إعادة محاولة، تسجيل تحليلات مش لازم يعطّل حاجة
+        } catch (err) {
+            // تجاهل عمدي - تحليلات الجولة اختيارية، ما ينفعش توقف تجربة العميلة
+        }
+    }
+
+    /**
+     * 📊🚪 [تسجيل ترك حقيقي أثناء إغلاق الصفحة/التبويب]: نفس logBoseTourEvent
+     * بالظبط، لكن بـ `keepalive: true` صراحةً - ده اللي بيضمن إن المتصفح
+     * يكمّل إرسال الطلب حتى لو الصفحة بدأت تتقفل/تتنقل فعليًا (fetch عادي
+     * بيتلغي غالبًا في نفس اللحظة دي). ده أهم حدث تحليلي فعليًا: العميلة
+     * سابت الموقع تمامًا وهي لسه في خطوة معينة، مش دوست زرار "إنهاء الجولة".
+     */
+    function logBoseTourEventOnExit(event) {
+        try {
+            const url = `${REST_BASE}/tour_analytics_events`;
+            fetch(url, {
+                method: "POST",
+                keepalive: true,
+                headers: { ...commonHeaders, Prefer: "return=minimal" },
+                body: JSON.stringify({
+                    session_id: event.sessionId,
+                    event_type: event.eventType,
+                    step_order: event.stepOrder ?? null,
+                    step_selector: event.stepSelector || null,
+                    step_title: event.stepTitle || null,
+                    page_file: event.pageFile || null,
+                }),
+            }).catch(() => {});
+        } catch (err) {
+            // تجاهل عمدي - نفس فلسفة logBoseTourEvent
+        }
+    }
+
     window.BoseSupabase = {
         loadBoseStoreDataFromSupabase,
         getBoseDataVersion,
@@ -519,6 +600,9 @@
         getBoseCustomerRewards,
         validateBoseLoyaltyVoucher,
         getBoseContentPage,
+        fetchBoseTourSteps,
+        logBoseTourEvent,
+        logBoseTourEventOnExit,
     };
     // الاسم اللي cart-engine.js بينده عليه فعلياً (راجع processFinalBoseOrder)
     window.saveBoseOrderToDatabase = saveBoseOrderToDatabase;
