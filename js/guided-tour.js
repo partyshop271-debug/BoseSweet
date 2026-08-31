@@ -340,11 +340,13 @@
             .bose-tour-intro-accept-btn{flex:1;background:#FF91A4;color:#fff;border:none;border-radius:11px;padding:9px 10px;font-family:'Cairo',sans-serif;font-size:.82rem;font-weight:800;cursor:pointer;}
             .bose-tour-intro-dismiss-btn{background:none;border:none;color:#999;font-size:.82rem;cursor:pointer;font-family:'Cairo',sans-serif;padding:9px 10px;}
 
-            /* 🆕 [زرار المساعدة العائم + قايمة اختيار الجولة] */
+            /* 🆕 [زرار المساعدة العائم + قايمة اختيار الجولة] - شكل تاب عمودي
+               ملتصق بحافة الشاشة (زي المرجع اللي بعتته العميلة)، مش بار أفقي. */
             #bose-tour-fab-wrap{position:fixed;top:42%;right:0;z-index:99996;direction:rtl;font-family:'Cairo',sans-serif;}
-            #bose-tour-fab-btn{display:flex;align-items:center;gap:7px;background:#FF91A4;color:#111;border:none;border-radius:16px 0 0 16px;padding:11px 14px 11px 12px;box-shadow:-2px 3px 14px rgba(0,0,0,.2);font-family:'Cairo',sans-serif;font-weight:800;font-size:.82rem;cursor:pointer;}
-            #bose-tour-fab-btn i{font-size:.95rem;}
-            #bose-tour-fab-panel{position:fixed;top:42%;right:78px;transform:translateY(-10px);background:#fff;border-radius:18px;box-shadow:0 10px 34px rgba(0,0,0,.24);padding:14px;width:236px;opacity:0;pointer-events:none;transition:opacity .18s ease,transform .18s ease;}
+            #bose-tour-fab-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:#FF91A4;color:#111;border:none;border-radius:14px 0 0 14px;width:40px;padding:16px 8px;box-shadow:-2px 3px 14px rgba(0,0,0,.2);font-family:'Cairo',sans-serif;cursor:pointer;}
+            #bose-tour-fab-btn i{font-size:1rem;}
+            #bose-tour-fab-btn span{writing-mode:vertical-rl;text-orientation:sideways;white-space:nowrap;font-weight:800;font-size:.82rem;letter-spacing:.3px;}
+            #bose-tour-fab-panel{position:fixed;top:42%;right:56px;transform:translateY(-10px);background:#fff;border-radius:18px;box-shadow:0 10px 34px rgba(0,0,0,.24);padding:14px;width:236px;opacity:0;pointer-events:none;transition:opacity .18s ease,transform .18s ease;}
             #bose-tour-fab-panel.bose-tour-fab-panel-open{opacity:1;pointer-events:auto;transform:translateY(0);}
             .bose-tour-fab-panel-title{font-weight:800;font-size:.86rem;color:#111;margin-bottom:10px;text-align:right;}
             .bose-tour-fab-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
@@ -353,8 +355,9 @@
             .bose-tour-fab-tile-icon{width:34px;height:34px;border-radius:50%;background:#FF91A4;color:#fff;display:flex;align-items:center;justify-content:center;font-size:.95rem;}
             .bose-tour-fab-tile-label{font-size:.72rem;font-weight:700;color:#333;text-align:center;line-height:1.3;}
             @media (max-width:480px){
-                #bose-tour-fab-btn span{display:none;}
-                #bose-tour-fab-panel{width:200px;right:64px;}
+                #bose-tour-fab-btn{width:34px;padding:12px 6px;}
+                #bose-tour-fab-btn span{font-size:.74rem;}
+                #bose-tour-fab-panel{width:200px;right:48px;}
             }
         `;
         document.head.appendChild(style);
@@ -687,6 +690,21 @@
 
     /* ============================= توست تلقائي أول زيارة (مستقل لكل جولة) ============================= */
 
+    // 🆕 [منع التزاحم مع نافذة "حمّلي تطبيقنا"]: النافذة دي (core-engine.js)
+    // بتظهر بنفس التوقيت بالظبط (3.5 ثانية) وبنفس منطقة الشاشة تقريبًا -
+    // لو الاتنين ظهروا في نفس اللحظة بيحصل تكدس وتدافع بصري. بندّي نافذة
+    // التطبيق الأولوية دايمًا: لو لسه ظاهرة، بنستنى تتقفل (+نص ثانية هدوء
+    // بعدها) قبل ما نعرض توست الجولة. لو مش موجودة أصلاً، بنكمل فورًا من
+    // غير أي تأخير إضافي - زي ما كان بالظبط.
+    function whenAppInstallPopupClear(cb) {
+        const check = () => {
+            const popup = document.getElementById('bose-app-install-popup-overlay');
+            if (!popup) { cb(); return; }
+            setTimeout(check, 400);
+        };
+        check();
+    }
+
     function maybeShowFirstVisitToastForTour(tourKey) {
         const def = TOUR_DEFS.find(t => t.key === tourKey);
         if (!def) return;
@@ -700,40 +718,46 @@
         setTimeout(() => {
             const stateNow = getState();
             if (stateNow && stateNow.active) return;
-            try { localStorage.setItem(seenKey, '1'); } catch (e) { /* لا شيء */ }
-
-            injectStylesOnce();
-            const introSessionId = makeSessionId();
-            logTourEvent('auto_toast_shown', tourKey, { sessionId: introSessionId });
-
-            const toast = document.createElement('div');
-            toast.className = 'bose-tour-intro-toast';
-            toast.innerHTML = `
-                <div class="bose-tour-intro-toast-title">👋 ${def.toastTitle}</div>
-                <p class="bose-tour-intro-toast-text">${def.toastText}</p>
-                <div class="bose-tour-intro-toast-row">
-                    <button type="button" class="bose-tour-intro-accept-btn" data-bose-intro-accept="1">آه، وريني</button>
-                    <button type="button" class="bose-tour-intro-dismiss-btn" data-bose-intro-dismiss="1">لأ شكراً</button>
-                </div>
-            `;
-            document.body.appendChild(toast);
-            requestAnimationFrame(() => toast.classList.add('bose-tour-intro-toast-show'));
-
-            function removeToast() {
-                toast.classList.remove('bose-tour-intro-toast-show');
-                setTimeout(() => toast.remove(), 350);
-            }
-
-            toast.querySelector('[data-bose-intro-accept]').addEventListener('click', () => {
-                logTourEvent('auto_toast_accept', tourKey, { sessionId: introSessionId });
-                removeToast();
-                startTour(tourKey);
-            });
-            toast.querySelector('[data-bose-intro-dismiss]').addEventListener('click', () => {
-                logTourEvent('auto_toast_dismiss', tourKey, { sessionId: introSessionId });
-                removeToast();
-            });
+            whenAppInstallPopupClear(() => showFirstVisitToastNow(tourKey, def, seenKey));
         }, 3500);
+    }
+
+    function showFirstVisitToastNow(tourKey, def, seenKey) {
+        const stateNow = getState();
+        if (stateNow && stateNow.active) return;
+        try { localStorage.setItem(seenKey, '1'); } catch (e) { /* لا شيء */ }
+
+        injectStylesOnce();
+        const introSessionId = makeSessionId();
+        logTourEvent('auto_toast_shown', tourKey, { sessionId: introSessionId });
+
+        const toast = document.createElement('div');
+        toast.className = 'bose-tour-intro-toast';
+        toast.innerHTML = `
+            <div class="bose-tour-intro-toast-title">👋 ${def.toastTitle}</div>
+            <p class="bose-tour-intro-toast-text">${def.toastText}</p>
+            <div class="bose-tour-intro-toast-row">
+                <button type="button" class="bose-tour-intro-accept-btn" data-bose-intro-accept="1">آه، وريني</button>
+                <button type="button" class="bose-tour-intro-dismiss-btn" data-bose-intro-dismiss="1">لأ شكراً</button>
+            </div>
+        `;
+        document.body.appendChild(toast);
+        requestAnimationFrame(() => toast.classList.add('bose-tour-intro-toast-show'));
+
+        function removeToast() {
+            toast.classList.remove('bose-tour-intro-toast-show');
+            setTimeout(() => toast.remove(), 350);
+        }
+
+        toast.querySelector('[data-bose-intro-accept]').addEventListener('click', () => {
+            logTourEvent('auto_toast_accept', tourKey, { sessionId: introSessionId });
+            removeToast();
+            startTour(tourKey);
+        });
+        toast.querySelector('[data-bose-intro-dismiss]').addEventListener('click', () => {
+            logTourEvent('auto_toast_dismiss', tourKey, { sessionId: introSessionId });
+            removeToast();
+        });
     }
 
     // أي عنصر عليه data-start-bose-tour بيبدأ جولة بدل سلوكه الافتراضي:
