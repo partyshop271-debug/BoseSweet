@@ -56,12 +56,19 @@
                     ? window.buildWhatsappLink(FALLBACK_WHATSAPP_NUMBER, waPromptText)
                     : `https://wa.me/${FALLBACK_WHATSAPP_NUMBER}?text=${encodeURIComponent(waPromptText)}`;
 
+                // 🛡️🆕 [إصلاح هوية بصرية - طلب صاحبة المتجر]: البانر ده كان بخلفية
+                // سوداء بالكامل وعايم أسفل الشاشة - مخالف لهوية حلويات بوسي البصرية
+                // (الأسود مكانه النصوص فقط، مش خلفيات). دلوقتي بخلفية بيضاء + حدود
+                // وردية فاتحة (نفس أسلوب باقي كروت/تنبيهات الموقع)، وعايم *تحت الهيدر
+                // مباشرة* بدل أسفل الشاشة تماماً - نفس منطق نظام التوست (#bose-toast-container)
+                // اللي بيظهر فوق الهيدر، بس على ارتفاع مختلف شوية عشان الاتنين لو
+                // ظهروا في نفس اللحظة (تنبيه عادي + رسالة الطوارئ دي) ميتصادموش بصرياً.
                 const banner = document.createElement("div");
                 banner.setAttribute("dir", "rtl");
-                banner.style.cssText = "position:fixed;left:0;right:0;bottom:0;z-index:2147483647;background:#111111;color:#ffffff;font-family:Tahoma,Arial,sans-serif;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 -2px 12px rgba(0,0,0,0.25);flex-wrap:wrap;";
+                banner.style.cssText = "position:fixed;left:50%;transform:translateX(-50%);top:calc(var(--bose-topbar-height, 44px) + 86px);z-index:2147483647;background:#FFFFFF;color:#111111;font-family:'Cairo',Tahoma,Arial,sans-serif;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 10px 34px rgba(0,0,0,0.18);flex-wrap:wrap;width:min(92vw, 460px);border-radius:16px;border:1px solid rgba(255,145,164,0.4);";
 
                 const msg = document.createElement("span");
-                msg.style.cssText = "font-size:14px;line-height:1.5;flex:1;min-width:200px;";
+                msg.style.cssText = "font-size:14px;line-height:1.5;flex:1;min-width:200px;color:#111111;";
                 msg.textContent = isNonOrderingPage
                     ? "حصل عندنا خطأ غير متوقع في الصفحة 🙏 ماتقلقيش، لو محتاجة أي مساعدة تقدري تتواصلي معانا على واتساب مباشرة."
                     : "حصل عندنا خطأ غير متوقع في الصفحة 🙏 ماتقلقيش، تقدري تكملي طلبك بسهولة على واتساب مباشرة.";
@@ -71,12 +78,12 @@
                 link.target = "_blank";
                 link.rel = "noopener noreferrer";
                 link.textContent = isNonOrderingPage ? "تواصلي معانا على واتساب" : "أكملي طلبك على واتساب";
-                link.style.cssText = "background:#FF91A4;color:#111111;font-weight:700;text-decoration:none;padding:8px 16px;border-radius:8px;white-space:nowrap;font-size:14px;";
+                link.style.cssText = "background:#FF91A4;color:#ffffff;font-weight:700;text-decoration:none;padding:8px 16px;border-radius:8px;white-space:nowrap;font-size:14px;";
 
                 const closeBtn = document.createElement("button");
                 closeBtn.textContent = "✕";
                 closeBtn.setAttribute("aria-label", "إغلاق");
-                closeBtn.style.cssText = "background:transparent;border:none;color:#ffffff;font-size:16px;cursor:pointer;padding:4px 8px;";
+                closeBtn.style.cssText = "background:transparent;border:none;color:#111111;opacity:0.55;font-size:16px;cursor:pointer;padding:4px 8px;";
                 closeBtn.onclick = function() { banner.remove(); };
 
                 banner.appendChild(msg);
@@ -2272,9 +2279,42 @@
             }
         };
 
+        // 🛡️🆕 [إصلاح - تكدس نافذة التطبيق فوق الجولة التعريفية]: النافذة دي
+        // كانت بتظهر بعد 3.5 ثانية بشكل مستقل تماماً عن نظام الجولة التعريفية
+        // (js/guided-tour.js) - لو العميلة كانت وسط جولة تعريفية شغالة (نفس
+        // z-index تقريباً: 99999 للاتنين)، النافذتين كانوا بيترصّوا فوق بعض
+        // فجأة في نفس اللحظة، وده بالظبط اللي ظهر في اسكرين شوت صاحبة المتجر
+        // (كارت الجولة "16/15" وكارت "حمّلي تطبيقنا" ظاهرين مع بعض في نفس
+        // اللحظة). الحل: قبل ما نعرض النافذة، بنتأكد إن مفيش جولة تعريفية
+        // شغالة دلوقتي (بنقرا نفس مفتاح localStorage اللي guided-tour.js
+        // بيحفظ فيه حالة الجولة - bose_guided_tour_state_v4 - وبنفحص .active).
+        // لو فيه جولة شغالة، بنأجل ظهور النافذة وبنعيد المحاولة كل ثانيتين
+        // (سقف 30 محاولة = دقيقة كحد أقصى) لحد ما الجولة تخلص أو العميلة
+        // تقفلها - النافذة برضه بتحترم كل قواعد عدم التكرار العادية بتاعتها.
+        function isBoseGuidedTourCurrentlyActive() {
+            try {
+                const raw = localStorage.getItem('bose_guided_tour_state_v4');
+                if (!raw) return false;
+                const state = JSON.parse(raw);
+                return !!(state && state.active);
+            } catch (e) {
+                return false;
+            }
+        }
+
+        let tourWaitAttempts = 0;
+        function showPopupWhenTourIsClear() {
+            if (isBoseGuidedTourCurrentlyActive() && tourWaitAttempts < 30) {
+                tourWaitAttempts++;
+                setTimeout(showPopupWhenTourIsClear, 2000);
+                return;
+            }
+            showPopup();
+        }
+
         // نستنى شوية ثواني بعد التحميل الكامل عشان النافذة متبانش فجأة لحظة ما العميل
         // لسه بيحمل الصفحة - إحساس أهدى واحترافي أكتر من ظهور فوري صادم
-        setTimeout(showPopup, 3500);
+        setTimeout(showPopupWhenTourIsClear, 3500);
     }
 
     function buildAndInjectGlobalComponents() {
@@ -2768,9 +2808,62 @@
         document.body.appendChild(errorDiv);
     }
 
+    /**
+     * 🛡️🆕 [إصلاح - الصفحة بتفضل من غير هيدر ولا فوتر خالص لو النت بطيء]:
+     * قبل كده buildAndInjectGlobalComponents (اللي بيرسم الهيدر/الفوتر
+     * الحقيقيين) كان بيستنى بيانات المتجر توصل من Supabase الأول - على نت
+     * بطيء جداً (زي 13 كيلوبايت/ث اللي ظهر في اسكرين شوت صاحبة المتجر)،
+     * أو لو الاتصال فشل تماماً بعد كل المحاولات، العميلة كانت بتفضل شايفة
+     * صفحة من غير أي تنقل (مفيش لوجو، مفيش زرار قائمة، مفيش سلة) لثواني
+     * طويلة أو للأبد. دلوقتي بيتحقن هيدر/فوتر ثابتين وبسيطين فوراً (منطق ثابت،
+     * مش معتمدين على أي بيانات من القاعدة) بمجرد ما الـDOM يجهز - قبل ما
+     * loadStoreDatabase() يبدأ أصلاً. الهيدر/الفوتر الحقيقيين الديناميكيين
+     * (بالشريط المتحرك ولوجو المتجر الفعلي وعداد السلة إلخ) بيستبدلوهم تلقائياً
+     * بمجرد ما البيانات توصل - العميلة ميلاحظش أي "قفزة" غريبة لإن الشكل العام
+     * (لوجو + اسم + أيقونات) متطابق تقريباً.
+     */
+    function injectBoseInstantFallbackShell() {
+        const headerInjector = document.getElementById('bose-header-injector');
+        if (headerInjector && !headerInjector.hasChildNodes()) {
+            headerInjector.innerHTML = `
+                <header class="bose-sticky-header">
+                    <div class="header-right-side">
+                        <button id="mobile-menu-toggle" class="bose-nav-btn" aria-label="فتح القائمة الجانبية">
+                            <i class="fa-solid fa-bars-staggered"></i>
+                        </button>
+                        <a href="/index.html" class="brand-logo-container">
+                            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="لوجو حلويات بوسي" class="brand-logo-img" width="80" height="80" />
+                            <span class="brand-name-display">حلويات بوسي</span>
+                        </a>
+                    </div>
+                    <div class="header-left-side">
+                        <a href="/favorites.html" class="nav-cart-icon-wrapper" aria-label="عرض المفضلة">
+                            <i class="fa-solid fa-heart bose-nav-btn" style="padding:0;"></i>
+                        </a>
+                        <a href="/cart.html" class="nav-cart-icon-wrapper" aria-label="عرض سلة المشتريات">
+                            <i class="fa-solid fa-bag-shopping bose-nav-btn" style="padding:0;"></i>
+                        </a>
+                    </div>
+                </header>
+            `;
+        }
+        const footerInjector = document.getElementById('bose-footer-injector');
+        if (footerInjector && !footerInjector.hasChildNodes()) {
+            footerInjector.innerHTML = `
+                <footer class="bose-footer-fallback" role="contentinfo" style="text-align:center;padding:32px 16px;font-family:'Cairo',sans-serif;color:var(--bose-black,#111111);opacity:0.65;font-size:0.85rem;">
+                    <p style="margin:0;">© ${new Date().getFullYear()} حلويات بوسي</p>
+                </footer>
+            `;
+        }
+    }
+
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', loadStoreDatabase);
+        document.addEventListener('DOMContentLoaded', function () {
+            injectBoseInstantFallbackShell();
+            loadStoreDatabase();
+        });
     } else {
+        injectBoseInstantFallbackShell();
         loadStoreDatabase();
     }
 

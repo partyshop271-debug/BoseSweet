@@ -319,7 +319,13 @@
             .bose-tour-progress-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
             .bose-tour-progress-track{flex:1;height:4px;border-radius:4px;background:rgba(255,145,164,.18);overflow:hidden;}
             .bose-tour-progress-fill{height:100%;background:#FF91A4;border-radius:4px;transition:width .25s ease;}
-            .bose-tour-progress-text{font-size:.68rem;color:#FF91A4;font-weight:700;white-space:nowrap;}
+            /* 🛡️🆕 [إصلاح - رقم الجولة بيتقلب بصرياً "16/15" بدل "15/16"]: النص ده
+               رقمين إنجليزي (مش عربي) جوه فقرة اتجاهها RTL بالكامل - كل رقم لوحده
+               "LTR run" سليم جوّه نفسه، لكن المتصفح بيرتّب مواضع الـ"runs" الاتنين
+               (قبل الشرطة/بعدها) حسب اتجاه الفقرة العام (RTL)، فبيقلب مكانهم
+               بصرياً حتى إن كل رقم لوحده صحيح. direction:ltr + unicode-bidi:isolate
+               بيجبروا النص ده يتصرف كـ"جزيرة" LTR مستقلة عن اتجاه الفقرة اللي حواليه.*/
+            .bose-tour-progress-text{font-size:.68rem;color:#FF91A4;font-weight:700;white-space:nowrap;direction:ltr;unicode-bidi:isolate;display:inline-block;}
             .bose-tour-tooltip-title{font-weight:800;font-size:1rem;color:#111;margin-bottom:6px;}
             .bose-tour-tooltip-text{font-size:.88rem;color:#333;line-height:1.6;margin:0 0 12px 0;}
             .bose-tour-tap-hint{display:flex;align-items:center;gap:5px;font-size:.78rem;color:#FF91A4;font-weight:700;margin-bottom:12px;}
@@ -411,6 +417,14 @@
 
     function positionAndShowStep(tourKey, stepIndex) {
         removeOverlay();
+        // 🛡️🆕 [إصلاح - تكدس نافذة "حمّلي تطبيقنا" فوق الجولة]: لو نافذة تحميل
+        // التطبيق (core-engine.js → setupAppInstallPopup) كانت ظاهرة بالفعل
+        // (مثلاً العميلة بدأت الجولة يدوياً من زرار المساعدة العائم وهي
+        // النافذة لسه فاتحة قدامها)، نقفلها فوراً قبل ما نعرض خطوة الجولة -
+        // نفس منطق منع التصادم لكن في الاتجاه العكسي (الجولة أولوية أعلى
+        // لإن العميلة طلبتها بنفسها بضغطة فعلية).
+        const openAppInstallPopup = document.getElementById('bose-app-install-popup-overlay');
+        if (openAppInstallPopup) openAppInstallPopup.remove();
         const steps = RESOLVED_TOURS[tourKey];
         const step = steps && steps[stepIndex];
         if (!step) { endTour(true); return; }
