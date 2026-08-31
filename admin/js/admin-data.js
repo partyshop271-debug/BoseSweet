@@ -1664,19 +1664,24 @@
     }
 
     /**
-     * 📊 [تحليلات ترك الجولة]: بترجع كل أحداث الجولة الخام في نطاق زمني
-     * معين - التجميع (funnel، نسب الترك لكل خطوة) بيحصل في tour-page.js
-     * نفسه بدل دالة SQL منفصلة، عشان حجم البيانات المتوقع لمتجر واحد صغير
-     * نسبيًا ومفيش داعي لتعقيد إضافي دلوقتي.
+     * 📊 [تحليلات ترك الجولة]: بترجع كل أحداث جولة واحدة محددة (tourKey)
+     * في نطاق زمني معين - التجميع (funnel، نسب الترك لكل خطوة) بيحصل في
+     * tour-page.js نفسه بدل دالة SQL منفصلة، عشان حجم البيانات المتوقع
+     * لمتجر واحد صغير نسبيًا ومفيش داعي لتعقيد إضافي دلوقتي.
+     * 🆕 لازم نفلتر بـ tourKey دايمًا: بعد ما بقى عندنا 7 جولات مستقلة،
+     * step_order بقى بيتكرر عبر جولات مختلفة (كل جولة لها ترقيمها
+     * الخاص)، فتجميع كل الأحداث مع بعض من غير فلترة بالجولة هيخلط بيانات
+     * جولات مختلفة تمامًا في نفس الصف غلط.
      */
-    async function getTourAnalyticsEvents(sinceIso) {
+    async function getTourAnalyticsEvents(sinceIso, tourKey) {
         try {
             let query = client
                 .from("tour_analytics_events")
-                .select("event_type, step_order, step_title, page_file, session_id, created_at")
+                .select("event_type, tour_key, step_order, step_title, page_file, session_id, created_at")
                 .order("created_at", { ascending: true })
                 .limit(20000);
             if (sinceIso) query = query.gte("created_at", sinceIso);
+            if (tourKey) query = query.eq("tour_key", tourKey);
             const { data, error } = await query;
             if (error) throw error;
             return data || [];
