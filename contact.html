@@ -25,9 +25,16 @@
     <link rel="stylesheet" href="css/main.css?v=2026_production_v39.0">
     
     <!-- استدعاء المحرك المركزي الموحد في رأس الصفحة لتأمين الحقن والتوافق -->
-    <script src="js/supabase-client.js?v=2026_production_v40.0"></script>
-    <script src="js/favorites-engine.js?v=2026_production_v37.0"></script>
-    <script src="js/core-engine.js?v=2027_production_v54.0"></script>
+    <!-- ⚡🛡️🆕 [إصلاح جذري - الهيدر/الفوتر والمحتوى بيختفوا بالكامل]: السكريبتات
+         دي كانت بتتحمّل من غير "defer"، يعني بتتنفذ فورًا أثناء تحليل <head>
+         *قبل* ما <body> يتعمل أصلاً. core-engine.js فيه كود بيشتغل فور تحميله
+         بينادي document.body مباشرة - وهو وقتها null لسه، فبيرمي خطأ JavaScript
+         فعلي يوقف باقي السكريبت كله ويظهر رسالة "خطأ غير متوقع" بدل الصفحة
+         الحقيقية. الحل: "defer" بيخلي السكريبت ينتظر لحد ما HTML كله يتحلل
+         الأول - نفس الطريقة المستخدمة في كل صفحات الموقع التانية. -->
+    <script src="js/supabase-client.js?v=2026_production_v40.0" defer></script>
+    <script src="js/favorites-engine.js?v=2026_production_v37.0" defer></script>
+    <script src="js/core-engine.js?v=2027_production_v54.0" defer></script>
 </head>
 <body>
 

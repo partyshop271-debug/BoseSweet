@@ -16,9 +16,16 @@
          بدل الاعتماد على أي CDN خارجي (cdnjs/jsdelivr/unpkg) - مفيش نقطة فشل خارجية تانية خالص. -->
     <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css?v=2026_local_v1.0" fetchpriority="high">
     <link rel="stylesheet" href="vendor/fonts/cairo/cairo.css?v=2026_local_v1.0">
-    <script src="js/supabase-client.js?v=2026_production_v40.0"></script>
-    <script src="js/favorites-engine.js?v=2026_production_v37.0"></script>
-    <script src="js/core-engine.js?v=2027_production_v54.0"></script>
+    <!-- ⚡🛡️🆕 [إصلاح جذري - الهيدر/الفوتر والمحتوى بيختفوا بالكامل]: السكريبتات
+         دي كانت بتتحمّل من غير "defer"، يعني بتتنفذ فورًا أثناء تحليل <head>
+         *قبل* ما <body> يتعمل أصلاً. core-engine.js فيه كود بيشتغل فور تحميله
+         بينادي document.body مباشرة - وهو وقتها null لسه، فبيرمي خطأ JavaScript
+         فعلي يوقف باقي السكريبت كله ويظهر رسالة "خطأ غير متوقع" بدل الصفحة
+         الحقيقية. الحل: "defer" بيخلي السكريبت ينتظر لحد ما HTML كله يتحلل
+         الأول - نفس الطريقة المستخدمة في كل صفحات الموقع التانية. -->
+    <script src="js/supabase-client.js?v=2026_production_v40.0" defer></script>
+    <script src="js/favorites-engine.js?v=2026_production_v37.0" defer></script>
+    <script src="js/core-engine.js?v=2027_production_v54.0" defer></script>
 
     <style>
         .not-found-wrapper {
