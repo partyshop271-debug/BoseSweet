@@ -160,6 +160,94 @@
         `).join("");
     }
 
+    /**
+     * 🎯🆕 [نمو - عميلات مهتمات بفئة معينة]: مصفوفة رقم موبايل بصيغة دولية
+     * (زي buildWhatsappUrl جوه admin-ui-utils.js وvoucher-notifications-page.js
+     * بالظبط) عشان رابط واتساب يفتح صح على أي جهاز.
+     */
+    function toInternationalPhone(phone) {
+        let cleaned = String(phone || "").replace(/[^\d]/g, "");
+        if (cleaned.startsWith("00201")) cleaned = "0" + cleaned.substring(4);
+        else if (cleaned.startsWith("201")) cleaned = "0" + cleaned.substring(2);
+        else if (cleaned.startsWith("1") && cleaned.length === 10) cleaned = "0" + cleaned;
+        if (cleaned.startsWith("0")) cleaned = cleaned.substring(1);
+        return "20" + cleaned;
+    }
+
+    function formatShortDate(iso) {
+        if (!iso) return "—";
+        return new Date(iso).toLocaleDateString("ar-EG", { day: "2-digit", month: "2-digit", year: "numeric" });
+    }
+
+    async function loadCategoryOptions() {
+        const select = document.getElementById("reports-category-select");
+        const categories = await window.BoseAdmin.getAllCategories();
+        const e = window.BoseAdminUI.escapeHtml;
+        select.innerHTML = '<option value="">اختاري فئة...</option>' +
+            categories.map((c) => `<option value="${e(c.id)}">${e(c.title)}</option>`).join("");
+    }
+
+    function renderCategoryInterest(rows, categoryTitle) {
+        const wrap = document.getElementById("reports-category-interest-wrap");
+        const e = window.BoseAdminUI.escapeHtml;
+        if (!rows.length) {
+            wrap.innerHTML = window.BoseAdminUI.emptyStateHTML({
+                icon: "fa-heart",
+                title: `مفيش عميلات اشترت من "${e(categoryTitle)}" لسه`,
+                text: "هيظهروا هنا أول ما حد يطلب من الفئة دي.",
+            });
+            return;
+        }
+        wrap.innerHTML = `
+            <div class="adm-table-wrapper">
+                <table class="adm-table">
+                    <thead>
+                        <tr>
+                            <th>العميلة</th>
+                            <th>رقم الموبايل</th>
+                            <th>عدد الطلبات بالفئة دي</th>
+                            <th>آخر طلب</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${rows.map((r) => {
+                            const whatsappUrl = window.BoseAdminUI.buildWhatsappUrl(
+                                toInternationalPhone(r.phone),
+                                `أهلاً بيك يا ${r.customer_name || ""} 🌸 عندنا حاجة جديدة في "${categoryTitle}" حبينا نعرّفك بيها أول بأول!`
+                            );
+                            return `
+                            <tr>
+                                <td>${e(r.customer_name || "—")}</td>
+                                <td dir="ltr" style="text-align:right;">${e(r.phone)}</td>
+                                <td>${r.order_count}</td>
+                                <td>${formatShortDate(r.last_order_at)}</td>
+                                <td>
+                                    <a class="adm-btn adm-btn-sm adm-btn-primary" href="${whatsappUrl}" target="_blank" rel="noopener" style="text-decoration:none; white-space:nowrap;">
+                                        <i class="fa-brands fa-whatsapp"></i> ابعتيلها رسالة
+                                    </a>
+                                </td>
+                            </tr>`;
+                        }).join("")}
+                    </tbody>
+                </table>
+            </div>
+        `;
+    }
+
+    async function loadCategoryInterest(categoryId) {
+        const wrap = document.getElementById("reports-category-interest-wrap");
+        const select = document.getElementById("reports-category-select");
+        if (!categoryId) {
+            wrap.innerHTML = '<p style="text-align:center; opacity:0.6; padding: 20px 0;">اختاري فئة من القائمة فوق عشان تشوفي العميلات المهتمات بيها.</p>';
+            return;
+        }
+        wrap.innerHTML = '<div class="adm-loading-spinner"></div>';
+        const categoryTitle = select.selectedOptions[0] ? select.selectedOptions[0].textContent : "";
+        const rows = await window.BoseAdmin.getCustomersByCategoryInterest(categoryId, 365);
+        renderCategoryInterest(rows, categoryTitle);
+    }
+
     async function loadReports(days) {
         document.getElementById("reports-chart-wrap").innerHTML = '<div class="adm-loading-spinner"></div>';
         document.getElementById("reports-top-products-tbody").innerHTML =
@@ -182,10 +270,13 @@
         document.getElementById("reports-range-select").addEventListener("change", (e) => {
             loadReports(Number(e.target.value));
         });
+        document.getElementById("reports-category-select").addEventListener("change", (e) => {
+            loadCategoryInterest(e.target.value);
+        });
     }
 
     document.addEventListener("BoseAdminReady", async () => {
         wireControls();
-        await loadReports(30);
+        await Promise.all([loadReports(30), loadCategoryOptions()]);
     });
 })();
