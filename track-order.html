@@ -21,13 +21,13 @@
          بدل الاعتماد على أي CDN خارجي (cdnjs/jsdelivr/unpkg) - مفيش نقطة فشل خارجية تانية خالص. -->
     <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css?v=2026_local_v1.0" fetchpriority="high">
     <link rel="stylesheet" href="vendor/fonts/cairo/cairo.css?v=2026_local_v1.0">
-    <link rel="stylesheet" href="css/global.css?v=2026_production_v43.1">
+    <link rel="stylesheet" href="css/global.css?v=2026_production_v44.0">
     <link rel="stylesheet" href="css/main.css?v=2026_production_v39.0">
 
     <!-- استدعاء المحرك المركزي الموحد في رأس الصفحة لتأمين الحقن والتوافق -->
     <script src="js/supabase-client.js?v=2026_production_v40.0"></script>
     <script src="js/favorites-engine.js?v=2026_production_v37.0"></script>
-    <script src="js/core-engine.js?v=2027_production_v53.0"></script>
+    <script src="js/core-engine.js?v=2027_production_v54.0"></script>
 
     <style>
         .track-page-wrapper { padding: 60px 20px 80px; max-width: 620px; margin: 0 auto; min-height: 70vh; font-family: 'Cairo', sans-serif; }
@@ -126,6 +126,7 @@
             function renderResult(row) {
                 const box = document.getElementById("track-result-box");
                 const inner = document.getElementById("track-result-inner");
+                if (!box || !inner) return;
                 box.style.display = "block";
 
                 if (!row || !row.found) {
@@ -151,10 +152,10 @@
                 inner.innerHTML = `
                     <span class="track-status-pill status-${window.escapeBoseHTML(row.status || '')}"><i class="fa-solid ${statusIcon}" style="font-size:${statusIcon === 'fa-circle' ? '8px' : '14px'};"></i> ${window.escapeBoseHTML(statusLabel(row.status))}</span>
                     <div class="track-order-meta">
-                        <div><span class="meta-label">رقم الطلب</span><span class="meta-value">${window.escapeBoseHTML(row.order_number || '')}</span></div>
+                        <div><span class="meta-label">رقم الطلب</span><span class="meta-value bose-ltr-nums">${window.escapeBoseHTML(row.order_number || '')}</span></div>
                         <div><span class="meta-label">طريقة الاستلام</span><span class="meta-value">${row.delivery_method === 'pickup' ? 'استلام من الفرع' : 'توصيل للمنزل'}</span></div>
-                        <div><span class="meta-label">التاريخ المطلوب</span><span class="meta-value">${window.escapeBoseHTML(row.scheduled_date || '-')}</span></div>
-                        <div><span class="meta-label">الميعاد</span><span class="meta-value">${window.escapeBoseHTML(row.scheduled_time || '-')}</span></div>
+                        <div><span class="meta-label">التاريخ المطلوب</span><span class="meta-value bose-ltr-nums">${window.escapeBoseHTML(row.scheduled_date || '-')}</span></div>
+                        <div><span class="meta-label">الميعاد</span><span class="meta-value bose-ltr-nums">${window.escapeBoseHTML(row.scheduled_time || '-')}</span></div>
                     </div>
                     <div class="track-items-list">
                         ${itemsHtml || '<p style="text-align:center; opacity:0.6; font-size:0.85rem;">لا توجد تفاصيل أصناف مسجلة</p>'}
@@ -164,10 +165,17 @@
             }
 
             async function handleSubmit(e) {
-                e.preventDefault();
+                if (e && e.preventDefault) e.preventDefault();
+                // 🛡️🆕 [تحصين - تجنب رسالة الطوارئ العامة من غير داعي]: لو العناصر
+                // دي مش موجودة لأي سبب (مثلاً net بطيء جداً والصفحة لسه بترسم)،
+                // منخرجش برمي خطأ يوصّل لشبكة الأمان العامة في core-engine.js -
+                // بنرجع بهدوء بدل كده.
                 const btn = document.getElementById("track-submit-btn");
-                const orderNumber = document.getElementById("track-order-number").value.trim();
-                const phone = document.getElementById("track-order-phone").value.trim();
+                const orderNumberField = document.getElementById("track-order-number");
+                const phoneField = document.getElementById("track-order-phone");
+                if (!btn || !orderNumberField || !phoneField) return;
+                const orderNumber = orderNumberField.value.trim();
+                const phone = phoneField.value.trim();
 
                 if (!window.BoseSupabase || typeof window.BoseSupabase.trackBoseOrder !== "function") return;
 
@@ -186,16 +194,27 @@
             }
 
             document.addEventListener("DOMContentLoaded", () => {
-                const form = document.getElementById("track-order-form");
-                if (form) form.addEventListener("submit", handleSubmit);
+                // 🛡️🆕 [تحصين شامل]: أي خطأ غير متوقع هنا (مثلاً عنصر لسه ما اترسمش
+                // على نت بطيء جداً) بيتلقّط ويتجاهل بأمان بدل ما يوصّل لشبكة
+                // الأمان العامة ويطلع بانر "خطأ غير متوقع" من غير داعي فعلي -
+                // الصفحة نفسها هتفضل شغالة عادي حتى لو حتة بسيطة زي التعبئة
+                // التلقائية من الرابط فشلت.
+                try {
+                    const form = document.getElementById("track-order-form");
+                    if (form) form.addEventListener("submit", handleSubmit);
 
-                // 🔗 لو جاية من صفحة نجاح الطلب أو من رابط جاهز، نعبي الحقول تلقائياً
-                const params = new URLSearchParams(window.location.search);
-                const prefOrder = params.get("order");
-                const prefPhone = params.get("phone");
-                if (prefOrder) document.getElementById("track-order-number").value = prefOrder;
-                if (prefPhone) document.getElementById("track-order-phone").value = prefPhone;
-                if (prefOrder && prefPhone) handleSubmit(new Event("submit"));
+                    // 🔗 لو جاية من صفحة نجاح الطلب أو من رابط جاهز، نعبي الحقول تلقائياً
+                    const params = new URLSearchParams(window.location.search);
+                    const prefOrder = params.get("order");
+                    const prefPhone = params.get("phone");
+                    const orderField = document.getElementById("track-order-number");
+                    const phoneField = document.getElementById("track-order-phone");
+                    if (prefOrder && orderField) orderField.value = prefOrder;
+                    if (prefPhone && phoneField) phoneField.value = prefPhone;
+                    if (prefOrder && prefPhone) handleSubmit(new Event("submit"));
+                } catch (e) {
+                    console.warn("⚠️ فشل التهيئة التلقائية لصفحة تتبع الطلب:", e);
+                }
             });
         })();
     </script>
