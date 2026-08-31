@@ -1,16 +1,31 @@
 /**
- * tour-page.js - منطق صفحة "الجولة التفاعلية" فقط
+ * tour-page.js - منطق صفحة "الجولة التفاعلية" (V2 - جولات مستقلة)
  * =====================================================================
+ * 🆕 الموقع بقى فيه 7 جولات مستقلة عن بعض (بدل جولة واحدة متصلة من
+ * 47 خطوة): sidebar, homepage, product, cake_simulator, flower_simulator,
+ * cart, checkout. كل خطوة في جدول tour_steps بقى ليها tour_key، والترتيب
+ * (step_order) بقى فريد داخل نفس الجولة بس مش عبر الجدول كله.
+ *
  * تبويبين مستقلين في نفس الصفحة:
- * 1) خطوات الجولة: عرض/إضافة/تعديل/حذف/إعادة ترتيب صفوف جدول tour_steps -
- *    ده اللي js/guided-tour.js في الموقع العام بيقرا منه فعليًا (بدل ما
- *    كانت الخطوات Array مكتوبة جوه الكود).
- * 2) إحصائيات الجولة: تجميع أحداث tour_analytics_events في funnel يوضح
- *    فعليًا عند أي خطوة العميلات بيسيبوا الجولة (سواء بضغطة "إنهاء
- *    الجولة" الصريحة، أو بترك الموقع/التبويب فجأة وهم لسه في خطوة معينة).
+ * 1) خطوات الجولة: فلترة/عرض/إضافة/تعديل/حذف/إعادة ترتيب خطوات جولة
+ *    واحدة مختارة من قائمة "الجولة" فوق الجدول.
+ * 2) إحصائيات الجولة: نفس الفكرة - جولة واحدة محددة في كل مرة، عشان
+ *    step_order بقى بيتكرر عبر جولات مختلفة ومينفعش نجمعهم مع بعض.
  */
 (function () {
     "use strict";
+
+    // 🧭 [الجولات المتاحة]: نفس المفاتيح بالظبط الموجودة في js/guided-tour.js
+    // (TOUR_DEFS) وفي عمود tour_key بالجدول.
+    const TOURS = [
+        { key: "sidebar", label: "القائمة الجانبية" },
+        { key: "homepage", label: "الصفحة الرئيسية" },
+        { key: "product", label: "صفحة المنتج" },
+        { key: "cake_simulator", label: "محاكي التورت" },
+        { key: "flower_simulator", label: "محاكي الورد" },
+        { key: "cart", label: "السلة" },
+        { key: "checkout", label: "إتمام الطلب" },
+    ];
 
     // نفس الصفحات اللي فعليًا محمّل فيها js/guided-tour.js في الموقع العام -
     // اختيار صفحة غير موجودة في القايمة دي يعني خطوة مستحيل تظهر أبداً.
@@ -19,12 +34,21 @@
         { value: "menu.html", label: "المنيو (menu.html)" },
         { value: "category.html", label: "صفحة الفئة (category.html)" },
         { value: "product.html", label: "صفحة المنتج (product.html)" },
+        { value: "cake-builder.html", label: "محاكي التورت (cake-builder.html)" },
+        { value: "flower-builder.html", label: "محاكي الورد (flower-builder.html)" },
         { value: "cart.html", label: "السلة (cart.html)" },
         { value: "checkout.html", label: "إتمام الطلب (checkout.html)" },
         { value: "order-success.html", label: "نجاح الطلب (order-success.html)" },
     ];
 
-    let allSteps = [];
+    let allSteps = []; // كل خطوات كل الجولات مع بعض - بنفلترها حسب الجولة المختارة عند العرض
+    let currentTourKey = "sidebar";
+
+    function visibleSteps() {
+        return allSteps
+            .filter((s) => s.tour_key === currentTourKey)
+            .sort((a, b) => a.step_order - b.step_order);
+    }
 
     /* ============================================================
        تبويبات
@@ -56,26 +80,28 @@
     function renderStepsTable() {
         const tbody = document.getElementById("tour-steps-tbody");
         const e = window.BoseAdminUI.escapeHtml;
+        const steps = visibleSteps();
 
-        if (!allSteps.length) {
-            tbody.innerHTML = `<tr><td colspan="7">${window.BoseAdminUI.emptyStateHTML({
+        if (!steps.length) {
+            tbody.innerHTML = `<tr><td colspan="8">${window.BoseAdminUI.emptyStateHTML({
                 icon: "fa-route",
-                title: "مفيش خطوات جولة مضافة لسه",
-                text: "اضغطي \"إضافة خطوة\" لبدء بناء الجولة، أو شغّلي ملف الـ migration اللي فيه كل الخطوات الحالية جاهزة.",
+                title: "مفيش خطوات مضافة لهذه الجولة لسه",
+                text: "اضغطي \"إضافة خطوة\" لبدء بناء الجولة دي.",
             })}</td></tr>`;
             return;
         }
 
-        tbody.innerHTML = allSteps.map((s, i) => `
+        tbody.innerHTML = steps.map((s, i) => `
             <tr>
                 <td>
                     <div class="tour-reorder-cell">
                         <button type="button" data-action="up" data-id="${e(s.id)}" ${i === 0 ? "disabled" : ""} title="لأعلى"><i class="fa-solid fa-chevron-up"></i></button>
                         <strong>${s.step_order}</strong>
-                        <button type="button" data-action="down" data-id="${e(s.id)}" ${i === allSteps.length - 1 ? "disabled" : ""} title="لأسفل"><i class="fa-solid fa-chevron-down"></i></button>
+                        <button type="button" data-action="down" data-id="${e(s.id)}" ${i === steps.length - 1 ? "disabled" : ""} title="لأسفل"><i class="fa-solid fa-chevron-down"></i></button>
                     </div>
                 </td>
                 <td>${pageLabel(s)}</td>
+                <td>${s.section ? `<span class="adm-badge info">${e(s.section)}</span>` : "—"}</td>
                 <td><span class="tour-mode-badge ${e(s.mode)}">${s.mode === "click" ? "دوسة" : "شرح"}</span></td>
                 <td><span class="tour-selector-code">${e(s.selector)}</span></td>
                 <td>${e(s.title)}</td>
@@ -132,12 +158,16 @@
         }
     }
 
+    // 🆕 [إعادة ترتيب داخل نفس الجولة فقط]: step_order بقى فريد على مستوى
+    // (tour_key, step_order) مش على مستوى الجدول كله، فإعادة الترتيب لازم
+    // تشتغل جوه الجولة المفلترة بس - مش على allSteps كله.
     async function handleMove(id, direction) {
-        const index = allSteps.findIndex((s) => s.id === id);
+        const steps = visibleSteps();
+        const index = steps.findIndex((s) => s.id === id);
         const targetIndex = index + direction;
-        if (index === -1 || targetIndex < 0 || targetIndex >= allSteps.length) return;
+        if (index === -1 || targetIndex < 0 || targetIndex >= steps.length) return;
 
-        const reordered = allSteps.slice();
+        const reordered = steps.slice();
         const [moved] = reordered.splice(index, 1);
         reordered.splice(targetIndex, 0, moved);
 
@@ -183,6 +213,13 @@
 
                 <form id="step-form">
                     <div class="adm-field">
+                        <label for="st-tour-key">الجولة</label>
+                        <select class="adm-select" id="st-tour-key">
+                            ${TOURS.map((t) => `<option value="${e(t.key)}" ${(isEdit ? step.tour_key : currentTourKey) === t.key ? "selected" : ""}>${e(t.label)}</option>`).join("")}
+                        </select>
+                    </div>
+
+                    <div class="adm-field">
                         <label for="st-any-page">تظهر في</label>
                         <select class="adm-select" id="st-any-page">
                             <option value="0" ${!isEdit || !step.any_page ? "selected" : ""}>صفحة واحدة محددة</option>
@@ -226,6 +263,11 @@
                     </div>
 
                     <div class="adm-field">
+                        <label for="st-section">القسم الفرعي (اختياري - للتحكم في زرار "تخطي القسم")</label>
+                        <input type="text" class="adm-input" id="st-section" placeholder="مثال: design أو extras أو review" value="${isEdit && step.section ? e(step.section) : ""}" style="direction: ltr; text-align: left;">
+                    </div>
+
+                    <div class="adm-field">
                         <label for="st-delay">تأخير قبل العرض (مللي ثانية - اتركيه 0 لو مش متأكدة)</label>
                         <input type="number" class="adm-input" id="st-delay" value="${isEdit ? (step.delay_before_show || 0) : 0}" min="0">
                     </div>
@@ -265,7 +307,9 @@
 
             const isAnyPage = anyPageSelect.value === "1";
             const mode = modeSelect.value;
+            const chosenTourKey = document.getElementById("st-tour-key").value;
             const payload = {
+                tour_key: chosenTourKey,
                 any_page: isAnyPage,
                 page: isAnyPage ? null : [document.getElementById("st-page-file").value],
                 mode,
@@ -273,6 +317,7 @@
                 hint: mode === "click" ? (document.getElementById("st-hint").value.trim() || null) : null,
                 title: document.getElementById("st-title").value.trim(),
                 body_text: document.getElementById("st-body-text").value.trim(),
+                section: document.getElementById("st-section").value.trim() || null,
                 delay_before_show: parseInt(document.getElementById("st-delay").value, 10) || 0,
             };
 
@@ -281,12 +326,19 @@
                     await window.BoseAdmin.updateTourStep(step.id, payload);
                     window.BoseAdminUI.showToast("تم تعديل الخطوة", "success");
                 } else {
-                    // خطوة جديدة بتتحط في آخر الترتيب دايمًا
-                    const nextOrder = allSteps.length ? Math.max(...allSteps.map((s) => s.step_order)) + 1 : 1;
+                    // خطوة جديدة بتتحط في آخر ترتيب الجولة المختارة (مش كل
+                    // الخطوات في كل الجولات) دايمًا
+                    const sameTourSteps = allSteps.filter((s) => s.tour_key === chosenTourKey);
+                    const nextOrder = sameTourSteps.length ? Math.max(...sameTourSteps.map((s) => s.step_order)) + 1 : 1;
                     await window.BoseAdmin.createTourStep({ ...payload, step_order: nextOrder, is_active: true });
                     window.BoseAdminUI.showToast("تم إضافة الخطوة", "success");
                 }
                 close();
+                // لو الخطوة اتضافت/انتقلت لجولة تانية غير المعروضة دلوقتي، بنعرض
+                // جولتها عشان العميلة تشوف نتيجة شغلها على طول.
+                currentTourKey = chosenTourKey;
+                const filterSelect = document.getElementById("tour-filter-select");
+                if (filterSelect) filterSelect.value = chosenTourKey;
                 await loadSteps();
             } catch (err) {
                 window.BoseAdminUI.showToast(isEdit ? "تعذر تعديل الخطوة" : "تعذر إضافة الخطوة", "error");
@@ -298,7 +350,7 @@
 
     async function loadSteps() {
         const tbody = document.getElementById("tour-steps-tbody");
-        tbody.innerHTML = `<tr><td colspan="7"><div class="adm-loading-spinner"></div></td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8"><div class="adm-loading-spinner"></div></td></tr>`;
         allSteps = await window.BoseAdmin.getAllTourSteps();
         renderStepsTable();
     }
@@ -328,9 +380,10 @@
 
         const days = parseInt(document.getElementById("tour-range-select").value, 10);
         const sinceIso = sinceIsoForRangeDays(days);
-        const events = await window.BoseAdmin.getTourAnalyticsEvents(sinceIso);
+        const tourKey = document.getElementById("tour-analytics-filter-select").value;
+        const events = await window.BoseAdmin.getTourAnalyticsEvents(sinceIso, tourKey);
 
-        // ---- ملخص عام ----
+        // ---- ملخص عام (لهذه الجولة بس) ----
         const totalStarts = events.filter((ev) => ev.event_type === "tour_start").length;
         const totalFinishes = events.filter((ev) => ev.event_type === "tour_finish").length;
         const totalExplicitSkips = events.filter((ev) => ev.event_type === "tour_skip").length;
@@ -353,17 +406,13 @@
             </div>
         `).join("");
 
-        // ---- funnel لكل خطوة ----
-        // مبني على step_order (رقم ثابت) مش على tour_steps.id، عشان الأحداث
-        // القديمة تفضل قابلة للقراءة حتى لو الخطوة اتعدلت أو اتحذفت بعدين -
-        // step_title المسجّل وقت الحدث هو مصدر العنوان المعروض هنا، مش
-        // الجدول الحالي.
+        // ---- funnel لكل خطوة (نفس الجولة المفلترة بس) ----
         const viewEvents = events.filter((ev) => ev.event_type === "step_view" && ev.step_order != null);
         if (!viewEvents.length) {
             funnelWrap.innerHTML = window.BoseAdminUI.emptyStateHTML({
                 icon: "fa-chart-column",
-                title: "مفيش بيانات كفاية في الفترة دي",
-                text: "لما عميلات تبدأ تستخدم الجولة فعليًا، هتلاقي هنا بالظبط عند أي خطوة بيسيبوا.",
+                title: "مفيش بيانات كفاية في الفترة دي لهذه الجولة",
+                text: "لما عميلات تبدأ تستخدم الجولة دي فعليًا، هتلاقي هنا بالظبط عند أي خطوة بيسيبوا.",
             });
             return;
         }
@@ -428,6 +477,11 @@
         initTabs();
         document.getElementById("add-step-btn").addEventListener("click", () => openStepModal(null));
         document.getElementById("tour-range-select").addEventListener("change", loadAnalytics);
+        document.getElementById("tour-analytics-filter-select").addEventListener("change", loadAnalytics);
+        document.getElementById("tour-filter-select").addEventListener("change", (e) => {
+            currentTourKey = e.target.value;
+            renderStepsTable();
+        });
         await loadSteps();
     });
 })();
