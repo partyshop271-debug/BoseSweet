@@ -63,7 +63,7 @@
                         <div class="adm-card-header">
                             <div>
                                 <h2>خطوات الجولة التفاعلية</h2>
-                                <p>كل خطوة بتضيء عنصر حقيقي في الموقع - عدّلي النص أو رتّبي الخطوات من غير ما تلمسي كود. الترتيب هنا هو نفس ترتيب ظهورها للعميلة بالظبط.</p>
+                                <p>الموقع بقى فيه 7 جولات مستقلة عن بعض بدل جولة واحدة متصلة - اختاري الجولة اللي عايزة تعدّلي فيها من القائمة تحت. كل خطوة بتضيء عنصر حقيقي في الموقع، والترتيب هنا هو نفس ترتيب ظهورها للعميلة داخل نفس الجولة بالظبط.</p>
                             </div>
                             <button class="adm-btn adm-btn-primary" id="add-step-btn">
                                 <i class="fa-solid fa-plus"></i> إضافة خطوة
@@ -71,7 +71,19 @@
                         </div>
                         <div class="adm-hint" style="padding: 0 20px 16px 20px;">
                             <i class="fa-solid fa-circle-info"></i>
-                            <strong>selector</strong> لازم يكون نفس الـ CSS selector الموجود فعليًا في كود صفحة الموقع (زي <code>#btn-add-to-cart-master-trigger</code>) - لو اتغيّر اسم العنصر في الكود يومًا ما، لازم يتحدّث هنا كمان وإلا الخطوة هتتخطى تلقائيًا (وهيظهر ده في تبويب الإحصائيات كـ"تخطي تلقائي").
+                            <strong>selector</strong> لازم يكون نفس الـ CSS selector الموجود فعليًا في كود صفحة الموقع (زي <code>#btn-add-to-cart-master-trigger</code>) - لو اتغيّر اسم العنصر في الكود يومًا ما، لازم يتحدّث هنا كمان وإلا الخطوة هتتخطى تلقائيًا (وهيظهر ده في تبويب الإحصائيات كـ"تخطي تلقائي"). <strong>القسم</strong> اختياري وبيتحكم في زرار "تخطي القسم" اللي بتشوفه العميلة - خطوتين بنفس القسم يبقوا جزء من نفس المرحلة، وأول خطوة بقسم مختلف بعدها هي اللي "تخطي القسم" بيوديك ليها.
+                        </div>
+                        <div class="adm-field" style="padding: 0 20px 16px 20px; max-width:320px;">
+                            <label for="tour-filter-select">الجولة</label>
+                            <select class="adm-select" id="tour-filter-select">
+                                <option value="sidebar">القائمة الجانبية</option>
+                                <option value="homepage">الصفحة الرئيسية</option>
+                                <option value="product">صفحة المنتج</option>
+                                <option value="cake_simulator">محاكي التورت</option>
+                                <option value="flower_simulator">محاكي الورد</option>
+                                <option value="cart">السلة</option>
+                                <option value="checkout">إتمام الطلب</option>
+                            </select>
                         </div>
                         <div class="adm-table-wrapper">
                             <table class="adm-table" id="tour-steps-table">
@@ -79,6 +91,7 @@
                                     <tr>
                                         <th>الترتيب</th>
                                         <th>الصفحة</th>
+                                        <th>القسم</th>
                                         <th>النوع</th>
                                         <th>العنصر (selector)</th>
                                         <th>العنوان</th>
@@ -87,7 +100,7 @@
                                     </tr>
                                 </thead>
                                 <tbody id="tour-steps-tbody">
-                                    <tr><td colspan="7"><div class="adm-loading-spinner"></div></td></tr>
+                                    <tr><td colspan="8"><div class="adm-loading-spinner"></div></td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -100,9 +113,18 @@
                         <div class="adm-card-header">
                             <div>
                                 <h2><i class="fa-solid fa-chart-column"></i> ملخص الجولة</h2>
-                                <p>عدد مرات بدء الجولة، إنهاؤها بالكامل، والترك الفعلي (سواء بزرار "إنهاء الجولة" أو بترك الموقع فجأة)</p>
+                                <p>عدد مرات بدء الجولة، إنهاؤها بالكامل، والترك الفعلي (سواء بزرار "إنهاء الجولة" أو بترك الموقع فجأة) - لجولة واحدة محددة</p>
                             </div>
                             <div class="adm-gap-8">
+                                <select class="adm-select" id="tour-analytics-filter-select" style="width:auto;">
+                                    <option value="sidebar">القائمة الجانبية</option>
+                                    <option value="homepage">الصفحة الرئيسية</option>
+                                    <option value="product">صفحة المنتج</option>
+                                    <option value="cake_simulator">محاكي التورت</option>
+                                    <option value="flower_simulator">محاكي الورد</option>
+                                    <option value="cart">السلة</option>
+                                    <option value="checkout">إتمام الطلب</option>
+                                </select>
                                 <select class="adm-select" id="tour-range-select" style="width:auto;">
                                     <option value="7">آخر 7 أيام</option>
                                     <option value="30" selected>آخر 30 يوم</option>
