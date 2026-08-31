@@ -182,8 +182,10 @@
      * بيتحقن هنا مرة واحدة بنفس منطق حقن الـ structured data تحت -
      * أي صفحة عميل بتحمّل core-engine.js (كل الموقع ما عدا لوحة التحكم) بتاخد
      * القياس تلقائياً من غير ما نلمس الـ 19 صفحة يدوياً واحدة واحدة.
-     * ⚠️ TikTok Pixel و Facebook Pixel لسه مش متركبين - محتاجين الـ IDs بتاعتهم
-     * (لسه مش واصلة)، أماكنهم محجوزة تحت وجاهزة، سطر واحد بس هيتضاف لما توصل.
+     * ✅ [تحديث]: الـ IDs التلاتة (GA4/Facebook/TikTok) وصلت واتركبت فعلاً تحت -
+     * الكومنت القديم اللي كان بيقول "لسه مش متركبين" كان فات تحديثه من جلسة سابقة،
+     * بيتصلح هنا بس عشان أي مراجعة مستقبلية متتلخبطش. راجع fireBoseCommerceEvent
+     * تحت لأحداث AddToCart/InitiateCheckout/Purchase الحقيقية المبنية فوق البيكسلات دي.
      */
     (function ensureBoseAnalytics() {
         // --- Google Analytics 4 ---
@@ -234,6 +236,65 @@
             }(window, document, "ttq");
         }
     })();
+
+    /**
+     * 📊👑 [نمو - أحداث تجارية حقيقية للبيكسلات]: قبل كده البيكسلات التلاتة
+     * (فوق) كانت بترصد بس "PageView" - يعني نعرف إن حد زار الموقع، لكن معندناش
+     * أي فكرة مين حط منتج في السلة، مين بدأ يشتري، ومين اشترى فعلاً وبقيمة
+     * كام. ده كان بيمنع أهم حاجتين في أي إعلان ممول: (1) إعادة استهداف دقيقة
+     * ("اللي حطوا في السلة وماكملوش" - أعلى فرصة تحويل من أي جمهور تاني)،
+     * و(2) بناء "جمهور شبيه" (Lookalike) مبني على مشتريين حقيقيين بدل زوار
+     * عاديين. الدالة دي نقطة واحدة موحّدة بيستدعيها كل مكان في الموقع بيضيف
+     * للسلة (core-engine.js نفسه، product.html، cake-engine.js، flower-engine.js،
+     * cake-quick-engine.js) وصفحتي الشيك أوت والنجاح - وبتبعت لكل بيكسل بالاسم
+     * القياسي المعروف له (GA4/Meta/TikTok مختلفين شوية عن بعض في أسماء
+     * الأحداث القياسية)، مع حراسة try/catch لأي بيكسل مش محمّل (مثلاً حاجب
+     * إعلانات) عشان محدش يعطّل رحلة الشراء نفسها لو فشل الإرسال.
+     * @param {'add_to_cart'|'begin_checkout'|'purchase'} eventName
+     * @param {{value?: number, currency?: string, contentId?: string, contentName?: string, quantity?: number, orderId?: string}} data
+     */
+    window.fireBoseCommerceEvent = function(eventName, data) {
+        try {
+            const value = Math.round((parseFloat(String(data && data.value)) || 0) * 100) / 100;
+            const currency = (data && data.currency) || "EGP";
+            const contentId = (data && data.contentId) || "";
+            const contentName = (data && data.contentName) || "";
+            const quantity = (data && data.quantity) || 1;
+
+            // --- Google Analytics 4 (gtag) - نفس أسماء الأحداث القياسية بالظبط ---
+            if (typeof window.gtag === "function") {
+                /** @type {any} */
+                const payload = { currency, value, items: [{ item_id: contentId, item_name: contentName, quantity, price: value }] };
+                if (eventName === "purchase" && data && data.orderId) payload.transaction_id = data.orderId;
+                window.gtag("event", eventName, payload);
+            }
+
+            // --- Facebook Pixel - أسماء الأحداث القياسية بتاعته مختلفة شوية ---
+            if (typeof window.fbq === "function") {
+                const fbEventMap = { add_to_cart: "AddToCart", begin_checkout: "InitiateCheckout", purchase: "Purchase" };
+                const fbEventName = fbEventMap[eventName];
+                if (fbEventName) {
+                    window.fbq("track", fbEventName, {
+                        value, currency, content_type: "product",
+                        content_ids: contentId ? [contentId] : undefined,
+                        contents: contentId ? [{ id: contentId, quantity }] : undefined,
+                    });
+                }
+            }
+
+            // --- TikTok Pixel - "CompletePayment" هو مكافئ حدث الشراء الفعلي عندهم ---
+            if (window.ttq && typeof window.ttq.track === "function") {
+                const ttEventMap = { add_to_cart: "AddToCart", begin_checkout: "InitiateCheckout", purchase: "CompletePayment" };
+                const ttEventName = ttEventMap[eventName];
+                if (ttEventName) {
+                    window.ttq.track(ttEventName, {
+                        value, currency, content_type: "product",
+                        contents: contentId ? [{ content_id: contentId, content_name: contentName, quantity, price: value }] : undefined,
+                    });
+                }
+            }
+        } catch (e) { /* تجاهل بأمان - تتبع تحليلي اختياري، ما ينفعش يعطّل رحلة الشراء */ }
+    };
 
     /**
      * 🛒👑 [نمو - تذكير بالسلة]: العميلة بتتصفح، تحط منتجات في السلة، وتتشتت (مكالمة،
@@ -1863,6 +1924,14 @@
         localStorage.setItem('bose_cart', JSON.stringify(cart));
         window.updateGlobalCartCounter();
 
+        // 📊 [نمو - AddToCart]: حدث تجاري حقيقي لكل الأماكن اللي بتستخدم الدالة
+        // دي (كارت المنتج في الفئة/المنيو/اقتراحات صفحة السلة والمنتج).
+        const finalUnitPriceForEvent = window.calculateProductFinalPrice(product, addOpts);
+        window.fireBoseCommerceEvent('add_to_cart', {
+            value: finalUnitPriceForEvent * qty, currency: window.BoseStoreData?.store?.currency || 'EGP',
+            contentId: product.id || product.slug, contentName: product.title, quantity: qty
+        });
+
         if (cardContainer) {
             /** @type {HTMLInputElement|null} */ const qtyInput = cardContainer.querySelector('.input-qty-value');
             const priceDisplay = cardContainer.querySelector('.product-card-price');
@@ -2592,10 +2661,6 @@
                 sidebar.classList.add('open');
                 overlay.classList.add('show');
                 document.body.classList.add('drawer-active');
-                // 🆕 [جولة القائمة الجانبية]: بنبلّغ guided-tour.js إن القائمة
-                // اتفتحت فعليًا - هو اللي بيقرر لو ده أول مرة يعرض توست
-                // "تحبي نوريكي القائمة الجانبية؟" أو لأ.
-                document.dispatchEvent(new CustomEvent('boseSidebarOpened'));
             });
         }
         

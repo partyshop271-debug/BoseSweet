@@ -150,6 +150,14 @@ function startQuickOrderEngine() {
             window.updateGlobalCartCounter();
         }
 
+        // 📊 [نمو - AddToCart]: طلب تورتة سريع بخطوة واحدة.
+        if (typeof window.fireBoseCommerceEvent === 'function') {
+            window.fireBoseCommerceEvent('add_to_cart', {
+                value: finalCartItem.finalPrice, currency: window.BoseStoreData?.store?.currency || 'EGP',
+                contentId: masterProduct.slug, contentName: masterProduct.title || 'التورت', quantity: 1
+            });
+        }
+
         if (typeof window.showBoseGlobalToast === 'function') {
             window.showBoseGlobalToast("تم حجز تورتتك بنجاح! تقدري تكملي طلبك من السلة دلوقتي.");
         }

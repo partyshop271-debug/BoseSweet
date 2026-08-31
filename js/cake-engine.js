@@ -1080,6 +1080,14 @@ function startEngineLogic() {
                 window.updateGlobalCartCounter();
             }
 
+            // 📊 [نمو - AddToCart]: تورتة مخصصة من المحاكي الكامل.
+            if (typeof window.fireBoseCommerceEvent === 'function') {
+                window.fireBoseCommerceEvent('add_to_cart', {
+                    value: finalCartItem.finalPrice, currency: window.BoseStoreData?.store?.currency || 'EGP',
+                    contentId: masterProduct.slug, contentName: masterProduct.title || 'التورت', quantity: 1
+                });
+            }
+
             if (typeof window.showBoseGlobalToast === 'function') {
                 window.showBoseGlobalToast("تمت إضافة تصميم تورتتك الفريد إلى السلة بنجاح.");
             } else {

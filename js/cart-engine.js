@@ -583,6 +583,16 @@ function renderBoseCheckoutPage(storeData) {
         return;
     }
 
+    // 📊 [نمو - InitiateCheckout]: العميلة وصلت فعلياً لصفحة الشيك أوت (نية شراء
+    // حقيقية) - بيتبعت مرة واحدة هنا بقيمة محتويات السلة الحالية (من غير شحن/خصم
+    // لسه، القيمة النهائية الدقيقة بتتأكد لاحقاً في حدث الشراء نفسه بعد التأكيد).
+    if (typeof window.fireBoseCommerceEvent === "function") {
+        const checkoutCartValue = cart.reduce((sum, item) => sum + ((parseFloat(item.finalPrice) || 0) * (parseInt(item.quantity, 10) || 1)), 0);
+        window.fireBoseCommerceEvent('begin_checkout', {
+            value: checkoutCartValue, currency: storeData?.store?.currency || 'EGP', quantity: cart.length
+        });
+    }
+
     // 🎁 [نظام نقاط الولاء]: حالة عامة بسيطة بتتحدّث لما رقم الهاتف يتأكد صحيح
     // (خصم تلقائي حسب ترتيب الطلب) ولما قسيمة ولاء صحيحة تتطبق - بيقرأها
     // recalculateCheckoutInvoice/processFinalBoseOrder عشان يعرضوا وياخدوا
@@ -1584,6 +1594,22 @@ function renderBoseSuccessPage(storeData) {
         resendWhatsappBtn.setAttribute("href", link);
         resendWhatsappBtn.setAttribute("target", "_blank");
         resendWhatsappBtn.setAttribute("rel", "noopener noreferrer");
+    }
+
+    // 📊👑 [نمو - Purchase]: أهم حدث تجاري - بيتأكد بس هنا (بعد ما الطلب فعلاً
+    // اتحفظ في قاعدة البيانات، مش مجرد نية شراء زي InitiateCheckout). حراسة
+    // "purchaseEventTracked" ضرورية لأن bose_last_order بيفضل محفوظ في localStorage
+    // بعد الإرسال (عشان لو العميلة رجعت/عملت refresh لصفحة النجاح يشوفوا فاتورتهم)،
+    // فمن غير الحراسة دي كل refresh كان هيبعت حدث "شراء" مكرر ويضخّم الأرقام في
+    // تقارير الإعلانات بالغلط.
+    if (!order.purchaseEventTracked && order.dbOrderNumber && typeof window.fireBoseCommerceEvent === "function") {
+        window.fireBoseCommerceEvent('purchase', {
+            value: parseFloat(order.grandTotal) || 0,
+            currency: (typeof window.BoseStoreData !== "undefined" && window.BoseStoreData?.store?.currency) || 'EGP',
+            orderId: String(order.dbOrderNumber)
+        });
+        order.purchaseEventTracked = true;
+        try { localStorage.setItem("bose_last_order", JSON.stringify(order)); } catch (e) {}
     }
 
     if (orderNumLbl) orderNumLbl.textContent = `رقم طلب الفاتورة: #${order.orderNumber || '0000'}`;

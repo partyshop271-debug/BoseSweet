@@ -1165,6 +1165,15 @@
                 localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(currentCart));
 
                 if (window.updateGlobalCartCounter) window.updateGlobalCartCounter();
+
+                // 📊 [نمو - AddToCart]: بوكيه ورد مخصص من المحاكي.
+                if (typeof window.fireBoseCommerceEvent === 'function') {
+                    window.fireBoseCommerceEvent('add_to_cart', {
+                        value: finalCartItem.finalPrice, currency: window.BoseStoreData?.store?.currency || 'EGP',
+                        contentId: masterProduct.slug, contentName: masterProduct.title || 'الورد', quantity: 1
+                    });
+                }
+
                 if (window.showBoseGlobalToast) window.showBoseGlobalToast("تمت إضافة المنتج إلى السلة.");
 
                 try {
