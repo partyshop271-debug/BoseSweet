@@ -24,14 +24,37 @@
         let alreadyShown = false;
         const FALLBACK_WHATSAPP_NUMBER = "201097238441";
 
+        // 🛡️🆕 [إصلاح - رسالة البانر كانت واحدة تمام في كل صفحات الموقع
+        // وبتفترض دايماً إن العميلة "بتكمل طلب جديد" ("أكملي طلبك على واتساب").
+        // ده غلط منطقياً في أي صفحة مالهاش علاقة بعمل طلب جديد فعلياً - أوضح
+        // مثال: track-order.html (العميلة بتتابع طلب اتعمل بالفعل، مش بتطلب)
+        // وكذلك rewards.html/contact.html/about.html وصفحات السياسات. ظهور
+        // "أكملي طلبك" هنا مربك وممكن يوهم العميلة إنها محتاجة تطلب تاني.
+        // دلوقتي البانر بيختار نص/CTA مناسب حسب الصفحة الحالية فعلياً.
+        const NON_ORDERING_PAGES = [
+            "track-order.html", "rewards.html", "contact.html", "about.html",
+            "privacy-policy.html", "refund-policy.html", "shipping-policy.html",
+            "terms.html", "404.html", "favorites.html", "linkinbio.html",
+        ];
+
+        function currentPageFileName() {
+            const parts = window.location.pathname.split("/");
+            const last = parts[parts.length - 1];
+            return last && last !== "" ? last : "index.html";
+        }
+
         function showGlobalErrorBanner() {
             if (alreadyShown) return;
             alreadyShown = true;
 
             try {
+                const isNonOrderingPage = NON_ORDERING_PAGES.indexOf(currentPageFileName()) !== -1;
+                const waPromptText = isNonOrderingPage
+                    ? "أهلاً، حصل عندي مشكلة في الموقع وحابة أستفسر معاكم من هنا 🌸"
+                    : "أهلاً، حصل عندي مشكلة في الموقع وحابة أكمل طلبي معاكم من هنا 🌸";
                 const waLink = (typeof window.buildWhatsappLink === "function")
-                    ? window.buildWhatsappLink(FALLBACK_WHATSAPP_NUMBER, "أهلاً، حصل عندي مشكلة في الموقع وحابة أكمل طلبي معاكم من هنا 🌸")
-                    : `https://wa.me/${FALLBACK_WHATSAPP_NUMBER}?text=${encodeURIComponent("أهلاً، حصل عندي مشكلة في الموقع وحابة أكمل طلبي معاكم من هنا 🌸")}`;
+                    ? window.buildWhatsappLink(FALLBACK_WHATSAPP_NUMBER, waPromptText)
+                    : `https://wa.me/${FALLBACK_WHATSAPP_NUMBER}?text=${encodeURIComponent(waPromptText)}`;
 
                 const banner = document.createElement("div");
                 banner.setAttribute("dir", "rtl");
@@ -39,13 +62,15 @@
 
                 const msg = document.createElement("span");
                 msg.style.cssText = "font-size:14px;line-height:1.5;flex:1;min-width:200px;";
-                msg.textContent = "حصل عندنا خطأ غير متوقع في الصفحة 🙏 ماتقلقيش، تقدري تكملي طلبك بسهولة على واتساب مباشرة.";
+                msg.textContent = isNonOrderingPage
+                    ? "حصل عندنا خطأ غير متوقع في الصفحة 🙏 ماتقلقيش، لو محتاجة أي مساعدة تقدري تتواصلي معانا على واتساب مباشرة."
+                    : "حصل عندنا خطأ غير متوقع في الصفحة 🙏 ماتقلقيش، تقدري تكملي طلبك بسهولة على واتساب مباشرة.";
 
                 const link = document.createElement("a");
                 link.href = waLink;
                 link.target = "_blank";
                 link.rel = "noopener noreferrer";
-                link.textContent = "أكملي طلبك على واتساب";
+                link.textContent = isNonOrderingPage ? "تواصلي معانا على واتساب" : "أكملي طلبك على واتساب";
                 link.style.cssText = "background:#FF91A4;color:#111111;font-weight:700;text-decoration:none;padding:8px 16px;border-radius:8px;white-space:nowrap;font-size:14px;";
 
                 const closeBtn = document.createElement("button");
