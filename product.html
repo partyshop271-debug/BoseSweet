@@ -30,7 +30,7 @@
     
     <script src="js/supabase-client.js?v=2026_production_v40.0" defer></script>
     <script src="js/favorites-engine.js?v=2026_production_v37.0" defer></script>
-    <script src="js/core-engine.js?v=2027_production_v51.0" defer></script>
+    <script src="js/core-engine.js?v=2027_production_v52.0" defer></script>
     <script src="js/guided-tour.js?v=3.0" defer></script>
     <script src="js/cart-reminder.js?v=1" defer></script>
     <script src="js/trust-badges.js?v=1" defer></script>
@@ -1580,6 +1580,15 @@
                         if (typeof window.updateGlobalCartCounter === "function") {
                             window.updateGlobalCartCounter();
                         }
+                        // 📊 [نمو - AddToCart]: زرار الإضافة الرئيسي في صفحة المنتج.
+                        if (typeof window.fireBoseCommerceEvent === "function") {
+                            window.fireBoseCommerceEvent('add_to_cart', {
+                                value: (parseFloat(cartItemObj.finalPrice) || 0) * currentMasterQuantity,
+                                currency: window.BoseStoreData?.store?.currency || 'EGP',
+                                contentId: currentProduct.id || currentProduct.slug,
+                                contentName: currentProduct.title, quantity: currentMasterQuantity
+                            });
+                        }
                         document.dispatchEvent(new CustomEvent('BoseCartUpdated'));
                         if (typeof window.showBoseToast === 'function') {
                             window.showBoseToast(`تمت إضافة ${currentMasterQuantity} من ${currentProduct.title} بنجاح لراحتك 🌸`);
@@ -1620,6 +1629,15 @@
                     localStorage.setItem("bose_cart", JSON.stringify(cartArr));
                     if (typeof window.updateGlobalCartCounter === "function") {
                         window.updateGlobalCartCounter();
+                    }
+                    // 📊 [نمو - AddToCart]: نفس الحدث في مسار الـfallback الاحتياطي.
+                    if (typeof window.fireBoseCommerceEvent === "function") {
+                        window.fireBoseCommerceEvent('add_to_cart', {
+                            value: finalUnitPrice * currentMasterQuantity,
+                            currency: window.BoseStoreData?.store?.currency || 'EGP',
+                            contentId: currentProduct.id || currentProduct.slug,
+                            contentName: currentProduct.title, quantity: currentMasterQuantity
+                        });
                     }
                     if (typeof window.showBoseToast === 'function') {
                         window.showBoseToast(`تمت إضافة المنتج بنجاح لراحتك 🌸`);
