@@ -508,17 +508,20 @@
     }
 
     /**
-     * 🧭 [نظام الجولة القابل للتعديل]: بترجع كل خطوات الجولة المفعّلة
-     * (is_active=true) مرتبة بالظبط زي ما لازم تتنفذ. لو الجدول فاضي أو
+     * 🧭 [نظام الجولات المستقلة]: بترجع كل خطوات كل الجولات المفعّلة
+     * (is_active=true) مرتبة بالظبط زي ما لازم تتنفذ داخل كل جولة -
+     * guided-tour.js هو اللي بيجمّعها حسب tour_key. لو الجدول فاضي أو
      * فشل الاتصال، بترجع null - وguided-tour.js عنده نسخة احتياطية
-     * (BOSE_TOUR_STEPS_FALLBACK) عشان الجولة تفضل شغالة حتى لو القاعدة
-     * مش متاحة أو لسه ما اتعملهاش migration.
+     * (BOSE_TOUR_STEPS_FALLBACK) لكل جولة على حدة عشان أي جولة تفضل
+     * شغالة حتى لو القاعدة مش متاحة أو لسه ما اتعملهاش migration.
      */
     async function fetchBoseTourSteps() {
         try {
-            const rows = await boseSupabaseFetch("/tour_steps?is_active=eq.true&select=*&order=step_order.asc");
+            const rows = await boseSupabaseFetch("/tour_steps?is_active=eq.true&select=*&order=tour_key.asc,step_order.asc");
             if (!rows || !rows.length) return null;
             return rows.map((r) => ({
+                tourKey: r.tour_key,
+                section: r.section || undefined,
                 page: r.any_page ? undefined : (r.page || []),
                 anyPage: !!r.any_page,
                 mode: r.mode,
@@ -549,6 +552,7 @@
                 body: JSON.stringify({
                     session_id: event.sessionId,
                     event_type: event.eventType,
+                    tour_key: event.tourKey || null,
                     step_order: event.stepOrder ?? null,
                     step_selector: event.stepSelector || null,
                     step_title: event.stepTitle || null,
@@ -577,6 +581,7 @@
                 body: JSON.stringify({
                     session_id: event.sessionId,
                     event_type: event.eventType,
+                    tour_key: event.tourKey || null,
                     step_order: event.stepOrder ?? null,
                     step_selector: event.stepSelector || null,
                     step_title: event.stepTitle || null,

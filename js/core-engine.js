@@ -2592,6 +2592,10 @@
                 sidebar.classList.add('open');
                 overlay.classList.add('show');
                 document.body.classList.add('drawer-active');
+                // 🆕 [جولة القائمة الجانبية]: بنبلّغ guided-tour.js إن القائمة
+                // اتفتحت فعليًا - هو اللي بيقرر لو ده أول مرة يعرض توست
+                // "تحبي نوريكي القائمة الجانبية؟" أو لأ.
+                document.dispatchEvent(new CustomEvent('boseSidebarOpened'));
             });
         }
         
