@@ -39,7 +39,7 @@ module.exports = async function handler(req, res) {
 
     try {
         const response = await fetch(
-            `${SUPABASE_URL}/rest/v1/store_settings?id=eq.1&select=logo`,
+            `${SUPABASE_URL}/rest/v1/store_settings?id=eq.1&select=store`,
             {
                 headers: {
                     apikey: SUPABASE_PUBLISHABLE_KEY,
@@ -49,7 +49,8 @@ module.exports = async function handler(req, res) {
         );
         if (response.ok) {
             const rows = await response.json();
-            const fetchedLogo = Array.isArray(rows) ? rows[0]?.logo : rows?.logo;
+            const row = Array.isArray(rows) ? rows[0] : rows;
+            const fetchedLogo = row?.store?.logo;
             if (fetchedLogo && typeof fetchedLogo === "string" && fetchedLogo.trim()) {
                 logoUrl = fetchedLogo.trim();
             }
