@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الإشعارات | لوحة تحكم حلويات بوسي</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="stylesheet" href="../vendor/fonts/cairo/cairo.css?v=2026_local_v1.0">
+    <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css?v=2026_local_v1.0" fetchpriority="high">
+
+    <link rel="stylesheet" href="css/admin-theme.css">
+    <link rel="stylesheet" href="css/admin-layout.css">
+</head>
+<body data-page="push-notifications">
+
+    <!-- شاشة تحميل تظهر لحد ما يتأكد من الجلسة -->
+    <div class="adm-auth-gate"><div class="adm-loading-spinner"></div></div>
+
+    <div class="adm-shell">
+        <div id="adm-shell-target"></div>
+
+        <main class="adm-main">
+            <div id="adm-topbar-target"></div>
+
+            <div class="adm-content" id="adm-page-content">
+
+                <div class="adm-card">
+                    <div>
+                        <h2><i class="fa-solid fa-bell"></i> الإشعارات</h2>
+                        <p>ابعتي إشعار Push حقيقي لكل العميلات المفعّلة عندهم إشعارات الموقع - بيوصلهم حتى لو الموقع مقفول عندهم تمامًا.</p>
+                    </div>
+                </div>
+
+                <div class="adm-card adm-mt-16" id="pn-subscribers-card">
+                    <div class="adm-card-header">
+                        <div>
+                            <h2>عدد المشتركين حاليًا</h2>
+                            <p>عدد الأجهزة اللي فعّلت الإشعارات ولسه مفعّلة</p>
+                        </div>
+                    </div>
+                    <div id="pn-subscriber-count" style="font-size: 32px; font-weight: 700; color: var(--adm-pink);">
+                        <div class="adm-loading-spinner" style="width:24px;height:24px;"></div>
+                    </div>
+                </div>
+
+                <div class="adm-card adm-mt-16">
+                    <div class="adm-card-header">
+                        <div>
+                            <h2>إرسال إشعار جديد</h2>
+                            <p>هيوصل فورًا لكل المشتركين المفعّلين - راجعي النص كويس قبل الإرسال، مفيش تراجع بعدها</p>
+                        </div>
+                    </div>
+
+                    <div class="adm-field">
+                        <label for="pn-title-input">عنوان الإشعار</label>
+                        <input type="text" class="adm-input" id="pn-title-input" placeholder="مثال: عرض اليوم 🎀" maxlength="80">
+                        <small id="pn-title-count" style="color:#888;">0 / 80</small>
+                    </div>
+
+                    <div class="adm-field">
+                        <label for="pn-body-input">نص الإشعار</label>
+                        <textarea class="adm-textarea" id="pn-body-input" rows="3" placeholder="مثال: خصم 20% على كل التورت النهاردة بس - اطلبي دلوقتي قبل ما ينتهي!" maxlength="200"></textarea>
+                        <small id="pn-body-count" style="color:#888;">0 / 200</small>
+                    </div>
+
+                    <div class="adm-field">
+                        <label for="pn-url-input">الرابط اللي هيفتح لو ضغطت على الإشعار (اختياري)</label>
+                        <input type="text" class="adm-input" id="pn-url-input" placeholder="/offers.html" value="/">
+                        <small style="color:#888;">مثال: /offers.html أو /index.html - سيبيه / لو عايزة الصفحة الرئيسية</small>
+                    </div>
+
+                    <div class="adm-card" id="pn-preview-card" style="background:#f9f9f9; border:1px dashed #ddd;">
+                        <p style="margin:0 0 6px; font-weight:700; font-size:13px; color:#888;">معاينة</p>
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <div style="width:36px;height:36px;border-radius:8px;background:var(--adm-pink);flex-shrink:0;"></div>
+                            <div>
+                                <div id="pn-preview-title" style="font-weight:700;">عنوان الإشعار</div>
+                                <div id="pn-preview-body" style="font-size:13px; color:#555;">نص الإشعار هيظهر هنا</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="adm-modal-actions" style="justify-content:flex-start;">
+                        <button type="button" class="adm-btn adm-btn-primary" id="pn-send-btn">
+                            <i class="fa-solid fa-paper-plane"></i> إرسال الإشعار الآن
+                        </button>
+                    </div>
+                </div>
+
+                <div class="adm-card adm-mt-16" id="pn-last-result-card" style="display:none;">
+                    <div class="adm-card-header"><div><h2>نتيجة آخر إرسال</h2></div></div>
+                    <div id="pn-last-result-body"></div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="../vendor/supabase-js/supabase.js"></script>
+    <script src="js/admin-data.js"></script>
+    <script src="js/admin-auth-guard.js"></script>
+    <script src="js/admin-ui-utils.js"></script>
+    <script src="js/admin-shell.js"></script>
+    <script src="js/pages/push-notifications-page.js"></script>
+</body>
+</html>
