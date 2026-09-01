@@ -32,6 +32,40 @@
         return `${Math.round(n || 0).toLocaleString("ar-EG")} ج.م`;
     }
 
+    /* ============================= المفضلة ============================= */
+
+    function renderFavorites(products) {
+        const wrap = document.getElementById("clk-favorites-list");
+        const e = window.BoseAdminUI.escapeHtml;
+        if (!products.length) {
+            wrap.innerHTML = window.BoseAdminUI.emptyStateHTML({
+                icon: "fa-heart",
+                title: "المفضلة فاضية",
+                text: "العميلة دي لسه معندهاش أي منتج في المفضلة.",
+            });
+            return;
+        }
+        wrap.innerHTML = `
+            <div style="display:flex; flex-wrap:wrap; gap:10px;">
+                ${products.map((p) => {
+                    const img = (p.images && p.images[0]) || "";
+                    return `
+                    <div style="display:flex; align-items:center; gap:8px; background: var(--adm-bg-hover); border-radius: 10px; padding: 8px 12px;">
+                        ${img ? `<img src="${e(img)}" alt="" style="width:32px; height:32px; border-radius:8px; object-fit:cover;">` : ""}
+                        <span style="font-weight:700; font-size:0.86rem;">${e(p.title || p.id)}</span>
+                    </div>`;
+                }).join("")}
+            </div>
+        `;
+    }
+
+    async function loadFavorites(phone) {
+        const wrap = document.getElementById("clk-favorites-list");
+        wrap.innerHTML = '<p style="text-align:center; opacity:0.6; padding: 10px 0;">جاري التحميل...</p>';
+        const products = await window.BoseAdmin.getCustomerFavorites(phone);
+        renderFavorites(products);
+    }
+
     /* ============================= بطاقات الملخص ============================= */
 
     function renderStats(profile) {
@@ -271,6 +305,7 @@
         renderCycle(profile);
         renderVouchers(profile);
         renderOrders(profile);
+        loadFavorites(currentPhone);
     }
 
     async function handleSearch() {
@@ -291,6 +326,7 @@
             renderCycle(profile);
             renderVouchers(profile);
             renderOrders(profile);
+            loadFavorites(currentPhone);
             document.getElementById("clk-results").style.display = "";
         } catch (err) {
             currentPhone = null;
