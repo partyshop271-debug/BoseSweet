@@ -249,6 +249,40 @@
         }
     }
 
+    /**
+     * 💗🆕 [نمو - مفضلة مرتبطة برقم موبايل]: بترجع منتجات مفضلة عميلة معينة
+     * (عناوين + صور، مش IDs بس) - قراءة مباشرة من customer_favorites (متاحة
+     * للأدمن عبر RLS is_bose_admin()) بعدين ربط الـIDs بجدول products محليًا
+     * (نفس فلسفة عدم وجود foreign key حقيقي بين order_items.product_id
+     * وproducts.id - مفيش join جاهز في PostgREST هنا برضه).
+     */
+    async function getCustomerFavorites(phone) {
+        try {
+            const cleanPhone = sanitizeFilterValue(String(phone || "").trim());
+            const { data: favRow, error: favError } = await client
+                .from("customer_favorites")
+                .select("product_ids")
+                .eq("phone", cleanPhone)
+                .maybeSingle();
+            if (favError) throw favError;
+            const ids = (favRow && favRow.product_ids) || [];
+            if (!ids.length) return [];
+
+            const { data: products, error: prodError } = await client
+                .from("products")
+                .select("id, title, images, category_id")
+                .in("id", ids);
+            if (prodError) throw prodError;
+
+            const byId = {};
+            (products || []).forEach((p) => { byId[p.id] = p; });
+            return ids.map((id) => byId[id] || { id, title: id, images: [] }).filter(Boolean);
+        } catch (e) {
+            console.warn("تعذر جلب مفضلة العميلة:", e.message);
+            return [];
+        }
+    }
+
     /** سجل النشاط الإداري (آخر التعديلات اللي حصلت من اللوحة) */
     async function getAuditLog(limit = 100) {
         try {
@@ -1722,6 +1756,7 @@
         getTopProducts,
         getCustomerAttributionBreakdown,
         getCustomersByCategoryInterest,
+        getCustomerFavorites,
         getAuditLog,
         getMissingPhotoProductsCount,
         getRecentOrders,
