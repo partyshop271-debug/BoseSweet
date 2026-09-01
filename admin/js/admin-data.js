@@ -1664,6 +1664,56 @@
         return data.text;
     }
 
+    /* ============================= الإشعارات (Push Notifications) ============================= */
+    /**
+     * عدد أجهزة العملاء المشتركة حاليًا في الإشعارات (disabled_at is null).
+     * push_subscriptions ممنوع عليها أي قراءة مباشرة من anon/authenticated (راجع
+     * الـ RLS في migration create_push_subscriptions) - فبنعدّها عبر count فقط
+     * (head request، مفيش قراءة لأي endpoint/keys فعلية) وده مسموح لإنه بيرجع
+     * رقم بس مش صفوف - لو الحساب اتغيّر لاحقًا لازم RPC مخصص بدل كده.
+     */
+    async function getPushSubscriberCount() {
+        try {
+            const { count, error } = await client
+                .from("push_subscriptions")
+                .select("id", { count: "exact", head: true })
+                .is("disabled_at", null);
+            if (error) throw error;
+            return count || 0;
+        } catch (e) {
+            // متوقع لو الجدول لسه RLS بيمنع القراءة تمامًا حتى للـ count -
+            // نرجع null عشان الصفحة تقدر تفرّق بين "صفر" و"معرفناش"
+            console.warn("تعذر معرفة عدد المشتركين في الإشعارات:", e.message);
+            return null;
+        }
+    }
+
+    /**
+     * بترسل إشعار Push حقيقي لكل الأجهزة المشتركة عبر Edge Function
+     * send-push-notification (نفس نمط generateContent بالظبط - بتوكن جلسة
+     * الأدمن الحالي عشان الفنكشن يتأكد إنه أدمن فعلاً قبل ما يبعت لأي حد).
+     * @param {{title: string, body: string, url?: string, icon?: string}} payload
+     * @returns {Promise<{sent: number, failed: number, totalSubscribers: number}>}
+     */
+    async function sendPushNotification(payload) {
+        const session = await getSession();
+        if (!session) throw new Error("لا توجد جلسة دخول صالحة");
+
+        const res = await fetch(`${SUPABASE_URL}/functions/v1/send-push-notification`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${session.access_token}`,
+                "apikey": SUPABASE_PUBLISHABLE_KEY,
+            },
+            body: JSON.stringify(payload),
+        });
+
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || "تعذر إرسال الإشعار، حاول مرة أخرى");
+        return data;
+    }
+
     /* ============================= الجولة التفاعلية (tour.html) ============================= */
 
     /**
@@ -1838,5 +1888,7 @@
         deleteTourStep,
         reorderTourSteps,
         getTourAnalyticsEvents,
+        getPushSubscriberCount,
+        sendPushNotification,
     };
 })();

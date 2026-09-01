@@ -30,6 +30,7 @@
                 { key: "orders", label: "الطلبات", icon: "fa-receipt", href: "orders.html", badgeKey: "ordersToday" },
                 { key: "products", label: "المنتجات", icon: "fa-cake-candles", href: "products.html" },
                 { key: "review-followups", label: "تذكير المراجعات", icon: "fa-comment-dots", href: "review-followups.html", badgeKey: "reviewFollowupsDue" },
+                { key: "push-notifications", label: "الإشعارات", icon: "fa-bell", href: "push-notifications.html" },
             ],
         },
         {
@@ -77,6 +78,7 @@
         orders: ["الطلبات", "متابعة وتحديث حالة كل طلبات العملاء"],
         products: ["المنتجات", "إضافة وتعديل منتجات المتجر"],
         "review-followups": ["تذكير المراجعات", "عملاء اتسلملهم طلبهم من يوم أو أكتر - ابعتيلهم تذكير مراجعة بضغطة واحدة"],
+        "push-notifications": ["الإشعارات", "ابعتي إشعار Push حقيقي فورًا لكل العميلات المفعّلة عندهم إشعارات الموقع"],
         homepage: ["الواجهة الرئيسية", "التحكم في محتوى الصفحة الرئيسية للموقع"],
         "about-page": ["صفحة \"من نحن\"", "القصة، الإحصائيات الحقيقية، قيم العلامة التجارية، ومعرض الصور"],
         categories: ["الفئات", "إدارة فئات المنتجات"],
