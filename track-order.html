@@ -35,10 +35,9 @@
          الصفحة الحقيقية. الحل: "defer" بيخلي السكريبت ينتظر لحد ما HTML كله
          (بما فيه <body>) يتحلل الأول قبل ما ينفذ - نفس الطريقة المستخدمة في كل
          صفحات الموقع التانية (index/cart/menu/category/...). -->
-    <script src="js/supabase-client.js?v=2026_production_v40.0" defer></script>
-    <script src="js/favorites-engine.js?v=2026_production_v37.0" defer></script>
+    <script src="js/supabase-client.js?v=2026_production_v41.0" defer></script>
+    <script src="js/favorites-engine.js?v=2026_production_v38.0" defer></script>
     <script src="js/core-engine.js?v=2027_production_v54.0" defer></script>
-    <script src="js/guided-tour.js?v=3.1" defer></script>
 
     <style>
         .track-page-wrapper { padding: 60px 20px 80px; max-width: 620px; margin: 0 auto; min-height: 70vh; font-family: 'Cairo', sans-serif; }
@@ -196,6 +195,11 @@
                 try {
                     const result = await window.BoseSupabase.trackBoseOrder(orderNumber, phone);
                     renderResult(result);
+                    // 💗 [نمو - مفضلة مرتبطة برقم موبايل]: نفس فكرة صفحة المكافآت -
+                    // لو الطلب اتلاقى فعلاً، نسترجع مفضلة العميلة ونزامنها.
+                    if (result && result.found && typeof window.mergeBoseFavoritesFromServer === "function") {
+                        window.mergeBoseFavoritesFromServer(phone);
+                    }
                 } catch (err) {
                     renderResult({ found: false, message: "حصل خطأ في الاتصال، حاولي مرة أخرى" });
                 } finally {
