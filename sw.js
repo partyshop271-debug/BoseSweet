@@ -12,7 +12,12 @@
  * الإنترنت بطيء، وسيبنا كل حاجة تانية تروح للسيرفر مباشرة زي ما هي.
  */
 
-const BOSE_SW_VERSION = "bose-sw-v1";
+const BOSE_SW_VERSION = "bose-sw-v2";
+
+// 🔔 [نظام الإشعارات]: أيقونة افتراضية لو الإشعار الجاي من السيرفر متضمنش
+// أيقونة (نفس شعار المتجر الافتراضي المستخدم في api/manifest.js).
+const BOSE_PUSH_DEFAULT_ICON =
+  "https://res.cloudinary.com/dyx4w0dr1/image/upload/f_auto,q_auto,w_192,h_192,c_fill,g_auto,b_white/v1780054759/logo_igggsb.png";
 
 self.addEventListener("install", (event) => {
   self.skipWaiting();
@@ -28,5 +33,56 @@ self.addEventListener("fetch", (event) => {
 
   event.respondWith(
     fetch(event.request).catch(() => caches.match(event.request))
+  );
+});
+
+/**
+ * 🔔 [نظام الإشعارات - جزء 1]: استقبال رسالة Push جاية من فنكشن
+ * send-push-notification (أدمن ضغط "إرسال" من لوحة التحكم) وعرضها كإشعار
+ * حقيقي على شاشة العميل، حتى لو الموقع مقفول تماماً - ده بالظبط اللي بيفرّق
+ * بين "أيقونة عادية" و"تطبيق فعلي" بيتواصل مع العميل.
+ * الرسالة بتوصل كـ JSON: { title, body, url, icon } (شايفها من الفنكشن).
+ */
+self.addEventListener("push", (event) => {
+  let data = {};
+  try {
+    data = event.data ? event.data.json() : {};
+  } catch (e) {
+    data = { title: "حلويات بوسي", body: event.data ? event.data.text() : "" };
+  }
+
+  const title = data.title || "حلويات بوسي";
+  const options = {
+    body: data.body || "",
+    icon: data.icon || BOSE_PUSH_DEFAULT_ICON,
+    badge: data.icon || BOSE_PUSH_DEFAULT_ICON,
+    dir: "rtl",
+    lang: "ar",
+    data: { url: data.url || "/" },
+  };
+
+  event.waitUntil(self.registration.showNotification(title, options));
+});
+
+/**
+ * 🔔 [نظام الإشعارات - جزء 2]: العميل بيدوس على الإشعار -> نفتحله الرابط
+ * المرتبط بيه (أو نركّز على تبويب مفتوح أصلاً لو موجود بدل ما نفتح تبويب جديد).
+ */
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const targetUrl = (event.notification.data && event.notification.data.url) || "/";
+
+  event.waitUntil(
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((clientsList) => {
+      for (const client of clientsList) {
+        const clientPath = new URL(client.url).pathname;
+        if (clientPath === targetUrl && "focus" in client) {
+          return client.focus();
+        }
+      }
+      if (self.clients.openWindow) {
+        return self.clients.openWindow(targetUrl);
+      }
+    })
   );
 });
