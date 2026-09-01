@@ -18,6 +18,11 @@
     'use strict';
 
     const FAV_STORAGE_KEY = 'bose_favorites';
+    // 💗🆕 [نمو - مفضلة مرتبطة برقم موبايل]: آخر رقم موبايل حقيقي اتأكد لهذه
+    // العميلة (بعد طلب ناجح، أو بحث ناجح في صفحة المكافآت/تتبع الطلب) - بيتسجل
+    // هنا عشان أي تغيير لاحق في المفضلة يترفع تلقائي لنفس الرقم من غير ما
+    // العميلة تعمل حاجة إضافية.
+    const KNOWN_PHONE_KEY = 'bose_known_phone';
 
     /** @returns {string[]} */
     function getBoseFavorites() {
@@ -49,6 +54,60 @@
         return getBoseFavorites().includes(String(productId));
     }
 
+    function getKnownPhone() {
+        try { return localStorage.getItem(KNOWN_PHONE_KEY) || null; } catch (e) { return null; }
+    }
+
+    /**
+     * 📞 بتتنادى من أي مكان في الموقع اتأكد فيه رقم موبايل حقيقي للعميلة
+     * (نجاح طلب، بحث ناجح في المكافآت/تتبع الطلب) - بعد كده أي تغيير في
+     * المفضلة هيترفع تلقائي لنفس الرقم ده.
+     * @param {string} phone
+     */
+    function setBoseKnownPhone(phone) {
+        if (!phone) return;
+        try { localStorage.setItem(KNOWN_PHONE_KEY, String(phone)); } catch (e) {}
+    }
+
+    /**
+     * ☁️ بترفع نسخة المفضلة المحلية الحالية لنفس رقم الموبايل المعروف (لو
+     * موجود) - best-effort بالكامل، مفيش أي انتظار أو رسالة خطأ للعميلة لو
+     * فشلت (تحسين خلفي، مش جزء أساسي من رحلة الشراء).
+     */
+    function syncBoseFavoritesToServer() {
+        const phone = getKnownPhone();
+        if (!phone) return;
+        if (!window.BoseSupabase || typeof window.BoseSupabase.syncCustomerFavorites !== 'function') return;
+        window.BoseSupabase.syncCustomerFavorites(phone, getBoseFavorites()).catch(() => {
+            // تجاهل عمدي - رفع خلفي اختياري، ما ينفعش يعطّل أي حاجة تانية بالصفحة
+        });
+    }
+
+    /**
+     * 🔄 بتجيب مفضلة العميلة المسجّلة على نفس الرقم من القاعدة، تدمجها مع أي
+     * حاجة محلية موجودة بالفعل على الجهاز ده (union - مفيش أي حاجة بتتشال)،
+     * تحفظ النسخة المدموجة محليًا، وترفعها تاني عشان القاعدة والمتصفح يفضلوا
+     * متطابقين. بتتنادى لما رقم موبايل يتأكد من صفحة المكافآت/تتبع الطلب.
+     * @param {string} phone
+     */
+    async function mergeBoseFavoritesFromServer(phone) {
+        if (!phone) return;
+        setBoseKnownPhone(phone);
+        if (!window.BoseSupabase || typeof window.BoseSupabase.fetchCustomerFavorites !== 'function') return;
+        try {
+            const remoteList = await window.BoseSupabase.fetchCustomerFavorites(phone);
+            const localList = getBoseFavorites();
+            const merged = Array.from(new Set([...localList, ...remoteList.map(String)]));
+            if (merged.length !== localList.length) {
+                saveBoseFavorites(merged);
+                updateFavoritesBadge();
+            }
+            syncBoseFavoritesToServer();
+        } catch (e) {
+            // تجاهل عمدي - نفس فلسفة رفع المفضلة، تحسين خلفي اختياري
+        }
+    }
+
     /**
      * 🔄 بيحدّث كل شارات عداد المفضلة الظاهرة في الصفحة (هيدر سطح المكتب +
      * أي مكان تاني ليه نفس الكلاس مستقبلاً) دفعة واحدة.
@@ -78,6 +137,9 @@
         list = wasFavorite ? list.filter((favId) => favId !== id) : [...list, id];
         saveBoseFavorites(list);
         updateFavoritesBadge();
+        // 💗 [نمو]: أي تغيير في المفضلة (إضافة/إزالة) بيترفع فورًا لنفس رقم
+        // الموبايل المعروف لو موجود - عشان لوحة التحكم تشوف أحدث اهتمام حقيقي.
+        syncBoseFavoritesToServer();
 
         const nowFavorite = !wasFavorite;
         let matchedButtons = 0;
@@ -117,6 +179,9 @@
     window.isBoseFavorite = isBoseFavorite;
     window.toggleBoseFavorite = toggleBoseFavorite;
     window.updateFavoritesBadge = updateFavoritesBadge;
+    window.setBoseKnownPhone = setBoseKnownPhone;
+    window.syncBoseFavoritesToServer = syncBoseFavoritesToServer;
+    window.mergeBoseFavoritesFromServer = mergeBoseFavoritesFromServer;
 
     // 🛡️ الهيدر (وفيه عداد القلب) بيتحقن ديناميكياً من core-engine.js بعد ما
     // بيانات المتجر توصل - مش موجود وقت DOMContentLoaded من الأساس - فبنستنى
@@ -125,5 +190,10 @@
     document.addEventListener('DOMContentLoaded', updateFavoritesBadge);
     document.addEventListener('BoseDatabaseLoaded', function () {
         setTimeout(updateFavoritesBadge, 60);
+        // 💗 [نمو]: لو رقم موبايل معروف بالفعل من زيارة سابقة (طلب/بحث سابق)،
+        // نجيب أحدث نسخة من مفضلتها من القاعدة وندمجها هنا تلقائيًا - مرة واحدة
+        // فقط لكل تحميل صفحة، بدون أي تفاعل مطلوب من العميلة.
+        const knownPhone = getKnownPhone();
+        if (knownPhone) mergeBoseFavoritesFromServer(knownPhone);
     });
 })();

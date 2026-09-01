@@ -593,6 +593,23 @@
         }
     }
 
+    /**
+     * 💗🆕 [نمو - مفضلة مرتبطة برقم موبايل]: المفضلة (favorites-engine.js) كانت
+     * localStorage بحت مش مرتبطة برقم أي عميلة، فمعنداش أي طريقة نعرف بيها مين
+     * مهتمة بمنتج معين قبل ما تشتريه فعليًا، ومعندهاش طريقة تسترجع مفضلتها لو
+     * غيّرت جهاز. الدالتين دول بيبعتوا/يجيبوا القائمة عبر RPC آمن (نفس فلسفة
+     * create_order_with_items - رقم الهاتف بيتحقق منه سيرفريًا، معدل الطلبات
+     * محدود) - favorites-engine.js هو اللي بيقرر أمتى يستدعيهم فعليًا.
+     */
+    async function syncCustomerFavorites(phone, productIds) {
+        return boseSupabaseRpc("sync_customer_favorites", { p_phone: phone, p_product_ids: productIds || [] });
+    }
+
+    async function fetchCustomerFavorites(phone) {
+        const result = await boseSupabaseRpc("get_customer_favorites", { p_phone: phone });
+        return Array.isArray(result) ? result.map(String) : [];
+    }
+
     window.BoseSupabase = {
         loadBoseStoreDataFromSupabase,
         getBoseDataVersion,
@@ -608,6 +625,8 @@
         fetchBoseTourSteps,
         logBoseTourEvent,
         logBoseTourEventOnExit,
+        syncCustomerFavorites,
+        fetchCustomerFavorites,
     };
     // الاسم اللي cart-engine.js بينده عليه فعلياً (راجع processFinalBoseOrder)
     window.saveBoseOrderToDatabase = saveBoseOrderToDatabase;

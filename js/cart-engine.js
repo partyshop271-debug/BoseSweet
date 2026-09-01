@@ -1247,6 +1247,16 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFu
                 completedBoseOrderObject.dbOrderNumber = dbResult.orderNumber;
                 completedBoseOrderObject.orderNumber = dbResult.orderNumber;
                 completedBoseOrderObject.orderId = dbResult.orderNumber;
+
+                // 💗 [نمو - مفضلة مرتبطة برقم موبايل]: أول لحظة نتأكد فيها من رقم
+                // موبايل حقيقي للعميلة - نسجّله كـ"رقم معروف" ونرفع مفضلتها الحالية
+                // (لو عندها أي حاجة في المفضلة) عليه فورًا، best-effort بالكامل.
+                if (typeof window.setBoseKnownPhone === "function") {
+                    window.setBoseKnownPhone(sanitizedPhone1);
+                }
+                if (typeof window.syncBoseFavoritesToServer === "function") {
+                    window.syncBoseFavoritesToServer();
+                }
                 // 🎁 [نظام نقاط الولاء]: القيم دي هي المؤكدة فعلياً من قاعدة البيانات
                 // (مصدر الحقيقة) - بتتسجل هنا عشان صفحة النجاح تقدر تعرض للعميلة
                 // بالظبط الخصم اللي اتطبق، أو تبشّرها لو الطلب ده حقق لها قسيمة الـ300 جنيه.
