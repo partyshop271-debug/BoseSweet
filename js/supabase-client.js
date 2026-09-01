@@ -610,6 +610,27 @@
         return Array.isArray(result) ? result.map(String) : [];
     }
 
+    /**
+     * 🔔 [نظام الإشعارات]: حفظ/حذف اشتراك Push Notification لجهاز العميل.
+     * زي syncCustomerFavorites بالظبط - بتعدي عبر RPC آمن (save_push_subscription/
+     * remove_push_subscription) مش على الجدول مباشرة، عشان endpoint/keys بتاعة
+     * أي جهاز تفضل مش قابلة للقراءة من anon، بس الكتابة المتحكَّم فيها مسموحة.
+     * js/push-notifications.js هو اللي بيستدعيهم فعليًا.
+     */
+    async function savePushSubscription(subscriptionJSON, userAgent) {
+        const keys = (subscriptionJSON && subscriptionJSON.keys) || {};
+        return boseSupabaseRpc("save_push_subscription", {
+            p_endpoint: subscriptionJSON.endpoint,
+            p_p256dh: keys.p256dh,
+            p_auth: keys.auth,
+            p_user_agent: userAgent || (typeof navigator !== "undefined" ? navigator.userAgent : null),
+        });
+    }
+
+    async function removePushSubscription(endpoint) {
+        return boseSupabaseRpc("remove_push_subscription", { p_endpoint: endpoint });
+    }
+
     window.BoseSupabase = {
         loadBoseStoreDataFromSupabase,
         getBoseDataVersion,
@@ -627,6 +648,8 @@
         logBoseTourEventOnExit,
         syncCustomerFavorites,
         fetchCustomerFavorites,
+        savePushSubscription,
+        removePushSubscription,
     };
     // الاسم اللي cart-engine.js بينده عليه فعلياً (راجع processFinalBoseOrder)
     window.saveBoseOrderToDatabase = saveBoseOrderToDatabase;
