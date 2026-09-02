@@ -1512,6 +1512,93 @@
         if (error) throw error;
     }
 
+    /* ============================= 🎁❓ الأسئلة الشائعة عن بطاقات الهدايا (gift_card_faqs) ============================= */
+    /**
+     * أسئلة وإجابات ثابتة عن بطاقات الهدايا (منفصلة تماماً عن products.faqs
+     * الخاص بأسئلة كل منتج لوحده) - بتتعرض للعميلة في صفحة gift-card-faq.html
+     * كأكورديون واحد يغطي الموضوع كله (الشراء/الاستلام/الاستخدام/الصلاحية).
+     * قراءة عامة (RLS: is_published=true فقط) وكتابة أدمن فقط - نفس فلسفة
+     * أي جدول كتالوج تاني في الموقع.
+     */
+
+    /** كل الأسئلة (منشورة ومخفية) - للوحة التحكم بس، مرتبة بـ sort_order */
+    async function getAllGiftCardFaqs() {
+        try {
+            const { data, error } = await client
+                .from("gift_card_faqs")
+                .select("*")
+                .order("sort_order", { ascending: true });
+            if (error) throw error;
+            return data || [];
+        } catch (e) {
+            console.warn("تعذر جلب الأسئلة الشائعة عن بطاقات الهدايا:", e.message);
+            return [];
+        }
+    }
+
+    /** إضافة سؤال جديد - sort_order افتراضياً بيتحط آخر الترتيب الحالي */
+    async function addGiftCardFaq({ question, answer, sortOrder, isPublished }) {
+        const q = (question || "").trim();
+        const a = (answer || "").trim();
+        if (!q || !a) throw new Error("السؤال والإجابة مطلوبين");
+
+        let finalSortOrder = sortOrder;
+        if (finalSortOrder === undefined || finalSortOrder === null) {
+            const { data: maxRow } = await client
+                .from("gift_card_faqs")
+                .select("sort_order")
+                .order("sort_order", { ascending: false })
+                .limit(1)
+                .maybeSingle();
+            finalSortOrder = (maxRow?.sort_order || 0) + 1;
+        }
+
+        const { data, error } = await client
+            .from("gift_card_faqs")
+            .insert({
+                question: q,
+                answer: a,
+                sort_order: finalSortOrder,
+                is_published: isPublished !== false,
+            })
+            .select()
+            .single();
+        if (error) throw error;
+        await logAdminAction("إضافة سؤال شائع عن بطاقات الهدايا", "gift_card_faq", data.id, q);
+        return data;
+    }
+
+    /** تعديل سؤال موجود - أي مجموعة حقول من question/answer/sortOrder/isPublished */
+    async function updateGiftCardFaq(faqId, { question, answer, sortOrder, isPublished }) {
+        const patch = { updated_at: new Date().toISOString() };
+        if (question !== undefined) patch.question = (question || "").trim();
+        if (answer !== undefined) patch.answer = (answer || "").trim();
+        if (sortOrder !== undefined && sortOrder !== null) patch.sort_order = sortOrder;
+        if (isPublished !== undefined) patch.is_published = !!isPublished;
+
+        const { error } = await client.from("gift_card_faqs").update(patch).eq("id", faqId);
+        if (error) throw error;
+        await logAdminAction("تعديل سؤال شائع عن بطاقات الهدايا", "gift_card_faq", faqId, patch.question || null);
+    }
+
+    /** حذف سؤال نهائياً */
+    async function deleteGiftCardFaq(faqId, question) {
+        const { error } = await client.from("gift_card_faqs").delete().eq("id", faqId);
+        if (error) throw error;
+        await logAdminAction("حذف سؤال شائع عن بطاقات الهدايا", "gift_card_faq", faqId, question || null);
+    }
+
+    /** إعادة ترتيب دفعة من الأسئلة مرة واحدة - بتستقبل [{id, sort_order}, ...]
+     *  (نفس فكرة أزرار الأعلى/الأسفل في مكونات الـ repeater بلوحة التحكم) */
+    async function reorderGiftCardFaqs(orderedItems) {
+        if (!orderedItems || !orderedItems.length) return;
+        await Promise.all(
+            orderedItems.map((item) =>
+                client.from("gift_card_faqs").update({ sort_order: item.sort_order }).eq("id", item.id)
+            )
+        );
+    }
+
     /**
      * 📝 سجل نشاط إداري عام - بيتحط في admin_audit_log (نفس الجدول اللي
      * صفحة "سجل النشاط" بتقرأ منه). admin_id و admin_name بيتملوا تلقائياً
@@ -1881,6 +1968,11 @@
         voidGiftCard,
         getUnnotifiedGiftCards,
         markGiftCardNotified,
+        getAllGiftCardFaqs,
+        addGiftCardFaq,
+        updateGiftCardFaq,
+        deleteGiftCardFaq,
+        reorderGiftCardFaqs,
         setOrderExcludedFromLoyalty,
         getAllTourSteps,
         createTourStep,
