@@ -18,7 +18,7 @@
 
     // 🔑 مفتاح VAPID العلني - آمن للعرض في كود العميل (ده بالظبط الغرض منه،
     // بعكس المفتاح الخاص اللي متخزّن كـ Edge Function secret على السيرفر بس).
-    const VAPID_PUBLIC_KEY = "BMUAHJ-o5Z1BgZJkT7D7RNWDNzvuzaZFAzg1k3WATf55XlR4dODO68gZ6UrtETsRF2Ig_lA8PhrfGfMVAkOAg2U";
+    const VAPID_PUBLIC_KEY = "BKRRJOTI0JD8uBVVM1mlP392jLxo3ILd3UhLshBaYssK4_rPc4PbFffvIosiTEGVzzPHB-CfFnNQ4Tt06fBCK8M";
 
     const LS_PERMANENTLY_DISMISSED = "bose_push_prompt_permanently_dismissed";
     const SS_DISMISSED_THIS_SESSION = "bose_push_prompt_dismissed_this_session";
