@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الأسئلة الشائعة عن بطاقات الهدايا | لوحة تحكم حلويات بوسي</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="stylesheet" href="../vendor/fonts/cairo/cairo.css?v=2026_local_v1.0">
+    <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css?v=2026_local_v1.0" fetchpriority="high">
+
+    <link rel="stylesheet" href="css/admin-theme.css">
+    <link rel="stylesheet" href="css/admin-layout.css">
+
+    <style>
+        .gcf-order-badge {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 26px; height: 26px; border-radius: 50%;
+            background: rgba(255,145,164,0.12); color: var(--bose-pink, #FF91A4);
+            font-weight: 700; font-size: 12px;
+        }
+        .gcf-status-pill {
+            display: inline-block; padding: 3px 10px; border-radius: 20px;
+            font-size: 12px; font-weight: 700;
+        }
+        .gcf-status-pill.published { background: rgba(46, 204, 113, 0.15); color: #2ecc71; }
+        .gcf-status-pill.hidden { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.55); }
+        .gcf-answer-preview {
+            max-width: 360px; overflow: hidden; text-overflow: ellipsis;
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+            font-size: 12.5px; opacity: 0.75; margin-top: 4px;
+        }
+    </style>
+</head>
+<body data-page="gift-card-faqs">
+
+    <!-- شاشة تحميل تظهر لحد ما يتأكد من الجلسة -->
+    <div class="adm-auth-gate"><div class="adm-loading-spinner"></div></div>
+
+    <div class="adm-shell">
+        <div id="adm-shell-target"></div>
+
+        <main class="adm-main">
+            <div id="adm-topbar-target"></div>
+
+            <div class="adm-content" id="adm-page-content">
+
+                <div class="adm-card" style="margin-bottom: 18px; background: rgba(255,145,164,0.05);">
+                    <p style="margin:0; font-size:0.9rem; line-height:1.7;">
+                        <i class="fa-solid fa-circle-info" style="color: var(--bose-pink, #FF91A4);"></i>
+                        الأسئلة دي بتظهر للعميلة في صفحة
+                        <a href="/gift-card-faq.html" target="_blank" rel="noopener">الأسئلة الشائعة عن بطاقات الهدايا</a>
+                        على الموقع - السؤال المخفي (مش منشور) بيفضل هنا بس ومش بيظهر للعميلة، والترتيب هنا هو نفسه ترتيب الظهور هناك.
+                    </p>
+                </div>
+
+                <div class="adm-card">
+                    <div class="adm-card-header">
+                        <div>
+                            <h2>كل الأسئلة الشائعة</h2>
+                            <p>إدارة أسئلة وإجابات بطاقات الهدايا وترتيب ظهورها للعميلة</p>
+                        </div>
+                        <button class="adm-btn adm-btn-primary" id="add-gcf-btn">
+                            <i class="fa-solid fa-plus"></i> سؤال جديد
+                        </button>
+                    </div>
+                    <div class="adm-table-wrapper">
+                        <table class="adm-table" id="gcf-table">
+                            <thead>
+                                <tr>
+                                    <th style="width:60px;">الترتيب</th>
+                                    <th>السؤال والإجابة</th>
+                                    <th style="width:100px;">الحالة</th>
+                                    <th style="width:150px;"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="gcf-tbody">
+                                <tr><td colspan="4"><div class="adm-loading-spinner"></div></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="../vendor/supabase-js/supabase.js"></script>
+    <script src="js/admin-data.js"></script>
+    <script src="js/admin-auth-guard.js"></script>
+    <script src="js/admin-ui-utils.js"></script>
+    <script src="js/admin-shell.js"></script>
+    <script src="js/pages/gift-card-faqs-page.js"></script>
+</body>
+</html>
