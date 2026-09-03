@@ -39,12 +39,29 @@
                             <button type="button" class="adm-btn adm-btn-danger" id="orders-delete-cancelled-btn">
                                 <i class="fa-solid fa-broom"></i> حذف كل الملغي
                             </button>
+                            <button type="button" class="adm-btn adm-btn-outline" id="orders-export-csv-btn">
+                                <i class="fa-solid fa-file-csv"></i> تصدير Excel
+                            </button>
                         </div>
+                    </div>
+
+                    <!-- 🆕 [تحسين إنتاجية - فلتر تاريخ سريع]: بدل ما تدوّري وسط كل
+                         الطلبات المتراكمة، دوسي زرار واحد تشوفي بس طلبات اليوم/أمس/الأسبوع -->
+                    <div class="adm-orders-date-filter" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px;">
+                        <button type="button" class="adm-chip active" data-range="all">كل الطلبات</button>
+                        <button type="button" class="adm-chip" data-range="today">اليوم</button>
+                        <button type="button" class="adm-chip" data-range="yesterday">أمس</button>
+                        <button type="button" class="adm-chip" data-range="week">آخر 7 أيام</button>
                     </div>
 
                     <div class="adm-orders-bulk-bar" id="orders-bulk-bar" style="display:none;">
                         <span id="orders-bulk-count">0 طلب محدد</span>
                         <button type="button" class="adm-btn adm-btn-ghost" id="orders-bulk-clear-btn">إلغاء التحديد</button>
+                        <!-- 🆕 [تحسين إنتاجية - تحديث حالة جماعي] -->
+                        <select class="adm-select" id="orders-bulk-status-select" style="width:auto; min-width:160px; margin-inline-start:auto;"></select>
+                        <button type="button" class="adm-btn adm-btn-primary" id="orders-bulk-status-btn">
+                            <i class="fa-solid fa-check-double"></i> تحديث الحالة
+                        </button>
                         <button type="button" class="adm-btn adm-btn-danger" id="orders-bulk-delete-btn">
                             <i class="fa-solid fa-trash"></i> حذف المحدد
                         </button>
