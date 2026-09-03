@@ -25,8 +25,6 @@
         { key: "flower_simulator", label: "محاكي الورد" },
         { key: "cart", label: "السلة" },
         { key: "checkout", label: "إتمام الطلب" },
-        { key: "rewards", label: "نادي المكافآت" },
-        { key: "track_order", label: "تتبع الطلب" },
     ];
 
     // نفس الصفحات اللي فعليًا محمّل فيها js/guided-tour.js في الموقع العام -
@@ -41,8 +39,6 @@
         { value: "cart.html", label: "السلة (cart.html)" },
         { value: "checkout.html", label: "إتمام الطلب (checkout.html)" },
         { value: "order-success.html", label: "نجاح الطلب (order-success.html)" },
-        { value: "rewards.html", label: "نادي المكافآت (rewards.html)" },
-        { value: "track-order.html", label: "تتبع الطلب (track-order.html)" },
     ];
 
     let allSteps = []; // كل خطوات كل الجولات مع بعض - بنفلترها حسب الجولة المختارة عند العرض
@@ -246,16 +242,6 @@
                         </select>
                     </div>
 
-                    <div class="adm-field" id="st-verify-field-wrap">
-                        <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
-                            <input type="checkbox" id="st-verify-panel" ${isEdit && step.verify_panel_change ? "checked" : ""}>
-                            تحقّق فعلي قبل ما الجولة تتقدم (للوحات/panels بس)
-                        </label>
-                        <p class="adm-hint" style="margin-top:4px;">
-                            فعّليها لو الزرار ده ممكن يمنعه validation في الموقع نفسه من الانتقال فعليًا (زي زرار "التالي" في محاكي التورت لما خانة المناسبة لسه فاضية) - الجولة وقتها بتستنى وتتأكد إن لوحة (panel) تانية فعلاً ظهرت قبل ما تتقدم للخطوة اللي بعدها، بدل ما تفترض إن الكليك = انتقال حصل.
-                        </p>
-                    </div>
-
                     <div class="adm-field">
                         <label for="st-selector">CSS Selector للعنصر الحقيقي</label>
                         <input type="text" class="adm-input" id="st-selector" placeholder="#btn-add-to-cart-master-trigger" value="${isEdit ? e(step.selector) : ""}" required style="direction: ltr; text-align: left;">
@@ -298,12 +284,10 @@
         const pageFieldWrap = document.getElementById("st-page-field-wrap");
         const modeSelect = document.getElementById("st-mode");
         const hintFieldWrap = document.getElementById("st-hint-field-wrap");
-        const verifyFieldWrap = document.getElementById("st-verify-field-wrap");
 
         function syncVisibility() {
             pageFieldWrap.style.display = anyPageSelect.value === "1" ? "none" : "";
             hintFieldWrap.style.display = modeSelect.value === "click" ? "" : "none";
-            verifyFieldWrap.style.display = modeSelect.value === "click" ? "" : "none";
         }
         anyPageSelect.addEventListener("change", syncVisibility);
         modeSelect.addEventListener("change", syncVisibility);
@@ -335,7 +319,6 @@
                 body_text: document.getElementById("st-body-text").value.trim(),
                 section: document.getElementById("st-section").value.trim() || null,
                 delay_before_show: parseInt(document.getElementById("st-delay").value, 10) || 0,
-                verify_panel_change: mode === "click" ? document.getElementById("st-verify-panel").checked : false,
             };
 
             try {

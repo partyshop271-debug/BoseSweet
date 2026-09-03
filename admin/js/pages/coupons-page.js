@@ -11,7 +11,6 @@
 
     let allCoupons = [];
     let showArchived = false;
-    let selectedCodes = new Set();
     // 📊 [تقرير استخدام الكوبونات]: خريطة { code -> { usageCount, totalDiscount, lastUsedAt } }
     // محسوبة من جدول orders الفعلي، مش عمود مخزّن على جدول coupons نفسه.
     let usageStats = {};
@@ -100,12 +99,11 @@
         const e = window.BoseAdminUI.escapeHtml;
 
         if (!allCoupons.length) {
-            tbody.innerHTML = `<tr><td colspan="11">${window.BoseAdminUI.emptyStateHTML({
+            tbody.innerHTML = `<tr><td colspan="10">${window.BoseAdminUI.emptyStateHTML({
                 icon: "fa-ticket",
                 title: "مفيش كوبونات مضافة لسه",
                 text: "ابدأ بإضافة أول كود خصم من زرار \"كوبون جديد\".",
             })}</td></tr>`;
-            updateBulkBar();
             return;
         }
 
@@ -113,7 +111,6 @@
             const usage = formatUsage(c.code);
             return `
             <tr${c.is_archived ? ' style="opacity:0.6;"' : ""}>
-                <td><input type="checkbox" class="coupons-row-check" data-code="${e(c.code)}" ${selectedCodes.has(c.code) ? "checked" : ""}></td>
                 <td><strong>${e(c.code)}</strong></td>
                 <td>${e(TYPE_LABELS[c.type] || c.type)}</td>
                 <td>${formatValue(c)}</td>
@@ -165,30 +162,6 @@
         tbody.querySelectorAll('[data-action="unarchive"]').forEach((btn) => {
             btn.addEventListener("click", () => handleUnarchive(btn.getAttribute("data-code")));
         });
-
-        tbody.querySelectorAll(".coupons-row-check").forEach((cb) => {
-            cb.addEventListener("change", () => {
-                const code = cb.getAttribute("data-code");
-                if (cb.checked) selectedCodes.add(code); else selectedCodes.delete(code);
-                updateBulkBar();
-            });
-        });
-        updateBulkBar();
-    }
-
-    /** 🆕 [تحسين إنتاجية - أرشفة جماعية] نفس نمط شريط التحديد الجماعي في باقي الصفحات */
-    function updateBulkBar() {
-        const bar = document.getElementById("coupons-bulk-bar");
-        const countEl = document.getElementById("coupons-bulk-count");
-        const selectAll = document.getElementById("coupons-select-all");
-        if (!bar) return;
-
-        const visibleCodes = new Set(allCoupons.map((c) => c.code));
-        Array.from(selectedCodes).forEach((code) => { if (!visibleCodes.has(code)) selectedCodes.delete(code); });
-
-        bar.style.display = selectedCodes.size ? "flex" : "none";
-        if (countEl) countEl.textContent = `${selectedCodes.size} كوبون محدد`;
-        if (selectAll) selectAll.checked = allCoupons.length > 0 && selectedCodes.size === allCoupons.length;
     }
 
     async function handleToggleActive(code) {
@@ -461,7 +434,7 @@
 
     async function loadCoupons() {
         const tbody = document.getElementById("coupons-tbody");
-        tbody.innerHTML = `<tr><td colspan="11"><div class="adm-loading-spinner"></div></td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="10"><div class="adm-loading-spinner"></div></td></tr>`;
         const [coupons, stats] = await Promise.all([
             window.BoseAdmin.getAllCoupons(showArchived),
             window.BoseAdmin.getCouponUsageStats(),
@@ -480,34 +453,6 @@
                 await loadCoupons();
             });
         }
-        document.getElementById("coupons-select-all").addEventListener("change", (e) => {
-            if (e.target.checked) allCoupons.forEach((c) => selectedCodes.add(c.code));
-            else selectedCodes.clear();
-            renderTable();
-        });
-        document.getElementById("coupons-bulk-clear-btn").addEventListener("click", () => {
-            selectedCodes.clear();
-            renderTable();
-        });
-        document.getElementById("coupons-bulk-archive-btn").addEventListener("click", async () => {
-            const count = selectedCodes.size;
-            if (!count) return;
-            const confirmed = await window.BoseAdminUI.confirmAction({
-                title: "تأكيد أرشفة جماعية",
-                message: `هيتم أرشفة ${count} كوبون (وإيقافهم تلقائياً). السجل والإحصائيات هتفضل محفوظة، وتقدري تسترجعيهم بعدين.`,
-                confirmLabel: "أرشفة الكل",
-            });
-            if (!confirmed) return;
-            try {
-                await window.BoseAdmin.bulkArchiveCoupons(Array.from(selectedCodes));
-                window.BoseAdminUI.showToast(`تم أرشفة ${count} كوبون`, "success");
-                selectedCodes.clear();
-                await loadCoupons();
-            } catch (e) {
-                window.BoseAdminUI.showToast("تعذر أرشفة الكوبونات المحددة", "error");
-            }
-        });
-
         await loadCoupons();
     });
 })();
