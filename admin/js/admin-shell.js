@@ -147,17 +147,6 @@
                     </div>
                 </div>
                 <div class="adm-topbar-right">
-                    <!-- 🆕 [تحسين إنتاجية - بحث موحّد من أي صفحة]: صندوق واحد بيدوّر
-                         في الطلبات + المنتجات + العملاء مع بعض، من غير ما تسيبي
-                         الصفحة اللي انتي فيها. اضغطي على نتيجة يوديكي للصفحة الصح
-                         مباشرة (طلب مفتوح، منتج جاهز للتعديل، أو ملف العميلة). -->
-                    <div class="adm-global-search" id="adm-global-search">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                        <input type="text" id="adm-global-search-input" autocomplete="off"
-                               placeholder="بحث سريع: رقم طلب / اسم منتج / موبايل عميلة...">
-                        <kbd class="adm-global-search-kbd">/</kbd>
-                        <div class="adm-global-search-results" id="adm-global-search-results"></div>
-                    </div>
                     <div class="adm-user-chip">
                         <div class="adm-user-avatar">${initial}</div>
                         <span>${adminInfo?.displayName || ""}</span>
@@ -289,107 +278,6 @@
             });
             if (backdrop) backdrop.addEventListener("click", closeSidebar);
         }
-
-        wireGlobalSearch();
-    }
-
-    /**
-     * 🆕 [تحسين إنتاجية - بحث موحّد من أي صفحة]: بيدوّر في window.BoseAdmin.globalAdminSearch
-     * (تعريفها في admin-data.js) بعد 300ms من آخر حرف اتكتب، ويعرض النتايج
-     * مجمّعة (طلبات/منتجات/عميلات) في قائمة منسدلة. كل نتيجة بتوديك للصفحة
-     * الصح مباشرة بنفس نمط "?edit=ID" الموجود بالفعل في products.html.
-     */
-    function wireGlobalSearch() {
-        const input = document.getElementById("adm-global-search-input");
-        const resultsBox = document.getElementById("adm-global-search-results");
-        if (!input || !resultsBox) return;
-
-        const e = (s) => (window.BoseAdminUI ? window.BoseAdminUI.escapeHtml(s) : String(s ?? ""));
-        let debounceTimer = null;
-        let requestSeq = 0;
-
-        function closeResults() {
-            resultsBox.style.display = "none";
-            resultsBox.innerHTML = "";
-        }
-
-        function renderResults({ orders, products, customers }) {
-            if (!orders.length && !products.length && !customers.length) {
-                resultsBox.innerHTML = `<div class="adm-global-search-empty">مفيش نتائج مطابقة</div>`;
-                resultsBox.style.display = "block";
-                return;
-            }
-
-            let html = "";
-            if (orders.length) {
-                html += `<div class="adm-global-search-group-label">طلبات</div>`;
-                html += orders.map((o) => `
-                    <a class="adm-global-search-item" href="orders.html?open=${e(o.id)}">
-                        <i class="fa-solid fa-receipt"></i>
-                        <span>#${e(o.order_number || o.id)} - ${e(o.customer_name || "—")}</span>
-                        <small>${o.grand_total ? Math.round(o.grand_total) + " ج.م" : ""}</small>
-                    </a>`).join("");
-            }
-            if (products.length) {
-                html += `<div class="adm-global-search-group-label">منتجات</div>`;
-                html += products.map((p) => `
-                    <a class="adm-global-search-item" href="products.html?edit=${e(p.id)}">
-                        <i class="fa-solid fa-cake-candles"></i>
-                        <span>${e(p.title)}${p.flavor_name ? " - " + e(p.flavor_name) : ""}</span>
-                    </a>`).join("");
-            }
-            if (customers.length) {
-                html += `<div class="adm-global-search-group-label">عميلات</div>`;
-                html += customers.map((c) => `
-                    <a class="adm-global-search-item" href="customer-lookup.html?phone=${e(c.phone)}">
-                        <i class="fa-solid fa-user"></i>
-                        <span>${e(c.customer_name || c.phone)}</span>
-                        <small>${e(c.phone)}${c.total_orders ? " - " + c.total_orders + " طلب" : ""}</small>
-                    </a>`).join("");
-            }
-            resultsBox.innerHTML = html;
-            resultsBox.style.display = "block";
-        }
-
-        input.addEventListener("input", () => {
-            clearTimeout(debounceTimer);
-            const q = input.value.trim();
-            if (q.length < 2) { closeResults(); return; }
-            debounceTimer = setTimeout(async () => {
-                const mySeq = ++requestSeq;
-                resultsBox.innerHTML = `<div class="adm-global-search-empty">جاري البحث...</div>`;
-                resultsBox.style.display = "block";
-                try {
-                    const results = await window.BoseAdmin.globalAdminSearch(q);
-                    if (mySeq !== requestSeq) return; // نتيجة بحث قديمة وصلت متأخرة، اتجاهلها
-                    renderResults(results);
-                } catch (err) {
-                    if (mySeq !== requestSeq) return;
-                    resultsBox.innerHTML = `<div class="adm-global-search-empty">تعذر البحث حالياً</div>`;
-                }
-            }, 300);
-        });
-
-        document.addEventListener("click", (e2) => {
-            if (!document.getElementById("adm-global-search").contains(e2.target)) closeResults();
-        });
-        input.addEventListener("keydown", (e2) => {
-            if (e2.key === "Escape") { closeResults(); input.blur(); }
-        });
-
-        /**
-         * 🆕 [تحسين إنتاجية - اختصار كيبورد]: دوسي "/" من أي مكان في اللوحة
-         * (من غير ما تكوني كاتبة في حقل تاني) عشان تنطي مباشرة لصندوق البحث
-         * الموحّد، من غير ما تلمسي الماوس خالص.
-         */
-        document.addEventListener("keydown", (e2) => {
-            if (e2.key !== "/") return;
-            const active = document.activeElement;
-            const isTyping = active && (active.tagName === "INPUT" || active.tagName === "TEXTAREA" || active.isContentEditable);
-            if (isTyping) return;
-            e2.preventDefault();
-            input.focus();
-        });
     }
 
     function renderShell(adminInfo) {
