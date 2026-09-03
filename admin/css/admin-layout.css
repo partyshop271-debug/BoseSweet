@@ -213,84 +213,6 @@
 
 .adm-user-chip span { font-size: 0.82rem; font-weight: 700; color: var(--adm-text-primary); }
 
-/* =========================== 🆕 [تحسين إنتاجية] البحث الموحّد بالشريط العلوي =========================== */
-
-.adm-global-search {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    width: 260px;
-    padding: 8px 14px;
-    border-radius: var(--adm-radius-pill);
-    background: var(--adm-bg-surface);
-    border: 1px solid var(--adm-border-soft);
-    transition: width 0.15s ease, border-color 0.15s ease;
-}
-.adm-global-search:focus-within {
-    width: 320px;
-    border-color: var(--adm-pink);
-}
-.adm-global-search > i { color: var(--adm-text-muted, var(--adm-text-secondary, #999)); font-size: 0.85rem; flex-shrink: 0; }
-.adm-global-search input {
-    flex: 1;
-    min-width: 0;
-    border: none;
-    outline: none;
-    background: transparent;
-    font-family: inherit;
-    font-size: 0.82rem;
-    color: var(--adm-text-primary);
-}
-.adm-global-search input::placeholder { color: var(--adm-text-muted, var(--adm-text-secondary, #999)); }
-.adm-global-search-kbd {
-    flex-shrink: 0;
-    font-family: inherit;
-    font-size: 0.7rem;
-    color: var(--adm-text-muted, var(--adm-text-secondary, #999));
-    border: 1px solid var(--adm-border-soft);
-    border-radius: 4px;
-    padding: 1px 6px;
-}
-.adm-global-search:focus-within .adm-global-search-kbd { display: none; }
-
-.adm-global-search-results {
-    display: none;
-    position: absolute;
-    top: calc(100% + 8px);
-    inset-inline-start: 0;
-    width: 340px;
-    max-height: 420px;
-    overflow-y: auto;
-    background: var(--adm-bg-surface);
-    border: 1px solid var(--adm-border-soft);
-    border-radius: var(--adm-radius-md, 12px);
-    box-shadow: var(--adm-shadow-card);
-    padding: 8px;
-    z-index: 60;
-}
-.adm-global-search-group-label {
-    font-size: 0.72rem;
-    font-weight: 700;
-    color: var(--adm-text-muted, var(--adm-text-secondary, #999));
-    padding: 8px 10px 4px;
-}
-.adm-global-search-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 9px 10px;
-    border-radius: 8px;
-    text-decoration: none;
-    color: var(--adm-text-primary);
-    font-size: 0.85rem;
-}
-.adm-global-search-item:hover { background: var(--adm-bg-base); }
-.adm-global-search-item i { width: 16px; text-align: center; color: var(--adm-pink); flex-shrink: 0; }
-.adm-global-search-item span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.adm-global-search-item small { color: var(--adm-text-muted, var(--adm-text-secondary, #999)); font-size: 0.75rem; flex-shrink: 0; }
-.adm-global-search-empty { padding: 14px 10px; text-align: center; font-size: 0.82rem; color: var(--adm-text-muted, var(--adm-text-secondary, #999)); }
-
 .adm-content {
     padding: 26px 28px 60px 28px;
     flex: 1;
@@ -377,21 +299,6 @@
 .adm-alert-row:hover { background: var(--adm-bg-soft); }
 .adm-alert-row span { flex: 1; }
 .adm-alert-row i.fa-chevron-left { color: var(--adm-text-secondary); font-size: 0.75rem; }
-
-/* 🆕 [تحسين إنتاجية - طلبات قابلة للتنفيذ من الداشبورد] */
-.adm-pending-order-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 6px;
-    border-bottom: 1px solid var(--adm-border-soft);
-    flex-wrap: wrap;
-}
-.adm-pending-order-row:last-child { border-bottom: none; }
-.adm-pending-order-row .adm-pending-order-info { flex: 1; min-width: 160px; }
-.adm-pending-order-row .adm-pending-order-info strong { display: block; font-size: 0.9rem; color: var(--adm-text-primary); }
-.adm-pending-order-row .adm-pending-order-info small { color: var(--adm-text-secondary); font-size: 0.78rem; }
-.adm-pending-order-row .adm-pending-order-actions { display: flex; gap: 8px; }
 
 /* =========================== الأزرار =========================== */
 
@@ -578,18 +485,6 @@
     width: 30px; height: 30px; border-radius: 50%;
     cursor: pointer; font-size: 0.85rem;
 }
-
-/* 🆕 [تحسين إنتاجية - تنقّل التالي/السابق بالمودال] */
-.adm-modal-nav-btns { display: flex; align-items: center; gap: 6px; }
-.adm-modal-nav-btn {
-    background: var(--adm-bg-hover);
-    border: none; color: var(--adm-text-secondary);
-    width: 30px; height: 30px; border-radius: 50%;
-    cursor: pointer; font-size: 0.8rem;
-    transition: var(--adm-transition);
-}
-.adm-modal-nav-btn:hover:not(:disabled) { background: var(--adm-pink); color: var(--adm-text-on-accent); }
-.adm-modal-nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 
 .adm-modal-actions {
     display: flex; justify-content: flex-end; gap: 10px;
@@ -778,26 +673,6 @@ html.adm-ready .adm-auth-gate { display: none; }
 }
 .adm-orders-bulk-bar .adm-btn { margin-inline-start: auto; }
 .adm-orders-bulk-bar .adm-btn-ghost { margin-inline-start: 0; }
-
-/* 🆕 [تحسين إنتاجية - فلتر تاريخ سريع]: زراير شبه-pill بسيطة، حالة "active"
-   واحدة بس فاتحة (بدل select) عشان يبانوا كلهم مرة واحدة وتبقى ضغطة واحدة. */
-.adm-chip {
-    padding: 7px 16px;
-    border-radius: var(--adm-radius-pill);
-    border: 1px solid var(--adm-border-soft);
-    background: var(--adm-bg-surface);
-    color: var(--adm-text-secondary, var(--adm-text-primary));
-    font-size: 0.85rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.15s ease;
-}
-.adm-chip:hover { border-color: var(--adm-pink); }
-.adm-chip.active {
-    background: var(--adm-pink);
-    border-color: var(--adm-pink);
-    color: var(--adm-text-on-accent);
-}
 
 .adm-clickable-row { cursor: pointer; }
 .adm-clickable-row td.adm-orders-checkbox-cell { cursor: default; }
@@ -1139,14 +1014,8 @@ html.adm-ready .adm-auth-gate { display: none; }
     }
     .adm-content { padding: 18px 16px 50px 16px; }
     .adm-topbar { padding: 0 16px; }
-    /* البحث الموحّد محتاج مساحة أفقية مش متاحة بجنب زرار القائمة+العنوان على
-       الموبايل - كل صفحة أصلاً عندها بحثها المحلي، فمش فقدان وظيفة حقيقي. */
-    .adm-global-search { display: none; }
     .adm-order-detail-grid { grid-template-columns: 1fr; }
     .adm-orders-filters { width: 100%; }
-    .adm-orders-bulk-bar { flex-wrap: wrap; }
-    .adm-orders-bulk-bar .adm-btn,
-    .adm-orders-bulk-bar select { margin-inline-start: 0 !important; width: 100%; }
     .adm-orders-search, .adm-orders-status-filter { width: 100%; min-width: 0; }
     .adm-products-filters { width: 100%; }
     .adm-products-search, .adm-products-category-filter, #add-product-btn { width: 100%; min-width: 0; }
