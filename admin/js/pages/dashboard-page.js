@@ -110,6 +110,77 @@
         `).join("");
     }
 
+    /**
+     * 🆕 [تحسين إنتاجية - قائمة قابلة للتنفيذ]: كل الطلبات "قيد المراجعة"
+     * بتتعرض هنا بأزرار تأكيد/إلغاء مباشرة، من غير ما تسيبي الداشبورد وتفتحي
+     * صفحة الطلبات. حد أقصى 8 عشان الكارت يفضل قابل للقراءة بسرعة - لو أكتر،
+     * فيه رابط "عرض الكل" في نهاية القائمة بيوديها لصفحة الطلبات بفلتر جاهز.
+     */
+    async function loadPendingOrdersActionable() {
+        const card = document.getElementById("dashboard-pending-card");
+        const list = document.getElementById("dashboard-pending-list");
+        if (!card || !list) return;
+
+        let pendingOrders = [];
+        try {
+            pendingOrders = await window.BoseAdmin.getAllOrders({ status: "pending" });
+        } catch (e) {
+            return; // مفيش داعي نكسر باقي الداشبورد لو الطلب ده فشل
+        }
+
+        if (!pendingOrders.length) { card.style.display = "none"; return; }
+        card.style.display = "";
+
+        const e = window.BoseAdminUI.escapeHtml;
+        const visible = pendingOrders.slice(0, 8);
+
+        function renderRow(o) {
+            return `
+                <div class="adm-pending-order-row" data-id="${e(o.id)}">
+                    <div class="adm-pending-order-info">
+                        <strong>#${e(o.order_number || o.id)} - ${e(o.customer_name || "—")}</strong>
+                        <small>${o.grand_total ? Math.round(o.grand_total) + " ج.م" : "—"} - ${formatDate(o.created_at)}</small>
+                    </div>
+                    <div class="adm-pending-order-actions">
+                        <button type="button" class="adm-btn adm-btn-sm adm-btn-primary" data-action="confirm" data-id="${e(o.id)}">
+                            <i class="fa-solid fa-check"></i> تأكيد
+                        </button>
+                        <button type="button" class="adm-btn adm-btn-sm adm-btn-danger" data-action="cancel" data-id="${e(o.id)}">
+                            <i class="fa-solid fa-xmark"></i> إلغاء
+                        </button>
+                        <a href="orders.html?open=${e(o.id)}" class="adm-btn adm-btn-sm adm-btn-outline">
+                            <i class="fa-solid fa-eye"></i>
+                        </a>
+                    </div>
+                </div>`;
+        }
+
+        list.innerHTML = visible.map(renderRow).join("") +
+            (pendingOrders.length > visible.length
+                ? `<div class="adm-mt-16"><a href="orders.html" class="adm-btn adm-btn-outline adm-btn-sm">عرض باقي الطلبات قيد المراجعة (${pendingOrders.length - visible.length})</a></div>`
+                : "");
+
+        list.querySelectorAll("button[data-action]").forEach((btn) => {
+            btn.addEventListener("click", async () => {
+                const id = btn.getAttribute("data-id");
+                const newStatus = btn.getAttribute("data-action") === "confirm" ? "confirmed" : "cancelled";
+                btn.disabled = true;
+                try {
+                    await window.BoseAdmin.updateOrderStatus(id, newStatus);
+                    window.BoseAdminUI.showToast(
+                        newStatus === "confirmed" ? "تم تأكيد الطلب" : "تم إلغاء الطلب", "success"
+                    );
+                    const row = list.querySelector(`.adm-pending-order-row[data-id="${CSS.escape(id)}"]`);
+                    if (row) row.remove();
+                    if (!list.querySelector(".adm-pending-order-row")) card.style.display = "none";
+                } catch (err) {
+                    window.BoseAdminUI.showToast("تعذر تحديث حالة الطلب", "error");
+                    btn.disabled = false;
+                }
+            });
+        });
+    }
+
     async function init() {
         let summary = {};
         try {
@@ -118,6 +189,8 @@
         } catch (e) {
             window.BoseAdminUI.showToast("تعذر تحميل إحصائيات الداشبورد", "error");
         }
+
+        loadPendingOrdersActionable();
 
         try {
             const missingPhotoCount = await window.BoseAdmin.getMissingPhotoProductsCount();
