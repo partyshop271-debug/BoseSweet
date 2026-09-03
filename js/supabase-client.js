@@ -531,6 +531,7 @@
                 text: r.body_text,
                 delayBeforeShow: r.delay_before_show || 0,
                 timeoutMs: r.timeout_ms || undefined,
+                verifyPanelChange: !!r.verify_panel_change,
             }));
         } catch (err) {
             console.warn("تعذر جلب خطوات الجولة من القاعدة، هيتم استخدام النسخة الاحتياطية:", err.message);
