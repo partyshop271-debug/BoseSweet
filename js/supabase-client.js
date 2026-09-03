@@ -127,6 +127,14 @@
             rating: p.rating,
             reviews: p.seed_reviews || [],
             isAvailable: p.is_available !== false,
+            // 🐛 [إصلاح حرج]: faqs كان معمول له عمود في قاعدة البيانات وواجهة عرض
+            // في صفحة المنتج (renderProductFaqs) بس متسبش أي مسار وصول هنا - يعني
+            // أي أسئلة شائعة تتكتب من لوحة التحكم كانت بتفضل مدفونة ومتوصلش للعميل
+            // خالص. نفس الكلام لـ is_gift_card/options اللازمين لبطاقة الهدية
+            // بالمبلغ الحر (حد أدنى/أقصى قادمين من هنا للواجهة).
+            faqs: p.faqs || [],
+            isGiftCard: p.is_gift_card === true,
+            options: p.options || {},
         }));
 
         return {
@@ -242,6 +250,10 @@
             // 🎁 [نظام نقاط الولاء]: كود قسيمة الولاء (لو العميلة عندها واحدة نشطة
             // ودخلته) - الباك إند بيتحقق منه ومن ملكيته لنفس رقم الهاتف بنفسه.
             p_voucher_code: orderPayload.loyaltyVoucherCode || null,
+            // 🎁 [استخدام كود بطاقة هدية]: كود البطاقة (لو العميل كتبه وضغط
+            // "تفعيل" في الشيك أوت) - create_order_with_items بيتحقق منه ومن
+            // رصيده بنفسه تاني، نفس فلسفة قسيمة الولاء تماماً.
+            p_gift_card_code: orderPayload.giftCardCode || null,
             // 🛡️🔧 [إصلاح جذري]: قبل كده الباراميترات دي ما كانتش بتتبعت خالص،
             // فـ PostgREST كان بيستدعي نسخة قديمة من الدالة (من غير تتبع مصدر
             // العميل) بدل النسخة الجديدة اللي فيها upsert_customer_on_order -
@@ -419,6 +431,21 @@
     }
 
     /**
+     * 🎁 [استخدام كود بطاقة هدية]: نفس فلسفة validateBoseCoupon بالظبط - بتنادي
+     * على validate_gift_card_code (RPC آمن SECURITY DEFINER) بدل ما تقرا جدول
+     * gift_cards مباشرة (مقفول بالكامل بـ RLS على الأدمن فقط) عشان محدش يقدر
+     * يتصفح كل الأكواد أو أرصدتها.
+     * @param {string} code
+     */
+    async function validateBoseGiftCard(code) {
+        const result = await boseSupabaseRpc("validate_gift_card_code", {
+            p_code: code,
+        });
+        const row = Array.isArray(result) ? result[0] : result;
+        return row || { is_valid: false, message: "تعذر التحقق من كود بطاقة الهدية" };
+    }
+
+    /**
      * 📦 تتبع الطلب: بيرجع حالة الطلب وتفاصيله لو رقم الطلب + رقم الهاتف مطابقين
      * فعلياً لطلب حقيقي في القاعدة (نفس فلسفة validate_coupon: RPC آمن بدل SELECT
      * مباشر على جدول orders المقفول بالكامل بـ RLS للأدمن فقط).
@@ -482,6 +509,7 @@
             payFull: !!o.payFull,
             // 🎁 [نظام نقاط الولاء]: كود قسيمة الولاء لو العميلة طبّقته في السلة
             loyaltyVoucherCode: o.loyaltyVoucherCode || null,
+            giftCardCode: o.giftCardCode || null,
             // 🧭 [نظام تتبع مصدر العملاء]: مرّرة لو موجودة (مش متسجلة من الفرونت
             // إند لسه دلوقتي، بس بقت شغالة فعلياً وقت وصولها من أي مصدر مستقبلي)
             attributionSource: o.attributionSource || null,
@@ -531,7 +559,6 @@
                 text: r.body_text,
                 delayBeforeShow: r.delay_before_show || 0,
                 timeoutMs: r.timeout_ms || undefined,
-                verifyPanelChange: !!r.verify_panel_change,
             }));
         } catch (err) {
             console.warn("تعذر جلب خطوات الجولة من القاعدة، هيتم استخدام النسخة الاحتياطية:", err.message);
@@ -656,6 +683,7 @@
         submitBoseReview,
         fetchApprovedReviews,
         validateBoseCoupon,
+        validateBoseGiftCard,
         uploadBoseReferenceImage,
         trackBoseOrder,
         getBoseCustomerRewards,

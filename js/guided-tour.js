@@ -3,11 +3,10 @@
  * ------------------------------------------------------------------
  * ✨ [جديد في V4.0 - أهم تغيير في تاريخ الميزة دي]:
  * الجولة الواحدة المتصلة القديمة (47 خطوة من الهيدر لحد الفاتورة) اتلغت
- * خالص، وبقى عندنا 9 جولات مستقلة تمامًا عن بعض، كل واحدة بتشرح منطقة
+ * خالص، وبقى عندنا 7 جولات مستقلة تمامًا عن بعض، كل واحدة بتشرح منطقة
  * واحدة بس: القائمة الجانبية (sidebar)، الصفحة الرئيسية (homepage)،
  * صفحة المنتج (product)، محاكي التورت (cake_simulator)، محاكي الورد
- * (flower_simulator)، السلة (cart)، إتمام الطلب (checkout)، نادي
- * المكافآت (rewards)، وتتبع الطلب (track_order).
+ * (flower_simulator)، السلة (cart)، إتمام الطلب (checkout).
  *
  * كل جولة عندها:
  * - توست تلقائي مستقل أول ما العميلة تدخل المنطقة دي (مرة واحدة بس لكل
@@ -36,7 +35,6 @@
     const STORAGE_KEY = 'bose_guided_tour_state_v4';
     const TOAST_SEEN_KEY_PREFIX = 'bose_tour_first_visit_toast_seen_v2_';
     const STEPS_SESSION_CACHE_KEY = 'bose_tour_steps_cache_v2';
-    const FAB_POINTER_SEEN_KEY = 'bose_tour_fab_pointer_seen_v1';
 
     // 🧭 [تعريف الجولات المتاحة]: القايمة اللي بتظهر في زرار المساعدة
     // العائم - كل جولة عندها مفتاح فريد (نفس tour_key في قاعدة البيانات)،
@@ -49,8 +47,6 @@
         { key: 'flower_simulator', label: 'محاكي الورد', icon: 'fa-spa', toastTitle: 'أول مرة تدخلي محاكي الورد؟', toastText: 'تحبي ناخدك خطوة بخطوة نصمم مع بعض بوكيه مناسبتك؟' },
         { key: 'cart', label: 'السلة', icon: 'fa-cart-shopping', toastTitle: 'أول مرة تدخلي سلتك؟', toastText: 'تحبي جولة سريعة نوريكي فيها كل حاجة في السلة؟' },
         { key: 'checkout', label: 'إتمام الطلب', icon: 'fa-credit-card', toastTitle: 'أول مرة تكملي طلب؟', toastText: 'تحبي جولة سريعة نوريكي فيها خطوات إتمام الطلب من الأول للآخر؟' },
-        { key: 'rewards', label: 'نادي المكافآت', icon: 'fa-crown', toastTitle: 'أول مرة تزوري نادي المكافآت؟', toastText: 'تحبي نوريكي بسرعة إزاي تكسبي خصومات وقسيمة شراء حقيقية على طلباتك؟' },
-        { key: 'track_order', label: 'تتبع الطلب', icon: 'fa-location-crosshairs', toastTitle: 'أول مرة تتبعي طلب؟', toastText: 'تحبي نوريكي إزاي تعرفي حالة طلبك بسهولة؟' },
     ];
 
     // 🛡️ [نسخة احتياطية]: نفس محتوى جدول tour_steps بالظبط وقت آخر تحديث،
@@ -118,62 +114,31 @@
         cake_simulator: [
             { page: ['cake-builder.html'], mode: 'info', selector: '#bose-cake-intro', title: 'صممي تورتتك خطوة بخطوة', text: 'هناخدك في 11 خطوة بسيطة وسريعة نصمم فيها مع بعض تورتة مناسبتك بالظبط.', section: 'design' },
             { page: ['cake-builder.html'], mode: 'info', selector: '#bose-portfolio-lightbox-track', title: 'اتفرجي على تصاميم سابقة', text: 'دي أمثلة لتصاميم نفذناها فعلاً، تقدري تتصفحيها الأول عشان تستوحي منها شكل تورتتك.', section: 'design' },
-            { page: ['cake-builder.html'], mode: 'click', verifyPanelChange: true, selector: '#btn-wizard-next', hint: 'دوسي على زرار "التالي" تحت', title: 'يلا نبدأ', text: 'كل ما تخلصي خطوة، هتلاقي زرار "التالي" ده تحت - دوسي عليه دلوقتي عشان نبدأ فعليًا.', section: 'design' },
-            { page: ['cake-builder.html'], mode: 'info', selector: '#panel-wizard-step-2.active-panel', title: 'مناسبة التورتة', text: 'اكتبي هنا مناسبة التورتة (عيد ميلاد، خطوبة، تخرج...) عشان نراعيها في التصميم - الخطوة دي إجبارية ومش هتقدري تكملي من غيرها.', section: 'design' },
-            { page: ['cake-builder.html'], mode: 'click', verifyPanelChange: true, selector: '#btn-wizard-next', hint: 'بعد ما تكتبي المناسبة، دوسي "التالي"', title: 'دوسي التالي', text: 'لما تخلصي كتابة المناسبة، دوسي هنا للمتابعة.', section: 'design' },
-            { page: ['cake-builder.html'], mode: 'info', selector: '#panel-wizard-step-3.active-panel', title: 'تصميم مرجعي (اختياري)', text: 'لو عندك صورة تورتة عايزة نقرب شكلنا منها، فعّلي الخيار ده وارفعيها. لو مش عايزة، سيبيه واضغطي "التالي".', section: 'design' },
-            { page: ['cake-builder.html'], mode: 'click', verifyPanelChange: true, selector: '#btn-wizard-next', hint: 'دوسي "التالي" للمتابعة', title: 'دوسي التالي', text: 'جاهزة؟ دوسي هنا للمتابعة.', section: 'design' },
-            { page: ['cake-builder.html'], mode: 'info', selector: '#panel-wizard-step-4.active-panel', title: 'عدد الأشخاص', text: 'حددي هنا عدد الأشخاص، والحجم والسعر بيتظبطوا تلقائيًا حسب اختيارك.', section: 'design' },
-            { page: ['cake-builder.html'], mode: 'click', verifyPanelChange: true, selector: '#btn-wizard-next', hint: 'دوسي "التالي" بعد ما تحددي العدد', title: 'دوسي التالي', text: 'بعد ما تحددي العدد، دوسي هنا للمتابعة.', section: 'design' },
-            { page: ['cake-builder.html'], mode: 'info', selector: '#panel-wizard-step-5.active-panel', title: 'شكل التورتة', text: 'اختاري شكل التورتة اللي يناسب مناسبتك (دائري، قلب، مربع، مستطيل...).', section: 'design' },
-            { page: ['cake-builder.html'], mode: 'click', verifyPanelChange: true, selector: '#btn-wizard-next', hint: 'دوسي "التالي" بعد الاختيار', title: 'دوسي التالي', text: 'بعد ما تختاري الشكل، دوسي هنا للمتابعة.', section: 'design' },
-            { page: ['cake-builder.html'], mode: 'info', selector: '#panel-wizard-step-6.active-panel', title: 'النكهة', text: 'دلوقتي اختاري النكهة اللي تحبيها للتورتة.', section: 'design' },
-            { page: ['cake-builder.html'], mode: 'click', verifyPanelChange: true, selector: '#btn-wizard-next', hint: 'دوسي "التالي" بعد الاختيار', title: 'دوسي التالي', text: 'بعد ما تختاري النكهة، دوسي هنا للمتابعة.', section: 'design' },
-            { page: ['cake-builder.html'], mode: 'info', selector: '#panel-wizard-step-7.active-panel', title: 'طباعة صورة (اختياري)', text: 'تقدري تطبعي صورة حقيقية على التورتة من هنا لو حابة.', section: 'extras' },
-            { page: ['cake-builder.html'], mode: 'click', verifyPanelChange: true, selector: '#btn-wizard-next', hint: 'دوسي "التالي" للمتابعة', title: 'دوسي التالي', text: 'جاهزة؟ دوسي هنا للمتابعة.', section: 'extras' },
-            { page: ['cake-builder.html'], mode: 'info', selector: '#panel-wizard-step-8.active-panel', title: 'رسالة على التورتة', text: 'اكتبي هنا أي رسالة حابة تتكتب على التورتة (زي: عيد ميلاد سعيد يا حبيبتي).', section: 'extras' },
-            { page: ['cake-builder.html'], mode: 'click', verifyPanelChange: true, selector: '#btn-wizard-next', hint: 'دوسي "التالي" بعد ما تكتبي', title: 'دوسي التالي', text: 'بعد ما تكتبي الرسالة (أو تسيبيها فاضية)، دوسي هنا للمتابعة.', section: 'extras' },
-            { page: ['cake-builder.html'], mode: 'info', selector: '#panel-wizard-step-9.active-panel', title: 'حساسية من مكونات؟', text: 'عرّفينا هنا لو بتعاني من حساسية تجاه أي مكونات زي المكسرات، عشان نراعي ده في المعمل.', section: 'extras' },
-            { page: ['cake-builder.html'], mode: 'click', verifyPanelChange: true, selector: '#btn-wizard-next', hint: 'دوسي "التالي" للمتابعة', title: 'دوسي التالي', text: 'جاهزة؟ دوسي هنا للمتابعة.', section: 'extras' },
-            { page: ['cake-builder.html'], mode: 'info', selector: '#panel-wizard-step-10.active-panel', title: 'كارت إهداء (اختياري)', text: 'حابة تضيفي كارت إهداء يتقدم مع التورتة؟ فعّلي الخيار ده لو حابة.', section: 'extras' },
-            { page: ['cake-builder.html'], mode: 'click', verifyPanelChange: true, selector: '#btn-wizard-next', hint: 'دوسي "التالي" للمتابعة', title: 'دوسي التالي', text: 'جاهزة؟ دوسي هنا للمتابعة.', section: 'extras' },
-            { page: ['cake-builder.html'], mode: 'info', selector: '#panel-wizard-step-11.active-panel', title: 'راجعي طلبك', text: 'دي كل تفاصيل تورتتك والسعر النهائي مجمّعة قدامك - راجعيهم كويس قبل ما تضيفيها لسلتك.', section: 'review' },
-            { page: ['cake-builder.html'], mode: 'click', selector: '#btn-cake-submit-cart-summary', hint: 'دوسي على الزرار الوردي تحت عشان تضيفيها لسلتك', title: 'أضيفيها لسلتك', text: 'لما تخلصي المراجعة، دوسي هنا عشان تضيفيها لسلتك.', section: 'review' },
+            { page: ['cake-builder.html'], mode: 'click', selector: '#btn-wizard-next', hint: 'دوسي على زرار "التالي" تحت', title: 'يلا نبدأ', text: 'كل ما تخلصي خطوة، هتلاقي زرار "التالي" ده تحت - دوسي عليه دلوقتي عشان نبدأ فعليًا.', section: 'design' },
+            { page: ['cake-builder.html'], mode: 'click', selector: '#btn-wizard-next', hint: 'بعد ما تكتبي المناسبة، دوسي "التالي"', title: 'مناسبة التورتة', text: 'اكتبي هنا مناسبة التورتة (عيد ميلاد، خطوبة، تخرج...) عشان نراعيها في التصميم، وبعدين دوسي "التالي".', section: 'design' },
+            { page: ['cake-builder.html'], mode: 'click', selector: '#btn-wizard-next', hint: 'دوسي "التالي" للمتابعة', title: 'تصميم مرجعي (اختياري)', text: 'لو عندك صورة تورتة عايزة نقرب شكلنا منها، فعّلي الخيار ده وارفعيها. لو مش عايزة، سيبيه واضغطي "التالي".', section: 'design' },
+            { page: ['cake-builder.html'], mode: 'click', selector: '#btn-wizard-next', hint: 'دوسي "التالي" بعد ما تحددي العدد', title: 'عدد الأشخاص', text: 'حددي هنا عدد الأشخاص، والحجم والسعر بيتظبطوا تلقائيًا حسب اختيارك.', section: 'design' },
+            { page: ['cake-builder.html'], mode: 'click', selector: '#btn-wizard-next', hint: 'دوسي "التالي" بعد الاختيار', title: 'شكل التورتة', text: 'اختاري شكل التورتة اللي يناسب مناسبتك (دائري، قلب، مربع...).', section: 'design' },
+            { page: ['cake-builder.html'], mode: 'click', selector: '#btn-wizard-next', hint: 'دوسي "التالي" بعد الاختيار', title: 'النكهة', text: 'دلوقتي اختاري النكهة اللي تحبيها للتورتة.', section: 'design' },
+            { page: ['cake-builder.html'], mode: 'click', selector: '#btn-wizard-next', hint: 'دوسي "التالي" للمتابعة', title: 'طباعة صورة (اختياري)', text: 'تقدري تطبعي صورة حقيقية على التورتة من هنا لو حابة.', section: 'extras' },
+            { page: ['cake-builder.html'], mode: 'click', selector: '#btn-wizard-next', hint: 'دوسي "التالي" بعد ما تكتبي', title: 'رسالة على التورتة', text: 'اكتبي هنا أي رسالة حابة تتكتب على التورتة (زي: عيد ميلاد سعيد يا حبيبتي).', section: 'extras' },
+            { page: ['cake-builder.html'], mode: 'click', selector: '#btn-wizard-next', hint: 'دوسي "التالي" للمتابعة', title: 'حساسية من مكونات؟', text: 'عرّفينا هنا لو بتعاني من حساسية تجاه أي مكونات زي المكسرات، عشان نراعي ده في المعمل.', section: 'extras' },
+            { page: ['cake-builder.html'], mode: 'click', selector: '#btn-wizard-next', hint: 'دوسي "التالي" للمتابعة', title: 'كارت إهداء (اختياري)', text: 'حابة تضيفي كارت إهداء يتقدم مع التورتة؟ فعّلي الخيار ده لو حابة.', section: 'extras' },
+            { page: ['cake-builder.html'], mode: 'click', selector: '#btn-cake-submit-cart-summary', hint: 'دوسي على الزرار الوردي تحت عشان تضيفيها لسلتك', title: 'راجعي وأضيفيها لسلتك', text: 'دي كل تفاصيل تورتتك والسعر النهائي - راجعيهم كويس وبعدين دوسي هنا عشان تضيفيها لسلتك.', section: 'review' },
         ],
         flower_simulator: [
             { page: ['flower-builder.html'], mode: 'info', selector: '#bose-flower-intro', title: 'صممي بوكيهك خطوة بخطوة', text: 'هناخدك خطوة بخطوة نصمم مع بعض بوكيه الورد اللي يناسب مناسبتك بالظبط.', section: 'design' },
             { page: ['flower-builder.html'], mode: 'info', selector: '#bose-flower-portfolio-lightbox-track', title: 'اتفرجي على تصاميم سابقة', text: 'دي أمثلة لبوكيهات نفذناها فعلاً، تقدري تتصفحيها الأول عشان تستوحي منها.', section: 'design' },
-            { page: ['flower-builder.html'], mode: 'click', verifyPanelChange: true, selector: '#btn-next', hint: 'دوسي على زرار "التالي" تحت', title: 'يلا نبدأ', text: 'كل ما تخلصي خطوة، هتلاقي زرار "التالي" ده تحت - دوسي عليه دلوقتي عشان نبدأ فعليًا.', section: 'design' },
-            { page: ['flower-builder.html'], mode: 'info', selector: '#panel-wizard-step-2.active-panel', title: 'نوع البوكيه', text: 'اختاري هنا نوع الورد اللي حابة بوكيهك يكون بيه.', section: 'design' },
-            { page: ['flower-builder.html'], mode: 'click', verifyPanelChange: true, selector: '#btn-next', hint: 'دوسي "التالي" بعد الاختيار', title: 'دوسي التالي', text: 'بعد ما تختاري نوع الورد، دوسي هنا للمتابعة.', section: 'design' },
-            { page: ['flower-builder.html'], mode: 'info', selector: '#panel-wizard-step-3.active-panel', title: 'عدد الورد', text: 'حددي هنا عدد الورد اللي حابة بوكيهك يكون بيه، والسعر بيتظبط تلقائيًا.', section: 'design' },
-            { page: ['flower-builder.html'], mode: 'click', verifyPanelChange: true, selector: '#btn-next', hint: 'دوسي "التالي" بعد ما تحددي العدد', title: 'دوسي التالي', text: 'بعد ما تحددي العدد، دوسي هنا للمتابعة.', section: 'design' },
-            { page: ['flower-builder.html'], mode: 'info', selector: '#panel-wizard-step-4.active-panel', title: 'صورة تصميم مرجعية (اختياري)', text: 'لو عندك صورة بوكيه عايزة نقرب شكلنا منها، ارفعيها هنا. لو مش عايزة، دوسي "التالي" على طول.', section: 'design' },
-            { page: ['flower-builder.html'], mode: 'click', verifyPanelChange: true, selector: '#btn-next', hint: 'دوسي "التالي" للمتابعة', title: 'دوسي التالي', text: 'جاهزة؟ دوسي هنا للمتابعة.', section: 'design' },
-            { page: ['flower-builder.html'], mode: 'info', selector: '#panel-wizard-step-5.active-panel', title: 'شريط مطبوع عليه كلام (اختياري)', text: 'حابة نضيف شريط ستان مطبوع عليه كلام حلو مع البوكيه؟ فعّلي الخيار ده لو حابة.', section: 'addons' },
-            { page: ['flower-builder.html'], mode: 'click', verifyPanelChange: true, selector: '#btn-next', hint: 'دوسي "التالي" للمتابعة', title: 'دوسي التالي', text: 'جاهزة؟ دوسي هنا للمتابعة.', section: 'addons' },
-            { page: ['flower-builder.html'], mode: 'info', selector: '#panel-wizard-step-6.active-panel', title: 'صور شخصية جوه البوكيه (اختياري)', text: 'تقدري تضيفي صور شخصية مطبوعة توضع جوه البوكيه نفسه من هنا.', section: 'addons' },
-            { page: ['flower-builder.html'], mode: 'click', verifyPanelChange: true, selector: '#btn-next', hint: 'دوسي "التالي" للمتابعة', title: 'دوسي التالي', text: 'جاهزة؟ دوسي هنا للمتابعة.', section: 'addons' },
-            { page: ['flower-builder.html'], mode: 'info', selector: '#panel-wizard-step-7.active-panel', title: 'كاش نظيف جوه البوكيه (اختياري)', text: 'تقدري تضيفي مبلغ كاش نظيف يتوضع جوه البوكيه كهدية إضافية.', section: 'addons' },
-            { page: ['flower-builder.html'], mode: 'click', verifyPanelChange: true, selector: '#btn-next', hint: 'دوسي "التالي" للمتابعة', title: 'دوسي التالي', text: 'جاهزة؟ دوسي هنا للمتابعة.', section: 'addons' },
-            { page: ['flower-builder.html'], mode: 'info', selector: '#panel-wizard-step-8.active-panel', title: 'شوكولاتة فاخرة (اختياري)', text: 'وتقدري كمان تضيفي شوكولاتة فاخرة مستوردة جوه البوكيه.', section: 'addons' },
-            { page: ['flower-builder.html'], mode: 'click', verifyPanelChange: true, selector: '#btn-next', hint: 'دوسي "التالي" للمتابعة', title: 'دوسي التالي', text: 'جاهزة؟ دوسي هنا للمتابعة.', section: 'addons' },
-            { page: ['flower-builder.html'], mode: 'info', selector: '#panel-wizard-step-9.active-panel', title: 'كارت إهداء (اختياري)', text: 'حابة تضيفي كارت إهداء يتقدم مع البوكيه؟ فعّلي الخيار ده لو حابة.', section: 'addons' },
-            { page: ['flower-builder.html'], mode: 'click', verifyPanelChange: true, selector: '#btn-next', hint: 'دوسي "التالي" للمتابعة', title: 'دوسي التالي', text: 'جاهزة؟ دوسي هنا للمتابعة.', section: 'addons' },
-            { page: ['flower-builder.html'], mode: 'info', selector: '#panel-wizard-step-10.active-panel', title: 'راجعي بوكيهك', text: 'دي كل تفاصيل بوكيهك والسعر النهائي مجمّعة قدامك - راجعيهم كويس قبل ما تضيفيه لسلتك.', section: 'review' },
-            { page: ['flower-builder.html'], mode: 'click', selector: '#add-to-cart-btn', hint: 'دوسي على الزرار الوردي تحت عشان تضيفيه لسلتك', title: 'أضيفيه لسلتك', text: 'لما تخلصي المراجعة، دوسي هنا عشان تضيفيه لسلتك.', section: 'review' },
-        ],
-        rewards: [
-            { page: ['rewards.html'], mode: 'info', selector: '.rw-hero', title: 'نادي مكافآت بوسي 👑', text: 'مرحبًا بيكِ في نادي مكافآت بوسي - هنوريكي بسرعة إزاي تكسبي خصومات وقسيمة شراء حقيقية على طلباتك.' },
-            { page: ['rewards.html'], mode: 'info', selector: '#rw-explainer-cards', title: 'خصومات تلقائية حسب ترتيب طلبك', text: 'كل ما تطلبي أكتر، كل ما تكسبي أكتر - الأرقام دي بتوضحلك نسبة الخصم اللي هتاخديها تلقائيًا حسب ترتيب طلبك، وكمان قسيمة شراء حقيقية بعد عدد معيّن من الطلبات.' },
-            { page: ['rewards.html'], mode: 'info', selector: '.rw-form-card', title: 'اعرفي رصيدك دلوقتي', text: 'اكتبي رقم الهاتف اللي بتطلبي بيه عادةً هنا ودوسي "اعرضي رصيدي"، وهتشوفي فورًا كام طلب باقيلك عشان تكسبي الخصم الجاي، وأي قسايم شراء نشطة عندك.' },
-            { page: ['rewards.html'], mode: 'info', selector: '.rw-howto', title: 'إزاي يشتغل النظام بالتفصيل', text: 'وهنا شرح كامل لكل تفاصيل نظام المكافآت - من دورة الخصم لحد قسيمة الـ300 جنيه وإزاي تستخدميها وقت الدفع.' },
-        ],
-        track_order: [
-            { page: ['track-order.html'], mode: 'info', selector: '.track-page-header', title: 'تتبعي طلبك', text: 'من هنا تقدري تعرفي حالة طلبك أول بأول من غير ما تحتاجي تكلمينا.' },
-            { page: ['track-order.html'], mode: 'info', selector: '#track-order-number', title: 'رقم الطلب', text: 'هتلاقيه في فاتورة الواتساب اللي وصلتك وقت ما طلبتي، أو في صفحة "تم الطلب" لو محفوظة عندك.' },
-            { page: ['track-order.html'], mode: 'info', selector: '#track-order-phone', title: 'رقم الهاتف', text: 'نفس رقم الهاتف اللي استخدمتيه وانتي بتطلبي.' },
-            { page: ['track-order.html'], mode: 'info', selector: '#track-submit-btn', title: 'اعرضي حالة الطلب', text: 'دوسي هنا وهتشوفي فورًا حالة طلبك دلوقتي (بتحضير، جاهز، في الطريق، أو اتسلم) مع كل تفاصيله.' },
+            { page: ['flower-builder.html'], mode: 'click', selector: '#btn-next', hint: 'دوسي على زرار "التالي" تحت', title: 'يلا نبدأ', text: 'كل ما تخلصي خطوة، هتلاقي زرار "التالي" ده تحت - دوسي عليه دلوقتي عشان نبدأ فعليًا.', section: 'design' },
+            { page: ['flower-builder.html'], mode: 'click', selector: '#btn-next', hint: 'دوسي "التالي" بعد الاختيار', title: 'نوع البوكيه', text: 'اختاري هنا نوع الورد اللي حابة بوكيهك يكون بيه.', section: 'design' },
+            { page: ['flower-builder.html'], mode: 'click', selector: '#btn-next', hint: 'دوسي "التالي" بعد ما تحددي العدد', title: 'عدد الورد', text: 'حددي هنا عدد الورد اللي حابة بوكيهك يكون بيه، والسعر بيتظبط تلقائيًا.', section: 'design' },
+            { page: ['flower-builder.html'], mode: 'click', selector: '#btn-next', hint: 'دوسي "التالي" للمتابعة', title: 'صورة تصميم مرجعية (اختياري)', text: 'لو عندك صورة بوكيه عايزة نقرب شكلنا منها، ارفعيها هنا. لو مش عايزة، دوسي "التالي" على طول.', section: 'design' },
+            { page: ['flower-builder.html'], mode: 'click', selector: '#btn-next', hint: 'دوسي "التالي" للمتابعة', title: 'شريط مطبوع عليه كلام (اختياري)', text: 'حابة نضيف شريط ستان مطبوع عليه كلام حلو مع البوكيه؟ فعّلي الخيار ده لو حابة.', section: 'addons' },
+            { page: ['flower-builder.html'], mode: 'click', selector: '#btn-next', hint: 'دوسي "التالي" للمتابعة', title: 'صور شخصية جوه البوكيه (اختياري)', text: 'تقدري تضيفي صور شخصية مطبوعة توضع جوه البوكيه نفسه من هنا.', section: 'addons' },
+            { page: ['flower-builder.html'], mode: 'click', selector: '#btn-next', hint: 'دوسي "التالي" للمتابعة', title: 'كاش نظيف جوه البوكيه (اختياري)', text: 'تقدري تضيفي مبلغ كاش نظيف يتوضع جوه البوكيه كهدية إضافية.', section: 'addons' },
+            { page: ['flower-builder.html'], mode: 'click', selector: '#btn-next', hint: 'دوسي "التالي" للمتابعة', title: 'شوكولاتة فاخرة (اختياري)', text: 'وتقدري كمان تضيفي شوكولاتة فاخرة مستوردة جوه البوكيه.', section: 'addons' },
+            { page: ['flower-builder.html'], mode: 'click', selector: '#btn-next', hint: 'دوسي "التالي" للمتابعة', title: 'كارت إهداء (اختياري)', text: 'حابة تضيفي كارت إهداء يتقدم مع البوكيه؟ فعّلي الخيار ده لو حابة.', section: 'addons' },
+            { page: ['flower-builder.html'], mode: 'click', selector: '#add-to-cart-btn', hint: 'دوسي على الزرار الوردي تحت عشان تضيفيه لسلتك', title: 'راجعي وأضيفيه لسلتك', text: 'دي كل تفاصيل بوكيهك والسعر النهائي - راجعيهم كويس وبعدين دوسي هنا عشان تضيفيه لسلتك.', section: 'review' },
         ],
     };
 
@@ -288,7 +253,6 @@
     let activeOverlayEls = null;
     let activeClickHandler = null;
     let waitTimer = null;
-    let verifyPanelTimer = null;
     let activeTargetEl = null;
     let activeRepositionRAF = null;
     let repositionTimer = null;
@@ -318,7 +282,6 @@
         if (activeOverlayEls) { activeOverlayEls.forEach(el => el.remove()); activeOverlayEls = null; }
         if (activeClickHandler) { document.removeEventListener('click', activeClickHandler, true); activeClickHandler = null; }
         if (waitTimer) { clearTimeout(waitTimer); waitTimer = null; }
-        if (verifyPanelTimer) { clearTimeout(verifyPanelTimer); verifyPanelTimer = null; }
         if (repositionTimer) { cancelAnimationFrame(repositionTimer); repositionTimer = null; }
         activeRepositionRAF = null;
         if (activeScrollHandler) {
@@ -389,14 +352,7 @@
             #bose-tour-fab-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:#FF91A4;color:#111;border:none;border-radius:14px 0 0 14px;width:40px;padding:16px 8px;box-shadow:-2px 3px 14px rgba(0,0,0,.2);font-family:'Cairo',sans-serif;cursor:pointer;}
             #bose-tour-fab-btn i{font-size:1rem;}
             #bose-tour-fab-btn span{writing-mode:vertical-rl;text-orientation:sideways;white-space:nowrap;font-weight:800;font-size:.82rem;letter-spacing:.3px;}
-            /* 🛡️🆕 [إصلاح - أيقونات الجولة بتتقطع تحت ومفيش سكرول]: اللوحة دي
-               كانت من غير max-height ولا overflow، فلما بقى فيها 9 جولات
-               (5 صفوف) على شاشات قصيرة، الجزء اللي بيعدي حافة الشاشة كان
-               بيتقطع بصرياً - ومحدش ينفع يسكرول الصفحة العادية يوريه، لأن
-               اللوحة نفسها position:fixed وسكرول الصفحة مالوش علاقة بيها.
-               دلوقتي عندها سقف ارتفاع مرتبط بمساحة الشاشة الفعلية + سكرول
-               داخلي خاص بيها، فأي صفوف زيادة تتلف براحة جوه اللوحة نفسها. */
-            #bose-tour-fab-panel{position:fixed;top:42%;right:56px;transform:translateY(-10px);background:#fff;border-radius:18px;box-shadow:0 10px 34px rgba(0,0,0,.24);padding:14px;width:236px;max-height:54vh;max-height:54dvh;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;opacity:0;pointer-events:none;transition:opacity .18s ease,transform .18s ease;}
+            #bose-tour-fab-panel{position:fixed;top:42%;right:56px;transform:translateY(-10px);background:#fff;border-radius:18px;box-shadow:0 10px 34px rgba(0,0,0,.24);padding:14px;width:236px;opacity:0;pointer-events:none;transition:opacity .18s ease,transform .18s ease;}
             #bose-tour-fab-panel.bose-tour-fab-panel-open{opacity:1;pointer-events:auto;transform:translateY(0);}
             .bose-tour-fab-panel-title{font-weight:800;font-size:.86rem;color:#111;margin-bottom:10px;text-align:right;}
             .bose-tour-fab-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
@@ -404,16 +360,10 @@
             .bose-tour-fab-tile:hover{background:#ffe4ea;}
             .bose-tour-fab-tile-icon{width:34px;height:34px;border-radius:50%;background:#FF91A4;color:#fff;display:flex;align-items:center;justify-content:center;font-size:.95rem;}
             .bose-tour-fab-tile-label{font-size:.72rem;font-weight:700;color:#333;text-align:center;line-height:1.3;}
-            #bose-tour-fab-btn.bose-tour-fab-btn-pulse{animation:boseTourFabPulse 1.1s ease-in-out 3;}
-            @keyframes boseTourFabPulse{0%,100%{box-shadow:-2px 3px 14px rgba(0,0,0,.2);}50%{box-shadow:-2px 3px 14px rgba(0,0,0,.2),0 0 0 8px rgba(255,145,164,.45);}}
-            .bose-tour-fab-note{position:fixed;top:42%;right:56px;transform:translateY(-10px) translateX(8px);background:#111;color:#fff;padding:10px 16px;border-radius:12px;font-family:'Cairo',sans-serif;font-size:.82rem;font-weight:700;z-index:99996;direction:rtl;white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,.3);opacity:0;transition:opacity .3s ease,transform .3s ease;}
-            .bose-tour-fab-note.bose-tour-fab-note-show{opacity:1;transform:translateY(-10px) translateX(0);}
-            .bose-tour-fab-note i{color:#FF91A4;margin-left:4px;}
             @media (max-width:480px){
                 #bose-tour-fab-btn{width:34px;padding:12px 6px;}
                 #bose-tour-fab-btn span{font-size:.74rem;}
                 #bose-tour-fab-panel{width:200px;right:48px;}
-                .bose-tour-fab-note{right:48px;white-space:normal;max-width:170px;}
             }
         `;
         document.head.appendChild(style);
@@ -593,33 +543,6 @@
                 activeClickHandler = function (e) {
                     if (e.target.closest('[data-bose-tour-skip]') || e.target.closest('[data-bose-tour-prev]') || e.target.closest('[data-bose-tour-skipsection]')) return;
                     if (!e.target.closest(step.selector)) return;
-
-                    // 🛡️ [تحقق فعلي قبل ما الجولة تتحرك]: زرارات زي "التالي" في
-                    // محاكي التورت/الورد ممكن يمنعها validation في الموقع نفسه
-                    // (زي خانة "المناسبة" الإجبارية) - يعني الكليك حصل، بس
-                    // العميلة فعليًا لسه واقفة في نفس خطوة المحاكي. لو الخطوة
-                    // عندها verifyPanelChange، منستنيش نتقدم في الجولة إلا لما
-                    // نتأكد إن لوحة (panel) تانية بقت فعلاً هي الظاهرة - وده
-                    // بيمنع أشهر مشكلة إن الجولة "تفترض" الانتقال حصل وهو ما حصلش.
-                    if (step.verifyPanelChange) {
-                        const beforePanel = document.querySelector('.active-panel[id^="panel-wizard-step-"]');
-                        const beforeId = beforePanel ? beforePanel.id : null;
-                        verifyPanelTimer = setTimeout(() => {
-                            verifyPanelTimer = null;
-                            const afterPanel = document.querySelector('.active-panel[id^="panel-wizard-step-"]');
-                            const afterId = afterPanel ? afterPanel.id : null;
-                            if (afterId && afterId !== beforeId) {
-                                handleAdvance(tourKey, stepIndex, stepIndex + 1);
-                            }
-                            // لو ما اتغيرش شيء، يبقى في الأغلب فيه تحقق (validation)
-                            // في الصفحة نفسها منع الانتقال (وهي غالبًا بتوضح السبب
-                            // برسالة/توست من عندها) - سيبي العميلة في نفس خطوة
-                            // الجولة الحالية من غير أي تغيير، وهتقدر تدوس "التالي"
-                            // تاني بعد ما تكمل المطلوب.
-                        }, 350);
-                        return;
-                    }
-
                     handleAdvance(tourKey, stepIndex, stepIndex + 1);
                 };
                 document.addEventListener('click', activeClickHandler, true);
@@ -734,16 +657,7 @@
 
     function closeFabPanel() {
         const panel = document.getElementById('bose-tour-fab-panel');
-        const btn = document.getElementById('bose-tour-fab-btn');
         if (panel) panel.classList.remove('bose-tour-fab-panel-open');
-        if (btn) btn.setAttribute('aria-expanded', 'false');
-    }
-
-    function openFabPanel() {
-        const panel = document.getElementById('bose-tour-fab-panel');
-        const btn = document.getElementById('bose-tour-fab-btn');
-        if (panel) panel.classList.add('bose-tour-fab-panel-open');
-        if (btn) btn.setAttribute('aria-expanded', 'true');
     }
 
     function injectFabOnce() {
@@ -782,15 +696,7 @@
             tile.addEventListener('click', () => startTour(tile.getAttribute('data-tour-key')));
         });
         document.addEventListener('click', (e) => {
-            if (wrap.contains(e.target)) return;
-            // 🛡️ [إصلاح - الزرار "خدينا جولة" ما كانش شغال]: لو الكليك ده هو
-            // نفسه اللي فتح اللوحة (زرار في الهيدر أو القائمة الجانبية عليه
-            // data-start-bose-tour)، ما ينفعش نقفلها على طول في نفس اللحظة -
-            // كان بيحصل بالظبط كده قبل كده (اللوحة تتفتح وتتقفل في نفس الكليك
-            // الواحد لأن الاستمائع على "أي كليك بره اللوحة يقفلها" كان بيتنفذ
-            // بعد الاستماع اللي بيفتحها في نفس تمرير الحدث).
-            if (e.target.closest('[data-start-bose-tour]')) return;
-            closeFabPanel();
+            if (!wrap.contains(e.target)) closeFabPanel();
         });
 
         updateFabVisibility();
@@ -865,53 +771,7 @@
         toast.querySelector('[data-bose-intro-dismiss]').addEventListener('click', () => {
             logTourEvent('auto_toast_dismiss', tourKey, { sessionId: introSessionId });
             removeToast();
-            maybeHighlightFabAfterDismiss();
         });
-    }
-
-    /**
-     * 👉 [بعد الرفض - نوريها فين تلاقي الجولة تاني]: قبل كده لما العميلة
-     * كانت تدوس "لأ شكرًا"، التوست كان بيقفل والشاشة تقعد ساكتة تمامًا -
-     * من غير ما تعرف أصلاً إن فيه زرار جولة ثابت في الموقع تقدر ترجعله في
-     * أي وقت. دلوقتي أول مرة بس (لكل متصفح) لما ترفض أي توست دعوة، بنلفت
-     * نظرها فعليًا لزرار الجولة العائم - نبضة إضاءة عليه + كارت صغير جنبه
-     * بيوضح "من هنا هتلاقي الجولة في أي وقت" - وبيختفي لوحده من غير ما
-     * يحتاج أي تفاعل. مرة واحدة بس للأبد عشان ميتكررش مع كل توست ترفضه
-     * في مناطق مختلفة بالموقع.
-     */
-    function maybeHighlightFabAfterDismiss() {
-        let seen = true;
-        try { seen = !!localStorage.getItem(FAB_POINTER_SEEN_KEY); } catch (e) { seen = true; }
-        if (seen) return;
-        try { localStorage.setItem(FAB_POINTER_SEEN_KEY, '1'); } catch (e) { /* لا شيء */ }
-        // 🛡️🆕 [إصلاح - الكارت كان بيختفي لوحده وهو مستخبي ورا نافذة "حمّلي
-        // تطبيقنا"]: التوقيت القديم كان ثابت (450 مللي ثانية) من غير ما يتأكد
-        // إن نافذة التطبيق مش هتظهر فوقه في نفس اللحظة - فلو الاتنين اتزاحموا،
-        // الكارت كان بيبان لمدة 3.8 ثانية وبيختفي تلقائياً وهو مخفي بالكامل
-        // ورا النافذة، يعني العميلة ما كانتش بتشوفه أبداً. دلوقتي بنستخدم
-        // نفس دالة الانتظار (whenAppInstallPopupClear) اللي بتستخدمها التوست
-        // التعريفي فوق - بنستنى النافذة تقفل الأول (لو ظاهرة) قبل ما نعرض
-        // الكارت، عشان تشوفه فعلاً في المدة الكاملة اللي بيفضل ظاهر فيها.
-        setTimeout(() => whenAppInstallPopupClear(highlightFabButton), 450);
-    }
-
-    function highlightFabButton() {
-        const fabWrap = document.getElementById('bose-tour-fab-wrap');
-        const btn = document.getElementById('bose-tour-fab-btn');
-        if (!fabWrap || !btn) return; // الزرار العائم مش موجود في الصفحة دي أصلاً
-
-        btn.classList.add('bose-tour-fab-btn-pulse');
-        setTimeout(() => btn.classList.remove('bose-tour-fab-btn-pulse'), 4200);
-
-        const note = document.createElement('div');
-        note.className = 'bose-tour-fab-note';
-        note.innerHTML = `<i class="fa-solid fa-arrow-left"></i> تمام، أي وقت حابة تاخدي جولة، هتلاقيها هنا 😊`;
-        document.body.appendChild(note);
-        requestAnimationFrame(() => note.classList.add('bose-tour-fab-note-show'));
-        setTimeout(() => {
-            note.classList.remove('bose-tour-fab-note-show');
-            setTimeout(() => note.remove(), 350);
-        }, 3800);
     }
 
     // أي عنصر عليه data-start-bose-tour بيبدأ جولة بدل سلوكه الافتراضي:
@@ -926,7 +786,8 @@
         const key = trigger.getAttribute('data-start-bose-tour');
         const knownKeys = TOUR_DEFS.map(t => t.key);
         if (key && knownKeys.indexOf(key) !== -1) { startTour(key); return; }
-        openFabPanel();
+        const panel = document.getElementById('bose-tour-fab-panel');
+        if (panel) panel.classList.add('bose-tour-fab-panel-open');
     }, false);
 
     window.startBoseGuidedTour = startTour;
@@ -942,8 +803,6 @@
             'checkout.html': 'checkout',
             'cake-builder.html': 'cake_simulator',
             'flower-builder.html': 'flower_simulator',
-            'rewards.html': 'rewards',
-            'track-order.html': 'track_order',
         };
         const autoTourKey = pageTourMap[currentPageFile()];
         if (autoTourKey) maybeShowFirstVisitToastForTour(autoTourKey);

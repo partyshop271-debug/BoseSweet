@@ -802,6 +802,65 @@ function renderBoseCheckoutPage(storeData) {
         };
     }
 
+    // 🎁 [استخدام كود بطاقة هدية]: نفس فلسفة قسيمة الولاء بالظبط - تحقق فوري
+    // عبر validate_gift_card_code، وتحديث الفاتورة المعروضة على طول. الكود ده
+    // كان الجزء الوحيد الناقص من ميزة بطاقة الهدية - الباك إند كان جاهز
+    // ومنتظر من زمان (create_order_with_items بيقبل p_gift_card_code أصلاً).
+    window.BoseGiftCardState = { code: null, discountAmount: 0, remaining: 0 };
+    const giftCardApplyBtn = document.getElementById("btn-apply-gift-card");
+    const giftCardInput = document.getElementById("checkout-giftcard-code");
+    const giftCardMsg = document.getElementById("checkout-giftcard-message");
+    if (giftCardApplyBtn && giftCardInput) {
+        giftCardApplyBtn.onclick = async () => {
+            const code = giftCardInput.value.trim();
+            if (!code) return;
+            if (!window.BoseSupabase || typeof window.BoseSupabase.validateBoseGiftCard !== "function") return;
+
+            giftCardApplyBtn.disabled = true;
+            giftCardApplyBtn.textContent = "بنتأكد...";
+            try {
+                const result = await window.BoseSupabase.validateBoseGiftCard(code);
+                if (result && result.is_valid) {
+                    window.BoseGiftCardState.code = code.toUpperCase();
+                    window.BoseGiftCardState.remaining = result.remaining_amount || 0;
+                    const loyaltyNow = window.BoseLoyaltyState || { discountAmount: 0, voucherDiscountAmount: 0 };
+                    const invoiceNow = window.calculateBoseInvoice(cart, storeData, selectedShippingFee, loyaltyNow.discountAmount, loyaltyNow.voucherDiscountAmount, 0);
+                    window.BoseGiftCardState.discountAmount = Math.min(
+                        result.remaining_amount || 0,
+                        Math.max(0, invoiceNow.subtotal + selectedShippingFee - invoiceNow.discount)
+                    );
+                    if (giftCardMsg) { giftCardMsg.style.color = "#2e9e5b"; giftCardMsg.textContent = "✅ " + (result.message || "تم تفعيل بطاقة الهدية") + ` (الرصيد: ${result.remaining_amount} EGP)`; }
+                } else {
+                    window.BoseGiftCardState.code = null;
+                    window.BoseGiftCardState.discountAmount = 0;
+                    if (giftCardMsg) { giftCardMsg.style.color = "#FF91A4"; giftCardMsg.textContent = "⚠️ " + ((result && result.message) || "كود بطاقة الهدية غير صحيح"); }
+                }
+                recalculateCheckoutInvoice(cart, storeData, selectedShippingFee, currentShippingMethod, payFullSelected);
+            } catch (err) {
+                if (giftCardMsg) { giftCardMsg.style.color = "#FF91A4"; giftCardMsg.textContent = "⚠️ تعذر التحقق من الكود، حاولي تاني"; }
+            } finally {
+                giftCardApplyBtn.disabled = false;
+                giftCardApplyBtn.textContent = "تفعيل";
+            }
+        };
+    }
+
+    // 🎁 [بطاقة هدية = منتج رقمي]: لو السلة كلها بطاقات هدية، نخفي قسم
+    // الشحن/الاستلام والموعد بالكامل ونظهر بدل منه رسالة توضيحية، ونثبّت
+    // "استلام" + شحن صفر تلقائياً - نفس القرار اللي السيرفر هياخده تاني
+    // بشكل ملزم في create_order_with_items (v_cart_is_digital_only).
+    const cartIsDigitalOnly = cart.length > 0 && cart.every(item => item.type === "gift-card");
+    const fulfillmentSection = document.getElementById("bose-fulfillment-and-schedule-section");
+    const digitalNote = document.getElementById("bose-giftcard-digital-note");
+    if (cartIsDigitalOnly) {
+        if (fulfillmentSection) fulfillmentSection.style.display = "none";
+        if (digitalNote) digitalNote.style.display = "block";
+        currentShippingMethod = "pickup";
+        selectedShippingFee = 0;
+        payFullSelected = true;
+        recalculateCheckoutInvoice(cart, storeData, selectedShippingFee, currentShippingMethod, payFullSelected);
+    }
+
     if (pickupBtn) pickupBtn.click();
 
     const copyPhoneBtn = document.getElementById("bose-copy-deposit-phone");
@@ -907,7 +966,8 @@ function recalculateCheckoutInvoice(cart, storeData, shippingFee, method, payFul
     // الولاء (لو اتفعّلت) عشان يظهروا كبند واضح ويتحسب بيهم الإجمالي الكلي هنا
     // بنفس الطريقة اللي هتتحسب بيها فعلياً في create_order_with_items بالباك إند.
     const loyaltyState = window.BoseLoyaltyState || { discountAmount: 0, voucherDiscountAmount: 0 };
-    const invoice = window.calculateBoseInvoice(cart, storeData, shippingFee, loyaltyState.discountAmount, loyaltyState.voucherDiscountAmount);
+    const giftCardState = window.BoseGiftCardState || { discountAmount: 0 };
+    const invoice = window.calculateBoseInvoice(cart, storeData, shippingFee, loyaltyState.discountAmount, loyaltyState.voucherDiscountAmount, giftCardState.discountAmount);
 
     if (subtotalDisplay) subtotalDisplay.textContent = invoice.subtotal.toFixed(2) + " EGP";
     if (shippingDisplay) {
@@ -951,6 +1011,12 @@ function renderBoseLoyaltyDiscountRows(invoice) {
         rowsHtml += `<div class="pricing-row-node" style="display: flex; justify-content: space-between;">
             <span class="pricing-label-text"><i class="fa-solid fa-gift" style="color:#FF91A4;"></i> قسيمة الولاء:</span>
             <span style="font-weight: 700; color: #2e9e5b;">- ${invoice.voucherDiscountAmount.toFixed(2)} EGP</span>
+        </div>`;
+    }
+    if (invoice.giftCardDiscountAmount > 0) {
+        rowsHtml += `<div class="pricing-row-node" style="display: flex; justify-content: space-between;">
+            <span class="pricing-label-text"><i class="fa-solid fa-ticket" style="color:#FF91A4;"></i> بطاقة الهدية:</span>
+            <span style="font-weight: 700; color: #2e9e5b;">- ${invoice.giftCardDiscountAmount.toFixed(2)} EGP</span>
         </div>`;
     }
     wrapper.innerHTML = rowsHtml;
@@ -1018,7 +1084,12 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFu
     // العنوان المقروء من نص الـoption نفسه، مش من الـvalue).
     let selectedZoneId = "";
 
-    if (method === "delivery") {
+    // 🎁 [بطاقة هدية = منتج رقمي]: مفيش عنوان أو منطقة شحن مطلوبة لو السلة
+    // كلها بطاقات هدية - نفس القرار اللي هياتاخد تاني بشكل ملزم في
+    // create_order_with_items على السيرفر (v_cart_is_digital_only).
+    const cartIsDigitalOnlyForOrder = cart.length > 0 && cart.every(item => item.type === "gift-card");
+
+    if (!cartIsDigitalOnlyForOrder && method === "delivery") {
         if (zoneSelect && !zoneSelect.value) {
             addValidationError(zoneSelect, "يرجى تحديد المنطقة السكنية.");
         } else {
@@ -1035,10 +1106,10 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFu
         }
     }
 
-    const orderDate = deliveryDateInput ? deliveryDateInput.value : "";
-    const orderTime = deliveryTimeInput ? deliveryTimeInput.value : "";
+    const orderDate = cartIsDigitalOnlyForOrder ? "" : (deliveryDateInput ? deliveryDateInput.value : "");
+    const orderTime = cartIsDigitalOnlyForOrder ? "" : (deliveryTimeInput ? deliveryTimeInput.value : "");
 
-    if (!orderDate || !orderTime) {
+    if (!cartIsDigitalOnlyForOrder && (!orderDate || !orderTime)) {
         addValidationError(!orderDate ? deliveryDateInput : deliveryTimeInput, "يرجى اختيار تاريخ وساعة الاستلام المناسبة لتجهيز طلبك.");
     }
 
@@ -1127,7 +1198,8 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFu
     // لو موجودين، عشان المبلغ المطلوب دفعه فعلياً والمرسل في فاتورة الواتساب
     // يطابق بالظبط اللي هيتحسب في قاعدة البيانات، مش يفاجئ العميلة برقم مختلف)
     const loyaltyStateForOrder = window.BoseLoyaltyState || { discountAmount: 0, voucherDiscountAmount: 0 };
-    const invoice = window.calculateBoseInvoice(cart, storeData, shippingFee, loyaltyStateForOrder.discountAmount, loyaltyStateForOrder.voucherDiscountAmount);
+    const giftCardStateForOrder = window.BoseGiftCardState || { code: null, discountAmount: 0 };
+    const invoice = window.calculateBoseInvoice(cart, storeData, shippingFee, loyaltyStateForOrder.discountAmount, loyaltyStateForOrder.voucherDiscountAmount, giftCardStateForOrder.discountAmount);
     const finalGrandTotalCalculated = invoice.grandTotal;
 
     // 🆔 [إصلاح حرج]: رقم طلب فريد فعلياً (طابع زمني + عشوائي) بدل رقم
@@ -1148,7 +1220,8 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFu
         shippingZoneId: method === "delivery" ? (selectedZoneId || null) : null,
         shippingFee: shippingFee,
         address: fullAddressText,
-        date: `${orderDate.split('-')[2]} / ${orderDate.split('-')[1]} / ${orderDate.split('-')[0]}`,
+        // 🎁 [بطاقة هدية = منتج رقمي]: مفيش تاريخ/ساعة استلام لطلب رقمي بالكامل
+        date: orderDate ? `${orderDate.split('-')[2]} / ${orderDate.split('-')[1]} / ${orderDate.split('-')[0]}` : "فوري (منتج رقمي)",
         scheduledDate: orderDate,
         scheduledTime: orderTime,
         subtotal: invoice.subtotal,
@@ -1162,6 +1235,11 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFu
         loyaltyVoucherCode: loyaltyStateForOrder.voucherCode || null,
         loyaltyDiscountAmount: invoice.loyaltyDiscountAmount || 0,
         voucherAmountUsed: invoice.voucherDiscountAmount || 0,
+        // 🎁 [استخدام كود بطاقة هدية]: نفس منطق قسيمة الولاء بالظبط - كود
+        // بطاقة الهدية (لو العميل فعّله في الشيك أوت) بيترسل لـcreate_order_with_items
+        // عشان يتحقق منه ويخصم رصيده فعلياً بشكل ملزم على السيرفر.
+        giftCardCode: giftCardStateForOrder.code || null,
+        giftCardAmountUsed: invoice.giftCardDiscountAmount || 0,
         grandTotal: finalGrandTotalCalculated,
         notes: orderNotesInput ? orderNotesInput.value.trim() : "لا توجد ملاحظات إضافية",
         // 🌸 [نظام التعرّف على العميل]: ملاحظات الشحن/التوصيل بتتسجل كحقل منفصل

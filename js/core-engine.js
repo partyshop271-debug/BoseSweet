@@ -862,7 +862,7 @@
         return `
             <div class="product-card-unified${hasDiscount ? ' bose-offer-card' : ''}${isUnavailable ? ' bose-unavailable-card' : ''}" data-id="${product.id}" data-selected-size="${defaultSizeKey || ''}" onclick="if(!event.target.closest('.product-card-qty-wrapper') && !event.target.closest('.btn-add-to-cart') && !event.target.closest('.bose-card-size-tabs') && !event.target.closest('.bose-fav-btn')){ window.location.href='/product.html?slug=${encodeURIComponent(product.slug)}'; }" style="cursor:pointer;">
                 ${discountBadgeHtml}
-                ${isUnavailable ? `<div class="bose-offer-badge bose-stock-badge">نفدت الكمية</div>` : ''}
+                ${isUnavailable ? `<div class="offer-badge" style="background:rgba(17,17,17,0.75);">نفدت الكمية</div>` : ''}
                 ${favBtnHtml}
                 <img src="${cardImg}" alt="${safeFlavor ? safeTitle + ' - ' + safeFlavor : safeTitle} | حلويات بوسي" class="product-card-img" data-size-img="1" width="300" height="300" loading="lazy" style="${isUnavailable ? 'filter:grayscale(60%); opacity:0.75;' : ''}" />
                 <h3 class="product-card-title">${safeTitle}</h3>
@@ -1075,6 +1075,16 @@
         let price = 0;
         
         if (product) {
+            // 🎁 [بطاقة هدية بمبلغ حر]: مفيش تسعير عادي هنا - السعر هو المبلغ اللي
+            // العميل كتبه بنفسه، محصور بين الحد الأدنى والأقصى المحفوظين في
+            // options الخاصة بالمنتج. الحصر هنا للتجربة/العرض بس - الفحص الملزم
+            // الحقيقي بيحصل تاني في create_order_with_items على السيرفر.
+            if (product.isGiftCard) {
+                const min = parseFloat(product.options?.minAmount) || 150;
+                const max = parseFloat(product.options?.maxAmount) || 3000;
+                const chosen = parseFloat(opts.giftCardAmount);
+                return Math.min(Math.max(isNaN(chosen) ? min : chosen, min), max);
+            }
             price = product.price || product.basePrice || 0;
             // 🚨🚨 [إصلاح جذري حرج - العروض بتلغي نفسها]: عمود "prices" (الخاص
             // بالأحجام) ممكن يفضل فيه القيمة القديمة قبل الخصم غلط في البيانات
@@ -1259,8 +1269,14 @@
             finalPrice: parseFloat(finalUnitPrice.toFixed(4)),
             quantity: parseInt(String(quantity), 10) || 1,
             image: (product.images && product.images[0]) || product.image || "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
-            type: product.type || (product.isMiniCake ? "mini-cake" : "standard"),
+            // 🎁 [بطاقة هدية بمبلغ حر]: item_type = "gift-card" هو اللي بيخلي
+            // create_order_with_items على السيرفر يعامل السطر ده كمبلغ حر
+            // (يتحقق منه ضد الحد الأدنى/الأقصى) بدل ما يدور عليه في جدول
+            // المنتجات بسعر ثابت، وهو نفسه اللي بيخلي واجهة السلة/الشيكاوت
+            // تستثنيه من الشحن وموعد التسليم لأنه منتج رقمي بالكامل.
+            type: product.isGiftCard ? "gift-card" : (product.type || (product.isMiniCake ? "mini-cake" : "standard")),
             customDetails: {
+                amount: product.isGiftCard ? finalUnitPrice : undefined,
                 cakeType: opts.cakeType || opts.cakeFlavor || "فانيليا",
                 shape: opts.shape || "circle",
                 persons: parseInt(opts.persons, 10) || (product.isMiniCake ? 2 : 0),
@@ -1412,6 +1428,11 @@
     window.calculateBoseInvoice = function(cart, storeData, shippingFee, loyaltyDiscountAmount, voucherDiscountAmount, giftCardDiscountAmount) {
         const safeCart = Array.isArray(cart) ? cart : [];
         const safeShippingFee = parseFloat(String(shippingFee)) || 0;
+        // 🎁 [استخدام كود بطاقة هدية]: نفس فلسفة قسيمة الولاء بالظبط - رقم الخصم
+        // ده معروض فوري للعميلة بعد الضغط على "تفعيل" (validate_gift_card_code)
+        // بس الخصم الفعلي من رصيد الكود بيحصل تاني وبشكل ملزم في
+        // create_order_with_items على السيرفر وقت إنشاء الطلب فعلياً.
+        const safeGiftCardDiscount = parseFloat(String(giftCardDiscountAmount)) || 0;
         // 🎁 [نظام نقاط الولاء]: خصم تلقائي حسب ترتيب الطلب (5%/10%/15%) وخصم
         // قسيمة الولاء (300 جنيه كل 10 طلبات) - بيتحسبوا في checkout.html بمجرد
         // ما رقم الهاتف يتأكد صحيح (عن طريق get_customer_rewards/validate_loyalty_voucher)
@@ -1419,10 +1440,6 @@
         // قبل ما تأكد الطلب، بدل ما يتطبقوا بصمت في قاعدة البيانات بس.
         const safeLoyaltyDiscount = parseFloat(String(loyaltyDiscountAmount)) || 0;
         const safeVoucherDiscount = parseFloat(String(voucherDiscountAmount)) || 0;
-        // 🎁 [بطاقات الهدايا - تفعيل حقيقي]: خصم بطاقة الهدية (لو اتفعّلت في
-        // صفحة إتمام الطلب) بنفس منطق قسيمة الولاء فوق - بيتحسب هنا محلياً
-        // للعرض الفوري، وبيتأكد فعلياً من الباك إند وقت create_order_with_items.
-        const safeGiftCardDiscount = parseFloat(String(giftCardDiscountAmount)) || 0;
 
         let subtotal = 0;
         let itemsCount = 0;
@@ -1662,7 +1679,7 @@
         const rules = window.BoseStoreData?.orderRules || {};
         const requiredHours = isCustomOrder
             ? (rules.minPreparationTimeHoursCustom || 168) - 0.05
-            : (rules.minPreparationTimeHours || 48) - 0.05;
+            : (rules.minPreparationTimeHours || 24) - 0.05;
         return (selectedDateTime.getTime() - currentDateTime.getTime()) / (1000 * 60 * 60) >= requiredHours;
     };
 
@@ -2316,17 +2333,8 @@
         // لو فيه جولة شغالة، بنأجل ظهور النافذة وبنعيد المحاولة كل ثانيتين
         // (سقف 30 محاولة = دقيقة كحد أقصى) لحد ما الجولة تخلص أو العميلة
         // تقفلها - النافذة برضه بتحترم كل قواعد عدم التكرار العادية بتاعتها.
-        // 🛡️🆕 [إصلاح - النافذة كانت بترصّ فوق قايمة اختيار الجولة]: الفحص ده
-        // كان بيتأكد بس إن فيه *جولة بدأت فعلياً* (state.active) - لكن لو
-        // العميلة دوست على زرار "الجولة" العائم وفتحت قايمة الاختيار (الصور
-        // اللي صاحبة المتجر بعتتها) من غير ما تختار جولة لسه، الحالة دي
-        // مش متسجلة في bose_guided_tour_state_v4 خالص، فالنافذة كانت بتحسب
-        // إن مفيش جولة شغالة وتظهر فوق القايمة المفتوحة فجأة. دلوقتي بنفحص
-        // كمان كلاس bose-tour-fab-panel-open على اللوحة نفسها.
         function isBoseGuidedTourCurrentlyActive() {
             try {
-                const panel = document.getElementById('bose-tour-fab-panel');
-                if (panel && panel.classList.contains('bose-tour-fab-panel-open')) return true;
                 const raw = localStorage.getItem('bose_guided_tour_state_v4');
                 if (!raw) return false;
                 const state = JSON.parse(raw);
@@ -2615,52 +2623,6 @@
                 </div>
             `;
             setupHeaderAndSidebarEvents();
-
-            if (topBarEnabled && !window.matchMedia('(prefers-reduced-motion: reduce)').matches && !window.__boseTopBarScrollHideBound) {
-                const marqueeEl = document.getElementById('top-bar-marquee');
-                if (marqueeEl) {
-                    window.__boseTopBarScrollHideBound = true;
-                    let lastScrollY = window.scrollY;
-                    let isHidden = false;
-                    let ticking = false;
-                    const SHOW_NEAR_TOP_PX = 40;
-                    const HIDE_AFTER_SCROLL_PX = 60;
-
-                    const applyState = () => {
-                        const currentY = window.scrollY;
-                        const scrolledDown = currentY > lastScrollY;
-
-                        if (currentY <= SHOW_NEAR_TOP_PX) {
-                            if (isHidden) {
-                                isHidden = false;
-                                marqueeEl.classList.remove('bose-top-bar-scroll-hidden');
-                                document.documentElement.style.setProperty('--bose-topbar-height', topBarHeight + 'px');
-                            }
-                        } else if (scrolledDown && currentY > HIDE_AFTER_SCROLL_PX) {
-                            if (!isHidden) {
-                                isHidden = true;
-                                marqueeEl.classList.add('bose-top-bar-scroll-hidden');
-                                document.documentElement.style.setProperty('--bose-topbar-height', '0px');
-                            }
-                        } else if (!scrolledDown) {
-                            if (isHidden) {
-                                isHidden = false;
-                                marqueeEl.classList.remove('bose-top-bar-scroll-hidden');
-                                document.documentElement.style.setProperty('--bose-topbar-height', topBarHeight + 'px');
-                            }
-                        }
-                        lastScrollY = currentY;
-                        ticking = false;
-                    };
-
-                    window.addEventListener('scroll', () => {
-                        if (!ticking) {
-                            window.requestAnimationFrame(applyState);
-                            ticking = true;
-                        }
-                    }, { passive: true });
-                }
-            }
         }
 
         // 🔧 [إصلاح جذري]: الشريط السفلي الثابت كان Hardcoded جوه index.html بس، فكان بيختفي
@@ -2679,7 +2641,7 @@
             const currentPage = (window.location.pathname.split('/').pop() || 'index.html');
             const isHome = currentPage === '' || currentPage === 'index.html';
             const isOffers = currentPage === 'offers.html';
-            const isMenu = currentPage === 'menu.html';
+            const isCart = currentPage === 'cart.html';
 
             const bottomNav = document.createElement('nav');
             bottomNav.className = 'bose-bottom-nav bose-bottom-nav-bar';
@@ -2689,10 +2651,6 @@
                     <i class="fas fa-home"></i>
                     <span>الرئيسية</span>
                 </a>
-                <a href="/menu.html" class="bottom-nav-item bose-bottom-nav-item${isMenu ? ' active' : ''}">
-                    <i class="fas fa-book-open"></i>
-                    <span>المنيو</span>
-                </a>
                 <a href="/offers.html" class="bottom-nav-item bose-bottom-nav-item${isOffers ? ' active' : ''}">
                     <i class="fas fa-tags"></i>
                     <span>العروض</span>
@@ -2700,6 +2658,13 @@
                 <a href="${window.buildWhatsappLink(data.social?.whatsapp || '201097238441', '')}" target="_blank" rel="noopener noreferrer" class="bottom-nav-item bose-bottom-nav-item whatsapp-item">
                     <i class="fab fa-whatsapp"></i>
                     <span>الواتساب</span>
+                </a>
+                <a href="/cart.html" class="bottom-nav-item bose-bottom-nav-item cart-item${isCart ? ' active' : ''}">
+                    <div class="nav-cart-icon-wrap">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span class="nav-cart-badge bose-bottom-nav-badge">0</span>
+                    </div>
+                    <span>السلة</span>
                 </a>
             `;
             document.body.appendChild(bottomNav);
@@ -2886,61 +2851,10 @@
     }
 
     function showGlobalFriendlyError() {
-        try {
-            const FALLBACK_WHATSAPP_NUMBER = "201097238441";
-            const waPromptText = "أهلاً، الموقع مش راضي يفتح عندي دلوقتي وحابة أطلب/أستفسر من هنا 🌸";
-            const waLink = (typeof window.buildWhatsappLink === "function")
-                ? window.buildWhatsappLink(FALLBACK_WHATSAPP_NUMBER, waPromptText)
-                : `https://wa.me/${FALLBACK_WHATSAPP_NUMBER}?text=${encodeURIComponent(waPromptText)}`;
-
-            const overlay = document.createElement("div");
-            overlay.setAttribute("dir", "rtl");
-            overlay.id = "bose-global-fatal-error-overlay";
-            overlay.style.cssText = "position:fixed;inset:0;z-index:2147483647;background:rgba(255,255,255,0.97);display:flex;align-items:center;justify-content:center;padding:24px;font-family:'Cairo',Tahoma,Arial,sans-serif;";
-
-            const card = document.createElement("div");
-            card.style.cssText = "background:#FFFFFF;border:1px solid rgba(255,145,164,0.4);border-radius:20px;box-shadow:0 10px 34px rgba(0,0,0,0.18);padding:32px 26px;max-width:380px;width:100%;text-align:center;";
-
-            const icon = document.createElement("div");
-            icon.textContent = "📡";
-            icon.style.cssText = "font-size:38px;margin-bottom:6px;";
-
-            const title = document.createElement("h2");
-            title.textContent = "في صعوبة بسيطة في الاتصال";
-            title.style.cssText = "font-size:19px;font-weight:800;color:#111111;margin:0 0 10px;";
-
-            const msg = document.createElement("p");
-            msg.textContent = "معلش، شكلنا مش قادرين نوصل لبيانات المتجر دلوقتي - غالباً بسبب ضعف مؤقت في الاتصال بالنت. جربي إعادة المحاولة، أو كلمينا على واتساب ونساعدك فوراً.";
-            msg.style.cssText = "font-size:14px;line-height:1.7;color:#444444;margin:0 0 22px;";
-
-            const retryBtn = document.createElement("button");
-            retryBtn.type = "button";
-            retryBtn.textContent = "🔄 إعادة المحاولة";
-            retryBtn.style.cssText = "display:block;width:100%;background:#FF91A4;color:#ffffff;font-weight:800;font-size:15px;border:none;padding:14px;border-radius:50px;cursor:pointer;margin-bottom:12px;";
-            retryBtn.onclick = function() { window.location.reload(); };
-
-            const waLinkEl = document.createElement("a");
-            waLinkEl.href = waLink;
-            waLinkEl.target = "_blank";
-            waLinkEl.rel = "noopener noreferrer";
-            waLinkEl.textContent = "تواصلي معانا على واتساب";
-            waLinkEl.style.cssText = "display:block;width:100%;background:#FFFFFF;color:#128C7E;font-weight:700;font-size:14px;border:2px solid #128C7E;padding:11px;border-radius:50px;text-decoration:none;box-sizing:border-box;";
-
-            card.appendChild(icon);
-            card.appendChild(title);
-            card.appendChild(msg);
-            card.appendChild(retryBtn);
-            card.appendChild(waLinkEl);
-            overlay.appendChild(card);
-
-            const attach = function() {
-                if (document.body) document.body.appendChild(overlay);
-            };
-            if (document.body) attach();
-            else document.addEventListener("DOMContentLoaded", attach);
-        } catch (fatalErrorUiErr) {
-            console.error("⚠️ فشل عرض كارت الخطأ الحرج نفسه:", fatalErrorUiErr);
-        }
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'bose-global-toast-error';
+        errorDiv.textContent = 'عذراً، نواجه صعوبة في الاتصال بالخادم حالياً. يرجى إعادة محاولة تحميل الصفحة.';
+        document.body.appendChild(errorDiv);
     }
 
     /**
