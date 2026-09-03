@@ -36,24 +36,10 @@
                             <option value="all">الكل</option>
                         </select>
                     </div>
-
-                    <!-- 🆕 [تحسين إنتاجية - اعتماد/حذف جماعي] -->
-                    <div class="adm-orders-bulk-bar" id="reviews-bulk-bar" style="display:none;">
-                        <span id="reviews-bulk-count">0 تقييم محدد</span>
-                        <button type="button" class="adm-btn adm-btn-ghost" id="reviews-bulk-clear-btn">إلغاء التحديد</button>
-                        <button type="button" class="adm-btn adm-btn-primary" id="reviews-bulk-approve-btn">
-                            <i class="fa-solid fa-check-double"></i> اعتماد المحدد
-                        </button>
-                        <button type="button" class="adm-btn adm-btn-danger" id="reviews-bulk-delete-btn">
-                            <i class="fa-solid fa-trash"></i> حذف المحدد
-                        </button>
-                    </div>
-
                     <div class="adm-table-wrapper">
                         <table class="adm-table" id="reviews-table">
                             <thead>
                                 <tr>
-                                    <th style="width:36px;"><input type="checkbox" id="reviews-select-all"></th>
                                     <th>العميل</th>
                                     <th>المنتج</th>
                                     <th>التقييم</th>
@@ -64,7 +50,7 @@
                                 </tr>
                             </thead>
                             <tbody id="reviews-tbody">
-                                <tr><td colspan="8"><div class="adm-loading-spinner"></div></td></tr>
+                                <tr><td colspan="7"><div class="adm-loading-spinner"></div></td></tr>
                             </tbody>
                         </table>
                     </div>
