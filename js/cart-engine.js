@@ -313,6 +313,23 @@ function renderBoseCartPage(storeData) {
                     specs.push(`<span><strong>الحجم:</strong> ${esc(cd.sizeLabel)}</span>`);
                 }
 
+                // 🎁🖋️ [تفاصيل تخصيص بطاقة الهدية]: نفس فلسفة عرض تفاصيل التورت/الورد
+                // المخصص فوق بالظبط - كل حقل بيظهر بس لو العميلة فعلاً ملأته من
+                // gift-card-builder.html، عشان العميلة (وفاتورة الواتساب) يشوفوا
+                // بالظبط الكارت اتصمم إزاي قبل ما يتأكد الطلب.
+                if (item.type === "gift-card") {
+                    if (cd.giftDesignName) specs.push(`<span>🎨 <strong>تصميم البطاقة:</strong> ${esc(cd.giftDesignName)}</span>`);
+                    if (cd.giftOccasionLabel) specs.push(`<span><strong>المناسبة:</strong> ${esc(cd.giftOccasionLabel)}</span>`);
+                    if (cd.recipientName) specs.push(`<span><strong>إلى:</strong> ${esc(cd.recipientName)}</span>`);
+                    if (cd.senderName) specs.push(`<span><strong>من:</strong> ${esc(cd.senderName)}</span>`);
+                    if (cd.giftMessage) specs.push(`<span><strong>الرسالة:</strong> "${esc(cd.giftMessage)}"</span>`);
+                    if (cd.giftSendOption === "schedule" && cd.giftScheduledSendAtLabel) {
+                        specs.push(`<span>🕒 <strong>موعد الإرسال:</strong> ${esc(cd.giftScheduledSendAtLabel)}</span>`);
+                    } else {
+                        specs.push(`<span>🕒 <strong>موعد الإرسال:</strong> فوري بعد تأكيد الطلب</span>`);
+                    }
+                }
+
                 if (specs.length > 0) {
                     customDetailsHTML = `<div class="cart-item-customizations-panel" style="font-size: 13px; color: #111111; background: rgba(255,145,164,0.04); padding: 10px; border-radius: 12px; margin: 6px 0; border-right: 3px solid #FF91A4; display: flex; flex-direction: column; gap: 4px; width: 100%; box-sizing: border-box; font-family: 'Cairo';">${specs.join("")}</div>`;
                 }

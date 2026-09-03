@@ -1252,6 +1252,7 @@
         const isCustomizable = product.isMiniCake ||
                              product.type === "custom-cake" || 
                              product.type === "custom-flower" || 
+                             product.isGiftCard ||
                              (product.customizationOptions && Object.keys(opts).length > 0);
                              
         const finalId = isCustomizable ? `${product.slug}-${Date.now()}` : String(product.slug || product.id);
@@ -1319,7 +1320,19 @@
                 // صفحة السلة وفي فاتورة الواتساب - بدل ما يختفي تماماً ويفضل السعر
                 // هو الفرق الوحيد الصامت بين حجم وحجم.
                 size: opts.size || null,
-                sizeLabel: opts.size ? (window.BOSE_SIZE_LABELS[opts.size] || opts.size) : ""
+                sizeLabel: opts.size ? (window.BOSE_SIZE_LABELS[opts.size] || opts.size) : "",
+                // 🎁🖋️ [تخصيص بطاقة الهدية]: بيانات التصميم اللي اختارتها العميلة من
+                // gift-card-builder.html - كلها بيانات عرض/فاتورة بس (مش بتأثر على
+                // السعر، السعر بيتحسب من amount فوق زي ما هو). بتوصل فاضية لأي
+                // منتج تاني عادي فمفيش أي كسر أو تأثير على باقي أنواع السلة.
+                giftDesignName: opts.giftDesignName || "",
+                giftOccasionLabel: opts.giftOccasionLabel || "",
+                recipientName: opts.recipientName || "",
+                senderName: opts.senderName || "",
+                giftMessage: opts.giftMessage || "",
+                giftSendOption: opts.giftSendOption || "now",
+                giftScheduledSendAtLabel: opts.giftScheduledSendAtLabel || "",
+                giftScheduledSendAtISO: opts.giftScheduledSendAtISO || ""
             }
         };
     };
@@ -2563,6 +2576,12 @@
                                     </a>
                                 </li>
                                 <li class="sidebar-link-item">
+                                    <a href="/gift-card-builder.html">
+                                        <span class="link-main-side"><i class="fa-solid fa-gift main-icon"></i>بطاقة هدية مخصصة</span>
+                                        <i class="fa-solid fa-chevron-left arrow-icon"></i>
+                                    </a>
+                                </li>
+                                <li class="sidebar-link-item">
                                     <a href="/gift-card-faq.html">
                                         <span class="link-main-side"><i class="fa-solid fa-circle-question main-icon"></i>أسئلة بطاقات الهدايا</span>
                                         <i class="fa-solid fa-chevron-left arrow-icon"></i>
@@ -2718,6 +2737,7 @@
                                 <li><a href="/menu.html">المنيو الشامل</a></li>
                                 <li><a href="/cake-builder.html">محاكي التورت</a></li>
                                 <li><a href="/flower-builder.html">محاكي الورد</a></li>
+                                <li><a href="/gift-card-builder.html">بطاقة هدية مخصصة</a></li>
                                 <li><a href="/cart.html">سلة التسوق</a></li>
                             </ul>
                         </div>
