@@ -22,12 +22,12 @@
     --bose-soft-gray: rgba(255, 145, 164, 0.06);
     --bose-border-gray: #FF91A4;
     --bose-border-pink-tint: rgba(255, 145, 164, 0.25);
-    --bose-success-green: #FF91A4;
-    --bose-success-text: #FF91A4;
-    --bose-success-bg: rgba(255, 145, 164, 0.08);
-    --bose-error-red: #FF91A4;
-    --bose-error-text: #FF91A4;
-    --bose-error-bg: rgba(255, 145, 164, 0.05);
+    --bose-success-green: #1B6E3C;
+    --bose-success-text: #1B6E3C;
+    --bose-success-bg: rgba(27, 110, 60, 0.08);
+    --bose-error-red: #C62828;
+    --bose-error-text: #C62828;
+    --bose-error-bg: rgba(198, 40, 40, 0.06);
     --bose-soft-shadow: 0 12px 32px rgba(255, 145, 164, 0.08);
     --bose-hover-shadow: 0 16px 40px rgba(255, 145, 164, 0.15);
     --bose-radius: var(--bose-radius-md, 16px); /* 🛡️ [إصلاح تناسق]: كانت 16px ثابتة محلياً هنا، دلوقتي بترجع لنفس المقياس الموحّد المعرّف في global.css (--bose-radius-md) عشان تتغير كل الكروت في الموقع سوا لو الفريق غيّر المقياس مستقبلاً بدل ما تفضل الصفحة دي منفصلة برقمها الخاص. */
@@ -755,14 +755,14 @@
     display: block;
     background-color: var(--bose-success-bg);
     color: var(--bose-success-text);
-    border: 1px solid rgba(255, 145, 164, 0.2);
+    border: 1px solid rgba(27, 110, 60, 0.25);
 }
 
 .coupon-status-toast.error {
     display: block;
     background-color: var(--bose-error-bg);
     color: var(--bose-error-text);
-    border: 1px solid rgba(255, 145, 164, 0.2);
+    border: 1px solid rgba(198, 40, 40, 0.25);
 }
 
 /* جدول تفاصيل الحسابات المالية */
@@ -1743,32 +1743,10 @@ select.bose-form-control option,
     background-color: var(--bose-cream);
 }
 
-/* ==========================================================================
-   12. 👑 حوكمة وأمان قنوات الفوتر القياسي لحظر ثغرة التصفير والظلال المشوهة 👑
-   ========================================================================== */
-.footer-social-icon-btn {
-    width: 38px !important;
-    height: 38px !important;
-    border-radius: 50% !important;
-    border: 1px solid rgba(255, 145, 164, 0.3) !important; /* إطار بمبي ناعم يمثل نبض الحياة */
-    display: flex !important; /* إصلاح الفلكس بوكس الساقط لمركزة الأيقونات */
-    align-items: center !important;
-    justify-content: center !important;
-    color: #FF91A4 !important;                           /* إلغاء اللون الأسود وتحويله لبمبي ناعم ملوكي لراحة العين */
-    background-color: #FFFFFF !important;                /* أرضية بيضاء صريحة لتوفير التنفس البصري الكامل ومنع التكدس */
-    box-shadow: 0 8px 32px rgba(255, 145, 164, 0.08) !important; /* ظلال ناعمة مريحة خالية من أي سواد مشوه */
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    font-size: 16px !important;
-    text-decoration: none !important;
-}
-
-.footer-social-icon-btn:hover {
-    background-color: #FF91A4 !important;     /* التحول الملوكي الكامل للون البمبي نبض الحياة عند الهوفر */
-    color: #FFFFFF !important;               /* قلب لون الأيقونة الداخلي للأبيض الساطع */
-    border-color: #FF91A4 !important;         /* تأمين تلاحم البوردر بشكل فخم وانسيابي */
-    transform: translateY(-3px) !important;   /* حركة ناعمة محفزة تليق بعميل علاماتنا الفاخرة */
-    box-shadow: 0 12px 40px rgba(255, 145, 164, 0.22) !important;
-}
+/* 🐛🛡️ [إصلاح بق حقيقي - تعارض بين ملفين]: كان هنا تعريف كامل مكرر
+   لـ.footer-social-icon-btn بقيم مختلفة عن النسخة الموحّدة في main.css
+   (38px بدل 42px). main.css متحمّل أصلاً في نفس الصفحتين، فمسحنا النسخة
+   المكررة المتضاربة هنا. */
 
 /* ==========================================================================
    13. 👑 التجاوب والـ Media Queries وإرجاع قواعد أمان التابلت المبتورة 👑
