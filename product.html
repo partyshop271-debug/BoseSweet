@@ -28,11 +28,11 @@
     <link rel="stylesheet" href="css/global.css?v=2026_production_v44.0">
     <link rel="stylesheet" href="css/main.css?v=2026_production_v40.0">
     
-    <script src="js/supabase-client.js?v=2026_production_v43.0" defer></script>
+    <script src="js/supabase-client.js?v=2026_production_v42.0" defer></script>
     <script src="js/push-notifications.js?v=1.0" defer></script>
     <script src="js/favorites-engine.js?v=2026_production_v38.0" defer></script>
-    <script src="js/core-engine.js?v=2027_production_v57.0" defer></script>
-    <script src="js/guided-tour.js?v=3.2" defer></script>
+    <script src="js/core-engine.js?v=2027_production_v55.0" defer></script>
+    <script src="js/guided-tour.js?v=3.1" defer></script>
     <script src="js/cart-reminder.js?v=1" defer></script>
     <script src="js/trust-badges.js?v=1" defer></script>
 
@@ -664,6 +664,16 @@
                     <div id="bose-product-quantity-note" class="bose-qty-clarity-note" style="display:none;"><i class="fa-solid fa-circle-info"></i><span id="bose-product-quantity-note-text"></span></div>
                 </div>
 
+                <!-- 🎁 [بطاقة هدية بمبلغ حر]: بديل لصف السعر الثابت - بتظهر بس
+                     لو المنتج is_gift_card=true، وبتخلي العميل يكتب أي مبلغ
+                     بين الحد الأدنى والأقصى المحفوظين في options.minAmount/maxAmount -->
+                <div id="bose-giftcard-amount-block" style="display:none; margin: 10px 0 18px;">
+                    <label for="input-giftcard-amount" style="display:block; font-weight:700; margin-bottom:8px; font-size:14px;">اكتب القيمة اللي عايزها (جنيه)</label>
+                    <input id="input-giftcard-amount" type="number" step="1" inputmode="numeric"
+                        style="width:100%; padding:14px 16px; border-radius:12px; border:2px solid var(--bose-pink,#ff91a4); font-size:18px; font-weight:700; text-align:center;">
+                    <p id="bose-giftcard-amount-hint" style="margin:8px 0 0; font-size:13px; opacity:.75;"></p>
+                </div>
+
                 <!-- 🛒 [ترتيب قرار الشراء]: الكمية وزرار الإضافة للسلة بقوا فوق مباشرة تحت
                      السعر، عشان تبقى أول حاجة العميلة تتفاعل معاها - قبل ما تنزل تقرا باقي
                      التفاصيل. راجع actions-purchase-integration-row في CSS: بقت عمودية،
@@ -915,6 +925,42 @@
             // (عمود جديد في جدول products) وبيتعرض هنا دايماً وبشكل واضح - مش جوه أي
             // بوكس اختياري - عشان لو السعر ده بيغطي دستة كاملة (12 قطعة) مثلاً، العميل
             // يعرف ده من أول لحظة يفتح فيها صفحة المنتج، قبل حتى ما يفكر يضيف للسلة.
+            // 🎁 [بطاقة هدية بمبلغ حر]: تفعيل حقل المبلغ الحر لما المنتج المفتوح
+            // يكون بطاقة هدية - بيحدد قيمة ابتدائية = الحد الأدنى، وبيربط أي
+            // تغيير في القيمة بتحديث السعر المعروض فوراً (updateLivePriceDisplay).
+            function initGiftCardAmountField() {
+                const block = document.getElementById("bose-giftcard-amount-block");
+                const input = document.getElementById("input-giftcard-amount");
+                const hint = document.getElementById("bose-giftcard-amount-hint");
+                if (!block || !input || !hint || !currentProduct) return;
+                if (!currentProduct.isGiftCard) {
+                    block.style.display = "none";
+                    return;
+                }
+                const min = parseFloat(currentProduct.options?.minAmount) || 150;
+                const max = parseFloat(currentProduct.options?.maxAmount) || 3000;
+                input.min = String(min);
+                input.max = String(max);
+                input.value = String(min);
+                hint.textContent = `من ${min} لحد ${max} جنيه`;
+                currentSelectedOptions.giftCardAmount = min;
+                block.style.display = "block";
+
+                input.addEventListener("input", () => {
+                    currentSelectedOptions.giftCardAmount = parseFloat(input.value) || min;
+                    updateLivePriceDisplay(window.BoseStoreData?.store?.currency || "EGP");
+                });
+                input.addEventListener("blur", () => {
+                    // نصحح القيمة بصرياً للحد المسموح بمجرد ما العميل يسيب الحقل،
+                    // عشان يبقى واضح من الأول إن في سقف - مش مفاجأة وقت الدفع بس.
+                    let v = parseFloat(input.value) || min;
+                    v = Math.min(Math.max(v, min), max);
+                    input.value = String(v);
+                    currentSelectedOptions.giftCardAmount = v;
+                    updateLivePriceDisplay(window.BoseStoreData?.store?.currency || "EGP");
+                });
+            }
+
             function renderQuantityNote() {
                 const wrapper = document.getElementById("bose-product-quantity-note");
                 const textEl = document.getElementById("bose-product-quantity-note-text");
@@ -1116,6 +1162,8 @@
                 // معندوش سعر أو تفاصيل ثابتة أصلاً، ومكانه الشرعي الوحيد هو المحاكي مش صفحة
                 // منتج ثابتة بسعر تقريبي غلط. لو حد وصل هنا بأي رابط قديم أو من محرك بحث،
                 // بنوديه على طول للمحاكي الصحيح بدل ما يشوف صفحة مكررة وغلط.
+                initGiftCardAmountField();
+
                 if (currentProduct.customBuilderUrl && currentProduct.builderType && currentProduct.builderType !== 'standard') {
                     window.location.replace(currentProduct.customBuilderUrl);
                     return;

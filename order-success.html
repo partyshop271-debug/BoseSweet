@@ -33,11 +33,11 @@
          بيخلي السكريبتات تستنى لحد ما HTML كله يتحلل الأول - نفس الطريقة
          المستخدمة في باقي صفحات الموقع. ترتيب loyalty-config.js *قبل*
          core-engine.js اتحافظ عليه زي ما هو. -->
-    <script src="js/supabase-client.js?v=2026_production_v43.0" defer></script>
+    <script src="js/supabase-client.js?v=2026_production_v42.0" defer></script>
     <script src="js/push-notifications.js?v=1.0" defer></script>
     <script src="js/favorites-engine.js?v=2026_production_v38.0" defer></script>
     <script src="js/loyalty-config.js?v=2026_production_v1.0" defer></script>
-    <script src="js/core-engine.js?v=2027_production_v57.0" defer></script>
+    <script src="js/core-engine.js?v=2027_production_v55.0" defer></script>
     <!-- 🛡️ [إصلاح حرج - المرحلة 1]: هذه الصفحة كانت الوحيدة بين كل صفحات السلة/الدفع
          التي لا تحمّل cart-engine.js، فكانت دالة renderBoseSuccessPage المخصصة لها
          معطّلة تماماً ومعوّضة بسكريبت داخلي مكرر. تم حذف التكرار وربط الصفحة بالمحرك
@@ -56,13 +56,13 @@
          بعكس defer اللي بيستنى لحد ما الصفحة كلها تتحلل). أضفنا defer هنا كمان عشان
          الترتيب يفضل صحيح ومطابق تمامًا لنفس النمط المستخدم في cart.html/checkout.html. -->
     <script src="js/invoice-image-generator.js?v=2026_production_v1.0" defer></script>
-    <script src="js/cart-engine.js?v=2027_production_v46.0" defer></script>
+    <script src="js/cart-engine.js?v=2027_production_v45.0" defer></script>
     <!-- 🛡️🆕 [إصلاح باج حقيقي]: الصفحة دي كانت الوحيدة من كل صفحات رحلة
          الطلب (منيو/فئة/منتج/سلة/إتمام الطلب) اللي مش محمّلة فيها
          js/guided-tour.js - فلو الجولة التفاعلية وصلت لآخر خطوة (شرح
          الفاتورة وأزرار واتساب/تتبع الطلب/تحميل الفاتورة هنا)، كانت
          بتختفي بصمت من غير ما تتقفل صح أو تظهر رسالة "تمام خلصنا 🎉". -->
-    <script src="js/guided-tour.js?v=3.2" defer></script>
+    <script src="js/guided-tour.js?v=3.1" defer></script>
 
     <style>
         /* 🎨 الهندسة البصرية المخصصة لصفحة نجاح الطلب الفاخرة */
@@ -199,33 +199,29 @@
             margin-top: 10px;
         }
 
+        @media (min-width: 480px) {
+            .success-actions-row {
+                flex-direction: row;
+            }
+        }
+
         .btn-success-whatsapp-trigger {
-            width: 100%;
-            background-color: #128C7E;
+            flex: 1;
+            background-color: #FF91A4;
             color: var(--bose-white, #FFFFFF);
             border: none;
-            padding: 17px 24px;
+            padding: 14px 24px;
             border-radius: 50px;
-            font-size: 1.02rem;
-            font-weight: 800;
+            font-size: 0.95rem;
+            font-weight: 700;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
             text-decoration: none;
-            box-shadow: 0 8px 26px rgba(18, 140, 126, 0.35);
+            box-shadow: 0 6px 20px rgba(255, 145, 164, 0.2);
             transition: 0.2s ease;
-            animation: boseWhatsappPulseAttention 2.2s ease-in-out 3;
-        }
-
-        @keyframes boseWhatsappPulseAttention {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.025); }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            .btn-success-whatsapp-trigger { animation: none; }
         }
 
         .btn-success-whatsapp-trigger:hover {
@@ -235,12 +231,12 @@
 
         .btn-success-home-anchor {
             flex: 1;
-            background-color: var(--bose-white, #FFFFFF);
-            color: var(--bose-pink-text, #FF91A4);
-            border: 2px solid var(--bose-pink-text, #FF91A4);
-            padding: 12px 24px;
+            background-color: var(--bose-pink, #FF91A4);
+            color: var(--bose-white, #FFFFFF);
+            border: none;
+            padding: 14px 24px;
             border-radius: 50px;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             font-weight: 700;
             cursor: pointer;
             display: flex;
@@ -248,25 +244,13 @@
             justify-content: center;
             gap: 10px;
             text-decoration: none;
+            box-shadow: 0 6px 20px rgba(255, 145, 164, 0.2);
             transition: 0.2s ease;
         }
 
         .btn-success-home-anchor:hover {
-            background-color: var(--bose-pink-text, #FF91A4);
-            color: var(--bose-white, #FFFFFF);
-        }
-
-        .success-secondary-actions-row {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            width: 100%;
-        }
-
-        @media (min-width: 480px) {
-            .success-secondary-actions-row {
-                flex-direction: row;
-            }
+            background-color: var(--bose-black, #111111);
+            box-shadow: 0 6px 20px rgba(17, 17, 17, 0.15);
         }
     </style>
 </head>
@@ -351,14 +335,12 @@
                 <a href="#" id="bose-resend-whatsapp-btn" class="btn-success-whatsapp-trigger" style="display:none;">
                     <i class="fab fa-whatsapp"></i> إرسال فاتورة الطلب على واتساب
                 </a>
-                <div class="success-secondary-actions-row">
-                    <a href="track-order.html" id="bose-success-track-btn" class="btn-success-home-anchor" style="display:none;">
-                        <i class="fas fa-location-crosshairs"></i> تتبعي طلبك
-                    </a>
-                    <a href="index.html" class="btn-success-home-anchor">
-                        <i class="fas fa-home"></i> العودة للواجهة الرئيسية
-                    </a>
-                </div>
+                <a href="track-order.html" id="bose-success-track-btn" class="btn-success-whatsapp-trigger" style="display:none;">
+                    <i class="fas fa-location-crosshairs"></i> تتبعي طلبك
+                </a>
+                <a href="index.html" class="btn-success-home-anchor">
+                    <i class="fas fa-home"></i> العودة للواجهة الرئيسية
+                </a>
             </div>
 
             <!-- 🧾 [إضافة اختيارية - مرجع شخصي للعميلة]: زرار صغير مختلف تمامًا عن
