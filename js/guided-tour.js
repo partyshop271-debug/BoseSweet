@@ -389,7 +389,14 @@
             #bose-tour-fab-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:#FF91A4;color:#111;border:none;border-radius:14px 0 0 14px;width:40px;padding:16px 8px;box-shadow:-2px 3px 14px rgba(0,0,0,.2);font-family:'Cairo',sans-serif;cursor:pointer;}
             #bose-tour-fab-btn i{font-size:1rem;}
             #bose-tour-fab-btn span{writing-mode:vertical-rl;text-orientation:sideways;white-space:nowrap;font-weight:800;font-size:.82rem;letter-spacing:.3px;}
-            #bose-tour-fab-panel{position:fixed;top:42%;right:56px;transform:translateY(-10px);background:#fff;border-radius:18px;box-shadow:0 10px 34px rgba(0,0,0,.24);padding:14px;width:236px;opacity:0;pointer-events:none;transition:opacity .18s ease,transform .18s ease;}
+            /* 🛡️🆕 [إصلاح - أيقونات الجولة بتتقطع تحت ومفيش سكرول]: اللوحة دي
+               كانت من غير max-height ولا overflow، فلما بقى فيها 9 جولات
+               (5 صفوف) على شاشات قصيرة، الجزء اللي بيعدي حافة الشاشة كان
+               بيتقطع بصرياً - ومحدش ينفع يسكرول الصفحة العادية يوريه، لأن
+               اللوحة نفسها position:fixed وسكرول الصفحة مالوش علاقة بيها.
+               دلوقتي عندها سقف ارتفاع مرتبط بمساحة الشاشة الفعلية + سكرول
+               داخلي خاص بيها، فأي صفوف زيادة تتلف براحة جوه اللوحة نفسها. */
+            #bose-tour-fab-panel{position:fixed;top:42%;right:56px;transform:translateY(-10px);background:#fff;border-radius:18px;box-shadow:0 10px 34px rgba(0,0,0,.24);padding:14px;width:236px;max-height:54vh;max-height:54dvh;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;opacity:0;pointer-events:none;transition:opacity .18s ease,transform .18s ease;}
             #bose-tour-fab-panel.bose-tour-fab-panel-open{opacity:1;pointer-events:auto;transform:translateY(0);}
             .bose-tour-fab-panel-title{font-weight:800;font-size:.86rem;color:#111;margin-bottom:10px;text-align:right;}
             .bose-tour-fab-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
@@ -877,7 +884,15 @@
         try { seen = !!localStorage.getItem(FAB_POINTER_SEEN_KEY); } catch (e) { seen = true; }
         if (seen) return;
         try { localStorage.setItem(FAB_POINTER_SEEN_KEY, '1'); } catch (e) { /* لا شيء */ }
-        setTimeout(highlightFabButton, 450);
+        // 🛡️🆕 [إصلاح - الكارت كان بيختفي لوحده وهو مستخبي ورا نافذة "حمّلي
+        // تطبيقنا"]: التوقيت القديم كان ثابت (450 مللي ثانية) من غير ما يتأكد
+        // إن نافذة التطبيق مش هتظهر فوقه في نفس اللحظة - فلو الاتنين اتزاحموا،
+        // الكارت كان بيبان لمدة 3.8 ثانية وبيختفي تلقائياً وهو مخفي بالكامل
+        // ورا النافذة، يعني العميلة ما كانتش بتشوفه أبداً. دلوقتي بنستخدم
+        // نفس دالة الانتظار (whenAppInstallPopupClear) اللي بتستخدمها التوست
+        // التعريفي فوق - بنستنى النافذة تقفل الأول (لو ظاهرة) قبل ما نعرض
+        // الكارت، عشان تشوفه فعلاً في المدة الكاملة اللي بيفضل ظاهر فيها.
+        setTimeout(() => whenAppInstallPopupClear(highlightFabButton), 450);
     }
 
     function highlightFabButton() {

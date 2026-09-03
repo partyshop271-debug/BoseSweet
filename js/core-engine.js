@@ -1409,7 +1409,7 @@
      * @param {number} shippingFee
      * @returns {{subtotal: number, discount: number, shippingFee: number, grandTotal: number, itemsCount: number}}
      */
-    window.calculateBoseInvoice = function(cart, storeData, shippingFee, loyaltyDiscountAmount, voucherDiscountAmount) {
+    window.calculateBoseInvoice = function(cart, storeData, shippingFee, loyaltyDiscountAmount, voucherDiscountAmount, giftCardDiscountAmount) {
         const safeCart = Array.isArray(cart) ? cart : [];
         const safeShippingFee = parseFloat(String(shippingFee)) || 0;
         // 🎁 [نظام نقاط الولاء]: خصم تلقائي حسب ترتيب الطلب (5%/10%/15%) وخصم
@@ -1419,6 +1419,10 @@
         // قبل ما تأكد الطلب، بدل ما يتطبقوا بصمت في قاعدة البيانات بس.
         const safeLoyaltyDiscount = parseFloat(String(loyaltyDiscountAmount)) || 0;
         const safeVoucherDiscount = parseFloat(String(voucherDiscountAmount)) || 0;
+        // 🎁 [بطاقات الهدايا - تفعيل حقيقي]: خصم بطاقة الهدية (لو اتفعّلت في
+        // صفحة إتمام الطلب) بنفس منطق قسيمة الولاء فوق - بيتحسب هنا محلياً
+        // للعرض الفوري، وبيتأكد فعلياً من الباك إند وقت create_order_with_items.
+        const safeGiftCardDiscount = parseFloat(String(giftCardDiscountAmount)) || 0;
 
         let subtotal = 0;
         let itemsCount = 0;
@@ -1452,7 +1456,7 @@
         }
         couponDiscount = parseFloat(couponDiscount.toFixed(4));
 
-        const discount = parseFloat((couponDiscount + safeLoyaltyDiscount + safeVoucherDiscount).toFixed(4));
+        const discount = parseFloat((couponDiscount + safeLoyaltyDiscount + safeVoucherDiscount + safeGiftCardDiscount).toFixed(4));
         const grandTotal = Math.round(Math.max(0, subtotal - discount) + safeShippingFee);
 
         return {
@@ -1461,6 +1465,7 @@
             couponDiscount: couponDiscount,
             loyaltyDiscountAmount: safeLoyaltyDiscount,
             voucherDiscountAmount: safeVoucherDiscount,
+            giftCardDiscountAmount: safeGiftCardDiscount,
             shippingFee: safeShippingFee,
             grandTotal: grandTotal,
             itemsCount: itemsCount,
@@ -1657,7 +1662,7 @@
         const rules = window.BoseStoreData?.orderRules || {};
         const requiredHours = isCustomOrder
             ? (rules.minPreparationTimeHoursCustom || 168) - 0.05
-            : (rules.minPreparationTimeHours || 24) - 0.05;
+            : (rules.minPreparationTimeHours || 48) - 0.05;
         return (selectedDateTime.getTime() - currentDateTime.getTime()) / (1000 * 60 * 60) >= requiredHours;
     };
 
@@ -2311,8 +2316,17 @@
         // لو فيه جولة شغالة، بنأجل ظهور النافذة وبنعيد المحاولة كل ثانيتين
         // (سقف 30 محاولة = دقيقة كحد أقصى) لحد ما الجولة تخلص أو العميلة
         // تقفلها - النافذة برضه بتحترم كل قواعد عدم التكرار العادية بتاعتها.
+        // 🛡️🆕 [إصلاح - النافذة كانت بترصّ فوق قايمة اختيار الجولة]: الفحص ده
+        // كان بيتأكد بس إن فيه *جولة بدأت فعلياً* (state.active) - لكن لو
+        // العميلة دوست على زرار "الجولة" العائم وفتحت قايمة الاختيار (الصور
+        // اللي صاحبة المتجر بعتتها) من غير ما تختار جولة لسه، الحالة دي
+        // مش متسجلة في bose_guided_tour_state_v4 خالص، فالنافذة كانت بتحسب
+        // إن مفيش جولة شغالة وتظهر فوق القايمة المفتوحة فجأة. دلوقتي بنفحص
+        // كمان كلاس bose-tour-fab-panel-open على اللوحة نفسها.
         function isBoseGuidedTourCurrentlyActive() {
             try {
+                const panel = document.getElementById('bose-tour-fab-panel');
+                if (panel && panel.classList.contains('bose-tour-fab-panel-open')) return true;
                 const raw = localStorage.getItem('bose_guided_tour_state_v4');
                 if (!raw) return false;
                 const state = JSON.parse(raw);
