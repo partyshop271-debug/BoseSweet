@@ -335,7 +335,13 @@
 
     /**
      * كل الطلبات مع عناصرها (order_items)، الأحدث أولاً.
-     * @param {{status?: string, search?: string}} filters - status: فلترة بحالة معينة، search: بحث في رقم الطلب/اسم العميل/التليفون
+     * @param {{status?: string, search?: string, dateFrom?: string, dateTo?: string}} filters
+     *   - status: فلترة بحالة معينة
+     *   - search: بحث في رقم الطلب/اسم العميل/التليفون
+     *   - dateFrom/dateTo: تواريخ بصيغة YYYY-MM-DD (شاملة الاتنين) لفلترة created_at -
+     *     🆕 [تحسين إنتاجية - فلتر التاريخ]: قبل كده الصفحة كانت بتجيب كل الطلبات دايماً
+     *     وتسيب صاحبة المتجر تلاقي "طلبات النهاردة" وسط القائمة كلها. الفلترة هنا بتتم
+     *     على مستوى القاعدة (زي status/search بالظبط) عشان تفضل سريعة مهما كبر عدد الطلبات.
      */
     async function getAllOrders(filters = {}) {
         try {
@@ -347,6 +353,9 @@
             if (filters.status) {
                 query = query.eq("status", filters.status);
             }
+            if (filters.statusIn && filters.statusIn.length) {
+                query = query.in("status", filters.statusIn);
+            }
             if (filters.search && filters.search.trim()) {
                 // تعقيم نص البحث قبل تركيبه جوه صياغة .or() عشان فاصلة أو قوس
                 // مكتوبين من الأدمن ميكسروش الفلتر أو يغيّروا شرط الاستعلام.
@@ -356,6 +365,12 @@
                         `order_number.ilike.%${s}%,customer_name.ilike.%${s}%,phone1.ilike.%${s}%,phone2.ilike.%${s}%`
                     );
                 }
+            }
+            if (filters.dateFrom) {
+                query = query.gte("created_at", `${filters.dateFrom}T00:00:00`);
+            }
+            if (filters.dateTo) {
+                query = query.lte("created_at", `${filters.dateTo}T23:59:59`);
             }
 
             const { data, error } = await query;
@@ -367,10 +382,53 @@
         }
     }
 
+    /**
+     * 🆕 [تحسين أداء - استهلاك بيانات أقل]: getAllOrders بتجيب كل تفاصيل
+     * الطلب + كل عناصره (order_items) - مناسب لجدول الطلبات الكامل، لكن
+     * زيادة عن الحاجة لأي مكان بيعرض بس ملخص سريع (زي كارت "طلبات محتاجة
+     * قرارك" في الداشبورد). الدالة دي بتجيب الأعمدة المطلوبة بس من غير أي
+     * join، فبتقلل حجم البيانات المنقولة فعلياً مع كل طلب داشبورد.
+     */
+    async function getOrdersLean(filters = {}) {
+        try {
+            let query = client
+                .from("orders")
+                .select("id, order_number, customer_name, grand_total, status, created_at")
+                .order("created_at", { ascending: false });
+            if (filters.status) query = query.eq("status", filters.status);
+            if (filters.limit) query = query.limit(filters.limit);
+
+            const { data, error } = await query;
+            if (error) throw error;
+            return data || [];
+        } catch (e) {
+            console.warn("تعذر جلب ملخص الطلبات:", e.message);
+            return [];
+        }
+    }
+
     /** تحديث حالة طلب واحد (pending/confirmed/preparing/out_for_delivery/delivered/cancelled) */
     async function updateOrderStatus(orderId, newStatus) {
         const { error } = await client.from("orders").update({ status: newStatus }).eq("id", orderId);
         if (error) throw error;
+    }
+
+    /**
+     * 🆕 [تحسين إنتاجية - تحديث حالة جماعي]: قبل كده تحديد أكتر من طلب في
+     * صفحة الطلبات كان بيسمح بحذفهم بس - أي تغيير حالة (تأكيد/بدء تحضير/
+     * تسليم) كان لازم يتعمل طلب طلب بفتح المودال كل مرة. نفس نمط
+     * bulkUpdateProducts بالظبط، بس على جدول orders. تحديث واحد بـ .in()
+     * بيخلي أي trigger على مستوى الصف (زي handle_order_confirmed_financials)
+     * يشتغل لكل طلب لوحده بشكل صحيح، بالظبط زي لو اتحدثوا واحد واحد.
+     */
+    async function bulkUpdateOrderStatus(orderIds, newStatus) {
+        if (!orderIds || !orderIds.length) return 0;
+        const { error, count } = await client
+            .from("orders")
+            .update({ status: newStatus }, { count: "exact" })
+            .in("id", orderIds);
+        if (error) throw error;
+        return count || 0;
     }
 
     /**
@@ -409,6 +467,44 @@
             .in("id", orderIds);
         if (error) throw error;
         return count || 0;
+    }
+
+    /**
+     * 🆕 [تحسين إنتاجية - بحث موحّد من أي صفحة]: قبل كده كل صفحة عندها بحثها
+     * المحلي بس (الطلبات بتدوّر في الطلبات، متابعة العملاء بتدوّر برقم موبايل
+     * دقيق بس، المنتجات بتدوّر في المنتجات). لو عميلة اتصلت وقالت رقمها وانتي
+     * في صفحة تانية، كنتي مضطرة تسيبي الصفحة وتفتحي الصفحة الصح الأول. الدالة
+     * دي بتدوّر في التلاتة مع بعض دفعة واحدة (5 نتايج لكل نوع بالكتير، كفاية
+     * لصندوق بحث سريع في الشريط العلوي) وترجع نتيجة واحدة مجمّعة.
+     */
+    async function globalAdminSearch(rawQuery) {
+        const q = sanitizeFilterValue((rawQuery || "").trim());
+        if (!q || q.length < 2) return { orders: [], products: [], customers: [] };
+
+        const [ordersRes, productsRes, customersRes] = await Promise.all([
+            client
+                .from("orders")
+                .select("id, order_number, customer_name, phone1, status, grand_total")
+                .or(`order_number.ilike.%${q}%,customer_name.ilike.%${q}%,phone1.ilike.%${q}%,phone2.ilike.%${q}%`)
+                .order("created_at", { ascending: false })
+                .limit(5),
+            client
+                .from("products")
+                .select("id, title, flavor_name, price")
+                .ilike("title", `%${q}%`)
+                .limit(5),
+            client
+                .from("customers")
+                .select("phone, customer_name, total_orders")
+                .or(`customer_name.ilike.%${q}%,phone.ilike.%${q}%`)
+                .limit(5),
+        ]);
+
+        return {
+            orders: ordersRes.error ? [] : (ordersRes.data || []),
+            products: productsRes.error ? [] : (productsRes.data || []),
+            customers: customersRes.error ? [] : (customersRes.data || []),
+        };
     }
 
     /** عدد الطلبات اللي لسه بانتظار تأكيد العربون - يُستخدم كبادج في الشريط الجانبي/الداشبورد */
@@ -911,6 +1007,21 @@
     }
 
     /**
+     * 🆕 [تحسين إنتاجية - أرشفة جماعية]: نفس منطق archiveCoupon الواحد بس
+     * لمجموعة أكواد مرة واحدة - مفيد لو عندك كوبونات مناسبات قديمة كتير
+     * عايزة تقفليها كلها دفعة واحدة بدل واحد واحد.
+     */
+    async function bulkArchiveCoupons(codes) {
+        if (!codes || !codes.length) return 0;
+        const { error, count } = await client
+            .from("coupons")
+            .update({ is_archived: true, is_active: false }, { count: "exact" })
+            .in("code", codes);
+        if (error) throw error;
+        return count || 0;
+    }
+
+    /**
      * 📊 [تقرير استخدام الكوبونات]: مفيش عمود عداد استخدام على جدول coupons
      * نفسه، فبنحسبه هنا مباشرة من جدول orders (اللي فيه coupon_code لكل
      * طلب استخدم كوبون + discount_amount الفعلي اللي اتخصم بيه) - بنجيب كل
@@ -991,6 +1102,28 @@
     async function deleteReview(id) {
         const { error } = await client.from("reviews").delete().eq("id", id);
         if (error) throw error;
+    }
+
+    /**
+     * 🆕 [تحسين إنتاجية - اعتماد/حذف جماعي للتقييمات]: قبل كده كل تقييم
+     * بيتعتمد أو يتحذف لوحده بضغطة منفصلة - لو وصلها 10 تقييمات دفعة واحدة
+     * (بعد حملة تسويقية مثلاً)، كانت محتاجة 10 ضغطات منفصلة.
+     */
+    async function bulkApproveReviews(ids) {
+        if (!ids || !ids.length) return 0;
+        const { error, count } = await client
+            .from("reviews")
+            .update({ is_approved: true }, { count: "exact" })
+            .in("id", ids);
+        if (error) throw error;
+        return count || 0;
+    }
+
+    async function bulkDeleteReviews(ids) {
+        if (!ids || !ids.length) return 0;
+        const { error, count } = await client.from("reviews").delete({ count: "exact" }).in("id", ids);
+        if (error) throw error;
+        return count || 0;
     }
 
     /* ============================= إعدادات المحاكيات (صفحة builders-settings.html) ============================= */
@@ -1898,9 +2031,12 @@
         getMissingPhotoProductsCount,
         getRecentOrders,
         getAllOrders,
+        getOrdersLean,
         deleteOrder,
         deleteOrders,
         updateOrderStatus,
+        bulkUpdateOrderStatus,
+        globalAdminSearch,
         confirmOrderDeposit,
         getAwaitingDepositCount,
         getReviewFollowups,
@@ -1931,11 +2067,14 @@
         deleteCoupon,
         archiveCoupon,
         unarchiveCoupon,
+        bulkArchiveCoupons,
         getCouponUsageStats,
         getAllReviews,
         approveReview,
         unapproveReview,
         deleteReview,
+        bulkApproveReviews,
+        bulkDeleteReviews,
         getAllShippingZones,
         createShippingZone,
         updateShippingZone,
