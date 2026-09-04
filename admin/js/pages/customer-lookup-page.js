@@ -339,12 +339,26 @@
         }
     }
 
+    /**
+     * 🔗 [تحسين إنتاجية - وصول سريع من البحث الموحّد]: نفس نمط
+     * products.html?edit=ID الموجود بالفعل - صندوق البحث الموحّد في الشريط
+     * العلوي بيحوّل هنا برابط customer-lookup.html?phone=01xxxxxxxxx وهيبحث
+     * تلقائياً على طول من غير ما تكتبي الرقم يدوياً تاني.
+     */
+    function searchFromQueryParam() {
+        const phone = new URLSearchParams(window.location.search).get("phone");
+        if (!phone) return;
+        document.getElementById("clk-phone-input").value = phone;
+        handleSearch();
+    }
+
     function init() {
         document.getElementById("clk-search-btn").addEventListener("click", handleSearch);
         document.getElementById("clk-phone-input").addEventListener("keydown", (e) => {
             if (e.key === "Enter") handleSearch();
         });
         initGrantVoucherForm();
+        searchFromQueryParam();
     }
 
     document.addEventListener("BoseAdminReady", init);

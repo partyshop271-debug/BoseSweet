@@ -251,9 +251,18 @@
             </div>`;
     }
 
+    /**
+     * 🆕 [تحسين إنتاجية - تنقّل التالي/السابق]: قبل كده لازم تقفلي المودال
+     * وتفتحي الطلب التاني يدوي من الجدول في كل مرة. دلوقتي بتنتقلي بين
+     * الطلبات المفلترة الظاهرة في الجدول (currentOrders) بزرارين أو
+     * بالأسهم من الكيبورد، من غير ما تسيبي المودال خالص.
+     */
     function openOrderModal(order) {
         const e = window.BoseAdminUI.escapeHtml;
         const items = order.order_items || [];
+        const idx = currentOrders.findIndex((o) => o.id === order.id);
+        const hasPrev = idx > 0;
+        const hasNext = idx >= 0 && idx < currentOrders.length - 1;
 
         const overlay = document.createElement("div");
         overlay.className = "adm-modal-overlay";
@@ -261,7 +270,15 @@
             <div class="adm-modal" style="max-width: 560px;">
                 <div class="adm-modal-header">
                     <h3>طلب #${e(order.order_number || order.id)}</h3>
-                    <button class="adm-modal-close" data-role="close"><i class="fa-solid fa-xmark"></i></button>
+                    <div class="adm-modal-nav-btns">
+                        <button class="adm-modal-nav-btn" id="order-nav-prev" ${hasPrev ? "" : "disabled"} title="الطلب السابق (←)">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                        <button class="adm-modal-nav-btn" id="order-nav-next" ${hasNext ? "" : "disabled"} title="الطلب التالي (→)">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </button>
+                        <button class="adm-modal-close" data-role="close"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
                 </div>
 
                 <!-- 🧾 [أداة داخلية]: صورة فاتورة مرجعية للفريق وقت التجهيز - مرجع
@@ -339,7 +356,35 @@
             </div>`;
         document.body.appendChild(overlay);
 
-        function close() { overlay.remove(); }
+        function close() {
+            overlay.remove();
+            document.removeEventListener("keydown", onKeydown);
+        }
+
+        function goTo(newIdx) {
+            if (newIdx < 0 || newIdx >= currentOrders.length) return;
+            close();
+            openOrderModal(currentOrders[newIdx]);
+        }
+
+        function onKeydown(evt) {
+            if (evt.key === "Escape") { close(); return; }
+            // ما نتفاعلش مع الأسهم لو المستخدمة بتعدّل قيمة داخل select/input
+            // جوه المودال (زي حالة الطلب) عشان الأسهم متقفلش المودال بالغلط.
+            const active = document.activeElement;
+            const isEditingField = active && (active.tagName === "SELECT" || active.tagName === "INPUT" || active.tagName === "TEXTAREA");
+            if (isEditingField) return;
+            // الأسهم بتتحرك حسب ترتيب العرض البصري (يمين=رجوع لعنصر أقدم بالجدول
+            // اللي فوقه، RTL) - نفس اتجاه أزرار ‹ › اللي جنب بعض في الهيدر.
+            if (evt.key === "ArrowRight" && hasPrev) goTo(idx - 1);
+            if (evt.key === "ArrowLeft" && hasNext) goTo(idx + 1);
+        }
+        document.addEventListener("keydown", onKeydown);
+
+        const prevBtn = document.getElementById("order-nav-prev");
+        const nextBtn = document.getElementById("order-nav-next");
+        if (prevBtn) prevBtn.addEventListener("click", () => goTo(idx - 1));
+        if (nextBtn) nextBtn.addEventListener("click", () => goTo(idx + 1));
 
         overlay.addEventListener("click", (evt) => {
             if (evt.target === overlay) close();
@@ -415,14 +460,81 @@
 
     /* ============================= التحميل والفلترة ============================= */
 
+    /**
+     * 🆕 [تحسين إنتاجية - فلتر تاريخ سريع]: أزرار "اليوم/أمس/آخر 7 أيام" بترجع
+     * dateFrom/dateTo بصيغة YYYY-MM-DD (بتوقيت الجهاز المحلي، مش UTC، عشان
+     * "اليوم" يطابق فعلاً يوم صاحبة المتجر مش يوم UTC اللي ممكن يختلف بساعتين).
+     */
+    function toLocalDateStr(d) {
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, "0");
+        const day = String(d.getDate()).padStart(2, "0");
+        return `${y}-${m}-${day}`;
+    }
+
+    function computeDateRange(key) {
+        const today = new Date();
+        if (key === "today") {
+            const s = toLocalDateStr(today);
+            return { dateFrom: s, dateTo: s };
+        }
+        if (key === "yesterday") {
+            const y = new Date(today);
+            y.setDate(y.getDate() - 1);
+            const s = toLocalDateStr(y);
+            return { dateFrom: s, dateTo: s };
+        }
+        if (key === "week") {
+            const w = new Date(today);
+            w.setDate(w.getDate() - 6);
+            return { dateFrom: toLocalDateStr(w), dateTo: toLocalDateStr(today) };
+        }
+        return { dateFrom: "", dateTo: "" };
+    }
+
+    /**
+     * 🆕 [تحسين إنتاجية - تذكّر آخر فلترة]: فتح صفحة الطلبات كل مرة وإعادة
+     * اختيار نفس الحالة/الفترة (مثلاً "قيد المراجعة" أو "اليوم") يوم بعد يوم
+     * بيضيّع وقت متكرر. الفلاتر دلوقتي بتتحفظ محلياً في المتصفح وترجع تلقائي
+     * أول ما تفتحي الصفحة تاني - البحث النصي مش بيتحفظ لأنه غالباً بحث عابر.
+     */
+    const FILTERS_STORAGE_KEY = "bose_admin_orders_filters_v1";
+
+    function saveFiltersPreference(status, dateRangeKey) {
+        try {
+            localStorage.setItem(FILTERS_STORAGE_KEY, JSON.stringify({ status, dateRangeKey }));
+        } catch (e) { /* التخزين المحلي مش متاح - مش مشكلة، هيبتدي فاضي المرة الجاية */ }
+    }
+
+    function restoreFiltersPreference() {
+        try {
+            const raw = localStorage.getItem(FILTERS_STORAGE_KEY);
+            if (!raw) return;
+            const { status, dateRangeKey } = JSON.parse(raw);
+            if (status) document.getElementById("orders-status-filter").value = status;
+            if (dateRangeKey) {
+                const wrap = document.querySelector(".adm-orders-date-filter");
+                const target = wrap && wrap.querySelector(`.adm-chip[data-range="${dateRangeKey}"]`);
+                if (target) {
+                    wrap.querySelectorAll(".adm-chip").forEach((b) => b.classList.remove("active"));
+                    target.classList.add("active");
+                }
+            }
+        } catch (e) { /* تجاهل أي بيانات محفوظة تالفة */ }
+    }
+
     async function loadOrders() {
         const tbody = document.getElementById("orders-tbody");
         tbody.innerHTML = `<tr><td colspan="7"><div class="adm-loading-spinner"></div></td></tr>`;
 
         const status = document.getElementById("orders-status-filter").value;
         const search = document.getElementById("orders-search-input").value.trim();
+        const activeDateBtn = document.querySelector(".adm-orders-date-filter .adm-chip.active");
+        const dateRangeKey = activeDateBtn ? activeDateBtn.dataset.range : "all";
+        const { dateFrom, dateTo } = computeDateRange(dateRangeKey);
+        saveFiltersPreference(status, dateRangeKey);
 
-        currentOrders = await window.BoseAdmin.getAllOrders({ status, search });
+        currentOrders = await window.BoseAdmin.getAllOrders({ status, search, dateFrom, dateTo });
         renderTable();
     }
 
@@ -433,12 +545,122 @@
             window.BoseAdminUI.ORDER_STATUSES.map((s) => `<option value="${s.key}">${e(s.label)}</option>`).join("");
     }
 
+    /** 🆕 [تحسين إنتاجية - فلتر تاريخ سريع]: زرار واحد يبقى "active" في كل مرة */
+    function wireDateFilterChips() {
+        const wrap = document.querySelector(".adm-orders-date-filter");
+        if (!wrap) return;
+        wrap.querySelectorAll(".adm-chip").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                wrap.querySelectorAll(".adm-chip").forEach((b) => b.classList.remove("active"));
+                btn.classList.add("active");
+                loadOrders();
+            });
+        });
+    }
+
+    /**
+     * 🆕 [تحسين إنتاجية - تحديث حالة جماعي]: زرار "تحديث الحالة" في شريط
+     * التحديد الجماعي بجنب زرار الحذف - بيغيّر حالة كل الطلبات المحددة
+     * بضغطة واحدة (مثال: تأكيد 8 طلبات وصلت الصبح من غير فتح كل واحد لوحده).
+     */
+    function wireBulkStatusUpdate() {
+        const select = document.getElementById("orders-bulk-status-select");
+        const btn = document.getElementById("orders-bulk-status-btn");
+        if (!select || !btn) return;
+
+        select.innerHTML = window.BoseAdminUI.ORDER_STATUSES
+            .map((s) => `<option value="${s.key}">${window.BoseAdminUI.escapeHtml(s.label)}</option>`)
+            .join("");
+
+        btn.addEventListener("click", async () => {
+            const count = selectedIds.size;
+            if (!count) return;
+            const newStatus = select.value;
+            const label = window.BoseAdminUI.ORDER_STATUSES.find((s) => s.key === newStatus)?.label || newStatus;
+            const confirmed = await window.BoseAdminUI.confirmAction({
+                title: "تأكيد تحديث الحالة الجماعي",
+                message: `هيتم تغيير حالة ${count} طلب إلى "${label}". متأكدة؟`,
+                confirmLabel: "تحديث الحالة",
+            });
+            if (!confirmed) return;
+
+            btn.disabled = true;
+            btn.textContent = "جاري التحديث...";
+            try {
+                await window.BoseAdmin.bulkUpdateOrderStatus(Array.from(selectedIds), newStatus);
+                window.BoseAdminUI.showToast(`تم تحديث حالة ${count} طلب إلى "${label}"`, "success");
+                selectedIds.clear();
+                await loadOrders();
+            } catch (err) {
+                window.BoseAdminUI.showToast("تعذر تحديث حالة الطلبات المحددة", "error");
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fa-solid fa-check-double"></i> تحديث الحالة`;
+            }
+        });
+    }
+
+    /**
+     * 🔗 [تحسين إنتاجية - وصول سريع من البحث الموحّد]: نفس نمط
+     * products.html?edit=ID الموجود بالفعل - أي صفحة (خصوصاً صندوق البحث
+     * الموحّد في الشريط العلوي) تقدر تحوّل هنا برابط orders.html?open=ORDER_ID
+     * وهيفتح مودال تفاصيل الطلب ده تلقائياً على طول.
+     */
+    function openOrderFromQueryParam() {
+        const targetId = new URLSearchParams(window.location.search).get("open");
+        if (!targetId) return;
+        const order = currentOrders.find((o) => o.id === targetId);
+        if (order) openOrderModal(order);
+    }
+
+    /**
+     * 🆕 [تحسين إنتاجية - تصدير Excel/CSV]: قبل كده مفيش أي طريقة تاخدي بيها
+     * نسخة من الطلبات (المفلترة زي ما هي ظاهرة قدامك دلوقتي) تشتغلي عليها
+     * بره اللوحة - مثلاً تبعتيها لحد يساعدك، أو تعملي حسبة يدوية، أو تحتفظي
+     * بأرشيف شهري. الزرار بيصدّر بالظبط اللي ظاهر في الجدول دلوقتي (نفس فلتر
+     * الحالة/التاريخ/البحث المطبّق)، مش كل الطلبات في القاعدة.
+     */
+    function exportOrdersToCSV() {
+        if (!currentOrders.length) {
+            window.BoseAdminUI.showToast("مفيش طلبات ظاهرة دلوقتي تصدّريها", "warning");
+            return;
+        }
+        const statusLabel = (key) =>
+            (window.BoseAdminUI.ORDER_STATUSES.find((s) => s.key === key) || {}).label || key;
+        const csvCell = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+
+        const headers = ["رقم الطلب", "اسم العميل", "الهاتف", "الحالة", "طريقة الاستلام", "الإجمالي الكلي", "تاريخ الطلب"];
+        const rows = currentOrders.map((o) => [
+            o.order_number || o.id,
+            o.customer_name || "",
+            o.phone1 || "",
+            statusLabel(o.status),
+            DELIVERY_LABELS[o.delivery_method] || o.delivery_method || "",
+            o.grand_total || 0,
+            o.created_at ? new Date(o.created_at).toLocaleString("ar-EG") : "",
+        ]);
+
+        const csv = [headers, ...rows].map((r) => r.map(csvCell).join(",")).join("\r\n");
+        // BOM (\uFEFF) ضروري عشان Excel يفتح النص العربي صح من غير رموز مبعثرة
+        const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `طلبات-بوسي-${toLocalDateStr(new Date())}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+    }
+
     function wireControls() {
         document.getElementById("orders-search-input").addEventListener("input", () => {
             clearTimeout(searchDebounceTimer);
             searchDebounceTimer = setTimeout(loadOrders, 350);
         });
         document.getElementById("orders-status-filter").addEventListener("change", loadOrders);
+        wireDateFilterChips();
+        wireBulkStatusUpdate();
 
         document.getElementById("orders-select-all").addEventListener("change", (evt) => {
             if (evt.target.checked) {
@@ -481,6 +703,8 @@
             }
         });
 
+        document.getElementById("orders-export-csv-btn").addEventListener("click", exportOrdersToCSV);
+
         document.getElementById("orders-delete-cancelled-btn").addEventListener("click", async () => {
             const btn = document.getElementById("orders-delete-cancelled-btn");
             btn.disabled = true;
@@ -512,6 +736,12 @@
     document.addEventListener("BoseAdminReady", async () => {
         buildStatusFilterOptions();
         wireControls();
+        // لو جاية من رابط "فتح طلب مباشر" (من البحث الموحّد مثلاً)، متبقاش
+        // الفلاتر المحفوظة تمنع ظهور الطلب المطلوب (لو حالته/تاريخه برّه الفلتر).
+        if (!new URLSearchParams(window.location.search).get("open")) {
+            restoreFiltersPreference();
+        }
         await loadOrders();
+        openOrderFromQueryParam();
     });
 })();

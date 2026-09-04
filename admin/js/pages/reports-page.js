@@ -12,6 +12,12 @@
 (function () {
     "use strict";
 
+    // 🆕 [تحسين إنتاجية - تصدير التقرير]: بتتخزن هنا آخر بيانات اتحمّلت
+    // عشان زرار التصدير يصدّرها زي ما هي ظاهرة على الشاشة (نفس المدى المختار)
+    let currentSalesRows = [];
+    let currentTopProducts = [];
+    let currentDays = 30;
+
     function money(n) {
         return `${Math.round(n || 0).toLocaleString("ar-EG")} ج.م`;
     }
@@ -264,6 +270,50 @@
         renderChart(salesRows);
         renderTopProducts(topProducts);
         renderAttribution(attributionRows);
+
+        currentSalesRows = salesRows;
+        currentTopProducts = topProducts;
+        currentDays = days;
+    }
+
+    /**
+     * 🆕 [تحسين إنتاجية - تصدير التقرير]: قبل كده مفيش طريقة تاخدي بيها نسخة
+     * من أرقام المبيعات تشتغلي عليها بره اللوحة (أرشيف شهري، مقارنة يدوية،
+     * إلخ). الملف فيه قسمين: المبيعات يوم بيوم، وأفضل المنتجات مبيعاً - لنفس
+     * المدى الظاهرة على الشاشة دلوقتي.
+     */
+    function exportReportsToCSV() {
+        if (!currentSalesRows.length) {
+            window.BoseAdminUI.showToast("مفيش بيانات كفاية لتصديرها لسه", "warning");
+            return;
+        }
+        const csvCell = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+        const line = (arr) => arr.map(csvCell).join(",");
+
+        const lines = [];
+        lines.push(line([`تقرير مبيعات - آخر ${currentDays} يوم`]));
+        lines.push("");
+        lines.push(line(["التاريخ", "عدد الطلبات", "الإيراد"]));
+        currentSalesRows.forEach((r) => {
+            lines.push(line([formatShortDate(r.day), r.orders_count || 0, Math.round(r.revenue || 0)]));
+        });
+        lines.push("");
+        lines.push(line(["أفضل المنتجات مبيعاً"]));
+        lines.push(line(["المنتج", "الكمية المباعة", "الإيراد"]));
+        currentTopProducts.forEach((r) => {
+            lines.push(line([r.title || r.product_id, r.qty_sold || 0, Math.round(r.revenue || 0)]));
+        });
+
+        const csv = lines.join("\r\n");
+        const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `تقرير-مبيعات-بوسي-${currentDays}يوم.csv`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
     }
 
     function wireControls() {
@@ -273,6 +323,7 @@
         document.getElementById("reports-category-select").addEventListener("change", (e) => {
             loadCategoryInterest(e.target.value);
         });
+        document.getElementById("reports-export-csv-btn").addEventListener("click", exportReportsToCSV);
     }
 
     document.addEventListener("BoseAdminReady", async () => {

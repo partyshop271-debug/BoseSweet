@@ -11,6 +11,7 @@
     "use strict";
 
     let currentReviews = [];
+    let selectedIds = new Set();
 
     function starsHTML(rating) {
         const full = Math.max(0, Math.min(5, Math.round(rating || 0)));
@@ -42,16 +43,18 @@
         const e = window.BoseAdminUI.escapeHtml;
 
         if (!currentReviews.length) {
-            tbody.innerHTML = `<tr><td colspan="7">${window.BoseAdminUI.emptyStateHTML({
+            tbody.innerHTML = `<tr><td colspan="8">${window.BoseAdminUI.emptyStateHTML({
                 icon: "fa-star",
                 title: "مفيش تقييمات هنا",
                 text: "لو فيه تقييمات جديدة من العملاء، هتظهر هنا فوراً.",
             })}</td></tr>`;
+            updateBulkBar();
             return;
         }
 
         tbody.innerHTML = currentReviews.map((r) => `
             <tr>
+                <td><input type="checkbox" class="reviews-row-check" data-id="${e(r.id)}" ${selectedIds.has(r.id) ? "checked" : ""}></td>
                 <td>${e(r.user_name || "—")}</td>
                 <td>${e(r.products?.title || "منتج محذوف")}</td>
                 <td>${starsHTML(r.rating)}</td>
@@ -78,6 +81,34 @@
         tbody.querySelectorAll('[data-action="delete"]').forEach((btn) => {
             btn.addEventListener("click", () => handleDelete(btn.getAttribute("data-id")));
         });
+
+        tbody.querySelectorAll(".reviews-row-check").forEach((cb) => {
+            cb.addEventListener("change", () => {
+                const id = cb.getAttribute("data-id");
+                if (cb.checked) selectedIds.add(id); else selectedIds.delete(id);
+                updateBulkBar();
+            });
+        });
+        updateBulkBar();
+    }
+
+    /**
+     * 🆕 [تحسين إنتاجية - اعتماد/حذف جماعي]: نفس نمط شريط التحديد الجماعي في
+     * صفحة الطلبات بالظبط - يظهر لما تحددي تقييم واحد على الأقل.
+     */
+    function updateBulkBar() {
+        const bar = document.getElementById("reviews-bulk-bar");
+        const countEl = document.getElementById("reviews-bulk-count");
+        const selectAll = document.getElementById("reviews-select-all");
+        if (!bar) return;
+
+        // تنظيف أي id محدد من قبل بقى مش موجود في القائمة الحالية (بعد فلترة/تحديث)
+        const visibleIds = new Set(currentReviews.map((r) => r.id));
+        Array.from(selectedIds).forEach((id) => { if (!visibleIds.has(id)) selectedIds.delete(id); });
+
+        bar.style.display = selectedIds.size ? "flex" : "none";
+        if (countEl) countEl.textContent = `${selectedIds.size} تقييم محدد`;
+        if (selectAll) selectAll.checked = currentReviews.length > 0 && selectedIds.size === currentReviews.length;
     }
 
     async function handleApprove(id) {
@@ -130,13 +161,61 @@
 
     async function loadReviews() {
         const tbody = document.getElementById("reviews-tbody");
-        tbody.innerHTML = `<tr><td colspan="7"><div class="adm-loading-spinner"></div></td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8"><div class="adm-loading-spinner"></div></td></tr>`;
         currentReviews = await window.BoseAdmin.getAllReviews(currentFilterValue());
         renderTable();
     }
 
     document.addEventListener("BoseAdminReady", async () => {
         document.getElementById("reviews-status-filter").addEventListener("change", loadReviews);
+
+        document.getElementById("reviews-select-all").addEventListener("change", (e) => {
+            if (e.target.checked) currentReviews.forEach((r) => selectedIds.add(r.id));
+            else selectedIds.clear();
+            renderTable();
+        });
+        document.getElementById("reviews-bulk-clear-btn").addEventListener("click", () => {
+            selectedIds.clear();
+            renderTable();
+        });
+        document.getElementById("reviews-bulk-approve-btn").addEventListener("click", async () => {
+            const count = selectedIds.size;
+            if (!count) return;
+            const confirmed = await window.BoseAdminUI.confirmAction({
+                title: "تأكيد اعتماد جماعي",
+                message: `هيتم اعتماد ${count} تقييم وهيظهروا للعملاء فوراً. متأكدة؟`,
+                confirmLabel: "اعتماد الكل",
+            });
+            if (!confirmed) return;
+            try {
+                await window.BoseAdmin.bulkApproveReviews(Array.from(selectedIds));
+                window.BoseAdminUI.showToast(`تم اعتماد ${count} تقييم`, "success");
+                selectedIds.clear();
+                await loadReviews();
+            } catch (e) {
+                window.BoseAdminUI.showToast("تعذر اعتماد التقييمات المحددة", "error");
+            }
+        });
+        document.getElementById("reviews-bulk-delete-btn").addEventListener("click", async () => {
+            const count = selectedIds.size;
+            if (!count) return;
+            const confirmed = await window.BoseAdminUI.confirmAction({
+                title: "تأكيد الحذف الجماعي",
+                message: `هيتم حذف ${count} تقييم نهائياً. الإجراء ده مش هينفع يتراجع.`,
+                confirmLabel: "حذف نهائي",
+                danger: true,
+            });
+            if (!confirmed) return;
+            try {
+                await window.BoseAdmin.bulkDeleteReviews(Array.from(selectedIds));
+                window.BoseAdminUI.showToast(`تم حذف ${count} تقييم`, "success");
+                selectedIds.clear();
+                await loadReviews();
+            } catch (e) {
+                window.BoseAdminUI.showToast("تعذر حذف التقييمات المحددة", "error");
+            }
+        });
+
         await loadReviews();
     });
 })();
