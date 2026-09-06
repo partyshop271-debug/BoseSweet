@@ -455,6 +455,30 @@
         if (popup) popup.remove();
     });
 
+    // 🛡️🆕 [إصلاح جذري - تكدس نافذة التطبيق فوق الجولة التعريفية]: كان فيه
+    // محاولتين سابقتين لمنع التزاحم (هنا وفي guided-tour.js) لكن كل واحدة كانت
+    // بتفحص حالة مختلفة وبتفحصها *مرة واحدة* وقت الجدولة بس - نافذة التطبيق
+    // كانت بتستنى بس "الجولة الفعلية شغالة؟" (state.active) من غير ما تاخد بالها
+    // من توست "عايزة نجولة معاكِ؟" الصغير اللي بيظهر *قبل* ما العميلة توافق
+    // وتبدأ الجولة فعلياً - فلو العميلة وافقت على التوست بعد ما نافذة التطبيق
+    // خلصت فحصها الأول (وكانت وقتها لسه "مش شغالة")، الاتنين كانوا بيظهروا فوق
+    // بعض بالظبط، زي ما وصفت صاحبة المتجر. الدالة الموحدة دي بقت مصدر الحقيقة
+    // الوحيد لسؤال "فيه أي حاجة onboarding ظاهرة دلوقتي؟" (النافذة + التوست +
+    // الجولة الفعلية الثلاثة مع بعض)، وبتتفحص من جديد في كل مرة (مش مرة واحدة
+    // بس وقت الجدولة) من الطرفين قبل أي عرض فعلي.
+    window.isBoseOnboardingOverlayBusy = function () {
+        if (document.getElementById('bose-app-install-popup-overlay')) return true;
+        if (document.querySelector('.bose-tour-intro-toast')) return true;
+        try {
+            const raw = localStorage.getItem('bose_guided_tour_state_v4');
+            if (raw) {
+                const state = JSON.parse(raw);
+                if (state && state.active) return true;
+            }
+        } catch (e) { /* لا شيء - لو القراءة فشلت منعتبرهاش مشغولة */ }
+        return false;
+    };
+
     /**
      * دالة موحّدة لتفعيل تثبيت التطبيق - تُستخدم من نافذة الترحيب وأزرار البلوك
      * الكبير في الرئيسية على حد سواء.
@@ -2284,10 +2308,27 @@
             if (popup) popup.remove();
             sessionStorage.setItem('bose_app_popup_dismissed_this_session', 'true');
         };
+        // 🛡️🆕 [إصلاح - أولوية الجولة عند طلب صريح من العميلة]: لو العميلة دوست
+        // "آه وريني" على توست الجولة والنافذة كانت فاتحة في نفس اللحظة (سباق
+        // توقيت نادر جداً بس وارد)، guided-tour.js بينادي الدالة دي عشان يقفل
+        // النافذة فوراً من غير ما يستنى - فعل مستخدم صريح لازم ياخد الأولوية
+        // على نافذة ترويجية سلبية، مش يستنى دقيقة كاملة لحد ما النافذة "تلاقي
+        // وقتها" تتقفل لوحدها.
+        window.boseCloseAppInstallPopup = closePopup;
 
         const showPopup = () => {
             // ضمان أخير: لو فتحت صفحة تانية في نفس الجلسة والنافذة ظهرت فعلاً قبل كده، منكررهاش
             if (document.getElementById('bose-app-install-popup-overlay')) return;
+
+            // 🛡️🆕 [إصلاح - فحص أخير لحظي]: بين آخر مرة اتفحص فيها busy() في
+            // showPopupWhenTourIsClear وبين تنفيذ السطر ده ممكن يكون العميلة
+            // وافقت على توست الجولة فعلاً (سباق نادر بميلي ثانية) - فحص أخير
+            // متزامن هنا (مش setTimeout تاني) يقفل الاحتمال ده تماماً بدل ما
+            // يتفتح النافذتين مع بعض بفارق أجزاء من الثانية.
+            if (typeof window.isBoseOnboardingOverlayBusy === 'function' && window.isBoseOnboardingOverlayBusy()) {
+                setTimeout(showPopupWhenTourIsClear, 700);
+                return;
+            }
 
             const ctaHtml = isIOS
                 ? `<div class="bose-app-install-ios-note">
@@ -2365,11 +2406,21 @@
             }
         }
 
+        // 🛡️🆕 [إصلاح جذري - تكدس نافذة التطبيق فوق الجولة التعريفية]: كانت
+        // بتفحص بس "الجولة الفعلية شغالة؟" (تجاهلت توست الدعوة الصغير قبلها)
+        // وكل فحص كل ثانيتين (فترة كافية عشان العميلة توافق على التوست وتبدأ
+        // جولة كاملة قبل الفحص الجاي). دلوقتي بتستخدم isBoseOnboardingOverlayBusy
+        // الموحدة (نافذة + توست + جولة مع بعض) بفحص أسرع (700ms) + فحص أخير
+        // مباشرة قبل الحقن الفعلي في showPopup() عشان نقفل شباك السباق لأقل
+        // ما يمكن.
         let tourWaitAttempts = 0;
         function showPopupWhenTourIsClear() {
-            if (isBoseGuidedTourCurrentlyActive() && tourWaitAttempts < 30) {
+            const busy = typeof window.isBoseOnboardingOverlayBusy === 'function'
+                ? window.isBoseOnboardingOverlayBusy()
+                : isBoseGuidedTourCurrentlyActive();
+            if (busy && tourWaitAttempts < 85) { // ≈ دقيقة كحد أقصى بفترة 700ms
                 tourWaitAttempts++;
-                setTimeout(showPopupWhenTourIsClear, 2000);
+                setTimeout(showPopupWhenTourIsClear, 700);
                 return;
             }
             showPopup();

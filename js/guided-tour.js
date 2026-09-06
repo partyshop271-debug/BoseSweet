@@ -315,13 +315,20 @@
         currentStepInfo = null;
     }
 
+    // 🛡️🆕 [إصلاح جذري - توحيد الإشعارات]: كانت الجولة التعريفية بتستخدم نظام
+    // توست خاص بيها لوحدها (خلفية سودة، تحت الشاشة) منفصل تمامًا عن نظام
+    // الإشعار الموحد المستخدم في باقي الموقع (وردي، فوق الهيدر، z-index أعلى
+    // من أي حاجة تانية في الصفحة). النتيجة كانت: (أ) لون مختلف يكسر الهوية
+    // الموحدة اللي طلبتها صاحبة المتجر، و(ب) موضعه تحت بيخليه يقع فعليًا تحت/
+    // ورا أي نافذة تانية بتتفتح في نفس اللحظة (نافذة تحميل التطبيق بتنزلق من
+    // تحت كمان، فبتغطي بالظبط نفس المنطقة)، فالعميلة ما كانتش بتشوفه أصلاً لو
+    // فتحت/قفلت حاجة تانية في نفس التوقيت. دلوقتي بتستخدم نفس دالة الإشعار
+    // الموحدة (showBoseGlobalToast) المعرّفة في core-engine.js - نفس اللون،
+    // نفس الموضع فوق الهيدر، ونفس الـ z-index الأعلى من كل حاجة في الصفحة.
     function showToast(msg) {
-        const t = document.createElement('div');
-        t.className = 'bose-tour-toast';
-        t.textContent = msg;
-        document.body.appendChild(t);
-        requestAnimationFrame(() => t.classList.add('bose-tour-toast-show'));
-        setTimeout(() => { t.classList.remove('bose-tour-toast-show'); setTimeout(() => t.remove(), 400); }, 3400);
+        if (typeof window.showBoseGlobalToast === 'function') {
+            window.showBoseGlobalToast(msg);
+        }
     }
 
     function endTour(celebrate) {
@@ -357,8 +364,6 @@
             .bose-tour-prev-btn{display:flex;align-items:center;gap:4px;background:none;border:none;color:#888;font-size:.76rem;font-weight:700;cursor:pointer;padding:0;font-family:'Cairo',sans-serif;}
             .bose-tour-skipsection-btn{background:none;border:none;color:#FF91A4;font-size:.76rem;font-weight:700;cursor:pointer;padding:0;font-family:'Cairo',sans-serif;}
             .bose-tour-skip-btn{background:none;border:none;color:#999;font-size:.76rem;cursor:pointer;text-decoration:underline;padding:0;font-family:'Cairo',sans-serif;}
-            .bose-tour-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:#111;color:#fff;padding:14px 22px;border-radius:14px;font-family:'Cairo',sans-serif;font-size:.9rem;z-index:100000;opacity:0;transition:opacity .3s ease,transform .3s ease;max-width:88vw;text-align:center;}
-            .bose-tour-toast-show{opacity:1;transform:translateX(-50%) translateY(0);}
             @media (max-width:480px){.bose-tour-tooltip{max-width:85vw;}}
             .bose-tour-intro-toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(24px);background:#fff;color:#111;padding:16px 18px;border-radius:16px;box-shadow:0 10px 34px rgba(0,0,0,.22);z-index:100000;opacity:0;transition:opacity .35s ease,transform .35s ease;max-width:340px;width:88vw;font-family:'Cairo',sans-serif;direction:rtl;text-align:right;}
             .bose-tour-intro-toast-show{opacity:1;transform:translateX(-50%) translateY(0);}
@@ -649,6 +654,14 @@
 
     async function startTour(tourKey) {
         closeFabPanel();
+        // 🛡️🆕 [إصلاح جذري - أولوية الجولة عند طلب صريح]: أياً كان مصدر بدء
+        // الجولة (توست الدعوة، زرار المساعدة العائم، رابط data-start-bose-tour
+        // مباشر) - لو نافذة "حمّلي تطبيقنا" فاتحة في نفس اللحظة دي (سباق توقيت
+        // نادر جداً بس وارد)، بنقفلها فوراً هنا. فعل العميلة الصريح إنها عايزة
+        // تشوف الجولة دلوقتي لازم ياخد الأولوية على نافذة ترويجية سلبية.
+        if (typeof window.boseCloseAppInstallPopup === 'function') {
+            window.boseCloseAppInstallPopup();
+        }
         const tours = await ensureStepsLoaded();
         const steps = tours[tourKey];
         if (!steps || !steps.length) return;

@@ -893,11 +893,33 @@ function renderBoseCheckoutPage(storeData) {
         };
     }
 
+    // 🛡️🆕 [إصلاح - حماية من الضغط المزدوج]: قبل كده الزرار كان يفضل قابل
+    // للضغط طول فترة انتظار الحفظ في قاعدة البيانات (عملية async مفيهاش أي
+    // مؤشر تحميل) - لو النت بطيء، العميلة ممكن تحس إن الضغطة "معملتش حاجة"
+    // فتضغط تاني، وده كان بيولّد طلب مكرر فعلياً. دلوقتي بيتعطل الزرار فوراً
+    // مع سبينر واضح لحد ما نوصل لصفحة النجاح (أو يفشل الطلب فنرجّعه شغال تاني).
     const submitOrderBtn = document.getElementById("btn-submit-order-final");
     if (submitOrderBtn) {
-        submitOrderBtn.onclick = (e) => {
+        const originalBtnHtml = submitOrderBtn.innerHTML;
+        submitOrderBtn.onclick = async (e) => {
             e.preventDefault();
-            processFinalBoseOrder(cart, storeData, currentShippingMethod, selectedShippingFee, payFullSelected);
+            if (submitOrderBtn.disabled) return; // صمام أمان إضافي ضد النقر السريع المتكرر
+            submitOrderBtn.disabled = true;
+            submitOrderBtn.style.opacity = "0.75";
+            submitOrderBtn.style.cursor = "not-allowed";
+            submitOrderBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جارٍ تأكيد طلبك...';
+            try {
+                await processFinalBoseOrder(cart, storeData, currentShippingMethod, selectedShippingFee, payFullSelected);
+            } finally {
+                // 🛡️ لو في أخطاء تحقق (فورم فيها حقول ناقصة) processFinalBoseOrder
+                // بترجع من غير ما تكمل - لازم نرجّع الزرار شغال تاني عشان العميلة
+                // تقدر تصلح وتحاول تاني، بدل ما يفضل معطّل للأبد. لو نجح الطلب،
+                // الصفحة بترحّل فوراً لـ order-success.html فمفيش فرق عملي.
+                submitOrderBtn.disabled = false;
+                submitOrderBtn.style.opacity = "";
+                submitOrderBtn.style.cursor = "";
+                submitOrderBtn.innerHTML = originalBtnHtml;
+            }
         };
     }
 }
@@ -1725,6 +1747,18 @@ function renderBoseSuccessPage(storeData) {
         resendWhatsappBtn.setAttribute("href", link);
         resendWhatsappBtn.setAttribute("target", "_blank");
         resendWhatsappBtn.setAttribute("rel", "noopener noreferrer");
+
+        // 🐛✅ [إصلاح جوهري - المرحلة 2 - شبكة أمان أخيرة]: لو العميلة قعدت
+        // في الصفحة دي 8 ثواني من غير ما تدوس زرار الواتساب (يعني غالباً
+        // مقرتش النص أو ملاحظتش إن فيه خطوة متبقية)، بنفكّرها بتوست واضح
+        // بدل ما نسيبها تسيب الصفحة وهي فاهمة إن الطلب "خلص" فعلياً.
+        let bosWhatsappClicked = false;
+        resendWhatsappBtn.addEventListener("click", () => { bosWhatsappClicked = true; }, { once: true });
+        setTimeout(() => {
+            if (!bosWhatsappClicked && typeof window.showBoseGlobalToast === "function") {
+                window.showBoseGlobalToast("🌸 متنسيش تدوسي زرار إرسال الفاتورة على واتساب عشان نبدأ نجهز طلبك!");
+            }
+        }, 8000);
     }
 
     // 📊👑 [نمو - Purchase]: أهم حدث تجاري - بيتأكد بس هنا (بعد ما الطلب فعلاً
