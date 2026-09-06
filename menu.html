@@ -250,19 +250,26 @@
     <!-- 👑 المحرك البرمجي الموحد لصفحة المنيو الشامل وإعادة الفرز سلوكياً 👑 -->
     <script>
         // 1. مصفوفة البيانات الثابتة والاحتياطية المطابقة حرفياً للـ JSON لمنع شلل الصفحة
+        // 🐛 [إصلاح - كل الفئات بنفس صورة اللوجو]: النسخة القديمة كانت بتحط نفس رابط
+        // اللوجو الافتراضي كصورة لكل الـ 12 فئة، فأول ما الصفحة تفتح على نت بطيء (قبل
+        // ما بيانات القاعدة توصل)، العميلة كانت تشوف 12 كارت بنفس الصورة بالظبط - يضرب
+        // بالظبط الوعد اللي بنقوله في وصف الصفحة ("12 فئة واضحة بالصور"). دلوقتي كل
+        // فئة معاها صورة الغلاف الحقيقية الحالية بتاعتها (لقطة من قاعدة البيانات وقت
+        // الإصلاح) - لو الأدمن غيّرت صورة فئة بعدين، القيمة الحية من القاعدة هتاخد
+        // الأولوية فورًا زي العادة، والقيمة هنا تفضل بس احتياطية لثواني التحميل الأولى.
         const boseFallbackCategories = [
-            { "id": "taswaq-toort", "title": "التورت", "builderType": "cake-customizer", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" },
-            { "id": "taswaq-gatowat", "title": "الجاتوهات", "builderType": "standard", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" },
-            { "id": "taswaq-qashtota", "title": "القشطوطة", "builderType": "standard", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" },
-            { "id": "taswaq-despacito", "title": "الديسباسيتو", "builderType": "standard", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" },
-            { "id": "taswaq-cinabon", "title": "السينابون", "builderType": "standard", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" },
-            { "id": "taswaq-donuts", "title": "الدوناتس", "builderType": "standard", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" },
-            { "id": "taswaq-red-velvet", "title": "الريدڤيلڤت", "builderType": "standard", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" },
-            { "id": "taswaq-cupcake", "title": "الكب كيك", "builderType": "standard", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" },
-            { "id": "taswaq-mini-cake", "title": "الميني تورت", "builderType": "standard", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" },
-            { "id": "taswaq-flowers", "title": "الورد", "builderType": "flower-customizer", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" },
-            { "id": "taswaq-happiness-cups", "title": "كبات السعادة", "builderType": "standard", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" },
-            { "id": "taswaq-relax-box", "title": "بوكس الروقان", "builderType": "standard", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" }
+            { "id": "taswaq-toort", "title": "التورت", "builderType": "cake-customizer", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1786478146/kcalqonltdjopqjeq3a1.jpg" },
+            { "id": "taswaq-gatowat", "title": "الجاتوهات", "builderType": "standard", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1786532973/no3qyvm0lcuhyoudwvgd.jpg" },
+            { "id": "taswaq-qashtota", "title": "القشطوطة", "builderType": "standard", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1786480595/ef27csnjwo673gppbaxs.jpg" },
+            { "id": "taswaq-despacito", "title": "الديسباسيتو", "builderType": "standard", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1786529024/xzlkr6bbtgbablleqfgr.jpg" },
+            { "id": "taswaq-cinabon", "title": "السينابون", "builderType": "standard", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1786464166/hpibkcwrtjtvkdnzqtfn.jpg" },
+            { "id": "taswaq-donuts", "title": "الدوناتس", "builderType": "standard", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1786538804/jvrsonhvs4krscdeufqe.jpg" },
+            { "id": "taswaq-red-velvet", "title": "الريدڤيلڤت", "builderType": "standard", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1786558102/k356h2nth4etqulwp1ve.jpg" },
+            { "id": "taswaq-cupcake", "title": "الكب كيك", "builderType": "standard", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1786535145/bqdmgckrwf9fkk6l8t3y.jpg" },
+            { "id": "taswaq-mini-cake", "title": "الميني تورت", "builderType": "standard", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1786550787/fmlydrm06aouejbzqmop.jpg" },
+            { "id": "taswaq-flowers", "title": "الورد", "builderType": "flower-customizer", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1786534388/uwfvmw3v1kvgmjrt0glp.jpg" },
+            { "id": "taswaq-happiness-cups", "title": "كبات السعادة", "builderType": "standard", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1786532150/gx3hmliy2p6kksej4izz.jpg" },
+            { "id": "taswaq-relax-box", "title": "بوكس الروقان", "builderType": "standard", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1786531957/oetxazx8wvpa4jrss7zs.jpg" }
         ];
 
         // 2. دالة بناء وحقن الكروت بالوزن البصري المطلوب والأبعاد الصارمة للـ 12 فئة معتمدة

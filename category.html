@@ -482,6 +482,21 @@
             <button class="bose-filter-tab-pill" data-filter-size="large" aria-label="عرض مقاس حجم عائلي">حجم عائلي</button>
         </div>
 
+        <!-- 🔽 [إصلاح - ترتيب يدوي بالسعر]: قبل كده الترتيب الوحيد كان تلقائي بناءً
+             على سلوك تصفح العميلة (bose_user_behavior)، بدون أي تحكم يدوي - عميلة
+             بتقارن الأسعار (خصوصاً أول مرة) محتاجة تقدر ترتب بنفسها من الأرخص للأغلى
+             أو العكس، بدل ما يتحكم في الترتيب سلوك تصفح مش واضح لها. -->
+        <div class="bose-category-sort-row" style="display:flex; justify-content:flex-end; margin-bottom:16px;">
+            <label for="bose-category-sort-select" style="display:flex; align-items:center; gap:8px; font-size:0.9rem; font-weight:700; color:#111;">
+                ترتيب حسب
+                <select id="bose-category-sort-select" style="padding:8px 12px; border-radius:10px; border:1px solid rgba(255,145,164,0.35); font-family:'Cairo',sans-serif; font-weight:700; color:#111; background:#fff; cursor:pointer;">
+                    <option value="default">الأنسب لك</option>
+                    <option value="price-asc">السعر: من الأقل للأعلى</option>
+                    <option value="price-desc">السعر: من الأعلى للأقل</option>
+                </select>
+            </label>
+        </div>
+
         <!-- حاوية الشبكة الهندسية للمنتجات المعزولة -->
         <div id="bose-category-products-grid" class="category-products-grid">
             <div class="skeleton-card-loader"><div class="skeleton-pulse-node" style="height:220px;"></div><div class="skeleton-pulse-node" style="height:24px; width:70%;"></div><div class="skeleton-pulse-node" style="height:20px; width:40%;"></div><div class="skeleton-pulse-node" style="height:45px; margin-top:auto;"></div></div>
@@ -508,6 +523,8 @@
             let activeSizeTab = "triangle";
             let globalFilteredProducts = [];
             let globalStoreCurrency = "EGP";
+            let activeSortMode = "default"; // 'default' (سلوكي) | 'price-asc' | 'price-desc'
+            const sortSelectEl = document.getElementById('bose-category-sort-select');
 
             if (!categoryId) {
                 renderEmptyState("لم يتم تحديد الصنف بشكل صحيح. يرجى العودة للمنيو الرئيسي.");
@@ -605,24 +622,20 @@
                     return;
                 }
                 
-                // الترتيب السلوكي الذكي للعميل
-                try {
-                    const behaviorData = localStorage.getItem('bose_user_behavior');
-                    const behaviorLog = behaviorData ? JSON.parse(behaviorData) : {};
-                    
-                    globalFilteredProducts.sort((a, b) => {
-                        let scoreA = behaviorLog[a.slug] ? behaviorLog[a.slug].score : 0;
-                        let scoreB = behaviorLog[b.slug] ? behaviorLog[b.slug].score : 0;
-                        
-                        if (scoreB === scoreA) {
-                            let timeA = behaviorLog[a.slug] ? behaviorLog[a.slug].lastVisited : 0;
-                            let timeB = behaviorLog[b.slug] ? behaviorLog[b.slug].lastVisited : 0;
-                            return timeB - timeA;
-                        }
-                        return scoreB - scoreA;
+                // 🔽 [إصلاح - ترتيب يدوي بالسعر]: الترتيب السلوكي بقى دالة مستقلة
+                // (sortByBehavior) بتتنادى بس لو العميلة سايبة الوضع الافتراضي
+                // "الأنسب لك" - لو اختارت ترتيب بالسعر، بنحترم اختيارها ومنعملش
+                // إعادة ترتيب سلوكي فوقه.
+                applyActiveSort();
+
+                if (sortSelectEl && !sortSelectEl.dataset.bound) {
+                    sortSelectEl.dataset.bound = "1";
+                    sortSelectEl.value = activeSortMode;
+                    sortSelectEl.addEventListener('change', function () {
+                        activeSortMode = this.value;
+                        applyActiveSort();
+                        renderProductsDOM();
                     });
-                } catch (e) {
-                    console.warn("⚠️ فشل فرز المنتجات سلوكياً داخل الفئة.");
                 }
 
                 descNode.textContent = categoryObj.description || globalFilteredProducts[0].description || `أفخر أنواع ${categoryObj.title} المصنوعة يدوياً بكل حب وشغف.`;
@@ -656,11 +669,59 @@
                         sizeFilterRow.querySelectorAll('.bose-filter-tab-pill').forEach(p => p.classList.remove('active'));
                         this.classList.add('active');
                         activeSizeTab = this.getAttribute('data-filter-size');
-                        
-                        // تحديث الأسعار والمحددات ديناميكياً لتوفير استهلاك البيانات والمعالجة
-                        updateExistingCardsConfig();
+
+                        // 🔽 [إصلاح - ترتيب يدوي بالسعر]: لو الترتيب الحالي بالسعر، لازم نعيد
+                        // الترتيب الكامل مع تبديل الحجم (لأن سعر كل منتج بيتغيّر)، مش بس تحديث
+                        // الأرقام مكانها - وإلا الترتيب يفضل مبني على أسعار الحجم القديم.
+                        if (activeSortMode === "price-asc" || activeSortMode === "price-desc") {
+                            applyActiveSort();
+                            renderProductsDOM();
+                        } else {
+                            // تحديث الأسعار والمحددات ديناميكياً لتوفير استهلاك البيانات والمعالجة
+                            updateExistingCardsConfig();
+                        }
                     });
                 });
+            }
+
+            // 🔽 [إصلاح - ترتيب يدوي بالسعر]: بنستخدم نفس دالة حساب السعر النهائي
+            // (calculateProductFinalPrice) المستخدمة فعلياً في عرض الكارت، عشان
+            // الترتيب يتطابق تماماً مع السعر اللي العميلة شايفاه فعلاً على الشاشة.
+            function getSortablePrice(product) {
+                const sizeForPrice = (categoryId !== "taswaq-cupcake" && product.prices) ? activeSizeTab : (product.defaultSize || "triangle");
+                return typeof window.calculateProductFinalPrice === 'function'
+                    ? window.calculateProductFinalPrice(product, { size: sizeForPrice })
+                    : (product.price || 0);
+            }
+
+            function applyActiveSort() {
+                if (activeSortMode === "price-asc") {
+                    globalFilteredProducts.sort((a, b) => getSortablePrice(a) - getSortablePrice(b));
+                    return;
+                }
+                if (activeSortMode === "price-desc") {
+                    globalFilteredProducts.sort((a, b) => getSortablePrice(b) - getSortablePrice(a));
+                    return;
+                }
+                // الوضع الافتراضي "الأنسب لك": الترتيب السلوكي بناءً على تصفح العميلة سابقاً
+                try {
+                    const behaviorData = localStorage.getItem('bose_user_behavior');
+                    const behaviorLog = behaviorData ? JSON.parse(behaviorData) : {};
+
+                    globalFilteredProducts.sort((a, b) => {
+                        let scoreA = behaviorLog[a.slug] ? behaviorLog[a.slug].score : 0;
+                        let scoreB = behaviorLog[b.slug] ? behaviorLog[b.slug].score : 0;
+
+                        if (scoreB === scoreA) {
+                            let timeA = behaviorLog[a.slug] ? behaviorLog[a.slug].lastVisited : 0;
+                            let timeB = behaviorLog[b.slug] ? behaviorLog[b.slug].lastVisited : 0;
+                            return timeB - timeA;
+                        }
+                        return scoreB - scoreA;
+                    });
+                } catch (e) {
+                    console.warn("⚠️ فشل فرز المنتجات سلوكياً داخل الفئة.");
+                }
             }
 
             function renderProductsDOM() {

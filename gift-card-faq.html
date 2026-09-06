@@ -3,30 +3,328 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+    <link rel="apple-touch-icon" href="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#FF91A4">
     <title>الأسئلة الشائعة عن بطاقات الهدايا | حلويات بوسي</title>
-    <meta name="description" content="أسئلة بطاقات الهدايا بقت جزء من صفحة بطاقة الهدية نفسها.">
-    <!--
-        🔗 [توحيد الصفحتين - 2026-09-05]: الأسئلة الشائعة بقت مدمجة جوه صفحة
-        بطاقة الهدية نفسها (gift-card-builder.html#bose-gift-card-faq-section)
-        بدل ما تكون صفحة مستقلة منفصلة - عشان العميلة تلاقي المنتج والأسئلة
-        والتقييمات كلهم في مكان واحد بدل ما تتشتت بين صفحتين مختلفين لنفس
-        الموضوع. الصفحة دي اتسابت هنا (بدل حذفها) كـredirect بس، عشان أي
-        لينك قديم متبعت أو محفوظ في نتائج البحث يوصل لمكان حقيقي بدل ما
-        يوصل لصفحة 404.
-    -->
-    <meta http-equiv="refresh" content="0; url=/gift-card-builder.html#bose-gift-card-faq-section">
-    <link rel="canonical" href="https://bose-sweet.vercel.app/gift-card-builder.html">
+
+    <!-- Meta Tags للـ SEO والأرشفة الاحترافية -->
+    <meta name="description" content="كل اللي محتاجة تعرفيه عن بطاقات هدايا حلويات بوسي: إزاي تشتريها، إزاي تستلمي الكود، إزاي تستخدميه، ومدة الصلاحية.">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph لمشاركة احترافية -->
+    <meta property="og:title" content="الأسئلة الشائعة عن بطاقات الهدايا | حلويات بوسي">
+    <meta property="og:description" content="كل اللي محتاجة تعرفيه عن بطاقات هدايا حلويات بوسي: الشراء، الاستلام، الاستخدام، والصلاحية.">
+    <meta property="og:type" content="website">
+
+    <link rel="canonical" href="https://bose-sweet.vercel.app/gift-card-faq.html">
+    <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css?v=2026_local_v1.0" fetchpriority="high">
     <link rel="stylesheet" href="vendor/fonts/cairo/cairo.css?v=2026_local_v1.0">
+    <link rel="stylesheet" href="css/global.css?v=2026_production_v44.0">
+    <link rel="stylesheet" href="css/main.css?v=2026_production_v39.0">
+
+    <!-- المحرك المركزي العالمي وعمليات الفحص المالي -->
+    <script src="js/supabase-client.js?v=2026_production_v42.0" defer></script>
+    <script src="js/push-notifications.js?v=1.0" defer></script>
+    <script src="js/core-engine.js?v=2027_production_v55.0" defer></script>
+
     <style>
-        body { font-family: 'Cairo', sans-serif; background: #fff; color: #111; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; text-align: center; padding: 24px; box-sizing: border-box; }
-        a { color: #FF91A4; font-weight: 700; }
+        :root {
+            --bose-pink: #FF91A4;
+            --bose-white: #FFFFFF;
+            --bose-black: #111111;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; }
+
+        body {
+            font-family: 'Cairo', sans-serif !important;
+            background-color: var(--bose-white) !important;
+            color: var(--bose-black) !important;
+            margin: 0;
+            padding: 0;
+            line-height: 1.8;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        .gcf-wrap {
+            width: 100%;
+            max-width: 820px;
+            margin: 0 auto;
+            padding: 40px 20px 90px;
+        }
+
+        @media (max-width: 768px) {
+            .gcf-wrap { padding: 20px 15px 70px; }
+        }
+
+        .gcf-header {
+            text-align: center;
+            margin-bottom: 36px;
+            padding: 34px 18px;
+            background: linear-gradient(rgba(255, 145, 164, 0.06), rgba(255, 145, 164, 0.015));
+            border: 1px solid rgba(255, 145, 164, 0.3);
+            border-radius: 20px;
+        }
+
+        .gcf-header .gcf-icon {
+            width: 64px; height: 64px; border-radius: 50%;
+            background: linear-gradient(135deg, #FF91A4, #ffb3c1);
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 14px;
+            box-shadow: 0 10px 26px rgba(255,145,164,0.35);
+        }
+
+        .gcf-header .gcf-icon i { font-size: 1.7rem; color: #fff; }
+
+        .gcf-header h1 {
+            font-size: 26px;
+            font-weight: 700 !important;
+            margin: 0 0 12px 0;
+            color: var(--bose-black) !important;
+        }
+
+        .gcf-header p {
+            font-size: 15px;
+            color: var(--bose-black);
+            margin: 0 auto;
+            opacity: 0.8;
+            max-width: 520px;
+        }
+
+        .gcf-cta-row {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .gcf-cta-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 700;
+            text-decoration: none;
+            border: 2px solid var(--bose-pink);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .gcf-cta-btn.primary {
+            background: var(--bose-pink);
+            color: #fff;
+        }
+
+        .gcf-cta-btn.secondary {
+            background: #fff;
+            color: var(--bose-black);
+        }
+
+        .gcf-cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255,145,164,0.3);
+        }
+
+        .gcf-accordion { display: flex; flex-direction: column; gap: 12px; }
+
+        .gcf-item {
+            background: var(--bose-white);
+            border: 1px solid rgba(255, 145, 164, 0.3);
+            border-radius: 16px;
+            padding: 4px 20px;
+            box-shadow: 0 8px 32px rgba(255, 145, 164, 0.08);
+            transition: box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        .gcf-item[open] {
+            box-shadow: 0 16px 40px rgba(255, 145, 164, 0.16);
+            border-color: var(--bose-pink);
+        }
+
+        .gcf-item summary {
+            cursor: pointer;
+            list-style: none;
+            padding: 16px 0;
+            font-weight: 700;
+            font-size: 15.5px;
+            color: var(--bose-black);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .gcf-item summary::-webkit-details-marker { display: none; }
+
+        .gcf-item summary .gcf-q-icon {
+            width: 30px; height: 30px; flex: 0 0 30px;
+            border-radius: 50%;
+            background: rgba(255, 145, 164, 0.12);
+            color: var(--bose-pink);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 13px;
+        }
+
+        .gcf-item summary .gcf-q-text { flex: 1; }
+
+        .gcf-item summary .gcf-chevron {
+            color: var(--bose-pink);
+            transition: transform 0.25s ease;
+            font-size: 13px;
+        }
+
+        .gcf-item[open] summary .gcf-chevron { transform: rotate(180deg); }
+
+        .gcf-item .gcf-answer {
+            padding: 0 0 18px 42px;
+            margin: 0;
+            font-size: 14.5px;
+            line-height: 1.85;
+            color: var(--bose-black);
+            opacity: 0.85;
+        }
+
+        @media (max-width: 480px) {
+            .gcf-item .gcf-answer { padding-right: 0; }
+        }
+
+        .gcf-empty-state, .gcf-loading-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--bose-black);
+            opacity: 0.6;
+            font-size: 14.5px;
+        }
+
+        .gcf-bottom-note {
+            text-align: center;
+            margin-top: 36px;
+            padding: 22px;
+            background: rgba(255, 145, 164, 0.05);
+            border-radius: 16px;
+            font-size: 14px;
+            color: var(--bose-black);
+            opacity: 0.85;
+        }
+
+        .gcf-bottom-note a { color: var(--bose-pink); font-weight: 700; text-decoration: none; }
     </style>
 </head>
 <body>
-    <p>
-        الأسئلة الشائعة عن بطاقات الهدايا بقت جزء من صفحة بطاقة الهدية نفسها.<br>
-        هتتحولي دلوقتي تلقائياً - لو محصلش تحويل،
-        <a href="/gift-card-builder.html#bose-gift-card-faq-section">اضغطي هنا</a>.
-    </p>
+
+    <!-- وسم حاقن الهيدر المقدس الموحد لجميع صفحات حلويات بوسي -->
+    <div id="bose-header-injector"></div>
+
+    <main class="gcf-wrap">
+
+        <div class="gcf-header">
+            <div class="gcf-icon"><i class="fa-solid fa-gift"></i></div>
+            <h1>الأسئلة الشائعة عن بطاقات الهدايا</h1>
+            <p>جمعنالك كل التفاصيل عن الشراء، الاستلام، الاستخدام، ومدة الصلاحية في مكان واحد.</p>
+            <div class="gcf-cta-row">
+                <a href="/category.html?category=bose-gift-cards" class="gcf-cta-btn primary">
+                    <i class="fa-solid fa-basket-shopping"></i> اشتري بطاقة هدية
+                </a>
+                <a href="/checkout.html" class="gcf-cta-btn secondary">
+                    <i class="fa-solid fa-ticket"></i> استخدمي كودك في الطلب
+                </a>
+            </div>
+        </div>
+
+        <div class="gcf-accordion" id="gcf-accordion">
+            <div class="gcf-loading-state" id="gcf-loading-state">
+                <i class="fa-solid fa-spinner fa-spin"></i> جاري تحميل الأسئلة...
+            </div>
+        </div>
+
+        <div class="gcf-bottom-note">
+            <i class="fa-solid fa-circle-info" style="color: var(--bose-pink);"></i>
+            محتاجة مساعدة إضافية أو سؤالك مش موجود هنا؟
+            تواصلي معانا مباشرة على <a href="/contact.html">صفحة التواصل</a>.
+        </div>
+
+    </main>
+
+    <!-- وسم حاقن الفوتر المقدس الموحد لجميع صفحات حلويات بوسي -->
+    <div id="bose-footer-injector"></div>
+
+    <!-- 🎁 [أسئلة بطاقات الهدايا]: بيقرأ من جدول gift_card_faqs (قراءة عامة
+         للصفوف المنشورة is_published=true فقط) ويعرضها كأكورديون، مع حقن
+         FAQPage schema.org لنفس الأسئلة والإجابات بالظبط - نفس فلسفة
+         الأسئلة الخاصة بكل منتج في product.html (renderProductFaqs) بس على
+         مستوى الصفحة كلها بدل منتج واحد. -->
+    <script>
+        (function () {
+            function escapeHTML(str) {
+                if (window.escapeBoseHTML) return window.escapeBoseHTML(str);
+                const d = document.createElement("div");
+                d.textContent = String(str == null ? "" : str);
+                return d.innerHTML;
+            }
+
+            function renderFaqs(faqs) {
+                const container = document.getElementById("gcf-accordion");
+                if (!container) return;
+
+                if (!faqs || faqs.length === 0) {
+                    container.innerHTML = `
+                        <div class="gcf-empty-state">
+                            <i class="fa-solid fa-circle-question" style="font-size: 1.6rem; display:block; margin-bottom: 10px; color: var(--bose-pink);"></i>
+                            الأسئلة الشائعة هتضاف قريباً هنا.
+                        </div>`;
+                    return;
+                }
+
+                container.innerHTML = faqs.map((f, idx) => `
+                    <details class="gcf-item" ${idx === 0 ? "open" : ""}>
+                        <summary>
+                            <span class="gcf-q-icon"><i class="fa-solid fa-question"></i></span>
+                            <span class="gcf-q-text">${escapeHTML(f.question)}</span>
+                            <i class="fa-solid fa-chevron-down gcf-chevron"></i>
+                        </summary>
+                        <p class="gcf-answer">${escapeHTML(f.answer)}</p>
+                    </details>
+                `).join("");
+
+                let script = document.getElementById("gcf-faq-structured-data");
+                if (!script) {
+                    script = document.createElement("script");
+                    script.type = "application/ld+json";
+                    script.id = "gcf-faq-structured-data";
+                    document.head.appendChild(script);
+                }
+                script.textContent = JSON.stringify({
+                    "@context": "https://schema.org",
+                    "@type": "FAQPage",
+                    "mainEntity": faqs.map((f) => ({
+                        "@type": "Question",
+                        "name": f.question,
+                        "acceptedAnswer": { "@type": "Answer", "text": f.answer }
+                    }))
+                });
+            }
+
+            async function loadGiftCardFaqs() {
+                if (!window.BoseSupabase || typeof window.BoseSupabase.getGiftCardFaqs !== "function") {
+                    setTimeout(loadGiftCardFaqs, 200);
+                    return;
+                }
+                try {
+                    const faqs = await window.BoseSupabase.getGiftCardFaqs();
+                    renderFaqs(faqs);
+                } catch (err) {
+                    console.warn("تعذر عرض الأسئلة الشائعة عن بطاقات الهدايا:", err.message);
+                    renderFaqs([]);
+                }
+            }
+
+            loadGiftCardFaqs();
+        })();
+    </script>
 </body>
 </html>
