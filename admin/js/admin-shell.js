@@ -80,7 +80,6 @@
             items: [
                 { key: "loyalty-vouchers", label: "قسائم الولاء الصادرة", icon: "fa-gift", href: "loyalty-vouchers.html" },
                 { key: "gift-cards", label: "بطاقات الهدايا", icon: "fa-wallet", href: "gift-cards.html" },
-                { key: "gift-card-faqs", label: "أسئلة بطاقات الهدايا", icon: "fa-circle-question", href: "gift-card-faqs.html" },
                 { key: "voucher-notifications", label: "تنبيه القسائم والبطاقات", icon: "fa-bell", href: "voucher-notifications.html", badgeKey: "vouchersUnnotified" },
             ],
         },
@@ -119,7 +118,6 @@
         "customer-lookup": ["متابعة العملاء", "دوّري برقم تليفون العميل: كام طلب عنده، فين وصل في دائرة الولاء، وقسايمه"],
         "loyalty-vouchers": ["قسائم الولاء الصادرة", "كل قسايم الهدية اللي اتكسبت من دورة الولاء، مين استخدمها، وقد إيه فلوس اتصرفت من خلالها"],
         "gift-cards": ["بطاقات الهدايا", "بطاقات الهدايا اللي اتباعت بفلوس حقيقية عبر منتج بطاقة هدية - مين اشتراها وقد إيه اتصرف منها"],
-        "gift-card-faqs": ["الأسئلة الشائعة عن بطاقات الهدايا", "إدارة الأسئلة والإجابات الظاهرة للعميلة في صفحة الأسئلة الشائعة عن بطاقات الهدايا"],
         "voucher-notifications": ["تنبيه القسائم والبطاقات", "قسائم ولاء وبطاقات هدايا نشطة لسه محدش قال للعميل بيها - ابعتيله كارت الهدية بضغطة واحدة"],
     };
 
