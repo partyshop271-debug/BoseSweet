@@ -259,6 +259,7 @@
         const senderInput = document.getElementById("gcbSender");
         const messageInput = document.getElementById("gcbMessage");
         const counter = document.getElementById("gcbMessageCounter");
+        const counterWrap = document.getElementById("gcbMessageCounterWrap");
 
         if (recipientInput) {
             recipientInput.addEventListener("input", () => {
@@ -294,7 +295,14 @@
             messageInput.maxLength = MESSAGE_MAX_LEN;
             messageInput.addEventListener("input", () => {
                 state.message = messageInput.value;
-                if (counter) counter.textContent = String(messageInput.value.length);
+                const len = messageInput.value.length;
+                if (counter) {
+                    counter.textContent = String(len);
+                }
+                if (counterWrap) {
+                    counterWrap.classList.toggle("is-near-limit", len >= MESSAGE_MAX_LEN - 20 && len < MESSAGE_MAX_LEN);
+                    counterWrap.classList.toggle("is-at-limit", len >= MESSAGE_MAX_LEN);
+                }
                 renderPreview();
             });
         }
@@ -660,6 +668,26 @@
         }
     }
 
+    /* ============================ إحصائية ثقة حقيقية (من إعدادات المتجر نفسه) ============================ */
+    // 🛡️ [صادق بس] لا يوجد رقم مخترع هنا. بنقرا الأرقام اللي صاحبة المتجر
+    // نفسها ضبطتها في لوحة التحكم (قسم "الفخر والاعتزاز" في الصفحة الرئيسية:
+    // store_settings.homepage.pride.stats) بدل ما نخترع رقم خاص بالصفحة دي
+    // لوحدها - لأن رقم المبيعات الفعلي لبطاقات الهدية على الموقع لسه صغير
+    // جداً في البداية، وعرضه كان هيقلل الثقة بدل ما يزودها. ده نفس الرقم
+    // اللي ظاهر لأي زائر في قسم "الفخر والاعتزاز" بالصفحة الرئيسية، فمفيش
+    // أي تضارب أو رقمين مختلفين لنفس المتجر.
+    function renderSocialProof() {
+        const el = document.getElementById("gcbSocialProof");
+        if (!el) return;
+        const stats = window.BoseStoreData?.homepage?.pride?.stats;
+        const stat = stats?.customers || stats?.orders;
+        if (!stat || !stat.value) { el.hidden = true; return; }
+
+        const formattedValue = Number(stat.value).toLocaleString("ar-EG");
+        el.innerHTML = `<i class="fa-solid fa-heart" aria-hidden="true"></i> بثقة أكتر من ${formattedValue}${stat.suffix || ""} ${stat.label || "عميل"}`;
+        el.hidden = false;
+    }
+
     /* ============================ شارات الثقة ============================ */
     function renderTrustBadges() {
         const target = document.getElementById("bose-product-trust-badges");
@@ -694,6 +722,23 @@
         renderPreview();
         renderFaqSection(product.faqs);
         injectGiftCardStructuredData();
+        setAddToCartButtonsState("ready");
+    }
+
+    /* ============================ حالة تحميل بيانات المنتج ============================ */
+    function setAddToCartButtonsState(mode) {
+        const labels = {
+            loading: "بيتم تحميل بيانات المنتج...",
+            ready: "أضيفي البطاقة للسلة",
+            error: "تعذر التحميل - حدّثي الصفحة"
+        };
+        [document.getElementById("gcbAddToCart"), document.getElementById("gcbAddToCartMobile")].forEach((btn) => {
+            if (!btn) return;
+            btn.disabled = mode !== "ready";
+            const labelEl = btn.querySelector(".gcb-cta-label");
+            if (labelEl) labelEl.textContent = labels[mode] || labels.ready;
+            else btn.textContent = labels[mode] || labels.ready;
+        });
     }
 
     function init() {
@@ -704,6 +749,7 @@
         bindSendOptionToggle();
         renderPreview();
         renderTrustBadges();
+        renderSocialProof();
 
         if (typeof window.initBoseReviewsWidget === "function") {
             window.initBoseReviewsWidget({
@@ -727,7 +773,17 @@
         if (window.BoseStoreData) {
             bindRealGiftCardProduct(window.BoseStoreData);
         }
-        document.addEventListener("BoseDatabaseLoaded", (e) => bindRealGiftCardProduct(e.detail));
+        document.addEventListener("BoseDatabaseLoaded", (e) => {
+            bindRealGiftCardProduct(e.detail);
+            renderSocialProof();
+        });
+
+        // ⏳ [حالة تحميل]: لو بعد 8 ثواني لسه مفيش منتج بطاقة هدية حقيقي اتحمل
+        // (مشكلة اتصال أو المنتج مش موجود أصلاً)، بدل ما الزرار يفضل عالق على
+        // "بيتم التحميل" للأبد من غير أي تفسير، بنوضح للعميلة إن فيه مشكلة.
+        setTimeout(() => {
+            if (!realProduct) setAddToCartButtonsState("error");
+        }, 8000);
     }
 
     if (document.readyState === "loading") {
