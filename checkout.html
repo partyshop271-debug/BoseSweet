@@ -364,12 +364,25 @@
                     </div>
 
                     <!-- ⏱️ قسم الجدولة الزمنية والموعد المحكوم بقواعد المعالجة وحارس الـ 24 ساعة تحضير صارم ⏱️ -->
+
+                    <!-- 🆕 [توضيح واضح قدام العميل مباشرة]: قبل كده السبب الحقيقي وراء وقت
+                         التحضير كان مخبي جوه الـ ⓘ (لازم تدوسي عليه عشان تشوفيه) - العميلة
+                         اشتكت إنها بتتفاجئ بالمدة من غير شرح واضح وصريح ومقنع قدامها. دلوقتي
+                         في بانر واضح وثابت الظهور فوق حقول التاريخ/الساعة مباشرة، بنفس أسلوب
+                         باقي التنبيهات في الصفحة (زي بانر الطلب المختلط تحت)، بيتغيّر نصه حسب
+                         نوع الطلب (عادي / مخصص من المحاكي) زي ما كان بيحصل قبل كده لكن دلوقتي
+                         ظاهر وواضح من غير ما تدوس على حاجة. -->
+                    <div id="checkout-prep-time-notice" style="display:flex; align-items:flex-start; gap:10px; background: rgba(255,145,164,0.1); border: 1px solid rgba(255,145,164,0.4); border-radius: 14px; padding: 14px 16px; margin-bottom: 14px; direction: rtl;">
+                        <i class="fas fa-clock" style="color:#FF91A4; margin-top:2px; font-size: 1rem;"></i>
+                        <p id="checkout-preparation-message" style="margin:0; font-size:0.85rem; font-weight:600; color:#111111; line-height:1.7; text-align: right;"></p>
+                    </div>
+
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; width: 100%;">
                         <div class="input-group-node">
                             <label for="checkout-delivery-date">تاريخ الاستلام
                                 <button type="button" class="bose-info-badge-inline"
                                         data-bose-info-title="ليه مش كل التواريخ متاحة؟"
-                                        data-bose-info-text="محتاجين على الأقل 24 ساعة من دلوقتي عشان نجهز طلبك بجودة عالية (لو طلبك فيه تورت أو ورد من المحاكي، الوقت المطلوب أسبوع كامل تقريباً). كمان الاستلام والتوصيل بيكونوا بس من الساعة 9 الصبح لحد 10 بالليل، فأي وقت خارج النطاق ده مش هيتقبل.">ⓘ</button>
+                                        data-bose-info-text="الاستلام والتوصيل بيكونوا بس من الساعة 9 الصبح لحد 10 بالليل، فأي وقت خارج النطاق ده مش هيتقبل. وأقرب موعد متاح ليكي هو بعد مرور مدة التحضير الموضحة فوق.">ⓘ</button>
                             </label>
                             <input type="date" id="checkout-delivery-date" class="bose-field-capture" required aria-describedby="err-checkout-delivery-date">
                             <span class="bose-field-error-msg" id="err-checkout-delivery-date"><i class="fa-solid fa-circle-exclamation"></i><span></span></span>
@@ -380,9 +393,6 @@
                             <span class="bose-field-error-msg" id="err-checkout-delivery-time"><i class="fa-solid fa-circle-exclamation"></i><span></span></span>
                         </div>
                     </div>
-                    
-                    <!-- نص رسالة حارس الوقت التوضيحي المستدعى ديناميكياً من حقل قاعدة البيانات لمنع التشتيت -->
-                    <p id="checkout-preparation-message" style="font-size: 0.82rem; color: var(--bose-pink); font-weight: 600; margin: 4px 4px 0 0; line-height: 1.5; text-align: right;"></p>
                     </div><!-- /#bose-fulfillment-and-schedule-section -->
 
                     <!-- ⚠️ تنبيه العزل بين المنتجات المخصصة (تورت/ورد محاكي) والمنتجات العادية:
@@ -625,8 +635,9 @@
                         return m === 0 ? `${h12} ${period}` : `${h12}:${String(m).padStart(2, "0")} ${period}`;
                     };
                     const minPrepHoursForTooltip = siteData.orderRules?.minPreparationTimeHours || 48;
+                    dateInfoBadge.setAttribute("data-bose-info-title", "ليه مش كل التواريخ متاحة؟");
                     dateInfoBadge.setAttribute("data-bose-info-text",
-                        `محتاجين على الأقل ${minPrepHoursForTooltip} ساعة من دلوقتي عشان نجهز طلبك بجودة عالية (لو طلبك فيه تورت أو ورد من المحاكي، الوقت المطلوب أسبوع كامل تقريباً). كمان الاستلام والتوصيل بيكونوا بس من الساعة ${fmtHour(bhStart)} لحد ${fmtHour(bhEnd)}، فأي وقت خارج النطاق ده مش هيتقبل.`);
+                        `الاستلام والتوصيل بيكونوا بس من الساعة ${fmtHour(bhStart)} لحد ${fmtHour(bhEnd)}، فأي وقت خارج النطاق ده مش هيتقبل. وأقرب موعد متاح ليكي هو بعد مرور مدة التحضير الموضحة فوق (${minPrepHoursForTooltip} ساعة للمنتجات العادية).`);
                 }
 
                 // 🛡️ [إصلاح - المرحلة 2]: قبل كده كان حامي التاريخ بيفرض بكرة (24 ساعة)
@@ -651,8 +662,8 @@
                 // سحب نص حارس الوقت الصحيح المطابق لنوع الطلب لتعريف العميل برحلة الإتقان الصادقة للبراند
                 if (prepMsgNode) {
                     prepMsgNode.textContent = hasCustomItemForDate
-                        ? (siteData.orderRules?.customPreparationTimeMessage || "التورت والورد المخصص عبر المحاكي بيحتاج حجز قبل موعد التسليم بأسبوع كامل (7 أيام) على الأقل.")
-                        : (siteData.orderRules?.preparationTimeMessage || "نحتاج إلى وقت كافٍ لتجهيز طلبك بأفضل جودة ممكنة، لذلك لا يمكن اختيار موعد قبل 48 ساعة من وقت تأكيد الطلب.");
+                        ? (siteData.orderRules?.customPreparationTimeMessage || "بسبب ضغط الطلبات علينا حالياً، التورت والورد المخصص عبر المحاكي بيحتاج حجز قبل موعد التسليم بأسبوع كامل (7 أيام) على الأقل، عشان نقدر نجهزه بهدوء ونتأكد إن كل تفصيلة فيه (المقاس والشكل والألوان) طلعت مظبوطة زي ما اتفقنا - الوقت ده لمصلحتك عشان طلبك ياخد حقه كامل.")
+                        : (siteData.orderRules?.preparationTimeMessage || "بسبب ضغط الطلبات علينا حالياً، محتاجين وقت كافٍ (على الأقل 48 ساعة من وقت تأكيد الطلب) عشان نجهز طلبك بأفضل جودة ممكنة ونتأكد إن كل حاجة فيه صح - الوقت ده لمصلحتك عشان طلبك ياخد حقه الكامل في التحضير.");
                 }
 
                 // ⚠️ [عزل الطلبات المختلطة]: إظهار تنبيه المزج بين المخصص والعادي هنا كمان
