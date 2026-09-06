@@ -888,7 +888,7 @@
     top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(17, 17, 17, 0.4);
     backdrop-filter: blur(4px); /* زيادة التركيز البصري ومنع التشتيت */
-    z-index: 50000;
+    z-index: var(--bose-z-modal);
     align-items: center;
     justify-content: center;
     padding: 20px;
@@ -952,7 +952,7 @@
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
     .simulator-container, .bose-custom-builder-block {
         margin: 15px auto !important;
         padding: 0 12px !important;
@@ -1274,7 +1274,7 @@
 .bose-lightbox-overlay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(17, 17, 17, 0.9); backdrop-filter: blur(6px);
-    display: none; align-items: center; justify-content: center; z-index: 60000;
+    display: none; align-items: center; justify-content: center; z-index: var(--bose-z-sidebar-drawer);
     padding: 20px; box-sizing: border-box;
 }
 .bose-lightbox-card {
