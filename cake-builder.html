@@ -19,16 +19,16 @@
     <link rel="stylesheet" href="css/main.css?v=2026_production_v39.0">
     <link rel="stylesheet" href="css/simulators.css?v=2026_production_v40.0">
     <link rel="stylesheet" href="css/reviews-widget.css?v=2026_production_v1.1">
-    <script src="js/supabase-client.js?v=2026_production_v42.0" defer></script>
+    <script src="js/supabase-client.js?v=2026_production_v43.0" defer></script>
     <script src="js/push-notifications.js?v=1.0" defer></script>
     <script src="js/favorites-engine.js?v=2026_production_v38.0" defer></script>
-    <script src="js/core-engine.js?v=2027_production_v55.0" defer></script>
+    <script src="js/core-engine.js?v=2027_production_v56.0" defer></script>
     <!-- 🧭 [إصلاح - جولة تعريفية مفقودة]: السكريبت ده كان غير موجود في الصفحة دي خالص،
          فرغم إن جولة "cake_simulator" (11 خطوة) كانت مكتوبة بالكامل جوه guided-tour.js،
          كانت كود ميت مستحيل يتشغّل أبداً - مفيش زرار "الجولة" العائم ولا توست تلقائي
          في أعقد صفحة في الموقع (محاكي التورت). دلوقتي مضاف بنفس ترتيب باقي الصفحات
          (فورًا بعد core-engine.js). -->
-    <script src="js/guided-tour.js?v=3.1" defer></script>
+    <script src="js/guided-tour.js?v=3.2" defer></script>
 
     <style>
         /* ==================================================================
@@ -972,32 +972,12 @@
 
                         <p class="bose-gallery-tap-hint">👆 اضغطي ⓘ لمعرفة أكتر، والصور فوق الكروت مجرد أمثلة لإلهامك مش نسخة طبق الأصل هتتنفذلك.</p>
 
-                        <div class="bose-interactive-radio-grid">
-                            <label class="bose-selection-card-label">
-                                <input type="radio" name="cake_shape" value="circle" checked>
-                                <div class="bose-selection-card-inner">دائرة<span class="bose-selected-checkmark">✅ مُختار</span></div>
-                                <button type="button" class="bose-info-badge" data-info-key="shape-circle">ⓘ</button>
-                                <span class="bose-option-lock-caption" id="shape-circle-caption"></span>
-                            </label>
-                            <label class="bose-selection-card-label">
-                                <input type="radio" name="cake_shape" value="heart">
-                                <div class="bose-selection-card-inner">قلب<span class="bose-selected-checkmark">✅ مُختار</span></div>
-                                <button type="button" class="bose-info-badge" data-info-key="shape-heart">ⓘ</button>
-                                <span class="bose-option-lock-caption" id="shape-heart-caption"></span>
-                            </label>
-                            <label class="bose-selection-card-label">
-                                <input type="radio" name="cake_shape" value="square">
-                                <div class="bose-selection-card-inner">مربع<span class="bose-selected-checkmark">✅ مُختار</span></div>
-                                <button type="button" class="bose-info-badge" data-info-key="shape-square">ⓘ</button>
-                                <span class="bose-option-lock-caption" id="shape-square-caption"></span>
-                            </label>
-                            <label class="bose-selection-card-label">
-                                <input type="radio" name="cake_shape" value="rectangle">
-                                <div class="bose-selection-card-inner">مستطيل<span class="bose-selected-checkmark">✅ مُختار</span></div>
-                                <button type="button" class="bose-info-badge" data-info-key="shape-rectangle">ⓘ</button>
-                                <span class="bose-option-lock-caption" id="shape-rectangle-caption"></span>
-                            </label>
-                        </div>
+                        <!-- 🎂👑 [رسم الأشكال ديناميكياً من لوحة التحكم]: بدل 4 كروت مكتوبة يدوياً
+                             وثابتة هنا، بيتم بناء الكروت كلها في cake-engine.js من
+                             config.shapes (نفس القايمة اللي الأدمن بتتحكم فيها) - بالظبط
+                             زي أنواع الورد في محاكي الورد. أي شكل تضيفه/تحذفه/تعدله الأدمن
+                             من لوحة التحكم بيظهر فوراً هنا كخيار حقيقي قدام العميلة. -->
+                        <div class="bose-interactive-radio-grid" id="cake-shape-grid"></div>
                         <p class="bose-current-selection-line" id="shape-current-selection-line"></p>
                         <div class="bose-alert-message" id="alert-shape-restriction"></div>
                     </div>
@@ -1012,23 +992,9 @@
                             <span>النكهة سر التجربة - كل نكهة عندنا متقنة بعناية فائقة، اختاري إللي هيبهر ضيوفك.</span>
                         </div>
 
-                        <div class="bose-interactive-radio-grid">
-                            <label class="bose-selection-card-label">
-                                <input type="radio" name="cake_flavor" value="vanilla" checked>
-                                <div class="bose-selection-card-inner">فانيليا<span class="bose-selected-checkmark">✅ مُختار</span></div>
-                                <button type="button" class="bose-info-badge" data-info-key="flavor-vanilla">ⓘ</button>
-                            </label>
-                            <label class="bose-selection-card-label">
-                                <input type="radio" name="cake_flavor" value="chocolate">
-                                <div class="bose-selection-card-inner">شوكولاتة<span class="bose-selected-checkmark">✅ مُختار</span></div>
-                                <button type="button" class="bose-info-badge" data-info-key="flavor-chocolate">ⓘ</button>
-                            </label>
-                            <label class="bose-selection-card-label">
-                                <input type="radio" name="cake_flavor" value="half-half">
-                                <div class="bose-selection-card-inner">نصف ونصف<span class="bose-selected-checkmark">✅ مُختار</span></div>
-                                <button type="button" class="bose-info-badge" data-info-key="flavor-half-half">ⓘ</button>
-                            </label>
-                        </div>
+                        <!-- 🎂👑 [رسم النكهات ديناميكياً من لوحة التحكم]: نفس مبدأ الأشكال فوق -
+                             الكروت بتتبنى من config.cakeTypes. -->
+                        <div class="bose-interactive-radio-grid" id="cake-flavor-grid"></div>
                         <p class="bose-current-selection-line" id="flavor-current-selection-line"></p>
                         <p class="bose-flavor-sensory-note" id="flavor-sensory-note"></p>
                         <div class="bose-image-example-note">
@@ -1047,23 +1013,10 @@
                             <span>صورة مطبوعة على سطح التورتة بتضيف لمسة شخصية فريدة مش هتتكرر عند حد تاني.</span>
                         </div>
 
-                        <div class="bose-interactive-radio-grid">
-                            <label class="bose-selection-card-label">
-                                <input type="radio" name="cake_printing" value="none" checked>
-                                <div class="bose-selection-card-inner">بدون صور<span class="bose-selected-checkmark">✅ مُختار</span></div>
-                                <button type="button" class="bose-info-badge" data-info-key="printing-none">ⓘ</button>
-                            </label>
-                            <label class="bose-selection-card-label">
-                                <input type="radio" name="cake_printing" value="edible">
-                                <div class="bose-selection-card-inner">صورة قابلة للأكل (+60 ج)<span class="bose-selected-checkmark">✅ مُختار</span></div>
-                                <button type="button" class="bose-info-badge" data-info-key="printing-edible">ⓘ</button>
-                            </label>
-                            <label class="bose-selection-card-label">
-                                <input type="radio" name="cake_printing" value="non-edible">
-                                <div class="bose-selection-card-inner">صورة غير قابلة للأكل (+15 ج)<span class="bose-selected-checkmark">✅ مُختار</span></div>
-                                <button type="button" class="bose-info-badge" data-info-key="printing-non-edible">ⓘ</button>
-                            </label>
-                        </div>
+                        <!-- 🎂👑 [رسم أنواع الطباعة ديناميكياً من لوحة التحكم]: "بدون صور" خيار
+                             مجاني ثابت دايماً (مش جزء من قايمة الأدمن)، والباقي بيتبنى من
+                             config.printingOptions بسعر كل نوع. -->
+                        <div class="bose-interactive-radio-grid" id="cake-printing-grid"></div>
                         <p class="bose-current-selection-line" id="printing-current-selection-line"></p>
                         <div class="bose-image-example-note">
                             <span class="note-icon">📌</span>
@@ -1195,7 +1148,7 @@
 
     <div id="bose-footer-injector"></div>
 
-    <script src="js/cake-engine.js?v=2026_production_v43.0" defer></script>
+    <script src="js/cake-engine.js?v=2026_production_v44.0" defer></script>
     <script src="js/reviews-widget.js?v=2026_production_v1.1" defer></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
