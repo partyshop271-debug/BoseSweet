@@ -12,12 +12,18 @@
     <title>بطاقات الهدايا من حلويات بوسي</title>
     <meta name="description" content="صممي بطاقة هدية إلكترونية بكلماتك، لمن تحبين - اختاري القيمة والتصميم، اكتبي رسالتك، وهتوصل فوراً بعد تأكيد الطلب.">
     <link rel="canonical" href="https://bose-sweet.vercel.app/gift-card-builder.html">
+    <meta property="og:title" content="بطاقات الهدايا من حلويات بوسي">
+    <meta property="og:description" content="هدية معمولة مخصوص للشخص اللي بتحبه - صممي بطاقتك بنفسك واختاري القيمة والتصميم واكتبي رسالتك.">
+    <meta property="og:type" content="product">
+    <meta property="og:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+    <meta property="og:url" content="https://bose-sweet.vercel.app/gift-card-builder.html">
+    <meta name="twitter:card" content="summary">
 
     <link rel="stylesheet" href="vendor/fonts/cairo/cairo.css?v=2026_local_v1.0">
     <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css?v=2026_local_v1.0" fetchpriority="high">
     <link rel="stylesheet" href="css/global.css?v=2026_production_v44.0">
     <link rel="stylesheet" href="css/main.css?v=2026_production_v40.0">
-    <link rel="stylesheet" href="css/gift-card.css?v=2.0">
+    <link rel="stylesheet" href="css/gift-card.css?v=2.3">
     <link rel="stylesheet" href="css/reviews-widget.css?v=2026_production_v1.1">
 
     <script src="js/supabase-client.js?v=2026_production_v42.0" defer></script>
@@ -39,6 +45,7 @@
         <header class="gcb-intro">
             <h1>بطاقات الهدايا من حلويات بوسي</h1>
             <p>هدية معمولة مخصوص للشخص اللي بتحبه 💗</p>
+            <p class="gcb-social-proof" id="gcbSocialProof" hidden></p>
         </header>
 
         <div class="gcb-layout">
@@ -115,7 +122,7 @@
                     <div class="gcb-field">
                         <label for="gcbMessage" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">الرسالة</label>
                         <textarea id="gcbMessage" placeholder="اكتبي كلمة من قلبك..." maxlength="150"></textarea>
-                        <div class="gcb-counter"><span id="gcbMessageCounter">0</span>/150</div>
+                        <div class="gcb-counter" id="gcbMessageCounterWrap"><span id="gcbMessageCounter">0</span>/150</div>
                     </div>
                 </div>
 
@@ -141,13 +148,18 @@
                     <span>بطاقة هدية رقمية بالكامل - بتوصل على واتساب فور تأكيد الطلب، وصالحة لمدة سنة كاملة من تاريخ الشراء.</span>
                 </div>
 
+                <a class="gcb-upsell" href="category.html?category=taswaq-happiness-cups">
+                    <i class="fa-solid fa-heart" aria-hidden="true"></i>
+                    <span>حابة تضيفي كبة سعادة صغيرة مع الهدية؟ <strong>شوفي الأشكال والنكهات →</strong></span>
+                </a>
+
                 <div class="gcb-summary">
                     <div class="gcb-summary-row"><span>قيمة البطاقة</span><strong id="gcbSummaryAmount">300 جنيه</strong></div>
                     <div class="gcb-summary-row gcb-summary-total"><span>الإجمالي</span><strong id="gcbSummaryTotal">300 جنيه</strong></div>
                 </div>
 
-                <button type="button" class="gcb-cta" id="gcbAddToCart">
-                    <i class="fa-solid fa-gift" aria-hidden="true"></i> أضيفي البطاقة للسلة
+                <button type="button" class="gcb-cta" id="gcbAddToCart" disabled>
+                    <i class="fa-solid fa-gift" aria-hidden="true"></i> <span class="gcb-cta-label">بيتم تحميل بيانات المنتج...</span>
                 </button>
 
                 <div id="bose-product-trust-badges" class="gcb-trust"></div>
@@ -174,14 +186,14 @@
             <span>الإجمالي</span>
             <strong id="gcbMobileBarAmount">300 جنيه</strong>
         </div>
-        <button type="button" class="gcb-cta" id="gcbAddToCartMobile">
-            <i class="fa-solid fa-gift" aria-hidden="true"></i> أضيفي البطاقة للسلة
+        <button type="button" class="gcb-cta" id="gcbAddToCartMobile" disabled>
+            <i class="fa-solid fa-gift" aria-hidden="true"></i> <span class="gcb-cta-label">بيتم التحميل...</span>
         </button>
     </div>
 
     <div id="bose-footer-injector"></div>
 
     <script src="js/reviews-widget.js?v=2026_production_v1.1" defer></script>
-    <script src="js/gift-card-engine.js?v=2.1" defer></script>
+    <script src="js/gift-card-engine.js?v=2.3" defer></script>
 </body>
 </html>
