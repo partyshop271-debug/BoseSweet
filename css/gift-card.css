@@ -1,0 +1,667 @@
+/* =====================================================================
+   css/gift-card.css — صفحة بطاقات الهدايا (gift-card-builder.html)
+   =====================================================================
+   ملف مستقل خاص بالصفحة فقط، بيعتمد بالكامل على متغيرات ونظام الألوان
+   والخطوط الموجودين في css/global.css (--bose-pink / --bose-black /
+   --bose-white / --bose-radius-* / --bose-shadow-* / --bose-transition-*)
+   ومفيش أي قيم مخترعة جديدة للهوية العامة - القيم الوحيدة الجديدة هنا هي
+   ألوان الـaccent الخاصة بكل تصميم بطاقة (Love/Birthday/Elegant) وهي
+   عناصر زخرفية تخص التصميمات الأربعة نفسها فقط، بنفس فلسفة gift-card-engine
+   القديمة اللي كانت بتفرّق بين ألوان كل تصميم.
+   ===================================================================== */
+
+/* ---------------------------------------------------------------------
+   0. إخفاء الشريط السفلي العام على الصفحة دي واستبداله بشريط CTA خاص
+   --------------------------------------------------------------------- */
+.bose-bottom-nav-bar,
+.bose-floating-cart-btn { display: none !important; }
+
+body.gcb-body {
+    padding-bottom: 0 !important;
+}
+
+/* ---------------------------------------------------------------------
+   1. الهيكل العام
+   --------------------------------------------------------------------- */
+.gcb-page {
+    width: 100%;
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 22px 16px 48px;
+    box-sizing: border-box;
+}
+
+.gcb-breadcrumb {
+    display: flex;
+    align-items: center;
+    font-size: 0.86rem;
+    font-weight: 600;
+    color: var(--bose-black);
+    opacity: 0.75;
+    margin-bottom: 22px;
+}
+.gcb-breadcrumb a { color: var(--bose-black); text-decoration: none; }
+.gcb-breadcrumb a:hover { color: var(--bose-pink); opacity: 1; }
+.gcb-breadcrumb-sep { margin: 0 8px; opacity: 0.4; }
+.gcb-breadcrumb [aria-current="page"] { color: var(--bose-pink); opacity: 1; }
+
+.gcb-intro {
+    text-align: center;
+    max-width: 620px;
+    margin: 0 auto 34px;
+}
+.gcb-intro h1 {
+    font-size: 1.65rem;
+    font-weight: 800;
+    color: var(--bose-black);
+    margin: 0 0 10px;
+    line-height: 1.35;
+}
+.gcb-intro p {
+    font-size: 0.98rem;
+    color: var(--bose-black);
+    opacity: 0.72;
+    margin: 0;
+    line-height: 1.7;
+}
+
+.gcb-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
+}
+
+@media (min-width: 900px) {
+    .gcb-layout {
+        grid-template-columns: minmax(360px, 460px) 1fr;
+        align-items: start;
+        gap: 44px;
+    }
+    .gcb-intro { margin-bottom: 40px; }
+    .gcb-intro h1 { font-size: 2rem; }
+}
+
+/* ---------------------------------------------------------------------
+   2. عمود المعاينة الحية
+   --------------------------------------------------------------------- */
+.gcb-preview-col { min-width: 0; }
+
+.gcb-preview-sticky { display: flex; flex-direction: column; gap: 14px; }
+
+@media (min-width: 900px) {
+    .gcb-preview-sticky { position: sticky; top: 100px; }
+}
+
+.gcb-card {
+    position: relative;
+    width: 100%;
+    min-height: 300px;
+    border-radius: 26px;
+    padding: 34px 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 10px;
+    overflow: hidden;
+    box-shadow: var(--bose-shadow-glow);
+    transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+}
+
+@media (min-width: 480px) { .gcb-card { min-height: 330px; padding: 40px 34px; } }
+@media (min-width: 900px) { .gcb-card { min-height: 360px; } }
+
+.gcb-card-pattern {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+.gcb-card-top {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 4px;
+}
+.gcb-card-logo {
+    width: 34px;
+    height: 34px;
+    object-fit: contain;
+    border-radius: 50%;
+}
+.gcb-card-kicker {
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    opacity: 0.8;
+}
+
+.gcb-card-icon {
+    font-size: 1.7rem;
+    margin-bottom: 2px;
+    position: relative;
+}
+
+.gcb-card-title {
+    font-size: 1.35rem;
+    font-weight: 800;
+    position: relative;
+}
+
+.gcb-card-divider {
+    width: 46px;
+    height: 2px;
+    border-radius: 2px;
+    margin: 2px 0 4px;
+    position: relative;
+}
+
+.gcb-card-to, .gcb-card-from {
+    font-size: 0.92rem;
+    font-weight: 600;
+    opacity: 0.92;
+    position: relative;
+}
+.gcb-card-to strong, .gcb-card-from strong { font-weight: 800; }
+
+.gcb-card-message {
+    font-size: 0.86rem;
+    font-weight: 500;
+    opacity: 0.88;
+    max-width: 88%;
+    line-height: 1.7;
+    margin: 2px 0;
+    position: relative;
+    word-break: break-word;
+}
+.gcb-card-message::before, .gcb-card-message::after { content: '"'; }
+
+.gcb-card-occasion {
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.35);
+    position: relative;
+}
+
+.gcb-card-amount {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: 8px;
+    position: relative;
+}
+.gcb-card-amount small { font-size: 0.78rem; font-weight: 700; opacity: 0.85; }
+
+/* ---- تصميم 1: أحبك (Love) ---- */
+.gcb-card--love {
+    background: linear-gradient(160deg, #FFF0F3 0%, #FFDCE5 55%, #FFC5D6 100%);
+    color: #4A1826;
+}
+.gcb-card--love .gcb-card-icon,
+.gcb-card--love .gcb-card-amount { color: #E0577B; }
+.gcb-card--love .gcb-card-pattern {
+    background-image:
+        radial-gradient(rgba(224, 87, 123, 0.16) 2px, transparent 2.4px),
+        radial-gradient(rgba(224, 87, 123, 0.12) 1.6px, transparent 2px);
+    background-size: 46px 46px, 30px 30px;
+    background-position: 0 0, 15px 20px;
+}
+
+/* ---- تصميم 2: عيد ميلاد (Birthday) ---- */
+.gcb-card--birthday {
+    background: linear-gradient(140deg, #FFF7E9 0%, #FFE7BE 60%, #FFD79A 100%);
+    color: #4A2E0B;
+}
+.gcb-card--birthday .gcb-card-icon,
+.gcb-card--birthday .gcb-card-amount { color: #C9972E; }
+.gcb-card--birthday .gcb-card-pattern {
+    background-image:
+        radial-gradient(#E8607C 3px, transparent 3.4px),
+        radial-gradient(#6B7D53 2.4px, transparent 2.8px),
+        radial-gradient(#C9972E 2.8px, transparent 3.2px);
+    background-size: 90px 90px, 70px 70px, 110px 110px;
+    background-position: 6% 8%, 88% 14%, 78% 85%;
+    opacity: 0.35;
+}
+
+/* ---- تصميم 3: أنيقة (Elegant) ---- */
+.gcb-card--elegant {
+    background: #FDFBF8;
+    border: 1px solid rgba(17, 17, 17, 0.1);
+    color: #111111;
+    box-shadow: 0 10px 30px rgba(17, 17, 17, 0.06);
+}
+.gcb-card--elegant .gcb-card-icon,
+.gcb-card--elegant .gcb-card-amount,
+.gcb-card--elegant .gcb-card-kicker { color: #C9972E; }
+.gcb-card--elegant .gcb-card-divider { background: #C9972E; }
+.gcb-card--elegant .gcb-card-title { letter-spacing: 0.4px; }
+.gcb-card--elegant::after {
+    content: '';
+    position: absolute;
+    inset: 10px;
+    border: 1px solid rgba(201, 151, 46, 0.35);
+    border-radius: 18px;
+    pointer-events: none;
+}
+
+/* ---- تصميم 4: هوية بوسي (Bose Sweet) ---- */
+.gcb-card--brand {
+    background: linear-gradient(135deg, #FFFFFF 0%, #FFE9EE 100%);
+    border: 1.5px solid var(--bose-pink);
+    color: #111111;
+}
+.gcb-card--brand .gcb-card-icon,
+.gcb-card--brand .gcb-card-amount { color: var(--bose-pink); }
+.gcb-card--brand .gcb-card-divider { background: var(--bose-pink); }
+.gcb-card--brand .gcb-card-logo { width: 42px; height: 42px; }
+.gcb-card--brand .gcb-card-pattern {
+    background: repeating-linear-gradient(-45deg, rgba(255,145,164,0.06) 0 2px, transparent 2px 22px);
+}
+
+.gcb-preview-note {
+    text-align: center;
+    font-size: 0.76rem;
+    color: var(--bose-black);
+    opacity: 0.5;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.gcb-preview-actions {
+    display: flex;
+    gap: 10px;
+}
+.gcb-preview-actions button {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    background: var(--bose-white);
+    border: 1.5px solid rgba(17, 17, 17, 0.12);
+    color: var(--bose-black);
+    font-family: 'Cairo', sans-serif;
+    font-weight: 700;
+    font-size: 0.82rem;
+    padding: 11px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: var(--bose-transition-fast);
+}
+.gcb-preview-actions button:hover { border-color: var(--bose-pink); color: var(--bose-pink); }
+.gcb-preview-actions button:focus-visible { outline: 2px solid var(--bose-pink); outline-offset: 2px; }
+
+/* ---------------------------------------------------------------------
+   3. عمود التخصيص
+   --------------------------------------------------------------------- */
+.gcb-form-col { min-width: 0; }
+
+.gcb-block {
+    background: var(--bose-white);
+    border: 1px solid rgba(17, 17, 17, 0.07);
+    border-radius: var(--bose-radius-md, 16px);
+    padding: 20px 18px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.03);
+}
+
+.gcb-block-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.98rem;
+    font-weight: 800;
+    color: var(--bose-black);
+    margin: 0 0 14px;
+}
+.gcb-block-num {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--bose-pink);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.76rem;
+}
+.gcb-optional {
+    margin-right: auto;
+    font-size: 0.74rem;
+    font-weight: 600;
+    opacity: 0.45;
+}
+
+/* ---- شيبس القيمة ---- */
+.gcb-amount-chips { display: flex; flex-wrap: wrap; gap: 10px; }
+.gcb-chip {
+    min-height: 44px;
+    background: var(--bose-white);
+    border: 1.5px solid rgba(17, 17, 17, 0.12);
+    border-radius: 12px;
+    padding: 10px 18px;
+    font-family: 'Cairo', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--bose-black);
+    cursor: pointer;
+    transition: var(--bose-transition-fast);
+}
+.gcb-chip:hover { border-color: var(--bose-pink); }
+.gcb-chip:focus-visible { outline: 2px solid var(--bose-pink); outline-offset: 2px; }
+.gcb-chip.is-selected {
+    border-color: var(--bose-pink);
+    background: rgba(255, 145, 164, 0.08);
+    color: var(--bose-pink);
+    box-shadow: 0 4px 12px rgba(255, 145, 164, 0.18);
+}
+
+.gcb-amount-custom {
+    margin-top: 12px;
+}
+.gcb-amount-custom label {
+    display: block;
+    font-size: 0.84rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+.gcb-amount-custom input {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 2px solid var(--bose-pink);
+    font-family: 'Cairo', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-align: center;
+    box-sizing: border-box;
+}
+.gcb-hint {
+    font-size: 0.78rem;
+    opacity: 0.6;
+    margin: 10px 0 0;
+    line-height: 1.6;
+}
+
+/* ---- شيبس المناسبة ---- */
+.gcb-occasion-chips { display: flex; flex-wrap: wrap; gap: 10px; }
+.gcb-occasion-chip {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bose-white);
+    border: 1.5px solid rgba(17, 17, 17, 0.12);
+    border-radius: 999px;
+    padding: 9px 16px 9px 14px;
+    font-family: 'Cairo', sans-serif;
+    font-weight: 700;
+    font-size: 0.84rem;
+    color: var(--bose-black);
+    cursor: pointer;
+    transition: var(--bose-transition-fast);
+}
+.gcb-occasion-chip i { font-size: 0.9rem; opacity: 0.75; }
+.gcb-occasion-chip:hover { border-color: var(--bose-pink); }
+.gcb-occasion-chip:focus-visible { outline: 2px solid var(--bose-pink); outline-offset: 2px; }
+.gcb-occasion-chip.is-selected {
+    border-color: var(--bose-pink);
+    background: rgba(255, 145, 164, 0.08);
+    color: var(--bose-pink);
+}
+.gcb-occasion-chip.is-selected i { opacity: 1; }
+
+/* ---- الحقول ---- */
+.gcb-field { margin-bottom: 14px; }
+.gcb-field:last-child { margin-bottom: 0; }
+.gcb-field label {
+    display: block;
+    font-size: 0.86rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+.gcb-field input[type="text"], .gcb-field input[type="tel"], .gcb-field textarea {
+    width: 100%;
+    padding: 13px 15px;
+    border-radius: 12px;
+    border: 1.5px solid rgba(17, 17, 17, 0.14);
+    font-family: 'Cairo', sans-serif;
+    font-size: 0.92rem;
+    box-sizing: border-box;
+    transition: var(--bose-transition-fast);
+}
+.gcb-field input[type="tel"] { text-align: right; }
+.gcb-field input[type="text"]:focus, .gcb-field input[type="tel"]:focus, .gcb-field textarea:focus {
+    outline: none;
+    border-color: var(--bose-pink);
+    box-shadow: 0 0 0 3px rgba(255, 145, 164, 0.14);
+}
+.gcb-field textarea { resize: none; height: 92px; }
+.gcb-field.has-error input[type="text"], .gcb-field.has-error input[type="tel"] { border-color: #E0577B; }
+.gcb-field-error {
+    display: block;
+    min-height: 18px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #E0577B;
+    margin-top: 5px;
+}
+.gcb-counter { font-size: 0.75rem; opacity: 0.5; text-align: left; margin-top: 5px; }
+
+/* ---- تصاميم البطاقة (المعرض) ---- */
+.gcb-design-gallery {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+@media (min-width: 480px) { .gcb-design-gallery { grid-template-columns: repeat(4, 1fr); } }
+
+.gcb-design-thumb {
+    position: relative;
+    height: 84px;
+    border-radius: 14px;
+    border: 2px solid transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    cursor: pointer;
+    font-family: 'Cairo', sans-serif;
+    padding: 6px;
+    box-sizing: border-box;
+    transition: var(--bose-transition-fast);
+    overflow: hidden;
+}
+.gcb-design-thumb i { font-size: 1.1rem; position: relative; }
+.gcb-design-thumb span { font-size: 0.68rem; font-weight: 800; line-height: 1.3; text-align: center; position: relative; }
+.gcb-design-thumb:focus-visible { outline: 2px solid var(--bose-pink); outline-offset: 2px; }
+.gcb-design-thumb.is-selected {
+    border-color: var(--bose-black);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.14);
+    transform: translateY(-2px);
+}
+.gcb-design-thumb .gcb-thumb-check {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--bose-black);
+    color: #fff;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.6rem;
+}
+.gcb-design-thumb.is-selected .gcb-thumb-check { display: flex; }
+
+/* ---- موعد الإرسال ---- */
+.gcb-send-options { display: flex; flex-direction: column; gap: 10px; }
+.gcb-radio {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    min-height: 30px;
+}
+.gcb-radio input { accent-color: var(--bose-pink); width: 18px; height: 18px; flex-shrink: 0; }
+.gcb-schedule-box { margin-top: 10px; }
+.gcb-schedule-box input[type="datetime-local"] {
+    width: 100%;
+    padding: 13px 15px;
+    border-radius: 12px;
+    border: 1.5px solid rgba(17, 17, 17, 0.14);
+    font-family: 'Cairo', sans-serif;
+    font-size: 0.9rem;
+    box-sizing: border-box;
+}
+
+/* ---- ملاحظة المنتج الرقمي ---- */
+.gcb-digital-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: rgba(255, 145, 164, 0.06);
+    border: 1px solid rgba(255, 145, 164, 0.25);
+    border-radius: 14px;
+    padding: 14px 16px;
+    font-size: 0.83rem;
+    line-height: 1.7;
+    color: var(--bose-black);
+    opacity: 0.9;
+    margin-bottom: 16px;
+}
+.gcb-digital-note i { color: var(--bose-pink); margin-top: 2px; flex-shrink: 0; }
+
+/* ---- ملخص السعر ---- */
+.gcb-summary {
+    background: rgba(17, 17, 17, 0.02);
+    border-radius: 14px;
+    padding: 14px 18px;
+    margin-bottom: 16px;
+}
+.gcb-summary-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.88rem;
+    padding: 6px 0;
+}
+.gcb-summary-row span { opacity: 0.7; font-weight: 600; }
+.gcb-summary-row strong { font-weight: 800; }
+.gcb-summary-total {
+    border-top: 1px dashed rgba(17, 17, 17, 0.14);
+    margin-top: 4px;
+    padding-top: 12px;
+    font-size: 1rem;
+}
+.gcb-summary-total strong { color: var(--bose-pink); font-size: 1.15rem; }
+
+/* ---- زر الإضافة للسلة ---- */
+.gcb-cta {
+    width: 100%;
+    background: var(--bose-pink);
+    color: #fff;
+    border: none;
+    padding: 16px 26px;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 700;
+    font-family: 'Cairo', sans-serif;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 8px 22px rgba(255, 145, 164, 0.28);
+    transition: var(--bose-transition-fast);
+}
+.gcb-cta:hover { opacity: 0.95; transform: translateY(-1px); }
+.gcb-cta:focus-visible { outline: 2px solid var(--bose-black); outline-offset: 3px; }
+.gcb-cta.is-shaking { animation: gcbShake 0.4s ease; }
+@keyframes gcbShake {
+    10%, 90% { transform: translateX(-1px); }
+    20%, 80% { transform: translateX(2px); }
+    30%, 50%, 70% { transform: translateX(-4px); }
+    40%, 60% { transform: translateX(4px); }
+}
+
+.gcb-trust { margin-top: 6px; }
+
+/* ---- الأسئلة الشائعة (مدمجة من بيانات المنتج) ---- */
+.gcb-faq-item {
+    border: 1px solid rgba(17, 17, 17, 0.1);
+    border-radius: 14px;
+    padding: 14px 16px;
+    direction: rtl;
+}
+.gcb-faq-item summary {
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--bose-black);
+}
+.gcb-faq-item summary:focus-visible { outline: 2px solid var(--bose-pink); outline-offset: 3px; }
+.gcb-faq-item p {
+    margin: 10px 0 0;
+    font-size: 0.88rem;
+    opacity: 0.85;
+    line-height: 1.7;
+}
+
+/* ---- الشريط اللاصق أسفل الشاشة (موبايل) ---- */
+.gcb-mobile-bar {
+    position: fixed;
+    right: 0; left: 0; bottom: 0;
+    z-index: 400;
+    display: none;
+    align-items: center;
+    gap: 12px;
+    background: var(--bose-white);
+    border-top: 1px solid rgba(17, 17, 17, 0.08);
+    box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.08);
+    padding: 10px 14px calc(10px + env(safe-area-inset-bottom, 0px));
+    box-sizing: border-box;
+}
+.gcb-mobile-bar-price {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.3;
+    flex-shrink: 0;
+}
+.gcb-mobile-bar-price span { font-size: 0.68rem; opacity: 0.6; font-weight: 600; }
+.gcb-mobile-bar-price strong { font-size: 1.05rem; font-weight: 800; color: var(--bose-pink); white-space: nowrap; }
+.gcb-mobile-bar .gcb-cta { width: auto; flex: 1; min-width: 0; padding: 13px 16px; font-size: 0.9rem; }
+
+@media (max-width: 899px) {
+    .gcb-mobile-bar { display: flex; }
+    .gcb-page { padding-bottom: 104px; }
+    .gcb-form-col .gcb-cta:not(.gcb-mobile-bar .gcb-cta) { display: none; }
+}
+@media (min-width: 900px) {
+    .gcb-mobile-bar { display: none !important; }
+}
+
+/* ---------------------------------------------------------------------
+   4. حركة بسيطة جداً عند تغيير التصميم
+   --------------------------------------------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+    .gcb-card { animation: gcbCardIn 0.3s ease; }
+}
+@keyframes gcbCardIn {
+    from { opacity: 0.55; transform: scale(0.985); }
+    to { opacity: 1; transform: scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .gcb-card, .gcb-cta, .gcb-chip, .gcb-occasion-chip, .gcb-design-thumb { transition: none !important; animation: none !important; }
+}
