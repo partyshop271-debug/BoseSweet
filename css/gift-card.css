@@ -64,6 +64,19 @@ body.gcb-body {
     margin: 0;
     line-height: 1.7;
 }
+.gcb-social-proof {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px !important;
+    font-size: 0.82rem !important;
+    font-weight: 700;
+    color: #C9972E !important;
+    opacity: 1 !important;
+    background: rgba(201, 151, 46, 0.08);
+    padding: 6px 16px;
+    border-radius: 999px;
+}
 
 .gcb-layout {
     display: grid;
@@ -452,7 +465,9 @@ body.gcb-body {
     color: #E0577B;
     margin-top: 5px;
 }
-.gcb-counter { font-size: 0.75rem; opacity: 0.5; text-align: left; margin-top: 5px; }
+.gcb-counter { font-size: 0.75rem; opacity: 0.5; text-align: left; margin-top: 5px; transition: var(--bose-transition-fast); }
+.gcb-counter.is-near-limit { opacity: 0.9; color: #C9972E; font-weight: 700; }
+.gcb-counter.is-at-limit { opacity: 1; color: #E0577B; font-weight: 700; }
 
 /* ---- تصاميم البطاقة (المعرض) ---- */
 .gcb-design-gallery {
@@ -543,6 +558,25 @@ body.gcb-body {
 }
 .gcb-digital-note i { color: var(--bose-pink); margin-top: 2px; flex-shrink: 0; }
 
+/* ---- اقتراح إضافة بسيطة (upsell) ---- */
+.gcb-upsell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(201, 151, 46, 0.06);
+    border: 1px dashed rgba(201, 151, 46, 0.4);
+    border-radius: 14px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    font-size: 0.83rem;
+    color: var(--bose-black);
+    text-decoration: none;
+    transition: var(--bose-transition-fast);
+}
+.gcb-upsell:hover { border-color: #C9972E; background: rgba(201, 151, 46, 0.1); }
+.gcb-upsell i { color: #C9972E; flex-shrink: 0; }
+.gcb-upsell strong { color: #C9972E; white-space: nowrap; }
+
 /* ---- ملخص السعر ---- */
 .gcb-summary {
     background: rgba(17, 17, 17, 0.02);
@@ -595,6 +629,7 @@ body.gcb-body {
     30%, 50%, 70% { transform: translateX(-4px); }
     40%, 60% { transform: translateX(4px); }
 }
+.gcb-cta:disabled { opacity: 0.6; cursor: not-allowed; box-shadow: none; transform: none; }
 
 .gcb-trust { margin-top: 6px; }
 
