@@ -75,6 +75,87 @@
         .status-delivered, .status-completed { background: rgba(46, 158, 91, 0.1); color: #2e9e5b; }
         .status-cancelled { background: rgba(17, 17, 17, 0.06); color: #6b6b6b; }
 
+        /* 👑🛡️ [تحسين - خط زمني مرئي لمراحل الطلب]: العميلة قبل كده كانت
+           بتشوف بس "الحالة الحالية" كشارة واحدة، من غير أي إحساس بالرحلة
+           الكاملة (فين وصلنا من أصل كام مرحلة؟). الخط ده بيوضح المراحل
+           الأربعة الأساسية مع تمييز المرحلة الحالية والمراحل اللي خلصت. */
+        .track-status-timeline {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 22px;
+            position: relative;
+        }
+
+        .track-status-timeline::before {
+            content: "";
+            position: absolute;
+            top: 14px;
+            right: 12%;
+            left: 12%;
+            height: 3px;
+            background: rgba(17, 17, 17, 0.08);
+            z-index: 0;
+        }
+
+        .track-timeline-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            position: relative;
+            z-index: 1;
+            flex: 1;
+        }
+
+        .track-timeline-dot {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--bose-white, #fff);
+            border: 3px solid rgba(17, 17, 17, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: rgba(17, 17, 17, 0.35);
+            transition: all 0.3s ease;
+        }
+
+        .track-timeline-step.is-done .track-timeline-dot {
+            background: #FF91A4;
+            border-color: #FF91A4;
+            color: #fff;
+        }
+
+        .track-timeline-step.is-current .track-timeline-dot {
+            background: #FF91A4;
+            border-color: #FF91A4;
+            color: #fff;
+            box-shadow: 0 0 0 5px rgba(255, 145, 164, 0.2);
+        }
+
+        .track-timeline-step.is-cancelled .track-timeline-dot {
+            background: #6b6b6b;
+            border-color: #6b6b6b;
+            color: #fff;
+        }
+
+        .track-timeline-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: rgba(17, 17, 17, 0.45);
+            text-align: center;
+        }
+
+        .track-timeline-step.is-done .track-timeline-label,
+        .track-timeline-step.is-current .track-timeline-label {
+            color: var(--bose-black, #111);
+        }
+
+        @media (max-width: 380px) {
+            .track-timeline-label { font-size: 0.62rem; }
+        }
+
         .track-order-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; }
         .track-order-meta div { background: rgba(255, 145, 164, 0.08); border-radius: 12px; padding: 12px 14px; }
         .track-order-meta span { display: block; }
@@ -138,6 +219,52 @@
                 return STATUS_LABELS[status] || status || "غير محدد";
             }
 
+            // 👑🛡️ [تحسين - خط زمني مرئي]: بيحوّل حالة الطلب الخام (اللي جاية
+            // من قاعدة البيانات بأسماء متعددة زي processing/preparing لنفس
+            // المرحلة) لمرحلة واحدة من أصل 4 مراحل واضحة للعميلة.
+            const TIMELINE_STEPS = [
+                { key: "received", label: "استلمنا طلبك", icon: "fa-clipboard-check" },
+                { key: "preparing", label: "بيتحضّر دلوقتي", icon: "fa-kitchen-set" },
+                { key: "ready", label: "جاهز", icon: "fa-box-open" },
+                { key: "delivered", label: "وصلك", icon: "fa-house-circle-check" },
+            ];
+
+            function statusToStepIndex(status) {
+                switch (status) {
+                    case "pending": return 0;
+                    case "processing":
+                    case "preparing": return 1;
+                    case "ready": return 2;
+                    case "out_for_delivery":
+                    case "delivering": return 2;
+                    case "delivered":
+                    case "completed": return 3;
+                    default: return 0;
+                }
+            }
+
+            function buildTimelineHtml(status) {
+                if (status === "cancelled") {
+                    return `<div class="track-status-timeline">
+                        <div class="track-timeline-step is-cancelled">
+                            <div class="track-timeline-dot"><i class="fa-solid fa-circle-xmark"></i></div>
+                            <span class="track-timeline-label">اتلغى الطلب</span>
+                        </div>
+                    </div>`;
+                }
+                const currentIndex = statusToStepIndex(status);
+                return `<div class="track-status-timeline">
+                    ${TIMELINE_STEPS.map((step, i) => {
+                        const stateClass = i < currentIndex ? "is-done" : (i === currentIndex ? "is-current" : "");
+                        const icon = i < currentIndex ? "fa-check" : step.icon;
+                        return `<div class="track-timeline-step ${stateClass}">
+                            <div class="track-timeline-dot"><i class="fa-solid ${icon}"></i></div>
+                            <span class="track-timeline-label">${step.label}</span>
+                        </div>`;
+                    }).join("")}
+                </div>`;
+            }
+
             function renderResult(row) {
                 const box = document.getElementById("track-result-box");
                 const inner = document.getElementById("track-result-inner");
@@ -165,6 +292,7 @@
                     : (row.status === 'cancelled' ? 'fa-circle-xmark' : 'fa-circle');
 
                 inner.innerHTML = `
+                    ${buildTimelineHtml(row.status)}
                     <span class="track-status-pill status-${window.escapeBoseHTML(row.status || '')}"><i class="fa-solid ${statusIcon}" style="font-size:${statusIcon === 'fa-circle' ? '8px' : '14px'};"></i> ${window.escapeBoseHTML(statusLabel(row.status))}</span>
                     <div class="track-order-meta">
                         <div><span class="meta-label">رقم الطلب</span><span class="meta-value bose-ltr-nums">${window.escapeBoseHTML(row.order_number || '')}</span></div>
