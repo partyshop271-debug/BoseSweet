@@ -660,11 +660,21 @@
     }
 
     /**
-     * 🔗 [توحيد - 2026-09-05]: كانت هنا getGiftCardFaqs() بتقرا من جدول
-     * gift_card_faqs مستقل - اتحذف الدالة والجدول نفسه لأن الأسئلة بقت
-     * جزء من عمود products.faqs بتاع منتج بطاقة الهدية نفسه (bose-gift-card)
-     * زي أي منتج تاني، وبتتقرا من storeData.products مباشرة بدل نداء منفصل.
+     * 🎁 [الأسئلة الشائعة عن بطاقات الهدايا]: بترجع كل صفوف gift_card_faqs
+     * المنشورة (is_published=true) فقط، مرتبة بـ sort_order - قراءة عامة
+     * زي أي جدول كتالوج تاني (RLS: gift_card_faqs_public_read). صفحة
+     * gift-card-faq.html هي اللي بتستدعيها لعرض الأكورديون للعميلة.
      */
+    async function getGiftCardFaqs() {
+        try {
+            return await boseSupabaseFetch(
+                "/gift_card_faqs?is_published=eq.true&select=id,question,answer,sort_order&order=sort_order.asc"
+            );
+        } catch (err) {
+            console.warn("تعذر جلب الأسئلة الشائعة عن بطاقات الهدايا:", err.message);
+            return [];
+        }
+    }
 
     window.BoseSupabase = {
         loadBoseStoreDataFromSupabase,
@@ -686,6 +696,7 @@
         fetchCustomerFavorites,
         savePushSubscription,
         removePushSubscription,
+        getGiftCardFaqs,
     };
     // الاسم اللي cart-engine.js بينده عليه فعلياً (راجع processFinalBoseOrder)
     window.saveBoseOrderToDatabase = saveBoseOrderToDatabase;

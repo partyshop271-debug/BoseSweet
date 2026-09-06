@@ -47,6 +47,14 @@
         { key: 'flower_simulator', label: 'محاكي الورد', icon: 'fa-spa', toastTitle: 'أول مرة تدخلي محاكي الورد؟', toastText: 'تحبي ناخدك خطوة بخطوة نصمم مع بعض بوكيه مناسبتك؟' },
         { key: 'cart', label: 'السلة', icon: 'fa-cart-shopping', toastTitle: 'أول مرة تدخلي سلتك؟', toastText: 'تحبي جولة سريعة نوريكي فيها كل حاجة في السلة؟' },
         { key: 'checkout', label: 'إتمام الطلب', icon: 'fa-credit-card', toastTitle: 'أول مرة تكملي طلب؟', toastText: 'تحبي جولة سريعة نوريكي فيها خطوات إتمام الطلب من الأول للآخر؟' },
+        // 🧭 [إصلاح - جولتين حيّتين كانتا معطّلتين تمامًا]: الجولتين دول (rewards و
+        // track_order) كانوا مكتوبين ومحفوظين بالكامل في قاعدة البيانات، لكن غير
+        // موجودين هنا في TOUR_DEFS خالص - يعني حتى لو السكريبت اتحمّل في صفحتهم،
+        // مستحيل يظهروا في قايمة الزرار العائم ولا يشتغلهم التوست التلقائي، لأن
+        // الاتنين دول (مش قاعدة البيانات) هما مصدر القايمة والتوست. دلوقتي مضافين
+        // بنفس شكل باقي الجولات.
+        { key: 'rewards', label: 'نادي المكافآت', icon: 'fa-crown', toastTitle: 'أول مرة تدخلي صفحة المكافآت؟', toastText: 'تحبي جولة سريعة نوريكي فيها إزاي تعرفي رصيدك ونظام النقاط بالتفصيل؟' },
+        { key: 'track_order', label: 'تتبع الطلب', icon: 'fa-truck-fast', toastTitle: 'أول مرة تتبعي طلب؟', toastText: 'تحبي جولة سريعة نوريكي فيها إزاي تعرفي حالة طلبك؟' },
     ];
 
     // 🛡️ [نسخة احتياطية]: نفس محتوى جدول tour_steps بالظبط وقت آخر تحديث،
@@ -101,6 +109,8 @@
         ],
         checkout: [
             { page: ['checkout.html'], mode: 'info', selector: '#checkout-customer-name', title: 'بياناتك', text: 'هنا بتحطي اسمك بالكامل ورقم موبايلك اللي عليه واتساب (ورقم إضافي اختياري لو حبيتي).' },
+            { page: ['checkout.html'], mode: 'info', selector: '#checkout-voucher-code', title: 'قسيمة الولاء (لو عندك)', text: 'دي مختلفة عن كود الخصم اللي كتبتيه في السلة - قسيمة الولاء بتتكسب تلقائياً كل عدد معيّن من الطلبات، وبتلاقيها هنا لو رقمك عليه واحدة نشطة.' },
+            { page: ['checkout.html'], mode: 'info', selector: '#checkout-giftcard-code', title: 'بطاقة هدية (لو عندك)', text: 'ولو حد أهداكي بطاقة هدية من عندنا، اكتبي كودها هنا - وهي كمان مختلفة عن كود خصم السلة وقسيمة الولاء.' },
             { page: ['checkout.html'], mode: 'info', selector: '.fulfillment-methods-flex', title: 'توصيل ولا استلام؟', text: 'اختاري توصيل للمنزل حسب منطقتك، أو استلام من الفرع من غير أي مصاريف شحن خالص.' },
             { page: ['checkout.html'], mode: 'info', delayBeforeShow: 200, selector: '#shipping-zone-wrapper', title: 'منطقتك وعنوانك', text: 'لو اخترتِ التوصيل، حددي منطقتك السكنية واكتبي عنوانك بالتفصيل، وهيتحسب سعر الشحن تلقائي.' },
             { page: ['checkout.html'], mode: 'info', selector: '#checkout-delivery-date', title: 'ميعاد التسليم', text: 'وهنا تحددي تاريخ وساعة التسليم اللي تناسبك (محتاجين على الأقل 24 ساعة عشان نجهز طلبك طازة).' },
@@ -139,6 +149,18 @@
             { page: ['flower-builder.html'], mode: 'click', selector: '#btn-next', hint: 'دوسي "التالي" للمتابعة', title: 'شوكولاتة فاخرة (اختياري)', text: 'وتقدري كمان تضيفي شوكولاتة فاخرة مستوردة جوه البوكيه.', section: 'addons' },
             { page: ['flower-builder.html'], mode: 'click', selector: '#btn-next', hint: 'دوسي "التالي" للمتابعة', title: 'كارت إهداء (اختياري)', text: 'حابة تضيفي كارت إهداء يتقدم مع البوكيه؟ فعّلي الخيار ده لو حابة.', section: 'addons' },
             { page: ['flower-builder.html'], mode: 'click', selector: '#add-to-cart-btn', hint: 'دوسي على الزرار الوردي تحت عشان تضيفيه لسلتك', title: 'راجعي وأضيفيه لسلتك', text: 'دي كل تفاصيل بوكيهك والسعر النهائي - راجعيهم كويس وبعدين دوسي هنا عشان تضيفيه لسلتك.', section: 'review' },
+        ],
+        rewards: [
+            { page: ['rewards.html'], mode: 'info', selector: '.rw-hero', title: 'نادي مكافآت بوسي 👑', text: 'مرحبًا بيكِ في نادي مكافآت بوسي - هنوريكي بسرعة إزاي تكسبي خصومات وقسيمة شراء حقيقية على طلباتك.' },
+            { page: ['rewards.html'], mode: 'info', selector: '#rw-explainer-cards', title: 'خصومات تلقائية حسب ترتيب طلبك', text: 'كل ما تطلبي أكتر، كل ما تكسبي أكتر - الأرقام دي بتوضحلك نسبة الخصم اللي هتاخديها تلقائيًا حسب ترتيب طلبك، وكمان قسيمة شراء حقيقية بعد عدد معيّن من الطلبات.' },
+            { page: ['rewards.html'], mode: 'info', selector: '.rw-form-card', title: 'اعرفي رصيدك دلوقتي', text: 'اكتبي رقم الهاتف اللي بتطلبي بيه عادةً هنا ودوسي "اعرضي رصيدي"، وهتشوفي فورًا كام طلب باقيلك عشان تكسبي الخصم الجاي، وأي قسايم شراء نشطة عندك.' },
+            { page: ['rewards.html'], mode: 'info', selector: '.rw-howto', title: 'إزاي يشتغل النظام بالتفصيل', text: 'وهنا شرح كامل لكل تفاصيل نظام المكافآت - من دورة الخصم لحد قسيمة الـ300 جنيه وإزاي تستخدميها وقت الدفع.' },
+        ],
+        track_order: [
+            { page: ['track-order.html'], mode: 'info', selector: '.track-page-header', title: 'تتبعي طلبك', text: 'من هنا تقدري تعرفي حالة طلبك أول بأول من غير ما تحتاجي تكلمينا.' },
+            { page: ['track-order.html'], mode: 'info', selector: '#track-order-number', title: 'رقم الطلب', text: 'هتلاقيه في فاتورة الواتساب اللي وصلتك وقت ما طلبتي، أو في صفحة "تم الطلب" لو محفوظة عندك.' },
+            { page: ['track-order.html'], mode: 'info', selector: '#track-order-phone', title: 'رقم الهاتف', text: 'نفس رقم الهاتف اللي استخدمتيه وانتي بتطلبي.' },
+            { page: ['track-order.html'], mode: 'click', selector: '#track-submit-btn', hint: 'دوسي على زرار "اعرضي حالة الطلب" بعد ما تكتبي بياناتك', title: 'اعرضي حالة الطلب', text: 'دوسي هنا وهتشوفي فورًا حالة طلبك دلوقتي (بتحضير، جاهز، في الطريق، أو اتسلم) مع كل تفاصيله.' },
         ],
     };
 

@@ -35,6 +35,7 @@
             "track-order.html", "rewards.html", "contact.html", "about.html",
             "privacy-policy.html", "refund-policy.html", "shipping-policy.html",
             "terms.html", "404.html", "favorites.html", "linkinbio.html",
+            "gift-card-faq.html",
         ];
 
         function currentPageFileName() {
@@ -1331,19 +1332,7 @@
                 giftMessage: opts.giftMessage || "",
                 giftSendOption: opts.giftSendOption || "now",
                 giftScheduledSendAtLabel: opts.giftScheduledSendAtLabel || "",
-                giftScheduledSendAtISO: opts.giftScheduledSendAtISO || "",
-                // 🚨🎁 [إصلاح حرج - 2026-09-05]: الـtrigger الفعلي في قاعدة البيانات
-                // (handle_gift_card_purchase_delivery) بيقرا custom_details بمفاتيح
-                // مختلفة عن اللي فوق (اللي هي بس لعرض السلة/الفاتورة): بيتوقع
-                // personalMessage / designTheme / recipientPhone بالظبط. من غيرهم
-                // بيتصدر كود البطاقة في جدول gift_cards وكل بيانات التخصيص
-                // (recipient_name/personal_message/design_theme/recipient_phone)
-                // بتفضل NULL للأبد - زي ما حصل فعلياً مع أول بطاقة اتباعت. الحقول
-                // دي إضافية بس (نفس القيم اللي فوق) عشان الـtrigger يلاقيها من غير
-                // ما نلمس أي حاجة في عرض السلة/الفاتورة الحالي.
-                personalMessage: opts.giftMessage || "",
-                designTheme: opts.designThemeId || "",
-                recipientPhone: opts.recipientPhone || ""
+                giftScheduledSendAtISO: opts.giftScheduledSendAtISO || ""
             }
         };
     };
@@ -2593,6 +2582,12 @@
                                     </a>
                                 </li>
                                 <li class="sidebar-link-item">
+                                    <a href="/gift-card-faq.html">
+                                        <span class="link-main-side"><i class="fa-solid fa-circle-question main-icon"></i>أسئلة بطاقات الهدايا</span>
+                                        <i class="fa-solid fa-chevron-left arrow-icon"></i>
+                                    </a>
+                                </li>
+                                <li class="sidebar-link-item">
                                     <a href="/policies/shipping-policy.html">
                                         <span class="link-main-side"><i class="fa-solid fa-truck main-icon"></i>سياسة الشحن والتوصيل</span>
                                         <i class="fa-solid fa-chevron-left arrow-icon"></i>
@@ -2753,6 +2748,7 @@
                                 <li><a href="/policies/refund-policy.html">سياسة الاسترجاع المالي</a></li>
                                 <li><a href="/policies/shipping-policy.html">سياسة الشحن والتوصيل</a></li>
                                 <li><a href="/policies/terms.html">الشروط والأحكام</a></li>
+                                <li><a href="/gift-card-faq.html">أسئلة بطاقات الهدايا</a></li>
                                 <li class="footer-contact-item" style="margin-top: 15px; display: flex; align-items: center; gap: 8px; font-size: 14px; color: #111111;">
                                     <i class="fa-solid fa-location-dot" style="color: #FF91A4;"></i>
                                     <span>${window.escapeBoseHTML(data.store?.pickup?.address || 'العنوان الرئيسي')}</span>
