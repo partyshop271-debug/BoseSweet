@@ -1163,8 +1163,8 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFu
         const isScheduleValid = window.validateBoseDeliverySchedule(orderDate, orderTime, cartHasCustomItem);
         if (!isScheduleValid) {
             const fallbackMsg = cartHasCustomItem
-                ? "التورت والورد المخصص عبر المحاكي بيحتاج حجز قبل موعد التسليم بأسبوع كامل (7 أيام) على الأقل."
-                : "نحتاج إلى وقت كافٍ لتجهيز طلبك بأفضل جودة ممكنة، لذلك لا يمكن اختيار موعد قبل 48 ساعة.";
+                ? "بسبب ضغط الطلبات علينا حالياً، التورت والورد المخصص عبر المحاكي بيحتاج حجز قبل موعد التسليم بأسبوع كامل (7 أيام) على الأقل، عشان نقدر نجهزه بهدوء ونتأكد إن كل تفصيلة فيه طلعت مظبوطة - الوقت ده لمصلحتك عشان طلبك ياخد حقه كامل."
+                : "بسبب ضغط الطلبات علينا حالياً، محتاجين وقت كافٍ (لا يمكن اختيار موعد قبل 48 ساعة) عشان نجهز طلبك بأفضل جودة ممكنة ونتأكد إن كل حاجة فيه صح - الوقت ده لمصلحتك عشان طلبك ياخد حقه الكامل في التحضير.";
             const msg = cartHasCustomItem
                 ? (storeData.orderRules?.customPreparationTimeMessage || fallbackMsg)
                 : (storeData.orderRules?.preparationTimeMessage || fallbackMsg);
