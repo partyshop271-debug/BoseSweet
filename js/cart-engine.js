@@ -1244,6 +1244,10 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFu
         subtotal: invoice.subtotal,
         discountAmount: invoice.discount,
         couponCode: invoice.couponCode || null,
+        // 🛡️🎟️ [إصلاح - شفافية الكوبون]: invoice.discount هو المجموع الكلي
+        // (كوبون + ولاء + قسيمة + بطاقة هدية) - بيتسجل هنا منفصل عشان فاتورة
+        // الواتساب تقدر تعرضه كسطر مستقل بدل ما يختفي جوه رقم الخصم الكلي.
+        couponDiscount: invoice.couponDiscount || 0,
         // 🎁 [نظام نقاط الولاء]: كود القسيمة (لو اتفعّل) بيترسل للباك إند عشان
         // create_order_with_items يتحقق منه بنفسه ويخصم رصيده فعلياً. القيمتين
         // تحت تقدير فوري من نفس معادلة الباك إند عشان تظهر في فاتورة الواتساب
@@ -1581,11 +1585,21 @@ function buildBoseFormattedWhatsappInvoice(order) {
     // 🎁 [نظام نقاط الولاء]: خصم الولاء التلقائي وخصم قسيمة الولاء (لو اتطبقوا)
     // بيظهروا كسطرين واضحين هنا قبل المجموع النهائي، عشان العميلة تشوف بعينها
     // إنها فعلاً اخدت مكافأتها ومش مجرد خصم مخفي.
+    // 🛡️🎟️ [إصلاح - شفافية الكوبون في فاتورة الواتساب]: كود الكوبون العادي
+    // كان خصمه بيتحسب في الإجمالي النهائي من غير أي سطر يوضح للفرع/العميلة
+    // إنه اتطبق ولا بكام - دلوقتي بيظهر كبند منفصل زي خصم الولاء بالظبط.
+    if (order.couponCode && order.couponDiscount && order.couponDiscount > 0) {
+        msg += `🎟️ *كوبون الخصم (${order.couponCode}):* -${parseFloat(order.couponDiscount).toFixed(2)} EGP\n`;
+    }
     if (order.loyaltyDiscountAmount && order.loyaltyDiscountAmount > 0) {
         msg += `🌟 *خصم الولاء التلقائي:* -${parseFloat(order.loyaltyDiscountAmount).toFixed(2)} EGP\n`;
     }
     if (order.voucherAmountUsed && order.voucherAmountUsed > 0) {
         msg += `🎁 *قسيمة الولاء المستخدمة:* -${parseFloat(order.voucherAmountUsed).toFixed(2)} EGP\n`;
+    }
+    // 🎁 [بطاقات الهدايا - شفافية الفاتورة]: نفس مبدأ الشفافية أعلاه لبطاقة الهدية.
+    if (order.giftCardCode && order.giftCardAmountUsed && order.giftCardAmountUsed > 0) {
+        msg += `💳 *بطاقة الهدية المستخدمة (${order.giftCardCode}):* -${parseFloat(order.giftCardAmountUsed).toFixed(2)} EGP\n`;
     }
     msg += `👑 *المجموع المالي النهائي:* ${order.grandTotal} EGP 👑\n`;
     // 💵 [عربون/دفع مقدم]: توضيح صريح لطريقة ووقت الدفع - استلام = عربون 50%
@@ -1631,6 +1645,18 @@ function buildBoseCondensedWhatsappInvoice(order) {
         msg += `${idx + 1}. ${item.title} ×${item.quantity} — ${parseFloat(item.finalPrice).toFixed(2)} EGP\n`;
     });
     msg += `--------------------------------------------------\n`;
+    if (order.couponCode && order.couponDiscount && order.couponDiscount > 0) {
+        msg += `🎟️ *كوبون الخصم (${order.couponCode}):* -${parseFloat(order.couponDiscount).toFixed(2)} EGP\n`;
+    }
+    if (order.loyaltyDiscountAmount && order.loyaltyDiscountAmount > 0) {
+        msg += `🌟 *خصم الولاء التلقائي:* -${parseFloat(order.loyaltyDiscountAmount).toFixed(2)} EGP\n`;
+    }
+    if (order.voucherAmountUsed && order.voucherAmountUsed > 0) {
+        msg += `🎁 *قسيمة الولاء المستخدمة:* -${parseFloat(order.voucherAmountUsed).toFixed(2)} EGP\n`;
+    }
+    if (order.giftCardCode && order.giftCardAmountUsed && order.giftCardAmountUsed > 0) {
+        msg += `💳 *بطاقة الهدية المستخدمة (${order.giftCardCode}):* -${parseFloat(order.giftCardAmountUsed).toFixed(2)} EGP\n`;
+    }
     msg += `👑 *المجموع النهائي:* ${order.grandTotal} EGP\n`;
     if (order.depositAmount !== undefined) {
         msg += `💳 *المطلوب دفعه الآن:* ${order.depositAmount} EGP (كاش أو InstaPay على ${order.paymentPhone})\n`;

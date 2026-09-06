@@ -1692,7 +1692,7 @@
         const rules = window.BoseStoreData?.orderRules || {};
         const requiredHours = isCustomOrder
             ? (rules.minPreparationTimeHoursCustom || 168) - 0.05
-            : (rules.minPreparationTimeHours || 24) - 0.05;
+            : (rules.minPreparationTimeHours || 48) - 0.05;
         return (selectedDateTime.getTime() - currentDateTime.getTime()) / (1000 * 60 * 60) >= requiredHours;
     };
 
@@ -2346,8 +2346,16 @@
         // لو فيه جولة شغالة، بنأجل ظهور النافذة وبنعيد المحاولة كل ثانيتين
         // (سقف 30 محاولة = دقيقة كحد أقصى) لحد ما الجولة تخلص أو العميلة
         // تقفلها - النافذة برضه بتحترم كل قواعد عدم التكرار العادية بتاعتها.
+        // 🛡️🆕 [إصلاح - النافذة كانت بترصّ فوق قايمة اختيار الجولة]: الفحص ده
+        // كان بيتأكد بس إن فيه *جولة بدأت فعلياً* (state.active) - لكن لو
+        // العميلة دوست على زرار "الجولة" العائم وفتحت قايمة الاختيار من غير
+        // ما تختار جولة لسه، الحالة دي مش متسجلة في bose_guided_tour_state_v4
+        // خالص، فالنافذة كانت بتحسب إن مفيش جولة شغالة وتظهر فوق القايمة
+        // المفتوحة فجأة. دلوقتي بنفحص كمان كلاس bose-tour-fab-panel-open.
         function isBoseGuidedTourCurrentlyActive() {
             try {
+                const panel = document.getElementById('bose-tour-fab-panel');
+                if (panel && panel.classList.contains('bose-tour-fab-panel-open')) return true;
                 const raw = localStorage.getItem('bose_guided_tour_state_v4');
                 if (!raw) return false;
                 const state = JSON.parse(raw);

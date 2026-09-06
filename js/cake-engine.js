@@ -24,13 +24,48 @@ function startEngineLogic() {
         basePrice: 580,
         pricePerPerson: 145,
         persons: { minimum: 4, maximum: 250, step: 2 },
+        // 🛡️ [تحصين احتياطي كامل]: قبل كده الاحتياطي ده كان ناقص - أشكال من
+        // غير أسماء، ومفيش نكهات ولا أنواع طباعة خالص. ده كان بيشتغل قبل كده
+        // بالصدفة لأن الكروت كانت مكتوبة ثابتة في الـHTML (مش بتتبنى من هنا)،
+        // لكن دلوقتي بعد ما بقت الكروت بتتبنى من نفس القايمة دي، لازم يكون
+        // فيها كل حاجة محتاجينها عشان لو تحميل بيانات المتجر فشل تماماً
+        // (حالة نادرة)، المحاكي يفضل شغال زي ما هو من غير أي كارت فاضي.
         shapes: [
-            { id: "circle", minimumPersons: 4 },
-            { id: "heart", minimumPersons: 4 },
-            { id: "square", minimumPersons: 16 },
-            { id: "rectangle", minimumPersons: 20 }
+            { id: "circle", name: "دائرة", minimumPersons: 4 },
+            { id: "heart", name: "قلب", minimumPersons: 4 },
+            { id: "square", name: "مربع", minimumPersons: 16 },
+            { id: "rectangle", name: "مستطيل", minimumPersons: 20 }
+        ],
+        cakeTypes: [
+            { id: "vanilla", name: "فانيليا" },
+            { id: "chocolate", name: "شوكولاتة" },
+            { id: "half-half", name: "نصف ونصف" }
+        ],
+        printingOptions: [
+            { id: "edible", name: "صورة قابلة للأكل", price: 60 },
+            { id: "non-edible", name: "صورة غير قابلة للأكل", price: 15 }
         ]
     };
+
+    // 🛡️ [تحصين لكل قايمة لوحدها]: حتى لو config.cakeBuilder موجود فعلاً من
+    // Supabase، ممكن تحصل حالة نادرة يكون فيها shapes/cakeTypes/printingOptions
+    // فاضية (مثلاً الأدمن مسحت كل الأشكال بالغلط) - فبنرجع لكل قايمة الاحتياطي
+    // الخاص بيها لوحدها، مش نسيب الكارت فاضي بالكامل قدام العميلة.
+    if (!Array.isArray(config.shapes) || config.shapes.length === 0) {
+        config.shapes = [
+            { id: "circle", name: "دائرة", minimumPersons: 4 },
+            { id: "heart", name: "قلب", minimumPersons: 4 },
+            { id: "square", name: "مربع", minimumPersons: 16 },
+            { id: "rectangle", name: "مستطيل", minimumPersons: 20 }
+        ];
+    }
+    if (!Array.isArray(config.cakeTypes) || config.cakeTypes.length === 0) {
+        config.cakeTypes = [
+            { id: "vanilla", name: "فانيليا" },
+            { id: "chocolate", name: "شوكولاتة" },
+            { id: "half-half", name: "نصف ونصف" }
+        ];
+    }
 
     // 🛡️ [تحصين الترتيب - نافذة تكبير الصور بقت أول حاجة بتتفعل]: قبل كده
     // initializeBoseLightboxGallery() كانت آخر سطر ينفّذ في الدالة كلها -
@@ -119,26 +154,62 @@ function startEngineLogic() {
        دائرية فوق النص - من غير ما تلمس أي حاجة تانية في الكارت (مفيش أي تعديل
        على منطق الاختيار أو ترتيب input/button اللي اتصلح قبل كده).
        ================================================================== */
-    function applyBoseOptionCardImages(radioName, itemsArray) {
-        if (!Array.isArray(itemsArray) || itemsArray.length === 0) return;
-        document.querySelectorAll(`input[name="${radioName}"]`).forEach((radio) => {
-            const match = itemsArray.find((item) => item && item.id === radio.value);
-            if (!match || !match.image) return;
-            const inner = radio.parentElement?.querySelector('.bose-selection-card-inner');
-            if (!inner) return;
-            let img = inner.querySelector('img.bose-option-card-thumb');
-            if (!img) {
-                img = document.createElement('img');
-                img.className = 'bose-option-card-thumb';
-                img.alt = '';
-                inner.insertBefore(img, inner.firstChild);
-            }
-            img.src = window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(match.image, 150) : match.image;
-        });
+    /* ==================================================================
+       🎂👑 [ربط قوايم لوحة التحكم فعلياً بالمحاكي - كروت الشكل/النكهة/نوع
+       الطباعة]: قبل كده الكروت التلاتة دي كانت مكتوبة يدوياً وثابتة في
+       cake-builder.html (4 أشكال بالظبط، 3 نكهات بالظبط، نوعين طباعة بس) -
+       فأي شكل/نكهة/نوع طباعة تضيفه الأدمن من لوحة التحكم (نفس الشاشة اللي
+       بتتحكم في الصور والأسعار) كان مالوش أي مكان يظهر فيه للعميلة خالص،
+       رغم إنه بيتحفظ في قاعدة البيانات فعلاً. دلوقتي الكروت بتتبني هنا من
+       config.shapes/cakeTypes/printingOptions مباشرة - بالظبط زي أنواع
+       الورد في محاكي الورد (flower-engine.js) اللي كانت شغالة صح من الأول.
+       الأسعار والحد الأدنى للأفراد وربط الصور كلهم أصلاً كانوا بيتقروا من
+       نفس القوايم دي (مش الكروت الثابتة) - يعني المشكلة كانت بس في شكل
+       الاختيار نفسه، مش في حساب السعر أو القفل. ================================================================== */
+    const DEFAULT_OPTION_INFO = {
+        "circle": "الشكل الكلاسيكي الأشهر والأسهل في التوزيع على الضيوف، بيناسب كل المناسبات ومتاح من 4 أفراد.",
+        "heart": "شكل مثالي للمناسبات الرومانسية زي عيد الحب والخطوبة، بيدي إحساس شخصي ومميز، متاح من 4 أفراد.",
+        "square": "شكل عصري وأنيق بيدي تقطيع منظم ومريح للتجمعات الكبيرة، متاح من 16 فرد.",
+        "rectangle": "الأفضل للحفلات الكبيرة والتجمعات الواسعة لأنه بيدي أكبر مساحة تقطيع، متاح من 20 فرد.",
+        "vanilla": "فانيليا فرنسية ناعمة بقوام طري وخفيف - اختيار كلاسيكي بيعجب الكبير والصغير.",
+        "chocolate": "شوكولاتة بلجيكية غنية بطعم عميق ومكثف - مثالية لعشاق الشوكولاتة الحقيقيين.",
+        "half-half": "مزيج متوازن بين نعومة الفانيليا وغنى الشوكولاتة في كل قطعة - الأفضل لو ضيوفك أذواقهم مختلفة.",
+        "none": "تصميم كلاسيكي أنيق من غير طباعة أي صورة على السطح - مناسب لو حابة شكل بسيط وفخم.",
+        "edible": "صورة حقيقية بتتطبع بحبر مصرح باستخدامه في الأطعمة وتتاكل عادي مع التورتة.",
+        "non-edible": "صورة بتتطبع على شريحة بلاستيك رقيقة بتتحط فوق التورتة كديكور (متاكلش)."
+    };
+    function escBoseAttr(str) {
+        return String(str == null ? "" : str).replace(/"/g, "&quot;");
     }
-    applyBoseOptionCardImages('cake_shape', config.shapes);
-    applyBoseOptionCardImages('cake_flavor', config.cakeTypes);
-    applyBoseOptionCardImages('cake_printing', config.printingOptions);
+    function renderCakeOptionGrid(containerId, radioName, items, opts) {
+        opts = opts || {};
+        const container = document.getElementById(containerId);
+        const nameMap = {};
+        const descMap = {};
+        if (!container || !Array.isArray(items) || items.length === 0) return { nameMap, descMap };
+        container.innerHTML = items.map((item, idx) => {
+            nameMap[item.id] = item.name || item.id;
+            descMap[item.id] = item.description || DEFAULT_OPTION_INFO[item.id] || "";
+            const img = item.image
+                ? `<img src="${window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(item.image, 150) : item.image}" alt="" class="bose-option-card-thumb">`
+                : "";
+            const priceTag = (opts.showPrice && item.price) ? ` (+${Math.round(item.price)} ج)` : "";
+            const caption = opts.captionPrefix ? `<span class="bose-option-lock-caption" id="${opts.captionPrefix}-${item.id}-caption"></span>` : "";
+            return `<label class="bose-selection-card-label">
+                <input type="radio" name="${radioName}" value="${item.id}"${idx === 0 ? " checked" : ""}>
+                <div class="bose-selection-card-inner">${img}${escBoseAttr(item.name || item.id)}${priceTag}<span class="bose-selected-checkmark">✅ مُختار</span></div>
+                <button type="button" class="bose-info-badge" data-info-title="${escBoseAttr(item.name || item.id)}" data-info-text="${escBoseAttr(descMap[item.id])}">ⓘ</button>
+                ${caption}
+            </label>`;
+        }).join("");
+        return { nameMap, descMap };
+    }
+
+    const shapeMaps = renderCakeOptionGrid("cake-shape-grid", "cake_shape", config.shapes, { captionPrefix: "shape" });
+    const flavorMaps = renderCakeOptionGrid("cake-flavor-grid", "cake_flavor", config.cakeTypes, {});
+    const printingItems = [{ id: "none", name: "بدون صور" }].concat(Array.isArray(config.printingOptions) ? config.printingOptions : []);
+    const printingMaps = renderCakeOptionGrid("cake-printing-grid", "cake_printing", printingItems, { showPrice: true });
+
 
     /* ==================================================================
        🎉 [مناسبة التورتة]: خانة نص حرة (دلوقتي في خطوتها المستقلة رقم 2).
@@ -170,7 +241,7 @@ function startEngineLogic() {
     function updateFlavorSensoryNote() {
         if (!flavorSensoryNote) return;
         const selectedFlavor = document.querySelector('input[name="cake_flavor"]:checked')?.value || 'vanilla';
-        flavorSensoryNote.textContent = FLAVOR_SENSORY_NOTES[selectedFlavor] || "";
+        flavorSensoryNote.textContent = flavorMaps.descMap[selectedFlavor] || FLAVOR_SENSORY_NOTES[selectedFlavor] || "";
     }
     document.querySelectorAll('input[name="cake_flavor"]').forEach((radio) => {
         radio.addEventListener('change', updateFlavorSensoryNote);
@@ -184,10 +255,6 @@ function startEngineLogic() {
        بالإضافة لرسالة تأكيد سريعة (toast) لما العميلة تغيّر اختيارها -
        عشان يبقى مفيش أي لبس خالص إن الاختيار اتسجل واتفهم صح.
        ================================================================== */
-    const SHAPE_LABELS = { circle: 'دائرة', heart: 'قلب', square: 'مربع', rectangle: 'مستطيل' };
-    const FLAVOR_LABELS = { vanilla: 'فانيليا', chocolate: 'شوكولاتة', 'half-half': 'نصف ونصف' };
-    const PRINTING_LABELS = { none: 'بدون طباعة صورة', edible: 'صورة قابلة للأكل', 'non-edible': 'صورة غير قابلة للأكل' };
-
     const shapeSelectionLine = document.getElementById('shape-current-selection-line');
     const flavorSelectionLine = document.getElementById('flavor-current-selection-line');
     const printingSelectionLine = document.getElementById('printing-current-selection-line');
@@ -202,9 +269,9 @@ function startEngineLogic() {
         const shapeVal = document.querySelector('input[name="cake_shape"]:checked')?.value || 'circle';
         const flavorVal = document.querySelector('input[name="cake_flavor"]:checked')?.value || 'vanilla';
         const printingVal = document.querySelector('input[name="cake_printing"]:checked')?.value || 'none';
-        updateSelectionLine(shapeSelectionLine, SHAPE_LABELS, shapeVal);
-        updateSelectionLine(flavorSelectionLine, FLAVOR_LABELS, flavorVal);
-        updateSelectionLine(printingSelectionLine, PRINTING_LABELS, printingVal);
+        updateSelectionLine(shapeSelectionLine, shapeMaps.nameMap, shapeVal);
+        updateSelectionLine(flavorSelectionLine, flavorMaps.nameMap, flavorVal);
+        updateSelectionLine(printingSelectionLine, printingMaps.nameMap, printingVal);
     }
     refreshAllSelectionLines();
 
@@ -212,7 +279,7 @@ function startEngineLogic() {
         radio.addEventListener('change', () => {
             refreshAllSelectionLines();
             if (typeof window.showBoseGlobalToast === 'function') {
-                window.showBoseGlobalToast(`تم اختيار الشكل: ${SHAPE_LABELS[radio.value] || radio.value} ✅`);
+                window.showBoseGlobalToast(`تم اختيار الشكل: ${shapeMaps.nameMap[radio.value] || radio.value} ✅`);
             }
         });
     });
@@ -220,7 +287,7 @@ function startEngineLogic() {
         radio.addEventListener('change', () => {
             refreshAllSelectionLines();
             if (typeof window.showBoseGlobalToast === 'function') {
-                window.showBoseGlobalToast(`تم اختيار النكهة: ${FLAVOR_LABELS[radio.value] || radio.value} ✅`);
+                window.showBoseGlobalToast(`تم اختيار النكهة: ${flavorMaps.nameMap[radio.value] || radio.value} ✅`);
             }
         });
     });
@@ -228,7 +295,7 @@ function startEngineLogic() {
         radio.addEventListener('change', () => {
             refreshAllSelectionLines();
             if (typeof window.showBoseGlobalToast === 'function') {
-                window.showBoseGlobalToast(`تم اختيار نوع الطباعة: ${PRINTING_LABELS[radio.value] || radio.value} ✅`);
+                window.showBoseGlobalToast(`تم اختيار نوع الطباعة: ${printingMaps.nameMap[radio.value] || radio.value} ✅`);
             }
         });
     });
@@ -236,30 +303,22 @@ function startEngineLogic() {
     /* ==================================================================
        ℹ️ [شرح توضيحي منبثق لكل اختيار]: بوكس واحد مشترك بيتغير محتواه
        حسب أي زرار ⓘ اتضغط، بحجم مضغوط قريب لحجم الكارت (مش شاشة كاملة).
+       🛡️👑 [إصلاح - مربوط دلوقتي بقايمة الأدمن]: النص كان جاي من قاموس
+       ثابت (INFO_CONTENT) مربوط بـ 4 أشكال/3 نكهات/نوعين طباعة بالظبط،
+       فأي خيار جديد تضيفه الأدمن ماكانش هيلاقي أي نص شرح ليه. دلوقتي كل
+       زرار ⓘ بيحمل نصه بنفسه (data-info-title/data-info-text) اللي
+       اتحط عليه وقت الرسم في renderCakeOptionGrid فوق - جاي من وصف
+       الأدمن (لو مكتوب) أو من النص الافتراضي المعروف لو الخيار من الأساسيات.
        ================================================================== */
-    const INFO_CONTENT = {
-        "shape-circle": { title: "دائرة 🔵", text: "الشكل الكلاسيكي الأشهر والأسهل في التوزيع على الضيوف، بيناسب كل المناسبات ومتاح من 4 أفراد." },
-        "shape-heart": { title: "قلب ❤️", text: "شكل مثالي للمناسبات الرومانسية زي عيد الحب والخطوبة، بيدي إحساس شخصي ومميز، متاح من 4 أفراد." },
-        "shape-square": { title: "مربع ◻️", text: "شكل عصري وأنيق بيدي تقطيع منظم ومريح للتجمعات الكبيرة، متاح من 16 فرد." },
-        "shape-rectangle": { title: "مستطيل ▭", text: "الأفضل للحفلات الكبيرة والتجمعات الواسعة لأنه بيدي أكبر مساحة تقطيع، متاح من 20 فرد." },
-        "flavor-vanilla": { title: "فانيليا 🌼", text: "فانيليا فرنسية ناعمة بقوام طري وخفيف - اختيار كلاسيكي بيعجب الكبير والصغير." },
-        "flavor-chocolate": { title: "شوكولاتة 🍫", text: "شوكولاتة بلجيكية غنية بطعم عميق ومكثف - مثالية لعشاق الشوكولاتة الحقيقيين." },
-        "flavor-half-half": { title: "نصف ونصف 🎂", text: "مزيج متوازن بين نعومة الفانيليا وغنى الشوكولاتة في كل قطعة - الأفضل لو ضيوفك أذواقهم مختلفة." },
-        "printing-none": { title: "بدون صور", text: "تصميم كلاسيكي أنيق من غير طباعة أي صورة على السطح - مناسب لو حابة شكل بسيط وفخم." },
-        "printing-edible": { title: "صورة قابلة للأكل 🍽️", text: "صورة حقيقية بتتطبع بحبر مصرح باستخدامه في الأطعمة وتتاكل عادي مع التورتة، بسعر إضافي 60 جنيه." },
-        "printing-non-edible": { title: "صورة غير قابلة للأكل 🖼️", text: "صورة بتتطبع على شريحة بلاستيك رقيقة بتتحط فوق التورتة كديكور (متاكلش)، بسعر إضافي 15 جنيه." }
-    };
-
     const infoBackdrop = document.getElementById('bose-info-popover-backdrop');
     const infoTitleEl = document.getElementById('bose-info-popover-title');
     const infoTextEl = document.getElementById('bose-info-popover-text');
     const infoCloseBtn = document.getElementById('bose-info-popover-close');
 
-    function openInfoPopover(key) {
-        const data = INFO_CONTENT[key];
-        if (!data || !infoBackdrop) return;
-        infoTitleEl.textContent = data.title;
-        infoTextEl.textContent = data.text;
+    function openInfoPopover(title, text) {
+        if (!infoBackdrop || !text) return;
+        infoTitleEl.textContent = title || "";
+        infoTextEl.textContent = text;
         infoBackdrop.classList.add('show');
     }
     function closeInfoPopover() {
@@ -276,7 +335,7 @@ function startEngineLogic() {
         badge.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            openInfoPopover(badge.dataset.infoKey);
+            openInfoPopover(badge.dataset.infoTitle, badge.dataset.infoText);
         });
     });
 
@@ -295,16 +354,9 @@ function startEngineLogic() {
     // (نفس القايمة اللي الأدمن بتتحكم فيها لكل شكل) فلو الأدمن رفعت
     // minimumPersons لأي شكل (حتى دائرة أو قلب) هيتقفل صح بنفس المنطق
     // ونفس رسالة التنفيذ المخصصة بتاعته - من غير أي كود إضافي.
-    const shapeCaptionEls = {
-        circle: document.getElementById('shape-circle-caption'),
-        heart: document.getElementById('shape-heart-caption'),
-        square: document.getElementById('shape-square-caption'),
-        rectangle: document.getElementById('shape-rectangle-caption'),
-    };
-    const shapeNameMap = { circle: 'الدائرة', heart: 'القلب', square: 'المربع', rectangle: 'المستطيل' };
-    // كل شكل ليه حقل "تفاصيل تنفيذ الشكل" مستقل (Upgrade)، وبيرجع لحقل
-    // "التنويه" القديم (Minimum) لو موجود من إعداد سابق عشان محدش يفقد
-    // نص كان مكتوب أصلاً، وبعدين لرسالة عامة افتراضية لو مفيش أي نص.
+    function getShapeCaptionEl(shapeId) {
+        return document.getElementById(`shape-${shapeId}-caption`);
+    }
     function getShapeOverrideText(shapeId) {
         const images = window.BoseStoreData?.cakeBuilder?.images || {};
         return images[`${shapeId}Upgrade`] || images[`${shapeId}Minimum`] || "";
@@ -318,8 +370,8 @@ function startEngineLogic() {
 
     function renderShapeCaptions() {
         const minimums = getShapeMinimums();
-        Object.keys(shapeCaptionEls).forEach((shapeId) => {
-            const el = shapeCaptionEls[shapeId];
+        Object.keys(minimums).forEach((shapeId) => {
+            const el = getShapeCaptionEl(shapeId);
             const min = minimums[shapeId];
             if (el && min) el.textContent = `🔒 متاح من ${min} فرد فأكتر`;
         });
@@ -328,7 +380,7 @@ function startEngineLogic() {
 
     function updateShapeLockVisuals(currentPersons) {
         const minimums = getShapeMinimums();
-        Object.keys(shapeCaptionEls).forEach((shapeId) => {
+        Object.keys(minimums).forEach((shapeId) => {
             const min = minimums[shapeId];
             if (!min) return;
             const label = document.querySelector(`input[name="cake_shape"][value="${shapeId}"]`)?.closest('.bose-selection-card-label');
@@ -348,7 +400,7 @@ function startEngineLogic() {
             setTimeout(() => label.classList.remove('bose-shake-alert'), 450);
         }
         const overrideText = getShapeOverrideText(shapeValue);
-        const text = overrideText || `شكل ${shapeNameMap[shapeValue] || ''} متاح بس من ${minPersons} فرد فأكتر عشان التقطيع والتنسيق يطلعوا مظبوطين. ارجعي لخطوة عدد الأفراد وزوّدي العدد لو حابة تختاريه.`;
+        const text = overrideText || `شكل ${shapeMaps.nameMap[shapeValue] || ''} متاح بس من ${minPersons} فرد فأكتر عشان التقطيع والتنسيق يطلعوا مظبوطين. ارجعي لخطوة عدد الأفراد وزوّدي العدد لو حابة تختاريه.`;
         if (alertBox) {
             alertBox.textContent = `🔒 ${text}`;
             alertBox.style.display = "block";
@@ -547,12 +599,12 @@ function startEngineLogic() {
         // متحدد فعلاً (مش وقت الضغط نفسه)، برضو بنرجعها للدائرة ونوضح السبب
         // بنفس الرسالة المنسّقة - مش بس نص عادي بيتفوت.
         if (selectedShape === 'square' && currentPersons < squareData.minimumPersons) {
-            document.querySelector('input[name="cake_shape"][value="circle"]').checked = true;
-            selectedShape = 'circle';
+            const circleRadio = document.querySelector('input[name="cake_shape"][value="circle"]');
+            if (circleRadio) { circleRadio.checked = true; selectedShape = 'circle'; }
             showShapeLockAlert('square', squareData.minimumPersons);
         } else if (selectedShape === 'rectangle' && currentPersons < rectData.minimumPersons) {
-            document.querySelector('input[name="cake_shape"][value="circle"]').checked = true;
-            selectedShape = 'circle';
+            const circleRadio = document.querySelector('input[name="cake_shape"][value="circle"]');
+            if (circleRadio) { circleRadio.checked = true; selectedShape = 'circle'; }
             showShapeLockAlert('rectangle', rectData.minimumPersons);
         }
 
@@ -1097,9 +1149,12 @@ function startEngineLogic() {
             document.getElementById('text-cake-message').value = "";
             document.getElementById('text-cake-allergy').value = "";
             inputPersons.value = config.persons.minimum;
-            document.querySelector('input[name="cake_shape"][value="circle"]').checked = true;
-            document.querySelector('input[name="cake_flavor"][value="vanilla"]').checked = true;
-            document.querySelector('input[name="cake_printing"][value="none"]').checked = true;
+            const resetShapeRadio = document.querySelector('input[name="cake_shape"][value="circle"]');
+            if (resetShapeRadio) resetShapeRadio.checked = true;
+            const resetFlavorRadio = document.querySelector('input[name="cake_flavor"][value="vanilla"]');
+            if (resetFlavorRadio) resetFlavorRadio.checked = true;
+            const resetPrintingRadio = document.querySelector('input[name="cake_printing"][value="none"]');
+            if (resetPrintingRadio) resetPrintingRadio.checked = true;
             if (occasionInput) occasionInput.value = "";
             if (occasionRequiredHint) occasionRequiredHint.classList.remove('show');
             if (replicaToggle) replicaToggle.checked = false;
