@@ -79,6 +79,35 @@
             gap: 20px;
         }
 
+        /* 🐛🛡️ [إصلاح حرج - فيض أفقي على الموبايل]: قاعدة CSS Grid لخانتي التاريخ/
+           الساعة كانت grid-template-columns: 1fr 1fr من غير أي حماية، وعناصر الـ
+           Grid افتراضيًا عندها min-width:auto (مش 0) - يعني المتصفح مش بيسمح
+           للعمود يصغر عن العرض الطبيعي لمحتواه (حقل <input type="date"> عنده
+           عرض أدنى فعلي كبير نسبيًا في متصفحات موبايل كتير) حتى لو الشاشة
+           ضيقة. النتيجة: الصفحة كلها كانت بتتمدد أعرض من الشاشة، وبما إن
+           overflow-x:hidden متحط أصلاً على html/body (حماية عامة من ظهور
+           سكرول أفقي)، الجزء الزايد مكنش بيظهر بسكرول - كان بيتقص ويختفي
+           تمامًا، وده بالظبط اللي ظهر في السكرين شوت (نص العناوين مقطوع). على
+           الشاشات الكبيرة (تابلت/ديسكتوب) العرض المتاح كان دايمًا أكبر من
+           الحد الأدنى فمكانش بيظهر أي مشكلة - عشان كده كانت شغالة "بس على
+           سطح مكتب أو تابلت" بالظبط زي ما اتقال. min-width:0 هنا بيسمح
+           للعمود يصغر فعليًا زي ما الشاشة محتاجة. -->
+        .bose-date-time-grid > .input-group-node {
+            min-width: 0;
+        }
+        .bose-date-time-grid input[type="date"],
+        .bose-date-time-grid input[type="time"] {
+            min-width: 0;
+            width: 100%;
+        }
+        @media (max-width: 420px) {
+            /* أمان إضافي للشاشات الضيقة جدًا (أقل من ~420px): الحقلين يترصّوا
+               فوق بعض عمودي بدل ما يتزنقوا جنب بعض أفقيًا. */
+            .bose-date-time-grid {
+                grid-template-columns: 1fr !important;
+            }
+        }
+
         .input-group-node {
             display: flex;
             flex-direction: column;
@@ -386,7 +415,7 @@
                         <div id="checkout-day-chip-strip" style="display:flex; gap:8px; overflow-x:auto; padding-bottom:6px; -webkit-overflow-scrolling:touch;"></div>
                     </div>
 
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; width: 100%;">
+                    <div class="bose-date-time-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; width: 100%;">
                         <div class="input-group-node">
                             <label for="checkout-delivery-date">تاريخ الاستلام
                                 <button type="button" class="bose-info-badge-inline"
