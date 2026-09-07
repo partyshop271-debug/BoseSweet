@@ -77,17 +77,28 @@
         }
 
         if (!rows.length) {
-            tbody.innerHTML = `<tr><td colspan="10">${window.BoseAdminUI.emptyStateHTML({ icon: "fa-wallet", title: "مفيش بطاقات مطابقة", text: "جربي تغيير البحث أو الفلتر" })}</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="11">${window.BoseAdminUI.emptyStateHTML({ icon: "fa-wallet", title: "مفيش بطاقات مطابقة", text: "جربي تغيير البحث أو الفلتر" })}</td></tr>`;
             return;
         }
 
         tbody.innerHTML = rows.map((c) => {
             const status = cardStatus(c);
             const canVoid = status === "active";
+            const sendToPhone = (c.recipient_phone && c.recipient_phone.trim()) || c.purchaser_phone;
+            const isGiftedToSomeoneElse = !!(c.recipient_phone && c.recipient_phone.trim());
+            const recipientCellHTML = c.recipient_name || isGiftedToSomeoneElse
+                ? `<div style="display:flex; flex-direction:column; gap:2px;">
+                        ${c.recipient_name ? `<strong>${e(c.recipient_name)}</strong>` : `<span class="adm-order-item-meta">بدون اسم</span>`}
+                        ${isGiftedToSomeoneElse ? `<span class="adm-order-item-meta" style="direction:ltr; text-align:right;">${e(c.recipient_phone)}</span>` : ""}
+                   </div>`
+                : `<span class="adm-order-item-meta">هدية لنفس المشتري</span>`;
+            const whatsappMessage = `هدية بطاقة حلويات بوسي 🎁${c.recipient_name ? `\nإلى: ${c.recipient_name}` : ""}${c.personal_message ? `\n"${c.personal_message}"` : ""}\n\nكود بطاقتك: ${c.code}\nالرصيد: ${money(c.amount)}\nصالحة لمدة سنة من تاريخ الإصدار.`;
+            const whatsappUrl = window.BoseAdminUI.buildWhatsappUrl(sendToPhone, whatsappMessage);
             return `
             <tr>
                 <td class="gc-code">${e(c.code)}</td>
                 <td style="direction:ltr; text-align:right;">${e(c.purchaser_phone)}</td>
+                <td title="${c.personal_message ? e(c.personal_message) : ""}">${recipientCellHTML}</td>
                 <td>${money(c.amount)}</td>
                 <td>${money(c.remaining_amount)}</td>
                 <td>${c.purchase_order ? e(c.purchase_order.order_number) : `<span class="adm-order-item-meta">صدرت يدوي</span>`}</td>
@@ -96,6 +107,7 @@
                 <td>${formatDate(c.expires_at)}</td>
                 <td>${statusBadgeHTML(status)}</td>
                 <td class="adm-table-actions">
+                    <a class="adm-btn adm-btn-ghost adm-btn-icon" href="${whatsappUrl}" target="_blank" rel="noopener noreferrer" title="${isGiftedToSomeoneElse ? "بعتيلها الكود على واتساب مباشرة" : "ابعتي الكود على واتساب المشتري"}"><i class="fa-brands fa-whatsapp"></i></a>
                     <button class="adm-btn adm-btn-ghost adm-btn-icon" data-action="edit" data-id="${e(c.id)}" title="تعديل الرصيد أو تاريخ الانتهاء"><i class="fa-solid fa-pen"></i></button>
                     ${canVoid ? `<button class="adm-btn adm-btn-ghost adm-btn-icon" data-action="void" data-id="${e(c.id)}" title="إلغاء البطاقة"><i class="fa-solid fa-ban"></i></button>` : ""}
                 </td>
