@@ -713,43 +713,10 @@
                     const phone = siteData.social?.whatsapp || "201097238441";
                     const desiredDate = dateInputEl.value || "—";
                     const desiredTime = timeInputEl ? (timeInputEl.value || "—") : "—";
-
-                    // 🆕 [إصلاح]: كانت الرسالة هنا بتاخد بس item.title، من غير flavorName
-                    // ولا السعر - فلو الاسم عام (زي "مثلث") الفريق مش عارف الطعم
-                    // بالظبط غير بالرجوع للعميلة تاني. دلوقتي كل صنف بيتكتب بالطعم
-                    // والسعر الكامل بتاعه بدل الاسم لوحده.
                     const itemsSummary = Array.isArray(cartArr) && cartArr.length
-                        ? cartArr.map(it => {
-                            const namePart = it.flavorName && it.flavorName !== it.title
-                                ? `${it.title || ""} - ${it.flavorName}`
-                                : (it.title || "صنف");
-                            const priceEach = parseFloat(it.finalPrice) || 0;
-                            return `${namePart} (×${it.quantity || 1}, ${priceEach} EGP للقطعة)`;
-                        }).join("، ")
+                        ? cartArr.map(it => `${it.title || ""} (×${it.quantity || 1})`).join("، ")
                         : "طلبي";
-
-                    // 🆕 [إصلاح]: نجيب بيانات العميلة والعنوان والملاحظات من نفس حقول
-                    // الفورم مباشرة (لو اتكتبت لحد دلوقتي) عشان الفريق يقدر يتصرف
-                    // من غير ما يضطر يسأل من الأول - قبل كده الرسالة مكنش فيها أي
-                    // حاجة عن هوية العميلة أو وسيلة التواصل بيها.
-                    const nameVal = (document.getElementById("checkout-customer-name")?.value || "").trim();
-                    const phone1Val = (document.getElementById("checkout-customer-phone")?.value || "").trim();
-                    const phone2Val = (document.getElementById("checkout-customer-phone-2")?.value || "").trim();
-                    const addressVal = (document.getElementById("checkout-address-details")?.value || "").trim();
-                    const zoneEl = document.getElementById("checkout-zone-select");
-                    const zoneVal = zoneEl && zoneEl.selectedIndex > 0 ? zoneEl.options[zoneEl.selectedIndex].textContent.trim() : "";
-                    const totalVal = (document.getElementById("summary-grand-total")?.textContent || "").trim();
-
-                    const lines = [
-                        `أهلاً، عايزة أعرف تقدروا تظبطولي طلبي (${itemsSummary}) في يوم ${desiredDate} الساعة ${desiredTime}؟ ولو مش هينفع، ياريت تقترحوا عليّا ميعاد قريب مناسب.`
-                    ];
-                    if (nameVal) lines.push(`👤 الاسم: ${nameVal}`);
-                    if (phone1Val || phone2Val) lines.push(`📞 التليفون: ${[phone1Val, phone2Val].filter(Boolean).join(" / ")}`);
-                    if (zoneVal) lines.push(`📍 المنطقة: ${zoneVal}`);
-                    if (addressVal) lines.push(`🏠 العنوان بالتفصيل: ${addressVal}`);
-                    if (totalVal) lines.push(`💰 إجمالي الطلب: ${totalVal}`);
-
-                    const msg = lines.join("\n");
+                    const msg = `أهلاً، عايزة أعرف تقدروا تظبطولي طلبي (${itemsSummary}) في يوم ${desiredDate} الساعة ${desiredTime}؟ ولو مش هينفع، ياريت تقترحوا عليّا ميعاد قريب مناسب.`;
                     return typeof window.buildWhatsappLink === "function"
                         ? window.buildWhatsappLink(phone, msg)
                         : `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
