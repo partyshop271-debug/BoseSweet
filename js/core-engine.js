@@ -35,7 +35,6 @@
             "track-order.html", "rewards.html", "contact.html", "about.html",
             "privacy-policy.html", "refund-policy.html", "shipping-policy.html",
             "terms.html", "404.html", "favorites.html", "linkinbio.html",
-            "gift-card-faq.html",
         ];
 
         function currentPageFileName() {
@@ -1280,8 +1279,15 @@
                              (product.customizationOptions && Object.keys(opts).length > 0);
                              
         const finalId = isCustomizable ? `${product.slug}-${Date.now()}` : String(product.slug || product.id);
-        let correctFlavor = opts.flavorName || opts.cakeType || product.flavorName || product.flavor || "جاهز وفريش";
-        if (correctFlavor === "none" || correctFlavor === "افتراضي") {
+        // 🎁 [إصلاح - وصف نكهة خاطئ لبطاقة الهدية]: بطاقة الهدية منتج رقمي
+        // مالوش أي "نكهة" أصلاً - قبل كده كانت بتقع في نفس fallback البتاع
+        // المنتجات العادية ("جاهز وفريش") لأن مفيش opts.flavorName/cakeType
+        // بيتبعتوا لها، فكانت تظهر في السلة/الفاتورة بوصف مربك زي "جاهز
+        // وفريش" على منتج مالوش أي علاقة بالتحضير أو الطزاجة.
+        let correctFlavor = product.isGiftCard
+            ? "بطاقة هدية رقمية"
+            : (opts.flavorName || opts.cakeType || product.flavorName || product.flavor || "جاهز وفريش");
+        if (!product.isGiftCard && (correctFlavor === "none" || correctFlavor === "افتراضي")) {
             correctFlavor = product.flavorName || "جاهز وفريش";
         }
 
@@ -1356,9 +1362,37 @@
                 giftMessage: opts.giftMessage || "",
                 giftSendOption: opts.giftSendOption || "now",
                 giftScheduledSendAtLabel: opts.giftScheduledSendAtLabel || "",
-                giftScheduledSendAtISO: opts.giftScheduledSendAtISO || ""
+                giftScheduledSendAtISO: opts.giftScheduledSendAtISO || "",
+                // 🚨🎁 [إصلاح حرج - 2026-09-06]: الـtrigger الفعلي في قاعدة البيانات
+                // (handle_gift_card_purchase_delivery) بيقرا custom_details بمفاتيح
+                // مختلفة عن اللي فوق (اللي هي بس لعرض السلة/الفاتورة): بيتوقع
+                // personalMessage / designTheme / recipientPhone بالظبط. من غيرهم
+                // بيتصدر كود البطاقة في جدول gift_cards وكل بيانات التخصيص
+                // (recipient_name/personal_message/design_theme/recipient_phone)
+                // بتفضل NULL للأبد - زي ما حصل فعلياً مع أول بطاقة اتباعت. الحقول
+                // دي إضافية بس (نفس القيم اللي فوق) عشان الـtrigger يلاقيها من غير
+                // ما نلمس أي حاجة في عرض السلة/الفاتورة الحالي.
+                personalMessage: opts.giftMessage || "",
+                designTheme: opts.designThemeId || "",
+                recipientPhone: opts.recipientPhone || ""
             }
         };
+    };
+
+    /**
+     * 🎁📦 [منتج رقمي بالكامل]: بترجع true بس لو السلة مش فاضية وكل عنصر
+     * فيها بطاقة هدية (item.type === "gift-card") - سلة فيها بطاقة هدية
+     * + منتج فعلي واحد بتفضل "فعلية" بالكامل عن قصد (لسه محتاجة شحن/موعد
+     * تسليم عادي للمنتج التاني). checkout.html/cart.html/cart-engine.js
+     * بيستخدموا الدالة دي عشان يخفوا خطوات الشحن والتسليم الفعلية تماماً
+     * لو السلة رقمية بالكامل، بدل ما يوهموا العميلة إن بطاقة الهدية
+     * هتتشحن أو تحتاج معاد توصيل زي أي طلب حلويات عادي.
+     * @param {Array} cart
+     * @returns {boolean}
+     */
+    window.boseCartIsDigitalOnly = function(cart) {
+        if (!Array.isArray(cart) || cart.length === 0) return false;
+        return cart.every((item) => item && item.type === "gift-card");
     };
 
     /**
@@ -2689,12 +2723,6 @@
                                     </a>
                                 </li>
                                 <li class="sidebar-link-item">
-                                    <a href="/gift-card-faq.html">
-                                        <span class="link-main-side"><i class="fa-solid fa-circle-question main-icon"></i>أسئلة بطاقات الهدايا</span>
-                                        <i class="fa-solid fa-chevron-left arrow-icon"></i>
-                                    </a>
-                                </li>
-                                <li class="sidebar-link-item">
                                     <a href="/policies/shipping-policy.html">
                                         <span class="link-main-side"><i class="fa-solid fa-truck main-icon"></i>سياسة الشحن والتوصيل</span>
                                         <i class="fa-solid fa-chevron-left arrow-icon"></i>
@@ -2898,7 +2926,6 @@
                                 <li><a href="/policies/refund-policy.html">سياسة الاسترجاع المالي</a></li>
                                 <li><a href="/policies/shipping-policy.html">سياسة الشحن والتوصيل</a></li>
                                 <li><a href="/policies/terms.html">الشروط والأحكام</a></li>
-                                <li><a href="/gift-card-faq.html">أسئلة بطاقات الهدايا</a></li>
                                 <li class="footer-contact-item" style="margin-top: 15px; display: flex; align-items: center; gap: 8px; font-size: 14px; color: #111111;">
                                     <i class="fa-solid fa-location-dot" style="color: #FF91A4;"></i>
                                     <span>${window.escapeBoseHTML(data.store?.pickup?.address || 'العنوان الرئيسي')}</span>

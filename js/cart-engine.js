@@ -615,6 +615,15 @@ function updateCartSummary(cart, storeData) {
         grandTotalDisplay.textContent = invoice.grandTotal + " EGP";
     }
     
+    // 🎁 [وضوح - صفحة السلة نفسها]: نفس التوضيح اللي بيحصل في صفحة إتمام
+    // الطلب - لو السلة بطاقات هدايا بس، نقول صراحة إنه منتج رقمي مفيهوش
+    // شحن، بدل النص العام "بتتحدد في خطوة الاستلام" اللي بيوهم إن فيه
+    // قرار شحن لسه هياتاخد لاحقاً.
+    const shippingDisplay = document.getElementById("summary-shipping-fee");
+    if (shippingDisplay && cart.length > 0 && cart.every((item) => item.type === "gift-card")) {
+        shippingDisplay.textContent = "لا يوجد شحن (منتج رقمي)";
+    }
+    
     // 🎯🆕 [خانة خصم ذكية موحدة]: خانة واحدة بتقبل كود خصم أو قسيمة ولاء أو
     // بطاقة هدية مع بعض (راجع wireBoseSmartDiscountBox فوق) - بتفضل الأكواد
     // شغالة حتى لو العميلة كملت لصفحة إتمام الطلب. صفحة السلة مفيهاش رقم
@@ -1005,7 +1014,13 @@ function recalculateCheckoutInvoice(cart, storeData, shippingFee, method, payFul
 
     if (subtotalDisplay) subtotalDisplay.textContent = invoice.subtotal.toFixed(2) + " EGP";
     if (shippingDisplay) {
-        shippingDisplay.textContent = invoice.shippingFee === 0 ? "مجاناً" : invoice.shippingFee.toFixed(2) + " EGP";
+        // 🎁 [وضوح - لا يوجد شحن على منتج رقمي]: "مجاناً" لوحدها ممكن توحي
+        // إن فيه شحن فعلي هيوصل ببلاش - الأصح لسلة بطاقات هدايا بس إننا
+        // نقول صراحة إن مفيش شحن مطلوب خالص لأنه منتج رقمي.
+        const isDigitalOnlyCart = cart.length > 0 && cart.every((item) => item.type === "gift-card");
+        shippingDisplay.textContent = isDigitalOnlyCart
+            ? "لا يوجد شحن (منتج رقمي)"
+            : (invoice.shippingFee === 0 ? "مجاناً" : invoice.shippingFee.toFixed(2) + " EGP");
     }
 
     renderBoseLoyaltyDiscountRows(invoice);
@@ -1129,6 +1144,16 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFu
     // create_order_with_items على السيرفر (v_cart_is_digital_only).
     const cartIsDigitalOnlyForOrder = cart.length > 0 && cart.every(item => item.type === "gift-card");
 
+    // 🎁🚨 [إصلاح - نص "استلام من الفرع" ظاهر غلط على طلب رقمي بالكامل]:
+    // fullAddressText بيتهيأ افتراضياً بنص استلام فرع فعلي، وده كان بيفضل
+    // زي ما هو حتى لو السلة بطاقات هدايا بس (القسم اللي بيغيّره مربوط بشرط
+    // !cartIsDigitalOnlyForOrder فمبيتنفذش خالص للطلب الرقمي) - يعني فاتورة
+    // الواتساب وإيصال نجاح الطلب كانوا هيظهروا "استلام يدوي مباشر من مقر
+    // الفرع" على كود بطاقة هدية هيتبعت على واتساب، وده مربك وغلط.
+    if (cartIsDigitalOnlyForOrder) {
+        fullAddressText = "بطاقة هدية رقمية - مفيش عنوان أو استلام مطلوب";
+    }
+
     if (!cartIsDigitalOnlyForOrder && method === "delivery") {
         if (zoneSelect && !zoneSelect.value) {
             addValidationError(zoneSelect, "يرجى تحديد المنطقة السكنية.");
@@ -1251,7 +1276,7 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFu
         customerName: customerName,
         phone1: sanitizedPhone1,
         phone2: sanitizedPhone2,
-        deliveryMethod: method === "pickup" ? "استلام من الفرع" : "توصيل للمنزل",
+        deliveryMethod: cartIsDigitalOnlyForOrder ? "تسليم رقمي فوري (بطاقة هدية)" : (method === "pickup" ? "استلام من الفرع" : "توصيل للمنزل"),
         deliveryZone: selectedZoneName,
         // 🛡️ [إصلاح حرج]: الـid الحقيقي لمنطقة الشحن (مطابق لجدول shipping_zones)
         // بيتسجل هنا عشان saveBoseOrderToDatabase في supabase-client.js يقدر
