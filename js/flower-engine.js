@@ -482,6 +482,33 @@
         flowerConfig.giftCardPrice = parseFloat(fbConfig.giftCardPrice) || flowerConfig.giftCardPrice;
         flowerConfig.satinRibbonPrice = parseFloat(fbConfig.satinRibbonPrice) || flowerConfig.satinRibbonPrice;
 
+        /* ==================================================================
+           🐛👑 [إصلاح جذري - نصوص التلميح (ⓘ) كانت أرقام ثابتة منفصلة عن
+           لوحة التحكم]: صناديق السعر الظاهرة (شريط الستان/الصور الشخصية/كارت
+           الإهداء) كانت بترسم نفسها صح من flowerConfig دايماً - المشكلة كانت
+           في نص الشرح المنبثق (زرار ⓘ) لكل خطوة، اللي كان رقم السعر مكتوب
+           يدوياً وثابت جوه data-bose-info-text في الـ HTML نفسه (مثلاً
+           "السعر هنا 15 جنيه"). فلما الأدمن تغيّر سعر طباعة الصور الشخصية من
+           لوحة التحكم، الرقم كان بيتغيّر صح في القاعدة والصندوق الرئيسي، لكن
+           نص التلميح يفضل قايل الرقم القديم للأبد - وده بالظبط اللي حصل معاها.
+           الحل: بعد ما الأسعار الحقيقية توصل من القاعدة، بنستبدل الرقم القديم
+           في كل نص تلميح بالرقم الحالي فعلياً، عن طريق substring-replace للرقم
+           المكتوب أصلاً في الـHTML (بدل إعادة كتابة النص كله) - عشان أي تعديل
+           تاني في صياغة النص نفسه من غير الرقم يفضل شغال زي ما هو من غير لمسه.
+           ================================================================== */
+        function syncInfoTooltipPrice(selector, oldPriceInText, newPrice) {
+            const btn = document.querySelector(selector);
+            if (!btn) return;
+            const roundedNew = Math.round(newPrice);
+            if (roundedNew === oldPriceInText) return; // نفس الرقم أصلاً، مفيش داعي نلمس النص
+            const currentText = btn.getAttribute('data-bose-info-text') || '';
+            const updatedText = currentText.split(`${oldPriceInText} جنيه`).join(`${roundedNew} جنيه`);
+            btn.setAttribute('data-bose-info-text', updatedText);
+        }
+        syncInfoTooltipPrice('[data-bose-info-title="التغليف والشريط الأساسي بفلوس؟"]', 50, flowerConfig.satinRibbonPrice);
+        syncInfoTooltipPrice('[data-bose-info-title="محتاجة أرفع صورة تانية هنا؟"]', 15, flowerConfig.photoPrintPrice);
+        syncInfoTooltipPrice('[data-bose-info-title="كارت الإهداء ده إيه بالظبط؟"]', 30, flowerConfig.giftCardPrice);
+
         // 🖼️👑 [معرض نماذج كارت الإهداء المطبوع - محاكي الورد]: نفس آلية معرض
         // سابقة الأعمال فوق بالظبط، بس بيتقرا من fbConfig.giftCardImages وبيتعرض
         // كشريط صور صغير جوه خطوة كارت الإهداء نفسها (بدل ما تكون العميلة "شغالة
