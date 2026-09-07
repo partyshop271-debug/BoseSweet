@@ -460,6 +460,41 @@
     }
 
     /**
+     * 📅 [تقويم الإتاحة الذكي]: بترجع خريطة {تاريخ -> {orderCount, customOrderCount}}
+     * لعدد الطلبات المجدولة فعلياً في كل يوم ضمن نطاق تاريخ معين (أرقام تجميعية
+     * بس، مفيش أي بيانات شخصية) - بتستخدمها checkout.html عشان تعرف الأيام
+     * "المتاحة" و"المشغولة" فعلياً وتبني عليها شريط اختيار التاريخ المرئي،
+     * بدل ما تعتمد بس على قاعدة الـ48 ساعة/أسبوع الثابتة.
+     * @param {string} startDateStr صيغة YYYY-MM-DD
+     * @param {string} endDateStr صيغة YYYY-MM-DD
+     * @returns {Promise<Object<string, {orderCount:number, customOrderCount:number}>>}
+     */
+    async function getBoseDailyOrderCapacity(startDateStr, endDateStr) {
+        try {
+            const rows = await boseSupabaseRpc("get_daily_order_capacity", {
+                p_start_date: startDateStr,
+                p_end_date: endDateStr,
+            });
+            const map = {};
+            (Array.isArray(rows) ? rows : []).forEach((row) => {
+                if (row && row.order_date) {
+                    map[row.order_date] = {
+                        orderCount: row.order_count || 0,
+                        customOrderCount: row.custom_order_count || 0,
+                    };
+                }
+            });
+            return map;
+        } catch (e) {
+            // فشل الجلب (شبكة ضعيفة مثلاً) مايوقفش رحلة الشراء - يرجع خريطة فاضية
+            // فيبقى سلوك الموقع زي الأول تماماً (كل الأيام "متاحة" من ناحية السعة،
+            // القيد الوحيد يفضل قاعدة مدة التحضير الثابتة).
+            console.warn("تعذر جلب بيانات سعة الأيام:", e);
+            return {};
+        }
+    }
+
+    /**
      * 🎁 مكافآت العميل: بتحسب النقاط/المستوى فعلياً من إجمالي طلبات العميل
      * الحقيقية المرتبطة برقم هاتفه (باستثناء الطلبات الملغاة) عبر RPC آمن.
      */
@@ -686,6 +721,7 @@
         validateBoseGiftCard,
         uploadBoseReferenceImage,
         trackBoseOrder,
+        getBoseDailyOrderCapacity,
         getBoseCustomerRewards,
         validateBoseLoyaltyVoucher,
         getBoseContentPage,

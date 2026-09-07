@@ -807,11 +807,11 @@ function renderBoseCheckoutPage(storeData) {
                 } else {
                     window.BoseLoyaltyState.voucherCode = null;
                     window.BoseLoyaltyState.voucherDiscountAmount = 0;
-                    if (voucherMsg) { voucherMsg.style.color = "#FF91A4"; voucherMsg.textContent = "⚠️ " + ((result && result.message) || "كود القسيمة غير صحيح"); }
+                    if (voucherMsg) { voucherMsg.style.color = "var(--bose-error-text, #C62828)"; voucherMsg.textContent = "⚠️ " + ((result && result.message) || "كود القسيمة غير صحيح"); }
                 }
                 recalculateCheckoutInvoice(cart, storeData, selectedShippingFee, currentShippingMethod, payFullSelected);
             } catch (err) {
-                if (voucherMsg) { voucherMsg.style.color = "#FF91A4"; voucherMsg.textContent = "⚠️ تعذر التحقق من القسيمة، حاولي تاني"; }
+                if (voucherMsg) { voucherMsg.style.color = "var(--bose-error-text, #C62828)"; voucherMsg.textContent = "⚠️ تعذر التحقق من القسيمة، حاولي تاني"; }
             } finally {
                 voucherApplyBtn.disabled = false;
                 voucherApplyBtn.textContent = "تفعيل";
@@ -850,11 +850,11 @@ function renderBoseCheckoutPage(storeData) {
                 } else {
                     window.BoseGiftCardState.code = null;
                     window.BoseGiftCardState.discountAmount = 0;
-                    if (giftCardMsg) { giftCardMsg.style.color = "#FF91A4"; giftCardMsg.textContent = "⚠️ " + ((result && result.message) || "كود بطاقة الهدية غير صحيح"); }
+                    if (giftCardMsg) { giftCardMsg.style.color = "var(--bose-error-text, #C62828)"; giftCardMsg.textContent = "⚠️ " + ((result && result.message) || "كود بطاقة الهدية غير صحيح"); }
                 }
                 recalculateCheckoutInvoice(cart, storeData, selectedShippingFee, currentShippingMethod, payFullSelected);
             } catch (err) {
-                if (giftCardMsg) { giftCardMsg.style.color = "#FF91A4"; giftCardMsg.textContent = "⚠️ تعذر التحقق من الكود، حاولي تاني"; }
+                if (giftCardMsg) { giftCardMsg.style.color = "var(--bose-error-text, #C62828)"; giftCardMsg.textContent = "⚠️ تعذر التحقق من الكود، حاولي تاني"; }
             } finally {
                 giftCardApplyBtn.disabled = false;
                 giftCardApplyBtn.textContent = "تفعيل";
