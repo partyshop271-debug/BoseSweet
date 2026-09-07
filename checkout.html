@@ -620,6 +620,35 @@
                 cartArr = [];
             }
 
+            // 🛡️👑 [إصلاح جذري - العميل قادر يختار موعد أقرب من مدة التحضير]:
+            // حقل تاريخ التسليم (checkout-delivery-date) كان من غير أي min خالص
+            // في الـHTML الخام، وأول min بيتحط عليه بيحصل بس بعد ما بيانات
+            // المتجر توصل من القاعدة (initializeLocalConfig → setupBoseSmartSchedule،
+            // سطر ~928 تحت) - يعني في الفترة (ولو أجزاء ثانية) قبل ما البيانات
+            // توصل، خصوصًا على نت بطيء، الحقل كان مفتوح تمامًا وتقدر تختاري
+            // أي تاريخ فيه - حتى النهاردة نفسه - قبل ما القيد يتفعّل. لو
+            // العميلة اختارت التاريخ في اللحظة دي بالظبط، القيمة كانت بتفضل
+            // محفوظة في الحقل حتى بعد ما الـmin الحقيقي يتحط بعدين (المتصفح
+            // مبيمسحش قيمة موجودة مسبقًا لمجرد تغيير min). هنا بنحط حد أدنى
+            // احتياطي فوري (بنفس القيم الافتراضية الرسمية 48/168 ساعة) قبل
+            // أي انتظار للشبكة، فالحقل يبقى محمي من أول لحظة - وبعدين لما
+            // القواعد الحقيقية من لوحة التحكم توصل، بيتحدّث لقيمتها الدقيقة
+            // (ممكن تكون مختلفة شوية لو الأدمن غيّرتها) وبيتفحص القيمة الحالية
+            // تاني (تحت في initializeLocalConfig) - لو باظت بعد التحديث، بتتمسح.
+            (function setImmediateSafeDateMinimum() {
+                const dateInputEarly = document.getElementById("checkout-delivery-date");
+                if (!dateInputEarly) return;
+                const hasCustomNow = typeof window.boseCartHasCustomItem === "function"
+                    ? window.boseCartHasCustomItem(cartArr) : false;
+                const safeLeadDays = Math.ceil((hasCustomNow ? 168 : 48) / 24);
+                const safeMinObj = new Date();
+                safeMinObj.setDate(safeMinObj.getDate() + safeLeadDays);
+                const yyyy = safeMinObj.getFullYear();
+                const mm = String(safeMinObj.getMonth() + 1).padStart(2, "0");
+                const dd = String(safeMinObj.getDate()).padStart(2, "0");
+                dateInputEarly.min = `${yyyy}-${mm}-${dd}`;
+            })();
+
             if (cartArr.length > 0 && compactHook) {
                 // 🛡️ [إصلاح أمني]: item.title/flavorName كانوا بيتحقنوا في innerHTML من غير
                 // تعقيم هنا، بخلاف باقي الموقع اللي بيستخدم escapeBoseHTML دايماً لنفس
@@ -740,13 +769,55 @@
                     const zoneVal = zoneEl && zoneEl.selectedIndex > 0 ? zoneEl.options[zoneEl.selectedIndex].textContent.trim() : "";
                     const totalVal = (document.getElementById("summary-grand-total")?.textContent || "").trim();
 
+                    // 🐛👑 [إصلاح جذري - رسالة ناقصة جداً مقارنة برسالة الطلب العادية]:
+                    // كانت الرسالة دي (بديل واتساب لمواعيد غير متاحة) بتحتوي بس على
+                    // الصنف والاسم والتليفون والمنطقة والعنوان والإجمالي - من غير أي
+                    // ذكر لوسيلة الاستلام (توصيل/استلام)، ولا ملاحظات التوصيل، ولا
+                    // صور المنتجات المرفوعة (تصميم تورتة/ورد مرجعي مثلاً) - كل دي
+                    // موجودة وواضحة في فاتورة الواتساب العادية (buildBoseFormattedWhatsappInvoice
+                    // في cart-engine.js) لكن غايبة تماماً هنا، فالمبيعات كانوا بيردوا
+                    // على عميلة برسالة ناقصة جداً من غير ما يعرفوا هيشحنوا ولا هتيجي
+                    // تستلم، ولا يشوفوا شكل المنتج المطلوب. دلوقتي بنبني نفس الحقول
+                    // بالظبط (بنفس القيم والتسميات) من بيانات الفورم الحالية.
+                    const pickupBtnEl = document.getElementById("method-pickup");
+                    const fulfillmentVal = pickupBtnEl && pickupBtnEl.classList.contains("active-option")
+                        ? "استلام من الفرع" : "توصيل للمنزل";
+                    const shippingNotesVal = (document.getElementById("checkout-shipping-notes-textarea")?.value || "").trim();
+                    const orderNotesVal = (document.getElementById("checkout-order-notes-textarea")?.value || "").trim();
+
+                    // نفس منطق اكتشاف صور المنتجات المرجعية المستخدم بالظبط في فاتورة
+                    // الواتساب العادية - صور طباعة/تصميم التورت المخصص، وأي صورة مرجعية
+                    // مرفوعة لصنف تاني (مش لوجو الموقع الافتراضي).
+                    const itemImageLines = [];
+                    if (Array.isArray(cartArr)) {
+                        cartArr.forEach((it) => {
+                            const isCakeBespoke = it.type === "custom-cake" || it.type === "mini-cake" || it.productSlug === "toort-custom-master" || it.productSlug === "mini-cake-two-person";
+                            const cd = it.customDetails || {};
+                            if (isCakeBespoke) {
+                                if (cd.printImageUrl) itemImageLines.push(`🖨️ صورة الطباعة على ${it.title || "التورتة"}: ${cd.printImageUrl}`);
+                                if (cd.replicaImageUrl) itemImageLines.push(`🎨 صورة تصميم ${it.title || "التورتة"} المرجعية: ${cd.replicaImageUrl}`);
+                            } else {
+                                if (it.image && typeof it.image === "string" && it.image.startsWith("http") && !it.image.includes("logo_igggsb")) {
+                                    itemImageLines.push(`🖼️ صورة ${it.title || "الصنف"}: ${it.image}`);
+                                }
+                                if (Array.isArray(it.referenceImages)) {
+                                    it.referenceImages.forEach((u) => { if (u && typeof u === "string" && u.startsWith("http")) itemImageLines.push(`🖼️ صورة مرجعية لـ ${it.title || "الصنف"}: ${u}`); });
+                                }
+                            }
+                        });
+                    }
+
                     const lines = [
                         `أهلاً، عايزة أعرف تقدروا تظبطولي طلبي (${itemsSummary}) في يوم ${desiredDate} الساعة ${desiredTime}؟ ولو مش هينفع، ياريت تقترحوا عليّا ميعاد قريب مناسب.`
                     ];
                     if (nameVal) lines.push(`👤 الاسم: ${nameVal}`);
                     if (phone1Val || phone2Val) lines.push(`📞 التليفون: ${[phone1Val, phone2Val].filter(Boolean).join(" / ")}`);
-                    if (zoneVal) lines.push(`📍 المنطقة: ${zoneVal}`);
-                    if (addressVal) lines.push(`🏠 العنوان بالتفصيل: ${addressVal}`);
+                    lines.push(`🚗 مسار الاستلام: ${fulfillmentVal}`);
+                    if (fulfillmentVal === "توصيل للمنزل" && zoneVal) lines.push(`📍 المنطقة: ${zoneVal}`);
+                    if (fulfillmentVal === "توصيل للمنزل" && addressVal) lines.push(`🏠 العنوان بالتفصيل: ${addressVal}`);
+                    if (shippingNotesVal) lines.push(`🚚 ملاحظات التوصيل: ${shippingNotesVal}`);
+                    if (itemImageLines.length) lines.push(...itemImageLines);
+                    if (orderNotesVal) lines.push(`📝 ملاحظات عن الحساسية/طلب خاص: ${orderNotesVal}`);
                     if (totalVal) lines.push(`💰 إجمالي الطلب: ${totalVal}`);
 
                     const msg = lines.join("\n");
@@ -925,7 +996,22 @@
                 const dd = String(minDateObj.getDate()).padStart(2, '0');
                 const mm = String(minDateObj.getMonth() + 1).padStart(2, '0');
                 const yyyy = minDateObj.getFullYear();
-                if (datePicker) datePicker.min = `${yyyy}-${mm}-${dd}`;
+                if (datePicker) {
+                    datePicker.min = `${yyyy}-${mm}-${dd}`;
+                    // 🛡️👑 [الطبقة التانية من الإصلاح]: لو العميلة لحقت تختار تاريخ
+                    // في الفترة القصيرة اللي كان فيها الحقل من غير min حقيقي (قبل
+                    // ما بيانات المتجر توصل)، تغيير .min دلوقتي لوحده مش هيمسح
+                    // القيمة القديمة الغلط تلقائيًا - المتصفح مش بيعيد فحص قيمة
+                    // موجودة مسبقًا لمجرد تغيير الحد الأدنى. فبنفحص إحنا بأنفسنا:
+                    // لو القيمة الحالية أقدم من الحد الحقيقي الجديد، بنمسحها فورًا
+                    // (بدل ما تفضل قابعة في الحقل لحد ما العميلة تضغط "تأكيد" وتتفاجئ).
+                    if (datePicker.value && datePicker.value < datePicker.min) {
+                        datePicker.value = "";
+                        if (typeof window.showBoseGlobalToast === "function") {
+                            window.showBoseGlobalToast("عذراً، الموعد اللي اخترتيه أقرب من مدة التحضير المطلوبة - اختاري ميعاد تاني من فضلك.");
+                        }
+                    }
+                }
 
                 // 📅🆘 [تقويم الإتاحة الذكي + بديل واتساب]: يبني شريط الأيام السريع،
                 // بيقفل الأيام اللي وصلت لسقف الطلبات (لو الأدمن حددت سقف من لوحة
