@@ -121,6 +121,10 @@
         fillField("rules-preparationTimeMessage", orderRules.preparationTimeMessage);
         fillField("rules-customPreparationTimeMessage", orderRules.customPreparationTimeMessage);
 
+        // 📅 [تقويم الإتاحة الذكي]: سقف عدد الطلبات يوميًا - فاضي/صفر يعني بلا حد
+        fillField("rules-maxOrdersPerDay", orderRules.maxOrdersPerDay ?? "");
+        fillField("rules-maxCustomOrdersPerDay", orderRules.maxCustomOrdersPerDay ?? "");
+
         // إعدادات البادجات التلقائية
         fillField("badges-newArrivalDays", badgeSettings.newArrivalDays ?? 14);
         fillField("badges-bestSellerDays", badgeSettings.bestSellerDays ?? 30);
@@ -206,6 +210,10 @@
                 businessHoursEnd: readField("rules-businessHoursEnd") || "22:00",
                 preparationTimeMessage: readField("rules-preparationTimeMessage"),
                 customPreparationTimeMessage: readField("rules-customPreparationTimeMessage"),
+                // 📅 [تقويم الإتاحة الذكي]: 0/فاضي = بلا حد (الميزة تفضل معطلة تلقائيًا
+                // لحد ما هي تحدد رقم فعلي)
+                maxOrdersPerDay: readNumberField("rules-maxOrdersPerDay") || 0,
+                maxCustomOrdersPerDay: readNumberField("rules-maxCustomOrdersPerDay") || 0,
             };
 
             const updatedBadgeSettings = {
