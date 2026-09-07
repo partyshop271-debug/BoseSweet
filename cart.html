@@ -104,7 +104,7 @@ body {
 }
 </style>
 <!-- استدعاء المحرك المركزي الموحد حارس الحسابات وحاقن الهيدر والفوتر آلياً أولاً -->
-<script src="js/supabase-client.js?v=2026_production_v43.0" defer></script>
+<script src="js/supabase-client.js?v=2027_production_v43.0" defer></script>
     <script src="js/push-notifications.js?v=1.0" defer></script>
 <script src="js/favorites-engine.js?v=2026_production_v38.0" defer></script>
 <!-- 🛡️🆕 [إصلاح ترتيب]: loyalty-config.js لازم يتحمّل *قبل* core-engine.js (شوفي
@@ -113,8 +113,8 @@ body {
      تتعرّف أصلاً، فبانر الولاء وكارت نجاح الطلب كانوا بيرجعوا لأرقام افتراضية
      ثابتة بدل الأرقام الحقيقية المحفوظة في لوحة التحكم. -->
 <script src="js/loyalty-config.js?v=2026_production_v1.0" defer></script>
-<script src="js/core-engine.js?v=2027_production_v56.0" defer></script>
-<script src="js/guided-tour.js?v=3.2" defer></script>
+<script src="js/core-engine.js?v=2028_production_v56.0" defer></script>
+<script src="js/guided-tour.js?v=3.3" defer></script>
 </head>
 <body class="bose-hardware-accelerated">
 
@@ -175,14 +175,20 @@ body {
         <div class="bose-summary-sticky-card">
             <h3 class="summary-section-title">ملخص الطلب</h3>
 
+            <!-- 🎯🆕 [خانة خصم ذكية موحدة]: بتقبل كود خصم أو قسيمة ولاء أو بطاقة
+                 هدية مع بعض في نفس الخانة - بتتعرف على نوع الكود لوحدها
+                 (resolve_discount_code) وتطبقه صح. راجع wireBoseSmartDiscountBox
+                 في cart-engine.js. الأكواد دي بتفضل شغالة معاكي لو كملتي لصفحة
+                 إتمام الطلب برضه. -->
             <div class="coupon-form-container">
-                <input type="text" id="coupon-input" class="coupon-input-field" placeholder="عندك كود خصم؟ اكتبه هنا...">
+                <input type="text" id="coupon-input" class="coupon-input-field" placeholder="عندك كود خصم أو قسيمة ولاء أو بطاقة هدية؟ اكتبيه هنا...">
                 <button type="button" id="btn-apply-coupon" class="coupon-apply-trigger">تطبيق</button>
                 <button type="button" class="bose-info-badge-inline"
                         data-bose-info-title="عندي كود خصم منين؟"
-                        data-bose-info-text="لو معاكِ كود خصم أو قسيمة ولاء من عرض سابق أو من نظام نقاط الولاء، اكتبيه في الخانة دي واضغطي تطبيق وهيتخصم من إجمالي الطلب فوراً قبل ما تكمّلي لصفحة إتمام الطلب. لو مفيش كود، تجاهلي الخانة دي وكمّلي عادي.">ⓘ</button>
+                        data-bose-info-text="اكتبي أي كود عندك في الخانة دي - كود خصم عادي، قسيمة ولاء من نظام نقاط الولاء، أو حتى كود بطاقة هدية اتهديتيها من حد - وإحنا هنتعرف على نوعه ونطبقه صح لوحدنا. تقدري تضيفي أكتر من كود مع بعض. لو مفيش كود، تجاهلي الخانة دي وكمّلي عادي.">ⓘ</button>
             </div>
             <div id="coupon-message" class="coupon-status-toast"></div>
+            <div id="coupon-chips" style="margin-top:8px;"></div>
 
             <div class="summary-pricing-table">
                 <div class="pricing-row-node">
@@ -235,7 +241,7 @@ body {
 <div id="bose-footer-injector"></div>
 
 <!-- استدعاء محرك العمليات والحسابات الموحد للطلب والسلة -->
-<script src="js/cart-engine.js?v=2027_production_v46.0" defer></script>
+<script src="js/cart-engine.js?v=2028_production_v46.0" defer></script>
 
 <!-- كود حقن صور المقترحات المطور وتأمين تجربة الإضافة واللمس دون Full Refresh للبيانات -->
 <script>
