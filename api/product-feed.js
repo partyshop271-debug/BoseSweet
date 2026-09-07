@@ -53,13 +53,19 @@ module.exports = async function handler(req, res) {
         // ("القشطوطة نوتيلا"، "القشطوطة كراميل"...) زي ما هو مطلوب بالظبط، ولو
         // منتج مالوش نكهة مخصصة (flavor_name فاضي أو نفس اسم المنتج) بيفضل زي ما هو.
         const products = await fetchTable(
-            "products?select=id,title,flavor_name,description,flavor_desc,images,price,old_price,is_available,category_id&or=(builder_type.is.null,builder_type.eq.standard)"
+            "products?select=id,title,flavor_name,description,flavor_desc,images,price,old_price,is_available,category_id,is_gift_card&or=(builder_type.is.null,builder_type.eq.standard)"
         );
         const categories = await fetchTable("categories?select=id,title");
         const catMap = {};
         categories.forEach((c) => { catMap[c.id] = c.title; });
 
         const items = products
+            // 🎁 [استبعاد بطاقات الهدايا من الكتالوج]: منتج رقمي بقيمة يختارها
+            // العميل بنفسه (مش سعر ثابت واحد) وبدون شحن فعلي - مش منطقي يتحط
+            // في فيد كتالوج تسوق مبني على افتراض "منتج بسعر ثابت وشحن فعلي"
+            // زي أي منتج تاني (Meta/Google كمان بيرفضوا أي صورة SVG أصلاً لو
+            // كانت الصورة من النوع ده). نفس منطق استبعاد منتجات المحاكيات فوق.
+            .filter((p) => !p.is_gift_card)
             .filter((p) => p.images && p.images.length > 0 && p.price) // منتج من غير صورة أو سعر مرفوض من فيسبوك/تيك توك أصلاً
             .map((p) => {
                 // ملحوظة: مفيش عمود "slug" منفصل - الموقع كله بيستخدم id نفسه كـ "slug"
