@@ -145,6 +145,24 @@
                             <label for="rules-customPreparationTimeMessage">رسالة توضيحية للمحاكيات</label>
                             <textarea class="adm-input" id="rules-customPreparationTimeMessage" rows="2" placeholder="نفس الفكرة بس للتورت/الورد المخصص اللي محتاج وقت أطول."></textarea>
                         </div>
+
+                        <!-- 📅 [تقويم الإتاحة الذكي]: لو حددتي رقم هنا، شريط اختيار
+                             التاريخ في صفحة الدفع هيقفل تلقائيًا أي يوم وصل لعدد
+                             الطلبات ده فعليًا، بدل ما العميلة تختاره وتتفاجئ بعد
+                             كده. سيبيه فاضي لو عايزة الميزة دي تفضل معطلة. -->
+                        <div class="adm-form-grid adm-mt-16">
+                            <div class="adm-field">
+                                <label for="rules-maxOrdersPerDay">أقصى عدد طلبات (كل الأنواع) في اليوم الواحد</label>
+                                <input type="number" step="1" min="0" class="adm-input" id="rules-maxOrdersPerDay" placeholder="بدون حد">
+                            </div>
+                            <div class="adm-field">
+                                <label for="rules-maxCustomOrdersPerDay">أقصى عدد طلبات محاكي (تورت/ورد مخصص) في اليوم الواحد</label>
+                                <input type="number" step="1" min="0" class="adm-input" id="rules-maxCustomOrdersPerDay" placeholder="بدون حد">
+                            </div>
+                        </div>
+                        <p style="font-size: 0.8rem; color: var(--adm-text-muted); margin-top: 6px;">
+                            لما اليوم يوصل لأي سقف من دول، هيتقفل تلقائيًا في شريط اختيار التاريخ عند العميلة (تفضل تقدر تختار يوم تاني بسهولة)، وهيظهرلها كمان خيار تتواصل معانا على واتساب لو حابة تحاول تظبط ميعاد استثنائي.
+                        </p>
                     </div>
 
                     <div class="adm-card adm-mt-16">
