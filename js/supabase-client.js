@@ -446,6 +446,25 @@
     }
 
     /**
+     * 🎯 [خانة خصم ذكية موحدة]: نداء واحد بس لـ resolve_discount_code بدل ما
+     * الفرونت إند يجرب الكود على 3 دوال منفصلة (كوبون/بطاقة هدية/قسيمة ولاء)
+     * بـ3 طلبات شبكة - الدالة في قاعدة البيانات هي اللي بتحدد نوع الكود
+     * الحقيقي وترجع نتيجة التحقق المطابقة له بالظبط (code_type + is_valid +
+     * message + تفاصيل الخصم حسب النوع).
+     * @param {string} code
+     * @param {string|null} phone
+     * @param {number|null} subtotal
+     */
+    async function resolveBoseDiscountCode(code, phone, subtotal) {
+        const result = await boseSupabaseRpc("resolve_discount_code", {
+            p_code: code,
+            p_phone: phone || null,
+            p_subtotal: (subtotal === undefined || subtotal === null) ? null : parseFloat(subtotal),
+        });
+        return result || { code_type: "none", is_valid: false, message: "تعذر التحقق من الكود حالياً" };
+    }
+
+    /**
      * 📦 تتبع الطلب: بيرجع حالة الطلب وتفاصيله لو رقم الطلب + رقم الهاتف مطابقين
      * فعلياً لطلب حقيقي في القاعدة (نفس فلسفة validate_coupon: RPC آمن بدل SELECT
      * مباشر على جدول orders المقفول بالكامل بـ RLS للأدمن فقط).
@@ -719,6 +738,7 @@
         fetchApprovedReviews,
         validateBoseCoupon,
         validateBoseGiftCard,
+        resolveBoseDiscountCode,
         uploadBoseReferenceImage,
         trackBoseOrder,
         getBoseDailyOrderCapacity,

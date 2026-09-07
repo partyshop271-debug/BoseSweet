@@ -494,6 +494,108 @@ function triggerCartItemRemoval(cart, index, storeData, callback) {
     });
 }
 
+/**
+ * 🎯🆕 [خانة خصم ذكية موحدة]: خانة واحدة بس بدل 3 خانات منفصلة (كود خصم في
+ * صفحة السلة + قسيمة ولاء وبطاقة هدية في صفحة إتمام الطلب) - بتستخدم
+ * resolve_discount_code (RPC واحد في القاعدة بيحدد نوع الكود الحقيقي ويرجع
+ * نتيجة التحقق المطابقة له، بدل ما الفرونت إند يجرب الكود على 3 دوال بـ3
+ * طلبات شبكة منفصلة). نفس الدالة دي بتشتغل في صفحة السلة وصفحة إتمام الطلب
+ * بالظبط، وبتدعم أكتر من كود شغال في نفس الوقت (كوبون + قسيمة ولاء + بطاقة
+ * هدية مع بعض) معروضين كـ"chips" قابلة للإلغاء تحت الخانة. الأكواد المطبقة
+ * بتتخزن في bose_active_discounts (راجع core-engine.js) فبتفضل شغالة حتى لو
+ * العميلة نقلت بين صفحة السلة وصفحة إتمام الطلب - قبل كده كل صفحة كان ليها
+ * تخزين منفصل وأي كود بيتفعّل في صفحة كان بيضيع لو رجعت للتانية.
+ * @param {{inputId:string, buttonId:string, msgId:string, chipsId:string}} ids
+ * @param {Array} cart
+ * @param {Object} storeData
+ * @param {() => string} getPhone دالة بترجع رقم الهاتف الحالي وقت الفحص (أو "" لو مفيش)
+ * @param {() => void} onApplied بتتنفذ بعد أي تعديل (تطبيق/إلغاء) عشان تعيد رسم الفاتورة في الصفحة المستدعية
+ */
+function wireBoseSmartDiscountBox(ids, cart, storeData, getPhone, onApplied) {
+    const input = document.getElementById(ids.inputId);
+    const btn = document.getElementById(ids.buttonId);
+    const msg = document.getElementById(ids.msgId);
+    const chipsBox = document.getElementById(ids.chipsId);
+    if (!input || !btn || !chipsBox) return null;
+
+    const TYPE_META = {
+        coupon: { icon: "🎟️", label: "كود خصم" },
+        loyalty_voucher: { icon: "🎁", label: "قسيمة ولاء" },
+        gift_card: { icon: "💳", label: "بطاقة هدية" }
+    };
+    const esc = typeof window.escapeBoseHTML === "function" ? window.escapeBoseHTML : (s => String(s || ""));
+
+    function renderChips() {
+        const active = typeof window.getBoseActiveDiscounts === "function" ? window.getBoseActiveDiscounts() : [];
+        chipsBox.innerHTML = active.map(d => {
+            const meta = TYPE_META[d.code_type] || { icon: "✅", label: "خصم" };
+            return `<span class="bose-discount-chip" style="display:inline-flex; align-items:center; gap:6px; background:rgba(46,158,91,0.1); color:#2e9e5b; border:1px solid rgba(46,158,91,0.3); border-radius:999px; padding:6px 12px; font-size:0.8rem; font-weight:700; margin:4px 6px 4px 0;">
+                ${meta.icon} ${meta.label}: ${esc(d.code)}
+                <button type="button" class="bose-discount-chip-remove" data-code-type="${d.code_type}" aria-label="إلغاء" style="background:none; border:none; color:#2e9e5b; cursor:pointer; font-weight:900; padding:0 2px; font-size:0.95rem; line-height:1;">×</button>
+            </span>`;
+        }).join("");
+        chipsBox.querySelectorAll(".bose-discount-chip-remove").forEach(removeBtn => {
+            removeBtn.addEventListener("click", () => {
+                window.removeBoseActiveDiscount(removeBtn.dataset.codeType);
+                renderChips();
+                if (typeof onApplied === "function") onApplied();
+            });
+        });
+    }
+
+    async function applyCode(rawCode) {
+        const code = (rawCode || input.value || "").trim();
+        if (!code) return;
+        if (!window.BoseSupabase || typeof window.BoseSupabase.resolveBoseDiscountCode !== "function") {
+            if (msg) { msg.style.color = "var(--bose-error-text, #C62828)"; msg.textContent = "⚠️ تعذر التحقق حالياً، حاولي تحديث الصفحة."; }
+            return;
+        }
+        const originalLabel = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = "بنتأكد...";
+        try {
+            const phone = typeof getPhone === "function" ? (getPhone() || "") : "";
+            const subtotal = window.calculateBoseInvoice(cart, storeData, 0).subtotal;
+            const result = await window.BoseSupabase.resolveBoseDiscountCode(code, phone, subtotal);
+            if (result && result.is_valid) {
+                const entry = { code_type: result.code_type, code: code.toUpperCase() };
+                if (result.code_type === "coupon") {
+                    entry.discount_type = result.discount_type;
+                    entry.discount_value = result.discount_value;
+                    entry.max_discount_amount = result.max_discount_amount;
+                } else {
+                    entry.remaining_amount = result.remaining_amount;
+                }
+                window.setBoseActiveDiscount(entry);
+                input.value = "";
+                if (msg) { msg.style.color = "#2e9e5b"; msg.textContent = "✅ " + (result.message || "تم تطبيق الكود"); }
+                renderChips();
+                if (typeof onApplied === "function") onApplied();
+            } else {
+                if (msg) { msg.style.color = "var(--bose-error-text, #C62828)"; msg.textContent = "⚠️ " + ((result && result.message) || "الكود ده مش شغال، تأكدي منه"); }
+            }
+        } catch (err) {
+            if (msg) { msg.style.color = "var(--bose-error-text, #C62828)"; msg.textContent = "⚠️ تعذر التحقق من الكود، حاولي تاني"; }
+        } finally {
+            btn.disabled = false;
+            btn.textContent = originalLabel;
+        }
+    }
+
+    renderChips();
+    if (!btn.dataset.boseSmartDiscountWired) {
+        btn.dataset.boseSmartDiscountWired = "true";
+        btn.onclick = () => applyCode();
+        input.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") { e.preventDefault(); applyCode(); }
+        });
+    }
+
+    // بيرجع applyCode عشان بانر اقتراح قسيمة الولاء يقدر يفعّلها بضغطة واحدة
+    // (راجع runLoyaltyLookup تحت) من غير ما العميلة تضطر تنسخ/تكتب الكود بنفسها.
+    return { applyCode, renderChips };
+}
+
 function updateCartSummary(cart, storeData) {
     const subtotalDisplay = document.getElementById("cart-subtotal-value") || document.getElementById("summary-subtotal");
     const grandTotalDisplay = document.getElementById("cart-grand-total-value") || document.getElementById("summary-grand-total");
@@ -513,78 +615,21 @@ function updateCartSummary(cart, storeData) {
         grandTotalDisplay.textContent = invoice.grandTotal + " EGP";
     }
     
-    const promoInput = document.getElementById("coupon-input");
-    const promoBtn = document.getElementById("btn-apply-coupon");
-    const couponMsg = document.getElementById("coupon-message");
-    
-    if (promoBtn && promoInput && couponMsg) {
-        if (!promoBtn.dataset.listenerAttached) {
-            promoBtn.onclick = async () => {
-                const code = promoInput.value.trim().toUpperCase();
-                if (!code) return;
-
-                // 🛡️ [إصلاح أمني]: التحقق من الكوبون بقى بيتم عبر دالة آمنة في الباكند
-                // (validate_coupon RPC عن طريق window.BoseSupabase.validateBoseCoupon)
-                // بدل مقارنته محلياً مع قايمة storeData.coupons اللي كانت بتوصل كاملة
-                // وواضحة لأي حد يفتح ملف بيانات المتجر العام مباشرة في المتصفح.
-                if (!window.BoseSupabase || typeof window.BoseSupabase.validateBoseCoupon !== "function") {
-                    couponMsg.className = "coupon-status-toast error";
-                    couponMsg.textContent = "⚠️ تعذر التحقق من الكوبون حالياً، حاول تحديث الصفحة.";
-                    return;
-                }
-
-                const originalBtnLabel = promoBtn.textContent;
-                promoBtn.disabled = true;
-                promoBtn.textContent = "بيتم التحقق...";
-
-                // 🛡️🔧 [إصلاح جذري]: قبل كده الكود كان بيتبعت لوحده من غير قيمة
-                // السلة ولا رقم هاتف - فأي كوبون عليه "حد أدنى لقيمة الطلب" كان
-                // بيتجاهَل تماماً (يظهر ناجح حتى لو السلة أقل من الحد)، وأي كوبون
-                // "مربوط برقم موبايل" كان يترفض هنا دايماً ومفيش فرصة تانية يتفحص
-                // بيها. دلوقتي بنبعت الـ subtotal الحقيقي دايماً، وبنبعت رقم الهاتف
-                // لو العميل عنده بيانات محفوظة من زيارة سابقة (getBoseCustomerProfile) -
-                // لو مفيش هاتف متاح دلوقتي، برضه هيتفحص تاني بدقة قبل تأكيد الطلب
-                // في الشيك أوت (راجع processFinalBoseOrder) قبل ما يتحسب أي مبلغ نهائي.
-                const currentSubtotalForValidation = window.calculateBoseInvoice(cart, storeData, 0).subtotal;
-                const savedProfileForValidation = typeof window.getBoseCustomerProfile === "function" ? window.getBoseCustomerProfile() : null;
-                const phoneForValidation = savedProfileForValidation && savedProfileForValidation.phone1 ? savedProfileForValidation.phone1 : null;
-
-                try {
-                    const result = await window.BoseSupabase.validateBoseCoupon(code, phoneForValidation, currentSubtotalForValidation);
-                    if (result && result.is_valid) {
-                        // ⚠️ ملحوظة: أسماء الحقول دي (discount_type/discount_value) افتراض
-                        // منطقي بناءً على استخدام calculateCouponDiscount(subtotal, {type, value}).
-                        // لازم تتأكد إنها مطابقة تماماً لأسماء الأعمدة الراجعة فعلياً من
-                        // دالة validate_coupon في قاعدة البيانات، وتعدلها هنا لو مختلفة.
-                        const discountType = result.discount_type || result.type || "percent";
-                        const discountValue = parseFloat(result.discount_value ?? result.value ?? 0) || 0;
-                        // 🆕 [سقف أقصى للخصم]: لو الكوبون عليه سقف (max_discount_amount)،
-                        // بيتخزن جنب النوع والقيمة عشان calculateCouponDiscount يطبقه.
-                        const maxDiscountAmount = result.max_discount_amount !== null && result.max_discount_amount !== undefined
-                            ? parseFloat(result.max_discount_amount) : null;
-                        localStorage.setItem("bose_active_coupon", JSON.stringify({ code, type: discountType, value: discountValue, maxDiscountAmount }));
-                        couponMsg.className = "coupon-status-toast success";
-                        couponMsg.textContent = discountType === "fixed"
-                            ? `✅ تمام، خصم الكوبون اتطبق: ${discountValue} جنيه`
-                            : `✅ تمام، خصم الكوبون اتطبق: ${discountValue}%`;
-                        if (typeof window.showBoseGlobalToast === "function") window.showBoseGlobalToast("تم تطبيق كود الخصم بنجاح");
-                        updateCartSummary(cart, storeData);
-                    } else {
-                        localStorage.removeItem("bose_active_coupon");
-                        couponMsg.className = "coupon-status-toast error";
-                        couponMsg.textContent = (result && result.message) || "⚠️ كود الخصم ده مش شغال، تأكدوا منه أو من تاريخ صلاحيته.";
-                    }
-                } catch (err) {
-                    couponMsg.className = "coupon-status-toast error";
-                    couponMsg.textContent = "⚠️ تعذر التحقق من الكوبون، تأكد من الاتصال بالإنترنت وحاول تاني.";
-                } finally {
-                    promoBtn.disabled = false;
-                    promoBtn.textContent = originalBtnLabel;
-                }
-            };
-            promoBtn.dataset.listenerAttached = "true";
-        }
-    }
+    // 🎯🆕 [خانة خصم ذكية موحدة]: خانة واحدة بتقبل كود خصم أو قسيمة ولاء أو
+    // بطاقة هدية مع بعض (راجع wireBoseSmartDiscountBox فوق) - بتفضل الأكواد
+    // شغالة حتى لو العميلة كملت لصفحة إتمام الطلب. صفحة السلة مفيهاش رقم
+    // هاتف بتاعها، فبنستخدم رقم أي ملف عميل محفوظ من زيارة سابقة لو موجود
+    // (getBoseCustomerProfile) - كافي لفحص كوبونات/قسائم مربوطة برقم معروف.
+    wireBoseSmartDiscountBox(
+        { inputId: "coupon-input", buttonId: "btn-apply-coupon", msgId: "coupon-message", chipsId: "coupon-chips" },
+        cart,
+        storeData,
+        () => {
+            const savedProfile = typeof window.getBoseCustomerProfile === "function" ? window.getBoseCustomerProfile() : null;
+            return savedProfile && savedProfile.phone1 ? savedProfile.phone1 : "";
+        },
+        () => updateCartSummary(cart, storeData)
+    );
 }
 
 /**
@@ -614,9 +659,12 @@ function renderBoseCheckoutPage(storeData) {
     // (خصم تلقائي حسب ترتيب الطلب) ولما قسيمة ولاء صحيحة تتطبق - بيقرأها
     // recalculateCheckoutInvoice/processFinalBoseOrder عشان يعرضوا وياخدوا
     // بالهم منها بالظبط زي كوبون الخصم العادي.
+    // 🎯🆕 [خانة خصم ذكية موحدة]: كود قسيمة الولاء وكود بطاقة الهدية بقوا
+    // بيتخزنوا في bose_active_discounts الموحدة (راجع core-engine.js) بدل
+    // متغيرات منفصلة هنا - calculateBoseInvoice بيقراهم من هناك مباشرة.
+    // window.BoseLoyaltyState فضل بس للخصم التلقائي (مش كود بيتكتب).
     window.BoseLoyaltyState = {
-        discountAmount: 0, discountPercent: 0, totalOrders: 0, nextOrderNumber: 0,
-        voucherDiscountAmount: 0, voucherCode: null, voucherRemaining: 0
+        discountAmount: 0, discountPercent: 0, totalOrders: 0, nextOrderNumber: 0
     };
 
     const pickupBtn = document.getElementById("method-pickup");
@@ -713,6 +761,10 @@ function renderBoseCheckoutPage(storeData) {
     const loyaltyBanner = document.getElementById("bose-checkout-loyalty-banner");
     let loyaltyLookupTimer = null;
     let lastCheckedLoyaltyPhone = "";
+    // 🎯🆕 [خانة خصم ذكية موحدة]: مرجع لواجهة الخانة الموحدة (يتحدد تحت بعد
+    // wireBoseSmartDiscountBox) - بيتستخدم هنا عشان بانر اقتراح قسيمة الولاء
+    // يقدر يفعّلها بضغطة واحدة (applyCode) من غير ما العميلة تنسخ/تكتب الكود.
+    let smartBox = null;
 
     function renderLoyaltyBanner(html) {
         if (!loyaltyBanner) return;
@@ -736,7 +788,7 @@ function renderBoseCheckoutPage(storeData) {
             window.BoseLoyaltyState.nextOrderNumber = nextOrderNumber;
             window.BoseLoyaltyState.discountPercent = row.next_discount_percent || 0;
 
-            const invoiceNow = window.calculateBoseInvoice(cart, storeData, selectedShippingFee, 0, window.BoseLoyaltyState.voucherDiscountAmount);
+            const invoiceNow = window.calculateBoseInvoice(cart, storeData, selectedShippingFee, 0);
             window.BoseLoyaltyState.discountAmount = row.next_discount_percent > 0
                 ? parseFloat((invoiceNow.subtotal * (row.next_discount_percent / 100)).toFixed(2))
                 : 0;
@@ -760,11 +812,26 @@ function renderBoseCheckoutPage(storeData) {
                 bannerHtml = `<div style="${styleBase} background:rgba(255,145,164,0.08); color:#FF91A4; border:1px solid rgba(255,145,164,0.3);">
                     <i class="fa-solid fa-heart"></i> باقيلك ${row.orders_until_next_discount} ${row.orders_until_next_discount === 1 ? 'طلب' : 'طلبات'} بعد ده عشان تاخدي خصم على طلبك الجاي</div>`;
             }
+            // 🎯🆕 [خانة خصم ذكية موحدة - تفعيل بضغطة واحدة]: قبل كده كان بيتقال
+            // للعميلة "اكتبي الكود في الحقل تحت" حتى لو أصلاً عندنا الكود ورصيده
+            // جاهزين من نفس الاستعلام - كانت بتضطر تنسخه/تكتبه بنفسها. دلوقتي
+            // كل قسيمة نشطة بتظهر كزرار جاهز يطبقها فوراً (بيمر برضه على
+            // resolve_discount_code عشان يتأكد إنها لسه سارية لحظة الضغط بالظبط).
             if (Array.isArray(row.active_vouchers) && row.active_vouchers.length > 0) {
-                bannerHtml += `<div style="${styleBase} background:rgba(212,175,55,0.1); color:#b8860b; border:1px solid rgba(212,175,55,0.3);">
-                    <i class="fa-solid fa-ticket"></i> عندك ${row.active_vouchers.length} قسيمة ولاء نشطة - اكتبي كودها في الحقل تحت عشان تستخدميها</div>`;
+                const voucherButtonsHtml = row.active_vouchers.map(v =>
+                    `<button type="button" class="bose-apply-voucher-btn" data-voucher-code="${window.escapeBoseHTML ? window.escapeBoseHTML(v.code) : v.code}" style="background:#b8860b; color:#fff; border:none; border-radius:8px; padding:4px 12px; font-size:0.78rem; font-weight:700; cursor:pointer; margin-inline-start:6px;">استخدميها الآن (${v.remaining_amount} EGP)</button>`
+                ).join("");
+                bannerHtml += `<div style="${styleBase} background:rgba(212,175,55,0.1); color:#b8860b; border:1px solid rgba(212,175,55,0.3); flex-wrap:wrap;">
+                    <i class="fa-solid fa-ticket"></i> عندك ${row.active_vouchers.length} قسيمة ولاء نشطة${voucherButtonsHtml}</div>`;
             }
             renderLoyaltyBanner(bannerHtml);
+            if (loyaltyBanner) {
+                loyaltyBanner.querySelectorAll(".bose-apply-voucher-btn").forEach(vBtn => {
+                    vBtn.addEventListener("click", () => {
+                        if (smartBox) smartBox.applyCode(vBtn.dataset.voucherCode);
+                    });
+                });
+            }
             recalculateCheckoutInvoice(cart, storeData, selectedShippingFee, currentShippingMethod, payFullSelected);
         } catch (err) {
             console.warn("⚠️ تعذر جلب رصيد الولاء:", err);
@@ -779,88 +846,17 @@ function renderBoseCheckoutPage(storeData) {
         if (phone1InputForLoyalty.value) runLoyaltyLookup(phone1InputForLoyalty.value);
     }
 
-    // 🎁 [نظام نقاط الولاء]: تفعيل كود قسيمة الولاء (300 جنيه) - محتاج رقم
-    // الهاتف الأساسي صحيح الأول عشان نتأكد إن القسيمة فعلاً بتاعة نفس العميلة.
-    const voucherApplyBtn = document.getElementById("btn-apply-loyalty-voucher");
-    const voucherInput = document.getElementById("checkout-voucher-code");
-    const voucherMsg = document.getElementById("checkout-voucher-message");
-    if (voucherApplyBtn && voucherInput) {
-        voucherApplyBtn.onclick = async () => {
-            const code = voucherInput.value.trim();
-            const phone = phone1InputForLoyalty ? phone1InputForLoyalty.value.trim() : "";
-            if (!code) return;
-            if (!window.BoseSupabase || typeof window.BoseSupabase.validateBoseLoyaltyVoucher !== "function") return;
-
-            voucherApplyBtn.disabled = true;
-            voucherApplyBtn.textContent = "بنتأكد...";
-            try {
-                const result = await window.BoseSupabase.validateBoseLoyaltyVoucher(code, phone);
-                if (result && result.is_valid) {
-                    window.BoseLoyaltyState.voucherCode = code.toUpperCase();
-                    window.BoseLoyaltyState.voucherRemaining = result.remaining_amount || 0;
-                    const invoiceNow = window.calculateBoseInvoice(cart, storeData, selectedShippingFee, window.BoseLoyaltyState.discountAmount, 0);
-                    window.BoseLoyaltyState.voucherDiscountAmount = Math.min(
-                        result.remaining_amount || 0,
-                        Math.max(0, invoiceNow.subtotal + selectedShippingFee - invoiceNow.discount)
-                    );
-                    if (voucherMsg) { voucherMsg.style.color = "#2e9e5b"; voucherMsg.textContent = "✅ " + (result.message || "تم تفعيل القسيمة"); }
-                } else {
-                    window.BoseLoyaltyState.voucherCode = null;
-                    window.BoseLoyaltyState.voucherDiscountAmount = 0;
-                    if (voucherMsg) { voucherMsg.style.color = "var(--bose-error-text, #C62828)"; voucherMsg.textContent = "⚠️ " + ((result && result.message) || "كود القسيمة غير صحيح"); }
-                }
-                recalculateCheckoutInvoice(cart, storeData, selectedShippingFee, currentShippingMethod, payFullSelected);
-            } catch (err) {
-                if (voucherMsg) { voucherMsg.style.color = "var(--bose-error-text, #C62828)"; voucherMsg.textContent = "⚠️ تعذر التحقق من القسيمة، حاولي تاني"; }
-            } finally {
-                voucherApplyBtn.disabled = false;
-                voucherApplyBtn.textContent = "تفعيل";
-            }
-        };
-    }
-
-    // 🎁 [استخدام كود بطاقة هدية]: نفس فلسفة قسيمة الولاء بالظبط - تحقق فوري
-    // عبر validate_gift_card_code، وتحديث الفاتورة المعروضة على طول. الكود ده
-    // كان الجزء الوحيد الناقص من ميزة بطاقة الهدية - الباك إند كان جاهز
-    // ومنتظر من زمان (create_order_with_items بيقبل p_gift_card_code أصلاً).
-    window.BoseGiftCardState = { code: null, discountAmount: 0, remaining: 0 };
-    const giftCardApplyBtn = document.getElementById("btn-apply-gift-card");
-    const giftCardInput = document.getElementById("checkout-giftcard-code");
-    const giftCardMsg = document.getElementById("checkout-giftcard-message");
-    if (giftCardApplyBtn && giftCardInput) {
-        giftCardApplyBtn.onclick = async () => {
-            const code = giftCardInput.value.trim();
-            if (!code) return;
-            if (!window.BoseSupabase || typeof window.BoseSupabase.validateBoseGiftCard !== "function") return;
-
-            giftCardApplyBtn.disabled = true;
-            giftCardApplyBtn.textContent = "بنتأكد...";
-            try {
-                const result = await window.BoseSupabase.validateBoseGiftCard(code);
-                if (result && result.is_valid) {
-                    window.BoseGiftCardState.code = code.toUpperCase();
-                    window.BoseGiftCardState.remaining = result.remaining_amount || 0;
-                    const loyaltyNow = window.BoseLoyaltyState || { discountAmount: 0, voucherDiscountAmount: 0 };
-                    const invoiceNow = window.calculateBoseInvoice(cart, storeData, selectedShippingFee, loyaltyNow.discountAmount, loyaltyNow.voucherDiscountAmount, 0);
-                    window.BoseGiftCardState.discountAmount = Math.min(
-                        result.remaining_amount || 0,
-                        Math.max(0, invoiceNow.subtotal + selectedShippingFee - invoiceNow.discount)
-                    );
-                    if (giftCardMsg) { giftCardMsg.style.color = "#2e9e5b"; giftCardMsg.textContent = "✅ " + (result.message || "تم تفعيل بطاقة الهدية") + ` (الرصيد: ${result.remaining_amount} EGP)`; }
-                } else {
-                    window.BoseGiftCardState.code = null;
-                    window.BoseGiftCardState.discountAmount = 0;
-                    if (giftCardMsg) { giftCardMsg.style.color = "var(--bose-error-text, #C62828)"; giftCardMsg.textContent = "⚠️ " + ((result && result.message) || "كود بطاقة الهدية غير صحيح"); }
-                }
-                recalculateCheckoutInvoice(cart, storeData, selectedShippingFee, currentShippingMethod, payFullSelected);
-            } catch (err) {
-                if (giftCardMsg) { giftCardMsg.style.color = "var(--bose-error-text, #C62828)"; giftCardMsg.textContent = "⚠️ تعذر التحقق من الكود، حاولي تاني"; }
-            } finally {
-                giftCardApplyBtn.disabled = false;
-                giftCardApplyBtn.textContent = "تفعيل";
-            }
-        };
-    }
+    // 🎯🆕 [خانة خصم ذكية موحدة]: خانة واحدة بس بدل الخانتين المنفصلتين
+    // (قسيمة ولاء + بطاقة هدية) - بتقبل أي كود منهم أو كود خصم عادي كمان،
+    // وبتدعم الثلاثة مع بعض في نفس الوقت (chips). راجع wireBoseSmartDiscountBox
+    // فوق لتفاصيل الفحص (resolve_discount_code) وbose_active_discounts.
+    smartBox = wireBoseSmartDiscountBox(
+        { inputId: "checkout-discount-code", buttonId: "btn-apply-discount-code", msgId: "checkout-discount-message", chipsId: "checkout-discount-chips" },
+        cart,
+        storeData,
+        () => phone1InputForLoyalty ? phone1InputForLoyalty.value.trim() : "",
+        () => recalculateCheckoutInvoice(cart, storeData, selectedShippingFee, currentShippingMethod, payFullSelected)
+    );
 
     // 🎁 [بطاقة هدية = منتج رقمي]: لو السلة كلها بطاقات هدية، نخفي قسم
     // الشحن/الاستلام والموعد بالكامل ونظهر بدل منه رسالة توضيحية، ونثبّت
@@ -1004,9 +1000,8 @@ function recalculateCheckoutInvoice(cart, storeData, shippingFee, method, payFul
     // 🎁 [نظام نقاط الولاء]: بنمرر الخصم التلقائي (حسب ترتيب الطلب) وخصم قسيمة
     // الولاء (لو اتفعّلت) عشان يظهروا كبند واضح ويتحسب بيهم الإجمالي الكلي هنا
     // بنفس الطريقة اللي هتتحسب بيها فعلياً في create_order_with_items بالباك إند.
-    const loyaltyState = window.BoseLoyaltyState || { discountAmount: 0, voucherDiscountAmount: 0 };
-    const giftCardState = window.BoseGiftCardState || { discountAmount: 0 };
-    const invoice = window.calculateBoseInvoice(cart, storeData, shippingFee, loyaltyState.discountAmount, loyaltyState.voucherDiscountAmount, giftCardState.discountAmount);
+    const loyaltyState = window.BoseLoyaltyState || { discountAmount: 0 };
+    const invoice = window.calculateBoseInvoice(cart, storeData, shippingFee, loyaltyState.discountAmount);
 
     if (subtotalDisplay) subtotalDisplay.textContent = invoice.subtotal.toFixed(2) + " EGP";
     if (shippingDisplay) {
@@ -1046,15 +1041,21 @@ function renderBoseLoyaltyDiscountRows(invoice) {
             <span style="font-weight: 700; color: #2e9e5b;">- ${invoice.loyaltyDiscountAmount.toFixed(2)} EGP</span>
         </div>`;
     }
+    if (invoice.couponDiscount > 0) {
+        rowsHtml += `<div class="pricing-row-node" style="display: flex; justify-content: space-between;">
+            <span class="pricing-label-text"><i class="fa-solid fa-ticket-simple" style="color:#FF91A4;"></i> كود الخصم${invoice.couponCode ? ` (${invoice.couponCode})` : ""}:</span>
+            <span style="font-weight: 700; color: #2e9e5b;">- ${invoice.couponDiscount.toFixed(2)} EGP</span>
+        </div>`;
+    }
     if (invoice.voucherDiscountAmount > 0) {
         rowsHtml += `<div class="pricing-row-node" style="display: flex; justify-content: space-between;">
-            <span class="pricing-label-text"><i class="fa-solid fa-gift" style="color:#FF91A4;"></i> قسيمة الولاء:</span>
+            <span class="pricing-label-text"><i class="fa-solid fa-gift" style="color:#FF91A4;"></i> قسيمة الولاء${invoice.voucherCode ? ` (${invoice.voucherCode})` : ""}:</span>
             <span style="font-weight: 700; color: #2e9e5b;">- ${invoice.voucherDiscountAmount.toFixed(2)} EGP</span>
         </div>`;
     }
     if (invoice.giftCardDiscountAmount > 0) {
         rowsHtml += `<div class="pricing-row-node" style="display: flex; justify-content: space-between;">
-            <span class="pricing-label-text"><i class="fa-solid fa-ticket" style="color:#FF91A4;"></i> بطاقة الهدية:</span>
+            <span class="pricing-label-text"><i class="fa-solid fa-credit-card" style="color:#FF91A4;"></i> بطاقة الهدية${invoice.giftCardCode ? ` (${invoice.giftCardCode})` : ""}:</span>
             <span style="font-weight: 700; color: #2e9e5b;">- ${invoice.giftCardDiscountAmount.toFixed(2)} EGP</span>
         </div>`;
     }
@@ -1194,41 +1195,41 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFu
         return;
     }
 
-    // 🛡️🔧🆕 [إصلاح جذري - إعادة تحقق نهائية من الكوبون]: الكوبون اللي اتفعّل
-    // في صفحة السلة اتفحص وقتها برقم هاتف/قيمة سلة مبدئيين (أو من غير هاتف
-    // خالص لو أول زيارة). دلوقتي وصلنا لحظة عندنا فيها البيانات الحقيقية 100%
-    // (رقم الهاتف المكتوب فعلاً + قيمة السلة النهائية)، فبنعيد التحقق منه تاني
-    // هنا قبل ما نحسب أي إجمالي أو نبني فاتورة واتساب - عشان لو الكوبون طلع
-    // فعلياً مش سارٍ (مربوط برقم مختلف، أو السلة تحت الحد الأدنى، أو انتهت
-    // صلاحيته من ثانية لثانية)، نوقف العميلة ونوضحلها بدل ما نخليها تكمل
-    // بفاتورة فيها خصم وهمي هيتشال بصمت وقت الحفظ الفعلي في القاعدة.
-    const rawActiveCouponCheck = localStorage.getItem("bose_active_coupon");
-    if (rawActiveCouponCheck && window.BoseSupabase && typeof window.BoseSupabase.validateBoseCoupon === "function") {
-        try {
-            const activeCouponCheck = JSON.parse(rawActiveCouponCheck);
-            if (activeCouponCheck && activeCouponCheck.code) {
+    // 🛡️🔧🆕🎯 [إعادة تحقق نهائية من كل الأكواد المطبقة]: أي كود (كوبون/قسيمة
+    // ولاء/بطاقة هدية) اتفعّل في صفحة سابقة اتفحص وقتها برقم هاتف/قيمة سلة
+    // مبدئيين (أو من غير هاتف خالص لو أول زيارة). دلوقتي وصلنا لحظة عندنا فيها
+    // البيانات الحقيقية 100% (رقم الهاتف المكتوب فعلاً + قيمة السلة النهائية)،
+    // فبنعيد التحقق من كل كود مطبق تاني هنا قبل ما نحسب أي إجمالي أو نبني
+    // فاتورة واتساب - عشان لو أي واحد منهم طلع فعلياً مش سارٍ (مربوط برقم
+    // مختلف، أو السلة تحت الحد الأدنى، أو انتهت صلاحيته، أو رصيده خلص من
+    // ثانية لثانية)، نوقف العميلة ونوضحلها بدل ما نخليها تكمل بفاتورة فيها
+    // خصم وهمي هيتشال بصمت وقت الحفظ الفعلي في القاعدة.
+    const discountsToRecheck = typeof window.getBoseActiveDiscounts === "function" ? window.getBoseActiveDiscounts() : [];
+    if (discountsToRecheck.length > 0 && window.BoseSupabase && typeof window.BoseSupabase.resolveBoseDiscountCode === "function") {
+        for (const entry of discountsToRecheck) {
+            try {
                 const subtotalForRecheck = window.calculateBoseInvoice(cart, storeData, 0).subtotal;
-                const recheckResult = await window.BoseSupabase.validateBoseCoupon(activeCouponCheck.code, sanitizedPhone1, subtotalForRecheck);
+                const recheckResult = await window.BoseSupabase.resolveBoseDiscountCode(entry.code, sanitizedPhone1, subtotalForRecheck);
                 if (!recheckResult || !recheckResult.is_valid) {
-                    localStorage.removeItem("bose_active_coupon");
-                    const couponMsgEl = document.getElementById("coupon-message");
-                    if (couponMsgEl) {
-                        couponMsgEl.className = "coupon-status-toast error";
-                        couponMsgEl.textContent = (recheckResult && recheckResult.message) || "⚠️ كود الخصم مبقاش شغال، شيلناه من طلبك.";
+                    window.removeBoseActiveDiscount(entry.code_type);
+                    const discountMsgEl = document.getElementById("coupon-message") || document.getElementById("checkout-discount-message");
+                    if (discountMsgEl) {
+                        discountMsgEl.style.color = "var(--bose-error-text, #C62828)";
+                        discountMsgEl.textContent = (recheckResult && recheckResult.message) || `⚠️ كود "${entry.code}" مبقاش شغال، شيلناه من طلبك.`;
                     }
                     if (typeof window.showBoseGlobalToast === "function") {
-                        window.showBoseGlobalToast((recheckResult && recheckResult.message) || "كود الخصم مبقاش شغال - راجعي طلبك وأكدي تاني");
+                        window.showBoseGlobalToast((recheckResult && recheckResult.message) || `كود "${entry.code}" مبقاش شغال - راجعي طلبك وأكدي تاني`);
                     }
                     if (typeof recalculateCheckoutInvoice === "function") recalculateCheckoutInvoice(cart, storeData, shippingFee, method, payFull);
                     return;
                 }
+            } catch (e) {
+                // لو التحقق فشل لأي سبب تقني (مشكلة نت مثلاً)، الأمان المالي الحقيقي
+                // مضمون أصلاً من نفس الفحص جوه create_order_with_items وقت الحفظ -
+                // فمنعطلش تأكيد الطلب هنا، بس بنسيب الرقم النهائي يتصحح تلقائياً
+                // بعد الحفظ (راجع استبدال grandTotal بالقيمة المؤكدة تحت).
+                console.warn("⚠️ تعذر إعادة التحقق من كود الخصم قبل التأكيد النهائي:", e);
             }
-        } catch (e) {
-            // لو التحقق فشل لأي سبب تقني (مشكلة نت مثلاً)، الأمان المالي الحقيقي
-            // مضمون أصلاً من نفس الفحص جوه create_order_with_items وقت الحفظ -
-            // فمنعطلش تأكيد الطلب هنا، بس بنسيب الرقم النهائي يتصحح تلقائياً
-            // بعد الحفظ (راجع استبدال grandTotal بالقيمة المؤكدة تحت).
-            console.warn("⚠️ تعذر إعادة التحقق من الكوبون قبل التأكيد النهائي:", e);
         }
     }
 
@@ -1236,9 +1237,8 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFu
     // (🎁 نظام نقاط الولاء: هنا كمان بنضيف الخصم التلقائي وخصم قسيمة الولاء
     // لو موجودين، عشان المبلغ المطلوب دفعه فعلياً والمرسل في فاتورة الواتساب
     // يطابق بالظبط اللي هيتحسب في قاعدة البيانات، مش يفاجئ العميلة برقم مختلف)
-    const loyaltyStateForOrder = window.BoseLoyaltyState || { discountAmount: 0, voucherDiscountAmount: 0 };
-    const giftCardStateForOrder = window.BoseGiftCardState || { code: null, discountAmount: 0 };
-    const invoice = window.calculateBoseInvoice(cart, storeData, shippingFee, loyaltyStateForOrder.discountAmount, loyaltyStateForOrder.voucherDiscountAmount, giftCardStateForOrder.discountAmount);
+    const loyaltyStateForOrder = window.BoseLoyaltyState || { discountAmount: 0 };
+    const invoice = window.calculateBoseInvoice(cart, storeData, shippingFee, loyaltyStateForOrder.discountAmount);
     const finalGrandTotalCalculated = invoice.grandTotal;
 
     // 🆔 [إصلاح حرج]: رقم طلب فريد فعلياً (طابع زمني + عشوائي) بدل رقم
@@ -1275,13 +1275,13 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFu
         // تحت تقدير فوري من نفس معادلة الباك إند عشان تظهر في فاتورة الواتساب
         // اللي بتتفتح فوراً (قبل ما رد قاعدة البيانات المؤكد يوصل أصلاً)،
         // وبيتم استبدالهم بالقيمة المؤكدة فعلياً بعد الحفظ تحت.
-        loyaltyVoucherCode: loyaltyStateForOrder.voucherCode || null,
+        loyaltyVoucherCode: invoice.voucherCode || null,
         loyaltyDiscountAmount: invoice.loyaltyDiscountAmount || 0,
         voucherAmountUsed: invoice.voucherDiscountAmount || 0,
         // 🎁 [استخدام كود بطاقة هدية]: نفس منطق قسيمة الولاء بالظبط - كود
-        // بطاقة الهدية (لو العميل فعّله في الشيك أوت) بيترسل لـcreate_order_with_items
+        // بطاقة الهدية (لو العميل فعّله من الخانة الموحدة) بيترسل لـcreate_order_with_items
         // عشان يتحقق منه ويخصم رصيده فعلياً بشكل ملزم على السيرفر.
-        giftCardCode: giftCardStateForOrder.code || null,
+        giftCardCode: invoice.giftCardCode || null,
         giftCardAmountUsed: invoice.giftCardDiscountAmount || 0,
         grandTotal: finalGrandTotalCalculated,
         notes: orderNotesInput ? orderNotesInput.value.trim() : "لا توجد ملاحظات إضافية",
@@ -1440,7 +1440,10 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFu
     completedBoseOrderObject.whatsappMessageFull = fullWhatsappMessageText;
     localStorage.setItem("bose_last_order", JSON.stringify(completedBoseOrderObject));
 
-    localStorage.removeItem("bose_active_coupon");
+    // 🎯🆕 [خانة خصم ذكية موحدة]: بعد نجاح الطلب، كل الأكواد المطبقة (كوبون/
+    // قسيمة ولاء/بطاقة هدية) بتتشال مع بعض من bose_active_discounts - كل
+    // واحد فيهم استُهلك فعلياً في الطلب ده، فمينفعش يفضل شغال للطلب الجاي.
+    localStorage.removeItem("bose_active_discounts");
     if (typeof window.updateGlobalCartCounter === "function") window.updateGlobalCartCounter();
 
     // 🛡️🐛👑 [إصلاح جذري - المرحلة 2]: من غير أي محاولة فتح تاب هنا خالص -

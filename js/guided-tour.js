@@ -103,14 +103,13 @@
         ],
         cart: [
             { page: ['cart.html'], mode: 'info', selector: '#cart-items-wrapper', title: 'راجعي أصنافك', text: 'دي كل الأصناف اللي ضفتيها. تقدري تزوّدي أو تقلّلي الكمية، أو تشيلي أي صنف من زرار الحذف.' },
-            { page: ['cart.html'], mode: 'info', selector: '#coupon-input', title: 'كود الخصم', text: 'لو عندك كود خصم، اكتبيه هنا ودوسي "تطبيق".' },
+            { page: ['cart.html'], mode: 'info', selector: '#coupon-input', title: 'كود الخصم أو القسيمة', text: 'لو عندك كود خصم، أو قسيمة ولاء، أو حتى بطاقة هدية، اكتبيه هنا ودوسي "تطبيق" - هنتعرف على نوعه لوحدنا.' },
             { page: ['cart.html'], mode: 'info', selector: '#checkout-order-notes-textarea', title: 'ملاحظاتك', text: 'وأي ملاحظة عايزاها تتقال لينا (زي حساسية من مكسرات مثلاً)، اكتبيها هنا.' },
             { page: ['cart.html'], mode: 'click', selector: '#btn-proceed-to-checkout', hint: 'دوسي على الزرار المكتوب عليه "كمّلي طلبك" تحت الفاتورة', title: 'كمّلي طلبك', text: 'لما تراجعي كل حاجة، دوسي هنا عشان تكتبي بياناتك وتحددي التوصيل أو الاستلام.' },
         ],
         checkout: [
             { page: ['checkout.html'], mode: 'info', selector: '#checkout-customer-name', title: 'بياناتك', text: 'هنا بتحطي اسمك بالكامل ورقم موبايلك اللي عليه واتساب (ورقم إضافي اختياري لو حبيتي).' },
-            { page: ['checkout.html'], mode: 'info', selector: '#checkout-voucher-code', title: 'قسيمة الولاء (لو عندك)', text: 'دي مختلفة عن كود الخصم اللي كتبتيه في السلة - قسيمة الولاء بتتكسب تلقائياً كل عدد معيّن من الطلبات، وبتلاقيها هنا لو رقمك عليه واحدة نشطة.' },
-            { page: ['checkout.html'], mode: 'info', selector: '#checkout-giftcard-code', title: 'بطاقة هدية (لو عندك)', text: 'ولو حد أهداكي بطاقة هدية من عندنا، اكتبي كودها هنا - وهي كمان مختلفة عن كود خصم السلة وقسيمة الولاء.' },
+            { page: ['checkout.html'], mode: 'info', selector: '#checkout-discount-code', title: 'كود خصم أو قسيمة أو بطاقة هدية', text: 'عندك قسيمة ولاء بتتكسب تلقائياً كل عدد معيّن من الطلبات، أو بطاقة هدية اتهديتيها من حد؟ اكتبي الكود هنا وهنتعرف على نوعه ونطبقه لوحدنا - وتقدري تضيفي أكتر من كود مع بعض.' },
             { page: ['checkout.html'], mode: 'info', selector: '.fulfillment-methods-flex', title: 'توصيل ولا استلام؟', text: 'اختاري توصيل للمنزل حسب منطقتك، أو استلام من الفرع من غير أي مصاريف شحن خالص.' },
             { page: ['checkout.html'], mode: 'info', delayBeforeShow: 200, selector: '#shipping-zone-wrapper', title: 'منطقتك وعنوانك', text: 'لو اخترتِ التوصيل، حددي منطقتك السكنية واكتبي عنوانك بالتفصيل، وهيتحسب سعر الشحن تلقائي.' },
             { page: ['checkout.html'], mode: 'info', selector: '#checkout-delivery-date', title: 'ميعاد التسليم', text: 'وهنا تحددي تاريخ وساعة التسليم اللي تناسبك (محتاجين على الأقل 24 ساعة عشان نجهز طلبك طازة).' },

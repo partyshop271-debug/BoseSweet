@@ -1462,21 +1462,50 @@
      * @param {number} shippingFee
      * @returns {{subtotal: number, discount: number, shippingFee: number, grandTotal: number, itemsCount: number}}
      */
-    window.calculateBoseInvoice = function(cart, storeData, shippingFee, loyaltyDiscountAmount, voucherDiscountAmount, giftCardDiscountAmount) {
+    // 🎯🆕 [خانة خصم ذكية موحدة]: بدل 3 حالات تخزين منفصلة (bose_active_coupon
+    // في localStorage + window.BoseLoyaltyState.voucherCode + window.BoseGiftCardState
+    // في متغيرات الصفحة بس)، كل الأكواد المطبقة (كوبون/قسيمة ولاء/بطاقة هدية)
+    // بقت بتتخزن مكان واحد (bose_active_discounts) - وده معناه إنها بتفضل
+    // متاحة حتى لو العميلة رجعت من صفحة الشيك أوت للسلة والعكس، بدل ما تضطر
+    // تكتب الكود تاني كل ما تنقل صفحة. أقصى كود واحد لكل نوع (code_type) في
+    // نفس الوقت - كود جديد من نفس النوع بيستبدل القديم.
+    function getBoseActiveDiscounts() {
+        try {
+            const raw = localStorage.getItem("bose_active_discounts");
+            const arr = raw ? JSON.parse(raw) : [];
+            return Array.isArray(arr) ? arr : [];
+        } catch (e) {
+            return [];
+        }
+    }
+    window.getBoseActiveDiscounts = getBoseActiveDiscounts;
+
+    window.setBoseActiveDiscount = function(entry) {
+        if (!entry || !entry.code_type) return;
+        const list = getBoseActiveDiscounts().filter(d => d.code_type !== entry.code_type);
+        list.push(entry);
+        localStorage.setItem("bose_active_discounts", JSON.stringify(list));
+    };
+
+    window.removeBoseActiveDiscount = function(codeType) {
+        const list = getBoseActiveDiscounts().filter(d => d.code_type !== codeType);
+        localStorage.setItem("bose_active_discounts", JSON.stringify(list));
+    };
+
+    /**
+     * @param {Array} cart
+     * @param {Object} storeData
+     * @param {number} shippingFee
+     * @param {number} [loyaltyDiscountAmount] الخصم التلقائي حسب ترتيب الطلب (5%/10%/15%) - مش كود بيتكتب، فمُستقل عن bose_active_discounts.
+     */
+    window.calculateBoseInvoice = function(cart, storeData, shippingFee, loyaltyDiscountAmount) {
         const safeCart = Array.isArray(cart) ? cart : [];
         const safeShippingFee = parseFloat(String(shippingFee)) || 0;
-        // 🎁 [استخدام كود بطاقة هدية]: نفس فلسفة قسيمة الولاء بالظبط - رقم الخصم
-        // ده معروض فوري للعميلة بعد الضغط على "تفعيل" (validate_gift_card_code)
-        // بس الخصم الفعلي من رصيد الكود بيحصل تاني وبشكل ملزم في
-        // create_order_with_items على السيرفر وقت إنشاء الطلب فعلياً.
-        const safeGiftCardDiscount = parseFloat(String(giftCardDiscountAmount)) || 0;
-        // 🎁 [نظام نقاط الولاء]: خصم تلقائي حسب ترتيب الطلب (5%/10%/15%) وخصم
-        // قسيمة الولاء (300 جنيه كل 10 طلبات) - بيتحسبوا في checkout.html بمجرد
-        // ما رقم الهاتف يتأكد صحيح (عن طريق get_customer_rewards/validate_loyalty_voucher)
-        // ويترسلوا هنا كباراميتر اختياري عشان يظهروا كبند منفصل وواضح للعميلة
-        // قبل ما تأكد الطلب، بدل ما يتطبقوا بصمت في قاعدة البيانات بس.
+        // 🎁 [نظام نقاط الولاء]: خصم تلقائي حسب ترتيب الطلب (5%/10%/15%) - بيتحسب
+        // في checkout.html بمجرد ما رقم الهاتف يتأكد صحيح (get_customer_rewards)
+        // ويترسل هنا كباراميتر اختياري عشان يظهر كبند منفصل وواضح للعميلة قبل
+        // ما تأكد الطلب، بدل ما يتطبق بصمت في قاعدة البيانات بس.
         const safeLoyaltyDiscount = parseFloat(String(loyaltyDiscountAmount)) || 0;
-        const safeVoucherDiscount = parseFloat(String(voucherDiscountAmount)) || 0;
 
         let subtotal = 0;
         let itemsCount = 0;
@@ -1488,29 +1517,46 @@
         });
         subtotal = parseFloat(subtotal.toFixed(4));
 
-        let couponDiscount = 0;
-        let activeCouponCode = null;
-        try {
-            // 🛡️ [إصلاح أمني]: بيانات الكوبون النشط بقت جاية من نتيجة تحقق آمن عبر
-            // الباكند (validate_coupon RPC) وقت الضغط على "تطبيق"، مش من قايمة
-            // storeData.coupons العامة القديمة اللي كانت بتفضح كل أكواد الخصم لأي
-            // حد يفتح site-data-final.json مباشرة. راجع onclick الخاص بـ btn-apply-coupon
-            // في cart-engine.js لمصدر بيانات bose_active_coupon الجديد.
-            const rawActiveCoupon = localStorage.getItem("bose_active_coupon");
-            if (rawActiveCoupon) {
-                const activeCoupon = JSON.parse(rawActiveCoupon);
-                if (activeCoupon && activeCoupon.code) {
-                    couponDiscount = window.calculateCouponDiscount(subtotal, activeCoupon);
-                    activeCouponCode = activeCoupon.code;
-                }
-            }
-        } catch (e) {
-            couponDiscount = 0;
-            activeCouponCode = null;
-        }
-        couponDiscount = parseFloat(couponDiscount.toFixed(4));
+        const activeDiscounts = getBoseActiveDiscounts();
+        const couponEntry = activeDiscounts.find(d => d.code_type === "coupon") || null;
+        const voucherEntry = activeDiscounts.find(d => d.code_type === "loyalty_voucher") || null;
+        const giftCardEntry = activeDiscounts.find(d => d.code_type === "gift_card") || null;
 
-        const discount = parseFloat((couponDiscount + safeLoyaltyDiscount + safeVoucherDiscount + safeGiftCardDiscount).toFixed(4));
+        // 🧮 [ترتيب تراكم الخصومات]: نفس الترتيب القديم بالظبط (ولاء تلقائي ←
+        // كوبون ← قسيمة ولاء ← بطاقة هدية) - كل خصم بيتقفل عند أقصى مبلغ متبقي
+        // فعلياً بعد اللي قبله، عشان مجموع الخصومات مايتعداش قيمة الطلب+الشحن
+        // خالص، ومايتاكلش من رصيد قسيمة/بطاقة أكتر من المفروض.
+        const payableCeiling = parseFloat((subtotal + safeShippingFee).toFixed(4));
+        let runningUsed = Math.min(safeLoyaltyDiscount, payableCeiling);
+
+        let couponDiscount = 0;
+        if (couponEntry) {
+            couponDiscount = window.calculateCouponDiscount(subtotal, {
+                type: couponEntry.discount_type,
+                value: couponEntry.discount_value,
+                maxDiscountAmount: couponEntry.max_discount_amount
+            });
+            couponDiscount = Math.min(couponDiscount, Math.max(0, payableCeiling - runningUsed));
+            runningUsed += couponDiscount;
+        }
+
+        let voucherDiscount = 0;
+        if (voucherEntry) {
+            voucherDiscount = Math.min(parseFloat(voucherEntry.remaining_amount) || 0, Math.max(0, payableCeiling - runningUsed));
+            runningUsed += voucherDiscount;
+        }
+
+        let giftCardDiscount = 0;
+        if (giftCardEntry) {
+            giftCardDiscount = Math.min(parseFloat(giftCardEntry.remaining_amount) || 0, Math.max(0, payableCeiling - runningUsed));
+            runningUsed += giftCardDiscount;
+        }
+
+        couponDiscount = parseFloat(couponDiscount.toFixed(4));
+        voucherDiscount = parseFloat(voucherDiscount.toFixed(4));
+        giftCardDiscount = parseFloat(giftCardDiscount.toFixed(4));
+
+        const discount = parseFloat((couponDiscount + safeLoyaltyDiscount + voucherDiscount + giftCardDiscount).toFixed(4));
         const grandTotal = Math.round(Math.max(0, subtotal - discount) + safeShippingFee);
 
         return {
@@ -1518,12 +1564,14 @@
             discount: discount,
             couponDiscount: couponDiscount,
             loyaltyDiscountAmount: safeLoyaltyDiscount,
-            voucherDiscountAmount: safeVoucherDiscount,
-            giftCardDiscountAmount: safeGiftCardDiscount,
+            voucherDiscountAmount: voucherDiscount,
+            giftCardDiscountAmount: giftCardDiscount,
             shippingFee: safeShippingFee,
             grandTotal: grandTotal,
             itemsCount: itemsCount,
-            couponCode: activeCouponCode
+            couponCode: couponEntry ? couponEntry.code : null,
+            voucherCode: voucherEntry ? voucherEntry.code : null,
+            giftCardCode: giftCardEntry ? giftCardEntry.code : null
         };
     };
 
