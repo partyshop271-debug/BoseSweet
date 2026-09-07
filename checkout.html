@@ -52,12 +52,33 @@
             }
         }
 
+        /* 🐛🛡️ [إصلاح حرج - فيض أفقي على الموبايل لكل صفحة الشيك أوت]: عمودي
+           الجريد الرئيسي (.checkout-form-panel و .invoice-sticky-preview) هما
+           عناصر CSS Grid جوه .checkout-grid-layout (اللي عمودها الوحيد على
+           الموبايل عرضه 1fr). لكن عناصر الـ Grid افتراضيًا عندها
+           min-width:auto (مش 0)، يعني المتصفح مش بيسمح للعمود يصغر عن أعرض
+           محتوى غير قابل للف جواه (زي label طويل زي "رقم هاتف إضافي بديل
+           (اختياري لتأمين وصول شحنتك الملكية)" أو نص التاريخ/الأزرار) حتى لو
+           الشاشة ضيقة. النتيجة كانت إن الفورم كله بيتمدد لعرض حقيقي أوسع من
+           الموبايل بكتير (وصل لحد ~968px على شاشة 375px في الاختبار)، وبما إن
+           overflow-x:hidden على html/body بيقص الزيادة دي بصريًا من غير
+           سكرول، كانت النصوص والحقول بتظهر مقصوصة ومزاحة تمامًا زي اللي ظهر
+           في سكرين شوت العميلة - نفس مرض .bose-date-time-grid بالظبط
+           (شوفي التعليق بتاعها تحت) لكن على مستوى عمود الصفحة كله مش خانة
+           واحدة بس. min-width:0 هنا بيسمح للعمود يصغر فعليًا لعرض الشاشة
+           الحقيقي، والمحتوى الداخلي (label/input) بيلف جوه زي ما لازم. */
+        .checkout-form-panel,
+        .invoice-sticky-preview {
+            min-width: 0;
+        }
+
         .checkout-form-panel {
             background: var(--bose-white, #FFFFFF);
             border: var(--bose-border-pink, 1px solid rgba(255, 145, 164, 0.3));
             border-radius: 24px;
             padding: 30px 24px;
             box-shadow: var(--bose-shadow-glow, 0 8px 32px rgba(255, 145, 164, 0.12));
+            box-sizing: border-box;
         }
 
         .checkout-pane-title {
