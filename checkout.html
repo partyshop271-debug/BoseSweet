@@ -377,6 +377,15 @@
                         <p id="checkout-preparation-message" style="margin:0; font-size:0.85rem; font-weight:600; color:#111111; line-height:1.7; text-align: right;"></p>
                     </div>
 
+                    <!-- 📅 [تقويم الإتاحة الذكي]: شريط أيام سريع بيعرض أقرب الأيام
+                         ويقفل تلقائيًا أي يوم قبل مدة التحضير المطلوبة أو وصل لسقف
+                         عدد الطلبات (لو الأدمن حددت سقف) - بيقلل احتمال إن العميلة
+                         تختار يوم مرفوض من الأساس بدل ما تتفاجئ بعد الاختيار. -->
+                    <div id="checkout-day-chip-wrapper" style="margin-bottom: 14px; display:none;">
+                        <p style="font-size: 0.78rem; color: var(--adm-text-muted, #777); margin: 0 0 8px; font-weight: 600;">اختاري يوم الاستلام بسرعة:</p>
+                        <div id="checkout-day-chip-strip" style="display:flex; gap:8px; overflow-x:auto; padding-bottom:6px; -webkit-overflow-scrolling:touch;"></div>
+                    </div>
+
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; width: 100%;">
                         <div class="input-group-node">
                             <label for="checkout-delivery-date">تاريخ الاستلام
@@ -392,6 +401,19 @@
                             <input type="time" id="checkout-delivery-time" class="bose-field-capture" required aria-describedby="err-checkout-delivery-time">
                             <span class="bose-field-error-msg" id="err-checkout-delivery-time"><i class="fa-solid fa-circle-exclamation"></i><span></span></span>
                         </div>
+                    </div>
+
+                    <!-- 🆘 [بديل واتساب + اقتراح أقرب مواعيد]: بيظهر بس لما الموعد
+                         المختار فعليًا مرفوض (قبل مدة التحضير أو اليوم مكتمل) -
+                         بيقترح أقرب 3 مواعيد متاحة فعليًا، وبيدي خيار تواصل مباشر
+                         مع فريق المبيعات عبر واتساب لو حابة تحاول تظبيط ميعاد
+                         استثنائي بدل ما تسيب السلة وتمشي. -->
+                    <div id="checkout-schedule-alert" style="display:none; margin-top:10px; background: rgba(255,145,164,0.08); border: 1px dashed var(--bose-pink, #FF91A4); border-radius: 14px; padding: 14px 16px; direction: rtl;">
+                        <p id="checkout-schedule-alert-text" style="margin:0 0 10px; font-size:0.92rem; font-weight:700; color:#111111; line-height:1.7;"></p>
+                        <div id="checkout-schedule-suggestions" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px;"></div>
+                        <a id="checkout-schedule-whatsapp-btn" href="#" target="_blank" rel="noopener noreferrer" style="display:inline-flex; align-items:center; gap:8px; background:#25D366; color:#fff; font-weight:700; font-size:0.85rem; padding:10px 16px; border-radius:12px; text-decoration:none;">
+                            <i class="fab fa-whatsapp"></i> تواصلي معانا لظبط الميعاد المناسب ليكي
+                        </a>
                     </div>
                     </div><!-- /#bose-fulfillment-and-schedule-section -->
 
@@ -573,6 +595,145 @@
                 });
             }
 
+            // 📅🆘 [تقويم الإتاحة الذكي + بديل واتساب]: عزل كامل منطق شريط الأيام
+            // السريع + تنبيه المواعيد المرفوضة في دالة واحدة مستقلة عشان تفضل
+            // initializeLocalConfig مركّزة على إعداداتها الأساسية.
+            async function setupBoseSmartSchedule(siteData, hasCustomItem, minDateObj) {
+                const chipWrapper = document.getElementById("checkout-day-chip-wrapper");
+                const chipStrip = document.getElementById("checkout-day-chip-strip");
+                const alertBox = document.getElementById("checkout-schedule-alert");
+                const alertText = document.getElementById("checkout-schedule-alert-text");
+                const suggestionsBox = document.getElementById("checkout-schedule-suggestions");
+                const waBtn = document.getElementById("checkout-schedule-whatsapp-btn");
+                const dateInputEl = document.getElementById("checkout-delivery-date");
+                const timeInputEl = document.getElementById("checkout-delivery-time");
+                if (!chipWrapper || !chipStrip || !dateInputEl) return;
+
+                const toDateStr = (d) => {
+                    const y = d.getFullYear();
+                    const m = String(d.getMonth() + 1).padStart(2, "0");
+                    const day = String(d.getDate()).padStart(2, "0");
+                    return `${y}-${m}-${day}`;
+                };
+                const weekdayShort = (d) => d.toLocaleDateString("ar-EG", { weekday: "short" });
+
+                // نطاق البحث: من أول يوم متاح فعليًا (minDateObj) لحد 45 يوم بعده -
+                // كافي لعرض شريط الأيام واقتراح أقرب المواعيد حتى لو أيام كتير مكتملة.
+                const rangeStart = new Date(minDateObj);
+                const rangeEnd = new Date(minDateObj);
+                rangeEnd.setDate(rangeEnd.getDate() + 45);
+
+                const rules = siteData.orderRules || {};
+                const maxOrdersPerDay = Number(rules.maxOrdersPerDay) || 0;
+                const maxCustomOrdersPerDay = Number(rules.maxCustomOrdersPerDay) || 0;
+                const capacityFeatureOn = maxOrdersPerDay > 0 || maxCustomOrdersPerDay > 0;
+
+                let capacityMap = {};
+                if (capacityFeatureOn && window.BoseSupabase && typeof window.BoseSupabase.getBoseDailyOrderCapacity === "function") {
+                    capacityMap = await window.BoseSupabase.getBoseDailyOrderCapacity(toDateStr(rangeStart), toDateStr(rangeEnd));
+                }
+
+                function isDayFull(dateStr) {
+                    if (!capacityFeatureOn) return false;
+                    const counts = capacityMap[dateStr] || { orderCount: 0, customOrderCount: 0 };
+                    if (maxOrdersPerDay > 0 && counts.orderCount >= maxOrdersPerDay) return true;
+                    if (hasCustomItem && maxCustomOrdersPerDay > 0 && counts.customOrderCount >= maxCustomOrdersPerDay) return true;
+                    return false;
+                }
+
+                function findNearestAvailableDates(count) {
+                    const found = [];
+                    const cursor = new Date(rangeStart);
+                    while (found.length < count && cursor <= rangeEnd) {
+                        const dStr = toDateStr(cursor);
+                        if (!isDayFull(dStr)) found.push({ dateStr: dStr, dateObj: new Date(cursor) });
+                        cursor.setDate(cursor.getDate() + 1);
+                    }
+                    return found;
+                }
+
+                function selectDate(dateStr) {
+                    dateInputEl.value = dateStr;
+                    dateInputEl.dispatchEvent(new Event("change"));
+                    updateAlert();
+                    dateInputEl.scrollIntoView({ behavior: "smooth", block: "center" });
+                }
+
+                function buildWhatsappFallbackLink() {
+                    const phone = siteData.social?.whatsapp || "201097238441";
+                    const desiredDate = dateInputEl.value || "—";
+                    const desiredTime = timeInputEl ? (timeInputEl.value || "—") : "—";
+                    const itemsSummary = Array.isArray(cartArr) && cartArr.length
+                        ? cartArr.map(it => `${it.title || ""} (×${it.quantity || 1})`).join("، ")
+                        : "طلبي";
+                    const msg = `أهلاً، عايزة أعرف تقدروا تظبطولي طلبي (${itemsSummary}) في يوم ${desiredDate} الساعة ${desiredTime}؟ ولو مش هينفع، ياريت تقترحوا عليّا ميعاد قريب مناسب.`;
+                    return typeof window.buildWhatsappLink === "function"
+                        ? window.buildWhatsappLink(phone, msg)
+                        : `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+                }
+
+                function renderSuggestionChips(container, dates, onPick) {
+                    container.innerHTML = "";
+                    dates.forEach(({ dateStr, dateObj }) => {
+                        const chip = document.createElement("button");
+                        chip.type = "button";
+                        chip.textContent = `${weekdayShort(dateObj)} ${dateObj.getDate()}/${dateObj.getMonth() + 1}`;
+                        chip.style.cssText = "background:#fff; border:1.5px solid var(--bose-pink,#FF91A4); color:var(--bose-pink,#FF91A4); font-weight:700; font-size:0.8rem; padding:8px 14px; border-radius:10px; cursor:pointer;";
+                        chip.addEventListener("click", () => onPick(dateStr));
+                        container.appendChild(chip);
+                    });
+                }
+
+                function updateAlert() {
+                    const currentDate = dateInputEl.value;
+                    const currentTime = timeInputEl ? timeInputEl.value : "";
+                    if (!alertBox || !currentDate) { if (alertBox) alertBox.style.display = "none"; return; }
+
+                    const leadOk = currentTime
+                        ? (typeof window.validateBoseDeliverySchedule !== "function" || window.validateBoseDeliverySchedule(currentDate, currentTime, hasCustomItem))
+                        : (currentDate >= toDateStr(minDateObj));
+                    const capacityOk = !isDayFull(currentDate);
+
+                    if (leadOk && capacityOk) {
+                        alertBox.style.display = "none";
+                        return;
+                    }
+
+                    alertBox.style.display = "block";
+                    alertText.textContent = !capacityOk
+                        ? "للأسف اليوم ده وصل لأقصى عدد طلبات نقدر نجهزه بجودة عالية. تقدري تختاري يوم من الاقتراحات دي، أو تتواصلي معانا مباشرة نحاول نظبطلك الميعاد ده تحديدًا."
+                        : "الميعاد ده أقرب من مدة التحضير اللي محتاجينها. تقدري تختاري يوم من الاقتراحات دي، أو تتواصلي معانا مباشرة لو الميعاد ده مهم جدًا بالنسبالك.";
+
+                    renderSuggestionChips(suggestionsBox, findNearestAvailableDates(3), selectDate);
+                    if (waBtn) waBtn.href = buildWhatsappFallbackLink();
+                }
+
+                // بناء شريط الـ14 يوم القادمة (بداية من أول يوم متاح فعليًا حسب مدة
+                // التحضير) - الأيام المكتملة بتتقفل تلقائيًا وتظهر بشكل مختلف بصريًا.
+                chipStrip.innerHTML = "";
+                const cursor = new Date(minDateObj);
+                for (let i = 0; i < 14; i++) {
+                    const dStr = toDateStr(cursor);
+                    const full = isDayFull(dStr);
+                    const chip = document.createElement("button");
+                    chip.type = "button";
+                    chip.style.cssText = `flex:0 0 auto; min-width:56px; text-align:center; border-radius:12px; padding:10px 8px; font-size:0.85rem; font-weight:700; cursor:${full ? "not-allowed" : "pointer"}; border:1.5px solid ${full ? "#ddd" : "var(--bose-pink,#FF91A4)"}; background:${full ? "#f5f5f5" : "#fff"}; color:${full ? "#aaa" : "var(--bose-pink,#FF91A4)"}; text-decoration:${full ? "line-through" : "none"};`;
+                    chip.innerHTML = `<span style="display:block;">${weekdayShort(cursor)}</span><span style="display:block; font-size:1.1rem;">${cursor.getDate()}</span>`;
+                    if (full) {
+                        chip.disabled = true;
+                        chip.title = "اليوم ده مكتمل، اختاري يوم تاني أو تواصلي معانا";
+                    } else {
+                        chip.addEventListener("click", () => selectDate(dStr));
+                    }
+                    chipStrip.appendChild(chip);
+                    cursor.setDate(cursor.getDate() + 1);
+                }
+                chipWrapper.style.display = "block";
+
+                if (dateInputEl) dateInputEl.addEventListener("change", updateAlert);
+                if (timeInputEl) timeInputEl.addEventListener("change", updateAlert);
+            }
+
             function initializeLocalConfig(siteData) {
                 if (!siteData) return;
 
@@ -682,6 +843,14 @@
                 const mm = String(minDateObj.getMonth() + 1).padStart(2, '0');
                 const yyyy = minDateObj.getFullYear();
                 if (datePicker) datePicker.min = `${yyyy}-${mm}-${dd}`;
+
+                // 📅🆘 [تقويم الإتاحة الذكي + بديل واتساب]: يبني شريط الأيام السريع،
+                // بيقفل الأيام اللي وصلت لسقف الطلبات (لو الأدمن حددت سقف من لوحة
+                // التحكم)، وبيظهر تنبيه فيه أقرب المواعيد المتاحة فعليًا + زرار
+                // واتساب لما العميلة تختار موعد مرفوض بدل ما تتفاجئ برسالة خطأ بس.
+                setupBoseSmartSchedule(siteData, hasCustomItemForDate, minDateObj).catch((e) => {
+                    console.warn("تعذر تفعيل تقويم الإتاحة الذكي:", e);
+                });
                 
                 // تشغيل الرندرة المبدئية والربط مع محرك السلة القياسي المطور
                 if (typeof window.initializeCartEngine === "function") {
