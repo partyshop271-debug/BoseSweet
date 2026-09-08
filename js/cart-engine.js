@@ -874,9 +874,16 @@ function renderBoseCheckoutPage(storeData) {
     const cartIsDigitalOnly = cart.length > 0 && cart.every(item => item.type === "gift-card");
     const fulfillmentSection = document.getElementById("bose-fulfillment-and-schedule-section");
     const digitalNote = document.getElementById("bose-giftcard-digital-note");
+    // 🆕 [إصلاح - نفس فئة مشكلة خانات الاستلام/التوصيل]: خانة "ملاحظات عن
+    // الطلب" كان نصها دايماً بيفترض حلويات فعلية (سكر خفيف/حساسية مكسرات) -
+    // مالهاش معنى لعميلة بتشتري بطاقة هدية رقمية بس. بتتغير هنا لنص عام.
+    const orderNotesLabelEl = document.getElementById("bose-order-notes-label-node");
+    const orderNotesTextareaEl = document.getElementById("checkout-order-notes-textarea");
     if (cartIsDigitalOnly) {
         if (fulfillmentSection) fulfillmentSection.style.display = "none";
         if (digitalNote) digitalNote.style.display = "block";
+        if (orderNotesLabelEl) orderNotesLabelEl.textContent = "أي ملاحظة عن بطاقة الهدية أو طلبك - اختياري";
+        if (orderNotesTextareaEl) orderNotesTextareaEl.placeholder = "مثال: حابة أضيف رسالة تانية للمُهدى إليه...";
         currentShippingMethod = "pickup";
         selectedShippingFee = 0;
         payFullSelected = true;
@@ -972,7 +979,7 @@ function calculateBoseDepositAmount(grandTotal, method, payFull) {
     return { depositAmount: deposit, remainingAmount: Math.round((total - deposit) * 100) / 100 };
 }
 
-function updateBoseDepositPaymentBox(storeData, grandTotal, method, payFull) {
+function updateBoseDepositPaymentBox(storeData, grandTotal, method, payFull, isDigitalOnly) {
     const amountEl = document.getElementById("bose-deposit-amount");
     const remainingRow = document.getElementById("bose-deposit-remaining-row");
     const remainingAmountEl = document.getElementById("bose-deposit-remaining-amount");
@@ -981,12 +988,26 @@ function updateBoseDepositPaymentBox(storeData, grandTotal, method, payFull) {
     const payChoiceRow = document.getElementById("bose-pay-choice-row");
     if (!amountEl) return;
 
-    if (payChoiceRow) payChoiceRow.style.display = method === "delivery" ? "none" : "flex";
+    // 🐛💰 [إصلاح - خيار عربون 50% ظاهر على بطاقة هدية رقمية]: زرار "عربون
+    // 50%" كان بيفضل ظاهر وقابل للضغط حتى لو السلة كلها بطاقات هدايا -
+    // بطاقة الهدية بتتولد وتتبعت كاملة بمجرد تأكيد الدفع (مفيش "تسليم جزئي"
+    // منطقي لكود رقمي)، والسيرفر أصلاً بيفرض الدفع الكامل عليها دايماً
+    // (create_order_with_items: v_cart_is_digital_only → v_deposit_amount =
+    // الإجمالي الكامل، بغض النظر عن اختيار العميلة) - يعني لو العميلة ضغطت
+    // "عربون 50%" هنا، الرقم اللي هتشوفه في الشاشة (نص المبلغ) كان هيبقى غلط
+    // ومختلف عن اللي هيتطلب منها فعلياً وقت المراجعة، وده بالظبط نفس فئة
+    // مشكلة الخانات اللي مالهاش معنى في السياق الحالي. دلوقتي الخيار ده بيتخفي
+    // تماماً على بطاقة الهدية، والمبلغ المعروض دايماً الإجمالي الكامل.
+    if (payChoiceRow) payChoiceRow.style.display = (method === "delivery" || isDigitalOnly) ? "none" : "flex";
 
-    const { depositAmount, remainingAmount } = calculateBoseDepositAmount(grandTotal, method, payFull);
+    const effectivePayFull = isDigitalOnly ? true : payFull;
+    const { depositAmount, remainingAmount } = calculateBoseDepositAmount(grandTotal, method, effectivePayFull);
     amountEl.textContent = depositAmount.toFixed(2) + " EGP";
 
-    if (method === "delivery") {
+    if (isDigitalOnly) {
+        if (labelEl) labelEl.textContent = "المبلغ الكامل المطلوب دفعه الآن (بطاقة هدية رقمية):";
+        if (remainingRow) remainingRow.style.display = "none";
+    } else if (method === "delivery") {
         if (labelEl) labelEl.textContent = "المبلغ الكامل المطلوب دفعه الآن لتأكيد الحجز (توصيل):";
         if (remainingRow) remainingRow.style.display = "none";
     } else if (payFull) {
@@ -1029,7 +1050,8 @@ function recalculateCheckoutInvoice(cart, storeData, shippingFee, method, payFul
         grandTotalDisplay.textContent = invoice.grandTotal + " EGP";
     }
 
-    updateBoseDepositPaymentBox(storeData, invoice.grandTotal, method || "pickup", payFull);
+    const isDigitalOnlyForDeposit = cart.length > 0 && cart.every((item) => item.type === "gift-card");
+    updateBoseDepositPaymentBox(storeData, invoice.grandTotal, method || "pickup", payFull, isDigitalOnlyForDeposit);
 }
 
 /**
@@ -1659,7 +1681,12 @@ function buildBoseFormattedWhatsappInvoice(order) {
             msg += `💳 *عربون تأكيد الحجز المطلوب الآن:* ${order.depositAmount} EGP (كاش أو InstaPay على ${order.paymentPhone})\n`;
             msg += `🧾 *الباقي عند الاستلام:* ${order.remainingAmount} EGP\n`;
         } else {
-            const fullReason = order.deliveryMethod === "توصيل للمنزل" ? "توصيل" : "دفع كامل باختيارها";
+            // 🎁 [نفس فئة إصلاح خانات السياق الخاطئ]: لو الطلب بطاقة هدية رقمية،
+            // "دفع كامل باختيارها" مضلل - الدفع الكامل هنا إجباري (منتج رقمي)
+            // مش اختيار حر زي حالة الاستلام العادي.
+            const fullReason = order.deliveryMethod === "توصيل للمنزل"
+                ? "توصيل"
+                : (order.deliveryMethod === "تسليم رقمي فوري (بطاقة هدية)" ? "بطاقة هدية رقمية" : "دفع كامل باختيارها");
             msg += `💳 *المبلغ الكامل المطلوب الآن (${fullReason}):* ${order.depositAmount} EGP (كاش أو InstaPay على ${order.paymentPhone})\n`;
         }
         msg += `📸 من فضلك ابعتي لقطة شاشة التحويل هنا فور إتمامه وهنأكد الحجز فوراً.\n`;
@@ -1885,7 +1912,12 @@ function renderBoseSuccessPage(storeData) {
             if (depRemainingRow) depRemainingRow.style.display = "flex";
             if (depRemainingEl) depRemainingEl.textContent = order.remainingAmount + " EGP";
         } else {
-            const fullReason = order.deliveryMethod === "توصيل للمنزل" ? "توصيل" : "دفع كامل باختيارها";
+            // 🎁 [نفس فئة إصلاح خانات السياق الخاطئ]: لو الطلب بطاقة هدية رقمية،
+            // "دفع كامل باختيارها" مضلل - الدفع الكامل هنا إجباري (منتج رقمي)
+            // مش اختيار حر زي حالة الاستلام العادي.
+            const fullReason = order.deliveryMethod === "توصيل للمنزل"
+                ? "توصيل"
+                : (order.deliveryMethod === "تسليم رقمي فوري (بطاقة هدية)" ? "بطاقة هدية رقمية" : "دفع كامل باختيارها");
             if (depLabelEl) depLabelEl.textContent = `المبلغ الكامل المطلوب الآن (${fullReason}):`;
             if (depRemainingRow) depRemainingRow.style.display = "none";
         }
