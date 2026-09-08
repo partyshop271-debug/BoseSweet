@@ -162,33 +162,28 @@ body {
             <!-- وسم حقن كروت السلة الأفقية الفخمة والمحمية ضد البتر -->
             <div id="cart-items-wrapper" class="cart-items-collection"></div>
 
-            <!-- توصيات وملاحظات العميل الاختيارية لسلامة التحضير اللوجستي والطبي -->
-            <div class="checkout-details-card" style="margin-top: 24px; padding: 24px; background: #FFFFFF; border: 1px solid rgba(255,145,164,0.2); border-radius: 16px;">
-                <h4 class="product-option-title" style="margin-bottom: 14px; font-weight: 700; color: #111111; font-size: 1rem;">
-                    <i class="fas fa-pen-fancy" style="color: #FF91A4; margin-left: 6px;"></i> عندك أي ملاحظات أو طلبات خاصة بالتحضير؟ (اختياري)
-                </h4>
-                <textarea id="checkout-order-notes-textarea" class="product-custom-input" placeholder="مثال: لو حابب نلغي المكسرات من حشوة التورتة عشان الحساسية، أو حابب نكلمك في التليفون قبل التوصيل بوقت كافٍ..." style="height: 100px; font-family: 'Cairo', sans-serif; font-size: 0.92rem; padding: 14px; border: 1px solid rgba(255,145,164,0.2); border-radius: 12px; resize: none; width: 100%; box-sizing: border-box; background: rgba(255, 145, 164, 0.08); color: #111111;"></textarea>
-            </div>
+            <!-- 🗑️ [إصلاح - حقل ملاحظات ميت + تكرار مربك]: كان هنا حقل ملاحظات
+                 منفصل بنفس الـ id بتاع حقل ملاحظات صفحة إتمام الطلب (checkout-order-notes-textarea)
+                 لكن من غير أي كود بيقرأ قيمته خالص - يعني أي حاجة العميلة تكتبها هنا
+                 كانت بتضيع تماماً وبتتسأل نفس السؤال تاني من الصفر في صفحة إتمام
+                 الطلب (اللي هي الحقل الفعلي الوحيد المتصل بالطلب فعلياً). ده كان
+                 بيخلي العميلة تحس إنها بتتكلم مرتين عن نفس الحاجة، وكمان نصه
+                 كان دايماً بيفترض تورت (حشوة/مكسرات) حتى لو الطلب ورد بس. الحقل
+                 الحقيقي الوحيد دلوقتي هو اللي في صفحة إتمام الطلب فقط. -->
         </div>
 
         <!-- الجانب الأيسر: ملخص الطلب المالي والكوبونات الذكية -->
         <div class="bose-summary-sticky-card">
             <h3 class="summary-section-title">ملخص الطلب</h3>
 
-            <!-- 🎯🆕 [خانة خصم ذكية موحدة]: بتقبل كود خصم أو قسيمة ولاء أو بطاقة
-                 هدية مع بعض في نفس الخانة - بتتعرف على نوع الكود لوحدها
-                 (resolve_discount_code) وتطبقه صح. راجع wireBoseSmartDiscountBox
-                 في cart-engine.js. الأكواد دي بتفضل شغالة معاكي لو كملتي لصفحة
-                 إتمام الطلب برضه. -->
-            <div class="coupon-form-container">
-                <input type="text" id="coupon-input" class="coupon-input-field" placeholder="عندك كود خصم أو قسيمة ولاء أو بطاقة هدية؟ اكتبيه هنا...">
-                <button type="button" id="btn-apply-coupon" class="coupon-apply-trigger">تطبيق</button>
-                <button type="button" class="bose-info-badge-inline"
-                        data-bose-info-title="عندي كود خصم منين؟"
-                        data-bose-info-text="اكتبي أي كود عندك في الخانة دي - كود خصم عادي، قسيمة ولاء من نظام نقاط الولاء، أو حتى كود بطاقة هدية اتهديتيها من حد - وإحنا هنتعرف على نوعه ونطبقه صح لوحدنا. تقدري تضيفي أكتر من كود مع بعض. لو مفيش كود، تجاهلي الخانة دي وكمّلي عادي.">ⓘ</button>
-            </div>
-            <div id="coupon-message" class="coupon-status-toast"></div>
-            <div id="coupon-chips" style="margin-top:8px;"></div>
+            <!-- 🗑️ [إصلاح - خطوة إدخال كود مكررة ومربكة]: كان هنا نفس خانة الكود
+                 الذكية اللي موجودة في صفحة إتمام الطلب - أي كود يتطبق هنا بيفضل
+                 شغال تلقائياً في إتمام الطلب برضه (بيتخزن في bose_active_discounts)،
+                 فوجودها في المكانين مع بعض كان تكرار حرفي لنفس الخطوة بلا أي فايدة
+                 حقيقية، وكان بيدي العميلة إحساس إن فيه حاجة ناقصة أو محتاجة تتعمل
+                 تاني في الخطوة الجاية. خانة الكود دلوقتي في صفحة إتمام الطلب فقط -
+                 نقطة دخول واحدة واضحة، ومع ذلك أي كود اتطبق (لو حصل من كود قديم
+                 محفوظ) لسه بيظهر أثره في "الخصم المطبق" تحت زي ما هو. -->
 
             <div class="summary-pricing-table">
                 <div class="pricing-row-node">
@@ -241,7 +236,7 @@ body {
 <div id="bose-footer-injector"></div>
 
 <!-- استدعاء محرك العمليات والحسابات الموحد للطلب والسلة -->
-<script src="js/cart-engine.js?v=2029_production_v46.0" defer></script>
+<script src="js/cart-engine.js?v=2029_production_v47.0" defer></script>
 
 <!-- كود حقن صور المقترحات المطور وتأمين تجربة الإضافة واللمس دون Full Refresh للبيانات -->
 <script>
