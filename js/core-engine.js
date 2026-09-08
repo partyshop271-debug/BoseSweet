@@ -429,10 +429,21 @@
             themeMeta.content = '#FF91A4';
             document.head.appendChild(themeMeta);
         }
+        /**
+         * 👑👑 [حل جذري - سباق التوقيت على النت البطيء]: كان التسجيل هنا مؤجَّل
+         * لحد ما تنطلق window 'load' (يعني: لحد ما كل حاجة في الصفحة تخلص تحميل
+         * تمامًا - كل الصور والفيديوهات كمان، مش بس النص). على نت بطيء (زي بعض
+         * مناطقنا اللي بتوصل لـ 13 كيلوبايت/ثانية) ده ممكن ياخد كذا ثانية زيادة،
+         * وأي عميل يضغط "تثبيت التطبيق" قبل ما التسجيل يخلص بيبقى Chrome لسه
+         * شايف الموقع "مش مؤهل للتثبيت الكامل" في اللحظة دي، فبيرجّعله اختصار
+         * عادي (Add to Home Screen) بدل تطبيق حقيقي (WebAPK) - حتى لو ضغط زرار
+         * "تثبيت" بالظبط. الحل: نسجّل فورًا من غير أي انتظار خالص - التسجيل
+         * أصلاً غير متزامن (async) ومبيمنعش أي حاجة تانية من التحميل، وملف sw.js
+         * نفسه صغير جدًا، فمفيش أي فايدة حقيقية من تأجيله، وتسجيله بدري يخلّي
+         * الموقع "مؤهل للتثبيت" في أسرع وقت ممكن حتى على أضعف اتصال.
+         */
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js').catch(() => { /* فشل صامت - متأثرش على تجربة العميل العادية */ });
-            });
+            navigator.serviceWorker.register('/sw.js').catch(() => { /* فشل صامت - متأثرش على تجربة العميل العادية */ });
         }
     })();
 
@@ -486,7 +497,47 @@
      * لما يبقى فيه روابط متجر حقيقية، استبدلي محتوى الدالة دي بفتح الرابط المناسب
      * حسب نظام تشغيل الجهاز (iOS → App Store link، Android → Google Play link).
      */
+    /**
+     * 👑👑 [حل جذري - إغلاق فجوة السباق نهائيًا]: حتى بعد تسريع تسجيل الـ
+     * service worker، ممكن يفضل فيه نافذة زمنية صغيرة (ثانية أو اتنين) على نت
+     * بطيء جدًا بين لحظة ضغط العميل "تثبيت" ولحظة ما Chrome يطلق حدث
+     * beforeinstallprompt فعليًا. قبل كده كنا بنرجّع فورًا رسالة "روحي دوري في
+     * القائمة يدوي" في اللحظة دي بالظبط - وده كان بيضمن عمليًا إن العميل ياخد
+     * اختصار عادي بالغلط (لأن القائمة وقتها لسه فعلاً مش هتعرض "تثبيت التطبيق").
+     * الحل: بدل الاستسلام الفوري، نستنى لحد 6 ثواني كاملة لفرصة حقيقية إن
+     * الحدث يوصل، ونفعّل التثبيت الحقيقي أول ما يوصل تلقائيًا - العميل يحس إنه
+     * ضغط زرار واحد بس واتثبت التطبيق صح، من غير ما يحتاج يعرف تفاصيل تقنية.
+     */
+    function waitForBoseInstallPromptEvent(timeoutMs) {
+        return new Promise((resolve) => {
+            if (boseDeferredInstallPrompt) { resolve(true); return; }
+            let settled = false;
+            const check = setInterval(() => {
+                if (boseDeferredInstallPrompt && !settled) {
+                    settled = true;
+                    clearInterval(check);
+                    resolve(true);
+                }
+            }, 200);
+            setTimeout(() => {
+                if (!settled) {
+                    settled = true;
+                    clearInterval(check);
+                    resolve(false);
+                }
+            }, timeoutMs);
+        });
+    }
+
     window.triggerBoseAppInstall = async function() {
+        if (!boseDeferredInstallPrompt) {
+            // لسه محصلش الحدث - ممكن يبقى وصل خلال كام ثانية على نت بطيء، نستناه
+            // بدل ما نستسلم فورًا (شايفي الشرح فوق).
+            if (window.showBoseGlobalToast) {
+                window.showBoseGlobalToast('لحظات، بنجهّزلك التثبيت...');
+            }
+            await waitForBoseInstallPromptEvent(6000);
+        }
         if (boseDeferredInstallPrompt) {
             boseDeferredInstallPrompt.prompt();
             const choice = await boseDeferredInstallPrompt.userChoice;
