@@ -14,7 +14,6 @@
    0. إخفاء الشريط السفلي العام على الصفحة دي واستبداله بشريط CTA خاص
    --------------------------------------------------------------------- */
 .bose-bottom-nav-bar,
-.bose-floating-cart-btn { display: none !important; }
 
 body.gcb-body {
     padding-bottom: 0 !important;
