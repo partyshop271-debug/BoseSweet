@@ -271,7 +271,7 @@
     </style>
 
     <!-- المحرك العام (يُستدعى أولاً في رأس كل الصفحات لقراءة قاعدة البيانات) -->
-    <script src="js/supabase-client.js?v=2026_production_v43.0" defer></script>
+    <script src="js/supabase-client.js?v=2027_production_v43.0" defer></script>
     <script src="js/push-notifications.js?v=1.0" defer></script>
     <script src="js/favorites-engine.js?v=2026_production_v38.0" defer></script>
     <!-- 🛡️🆕 [إصلاح ترتيب]: loyalty-config.js لازم يتحمّل *قبل* core-engine.js (شوفي
@@ -280,8 +280,8 @@
          تتعرّف أصلاً، فبانر الولاء في صفحة الدفع (#bose-checkout-loyalty-banner)
          كان بيرجع لأرقام افتراضية ثابتة بدل قيمة القسيمة الحقيقية من لوحة التحكم. -->
     <script src="js/loyalty-config.js?v=2026_production_v1.0" defer></script>
-    <script src="js/core-engine.js?v=2027_production_v56.0" defer></script>
-    <script src="js/guided-tour.js?v=3.2" defer></script>
+    <script src="js/core-engine.js?v=2028_production_v56.0" defer></script>
+    <script src="js/guided-tour.js?v=3.3" defer></script>
 </head>
 <body class="bose-hardware-accelerated Pw-checkout-view">
 
@@ -329,34 +329,23 @@
                         <span class="bose-field-error-msg" id="err-checkout-customer-phone-2"><i class="fa-solid fa-circle-exclamation"></i><span></span></span>
                     </div>
 
-                    <!-- 🎁 [نظام نقاط الولاء]: قسيمة الولاء (300 جنيه، بتتكسب كل 10 طلبات) -
-                         اختيارية، بتظهر جنبها القسائم النشطة المتاحة على رقم العميلة تلقائياً
-                         بمجرد التأكد من رقم الهاتف، مع زرار سريع لتعبئة الكود. -->
+                    <!-- 🎯🆕 [خانة خصم ذكية موحدة]: خانة واحدة بس بدل 3 خانات منفصلة
+                         (كود خصم/قسيمة ولاء/بطاقة هدية) - بتحدد نوع الكود المكتوب
+                         تلقائياً (resolve_discount_code) وتطبقه صح. بتدعم أكتر من
+                         كود شغال مع بعض (chips قابلة للإلغاء تحت الخانة). راجع
+                         wireBoseSmartDiscountBox في cart-engine.js. -->
                     <div class="input-group-node">
-                        <label for="checkout-voucher-code">عندك قسيمة ولاء؟ اكتبي كودها هنا (اختياري)
+                        <label for="checkout-discount-code">عندك كود خصم أو قسيمة ولاء أو بطاقة هدية؟ (اختياري)
                             <button type="button" class="bose-info-badge-inline"
-                                    data-bose-info-title="قسيمة الولاء دي إيه؟"
-                                    data-bose-info-text="قسيمة الولاء بتتكسب تلقائياً كل ما تكمّلي عدد معين من الطلبات معانا، وبتدّيكِ خصم على طلب جديد. لو عندك رقم هاتف مسجّل ومعاكِ قسيمة نشطة، هتلاقيها ظاهرة تلقائياً هنا بعد ما تكتبي رقمك فوق. القسيمة دي مختلفة عن كود الخصم العادي اللي بتكتبيه في صفحة السلة.">ⓘ</button>
+                                    data-bose-info-title="إيه الفرق بينهم؟"
+                                    data-bose-info-text="اكتبي أي كود عندك في الخانة دي - سواء كود خصم عادي، أو قسيمة ولاء بتتكسب تلقائياً كل ما تكمّلي عدد معين من الطلبات معانا، أو كود بطاقة هدية اتهديتيها من حد - وإحنا هنتعرف على نوعه ونطبقه صح لوحدنا. لو عندك أكتر من كود، تقدري تضيفيهم كلهم واحد ورا التاني من نفس الخانة.">ⓘ</button>
                         </label>
                         <div style="display:flex; gap:8px;">
-                            <input type="text" id="checkout-voucher-code" class="bose-field-capture" placeholder="مثال: BOSE-XXXXXX" style="flex:1; text-transform:uppercase;">
-                            <button type="button" id="btn-apply-loyalty-voucher" style="white-space:nowrap; background:#FF91A4; color:#fff; border:none; border-radius:10px; padding:0 18px; font-family:'Cairo',sans-serif; font-weight:700; cursor:pointer;">تفعيل</button>
+                            <input type="text" id="checkout-discount-code" class="bose-field-capture" placeholder="اكتبي الكود هنا وهيتطبق تلقائي..." style="flex:1; text-transform:uppercase;">
+                            <button type="button" id="btn-apply-discount-code" style="white-space:nowrap; background:#FF91A4; color:#fff; border:none; border-radius:10px; padding:0 18px; font-family:'Cairo',sans-serif; font-weight:700; cursor:pointer;">تطبيق</button>
                         </div>
-                        <div id="checkout-voucher-message" style="font-size:0.85rem; margin-top:6px;"></div>
-                    </div>
-
-                    <!-- 🎁 [استخدام كود بطاقة هدية]: حقل مستقل عن القسيمة/الكوبون -
-                         الباك إند (create_order_with_items) بيقبل p_gift_card_code
-                         من زمان وبيحسب الخصم صح، بس محدش كان بناله واجهة استخدام
-                         في الشيك أوت. cart-engine.js هو اللي بيربط الزرار بـ
-                         validate_gift_card_code ويحدّث الفاتورة المعروضة فوراً. -->
-                    <div class="input-group-node">
-                        <label for="checkout-giftcard-code">معاك كود بطاقة هدية؟ اكتبه هنا (اختياري)</label>
-                        <div style="display:flex; gap:8px;">
-                            <input type="text" id="checkout-giftcard-code" class="bose-field-capture" placeholder="مثال: GIFT-XXXXXXXX" style="flex:1; text-transform:uppercase;">
-                            <button type="button" id="btn-apply-gift-card" style="white-space:nowrap; background:#FF91A4; color:#fff; border:none; border-radius:10px; padding:0 18px; font-family:'Cairo',sans-serif; font-weight:700; cursor:pointer;">تفعيل</button>
-                        </div>
-                        <div id="checkout-giftcard-message" style="font-size:0.85rem; margin-top:6px;"></div>
+                        <div id="checkout-discount-message" style="font-size:0.85rem; margin-top:6px;"></div>
+                        <div id="checkout-discount-chips" style="margin-top:8px;"></div>
                     </div>
 
                     <!-- 🎁 [بطاقة هدية = منتج رقمي]: بتظهر بس لو السلة كلها بطاقات
@@ -567,7 +556,7 @@
     <div id="bose-footer-injector"></div>
 
     <!-- ⚡ استدعاء محرك السلة وإتمام عمليات الحساب والدفع والربط اللوجستي المركزي (js/cart-engine.js) ⚡ -->
-    <script src="js/cart-engine.js?v=2027_production_v46.0" defer></script>
+    <script src="js/cart-engine.js?v=2028_production_v46.0" defer></script>
 
     <!-- 🔮 سكريبت التزامن الدفاعي المحلي لربط وحقن الواجهات وضمان فك شلل حقول الصفحة دون تعارض خارجي 🔮 -->
     <script>
