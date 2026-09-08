@@ -419,7 +419,17 @@
                          ظاهر وواضح من غير ما تدوس على حاجة. -->
                     <div id="checkout-prep-time-notice" style="display:flex; align-items:flex-start; gap:10px; background: rgba(255,145,164,0.1); border: 1px solid rgba(255,145,164,0.4); border-radius: 14px; padding: 14px 16px; margin-bottom: 14px; direction: rtl;">
                         <i class="fas fa-clock" style="color:#FF91A4; margin-top:2px; font-size: 1rem;"></i>
-                        <p id="checkout-preparation-message" style="margin:0; font-size:0.85rem; font-weight:600; color:#111111; line-height:1.7; text-align: right;"></p>
+                        <div>
+                            <p id="checkout-preparation-message" style="margin:0; font-size:0.85rem; font-weight:600; color:#111111; line-height:1.7; text-align: right;"></p>
+                            <!-- 🕐👑 [توضيح واضح قدام العميل مباشرة - نظام "طلب مستعجل"]: قبل
+                                 كده الخيار الجديد (إن العميلة اللي مستعجلة تقدر تسألنا وممكن
+                                 ننفذلها لو ظروفنا سمحت) كان معروف بس لو ضغطت على ⓘ الحقل، أو
+                                 لو اختارت تاريخ غلط وبانلها رسالة خطأ - يعني مش كل حد هيعرف
+                                 بيه من الأساس. دلوقتي سطر ثابت الظهور هنا في نفس البانر
+                                 الرئيسي، من أول ما الصفحة تفتح، من غير ما تلمس أي حاجة.
+                                 مستقل عن prepMsgNode عشان يفضل ظاهر حتى لو النص التاني اتغيّر. -->
+                            <p id="checkout-rush-order-notice" style="margin:6px 0 0; font-size:0.8rem; font-weight:600; color:#B4750F; line-height:1.6; text-align: right;">⏱ مستعجلة أكتر من كده؟ تقدري تختاري ميعاد أقرب من الشريط تحت أو من التقويم - هنتواصل معاكي على طول نتأكد لو نقدر ننفذه، بس مش مضمون.</p>
+                        </div>
                     </div>
 
                     <!-- 📅 [تقويم الإتاحة الذكي]: شريط أيام سريع بيعرض أقرب الأيام
@@ -620,32 +630,24 @@
                 cartArr = [];
             }
 
-            // 🛡️👑 [إصلاح جذري - العميل قادر يختار موعد أقرب من مدة التحضير]:
-            // حقل تاريخ التسليم (checkout-delivery-date) كان من غير أي min خالص
-            // في الـHTML الخام، وأول min بيتحط عليه بيحصل بس بعد ما بيانات
-            // المتجر توصل من القاعدة (initializeLocalConfig → setupBoseSmartSchedule،
-            // سطر ~928 تحت) - يعني في الفترة (ولو أجزاء ثانية) قبل ما البيانات
-            // توصل، خصوصًا على نت بطيء، الحقل كان مفتوح تمامًا وتقدر تختاري
-            // أي تاريخ فيه - حتى النهاردة نفسه - قبل ما القيد يتفعّل. لو
-            // العميلة اختارت التاريخ في اللحظة دي بالظبط، القيمة كانت بتفضل
-            // محفوظة في الحقل حتى بعد ما الـmin الحقيقي يتحط بعدين (المتصفح
-            // مبيمسحش قيمة موجودة مسبقًا لمجرد تغيير min). هنا بنحط حد أدنى
-            // احتياطي فوري (بنفس القيم الافتراضية الرسمية 48/168 ساعة) قبل
-            // أي انتظار للشبكة، فالحقل يبقى محمي من أول لحظة - وبعدين لما
-            // القواعد الحقيقية من لوحة التحكم توصل، بيتحدّث لقيمتها الدقيقة
-            // (ممكن تكون مختلفة شوية لو الأدمن غيّرتها) وبيتفحص القيمة الحالية
-            // تاني (تحت في initializeLocalConfig) - لو باظت بعد التحديث، بتتمسح.
+            // 🛡️👑 [تحديث السياسة - نظام "طلب مستعجل" الجديد]: قبل كده كان
+            // الحقل بيتقفل تمامًا (min = أول موعد رسمي متاح) فمينفعش تختاري
+            // تاريخ أقرب من مدة التحضير خالص - حتى لو كنتِ مستعجلة وعايزة
+            // تسألي لو ظروفنا بتسمح. دلوقتي السياسة اتغيّرت: أي تاريخ من
+            // النهاردة فصاعدًا يفضل قابل للاختيار (منطقيًا مينفعش تختاري
+            // تاريخ فات)، ولو اخترتِ يوم أقرب من مدة التحضير الرسمية، هيظهرلك
+            // تنبيه واضح إنه مش مضمون وزرار تتواصلي بيه معانا على طول
+            // (المنطق ده موجود فعلاً في updateAlert() تحت - مبيتأثرش بالتغيير
+            // ده، كان شغال صح من قبل). الحد الأدنى بقى "النهاردة" بس - بسيط
+            // وثابت من غير أي انتظار لبيانات أو حسابات، فمفيش أي فرصة تانية
+            // لثغرة السباق القديمة (اختيار تاريخ فات فعلاً) من الأساس.
             (function setImmediateSafeDateMinimum() {
                 const dateInputEarly = document.getElementById("checkout-delivery-date");
                 if (!dateInputEarly) return;
-                const hasCustomNow = typeof window.boseCartHasCustomItem === "function"
-                    ? window.boseCartHasCustomItem(cartArr) : false;
-                const safeLeadDays = Math.ceil((hasCustomNow ? 168 : 48) / 24);
-                const safeMinObj = new Date();
-                safeMinObj.setDate(safeMinObj.getDate() + safeLeadDays);
-                const yyyy = safeMinObj.getFullYear();
-                const mm = String(safeMinObj.getMonth() + 1).padStart(2, "0");
-                const dd = String(safeMinObj.getDate()).padStart(2, "0");
+                const now = new Date();
+                const yyyy = now.getFullYear();
+                const mm = String(now.getMonth() + 1).padStart(2, "0");
+                const dd = String(now.getDate()).padStart(2, "0");
                 dateInputEarly.min = `${yyyy}-${mm}-${dd}`;
             })();
 
@@ -709,7 +711,12 @@
 
                 let capacityMap = {};
                 if (capacityFeatureOn && window.BoseSupabase && typeof window.BoseSupabase.getBoseDailyOrderCapacity === "function") {
-                    capacityMap = await window.BoseSupabase.getBoseDailyOrderCapacity(toDateStr(rangeStart), toDateStr(rangeEnd));
+                    // 🕐 [تحديث]: بنجيب بيانات السعة بداية من النهاردة (مش بس من
+                    // أول موعد رسمي) عشان أيام "الطلب المستعجل" الجديدة في الشريط
+                    // تقدر كمان تتقفل صح لو وصلت لسقف الطلبات، مش تفضل دايمًا فاضية
+                    // بس لأن مفيش بيانات ليها.
+                    const todayForCapacity = new Date(); todayForCapacity.setHours(0, 0, 0, 0);
+                    capacityMap = await window.BoseSupabase.getBoseDailyOrderCapacity(toDateStr(todayForCapacity), toDateStr(rangeEnd));
                 }
 
                 function isDayFull(dateStr) {
@@ -862,21 +869,33 @@
                     if (waBtn) waBtn.href = buildWhatsappFallbackLink();
                 }
 
-                // بناء شريط الـ14 يوم القادمة (بداية من أول يوم متاح فعليًا حسب مدة
-                // التحضير) - الأيام المكتملة بتتقفل تلقائيًا وتظهر بشكل مختلف بصريًا.
+                // 🕐👑 [تحديث السياسة - نظام "طلب مستعجل"]: الشريط كان بيبدأ من
+                // minDateObj بس (أول يوم رسمي مضمون) فمكانش فيه أي طريقة تضغطي
+                // بيها على يوم أقرب - لازم تكتبيه يدوي في حقل التاريخ. دلوقتي
+                // الشريط بيبدأ من النهاردة، وأيام "الطلب المستعجل" (قبل الموعد
+                // الرسمي) ليها شكل مختلف واضح (لون كهرماني + أيقونة ⏱) يوضح إنها
+                // "تحتاج تأكيد منا" مش "متاحة أوتوماتيك" زي باقي الأيام.
                 chipStrip.innerHTML = "";
-                const cursor = new Date(minDateObj);
-                for (let i = 0; i < 14; i++) {
+                const todayForChips = new Date();
+                todayForChips.setHours(0, 0, 0, 0);
+                const rushDaysCount = Math.max(0, Math.round((minDateObj - todayForChips) / 86400000));
+                const cursor = new Date(todayForChips);
+                for (let i = 0; i < rushDaysCount + 14; i++) {
                     const dStr = toDateStr(cursor);
                     const full = isDayFull(dStr);
+                    const isRushDay = cursor < minDateObj;
                     const chip = document.createElement("button");
                     chip.type = "button";
-                    chip.style.cssText = `flex:0 0 auto; min-width:56px; text-align:center; border-radius:12px; padding:10px 8px; font-size:0.85rem; font-weight:700; cursor:${full ? "not-allowed" : "pointer"}; border:1.5px solid ${full ? "#ddd" : "var(--bose-pink,#FF91A4)"}; background:${full ? "#f5f5f5" : "#fff"}; color:${full ? "#aaa" : "var(--bose-pink,#FF91A4)"}; text-decoration:${full ? "line-through" : "none"};`;
-                    chip.innerHTML = `<span style="display:block;">${weekdayShort(cursor)}</span><span style="display:block; font-size:1.1rem;">${cursor.getDate()}</span>`;
+                    let borderColor = "var(--bose-pink,#FF91A4)", bgColor = "#fff", textColor = "var(--bose-pink,#FF91A4)";
+                    if (full) { borderColor = "#ddd"; bgColor = "#f5f5f5"; textColor = "#aaa"; }
+                    else if (isRushDay) { borderColor = "#E8A33D"; bgColor = "#FFF7EA"; textColor = "#B4750F"; }
+                    chip.style.cssText = `flex:0 0 auto; min-width:56px; text-align:center; border-radius:12px; padding:10px 8px; font-size:0.85rem; font-weight:700; cursor:${full ? "not-allowed" : "pointer"}; border:1.5px solid ${borderColor}; background:${bgColor}; color:${textColor}; text-decoration:${full ? "line-through" : "none"};`;
+                    chip.innerHTML = `<span style="display:block;">${isRushDay && !full ? "⏱ " : ""}${weekdayShort(cursor)}</span><span style="display:block; font-size:1.1rem;">${cursor.getDate()}</span>`;
                     if (full) {
                         chip.disabled = true;
                         chip.title = "اليوم ده مكتمل، اختاري يوم تاني أو تواصلي معانا";
                     } else {
+                        if (isRushDay) chip.title = "الموعد ده أقرب من مدة التحضير المعتادة - مش مضمون، هنتواصل معاكي نتأكد لو نقدر ننفذه";
                         chip.addEventListener("click", () => selectDate(dStr));
                     }
                     chipStrip.appendChild(chip);
@@ -952,7 +971,7 @@
                     const minPrepHoursForTooltip = siteData.orderRules?.minPreparationTimeHours || 48;
                     dateInfoBadge.setAttribute("data-bose-info-title", "ليه مش كل التواريخ متاحة؟");
                     dateInfoBadge.setAttribute("data-bose-info-text",
-                        `الاستلام والتوصيل بيكونوا بس من الساعة ${fmtHour(bhStart)} لحد ${fmtHour(bhEnd)}، فأي وقت خارج النطاق ده مش هيتقبل. وأقرب موعد متاح ليكي هو بعد مرور مدة التحضير الموضحة فوق (${minPrepHoursForTooltip} ساعة للمنتجات العادية).`);
+                        `الاستلام والتوصيل بيكونوا بس من الساعة ${fmtHour(bhStart)} لحد ${fmtHour(bhEnd)}، فأي وقت خارج النطاق ده مش هيتقبل. وأقرب موعد مضمون ليكي هو بعد مرور مدة التحضير الموضحة فوق (${minPrepHoursForTooltip} ساعة للمنتجات العادية) - بس لو الميعاد أقرب من كده مهم لك، تقدري تختاريه برضه وهنتواصل معاكي نتأكد لو نقدر ننفذه.`);
                 }
 
                 // 🛡️ [إصلاح - المرحلة 2]: قبل كده كان حامي التاريخ بيفرض بكرة (24 ساعة)
@@ -990,28 +1009,33 @@
                     checkoutMixedBanner.style.display = isMixedOrderCheckout ? "flex" : "none";
                 }
 
-                // ضبط حامي التاريخ ليكون أول موعد متاح فعلياً حسب نوع الطلب (بكرة للعادي، بعد أسبوع للمخصص)
+                // minDateObj يفضل هو "أول موعد رسمي مضمون" (بيتحسب زي الأول
+                // بالظبط) - بس بقى بيُستخدم كعتبة تنبيه ناعم (تحت في updateAlert
+                // وشريط الأيام)، مش كحد قفل صارم على الحقل نفسه. أي تاريخ من
+                // النهاردة فصاعدًا يفضل قابل للاختيار فعليًا.
                 const minDateObj = new Date();
                 minDateObj.setDate(minDateObj.getDate() + leadDays);
-                const dd = String(minDateObj.getDate()).padStart(2, '0');
-                const mm = String(minDateObj.getMonth() + 1).padStart(2, '0');
-                const yyyy = minDateObj.getFullYear();
                 if (datePicker) {
-                    datePicker.min = `${yyyy}-${mm}-${dd}`;
-                    // 🛡️👑 [الطبقة التانية من الإصلاح]: لو العميلة لحقت تختار تاريخ
-                    // في الفترة القصيرة اللي كان فيها الحقل من غير min حقيقي (قبل
-                    // ما بيانات المتجر توصل)، تغيير .min دلوقتي لوحده مش هيمسح
-                    // القيمة القديمة الغلط تلقائيًا - المتصفح مش بيعيد فحص قيمة
-                    // موجودة مسبقًا لمجرد تغيير الحد الأدنى. فبنفحص إحنا بأنفسنا:
-                    // لو القيمة الحالية أقدم من الحد الحقيقي الجديد، بنمسحها فورًا
-                    // (بدل ما تفضل قابعة في الحقل لحد ما العميلة تضغط "تأكيد" وتتفاجئ).
-                    if (datePicker.value && datePicker.value < datePicker.min) {
+                    // 🛡️👑 [تحديث السياسة - نظام "طلب مستعجل"]: قبل كده كان .min
+                    // بيتحط على minDateObj (يقفل أي تاريخ أقرب من مدة التحضير
+                    // تمامًا من الحقل نفسه). دلوقتي - بعد إتاحة خيار "اسألينا لو
+                    // الميعاد يهمك" - بنسيب .min على "النهاردة" بس (الاحتياطي
+                    // الفوري اللي اتحط فوق من أول لحظة)، فأي تاريخ من النهاردة
+                    // فصاعدًا يفضل قابل للاختيار في التقويم نفسه، والتنبيه الناعم
+                    // (updateAlert تحت) هو اللي بيوضح لو الموعد ده محتاج تأكيد
+                    // يدوي، مش الحقل نفسه بيرفضه من الأساس.
+                    const nowStr = (() => { const n = new Date(); return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`; })();
+                    if (!datePicker.min || datePicker.min < nowStr) datePicker.min = nowStr;
+                    // خط دفاع أخير: لو قيمة موجودة أقدم من النهاردة فعلاً (حالة
+                    // نادرة جدًا)، امسحيها - تاريخ فات مينفعش يتسلّم فيه أي حاجة.
+                    if (datePicker.value && datePicker.value < nowStr) {
                         datePicker.value = "";
                         if (typeof window.showBoseGlobalToast === "function") {
-                            window.showBoseGlobalToast("عذراً، الموعد اللي اخترتيه أقرب من مدة التحضير المطلوبة - اختاري ميعاد تاني من فضلك.");
+                            window.showBoseGlobalToast("الموعد اللي كان محدد فات - اختاري ميعاد تاني من فضلك.");
                         }
                     }
                 }
+
 
                 // 📅🆘 [تقويم الإتاحة الذكي + بديل واتساب]: يبني شريط الأيام السريع،
                 // بيقفل الأيام اللي وصلت لسقف الطلبات (لو الأدمن حددت سقف من لوحة
