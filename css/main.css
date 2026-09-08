@@ -958,7 +958,12 @@
 
 @media (max-width: 550px) {
     .products-grid, .bose-products-grid { grid-template-columns: minmax(0, 1fr) !important; }
-    #our-products-grid.products-grid { grid-template-columns: minmax(0, 1fr) !important; }
+    /* 🐛🛡️ [إصلاح - كروت منتجاتنا ترصت تحت بعض بدل كارتين جنب بعض]: القاعدة
+       العامة فوق كانت بتفرض عمود واحد على كل شبكات .products-grid تحت 550px،
+       بما فيهم #our-products-grid - بينما باقي المدى (551-767px تحت) بيفرض
+       عمودين. الأدمن أكدت إن الشكل المطلوب هو عمودين جنب بعض دايمًا، حتى على
+       أصغر الشاشات - فبنستثنيه هنا صراحة بعمودين بدل ما ياخد القاعدة العامة. */
+    #our-products-grid.products-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 12px !important; }
 }
 
 /* [إصلاح تعارض]: #most-selling-grid و #new-arrivals-grid بالتحديد لازم يبقوا
