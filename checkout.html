@@ -10,7 +10,7 @@
     
     <!-- 🔍 إعدادات تحسين محركات البحث والأرشفة الفاخرة SEO الملتزمة بمواصفة البراند 🔍 -->
     <title>إتمام الطلب الفاخر | حلويات بوسي</title>
-    <meta name="description" content="أدخل بياناتك اللوجستية لمراجعة وتأكيد فاتورتك الملكية وتنسيق التوصيل الفوري لطلبك من حلويات بوسي.">
+    <meta name="description" content="أدخلي بياناتك عشان نأكد طلبك ونحدد ميعاد التوصيل أو الاستلام من حلويات بوسي.">
     <meta name="robots" content="noindex, follow">
     
     <!-- ⚡ [إصلاح أداء]: preconnect ناقص كان بيأخر أول اتصال بمصادر الخط والصور والأيقونات -->
@@ -292,20 +292,20 @@
     <main class="checkout-page-section">
         <div class="cart-page-header">
             <h1 class="cart-page-title">إتمام الطلب</h1>
-            <p class="cart-page-subtitle bose-arabic-text">يمكنك كتابة بياناتك اللوجستية بدقة علشان حلويات بوسي هتجهز طلبك الفاخر في موعده القياسي المعتمد 🌸</p>
+            <p class="cart-page-subtitle bose-arabic-text">اكتبي بياناتك وإحنا هنجهزلك طلبك في ميعاده 🌸</p>
         </div>
 
         <div class="checkout-grid-layout">
             
             <!-- الجانب الأيمن: استمارة حصد البيانات اللوجستية وعناوين التوصيل والجدولة الزمنية -->
             <div class="checkout-form-panel">
-                <h3 class="checkout-pane-title"><i class="fas fa-truck-ramp-box" style="color:var(--bose-pink);"></i> البيانات اللوجستية وموعد الاستلام</h3>
+                <h3 class="checkout-pane-title"><i class="fas fa-truck-ramp-box" style="color:var(--bose-pink);"></i> بياناتك وميعاد الاستلام</h3>
                 
                 <form id="bose-checkout-fields-form" class="form-inputs-stack" onsubmit="return false;">
                     
                     <!-- الاسم بالكامل (إلزامي برمجياً بنسبة مئة بالمئة) -->
                     <div class="input-group-node">
-                        <label for="checkout-customer-name">الاسم الكريم بالكامل <span class="required-indicator">*</span></label>
+                        <label for="checkout-customer-name">الاسم بالكامل <span class="required-indicator">*</span></label>
                         <input type="text" id="checkout-customer-name" class="bose-field-capture" placeholder="اكتب الاسم بالكامل" required aria-describedby="err-checkout-customer-name">
                         <span class="bose-field-error-msg" id="err-checkout-customer-name"><i class="fa-solid fa-circle-exclamation"></i><span></span></span>
                     </div>
@@ -324,8 +324,8 @@
 
                     <!-- رقم هاتف إضافي بديل (اختياري بالكامل لحماية التحويلات ومبيعات الموقع) -->
                     <div class="input-group-node">
-                        <label for="checkout-customer-phone-2">رقم هاتف إضافي بديل (اختياري لتأمين وصول شحنتك الملكية)</label>
-                        <input type="tel" id="checkout-customer-phone-2" class="bose-field-capture" placeholder="اكتب رقم موبايل إضافي إن وجد لسلامة الشحن اللوجستي..." aria-describedby="err-checkout-customer-phone-2">
+                        <label for="checkout-customer-phone-2">رقم هاتف إضافي (اختياري، لو معرفناش نوصلك على الرقم الأول)</label>
+                        <input type="tel" id="checkout-customer-phone-2" class="bose-field-capture" placeholder="اكتبي رقم موبايل تاني لو حابة..." aria-describedby="err-checkout-customer-phone-2">
                         <span class="bose-field-error-msg" id="err-checkout-customer-phone-2"><i class="fa-solid fa-circle-exclamation"></i><span></span></span>
                     </div>
 
@@ -388,8 +388,8 @@
                     </div>
 
                     <!-- العنوان بالتفصيل (يتغير نصه ووظيفته برمجياً لتسهيل تجربة المستهلك) -->
-                    <div class="input-group-node">
-                        <label for="checkout-address-details" id="bose-address-label-node">العنوان الفعلي بالتفصيل <span class="required-indicator">*</span></label>
+                    <div class="input-group-node" id="bose-address-field-wrapper">
+                        <label for="checkout-address-details" id="bose-address-label-node">العنوان بالتفصيل <span class="required-indicator">*</span></label>
                         <textarea id="checkout-address-details" class="bose-field-capture" placeholder="شارع... منزل... علامة مميزة..." required aria-describedby="err-checkout-address-details"></textarea>
                         <span class="bose-field-error-msg" id="err-checkout-address-details"><i class="fa-solid fa-circle-exclamation"></i><span></span></span>
                     </div>
@@ -552,7 +552,7 @@
 
                 <!-- زر الإجراء الحاسم والمعتمد بالمعرف الصريح لتشغيل صياغة الفاتورة الملكية -->
                 <button type="button" id="btn-submit-order-final" class="bose-primary-checkout-btn">
-                    <i class="fas fa-lock"></i> حجز وتأكيد الفاتورة الملكية
+                    <i class="fas fa-lock"></i> تأكيد الطلب
                 </button>
                 <p style="font-size: 0.82rem; font-weight: 700; color: #FF91A4; text-align: center; margin: 10px 0 0;">
                     ⚠️ <!-- 🐛✅ [إصلاح حرج - تناقض نص/سلوك فعلي]: النص القديم هنا كان بيقول
@@ -584,6 +584,7 @@
             const compactHook = document.getElementById("bose-checkout-compact-items-hook");
             const addressInput = document.getElementById("checkout-address-details");
             const addressLabel = document.getElementById("bose-address-label-node");
+            const addressWrapper = document.getElementById("bose-address-field-wrapper");
             const shippingWrapper = document.getElementById("shipping-zone-wrapper");
             const shippingNotesWrapper = document.getElementById("checkout-shipping-notes-wrapper");
             
@@ -1072,7 +1073,8 @@
                     e.preventDefault();
                     if (shippingWrapper) shippingWrapper.style.display = "flex";
                     if (shippingNotesWrapper) shippingNotesWrapper.style.display = "flex";
-                    if (addressLabel) addressLabel.innerHTML = 'العنوان الفعلي بالتفصيل <span class="required-indicator">*</span>';
+                    if (addressWrapper) addressWrapper.style.display = "flex";
+                    if (addressLabel) addressLabel.innerHTML = 'العنوان بالتفصيل <span class="required-indicator">*</span>';
                     if (addressInput) {
                         addressInput.placeholder = "شارع... منزل... علامة مميزة...";
                         addressInput.required = true;
@@ -1082,14 +1084,20 @@
                 methodPickupBtn.addEventListener("click", (e) => {
                     e.preventDefault();
                     if (shippingWrapper) shippingWrapper.style.display = "none";
-                    // 🆕 [إصلاح]: تخفي خانة "ملاحظات إضافية للتوصيل" تماماً في وضع
-                    // الاستلام الذاتي - مالهاش أي معنى من غير توصيل أصلاً، وأي
-                    // ملاحظة عن ميعاد الاستلام نفسه اتغطت في الخانة اللي تحت
-                    // (المُعاد تسميتها "توصيات وملاحظات خاصة بموعد وصولك واستلامك").
+                    // 🆕🆕 [إصلاح جذري - خانة كانت بتضيع قيمتها تماماً]: قبل كده الخانة دي
+                    // كانت بتتخفّى شكلياً بس (تتغيّر لـ "توصيات وملاحظات خاصة بموعد
+                    // وصولك واستلامك")، لكن اتضح إن أي حاجة العميلة تكتبها فيها في وضع
+                    // الاستلام الذاتي كانت بتضيع تماماً - مش بتتبعت في رسالة الواتساب
+                    // ولا بتتحفظ في الطلب خالص (addressDetails بيترجع فاضي دايمًا لو
+                    // method !== "delivery"، راجع cart-engine.js). يعني كانت خانة بتاخد
+                    // وقت العميلة من غير أي فايدة حقيقية، وبتضيف خطوة/قرار زيادة مالوش
+                    // داعي أصلاً لأن العميلة أصلاً بتتفق على تفاصيل الاستلام مباشرة على
+                    // واتساب. الحل: تختفي بالكامل في وضع الاستلام بدل إعادة تسميتها -
+                    // مفيش أي فقدان وظيفة حقيقي لأنها مكنتش شغالة أصلاً.
+                    if (addressWrapper) addressWrapper.style.display = "none";
                     if (shippingNotesWrapper) shippingNotesWrapper.style.display = "none";
-                    if (addressLabel) addressLabel.innerHTML = 'توصيات وملاحظات خاصة بموعد وصولك واستلامك (اختياري)';
                     if (addressInput) {
-                        addressInput.placeholder = "مثال: هعدي استلم تورتة عيد الميلاد بنفسي في تمام الساعة 5 مساءً بالظبط...";
+                        addressInput.value = "";
                         addressInput.required = false;
                     }
                     if (zoneSelect) zoneSelect.value = "";
