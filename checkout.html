@@ -396,8 +396,14 @@
 
                     <!-- 🌸 [نظام التعرّف على العميل]: ملاحظات مخصصة للشحن/التوصيل (زي علامة
                          مميزة على المنزل، كود بوابة، أو وقت مفضّل لاستلام المندوب) منفصلة عن
-                         ملاحظات الحساسية/السكر تحت، عشان توصل واضحة لفريق التوصيل. -->
-                    <div class="input-group-node">
+                         ملاحظات الحساسية/السكر تحت، عشان توصل واضحة لفريق التوصيل.
+                         🆕 [إصلاح - خانة زيادة مربكة في وضع الاستلام من الفرع]: الخانة دي
+                         كانت ظاهرة دايماً حتى لو العميلة اختارت "استلام من الفرع" - يعني
+                         كانت بتشوف "ملاحظات إضافية للتوصيل" ومكتوب فيها مثال عن الدور
+                         والشقة واتصال المندوب، رغم إنه مفيش أي توصيل أصلاً في الحالة دي!
+                         دلوقتي بتتخفى تلقائياً في وضع الاستلام (نفس منطق إخفاء منطقة
+                         التوصيل شيبينج-زون تماماً)، وبترجع تظهر بس لما تختار توصيل للمنزل. -->
+                    <div class="input-group-node" id="checkout-shipping-notes-wrapper">
                         <label for="checkout-shipping-notes-textarea">ملاحظات إضافية للتوصيل (اختياري)</label>
                         <textarea id="checkout-shipping-notes-textarea" class="bose-field-capture" placeholder="مثال: الدور التالت شقة يمين، اتصل قبل ما توصل بربع ساعة..."></textarea>
                     </div>
@@ -565,6 +571,7 @@
             const addressInput = document.getElementById("checkout-address-details");
             const addressLabel = document.getElementById("bose-address-label-node");
             const shippingWrapper = document.getElementById("shipping-zone-wrapper");
+            const shippingNotesWrapper = document.getElementById("checkout-shipping-notes-wrapper");
             
             const methodDeliveryBtn = document.getElementById("method-delivery");
             const methodPickupBtn = document.getElementById("method-pickup");
@@ -1036,6 +1043,7 @@
                 methodDeliveryBtn.addEventListener("click", (e) => {
                     e.preventDefault();
                     if (shippingWrapper) shippingWrapper.style.display = "flex";
+                    if (shippingNotesWrapper) shippingNotesWrapper.style.display = "flex";
                     if (addressLabel) addressLabel.innerHTML = 'العنوان الفعلي بالتفصيل <span class="required-indicator">*</span>';
                     if (addressInput) {
                         addressInput.placeholder = "شارع... منزل... علامة مميزة...";
@@ -1046,6 +1054,11 @@
                 methodPickupBtn.addEventListener("click", (e) => {
                     e.preventDefault();
                     if (shippingWrapper) shippingWrapper.style.display = "none";
+                    // 🆕 [إصلاح]: تخفي خانة "ملاحظات إضافية للتوصيل" تماماً في وضع
+                    // الاستلام الذاتي - مالهاش أي معنى من غير توصيل أصلاً، وأي
+                    // ملاحظة عن ميعاد الاستلام نفسه اتغطت في الخانة اللي تحت
+                    // (المُعاد تسميتها "توصيات وملاحظات خاصة بموعد وصولك واستلامك").
+                    if (shippingNotesWrapper) shippingNotesWrapper.style.display = "none";
                     if (addressLabel) addressLabel.innerHTML = 'توصيات وملاحظات خاصة بموعد وصولك واستلامك (اختياري)';
                     if (addressInput) {
                         addressInput.placeholder = "مثال: هعدي استلم تورتة عيد الميلاد بنفسي في تمام الساعة 5 مساءً بالظبط...";
