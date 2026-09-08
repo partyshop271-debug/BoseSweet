@@ -525,6 +525,29 @@ function wireBoseSmartDiscountBox(ids, cart, storeData, getPhone, onApplied) {
     };
     const esc = typeof window.escapeBoseHTML === "function" ? window.escapeBoseHTML : (s => String(s || ""));
 
+    // 🆕 [إصلاح - تشتيت في صفحة إتمام الطلب]: لو العميلة طبّقت كود في صفحة
+    // السلة، كانت لسه بتشوف خانة الإدخال + زرار "تطبيق" فاضيين في صفحة
+    // إتمام الطلب كأنها لازم تكرر الخطوة تاني - رغم إن الكود شغال فعلاً
+    // (شايفاه كـ chip بس ممكن ميلاحظوش الفرق). دلوقتي لو في كود شغال بالفعل
+    // بنخفي خانة الإدخال والزرار ونسيب بس الـ chip + رابط صغير "ضيفي كود
+    // تاني" يظهر الخانة تاني لو حبت فعلاً تضيف كود إضافي أو تغيّره.
+    let toggleLink = null;
+    function ensureToggleLink() {
+        if (toggleLink) return toggleLink;
+        toggleLink = document.createElement("button");
+        toggleLink.type = "button";
+        toggleLink.textContent = "+ ضيفي كود تاني";
+        toggleLink.style.cssText = "background:none; border:none; color:var(--bose-pink,#FF91A4); font-weight:700; font-size:0.8rem; cursor:pointer; padding:4px 0; text-decoration:underline;";
+        toggleLink.addEventListener("click", () => {
+            input.style.display = "";
+            btn.style.display = "";
+            toggleLink.style.display = "none";
+            input.focus();
+        });
+        chipsBox.insertAdjacentElement("afterend", toggleLink);
+        return toggleLink;
+    }
+
     function renderChips() {
         const active = typeof window.getBoseActiveDiscounts === "function" ? window.getBoseActiveDiscounts() : [];
         chipsBox.innerHTML = active.map(d => {
@@ -541,6 +564,17 @@ function wireBoseSmartDiscountBox(ids, cart, storeData, getPhone, onApplied) {
                 if (typeof onApplied === "function") onApplied();
             });
         });
+
+        const link = ensureToggleLink();
+        if (active.length > 0) {
+            input.style.display = "none";
+            btn.style.display = "none";
+            link.style.display = "";
+        } else {
+            input.style.display = "";
+            btn.style.display = "";
+            link.style.display = "none";
+        }
     }
 
     async function applyCode(rawCode) {
@@ -874,9 +908,26 @@ function renderBoseCheckoutPage(storeData) {
     const cartIsDigitalOnly = cart.length > 0 && cart.every(item => item.type === "gift-card");
     const fulfillmentSection = document.getElementById("bose-fulfillment-and-schedule-section");
     const digitalNote = document.getElementById("bose-giftcard-digital-note");
-    // 🆕 [إصلاح - نفس فئة مشكلة خانات الاستلام/التوصيل]: خانة "ملاحظات عن
-    // الطلب" كان نصها دايماً بيفترض حلويات فعلية (سكر خفيف/حساسية مكسرات) -
-    // مالهاش معنى لعميلة بتشتري بطاقة هدية رقمية بس. بتتغير هنا لنص عام.
+    // 🆕 [إصلاح - نفس فئة مشكلة خانات الاستلام/التوصيل، امتداد للحالة اللي
+    // كانت ناقصة]: خانة "ملاحظات عن الطلب" كان نصها الافتراضي دايماً بيفترض
+    // حلويات فعلية (سكر خفيف/حساسية مكسرات) - كانت اتصلحت قبل كده بس لحالة
+    // "بطاقة هدية رقمية بس"، لكن لسه بتفضل بنفس النص الغلط لو السلة ورد بس
+    // (بوكيه جاهز أو مخصص من المحاكي، من غير أي صنف حلويات فعلي معاه) - وده
+    // بالظبط سبب شكوى العميلة إنها اتلخبطت وهي بتطلب بوكيه ورد. بنحسب دلوقتي
+    // هل في أي صنف "أكل" فعلي في السلة (مش بطاقة هدية ومش ورد) عن طريق نوع
+    // الصنف نفسه (custom-flower/gift-card) أو تصنيف المنتج (category) لو
+    // منتج عادي - ولو مفيش أي صنف أكل خالص، بنستخدم نص عام مناسب للورد.
+    const NON_FOOD_CATEGORY_IDS = ["taswaq-flowers", "bose-gift-cards"];
+    const productsBySlugForNotes = {};
+    if (storeData && Array.isArray(storeData.products)) {
+        storeData.products.forEach(p => { productsBySlugForNotes[p.slug] = p; });
+    }
+    const cartHasFoodItem = cart.some(item => {
+        if (item.type === "gift-card" || item.type === "custom-flower") return false;
+        const matchedProd = productsBySlugForNotes[item.productSlug];
+        if (matchedProd && NON_FOOD_CATEGORY_IDS.includes(matchedProd.category)) return false;
+        return true;
+    });
     const orderNotesLabelEl = document.getElementById("bose-order-notes-label-node");
     const orderNotesTextareaEl = document.getElementById("checkout-order-notes-textarea");
     if (cartIsDigitalOnly) {
@@ -888,6 +939,9 @@ function renderBoseCheckoutPage(storeData) {
         selectedShippingFee = 0;
         payFullSelected = true;
         recalculateCheckoutInvoice(cart, storeData, selectedShippingFee, currentShippingMethod, payFullSelected);
+    } else if (!cartHasFoodItem && cart.length > 0) {
+        if (orderNotesLabelEl) orderNotesLabelEl.textContent = "أي ملاحظة عن طلبك (زي كارت تهنئة أو طلب خاص) - اختياري";
+        if (orderNotesTextareaEl) orderNotesTextareaEl.placeholder = "مثال: حابة أضيف كارت تهنئة، أو أي طلب خاص...";
     }
 
     if (pickupBtn) pickupBtn.click();
