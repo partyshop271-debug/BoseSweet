@@ -387,8 +387,20 @@
             const imgSrc = isObject ? item.image : item;
             const isLinked = isObject && !!item.slug;
             const imgTag = `<img src="${window.optimizeBoseImageUrl(imgSrc, 300)}" alt="منتج فاخر حلويات بوسي" class="waterfall-img" width="220" height="220" loading="lazy" />`;
+            // 🆕👑 [دمج صفحة المنتج جوه صفحة الفئة]: بدل رابط product.html المستقل،
+            // بنوديها لصفحة فئة المنتج نفسه مع فتح تفاصيله تلقائياً هناك.
+            let waterfallLinkUrl = '/category.html';
+            if (isLinked) {
+                const linkedProduct = (window.BoseStoreData && window.BoseStoreData.products)
+                    ? window.BoseStoreData.products.find((p) => p.slug === item.slug)
+                    : null;
+                const params = new URLSearchParams();
+                if (linkedProduct && linkedProduct.category) params.set('category', linkedProduct.category);
+                params.set('product', item.slug);
+                waterfallLinkUrl = `/category.html?${params.toString()}`;
+            }
             return isLinked
-                ? `<a href="/product.html?slug=${encodeURIComponent(item.slug)}" class="waterfall-img-link" aria-label="عرض تفاصيل المنتج">${imgTag}</a>`
+                ? `<a href="${waterfallLinkUrl}" class="waterfall-img-link" aria-label="عرض تفاصيل المنتج">${imgTag}</a>`
                 : imgTag;
         }).join('');
 

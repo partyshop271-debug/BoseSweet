@@ -150,7 +150,7 @@ function boseShowAllCheckoutErrors(errors, firstInvalidInput) {
 /** 🛡️ تسجيل مستمعين لمسح خطأ أي حقل شيك أوت بمجرد ما العميلة تعدّله */
 function boseInitCheckoutFieldErrorClearing() {
     const fieldIds = [
-        "checkout-customer-name", "checkout-customer-phone", "checkout-customer-phone-2",
+        "checkout-customer-name", "checkout-customer-phone",
         "checkout-zone-select", "checkout-address-details", "checkout-delivery-date", "checkout-delivery-time",
     ];
     fieldIds.forEach((id) => {
@@ -1105,17 +1105,13 @@ function renderBoseLoyaltyDiscountRows(invoice) {
 async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFull) {
     const customerNameInput = document.getElementById("checkout-customer-name");
     const customerPhoneInput = document.getElementById("checkout-customer-phone");
-    const customerPhone2Input = document.getElementById("checkout-customer-phone-2");
     const addressDetailsInput = document.getElementById("checkout-address-details");
     const zoneSelect = document.getElementById("checkout-zone-select");
     const deliveryDateInput = document.getElementById("checkout-delivery-date");
     const deliveryTimeInput = document.getElementById("checkout-delivery-time");
+    // 🗑️ [تبسيط] خانة ملاحظات التوصيل المنفصلة اتشالت - خانة "ملاحظات عن
+    // الطلب" الوحيدة دلوقتي بتغطي التوصيل والحساسية/السكر مع بعض.
     const orderNotesInput = document.getElementById("checkout-order-notes-textarea");
-    // 🌸 [نظام التعرّف على العميل]: حقل جديد مخصص لملاحظات الشحن/التوصيل (زي
-    // علامة مميزة على المنزل، كود بوابة، أو وقت مفضّل للمندوب) منفصل عن ملاحظات
-    // الحساسية/السكر العامة، عشان الاتنين يوصلوا واضحين لفريق التوصيل بدل ما
-    // يتلخبطوا في سطر واحد.
-    const shippingNotesInput = document.getElementById("checkout-shipping-notes-textarea");
 
     // 🛡️🛡️ [تحسين UX - تحقق شامل من الفورم]: بدل ما نوقف عند أول خطأ (زي ما
     // كان بيحصل قبل كده)، بنجمع كل الأخطاء في المصفوفة دي مرة واحدة، ونعرضهم
@@ -1141,16 +1137,6 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFu
         addValidationError(customerPhoneInput, "يرجى إدخال رقم هاتف محمول مصري صحيح ومطابق للشبكة.");
     } else {
         sanitizedPhone1 = typeof window.sanitizeBosePhoneNumber === "function" ? window.sanitizeBosePhoneNumber(phone1) : phone1;
-    }
-
-    let sanitizedPhone2 = "";
-    if (customerPhone2Input && customerPhone2Input.value.trim() !== "") {
-        const phone2 = customerPhone2Input.value.trim();
-        if (typeof window.validateBosePhoneNumber === "function" && !window.validateBosePhoneNumber(phone2)) {
-            addValidationError(customerPhone2Input, "رقم الهاتف البديل غير صحيح، يرجى مراجعته أو مسحه ليبقى اختيارياً.");
-        } else {
-            sanitizedPhone2 = typeof window.sanitizeBosePhoneNumber === "function" ? window.sanitizeBosePhoneNumber(phone2) : phone2;
-        }
     }
 
     let fullAddressText = "استلام يدوي مباشر من مقر الفرع";
@@ -1300,7 +1286,6 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFu
         orderId: `BOSE-${orderIdGenerated}`,
         customerName: customerName,
         phone1: sanitizedPhone1,
-        phone2: sanitizedPhone2,
         deliveryMethod: cartIsDigitalOnlyForOrder ? "تسليم رقمي فوري (بطاقة هدية)" : (method === "pickup" ? "استلام من الفرع" : "توصيل للمنزل"),
         deliveryZone: selectedZoneName,
         // 🛡️ [إصلاح حرج]: الـid الحقيقي لمنطقة الشحن (مطابق لجدول shipping_zones)
@@ -1335,10 +1320,6 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFu
         giftCardAmountUsed: invoice.giftCardDiscountAmount || 0,
         grandTotal: finalGrandTotalCalculated,
         notes: orderNotesInput ? orderNotesInput.value.trim() : "لا توجد ملاحظات إضافية",
-        // 🌸 [نظام التعرّف على العميل]: ملاحظات الشحن/التوصيل بتتسجل كحقل منفصل
-        // في فاتورة الواتساب (راجع buildBoseFormattedWhatsappInvoice) عشان توصل
-        // واضحة لوحدها للمندوب، وكمان بتتحفظ في ملف العميل المحلي تحت.
-        shippingNotes: shippingNotesInput ? shippingNotesInput.value.trim() : "",
         items: cart
     };
 
@@ -1364,12 +1345,10 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFu
         window.saveBoseCustomerProfile({
             name: customerName,
             phone1: sanitizedPhone1,
-            phone2: sanitizedPhone2,
             deliveryMethod: method,
             zoneId: selectedZoneId || "",
             addressDetails: (method === "delivery" && addressDetailsInput) ? addressDetailsInput.value.trim() : "",
-            orderNotes: orderNotesInput ? orderNotesInput.value.trim() : "",
-            shippingNotes: shippingNotesInput ? shippingNotesInput.value.trim() : ""
+            orderNotes: orderNotesInput ? orderNotesInput.value.trim() : ""
         });
     }
 
@@ -1549,12 +1528,6 @@ function buildBoseFormattedWhatsappInvoice(order) {
     msg += `📞 *رقم الاتصال:* ${order.phone1}\n`;
     msg += `🚗 *مسار الاستلام:* ${order.deliveryMethod}\n`;
     msg += `📍 *التفاصيل الجغرافية:* ${order.address}\n`;
-    // 🌸 [نظام التعرّف على العميل]: ملاحظات الشحن/التوصيل (لو موجودة) بتظهر
-    // كسطر مستقل وواضح بدل ما تتلخبط جوه ملاحظات الحساسية/السكر العامة تحت
-    // في نهاية الفاتورة.
-    if (order.shippingNotes && order.shippingNotes.trim() !== "") {
-        msg += `🚚 *ملاحظات التوصيل:* ${order.shippingNotes.trim()}\n`;
-    }
     msg += `📅 *موعد الاستلام:* ${order.scheduledDate} الساعة ${formatBoseTimeToEgyptian12Hour(order.scheduledTime)}\n\n`;
     msg += `--------------------------------------------------\n`;
     msg += `📦 *تفاصيل الأصناف المطلوبة:*\n\n`;
@@ -1655,7 +1628,7 @@ function buildBoseFormattedWhatsappInvoice(order) {
     });
 
     msg += `--------------------------------------------------\n`;
-    msg += `📝 *ملاحظات عن الحساسية / تفضيل السكر أو أي طلب خاص:* ${order.notes}\n\n`;
+    msg += `📝 *ملاحظات:* ${order.notes}\n\n`;
     msg += `--------------------------------------------------\n`;
     // 🎁 [نظام نقاط الولاء]: خصم الولاء التلقائي وخصم قسيمة الولاء (لو اتطبقوا)
     // بيظهروا كسطرين واضحين هنا قبل المجموع النهائي، عشان العميلة تشوف بعينها

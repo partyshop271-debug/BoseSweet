@@ -934,7 +934,7 @@
         const favBtnHtml = buildBoseFavButtonHTML(product.id);
 
         return `
-            <div class="product-card-unified${hasDiscount ? ' bose-offer-card' : ''}${isUnavailable ? ' bose-unavailable-card' : ''}" data-id="${product.id}" data-selected-size="${defaultSizeKey || ''}" onclick="if(!event.target.closest('.product-card-qty-wrapper') && !event.target.closest('.btn-add-to-cart') && !event.target.closest('.bose-card-size-tabs') && !event.target.closest('.bose-fav-btn')){ window.location.href='/product.html?slug=${encodeURIComponent(product.slug)}'; }" style="cursor:pointer;">
+            <div class="product-card-unified${hasDiscount ? ' bose-offer-card' : ''}${isUnavailable ? ' bose-unavailable-card' : ''}" data-id="${product.id}" data-slug="${encodeURIComponent(product.slug)}" data-selected-size="${defaultSizeKey || ''}" onclick="if(!event.target.closest('.product-card-qty-wrapper') && !event.target.closest('.btn-add-to-cart') && !event.target.closest('.bose-card-size-tabs') && !event.target.closest('.bose-fav-btn')){ window.location.href=window.buildBoseProductDetailUrl(this); }" style="cursor:pointer;">
                 ${discountBadgeHtml}
                 ${isUnavailable ? `<div class="bose-offer-badge bose-stock-badge">نفدت الكمية</div>` : ''}
                 ${favBtnHtml}
@@ -1018,6 +1018,33 @@
     // مع مشكلة "تكرار منتجات العروض"). تعليقها هنا على window بيخلي أي صفحة في
     // الموقع كله تقدر تستخدم window.createProductCardHTML(product) بدل ما تعيد
     // كتابة نفس الكود من الصفر.
+    // 🆕 [تبسيط - نقل الاختيار مش تكراره]: لما العميلة تفتح تفاصيل منتج من كارته
+    // (في أي مكان: فئة/رئيسية/عروض/مقترحات) بعد ما اختارت حجم و/أو غيّرت الكمية
+    // في الكارت نفسه، مفيش داعي صفحة المنتج تسألها تاني من الصفر - بنمرر
+    // اختيارها الحالي في رابط الصفحة (size/qty) عشان تفتح وهي محمّلة بيه
+    // تلقائياً. دالة واحدة مشتركة يستخدمها الكارت الموحد وأي صفحة تانية
+    // (category.html) بدل ما كل صفحة تبني الرابط بمنطقها الخاص.
+    // 🆕👑 [دمج صفحة المنتج جوه صفحة الفئة]: مفيش صفحة product.html منفصلة تاني -
+    // أي كارت في أي صفحة تانية (الرئيسية/العروض/المفضلة/مقترحات السلة) بيودّي
+    // دلوقتي لصفحة الفئة بتاعت نفس المنتج مع فتح نافذة تفاصيله تلقائياً هناك
+    // (راجع window.openBoseProductDetailModal في category.html)، بدل صفحة مستقلة.
+    window.buildBoseProductDetailUrl = function(cardEl) {
+        if (!cardEl) return '/category.html';
+        const slug = decodeURIComponent(cardEl.dataset.slug || '');
+        const size = cardEl.dataset.selectedSize || '';
+        const qtyInput = cardEl.querySelector('.input-qty-value');
+        const qty = qtyInput ? parseInt(qtyInput.value, 10) : 1;
+        const product = (window.BoseStoreData && window.BoseStoreData.products)
+            ? window.BoseStoreData.products.find(function(p) { return p.slug === slug; })
+            : null;
+        const params = new URLSearchParams();
+        if (product && product.category) params.set('category', product.category);
+        params.set('product', slug);
+        if (size) params.set('size', size);
+        if (qty && qty > 1) params.set('qty', String(qty));
+        return `/category.html?${params.toString()}`;
+    };
+
     window.createProductCardHTML = createProductCardHTML;
 
     /**

@@ -95,11 +95,11 @@
         product: [
             { page: ['menu.html'], mode: 'click', selector: '.bose-menu-custom-card', hint: 'دوسي على أي كارت فئة زي اللي قدامك دلوقتي', title: 'اختاري فئة', text: 'هناخدك في جولة سريعة على صفحة المنتج من الألف للياء. دوسي على أي فئة زي دي.' },
             { page: ['category.html'], mode: 'click', selector: '.product-card', hint: 'دوسي على أي منتج زي اللي قدامك دلوقتي', title: 'اختاري الصنف', text: 'دوسي على أي منتج زي ده عشان تشوفي تفاصيله وسعره بالكامل.' },
-            { page: ['product.html'], mode: 'info', selector: '.master-image-frame', title: 'صفحة المنتج', text: 'هتلاقي هنا صور واضحة للمنتج، وتحت كده وصف تفصيلي للمكونات والطعم عشان تختاري صح.' },
-            { page: ['product.html'], mode: 'info', selector: '.product-price-block', title: 'السعر', text: 'وده السعر النهائي واضح قدامك من غير أي مفاجآت.' },
-            { page: ['product.html'], mode: 'info', selector: '.qty-picker-capsule', title: 'حددي الكمية', text: 'من هنا تقدري تزوّدي أو تقلّلي الكمية اللي حابة تطلبيها قبل ما تضيفيها لسلتك.' },
-            { page: ['product.html'], mode: 'click', selector: '#btn-add-to-cart-master-trigger', hint: 'دوسي على الزرار الوردي المكتوب عليه "أضيفي للسلة" تحت السعر', title: 'ضيفيه لسلتك', text: 'بعد ما تحددي اللي يناسبك، دوسي هنا عشان تضيفي المنتج ده لسلتك.' },
-            { page: ['product.html'], mode: 'info', selector: '.nav-cart-icon-wrapper[href="/cart.html"]', title: 'دي سلتك دلوقتي! 🎉', text: 'شوفي، بقى فيها رقم دلوقتي. لما تكوني جاهزة، دوسي عليها عشان تراجعي طلبك - وليها جولة مستقلة لوحدها.' },
+            { page: ['category.html'], mode: 'info', selector: '.bose-product-detail-modal-body .product-card-img', title: 'صورة المنتج', text: 'هتلاقي هنا صورة واضحة للمنتج، وتحت كده وصف تفصيلي للمكونات والطعم عشان تختاري صح.' },
+            { page: ['category.html'], mode: 'info', selector: '.bose-product-detail-modal-body .product-card-price', title: 'السعر', text: 'وده السعر النهائي واضح قدامك من غير أي مفاجآت.' },
+            { page: ['category.html'], mode: 'info', selector: '.bose-product-detail-modal-body .product-card-qty-wrapper', title: 'حددي الكمية', text: 'من هنا تقدري تزوّدي أو تقلّلي الكمية اللي حابة تطلبيها قبل ما تضيفيها لسلتك.' },
+            { page: ['category.html'], mode: 'click', selector: '.bose-product-detail-modal-body .btn-add-to-cart', hint: 'دوسي على الزرار الوردي المكتوب عليه "أضيفي للسلة" تحت السعر', title: 'ضيفيه لسلتك', text: 'بعد ما تحددي اللي يناسبك، دوسي هنا عشان تضيفي المنتج ده لسلتك.' },
+            { page: ['category.html'], mode: 'info', selector: '.nav-cart-icon-wrapper[href="/cart.html"]', title: 'دي سلتك دلوقتي! 🎉', text: 'شوفي، بقى فيها رقم دلوقتي. لما تكوني جاهزة، دوسي عليها عشان تراجعي طلبك - وليها جولة مستقلة لوحدها.' },
         ],
         cart: [
             { page: ['cart.html'], mode: 'info', selector: '#cart-items-wrapper', title: 'راجعي أصنافك', text: 'دي كل الأصناف اللي ضفتيها. تقدري تزوّدي أو تقلّلي الكمية، أو تشيلي أي صنف من زرار الحذف.' },
