@@ -32,8 +32,7 @@
     const KNOWN_PAGES = [
         { value: "index.html", label: "الصفحة الرئيسية (index.html)" },
         { value: "menu.html", label: "المنيو (menu.html)" },
-        { value: "category.html", label: "صفحة الفئة (category.html)" },
-        { value: "product.html", label: "صفحة المنتج (product.html)" },
+        { value: "category.html", label: "صفحة الفئة + نافذة تفاصيل المنتج (category.html)" },
         { value: "cake-builder.html", label: "محاكي التورت (cake-builder.html)" },
         { value: "flower-builder.html", label: "محاكي الورد (flower-builder.html)" },
         { value: "cart.html", label: "السلة (cart.html)" },
