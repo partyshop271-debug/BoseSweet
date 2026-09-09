@@ -79,13 +79,16 @@ module.exports = async function handler(req, res) {
             // القديم product.html?slug=${p.id} كان صح فعلاً وهو نفس القيمة اللي product.html
             // بيدور بيها (p.slug === currentSlug، وslug هنا = id) — سيبناه زي ما هو، والإضافة
             // الوحيدة هنا هي صور المنتج لكل رابط.
-            fetchTable("products?select=id,images,updated_at,builder_type&or=(builder_type.is.null,builder_type.eq.standard)"),
+            fetchTable("products?select=id,images,updated_at,builder_type,category&or=(builder_type.is.null,builder_type.eq.standard)"),
         ]);
 
         const entries = [];
         STATIC_PAGES.forEach((p) => entries.push(urlEntry(SITE_BASE + p.path, today, p.priority)));
         categories.forEach((c) => entries.push(urlEntry(`${SITE_BASE}/category.html?category=${c.id}`, toDateOnly(c.updated_at), "0.7", [c.image])));
-        products.forEach((p) => entries.push(urlEntry(`${SITE_BASE}/product.html?slug=${p.id}`, toDateOnly(p.updated_at), "0.6", p.images)));
+        // 🆕👑 [دمج صفحة المنتج جوه صفحة الفئة]: مفيش صفحة product.html منفصلة تاني -
+        // كل منتج بيتفهرس برابط صفحة الفئة بتاعته + باراميتر product= (بيفتح نافذة
+        // تفاصيله تلقائياً هناك - راجع category.html/openBoseProductDetailModal).
+        products.forEach((p) => entries.push(urlEntry(`${SITE_BASE}/category.html?category=${p.category || ''}&product=${p.id}`, toDateOnly(p.updated_at), "0.6", p.images)));
 
         const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n${entries.join("\n")}\n</urlset>\n`;
 

@@ -75,7 +75,10 @@ module.exports = async function handler(req, res) {
                 // متطلعش بعنوان مكرر زي "التورتة التورتة").
                 const flavorName = (p.flavor_name || "").trim();
                 const combinedTitle = (flavorName && flavorName !== p.title) ? `${p.title} ${flavorName}` : p.title;
-                const link = `${SITE_BASE}/product.html?slug=${p.id}`;
+                // 🆕👑 [دمج صفحة المنتج جوه صفحة الفئة]: رابط المنتج في فيد جوجل/فيسبوك
+                // بقى بيوديها لصفحة الفئة بتاعت المنتج ده مع باراميتر product= اللي
+                // بيفتح تفاصيله تلقائياً هناك، بدل صفحة product.html اللي اتشالت.
+                const link = `${SITE_BASE}/category.html?category=${p.category_id || ''}&product=${p.id}`;
                 const desc = p.flavor_desc || p.description || `${combinedTitle} من حلويات بوسي - مكونات طبيعية 100% وتحضير طازة يومياً.`;
                 const availability = p.is_available === false ? "out of stock" : "in stock";
                 // 🛡️ [إصلاح - تحذير "الكمية غير موجودة" في Meta Commerce Manager]: فيسبوك/
