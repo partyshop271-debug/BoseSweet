@@ -156,7 +156,7 @@
                 <p style="font-size:0.82rem; color: var(--adm-text-muted, #7a7a7a); margin: 0 0 14px;">
                     الكود ورقم الموبايل والقيمة الأصلية ثابتين ومينفعش يتغيّروا - تقدري بس تعدّلي الرصيد المتبقي وتاريخ الانتهاء.
                 </p>
-                <form id="lv-edit-form">
+                <form id="lv-edit-form" novalidate>
                     <div class="adm-field">
                         <label for="lv-ef-remaining">الرصيد المتبقي (جنيه) - من أصل ${money(voucher.amount)}</label>
                         <input type="number" min="0" max="${voucher.amount}" step="1" class="adm-input" id="lv-ef-remaining" value="${voucher.remaining_amount}" required>
@@ -185,18 +185,20 @@
             saveBtn.disabled = true;
             saveBtn.textContent = "جاري الحفظ...";
 
-            const remainingRaw = document.getElementById("lv-ef-remaining").value;
-            const expiresRaw = document.getElementById("lv-ef-expires").value;
-            const remainingAmount = parseFloat(remainingRaw);
-
-            if (isNaN(remainingAmount) || remainingAmount < 0 || remainingAmount > voucher.amount) {
-                window.BoseAdminUI.showToast(`الرصيد لازم يكون بين 0 و${voucher.amount}`, "error");
-                saveBtn.disabled = false;
-                saveBtn.textContent = "حفظ التعديل";
-                return;
-            }
-
             try {
+                const remainingRaw = document.getElementById("lv-ef-remaining").value;
+                const expiresRaw = document.getElementById("lv-ef-expires").value;
+                const remainingAmount = parseFloat(remainingRaw);
+
+                if (isNaN(remainingAmount) || remainingAmount < 0 || remainingAmount > voucher.amount) {
+                    window.BoseAdminUI.showToast(`الرصيد لازم يكون بين 0 و${voucher.amount}`, "error");
+                    return;
+                }
+                if (!expiresRaw) {
+                    window.BoseAdminUI.showToast("لازم تحدد تاريخ انتهاء", "error");
+                    return;
+                }
+
                 await window.BoseAdmin.updateLoyaltyVoucher(voucherId, {
                     remainingAmount,
                     expiresAt: new Date(`${expiresRaw}T23:59:59`).toISOString(),
@@ -205,7 +207,9 @@
                 close();
                 await loadVouchers();
             } catch (err) {
+                console.error("خطأ أثناء تعديل القسيمة:", err);
                 window.BoseAdminUI.showToast(err.message || "تعذر حفظ التعديل", "error");
+            } finally {
                 saveBtn.disabled = false;
                 saveBtn.textContent = "حفظ التعديل";
             }
@@ -227,7 +231,7 @@
                     <h3>إصدار قسيمة يدوي</h3>
                     <button class="adm-modal-close" data-role="close"><i class="fa-solid fa-xmark"></i></button>
                 </div>
-                <form id="lv-issue-form">
+                <form id="lv-issue-form" novalidate>
                     <div class="adm-field">
                         <label for="lv-if-phone">رقم موبايل العميل</label>
                         <input type="tel" class="adm-input" id="lv-if-phone" style="direction:ltr;" placeholder="01012345678" required>
@@ -263,11 +267,24 @@
             saveBtn.disabled = true;
             saveBtn.textContent = "جاري الإصدار...";
 
-            const phone = document.getElementById("lv-if-phone").value.trim();
-            const amount = parseFloat(document.getElementById("lv-if-amount").value) || 0;
-            const expiresRaw = document.getElementById("lv-if-expires").value;
-
             try {
+                const phone = document.getElementById("lv-if-phone").value.trim();
+                const amount = parseFloat(document.getElementById("lv-if-amount").value) || 0;
+                const expiresRaw = document.getElementById("lv-if-expires").value;
+
+                if (!phone) {
+                    window.BoseAdminUI.showToast("لازم تكتب رقم موبايل العميل", "error");
+                    return;
+                }
+                if (amount <= 0) {
+                    window.BoseAdminUI.showToast("لازم تدخل قيمة صحيحة للقسيمة", "error");
+                    return;
+                }
+                if (!expiresRaw) {
+                    window.BoseAdminUI.showToast("لازم تحدد تاريخ انتهاء", "error");
+                    return;
+                }
+
                 const code = await window.BoseAdmin.issueLoyaltyVoucher({
                     phone,
                     amount,
@@ -277,7 +294,9 @@
                 close();
                 await loadVouchers();
             } catch (err) {
+                console.error("خطأ أثناء إصدار القسيمة:", err);
                 window.BoseAdminUI.showToast(err.message || "تعذر إصدار القسيمة", "error");
+            } finally {
                 saveBtn.disabled = false;
                 saveBtn.textContent = "إصدار القسيمة";
             }

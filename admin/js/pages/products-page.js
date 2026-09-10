@@ -363,7 +363,7 @@
                     <button class="adm-modal-close" data-role="close"><i class="fa-solid fa-xmark"></i></button>
                 </div>
 
-                <form id="product-form">
+                <form id="product-form" novalidate>
                     <div class="adm-form-grid">
                         <div class="adm-field">
                             <label for="pf-id">معرّف المنتج (ID)</label>
@@ -701,87 +701,136 @@
         document.getElementById("product-form").addEventListener("submit", async (evt) => {
             evt.preventDefault();
             const saveBtn = document.getElementById("pf-save-btn");
+
+            // 🛡️ [إصلاح جذري - "الأزرار ما بتتحركش" / زرار الحفظ بيتجمد]: قبل كده،
+            // زرار الحفظ كان بيتقفل (disabled + "جاري الحفظ...") قبل ما نبدأ حتى،
+            // وكل بناء الـ payload (أحجام/أسئلة شائعة/خيارات) كان شغال برّه try/catch.
+            // أي خطأ غير متوقع هناك (قيمة فاضية غير متوقعة، عنصر مش موجود...) كان
+            // بيوقف التنفيذ فجأة والزرار يفضل واقف على "جاري الحفظ..." للأبد من
+            // غير أي رسالة خطأ - يعني بالظبط اللي بيتوصف إنه "الأزرار مشلولة".
+            // دلوقتي كل حاجة من الأول للآخر جوه try/catch/finally واحد، والـ
+            // finally بيرجّع الزرار لحالته الطبيعية مهما حصل - يبقى مستحيل يفضل
+            // متجمد، وأي خطأ هيظهر كتوست واضح بدل ما يختفي بصمت.
+            //
+            // كمان استبدلنا الاعتماد على التحقق الأصلي (native required) للمتصفح:
+            // المودال عنده overflow-y:auto، والفقاعة اللي المتصفح بيوريها لحقل
+            // فاضي بتتقطع/متظهرش صح جوه container بيعمل scroll زي ده في متصفحات
+            // كتير (خصوصاً متصفحات الموبايل/الـ in-app webviews) - فكان ممكن
+            // الأدمن يدوس "حفظ" ومتصفحه يمنع الإرسال بصمت تام من غير أي تنبيه
+            // يظهر خالص، فيحس إن الزرار "مش بيتحرك". دلوقتي التحقق بيتم يدوياً
+            // هنا مع توست واضح يسمي الحقل الناقص بالظبط.
             saveBtn.disabled = true;
             saveBtn.textContent = "جاري الحفظ...";
 
-            // الأحجام: بس المفاتيح اللي الأدمن دخّل ليها سعر فعلي (مش فاضية)
-            const newPrices = {};
-            SIZE_KEYS.forEach((key) => {
-                const val = document.getElementById(`pf-size-${key}`).value;
-                if (val !== "") newPrices[key] = parseFloat(val) || 0;
-            });
-            const filledSizeKeys = Object.keys(newPrices);
-            const searchTerms = document.getElementById("pf-search-terms").value
-                .split(/[,،]/).map((t) => t.trim()).filter(Boolean);
-
-            // 📦 [نظام المخزون]: فاضي = null (غير متتبع، سلوك زي الأول بالظبط).
-            // لو اتحطت قيمة ووصلت لصفر أو أقل، بنفرض is_available=false تلقائياً
-            // بغض النظر عن حالة الـ checkbox - عشان المنتج ميفضلش شغال بالغلط
-            // وهو خلصان فعلياً من المخزون.
-            const stockRaw = document.getElementById("pf-stock-quantity").value;
-            const stockQuantity = stockRaw !== "" ? Math.max(0, parseInt(stockRaw, 10) || 0) : null;
-            let isAvailable = document.getElementById("pf-available").checked;
-            if (stockQuantity !== null && stockQuantity <= 0) isAvailable = false;
-
-            const payload = {
-                category_id: document.getElementById("pf-category").value,
-                title: document.getElementById("pf-title").value.trim(),
-                flavor_name: document.getElementById("pf-flavor-name").value.trim() || null,
-                flavor_desc: document.getElementById("pf-flavor-desc").value.trim() || null,
-                description: document.getElementById("pf-description").value.trim() || null,
-                price: parseFloat(document.getElementById("pf-price").value) || 0,
-                old_price: document.getElementById("pf-old-price").value ? parseFloat(document.getElementById("pf-old-price").value) : null,
-                quantity_note: document.getElementById("pf-quantity-note").value.trim() || null,
-                stock_quantity: stockQuantity,
-                sort_order: parseInt(document.getElementById("pf-sort-order").value, 10) || 0,
-                is_featured: document.getElementById("pf-featured").checked,
-                is_available: isAvailable,
-                // 🍧 [حل مشكلة "مش عارف يختار من خلاله" - منتجات الميكس]: بنحافظ على أي
-                // مفاتيح تانية موجودة أصلاً جوه options (زي minAmount/maxAmount لمنتج
-                // بطاقة الهدية) ونضيف/نحدّث mixFlavor بس فوقها - بدل ما نستبدل الكائن
-                // كله ونمسح بيانات كانت متخزنة فيه لغرض تاني.
-                options: { ...(product?.options && typeof product.options === "object" && !Array.isArray(product.options) ? product.options : {}), mixFlavor: document.getElementById("pf-mix-flavor").checked },
-                builder_type: document.getElementById("pf-builder-type").value,
-                custom_builder_url: document.getElementById("pf-builder-type").value !== "standard"
-                    ? (document.getElementById("pf-builder-url").value.trim() || null)
-                    : null,
-                search_terms: searchTerms,
-                faqs: faqs.filter((f) => f.q.trim() && f.a.trim()).map((f) => ({ q: f.q.trim(), a: f.a.trim() })),
-                prices: filledSizeKeys.length ? newPrices : {},
-                default_size: filledSizeKeys.length ? (filledSizeKeys.includes(product?.default_size) ? product.default_size : filledSizeKeys[0]) : null,
-                size_descriptions: filledSizeKeys.length
-                    ? Object.fromEntries(Object.entries(sizeDescriptions).filter(([k]) => filledSizeKeys.includes(k)))
-                    : {},
-                // 🖼️ [صور الأحجام المتعددة]: بنحفظ بس صور الأحجام اللي لسه ليها سعر متعبّى
-                // (لو الأدمن مسح سعر حجم، صورته المخصصة بتتشال معاه تلقائياً بدل ما تفضل يتيمة).
-                size_images: filledSizeKeys.length
-                    ? Object.fromEntries(Object.entries(sizeImages).filter(([k]) => filledSizeKeys.includes(k)))
-                    : {},
-                images,
-            };
-
             try {
+                const categoryId = document.getElementById("pf-category").value;
+                const title = document.getElementById("pf-title").value.trim();
+                const priceRaw = document.getElementById("pf-price").value;
+                const idField = document.getElementById("pf-id");
+                const id = !isEdit ? idField.value.trim() : product.id;
+
+                if (!categoryId) {
+                    window.BoseAdminUI.showToast("لازم تختار فئة للمنتج", "error");
+                    document.getElementById("pf-category").focus();
+                    return;
+                }
+                if (!title) {
+                    window.BoseAdminUI.showToast("لازم تكتب اسم المنتج", "error");
+                    document.getElementById("pf-title").focus();
+                    return;
+                }
+                if (priceRaw === "" || isNaN(parseFloat(priceRaw))) {
+                    window.BoseAdminUI.showToast("لازم تدخل سعر صحيح للمنتج", "error");
+                    document.getElementById("pf-price").focus();
+                    return;
+                }
+                if (!isEdit) {
+                    if (!id) {
+                        window.BoseAdminUI.showToast("لازم تكتب معرّف (ID) للمنتج", "error");
+                        idField.focus();
+                        return;
+                    }
+                    if (!/^[a-z0-9-]+$/.test(id)) {
+                        window.BoseAdminUI.showToast("المعرّف لازم يكون حروف إنجليزية صغيرة وأرقام وشرطات بس", "error");
+                        idField.focus();
+                        return;
+                    }
+                }
+
+                // الأحجام: بس المفاتيح اللي الأدمن دخّل ليها سعر فعلي (مش فاضية)
+                const newPrices = {};
+                SIZE_KEYS.forEach((key) => {
+                    const val = document.getElementById(`pf-size-${key}`).value;
+                    if (val !== "") newPrices[key] = parseFloat(val) || 0;
+                });
+                const filledSizeKeys = Object.keys(newPrices);
+                const searchTerms = document.getElementById("pf-search-terms").value
+                    .split(/[,،]/).map((t) => t.trim()).filter(Boolean);
+
+                // 📦 [نظام المخزون]: فاضي = null (غير متتبع، سلوك زي الأول بالظبط).
+                // لو اتحطت قيمة ووصلت لصفر أو أقل، بنفرض is_available=false تلقائياً
+                // بغض النظر عن حالة الـ checkbox - عشان المنتج ميفضلش شغال بالغلط
+                // وهو خلصان فعلياً من المخزون.
+                const stockRaw = document.getElementById("pf-stock-quantity").value;
+                const stockQuantity = stockRaw !== "" ? Math.max(0, parseInt(stockRaw, 10) || 0) : null;
+                let isAvailable = document.getElementById("pf-available").checked;
+                if (stockQuantity !== null && stockQuantity <= 0) isAvailable = false;
+
+                const payload = {
+                    category_id: categoryId,
+                    title,
+                    flavor_name: document.getElementById("pf-flavor-name").value.trim() || null,
+                    flavor_desc: document.getElementById("pf-flavor-desc").value.trim() || null,
+                    description: document.getElementById("pf-description").value.trim() || null,
+                    price: parseFloat(priceRaw) || 0,
+                    old_price: document.getElementById("pf-old-price").value ? parseFloat(document.getElementById("pf-old-price").value) : null,
+                    quantity_note: document.getElementById("pf-quantity-note").value.trim() || null,
+                    stock_quantity: stockQuantity,
+                    sort_order: parseInt(document.getElementById("pf-sort-order").value, 10) || 0,
+                    is_featured: document.getElementById("pf-featured").checked,
+                    is_available: isAvailable,
+                    // 🍧 [حل مشكلة "مش عارف يختار من خلاله" - منتجات الميكس]: بنحافظ على أي
+                    // مفاتيح تانية موجودة أصلاً جوه options (زي minAmount/maxAmount لمنتج
+                    // بطاقة الهدية) ونضيف/نحدّث mixFlavor بس فوقها - بدل ما نستبدل الكائن
+                    // كله ونمسح بيانات كانت متخزنة فيه لغرض تاني.
+                    options: { ...(product?.options && typeof product.options === "object" && !Array.isArray(product.options) ? product.options : {}), mixFlavor: document.getElementById("pf-mix-flavor").checked },
+                    builder_type: document.getElementById("pf-builder-type").value,
+                    custom_builder_url: document.getElementById("pf-builder-type").value !== "standard"
+                        ? (document.getElementById("pf-builder-url").value.trim() || null)
+                        : null,
+                    search_terms: searchTerms,
+                    faqs: faqs.filter((f) => f.q.trim() && f.a.trim()).map((f) => ({ q: f.q.trim(), a: f.a.trim() })),
+                    prices: filledSizeKeys.length ? newPrices : {},
+                    default_size: filledSizeKeys.length ? (filledSizeKeys.includes(product?.default_size) ? product.default_size : filledSizeKeys[0]) : null,
+                    size_descriptions: filledSizeKeys.length
+                        ? Object.fromEntries(Object.entries(sizeDescriptions).filter(([k]) => filledSizeKeys.includes(k)))
+                        : {},
+                    // 🖼️ [صور الأحجام المتعددة]: بنحفظ بس صور الأحجام اللي لسه ليها سعر متعبّى
+                    // (لو الأدمن مسح سعر حجم، صورته المخصصة بتتشال معاه تلقائياً بدل ما تفضل يتيمة).
+                    size_images: filledSizeKeys.length
+                        ? Object.fromEntries(Object.entries(sizeImages).filter(([k]) => filledSizeKeys.includes(k)))
+                        : {},
+                    images,
+                };
+
                 if (isEdit) {
                     await window.BoseAdmin.updateProduct(product.id, payload);
                     window.BoseAdminUI.showToast("تم تعديل المنتج", "success");
                 } else {
-                    const id = document.getElementById("pf-id").value.trim();
-                    if (!/^[a-z0-9-]+$/.test(id)) {
-                        window.BoseAdminUI.showToast("المعرّف لازم يكون حروف إنجليزية صغيرة وأرقام وشرطات بس", "error");
-                        saveBtn.disabled = false;
-                        saveBtn.textContent = "حفظ المنتج";
-                        return;
-                    }
                     await window.BoseAdmin.createProduct({ id, ...payload });
                     window.BoseAdminUI.showToast("تم إضافة المنتج", "success");
                 }
                 close();
                 await loadProducts();
             } catch (err) {
+                console.error("خطأ أثناء حفظ المنتج:", err);
                 window.BoseAdminUI.showToast(
                     isEdit ? "تعذر تعديل المنتج" : "تعذر إضافة المنتج (تأكد إن الـ ID مش مستخدم قبل كده)",
                     "error"
                 );
+            } finally {
+                // 🛡️ الجزء الأهم من الإصلاح: ده بيتنفذ دايماً - نجح الحفظ، فشل،
+                // أو حصل خطأ غير متوقع - فالزرار مستحيل يفضل عالق على "جاري الحفظ..."
                 saveBtn.disabled = false;
                 saveBtn.textContent = "حفظ المنتج";
             }

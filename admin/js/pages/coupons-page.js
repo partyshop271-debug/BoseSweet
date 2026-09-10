@@ -270,7 +270,7 @@
                     <button class="adm-modal-close" data-role="close"><i class="fa-solid fa-xmark"></i></button>
                 </div>
 
-                <form id="coupon-form">
+                <form id="coupon-form" novalidate>
                     <div class="adm-field">
                         <label for="cf-code">كود الكوبون</label>
                         <input type="text" class="adm-input" id="cf-code" value="${isEdit ? e(coupon.code) : ""}"
@@ -378,58 +378,55 @@
             saveBtn.disabled = true;
             saveBtn.textContent = "جاري الحفظ...";
 
-            const type = document.getElementById("cf-type").value;
-            const value = parseFloat(document.getElementById("cf-value").value) || 0;
-
-            if (type === "percent" && value > 100) {
-                window.BoseAdminUI.showToast("النسبة المئوية لازم تكون 100 أو أقل", "error");
-                saveBtn.disabled = false;
-                saveBtn.textContent = "حفظ الكوبون";
-                return;
-            }
-
-            const expiresRaw = document.getElementById("cf-expires").value;
-            const startsRaw = document.getElementById("cf-starts").value;
-            const maxUsesRaw = document.getElementById("cf-max-uses").value;
-            const minOrderRaw = document.getElementById("cf-min-order").value;
-            const maxDiscountRaw = document.getElementById("cf-max-discount").value;
-            const firstOrderOnly = document.getElementById("cf-first-order").checked;
-            const boundPhoneRaw = document.getElementById("cf-bound-phone").value.trim();
-            // توحيد شكل رقم الموبايل زي بالظبط ما بتفحصه دالة create_order_with_items
-            // في القاعدة (v_clean_phone) عشان المطابقة تنجح فعليًا وقت الطلب
-            const boundPhoneClean = boundPhoneRaw.replace(/[\s\-()+]/g, "");
-
-            if (boundPhoneRaw && !/^01[0125][0-9]{8}$/.test(boundPhoneClean)) {
-                window.BoseAdminUI.showToast("رقم الموبايل المربوط لازم يكون رقم مصري صحيح (01...)", "error");
-                saveBtn.disabled = false;
-                saveBtn.textContent = "حفظ الكوبون";
-                return;
-            }
-
-            // نهاية اليوم المختار (23:59:59) لتاريخ الانتهاء، وبداية اليوم (00:00:00) لتاريخ البداية
-            const startsAtIso = startsRaw ? new Date(`${startsRaw}T00:00:00`).toISOString() : null;
-            const expiresAtIso = expiresRaw ? new Date(`${expiresRaw}T23:59:59`).toISOString() : null;
-            if (startsAtIso && expiresAtIso && new Date(startsAtIso) >= new Date(expiresAtIso)) {
-                window.BoseAdminUI.showToast("تاريخ البداية لازم يكون قبل تاريخ الانتهاء", "error");
-                saveBtn.disabled = false;
-                saveBtn.textContent = "حفظ الكوبون";
-                return;
-            }
-
-            const payload = {
-                type,
-                value,
-                is_active: document.getElementById("cf-active").checked,
-                expires_at: expiresAtIso,
-                starts_at: startsAtIso,
-                max_uses: maxUsesRaw ? parseInt(maxUsesRaw, 10) : null,
-                min_order_value: minOrderRaw ? parseFloat(minOrderRaw) : null,
-                max_discount_amount: maxDiscountRaw ? parseFloat(maxDiscountRaw) : null,
-                first_order_only: firstOrderOnly,
-                bound_phone: boundPhoneRaw ? boundPhoneClean : null,
-            };
-
+            // 🛡️ [إصلاح شامل - نفس إصلاح products-page.js]: كل شيء بقى جوه
+            // try/catch/finally واحد، والـ finally بيرجّع الزرار لحالته الطبيعية
+            // مهما حصل - يبقى مستحيل يفضل عالق على "جاري الحفظ...".
             try {
+                const type = document.getElementById("cf-type").value;
+                const value = parseFloat(document.getElementById("cf-value").value) || 0;
+
+                if (type === "percent" && value > 100) {
+                    window.BoseAdminUI.showToast("النسبة المئوية لازم تكون 100 أو أقل", "error");
+                    return;
+                }
+
+                const expiresRaw = document.getElementById("cf-expires").value;
+                const startsRaw = document.getElementById("cf-starts").value;
+                const maxUsesRaw = document.getElementById("cf-max-uses").value;
+                const minOrderRaw = document.getElementById("cf-min-order").value;
+                const maxDiscountRaw = document.getElementById("cf-max-discount").value;
+                const firstOrderOnly = document.getElementById("cf-first-order").checked;
+                const boundPhoneRaw = document.getElementById("cf-bound-phone").value.trim();
+                // توحيد شكل رقم الموبايل زي بالظبط ما بتفحصه دالة create_order_with_items
+                // في القاعدة (v_clean_phone) عشان المطابقة تنجح فعليًا وقت الطلب
+                const boundPhoneClean = boundPhoneRaw.replace(/[\s\-()+]/g, "");
+
+                if (boundPhoneRaw && !/^01[0125][0-9]{8}$/.test(boundPhoneClean)) {
+                    window.BoseAdminUI.showToast("رقم الموبايل المربوط لازم يكون رقم مصري صحيح (01...)", "error");
+                    return;
+                }
+
+                // نهاية اليوم المختار (23:59:59) لتاريخ الانتهاء، وبداية اليوم (00:00:00) لتاريخ البداية
+                const startsAtIso = startsRaw ? new Date(`${startsRaw}T00:00:00`).toISOString() : null;
+                const expiresAtIso = expiresRaw ? new Date(`${expiresRaw}T23:59:59`).toISOString() : null;
+                if (startsAtIso && expiresAtIso && new Date(startsAtIso) >= new Date(expiresAtIso)) {
+                    window.BoseAdminUI.showToast("تاريخ البداية لازم يكون قبل تاريخ الانتهاء", "error");
+                    return;
+                }
+
+                const payload = {
+                    type,
+                    value,
+                    is_active: document.getElementById("cf-active").checked,
+                    expires_at: expiresAtIso,
+                    starts_at: startsAtIso,
+                    max_uses: maxUsesRaw ? parseInt(maxUsesRaw, 10) : null,
+                    min_order_value: minOrderRaw ? parseFloat(minOrderRaw) : null,
+                    max_discount_amount: maxDiscountRaw ? parseFloat(maxDiscountRaw) : null,
+                    first_order_only: firstOrderOnly,
+                    bound_phone: boundPhoneRaw ? boundPhoneClean : null,
+                };
+
                 if (isEdit) {
                     await window.BoseAdmin.updateCoupon(coupon.code, payload);
                     window.BoseAdminUI.showToast("تم تعديل الكوبون", "success");
@@ -437,8 +434,6 @@
                     const code = document.getElementById("cf-code").value.trim().toUpperCase();
                     if (!code) {
                         window.BoseAdminUI.showToast("كود الكوبون مطلوب", "error");
-                        saveBtn.disabled = false;
-                        saveBtn.textContent = "حفظ الكوبون";
                         return;
                     }
                     await window.BoseAdmin.createCoupon({ code, ...payload });
@@ -447,10 +442,12 @@
                 close();
                 await loadCoupons();
             } catch (err) {
+                console.error("خطأ أثناء حفظ الكوبون:", err);
                 window.BoseAdminUI.showToast(
                     isEdit ? "تعذر تعديل الكوبون" : "تعذر إضافة الكوبون (تأكد إن الكود مش مستخدم قبل كده)",
                     "error"
                 );
+            } finally {
                 saveBtn.disabled = false;
                 saveBtn.textContent = "حفظ الكوبون";
             }

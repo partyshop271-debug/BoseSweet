@@ -210,7 +210,7 @@
                     <button class="adm-modal-close" data-role="close"><i class="fa-solid fa-xmark"></i></button>
                 </div>
 
-                <form id="step-form">
+                <form id="step-form" novalidate>
                     <div class="adm-field">
                         <label for="st-tour-key">الجولة</label>
                         <select class="adm-select" id="st-tour-key">
@@ -304,23 +304,40 @@
             saveBtn.disabled = true;
             saveBtn.textContent = "جاري الحفظ...";
 
-            const isAnyPage = anyPageSelect.value === "1";
-            const mode = modeSelect.value;
-            const chosenTourKey = document.getElementById("st-tour-key").value;
-            const payload = {
-                tour_key: chosenTourKey,
-                any_page: isAnyPage,
-                page: isAnyPage ? null : [document.getElementById("st-page-file").value],
-                mode,
-                selector: document.getElementById("st-selector").value.trim(),
-                hint: mode === "click" ? (document.getElementById("st-hint").value.trim() || null) : null,
-                title: document.getElementById("st-title").value.trim(),
-                body_text: document.getElementById("st-body-text").value.trim(),
-                section: document.getElementById("st-section").value.trim() || null,
-                delay_before_show: parseInt(document.getElementById("st-delay").value, 10) || 0,
-            };
-
             try {
+                const isAnyPage = anyPageSelect.value === "1";
+                const mode = modeSelect.value;
+                const chosenTourKey = document.getElementById("st-tour-key").value;
+                const selector = document.getElementById("st-selector").value.trim();
+                const title = document.getElementById("st-title").value.trim();
+                const bodyText = document.getElementById("st-body-text").value.trim();
+
+                if (!selector) {
+                    window.BoseAdminUI.showToast("لازم تكتب الـ selector الخاص بالخطوة", "error");
+                    return;
+                }
+                if (!title) {
+                    window.BoseAdminUI.showToast("لازم تكتب عنوان الخطوة", "error");
+                    return;
+                }
+                if (!bodyText) {
+                    window.BoseAdminUI.showToast("لازم تكتب نص الخطوة", "error");
+                    return;
+                }
+
+                const payload = {
+                    tour_key: chosenTourKey,
+                    any_page: isAnyPage,
+                    page: isAnyPage ? null : [document.getElementById("st-page-file").value],
+                    mode,
+                    selector,
+                    hint: mode === "click" ? (document.getElementById("st-hint").value.trim() || null) : null,
+                    title,
+                    body_text: bodyText,
+                    section: document.getElementById("st-section").value.trim() || null,
+                    delay_before_show: parseInt(document.getElementById("st-delay").value, 10) || 0,
+                };
+
                 if (isEdit) {
                     await window.BoseAdmin.updateTourStep(step.id, payload);
                     window.BoseAdminUI.showToast("تم تعديل الخطوة", "success");
@@ -340,7 +357,9 @@
                 if (filterSelect) filterSelect.value = chosenTourKey;
                 await loadSteps();
             } catch (err) {
+                console.error("خطأ أثناء حفظ خطوة الجولة:", err);
                 window.BoseAdminUI.showToast(isEdit ? "تعذر تعديل الخطوة" : "تعذر إضافة الخطوة", "error");
+            } finally {
                 saveBtn.disabled = false;
                 saveBtn.textContent = "حفظ";
             }

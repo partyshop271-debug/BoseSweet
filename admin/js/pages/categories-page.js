@@ -94,7 +94,7 @@
                     <button class="adm-modal-close" data-role="close"><i class="fa-solid fa-xmark"></i></button>
                 </div>
 
-                <form id="category-form">
+                <form id="category-form" novalidate>
                     <div class="adm-field">
                         <label for="cf-id">معرّف الفئة (ID)</label>
                         <input type="text" class="adm-input" id="cf-id" value="${isEdit ? e(category.id) : ""}"
@@ -182,23 +182,38 @@
             saveBtn.disabled = true;
             saveBtn.textContent = "جاري الحفظ...";
 
-            const payload = {
-                title: document.getElementById("cf-title").value.trim(),
-                builder_type: document.getElementById("cf-builder-type").value,
-                sort_order: parseInt(document.getElementById("cf-sort-order").value, 10) || 0,
-                image: image || null,
-            };
-
+            // 🛡️ [إصلاح شامل - نفس إصلاح products-page.js]: كل الحفظ بقى جوه
+            // try/catch/finally واحد عشان الزرار مستحيل يفضل عالق، والتحقق بقى
+            // يدوي بدل الاعتماد على required الأصلي اللي ممكن يتقفل بصمت جوه
+            // مودال بيعمل scroll.
             try {
+                const title = document.getElementById("cf-title").value.trim();
+                if (!title) {
+                    window.BoseAdminUI.showToast("لازم تكتب اسم الفئة", "error");
+                    document.getElementById("cf-title").focus();
+                    return;
+                }
+
+                const payload = {
+                    title,
+                    builder_type: document.getElementById("cf-builder-type").value,
+                    sort_order: parseInt(document.getElementById("cf-sort-order").value, 10) || 0,
+                    image: image || null,
+                };
+
                 if (isEdit) {
                     await window.BoseAdmin.updateCategory(category.id, payload);
                     window.BoseAdminUI.showToast("تم تعديل الفئة", "success");
                 } else {
                     const id = document.getElementById("cf-id").value.trim();
+                    if (!id) {
+                        window.BoseAdminUI.showToast("لازم تكتب معرّف (ID) للفئة", "error");
+                        document.getElementById("cf-id").focus();
+                        return;
+                    }
                     if (!/^[a-z0-9-]+$/.test(id)) {
                         window.BoseAdminUI.showToast("المعرّف لازم يكون حروف إنجليزية صغيرة وأرقام وشرطات بس", "error");
-                        saveBtn.disabled = false;
-                        saveBtn.textContent = "حفظ الفئة";
+                        document.getElementById("cf-id").focus();
                         return;
                     }
                     await window.BoseAdmin.createCategory({ id, ...payload });
@@ -207,10 +222,12 @@
                 close();
                 await loadCategories();
             } catch (err) {
+                console.error("خطأ أثناء حفظ الفئة:", err);
                 window.BoseAdminUI.showToast(
                     isEdit ? "تعذر تعديل الفئة" : "تعذر إضافة الفئة (تأكد إن الـ ID مش مستخدم قبل كده)",
                     "error"
                 );
+            } finally {
                 saveBtn.disabled = false;
                 saveBtn.textContent = "حفظ الفئة";
             }

@@ -91,7 +91,7 @@
                     <button class="adm-modal-close" data-role="close"><i class="fa-solid fa-xmark"></i></button>
                 </div>
 
-                <form id="zone-form">
+                <form id="zone-form" novalidate>
                     <div class="adm-field">
                         <label for="zf-id">معرّف المنطقة (ID)</label>
                         <input type="text" class="adm-input" id="zf-id" value="${isEdit ? e(zone.id) : ""}"
@@ -140,23 +140,31 @@
             saveBtn.disabled = true;
             saveBtn.textContent = "جاري الحفظ...";
 
-            const payload = {
-                governorate: document.getElementById("zf-governorate").value.trim(),
-                city: document.getElementById("zf-city").value.trim() || null,
-                area: document.getElementById("zf-area").value.trim() || null,
-                price: parseFloat(document.getElementById("zf-price").value) || 0,
-            };
-
             try {
+                const governorate = document.getElementById("zf-governorate").value.trim();
+                if (!governorate) {
+                    window.BoseAdminUI.showToast("لازم تكتب اسم المحافظة", "error");
+                    return;
+                }
+
+                const payload = {
+                    governorate,
+                    city: document.getElementById("zf-city").value.trim() || null,
+                    area: document.getElementById("zf-area").value.trim() || null,
+                    price: parseFloat(document.getElementById("zf-price").value) || 0,
+                };
+
                 if (isEdit) {
                     await window.BoseAdmin.updateShippingZone(zone.id, payload);
                     window.BoseAdminUI.showToast("تم تعديل المنطقة", "success");
                 } else {
                     const id = document.getElementById("zf-id").value.trim();
+                    if (!id) {
+                        window.BoseAdminUI.showToast("لازم تكتب معرّف (ID) للمنطقة", "error");
+                        return;
+                    }
                     if (!/^[a-z0-9-]+$/.test(id)) {
                         window.BoseAdminUI.showToast("المعرّف لازم يكون حروف إنجليزية صغيرة وأرقام وشرطات بس", "error");
-                        saveBtn.disabled = false;
-                        saveBtn.textContent = "حفظ المنطقة";
                         return;
                     }
                     await window.BoseAdmin.createShippingZone({ id, ...payload });
@@ -165,10 +173,12 @@
                 close();
                 await loadZones();
             } catch (err) {
+                console.error("خطأ أثناء حفظ المنطقة:", err);
                 window.BoseAdminUI.showToast(
                     isEdit ? "تعذر تعديل المنطقة" : "تعذر إضافة المنطقة (تأكد إن الـ ID مش مستخدم قبل كده)",
                     "error"
                 );
+            } finally {
                 saveBtn.disabled = false;
                 saveBtn.textContent = "حفظ المنطقة";
             }

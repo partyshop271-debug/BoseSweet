@@ -6,10 +6,6 @@
  * مكررة. لازم يكون للمنتج المختار old_price أكبر من price في صفحة
  * "المنتجات" علشان شارة الخصم تظهر فعلياً على الموقع العام - الصفحة دي
  * بتحدد *مين* يظهر في قسم العروض المميزة، مش بتحدد السعر نفسه.
- *
- * ده منفصل تماماً عن "بانرات العروض" (promotions.html) اللي بتدير كروت
- * تسويقية حرة (JSON مستقل في store_settings.promotions) مش مربوطة
- * بمنتج حقيقي.
  */
 (function () {
     "use strict";
@@ -110,7 +106,7 @@
                     <button class="adm-modal-close" data-role="close"><i class="fa-solid fa-xmark"></i></button>
                 </div>
 
-                <form id="offer-form">
+                <form id="offer-form" novalidate>
                     <div class="adm-field">
                         <label for="of-product">المنتج</label>
                         <select class="adm-select" id="of-product" required>
@@ -149,12 +145,17 @@
             saveBtn.disabled = true;
             saveBtn.textContent = "جاري الحفظ...";
 
-            const payload = {
-                product_id: document.getElementById("of-product").value,
-                sort_order: parseInt(document.getElementById("of-sort-order").value, 10) || 0,
-            };
-
             try {
+                const productId = document.getElementById("of-product").value;
+                if (!productId) {
+                    window.BoseAdminUI.showToast("لازم تختار منتج للعرض", "error");
+                    return;
+                }
+                const payload = {
+                    product_id: productId,
+                    sort_order: parseInt(document.getElementById("of-sort-order").value, 10) || 0,
+                };
+
                 if (isEdit) {
                     await window.BoseAdmin.updateOffer(offer.id, payload);
                     window.BoseAdminUI.showToast("تم تعديل العرض", "success");
@@ -165,7 +166,9 @@
                 close();
                 await loadOffers();
             } catch (err) {
+                console.error("خطأ أثناء حفظ العرض:", err);
                 window.BoseAdminUI.showToast(isEdit ? "تعذر تعديل العرض" : "تعذر إضافة العرض", "error");
+            } finally {
                 saveBtn.disabled = false;
                 saveBtn.textContent = "حفظ";
             }
