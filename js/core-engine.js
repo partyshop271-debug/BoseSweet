@@ -821,7 +821,7 @@
     function buildBoseFavButtonHTML(productId) {
         const isFav = typeof window.isBoseFavorite === 'function' && window.isBoseFavorite(productId);
         return `
-            <button type="button" class="bose-fav-btn${isFav ? ' is-active' : ''}" data-fav-id="${productId}" aria-label="${isFav ? 'إزالة من المفضلة' : 'إضافة للمفضلة'}" onclick="event.stopPropagation(); if(window.toggleBoseFavorite){ window.toggleBoseFavorite('${productId}', this); }">
+            <button type="button" class="bose-fav-btn${isFav ? ' is-active' : ''}" data-fav-id="${productId}" data-bose-action="toggle-favorite" aria-label="${isFav ? 'إزالة من المفضلة' : 'إضافة للمفضلة'}">
                 <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
             </button>`;
     }
@@ -853,16 +853,16 @@
 
         if (isBuilderMaster) {
             return `
-                <div class="product-card-unified bose-builder-master-card" data-id="${product.id}" onclick="window.location.href='${product.customBuilderUrl}';" style="cursor:pointer;">
+                <div class="product-card-unified bose-builder-master-card" data-id="${product.id}" data-bose-action="goto-url" data-bose-href="${product.customBuilderUrl}" style="cursor:pointer;">
                     <img src="${safeImg}" alt="${safeTitle} | حلويات بوسي" class="product-card-img" width="300" height="300" loading="lazy" />
                     <h3 class="product-card-title">${safeTitle}</h3>
                     <span class="product-card-flavor-name">${safeFlavor}</span>
                     <p class="product-card-desc">${safeDesc}</p>
-                    <button type="button" class="bose-desc-toggle-btn" hidden aria-expanded="false" onclick="event.stopPropagation(); window.toggleBoseCardDesc(this);">اظهار المزيد</button>
+                    <button type="button" class="bose-desc-toggle-btn" hidden aria-expanded="false" data-bose-action="toggle-desc">اظهار المزيد</button>
                     <div class="product-card-price">
                         <span>أسعار تبدأ من ${Math.round(product.basePrice || product.price || 0)} جنيه</span>
                     </div>
-                    <button class="btn-add-to-cart" onclick="event.stopPropagation(); window.location.href='${product.customBuilderUrl}';">
+                    <button class="btn-add-to-cart" data-bose-action="goto-url" data-bose-href="${product.customBuilderUrl}">
                         <i class="fa-solid fa-wand-magic-sparkles"></i> ابدأ التصميم الآن
                     </button>
                 </div>
@@ -888,7 +888,7 @@
                     ${availableSizes.map(sizeKey => `
                         <button type="button" class="bose-card-size-pill${sizeKey === defaultSizeKey ? ' active' : ''}"
                                 data-size-key="${sizeKey}"
-                                onclick="event.stopPropagation(); window.handleBoseCardSizeChange(this, '${product.id}')">${window.BOSE_SIZE_LABELS[sizeKey] || sizeKey}</button>
+                                data-bose-action="change-size">${window.BOSE_SIZE_LABELS[sizeKey] || sizeKey}</button>
                     `).join('')}
                 </div>
             `;
@@ -922,7 +922,7 @@
             ? `<button class="btn-add-to-cart" disabled style="opacity:0.6; cursor:not-allowed;">
                     <i class="fa-solid fa-ban"></i> نفدت الكمية حالياً
                </button>`
-            : `<button class="btn-add-to-cart" onclick="window.handleBoseDirectAddToCart(this, '${product.id}')">
+            : `<button class="btn-add-to-cart" data-bose-action="add-to-cart">
                     <i class="fa-solid fa-basket-shopping"></i> اضافة للسلة
                </button>`;
 
@@ -934,7 +934,7 @@
         const favBtnHtml = buildBoseFavButtonHTML(product.id);
 
         return `
-            <div class="product-card-unified${hasDiscount ? ' bose-offer-card' : ''}${isUnavailable ? ' bose-unavailable-card' : ''}" data-id="${product.id}" data-slug="${encodeURIComponent(product.slug)}" data-selected-size="${defaultSizeKey || ''}" onclick="if(!event.target.closest('.product-card-qty-wrapper') && !event.target.closest('.btn-add-to-cart') && !event.target.closest('.bose-card-size-tabs') && !event.target.closest('.bose-fav-btn')){ window.location.href=window.buildBoseProductDetailUrl(this); }" style="cursor:pointer;">
+            <div class="product-card-unified${hasDiscount ? ' bose-offer-card' : ''}${isUnavailable ? ' bose-unavailable-card' : ''}" data-id="${product.id}" data-slug="${encodeURIComponent(product.slug)}" data-selected-size="${defaultSizeKey || ''}" data-bose-action="open-detail" style="cursor:pointer;">
                 ${discountBadgeHtml}
                 ${isUnavailable ? `<div class="bose-offer-badge bose-stock-badge">نفدت الكمية</div>` : ''}
                 ${favBtnHtml}
@@ -942,14 +942,14 @@
                 <h3 class="product-card-title">${safeTitle}</h3>
                 <span class="product-card-flavor-name">${safeFlavor}</span>
                 <p class="product-card-desc">${safeDesc}</p>
-                <button type="button" class="bose-desc-toggle-btn" hidden aria-expanded="false" onclick="event.stopPropagation(); window.toggleBoseCardDesc(this);">اظهار المزيد</button>
+                <button type="button" class="bose-desc-toggle-btn" hidden aria-expanded="false" data-bose-action="toggle-desc">اظهار المزيد</button>
                 ${sizeTabsHtml}
                 ${quantityNoteHtml}
                 
                 <div class="product-card-qty-wrapper" style="${isUnavailable ? 'display:none;' : ''}">
-                    <button class="btn-qty-plus" onclick="window.handleBoseCardQtyChange(this, 1)">+</button>
+                    <button class="btn-qty-plus" data-bose-action="qty-plus">+</button>
                     <input type="number" class="input-qty-value" value="1" min="1" readonly />
-                    <button class="btn-qty-minus" onclick="window.handleBoseCardQtyChange(this, -1)">-</button>
+                    <button class="btn-qty-minus" data-bose-action="qty-minus">-</button>
                 </div>
                 
                 <div class="product-card-price" data-base-price="${calculatedPrice}">
@@ -1129,6 +1129,84 @@
     initBoseDescToggleObserver();
 
     /**
+     * 🛡️👑 [تصليب CSP - إلغاء onclick المضمّن نهائياً]: كل كروت المنتجات/الفئات
+     * في الموقع (createProductCardHTML هنا + كارت الفئة في homepage-engine.js)
+     * كانت بتستخدم onclick="..." مكتوب مباشرة جوه الـHTML - وده بالظبط اللي
+     * كان بيتقفل تماماً لما سياسة الأمان (CSP) اتشددت لمنع أي كود مضمّن (لأن كل
+     * زرار فيه ID منتج مختلف، مفيش "بصمة" ثابتة ممكن تتعمل لكل الاحتمالات).
+     * دلوقتي مستمع واحد بس مفوّض (event delegation) على document بيغطي كل
+     * كروت المنتجات في الموقع كله عن طريق data-bose-action بدل onclick - كده
+     * تقدر نرجّع نفعّل سياسة CSP الصارمة (بصمات فقط، من غير 'unsafe-inline')
+     * تاني من غير ما نكسر أي زرار.
+     */
+    function initBoseCardActionDelegation() {
+        if (window.__boseCardActionDelegationInit) return;
+        window.__boseCardActionDelegationInit = true;
+
+        document.addEventListener('click', function(e) {
+            const el = e.target.closest('[data-bose-action]');
+            if (!el) return;
+            const action = el.dataset.boseAction;
+            const card = el.closest('.product-card-unified, .category-card-unified');
+
+            switch (action) {
+                case 'goto-url': {
+                    e.stopPropagation();
+                    const url = el.dataset.boseHref;
+                    if (url) window.location.href = url;
+                    break;
+                }
+                case 'toggle-favorite': {
+                    e.stopPropagation();
+                    const favId = el.dataset.favId;
+                    if (favId && typeof window.toggleBoseFavorite === 'function') {
+                        window.toggleBoseFavorite(favId, el);
+                    }
+                    break;
+                }
+                case 'toggle-desc': {
+                    e.stopPropagation();
+                    if (typeof window.toggleBoseCardDesc === 'function') window.toggleBoseCardDesc(el);
+                    break;
+                }
+                case 'change-size': {
+                    e.stopPropagation();
+                    const productId = card ? card.dataset.id : null;
+                    if (productId && typeof window.handleBoseCardSizeChange === 'function') {
+                        window.handleBoseCardSizeChange(el, productId);
+                    }
+                    break;
+                }
+                case 'add-to-cart': {
+                    const productId = card ? card.dataset.id : null;
+                    if (productId && typeof window.handleBoseDirectAddToCart === 'function') {
+                        window.handleBoseDirectAddToCart(el, productId);
+                    }
+                    break;
+                }
+                case 'qty-plus': {
+                    if (typeof window.handleBoseCardQtyChange === 'function') window.handleBoseCardQtyChange(el, 1);
+                    break;
+                }
+                case 'qty-minus': {
+                    if (typeof window.handleBoseCardQtyChange === 'function') window.handleBoseCardQtyChange(el, -1);
+                    break;
+                }
+                case 'open-detail': {
+                    // 🛡️ نفس شرط الاستبعاد اللي كان جوه onclick القديم بالظبط -
+                    // لو الضغطة جت من جوه صندوق الكمية (حتى لو على الـinput نفسه
+                    // مش الأزرار)، منعملش أي تنقل لصفحة التفاصيل.
+                    if (e.target.closest('.product-card-qty-wrapper') || e.target.closest('.btn-add-to-cart') || e.target.closest('.bose-card-size-tabs') || e.target.closest('.bose-fav-btn')) return;
+                    const url = (typeof window.buildBoseProductDetailUrl === 'function') ? window.buildBoseProductDetailUrl(el) : null;
+                    if (url) window.location.href = url;
+                    break;
+                }
+            }
+        });
+    }
+    initBoseCardActionDelegation();
+
+    /**
      * @param {HTMLElement} buttonElement
      * @param {number} direction
      */
@@ -1147,8 +1225,18 @@
         if (currentQty < 1) currentQty = 1;
         qtyInput.value = String(currentQty);
 
+        // 🛡️🆕 [إصلاح - الأزرار كانت بتمسح شكل السعر]: كان الكود بيكتب على
+        // priceDisplay.textContent مباشرة، وده بيمسح كل العناصر التانية جوه
+        // نفس الصندوق (السعر القديم المشطوب + شارة "وفرتِ X جنيه" لو المنتج
+        // عليه عرض) لأن textContent بيستبدل كل الأبناء بنص واحد بسيط. دلوقتي
+        // بنحدّث بس الـ<span> اللي فيه السعر الحالي (زي ما بتعمل بالظبط
+        // handleBoseDirectAddToCart)، وبنسيب السعر القديم وشارة التوفير زي
+        // ما هما لو المنتج عليه عرض.
         const basePrice = parseFloat(priceDisplay.getAttribute('data-base-price') || '0') || 0;
-        priceDisplay.textContent = `${Math.round(basePrice * currentQty)} جنيه`;
+        const newTotal = `${Math.round(basePrice * currentQty)} جنيه`;
+        const priceSpan = priceDisplay.querySelector('span');
+        if (priceSpan) priceSpan.textContent = newTotal;
+        else priceDisplay.textContent = newTotal;
     };
 
 
