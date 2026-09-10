@@ -373,6 +373,15 @@
                 query = query.lte("created_at", `${filters.dateTo}T23:59:59`);
             }
 
+            // 🛡️ [إصلاح - حماية من نمو الجدول]: من غير حد أقصى، الاستعلام ده كان
+            // بيجيب كل صفوف الطلبات (+كل order_items بتاعتها) دفعة واحدة في كل
+            // مرة تتفتح فيها الصفحة أو يتغيّر فلتر - مقبول دلوقتي بحجم الطلبات
+            // الحالي، لكن هيبقى بطيء ومكلف في النقل كل ما تكبر قاعدة الطلبات.
+            // الحد الافتراضي هنا (500) سخي جداً لأي استخدام يومي عادي وميغيّرش
+            // سلوك أي فلتر حالي - لو حد محتاج فعلاً أكتر من 500 نتيجة، يقدر
+            // يبعت filters.limit برقم أكبر أو يستخدم فلتر التاريخ لتضييق النطاق.
+            query = query.limit(filters.limit || 500);
+
             const { data, error } = await query;
             if (error) throw error;
             return data || [];
@@ -686,31 +695,6 @@
         if (error) throw error;
     }
 
-    /** يرجّع مصفوفة العروض (promotions) من صف store_settings الوحيد */
-    async function getPromotions() {
-        try {
-            const { data, error } = await client
-                .from("store_settings")
-                .select("promotions")
-                .eq("id", 1)
-                .maybeSingle();
-            if (error) throw error;
-            return (data && data.promotions) || [];
-        } catch (e) {
-            console.warn("تعذر جلب العروض:", e.message);
-            return [];
-        }
-    }
-
-    /** بتستبدل مصفوفة العروض بالكامل - الصفحة اللي بتنادي الدالة دي بتبعت المصفوفة كاملة بعد التعديل */
-    async function savePromotions(promotions) {
-        const { error } = await client
-            .from("store_settings")
-            .update({ promotions, updated_at: new Date().toISOString() })
-            .eq("id", 1);
-        if (error) throw error;
-    }
-
     /** يرجّع كائن navigation (الشريط العلوي المتحرك) من صف store_settings الوحيد */
     async function getNavigationSettings() {
         try {
@@ -738,9 +722,8 @@
 
     /* ============================= العروض المميزة (صفحة offers.html) ============================= */
     /**
-     * جدول offers منفصل تماماً عن store_settings.promotions: كل صف هنا هو
-     * ربط حقيقي (product_id FK) لمنتج موجود بالفعل في جدول products، مش
-     * كائن مستقل مكرر ببيانات خاصة بيه. الهدف: عرض "هذا المنتج عليه عرض"
+     * كل صف هنا هو ربط حقيقي (product_id FK) لمنتج موجود بالفعل في جدول
+     * products، مش كائن مستقل مكرر ببيانات خاصة بيه. الهدف: عرض "هذا المنتج عليه عرض"
      * بدون تكرار المنتج كسطر منفصل بسعر مختلف في صفحة الفئة (المشكلة
      * اللي كانت موجودة قبل كده في category.html على الموقع العام).
      */
@@ -1076,6 +1059,9 @@
 
             if (filters.approved === true) query = query.eq("is_approved", true);
             if (filters.approved === false) query = query.eq("is_approved", false);
+
+            // 🛡️ [نفس إصلاح حماية النمو المطبّق على getAllOrders]
+            query = query.limit(filters.limit || 500);
 
             const { data, error } = await query;
             if (error) throw error;
@@ -1981,8 +1967,6 @@
         updateHomepageSettings,
         getNavigationSettings,
         updateNavigationSettings,
-        getPromotions,
-        savePromotions,
         getAllCoupons,
         createCoupon,
         updateCoupon,
