@@ -14,15 +14,23 @@
 :root {
     /* الألوان الحاكمة والمقدسة لعلامة حلويات بوسي الفاخرة - ممنوع مساسها */
     --bose-pink: #FF91A4;        /* نبض الحياة: حدود كروت المنتجات، خلفيات فاتحة، والتأثيرات التفاعلية الزخرفية - غير مخصص للنصوص */
-    /* 🛡️ [إصلاح إتاحة - تباين الألوان]: --bose-pink الأصلي نسبة تباينه مع
-       الأبيض هي 2.13:1 بس - أقل بكتير من الحد الأدنى العالمي (WCAG AA) للنصوص
-       وهو 4.5:1، وده بيخلي أي نص أو زرار بلونه صعب القراءة (خصوصاً في الشمس أو
-       لأصحاب ضعف النظر). اللون ده نفس الهوية (وردي) لكن بدرجة أغمق بتوصل
-       لنسبة تباين 4.6:1 - مخصص لأي نص وردي أو خلفية زرار أساسي فيها نص أبيض. */
+    /* 🛡️🆕 [إصلاح إتاحة - تباين الألوان - سبتمبر 2026]: --bose-pink الأصلي
+       نسبة تباينه مع الأبيض 2.13:1 بس - أقل بكتير من الحد الأدنى العالمي
+       (WCAG AA) للنصوص وهو 4.5:1. كان فيه محاولة سابقة لحل المشكلة بدرجة وردي
+       أغمق، بس عملياً أي درجة وردي بنفس الهوية توصل لـ4.5:1+ بتبقى قريبة من
+       الأحمر مش وردي فاتح (تجربة رياضية أكدت كده). الحل المعتمد دلوقتي: نص
+       أسود (--bose-black) فوق نفس الوردي الفاتح المعروف، مش نص أبيض - بيوصل
+       لتباين 8.85:1 من غير ما نغيّر درجة الوردي خالص. --bose-pink-text باقي
+       موجود للتوافق مع الكود القديم بس قيمته نفس --bose-pink بالظبط دلوقتي. */
     --bose-pink-text: #FF91A4;
     --bose-white: #FFFFFF;       /* المسيطر تماماً: لخلق تنفس بصري ومنع التكديس نهائياً لراحة العميل النفسية */
     --bose-black: #111111;       /* النصوص والعناوين فقط لضمان وضوح كامل للعين وحظر استخدامه في ظلال أو خلفيات */
-    --bose-gold: #FF91A4;        /* وجود رمزي ناعم وخفيف جداً لمحاكاة فخامة اللوجو (نجوم التقييمات) */
+    /* 🛡️🆕 [إصلاح إتاحة - سبتمبر 2026]: القيمة القديمة هنا كانت #FF91A4 -
+       نفس لون الوردي بالظبط، يعني "الدهبي" في نجوم التقييم وشارات النقاط
+       كان عملياً وردي مش دهبي، وده سبب إحساسك إن النجوم بتدوب في لون الموقع.
+       القيمة الجديدة دهبي حقيقي (نفس درجة النجاح في نظام الإشعارات) وبتوصل
+       لتباين 6.36:1 مع الأبيض - مقروءة كنص وواضحة كأيقونة، مش بس "لمسة خفيفة". */
+    --bose-gold: #7A5A16;        /* دهبي حقيقي فاتح - نجوم التقييم، شارات النقاط، لمسات النصوص الذهبية */
     /* 🐛 [إصلاح - لون أيقونات الهيدر]: كانت أيقونات المفضلة/السلة/القائمة
        (.bose-nav-btn) بلون أسود عادي (--bose-black) بدل لون يعكس هوية العلامة
        الفاخرة. ده متغير دهبي حقيقي مخصص لها، منفصل عن --bose-gold القديم
@@ -679,23 +687,44 @@ img {
     font-family: var(--bose-font, 'Cairo', sans-serif);
 }
 
+/* 🆕 [إعادة تصميم الإشعارات - سبتمبر 2026]: قبل كده كل الإشعارات (نجاح/خطأ/
+   تحذير/ترحيب) كانت بنفس اللون الوردي الغامق بالظبط، يعني ذايبة بصرياً فوق
+   موقع لونه الأساسي وردي - العميل بيفوّتها بسهولة. دلوقتي بطاقة فاتحة (مش
+   ذايبة في خلفية الموقع) + شريط لون جانبي + أيقونة دايرة ملوّنة حسب نوع
+   الرسالة، والألوان الأربعة من نفس العيلة اللونية الدافية لهوية بوسي (مش
+   ألوان تنبيهية عامة مقتبسة من أي موقع) - عشان تحس إنها جزء من الموقع مش
+   حاجة لصقانة عليه. */
+:root {
+    --bose-toast-accent: var(--bose-pink-text);
+    --bose-toast-accent-dark: var(--bose-pink-text);
+    --bose-toast-icon: '\2022'; /* نقطة افتراضية */
+}
+
 .bose-toast-message {
-    background-color: var(--bose-pink-text); /* 🛡️ لون أغمق لضمان تباين كافٍ مع النص الأبيض */
-    color: var(--bose-white);
-    padding: 14px 22px;
-    border-radius: 16px; /* 🆕 كبسولة مربعة الحواف الناعمة بدل الشكل الطويل الضيق - أريح للعين مع نصوص أطول ومش بتحس إنها "مكدسة" في شكل شريط رفيع */
+    background-color: var(--bose-white);
+    color: var(--bose-toast-accent-dark);
+    padding: 12px 16px;
+    border-radius: 4px 16px 16px 4px; /* 🆕 حافة يمين شبه مربعة (مكان الشريط الملوّن) وباقي الكبسولة ناعمة */
+    border-right: 4px solid var(--bose-toast-accent);
     font-weight: 700;
     font-size: 15px;
-    line-height: 1.55; /* 🆕 مسافة أوضح بين الأسطر لو الرسالة طويلة وعملت لفة سطرين */
-    text-align: center;
-    box-shadow: 0 10px 34px rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.4);
+    line-height: 1.6;
+    text-align: right;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.14);
     direction: rtl;
+    display: flex;
+    align-items: center;
+    gap: 12px;
     opacity: 0;
     transform: translateY(-16px);
     transition: opacity 0.4s ease, transform 0.4s ease;
     pointer-events: auto;
 }
+
+.bose-toast-message[data-type="success"] { --bose-toast-accent: #D4AF37; --bose-toast-accent-dark: #7A5A16; --bose-toast-icon: '\2713'; }
+.bose-toast-message[data-type="error"]   { --bose-toast-accent: #A13A4A; --bose-toast-accent-dark: #6E2431; --bose-toast-icon: '\2715'; }
+.bose-toast-message[data-type="warning"] { --bose-toast-accent: #B9722E; --bose-toast-accent-dark: #7A4A1B; --bose-toast-icon: '!';     }
+.bose-toast-message[data-type="info"]    { --bose-toast-accent: #7A3355; --bose-toast-accent-dark: #4E1F37; --bose-toast-icon: '\24D8'; }
 
 .bose-toast-message.is-visible {
     opacity: 1;
@@ -705,6 +734,80 @@ img {
 .bose-toast-message.is-leaving {
     opacity: 0;
     transform: translateY(-20px);
+}
+
+.bose-toast-icon {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    /* 🛡️🆕 [إصلاح إتاحة - سبتمبر 2026]: كانت الدايرة بلون --bose-toast-accent
+       الفاتح (زي الدهبي #D4AF37) - العلامة البيضاء جواها كان تباينها 2.10:1
+       بس، فاشلة حتى في أقل حد مسموح للأيقونات الرسومية (3:1). --accent-dark
+       نفس درجة اللون بس أغمق، وبيوصل لتباين 6.36:1 - 13.33:1 حسب النوع. */
+    background-color: var(--bose-toast-accent-dark);
+    color: var(--bose-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+}
+.bose-toast-icon::before {
+    content: var(--bose-toast-icon);
+}
+
+.bose-toast-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.bose-toast-text {
+    font-family: var(--bose-font, 'Cairo', sans-serif);
+}
+
+/* 🆕 شريط تقدّم بيوضّح بصرياً كام ثانية باقية قبل ما الإشعار يختفي - ومهم
+   إنه بيتوقف تماماً لو العميل حطّ إيده/دوسته (pause on hover/focus) عشان
+   محدش يضطر "يلحق" يقرأ الرسالة قبل ما تختفي، خصوصاً لضعاف القراءة والنظر. */
+.bose-toast-progress {
+    height: 3px;
+    background-color: rgba(0, 0, 0, 0.07);
+    border-radius: 2px;
+    margin-top: 8px;
+    overflow: hidden;
+}
+.bose-toast-progress-fill {
+    height: 100%;
+    width: 100%;
+    background-color: var(--bose-toast-accent);
+}
+
+.bose-toast-close {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    color: rgba(17, 17, 17, 0.35);
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 2px 4px;
+    align-self: flex-start;
+}
+.bose-toast-close:hover,
+.bose-toast-close:focus-visible {
+    color: rgba(17, 17, 17, 0.7);
+}
+
+/* 🆕 احترام تفضيل "تقليل الحركة" لو العميل مفعّله في جهازه - الإشعار لسه
+   بيظهر ويختفي، بس من غير أنيميشن انزلاق/تلاشي يقدر يضايق حد حساس للحركة. */
+@media (prefers-reduced-motion: reduce) {
+    .bose-toast-message {
+        transition: opacity 0.15s linear;
+        transform: none !important;
+    }
+    .bose-toast-progress-fill {
+        transition: none !important;
+    }
 }
 /* ==========================================================================
    👑👑 [مرحلة جديدة]: نافذة "حمّلي تطبيقنا" - بهوية حلويات بوسي الكاملة

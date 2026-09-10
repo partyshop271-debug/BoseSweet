@@ -1311,14 +1311,14 @@
 
 .btn-add-to-cart {
     width: 100%;
-    background-color: var(--bose-pink-text); /* 🛡️ لون أغمق لضمان تباين كافٍ مع النص الأبيض - أهم زرار بالكارت */
-    color: var(--bose-white);
+    background-color: var(--bose-pink-text); /* 🛡️ خلفية وردي العلامة زي ما هي */
+    color: var(--bose-black); /* 🛡️🆕 [إتاحة]: كان نص أبيض بتباين 2.13:1 فاشل - نص أسود دلوقتي بتباين 8.85:1 */
     padding: 12px;
     border-radius: var(--bose-radius-pill);
     font-weight: 700;
     cursor: pointer;
     transition: var(--bose-transition-fast);
-    border: none;
+    border: 2px solid transparent;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1332,9 +1332,23 @@
 
 .btn-add-to-cart:disabled {
     background-color: var(--bose-pink-text) !important;
-    color: var(--bose-white) !important;
+    color: var(--bose-black) !important;
     opacity: 1 !important;
     cursor: not-allowed;
+}
+
+/* 🆕 [حالة "تمت الإضافة" - سبتمبر 2026]: قبل كده الزرار في حالة النجاح كان
+   بياخد بالظبط نفس شكل الحالة العادية (نفس الوردي، من غير حدود) - الفرق
+   الوحيد كان النص والأيقونة، وده مش كفاية كإشارة بصرية واضحة إن الإضافة
+   نجحت فعلاً. دلوقتي بوردر دهبي واضح + خلفية بيضاء + أيقونة صح دهبية -
+   شكل مختلف تماماً عن الحالة العادية، بيحس العميل إنه "استلم تأكيد" فعلي. */
+.btn-add-to-cart.is-added {
+    background-color: var(--bose-white) !important;
+    color: var(--bose-black) !important;
+    border: 2px solid var(--bose-gold) !important;
+}
+.btn-add-to-cart.is-added i {
+    color: var(--bose-gold);
 }
 
 /* 🛡️ [إصلاح بصري - كارت رفيع/طويل/مضغوط]: الحل السابق (minmax) منع الكارت
