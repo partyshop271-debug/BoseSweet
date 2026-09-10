@@ -123,7 +123,7 @@
             </div>
 
             <div class="bose-step-wizard-card">
-                <form id="bose-interactive-flower-form" onsubmit="return false;">
+                <form id="bose-interactive-flower-form">
 
                     <!-- الخطوة 1: إلهام من شغلنا + الإحساس المطلوب من الباقة
                          🖼️👑 [سمتريه محاكي التورت]: نفس مكان معرض الإلهام
@@ -511,6 +511,11 @@
     <script src="js/flower-engine.js?v=2026_production_v43.0" defer></script>
     <script src="js/reviews-widget.js?v=2026_production_v1.2" defer></script>
     <script>
+        // 🛡️ [تصليب CSP]: بديل onsubmit="return false;" المضمّن (نفس السلوك بالظبط).
+        document.addEventListener("DOMContentLoaded", function () {
+            const flowerForm = document.getElementById("bose-interactive-flower-form");
+            if (flowerForm) flowerForm.addEventListener("submit", (e) => e.preventDefault());
+        });
         document.addEventListener("DOMContentLoaded", function () {
             window.initBoseReviewsWidget({
                 mountId: "bose-flower-reviews-mount",

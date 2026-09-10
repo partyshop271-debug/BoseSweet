@@ -1200,13 +1200,13 @@
                     cardElement.innerHTML = `
                         ${discountBadgeHtml}
                         ${favBtnHtml}
-                        <a href="${productDetailUrl}" class="product-card-link" aria-label="عرض تفاصيل منتج ${safeTitle}" onclick="event.preventDefault(); window.openBoseProductDetailModal('${product.slug}', '${defaultSize}');">
+                        <a href="${productDetailUrl}" class="product-card-link" aria-label="عرض تفاصيل منتج ${safeTitle}">
                             <img class="product-card-img" data-size-img="1" src="${window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(cardImageUrl, 450) : cardImageUrl}" alt="${safeTitle}" loading="lazy">
                             <h3 class="product-card-title">${safeTitle}</h3>
                             <span class="product-card-flavor-name">${safeFlavor}</span>
                             <p class="product-card-desc">${safeDesc}</p>
                         </a>
-                        <button type="button" class="bose-desc-toggle-btn" hidden aria-expanded="false" onclick="event.preventDefault(); event.stopPropagation(); window.toggleBoseCardDesc(this);">اظهار المزيد</button>
+                        <button type="button" class="bose-desc-toggle-btn" hidden aria-expanded="false">اظهار المزيد</button>
 
                         <div class="product-card-bottom-row">
                             <div class="product-card-price" data-base-unit-price="${calculatedPrice}">
@@ -1214,9 +1214,26 @@
                                 <span class="current-price-value">${calculatedPrice} ${globalStoreCurrency}</span>
                                 ${savingsHtml}
                             </div>
-                            <a href="${productDetailUrl}" class="bose-internal-add" aria-label="عرض تفاصيل وتقييمات منتج ${safeTitle}" onclick="event.preventDefault(); window.openBoseProductDetailModal('${product.slug}', '${defaultSize}');">عرض التفاصيل</a>
+                            <a href="${productDetailUrl}" class="bose-internal-add" aria-label="عرض تفاصيل وتقييمات منتج ${safeTitle}">عرض التفاصيل</a>
                         </div>
                     `;
+
+                    // 🛡️ [تصليب CSP]: بدل الـ onclick المضمّنة التلاتة اللي كانت جوه الـ template
+                    // فوق (نفس السلوك بالظبط) - مربوطة دلوقتي بـ addEventListener بعد إدراج الكارت.
+                    cardElement.querySelectorAll(".product-card-link, .bose-internal-add").forEach((link) => {
+                        link.addEventListener("click", function (e) {
+                            e.preventDefault();
+                            window.openBoseProductDetailModal(product.slug, defaultSize);
+                        });
+                    });
+                    const descToggleBtn = cardElement.querySelector(".bose-desc-toggle-btn");
+                    if (descToggleBtn) {
+                        descToggleBtn.addEventListener("click", function (e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            window.toggleBoseCardDesc(descToggleBtn);
+                        });
+                    }
 
                     // 👑 [إصلاح جذري - كل الكارت قابل للمس]
                     cardElement.addEventListener('click', function(e) {

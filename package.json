@@ -4,7 +4,9 @@
   "private": true,
   "description": "حلويات بوسي - الموقع ولوحة التحكم (بدون build حقيقي وقت التشغيل، فقط تصغير الأصول وقت النشر)",
   "scripts": {
-    "build": "node scripts/minify.js"
+    "build": "node scripts/csp-hashes.js check && node scripts/minify.js",
+    "csp:check": "node scripts/csp-hashes.js check",
+    "csp:update": "node scripts/csp-hashes.js update"
   },
   "devDependencies": {
     "esbuild": "^0.28.2"

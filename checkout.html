@@ -301,7 +301,7 @@
             <div class="checkout-form-panel">
                 <h3 class="checkout-pane-title"><i class="fas fa-truck-ramp-box" style="color:var(--bose-pink);"></i> بياناتك وميعاد الاستلام</h3>
                 
-                <form id="bose-checkout-fields-form" class="form-inputs-stack" onsubmit="return false;">
+                <form id="bose-checkout-fields-form" class="form-inputs-stack">
                     
                     <!-- الاسم بالكامل (إلزامي برمجياً بنسبة مئة بالمئة) -->
                     <div class="input-group-node">
@@ -573,6 +573,12 @@
 
     <!-- 🔮 سكريبت التزامن الدفاعي المحلي لربط وحقن الواجهات وضمان فك شلل حقول الصفحة دون تعارض خارجي 🔮 -->
     <script>
+        // 🛡️ [تصليب CSP]: بديل onsubmit="return false;" المضمّن (نفس السلوك بالظبط - التأكيد
+        // الفعلي بيتم بزرار btn-submit-order-final مش submit عادي).
+        document.addEventListener("DOMContentLoaded", () => {
+            const checkoutFieldsForm = document.getElementById("bose-checkout-fields-form");
+            if (checkoutFieldsForm) checkoutFieldsForm.addEventListener("submit", (e) => e.preventDefault());
+        });
         document.addEventListener("DOMContentLoaded", () => {
             const compactHook = document.getElementById("bose-checkout-compact-items-hook");
             const addressInput = document.getElementById("checkout-address-details");

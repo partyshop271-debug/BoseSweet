@@ -318,7 +318,7 @@
                 const safeCatTitle = escMenu(cat.title);
                 card.innerHTML = `
                     <a href="${targetUrl}" class="bose-menu-img-wrap" aria-label="استعراض فئة ${safeCatTitle}">
-                        <img src="${window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(cat.image, 450) : cat.image}" alt="${safeCatTitle}" loading="lazy" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png'">
+                        <img src="${window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(cat.image, 450) : cat.image}" alt="${safeCatTitle}" loading="lazy">
                     </a>
                     <a href="${targetUrl}" style="text-decoration:none;">
                         <h3 class="bose-menu-title-node">${safeCatTitle}</h3>
@@ -329,6 +329,15 @@
                         </a>
                     </div>
                 `;
+                // 🛡️ [تصليب CSP]: بديل onerror المضمّن جوه الـ template - نفس السلوك بالظبط
+                // (الرجوع للوجو الافتراضي لو رابط صورة الفئة اتكسر) لكن مربوط بـ addEventListener.
+                const cardImg = card.querySelector("img");
+                if (cardImg) {
+                    cardImg.addEventListener("error", function onCardImgError() {
+                        cardImg.removeEventListener("error", onCardImgError);
+                        cardImg.src = "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png";
+                    });
+                }
                 grid.appendChild(card);
             });
         }
