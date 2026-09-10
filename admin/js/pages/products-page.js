@@ -71,7 +71,7 @@
             <tr>
                 <td class="adm-orders-checkbox-cell"><input type="checkbox" class="adm-product-row-checkbox" data-id="${e(p.id)}" ${selectedIds.has(p.id) ? "checked" : ""}></td>
                 <td>${thumb ? `<img src="${e(thumb)}" class="adm-table-thumb" alt="">` : `<div class="adm-table-thumb"></div>`}</td>
-                <td>${e(p.title)} ${needsPhoto ? `<span class="adm-badge warning" title="لسه شايل صورة اللوجو الافتراضية، محتاج صورة حقيقية">بدون صورة حقيقية</span>` : ""}</td>
+                <td>${e(p.title)} ${needsPhoto ? `<span class="adm-badge warning" title="لسه شايل صورة اللوجو الافتراضية، محتاج صورة حقيقية">بدون صورة حقيقية</span>` : ""} ${p.options && p.options.mixFlavor === true ? `<span class="adm-badge" title="العميل بيختار توبينجين مختلفين من نافذة تفاصيل المنتج">🍧 ميكس</span>` : ""}</td>
                 <td>${e(categoryTitle(p))}</td>
                 <td>${Math.round(p.price)} ج.م</td>
                 <td>${p.old_price ? Math.round(p.old_price) + " ج.م" : "—"}</td>
@@ -469,6 +469,12 @@
                                 المنتج متاح للطلب حالياً
                             </label>
 
+                            <label class="adm-checkbox-label">
+                                <input type="checkbox" id="pf-mix-flavor" ${isEdit && product.options && product.options.mixFlavor === true ? "checked" : ""}>
+                                🍧 منتج ميكس (يخلي العميل يختار توبينجين مختلفين من نفس القسم)
+                            </label>
+                            <span class="adm-hint" style="margin-top:-8px;">فعّليها لمنتج زي "قشطوطة ميكس" عشان يظهر في نافذة تفاصيله أداة اختيار حقيقية لتوبينجين من باقي نكهات نفس القسم - وسعره هيتحسب تلقائياً كمتوسط سعر التوبينجين اللي هتختارهم العميلة. لازم يكون في نكهتين تانيين على الأقل متاحتين بنفس القسم عشان الأداة تظهر.</span>
+
                             <div class="adm-field">
                                 <label for="pf-builder-type">نوع المنتج</label>
                                 <select class="adm-select" id="pf-builder-type">
@@ -730,6 +736,11 @@
                 sort_order: parseInt(document.getElementById("pf-sort-order").value, 10) || 0,
                 is_featured: document.getElementById("pf-featured").checked,
                 is_available: isAvailable,
+                // 🍧 [حل مشكلة "مش عارف يختار من خلاله" - منتجات الميكس]: بنحافظ على أي
+                // مفاتيح تانية موجودة أصلاً جوه options (زي minAmount/maxAmount لمنتج
+                // بطاقة الهدية) ونضيف/نحدّث mixFlavor بس فوقها - بدل ما نستبدل الكائن
+                // كله ونمسح بيانات كانت متخزنة فيه لغرض تاني.
+                options: { ...(product?.options && typeof product.options === "object" && !Array.isArray(product.options) ? product.options : {}), mixFlavor: document.getElementById("pf-mix-flavor").checked },
                 builder_type: document.getElementById("pf-builder-type").value,
                 custom_builder_url: document.getElementById("pf-builder-type").value !== "standard"
                     ? (document.getElementById("pf-builder-url").value.trim() || null)
