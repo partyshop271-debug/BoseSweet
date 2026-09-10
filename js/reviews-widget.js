@@ -356,7 +356,7 @@
             const rating = checkedRadio ? checkedRadio.value : "5";
 
             if (!userName || !comment) {
-                if (typeof window.showBoseToast === "function") window.showBoseToast("يرجى ملء جميع الحقول المطلوبة قبل الإرسال 🌸");
+                if (typeof window.showBoseToast === "function") window.showBoseToast("من فضلك املي كل الحقول المطلوبة قبل الإرسال 🌸");
                 return;
             }
 

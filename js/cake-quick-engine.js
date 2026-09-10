@@ -65,7 +65,7 @@ function startQuickOrderEngine() {
             if (!file) return;
             if (!window.BoseSupabase || typeof window.BoseSupabase.uploadBoseReferenceImage !== 'function') {
                 if (typeof window.showBoseGlobalToast === 'function') {
-                    window.showBoseGlobalToast("تعذر تحميل خدمة رفع الصور، حاول تحديث الصفحة.");
+                    window.showBoseGlobalToast("مقدرناش نحمّل خدمة رفع الصور، حاولي تحدثي الصفحة.");
                 }
                 return;
             }
@@ -87,7 +87,7 @@ function startQuickOrderEngine() {
                 uploadedPhotoUrl = "";
                 if (photoUploadLabel) photoUploadLabel.textContent = "فشل الرفع، اضغط للمحاولة مرة أخرى";
                 if (typeof window.showBoseGlobalToast === 'function') {
-                    window.showBoseGlobalToast("تعذر رفع الصورة، تأكدي من الاتصال بالإنترنت وحاولي تاني.");
+                    window.showBoseGlobalToast("مقدرناش نرفع الصورة، تأكدي من الاتصال بالإنترنت وحاولي تاني.");
                 }
             } finally {
                 isUploadingPhoto = false;

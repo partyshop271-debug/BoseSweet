@@ -454,7 +454,7 @@ function startEngineLogic() {
             if (!file) return;
             if (!window.BoseSupabase || typeof window.BoseSupabase.uploadBoseReferenceImage !== 'function') {
                 if (typeof window.showBoseGlobalToast === 'function') {
-                    window.showBoseGlobalToast("تعذر تحميل خدمة رفع الصور، حاول تحديث الصفحة.");
+                    window.showBoseGlobalToast("مقدرناش نحمّل خدمة رفع الصور، حاولي تحدثي الصفحة.");
                 }
                 return;
             }
@@ -476,7 +476,7 @@ function startEngineLogic() {
                 uploadedCakePhotoUrl = "";
                 if (cakePhotoUploadLabel) cakePhotoUploadLabel.textContent = "فشل الرفع، اضغط للمحاولة مرة أخرى";
                 if (typeof window.showBoseGlobalToast === 'function') {
-                    window.showBoseGlobalToast("تعذر رفع الصورة، تأكدي من الاتصال بالإنترنت وحاولي تاني.");
+                    window.showBoseGlobalToast("مقدرناش نرفع الصورة، تأكدي من الاتصال بالإنترنت وحاولي تاني.");
                 }
             } finally {
                 isUploadingCakePhoto = false;
@@ -513,7 +513,7 @@ function startEngineLogic() {
             if (!file) return;
             if (!window.BoseSupabase || typeof window.BoseSupabase.uploadBoseReferenceImage !== 'function') {
                 if (typeof window.showBoseGlobalToast === 'function') {
-                    window.showBoseGlobalToast("تعذر تحميل خدمة رفع الصور، حاول تحديث الصفحة.");
+                    window.showBoseGlobalToast("مقدرناش نحمّل خدمة رفع الصور، حاولي تحدثي الصفحة.");
                 }
                 return;
             }
@@ -535,7 +535,7 @@ function startEngineLogic() {
                 uploadedReplicaPhotoUrl = "";
                 if (replicaUploadLabel) replicaUploadLabel.textContent = "فشل الرفع، اضغط للمحاولة مرة أخرى";
                 if (typeof window.showBoseGlobalToast === 'function') {
-                    window.showBoseGlobalToast("تعذر رفع الصورة، تأكدي من الاتصال بالإنترنت وحاولي تاني.");
+                    window.showBoseGlobalToast("مقدرناش نرفع الصورة، تأكدي من الاتصال بالإنترنت وحاولي تاني.");
                 }
             } finally {
                 isUploadingReplicaPhoto = false;
@@ -714,7 +714,7 @@ function startEngineLogic() {
         btnShareDesign.addEventListener('click', async () => {
             if (!window.BoseSupabase || typeof window.BoseSupabase.createSharedCakeDesign !== 'function') {
                 if (typeof window.showBoseGlobalToast === 'function') {
-                    window.showBoseGlobalToast("تعذر تجهيز رابط المشاركة الآن، حاولي تحديث الصفحة.");
+                    window.showBoseGlobalToast("مقدرناش نجهز رابط المشاركة دلوقتي، حاولي تحدثي الصفحة.");
                 }
                 return;
             }
@@ -742,7 +742,7 @@ function startEngineLogic() {
                 btnShareDesign.replaceWith(realLink);
             } catch (err) {
                 if (typeof window.showBoseGlobalToast === 'function') {
-                    window.showBoseGlobalToast("تعذر تجهيز رابط المشاركة الآن، حاولي مرة أخرى.");
+                    window.showBoseGlobalToast("مقدرناش نجهز رابط المشاركة دلوقتي، حاولي تاني.");
                 }
                 btnShareDesign.disabled = false;
                 btnShareDesign.innerHTML = originalLabel;

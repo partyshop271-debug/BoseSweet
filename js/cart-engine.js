@@ -621,7 +621,7 @@ function updateCartSummary(cart, storeData) {
     // قرار شحن لسه هياتاخد لاحقاً.
     const shippingDisplay = document.getElementById("summary-shipping-fee");
     if (shippingDisplay && cart.length > 0 && cart.every((item) => item.type === "gift-card")) {
-        shippingDisplay.textContent = "لا يوجد شحن (منتج رقمي)";
+        shippingDisplay.textContent = "مفيش شحن (منتج رقمي)";
     }
     
     // 🗑️ [إصلاح - إزالة نقطة دخول الكود من السلة]: كانت هنا خانة كود ذكية
@@ -1043,7 +1043,7 @@ function recalculateCheckoutInvoice(cart, storeData, shippingFee, method, payFul
         // نقول صراحة إن مفيش شحن مطلوب خالص لأنه منتج رقمي.
         const isDigitalOnlyCart = cart.length > 0 && cart.every((item) => item.type === "gift-card");
         shippingDisplay.textContent = isDigitalOnlyCart
-            ? "لا يوجد شحن (منتج رقمي)"
+            ? "مفيش شحن (منتج رقمي)"
             : (invoice.shippingFee === 0 ? "مجاناً" : invoice.shippingFee.toFixed(2) + " EGP");
     }
 
@@ -1128,13 +1128,13 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFu
 
     const customerName = customerNameInput ? customerNameInput.value.trim() : "";
     if (customerName.length < 3) {
-        addValidationError(customerNameInput, "يرجى كتابة اسم صاحب الطلب بالكامل ثنائياً على الأقل.");
+        addValidationError(customerNameInput, "من فضلك اكتبي اسمك بالكامل (اسمين على الأقل).");
     }
 
     const phone1 = customerPhoneInput ? customerPhoneInput.value.trim() : "";
     let sanitizedPhone1 = "";
     if (typeof window.validateBosePhoneNumber === "function" && !window.validateBosePhoneNumber(phone1)) {
-        addValidationError(customerPhoneInput, "يرجى إدخال رقم هاتف محمول مصري صحيح ومطابق للشبكة.");
+        addValidationError(customerPhoneInput, "من فضلك اكتبي رقم موبايل مصري صحيح.");
     } else {
         sanitizedPhone1 = typeof window.sanitizeBosePhoneNumber === "function" ? window.sanitizeBosePhoneNumber(phone1) : phone1;
     }
@@ -1167,7 +1167,7 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFu
 
     if (!cartIsDigitalOnlyForOrder && method === "delivery") {
         if (zoneSelect && !zoneSelect.value) {
-            addValidationError(zoneSelect, "يرجى تحديد المنطقة السكنية.");
+            addValidationError(zoneSelect, "من فضلك حددي منطقتك.");
         } else {
             selectedZoneId = zoneSelect ? zoneSelect.value : "";
             const selectedOption = zoneSelect && zoneSelect.selectedOptions ? zoneSelect.selectedOptions[0] : null;
@@ -1176,7 +1176,7 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFu
 
         const addressDetails = addressDetailsInput ? addressDetailsInput.value.trim() : "";
         if (addressDetails.length < 8) {
-            addValidationError(addressDetailsInput, "يرجى كتابة العنوان السكني بالتفصيل لسلامة الشحن.");
+            addValidationError(addressDetailsInput, "من فضلك اكتبي عنوانك بالتفصيل عشان يوصلك الطلب صح.");
         } else {
             fullAddressText = `المنطقة: ${selectedZoneName} | تفصيل السكن: ${addressDetails}`;
         }
@@ -1186,7 +1186,7 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFu
     const orderTime = cartIsDigitalOnlyForOrder ? "" : (deliveryTimeInput ? deliveryTimeInput.value : "");
 
     if (!cartIsDigitalOnlyForOrder && (!orderDate || !orderTime)) {
-        addValidationError(!orderDate ? deliveryDateInput : deliveryTimeInput, "يرجى اختيار تاريخ وساعة الاستلام المناسبة لتجهيز طلبك.");
+        addValidationError(!orderDate ? deliveryDateInput : deliveryTimeInput, "من فضلك اختاري تاريخ وساعة الاستلام المناسبين ليكِ.");
     }
 
     // 🛡️ [إصلاح - المرحلة 2]: تحديد هل السلة فيها منتج مخصص (تورت/ورد محاكي) عشان
@@ -1221,7 +1221,7 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFu
         if (orderTime < bhStart || orderTime > bhEnd) {
             const bhStartDisplay = typeof formatBoseTimeToEgyptian12Hour === "function" ? formatBoseTimeToEgyptian12Hour(bhStart) : bhStart;
             const bhEndDisplay = typeof formatBoseTimeToEgyptian12Hour === "function" ? formatBoseTimeToEgyptian12Hour(bhEnd) : bhEnd;
-            addValidationError(deliveryTimeInput, `مواعيد الاستلام متاحة بس من ${bhStartDisplay} لحد ${bhEndDisplay}، يرجى اختيار ساعة جوه النطاق ده.`);
+            addValidationError(deliveryTimeInput, `مواعيد الاستلام متاحة بس من ${bhStartDisplay} لحد ${bhEndDisplay}، اختاري ساعة جوه النطاق ده.`);
         }
     }
 
@@ -1523,11 +1523,11 @@ function buildBoseFormattedWhatsappInvoice(order) {
         msg += `🌸 أهلاً يا *${order.customerName}*، شكراً لثقتك في حلويات بوسي! دي فاتورة حجزك 👇\n\n`;
     }
     msg += `--------------------------------------------------\n\n`;
-    msg += `🧾 *رقم المعاملة:* ${order.orderId}\n`;
+    msg += `🧾 *رقم الطلب:* ${order.orderId}\n`;
     msg += `👤 *العميل:* ${order.customerName}\n`;
     msg += `📞 *رقم الاتصال:* ${order.phone1}\n`;
-    msg += `🚗 *مسار الاستلام:* ${order.deliveryMethod}\n`;
-    msg += `📍 *التفاصيل الجغرافية:* ${order.address}\n`;
+    msg += `🚗 *طريقة الاستلام:* ${order.deliveryMethod}\n`;
+    msg += `📍 *العنوان:* ${order.address}\n`;
     msg += `📅 *موعد الاستلام:* ${order.scheduledDate} الساعة ${formatBoseTimeToEgyptian12Hour(order.scheduledTime)}\n\n`;
     msg += `--------------------------------------------------\n`;
     msg += `📦 *تفاصيل الأصناف المطلوبة:*\n\n`;
@@ -1686,11 +1686,11 @@ function buildBoseCondensedWhatsappInvoice(order) {
     let msg = `✨ *فاتورة حجز مختصرة - حلويات بوسي* ✨\n`;
     msg += `(الطلب فيه تفاصيل/صور كتير، فهنبعت نسخة مختصرة هنا - كل التفاصيل والصور الكاملة موجودة في رابط تتبع الطلب تحت 👇)\n\n`;
     msg += `--------------------------------------------------\n`;
-    msg += `🧾 *رقم المعاملة:* ${order.orderId}\n`;
+    msg += `🧾 *رقم الطلب:* ${order.orderId}\n`;
     msg += `👤 *العميل:* ${order.customerName}\n`;
     msg += `📞 *رقم الاتصال:* ${order.phone1}\n`;
-    msg += `🚗 *مسار الاستلام:* ${order.deliveryMethod}\n`;
-    msg += `📍 *التفاصيل الجغرافية:* ${order.address}\n`;
+    msg += `🚗 *طريقة الاستلام:* ${order.deliveryMethod}\n`;
+    msg += `📍 *العنوان:* ${order.address}\n`;
     msg += `📅 *موعد الاستلام:* ${order.scheduledDate} الساعة ${formatBoseTimeToEgyptian12Hour(order.scheduledTime)}\n\n`;
     msg += `--------------------------------------------------\n`;
     msg += `📦 *الأصناف:*\n`;

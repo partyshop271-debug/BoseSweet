@@ -2143,7 +2143,7 @@
         // استدعاء مباشر للدالة دي متجاوز لواجهة الزرار المعطّل في createProductCardHTML.
         if (product.isAvailable === false) {
             if (typeof window.showBoseGlobalToast === 'function') {
-                window.showBoseGlobalToast('عذراً، هذا الصنف نفدت كميته حالياً.');
+                window.showBoseGlobalToast('معلش، الصنف ده خلص من المخزن دلوقتي.');
             }
             return;
         }

@@ -172,7 +172,7 @@
         if (embeddedPriceDisplay) {
             const currentCountCost = flowerConfig.basePrice + (extraFlowers * flowerConfig.extraFlowerPrice);
             let finalCountCost = window.calculateBosePrice ? window.calculateBosePrice(currentCountCost, "builder") : currentCountCost;
-            embeddedPriceDisplay.innerHTML = `سعر هذا البوكيه الذي يحتوي على ${state.flowerCount} وردة هو <span>${Math.round(finalCountCost)} جنيه</span>`;
+            embeddedPriceDisplay.innerHTML = `سعر البوكيه ده اللي فيه ${state.flowerCount} وردة هو <span>${Math.round(finalCountCost)} جنيه</span>`;
         }
 
         // تحديث سعر شريط الستان
@@ -405,7 +405,7 @@
             // للعميل إن الرفع فشل فعلياً ونسيبها تحاول تاني، بدل حل وهمي بيبان شغال.
             state.photoUrl = "";
             if (photoPreviewContainer) photoPreviewContainer.style.display = "none";
-            if (window.showBoseGlobalToast) window.showBoseGlobalToast("تعذر رفع الصورة، تأكدي من الاتصال بالإنترنت وحاولي تاني.");
+            if (window.showBoseGlobalToast) window.showBoseGlobalToast("مقدرناش نرفع الصورة، تأكدي من الاتصال بالإنترنت وحاولي تاني.");
         } finally {
             state.isUploading = false;
             if (addToCartBtn) {
