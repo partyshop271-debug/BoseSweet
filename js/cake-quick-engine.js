@@ -6,6 +6,11 @@
  */
 
 function startQuickOrderEngine() {
+    // 🛡️ [تصليب CSP]: بديل onsubmit="return false;" المضمّن اللي كان في الفورم في cake-quick-order.html
+    // (نفس السلوك بالظبط - التأكيد بيتم بزرار qo-btn-confirm مش submit عادي).
+    const quickOrderForm = document.getElementById('bose-quick-order-form');
+    if (quickOrderForm) quickOrderForm.addEventListener('submit', (e) => e.preventDefault());
+
     const inputPersons = document.getElementById('qo-input-persons');
     const btnMinus = document.getElementById('qo-btn-persons-minus');
     const btnPlus = document.getElementById('qo-btn-persons-plus');
