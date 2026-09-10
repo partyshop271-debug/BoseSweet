@@ -324,16 +324,16 @@
     // فتحت/قفلت حاجة تانية في نفس التوقيت. دلوقتي بتستخدم نفس دالة الإشعار
     // الموحدة (showBoseGlobalToast) المعرّفة في core-engine.js - نفس اللون،
     // نفس الموضع فوق الهيدر، ونفس الـ z-index الأعلى من كل حاجة في الصفحة.
-    function showToast(msg) {
+    function showToast(msg, type) {
         if (typeof window.showBoseGlobalToast === 'function') {
-            window.showBoseGlobalToast(msg);
+            window.showBoseGlobalToast(msg, type ? { type } : undefined);
         }
     }
 
     function endTour(celebrate) {
         removeOverlay();
         clearState();
-        if (celebrate) showToast('تمام! 🎉 كده بقيتي عارفة تستخدمي الجزء ده من موقعنا بكل سهولة.');
+        if (celebrate) showToast('تمام! 🎉 كده بقيتي عارفة تستخدمي الجزء ده من موقعنا بكل سهولة.', 'success');
     }
 
     function injectStylesOnce() {
@@ -466,7 +466,7 @@
             el => renderSpotlight(el, step, tourKey, stepIndex),
             () => {
                 logTourEvent('tour_auto_skip', tourKey, { stepIndex, selector: step.selector, title: step.title });
-                showToast('معلش، خطوة في الجولة اتخطّت تلقائيًا 🙏');
+                showToast('معلش، خطوة في الجولة اتخطّت تلقائيًا 🙏', 'warning');
                 handleAdvance(tourKey, stepIndex, stepIndex + 1);
             },
             step.timeoutMs
