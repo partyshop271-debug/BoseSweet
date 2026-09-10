@@ -836,8 +836,18 @@
      * @param {Object} product
      * @returns {string}
      */
-    function createProductCardHTML(product) {
+    function createProductCardHTML(product, renderMode) {
         if (!product) return '';
+        // 🍧👑 [حل مشكلة "مش عارف يختار من خلاله" - دمج المنتج جوه نافذة الفئة]:
+        // بعد ما اتشالت صفحة المنتج المستقلة وبقى كل التفاعل الحقيقي (سعر/كمية/إضافة
+        // للسلة) بيحصل جوه نافذة التفاصيل في category.html اللي بتستخدم نفس الدالة
+        // دي، منتج الميكس محتاج شكلين مختلفين فعلاً: كارت مصغّر عادي (زي أي مكان
+        // تاني بيستخدم الدالة دي - الرئيسية/العروض/المفضلة/مقترحات السلة) بيودّي
+        // لنافذة التفاصيل بدل ما يضيف "ميكس فاضي" بضغطة واحدة، مقابل الشكل الكامل
+        // التفاعلي (renderMode = 'detail') جوه النافذة نفسها فيه فعلاً أداة اختيار
+        // التوبينجين + زرار إضافة شغال (راجع renderBoseMixToppingPickerInModal في
+        // category.html اللي بتضيف أداة الاختيار دي تحت الكارت ده مباشرة).
+        const isDetailView = renderMode === 'detail';
         const rawImg = (product.images && product.images.length > 0 && product.images[0]) ? product.images[0] : 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png';
         const safeImg = window.optimizeBoseImageUrl(rawImg, 400);
         const safeTitle = window.escapeBoseHTML(product.title);
@@ -850,6 +860,34 @@
         // وكأنه "تورتة جاهزة" منفصلة عن المحاكي. دلوقتي بيوديه للمحاكي مباشرة وبس، ومفيش
         // زرار "إضافة للسلة" مباشر أو عداد كمية لأنه مش منطقي هنا خالص.
         const isBuilderMaster = !!product.customBuilderUrl && product.builderType && product.builderType !== 'standard';
+
+        // 🍧 [حل مشكلة "مش عارف يختار من خلاله" - منتجات الميكس]: منتج زي "قشطوطة
+        // ميكس" لازم العميل يختار توبينجين مختلفين بنفسه قبل ما يتضاف للسلة - مفيش
+        // سعر أو تفاصيل ثابتة تصح إضافتها مباشرة من كارت المنتج زي أي منتج عادي (فرق
+        // جوهري عن باقي النكهات: هنا في اختيار حقيقي لازم يحصل الأول). نفس فلسفة
+        // isBuilderMaster فوق بالظبط - الكارت بيوديها لصفحة المنتج المستقلة عشان
+        // تختار من هناك بدل ما تضيف "ميكس فاضي" بغلط بضغطة واحدة.
+        const isMixFlavor = product.options && product.options.mixFlavor === true;
+        const mixDetailUrl = `/category.html?category=${encodeURIComponent(product.category || '')}&product=${encodeURIComponent(product.slug)}`;
+
+        if (isMixFlavor && !isDetailView) {
+            const startingPrice = window.calculateProductFinalPrice(product, {});
+            return `
+                <div class="product-card-unified bose-builder-master-card" data-id="${product.id}" onclick="window.location.href='${mixDetailUrl}';" style="cursor:pointer;">
+                    <img src="${safeImg}" alt="${safeTitle} | حلويات بوسي" class="product-card-img" width="300" height="300" loading="lazy" />
+                    <h3 class="product-card-title">${safeTitle}</h3>
+                    <span class="product-card-flavor-name">${safeFlavor}</span>
+                    <p class="product-card-desc">${safeDesc}</p>
+                    <button type="button" class="bose-desc-toggle-btn" hidden aria-expanded="false" onclick="event.stopPropagation(); window.toggleBoseCardDesc(this);">اظهار المزيد</button>
+                    <div class="product-card-price">
+                        <span>أسعار تبدأ من ${Math.round(startingPrice)} جنيه</span>
+                    </div>
+                    <button class="btn-add-to-cart" onclick="event.stopPropagation(); window.location.href='${mixDetailUrl}';">
+                        <i class="fa-solid fa-layer-group"></i> اختاري توبينجاتك
+                    </button>
+                </div>
+            `;
+        }
 
         if (isBuilderMaster) {
             return `
@@ -918,9 +956,19 @@
             : '';
 
         const isUnavailable = product.isAvailable === false;
+        // 🍧 [حل مشكلة "مش عارف يختار من خلاله" - منتجات الميكس في النافذة المدمجة]:
+        // زرار الإضافة هنا بيبدأ معطّل دايماً لمنتج الميكس في وضع التفاصيل - أداة
+        // اختيار التوبينجين (renderBoseMixToppingPickerInModal في category.html)
+        // هي اللي بتفعّله بعد ما العميلة تختار توبينجين مختلفين فعلاً، وبتنادي
+        // window.handleBoseMixAddToCartClick بدل الإضافة المباشرة العادية عشان
+        // تقرأ التوبينجين المختارين من بيانات الكارت نفسه وقت الإضافة الفعلية.
         const addToCartButtonHtml = isUnavailable
             ? `<button class="btn-add-to-cart" disabled style="opacity:0.6; cursor:not-allowed;">
                     <i class="fa-solid fa-ban"></i> نفدت الكمية حالياً
+               </button>`
+            : (isMixFlavor && isDetailView)
+            ? `<button class="btn-add-to-cart btn-add-to-cart-mix" disabled style="opacity:0.6; cursor:not-allowed;" onclick="window.handleBoseMixAddToCartClick(this, '${product.id}')">
+                    <i class="fa-solid fa-layer-group"></i> اختاري توبينجاتك تحت أولاً
                </button>`
             : `<button class="btn-add-to-cart" onclick="window.handleBoseDirectAddToCart(this, '${product.id}')">
                     <i class="fa-solid fa-basket-shopping"></i> اضافة للسلة
@@ -1187,6 +1235,31 @@
                 return Math.min(Math.max(isNaN(chosen) ? min : chosen, min), max);
             }
             price = product.price || product.basePrice || 0;
+
+            // 🍧 [حل مشكلة "مش عارف يختار من خلاله" - سعر منتجات الميكس]: قررت
+            // صاحبة المتجر إن سعر الميكس يتغير حسب التوبينجين المختارين فعلاً (مش
+            // سعر ثابت)، فالسعر النهائي = متوسط سعر التوبينجين نفسهم (كل توبينج هو
+            // منتج/نكهة حقيقية موجودة أصلاً بسعرها الخاص). بندوّر عليهم في نفس مصفوفة
+            // المنتجات المحمّلة أصلاً (window.BoseStoreData.products) بدل أي نداء
+            // شبكة إضافي. لو المنتج عنده أحجام (زي مثلث/طاجن/كبير)، بناخد سعر نفس
+            // الحجم المختار من كل توبينج لو موجود، وإلا سعره الأساسي. لو لسه محددش
+            // توبينجين (زي وقت عرض الكارت في الفئة/الرئيسية قبل ما تدخل صفحة المنتج)،
+            // بيفضل يعرض سعر المنتج الأساسي المسجل من لوحة التحكم كـ"يبدأ من".
+            if (product.options && product.options.mixFlavor === true && opts.mixToppingASlug && opts.mixToppingBSlug) {
+                const allProducts = (window.BoseStoreData && window.BoseStoreData.products) || [];
+                const toppingA = allProducts.find((/** @type {any} */ p) => p.slug === opts.mixToppingASlug);
+                const toppingB = allProducts.find((/** @type {any} */ p) => p.slug === opts.mixToppingBSlug);
+                const priceOfTopping = (/** @type {any} */ topping) => {
+                    if (!topping) return null;
+                    if (topping.prices && opts.size && topping.prices[opts.size] !== undefined) return parseFloat(topping.prices[opts.size]) || 0;
+                    return topping.price || topping.basePrice || 0;
+                };
+                const priceA = priceOfTopping(toppingA);
+                const priceB = priceOfTopping(toppingB);
+                if (priceA !== null && priceB !== null) {
+                    return window.calculateBosePrice((priceA + priceB) / 2, "menu-only");
+                }
+            }
             // 🚨🚨 [إصلاح جذري حرج - العروض بتلغي نفسها]: عمود "prices" (الخاص
             // بالأحجام) ممكن يفضل فيه القيمة القديمة قبل الخصم غلط في البيانات
             // (حصل فعلاً مع منتج "جاتوه كلاسيك" سابقاً) - فأي مكان بيمرر "size"
@@ -1354,6 +1427,7 @@
                              product.type === "custom-cake" || 
                              product.type === "custom-flower" || 
                              product.isGiftCard ||
+                             (product.options && product.options.mixFlavor === true) ||
                              (product.customizationOptions && Object.keys(opts).length > 0);
                              
         const finalId = isCustomizable ? `${product.slug}-${Date.now()}` : String(product.slug || product.id);
@@ -1429,6 +1503,12 @@
                 // هو الفرق الوحيد الصامت بين حجم وحجم.
                 size: opts.size || null,
                 sizeLabel: opts.size ? (window.BOSE_SIZE_LABELS[opts.size] || opts.size) : "",
+                // 🍧 [حل مشكلة "مش عارف يختار من خلاله" - منتجات الميكس]: التوبينجين
+                // اللي اختارتهم العميلة فعلياً لمنتج ميكس (زي قشطوطة ميكس)، مخزّنين هنا
+                // منفصلين بالإضافة لـ flavorName المدمج فوق - عشان أي عرض إداري مستقبلي
+                // يقدر يستخدمهم منفصلين لو احتاج (تقارير التوبينجات الأكتر طلبًا مثلاً).
+                mixToppingA: opts.mixToppingAName || "",
+                mixToppingB: opts.mixToppingBName || "",
                 // 🎁🖋️ [تخصيص بطاقة الهدية]: بيانات التصميم اللي اختارتها العميلة من
                 // gift-card-builder.html - كلها بيانات عرض/فاتورة بس (مش بتأثر على
                 // السعر، السعر بيتحسب من amount فوق زي ما هو). بتوصل فاضية لأي
@@ -2139,6 +2219,14 @@
             return;
         }
 
+        // 🍧 [نفس حارس isMixFlavor في createProductCardHTML لكن جوه الدالة نفسها]:
+        // عشان مفيش أي طريقة تانية (كارت مقترحات صفحة السلة/المنتج مثلاً) تقدر
+        // تتحايل على اختيار التوبينجين وتضيف المنتج مباشرة بتوبينج فاضي.
+        if (product.options && product.options.mixFlavor === true) {
+            window.location.href = `/category.html?category=${encodeURIComponent(product.category || '')}&product=${encodeURIComponent(product.slug)}`;
+            return;
+        }
+
         // 🛡️ [V14.0]: حارس أخير يمنع إضافة منتج نفدت كميته للسلة حتى لو حصل أي
         // استدعاء مباشر للدالة دي متجاوز لواجهة الزرار المعطّل في createProductCardHTML.
         if (product.isAvailable === false) {
@@ -2208,6 +2296,90 @@
                 else priceDisplay.textContent = `${Math.round(finalUnitPrice)} جنيه`;
             }
         }
+
+        const originalHtml = buttonElement.innerHTML;
+        buttonElement.innerHTML = '<i class="fa-solid fa-check"></i> تمت الإضافة';
+        /** @type {HTMLButtonElement} */ (buttonElement).disabled = true;
+
+        window.showBoseGlobalToast('ضفنا المنتج للسلة.');
+
+        setTimeout(() => {
+            buttonElement.innerHTML = originalHtml;
+            /** @type {HTMLButtonElement} */ (buttonElement).disabled = false;
+        }, 2500);
+    };
+
+    /**
+     * 🍧 [حل مشكلة "مش عارف يختار من خلاله" - إضافة منتج الميكس للسلة]: نظير
+     * window.handleBoseDirectAddToCart لكن مخصص لمنتج ميكس داخل نافذة تفاصيل
+     * المنتج (category.html) - بيقرأ التوبينجين اللي اختارتهم العميلة فعلاً من
+     * `card._boseMixSelection` (بتتخزن هناك بواسطة renderBoseMixToppingPickerInModal
+     * لحظة كل اختيار)، وبيرفض الإضافة تماماً لو لسه ناقص توبينج واحد على الأقل -
+     * نفس حماية الزرار المعطّل بصريًا، لكن جوه الدالة نفسها كمان (دفاع مزدوج).
+     * @param {HTMLElement} buttonElement
+     * @param {string} productId
+     */
+    window.handleBoseMixAddToCartClick = function(buttonElement, productId) {
+        if (!window.BoseStoreData || !buttonElement) return;
+        const product = window.BoseStoreData.products ? window.BoseStoreData.products.find((/** @type {any} */ p) => p.id === productId || p.slug === productId) : null;
+        if (!product) return;
+
+        const cardContainer = buttonElement.closest('.product-card-unified');
+        const sel = cardContainer && /** @type {any} */ (cardContainer)._boseMixSelection;
+        if (!sel || !sel.mixToppingASlug || !sel.mixToppingBSlug) {
+            if (typeof window.showBoseGlobalToast === 'function') {
+                window.showBoseGlobalToast('اختاري توبينجين مختلفين الأول قبل ما تضيفي للسلة 🍧');
+            }
+            return;
+        }
+
+        let qty = 1;
+        if (cardContainer) {
+            /** @type {HTMLInputElement|null} */
+            const qtyInput = cardContainer.querySelector('.input-qty-value');
+            if (qtyInput) qty = parseInt(qtyInput.value, 10) || 1;
+        }
+
+        const addOpts = {
+            mixToppingASlug: sel.mixToppingASlug,
+            mixToppingBSlug: sel.mixToppingBSlug,
+            mixToppingAName: sel.mixToppingAName,
+            mixToppingBName: sel.mixToppingBName,
+            flavorName: `${sel.mixToppingAName} + ${sel.mixToppingBName}`,
+        };
+
+        let cart = [];
+        try {
+            const rawCart = localStorage.getItem('bose_cart');
+            cart = rawCart ? JSON.parse(rawCart) : [];
+            if (!Array.isArray(cart)) cart = [];
+        } catch (e) {
+            console.warn("⚠️ بيانات السلة المحفوظة كانت تالفة أثناء إضافة منتج الميكس، تم البدء بسلة فاضية.", e);
+            cart = [];
+        }
+
+        // 🍧 [نفس منطق إيجاد سطر السلة المطابق زي أي منتج تاني قابل للتخصيص]: مزيج
+        // توبينجين معين (مش أي مزيج) هو اللي بيحدد لو ده "نفس المنتج" لغرض جمع
+        // الكمية - مزيج مختلف (توبينجات مختلفة) لازم ياخد سطر منفصل في السلة.
+        const MAX_QTY_FROM_PRODUCT_CARD = 20;
+        const existingItem = cart.find((/** @type {any} */ item) =>
+            item.productSlug === product.slug && item.flavorName === addOpts.flavorName);
+        if (existingItem) {
+            existingItem.quantity = Math.min(existingItem.quantity + qty, MAX_QTY_FROM_PRODUCT_CARD);
+        } else {
+            const cappedQty = Math.min(qty, MAX_QTY_FROM_PRODUCT_CARD);
+            const newItem = window.createCartItem(product, addOpts, cappedQty);
+            if (newItem) cart.push(newItem);
+        }
+
+        localStorage.setItem('bose_cart', JSON.stringify(cart));
+        window.updateGlobalCartCounter();
+
+        const finalUnitPriceForEvent = window.calculateProductFinalPrice(product, addOpts);
+        window.fireBoseCommerceEvent('add_to_cart', {
+            value: finalUnitPriceForEvent * qty, currency: window.BoseStoreData?.store?.currency || 'EGP',
+            contentId: product.id || product.slug, contentName: product.title, quantity: qty
+        });
 
         const originalHtml = buttonElement.innerHTML;
         buttonElement.innerHTML = '<i class="fa-solid fa-check"></i> تمت الإضافة';
