@@ -22,7 +22,7 @@
     <script src="js/supabase-client.js?v=2027_production_v43.0" defer></script>
     <script src="js/push-notifications.js?v=1.0" defer></script>
     <script src="js/favorites-engine.js?v=2026_production_v38.0" defer></script>
-    <script src="js/core-engine.js?v=2028_production_v57.0" defer></script>
+    <script src="js/core-engine.js?v=2028_production_v58.0" defer></script>
     <!-- 🧭 [إصلاح - جولة تعريفية مفقودة]: السكريبت ده كان غير موجود في الصفحة دي خالص،
          فرغم إن جولة "cake_simulator" (11 خطوة) كانت مكتوبة بالكامل جوه guided-tour.js،
          كانت كود ميت مستحيل يتشغّل أبداً - مفيش زرار "الجولة" العائم ولا توست تلقائي
@@ -945,8 +945,8 @@
 
                     <!-- الخطوة 4 - عدد الأفراد -->
                     <div class="bose-step-wizard-panel" id="panel-wizard-step-4">
-                        <h2 class="bose-wizard-title">تورتة مناسبتك الفاخرة لـ كام فرد؟</h2>
-                        <p class="bose-wizard-subtitle">حجم التورتة وسعرها بيتحدد بناءً على عدد الأفراد، يرجى اختيار العدد المناسب لضيوفك.</p>
+                        <h2 class="bose-wizard-title">تورتة مناسبتك لكام فرد؟</h2>
+                        <p class="bose-wizard-subtitle">حجم التورتة وسعرها بيتحدد على عدد الأفراد، اختاري العدد المناسب لضيوفك.</p>
 
                         <div class="bose-designer-note-bubble show bose-step-motivation">
                             <span class="note-icon">🎉</span>
@@ -967,7 +967,7 @@
 
                         <div class="bose-designer-note-bubble show bose-step-motivation">
                             <span class="note-icon">✨</span>
-                            <span>الشكل بيديّ للتورتة شخصيتها - اختاري إللي يعبّر عن مناسبتك أكتر.</span>
+                            <span>الشكل بيدّي للتورتة شخصيتها - اختاري اللي يعبّر عن مناسبتك أكتر.</span>
                         </div>
 
                         <p class="bose-gallery-tap-hint">👆 اضغطي ⓘ لمعرفة أكتر، والصور فوق الكروت مجرد أمثلة لإلهامك مش نسخة طبق الأصل هتتنفذلك.</p>
@@ -989,7 +989,7 @@
 
                         <div class="bose-designer-note-bubble show bose-step-motivation">
                             <span class="note-icon">😋</span>
-                            <span>النكهة سر التجربة - كل نكهة عندنا متقنة بعناية فائقة، اختاري إللي هيبهر ضيوفك.</span>
+                            <span>النكهة سر التجربة - كل نكهة عندنا متقنة بعناية كبيرة، اختاري اللي هيعجب ضيوفك.</span>
                         </div>
 
                         <!-- 🎂👑 [رسم النكهات ديناميكياً من لوحة التحكم]: نفس مبدأ الأشكال فوق -
@@ -1024,10 +1024,10 @@
                         </div>
 
                         <div class="bose-premium-template-box" id="cake-photo-upload-section" style="display:none; margin-top:18px;">
-                            <label class="premium-input-label" id="cake-photo-upload-label" for="cake-photo-file">اضغط هنا وارفع الصورة اللي حابب نطبعها على التورتة</label>
+                            <label class="premium-input-label" id="cake-photo-upload-label" for="cake-photo-file">اضغطي هنا وارفعي الصورة اللي حابة نطبعها على التورتة</label>
                             <div class="bose-photo-upload-zone" id="bose-cake-photo-upload-zone">
                                 <i class="fa-solid fa-cloud-arrow-up"></i>
-                                <span class="card-label">اضغط هنا وارفع الصورة</span>
+                                <span class="card-label">اضغطي هنا وارفعي الصورة</span>
                                 <input type="file" id="cake-photo-file" accept="image/*">
                             </div>
                             <div id="cake-photo-preview-container">
@@ -1074,7 +1074,7 @@
 
                         <label class="premium-input-label bose-checkbox-label-tap">
                             <input type="checkbox" id="cake-giftcard-toggle">
-                            آه، حابب نطبعلك كارت إهداء ونحضره مع التورتة
+                            آه، حابة نطبعلك كارت إهداء ونحضره مع التورتة
                         </label>
                         <div id="cake-giftcard-price-note" style="margin-top:10px;"></div>
                         <div id="cake-giftcard-gallery" class="bose-giftcard-gallery-scroller"></div>
@@ -1083,7 +1083,7 @@
                             <span>الصور دي نماذج سابقة لشكل الكارت، والخط أو التنسيق بالظبط ممكن يختلف شوية عند التنفيذ الفعلي.</span>
                         </div>
                         <div id="cake-giftcard-text-section" class="custom-text-wrapper" style="margin-top:12px;">
-                            <label class="premium-input-label" for="cake-giftcard-text">اكتب الكلام اللي حابب نكتبه على الكارت هنا:</label>
+                            <label class="premium-input-label" for="cake-giftcard-text">اكتبي الكلام اللي حابة نكتبه على الكارت هنا:</label>
                             <textarea id="cake-giftcard-text" class="bose-premium-text-input bose-premium-textarea" placeholder="اكتب مشاعرك الصادقة هنا ببراحة..."></textarea>
                         </div>
                     </div>
@@ -1148,8 +1148,8 @@
 
     <div id="bose-footer-injector"></div>
 
-    <script src="js/cake-engine.js?v=2026_production_v44.0" defer></script>
-    <script src="js/reviews-widget.js?v=2026_production_v1.1" defer></script>
+    <script src="js/cake-engine.js?v=2026_production_v45.0" defer></script>
+    <script src="js/reviews-widget.js?v=2026_production_v1.2" defer></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             window.initBoseReviewsWidget({

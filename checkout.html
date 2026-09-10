@@ -280,7 +280,7 @@
          تتعرّف أصلاً، فبانر الولاء في صفحة الدفع (#bose-checkout-loyalty-banner)
          كان بيرجع لأرقام افتراضية ثابتة بدل قيمة القسيمة الحقيقية من لوحة التحكم. -->
     <script src="js/loyalty-config.js?v=2026_production_v1.0" defer></script>
-    <script src="js/core-engine.js?v=2028_production_v57.0" defer></script>
+    <script src="js/core-engine.js?v=2028_production_v58.0" defer></script>
     <script src="js/guided-tour.js?v=3.3" defer></script>
 </head>
 <body class="bose-hardware-accelerated Pw-checkout-view">
@@ -352,7 +352,7 @@
                     <div id="bose-giftcard-digital-note" class="input-group-node" style="display:none; background:rgba(255,145,164,.06); border:1px solid #FF91A4; border-radius:14px; padding:16px;">
                         <p style="margin:0; font-size:14px; line-height:1.8;">
                             <i class="fa-solid fa-circle-info" style="color:#FF91A4;"></i>
-                            طلبك عبارة عن بطاقة هدية رقمية بس، فمفيش شحن أو ميعاد استلام مطلوب.
+                            طلبك ده بطاقة هدية رقمية بس، يعني مفيش شحن ولا ميعاد استلام مطلوب.
                             بعد ما نأكد الدفع، هنبعتلك كود البطاقة مباشرة على الواتساب.
                         </p>
                     </div>
@@ -360,17 +360,17 @@
                     <!-- قسم تحديد طريقة ومسار الاستلام التفاعلي لبراند حلويات بوسي -->
                     <div id="bose-fulfillment-and-schedule-section">
                     <div class="input-group-node">
-                        <label>كيف ترغب في استلام الطلب؟ <span class="required-indicator">*</span>
+                        <label>عايزة تستلمي طلبك إزاي؟ <span class="required-indicator">*</span>
                             <button type="button" class="bose-info-badge-inline"
                                     data-bose-info-title="إيه الفرق بين الاتنين؟"
                                     data-bose-info-text="التوصيل للمنزل: بنوصّلك الطلب لعنوانك بعد ما تختاري منطقتك السكنية، وعليه رسوم توصيل بتتحدد حسب المنطقة ولازم يتدفع كامل المبلغ. الاستلام من الفرع: تيجي تستلمي طلبك بنفسك من الفرع من غير أي رسوم توصيل، وتقدري كمان تختاري تدفعي عربون بس وتكملي الباقي وقت الاستلام.">ⓘ</button>
                         </label>
                         <div class="fulfillment-methods-flex">
                             <button type="button" id="method-delivery" class="btn-fulfillment-node active">
-                                <i class="fas fa-shipping-fast"></i> أرغب في التوصيل للمنزل
+                                <i class="fas fa-shipping-fast"></i> توصيل للمنزل
                             </button>
                             <button type="button" id="method-pickup" class="btn-fulfillment-node">
-                                <i class="fas fa-store"></i> سأستلم الطلب بنفسي من الفرع
+                                <i class="fas fa-store"></i> استلام من الفرع
                             </button>
                         </div>
                     </div>
@@ -470,7 +470,7 @@
                     <div id="checkout-mixed-order-warning-banner" style="display:none; align-items:flex-start; gap:10px; background: rgba(255,145,164,0.1); border: 1px solid rgba(255,145,164,0.4); border-radius: 14px; padding: 14px 16px; margin-top: 4px; direction: rtl;">
                         <i class="fas fa-triangle-exclamation" style="color:#FF91A4; margin-top:2px;"></i>
                         <p style="margin:0; font-size:0.85rem; font-weight:600; color:#111111; line-height:1.6;">
-                            طلبك فيه صنف تورت أو ورد مخصص من المحاكي، فهو محتاج وقت تحضير أطول (أسبوع كامل تقريبًا). المنتجات العادية الموجودة معاه في نفس الطلب هتتسلّم <strong>مع</strong> المخصص في نفس الموعد المتأخر، مش هتوصلك لوحدها بدري.
+                            طلبك فيه صنف تورت أو ورد مخصص من المحاكي، وده محتاج وقت تحضير أطول (أسبوع كامل تقريبًا). المنتجات العادية الموجودة معاه في نفس الطلب هتتسلّم <strong>مع</strong> المخصص في نفس الموعد المتأخر، مش هتوصلك لوحدها بدري.
                         </p>
                     </div>
 
@@ -509,7 +509,7 @@
                     </div>
                     
                     <div class="summary-grand-total-row" style="border-top: 1px dashed rgba(255, 145, 164, 0.25); padding-top: 18px; display: flex; justify-content: space-between; align-items: center;">
-                        <span class="grand-total-label" style="font-weight: 700; color: #111111;">العائد المالي (المقرّب كلياً):</span>
+                        <span class="grand-total-label" style="font-weight: 700; color: #111111;">الإجمالي الكلي (المقرّب):</span>
                         <span id="summary-grand-total" class="total-value-display" style="font-size: 1.5rem; font-weight: 700; color: #FF91A4;">0 EGP</span>
                     </div>
                 </div>
@@ -569,7 +569,7 @@
     <div id="bose-footer-injector"></div>
 
     <!-- ⚡ استدعاء محرك السلة وإتمام عمليات الحساب والدفع والربط اللوجستي المركزي (js/cart-engine.js) ⚡ -->
-    <script src="js/cart-engine.js?v=2029_production_v47.0" defer></script>
+    <script src="js/cart-engine.js?v=2029_production_v48.0" defer></script>
 
     <!-- 🔮 سكريبت التزامن الدفاعي المحلي لربط وحقن الواجهات وضمان فك شلل حقول الصفحة دون تعارض خارجي 🔮 -->
     <script>
