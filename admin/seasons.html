@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المواسم والمناسبات | لوحة تحكم حلويات بوسي</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="stylesheet" href="../vendor/fonts/cairo/cairo.css?v=2026_local_v1.0">
+    <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css?v=2026_local_v1.0" fetchpriority="high">
+
+    <link rel="stylesheet" href="css/admin-theme.css">
+    <link rel="stylesheet" href="css/admin-layout.css">
+    <style>
+        .szn-status-chip { display:inline-flex; align-items:center; gap:6px; padding:3px 10px; border-radius:20px; font-size:0.78rem; font-weight:700; }
+        .szn-status-live { background: rgba(46,160,67,0.12); color:#2ea043; }
+        .szn-status-upcoming { background: rgba(88,166,255,0.12); color:#4a90e2; }
+        .szn-status-ended, .szn-status-off { background: rgba(120,120,120,0.12); color:#777; }
+        .szn-status-forced { background: rgba(255,145,164,0.15); color:#ff5c7a; }
+        .szn-chips-list { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
+        .szn-chip { display:inline-flex; align-items:center; gap:6px; background: var(--adm-bg-input); border:1px solid var(--adm-border); border-radius:20px; padding:4px 6px 4px 12px; font-size:0.85rem; }
+        .szn-chip button { background:none; border:none; color:#c62828; cursor:pointer; width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+        .szn-checkbox-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap:8px; margin-top:8px; }
+        .szn-checkbox-grid label { display:flex; align-items:center; gap:6px; font-size:0.88rem; font-weight:500; }
+        .szn-color-row { display:flex; align-items:center; gap:10px; }
+        .szn-section-title { font-weight:800; font-size:0.95rem; margin: 18px 0 4px; padding-top:14px; border-top:1px dashed var(--adm-border); }
+        .szn-section-title:first-of-type { border-top:none; padding-top:0; margin-top:0; }
+    </style>
+</head>
+<body data-page="seasons">
+
+    <!-- شاشة تحميل تظهر لحد ما يتأكد من الجلسة -->
+    <div class="adm-auth-gate"><div class="adm-loading-spinner"></div></div>
+
+    <div class="adm-shell">
+        <div id="adm-shell-target"></div>
+
+        <main class="adm-main">
+            <div id="adm-topbar-target"></div>
+
+            <div class="adm-content" id="adm-page-content">
+
+                <div class="adm-card">
+                    <div class="adm-card-header">
+                        <div>
+                            <h2>كل المواسم والمناسبات</h2>
+                            <p>جهّزي كل مناسبات السنة مقدمًا (عيد الحب، رمضان، العيدين، رأس السنة...) وهتتفعل وتتلغي لوحدها في وقتها</p>
+                        </div>
+                        <button class="adm-btn adm-btn-primary" id="add-season-btn">
+                            <i class="fa-solid fa-plus"></i> مناسبة جديدة
+                        </button>
+                    </div>
+                    <div class="adm-table-wrapper">
+                        <table class="adm-table" id="seasons-table">
+                            <thead>
+                                <tr>
+                                    <th>المناسبة</th>
+                                    <th>الحالة</th>
+                                    <th>من - إلى</th>
+                                    <th>منتجات مرتبطة</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="seasons-tbody">
+                                <tr><td colspan="5"><div class="adm-loading-spinner"></div></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="../vendor/supabase-js/supabase.js"></script>
+    <script src="js/admin-data.js"></script>
+    <script src="js/admin-auth-guard.js"></script>
+    <script src="js/admin-ui-utils.js"></script>
+    <script src="js/admin-shell.js"></script>
+    <script src="js/pages/seasons-page.js"></script>
+</body>
+</html>
