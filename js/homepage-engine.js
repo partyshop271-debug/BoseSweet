@@ -48,7 +48,7 @@
             const track = document.getElementById('categories-track') || categoriesSection.querySelector('.categories-track-slider') || categoriesSection.querySelector('[id*="track"]');
             if (track) {
                 track.innerHTML = liveCategoriesList.map(/** @param {Object} cat */ (cat) => `
-                    <div class="category-card-unified" data-bose-action="goto-url" data-bose-href="/category.html?category=${encodeURIComponent(cat.id)}">
+                    <div class="category-card-unified" data-nav-url="/category.html?category=${encodeURIComponent(cat.id)}">
                         <img src="${window.optimizeBoseImageUrl(cat.image, 450)}" alt="${window.escapeBoseHTML(cat.title)} | حلويات بوسي" class="category-card-img" width="180" height="180" loading="lazy" />
                         <div class="category-card-name">${window.escapeBoseHTML(cat.title)}</div>
                     </div>

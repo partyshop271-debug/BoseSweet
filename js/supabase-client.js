@@ -172,6 +172,11 @@
             // === 0) - وده اللي كان بيخلي الصفحة تبان فاضية تمامًا للعميلة رغم إن
             // المحتوى موجود ومحفوظ صح في القاعدة طول الوقت. دلوقتي بيرجع فعليًا.
             about: settings.about || {},
+            // 🎉 [المواسم والمناسبات]: نفس تحذير homepage/promotions/loyalty/about
+            // فوق بالظبط - العمود بييجي من select=* لازم يتمرر هنا صراحة وإلا
+            // هيفضل window.BoseStoreData.seasons == undefined للأبد رغم وجوده
+            // في القاعدة فعلاً.
+            seasons: settings.seasons || [],
             categories: categories || [],
             products: rebuiltProducts,
             offers: offers || [],

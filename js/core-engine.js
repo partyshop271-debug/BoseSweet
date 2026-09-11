@@ -534,7 +534,7 @@
             // لسه محصلش الحدث - ممكن يبقى وصل خلال كام ثانية على نت بطيء، نستناه
             // بدل ما نستسلم فورًا (شايفي الشرح فوق).
             if (window.showBoseGlobalToast) {
-                window.showBoseGlobalToast('لحظات، بنجهّزلك التثبيت...', { type: 'info' });
+                window.showBoseGlobalToast('لحظات، بنجهّزلك التثبيت...');
             }
             await waitForBoseInstallPromptEvent(6000);
         }
@@ -821,11 +821,32 @@
     function buildBoseFavButtonHTML(productId) {
         const isFav = typeof window.isBoseFavorite === 'function' && window.isBoseFavorite(productId);
         return `
-            <button type="button" class="bose-fav-btn${isFav ? ' is-active' : ''}" data-fav-id="${productId}" data-bose-action="toggle-favorite" aria-label="${isFav ? 'إزالة من المفضلة' : 'إضافة للمفضلة'}">
+            <button type="button" class="bose-fav-btn${isFav ? ' is-active' : ''}" data-fav-id="${productId}" aria-label="${isFav ? 'إزالة من المفضلة' : 'إضافة للمفضلة'}">
                 <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
             </button>`;
     }
     window.buildBoseFavButtonHTML = buildBoseFavButtonHTML;
+
+    /**
+     * 🎉 [المواسم والمناسبات]: بيرجّع شارة نصية صغيرة لو المنتج مرتبط (بمعرّفه
+     * أو بفئته) بالمناسبة الشغالة دلوقتي - وإلا نص فاضي. اللون بيتحط بس هنا
+     * (لون المناسبة المميز لو مضبوط) - مفيش أي تأثير على لون زرار الإضافة
+     * للسلة أو أي عنصر تفاعلي أساسي تاني، بما يطابق قرار الحفاظ على هوية
+     * الموقع (أبيض/أسود/بينك) ثابتة.
+     * @param {Object} product
+     * @returns {string}
+     */
+    function buildBoseSeasonBadgeHTML(product) {
+        const season = window.getActiveBoseSeason ? window.getActiveBoseSeason() : null;
+        if (!season || !season.badge || !season.badge.text) return '';
+        const isLinkedProduct = (season.linkedProductIds || []).includes(product.id);
+        const isLinkedCategory = (season.linkedCategoryIds || []).includes(product.category);
+        if (!isLinkedProduct && !isLinkedCategory) return '';
+        const bgStyle = season.accentColor ? ` style="background:${window.escapeBoseHTML(season.accentColor)};"` : '';
+        const iconHtml = season.badge.icon ? `<i class="fa-solid ${window.escapeBoseHTML(season.badge.icon)}"></i> ` : '';
+        return `<div class="bose-season-badge-inline"${bgStyle}>${iconHtml}${window.escapeBoseHTML(season.badge.text)}</div>`;
+    }
+    window.buildBoseSeasonBadgeHTML = buildBoseSeasonBadgeHTML;
 
     /**
      * 👑 [محرك موحد وحيد لكل كروت المنتجات في الموقع كله]
@@ -861,22 +882,29 @@
         // زرار "إضافة للسلة" مباشر أو عداد كمية لأنه مش منطقي هنا خالص.
         const isBuilderMaster = !!product.customBuilderUrl && product.builderType && product.builderType !== 'standard';
 
+        // 🍧 [حل مشكلة "مش عارف يختار من خلاله" - منتجات الميكس]: منتج زي "قشطوطة
+        // ميكس" لازم العميل يختار توبينجين مختلفين بنفسه قبل ما يتضاف للسلة - مفيش
+        // سعر أو تفاصيل ثابتة تصح إضافتها مباشرة من كارت المنتج زي أي منتج عادي (فرق
+        // جوهري عن باقي النكهات: هنا في اختيار حقيقي لازم يحصل الأول). نفس فلسفة
+        // isBuilderMaster فوق بالظبط - الكارت بيوديها لصفحة المنتج المستقلة عشان
+        // تختار من هناك بدل ما تضيف "ميكس فاضي" بغلط بضغطة واحدة.
         const isMixFlavor = product.options && product.options.mixFlavor === true;
         const mixDetailUrl = `/category.html?category=${encodeURIComponent(product.category || '')}&product=${encodeURIComponent(product.slug)}`;
 
         if (isMixFlavor && !isDetailView) {
             const startingPrice = window.calculateProductFinalPrice(product, {});
             return `
-                <div class="product-card-unified bose-builder-master-card" data-id="${product.id}" data-bose-action="goto-url" data-bose-href="${mixDetailUrl}" style="cursor:pointer;">
+                <div class="product-card-unified bose-builder-master-card" data-id="${product.id}" data-nav-url="${mixDetailUrl}" style="cursor:pointer;">
                     <img src="${safeImg}" alt="${safeTitle} | حلويات بوسي" class="product-card-img" width="300" height="300" loading="lazy" />
+                    ${buildBoseSeasonBadgeHTML(product)}
                     <h3 class="product-card-title">${safeTitle}</h3>
                     <span class="product-card-flavor-name">${safeFlavor}</span>
                     <p class="product-card-desc">${safeDesc}</p>
-                    <button type="button" class="bose-desc-toggle-btn" hidden aria-expanded="false" data-bose-action="toggle-desc">اظهار المزيد</button>
+                    <button type="button" class="bose-desc-toggle-btn" hidden aria-expanded="false">اظهار المزيد</button>
                     <div class="product-card-price">
                         <span>أسعار تبدأ من ${Math.round(startingPrice)} جنيه</span>
                     </div>
-                    <button class="btn-add-to-cart" data-bose-action="goto-url" data-bose-href="${mixDetailUrl}">
+                    <button class="btn-add-to-cart">
                         <i class="fa-solid fa-layer-group"></i> اختاري توبينجاتك
                     </button>
                 </div>
@@ -885,16 +913,17 @@
 
         if (isBuilderMaster) {
             return `
-                <div class="product-card-unified bose-builder-master-card" data-id="${product.id}" data-bose-action="goto-url" data-bose-href="${product.customBuilderUrl}" style="cursor:pointer;">
+                <div class="product-card-unified bose-builder-master-card" data-id="${product.id}" data-nav-url="${product.customBuilderUrl}" style="cursor:pointer;">
                     <img src="${safeImg}" alt="${safeTitle} | حلويات بوسي" class="product-card-img" width="300" height="300" loading="lazy" />
+                    ${buildBoseSeasonBadgeHTML(product)}
                     <h3 class="product-card-title">${safeTitle}</h3>
                     <span class="product-card-flavor-name">${safeFlavor}</span>
                     <p class="product-card-desc">${safeDesc}</p>
-                    <button type="button" class="bose-desc-toggle-btn" hidden aria-expanded="false" data-bose-action="toggle-desc">اظهار المزيد</button>
+                    <button type="button" class="bose-desc-toggle-btn" hidden aria-expanded="false">اظهار المزيد</button>
                     <div class="product-card-price">
                         <span>أسعار تبدأ من ${Math.round(product.basePrice || product.price || 0)} جنيه</span>
                     </div>
-                    <button class="btn-add-to-cart" data-bose-action="goto-url" data-bose-href="${product.customBuilderUrl}">
+                    <button class="btn-add-to-cart">
                         <i class="fa-solid fa-wand-magic-sparkles"></i> ابدأ التصميم الآن
                     </button>
                 </div>
@@ -919,8 +948,7 @@
                 <div class="bose-card-size-tabs" role="group" aria-label="اختيار الحجم">
                     ${availableSizes.map(sizeKey => `
                         <button type="button" class="bose-card-size-pill${sizeKey === defaultSizeKey ? ' active' : ''}"
-                                data-size-key="${sizeKey}"
-                                data-bose-action="change-size">${window.BOSE_SIZE_LABELS[sizeKey] || sizeKey}</button>
+                                data-size-key="${sizeKey}">${window.BOSE_SIZE_LABELS[sizeKey] || sizeKey}</button>
                     `).join('')}
                 </div>
             `;
@@ -953,18 +981,18 @@
         // 🍧 [حل مشكلة "مش عارف يختار من خلاله" - منتجات الميكس في النافذة المدمجة]:
         // زرار الإضافة هنا بيبدأ معطّل دايماً لمنتج الميكس في وضع التفاصيل - أداة
         // اختيار التوبينجين (renderBoseMixToppingPickerInModal في category.html)
-        // هي اللي بتفعّله بعد ما العميلة تختار توبينجين مختلفين فعلاً. بيستخدم
-        // فعل مفوّض مختلف "add-to-cart-mix" عشان يقرأ التوبينجين المختارين من
-        // بيانات الكارت وقت الإضافة الفعلية بدل الإضافة المباشرة العادية.
+        // هي اللي بتفعّله بعد ما العميلة تختار توبينجين مختلفين فعلاً، وبتنادي
+        // window.handleBoseMixAddToCartClick بدل الإضافة المباشرة العادية عشان
+        // تقرأ التوبينجين المختارين من بيانات الكارت نفسه وقت الإضافة الفعلية.
         const addToCartButtonHtml = isUnavailable
             ? `<button class="btn-add-to-cart" disabled style="opacity:0.6; cursor:not-allowed;">
                     <i class="fa-solid fa-ban"></i> نفدت الكمية حالياً
                </button>`
             : (isMixFlavor && isDetailView)
-            ? `<button class="btn-add-to-cart btn-add-to-cart-mix" disabled style="opacity:0.6; cursor:not-allowed;" data-bose-action="add-to-cart-mix">
+            ? `<button class="btn-add-to-cart btn-add-to-cart-mix" disabled style="opacity:0.6; cursor:not-allowed;">
                     <i class="fa-solid fa-layer-group"></i> اختاري توبينجاتك تحت أولاً
                </button>`
-            : `<button class="btn-add-to-cart" data-bose-action="add-to-cart">
+            : `<button class="btn-add-to-cart">
                     <i class="fa-solid fa-basket-shopping"></i> اضافة للسلة
                </button>`;
 
@@ -976,22 +1004,23 @@
         const favBtnHtml = buildBoseFavButtonHTML(product.id);
 
         return `
-            <div class="product-card-unified${hasDiscount ? ' bose-offer-card' : ''}${isUnavailable ? ' bose-unavailable-card' : ''}" data-id="${product.id}" data-slug="${encodeURIComponent(product.slug)}" data-selected-size="${defaultSizeKey || ''}" data-bose-action="open-detail" style="cursor:pointer;">
+            <div class="product-card-unified${hasDiscount ? ' bose-offer-card' : ''}${isUnavailable ? ' bose-unavailable-card' : ''}" data-id="${product.id}" data-slug="${encodeURIComponent(product.slug)}" data-selected-size="${defaultSizeKey || ''}" style="cursor:pointer;">
                 ${discountBadgeHtml}
                 ${isUnavailable ? `<div class="bose-offer-badge bose-stock-badge">نفدت الكمية</div>` : ''}
                 ${favBtnHtml}
                 <img src="${cardImg}" alt="${safeFlavor ? safeTitle + ' - ' + safeFlavor : safeTitle} | حلويات بوسي" class="product-card-img" data-size-img="1" width="300" height="300" loading="lazy" style="${isUnavailable ? 'filter:grayscale(60%); opacity:0.75;' : ''}" />
+                ${buildBoseSeasonBadgeHTML(product)}
                 <h3 class="product-card-title">${safeTitle}</h3>
                 <span class="product-card-flavor-name">${safeFlavor}</span>
                 <p class="product-card-desc">${safeDesc}</p>
-                <button type="button" class="bose-desc-toggle-btn" hidden aria-expanded="false" data-bose-action="toggle-desc">اظهار المزيد</button>
+                <button type="button" class="bose-desc-toggle-btn" hidden aria-expanded="false">اظهار المزيد</button>
                 ${sizeTabsHtml}
                 ${quantityNoteHtml}
                 
                 <div class="product-card-qty-wrapper" style="${isUnavailable ? 'display:none;' : ''}">
-                    <button class="btn-qty-plus" data-bose-action="qty-plus">+</button>
+                    <button class="btn-qty-plus">+</button>
                     <input type="number" class="input-qty-value" value="1" min="1" readonly />
-                    <button class="btn-qty-minus" data-bose-action="qty-minus">-</button>
+                    <button class="btn-qty-minus">-</button>
                 </div>
                 
                 <div class="product-card-price" data-base-price="${calculatedPrice}">
@@ -1089,6 +1118,85 @@
 
     window.createProductCardHTML = createProductCardHTML;
 
+    // 🛡️ [تصليب CSP - إزالة كل onclick المضمّنة من كارت المنتج الموحد]: كارت
+    // المنتج (createProductCardHTML) كان بيبني كل تفاعلاته (فتح التفاصيل/قلب
+    // المفضلة/تغيير الحجم/+ -/إضافة للسلة) بـ onclick مضمّن جوه الـ HTML string
+    // نفسه. ده بيتعارض مع أي CSP بيمنع 'unsafe-inline' في script-src (هيتمنع
+    // صامت في الإنتاج). الحل: مستمع واحد مفوّض (event delegation) على الصفحة
+    // كلها، بيتصرف بالظبط زي كل onclick القديمة - نفس الترتيب ونفس الاستثناءات.
+    document.addEventListener("click", function (e) {
+        // 1) زرار قلب المفضلة
+        const favBtn = e.target.closest(".bose-fav-btn[data-fav-id]");
+        if (favBtn) {
+            e.stopPropagation();
+            if (window.toggleBoseFavorite) window.toggleBoseFavorite(favBtn.dataset.favId, favBtn);
+            return;
+        }
+
+        // 2) زرار "اظهار المزيد" (وصف الكارت الطويل)
+        const descToggleBtn = e.target.closest(".bose-desc-toggle-btn");
+        if (descToggleBtn) {
+            e.stopPropagation();
+            window.toggleBoseCardDesc(descToggleBtn);
+            return;
+        }
+
+        // 3) تبويب اختيار الحجم المصغر جوه الكارت
+        const sizePill = e.target.closest(".bose-card-size-pill[data-size-key]");
+        if (sizePill) {
+            e.stopPropagation();
+            const sizeCard = sizePill.closest(".product-card-unified");
+            if (sizeCard) window.handleBoseCardSizeChange(sizePill, sizeCard.dataset.id);
+            return;
+        }
+
+        // 4) زرار "إضافة للسلة" لمنتج الميكس (وضع التفاصيل) - مفعّل بس بعد ما
+        //    العميلة تختار توبينجين مختلفين فعلاً من أداة الاختيار
+        const mixAddBtn = e.target.closest(".btn-add-to-cart-mix:not([disabled])");
+        if (mixAddBtn) {
+            const mixCard = mixAddBtn.closest(".product-card-unified");
+            if (mixCard) window.handleBoseMixAddToCartClick(mixAddBtn, mixCard.dataset.id);
+            return;
+        }
+
+        // 5) زرار "إضافة للسلة" العادي - مستثنى هنا كارت الميكس/المحاكي المبسّط
+        //    (عندهم data-nav-url وبيودّوا لصفحة التفاصيل مش إضافة مباشرة)
+        const addBtn = e.target.closest(".btn-add-to-cart:not([disabled])");
+        if (addBtn && !addBtn.closest("[data-nav-url]")) {
+            const addCard = addBtn.closest(".product-card-unified");
+            if (addCard) window.handleBoseDirectAddToCart(addBtn, addCard.dataset.id);
+            return;
+        }
+
+        // 6) أزرار +/- عداد الكمية
+        const qtyPlus = e.target.closest(".btn-qty-plus");
+        if (qtyPlus) { window.handleBoseCardQtyChange(qtyPlus, 1); return; }
+        const qtyMinus = e.target.closest(".btn-qty-minus");
+        if (qtyMinus) { window.handleBoseCardQtyChange(qtyMinus, -1); return; }
+
+        // 7) كارت الميكس/المحاكي المبسّط - أي ضغطة (غير الاستثناءات فوق) بتودّي
+        //    لنفس الرابط المسجل عليه (صفحة التفاصيل أو المحاكي المخصص)
+        const navCard = e.target.closest("[data-nav-url]");
+        if (navCard) {
+            window.location.href = navCard.dataset.navUrl;
+            return;
+        }
+
+        // 8) الكارت الموحد القياسي - أي ضغطة على مساحة فاضية توديه لتفاصيل
+        //    المنتج، إلا لو كانت جوه عداد الكمية/كروت الحجم/زرار الإضافة/المفضلة
+        //    (نفس الاستثناءات اللي كانت في الـ onclick الأصلي بالظبط)
+        const standardCard = e.target.closest(".product-card-unified");
+        if (standardCard) {
+            if (
+                e.target.closest(".product-card-qty-wrapper") ||
+                e.target.closest(".btn-add-to-cart") ||
+                e.target.closest(".bose-card-size-tabs") ||
+                e.target.closest(".bose-fav-btn")
+            ) return;
+            window.location.href = window.buildBoseProductDetailUrl(standardCard);
+        }
+    });
+
     /**
      * 📏 [إصلاح - كارت وصف طويل بيكسر ارتفاع الصف]: النص الأصلي (flavorDesc)
      * بيفضل موجود كامل زي ما هو في الـHTML (مفيش تقصير فعلي للنص)، لكن بصرياً
@@ -1171,94 +1279,6 @@
     initBoseDescToggleObserver();
 
     /**
-     * 🛡️👑 [تصليب CSP - إلغاء onclick المضمّن نهائياً]: كل كروت المنتجات/الفئات
-     * في الموقع (createProductCardHTML هنا + كارت الفئة في homepage-engine.js)
-     * كانت بتستخدم onclick="..." مكتوب مباشرة جوه الـHTML - وده بالظبط اللي
-     * كان بيتقفل تماماً لما سياسة الأمان (CSP) اتشددت لمنع أي كود مضمّن (لأن كل
-     * زرار فيه ID منتج مختلف، مفيش "بصمة" ثابتة ممكن تتعمل لكل الاحتمالات).
-     * دلوقتي مستمع واحد بس مفوّض (event delegation) على document بيغطي كل
-     * كروت المنتجات في الموقع كله عن طريق data-bose-action بدل onclick - كده
-     * تقدر نرجّع نفعّل سياسة CSP الصارمة (بصمات فقط، من غير 'unsafe-inline')
-     * تاني من غير ما نكسر أي زرار.
-     */
-    function initBoseCardActionDelegation() {
-        if (window.__boseCardActionDelegationInit) return;
-        window.__boseCardActionDelegationInit = true;
-
-        document.addEventListener('click', function(e) {
-            const el = e.target.closest('[data-bose-action]');
-            if (!el) return;
-            const action = el.dataset.boseAction;
-            const card = el.closest('.product-card-unified, .category-card-unified');
-
-            switch (action) {
-                case 'goto-url': {
-                    e.stopPropagation();
-                    const url = el.dataset.boseHref;
-                    if (url) window.location.href = url;
-                    break;
-                }
-                case 'toggle-favorite': {
-                    e.stopPropagation();
-                    const favId = el.dataset.favId;
-                    if (favId && typeof window.toggleBoseFavorite === 'function') {
-                        window.toggleBoseFavorite(favId, el);
-                    }
-                    break;
-                }
-                case 'toggle-desc': {
-                    e.stopPropagation();
-                    if (typeof window.toggleBoseCardDesc === 'function') window.toggleBoseCardDesc(el);
-                    break;
-                }
-                case 'change-size': {
-                    e.stopPropagation();
-                    const productId = card ? card.dataset.id : null;
-                    if (productId && typeof window.handleBoseCardSizeChange === 'function') {
-                        window.handleBoseCardSizeChange(el, productId);
-                    }
-                    break;
-                }
-                case 'add-to-cart': {
-                    const productId = card ? card.dataset.id : null;
-                    if (productId && typeof window.handleBoseDirectAddToCart === 'function') {
-                        window.handleBoseDirectAddToCart(el, productId);
-                    }
-                    break;
-                }
-                case 'add-to-cart-mix': {
-                    // 🍧 [حل مشكلة "مش عارف يختار من خلاله" - منتجات الميكس]: زرار
-                    // الإضافة الخاص بمنتج ميكس جوه نافذة التفاصيل - بيقرأ التوبينجين
-                    // المختارين من بيانات الكارت نفسه (مخزّنة بواسطة أداة الاختيار).
-                    const mixProductId = card ? card.dataset.id : null;
-                    if (mixProductId && typeof window.handleBoseMixAddToCartClick === 'function') {
-                        window.handleBoseMixAddToCartClick(el, mixProductId);
-                    }
-                    break;
-                }
-                case 'qty-plus': {
-                    if (typeof window.handleBoseCardQtyChange === 'function') window.handleBoseCardQtyChange(el, 1);
-                    break;
-                }
-                case 'qty-minus': {
-                    if (typeof window.handleBoseCardQtyChange === 'function') window.handleBoseCardQtyChange(el, -1);
-                    break;
-                }
-                case 'open-detail': {
-                    // 🛡️ نفس شرط الاستبعاد اللي كان جوه onclick القديم بالظبط -
-                    // لو الضغطة جت من جوه صندوق الكمية (حتى لو على الـinput نفسه
-                    // مش الأزرار)، منعملش أي تنقل لصفحة التفاصيل.
-                    if (e.target.closest('.product-card-qty-wrapper') || e.target.closest('.btn-add-to-cart') || e.target.closest('.bose-card-size-tabs') || e.target.closest('.bose-fav-btn')) return;
-                    const url = (typeof window.buildBoseProductDetailUrl === 'function') ? window.buildBoseProductDetailUrl(el) : null;
-                    if (url) window.location.href = url;
-                    break;
-                }
-            }
-        });
-    }
-    initBoseCardActionDelegation();
-
-    /**
      * @param {HTMLElement} buttonElement
      * @param {number} direction
      */
@@ -1277,18 +1297,8 @@
         if (currentQty < 1) currentQty = 1;
         qtyInput.value = String(currentQty);
 
-        // 🛡️🆕 [إصلاح - الأزرار كانت بتمسح شكل السعر]: كان الكود بيكتب على
-        // priceDisplay.textContent مباشرة، وده بيمسح كل العناصر التانية جوه
-        // نفس الصندوق (السعر القديم المشطوب + شارة "وفرتِ X جنيه" لو المنتج
-        // عليه عرض) لأن textContent بيستبدل كل الأبناء بنص واحد بسيط. دلوقتي
-        // بنحدّث بس الـ<span> اللي فيه السعر الحالي (زي ما بتعمل بالظبط
-        // handleBoseDirectAddToCart)، وبنسيب السعر القديم وشارة التوفير زي
-        // ما هما لو المنتج عليه عرض.
         const basePrice = parseFloat(priceDisplay.getAttribute('data-base-price') || '0') || 0;
-        const newTotal = `${Math.round(basePrice * currentQty)} جنيه`;
-        const priceSpan = priceDisplay.querySelector('span');
-        if (priceSpan) priceSpan.textContent = newTotal;
-        else priceDisplay.textContent = newTotal;
+        priceDisplay.textContent = `${Math.round(basePrice * currentQty)} جنيه`;
     };
 
 
@@ -1335,7 +1345,7 @@
             // المنتجات المحمّلة أصلاً (window.BoseStoreData.products) بدل أي نداء
             // شبكة إضافي. لو المنتج عنده أحجام (زي مثلث/طاجن/كبير)، بناخد سعر نفس
             // الحجم المختار من كل توبينج لو موجود، وإلا سعره الأساسي. لو لسه محددش
-            // توبينجين (زي وقت عرض الكارت في الفئة/الرئيسية قبل ما تدخل النافذة)،
+            // توبينجين (زي وقت عرض الكارت في الفئة/الرئيسية قبل ما تدخل صفحة المنتج)،
             // بيفضل يعرض سعر المنتج الأساسي المسجل من لوحة التحكم كـ"يبدأ من".
             if (product.options && product.options.mixFlavor === true && opts.mixToppingASlug && opts.mixToppingBSlug) {
                 const allProducts = (window.BoseStoreData && window.BoseStoreData.products) || [];
@@ -1596,9 +1606,9 @@
                 size: opts.size || null,
                 sizeLabel: opts.size ? (window.BOSE_SIZE_LABELS[opts.size] || opts.size) : "",
                 // 🍧 [حل مشكلة "مش عارف يختار من خلاله" - منتجات الميكس]: التوبينجين
-                // اللي اختارتهم العميلة فعلياً لمنتج ميكس، مخزّنين هنا منفصلين
-                // بالإضافة لـ flavorName المدمج فوق - عشان أي عرض إداري مستقبلي يقدر
-                // يستخدمهم منفصلين لو احتاج (تقارير التوبينجات الأكتر طلبًا مثلاً).
+                // اللي اختارتهم العميلة فعلياً لمنتج ميكس (زي قشطوطة ميكس)، مخزّنين هنا
+                // منفصلين بالإضافة لـ flavorName المدمج فوق - عشان أي عرض إداري مستقبلي
+                // يقدر يستخدمهم منفصلين لو احتاج (تقارير التوبينجات الأكتر طلبًا مثلاً).
                 mixToppingA: opts.mixToppingAName || "",
                 mixToppingB: opts.mixToppingBName || "",
                 // 🎁🖋️ [تخصيص بطاقة الهدية]: بيانات التصميم اللي اختارتها العميلة من
@@ -2017,6 +2027,28 @@
     };
 
     /**
+     * 🎉 [المواسم والمناسبات]: بتحدد المناسبة الشغالة دلوقتي (لو في واحدة) من
+     * store_settings.seasons - نفس منطق getSeasonStatus في admin/js/pages/seasons-page.js
+     * بالظبط (لازم يتزامنوا مع أي تعديل مستقبلي في أي منهم): manualOverride === true
+     * يفرض التفعيل بغض النظر عن التاريخ، === false يفرض الإيقاف، وlo فاضي (تلقائي)
+     * بيتحدد حسب تاريخ اليوم بين startDate وendDate. أول مناسبة تطابق في المصفوفة
+     * هي اللي بتتاخد (ترتيب الإضافة = الأولوية عند تداخل مناسبتين في نفس الوقت).
+     * @returns {Object|null}
+     */
+    window.getActiveBoseSeason = function() {
+        const seasons = (window.BoseStoreData && window.BoseStoreData.seasons) || [];
+        if (!seasons.length) return null;
+        const today = new Date();
+        const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+        return seasons.find((s) => {
+            if (s.manualOverride === true) return true;
+            if (s.manualOverride === false) return false;
+            if (!s.startDate || !s.endDate) return false;
+            return todayStr >= s.startDate && todayStr <= s.endDate;
+        }) || null;
+    };
+
+    /**
      * @param {string} str
      * @returns {string}
      */
@@ -2163,29 +2195,8 @@
      * الـ CSS الخاص بالتصميم (#bose-toast-container / .bose-toast-message)
      * كان جاهز فعلاً من قبل في global.css - هنا بس بنوصّله بمنطق JS شغال.
      */
-    /**
-     * 🆕 [إعادة تصميم الإشعارات - سبتمبر 2026]: بدل ما كل الرسائل تبقى بنفس
-     * اللون الوردي وتختفي بعد 3.2 ثانية ثابتة مهما كان طول الرسالة أو أهميتها،
-     * دلوقتي فيه أربعة أنواع (success/error/warning/info) بألوان مختلفة، شريط
-     * تقدّم بيوضّح الوقت المتبقي، زرار إغلاق واضح، والعدّاد بيقف تماماً لو
-     * العميل حطّ إيده/ركّز على الإشعار (pause on hover/focus) - مهم خصوصاً
-     * لضعاف القراءة والنظر اللي محتاجين وقت أطول أو يتحكموا في التوقيت بنفسهم
-     * بدل ما يتسابقوا مع عدّاد ثابت. التوافق مع النداء القديم
-     * showBoseToast(message, 4000) لسه شغال زي ما هو (duration رقم = نفس
-     * المعنى القديم، من غير النوع/الأيقونة الجديدة اللي بتتفعل بس لو النداء
-     * الجديد استخدم كائن خيارات).
-     * @param {string} message
-     * @param {number|{type?: 'success'|'error'|'warning'|'info', duration?: number, closable?: boolean}} [options]
-     */
-    window.showBoseToast = function (message, options) {
+    window.showBoseToast = function (message, duration = 3200) {
         if (!message) return;
-        if (typeof options === 'number') options = { duration: options };
-        const {
-            type = 'info',
-            duration = 6500,
-            closable = true
-        } = options || {};
-
         let container = document.getElementById('bose-toast-container');
         if (!container) {
             container = document.createElement('div');
@@ -2195,45 +2206,7 @@
 
         const toast = document.createElement('div');
         toast.className = 'bose-toast-message';
-        toast.dataset.type = type;
-        // 🛡️ أخطاء تتقرأ فوراً (aria-live="assertive")، باقي الأنواع بتتقرأ
-        // من غير ما تقاطع اللي قارئ الشاشة بيقوله دلوقتي (aria-live="polite").
-        toast.setAttribute('role', type === 'error' ? 'alert' : 'status');
-        toast.setAttribute('aria-live', type === 'error' ? 'assertive' : 'polite');
-
-        const icon = document.createElement('span');
-        icon.className = 'bose-toast-icon';
-        icon.setAttribute('aria-hidden', 'true');
-        toast.appendChild(icon);
-
-        const body = document.createElement('div');
-        body.className = 'bose-toast-body';
-        const text = document.createElement('div');
-        text.className = 'bose-toast-text';
-        text.textContent = message;
-        body.appendChild(text);
-
-        let progressFill = null;
-        if (duration > 0) {
-            const progress = document.createElement('div');
-            progress.className = 'bose-toast-progress';
-            progressFill = document.createElement('div');
-            progressFill.className = 'bose-toast-progress-fill';
-            progress.appendChild(progressFill);
-            body.appendChild(progress);
-        }
-        toast.appendChild(body);
-
-        if (closable) {
-            const closeBtn = document.createElement('button');
-            closeBtn.type = 'button';
-            closeBtn.className = 'bose-toast-close';
-            closeBtn.setAttribute('aria-label', 'إغلاق الإشعار');
-            closeBtn.innerHTML = '&times;';
-            closeBtn.addEventListener('click', () => removeToast());
-            toast.appendChild(closeBtn);
-        }
-
+        toast.textContent = message;
         container.appendChild(toast);
 
         // فريم إضافي قبل إضافة is-visible عشان الـ transition يشتغل فعلاً
@@ -2242,48 +2215,11 @@
             requestAnimationFrame(() => toast.classList.add('is-visible'));
         });
 
-        let hideTimer = null;
-        let remaining = duration;
-        let startedAt = Date.now();
-
-        function scheduleHide() {
-            if (duration <= 0) return; // duration=0 يعني "متختفيش لوحدها" - العميل هو اللي يقفلها
-            startedAt = Date.now();
-            hideTimer = setTimeout(removeToast, remaining);
-            if (progressFill) {
-                requestAnimationFrame(() => {
-                    progressFill.style.transition = `width ${remaining}ms linear`;
-                    progressFill.style.width = '0%';
-                });
-            }
-        }
-
-        function pauseHide() {
-            if (duration <= 0 || !hideTimer) return;
-            clearTimeout(hideTimer);
-            hideTimer = null;
-            remaining -= (Date.now() - startedAt);
-            if (progressFill) {
-                const currentWidth = progressFill.getBoundingClientRect().width;
-                const parentWidth = progressFill.parentElement.getBoundingClientRect().width;
-                const currentPercent = parentWidth ? (currentWidth / parentWidth) * 100 : 0;
-                progressFill.style.transition = 'none';
-                progressFill.style.width = currentPercent + '%';
-            }
-        }
-
-        function removeToast() {
+        setTimeout(() => {
             toast.classList.remove('is-visible');
             toast.classList.add('is-leaving');
             setTimeout(() => toast.remove(), 420);
-        }
-
-        toast.addEventListener('mouseenter', pauseHide);
-        toast.addEventListener('mouseleave', scheduleHide);
-        toast.addEventListener('focusin', pauseHide);
-        toast.addEventListener('focusout', scheduleHide);
-
-        scheduleHide();
+        }, duration);
     };
 
     /**
@@ -2362,19 +2298,26 @@
     };
 
     /**
-     * 🆕 [موحّد مع showBoseToast]: كانت دي نسخة تانية منفصلة تماماً (نفس الـ
-     * CSS بس بمنطق JS مختلف، ومدة ثابتة 3 ثواني من غير أي تحكم من العميل) -
-     * وهي كانت الأكتر استخدامًا فعلياً في الموقع (السلة، المفضلة، رفع صور
-     * التورت/الورد، الكوبونات..إلخ)، يعني تحسين showBoseToast لوحدها كان
-     * هيسيب أغلب الإشعارات الحقيقية اللي بتظهر للعميل بره التحسين. دلوقتي
-     * بقت مجرد غلاف رفيع فوق showBoseToast عشان كل مكان بينادي عليها ياخد
-     * نفس التصميم الجديد (نوع/أيقونة/شريط تقدّم/زرار إغلاق) تلقائياً من غير
-     * ما نغيّر كل نداء ليها في كل الملفات.
      * @param {string} message
-     * @param {number|{type?: 'success'|'error'|'warning'|'info', duration?: number, closable?: boolean}} [options]
      */
-    window.showBoseGlobalToast = function(message, options) {
-        window.showBoseToast(message, options);
+    window.showBoseGlobalToast = function(message) {
+        let container = document.getElementById('bose-toast-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'bose-toast-container';
+            document.body.appendChild(container);
+        }
+        const toast = document.createElement('div');
+        toast.className = 'bose-toast-message';
+        toast.textContent = message;
+        container.appendChild(toast);
+
+        requestAnimationFrame(() => toast.classList.add('is-visible'));
+        setTimeout(() => {
+            toast.classList.remove('is-visible');
+            toast.classList.add('is-leaving');
+            setTimeout(() => { toast.remove(); }, 400);
+        }, 3000);
     };
 
     /**
@@ -2401,8 +2344,8 @@
         }
 
         // 🍧 [نفس حارس isMixFlavor في createProductCardHTML لكن جوه الدالة نفسها]:
-        // عشان مفيش أي طريقة تانية تقدر تتحايل على اختيار التوبينجين وتضيف المنتج
-        // مباشرة بتوبينج فاضي.
+        // عشان مفيش أي طريقة تانية (كارت مقترحات صفحة السلة/المنتج مثلاً) تقدر
+        // تتحايل على اختيار التوبينجين وتضيف المنتج مباشرة بتوبينج فاضي.
         if (product.options && product.options.mixFlavor === true) {
             window.location.href = `/category.html?category=${encodeURIComponent(product.category || '')}&product=${encodeURIComponent(product.slug)}`;
             return;
@@ -2412,7 +2355,7 @@
         // استدعاء مباشر للدالة دي متجاوز لواجهة الزرار المعطّل في createProductCardHTML.
         if (product.isAvailable === false) {
             if (typeof window.showBoseGlobalToast === 'function') {
-                window.showBoseGlobalToast('عذراً، هذا الصنف نفدت كميته حالياً.', { type: 'warning' });
+                window.showBoseGlobalToast('معلش، الصنف ده خلص من المخزن دلوقتي.');
             }
             return;
         }
@@ -2480,14 +2423,12 @@
 
         const originalHtml = buttonElement.innerHTML;
         buttonElement.innerHTML = '<i class="fa-solid fa-check"></i> تمت الإضافة';
-        buttonElement.classList.add('is-added');
         /** @type {HTMLButtonElement} */ (buttonElement).disabled = true;
 
-        window.showBoseGlobalToast('ضفنا المنتج للسلة.', { type: 'success' });
+        window.showBoseGlobalToast('ضفنا المنتج للسلة.');
 
         setTimeout(() => {
             buttonElement.innerHTML = originalHtml;
-            buttonElement.classList.remove('is-added');
             /** @type {HTMLButtonElement} */ (buttonElement).disabled = false;
         }, 2500);
     };
@@ -2511,7 +2452,7 @@
         const sel = cardContainer && /** @type {any} */ (cardContainer)._boseMixSelection;
         if (!sel || !sel.mixToppingASlug || !sel.mixToppingBSlug) {
             if (typeof window.showBoseGlobalToast === 'function') {
-                window.showBoseGlobalToast('اختاري توبينجين مختلفين الأول قبل ما تضيفي للسلة 🍧', { type: 'warning' });
+                window.showBoseGlobalToast('اختاري توبينجين مختلفين الأول قبل ما تضيفي للسلة 🍧');
             }
             return;
         }
@@ -2566,14 +2507,12 @@
 
         const originalHtml = buttonElement.innerHTML;
         buttonElement.innerHTML = '<i class="fa-solid fa-check"></i> تمت الإضافة';
-        buttonElement.classList.add('is-added');
         /** @type {HTMLButtonElement} */ (buttonElement).disabled = true;
 
-        window.showBoseGlobalToast('ضفنا المنتج للسلة.', { type: 'success' });
+        window.showBoseGlobalToast('ضفنا المنتج للسلة.');
 
         setTimeout(() => {
             buttonElement.innerHTML = originalHtml;
-            buttonElement.classList.remove('is-added');
             /** @type {HTMLButtonElement} */ (buttonElement).disabled = false;
         }, 2500);
     };
@@ -2949,6 +2888,13 @@
         const headerInjector = document.getElementById('bose-header-injector');
         if (headerInjector) {
             const marqueeMessages = data.navigation?.topBarMessages || ["صنعناها بحب لتهديها لمن تحب", "توصيل طازج يومياً لجميع المناطق"];
+            // 🎉 [المواسم والمناسبات]: لو فيه مناسبة شغالة دلوقتي وعندها رسالة شريط
+            // علوي، بتتحط أول الدوران - على مستوى العرض بس، من غير ما تلمس أو
+            // تستبدل رسائل navigation.topBarMessages المحفوظة فعليًا.
+            const activeSeasonForMarquee = window.getActiveBoseSeason ? window.getActiveBoseSeason() : null;
+            const effectiveMarqueeMessages = (activeSeasonForMarquee && activeSeasonForMarquee.banner && activeSeasonForMarquee.banner.title)
+                ? [`🎉 ${activeSeasonForMarquee.banner.title}`, ...marqueeMessages]
+                : marqueeMessages;
             let marqueeItemsHtml = '';
             // 🛡️ [تحصين إضافي - دفاع في العمق]: رسائل الشريط المتحرك بتيجي من لوحة
             // التحكم (store_settings.navigation) وبتتحقن هنا لكل زائر في كل صفحة بالموقع
@@ -2956,7 +2902,7 @@
             // في الموقع (زي عنوان الفرع في cart-engine.js) بيتطبق هنا كمان - حتى لو
             // الحساب الإداري موثوق حالياً، أي اختراق مستقبلي لحساب الأدمن أو أي ثغرة
             // تانية في لوحة التحكم مبتتحولش لسكريبت شغال على جهاز كل زائر للموقع.
-            marqueeMessages.forEach((/** @type {string} */ msg) => { marqueeItemsHtml += `<span class="bose-marquee-item">${window.escapeBoseHTML(msg)}</span>`; });
+            effectiveMarqueeMessages.forEach((/** @type {string} */ msg) => { marqueeItemsHtml += `<span class="bose-marquee-item">${window.escapeBoseHTML(msg)}</span>`; });
 
             // ⚙️ [تحكم في سرعة الشريط العلوي وتشغيله/إيقافه من لوحة التحكم]:
             // بيتقرا من navigation.topBarSpeedSeconds و navigation.topBarEnabled.
@@ -3358,7 +3304,7 @@
                 sessionStorage.setItem('bose_welcome_shown', '1');
                 setTimeout(() => {
                     if (typeof window.showBoseToast === "function") {
-                        window.showBoseToast(`أهلاً بعودتك يا ${welcomeProfile.name} 🌸 وحشتينا!`, { type: 'info', duration: 4200 });
+                        window.showBoseToast(`أهلاً بعودتك يا ${welcomeProfile.name} 🌸 وحشتينا!`, 4200);
                     }
                 }, 700);
             }
