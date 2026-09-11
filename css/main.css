@@ -210,6 +210,95 @@
     font-size: 10px;
 }
 
+/* 🎉 [المواسم والمناسبات]: شارة نصية بسيطة داخل تدفق الكارت العادي (مش
+   position:absolute) عشان محدّش يتعارض مع شارة الخصم (أعلى يمين) أو زرار
+   المفضلة (أعلى شمال) اللي شاغلين الركنين العلويين بالفعل. اللون الافتراضي
+   بينك العلامة - بيتغير بس لو المناسبة عندها accentColor مضبوط من لوحة التحكم. */
+.bose-season-badge-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--bose-pink);
+    color: var(--bose-white);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 11px;
+    border-radius: 20px;
+    margin: 8px 0 2px;
+    width: fit-content;
+}
+
+/* 🎉 [المواسم والمناسبات]: بانر المناسبة الشغالة على الصفحة الرئيسية. اللون
+   المميز (لو مضبوط من لوحة التحكم) بيتحط بس هنا عبر متغيّر CSS محلي
+   --bose-season-accent، وبيرجع تلقائيًا لبينك العلامة لو مش مضبوط - العنصر
+   التفاعلي الوحيد جواه (زرار الـ CTA) بيستخدم نفس المتغيّر مش لون ثابت جديد. */
+.bose-season-banner {
+    --bose-season-accent: var(--bose-pink);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 24px;
+    max-width: 1200px;
+    margin: 28px auto;
+    padding: 20px;
+    border-radius: var(--bose-radius-lg, 18px);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--bose-season-accent) 14%, var(--bose-white)), var(--bose-white));
+    border: 1px solid color-mix(in srgb, var(--bose-season-accent) 35%, transparent);
+}
+
+.bose-season-banner-media {
+    flex: 0 0 260px;
+    max-width: 100%;
+    border-radius: var(--bose-radius-md, 14px);
+    overflow: hidden;
+}
+
+.bose-season-banner-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.bose-season-banner-content {
+    flex: 1 1 280px;
+    min-width: 220px;
+}
+
+.bose-season-banner-content h2 {
+    margin: 0 0 8px;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--bose-black);
+}
+
+.bose-season-banner-content p {
+    margin: 0 0 14px;
+    color: var(--bose-black);
+    opacity: 0.8;
+    line-height: 1.7;
+}
+
+.bose-season-banner-cta {
+    display: inline-block;
+    background: var(--bose-season-accent);
+    color: var(--bose-white) !important;
+    font-weight: 700;
+    padding: 10px 26px;
+    border-radius: var(--bose-radius-sm, 10px);
+    text-decoration: none;
+    transition: var(--bose-transition-fast, all 0.2s ease);
+}
+
+.bose-season-banner-cta:hover {
+    filter: brightness(0.92);
+}
+
+@media (max-width: 640px) {
+    .bose-season-banner { flex-direction: column; text-align: center; padding: 16px; }
+    .bose-season-banner-media { flex-basis: auto; width: 100%; }
+}
+
 /* 🏷️ [إصلاح جذري لمشكلة تكرار منتجات العروض]: نفس الكلاسات دي بتشتغل تلقائياً
    على أي منتج معاه oldPrice في أي مكان بالموقع (فئة، أكثر مبيعاً، وصل حديثاً،
    صفحة العروض) - مش بس جوه كارت العروض بالرئيسية - عشان العميل يعرف فوراً
@@ -1311,14 +1400,14 @@
 
 .btn-add-to-cart {
     width: 100%;
-    background-color: var(--bose-pink-text); /* 🛡️ خلفية وردي العلامة زي ما هي */
-    color: var(--bose-black); /* 🛡️🆕 [إتاحة]: كان نص أبيض بتباين 2.13:1 فاشل - نص أسود دلوقتي بتباين 8.85:1 */
+    background-color: var(--bose-pink-text); /* 🛡️ لون أغمق لضمان تباين كافٍ مع النص الأبيض - أهم زرار بالكارت */
+    color: var(--bose-white);
     padding: 12px;
     border-radius: var(--bose-radius-pill);
     font-weight: 700;
     cursor: pointer;
     transition: var(--bose-transition-fast);
-    border: 2px solid transparent;
+    border: none;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1332,23 +1421,9 @@
 
 .btn-add-to-cart:disabled {
     background-color: var(--bose-pink-text) !important;
-    color: var(--bose-black) !important;
+    color: var(--bose-white) !important;
     opacity: 1 !important;
     cursor: not-allowed;
-}
-
-/* 🆕 [حالة "تمت الإضافة" - سبتمبر 2026]: قبل كده الزرار في حالة النجاح كان
-   بياخد بالظبط نفس شكل الحالة العادية (نفس الوردي، من غير حدود) - الفرق
-   الوحيد كان النص والأيقونة، وده مش كفاية كإشارة بصرية واضحة إن الإضافة
-   نجحت فعلاً. دلوقتي بوردر دهبي واضح + خلفية بيضاء + أيقونة صح دهبية -
-   شكل مختلف تماماً عن الحالة العادية، بيحس العميل إنه "استلم تأكيد" فعلي. */
-.btn-add-to-cart.is-added {
-    background-color: var(--bose-white) !important;
-    color: var(--bose-black) !important;
-    border: 2px solid var(--bose-gold) !important;
-}
-.btn-add-to-cart.is-added i {
-    color: var(--bose-gold);
 }
 
 /* 🛡️ [إصلاح بصري - كارت رفيع/طويل/مضغوط]: الحل السابق (minmax) منع الكارت
