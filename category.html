@@ -59,7 +59,7 @@
     <script src="js/supabase-client.js?v=2027_production_v43.0" defer></script>
     <script src="js/push-notifications.js?v=1.0" defer></script>
     <script src="js/favorites-engine.js?v=2026_production_v38.0" defer></script>
-    <script src="js/core-engine.js?v=2028_production_v60.0" defer></script>
+    <script src="js/core-engine.js?v=2028_production_v58.0" defer></script>
     <script src="js/reviews-widget.js?v=2026_production_v1.2" defer></script>
     <script src="js/guided-tour.js?v=3.3" defer></script>
     <script src="js/cart-reminder.js?v=1" defer></script>
@@ -689,32 +689,14 @@
              * @param {Object} product
              * @param {HTMLElement} cardEl
              */
-            /**
-             * 🍧 [حل مشكلة "مش عارف يختار من خلاله" - توسعة لمنتجات ميكس تانية]: بعض
-             * الأقسام (زي الديسباسيتو) بتمثّل كل حجم كمنتج/صف منفصل تماماً (لاحقة
-             * "-medium"/"-large" في الـid) بدل صف واحد فيه prices{} بكل الأحجام (زي
-             * القشطوطة). من غير الفلترة دي، منتج ميكس "طاجن" كان ممكن يعرض توبينجات
-             * بسعر "كبير" أو "مثلث" غلط في نفس القائمة. بنطابق لاحقة الحجم في اسم
-             * منتج الميكس نفسه مع لاحقة كل توبينج مرشّح، فيرجع بس نفس الحجم بالظبط.
-             * @param {string} productId
-             */
-            function getBoseProductSizeSuffix(productId) {
-                const id = String(productId || '');
-                if (id.endsWith('-large')) return '-large';
-                if (id.endsWith('-medium')) return '-medium';
-                return '';
-            }
-
             function renderBoseMixToppingPickerInModal(product, cardEl) {
                 const allProducts = (window.BoseStoreData && window.BoseStoreData.products) || [];
-                const mixSizeSuffix = getBoseProductSizeSuffix(product.id);
                 const pool = allProducts.filter(function (p) {
                     return p.category === product.category &&
                         p.slug !== product.slug &&
                         !String(p.id).startsWith('promo-') &&
                         !(p.options && p.options.mixFlavor === true) &&
-                        p.isAvailable !== false &&
-                        getBoseProductSizeSuffix(p.id) === mixSizeSuffix;
+                        p.isAvailable !== false;
                 });
 
                 // 🍧 مفيش توبينجات كفاية للاختيار منها حالياً - بنسيب الكارت زي ما هو
@@ -950,25 +932,6 @@
             let activeSortMode = "default"; // 'default' (سلوكي) | 'price-asc' | 'price-desc'
             const sortSelectEl = document.getElementById('bose-category-sort-select');
 
-            // 🛡️👑 [حل مشكلة "تبويبات المقاس مش بتصفي أي حاجة" - الديسباسيتو]: تبويبات
-            // مثلث/طاجن/حجم عائلي كانت بتتفعّل بصريًا (active class) فعلاً، لكن مفيش
-            // أي تصفية حقيقية بتحصل تحتها - كل صفوف كل الأحجام كانت بتتعرض مع بعض
-            // دايمًا. السبب: التصفية القديمة كانت مبنية على فرض إن كل الأحجام
-            // مخزّنة جوه صف واحد فيه عمود prices{} (زي القشطوطة)، لكن الديسباسيتو
-            // فعليًا بيمثّل كل حجم كصف/منتج منفصل تمامًا (لاحقة -medium/-large في
-            // الـid) - وده الفرض اللي مفيش أي منتج في قاعدة البيانات كلها بيحققه
-            // أصلاً (فحصت: prices فاضية {} في كل المنتجات من غير استثناء). isTabsLayoutActive
-            // و getVisibleProductsForRender() تحت بيطبّقوا التصفية الصح فعليًا لأول مرة.
-            let isTabsLayoutActive = false;
-            const BOSE_TAB_TO_ID_SUFFIX = { triangle: '', medium: '-medium', large: '-large' };
-
-            /** بيرجع بس صفوف المنتجات اللي لاحقة حجمها تطابق التبويب المختار حالياً */
-            function getVisibleProductsForRender() {
-                if (!isTabsLayoutActive) return globalFilteredProducts;
-                const suffix = BOSE_TAB_TO_ID_SUFFIX[activeSizeTab] || '';
-                return globalFilteredProducts.filter(p => getBoseProductSizeSuffix(p.id) === suffix);
-            }
-
             if (!categoryId) {
                 renderEmptyState("لم يتم تحديد الصنف بشكل صحيح. يرجى العودة للمنيو الرئيسي.");
                 return;
@@ -1089,17 +1052,14 @@
                     productsGrid.className = "category-products-grid layout-full-card";
                     sizeFilterRow.style.display = "none";
                     sizeFilterNote.style.display = "none";
-                    isTabsLayoutActive = false;
                 } else if (firstProduct && firstProduct.layout) {
                     productsGrid.className = `category-products-grid layout-${firstProduct.layout}`;
                     if (firstProduct.layout === "tabs") {
                         sizeFilterRow.style.display = "flex";
                         sizeFilterNote.style.display = "flex";
-                        isTabsLayoutActive = true;
                     } else {
                         sizeFilterRow.style.display = "none";
                         sizeFilterNote.style.display = "none";
-                        isTabsLayoutActive = false;
                     }
                 }
 
@@ -1124,18 +1084,6 @@
                         sizeFilterRow.querySelectorAll('.bose-filter-tab-pill').forEach(p => p.classList.remove('active'));
                         this.classList.add('active');
                         activeSizeTab = this.getAttribute('data-filter-size');
-
-                        // 🛡️👑 [حل مشكلة "تبويبات المقاس مش بتصفي أي حاجة"]: تبديل تبويب
-                        // الحجم لقسم بيستخدم صف منتج منفصل لكل حجم (زي الديسباسيتو) معناه
-                        // مجموعة صفوف مختلفة تمامًا (سلاجات/صور/أسعار مختلفة) - مش نفس
-                        // المنتج بسعر مختلف بس. تحديث الأسعار "في مكانها" (updateExistingCardsConfig)
-                        // ماكانش بيغيّر أي حاجة فعليًا هنا لأن كروت الحجم الجديد أصلاً مش
-                        // موجودة في الـDOM لحد ما نعيد الرسم بالكامل.
-                        if (isTabsLayoutActive) {
-                            applyActiveSort();
-                            renderProductsDOM();
-                            return;
-                        }
 
                         // 🔽 [إصلاح - ترتيب يدوي بالسعر]: لو الترتيب الحالي بالسعر، لازم نعيد
                         // الترتيب الكامل مع تبديل الحجم (لأن سعر كل منتج بيتغيّر)، مش بس تحديث
@@ -1194,7 +1142,7 @@
             function renderProductsDOM() {
                 productsGrid.innerHTML = "";
                 
-                getVisibleProductsForRender().forEach(product => {
+                globalFilteredProducts.forEach(product => {
                     const defaultSize = (categoryId !== "taswaq-cupcake" && product.prices) ? activeSizeTab : (product.defaultSize || "triangle");
                     
                     const calculatedPrice = typeof window.calculateProductFinalPrice === 'function' ? 
@@ -1254,6 +1202,7 @@
                         ${favBtnHtml}
                         <a href="${productDetailUrl}" class="product-card-link" aria-label="عرض تفاصيل منتج ${safeTitle}">
                             <img class="product-card-img" data-size-img="1" src="${window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(cardImageUrl, 450) : cardImageUrl}" alt="${safeTitle}" loading="lazy">
+                            ${window.buildBoseSeasonBadgeHTML ? window.buildBoseSeasonBadgeHTML(product) : ''}
                             <h3 class="product-card-title">${safeTitle}</h3>
                             <span class="product-card-flavor-name">${safeFlavor}</span>
                             <p class="product-card-desc">${safeDesc}</p>

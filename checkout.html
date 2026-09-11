@@ -280,7 +280,7 @@
          تتعرّف أصلاً، فبانر الولاء في صفحة الدفع (#bose-checkout-loyalty-banner)
          كان بيرجع لأرقام افتراضية ثابتة بدل قيمة القسيمة الحقيقية من لوحة التحكم. -->
     <script src="js/loyalty-config.js?v=2026_production_v1.0" defer></script>
-    <script src="js/core-engine.js?v=2028_production_v60.0" defer></script>
+    <script src="js/core-engine.js?v=2028_production_v58.0" defer></script>
     <script src="js/guided-tour.js?v=3.3" defer></script>
 </head>
 <body class="bose-hardware-accelerated Pw-checkout-view">
@@ -410,6 +410,15 @@
                          باقي التنبيهات في الصفحة (زي بانر الطلب المختلط تحت)، بيتغيّر نصه حسب
                          نوع الطلب (عادي / مخصص من المحاكي) زي ما كان بيحصل قبل كده لكن دلوقتي
                          ظاهر وواضح من غير ما تدوس على حاجة. -->
+                    <!-- 🎉 [المواسم والمناسبات]: رسالة اختيارية للمناسبة الشغالة دلوقتي (لو
+                         مفعّلة من لوحة التحكم) - مخفية افتراضيًا، بتتملى من نفس منطق
+                         window.getActiveBoseSeason() المستخدم في شارة المنتجات وبانر
+                         الرئيسية، بنفس أسلوب بانر وقت التحضير تحت. -->
+                    <div id="checkout-season-message-notice" style="display:none; align-items:flex-start; gap:10px; background: rgba(255,145,164,0.1); border: 1px solid rgba(255,145,164,0.4); border-radius: 14px; padding: 14px 16px; margin-bottom: 14px; direction: rtl;">
+                        <i class="fas fa-sparkles" style="color:#FF91A4; margin-top:2px; font-size: 1rem;"></i>
+                        <p id="checkout-season-message-text" style="margin:0; font-size:0.85rem; font-weight:600; color:#111111; line-height:1.7; text-align: right;"></p>
+                    </div>
+
                     <div id="checkout-prep-time-notice" style="display:flex; align-items:flex-start; gap:10px; background: rgba(255,145,164,0.1); border: 1px solid rgba(255,145,164,0.4); border-radius: 14px; padding: 14px 16px; margin-bottom: 14px; direction: rtl;">
                         <i class="fas fa-clock" style="color:#FF91A4; margin-top:2px; font-size: 1rem;"></i>
                         <div>
@@ -573,6 +582,26 @@
 
     <!-- 🔮 سكريبت التزامن الدفاعي المحلي لربط وحقن الواجهات وضمان فك شلل حقول الصفحة دون تعارض خارجي 🔮 -->
     <script>
+        // 🎉 [المواسم والمناسبات]: تعبئة رسالة المناسبة الشغالة (لو مفعّلة ومكتوب
+        // لها نص من لوحة التحكم) في البانر المضاف فوق بانر وقت التحضير.
+        function renderBoseCheckoutSeasonMessage() {
+            const season = window.getActiveBoseSeason ? window.getActiveBoseSeason() : null;
+            const notice = document.getElementById("checkout-season-message-notice");
+            const textNode = document.getElementById("checkout-season-message-text");
+            if (!notice || !textNode) return;
+            if (season && season.cartMessage && season.cartMessage.enabled && season.cartMessage.text) {
+                textNode.textContent = season.cartMessage.text;
+                notice.style.display = "flex";
+            } else {
+                notice.style.display = "none";
+            }
+        }
+        if (window.BoseStoreData && window.BoseStoreData.seasons) {
+            renderBoseCheckoutSeasonMessage();
+        } else {
+            document.addEventListener("BoseDatabaseLoaded", renderBoseCheckoutSeasonMessage);
+        }
+
         // 🛡️ [تصليب CSP]: بديل onsubmit="return false;" المضمّن (نفس السلوك بالظبط - التأكيد
         // الفعلي بيتم بزرار btn-submit-order-final مش submit عادي).
         document.addEventListener("DOMContentLoaded", () => {

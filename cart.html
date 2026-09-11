@@ -113,7 +113,7 @@ body {
      تتعرّف أصلاً، فبانر الولاء وكارت نجاح الطلب كانوا بيرجعوا لأرقام افتراضية
      ثابتة بدل الأرقام الحقيقية المحفوظة في لوحة التحكم. -->
 <script src="js/loyalty-config.js?v=2026_production_v1.0" defer></script>
-<script src="js/core-engine.js?v=2028_production_v60.0" defer></script>
+<script src="js/core-engine.js?v=2028_production_v58.0" defer></script>
 <script src="js/guided-tour.js?v=3.3" defer></script>
 </head>
 <body class="bose-hardware-accelerated">
@@ -131,6 +131,13 @@ body {
 
 <!-- المحتوى الرئيسي الفاخر لصفحة السلة مع التنفس البصري الكامل -->
 <main class="bose-cart-page-section" id="cart-main-container">
+
+    <!-- 🎉 [المواسم والمناسبات]: رسالة اختيارية للمناسبة الشغالة دلوقتي (لو
+         مفعّلة من لوحة التحكم) - مخفية افتراضيًا. -->
+    <div id="cart-season-message-notice" style="display:none; align-items:flex-start; gap:10px; background: rgba(255,145,164,0.1); border: 1px solid rgba(255,145,164,0.4); border-radius: 14px; padding: 14px 16px; margin-bottom: 18px; direction: rtl;">
+        <i class="fas fa-sparkles" style="color:#FF91A4; margin-top:2px; font-size: 1rem;"></i>
+        <p id="cart-season-message-text" style="margin:0; font-size:0.88rem; font-weight:600; color:#111111; line-height:1.6; text-align: right;"></p>
+    </div>
 
     <div class="cart-page-header">
         <h1 class="cart-page-title">سلة التسوق</h1>
@@ -299,6 +306,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (window.BoseStoreData) { renderStrictSuggestionsGrid(window.BoseStoreData); }
     document.addEventListener("BoseDatabaseLoaded", (e) => { renderStrictSuggestionsGrid(e.detail); });
+
+    // 🎉 [المواسم والمناسبات]: تعبئة رسالة المناسبة الشغالة (لو مفعّلة ومكتوب لها نص)
+    const renderBoseCartSeasonMessage = () => {
+        const season = window.getActiveBoseSeason ? window.getActiveBoseSeason() : null;
+        const notice = document.getElementById("cart-season-message-notice");
+        const textNode = document.getElementById("cart-season-message-text");
+        if (!notice || !textNode) return;
+        if (season && season.cartMessage && season.cartMessage.enabled && season.cartMessage.text) {
+            textNode.textContent = season.cartMessage.text;
+            notice.style.display = "flex";
+        } else {
+            notice.style.display = "none";
+        }
+    };
+    if (window.BoseStoreData && window.BoseStoreData.seasons) { renderBoseCartSeasonMessage(); }
+    document.addEventListener("BoseDatabaseLoaded", renderBoseCartSeasonMessage);
 
     // تمكين سحب شريط المقترحات بالماوس للمتصفحات والموبايل بسلاسة مطلقة
     const horizontalTrack = document.getElementById("bose-cart-premium-suggestions-grid");
