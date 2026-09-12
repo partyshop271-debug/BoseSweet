@@ -237,7 +237,6 @@
             badgeSettings = updatedBadgeSettings;
             window.BoseAdminUI.showToast("تم حفظ بيانات المتجر", "success");
         } catch (err) {
-            console.error("تعذر حفظ بيانات المتجر:", err);
             window.BoseAdminUI.showToast("تعذر حفظ البيانات", "error");
         } finally {
             saveBtn.disabled = false;

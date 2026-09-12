@@ -8,7 +8,7 @@
  *
  * كل عنصر موسم: id (فريد), name, startDate, endDate (YYYY-MM-DD),
  * manualOverride (null=تلقائي حسب التاريخ, true=فرض تفعيل, false=فرض إيقاف),
- * accentColor (هيكس اختياري - لو فاضي بيستخدم بينك العلامة الافتراضي)،
+ * accentColor (هيكس إجباري - بيستبدل بينك العلامة في كل الموقع طول ما المناسبة شغالة)،
  * banner {title, description, cta, target, image}, badge {text, icon},
  * linkedProductIds [], linkedCategoryIds [], cartMessage {text, enabled}.
  *
@@ -33,6 +33,21 @@
         if (season.manualOverride === true) return { label: "مفعّلة يدوياً الآن", cls: "szn-status-forced" };
         if (season.manualOverride === false) return { label: "معطّلة يدوياً", cls: "szn-status-off" };
         const today = todayStr();
+
+        // 🎉👑 [نظام المواسم التلقائي]: مواسم المكتبة الجاهزة عندها recurrence
+        // بدل تواريخ ثابتة - نفس منطق pickActiveSeasonFrom في core-engine.js
+        // بالظبط (لازم يتزامنوا).
+        if (season.recurrence && window.BoseSeasonDates) {
+            const w = window.BoseSeasonDates.computeActiveWindow(season.recurrence, new Date());
+            if (!w) return { label: "بدون تواريخ", cls: "szn-status-off" };
+            let label;
+            if (today < w.startDate) label = "قادمة";
+            else if (today > w.endDate) label = "خلصت";
+            else label = "شغالة الآن";
+            if (w.estimated) label += " (تاريخ تقديري)";
+            return { label, cls: today < w.startDate ? "szn-status-upcoming" : today > w.endDate ? "szn-status-ended" : "szn-status-live" };
+        }
+
         if (!season.startDate || !season.endDate) return { label: "بدون تواريخ", cls: "szn-status-off" };
         if (today < season.startDate) return { label: "قادمة", cls: "szn-status-upcoming" };
         if (today > season.endDate) return { label: "خلصت", cls: "szn-status-ended" };
@@ -48,7 +63,31 @@
 
     /* ============================= الجدول ============================= */
 
+    /**
+     * بترجع رقم ترتيب لكل مناسبة: 0 = شغالة الآن (الأهم)، 1 = قادمة (مرتبة
+     * حسب الأقرب)، 2 = خلصت أو معطّلة يدوياً (الأقل أهمية). بتتستخدم لترتيب
+     * الجدول بحيث اللي محتاجة انتباه دلوقتي تبان الأول، بدل ترتيب الإضافة.
+     */
+    function getSortKey(season) {
+        const status = getSeasonStatus(season);
+        if (status.cls === "szn-status-live" || status.cls === "szn-status-forced") return [0, 0];
+        if (status.cls === "szn-status-upcoming") {
+            if (season.recurrence && window.BoseSeasonDates) {
+                const w = window.BoseSeasonDates.computeActiveWindow(season.recurrence, new Date());
+                if (w) return [1, w.startDate];
+            }
+            return [1, season.startDate || "9999-99-99"];
+        }
+        return [2, 0];
+    }
+
     function renderTable() {
+        currentSeasons.sort((a, b) => {
+            const ka = getSortKey(a), kb = getSortKey(b);
+            if (ka[0] !== kb[0]) return ka[0] - kb[0];
+            return String(ka[1]).localeCompare(String(kb[1]));
+        });
+
         const tbody = document.getElementById("seasons-tbody");
         const e = window.BoseAdminUI.escapeHtml;
 
@@ -68,7 +107,13 @@
             <tr>
                 <td><strong>${e(s.name)}</strong></td>
                 <td><span class="szn-status-chip ${status.cls}">${status.label}</span></td>
-                <td>${s.startDate ? e(s.startDate) : "—"} → ${s.endDate ? e(s.endDate) : "—"}</td>
+                <td>${(() => {
+                    if (s.recurrence && window.BoseSeasonDates) {
+                        const w = window.BoseSeasonDates.computeActiveWindow(s.recurrence, new Date());
+                        if (w) return `${e(w.startDate)} → ${e(w.endDate)} <span style="opacity:.6; font-size:.8em;">(تلقائي${w.estimated ? " - تقديري" : ""})</span>`;
+                    }
+                    return `${s.startDate ? e(s.startDate) : "—"} → ${s.endDate ? e(s.endDate) : "—"}`;
+                })()}</td>
                 <td>${linkedCount || "—"}</td>
                 <td class="adm-table-actions">
                     <button class="adm-btn adm-btn-ghost adm-btn-icon" data-action="edit" data-idx="${idx}" title="تعديل">
@@ -150,6 +195,12 @@
                 </div>
 
                 <form id="season-form">
+                    <div class="szn-section-title" style="margin-top:0; border-top:none;">معاينة حية</div>
+                    <div id="sf-live-preview" style="border: 1px dashed var(--adm-border); border-radius: 12px; padding: 14px; margin-bottom: 6px;">
+                        <div id="sf-preview-ribbon-wrap" style="position:relative; width:110px; height:60px; margin-bottom:10px;"></div>
+                        <div id="sf-preview-banner"></div>
+                    </div>
+
                     <div class="szn-section-title">البيانات الأساسية</div>
                     <div class="adm-field">
                         <label for="sf-id">معرّف المناسبة (ID)</label>
@@ -162,6 +213,23 @@
                         <input type="text" class="adm-input" id="sf-name" value="${isEdit ? e(season.name) : ""}" placeholder="مثال: عيد الحب" required>
                     </div>
 
+                    ${(isEdit && season.recurrence) ? `
+                    <div class="adm-field">
+                        <label>تاريخ التفعيل</label>
+                        <div class="adm-hint" style="background: rgba(255,145,164,0.08); border: 1px solid rgba(255,145,164,0.3); border-radius: 10px; padding: 10px 14px; display:block;">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            تاريخ المناسبة دي بيتحسب تلقائياً كل سنة (مناسبة من المكتبة الجاهزة) - مش محتاجة تكتبيه يدوي.
+                            ${(() => {
+                                if (!window.BoseSeasonDates) return "";
+                                const w = window.BoseSeasonDates.computeActiveWindow(season.recurrence, new Date());
+                                if (!w) return "";
+                                return `<br><strong>هتشتغل من ${e(w.startDate)} لحد ${e(w.endDate)}</strong>${w.estimated ? " <span style=\"color:#c62828;\">(تاريخ هجري تقديري - يُرجى التأكد من دار الإفتاء قبل الموسم بفترة كافية)</span>" : ""}`;
+                            })()}
+                        </div>
+                        <input type="hidden" id="sf-start-date" value="${e(season.startDate || "")}">
+                        <input type="hidden" id="sf-end-date" value="${e(season.endDate || "")}">
+                    </div>
+                    ` : `
                     <div class="adm-form-grid">
                         <div class="adm-field">
                             <label for="sf-start-date">تاريخ البداية</label>
@@ -172,6 +240,7 @@
                             <input type="date" class="adm-input" id="sf-end-date" value="${isEdit && season.endDate ? e(season.endDate) : ""}" required>
                         </div>
                     </div>
+                    `}
                     <div class="adm-field">
                         <label for="sf-override">التحكم اليدوي</label>
                         <select class="adm-select" id="sf-override">
@@ -182,12 +251,11 @@
                     </div>
 
                     <div class="adm-field">
-                        <label for="sf-accent-color">لون مميز للمناسبة (اختياري)</label>
+                        <label for="sf-accent-color">لون المناسبة المميز (إجباري)</label>
                         <div class="szn-color-row">
-                            <input type="color" class="adm-input" id="sf-accent-color" value="${isEdit && season.accentColor ? e(season.accentColor) : "#FF91A4"}" style="width:60px; padding:4px;">
-                            <label class="adm-checkbox-label"><input type="checkbox" id="sf-accent-color-enabled" ${isEdit && season.accentColor ? "checked" : ""}> استخدام لون مميز (بدلها: بينك العلامة الافتراضي)</label>
+                            <input type="color" class="adm-input" id="sf-accent-color" value="${isEdit && season.accentColor ? e(season.accentColor) : "#FF91A4"}" style="width:60px; padding:4px;" required>
+                            <span class="adm-hint" style="margin:0;">اللون ده هيستبدل بينك العلامة في كل الموقع (أزرار، بوردرات، أيقونات، ريبونات) طول ما المناسبة شغالة</span>
                         </div>
-                        <span class="adm-hint">بيتحط في البانر والشارة بس - أزرار الموقع الأساسية بتفضل بينك دايمًا</span>
                     </div>
 
                     <div class="szn-section-title">بانر الصفحة الرئيسية</div>
@@ -206,7 +274,8 @@
                         </div>
                         <div class="adm-field">
                             <label for="sf-banner-target">رابط الزرار</label>
-                            <input type="text" class="adm-input" id="sf-banner-target" value="${isEdit ? e(season.banner?.target || "") : ""}" placeholder="offers.html">
+                            <input type="text" class="adm-input" id="sf-banner-target" value="${isEdit ? e(season.banner?.target || "") : ""}" placeholder="season.html?season=my-id">
+                            <span class="adm-hint" style="margin:0;">استخدمي season.html?season=معرّف-المناسبة عشان الزرار يودّي لصفحة فيها منتجات المناسبة دي بالذات</span>
                         </div>
                     </div>
                     <div class="adm-field">
@@ -217,6 +286,10 @@
                             <span id="sf-banner-upload-label">${bannerImage ? "استبدال الصورة" : "إضافة صورة"}</span>
                         </label>
                         <input type="file" id="sf-banner-image-input" accept="image/*" hidden>
+                    </div>
+                    <div class="adm-field">
+                        <label for="sf-banner-emoji">إيموجي البانر (بيظهر بدل الصورة لو مفيش صورة)</label>
+                        <input type="text" class="adm-input" id="sf-banner-emoji" value="${isEdit ? e(season.banner?.emoji || "") : ""}" placeholder="🎉" style="width:80px; font-size:1.3rem; text-align:center;">
                     </div>
 
                     <div class="szn-section-title">شارة المنتجات</div>
@@ -290,6 +363,42 @@
         }
         refreshProductChips();
 
+        // 🪄 [معاينة حية]: بتتحدّث فورًا مع أي تعديل في العنوان/الوصف/اللون/
+        // الإيموجي/الشارة - بتديها إحساس تقريبي لشكل البانر والريبون قبل الحفظ.
+        function updateLivePreview() {
+            const eHtml = window.BoseAdminUI.escapeHtml;
+            const accentColor = document.getElementById("sf-accent-color").value || "#FF91A4";
+            const title = document.getElementById("sf-banner-title").value.trim() || "(عنوان البانر)";
+            const desc = document.getElementById("sf-banner-description").value.trim();
+            const emoji = document.getElementById("sf-banner-emoji").value.trim() || "🎉";
+            const badgeText = document.getElementById("sf-badge-text").value.trim();
+
+            document.getElementById("sf-preview-banner").innerHTML = `
+                <div style="display:flex; align-items:center; gap:14px; background: color-mix(in srgb, ${accentColor} 14%, white); border: 1px solid color-mix(in srgb, ${accentColor} 35%, transparent); border-radius: 14px; padding: 12px;">
+                    <div style="flex:0 0 60px; height:60px; border-radius:50%; background: color-mix(in srgb, ${accentColor} 22%, white); display:flex; align-items:center; justify-content:center; font-size:28px;">${emoji}</div>
+                    <div style="flex:1; min-width:0;">
+                        <div style="font-weight:800; font-size:0.95rem;">${eHtml(title)}</div>
+                        ${desc ? `<div style="font-size:0.8rem; opacity:0.75; margin-top:2px;">${eHtml(desc)}</div>` : ""}
+                    </div>
+                </div>`;
+
+            const ribbonWrap = document.getElementById("sf-preview-ribbon-wrap");
+            if (badgeText) {
+                ribbonWrap.style.display = "block";
+                ribbonWrap.innerHTML = `
+                    <div style="position:absolute; top:14px; left:-30px; width:120px; transform:rotate(-45deg); text-align:center;">
+                        <span style="display:block; background: linear-gradient(135deg, ${accentColor}, color-mix(in srgb, ${accentColor} 80%, black)); color:#fff; font-size:10px; font-weight:800; padding:4px 0;">${eHtml(badgeText)}</span>
+                    </div>`;
+            } else {
+                ribbonWrap.style.display = "none";
+                ribbonWrap.innerHTML = "";
+            }
+        }
+        ["sf-accent-color", "sf-banner-title", "sf-banner-description", "sf-banner-emoji", "sf-badge-text"].forEach((id) => {
+            document.getElementById(id).addEventListener("input", updateLivePreview);
+        });
+        updateLivePreview();
+
         document.getElementById("sf-add-product-btn").addEventListener("click", () => {
             const select = document.getElementById("sf-product-select");
             const id = select.value;
@@ -350,7 +459,13 @@
 
             const overrideVal = document.getElementById("sf-override").value;
             const manualOverride = overrideVal === "on" ? true : overrideVal === "off" ? false : null;
-            const accentColorEnabled = document.getElementById("sf-accent-color-enabled").checked;
+            const accentColor = document.getElementById("sf-accent-color").value;
+            if (!accentColor) {
+                window.BoseAdminUI.showToast("لازم تختاري لون مميز للمناسبة", "error");
+                saveBtn.disabled = false;
+                saveBtn.textContent = "حفظ المناسبة";
+                return;
+            }
 
             const selectedCategoryIds = Array.from(document.querySelectorAll(".szn-cat-checkbox:checked")).map((cb) => cb.value);
 
@@ -360,13 +475,14 @@
                 startDate,
                 endDate,
                 manualOverride,
-                accentColor: accentColorEnabled ? document.getElementById("sf-accent-color").value : "",
+                accentColor,
                 banner: {
                     title: document.getElementById("sf-banner-title").value.trim(),
                     description: document.getElementById("sf-banner-description").value.trim(),
                     cta: document.getElementById("sf-banner-cta").value.trim(),
                     target: document.getElementById("sf-banner-target").value.trim(),
                     image: bannerImage || "",
+                    emoji: document.getElementById("sf-banner-emoji").value.trim(),
                 },
                 badge: {
                     text: document.getElementById("sf-badge-text").value.trim(),
@@ -379,6 +495,12 @@
                     text: document.getElementById("sf-cart-message-text").value.trim(),
                 },
             };
+            // 🎉👑 [نظام المواسم التلقائي]: recurrence وphase2 (لو موجودين) مش لهم
+            // حقول في الفورم أصلاً (بيتحسبوا مش بيتكتبوا) - لازم يتحافظ عليهم
+            // زي ما هما وقت التعديل وإلا هتتحول المناسبة الجاهزة لمناسبة يدوية
+            // عادية وتفقد تاريخها التلقائي ومحتوى مرحلة العيد.
+            if (isEdit && season.recurrence) payload.recurrence = season.recurrence;
+            if (isEdit && season.phase2) payload.phase2 = season.phase2;
 
             try {
                 if (isEdit) {

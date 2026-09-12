@@ -161,7 +161,7 @@
                 <p style="font-size:0.82rem; color: var(--adm-text-muted, #7a7a7a); margin: 0 0 14px;">
                     الكود ورقم المشتري والقيمة الأصلية ثابتين ومينفعش يتغيّروا - تقدري بس تعدّلي الرصيد المتبقي وتاريخ الانتهاء.
                 </p>
-                <form id="gc-edit-form" novalidate>
+                <form id="gc-edit-form">
                     <div class="adm-field">
                         <label for="gc-ef-remaining">الرصيد المتبقي (جنيه) - من أصل ${money(card.amount)}</label>
                         <input type="number" min="0" max="${card.amount}" step="1" class="adm-input" id="gc-ef-remaining" value="${card.remaining_amount}" required>
@@ -190,20 +190,18 @@
             saveBtn.disabled = true;
             saveBtn.textContent = "جاري الحفظ...";
 
+            const remainingRaw = document.getElementById("gc-ef-remaining").value;
+            const expiresRaw = document.getElementById("gc-ef-expires").value;
+            const remainingAmount = parseFloat(remainingRaw);
+
+            if (isNaN(remainingAmount) || remainingAmount < 0 || remainingAmount > card.amount) {
+                window.BoseAdminUI.showToast(`الرصيد لازم يكون بين 0 و${card.amount}`, "error");
+                saveBtn.disabled = false;
+                saveBtn.textContent = "حفظ التعديل";
+                return;
+            }
+
             try {
-                const remainingRaw = document.getElementById("gc-ef-remaining").value;
-                const expiresRaw = document.getElementById("gc-ef-expires").value;
-                const remainingAmount = parseFloat(remainingRaw);
-
-                if (isNaN(remainingAmount) || remainingAmount < 0 || remainingAmount > card.amount) {
-                    window.BoseAdminUI.showToast(`الرصيد لازم يكون بين 0 و${card.amount}`, "error");
-                    return;
-                }
-                if (!expiresRaw) {
-                    window.BoseAdminUI.showToast("لازم تحدد تاريخ انتهاء", "error");
-                    return;
-                }
-
                 await window.BoseAdmin.updateGiftCard(giftCardId, {
                     remainingAmount,
                     expiresAt: new Date(`${expiresRaw}T23:59:59`).toISOString(),
@@ -212,9 +210,7 @@
                 close();
                 await loadGiftCards();
             } catch (err) {
-                console.error("خطأ أثناء تعديل بطاقة الهدية:", err);
                 window.BoseAdminUI.showToast(err.message || "تعذر حفظ التعديل", "error");
-            } finally {
                 saveBtn.disabled = false;
                 saveBtn.textContent = "حفظ التعديل";
             }
@@ -236,7 +232,7 @@
                     <h3>إصدار بطاقة هدية يدوي</h3>
                     <button class="adm-modal-close" data-role="close"><i class="fa-solid fa-xmark"></i></button>
                 </div>
-                <form id="gc-issue-form" novalidate>
+                <form id="gc-issue-form">
                     <div class="adm-field">
                         <label for="gc-if-phone">رقم موبايل المُهدي (المشتري)</label>
                         <input type="tel" class="adm-input" id="gc-if-phone" style="direction:ltr;" placeholder="01012345678" required>
@@ -273,24 +269,11 @@
             saveBtn.disabled = true;
             saveBtn.textContent = "جاري الإصدار...";
 
+            const phone = document.getElementById("gc-if-phone").value.trim();
+            const amount = parseFloat(document.getElementById("gc-if-amount").value) || 0;
+            const expiresRaw = document.getElementById("gc-if-expires").value;
+
             try {
-                const phone = document.getElementById("gc-if-phone").value.trim();
-                const amount = parseFloat(document.getElementById("gc-if-amount").value) || 0;
-                const expiresRaw = document.getElementById("gc-if-expires").value;
-
-                if (!phone) {
-                    window.BoseAdminUI.showToast("لازم تكتب رقم موبايل المُهدي", "error");
-                    return;
-                }
-                if (amount <= 0) {
-                    window.BoseAdminUI.showToast("لازم تدخل قيمة صحيحة للبطاقة", "error");
-                    return;
-                }
-                if (!expiresRaw) {
-                    window.BoseAdminUI.showToast("لازم تحدد تاريخ انتهاء", "error");
-                    return;
-                }
-
                 const code = await window.BoseAdmin.issueManualGiftCard({
                     phone,
                     amount,
@@ -300,9 +283,7 @@
                 close();
                 await loadGiftCards();
             } catch (err) {
-                console.error("خطأ أثناء إصدار بطاقة الهدية:", err);
                 window.BoseAdminUI.showToast(err.message || "تعذر إصدار البطاقة", "error");
-            } finally {
                 saveBtn.disabled = false;
                 saveBtn.textContent = "إصدار البطاقة";
             }

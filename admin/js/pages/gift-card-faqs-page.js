@@ -149,7 +149,7 @@
                     <button class="adm-modal-close" data-role="close"><i class="fa-solid fa-xmark"></i></button>
                 </div>
 
-                <form id="gcf-form" novalidate>
+                <form id="gcf-form">
                     <div class="adm-field">
                         <label for="gcf-question">السؤال</label>
                         <input type="text" class="adm-input" id="gcf-question" value="${isEdit ? e(faq.question) : ""}" required>
@@ -188,24 +188,13 @@
             saveBtn.disabled = true;
             saveBtn.textContent = "جاري الحفظ...";
 
+            const payload = {
+                question: document.getElementById("gcf-question").value.trim(),
+                answer: document.getElementById("gcf-answer").value.trim(),
+                isPublished: document.getElementById("gcf-is-published").checked,
+            };
+
             try {
-                const question = document.getElementById("gcf-question").value.trim();
-                const answer = document.getElementById("gcf-answer").value.trim();
-                if (!question) {
-                    window.BoseAdminUI.showToast("لازم تكتب السؤال", "error");
-                    return;
-                }
-                if (!answer) {
-                    window.BoseAdminUI.showToast("لازم تكتب الإجابة", "error");
-                    return;
-                }
-
-                const payload = {
-                    question,
-                    answer,
-                    isPublished: document.getElementById("gcf-is-published").checked,
-                };
-
                 if (isEdit) {
                     await window.BoseAdmin.updateGiftCardFaq(faq.id, payload);
                     window.BoseAdminUI.showToast("تم تعديل السؤال", "success");
@@ -216,9 +205,7 @@
                 close();
                 await loadFaqs();
             } catch (err) {
-                console.error("خطأ أثناء حفظ السؤال:", err);
                 window.BoseAdminUI.showToast(isEdit ? "تعذر تعديل السؤال" : "تعذر إضافة السؤال", "error");
-            } finally {
                 saveBtn.disabled = false;
                 saveBtn.textContent = "حفظ السؤال";
             }
