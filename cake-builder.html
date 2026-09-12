@@ -22,6 +22,7 @@
     <script src="js/supabase-client.js?v=2027_production_v43.0" defer></script>
     <script src="js/push-notifications.js?v=1.0" defer></script>
     <script src="js/favorites-engine.js?v=2026_production_v38.0" defer></script>
+    <script src="js/season-dates.js?v=2026_production_v1.0" defer></script>
     <script src="js/core-engine.js?v=2028_production_v58.0" defer></script>
     <!-- 🧭 [إصلاح - جولة تعريفية مفقودة]: السكريبت ده كان غير موجود في الصفحة دي خالص،
          فرغم إن جولة "cake_simulator" (11 خطوة) كانت مكتوبة بالكامل جوه guided-tour.js،
@@ -252,7 +253,7 @@
             justify-content: center;
             padding: 20px 16px;
             background-color: var(--bose-white);
-            border: 1px solid rgba(255, 145, 164, 0.25);
+            border: 1px solid rgba(var(--bose-pink-rgb), 0.25);
             border-radius: 18px;
             font-size: 16px;
             font-weight: 700;
@@ -305,7 +306,7 @@
             font-weight: 700;
             color: var(--bose-black);
             background: var(--bose-pink-light);
-            border: 1px solid rgba(255, 145, 164, 0.3);
+            border: 1px solid rgba(var(--bose-pink-rgb), 0.3);
             border-radius: 30px;
             padding: 10px 16px;
             margin-top: 14px;
@@ -465,7 +466,7 @@
             border: 1px solid var(--bose-gray-border);
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 10px 26px rgba(255, 145, 164, 0.28);
+            box-shadow: 0 10px 26px rgba(var(--bose-pink-rgb), 0.28);
         }
         /* 🖼️👑 [إصلاح - كارت الإهداء بقى بنفس حجم باقي صور المحاكي بالظبط]:
            قبل كده كانت الصور دي أصغر بكتير (110px) من صور معرض الإلهام
@@ -491,12 +492,12 @@
             border: 1px solid var(--bose-gray-border);
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 10px 26px rgba(255, 145, 164, 0.28);
+            box-shadow: 0 10px 26px rgba(var(--bose-pink-rgb), 0.28);
         }
         .bose-giftcard-img-node:hover,
         .bose-giftcard-img-node:active {
             transform: scale(1.04) translateY(-2px);
-            box-shadow: 0 10px 22px rgba(255, 145, 164, 0.35);
+            box-shadow: 0 10px 22px rgba(var(--bose-pink-rgb), 0.35);
         }
         .bose-giftcard-img-node img {
             width: 100%;
@@ -512,7 +513,7 @@
         .bose-portfolio-img-node:hover,
         .bose-portfolio-img-node:active {
             transform: scale(1.04) translateY(-3px);
-            box-shadow: 0 16px 34px rgba(255, 145, 164, 0.4);
+            box-shadow: 0 16px 34px rgba(var(--bose-pink-rgb), 0.4);
         }
         .bose-portfolio-img-node img {
             width: 100%;
@@ -558,14 +559,14 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: linear-gradient(135deg, var(--bose-pink), #FF91A4);
+            background: linear-gradient(135deg, var(--bose-pink), var(--bose-pink));
             color: var(--bose-white) !important;
             font-weight: 700;
             font-size: 14.5px;
             padding: 13px 26px;
             border-radius: 50px;
             text-decoration: none;
-            box-shadow: 0 8px 24px rgba(255, 145, 164, 0.4);
+            box-shadow: 0 8px 24px rgba(var(--bose-pink-rgb), 0.4);
             transition: var(--bose-transition);
         }
         .bose-quick-shortcut-btn:hover {
@@ -585,7 +586,7 @@
             justify-content: space-between;
             align-items: center;
             margin-top: 26px;
-            border-top: 1px solid rgba(255,145,164,0.12);
+            border-top: 1px solid rgba(var(--bose-pink-rgb),0.12);
             padding-top: 18px;
             gap: 14px;
         }
@@ -600,7 +601,7 @@
             transition: var(--bose-transition);
         }
         .bose-nav-action-btn.bose-next-trigger {
-            background: linear-gradient(135deg, var(--bose-pink), #FF91A4);
+            background: linear-gradient(135deg, var(--bose-pink), var(--bose-pink));
             color: var(--bose-white);
         }
         .bose-nav-action-btn.bose-prev-trigger {
@@ -791,13 +792,13 @@
 
         .bose-order-summary-card {
             background: var(--bose-white);
-            border: 1px solid rgba(255,145,164,0.2);
+            border: 1px solid rgba(var(--bose-pink-rgb),0.2);
             border-radius: 18px;
             padding: 18px 20px;
         }
         .bose-order-summary-card .price-item-row {
             padding: 6px 0;
-            border-bottom: 1px dashed rgba(255,145,164,0.2);
+            border-bottom: 1px dashed rgba(var(--bose-pink-rgb),0.2);
         }
         .bose-order-summary-card .price-item-row:last-child { border-bottom: none; }
         .bose-order-summary-total-row {
@@ -813,7 +814,7 @@
         }
         .bose-order-summary-total-row span:last-child { color: var(--bose-pink); }
         .bose-inline-add-to-cart-btn {
-            background: linear-gradient(135deg, var(--bose-pink), #FF91A4) !important;
+            background: linear-gradient(135deg, var(--bose-pink), var(--bose-pink)) !important;
             color: var(--bose-white) !important;
             border: none !important;
             padding: 16px !important;
@@ -824,7 +825,7 @@
             font-family: 'Cairo' !important;
             width: 100%;
             margin-top: 18px;
-            box-shadow: 0 8px 30px rgba(255, 145, 164, 0.4) !important;
+            box-shadow: 0 8px 30px rgba(var(--bose-pink-rgb), 0.4) !important;
         }
     </style>
 </head>

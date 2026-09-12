@@ -37,7 +37,8 @@
     <script src="js/push-notifications.js?v=1.0" defer></script>
     <script src="js/favorites-engine.js?v=2026_production_v38.0" defer></script>
     <script src="js/loyalty-config.js?v=2026_production_v1.0" defer></script>
-    <script src="js/core-engine.js?v=2028_production_v60.0" defer></script>
+    <script src="js/season-dates.js?v=2026_production_v1.0" defer></script>
+    <script src="js/core-engine.js?v=2028_production_v58.0" defer></script>
     <!-- 🛡️ [إصلاح حرج - المرحلة 1]: هذه الصفحة كانت الوحيدة بين كل صفحات السلة/الدفع
          التي لا تحمّل cart-engine.js، فكانت دالة renderBoseSuccessPage المخصصة لها
          معطّلة تماماً ومعوّضة بسكريبت داخلي مكرر. تم حذف التكرار وربط الصفحة بالمحرك
@@ -78,10 +79,10 @@
 
         .success-card-capsule {
             background: var(--bose-white, #FFFFFF);
-            border: var(--bose-border-pink, 1px solid rgba(255, 145, 164, 0.3));
+            border: var(--bose-border-pink, 1px solid rgba(var(--bose-pink-rgb), 0.3));
             border-radius: 24px;
             padding: 40px 24px;
-            box-shadow: var(--bose-shadow-glow, 0 8px 32px rgba(255, 145, 164, 0.12));
+            box-shadow: var(--bose-shadow-glow, 0 8px 32px rgba(var(--bose-pink-rgb), 0.12));
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -92,9 +93,9 @@
             width: 80px;
             height: 80px;
             border-radius: 50%;
-            background-color: rgba(255, 145, 164, 0.08);
-            border: 2px solid var(--bose-pink, #FF91A4);
-            color: var(--bose-pink, #FF91A4);
+            background-color: rgba(var(--bose-pink-rgb), 0.08);
+            border: 2px solid var(--bose-pink, var(--bose-pink));
+            color: var(--bose-pink, var(--bose-pink));
             display: flex;
             align-items: center;
             justify-content: center;
@@ -103,9 +104,9 @@
         }
 
         @keyframes bosePulseGlow {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 145, 164, 0.4); }
-            70% { transform: scale(1.04); box-shadow: 0 0 0 15px rgba(255, 145, 164, 0); }
-            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 145, 164, 0); }
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(var(--bose-pink-rgb), 0.4); }
+            70% { transform: scale(1.04); box-shadow: 0 0 0 15px rgba(var(--bose-pink-rgb), 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(var(--bose-pink-rgb), 0); }
         }
 
         .success-headline {
@@ -128,19 +129,19 @@
         /* حاوية تفاصيل الفاتورة المحفوظة بجهاز العميل */
         .order-summary-receipt-box {
             width: 100%;
-            background-color: rgba(255, 145, 164, 0.08);
+            background-color: rgba(var(--bose-pink-rgb), 0.08);
             border-radius: 16px;
             padding: 20px;
             box-sizing: border-box;
             text-align: right;
-            border: 1px dashed rgba(255, 145, 164, 0.25);
+            border: 1px dashed rgba(var(--bose-pink-rgb), 0.25);
             margin-top: 10px;
         }
 
         .receipt-header-row {
             display: flex;
             justify-content: space-between;
-            border-bottom: 1px dashed rgba(255, 145, 164, 0.3);
+            border-bottom: 1px dashed rgba(var(--bose-pink-rgb), 0.3);
             padding-bottom: 12px;
             margin-bottom: 16px;
             font-size: 0.9rem;
@@ -171,14 +172,14 @@
 
         .receipt-item-price {
             font-weight: 700;
-            color: var(--bose-pink, #FF91A4);
+            color: var(--bose-pink, var(--bose-pink));
         }
 
         .receipt-footer-total {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-top: 1px dashed rgba(255, 145, 164, 0.3);
+            border-top: 1px dashed rgba(var(--bose-pink-rgb), 0.3);
             padding-top: 14px;
             font-size: 1.1rem;
             font-weight: 700;
@@ -186,7 +187,7 @@
         }
 
         .receipt-total-val {
-            color: var(--bose-pink, #FF91A4);
+            color: var(--bose-pink, var(--bose-pink));
             font-size: 1.2rem;
         }
 
@@ -236,8 +237,8 @@
         .btn-success-home-anchor {
             flex: 1;
             background-color: var(--bose-white, #FFFFFF);
-            color: var(--bose-pink-text, #FF91A4);
-            border: 2px solid var(--bose-pink-text, #FF91A4);
+            color: var(--bose-pink-text, var(--bose-pink));
+            border: 2px solid var(--bose-pink-text, var(--bose-pink));
             padding: 12px 24px;
             border-radius: 50px;
             font-size: 0.9rem;
@@ -252,7 +253,7 @@
         }
 
         .btn-success-home-anchor:hover {
-            background-color: var(--bose-pink-text, #FF91A4);
+            background-color: var(--bose-pink-text, var(--bose-pink));
             color: var(--bose-white, #FFFFFF);
         }
 
@@ -264,9 +265,9 @@
             animation: boseWhatsappPulseGlow 1.8s infinite ease-in-out;
         }
         @keyframes boseWhatsappPulseGlow {
-            0% { box-shadow: 0 4px 15px rgba(255, 145, 164, 0.25); }
-            50% { box-shadow: 0 4px 22px rgba(255, 145, 164, 0.6); }
-            100% { box-shadow: 0 4px 15px rgba(255, 145, 164, 0.25); }
+            0% { box-shadow: 0 4px 15px rgba(var(--bose-pink-rgb), 0.25); }
+            50% { box-shadow: 0 4px 22px rgba(var(--bose-pink-rgb), 0.6); }
+            100% { box-shadow: 0 4px 15px rgba(var(--bose-pink-rgb), 0.25); }
         }
 
         .success-secondary-actions-row {
@@ -305,8 +306,8 @@
                  من غير ما ينفي إن الطلب اتحجز فعلياً، والفقرة تحته بتتصدر بيها -
                  مش بجملة "خلصنا" الفرحانة اللي كانت بتسبق التحذير. -->
             <h1 class="success-headline">تم حجز طلبك! خطوة واحدة متبقية 🌸</h1>
-            <h3 id="success-customer-welcome" class="success-subheadline" style="display:none; font-weight:700; color:var(--bose-pink, #FF91A4); margin:0;"></h3>
-            <p class="success-subheadline"><strong style="color:var(--bose-pink, #FF91A4);">محتاجين نستلم فاتورتك على واتساب عشان نبدأ التجهيز فعلياً</strong> - دوسي على الزرار الوردي "إرسال الفاتورة على واتساب" تحت 👇 وبعدين زرار الإرسال (▶) جوه واتساب نفسه. من غير الخطوة دي، طلبك محفوظ عندنا بس لسه مش وصلنا رسمياً.</p>
+            <h3 id="success-customer-welcome" class="success-subheadline" style="display:none; font-weight:700; color:var(--bose-pink, var(--bose-pink)); margin:0;"></h3>
+            <p class="success-subheadline"><strong style="color:var(--bose-pink, var(--bose-pink));">محتاجين نستلم فاتورتك على واتساب عشان نبدأ التجهيز فعلياً</strong> - دوسي على الزرار الوردي "إرسال الفاتورة على واتساب" تحت 👇 وبعدين زرار الإرسال (▶) جوه واتساب نفسه. من غير الخطوة دي، طلبك محفوظ عندنا بس لسه مش وصلنا رسمياً.</p>
 
             <div class="order-summary-receipt-box">
                 <div class="receipt-header-row">
@@ -330,20 +331,20 @@
             <div id="bose-loyalty-success-card" style="display:none;"></div>
 
             <!-- 💵 [عربون/دفع مقدم] نفس بوكس تعليمات الدفع الموجود في checkout.html، هنا بيتعبى من بيانات الطلب المحفوظة -->
-            <div id="bose-deposit-payment-box" style="display:none; margin: 4px 0 0 0; padding: 16px; border-radius: 14px; background: rgba(255, 145, 164, 0.06); border: 1px solid #FF91A4; direction: rtl; text-align: right; font-family: 'Cairo';">
+            <div id="bose-deposit-payment-box" style="display:none; margin: 4px 0 0 0; padding: 16px; border-radius: 14px; background: rgba(var(--bose-pink-rgb), 0.06); border: 1px solid var(--bose-pink); direction: rtl; text-align: right; font-family: 'Cairo';">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
                     <span id="bose-deposit-label" style="font-weight: 700; color: #111111; font-size: 0.95rem;">المبلغ المطلوب دفعه الآن لتأكيد الحجز:</span>
-                    <span id="bose-deposit-amount" style="font-weight: 800; color: #FF91A4; font-size: 1.15rem;">0 EGP</span>
+                    <span id="bose-deposit-amount" style="font-weight: 800; color: var(--bose-pink); font-size: 1.15rem;">0 EGP</span>
                 </div>
                 <div id="bose-deposit-remaining-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; opacity: 0.75; font-size: 0.85rem;">
                     <span>الباقي يُدفع عند الاستلام:</span>
                     <span id="bose-deposit-remaining-amount">0 EGP</span>
                 </div>
-                <div style="border-top: 1px dashed rgba(255, 145, 164, 0.3); padding-top: 10px; font-size: 0.85rem; color: #111111; opacity: 0.85; line-height: 1.7;">
+                <div style="border-top: 1px dashed rgba(var(--bose-pink-rgb), 0.3); padding-top: 10px; font-size: 0.85rem; color: #111111; opacity: 0.85; line-height: 1.7;">
                     💳 حوّلي المبلغ <strong>كاش أو InstaPay</strong> على رقمنا:
-                    <span style="display: inline-flex; align-items: center; gap: 6px; font-weight: 800; color: #FF91A4; direction: ltr;">
+                    <span style="display: inline-flex; align-items: center; gap: 6px; font-weight: 800; color: var(--bose-pink); direction: ltr;">
                         <span id="bose-deposit-phone-number">—</span>
-                        <button type="button" id="bose-copy-deposit-phone" title="نسخ الرقم" style="border: none; background: rgba(255,145,164,0.15); color: #FF91A4; border-radius: 6px; padding: 2px 8px; cursor: pointer; font-size: 0.8rem;"><i class="far fa-copy"></i></button>
+                        <button type="button" id="bose-copy-deposit-phone" title="نسخ الرقم" style="border: none; background: rgba(var(--bose-pink-rgb),0.15); color: var(--bose-pink); border-radius: 6px; padding: 2px 8px; cursor: pointer; font-size: 0.8rem;"><i class="far fa-copy"></i></button>
                     </span>
                     <br>ثم ابعتي لقطة شاشة التحويل على واتساب فور إتمامه وهنأكد حجزك فوراً.
                 </div>

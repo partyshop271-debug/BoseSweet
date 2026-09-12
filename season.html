@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+    <link rel="apple-touch-icon" href="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#FF91A4">
+    <title id="bose-season-page-title">تشكيلة المناسبة | حلويات بوسي</title>
+
+    <!-- 🔍 إعدادات تحسين محركات البحث والأرشفة -->
+    <meta name="description" id="bose-season-page-meta-desc" content="تشكيلة حلويات بوسي المختارة خصيصاً للمناسبة.">
+    <meta name="robots" content="noindex, follow">
+    <!-- 🛡️ [noindex عمداً]: الصفحة دي محتواها بيتغيّر كل مناسبة (نفس الرابط،
+         محتوى مختلف كل شوية) - مش مفيد تتفهرس في جوجل بمحتوى مؤقت كده، بعكس
+         صفحات الفئات الثابتة. لسه follow عشان جوجل يقدر يتابع لينكات المنتجات جواها. -->
+
+    <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
+
+    <link rel="stylesheet" href="vendor/fonts/cairo/cairo.css?v=2026_local_v1.0">
+    <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css?v=2026_local_v1.0" fetchpriority="high">
+    <link rel="stylesheet" href="css/global.css?v=2026_production_v44.0">
+    <link rel="stylesheet" href="css/main.css?v=2026_production_v39.0">
+
+    <script src="js/supabase-client.js?v=2027_production_v43.0" defer></script>
+    <script src="js/push-notifications.js?v=1.0" defer></script>
+    <script src="js/favorites-engine.js?v=2026_production_v38.0" defer></script>
+    <script src="js/season-dates.js?v=2026_production_v1.0" defer></script>
+    <script src="js/core-engine.js?v=2028_production_v58.0" defer></script>
+    <script src="js/cart-reminder.js?v=1" defer></script>
+
+    <style>
+        /* 🎉 هوية بصرية مخصصة لصفحة عرض تشكيلة المناسبة - بتاخد لون المناسبة
+           المفعّل سيتوايد أصلاً (var(--bose-pink)) من غير أي إعداد إضافي هنا */
+        .season-page-hero {
+            padding: 50px 20px 30px 20px;
+            text-align: center;
+            background: linear-gradient(rgba(var(--bose-pink-rgb), 0.08), rgba(var(--bose-pink-rgb), 0.01));
+        }
+        .season-page-hero .season-page-emoji {
+            font-size: 48px;
+            display: block;
+            margin-bottom: 10px;
+        }
+        .season-page-hero h1 {
+            font-size: 28px;
+            color: var(--bose-black);
+            margin: 0 0 12px 0;
+        }
+        .season-page-hero p {
+            font-size: 15px;
+            color: var(--bose-black);
+            opacity: 0.8;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+        .season-page-wrapper {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 16px 70px 16px;
+            box-sizing: border-box;
+        }
+        #season-page-grid.products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 16px;
+        }
+        @media (min-width: 640px) {
+            #season-page-grid.products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+                gap: 22px;
+            }
+        }
+        #season-page-empty-state, #season-page-not-found {
+            display: none;
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--bose-black);
+            opacity: 0.7;
+        }
+        #season-page-empty-state i, #season-page-not-found i {
+            font-size: 2.5rem;
+            color: var(--bose-pink);
+            margin-bottom: 16px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="bose-header-injector"></div>
+
+    <main>
+        <section class="season-page-hero" id="season-page-hero" hidden>
+            <span class="season-page-emoji" id="season-page-emoji"></span>
+            <h1 id="season-page-title"></h1>
+            <p id="season-page-description"></p>
+        </section>
+
+        <div class="season-page-wrapper">
+            <div id="season-page-grid" class="bose-products-grid products-grid"></div>
+            <div id="season-page-empty-state">
+                <i class="fa-solid fa-gift"></i>
+                <p>هنضيف تشكيلة المناسبة دي قريب - تابعينا!</p>
+            </div>
+            <div id="season-page-not-found">
+                <i class="fa-solid fa-circle-question"></i>
+                <p>المناسبة دي مش متاحة دلوقتي. <a href="menu.html">تصفحي المنيو كامل</a></p>
+            </div>
+        </div>
+    </main>
+
+    <div id="bose-footer-injector"></div>
+
+    <!-- 👑 محرك صفحة عرض تشكيلة المناسبة - مستقل وخفيف، بيعتمد على نفس منطق
+         الربط المستخدم في شارة/ريبون المنتج (buildBoseSeasonBadgeHTML في
+         core-engine.js): لو المناسبة مربوطة بمنتجات/فئات محددة بيعرضهم بس،
+         وإلا (الافتراضي لمواسم المكتبة الجاهزة) بيعرض كل المنتجات. -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const seasonId = new URLSearchParams(window.location.search).get("season");
+            if (!seasonId) {
+                document.getElementById("season-page-not-found").style.display = "block";
+                return;
+            }
+
+            function render(siteData) {
+                const seasons = (siteData && siteData.seasons) || [];
+                const season = seasons.find((s) => s.id === seasonId);
+                if (!season) {
+                    document.getElementById("season-page-not-found").style.display = "block";
+                    return;
+                }
+
+                // 🎉 [نفس منطق تكثيف رمضان→العيد]: لو المناسبة سلسلة رمضان-عيد
+                // ووصلنا لتاريخ التكثيف، نعرض محتوى مرحلة العيد بدل رمضان -
+                // نفس المنطق بالظبط في pickActiveSeasonFrom بـ core-engine.js.
+                let effectiveBanner = season.banner || {};
+                if (season.recurrence && season.recurrence.type === "ramadan-eid-chain" && season.phase2 && window.BoseSeasonDates) {
+                    const w = window.BoseSeasonDates.computeActiveWindow(season.recurrence, new Date());
+                    const todayStr = new Date().toISOString().slice(0, 10);
+                    if (w && w.intensifyDate && todayStr >= w.intensifyDate) {
+                        effectiveBanner = season.phase2.banner || effectiveBanner;
+                    }
+                }
+
+                document.title = `${season.name} | حلويات بوسي`;
+                document.getElementById("bose-season-page-title").textContent = `${season.name} | حلويات بوسي`;
+                const metaDesc = document.getElementById("bose-season-page-meta-desc");
+                if (metaDesc) metaDesc.content = effectiveBanner.description || `تشكيلة ${season.name} من حلويات بوسي`;
+
+                const hero = document.getElementById("season-page-hero");
+                hero.hidden = false;
+                document.getElementById("season-page-emoji").textContent = effectiveBanner.emoji || "";
+                document.getElementById("season-page-title").textContent = effectiveBanner.title || season.name;
+                document.getElementById("season-page-description").textContent = effectiveBanner.description || "";
+
+                const hasSpecificLinks = (season.linkedProductIds && season.linkedProductIds.length) || (season.linkedCategoryIds && season.linkedCategoryIds.length);
+                const products = (siteData.products || []).filter((p) => {
+                    if (!hasSpecificLinks) return true;
+                    return (season.linkedProductIds || []).includes(p.id) || (season.linkedCategoryIds || []).includes(p.category);
+                });
+
+                const grid = document.getElementById("season-page-grid");
+                if (!products.length) {
+                    document.getElementById("season-page-empty-state").style.display = "block";
+                    return;
+                }
+                grid.innerHTML = products.map((p) => window.createProductCardHTML(p)).join("");
+            }
+
+            if (window.BoseStoreData) render(window.BoseStoreData);
+            else document.addEventListener("BoseDatabaseLoaded", (e) => render(e.detail));
+        });
+    </script>
+</body>
+</html>

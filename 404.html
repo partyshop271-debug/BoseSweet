@@ -26,7 +26,8 @@
     <script src="js/supabase-client.js?v=2027_production_v43.0" defer></script>
     <script src="js/push-notifications.js?v=1.0" defer></script>
     <script src="js/favorites-engine.js?v=2026_production_v38.0" defer></script>
-    <script src="js/core-engine.js?v=2028_production_v60.0" defer></script>
+    <script src="js/season-dates.js?v=2026_production_v1.0" defer></script>
+    <script src="js/core-engine.js?v=2028_production_v58.0" defer></script>
 
     <style>
         .not-found-wrapper {
@@ -42,9 +43,9 @@
             width: 90px;
             height: 90px;
             border-radius: 50%;
-            background-color: rgba(255, 145, 164, 0.08);
-            border: 2px solid var(--bose-pink, #FF91A4);
-            color: var(--bose-pink, #FF91A4);
+            background-color: rgba(var(--bose-pink-rgb), 0.08);
+            border: 2px solid var(--bose-pink, var(--bose-pink));
+            color: var(--bose-pink, var(--bose-pink));
             display: flex;
             align-items: center;
             justify-content: center;
@@ -54,7 +55,7 @@
         .not-found-code {
             font-size: 4rem;
             font-weight: 700;
-            color: var(--bose-pink, #FF91A4);
+            color: var(--bose-pink, var(--bose-pink));
             margin: 0 0 8px 0;
             line-height: 1;
         }
@@ -94,9 +95,9 @@
             transition: 0.2s ease;
         }
         .btn-not-found-home {
-            background-color: var(--bose-pink, #FF91A4);
+            background-color: var(--bose-pink, var(--bose-pink));
             color: #FFFFFF;
-            box-shadow: 0 6px 20px rgba(255, 145, 164, 0.2);
+            box-shadow: 0 6px 20px rgba(var(--bose-pink-rgb), 0.2);
         }
         .btn-not-found-home:hover {
             background-color: var(--bose-black, #111111);
@@ -104,10 +105,10 @@
         .btn-not-found-menu {
             background-color: #FFFFFF;
             color: var(--bose-black, #111111);
-            border: 1px solid rgba(255, 145, 164, 0.4);
+            border: 1px solid rgba(var(--bose-pink-rgb), 0.4);
         }
         .btn-not-found-menu:hover {
-            border-color: var(--bose-pink, #FF91A4);
+            border-color: var(--bose-pink, var(--bose-pink));
         }
     </style>
 </head>

@@ -41,31 +41,31 @@
     <!-- 🎁 [نظام نقاط الولاء]: تنسيقات مخصصة للقسم التفاعلي الجديد في الصفحة الرئيسية -
          مفصولة هنا (بدل main.css المشترك) عشان تبقى معزولة وسهلة المراجعة والتعديل لاحقاً. -->
     <style>
-        .bose-loyalty-teaser-section { padding: 70px 20px; background: linear-gradient(160deg, rgba(255,145,164,0.06), rgba(212,175,55,0.04)); }
+        .bose-loyalty-teaser-section { padding: 70px 20px; background: linear-gradient(160deg, rgba(var(--bose-pink-rgb),0.06), rgba(212,175,55,0.04)); }
         .bose-loyalty-teaser-inner { max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 50px; align-items: center; }
         @media (max-width: 900px) { .bose-loyalty-teaser-inner { grid-template-columns: 1fr; gap: 34px; } }
 
-        .bose-loyalty-teaser-eyebrow { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,145,164,0.12); color: #FF91A4; font-weight: 800; font-size: 0.8rem; padding: 8px 16px; border-radius: 30px; margin-bottom: 16px; }
+        .bose-loyalty-teaser-eyebrow { display: inline-flex; align-items: center; gap: 8px; background: rgba(var(--bose-pink-rgb),0.12); color: var(--bose-pink); font-weight: 800; font-size: 0.8rem; padding: 8px 16px; border-radius: 30px; margin-bottom: 16px; }
         .bose-loyalty-teaser-title { font-size: 1.9rem; font-weight: 800; color: #111; margin: 0 0 14px; line-height: 1.35; }
         .bose-loyalty-teaser-desc { font-size: 0.98rem; color: #111; opacity: 0.75; line-height: 1.8; margin: 0 0 22px; max-width: 480px; }
 
         .bose-loyalty-tier-chips { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 22px; }
-        .bose-loyalty-chip { background: #fff; border: 1px solid rgba(255,145,164,0.3); border-radius: 14px; padding: 10px 16px; display: flex; flex-direction: column; align-items: center; min-width: 78px; box-shadow: 0 4px 14px rgba(255,145,164,0.1); transition: transform .25s; }
+        .bose-loyalty-chip { background: #fff; border: 1px solid rgba(var(--bose-pink-rgb),0.3); border-radius: 14px; padding: 10px 16px; display: flex; flex-direction: column; align-items: center; min-width: 78px; box-shadow: 0 4px 14px rgba(var(--bose-pink-rgb),0.1); transition: transform .25s; }
         .bose-loyalty-chip:hover { transform: translateY(-4px); }
-        .bose-loyalty-chip .chip-num { font-weight: 800; color: #FF91A4; font-size: 1.15rem; }
+        .bose-loyalty-chip .chip-num { font-weight: 800; color: var(--bose-pink); font-size: 1.15rem; }
         .bose-loyalty-chip .chip-lbl { font-size: 0.7rem; color: #111; opacity: 0.65; font-weight: 700; }
         .bose-loyalty-chip-gold { border-color: rgba(212,175,55,0.4); background: linear-gradient(135deg, rgba(212,175,55,0.1), #fff); }
         .bose-loyalty-chip-gold .chip-num { color: #b8860b; font-size: 0.95rem; }
 
-        .bose-loyalty-teaser-link { display: inline-flex; align-items: center; gap: 8px; color: #FF91A4; font-weight: 800; font-size: 0.92rem; text-decoration: none; }
+        .bose-loyalty-teaser-link { display: inline-flex; align-items: center; gap: 8px; color: var(--bose-pink); font-weight: 800; font-size: 0.92rem; text-decoration: none; }
         .bose-loyalty-teaser-link i { transition: transform .2s; }
         .bose-loyalty-teaser-link:hover i { transform: translateX(-4px); }
 
-        .bose-loyalty-widget-card { position: relative; background: #fff; border-radius: 24px; padding: 32px 26px; box-shadow: 0 16px 40px rgba(255,145,164,0.18); overflow: hidden; text-align: center; }
-        .bose-loyalty-widget-glow { position: absolute; top: -60px; left: -60px; width: 160px; height: 160px; background: radial-gradient(circle, rgba(255,145,164,0.25), transparent 70%); animation: bltGlowMove 5s ease-in-out infinite; }
+        .bose-loyalty-widget-card { position: relative; background: #fff; border-radius: 24px; padding: 32px 26px; box-shadow: 0 16px 40px rgba(var(--bose-pink-rgb),0.18); overflow: hidden; text-align: center; }
+        .bose-loyalty-widget-glow { position: absolute; top: -60px; left: -60px; width: 160px; height: 160px; background: radial-gradient(circle, rgba(var(--bose-pink-rgb),0.25), transparent 70%); animation: bltGlowMove 5s ease-in-out infinite; }
         @keyframes bltGlowMove { 0%,100% { transform: translate(0,0); } 50% { transform: translate(30px, 20px); } }
 
-        .bose-loyalty-widget-icon { width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg,#FF91A4,#ffb3c1); display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; animation: bltFloat 3s ease-in-out infinite; }
+        .bose-loyalty-widget-icon { width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg,var(--bose-pink),#ffb3c1); display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; animation: bltFloat 3s ease-in-out infinite; }
         .bose-loyalty-widget-icon i { color: #fff; font-size: 1.5rem; }
         @keyframes bltFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
         .bose-loyalty-widget-card h3 { font-size: 1.05rem; font-weight: 800; color: #111; margin: 0 0 6px; position: relative; }
@@ -73,17 +73,17 @@
 
         .bose-loyalty-widget-input-row { display: flex; gap: 8px; position: relative; }
         .bose-loyalty-widget-input-row input { flex: 1; padding: 13px 14px; border-radius: 12px; border: 1px solid rgba(17,17,17,0.15); font-family: 'Cairo', sans-serif; font-size: 0.92rem; direction: ltr; text-align: right; }
-        .bose-loyalty-widget-input-row input:focus { outline: none; border-color: #FF91A4; }
-        .bose-loyalty-widget-input-row button { background: #FF91A4; color: #fff; border: none; border-radius: 12px; width: 48px; cursor: pointer; font-size: 1rem; flex-shrink: 0; }
-        .bose-loyalty-widget-error { color: #FF91A4; font-size: 0.8rem; font-weight: 700; margin-top: 10px; min-height: 1em; }
+        .bose-loyalty-widget-input-row input:focus { outline: none; border-color: var(--bose-pink); }
+        .bose-loyalty-widget-input-row button { background: var(--bose-pink); color: #fff; border: none; border-radius: 12px; width: 48px; cursor: pointer; font-size: 1rem; flex-shrink: 0; }
+        .bose-loyalty-widget-error { color: var(--bose-pink); font-size: 0.8rem; font-weight: 700; margin-top: 10px; min-height: 1em; }
 
         .bose-loyalty-widget-result { text-align: center; animation: bltFadeIn .4s ease; }
         @keyframes bltFadeIn { from { opacity:0; transform: translateY(8px);} to { opacity:1; transform: translateY(0);} }
-        .bose-loyalty-widget-result .blt-order-num { font-size: 2.1rem; font-weight: 800; color: #FF91A4; display: block; line-height: 1; }
+        .bose-loyalty-widget-result .blt-order-num { font-size: 2.1rem; font-weight: 800; color: var(--bose-pink); display: block; line-height: 1; }
         .bose-loyalty-widget-result .blt-order-lbl { font-size: 0.78rem; color: #111; opacity: 0.65; font-weight: 700; margin-bottom: 16px; display: block; }
-        .bose-loyalty-widget-result .blt-msg { background: rgba(255,145,164,0.08); border: 1px solid rgba(255,145,164,0.25); border-radius: 12px; padding: 12px 14px; font-size: 0.86rem; font-weight: 700; color: #111; line-height: 1.6; margin-bottom: 14px; }
+        .bose-loyalty-widget-result .blt-msg { background: rgba(var(--bose-pink-rgb),0.08); border: 1px solid rgba(var(--bose-pink-rgb),0.25); border-radius: 12px; padding: 12px 14px; font-size: 0.86rem; font-weight: 700; color: #111; line-height: 1.6; margin-bottom: 14px; }
         .bose-loyalty-widget-result .blt-msg.blt-msg-gold { background: rgba(212,175,55,0.1); border-color: rgba(212,175,55,0.3); }
-        .bose-loyalty-widget-result .blt-more-link { color: #FF91A4; font-weight: 800; font-size: 0.85rem; text-decoration: none; }
+        .bose-loyalty-widget-result .blt-more-link { color: var(--bose-pink); font-weight: 800; font-size: 0.85rem; text-decoration: none; }
     </style>
 
     <!-- استدعاء حارس المحرك المركزي العالمي في رأس الصفحة لمنع وميض الألوان وتأمين البيانات الموحدة -->
@@ -120,6 +120,7 @@
     <script src="js/push-notifications.js?v=1.0" defer></script>
     <script src="js/favorites-engine.js?v=2026_production_v38.0" defer></script>
     <script src="js/loyalty-config.js?v=2026_production_v2.0" defer></script>
+    <script src="js/season-dates.js?v=2026_production_v1.0" defer></script>
     <script src="js/core-engine.js?v=2028_production_v58.0" defer></script>
     <script src="js/guided-tour.js?v=3.3" defer></script>
     <script src="js/homepage-engine.js?v=2026_production_v1.0" defer></script>
@@ -137,7 +138,7 @@
         <!-- SECTION 01: عقد من التميز (Hero Block) -->
         <section id="hero-section" class="bose-hero-section" aria-labelledby="hero-title">
             <div class="bose-hero-slide-overlay">
-                <h1 id="hero-title" class="bose-hero-title">عقد من <span class="bose-highlight-yellow" style="color:#FF91A4;">التميز</span> في صناعة الحلويات</h1>
+                <h1 id="hero-title" class="bose-hero-title">عقد من <span class="bose-highlight-yellow" style="color:var(--bose-pink);">التميز</span> في صناعة الحلويات</h1>
                 <p id="hero-description" class="bose-hero-desc bose-arabic-text">نختار كل مكوّن بعناية كبيرة، عشان نطلعلكم بجودة تستاهل ثقتكم.</p>
                 <a id="hero-cta-btn" href="menu.html" class="bose-hero-btn" role="button">اطلبي الآن</a>
                 <a href="#howto-order-section" id="hero-howto-hint-link" class="bose-hero-howto-hint" data-start-bose-tour="1"><i class="fas fa-circle-question"></i> مش عارفة تستخدمي الموقع؟ خدي جولة كاملة</a>

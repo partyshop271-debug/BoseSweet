@@ -93,8 +93,8 @@ body {
 .bose-spinner-loader {
     width: 45px;
     height: 45px;
-    border: 4px solid rgba(255, 145, 164, 0.08);
-    border-top: 4px solid #FF91A4;
+    border: 4px solid rgba(var(--bose-pink-rgb), 0.08);
+    border-top: 4px solid var(--bose-pink);
     border-radius: 50%;
     animation: boseCartSpinMaster 0.8s linear infinite;
 }
@@ -113,6 +113,7 @@ body {
      تتعرّف أصلاً، فبانر الولاء وكارت نجاح الطلب كانوا بيرجعوا لأرقام افتراضية
      ثابتة بدل الأرقام الحقيقية المحفوظة في لوحة التحكم. -->
 <script src="js/loyalty-config.js?v=2026_production_v1.0" defer></script>
+<script src="js/season-dates.js?v=2026_production_v1.0" defer></script>
 <script src="js/core-engine.js?v=2028_production_v58.0" defer></script>
 <script src="js/guided-tour.js?v=3.3" defer></script>
 </head>
@@ -134,8 +135,8 @@ body {
 
     <!-- 🎉 [المواسم والمناسبات]: رسالة اختيارية للمناسبة الشغالة دلوقتي (لو
          مفعّلة من لوحة التحكم) - مخفية افتراضيًا. -->
-    <div id="cart-season-message-notice" style="display:none; align-items:flex-start; gap:10px; background: rgba(255,145,164,0.1); border: 1px solid rgba(255,145,164,0.4); border-radius: 14px; padding: 14px 16px; margin-bottom: 18px; direction: rtl;">
-        <i class="fas fa-sparkles" style="color:#FF91A4; margin-top:2px; font-size: 1rem;"></i>
+    <div id="cart-season-message-notice" style="display:none; align-items:flex-start; gap:10px; background: rgba(var(--bose-pink-rgb),0.1); border: 1px solid rgba(var(--bose-pink-rgb),0.4); border-radius: 14px; padding: 14px 16px; margin-bottom: 18px; direction: rtl;">
+        <i class="fas fa-sparkles" style="color:var(--bose-pink); margin-top:2px; font-size: 1rem;"></i>
         <p id="cart-season-message-text" style="margin:0; font-size:0.88rem; font-weight:600; color:#111111; line-height:1.6; text-align: right;"></p>
     </div>
 
@@ -153,14 +154,14 @@ body {
                             data-bose-info-title="أقدر أعدّل الأصناف هنا؟"
                             data-bose-info-text="أيوة، تقدري تزوّدي أو تقلّلي كمية أي صنف من الأزرار جنبه مباشرة، أو تشيليه خالص من السلة، وهيتحدث السعر الإجمالي تلقائياً. الأصناف المخصصة من محاكي التورت أو الورد تقدري تعدّلي تفاصيلها بالرجوع لصفحة المحاكي من زرار التعديل الموجود على الصنف نفسه.">ⓘ</button>
                 </h3>
-                <button id="btn-clear-cart" class="btn-clear-cart-node" style="font-family: 'Cairo', sans-serif; font-size: 0.88rem; font-weight: 700; color: #111111; border: 1px solid rgba(255,145,164,0.3); padding: 8px 16px; border-radius: 30px; background: #FFFFFF; cursor: pointer; transition: 0.2s;">إفراغ السلة</button>
+                <button id="btn-clear-cart" class="btn-clear-cart-node" style="font-family: 'Cairo', sans-serif; font-size: 0.88rem; font-weight: 700; color: #111111; border: 1px solid rgba(var(--bose-pink-rgb),0.3); padding: 8px 16px; border-radius: 30px; background: #FFFFFF; cursor: pointer; transition: 0.2s;">إفراغ السلة</button>
             </div>
 
             <!-- ⚠️ تنبيه العزل بين المنتجات المخصصة (تورت/ورد محاكي) والمنتجات العادية:
                  يظهر تلقائيًا بس لو السلة فيها الاتنين مع بعض، عشان العميلة تعرف قبل
                  ما تكمل إن المنتجات العادية هتتسلّم مع المخصص في نفس الموعد المتأخر. -->
-            <div id="mixed-order-warning-banner" style="display:none; align-items:flex-start; gap:10px; background: rgba(255,145,164,0.1); border: 1px solid rgba(255,145,164,0.4); border-radius: 14px; padding: 14px 16px; margin-bottom: 18px; direction: rtl;">
-                <i class="fas fa-triangle-exclamation" style="color:#FF91A4; margin-top:2px;"></i>
+            <div id="mixed-order-warning-banner" style="display:none; align-items:flex-start; gap:10px; background: rgba(var(--bose-pink-rgb),0.1); border: 1px solid rgba(var(--bose-pink-rgb),0.4); border-radius: 14px; padding: 14px 16px; margin-bottom: 18px; direction: rtl;">
+                <i class="fas fa-triangle-exclamation" style="color:var(--bose-pink); margin-top:2px;"></i>
                 <p style="margin:0; font-size:0.88rem; font-weight:600; color:#111111; line-height:1.6;">
                     طلبك فيه صنف تورت أو ورد مخصص من المحاكي، وده محتاج وقت تحضير أطول (أسبوع كامل تقريبًا). المنتجات العادية الموجودة معاه في نفس السلة هتتسلّم <strong>مع</strong> المخصص في نفس الموعد المتأخر، مش هتوصلك لوحدها بدري. لو حابة تستلمي المنتجات العادية بسرعة، الأفضل تعمليها أوردر منفصل.
                 </p>
@@ -203,7 +204,7 @@ body {
                 </div>
                 <div class="pricing-row-node">
                     <span class="pricing-label-text">الخصم المطبق:</span>
-                    <span id="summary-discount" class="pricing-value-text" style="color: #FF91A4; font-weight: 700;">0 EGP</span>
+                    <span id="summary-discount" class="pricing-value-text" style="color: var(--bose-pink); font-weight: 700;">0 EGP</span>
                 </div>
                 <div class="pricing-row-node">
                     <span class="pricing-label-text">رسوم ومصاريف التوصيل:
@@ -213,9 +214,9 @@ body {
                     </span>
                     <span id="summary-shipping-fee" class="pricing-value-text" style="color: #111111; font-size: 0.88rem;">بتتحدد في خطوة الاستلام</span>
                 </div>
-                <div class="summary-grand-total-row" style="border-top: 1px dashed rgba(255,145,164,0.3); padding-top: 16px;">
+                <div class="summary-grand-total-row" style="border-top: 1px dashed rgba(var(--bose-pink-rgb),0.3); padding-top: 16px;">
                     <span class="grand-total-label">الإجمالي النهائي التقريبي:</span>
-                    <span id="cart-grand-total-value" class="total-value-display" style="color: #FF91A4; font-weight: 700; font-size: 1.5rem;">0 EGP</span>
+                    <span id="cart-grand-total-value" class="total-value-display" style="color: var(--bose-pink); font-weight: 700; font-size: 1.5rem;">0 EGP</span>
                 </div>
             </div>
 
@@ -229,7 +230,7 @@ body {
     </div>
 
     <!-- قسم قد يعجبك أيضاً: مجرى حركة أفقي انسيابي مريح لعين العميل ومحمي الأبعاد بالكامل -->
-    <section class="bose-section-container" style="padding: 40px 0 0 0; margin-top: 40px; border-top: 1px dashed #FF91A4;">
+    <section class="bose-section-container" style="padding: 40px 0 0 0; margin-top: 40px; border-top: 1px dashed var(--bose-pink);">
         <div class="bose-section-header" style="text-align: right; margin-bottom: 20px; direction: rtl;">
             <h2 class="bose-section-title" style="font-size: 1.5rem; font-weight: 700; color: #111111; padding-bottom: 6px;">قد يعجبك أيضاً</h2>
             <p class="bose-section-subtitle" style="font-size: 0.95rem; color: #111111; margin-top: 2px;">أصناف مميزة بيقترحها عليك خبراء حلويات بوسي عشان تكمل بيها روعة اختيارك للنهارده.</p>
