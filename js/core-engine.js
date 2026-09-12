@@ -10,6 +10,123 @@
     "use strict";
 
     /**
+     * 🎉👑 [المواسم والمناسبات - الاستبدال الكامل للون البينك]: القرار النهائي
+     * (بعد نقاش صريح): وقت ما مناسبة شغالة وعندها لون مميز، اللون ده بيستبدل
+     * بينك العلامة في *كل حتة* في الموقع (أزرار، بوردرات، أيقونات، ظلال) - مش
+     * لمسة زخرفية محدودة. ده اتحقق تقنياً بتحويل كل الاستخدامات المباشرة للون
+     * البينك (hex #FF91A4 و rgba(255,145,164,...)) في كل ملفات CSS/HTML/JS
+     * الموقع (عدا لوحة التحكم والملفات المستقلة) لمتغيّرين CSS مركزيين:
+     * --bose-pink و --bose-pink-rgb (المعرّفين في css/global.css، وكل باقي
+     * متغيّرات البينك التانية زي --bose-pink-text و--bose-gold و--bose-cream
+     * وغيرهم بقوا كلهم بيرجعوا لنفس المتغيّرين دول). يعني تغيير المتغيّرين دول
+     * هنا فقط كفيل إنه يغيّر لون كل حاجة في الموقع فورًا - مفيش داعي نلمس أي
+     * ملف تاني وقت تفعيل/إلغاء مناسبة.
+     *
+     * الاستثناءات المتعمدة (لأسباب تقنية بحتة، مش قرار تصميم): محتوى meta
+     * theme-color/manifest.json (بيتقروا من المتصفح/النظام مباشرة، مش سياق
+     * CSS، فمعرفش يفهم var()) بيتحدّثوا هنا برمجياً كقيمة حقيقية بدل ما
+     * يعتمدوا على المتغيّر؛ وملفات canvas (js/invoice-image-generator.js) بتقرا
+     * القيمة الفعلية المحسوبة وقت الرسم بدل ما تستخدم var() مباشرة لنفس السبب.
+     */
+    function hexToRgbTriplet(hex) {
+        if (!hex || typeof hex !== "string") return null;
+        const m = hex.trim().replace(/^#/, "");
+        const full = m.length === 3 ? m.split("").map((c) => c + c).join("") : m;
+        if (!/^[0-9a-fA-F]{6}$/.test(full)) return null;
+        const r = parseInt(full.slice(0, 2), 16);
+        const g = parseInt(full.slice(2, 4), 16);
+        const b = parseInt(full.slice(4, 6), 16);
+        return `${r}, ${g}, ${b}`;
+    }
+
+    /**
+     * نفس منطق getActiveBoseSeason (المعرّفة تحت في نفس الملف) بس مستقلة
+     * تماماً وبتاخد مصفوفة المواسم مباشرة كباراميتر - عشان نقدر نستخدمها هنا
+     * فوق قبل ما باقي الملف يتحمّل، ومن جوه بيانات الكاش المحلي كمان.
+     * @param {Array} seasons
+     * @returns {Object|null}
+     */
+    function pickActiveSeasonFrom(seasons) {
+        if (!Array.isArray(seasons) || !seasons.length) return null;
+        const today = new Date();
+        const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+
+        const found = seasons.find((s) => {
+            if (s.manualOverride === true) return true;
+            if (s.manualOverride === false) return false;
+
+            // 🎉👑 [نظام المواسم التلقائي]: لو المناسبة عندها recurrence (مواسم
+            // المكتبة الجاهزة)، تاريخها بيتحسب تلقائياً كل سنة - مش مكتوب يدوي.
+            // لو معندهاش (مناسبة قديمة اتضافت يدوي)، بيرجع لمنطق startDate/endDate
+            // الثابت القديم زي ما هو، للتوافق مع أي بيانات سابقة.
+            if (s.recurrence && window.BoseSeasonDates) {
+                const w = window.BoseSeasonDates.computeActiveWindow(s.recurrence, today);
+                return w && todayStr >= w.startDate && todayStr <= w.endDate;
+            }
+
+            if (!s.startDate || !s.endDate) return false;
+            return todayStr >= s.startDate && todayStr <= s.endDate;
+        }) || null;
+
+        if (!found) return null;
+
+        // 🎉 [تكثيف رمضان → العيد]: لو المناسبة من نوع "سلسلة رمضان-عيد" وعندها
+        // محتوى مرحلة تانية (phase2)، وتاريخ اليوم وصل لتاريخ التكثيف (عادةً 5
+        // أيام قبل العيد)، بنستبدل البانر/الشارة بمحتوى العيد بدل رمضان تلقائياً
+        // - نفس كائن المناسبة، من غير ما نلمس أي حاجة تانية فيه ولا نأثر على
+        // باقي المستهلكين (شارة، بانر، لون، رسالة سلة).
+        if (found.recurrence && found.recurrence.type === "ramadan-eid-chain" && found.phase2 && window.BoseSeasonDates) {
+            const w = window.BoseSeasonDates.computeActiveWindow(found.recurrence, today);
+            if (w && w.intensifyDate && todayStr >= w.intensifyDate) {
+                return Object.assign({}, found, {
+                    banner: found.phase2.banner || found.banner,
+                    badge: found.phase2.badge || found.badge,
+                });
+            }
+        }
+
+        return found;
+    }
+
+    /**
+     * بتطبّق (أو بترجع) لون المناسبة الشغالة على كامل الموقع - المتغيّرين
+     * المركزيين، وmeta theme-color (بقيمة حقيقية لإنها مش سياق CSS).
+     * @param {Array} seasons
+     */
+    function applyBoseSeasonTheme(seasons) {
+        const active = pickActiveSeasonFrom(seasons);
+        const accentColor = active && active.accentColor;
+        const rgbTriplet = accentColor ? hexToRgbTriplet(accentColor) : null;
+
+        const root = document.documentElement;
+        if (accentColor && rgbTriplet) {
+            root.style.setProperty("--bose-pink", accentColor);
+            root.style.setProperty("--bose-pink-rgb", rgbTriplet);
+        } else {
+            root.style.removeProperty("--bose-pink");
+            root.style.removeProperty("--bose-pink-rgb");
+        }
+
+        const themeMeta = document.querySelector('meta[name="theme-color"]');
+        if (themeMeta) themeMeta.content = accentColor || "#FF91A4";
+    }
+
+    // 🚀 مسار سريع: تطبيق فوري من الكاش المحلي (لو موجود) قبل أي طلب شبكة -
+    // يقلل الوميض اللوني للزوار العائدين. هيتراجع/يتزامن تاني فور وصول بيانات
+    // حقيقية جديدة عبر BoseDatabaseLoaded تحت.
+    try {
+        const cachedRaw = localStorage.getItem("bose_cached_store_data");
+        if (cachedRaw) {
+            const cached = JSON.parse(cachedRaw);
+            if (cached && Array.isArray(cached.seasons)) applyBoseSeasonTheme(cached.seasons);
+        }
+    } catch (e) { /* تجاهل - هيتطبق الشكل الافتراضي لحد ما البيانات الحقيقية توصل */ }
+
+    document.addEventListener("BoseDatabaseLoaded", function (e) {
+        if (e.detail && Array.isArray(e.detail.seasons)) applyBoseSeasonTheme(e.detail.seasons);
+    });
+
+    /**
      * 🛡️🆕 [إصلاح]: شبكة أمان عامة (Global Error Handler) - قبل كده لو حصل خطأ
      * غير متوقع في أي مكان في رحلة الشراء (تحميل، كارت، تشيك أوت)، الصفحة كانت
      * "بتقف بصمت" من غير أي رسالة للعميلة، وهي حاسة إن حاجة اتعطلت بس مش عارفة
@@ -65,7 +182,7 @@
                 // ظهروا في نفس اللحظة (تنبيه عادي + رسالة الطوارئ دي) ميتصادموش بصرياً.
                 const banner = document.createElement("div");
                 banner.setAttribute("dir", "rtl");
-                banner.style.cssText = "position:fixed;left:50%;transform:translateX(-50%);top:calc(var(--bose-topbar-height, 44px) + 86px);z-index:2147483647;background:#FFFFFF;color:#111111;font-family:'Cairo',Tahoma,Arial,sans-serif;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 10px 34px rgba(0,0,0,0.18);flex-wrap:wrap;width:min(92vw, 460px);border-radius:16px;border:1px solid rgba(255,145,164,0.4);";
+                banner.style.cssText = "position:fixed;left:50%;transform:translateX(-50%);top:calc(var(--bose-topbar-height, 44px) + 86px);z-index:2147483647;background:#FFFFFF;color:#111111;font-family:'Cairo',Tahoma,Arial,sans-serif;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 10px 34px rgba(0,0,0,0.18);flex-wrap:wrap;width:min(92vw, 460px);border-radius:16px;border:1px solid rgba(var(--bose-pink-rgb),0.4);";
 
                 const msg = document.createElement("span");
                 msg.style.cssText = "font-size:14px;line-height:1.5;flex:1;min-width:200px;color:#111111;";
@@ -78,7 +195,7 @@
                 link.target = "_blank";
                 link.rel = "noopener noreferrer";
                 link.textContent = isNonOrderingPage ? "تواصلي معانا على واتساب" : "أكملي طلبك على واتساب";
-                link.style.cssText = "background:#FF91A4;color:#ffffff;font-weight:700;text-decoration:none;padding:8px 16px;border-radius:8px;white-space:nowrap;font-size:14px;";
+                link.style.cssText = "background:var(--bose-pink);color:#ffffff;font-weight:700;text-decoration:none;padding:8px 16px;border-radius:8px;white-space:nowrap;font-size:14px;";
 
                 const closeBtn = document.createElement("button");
                 closeBtn.textContent = "✕";
@@ -828,23 +945,28 @@
     window.buildBoseFavButtonHTML = buildBoseFavButtonHTML;
 
     /**
-     * 🎉 [المواسم والمناسبات]: بيرجّع شارة نصية صغيرة لو المنتج مرتبط (بمعرّفه
-     * أو بفئته) بالمناسبة الشغالة دلوقتي - وإلا نص فاضي. اللون بيتحط بس هنا
-     * (لون المناسبة المميز لو مضبوط) - مفيش أي تأثير على لون زرار الإضافة
-     * للسلة أو أي عنصر تفاعلي أساسي تاني، بما يطابق قرار الحفاظ على هوية
-     * الموقع (أبيض/أسود/بينك) ثابتة.
+     * 🎉 [المواسم والمناسبات]: بيرجّع ريبون قطري صغير في زاوية كارت المنتج لو
+     * المنتج مرتبط (بمعرّفه أو بفئته) بالمناسبة الشغالة دلوقتي - وإلا نص فاضي.
+     * اللون بياخد نفس متغيّر --bose-pink المركزي (مش لون منفصل) عشان يتزامن
+     * تلقائياً مع أي تغيير ثيم سيتم تطبيقه من applyBoseSeasonTheme فوق أول
+     * الملف - مفيش حاجة تتفصل هنا يدوي.
      * @param {Object} product
      * @returns {string}
      */
     function buildBoseSeasonBadgeHTML(product) {
         const season = window.getActiveBoseSeason ? window.getActiveBoseSeason() : null;
         if (!season || !season.badge || !season.badge.text) return '';
-        const isLinkedProduct = (season.linkedProductIds || []).includes(product.id);
-        const isLinkedCategory = (season.linkedCategoryIds || []).includes(product.category);
-        if (!isLinkedProduct && !isLinkedCategory) return '';
-        const bgStyle = season.accentColor ? ` style="background:${window.escapeBoseHTML(season.accentColor)};"` : '';
+        const hasSpecificLinks = (season.linkedProductIds && season.linkedProductIds.length) || (season.linkedCategoryIds && season.linkedCategoryIds.length);
+        // 🎉 [لا روابط محددة = تنطبق على كل المنتجات]: المواسم الجاهزة من المكتبة
+        // بتيجي من غير أي منتجات مربوطة يدوياً (هي أصلاً مصممة تشتغل عالميًا من
+        // غير ما تكتبي حاجة) - فعدم وجود أي ربط بيتفسّر كـ"كل المنتجات"، وتقدري
+        // تضيّقيها لاحقاً باختيار فئات/منتجات محددة من لوحة التحكم لو حبيتي.
+        const isLinked = !hasSpecificLinks
+            || (season.linkedProductIds || []).includes(product.id)
+            || (season.linkedCategoryIds || []).includes(product.category);
+        if (!isLinked) return '';
         const iconHtml = season.badge.icon ? `<i class="fa-solid ${window.escapeBoseHTML(season.badge.icon)}"></i> ` : '';
-        return `<div class="bose-season-badge-inline"${bgStyle}>${iconHtml}${window.escapeBoseHTML(season.badge.text)}</div>`;
+        return `<div class="bose-season-ribbon"><span>${iconHtml}${window.escapeBoseHTML(season.badge.text)}</span></div>`;
     }
     window.buildBoseSeasonBadgeHTML = buildBoseSeasonBadgeHTML;
 
@@ -895,8 +1017,8 @@
             const startingPrice = window.calculateProductFinalPrice(product, {});
             return `
                 <div class="product-card-unified bose-builder-master-card" data-id="${product.id}" data-nav-url="${mixDetailUrl}" style="cursor:pointer;">
-                    <img src="${safeImg}" alt="${safeTitle} | حلويات بوسي" class="product-card-img" width="300" height="300" loading="lazy" />
                     ${buildBoseSeasonBadgeHTML(product)}
+                    <img src="${safeImg}" alt="${safeTitle} | حلويات بوسي" class="product-card-img" width="300" height="300" loading="lazy" />
                     <h3 class="product-card-title">${safeTitle}</h3>
                     <span class="product-card-flavor-name">${safeFlavor}</span>
                     <p class="product-card-desc">${safeDesc}</p>
@@ -914,8 +1036,8 @@
         if (isBuilderMaster) {
             return `
                 <div class="product-card-unified bose-builder-master-card" data-id="${product.id}" data-nav-url="${product.customBuilderUrl}" style="cursor:pointer;">
-                    <img src="${safeImg}" alt="${safeTitle} | حلويات بوسي" class="product-card-img" width="300" height="300" loading="lazy" />
                     ${buildBoseSeasonBadgeHTML(product)}
+                    <img src="${safeImg}" alt="${safeTitle} | حلويات بوسي" class="product-card-img" width="300" height="300" loading="lazy" />
                     <h3 class="product-card-title">${safeTitle}</h3>
                     <span class="product-card-flavor-name">${safeFlavor}</span>
                     <p class="product-card-desc">${safeDesc}</p>
@@ -1008,8 +1130,8 @@
                 ${discountBadgeHtml}
                 ${isUnavailable ? `<div class="bose-offer-badge bose-stock-badge">نفدت الكمية</div>` : ''}
                 ${favBtnHtml}
-                <img src="${cardImg}" alt="${safeFlavor ? safeTitle + ' - ' + safeFlavor : safeTitle} | حلويات بوسي" class="product-card-img" data-size-img="1" width="300" height="300" loading="lazy" style="${isUnavailable ? 'filter:grayscale(60%); opacity:0.75;' : ''}" />
                 ${buildBoseSeasonBadgeHTML(product)}
+                <img src="${cardImg}" alt="${safeFlavor ? safeTitle + ' - ' + safeFlavor : safeTitle} | حلويات بوسي" class="product-card-img" data-size-img="1" width="300" height="300" loading="lazy" style="${isUnavailable ? 'filter:grayscale(60%); opacity:0.75;' : ''}" />
                 <h3 class="product-card-title">${safeTitle}</h3>
                 <span class="product-card-flavor-name">${safeFlavor}</span>
                 <p class="product-card-desc">${safeDesc}</p>
@@ -2028,24 +2150,16 @@
 
     /**
      * 🎉 [المواسم والمناسبات]: بتحدد المناسبة الشغالة دلوقتي (لو في واحدة) من
-     * store_settings.seasons - نفس منطق getSeasonStatus في admin/js/pages/seasons-page.js
-     * بالظبط (لازم يتزامنوا مع أي تعديل مستقبلي في أي منهم): manualOverride === true
-     * يفرض التفعيل بغض النظر عن التاريخ، === false يفرض الإيقاف، وlo فاضي (تلقائي)
-     * بيتحدد حسب تاريخ اليوم بين startDate وendDate. أول مناسبة تطابق في المصفوفة
-     * هي اللي بتتاخد (ترتيب الإضافة = الأولوية عند تداخل مناسبتين في نفس الوقت).
+     * store_settings.seasons - غلاف بسيط حوالين pickActiveSeasonFrom (معرّفة
+     * فوق أول الملف، نفس المنطق بالظبط مستخدم هناك لتطبيق لون الثيم بدري) عشان
+     * باقي الموقع يقدر يستخدمها بمعرفة window.BoseStoreData بس من غير ما
+     * يبعت المصفوفة يدوي. لازم يتزامن مع getSeasonStatus في
+     * admin/js/pages/seasons-page.js لو اتغيّر منطق الحالة مستقبلاً.
      * @returns {Object|null}
      */
     window.getActiveBoseSeason = function() {
         const seasons = (window.BoseStoreData && window.BoseStoreData.seasons) || [];
-        if (!seasons.length) return null;
-        const today = new Date();
-        const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
-        return seasons.find((s) => {
-            if (s.manualOverride === true) return true;
-            if (s.manualOverride === false) return false;
-            if (!s.startDate || !s.endDate) return false;
-            return todayStr >= s.startDate && todayStr <= s.endDate;
-        }) || null;
+        return pickActiveSeasonFrom(seasons);
     };
 
     /**
@@ -3283,7 +3397,7 @@
                                 <li><a href="/policies/shipping-policy.html">سياسة الشحن والتوصيل</a></li>
                                 <li><a href="/policies/terms.html">الشروط والأحكام</a></li>
                                 <li class="footer-contact-item" style="margin-top: 15px; display: flex; align-items: center; gap: 8px; font-size: 14px; color: #111111;">
-                                    <i class="fa-solid fa-location-dot" style="color: #FF91A4;"></i>
+                                    <i class="fa-solid fa-location-dot" style="color: var(--bose-pink);"></i>
                                     <span>${window.escapeBoseHTML(data.store?.pickup?.address || 'العنوان الرئيسي')}</span>
                                 </li>
                             </ul>
@@ -3417,7 +3531,7 @@
             overlay.style.cssText = "position:fixed;inset:0;z-index:2147483647;background:rgba(255,255,255,0.97);display:flex;align-items:center;justify-content:center;padding:24px;font-family:'Cairo',Tahoma,Arial,sans-serif;";
 
             const card = document.createElement("div");
-            card.style.cssText = "background:#FFFFFF;border:1px solid rgba(255,145,164,0.4);border-radius:20px;box-shadow:0 10px 34px rgba(0,0,0,0.18);padding:32px 26px;max-width:380px;width:100%;text-align:center;";
+            card.style.cssText = "background:#FFFFFF;border:1px solid rgba(var(--bose-pink-rgb),0.4);border-radius:20px;box-shadow:0 10px 34px rgba(0,0,0,0.18);padding:32px 26px;max-width:380px;width:100%;text-align:center;";
 
             const icon = document.createElement("div");
             icon.textContent = "📡";
@@ -3434,7 +3548,7 @@
             const retryBtn = document.createElement("button");
             retryBtn.type = "button";
             retryBtn.textContent = "🔄 إعادة المحاولة";
-            retryBtn.style.cssText = "display:block;width:100%;background:#FF91A4;color:#ffffff;font-weight:800;font-size:15px;border:none;padding:14px;border-radius:50px;cursor:pointer;margin-bottom:12px;";
+            retryBtn.style.cssText = "display:block;width:100%;background:var(--bose-pink);color:#ffffff;font-weight:800;font-size:15px;border:none;padding:14px;border-radius:50px;cursor:pointer;margin-bottom:12px;";
             retryBtn.onclick = function() { window.location.reload(); };
 
             const waLinkEl = document.createElement("a");

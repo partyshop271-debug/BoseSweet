@@ -22,7 +22,34 @@
  */
 
 (function () {
-    const BRAND_PINK = "#FF91A4";
+    /**
+     * 🎨 [إصلاح حرج - Canvas مبيفهمش var()]: على عكس أي عنصر DOM عادي، الرسم على
+     * canvas (ctx.fillStyle/strokeStyle) مش بيقدر يفهم `var(--bose-pink)` كنص -
+     * لازم لون حقيقي محلول (hex/rgb) وإلا الرسم بيفشل صامت. الدالة دي بتقرا
+     * القيمة الفعلية الحالية لمتغيّر CSS من الصفحة وقت الرسم نفسه (مش وقت تحميل
+     * الملف) - يعني لو فيه مناسبة شغالة ولها لون مميز، صورة الفاتورة كمان
+     * بتاخد نفس اللون تلقائياً، مع fallback آمن للبينك الافتراضي لو لأي سبب
+     * المتغيّر مش موجود.
+     * @returns {string}
+     */
+    function getBrandPink() {
+        try {
+            const v = getComputedStyle(document.documentElement).getPropertyValue("--bose-pink").trim();
+            if (v) return v;
+        } catch (e) { /* تجاهل - نرجع للّون الافتراضي تحت */ }
+        return "#FF91A4";
+    }
+    /**
+     * @param {number} alpha
+     * @returns {string}
+     */
+    function getBrandPinkRgba(alpha) {
+        try {
+            const v = getComputedStyle(document.documentElement).getPropertyValue("--bose-pink-rgb").trim();
+            if (v) return `rgba(${v},${alpha})`;
+        } catch (e) { /* تجاهل - نرجع للّون الافتراضي تحت */ }
+        return `rgba(255,145,164,${alpha})`;
+    }
     const BRAND_BLACK = "#111111";
     const BRAND_GOLD = "#D4AF37";
     const BRAND_LOGO_FALLBACK = "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png";
@@ -147,7 +174,7 @@
         ctx.setLineDash([7, 5]);
         ctx.arc(0, 0, radius, 0, Math.PI * 2);
         ctx.lineWidth = 3.5;
-        ctx.strokeStyle = BRAND_PINK;
+        ctx.strokeStyle = getBrandPink();
         ctx.stroke();
         ctx.setLineDash([]);
 
@@ -159,7 +186,7 @@
 
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillStyle = BRAND_PINK;
+        ctx.fillStyle = getBrandPink();
         ctx.font = "700 22px Cairo, Arial, sans-serif";
         ctx.fillText("★", 0, -radius * 0.32);
         ctx.font = "800 17px Cairo, Arial, sans-serif";
@@ -168,7 +195,7 @@
         ctx.fillStyle = BRAND_GOLD;
         ctx.fillText("BoseSweets", 0, radius * 0.26);
         ctx.font = "500 11px Cairo, Arial, sans-serif";
-        ctx.fillStyle = BRAND_PINK;
+        ctx.fillStyle = getBrandPink();
         ctx.fillText("حلويات بوسي", 0, radius * 0.5);
 
         ctx.restore();
@@ -198,7 +225,7 @@
         ctx.arcTo(x, y + size, x, y, radius);
         ctx.arcTo(x, y, x + size, y, radius);
         ctx.closePath();
-        ctx.strokeStyle = "rgba(255,145,164,0.5)";
+        ctx.strokeStyle = getBrandPinkRgba(0.5);
         ctx.lineWidth = 1.5;
         ctx.stroke();
     }
@@ -310,7 +337,7 @@
         // خلفية بيضاء + إطار خفيف
         ctx.fillStyle = "#FFFFFF";
         ctx.fillRect(0, 0, CANVAS_WIDTH, totalHeight);
-        ctx.strokeStyle = "rgba(255,145,164,0.35)";
+        ctx.strokeStyle = getBrandPinkRgba(0.35);
         ctx.lineWidth = 2;
         ctx.strokeRect(8, 8, CANVAS_WIDTH - 16, totalHeight - 16);
 
@@ -330,7 +357,7 @@
             ctx.restore();
             ctx.beginPath();
             ctx.arc(centerX, y, size / 2, 0, Math.PI * 2);
-            ctx.strokeStyle = BRAND_PINK;
+            ctx.strokeStyle = getBrandPink();
             ctx.lineWidth = 2;
             ctx.stroke();
             y += 48;
@@ -342,7 +369,7 @@
         ctx.fillText(storeInfo.name || "حلويات بوسي", centerX, y);
         y += 22;
         ctx.font = "700 13px Cairo, Arial, sans-serif";
-        ctx.fillStyle = BRAND_PINK;
+        ctx.fillStyle = getBrandPink();
         ctx.fillText("BoseSweets ✨ فاتورة حجز طلبية", centerX, y);
         y += 30;
 
@@ -361,7 +388,7 @@
         ctx.arcTo(badgeX, badgeY + badgeH, badgeX, badgeY, badgeH / 2);
         ctx.arcTo(badgeX, badgeY, badgeX + badgeW, badgeY, badgeH / 2);
         ctx.closePath();
-        ctx.fillStyle = BRAND_PINK;
+        ctx.fillStyle = getBrandPink();
         ctx.fill();
         ctx.fillStyle = "#FFFFFF";
         ctx.textAlign = "center";
@@ -392,7 +419,7 @@
         metaWrapped.forEach(({ label, lines }) => {
             ctx.textAlign = "right";
             ctx.font = FONT_LABEL;
-            ctx.fillStyle = BRAND_PINK;
+            ctx.fillStyle = getBrandPink();
             ctx.fillText(label, rightX, y);
             const labelWidth = ctx.measureText(label).width;
             ctx.font = FONT_VALUE;
@@ -418,7 +445,7 @@
         for (const entry of itemsWrapped) {
             const { titleLines, flavorLines, qtyLabel, priceLabel, wrappedDetails, blockHeight, images, hasMainThumb, refSpecs } = entry;
             const cardTop = y - 20;
-            ctx.fillStyle = "rgba(255,145,164,0.06)";
+            ctx.fillStyle = getBrandPinkRgba(0.06);
             ctx.beginPath();
             const cardRadius = 10;
             const cardX = 30, cardW = CANVAS_WIDTH - 60;
@@ -445,7 +472,7 @@
             titleLines.forEach((line) => { ctx.fillText(line, textRight, y); y += 24; });
 
             ctx.font = FONT_FLAVOR;
-            ctx.fillStyle = BRAND_PINK;
+            ctx.fillStyle = getBrandPink();
             flavorLines.forEach((line) => { ctx.fillText(line, textRight, y); y += 20; });
             y += 6;
 
@@ -500,7 +527,7 @@
 
         ctx.textAlign = "center";
         ctx.font = "800 20px Cairo, Arial, sans-serif";
-        ctx.fillStyle = BRAND_PINK;
+        ctx.fillStyle = getBrandPink();
         ctx.fillText(`👑 المجموع المالي النهائي: ${order.grandTotal} EGP 👑`, centerX, y);
         y += 30;
 

@@ -42,7 +42,7 @@
             }
             .btb-item { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; }
             .btb-icon {
-                width: 44px; height: 44px; border-radius: 50%; background: rgba(255,145,164,0.1); color: #FF91A4;
+                width: 44px; height: 44px; border-radius: 50%; background: rgba(var(--bose-pink-rgb),0.1); color: var(--bose-pink);
                 display: flex; align-items: center; justify-content: center; font-size: 1.05rem;
             }
             .btb-label { font-size: 0.74rem; font-weight: 800; color: #111; line-height: 1.3; }

@@ -54,7 +54,7 @@
                 </button>
             </div>
 
-            <div id="bose-simreview-form-wrapper" style="display: none; background: rgba(255, 145, 164, 0.03); border: 1px dashed var(--bose-pink); border-radius: 24px; padding: 24px; margin-bottom: 30px; direction: rtl;">
+            <div id="bose-simreview-form-wrapper" style="display: none; background: rgba(var(--bose-pink-rgb), 0.03); border: 1px dashed var(--bose-pink); border-radius: 24px; padding: 24px; margin-bottom: 30px; direction: rtl;">
 
                 <div id="bose-simreview-step-rating">
                     <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 14px;">إيه رأيك في التجربة؟</h3>
@@ -96,7 +96,7 @@
                         <div id="bose-simreview-images-preview-zone" style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;"></div>
                     </div>
 
-                    <button id="btn-submit-simreview" type="button" style="background:var(--bose-pink); color:#fff; border:none; padding:12px 30px; border-radius:50px; font-weight:700; cursor:pointer; box-shadow:0 4px 12px rgba(255,145,164,0.2);">نشر مراجعتي</button>
+                    <button id="btn-submit-simreview" type="button" style="background:var(--bose-pink); color:#fff; border:none; padding:12px 30px; border-radius:50px; font-weight:700; cursor:pointer; box-shadow:0 4px 12px rgba(var(--bose-pink-rgb),0.2);">نشر مراجعتي</button>
                     <p style="font-size:0.78rem; color:#111111; opacity:0.6; margin:10px 0 0 0; line-height:1.5;">
                         <i class="fas fa-circle-info"></i> بتتراجع من فريقنا أولاً لضمان الجودة، وبعد اعتمادها هتساعد عملاء تانيين يختاروا صح 🌸
                     </p>
@@ -168,7 +168,7 @@
                     .join("")}</div>`;
             }
             const pendingBadge = rev.pending
-                ? `<span style="font-size:0.72rem; font-weight:700; color:var(--bose-pink); background:rgba(255,145,164,0.1); padding:3px 10px; border-radius:50px; margin-right:8px;">قيد المراجعة</span>`
+                ? `<span style="font-size:0.72rem; font-weight:700; color:var(--bose-pink); background:rgba(var(--bose-pink-rgb),0.1); padding:3px 10px; border-radius:50px; margin-right:8px;">قيد المراجعة</span>`
                 : "";
             return `
                 <div class="review-card-node" style="direction: rtl; text-align: right;">
@@ -268,7 +268,7 @@
 
             const chips = isLow ? SENTIMENT_CHIPS.negative : SENTIMENT_CHIPS.positive;
             chipsRow.innerHTML = chips
-                .map((c) => `<button type="button" class="bose-review-chip" data-chip="${escapeHTML(c)}" style="background:#fff; border:1px solid rgba(255,145,164,0.4); color:var(--bose-black); padding:6px 14px; border-radius:50px; font-size:0.78rem; font-weight:700; cursor:pointer;">+ ${c}</button>`)
+                .map((c) => `<button type="button" class="bose-review-chip" data-chip="${escapeHTML(c)}" style="background:#fff; border:1px solid rgba(var(--bose-pink-rgb),0.4); color:var(--bose-black); padding:6px 14px; border-radius:50px; font-size:0.78rem; font-weight:700; cursor:pointer;">+ ${c}</button>`)
                 .join("");
             chipsRow.querySelectorAll(".bose-review-chip").forEach((chip) => {
                 chip.addEventListener("click", () => {
@@ -318,7 +318,7 @@
 
             for (const file of filesToUpload) {
                 const placeholder = document.createElement("div");
-                placeholder.style.cssText = "width:73px; height:73px; border-radius:10px; background:rgba(255, 145, 164, 0.08); display:flex; align-items:center; justify-content:center; font-size:0.7rem; color:var(--bose-pink);";
+                placeholder.style.cssText = "width:73px; height:73px; border-radius:10px; background:rgba(var(--bose-pink-rgb), 0.08); display:flex; align-items:center; justify-content:center; font-size:0.7rem; color:var(--bose-pink);";
                 placeholder.textContent = "...";
                 previewContainer.appendChild(placeholder);
 

@@ -1074,7 +1074,7 @@
                 lightboxOverlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(17,17,17,0.9);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;z-index:999999;padding:20px;box-sizing:border-box;';
                 lightboxOverlay.innerHTML = `
                     <div class="bose-lightbox-card" style="background:#FFFFFF;padding:10px;border-radius:20px;width:100%;height:100%;max-width:1400px;display:flex;align-items:center;justify-content:center;position:relative;">
-                        <button type="button" class="bose-lightbox-close" id="bose-lightbox-close-btn" style="position:absolute;top:14px;left:14px;background:#FF91A4;color:#FFFFFF;border:none;width:44px;height:44px;border-radius:50%;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;">&times;</button>
+                        <button type="button" class="bose-lightbox-close" id="bose-lightbox-close-btn" style="position:absolute;top:14px;left:14px;background:var(--bose-pink);color:#FFFFFF;border:none;width:44px;height:44px;border-radius:50%;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;">&times;</button>
                         <img src="" id="bose-lightbox-img" alt="معاينة الصورة الفاخرة" style="max-width:100%;max-height:100%;width:auto;height:auto;border-radius:14px;object-fit:contain;display:block;">
                     </div>`;
                 document.body.appendChild(lightboxOverlay);

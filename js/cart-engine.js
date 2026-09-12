@@ -141,7 +141,7 @@ function boseShowAllCheckoutErrors(errors, firstInvalidInput) {
         ? "فيه حقل واحد محتاج مراجعة، موضّح تحته بالتفصيل"
         : `فيه ${errors.length} حقول محتاجة مراجعة، موضّحة تحت كل حقل بالتفصيل`;
     if (typeof window.showBoseGlobalToast === "function") {
-        window.showBoseGlobalToast(summary, { type: "warning" });
+        window.showBoseGlobalToast(summary);
     } else {
         showBoseCustomModal(summary);
     }
@@ -221,9 +221,9 @@ function renderBoseCartPage(storeData) {
         if (cart.length === 0) {
             cartWrapper.innerHTML = `
                 <div class="empty-cart-message-block" style="text-align: center; padding: 60px 20px; background: #FFFFFF;">
-                    <i class="fas fa-shopping-bag" style="font-size: 48px; color: #FF91A4; margin-bottom: 20px; display: block; opacity: 0.6;"></i>
+                    <i class="fas fa-shopping-bag" style="font-size: 48px; color: var(--bose-pink); margin-bottom: 20px; display: block; opacity: 0.6;"></i>
                     <p style="font-size: 18px; font-weight: 700; color: #111111; font-family: 'Cairo'; margin-bottom: 20px;">سلة المشتريات فارغة حالياً</p>
-                    <a href="/menu.html" class="bose-btn-primary" style="display: inline-block; background: #FF91A4; color: #FFFFFF; padding: 12px 30px; border-radius: 12px; text-decoration: none; font-weight: 700; font-family: 'Cairo'; box-shadow: 0 8px 32px rgba(255, 145, 164, 0.15);">تصفح المنيو الشامل</a>
+                    <a href="/menu.html" class="bose-btn-primary" style="display: inline-block; background: var(--bose-pink); color: #FFFFFF; padding: 12px 30px; border-radius: 12px; text-decoration: none; font-weight: 700; font-family: 'Cairo'; box-shadow: 0 8px 32px rgba(var(--bose-pink-rgb), 0.15);">تصفح المنيو الشامل</a>
                 </div>
             `;
             updateCartSummary(cart, storeData);
@@ -254,7 +254,7 @@ function renderBoseCartPage(storeData) {
                     if (cd.persons && parseInt(cd.persons, 10) > 0) specs.push(`<span><strong>عدد الأفراد:</strong> ${parseInt(cd.persons, 10)} فرد</span>`);
                     if (cd.printingType && cd.printingType !== "none") specs.push(`<span><strong>الطباعة:</strong> ${cd.printingType === 'edible' ? 'صورة صالحة للأكل' : 'صورة مجسمة غير صالحة للأكل'}</span>`);
                     if (cd.customMessage && cd.customMessage.trim() !== "") specs.push(`<span><strong>الرسالة المكتوبة:</strong> "${esc(cd.customMessage.trim())}"</span>`);
-                    if (cd.allergyNote && cd.allergyNote.trim() !== "") specs.push(`<span style="color:#FF91A4;"><strong>ملاحظة الحساسية:</strong> ${esc(cd.allergyNote.trim())}</span>`);
+                    if (cd.allergyNote && cd.allergyNote.trim() !== "") specs.push(`<span style="color:var(--bose-pink);"><strong>ملاحظة الحساسية:</strong> ${esc(cd.allergyNote.trim())}</span>`);
                     // 🐛💳 [إصلاح جذري - كارت الإهداء كان بيختفي تماماً من ملخص السلة]: قسم
                     // isCakeBespoke هنا معندوش أي سطر لـ hasGiftCard/giftCardText من الأساس
                     // (بعكس قسم isFlowerBespoke تحت اللي عنده السطر ده)، رغم إن العميلة فعلاً
@@ -269,8 +269,8 @@ function renderBoseCartPage(storeData) {
                     // صورتها فعلاً اترفعت واتحفظت مع طلبها، غير الصورة الرئيسية بس (اللي
                     // ممكن تبقى واحدة بس من الاتنين لو رفعت الاتنين مع بعض). دلوقتي بنعرض
                     // thumbnail حقيقي قابل للضغط (بيفتح بملء الشاشة) لكل صورة مرفقة فعلياً.
-                    if (cd.replicaImageUrl) specs.push(`<span class="cart-item-attached-photo"><strong>صورة التصميم المرجعي:</strong><br><a href="${esc(cd.replicaImageUrl)}" target="_blank" rel="noopener"><img src="${esc(cd.replicaImageUrl)}" alt="صورة التصميم المرجعي" loading="lazy" style="width:64px;height:64px;border-radius:10px;object-fit:cover;margin-top:4px;cursor:pointer;border:1px solid rgba(255,145,164,0.3);"></a></span>`);
-                    if (cd.printImageUrl) specs.push(`<span class="cart-item-attached-photo"><strong>صورة الطباعة على التورتة:</strong><br><a href="${esc(cd.printImageUrl)}" target="_blank" rel="noopener"><img src="${esc(cd.printImageUrl)}" alt="صورة الطباعة على التورتة" loading="lazy" style="width:64px;height:64px;border-radius:10px;object-fit:cover;margin-top:4px;cursor:pointer;border:1px solid rgba(255,145,164,0.3);"></a></span>`);
+                    if (cd.replicaImageUrl) specs.push(`<span class="cart-item-attached-photo"><strong>صورة التصميم المرجعي:</strong><br><a href="${esc(cd.replicaImageUrl)}" target="_blank" rel="noopener"><img src="${esc(cd.replicaImageUrl)}" alt="صورة التصميم المرجعي" loading="lazy" style="width:64px;height:64px;border-radius:10px;object-fit:cover;margin-top:4px;cursor:pointer;border:1px solid rgba(var(--bose-pink-rgb),0.3);"></a></span>`);
+                    if (cd.printImageUrl) specs.push(`<span class="cart-item-attached-photo"><strong>صورة الطباعة على التورتة:</strong><br><a href="${esc(cd.printImageUrl)}" target="_blank" rel="noopener"><img src="${esc(cd.printImageUrl)}" alt="صورة الطباعة على التورتة" loading="lazy" style="width:64px;height:64px;border-radius:10px;object-fit:cover;margin-top:4px;cursor:pointer;border:1px solid rgba(var(--bose-pink-rgb),0.3);"></a></span>`);
                 }
                 
                 if (isFlowerBespoke) {
@@ -331,7 +331,7 @@ function renderBoseCartPage(storeData) {
                 }
 
                 if (specs.length > 0) {
-                    customDetailsHTML = `<div class="cart-item-customizations-panel" style="font-size: 13px; color: #111111; background: rgba(255,145,164,0.04); padding: 10px; border-radius: 12px; margin: 6px 0; border-right: 3px solid #FF91A4; display: flex; flex-direction: column; gap: 4px; width: 100%; box-sizing: border-box; font-family: 'Cairo';">${specs.join("")}</div>`;
+                    customDetailsHTML = `<div class="cart-item-customizations-panel" style="font-size: 13px; color: #111111; background: rgba(var(--bose-pink-rgb),0.04); padding: 10px; border-radius: 12px; margin: 6px 0; border-right: 3px solid var(--bose-pink); display: flex; flex-direction: column; gap: 4px; width: 100%; box-sizing: border-box; font-family: 'Cairo';">${specs.join("")}</div>`;
                 }
             }
 
@@ -368,14 +368,14 @@ function renderBoseCartPage(storeData) {
             cartCard.innerHTML = `
                 <div style="display: flex; align-items: center; gap: 20px; flex: 1; min-width: 0;">
                     ${linkStart}
-                    <img src="${safeCartImg}" class="cart-item-image" alt="${safeTitle}" style="width: 120px; height: 120px; border-radius: 20px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(255,145,164,0.3); cursor: ${linkStart ? 'pointer' : 'default'};" loading="lazy">
+                    <img src="${safeCartImg}" class="cart-item-image" alt="${safeTitle}" style="width: 120px; height: 120px; border-radius: 20px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(var(--bose-pink-rgb),0.3); cursor: ${linkStart ? 'pointer' : 'default'};" loading="lazy">
                     <div style="display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 0; text-align: right;">
                         <h3 class="cart-item-title" style="margin: 0; font-size: 16px; font-weight: 700; color: #111111; font-family: 'Cairo'; line-height: 1.4; cursor: ${linkStart ? 'pointer' : 'default'};">${safeTitle}</h3>
-                        <span class="cart-item-flavor-name" style="font-size: 13.5px; color: #FF91A4; font-weight: 700; font-family: 'Cairo';">${safeFlavorName}</span>
+                        <span class="cart-item-flavor-name" style="font-size: 13.5px; color: var(--bose-pink); font-weight: 700; font-family: 'Cairo';">${safeFlavorName}</span>
                         ${linkEnd}
                         ${customDetailsHTML}
                         
-                        <div class="bose-qty-controller-box" style="display: flex; align-items: center; border: 1px solid rgba(255, 145, 164, 0.3); border-radius: 12px; width: max-content; margin-top: 8px; background: #FFFFFF; height: 38px; padding: 2px;">
+                        <div class="bose-qty-controller-box" style="display: flex; align-items: center; border: 1px solid rgba(var(--bose-pink-rgb), 0.3); border-radius: 12px; width: max-content; margin-top: 8px; background: #FFFFFF; height: 38px; padding: 2px;">
                             <button class="btn-qty-plus" data-index="${index}" style="border: none; background: transparent; width: 36px; height: 100%; font-weight: 700; font-size: 16px; color: #111111; cursor: pointer;">+</button>
                             <input type="text" readonly class="qty-numerical-display" value="${item.quantity}" style="width: 36px; text-align: center; border: none; font-size: 15px; font-weight: 700; color: #111111; background: transparent; font-family: 'Cairo';">
                             <button class="btn-qty-minus" data-index="${index}" style="border: none; background: transparent; width: 36px; height: 100%; font-weight: 700; font-size: 16px; color: #111111; cursor: pointer;">-</button>
@@ -390,12 +390,12 @@ function renderBoseCartPage(storeData) {
                     
                     <div style="text-align: left; font-family: 'Cairo';">
                         <span class="qty-multiplication-label" style="display: ${item.quantity > 1 ? 'block' : 'none'}; font-size: 12px; color: #111111; opacity: 0.6; direction: ltr;">${finalProductPrice.toFixed(2)} × ${item.quantity}</span>
-                        <div class="cart-item-total-price" style="font-size: 18px; font-weight: 700; color: #FF91A4; white-space: nowrap;">${totalItemCost.toFixed(2)} <span style="font-size: 12px; font-weight: 700; color: #111111;">EGP</span></div>
+                        <div class="cart-item-total-price" style="font-size: 18px; font-weight: 700; color: var(--bose-pink); white-space: nowrap;">${totalItemCost.toFixed(2)} <span style="font-size: 12px; font-weight: 700; color: #111111;">EGP</span></div>
                     </div>
                 </div>
 
-                <div class="cart-item-completion-hint" style="grid-column: 1 / -1; display: flex; align-items: flex-start; gap: 8px; margin-top: 4px; padding: 10px 14px; background: rgba(255,145,164,0.06); border: 1px dashed rgba(255,145,164,0.35); border-radius: 12px; font-family: 'Cairo';">
-                    <i class="fa-solid fa-circle-info" style="color: #FF91A4; font-size: 13px; margin-top: 2px;"></i>
+                <div class="cart-item-completion-hint" style="grid-column: 1 / -1; display: flex; align-items: flex-start; gap: 8px; margin-top: 4px; padding: 10px 14px; background: rgba(var(--bose-pink-rgb),0.06); border: 1px dashed rgba(var(--bose-pink-rgb),0.35); border-radius: 12px; font-family: 'Cairo';">
+                    <i class="fa-solid fa-circle-info" style="color: var(--bose-pink); font-size: 13px; margin-top: 2px;"></i>
                     <span style="font-size: 12.5px; line-height: 1.6; color: #111111; opacity: 0.85;">الصنف ده اتحفظ في سلتك، بس طلبك لسه ما بعتش. كمّلي لآخر الصفحة ودوسي على "الانتقال لإتمام الطلب"، وبعدين زرار تأكيد الطلب في صفحة الدفع، عشان تفاصيل طلبك توصلنا فورًا على الواتساب ونبدأ نجهزهولك.</span>
                 </div>
             `;
@@ -442,14 +442,14 @@ function renderBoseCartPage(storeData) {
             // 🛡️ [إصلاح]: منع تجاوز الحد الأقصى المنطقي للكمية بدل الزيادة اللانهائية.
             if (item.quantity >= MAX_CART_ITEM_QUANTITY) {
                 if (typeof window.showBoseGlobalToast === "function") {
-                    window.showBoseGlobalToast(`أقصى كمية ممكنة للقطعة الواحدة هي ${MAX_CART_ITEM_QUANTITY}. لو محتاجة كمية أكبر، تواصلي معانا مباشرة على واتساب.`, { type: 'warning' });
+                    window.showBoseGlobalToast(`أقصى كمية ممكنة للقطعة الواحدة هي ${MAX_CART_ITEM_QUANTITY}. لو محتاجة كمية أكبر، تواصلي معانا مباشرة على واتساب.`);
                 }
                 return;
             }
             item.quantity += 1;
             localStorage.setItem("bose_cart", JSON.stringify(cart));
             if (typeof window.updateGlobalCartCounter === "function") window.updateGlobalCartCounter();
-            if (typeof window.showBoseGlobalToast === "function") window.showBoseGlobalToast("تمت إضافة قطعة أخرى للسلة.", { type: 'success' });
+            if (typeof window.showBoseGlobalToast === "function") window.showBoseGlobalToast("تمت إضافة قطعة أخرى للسلة.");
             
             updateSingleItemDOM(cardElement, item, finalProductPrice, finalProductPrice * item.quantity);
             updateCartSummary(cart, storeData);
@@ -458,7 +458,7 @@ function renderBoseCartPage(storeData) {
                 item.quantity -= 1;
                 localStorage.setItem("bose_cart", JSON.stringify(cart));
                 if (typeof window.updateGlobalCartCounter === "function") window.updateGlobalCartCounter();
-                if (typeof window.showBoseGlobalToast === "function") window.showBoseGlobalToast("تم تقليل قطعة من السلة.", { type: 'info' });
+                if (typeof window.showBoseGlobalToast === "function") window.showBoseGlobalToast("تم تقليل قطعة من السلة.");
                 
                 updateSingleItemDOM(cardElement, item, finalProductPrice, finalProductPrice * item.quantity);
                 updateCartSummary(cart, storeData);
@@ -475,7 +475,7 @@ function renderBoseCartPage(storeData) {
             showBoseCustomModal("تحب تفضّي السلة من كل الأصناف؟", () => {
                 localStorage.removeItem("bose_cart");
                 if (typeof window.updateGlobalCartCounter === "function") window.updateGlobalCartCounter();
-                if (typeof window.showBoseGlobalToast === "function") window.showBoseGlobalToast("السلة اتفضّت خالص.", { type: 'info' });
+                if (typeof window.showBoseGlobalToast === "function") window.showBoseGlobalToast("السلة اتفضّت خالص.");
                 buildFullCartUI();
             });
         };
@@ -489,7 +489,7 @@ function triggerCartItemRemoval(cart, index, storeData, callback) {
         cart.splice(index, 1);
         localStorage.setItem("bose_cart", JSON.stringify(cart));
         if (typeof window.updateGlobalCartCounter === "function") window.updateGlobalCartCounter();
-        if (typeof window.showBoseGlobalToast === "function") window.showBoseGlobalToast("الصنف اتشال من السلة.", { type: 'info' });
+        if (typeof window.showBoseGlobalToast === "function") window.showBoseGlobalToast("الصنف اتشال من السلة.");
         callback();
     });
 }
@@ -621,7 +621,7 @@ function updateCartSummary(cart, storeData) {
     // قرار شحن لسه هياتاخد لاحقاً.
     const shippingDisplay = document.getElementById("summary-shipping-fee");
     if (shippingDisplay && cart.length > 0 && cart.every((item) => item.type === "gift-card")) {
-        shippingDisplay.textContent = "لا يوجد شحن (منتج رقمي)";
+        shippingDisplay.textContent = "مفيش شحن (منتج رقمي)";
     }
     
     // 🗑️ [إصلاح - إزالة نقطة دخول الكود من السلة]: كانت هنا خانة كود ذكية
@@ -739,13 +739,13 @@ function renderBoseCheckoutPage(storeData) {
         payFullSelected = value;
         if (payChoiceDepositBtn) {
             payChoiceDepositBtn.classList.toggle("active", !value);
-            payChoiceDepositBtn.style.background = !value ? "#FF91A4" : "#fff";
-            payChoiceDepositBtn.style.color = !value ? "#fff" : "#FF91A4";
+            payChoiceDepositBtn.style.background = !value ? "var(--bose-pink)" : "#fff";
+            payChoiceDepositBtn.style.color = !value ? "#fff" : "var(--bose-pink)";
         }
         if (payChoiceFullBtn) {
             payChoiceFullBtn.classList.toggle("active", value);
-            payChoiceFullBtn.style.background = value ? "#FF91A4" : "#fff";
-            payChoiceFullBtn.style.color = value ? "#fff" : "#FF91A4";
+            payChoiceFullBtn.style.background = value ? "var(--bose-pink)" : "#fff";
+            payChoiceFullBtn.style.color = value ? "#fff" : "var(--bose-pink)";
         }
         recalculateCheckoutInvoice(cart, storeData, selectedShippingFee, currentShippingMethod, payFullSelected);
     }
@@ -805,10 +805,10 @@ function renderBoseCheckoutPage(storeData) {
                 bannerHtml = `<div style="${styleBase} background:rgba(46,158,91,0.1); color:#2e9e5b; border:1px solid rgba(46,158,91,0.3);">
                     <i class="fa-solid fa-star"></i> مبروك! ده طلبك رقم ${nextOrderNumber}، وهياخد خصم تلقائي ${row.next_discount_percent}% 🎉</div>`;
             } else if (row.orders_until_next_voucher === 1 || nextOrderNumber % loyaltyCfg.milestoneEvery === 0) {
-                bannerHtml = `<div style="${styleBase} background:rgba(255,145,164,0.08); color:#FF91A4; border:1px solid rgba(255,145,164,0.3);">
+                bannerHtml = `<div style="${styleBase} background:rgba(var(--bose-pink-rgb),0.08); color:var(--bose-pink); border:1px solid rgba(var(--bose-pink-rgb),0.3);">
                     <i class="fa-solid fa-gift"></i> ده طلبك رقم ${nextOrderNumber}! بعد استلامه هتاخدي قسيمة شراء ${loyaltyCfg.voucherAmount} جنيه صالحة لمدة ${voucherMonthsTxt} 🎁</div>`;
             } else if (row.orders_until_next_discount > 0) {
-                bannerHtml = `<div style="${styleBase} background:rgba(255,145,164,0.08); color:#FF91A4; border:1px solid rgba(255,145,164,0.3);">
+                bannerHtml = `<div style="${styleBase} background:rgba(var(--bose-pink-rgb),0.08); color:var(--bose-pink); border:1px solid rgba(var(--bose-pink-rgb),0.3);">
                     <i class="fa-solid fa-heart"></i> باقيلك ${row.orders_until_next_discount} ${row.orders_until_next_discount === 1 ? 'طلب' : 'طلبات'} بعد ده عشان تاخدي خصم على طلبك الجاي</div>`;
             }
             // 🎯🆕 [خانة خصم ذكية موحدة - تفعيل بضغطة واحدة]: قبل كده كان بيتقال
@@ -948,17 +948,17 @@ function injectBoseBranchBlock(storeData) {
     
     const branchDiv = document.createElement("div");
     branchDiv.id = "bose-branch-info-static";
-    branchDiv.style.cssText = "background: rgba(255, 145, 164, 0.04); border: 1px solid #FF91A4; padding: 16px; border-radius: 14px; margin: 15px 0; direction: rtl; text-align: right;";
+    branchDiv.style.cssText = "background: rgba(var(--bose-pink-rgb), 0.04); border: 1px solid var(--bose-pink); padding: 16px; border-radius: 14px; margin: 15px 0; direction: rtl; text-align: right;";
     
     const addressText = storeData.store?.pickup?.address || "الكفاح شارع الوحدة المحلية بجوار صيدلية الدكتور أحمد مجدي وبجوار عيادة الدكتور علي";
     const mapLink = storeData.store?.pickup?.mapUrl || "https://maps.app.goo.gl/nAg4Y7vQ7hACvKGc8?g_st=ac";
     const escBranch = window.escapeBoseHTML || (s => s);
 
     branchDiv.innerHTML = `
-        <h4 style="margin: 0 0 6px 0; font-size: 15px; color: #111111; font-weight: 700; font-family: 'Cairo';"><i class="fas fa-building" style="color: #FF91A4; margin-left: 6px;"></i> مقر الاستلام الرسمي للبراند:</h4>
+        <h4 style="margin: 0 0 6px 0; font-size: 15px; color: #111111; font-weight: 700; font-family: 'Cairo';"><i class="fas fa-building" style="color: var(--bose-pink); margin-left: 6px;"></i> مقر الاستلام الرسمي للبراند:</h4>
         <p style="margin: 0 0 12px 0; font-size: 13.5px; color: #111111; opacity: 0.8; line-height: 1.6; font-family: 'Cairo';">${escBranch(addressText)}</p>
-        <a href="${mapLink}" target="_blank" rel="noopener noreferrer" class="success-action-secondary-btn" style="padding: 8px 16px; font-size: 13px; font-weight: 700; border-radius: 8px; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; background: #FFFFFF; border: 1px solid #FF91A4; color: #111111; font-family: 'Cairo';">
-            <i class="fas fa-map-marked-alt" style="color: #FF91A4;"></i> عرض الموقع على خرائط جوجل
+        <a href="${mapLink}" target="_blank" rel="noopener noreferrer" class="success-action-secondary-btn" style="padding: 8px 16px; font-size: 13px; font-weight: 700; border-radius: 8px; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; background: #FFFFFF; border: 1px solid var(--bose-pink); color: #111111; font-family: 'Cairo';">
+            <i class="fas fa-map-marked-alt" style="color: var(--bose-pink);"></i> عرض الموقع على خرائط جوجل
         </a>
     `;
     
@@ -1043,7 +1043,7 @@ function recalculateCheckoutInvoice(cart, storeData, shippingFee, method, payFul
         // نقول صراحة إن مفيش شحن مطلوب خالص لأنه منتج رقمي.
         const isDigitalOnlyCart = cart.length > 0 && cart.every((item) => item.type === "gift-card");
         shippingDisplay.textContent = isDigitalOnlyCart
-            ? "لا يوجد شحن (منتج رقمي)"
+            ? "مفيش شحن (منتج رقمي)"
             : (invoice.shippingFee === 0 ? "مجاناً" : invoice.shippingFee.toFixed(2) + " EGP");
     }
 
@@ -1077,25 +1077,25 @@ function renderBoseLoyaltyDiscountRows(invoice) {
     let rowsHtml = "";
     if (invoice.loyaltyDiscountAmount > 0) {
         rowsHtml += `<div class="pricing-row-node" style="display: flex; justify-content: space-between;">
-            <span class="pricing-label-text"><i class="fa-solid fa-star" style="color:#FF91A4;"></i> خصم الولاء التلقائي:</span>
+            <span class="pricing-label-text"><i class="fa-solid fa-star" style="color:var(--bose-pink);"></i> خصم الولاء التلقائي:</span>
             <span style="font-weight: 700; color: #2e9e5b;">- ${invoice.loyaltyDiscountAmount.toFixed(2)} EGP</span>
         </div>`;
     }
     if (invoice.couponDiscount > 0) {
         rowsHtml += `<div class="pricing-row-node" style="display: flex; justify-content: space-between;">
-            <span class="pricing-label-text"><i class="fa-solid fa-ticket-simple" style="color:#FF91A4;"></i> كود الخصم${invoice.couponCode ? ` (${invoice.couponCode})` : ""}:</span>
+            <span class="pricing-label-text"><i class="fa-solid fa-ticket-simple" style="color:var(--bose-pink);"></i> كود الخصم${invoice.couponCode ? ` (${invoice.couponCode})` : ""}:</span>
             <span style="font-weight: 700; color: #2e9e5b;">- ${invoice.couponDiscount.toFixed(2)} EGP</span>
         </div>`;
     }
     if (invoice.voucherDiscountAmount > 0) {
         rowsHtml += `<div class="pricing-row-node" style="display: flex; justify-content: space-between;">
-            <span class="pricing-label-text"><i class="fa-solid fa-gift" style="color:#FF91A4;"></i> قسيمة الولاء${invoice.voucherCode ? ` (${invoice.voucherCode})` : ""}:</span>
+            <span class="pricing-label-text"><i class="fa-solid fa-gift" style="color:var(--bose-pink);"></i> قسيمة الولاء${invoice.voucherCode ? ` (${invoice.voucherCode})` : ""}:</span>
             <span style="font-weight: 700; color: #2e9e5b;">- ${invoice.voucherDiscountAmount.toFixed(2)} EGP</span>
         </div>`;
     }
     if (invoice.giftCardDiscountAmount > 0) {
         rowsHtml += `<div class="pricing-row-node" style="display: flex; justify-content: space-between;">
-            <span class="pricing-label-text"><i class="fa-solid fa-credit-card" style="color:#FF91A4;"></i> بطاقة الهدية${invoice.giftCardCode ? ` (${invoice.giftCardCode})` : ""}:</span>
+            <span class="pricing-label-text"><i class="fa-solid fa-credit-card" style="color:var(--bose-pink);"></i> بطاقة الهدية${invoice.giftCardCode ? ` (${invoice.giftCardCode})` : ""}:</span>
             <span style="font-weight: 700; color: #2e9e5b;">- ${invoice.giftCardDiscountAmount.toFixed(2)} EGP</span>
         </div>`;
     }
@@ -1128,13 +1128,13 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFu
 
     const customerName = customerNameInput ? customerNameInput.value.trim() : "";
     if (customerName.length < 3) {
-        addValidationError(customerNameInput, "يرجى كتابة اسم صاحب الطلب بالكامل ثنائياً على الأقل.");
+        addValidationError(customerNameInput, "من فضلك اكتبي اسمك بالكامل (اسمين على الأقل).");
     }
 
     const phone1 = customerPhoneInput ? customerPhoneInput.value.trim() : "";
     let sanitizedPhone1 = "";
     if (typeof window.validateBosePhoneNumber === "function" && !window.validateBosePhoneNumber(phone1)) {
-        addValidationError(customerPhoneInput, "يرجى إدخال رقم هاتف محمول مصري صحيح ومطابق للشبكة.");
+        addValidationError(customerPhoneInput, "من فضلك اكتبي رقم موبايل مصري صحيح.");
     } else {
         sanitizedPhone1 = typeof window.sanitizeBosePhoneNumber === "function" ? window.sanitizeBosePhoneNumber(phone1) : phone1;
     }
@@ -1167,7 +1167,7 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFu
 
     if (!cartIsDigitalOnlyForOrder && method === "delivery") {
         if (zoneSelect && !zoneSelect.value) {
-            addValidationError(zoneSelect, "يرجى تحديد المنطقة السكنية.");
+            addValidationError(zoneSelect, "من فضلك حددي منطقتك.");
         } else {
             selectedZoneId = zoneSelect ? zoneSelect.value : "";
             const selectedOption = zoneSelect && zoneSelect.selectedOptions ? zoneSelect.selectedOptions[0] : null;
@@ -1176,7 +1176,7 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFu
 
         const addressDetails = addressDetailsInput ? addressDetailsInput.value.trim() : "";
         if (addressDetails.length < 8) {
-            addValidationError(addressDetailsInput, "يرجى كتابة العنوان السكني بالتفصيل لسلامة الشحن.");
+            addValidationError(addressDetailsInput, "من فضلك اكتبي عنوانك بالتفصيل عشان يوصلك الطلب صح.");
         } else {
             fullAddressText = `المنطقة: ${selectedZoneName} | تفصيل السكن: ${addressDetails}`;
         }
@@ -1186,7 +1186,7 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFu
     const orderTime = cartIsDigitalOnlyForOrder ? "" : (deliveryTimeInput ? deliveryTimeInput.value : "");
 
     if (!cartIsDigitalOnlyForOrder && (!orderDate || !orderTime)) {
-        addValidationError(!orderDate ? deliveryDateInput : deliveryTimeInput, "يرجى اختيار تاريخ وساعة الاستلام المناسبة لتجهيز طلبك.");
+        addValidationError(!orderDate ? deliveryDateInput : deliveryTimeInput, "من فضلك اختاري تاريخ وساعة الاستلام المناسبين ليكِ.");
     }
 
     // 🛡️ [إصلاح - المرحلة 2]: تحديد هل السلة فيها منتج مخصص (تورت/ورد محاكي) عشان
@@ -1221,7 +1221,7 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFu
         if (orderTime < bhStart || orderTime > bhEnd) {
             const bhStartDisplay = typeof formatBoseTimeToEgyptian12Hour === "function" ? formatBoseTimeToEgyptian12Hour(bhStart) : bhStart;
             const bhEndDisplay = typeof formatBoseTimeToEgyptian12Hour === "function" ? formatBoseTimeToEgyptian12Hour(bhEnd) : bhEnd;
-            addValidationError(deliveryTimeInput, `مواعيد الاستلام متاحة بس من ${bhStartDisplay} لحد ${bhEndDisplay}، يرجى اختيار ساعة جوه النطاق ده.`);
+            addValidationError(deliveryTimeInput, `مواعيد الاستلام متاحة بس من ${bhStartDisplay} لحد ${bhEndDisplay}، اختاري ساعة جوه النطاق ده.`);
         }
     }
 
@@ -1254,7 +1254,7 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFu
                         discountMsgEl.textContent = (recheckResult && recheckResult.message) || `⚠️ كود "${entry.code}" مبقاش شغال، شيلناه من طلبك.`;
                     }
                     if (typeof window.showBoseGlobalToast === "function") {
-                        window.showBoseGlobalToast((recheckResult && recheckResult.message) || `كود "${entry.code}" مبقاش شغال - راجعي طلبك وأكدي تاني`, { type: 'error' });
+                        window.showBoseGlobalToast((recheckResult && recheckResult.message) || `كود "${entry.code}" مبقاش شغال - راجعي طلبك وأكدي تاني`);
                     }
                     if (typeof recalculateCheckoutInvoice === "function") recalculateCheckoutInvoice(cart, storeData, shippingFee, method, payFull);
                     return;
@@ -1523,11 +1523,11 @@ function buildBoseFormattedWhatsappInvoice(order) {
         msg += `🌸 أهلاً يا *${order.customerName}*، شكراً لثقتك في حلويات بوسي! دي فاتورة حجزك 👇\n\n`;
     }
     msg += `--------------------------------------------------\n\n`;
-    msg += `🧾 *رقم المعاملة:* ${order.orderId}\n`;
+    msg += `🧾 *رقم الطلب:* ${order.orderId}\n`;
     msg += `👤 *العميل:* ${order.customerName}\n`;
     msg += `📞 *رقم الاتصال:* ${order.phone1}\n`;
-    msg += `🚗 *مسار الاستلام:* ${order.deliveryMethod}\n`;
-    msg += `📍 *التفاصيل الجغرافية:* ${order.address}\n`;
+    msg += `🚗 *طريقة الاستلام:* ${order.deliveryMethod}\n`;
+    msg += `📍 *العنوان:* ${order.address}\n`;
     msg += `📅 *موعد الاستلام:* ${order.scheduledDate} الساعة ${formatBoseTimeToEgyptian12Hour(order.scheduledTime)}\n\n`;
     msg += `--------------------------------------------------\n`;
     msg += `📦 *تفاصيل الأصناف المطلوبة:*\n\n`;
@@ -1686,11 +1686,11 @@ function buildBoseCondensedWhatsappInvoice(order) {
     let msg = `✨ *فاتورة حجز مختصرة - حلويات بوسي* ✨\n`;
     msg += `(الطلب فيه تفاصيل/صور كتير، فهنبعت نسخة مختصرة هنا - كل التفاصيل والصور الكاملة موجودة في رابط تتبع الطلب تحت 👇)\n\n`;
     msg += `--------------------------------------------------\n`;
-    msg += `🧾 *رقم المعاملة:* ${order.orderId}\n`;
+    msg += `🧾 *رقم الطلب:* ${order.orderId}\n`;
     msg += `👤 *العميل:* ${order.customerName}\n`;
     msg += `📞 *رقم الاتصال:* ${order.phone1}\n`;
-    msg += `🚗 *مسار الاستلام:* ${order.deliveryMethod}\n`;
-    msg += `📍 *التفاصيل الجغرافية:* ${order.address}\n`;
+    msg += `🚗 *طريقة الاستلام:* ${order.deliveryMethod}\n`;
+    msg += `📍 *العنوان:* ${order.address}\n`;
     msg += `📅 *موعد الاستلام:* ${order.scheduledDate} الساعة ${formatBoseTimeToEgyptian12Hour(order.scheduledTime)}\n\n`;
     msg += `--------------------------------------------------\n`;
     msg += `📦 *الأصناف:*\n`;
@@ -1787,7 +1787,7 @@ function renderBoseSuccessPage(storeData) {
         resendWhatsappBtn.addEventListener("click", () => { bosWhatsappClicked = true; }, { once: true });
         setTimeout(() => {
             if (!bosWhatsappClicked && typeof window.showBoseGlobalToast === "function") {
-                window.showBoseGlobalToast("🌸 متنسيش تدوسي زرار إرسال الفاتورة على واتساب عشان نبدأ نجهز طلبك!", { type: 'warning' });
+                window.showBoseGlobalToast("🌸 متنسيش تدوسي زرار إرسال الفاتورة على واتساب عشان نبدأ نجهز طلبك!");
             }
         }, 8000);
     }
@@ -1859,9 +1859,9 @@ function renderBoseSuccessPage(storeData) {
             // كانت مكتوبة هنا يدوياً.
             const loyaltyCfg = (typeof window.getBoseLoyaltyConfig === "function") ? window.getBoseLoyaltyConfig() : { voucherAmount: 300, voucherValidityMonths: 2 };
             const voucherMonthsTxt = window.formatArabicMonths ? window.formatArabicMonths(loyaltyCfg.voucherValidityMonths) : `${loyaltyCfg.voucherValidityMonths} شهر`;
-            cardHtml += `<div style="${cardBaseStyle} background: rgba(255,145,164,0.08); border: 1px solid rgba(255,145,164,0.3); color:#FF91A4;">
+            cardHtml += `<div style="${cardBaseStyle} background: rgba(var(--bose-pink-rgb),0.08); border: 1px solid rgba(var(--bose-pink-rgb),0.3); color:var(--bose-pink);">
                 <i class="fa-solid fa-gift" style="font-size:1.2rem;"></i>
-                <span>مبروك! الطلب ده وصّلك لمرحلة قسيمة شراء بـ${loyaltyCfg.voucherAmount} جنيه - هتوصلك تلقائياً بعد استلام طلبك، وهتلاقيها في <a href="/rewards.html?phone=${encodeURIComponent(order.phone1 || '')}" style="color:#FF91A4; text-decoration:underline;">صفحة نادي المكافآت</a> صالحة لمدة ${voucherMonthsTxt} 🎉</span>
+                <span>مبروك! الطلب ده وصّلك لمرحلة قسيمة شراء بـ${loyaltyCfg.voucherAmount} جنيه - هتوصلك تلقائياً بعد استلام طلبك، وهتلاقيها في <a href="/rewards.html?phone=${encodeURIComponent(order.phone1 || '')}" style="color:var(--bose-pink); text-decoration:underline;">صفحة نادي المكافآت</a> صالحة لمدة ${voucherMonthsTxt} 🎉</span>
             </div>`;
         }
 
@@ -2019,11 +2019,11 @@ function injectBoseCustomModalStyles() {
     styleEl.textContent = `
         .bose-custom-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(17, 17, 17, 0.4); display: flex; align-items: center; justify-content: center; z-index: 100000; direction: rtl; opacity: 0; transition: opacity 0.25s ease; pointer-events: none; padding: 20px; box-sizing: border-box; }
         .bose-custom-modal-overlay.active { opacity: 1; pointer-events: auto; }
-        .bose-custom-modal-card { background: #FFFFFF; border: 1px solid rgba(255, 145, 164, 0.3); border-radius: 24px; padding: 24px; width: 100%; max-width: 400px; box-shadow: 0 12px 40px rgba(255, 145, 164, 0.15); text-align: center; box-sizing: border-box; }
+        .bose-custom-modal-card { background: #FFFFFF; border: 1px solid rgba(var(--bose-pink-rgb), 0.3); border-radius: 24px; padding: 24px; width: 100%; max-width: 400px; box-shadow: 0 12px 40px rgba(var(--bose-pink-rgb), 0.15); text-align: center; box-sizing: border-box; }
         .bose-modal-text { font-family: 'Cairo'; font-size: 16px; font-weight: 700; color: #111111; margin: 0 0 20px 0; line-height: 1.5; }
         .bose-modal-actions-wrapper { display: flex; gap: 12px; justify-content: center; }
         .bose-modal-btn { font-family: 'Cairo'; font-size: 14px; font-weight: 700; padding: 10px 24px; border-radius: 12px; cursor: pointer; border: none; box-sizing: border-box; }
-        .bose-modal-btn-confirm { background: #FF91A4; color: #FFFFFF; }
+        .bose-modal-btn-confirm { background: var(--bose-pink); color: #FFFFFF; }
         .bose-modal-btn-cancel { background: #FFFFFF; color: #111111; border: 1px solid rgba(17,17,17,0.15); }
     `;
     document.head.appendChild(styleEl);

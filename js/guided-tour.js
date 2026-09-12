@@ -324,16 +324,16 @@
     // فتحت/قفلت حاجة تانية في نفس التوقيت. دلوقتي بتستخدم نفس دالة الإشعار
     // الموحدة (showBoseGlobalToast) المعرّفة في core-engine.js - نفس اللون،
     // نفس الموضع فوق الهيدر، ونفس الـ z-index الأعلى من كل حاجة في الصفحة.
-    function showToast(msg, type) {
+    function showToast(msg) {
         if (typeof window.showBoseGlobalToast === 'function') {
-            window.showBoseGlobalToast(msg, type ? { type } : undefined);
+            window.showBoseGlobalToast(msg);
         }
     }
 
     function endTour(celebrate) {
         removeOverlay();
         clearState();
-        if (celebrate) showToast('تمام! 🎉 كده بقيتي عارفة تستخدمي الجزء ده من موقعنا بكل سهولة.', 'success');
+        if (celebrate) showToast('تمام! 🎉 كده بقيتي عارفة تستخدمي الجزء ده من موقعنا بكل سهولة.');
     }
 
     function injectStylesOnce() {
@@ -341,27 +341,27 @@
         const style = document.createElement('style');
         style.id = 'bose-tour-styles';
         style.textContent = `
-            .bose-tour-highlight-box{position:fixed;z-index:99998;pointer-events:none;border-radius:14px;box-shadow:0 0 0 9999px rgba(17,17,17,.62);border:3px solid #FF91A4;}
+            .bose-tour-highlight-box{position:fixed;z-index:99998;pointer-events:none;border-radius:14px;box-shadow:0 0 0 9999px rgba(17,17,17,.62);border:3px solid var(--bose-pink);}
             .bose-tour-tooltip{position:fixed;z-index:99999;background:#fff;border-radius:16px;padding:16px 18px;box-shadow:0 8px 30px rgba(0,0,0,.25);max-width:300px;font-family:'Cairo',sans-serif;direction:rtl;text-align:right;animation:boseTourPop .25s ease;}
             @keyframes boseTourPop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
             .bose-tour-progress-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
-            .bose-tour-progress-track{flex:1;height:4px;border-radius:4px;background:rgba(255,145,164,.18);overflow:hidden;}
-            .bose-tour-progress-fill{height:100%;background:#FF91A4;border-radius:4px;transition:width .25s ease;}
+            .bose-tour-progress-track{flex:1;height:4px;border-radius:4px;background:rgba(var(--bose-pink-rgb),.18);overflow:hidden;}
+            .bose-tour-progress-fill{height:100%;background:var(--bose-pink);border-radius:4px;transition:width .25s ease;}
             /* 🛡️🆕 [إصلاح - رقم الجولة بيتقلب بصرياً "16/15" بدل "15/16"]: النص ده
                رقمين إنجليزي (مش عربي) جوه فقرة اتجاهها RTL بالكامل - كل رقم لوحده
                "LTR run" سليم جوّه نفسه، لكن المتصفح بيرتّب مواضع الـ"runs" الاتنين
                (قبل الشرطة/بعدها) حسب اتجاه الفقرة العام (RTL)، فبيقلب مكانهم
                بصرياً حتى إن كل رقم لوحده صحيح. direction:ltr + unicode-bidi:isolate
                بيجبروا النص ده يتصرف كـ"جزيرة" LTR مستقلة عن اتجاه الفقرة اللي حواليه.*/
-            .bose-tour-progress-text{font-size:.68rem;color:#FF91A4;font-weight:700;white-space:nowrap;direction:ltr;unicode-bidi:isolate;display:inline-block;}
+            .bose-tour-progress-text{font-size:.68rem;color:var(--bose-pink);font-weight:700;white-space:nowrap;direction:ltr;unicode-bidi:isolate;display:inline-block;}
             .bose-tour-tooltip-title{font-weight:800;font-size:1rem;color:#111;margin-bottom:6px;}
             .bose-tour-tooltip-text{font-size:.88rem;color:#333;line-height:1.6;margin:0 0 12px 0;}
-            .bose-tour-tap-hint{display:flex;align-items:center;gap:5px;font-size:.78rem;color:#FF91A4;font-weight:700;margin-bottom:12px;}
-            .bose-tour-next-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;background:#FF91A4;color:#fff;border:none;border-radius:12px;padding:10px 14px;font-family:'Cairo',sans-serif;font-size:.88rem;font-weight:800;cursor:pointer;margin-bottom:10px;transition:filter .15s ease;}
+            .bose-tour-tap-hint{display:flex;align-items:center;gap:5px;font-size:.78rem;color:var(--bose-pink);font-weight:700;margin-bottom:12px;}
+            .bose-tour-next-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;background:var(--bose-pink);color:#fff;border:none;border-radius:12px;padding:10px 14px;font-family:'Cairo',sans-serif;font-size:.88rem;font-weight:800;cursor:pointer;margin-bottom:10px;transition:filter .15s ease;}
             .bose-tour-next-btn:hover{filter:brightness(0.95);}
             .bose-tour-bottom-row{display:flex;align-items:center;justify-content:space-between;gap:8px;}
             .bose-tour-prev-btn{display:flex;align-items:center;gap:4px;background:none;border:none;color:#888;font-size:.76rem;font-weight:700;cursor:pointer;padding:0;font-family:'Cairo',sans-serif;}
-            .bose-tour-skipsection-btn{background:none;border:none;color:#FF91A4;font-size:.76rem;font-weight:700;cursor:pointer;padding:0;font-family:'Cairo',sans-serif;}
+            .bose-tour-skipsection-btn{background:none;border:none;color:var(--bose-pink);font-size:.76rem;font-weight:700;cursor:pointer;padding:0;font-family:'Cairo',sans-serif;}
             .bose-tour-skip-btn{background:none;border:none;color:#999;font-size:.76rem;cursor:pointer;text-decoration:underline;padding:0;font-family:'Cairo',sans-serif;}
             @media (max-width:480px){.bose-tour-tooltip{max-width:85vw;}}
             .bose-tour-intro-toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(24px);background:#fff;color:#111;padding:16px 18px;border-radius:16px;box-shadow:0 10px 34px rgba(0,0,0,.22);z-index:100000;opacity:0;transition:opacity .35s ease,transform .35s ease;max-width:340px;width:88vw;font-family:'Cairo',sans-serif;direction:rtl;text-align:right;}
@@ -369,13 +369,13 @@
             .bose-tour-intro-toast-title{font-weight:800;font-size:.95rem;margin-bottom:4px;display:flex;align-items:center;gap:6px;}
             .bose-tour-intro-toast-text{font-size:.84rem;color:#555;line-height:1.55;margin:0 0 12px 0;}
             .bose-tour-intro-toast-row{display:flex;gap:8px;}
-            .bose-tour-intro-accept-btn{flex:1;background:#FF91A4;color:#fff;border:none;border-radius:11px;padding:9px 10px;font-family:'Cairo',sans-serif;font-size:.82rem;font-weight:800;cursor:pointer;}
+            .bose-tour-intro-accept-btn{flex:1;background:var(--bose-pink);color:#fff;border:none;border-radius:11px;padding:9px 10px;font-family:'Cairo',sans-serif;font-size:.82rem;font-weight:800;cursor:pointer;}
             .bose-tour-intro-dismiss-btn{background:none;border:none;color:#999;font-size:.82rem;cursor:pointer;font-family:'Cairo',sans-serif;padding:9px 10px;}
 
             /* 🆕 [زرار المساعدة العائم + قايمة اختيار الجولة] - شكل تاب عمودي
                ملتصق بحافة الشاشة (زي المرجع اللي بعتته العميلة)، مش بار أفقي. */
             #bose-tour-fab-wrap{position:fixed;top:42%;right:0;z-index:99996;direction:rtl;font-family:'Cairo',sans-serif;}
-            #bose-tour-fab-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:#FF91A4;color:#111;border:none;border-radius:14px 0 0 14px;width:40px;padding:16px 8px;box-shadow:-2px 3px 14px rgba(0,0,0,.2);font-family:'Cairo',sans-serif;cursor:pointer;}
+            #bose-tour-fab-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:var(--bose-pink);color:#111;border:none;border-radius:14px 0 0 14px;width:40px;padding:16px 8px;box-shadow:-2px 3px 14px rgba(0,0,0,.2);font-family:'Cairo',sans-serif;cursor:pointer;}
             #bose-tour-fab-btn i{font-size:1rem;}
             #bose-tour-fab-btn span{writing-mode:vertical-rl;text-orientation:sideways;white-space:nowrap;font-weight:800;font-size:.82rem;letter-spacing:.3px;}
             /* 🛡️🆕 [إصلاح - أيقونات الجولة بتتقطع تحت ومفيش سكرول]: اللوحة دي
@@ -391,7 +391,7 @@
             .bose-tour-fab-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
             .bose-tour-fab-tile{display:flex;flex-direction:column;align-items:center;gap:6px;background:#fff5f7;border:none;border-radius:14px;padding:12px 6px;cursor:pointer;font-family:'Cairo',sans-serif;transition:background .15s ease;}
             .bose-tour-fab-tile:hover{background:#ffe4ea;}
-            .bose-tour-fab-tile-icon{width:34px;height:34px;border-radius:50%;background:#FF91A4;color:#fff;display:flex;align-items:center;justify-content:center;font-size:.95rem;}
+            .bose-tour-fab-tile-icon{width:34px;height:34px;border-radius:50%;background:var(--bose-pink);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.95rem;}
             .bose-tour-fab-tile-label{font-size:.72rem;font-weight:700;color:#333;text-align:center;line-height:1.3;}
             @media (max-width:480px){
                 #bose-tour-fab-btn{width:34px;padding:12px 6px;}
@@ -466,7 +466,7 @@
             el => renderSpotlight(el, step, tourKey, stepIndex),
             () => {
                 logTourEvent('tour_auto_skip', tourKey, { stepIndex, selector: step.selector, title: step.title });
-                showToast('معلش، خطوة في الجولة اتخطّت تلقائيًا 🙏', 'warning');
+                showToast('معلش، خطوة في الجولة اتخطّت تلقائيًا 🙏');
                 handleAdvance(tourKey, stepIndex, stepIndex + 1);
             },
             step.timeoutMs

@@ -138,7 +138,7 @@
                 background: #fff;
                 border-radius: 16px;
                 box-shadow: 0 10px 30px rgba(0,0,0,0.18);
-                border: 1px solid rgba(255,145,164,0.35);
+                border: 1px solid rgba(var(--bose-pink-rgb),0.35);
                 padding: 16px 18px;
                 display: flex;
                 align-items: flex-start;
@@ -156,7 +156,7 @@
                 width: 40px;
                 height: 40px;
                 border-radius: 50%;
-                background: var(--bose-pink, #FF91A4);
+                background: var(--bose-pink, var(--bose-pink));
                 color: #fff;
                 display: flex;
                 align-items: center;
@@ -168,7 +168,7 @@
             .bose-push-prompt-desc { font-size: 13px; color: #555; margin: 0 0 12px; line-height: 1.5; }
             .bose-push-prompt-actions { display: flex; gap: 8px; }
             .bose-push-prompt-cta {
-                background: var(--bose-pink-text, #FF91A4);
+                background: var(--bose-pink-text, var(--bose-pink));
                 color: #fff;
                 border: none;
                 border-radius: 10px;

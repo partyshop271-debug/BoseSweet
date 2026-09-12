@@ -66,21 +66,21 @@
                 position: fixed; inset-inline: 12px; bottom: 12px; z-index: 9999;
                 max-width: 460px; margin-inline: auto;
                 background: #fff; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.18);
-                border: 1px solid rgba(255,145,164,0.25);
+                border: 1px solid rgba(var(--bose-pink-rgb),0.25);
                 padding: 14px 16px; display: flex; align-items: center; gap: 12px;
                 font-family: 'Cairo', sans-serif; direction: rtl;
                 animation: bcr-slide-up .35s ease;
             }
             @keyframes bcr-slide-up { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
             #${BANNER_ID} .bcr-icon {
-                width: 44px; height: 44px; flex-shrink: 0; border-radius: 50%; background: rgba(255,145,164,0.12); color: #FF91A4;
+                width: 44px; height: 44px; flex-shrink: 0; border-radius: 50%; background: rgba(var(--bose-pink-rgb),0.12); color: var(--bose-pink);
                 display: flex; align-items: center; justify-content: center; font-size: 1.15rem;
             }
             #${BANNER_ID} .bcr-text { flex: 1; min-width: 0; }
             #${BANNER_ID} .bcr-title { font-size: 0.86rem; font-weight: 800; color: #111; margin: 0 0 2px; }
             #${BANNER_ID} .bcr-sub { font-size: 0.74rem; color: #111; opacity: 0.65; margin: 0; }
             #${BANNER_ID} .bcr-cta {
-                flex-shrink: 0; background: linear-gradient(135deg, #FF91A4, #ff7d95); color: #fff; border: none;
+                flex-shrink: 0; background: linear-gradient(135deg, var(--bose-pink), #ff7d95); color: #fff; border: none;
                 border-radius: 10px; padding: 9px 14px; font-family: 'Cairo', sans-serif; font-weight: 800; font-size: 0.78rem;
                 cursor: pointer; text-decoration: none; display: inline-block; white-space: nowrap;
             }

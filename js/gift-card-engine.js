@@ -43,7 +43,7 @@
         { id: "elegant", className: "gcb-card--elegant", name: "بطاقة أنيقة", icon: "fa-solid fa-gem",
           canvas: { bgFrom: "#FDFBF8", bgTo: "#F3E9DA", accent: "#C9972E", text: "#111111" } },
         { id: "brand", className: "gcb-card--brand", name: "هدية من حلويات بوسي", icon: "fa-solid fa-heart-circle-check",
-          canvas: { bgFrom: "#FFFFFF", bgTo: "#FFE9EE", accent: "#FF91A4", text: "#111111" } }
+          canvas: { bgFrom: "#FFFFFF", bgTo: "#FFE9EE", accent: "var(--bose-pink)", text: "#111111" } }
     ];
 
     const OCCASIONS = [
