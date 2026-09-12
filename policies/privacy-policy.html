@@ -22,10 +22,11 @@
         /* التزاماً بالهوية البصرية والألوان الحاكمة لـ حلويات بوسي */
         :root {
             --bose-pink: #FF91A4;
+            --bose-pink-rgb: 255, 145, 164;
             --bose-white: #FFFFFF;
             --bose-black: #111111;
-            --bose-gold: #FF91A4;
-            --bose-shadow-glow: 0 12px 40px rgba(255, 145, 164, 0.12);
+            --bose-gold: var(--bose-pink);
+            --bose-shadow-glow: 0 12px 40px rgba(var(--bose-pink-rgb), 0.12);
             --bose-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -69,7 +70,7 @@
 
         .policy-card {
             background: var(--bose-white);
-            border: 1px solid #FF91A4; /* بوردر بمبي واضح وموحد مع باقي الموقع */
+            border: 1px solid var(--bose-pink); /* بوردر بمبي واضح وموحد مع باقي الموقع */
             border-radius: 24px;
             padding: 40px;
             box-shadow: var(--bose-shadow-glow); /* ظلال ناعمة بمبية */
@@ -79,12 +80,12 @@
 
         .policy-card:hover {
             border-color: var(--bose-pink);
-            box-shadow: 0 16px 48px rgba(255, 145, 164, 0.18);
+            box-shadow: 0 16px 48px rgba(var(--bose-pink-rgb), 0.18);
         }
 
         .policy-section {
             margin-bottom: 24px;
-            border: 1px solid #FF91A4;
+            border: 1px solid var(--bose-pink);
             border-radius: 16px;
             padding: 20px;
         }
@@ -134,15 +135,15 @@
             display: flex;
             align-items: flex-start;
             padding: 12px 16px;
-            background: rgba(255, 145, 164, 0.03);
+            background: rgba(var(--bose-pink-rgb), 0.03);
             border-radius: 12px;
-            border: 1px solid rgba(255, 145, 164, 0.08);
+            border: 1px solid rgba(var(--bose-pink-rgb), 0.08);
             transition: var(--bose-transition);
         }
 
         .policy-section ul li:hover {
-            background: rgba(255, 145, 164, 0.06);
-            border-color: rgba(255, 145, 164, 0.2);
+            background: rgba(var(--bose-pink-rgb), 0.06);
+            border-color: rgba(var(--bose-pink-rgb), 0.2);
             transform: translateX(-4px);
         }
 
@@ -274,7 +275,7 @@
          الأول - نفس الطريقة المستخدمة في كل صفحات الموقع التانية. -->
     <script src="../js/supabase-client.js?v=2027_production_v43.0" defer></script>
     <script src="../js/push-notifications.js?v=1.0" defer></script>
-    <script src="../js/core-engine.js?v=2028_production_v60.0" defer></script>
+    <script src="../js/core-engine.js?v=2028_production_v58.0" defer></script>
 
     <!-- 🆕 [5.2 - محتوى ديناميكي من لوحة التحكم]: لو الأدمن كتب محتوى فعلي
          لصفحة السياسة دي من "استوديو المحتوى"، بيظهر هنا بدل النص الثابت.

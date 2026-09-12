@@ -40,20 +40,21 @@
          الأول - نفس الطريقة المستخدمة في كل صفحات الموقع التانية. -->
     <script src="../js/supabase-client.js?v=2027_production_v43.0" defer></script>
     <script src="../js/push-notifications.js?v=1.0" defer></script>
-    <script src="../js/core-engine.js?v=2028_production_v60.0" defer></script>
+    <script src="../js/core-engine.js?v=2028_production_v58.0" defer></script>
     
     <style>
         /* نظام الألوان الحاكمة والمقدسة لعلامة حلويات بوسي الفاخرة */
         :root {
             --bose-pink: #FF91A4;
+            --bose-pink-rgb: 255, 145, 164;
             --bose-white: #FFFFFF;
             --bose-black: #111111;
-            --bose-gold: #FF91A4;
+            --bose-gold: var(--bose-pink);
             
-            --bose-shadow-glow: 0 8px 32px rgba(255, 145, 164, 0.12);
-            --bose-shadow-hover: 0 16px 40px rgba(255, 145, 164, 0.22);
-            --bose-border-pink: 1px solid rgba(255, 145, 164, 0.3);
-            --bose-border-thick: 2px solid #FF91A4;
+            --bose-shadow-glow: 0 8px 32px rgba(var(--bose-pink-rgb), 0.12);
+            --bose-shadow-hover: 0 16px 40px rgba(var(--bose-pink-rgb), 0.22);
+            --bose-border-pink: 1px solid rgba(var(--bose-pink-rgb), 0.3);
+            --bose-border-thick: 2px solid var(--bose-pink);
         }
 
         /* إعادة تهيئة شاملة لضمان التوافق المطلق ومنع الـ Overflow */
@@ -141,7 +142,7 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            border-bottom: 2px solid rgba(255, 145, 164, 0.15);
+            border-bottom: 2px solid rgba(var(--bose-pink-rgb), 0.15);
             padding-bottom: 12px;
         }
 
