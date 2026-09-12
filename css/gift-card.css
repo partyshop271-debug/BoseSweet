@@ -272,7 +272,7 @@ body.gcb-body {
 .gcb-card--brand .gcb-card-divider { background: var(--bose-pink); }
 .gcb-card--brand .gcb-card-logo { width: 42px; height: 42px; }
 .gcb-card--brand .gcb-card-pattern {
-    background: repeating-linear-gradient(-45deg, rgba(255,145,164,0.06) 0 2px, transparent 2px 22px);
+    background: repeating-linear-gradient(-45deg, rgba(var(--bose-pink-rgb),0.06) 0 2px, transparent 2px 22px);
 }
 
 .gcb-preview-note {
@@ -369,9 +369,9 @@ body.gcb-body {
 .gcb-chip:focus-visible { outline: 2px solid var(--bose-pink); outline-offset: 2px; }
 .gcb-chip.is-selected {
     border-color: var(--bose-pink);
-    background: rgba(255, 145, 164, 0.08);
+    background: rgba(var(--bose-pink-rgb), 0.08);
     color: var(--bose-pink);
-    box-shadow: 0 4px 12px rgba(255, 145, 164, 0.18);
+    box-shadow: 0 4px 12px rgba(var(--bose-pink-rgb), 0.18);
 }
 
 .gcb-amount-custom {
@@ -424,7 +424,7 @@ body.gcb-body {
 .gcb-occasion-chip:focus-visible { outline: 2px solid var(--bose-pink); outline-offset: 2px; }
 .gcb-occasion-chip.is-selected {
     border-color: var(--bose-pink);
-    background: rgba(255, 145, 164, 0.08);
+    background: rgba(var(--bose-pink-rgb), 0.08);
     color: var(--bose-pink);
 }
 .gcb-occasion-chip.is-selected i { opacity: 1; }
@@ -452,7 +452,7 @@ body.gcb-body {
 .gcb-field input[type="text"]:focus, .gcb-field input[type="tel"]:focus, .gcb-field textarea:focus {
     outline: none;
     border-color: var(--bose-pink);
-    box-shadow: 0 0 0 3px rgba(255, 145, 164, 0.14);
+    box-shadow: 0 0 0 3px rgba(var(--bose-pink-rgb), 0.14);
 }
 .gcb-field textarea { resize: none; height: 92px; }
 .gcb-field.has-error input[type="text"], .gcb-field.has-error input[type="tel"] { border-color: #E0577B; }
@@ -545,8 +545,8 @@ body.gcb-body {
     display: flex;
     align-items: flex-start;
     gap: 10px;
-    background: rgba(255, 145, 164, 0.06);
-    border: 1px solid rgba(255, 145, 164, 0.25);
+    background: rgba(var(--bose-pink-rgb), 0.06);
+    border: 1px solid rgba(var(--bose-pink-rgb), 0.25);
     border-radius: 14px;
     padding: 14px 16px;
     font-size: 0.83rem;
@@ -616,7 +616,7 @@ body.gcb-body {
     align-items: center;
     justify-content: center;
     gap: 10px;
-    box-shadow: 0 8px 22px rgba(255, 145, 164, 0.28);
+    box-shadow: 0 8px 22px rgba(var(--bose-pink-rgb), 0.28);
     transition: var(--bose-transition-fast);
 }
 .gcb-cta:hover { opacity: 0.95; transform: translateY(-1px); }

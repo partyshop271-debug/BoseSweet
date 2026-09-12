@@ -18,18 +18,18 @@
    اتغير اسمها هنا لـ --bose-border-pink-tint عشان توضّح إنها "درجة لون" مش "حد جاهز"،
    ومفيش أي تعارض تسمية بينها وبين global.css خالص دلوقتي. */
 :root {
-    --bose-cream: rgba(255, 145, 164, 0.08);
-    --bose-soft-gray: rgba(255, 145, 164, 0.06);
-    --bose-border-gray: #FF91A4;
-    --bose-border-pink-tint: rgba(255, 145, 164, 0.25);
+    --bose-cream: rgba(var(--bose-pink-rgb), 0.08);
+    --bose-soft-gray: rgba(var(--bose-pink-rgb), 0.06);
+    --bose-border-gray: var(--bose-pink);
+    --bose-border-pink-tint: rgba(var(--bose-pink-rgb), 0.25);
     --bose-success-green: #1B6E3C;
     --bose-success-text: #1B6E3C;
     --bose-success-bg: rgba(27, 110, 60, 0.08);
     --bose-error-red: #C62828;
     --bose-error-text: #C62828;
     --bose-error-bg: rgba(198, 40, 40, 0.06);
-    --bose-soft-shadow: 0 12px 32px rgba(255, 145, 164, 0.08);
-    --bose-hover-shadow: 0 16px 40px rgba(255, 145, 164, 0.15);
+    --bose-soft-shadow: 0 12px 32px rgba(var(--bose-pink-rgb), 0.08);
+    --bose-hover-shadow: 0 16px 40px rgba(var(--bose-pink-rgb), 0.15);
     --bose-radius: var(--bose-radius-md, 16px); /* 🛡️ [إصلاح تناسق]: كانت 16px ثابتة محلياً هنا، دلوقتي بترجع لنفس المقياس الموحّد المعرّف في global.css (--bose-radius-md) عشان تتغير كل الكروت في الموقع سوا لو الفريق غيّر المقياس مستقبلاً بدل ما تفضل الصفحة دي منفصلة برقمها الخاص. */
     --bose-font: 'Cairo', sans-serif;
 }
@@ -336,7 +336,7 @@
     position: absolute;
     bottom: 4px;
     right: 4px;
-    background: rgba(255, 145, 164, 0.95); /* ذهبي فاخر متوافق مع البراند */
+    background: rgba(var(--bose-pink-rgb), 0.95); /* ذهبي فاخر متوافق مع البراند */
     color: var(--bose-white);
     font-size: 0.65rem;
     font-family: var(--bose-font);
@@ -404,7 +404,7 @@
     background: var(--bose-cream);
     padding: 3px 10px;
     border-radius: var(--bose-radius-sm);
-    border: 1px solid rgba(255, 145, 164, 0.2);
+    border: 1px solid rgba(var(--bose-pink-rgb), 0.2);
 }
 
 /* زر إزالة المنتج المتمحور في أعلى اليسار بحرية كاملة */
@@ -452,7 +452,7 @@
     width: 100%;
     font-size: 0.82rem;
     color: rgba(17, 17, 17, 0.7);
-    border-top: 1px dashed rgba(255, 145, 164, 0.15);
+    border-top: 1px dashed rgba(var(--bose-pink-rgb), 0.15);
     padding-top: 6px;
     margin-top: 4px;
 }
@@ -467,7 +467,7 @@
     font-size: 0.8rem;
     padding: 6px 12px;
     border-radius: var(--bose-radius-sm);
-    border: 1px solid rgba(255, 145, 164, 0.15);
+    border: 1px solid rgba(var(--bose-pink-rgb), 0.15);
     display: inline-flex;
     align-items: center;
     justify-content: space-between;
@@ -498,8 +498,8 @@
 
 .customization-badge-node.gold-accent,
 .customization-badge-pill.gold-accent {
-    border-color: rgba(255, 145, 164, 0.3);
-    background-color: rgba(255, 145, 164, 0.05);
+    border-color: rgba(var(--bose-pink-rgb), 0.3);
+    background-color: rgba(var(--bose-pink-rgb), 0.05);
 }
 
 .customization-badge-node.gold-accent i,
@@ -509,13 +509,13 @@
 
 .customization-badge-node.money-accent,
 .customization-badge-pill.money-accent {
-    border-color: rgba(255, 145, 164, 0.25);
-    background-color: rgba(255, 145, 164, 0.04);
+    border-color: rgba(var(--bose-pink-rgb), 0.25);
+    background-color: rgba(var(--bose-pink-rgb), 0.04);
 }
 
 .customization-badge-node.money-accent i,
 .customization-badge-pill.money-accent i {
-    color: #FF91A4;
+    color: var(--bose-pink);
 }
 
 /* الرابط الخاص بصور العميل المرفوعة المرجعة من السيرفر */
@@ -532,7 +532,7 @@
     background: var(--bose-cream);
     padding: 4px 8px;
     border-radius: var(--bose-radius-sm);
-    border: 1px solid rgba(255, 145, 164, 0.15);
+    border: 1px solid rgba(var(--bose-pink-rgb), 0.15);
 }
 
 .bose-custom-image-link:hover {
@@ -711,7 +711,7 @@
 .coupon-input-field:focus {
     outline: none;
     border-color: var(--bose-pink);
-    box-shadow: 0 0 0 3px rgba(255, 145, 164, 0.15);
+    box-shadow: 0 0 0 3px rgba(var(--bose-pink-rgb), 0.15);
 }
 
 .coupon-apply-trigger {
@@ -729,13 +729,13 @@
                 transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
                 box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     white-space: nowrap;
-    box-shadow: 0 4px 10px rgba(255, 145, 164, 0.15);
+    box-shadow: 0 4px 10px rgba(var(--bose-pink-rgb), 0.15);
 }
 
 .coupon-apply-trigger:hover {
-    background-color: #FF91A4; /* درجة أغمق قليلاً تفاعلية ناعمة */
+    background-color: var(--bose-pink); /* درجة أغمق قليلاً تفاعلية ناعمة */
     transform: translateY(-1px);
-    box-shadow: 0 6px 15px rgba(255, 145, 164, 0.25);
+    box-shadow: 0 6px 15px rgba(var(--bose-pink-rgb), 0.25);
 }
 
 /* دمج التغذية البصرية المبتورة لحالة نجاح وفشل الكوبون */
@@ -868,7 +868,7 @@
     transition: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
                 transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
                 box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 4px 15px rgba(255, 145, 164, 0.25);
+    box-shadow: 0 4px 15px rgba(var(--bose-pink-rgb), 0.25);
     text-decoration: none;
     position: relative;
     box-sizing: border-box;
@@ -877,9 +877,9 @@
 .bose-primary-checkout-btn:hover,
 .premium-checkout-button:hover,
 .bose-action-button-full:hover {
-    background-color: #FF91A4;
+    background-color: var(--bose-pink);
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255, 145, 164, 0.35);
+    box-shadow: 0 6px 20px rgba(var(--bose-pink-rgb), 0.35);
 }
 
 /* فئة حالة التحميل عند معالجة الطلب برمجياً لمنع التكرار وقفل الكبس المزدوج */
@@ -931,7 +931,7 @@
 .premium-back-to-menu-button {
     background-color: var(--bose-cream);
     color: var(--bose-pink-text);
-    border: 1px solid rgba(255, 145, 164, 0.2);
+    border: 1px solid rgba(var(--bose-pink-rgb), 0.2);
     border-radius: var(--bose-radius-pill);
     padding: 12px 20px;
 }
@@ -1055,11 +1055,11 @@
 .checkout-textarea-input:focus,
 .bose-field-capture:focus {
     border-color: var(--bose-pink);
-    box-shadow: 0 0 0 4px rgba(255, 145, 164, 0.15);
+    box-shadow: 0 0 0 4px rgba(var(--bose-pink-rgb), 0.15);
 }
 
 /* 🐛🎨 [إصلاح تباين حقيقي]: كان حقل الخطأ وخط رسالة الخطأ بلون الوردي
-   الأساسي للبراند (#FF91A4) نفسه - نفس اللون المستخدم في كل زرار وسعر
+   الأساسي للبراند (var(--bose-pink)) نفسه - نفس اللون المستخدم في كل زرار وسعر
    وبادچ في الموقع للزينة العادية. يعني لما حقل يبقى غلط، حدوده ما كانتش
    "تلفت النظر" فعليًا كخطأ لازم يتصلح - كانت بس بتشبه أي تفصيلة وردية
    تانية بالصفحة. باقي الموقع فعلاً عنده نظام ألوان أخطاء حقيقي جاهز
@@ -1210,7 +1210,7 @@ select.bose-form-control option,
     border-color: var(--bose-pink) !important;
     background-color: var(--bose-cream) !important;
     color: var(--bose-pink-text) !important;
-    box-shadow: 0 4px 12px rgba(255, 145, 164, 0.08) !important;
+    box-shadow: 0 4px 12px rgba(var(--bose-pink-rgb), 0.08) !important;
 }
 
 .shipping-method-card.active-option i,
@@ -1249,7 +1249,7 @@ select.bose-form-control option,
 .bose-cloudinary-upload-container,
 .bose-cloudinary-upload-wrapper,
 .bose-upload-dragzone {
-    border: 2px dashed rgba(255, 145, 164, 0.4);
+    border: 2px dashed rgba(var(--bose-pink-rgb), 0.4);
     background-color: var(--bose-cream);
     border-radius: var(--bose-radius);
     padding: 24px;
@@ -1314,7 +1314,7 @@ select.bose-form-control option,
 .cloudinary-upload-indicator-card,
 .bose-upload-preview-card,
 .bose-upload-progress-container {
-    border: 1px solid rgba(255, 145, 164, 0.25);
+    border: 1px solid rgba(var(--bose-pink-rgb), 0.25);
     background-color: var(--bose-white);
     border-radius: var(--bose-radius-md);
     padding: 14px;
@@ -1323,7 +1323,7 @@ select.bose-form-control option,
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    box-shadow: 0 4px 15px rgba(255, 145, 164, 0.03);
+    box-shadow: 0 4px 15px rgba(var(--bose-pink-rgb), 0.03);
     width: 100%;
     box-sizing: border-box;
 }
@@ -1338,7 +1338,7 @@ select.bose-form-control option,
 .cloudinary-spinner {
     width: 22px;
     height: 22px;
-    border: 2px solid rgba(255, 145, 164, 0.2);
+    border: 2px solid rgba(var(--bose-pink-rgb), 0.2);
     border-top: 2px solid var(--bose-pink);
     border-radius: 50%;
     animation: boseSpin 0.8s linear infinite;
@@ -1391,7 +1391,7 @@ select.bose-form-control option,
     display: none;
     align-items: center;
     gap: 6px;
-    border: 1px solid rgba(255, 145, 164, 0.15);
+    border: 1px solid rgba(var(--bose-pink-rgb), 0.15);
     flex-shrink: 0;
 }
 
@@ -1505,7 +1505,7 @@ select.bose-form-control option,
 .payment-method-accordion-item.expanded-active .payment-method-content-body {
     padding: 16px 20px;
     max-height: 500px;
-    border-top: 1px dashed rgba(255, 145, 164, 0.15);
+    border-top: 1px dashed rgba(var(--bose-pink-rgb), 0.15);
 }
 
 .payment-instructions-box {
@@ -1534,7 +1534,7 @@ select.bose-form-control option,
 }
 
 .review-items-container::-webkit-scrollbar-thumb {
-    background: rgba(255, 145, 164, 0.3);
+    background: rgba(var(--bose-pink-rgb), 0.3);
     border-radius: var(--bose-radius-sm);
 }
 
@@ -1631,7 +1631,7 @@ select.bose-form-control option,
 .bose-receipt-digital-card,
 .success-invoice-receipt-card {
     background-color: var(--bose-cream);
-    border: 1.5px dashed rgba(255, 145, 164, 0.3);
+    border: 1.5px dashed rgba(var(--bose-pink-rgb), 0.3);
     border-radius: var(--bose-radius-md);
     padding: 20px;
     text-align: right;
@@ -1645,7 +1645,7 @@ select.bose-form-control option,
 .receipt-card-header {
     display: flex;
     justify-content: space-between;
-    border-bottom: 1px dashed rgba(255, 145, 164, 0.3);
+    border-bottom: 1px dashed rgba(var(--bose-pink-rgb), 0.3);
     padding-bottom: 12px;
     margin-bottom: 16px;
     font-size: 0.9rem;
@@ -1668,7 +1668,7 @@ select.bose-form-control option,
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-top: 1px dashed rgba(255, 145, 164, 0.3);
+    border-top: 1px dashed rgba(var(--bose-pink-rgb), 0.3);
     padding-top: 14px;
     font-size: 1.1rem;
     font-weight: 700;
@@ -1714,7 +1714,7 @@ select.bose-form-control option,
     justify-content: center;
     gap: 10px;
     text-decoration: none;
-    box-shadow: 0 4px 15px rgba(255, 145, 164, 0.2);
+    box-shadow: 0 4px 15px rgba(var(--bose-pink-rgb), 0.2);
     transition: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
                 transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
                 box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);

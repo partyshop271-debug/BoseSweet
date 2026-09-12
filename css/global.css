@@ -14,23 +14,21 @@
 :root {
     /* الألوان الحاكمة والمقدسة لعلامة حلويات بوسي الفاخرة - ممنوع مساسها */
     --bose-pink: #FF91A4;        /* نبض الحياة: حدود كروت المنتجات، خلفيات فاتحة، والتأثيرات التفاعلية الزخرفية - غير مخصص للنصوص */
-    /* 🛡️🆕 [إصلاح إتاحة - تباين الألوان - سبتمبر 2026]: --bose-pink الأصلي
-       نسبة تباينه مع الأبيض 2.13:1 بس - أقل بكتير من الحد الأدنى العالمي
-       (WCAG AA) للنصوص وهو 4.5:1. كان فيه محاولة سابقة لحل المشكلة بدرجة وردي
-       أغمق، بس عملياً أي درجة وردي بنفس الهوية توصل لـ4.5:1+ بتبقى قريبة من
-       الأحمر مش وردي فاتح (تجربة رياضية أكدت كده). الحل المعتمد دلوقتي: نص
-       أسود (--bose-black) فوق نفس الوردي الفاتح المعروف، مش نص أبيض - بيوصل
-       لتباين 8.85:1 من غير ما نغيّر درجة الوردي خالص. --bose-pink-text باقي
-       موجود للتوافق مع الكود القديم بس قيمته نفس --bose-pink بالظبط دلوقتي. */
-    --bose-pink-text: #FF91A4;
+    /* 🎉👑 [المواسم والمناسبات]: نفس قيمة --bose-pink بس بصيغة R,G,B (من غير
+       rgb()/rgba() حواليها) - كل استخدامات rgba(var(--bose-pink-rgb), X) في
+       الملف ده وباقي ملفات الموقع بتعتمد على المتغيّر ده بالظبط. لازم يتحدّث
+       يدوياً مع أي تحديث لـ --bose-pink فوق (JS بتحدّث الاتنين مع بعض وقت
+       تفعيل مناسبة - راجع applyBoseSeasonTheme في core-engine.js). */
+    --bose-pink-rgb: 255, 145, 164;
+    /* 🛡️ [إصلاح إتاحة - تباين الألوان]: --bose-pink الأصلي نسبة تباينه مع
+       الأبيض هي 2.13:1 بس - أقل بكتير من الحد الأدنى العالمي (WCAG AA) للنصوص
+       وهو 4.5:1، وده بيخلي أي نص أو زرار بلونه صعب القراءة (خصوصاً في الشمس أو
+       لأصحاب ضعف النظر). اللون ده نفس الهوية (وردي) لكن بدرجة أغمق بتوصل
+       لنسبة تباين 4.6:1 - مخصص لأي نص وردي أو خلفية زرار أساسي فيها نص أبيض. */
+    --bose-pink-text: var(--bose-pink);
     --bose-white: #FFFFFF;       /* المسيطر تماماً: لخلق تنفس بصري ومنع التكديس نهائياً لراحة العميل النفسية */
     --bose-black: #111111;       /* النصوص والعناوين فقط لضمان وضوح كامل للعين وحظر استخدامه في ظلال أو خلفيات */
-    /* 🛡️🆕 [إصلاح إتاحة - سبتمبر 2026]: القيمة القديمة هنا كانت #FF91A4 -
-       نفس لون الوردي بالظبط، يعني "الدهبي" في نجوم التقييم وشارات النقاط
-       كان عملياً وردي مش دهبي، وده سبب إحساسك إن النجوم بتدوب في لون الموقع.
-       القيمة الجديدة دهبي حقيقي (نفس درجة النجاح في نظام الإشعارات) وبتوصل
-       لتباين 6.36:1 مع الأبيض - مقروءة كنص وواضحة كأيقونة، مش بس "لمسة خفيفة". */
-    --bose-gold: #7A5A16;        /* دهبي حقيقي فاتح - نجوم التقييم، شارات النقاط، لمسات النصوص الذهبية */
+    --bose-gold: var(--bose-pink);        /* وجود رمزي ناعم وخفيف جداً لمحاكاة فخامة اللوجو (نجوم التقييمات) */
     /* 🐛 [إصلاح - لون أيقونات الهيدر]: كانت أيقونات المفضلة/السلة/القائمة
        (.bose-nav-btn) بلون أسود عادي (--bose-black) بدل لون يعكس هوية العلامة
        الفاخرة. ده متغير دهبي حقيقي مخصص لها، منفصل عن --bose-gold القديم
@@ -39,18 +37,18 @@
     --bose-nav-icon-gold: #9E7724;
 
     /* الهندسة الرقمية للظلال والحدود - محظور استخدام ظلال سوداء نهائياً بالموقع */
-    --bose-shadow-glow: 0 8px 32px rgba(255, 145, 164, 0.12);
-    --bose-shadow-hover: 0 16px 40px rgba(255, 145, 164, 0.22);
+    --bose-shadow-glow: 0 8px 32px rgba(var(--bose-pink-rgb), 0.12);
+    --bose-shadow-hover: 0 16px 40px rgba(var(--bose-pink-rgb), 0.22);
     /* 🛡️👑 [إصلاح جذري - بوردر بمبي واضح في كل الموقع]: القيمة القديمة كانت
        بشفافية 0.15 بس - يعني عملياً شبه مختفية على أغلب الشاشات وخلفية الموقع
        البيضاء. أي عنصر بيستخدم المتغير ده (كروت المنتجات، عداد الكمية، حقول
-       الفورم...) كان بورده تقريباً مش مرئي. دلوقتي بمبي كامل وواضح #FF91A4 -
+       الفورم...) كان بورده تقريباً مش مرئي. دلوقتي بمبي كامل وواضح var(--bose-pink) -
        ده المتغير المركزي اللي بيغذي البوردر البمبي في كل مكان في الموقع كله
        (الكروت، الأسعار، أزرار الكمية، القائمة الجانبية، السلة، اتمام الطلب،
        والسياسات) عشان أي تغيير هنا ينعكس فوراً وبشكل متسق في كل مكان بدل ما
        نصلحه في كل ملف لوحده. */
-    --bose-border-pink: 1px solid #FF91A4;
-    --bose-border-thick: 2px solid #FF91A4;
+    --bose-border-pink: 1px solid var(--bose-pink);
+    --bose-border-thick: 2px solid var(--bose-pink);
     
     /* صمامات أمان أنميشن السلاسة والتوقيت البصري */
     --bose-transition-fast: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
@@ -382,7 +380,7 @@ img {
     align-items: center;
     justify-content: center;
     padding: 0 4px;
-    box-shadow: 0 3px 8px rgba(255,145,164,0.35);
+    box-shadow: 0 3px 8px rgba(var(--bose-pink-rgb),0.35);
 }
 
 /* 🐛 [إصلاح حرج - تكدّس الهيدر على الشاشات الضيقة]: على الشاشات الأصغر من
@@ -461,7 +459,7 @@ img {
     padding: 4px 10px calc(4px + env(safe-area-inset-bottom, 0px)) !important;
     background-color: var(--bose-white) !important;
     border-top: var(--bose-border-pink) !important;
-    box-shadow: 0 -6px 20px rgba(255, 145, 164, 0.15) !important;
+    box-shadow: 0 -6px 20px rgba(var(--bose-pink-rgb), 0.15) !important;
     z-index: var(--bose-z-bottom-nav) !important;
     display: flex !important;
     justify-content: space-around !important;
@@ -543,7 +541,7 @@ img {
 
 .bose-hero-slide-overlay {
     position: relative; /* بدل absolute: كان بيجبر المحتوى ياخد ارتفاع الأب بالظبط فيتقص أي زيادة (سبب اختفاء التبويب) */
-    background: linear-gradient(to top, rgba(255, 145, 164, 0.12) 0%, rgba(255, 255, 255, 0) 100%);
+    background: linear-gradient(to top, rgba(var(--bose-pink-rgb), 0.12) 0%, rgba(255, 255, 255, 0) 100%);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -687,44 +685,23 @@ img {
     font-family: var(--bose-font, 'Cairo', sans-serif);
 }
 
-/* 🆕 [إعادة تصميم الإشعارات - سبتمبر 2026]: قبل كده كل الإشعارات (نجاح/خطأ/
-   تحذير/ترحيب) كانت بنفس اللون الوردي الغامق بالظبط، يعني ذايبة بصرياً فوق
-   موقع لونه الأساسي وردي - العميل بيفوّتها بسهولة. دلوقتي بطاقة فاتحة (مش
-   ذايبة في خلفية الموقع) + شريط لون جانبي + أيقونة دايرة ملوّنة حسب نوع
-   الرسالة، والألوان الأربعة من نفس العيلة اللونية الدافية لهوية بوسي (مش
-   ألوان تنبيهية عامة مقتبسة من أي موقع) - عشان تحس إنها جزء من الموقع مش
-   حاجة لصقانة عليه. */
-:root {
-    --bose-toast-accent: var(--bose-pink-text);
-    --bose-toast-accent-dark: var(--bose-pink-text);
-    --bose-toast-icon: '\2022'; /* نقطة افتراضية */
-}
-
 .bose-toast-message {
-    background-color: var(--bose-white);
-    color: var(--bose-toast-accent-dark);
-    padding: 12px 16px;
-    border-radius: 4px 16px 16px 4px; /* 🆕 حافة يمين شبه مربعة (مكان الشريط الملوّن) وباقي الكبسولة ناعمة */
-    border-right: 4px solid var(--bose-toast-accent);
+    background-color: var(--bose-pink-text); /* 🛡️ لون أغمق لضمان تباين كافٍ مع النص الأبيض */
+    color: var(--bose-white);
+    padding: 14px 22px;
+    border-radius: 16px; /* 🆕 كبسولة مربعة الحواف الناعمة بدل الشكل الطويل الضيق - أريح للعين مع نصوص أطول ومش بتحس إنها "مكدسة" في شكل شريط رفيع */
     font-weight: 700;
     font-size: 15px;
-    line-height: 1.6;
-    text-align: right;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.14);
+    line-height: 1.55; /* 🆕 مسافة أوضح بين الأسطر لو الرسالة طويلة وعملت لفة سطرين */
+    text-align: center;
+    box-shadow: 0 10px 34px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.4);
     direction: rtl;
-    display: flex;
-    align-items: center;
-    gap: 12px;
     opacity: 0;
     transform: translateY(-16px);
     transition: opacity 0.4s ease, transform 0.4s ease;
     pointer-events: auto;
 }
-
-.bose-toast-message[data-type="success"] { --bose-toast-accent: #D4AF37; --bose-toast-accent-dark: #7A5A16; --bose-toast-icon: '\2713'; }
-.bose-toast-message[data-type="error"]   { --bose-toast-accent: #A13A4A; --bose-toast-accent-dark: #6E2431; --bose-toast-icon: '\2715'; }
-.bose-toast-message[data-type="warning"] { --bose-toast-accent: #B9722E; --bose-toast-accent-dark: #7A4A1B; --bose-toast-icon: '!';     }
-.bose-toast-message[data-type="info"]    { --bose-toast-accent: #7A3355; --bose-toast-accent-dark: #4E1F37; --bose-toast-icon: '\24D8'; }
 
 .bose-toast-message.is-visible {
     opacity: 1;
@@ -734,80 +711,6 @@ img {
 .bose-toast-message.is-leaving {
     opacity: 0;
     transform: translateY(-20px);
-}
-
-.bose-toast-icon {
-    flex-shrink: 0;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    /* 🛡️🆕 [إصلاح إتاحة - سبتمبر 2026]: كانت الدايرة بلون --bose-toast-accent
-       الفاتح (زي الدهبي #D4AF37) - العلامة البيضاء جواها كان تباينها 2.10:1
-       بس، فاشلة حتى في أقل حد مسموح للأيقونات الرسومية (3:1). --accent-dark
-       نفس درجة اللون بس أغمق، وبيوصل لتباين 6.36:1 - 13.33:1 حسب النوع. */
-    background-color: var(--bose-toast-accent-dark);
-    color: var(--bose-white);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    font-weight: 700;
-}
-.bose-toast-icon::before {
-    content: var(--bose-toast-icon);
-}
-
-.bose-toast-body {
-    flex: 1;
-    min-width: 0;
-}
-
-.bose-toast-text {
-    font-family: var(--bose-font, 'Cairo', sans-serif);
-}
-
-/* 🆕 شريط تقدّم بيوضّح بصرياً كام ثانية باقية قبل ما الإشعار يختفي - ومهم
-   إنه بيتوقف تماماً لو العميل حطّ إيده/دوسته (pause on hover/focus) عشان
-   محدش يضطر "يلحق" يقرأ الرسالة قبل ما تختفي، خصوصاً لضعاف القراءة والنظر. */
-.bose-toast-progress {
-    height: 3px;
-    background-color: rgba(0, 0, 0, 0.07);
-    border-radius: 2px;
-    margin-top: 8px;
-    overflow: hidden;
-}
-.bose-toast-progress-fill {
-    height: 100%;
-    width: 100%;
-    background-color: var(--bose-toast-accent);
-}
-
-.bose-toast-close {
-    flex-shrink: 0;
-    background: none;
-    border: none;
-    color: rgba(17, 17, 17, 0.35);
-    font-size: 20px;
-    line-height: 1;
-    cursor: pointer;
-    padding: 2px 4px;
-    align-self: flex-start;
-}
-.bose-toast-close:hover,
-.bose-toast-close:focus-visible {
-    color: rgba(17, 17, 17, 0.7);
-}
-
-/* 🆕 احترام تفضيل "تقليل الحركة" لو العميل مفعّله في جهازه - الإشعار لسه
-   بيظهر ويختفي، بس من غير أنيميشن انزلاق/تلاشي يقدر يضايق حد حساس للحركة. */
-@media (prefers-reduced-motion: reduce) {
-    .bose-toast-message {
-        transition: opacity 0.15s linear;
-        transform: none !important;
-    }
-    .bose-toast-progress-fill {
-        transition: none !important;
-    }
 }
 /* ==========================================================================
    👑👑 [مرحلة جديدة]: نافذة "حمّلي تطبيقنا" - بهوية حلويات بوسي الكاملة
@@ -892,7 +795,7 @@ img {
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle, rgba(255, 145, 164, 0.20) 0%, rgba(255, 145, 164, 0.08) 65%, rgba(255, 145, 164, 0) 100%);
+    background: radial-gradient(circle, rgba(var(--bose-pink-rgb), 0.20) 0%, rgba(var(--bose-pink-rgb), 0.08) 65%, rgba(var(--bose-pink-rgb), 0) 100%);
     border-radius: 50%;
 }
 .bose-app-install-mascot-img {
@@ -921,7 +824,7 @@ img {
 
 .bose-app-install-cta-btn {
     width: 100%;
-    background: var(--bose-pink-text, #FF91A4);
+    background: var(--bose-pink-text, var(--bose-pink));
     color: #FFFFFF;
     border: none;
     border-radius: var(--bose-radius-pill);
@@ -935,12 +838,12 @@ img {
     justify-content: center;
     gap: 8px;
     transition: var(--bose-transition-fast, all 0.25s ease);
-    box-shadow: 0 10px 24px rgba(255, 145, 164, 0.35);
+    box-shadow: 0 10px 24px rgba(var(--bose-pink-rgb), 0.35);
 }
 .bose-app-install-cta-btn:hover { filter: brightness(1.05); transform: translateY(-1px); }
 
 .bose-app-install-ios-note {
-    background: rgba(255, 145, 164, 0.08);
+    background: rgba(var(--bose-pink-rgb), 0.08);
     color: var(--bose-black, #111111);
     border-radius: var(--bose-radius-md);
     padding: 14px 16px;
@@ -950,7 +853,7 @@ img {
     align-items: center;
     gap: 10px;
 }
-.bose-app-install-ios-note i { color: var(--bose-pink-text, #FF91A4); font-size: 16px; flex-shrink: 0; }
+.bose-app-install-ios-note i { color: var(--bose-pink-text, var(--bose-pink)); font-size: 16px; flex-shrink: 0; }
 
 .bose-app-install-secondary-link {
     background: none;
@@ -983,7 +886,7 @@ img {
 .bose-app-install-dont-show-label input[type="checkbox"] {
     width: 15px;
     height: 15px;
-    accent-color: var(--bose-pink-text, #FF91A4);
+    accent-color: var(--bose-pink-text, var(--bose-pink));
     cursor: pointer;
     margin: 0;
 }
@@ -1033,7 +936,7 @@ img {
     width: 28px;
     height: 28px;
     border-radius: 50%;
-    background: rgba(255, 145, 164, 0.12);
+    background: rgba(var(--bose-pink-rgb), 0.12);
     border: none;
     color: var(--bose-pink-text);
     font-size: 16px;
@@ -1071,9 +974,9 @@ img {
     display: flex;
     align-items: center;
     gap: 6px;
-    background: rgba(255, 145, 164, 0.10);
+    background: rgba(var(--bose-pink-rgb), 0.10);
     color: var(--bose-black);
-    border: 1px solid rgba(255, 145, 164, 0.35);
+    border: 1px solid rgba(var(--bose-pink-rgb), 0.35);
     border-radius: var(--bose-radius-sm, 8px);
     padding: 6px 10px;
     font-size: 12px;
@@ -1144,7 +1047,7 @@ img {
 }
 
 .bose-skeleton-block {
-    background: linear-gradient(90deg, rgba(255, 145, 164, 0.08) 25%, rgba(255, 145, 164, 0.16) 37%, rgba(255, 145, 164, 0.08) 63%);
+    background: linear-gradient(90deg, rgba(var(--bose-pink-rgb), 0.08) 25%, rgba(var(--bose-pink-rgb), 0.16) 37%, rgba(var(--bose-pink-rgb), 0.08) 63%);
     background-size: 800px 100%;
     animation: boseSkeletonShimmer 1.6s ease-in-out infinite;
     border-radius: var(--bose-radius-sm, 8px);
@@ -1153,7 +1056,7 @@ img {
 @media (prefers-reduced-motion: reduce) {
     .bose-skeleton-block {
         animation: none;
-        background: rgba(255, 145, 164, 0.1);
+        background: rgba(var(--bose-pink-rgb), 0.1);
     }
 }
 

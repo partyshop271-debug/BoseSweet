@@ -53,7 +53,7 @@
     font-weight: 700 !important;
     font-size: 0.85rem;
     padding: 10px 20px;
-    border: 1px solid rgba(255, 145, 164, 0.3);
+    border: 1px solid rgba(var(--bose-pink-rgb), 0.3);
     background: #FFFFFF;
     color: #111111;
     border-radius: var(--bose-radius-pill);
@@ -62,10 +62,10 @@
 }
 
 .bose-filter-tab-pill.active {
-    background-color: var(--bose-pink-text, #FF91A4);
+    background-color: var(--bose-pink-text, var(--bose-pink));
     color: #FFFFFF;
-    border-color: var(--bose-pink-text, #FF91A4);
-    box-shadow: 0 4px 12px rgba(255, 145, 164, 0.2);
+    border-color: var(--bose-pink-text, var(--bose-pink));
+    box-shadow: 0 4px 12px rgba(var(--bose-pink-rgb), 0.2);
 }
 /* [ملاحظة توافق]: الحركة التلقائية اتنقلت بالكامل لـ core-engine.js (requestAnimationFrame)
    بدل @keyframes CSS، عشان تقدر تستجيب للسحب اليدوي بسلاسة من غير أي قفزة أو تعارض
@@ -99,7 +99,7 @@
     height: 39px;
     flex-shrink: 0;
     border-radius: 50%;
-    background-color: rgba(255, 145, 164, 0.12);
+    background-color: rgba(var(--bose-pink-rgb), 0.12);
     color: var(--bose-pink-text);
     font-size: 19.5px;
     transition: var(--bose-transition-fast);
@@ -123,7 +123,7 @@
 .bose-offers-slider-section {
     width: 100%;
     padding: 40px 0;
-    background-color: rgba(255, 145, 164, 0.02);
+    background-color: rgba(var(--bose-pink-rgb), 0.02);
     border-top: var(--bose-border-pink);
     border-bottom: var(--bose-border-pink);
 }
@@ -210,30 +210,61 @@
     font-size: 10px;
 }
 
-/* 🎉 [المواسم والمناسبات]: شارة نصية بسيطة داخل تدفق الكارت العادي (مش
-   position:absolute) عشان محدّش يتعارض مع شارة الخصم (أعلى يمين) أو زرار
-   المفضلة (أعلى شمال) اللي شاغلين الركنين العلويين بالفعل. اللون الافتراضي
-   بينك العلامة - بيتغير بس لو المناسبة عندها accentColor مضبوط من لوحة التحكم. */
-.bose-season-badge-inline {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    background: var(--bose-pink);
-    color: var(--bose-white);
-    font-size: 12px;
-    font-weight: 700;
-    padding: 4px 11px;
-    border-radius: 20px;
-    margin: 8px 0 2px;
-    width: fit-content;
+/* 🎉👑 [المواسم والمناسبات]: ريبون قطري حقيقي في الزاوية العلوية اليسرى لكارت
+   المنتج - بيتقص جوه حدود الكارت بفضل overflow:hidden الموجودة أصلاً على
+   .product-card-unified. z-index أقل من زرار المفضلة (3) وشارة الخصم (2) عشان
+   ميغطيش عليهم لو اتصادفوا في نفس الركن - بس هو أصلاً في الركن الشمال والباقي
+   في اليمين فالتعارض نادر. اللون بياخد متغيّر --bose-pink المركزي مباشرة (مش
+   متغيّر منفصل) عشان يتزامن تلقائياً مع تبديل الثيم الكامل اللي بيحصل من
+   core-engine.js وقت ما مناسبة تبقى شغالة - مفيش أي إعداد لون منفصل هنا. */
+.bose-season-ribbon {
+    position: absolute;
+    top: 18px;
+    left: -38px;
+    z-index: 1;
+    width: 150px;
+    transform: rotate(-45deg);
+    transform-origin: center;
+    text-align: center;
+    pointer-events: none;
 }
 
-/* 🎉 [المواسم والمناسبات]: بانر المناسبة الشغالة على الصفحة الرئيسية. اللون
-   المميز (لو مضبوط من لوحة التحكم) بيتحط بس هنا عبر متغيّر CSS محلي
-   --bose-season-accent، وبيرجع تلقائيًا لبينك العلامة لو مش مضبوط - العنصر
-   التفاعلي الوحيد جواه (زرار الـ CTA) بيستخدم نفس المتغيّر مش لون ثابت جديد. */
+.bose-season-ribbon span {
+    display: block;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--bose-pink), color-mix(in srgb, var(--bose-pink) 80%, black));
+    color: var(--bose-white);
+    font-size: 11.5px;
+    font-weight: 800;
+    padding: 5px 0;
+    box-shadow: 0 3px 10px rgba(var(--bose-pink-rgb), 0.35);
+}
+
+/* ✨ [لمعة احتفالية خفيفة]: خط ضوء بيمر على الريبون كل شوية - إحساس بسيط
+   إنه "حي" بدل ما يكون شكل ثابت جامد، من غير ما يبقى مبالغ فيه أو مشتت. */
+.bose-season-ribbon span::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, 0.55) 50%, transparent 70%);
+    transform: translateX(-100%);
+    animation: bose-season-ribbon-shimmer 3.2s ease-in-out infinite;
+}
+
+@keyframes bose-season-ribbon-shimmer {
+    0%, 45% { transform: translateX(-100%); }
+    65%, 100% { transform: translateX(100%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .bose-season-ribbon span::after { animation: none; }
+}
+
+/* 🎉 [المواسم والمناسبات]: بانر المناسبة الشغالة على الصفحة الرئيسية - بياخد
+   لون البينك المركزي (var(--bose-pink)) زي أي عنصر تاني في الموقع، فبيتزامن
+   تلقائياً مع أي مناسبة شغالة من غير أي إعداد لون منفصل هنا. */
 .bose-season-banner {
-    --bose-season-accent: var(--bose-pink);
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -242,8 +273,8 @@
     margin: 28px auto;
     padding: 20px;
     border-radius: var(--bose-radius-lg, 18px);
-    background: linear-gradient(135deg, color-mix(in srgb, var(--bose-season-accent) 14%, var(--bose-white)), var(--bose-white));
-    border: 1px solid color-mix(in srgb, var(--bose-season-accent) 35%, transparent);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--bose-pink) 14%, var(--bose-white)), var(--bose-white));
+    border: 1px solid color-mix(in srgb, var(--bose-pink) 35%, transparent);
 }
 
 .bose-season-banner-media {
@@ -260,9 +291,75 @@
     display: block;
 }
 
+/* 🎉 [لوحة إيموجي احتفالية بديلة عن الصورة]: دايرة متدرجة اللون فيها إيموجي
+   المناسبة كبير في النص، ونفس الإيموجي متناثر حواليها كقصاصات احتفالية خفيفة
+   (زي الكونفيتي) - كل ده CSS ونص بس، من غير أي ملف صورة. */
+.bose-season-banner-visual {
+    position: relative;
+    flex: 0 0 200px;
+    height: 200px;
+    max-width: 100%;
+    border-radius: 50%;
+    background: radial-gradient(circle, color-mix(in srgb, var(--bose-pink) 22%, var(--bose-white)), color-mix(in srgb, var(--bose-pink) 8%, var(--bose-white)));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.bose-season-hero-emoji {
+    position: relative;
+    z-index: 2;
+    font-size: 72px;
+    line-height: 1;
+    filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.15));
+}
+
+.bose-season-confetti-field {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+}
+
+.bose-season-confetti-piece {
+    position: absolute;
+    opacity: 0.35;
+    font-size: 20px;
+}
+.bose-season-confetti-piece:nth-child(1)  { top: 8%;  left: 15%; font-size: 16px; transform: rotate(-15deg); }
+.bose-season-confetti-piece:nth-child(2)  { top: 15%; left: 75%; font-size: 22px; transform: rotate(20deg); }
+.bose-season-confetti-piece:nth-child(3)  { top: 30%; left: 5%;  font-size: 14px; transform: rotate(10deg); }
+.bose-season-confetti-piece:nth-child(4)  { top: 78%; left: 12%; font-size: 20px; transform: rotate(-25deg); }
+.bose-season-confetti-piece:nth-child(5)  { top: 82%; left: 70%; font-size: 16px; transform: rotate(15deg); }
+.bose-season-confetti-piece:nth-child(6)  { top: 5%;  left: 45%; font-size: 14px; transform: rotate(-10deg); }
+.bose-season-confetti-piece:nth-child(7)  { top: 60%; left: 88%; font-size: 18px; transform: rotate(30deg); }
+.bose-season-confetti-piece:nth-child(8)  { top: 90%; left: 45%; font-size: 15px; transform: rotate(-20deg); }
+.bose-season-confetti-piece:nth-child(9)  { top: 45%; left: 90%; font-size: 13px; transform: rotate(5deg); }
+.bose-season-confetti-piece:nth-child(10) { top: 48%; left: 3%;  font-size: 17px; transform: rotate(-30deg); }
+
+@media (max-width: 640px) {
+    .bose-season-banner-visual { flex-basis: 140px; height: 140px; }
+    .bose-season-hero-emoji { font-size: 52px; }
+}
+
 .bose-season-banner-content {
     flex: 1 1 280px;
     min-width: 220px;
+}
+
+/* ⏳ [عدّاد المناسبة]: شارة صغيرة فوق العنوان بتوضح كام يوم باقي على المناسبة
+   (أو إنها جارية دلوقتي) - بتدي إحساس إلحاح لطيف بيشجع الطلب بدري. */
+.bose-season-countdown {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: color-mix(in srgb, var(--bose-pink) 12%, var(--bose-white));
+    color: var(--bose-pink);
+    font-size: 0.8rem;
+    font-weight: 800;
+    padding: 5px 12px;
+    border-radius: 20px;
+    margin-bottom: 10px;
 }
 
 .bose-season-banner-content h2 {
@@ -281,7 +378,7 @@
 
 .bose-season-banner-cta {
     display: inline-block;
-    background: var(--bose-season-accent);
+    background: var(--bose-pink);
     color: var(--bose-white) !important;
     font-weight: 700;
     padding: 10px 26px;
@@ -390,7 +487,7 @@
 }
 
 .search-modal-header .bose-nav-btn:hover {
-    background-color: rgba(255, 145, 164, 0.15);
+    background-color: rgba(var(--bose-pink-rgb), 0.15);
     color: var(--bose-pink-text);
 }
 
@@ -506,7 +603,7 @@
     font-size: 14px;
     font-weight: 700;
     color: var(--bose-pink-text);
-    background-color: rgba(255, 145, 164, 0.1);
+    background-color: rgba(var(--bose-pink-rgb), 0.1);
     padding: 6px 14px;
     border-radius: var(--bose-radius-pill);
     white-space: nowrap;
@@ -573,7 +670,7 @@
     height: 100vh !important;
     background-color: var(--bose-white) !important;
     z-index: var(--bose-z-sidebar-drawer) !important;
-    box-shadow: -12px 0 45px rgba(255, 145, 164, 0.16) !important;
+    box-shadow: -12px 0 45px rgba(var(--bose-pink-rgb), 0.16) !important;
     transform: translateX(100%) !important;
     transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1) !important;
     display: flex !important;
@@ -592,7 +689,7 @@
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
-    background-color: rgba(255,145,164,0.02) !important;
+    background-color: rgba(var(--bose-pink-rgb),0.02) !important;
 }
 
 .sidebar-logo-container {
@@ -651,7 +748,7 @@
     text-transform: uppercase !important;
     letter-spacing: 1.2px !important;
     padding: 0 16px 12px 16px !important;
-    border-bottom: 1px dashed rgba(255, 145, 164, 0.2) !important;
+    border-bottom: 1px dashed rgba(var(--bose-pink-rgb), 0.2) !important;
     margin-bottom: 12px !important;
 }
 
@@ -660,7 +757,7 @@
     width: 100%;
     background: none;
     border: none;
-    border-bottom: 1px dashed rgba(255, 145, 164, 0.2) !important;
+    border-bottom: 1px dashed rgba(var(--bose-pink-rgb), 0.2) !important;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -727,7 +824,7 @@
 }
 
 .sidebar-link-item a:hover {
-    background-color: rgba(255, 145, 164, 0.06) !important;
+    background-color: rgba(var(--bose-pink-rgb), 0.06) !important;
     color: var(--bose-pink-text) !important;
     padding-right: 24px !important;
 }
@@ -741,7 +838,7 @@
 .sidebar-footer-contacts {
     padding: 24px 20px !important;
     border-top: var(--bose-border-pink) !important;
-    background-color: rgba(255,145,164,0.01) !important;
+    background-color: rgba(var(--bose-pink-rgb),0.01) !important;
     display: flex !important;
     flex-direction: column !important;
     gap: 12px !important;
@@ -763,21 +860,21 @@
 
 .sidebar-footer-contacts .sidebar-contact-pill:nth-child(1) {
     background-color: #FFFFFF !important;
-    color: #FF91A4 !important;
-    border: 2px solid #FF91A4 !important;
+    color: var(--bose-pink) !important;
+    border: 2px solid var(--bose-pink) !important;
     box-shadow: var(--bose-shadow-glow) !important;
 }
 
 .sidebar-footer-contacts .sidebar-contact-pill:nth-child(1):hover {
-    background-color: #FF91A4 !important;
+    background-color: var(--bose-pink) !important;
     color: #FFFFFF !important;
     box-shadow: var(--bose-shadow-hover) !important;
 }
 
 .sidebar-footer-contacts .sidebar-contact-pill:nth-child(2) {
-    background-color: rgba(255, 145, 164, 0.04) !important;
+    background-color: rgba(var(--bose-pink-rgb), 0.04) !important;
     color: var(--bose-black) !important;
-    border: 1px solid rgba(255, 145, 164, 0.12) !important;
+    border: 1px solid rgba(var(--bose-pink-rgb), 0.12) !important;
 }
 
 .sidebar-footer-contacts .sidebar-contact-pill:nth-child(2):hover {
@@ -931,7 +1028,7 @@
    بدل ما الفيديوهين الاتنين يبدأوا يتحمّلوا ويشتغلوا فور فتح الصفحة وهما لسه
    تحت خالص برّه الشاشة، وده كان بيستهلك بيانات وأداء من غير أي داعي حقيقي. */
 .bose-lazy-video-frame:not(.bose-video-loaded) {
-    background: linear-gradient(110deg, rgba(255,145,164,0.08) 8%, rgba(255,145,164,0.18) 18%, rgba(255,145,164,0.08) 33%);
+    background: linear-gradient(110deg, rgba(var(--bose-pink-rgb),0.08) 8%, rgba(var(--bose-pink-rgb),0.18) 18%, rgba(var(--bose-pink-rgb),0.08) 33%);
     background-size: 200% 100%;
     animation: boseVideoSkeletonPulse 1.6s linear infinite;
 }
@@ -1275,7 +1372,7 @@
     margin: 0 0 12px 0;
     font-size: 0.82rem;
     font-weight: 700;
-    color: var(--bose-pink-text, #FF91A4);
+    color: var(--bose-pink-text, var(--bose-pink));
     cursor: pointer;
     text-decoration: underline;
     text-underline-offset: 2px;
@@ -1302,7 +1399,7 @@
 .bose-mini-size-note {
     font-size: 12px;
     font-weight: 700;
-    color: var(--bose-pink-text, #FF91A4);
+    color: var(--bose-pink-text, var(--bose-pink));
     display: flex;
     align-items: center;
     gap: 5px;
@@ -1321,7 +1418,7 @@
     font-weight: 700;
     font-size: 10.5px;
     padding: 5px 10px;
-    border: 1px solid rgba(255, 145, 164, 0.35);
+    border: 1px solid rgba(var(--bose-pink-rgb), 0.35);
     background: #FFFFFF;
     color: var(--bose-black, #111111);
     border-radius: var(--bose-radius-pill);
@@ -1330,9 +1427,9 @@
 }
 
 .bose-card-size-pill.active {
-    background-color: var(--bose-pink-text, #FF91A4);
+    background-color: var(--bose-pink-text, var(--bose-pink));
     color: #FFFFFF;
-    border-color: var(--bose-pink-text, #FF91A4);
+    border-color: var(--bose-pink-text, var(--bose-pink));
 }
 
 .product-card-unified .bose-card-size-pill {
@@ -1351,7 +1448,7 @@
     border: var(--bose-border-pink);
     border-radius: var(--bose-radius-pill);
     padding: 4px 8px;
-    background-color: rgba(255, 145, 164, 0.03); 
+    background-color: rgba(var(--bose-pink-rgb), 0.03); 
 }
 
 .btn-qty-plus, .btn-qty-minus {
@@ -1395,7 +1492,7 @@
     border-radius: var(--bose-radius-sm);
     display: inline-block;
     align-self: center;
-    background-color: rgba(255, 145, 164, 0.01);
+    background-color: rgba(var(--bose-pink-rgb), 0.01);
 }
 
 .btn-add-to-cart {
@@ -1624,7 +1721,7 @@
     border: 2px solid var(--bose-white) !important; 
     text-decoration: none !important; 
     margin: 12px auto 0 auto !important; 
-    box-shadow: 0 8px 26px rgba(255, 145, 164, 0.4) !important;
+    box-shadow: 0 8px 26px rgba(var(--bose-pink-rgb), 0.4) !important;
     transition: background-color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
                 color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
                 border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
@@ -1693,7 +1790,7 @@
     width: 260px;
     height: 260px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(255, 145, 164, 0.16) 0%, rgba(255, 145, 164, 0) 70%);
+    background: radial-gradient(circle, rgba(var(--bose-pink-rgb), 0.16) 0%, rgba(var(--bose-pink-rgb), 0) 70%);
     animation: boseBackdropDrift 9s ease-in-out infinite;
 }
 .bose-isolated-backdrop-framework::before { top: -60px; inset-inline-end: -40px; }
@@ -1966,8 +2063,8 @@
 .bose-pride-statistics-section {
     padding: 70px 20px;
     background-color: var(--bose-white);
-    border-top: 1px solid rgba(255, 145, 164, 0.12);
-    border-bottom: 1px solid rgba(255, 145, 164, 0.12);
+    border-top: 1px solid rgba(var(--bose-pink-rgb), 0.12);
+    border-bottom: 1px solid rgba(var(--bose-pink-rgb), 0.12);
     box-sizing: border-box;
 }
 
@@ -2017,7 +2114,7 @@
     bottom: 8px;
     inset-inline-start: 27px;
     width: 2px;
-    background: repeating-linear-gradient(to bottom, rgba(255, 145, 164, 0.35) 0 6px, transparent 6px 13px);
+    background: repeating-linear-gradient(to bottom, rgba(var(--bose-pink-rgb), 0.35) 0 6px, transparent 6px 13px);
     z-index: 0;
 }
 
@@ -2074,7 +2171,7 @@
 
 .bose-timeline-kicker {
     display: inline-block;
-    background: var(--bose-pink-light, rgba(255, 145, 164, 0.08));
+    background: var(--bose-pink-light, rgba(var(--bose-pink-rgb), 0.08));
     color: var(--bose-pink-text);
     font-size: 12px;
     font-weight: 700;
@@ -2287,7 +2384,7 @@
 
 .footer-copyright-block {
     width: 100% !important;
-    border-top: 1px solid rgba(255, 145, 164, 0.12) !important;
+    border-top: 1px solid rgba(var(--bose-pink-rgb), 0.12) !important;
     padding-top: 30px !important;
     margin-top: 20px !important;
     font-size: 14px !important;
@@ -2333,7 +2430,7 @@
     background-clip: content-box !important;
     margin: 0 !important;
     border-radius: 50% !important;
-    background-color: rgba(255, 145, 164, 0.25) !important;
+    background-color: rgba(var(--bose-pink-rgb), 0.25) !important;
     cursor: pointer !important;
     transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
                 width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
@@ -2367,8 +2464,8 @@
     justify-content: center;
     gap: 8px;
     text-align: center;
-    background: rgba(255, 145, 164, 0.08);
-    color: var(--bose-pink-text, #FF91A4);
+    background: rgba(var(--bose-pink-rgb), 0.08);
+    color: var(--bose-pink-text, var(--bose-pink));
     font-weight: 700;
     font-size: 13.5px;
     font-family: 'Cairo', sans-serif;
@@ -2385,7 +2482,7 @@
    ========================================================================== */
 .bose-app-promo-section {
     width: 100%;
-    background: linear-gradient(135deg, #FF91A4 0%, #FF91A4 55%, #FF91A4 100%);
+    background: linear-gradient(135deg, var(--bose-pink) 0%, var(--bose-pink) 55%, var(--bose-pink) 100%);
     padding: 56px 20px;
     overflow: hidden;
     position: relative;
@@ -2404,7 +2501,7 @@
     position: absolute;
     bottom: -80px; left: -80px;
     width: 280px; height: 280px;
-    background: rgba(255, 145, 164, 0.12);
+    background: rgba(var(--bose-pink-rgb), 0.12);
     border-radius: 50%;
 }
 
@@ -2444,7 +2541,7 @@
     border-radius: var(--bose-radius-pill);
     margin-bottom: 16px;
 }
-.bose-app-promo-eyebrow i { color: var(--bose-gold, #FF91A4); }
+.bose-app-promo-eyebrow i { color: var(--bose-gold, var(--bose-pink)); }
 
 .bose-app-promo-title {
     font-size: clamp(28px, 5vw, 40px);
@@ -2490,7 +2587,7 @@
     background: rgba(255,255,255,0.3);
     transform: translateY(-1px);
 }
-.bose-app-promo-pill i { color: var(--bose-gold, #FF91A4); }
+.bose-app-promo-pill i { color: var(--bose-gold, var(--bose-pink)); }
 
 .bose-app-promo-store-btns {
     display: flex;
@@ -2520,7 +2617,7 @@
 
 .bose-app-store-btn-filled {
     background: #FFFFFF;
-    color: var(--bose-pink-text, #FF91A4);
+    color: var(--bose-pink-text, var(--bose-pink));
     border-color: #FFFFFF;
 }
 .bose-app-store-btn-filled:hover { background: rgba(255,255,255,0.9); }
@@ -2573,18 +2670,18 @@
 .mock-app-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
 .mock-app-header img { width: 26px; height: 26px; border-radius: 50%; }
 .mock-app-header strong { font-size: 13px; color: var(--bose-black, #111); }
-.mock-hero-strip { background: rgba(255,145,164,0.12); color: var(--bose-pink-text, #FF91A4); font-size: 11px; font-weight: 700; text-align: center; padding: 10px; border-radius: var(--bose-radius-sm); margin-bottom: 12px; }
+.mock-hero-strip { background: rgba(var(--bose-pink-rgb),0.12); color: var(--bose-pink-text, var(--bose-pink)); font-size: 11px; font-weight: 700; text-align: center; padding: 10px; border-radius: var(--bose-radius-sm); margin-bottom: 12px; }
 .mock-product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.mock-product-card { background: #FFFFFF; border: 1px solid rgba(255,145,164,0.15); border-radius: var(--bose-radius-sm); height: 78px; overflow: hidden; position: relative; }
+.mock-product-card { background: #FFFFFF; border: 1px solid rgba(var(--bose-pink-rgb),0.15); border-radius: var(--bose-radius-sm); height: 78px; overflow: hidden; position: relative; }
 .mock-product-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .mock-product-card .mock-product-name { position: absolute; inset: auto 0 0 0; background: linear-gradient(0deg, rgba(0,0,0,0.55), transparent); color: #fff; font-size: 8.5px; font-weight: 700; padding: 3px 6px 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 .mock-rewards-title { font-size: 15px; font-weight: 800; color: var(--bose-black, #111); margin-bottom: 12px; }
-.mock-points-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--bose-gold, #FF91A4); color: #fff; font-size: 12px; font-weight: 800; padding: 6px 14px; border-radius: var(--bose-radius-pill); margin-bottom: 14px; }
+.mock-points-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--bose-gold, var(--bose-pink)); color: #fff; font-size: 12px; font-weight: 800; padding: 6px 14px; border-radius: var(--bose-radius-pill); margin-bottom: 14px; }
 .mock-progress-track { width: 100%; height: 8px; background: #FFFFFF; border-radius: var(--bose-radius-pill); margin-bottom: 16px; overflow: hidden; }
-.mock-progress-fill { width: 62%; height: 100%; background: var(--bose-pink, #FF91A4); border-radius: var(--bose-radius-pill); }
-.mock-reward-row { display: flex; align-items: center; gap: 8px; font-size: 11px; color: #111111; background: rgba(255, 145, 164, 0.08); padding: 10px; border-radius: var(--bose-radius-sm); margin-bottom: 8px; }
-.mock-reward-row i { color: var(--bose-pink-text, #FF91A4); }
+.mock-progress-fill { width: 62%; height: 100%; background: var(--bose-pink, var(--bose-pink)); border-radius: var(--bose-radius-pill); }
+.mock-reward-row { display: flex; align-items: center; gap: 8px; font-size: 11px; color: #111111; background: rgba(var(--bose-pink-rgb), 0.08); padding: 10px; border-radius: var(--bose-radius-sm); margin-bottom: 8px; }
+.mock-reward-row i { color: var(--bose-pink-text, var(--bose-pink)); }
 
 .mock-cart-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
 .mock-cart-thumb { width: 46px; height: 46px; background: #FFFFFF; border-radius: var(--bose-radius-sm); flex-shrink: 0; overflow: hidden; }
@@ -2593,15 +2690,15 @@
 .mock-cart-lines span { display: block; height: 8px; background: #FFFFFF; border-radius: 4px; }
 .mock-cart-lines span:last-child { width: 50%; }
 .mock-cart-lines .mock-cart-name { height: auto; background: none; font-size: 11px; font-weight: 700; color: var(--bose-black, #111); border-radius: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.mock-cart-lines .mock-cart-price { height: auto; background: none; font-size: 10px; font-weight: 700; color: var(--bose-pink-text, #FF91A4); border-radius: 0; width: auto !important; }
-.mock-checkout-btn { width: 100%; background: var(--bose-pink-text, #FF91A4); color: #fff; border: none; border-radius: var(--bose-radius-pill); padding: 12px; font-family: 'Cairo', sans-serif; font-weight: 800; font-size: 12.5px; margin-top: 10px; }
+.mock-cart-lines .mock-cart-price { height: auto; background: none; font-size: 10px; font-weight: 700; color: var(--bose-pink-text, var(--bose-pink)); border-radius: 0; width: auto !important; }
+.mock-checkout-btn { width: 100%; background: var(--bose-pink-text, var(--bose-pink)); color: #fff; border: none; border-radius: var(--bose-radius-pill); padding: 12px; font-family: 'Cairo', sans-serif; font-weight: 800; font-size: 12.5px; margin-top: 10px; }
 
 /* ---------- أيقونات عائمة حوالين الموبايل ---------- */
 .bose-app-promo-float-badge {
     position: absolute;
     width: 48px; height: 48px;
     background: #FFFFFF;
-    color: var(--bose-pink-text, #FF91A4);
+    color: var(--bose-pink-text, var(--bose-pink));
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -2610,10 +2707,10 @@
     box-shadow: 0 10px 25px rgba(0,0,0,0.18);
     animation: boseFloatBadgeBounce 3.4s ease-in-out infinite;
 }
-.badge-pos-1 { top: 6%; right: -4%; animation-delay: 0s; color: var(--bose-gold, #FF91A4); }
+.badge-pos-1 { top: 6%; right: -4%; animation-delay: 0s; color: var(--bose-gold, var(--bose-pink)); }
 .badge-pos-2 { top: 30%; left: -6%; animation-delay: 0.5s; }
 .badge-pos-3 { bottom: 30%; right: -6%; animation-delay: 1s; }
-.badge-pos-4 { bottom: 8%; left: -4%; animation-delay: 1.5s; color: var(--bose-gold, #FF91A4); }
+.badge-pos-4 { bottom: 8%; left: -4%; animation-delay: 1.5s; color: var(--bose-gold, var(--bose-pink)); }
 
 @keyframes boseFloatBadgeBounce {
     0%, 100% { transform: translateY(0); }
@@ -2631,16 +2728,16 @@
    أونلاين من عندنا لأول مرة، بيشرحله الرحلة كاملة من الاختيار لحد التوصيل)
    ========================================================================== */
 .bose-howto-section {
-    background: rgba(255, 145, 164, 0.05);
-    border-top: 1px dashed rgba(255, 145, 164, 0.3);
-    border-bottom: 1px dashed rgba(255, 145, 164, 0.3);
+    background: rgba(var(--bose-pink-rgb), 0.05);
+    border-top: 1px dashed rgba(var(--bose-pink-rgb), 0.3);
+    border-bottom: 1px dashed rgba(var(--bose-pink-rgb), 0.3);
 }
 
 .bose-howto-badge {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    background: var(--bose-pink-text, #FF91A4);
+    background: var(--bose-pink-text, var(--bose-pink));
     color: #FFFFFF;
     font-weight: 700;
     font-size: 0.8rem;
@@ -2672,7 +2769,7 @@
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    background: var(--bose-pink-text, #FF91A4);
+    background: var(--bose-pink-text, var(--bose-pink));
     color: #FFFFFF;
     font-family: 'Cairo', sans-serif;
     font-weight: 800;
@@ -2724,8 +2821,8 @@
     height: 40px;
     border-radius: 50%;
     background: #FFFFFF;
-    border: 2px solid var(--bose-pink-text, #FF91A4);
-    color: var(--bose-pink-text, #FF91A4);
+    border: 2px solid var(--bose-pink-text, var(--bose-pink));
+    color: var(--bose-pink-text, var(--bose-pink));
     font-weight: 800;
     font-size: 1rem;
     display: flex;
@@ -2737,7 +2834,7 @@
 .bose-howto-step-line {
     width: 2px;
     flex: 1;
-    background: repeating-linear-gradient(to bottom, var(--bose-pink-text, #FF91A4) 0 6px, transparent 6px 12px);
+    background: repeating-linear-gradient(to bottom, var(--bose-pink-text, var(--bose-pink)) 0 6px, transparent 6px 12px);
     margin: 4px 0;
 }
 
@@ -2759,7 +2856,7 @@
 }
 
 .bose-howto-step-title i {
-    color: var(--bose-pink-text, #FF91A4);
+    color: var(--bose-pink-text, var(--bose-pink));
     font-size: 0.95rem;
 }
 
@@ -2771,7 +2868,7 @@
 }
 
 .bose-howto-step-desc strong {
-    color: var(--bose-pink-text, #FF91A4);
+    color: var(--bose-pink-text, var(--bose-pink));
     font-weight: 800;
 }
 
@@ -2782,14 +2879,14 @@
    وتفاعل واضح عند الـhover/focus. */
 .bose-howto-inline-link {
     text-decoration: underline;
-    text-decoration-color: rgba(255, 145, 164, 0.4);
+    text-decoration-color: rgba(var(--bose-pink-rgb), 0.4);
     text-underline-offset: 3px;
     transition: text-decoration-color 0.2s ease, opacity 0.2s ease;
 }
 
 .bose-howto-inline-link:hover,
 .bose-howto-inline-link:focus-visible {
-    text-decoration-color: var(--bose-pink-text, #FF91A4);
+    text-decoration-color: var(--bose-pink-text, var(--bose-pink));
     opacity: 0.85;
 }
 
@@ -2803,14 +2900,14 @@
 
 .bose-howto-callout-card {
     background: #FFFFFF;
-    border: 1px solid var(--bose-pink-text, #FF91A4);
+    border: 1px solid var(--bose-pink-text, var(--bose-pink));
     border-radius: var(--bose-radius-md);
     padding: 16px;
     text-align: right;
 }
 
 .bose-howto-callout-card i {
-    color: var(--bose-pink-text, #FF91A4);
+    color: var(--bose-pink-text, var(--bose-pink));
     font-size: 1.1rem;
     margin-bottom: 8px;
     display: block;

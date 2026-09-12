@@ -16,9 +16,9 @@
    هذا الملف الآن يعتمد على متغيرات global.css مباشرة، ويضيف فقط المتغيرات الخاصة
    بالمحاكيات تحديداً واللي مش موجودة في أي ملف تاني. */
 :root {
-    --bose-pink-light: rgba(255, 145, 164, 0.04);
-    --bose-pink-shadow: 0 12px 40px rgba(255, 145, 164, 0.12);
-    --bose-gray-border: #FF91A4;
+    --bose-pink-light: rgba(var(--bose-pink-rgb), 0.04);
+    --bose-pink-shadow: 0 12px 40px rgba(var(--bose-pink-rgb), 0.12);
+    --bose-gray-border: var(--bose-pink);
     --bose-gray-light: #FFFFFF;
 }
 
@@ -143,7 +143,7 @@
     justify-content: space-between;
     gap: 10px;
     background: #fff;
-    border: 1px solid rgba(255, 145, 164, 0.25);
+    border: 1px solid rgba(var(--bose-pink-rgb), 0.25);
     border-radius: var(--bose-radius-sm, 10px);
     padding: 10px 14px;
 }
@@ -234,7 +234,7 @@
     background: var(--bose-pink-text) !important;
     border-color: var(--bose-pink-text) !important;
     color: var(--bose-white) !important;
-    box-shadow: 0 4px 15px rgba(255, 145, 164, 0.3) !important;
+    box-shadow: 0 4px 15px rgba(var(--bose-pink-rgb), 0.3) !important;
 }
 
 .step-node.completed {
@@ -283,7 +283,7 @@
     border-radius: var(--bose-radius-md);
     padding: 20px;
     margin-bottom: 24px;
-    box-shadow: 0 6px 20px rgba(255, 145, 164, 0.02);
+    box-shadow: 0 6px 20px rgba(var(--bose-pink-rgb), 0.02);
     transition: border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1),
                 box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     box-sizing: border-box;
@@ -412,7 +412,7 @@
     font-weight: 700;
     color: var(--bose-black);
     background: var(--bose-pink-light);
-    border: 1px solid rgba(255, 145, 164, 0.3);
+    border: 1px solid rgba(var(--bose-pink-rgb), 0.3);
     border-radius: 30px;
     padding: 10px 16px;
     margin-top: 14px;
@@ -437,7 +437,7 @@
     background: var(--bose-white);
     padding: 6px 12px;
     border-radius: var(--bose-radius-pill);
-    border: 1.5px solid rgba(255, 145, 164, 0.2);
+    border: 1.5px solid rgba(var(--bose-pink-rgb), 0.2);
     box-sizing: border-box;
 }
 
@@ -473,12 +473,12 @@
     background: var(--bose-pink-text) !important;
     border: 1.5px solid var(--bose-pink-text) !important;
     color: var(--bose-white) !important;
-    box-shadow: 0 4px 12px rgba(255, 145, 164, 0.2);
+    box-shadow: 0 4px 12px rgba(var(--bose-pink-rgb), 0.2);
 }
 
 .bose-circular-qty-btn.btn-plus-style:hover {
-    background: #FF91A4 !important;
-    border-color: #FF91A4 !important;
+    background: var(--bose-pink) !important;
+    border-color: var(--bose-pink) !important;
 }
 
 .bose-numerical-input-display {
@@ -496,7 +496,7 @@
     margin-top: 15px;
     padding: 12px;
     background: var(--bose-pink-light);
-    border: 1px solid rgba(255, 145, 164, 0.2);
+    border: 1px solid rgba(var(--bose-pink-rgb), 0.2);
     border-radius: var(--bose-radius-md);
     text-align: center;
     width: 100%;
@@ -562,7 +562,7 @@
     object-fit: cover;
     border-radius: var(--bose-radius-sm);
     border: var(--bose-border-pink);
-    box-shadow: 0 4px 12px rgba(255, 145, 164, 0.1);
+    box-shadow: 0 4px 12px rgba(var(--bose-pink-rgb), 0.1);
     /* 🖼️ [تكبير بملء الشاشة عند الضغط]: راجع initializeBoseLightboxGallery في
        cake-engine.js - أي صورة معاينة مرفوعة (مرجعية أو للطباعة) بقت تفتح بملء
        الشاشة زي باقي صور المحاكي، عشان العميل يتأكد من تفاصيل صورته اللي رفعها. */
@@ -651,7 +651,7 @@
 }
 
 .summary-title {
-    border-bottom: 2px dashed rgba(255, 145, 164, 0.2);
+    border-bottom: 2px dashed rgba(var(--bose-pink-rgb), 0.2);
     padding-bottom: 14px;
     margin: 0 0 20px 0;
     color: var(--bose-black) !important;
@@ -694,7 +694,7 @@
     border-radius: var(--bose-radius-sm) !important;
     font-size: 14px !important;
     font-weight: 700 !important;
-    border: 1px solid rgba(255, 145, 164, 0.15) !important;
+    border: 1px solid rgba(var(--bose-pink-rgb), 0.15) !important;
     color: var(--bose-black) !important;
     animation: boseStepFade 0.25s ease forwards;
 }
@@ -756,11 +756,11 @@
 .premium-nav-btn.primary {
     background: var(--bose-pink-text) !important; /* 🛡️ لون أغمق لضمان تباين كافٍ - زرار "التالي" الأساسي في محاكيات التورت/الورد */
     color: var(--bose-white) !important;
-    box-shadow: 0 4px 15px rgba(255, 145, 164, 0.25) !important;
+    box-shadow: 0 4px 15px rgba(var(--bose-pink-rgb), 0.25) !important;
 }
 
 .premium-nav-btn.primary:hover {
-    background: #FF91A4 !important;
+    background: var(--bose-pink) !important;
     transform: translateY(-2px);
 }
 
@@ -808,7 +808,7 @@
     padding-bottom: 15px;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: thin;
-    scrollbar-color: rgba(255, 145, 164, 0.2) transparent;
+    scrollbar-color: rgba(var(--bose-pink-rgb), 0.2) transparent;
 }
 
 .horizontal-swipe-slider::-webkit-scrollbar {
@@ -816,7 +816,7 @@
 }
 
 .horizontal-swipe-slider::-webkit-scrollbar-thumb {
-    background: rgba(255, 145, 164, 0.2);
+    background: rgba(var(--bose-pink-rgb), 0.2);
     border-radius: var(--bose-radius-sm);
 }
 
@@ -836,7 +836,7 @@
 .portfolio-item-card:hover {
     border-color: var(--bose-pink);
     transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(255, 145, 164, 0.08);
+    box-shadow: 0 8px 24px rgba(var(--bose-pink-rgb), 0.08);
 }
 
 .portfolio-item-img {
@@ -873,7 +873,7 @@
 .bose-giftcard-img-node:active {
     border-color: var(--bose-pink);
     transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(255, 145, 164, 0.08);
+    box-shadow: 0 8px 24px rgba(var(--bose-pink-rgb), 0.08);
 }
 .bose-giftcard-img-node img {
     width: 100%;
@@ -934,7 +934,7 @@
     aspect-ratio: 16 / 9;
     object-fit: cover;
     border-radius: var(--bose-radius-md);
-    border: 1px solid rgba(255, 145, 164, 0.2);
+    border: 1px solid rgba(var(--bose-pink-rgb), 0.2);
     display: block;
 }
 
@@ -1175,7 +1175,7 @@
     justify-content: space-between;
     align-items: center;
     margin-top: 26px;
-    border-top: 1px solid rgba(255,145,164,0.12);
+    border-top: 1px solid rgba(var(--bose-pink-rgb),0.12);
     padding-top: 18px;
     gap: 14px;
 }
@@ -1190,7 +1190,7 @@
     transition: var(--bose-transition);
 }
 .bose-nav-action-btn.bose-next-trigger {
-    background: linear-gradient(135deg, var(--bose-pink), #FF91A4);
+    background: linear-gradient(135deg, var(--bose-pink), var(--bose-pink));
     color: var(--bose-white);
 }
 .bose-nav-action-btn.bose-prev-trigger {
@@ -1228,7 +1228,7 @@
     border: 1px solid var(--bose-gray-border);
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
-    box-shadow: 0 10px 26px rgba(255, 145, 164, 0.28);
+    box-shadow: 0 10px 26px rgba(var(--bose-pink-rgb), 0.28);
 }
 @media (max-width: 480px) {
     .bose-portfolio-img-node { width: 204px; height: 204px; }
@@ -1236,7 +1236,7 @@
 .bose-portfolio-img-node:hover,
 .bose-portfolio-img-node:active {
     transform: scale(1.04) translateY(-3px);
-    box-shadow: 0 16px 34px rgba(255, 145, 164, 0.4);
+    box-shadow: 0 16px 34px rgba(var(--bose-pink-rgb), 0.4);
 }
 .bose-portfolio-img-node img {
     width: 100%;
@@ -1302,13 +1302,13 @@
    - كارت أبيض بسطور مفصولة بخط منقط، وسطر إجمالي بارز بلون البراند. */
 .bose-order-summary-card {
     background: var(--bose-white);
-    border: 1px solid rgba(255,145,164,0.2);
+    border: 1px solid rgba(var(--bose-pink-rgb),0.2);
     border-radius: 18px;
     padding: 18px 20px;
 }
 .bose-order-summary-card .price-item-row {
     padding: 6px 0;
-    border-bottom: 1px dashed rgba(255,145,164,0.2);
+    border-bottom: 1px dashed rgba(var(--bose-pink-rgb),0.2);
 }
 .bose-order-summary-card .price-item-row:last-child { border-bottom: none; }
 .bose-order-summary-total-row {
@@ -1324,7 +1324,7 @@
 }
 .bose-order-summary-total-row span:last-child { color: var(--bose-pink); }
 .bose-inline-add-to-cart-btn {
-    background: linear-gradient(135deg, var(--bose-pink), #FF91A4) !important;
+    background: linear-gradient(135deg, var(--bose-pink), var(--bose-pink)) !important;
     color: var(--bose-white) !important;
     border: none !important;
     padding: 16px !important;
@@ -1335,7 +1335,7 @@
     font-family: 'Cairo' !important;
     width: 100%;
     margin-top: 18px;
-    box-shadow: 0 8px 30px rgba(255, 145, 164, 0.4) !important;
+    box-shadow: 0 8px 30px rgba(var(--bose-pink-rgb), 0.4) !important;
 }
 
 @media (max-width: 767px) {
@@ -1354,7 +1354,7 @@
     align-items: center;
     gap: 14px;
     background: linear-gradient(135deg, var(--bose-pink-light), var(--bose-white));
-    border: 1.5px solid rgba(255, 145, 164, 0.35);
+    border: 1.5px solid rgba(var(--bose-pink-rgb), 0.35);
     border-radius: 20px;
     padding: 16px 18px 20px 18px;
     margin-bottom: 22px;
@@ -1375,7 +1375,7 @@
     align-items: center;
     justify-content: center;
     font-size: 18px;
-    box-shadow: 0 4px 14px rgba(255, 145, 164, 0.4);
+    box-shadow: 0 4px 14px rgba(var(--bose-pink-rgb), 0.4);
 }
 .bose-info-carousel-track {
     flex: 1;
@@ -1409,7 +1409,7 @@
     position: absolute;
     bottom: 0; right: 0; left: 0;
     height: 3px;
-    background: rgba(255, 145, 164, 0.15);
+    background: rgba(var(--bose-pink-rgb), 0.15);
 }
 .bose-info-carousel-progress-fill {
     height: 100%;
