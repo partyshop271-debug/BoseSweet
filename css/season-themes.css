@@ -1,0 +1,94 @@
+/**
+ * season-themes.css - الطبقة الزخرفية والتكاملات البصرية للـ Theme Engine
+ * =====================================================================
+ * 🎨👑 [Theme Engine - المستوى 2 و3]: كل قاعدة هنا مربوطة بـ
+ * [data-bose-theme="..."] (بيتحط على <html> من js/season-theme-engine.js).
+ * لو مفيش مناسبة شغالة، الـ attribute مش موجود، فمفيش أي قاعدة هنا بتتفعّل -
+ * صفر تأثير على الوضع الافتراضي. الملف ده لا يحتوي على أي منطق JS ولا DOM
+ * injection - زخرفة CSS بحتة (خفيفة قد الإمكان زي ما طلبت المواصفة).
+ *
+ * قواعد إلزامية لأي إضافة زخرفية جديدة هنا مستقبلاً:
+ * - pointer-events: none دايمًا (الزخرفة ملهاش أي تفاعل)
+ * - aria-hidden="true" على أي عنصر HTML مرتبط (مفيش نص حقيقي جوه الزخرفة)
+ * - opacity منخفض جدًا (0.04-0.09) - زخرفة خلفية مش تصميم أساسي
+ * - overflow: hidden على العنصر الحاوي - يمنع horizontal scroll نهائيًا
+ * - @media (prefers-reduced-motion: reduce) يوقف أي حركة
+ * - بدون position:fixed أو أي حاجة بتتبع الـ scroll (تكلفة أداء)
+ */
+
+/* ============================= رأس السنة الفاخر ============================= */
+
+/* 🥂 [نمط الزخرفة "stars-sparkle"]: نقط ضوء صغيرة متناثرة بتقنية radial-gradient
+   خفيفة الوزن جدًا (CSS بحت، بدون أي صورة أو SVG) - بديل احترافي وهادئ لفكرة
+   "الإيموجي المتناثر" اللي اتلغت. */
+[data-bose-theme="new-year-luxury"] .bose-season-banner,
+[data-bose-theme="new-year-luxury"] .bose-hero-section {
+    position: relative;
+}
+
+[data-bose-theme="new-year-luxury"] .bose-season-banner::before,
+[data-bose-theme="new-year-luxury"] .bose-hero-section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: var(--bose-season-pattern-opacity, 0.07);
+    background-image:
+        radial-gradient(circle, var(--bose-season-secondary, #C6A15B) 1px, transparent 1.5px),
+        radial-gradient(circle, var(--bose-season-secondary, #C6A15B) 1px, transparent 1.5px);
+    background-size: 90px 90px, 140px 140px;
+    background-position: 0 0, 45px 70px;
+    z-index: 0;
+}
+
+[data-bose-theme="new-year-luxury"] .bose-season-banner > * ,
+[data-bose-theme="new-year-luxury"] .bose-hero-section > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* بانر المناسبة بيستخدم التدرج الناعم بدل الدرجة البمبي الافتراضية */
+[data-bose-theme="new-year-luxury"] .bose-season-banner {
+    background: var(--bose-season-soft-gradient);
+    border-color: var(--bose-season-border-color);
+    overflow: hidden;
+}
+
+/* خط ذهبي رفيع أعلى قسم الهيرو - لمسة فخامة خفيفة جدًا، مش تغيير تصميم */
+[data-bose-theme="new-year-luxury"] .bose-hero-section {
+    overflow: hidden;
+}
+[data-bose-theme="new-year-luxury"] .bose-hero-section::after {
+    content: "";
+    position: absolute;
+    top: 0; right: 0; left: 0;
+    height: 3px;
+    background: var(--bose-season-gradient);
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* الريبون على المنتجات - بورجاندي صلب (تباين 9.94:1 مضمون مع النص الأبيض)
+   مع حد ذهبي رفيع للمسة الفخامة - بدل تدرج كان هيوصل لطرف دهبي فاتح
+   (تباين أقل من الحد الأدنى WCAG AA) في نص الريبون. */
+[data-bose-theme="new-year-luxury"] .bose-season-ribbon span {
+    background: var(--bose-season-primary);
+    box-shadow: 0 3px 10px var(--bose-season-shadow-color);
+    border-bottom: 2px solid var(--bose-season-secondary);
+}
+
+/* لمسة خفيفة جدًا في الفوتر - خط علوي رفيع بلون الثيم، بدون أي عنصر جديد إضافي */
+[data-bose-theme="new-year-luxury"] .bose-footer {
+    border-top: 2px solid var(--bose-season-border-color);
+}
+
+/* ملحوظة: الشريط العلوي المتحرك (topbar marquee) بياخد لونه تلقائيًا عبر
+   السلسلة القديمة (--bose-pink-text يتغذى من --bose-pink) - مفيش داعي لقاعدة
+   منفصلة هنا، وأي محاولة كانت هتتعارض مع !important الموجودة في global.css. */
+
+@media (prefers-reduced-motion: reduce) {
+    [data-bose-theme] * {
+        animation: none !important;
+        transition: none !important;
+    }
+}

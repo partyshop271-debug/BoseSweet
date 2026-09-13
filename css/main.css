@@ -342,6 +342,20 @@
     .bose-season-hero-emoji { font-size: 52px; }
 }
 
+/* 🎨👑 [تصميم مكرّر للمواسم اللي عندها Theme Preset كامل - راجع
+   js/season-theme-engine.js]: دايرة نظيفة بحد رفيع بلون الثيم الثانوي
+   (--bose-season-secondary، عادةً دهبي/فاتح) بدل التدرج البمبي الافتراضي
+   وبدون أي قصاصات إيموجي مبعثرة حوليها - الزخرفة الخفيفة بتيجي من الكارت
+   الحاوي نفسه (season-themes.css) مش من هنا، فمفيش ازدحام بصري. */
+.bose-season-banner-visual-refined {
+    background: var(--bose-season-soft-gradient, radial-gradient(circle, color-mix(in srgb, var(--bose-pink) 22%, var(--bose-white)), color-mix(in srgb, var(--bose-pink) 8%, var(--bose-white))));
+    border: 2px solid var(--bose-season-secondary, var(--bose-pink));
+}
+
+.bose-season-banner-visual-refined .bose-season-hero-emoji {
+    filter: drop-shadow(0 4px 10px var(--bose-season-shadow-color, rgba(0, 0, 0, 0.12)));
+}
+
 .bose-season-banner-content {
     flex: 1 1 280px;
     min-width: 220px;

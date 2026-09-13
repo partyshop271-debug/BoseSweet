@@ -48,6 +48,28 @@
        والسياسات) عشان أي تغيير هنا ينعكس فوراً وبشكل متسق في كل مكان بدل ما
        نصلحه في كل ملف لوحده. */
     --bose-border-pink: 1px solid var(--bose-pink);
+
+    /* 🎨👑 [Theme Engine - المستوى الأول (Global Theme)]: طبقة متغيرات موسّعة
+       فوق --bose-pink القديم - القيم الافتراضية هنا كلها بترجع لهوية بوسي
+       الحالية بالظبط (صفر تأثير بصري لو مفيش مناسبة شغالة أو المناسبة
+       الشغالة لسه من غير themePreset). js/season-theme-engine.js هو الوحيد
+       المسؤول عن تغيير القيم دي وقت تفعيل مناسبة - أي ملف تاني (CSS أو JS)
+       المفروض بس "يقرأ" منها مش "يكتب" فيها. راجع js/season-themes.js لشكل
+       الـ theme object الكامل و js/season-theme-engine.js لمنطق التطبيق. */
+    --bose-season-primary: var(--bose-pink);
+    --bose-season-secondary: var(--bose-black);
+    --bose-season-accent: var(--bose-pink);
+    --bose-season-dark: var(--bose-black);
+    --bose-season-light: var(--bose-white);
+    --bose-season-bg: var(--bose-white);
+    --bose-season-surface: var(--bose-white);
+    --bose-season-text: var(--bose-black);
+    --bose-season-muted-text: rgba(17, 17, 17, 0.62);
+    --bose-season-border-color: var(--bose-pink);
+    --bose-season-shadow-color: rgba(var(--bose-pink-rgb), 0.12);
+    --bose-season-gradient: linear-gradient(135deg, var(--bose-pink), var(--bose-pink));
+    --bose-season-soft-gradient: linear-gradient(135deg, color-mix(in srgb, var(--bose-pink) 12%, var(--bose-white)), var(--bose-white));
+    --bose-season-pattern-opacity: 0; /* 0 = مفيش زخرفة ظاهرة أصلاً لحد ما مناسبة تفعّلها */
     --bose-border-thick: 2px solid var(--bose-pink);
     
     /* صمامات أمان أنميشن السلاسة والتوقيت البصري */
