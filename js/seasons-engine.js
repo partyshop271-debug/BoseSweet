@@ -18,6 +18,10 @@
     function buildEmojiVisualHTML(emoji, safeName) {
         // نفس الإيموجي بيتكرر كخلفية زخرفية خفيفة (تأثير قصاصات احتفالية) خلف
         // الإيموجي الرئيسي الكبير في النص - كله CSS/نص بس، من غير أي صورة.
+        // 🛡️ [مستخدمة بس للمواسم من غير themePreset - توافق قديم]: المواسم
+        // اللي عندها Theme كامل (زي رأس السنة الفاخر) بتستخدم
+        // buildRefinedVisualHTML تحت بدالها - التصميم ده اتنقد إنه "مبعثر ووحش"
+        // فاتسحب من أي مناسبة عندها Theme حقيقي.
         const confettiCount = 10;
         let confettiHtml = "";
         for (let i = 0; i < confettiCount; i++) {
@@ -26,6 +30,22 @@
         return `
             <div class="bose-season-banner-visual" aria-hidden="true">
                 <div class="bose-season-confetti-field">${confettiHtml}</div>
+                <span class="bose-season-hero-emoji">${emoji}</span>
+            </div>
+        `;
+    }
+
+    /**
+     * 🎨👑 [تصميم مكرّر للمواسم اللي عندها Theme Preset كامل]: دايرة واحدة
+     * أنيقة بحد ذهبي رفيع وإيموجي واحد بس في النص - من غير أي قصاصات مبعثرة.
+     * الزخرفة الخفيفة (نقط الضوء) بتيجي من CSS نفسه (season-themes.css) على
+     * الكارت كله مش هنا، فمفيش تكرار أو ازدحام بصري.
+     * @param {string} emoji
+     * @returns {string}
+     */
+    function buildRefinedVisualHTML(emoji) {
+        return `
+            <div class="bose-season-banner-visual bose-season-banner-visual-refined" aria-hidden="true">
                 <span class="bose-season-hero-emoji">${emoji}</span>
             </div>
         `;
@@ -72,10 +92,13 @@
             ? `<a href="${e(banner.target)}" class="bose-season-banner-cta">${e(banner.cta)}</a>`
             : "";
 
-        // صورة حقيقية لو موجودة (أولوية)، وإلا تصميم الإيموجي الاحتفالي، وإلا مفيش وسائط خالص
+        // صورة حقيقية لو موجودة (أولوية)، وإلا تصميم مكرّر لو عندها Theme كامل،
+        // وإلا تصميم الإيموجي القديم (المواسم من غير themePreset)، وإلا مفيش وسائط خالص
         const visualHtml = banner.image
             ? `<div class="bose-season-banner-media"><img src="${window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(banner.image, 900) : e(banner.image)}" alt="${e(banner.title || season.name)}" loading="lazy"></div>`
-            : (banner.emoji ? buildEmojiVisualHTML(banner.emoji, e(banner.title || season.name)) : "");
+            : banner.emoji
+                ? (season.themePreset ? buildRefinedVisualHTML(banner.emoji) : buildEmojiVisualHTML(banner.emoji, e(banner.title || season.name)))
+                : "";
 
         mount.innerHTML = `
             <div class="bose-season-banner">

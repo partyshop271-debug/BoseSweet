@@ -10,34 +10,12 @@
     "use strict";
 
     /**
-     * 🎉👑 [المواسم والمناسبات - الاستبدال الكامل للون البينك]: القرار النهائي
-     * (بعد نقاش صريح): وقت ما مناسبة شغالة وعندها لون مميز، اللون ده بيستبدل
-     * بينك العلامة في *كل حتة* في الموقع (أزرار، بوردرات، أيقونات، ظلال) - مش
-     * لمسة زخرفية محدودة. ده اتحقق تقنياً بتحويل كل الاستخدامات المباشرة للون
-     * البينك (hex #FF91A4 و rgba(255,145,164,...)) في كل ملفات CSS/HTML/JS
-     * الموقع (عدا لوحة التحكم والملفات المستقلة) لمتغيّرين CSS مركزيين:
-     * --bose-pink و --bose-pink-rgb (المعرّفين في css/global.css، وكل باقي
-     * متغيّرات البينك التانية زي --bose-pink-text و--bose-gold و--bose-cream
-     * وغيرهم بقوا كلهم بيرجعوا لنفس المتغيّرين دول). يعني تغيير المتغيّرين دول
-     * هنا فقط كفيل إنه يغيّر لون كل حاجة في الموقع فورًا - مفيش داعي نلمس أي
-     * ملف تاني وقت تفعيل/إلغاء مناسبة.
-     *
-     * الاستثناءات المتعمدة (لأسباب تقنية بحتة، مش قرار تصميم): محتوى meta
-     * theme-color/manifest.json (بيتقروا من المتصفح/النظام مباشرة، مش سياق
-     * CSS، فمعرفش يفهم var()) بيتحدّثوا هنا برمجياً كقيمة حقيقية بدل ما
-     * يعتمدوا على المتغيّر؛ وملفات canvas (js/invoice-image-generator.js) بتقرا
-     * القيمة الفعلية المحسوبة وقت الرسم بدل ما تستخدم var() مباشرة لنفس السبب.
+     * 🎨👑 [Theme Engine - فصل المسؤوليات]: الدالة دي (pickActiveSeasonFrom)
+     * مسؤولة عن سؤال واحد بس: "أنهي مناسبة شغالة دلوقتي؟" - تحديد الـ Theme
+     * وتطبيقه بقى مسؤولية منفصلة تمامًا في js/season-theme-engine.js (راجع
+     * applyForSeason تحت). ده قصدي عشان لو حد احتاج يعرف "المناسبة الشغالة
+     * إيه" من غير ما يطبّق أي حاجة بصريًا، يقدر ينادي الدالة دي لوحدها.
      */
-    function hexToRgbTriplet(hex) {
-        if (!hex || typeof hex !== "string") return null;
-        const m = hex.trim().replace(/^#/, "");
-        const full = m.length === 3 ? m.split("").map((c) => c + c).join("") : m;
-        if (!/^[0-9a-fA-F]{6}$/.test(full)) return null;
-        const r = parseInt(full.slice(0, 2), 16);
-        const g = parseInt(full.slice(2, 4), 16);
-        const b = parseInt(full.slice(4, 6), 16);
-        return `${r}, ${g}, ${b}`;
-    }
 
     /**
      * نفس منطق getActiveBoseSeason (المعرّفة تحت في نفس الملف) بس مستقلة
@@ -89,26 +67,14 @@
     }
 
     /**
-     * بتطبّق (أو بترجع) لون المناسبة الشغالة على كامل الموقع - المتغيّرين
-     * المركزيين، وmeta theme-color (بقيمة حقيقية لإنها مش سياق CSS).
+     * 🎨 [تطبيق الـ Theme - مفوّض بالكامل لـ season-theme-engine.js]: core-engine.js
+     * بيحدد "أنهي مناسبة؟" (pickActiveSeasonFrom) وبس - التطبيق الفعلي
+     * (متغيرات CSS، meta theme-color، الطبقة الزخرفية) شغل الملف التاني تمامًا.
      * @param {Array} seasons
      */
     function applyBoseSeasonTheme(seasons) {
         const active = pickActiveSeasonFrom(seasons);
-        const accentColor = active && active.accentColor;
-        const rgbTriplet = accentColor ? hexToRgbTriplet(accentColor) : null;
-
-        const root = document.documentElement;
-        if (accentColor && rgbTriplet) {
-            root.style.setProperty("--bose-pink", accentColor);
-            root.style.setProperty("--bose-pink-rgb", rgbTriplet);
-        } else {
-            root.style.removeProperty("--bose-pink");
-            root.style.removeProperty("--bose-pink-rgb");
-        }
-
-        const themeMeta = document.querySelector('meta[name="theme-color"]');
-        if (themeMeta) themeMeta.content = accentColor || "#FF91A4";
+        if (window.BoseSeasonThemeEngine) window.BoseSeasonThemeEngine.applyForSeason(active);
     }
 
     // 🚀 مسار سريع: تطبيق فوري من الكاش المحلي (لو موجود) قبل أي طلب شبكة -
