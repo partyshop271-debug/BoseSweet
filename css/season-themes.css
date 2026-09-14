@@ -4,60 +4,105 @@
  * 🎨👑 [Theme Engine - المستوى 2 و3]: كل قاعدة هنا مربوطة بـ
  * [data-bose-theme="..."] (بيتحط على <html> من js/season-theme-engine.js).
  * لو مفيش مناسبة شغالة، الـ attribute مش موجود، فمفيش أي قاعدة هنا بتتفعّل -
- * صفر تأثير على الوضع الافتراضي. الملف ده لا يحتوي على أي منطق JS ولا DOM
- * injection - زخرفة CSS بحتة (خفيفة قد الإمكان زي ما طلبت المواصفة).
+ * صفر تأثير على الوضع الافتراضي.
  *
- * قواعد إلزامية لأي إضافة زخرفية جديدة هنا مستقبلاً:
- * - pointer-events: none دايمًا (الزخرفة ملهاش أي تفاعل)
- * - aria-hidden="true" على أي عنصر HTML مرتبط (مفيش نص حقيقي جوه الزخرفة)
- * - opacity منخفض جدًا (0.04-0.09) - زخرفة خلفية مش تصميم أساسي
+ * العناصر الزخرفية نفسها (SVG) بتتحقن من js/season-decorations.js كـ
+ * <span class="bsn-el bsn-...">؛ الملف ده مسؤول عن مكانها/حجمها/حركتها بس.
+ *
+ * قواعد إلزامية لأي إضافة هنا:
+ * - pointer-events: none دايمًا
  * - overflow: hidden على العنصر الحاوي - يمنع horizontal scroll نهائيًا
  * - @media (prefers-reduced-motion: reduce) يوقف أي حركة
- * - بدون position:fixed أو أي حاجة بتتبع الـ scroll (تكلفة أداء)
+ * - بدون position:fixed (تكلفة أداء وقت الـ scroll)
  */
+
+/* ============================= الطبقة الزخرفية العامة (bsn-*) ============================= */
+/* أي عنصر يتحقن من season-decorations.js بيتبع القواعد دي بغض النظر عن أي preset */
+
+.bsn-decoration-layer {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.bsn-el { position: absolute; display: block; pointer-events: none; }
+
+.bsn-snowflake { width: 16px; height: 16px; opacity: 0.55; animation: bsn-fall 9s linear infinite, bsn-sway 4s ease-in-out infinite; }
+.bsn-star { width: 14px; height: 14px; opacity: 0.5; animation: bsn-twinkle 3.4s ease-in-out infinite; }
+.bsn-sparkle { width: 16px; height: 16px; opacity: 0.6; animation: bsn-twinkle 2.6s ease-in-out infinite; }
+.bsn-ornament { width: 20px; height: 24px; opacity: 0.5; }
+
+.bsn-santa, .bsn-snowman { opacity: 0.92; filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.12)); }
+.bsn-santa svg, .bsn-snowman svg { display: block; height: auto; }
+
+.bsn-gift-cluster { position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); display: flex; align-items: flex-end; gap: -6px; opacity: 0.9; }
+.bsn-gift { width: 34px; }
+.bsn-gift-1 { margin-inline-end: -8px; transform: translateY(4px) rotate(-4deg); }
+.bsn-gift-2 { width: 40px; transform: rotate(3deg); }
+.bsn-gift svg { display: block; width: 100%; height: auto; }
+
+@keyframes bsn-fall {
+    0% { transform: translateY(-10%); }
+    100% { transform: translateY(340%); }
+}
+@keyframes bsn-sway {
+    0%, 100% { margin-inline-start: 0; }
+    50% { margin-inline-start: 14px; }
+}
+@keyframes bsn-twinkle {
+    0%, 100% { opacity: 0.25; transform: scale(0.85); }
+    50% { opacity: 0.75; transform: scale(1.05); }
+}
+
+@media (max-width: 640px) {
+    /* موبايل: عناصر أصغر وأقل كثافة - أول نصف العناصر بس (nth-child) بيفضل ظاهر */
+    .bsn-snowflake, .bsn-star, .bsn-sparkle { width: 11px; height: 11px; }
+    .bsn-santa { width: 46px !important; }
+    .bsn-snowman { width: 40px !important; }
+    .bsn-gift { width: 24px; }
+    .bsn-gift-2 { width: 28px; }
+    .bsn-el:nth-child(n+7).bsn-snowflake,
+    .bsn-el:nth-child(n+5).bsn-star,
+    .bsn-el:nth-child(n+4).bsn-sparkle {
+        display: none; /* تقليل الكثافة على الموبايل بدل إخفاء الهوية بالكامل */
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .bsn-snowflake, .bsn-star, .bsn-sparkle { animation: none !important; opacity: 0.4; }
+}
 
 /* ============================= رأس السنة الفاخر ============================= */
 
-/* 🥂 [نمط الزخرفة "stars-sparkle"]: نقط ضوء صغيرة متناثرة بتقنية radial-gradient
-   خفيفة الوزن جدًا (CSS بحت، بدون أي صورة أو SVG) - بديل احترافي وهادئ لفكرة
-   "الإيموجي المتناثر" اللي اتلغت. */
 [data-bose-theme="new-year-luxury"] .bose-season-banner,
 [data-bose-theme="new-year-luxury"] .bose-hero-section {
     position: relative;
+    overflow: hidden;
 }
 
-[data-bose-theme="new-year-luxury"] .bose-season-banner::before,
-[data-bose-theme="new-year-luxury"] .bose-hero-section::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    opacity: var(--bose-season-pattern-opacity, 0.07);
-    background-image:
-        radial-gradient(circle, var(--bose-season-secondary, #C6A15B) 1px, transparent 1.5px),
-        radial-gradient(circle, var(--bose-season-secondary, #C6A15B) 1px, transparent 1.5px);
-    background-size: 90px 90px, 140px 140px;
-    background-position: 0 0, 45px 70px;
-    z-index: 0;
+/* 🥂 [تكوين الهيرو الكامل]: خلفية آيفوري دافئة + توهج ذهبي علوي + تدرج
+   بورجاندي ناعم سفلي (مش الموقع كله بورجاندي - القاعدة "80% بوسي / 20% موسم") */
+[data-bose-theme="new-year-luxury"] .bose-hero-section {
+    background:
+        radial-gradient(ellipse 60% 50% at 50% 0%, rgba(185, 146, 74, 0.16), transparent 70%),
+        linear-gradient(180deg, var(--bose-season-light, #FFF8ED) 0%, var(--bose-season-light, #FFF8ED) 60%, rgba(110, 31, 47, 0.08) 100%);
 }
 
-[data-bose-theme="new-year-luxury"] .bose-season-banner > * ,
+[data-bose-theme="new-year-luxury"] .bose-season-banner > *,
 [data-bose-theme="new-year-luxury"] .bose-hero-section > * {
     position: relative;
-    z-index: 1;
+    z-index: 2;
 }
 
 /* بانر المناسبة بيستخدم التدرج الناعم بدل الدرجة البمبي الافتراضية */
 [data-bose-theme="new-year-luxury"] .bose-season-banner {
     background: var(--bose-season-soft-gradient);
     border-color: var(--bose-season-border-color);
-    overflow: hidden;
 }
 
-/* خط ذهبي رفيع أعلى قسم الهيرو - لمسة فخامة خفيفة جدًا، مش تغيير تصميم */
-[data-bose-theme="new-year-luxury"] .bose-hero-section {
-    overflow: hidden;
-}
+/* خط تدرج بورجاندي→دهبي أعلى قسم الهيرو - لمسة فخامة */
 [data-bose-theme="new-year-luxury"] .bose-hero-section::after {
     content: "";
     position: absolute;
@@ -65,26 +110,46 @@
     height: 3px;
     background: var(--bose-season-gradient);
     pointer-events: none;
-    z-index: 2;
+    z-index: 3;
 }
 
-/* الريبون على المنتجات - بورجاندي صلب (تباين 9.94:1 مضمون مع النص الأبيض)
-   مع حد ذهبي رفيع للمسة الفخامة - بدل تدرج كان هيوصل لطرف دهبي فاتح
-   (تباين أقل من الحد الأدنى WCAG AA) في نص الريبون. */
+/* الريبون على المنتجات - بورجاندي صلب (تباين 11:1 مضمون مع النص الأبيض)
+   مع حد ذهبي رفيع للمسة الفخامة */
 [data-bose-theme="new-year-luxury"] .bose-season-ribbon span {
     background: var(--bose-season-primary);
     box-shadow: 0 3px 10px var(--bose-season-shadow-color);
     border-bottom: 2px solid var(--bose-season-secondary);
 }
 
-/* لمسة خفيفة جدًا في الفوتر - خط علوي رفيع بلون الثيم، بدون أي عنصر جديد إضافي */
-[data-bose-theme="new-year-luxury"] .bose-footer {
-    border-top: 2px solid var(--bose-season-border-color);
+/* نجمة زخرفية صغيرة بجانب نص الريبون - راجع buildBoseSeasonBadgeHTML في core-engine.js */
+[data-bose-theme="new-year-luxury"] .bose-season-ribbon .bsn-badge-icon {
+    color: var(--bose-season-secondary, #B9924A);
+    margin-inline-end: 3px;
+    font-size: 0.85em;
 }
 
-/* ملحوظة: الشريط العلوي المتحرك (topbar marquee) بياخد لونه تلقائيًا عبر
-   السلسلة القديمة (--bose-pink-text يتغذى من --bose-pink) - مفيش داعي لقاعدة
-   منفصلة هنا، وأي محاولة كانت هتتعارض مع !important الموجودة في global.css. */
+/* الفوتر - نفضل الخلفية الفاتحة الأصلية (تغييرها لغامقة محتاج مراجعة تباين كل
+   نص/لينك/أيقونة جواه، خطر عالي من غير معاينة بصرية حقيقية) - بدالها حد علوي
+   سميك بتدرج بورجاندي→دهبي + شريط زخرفي رفيع من نفس عناصر الثلج/النجوم. */
+[data-bose-theme="new-year-luxury"] .bose-footer {
+    border-top: 4px solid transparent;
+    border-image: var(--bose-season-gradient) 1;
+    position: relative;
+}
+
+/* الهيدر - لمسات خفيفة بس (مش بورجاندي كامل - القاعدة صريحة إنه يفضل نظيف) */
+[data-bose-theme="new-year-luxury"] .bose-sticky-header {
+    border-bottom: 2px solid var(--bose-season-secondary, transparent);
+}
+
+/* الشريط العلوي المتحرك (topbar marquee) بياخد لونه تلقائيًا عبر السلسلة
+   القديمة (--bose-pink-text يتغذى من --bose-pink) - نضيف بس تباعد للفواصل الزخرفية */
+[data-bose-theme="new-year-luxury"] .bose-marquee-item::after {
+    content: "✦";
+    margin: 0 14px;
+    opacity: 0.6;
+    color: var(--bose-season-secondary, #B9924A);
+}
 
 @media (prefers-reduced-motion: reduce) {
     [data-bose-theme] * {
@@ -92,3 +157,4 @@
         transition: none !important;
     }
 }
+

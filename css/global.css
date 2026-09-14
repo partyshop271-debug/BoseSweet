@@ -67,6 +67,7 @@
     --bose-season-muted-text: rgba(17, 17, 17, 0.62);
     --bose-season-border-color: var(--bose-pink);
     --bose-season-shadow-color: rgba(var(--bose-pink-rgb), 0.12);
+    --bose-season-deep: var(--bose-pink);
     --bose-season-gradient: linear-gradient(135deg, var(--bose-pink), var(--bose-pink));
     --bose-season-soft-gradient: linear-gradient(135deg, color-mix(in srgb, var(--bose-pink) 12%, var(--bose-white)), var(--bose-white));
     --bose-season-pattern-opacity: 0; /* 0 = مفيش زخرفة ظاهرة أصلاً لحد ما مناسبة تفعّلها */
