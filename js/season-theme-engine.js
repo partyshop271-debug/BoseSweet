@@ -32,7 +32,7 @@
         "--bose-season-primary", "--bose-season-secondary", "--bose-season-accent",
         "--bose-season-dark", "--bose-season-light", "--bose-season-bg",
         "--bose-season-surface", "--bose-season-text", "--bose-season-muted-text",
-        "--bose-season-border-color", "--bose-season-shadow-color",
+        "--bose-season-border-color", "--bose-season-shadow-color", "--bose-season-deep",
         "--bose-season-gradient", "--bose-season-soft-gradient", "--bose-season-pattern-opacity",
     ];
 
@@ -92,6 +92,7 @@
     function applyTheme(theme) {
         const el = document.documentElement;
         const themeMeta = document.querySelector('meta[name="theme-color"]');
+        const heroSection = document.getElementById("hero-section");
 
         if (!theme) {
             SEASON_VARS.forEach((v) => el.style.removeProperty(v));
@@ -99,6 +100,7 @@
             el.style.removeProperty("--bose-pink-rgb");
             el.removeAttribute("data-bose-theme");
             if (themeMeta) themeMeta.content = "#FF91A4";
+            if (heroSection && window.BoseSeasonDecorations) window.BoseSeasonDecorations.clearFrom(heroSection);
             return;
         }
 
@@ -116,6 +118,7 @@
         setVar("--bose-season-muted-text", p.mutedText);
         setVar("--bose-season-border-color", p.border);
         setVar("--bose-season-shadow-color", p.shadow);
+        setVar("--bose-season-deep", p.deepPrimary);
         setVar("--bose-season-gradient", theme.gradient);
         setVar("--bose-season-soft-gradient", theme.softGradient);
         setVar("--bose-season-pattern-opacity", theme.decorative ? theme.decorative.opacity : 0);
@@ -132,6 +135,22 @@
 
         el.setAttribute("data-bose-theme", theme.id || "");
         if (themeMeta) themeMeta.content = accentColor || "#FF91A4";
+
+        // 🎨 [طبقة زخرفية حقيقية على قسم الهيرو - SVG مش إيموجي]: الهيرو عنصر
+        // DOM ثابت موجود دايمًا بعد تحميل الصفحة، فالمحرك ده يقدر يحقن الزخرفة
+        // فيه مباشرة - بعكس بانر المناسبة اللي محتواه بيتبني ديناميكيًا من
+        // js/seasons-engine.js (هي المسؤولة عن حقن الزخرفة في البانر بنفسها
+        // بعد ما تبني محتواه، عشان تترتيب صح - راجع renderSeasonBanner هناك).
+        function decorateHero() {
+            if (heroSection && theme.decorative && window.BoseSeasonDecorations) {
+                window.BoseSeasonDecorations.renderInto(heroSection, theme.decorative);
+            }
+        }
+        if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", decorateHero, { once: true });
+        } else {
+            decorateHero();
+        }
     }
 
     /**
@@ -175,7 +194,11 @@
         } catch (e) { /* تجاهل - مفيش تأثير على أي زائر حقيقي */ }
     }
 
-    return { applyForSeason, resolveTheme, previewTheme, clearPreview };
+    function getPreviewThemeId() {
+        return previewThemeId;
+    }
+
+    return { applyForSeason, resolveTheme, previewTheme, clearPreview, getPreviewThemeId };
 });
 
 // 🧪 [اختصار سهل للتجربة من الـ console]: window.BoseSeasonPreview("ramadan-luxury")

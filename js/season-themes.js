@@ -40,28 +40,31 @@
             id: "new-year-luxury",
             name: "رأس السنة الفاخر",
             palette: {
-                primary: "#7A2331",       // Deep Burgundy - الأزرار والعناصر البارزة
-                secondary: "#C6A15B",     // Soft Gold - حدود وتفاصيل ثانوية (على خلفية فاتحة بس)
-                accent: "#7A2331",        // 🛡️ [قرار إتاحة]: نفس البرغندي مش الدهبي - الدهبي (#C6A15B) نسبة
-                                          // تباينه مع النص الأبيض 2.43:1 بس (فشل WCAG AA اللي بيحتاج 4.5:1)،
-                                          // والمتغيّر ده هو اللي بيتغذى منه --bose-pink فيغذي بيه كل زرار/شريط
-                                          // نص أبيض في الموقع - البرغندي 9.94:1 آمن تمامًا. الدهبي لسه موجود
-                                          // ومستخدم في الحدود والتدرجات وخلفيات فاتحة بس.
-                dark: "#221F1A",          // charcoal دافئ - للعناوين الزخرفية بس (مش نص الموقع العادي)
-                light: "#FDFBF6",         // Ivory
-                background: "#FDFBF6",    // خلفية القسم الموسمي (بانر/هيرو) - Ivory دافئ مش أبيض فاقع
+                primary: "#6E1F2F",       // Primary Burgundy - الأزرار والريبون والعناصر البارزة
+                secondary: "#B9924A",     // Warm Gold - حدود وتفاصيل ثانوية على خلفية فاتحة
+                accent: "#6E1F2F",        // 🛡️ [قرار إتاحة محسوب]: نفس البرجيندي - تباينه مع الأبيض 11:1 (آمن
+                                          // جدًا). الشامبين جولد (#D6B36A) تباينه مع الأبيض 2:1 بس - فاشل تمامًا
+                                          // كخلفية لنص أبيض، فمينفعش يتحط هنا رغم إنه أجمل بصريًا - مكانه الصح
+                                          // نص/تفاصيل على خلفية غامقة (زي الشريط العلوي) مش accent عام.
+                deepPrimary: "#4A101D",   // Deep Burgundy - تدرجات وhover غامق
+                wine: "#7B2638",          // Wine - لمسة تدرج ثانية
+                champagneGold: "#D6B36A", // Champagne Gold - نص/حدود على خلفية غامقة بس
+                dark: "#171316",          // charcoal غامق جدًا - عناوين زخرفية بس
+                light: "#FFF8ED",         // Ivory دافئة
+                background: "#FFF8ED",
                 surface: "#FFFFFF",
-                text: null,               // null = يفضل لون بوسي الأساسي (--bose-black) - قاعدة "النص متتلونش"
-                mutedText: "rgba(34, 31, 26, 0.62)",
-                border: "#C6A15B",
-                shadow: "rgba(122, 35, 49, 0.16)",
+                text: null,               // null = يفضل لون بوسي الأساسي - قاعدة "النص متتلونش"
+                mutedText: "rgba(23, 19, 22, 0.62)",
+                border: "#B9924A",
+                shadow: "rgba(110, 31, 47, 0.18)",
             },
-            gradient: "linear-gradient(135deg, #7A2331, #C6A15B)",
-            softGradient: "linear-gradient(135deg, rgba(198, 161, 91, 0.14), #FDFBF6)",
+            gradient: "linear-gradient(135deg, #6E1F2F, #4A101D)",
+            softGradient: "linear-gradient(135deg, rgba(185, 146, 74, 0.14), #FFF8ED)",
             decorative: {
-                pattern: "stars-sparkle",
-                opacity: 0.07,
-                intensity: "subtle",
+                pattern: "winter-stars-snow",
+                opacity: 0.08,
+                intensity: "high", // رأس السنة مناسبة كبرى - وضوح أعلى من الافتراضي المتحفظ لمناسبات تانية
+                layers: ["winter-snow", "winter-stars", "winter-sparkles", "winter-santa", "winter-snowman", "winter-gifts", "winter-ornaments"],
             },
             badgeText: "New Year Collection",
             emoji: "✨",

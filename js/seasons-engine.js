@@ -78,7 +78,17 @@
         const mount = document.getElementById("bose-season-banner-mount");
         if (!mount) return;
 
-        const season = window.getActiveBoseSeason ? window.getActiveBoseSeason() : null;
+        // 🧪 [Theme Debug Mode]: لو فيه preview شغال (?seasonPreview=...)، البانر
+        // بيدوّر على أي مناسبة حقيقية في البيانات بنفس الـ themePreset ده
+        // ويستخدم محتواها - عشان تجربة المعاينة تبقى كاملة (لون + محتوى فعلي)
+        // مش بس الألوان، حتى لو المناسبة الحقيقية مش شغالة بتاريخ اليوم.
+        const previewId = window.BoseSeasonThemeEngine ? window.BoseSeasonThemeEngine.getPreviewThemeId() : null;
+        let season = window.getActiveBoseSeason ? window.getActiveBoseSeason() : null;
+        if (previewId && window.BoseStoreData && Array.isArray(window.BoseStoreData.seasons)) {
+            const previewSeason = window.BoseStoreData.seasons.find((s) => s.themePreset === previewId);
+            if (previewSeason) season = previewSeason;
+        }
+
         const banner = season && season.banner;
         const hasContent = banner && (banner.title || banner.image || banner.emoji);
         if (!hasContent) {
@@ -88,8 +98,24 @@
         }
 
         const e = window.escapeBoseHTML;
+
+        // 🎉 [سنة ديناميكية - قاعدة 17]: أي {year} في نص البانر/الشارة بيتستبدل
+        // بالسنة الفعلية للمناسبة (من تاريخها الحقيقي المحسوب، مش سنة مكتوبة
+        // يدوي في القاعدة) - يفضل صح كل سنة من غير أي تعديل.
+        function substituteYear(str) {
+            if (!str || str.indexOf("{year}") === -1) return str;
+            let year = new Date().getFullYear();
+            if (season.recurrence && window.BoseSeasonDates) {
+                const core = window.BoseSeasonDates.getOccasionCoreDates(season.recurrence, year);
+                const w = window.BoseSeasonDates.computeActiveWindow(season.recurrence, new Date());
+                if (w && w.coreStartDate) year = parseInt(w.coreStartDate.slice(0, 4), 10);
+                else if (core && core.start) year = core.start.getFullYear();
+            }
+            return str.replace(/\{year\}/g, String(year));
+        }
+
         const ctaHtml = (banner.cta && banner.target)
-            ? `<a href="${e(banner.target)}" class="bose-season-banner-cta">${e(banner.cta)}</a>`
+            ? `<a href="${e(banner.target)}" class="bose-season-banner-cta">${e(substituteYear(banner.cta))}</a>`
             : "";
 
         // صورة حقيقية لو موجودة (أولوية)، وإلا تصميم مكرّر لو عندها Theme كامل،
@@ -105,13 +131,24 @@
                 ${visualHtml}
                 <div class="bose-season-banner-content">
                     ${buildCountdownHTML(season)}
-                    ${banner.title ? `<h2>${e(banner.title)}</h2>` : ""}
-                    ${banner.description ? `<p>${e(banner.description)}</p>` : ""}
+                    ${banner.title ? `<h2>${e(substituteYear(banner.title))}</h2>` : ""}
+                    ${banner.description ? `<p>${e(substituteYear(banner.description))}</p>` : ""}
                     ${ctaHtml}
                 </div>
             </div>
         `;
         mount.hidden = false;
+
+        // 🎨 [طبقة زخرفية حقيقية على البانر - SVG مش إيموجي]: بس للمواسم اللي
+        // عندها Theme Preset كامل - لازم تتحط بعد بناء محتوى البانر (مش قبله)
+        // عشان innerHTML فوق ميمسحهاش.
+        if (season.themePreset && window.BoseSeasonThemeEngine && window.BoseSeasonDecorations) {
+            const theme = window.BoseSeasonThemeEngine.resolveTheme(season);
+            const bannerEl = mount.querySelector(".bose-season-banner");
+            if (theme && theme.decorative && bannerEl) {
+                window.BoseSeasonDecorations.renderInto(bannerEl, theme.decorative);
+            }
+        }
     }
 
     document.addEventListener("BoseDatabaseLoaded", renderSeasonBanner);

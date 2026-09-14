@@ -920,7 +920,14 @@
      * @returns {string}
      */
     function buildBoseSeasonBadgeHTML(product) {
-        const season = window.getActiveBoseSeason ? window.getActiveBoseSeason() : null;
+        let season = window.getActiveBoseSeason ? window.getActiveBoseSeason() : null;
+        // 🧪 [Theme Debug Mode]: نفس منطق seasons-engine.js - المعاينة بتدوّر على
+        // مناسبة حقيقية بنفس الـ themePreset عشان الريبون يبان أثناء التجربة.
+        const previewId = window.BoseSeasonThemeEngine ? window.BoseSeasonThemeEngine.getPreviewThemeId() : null;
+        if (previewId && window.BoseStoreData && Array.isArray(window.BoseStoreData.seasons)) {
+            const previewSeason = window.BoseStoreData.seasons.find((s) => s.themePreset === previewId);
+            if (previewSeason) season = previewSeason;
+        }
         if (!season || !season.badge || !season.badge.text) return '';
         const hasSpecificLinks = (season.linkedProductIds && season.linkedProductIds.length) || (season.linkedCategoryIds && season.linkedCategoryIds.length);
         // 🎉 [لا روابط محددة = تنطبق على كل المنتجات]: المواسم الجاهزة من المكتبة
@@ -931,8 +938,23 @@
             || (season.linkedProductIds || []).includes(product.id)
             || (season.linkedCategoryIds || []).includes(product.category);
         if (!isLinked) return '';
+
+        // 🎉 [سنة ديناميكية]: نفس substituteYear الموجودة في seasons-engine.js
+        // بس نسخة صغيرة هنا لإن الشارة بتتبني من الملف ده مش من هناك.
+        let badgeText = season.badge.text;
+        if (badgeText.indexOf('{year}') !== -1) {
+            let year = new Date().getFullYear();
+            if (season.recurrence && window.BoseSeasonDates) {
+                const w = window.BoseSeasonDates.computeActiveWindow(season.recurrence, new Date());
+                if (w && w.coreStartDate) year = parseInt(w.coreStartDate.slice(0, 4), 10);
+            }
+            badgeText = badgeText.replace(/\{year\}/g, String(year));
+        }
+
         const iconHtml = season.badge.icon ? `<i class="fa-solid ${window.escapeBoseHTML(season.badge.icon)}"></i> ` : '';
-        return `<div class="bose-season-ribbon"><span>${iconHtml}${window.escapeBoseHTML(season.badge.text)}</span></div>`;
+        // ✦ [أيقونة زخرفية صغيرة للمواسم اللي عندها Theme كامل - راجع css/season-themes.css]
+        const decorIconHtml = season.themePreset ? '<span class="bsn-badge-icon" aria-hidden="true">✦</span>' : '';
+        return `<div class="bose-season-ribbon"><span>${decorIconHtml}${iconHtml}${window.escapeBoseHTML(badgeText)}</span></div>`;
     }
     window.buildBoseSeasonBadgeHTML = buildBoseSeasonBadgeHTML;
 
