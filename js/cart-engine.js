@@ -1839,19 +1839,45 @@ function renderBoseSuccessPage(storeData) {
             } catch (e) { return false; }
         })();
 
-        if (waAlreadyAutoOpened) {
+        // 🐛✅ [إصلاح - "رسالة التذكير بتظهر بعد ما العميلة بعثت الفاتورة فعلاً"]:
+        // السيناريو اللي كان بيحصل: العميلة تدوس زرار "إرسال فاتورة الطلب على
+        // واتساب"، فيتفتح واتساب (تطبيق أو ويب) في تبويبة/نافذة جديدة، تبعت
+        // الرسالة فعلاً، وبعدين تدوس "رجوع" (زرار الرجوع في الموبايل) عشان
+        // ترجع لموقعنا. المشكلة إن الرجوع ده بيعمل أحيانًا Reload كامل لصفحة
+        // order-success.html (خصوصًا لو المتصفح فتح رابط wa.me/التطبيق بشكل
+        // بيعتبره "تصفح لصفحة تانية" مش مجرد تبويبة موازية) - يعني كل متغيرات
+        // الجافاسكريبت زي bosWhatsappClicked بترجع لقيمتها الافتراضية (false)
+        // تاني من الصفر، فمؤقت الـ8 ثواني بيبدأ من جديد كأن حاجة ما حصلتش،
+        // ويظهر تذكير "متنسيش تبعتي الفاتورة!" للعميلة رغم إنها بعثتها فعلاً
+        // من ثانية. الحل: نسجّل تأكيد الضغطة داخل نفس سجل الطلب في localStorage
+        // (بنفس أسلوب purchaseEventTracked تحت بالظبط) عشان يفضل التأكيد موجود
+        // حتى بعد أي Reload/رجوع/خروج من الموقع تمامًا وليس بس جوه الذاكرة
+        // المؤقتة لتشغيلة الصفحة الحالية.
+        const waAlreadyManuallySent = !!order.whatsappManuallySent;
+
+        if (waAlreadyAutoOpened || waAlreadyManuallySent) {
             resendWhatsappBtn.classList.add("bose-wa-btn-secondary-fallback");
-            resendWhatsappBtn.innerHTML = '<i class="fab fa-whatsapp"></i> مفتحش عندك واتساب؟ ابعتي الفاتورة تاني';
+            resendWhatsappBtn.innerHTML = waAlreadyManuallySent
+                ? '<i class="fab fa-whatsapp"></i> تم إرسال الفاتورة بنجاح ✅ (اضغطي هنا لإرسالها تاني لو حابة)'
+                : '<i class="fab fa-whatsapp"></i> مفتحش عندك واتساب؟ ابعتي الفاتورة تاني';
         }
 
         // 🐛✅ [إصلاح جوهري - المرحلة 2 - شبكة أمان أخيرة]: لو العميلة قعدت
         // في الصفحة دي 8 ثواني من غير ما تدوس زرار الواتساب (يعني غالباً
         // مقرتش النص أو ملاحظتش إن فيه خطوة متبقية)، بنفكّرها بتوست واضح
         // بدل ما نسيبها تسيب الصفحة وهي فاهمة إن الطلب "خلص" فعلياً. الریمایندر
-        // ده بس لو واتساب ما اتفتحش تلقائي - لو اتفتح، مفيش داعي نقلق العميلة.
+        // ده بس لو واتساب ما اتفتحش تلقائي ولا اتبعت يدوي قبل كده - لو حصل
+        // أي منهم، مفيش داعي نقلق العميلة.
         let bosWhatsappClicked = false;
-        resendWhatsappBtn.addEventListener("click", () => { bosWhatsappClicked = true; }, { once: true });
-        if (!waAlreadyAutoOpened) {
+        resendWhatsappBtn.addEventListener("click", () => {
+            bosWhatsappClicked = true;
+            // 🛡️ تسجيل دائم في نفس سجل الطلب (مش sessionStorage) عشان التأكيد
+            // ده يفضل موجود حتى لو الصفحة اتعمللها Reload كامل بعد الرجوع من
+            // واتساب - راجع التعليق فوق لتفاصيل السيناريو الكامل.
+            order.whatsappManuallySent = true;
+            try { localStorage.setItem("bose_last_order", JSON.stringify(order)); } catch (e) {}
+        }, { once: true });
+        if (!waAlreadyAutoOpened && !waAlreadyManuallySent) {
             setTimeout(() => {
                 if (!bosWhatsappClicked && typeof window.showBoseGlobalToast === "function") {
                     window.showBoseGlobalToast("🌸 متنسيش تدوسي زرار إرسال الفاتورة على واتساب عشان نبدأ نجهز طلبك!", { type: "warning" });
