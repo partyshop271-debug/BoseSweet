@@ -737,7 +737,7 @@
                         card.addEventListener('click', function () {
                             if (this.dataset.slug === otherSlug) {
                                 if (typeof window.showBoseGlobalToast === 'function') {
-                                    window.showBoseGlobalToast('مينفعش تختاري نفس التوبينج مرتين - اختاري توبينج مختلف للنص التاني 🍧');
+                                    window.showBoseGlobalToast('مينفعش تختاري نفس التوبينج مرتين - اختاري توبينج مختلف للنص التاني 🍧', { type: 'warning' });
                                 }
                                 return;
                             }

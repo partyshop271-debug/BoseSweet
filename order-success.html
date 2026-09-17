@@ -273,6 +273,18 @@
             100% { box-shadow: 0 4px 15px rgba(var(--bose-pink-rgb), 0.25); }
         }
 
+        /* 🆕 [ضغطة واحدة للمتصفحات العادية - سبتمبر 2026]: لو واتساب اتفتح
+           تلقائيًا فعلاً (راجع cart-engine.js)، الزرار ده بقى خيار احتياطي
+           هادي بس ("مفتحش عندك؟ ابعتيها تاني") - مش لازم يستحوذ على عين
+           العميلة بنفس إلحاح "الخطوة اللي لسه ناقصة" زي قبل كده. */
+        #bose-resend-whatsapp-btn.bose-wa-btn-secondary-fallback {
+            animation: none;
+            background-color: var(--bose-white, #FFFFFF);
+            color: var(--bose-black, #111111);
+            border: 1.5px solid var(--bose-border-gray, #E5E5E5);
+            box-shadow: none;
+        }
+
         .success-secondary-actions-row {
             display: flex;
             flex-direction: column;

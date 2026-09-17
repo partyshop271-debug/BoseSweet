@@ -458,8 +458,30 @@
                             <span class="bose-field-error-msg" id="err-checkout-delivery-date"><i class="fa-solid fa-circle-exclamation"></i><span></span></span>
                         </div>
                         <div class="input-group-node">
-                            <label for="checkout-delivery-time">ساعة الاستلام</label>
-                            <input type="time" id="checkout-delivery-time" class="bose-field-capture" required aria-describedby="err-checkout-delivery-time">
+                            <label for="checkout-time-hour">ساعة الاستلام</label>
+                            <!-- 🛡️🆕 [إصلاح - سبتمبر 2026]: <input type="time"> الأصلي كان بيعرض
+                                 الوقت بصيغة 24 ساعة (زي "17:00"/"20:00") في بعض المتصفحات/الأجهزة،
+                                 لأن شكل عرضه بيتحدد من إعدادات نظام تشغيل جهاز العميلة نفسه مش من
+                                 كود الموقع - مفيش طريقة نضمن بيها صيغة 12 ساعة بأي تحكم من CSS/JS
+                                 على الحقل الأصلي. الحل: قائمة اختيار مخصصة بالكامل (ساعة 1-12 +
+                                 دقيقة + صباحاً/مساءً) بنبنيها إحنا، فبتضمن صيغة 12 ساعة مصرية مألوفة
+                                 مضمونة 100% على أي جهاز. القيمة الحقيقية (صيغة "HH:MM" الداخلية) لسه
+                                 بتتخزن في حقل مخفي بنفس الـid القديم (checkout-delivery-time) عشان
+                                 كل كود الفحص/الحفظ/فاتورة الواتساب الموجود يفضل شغال زي ما هو. -->
+                            <div class="bose-time-picker" id="bose-time-picker-visual">
+                                <select id="checkout-time-hour" class="bose-time-picker-select" aria-label="الساعة">
+                                    <option value="">الساعة</option>
+                                </select>
+                                <span class="bose-time-picker-colon">:</span>
+                                <select id="checkout-time-minute" class="bose-time-picker-select" aria-label="الدقيقة">
+                                    <option value="">الدقيقة</option>
+                                </select>
+                                <div class="bose-time-period-toggle" role="group" aria-label="صباحاً أو مساءً">
+                                    <button type="button" class="bose-time-period-btn" data-period="AM">صباحاً</button>
+                                    <button type="button" class="bose-time-period-btn" data-period="PM">مساءً</button>
+                                </div>
+                            </div>
+                            <input type="hidden" id="checkout-delivery-time" required aria-describedby="err-checkout-delivery-time">
                             <span class="bose-field-error-msg" id="err-checkout-delivery-time"><i class="fa-solid fa-circle-exclamation"></i><span></span></span>
                         </div>
                     </div>
@@ -611,6 +633,68 @@
         document.addEventListener("DOMContentLoaded", () => {
             const checkoutFieldsForm = document.getElementById("bose-checkout-fields-form");
             if (checkoutFieldsForm) checkoutFieldsForm.addEventListener("submit", (e) => e.preventDefault());
+        });
+
+        // 🆕 [قائمة اختيار الساعة المخصصة - سبتمبر 2026]: راجع تعليق checkout.html
+        // في مكان الحقل نفسه للسبب الكامل. الدالة دي بتبني الخيارات وبتزامن أي
+        // تغيير في الساعة/الدقيقة/صباحاً-مساءً مع الحقل المخفي checkout-delivery-time
+        // (صيغة "HH:MM" داخلية 24 ساعة زي الأول بالظبط) - فكل كود الفحص والحفظ
+        // وفاتورة الواتساب الموجود يفضل شغال من غير أي تعديل عليه.
+        document.addEventListener("DOMContentLoaded", () => {
+            const hourSelect = document.getElementById("checkout-time-hour");
+            const minuteSelect = document.getElementById("checkout-time-minute");
+            const periodButtons = document.querySelectorAll(".bose-time-period-btn");
+            const hiddenTimeInput = document.getElementById("checkout-delivery-time");
+            if (!hourSelect || !minuteSelect || !hiddenTimeInput || !periodButtons.length) return;
+
+            for (let h = 1; h <= 12; h++) {
+                const opt = document.createElement("option");
+                opt.value = String(h);
+                opt.textContent = String(h);
+                hourSelect.appendChild(opt);
+            }
+            ["00", "15", "30", "45"].forEach((m) => {
+                const opt = document.createElement("option");
+                opt.value = m;
+                opt.textContent = m;
+                minuteSelect.appendChild(opt);
+            });
+
+            let selectedPeriod = null; // "AM" | "PM"
+
+            function setActivePeriodButton(period) {
+                selectedPeriod = period;
+                periodButtons.forEach((btn) => {
+                    btn.classList.toggle("is-active", btn.dataset.period === period);
+                });
+            }
+
+            function syncHiddenTimeValue() {
+                const hour12 = parseInt(hourSelect.value, 10);
+                const minute = minuteSelect.value;
+                if (!hour12 || minute === "" || !selectedPeriod) {
+                    hiddenTimeInput.value = "";
+                    return;
+                }
+                let hour24 = hour12 % 12;
+                if (selectedPeriod === "PM") hour24 += 12;
+                const hour24Padded = String(hour24).padStart(2, "0");
+                hiddenTimeInput.value = `${hour24Padded}:${minute}`;
+                // 🛡️ بنطلق حدثي change و input عشان أي كود تاني بيسمع على الحقل
+                // القديم (مسح خطأ الحقل، تحديث تنبيه المواعيد المرفوضة..إلخ)
+                // يفضل شغال بالظبط زي ما كان شغال مع <input type="time"> الأصلي.
+                hiddenTimeInput.dispatchEvent(new Event("change", { bubbles: true }));
+                hiddenTimeInput.dispatchEvent(new Event("input", { bubbles: true }));
+            }
+
+            hourSelect.addEventListener("change", syncHiddenTimeValue);
+            minuteSelect.addEventListener("change", syncHiddenTimeValue);
+            periodButtons.forEach((btn) => {
+                btn.addEventListener("click", () => {
+                    setActivePeriodButton(btn.dataset.period);
+                    syncHiddenTimeValue();
+                });
+            });
         });
         document.addEventListener("DOMContentLoaded", () => {
             const compactHook = document.getElementById("bose-checkout-compact-items-hook");
@@ -1058,7 +1142,7 @@
                     if (datePicker.value && datePicker.value < nowStr) {
                         datePicker.value = "";
                         if (typeof window.showBoseGlobalToast === "function") {
-                            window.showBoseGlobalToast("الموعد اللي كان محدد فات - اختاري ميعاد تاني من فضلك.");
+                            window.showBoseGlobalToast("الموعد اللي كان محدد فات - اختاري ميعاد تاني من فضلك.", { type: "warning" });
                         }
                     }
                 }
