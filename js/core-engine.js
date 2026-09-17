@@ -875,16 +875,7 @@
     function buildBoseDiscountBadgeMarkup(product, opts) {
         const currencyLabel = (opts && opts.currencyLabel) || 'جنيه';
         const savingsVerb = (opts && opts.savingsVerb) || 'وفر';
-        // 👑 [صفحة العروض بقت المصدر الوحيد للحقيقة]: الشارة/السعر القديم/جملة
-        // التوفير ما بتظهرش غير لو (1) في المنتج سعر قديم أكبر من الحالي *و*
-        // (2) المنتج ده مضاف فعليًا في جدول offers من لوحة التحكم. قبل كده كان
-        // الشرط الأول بس كافي - فحذف "عرض" من صفحة العروض في اللوحة ما كنش بيغير
-        // ولا حاجة في الموقع طول ما السعر القديم لسه محطوط، فالعرض يفضل ظاهر
-        // للعميل رغم إنه اتشال من اللوحة. دلوقتي إضافة/حذف من صفحة العروض هو
-        // اللي بيتحكم في الظهور فعليًا في كل مكان (الكارت هنا + صفحة المنتج).
-        const offersList = (window.BoseStoreData && Array.isArray(window.BoseStoreData.offers)) ? window.BoseStoreData.offers : [];
-        const isInOffersList = !!(product && offersList.some((o) => o.product_id === product.id));
-        const hasDiscount = !!(product && product.oldPrice && product.oldPrice > product.price && isInOffersList);
+        const hasDiscount = !!(product && product.oldPrice && product.oldPrice > product.price);
         if (!hasDiscount) {
             return { hasDiscount: false, discountBadgeHtml: '', oldPriceHtml: '', savingsHtml: '' };
         }
