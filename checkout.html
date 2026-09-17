@@ -22,7 +22,7 @@
     <!-- [إصلاح جذري نهائي]: الأيقونات بقت مُستضافة محليًا داخل الموقع نفسه (vendor/fontawesome)
          بدل الاعتماد على أي CDN خارجي (cdnjs/jsdelivr/unpkg) - مفيش نقطة فشل خارجية تانية خالص. -->
     <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css?v=2026_local_v1.0" fetchpriority="high">
-    <link rel="stylesheet" href="css/global.css?v=2026_production_v44.0">
+    <link rel="stylesheet" href="css/global.css?v=2026_production_v44.1">
     <link rel="stylesheet" href="css/main.css?v=2026_production_v40.0">
     <link rel="stylesheet" href="css/season-themes.css?v=2026_production_v40.0">
     <link rel="stylesheet" href="css/cart-checkout.css?v=2026_production_v37.0">
@@ -464,17 +464,21 @@
                                  لأن شكل عرضه بيتحدد من إعدادات نظام تشغيل جهاز العميلة نفسه مش من
                                  كود الموقع - مفيش طريقة نضمن بيها صيغة 12 ساعة بأي تحكم من CSS/JS
                                  على الحقل الأصلي. الحل: قائمة اختيار مخصصة بالكامل (ساعة 1-12 +
-                                 دقيقة + صباحاً/مساءً) بنبنيها إحنا، فبتضمن صيغة 12 ساعة مصرية مألوفة
+                                 صباحاً/مساءً) بنبنيها إحنا، فبتضمن صيغة 12 ساعة مصرية مألوفة
                                  مضمونة 100% على أي جهاز. القيمة الحقيقية (صيغة "HH:MM" الداخلية) لسه
                                  بتتخزن في حقل مخفي بنفس الـid القديم (checkout-delivery-time) عشان
-                                 كل كود الفحص/الحفظ/فاتورة الواتساب الموجود يفضل شغال زي ما هو. -->
+                                 كل كود الفحص/الحفظ/فاتورة الواتساب الموجود يفضل شغال زي ما هو.
+                                 🆕 [تبسيط - سبتمبر 2026]: خانة اختيار "الدقيقة" اتشالت بالكامل بناءً
+                                 على طلب صاحبة المتجر - مفيش داعي فعلي للعميلة تحدد الدقيقة بالظبط،
+                                 يكفي إنها تختار الساعة المناسبة لها + صباحاً/مساءً فقط. القيمة الداخلية
+                                 المحفوظة دايمًا بتاخد "00" دقيقة تلقائيًا (راجع syncHiddenTimeValue تحت). -->
+                            <p style="font-size: 0.78rem; color: var(--adm-text-muted, #777); margin: 0 0 8px; font-weight: 600; line-height: 1.6;">
+                                اختاري الساعة اللي تحبي تستلمي طلبك فيها من هنا، وحددي صباحًا أو مساءً.
+                                <br>⏰ مواعيد الاستلام والتوصيل بتكون من الساعة <strong>9 صباحًا</strong> لحد <strong>10 مساءً</strong> بس - اختاري الساعة اللي تناسبك جوه النطاق ده.
+                            </p>
                             <div class="bose-time-picker" id="bose-time-picker-visual">
                                 <select id="checkout-time-hour" class="bose-time-picker-select" aria-label="الساعة">
                                     <option value="">الساعة</option>
-                                </select>
-                                <span class="bose-time-picker-colon">:</span>
-                                <select id="checkout-time-minute" class="bose-time-picker-select" aria-label="الدقيقة">
-                                    <option value="">الدقيقة</option>
                                 </select>
                                 <div class="bose-time-period-toggle" role="group" aria-label="صباحاً أو مساءً">
                                     <button type="button" class="bose-time-period-btn" data-period="AM">صباحاً</button>
@@ -604,7 +608,7 @@
     <div id="bose-footer-injector"></div>
 
     <!-- ⚡ استدعاء محرك السلة وإتمام عمليات الحساب والدفع والربط اللوجستي المركزي (js/cart-engine.js) ⚡ -->
-    <script src="js/cart-engine.js?v=2029_production_v48.0" defer></script>
+    <script src="js/cart-engine.js?v=2029_production_v48.1" defer></script>
 
     <!-- 🔮 سكريبت التزامن الدفاعي المحلي لربط وحقن الواجهات وضمان فك شلل حقول الصفحة دون تعارض خارجي 🔮 -->
     <script>
@@ -637,15 +641,16 @@
 
         // 🆕 [قائمة اختيار الساعة المخصصة - سبتمبر 2026]: راجع تعليق checkout.html
         // في مكان الحقل نفسه للسبب الكامل. الدالة دي بتبني الخيارات وبتزامن أي
-        // تغيير في الساعة/الدقيقة/صباحاً-مساءً مع الحقل المخفي checkout-delivery-time
+        // تغيير في الساعة/صباحاً-مساءً مع الحقل المخفي checkout-delivery-time
         // (صيغة "HH:MM" داخلية 24 ساعة زي الأول بالظبط) - فكل كود الفحص والحفظ
         // وفاتورة الواتساب الموجود يفضل شغال من غير أي تعديل عليه.
+        // 🆕 [تبسيط - سبتمبر 2026]: قائمة "الدقيقة" اتشالت بالكامل (راجع تعليق
+        // checkout.html) - الدقيقة المحفوظة فعليًا في القيمة الداخلية دايمًا "00".
         document.addEventListener("DOMContentLoaded", () => {
             const hourSelect = document.getElementById("checkout-time-hour");
-            const minuteSelect = document.getElementById("checkout-time-minute");
             const periodButtons = document.querySelectorAll(".bose-time-period-btn");
             const hiddenTimeInput = document.getElementById("checkout-delivery-time");
-            if (!hourSelect || !minuteSelect || !hiddenTimeInput || !periodButtons.length) return;
+            if (!hourSelect || !hiddenTimeInput || !periodButtons.length) return;
 
             for (let h = 1; h <= 12; h++) {
                 const opt = document.createElement("option");
@@ -653,14 +658,9 @@
                 opt.textContent = String(h);
                 hourSelect.appendChild(opt);
             }
-            ["00", "15", "30", "45"].forEach((m) => {
-                const opt = document.createElement("option");
-                opt.value = m;
-                opt.textContent = m;
-                minuteSelect.appendChild(opt);
-            });
 
             let selectedPeriod = null; // "AM" | "PM"
+            const FIXED_MINUTE = "00";
 
             function setActivePeriodButton(period) {
                 selectedPeriod = period;
@@ -671,15 +671,14 @@
 
             function syncHiddenTimeValue() {
                 const hour12 = parseInt(hourSelect.value, 10);
-                const minute = minuteSelect.value;
-                if (!hour12 || minute === "" || !selectedPeriod) {
+                if (!hour12 || !selectedPeriod) {
                     hiddenTimeInput.value = "";
                     return;
                 }
                 let hour24 = hour12 % 12;
                 if (selectedPeriod === "PM") hour24 += 12;
                 const hour24Padded = String(hour24).padStart(2, "0");
-                hiddenTimeInput.value = `${hour24Padded}:${minute}`;
+                hiddenTimeInput.value = `${hour24Padded}:${FIXED_MINUTE}`;
                 // 🛡️ بنطلق حدثي change و input عشان أي كود تاني بيسمع على الحقل
                 // القديم (مسح خطأ الحقل، تحديث تنبيه المواعيد المرفوضة..إلخ)
                 // يفضل شغال بالظبط زي ما كان شغال مع <input type="time"> الأصلي.
@@ -688,7 +687,6 @@
             }
 
             hourSelect.addEventListener("change", syncHiddenTimeValue);
-            minuteSelect.addEventListener("change", syncHiddenTimeValue);
             periodButtons.forEach((btn) => {
                 btn.addEventListener("click", () => {
                     setActivePeriodButton(btn.dataset.period);
@@ -997,10 +995,18 @@
                     const isRushDay = cursor < minDateObj;
                     const chip = document.createElement("button");
                     chip.type = "button";
+                    chip.dataset.dateStr = dStr;
                     let borderColor = "var(--bose-pink,var(--bose-pink))", bgColor = "#fff", textColor = "var(--bose-pink,var(--bose-pink))";
                     if (full) { borderColor = "#ddd"; bgColor = "#f5f5f5"; textColor = "#aaa"; }
                     else if (isRushDay) { borderColor = "#E8A33D"; bgColor = "#FFF7EA"; textColor = "#B4750F"; }
-                    chip.style.cssText = `flex:0 0 auto; min-width:56px; text-align:center; border-radius:12px; padding:10px 8px; font-size:0.85rem; font-weight:700; cursor:${full ? "not-allowed" : "pointer"}; border:1.5px solid ${borderColor}; background:${bgColor}; color:${textColor}; text-decoration:${full ? "line-through" : "none"};`;
+                    // 🐛✅ [إصلاح - وضوح "أنهي يوم هو اللي مختار فعلاً؟"]: بنسجّل ألوان
+                    // الحالة الطبيعية جوه data-* عشان دالة updateChipSelectionUI تحت
+                    // تقدر ترجّعها بسهولة لما اليوم ده "يتلغى" اختياره (العميلة اختارت
+                    // يوم تاني بدله)، من غير ما نكرر منطق تحديد الألوان تاني.
+                    chip.dataset.borderColor = borderColor;
+                    chip.dataset.bgColor = bgColor;
+                    chip.dataset.textColor = textColor;
+                    chip.style.cssText = `flex:0 0 auto; min-width:56px; text-align:center; border-radius:12px; padding:10px 8px; font-size:0.85rem; font-weight:700; cursor:${full ? "not-allowed" : "pointer"}; border:1.5px solid ${borderColor}; background:${bgColor}; color:${textColor}; text-decoration:${full ? "line-through" : "none"}; transition: all 0.15s ease; position:relative;`;
                     chip.innerHTML = `<span style="display:block;">${isRushDay && !full ? "⏱ " : ""}${weekdayShort(cursor)}</span><span style="display:block; font-size:1.1rem;">${cursor.getDate()}</span>`;
                     if (full) {
                         chip.disabled = true;
@@ -1014,7 +1020,42 @@
                 }
                 chipWrapper.style.display = "block";
 
+                // 🆕👑 [إصلاح - "مش واضح أنهي يوم مختار فعلاً"]: الشريط قبل كده
+                // كان بيلوّن كل يوم بس حسب إتاحته (متاح/مستعجل/مكتمل) من غير أي
+                // تمييز لليوم اللي العميلة فعلاً اختارته في حقل "تاريخ الاستلام" -
+                // فكانت العميلة تدوس على يوم، السعر/الخط يتحدث تحت، لكن مفيش أي
+                // إشارة بصرية واضحة على الشريط نفسه تأكدلها "أيوه، ده اللي اخترتيه".
+                // الدالة دي بتحط علامة ✓ واضحة + خلفية وردي مصمت على اليوم المختار
+                // فعليًا (سواء اتختار من الشريط نفسه أو من حقل التاريخ تحت مباشرة)،
+                // وبترجّع أي يوم كان متعلم قبل كده لشكله العادي. بتتنادى أول مرة
+                // فورًا بعد بناء الشريط، وبعدين مع أي تغيير على حقل التاريخ.
+                function updateChipSelectionUI() {
+                    const currentVal = dateInputEl.value;
+                    chipStrip.querySelectorAll("button").forEach((chipBtn) => {
+                        const isSelected = !chipBtn.disabled && chipBtn.dataset.dateStr === currentVal;
+                        const daySpan = chipBtn.querySelector("span:first-child");
+                        if (isSelected) {
+                            chipBtn.style.background = "var(--bose-pink, #ff5c8d)";
+                            chipBtn.style.borderColor = "var(--bose-pink, #ff5c8d)";
+                            chipBtn.style.color = "#fff";
+                            chipBtn.setAttribute("aria-current", "date");
+                            if (daySpan && !daySpan.querySelector(".bose-chip-check")) {
+                                daySpan.innerHTML = `<i class="fa-solid fa-check bose-chip-check" style="margin-left:3px;"></i>${daySpan.textContent}`;
+                            }
+                        } else {
+                            chipBtn.style.background = chipBtn.dataset.bgColor;
+                            chipBtn.style.borderColor = chipBtn.dataset.borderColor;
+                            chipBtn.style.color = chipBtn.dataset.textColor;
+                            chipBtn.removeAttribute("aria-current");
+                            const checkIcon = daySpan ? daySpan.querySelector(".bose-chip-check") : null;
+                            if (checkIcon) checkIcon.remove();
+                        }
+                    });
+                }
+                updateChipSelectionUI();
+
                 if (dateInputEl) dateInputEl.addEventListener("change", updateAlert);
+                if (dateInputEl) dateInputEl.addEventListener("change", updateChipSelectionUI);
                 if (timeInputEl) timeInputEl.addEventListener("change", updateAlert);
             }
 
