@@ -32,7 +32,7 @@
     height: 44px;
     border-radius: 50%;
     background: var(--bose-pink);
-    color: #fff;
+    color: var(--bose-black);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -42,7 +42,7 @@
 
 .btn-trigger-review-form {
     background: var(--bose-pink);
-    color: #fff;
+    color: var(--bose-black);
     border: 1px solid var(--bose-pink);
     padding: 11px 22px;
     border-radius: 50px;

@@ -337,7 +337,7 @@ body.gcb-body {
     height: 24px;
     border-radius: 50%;
     background: var(--bose-pink);
-    color: #fff;
+    color: var(--bose-black);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -604,7 +604,7 @@ body.gcb-body {
 .gcb-cta {
     width: 100%;
     background: var(--bose-pink);
-    color: #fff;
+    color: var(--bose-black);
     border: none;
     padding: 16px 26px;
     border-radius: 50px;

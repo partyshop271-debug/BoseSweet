@@ -63,7 +63,7 @@
 
 .bose-filter-tab-pill.active {
     background-color: var(--bose-pink-text, var(--bose-pink));
-    color: #FFFFFF;
+    color: var(--bose-black);
     border-color: var(--bose-pink-text, var(--bose-pink));
     box-shadow: 0 4px 12px rgba(var(--bose-pink-rgb), 0.2);
 }
@@ -108,7 +108,7 @@
 .ticker-cat-item:hover {
     border-color: var(--bose-pink-text);
     background-color: var(--bose-pink-text);
-    color: var(--bose-white) !important;
+    color: var(--bose-black) !important;
     transform: translateY(-2px);
 }
 
@@ -393,7 +393,7 @@
 .bose-season-banner-cta {
     display: inline-block;
     background: var(--bose-pink);
-    color: var(--bose-white) !important;
+    color: var(--bose-black) !important;
     font-weight: 700;
     padding: 10px 26px;
     border-radius: var(--bose-radius-sm, 10px);
@@ -881,7 +881,7 @@
 
 .sidebar-footer-contacts .sidebar-contact-pill:nth-child(1):hover {
     background-color: var(--bose-pink) !important;
-    color: #FFFFFF !important;
+    color: var(--bose-black) !important;
     box-shadow: var(--bose-shadow-hover) !important;
 }
 
@@ -1442,7 +1442,7 @@
 
 .bose-card-size-pill.active {
     background-color: var(--bose-pink-text, var(--bose-pink));
-    color: #FFFFFF;
+    color: var(--bose-black);
     border-color: var(--bose-pink-text, var(--bose-pink));
 }
 
@@ -1481,7 +1481,7 @@
 
 .btn-qty-plus:hover, .btn-qty-minus:hover {
     background-color: var(--bose-pink-text);
-    color: var(--bose-white);
+    color: var(--bose-black);
     border-color: var(--bose-pink-text);
 }
 
@@ -1511,14 +1511,14 @@
 
 .btn-add-to-cart {
     width: 100%;
-    background-color: var(--bose-pink-text); /* 🛡️ لون أغمق لضمان تباين كافٍ مع النص الأبيض - أهم زرار بالكارت */
-    color: var(--bose-white);
+    background-color: var(--bose-pink-text); /* 🛡️ خلفية وردي العلامة زي ما هي */
+    color: var(--bose-black); /* 🛡️🆕 [إتاحة]: كان نص أبيض بتباين 2.13:1 فاشل - نص أسود دلوقتي بتباين 8.85:1 */
     padding: 12px;
     border-radius: var(--bose-radius-pill);
     font-weight: 700;
     cursor: pointer;
     transition: var(--bose-transition-fast);
-    border: none;
+    border: 2px solid transparent;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1532,9 +1532,23 @@
 
 .btn-add-to-cart:disabled {
     background-color: var(--bose-pink-text) !important;
-    color: var(--bose-white) !important;
+    color: var(--bose-black) !important;
     opacity: 1 !important;
     cursor: not-allowed;
+}
+
+/* 🆕 [حالة "تمت الإضافة" - سبتمبر 2026]: قبل كده الزرار في حالة النجاح كان
+   بياخد بالظبط نفس شكل الحالة العادية (نفس الوردي، من غير حدود) - الفرق
+   الوحيد كان النص والأيقونة، وده مش كفاية كإشارة بصرية واضحة إن الإضافة
+   نجحت فعلاً. دلوقتي بوردر دهبي واضح + خلفية بيضاء + أيقونة صح دهبية -
+   شكل مختلف تماماً عن الحالة العادية، بيحس العميل إنه "استلم تأكيد" فعلي. */
+.btn-add-to-cart.is-added {
+    background-color: var(--bose-white) !important;
+    color: var(--bose-black) !important;
+    border: 2px solid var(--bose-gold) !important;
+}
+.btn-add-to-cart.is-added i {
+    color: var(--bose-gold);
 }
 
 /* 🛡️ [إصلاح بصري - كارت رفيع/طويل/مضغوط]: الحل السابق (minmax) منع الكارت
@@ -1661,7 +1675,7 @@
 
 .btn-show-more-outline:hover {
     background: var(--bose-pink-text) !important;
-    color: var(--bose-white) !important;
+    color: var(--bose-black) !important;
 }
 
 /* ==========================================================================
@@ -1728,7 +1742,7 @@
     opacity: 1 !important;
     visibility: visible !important; 
     background-color: var(--bose-pink-text) !important; 
-    color: var(--bose-white) !important; 
+    color: var(--bose-black) !important; 
     font-weight: 700 !important; 
     padding: 15px 50px !important; 
     border-radius: var(--bose-radius-pill) !important; 
@@ -2339,7 +2353,7 @@
 
 .footer-social-icon-btn:hover {
     background-color: var(--bose-pink-text) !important;     
-    color: var(--bose-white) !important;           
+    color: var(--bose-black) !important;           
     border-color: var(--bose-pink-text) !important;         
     transform: translateY(-4px) !important;            
     box-shadow: var(--bose-shadow-hover) !important;
@@ -2705,7 +2719,7 @@
 .mock-cart-lines span:last-child { width: 50%; }
 .mock-cart-lines .mock-cart-name { height: auto; background: none; font-size: 11px; font-weight: 700; color: var(--bose-black, #111); border-radius: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .mock-cart-lines .mock-cart-price { height: auto; background: none; font-size: 10px; font-weight: 700; color: var(--bose-pink-text, var(--bose-pink)); border-radius: 0; width: auto !important; }
-.mock-checkout-btn { width: 100%; background: var(--bose-pink-text, var(--bose-pink)); color: #fff; border: none; border-radius: var(--bose-radius-pill); padding: 12px; font-family: 'Cairo', sans-serif; font-weight: 800; font-size: 12.5px; margin-top: 10px; }
+.mock-checkout-btn { width: 100%; background: var(--bose-pink-text, var(--bose-pink)); color: var(--bose-black); border: none; border-radius: var(--bose-radius-pill); padding: 12px; font-family: 'Cairo', sans-serif; font-weight: 800; font-size: 12.5px; margin-top: 10px; }
 
 /* ---------- أيقونات عائمة حوالين الموبايل ---------- */
 .bose-app-promo-float-badge {
@@ -2752,7 +2766,7 @@
     align-items: center;
     gap: 6px;
     background: var(--bose-pink-text, var(--bose-pink));
-    color: #FFFFFF;
+    color: var(--bose-black);
     font-weight: 700;
     font-size: 0.8rem;
     padding: 6px 16px;
@@ -2784,7 +2798,7 @@
     align-items: center;
     gap: 10px;
     background: var(--bose-pink-text, var(--bose-pink));
-    color: #FFFFFF;
+    color: var(--bose-black);
     font-family: 'Cairo', sans-serif;
     font-weight: 800;
     font-size: 1rem;

@@ -175,7 +175,7 @@
     border-radius: 50px;
     cursor: pointer;
 }
-.bose-order-summary-edit-btn:hover { background: var(--bose-pink); color: #fff; }
+.bose-order-summary-edit-btn:hover { background: var(--bose-pink); color: var(--bose-black); }
 
 /* تقسيم مساحة العمل لجزأين متوازنين (أدوات التحكم واللوحة الجانبية) */
 .simulator-workspace {
@@ -233,7 +233,7 @@
 .step-node.active {
     background: var(--bose-pink-text) !important;
     border-color: var(--bose-pink-text) !important;
-    color: var(--bose-white) !important;
+    color: var(--bose-black) !important;
     box-shadow: 0 4px 15px rgba(var(--bose-pink-rgb), 0.3) !important;
 }
 
@@ -383,7 +383,7 @@
     gap: 4px;
     margin-top: 6px;
     background: var(--bose-pink);
-    color: var(--bose-white);
+    color: var(--bose-black);
     font-size: 11px;
     font-weight: 800;
     padding: 4px 11px;
@@ -472,7 +472,7 @@
 .bose-circular-qty-btn.btn-plus-style {
     background: var(--bose-pink-text) !important;
     border: 1.5px solid var(--bose-pink-text) !important;
-    color: var(--bose-white) !important;
+    color: var(--bose-black) !important;
     box-shadow: 0 4px 12px rgba(var(--bose-pink-rgb), 0.2);
 }
 
@@ -755,7 +755,7 @@
 
 .premium-nav-btn.primary {
     background: var(--bose-pink-text) !important; /* 🛡️ لون أغمق لضمان تباين كافٍ - زرار "التالي" الأساسي في محاكيات التورت/الورد */
-    color: var(--bose-white) !important;
+    color: var(--bose-black) !important;
     box-shadow: 0 4px 15px rgba(var(--bose-pink-rgb), 0.25) !important;
 }
 
@@ -1122,7 +1122,7 @@
 .bose-progress-node.active {
     border-color: var(--bose-pink) !important;
     background-color: var(--bose-pink) !important;
-    color: var(--bose-white) !important;
+    color: var(--bose-black) !important;
     box-shadow: 0 0 12px var(--bose-pink-shadow) !important;
 }
 .bose-progress-node.done {
@@ -1292,7 +1292,7 @@
 }
 .bose-lightbox-close {
     position: absolute; top: 14px; left: 14px; background: var(--bose-pink);
-    color: var(--bose-white); border: none; width: 44px; height: 44px;
+    color: var(--bose-black); border: none; width: 44px; height: 44px;
     border-radius: 50%; font-size: 22px; cursor: pointer; display: flex;
     align-items: center; justify-content: center; box-shadow: var(--bose-shadow-hover);
     z-index: 2;
@@ -1370,7 +1370,7 @@
     height: 40px;
     border-radius: 50%;
     background: var(--bose-pink);
-    color: var(--bose-white);
+    color: var(--bose-black);
     display: flex;
     align-items: center;
     justify-content: center;

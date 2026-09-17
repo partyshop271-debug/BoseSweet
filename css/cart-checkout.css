@@ -250,7 +250,7 @@
 
 .btn-clear-cart-node:hover {
     background-color: var(--bose-pink-text);
-    color: var(--bose-white);
+    color: var(--bose-black);
     box-shadow: var(--bose-hover-shadow);
     transform: translateY(-2px);
 }
@@ -537,7 +537,7 @@
 
 .bose-custom-image-link:hover {
     background: var(--bose-pink-text);
-    color: var(--bose-white);
+    color: var(--bose-black);
     transform: scale(1.03);
 }
 
@@ -716,7 +716,7 @@
 
 .coupon-apply-trigger {
     background-color: var(--bose-pink-text); /* 🛡️ لون أغمق لضمان تباين كافٍ (4.6:1) مع النص الأبيض فوقه */
-    color: var(--bose-white);
+    color: var(--bose-black);
     border: none;
     border-radius: var(--bose-radius-pill);
     padding: 0 20px;
@@ -853,8 +853,8 @@
 .bose-action-button-full {
     width: 100%;
     height: 52px;
-    background-color: var(--bose-pink-text); /* 🛡️ لون أغمق لضمان تباين كافٍ مع النص الأبيض - كان زرار تأكيد الطلب أقل عنصر وضوحاً بالصفحة */
-    color: var(--bose-white);
+    background-color: var(--bose-pink-text); /* 🛡️🆕 [إتاحة - سبتمبر 2026]: زرار تأكيد الطلب - كان أهم زرار في الصفحة بنص أبيض فاشل التباين، بقى أسود */
+    color: var(--bose-black);
     border: none;
     border-radius: var(--bose-radius-pill);
     font-family: var(--bose-font);
@@ -938,7 +938,7 @@
 
 .bose-continue-shopping-anchor:hover,
 .premium-back-to-menu-button:hover {
-    color: var(--bose-white);
+    color: var(--bose-black);
     background-color: var(--bose-pink-text);
     border-color: var(--bose-pink-text);
 }
@@ -1069,6 +1069,88 @@
 .bose-field-capture.field-invalid {
     border-color: var(--bose-error-red) !important;
     box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.12) !important;
+}
+
+/* 🆕 [قائمة اختيار الساعة المخصصة - سبتمبر 2026] راجع التعليق في checkout.html
+   لسبب استبدال <input type="time"> الأصلي - نفس شكل .bose-field-capture
+   تقريباً بس مقسّم لثلاث عناصر (ساعة/دقيقة/صباحاً-مساءً) جنب بعض. */
+.bose-time-picker {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background-color: var(--bose-white);
+    border: 1.5px solid var(--bose-border-gray);
+    border-radius: var(--bose-radius-sm);
+    height: 48px;
+    padding: 0 10px;
+    transition: border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.bose-time-picker:focus-within {
+    border-color: var(--bose-pink);
+    box-shadow: 0 0 0 4px rgba(var(--bose-pink-rgb), 0.15);
+}
+/* الحقل الحقيقي (checkout-delivery-time) بقى مخفي، فرسالة الخطأ بتتحط على
+   القائمة المرئية نفسها بدل ما تعتمد على حقل مخفي محدش شايفه - :has() بتاخد
+   بالها من حالة الحقل المخفي اللي جنبها مباشرة في الـDOM. */
+.bose-time-picker:has(+ #checkout-delivery-time.field-invalid) {
+    border-color: var(--bose-error-red) !important;
+    box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.12) !important;
+}
+
+.bose-time-picker-select {
+    border: none;
+    background: transparent;
+    font-family: var(--bose-font);
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--bose-black);
+    outline: none;
+    flex: 1;
+    min-width: 0;
+    text-align: center;
+    appearance: none;
+    cursor: pointer;
+}
+
+.bose-time-picker-colon {
+    font-weight: 700;
+    color: var(--bose-black);
+    flex-shrink: 0;
+}
+
+.bose-time-period-toggle {
+    display: flex;
+    flex-shrink: 0;
+    background-color: #F3F3F3;
+    border-radius: var(--bose-radius-pill);
+    padding: 3px;
+    gap: 2px;
+}
+
+.bose-time-period-btn {
+    border: none;
+    background: transparent;
+    font-family: var(--bose-font);
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--bose-black);
+    padding: 6px 10px;
+    border-radius: var(--bose-radius-pill);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: var(--bose-transition-fast);
+}
+.bose-time-period-btn.is-active {
+    background-color: var(--bose-pink-text);
+    color: var(--bose-black);
+}
+
+@media (max-width: 380px) {
+    .bose-time-period-btn {
+        padding: 6px 7px;
+        font-size: 0.68rem;
+    }
 }
 
 .bose-field-error-msg {
@@ -1701,8 +1783,8 @@ select.bose-form-control option,
 .btn-success-whatsapp-trigger,
 .success-action-primary-btn {
     flex: 1;
-    background-color: var(--bose-pink-text); /* 🛡️ لون أغمق لضمان تباين كافٍ مع النص الأبيض */
-    color: var(--bose-white);
+    background-color: var(--bose-pink-text); /* 🛡️🆕 [إتاحة - سبتمبر 2026]: أزرار واتساب/الإجراء الأساسي في صفحة نجاح الطلب - النص أسود دلوقتي مش أبيض */
+    color: var(--bose-black);
     border: none;
     padding: 14px 24px;
     border-radius: var(--bose-radius-pill);
