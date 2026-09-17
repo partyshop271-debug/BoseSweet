@@ -72,11 +72,26 @@
         });
     }
 
+    /**
+     * 🐛✅ [إصلاح - "العرض لسه ظاهر على المنتج بعد ما اتمسح من هنا"]: قبل
+     * كده، حذف الصف من هنا كان بيشيل بس ربط FK جوه جدول offers (المنتج
+     * يختفي من قسم "العروض المميزة" في الصفحة الرئيسية/offers.html) لكن
+     * شارة الخصم/السعر القديم المشطوب اللي بتظهر على المنتج في كل مكان
+     * تاني (كارت المنتج، صفحة الفئة، نافذة التفاصيل) بييجي من عمود
+     * old_price في صفحة "المنتجات" نفسها (راجع buildBoseDiscountBadgeMarkup
+     * في core-engine.js) - وده عمود منفصل تمامًا مش بيتلمس لما نحذف من هنا.
+     * فكانت النتيجة: الأدمن بيحذف "العرض" فيتفاجئ إن المنتج لسه شكله وكأنه
+     * عليه خصم في كل مكان تاني بالموقع. دلوقتي، بعد تأكيد حذف العرض، بنسأل
+     * سؤال تاني واضح: تحذفي السعر القديم من المنتج نفسه كمان ولا تسيبيه؟ -
+     * عشان الأدمن تقدر تشيل الخصم بالكامل من مكان واحد بدل ما تضطر تروح
+     * صفحة "المنتجات" يدوي بعد كده وتفتكر تمسح old_price بنفسها.
+     */
     async function handleDelete(id) {
         const offer = allOffers.find((o) => o.id === id);
+        const product = offer?.products || null;
         const confirmed = await window.BoseAdminUI.confirmAction({
             title: "تأكيد الإزالة",
-            message: `هل أنت متأكد من إزالة "${offer?.products?.title || "هذا العرض"}" من قسم العروض؟ المنتج نفسه هيفضل موجود في المتجر عادي.`,
+            message: `هل أنت متأكد من إزالة "${product?.title || "هذا العرض"}" من قسم العروض المميزة؟ المنتج نفسه هيفضل موجود في المتجر عادي.`,
             confirmLabel: "إزالة",
             danger: true,
         });
@@ -84,7 +99,31 @@
 
         try {
             await window.BoseAdmin.deleteOffer(id);
-            window.BoseAdminUI.showToast("تم إزالة العرض", "success");
+
+            // لو المنتج لسه عنده سعر قديم (old_price)، شارة الخصم هتفضل ظاهرة
+            // عليه في كل الموقع رغم إزالته من قسم العروض - نوضح ده صراحة ونديها
+            // خيار تشيله من جذره بضغطة واحدة.
+            if (product && product.old_price) {
+                const clearPriceToo = await window.BoseAdminUI.confirmAction({
+                    title: "امسحي السعر القديم من المنتج كمان؟",
+                    message: `المنتج "${product.title}" لسه عنده سعر قديم (${money(product.old_price)}) في صفحة "المنتجات"، فشارة الخصم والسعر المشطوب هيفضلوا ظاهرين عليه في كل الموقع حتى بعد إزالته من هنا. تحذفي السعر القديم كمان دلوقتي عشان الخصم يختفي تمامًا؟`,
+                    confirmLabel: "امسحي السعر القديم كمان",
+                    danger: false,
+                });
+                if (clearPriceToo) {
+                    try {
+                        await window.BoseAdmin.updateProduct(product.id, { old_price: null });
+                        window.BoseAdminUI.showToast("تم إزالة العرض وحذف السعر القديم من المنتج", "success");
+                    } catch (e) {
+                        window.BoseAdminUI.showToast("تم إزالة العرض، لكن تعذر حذف السعر القديم من المنتج", "warning");
+                    }
+                } else {
+                    window.BoseAdminUI.showToast("تم إزالة العرض من القسم المميز (شارة الخصم هتفضل ظاهرة لأن السعر القديم لسه موجود)", "success");
+                }
+            } else {
+                window.BoseAdminUI.showToast("تم إزالة العرض", "success");
+            }
+
             await loadOffers();
         } catch (e) {
             window.BoseAdminUI.showToast("تعذر إزالة العرض", "error");
