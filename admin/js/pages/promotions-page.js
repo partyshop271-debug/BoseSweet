@@ -14,6 +14,7 @@
 
     let currentPromotions = [];
     let allCategories = [];
+    let allProducts = [];
 
     function categoryTitle(categoryId) {
         return allCategories.find((c) => c.id === categoryId)?.title || categoryId || "—";
@@ -120,6 +121,23 @@
         `).join("");
     }
 
+    function productPickerOptionsHTML() {
+        const e = window.BoseAdminUI.escapeHtml;
+        const groups = new Map();
+        allProducts.forEach((p) => {
+            const groupName = (p.categories && p.categories.title) || "بدون فئة";
+            if (!groups.has(groupName)) groups.set(groupName, []);
+            groups.get(groupName).push(p);
+        });
+        return Array.from(groups.entries()).map(([groupName, products]) => `
+            <optgroup label="${e(groupName)}">
+                ${products.map((p) => `
+                    <option value="${e(p.id)}">${e(p.title)}${p.flavor_name ? " - " + e(p.flavor_name) : ""} — ${Math.round(p.price || 0)} ج.م</option>
+                `).join("")}
+            </optgroup>
+        `).join("");
+    }
+
     function openPromotionModal(promotion) {
         const isEdit = !!promotion;
         const e = window.BoseAdminUI.escapeHtml;
@@ -135,11 +153,22 @@
                 </div>
 
                 <form id="promotion-form">
+                    ${!isEdit ? `
+                    <div class="adm-field adm-quick-fill-field">
+                        <label for="pf-quick-fill-product">🪄 تعبئة تلقائية من منتج موجود (اختياري)</label>
+                        <select class="adm-select" id="pf-quick-fill-product">
+                            <option value="">— اختاري منتج عشان نعبّي البيانات تلقائياً —</option>
+                            ${productPickerOptionsHTML()}
+                        </select>
+                        <span class="adm-hint">هيعبّي العنوان والفئة والسعر الحالي والصورة تلقائياً من المنتج اللي تختاريه - يفضل تحطي بس السعر الجديد للعرض وتراجعي كل حاجة قبل الحفظ. أو سيبيه فاضي لو العرض مش لمنتج واحد بعينه.</span>
+                    </div>
+                    ` : ""}
+
                     <div class="adm-field">
                         <label for="pf-id">معرّف العرض (ID)</label>
                         <input type="text" class="adm-input" id="pf-id" value="${isEdit ? e(promotion.id) : ""}"
                                placeholder="مثال: promo-cinabon-5plus1" ${isEdit ? "disabled" : ""} required>
-                        ${!isEdit ? `<span class="adm-hint">نص إنجليزي فريد، بحروف صغيرة وشرطات (-) بس. مينفعش يتغير بعد الحفظ.</span>` : ""}
+                        ${!isEdit ? `<span class="adm-hint">نص إنجليزي فريد، بحروف صغيرة وشرطات (-) بس. مينفعش يتغير بعد الحفظ. لو اخترتي منتج فوق، هيتملى تلقائيًا وتقدري تعدّليه.</span>` : ""}
                     </div>
 
                     <div class="adm-field">
@@ -220,6 +249,29 @@
         document.getElementById("pf-old-price").addEventListener("input", updateDiscountPreview);
         document.getElementById("pf-new-price").addEventListener("input", updateDiscountPreview);
         updateDiscountPreview();
+
+        // 🆕 [تعبئة تلقائية من منتج موجود - سبتمبر 2026]: بدل ما الأدمن تكتب
+        // كل التفاصيل من الصفر (عنوان، فئة، سعر، صورة) لكل عرض، اختيار منتج
+        // من القائمة دي بيعبّي كل ده تلقائيًا فورًا - تفضل بس محتاجة تحدد
+        // السعر الجديد للعرض (والمعرّف لو عايزة تغيّريه) وتراجع قبل الحفظ.
+        const quickFillSelect = document.getElementById("pf-quick-fill-product");
+        if (quickFillSelect) {
+            quickFillSelect.addEventListener("change", () => {
+                const product = allProducts.find((p) => p.id === quickFillSelect.value);
+                if (!product) return;
+
+                document.getElementById("pf-id").value = `promo-${product.id}`;
+                document.getElementById("pf-title").value = product.flavor_name ? `${product.title} - ${product.flavor_name}` : (product.title || "");
+                document.getElementById("pf-category").value = product.category_id || "";
+                document.getElementById("pf-old-price").value = product.price || "";
+                const productImage = Array.isArray(product.images) ? product.images.find((u) => typeof u === "string" && u.startsWith("http") && !u.includes("logo_igggsb")) : null;
+                if (productImage) {
+                    image = productImage;
+                    refreshImageGrid();
+                }
+                updateDiscountPreview();
+            });
+        }
 
         overlay.addEventListener("click", (evt) => {
             if (evt.target === overlay) close();
@@ -307,9 +359,10 @@
     async function loadPromotions() {
         const tbody = document.getElementById("promotions-tbody");
         tbody.innerHTML = `<tr><td colspan="7"><div class="adm-loading-spinner"></div></td></tr>`;
-        [currentPromotions, allCategories] = await Promise.all([
+        [currentPromotions, allCategories, allProducts] = await Promise.all([
             window.BoseAdmin.getPromotions(),
             window.BoseAdmin.getAllCategories(),
+            window.BoseAdmin.getAllProducts(),
         ]);
         renderTable();
     }

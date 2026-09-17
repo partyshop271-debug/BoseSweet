@@ -4,14 +4,8 @@
  * جدول offers هنا هو المصدر الحقيقي: كل صف = ربط FK لمنتج موجود في
  * products (offers.product_id -> products.id)، مش كائن مستقل بياناته
  * مكررة. لازم يكون للمنتج المختار old_price أكبر من price في صفحة
- * "المنتجات" علشان شارة الخصم تظهر فعلياً على الموقع العام.
- *
- * 👑 [الصفحة دي هي مفتاح التشغيل/الإطفاء الفعلي]: إضافة منتج هنا = يظهر
- * فورًا كعرض في كل مكان بالموقع (كاروسيل الرئيسية + صفحة "كل العروض" +
- * شارة الخصم على صفحة المنتج نفسه). حذفه من هنا = يختفي من كل الأماكن
- * دي تلقائيًا، حتى لو السعر القديم لسه محطوط على المنتج في صفحة
- * "المنتجات" (السعر القديم بيتحكم في *قيمة* الخصم المعروض، مش في هل
- * يظهر العرض أصلاً - ده قرار الصفحة دي بس).
+ * "المنتجات" علشان شارة الخصم تظهر فعلياً على الموقع العام - الصفحة دي
+ * بتحدد *مين* يظهر في قسم العروض المميزة، مش بتحدد السعر نفسه.
  *
  * ده منفصل تماماً عن "بانرات العروض" (promotions.html) اللي بتدير كروت
  * تسويقية حرة (JSON مستقل في store_settings.promotions) مش مربوطة
@@ -99,6 +93,35 @@
 
     /* ============================= مودال إضافة/تعديل ============================= */
 
+    /**
+     * 🆕 [توضيح اختيار المنتج - سبتمبر 2026]: قبل كده القائمة كانت بس بتعرض
+     * p.title، ولأن أغلب المنتجات (كل نكهات "القشطوطة" مثلاً) نفس الاسم
+     * بالظبط، كانت القائمة بتظهر "القشطوطة" مكررة عشرات المرات من غير أي
+     * طريقة تفريق بينهم. دلوقتي: تجميع بالفئة (optgroup) + اسم النكهة الحقيقي
+     * (flavor_name، موجود فعلاً في قاعدة البيانات لكل منتج) + السعر.
+     * @param {Array<Object>} products
+     * @param {string|null} selectedId
+     */
+    function buildProductOptionsHtml(products, selectedId) {
+        const e = window.BoseAdminUI.escapeHtml;
+        const groups = new Map(); // اسم الفئة -> منتجاتها
+        products.forEach((p) => {
+            const groupName = (p.categories && p.categories.title) || "بدون فئة";
+            if (!groups.has(groupName)) groups.set(groupName, []);
+            groups.get(groupName).push(p);
+        });
+
+        return Array.from(groups.entries()).map(([groupName, groupProducts]) => `
+            <optgroup label="${e(groupName)}">
+                ${groupProducts.map((p) => `
+                    <option value="${e(p.id)}" ${p.id === selectedId ? "selected" : ""}>
+                        ${e(p.title)}${p.flavor_name ? " - " + e(p.flavor_name) : ""} — ${Math.round(p.price || 0)} ج.م${p.old_price ? "" : " — بدون سعر قديم"}
+                    </option>
+                `).join("")}
+            </optgroup>
+        `).join("");
+    }
+
     function openOfferModal(offer) {
         const isEdit = !!offer;
         const e = window.BoseAdminUI.escapeHtml;
@@ -121,13 +144,9 @@
                         <label for="of-product">المنتج</label>
                         <select class="adm-select" id="of-product" required>
                             <option value="">اختر منتج...</option>
-                            ${availableProducts.map((p) => `
-                                <option value="${e(p.id)}" ${isEdit && p.id === offer.product_id ? "selected" : ""}>
-                                    ${e(p.title)}${p.old_price ? "" : " (بدون سعر قديم حالياً)"}
-                                </option>
-                            `).join("")}
+                            ${buildProductOptionsHtml(availableProducts, isEdit ? offer.product_id : null)}
                         </select>
-                        <span class="adm-hint">لو المنتج مالوش سعر قديم (old_price) في صفحة "المنتجات"، شارة الخصم مش هتظهر ليه في الموقع حتى لو اتضاف هنا.</span>
+                        <span class="adm-hint">أسماء كتير من المنتجات بتتكرر (نفس الاسم لكل نكهة، زي "القشطوطة") - اسم النكهة بعد الشرطة هو اللي بيفرّق بينهم.<br>لو المنتج مالوش سعر قديم (old_price) في صفحة "المنتجات"، شارة الخصم مش هتظهر ليه في الموقع حتى لو اتضاف هنا.</span>
                     </div>
 
                     <div class="adm-field">
