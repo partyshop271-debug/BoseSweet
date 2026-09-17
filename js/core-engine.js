@@ -2289,16 +2289,28 @@
     };
 
     /**
-     * 🛡️ [إصلاح حرج]: نظام رسائل التنبيه المؤقتة (toast) - كان بيتنادى عليه في
-     * أكتر من 8 أماكن في الموقع (تمت الإضافة للسلة، تم إرسال المراجعة، إلخ)
-     * بس الدالة نفسها كانت مش متعرّفة في أي مكان، يعني كل الرسائل دي كانت
-     * بتفشل بصمت (typeof === 'function' بيرجع false) والعميل ملوش أي تأكيد
-     * بصري إن الإضافة للسلة نجحت غير رقم صغير في شارة السلة بالزاوية.
-     * الـ CSS الخاص بالتصميم (#bose-toast-container / .bose-toast-message)
-     * كان جاهز فعلاً من قبل في global.css - هنا بس بنوصّله بمنطق JS شغال.
+     * 🆕 [إعادة تصميم الإشعارات - سبتمبر 2026]: بدل ما كل الرسائل تبقى بنفس
+     * اللون الوردي وتختفي بعد 3.2 ثانية ثابتة مهما كان طول الرسالة أو أهميتها،
+     * دلوقتي فيه أربعة أنواع (success/error/warning/info) بألوان مختلفة، شريط
+     * تقدّم بيوضّح الوقت المتبقي، زرار إغلاق واضح، والعدّاد بيقف تماماً لو
+     * العميل حطّ إيده/ركّز على الإشعار (pause on hover/focus) - مهم خصوصاً
+     * لضعاف القراءة والنظر اللي محتاجين وقت أطول أو يتحكموا في التوقيت بنفسهم
+     * بدل ما يتسابقوا مع عدّاد ثابت. التوافق مع النداء القديم
+     * showBoseToast(message, 4000) لسه شغال زي ما هو (duration رقم = نفس
+     * المعنى القديم، من غير النوع/الأيقونة الجديدة اللي بتتفعل بس لو النداء
+     * الجديد استخدم كائن خيارات).
+     * @param {string} message
+     * @param {number|{type?: 'success'|'error'|'warning'|'info', duration?: number, closable?: boolean}} [options]
      */
-    window.showBoseToast = function (message, duration = 3200) {
+    window.showBoseToast = function (message, options) {
         if (!message) return;
+        if (typeof options === 'number') options = { duration: options };
+        const {
+            type = 'info',
+            duration = 6500,
+            closable = true
+        } = options || {};
+
         let container = document.getElementById('bose-toast-container');
         if (!container) {
             container = document.createElement('div');
@@ -2308,7 +2320,45 @@
 
         const toast = document.createElement('div');
         toast.className = 'bose-toast-message';
-        toast.textContent = message;
+        toast.dataset.type = type;
+        // 🛡️ أخطاء تتقرأ فوراً (aria-live="assertive")، باقي الأنواع بتتقرأ
+        // من غير ما تقاطع اللي قارئ الشاشة بيقوله دلوقتي (aria-live="polite").
+        toast.setAttribute('role', type === 'error' ? 'alert' : 'status');
+        toast.setAttribute('aria-live', type === 'error' ? 'assertive' : 'polite');
+
+        const icon = document.createElement('span');
+        icon.className = 'bose-toast-icon';
+        icon.setAttribute('aria-hidden', 'true');
+        toast.appendChild(icon);
+
+        const body = document.createElement('div');
+        body.className = 'bose-toast-body';
+        const text = document.createElement('div');
+        text.className = 'bose-toast-text';
+        text.textContent = message;
+        body.appendChild(text);
+
+        let progressFill = null;
+        if (duration > 0) {
+            const progress = document.createElement('div');
+            progress.className = 'bose-toast-progress';
+            progressFill = document.createElement('div');
+            progressFill.className = 'bose-toast-progress-fill';
+            progress.appendChild(progressFill);
+            body.appendChild(progress);
+        }
+        toast.appendChild(body);
+
+        if (closable) {
+            const closeBtn = document.createElement('button');
+            closeBtn.type = 'button';
+            closeBtn.className = 'bose-toast-close';
+            closeBtn.setAttribute('aria-label', 'إغلاق الإشعار');
+            closeBtn.innerHTML = '&times;';
+            closeBtn.addEventListener('click', () => removeToast());
+            toast.appendChild(closeBtn);
+        }
+
         container.appendChild(toast);
 
         // فريم إضافي قبل إضافة is-visible عشان الـ transition يشتغل فعلاً
@@ -2317,11 +2367,48 @@
             requestAnimationFrame(() => toast.classList.add('is-visible'));
         });
 
-        setTimeout(() => {
+        let hideTimer = null;
+        let remaining = duration;
+        let startedAt = Date.now();
+
+        function scheduleHide() {
+            if (duration <= 0) return; // duration=0 يعني "متختفيش لوحدها" - العميل هو اللي يقفلها
+            startedAt = Date.now();
+            hideTimer = setTimeout(removeToast, remaining);
+            if (progressFill) {
+                requestAnimationFrame(() => {
+                    progressFill.style.transition = `width ${remaining}ms linear`;
+                    progressFill.style.width = '0%';
+                });
+            }
+        }
+
+        function pauseHide() {
+            if (duration <= 0 || !hideTimer) return;
+            clearTimeout(hideTimer);
+            hideTimer = null;
+            remaining -= (Date.now() - startedAt);
+            if (progressFill) {
+                const currentWidth = progressFill.getBoundingClientRect().width;
+                const parentWidth = progressFill.parentElement.getBoundingClientRect().width;
+                const currentPercent = parentWidth ? (currentWidth / parentWidth) * 100 : 0;
+                progressFill.style.transition = 'none';
+                progressFill.style.width = currentPercent + '%';
+            }
+        }
+
+        function removeToast() {
             toast.classList.remove('is-visible');
             toast.classList.add('is-leaving');
             setTimeout(() => toast.remove(), 420);
-        }, duration);
+        }
+
+        toast.addEventListener('mouseenter', pauseHide);
+        toast.addEventListener('mouseleave', scheduleHide);
+        toast.addEventListener('focusin', pauseHide);
+        toast.addEventListener('focusout', scheduleHide);
+
+        scheduleHide();
     };
 
     /**
@@ -2400,32 +2487,82 @@
     };
 
     /**
+     * 🆕 [موحّد مع showBoseToast]: كانت دي نسخة تانية منفصلة تماماً (نفس الـ
+     * CSS بس بمنطق JS مختلف، ومدة ثابتة 3 ثواني من غير أي تحكم من العميل) -
+     * وهي كانت الأكتر استخدامًا فعلياً في الموقع (السلة، المفضلة، رفع صور
+     * التورت/الورد، الكوبونات..إلخ)، يعني تحسين showBoseToast لوحدها كان
+     * هيسيب أغلب الإشعارات الحقيقية اللي بتظهر للعميل بره التحسين. دلوقتي
+     * بقت مجرد غلاف رفيع فوق showBoseToast عشان كل مكان بينادي عليها ياخد
+     * نفس التصميم الجديد (نوع/أيقونة/شريط تقدّم/زرار إغلاق) تلقائياً من غير
+     * ما نغيّر كل نداء ليها في كل الملفات.
      * @param {string} message
+     * @param {number|{type?: 'success'|'error'|'warning'|'info', duration?: number, closable?: boolean}} [options]
      */
-    window.showBoseGlobalToast = function(message) {
-        let container = document.getElementById('bose-toast-container');
-        if (!container) {
-            container = document.createElement('div');
-            container.id = 'bose-toast-container';
-            document.body.appendChild(container);
-        }
-        const toast = document.createElement('div');
-        toast.className = 'bose-toast-message';
-        toast.textContent = message;
-        container.appendChild(toast);
-
-        requestAnimationFrame(() => toast.classList.add('is-visible'));
-        setTimeout(() => {
-            toast.classList.remove('is-visible');
-            toast.classList.add('is-leaving');
-            setTimeout(() => { toast.remove(); }, 400);
-        }, 3000);
+    window.showBoseGlobalToast = function(message, options) {
+        window.showBoseToast(message, options);
     };
 
     /**
      * @param {HTMLElement} buttonElement
      * @param {string} productId
      */
+    /**
+     * 🆕 [مطالبة "بعد الإضافة للسلة" - سبتمبر 2026]: بتتنادى بعد أي إضافة
+     * ناجحة للسلة (من أي مكان في الموقع - كارت منتج، محاكي تورت/ورد، بطاقة
+     * هدية) وبتديلها زرارين واضحين بدل ما تفضل واقفة متلخبطة: "إتمام الطلب"
+     * يودّيها checkout.html على طول، و"أكمل التسوق" يقفل المطالبة وترجع لنفس
+     * الصفحة تكمل تصفح. من غير عداد اختفاء تلقائي - قرار مقصود، القرار مهم
+     * كفاية إن العميلة تاخد وقتها فيه من غير ما "يفوتها" الاختيار.
+     * @param {{message?: string}} [options]
+     */
+    window.showBosePostAddToCartPrompt = function(options) {
+        const message = (options && options.message) || 'تمت إضافة المنتج للسلة بنجاح 🎉';
+
+        let overlay = document.getElementById('bose-post-add-overlay');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.id = 'bose-post-add-overlay';
+            overlay.className = 'bose-post-add-overlay';
+            overlay.innerHTML =
+                '<div class="bose-post-add-card" role="dialog" aria-modal="true" aria-labelledby="bose-post-add-title">' +
+                    '<div class="bose-post-add-icon" aria-hidden="true">✓</div>' +
+                    '<p id="bose-post-add-title" class="bose-post-add-title"></p>' +
+                    '<div class="bose-post-add-actions">' +
+                        '<button type="button" class="bose-post-add-btn-primary" id="bose-post-add-checkout-btn">إتمام الطلب</button>' +
+                        '<button type="button" class="bose-post-add-btn-secondary" id="bose-post-add-continue-btn">أكمل التسوق</button>' +
+                    '</div>' +
+                '</div>';
+            document.body.appendChild(overlay);
+
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) window.hideBosePostAddToCartPrompt();
+            });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && overlay.classList.contains('is-visible')) {
+                    window.hideBosePostAddToCartPrompt();
+                }
+            });
+            overlay.querySelector('#bose-post-add-checkout-btn').addEventListener('click', () => {
+                window.location.href = '/checkout.html';
+            });
+            overlay.querySelector('#bose-post-add-continue-btn').addEventListener('click', () => {
+                window.hideBosePostAddToCartPrompt();
+            });
+        }
+
+        const titleEl = overlay.querySelector('.bose-post-add-title');
+        if (titleEl) titleEl.textContent = message;
+
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => overlay.classList.add('is-visible'));
+        });
+    };
+
+    window.hideBosePostAddToCartPrompt = function() {
+        const overlay = document.getElementById('bose-post-add-overlay');
+        if (overlay) overlay.classList.remove('is-visible');
+    };
+
     window.handleBoseDirectAddToCart = function(buttonElement, productId) {
         if (!window.BoseStoreData || !buttonElement) return;
         const product = window.BoseStoreData.products ? window.BoseStoreData.products.find((/** @type {any} */ p) => p.id === productId || p.slug === productId) : null;
@@ -2457,7 +2594,7 @@
         // استدعاء مباشر للدالة دي متجاوز لواجهة الزرار المعطّل في createProductCardHTML.
         if (product.isAvailable === false) {
             if (typeof window.showBoseGlobalToast === 'function') {
-                window.showBoseGlobalToast('معلش، الصنف ده خلص من المخزن دلوقتي.');
+                window.showBoseGlobalToast('معلش، الصنف ده خلص من المخزن دلوقتي.', { type: 'warning' });
             }
             return;
         }
@@ -2525,12 +2662,14 @@
 
         const originalHtml = buttonElement.innerHTML;
         buttonElement.innerHTML = '<i class="fa-solid fa-check"></i> تمت الإضافة';
+        buttonElement.classList.add('is-added');
         /** @type {HTMLButtonElement} */ (buttonElement).disabled = true;
 
-        window.showBoseGlobalToast('ضفنا المنتج للسلة.');
+        window.showBosePostAddToCartPrompt({ message: 'تمت إضافة المنتج للسلة بنجاح 🎉' });
 
         setTimeout(() => {
             buttonElement.innerHTML = originalHtml;
+            buttonElement.classList.remove('is-added');
             /** @type {HTMLButtonElement} */ (buttonElement).disabled = false;
         }, 2500);
     };
@@ -2554,7 +2693,7 @@
         const sel = cardContainer && /** @type {any} */ (cardContainer)._boseMixSelection;
         if (!sel || !sel.mixToppingASlug || !sel.mixToppingBSlug) {
             if (typeof window.showBoseGlobalToast === 'function') {
-                window.showBoseGlobalToast('اختاري توبينجين مختلفين الأول قبل ما تضيفي للسلة 🍧');
+                window.showBoseGlobalToast('اختاري توبينجين مختلفين الأول قبل ما تضيفي للسلة 🍧', { type: 'warning' });
             }
             return;
         }
@@ -2609,12 +2748,14 @@
 
         const originalHtml = buttonElement.innerHTML;
         buttonElement.innerHTML = '<i class="fa-solid fa-check"></i> تمت الإضافة';
+        buttonElement.classList.add('is-added');
         /** @type {HTMLButtonElement} */ (buttonElement).disabled = true;
 
-        window.showBoseGlobalToast('ضفنا المنتج للسلة.');
+        window.showBosePostAddToCartPrompt({ message: 'تمت إضافة المنتج للسلة بنجاح 🎉' });
 
         setTimeout(() => {
             buttonElement.innerHTML = originalHtml;
+            buttonElement.classList.remove('is-added');
             /** @type {HTMLButtonElement} */ (buttonElement).disabled = false;
         }, 2500);
     };
@@ -3406,7 +3547,7 @@
                 sessionStorage.setItem('bose_welcome_shown', '1');
                 setTimeout(() => {
                     if (typeof window.showBoseToast === "function") {
-                        window.showBoseToast(`أهلاً بعودتك يا ${welcomeProfile.name} 🌸 وحشتينا!`, 4200);
+                        window.showBoseToast(`أهلاً بعودتك يا ${welcomeProfile.name} 🌸 وحشتينا!`, { type: 'success', duration: 4200 });
                     }
                 }, 700);
             }

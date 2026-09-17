@@ -97,6 +97,18 @@ window.addEventListener("pageshow", (event) => {
     }
 });
 
+// 🆕🛡️ [تخطي خطوة صفحة النجاح - للمتصفحات العادية بس - سبتمبر 2026]: المتصفحات
+// المصغّرة الداخلية جوه إنستجرام/سناب شات/فيسبوك ليها قيود صارمة على فتح روابط
+// واتساب برمجيًا (راجع التعليق الكامل في processFinalBoseOrder تحت لتفاصيل
+// الفشل الموثّق فعليًا) - فبنكتشفها من user agent الجهاز، ولو مكتشفة، بنسيب
+// المسار الآمن الحالي (صفحة نجاح + ضغطة يدوية) زي ما هو تمامًا من غير أي
+// تغيير. للمتصفحات العادية (كروم/سفاري الحقيقيين، الأغلبية الساحقة من العميلات)
+// بس، بنفتح واتساب مباشرة من ضغطة "تأكيد الطلب" نفسها.
+function isBoseInAppBrowser() {
+    const ua = navigator.userAgent || "";
+    return /Instagram|FBAN|FBAV|Snapchat|Line\//i.test(ua);
+}
+
 /**
  * 🛡️ يعلّم حقل واحد كـ"غلط" (حدود حمراء + رسالة تحته) بدل ما نوقف الفورم
  * كله عند أول خطأ - بيُستخدم مع boseShowAllCheckoutErrors عشان كل الأخطاء
@@ -134,14 +146,24 @@ function boseClearFieldError(inputEl) {
 function boseShowAllCheckoutErrors(errors, firstInvalidInput) {
     errors.forEach(({ input, message }) => boseMarkFieldError(input, message));
     if (firstInvalidInput) {
-        firstInvalidInput.scrollIntoView({ behavior: "smooth", block: "center" });
-        firstInvalidInput.focus({ preventScroll: true });
+        // 🛡️🆕 [إصلاح - قائمة الساعة المخصصة]: checkout-delivery-time بقى
+        // حقل مخفي (type="hidden") من غير أي شكل مرئي، فـ .focus()/.scrollIntoView()
+        // عليه مباشرة مش بيعملوا حاجة محسوسة للعميلة - بنوجّههم لعنصر القائمة
+        // المرئية (bose-time-picker-visual) بدل منه في الحالة دي بس.
+        const focusTarget = (firstInvalidInput.id === "checkout-delivery-time")
+            ? (document.getElementById("bose-time-picker-visual") || firstInvalidInput)
+            : firstInvalidInput;
+        focusTarget.scrollIntoView({ behavior: "smooth", block: "center" });
+        const focusableInner = focusTarget.matches && focusTarget.matches("input, select, textarea, button")
+            ? focusTarget
+            : (focusTarget.querySelector ? focusTarget.querySelector("select, input, button") : null);
+        (focusableInner || focusTarget).focus({ preventScroll: true });
     }
     const summary = errors.length === 1
         ? "فيه حقل واحد محتاج مراجعة، موضّح تحته بالتفصيل"
         : `فيه ${errors.length} حقول محتاجة مراجعة، موضّحة تحت كل حقل بالتفصيل`;
     if (typeof window.showBoseGlobalToast === "function") {
-        window.showBoseGlobalToast(summary);
+        window.showBoseGlobalToast(summary, { type: "warning" });
     } else {
         showBoseCustomModal(summary);
     }
@@ -442,14 +464,14 @@ function renderBoseCartPage(storeData) {
             // 🛡️ [إصلاح]: منع تجاوز الحد الأقصى المنطقي للكمية بدل الزيادة اللانهائية.
             if (item.quantity >= MAX_CART_ITEM_QUANTITY) {
                 if (typeof window.showBoseGlobalToast === "function") {
-                    window.showBoseGlobalToast(`أقصى كمية ممكنة للقطعة الواحدة هي ${MAX_CART_ITEM_QUANTITY}. لو محتاجة كمية أكبر، تواصلي معانا مباشرة على واتساب.`);
+                    window.showBoseGlobalToast(`أقصى كمية ممكنة للقطعة الواحدة هي ${MAX_CART_ITEM_QUANTITY}. لو محتاجة كمية أكبر، تواصلي معانا مباشرة على واتساب.`, { type: "warning" });
                 }
                 return;
             }
             item.quantity += 1;
             localStorage.setItem("bose_cart", JSON.stringify(cart));
             if (typeof window.updateGlobalCartCounter === "function") window.updateGlobalCartCounter();
-            if (typeof window.showBoseGlobalToast === "function") window.showBoseGlobalToast("تمت إضافة قطعة أخرى للسلة.");
+            if (typeof window.showBoseGlobalToast === "function") window.showBoseGlobalToast("تمت إضافة قطعة أخرى للسلة.", { type: "success" });
             
             updateSingleItemDOM(cardElement, item, finalProductPrice, finalProductPrice * item.quantity);
             updateCartSummary(cart, storeData);
@@ -458,7 +480,7 @@ function renderBoseCartPage(storeData) {
                 item.quantity -= 1;
                 localStorage.setItem("bose_cart", JSON.stringify(cart));
                 if (typeof window.updateGlobalCartCounter === "function") window.updateGlobalCartCounter();
-                if (typeof window.showBoseGlobalToast === "function") window.showBoseGlobalToast("تم تقليل قطعة من السلة.");
+                if (typeof window.showBoseGlobalToast === "function") window.showBoseGlobalToast("تم تقليل قطعة من السلة.", { type: "info" });
                 
                 updateSingleItemDOM(cardElement, item, finalProductPrice, finalProductPrice * item.quantity);
                 updateCartSummary(cart, storeData);
@@ -475,7 +497,7 @@ function renderBoseCartPage(storeData) {
             showBoseCustomModal("تحب تفضّي السلة من كل الأصناف؟", () => {
                 localStorage.removeItem("bose_cart");
                 if (typeof window.updateGlobalCartCounter === "function") window.updateGlobalCartCounter();
-                if (typeof window.showBoseGlobalToast === "function") window.showBoseGlobalToast("السلة اتفضّت خالص.");
+                if (typeof window.showBoseGlobalToast === "function") window.showBoseGlobalToast("السلة اتفضّت خالص.", { type: "info" });
                 buildFullCartUI();
             });
         };
@@ -489,7 +511,7 @@ function triggerCartItemRemoval(cart, index, storeData, callback) {
         cart.splice(index, 1);
         localStorage.setItem("bose_cart", JSON.stringify(cart));
         if (typeof window.updateGlobalCartCounter === "function") window.updateGlobalCartCounter();
-        if (typeof window.showBoseGlobalToast === "function") window.showBoseGlobalToast("الصنف اتشال من السلة.");
+        if (typeof window.showBoseGlobalToast === "function") window.showBoseGlobalToast("الصنف اتشال من السلة.", { type: "info" });
         callback();
     });
 }
@@ -1254,7 +1276,7 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFu
                         discountMsgEl.textContent = (recheckResult && recheckResult.message) || `⚠️ كود "${entry.code}" مبقاش شغال، شيلناه من طلبك.`;
                     }
                     if (typeof window.showBoseGlobalToast === "function") {
-                        window.showBoseGlobalToast((recheckResult && recheckResult.message) || `كود "${entry.code}" مبقاش شغال - راجعي طلبك وأكدي تاني`);
+                        window.showBoseGlobalToast((recheckResult && recheckResult.message) || `كود "${entry.code}" مبقاش شغال - راجعي طلبك وأكدي تاني`, { type: "error" });
                     }
                     if (typeof recalculateCheckoutInvoice === "function") recalculateCheckoutInvoice(cart, storeData, shippingFee, method, payFull);
                     return;
@@ -1481,6 +1503,31 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFu
     // حقيقي مباشر، مش كود بيحاول يتحكم في نافذة لوحده) - ده بيشتغل موثوق
     // في كل المتصفحات بدون استثناء، حتى المتصفحات الداخلية المتشددة زي
     // سناب شات وإنستجرام وفيسبوك اللي كانت بترفض آلية "التاب الفاضي" القديمة.
+    // 🛡️🐛👑🆕 [المرحلة 3 - سبتمبر 2026 - ضغطة واحدة للمتصفحات العادية]:
+    // المرحلة اللي فاتت (التعليق فوق) وصلت لحل آمن 100% بس بخطوتين (صفحة
+    // نجاح + ضغطة يدوية) لأن أي محاولة قديمة لفتح واتساب تلقائي كانت بتعتمد
+    // على فتح تاب فاضي بـwindow.open("", "_blank") الأول وتوجيهه لاحقًا بعد
+    // انتظار رد قاعدة البيانات - والمتصفحات المصغّرة الداخلية (سناب
+    // شات/إنستجرام/فيسبوك) بترفض بالتحديد "إعادة توجيه تاب اتفتح فاضي
+    // مسبقًا" ده (بتوريه about:blank#blocked). دلوقتي الفرق: مفيش أي تاب
+    // فاضي بيتفتح خالص - بيتفتح تاب واتساب **مرة واحدة بس وبرابط كامل
+    // وجاهز فعلاً** (مش فاضي ثم يتحدّث)، وده مش نفس آلية الفشل الموثّقة،
+    // فبيشتغل عادي في كل المتصفحات الحقيقية (كروم/سفاري). المتصفحات
+    // المصغّرة المكتشفة (isBoseInAppBrowser) بس هي اللي بتفضل على المسار
+    // الآمن القديم بالظبط - صفر مخاطرة جديدة عليهم.
+    if (!isBoseInAppBrowser()) {
+        const waPhone = completedBoseOrderObject.paymentPhone || "01097238441";
+        const waLink = typeof window.buildWhatsappLink === "function"
+            ? window.buildWhatsappLink(waPhone, whatsappMessageText)
+            : `https://wa.me/2${waPhone}?text=${encodeURIComponent(whatsappMessageText)}`;
+        window.open(waLink, "_blank", "noopener");
+        // 🆕 بنسجّل إن واتساب اتفتح تلقائيًا فعلاً - صفحة النجاح (order-success.html)
+        // بتقرا العلامة دي عشان تلوّن زرار "إرسال الفاتورة" كخيار احتياطي هادي
+        // بدل ما تعامله كخطوة أساسية لسه ناقصة (وتوقف تذكير الـ8 ثواني الملح
+        // اللي مصمم أصلاً للحالة اللي واتساب فيها ما فتحش تلقائي خالص).
+        try { sessionStorage.setItem("bose_wa_auto_opened", "1"); } catch (e) {}
+    }
+
     window.location.href = "/order-success.html";
 }
 
@@ -1779,17 +1826,38 @@ function renderBoseSuccessPage(storeData) {
         resendWhatsappBtn.setAttribute("target", "_blank");
         resendWhatsappBtn.setAttribute("rel", "noopener noreferrer");
 
+        // 🆕 [ضغطة واحدة للمتصفحات العادية - سبتمبر 2026]: لو واتساب اتفتح
+        // تلقائيًا فعلاً من صفحة الشيك أوت (راجع processFinalBoseOrder)، الزرار
+        // ده بقى مجرد خيار احتياطي هادي ("مفتحش عندك؟ ابعتيها تاني") مش خطوة
+        // أساسية لسه ناقصة - فبنشيل شكل الإلحاح (النبضة المتحركة) وتذكير الـ8
+        // ثواني، عشان محدش يتلخبط ويحس إنه لسه محتاج يعمل حاجة وهو خلاص خلص.
+        const waAlreadyAutoOpened = (() => {
+            try {
+                const flagged = sessionStorage.getItem("bose_wa_auto_opened") === "1";
+                sessionStorage.removeItem("bose_wa_auto_opened");
+                return flagged;
+            } catch (e) { return false; }
+        })();
+
+        if (waAlreadyAutoOpened) {
+            resendWhatsappBtn.classList.add("bose-wa-btn-secondary-fallback");
+            resendWhatsappBtn.innerHTML = '<i class="fab fa-whatsapp"></i> مفتحش عندك واتساب؟ ابعتي الفاتورة تاني';
+        }
+
         // 🐛✅ [إصلاح جوهري - المرحلة 2 - شبكة أمان أخيرة]: لو العميلة قعدت
         // في الصفحة دي 8 ثواني من غير ما تدوس زرار الواتساب (يعني غالباً
         // مقرتش النص أو ملاحظتش إن فيه خطوة متبقية)، بنفكّرها بتوست واضح
-        // بدل ما نسيبها تسيب الصفحة وهي فاهمة إن الطلب "خلص" فعلياً.
+        // بدل ما نسيبها تسيب الصفحة وهي فاهمة إن الطلب "خلص" فعلياً. الریمایندر
+        // ده بس لو واتساب ما اتفتحش تلقائي - لو اتفتح، مفيش داعي نقلق العميلة.
         let bosWhatsappClicked = false;
         resendWhatsappBtn.addEventListener("click", () => { bosWhatsappClicked = true; }, { once: true });
-        setTimeout(() => {
-            if (!bosWhatsappClicked && typeof window.showBoseGlobalToast === "function") {
-                window.showBoseGlobalToast("🌸 متنسيش تدوسي زرار إرسال الفاتورة على واتساب عشان نبدأ نجهز طلبك!");
-            }
-        }, 8000);
+        if (!waAlreadyAutoOpened) {
+            setTimeout(() => {
+                if (!bosWhatsappClicked && typeof window.showBoseGlobalToast === "function") {
+                    window.showBoseGlobalToast("🌸 متنسيش تدوسي زرار إرسال الفاتورة على واتساب عشان نبدأ نجهز طلبك!", { type: "warning" });
+                }
+            }, 8000);
+        }
     }
 
     // 📊👑 [نمو - Purchase]: أهم حدث تجاري - بيتأكد بس هنا (بعد ما الطلب فعلاً

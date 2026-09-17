@@ -394,7 +394,7 @@
                 state.photoUrl = resData.secure_url;
                 if (photoPreviewImg) photoPreviewImg.src = window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(resData.secure_url, 300) : resData.secure_url;
                 if (photoPreviewContainer) photoPreviewContainer.style.display = "block";
-                if (window.showBoseGlobalToast) window.showBoseGlobalToast("تم تأمين وحفظ الصورة بنجاح! ✨");
+                if (window.showBoseGlobalToast) window.showBoseGlobalToast("تم تأمين وحفظ الصورة بنجاح! ✨", { type: "success" });
             }
         } catch (err) {
             // 🚨🚨 [إصلاح جذري حرج]: كان بيعمل Fallback صامت لصورة base64 عملاقة
@@ -405,7 +405,7 @@
             // للعميل إن الرفع فشل فعلياً ونسيبها تحاول تاني، بدل حل وهمي بيبان شغال.
             state.photoUrl = "";
             if (photoPreviewContainer) photoPreviewContainer.style.display = "none";
-            if (window.showBoseGlobalToast) window.showBoseGlobalToast("مقدرناش نرفع الصورة، تأكدي من الاتصال بالإنترنت وحاولي تاني.");
+            if (window.showBoseGlobalToast) window.showBoseGlobalToast("مقدرناش نرفع الصورة، تأكدي من الاتصال بالإنترنت وحاولي تاني.", { type: "error" });
         } finally {
             state.isUploading = false;
             if (addToCartBtn) {
@@ -1201,16 +1201,16 @@
                     });
                 }
 
-                if (window.showBoseGlobalToast) window.showBoseGlobalToast("تمت إضافة المنتج إلى السلة.");
+                if (typeof window.showBosePostAddToCartPrompt === 'function') {
+                    window.showBosePostAddToCartPrompt({ message: "تمت إضافة تصميم بوكيتك الفريد إلى السلة بنجاح 🎉" });
+                } else if (window.showBoseGlobalToast) {
+                    window.showBoseGlobalToast("تمت إضافة المنتج إلى السلة.", { type: "success" });
+                }
 
                 try {
                     sessionStorage.removeItem(BASE64_IMAGE_SESSION_KEY);
                     localStorage.removeItem(FLOWER_STATE_STORAGE_KEY);
                 } catch (e) {}
-
-                setTimeout(() => {
-                    window.location.href = "/cart.html";
-                }, 400);
             };
         }
 

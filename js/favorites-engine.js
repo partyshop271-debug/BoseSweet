@@ -165,7 +165,7 @@
         }
 
         if (typeof window.showBoseGlobalToast === 'function') {
-            window.showBoseGlobalToast(nowFavorite ? '💗 تمت الإضافة للمفضلة' : 'تمت الإزالة من المفضلة');
+            window.showBoseGlobalToast(nowFavorite ? '💗 تمت الإضافة للمفضلة' : 'تمت الإزالة من المفضلة', { type: 'success' });
         }
 
         // لو إحنا فعلياً في صفحة المفضلة نفسها وشلنا منتج، نعيد رسم الشبكة فوراً

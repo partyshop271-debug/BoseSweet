@@ -279,7 +279,7 @@ function startEngineLogic() {
         radio.addEventListener('change', () => {
             refreshAllSelectionLines();
             if (typeof window.showBoseGlobalToast === 'function') {
-                window.showBoseGlobalToast(`تم اختيار الشكل: ${shapeMaps.nameMap[radio.value] || radio.value} ✅`);
+                window.showBoseGlobalToast(`تم اختيار الشكل: ${shapeMaps.nameMap[radio.value] || radio.value} ✅`, { type: 'success' });
             }
         });
     });
@@ -287,7 +287,7 @@ function startEngineLogic() {
         radio.addEventListener('change', () => {
             refreshAllSelectionLines();
             if (typeof window.showBoseGlobalToast === 'function') {
-                window.showBoseGlobalToast(`تم اختيار النكهة: ${flavorMaps.nameMap[radio.value] || radio.value} ✅`);
+                window.showBoseGlobalToast(`تم اختيار النكهة: ${flavorMaps.nameMap[radio.value] || radio.value} ✅`, { type: 'success' });
             }
         });
     });
@@ -295,7 +295,7 @@ function startEngineLogic() {
         radio.addEventListener('change', () => {
             refreshAllSelectionLines();
             if (typeof window.showBoseGlobalToast === 'function') {
-                window.showBoseGlobalToast(`تم اختيار نوع الطباعة: ${printingMaps.nameMap[radio.value] || radio.value} ✅`);
+                window.showBoseGlobalToast(`تم اختيار نوع الطباعة: ${printingMaps.nameMap[radio.value] || radio.value} ✅`, { type: 'success' });
             }
         });
     });
@@ -454,7 +454,7 @@ function startEngineLogic() {
             if (!file) return;
             if (!window.BoseSupabase || typeof window.BoseSupabase.uploadBoseReferenceImage !== 'function') {
                 if (typeof window.showBoseGlobalToast === 'function') {
-                    window.showBoseGlobalToast("مقدرناش نحمّل خدمة رفع الصور، حاولي تحدثي الصفحة.");
+                    window.showBoseGlobalToast("مقدرناش نحمّل خدمة رفع الصور، حاولي تحدثي الصفحة.", { type: "error" });
                 }
                 return;
             }
@@ -470,13 +470,13 @@ function startEngineLogic() {
                 }
                 if (cakePhotoUploadLabel) cakePhotoUploadLabel.textContent = "تم رفع الصورة بنجاح ✓ (اضغط لتغييرها)";
                 if (typeof window.showBoseGlobalToast === 'function') {
-                    window.showBoseGlobalToast("تم رفع صورتك بنجاح! ✨");
+                    window.showBoseGlobalToast("تم رفع صورتك بنجاح! ✨", { type: "success" });
                 }
             } catch (err) {
                 uploadedCakePhotoUrl = "";
                 if (cakePhotoUploadLabel) cakePhotoUploadLabel.textContent = "فشل الرفع، اضغط للمحاولة مرة أخرى";
                 if (typeof window.showBoseGlobalToast === 'function') {
-                    window.showBoseGlobalToast("مقدرناش نرفع الصورة، تأكدي من الاتصال بالإنترنت وحاولي تاني.");
+                    window.showBoseGlobalToast("مقدرناش نرفع الصورة، تأكدي من الاتصال بالإنترنت وحاولي تاني.", { type: "error" });
                 }
             } finally {
                 isUploadingCakePhoto = false;
@@ -513,7 +513,7 @@ function startEngineLogic() {
             if (!file) return;
             if (!window.BoseSupabase || typeof window.BoseSupabase.uploadBoseReferenceImage !== 'function') {
                 if (typeof window.showBoseGlobalToast === 'function') {
-                    window.showBoseGlobalToast("مقدرناش نحمّل خدمة رفع الصور، حاولي تحدثي الصفحة.");
+                    window.showBoseGlobalToast("مقدرناش نحمّل خدمة رفع الصور، حاولي تحدثي الصفحة.", { type: "error" });
                 }
                 return;
             }
@@ -529,13 +529,13 @@ function startEngineLogic() {
                 }
                 if (replicaUploadLabel) replicaUploadLabel.textContent = "تم رفع الصورة بنجاح ✓ (اضغط لتغييرها)";
                 if (typeof window.showBoseGlobalToast === 'function') {
-                    window.showBoseGlobalToast("تم رفع صورة التصميم بنجاح! ✨");
+                    window.showBoseGlobalToast("تم رفع صورة التصميم بنجاح! ✨", { type: "success" });
                 }
             } catch (err) {
                 uploadedReplicaPhotoUrl = "";
                 if (replicaUploadLabel) replicaUploadLabel.textContent = "فشل الرفع، اضغط للمحاولة مرة أخرى";
                 if (typeof window.showBoseGlobalToast === 'function') {
-                    window.showBoseGlobalToast("مقدرناش نرفع الصورة، تأكدي من الاتصال بالإنترنت وحاولي تاني.");
+                    window.showBoseGlobalToast("مقدرناش نرفع الصورة، تأكدي من الاتصال بالإنترنت وحاولي تاني.", { type: "error" });
                 }
             } finally {
                 isUploadingReplicaPhoto = false;
@@ -714,7 +714,7 @@ function startEngineLogic() {
         btnShareDesign.addEventListener('click', async () => {
             if (!window.BoseSupabase || typeof window.BoseSupabase.createSharedCakeDesign !== 'function') {
                 if (typeof window.showBoseGlobalToast === 'function') {
-                    window.showBoseGlobalToast("مقدرناش نجهز رابط المشاركة دلوقتي، حاولي تحدثي الصفحة.");
+                    window.showBoseGlobalToast("مقدرناش نجهز رابط المشاركة دلوقتي، حاولي تحدثي الصفحة.", { type: "error" });
                 }
                 return;
             }
@@ -742,7 +742,7 @@ function startEngineLogic() {
                 btnShareDesign.replaceWith(realLink);
             } catch (err) {
                 if (typeof window.showBoseGlobalToast === 'function') {
-                    window.showBoseGlobalToast("مقدرناش نجهز رابط المشاركة دلوقتي، حاولي تاني.");
+                    window.showBoseGlobalToast("مقدرناش نجهز رابط المشاركة دلوقتي، حاولي تاني.", { type: "error" });
                 }
                 btnShareDesign.disabled = false;
                 btnShareDesign.innerHTML = originalLabel;
@@ -817,7 +817,7 @@ function startEngineLogic() {
                     occasionInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
                 if (typeof window.showBoseGlobalToast === 'function') {
-                    window.showBoseGlobalToast("محتاجين نعرف مناسبة التورتة الأول عشان نقدر نكمل معاكِ 🎂");
+                    window.showBoseGlobalToast("محتاجين نعرف مناسبة التورتة الأول عشان نقدر نكمل معاكِ 🎂", { type: "warning" });
                 }
                 return false;
             }
@@ -855,7 +855,7 @@ function startEngineLogic() {
             if (occasionRequiredHint) occasionRequiredHint.classList.add('show');
             if (occasionInput) occasionInput.focus();
             if (typeof window.showBoseGlobalToast === 'function') {
-                window.showBoseGlobalToast("محتاجين نعرف مناسبة التورتة الأول قبل ما تكملي باقي الاختيارات 🎂");
+                window.showBoseGlobalToast("محتاجين نعرف مناسبة التورتة الأول قبل ما تكملي باقي الاختيارات 🎂", { type: "warning" });
             }
             return;
         }
@@ -1018,7 +1018,7 @@ function startEngineLogic() {
             if (occasionRequiredHint) occasionRequiredHint.classList.add('show');
             if (occasionInput) occasionInput.focus();
             if (typeof window.showBoseGlobalToast === 'function') {
-                window.showBoseGlobalToast("محتاجين نعرف مناسبة التورتة الأول عشان نقدر نكمل معاكِ 🎂");
+                window.showBoseGlobalToast("محتاجين نعرف مناسبة التورتة الأول عشان نقدر نكمل معاكِ 🎂", { type: "warning" });
             }
             return;
         }
@@ -1026,7 +1026,7 @@ function startEngineLogic() {
         if (selectedPrinting !== 'none') {
             if (isUploadingCakePhoto) {
                 if (typeof window.showBoseGlobalToast === 'function') {
-                    window.showBoseGlobalToast("لسه بيتم رفع صورتك، استني ثواني وبعدين اضغطي إضافة للسلة.");
+                    window.showBoseGlobalToast("لسه بيتم رفع صورتك، استني ثواني وبعدين اضغطي إضافة للسلة.", { type: "warning" });
                 }
                 return;
             }
@@ -1045,7 +1045,7 @@ function startEngineLogic() {
                 currentActiveStep = 7;
                 syncWizardPanelsUI();
                 if (typeof window.showBoseGlobalToast === 'function') {
-                    window.showBoseGlobalToast("من فضلك ارفعي صورة التصميم المطلوب طباعته على التورتة أولاً.");
+                    window.showBoseGlobalToast("من فضلك ارفعي صورة التصميم المطلوب طباعته على التورتة أولاً.", { type: "warning" });
                 }
                 if (cakePhotoUploadZone) cakePhotoUploadZone.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 return;
@@ -1055,7 +1055,7 @@ function startEngineLogic() {
         if (wantsReplica) {
             if (isUploadingReplicaPhoto) {
                 if (typeof window.showBoseGlobalToast === 'function') {
-                    window.showBoseGlobalToast("لسه بيتم رفع صورة التصميم، استني ثواني وبعدين اضغطي إضافة للسلة.");
+                    window.showBoseGlobalToast("لسه بيتم رفع صورة التصميم، استني ثواني وبعدين اضغطي إضافة للسلة.", { type: "warning" });
                 }
                 return;
             }
@@ -1064,7 +1064,7 @@ function startEngineLogic() {
                 currentActiveStep = 3;
                 syncWizardPanelsUI();
                 if (typeof window.showBoseGlobalToast === 'function') {
-                    window.showBoseGlobalToast("من فضلك ارفعي صورة التورتة اللي عايزة نقرب تصميمك منها أولاً.");
+                    window.showBoseGlobalToast("من فضلك ارفعي صورة التورتة اللي عايزة نقرب تصميمك منها أولاً.", { type: "warning" });
                 }
                 if (replicaUploadZone) replicaUploadZone.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 return;
@@ -1076,7 +1076,7 @@ function startEngineLogic() {
             currentActiveStep = 10;
             syncWizardPanelsUI();
             if (typeof window.showBoseGlobalToast === 'function') {
-                window.showBoseGlobalToast("من فضلك اكتبي الكلام اللي حابة نكتبه على كارت الإهداء.");
+                window.showBoseGlobalToast("من فضلك اكتبي الكلام اللي حابة نكتبه على كارت الإهداء.", { type: "warning" });
             }
             if (giftCardTextInput) giftCardTextInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
             return;
@@ -1140,8 +1140,10 @@ function startEngineLogic() {
                 });
             }
 
-            if (typeof window.showBoseGlobalToast === 'function') {
-                window.showBoseGlobalToast("تمت إضافة تصميم تورتتك الفريد إلى السلة بنجاح.");
+            if (typeof window.showBosePostAddToCartPrompt === 'function') {
+                window.showBosePostAddToCartPrompt({ message: "تمت إضافة تصميم تورتتك الفريد إلى السلة بنجاح 🎉" });
+            } else if (typeof window.showBoseGlobalToast === 'function') {
+                window.showBoseGlobalToast("تمت إضافة تصميم تورتتك الفريد إلى السلة بنجاح.", { type: "success" });
             } else {
                 alert("تمت إضافة المنتج إلى السلة.");
             }

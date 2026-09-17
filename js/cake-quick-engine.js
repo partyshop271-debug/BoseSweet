@@ -70,7 +70,7 @@ function startQuickOrderEngine() {
             if (!file) return;
             if (!window.BoseSupabase || typeof window.BoseSupabase.uploadBoseReferenceImage !== 'function') {
                 if (typeof window.showBoseGlobalToast === 'function') {
-                    window.showBoseGlobalToast("مقدرناش نحمّل خدمة رفع الصور، حاولي تحدثي الصفحة.");
+                    window.showBoseGlobalToast("مقدرناش نحمّل خدمة رفع الصور، حاولي تحدثي الصفحة.", { type: "error" });
                 }
                 return;
             }
@@ -86,13 +86,13 @@ function startQuickOrderEngine() {
                 }
                 if (photoUploadLabel) photoUploadLabel.textContent = "تم رفع الصورة بنجاح ✓ (اضغط لتغييرها)";
                 if (typeof window.showBoseGlobalToast === 'function') {
-                    window.showBoseGlobalToast("تم رفع صورتك بنجاح! ✨");
+                    window.showBoseGlobalToast("تم رفع صورتك بنجاح! ✨", { type: "success" });
                 }
             } catch (err) {
                 uploadedPhotoUrl = "";
                 if (photoUploadLabel) photoUploadLabel.textContent = "فشل الرفع، اضغط للمحاولة مرة أخرى";
                 if (typeof window.showBoseGlobalToast === 'function') {
-                    window.showBoseGlobalToast("مقدرناش نرفع الصورة، تأكدي من الاتصال بالإنترنت وحاولي تاني.");
+                    window.showBoseGlobalToast("مقدرناش نرفع الصورة، تأكدي من الاتصال بالإنترنت وحاولي تاني.", { type: "error" });
                 }
             } finally {
                 isUploadingPhoto = false;
@@ -103,7 +103,7 @@ function startQuickOrderEngine() {
     function submitQuickOrder() {
         if (isUploadingPhoto) {
             if (typeof window.showBoseGlobalToast === 'function') {
-                window.showBoseGlobalToast("لسه بيتم رفع صورتك، استني ثواني وبعدين اضغطي تأكيد الحجز.");
+                window.showBoseGlobalToast("لسه بيتم رفع صورتك، استني ثواني وبعدين اضغطي تأكيد الحجز.", { type: "warning" });
             }
             return;
         }
@@ -163,11 +163,12 @@ function startQuickOrderEngine() {
             });
         }
 
-        if (typeof window.showBoseGlobalToast === 'function') {
-            window.showBoseGlobalToast("تم حجز تورتتك بنجاح! تقدري تكملي طلبك من السلة دلوقتي.");
+        if (typeof window.showBosePostAddToCartPrompt === 'function') {
+            window.showBosePostAddToCartPrompt({ message: "تم حجز تورتتك بنجاح! 🎉" });
+        } else if (typeof window.showBoseGlobalToast === 'function') {
+            window.showBoseGlobalToast("تم حجز تورتتك بنجاح! تقدري تكملي طلبك من السلة دلوقتي.", { type: "success" });
+            window.location.href = "/cart.html";
         }
-
-        window.location.href = "/cart.html";
     }
 
     if (btnConfirm) btnConfirm.addEventListener('click', submitQuickOrder);

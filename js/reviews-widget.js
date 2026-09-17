@@ -129,7 +129,7 @@
 
         async function submitReviewToBackend(review) {
             if (!window.BoseSupabase || typeof window.BoseSupabase.submitBoseReview !== "function") {
-                if (typeof window.showBoseToast === "function") window.showBoseToast("تعذر إرسال المراجعة حالياً، حاولي تحديث الصفحة أو المحاولة لاحقاً 🌸");
+                if (typeof window.showBoseToast === "function") window.showBoseToast("تعذر إرسال المراجعة حالياً، حاولي تحديث الصفحة أو المحاولة لاحقاً 🌸", { type: "error" });
                 return false;
             }
             // 🛡️ [حماية دفاعية]: قبل كده الكود هنا ماكانش فيه try/catch، فأي خطأ راجع
@@ -148,7 +148,7 @@
                 });
             } catch (err) {
                 console.warn("⚠️ تعذر إرسال المراجعة:", err);
-                if (typeof window.showBoseToast === "function") window.showBoseToast("حصلت مشكلة وإحنا بنبعت مراجعتك، ممكن تحاولي تاني؟ 🌸");
+                if (typeof window.showBoseToast === "function") window.showBoseToast("حصلت مشكلة وإحنا بنبعت مراجعتك، ممكن تحاولي تاني؟ 🌸", { type: "error" });
                 return false;
             }
             sessionPendingReviews.unshift({ ...review, pending: true });
@@ -307,7 +307,7 @@
             const files = Array.from(this.files).filter((f) => f.type.startsWith("image/"));
             const remainingSlots = MAX_REVIEW_IMAGES - uploadedImageUrls.length;
             if (remainingSlots <= 0) {
-                if (typeof window.showBoseToast === "function") window.showBoseToast(`أقصى عدد صور للمراجعة ${MAX_REVIEW_IMAGES} صور 🌸`);
+                if (typeof window.showBoseToast === "function") window.showBoseToast(`أقصى عدد صور للمراجعة ${MAX_REVIEW_IMAGES} صور 🌸`, { type: "warning" });
                 this.value = "";
                 return;
             }
@@ -335,7 +335,7 @@
                     placeholder.replaceWith(imgNode);
                 } catch (err) {
                     placeholder.remove();
-                    if (typeof window.showBoseToast === "function") window.showBoseToast("تعذر رفع إحدى الصور، حاولي مرة أخرى 🌸");
+                    if (typeof window.showBoseToast === "function") window.showBoseToast("تعذر رفع إحدى الصور، حاولي مرة أخرى 🌸", { type: "error" });
                 }
             }
 
@@ -346,7 +346,7 @@
 
         submitReviewBtn.addEventListener("click", async () => {
             if (isUploadingImages) {
-                if (typeof window.showBoseToast === "function") window.showBoseToast("لسه بترفع الصور، ثواني وهنكمل 🌸");
+                if (typeof window.showBoseToast === "function") window.showBoseToast("لسه بترفع الصور، ثواني وهنكمل 🌸", { type: "warning" });
                 return;
             }
 
@@ -356,7 +356,7 @@
             const rating = checkedRadio ? checkedRadio.value : "5";
 
             if (!userName || !comment) {
-                if (typeof window.showBoseToast === "function") window.showBoseToast("من فضلك املي كل الحقول المطلوبة قبل الإرسال 🌸");
+                if (typeof window.showBoseToast === "function") window.showBoseToast("من فضلك املي كل الحقول المطلوبة قبل الإرسال 🌸", { type: "warning" });
                 return;
             }
 
@@ -390,7 +390,7 @@
             formWrapper.style.display = "none";
             toggleFormBtn.innerHTML = `<i class="fas fa-pen"></i> شاركي رأيك في أقل من دقيقة`;
 
-            if (typeof window.showBoseToast === "function") window.showBoseToast("تم إرسال مراجعتك بنجاح، هتظهر لباقي الزوار بعد اعتمادها من الإدارة 🌸");
+            if (typeof window.showBoseToast === "function") window.showBoseToast("تم إرسال مراجعتك بنجاح، هتظهر لباقي الزوار بعد اعتمادها من الإدارة 🌸", { type: "success" });
         });
 
         renderReviews();

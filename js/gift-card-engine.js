@@ -443,7 +443,7 @@
                 if (navigator.canShare && navigator.canShare({ files: [file] })) {
                     await navigator.share({ files: [file], title: "بطاقة هدية من حلويات بوسي" });
                 } else if (typeof window.showBoseToast === "function") {
-                    window.showBoseToast("المشاركة المباشرة مش متاحة على المتصفح ده - جربي تحميل المعاينة بدل كده 🌸");
+                    window.showBoseToast("المشاركة المباشرة مش متاحة على المتصفح ده - جربي تحميل المعاينة بدل كده 🌸", { type: "warning" });
                 }
             }, "image/png");
         } catch (e) {
@@ -585,13 +585,13 @@
         if (state.amount < state.min || state.amount > state.max) {
             firstInvalidEl = firstInvalidEl || document.getElementById("gcbAmountCustomInput");
             if (typeof window.showBoseToast === "function") {
-                window.showBoseToast(`القيمة لازم تكون بين ${state.min} و ${state.max} جنيه`);
+                window.showBoseToast(`القيمة لازم تكون بين ${state.min} و ${state.max} جنيه`, { type: "warning" });
             }
         }
         if (state.sendOption === "schedule" && !state.scheduledDate) {
             firstInvalidEl = firstInvalidEl || document.getElementById("gcbScheduleDate");
             if (typeof window.showBoseToast === "function") {
-                window.showBoseToast("حددي موعد الإرسال أو اختاري إرسال فوري");
+                window.showBoseToast("حددي موعد الإرسال أو اختاري إرسال فوري", { type: "warning" });
             }
         }
         return firstInvalidEl;
@@ -612,7 +612,7 @@
         }
         if (!realProduct) {
             if (typeof window.showBoseToast === "function") {
-                window.showBoseToast("تعذر تحميل بيانات بطاقة الهدية من المتجر حالياً - جربي تحدّثي الصفحة.");
+                window.showBoseToast("تعذر تحميل بيانات بطاقة الهدية من المتجر حالياً - جربي تحدّثي الصفحة.", { type: "error" });
             }
             return;
         }
@@ -663,8 +663,10 @@
             });
         }
         document.dispatchEvent(new CustomEvent("BoseCartUpdated"));
-        if (typeof window.showBoseToast === "function") {
-            window.showBoseToast(`تمت إضافة بطاقة الهدية لـ${state.recipientName.trim()} للسلة بنجاح 🎁`);
+        if (typeof window.showBosePostAddToCartPrompt === "function") {
+            window.showBosePostAddToCartPrompt({ message: `تمت إضافة بطاقة الهدية لـ${state.recipientName.trim()} للسلة بنجاح 🎁` });
+        } else if (typeof window.showBoseToast === "function") {
+            window.showBoseToast(`تمت إضافة بطاقة الهدية لـ${state.recipientName.trim()} للسلة بنجاح 🎁`, { type: "success" });
         }
     }
 
