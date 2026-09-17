@@ -94,7 +94,21 @@
     function getAllOfferProducts() {
         const data = window.BoseStoreData;
         if (!data || !data.products) return [];
-        return data.products.filter(/** @param {Object} p */ (p) => p.oldPrice && p.oldPrice > p.price && p.isAvailable !== false);
+        // 👑 [صفحة العروض بقت المصدر الوحيد للحقيقة]: قبل كده الفلتر هنا كان
+        // بيتجاهل جدول offers خالص وبيعرض أي منتج معاه سعر قديم أكبر من
+        // الحالي - يعني حذف عرض من لوحة التحكم (صفحة "العروض") ما كنش بيأثر
+        // على كاروسيل الرئيسية ولا صفحة "كل العروض" أبدًا، لأن الاتنين مكنوش
+        // بيقروا جدول offers أصلاً رغم إنه متاح فعليًا في data.offers (بييجي
+        // من loadBoseStoreDataFromSupabase). دلوقتي: منتج يظهر هنا لو وبس لو
+        // (1) مضاف في جدول offers من اللوحة، (2) لسه معاه سعر قديم أكبر من
+        // الحالي فعليًا، (3) متاح. والترتيب بقى بياخد sort_order بتاع صف
+        // العرض نفسه (زي ما هي متظبطة في صفحة "العروض")، مش ترتيب المنتجات
+        // العام.
+        const offersList = Array.isArray(data.offers) ? data.offers : [];
+        const sortOrderByProductId = new Map(offersList.map((o) => [o.product_id, o.sort_order ?? 0]));
+        return data.products
+            .filter(/** @param {Object} p */ (p) => sortOrderByProductId.has(p.id) && p.oldPrice && p.oldPrice > p.price && p.isAvailable !== false)
+            .sort((a, b) => sortOrderByProductId.get(a.id) - sortOrderByProductId.get(b.id));
     }
     window.getAllOfferProducts = getAllOfferProducts;
 
