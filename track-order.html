@@ -169,6 +169,18 @@
         .track-items-list { border-top: 1px dashed rgba(17,17,17,0.15); padding-top: 14px; }
         .track-item-row { display: flex; justify-content: space-between; font-size: 0.9rem; padding: 6px 0; color: var(--bose-black, #111); }
         .track-item-row .item-flavor { opacity: 0.65; font-size: 0.8rem; }
+        .track-item-row-wrapper { border-bottom: 1px solid rgba(0,0,0,0.06); padding-bottom: 4px; margin-bottom: 4px; }
+        .track-item-row-wrapper:last-child { border-bottom: none; }
+        .track-item-images { display: flex; gap: 8px; flex-wrap: wrap; padding: 0 0 8px; }
+        .track-item-image-link {
+            display: block;
+            width: 64px;
+            height: 64px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1.5px solid rgba(0,0,0,0.08);
+        }
+        .track-item-image-link img { width: 100%; height: 100%; object-fit: cover; display: block; }
         .track-total-row { display: flex; justify-content: space-between; font-weight: 800; font-size: 1.02rem; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(17,17,17,0.1); color: var(--bose-pink, var(--bose-pink)); }
     </style>
 </head>
@@ -281,12 +293,30 @@
                 }
 
                 const items = Array.isArray(row.items) ? row.items : [];
-                const itemsHtml = items.map((it) => `
-                    <div class="track-item-row">
-                        <span>${window.escapeBoseHTML(it.title || "")} <span class="item-flavor">${it.flavor_name ? "(" + window.escapeBoseHTML(it.flavor_name) + ")" : ""}</span> × ${it.quantity || 1}</span>
-                        <span>${Math.round(it.line_total || 0)} جنيه</span>
+                const itemsHtml = items.map((it) => {
+                    const images = Array.isArray(it.images) ? it.images.filter((u) => typeof u === "string" && u.startsWith("http")) : [];
+                    // 🛡️🆕 [إصلاح - سبتمبر 2026]: قبل كده رابط "كل تفاصيل التخصيص
+                    // والصور المرفوعة" في فاتورة الواتساب المختصرة كان بيوصّل هنا
+                    // من غير ما الصفحة تعرض أي صورة أصلاً - مش مشكلة عرض بس،
+                    // الـ RPC نفسه ما كانش بيرجّع الصور خالص. دلوقتي بتترسم هنا
+                    // كصور مصغّرة قابلة للفتح بالحجم الكامل في تاب جديد.
+                    const imagesHtml = images.length
+                        ? `<div class="track-item-images">${images.map((url) => `
+                            <a href="${window.escapeBoseHTML(url)}" target="_blank" rel="noopener noreferrer" class="track-item-image-link">
+                                <img src="${window.escapeBoseHTML(url)}" alt="صورة مرفقة مع الطلب" loading="lazy">
+                            </a>
+                        `).join("")}</div>`
+                        : "";
+                    return `
+                    <div class="track-item-row-wrapper">
+                        <div class="track-item-row">
+                            <span>${window.escapeBoseHTML(it.title || "")} <span class="item-flavor">${it.flavor_name ? "(" + window.escapeBoseHTML(it.flavor_name) + ")" : ""}</span> × ${it.quantity || 1}</span>
+                            <span>${Math.round(it.line_total || 0)} جنيه</span>
+                        </div>
+                        ${imagesHtml}
                     </div>
-                `).join("");
+                `;
+                }).join("");
 
                 // 🛡️ [إصلاح وصول - أيقونة مختلفة مش لون بس]: الاعتماد على اللون
                 // وحده لتمييز الحالة مشكلة لعميلة عندها عمى ألوان جزئي - دلوقتي
