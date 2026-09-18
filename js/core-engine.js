@@ -999,7 +999,7 @@
         // isBuilderMaster فوق بالظبط - الكارت بيوديها لصفحة المنتج المستقلة عشان
         // تختار من هناك بدل ما تضيف "ميكس فاضي" بغلط بضغطة واحدة.
         const isMixFlavor = product.options && product.options.mixFlavor === true;
-        const mixDetailUrl = `/category.html?category=${encodeURIComponent(product.category || '')}&product=${encodeURIComponent(product.slug)}`;
+        const mixDetailUrl = `/product.html?slug=${encodeURIComponent(product.slug)}`;
 
         if (isMixFlavor && !isDetailView) {
             const startingPrice = window.calculateProductFinalPrice(product, {});
@@ -1205,28 +1205,165 @@
     // اختيارها الحالي في رابط الصفحة (size/qty) عشان تفتح وهي محمّلة بيه
     // تلقائياً. دالة واحدة مشتركة يستخدمها الكارت الموحد وأي صفحة تانية
     // (category.html) بدل ما كل صفحة تبني الرابط بمنطقها الخاص.
-    // 🆕👑 [دمج صفحة المنتج جوه صفحة الفئة]: مفيش صفحة product.html منفصلة تاني -
-    // أي كارت في أي صفحة تانية (الرئيسية/العروض/المفضلة/مقترحات السلة) بيودّي
-    // دلوقتي لصفحة الفئة بتاعت نفس المنتج مع فتح نافذة تفاصيله تلقائياً هناك
-    // (راجع window.openBoseProductDetailModal في category.html)، بدل صفحة مستقلة.
+    // 🆕👑 [رجوع صفحة المنتج المستقلة]: بعد التجربة مع النافذة المدمجة جوه
+    // category.html، اتقرر الرجوع لصفحة product.html حقيقية ومستقلة - أبسط
+    // وأوضح للعميلة (زي هديتك بالظبط)، من غير ما تتلخبط جوه صفحة تانية. أي
+    // كارت في أي مكان بالموقع (الرئيسية/الفئة/العروض/المفضلة/مقترحات السلة)
+    // بيودّي هنا دلوقتي.
     window.buildBoseProductDetailUrl = function(cardEl) {
-        if (!cardEl) return '/category.html';
+        if (!cardEl) return '/menu.html';
         const slug = decodeURIComponent(cardEl.dataset.slug || '');
         const size = cardEl.dataset.selectedSize || '';
         const qtyInput = cardEl.querySelector('.input-qty-value');
         const qty = qtyInput ? parseInt(qtyInput.value, 10) : 1;
-        const product = (window.BoseStoreData && window.BoseStoreData.products)
-            ? window.BoseStoreData.products.find(function(p) { return p.slug === slug; })
-            : null;
         const params = new URLSearchParams();
-        if (product && product.category) params.set('category', product.category);
-        params.set('product', slug);
+        params.set('slug', slug);
         if (size) params.set('size', size);
         if (qty && qty > 1) params.set('qty', String(qty));
-        return `/category.html?${params.toString()}`;
+        return `/product.html?${params.toString()}`;
     };
 
     window.createProductCardHTML = createProductCardHTML;
+
+    /**
+     * 🆕👑 [رجوع صفحة المنتج المستقلة - نقل منطق مشترك]: الدالتين دول كانوا
+     * قبل كده معرّفين محليًا جوه category.html بس (لخدمة نافذة التفاصيل القديمة).
+     * دلوقتي معلّقين هنا على window عشان أي صفحة تانية تقدر تستخدمهم - أهم
+     * حاجة product.html (الصفحة الحقيقية الجديدة)، وبرضه category.html نفسها
+     * لسه محتاجاهم كـ fallback لروابط قديمة. نفس فلسفة createProductCardHTML
+     * بالظبط: دالة واحدة، كل الصفحات تستخدمها، بدل نسخ متعددة ممكن تتلخبط.
+     *
+     * @param {HTMLElement} container - العنصر اللي هيتحقن فيه شبكة "قد يعجبك أيضاً"
+     * @param {Object} currentProduct - المنتج المفتوح حالياً (بيتستبعد من القائمة)
+     */
+    window.boseRenderRelatedProductsInto = function(container, currentProduct) {
+        if (!container || !window.BoseStoreData || !window.BoseStoreData.products) return;
+        const suggestionsList = window.BoseStoreData.products.filter(function(p) {
+            return p.slug !== currentProduct.slug && !(p.customBuilderUrl && p.builderType && p.builderType !== 'standard');
+        }).slice(0, 8);
+
+        if (suggestionsList.length === 0) {
+            container.innerHTML = '<p style="width:100%; text-align:center; opacity:0.6; font-weight:600; padding:20px;">استكشف المزيد من المفاجآت والأصناف الفاخرة بداخل المنيو الشامل 🌸</p>';
+            return;
+        }
+        container.innerHTML = suggestionsList.map(function(p) { return window.createProductCardHTML(p); }).join('');
+    };
+
+    /**
+     * 🍧 [حل مشكلة "مش عارف يختار من خلاله" - منتجات الميكس]: بتبني أداة اختيار
+     * توبينجين مختلفين لمنتج ميكس (زي قشطوطة ميكس) وتحقنها تحت الكارت التفاعلي
+     * مباشرة. مصدر التوبينجات هو باقي نكهات نفس القسم، مع استبعاد منتجات العروض
+     * "promo-" ومنتجات الميكس التانية وأي نكهة نفدت كميتها حالياً. العميلة لازم
+     * تختار توبينجين مختلفين قبل ما زرار "أضف للسلة" (المعطّل افتراضياً) يتفعّل.
+     * @param {Object} product
+     * @param {HTMLElement} cardEl
+     */
+    window.renderBoseMixToppingPicker = function(product, cardEl) {
+        const allProducts = (window.BoseStoreData && window.BoseStoreData.products) || [];
+        const pool = allProducts.filter(function (p) {
+            return p.category === product.category &&
+                p.slug !== product.slug &&
+                !String(p.id).startsWith('promo-') &&
+                !(p.options && p.options.mixFlavor === true) &&
+                p.isAvailable !== false;
+        });
+
+        // 🍧 مفيش توبينجات كفاية للاختيار منها حالياً - بنسيب الكارت زي ما هو
+        // (زرار الإضافة هيفضل معطّل، وده أهون من أداة مكسورة).
+        if (pool.length < 2) return;
+
+        const pickerRoot = document.createElement('div');
+        pickerRoot.className = 'bose-mix-picker-wrapper';
+        pickerRoot.innerHTML =
+            '<label class="bose-mix-picker-title">' +
+            '<i class="fas fa-layer-group" style="color:var(--bose-pink);"></i> اختاري توبينجاتك (لازم تختاري اتنين مختلفين)</label>' +
+            '<div class="bose-mix-picker-subtitle">التوبينج الأول</div>' +
+            '<div class="bose-mix-chip-row" id="bose-mix-picker-a"></div>' +
+            '<div class="bose-mix-picker-subtitle">التوبينج الثاني</div>' +
+            '<div class="bose-mix-chip-row" id="bose-mix-picker-b"></div>';
+
+        cardEl.insertAdjacentElement('afterend', pickerRoot);
+
+        // 🍧 حالة الاختيار الحالية مخزّنة على الكارت نفسه - window.handleBoseMixAddToCartClick
+        // (فوق في نفس الملف) بيقرأها من هنا وقت الإضافة الفعلية للسلة.
+        cardEl._boseMixSelection = { mixToppingASlug: null, mixToppingBSlug: null, mixToppingAName: '', mixToppingBName: '' };
+
+        function renderPickerCards(containerId, currentSlug, otherSlug, onPick) {
+            const container = pickerRoot.querySelector('#' + containerId);
+            container.innerHTML = pool.map(function (top) {
+                return '<div class="bose-mix-chip' + (top.slug === currentSlug ? ' selected' : '') + '"' +
+                    ' data-slug="' + top.slug + '"' +
+                    ' style="' + (top.slug === otherSlug ? 'opacity:0.35;' : '') + '">' +
+                    '<span class="bose-mix-chip-name">' + window.escapeBoseHTML(top.flavorName || top.title) + '</span>' +
+                    '<span class="bose-mix-chip-price">' + Math.round(top.price) + ' جنيه</span>' +
+                    '</div>';
+            }).join('');
+            container.querySelectorAll('.bose-mix-chip').forEach(function (card) {
+                card.addEventListener('click', function () {
+                    if (this.dataset.slug === otherSlug) {
+                        if (typeof window.showBoseGlobalToast === 'function') {
+                            window.showBoseGlobalToast('مينفعش تختاري نفس التوبينج مرتين - اختاري توبينج مختلف للنص التاني 🍧', { type: 'warning' });
+                        }
+                        return;
+                    }
+                    onPick(this.dataset.slug);
+                });
+            });
+        }
+
+        function refreshBothPickers() {
+            const sel = cardEl._boseMixSelection;
+            renderPickerCards('bose-mix-picker-a', sel.mixToppingASlug, sel.mixToppingBSlug, function (slug) {
+                sel.mixToppingASlug = slug;
+                const t = pool.find(function (p) { return p.slug === slug; });
+                sel.mixToppingAName = t ? (t.flavorName || t.title) : '';
+                onMixSelectionChange();
+            });
+            renderPickerCards('bose-mix-picker-b', sel.mixToppingBSlug, sel.mixToppingASlug, function (slug) {
+                sel.mixToppingBSlug = slug;
+                const t = pool.find(function (p) { return p.slug === slug; });
+                sel.mixToppingBName = t ? (t.flavorName || t.title) : '';
+                onMixSelectionChange();
+            });
+        }
+
+        function onMixSelectionChange() {
+            refreshBothPickers();
+            const sel = cardEl._boseMixSelection;
+            const bothSelected = sel.mixToppingASlug && sel.mixToppingBSlug;
+            const btn = cardEl.querySelector('.btn-add-to-cart-mix');
+            const priceDisplay = cardEl.querySelector('.product-card-price');
+            const flavorNode = cardEl.querySelector('.product-card-flavor-name');
+
+            if (bothSelected) {
+                const unitPrice = window.calculateProductFinalPrice(product, {
+                    mixToppingASlug: sel.mixToppingASlug,
+                    mixToppingBSlug: sel.mixToppingBSlug
+                });
+                if (priceDisplay) {
+                    const priceSpan = priceDisplay.querySelector('span');
+                    if (priceSpan) priceSpan.textContent = Math.round(unitPrice) + ' جنيه';
+                }
+                if (flavorNode) flavorNode.textContent = sel.mixToppingAName + ' + ' + sel.mixToppingBName;
+                if (btn) {
+                    btn.disabled = false;
+                    btn.style.opacity = '';
+                    btn.style.cursor = '';
+                    btn.innerHTML = '<i class="fa-solid fa-basket-shopping"></i> اضافة للسلة';
+                }
+            } else {
+                if (flavorNode) flavorNode.textContent = product.flavorName || '';
+                if (btn) {
+                    btn.disabled = true;
+                    btn.style.opacity = '0.6';
+                    btn.style.cursor = 'not-allowed';
+                    btn.innerHTML = '<i class="fa-solid fa-layer-group"></i> اختاري توبينجاتك تحت أولاً';
+                }
+            }
+        }
+
+        refreshBothPickers();
+    };
 
     // 🛡️ [تصليب CSP - إزالة كل onclick المضمّنة من كارت المنتج الموحد]: كارت
     // المنتج (createProductCardHTML) كان بيبني كل تفاعلاته (فتح التفاصيل/قلب
@@ -2586,7 +2723,7 @@
         // عشان مفيش أي طريقة تانية (كارت مقترحات صفحة السلة/المنتج مثلاً) تقدر
         // تتحايل على اختيار التوبينجين وتضيف المنتج مباشرة بتوبينج فاضي.
         if (product.options && product.options.mixFlavor === true) {
-            window.location.href = `/category.html?category=${encodeURIComponent(product.category || '')}&product=${encodeURIComponent(product.slug)}`;
+            window.location.href = `/product.html?slug=${encodeURIComponent(product.slug)}`;
             return;
         }
 
