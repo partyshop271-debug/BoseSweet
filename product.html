@@ -3,72 +3,209 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="robots" content="noindex, follow">
-    <title>جاري تحويلك... | حلويات بوسي</title>
+    <link rel="icon" type="image/png" href="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+    <link rel="apple-touch-icon" href="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#FF91A4">
+    <title>جاري تحميل المنتج... | حلويات بوسي</title>
 
     <!--
-        🆕👑 [دمج صفحة المنتج جوه صفحة الفئة - إصدار جديد]:
-        بناءً على قرار صاحبة المتجر، اتشالت صفحة تفاصيل المنتج المستقلة دي
-        بالكامل والصفحة الحقيقية بقت جوه category.html (نافذة تفاصيل مدمجة،
-        من غير أي تنقل صفحات - راجع window.openBoseProductDetailModal هناك).
+        🆕👑 [رجوع صفحة المنتج المستقلة]: بعد تجربة دمج تفاصيل المنتج جوه نافذة
+        منبثقة في category.html، اتقرر الرجوع لصفحة حقيقية ومستقلة هنا - أبسط
+        وأوضح للعميلة الجديدة (زي هديتك بالظبط: صورة، اسم، سعر، كمية، زرار
+        إضافة، وتفاصيل تحت - كل حاجة في مكانها من غير زحمة).
 
-        الملف ده اتسيب هنا عمداً كـ "مُحوِّل" بس (مش صفحة حقيقية) عشان أي رابط
-        قديم كان بيشاور على product.html؟slug=X - محفوظ في جوجل، مبعوت في
-        فاتورة واتساب قديمة، متبعت في محادثة قديمة، أو مضاف كمفضلة في متصفح حد -
-        يفضل شغال ويوديه للمكان الصحيح بدل ما يوصله لصفحة فاضية أو خطأ 404.
-
-        ⚠️ [ملاحظة لأي حد يشتغل على الكود بعد كده]: لسه فيه أماكن تانية في
-        الموقع بتشاور مباشرة على product.html وبتحتاج تحديث في مرحلة تانية
-        (لسه ماتمتش لغاية دلوقتي): ملف الأرشفة الآلي (api/sitemap.js)، فيد
-        جوجل شوبينج (api/product-feed.js)، قسم التقييمات (js/reviews-widget.js)،
-        والجولة التفاعلية (js/guided-tour.js + admin/js/pages/tour-page.js).
-        دول محتاجين مراجعة/تحديث مستقلة عشان يتوافقوا مع الرابط الجديد،
-        ومش لازم يوقفوا شغل التحويل البسيط هنا لحد ما يتحدثوا.
+        كل منطق السعر/الحجم/الكمية/الإضافة للسلة هنا هو نفسه بالظبط المستخدم في
+        كل كروت المنتج بالموقع (window.createProductCardHTML) - مفيش نسخة
+        مكررة. الجديد هنا هو بس: (1) صفحة حقيقية بدل نافذة، (2) تخطيط عمودين
+        بسيط على الشاشات الواسعة (صورة | تفاصيل) بدل الكارت المصغّر المكدّس.
     -->
 
+    <link rel="canonical" id="bose-canonical-tag" href="https://bose-sweet.vercel.app/product.html">
+    <meta name="description" id="bose-meta-description" content="تفاصيل صنف من تشكيلة حلويات بوسي الفاخرة.">
+    <meta property="og:title" id="bose-og-title" content="حلويات بوسي">
+    <meta property="og:description" id="bose-og-description" content="تفاصيل صنف من تشكيلة حلويات بوسي الفاخرة.">
+    <meta property="og:type" content="product">
+    <meta property="og:image" id="bose-og-image" content="">
+
+    <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
+
+    <link rel="stylesheet" href="vendor/fonts/cairo/cairo.css?v=2026_local_v1.0">
+    <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css?v=2026_local_v1.0" fetchpriority="high">
+    <link rel="stylesheet" href="css/global.css?v=2026_production_v44.1">
+    <link rel="stylesheet" href="css/main.css?v=2026_production_v40.1">
+    <link rel="stylesheet" href="css/season-themes.css?v=2026_production_v40.0">
+    <link rel="stylesheet" href="css/reviews-widget.css?v=2026_production_v1.1">
+
+    <style>
+        body { font-family: 'Cairo', sans-serif !important; }
+        .bose-product-page-skeleton {
+            display: grid;
+            gap: 24px;
+        }
+        @media (min-width: 861px) {
+            .bose-product-page-skeleton { grid-template-columns: minmax(300px, 460px) 1fr; }
+        }
+        .bose-product-page-skeleton .skeleton-pulse-node { border-radius: var(--bose-radius-md); }
+    </style>
+
     <script src="js/supabase-client.js?v=2027_production_v43.0" defer></script>
-    <script>
-        function boseRedirectOldProductLink(siteData) {
-            var params = new URLSearchParams(window.location.search);
-            var slug = params.get('slug');
-            var size = params.get('size');
-            var qty = params.get('qty');
-
-            var product = (slug && siteData && siteData.products)
-                ? siteData.products.find(function(p) { return p.slug === slug || p.id === slug; })
-                : null;
-
-            var target;
-            if (product) {
-                var newParams = new URLSearchParams();
-                if (product.category) newParams.set('category', product.category);
-                newParams.set('product', product.slug);
-                if (size) newParams.set('size', size);
-                if (qty) newParams.set('qty', qty);
-                target = '/category.html?' + newParams.toString();
-            } else {
-                // المنتج مش موجود (اتشال، أو الرابط غلط) - نوديها لمنيو المتجر
-                // الرئيسي بدل ما نسيبها في صفحة فاضية.
-                target = '/menu.html';
-            }
-            window.location.replace(target);
-        }
-
-        if (window.BoseStoreData) {
-            boseRedirectOldProductLink(window.BoseStoreData);
-        } else {
-            document.addEventListener("BoseDatabaseLoaded", function(e) {
-                boseRedirectOldProductLink(e.detail);
-            });
-            // 🛡️ شبكة أمان: لو تحميل بيانات المتجر اتأخر لأي سبب (اتصال بطيء، مشكلة
-            // مؤقتة)، منسيبش الزائر واقف على صفحة فاضية أكتر من 4 ثواني - نوديه
-            // لمنيو المتجر بدل ما يحس إن اللينك باظ.
-            setTimeout(function() {
-                if (!window.BoseStoreData) window.location.replace('/menu.html');
-            }, 4000);
-        }
-    </script>
+    <script src="js/push-notifications.js?v=1.0" defer></script>
+    <script src="js/favorites-engine.js?v=2026_production_v38.0" defer></script>
+    <script src="js/season-dates.js?v=2026_production_v1.0" defer></script>
+    <script src="js/season-themes.js?v=2026_production_v1.0" defer></script>
+    <script src="js/season-theme-engine.js?v=2026_production_v1.0" defer></script>
+    <script src="js/core-engine.js?v=2028_production_v59.0" defer></script>
+    <script src="js/reviews-widget.js?v=2026_production_v1.2" defer></script>
+    <script src="js/guided-tour.js?v=3.4" defer></script>
 </head>
-<body>
+<body class="bose-hardware-accelerated">
+
+<!-- 🏢 بروتوكول الهيكل الهندسي الموحد والحقن الديناميكي للعلامة التجارية 🏢 -->
+<div id="bose-header-injector"></div>
+
+<main class="bose-product-page-layout" id="product-main-container">
+
+    <nav class="bose-product-page-breadcrumb" aria-label="مسار التنقل" id="bose-product-breadcrumb">
+        <a href="/menu.html">المنيو</a>
+        <span>/</span>
+        <span id="bose-breadcrumb-loading">جاري التحميل...</span>
+    </nav>
+
+    <!-- 💀 هيكل تحميل مؤقت لحد ما بيانات المنتج تجهز - بيمنع "وميض" الصفحة الفاضية -->
+    <div id="bose-product-page-skeleton" class="bose-product-page-skeleton">
+        <div class="skeleton-pulse-node" style="aspect-ratio:1/1; width:100%;"></div>
+        <div>
+            <div class="skeleton-pulse-node" style="height:34px; width:70%; margin-bottom:14px;"></div>
+            <div class="skeleton-pulse-node" style="height:20px; width:40%; margin-bottom:20px;"></div>
+            <div class="skeleton-pulse-node" style="height:44px; width:100%; margin-bottom:14px;"></div>
+            <div class="skeleton-pulse-node" style="height:50px; width:100%;"></div>
+        </div>
+    </div>
+
+    <!-- 🎯 هنا بيتحقن الكارت التفاعلي الكامل (صورة/حجم/كمية/سعر/إضافة للسلة) -->
+    <div id="bose-product-page-root" style="display:none;"></div>
+
+    <!-- 🍧 أداة اختيار التوبينجين لمنتجات الميكس بتتحقن هنا تلقائياً لو المنتج محتاجها -->
+
+    <div id="bose-product-not-found" style="display:none; text-align:center; padding:60px 20px;">
+        <i class="fa-solid fa-circle-exclamation" style="font-size:3rem; color:var(--bose-pink); margin-bottom:16px;"></i>
+        <p style="font-weight:700; font-size:1.1rem; margin-bottom:20px;">عذراً، الصنف ده مش متوفر حالياً أو الرابط قديم.</p>
+        <a href="/menu.html" style="color:var(--bose-pink); font-weight:700;">تصفحي المنيو الشامل</a>
+    </div>
+
+    <div id="bose-product-page-below" style="display:none;">
+        <hr class="bose-product-page-section-divider">
+        <h3 class="bose-related-products-heading">قد يعجبك أيضاً</h3>
+        <div id="bose-product-related-grid" class="bose-horizontal-suggestions-slider"></div>
+        <div id="bose-product-reviews-root"></div>
+    </div>
+
+</main>
+
+<!-- 🏢 وسم حقن الفوتر الرسمي والشرعي للموقع بالكامل 🏢 -->
+<div id="bose-footer-injector"></div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    const slug = urlParams.get('slug');
+    const preferredSize = urlParams.get('size');
+
+    const skeletonEl = document.getElementById('bose-product-page-skeleton');
+    const rootEl = document.getElementById('bose-product-page-root');
+    const belowEl = document.getElementById('bose-product-page-below');
+    const notFoundEl = document.getElementById('bose-product-not-found');
+    const breadcrumbEl = document.getElementById('bose-product-breadcrumb');
+
+    function showNotFound() {
+        skeletonEl.style.display = 'none';
+        notFoundEl.style.display = 'block';
+    }
+
+    function init(siteData) {
+        if (!slug || !siteData || !siteData.products) { showNotFound(); return; }
+        const product = siteData.products.find(function (p) { return p.slug === slug || p.id === slug; });
+        if (!product) { showNotFound(); return; }
+
+        // 🛡️ منتجات المحاكي (تورت/ورد مخصص) معندهاش سعر أو تفاصيل ثابتة أصلاً -
+        // بتوديها لمحاكيها المخصص مباشرة، مش لصفحة تفاصيل عادية (نفس القاعدة
+        // المطبّقة في createProductCardHTML/isBuilderMaster بالظبط).
+        const isBuilderMaster = !!product.customBuilderUrl && product.builderType && product.builderType !== 'standard';
+        if (isBuilderMaster) {
+            window.location.replace(product.customBuilderUrl);
+            return;
+        }
+
+        const isMixFlavorProduct = product.options && product.options.mixFlavor === true;
+        rootEl.innerHTML = window.createProductCardHTML(product, 'detail');
+        const cardEl = rootEl.querySelector('.product-card-unified');
+        if (cardEl) cardEl.removeAttribute('onclick');
+
+        if (isMixFlavorProduct && cardEl && window.renderBoseMixToppingPicker) {
+            window.renderBoseMixToppingPicker(product, cardEl);
+        }
+
+        // لو جاية من كارت اختارت فيه حجم معيّن مسبقًا، فعّليه هنا بنفس الحجم
+        if (cardEl && preferredSize) {
+            const pill = cardEl.querySelector('.bose-card-size-pill[data-size-key="' + preferredSize + '"]');
+            if (pill && !pill.classList.contains('active')) pill.click();
+        }
+
+        skeletonEl.style.display = 'none';
+        rootEl.style.display = '';
+        belowEl.style.display = 'block';
+
+        if (window.boseRenderRelatedProductsInto) {
+            window.boseRenderRelatedProductsInto(document.getElementById('bose-product-related-grid'), product);
+        }
+        if (typeof window.initBoseReviewsWidget === 'function') {
+            window.initBoseReviewsWidget({
+                mountId: 'bose-product-reviews-root',
+                slug: product.slug,
+                title: product.title,
+                heading: 'مراجعات وتقييمات العملاء',
+                subtext: 'شاركينا رأيك في الصنف ده - رأيك بيفرق مع عميلات تانية زيك.'
+            });
+        }
+
+        // 🍞 [Breadcrumb بسيط]: المنيو > اسم الفئة > اسم المنتج - بيديها إحساس
+        // فوري "أنا فين دلوقتي" من غير ما تحتاج تدور.
+        const liveCatList = (typeof window.getBoseCategoriesList === 'function') ? window.getBoseCategoriesList() : [];
+        const categoryObj = liveCatList.find(function (c) { return c.id === product.category; });
+        let breadcrumbHtml = '<a href="/menu.html">المنيو</a><span>/</span>';
+        if (categoryObj) {
+            breadcrumbHtml += '<a href="/category.html?category=' + encodeURIComponent(categoryObj.id) + '">' + window.escapeBoseHTML(categoryObj.title) + '</a><span>/</span>';
+        }
+        breadcrumbHtml += '<span aria-current="page">' + window.escapeBoseHTML(product.title) + '</span>';
+        breadcrumbEl.innerHTML = breadcrumbHtml;
+
+        // 🔍 [SEO]: عنوان الصفحة/الوصف/الرابط الرسمي والصورة بيتحدثوا لبيانات
+        // المنتج الحقيقي (بدل ما يفضلوا عامين زي أي صفحة تانية).
+        document.title = product.title + ' | حلويات بوسي الفاخرة';
+        const desc = (product.flavorDesc || product.description || (product.title + ' من تشكيلة حلويات بوسي الفاخرة.')).substring(0, 155);
+        document.getElementById('bose-meta-description').setAttribute('content', desc);
+        document.getElementById('bose-og-title').setAttribute('content', product.title + ' | حلويات بوسي');
+        document.getElementById('bose-og-description').setAttribute('content', desc);
+        if (product.images && product.images[0]) {
+            document.getElementById('bose-og-image').setAttribute('content', product.images[0]);
+        }
+        const canonicalTag = document.getElementById('bose-canonical-tag');
+        if (canonicalTag) canonicalTag.setAttribute('href', 'https://bose-sweet.vercel.app/product.html?slug=' + encodeURIComponent(product.slug));
+    }
+
+    if (window.BoseStoreData) {
+        init(window.BoseStoreData);
+    } else {
+        document.addEventListener('BoseDatabaseLoaded', function (e) { init(e.detail); });
+        // 🛡️ شبكة أمان: لو التحميل اتأخر لأي سبب، منسيبش العميلة واقفة على
+        // هيكل تحميل فاضي أكتر من 6 ثواني.
+        setTimeout(function () {
+            if (!window.BoseStoreData) showNotFound();
+        }, 6000);
+    }
+});
+</script>
+
 </body>
 </html>

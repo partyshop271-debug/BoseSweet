@@ -47,7 +47,7 @@
          بدل الاعتماد على أي CDN خارجي (cdnjs/jsdelivr/unpkg) - مفيش نقطة فشل خارجية تانية خالص. -->
     <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css?v=2026_local_v1.0" fetchpriority="high">
     <link rel="stylesheet" href="css/global.css?v=2026_production_v44.1">
-    <link rel="stylesheet" href="css/main.css?v=2026_production_v40.0">
+    <link rel="stylesheet" href="css/main.css?v=2026_production_v40.1">
     <link rel="stylesheet" href="css/season-themes.css?v=2026_production_v40.0">
     <!-- 🆕👑 [دمج صفحة المنتج جوه صفحة الفئة]: نفس ملف التقييمات الموحّد المستخدم في
          صفحات المحاكيات (تورت/ورد/بطاقة هدية) - قسم مراجعات جاهز وكامل (نجوم + تعليق
@@ -63,9 +63,9 @@
     <script src="js/season-dates.js?v=2026_production_v1.0" defer></script>
     <script src="js/season-themes.js?v=2026_production_v1.0" defer></script>
     <script src="js/season-theme-engine.js?v=2026_production_v1.0" defer></script>
-    <script src="js/core-engine.js?v=2028_production_v58.0" defer></script>
+    <script src="js/core-engine.js?v=2028_production_v59.0" defer></script>
     <script src="js/reviews-widget.js?v=2026_production_v1.2" defer></script>
-    <script src="js/guided-tour.js?v=3.3" defer></script>
+    <script src="js/guided-tour.js?v=3.4" defer></script>
     <script src="js/cart-reminder.js?v=1" defer></script>
 
     <style>
@@ -497,53 +497,10 @@
             color: var(--bose-pink, var(--bose-pink));
             margin-bottom: 20px;
         }
-        /* 🆕👑 [نافذة تفاصيل المنتج المدمجة]: نفس أسلوب اللايت بوكس المستخدم في
-           صفحة المنتج القديمة، بس هنا بتحتوي على الكارت التفاعلي الكامل (صورة/حجم/
-           كمية/سعر/إضافة للسلة) بدل صورة بس. */
-        .bose-product-detail-modal-overlay {
-            position: fixed; inset: 0; background: rgba(17, 17, 17, 0.55);
-            backdrop-filter: blur(4px); display: none; align-items: flex-start;
-            justify-content: center; z-index: 60000; padding: 24px 16px;
-            box-sizing: border-box; overflow-y: auto;
-        }
-        .bose-product-detail-modal-overlay.active { display: flex; }
-        .bose-product-detail-modal-panel {
-            position: relative; width: 100%; max-width: 480px;
-            background: var(--bose-white); border-radius: var(--bose-radius-md);
-            margin: auto; box-shadow: 0 20px 60px rgba(17,17,17,0.25);
-            box-sizing: border-box;
-        }
-        .bose-product-detail-modal-body { padding: 4px; }
-        .bose-product-detail-modal-body .product-card-unified {
-            box-shadow: none !important; border: none !important; cursor: default;
-        }
-        .bose-product-detail-modal-body .product-card-img { aspect-ratio: 1/1; margin-bottom: 18px; }
-        .bose-product-detail-close-btn {
-            position: absolute; top: -14px; left: -14px; background: var(--bose-pink);
-            color: #FFFFFF; border: 3px solid var(--bose-white); width: 40px; height: 40px;
-            border-radius: 50%; font-size: 18px; cursor: pointer; display: flex;
-            align-items: center; justify-content: center; z-index: 2;
-            box-shadow: 0 3px 10px rgba(17,17,17,0.2);
-        }
-        body.bose-modal-open { overflow: hidden; }
-
-        /* 🆕👑 [دمج صفحة المنتج]: هندسة المقترحات الأفقية داخل نافذة التفاصيل -
-           نفس الأسلوب المستخدم سابقاً في product.html بالظبط. */
-        .bose-horizontal-suggestions-slider {
-            display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important;
-            overflow-x: auto !important; gap: 16px !important; padding: 12px 4px 24px 4px !important;
-            width: 100% !important; scrollbar-width: none !important; -ms-overflow-style: none !important;
-            -webkit-overflow-scrolling: touch !important;
-        }
-        .bose-horizontal-suggestions-slider::-webkit-scrollbar { display: none !important; }
-        .bose-horizontal-suggestions-slider .product-card-unified {
-            flex: 0 0 220px !important; width: 220px !important; max-width: 220px !important;
-            box-sizing: border-box !important;
-        }
-        .bose-product-detail-modal-body .reviews-premium-section,
-        .bose-product-detail-modal-body .bose-related-products-heading {
-            margin-top: 30px;
-        }
+        /* 🆕👑 [رجوع صفحة المنتج المستقلة]: نافذة تفاصيل المنتج وكل الـ CSS
+           الخاص بيها اتشالوا من هنا - تفاصيل المنتج بقت صفحة حقيقية مستقلة
+           (product.html). المظاهر المشتركة (كروت المقترحات/أداة التوبينجين)
+           بقت في css/main.css عشان تتستخدم من أي صفحة تانية محتاجاها. */
     </style>
 </head>
 <body class="bose-hardware-accelerated bose-arabic-text">
@@ -602,317 +559,24 @@
         </div>
     </main>
 
-    <!-- 🆕👑 [دمج صفحة المنتج جوه صفحة الفئة]: بدل ما "عرض التفاصيل" يوديكي لصفحة
-         تانية منفصلة (product.html)، تفاصيل المنتج (صورة أكبر، الحجم، الكمية،
-         السعر، الوصف الكامل، وزرار الإضافة للسلة) بتتفتح في نافذة واحدة فوق نفس
-         صفحة الفئة، من غير أي انتقال أو تحميل صفحة جديدة - نفس المنتج، نفس الصفحة،
-         خطوة واحدة أقل. الرابط بيتحدث في شريط العنوان (category.html?category=X&product=Y)
-         عشان يفضل قابل للمشاركة ولزرار الرجوع في المتصفح، بس من غير ما تتحمل صفحة جديدة فعلياً. -->
-    <!-- 🍧 [حل مشكلة "مش عارف يختار من خلاله" - تنسيق أداة اختيار التوبينجين]: كروت
-         الاختيار دي كانت موجودة بتنسيقها الخاص جوه صفحة المنتج القديمة (product.html)
-         اللي اتشالت بالكامل بعد دمج تفاصيل المنتج جوه نافذة category.html - فالتنسيق
-         مش موجود في أي ملف CSS مشترك تاني. بنعرّفه هنا مستقل تماماً (أسماء كلاسات
-         bose-mix-* مش مستخدمة في أي مكان تاني بالموقع) عشان منتج الميكس بس. -->
-    <style>
-        .bose-mix-picker-wrapper { margin: 4px 0 18px; }
-        .bose-mix-picker-title { display: block; font-weight: 800; margin-bottom: 10px; font-size: 1rem; }
-        .bose-mix-picker-subtitle { font-weight: 700; font-size: 0.85rem; margin: 0 0 6px; }
-        .bose-mix-chip-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
-        .bose-mix-chip {
-            cursor: pointer;
-            border: 1.5px solid rgba(var(--bose-pink-rgb), 0.35);
-            border-radius: var(--bose-radius-md, 16px);
-            padding: 8px 14px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2px;
-            background: #fff;
-            transition: all 0.15s ease;
-            min-width: 84px;
-            text-align: center;
-        }
-        .bose-mix-chip:hover { border-color: var(--bose-pink); }
-        .bose-mix-chip.selected {
-            border-color: var(--bose-pink);
-            background: rgba(var(--bose-pink-rgb), 0.08);
-            box-shadow: 0 2px 10px rgba(var(--bose-pink-rgb), 0.18);
-        }
-        .bose-mix-chip-name { font-weight: 700; font-size: 0.85rem; }
-        .bose-mix-chip-price { font-size: 0.75rem; opacity: 0.7; }
-    </style>
+    <!-- 🆕👑 [رجوع صفحة المنتج المستقلة]: بعد تجربة النافذة المدمجة هنا، اتقرر
+         الرجوع لصفحة product.html حقيقية ومستقلة - أبسط وأوضح للعميلة، وبتتفتح
+         مباشرة بدل ما تتلخبط جوه صفحة تانية (نفس فلسفة هديتك). كروت المنتجات في
+         الشبكة بتودّي هناك تلقائياً (window.buildBoseProductDetailUrl في
+         core-engine.js). النافذة المنبثقة وكل منطقها اتشالوا من هنا خالص -
+         مكانهم دلوقتي product.html + الدوال المشتركة اللي بقت على window في
+         core-engine.js (window.renderBoseMixToppingPicker/window.boseRenderRelatedProductsInto).
+         الدالة تحت باقية بس كـ"تحويلة" للروابط القديمة اللي لسه بتحمل
+         ?product= (مشاركة واتساب سابقة، رابط محفوظ عند عميلة، فاتورة قديمة). -->
+    <script>
+        window.openBoseProductDetailModal = function(slug, preferredSize) {
+            const params = new URLSearchParams();
+            params.set('slug', slug);
+            if (preferredSize) params.set('size', preferredSize);
+            window.location.href = '/product.html?' + params.toString();
+        };
+    </script>
 
-    <div id="bose-product-detail-modal" class="bose-product-detail-modal-overlay">
-        <div class="bose-product-detail-modal-panel">
-            <button type="button" id="bose-product-detail-close-btn" class="bose-product-detail-close-btn" aria-label="إغلاق">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-            <div id="bose-product-detail-modal-body" class="bose-product-detail-modal-body"></div>
-        </div>
-    </div>
-
-        <!-- 🆕👑 [محرك نافذة تفاصيل المنتج المدمجة] -->
-        <script>
-            // 🆕👑 [دمج صفحة المنتج جوه صفحة الفئة]: بيبني محتوى النافذة من نفس الكارت
-            // التفاعلي الموحّد (createProductCardHTML) اللي شغال في كل صفحات الموقع
-            // التانية، عشان منطق الحجم/الكمية/السعر/الإضافة للسلة يفضل مركزي في مكان
-            // واحد بس ومفيش نسخة تانية منه ممكن تتلخبط أو تختلف. بيفتح فوق نفس الصفحة
-            // من غير أي تحميل جديد، وبيحدّث رابط الصفحة عشان يفضل قابل للمشاركة.
-            //
-            // 🆕👑 [تحديث تاني]: بعد ما اتأكد إن الاستغناء عن صفحة المنتج قرار نهائي،
-            // النافذة دلوقتي بتحمل كل حاجة كانت موجودة في الصفحة القديمة من غير نقصان:
-            // قسم المقترحات المشابهة + قسم المراجعات والتقييمات الكامل (بالفورم بتاعه)
-            // + تحديث عنوان الصفحة/الرابط الرسمي (canonical) لاسم المنتج المفتوح فعلياً،
-            // بالظبط زي ما كان بيحصل في product.html قبل كده.
-            const boseCategoryLevelTitle = document.title;
-            const boseCategoryLevelCanonical = document.getElementById("bose-canonical-tag")
-                ? document.getElementById("bose-canonical-tag").getAttribute("href") : "";
-
-            function boseRenderRelatedProducts(currentProduct) {
-                const relatedRoot = document.getElementById('bose-product-detail-related-grid');
-                if (!relatedRoot || !window.BoseStoreData || !window.BoseStoreData.products) return;
-                const suggestionsList = window.BoseStoreData.products.filter(function(p) {
-                    return p.slug !== currentProduct.slug && !(p.customBuilderUrl && p.builderType && p.builderType !== 'standard');
-                }).slice(0, 8);
-
-                if (suggestionsList.length === 0) {
-                    relatedRoot.innerHTML = '<p style="width:100%; text-align:center; opacity:0.6; font-weight:600; padding:20px;">استكشف المزيد من المفاجآت والأصناف الفاخرة بداخل المنيو الشامل 🌸</p>';
-                    return;
-                }
-                relatedRoot.innerHTML = suggestionsList.map(function(p) { return window.createProductCardHTML(p); }).join('');
-            }
-
-            /**
-             * 🍧 [حل مشكلة "مش عارف يختار من خلاله" - منتجات الميكس]: بتبني أداة
-             * اختيار توبينجين مختلفين لمنتج ميكس (زي قشطوطة ميكس) وتحقنها تحت
-             * الكارت التفاعلي مباشرة جوه نافذة التفاصيل. مصدر التوبينجات هو باقي
-             * نكهات نفس القسم (بنفس فلسفة "استكشف باقي النكهات" اللي كانت موجودة في
-             * صفحة المنتج القديمة)، مع استبعاد منتجات العروض "promo-" ومنتجات الميكس
-             * التانية وأي نكهة نفدت كميتها حالياً. العميلة لازم تختار توبينجين
-             * مختلفين قبل ما زرار "أضف للسلة" (المعطّل افتراضياً في الكارت) يتفعّل.
-             * @param {Object} product
-             * @param {HTMLElement} cardEl
-             */
-            function renderBoseMixToppingPickerInModal(product, cardEl) {
-                const allProducts = (window.BoseStoreData && window.BoseStoreData.products) || [];
-                const pool = allProducts.filter(function (p) {
-                    return p.category === product.category &&
-                        p.slug !== product.slug &&
-                        !String(p.id).startsWith('promo-') &&
-                        !(p.options && p.options.mixFlavor === true) &&
-                        p.isAvailable !== false;
-                });
-
-                // 🍧 مفيش توبينجات كفاية للاختيار منها حالياً - بنسيب الكارت زي ما هو
-                // (زرار الإضافة هيفضل معطّل، وده أهون من نافذة فاضية أو أداة مكسورة).
-                if (pool.length < 2) return;
-
-                const pickerRoot = document.createElement('div');
-                pickerRoot.className = 'bose-mix-picker-wrapper';
-                pickerRoot.innerHTML =
-                    '<label class="bose-mix-picker-title">' +
-                    '<i class="fas fa-layer-group" style="color:var(--bose-pink);"></i> اختاري توبينجاتك (لازم تختاري اتنين مختلفين)</label>' +
-                    '<div class="bose-mix-picker-subtitle">التوبينج الأول</div>' +
-                    '<div class="bose-mix-chip-row" id="bose-mix-picker-a"></div>' +
-                    '<div class="bose-mix-picker-subtitle">التوبينج الثاني</div>' +
-                    '<div class="bose-mix-chip-row" id="bose-mix-picker-b"></div>';
-
-                cardEl.insertAdjacentElement('afterend', pickerRoot);
-
-                // 🍧 حالة الاختيار الحالية مخزّنة على الكارت نفسه - window.handleBoseMixAddToCartClick
-                // (core-engine.js) بيقرأها من هنا وقت الإضافة الفعلية للسلة.
-                cardEl._boseMixSelection = { mixToppingASlug: null, mixToppingBSlug: null, mixToppingAName: '', mixToppingBName: '' };
-
-                function renderPickerCards(containerId, currentSlug, otherSlug, onPick) {
-                    const container = pickerRoot.querySelector('#' + containerId);
-                    container.innerHTML = pool.map(function (top) {
-                        return '<div class="bose-mix-chip' + (top.slug === currentSlug ? ' selected' : '') + '"' +
-                            ' data-slug="' + top.slug + '"' +
-                            ' style="' + (top.slug === otherSlug ? 'opacity:0.35;' : '') + '">' +
-                            '<span class="bose-mix-chip-name">' + window.escapeBoseHTML(top.flavorName || top.title) + '</span>' +
-                            '<span class="bose-mix-chip-price">' + Math.round(top.price) + ' جنيه</span>' +
-                            '</div>';
-                    }).join('');
-                    container.querySelectorAll('.bose-mix-chip').forEach(function (card) {
-                        card.addEventListener('click', function () {
-                            if (this.dataset.slug === otherSlug) {
-                                if (typeof window.showBoseGlobalToast === 'function') {
-                                    window.showBoseGlobalToast('مينفعش تختاري نفس التوبينج مرتين - اختاري توبينج مختلف للنص التاني 🍧', { type: 'warning' });
-                                }
-                                return;
-                            }
-                            onPick(this.dataset.slug);
-                        });
-                    });
-                }
-
-                function refreshBothPickers() {
-                    const sel = cardEl._boseMixSelection;
-                    renderPickerCards('bose-mix-picker-a', sel.mixToppingASlug, sel.mixToppingBSlug, function (slug) {
-                        sel.mixToppingASlug = slug;
-                        const t = pool.find(function (p) { return p.slug === slug; });
-                        sel.mixToppingAName = t ? (t.flavorName || t.title) : '';
-                        onMixSelectionChange();
-                    });
-                    renderPickerCards('bose-mix-picker-b', sel.mixToppingBSlug, sel.mixToppingASlug, function (slug) {
-                        sel.mixToppingBSlug = slug;
-                        const t = pool.find(function (p) { return p.slug === slug; });
-                        sel.mixToppingBName = t ? (t.flavorName || t.title) : '';
-                        onMixSelectionChange();
-                    });
-                }
-
-                function onMixSelectionChange() {
-                    refreshBothPickers();
-                    const sel = cardEl._boseMixSelection;
-                    const bothSelected = sel.mixToppingASlug && sel.mixToppingBSlug;
-                    const btn = cardEl.querySelector('.btn-add-to-cart-mix');
-                    const priceDisplay = cardEl.querySelector('.product-card-price');
-                    const flavorNode = cardEl.querySelector('.product-card-flavor-name');
-
-                    if (bothSelected) {
-                        const unitPrice = window.calculateProductFinalPrice(product, {
-                            mixToppingASlug: sel.mixToppingASlug,
-                            mixToppingBSlug: sel.mixToppingBSlug
-                        });
-                        if (priceDisplay) {
-                            const priceSpan = priceDisplay.querySelector('span');
-                            if (priceSpan) priceSpan.textContent = Math.round(unitPrice) + ' جنيه';
-                        }
-                        if (flavorNode) flavorNode.textContent = sel.mixToppingAName + ' + ' + sel.mixToppingBName;
-                        if (btn) {
-                            btn.disabled = false;
-                            btn.style.opacity = '';
-                            btn.style.cursor = '';
-                            btn.innerHTML = '<i class="fa-solid fa-basket-shopping"></i> اضافة للسلة';
-                        }
-                    } else {
-                        if (flavorNode) flavorNode.textContent = product.flavorName || '';
-                        if (btn) {
-                            btn.disabled = true;
-                            btn.style.opacity = '0.6';
-                            btn.style.cursor = 'not-allowed';
-                            btn.innerHTML = '<i class="fa-solid fa-layer-group"></i> اختاري توبينجاتك تحت أولاً';
-                        }
-                    }
-                }
-
-                refreshBothPickers();
-            }
-
-            window.openBoseProductDetailModal = function(slug, preferredSize, opts) {
-                opts = opts || {};
-                if (!window.BoseStoreData || !window.BoseStoreData.products) return;
-                const product = window.BoseStoreData.products.find(function(p) { return p.slug === slug || p.id === slug; });
-                if (!product) return;
-
-                const modal = document.getElementById('bose-product-detail-modal');
-                const body = document.getElementById('bose-product-detail-modal-body');
-                if (!modal || !body) return;
-
-                // 🍧 [حل مشكلة "مش عارف يختار من خلاله" - منتجات الميكس]: منتج زي
-                // "قشطوطة ميكس" لازم يظهر هنا بالكارت الكامل التفاعلي (renderMode
-                // 'detail') مش الكارت المصغّر اللي بيودّي لمكان تاني - هنا فعلاً
-                // "المكان التاني" اللي المفروض تختار منه.
-                const isMixFlavorProduct = product.options && product.options.mixFlavor === true;
-
-                body.innerHTML = window.createProductCardHTML(product, isMixFlavorProduct ? 'detail' : undefined)
-                    + '<h3 class="bose-related-products-heading" style="font-size:1.1rem; font-weight:800; margin:0 0 6px 0;">قد يعجبك أيضاً</h3>'
-                    + '<div id="bose-product-detail-related-grid" class="bose-horizontal-suggestions-slider"></div>'
-                    + '<div id="bose-product-detail-reviews-root"></div>';
-
-                const cardEl = body.querySelector('.product-card-unified');
-                // منع أي محاولة نقر تودّي لفتح نافذة تانية جوه النافذة نفسها
-                if (cardEl) cardEl.removeAttribute('onclick');
-
-                // 🍧 [حل مشكلة "مش عارف يختار من خلاله" - أداة اختيار التوبينجين]:
-                // بتضاف مباشرة تحت الكارت (قبل قسم "قد يعجبك أيضاً") - العميلة
-                // بتختار توبينجين مختلفين من نفس نكهات القسم، والسعر وزرار الإضافة
-                // بيتحدثوا لحظياً مع كل اختيار (راجع renderBoseMixToppingPickerInModal تحت).
-                if (isMixFlavorProduct && cardEl) {
-                    renderBoseMixToppingPickerInModal(product, cardEl);
-                }
-
-                // لو فيه حجم متفق عليه من الكارت اللي جبنا منه (نفس اللي شافت سعره
-                // العميلة قبل ما تفتح التفاصيل)، بنفعّله بمحاكاة نقرة حقيقية على نفس
-                // التبويب عشان السعر والصورة يتحدّثوا صح بنفس المنطق الموجود فعلياً.
-                if (cardEl && preferredSize) {
-                    const pill = cardEl.querySelector(`.bose-card-size-pill[data-size-key="${preferredSize}"]`);
-                    if (pill && !pill.classList.contains('active')) pill.click();
-                }
-
-                boseRenderRelatedProducts(product);
-                if (typeof window.initBoseReviewsWidget === 'function') {
-                    window.initBoseReviewsWidget({
-                        mountId: 'bose-product-detail-reviews-root',
-                        slug: product.slug,
-                        title: product.title,
-                        heading: 'مراجعات وتقييمات العملاء',
-                        subtext: 'شاركينا رأيك في الصنف ده - رأيك بيفرق مع عميلات تانية زيك.'
-                    });
-                }
-
-                // 🔍 [SEO]: نفس سلوك product.html القديم بالظبط - عنوان الصفحة والرابط
-                // الرسمي (canonical) بيتحدثوا لاسم المنتج المفتوح فعلياً، ويرجعوا لقيمة
-                // الفئة العامة تاني لما النافذة تتقفل.
-                document.title = `${product.title} | حلويات بوسي الفاخرة`;
-                const canonicalTag = document.getElementById("bose-canonical-tag");
-                if (canonicalTag) canonicalTag.setAttribute("href", `https://bose-sweet.vercel.app/category.html?category=${encodeURIComponent(product.category || '')}&product=${encodeURIComponent(product.slug)}`);
-
-                modal.classList.add('active');
-                document.body.classList.add('bose-modal-open');
-
-                if (!opts.skipHistory) {
-                    const catId = new URLSearchParams(window.location.search).get('category') || product.category;
-                    const newUrl = `category.html?category=${encodeURIComponent(catId)}&product=${encodeURIComponent(product.slug)}`;
-                    history.pushState({ boseProductModalSlug: product.slug }, '', newUrl);
-                }
-            };
-
-            window.closeBoseProductDetailModal = function(opts) {
-                opts = opts || {};
-                const modal = document.getElementById('bose-product-detail-modal');
-                if (modal) modal.classList.remove('active');
-                document.body.classList.remove('bose-modal-open');
-                document.title = boseCategoryLevelTitle;
-                const canonicalTag = document.getElementById("bose-canonical-tag");
-                if (canonicalTag && boseCategoryLevelCanonical) canonicalTag.setAttribute("href", boseCategoryLevelCanonical);
-                if (!opts.skipHistory) history.back();
-            };
-
-            document.getElementById('bose-product-detail-close-btn').addEventListener('click', function() {
-                window.closeBoseProductDetailModal();
-            });
-            document.getElementById('bose-product-detail-modal').addEventListener('click', function(e) {
-                if (e.target === this) window.closeBoseProductDetailModal();
-            });
-            // 🛡️ لو العميلة دخلت بلينك فيه ?product= مباشرة، أو دوست زرار رجوع المتصفح،
-            // النافذة بتتفتح/تتقفل تبعاً لوجود الباراميتر ده في الرابط الحالي، مش بس
-            // لما تدوسي إغلاق بنفسك.
-            window.addEventListener('popstate', function() {
-                const productSlug = new URLSearchParams(window.location.search).get('product');
-                if (productSlug) {
-                    window.openBoseProductDetailModal(productSlug, new URLSearchParams(window.location.search).get('size'), { skipHistory: true });
-                } else {
-                    window.closeBoseProductDetailModal({ skipHistory: true });
-                }
-            });
-
-            // 🆕👑 [مقترحات داخل النافذة]: كارت "قد يعجبك" جوه النافذة نفسها بيفتح
-            // تفاصيل المنتج التاني في نفس النافذة (تراكمياً)، مش نافذة فوق نافذة -
-            // بنستخدم نفس الرابط اللي بيبنيه window.buildBoseProductDetailUrl، وبنمنع
-            // السلوك الافتراضي (اللي هيروح لصفحة category.html بمنتج تاني بالكامل)
-            // ونفتح المودال المحلي بدل منه.
-            document.getElementById('bose-product-detail-modal-body').addEventListener('click', function(e) {
-                const relatedCard = e.target.closest('#bose-product-detail-related-grid .product-card-unified');
-                if (!relatedCard) return;
-                if (e.target.closest('.product-card-qty-wrapper') || e.target.closest('.btn-add-to-cart') || e.target.closest('.bose-card-size-tabs') || e.target.closest('.bose-fav-btn')) return;
-                e.preventDefault();
-                e.stopPropagation();
-                const relatedSlug = decodeURIComponent(relatedCard.dataset.slug || '');
-                if (relatedSlug) window.openBoseProductDetailModal(relatedSlug, relatedCard.dataset.selectedSize || null);
-            }, true);
-        </script>
 
     <!-- 🏪 [الوسم النائب المعتمد هندسياً لحقن الفوتر ديناميكياً] -->
     <div id="bose-footer-injector"></div>
@@ -1195,11 +859,10 @@
                     // تعليق buildBoseFavButtonHTML نفسها في core-engine.js لسبب الانفصال).
                     const favBtnHtml = window.buildBoseFavButtonHTML(product.id);
 
-                    // 🆕👑 [دمج الصفحتين]: بدل ما نودّي لصفحة product.html منفصلة، الرابط
-                    // دلوقتي بيرجع لنفس صفحة الفئة مع باراميتر product= (يفضل قابل للمشاركة
-                    // وشغال حتى لو الجافاسكريبت فشل)، والنقر العادي بيفتح نافذة التفاصيل
-                    // مباشرة من غير ما يعمل أي تحميل صفحة جديدة (window.openBoseProductDetailModal تحت).
-                    const productDetailUrl = `category.html?category=${encodeURIComponent(categoryId)}&product=${encodeURIComponent(product.slug)}&size=${encodeURIComponent(defaultSize)}`;
+                    // 🆕👑 [رجوع صفحة المنتج المستقلة]: الرابط بيودّي دلوقتي لصفحة المنتج
+                    // الحقيقية المستقلة (product.html) بدل صفحة الفئة + باراميتر product=
+                    // (يفضل قابل للمشاركة وشغال حتى لو الجافاسكريبت فشل - رابط <a> عادي).
+                    const productDetailUrl = `product.html?slug=${encodeURIComponent(product.slug)}&size=${encodeURIComponent(defaultSize)}`;
 
                     cardElement.innerHTML = `
                         ${discountBadgeHtml}
