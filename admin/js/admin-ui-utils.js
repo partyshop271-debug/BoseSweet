@@ -19,6 +19,19 @@
      * لازم تتستخدم مع أي نص جاي من قاعدة البيانات أو من إدخال مستخدم
      * قبل ما يتحط جوه template string هيتحط في innerHTML.
      */
+    /**
+     * ⏰ يحوّل وقت 24 ساعة ("14:00") لصيغة 12 ساعة واضحة ("2:00 مساءً") - عشان مفيش
+     * أرقام زي 21 و18 و17 تظهر في لوحة التحكم. لو الوقت مش بصيغة HH:MM بيرجّع زي ما هو.
+     */
+    function formatTime12(time24) {
+        const parts = String(time24 || "").split(":");
+        const h = parseInt(parts[0], 10);
+        const m = parseInt(parts[1], 10);
+        if (isNaN(h) || isNaN(m)) return String(time24 || "");
+        const h12 = h % 12 === 0 ? 12 : h % 12;
+        return h12 + ":" + String(m).padStart(2, "0") + " " + (h < 12 ? "صباحًا" : "مساءً");
+    }
+
     function escapeHtml(value) {
         if (value === null || value === undefined) return "";
         return String(value)
@@ -285,7 +298,7 @@
      * ومفيش احتمال إن صفحة تتحدث وصفحة تتنسى فيحصل تعارض في العرض.
      */
     const ORDER_STATUSES = [
-        { key: "awaiting_deposit", label: "بانتظار تأكيد العربون", cls: "warning" },
+        { key: "awaiting_deposit", label: "بانتظار مراجعة التحويل", cls: "warning" },
         { key: "pending", label: "قيد المراجعة", cls: "warning" },
         { key: "confirmed", label: "مؤكد", cls: "info" },
         { key: "preparing", label: "قيد التحضير", cls: "info" },
@@ -344,6 +357,7 @@
     }
 
     window.BoseAdminUI = {
+        formatTime12,
         escapeHtml,
         showToast,
         confirmAction,
