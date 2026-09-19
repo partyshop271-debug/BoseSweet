@@ -28,6 +28,71 @@
         return parseFloat(document.getElementById(id).value) || 0;
     }
 
+    // ⏰ نفس صياغة الموقع للعميلة ("9:00 الصبح" / "9:00 بالليل") - راجع boseFormatSpokenHour في cart-engine.js
+    function spokenHour(time24) {
+        const parts = String(time24 || "").split(":");
+        const h = parseInt(parts[0], 10);
+        const m = parseInt(parts[1], 10);
+        if (isNaN(h) || isNaN(m)) return String(time24 || "");
+        const h12 = h % 12 === 0 ? 12 : h % 12;
+        const period = h < 12 ? "الصبح" : (h < 17 ? "بعد الضهر" : "بالليل");
+        return h12 + ":" + String(m).padStart(2, "0") + " " + period;
+    }
+
+    // ⏰ [ساعة واضحة من 1 لـ 12]: بدل حقل الوقت الأصلي (اللي بيعرض 21/18/17 على بعض التليفونات)،
+    // الساعة بتتختار من قايمة 1-12 + صباحًا/مساءً، والقيمة الفعلية بتتخزن في حقل مخفي
+    // بنفس الـid القديم بصيغة "HH:00" - فباقي الكود (الحفظ/الفحص/الموقع) مبيتغيرش.
+    function initTimeWidget(baseId) {
+        const hourSel = document.getElementById(baseId + "-hour");
+        const periodSel = document.getElementById(baseId + "-period");
+        const hidden = document.getElementById(baseId);
+        if (!hourSel || !periodSel || !hidden) return;
+        if (!hourSel.options.length) {
+            for (let h = 1; h <= 12; h++) {
+                const opt = document.createElement("option");
+                opt.value = String(h);
+                opt.textContent = String(h);
+                hourSel.appendChild(opt);
+            }
+        }
+        const push = () => {
+            let h = parseInt(hourSel.value, 10) % 12;
+            if (periodSel.value === "PM") h += 12;
+            hidden.value = String(h).padStart(2, "0") + ":00";
+            hidden.dispatchEvent(new Event("input"));
+        };
+        hourSel.addEventListener("change", push);
+        periodSel.addEventListener("change", push);
+    }
+
+    function syncTimeWidget(baseId) {
+        const hourSel = document.getElementById(baseId + "-hour");
+        const periodSel = document.getElementById(baseId + "-period");
+        const hidden = document.getElementById(baseId);
+        if (!hourSel || !periodSel || !hidden) return;
+        const h = parseInt(String(hidden.value || "").split(":")[0], 10);
+        if (isNaN(h)) return;
+        hourSel.value = String(h % 12 === 0 ? 12 : h % 12);
+        periodSel.value = h >= 12 ? "PM" : "AM";
+    }
+
+    let hoursPreviewWired = false;
+    function updateHoursPreview() {
+        const box = document.getElementById("rules-hours-preview");
+        if (!box) return;
+        const startEl = document.getElementById("rules-businessHoursStart");
+        const endEl = document.getElementById("rules-businessHoursEnd");
+        const start = (startEl && startEl.value) || "09:00";
+        const end = (endEl && endEl.value) || "22:00";
+        if (end <= start) {
+            box.style.color = "#B3261E";
+            box.textContent = "⚠️ ساعة النهاية لازم تكون بعد ساعة البداية";
+            return;
+        }
+        box.style.color = "#111111";
+        box.textContent = "العميلات هيشوفوا: مواعيد الاستلام والتوصيل من " + spokenHour(start) + " لحد " + spokenHour(end);
+    }
+
     /* ============================= الشعار ============================= */
 
     function refreshLogoPreview() {
@@ -114,12 +179,25 @@
         fillField("store-pickup-shippingFee", store.pickup.shippingFee ?? 0);
 
         // قواعد التوقيت وأقل مدة تحضير
-        fillField("rules-minPreparationTimeHours", orderRules.minPreparationTimeHours ?? 48);
-        fillField("rules-minPreparationTimeHoursCustom", orderRules.minPreparationTimeHoursCustom ?? 168);
+        fillField("rules-minPreparationTimeHours", orderRules.minPreparationTimeHours ?? 24);
+        fillField("rules-minPreparationTimeHoursCustom", orderRules.minPreparationTimeHoursCustom ?? 72);
         fillField("rules-businessHoursStart", orderRules.businessHoursStart || "09:00");
         fillField("rules-businessHoursEnd", orderRules.businessHoursEnd || "22:00");
-        fillField("rules-preparationTimeMessage", orderRules.preparationTimeMessage);
-        fillField("rules-customPreparationTimeMessage", orderRules.customPreparationTimeMessage);
+        // ⏰ معاينة مواعيد الاستلام والتوصيل زي ما العميلة هتشوفها، بتتحدث فورًا مع أي تغيير
+        if (!hoursPreviewWired) {
+            initTimeWidget("rules-businessHoursStart");
+            initTimeWidget("rules-businessHoursEnd");
+        }
+        syncTimeWidget("rules-businessHoursStart");
+        syncTimeWidget("rules-businessHoursEnd");
+        updateHoursPreview();
+        if (!hoursPreviewWired) {
+            hoursPreviewWired = true;
+            ["rules-businessHoursStart", "rules-businessHoursEnd"].forEach((id) => {
+                const el = document.getElementById(id);
+                if (el) { el.addEventListener("input", updateHoursPreview); el.addEventListener("change", updateHoursPreview); }
+            });
+        }
 
         // 📅 [تقويم الإتاحة الذكي]: سقف عدد الطلبات يوميًا - فاضي/صفر يعني بلا حد
         fillField("rules-maxOrdersPerDay", orderRules.maxOrdersPerDay ?? "");
@@ -160,6 +238,14 @@
         saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الحفظ...';
 
         try {
+            // ⏰ حماية: ساعة النهاية لازم تكون بعد ساعة البداية، وإلا الموقع كله هيقفل الاستلام والتوصيل
+            const hoursStartCheck = readField("rules-businessHoursStart") || "09:00";
+            const hoursEndCheck = readField("rules-businessHoursEnd") || "22:00";
+            if (hoursEndCheck <= hoursStartCheck) {
+                window.BoseAdminUI.showToast("ساعة نهاية الاستلام والتوصيل لازم تكون بعد ساعة البداية", "error");
+                return;
+            }
+
             const updatedStore = {
                 ...store,
                 name: readField("store-name"),
@@ -204,12 +290,10 @@
 
             const updatedOrderRules = {
                 ...orderRules,
-                minPreparationTimeHours: readNumberField("rules-minPreparationTimeHours") || 48,
-                minPreparationTimeHoursCustom: readNumberField("rules-minPreparationTimeHoursCustom") || 168,
+                minPreparationTimeHours: readNumberField("rules-minPreparationTimeHours") || 24,
+                minPreparationTimeHoursCustom: readNumberField("rules-minPreparationTimeHoursCustom") || 72,
                 businessHoursStart: readField("rules-businessHoursStart") || "09:00",
                 businessHoursEnd: readField("rules-businessHoursEnd") || "22:00",
-                preparationTimeMessage: readField("rules-preparationTimeMessage"),
-                customPreparationTimeMessage: readField("rules-customPreparationTimeMessage"),
                 // 📅 [تقويم الإتاحة الذكي]: 0/فاضي = بلا حد (الميزة تفضل معطلة تلقائيًا
                 // لحد ما هي تحدد رقم فعلي)
                 maxOrdersPerDay: readNumberField("rules-maxOrdersPerDay") || 0,

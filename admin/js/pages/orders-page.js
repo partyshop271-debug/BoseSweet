@@ -260,6 +260,13 @@
     function openOrderModal(order) {
         const e = window.BoseAdminUI.escapeHtml;
         const items = order.order_items || [];
+        // 💳 [رقم عملية التحويل]: العميلة بتكتبه في الشيك أوت وبيتحفظ كسطر في ملاحظات الطلب
+        // (راجع saveBoseOrderToDatabase). بنفصله هنا عشان يظهر جنب حالة الدفع بشكل واضح
+        // والأدمن تطابقه مع التحويل قبل ما تدوس "تأكيد استلام المبلغ".
+        const PAYMENT_REF_LINE_RE = /\n?🧾 رقم عملية التحويل \/ آخر 3 أرقام: (.+)$/m;
+        const paymentRefMatch = String(order.notes || "").match(PAYMENT_REF_LINE_RE);
+        const paymentRefText = paymentRefMatch ? paymentRefMatch[1].trim() : "";
+        const notesWithoutRef = String(order.notes || "").replace(PAYMENT_REF_LINE_RE, "").trim();
         const idx = currentOrders.findIndex((o) => o.id === order.id);
         const hasPrev = idx > 0;
         const hasNext = idx >= 0 && idx < currentOrders.length - 1;
@@ -293,12 +300,12 @@
                     <div><span>اسم العميل</span><strong>${e(order.customer_name || "—")}</strong></div>
                     <div><span>الهاتف</span><strong>${e(order.phone1 || "—")}${order.phone2 ? " / " + e(order.phone2) : ""}</strong></div>
                     <div><span>طريقة الاستلام</span><strong>${e(DELIVERY_LABELS[order.delivery_method] || order.delivery_method || "—")}</strong></div>
-                    <div><span>الموعد</span><strong>${order.scheduled_date ? e(order.scheduled_date) : "—"}${order.scheduled_time ? " - " + e(order.scheduled_time) : ""}</strong></div>
+                    <div><span>الموعد</span><strong>${order.scheduled_date ? e(order.scheduled_date) : "—"}${order.scheduled_time ? " - " + e(window.BoseAdminUI.formatTime12(order.scheduled_time)) : ""}</strong></div>
                     ${order.delivery_method === "delivery" ? `
                     <div class="adm-order-detail-full"><span>العنوان</span><strong>${e(order.address || "—")}</strong></div>
                     ` : ""}
-                    ${order.notes ? `
-                    <div class="adm-order-detail-full"><span>ملاحظات العميل</span><strong>${e(order.notes)}</strong></div>
+                    ${notesWithoutRef ? `
+                    <div class="adm-order-detail-full"><span>ملاحظات العميل</span><strong>${e(notesWithoutRef)}</strong></div>
                     ` : ""}
                     ${order.coupon_code ? `
                     <div><span>كود الخصم</span><strong>${e(order.coupon_code)}</strong></div>
@@ -322,6 +329,10 @@
                         <span>${order.delivery_method === "delivery" ? "المبلغ الكامل المطلوب (توصيل)" : "عربون تأكيد الحجز (50%)"}</span>
                         <span>${money(order.deposit_amount)}</span>
                     </div>
+                    ${paymentRefText ? `<div>
+                        <span>رقم عملية التحويل (من العميلة)</span>
+                        <strong style="direction:ltr;">${e(paymentRefText)}</strong>
+                    </div>` : ""}
                     <div>
                         <span>حالة الدفع</span>
                         <span>${order.deposit_status === "confirmed"
