@@ -2306,11 +2306,11 @@
      * @param {string} timeStr
      * @returns {boolean}
      */
-    // 🛡️ [إصلاح - المرحلة 2]: قبل كده كانت الدالة بتطبّق 24 ساعة على كل أنواع
-    // الطلبات بدون استثناء، بينما "الشروط والأحكام" الرسمية بتوعد العميل بمدة
-    // أسبوع كامل للتورت والورد المخصص عبر المحاكي (لأنها بتاخد مراحل تحضير وتنسيق
-    // كتيرة). دلوقتي الدالة بتاخد isCustomOrder وتطبّق العتبة الصحيحة المطابقة
-    // لصاحب المتجر: 168 ساعة (7 أيام) للمخصص، 24 ساعة لباقي المنتجات.
+    // 🕐 [مواعيد ثابتة لكل العملاء - بدون أي استثناء]: 24 ساعة على الأقل للمنتجات
+    // العادية، و72 ساعة (3 أيام) للتورت والورد المخصص من المحاكي. الأرقام دي بتتقرا من
+    // إعدادات المتجر (minPreparationTimeHours / minPreparationTimeHoursCustom) والقيم
+    // الافتراضية تحت بتشتغل بس لو الإعدادات فاضية. مفيش طلب "مستعجل" ولا موعد أقرب من
+    // كده مسموح بأي طريقة، والفحص الملزم نفسه بيتكرر على السيرفر في create_order_with_items.
     window.validateBoseDeliverySchedule = function(dateStr, timeStr, isCustomOrder = false) {
         if (!dateStr || !timeStr) return false;
         const selectedDateTime = new Date(`${dateStr}T${timeStr}`);
@@ -2318,9 +2318,20 @@
         if (selectedDateTime <= currentDateTime) return false;
         const rules = window.BoseStoreData?.orderRules || {};
         const requiredHours = isCustomOrder
-            ? (rules.minPreparationTimeHoursCustom || 168) - 0.05
-            : (rules.minPreparationTimeHours || 48) - 0.05;
+            ? (rules.minPreparationTimeHoursCustom || 72) - 0.05
+            : (rules.minPreparationTimeHours || 24) - 0.05;
         return (selectedDateTime.getTime() - currentDateTime.getTime()) / (1000 * 60 * 60) >= requiredHours;
+    };
+
+    // ⏱️ وصف مدة التحضير بالعربي من عدد الساعات (نفس الصياغة في الشيك أوت والسلة):
+    // 24 → "24 ساعة"، 72 → "3 أيام"، 48 → "يومين"، أي رقم تاني → "N ساعة".
+    window.formatBoseLeadTimeAr = function(hours) {
+        const h = Math.round(Number(hours) || 0);
+        if (h >= 48 && h % 24 === 0) {
+            const days = h / 24;
+            return days === 2 ? "يومين" : `${days} أيام`;
+        }
+        return `${h} ساعة`;
     };
 
     // 🛡️ [إصلاح - المرحلة 2]: دالة مشتركة موحّدة لتحديد هل السلة فيها منتج مخصص
@@ -3055,7 +3066,7 @@
                         {
                             "@type": "Question",
                             "name": "إيه طرق الدفع المتاحة؟",
-                            "acceptedAnswer": { "@type": "Answer", "text": "الدفع بيتم كاش أو عن طريق InstaPay، وبعد التحويل بتبعتي لقطة شاشة على واتساب وهيتم تأكيد طلبك فوراً." },
+                            "acceptedAnswer": { "@type": "Answer", "text": "الدفع بيتم بالتحويل على InstaPay أو محفظة إلكترونية مباشرة من صفحة إتمام الطلب، وبتكتبي رقم العملية (أو آخر 3 أرقام من رقمك) وطلبك بيتسجل فوراً وبنراجع التحويل ونأكد طلبك." },
                         },
                         {
                             "@type": "Question",

@@ -97,18 +97,6 @@ window.addEventListener("pageshow", (event) => {
     }
 });
 
-// 🆕🛡️ [تخطي خطوة صفحة النجاح - للمتصفحات العادية بس - سبتمبر 2026]: المتصفحات
-// المصغّرة الداخلية جوه إنستجرام/سناب شات/فيسبوك ليها قيود صارمة على فتح روابط
-// واتساب برمجيًا (راجع التعليق الكامل في processFinalBoseOrder تحت لتفاصيل
-// الفشل الموثّق فعليًا) - فبنكتشفها من user agent الجهاز، ولو مكتشفة، بنسيب
-// المسار الآمن الحالي (صفحة نجاح + ضغطة يدوية) زي ما هو تمامًا من غير أي
-// تغيير. للمتصفحات العادية (كروم/سفاري الحقيقيين، الأغلبية الساحقة من العميلات)
-// بس، بنفتح واتساب مباشرة من ضغطة "تأكيد الطلب" نفسها.
-function isBoseInAppBrowser() {
-    const ua = navigator.userAgent || "";
-    return /Instagram|FBAN|FBAV|Snapchat|Line\//i.test(ua);
-}
-
 /**
  * 🛡️ يعلّم حقل واحد كـ"غلط" (حدود حمراء + رسالة تحته) بدل ما نوقف الفورم
  * كله عند أول خطأ - بيُستخدم مع boseShowAllCheckoutErrors عشان كل الأخطاء
@@ -174,6 +162,7 @@ function boseInitCheckoutFieldErrorClearing() {
     const fieldIds = [
         "checkout-customer-name", "checkout-customer-phone",
         "checkout-zone-select", "checkout-address-details", "checkout-delivery-date", "checkout-delivery-time",
+        "checkout-payment-reference",
     ];
     fieldIds.forEach((id) => {
         const el = document.getElementById(id);
@@ -186,7 +175,30 @@ function boseInitCheckoutFieldErrorClearing() {
 /**
  * دالة التهيئة والتحكم الأساسية لمحرك السلة والطلب
  */
+// ⏰ [مواعيد الاستلام والتوصيل]: بيملّى كل بانرات الساعات (السلة + الشيك أوت) من نفس
+// إعدادات المتجر اللي بتفرضها الواجهة والسيرفر (businessHoursStart/End)، بصياغة مصرية
+// واضحة ("9:00 الصبح" / "10:00 بالليل") - لو الإعدادات اتغيرت، البانر بيتغير معاها.
+function boseFormatSpokenHour(time24) {
+    const parts = String(time24 || "").split(":");
+    const h = parseInt(parts[0], 10);
+    const m = parseInt(parts[1], 10);
+    if (isNaN(h) || isNaN(m)) return String(time24 || "");
+    const h12 = h % 12 === 0 ? 12 : h % 12;
+    const period = h < 12 ? "الصبح" : (h < 17 ? "بعد الضهر" : "بالليل");
+    return `${h12}:${String(m).padStart(2, "0")} ${period}`;
+}
+
+function boseFillBusinessHoursNotices(storeData) {
+    const rules = (storeData && storeData.orderRules) || {};
+    const startText = boseFormatSpokenHour(rules.businessHoursStart || "09:00");
+    const endText = boseFormatSpokenHour(rules.businessHoursEnd || "22:00");
+    document.querySelectorAll(".bose-hours-range-text").forEach((el) => { el.textContent = `من ${startText} لحد ${endText}`; });
+    document.querySelectorAll(".bose-hours-start-text").forEach((el) => { el.textContent = startText; });
+    document.querySelectorAll(".bose-hours-end-text").forEach((el) => { el.textContent = endText; });
+}
+
 function initializeCartEngine(storeData) {
+    boseFillBusinessHoursNotices(storeData);
     const isCartPage = document.getElementById("cart-items-wrapper") !== null;
     const isCheckoutPage = document.getElementById("btn-submit-order-final") !== null;
     const isSuccessPage = document.getElementById("success-order-id-display") !== null;
@@ -418,7 +430,7 @@ function renderBoseCartPage(storeData) {
 
                 <div class="cart-item-completion-hint" style="grid-column: 1 / -1; display: flex; align-items: flex-start; gap: 8px; margin-top: 4px; padding: 10px 14px; background: rgba(var(--bose-pink-rgb),0.06); border: 1px dashed rgba(var(--bose-pink-rgb),0.35); border-radius: 12px; font-family: 'Cairo';">
                     <i class="fa-solid fa-circle-info" style="color: var(--bose-pink); font-size: 13px; margin-top: 2px;"></i>
-                    <span style="font-size: 12.5px; line-height: 1.6; color: #111111; opacity: 0.85;">الصنف ده اتحفظ في سلتك، بس طلبك لسه ما بعتش. كمّلي لآخر الصفحة ودوسي على "الانتقال لإتمام الطلب"، وبعدين زرار تأكيد الطلب في صفحة الدفع، عشان تفاصيل طلبك توصلنا فورًا على الواتساب ونبدأ نجهزهولك.</span>
+                    <span style="font-size: 12.5px; line-height: 1.6; color: #111111; opacity: 0.85;">الصنف ده اتحفظ في سلتك، بس طلبك لسه ما بعتش. كمّلي لآخر الصفحة ودوسي على "الانتقال لإتمام الطلب"، وبعدين زرار تأكيد الطلب في صفحة الدفع، وحوّلي المبلغ واكتبي رقم العملية، عشان طلبك يتسجل عندنا فورًا ونراجع التحويل ونبدأ نجهزهولك.</span>
                 </div>
             `;
             
@@ -1247,6 +1259,24 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFu
         }
     }
 
+    // 💳 [رقم عملية التحويل - إلزامي]: الدفع بقى بالتحويل من الموقع نفسه (إنستاباي/محفظة)
+    // لكل الطلبات بدون استثناء، والعميلة بتكتب رقم العملية أو آخر 3 أرقام من الرقم اللي
+    // حوّلت منه عشان نقدر نطابق التحويل ونراجعه. بيتطلب بس لو فيه مبلغ فعلاً مطلوب
+    // تحويله (لو الطلب كله اتغطى بكود/بطاقة هدية والإجمالي صفر، مفيش داعي).
+    const paymentRefInput = document.getElementById("checkout-payment-reference");
+    const paymentRefValue = paymentRefInput ? paymentRefInput.value.trim().replace(/\s+/g, " ") : "";
+    if (paymentRefInput && typeof window.calculateBoseInvoice === "function") {
+        const loyaltyForPreview = window.BoseLoyaltyState || { discountAmount: 0 };
+        const previewInvoice = window.calculateBoseInvoice(cart, storeData, shippingFee, loyaltyForPreview.discountAmount);
+        if (previewInvoice && previewInvoice.grandTotal > 0) {
+            if (paymentRefValue.length < 3) {
+                addValidationError(paymentRefInput, "من فضلك اكتبي رقم العملية أو آخر 3 أرقام من الرقم اللي حوّلتي منه عشان نراجع التحويل.");
+            } else if (paymentRefValue.length > 40) {
+                addValidationError(paymentRefInput, "الرقم طويل زيادة، اكتبي رقم العملية أو آخر 3 أرقام من رقمك بس.");
+            }
+        }
+    }
+
     // 🚦 بعد تجميع كل الفحوصات: لو فيه أي خطأ نعرضهم كلهم دفعة واحدة ونوقف هنا
     if (validationErrors.length > 0) {
         boseShowAllCheckoutErrors(validationErrors, firstInvalidInput);
@@ -1341,6 +1371,8 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFu
         giftCardCode: invoice.giftCardCode || null,
         giftCardAmountUsed: invoice.giftCardDiscountAmount || 0,
         grandTotal: finalGrandTotalCalculated,
+        // 💳 رقم عملية التحويل (أو آخر 3 أرقام) - بيتحفظ مع الطلب في ملاحظاته (راجع saveBoseOrderToDatabase)
+        paymentReference: paymentRefValue,
         notes: orderNotesInput ? orderNotesInput.value.trim() : "لا توجد ملاحظات إضافية",
         items: cart
     };
@@ -1382,153 +1414,109 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFu
     completedBoseOrderObject.paymentPhone = storeData.store?.phone || "01097238441";
     completedBoseOrderObject.payFull = !!payFull;
 
-    // 🤝 سد ثغرة الأصفار وتوحيد الذاكرة متبادلة التوافق تماماً
-    localStorage.setItem("bose_last_order", JSON.stringify(completedBoseOrderObject));
-
-    // 🐛👑 [إصلاح جذري: رقم الطلب في فاتورة الواتساب كان دايماً مختلف عن
-    // الرقم الحقيقي المسجل في قاعدة البيانات]: قبل كده كان واتساب بيتفتح
-    // فوراً برقم مؤقت (Timestamp من جهاز العميل، مثال BOSE-1755... ) قبل
-    // ما ننتظر رد قاعدة البيانات، وبعدين لما الرقم الحقيقي (بصيغة
-    // 🛡️🐛👑 [إصلاح جذري - المرحلة 2 - سبب فشل واتساب حتى بعد إصلاح رابط
-    // wa.me]: كان هنا قبل كده تاب فاضي بيتفتح فوراً بـwindow.open("", "_blank")
-    // وبعدين (بعد انتظار رد قاعدة البيانات) بنوجّهه لرابط واتساب عن طريق
-    // location.href. اتضح فعلياً (لقطة شاشة حقيقية من عميلة بتستخدم متصفح
-    // سناب شات الداخلي) إن المتصفحات الداخلية دي (سناب شات/إنستجرام/فيسبوك)
-    // بترفض وبتمنع صراحة إعادة توجيه تاب اتفتح مسبقاً بالطريقة دي (بتوريه
-    // "about:blank#blocked" - رفض واضح من المتصفح نفسه، مش مجرد فشل صامت) -
-    // المشكلة مش في شكل الرابط (اتصلح في المرحلة الأولى) لكن في **آلية الفتح
-    // نفسها**. الحل الجذري: نشيل فكرة "افتحي تاب فاضي واستني" خالص، ونخلي
-    // إرسال فاتورة الواتساب **ضغطة حقيقية ومباشرة من العميلة نفسها** على رابط
-    // فعلي (<a href>) في صفحة النجاح - وده الفعل الوحيد اللي كل المتصفحات
-    // بتسمح بيه دايماً بدون استثناء لأنه فعل مستخدم حقيقي مباشر، مش كود بيتحكم
-    // في نافذة لوحده. صفحة النجاح (order-success.html) بقت فيها زرار "إرسال
-    // الفاتورة على واتساب" ظاهر وواضح دايماً كخطوة أساسية مطلوبة من العميلة -
-    // مش مجرد نسخة احتياطية اختيارية.
-
-    // 🛡️ [إصلاح]: الشرط كان بيتأكد من وجود دالة مختلفة (submitBoseOrderToDatabase)
-    // بينما بينادي فعلياً على window.saveBoseOrderToDatabase - شغالة بالصدفة
-    // لأن الاتنين بيتعرّفوا مع بعض في supabase-client.js، لكن الفحص الصحيح
-    // لازم يكون على الدالة اللي بننادي عليها فعلياً.
+    // 💾 [الدفع بالتحويل من الموقع - حفظ الطلب شرط أساسي]: مفيش مسار واتساب للطلبات
+    // بعد كده خالص. الطلب لازم يتحفظ في قاعدة البيانات الأول، ولو الحفظ فشل (نت ضعيف،
+    // أو السيرفر رفض الطلب لسبب زي ميعاد قريب أو كود مش شغال) بنوقف هنا ونوضّح للعميلة
+    // بالظبط إن الطلب ما اتسجلش، بدل ما نوصّلها لصفحة "تم الطلب" وهي فعلياً مفيش طلب.
+    let dbResult = null;
+    let dbSaveError = null;
     if (typeof window.saveBoseOrderToDatabase === "function") {
         try {
-            const dbResult = await window.saveBoseOrderToDatabase(completedBoseOrderObject);
-            if (dbResult && dbResult.orderNumber) {
-                // 🛡️ [إصلاح حرج]: الرقم الحقيقي من قاعدة البيانات بقى هو نفسه
-                // orderNumber/orderId المستخدمين في بناء فاتورة الواتساب تحت -
-                // مش مجرد قيمة إضافية بتتسجل من غير استخدام زي ما كان بيحصل.
-                completedBoseOrderObject.dbOrderNumber = dbResult.orderNumber;
-                completedBoseOrderObject.orderNumber = dbResult.orderNumber;
-                completedBoseOrderObject.orderId = dbResult.orderNumber;
-
-                // 💗 [نمو - مفضلة مرتبطة برقم موبايل]: أول لحظة نتأكد فيها من رقم
-                // موبايل حقيقي للعميلة - نسجّله كـ"رقم معروف" ونرفع مفضلتها الحالية
-                // (لو عندها أي حاجة في المفضلة) عليه فورًا، best-effort بالكامل.
-                if (typeof window.setBoseKnownPhone === "function") {
-                    window.setBoseKnownPhone(sanitizedPhone1);
-                }
-                if (typeof window.syncBoseFavoritesToServer === "function") {
-                    window.syncBoseFavoritesToServer();
-                }
-                // 🎁 [نظام نقاط الولاء]: القيم دي هي المؤكدة فعلياً من قاعدة البيانات
-                // (مصدر الحقيقة) - بتتسجل هنا عشان صفحة النجاح تقدر تعرض للعميلة
-                // بالظبط الخصم اللي اتطبق، أو تبشّرها لو الطلب ده حقق لها قسيمة الـ300 جنيه.
-                completedBoseOrderObject.loyaltyDiscountPercent = dbResult.loyaltyDiscountPercent || 0;
-                completedBoseOrderObject.loyaltyDiscountAmount = dbResult.loyaltyDiscountAmount || 0;
-                completedBoseOrderObject.voucherAmountUsed = dbResult.voucherAmountUsed || 0;
-                completedBoseOrderObject.isLoyaltyMilestone = !!dbResult.isLoyaltyMilestone;
-
-                // 🛡️🔧👑 [إصلاح جذري - مصدر الحقيقة المالي]: قبل كده الكود هنا كان
-                // بيسجل قيم الولاء بس من رد القاعدة، ويسيب grandTotal وdepositAmount
-                // زي ما اتحسبوا محلياً في السلة قبل الحفظ. لو الكوبون طلع فعلياً مش
-                // سارٍ وقت الحفظ (نادر بعد التحقق المزدوج فوق، لكن وارد - مثلاً race
-                // condition على max_uses بين عميلتين في نفس اللحظة)، كانت فاتورة
-                // الواتساب وصفحة "تم الطلب" هتعرض للعميلة رقم أقل من اللي فعلياً
-                // هيتحصّل ويتسجل في لوحة التحكم - تناقض حقيقي ممكن يسبب نزاع. دلوقتي
-                // بنستبدل كل الأرقام المالية بالقيم المؤكدة الراجعة فعلياً من
-                // create_order_with_items (مصدر الحقيقة الوحيد)، ونعيد حساب العربون/
-                // الباقي على أساسها بدل القيمة المحسوبة محلياً قبل الحفظ. ده كمان
-                // بيضمن إن زرار "إعادة إرسال الفاتورة" (لو العميلة استخدمته لاحقاً من
-                // صفحة النجاح) هيبعت نفس الرقم الصحيح بالظبط، مش رقم قديم مختلف.
-                if (dbResult.grandTotal !== undefined && dbResult.grandTotal !== null) {
-                    completedBoseOrderObject.grandTotal = dbResult.grandTotal;
-                }
-                if (dbResult.confirmedDiscountAmount !== undefined && dbResult.confirmedDiscountAmount !== null) {
-                    completedBoseOrderObject.discountAmount = dbResult.confirmedDiscountAmount;
-                }
-                if (dbResult.depositAmount !== undefined && dbResult.depositAmount !== null) {
-                    const confirmedGrandTotal = parseFloat(completedBoseOrderObject.grandTotal) || 0;
-                    completedBoseOrderObject.depositAmount = dbResult.depositAmount;
-                    completedBoseOrderObject.remainingAmount = Math.max(0, confirmedGrandTotal - (parseFloat(dbResult.depositAmount) || 0));
-                }
-            }
+            dbResult = await window.saveBoseOrderToDatabase(completedBoseOrderObject);
         } catch (err) {
-            // 🛡️ لو الاتصال فشل (نت ضعيف مثلاً) البيع لا يتوقف أبداً - بنكمل
-            // بالرقم المؤقت المولّد محلياً (orderIdGenerated) كحل احتياطي، وواتساب
-            // بيتفتح بيه عادي، لكنه هيبقى مختلف عن قاعدة البيانات في هذه الحالة
-            // النادرة بس (فشل حفظ فعلي)، مش في المسار العادي الناجح.
-            console.warn("⚠️ تعذر حفظ الطلب في قاعدة البيانات (البيع هيتم عبر واتساب بالرقم المؤقت رغم ذلك):", err);
+            dbSaveError = err;
+            console.error("⚠️ تعذر حفظ الطلب في قاعدة البيانات:", err);
         }
     }
 
-    const fullWhatsappMessageText = buildBoseFormattedWhatsappInvoice(completedBoseOrderObject);
+    if (!dbResult || !dbResult.orderNumber) {
+        const failMsg = boseExtractOrderSaveErrorMessage(dbSaveError);
+        boseShowCheckoutSubmitError(failMsg);
+        if (typeof window.showBoseGlobalToast === "function") {
+            window.showBoseGlobalToast(failMsg, { type: "error" });
+        }
+        return;
+    }
+    boseHideCheckoutSubmitError();
 
-    // 🛡️🐛 [إصلاح جذري - حماية إضافية ضد الروابط الطويلة جداً]: لو النص الكامل
-    // (بعد الترميز لرابط واتساب) بيتعدى ٣٠٠٠ حرف تقريباً (بيحصل بسهولة مع
-    // أصناف مخصصة كتير أو صور مرجعية متعددة)، بنستخدم النسخة المختصرة
-    // (buildBoseCondensedWhatsappInvoice فوق) في رابط واتساب الفعلي بدل الطويلة
-    // - عشان نضمن إن الرابط يفتح بنجاح في كل المتصفحات مهما كانت. النص الكامل
-    // بالتفاصيل والصور بيفضل محفوظ زي ما هو في قاعدة البيانات (custom_details/
-    // reference_images) وفي صفحة تتبع الطلب، فمفيش أي معلومة بتضيع.
-    const encodedLength = encodeURIComponent(fullWhatsappMessageText).length;
-    const whatsappMessageText = encodedLength > 3000
-        ? buildBoseCondensedWhatsappInvoice(completedBoseOrderObject)
-        : fullWhatsappMessageText;
+    // الرقم الحقيقي من قاعدة البيانات هو رقم الطلب المعتمد في كل مكان.
+    completedBoseOrderObject.dbOrderNumber = dbResult.orderNumber;
+    completedBoseOrderObject.orderNumber = dbResult.orderNumber;
+    completedBoseOrderObject.orderId = dbResult.orderNumber;
 
+    // 💗 [نمو - مفضلة مرتبطة برقم موبايل]: أول لحظة نتأكد فيها من رقم موبايل حقيقي
+    // للعميلة - نسجّله كـ"رقم معروف" ونرفع مفضلتها الحالية عليه (best-effort).
+    if (typeof window.setBoseKnownPhone === "function") {
+        window.setBoseKnownPhone(sanitizedPhone1);
+    }
+    if (typeof window.syncBoseFavoritesToServer === "function") {
+        window.syncBoseFavoritesToServer();
+    }
 
-    // ربط الرسالة بالـ object لضمان عدم حدوث شلل لزر الإرسال البديل بصفحة النجاح
-    // (بنحفظ نفس النص اللي فعلاً هيتفتح بيه واتساب، كامل أو مختصر حسب الحالة)
-    completedBoseOrderObject.whatsappMessage = whatsappMessageText;
-    completedBoseOrderObject.whatsappMessageFull = fullWhatsappMessageText;
-    localStorage.setItem("bose_last_order", JSON.stringify(completedBoseOrderObject));
+    // 🎁 [نظام نقاط الولاء]: القيم المؤكدة فعلياً من قاعدة البيانات (مصدر الحقيقة).
+    completedBoseOrderObject.loyaltyDiscountPercent = dbResult.loyaltyDiscountPercent || 0;
+    completedBoseOrderObject.loyaltyDiscountAmount = dbResult.loyaltyDiscountAmount || 0;
+    completedBoseOrderObject.voucherAmountUsed = dbResult.voucherAmountUsed || 0;
+    completedBoseOrderObject.isLoyaltyMilestone = !!dbResult.isLoyaltyMilestone;
 
-    // 🎯🆕 [خانة خصم ذكية موحدة]: بعد نجاح الطلب، كل الأكواد المطبقة (كوبون/
-    // قسيمة ولاء/بطاقة هدية) بتتشال مع بعض من bose_active_discounts - كل
-    // واحد فيهم استُهلك فعلياً في الطلب ده، فمينفعش يفضل شغال للطلب الجاي.
+    // 🛡️🔧👑 [مصدر الحقيقة المالي]: نستبدل كل الأرقام المالية بالقيم المؤكدة الراجعة من
+    // create_order_with_items، ونعيد حساب العربون/الباقي على أساسها، عشان صفحة النجاح
+    // تعرض بالظبط المبلغ اللي فعلاً لازم يتحوّل ويتراجع في لوحة التحكم.
+    if (dbResult.grandTotal !== undefined && dbResult.grandTotal !== null) {
+        completedBoseOrderObject.grandTotal = dbResult.grandTotal;
+    }
+    if (dbResult.confirmedDiscountAmount !== undefined && dbResult.confirmedDiscountAmount !== null) {
+        completedBoseOrderObject.discountAmount = dbResult.confirmedDiscountAmount;
+    }
+    if (dbResult.depositAmount !== undefined && dbResult.depositAmount !== null) {
+        const confirmedGrandTotal = parseFloat(completedBoseOrderObject.grandTotal) || 0;
+        completedBoseOrderObject.depositAmount = dbResult.depositAmount;
+        completedBoseOrderObject.remainingAmount = Math.max(0, confirmedGrandTotal - (parseFloat(dbResult.depositAmount) || 0));
+    }
+
+    // الطلب اتحفظ فعلاً - دلوقتي بس نسجّله محلياً لصفحة النجاح (كان بيتسجل قبل الحفظ،
+    // وده كان ممكن يسيب بيانات طلب "وهمي" لو الحفظ فشل).
+    try {
+        localStorage.setItem("bose_last_order", JSON.stringify(completedBoseOrderObject));
+    } catch (e) {
+        console.warn("⚠️ تعذر حفظ ملخص الطلب محلياً لصفحة النجاح.", e);
+    }
+
+    // 🎯🆕 [خانة خصم ذكية موحدة]: كل الأكواد المطبقة اتستهلكت فعلياً في الطلب ده،
+    // فمينفعش تفضل شغالة للطلب الجاي.
     localStorage.removeItem("bose_active_discounts");
     if (typeof window.updateGlobalCartCounter === "function") window.updateGlobalCartCounter();
 
-    // 🛡️🐛👑 [إصلاح جذري - المرحلة 2]: من غير أي محاولة فتح تاب هنا خالص -
-    // العميلة هتوصل لصفحة النجاح وهتلاقي زرار "إرسال الفاتورة على واتساب"
-    // واضح وظاهر، وضغطها عليه هي فعلياً هي اللي بتفتح واتساب (فعل مستخدم
-    // حقيقي مباشر، مش كود بيحاول يتحكم في نافذة لوحده) - ده بيشتغل موثوق
-    // في كل المتصفحات بدون استثناء، حتى المتصفحات الداخلية المتشددة زي
-    // سناب شات وإنستجرام وفيسبوك اللي كانت بترفض آلية "التاب الفاضي" القديمة.
-    // 🛡️🐛👑🆕 [المرحلة 3 - سبتمبر 2026 - ضغطة واحدة للمتصفحات العادية]:
-    // المرحلة اللي فاتت (التعليق فوق) وصلت لحل آمن 100% بس بخطوتين (صفحة
-    // نجاح + ضغطة يدوية) لأن أي محاولة قديمة لفتح واتساب تلقائي كانت بتعتمد
-    // على فتح تاب فاضي بـwindow.open("", "_blank") الأول وتوجيهه لاحقًا بعد
-    // انتظار رد قاعدة البيانات - والمتصفحات المصغّرة الداخلية (سناب
-    // شات/إنستجرام/فيسبوك) بترفض بالتحديد "إعادة توجيه تاب اتفتح فاضي
-    // مسبقًا" ده (بتوريه about:blank#blocked). دلوقتي الفرق: مفيش أي تاب
-    // فاضي بيتفتح خالص - بيتفتح تاب واتساب **مرة واحدة بس وبرابط كامل
-    // وجاهز فعلاً** (مش فاضي ثم يتحدّث)، وده مش نفس آلية الفشل الموثّقة،
-    // فبيشتغل عادي في كل المتصفحات الحقيقية (كروم/سفاري). المتصفحات
-    // المصغّرة المكتشفة (isBoseInAppBrowser) بس هي اللي بتفضل على المسار
-    // الآمن القديم بالظبط - صفر مخاطرة جديدة عليهم.
-    if (!isBoseInAppBrowser()) {
-        const waPhone = completedBoseOrderObject.paymentPhone || "01097238441";
-        const waLink = typeof window.buildWhatsappLink === "function"
-            ? window.buildWhatsappLink(waPhone, whatsappMessageText)
-            : `https://wa.me/2${waPhone}?text=${encodeURIComponent(whatsappMessageText)}`;
-        window.open(waLink, "_blank", "noopener");
-        // 🆕 بنسجّل إن واتساب اتفتح تلقائيًا فعلاً - صفحة النجاح (order-success.html)
-        // بتقرا العلامة دي عشان تلوّن زرار "إرسال الفاتورة" كخيار احتياطي هادي
-        // بدل ما تعامله كخطوة أساسية لسه ناقصة (وتوقف تذكير الـ8 ثواني الملح
-        // اللي مصمم أصلاً للحالة اللي واتساب فيها ما فتحش تلقائي خالص).
-        try { sessionStorage.setItem("bose_wa_auto_opened", "1"); } catch (e) {}
-    }
-
     window.location.href = "/order-success.html";
+}
+
+// 🧾 [رسائل فشل حفظ الطلب]: رسائل السيرفر الصريحة (raise exception في create_order_with_items،
+// زي "موعد قريب" أو "كود مش شغال") بتوصل جوه JSON في نص الخطأ - بنطلعها للعميلة زي ما هي.
+// أي خطأ تقني تاني (نت ضعيف/سيرفر) بياخد رسالة عامة واضحة إن الطلب ما اتسجلش.
+function boseExtractOrderSaveErrorMessage(err) {
+    const generic = "طلبك ما اتسجلش لسه - غالباً النت ضعيف أو حصلت مشكلة مؤقتة. جرّبي تدوسي \"تأكيد الطلب\" تاني بعد شوية.";
+    if (!err || !err.message) return generic;
+    const jsonMatch = String(err.message).match(/\{[\s\S]*\}\s*$/);
+    if (jsonMatch) {
+        try {
+            const parsed = JSON.parse(jsonMatch[0]);
+            if (parsed && parsed.code === "P0001" && parsed.message) return String(parsed.message);
+        } catch (e) { /* رسالة عامة تحت */ }
+    }
+    return generic;
+}
+
+function boseShowCheckoutSubmitError(message) {
+    const box = document.getElementById("checkout-submit-error");
+    if (!box) return;
+    box.textContent = message;
+    box.style.display = "block";
+    box.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+function boseHideCheckoutSubmitError() {
+    const box = document.getElementById("checkout-submit-error");
+    if (box) box.style.display = "none";
 }
 
 // 🕒 [إصلاح - التوقيت المصري]: كان وقت الاستلام بيتكتب في فاتورة الواتساب زي
@@ -1562,213 +1550,6 @@ function getBoseArabicShapeName(shape) {
     return shapeMap[shape] || shape;
 }
 
-function buildBoseFormattedWhatsappInvoice(order) {
-    let msg = `✨ *فاتورة حجز طلبية فاخرة - حلويات بوسي (BoseSweets)* ✨\n`;
-    // 🌸 [نظام التعرّف على العميل]: ترحيب مباشر باسم العميل بالظبط أول رسالة
-    // الواتساب، بدل ما يكون اسمه مجرد سطر بيانات جوه الفاتورة زي أي حقل تاني.
-    if (order.customerName) {
-        msg += `🌸 أهلاً يا *${order.customerName}*، شكراً لثقتك في حلويات بوسي! دي فاتورة حجزك 👇\n\n`;
-    }
-    msg += `--------------------------------------------------\n\n`;
-    msg += `🧾 *رقم الطلب:* ${order.orderId}\n`;
-    msg += `👤 *العميل:* ${order.customerName}\n`;
-    msg += `📞 *رقم الاتصال:* ${order.phone1}\n`;
-    msg += `🚗 *طريقة الاستلام:* ${order.deliveryMethod}\n`;
-    msg += `📍 *العنوان:* ${order.address}\n`;
-    msg += `📅 *موعد الاستلام:* ${order.scheduledDate} الساعة ${formatBoseTimeToEgyptian12Hour(order.scheduledTime)}\n\n`;
-    msg += `--------------------------------------------------\n`;
-    msg += `📦 *تفاصيل الأصناف المطلوبة:*\n\n`;
-
-    order.items.forEach((item, idx) => {
-        const isCakeBespoke = item.type === "custom-cake" || item.type === "mini-cake" || item.productSlug === "toort-custom-master" || item.productSlug === "mini-cake-two-person";
-        msg += `${idx + 1}. 🌟 *${item.title}* (${item.flavorName || 'جاهز وفريش'})\n`;
-        // 🛡️ [إصلاح حرج - رسالة واتساب بتقول "1 قطعة" بدل الدستة/العبوة الحقيقية]:
-        // item.quantity هو عدد "الوحدات" اللي طلبها العميل (دستة، عبوة، تورتة... إلخ)
-        // مش عدد القطع الفردية جوه الوحدة الواحدة. كلمة "قطعة" الثابتة هنا كانت بتوهم
-        // الفرع إن العميل طلب قطعة واحدة فعلياً حتى لو المنتج نفسه "دستة (12 قطعة)"،
-        // لأن اسم واسم الوحدة الحقيقيين موجودين بالفعل جوه عنوان المنتج (item.title)
-        // ومفيش داعي إطلاقاً لتأكيد/تخمين وحدة تانية جنبه ممكن تكون غلط. النص الجديد
-        // بيوضح إنه "عدد الوحدات" (×) بدل ما يخترع وحدة قياس قد تكون غلط.
-        // 🏷️ [إصلاح - تسمية الكمية حسب المنتج]: بدل تسمية عامة "عدد الوحدات
-        // المطلوبة" لكل الأصناف مهما كانت، بقت التسمية مخصصة لاسم المنتج نفسه
-        // (مثال: "العدد المطلوب من التورت"، "العدد المطلوب من القشطوطة")
-        // عشان توضح فوراً وبدقة إحنا بنعد ايه بالظبط لكل صنف في الفاتورة.
-        msg += `   • *العدد المطلوب من ${item.title}:* ×${item.quantity}\n`;
-        // 🏷️ [إصلاح - سعر باسم المنتج بدل تسمية عامة "سعر الوحدة الشامل"]: التسمية
-        // العامة القديمة كانت مش واضحة سعر ايه بالظبط لما في أكتر من صنف في نفس
-        // الفاتورة. دلوقتي السعر بيتقال جنب اسم الصنف نفسه (زي "سعر تورتة ديسباسيتو")
-        // بنفس أسلوب سطر الكمية فوقه، عشان الفرع يعرف فوراً وبدقة سعر أنهي صنف بالظبط.
-        msg += `   • *سعر ${item.title}:* ${parseFloat(item.finalPrice).toFixed(2)} EGP\n`;
-        
-        if (item.customDetails) {
-            const cd = item.customDetails;
-            if (item.type === "custom-cake" || item.type === "mini-cake") {
-                if (cd.isGift) msg += `   • 🎁 هدية لحد تاني\n`;
-                if (cd.occasionLabel && cd.occasionLabel.trim() !== "") msg += `   • المناسبة: ${cd.occasionLabel.trim()}\n`;
-                if (cd.cakeType && cd.cakeType !== "none" && cd.cakeType !== "افتراضي") msg += `   • طعم الكيك: ${cd.cakeType}\n`;
-                if (cd.shape && cd.shape !== "none") msg += `   • الشكل: ${getBoseArabicShapeName(cd.shape)}\n`;
-                if (cd.persons && cd.persons > 0) msg += `   • الأفراد: لـ ${cd.persons} فرد\n`;
-                if (cd.printingType && cd.printingType !== "none") msg += `   • طباعة صورة: ${cd.printingType === 'edible' ? 'قابلة للأكل' : 'غير قابلة للأكل'}\n`;
-                // 🏷️ [إصلاح - وضوح سطر "النص"]: التسمية القديمة "النص:" لوحدها ما
-                // كانتش بتوضح إن النص ده هيتكتب فعلاً على التورتة نفسها (وليس مثلاً
-                // كارت إهداء منفصل، اللي ليه سطره الخاص تحت). بقت التسمية صريحة.
-                if (cd.customMessage && cd.customMessage.trim() !== "") msg += `   • النص المطلوب كتابته على التورتة: "${cd.customMessage}"\n`;
-                if (cd.allergyNote && cd.allergyNote.trim() !== "") msg += `   • ⚠️ ملاحظة حساسية: ${cd.allergyNote.trim()}\n`;
-                if (cd.hasGiftCard && cd.giftCardText && cd.giftCardText.trim() !== "") msg += `   • كارت إهداء: "${cd.giftCardText.trim()}"\n`;
-                // 🖼️ [تمييز الصور - إصلاح جذري]: قبل كده كل الصور المرفوعة كانت
-                // بتظهر في قايمة واحدة مجهولة "صورة مرجعية 1 / 2" من غير أي توضيح
-                // أنهي صورة للطباعة فعلياً على التورتة وأنهي صورة هي بس مصدر إلهام
-                // للتصميم - ده كان ممكن يخلط على الفرع ويطبع الصورة الغلط. دلوقتي
-                // كل صورة بيها سطر واضح بيقول غرضها بالظبط.
-                if (cd.printImageUrl) msg += `   🖨️ *الصورة المطلوب طباعتها على التورتة:* ${cd.printImageUrl}\n`;
-                if (cd.replicaImageUrl) msg += `   🎨 *صورة التصميم اللي عايزين نقرب شكل التورتة منها:* ${cd.replicaImageUrl}\n`;
-            }
-            if (item.type === "custom-flower") {
-                if (cd.moodLabel) msg += `   • الإحساس المطلوب: ${cd.moodLabel}\n`;
-                // 🐛🌸👑 [إصلاح جذري - نوع الورد كان بيطبع في فاتورة الواتساب باسمه
-                // الداخلي الخام (زي "natural" بالإنجليزي، أو معرّف عشوائي زي "opt-xxxx"
-                // لأي نوع تضيفه الأدمن دلوقتي) بدل اسمه العربي الحقيقي - المطبخ/الفرع
-                // كان بياخد رسالة مش مفهومة. بنبحث عن الاسم الحقيقي في قائمة أنواع
-                // الورد المُدارة من لوحة التحكم، ولو مش لاقيينه بنرجع لاسم افتراضي.
-                if (cd.flowerType && cd.flowerType !== "none") {
-                    const fbTypes = window.BoseStoreData?.flowerBuilder?.flowerTypes;
-                    const match = Array.isArray(fbTypes) ? fbTypes.find(t => t && t.id === cd.flowerType) : null;
-                    const defaultNames = { natural: "ورد طبيعي نضر", artificial: "ورد صناعي فاخر", satin: "ورد ستان راقٍ" };
-                    msg += `   • نوع الورد: ${match ? match.name : (defaultNames[cd.flowerType] || cd.flowerType)}\n`;
-                }
-                if (cd.flowerCount && cd.flowerCount > 0) msg += `   • التعداد: ${cd.flowerCount} وردة\n`;
-                if (cd.hasSatinRibbon && cd.satinRibbonText && cd.satinRibbonText.trim() !== "") msg += `   • شريط ستان مطبوع حرارياً: "${cd.satinRibbonText}"\n`;
-                if (cd.photoCount && cd.photoCount > 0) msg += `   • صور شخصية مطبوعة: ${cd.photoCount} صورة\n`;
-                if (cd.cashAmount && cd.cashAmount > 0) msg += `   • الكاش المدمج جوه البوكيه: +${cd.cashAmount} EGP\n`;
-                if (cd.hasChocolate && cd.chocolateBudget && cd.chocolateBudget > 0) msg += `   • ميزانية الشوكولاتة الفاخرة: +${cd.chocolateBudget} EGP\n`;
-                if (cd.hasGiftCard && cd.giftCardText && cd.giftCardText.trim() !== "") msg += `   • كارت الإهداء: "${cd.giftCardText}"\n`;
-            }
-            // 👑 [إصلاح جذري - كارثة الأحجام]: لازم الحجم يظهر في فاتورة الواتساب اللي
-            // بيتفذ منها الطلب فعلياً في الفرع - قبل كده الحجم مكنش موجود هنا خالص،
-            // وكان ممكن يتنفذ الطلب بحجم غلط تماماً عن اللي دفع فيه العميل فعلاً.
-            if (item.type !== "custom-cake" && item.type !== "mini-cake" && item.type !== "custom-flower" && cd.sizeLabel) {
-                msg += `   • *الحجم المطلوب:* ${cd.sizeLabel}\n`;
-            }
-        }
-
-        // 🛡️ [إصلاح حرج]: أي صورة رفعها العميل (بوكيه مرجعي مثلاً) كانت بتتحفظ
-        // كرابط Cloudinary حقيقي جوه item.image لكن ما كانتش بتوصل خالص لنص
-        // فاتورة الواتساب. دلوقتي أي رابط Cloudinary حقيقي (مش لوجو الموقع
-        // الافتراضي) بيظهر كسطر واضح قابل للفتح المباشر من واتساب - ما عدا
-        // أصناف التورت المخصص، لأن صورها الاثنتين (الطباعة/التصميم المرجعي)
-        // اتوضحت بالفعل بسطرين منفصلين فوق، وتكرارها هنا هيرجع نفس اللخبطة
-        // القديمة (صورة "مرجعية" مجهولة الغرض).
-        const refImageUrls = [];
-        if (!isCakeBespoke) {
-            if (item.image && typeof item.image === "string" && item.image.startsWith("http") && !item.image.includes("logo_igggsb")) {
-                refImageUrls.push(item.image);
-            }
-            if (Array.isArray(item.referenceImages)) {
-                item.referenceImages.forEach(u => { if (u && typeof u === "string" && u.startsWith("http")) refImageUrls.push(u); });
-            }
-        }
-        refImageUrls.forEach((url, i) => {
-            msg += `   🖼️ *صورة مرجعية${refImageUrls.length > 1 ? ' ' + (i + 1) : ''}:* ${url}\n`;
-        });
-
-        msg += `   ---------------------------\n\n`;
-    });
-
-    msg += `--------------------------------------------------\n`;
-    msg += `📝 *ملاحظات:* ${order.notes}\n\n`;
-    msg += `--------------------------------------------------\n`;
-    // 🎁 [نظام نقاط الولاء]: خصم الولاء التلقائي وخصم قسيمة الولاء (لو اتطبقوا)
-    // بيظهروا كسطرين واضحين هنا قبل المجموع النهائي، عشان العميلة تشوف بعينها
-    // إنها فعلاً اخدت مكافأتها ومش مجرد خصم مخفي.
-    // 🛡️🎟️ [إصلاح - شفافية الكوبون في فاتورة الواتساب]: كود الكوبون العادي
-    // كان خصمه بيتحسب في الإجمالي النهائي من غير أي سطر يوضح للفرع/العميلة
-    // إنه اتطبق ولا بكام - دلوقتي بيظهر كبند منفصل زي خصم الولاء بالظبط.
-    if (order.couponCode && order.couponDiscount && order.couponDiscount > 0) {
-        msg += `🎟️ *كوبون الخصم (${order.couponCode}):* -${parseFloat(order.couponDiscount).toFixed(2)} EGP\n`;
-    }
-    if (order.loyaltyDiscountAmount && order.loyaltyDiscountAmount > 0) {
-        msg += `🌟 *خصم الولاء التلقائي:* -${parseFloat(order.loyaltyDiscountAmount).toFixed(2)} EGP\n`;
-    }
-    if (order.voucherAmountUsed && order.voucherAmountUsed > 0) {
-        msg += `🎁 *قسيمة الولاء المستخدمة:* -${parseFloat(order.voucherAmountUsed).toFixed(2)} EGP\n`;
-    }
-    // 🎁 [بطاقات الهدايا - شفافية الفاتورة]: نفس مبدأ الشفافية أعلاه لبطاقة الهدية.
-    if (order.giftCardCode && order.giftCardAmountUsed && order.giftCardAmountUsed > 0) {
-        msg += `💳 *بطاقة الهدية المستخدمة (${order.giftCardCode}):* -${parseFloat(order.giftCardAmountUsed).toFixed(2)} EGP\n`;
-    }
-    msg += `👑 *المجموع المالي النهائي:* ${order.grandTotal} EGP 👑\n`;
-    // 💵 [عربون/دفع مقدم]: توضيح صريح لطريقة ووقت الدفع - استلام = عربون 50%
-    // والباقي عند الاستلام، توصيل = كامل المبلغ مقدماً وقت تأكيد الحجز.
-    if (order.depositAmount !== undefined) {
-        if (order.remainingAmount > 0) {
-            msg += `💳 *عربون تأكيد الحجز المطلوب الآن:* ${order.depositAmount} EGP (كاش أو InstaPay على ${order.paymentPhone})\n`;
-            msg += `🧾 *الباقي عند الاستلام:* ${order.remainingAmount} EGP\n`;
-        } else {
-            // 🎁 [نفس فئة إصلاح خانات السياق الخاطئ]: لو الطلب بطاقة هدية رقمية،
-            // "دفع كامل باختيارها" مضلل - الدفع الكامل هنا إجباري (منتج رقمي)
-            // مش اختيار حر زي حالة الاستلام العادي.
-            const fullReason = order.deliveryMethod === "توصيل للمنزل"
-                ? "توصيل"
-                : (order.deliveryMethod === "تسليم رقمي فوري (بطاقة هدية)" ? "بطاقة هدية رقمية" : "دفع كامل باختيارها");
-            msg += `💳 *المبلغ الكامل المطلوب الآن (${fullReason}):* ${order.depositAmount} EGP (كاش أو InstaPay على ${order.paymentPhone})\n`;
-        }
-        msg += `📸 من فضلك ابعتي لقطة شاشة التحويل هنا فور إتمامه وهنأكد الحجز فوراً.\n`;
-    }
-    msg += `\n--------------------------------------------------\n`;
-    msg += `🤝 شكرًا لاختياركم الفاخر لـ حلويات بوسي. صنعناها بحب لتهديها لمن تحب. ✨`;
-    
-    return msg;
-}
-
-// 🛡️🐛 [إصلاح جذري - حماية إضافية ضد فشل فتح واتساب في الطلبات الكبيرة]:
-// طلبات فيها أكتر من صنف مخصص (تورت/ورد) بصور مرجعية بتولّد نص فاتورة طويل
-// جداً (رابط wa.me النهائي ممكن يوصل لآلاف الحروف) - حتى بعد إصلاح رابط
-// intent://، لسه ممكن بعض المتصفحات (خصوصاً المتصفحات الداخلية جوه تطبيقات
-// السوشيال ميديا) تتعثر مع روابط طويلة جداً. الدالة دي بتبني نسخة مختصرة
-// من الفاتورة (بيانات العميل + كل صنف باسمه وسعره وكميته بس، من غير تفاصيل
-// التخصيص الطويلة ولا روابط الصور) + توجّه الفرع لصفحة تتبع الطلب لمشاهدة
-// كل التفاصيل والصور كاملة (محفوظة بالفعل في قاعدة البيانات مع الطلب).
-// بتتستخدم بس لو النص الكامل طويل جداً (راجع processFinalBoseOrder تحت).
-function buildBoseCondensedWhatsappInvoice(order) {
-    let msg = `✨ *فاتورة حجز مختصرة - حلويات بوسي* ✨\n`;
-    msg += `(الطلب فيه تفاصيل/صور كتير، فهنبعت نسخة مختصرة هنا - كل التفاصيل والصور الكاملة موجودة في رابط تتبع الطلب تحت 👇)\n\n`;
-    msg += `--------------------------------------------------\n`;
-    msg += `🧾 *رقم الطلب:* ${order.orderId}\n`;
-    msg += `👤 *العميل:* ${order.customerName}\n`;
-    msg += `📞 *رقم الاتصال:* ${order.phone1}\n`;
-    msg += `🚗 *طريقة الاستلام:* ${order.deliveryMethod}\n`;
-    msg += `📍 *العنوان:* ${order.address}\n`;
-    msg += `📅 *موعد الاستلام:* ${order.scheduledDate} الساعة ${formatBoseTimeToEgyptian12Hour(order.scheduledTime)}\n\n`;
-    msg += `--------------------------------------------------\n`;
-    msg += `📦 *الأصناف:*\n`;
-    order.items.forEach((item, idx) => {
-        msg += `${idx + 1}. ${item.title} ×${item.quantity} — ${parseFloat(item.finalPrice).toFixed(2)} EGP\n`;
-    });
-    msg += `--------------------------------------------------\n`;
-    if (order.couponCode && order.couponDiscount && order.couponDiscount > 0) {
-        msg += `🎟️ *كوبون الخصم (${order.couponCode}):* -${parseFloat(order.couponDiscount).toFixed(2)} EGP\n`;
-    }
-    if (order.loyaltyDiscountAmount && order.loyaltyDiscountAmount > 0) {
-        msg += `🌟 *خصم الولاء التلقائي:* -${parseFloat(order.loyaltyDiscountAmount).toFixed(2)} EGP\n`;
-    }
-    if (order.voucherAmountUsed && order.voucherAmountUsed > 0) {
-        msg += `🎁 *قسيمة الولاء المستخدمة:* -${parseFloat(order.voucherAmountUsed).toFixed(2)} EGP\n`;
-    }
-    if (order.giftCardCode && order.giftCardAmountUsed && order.giftCardAmountUsed > 0) {
-        msg += `💳 *بطاقة الهدية المستخدمة (${order.giftCardCode}):* -${parseFloat(order.giftCardAmountUsed).toFixed(2)} EGP\n`;
-    }
-    msg += `👑 *المجموع النهائي:* ${order.grandTotal} EGP\n`;
-    if (order.depositAmount !== undefined) {
-        msg += `💳 *المطلوب دفعه الآن:* ${order.depositAmount} EGP (كاش أو InstaPay على ${order.paymentPhone})\n`;
-    }
-    if (order.dbOrderNumber) {
-        const siteOrigin = (typeof window !== "undefined" && window.location && window.location.origin) ? window.location.origin : "https://bose-sweet.vercel.app";
-        msg += `\n🔗 *كل تفاصيل التخصيص والصور المرفوعة:*\n${siteOrigin}/track-order.html?order=${encodeURIComponent(order.dbOrderNumber)}&phone=${encodeURIComponent(order.phone1)}\n`;
-    }
-    msg += `\n📸 من فضلك ابعتي لقطة شاشة التحويل هنا فور إتمامه وهنأكد الحجز فوراً.`;
-    return msg;
-}
-
 /**
  * =========================================================================
  * 🧾 3. محرك وإدارة صفحة نجاح الطلب وإصدار الفاتورة (order-success.html)
@@ -1789,7 +1570,6 @@ function renderBoseSuccessPage(storeData) {
     const orderIdDisplay = document.getElementById("success-order-id-display");
     const customerWelcome = document.getElementById("success-customer-welcome");
     const trackOrderBtn = document.getElementById("bose-success-track-btn");
-    const resendWhatsappBtn = document.getElementById("bose-resend-whatsapp-btn");
 
     const showEmptyState = () => {
         if (receiptWrapper) {
@@ -1809,83 +1589,6 @@ function renderBoseSuccessPage(storeData) {
         return;
     }
 
-    // 🛡️🐛👑 [إصلاح جذري]: زرار "إرسال فاتورة الطلب على واتساب" - دلوقتي هو
-    // الخطوة الأساسية المطلوبة من العميلة (مش مجرد نسخة احتياطية)، لأن
-    // المحاولة التلقائية في checkout.html اتشالت خالص (كانت بترفضها متصفحات
-    // زي سناب شات/إنستجرام/فيسبوك الداخلية برفض صريح - راجع كومنت
-    // processFinalBoseOrder). بنحط href حقيقي على الرابط مباشرة (مش JS بس)
-    // عشان يشتغل حتى لو المتصفح بيمنع window.open تماماً - أي متصفح بيقدر
-    // يفتح رابط https عادي بضغطة مستخدم حقيقية زي دي.
-    if (resendWhatsappBtn && order.whatsappMessage) {
-        resendWhatsappBtn.style.display = "flex";
-        const phone = order.paymentPhone || "01097238441";
-        const link = typeof window.buildWhatsappLink === "function"
-            ? window.buildWhatsappLink(phone, order.whatsappMessage)
-            : `https://wa.me/2${phone}?text=${encodeURIComponent(order.whatsappMessage)}`;
-        resendWhatsappBtn.setAttribute("href", link);
-        resendWhatsappBtn.setAttribute("target", "_blank");
-        resendWhatsappBtn.setAttribute("rel", "noopener noreferrer");
-
-        // 🆕 [ضغطة واحدة للمتصفحات العادية - سبتمبر 2026]: لو واتساب اتفتح
-        // تلقائيًا فعلاً من صفحة الشيك أوت (راجع processFinalBoseOrder)، الزرار
-        // ده بقى مجرد خيار احتياطي هادي ("مفتحش عندك؟ ابعتيها تاني") مش خطوة
-        // أساسية لسه ناقصة - فبنشيل شكل الإلحاح (النبضة المتحركة) وتذكير الـ8
-        // ثواني، عشان محدش يتلخبط ويحس إنه لسه محتاج يعمل حاجة وهو خلاص خلص.
-        const waAlreadyAutoOpened = (() => {
-            try {
-                const flagged = sessionStorage.getItem("bose_wa_auto_opened") === "1";
-                sessionStorage.removeItem("bose_wa_auto_opened");
-                return flagged;
-            } catch (e) { return false; }
-        })();
-
-        // 🐛✅ [إصلاح - "رسالة التذكير بتظهر بعد ما العميلة بعثت الفاتورة فعلاً"]:
-        // السيناريو اللي كان بيحصل: العميلة تدوس زرار "إرسال فاتورة الطلب على
-        // واتساب"، فيتفتح واتساب (تطبيق أو ويب) في تبويبة/نافذة جديدة، تبعت
-        // الرسالة فعلاً، وبعدين تدوس "رجوع" (زرار الرجوع في الموبايل) عشان
-        // ترجع لموقعنا. المشكلة إن الرجوع ده بيعمل أحيانًا Reload كامل لصفحة
-        // order-success.html (خصوصًا لو المتصفح فتح رابط wa.me/التطبيق بشكل
-        // بيعتبره "تصفح لصفحة تانية" مش مجرد تبويبة موازية) - يعني كل متغيرات
-        // الجافاسكريبت زي bosWhatsappClicked بترجع لقيمتها الافتراضية (false)
-        // تاني من الصفر، فمؤقت الـ8 ثواني بيبدأ من جديد كأن حاجة ما حصلتش،
-        // ويظهر تذكير "متنسيش تبعتي الفاتورة!" للعميلة رغم إنها بعثتها فعلاً
-        // من ثانية. الحل: نسجّل تأكيد الضغطة داخل نفس سجل الطلب في localStorage
-        // (بنفس أسلوب purchaseEventTracked تحت بالظبط) عشان يفضل التأكيد موجود
-        // حتى بعد أي Reload/رجوع/خروج من الموقع تمامًا وليس بس جوه الذاكرة
-        // المؤقتة لتشغيلة الصفحة الحالية.
-        const waAlreadyManuallySent = !!order.whatsappManuallySent;
-
-        if (waAlreadyAutoOpened || waAlreadyManuallySent) {
-            resendWhatsappBtn.classList.add("bose-wa-btn-secondary-fallback");
-            resendWhatsappBtn.innerHTML = waAlreadyManuallySent
-                ? '<i class="fab fa-whatsapp"></i> تم إرسال الفاتورة بنجاح ✅ (اضغطي هنا لإرسالها تاني لو حابة)'
-                : '<i class="fab fa-whatsapp"></i> مفتحش عندك واتساب؟ ابعتي الفاتورة تاني';
-        }
-
-        // 🐛✅ [إصلاح جوهري - المرحلة 2 - شبكة أمان أخيرة]: لو العميلة قعدت
-        // في الصفحة دي 8 ثواني من غير ما تدوس زرار الواتساب (يعني غالباً
-        // مقرتش النص أو ملاحظتش إن فيه خطوة متبقية)، بنفكّرها بتوست واضح
-        // بدل ما نسيبها تسيب الصفحة وهي فاهمة إن الطلب "خلص" فعلياً. الریمایندر
-        // ده بس لو واتساب ما اتفتحش تلقائي ولا اتبعت يدوي قبل كده - لو حصل
-        // أي منهم، مفيش داعي نقلق العميلة.
-        let bosWhatsappClicked = false;
-        resendWhatsappBtn.addEventListener("click", () => {
-            bosWhatsappClicked = true;
-            // 🛡️ تسجيل دائم في نفس سجل الطلب (مش sessionStorage) عشان التأكيد
-            // ده يفضل موجود حتى لو الصفحة اتعمللها Reload كامل بعد الرجوع من
-            // واتساب - راجع التعليق فوق لتفاصيل السيناريو الكامل.
-            order.whatsappManuallySent = true;
-            try { localStorage.setItem("bose_last_order", JSON.stringify(order)); } catch (e) {}
-        }, { once: true });
-        if (!waAlreadyAutoOpened && !waAlreadyManuallySent) {
-            setTimeout(() => {
-                if (!bosWhatsappClicked && typeof window.showBoseGlobalToast === "function") {
-                    window.showBoseGlobalToast("🌸 متنسيش تدوسي زرار إرسال الفاتورة على واتساب عشان نبدأ نجهز طلبك!", { type: "warning" });
-                }
-            }, 8000);
-        }
-    }
-
     // 📊👑 [نمو - Purchase]: أهم حدث تجاري - بيتأكد بس هنا (بعد ما الطلب فعلاً
     // اتحفظ في قاعدة البيانات، مش مجرد نية شراء زي InitiateCheckout). حراسة
     // "purchaseEventTracked" ضرورية لأن bose_last_order بيفضل محفوظ في localStorage
@@ -1902,7 +1605,7 @@ function renderBoseSuccessPage(storeData) {
         try { localStorage.setItem("bose_last_order", JSON.stringify(order)); } catch (e) {}
     }
 
-    if (orderNumLbl) orderNumLbl.textContent = `رقم طلب الفاتورة: #${order.orderNumber || '0000'}`;
+    if (orderNumLbl) orderNumLbl.textContent = "تفاصيل طلبك";
     if (dateLbl) dateLbl.textContent = order.date || '00 / 00 / 2026';
     if (orderIdDisplay) {
         orderIdDisplay.textContent = order.orderId || `#${order.orderNumber || ''}`;
@@ -1965,43 +1668,30 @@ function renderBoseSuccessPage(storeData) {
         }
     }
 
-    // 💵 [عربون/دفع مقدم]: عرض نفس بوكس تعليمات الدفع اللي ظهر في checkout.html
-    // هنا كمان، معبّى من بيانات الطلب المحفوظة فعلياً وقت التأكيد.
-    const depositBox = document.getElementById("bose-deposit-payment-box");
-    if (depositBox && order.depositAmount !== undefined) {
-        depositBox.style.display = "block";
-        const depAmountEl = document.getElementById("bose-deposit-amount");
-        const depLabelEl = document.getElementById("bose-deposit-label");
-        const depRemainingRow = document.getElementById("bose-deposit-remaining-row");
-        const depRemainingEl = document.getElementById("bose-deposit-remaining-amount");
-        const depPhoneEl = document.getElementById("bose-deposit-phone-number");
-        if (depAmountEl) depAmountEl.textContent = order.depositAmount + " EGP";
-        if (depPhoneEl) depPhoneEl.textContent = order.paymentPhone || "01097238441";
-        if (order.remainingAmount > 0) {
-            if (depLabelEl) depLabelEl.textContent = "عربون تأكيد الحجز المطلوب الآن (50%):";
-            if (depRemainingRow) depRemainingRow.style.display = "flex";
-            if (depRemainingEl) depRemainingEl.textContent = order.remainingAmount + " EGP";
-        } else {
-            // 🎁 [نفس فئة إصلاح خانات السياق الخاطئ]: لو الطلب بطاقة هدية رقمية،
-            // "دفع كامل باختيارها" مضلل - الدفع الكامل هنا إجباري (منتج رقمي)
-            // مش اختيار حر زي حالة الاستلام العادي.
-            const fullReason = order.deliveryMethod === "توصيل للمنزل"
-                ? "توصيل"
-                : (order.deliveryMethod === "تسليم رقمي فوري (بطاقة هدية)" ? "بطاقة هدية رقمية" : "دفع كامل باختيارها");
-            if (depLabelEl) depLabelEl.textContent = `المبلغ الكامل المطلوب الآن (${fullReason}):`;
-            if (depRemainingRow) depRemainingRow.style.display = "none";
+    // 💳 [ملخص التحويل]: بعد ما الطلب اتسجل من الموقع، بنوضّح للعميلة المبلغ اللي حوّلته
+    // ورقم العملية اللي كتبته (اللي بنراجعه دلوقتي)، والباقي اللي هيتدفع عند الاستلام لو
+    // كان عربون. بيتخفي لو مفيش مبلغ مطلوب تحويله أصلاً (الطلب اتغطى بكود/بطاقة هدية).
+    const payBox = document.getElementById("bose-payment-summary-box");
+    const paidAmount = parseFloat(order.depositAmount);
+    if (payBox && !isNaN(paidAmount) && paidAmount > 0) {
+        payBox.style.display = "block";
+        const paidLabelEl = document.getElementById("bose-paid-label");
+        const paidAmountEl = document.getElementById("bose-paid-amount");
+        const paidRefRow = document.getElementById("bose-paid-reference-row");
+        const paidRefEl = document.getElementById("bose-paid-reference");
+        const remainingRow = document.getElementById("bose-paid-remaining-row");
+        const remainingEl = document.getElementById("bose-paid-remaining-amount");
+        const remainingVal = parseFloat(order.remainingAmount) || 0;
+
+        if (paidAmountEl) paidAmountEl.textContent = paidAmount.toFixed(2) + " EGP";
+        if (paidLabelEl) paidLabelEl.textContent = remainingVal > 0 ? "عربون التأكيد اللي حوّلتيه (50%):" : "المبلغ اللي حوّلتيه:";
+        if (paidRefRow && paidRefEl && order.paymentReference) {
+            paidRefEl.textContent = order.paymentReference;
+            paidRefRow.style.display = "flex";
         }
-        const copyBtn = document.getElementById("bose-copy-deposit-phone");
-        if (copyBtn) {
-            copyBtn.onclick = () => {
-                const num = depPhoneEl?.textContent?.trim();
-                if (num && navigator.clipboard) {
-                    navigator.clipboard.writeText(num).then(() => {
-                        copyBtn.innerHTML = '<i class="fas fa-check"></i>';
-                        setTimeout(() => { copyBtn.innerHTML = '<i class="far fa-copy"></i>'; }, 1500);
-                    }).catch(() => {});
-                }
-            };
+        if (remainingRow && remainingEl && remainingVal > 0) {
+            remainingEl.textContent = remainingVal.toFixed(2) + " EGP";
+            remainingRow.style.display = "flex";
         }
     }
 

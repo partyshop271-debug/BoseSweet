@@ -542,9 +542,18 @@
         // متضيعش من سجل الطلب المحفوظ فعلياً في قاعدة البيانات (حتى لو ظهرت
         // في فاتورة الواتساب في سطر منفصل)، بندمجها هنا كسطر إضافي واضح جوه
         // نص الملاحظات المرسل لقاعدة البيانات.
-        const combinedNotes = (o.shippingNotes && o.shippingNotes.trim() !== "")
+        let combinedNotes = (o.shippingNotes && o.shippingNotes.trim() !== "")
             ? `${o.notes || "لا توجد ملاحظات إضافية"}\n🚚 ملاحظات التوصيل: ${o.shippingNotes.trim()}`
             : o.notes;
+        // 💳 [الدفع بالتحويل من الموقع]: رقم عملية التحويل (أو آخر 3 أرقام) اللي العميلة كتبته
+        // بيتحفظ كسطر مستقل في ملاحظات الطلب، عشان الأدمن يشوفه في تفاصيل الطلب ويطابقه
+        // مع التحويل قبل ما يدوس "تأكيد استلام المبلغ".
+        if (o.paymentReference && String(o.paymentReference).trim() !== "") {
+            const paymentLine = `🧾 رقم عملية التحويل / آخر 3 أرقام: ${String(o.paymentReference).trim()}`;
+            combinedNotes = (!combinedNotes || combinedNotes === "لا توجد ملاحظات إضافية")
+                ? paymentLine
+                : `${combinedNotes}\n${paymentLine}`;
+        }
         return submitBoseOrderToDatabase({
             customerName: o.customerName,
             phone1: o.phone1,
