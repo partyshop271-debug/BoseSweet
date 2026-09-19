@@ -272,7 +272,7 @@
     </style>
 
     <!-- المحرك العام (يُستدعى أولاً في رأس كل الصفحات لقراءة قاعدة البيانات) -->
-    <script src="js/supabase-client.js?v=2027_production_v43.0" defer></script>
+    <script src="js/supabase-client.js?v=2027_production_v44.0" defer></script>
     <script src="js/push-notifications.js?v=1.0" defer></script>
     <script src="js/favorites-engine.js?v=2026_production_v38.0" defer></script>
     <!-- 🛡️🆕 [إصلاح ترتيب]: loyalty-config.js لازم يتحمّل *قبل* core-engine.js (شوفي
@@ -423,18 +423,18 @@
                         <p id="checkout-season-message-text" style="margin:0; font-size:0.85rem; font-weight:600; color:#111111; line-height:1.7; text-align: right;"></p>
                     </div>
 
+                    <!-- ⏰ [مواعيد الاستلام والتوصيل - واضحة وبخط كبير]: الساعات بتتملى تلقائي من إعدادات
+                         المتجر (boseFillBusinessHoursNotices في cart-engine.js)، والنص الافتراضي هنا 9 الصبح - 10 بالليل. -->
+                    <div id="checkout-business-hours-notice" class="bose-hours-notice" role="note" style="text-align:center; direction:rtl; background: rgba(var(--bose-pink-rgb),0.12); border: 2.5px solid var(--bose-pink, #FF91A4); border-radius: 18px; padding: 18px 14px; margin: 0 0 14px 0;">
+    <div style="font-size:1.05rem; font-weight:800; color:#111111; margin-bottom:6px;"><i class="fas fa-clock" style="color:var(--bose-pink, #FF91A4);"></i> مواعيد الاستلام والتوصيل</div>
+    <div class="bose-hours-range-text" style="font-size:1.75rem; font-weight:900; color:var(--bose-pink, #FF91A4); line-height:1.4; margin-bottom:8px;">من 9:00 الصبح لحد 10:00 بالليل</div>
+    <div style="font-size:1rem; font-weight:800; color:#111111; line-height:1.8;">مفيش استلام ولا توصيل قبل <span class="bose-hours-start-text">9:00 الصبح</span> ولا بعد <span class="bose-hours-end-text">10:00 بالليل</span> - بدون أي استثناء.</div>
+</div>
+
                     <div id="checkout-prep-time-notice" style="display:flex; align-items:flex-start; gap:10px; background: rgba(var(--bose-pink-rgb),0.1); border: 1px solid rgba(var(--bose-pink-rgb),0.4); border-radius: 14px; padding: 14px 16px; margin-bottom: 14px; direction: rtl;">
                         <i class="fas fa-clock" style="color:var(--bose-pink); margin-top:2px; font-size: 1rem;"></i>
                         <div>
                             <p id="checkout-preparation-message" style="margin:0; font-size:0.85rem; font-weight:600; color:#111111; line-height:1.7; text-align: right;"></p>
-                            <!-- 🕐👑 [توضيح واضح قدام العميل مباشرة - نظام "طلب مستعجل"]: قبل
-                                 كده الخيار الجديد (إن العميلة اللي مستعجلة تقدر تسألنا وممكن
-                                 ننفذلها لو ظروفنا سمحت) كان معروف بس لو ضغطت على ⓘ الحقل، أو
-                                 لو اختارت تاريخ غلط وبانلها رسالة خطأ - يعني مش كل حد هيعرف
-                                 بيه من الأساس. دلوقتي سطر ثابت الظهور هنا في نفس البانر
-                                 الرئيسي، من أول ما الصفحة تفتح، من غير ما تلمس أي حاجة.
-                                 مستقل عن prepMsgNode عشان يفضل ظاهر حتى لو النص التاني اتغيّر. -->
-                            <p id="checkout-rush-order-notice" style="margin:6px 0 0; font-size:0.8rem; font-weight:600; color:#B4750F; line-height:1.6; text-align: right;">⏱ مستعجلة أكتر من كده؟ تقدري تختاري ميعاد أقرب من الشريط تحت أو من التقويم - هنتواصل معاكي على طول نتأكد لو نقدر ننفذه، بس مش مضمون.</p>
                         </div>
                     </div>
 
@@ -474,7 +474,6 @@
                                  المحفوظة دايمًا بتاخد "00" دقيقة تلقائيًا (راجع syncHiddenTimeValue تحت). -->
                             <p style="font-size: 0.78rem; color: var(--adm-text-muted, #777); margin: 0 0 8px; font-weight: 600; line-height: 1.6;">
                                 اختاري الساعة اللي تحبي تستلمي طلبك فيها من هنا، وحددي صباحًا أو مساءً.
-                                <br>⏰ مواعيد الاستلام والتوصيل بتكون من الساعة <strong>9 صباحًا</strong> لحد <strong>10 مساءً</strong> بس - اختاري الساعة اللي تناسبك جوه النطاق ده.
                             </p>
                             <div class="bose-time-picker" id="bose-time-picker-visual">
                                 <select id="checkout-time-hour" class="bose-time-picker-select" aria-label="الساعة">
@@ -490,17 +489,12 @@
                         </div>
                     </div>
 
-                    <!-- 🆘 [بديل واتساب + اقتراح أقرب مواعيد]: بيظهر بس لما الموعد
-                         المختار فعليًا مرفوض (قبل مدة التحضير أو اليوم مكتمل) -
-                         بيقترح أقرب 3 مواعيد متاحة فعليًا، وبيدي خيار تواصل مباشر
-                         مع فريق المبيعات عبر واتساب لو حابة تحاول تظبيط ميعاد
-                         استثنائي بدل ما تسيب السلة وتمشي. -->
+                    <!-- 🆘 [اقتراح أقرب مواعيد]: بيظهر بس لما الموعد المختار فعليًا مرفوض
+                         (قبل مدة التحضير الثابتة أو اليوم مكتمل) - بيقترح أقرب 3 أيام
+                         متاحة. مفيش استثناءات ومفيش تواصل واتساب لتظبيط موعد أقرب. -->
                     <div id="checkout-schedule-alert" style="display:none; margin-top:10px; background: rgba(var(--bose-pink-rgb),0.08); border: 1px dashed var(--bose-pink, var(--bose-pink)); border-radius: 14px; padding: 14px 16px; direction: rtl;">
                         <p id="checkout-schedule-alert-text" style="margin:0 0 10px; font-size:0.92rem; font-weight:700; color:#111111; line-height:1.7;"></p>
                         <div id="checkout-schedule-suggestions" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px;"></div>
-                        <a id="checkout-schedule-whatsapp-btn" href="#" target="_blank" rel="noopener noreferrer" style="display:inline-flex; align-items:center; gap:8px; background:#25D366; color:#fff; font-weight:700; font-size:0.85rem; padding:10px 16px; border-radius:12px; text-decoration:none;">
-                            <i class="fab fa-whatsapp"></i> تواصلي معانا لظبط الميعاد المناسب ليكي
-                        </a>
                     </div>
                     </div><!-- /#bose-fulfillment-and-schedule-section -->
 
@@ -509,7 +503,7 @@
                     <div id="checkout-mixed-order-warning-banner" style="display:none; align-items:flex-start; gap:10px; background: rgba(var(--bose-pink-rgb),0.1); border: 1px solid rgba(var(--bose-pink-rgb),0.4); border-radius: 14px; padding: 14px 16px; margin-top: 4px; direction: rtl;">
                         <i class="fas fa-triangle-exclamation" style="color:var(--bose-pink); margin-top:2px;"></i>
                         <p style="margin:0; font-size:0.85rem; font-weight:600; color:#111111; line-height:1.6;">
-                            طلبك فيه صنف تورت أو ورد مخصص من المحاكي، وده محتاج وقت تحضير أطول (أسبوع كامل تقريبًا). المنتجات العادية الموجودة معاه في نفس الطلب هتتسلّم <strong>مع</strong> المخصص في نفس الموعد المتأخر، مش هتوصلك لوحدها بدري.
+                            طلبك فيه صنف تورت أو ورد مخصص من المحاكي، وده محتاج وقت تحضير أطول (<strong id="checkout-custom-lead-label">3 أيام</strong>). المنتجات العادية الموجودة معاه في نفس الطلب هتتسلّم <strong>مع</strong> المخصص في نفس الموعد المتأخر، مش هتوصلك لوحدها بدري.
                         </p>
                     </div>
 
@@ -564,7 +558,7 @@
                         <span id="bose-deposit-label" style="font-weight: 700; color: #111111; font-size: 0.95rem;">المبلغ المطلوب دفعه الآن لتأكيد الحجز:
                             <button type="button" class="bose-info-badge-inline"
                                     data-bose-info-title="ليه لازم أحوّل مبلغ الآن؟"
-                                    data-bose-info-text="التحويل ده بيأكد حجز طلبك ويخلينا نبدأ التحضير فوراً. حوّلي المبلغ الموضح تحت كاش أو InstaPay على رقمنا، وابعتي لقطة شاشة التحويل على واتساب بعد ما تدوسي زرار الحجز - وطلبك يتأكد فور ما نستلم إثبات التحويل.">ⓘ</button>
+                                    data-bose-info-text="حوّلي المبلغ الموضح تحت كاش أو InstaPay على رقمنا، واكتبي رقم العملية (أو آخر 3 أرقام من رقمك اللي حوّلتي منه) في الخانة اللي تحت. طلبك بيتسجل فورًا، وبنراجع التحويل ونتواصل معاكي لتأكيده.">ⓘ</button>
                         </span>
                         <span id="bose-deposit-amount" style="font-weight: 800; color: var(--bose-pink); font-size: 1.15rem;">0 EGP</span>
                     </div>
@@ -578,7 +572,15 @@
                             <span id="bose-deposit-phone-number">—</span>
                             <button type="button" id="bose-copy-deposit-phone" title="نسخ الرقم" style="border: none; background: rgba(var(--bose-pink-rgb),0.15); color: var(--bose-pink); border-radius: 6px; padding: 2px 8px; cursor: pointer; font-size: 0.8rem;"><i class="far fa-copy"></i></button>
                         </span>
-                        <br>ثم ابعتي لقطة شاشة التحويل على واتساب بعد إتمام الحجز وهنأكد طلبك فوراً.
+                    </div>
+                    <!-- 💳 [رقم عملية التحويل - إلزامي]: العميلة بتحوّل من تطبيق البنك/المحفظة وبتكتب هنا
+                         رقم العملية أو آخر 3 أرقام من الرقم اللي حوّلت منه، والطلب بيتسجل في الموقع
+                         فورًا (بانتظار مراجعة التحويل) من غير أي خطوة واتساب. -->
+                    <div class="input-group-node" style="margin-top: 14px;">
+                        <label for="checkout-payment-reference">رقم العملية أو آخر 3 أرقام من رقمك اللي حوّلتي منه <span class="required-indicator">*</span></label>
+                        <input type="text" id="checkout-payment-reference" class="bose-field-capture" maxlength="40" autocomplete="off" placeholder="مثال: 482 أو رقم العملية" required aria-describedby="err-checkout-payment-reference">
+                        <span class="bose-field-error-msg" id="err-checkout-payment-reference"><i class="fa-solid fa-circle-exclamation"></i><span></span></span>
+                        <p style="margin: 8px 0 0; font-size: 0.78rem; color: #111111; opacity: 0.7; line-height: 1.7;">طلبك هيتسجل فورًا وهيبقى "بانتظار مراجعة التحويل" لحد ما نتأكد من وصول المبلغ، وبعدها هنتواصل معاكي لتأكيده.</p>
                     </div>
                 </div>
 
@@ -587,15 +589,9 @@
                     <i class="fas fa-lock"></i> تأكيد الطلب
                 </button>
                 <p style="font-size: 0.82rem; font-weight: 700; color: var(--bose-pink); text-align: center; margin: 10px 0 0;">
-                    ⚠️ <!-- 🐛✅ [إصلاح حرج - تناقض نص/سلوك فعلي]: النص القديم هنا كان بيقول
-                    "هيفتحلك واتساب تلقائي" رغم إن السلوك الفعلي (راجع كومنت processFinalBoseOrder
-                    في cart-engine.js) بقى إعادة توجيه لصفحة order-success.html وفيها زرار
-                    واضح لازم تدوسيه هي بنفسها - العميلة كانت بتقرا "هيفتح تلقائي"، تدوس تأكيد،
-                    توصل لصفحة عنوانها "تم تسجيل طلبك بنجاح!" فتحس إنها خلصت فعلاً وتسيب الصفحة
-                    من غير ما تدوس زرار الواتساب، فالفاتورة الفعلية عمرها ما توصلنا. النص دلوقتي
-                    بيوصف اللي هيحصل فعلياً بالظبط، مش اللي كان بيحصل قديماً. -->
-                    بعد التأكيد هتوصلك صفحة فيها زرار واضح "إرسال الفاتورة على واتساب" - <strong>لازم تدوسيه بنفسك</strong> وتدوسي زرار الإرسال (▶) جوه واتساب كمان، عشان الطلب يوصلنا فعلاً.
+                    بعد التأكيد طلبك بيتسجل عندنا فورًا، وبنراجع التحويل ونتواصل معاكي لتأكيده.
                 </p>
+                <div id="checkout-submit-error" role="alert" style="display:none; margin-top:12px; padding:12px 14px; border-radius:12px; background:#FDECEC; border:1px solid #F5C2C2; color:#B3261E; font-size:0.88rem; font-weight:700; line-height:1.7; text-align:right;"></div>
                 
                 <a href="menu.html" class="bose-continue-shopping-anchor" style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 15px; text-align: center; font-weight: 600; font-size: 0.92rem; color: rgba(17, 17, 17, 0.5); text-decoration: none;">
                     <i class="fas fa-arrow-right"></i> العودة للمنيو الشامل واستعراض الأصناف
@@ -608,7 +604,7 @@
     <div id="bose-footer-injector"></div>
 
     <!-- ⚡ استدعاء محرك السلة وإتمام عمليات الحساب والدفع والربط اللوجستي المركزي (js/cart-engine.js) ⚡ -->
-    <script src="js/cart-engine.js?v=2029_production_v48.1" defer></script>
+    <script src="js/cart-engine.js?v=2029_production_v49.0" defer></script>
 
     <!-- 🔮 سكريبت التزامن الدفاعي المحلي لربط وحقن الواجهات وضمان فك شلل حقول الصفحة دون تعارض خارجي 🔮 -->
     <script>
@@ -742,17 +738,9 @@
                 cartArr = [];
             }
 
-            // 🛡️👑 [تحديث السياسة - نظام "طلب مستعجل" الجديد]: قبل كده كان
-            // الحقل بيتقفل تمامًا (min = أول موعد رسمي متاح) فمينفعش تختاري
-            // تاريخ أقرب من مدة التحضير خالص - حتى لو كنتِ مستعجلة وعايزة
-            // تسألي لو ظروفنا بتسمح. دلوقتي السياسة اتغيّرت: أي تاريخ من
-            // النهاردة فصاعدًا يفضل قابل للاختيار (منطقيًا مينفعش تختاري
-            // تاريخ فات)، ولو اخترتِ يوم أقرب من مدة التحضير الرسمية، هيظهرلك
-            // تنبيه واضح إنه مش مضمون وزرار تتواصلي بيه معانا على طول
-            // (المنطق ده موجود فعلاً في updateAlert() تحت - مبيتأثرش بالتغيير
-            // ده، كان شغال صح من قبل). الحد الأدنى بقى "النهاردة" بس - بسيط
-            // وثابت من غير أي انتظار لبيانات أو حسابات، فمفيش أي فرصة تانية
-            // لثغرة السباق القديمة (اختيار تاريخ فات فعلاً) من الأساس.
+            // 🛡️ [حد أدنى فوري وآمن]: من أول لحظة (قبل ما بيانات المتجر تتحمّل) بنمنع اختيار
+            // تاريخ فات. الحد الأدنى الحقيقي (بعد مدة التحضير الثابتة) بيتحط في
+            // initializeLocalConfig أول ما إعدادات المواعيد توصل.
             (function setImmediateSafeDateMinimum() {
                 const dateInputEarly = document.getElementById("checkout-delivery-date");
                 if (!dateInputEarly) return;
@@ -797,7 +785,6 @@
                 const alertBox = document.getElementById("checkout-schedule-alert");
                 const alertText = document.getElementById("checkout-schedule-alert-text");
                 const suggestionsBox = document.getElementById("checkout-schedule-suggestions");
-                const waBtn = document.getElementById("checkout-schedule-whatsapp-btn");
                 const dateInputEl = document.getElementById("checkout-delivery-date");
                 const timeInputEl = document.getElementById("checkout-delivery-time");
                 if (!chipWrapper || !chipStrip || !dateInputEl) return;
@@ -817,6 +804,13 @@
                 rangeEnd.setDate(rangeEnd.getDate() + 45);
 
                 const rules = siteData.orderRules || {};
+                // ⏱️ مدة التحضير الثابتة (بالعربي) - بتتقرا من نفس إعدادات المتجر اللي السيرفر بيفرضها
+                const leadHours = hasCustomItem
+                    ? (Number(rules.minPreparationTimeHoursCustom) || 72)
+                    : (Number(rules.minPreparationTimeHours) || 24);
+                const leadLabel = typeof window.formatBoseLeadTimeAr === "function"
+                    ? window.formatBoseLeadTimeAr(leadHours)
+                    : `${leadHours} ساعة`;
                 const maxOrdersPerDay = Number(rules.maxOrdersPerDay) || 0;
                 const maxCustomOrdersPerDay = Number(rules.maxCustomOrdersPerDay) || 0;
                 const capacityFeatureOn = maxOrdersPerDay > 0 || maxCustomOrdersPerDay > 0;
@@ -857,91 +851,6 @@
                     dateInputEl.scrollIntoView({ behavior: "smooth", block: "center" });
                 }
 
-                function buildWhatsappFallbackLink() {
-                    const phone = siteData.social?.whatsapp || "201097238441";
-                    const desiredDate = dateInputEl.value || "—";
-                    const desiredTime = timeInputEl ? (timeInputEl.value || "—") : "—";
-
-                    // 🆕 [إصلاح]: كانت الرسالة هنا بتاخد بس item.title، من غير flavorName
-                    // ولا السعر - فلو الاسم عام (زي "مثلث") الفريق مش عارف الطعم
-                    // بالظبط غير بالرجوع للعميلة تاني. دلوقتي كل صنف بيتكتب بالطعم
-                    // والسعر الكامل بتاعه بدل الاسم لوحده.
-                    const itemsSummary = Array.isArray(cartArr) && cartArr.length
-                        ? cartArr.map(it => {
-                            const namePart = it.flavorName && it.flavorName !== it.title
-                                ? `${it.title || ""} - ${it.flavorName}`
-                                : (it.title || "صنف");
-                            const priceEach = parseFloat(it.finalPrice) || 0;
-                            return `${namePart} (×${it.quantity || 1}, ${priceEach} EGP للقطعة)`;
-                        }).join("، ")
-                        : "طلبي";
-
-                    // 🆕 [إصلاح]: نجيب بيانات العميلة والعنوان والملاحظات من نفس حقول
-                    // الفورم مباشرة (لو اتكتبت لحد دلوقتي) عشان الفريق يقدر يتصرف
-                    // من غير ما يضطر يسأل من الأول - قبل كده الرسالة مكنش فيها أي
-                    // حاجة عن هوية العميلة أو وسيلة التواصل بيها.
-                    const nameVal = (document.getElementById("checkout-customer-name")?.value || "").trim();
-                    const phone1Val = (document.getElementById("checkout-customer-phone")?.value || "").trim();
-                    const addressVal = (document.getElementById("checkout-address-details")?.value || "").trim();
-                    const zoneEl = document.getElementById("checkout-zone-select");
-                    const zoneVal = zoneEl && zoneEl.selectedIndex > 0 ? zoneEl.options[zoneEl.selectedIndex].textContent.trim() : "";
-                    const totalVal = (document.getElementById("summary-grand-total")?.textContent || "").trim();
-
-                    // 🐛👑 [إصلاح جذري - رسالة ناقصة جداً مقارنة برسالة الطلب العادية]:
-                    // كانت الرسالة دي (بديل واتساب لمواعيد غير متاحة) بتحتوي بس على
-                    // الصنف والاسم والتليفون والمنطقة والعنوان والإجمالي - من غير أي
-                    // ذكر لوسيلة الاستلام (توصيل/استلام)، ولا ملاحظات التوصيل، ولا
-                    // صور المنتجات المرفوعة (تصميم تورتة/ورد مرجعي مثلاً) - كل دي
-                    // موجودة وواضحة في فاتورة الواتساب العادية (buildBoseFormattedWhatsappInvoice
-                    // في cart-engine.js) لكن غايبة تماماً هنا، فالمبيعات كانوا بيردوا
-                    // على عميلة برسالة ناقصة جداً من غير ما يعرفوا هيشحنوا ولا هتيجي
-                    // تستلم، ولا يشوفوا شكل المنتج المطلوب. دلوقتي بنبني نفس الحقول
-                    // بالظبط (بنفس القيم والتسميات) من بيانات الفورم الحالية.
-                    const pickupBtnEl = document.getElementById("method-pickup");
-                    const fulfillmentVal = pickupBtnEl && pickupBtnEl.classList.contains("active-option")
-                        ? "استلام من الفرع" : "توصيل للمنزل";
-                    const orderNotesVal = (document.getElementById("checkout-order-notes-textarea")?.value || "").trim();
-
-                    // نفس منطق اكتشاف صور المنتجات المرجعية المستخدم بالظبط في فاتورة
-                    // الواتساب العادية - صور طباعة/تصميم التورت المخصص، وأي صورة مرجعية
-                    // مرفوعة لصنف تاني (مش لوجو الموقع الافتراضي).
-                    const itemImageLines = [];
-                    if (Array.isArray(cartArr)) {
-                        cartArr.forEach((it) => {
-                            const isCakeBespoke = it.type === "custom-cake" || it.type === "mini-cake" || it.productSlug === "toort-custom-master" || it.productSlug === "mini-cake-two-person";
-                            const cd = it.customDetails || {};
-                            if (isCakeBespoke) {
-                                if (cd.printImageUrl) itemImageLines.push(`🖨️ صورة الطباعة على ${it.title || "التورتة"}: ${cd.printImageUrl}`);
-                                if (cd.replicaImageUrl) itemImageLines.push(`🎨 صورة تصميم ${it.title || "التورتة"} المرجعية: ${cd.replicaImageUrl}`);
-                            } else {
-                                if (it.image && typeof it.image === "string" && it.image.startsWith("http") && !it.image.includes("logo_igggsb")) {
-                                    itemImageLines.push(`🖼️ صورة ${it.title || "الصنف"}: ${it.image}`);
-                                }
-                                if (Array.isArray(it.referenceImages)) {
-                                    it.referenceImages.forEach((u) => { if (u && typeof u === "string" && u.startsWith("http")) itemImageLines.push(`🖼️ صورة مرجعية لـ ${it.title || "الصنف"}: ${u}`); });
-                                }
-                            }
-                        });
-                    }
-
-                    const lines = [
-                        `أهلاً، عايزة أعرف تقدروا تظبطولي طلبي (${itemsSummary}) في يوم ${desiredDate} الساعة ${desiredTime}؟ ولو مش هينفع، ياريت تقترحوا عليّا ميعاد قريب مناسب.`
-                    ];
-                    if (nameVal) lines.push(`👤 الاسم: ${nameVal}`);
-                    if (phone1Val) lines.push(`📞 التليفون: ${phone1Val}`);
-                    lines.push(`🚗 مسار الاستلام: ${fulfillmentVal}`);
-                    if (fulfillmentVal === "توصيل للمنزل" && zoneVal) lines.push(`📍 المنطقة: ${zoneVal}`);
-                    if (fulfillmentVal === "توصيل للمنزل" && addressVal) lines.push(`🏠 العنوان بالتفصيل: ${addressVal}`);
-                    if (itemImageLines.length) lines.push(...itemImageLines);
-                    if (orderNotesVal) lines.push(`📝 ملاحظات: ${orderNotesVal}`);
-                    if (totalVal) lines.push(`💰 إجمالي الطلب: ${totalVal}`);
-
-                    const msg = lines.join("\n");
-                    return typeof window.buildWhatsappLink === "function"
-                        ? window.buildWhatsappLink(phone, msg)
-                        : `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
-                }
-
                 function renderSuggestionChips(container, dates, onPick) {
                     container.innerHTML = "";
                     dates.forEach(({ dateStr, dateObj }) => {
@@ -957,7 +866,23 @@
                 function updateAlert() {
                     const currentDate = dateInputEl.value;
                     const currentTime = timeInputEl ? timeInputEl.value : "";
-                    if (!alertBox || !currentDate) { if (alertBox) alertBox.style.display = "none"; return; }
+                    if (!alertBox) return;
+
+                    // ⏰ [ساعات الاستلام والتوصيل - فورًا مش عند "تأكيد الطلب" بس]: اختيار الساعة
+                    // بيقبل 1-12 صباحًا/مساءً، فلو العميلة اختارت ساعة برة النطاق بنقولها في نفس
+                    // اللحظة، بنفس الأرقام اللي بيفحصها الفحص الملزم (cart-engine.js).
+                    const bhStartStr = rules.businessHoursStart || "09:00";
+                    const bhEndStr = rules.businessHoursEnd || "22:00";
+                    if (currentTime && (currentTime < bhStartStr || currentTime > bhEndStr)) {
+                        const spokenStart = typeof boseFormatSpokenHour === "function" ? boseFormatSpokenHour(bhStartStr) : bhStartStr;
+                        const spokenEnd = typeof boseFormatSpokenHour === "function" ? boseFormatSpokenHour(bhEndStr) : bhEndStr;
+                        alertBox.style.display = "block";
+                        alertText.textContent = `الساعة دي برة مواعيد الاستلام والتوصيل. المواعيد من ${spokenStart} لحد ${spokenEnd} بس - مفيش قبل كده ولا بعد كده. اختاري ساعة جوه النطاق ده.`;
+                        suggestionsBox.innerHTML = "";
+                        return;
+                    }
+
+                    if (!currentDate) { alertBox.style.display = "none"; return; }
 
                     const leadOk = currentTime
                         ? (typeof window.validateBoseDeliverySchedule !== "function" || window.validateBoseDeliverySchedule(currentDate, currentTime, hasCustomItem))
@@ -971,48 +896,36 @@
 
                     alertBox.style.display = "block";
                     alertText.textContent = !capacityOk
-                        ? "للأسف اليوم ده وصل لأقصى عدد طلبات نقدر نجهزه بجودة عالية. تقدري تختاري يوم من الاقتراحات دي، أو تتواصلي معانا مباشرة نحاول نظبطلك الميعاد ده تحديدًا."
-                        : "الميعاد ده أقرب من مدة التحضير اللي محتاجينها. تقدري تختاري يوم من الاقتراحات دي، أو تتواصلي معانا مباشرة لو الميعاد ده مهم جدًا بالنسبالك.";
+                        ? "للأسف اليوم ده وصل لأقصى عدد طلبات نقدر نجهزه بجودة عالية. اختاري يوم من الاقتراحات دي."
+                        : `مواعيدنا ثابتة لكل العملاء: أقرب موعد لطلبك بعد ${leadLabel} من دلوقتي. اختاري يوم أو ساعة بعد كده، أو واحد من الاقتراحات دي.`;
 
                     renderSuggestionChips(suggestionsBox, findNearestAvailableDates(3), selectDate);
-                    if (waBtn) waBtn.href = buildWhatsappFallbackLink();
                 }
 
-                // 🕐👑 [تحديث السياسة - نظام "طلب مستعجل"]: الشريط كان بيبدأ من
-                // minDateObj بس (أول يوم رسمي مضمون) فمكانش فيه أي طريقة تضغطي
-                // بيها على يوم أقرب - لازم تكتبيه يدوي في حقل التاريخ. دلوقتي
-                // الشريط بيبدأ من النهاردة، وأيام "الطلب المستعجل" (قبل الموعد
-                // الرسمي) ليها شكل مختلف واضح (لون كهرماني + أيقونة ⏱) يوضح إنها
-                // "تحتاج تأكيد منا" مش "متاحة أوتوماتيك" زي باقي الأيام.
+                // 📅 [شريط الأيام السريع]: بيبدأ من أول موعد مسموح فعليًا (بعد مدة التحضير الثابتة).
+                // مفيش أيام أقرب من كده ولا "طلب مستعجل" - اليوم المكتمل بس هو اللي بيتقفل.
                 chipStrip.innerHTML = "";
-                const todayForChips = new Date();
-                todayForChips.setHours(0, 0, 0, 0);
-                const rushDaysCount = Math.max(0, Math.round((minDateObj - todayForChips) / 86400000));
-                const cursor = new Date(todayForChips);
-                for (let i = 0; i < rushDaysCount + 14; i++) {
+                const cursor = new Date(minDateObj);
+                cursor.setHours(0, 0, 0, 0);
+                for (let i = 0; i < 14; i++) {
                     const dStr = toDateStr(cursor);
                     const full = isDayFull(dStr);
-                    const isRushDay = cursor < minDateObj;
                     const chip = document.createElement("button");
                     chip.type = "button";
                     chip.dataset.dateStr = dStr;
                     let borderColor = "var(--bose-pink,var(--bose-pink))", bgColor = "#fff", textColor = "var(--bose-pink,var(--bose-pink))";
                     if (full) { borderColor = "#ddd"; bgColor = "#f5f5f5"; textColor = "#aaa"; }
-                    else if (isRushDay) { borderColor = "#E8A33D"; bgColor = "#FFF7EA"; textColor = "#B4750F"; }
-                    // 🐛✅ [إصلاح - وضوح "أنهي يوم هو اللي مختار فعلاً؟"]: بنسجّل ألوان
-                    // الحالة الطبيعية جوه data-* عشان دالة updateChipSelectionUI تحت
-                    // تقدر ترجّعها بسهولة لما اليوم ده "يتلغى" اختياره (العميلة اختارت
-                    // يوم تاني بدله)، من غير ما نكرر منطق تحديد الألوان تاني.
+                    // ألوان الحالة الطبيعية بتتسجل في data-* عشان updateChipSelectionUI تقدر ترجّعها
+                    // لما اليوم ده يتلغى اختياره (العميلة اختارت يوم تاني بدله).
                     chip.dataset.borderColor = borderColor;
                     chip.dataset.bgColor = bgColor;
                     chip.dataset.textColor = textColor;
                     chip.style.cssText = `flex:0 0 auto; min-width:56px; text-align:center; border-radius:12px; padding:10px 8px; font-size:0.85rem; font-weight:700; cursor:${full ? "not-allowed" : "pointer"}; border:1.5px solid ${borderColor}; background:${bgColor}; color:${textColor}; text-decoration:${full ? "line-through" : "none"}; transition: all 0.15s ease; position:relative;`;
-                    chip.innerHTML = `<span style="display:block;">${isRushDay && !full ? "⏱ " : ""}${weekdayShort(cursor)}</span><span style="display:block; font-size:1.1rem;">${cursor.getDate()}</span>`;
+                    chip.innerHTML = `<span style="display:block;">${weekdayShort(cursor)}</span><span style="display:block; font-size:1.1rem;">${cursor.getDate()}</span>`;
                     if (full) {
                         chip.disabled = true;
-                        chip.title = "اليوم ده مكتمل، اختاري يوم تاني أو تواصلي معانا";
+                        chip.title = "اليوم ده مكتمل، اختاري يوم تاني";
                     } else {
-                        if (isRushDay) chip.title = "الموعد ده أقرب من مدة التحضير المعتادة - مش مضمون، هنتواصل معاكي نتأكد لو نقدر ننفذه";
                         chip.addEventListener("click", () => selectDate(dStr));
                     }
                     chipStrip.appendChild(chip);
@@ -1075,6 +988,11 @@
                 }
 
                 const prepMsgNode = document.getElementById("checkout-preparation-message");
+                // ⏱️ مواعيد ثابتة لكل العملاء: الأرقام من إعدادات المتجر (نفس اللي السيرفر بيفرضه)،
+                // والنصوص بتتبني منها مباشرة بدل رسائل مكتوبة يدوي قابلة إنها تتخالف مع الأرقام.
+                const regularLeadHours = Number(siteData.orderRules?.minPreparationTimeHours) || 24;
+                const customLeadHours = Number(siteData.orderRules?.minPreparationTimeHoursCustom) || 72;
+                const fmtLeadAr = (h) => (typeof window.formatBoseLeadTimeAr === "function" ? window.formatBoseLeadTimeAr(h) : `${h} ساعة`);
                 const deliveryTimeInputEl = document.getElementById("checkout-delivery-time");
 
                 // 🛡️🕘 [تفعيل حد ساعات الاستلام فعليًا]: قبل كده كان حقل الساعة
@@ -1120,10 +1038,9 @@
                         let h12 = h % 12; if (h12 === 0) h12 = 12;
                         return m === 0 ? `${h12} ${period}` : `${h12}:${String(m).padStart(2, "0")} ${period}`;
                     };
-                    const minPrepHoursForTooltip = siteData.orderRules?.minPreparationTimeHours || 48;
                     dateInfoBadge.setAttribute("data-bose-info-title", "ليه مش كل التواريخ متاحة؟");
                     dateInfoBadge.setAttribute("data-bose-info-text",
-                        `الاستلام والتوصيل بيكونوا بس من الساعة ${fmtHour(bhStart)} لحد ${fmtHour(bhEnd)}، فأي وقت خارج النطاق ده مش هيتقبل. وأقرب موعد مضمون ليكي هو بعد مرور مدة التحضير الموضحة فوق (${minPrepHoursForTooltip} ساعة للمنتجات العادية) - بس لو الميعاد أقرب من كده مهم لك، تقدري تختاريه برضه وهنتواصل معاكي نتأكد لو نقدر ننفذه.`);
+                        `الاستلام والتوصيل بيكونوا بس من الساعة ${fmtHour(bhStart)} لحد ${fmtHour(bhEnd)}، فأي وقت خارج النطاق ده مش هيتقبل. ومواعيدنا ثابتة لكل العملاء: أقرب موعد للمنتجات العادية بعد ${fmtLeadAr(regularLeadHours)} من وقت تأكيد الطلب، وللتورت والورد المخصص بعد ${fmtLeadAr(customLeadHours)}.`);
                 }
 
                 // 🛡️ [إصلاح - المرحلة 2]: قبل كده كان حامي التاريخ بيفرض بكرة (24 ساعة)
@@ -1142,15 +1059,17 @@
                     ? window.boseCartHasCustomItem(cartArrForDate)
                     : false;
                 const leadDays = hasCustomItemForDate
-                    ? Math.ceil((siteData.orderRules?.minPreparationTimeHoursCustom || 168) / 24)
-                    : Math.ceil((siteData.orderRules?.minPreparationTimeHours || 48) / 24);
+                    ? Math.ceil(customLeadHours / 24)
+                    : Math.ceil(regularLeadHours / 24);
 
                 // سحب نص حارس الوقت الصحيح المطابق لنوع الطلب لتعريف العميل برحلة الإتقان الصادقة للبراند
                 if (prepMsgNode) {
                     prepMsgNode.textContent = hasCustomItemForDate
-                        ? (siteData.orderRules?.customPreparationTimeMessage || "بسبب ضغط الطلبات علينا حالياً، التورت والورد المخصص عبر المحاكي بيحتاج حجز قبل موعد التسليم بأسبوع كامل (7 أيام) على الأقل، عشان نقدر نجهزه بهدوء ونتأكد إن كل تفصيلة فيه (المقاس والشكل والألوان) طلعت مظبوطة زي ما اتفقنا - الوقت ده لمصلحتك عشان طلبك ياخد حقه كامل.")
-                        : (siteData.orderRules?.preparationTimeMessage || "بسبب ضغط الطلبات علينا حالياً، محتاجين وقت كافٍ (على الأقل 48 ساعة من وقت تأكيد الطلب) عشان نجهز طلبك بأفضل جودة ممكنة ونتأكد إن كل حاجة فيه صح - الوقت ده لمصلحتك عشان طلبك ياخد حقه الكامل في التحضير.");
+                        ? `مواعيدنا ثابتة لكل العملاء: التورت والورد المخصص من المحاكي بيحتاج تحضير أطول، فأقرب موعد استلام أو توصيل ليه بعد ${fmtLeadAr(customLeadHours)} من وقت تأكيد الطلب.`
+                        : `مواعيدنا ثابتة لكل العملاء: أقرب موعد استلام أو توصيل للمنتجات العادية بعد ${fmtLeadAr(regularLeadHours)} من وقت تأكيد الطلب، عشان نجهز طلبك طازة وبأفضل جودة.`;
                 }
+                const customLeadLabelEl = document.getElementById("checkout-custom-lead-label");
+                if (customLeadLabelEl) customLeadLabelEl.textContent = fmtLeadAr(customLeadHours);
 
                 // ⚠️ [عزل الطلبات المختلطة]: إظهار تنبيه المزج بين المخصص والعادي هنا كمان
                 // (مش بس في صفحة السلة) عشان العميلة تشوفه في آخر لحظة قبل تأكيد الطلب.
@@ -1168,22 +1087,16 @@
                 const minDateObj = new Date();
                 minDateObj.setDate(minDateObj.getDate() + leadDays);
                 if (datePicker) {
-                    // 🛡️👑 [تحديث السياسة - نظام "طلب مستعجل"]: قبل كده كان .min
-                    // بيتحط على minDateObj (يقفل أي تاريخ أقرب من مدة التحضير
-                    // تمامًا من الحقل نفسه). دلوقتي - بعد إتاحة خيار "اسألينا لو
-                    // الميعاد يهمك" - بنسيب .min على "النهاردة" بس (الاحتياطي
-                    // الفوري اللي اتحط فوق من أول لحظة)، فأي تاريخ من النهاردة
-                    // فصاعدًا يفضل قابل للاختيار في التقويم نفسه، والتنبيه الناعم
-                    // (updateAlert تحت) هو اللي بيوضح لو الموعد ده محتاج تأكيد
-                    // يدوي، مش الحقل نفسه بيرفضه من الأساس.
-                    const nowStr = (() => { const n = new Date(); return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`; })();
-                    if (!datePicker.min || datePicker.min < nowStr) datePicker.min = nowStr;
-                    // خط دفاع أخير: لو قيمة موجودة أقدم من النهاردة فعلاً (حالة
-                    // نادرة جدًا)، امسحيها - تاريخ فات مينفعش يتسلّم فيه أي حاجة.
-                    if (datePicker.value && datePicker.value < nowStr) {
+                    // 🕐 [مواعيد ثابتة - بدون استثناء]: أقرب تاريخ قابل للاختيار هو أول موعد بعد مدة
+                    // التحضير (بكرة للعادي، بعد 3 أيام للتورت/الورد المخصص). أي تاريخ أقرب من كده
+                    // مقفول في التقويم نفسه، ولو فيه قيمة قديمة أقرب منه بتتمسح بتنبيه واضح.
+                    const toIsoDate = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+                    const minDateStr = toIsoDate(minDateObj);
+                    datePicker.min = minDateStr;
+                    if (datePicker.value && datePicker.value < minDateStr) {
                         datePicker.value = "";
                         if (typeof window.showBoseGlobalToast === "function") {
-                            window.showBoseGlobalToast("الموعد اللي كان محدد فات - اختاري ميعاد تاني من فضلك.", { type: "warning" });
+                            window.showBoseGlobalToast("الموعد اللي كان محدد أقرب من مدة التحضير - اختاري ميعاد بعد " + fmtLeadAr(hasCustomItemForDate ? customLeadHours : regularLeadHours) + " من دلوقتي.", { type: "warning" });
                         }
                     }
                 }

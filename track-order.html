@@ -67,6 +67,7 @@
         .track-error-msg { background: rgba(var(--bose-pink-rgb), 0.08); color: var(--bose-pink); border: 1px solid rgba(var(--bose-pink-rgb), 0.3); border-radius: 12px; padding: 14px 16px; font-size: 0.92rem; text-align: center; }
 
         .track-status-pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 18px; border-radius: 30px; font-weight: 800; font-size: 0.95rem; margin-bottom: 18px; }
+        .status-awaiting_deposit, .status-confirmed { background: rgba(var(--bose-pink-rgb), 0.08); color: var(--bose-pink); }
         .status-pending { background: rgba(var(--bose-pink-rgb), 0.08); color: var(--bose-pink); }
         .status-processing, .status-preparing { background: rgba(var(--bose-pink-rgb), 0.08); color: var(--bose-pink); }
         .status-ready { background: rgba(var(--bose-pink-rgb), 0.08); color: var(--bose-pink); }
@@ -220,6 +221,8 @@
     <script>
         (function () {
             const STATUS_LABELS = {
+                awaiting_deposit: "بانتظار مراجعة التحويل",
+                confirmed: "تم تأكيد طلبك",
                 pending: "بانتظار المراجعة",
                 processing: "جاري التحضير",
                 preparing: "جاري التحضير",
@@ -230,6 +233,16 @@
                 completed: "تم التسليم",
                 cancelled: "تم إلغاء الطلب",
             };
+
+            // ⏰ الميعاد بصيغة 12 ساعة واضحة ("2:00 مساءً") بدل 24 ساعة ("14:00")
+            function formatScheduledTime(time24) {
+                const parts = String(time24 || "").split(":");
+                const h = parseInt(parts[0], 10);
+                const m = parseInt(parts[1], 10);
+                if (isNaN(h) || isNaN(m)) return time24 || "-";
+                const h12 = h % 12 === 0 ? 12 : h % 12;
+                return h12 + ":" + String(m).padStart(2, "0") + " " + (h < 12 ? "صباحاً" : "مساءً");
+            }
 
             function statusLabel(status) {
                 return STATUS_LABELS[status] || status || "غير محدد";
@@ -247,6 +260,8 @@
 
             function statusToStepIndex(status) {
                 switch (status) {
+                    case "awaiting_deposit":
+                    case "confirmed":
                     case "pending": return 0;
                     case "processing":
                     case "preparing": return 1;
@@ -332,7 +347,7 @@
                         <div><span class="meta-label">رقم الطلب</span><span class="meta-value bose-ltr-nums">${window.escapeBoseHTML(row.order_number || '')}</span></div>
                         <div><span class="meta-label">طريقة الاستلام</span><span class="meta-value">${row.delivery_method === 'pickup' ? 'استلام من الفرع' : 'توصيل للمنزل'}</span></div>
                         <div><span class="meta-label">التاريخ المطلوب</span><span class="meta-value bose-ltr-nums">${window.escapeBoseHTML(row.scheduled_date || '-')}</span></div>
-                        <div><span class="meta-label">الميعاد</span><span class="meta-value bose-ltr-nums">${window.escapeBoseHTML(row.scheduled_time || '-')}</span></div>
+                        <div><span class="meta-label">الميعاد</span><span class="meta-value bose-ltr-nums">${window.escapeBoseHTML(formatScheduledTime(row.scheduled_time))}</span></div>
                     </div>
                     <div class="track-items-list">
                         ${itemsHtml || '<p style="text-align:center; opacity:0.6; font-size:0.85rem;">لا توجد تفاصيل أصناف مسجلة</p>'}

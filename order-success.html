@@ -8,7 +8,7 @@
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#FF91A4">
     
-    <title>تم تسجيل طلبك بنجاح | حلويات بوسي</title>
+    <title>تم استلام طلبك بنجاح | حلويات بوسي</title>
     <meta name="robots" content="noindex, follow">
     
     <!-- ملفات التصميم الخارجية الموحدة والمستقلة -->
@@ -34,7 +34,7 @@
          بيخلي السكريبتات تستنى لحد ما HTML كله يتحلل الأول - نفس الطريقة
          المستخدمة في باقي صفحات الموقع. ترتيب loyalty-config.js *قبل*
          core-engine.js اتحافظ عليه زي ما هو. -->
-    <script src="js/supabase-client.js?v=2027_production_v43.0" defer></script>
+    <script src="js/supabase-client.js?v=2027_production_v44.0" defer></script>
     <script src="js/push-notifications.js?v=1.0" defer></script>
     <script src="js/favorites-engine.js?v=2026_production_v38.0" defer></script>
     <script src="js/loyalty-config.js?v=2026_production_v1.0" defer></script>
@@ -60,7 +60,7 @@
          بعكس defer اللي بيستنى لحد ما الصفحة كلها تتحلل). أضفنا defer هنا كمان عشان
          الترتيب يفضل صحيح ومطابق تمامًا لنفس النمط المستخدم في cart.html/checkout.html. -->
     <script src="js/invoice-image-generator.js?v=2026_production_v1.0" defer></script>
-    <script src="js/cart-engine.js?v=2029_production_v48.1" defer></script>
+    <script src="js/cart-engine.js?v=2029_production_v49.0" defer></script>
     <!-- 🛡️🆕 [إصلاح باج حقيقي]: الصفحة دي كانت الوحيدة من كل صفحات رحلة
          الطلب (منيو/فئة/منتج/سلة/إتمام الطلب) اللي مش محمّلة فيها
          js/guided-tour.js - فلو الجولة التفاعلية وصلت لآخر خطوة (شرح
@@ -297,6 +297,56 @@
                 flex-direction: row;
             }
         }
+
+        /* رقم الطلب الكبير + زرار تتبع الطلب الأساسي (صفحة "تم استلام طلبك") */
+        .success-order-number-big {
+            margin: 0;
+            font-size: 1.9rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: var(--bose-pink, #FF91A4);
+            direction: ltr;
+            word-break: break-all;
+        }
+
+        .btn-success-primary {
+            width: 100%;
+            box-sizing: border-box;
+            background-color: var(--bose-pink, #FF91A4);
+            color: #FFFFFF;
+            border: none;
+            padding: 16px 24px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-decoration: none;
+            transition: 0.2s ease;
+        }
+        .btn-success-primary:hover { opacity: 0.92; transform: translateY(-1px); }
+
+        .btn-success-secondary {
+            width: 100%;
+            box-sizing: border-box;
+            background-color: rgba(var(--bose-pink-rgb), 0.12);
+            color: var(--bose-black, #111111);
+            border: none;
+            padding: 15px 24px;
+            border-radius: 50px;
+            font-size: 0.98rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-decoration: none;
+            transition: 0.2s ease;
+        }
+        .btn-success-secondary:hover { background-color: rgba(var(--bose-pink-rgb), 0.22); }
     </style>
 </head>
 <body class="bose-hardware-accelerated">
@@ -312,28 +362,25 @@
                 <i class="fas fa-check"></i>
             </div>
 
-            <!-- 🐛✅ [إصلاح جوهري - المرحلة 2]: الكومنت القديم فوق كان بيوصف حالة
-                 قديمة جداً اتلغت من زمان (واتساب مبقاش بيتفتح تلقائياً خالص - راجع
-                 processFinalBoseOrder في cart-engine.js) لكن العنوان "تم تسجيل طلبك
-                 بنجاح!" فضل زي ما هو من وقتها، وهو بالظبط الجزء اللي كان بيخلي
-                 العميلة تحس إنها خلصت وتسيب الصفحة قبل ما تدوس زرار الواتساب
-                 (الخطوة الحقيقية المطلوبة). العنوان دلوقتي بيوضح إن في خطوة متبقية
-                 من غير ما ينفي إن الطلب اتحجز فعلياً، والفقرة تحته بتتصدر بيها -
-                 مش بجملة "خلصنا" الفرحانة اللي كانت بتسبق التحذير. -->
-            <h1 class="success-headline">تم حجز طلبك! خطوة واحدة متبقية 🌸</h1>
+            <!-- ✅ [الدفع بالتحويل من الموقع]: الطلب اتسجل فعلاً في قاعدة البيانات قبل ما
+                 العميلة توصل هنا (لو الحفظ فشل، صفحة الشيك أوت بتوقف وبتوضح ده ومش بتوصّل
+                 لهنا). مفيش أي خطوة واتساب متبقية - إحنا بس بنراجع التحويل ونتواصل معاها. -->
+            <h1 class="success-headline">تم استلام طلبك بنجاح! 🌸</h1>
             <h3 id="success-customer-welcome" class="success-subheadline" style="display:none; font-weight:700; color:var(--bose-pink, var(--bose-pink)); margin:0;"></h3>
-            <p class="success-subheadline"><strong style="color:var(--bose-pink, var(--bose-pink));">محتاجين نستلم فاتورتك على واتساب عشان نبدأ التجهيز فعلياً</strong> - دوسي على الزرار الوردي "إرسال الفاتورة على واتساب" تحت 👇 وبعدين زرار الإرسال (▶) جوه واتساب نفسه. من غير الخطوة دي، طلبك محفوظ عندنا بس لسه مش وصلنا رسمياً.</p>
+
+            <p class="success-subheadline" style="margin-bottom:-8px;">رقم الطلب</p>
+            <h2 id="success-order-id-display" class="success-order-number-big" style="display:none;"></h2>
+
+            <p class="success-subheadline">طلبك اتسجل عندنا وإحنا دلوقتي بنراجع التحويل. هنتواصل معاكي لتأكيد الطلب قريبًا، وتقدري تتابعي حالته في أي وقت من صفحة تتبع الطلب.</p>
 
             <div class="order-summary-receipt-box">
                 <div class="receipt-header-row">
-                    <span id="bose-receipt-number-lbl">رقم طلب الفاتورة: #0000</span>
+                    <span id="bose-receipt-number-lbl">تفاصيل طلبك</span>
                     <span id="bose-receipt-date-lbl" class="bose-ltr-nums">00 / 00 / 2026</span>
                 </div>
-                <!-- h2#success-order-id-display: البلوك البصري المستقل لعرض رقم الطلب المطلوب بالمواصفة -->
-                <h2 id="success-order-id-display" style="display:none; text-align:center; font-weight:700; color:var(--bose-black,#111111); margin: 4px 0 10px 0; font-size: 1rem;"></h2>
-                
+
                 <div id="bose-receipt-items-container" class="receipt-items-list"></div>
-                
+
                 <div class="receipt-footer-total">
                     <span>الإجمالي النهائي:</span>
                     <span id="bose-receipt-grand-total" class="receipt-total-val">0 EGP</span>
@@ -345,51 +392,33 @@
                  renderBoseSuccessPage في cart-engine.js من نفس بيانات الطلب المحفوظة. -->
             <div id="bose-loyalty-success-card" style="display:none;"></div>
 
-            <!-- 💵 [عربون/دفع مقدم] نفس بوكس تعليمات الدفع الموجود في checkout.html، هنا بيتعبى من بيانات الطلب المحفوظة -->
-            <div id="bose-deposit-payment-box" style="display:none; margin: 4px 0 0 0; padding: 16px; border-radius: 14px; background: rgba(var(--bose-pink-rgb), 0.06); border: 1px solid var(--bose-pink); direction: rtl; text-align: right; font-family: 'Cairo';">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                    <span id="bose-deposit-label" style="font-weight: 700; color: #111111; font-size: 0.95rem;">المبلغ المطلوب دفعه الآن لتأكيد الحجز:</span>
-                    <span id="bose-deposit-amount" style="font-weight: 800; color: var(--bose-pink); font-size: 1.15rem;">0 EGP</span>
+            <!-- 💳 [ملخص التحويل]: المبلغ اللي العميلة حوّلته + رقم العملية اللي كتبته (بنراجعهم
+                 دلوقتي) + الباقي عند الاستلام لو كان عربون. بيتعبى من بيانات الطلب المحفوظة. -->
+            <div id="bose-payment-summary-box" style="display:none; margin: 4px 0 0 0; padding: 16px; border-radius: 14px; background: rgba(var(--bose-pink-rgb), 0.06); border: 1px solid var(--bose-pink); direction: rtl; text-align: right; font-family: 'Cairo'; width: 100%; box-sizing: border-box;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span id="bose-paid-label" style="font-weight: 700; color: #111111; font-size: 0.95rem;">المبلغ اللي حوّلتيه:</span>
+                    <span id="bose-paid-amount" style="font-weight: 800; color: var(--bose-pink); font-size: 1.15rem;">0 EGP</span>
                 </div>
-                <div id="bose-deposit-remaining-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; opacity: 0.75; font-size: 0.85rem;">
+                <div id="bose-paid-reference-row" style="display: none; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 0.88rem; color: #111111;">
+                    <span>رقم العملية / آخر 3 أرقام:</span>
+                    <span id="bose-paid-reference" style="font-weight: 700; direction: ltr;"></span>
+                </div>
+                <div id="bose-paid-remaining-row" style="display: none; justify-content: space-between; align-items: center; margin-bottom: 8px; opacity: 0.75; font-size: 0.85rem;">
                     <span>الباقي يُدفع عند الاستلام:</span>
-                    <span id="bose-deposit-remaining-amount">0 EGP</span>
+                    <span id="bose-paid-remaining-amount">0 EGP</span>
                 </div>
                 <div style="border-top: 1px dashed rgba(var(--bose-pink-rgb), 0.3); padding-top: 10px; font-size: 0.85rem; color: #111111; opacity: 0.85; line-height: 1.7;">
-                    💳 حوّلي المبلغ <strong>كاش أو InstaPay</strong> على رقمنا:
-                    <span style="display: inline-flex; align-items: center; gap: 6px; font-weight: 800; color: var(--bose-pink); direction: ltr;">
-                        <span id="bose-deposit-phone-number">—</span>
-                        <button type="button" id="bose-copy-deposit-phone" title="نسخ الرقم" style="border: none; background: rgba(var(--bose-pink-rgb),0.15); color: var(--bose-pink); border-radius: 6px; padding: 2px 8px; cursor: pointer; font-size: 0.8rem;"><i class="far fa-copy"></i></button>
-                    </span>
-                    <br>ثم ابعتي لقطة شاشة التحويل على واتساب فور إتمامه وهنأكد حجزك فوراً.
+                    ⏳ بنراجع التحويل دلوقتي، وأول ما نتأكد من وصوله هنتواصل معاكي لتأكيد طلبك.
                 </div>
             </div>
 
-            <!-- 🛡️🐛👑 [إصلاح جذري - رجوع زرار "إرسال الفاتورة" كشبكة أمان]: كان
-            الزرار ده اتشال قبل كده بافتراض إن فاتورة الواتساب بتتفتح تلقائياً
-            بنجاح 100% دايماً لحظة تأكيد الطلب من checkout.html. لكن ده مش
-            مضمون فعلياً في كل الحالات - أشهرها: طلبات فيها تفاصيل/صور كتير
-            بتولّد رابط طويل، ومتصفحات الويب الداخلية (متصفح إنستجرام/فيسبوك
-            الداخلي In-App Browser، وهو مصدر زيارات رئيسي لمتجر بيسوّق على
-            السوشيال ميديا) اللي ممكن ترفض فتح الرابط تلقائياً خالص. لو الفتح
-            التلقائي فشل، العميلة كانت تفضل واصلة للصفحة دي بدون أي طريقة تانية
-            تبعت بيها فاتورتها للفرع - وده كان السبب الحقيقي وراء شكوى "خلصت
-            الأوردر بس مقدرتش ابعت رسالة الواتساب". الزرار دلوقتي شبكة أمان دايماً
-            ظاهرة (مش بس لما يفشل الفتح التلقائي)، وبيستخدم نفس نص الفاتورة
-            المحفوظ بالظبط (order.whatsappMessage) من غير أي حاجة تتحسب تاني -
-            راجع wireBoseResendWhatsappButton في cart-engine.js. -->
             <div class="success-actions-row">
-                <a href="#" id="bose-resend-whatsapp-btn" class="btn-success-whatsapp-trigger" style="display:none;">
-                    <i class="fab fa-whatsapp"></i> إرسال فاتورة الطلب على واتساب
+                <a href="track-order.html" id="bose-success-track-btn" class="btn-success-primary" style="display:none;">
+                    <i class="fas fa-location-crosshairs"></i> تتبعي طلبك
                 </a>
-                <div class="success-secondary-actions-row">
-                    <a href="track-order.html" id="bose-success-track-btn" class="btn-success-home-anchor" style="display:none;">
-                        <i class="fas fa-location-crosshairs"></i> تتبعي طلبك
-                    </a>
-                    <a href="index.html" class="btn-success-home-anchor">
-                        <i class="fas fa-home"></i> العودة للرئيسية
-                    </a>
-                </div>
+                <a href="menu.html" class="btn-success-secondary">
+                    <i class="fas fa-bag-shopping"></i> متابعة التسوق
+                </a>
             </div>
 
             <!-- 🧾 [إضافة اختيارية - مرجع شخصي للعميلة]: زرار صغير مختلف تمامًا عن

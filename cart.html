@@ -105,7 +105,7 @@ body {
 }
 </style>
 <!-- استدعاء المحرك المركزي الموحد حارس الحسابات وحاقن الهيدر والفوتر آلياً أولاً -->
-<script src="js/supabase-client.js?v=2027_production_v43.0" defer></script>
+<script src="js/supabase-client.js?v=2027_production_v44.0" defer></script>
     <script src="js/push-notifications.js?v=1.0" defer></script>
 <script src="js/favorites-engine.js?v=2026_production_v38.0" defer></script>
 <!-- 🛡️🆕 [إصلاح ترتيب]: loyalty-config.js لازم يتحمّل *قبل* core-engine.js (شوفي
@@ -166,7 +166,7 @@ body {
             <div id="mixed-order-warning-banner" style="display:none; align-items:flex-start; gap:10px; background: rgba(var(--bose-pink-rgb),0.1); border: 1px solid rgba(var(--bose-pink-rgb),0.4); border-radius: 14px; padding: 14px 16px; margin-bottom: 18px; direction: rtl;">
                 <i class="fas fa-triangle-exclamation" style="color:var(--bose-pink); margin-top:2px;"></i>
                 <p style="margin:0; font-size:0.88rem; font-weight:600; color:#111111; line-height:1.6;">
-                    طلبك فيه صنف تورت أو ورد مخصص من المحاكي، وده محتاج وقت تحضير أطول (أسبوع كامل تقريبًا). المنتجات العادية الموجودة معاه في نفس السلة هتتسلّم <strong>مع</strong> المخصص في نفس الموعد المتأخر، مش هتوصلك لوحدها بدري. لو حابة تستلمي المنتجات العادية بسرعة، الأفضل تعمليها أوردر منفصل.
+                    طلبك فيه صنف تورت أو ورد مخصص من المحاكي، وده محتاج وقت تحضير أطول (3 أيام تقريبًا). المنتجات العادية الموجودة معاه في نفس السلة هتتسلّم <strong>مع</strong> المخصص في نفس الموعد المتأخر، مش هتوصلك لوحدها بدري. لو حابة تستلمي المنتجات العادية بسرعة، الأفضل تعمليها أوردر منفصل.
                 </p>
             </div>
 
@@ -223,6 +223,12 @@ body {
                 </div>
             </div>
 
+            <div id="cart-business-hours-notice" class="bose-hours-notice" role="note" style="text-align:center; direction:rtl; background: rgba(var(--bose-pink-rgb),0.12); border: 2.5px solid var(--bose-pink, #FF91A4); border-radius: 18px; padding: 18px 14px; margin: 0 0 16px 0;">
+    <div style="font-size:1.05rem; font-weight:800; color:#111111; margin-bottom:6px;"><i class="fas fa-clock" style="color:var(--bose-pink, #FF91A4);"></i> مواعيد الاستلام والتوصيل</div>
+    <div class="bose-hours-range-text" style="font-size:1.75rem; font-weight:900; color:var(--bose-pink, #FF91A4); line-height:1.4; margin-bottom:8px;">من 9:00 الصبح لحد 10:00 بالليل</div>
+    <div style="font-size:1rem; font-weight:800; color:#111111; line-height:1.8;">مفيش استلام ولا توصيل قبل <span class="bose-hours-start-text">9:00 الصبح</span> ولا بعد <span class="bose-hours-end-text">10:00 بالليل</span> - بدون أي استثناء.</div>
+</div>
+
             <a href="checkout.html" id="btn-proceed-to-checkout" class="bose-primary-checkout-btn">
                 <i class="fas fa-shopping-bag"></i> الانتقال لإتمام الطلب
             </a>
@@ -247,7 +253,7 @@ body {
 <div id="bose-footer-injector"></div>
 
 <!-- استدعاء محرك العمليات والحسابات الموحد للطلب والسلة -->
-<script src="js/cart-engine.js?v=2029_production_v48.1" defer></script>
+<script src="js/cart-engine.js?v=2029_production_v49.0" defer></script>
 
 <!-- كود حقن صور المقترحات المطور وتأمين تجربة الإضافة واللمس دون Full Refresh للبيانات -->
 <script>
