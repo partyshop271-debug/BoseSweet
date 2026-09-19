@@ -118,32 +118,47 @@
                     </div>
 
                     <div class="adm-card adm-mt-16">
-                        <div class="adm-card-header"><div><h2>قواعد التوقيت وأقل مدة تحضير</h2><p>بتتحكم في أقرب موعد استلام/توصيل مسموح للعميل يختاره، ونطاق الساعات المسموح بيه على مدار اليوم. المحاكيات (التورت/الورد المخصص) ليها قاعدتها الخاصة بأسبوع كامل ومش بتتأثر بالرقم الأول هنا.</p></div></div>
+                        <div class="adm-card-header"><div><h2>قواعد التوقيت وأقل مدة تحضير</h2><p>بتتحكم في أقرب موعد استلام/توصيل مسموح للعميل يختاره، ونطاق الساعات المسموح بيه على مدار اليوم. المحاكيات (التورت/الورد المخصص) ليها قاعدتها الخاصة (الافتراضي 72 ساعة = 3 أيام) ومش بتتأثر بالرقم الأول هنا. القيم دي ثابتة لكل العملاء بدون أي استثناء، والموقع والسيرفر بيطبقوها بنفس الأرقام.</p></div></div>
                         <div class="adm-form-grid">
                             <div class="adm-field">
                                 <label for="rules-minPreparationTimeHours">أقل مدة تحضير للمنتجات العادية (ساعة)</label>
-                                <input type="number" step="1" class="adm-input" id="rules-minPreparationTimeHours" placeholder="48">
+                                <input type="number" step="1" class="adm-input" id="rules-minPreparationTimeHours" placeholder="24">
                             </div>
                             <div class="adm-field">
                                 <label for="rules-minPreparationTimeHoursCustom">أقل مدة تحضير للمحاكيات (ساعة)</label>
-                                <input type="number" step="1" class="adm-input" id="rules-minPreparationTimeHoursCustom" placeholder="168">
+                                <input type="number" step="1" class="adm-input" id="rules-minPreparationTimeHoursCustom" placeholder="72">
                             </div>
                             <div class="adm-field">
-                                <label for="rules-businessHoursStart">أقرب ساعة استلام/توصيل في اليوم</label>
-                                <input type="time" class="adm-input" id="rules-businessHoursStart" placeholder="09:00">
+                                <label for="rules-businessHoursStart-hour">مواعيد الاستلام والتوصيل تبدأ من الساعة</label>
+                                <div style="display:flex; gap:8px;">
+                                    <select class="adm-select" id="rules-businessHoursStart-hour" aria-label="الساعة" style="flex:1; min-height:52px; font-size:1.2rem; font-weight:800;"></select>
+                                    <select class="adm-select" id="rules-businessHoursStart-period" aria-label="صباحًا أو مساءً" style="flex:1; min-height:52px; font-size:1.2rem; font-weight:800;">
+                                        <option value="AM">صباحًا</option>
+                                        <option value="PM">مساءً</option>
+                                    </select>
+                                </div>
+                                <input type="hidden" id="rules-businessHoursStart">
                             </div>
                             <div class="adm-field">
-                                <label for="rules-businessHoursEnd">أبعد ساعة استلام/توصيل في اليوم</label>
-                                <input type="time" class="adm-input" id="rules-businessHoursEnd" placeholder="22:00">
+                                <label for="rules-businessHoursEnd-hour">مواعيد الاستلام والتوصيل بتنتهي عند الساعة</label>
+                                <div style="display:flex; gap:8px;">
+                                    <select class="adm-select" id="rules-businessHoursEnd-hour" aria-label="الساعة" style="flex:1; min-height:52px; font-size:1.2rem; font-weight:800;"></select>
+                                    <select class="adm-select" id="rules-businessHoursEnd-period" aria-label="صباحًا أو مساءً" style="flex:1; min-height:52px; font-size:1.2rem; font-weight:800;">
+                                        <option value="AM">صباحًا</option>
+                                        <option value="PM">مساءً</option>
+                                    </select>
+                                </div>
+                                <input type="hidden" id="rules-businessHoursEnd">
                             </div>
                         </div>
-                        <div class="adm-field">
-                            <label for="rules-preparationTimeMessage">رسالة توضيحية للمنتجات العادية</label>
-                            <textarea class="adm-input" id="rules-preparationTimeMessage" rows="2" placeholder="اشرحي هنا بوضوح ليه محتاجين الوقت ده - مثلاً ضغط الشغل وحرصنا إن كل التفاصيل تطلع مظبوطة. النص ده بيتقري للعميلة قبل ما تأكد طلبها."></textarea>
-                        </div>
-                        <div class="adm-field">
-                            <label for="rules-customPreparationTimeMessage">رسالة توضيحية للمحاكيات</label>
-                            <textarea class="adm-input" id="rules-customPreparationTimeMessage" rows="2" placeholder="نفس الفكرة بس للتورت/الورد المخصص اللي محتاج وقت أطول."></textarea>
+                        <div class="adm-field" style="margin-top: 8px;">
+                            <div id="rules-hours-preview" style="background:#FFF7F9; border:1.5px solid #F5C6D0; border-radius:12px; padding:12px 14px; font-weight:800; line-height:1.8;"></div>
+                            <p style="margin:8px 0 0; font-size:0.85rem; opacity:0.8; line-height:1.8;">
+                                ده اللي العميلات هيشوفوه في السلة وصفحة إتمام الطلب. مفيش استلام ولا توصيل قبل ساعة البداية ولا بعد ساعة النهاية.
+                                اختاري الساعة من 1 لـ 12 وحددي صباحًا أو مساءً (مثلاً 9 مساءً). الساعات كاملة بس لأن العميلة بتختار الساعة الكاملة.
+                                التغيير بيظهر في الموقع تلقائي بعد الحفظ (ممكن ياخد كام دقيقة يوصل لكل الأجهزة).
+                                نصوص مدة التحضير كمان بتتكتب أوتوماتيك من الأرقام اللي فوق، فمفيش داعي تكتبيها بإيدك.
+                            </p>
                         </div>
 
                         <!-- 📅 [تقويم الإتاحة الذكي]: لو حددتي رقم هنا، شريط اختيار
