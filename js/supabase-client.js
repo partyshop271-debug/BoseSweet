@@ -661,6 +661,38 @@
     }
 
     /**
+     * 📊🛡️ [2026-09-19 - سجل أعطال الواجهة عند العميلة]: أول استخدام ليها هو
+     * رفض رقم الموبايل في الشيك أوت. بتتخزن القيمة الخام كما هي بالظبط +
+     * الـcodepoints بتاعتها، عشان أي محرف مخفي (LRM/RLM/ALM/zero-width) يبان
+     * كرقم واضح في لوحة التحكم بدل ما نفضل نخمّن. جدول client_error_events:
+     * إدخال عام مسموح، القراءة للأدمن بس (نفس فلسفة tour_analytics_events).
+     * best-effort خالص - مايقدرش يعطّل الطلب تحت أي ظرف.
+     */
+    async function logBoseClientEvent(eventType, data) {
+        try {
+            const d = data || {};
+            await boseSupabaseFetch("/client_error_events", {
+                method: "POST",
+                headers: { Prefer: "return=minimal" },
+                body: JSON.stringify({
+                    event_type: String(eventType).slice(0, 60),
+                    raw_value: d.raw != null ? String(d.raw).slice(0, 120) : null,
+                    normalized: d.normalized != null ? String(d.normalized).slice(0, 40) : null,
+                    codepoints: Array.isArray(d.codepoints) ? d.codepoints.slice(0, 60) : null,
+                    attempt: d.attempt ?? null,
+                    page_file: (typeof location !== "undefined"
+                        ? location.pathname.split("/").pop() || "index.html"
+                        : null),
+                    user_agent: d.ua ? String(d.ua).slice(0, 400) : null,
+                    details: d.details ?? null,
+                }),
+            }, 0); // 0 = من غير إعادة محاولة
+        } catch (err) {
+            // تجاهل عمدي - التسجيل اختياري وما ينفعش يوقف تجربة العميلة
+        }
+    }
+
+    /**
      * 📊🚪 [تسجيل ترك حقيقي أثناء إغلاق الصفحة/التبويب]: نفس logBoseTourEvent
      * بالظبط، لكن بـ `keepalive: true` صراحةً - ده اللي بيضمن إن المتصفح
      * يكمّل إرسال الطلب حتى لو الصفحة بدأت تتقفل/تتنقل فعليًا (fetch عادي
@@ -754,6 +786,7 @@
         fetchBoseTourSteps,
         logBoseTourEvent,
         logBoseTourEventOnExit,
+        logBoseClientEvent,
         syncCustomerFavorites,
         fetchCustomerFavorites,
         savePushSubscription,

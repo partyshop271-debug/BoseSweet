@@ -276,9 +276,7 @@
             recipientPhoneInput.addEventListener("blur", () => {
                 const raw = recipientPhoneInput.value.trim();
                 if (!raw) return; // اختياري - فاضي مسموح
-                const isValid = typeof window.validateBosePhoneNumber === "function"
-                    ? window.validateBosePhoneNumber(raw, true)
-                    : /^01[0125][0-9]{8}$/.test(raw.replace(/[^\d]/g, ""));
+                const isValid = window.validateBosePhoneNumber(raw, true);
                 if (!isValid) {
                     setFieldError("gcbRecipientPhoneField", "gcbRecipientPhoneError", "رقم واتساب مصري غير صحيح - سيبيه فاضي لو مش متأكدة");
                 }
@@ -570,9 +568,7 @@
         }
         const phoneRaw = state.recipientPhone.trim();
         if (phoneRaw) {
-            const isValid = typeof window.validateBosePhoneNumber === "function"
-                ? window.validateBosePhoneNumber(phoneRaw, true)
-                : /^01[0125][0-9]{8}$/.test(phoneRaw.replace(/[^\d]/g, ""));
+            const isValid = window.validateBosePhoneNumber(phoneRaw, true);
             if (!isValid) {
                 setFieldError("gcbRecipientPhoneField", "gcbRecipientPhoneError", "رقم واتساب مصري غير صحيح - سيبيه فاضي لو مش متأكدة");
                 firstInvalidEl = firstInvalidEl || document.getElementById("gcbRecipientPhone");

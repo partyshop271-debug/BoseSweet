@@ -807,8 +807,8 @@ function renderBoseCheckoutPage(storeData) {
     }
 
     async function runLoyaltyLookup(rawPhone) {
-        const cleanPhone = (rawPhone || "").replace(/[\s\-\(\)\+]/g, "");
-        if (!/^01[0125][0-9]{8}$/.test(cleanPhone) || cleanPhone === lastCheckedLoyaltyPhone) return;
+        const cleanPhone = window.sanitizeBosePhoneNumber(rawPhone);
+        if (!window.validateBosePhoneNumber(cleanPhone) || cleanPhone === lastCheckedLoyaltyPhone) return;
         lastCheckedLoyaltyPhone = cleanPhone;
 
         if (!window.BoseSupabase || typeof window.BoseSupabase.getBoseCustomerRewards !== "function") return;
@@ -1168,7 +1168,12 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee, payFu
     const phone1 = customerPhoneInput ? customerPhoneInput.value.trim() : "";
     let sanitizedPhone1 = "";
     if (typeof window.validateBosePhoneNumber === "function" && !window.validateBosePhoneNumber(phone1)) {
-        addValidationError(customerPhoneInput, "من فضلك اكتبي رقم موبايل مصري صحيح.");
+        addValidationError(customerPhoneInput, window.BOSE_PHONE_ERROR_MESSAGE || "من فضلك اكتبي رقم موبايل مصري صحيح.");
+        // 📊 [2026-09-19]: بنسجّل القيمة الخام بالـcodepoints بتاعتها عشان أي علة
+        // مخفية جديدة تبان فوراً، وبعد رفضين بيتفتح مخرج واتساب عشان الطلب ميضيعش.
+        if (typeof window.boseRegisterPhoneRejection === "function") {
+            window.boseRegisterPhoneRejection(phone1, customerPhoneInput);
+        }
     } else {
         sanitizedPhone1 = typeof window.sanitizeBosePhoneNumber === "function" ? window.sanitizeBosePhoneNumber(phone1) : phone1;
     }

@@ -1905,24 +1905,17 @@
      * @param {boolean} isOptional
      * @returns {boolean}
      */
-    window.validateBosePhoneNumber = function(phone, isOptional = false) {
-        if (!phone || phone.trim() === "") return isOptional;
-        const cleaned = window.sanitizeBosePhoneNumber(phone);
-        return /^01[0125][0-9]{8}$/.test(cleaned);
-    };
+    // 🚚 [نُقلت إلى js/phone-utils.js - 2026-09-19]: النسخة القديمة كانت بتشيل
+    // قايمة محددة من المحارف بس وبتطابق regex على ASCII، فكانت بترفض بصمت أي رقم
+    // جايّ معاه علامة اتجاه مخفية (LRM/RLM/ALM) - وده اللي بيحصل تلقائياً لما
+    // أندرويد يلزق رقم من جهات الاتصال جوه صفحة عربية. التعريف الوحيد دلوقتي في
+    // phone-utils.js اللي بيتحمّل قبل الملف ده في كل الصفحات.
 
     /**
      * @param {string} phone
      * @returns {string}
      */
-    window.sanitizeBosePhoneNumber = function(phone) {
-        if (!phone) return "";
-        let cleaned = phone.trim().replace(/[\s\-\(\)\+]/g, "");
-        if (cleaned.startsWith("201")) cleaned = "0" + cleaned.substring(2);
-        else if (cleaned.startsWith("00201")) cleaned = "0" + cleaned.substring(4);
-        else if (cleaned.startsWith("1") && cleaned.length === 10) cleaned = "0" + cleaned;
-        return cleaned;
-    };
+    // 🚚 [نُقلت إلى js/phone-utils.js - 2026-09-19] - شوفي الملاحظة فوق.
 
     /**
      * @param {string} phone
