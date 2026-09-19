@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أعطال العميلات | لوحة تحكم حلويات بوسي</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="stylesheet" href="../vendor/fonts/cairo/cairo.css?v=2026_local_v1.0">
+    <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css?v=2026_local_v1.0" fetchpriority="high">
+
+    <link rel="stylesheet" href="css/admin-theme.css">
+    <link rel="stylesheet" href="css/admin-layout.css">
+</head>
+<body data-page="client-error-log">
+
+    <!-- شاشة تحميل تظهر لحد ما يتأكد من الجلسة -->
+    <div class="adm-auth-gate"><div class="adm-loading-spinner"></div></div>
+
+    <div class="adm-shell">
+        <div id="adm-shell-target"></div>
+
+        <main class="adm-main">
+            <div id="adm-topbar-target"></div>
+
+            <div class="adm-content" id="adm-page-content">
+
+                <div class="adm-card" style="margin-bottom: 18px; background: rgba(255,145,164,0.05);">
+                    <p style="margin:0; font-size:0.9rem; line-height:1.7;">
+                        <i class="fa-solid fa-circle-info" style="color: var(--bose-pink, #FF91A4);"></i>
+                        القائمة دي بتوريكِ كل مرة حقل رقم الموبايل في الشيك أوت (أو أي فورم تاني) رفض قيمة العميلة.
+                        <b>القيمة الخام</b> هي بالظبط اللي كتبتها العميلة أو لزقتها، و<b>القيمة بعد التنظيف</b> هي اللي
+                        وصل ليها الموقع بعد ما شال المسافات والرموز. لو الاتنين مختلفين عن بعض بشكل غريب - غالبًا فيه
+                        محرف مخفي (زي لما يُلزق رقم من جهات الاتصال) وده اللي عمود "الأكواد الخفية" بيوريهولك بالتفصيل.
+                        <br><br>
+                        <b>لو نفس العميلة ظهرت أكتر من مرة:</b> يبقى فعليًا اتفتحلها زرار "كمّلي طلبك على واتساب" في
+                        الصفحة، فراجعي واتساب المتجر لو محتاجة تكمّلي معاها الطلب يدوي.
+                    </p>
+                </div>
+
+                <div class="adm-card">
+                    <div class="adm-card-header">
+                        <div>
+                            <h2>سجل رفض الحقول</h2>
+                            <p id="cel-subtitle">جاري التحميل...</p>
+                        </div>
+                        <button class="adm-btn adm-btn-outline" id="cel-refresh-btn"><i class="fa-solid fa-rotate"></i> تحديث</button>
+                    </div>
+                    <div class="adm-table-wrapper">
+                        <table class="adm-table" id="cel-table">
+                            <thead>
+                                <tr>
+                                    <th>الوقت</th>
+                                    <th>نوع العطل</th>
+                                    <th>القيمة الخام</th>
+                                    <th>بعد التنظيف</th>
+                                    <th>الأكواد الخفية</th>
+                                    <th>المحاولة</th>
+                                    <th>الصفحة</th>
+                                    <th>الجهاز</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cel-tbody">
+                                <tr><td colspan="8"><div class="adm-loading-spinner"></div></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="../vendor/supabase-js/supabase.js"></script>
+    <script src="../js/phone-utils.js"></script>
+    <script src="js/admin-data.js"></script>
+    <script src="js/admin-auth-guard.js"></script>
+    <script src="js/admin-ui-utils.js"></script>
+    <script src="js/admin-shell.js"></script>
+    <script src="js/pages/client-error-log-page.js"></script>
+</body>
+</html>
