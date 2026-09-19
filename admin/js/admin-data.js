@@ -299,6 +299,29 @@
         }
     }
 
+    /**
+     * 📊🛡️ [2026-09-19 - سجل أعطال الواجهة عند العميلة]: بترجع أحدث حالات
+     * client_error_events (حالياً النوع الوحيد: phone_validation_rejected -
+     * رفض رقم موبايل في الشيك أوت). كل صف فيه القيمة الخام كما كتبتها
+     * العميلة بالظبط + codepoints بتاعتها، عشان أي محرف مخفي (LRM/RLM/ALM/
+     * zero-width) يبان واضح في الجدول بدل ما يتخمّن. تحليل الـcodepoints
+     * وعرضها بشكل مقروء بيحصل في client-error-log-page.js نفسها.
+     */
+    async function getClientErrorEvents(limit = 200) {
+        try {
+            const { data, error } = await client
+                .from("client_error_events")
+                .select("id, created_at, event_type, raw_value, normalized, codepoints, attempt, page_file, user_agent")
+                .order("created_at", { ascending: false })
+                .limit(limit);
+            if (error) throw error;
+            return data || [];
+        } catch (e) {
+            console.warn("تعذر جلب سجل أعطال الواجهة:", e.message);
+            return [];
+        }
+    }
+
     /** عدد المنتجات اللي لسه شايلة صورة اللوجو الافتراضية بدل صورة حقيقية (لتنبيه الداشبورد) */
     async function getMissingPhotoProductsCount() {
         try {
@@ -1367,7 +1390,12 @@
      * شرطة، +٢٠...) كان ممكن يخلي الأدمن يشوف نتيجة مختلفة عن اللي العميل شايفها.
      */
     function cleanEgyptianPhone(phone) {
-        return String(phone || "").trim().replace(/[\s\-()+]/g, "");
+        // 🛡️ [2026-09-19]: بيعتمد على المصدر الموحّد في js/phone-utils.js عشان
+        // يشيل كمان علامات الاتجاه المخفية والأرقام العربية-الهندية.
+        if (typeof window.sanitizeBosePhoneNumber === "function") {
+            return window.sanitizeBosePhoneNumber(phone);
+        }
+        return String(phone || "").trim().replace(/\D+/g, "");
     }
 
     /**
@@ -1380,7 +1408,7 @@
      */
     async function getCustomerLoyaltyProfile(phone) {
         const cleanPhone = cleanEgyptianPhone(phone);
-        if (!/^01[0125][0-9]{8}$/.test(cleanPhone)) {
+        if (!window.validateBosePhoneNumber(cleanPhone)) {
             throw new Error("رقم الهاتف غير صحيح، يرجى إدخال رقم مصري صحيح (يبدأ بـ 01...)");
         }
 
@@ -1488,8 +1516,8 @@
      * (generate_loyalty_voucher_code) عشان يفضل بنفس الشكل ومضمون إنه فريد.
      */
     async function issueLoyaltyVoucher({ phone, amount, expiresAt }) {
-        const cleanPhone = (phone || "").replace(/[\s\-()+]/g, "");
-        if (!/^01[0125][0-9]{8}$/.test(cleanPhone)) {
+        const cleanPhone = cleanEgyptianPhone(phone);
+        if (!window.validateBosePhoneNumber(cleanPhone)) {
             throw new Error("رقم الموبايل غير صحيح");
         }
         const { data: codeData, error: codeErr } = await client.rpc("generate_loyalty_voucher_code");
@@ -1608,8 +1636,8 @@
      * (نفس الدالة اللي بيستخدمها الإصدار التلقائي) عشان يفضل بنفس الشكل.
      */
     async function issueManualGiftCard({ phone, amount, expiresAt }) {
-        const cleanPhone = (phone || "").replace(/[\s\-()+]/g, "");
-        if (!/^01[0125][0-9]{8}$/.test(cleanPhone)) {
+        const cleanPhone = cleanEgyptianPhone(phone);
+        if (!window.validateBosePhoneNumber(cleanPhone)) {
             throw new Error("رقم الموبايل غير صحيح");
         }
         const { data: codeData, error: codeErr } = await client.rpc("generate_gift_card_code");
@@ -1714,7 +1742,7 @@
      */
     async function grantManualLoyaltyVoucher(phone, amount, validityMonths) {
         const cleanPhone = cleanEgyptianPhone(phone);
-        if (!/^01[0125][0-9]{8}$/.test(cleanPhone)) {
+        if (!window.validateBosePhoneNumber(cleanPhone)) {
             throw new Error("رقم الهاتف غير صحيح، يرجى إدخال رقم مصري صحيح (يبدأ بـ 01...)");
         }
         if (!amount || amount <= 0) {
@@ -1982,6 +2010,7 @@
         getCustomersByCategoryInterest,
         getCustomerFavorites,
         getAuditLog,
+        getClientErrorEvents,
         getMissingPhotoProductsCount,
         getRecentOrders,
         getAllOrders,
