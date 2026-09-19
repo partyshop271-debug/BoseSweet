@@ -397,9 +397,9 @@
             const boundPhoneRaw = document.getElementById("cf-bound-phone").value.trim();
             // توحيد شكل رقم الموبايل زي بالظبط ما بتفحصه دالة create_order_with_items
             // في القاعدة (v_clean_phone) عشان المطابقة تنجح فعليًا وقت الطلب
-            const boundPhoneClean = boundPhoneRaw.replace(/[\s\-()+]/g, "");
+            const boundPhoneClean = window.sanitizeBosePhoneNumber(boundPhoneRaw);
 
-            if (boundPhoneRaw && !/^01[0125][0-9]{8}$/.test(boundPhoneClean)) {
+            if (boundPhoneRaw && !window.validateBosePhoneNumber(boundPhoneRaw)) {
                 window.BoseAdminUI.showToast("رقم الموبايل المربوط لازم يكون رقم مصري صحيح (01...)", "error");
                 saveBtn.disabled = false;
                 saveBtn.textContent = "حفظ الكوبون";
