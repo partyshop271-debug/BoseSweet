@@ -284,6 +284,7 @@
     <script src="js/season-dates.js?v=2026_production_v1.0" defer></script>
     <script src="js/season-themes.js?v=2026_production_v1.0" defer></script>
     <script src="js/season-theme-engine.js?v=2026_production_v1.0" defer></script>
+    <script src="js/phone-utils.js?v=1" defer></script>
     <script src="js/core-engine.js?v=2028_production_v58.0" defer></script>
     <script src="js/guided-tour.js?v=3.3" defer></script>
 </head>
@@ -709,6 +710,13 @@
             // يكتبها من الأول تاني. العميل لسه قادر يعدّل أي حقل عادي زي ما هو، وده
             // بيحصل قبل تفعيل زرار "توصيل"/اختيار المنطقة تحت (اللي محتاج المناطق
             // تتحمّل الأول من قاعدة البيانات).
+            // 🩺 [2026-09-19]: الحارس الحي على حقل رقم الهاتف - بينضّف الرقم وهي
+            // بتكتب أو بتلزق (علامات اتجاه مخفية / أرقام عربية / صيغة دولية)
+            // وبيوريها لحظياً هل الرقم مظبوط ولا ناقص، قبل ما توصل لزرار التأكيد.
+            if (typeof window.initBosePhoneFieldGuard === "function") {
+                window.initBosePhoneFieldGuard("checkout-customer-phone");
+            }
+
             if (typeof window.getBoseCustomerProfile === "function") {
                 const savedProfile = window.getBoseCustomerProfile();
                 if (savedProfile) {
