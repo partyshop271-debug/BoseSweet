@@ -110,7 +110,7 @@
 
         list.innerHTML = orders.map((o) => orderRowHTML(o, `
             <button type="button" class="adm-btn adm-btn-sm adm-btn-primary" data-deposit-confirm="${e(o.id)}">
-                <i class="fa-solid fa-hand-holding-dollar"></i> تأكيد استلام العربون
+                <i class="fa-solid fa-hand-holding-dollar"></i> تأكيد استلام المبلغ
             </button>
         `)).join("");
 
@@ -120,10 +120,10 @@
                 btn.disabled = true;
                 try {
                     await window.BoseAdmin.confirmOrderDeposit(id);
-                    window.BoseAdminUI.showToast("تم تأكيد استلام العربون والطلب بقى مؤكد", "success");
+                    window.BoseAdminUI.showToast("تم تأكيد استلام المبلغ والطلب بقى مؤكد", "success");
                     removeRowOrHideCard(list, card, id);
                 } catch (e2) {
-                    window.BoseAdminUI.showToast("تعذر تأكيد العربون", "error");
+                    window.BoseAdminUI.showToast("تعذر تأكيد استلام المبلغ", "error");
                     btn.disabled = false;
                 }
             });
@@ -186,7 +186,7 @@
         document.getElementById("daily-all-clear-card").style.display = anyVisible ? "none" : "";
     }
 
-    function renderAlerts({ missingPhotoCount, unavailableProducts, reviewFollowupsDue, vouchersUnnotified }) {
+    function renderAlerts({ missingPhotoCount, unavailableProducts, reviewFollowupsDue }) {
         const card = document.getElementById("daily-alerts-card");
         const list = document.getElementById("daily-alerts-list");
         const alerts = [];
@@ -200,10 +200,6 @@
         if (reviewFollowupsDue > 0) {
             alerts.push({ icon: "fa-comment-dots", cls: "warning", text: `${reviewFollowupsDue} عميلة مستحقة تذكير بتقييم`, href: "review-followups.html" });
         }
-        if (vouchersUnnotified > 0) {
-            alerts.push({ icon: "fa-gift", cls: "info", text: `${vouchersUnnotified} قسيمة/بطاقة هدية لسه محدش اتقالها`, href: "voucher-notifications.html" });
-        }
-
         if (!alerts.length) { card.style.display = "none"; maybeShowAllClear(); return; }
         card.style.display = "";
         list.innerHTML = alerts.map((a) => `
@@ -234,7 +230,6 @@
             missingPhotoCount,
             unavailableProducts: summary.unavailableProducts ?? 0,
             reviewFollowupsDue: summary.reviewFollowupsDue ?? 0,
-            vouchersUnnotified: summary.vouchersUnnotified ?? 0,
         });
 
         document.getElementById("daily-approve-all-reviews-btn").addEventListener("click", async () => {

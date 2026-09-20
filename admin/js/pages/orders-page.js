@@ -307,9 +307,7 @@
                     ${notesWithoutRef ? `
                     <div class="adm-order-detail-full"><span>ملاحظات العميل</span><strong>${e(notesWithoutRef)}</strong></div>
                     ` : ""}
-                    ${order.coupon_code ? `
-                    <div><span>كود الخصم</span><strong>${e(order.coupon_code)}</strong></div>
-                    ` : ""}
+
                 </div>
 
                 <div class="adm-order-items-list">
@@ -326,7 +324,7 @@
                 <!-- 💵 [عربون/دفع مقدم] -->
                 <div class="adm-order-totals" style="margin-top: 10px; border-top: 1px dashed #eee; padding-top: 10px;">
                     <div>
-                        <span>${order.delivery_method === "delivery" ? "المبلغ الكامل المطلوب (توصيل)" : "عربون تأكيد الحجز (50%)"}</span>
+                        <span>المبلغ الكامل المطلوب (دفع مقدم)</span>
                         <span>${money(order.deposit_amount)}</span>
                     </div>
                     ${paymentRefText ? `<div>
@@ -343,7 +341,7 @@
                 ${order.deposit_status !== "confirmed" ? `
                 <div class="adm-mt-16">
                     <button type="button" class="adm-btn adm-btn-primary" id="order-confirm-deposit-btn" style="width:100%;">
-                        ✅ تأكيد استلام ${order.delivery_method === "delivery" ? "المبلغ" : "العربون"} (${money(order.deposit_amount)})
+                        ✅ تأكيد استلام المبلغ (${money(order.deposit_amount)})
                     </button>
                 </div>
                 ` : ""}
@@ -743,6 +741,12 @@
             }
         });
     }
+
+    // 🛎️ لو اللوحة اكتشفت طلب جديد (مراقب الشريط العلوي)، نحدّث الجدول تلقائي - بس لو مفيش
+    // نافذة تفاصيل طلب مفتوحة عشان مانقفلش عليها شغل بتعمله.
+    document.addEventListener("bose-new-orders", () => {
+        if (!document.querySelector(".adm-modal-overlay")) loadOrders();
+    });
 
     document.addEventListener("BoseAdminReady", async () => {
         buildStatusFilterOptions();

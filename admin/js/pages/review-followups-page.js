@@ -15,22 +15,13 @@
  * صورة المنتج في الجدول هنا عشان تقدري (لو حبيتي) تحفظيها وترفقيها يدوي
  * كرسالة تانية في نفس المحادثة - خطوة إضافية بسيطة بس مش أوتوماتيك بالكامل.
  *
- * 🎁 [كوبون التقييم - ٥٪ لمرة واحدة لمدة أسبوعين]: القرار اتاخد مع صاحبة
- * المتجر: خصم ثابت منفصل عن دورة الولاء الأصلية (٣/٦/٩) عشان ميأثرش على
- * حساباتها، بصلاحية قصيرة (أسبوعين) عشان يدفع العميلة تستخدمه بسرعة بدل ما
- * تنساه. جدول coupons مفيهوش عمود "حد استخدام" (max_uses)، فمفيش تقييد
- * تقني إن الكود يتستخدم مرة واحدة بس - الحل العملي: بنولّد كود فريد
- * وغير متوقّع لكل عميلة على حدة (مش كود عام مشترك)، فعمليًا هيفضل خاص بيها
- * هي بس لأن محدش غيرها عارفه. زرار "إصدار كوبون ٥٪" بيتاح لما تستلمي فعلاً
- * سكرين شوت التقييم من العميلة - مش بيتبعت تلقائي مع رسالة التذكير.
+ * 🎁 [بعد إلغاء الكوبونات]: مفيش كوبون تقييم بعد كده. لما العميلة تقول إنها قيّمت فعلاً على جوجل،
+ * زرار "قيّمت بالفعل" بيسجّلها في ذاكرة العملاء (customer_review_status) عشان ما تتسألش تاني.
  */
 (function () {
     "use strict";
 
     let currentFollowups = [];
-
-    const REVIEW_COUPON_PERCENT = 5;
-    const REVIEW_COUPON_VALID_DAYS = 14;
 
     function sanitizePhone(phone) {
         if (!phone) return "";
@@ -124,17 +115,15 @@
     /** رابط تقييم جوجل الرسمي لصفحة "حلويات بوسي" على الخرائط - ثابت لكل الطلبات */
     const GOOGLE_REVIEW_LINK = "https://g.page/r/Ca7yD4O1cGT3EBI/review";
 
-    // 🛡️ [تبسيط + شخصنة + حافز]: رسالة بطلب واحد واضح بس (جوجل، مش لينكين)،
-    // اسم المنتج مذكور بالظبط عشان تكون شخصية مش رسالة آلية عامة، وسطر حافز
-    // خفيف (سكرين شوت التقييم = كوبون ٥٪). الكوبون الفعلي بيتصدّر بزرار مخصص
-    // تحت لما يوصلك السكرين شوت فعلاً - مش بيتولّد مع رسالة التذكير نفسها.
+    // 🛡️ [تبسيط + شخصنة]: رسالة بطلب واحد واضح بس (جوجل، مش لينكين)، واسم المنتج مذكور بالظبط
+    // عشان تكون شخصية مش رسالة آلية عامة.
     function buildReminderMessage(order) {
         const firstName = (order.customer_name || "").trim().split(" ")[0] || "";
         const productPart = productNamesForMessage(order.order_items);
         const productLine = productPart ? ` عن تجربتك مع ${productPart}` : "";
-        const gender = guessGender(firstName);
-        const sendVerb = gender === "f" ? "ابعتيلنا" : "ابعتلنا";
-        return `أهلاً ${firstName} 🌸 نورتينا بطلبك من حلويات بوسي!\n\nلو عندك دقيقة بس${productLine}، هيسعدنا جداً رأيك على جوجل - بيفرق فعلاً معانا وبيساعد عملاء تانيين يلاقونا:\n${GOOGLE_REVIEW_LINK}\n\nوهدية بسيطة مننا 🎁: ${sendVerb} سكرين شوت من تقييمك وهنبعتلك كوبون خصم ٥٪ على طلبك الجاي 💕`;
+        return `أهلاً ${firstName} 🌸 نورتينا بطلبك من حلويات بوسي!\n\nلو عندك دقيقة بس${productLine}، هيسعدنا جداً رأيك على جوجل - بيفرق فعلاً معانا وبيساعد عملاء تانيين يلاقونا:\n${GOOGLE_REVIEW_LINK}
+
+شكراً ليكي على ثقتك في حلويات بوسي 💕`;
     }
 
     function buildWhatsappUrl(order) {
@@ -145,72 +134,21 @@
         return `https://wa.me/${intl}?text=${encodeURIComponent(buildReminderMessage(order))}`;
     }
 
-    /** كود كوبون فريد وسهل الطباعة للعميلة - الحماية الحقيقية دلوقتي بقت
-     *  bound_phone + max_uses (مش مجرد كود صعب التخمين زي قبل كده) */
-    function generateReviewCouponCode(order) {
-        const phoneDigits = sanitizePhone(order.phone1).replace(/\D/g, "").slice(-4) || "0000";
-        const random = Math.random().toString(36).slice(2, 6).toUpperCase();
-        return `SHUKRAN-${phoneDigits}-${random}`;
-    }
-
-    function buildReviewCouponMessage(code) {
-        return `تمام! 💖 كوبون خصم ٥٪ بتاعك على طلبك الجاي:\n${code}\nصالح لمدة أسبوعين من دلوقتي.`;
-    }
-
-    async function handleIssueCoupon(orderId) {
+    async function handleMarkReviewed(orderId) {
         const order = currentFollowups.find((o) => o.id === orderId);
         if (!order) return;
-
-        const firstName = (order.customer_name || "").trim().split(" ")[0] || "";
-        const gender = guessGender(firstName);
-        const customerNoun = gender === "f" ? "العميلة" : "العميل";
-        const possessivePronoun = gender === "f" ? "تقييمها" : "تقييمه";
-
         const confirmed = await window.BoseAdminUI.confirmAction({
-            title: "إصدار كوبون التقييم",
-            message: `هيتعمل كوبون خصم ${REVIEW_COUPON_PERCENT}٪ مربوط برقم موبايل ${order.customer_name || customerNoun} بس (محدّش تاني هيقدر يستخدمه)، صالح ${REVIEW_COUPON_VALID_DAYS} يوم ولمرة واحدة بالظبط. استخدمي الزرار ده بس بعد ما تستلمي فعلاً سكرين شوت ${possessivePronoun} على جوجل.`,
-            confirmLabel: "تأكيد الإصدار",
+            title: "تسجيل إن العميلة قيّمت",
+            message: "هتتسجّل العميلة دي إنها قيّمت فعلاً على جوجل، ومش هتتسأل تاني في أي طلب جاي. استخدمي الزرار ده بس بعد ما توصلك فعلاً صورة التقييم.",
+            confirmLabel: "تأكيد",
         });
         if (!confirmed) return;
-
-        const code = generateReviewCouponCode(order);
-        const expiresAt = new Date(Date.now() + REVIEW_COUPON_VALID_DAYS * 24 * 60 * 60 * 1000);
-
         try {
-            // 🛡️ [حماية حقيقية على مستوى القاعدة - مش مجرد كود صعب التخمين]:
-            // bound_phone بيربط الكود برقم موبايل العميلة بالظبط (مينفعش حد
-            // تاني يستخدمه حتى لو عرف الكود بالصدفة)، وmax_uses=1 بيمنع
-            // استخدامه أكتر من مرة حتى من نفس الرقم. الاتنين بيتفحصوا ذرّياً
-            // (atomic) جوه create_order_with_items وقت إتمام الطلب فعلياً.
-            await window.BoseAdmin.createCoupon({
-                code,
-                type: "percent",
-                value: REVIEW_COUPON_PERCENT,
-                is_active: true,
-                expires_at: expiresAt.toISOString(),
-                max_uses: 1,
-                bound_phone: sanitizePhone(order.phone1).replace(/\D/g, "").slice(-10),
-            });
-
-            // 🧠 [ذاكرة عميل]: تسجيل إن العميل ده قيّم فعلاً على جوجل - عشان
-            // مايتسألش تاني في أي طلب جاي مهما كان عدد طلباته بعد كده
             await window.BoseAdmin.markCustomerGoogleReviewed(order.phone1, order.customer_name);
-
-            const message = buildReviewCouponMessage(code);
-            try {
-                await navigator.clipboard.writeText(message);
-                window.BoseAdminUI.showToast(`تم إصدار الكود ${code} ونسخ رسالة جاهزة - الصقيها في واتساب`, "success");
-            } catch (clipErr) {
-                window.BoseAdminUI.showToast(`تم إصدار الكود: ${code}`, "success");
-            }
-
-            const intl = toInternational(order.phone1);
-            const waUrl = window.BoseAdminUI.buildWhatsappUrl
-                ? window.BoseAdminUI.buildWhatsappUrl(intl, message)
-                : `https://wa.me/${intl}?text=${encodeURIComponent(message)}`;
-            window.open(waUrl, "_blank", "noopener");
+            window.BoseAdminUI.showToast("تم تسجيل إنها قيّمت", "success");
+            await loadFollowups();
         } catch (e) {
-            window.BoseAdminUI.showToast("تعذر إصدار الكوبون - جربي تاني", "error");
+            window.BoseAdminUI.showToast("تعذر التسجيل - جربي تاني", "error");
         }
     }
 
@@ -243,8 +181,8 @@
                     <a class="adm-btn adm-btn-primary" href="${buildWhatsappUrl(o)}" target="_blank" rel="noopener" style="text-decoration:none; white-space:nowrap;">
                         <i class="fa-brands fa-whatsapp"></i> ابعتي التذكير
                     </a>
-                    <button class="adm-btn adm-btn-outline" data-action="issue-coupon" data-id="${e(o.id)}" style="white-space:nowrap;" title="استخدميه بعد ما توصلك سكرين شوت التقييم">
-                        <i class="fa-solid fa-gift"></i> إصدار كوبون ٥٪
+                    <button class="adm-btn adm-btn-outline" data-action="mark-reviewed" data-id="${e(o.id)}" style="white-space:nowrap;" title="استخدميه بعد ما توصلك صورة التقييم">
+                        <i class="fa-solid fa-star"></i> قيّمت بالفعل
                     </button>
                     <button class="adm-btn adm-btn-ghost" data-action="mark-sent" data-id="${e(o.id)}">تم الإرسال</button>
                 </td>
@@ -254,8 +192,8 @@
         tbody.querySelectorAll('[data-action="mark-sent"]').forEach((btn) => {
             btn.addEventListener("click", () => handleMarkSent(btn.getAttribute("data-id")));
         });
-        tbody.querySelectorAll('[data-action="issue-coupon"]').forEach((btn) => {
-            btn.addEventListener("click", () => handleIssueCoupon(btn.getAttribute("data-id")));
+        tbody.querySelectorAll('[data-action="mark-reviewed"]').forEach((btn) => {
+            btn.addEventListener("click", () => handleMarkReviewed(btn.getAttribute("data-id")));
         });
     }
 
