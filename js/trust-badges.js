@@ -23,7 +23,7 @@
     // مش "fa-solid"). دلوقتي حقل icon بياخد الكلاس الكامل (زي "fa-solid fa-lock"
     // أو "fa-brands fa-whatsapp") عشان يشتغل مع أي نوع أيقونة.
     const DEFAULT_BADGES = [
-        { icon: "fa-solid fa-lock", label: "دفع آمن", sub: "عربون أو كامل المبلغ بأمان" },
+        { icon: "fa-solid fa-lock", label: "دفع آمن", sub: "تحويل كامل المبلغ بأمان" },
         { icon: "fa-solid fa-award", label: "جودة مضمونة", sub: "خامات طازة يومياً" },
         { icon: "fa-solid fa-truck-fast", label: "توصيل سريع", sub: "لكل مناطق الوادي الجديد" },
         { icon: "fa-solid fa-headset", label: "تواصل مباشر", sub: "رد سريع على واتساب" },

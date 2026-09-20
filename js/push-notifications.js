@@ -18,7 +18,9 @@
 
     // 🔑 مفتاح VAPID العلني - آمن للعرض في كود العميل (ده بالظبط الغرض منه،
     // بعكس المفتاح الخاص اللي متخزّن كـ Edge Function secret على السيرفر بس).
-    const VAPID_PUBLIC_KEY = "BKRRJOTI0JD8uBVVM1mlP392jLxo3ILd3UhLshBaYssK4_rPc4PbFffvIosiTEGVzzPHB-CfFnNQ4Tt06fBCK8M";
+    const VAPID_PUBLIC_KEY = "BAkE7XPAXerLNjujhw7bflCNwquGI8NUsFjeMAKg7DVCLxsRIQ-l_31DHPAqgSijZyAnEXIZvRm_OiB00lqMtGw";
+    // مفتاح إشعارات الأدمن (تنبيهات الطلبات) - جهاز الأدمن ما بيتغيّرش اشتراكه من هنا أبداً
+    const ADMIN_VAPID_PUBLIC_KEY = "BAvmV5fbSyy3lbsV1F6zOxP0rxrcM2HOaKBqcn2sP9L7ogS05ZUxtD5hqk_-D9CZJs8HIwADUjUv8DUR6zF0Uio";
 
     const LS_PERMANENTLY_DISMISSED = "bose_push_prompt_permanently_dismissed";
     const SS_DISMISSED_THIS_SESSION = "bose_push_prompt_dismissed_this_session";
@@ -55,6 +57,52 @@
         return navigator.serviceWorker.ready;
     }
 
+    function subscriptionMatchesKey(subscription, publicKey) {
+        try {
+            const current = subscription && subscription.options && subscription.options.applicationServerKey;
+            if (!current) return false;
+            const a = new Uint8Array(current);
+            const b = urlBase64ToUint8Array(publicKey);
+            if (a.length !== b.length) return false;
+            for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false;
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    /**
+     * 🔑 [تجديد الاشتراكات القديمة تلقائيًا]: مفاتيح الإشعارات اتغيّرت، فأي عميلة كانت مشتركة بالمفتاح
+     * القديم اشتراكها مبقاش بيستلم. لو الإذن ممنوح أصلاً بنبدّل اشتراكها بالمفتاح الجديد من غير ما
+     * نطلب منها حاجة تاني. جهاز الأدمن (بمفتاح الأدمن) بيتسيب زي ما هو.
+     */
+    async function refreshLegacySubscription() {
+        if (!isPushSupported() || Notification.permission !== "granted") return;
+        try {
+            const reg = await navigator.serviceWorker.getRegistration();
+            if (!reg) return;
+            const sub = await reg.pushManager.getSubscription();
+            if (!sub) return;
+            if (subscriptionMatchesKey(sub, VAPID_PUBLIC_KEY) || subscriptionMatchesKey(sub, ADMIN_VAPID_PUBLIC_KEY)) return;
+
+            await sub.unsubscribe();
+            const fresh = await reg.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+            });
+            let tries = 0;
+            while (!(window.BoseSupabase && typeof window.BoseSupabase.savePushSubscription === "function") && tries < 50) {
+                await new Promise((r) => setTimeout(r, 200));
+                tries++;
+            }
+            if (window.BoseSupabase && typeof window.BoseSupabase.savePushSubscription === "function") {
+                await window.BoseSupabase.savePushSubscription(fresh.toJSON());
+            }
+        } catch (e) {
+            console.warn("bose push refresh failed:", e);
+        }
+    }
+
     async function isCurrentlySubscribed() {
         if (!isPushSupported()) return false;
         try {
@@ -83,6 +131,11 @@
             if (!registration) return false;
 
             let subscription = await registration.pushManager.getSubscription();
+            // اشتراك قديم بمفتاح مختلف (قبل تحديث مفاتيح الإشعارات) لازم يتبدّل عشان يقدر يستلم
+            if (subscription && !subscriptionMatchesKey(subscription, VAPID_PUBLIC_KEY) && !subscriptionMatchesKey(subscription, ADMIN_VAPID_PUBLIC_KEY)) {
+                await subscription.unsubscribe();
+                subscription = null;
+            }
             if (!subscription) {
                 subscription = await registration.pushManager.subscribe({
                     userVisibleOnly: true,
@@ -219,7 +272,7 @@
                 <div class="bose-push-prompt-icon"><i class="fa-solid fa-bell"></i></div>
                 <div class="bose-push-prompt-body">
                     <p class="bose-push-prompt-title">فعّلي إشعارات حلويات بوسي 🔔</p>
-                    <p class="bose-push-prompt-desc">تعرفي أول بأول بعروضنا الجديدة وقسائم مكافآتك - تقدري توقفها في أي وقت</p>
+                    <p class="bose-push-prompt-desc">تعرفي أول بأول بعروضنا الجديدة وخصومات مكافآتك - تقدري توقفها في أي وقت</p>
                     <div class="bose-push-prompt-actions">
                         <button type="button" class="bose-push-prompt-cta" id="bose-push-prompt-enable-btn">فعّلي الإشعارات</button>
                         <button type="button" class="bose-push-prompt-later" id="bose-push-prompt-later-btn">مش دلوقتي</button>
@@ -278,7 +331,9 @@
 
     if (document.readyState === "loading") {
         document.addEventListener("DOMContentLoaded", maybeShowPushPrompt);
+        document.addEventListener("DOMContentLoaded", () => setTimeout(refreshLegacySubscription, 2500));
     } else {
         maybeShowPushPrompt();
+        setTimeout(refreshLegacySubscription, 2500);
     }
 })();

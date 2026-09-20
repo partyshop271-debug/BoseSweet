@@ -1575,12 +1575,6 @@
             // العميل كتبه بنفسه، محصور بين الحد الأدنى والأقصى المحفوظين في
             // options الخاصة بالمنتج. الحصر هنا للتجربة/العرض بس - الفحص الملزم
             // الحقيقي بيحصل تاني في create_order_with_items على السيرفر.
-            if (product.isGiftCard) {
-                const min = parseFloat(product.options?.minAmount) || 150;
-                const max = parseFloat(product.options?.maxAmount) || 3000;
-                const chosen = parseFloat(opts.giftCardAmount);
-                return Math.min(Math.max(isNaN(chosen) ? min : chosen, min), max);
-            }
             price = product.price || product.basePrice || 0;
 
             // 🍧 [حل مشكلة "مش عارف يختار من خلاله" - سعر منتجات الميكس]: قررت
@@ -1773,7 +1767,6 @@
         const isCustomizable = product.isMiniCake ||
                              product.type === "custom-cake" || 
                              product.type === "custom-flower" || 
-                             product.isGiftCard ||
                              (product.options && product.options.mixFlavor === true) ||
                              (product.customizationOptions && Object.keys(opts).length > 0);
                              
@@ -1783,10 +1776,8 @@
         // المنتجات العادية ("جاهز وفريش") لأن مفيش opts.flavorName/cakeType
         // بيتبعتوا لها، فكانت تظهر في السلة/الفاتورة بوصف مربك زي "جاهز
         // وفريش" على منتج مالوش أي علاقة بالتحضير أو الطزاجة.
-        let correctFlavor = product.isGiftCard
-            ? "بطاقة هدية رقمية"
-            : (opts.flavorName || opts.cakeType || product.flavorName || product.flavor || "جاهز وفريش");
-        if (!product.isGiftCard && (correctFlavor === "none" || correctFlavor === "افتراضي")) {
+        let correctFlavor = (opts.flavorName || opts.cakeType || product.flavorName || product.flavor || "جاهز وفريش");
+        if (correctFlavor === "none" || correctFlavor === "افتراضي") {
             correctFlavor = product.flavorName || "جاهز وفريش";
         }
 
@@ -1804,9 +1795,8 @@
             // (يتحقق منه ضد الحد الأدنى/الأقصى) بدل ما يدور عليه في جدول
             // المنتجات بسعر ثابت، وهو نفسه اللي بيخلي واجهة السلة/الشيكاوت
             // تستثنيه من الشحن وموعد التسليم لأنه منتج رقمي بالكامل.
-            type: product.isGiftCard ? "gift-card" : (product.type || (product.isMiniCake ? "mini-cake" : "standard")),
+            type: (product.type || (product.isMiniCake ? "mini-cake" : "standard")),
             customDetails: {
-                amount: product.isGiftCard ? finalUnitPrice : undefined,
                 cakeType: opts.cakeType || opts.cakeFlavor || "فانيليا",
                 shape: opts.shape || "circle",
                 persons: parseInt(opts.persons, 10) || (product.isMiniCake ? 2 : 0),
@@ -1884,22 +1874,7 @@
         };
     };
 
-    /**
-     * 🎁📦 [منتج رقمي بالكامل]: بترجع true بس لو السلة مش فاضية وكل عنصر
-     * فيها بطاقة هدية (item.type === "gift-card") - سلة فيها بطاقة هدية
-     * + منتج فعلي واحد بتفضل "فعلية" بالكامل عن قصد (لسه محتاجة شحن/موعد
-     * تسليم عادي للمنتج التاني). checkout.html/cart.html/cart-engine.js
-     * بيستخدموا الدالة دي عشان يخفوا خطوات الشحن والتسليم الفعلية تماماً
-     * لو السلة رقمية بالكامل، بدل ما يوهموا العميلة إن بطاقة الهدية
-     * هتتشحن أو تحتاج معاد توصيل زي أي طلب حلويات عادي.
-     * @param {Array} cart
-     * @returns {boolean}
-     */
-    window.boseCartIsDigitalOnly = function(cart) {
-        if (!Array.isArray(cart) || cart.length === 0) return false;
-        return cart.every((item) => item && item.type === "gift-card");
-    };
-
+    
     /**
      * @param {string} phone
      * @param {boolean} isOptional
@@ -1956,88 +1931,19 @@
         return `https://wa.me/${intlNumber}?text=${encodedText}`;
     };
 
+    
     /**
-     * @param {number} subtotal
-     * @param {Object} coupon
-     * @returns {number}
-     */
-    window.calculateCouponDiscount = function(subtotal, coupon) {
-        const safeSubtotal = parseFloat(String(subtotal)) || 0;
-        if (!coupon) return 0;
-        const value = parseFloat(coupon.value) || 0;
-        let discount = 0;
-        if (coupon.type === "fixed") {
-            discount = value;
-        } else {
-            discount = safeSubtotal * (value / 100);
-        }
-        // 🆕 [سقف أقصى للخصم]: لو الكوبون عليه maxDiscountAmount (مفيدة خصوصاً
-        // مع النوع "نسبة مئوية" عشان طلب كبير جداً ميدّيش خصم مبالغ فيه)، بيتطبق
-        // هنا بعد الحساب مباشرة - نفس المنطق بالظبط اللي بيطبقه create_order_with_items
-        // في القاعدة، عشان الرقم المعروض للعميلة يطابق اللي هيتسجل فعلياً.
-        const maxDiscountAmount = coupon.maxDiscountAmount !== undefined && coupon.maxDiscountAmount !== null
-            ? parseFloat(coupon.maxDiscountAmount) : null;
-        if (maxDiscountAmount !== null && !isNaN(maxDiscountAmount)) {
-            discount = Math.min(discount, maxDiscountAmount);
-        }
-        return Math.max(0, Math.min(discount, safeSubtotal));
-    };
-
-    /**
-     * 🧮 [إصلاح حرج - المرحلة 1]: الدالة الموحدة الوحيدة لحساب فاتورة السلة/الشحن/الطلب النهائي.
-     * تُستخدم من cart-engine.js في 3 نقاط: ملخص السلة، ملخص الشحن بالـ checkout، وتأكيد الطلب النهائي،
-     * لضمان تطابق الأرقام بالمليم في كل مرحلة من رحلة الشراء.
-     * القاعدة المالية الصارمة: لا تقريب على الأسعار الفردية أو subtotal/discount، والتقريب الوحيد
-     * يتم مرة واحدة وحصرياً على الإجمالي الكلي النهائي (grandTotal).
+     * 🧾 [فاتورة السلة]: الإجمالي = (المجموع الفرعي - خصم الولاء التلقائي) + الشحن، ومقرّب لأقرب
+     * جنيه بنفس معادلة دالة الطلب في القاعدة (create_order_with_items) - القاعدة هي مصدر
+     * الحقيقة وبتعيد الحساب بنفسها. مفيش كوبونات ولا قسائم ولا بطاقات هدايا.
      * @param {Array} cart
      * @param {Object} storeData
      * @param {number} shippingFee
-     * @returns {{subtotal: number, discount: number, shippingFee: number, grandTotal: number, itemsCount: number}}
-     */
-    // 🎯🆕 [خانة خصم ذكية موحدة]: بدل 3 حالات تخزين منفصلة (bose_active_coupon
-    // في localStorage + window.BoseLoyaltyState.voucherCode + window.BoseGiftCardState
-    // في متغيرات الصفحة بس)، كل الأكواد المطبقة (كوبون/قسيمة ولاء/بطاقة هدية)
-    // بقت بتتخزن مكان واحد (bose_active_discounts) - وده معناه إنها بتفضل
-    // متاحة حتى لو العميلة رجعت من صفحة الشيك أوت للسلة والعكس، بدل ما تضطر
-    // تكتب الكود تاني كل ما تنقل صفحة. أقصى كود واحد لكل نوع (code_type) في
-    // نفس الوقت - كود جديد من نفس النوع بيستبدل القديم.
-    function getBoseActiveDiscounts() {
-        try {
-            const raw = localStorage.getItem("bose_active_discounts");
-            const arr = raw ? JSON.parse(raw) : [];
-            return Array.isArray(arr) ? arr : [];
-        } catch (e) {
-            return [];
-        }
-    }
-    window.getBoseActiveDiscounts = getBoseActiveDiscounts;
-
-    window.setBoseActiveDiscount = function(entry) {
-        if (!entry || !entry.code_type) return;
-        const list = getBoseActiveDiscounts().filter(d => d.code_type !== entry.code_type);
-        list.push(entry);
-        localStorage.setItem("bose_active_discounts", JSON.stringify(list));
-    };
-
-    window.removeBoseActiveDiscount = function(codeType) {
-        const list = getBoseActiveDiscounts().filter(d => d.code_type !== codeType);
-        localStorage.setItem("bose_active_discounts", JSON.stringify(list));
-    };
-
-    /**
-     * @param {Array} cart
-     * @param {Object} storeData
-     * @param {number} shippingFee
-     * @param {number} [loyaltyDiscountAmount] الخصم التلقائي حسب ترتيب الطلب (5%/10%/15%) - مش كود بيتكتب، فمُستقل عن bose_active_discounts.
+     * @param {number} [loyaltyDiscountAmount] خصم الولاء التلقائي المتوقع (معاينة فقط)
      */
     window.calculateBoseInvoice = function(cart, storeData, shippingFee, loyaltyDiscountAmount) {
         const safeCart = Array.isArray(cart) ? cart : [];
         const safeShippingFee = parseFloat(String(shippingFee)) || 0;
-        // 🎁 [نظام نقاط الولاء]: خصم تلقائي حسب ترتيب الطلب (5%/10%/15%) - بيتحسب
-        // في checkout.html بمجرد ما رقم الهاتف يتأكد صحيح (get_customer_rewards)
-        // ويترسل هنا كباراميتر اختياري عشان يظهر كبند منفصل وواضح للعميلة قبل
-        // ما تأكد الطلب، بدل ما يتطبق بصمت في قاعدة البيانات بس.
-        const safeLoyaltyDiscount = parseFloat(String(loyaltyDiscountAmount)) || 0;
 
         let subtotal = 0;
         let itemsCount = 0;
@@ -2049,61 +1955,17 @@
         });
         subtotal = parseFloat(subtotal.toFixed(4));
 
-        const activeDiscounts = getBoseActiveDiscounts();
-        const couponEntry = activeDiscounts.find(d => d.code_type === "coupon") || null;
-        const voucherEntry = activeDiscounts.find(d => d.code_type === "loyalty_voucher") || null;
-        const giftCardEntry = activeDiscounts.find(d => d.code_type === "gift_card") || null;
-
-        // 🧮 [ترتيب تراكم الخصومات]: نفس الترتيب القديم بالظبط (ولاء تلقائي ←
-        // كوبون ← قسيمة ولاء ← بطاقة هدية) - كل خصم بيتقفل عند أقصى مبلغ متبقي
-        // فعلياً بعد اللي قبله، عشان مجموع الخصومات مايتعداش قيمة الطلب+الشحن
-        // خالص، ومايتاكلش من رصيد قسيمة/بطاقة أكتر من المفروض.
-        const payableCeiling = parseFloat((subtotal + safeShippingFee).toFixed(4));
-        let runningUsed = Math.min(safeLoyaltyDiscount, payableCeiling);
-
-        let couponDiscount = 0;
-        if (couponEntry) {
-            couponDiscount = window.calculateCouponDiscount(subtotal, {
-                type: couponEntry.discount_type,
-                value: couponEntry.discount_value,
-                maxDiscountAmount: couponEntry.max_discount_amount
-            });
-            couponDiscount = Math.min(couponDiscount, Math.max(0, payableCeiling - runningUsed));
-            runningUsed += couponDiscount;
-        }
-
-        let voucherDiscount = 0;
-        if (voucherEntry) {
-            voucherDiscount = Math.min(parseFloat(voucherEntry.remaining_amount) || 0, Math.max(0, payableCeiling - runningUsed));
-            runningUsed += voucherDiscount;
-        }
-
-        let giftCardDiscount = 0;
-        if (giftCardEntry) {
-            giftCardDiscount = Math.min(parseFloat(giftCardEntry.remaining_amount) || 0, Math.max(0, payableCeiling - runningUsed));
-            runningUsed += giftCardDiscount;
-        }
-
-        couponDiscount = parseFloat(couponDiscount.toFixed(4));
-        voucherDiscount = parseFloat(voucherDiscount.toFixed(4));
-        giftCardDiscount = parseFloat(giftCardDiscount.toFixed(4));
-
-        const discount = parseFloat((couponDiscount + safeLoyaltyDiscount + voucherDiscount + giftCardDiscount).toFixed(4));
-        const grandTotal = Math.round(Math.max(0, subtotal - discount) + safeShippingFee);
+        // الخصم مايتخطاش المجموع الفرعي أبداً
+        const safeLoyaltyDiscount = Math.min(Math.max(0, parseFloat(String(loyaltyDiscountAmount)) || 0), subtotal);
+        const grandTotal = Math.round(Math.max(0, subtotal - safeLoyaltyDiscount) + safeShippingFee);
 
         return {
             subtotal: subtotal,
-            discount: discount,
-            couponDiscount: couponDiscount,
+            discount: safeLoyaltyDiscount,
             loyaltyDiscountAmount: safeLoyaltyDiscount,
-            voucherDiscountAmount: voucherDiscount,
-            giftCardDiscountAmount: giftCardDiscount,
             shippingFee: safeShippingFee,
             grandTotal: grandTotal,
-            itemsCount: itemsCount,
-            couponCode: couponEntry ? couponEntry.code : null,
-            voucherCode: voucherEntry ? voucherEntry.code : null,
-            giftCardCode: giftCardEntry ? giftCardEntry.code : null
+            itemsCount: itemsCount
         };
     };
 
@@ -3474,12 +3336,6 @@
                                     </a>
                                 </li>
                                 <li class="sidebar-link-item">
-                                    <a href="/gift-card-builder.html">
-                                        <span class="link-main-side"><i class="fa-solid fa-gift main-icon"></i>بطاقة هدية مخصصة</span>
-                                        <i class="fa-solid fa-chevron-left arrow-icon"></i>
-                                    </a>
-                                </li>
-                                <li class="sidebar-link-item">
                                     <a href="/policies/shipping-policy.html">
                                         <span class="link-main-side"><i class="fa-solid fa-truck main-icon"></i>سياسة الشحن والتوصيل</span>
                                         <i class="fa-solid fa-chevron-left arrow-icon"></i>
@@ -3653,7 +3509,6 @@
                                 <li><a href="/menu.html">المنيو الشامل</a></li>
                                 <li><a href="/cake-builder.html">محاكي التورت</a></li>
                                 <li><a href="/flower-builder.html">محاكي الورد</a></li>
-                                <li><a href="/gift-card-builder.html">بطاقة هدية مخصصة</a></li>
                                 <li><a href="/cart.html">سلة التسوق</a></li>
                             </ul>
                         </div>

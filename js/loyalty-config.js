@@ -1,39 +1,20 @@
 /**
- * loyalty-config.js — نقطة واحدة لقراءة إعدادات "نادي مكافآت حلويات بوسي"
- * (store_settings.loyalty) وتطبيعها بنفس القيم الافتراضية اللي بتستخدمها
- * لوحة التحكم بالظبط.
+ * loyalty-config.js - إعدادات خصم الولاء التلقائي (بتتقرا من store_settings.loyalty في القاعدة).
  *
- * 🛡️ [إصلاح جذري]: قبل كده كل صفحة (تيزر الرئيسية، rewards.html) كانت بتكتب
- * نسخة يدوية Hardcoded من نسب الخصم/مبلغ القسيمة/طول الدورة في الـ HTML/JS
- * بتاعتها، فمكنش فيه أي رابط حقيقي بينها وبين لوحة التحكم - أي تعديل من
- * الأدمن في loyalty-settings.html كان يتخزن في القاعدة لكن محدش في الواجهة
- * كان بيقرأه. دلوقتي كل صفحة تستدعي getBoseLoyaltyConfig() فتاخد نفس الأرقام
- * الحية اللي حفظتها لوحة التحكم، من مكان واحد بس - فأي صفحة جديدة تتبني
- * بعد كده تاخد نفس الرقم الصح تلقائيًا من غير ما تعيد كتابته.
+ * 🎁 [نظام الولاء بعد التبسيط]: مفيش قسائم ولا أكواد ولا كوبونات ولا بطاقات هدايا. الولاء بقى
+ * خصم نسبة مئوية تلقائي بيتطبق من السيرفر على طلب العميلة حسب ترتيب طلباتها المسلّمة جوه "دورة":
+ *   - cycle_length : طول الدورة (عدد الطلبات قبل ما العدّاد يبدأ من الأول)
+ *   - tiers        : { ترتيب_الطلب_في_الدورة : نسبة_الخصم }  مثال { "4": 5, "8": 10, "12": 15 }
+ *   - enabled      : تشغيل/إيقاف النظام كله
  *
- * 🚨🛡️ [تصحيح - الملاحظة القديمة هنا كانت غلط وسببت باگ حقيقي]: الملف ده
- * ما بيقراش window.BoseStoreData إلا *جوه* الدوال تحت، وقت ما حد ينادي
- * getBoseLoyaltyConfig() فعليًا - مش وقت تحميل السكريبت نفسه. يعني معندوش
- * أي تبعية حقيقية تخليه يتحمّل بعد core-engine.js.
- *
- * العكس هو الصح: لازم يتحمّل *قبل* core-engine.js (شوفي index.html/rewards.html)
- * - لأن core-engine.js ممكن يطلق حدث "BoseDatabaseLoaded" بشكل فوري ومتزامن
- * (لو فيه cache صالح، وهي الحالة الشائعة) وقت ما هو نفسه لسه بيتنفذ، فلو
- * loyalty-config.js متحمّلش قبله، أي كود بيسمع للحدث ده هيلاقي
- * getBoseLoyaltyConfig مش موجودة لسه ويفشل بصمت. ده بالظبط اللي كان بيسبب
- * ظهور أرقام الولاء القديمة الثابتة (5%/الطلب3، إلخ) بدل الأرقام الحقيقية
- * من لوحة التحكم في index.html.
- *
- * القاعدة البسيطة: أي صفحة تستخدم getBoseLoyaltyConfig/getSortedLoyaltyTiers
- * لازم تحمّل السكريبت ده قبل core-engine.js في ترتيب الـ <script> tags.
+ * ⚠️ [مهم - ترتيب التحميل]: الملف ده بيعرّف دوال بس، ولازم يتحمّل *قبل* core-engine.js في
+ * الصفحات اللي بتعرض الولاء (index.html / rewards.html)، لأن core-engine.js ممكن يطلق حدث
+ * BoseDatabaseLoaded بشكل متزامن أول ما البيانات تجهز.
  */
 (function () {
     "use strict";
 
-    // نفس الافتراضي بالظبط الموجود في admin/js/pages/loyalty-settings-page.js
-    // وفي admin-data.js (getCustomerLoyaltyProfile) - لو الأدمن لسه محفظش
-    // إعدادات مخصصة، الواجهة والقاعدة يفضلوا متفقين على نفس الأرقام.
-    const DEFAULT_TIERS = { "3": 5, "5": 10, "7": 15 };
+    const DEFAULT_TIERS = { "4": 5, "8": 10, "12": 15 };
 
     function getBoseLoyaltyConfig() {
         const loyalty = (window.BoseStoreData && window.BoseStoreData.loyalty) || {};
@@ -41,15 +22,12 @@
 
         return {
             enabled: loyalty.enabled !== false,
-            cycleLength: Math.max(1, parseInt(loyalty.cycle_length, 10) || 7),
+            cycleLength: Math.max(1, parseInt(loyalty.cycle_length, 10) || 12),
             tiers: hasCustomTiers ? loyalty.tiers : DEFAULT_TIERS,
-            milestoneEvery: Math.max(1, parseInt(loyalty.milestone_every, 10) || 10),
-            voucherAmount: (loyalty.voucher_amount === 0 || loyalty.voucher_amount) ? loyalty.voucher_amount : 300,
-            voucherValidityMonths: parseInt(loyalty.voucher_validity_months, 10) || 2,
         };
     }
 
-    /** بيرجّع الشرائح كمصفوفة مرتبة [{position, percent}] بدل الكائن الخام { "3": 5, ... } */
+    // الشرايح مرتّبة تصاعدياً: [{ position: 4, percent: 5 }, ...]
     function getSortedLoyaltyTiers(config) {
         const src = (config && config.tiers) || DEFAULT_TIERS;
         return Object.keys(src)
@@ -58,21 +36,11 @@
             .sort((a, b) => a.position - b.position);
     }
 
-    /** "شهر" / "شهرين" / "N شهور" - نفس صيغة الجمع العربي المصري المستخدمة في نصوص الموقع */
-    function formatArabicMonths(count) {
-        const n = parseInt(count, 10) || 0;
-        if (n === 1) return "شهر";
-        if (n === 2) return "شهرين";
-        return `${n} شهور`;
-    }
-
-    /** "طلب" / "طلبات" - نفس منطق الجمع المستخدم في باقي كود الموقع */
     function formatArabicOrders(count) {
         return parseInt(count, 10) === 1 ? "طلب" : "طلبات";
     }
 
     window.getBoseLoyaltyConfig = getBoseLoyaltyConfig;
     window.getSortedLoyaltyTiers = getSortedLoyaltyTiers;
-    window.formatArabicMonths = formatArabicMonths;
     window.formatArabicOrders = formatArabicOrders;
 })();

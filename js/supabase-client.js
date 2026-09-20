@@ -133,7 +133,6 @@
             // خالص. نفس الكلام لـ is_gift_card/options اللازمين لبطاقة الهدية
             // بالمبلغ الحر (حد أدنى/أقصى قادمين من هنا للواجهة).
             faqs: p.faqs || [],
-            isGiftCard: p.is_gift_card === true,
             options: p.options || {},
         }));
 
@@ -235,6 +234,9 @@
                 : (item.referenceImages || []),
         }));
 
+        // 💳 [الدفع بالتحويل - كامل المبلغ مقدمًا]: الدالة في قاعدة البيانات بتقبل رقم المحفظة/الهاتف
+        // اللي العميلة حوّلت منه (إلزامي وبيتفحص كرقم مصري) + رقم المتجر اللي حوّلت عليه، وبتحسب
+        // الخصم التلقائي والإجمالي بنفسها. مفيش كوبونات ولا قسائم ولا بطاقات هدايا ولا عربون.
         const result = await boseSupabaseRpc("create_order_with_items", {
             p_customer_name: orderPayload.customerName,
             p_phone1: orderPayload.phone1,
@@ -245,26 +247,12 @@
             p_scheduled_date: orderPayload.scheduledDateRaw || null, // YYYY-MM-DD
             p_scheduled_time: orderPayload.scheduledTime || null,
             p_notes: orderPayload.notes || null,
-            p_coupon_code: orderPayload.couponCode || null,
             p_subtotal: parseFloat(orderPayload.subtotal) || 0,
             p_shipping_fee: parseFloat(orderPayload.shippingFee) || 0,
-            p_discount_amount: parseFloat(orderPayload.discountAmount) || 0,
             p_grand_total: parseFloat(orderPayload.grandTotal) || 0,
             p_items: items,
-            p_pay_full: !!orderPayload.payFull,
-            // 🎁 [نظام نقاط الولاء]: كود قسيمة الولاء (لو العميلة عندها واحدة نشطة
-            // ودخلته) - الباك إند بيتحقق منه ومن ملكيته لنفس رقم الهاتف بنفسه.
-            p_voucher_code: orderPayload.loyaltyVoucherCode || null,
-            // 🎁 [استخدام كود بطاقة هدية]: كود البطاقة (لو العميل كتبه وضغط
-            // "تفعيل" في الشيك أوت) - create_order_with_items بيتحقق منه ومن
-            // رصيده بنفسه تاني، نفس فلسفة قسيمة الولاء تماماً.
-            p_gift_card_code: orderPayload.giftCardCode || null,
-            // 🛡️🔧 [إصلاح جذري]: قبل كده الباراميترات دي ما كانتش بتتبعت خالص،
-            // فـ PostgREST كان بيستدعي نسخة قديمة من الدالة (من غير تتبع مصدر
-            // العميل) بدل النسخة الجديدة اللي فيها upsert_customer_on_order -
-            // يعني جدول customers مكنش بيتحدث خالص من أي طلب حقيقي. دلوقتي
-            // بنبعتهم دايماً (حتى لو null) عشان تتحقق مطابقة الدالة الصحيحة
-            // فعلياً، وتشتغل ميزة تتبع مصدر العميل اللي مبنية بالفعل في لوحة التحكم.
+            p_payment_sender_phone: orderPayload.paymentSenderPhone || null,
+            p_payment_number_used: orderPayload.paymentNumberUsed || null,
             p_attribution_source: orderPayload.attributionSource || null,
             p_attribution_medium: orderPayload.attributionMedium || null,
             p_attribution_detail: orderPayload.attributionDetail || null,
@@ -274,38 +262,20 @@
         return {
             orderId: row.order_id,
             orderNumber: row.order_number,
-            depositAmount: row.deposit_amount,
+            depositAmount: row.deposit_amount, // = الإجمالي (الدفع كامل مقدمًا)
             grandTotal: row.grand_total,
-            // 🎁 [نظام نقاط الولاء]: القيم الحقيقية المحسوبة والمؤكدة من قاعدة
-            // البيانات (مصدر الحقيقة الوحيد) - بتتسجل في الطلب المحلي عشان تتعرض
-            // للعميلة في صفحة النجاح وفاتورة الواتساب.
+            // 🎁 [خصم الولاء التلقائي]: القيم المؤكدة من السيرفر (مصدر الحقيقة الوحيد)
             loyaltyDiscountPercent: row.loyalty_discount_percent || 0,
-            loyaltyDiscountAmount: row.loyalty_discount_amount || 0,
-            voucherAmountUsed: row.voucher_amount_used || 0,
+            loyaltyDiscountAmount: row.discount_amount || 0,
+            loyaltyOrderSequence: row.loyalty_order_sequence || null,
             isLoyaltyMilestone: !!row.is_loyalty_milestone,
-            // 🛡️🔧 [إصلاح جذري - مصدر الحقيقة المالي]: القيم دي هي المؤكدة
-            // فعلياً من قاعدة البيانات بعد تطبيق كل شروط الكوبون (حد أدنى/
-            // ربط برقم/سقف خصم/إلخ) - المفروض تستبدل بيها أي رقم كان محسوب
-            // محلياً في السلة قبل الحفظ، عشان فاتورة الواتساب وصفحة النجاح
-            // يعرضوا المبلغ الحقيقي المطلوب دفعه بالظبط مش تقدير محلي ممكن
-            // يكون اختلف (مثلاً لو الكوبون اتضح إنه مش سارٍ فعلياً وقت الحفظ).
             confirmedSubtotal: row.subtotal,
             confirmedShippingFee: row.shipping_fee,
             confirmedDiscountAmount: row.discount_amount,
         };
     }
 
-    /**
-     * 🎁 [نظام نقاط الولاء]: التحقق من صلاحية كود قسيمة الولاء (300 جنيه) قبل
-     * تطبيقه في السلة - بيتأكد إنه فعلاً بتاع نفس رقم الهاتف ولسه ساري ومعاه رصيد.
-     * @returns {Promise<{is_valid: boolean, message: string, remaining_amount: number|null, expires_at: string|null}>}
-     */
-    async function validateBoseLoyaltyVoucher(code, phone) {
-        const result = await boseSupabaseRpc("validate_loyalty_voucher", { p_code: code, p_phone: phone });
-        return Array.isArray(result) ? result[0] : result;
-    }
-
-    /**
+        /**
      * ⭐ إرسال مراجعة حقيقية لقاعدة البيانات (تحل محل localStorage الوهمي).
      * تدخل تلقائياً في "قائمة انتظار المراجعة" (is_approved = false) ولا
      * تظهر للعامة إلا بعد اعتماد الإدارة من لوحة التحكم لاحقاً.
@@ -414,62 +384,7 @@
         return data.secure_url;
     }
 
-    /**
-     * 🏷️ التحقق من كوبون عبر الدالة الآمنة (بدون كشف كل الأكواد)
-     * 🛡️🔧 [إصلاح جذري]: قبل كده الدالة دي كانت بتبعت الكود لوحده من غير
-     * رقم هاتف ولا قيمة سلة - فأي كوبون مربوط برقم موبايل كان يترفض تلقائياً
-     * دايماً (مستحيل يتطبق من واجهة العميل خالص)، وأي حد أدنى لقيمة الطلب
-     * كان بيتجاهله الفحص بالكامل. دلوقتي بتقبل phone و subtotal اختياريين
-     * وتبعتهم فعلياً لدالة القاعدة عشان الفحوصات التانية تشتغل صح.
-     * @param {string} code
-     * @param {string|null} phone
-     * @param {number|null} subtotal
-     */
-    async function validateBoseCoupon(code, phone, subtotal) {
-        const result = await boseSupabaseRpc("validate_coupon", {
-            p_code: code,
-            p_phone: phone || null,
-            p_subtotal: (subtotal === undefined || subtotal === null) ? null : parseFloat(subtotal),
-        });
-        const row = Array.isArray(result) ? result[0] : result;
-        return row || { is_valid: false, message: "تعذر التحقق من الكود" };
-    }
-
-    /**
-     * 🎁 [استخدام كود بطاقة هدية]: نفس فلسفة validateBoseCoupon بالظبط - بتنادي
-     * على validate_gift_card_code (RPC آمن SECURITY DEFINER) بدل ما تقرا جدول
-     * gift_cards مباشرة (مقفول بالكامل بـ RLS على الأدمن فقط) عشان محدش يقدر
-     * يتصفح كل الأكواد أو أرصدتها.
-     * @param {string} code
-     */
-    async function validateBoseGiftCard(code) {
-        const result = await boseSupabaseRpc("validate_gift_card_code", {
-            p_code: code,
-        });
-        const row = Array.isArray(result) ? result[0] : result;
-        return row || { is_valid: false, message: "تعذر التحقق من كود بطاقة الهدية" };
-    }
-
-    /**
-     * 🎯 [خانة خصم ذكية موحدة]: نداء واحد بس لـ resolve_discount_code بدل ما
-     * الفرونت إند يجرب الكود على 3 دوال منفصلة (كوبون/بطاقة هدية/قسيمة ولاء)
-     * بـ3 طلبات شبكة - الدالة في قاعدة البيانات هي اللي بتحدد نوع الكود
-     * الحقيقي وترجع نتيجة التحقق المطابقة له بالظبط (code_type + is_valid +
-     * message + تفاصيل الخصم حسب النوع).
-     * @param {string} code
-     * @param {string|null} phone
-     * @param {number|null} subtotal
-     */
-    async function resolveBoseDiscountCode(code, phone, subtotal) {
-        const result = await boseSupabaseRpc("resolve_discount_code", {
-            p_code: code,
-            p_phone: phone || null,
-            p_subtotal: (subtotal === undefined || subtotal === null) ? null : parseFloat(subtotal),
-        });
-        return result || { code_type: "none", is_valid: false, message: "تعذر التحقق من الكود حالياً" };
-    }
-
-    /**
+                /**
      * 📦 تتبع الطلب: بيرجع حالة الطلب وتفاصيله لو رقم الطلب + رقم الهاتف مطابقين
      * فعلياً لطلب حقيقي في القاعدة (نفس فلسفة validate_coupon: RPC آمن بدل SELECT
      * مباشر على جدول orders المقفول بالكامل بـ RLS للأدمن فقط).
@@ -518,14 +433,30 @@
         }
     }
 
-    /**
-     * 🎁 مكافآت العميل: بتحسب النقاط/المستوى فعلياً من إجمالي طلبات العميل
-     * الحقيقية المرتبطة برقم هاتفه (باستثناء الطلبات الملغاة) عبر RPC آمن.
+        /**
+     * 🎂 [مشاركة تصميم التورتة]: بيحفظ لقطة التصميم ويرجّع id قصير للرابط (design-view.html?id=...).
+     * الدوال في القاعدة: create_shared_cake_design / get_shared_cake_design.
      */
-    async function getBoseCustomerRewards(phone) {
-        const result = await boseSupabaseRpc("get_customer_rewards", { p_phone: phone });
+    async function createSharedCakeDesign(snapshot) {
+        const id = await boseSupabaseRpc("create_shared_cake_design", { p_design: snapshot });
+        return typeof id === "string" ? id : ((id && id.id) || null);
+    }
+
+    async function getSharedCakeDesign(id) {
+        const design = await boseSupabaseRpc("get_shared_cake_design", { p_id: id });
+        return design && typeof design === "object" ? design : null;
+    }
+
+    /**
+     * 🎁 [خصم الولاء التلقائي]: حالة ولاء العميلة من رقم موبايلها - عدد الطلبات اللي اتسلمت،
+     * ترتيب طلبها الجاي في الدورة، ونسبة الخصم اللي هتتطبق عليه تلقائي. مفيش أكواد ولا قسائم:
+     * الخصم بيتحسب ويتطبق من السيرفر (create_order_with_items) على أساس طلباتها المسلّمة.
+     * @returns {Promise<{found:boolean, delivered_orders:number, next_sequence:number, cycle_length:number, next_discount_percent:number, tiers:Object}>}
+     */
+    async function getBoseCustomerLoyaltyStatus(phone) {
+        const result = await boseSupabaseRpc("get_customer_loyalty_status", { p_phone: phone });
         const row = Array.isArray(result) ? result[0] : result;
-        return row || { found: false, message: "تعذر التحقق من رصيد المكافآت، حاولي مرة أخرى" };
+        return row || { found: false, delivered_orders: 0, next_sequence: 1, cycle_length: 12, next_discount_percent: 0, tiers: {} };
     }
 
     /**
@@ -542,18 +473,9 @@
         // متضيعش من سجل الطلب المحفوظ فعلياً في قاعدة البيانات (حتى لو ظهرت
         // في فاتورة الواتساب في سطر منفصل)، بندمجها هنا كسطر إضافي واضح جوه
         // نص الملاحظات المرسل لقاعدة البيانات.
-        let combinedNotes = (o.shippingNotes && o.shippingNotes.trim() !== "")
+        const combinedNotes = (o.shippingNotes && o.shippingNotes.trim() !== "")
             ? `${o.notes || "لا توجد ملاحظات إضافية"}\n🚚 ملاحظات التوصيل: ${o.shippingNotes.trim()}`
             : o.notes;
-        // 💳 [الدفع بالتحويل من الموقع]: رقم عملية التحويل (أو آخر 3 أرقام) اللي العميلة كتبته
-        // بيتحفظ كسطر مستقل في ملاحظات الطلب، عشان الأدمن يشوفه في تفاصيل الطلب ويطابقه
-        // مع التحويل قبل ما يدوس "تأكيد استلام المبلغ".
-        if (o.paymentReference && String(o.paymentReference).trim() !== "") {
-            const paymentLine = `🧾 رقم عملية التحويل / آخر 3 أرقام: ${String(o.paymentReference).trim()}`;
-            combinedNotes = (!combinedNotes || combinedNotes === "لا توجد ملاحظات إضافية")
-                ? paymentLine
-                : `${combinedNotes}\n${paymentLine}`;
-        }
         return submitBoseOrderToDatabase({
             customerName: o.customerName,
             phone1: o.phone1,
@@ -568,16 +490,13 @@
             scheduledDateRaw: o.scheduledDateISO || o.scheduledDate, // بصيغة YYYY-MM-DD بالفعل من <input type="date">
             scheduledTime: o.scheduledTime,
             notes: combinedNotes,
-            couponCode: o.couponCode || null,
             subtotal: parseFloat(o.subtotal) || ((o.grandTotal || 0) - (o.shippingFee || 0)),
             shippingFee: o.shippingFee || 0,
-            discountAmount: parseFloat(o.discountAmount) || 0,
             grandTotal: o.grandTotal,
             items: o.items || [],
-            payFull: !!o.payFull,
-            // 🎁 [نظام نقاط الولاء]: كود قسيمة الولاء لو العميلة طبّقته في السلة
-            loyaltyVoucherCode: o.loyaltyVoucherCode || null,
-            giftCardCode: o.giftCardCode || null,
+            // 💳 رقم المحفظة/الهاتف اللي حوّلت منه العميلة + رقم المتجر اللي حوّلت عليه
+            paymentSenderPhone: o.paymentSenderPhone || null,
+            paymentNumberUsed: o.paymentNumberUsed || null,
             // 🧭 [نظام تتبع مصدر العملاء]: مرّرة لو موجودة (مش متسجلة من الفرونت
             // إند لسه دلوقتي، بس بقت شغالة فعلياً وقت وصولها من أي مصدر مستقبلي)
             attributionSource: o.attributionSource || null,
@@ -774,14 +693,12 @@
         submitBoseOrderToDatabase,
         submitBoseReview,
         fetchApprovedReviews,
-        validateBoseCoupon,
-        validateBoseGiftCard,
-        resolveBoseDiscountCode,
         uploadBoseReferenceImage,
         trackBoseOrder,
         getBoseDailyOrderCapacity,
-        getBoseCustomerRewards,
-        validateBoseLoyaltyVoucher,
+        getBoseCustomerLoyaltyStatus,
+        createSharedCakeDesign,
+        getSharedCakeDesign,
         getBoseContentPage,
         fetchBoseTourSteps,
         logBoseTourEvent,
