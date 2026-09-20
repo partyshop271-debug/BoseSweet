@@ -50,7 +50,7 @@
                 <td class="adm-orders-checkbox-cell">
                     <input type="checkbox" class="adm-order-row-checkbox" data-id="${e(o.id)}" ${selectedIds.has(o.id) ? "checked" : ""}>
                 </td>
-                <td>#${e(o.order_number || o.id)}</td>
+                <td>#${e(o.order_number || o.id)}${o.payment_method === "cod" ? ' <span class="adm-badge warning" style="font-size:0.7rem;">💵 عند الاستلام</span>' : ""}</td>
                 <td>${e(o.customer_name || "—")}</td>
                 <td>${e(o.phone1 || "—")}</td>
                 <td>${money(o.grand_total)}</td>
@@ -265,7 +265,9 @@
         // والأدمن تطابقه مع التحويل قبل ما تدوس "تأكيد استلام المبلغ".
         const PAYMENT_REF_LINE_RE = /\n?🧾 رقم عملية التحويل \/ آخر 3 أرقام: (.+)$/m;
         const paymentRefMatch = String(order.notes || "").match(PAYMENT_REF_LINE_RE);
-        const paymentRefText = paymentRefMatch ? paymentRefMatch[1].trim() : "";
+        // رقم المحفظة/الهاتف اللي حوّلت منه العميلة: من عمود payment_sender_phone (الأساسي)، وبديل قديم من الملاحظات
+        const paymentRefText = order.payment_sender_phone || (paymentRefMatch ? paymentRefMatch[1].trim() : "");
+        const isCodOrder = order.payment_method === "cod";
         const notesWithoutRef = String(order.notes || "").replace(PAYMENT_REF_LINE_RE, "").trim();
         const idx = currentOrders.findIndex((o) => o.id === order.id);
         const hasPrev = idx > 0;
@@ -321,14 +323,30 @@
                     <div class="adm-order-grand-total"><span>الإجمالي الكلي</span><span>${money(order.grand_total)}</span></div>
                 </div>
 
-                <!-- 💵 [عربون/دفع مقدم] -->
+                <!-- 💵 [طريقة الدفع]: الدفع عند الاستلام (تحصيل كاش وقت التسليم) أو أونلاين (تحويل مقدم) -->
+                ${isCodOrder ? `
                 <div class="adm-order-totals" style="margin-top: 10px; border-top: 1px dashed #eee; padding-top: 10px;">
+                    <div>
+                        <span>طريقة الدفع</span>
+                        <span><span class="adm-badge warning">💵 الدفع عند الاستلام</span></span>
+                    </div>
+                    <div>
+                        <span>المبلغ المطلوب تحصيله كاش وقت التسليم</span>
+                        <strong>${money(order.grand_total)}</strong>
+                    </div>
+                </div>
+                ` : `
+                <div class="adm-order-totals" style="margin-top: 10px; border-top: 1px dashed #eee; padding-top: 10px;">
+                    <div>
+                        <span>طريقة الدفع</span>
+                        <span><span class="adm-badge info">دفع أونلاين (تحويل)</span></span>
+                    </div>
                     <div>
                         <span>المبلغ الكامل المطلوب (دفع مقدم)</span>
                         <span>${money(order.deposit_amount)}</span>
                     </div>
                     ${paymentRefText ? `<div>
-                        <span>رقم عملية التحويل (من العميلة)</span>
+                        <span>الرقم اللي حوّلت منه العميلة</span>
                         <strong style="direction:ltr;">${e(paymentRefText)}</strong>
                     </div>` : ""}
                     <div>
@@ -345,6 +363,7 @@
                     </button>
                 </div>
                 ` : ""}
+                `}
 
                 <div class="adm-field adm-mt-16">
                     <label for="order-status-select">حالة الطلب</label>
@@ -638,13 +657,14 @@
             (window.BoseAdminUI.ORDER_STATUSES.find((s) => s.key === key) || {}).label || key;
         const csvCell = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
 
-        const headers = ["رقم الطلب", "اسم العميل", "الهاتف", "الحالة", "طريقة الاستلام", "الإجمالي الكلي", "تاريخ الطلب"];
+        const headers = ["رقم الطلب", "اسم العميل", "الهاتف", "الحالة", "طريقة الاستلام", "طريقة الدفع", "الإجمالي الكلي", "تاريخ الطلب"];
         const rows = currentOrders.map((o) => [
             o.order_number || o.id,
             o.customer_name || "",
             o.phone1 || "",
             statusLabel(o.status),
             DELIVERY_LABELS[o.delivery_method] || o.delivery_method || "",
+            o.payment_method === "cod" ? "عند الاستلام" : "أونلاين",
             o.grand_total || 0,
             o.created_at ? new Date(o.created_at).toLocaleString("ar-EG") : "",
         ]);

@@ -56,7 +56,7 @@
         return `
             <div class="adm-pending-order-row" data-id="${e(o.id)}">
                 <div class="adm-pending-order-info">
-                    <strong>#${e(o.order_number || o.id)} - ${e(o.customer_name || "—")}</strong>
+                    <strong>#${e(o.order_number || o.id)} - ${e(o.customer_name || "—")}${o.payment_method === "cod" ? ' <span class="adm-badge warning" style="font-size:0.7rem;">💵 عند الاستلام</span>' : ""}</strong>
                     <small>${o.grand_total ? Math.round(o.grand_total) + " ج.م" : "—"} - ${formatDate(o.created_at)}</small>
                 </div>
                 <div class="adm-pending-order-actions">
