@@ -77,17 +77,8 @@
             ],
         },
         {
-            group: "القسائم والهدايا",
-            items: [
-                { key: "loyalty-vouchers", label: "قسائم الولاء الصادرة", icon: "fa-gift", href: "loyalty-vouchers.html" },
-                { key: "gift-cards", label: "بطاقات الهدايا", icon: "fa-wallet", href: "gift-cards.html" },
-                { key: "voucher-notifications", label: "تنبيه القسائم والبطاقات", icon: "fa-bell", href: "voucher-notifications.html", badgeKey: "vouchersUnnotified" },
-            ],
-        },
-        {
             group: "الإعدادات",
             items: [
-                { key: "coupons", label: "الكوبونات", icon: "fa-ticket", href: "coupons.html" },
                 { key: "reviews", label: "التقييمات", icon: "fa-star", href: "reviews.html", badgeKey: "pendingReviews" },
                 { key: "shipping-zones", label: "مناطق التوصيل", icon: "fa-truck-fast", href: "shipping-zones.html" },
                 { key: "builders-settings", label: "إعدادات المحاكيات", icon: "fa-palette", href: "builders-settings.html" },
@@ -117,17 +108,13 @@
         promotions: ["بانرات العروض", "إدارة بانرات وكروت العروض التسويقية الظاهرة للعملاء"],
         "content-studio": ["استوديو المحتوى", "توليد وتعديل أوصاف المنتجات والنكهات والفئات وصفحات السياسات بالذكاء الاصطناعي"],
         tour: ["الجولة التفاعلية", "تعديل خطوات جولة الموقع من غير كود، ومتابعة عند أي خطوة العميلات بيسيبوا الجولة فعليًا"],
-        coupons: ["الكوبونات", "إنشاء وإدارة أكواد الخصم"],
         reviews: ["التقييمات", "اعتماد أو رفض تقييمات العملاء"],
         "shipping-zones": ["مناطق التوصيل", "إدارة المناطق ورسوم الشحن"],
         "builders-settings": ["إعدادات المحاكيات", "ضبط محاكي التورت والورد"],
         "store-settings": ["بيانات المتجر", "الإعدادات العامة، SEO، والسوشيال ميديا"],
         "client-error-log": ["أعطال العميلات", "أي رقم موبايل اترفض في الشيك أوت وليه - القيمة كما كتبتها العميلة بالظبط"],
-        "loyalty-settings": ["إعدادات الولاء", "نسب الخصم، قيمة قسيمة الهدية، مدة صلاحيتها، وعدد الطلبات في الدورة"],
-        "customer-lookup": ["متابعة العملاء", "دوّري برقم تليفون العميل: كام طلب عنده، فين وصل في دائرة الولاء، وقسايمه"],
-        "loyalty-vouchers": ["قسائم الولاء الصادرة", "كل قسايم الهدية اللي اتكسبت من دورة الولاء، مين استخدمها، وقد إيه فلوس اتصرفت من خلالها"],
-        "gift-cards": ["بطاقات الهدايا", "بطاقات الهدايا اللي اتباعت بفلوس حقيقية عبر منتج بطاقة هدية - مين اشتراها وقد إيه اتصرف منها"],
-        "voucher-notifications": ["تنبيه القسائم والبطاقات", "قسائم ولاء وبطاقات هدايا نشطة لسه محدش قال للعميل بيها - ابعتيله كارت الهدية بضغطة واحدة"],
+        "loyalty-settings": ["إعدادات الولاء", "نسب خصم الولاء التلقائي وعدد الطلبات في الدورة"],
+        "customer-lookup": ["متابعة العملاء", "دوّري برقم تليفون العميل: كام طلب عنده، وفين وصل في دورة الولاء"],
     };
 
     function buildSidebar(currentPage) {
@@ -177,6 +164,8 @@
                     </div>
                 </div>
                 <div class="adm-topbar-right">
+                    <!-- 🛎️ تفعيل تنبيه الطلبات الجديدة على الجهاز ده (Push) - راجع initOrderAlerts -->
+                    <button type="button" class="adm-order-alert-btn" id="adm-order-alert-btn" data-state="off" style="display:none;"></button>
                     <!-- 🆕 [تحسين إنتاجية - بحث موحّد من أي صفحة]: صندوق واحد بيدوّر
                          في الطلبات + المنتجات + العملاء مع بعض، من غير ما تسيبي
                          الصفحة اللي انتي فيها. اضغطي على نتيجة يوديكي للصفحة الصح
@@ -422,6 +411,294 @@
         });
     }
 
+
+    /* =====================================================================
+     * 🛎️ [تنبيهات الطلبات الجديدة]: أول ما عميلة تسجّل طلب، الموقع بيكلّم صاحبة
+     * المتجر بنفسه بـ 3 طرق:
+     *   1) إشعار Push على الموبايل (حتى لو اللوحة مقفولة) - بيتفعّل مرة من الزرار في الشريط العلوي
+     *   2) تذكير تلقائي لو الطلب فضل من غير مراجعة (بيتبعت من السيرفر - notify-new-order)
+     *   3) تنبيه جوه اللوحة نفسها (بانر + صوت + وميض العنوان) لو مفتوحة، بيتشيك كل 30 ثانية
+     * مفاتيح الإشعار الخاصة بالأدمن منفصلة تمامًا عن إشعارات العميلات.
+     * ===================================================================== */
+    const ADMIN_VAPID_PUBLIC_KEY = "BAvmV5fbSyy3lbsV1F6zOxP0rxrcM2HOaKBqcn2sP9L7ogS05ZUxtD5hqk_-D9CZJs8HIwADUjUv8DUR6zF0Uio";
+    const LS_ALERT_ENDPOINT = "bose_admin_push_endpoint";
+    const LS_SEEN_PENDING = "bose_admin_seen_pending_ids";
+    const PENDING_POLL_MS = 30000;
+
+    function alertUrlBase64ToUint8Array(base64String) {
+        const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+        const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+        const raw = atob(base64);
+        const out = new Uint8Array(raw.length);
+        for (let i = 0; i < raw.length; i++) out[i] = raw.charCodeAt(i);
+        return out;
+    }
+
+    function alertPushSupported() {
+        return "serviceWorker" in navigator && "PushManager" in window && "Notification" in window;
+    }
+
+    function subscriptionUsesAdminKey(sub) {
+        try {
+            const current = sub && sub.options && sub.options.applicationServerKey;
+            if (!current) return false;
+            const a = new Uint8Array(current);
+            const b = alertUrlBase64ToUint8Array(ADMIN_VAPID_PUBLIC_KEY);
+            if (a.length !== b.length) return false;
+            for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false;
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    // "unsupported" | "denied" | "off" | "on"
+    async function computeAlertState() {
+        if (!alertPushSupported()) return "unsupported";
+        if (Notification.permission === "denied") return "denied";
+        if (Notification.permission !== "granted") return "off";
+        try {
+            const reg = await navigator.serviceWorker.getRegistration();
+            const sub = reg ? await reg.pushManager.getSubscription() : null;
+            if (!sub) return "off";
+            const savedEndpoint = localStorage.getItem(LS_ALERT_ENDPOINT);
+            return savedEndpoint === sub.endpoint && subscriptionUsesAdminKey(sub) ? "on" : "off";
+        } catch (e) {
+            return "off";
+        }
+    }
+
+    function injectOrderAlertStyles() {
+        if (document.getElementById("adm-order-alert-styles")) return;
+        const style = document.createElement("style");
+        style.id = "adm-order-alert-styles";
+        style.textContent = `
+            .adm-order-alert-btn { display:inline-flex; align-items:center; gap:6px; border:none; cursor:pointer; font-family:inherit;
+                font-size:0.82rem; font-weight:800; padding:8px 14px; border-radius:999px; white-space:nowrap; }
+            .adm-order-alert-btn[data-state="off"] { background:#FF91A4; color:#fff; animation: admAlertPulse 1.6s ease-in-out infinite; }
+            .adm-order-alert-btn[data-state="on"] { background:#E6F6EA; color:#1B7F3B; }
+            .adm-order-alert-btn[data-state="denied"], .adm-order-alert-btn[data-state="unsupported"] { background:#FDECEC; color:#B3261E; }
+            @keyframes admAlertPulse { 0%,100% { box-shadow:0 0 0 0 rgba(255,145,164,0.6); } 50% { box-shadow:0 0 0 9px rgba(255,145,164,0); } }
+            #adm-new-order-banner { position:fixed; top:12px; left:50%; transform:translateX(-50%); z-index:100000; width:min(560px, calc(100% - 24px));
+                background:#111; color:#fff; border-radius:16px; padding:14px 16px; display:flex; align-items:center; gap:12px; direction:rtl;
+                box-shadow:0 14px 40px rgba(0,0,0,0.35); border:2px solid #FF91A4; font-family:inherit; }
+            #adm-new-order-banner .adm-nob-text { flex:1; min-width:0; font-weight:800; font-size:0.95rem; line-height:1.6; }
+            #adm-new-order-banner a { background:#FF91A4; color:#fff; text-decoration:none; font-weight:800; border-radius:12px; padding:9px 14px; white-space:nowrap; }
+            #adm-new-order-banner button { background:transparent; border:none; color:#bbb; font-size:1.2rem; cursor:pointer; padding:4px 8px; }
+        `;
+        document.head.appendChild(style);
+    }
+
+    function paintAlertButton(state) {
+        const btn = document.getElementById("adm-order-alert-btn");
+        if (!btn) return;
+        const labels = {
+            off: '<i class="fa-solid fa-bell"></i> فعّلي تنبيه الطلبات',
+            on: '<i class="fa-solid fa-bell"></i> التنبيهات شغالة ✓',
+            denied: '<i class="fa-solid fa-bell-slash"></i> الإشعارات محظورة',
+            unsupported: '<i class="fa-solid fa-bell-slash"></i> تنبيه الموبايل',
+        };
+        btn.setAttribute("data-state", state);
+        btn.innerHTML = labels[state] || labels.off;
+        btn.style.display = "inline-flex";
+    }
+
+    function openAlertHelpModal(title, bodyHtml) {
+        const overlay = document.createElement("div");
+        overlay.className = "adm-modal-overlay";
+        overlay.innerHTML = `
+            <div class="adm-modal" style="max-width:440px;">
+                <div class="adm-modal-header">
+                    <h3>${title}</h3>
+                    <button class="adm-modal-close" data-role="cancel"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div style="line-height:1.9; font-size:0.95rem;">${bodyHtml}</div>
+                <div class="adm-modal-actions"><button class="adm-btn adm-btn-primary" data-role="cancel">تمام</button></div>
+            </div>`;
+        document.body.appendChild(overlay);
+        overlay.addEventListener("click", (e) => {
+            if (e.target === overlay || e.target.closest("[data-role='cancel']")) overlay.remove();
+        });
+    }
+
+    async function enableOrderAlerts() {
+        const ui = window.BoseAdminUI;
+        try {
+            const permission = await Notification.requestPermission();
+            if (permission !== "granted") {
+                paintAlertButton(permission === "denied" ? "denied" : "off");
+                ui.showToast("لازم توافقي على الإشعارات عشان التنبيه يشتغل", "error");
+                return;
+            }
+            try { await navigator.serviceWorker.register("/sw.js"); } catch (e) { /* متسجّل قبل كده */ }
+            const registration = await navigator.serviceWorker.ready;
+
+            let subscription = await registration.pushManager.getSubscription();
+            // اشتراك قديم بمفتاح مختلف (مثلاً من إشعارات العميلات على نفس الجهاز) لازم يتبدّل
+            if (subscription && !subscriptionUsesAdminKey(subscription)) {
+                await subscription.unsubscribe();
+                subscription = null;
+            }
+            if (!subscription) {
+                subscription = await registration.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey: alertUrlBase64ToUint8Array(ADMIN_VAPID_PUBLIC_KEY),
+                });
+            }
+
+            await window.BoseAdmin.saveAdminPushSubscription(subscription);
+            localStorage.setItem(LS_ALERT_ENDPOINT, subscription.endpoint);
+            paintAlertButton("on");
+            ui.showToast("اتفعّلت تنبيهات الطلبات على الجهاز ده ✓ - هنبعتلك إشعار تجريبي دلوقتي", "success");
+            await sendOrderAlertTest();
+        } catch (err) {
+            console.error("تعذر تفعيل تنبيهات الطلبات:", err);
+            ui.showToast("تعذر تفعيل التنبيهات: " + (err.message || "خطأ غير معروف"), "error");
+            paintAlertButton(await computeAlertState());
+        }
+    }
+
+    async function sendOrderAlertTest() {
+        const ui = window.BoseAdminUI;
+        try {
+            const res = await window.BoseAdmin.sendTestOrderAlert();
+            if (res && res.sent > 0) {
+                ui.showToast("اتبعت إشعار تجريبي - لو وصلك على الموبايل يبقى كله تمام 🎉", "success");
+            } else if (res && res.failed > 0) {
+                ui.showToast("الإشعار ما وصلش: " + ((res.errors && res.errors[0]) || "جهاز غير صالح") + " - جرّبي تفعّلي التنبيه تاني", "error");
+            } else {
+                ui.showToast((res && res.message) || "مفيش جهاز مفعّل لسه", "error");
+            }
+        } catch (err) {
+            ui.showToast("تعذر إرسال الإشعار التجريبي: " + (err.message || ""), "error");
+        }
+    }
+
+    function wireOrderAlertButton() {
+        const btn = document.getElementById("adm-order-alert-btn");
+        if (!btn) return;
+        btn.addEventListener("click", async () => {
+            const state = btn.getAttribute("data-state");
+            if (state === "on") return sendOrderAlertTest();
+            if (state === "denied") {
+                return openAlertHelpModal("الإشعارات محظورة لهذا الموقع",
+                    "المتصفح قافل الإشعارات للموقع ده. افتحي إعدادات الموقع (أيقونة القفل جنب العنوان) ← <strong>الإشعارات</strong> ← <strong>سماح</strong>، وبعدين حدّثي الصفحة وداسي على الزرار تاني.");
+            }
+            if (state === "unsupported") {
+                return openAlertHelpModal("تنبيه الطلبات على الموبايل",
+                    "المتصفح ده مش بيدعم إشعارات الموقع.<br><strong>آيفون:</strong> افتحي لوحة التحكم من Safari ← زرار المشاركة ← <strong>إضافة إلى الشاشة الرئيسية</strong>، وبعدين افتحيها من الأيقونة الجديدة وفعّلي التنبيه.<br><strong>أندرويد أو كمبيوتر:</strong> استخدمي متصفح Chrome.");
+            }
+            return enableOrderAlerts();
+        });
+    }
+
+    /* ---- تنبيه جوه اللوحة: صوت + بانر + وميض العنوان ---- */
+    let alertAudioCtx = null;
+    function unlockAlertAudio() {
+        try {
+            if (!alertAudioCtx) alertAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (alertAudioCtx.state === "suspended") alertAudioCtx.resume();
+        } catch (e) { /* الصوت اختياري */ }
+    }
+    document.addEventListener("pointerdown", unlockAlertAudio, { passive: true });
+
+    function playNewOrderSound() {
+        try {
+            unlockAlertAudio();
+            if (!alertAudioCtx) return;
+            const t0 = alertAudioCtx.currentTime;
+            [880, 1174, 880, 1174].forEach((freq, i) => {
+                const osc = alertAudioCtx.createOscillator();
+                const gain = alertAudioCtx.createGain();
+                const start = t0 + i * 0.2;
+                osc.type = "sine";
+                osc.frequency.value = freq;
+                gain.gain.setValueAtTime(0.0001, start);
+                gain.gain.exponentialRampToValueAtTime(0.3, start + 0.02);
+                gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.18);
+                osc.connect(gain);
+                gain.connect(alertAudioCtx.destination);
+                osc.start(start);
+                osc.stop(start + 0.2);
+            });
+        } catch (e) { /* الصوت اختياري */ }
+    }
+
+    let originalPageTitle = null;
+    function flashTitleForNewOrders(count) {
+        if (originalPageTitle === null) originalPageTitle = document.title;
+        document.title = "🛎️ (" + count + ") طلب جديد - " + originalPageTitle;
+        const restore = () => {
+            if (originalPageTitle !== null) document.title = originalPageTitle;
+            originalPageTitle = null;
+            window.removeEventListener("focus", restore);
+            document.removeEventListener("visibilitychange", onVis);
+        };
+        const onVis = () => { if (document.visibilityState === "visible") restore(); };
+        window.addEventListener("focus", restore);
+        document.addEventListener("visibilitychange", onVis);
+    }
+
+    function showNewOrderBanner(orders) {
+        const e = (s) => (window.BoseAdminUI ? window.BoseAdminUI.escapeHtml(s) : String(s ?? ""));
+        let banner = document.getElementById("adm-new-order-banner");
+        if (banner) banner.remove();
+        banner = document.createElement("div");
+        banner.id = "adm-new-order-banner";
+        banner.setAttribute("role", "alert");
+        const first = orders[0];
+        const text = orders.length === 1
+            ? `🛎️ طلب جديد #${e(first.order_number)} - ${e(first.customer_name || "عميلة")}${first.grand_total ? " - " + Math.round(first.grand_total) + " ج.م" : ""}`
+            : `🛎️ ${orders.length} طلبات جديدة اتسجّلت`;
+        const href = orders.length === 1 ? `orders.html?open=${e(first.id)}` : "orders.html";
+        banner.innerHTML = `<div class="adm-nob-text">${text}</div><a href="${href}">افتحي الطلب</a><button type="button" aria-label="إغلاق">✕</button>`;
+        banner.querySelector("button").addEventListener("click", () => banner.remove());
+        document.body.appendChild(banner);
+    }
+
+    function loadSeenPendingIds() {
+        try {
+            const raw = localStorage.getItem(LS_SEEN_PENDING);
+            return raw === null ? null : JSON.parse(raw);
+        } catch (e) {
+            return null;
+        }
+    }
+
+    async function pollPendingOrders() {
+        if (!window.BoseAdmin || !window.BoseAdmin.getPendingOrdersSnapshot) return;
+        const snap = await window.BoseAdmin.getPendingOrdersSnapshot();
+        if (!snap) return;
+        const currentIds = snap.latest.map((o) => o.id);
+        const seen = loadSeenPendingIds();
+        if (seen === null) {
+            // أول تشغيل على الجهاز ده: اللي موجود دلوقتي يتحسب "شفته" من غير تنبيه
+            localStorage.setItem(LS_SEEN_PENDING, JSON.stringify(currentIds));
+            return;
+        }
+        const fresh = snap.latest.filter((o) => !seen.includes(o.id));
+        if (!fresh.length) return;
+        localStorage.setItem(LS_SEEN_PENDING, JSON.stringify([...new Set([...seen, ...currentIds])].slice(-100)));
+
+        showNewOrderBanner(fresh);
+        playNewOrderSound();
+        if (document.visibilityState !== "visible" || !document.hasFocus()) flashTitleForNewOrders(fresh.length);
+        sharedSummaryPromise = null; // شارات القائمة الجانبية (عدد الطلبات المنتظرة) تتحدّث
+        updateNavBadges();
+        document.dispatchEvent(new CustomEvent("bose-new-orders", { detail: { orders: fresh } }));
+    }
+
+    async function initOrderAlerts() {
+        injectOrderAlertStyles();
+        wireOrderAlertButton();
+        paintAlertButton(await computeAlertState());
+        pollPendingOrders();
+        setInterval(pollPendingOrders, PENDING_POLL_MS);
+        document.addEventListener("visibilitychange", () => {
+            if (document.visibilityState === "visible") pollPendingOrders();
+        });
+    }
+
     function renderShell(adminInfo) {
         const currentPage = document.body.getAttribute("data-page") || "index";
         const shellTarget = document.getElementById("adm-shell-target");
@@ -432,6 +709,7 @@
 
         wireInteractions();
         updateNavBadges();
+        initOrderAlerts();
     }
 
     // الشِل بيتبنى بس بعد ما الحارس يتأكد من الجلسة (BoseAdminReady)

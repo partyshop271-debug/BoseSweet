@@ -143,20 +143,6 @@
             stats.reviewFollowupsDue = 0;
         }
 
-        // شارة "قسائم/بطاقات لسه محدش اتقالها" - مجموع النوعين مع بعض (قسائم
-        // الولاء + بطاقات الهدايا) عشان الرقم في الشارة يعكس أي حاجة مستنية
-        // فعلياً، أياً كان نوعها - نفس منطق getUnnotifiedVouchers/GiftCards بالظبط
-        try {
-            const [unnotifiedVouchers, unnotifiedGiftCards] = await Promise.all([
-                getUnnotifiedVouchers(),
-                getUnnotifiedGiftCards(),
-            ]);
-            stats.vouchersUnnotified = unnotifiedVouchers.length + unnotifiedGiftCards.length;
-        } catch (e) {
-            console.warn("تعذر جلب عدد القسائم/البطاقات اللي لسه محدش اتقالها:", e.message);
-            stats.vouchersUnnotified = 0;
-        }
-
         // 💵 [عربون/دفع مقدم] شارة "بانتظار تأكيد العربون" - نفس شرط getAwaitingDepositCount بس هنا كجزء من الملخص العام
         try {
             const { count } = await client
@@ -1007,110 +993,6 @@
         return { successCount: results.length - failedIds.length, failedIds };
     }
 
-    /* ============================= الكوبونات (صفحة coupons.html) ============================= */
-    /**
-     * المفتاح الأساسي هنا هو code نفسه (نص فريد)، مش id منفصل - نفس شكل
-     * جدول coupons في القاعدة. أي إنشاء بكود مستخدم قبل كده هيترفض من
-     * القاعدة (unique constraint على code) قبل ما يوصل لأي مكان تاني.
-     */
-
-    /** كل الكوبونات مرتبة أبجدياً. افتراضياً بيستبعد الكوبونات المؤرشفة (راجع
-     *  archiveCoupon تحت) - مرّر includeArchived=true لو محتاج تشوفها كلها. */
-    async function getAllCoupons(includeArchived) {
-        try {
-            let query = client.from("coupons").select("*").order("code", { ascending: true });
-            if (!includeArchived) query = query.eq("is_archived", false);
-            const { data, error } = await query;
-            if (error) throw error;
-            return data || [];
-        } catch (e) {
-            console.warn("تعذر جلب الكوبونات:", e.message);
-            return [];
-        }
-    }
-
-    /** إضافة كوبون جديد. coupon.code لازم يكون فريد */
-    async function createCoupon(coupon) {
-        const { error } = await client.from("coupons").insert(coupon);
-        if (error) throw error;
-    }
-
-    /** تعديل كوبون موجود (بالكود - الكود نفسه مينفعش يتغيّر بعد الإنشاء) */
-    async function updateCoupon(code, updates) {
-        const { error } = await client.from("coupons").update(updates).eq("code", code);
-        if (error) throw error;
-    }
-
-    /** حذف كوبون نهائياً (لا يمكن التراجع) */
-    async function deleteCoupon(code) {
-        const { error } = await client.from("coupons").delete().eq("code", code);
-        if (error) throw error;
-    }
-
-    /** 🆕 [أرشفة بدل حذف نهائي]: الكود بيختفي من القائمة النشطة ومستحيل
-     *  يتفعّل تاني (validate_coupon بيرفضه بمجرد is_archived=true)، لكن سجله
-     *  وتاريخ استخدامه يفضلوا محفوظين بالكامل - عكس الحذف النهائي. */
-    async function archiveCoupon(code) {
-        const { error } = await client.from("coupons").update({ is_archived: true, is_active: false }).eq("code", code);
-        if (error) throw error;
-    }
-
-    /** استرجاع كوبون من الأرشيف (بيرجع is_archived=false بس مش is_active - لازم تفعيله يدوياً بعدها) */
-    async function unarchiveCoupon(code) {
-        const { error } = await client.from("coupons").update({ is_archived: false }).eq("code", code);
-        if (error) throw error;
-    }
-
-    /**
-     * 🆕 [تحسين إنتاجية - أرشفة جماعية]: نفس منطق archiveCoupon الواحد بس
-     * لمجموعة أكواد مرة واحدة - مفيد لو عندك كوبونات مناسبات قديمة كتير
-     * عايزة تقفليها كلها دفعة واحدة بدل واحد واحد.
-     */
-    async function bulkArchiveCoupons(codes) {
-        if (!codes || !codes.length) return 0;
-        const { error, count } = await client
-            .from("coupons")
-            .update({ is_archived: true, is_active: false }, { count: "exact" })
-            .in("code", codes);
-        if (error) throw error;
-        return count || 0;
-    }
-
-    /**
-     * 📊 [تقرير استخدام الكوبونات]: مفيش عمود عداد استخدام على جدول coupons
-     * نفسه، فبنحسبه هنا مباشرة من جدول orders (اللي فيه coupon_code لكل
-     * طلب استخدم كوبون + discount_amount الفعلي اللي اتخصم بيه) - بنجيب كل
-     * الطلبات اللي ليها كوبون مرة واحدة، ونجمّعها محلياً حسب الكود، عشان
-     * نتجنب استعلام منفصل لكل كوبون على حدة. الطلبات الملغاة (status=cancelled)
-     * مستبعدة من الحساب لأنها مش استخدام فعلي حقيقي للخصم.
-     * بيرجّع Map: { code -> { usageCount, totalDiscount, lastUsedAt } }
-     */
-    async function getCouponUsageStats() {
-        try {
-            const { data, error } = await client
-                .from("orders")
-                .select("coupon_code, discount_amount, created_at, status")
-                .not("coupon_code", "is", null)
-                .neq("status", "cancelled");
-            if (error) throw error;
-            const stats = {};
-            (data || []).forEach((o) => {
-                const code = o.coupon_code;
-                if (!code) return;
-                if (!stats[code]) stats[code] = { usageCount: 0, totalDiscount: 0, lastUsedAt: null };
-                stats[code].usageCount += 1;
-                stats[code].totalDiscount += Number(o.discount_amount) || 0;
-                if (!stats[code].lastUsedAt || new Date(o.created_at) > new Date(stats[code].lastUsedAt)) {
-                    stats[code].lastUsedAt = o.created_at;
-                }
-            });
-            return stats;
-        } catch (e) {
-            console.warn("تعذر جلب تقرير استخدام الكوبونات:", e.message);
-            return {};
-        }
-    }
-
     /* ============================= التقييمات (صفحة reviews.html) ============================= */
     /**
      * كل تقييم بيدخل القاعدة بـ is_approved = false تلقائياً (من submitBoseReview
@@ -1347,15 +1229,12 @@
 
     /* ============================= برنامج الولاء (إعدادات الولاء / متابعة العملاء / القسائم الصادرة) ============================= */
     /**
-     * كل إعدادات دائرة الولاء (نسب الخصم لكل ترتيب في الدورة، طول الدورة،
-     * كل قد إيه طلب تتكسب قسيمة هدية، قيمتها، ومدة صلاحيتها) متخزنة في
+     * كل إعدادات خصم الولاء التلقائي (نسب الخصم لكل ترتيب في الدورة وطول الدورة) متخزنة في
      * عمود واحد store_settings.loyalty بالشكل:
-     *   { enabled, cycle_length, tiers: {"3":5,"5":10,"7":15}, milestone_every, voucher_amount, voucher_validity_months }
+     *   { enabled, cycle_length, tiers: {"4":5,"8":10,"12":15} }
      * نفس الـ RPCs اللي بتحسب خصم كل طلب (create_order_with_items)، بترجع
-     * رصيد العميل للموقع العام (get_customer_rewards)، وبتصدر قسيمة الهدية
-     * تلقائياً عند التسليم (trigger handle_loyalty_milestone_delivery) بتقرأ
-     * من العمود ده مباشرة - أي تعديل هنا بينعكس فوراً على كل الحسابات من
-     * غير أي كود إضافي أو تعديل في القاعدة.
+     * رصيد العميل للموقع العام (get_customer_loyalty_status) بتقرأ من العمود ده مباشرة -
+     * أي تعديل هنا بينعكس فوراً على كل الحسابات من غير أي كود إضافي.
      */
 
     /** يرجّع كائن loyalty بس من صف store_settings الوحيد (id=1) */
@@ -1399,12 +1278,9 @@
     }
 
     /**
-     * 🔍 [صفحة متابعة العملاء]: بتدوّر برقم تليفون عميل وترجع كل حاجة
-     * محتاجاها الصفحة دفعة واحدة - كل طلباته من الأحدث (بتفاصيل عناصرها)،
-     * قسايم الهدية بتاعته (نشطة ومنتهية/متصرفة)، وموقعه الحالي في دائرة
-     * الولاء (نفس منطق get_customer_rewards بالظبط، محسوب هنا محلياً عشان
-     * الصفحة تقدر كمان تعرض تفاصيل كل طلب اللي الـ RPC العام للعميل النهائي
-     * مايرجّعهاش لأسباب خصوصية).
+     * 🎁 [بروفايل ولاء عميلة - للأدمن]: كل طلباتها + عدد الطلبات المسلّمة + ترتيب طلبها الجاي في
+     * الدورة ونسبة الخصم التلقائي اللي هياخدها (نفس منطق قاعدة البيانات: الخصم بيتحسب على أساس
+     * الطلبات اللي اتسلّمت فعلاً، ومفيش قسائم ولا أكواد). الشرايح والدورة من store_settings.loyalty.
      */
     async function getCustomerLoyaltyProfile(phone) {
         const cleanPhone = cleanEgyptianPhone(phone);
@@ -1412,307 +1288,38 @@
             throw new Error("رقم الهاتف غير صحيح، يرجى إدخال رقم مصري صحيح (يبدأ بـ 01...)");
         }
 
-        const [ordersRes, vouchersRes, loyalty] = await Promise.all([
+        const [ordersRes, loyalty] = await Promise.all([
             client
                 .from("orders")
                 .select("*, order_items(*)")
                 .or(`phone1.eq.${cleanPhone},phone2.eq.${cleanPhone}`)
                 .order("created_at", { ascending: false }),
-            client
-                .from("loyalty_vouchers")
-                .select("*")
-                .eq("phone", cleanPhone)
-                .order("issued_at", { ascending: false }),
             getLoyaltySettings(),
         ]);
-
         if (ordersRes.error) throw ordersRes.error;
-        if (vouchersRes.error) throw vouchersRes.error;
 
         const orders = ordersRes.data || [];
-        const vouchers = vouchersRes.data || [];
+        const deliveredOrders = orders.filter((o) => o.status === "delivered");
+        const totalOrders = deliveredOrders.length;
 
-        // مهم: كل صف في orders هنا هو فاتورة/طلب مستقل قائم بذاته - حتى لو
-        // احتوى على عناصر كتير (مثلاً 20 منتج) في نفس الفاتورة، فده لسه
-        // "طلب واحد" في تسلسل الولاء. تسلسل الولاء بيتحسب بعدد صفوف orders
-        // (غير الملغاة) لنفس رقم الهاتف - مش بعدد عناصر order_items - بالظبط
-        // زي ما create_order_with_items و get_customer_rewards بيحسبوا في القاعدة.
-        //
-        // 🛡️ [تعديل ثغرة الولاء - جزء ٣]: كان الفلتر هنا `status !== "cancelled"`
-        // بس، يعني طلب لسه "بانتظار تأكيد العربون" (متأكدش دفعه من لوحة التحكم)
-        // كان يظهر هنا وكأنه محسوب فعلاً في تسلسل الولاء - رغم إن القاعدة نفسها
-        // (create_order_with_items + get_customer_rewards بعد التعديل) بقت
-        // بتحسب بس من الطلبات اللي deposit_status = 'confirmed'. ده كان يخلي
-        // صفحة متابعة العملاء في الأدمن تعرض للموظفة رقم/موضع مختلف عن الحقيقي.
-        // دلوقتي نفس المعيار بالظبط في كل مكان: بس الطلبات المؤكد دفعها.
-        const confirmedOrders = orders.filter(
-            (o) => o.deposit_status === "confirmed" && o.loyalty_excluded !== true
-        );
-        const totalOrders = confirmedOrders.length;
-
-        const cycleLength = Math.max(1, parseInt(loyalty.cycle_length, 10) || 7);
-        const tiers = loyalty.tiers || { "3": 5, "5": 10, "7": 15 };
-        const milestoneEvery = Math.max(1, parseInt(loyalty.milestone_every, 10) || 10);
+        const cycleLength = Math.max(1, parseInt(loyalty.cycle_length, 10) || 12);
+        const tiers = loyalty.tiers || { "4": 5, "8": 10, "12": 15 };
 
         const nextSeq = totalOrders + 1;
         const nextPos = ((nextSeq - 1) % cycleLength) + 1;
-        const nextIsMilestone = nextSeq % milestoneEvery === 0;
-        const nextPct = nextIsMilestone ? 0 : (parseInt(tiers[String(nextPos)], 10) || 0);
+        const nextPct = parseInt(tiers[String(nextPos)], 10) || 0;
 
         return {
             cleanPhone,
             orders,
-            vouchers,
             totalOrders,
             nextOrderSequence: nextSeq,
             nextCyclePosition: nextPos,
             nextDiscountPercent: nextPct,
-            nextIsMilestone,
             cycleLength,
             tiers,
-            milestoneEvery,
         };
     }
-
-    /**
-     * 🎁 [صفحة القسائم الصادرة]: كل قسايم الهدية اللي اتكسبت عبر دائرة الولاء
-     * (سواء لسه نشطة، خلصت، أو انتهت صلاحيتها) بترتيب الأحدث أولاً - مع رقم
-     * طلب الكسب ورقم آخر طلب اتصرفت فيه (لو موجودين) عشان الصفحة تعرضهم
-     * كروابط مفهومة من غير استعلام إضافي لكل صف. الفلترة بالكود أو رقم الهاتف.
-     */
-    async function getAllLoyaltyVouchers(filters = {}) {
-        try {
-            let query = client
-                .from("loyalty_vouchers")
-                .select(`
-                    *,
-                    earned_order:orders!loyalty_vouchers_earned_order_id_fkey(order_number),
-                    last_used_order:orders!loyalty_vouchers_last_used_order_id_fkey(order_number)
-                `)
-                .order("issued_at", { ascending: false });
-
-            if (filters.search && filters.search.trim()) {
-                const s = sanitizeFilterValue(filters.search.trim());
-                if (s) {
-                    query = query.or(`code.ilike.%${s}%,phone.ilike.%${s}%`);
-                }
-            }
-
-            const { data, error } = await query;
-            if (error) throw error;
-            return data || [];
-        } catch (e) {
-            console.warn("تعذر جلب القسائم الصادرة:", e.message);
-            return [];
-        }
-    }
-
-    /**
-     * 🎁 [إصدار قسيمة يدوي]: القسائم بتتصدر تلقائياً من النظام كل ١٢ طلب،
-     * لكن أحياناً محتاجة تصدّري قسيمة يدوي (تعويض عميلة، مكافأة استثنائية،
-     * أو أي سبب تجاري). earned_order_id بيفضل null عشان نعرف إنها صدرت يدوي
-     * مش من دورة الولاء - بيتفرق عن القسائم التلقائية في العرض بعدين لو حبينا.
-     * الكود بيتولّد من نفس دالة القاعدة اللي بتستخدمها دورة الولاء التلقائية
-     * (generate_loyalty_voucher_code) عشان يفضل بنفس الشكل ومضمون إنه فريد.
-     */
-    async function issueLoyaltyVoucher({ phone, amount, expiresAt }) {
-        const cleanPhone = cleanEgyptianPhone(phone);
-        if (!window.validateBosePhoneNumber(cleanPhone)) {
-            throw new Error("رقم الموبايل غير صحيح");
-        }
-        const { data: codeData, error: codeErr } = await client.rpc("generate_loyalty_voucher_code");
-        if (codeErr) throw codeErr;
-        const code = codeData;
-
-        const { error } = await client.from("loyalty_vouchers").insert({
-            phone: cleanPhone,
-            code,
-            amount,
-            remaining_amount: amount,
-            expires_at: expiresAt,
-            earned_order_id: null,
-        });
-        if (error) throw error;
-        return code;
-    }
-
-    /**
-     * ✏️ [تعديل قسيمة موجودة]: بنسمح بتعديل الرصيد المتبقي وتاريخ الانتهاء
-     * بس - مش الكود ولا رقم الموبايل ولا القيمة الأصلية (amount)، عشان دول
-     * بيانات هوية/تدقيق أساسية ميصحش تتغيّر بعد الإصدار. الحالات العملية
-     * لتعديل الرصيد: تصحيح غلطة، أو تعويض إضافي لعميلة. تعديل الانتهاء:
-     * مد الصلاحية لعميلة طلبت مهلة أكتر.
-     */
-    async function updateLoyaltyVoucher(voucherId, { remainingAmount, expiresAt }) {
-        const patch = {};
-        if (remainingAmount !== undefined && remainingAmount !== null) patch.remaining_amount = remainingAmount;
-        if (expiresAt !== undefined && expiresAt !== null) patch.expires_at = expiresAt;
-        if (!Object.keys(patch).length) return;
-        const { error } = await client.from("loyalty_vouchers").update(patch).eq("id", voucherId);
-        if (error) throw error;
-    }
-
-    /**
-     * 🎁 [صفحة تنبيه القسائم]: قسائم نشطة (رصيدها لسه موجود ولسه ما انتهتش)
-     * ومحدش قالها للعميل لحد دلوقتي (notified_at is null). دي شغالة سواء
-     * القسيمة اتصدرت تلقائي من دورة الـ١٢ طلب أو يدوي من زرار "إصدار قسيمة".
-     */
-    async function getUnnotifiedVouchers() {
-        try {
-            const { data, error } = await client
-                .from("loyalty_vouchers")
-                .select("id, phone, code, amount, remaining_amount, expires_at, issued_at, earned_order:orders!loyalty_vouchers_earned_order_id_fkey(order_number, customer_name)")
-                .is("notified_at", null)
-                .gt("remaining_amount", 0)
-                .gt("expires_at", new Date().toISOString())
-                .order("issued_at", { ascending: true });
-            if (error) throw error;
-            return data || [];
-        } catch (e) {
-            console.warn("تعذر جلب القسائم اللي لسه محدش اتقالها:", e.message);
-            return [];
-        }
-    }
-
-    async function markVoucherNotified(voucherId) {
-        const { error } = await client
-            .from("loyalty_vouchers")
-            .update({ notified_at: new Date().toISOString() })
-            .eq("id", voucherId);
-        if (error) throw error;
-    }
-
-    /** إلغاء قسيمة (بتصفير الرصيد المتبقي بدل الحذف النهائي - عشان يفضل أثرها
-     *  في سجل "إجمالي المصروف من القسائم" وسجل الاستخدام واضح وقابل للمراجعة) */
-    async function revokeLoyaltyVoucher(voucherId) {
-        const { error } = await client
-            .from("loyalty_vouchers")
-            .update({ remaining_amount: 0 })
-            .eq("id", voucherId);
-        if (error) throw error;
-    }
-
-    /* ============================= 🎁 بطاقات الهدايا المُباعة (gift_cards) ============================= */
-    /**
-     * بطاقات هدايا اشتراها عملاء بفلوسهم الفعلية (منتج فعلي عليه is_gift_card=true
-     * في جدول products) - مختلفة تماماً عن قسائم الولاء (اللي هي مكافأة مجانية).
-     * بتتصدر تلقائياً عبر trigger (handle_gift_card_purchase_delivery) لما طلب فيه
-     * منتج بطاقة هدية يوصل لحالة "delivered" بعد تأكيد الدفع. نفس نمط دوال قسائم
-     * الولاء فوق بالظبط، عشان تجربة الإدارة تتوحّد.
-     */
-
-    async function getAllGiftCards(filters = {}) {
-        try {
-            let query = client
-                .from("gift_cards")
-                .select(`
-                    *,
-                    purchase_order:orders!gift_cards_purchase_order_id_fkey(order_number, customer_name),
-                    last_used_order:orders!gift_cards_last_used_order_id_fkey(order_number)
-                `)
-                .order("issued_at", { ascending: false });
-
-            if (filters.search && filters.search.trim()) {
-                const s = sanitizeFilterValue(filters.search.trim());
-                if (s) {
-                    query = query.or(`code.ilike.%${s}%,purchaser_phone.ilike.%${s}%`);
-                }
-            }
-
-            const { data, error } = await query;
-            if (error) throw error;
-            return data || [];
-        } catch (e) {
-            console.warn("تعذر جلب بطاقات الهدايا:", e.message);
-            return [];
-        }
-    }
-
-    /**
-     * 🎁 [إصدار بطاقة هدية يدوي]: البطاقات بتتصدر تلقائياً لما عميل يشتري منتج
-     * بطاقة هدية ويستلمه، لكن أحياناً محتاجة تصدّري واحدة يدوي (تعويض، هدية
-     * ترويجية، اتفاق تليفوني). purchase_order_id بيفضل null عشان نعرف إنها
-     * صدرت يدوي مش من عملية شراء حقيقية. الكود بيتولّد من generate_gift_card_code
-     * (نفس الدالة اللي بيستخدمها الإصدار التلقائي) عشان يفضل بنفس الشكل.
-     */
-    async function issueManualGiftCard({ phone, amount, expiresAt }) {
-        const cleanPhone = cleanEgyptianPhone(phone);
-        if (!window.validateBosePhoneNumber(cleanPhone)) {
-            throw new Error("رقم الموبايل غير صحيح");
-        }
-        const { data: codeData, error: codeErr } = await client.rpc("generate_gift_card_code");
-        if (codeErr) throw codeErr;
-        const code = codeData;
-
-        const { error } = await client.from("gift_cards").insert({
-            code,
-            amount,
-            remaining_amount: amount,
-            purchaser_phone: cleanPhone,
-            purchase_order_id: null,
-            expires_at: expiresAt,
-        });
-        if (error) throw error;
-        await logAdminAction("إصدار بطاقة هدية يدوية", "gift_card", code, code, { phone: cleanPhone, amount });
-        return code;
-    }
-
-    /** ✏️ تعديل بطاقة هدية موجودة - الرصيد المتبقي وتاريخ الانتهاء بس، نفس
-     *  فلسفة تعديل قسيمة الولاء بالظبط (الكود/القيمة الأصلية/رقم المشتري ثوابت) */
-    async function updateGiftCard(giftCardId, { remainingAmount, expiresAt }) {
-        const patch = {};
-        if (remainingAmount !== undefined && remainingAmount !== null) patch.remaining_amount = remainingAmount;
-        if (expiresAt !== undefined && expiresAt !== null) patch.expires_at = expiresAt;
-        if (!Object.keys(patch).length) return;
-        const { error } = await client.from("gift_cards").update(patch).eq("id", giftCardId);
-        if (error) throw error;
-    }
-
-    /** إلغاء بطاقة هدية (تصفير الرصيد المتبقي، نفس منطق إلغاء قسيمة الولاء) */
-    async function voidGiftCard(giftCardId, code) {
-        const { error } = await client
-            .from("gift_cards")
-            .update({ remaining_amount: 0 })
-            .eq("id", giftCardId);
-        if (error) throw error;
-        await logAdminAction("إلغاء بطاقة هدية يدوياً", "gift_card", giftCardId, code || null);
-    }
-
-    /** بطاقات هدايا نشطة (رصيد موجود + لسه ما انتهتش) ومحدش قال للمشتري بكودها
-     *  لحد دلوقتي (notified_at is null) - نفس منطق قسائم الولاء بالظبط. */
-    async function getUnnotifiedGiftCards() {
-        try {
-            const { data, error } = await client
-                .from("gift_cards")
-                .select("id, purchaser_phone, code, amount, remaining_amount, expires_at, issued_at, purchase_order:orders!gift_cards_purchase_order_id_fkey(order_number, customer_name)")
-                .is("notified_at", null)
-                .gt("remaining_amount", 0)
-                .gt("expires_at", new Date().toISOString())
-                .order("issued_at", { ascending: true });
-            if (error) throw error;
-            return data || [];
-        } catch (e) {
-            console.warn("تعذر جلب بطاقات الهدايا اللي لسه محدش اتقالها:", e.message);
-            return [];
-        }
-    }
-
-    async function markGiftCardNotified(giftCardId) {
-        const { error } = await client
-            .from("gift_cards")
-            .update({ notified_at: new Date().toISOString() })
-            .eq("id", giftCardId);
-        if (error) throw error;
-    }
-
-    /* ============================= 🔗 [توحيد - 2026-09-05] =============================
-     * كانت هنا 5 دوال (getAllGiftCardFaqs/addGiftCardFaq/updateGiftCardFaq/
-     * deleteGiftCardFaq/reorderGiftCardFaqs) بتدير جدول gift_card_faqs
-     * مستقل - اتحذفوا مع الجدول نفسه، لأن الأسئلة بقت جزء من عمود
-     * products.faqs بتاع منتج بطاقة الهدية نفسه (bose-gift-card) وبتتعدل
-     * من نفس شاشة "تعديل المنتج" العادية زي أي منتج تاني. الجدول القديم
-     * اتمسح فعلياً من قاعدة البيانات، فالدوال دي كانت هترمي error لو اتنادت.
-     */
 
     /**
      * 📝 سجل نشاط إداري عام - بيتحط في admin_audit_log (نفس الجدول اللي
@@ -1730,60 +1337,6 @@
         } catch (e) {
             console.warn("تعذر تسجيل الحدث في سجل النشاط:", e.message);
         }
-    }
-
-    /**
-     * 🎁 [إجراء يدوي - منح قسيمة]: بتصدر قسيمة هدية لعميلة بشكل يدوي (خارج
-     * دورة الولاء التلقائية) - مفيدة في حالات استثنائية زي تعويض عميلة عن
-     * مشكلة في طلب. الكود بيتولد بنفس دالة توليد الأكواد المستخدمة في
-     * الإصدار التلقائي (generate_loyalty_voucher_code) عشان يفضل بنفس
-     * الصيغة (HADYA-XXXXXX)، لكن earned_order_id بيفضل فاضي (NULL) عشان
-     * يبان واضح إنها قسيمة يدوية مش مكسوبة من طلب حقيقي.
-     */
-    async function grantManualLoyaltyVoucher(phone, amount, validityMonths) {
-        const cleanPhone = cleanEgyptianPhone(phone);
-        if (!window.validateBosePhoneNumber(cleanPhone)) {
-            throw new Error("رقم الهاتف غير صحيح، يرجى إدخال رقم مصري صحيح (يبدأ بـ 01...)");
-        }
-        if (!amount || amount <= 0) {
-            throw new Error("قيمة القسيمة لازم تكون رقم أكبر من صفر");
-        }
-
-        const { data: codeData, error: codeError } = await client.rpc("generate_loyalty_voucher_code");
-        if (codeError) throw codeError;
-        const code = codeData;
-
-        const expiresAt = new Date();
-        expiresAt.setMonth(expiresAt.getMonth() + (parseInt(validityMonths, 10) || 2));
-
-        const { data, error } = await client
-            .from("loyalty_vouchers")
-            .insert({
-                phone: cleanPhone, code, amount, remaining_amount: amount,
-                earned_order_id: null, issued_at: new Date().toISOString(), expires_at: expiresAt.toISOString(),
-            })
-            .select()
-            .single();
-        if (error) throw error;
-
-        await logAdminAction("منح قسيمة ولاء يدوية", "loyalty_voucher", data.id, code, { phone: cleanPhone, amount });
-        return data;
-    }
-
-    /**
-     * 🚫 [إجراء يدوي - إلغاء قسيمة]: بنعمل "إلغاء" عن طريق تصفير تاريخ
-     * الصلاحية بدل حذف الصف نفسه - كده القسيمة بتظهر فوراً كـ"منتهية
-     * الصلاحية" في كل الشاشات (customer-lookup / loyalty-vouchers) وبيبطل
-     * استخدامها تلقائياً في create_order_with_items (اللي بيرفض أي قسيمة
-     * expires_at ≤ now())، من غير ما نفقد أي سجل تاريخي عن القسيمة.
-     */
-    async function voidLoyaltyVoucher(voucherId, code) {
-        const { error } = await client
-            .from("loyalty_vouchers")
-            .update({ expires_at: new Date().toISOString() })
-            .eq("id", voucherId);
-        if (error) throw error;
-        await logAdminAction("إلغاء قسيمة ولاء يدوياً", "loyalty_voucher", voucherId, code);
     }
 
     /**
@@ -1994,8 +1547,50 @@
         }
     }
 
+    /* ============ 🔔 تنبيهات الطلبات الجديدة (Push على موبايل الأدمن) ============ */
+
+    /** يسجّل جهاز الأدمن الحالي لاستلام تنبيهات الطلبات (RPC للأدمن بس) */
+    async function saveAdminPushSubscription(subscription) {
+        const json = subscription && typeof subscription.toJSON === "function" ? subscription.toJSON() : subscription;
+        if (!json || !json.endpoint || !json.keys) throw new Error("بيانات اشتراك الإشعارات ناقصة");
+        const { error } = await client.rpc("save_admin_push_subscription", {
+            p_endpoint: json.endpoint,
+            p_p256dh: json.keys.p256dh,
+            p_auth: json.keys.auth,
+            p_user_agent: String(navigator.userAgent || "").slice(0, 300),
+        });
+        if (error) throw error;
+    }
+
+    /** يبعت إشعار تجريبي لأجهزة الأدمن المفعّلة (الفنكشن بيتحقق إن اللي بينده أدمن) */
+    async function sendTestOrderAlert() {
+        const { data, error } = await client.functions.invoke("notify-new-order", { body: { test: true } });
+        if (error) throw error;
+        return data;
+    }
+
+    /** لقطة سريعة وخفيفة للطلبات اللي لسه مستنية مراجعة (للمراقب اللي بيشتغل كل 30 ثانية) */
+    async function getPendingOrdersSnapshot() {
+        try {
+            const { data, count, error } = await client
+                .from("orders")
+                .select("id, order_number, customer_name, grand_total, created_at", { count: "exact" })
+                .in("status", ["awaiting_deposit", "pending"])
+                .order("created_at", { ascending: false })
+                .limit(15);
+            if (error) throw error;
+            return { count: count || 0, latest: data || [] };
+        } catch (e) {
+            console.warn("تعذر جلب الطلبات المنتظرة:", e.message);
+            return null;
+        }
+    }
+
     // تصدير موحّد على window بنفس فلسفة الموقع العام (window.BoseSupabase)
     window.BoseAdmin = {
+        saveAdminPushSubscription,
+        sendTestOrderAlert,
+        getPendingOrdersSnapshot,
         client,
         signIn,
         signOut,
@@ -2046,14 +1641,6 @@
         savePromotions,
         getSeasons,
         saveSeasons,
-        getAllCoupons,
-        createCoupon,
-        updateCoupon,
-        deleteCoupon,
-        archiveCoupon,
-        unarchiveCoupon,
-        bulkArchiveCoupons,
-        getCouponUsageStats,
         getAllReviews,
         approveReview,
         unapproveReview,
@@ -2078,20 +1665,6 @@
         saveLoyaltySettings,
         cleanEgyptianPhone,
         getCustomerLoyaltyProfile,
-        getAllLoyaltyVouchers,
-        issueLoyaltyVoucher,
-        updateLoyaltyVoucher,
-        getUnnotifiedVouchers,
-        markVoucherNotified,
-        revokeLoyaltyVoucher,
-        grantManualLoyaltyVoucher,
-        voidLoyaltyVoucher,
-        getAllGiftCards,
-        issueManualGiftCard,
-        updateGiftCard,
-        voidGiftCard,
-        getUnnotifiedGiftCards,
-        markGiftCardNotified,
         setOrderExcludedFromLoyalty,
         getAllTourSteps,
         createTourStep,
