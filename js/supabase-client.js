@@ -495,6 +495,16 @@
             shippingFee: o.shippingFee || 0,
             grandTotal: o.grandTotal,
             items: o.items || [],
+            // 🐛✅ [إصلاح حرج - سبتمبر 2026]: الحقل ده كان ناقص تماماً من الـ object المُمرَّر لـ
+            // submitBoseOrderToDatabase تحت. النتيجة: submitBoseOrderToDatabase كانت بتقرأ
+            // orderPayload.paymentMethod (undefined) وتحوّلها دايماً لـ "online" مهما كانت
+            // طريقة الدفع الحقيقية اللي اختارتها العميلة - فكل طلبات "الدفع عند الاستلام"
+            // كانت بتوصل لدالة create_order_with_items في القاعدة بـ p_payment_method='online'،
+            // ودالة القاعدة (بحق) كانت بترفض أي طلب أونلاين من غير رقم تحويل وتوقف التأكيد
+            // برسالة "يرجى كتابة رقم المحفظة أو الهاتف اللي حوّلتِ منه المبلغ" - مع إن واجهة
+            // الشيك أوت (بحق برضه) كانت مخفية الخانة دي تماماً لأن العميلة اختارت "عند الاستلام".
+            // تأكيد الطلب كان بيستحيل فعلياً لأي عميلة تختار الدفع عند الاستلام.
+            paymentMethod: o.paymentMethod,
             // 💳 رقم المحفظة/الهاتف اللي حوّلت منه العميلة + رقم المتجر اللي حوّلت عليه
             paymentSenderPhone: o.paymentSenderPhone || null,
             paymentNumberUsed: o.paymentNumberUsed || null,
