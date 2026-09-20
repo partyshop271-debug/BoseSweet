@@ -342,7 +342,6 @@
         { value: "standard", label: "منتج عادي" },
         { value: "cake-customizer", label: "محاكي التورت" },
         { value: "flower-customizer", label: "محاكي الورد" },
-        { value: "gift-card-customizer", label: "محاكي بطاقة الهدية" },
     ];
 
     function openProductModal(product) {

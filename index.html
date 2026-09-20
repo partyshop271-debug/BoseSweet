@@ -55,8 +55,6 @@
         .bose-loyalty-chip:hover { transform: translateY(-4px); }
         .bose-loyalty-chip .chip-num { font-weight: 800; color: var(--bose-pink); font-size: 1.15rem; }
         .bose-loyalty-chip .chip-lbl { font-size: 0.7rem; color: #111; opacity: 0.65; font-weight: 700; }
-        .bose-loyalty-chip-gold { border-color: rgba(212,175,55,0.4); background: linear-gradient(135deg, rgba(212,175,55,0.1), #fff); }
-        .bose-loyalty-chip-gold .chip-num { color: #b8860b; font-size: 0.95rem; }
 
         .bose-loyalty-teaser-link { display: inline-flex; align-items: center; gap: 8px; color: var(--bose-pink); font-weight: 800; font-size: 0.92rem; text-decoration: none; }
         .bose-loyalty-teaser-link i { transition: transform .2s; }
@@ -83,7 +81,6 @@
         .bose-loyalty-widget-result .blt-order-num { font-size: 2.1rem; font-weight: 800; color: var(--bose-pink); display: block; line-height: 1; }
         .bose-loyalty-widget-result .blt-order-lbl { font-size: 0.78rem; color: #111; opacity: 0.65; font-weight: 700; margin-bottom: 16px; display: block; }
         .bose-loyalty-widget-result .blt-msg { background: rgba(var(--bose-pink-rgb),0.08); border: 1px solid rgba(var(--bose-pink-rgb),0.25); border-radius: 12px; padding: 12px 14px; font-size: 0.86rem; font-weight: 700; color: #111; line-height: 1.6; margin-bottom: 14px; }
-        .bose-loyalty-widget-result .blt-msg.blt-msg-gold { background: rgba(212,175,55,0.1); border-color: rgba(212,175,55,0.3); }
         .bose-loyalty-widget-result .blt-more-link { color: var(--bose-pink); font-weight: 800; font-size: 0.85rem; text-decoration: none; }
     </style>
 
@@ -120,7 +117,7 @@
     <script src="js/supabase-client.js?v=2027_production_v43.0" defer></script>
     <script src="js/push-notifications.js?v=1.0" defer></script>
     <script src="js/favorites-engine.js?v=2026_production_v38.0" defer></script>
-    <script src="js/loyalty-config.js?v=2026_production_v2.0" defer></script>
+    <script src="js/loyalty-config.js?v=2026_production_v3.0" defer></script>
     <script src="js/season-dates.js?v=2026_production_v1.0" defer></script>
     <script src="js/season-themes.js?v=2026_production_v1.0" defer></script>
     <script src="js/season-theme-engine.js?v=2026_production_v1.0" defer></script>
@@ -415,7 +412,6 @@
                             <div class="mock-points-badge" id="app-promo-points-badge"><i class="fa-solid fa-star"></i> طلبك القادم رقم 5</div>
                             <div class="mock-progress-track"><div class="mock-progress-fill"></div></div>
                             <div class="mock-reward-row" id="app-promo-discount-row"><i class="fa-solid fa-percent"></i> خصم 10% تلقائي على الطلب الجاي</div>
-                            <div class="mock-reward-row" id="app-promo-voucher-row"><i class="fa-solid fa-gift"></i> قسيمة 300 جنيه كل 10 طلبات</div>
                         </div>
                         <div class="bose-app-promo-screen bose-screen-3">
                             <div class="mock-status-bar"><span>9:41</span><i class="fa-solid fa-signal"></i></div>
@@ -451,13 +447,12 @@
                          فعليًا بالأرقام الحقيقية اللي مخزّنة في store_settings.loyalty
                          بمجرد ما تجهز - فأي تعديل من لوحة التحكم (loyalty-settings.html)
                          يوصل هنا تلقائيًا من غير أي تدخل يدوي في الكود تاني. -->
-                    <p class="bose-loyalty-teaser-desc" id="loyalty-teaser-desc">خصومات تلقائية على طلباتك من غير أي كود، وقسيمة شراء حقيقية بـ300 جنيه كل 10 طلبات - النظام كله واضح وبسيط وموجود قدامك دايماً.</p>
+                    <p class="bose-loyalty-teaser-desc" id="loyalty-teaser-desc">خصم ولاء تلقائي على طلباتك من غير أي كود - كل ما تكمّلي طلبات معانا الخصم بيكبر، والنظام كله واضح وبسيط وموجود قدامك دايماً.</p>
 
                     <div class="bose-loyalty-tier-chips" id="loyalty-tier-chips">
                         <div class="bose-loyalty-chip"><span class="chip-num">5%</span><span class="chip-lbl">الطلب 3</span></div>
                         <div class="bose-loyalty-chip"><span class="chip-num">10%</span><span class="chip-lbl">الطلب 5</span></div>
                         <div class="bose-loyalty-chip"><span class="chip-num">15%</span><span class="chip-lbl">الطلب 7</span></div>
-                        <div class="bose-loyalty-chip bose-loyalty-chip-gold"><span class="chip-num">300ج</span><span class="chip-lbl">كل 10 طلبات</span></div>
                     </div>
 
                     <a href="rewards.html" class="bose-loyalty-teaser-link">اعرفي كل التفاصيل <i class="fa-solid fa-arrow-left"></i></a>
@@ -584,7 +579,7 @@
     <div id="bose-footer-injector"></div>
 
     <!-- 🎁 [نظام نقاط الولاء]: تفعيل الودجت التفاعلي الشخصي في الصفحة الرئيسية -
-         نسخة مصغّرة من نفس منطق rewards.html، بتستخدم نفس get_customer_rewards RPC. -->
+         نسخة مصغّرة من نفس منطق rewards.html، بتستخدم get_customer_loyalty_status RPC. -->
     <script>
         (function () {
             function esc(s) { return window.escapeBoseHTML ? window.escapeBoseHTML(s) : s; }
@@ -629,14 +624,13 @@
                 const chipsEl = document.getElementById("loyalty-tier-chips");
 
                 if (descEl) {
-                    descEl.textContent = `خصومات تلقائية على طلباتك من غير أي كود، وقسيمة شراء حقيقية بـ${config.voucherAmount} جنيه كل ${config.milestoneEvery} طلبات - النظام كله واضح وبسيط وموجود قدامك دايماً.`;
+                    descEl.textContent = "خصم ولاء تلقائي على طلباتك من غير أي كود - كل ما تكمّلي طلبات معانا الخصم بيكبر، والنظام كله واضح وبسيط وموجود قدامك دايماً.";
                 }
 
                 const tiers = (typeof window.getSortedLoyaltyTiers === "function") ? window.getSortedLoyaltyTiers(config) : [];
 
                 if (chipsEl) {
                     let html = tiers.map((t) => `<div class="bose-loyalty-chip"><span class="chip-num">${esc(String(t.percent))}%</span><span class="chip-lbl">الطلب ${esc(String(t.position))}</span></div>`).join("");
-                    html += `<div class="bose-loyalty-chip bose-loyalty-chip-gold"><span class="chip-num">${esc(String(config.voucherAmount))}ج</span><span class="chip-lbl">كل ${esc(String(config.milestoneEvery))} طلبات</span></div>`;
                     chipsEl.innerHTML = html;
                 }
 
@@ -649,7 +643,6 @@
                 const bestTier = tiers.length ? tiers[tiers.length - 1] : null;
                 const pointsBadgeEl = document.getElementById("app-promo-points-badge");
                 const discountRowEl = document.getElementById("app-promo-discount-row");
-                const voucherRowEl = document.getElementById("app-promo-voucher-row");
 
                 if (pointsBadgeEl) {
                     pointsBadgeEl.innerHTML = `<i class="fa-solid fa-star"></i> طلبك القادم رقم ${esc(String(bestTier ? bestTier.position : config.cycleLength))}`;
@@ -659,9 +652,6 @@
                         ? `<i class="fa-solid fa-percent"></i> خصم ${esc(String(bestTier.percent))}% تلقائي على الطلب الجاي`
                         : `<i class="fa-solid fa-percent"></i> خصومات تلقائية على طلباتك`;
                 }
-                if (voucherRowEl) {
-                    voucherRowEl.innerHTML = `<i class="fa-solid fa-gift"></i> قسيمة ${esc(String(config.voucherAmount))} جنيه كل ${esc(String(config.milestoneEvery))} طلبات`;
-                }
             }
 
             function renderWidgetResult(row) {
@@ -669,38 +659,32 @@
                 const resultState = document.getElementById("loyalty-widget-result-state");
                 if (!formState || !resultState) return;
 
-                // 🛡️ [إصلاح جذري - مزامنة ودجت البحث السريع مع إعدادات الولاء الحية]:
-                // كان الكود هنا بيستخدم رقم 10 ثابت (Hardcoded) كطول لدورة القسيمة
-                // ونص "300 جنيه" ثابت كمان، منفصلين تمامًا عن milestone_every و
-                // voucher_amount الحقيقيين المحفوظين في لوحة التحكم. فلو الأدمن
-                // غيّرت الدورة (زي عندنا دلوقتي: كل 12 طلب مش 10)، الودجت كان بيقول
-                // للعميلة "ده طلبك الجاي هتاخدي القسيمة" في طلب غلط (كل رقم بيقبل
-                // القسمة على 10 بدل 12). دلوقتي بيقرا نفس config الحي اللي باقي
-                // الصفحة بتستخدمه عبر getBoseLoyaltyConfig() بدل الأرقام الثابتة.
-                const loyaltyCfg = (typeof window.getBoseLoyaltyConfig === "function")
-                    ? window.getBoseLoyaltyConfig()
-                    : { milestoneEvery: 10, voucherAmount: 300 };
-
-                const totalOrders = row.total_orders || 0;
-                const nextPct = row.next_discount_percent || 0;
-                const untilDiscount = row.orders_until_next_discount || 0;
-                const untilVoucher = row.orders_until_next_voucher || loyaltyCfg.milestoneEvery;
+                // 🎁 [خصم الولاء التلقائي]: الرسالة بتتبني من حالة العميلة الحقيقية (get_customer_loyalty_status):
+                // عدد طلباتها المسلّمة، ترتيب طلبها الجاي في الدورة، وشرايح الخصم.
+                const totalOrders = parseInt(row.delivered_orders, 10) || 0;
+                const nextSeq = parseInt(row.next_sequence, 10) || (totalOrders + 1);
+                const nextPct = parseFloat(row.next_discount_percent) || 0;
+                const cycle = parseInt(row.cycle_length, 10) || 12;
+                const pos = ((nextSeq - 1) % cycle) + 1;
+                const tierKeys = Object.keys(row.tiers || {}).map(Number).filter((n) => n > 0).sort((a, b) => a - b);
 
                 let msgHtml, msgClass = "";
                 if (nextPct > 0) {
-                    msgHtml = `🎉 طلبك الجاي (رقم ${totalOrders + 1}) هياخد خصم تلقائي <b>${nextPct}%</b> من غير أي كود!`;
-                } else if (untilVoucher === 1 || (totalOrders + 1) % loyaltyCfg.milestoneEvery === 0) {
-                    msgHtml = `🎁 ده طلبك الجاي! بعد استلامه هتاخدي قسيمة شراء بـ${esc(String(loyaltyCfg.voucherAmount))} جنيه`;
-                    msgClass = " blt-msg-gold";
+                    msgHtml = `🎉 طلبك الجاي (رقم ${nextSeq}) هياخد خصم تلقائي <b>${nextPct}%</b> من غير أي كود!`;
+                } else if (tierKeys.length > 0) {
+                    const upcoming = tierKeys.find((k) => k > pos);
+                    const targetKey = upcoming !== undefined ? upcoming : tierKeys[0];
+                    const targetSeq = upcoming !== undefined ? nextSeq + (upcoming - pos) : nextSeq + (cycle - pos) + tierKeys[0];
+                    msgHtml = `خصم الولاء الجاي <b>${esc(String(row.tiers[String(targetKey)]))}%</b> هيكون على طلبك رقم <b>${targetSeq}</b>`;
                 } else {
-                    msgHtml = `باقيلك <b>${untilDiscount}</b> ${untilDiscount === 1 ? 'طلب' : 'طلبات'} بس عشان تكسبي خصم على طلبك الجاي`;
+                    msgHtml = "كل ما تكمّلي طلبات معانا هتكسبي خصم تلقائي على طلباتك الجاية";
                 }
 
                 resultState.innerHTML = `
                     <span class="blt-order-num">${totalOrders}</span>
                     <span class="blt-order-lbl">${totalOrders === 1 ? 'طلب مكتمل معانا' : 'طلبات مكتملة معانا'}</span>
                     <div class="blt-msg${msgClass}">${msgHtml}</div>
-                    <a href="rewards.html?phone=${encodeURIComponent(document.getElementById('loyalty-widget-phone').value.trim())}" class="blt-more-link">شوفي كل التفاصيل والقسايم بتاعتك <i class="fa-solid fa-arrow-left"></i></a>
+                    <a href="rewards.html?phone=${encodeURIComponent(document.getElementById('loyalty-widget-phone').value.trim())}" class="blt-more-link">شوفي كل تفاصيل الولاء بتاعتك <i class="fa-solid fa-arrow-left"></i></a>
                 `;
                 formState.style.display = "none";
                 resultState.style.display = "block";
@@ -715,14 +699,19 @@
                 const phone = phoneInput.value.trim();
                 if (errorBox) errorBox.textContent = "";
 
-                if (!window.BoseSupabase || typeof window.BoseSupabase.getBoseCustomerRewards !== "function") return;
+                if (!window.BoseSupabase || typeof window.BoseSupabase.getBoseCustomerLoyaltyStatus !== "function") return;
 
                 btn.disabled = true;
                 btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
                 try {
-                    const row = await window.BoseSupabase.getBoseCustomerRewards(phone);
+                    if (typeof window.validateBosePhoneNumber === "function" && !window.validateBosePhoneNumber(phone)) {
+                        if (errorBox) errorBox.textContent = "من فضلك اكتبي رقم هاتف مصري صحيح";
+                        return;
+                    }
+                    const cleanPhone = typeof window.sanitizeBosePhoneNumber === "function" ? window.sanitizeBosePhoneNumber(phone) : phone;
+                    const row = await window.BoseSupabase.getBoseCustomerLoyaltyStatus(cleanPhone);
                     if (!row || !row.found) {
-                        if (errorBox) errorBox.textContent = (row && row.message) || "من فضلك اكتبي رقم هاتف مصري صحيح";
+                        if (errorBox) errorBox.textContent = "من فضلك اكتبي رقم هاتف مصري صحيح";
                         return;
                     }
                     renderWidgetResult(row);

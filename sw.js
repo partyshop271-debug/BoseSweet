@@ -59,6 +59,13 @@ self.addEventListener("push", (event) => {
     dir: "rtl",
     lang: "ar",
     data: { url: data.url || "/" },
+    // 🛎️ [تنبيهات الطلبات للأدمن]: الإشعارات المهمة بتفضل ظاهرة لحد ما تتفتح (requireInteraction)،
+    // وبتهتز، وبتستبدل بعضها بنفس الـtag بدل ما تتكدّس. الحقول دي اختيارية - إشعارات
+    // العميلات العادية مبتبعتهاش فمفيش أي تغيير في سلوكها.
+    tag: data.tag || undefined,
+    renotify: !!(data.renotify && data.tag),
+    requireInteraction: !!data.requireInteraction,
+    vibrate: Array.isArray(data.vibrate) ? data.vibrate : undefined,
   };
 
   event.waitUntil(self.registration.showNotification(title, options));
@@ -74,14 +81,31 @@ self.addEventListener("notificationclick", (event) => {
 
   event.waitUntil(
     self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((clientsList) => {
+      const target = new URL(targetUrl, self.location.origin);
+      const goTo = (client) =>
+        client.focus().then((focused) => {
+          const c = focused || client;
+          // نفس الصفحة بس بـ query مختلف (مثلاً ?open=رقم-الطلب) → نودّيه للرابط الجديد
+          if (new URL(c.url).search !== target.search && "navigate" in c) return c.navigate(target.href);
+          return c;
+        });
+
+      // 1) نفس الصفحة مفتوحة → نركّز عليها
       for (const client of clientsList) {
-        const clientPath = new URL(client.url).pathname;
-        if (clientPath === targetUrl && "focus" in client) {
-          return client.focus();
+        const u = new URL(client.url);
+        if (u.origin === target.origin && u.pathname === target.pathname && "focus" in client) return goTo(client);
+      }
+      // 2) إشعار أدمن وفيه تبويب أدمن مفتوح → نستخدمه بدل ما نفتح تبويب جديد
+      if (target.pathname.startsWith("/admin/")) {
+        for (const client of clientsList) {
+          const u = new URL(client.url);
+          if (u.origin === target.origin && u.pathname.startsWith("/admin/") && "focus" in client) {
+            return client.focus().then((focused) => ((focused || client).navigate ? (focused || client).navigate(target.href) : focused));
+          }
         }
       }
       if (self.clients.openWindow) {
-        return self.clients.openWindow(targetUrl);
+        return self.clients.openWindow(target.href);
       }
     })
   );

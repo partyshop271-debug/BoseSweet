@@ -105,15 +105,9 @@ body {
 }
 </style>
 <!-- استدعاء المحرك المركزي الموحد حارس الحسابات وحاقن الهيدر والفوتر آلياً أولاً -->
-<script src="js/supabase-client.js?v=2027_production_v44.0" defer></script>
+<script src="js/supabase-client.js?v=2027_production_v45.0" defer></script>
     <script src="js/push-notifications.js?v=1.0" defer></script>
 <script src="js/favorites-engine.js?v=2026_production_v38.0" defer></script>
-<!-- 🛡️🆕 [إصلاح ترتيب]: loyalty-config.js لازم يتحمّل *قبل* core-engine.js (شوفي
-     التعليق الكامل داخل js/loyalty-config.js) - لو حصل العكس، core-engine.js
-     ممكن يطلق حدث BoseDatabaseLoaded بشكل متزامن قبل ما getBoseLoyaltyConfig
-     تتعرّف أصلاً، فبانر الولاء وكارت نجاح الطلب كانوا بيرجعوا لأرقام افتراضية
-     ثابتة بدل الأرقام الحقيقية المحفوظة في لوحة التحكم. -->
-<script src="js/loyalty-config.js?v=2026_production_v1.0" defer></script>
 <script src="js/season-dates.js?v=2026_production_v1.0" defer></script>
 <script src="js/season-themes.js?v=2026_production_v1.0" defer></script>
 <script src="js/season-theme-engine.js?v=2026_production_v1.0" defer></script>
@@ -184,18 +178,11 @@ body {
                  الحقيقي الوحيد دلوقتي هو اللي في صفحة إتمام الطلب فقط. -->
         </div>
 
-        <!-- الجانب الأيسر: ملخص الطلب المالي والكوبونات الذكية -->
+        <!-- الجانب الأيسر: ملخص الطلب المالي -->
         <div class="bose-summary-sticky-card">
             <h3 class="summary-section-title">ملخص الطلب</h3>
 
-            <!-- 🗑️ [إصلاح - خطوة إدخال كود مكررة ومربكة]: كان هنا نفس خانة الكود
-                 الذكية اللي موجودة في صفحة إتمام الطلب - أي كود يتطبق هنا بيفضل
-                 شغال تلقائياً في إتمام الطلب برضه (بيتخزن في bose_active_discounts)،
-                 فوجودها في المكانين مع بعض كان تكرار حرفي لنفس الخطوة بلا أي فايدة
-                 حقيقية، وكان بيدي العميلة إحساس إن فيه حاجة ناقصة أو محتاجة تتعمل
-                 تاني في الخطوة الجاية. خانة الكود دلوقتي في صفحة إتمام الطلب فقط -
-                 نقطة دخول واحدة واضحة، ومع ذلك أي كود اتطبق (لو حصل من كود قديم
-                 محفوظ) لسه بيظهر أثره في "الخصم المطبق" تحت زي ما هو. -->
+            <!-- خصم الولاء التلقائي (لو العميلة مستحقاه) بيظهر في صفحة إتمام الطلب بعد كتابة رقم الموبايل. -->
 
             <div class="summary-pricing-table">
                 <div class="pricing-row-node">
@@ -205,10 +192,6 @@ body {
                 <div class="pricing-row-node">
                     <span class="pricing-label-text">المجموع الصافي للمشتريات:</span>
                     <span id="cart-subtotal-value" class="pricing-value-text" style="color: #111111; font-weight: 700;">0 EGP</span>
-                </div>
-                <div class="pricing-row-node">
-                    <span class="pricing-label-text">الخصم المطبق:</span>
-                    <span id="summary-discount" class="pricing-value-text" style="color: var(--bose-pink); font-weight: 700;">0 EGP</span>
                 </div>
                 <div class="pricing-row-node">
                     <span class="pricing-label-text">رسوم ومصاريف التوصيل:
@@ -254,7 +237,7 @@ body {
 <div id="bose-footer-injector"></div>
 
 <!-- استدعاء محرك العمليات والحسابات الموحد للطلب والسلة -->
-<script src="js/cart-engine.js?v=2029_production_v49.0" defer></script>
+<script src="js/cart-engine.js?v=2029_production_v50.0" defer></script>
 
 <!-- كود حقن صور المقترحات المطور وتأمين تجربة الإضافة واللمس دون Full Refresh للبيانات -->
 <script>
