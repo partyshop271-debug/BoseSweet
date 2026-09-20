@@ -46,8 +46,8 @@
          الأربعة اللي فوق بدل بعدهم (السكريبت العادي بيتنفذ فورًا لحظة ما البارسر يوصله،
          بعكس defer اللي بيستنى لحد ما الصفحة كلها تتحلل). أضفنا defer هنا كمان عشان
          الترتيب يفضل صحيح ومطابق تمامًا لنفس النمط المستخدم في cart.html/checkout.html. -->
-    <script src="js/invoice-image-generator.js?v=2026_production_v1.0" defer></script>
-    <script src="js/cart-engine.js?v=2029_production_v50.0" defer></script>
+    <script src="js/invoice-image-generator.js?v=2026_production_v1.1" defer></script>
+    <script src="js/cart-engine.js?v=2029_production_v52.0" defer></script>
     <!-- 🛡️🆕 [إصلاح باج حقيقي]: الصفحة دي كانت الوحيدة من كل صفحات رحلة
          الطلب (منيو/فئة/منتج/سلة/إتمام الطلب) اللي مش محمّلة فيها
          js/guided-tour.js - فلو الجولة التفاعلية وصلت لآخر خطوة (شرح
@@ -358,7 +358,7 @@
             <p class="success-subheadline" style="margin-bottom:-8px;">رقم الطلب</p>
             <h2 id="success-order-id-display" class="success-order-number-big" style="display:none;"></h2>
 
-            <p class="success-subheadline">طلبك اتسجل عندنا وإحنا دلوقتي بنراجع التحويل. هنتواصل معاكي لتأكيد الطلب قريبًا، وتقدري تتابعي حالته في أي وقت من صفحة تتبع الطلب.</p>
+            <p id="bose-success-subtext" class="success-subheadline">طلبك اتسجل عندنا وإحنا دلوقتي بنراجع التحويل. هنتواصل معاكي لتأكيد الطلب قريبًا، وتقدري تتابعي حالته في أي وقت من صفحة تتبع الطلب.</p>
 
             <div class="order-summary-receipt-box">
                 <div class="receipt-header-row">
@@ -390,7 +390,7 @@
                     <span>الرقم اللي حوّلتي منه:</span>
                     <span id="bose-paid-reference" style="font-weight: 700; direction: ltr;"></span>
                 </div>
-                <div style="border-top: 1px dashed rgba(var(--bose-pink-rgb), 0.3); padding-top: 10px; font-size: 0.85rem; color: #111111; opacity: 0.85; line-height: 1.7;">
+                <div id="bose-payment-summary-note" style="border-top: 1px dashed rgba(var(--bose-pink-rgb), 0.3); padding-top: 10px; font-size: 0.85rem; color: #111111; opacity: 0.85; line-height: 1.7;">
                     ⏳ بنراجع التحويل دلوقتي، وأول ما نتأكد من وصوله هنتواصل معاكي لتأكيد طلبك.
                 </div>
             </div>
