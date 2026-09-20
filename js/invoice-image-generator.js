@@ -531,7 +531,13 @@
         ctx.fillText(`👑 المجموع المالي النهائي: ${order.grandTotal} EGP 👑`, centerX, y);
         y += 30;
 
-        if (order.depositAmount !== undefined) {
+        if (order.paymentMethod === "cod") {
+            // 💵 الدفع عند الاستلام: مفيش مبلغ مطلوب دفعه دلوقتي، الإجمالي كله بيتدفع وقت التسليم
+            ctx.font = "700 14px Cairo, Arial, sans-serif";
+            ctx.fillStyle = BRAND_BLACK;
+            ctx.fillText(`طريقة الدفع: عند الاستلام - المطلوب: ${order.grandTotal} EGP`, centerX, y);
+            y += 30;
+        } else if (order.depositAmount !== undefined) {
             ctx.font = "700 14px Cairo, Arial, sans-serif";
             ctx.fillStyle = BRAND_BLACK;
             ctx.fillText(`المطلوب دفعه الآن: ${order.depositAmount} EGP`, centerX, y);

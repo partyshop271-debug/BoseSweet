@@ -728,15 +728,43 @@ function renderBoseCheckoutPage(storeData) {
 
     if (pickupBtn) pickupBtn.click();
 
+    // 📋 [زرار نسخ رقم التحويل - سبتمبر 2026]: زرار كبير بنص واضح ("انسخي الرقم" ← "تم النسخ ✓")
+    // بدل أيقونة صغيرة. وفيه بديل (textarea + execCommand) لو navigator.clipboard مش متاح
+    // (متصفحات قديمة أو صفحة مش HTTPS) - قبل كده الزرار كان بيسكت من غير أي رد فعل في الحالة دي.
     const copyPhoneBtn = document.getElementById("bose-copy-deposit-phone");
     if (copyPhoneBtn) {
+        const copyBtnDefaultHtml = '<i class="far fa-copy"></i> انسخي الرقم';
+        const showCopied = () => {
+            copyPhoneBtn.innerHTML = '<i class="fas fa-check"></i> تم النسخ ✓';
+            copyPhoneBtn.classList.add("is-copied");
+            setTimeout(() => {
+                copyPhoneBtn.innerHTML = copyBtnDefaultHtml;
+                copyPhoneBtn.classList.remove("is-copied");
+            }, 2000);
+        };
+        const legacyCopy = (text) => {
+            try {
+                const ta = document.createElement("textarea");
+                ta.value = text;
+                ta.setAttribute("readonly", "");
+                ta.style.cssText = "position:fixed;top:0;left:-9999px;opacity:0;";
+                document.body.appendChild(ta);
+                ta.select();
+                ta.setSelectionRange(0, text.length);
+                const ok = document.execCommand("copy");
+                document.body.removeChild(ta);
+                return ok;
+            } catch (e) { return false; }
+        };
         copyPhoneBtn.onclick = () => {
             const num = document.getElementById("bose-deposit-phone-number")?.textContent?.trim();
-            if (num && navigator.clipboard) {
-                navigator.clipboard.writeText(num).then(() => {
-                    copyPhoneBtn.innerHTML = '<i class="fas fa-check"></i>';
-                    setTimeout(() => { copyPhoneBtn.innerHTML = '<i class="far fa-copy"></i>'; }, 1500);
-                }).catch(() => {});
+            if (!num || num === "—") return;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(num).then(showCopied).catch(() => {
+                    if (legacyCopy(num)) showCopied();
+                });
+            } else if (legacyCopy(num)) {
+                showCopied();
             }
         };
     }
@@ -746,6 +774,44 @@ function renderBoseCheckoutPage(storeData) {
     // مؤشر تحميل) - لو النت بطيء، العميلة ممكن تحس إن الضغطة "معملتش حاجة"
     // فتضغط تاني، وده كان بيولّد طلب مكرر فعلياً. دلوقتي بيتعطل الزرار فوراً
     // مع سبينر واضح لحد ما نوصل لصفحة النجاح (أو يفشل الطلب فنرجّعه شغال تاني).
+    // 💳 [اختيار طريقة الدفع - سبتمبر 2026]: (الدفع عند الاستلام | أونلاين بالتحويل).
+    // الأونلاين هو الافتراضي (نفس السلوك القديم). لما العميلة تختار "عند الاستلام" بنخفي صندوق
+    // التحويل ونظهر صندوق شرح الدفع عند الاستلام، وخانة "رقم المحفظة" بتبطّل إلزامية.
+    window.getBosePaymentMethod = function () {
+        const cod = document.getElementById("bose-pm-cod");
+        return (cod && cod.checked) ? "cod" : "online";
+    };
+    const applyBosePaymentMethodUI = () => {
+        const method = window.getBosePaymentMethod();
+        const onlineBox = document.getElementById("bose-deposit-payment-box");
+        const codBox = document.getElementById("bose-cod-info-box");
+        const senderInput = document.getElementById("checkout-payment-sender-phone");
+        const submitNote = document.getElementById("bose-submit-note");
+        if (onlineBox) onlineBox.style.display = method === "online" ? "" : "none";
+        if (codBox) codBox.style.display = method === "cod" ? "block" : "none";
+        if (senderInput) {
+            if (method === "cod") {
+                senderInput.removeAttribute("required");
+                boseClearFieldError(senderInput); // لو كانت متعلّمة غلط قبل كده نمسحها
+            } else {
+                senderInput.setAttribute("required", "");
+            }
+        }
+        if (submitNote) {
+            submitNote.textContent = method === "cod"
+                ? "بعد التأكيد طلبك بيتسجل عندنا فورًا، وبنتواصل معاكي لتأكيده. والدفع بيكون كاش عند الاستلام."
+                : "بعد التأكيد طلبك بيتسجل عندنا فورًا، وبنراجع التحويل ونتواصل معاكي لتأكيده.";
+        }
+        document.querySelectorAll("#bose-payment-method-picker .bose-pm-option").forEach((label) => {
+            const radio = label.querySelector('input[type="radio"]');
+            label.classList.toggle("is-selected", !!(radio && radio.checked));
+        });
+    };
+    document.querySelectorAll('input[name="bose-payment-method"]').forEach((radio) => {
+        radio.addEventListener("change", applyBosePaymentMethodUI);
+    });
+    applyBosePaymentMethodUI();
+
     // 📞 نفس حارس رقم الموبايل (تنضيف الأرقام العربية/علامات الاتجاه المخفية) على خانة
     // رقم المحفظة/الهاتف اللي حوّلت منه العميلة - عشان اللصق من جهات الاتصال يشتغل.
     if (typeof window.initBosePhoneFieldGuard === "function") {
@@ -812,8 +878,14 @@ function updateBoseFullPaymentBox(storeData, grandTotal) {
     const phoneEl = document.getElementById("bose-deposit-phone-number");
     if (!amountEl) return;
 
-    amountEl.textContent = (Math.round((parseFloat(grandTotal) || 0) * 100) / 100).toFixed(2) + " EGP";
-    if (labelEl) labelEl.textContent = "المبلغ الكامل المطلوب تحويله الآن لتأكيد الحجز:";
+    // 🎨 المبلغ بخط كبير و"EGP" أصغر جنبه (الأرقام بس بتتحط - مفيش مدخل خارجي فـ innerHTML آمن هنا)
+    amountEl.innerHTML = (Math.round((parseFloat(grandTotal) || 0) * 100) / 100).toFixed(2) + " <small>EGP</small>";
+    // 🐛 قبل كده الكود ده كان بيكتب على textContent للعنوان كله، وده كان بيمسح زرار ⓘ (الشرح) اللي جواه
+    // كل مرة الفاتورة تتحدث. دلوقتي العنوان span لوحده والزرار برّاه فمش بيتمسح.
+    if (labelEl) labelEl.textContent = "المبلغ الكامل المطلوب تحويله الآن لتأكيد الحجز";
+    // 💵 نفس المبلغ بيتعرض كمان في صندوق "الدفع عند الاستلام" (المطلوب تحصيله وقت التسليم)
+    const codAmountEl = document.getElementById("bose-cod-amount");
+    if (codAmountEl) codAmountEl.innerHTML = (Math.round((parseFloat(grandTotal) || 0) * 100) / 100).toFixed(2) + " <small>EGP</small>";
     if (phoneEl) phoneEl.textContent = storeData?.store?.phone || "01097238441";
 }
 
@@ -980,9 +1052,11 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee) {
     // 💳 [رقم المحفظة/الهاتف اللي حوّلت منه العميلة - إلزامي]: الدفع بالتحويل (كامل المبلغ) من
     // الموقع نفسه، ورقم المحوِّل هو اللي بنطابق بيه التحويل ونأكد الطلب. بيتفحص كرقم مصري (01...)
     // في الواجهة وتاني في القاعدة (create_order_with_items).
+    // 💵 لو العميلة اختارت "الدفع عند الاستلام" مفيش تحويل، فرقم المحفظة مش مطلوب ولا بيتفحص.
+    const boseSelectedPaymentMethod = typeof window.getBosePaymentMethod === "function" ? window.getBosePaymentMethod() : "online";
     const paymentSenderInput = document.getElementById("checkout-payment-sender-phone");
     let paymentSenderPhone = "";
-    if (paymentSenderInput) {
+    if (paymentSenderInput && boseSelectedPaymentMethod === "online") {
         const senderRaw = paymentSenderInput.value.trim();
         if (typeof window.validateBosePhoneNumber === "function" && !window.validateBosePhoneNumber(senderRaw)) {
             addValidationError(paymentSenderInput, "من فضلك اكتبي رقم المحفظة أو الهاتف اللي حوّلتي منه (رقم مصري صحيح يبدأ بـ 01).");
@@ -1031,8 +1105,9 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee) {
         loyaltyDiscountAmount: invoice.loyaltyDiscountAmount || 0,
         grandTotal: finalGrandTotalCalculated,
         // 💳 رقم المحفظة/الهاتف اللي حوّلت منه العميلة + رقم المتجر اللي حوّلت عليه (بيتحفظوا في القاعدة)
-        paymentSenderPhone: paymentSenderPhone,
-        paymentNumberUsed: storeData.store?.phone || "01097238441",
+        paymentMethod: boseSelectedPaymentMethod, // "online" | "cod"
+        paymentSenderPhone: boseSelectedPaymentMethod === "online" ? paymentSenderPhone : "",
+        paymentNumberUsed: boseSelectedPaymentMethod === "online" ? (storeData.store?.phone || "01097238441") : "",
         notes: orderNotesInput ? orderNotesInput.value.trim() : "لا توجد ملاحظات إضافية",
         items: cart
     };
@@ -1067,9 +1142,16 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee) {
     }
 
     // الدفع كامل مقدمًا: المطلوب تحويله = الإجمالي النهائي (والقيمة المؤكدة الفعلية بتيجي من القاعدة تحت)
-    completedBoseOrderObject.depositAmount = finalGrandTotalCalculated;
-    completedBoseOrderObject.remainingAmount = 0;
-    completedBoseOrderObject.paymentPhone = storeData.store?.phone || "01097238441";
+    // 💵 الدفع عند الاستلام: مفيش مبلغ مطلوب تحويله دلوقتي، والإجمالي كله بيتدفع وقت التسليم.
+    if (boseSelectedPaymentMethod === "cod") {
+        completedBoseOrderObject.depositAmount = 0;
+        completedBoseOrderObject.remainingAmount = finalGrandTotalCalculated;
+        completedBoseOrderObject.paymentPhone = "";
+    } else {
+        completedBoseOrderObject.depositAmount = finalGrandTotalCalculated;
+        completedBoseOrderObject.remainingAmount = 0;
+        completedBoseOrderObject.paymentPhone = storeData.store?.phone || "01097238441";
+    }
 
     // 💾 [الدفع بالتحويل من الموقع - حفظ الطلب شرط أساسي]: مفيش مسار واتساب للطلبات
     // بعد كده خالص. الطلب لازم يتحفظ في قاعدة البيانات الأول، ولو الحفظ فشل (نت ضعيف،
@@ -1309,7 +1391,19 @@ function renderBoseSuccessPage(storeData) {
     // كان عربون. بيتخفي لو مفيش مبلغ مطلوب تحويله أصلاً (الطلب اتغطى بكود/بطاقة هدية).
     const payBox = document.getElementById("bose-payment-summary-box");
     const paidAmount = parseFloat(order.depositAmount);
-    if (payBox && !isNaN(paidAmount) && paidAmount > 0) {
+    if (payBox && order.paymentMethod === "cod") {
+        // 💵 الدفع عند الاستلام: بنوضّح المبلغ اللي هيتدفع وقت التسليم (مفيش تحويل ولا رقم محفظة)
+        const codTotal = parseFloat(order.grandTotal) || 0;
+        payBox.style.display = "block";
+        const codLabelEl = document.getElementById("bose-paid-label");
+        const codAmountEl = document.getElementById("bose-paid-amount");
+        const codNoteEl = document.getElementById("bose-payment-summary-note");
+        const codSubEl = document.getElementById("bose-success-subtext");
+        if (codLabelEl) codLabelEl.textContent = "المبلغ اللي هتدفعيه عند الاستلام:";
+        if (codAmountEl) codAmountEl.textContent = codTotal.toFixed(2) + " EGP";
+        if (codNoteEl) codNoteEl.textContent = "💵 مفيش أي تحويل مطلوب منك. هنتواصل معاكي لتأكيد طلبك، وهتدفعي كاش وقت الاستلام.";
+        if (codSubEl) codSubEl.textContent = "طلبك اتسجل عندنا. هنتواصل معاكي لتأكيد الطلب قريبًا، والدفع هيكون كاش عند الاستلام، وتقدري تتابعي حالته في أي وقت من صفحة تتبع الطلب.";
+    } else if (payBox && !isNaN(paidAmount) && paidAmount > 0) {
         payBox.style.display = "block";
         const paidLabelEl = document.getElementById("bose-paid-label");
         const paidAmountEl = document.getElementById("bose-paid-amount");

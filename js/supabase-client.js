@@ -253,6 +253,7 @@
             p_items: items,
             p_payment_sender_phone: orderPayload.paymentSenderPhone || null,
             p_payment_number_used: orderPayload.paymentNumberUsed || null,
+            p_payment_method: orderPayload.paymentMethod === "cod" ? "cod" : "online", // الدفع عند الاستلام | أونلاين
             p_attribution_source: orderPayload.attributionSource || null,
             p_attribution_medium: orderPayload.attributionMedium || null,
             p_attribution_detail: orderPayload.attributionDetail || null,
