@@ -148,7 +148,8 @@
             const { count } = await client
                 .from("orders")
                 .select("id", { count: "exact", head: true })
-                .eq("deposit_status", "pending");
+                .eq("deposit_status", "pending")
+                .eq("payment_method", "online"); // الدفع عند الاستلام مالوش عربون/تحويل ينتظر تأكيد
             stats.awaitingDepositCount = count || 0;
         } catch (e) {
             console.warn("تعذر جلب عدد طلبات العربون بانتظار التأكيد:", e.message);
@@ -402,7 +403,7 @@
         try {
             let query = client
                 .from("orders")
-                .select("id, order_number, customer_name, grand_total, status, created_at")
+                .select("id, order_number, customer_name, grand_total, status, created_at, payment_method")
                 .order("created_at", { ascending: false });
             if (filters.status) query = query.eq("status", filters.status);
             if (filters.limit) query = query.limit(filters.limit);
@@ -522,7 +523,8 @@
             const { count, error } = await client
                 .from("orders")
                 .select("id", { count: "exact", head: true })
-                .eq("deposit_status", "pending");
+                .eq("deposit_status", "pending")
+                .eq("payment_method", "online");
             if (error) throw error;
             return count || 0;
         } catch (e) {
