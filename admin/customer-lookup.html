@@ -20,15 +20,10 @@
             font-size: 0.78rem; font-weight: 800; background: var(--adm-bg-hover); color: var(--adm-text-secondary); padding: 0 6px; position: relative;
         }
         .clk-cycle-dot.has-discount { background: var(--adm-success-bg); color: var(--adm-success); }
-        .clk-cycle-dot.is-milestone { background: linear-gradient(135deg, #d4af37, #f0ce6b); color: #3a2e00; }
         .clk-cycle-dot.is-next { outline: 2px solid var(--adm-pink); outline-offset: 2px; }
-        .clk-voucher-item { display: flex; align-items: center; justify-content: space-between; background: var(--adm-bg-hover); border-radius: 12px; padding: 10px 14px; margin-bottom: 8px; }
-        .clk-voucher-item .code { font-weight: 800; direction: ltr; text-align: right; }
-        .clk-voucher-item .meta { font-size: 0.76rem; color: var(--adm-text-muted); }
         .clk-order-row { cursor: pointer; }
         .clk-order-items-row td { background: var(--adm-bg-hover); padding: 10px 16px; }
         .clk-order-items-row ul { margin: 0; padding-inline-start: 18px; font-size: 0.82rem; }
-        .clk-voucher-void-btn { border: none; background: none; color: var(--adm-danger); font-size: 0.76rem; font-weight: 700; cursor: pointer; padding: 4px 8px; }
         .clk-order-action-btn { border: none; background: var(--adm-bg-hover); color: var(--adm-text-secondary); font-size: 0.72rem; font-weight: 700; cursor: pointer; padding: 5px 9px; border-radius: 8px; white-space: nowrap; }
         .clk-order-action-btn.restore { background: var(--adm-success-bg); color: var(--adm-success); }
     </style>
@@ -50,7 +45,7 @@
                     <div class="adm-card-header">
                         <div>
                             <h2>متابعة العملاء</h2>
-                            <p>دوّري برقم تليفون العميلة عشان تشوفي كام طلب عندها، فين وصلت في دورة الولاء، وقسايمها النشطة</p>
+                            <p>دوّري برقم تليفون العميلة عشان تشوفي كام طلب عندها، فين وصلت في دورة الولاء</p>
                         </div>
                     </div>
                     <div class="clk-search-bar">
@@ -68,7 +63,7 @@
                     <div class="adm-empty-state">
                         <i class="fa-solid fa-user-magnifying-glass"></i>
                         <strong>دوّري برقم تليفون</strong>
-                        <p>هتظهر هنا كل بيانات العميلة: طلباتها، موقعها في دورة الولاء، وقسايمها</p>
+                        <p>هتظهر هنا كل بيانات العميلة: طلباتها، موقعها في دورة الولاء</p>
                     </div>
                 </div>
 
@@ -93,32 +88,6 @@
                         <div id="clk-favorites-list"><p style="text-align:center; opacity:0.6; padding: 10px 0;">جاري التحميل...</p></div>
                     </div>
 
-                    <div class="adm-card adm-mt-16">
-                        <div class="adm-card-header">
-                            <div><h2>قسايم الهدية</h2></div>
-                            <button type="button" class="adm-btn adm-btn-ghost" id="clk-grant-voucher-btn">
-                                <i class="fa-solid fa-plus"></i> منح قسيمة يدوية
-                            </button>
-                        </div>
-                        <div id="clk-grant-voucher-form" style="display:none; background: var(--adm-bg-hover); border-radius: 12px; padding: 14px; margin-bottom: 14px;">
-                            <div class="adm-form-grid">
-                                <div class="adm-field">
-                                    <label for="clk-grant-amount">قيمة القسيمة (ج.م)</label>
-                                    <input type="number" min="1" step="1" class="adm-input" id="clk-grant-amount">
-                                </div>
-                                <div class="adm-field">
-                                    <label for="clk-grant-validity">مدة الصلاحية (بالشهور)</label>
-                                    <input type="number" min="1" step="1" class="adm-input" id="clk-grant-validity" value="2">
-                                </div>
-                            </div>
-                            <div style="display:flex; gap:10px;">
-                                <button type="button" class="adm-btn adm-btn-primary" id="clk-grant-confirm-btn">تأكيد المنح</button>
-                                <button type="button" class="adm-btn adm-btn-ghost" id="clk-grant-cancel-btn">إلغاء</button>
-                            </div>
-                            <p class="adm-hint" style="margin-top:8px;">القسيمة دي هتتصدر فوراً خارج دورة الولاء التلقائية - استخدميها في الحالات الاستثنائية بس (تعويض عميلة مثلاً)</p>
-                        </div>
-                        <div id="clk-vouchers-list"></div>
-                    </div>
 
                     <div class="adm-card adm-mt-16">
                         <div class="adm-card-header"><div><h2>سجل الطلبات</h2><p>كل طلب هنا فاتورة مستقلة بذاتها - اضغطي على أي طلب لعرض عناصره</p></div></div>
@@ -131,8 +100,7 @@
                                         <th>الحالة</th>
                                         <th>ترتيبه في الولاء</th>
                                         <th>خصم الولاء</th>
-                                        <th>قسيمة مستخدمة</th>
-                                        <th>الإجمالي</th>
+                                                    <th>الإجمالي</th>
                                         <th>إجراء</th>
                                     </tr>
                                 </thead>
