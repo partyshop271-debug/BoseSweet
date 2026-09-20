@@ -2176,6 +2176,66 @@
         return (selectedDateTime.getTime() - currentDateTime.getTime()) / (1000 * 60 * 60) >= requiredHours;
     };
 
+    // 🧠🆕 [مواعيد ذكية بالكامل - سبتمبر 2026]: قبل كده الشيك أوت كان بيسيب العميلة
+    // تختار أي ساعة (1-12 + صباحًا/مساءً) على أي تاريخ، وبعدين يرفضها بعد الاختيار
+    // لو الساعة برة نطاق العمل أو أقرب من مدة التحضير - فكانت العميلة بتتفاجئ وتفضل
+    // "تجرّب وتتاكد" أكتر من مرة. أخطر حالة: لو دلوقتي قريب من آخر ساعات العمل (مثلاً
+    // 10 بالليل)، بكرة الساعة المطابقة (10 بالليل تاني) بتبقى برة نطاق العمل أصلاً،
+    // فمفيش أي ساعة صالحة يوم بكرة خالص - ده كان بيضيع في المنطق القديم (اللي كان
+    // بيحسب "أقرب تاريخ" كعدد أيام بس من غير ما يتأكد إن فيه ساعة عمل فعلاً صالحة
+    // فيه)، فالعميلة كانت بتوصلها اقتراحات ليوم مفيهوش أي ساعة تقدر تختارها أصلاً.
+    // الدوال التلاتة دي بتحل المشكلة من جذرها: بيتحسب كل شيء (الساعات المتاحة،
+    // وأقرب موعد فعلي) مرة واحدة هنا، ونفس القائمة اللي بتتعرض للعميلة هي بالظبط
+    // اللي هتتقبل - يبقى مستحيل تختار ميعاد مرفوض من الأساس.
+
+    // ⏱️ كل ساعات العمل الصحيحة (من businessHoursStart لحد businessHoursEnd، فاصل
+    // ساعة كاملة زي باقي الموقع) - نفس القائمة لأي تاريخ، من غير أي فحص لمدة التحضير.
+    window.getBoseBusinessHourSlots = function () {
+        const rules = window.BoseStoreData?.orderRules || {};
+        const bhStart = rules.businessHoursStart || "09:00";
+        const bhEnd = rules.businessHoursEnd || "22:00";
+        const startH = parseInt(String(bhStart).split(":")[0], 10);
+        const endH = parseInt(String(bhEnd).split(":")[0], 10);
+        const safeStart = isNaN(startH) ? 9 : startH;
+        const safeEnd = isNaN(endH) ? 22 : endH;
+        const slots = [];
+        for (let h = safeStart; h <= safeEnd; h++) {
+            const value = `${String(h).padStart(2, "0")}:00`;
+            const h12 = h % 12 === 0 ? 12 : h % 12;
+            const period = h < 12 ? "صباحًا" : "مساءً";
+            slots.push({ value, label: `${h12}:00 ${period}` });
+        }
+        return slots;
+    };
+
+    // 📅 لتاريخ معيّن، بيرجع بس ساعات العمل اللي فعلاً تعدّي فحص مدة التحضير
+    // (نفس validateBoseDeliverySchedule بالظبط، مطبّق على كل ساعة عمل لوحدها) -
+    // القائمة دي هي اللي المفروض تتعرض للعميلة، مش كل ساعات العمل بدون تمييز.
+    window.getBoseValidHoursForDate = function (dateStr, isCustomOrder) {
+        if (!dateStr || typeof window.validateBoseDeliverySchedule !== "function") return [];
+        return window.getBoseBusinessHourSlots().filter((slot) =>
+            window.validateBoseDeliverySchedule(dateStr, slot.value, isCustomOrder)
+        );
+    };
+
+    // 🎯 أقرب موعد صالح فعليًا (تاريخ + ساعة) - بيدور يوم بيوم (حد أقصى 60 يوم أمان)
+    // عن أول يوم فيه ساعة عمل واحدة صالحة على الأقل ومش مكتمل السعة (isDayFullFn
+    // اختيارية). ده اللي بيسمح للشيك أوت "يحدد الميعاد تلقائي" بدل ما يسيب العميلة
+    // تجرّب بنفسها.
+    window.getBoseEarliestValidSlot = function (isCustomOrder, isDayFullFn) {
+        const now = new Date(Date.now() + (window.boseServerTimeOffset || 0));
+        const cursor = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        for (let i = 0; i < 60; i++) {
+            const dateStr = `${cursor.getFullYear()}-${String(cursor.getMonth() + 1).padStart(2, "0")}-${String(cursor.getDate()).padStart(2, "0")}`;
+            if (!(typeof isDayFullFn === "function" && isDayFullFn(dateStr))) {
+                const validHours = window.getBoseValidHoursForDate(dateStr, isCustomOrder);
+                if (validHours.length > 0) return { dateStr: dateStr, time: validHours[0].value };
+            }
+            cursor.setDate(cursor.getDate() + 1);
+        }
+        return null;
+    };
+
     // ⏱️ وصف مدة التحضير بالعربي من عدد الساعات (نفس الصياغة في الشيك أوت والسلة):
     // 24 → "24 ساعة"، 72 → "3 أيام"، 48 → "يومين"، أي رقم تاني → "N ساعة".
     window.formatBoseLeadTimeAr = function(hours) {
