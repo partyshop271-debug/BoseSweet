@@ -120,6 +120,7 @@ ${items.join("\n")}
         res.setHeader("Cache-Control", "public, s-maxage=3600, stale-while-revalidate=86400");
         res.status(200).send(xml);
     } catch (err) {
+        console.error("[product-feed] فشل توليد الكتالوج:", err && err.message);
         res.setHeader("Content-Type", "text/plain; charset=utf-8");
         res.status(500).send("تعذر توليد كتالوج المنتجات حالياً");
     }

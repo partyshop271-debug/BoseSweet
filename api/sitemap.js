@@ -79,7 +79,7 @@ module.exports = async function handler(req, res) {
             // القديم product.html?slug=${p.id} كان صح فعلاً وهو نفس القيمة اللي product.html
             // بيدور بيها (p.slug === currentSlug، وslug هنا = id) — سيبناه زي ما هو، والإضافة
             // الوحيدة هنا هي صور المنتج لكل رابط.
-            fetchTable("products?select=id,images,updated_at,builder_type,category&or=(builder_type.is.null,builder_type.eq.standard)"),
+            fetchTable("products?select=id,images,updated_at,builder_type&or=(builder_type.is.null,builder_type.eq.standard)"),
         ]);
 
         const entries = [];
@@ -100,6 +100,7 @@ module.exports = async function handler(req, res) {
         res.setHeader("Cache-Control", "public, s-maxage=3600, stale-while-revalidate=86400");
         res.status(200).send(xml);
     } catch (err) {
+        console.error("[sitemap] فشل توليد الخريطة:", err && err.message);
         res.setHeader("Content-Type", "text/plain; charset=utf-8");
         res.status(500).send("تعذر توليد خريطة الموقع حالياً");
     }
