@@ -8,7 +8,13 @@
     "csp:check": "node scripts/csp-hashes.js check",
     "csp:update": "node scripts/csp-hashes.js update"
   },
+  "engines": {
+    "node": "22.x"
+  },
   "devDependencies": {
     "esbuild": "^0.28.2"
+  },
+  "allowScripts": {
+    "esbuild": true
   }
 }
