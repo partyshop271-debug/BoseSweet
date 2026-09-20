@@ -1112,6 +1112,13 @@
     appearance: none;
     cursor: pointer;
 }
+/* 🧠🆕 [ميعاد ذكي - سبتمبر 2026]: القائمة بتفضل معطّلة لحد ما العميلة تختار
+   تاريخ الاستلام الأول (راجع refreshBoseTimeOptionsForSelectedDate في checkout.html)
+   عشان توضّح بصريًا إن الترتيب "تاريخ الأول، بعدين ساعة" مش اختياري. */
+.bose-time-picker-select:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+}
 
 .bose-time-picker-colon {
     font-weight: 700;
