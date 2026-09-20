@@ -423,30 +423,22 @@
                         </div>
                         <div class="input-group-node">
                             <label for="checkout-time-hour">ساعة الاستلام</label>
-                            <!-- 🛡️🆕 [إصلاح - سبتمبر 2026]: <input type="time"> الأصلي كان بيعرض
-                                 الوقت بصيغة 24 ساعة (زي "17:00"/"20:00") في بعض المتصفحات/الأجهزة،
-                                 لأن شكل عرضه بيتحدد من إعدادات نظام تشغيل جهاز العميلة نفسه مش من
-                                 كود الموقع - مفيش طريقة نضمن بيها صيغة 12 ساعة بأي تحكم من CSS/JS
-                                 على الحقل الأصلي. الحل: قائمة اختيار مخصصة بالكامل (ساعة 1-12 +
-                                 صباحاً/مساءً) بنبنيها إحنا، فبتضمن صيغة 12 ساعة مصرية مألوفة
-                                 مضمونة 100% على أي جهاز. القيمة الحقيقية (صيغة "HH:MM" الداخلية) لسه
-                                 بتتخزن في حقل مخفي بنفس الـid القديم (checkout-delivery-time) عشان
-                                 كل كود الفحص/الحفظ/فاتورة الواتساب الموجود يفضل شغال زي ما هو.
-                                 🆕 [تبسيط - سبتمبر 2026]: خانة اختيار "الدقيقة" اتشالت بالكامل بناءً
-                                 على طلب صاحبة المتجر - مفيش داعي فعلي للعميلة تحدد الدقيقة بالظبط،
-                                 يكفي إنها تختار الساعة المناسبة لها + صباحاً/مساءً فقط. القيمة الداخلية
-                                 المحفوظة دايمًا بتاخد "00" دقيقة تلقائيًا (راجع syncHiddenTimeValue تحت). -->
+                            <!-- 🧠🆕 [ميعاد ذكي بالكامل - سبتمبر 2026]: القائمة دي بتتبنى ديناميكيًا
+                                 من window.getBoseValidHoursForDate() بس بالمواعيد اللي فعلاً ممكن
+                                 تتقبل لليوم المختار (جوه ساعات العمل + بعد مدة التحضير المطلوبة) -
+                                 يبقى مستحيل تختار ساعة هترفض بعدها. اتشال تمامًا خطوة اختيار
+                                 صباحًا/مساءً المنفصلة (كانت بتلخبط) - كل خيار في القائمة نص كامل
+                                 جاهز ("9:00 صباحًا") وقيمته الداخلية HH:MM بصيغة 24 ساعة مباشرة، فمفيش
+                                 حاجة تانية تتحسب. القيمة الحقيقية لسه بتتخزن في نفس الحقل المخفي
+                                 القديم (checkout-delivery-time) عشان كل كود الفحص/الحفظ/فاتورة
+                                 الواتساب الموجود يفضل شغال بدون أي تعديل. -->
                             <p style="font-size: 0.78rem; color: var(--adm-text-muted, #777); margin: 0 0 8px; font-weight: 600; line-height: 1.6;">
-                                اختاري الساعة اللي تحبي تستلمي طلبك فيها من هنا، وحددي صباحًا أو مساءً.
+                                اختاري اليوم الأول، وهنعرضلك بس المواعيد اللي فعلاً متاحة فيه.
                             </p>
                             <div class="bose-time-picker" id="bose-time-picker-visual">
-                                <select id="checkout-time-hour" class="bose-time-picker-select" aria-label="الساعة">
-                                    <option value="">الساعة</option>
+                                <select id="checkout-time-hour" class="bose-time-picker-select" aria-label="ساعة الاستلام" disabled>
+                                    <option value="">اختاري اليوم الأول</option>
                                 </select>
-                                <div class="bose-time-period-toggle" role="group" aria-label="صباحاً أو مساءً">
-                                    <button type="button" class="bose-time-period-btn" data-period="AM">صباحاً</button>
-                                    <button type="button" class="bose-time-period-btn" data-period="PM">مساءً</button>
-                                </div>
                             </div>
                             <input type="hidden" id="checkout-delivery-time" required aria-describedby="err-checkout-delivery-time">
                             <span class="bose-field-error-msg" id="err-checkout-delivery-time"><i class="fa-solid fa-circle-exclamation"></i><span></span></span>
@@ -706,46 +698,21 @@
             if (checkoutFieldsForm) checkoutFieldsForm.addEventListener("submit", (e) => e.preventDefault());
         });
 
-        // 🆕 [قائمة اختيار الساعة المخصصة - سبتمبر 2026]: راجع تعليق checkout.html
-        // في مكان الحقل نفسه للسبب الكامل. الدالة دي بتبني الخيارات وبتزامن أي
-        // تغيير في الساعة/صباحاً-مساءً مع الحقل المخفي checkout-delivery-time
-        // (صيغة "HH:MM" داخلية 24 ساعة زي الأول بالظبط) - فكل كود الفحص والحفظ
-        // وفاتورة الواتساب الموجود يفضل شغال من غير أي تعديل عليه.
-        // 🆕 [تبسيط - سبتمبر 2026]: قائمة "الدقيقة" اتشالت بالكامل (راجع تعليق
-        // checkout.html) - الدقيقة المحفوظة فعليًا في القيمة الداخلية دايمًا "00".
+        // 🧠🆕 [ميعاد ذكي بالكامل - سبتمبر 2026]: راجع تعليق checkout.html في مكان
+        // الحقل نفسه للسبب الكامل. window.refreshBoseTimeOptionsForSelectedDate()
+        // بتتبنى من هنا وبتتنادى من 3 أماكن: (1) أول ما بيانات المتجر توصل،
+        // (2) كل ما تاريخ الاستلام يتغيّر (تقويم أو شريط الأيام)، (3) كل ما نوع
+        // الطلب (فيه مخصص ولا لأ) يتغيّر بتغيّر محتويات السلة. القائمة بتتبنى بس
+        // من الساعات اللي window.getBoseValidHoursForDate() قالت إنها فعلاً
+        // مقبولة لليوم ده بالتحديد - فمستحيل العميلة تختار ساعة هترفض بعدها.
         document.addEventListener("DOMContentLoaded", () => {
             const hourSelect = document.getElementById("checkout-time-hour");
-            const periodButtons = document.querySelectorAll(".bose-time-period-btn");
             const hiddenTimeInput = document.getElementById("checkout-delivery-time");
-            if (!hourSelect || !hiddenTimeInput || !periodButtons.length) return;
-
-            for (let h = 1; h <= 12; h++) {
-                const opt = document.createElement("option");
-                opt.value = String(h);
-                opt.textContent = String(h);
-                hourSelect.appendChild(opt);
-            }
-
-            let selectedPeriod = null; // "AM" | "PM"
-            const FIXED_MINUTE = "00";
-
-            function setActivePeriodButton(period) {
-                selectedPeriod = period;
-                periodButtons.forEach((btn) => {
-                    btn.classList.toggle("is-active", btn.dataset.period === period);
-                });
-            }
+            const dateInput = document.getElementById("checkout-delivery-date");
+            if (!hourSelect || !hiddenTimeInput || !dateInput) return;
 
             function syncHiddenTimeValue() {
-                const hour12 = parseInt(hourSelect.value, 10);
-                if (!hour12 || !selectedPeriod) {
-                    hiddenTimeInput.value = "";
-                    return;
-                }
-                let hour24 = hour12 % 12;
-                if (selectedPeriod === "PM") hour24 += 12;
-                const hour24Padded = String(hour24).padStart(2, "0");
-                hiddenTimeInput.value = `${hour24Padded}:${FIXED_MINUTE}`;
+                hiddenTimeInput.value = hourSelect.value || "";
                 // 🛡️ بنطلق حدثي change و input عشان أي كود تاني بيسمع على الحقل
                 // القديم (مسح خطأ الحقل، تحديث تنبيه المواعيد المرفوضة..إلخ)
                 // يفضل شغال بالظبط زي ما كان شغال مع <input type="time"> الأصلي.
@@ -753,13 +720,54 @@
                 hiddenTimeInput.dispatchEvent(new Event("input", { bubbles: true }));
             }
 
-            hourSelect.addEventListener("change", syncHiddenTimeValue);
-            periodButtons.forEach((btn) => {
-                btn.addEventListener("click", () => {
-                    setActivePeriodButton(btn.dataset.period);
+            // 🎯 بتتنادى من setupBoseSmartSchedule (وأول ما الصفحة تحمّل) - بتبني
+            // القائمة من جديد بس بالمواعيد الصالحة فعليًا لليوم ده، وبتحاول تحافظ
+            // على اختيار العميلة القديم لو لسه صالح، وإلا بتختار أقرب ساعة صالحة
+            // تلقائيًا (نفس فلسفة "الموقع يحدد الميعاد" اللي المفروض تفهمها لوحدها).
+            window.refreshBoseTimeOptionsForSelectedDate = function (hasCustomItem) {
+                const dateStr = dateInput.value;
+                const previousValue = hiddenTimeInput.value;
+                hourSelect.innerHTML = "";
+
+                if (!dateStr || typeof window.getBoseValidHoursForDate !== "function") {
+                    const emptyOpt = document.createElement("option");
+                    emptyOpt.value = "";
+                    emptyOpt.textContent = "اختاري اليوم الأول";
+                    hourSelect.appendChild(emptyOpt);
+                    hourSelect.disabled = true;
+                    hiddenTimeInput.value = "";
+                    return;
+                }
+
+                const validSlots = window.getBoseValidHoursForDate(dateStr, !!hasCustomItem);
+                if (validSlots.length === 0) {
+                    const emptyOpt = document.createElement("option");
+                    emptyOpt.value = "";
+                    emptyOpt.textContent = "مفيش مواعيد متاحة في اليوم ده";
+                    hourSelect.appendChild(emptyOpt);
+                    hourSelect.disabled = true;
+                    hiddenTimeInput.value = "";
                     syncHiddenTimeValue();
+                    return;
+                }
+
+                hourSelect.disabled = false;
+                validSlots.forEach((slot) => {
+                    const opt = document.createElement("option");
+                    opt.value = slot.value;
+                    opt.textContent = slot.label;
+                    hourSelect.appendChild(opt);
                 });
-            });
+
+                // الاختيار القديم لو لسه ضمن المواعيد الصالحة الجديدة يفضل زي ما هو،
+                // وإلا بنختار تلقائيًا أقرب ساعة صالحة (أول عنصر في القائمة، مرتبة
+                // زمنيًا) - العميلة تقدر تغيّرها لأي ساعة تانية في نفس القائمة براحتها.
+                const stillValid = validSlots.some((slot) => slot.value === previousValue);
+                hourSelect.value = stillValid ? previousValue : validSlots[0].value;
+                syncHiddenTimeValue();
+            };
+
+            hourSelect.addEventListener("change", syncHiddenTimeValue);
         });
         document.addEventListener("DOMContentLoaded", () => {
             const compactHook = document.getElementById("bose-checkout-compact-items-hook");
@@ -911,12 +919,22 @@
                     return false;
                 }
 
+                // 🧠🆕 [إصلاح جذري]: يوم مفيهوش ولا ساعة عمل واحدة تعدّي مدة التحضير
+                // (زي بكرة لما دلوقتي قريب من آخر ساعات العمل - راجع تعليق minDateObj
+                // فوق) لازم يتعامل معاه بالظبط زي اليوم المكتمل: يتقفل في الشريط ومايترشحش
+                // كاقتراح، مش يظهر "متاح" ويرفض بعد ما العميلة تختاره وتدوس على الساعة.
+                function isDayUsable(dateStr) {
+                    if (isDayFull(dateStr)) return false;
+                    if (typeof window.getBoseValidHoursForDate !== "function") return true;
+                    return window.getBoseValidHoursForDate(dateStr, hasCustomItem).length > 0;
+                }
+
                 function findNearestAvailableDates(count) {
                     const found = [];
                     const cursor = new Date(rangeStart);
                     while (found.length < count && cursor <= rangeEnd) {
                         const dStr = toDateStr(cursor);
-                        if (!isDayFull(dStr)) found.push({ dateStr: dStr, dateObj: new Date(cursor) });
+                        if (isDayUsable(dStr)) found.push({ dateStr: dStr, dateObj: new Date(cursor) });
                         cursor.setDate(cursor.getDate() + 1);
                     }
                     return found;
@@ -987,22 +1005,23 @@
                 cursor.setHours(0, 0, 0, 0);
                 for (let i = 0; i < 14; i++) {
                     const dStr = toDateStr(cursor);
-                    const full = isDayFull(dStr);
+                    const dayFull = isDayFull(dStr);
+                    const usable = isDayUsable(dStr);
                     const chip = document.createElement("button");
                     chip.type = "button";
                     chip.dataset.dateStr = dStr;
                     let borderColor = "var(--bose-pink,var(--bose-pink))", bgColor = "#fff", textColor = "var(--bose-pink,var(--bose-pink))";
-                    if (full) { borderColor = "#ddd"; bgColor = "#f5f5f5"; textColor = "#aaa"; }
+                    if (!usable) { borderColor = "#ddd"; bgColor = "#f5f5f5"; textColor = "#aaa"; }
                     // ألوان الحالة الطبيعية بتتسجل في data-* عشان updateChipSelectionUI تقدر ترجّعها
                     // لما اليوم ده يتلغى اختياره (العميلة اختارت يوم تاني بدله).
                     chip.dataset.borderColor = borderColor;
                     chip.dataset.bgColor = bgColor;
                     chip.dataset.textColor = textColor;
-                    chip.style.cssText = `flex:0 0 auto; min-width:56px; text-align:center; border-radius:12px; padding:10px 8px; font-size:0.85rem; font-weight:700; cursor:${full ? "not-allowed" : "pointer"}; border:1.5px solid ${borderColor}; background:${bgColor}; color:${textColor}; text-decoration:${full ? "line-through" : "none"}; transition: all 0.15s ease; position:relative;`;
+                    chip.style.cssText = `flex:0 0 auto; min-width:56px; text-align:center; border-radius:12px; padding:10px 8px; font-size:0.85rem; font-weight:700; cursor:${!usable ? "not-allowed" : "pointer"}; border:1.5px solid ${borderColor}; background:${bgColor}; color:${textColor}; text-decoration:${!usable ? "line-through" : "none"}; transition: all 0.15s ease; position:relative;`;
                     chip.innerHTML = `<span style="display:block;">${weekdayShort(cursor)}</span><span style="display:block; font-size:1.1rem;">${cursor.getDate()}</span>`;
-                    if (full) {
+                    if (!usable) {
                         chip.disabled = true;
-                        chip.title = "اليوم ده مكتمل، اختاري يوم تاني";
+                        chip.title = dayFull ? "اليوم ده مكتمل، اختاري يوم تاني" : "مفيش ساعة استلام صالحة في اليوم ده، اختاري يوم تاني";
                     } else {
                         chip.addEventListener("click", () => selectDate(dStr));
                     }
@@ -1043,10 +1062,35 @@
                         }
                     });
                 }
+                // 🧠🆕 [الموقع يحدد الميعاد تلقائي]: لو حقل التاريخ لسه فاضي (أول تحميل
+                // للصفحة، ولا اختيار محفوظ قبل كده)، بنملّيه إحنا بأقرب تاريخ فيه ساعة
+                // عمل صالحة فعليًا (بعد مدة التحضير) ومش مكتمل السعة - العميلة تقدر
+                // تغيّره براحتها بعد كده، بس مش محتاجة تدور أو تجرّب بنفسها من الصفر.
+                if (!dateInputEl.value) {
+                    const autoSlot = typeof window.getBoseEarliestValidSlot === "function"
+                        ? window.getBoseEarliestValidSlot(hasCustomItem, isDayFull)
+                        : null;
+                    if (autoSlot) dateInputEl.value = autoSlot.dateStr;
+                }
+
+                // 🧠🆕 نبني قائمة الساعات المتاحة فعليًا لليوم المختار (سواء اتحدد يدويًا
+                // قبل كده أو اتحدد تلقائيًا فوق) - وده أول اختيار للساعة نفسها بيحصل تلقائي
+                // كمان (أقرب ساعة صالحة في اليوم ده)، مش محتاجة العميلة تختار حاجة أصلاً
+                // لو مش عايزة تغيّر الافتراضي.
+                if (typeof window.refreshBoseTimeOptionsForSelectedDate === "function") {
+                    window.refreshBoseTimeOptionsForSelectedDate(hasCustomItem);
+                }
+
                 updateChipSelectionUI();
+                updateAlert();
 
                 if (dateInputEl) dateInputEl.addEventListener("change", updateAlert);
                 if (dateInputEl) dateInputEl.addEventListener("change", updateChipSelectionUI);
+                if (dateInputEl) dateInputEl.addEventListener("change", () => {
+                    if (typeof window.refreshBoseTimeOptionsForSelectedDate === "function") {
+                        window.refreshBoseTimeOptionsForSelectedDate(hasCustomItem);
+                    }
+                });
                 if (timeInputEl) timeInputEl.addEventListener("change", updateAlert);
             }
 
@@ -1158,12 +1202,21 @@
                     checkoutMixedBanner.style.display = isMixedOrderCheckout ? "flex" : "none";
                 }
 
-                // minDateObj يفضل هو "أول موعد رسمي مضمون" (بيتحسب زي الأول
-                // بالظبط) - بس بقى بيُستخدم كعتبة تنبيه ناعم (تحت في updateAlert
-                // وشريط الأيام)، مش كحد قفل صارم على الحقل نفسه. أي تاريخ من
-                // النهاردة فصاعدًا يفضل قابل للاختيار فعليًا.
-                const minDateObj = new Date();
-                minDateObj.setDate(minDateObj.getDate() + leadDays);
+                // 🧠🐛✅ [إصلاح جذري - سبتمبر 2026]: minDateObj قبل كده كان بيتحسب كـ"عدد
+                // أيام" بس (leadDays = Math.ceil(ساعات التحضير / 24))، من غير ما ياخد باله
+                // من ساعة اليوم الحالية أصلاً. المشكلة: لو دلوقتي مثلاً 10 بالليل ومدة
+                // التحضير 24 ساعة، بكرة الساعة المطابقة (10 بالليل) بتبقى برة ساعات العمل
+                // (اللي بتقفل 10 بالليل بالظبط) - يعني بكرة كله مفيهوش ولا ساعة واحدة صالحة
+                // فعليًا، وكان لازم العميلة تنط ليوم بعد بكرة، لكن الموقع كان بيقولها "بكرة
+                // متاح" ويسيبها تكتشف الرفض بنفسها بعد ما تختار كل حاجة. دلوقتي minDateObj
+                // بيتحسب من getBoseEarliestValidSlot() اللي بتفحص كل يوم فعليًا وتتأكد إن
+                // فيه ساعة عمل واحدة على الأقل صالحة فيه قبل ما تعتبره "أول موعد متاح".
+                const earliestSlotForMin = typeof window.getBoseEarliestValidSlot === "function"
+                    ? window.getBoseEarliestValidSlot(hasCustomItemForDate, null)
+                    : null;
+                const minDateObj = earliestSlotForMin
+                    ? new Date(`${earliestSlotForMin.dateStr}T00:00:00`)
+                    : (() => { const d = new Date(); d.setDate(d.getDate() + leadDays); return d; })();
                 if (datePicker) {
                     // 🕐 [مواعيد ثابتة - بدون استثناء]: أقرب تاريخ قابل للاختيار هو أول موعد بعد مدة
                     // التحضير (بكرة للعادي، بعد 3 أيام للتورت/الورد المخصص). أي تاريخ أقرب من كده
