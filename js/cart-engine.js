@@ -540,6 +540,79 @@ function updateCartSummary(cart, storeData) {
     // عبر bose_active_discounts بغض النظر عن الصفحة، فوجود الخانة هنا كمان كان
     // تكرار مربك بلا فايدة. نقطة الدخول الوحيدة دلوقتي في صفحة إتمام الطلب.
     // "الخصم المطبق" فوق (invoice.discount) بيفضل يعكس أي كود شغال زي ما هو.
+
+    // 🧁 [أقل كمية للحجز]: شريط تقدم لكل فئة ليها حد أدنى + قفل زرار إتمام الطلب لحد ما يتحقق.
+    renderBoseMinQtyPanel(cart);
+}
+
+/**
+ * 🧁 [أقل كمية للحجز - صفحة السلة]: لكل فئة ليها حد أدنى (زي السينابون/الدوناتس 6 قطع)
+ * وموجود منها حاجة في السلة، بنعرض: عدد القطع الحالي من المطلوب + شريط تقدم + زرار يرجّعها
+ * لنفس الفئة تكمّل نكهات. زرار "الانتقال لإتمام الطلب" بيتقفل لحد ما كل الفئات تتحقق.
+ * الحماية الملزمة الحقيقية على السيرفر (create_order_with_items)، ودي لتوضيح الموقف للعميلة.
+ */
+function renderBoseMinQtyPanel(cart) {
+    const wrapper = document.getElementById("cart-items-wrapper");
+    const checkoutBtn = document.getElementById("btn-proceed-to-checkout");
+    if (!wrapper) return;
+
+    const statuses = typeof window.getBoseCartMinQtyStatus === "function" ? window.getBoseCartMinQtyStatus(cart) : [];
+    let panel = document.getElementById("bose-min-qty-panel");
+
+    if (!statuses.length) {
+        if (panel) panel.remove();
+        if (checkoutBtn) { checkoutBtn.classList.remove("is-blocked"); checkoutBtn.removeAttribute("aria-disabled"); }
+        return;
+    }
+
+    if (!panel) {
+        panel = document.createElement("div");
+        panel.id = "bose-min-qty-panel";
+        panel.className = "bose-min-qty-panel";
+        wrapper.parentNode.insertBefore(panel, wrapper);
+    }
+    const esc = window.escapeBoseHTML || (s => s);
+    panel.innerHTML = statuses.map(st => {
+        const pct = Math.min(100, Math.round((st.pieces / st.minQty) * 100));
+        return st.ok
+            ? `<div class="bose-min-qty-row is-ok">
+                   <div class="bose-min-qty-head"><i class="fa-solid fa-circle-check"></i> ${esc(st.title)}: ${st.pieces} قطع - تمام ✅</div>
+               </div>`
+            : `<div class="bose-min-qty-row is-missing">
+                   <div class="bose-min-qty-head"><i class="fa-solid fa-cubes-stacked"></i> ${esc(st.title)}: عندك ${st.pieces} من ${st.minQty} قطع</div>
+                   <div class="bose-min-qty-bar"><div class="bose-min-qty-bar-fill" style="width:${pct}%;"></div></div>
+                   <div class="bose-min-qty-hint"><strong>ناقص ${st.missing} قطع</strong> عشان تكمّلي الطلب (أقل حجز ${st.minQty} قطع).</div>
+                   <a class="bose-min-qty-link" href="/category.html?category=${encodeURIComponent(st.categoryId)}">كمّلي اختيار النكهات <i class="fa-solid fa-arrow-left"></i></a>
+               </div>`;
+    }).join("");
+
+    const blocked = statuses.some(st => !st.ok);
+    if (checkoutBtn) {
+        checkoutBtn.classList.toggle("is-blocked", blocked);
+        if (blocked) checkoutBtn.setAttribute("aria-disabled", "true"); else checkoutBtn.removeAttribute("aria-disabled");
+        if (!checkoutBtn.dataset.minQtyGuard) {
+            checkoutBtn.dataset.minQtyGuard = "1";
+            checkoutBtn.addEventListener("click", (evt) => {
+                if (checkoutBtn.getAttribute("aria-disabled") !== "true") return;
+                evt.preventDefault();
+                const p = document.getElementById("bose-min-qty-panel");
+                if (p) p.scrollIntoView({ behavior: "smooth", block: "center" });
+                if (typeof window.showBoseGlobalToast === "function") {
+                    window.showBoseGlobalToast("كمّلي أقل كمية للحجز الأول (شوفي الشريط فوق) وبعدين كمّلي طلبك.", { type: "warning" });
+                }
+            });
+        }
+    }
+
+    // لو اتحوّلت هنا من صفحة إتمام الطلب بسبب الحد الأدنى، نوضّح السبب مرة واحدة.
+    try {
+        if (blocked && sessionStorage.getItem("bose_min_qty_redirect") === "1") {
+            sessionStorage.removeItem("bose_min_qty_redirect");
+            if (typeof window.showBoseGlobalToast === "function") {
+                window.showBoseGlobalToast("لازم تكمّلي أقل كمية للحجز الأول قبل إتمام الطلب.", { type: "warning" });
+            }
+        }
+    } catch (e) { /* تجاهل بأمان */ }
 }
 
 /**
@@ -552,6 +625,15 @@ function renderBoseCheckoutPage(storeData) {
     
     if (cart.length === 0 && !window.location.pathname.includes("order-success.html")) {
         window.location.href = "/cart.html";
+        return;
+    }
+
+    // 🧁 [أقل كمية للحجز]: لو حد وصل لصفحة الشيك أوت (رابط مباشر/زرار قديم) والحد الأدنى
+    // لفئة في سلته لسه ما اتحققش، بنرجّعه للسلة اللي فيها شريط التقدم والتوضيح.
+    if (typeof window.getBoseCartMinQtyStatus === "function" &&
+        window.getBoseCartMinQtyStatus(cart).some(st => !st.ok)) {
+        try { sessionStorage.setItem("bose_min_qty_redirect", "1"); } catch (e) { /* تجاهل */ }
+        window.location.replace("/cart.html");
         return;
     }
 
@@ -935,6 +1017,20 @@ function renderBoseLoyaltyDiscountRows(invoice) {
 }
 
 async function processFinalBoseOrder(cart, storeData, method, shippingFee) {
+    // 🧁 [أقل كمية للحجز]: حارس أخير قبل أي فحص تاني - السيرفر برضه بيرفض، لكن ده بيوضّح
+    // للعميلة بدري ويرجّعها للسلة تكمّل النكهات بدل رسالة خطأ بعد ما تملا كل الفورم.
+    if (typeof window.getBoseCartMinQtyStatus === "function") {
+        const unmetMin = window.getBoseCartMinQtyStatus(cart).filter(st => !st.ok);
+        if (unmetMin.length > 0) {
+            const minMsg = unmetMin.map(st => `أقل حجز من ${st.title} ${st.minQty} قطع (عندك ${st.pieces})`).join(" - ");
+            boseShowCheckoutSubmitError(minMsg + ". هنرجّعك للسلة تكمّلي النكهات.");
+            if (typeof window.showBoseGlobalToast === "function") window.showBoseGlobalToast(minMsg, { type: "warning" });
+            try { sessionStorage.setItem("bose_min_qty_redirect", "1"); } catch (e) { /* تجاهل */ }
+            setTimeout(() => { window.location.href = "/cart.html"; }, 2500);
+            return;
+        }
+    }
+
     const customerNameInput = document.getElementById("checkout-customer-name");
     const customerPhoneInput = document.getElementById("checkout-customer-phone");
     const addressDetailsInput = document.getElementById("checkout-address-details");

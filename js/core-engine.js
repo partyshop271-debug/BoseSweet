@@ -1086,6 +1086,33 @@
             : '';
 
         const isUnavailable = product.isAvailable === false;
+
+        // 🧁 [أقل كمية للحجز + اختيار الحشو]: من إعدادات الفئة (لوحة التحكم → الفئات).
+        // الملاحظة بتظهر دايماً (مش جوه ⓘ) عشان العميلة تعرف الحد من أول لحظة، ومش
+        // بتظهر على البوكسات اللي لوحدها بتحقق الحد (6 قطع في الوحدة).
+        const orderRules = window.getBoseCategoryOrderRules(product.category);
+        const piecesPerUnit = window.getBoseProductPiecesPerUnit(product);
+        const minQtyNoteHtml = (orderRules.minQty > 1 && piecesPerUnit < orderRules.minQty && !isUnavailable)
+            ? `<div class="bose-min-qty-note" role="note">
+                   <strong>أقل حجز ${orderRules.minQty} قطع</strong>
+                   <small>لازم تطلبي ${orderRules.minQty} قطع أو أكتر من ${window.escapeBoseHTML(orderRules.title)} عشان الطلب يكمل.</small>
+               </div>`
+            : '';
+        const defaultFilling = (orderRules.fillings.length && !isUnavailable) ? orderRules.fillings[0] : '';
+        // 🧁 نفس شكل اختيار طريقة الدفع في الشيك أوت: كروت كبيرة، خط واضح، والمختار بيتلوّن.
+        window.__boseFillingSeq = (window.__boseFillingSeq || 0) + 1;
+        const fillingGroupName = `bose-filling-${window.__boseFillingSeq}`;
+        const fillingPickerHtml = defaultFilling
+            ? `<div class="bose-filling-picker" role="radiogroup" aria-label="اختيار الحشو">
+                   <div class="bose-filling-title">اختاري الحشو</div>
+                   ${orderRules.fillings.map((/** @type {string} */ f) => `
+                       <label class="bose-filling-option${f === defaultFilling ? ' is-selected' : ''}" data-filling="${window.escapeBoseHTML(f)}">
+                           <input type="radio" name="${fillingGroupName}" value="${window.escapeBoseHTML(f)}"${f === defaultFilling ? ' checked' : ''}>
+                           <span class="bose-filling-text"><strong>حشو ${window.escapeBoseHTML(f)}</strong></span>
+                       </label>
+                   `).join('')}
+               </div>`
+            : '';
         // 🍧 [حل مشكلة "مش عارف يختار من خلاله" - منتجات الميكس في النافذة المدمجة]:
         // زرار الإضافة هنا بيبدأ معطّل دايماً لمنتج الميكس في وضع التفاصيل - أداة
         // اختيار التوبينجين (renderBoseMixToppingPickerInModal في category.html)
@@ -1112,7 +1139,7 @@
         const favBtnHtml = buildBoseFavButtonHTML(product.id);
 
         return `
-            <div class="product-card-unified${hasDiscount ? ' bose-offer-card' : ''}${isUnavailable ? ' bose-unavailable-card' : ''}" data-id="${product.id}" data-slug="${encodeURIComponent(product.slug)}" data-selected-size="${defaultSizeKey || ''}" style="cursor:pointer;">
+            <div class="product-card-unified${hasDiscount ? ' bose-offer-card' : ''}${isUnavailable ? ' bose-unavailable-card' : ''}" data-id="${product.id}" data-slug="${encodeURIComponent(product.slug)}" data-selected-size="${defaultSizeKey || ''}" data-selected-filling="${window.escapeBoseHTML(defaultFilling)}" style="cursor:pointer;">
                 ${discountBadgeHtml}
                 ${isUnavailable ? `<div class="bose-offer-badge bose-stock-badge">نفدت الكمية</div>` : ''}
                 ${favBtnHtml}
@@ -1124,6 +1151,8 @@
                 <button type="button" class="bose-desc-toggle-btn" hidden aria-expanded="false">اظهار المزيد</button>
                 ${sizeTabsHtml}
                 ${quantityNoteHtml}
+                ${minQtyNoteHtml}
+                ${fillingPickerHtml}
                 
                 <div class="product-card-qty-wrapper" style="${isUnavailable ? 'display:none;' : ''}">
                     <button class="btn-qty-plus">+</button>
@@ -1395,6 +1424,21 @@
             return;
         }
 
+        // 3.5) اختيار الحشو (السينابون) جوه الكارت
+        const fillingOpt = e.target.closest(".bose-filling-option[data-filling]");
+        if (fillingOpt) {
+            e.stopPropagation();
+            const fillingCard = fillingOpt.closest(".product-card-unified");
+            if (fillingCard) {
+                fillingCard.querySelectorAll(".bose-filling-option").forEach((o) => o.classList.remove("is-selected"));
+                fillingOpt.classList.add("is-selected");
+                const radio = fillingOpt.querySelector('input[type="radio"]');
+                if (radio) radio.checked = true;
+                fillingCard.dataset.selectedFilling = fillingOpt.dataset.filling || "";
+            }
+            return;
+        }
+
         // 4) زرار "إضافة للسلة" لمنتج الميكس (وضع التفاصيل) - مفعّل بس بعد ما
         //    العميلة تختار توبينجين مختلفين فعلاً من أداة الاختيار
         const mixAddBtn = e.target.closest(".btn-add-to-cart-mix:not([disabled])");
@@ -1436,6 +1480,7 @@
                 e.target.closest(".product-card-qty-wrapper") ||
                 e.target.closest(".btn-add-to-cart") ||
                 e.target.closest(".bose-card-size-tabs") ||
+                e.target.closest(".bose-filling-picker") ||
                 e.target.closest(".bose-fav-btn")
             ) return;
             window.location.href = window.buildBoseProductDetailUrl(standardCard);
@@ -1747,6 +1792,67 @@
     };
 
     /**
+     * 🧁 [أقل كمية للحجز + اختيار الحشو لكل فئة - سبتمبر 2026]: قواعد بتتحدد من
+     * لوحة التحكم (الفئات) وبتتخزن في جدول categories:
+     *  - min_order_qty: أقل عدد قطع للحجز من الفئة (مجموع كل نكهاتها مع بعض)
+     *  - filling_options: مصفوفة خيارات حشو (زي ["قرفة","شوكولاتة"]) بتظهر على كارت المنتج
+     * وعلى المنتج نفسه (options.piecesPerUnit): عدد القطع في الوحدة الواحدة
+     * (بوكس 6 قطع = 6) عشان البوكس يتحسب صح ضد الحد الأدنى.
+     * الحماية الملزمة الحقيقية على السيرفر (create_order_with_items) - دي للتجربة بس.
+     * @param {string} categoryId
+     * @returns {{minQty:number, fillings:string[], title:string}}
+     */
+    window.getBoseCategoryOrderRules = function(categoryId) {
+        const cats = (window.BoseStoreData && Array.isArray(window.BoseStoreData.categories)) ? window.BoseStoreData.categories : [];
+        const cat = cats.find((/** @type {any} */ c) => c && c.id === categoryId);
+        if (!cat) return { minQty: 0, fillings: [], title: '' };
+        const min = parseInt(cat.min_order_qty, 10) || 0;
+        const fillings = Array.isArray(cat.filling_options)
+            ? cat.filling_options.map((/** @type {any} */ f) => String(f == null ? '' : f).trim()).filter(Boolean)
+            : [];
+        return { minQty: min > 1 ? min : 0, fillings: fillings, title: cat.title || '' };
+    };
+
+    /**
+     * @param {any} product
+     * @returns {number}
+     */
+    window.getBoseProductPiecesPerUnit = function(product) {
+        const opts = product && product.options;
+        const n = (opts && !Array.isArray(opts) && typeof opts === 'object') ? parseInt(opts.piecesPerUnit, 10) : 0;
+        return n > 0 ? n : 1;
+    };
+
+    /**
+     * بتحسب لكل فئة ليها حد أدنى وموجود منها حاجة في السلة: عدد القطع الحالي
+     * (كمية × قطع الوحدة) وكام ناقص. التورت/الورد المخصص وبطاقات الهدية مستثناة.
+     * @param {Array} cart
+     * @returns {Array<{categoryId:string,title:string,minQty:number,pieces:number,missing:number,ok:boolean}>}
+     */
+    window.getBoseCartMinQtyStatus = function(cart) {
+        if (!Array.isArray(cart) || !window.BoseStoreData || !Array.isArray(window.BoseStoreData.products)) return [];
+        /** @type {Record<string, any>} */
+        const totals = {};
+        cart.forEach((/** @type {any} */ item) => {
+            if (!item) return;
+            if (item.type === 'custom-cake' || item.type === 'custom-flower' || item.type === 'mini-cake' || item.type === 'gift-card') return;
+            const product = window.BoseStoreData.products.find((/** @type {any} */ p) => p.slug === item.productSlug);
+            if (!product) return;
+            const rules = window.getBoseCategoryOrderRules(product.category);
+            if (!rules.minQty) return;
+            const qty = parseInt(item.quantity, 10) || 0;
+            if (!totals[product.category]) {
+                totals[product.category] = { categoryId: product.category, title: rules.title, minQty: rules.minQty, pieces: 0 };
+            }
+            totals[product.category].pieces += qty * window.getBoseProductPiecesPerUnit(product);
+        });
+        return Object.keys(totals).map((k) => {
+            const t = totals[k];
+            return { ...t, missing: Math.max(0, t.minQty - t.pieces), ok: t.pieces >= t.minQty };
+        });
+    };
+
+    /**
      * @param {Object} product
      * @param {Object} selectedOptions
      * @param {number} quantity
@@ -1780,6 +1886,11 @@
         if (correctFlavor === "none" || correctFlavor === "افتراضي") {
             correctFlavor = product.flavorName || "جاهز وفريش";
         }
+        // 🧁 [اختيار الحشو - السينابون]: الحشو المختار بيتضاف لاسم النكهة نفسه عشان يظهر
+        // تلقائياً في السلة/الشيك أوت/الفاتورة/لوحة الطلبات (كلهم بيعرضوا flavorName)،
+        // وبيتخزن كمان لوحده في customDetails.filling كبيانات منظمة.
+        const fillingLabel = (typeof opts.filling === "string") ? opts.filling.trim() : "";
+        if (fillingLabel) correctFlavor = `${correctFlavor} • حشو ${fillingLabel}`;
 
         return {
             id: finalId,
@@ -1840,6 +1951,7 @@
                 // هو الفرق الوحيد الصامت بين حجم وحجم.
                 size: opts.size || null,
                 sizeLabel: opts.size ? (window.BOSE_SIZE_LABELS[opts.size] || opts.size) : "",
+                filling: fillingLabel,
                 // 🍧 [حل مشكلة "مش عارف يختار من خلاله" - منتجات الميكس]: التوبينجين
                 // اللي اختارتهم العميلة فعلياً لمنتج ميكس (زي قشطوطة ميكس)، مخزّنين هنا
                 // منفصلين بالإضافة لـ flavorName المدمج فوق - عشان أي عرض إداري مستقبلي
@@ -2574,10 +2686,13 @@
      * يودّيها checkout.html على طول، و"أكمل التسوق" يقفل المطالبة وترجع لنفس
      * الصفحة تكمل تصفح. من غير عداد اختفاء تلقائي - قرار مقصود، القرار مهم
      * كفاية إن العميلة تاخد وقتها فيه من غير ما "يفوتها" الاختيار.
-     * @param {{message?: string}} [options]
+     * 🧁 options.blockCheckout: لو فيه فئة لسه ناقصها الحد الأدنى للحجز، زرار
+     * "إتمام الطلب" بيتحوّل لـ"أكمل اختيار النكهات" وتاني زرار بيودّي للسلة.
+     * @param {{message?: string, blockCheckout?: boolean}} [options]
      */
     window.showBosePostAddToCartPrompt = function(options) {
         const message = (options && options.message) || 'تمت إضافة المنتج للسلة بنجاح 🎉';
+        const blockCheckout = !!(options && options.blockCheckout);
 
         let overlay = document.getElementById('bose-post-add-overlay');
         if (!overlay) {
@@ -2604,12 +2719,19 @@
                 }
             });
             overlay.querySelector('#bose-post-add-checkout-btn').addEventListener('click', () => {
+                if (overlay.dataset.blockCheckout === '1') { window.hideBosePostAddToCartPrompt(); return; }
                 window.location.href = '/checkout.html';
             });
             overlay.querySelector('#bose-post-add-continue-btn').addEventListener('click', () => {
+                if (overlay.dataset.blockCheckout === '1') { window.location.href = '/cart.html'; return; }
                 window.hideBosePostAddToCartPrompt();
             });
         }
+        overlay.dataset.blockCheckout = blockCheckout ? '1' : '0';
+        const promptPrimaryBtn = overlay.querySelector('#bose-post-add-checkout-btn');
+        const promptSecondaryBtn = overlay.querySelector('#bose-post-add-continue-btn');
+        if (promptPrimaryBtn) promptPrimaryBtn.textContent = blockCheckout ? 'أكمل اختيار النكهات' : 'إتمام الطلب';
+        if (promptSecondaryBtn) promptSecondaryBtn.textContent = blockCheckout ? 'شوفي السلة' : 'أكمل التسوق';
 
         const titleEl = overlay.querySelector('.bose-post-add-title');
         if (titleEl) titleEl.textContent = message;
@@ -2672,7 +2794,19 @@
         // تبويب الحجم المصغر جوه الكارت (لو المنتج بيدعم أكتر من حجم) بدل ما نضيفه
         // دايماً بأرخص حجم افتراضي زي ما كان بيحصل قبل كده في أي كارت خارج صفحة الفئة.
         const selectedSize = cardContainer ? (cardContainer.dataset.selectedSize || null) : null;
+        /** @type {{size?: string, filling?: string}} */
         const addOpts = selectedSize ? { size: selectedSize } : {};
+
+        // 🧁 [اختيار الحشو - السينابون]: لو فئة المنتج ليها خيارات حشو، لازم يتسجل حشو
+        // صالح دايماً (اللي العميلة اختارته من الكارت، أو الأول كافتراضي لو الكارت
+        // مالوش اختيار - زي كروت المقترحات) - وبيتحقق منه هنا مش بس في الواجهة.
+        const boseCatRules = window.getBoseCategoryOrderRules(product.category);
+        let selectedFilling = null;
+        if (boseCatRules.fillings.length) {
+            const pickedFilling = cardContainer ? (cardContainer.dataset.selectedFilling || '') : '';
+            selectedFilling = boseCatRules.fillings.includes(pickedFilling) ? pickedFilling : boseCatRules.fillings[0];
+            addOpts.filling = selectedFilling;
+        }
 
         // 🛡️ [إصلاح]: لو بيانات السلة المحفوظة تالفة، منمنعش العميلة من الإضافة -
         // بنرجع سلة فاضية ونكمل عادي بدل ما الضغطة على "أضف للسلة" تفشل بصمت.
@@ -2685,7 +2819,8 @@
             console.warn("⚠️ بيانات السلة المحفوظة كانت تالفة أثناء الإضافة، تم البدء بسلة فاضية.", e);
             cart = [];
         }
-        const cartLineId = selectedSize ? `${product.slug}-${selectedSize}` : product.slug;
+        // السطر بيتميّز بالحجم والحشو معاً: نفس النكهة بحشو مختلف = سطر منفصل في السلة.
+        const cartLineId = [product.slug, selectedSize, selectedFilling ? `fill-${encodeURIComponent(selectedFilling)}` : null].filter(Boolean).join('-');
         // 🛡️ [إصلاح]: نفس الحد الأقصى المنطقي المطبّق في صفحة السلة (20 قطعة)،
         // عشان العميلة متقدرش تتخطاه حتى وهي لسه في صفحة المنتج/الفئة.
         const MAX_QTY_FROM_PRODUCT_CARD = 20;
@@ -2726,7 +2861,20 @@
         buttonElement.classList.add('is-added');
         /** @type {HTMLButtonElement} */ (buttonElement).disabled = true;
 
-        window.showBosePostAddToCartPrompt({ message: 'تمت إضافة المنتج للسلة بنجاح 🎉' });
+        // 🧁 [أقل كمية للحجز]: لو الفئة ليها حد أدنى، الرسالة بتقول للعميلة وصلت لفين
+        // وناقص كام قطعة، وزرار "إتمام الطلب" بيتحوّل لـ"أكمل اختيار النكهات" لحد ما الحد يتحقق.
+        let promptMessage = 'تمت إضافة المنتج للسلة بنجاح 🎉';
+        let promptBlocksCheckout = false;
+        const minStatusForCat = window.getBoseCartMinQtyStatus(cart).find((/** @type {any} */ st) => st.categoryId === product.category);
+        if (minStatusForCat) {
+            if (minStatusForCat.ok) {
+                promptMessage = `تمت الإضافة 🎉 - عندك ${minStatusForCat.pieces} قطع ${minStatusForCat.title}، والحد الأدنى اتحقق ✅`;
+            } else {
+                promptMessage = `تمت الإضافة 🎉 - عندك ${minStatusForCat.pieces} من ${minStatusForCat.minQty} قطع ${minStatusForCat.title}. ناقص ${minStatusForCat.missing} قطع عشان تكمّلي الطلب.`;
+                promptBlocksCheckout = true;
+            }
+        }
+        window.showBosePostAddToCartPrompt({ message: promptMessage, blockCheckout: promptBlocksCheckout });
 
         setTimeout(() => {
             buttonElement.innerHTML = originalHtml;
