@@ -35,7 +35,7 @@
         tbody.innerHTML = allCategories.map((c) => `
             <tr>
                 <td>${c.image ? `<img src="${e(c.image)}" class="adm-table-thumb" alt="">` : `<div class="adm-table-thumb"></div>`}</td>
-                <td>${e(c.title)}<br><span class="adm-order-item-meta">${e(c.id)}</span></td>
+                <td>${e(c.title)}<br><span class="adm-order-item-meta">${e(c.id)}${c.min_order_qty > 1 ? ` · أقل حجز ${c.min_order_qty} قطع` : ""}${Array.isArray(c.filling_options) && c.filling_options.length ? ` · حشو: ${e(c.filling_options.join(" / "))}` : ""}</span></td>
                 <td>${e(BUILDER_TYPE_LABELS[c.builder_type] || c.builder_type || "—")}</td>
                 <td>${c.sort_order ?? 0}</td>
                 <td class="adm-table-actions">
@@ -123,6 +123,21 @@
                     </div>
 
                     <div class="adm-field">
+                        <label for="cf-min-qty">أقل كمية للحجز (اختياري)</label>
+                        <input type="number" min="0" max="200" step="1" class="adm-input" id="cf-min-qty"
+                               value="${isEdit && category.min_order_qty > 1 ? category.min_order_qty : ""}"
+                               placeholder="مثال: 6 - سيبيه فاضي لو مفيش حد أدنى">
+                        <span class="adm-hint">مجموع قطع كل نكهات الفئة مع بعض (مثلاً 2 أوريو + 4 لوتس = 6). الموقع بيمنع إتمام الطلب لحد ما الحد يتحقق، والسيرفر بيرفض أي طلب أقل من كده. البوكسات الجاهزة بتتحسب حسب "عدد القطع في الوحدة" في صفحة المنتج.</span>
+                    </div>
+
+                    <div class="adm-field">
+                        <label for="cf-fillings">خيارات الحشو (اختياري)</label>
+                        <textarea class="adm-input" id="cf-fillings" rows="3"
+                                  placeholder="كل خيار في سطر، مثال:&#10;قرفة&#10;شوكولاتة">${isEdit && Array.isArray(category.filling_options) ? e(category.filling_options.join("\n")) : ""}</textarea>
+                        <span class="adm-hint">لو كتبتي خيارات هنا، كل كارت منتج في الفئة دي هيظهر فيه اختيار الحشو، والاختيار بيتسجل في اسم النكهة داخل الطلب. أول خيار هو الافتراضي.</span>
+                    </div>
+
+                    <div class="adm-field">
                         <label>صورة الفئة</label>
                         <div class="adm-images-grid" id="cf-image-grid">
                             ${image ? `<div class="adm-image-thumb-wrap"><img src="${e(image)}" alt=""><button type="button" class="adm-image-remove-btn" id="cf-image-remove"><i class="fa-solid fa-xmark"></i></button></div>` : ""}
@@ -187,6 +202,12 @@
                 builder_type: document.getElementById("cf-builder-type").value,
                 sort_order: parseInt(document.getElementById("cf-sort-order").value, 10) || 0,
                 image: image || null,
+                min_order_qty: (() => {
+                    const n = parseInt(document.getElementById("cf-min-qty").value, 10);
+                    return n > 1 ? Math.min(n, 200) : null;
+                })(),
+                filling_options: document.getElementById("cf-fillings").value
+                    .split(/\r?\n/).map((t) => t.trim()).filter(Boolean),
             };
 
             try {

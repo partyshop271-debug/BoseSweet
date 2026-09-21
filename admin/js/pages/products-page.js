@@ -435,6 +435,16 @@
                         <span class="adm-hint">اسيبه فاضي لو مفيش لبس ممكن يحصل. مهم جداً لأي منتج "عرض/بوكس" مكوّن من عناصر مختلفة - حدّثه كل ما تغيّري محتويات العرض.</span>
                     </div>
 
+                    <!-- 🧁 [أقل كمية للحجز]: للبوكسات الجاهزة (مثال: بوكس 6 سينابون) - بيتحسب
+                         كذا قطعة ضد الحد الأدنى للفئة بدل ما يتحسب قطعة واحدة. سيبيه فاضي للمنتج العادي. -->
+                    <div class="adm-field">
+                        <label for="pf-pieces-per-unit">عدد القطع في الوحدة (للبوكسات بس)</label>
+                        <input type="number" min="1" max="100" step="1" class="adm-input" id="pf-pieces-per-unit"
+                               value="${isEdit && product.options && !Array.isArray(product.options) && product.options.piecesPerUnit > 1 ? product.options.piecesPerUnit : ""}"
+                               placeholder="مثال: 6 لبوكس فيه 6 قطع - سيبيه فاضي لو المنتج قطعة واحدة">
+                        <span class="adm-hint">مهم لو الفئة ليها "أقل كمية للحجز": بوكس 6 قطع بيحقق حد الـ6 لوحده.</span>
+                    </div>
+
                     <div class="adm-form-grid">
                         <div class="adm-field">
                             <label for="pf-sort-order">ترتيب العرض</label>
@@ -748,6 +758,18 @@
                     : {},
                 images,
             };
+
+            // 🧁 عدد القطع في الوحدة: بنكتب options بس لو القيمة اتغيّرت، وبندمجها في options
+            // الموجودة (زي mixFlavor) من غير ما نمسح أي حاجة تانية فيها.
+            const piecesRaw = parseInt(document.getElementById("pf-pieces-per-unit").value, 10);
+            const newPieces = piecesRaw > 1 ? Math.min(piecesRaw, 100) : 0;
+            const prevOptions = (product && product.options && !Array.isArray(product.options) && typeof product.options === "object") ? product.options : {};
+            const prevPieces = parseInt(prevOptions.piecesPerUnit, 10) > 1 ? parseInt(prevOptions.piecesPerUnit, 10) : 0;
+            if (newPieces !== prevPieces) {
+                const mergedOptions = { ...prevOptions };
+                if (newPieces) mergedOptions.piecesPerUnit = newPieces; else delete mergedOptions.piecesPerUnit;
+                payload.options = mergedOptions;
+            }
 
             try {
                 if (isEdit) {
