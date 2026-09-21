@@ -1588,11 +1588,66 @@
         }
     }
 
+    /**
+     * 🩺 [صحة نظام التنبيهات]: بترجع حالة القنوات فعليًا من السيرفر (عدد أجهزة الأدمن المفعّلة،
+     * هل تيليجرام مربوط، آخر إرسال ناجح، وكام طلب اتسجّل ولسه ماتنبّهش بيه).
+     * RPC للأدمن بس (get_admin_alert_status).
+     * @returns {Promise<{push_devices:number, push_last_ok:string|null, telegram_configured:boolean,
+     *   telegram_chat_name:string|null, telegram_last_ok:string|null, unnotified_orders:number,
+     *   pending_orders:number, oldest_pending_at:string|null}>}
+     */
+    async function getAdminAlertStatus() {
+        const { data, error } = await client.rpc("get_admin_alert_status");
+        if (error) throw error;
+        return data || {};
+    }
+
+    /**
+     * 🤖 [قناة تيليجرام]: بتبعت توكن البوت للفنكشن (بيتخزّن في Vault على السيرفر، مش في الجدول
+     * ولا في المتصفح). الفنكشن بيتأكد من التوكن، بيلاقي المحادثة اللي ابتدت مع البوت، وبيبعت رسالة تأكيد.
+     * أخطاء المستخدم (توكن غلط / لسه مبعتتش للبوت) بترجع {ok:false, code, message} بدل ما ترمي استثناء.
+     */
+    async function connectTelegramAlerts(token) {
+        const { data, error } = await client.functions.invoke("notify-new-order", {
+            body: { action: "telegram-setup", token: String(token || "").trim() },
+        });
+        if (error) throw error;
+        return data;
+    }
+
+    async function disconnectTelegramAlerts() {
+        const { data, error } = await client.functions.invoke("notify-new-order", {
+            body: { action: "telegram-disconnect" },
+        });
+        if (error) throw error;
+        return data;
+    }
+
+    /** آخر محاولات إرسال التنبيهات (جهاز/تيليجرام) - لو الجدول مش مقروء للأدمن بترجع null والصفحة بتخفي الكارت */
+    async function getAlertDeliveries(limit) {
+        try {
+            const { data, error } = await client
+                .from("admin_alert_deliveries")
+                .select("channel, kind, ok, order_number, detail, created_at")
+                .order("created_at", { ascending: false })
+                .limit(limit || 15);
+            if (error) throw error;
+            return data || [];
+        } catch (e) {
+            console.warn("تعذر جلب سجل التنبيهات:", e.message);
+            return null;
+        }
+    }
+
     // تصدير موحّد على window بنفس فلسفة الموقع العام (window.BoseSupabase)
     window.BoseAdmin = {
         saveAdminPushSubscription,
         sendTestOrderAlert,
         getPendingOrdersSnapshot,
+        getAdminAlertStatus,
+        connectTelegramAlerts,
+        disconnectTelegramAlerts,
+        getAlertDeliveries,
         client,
         signIn,
         signOut,

@@ -53,7 +53,8 @@
                 { key: "orders", label: "الطلبات", icon: "fa-receipt", href: "orders.html", badgeKey: "ordersToday" },
                 { key: "products", label: "المنتجات", icon: "fa-cake-candles", href: "products.html" },
                 { key: "review-followups", label: "تذكير المراجعات", icon: "fa-comment-dots", href: "review-followups.html", badgeKey: "reviewFollowupsDue" },
-                { key: "push-notifications", label: "الإشعارات", icon: "fa-bell", href: "push-notifications.html" },
+                { key: "order-alerts", label: "تنبيهات الطلبات", icon: "fa-bell-concierge", href: "order-alerts.html" },
+                { key: "push-notifications", label: "إشعارات العميلات", icon: "fa-bell", href: "push-notifications.html" },
             ],
         },
         {
@@ -99,7 +100,8 @@
         orders: ["الطلبات", "متابعة وتحديث حالة كل طلبات العملاء"],
         products: ["المنتجات", "إضافة وتعديل منتجات المتجر"],
         "review-followups": ["تذكير المراجعات", "عملاء اتسلملهم طلبهم من يوم أو أكتر - ابعتيلهم تذكير مراجعة بضغطة واحدة"],
-        "push-notifications": ["الإشعارات", "ابعتي إشعار Push حقيقي فورًا لكل العميلات المفعّلة عندهم إشعارات الموقع"],
+        "order-alerts": ["تنبيهات الطلبات", "تأكدي إن أي طلب جديد بيوصلك فورًا على موبايلك - وحالة كل قناة تنبيه"],
+        "push-notifications": ["إشعارات العميلات", "ابعتي إشعار Push حقيقي فورًا لكل العميلات المفعّلة عندهم إشعارات الموقع"],
         homepage: ["الواجهة الرئيسية", "التحكم في محتوى الصفحة الرئيسية للموقع"],
         seasons: ["المواسم والمناسبات", "جدولة بانرات وشارات وحملات موسمية تتفعل وتتلغي تلقائياً بالتاريخ"],
         "about-page": ["صفحة \"من نحن\"", "القصة، الإحصائيات الحقيقية، قيم العلامة التجارية، ومعرض الصور"],
@@ -551,6 +553,7 @@
             paintAlertButton("on");
             ui.showToast("اتفعّلت تنبيهات الطلبات على الجهاز ده ✓ - هنبعتلك إشعار تجريبي دلوقتي", "success");
             await sendOrderAlertTest();
+            document.dispatchEvent(new CustomEvent("bose-alert-channel-changed"));
         } catch (err) {
             console.error("تعذر تفعيل تنبيهات الطلبات:", err);
             ui.showToast("تعذر تفعيل التنبيهات: " + (err.message || "خطأ غير معروف"), "error");
@@ -574,22 +577,26 @@
         }
     }
 
+    // نفس تصرّف زرار الشريط العلوي - مكشوف عشان صفحة "تنبيهات الطلبات" تستخدمه هي كمان
+    async function runAlertButtonAction() {
+        const btn = document.getElementById("adm-order-alert-btn");
+        const state = btn ? btn.getAttribute("data-state") : await computeAlertState();
+        if (state === "on") return sendOrderAlertTest();
+        if (state === "denied") {
+            return openAlertHelpModal("الإشعارات محظورة لهذا الموقع",
+                "المتصفح قافل الإشعارات للموقع ده. افتحي إعدادات الموقع (أيقونة القفل جنب العنوان) ← <strong>الإشعارات</strong> ← <strong>سماح</strong>، وبعدين حدّثي الصفحة وداسي على الزرار تاني.");
+        }
+        if (state === "unsupported") {
+            return openAlertHelpModal("تنبيه الطلبات على الموبايل",
+                "المتصفح ده مش بيدعم إشعارات الموقع.<br><strong>آيفون:</strong> افتحي لوحة التحكم من Safari ← زرار المشاركة ← <strong>إضافة إلى الشاشة الرئيسية</strong>، وبعدين افتحيها من الأيقونة الجديدة وفعّلي التنبيه.<br><strong>أندرويد أو كمبيوتر:</strong> استخدمي متصفح Chrome.");
+        }
+        return enableOrderAlerts();
+    }
+
     function wireOrderAlertButton() {
         const btn = document.getElementById("adm-order-alert-btn");
         if (!btn) return;
-        btn.addEventListener("click", async () => {
-            const state = btn.getAttribute("data-state");
-            if (state === "on") return sendOrderAlertTest();
-            if (state === "denied") {
-                return openAlertHelpModal("الإشعارات محظورة لهذا الموقع",
-                    "المتصفح قافل الإشعارات للموقع ده. افتحي إعدادات الموقع (أيقونة القفل جنب العنوان) ← <strong>الإشعارات</strong> ← <strong>سماح</strong>، وبعدين حدّثي الصفحة وداسي على الزرار تاني.");
-            }
-            if (state === "unsupported") {
-                return openAlertHelpModal("تنبيه الطلبات على الموبايل",
-                    "المتصفح ده مش بيدعم إشعارات الموقع.<br><strong>آيفون:</strong> افتحي لوحة التحكم من Safari ← زرار المشاركة ← <strong>إضافة إلى الشاشة الرئيسية</strong>، وبعدين افتحيها من الأيقونة الجديدة وفعّلي التنبيه.<br><strong>أندرويد أو كمبيوتر:</strong> استخدمي متصفح Chrome.");
-            }
-            return enableOrderAlerts();
-        });
+        btn.addEventListener("click", runAlertButtonAction);
     }
 
     /* ---- تنبيه جوه اللوحة: صوت + بانر + وميض العنوان ---- */
@@ -688,6 +695,79 @@
         document.dispatchEvent(new CustomEvent("bose-new-orders", { detail: { orders: fresh } }));
     }
 
+    /* ---- 🩺 مراقبة صحة التنبيهات: أخطر حالة إن النظام "شغال" بس مفيش ولا قناة مفعّلة، فأي طلب يعدّي
+       من غير ما حد يعرف. الشريط ده بيظهر في كل صفحات اللوحة لحد ما تتفعّل قناة واحدة على الأقل. ---- */
+    const HEALTH_POLL_MS = 120000;
+
+    function injectHealthBannerStyles() {
+        if (document.getElementById("adm-alert-health-styles")) return;
+        const style = document.createElement("style");
+        style.id = "adm-alert-health-styles";
+        style.textContent = `
+            #adm-alert-health-banner { display:flex; align-items:center; gap:12px; flex-wrap:wrap; padding:12px 18px; font-weight:800;
+                font-size:0.92rem; line-height:1.7; direction:rtl; font-family:inherit; }
+            #adm-alert-health-banner[data-level="red"] { background:#7A1F1F; color:#fff; border-bottom:3px solid #F87171; }
+            #adm-alert-health-banner[data-level="amber"] { background:#5C4410; color:#fff; border-bottom:3px solid #FBBF24; }
+            #adm-alert-health-banner .adm-ahb-text { flex:1; min-width:220px; }
+            #adm-alert-health-banner a { background:#fff; color:#111; text-decoration:none; border-radius:10px; padding:7px 14px; white-space:nowrap; }
+        `;
+        document.head.appendChild(style);
+    }
+
+    function renderAlertHealthBanner(status) {
+        const old = document.getElementById("adm-alert-health-banner");
+        const page = document.body.getAttribute("data-page");
+        // صفحة "تنبيهات الطلبات" بتعرض الحالة بنفسها بتفصيل أكتر
+        if (!status || page === "order-alerts") { if (old) old.remove(); return; }
+
+        const push = Number(status.push_devices) || 0;
+        const tg = !!status.telegram_configured;
+        const unnotified = Number(status.unnotified_orders) || 0;
+
+        let level = null;
+        let text = "";
+        if (!push && !tg) {
+            level = "red";
+            text = "⚠️ تنبيهات الطلبات مش شغالة - أي طلب جديد مش هيوصلك، ولازم تفتحي اللوحة بنفسك عشان تشوفيه."
+                + (unnotified ? ` فيه ${unnotified} طلب اتسجّل ولسه محدش نبّهك بيه.` : "");
+        } else if (unnotified > 0) {
+            level = "amber";
+            text = `فيه ${unnotified} طلب اتسجّل ولسه ماوصلكيش عنه تنبيه - النظام بيحاول تاني تلقائيًا كل 5 دقايق.`;
+        }
+
+        if (!level) { if (old) old.remove(); return; }
+
+        injectHealthBannerStyles();
+        const banner = old || document.createElement("div");
+        banner.id = "adm-alert-health-banner";
+        banner.setAttribute("role", "alert");
+        banner.setAttribute("data-level", level);
+        banner.innerHTML = `<div class="adm-ahb-text">${text}</div><a href="order-alerts.html">${level === "red" ? "فعّليها دلوقتي" : "التفاصيل"}</a>`;
+        if (!old) {
+            const main = document.querySelector(".adm-main");
+            if (main) main.insertBefore(banner, main.firstChild);
+        }
+    }
+
+    async function refreshAlertHealth() {
+        if (!window.BoseAdmin || !window.BoseAdmin.getAdminAlertStatus) return null;
+        try {
+            const status = await window.BoseAdmin.getAdminAlertStatus();
+            renderAlertHealthBanner(status);
+            return status;
+        } catch (e) {
+            console.warn("تعذر فحص صحة التنبيهات:", e.message || e);
+            return null;
+        }
+    }
+
+    // مكشوف لصفحة "تنبيهات الطلبات" (order-alert-page.js)
+    window.BoseOrderAlerts = {
+        getDeviceState: computeAlertState,
+        runDeviceAction: runAlertButtonAction,
+        refreshHealth: refreshAlertHealth,
+    };
+
     async function initOrderAlerts() {
         injectOrderAlertStyles();
         wireOrderAlertButton();
@@ -695,8 +775,11 @@
         pollPendingOrders();
         setInterval(pollPendingOrders, PENDING_POLL_MS);
         document.addEventListener("visibilitychange", () => {
-            if (document.visibilityState === "visible") pollPendingOrders();
+            if (document.visibilityState === "visible") { pollPendingOrders(); refreshAlertHealth(); }
         });
+        document.addEventListener("bose-alert-channel-changed", refreshAlertHealth);
+        refreshAlertHealth();
+        setInterval(refreshAlertHealth, HEALTH_POLL_MS);
     }
 
     function renderShell(adminInfo) {
