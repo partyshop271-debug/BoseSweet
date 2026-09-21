@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تنبيهات الطلبات | لوحة تحكم حلويات بوسي</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="manifest" href="/admin/admin.webmanifest">
+    <meta name="theme-color" content="#FF91A4">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="stylesheet" href="../vendor/fonts/cairo/cairo.css?v=2026_local_v1.0">
+    <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css?v=2026_local_v1.0" fetchpriority="high">
+
+    <link rel="stylesheet" href="css/admin-theme.css">
+    <link rel="stylesheet" href="css/admin-layout.css">
+    <style>
+        .oa-hero { display:flex; align-items:center; gap:16px; padding:18px 20px; border-radius:16px; border:2px solid var(--adm-border); }
+        .oa-hero[data-level="green"] { background:var(--adm-success-bg); border-color:var(--adm-success); }
+        .oa-hero[data-level="amber"] { background:var(--adm-warning-bg); border-color:var(--adm-warning); }
+        .oa-hero[data-level="red"] { background:var(--adm-danger-bg); border-color:var(--adm-danger); }
+        .oa-hero-icon { font-size:2rem; flex-shrink:0; }
+        .oa-hero h2 { margin:0 0 4px; font-size:1.15rem; }
+        .oa-hero p { margin:0; color:var(--adm-text-secondary); line-height:1.8; }
+        .oa-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:16px; }
+        .oa-channel-head { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px; }
+        .oa-channel-head h3 { margin:0; font-size:1.05rem; }
+        .oa-meta { color:var(--adm-text-secondary); font-size:0.9rem; line-height:1.9; margin:0 0 12px; }
+        .oa-steps { margin:0 0 14px; padding-inline-start:22px; line-height:2; color:var(--adm-text-secondary); font-size:0.92rem; }
+        .oa-steps strong { color:var(--adm-text-primary); }
+        .oa-token-input { direction:ltr; text-align:left; font-family:monospace; }
+        .oa-actions { display:flex; flex-wrap:wrap; gap:8px; }
+        .oa-inline-msg { margin-top:10px; padding:10px 12px; border-radius:10px; font-size:0.9rem; line-height:1.8; }
+        .oa-inline-msg[data-kind="error"] { background:var(--adm-danger-bg); color:var(--adm-danger); }
+        .oa-inline-msg[data-kind="ok"] { background:var(--adm-success-bg); color:var(--adm-success); }
+        .oa-rules { margin:0; padding-inline-start:22px; line-height:2; color:var(--adm-text-secondary); font-size:0.92rem; }
+        .oa-ltr { direction:ltr; unicode-bidi:isolate; display:inline-block; }
+    </style>
+</head>
+<body data-page="order-alerts">
+
+    <!-- شاشة تحميل تظهر لحد ما يتأكد من الجلسة -->
+    <div class="adm-auth-gate"><div class="adm-loading-spinner"></div></div>
+
+    <div class="adm-shell">
+        <div id="adm-shell-target"></div>
+
+        <main class="adm-main">
+            <div id="adm-topbar-target"></div>
+
+            <div class="adm-content" id="adm-page-content">
+
+                <!-- الحالة العامة: هل أي طلب جديد هيوصلني فعلاً؟ -->
+                <div class="oa-hero" id="oa-hero" data-level="loading">
+                    <div class="oa-hero-icon"><i class="fa-solid fa-spinner fa-spin"></i></div>
+                    <div>
+                        <h2>بنفحص حالة التنبيهات...</h2>
+                        <p>لحظة واحدة</p>
+                    </div>
+                </div>
+
+                <div class="oa-grid adm-mt-16">
+
+                    <!-- القناة 1: إشعارات الموبايل -->
+                    <div class="adm-card" id="oa-push-card">
+                        <div class="oa-channel-head">
+                            <h3><i class="fa-solid fa-mobile-screen-button"></i> إشعارات الموبايل</h3>
+                            <span class="adm-badge" id="oa-push-badge">...</span>
+                        </div>
+                        <p class="oa-meta" id="oa-push-meta">جاري التحميل...</p>
+                        <div class="oa-actions">
+                            <button type="button" class="adm-btn adm-btn-primary" id="oa-push-btn">
+                                <i class="fa-solid fa-bell"></i> <span id="oa-push-btn-label">فعّلي على الجهاز ده</span>
+                            </button>
+                        </div>
+                        <p class="oa-meta adm-mt-8" style="margin-bottom:0;">
+                            اعملي ده على <strong>كل جهاز</strong> عايزة التنبيه يوصله (موبايلك + موبايل حد من الفريق مثلًا). على الآيفون لازم تضيفي اللوحة للشاشة الرئيسية الأول.
+                        </p>
+                    </div>
+
+                    <!-- القناة 2: تيليجرام -->
+                    <div class="adm-card" id="oa-tg-card">
+                        <div class="oa-channel-head">
+                            <h3><i class="fa-brands fa-telegram"></i> تيليجرام (قناة احتياطية)</h3>
+                            <span class="adm-badge" id="oa-tg-badge">...</span>
+                        </div>
+                        <p class="oa-meta" id="oa-tg-meta">جاري التحميل...</p>
+
+                        <div id="oa-tg-setup" style="display:none;">
+                            <ol class="oa-steps">
+                                <li>افتحي تيليجرام وابحثي عن <strong>@BotFather</strong> (الحساب الرسمي اللي جنبه علامة التوثيق).</li>
+                                <li>ابعتيله <strong>/newbot</strong> واختاري اسم للبوت، وبعدين اسم مستخدم لازم ينتهي بـ <strong>bot</strong>.</li>
+                                <li>هيبعتلك <strong>توكن</strong> طويل (شكله <span class="oa-ltr">123456789:AAxxxx...</span>) - انسخيه.</li>
+                                <li>افتحي البوت اللي لسه عاملاه وداسي <strong>Start</strong> (لازم تبعتيله أي رسالة عشان يعرف يكلّمك).</li>
+                                <li>الصقي التوكن تحت وداسي <strong>اربطي</strong>.</li>
+                            </ol>
+                            <div class="adm-field">
+                                <label for="oa-tg-token">توكن البوت</label>
+                                <input type="text" class="adm-input oa-token-input" id="oa-tg-token" placeholder="123456789:AAxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" autocomplete="off" spellcheck="false">
+                                <small style="color:#888;">التوكن بيتخزّن مشفّر على السيرفر ومش بيظهر تاني في اللوحة.</small>
+                            </div>
+                            <div class="oa-actions">
+                                <button type="button" class="adm-btn adm-btn-primary" id="oa-tg-connect-btn">
+                                    <i class="fa-solid fa-link"></i> اربطي تيليجرام
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="oa-tg-connected" style="display:none;">
+                            <div class="oa-actions">
+                                <button type="button" class="adm-btn adm-btn-outline" id="oa-tg-test-btn">
+                                    <i class="fa-solid fa-paper-plane"></i> ابعتي رسالة تجريبية
+                                </button>
+                                <button type="button" class="adm-btn adm-btn-ghost" id="oa-tg-disconnect-btn">
+                                    <i class="fa-solid fa-link-slash"></i> فكّ الربط
+                                </button>
+                            </div>
+                        </div>
+                        <div class="oa-inline-msg" id="oa-tg-msg" style="display:none;"></div>
+                    </div>
+
+                </div>
+
+                <!-- طلبات ماتنبّهش بيها -->
+                <div class="adm-card adm-mt-16" id="oa-backlog-card" style="display:none;">
+                    <div class="adm-card-header">
+                        <div>
+                            <h2>طلبات مستنية مراجعتك</h2>
+                            <p id="oa-backlog-text"></p>
+                        </div>
+                        <a class="adm-btn adm-btn-primary" href="orders.html"><i class="fa-solid fa-receipt"></i> افتحي الطلبات</a>
+                    </div>
+                </div>
+
+                <!-- إزاي النظام بيحميكي -->
+                <div class="adm-card adm-mt-16">
+                    <div class="adm-card-header">
+                        <div>
+                            <h2>النظام بيتصرف إزاي لما ييجي طلب</h2>
+                            <p>الإعدادات الحالية اللي شغالة على السيرفر</p>
+                        </div>
+                    </div>
+                    <ul class="oa-rules">
+                        <li><strong>لحظة تسجيل الطلب:</strong> إشعار فوري على كل جهاز مفعّل + تيليجرام لو مربوط، فيه اسم العميلة وطريقة الدفع والأصناف وموعد التسليم.</li>
+                        <li><strong>شبكة أمان كل 5 دقايق:</strong> أي طلب ماوصلش عنه تنبيه (مثلًا النت كان واقع لحظتها) بيتبعت تاني تلقائيًا.</li>
+                        <li><strong>تذكير لو الطلب فضل من غير مراجعة:</strong> أول تذكير بعد 15 دقيقة، وبعدها كل نص ساعة (بحد أقصى 6 مرات).</li>
+                        <li><strong>الطلبات العاجلة (موعدها خلال 24 ساعة):</strong> تذكير كل 15 دقيقة لحد ما تراجعيها، حتى بالليل.</li>
+                        <li><strong>هدوء الليل:</strong> التذكيرات العادية (مش العاجلة) بتسكت من 11 مساءً لـ 8 صباحًا. أول تنبيه للطلب نفسه بيوصل في أي وقت.</li>
+                        <li><strong>التذكيرات بتقف</strong> أول ما حالة الطلب تتغيّر عن "منتظر مراجعة".</li>
+                    </ul>
+                </div>
+
+                <!-- سجل الإرسال -->
+                <div class="adm-card adm-mt-16" id="oa-log-card" style="display:none;">
+                    <div class="adm-card-header">
+                        <div>
+                            <h2>آخر محاولات الإرسال</h2>
+                            <p>دليل فعلي على اللي اتبعت واللي فشل</p>
+                        </div>
+                    </div>
+                    <div class="adm-table-wrapper">
+                        <table class="adm-table">
+                            <thead>
+                                <tr><th>الوقت</th><th>القناة</th><th>النوع</th><th>الطلب</th><th>النتيجة</th></tr>
+                            </thead>
+                            <tbody id="oa-log-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="../vendor/supabase-js/supabase.js"></script>
+    <script src="../js/phone-utils.js"></script>
+    <script src="js/admin-data.js"></script>
+    <script src="js/admin-auth-guard.js"></script>
+    <script src="js/admin-ui-utils.js"></script>
+    <script src="js/admin-shell.js"></script>
+    <script src="js/pages/order-alerts-page.js"></script>
+</body>
+</html>
