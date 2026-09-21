@@ -1451,6 +1451,59 @@
     padding: 6px 14px;
 }
 
+/* 🧁 [أقل حجز + اختيار الحشو - كروت كبيرة وواضحة]: نفس لغة تصميم اختيار طريقة الدفع
+   في الشيك أوت (#bose-payment-method-picker): خط كبير، حدود وردي، والمختار بيتلوّن. */
+.bose-min-qty-note {
+    direction: rtl;
+    text-align: right;
+    font-family: 'Cairo', sans-serif;
+    color: #111111;
+    background: rgba(var(--bose-pink-rgb), 0.07);
+    border: 1.5px solid var(--bose-pink);
+    border-radius: 16px;
+    padding: 12px 14px;
+    margin: 8px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.bose-min-qty-note strong { font-size: 1.15rem; font-weight: 800; line-height: 1.6; }
+.bose-min-qty-note small { font-size: 0.95rem; font-weight: 600; line-height: 1.7; opacity: 0.9; }
+.bose-filling-picker {
+    direction: rtl;
+    text-align: right;
+    font-family: 'Cairo', sans-serif;
+    color: #111111;
+    margin: 8px 0;
+}
+.bose-filling-title { font-size: 1.15rem; font-weight: 800; margin: 0 0 8px; }
+.bose-filling-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    margin: 0 0 8px;
+    min-height: 58px;
+    border: 1.5px solid rgba(var(--bose-pink-rgb), 0.55);
+    border-radius: 14px;
+    background: #FFFFFF;
+    cursor: pointer;
+}
+.bose-filling-option.is-selected {
+    border-color: #111111;
+    box-shadow: 0 0 0 3px rgba(var(--bose-pink-rgb), 0.25);
+    background: rgba(var(--bose-pink-rgb), 0.07);
+}
+.bose-filling-option input[type="radio"] {
+    flex: 0 0 22px;
+    width: 22px;
+    height: 22px;
+    margin: 0;
+    accent-color: #111111;
+    cursor: pointer;
+}
+.bose-filling-text strong { font-size: 1.05rem; font-weight: 800; line-height: 1.6; }
+
 .product-card-qty-wrapper {
     display: flex;
     align-items: center;
@@ -3030,6 +3083,8 @@
     .bose-product-page-layout .product-card-unified .bose-desc-toggle-btn,
     .bose-product-page-layout .product-card-unified .bose-mini-size-note,
     .bose-product-page-layout .product-card-unified .bose-card-size-tabs,
+    .bose-product-page-layout .product-card-unified .bose-filling-picker,
+    .bose-product-page-layout .product-card-unified .bose-min-qty-note,
     .bose-product-page-layout .product-card-unified .bose-qty-clarity-note,
     .bose-product-page-layout .product-card-unified .product-card-qty-wrapper,
     .bose-product-page-layout .product-card-unified .product-card-price,

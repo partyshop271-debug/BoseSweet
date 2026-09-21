@@ -2014,3 +2014,75 @@ select.bose-form-control option,
    لكن الملف ده متحمّل بس في cart.html/checkout.html، فكانت بتظهر بلا أي
    تنسيق في أي صفحة تانية (index.html, offers.html...). اتنقلت لـ main.css
    (متحمّل في كل صفحات الموقع) عشان تشتغل فعلاً في كل مكان. */
+
+/* 🧁 [أقل كمية للحجز - صفحة السلة]: شريط تقدم لكل فئة ليها حد أدنى (السينابون/الدوناتس)،
+   وقفل بصري لزرار "الانتقال لإتمام الطلب" لحد ما الحد يتحقق (المنع الفعلي بالـJS + السيرفر). */
+.bose-min-qty-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 0 0 18px 0;
+    direction: rtl;
+    font-family: 'Cairo', sans-serif;
+}
+.bose-min-qty-row {
+    border-radius: 16px;
+    padding: 14px 16px;
+    border: 2px solid var(--bose-pink, #FF91A4);
+    background: rgba(var(--bose-pink-rgb), 0.08);
+}
+.bose-min-qty-row.is-ok {
+    border-color: #2e9e5b;
+    background: rgba(46, 158, 91, 0.08);
+}
+.bose-min-qty-head {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #111111;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    line-height: 1.6;
+}
+.bose-min-qty-row.is-ok .bose-min-qty-head i { color: #2e9e5b; }
+.bose-min-qty-row.is-missing .bose-min-qty-head i { color: var(--bose-pink-text, var(--bose-pink)); }
+.bose-min-qty-bar {
+    height: 14px;
+    border-radius: 999px;
+    background: rgba(17, 17, 17, 0.08);
+    overflow: hidden;
+    margin: 10px 0 8px;
+}
+.bose-min-qty-bar-fill {
+    height: 100%;
+    background: var(--bose-pink, #FF91A4);
+    border-radius: 999px;
+    transition: width 0.3s ease;
+}
+.bose-min-qty-hint {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #111111;
+    opacity: 0.85;
+    margin-bottom: 8px;
+}
+.bose-min-qty-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 800;
+    font-size: 1.05rem;
+    color: #111111;
+    background: #FFFFFF;
+    border: 1.5px solid var(--bose-pink, #FF91A4);
+    border-radius: 999px;
+    min-height: 46px;
+    padding: 8px 20px;
+    text-decoration: none;
+}
+.bose-min-qty-link:hover { background: rgba(var(--bose-pink-rgb), 0.12); }
+.bose-primary-checkout-btn.is-blocked {
+    opacity: 0.55;
+    cursor: not-allowed;
+    filter: grayscale(0.35);
+}
