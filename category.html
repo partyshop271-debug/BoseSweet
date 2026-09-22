@@ -462,6 +462,169 @@
             background-color: #111111;
         }
 
+        /* 🧺👑 [حل احترافي - بناء بوكس من نكهات متعددة في شاشة واحدة]: لأي فئة
+           عندها حد أدنى قطع (الدوناتس/السينابون حالياً، وأي فئة تانية تتضاف لاحقاً
+           بنفس القاعدة من لوحة التحكم)، الصفحة دي بتتحول لأداة "ابني بوكسك":
+           كل نكهة كارت له عداد قطع مستقل، وشريط ملخص ثابت تحت بيجمع كل النكهات
+           المختارة مع بعض ويضيفهم للسلة بضغطة واحدة - العميلة تقدر تبني بوكس الـ6
+           قطع من أي مزيج نكهات تحبه من غير ما تدخل خمس صفحات منتج منفصلة وترجع
+           كل مرة لتختار نكهة تانية. */
+        .bose-box-intro-banner {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            background: rgba(var(--bose-pink-rgb), 0.07);
+            border: 1.5px solid var(--bose-pink);
+            border-radius: 16px;
+            padding: 16px 18px;
+            margin-bottom: 24px;
+            direction: rtl;
+            text-align: right;
+        }
+        .bose-box-intro-banner i {
+            font-size: 1.3rem;
+            color: var(--bose-pink-text, var(--bose-pink));
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+        .bose-box-intro-banner strong {
+            display: block;
+            font-size: 1.05rem;
+            font-weight: 800;
+            margin-bottom: 3px;
+            color: #111111;
+        }
+        .bose-box-intro-banner span {
+            font-size: 0.88rem;
+            font-weight: 600;
+            opacity: 0.85;
+            color: #111111;
+        }
+
+        .bose-box-card {
+            display: flex;
+            flex-direction: column;
+        }
+        .bose-box-card.has-selection {
+            border-color: var(--bose-pink, var(--bose-pink)) !important;
+            box-shadow: var(--bose-shadow-hover) !important;
+        }
+        .bose-box-card .product-card-img { margin-bottom: 10px; }
+        .bose-box-card .product-card-title { font-size: 1rem; margin-bottom: 2px; }
+        .bose-box-card .product-card-price {
+            align-self: flex-start;
+            margin: 6px 0 10px 0;
+        }
+        .bose-box-fillings {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin: 0 0 10px 0;
+            direction: rtl;
+        }
+        .bose-box-filling-chip {
+            font-family: 'Cairo', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 5px 12px;
+            border: 1px solid rgba(var(--bose-pink-rgb), 0.4);
+            background: #FFFFFF;
+            color: #111111;
+            border-radius: 50px;
+            cursor: pointer;
+        }
+        .bose-box-filling-chip.active {
+            background: var(--bose-pink-text, var(--bose-pink));
+            color: #FFFFFF;
+            border-color: var(--bose-pink-text, var(--bose-pink));
+        }
+        .bose-box-qty-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            margin-top: auto;
+            padding-top: 10px;
+            direction: rtl;
+        }
+        .bose-box-qty-value {
+            min-width: 28px;
+            text-align: center;
+            font-weight: 800;
+            font-size: 1.15rem;
+            color: #111111;
+        }
+
+        /* 🧺 [الشريط الثابت السفلي - ملخص البوكس]: ثابت فوق شريط التنقل السفلي
+           (nav bottom bar موجود في كل الموقع)، بيوضح فورًا كام قطعة اتخيرت من
+           أصل الحد الأدنى، ومفعّل بس لما الحد يتحقق. */
+        .bose-box-sticky-bar {
+            position: fixed;
+            left: 0; right: 0;
+            /* 📱 [نفس ارتفاع شريط التنقل السفلي الحقيقي .bose-bottom-nav-bar بالظبط
+               (62px + مساحة الأمان السفلية) عشان الشريط يقف فوقه مباشرة من غير
+               تداخل أو مساحة فاضية على أي جهاز، حتى اللي فيه حافة سفلية (Home Indicator). */
+            bottom: calc(62px + env(safe-area-inset-bottom, 0px));
+            z-index: 4500;
+            background: #FFFFFF;
+            border-top: 1.5px solid var(--bose-pink);
+            box-shadow: 0 -6px 20px rgba(17, 17, 17, 0.12);
+            padding: 12px 16px;
+            display: none;
+        }
+        .bose-box-sticky-bar.is-visible { display: block; }
+        .bose-box-sticky-bar-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            direction: rtl;
+        }
+        .bose-box-sticky-progress-wrap { flex: 1; min-width: 0; }
+        .bose-box-sticky-text {
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: #111111;
+            margin-bottom: 6px;
+        }
+        .bose-box-sticky-progress-track {
+            height: 8px;
+            border-radius: 50px;
+            background: rgba(var(--bose-pink-rgb), 0.15);
+            overflow: hidden;
+        }
+        .bose-box-sticky-progress-fill {
+            height: 100%;
+            border-radius: 50px;
+            background: var(--bose-pink-text, var(--bose-pink));
+            transition: width 0.25s ease;
+        }
+        .bose-box-sticky-progress-fill.is-complete { background: #1a8f4c; }
+        .bose-box-sticky-cta {
+            flex-shrink: 0;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 22px;
+            font-family: 'Cairo', sans-serif;
+            font-weight: 800;
+            font-size: 0.88rem;
+            cursor: pointer;
+            background: var(--bose-pink-text, var(--bose-pink));
+            color: #FFFFFF;
+            white-space: nowrap;
+        }
+        .bose-box-sticky-cta:disabled {
+            background: #CCCCCC;
+            color: #777777;
+            cursor: not-allowed;
+        }
+        /* مساحة أمان سفلية إضافية لما شريط ملخص البوكس ظاهر، عشان آخر صف كروت
+           ميختفيش وراه. */
+        .category-view-wrapper.bose-box-mode-active {
+            padding-bottom: 120px;
+        }
+
         /* 🚨 هيكل التحميل الهيكلي الـ Skeleton */
         .skeleton-card-loader {
             background: #FFFFFF;
@@ -560,6 +723,20 @@
         </div>
     </main>
 
+    <!-- 🧺 [شريط ملخص بناء البوكس الثابت]: بيظهر بس لو الفئة عندها حد أدنى قطع
+         (bose-box-mode مفعّل) - راجع renderBoxBuilderCards/updateBoseBoxSummaryBar. -->
+    <div id="bose-box-sticky-bar" class="bose-box-sticky-bar" role="status" aria-live="polite">
+        <div class="bose-box-sticky-bar-inner">
+            <div class="bose-box-sticky-progress-wrap">
+                <div class="bose-box-sticky-text" id="bose-box-sticky-text">اخترتِ 0 من 6 قطع</div>
+                <div class="bose-box-sticky-progress-track">
+                    <div class="bose-box-sticky-progress-fill" id="bose-box-sticky-progress-fill" style="width:0%;"></div>
+                </div>
+            </div>
+            <button type="button" class="bose-box-sticky-cta" id="bose-box-sticky-cta" disabled>أضيفي البوكس للسلة</button>
+        </div>
+    </div>
+
     <!-- 🆕👑 [رجوع صفحة المنتج المستقلة]: بعد تجربة النافذة المدمجة هنا، اتقرر
          الرجوع لصفحة product.html حقيقية ومستقلة - أبسط وأوضح للعميلة، وبتتفتح
          مباشرة بدل ما تتلخبط جوه صفحة تانية (نفس فلسفة هديتك). كروت المنتجات في
@@ -600,6 +777,28 @@
             let globalStoreCurrency = "EGP";
             let activeSortMode = "default"; // 'default' (سلوكي) | 'price-asc' | 'price-desc'
             const sortSelectEl = document.getElementById('bose-category-sort-select');
+
+            // 👑 [إصلاح جذري - تبويبات حجم الديسباسيتو]: كل حجم (مثلث/طاجن/حجم عائلي)
+            // صف منتج منفصل تماماً في قاعدة البيانات لكل نكهة (مش منتج واحد بسعر متعدد
+            // الأحجام) - وكان التبويب هنا بيغيّر شكله بس (active class) من غير ما يفلتر
+            // أي حاجة فعلياً، فكانت النكهة المعروضة ثابتة دايماً على أول حجم. دلوقتي بنجمّع
+            // كل نكهة (variantGroupId) مع أحجامها التلاتة، وبنعرض بس العضو اللي بيطابق
+            // التبويب المفعّل - وبنعيد رسم الشبكة بالكامل مع كل تبديل تبويب (مش تحديث جزئي)
+            // عشان الرابط/الصورة/السعر كلهم يتبدلوا مع بعض لنفس المنتج الصحيح دايماً.
+            let isTabsMode = false;
+            let flavorGroups = []; // [{ groupId, bySize: {triangle,medium,large}, any }]
+
+            // 🧺 [حل احترافي - بناء بوكس من نكهات متعددة]: أي فئة عندها حد أدنى قطع
+            // حقيقي (min_order_qty > 1 من لوحة التحكم - الدوناتس/السينابون حالياً) بتتحول
+            // هنا لأداة اختيار تفاعلية بكل النكهات في نفس الشاشة، بدل ما العميلة تضطر
+            // تدخل صفحة منتج مستقلة لكل نكهة وترجع تاني 5 مرات عشان تكمّل الحد الأدنى.
+            let isBoxBuilderMode = false;
+            let catOrderRules = { minQty: 0, fillings: [], title: '' };
+            const boxSelections = {}; // key: `${productId}::${filling||''}` -> { productId, filling, qty }
+            const boxStickyBar = document.getElementById('bose-box-sticky-bar');
+            const boxStickyText = document.getElementById('bose-box-sticky-text');
+            const boxStickyFill = document.getElementById('bose-box-sticky-progress-fill');
+            const boxStickyCta = document.getElementById('bose-box-sticky-cta');
 
             if (!categoryId) {
                 renderEmptyState("لم يتم تحديد الصنف بشكل صحيح. يرجى العودة للمنيو الرئيسي.");
@@ -682,6 +881,32 @@
                 );
                 globalStoreCurrency = siteData.store.currency || "EGP";
 
+                // 🧺 [حد أدنى القطع + خيارات الحشو - من لوحة التحكم]: نفس القاعدة الحقيقية
+                // المستخدمة في كارت المنتج العادي (window.getBoseCategoryOrderRules) - لو
+                // الفئة عندها حد أدنى حقيقي (>1)، الصفحة كلها بتشتغل كأداة "ابني بوكسك".
+                catOrderRules = (typeof window.getBoseCategoryOrderRules === 'function')
+                    ? window.getBoseCategoryOrderRules(categoryId)
+                    : { minQty: 0, fillings: [], title: '' };
+                isBoxBuilderMode = catOrderRules.minQty > 1 && globalFilteredProducts.length > 0;
+
+                // 👑 [تجميع أحجام الديسباسيتو]: بنجمّع كل صفوف نفس النكهة (variantGroupId
+                // اللي اتربط في قاعدة البيانات، مع fallback بيشتق نفس التجميع من الـ id
+                // نفسه لو منتج جديد اتضاف من غير ما يترط - مرونة إضافية بس التجميع
+                // الرسمي هو variantGroupId).
+                isTabsMode = !isBoxBuilderMode && globalFilteredProducts.length > 0 && globalFilteredProducts[0].layout === "tabs";
+                if (isTabsMode) {
+                    const groupsMap = {};
+                    globalFilteredProducts.forEach(p => {
+                        const sizeKey = (p.options && !Array.isArray(p.options) && p.options.sizeKey)
+                            ? p.options.sizeKey
+                            : (String(p.id).endsWith('-large') ? 'large' : (String(p.id).endsWith('-medium') ? 'medium' : 'triangle'));
+                        const groupId = p.variantGroupId || String(p.id).replace(/-(large|medium)$/, '');
+                        if (!groupsMap[groupId]) groupsMap[groupId] = { groupId, bySize: {}, any: p };
+                        groupsMap[groupId].bySize[sizeKey] = p;
+                    });
+                    flavorGroups = Object.values(groupsMap);
+                }
+
                 // 🛡️ [إصلاح حرج جديد]: لو الفئة دي بالكامل بتخص محاكي تفاعلي (زي "التورت" أو "الورد")
                 // فبعد الفلترة فوق هتبقى فاضية تماماً من غير أي منتج قياسي - بدل ما نعرض "لا توجد منتجات"
                 // مربكة للعميل، نوديه مباشرة لصفحة المحاكي الصحيحة (نفس سلوك product.html بالظبط).
@@ -717,7 +942,13 @@
 
                 const firstProduct = globalFilteredProducts[0];
 
-                if (categoryId === "taswaq-cupcake") {
+                if (isBoxBuilderMode) {
+                    productsGrid.className = "category-products-grid layout-grid-card";
+                    sizeFilterRow.style.display = "none";
+                    sizeFilterNote.style.display = "none";
+                    document.getElementById('main-category-content').classList.add('bose-box-mode-active');
+                    renderBoseBoxIntroBanner();
+                } else if (categoryId === "taswaq-cupcake") {
                     productsGrid.className = "category-products-grid layout-full-card";
                     sizeFilterRow.style.display = "none";
                     sizeFilterNote.style.display = "none";
@@ -754,37 +985,47 @@
                         this.classList.add('active');
                         activeSizeTab = this.getAttribute('data-filter-size');
 
-                        // 🔽 [إصلاح - ترتيب يدوي بالسعر]: لو الترتيب الحالي بالسعر، لازم نعيد
-                        // الترتيب الكامل مع تبديل الحجم (لأن سعر كل منتج بيتغيّر)، مش بس تحديث
-                        // الأرقام مكانها - وإلا الترتيب يفضل مبني على أسعار الحجم القديم.
-                        if (activeSortMode === "price-asc" || activeSortMode === "price-desc") {
-                            applyActiveSort();
-                            renderProductsDOM();
-                        } else {
-                            // تحديث الأسعار والمحددات ديناميكياً لتوفير استهلاك البيانات والمعالجة
-                            updateExistingCardsConfig();
-                        }
+                        // 🛡️👑 [إصلاح جذري - تبويب الحجم مش بيغيّر حاجة فعلياً]: كل حجم منتج
+                        // منفصل بالكامل عن التاني (id/سعر/صورة/رابط مختلفين خالص، مش نفس
+                        // المنتج بسعر بديل) - تحديث جزئي (كان اسمه updateExistingCardsConfig)
+                        // كان بيبدّل السعر/الصورة بصرياً بس، وكان بيسيب رابط "عرض التفاصيل"
+                        // وحدث الضغط على الكارت لسه شايلين الحجم القديم في الذاكرة (closure)،
+                        // فكانت العميلة تضغط ع "حجم عائلي" وتتفاجئ إنها لسه بتوصّل لصفحة
+                        // "مثلث". الحل الصحيح: إعادة رسم الشبكة بالكامل من مصدرها الحقيقي
+                        // (flavorGroups) مع كل تبديل تبويب - أبسط وأضمن 100% من أي تحديث جزئي.
+                        applyActiveSort();
+                        renderProductsDOM();
                     });
                 });
             }
 
+            // 👑 [تبويبات الديسباسيتو]: بيرجع منتج الحجم المطابق للتبويب المفعّل من
+            // مجموعة النكهة، مع fallback منطقي لو نادراً حجم بعينه مش موجود لنكهة معينة.
+            function resolveTabProduct(group) {
+                return group.bySize[activeSizeTab] || group.bySize.triangle || group.bySize.medium || group.bySize.large || group.any;
+            }
+
             // 🔽 [إصلاح - ترتيب يدوي بالسعر]: بنستخدم نفس دالة حساب السعر النهائي
             // (calculateProductFinalPrice) المستخدمة فعلياً في عرض الكارت، عشان
-            // الترتيب يتطابق تماماً مع السعر اللي العميلة شايفاه فعلاً على الشاشة.
+            // الترتيب يتطابق تماماً مع السعر اللي العميلة شايفاها فعلاً على الشاشة.
+            // كل حجم دلوقتي صف منتج مستقل بسعره الحقيقي الخاص - مفيش حاجة لتمرير size.
             function getSortablePrice(product) {
-                const sizeForPrice = (categoryId !== "taswaq-cupcake" && product.prices) ? activeSizeTab : (product.defaultSize || "triangle");
                 return typeof window.calculateProductFinalPrice === 'function'
-                    ? window.calculateProductFinalPrice(product, { size: sizeForPrice })
+                    ? window.calculateProductFinalPrice(product, {})
                     : (product.price || 0);
             }
 
             function applyActiveSort() {
+                const list = isTabsMode ? flavorGroups : globalFilteredProducts;
+                const priceOf = isTabsMode ? (g => getSortablePrice(resolveTabProduct(g))) : getSortablePrice;
+                const slugOf = isTabsMode ? (g => resolveTabProduct(g).slug) : (p => p.slug);
+
                 if (activeSortMode === "price-asc") {
-                    globalFilteredProducts.sort((a, b) => getSortablePrice(a) - getSortablePrice(b));
+                    list.sort((a, b) => priceOf(a) - priceOf(b));
                     return;
                 }
                 if (activeSortMode === "price-desc") {
-                    globalFilteredProducts.sort((a, b) => getSortablePrice(b) - getSortablePrice(a));
+                    list.sort((a, b) => priceOf(b) - priceOf(a));
                     return;
                 }
                 // الوضع الافتراضي "الأنسب لك": الترتيب السلوكي بناءً على تصفح العميلة سابقاً
@@ -792,13 +1033,13 @@
                     const behaviorData = localStorage.getItem('bose_user_behavior');
                     const behaviorLog = behaviorData ? JSON.parse(behaviorData) : {};
 
-                    globalFilteredProducts.sort((a, b) => {
-                        let scoreA = behaviorLog[a.slug] ? behaviorLog[a.slug].score : 0;
-                        let scoreB = behaviorLog[b.slug] ? behaviorLog[b.slug].score : 0;
+                    list.sort((a, b) => {
+                        let scoreA = behaviorLog[slugOf(a)] ? behaviorLog[slugOf(a)].score : 0;
+                        let scoreB = behaviorLog[slugOf(b)] ? behaviorLog[slugOf(b)].score : 0;
 
                         if (scoreB === scoreA) {
-                            let timeA = behaviorLog[a.slug] ? behaviorLog[a.slug].lastVisited : 0;
-                            let timeB = behaviorLog[b.slug] ? behaviorLog[b.slug].lastVisited : 0;
+                            let timeA = behaviorLog[slugOf(a)] ? behaviorLog[slugOf(a)].lastVisited : 0;
+                            let timeB = behaviorLog[slugOf(b)] ? behaviorLog[slugOf(b)].lastVisited : 0;
                             return timeB - timeA;
                         }
                         return scoreB - scoreA;
@@ -809,13 +1050,21 @@
             }
 
             function renderProductsDOM() {
+                if (isBoxBuilderMode) { renderBoxBuilderCards(); return; }
+
                 productsGrid.innerHTML = "";
-                
-                globalFilteredProducts.forEach(product => {
-                    const defaultSize = (categoryId !== "taswaq-cupcake" && product.prices) ? activeSizeTab : (product.defaultSize || "triangle");
-                    
+
+                // 👑 [تبويبات الديسباسيتو]: المصدر الحقيقي للعرض بقى flavorGroups (منتج
+                // واحد فعلي لكل نكهة، هو بالظبط عضو الحجم المطابق للتبويب المفعّل) -
+                // مش كل صفوف الفئة الخام. renderProductsDOM بيتنادى بالكامل مع كل تبديل
+                // تبويب (راجع مستمع bose-filter-tab-pill فوق) فمفيش أي بيانات قديمة تفضل.
+                const visibleProducts = isTabsMode ? flavorGroups.map(resolveTabProduct) : globalFilteredProducts;
+
+                visibleProducts.forEach(product => {
+                    const defaultSize = isTabsMode ? activeSizeTab : (product.defaultSize || "triangle");
+
                     const calculatedPrice = typeof window.calculateProductFinalPrice === 'function' ? 
-                        window.calculateProductFinalPrice(product, {size: defaultSize}) : (product.price || 0);
+                        window.calculateProductFinalPrice(product, isTabsMode ? {} : {size: defaultSize}) : (product.price || 0);
                     
                     const cardElement = document.createElement('div');
                     // 🐛 [إصلاح حرج]: هذه الدالة كانت منفصلة تماماً عن createProductCardHTML الموحدة
@@ -914,53 +1163,183 @@
                 });
             }
 
-            function updateCardPriceDisplay(priceDisplayNode, quantity) {
-                // 🐛 [إصلاح حرج]: كان بيكتب على .product-card-price بالكامل بـ textContent،
-                // فكان بيمسح شارة "السعر القديم" وملاحظة "وفرت X جنيه" لأي منتج عليه عرض
-                // بمجرد ما العميل يغيّر الكمية. دلوقتي بيحدّث السعر الحالي بس جوه span مخصصة له.
-                const basePrice = parseFloat(priceDisplayNode.getAttribute('data-base-unit-price')) || 0;
-                const totalDisplayPrice = basePrice * (parseInt(quantity, 10) || 1);
-                const priceValueNode = priceDisplayNode.querySelector('.current-price-value');
-                if (priceValueNode) {
-                    priceValueNode.textContent = `${totalDisplayPrice} ${globalStoreCurrency}`;
-                } else {
-                    priceDisplayNode.textContent = `${totalDisplayPrice} ${globalStoreCurrency}`;
-                }
+            // 🧺 [بانر تعريفي لأداة بناء البوكس]: بيتحط مرة واحدة فوق الشبكة، بيوضح
+            // للعميلة إنها تقدر تخلط 6 قطع من أي نكهات تحبها في نفس الشاشة.
+            function renderBoseBoxIntroBanner() {
+                if (document.getElementById('bose-box-intro-banner')) return;
+                const banner = document.createElement('div');
+                banner.id = 'bose-box-intro-banner';
+                banner.className = 'bose-box-intro-banner';
+                banner.innerHTML = `
+                    <i class="fa-solid fa-basket-shopping"></i>
+                    <div>
+                        <strong>اختاري ${catOrderRules.minQty} قطع من أي نكهات تحبيها 🎁</strong>
+                        <span>مش لازم كلهم نفس النكهة - حطي العدد اللي تحبيه جنب كل نكهة تحت، والعداد هيجمعهم لحد ما توصلي ${catOrderRules.minQty}.</span>
+                    </div>
+                `;
+                productsGrid.parentNode.insertBefore(banner, productsGrid);
             }
 
-            function updateExistingCardsConfig() {
+            // 🧺👑 [قلب أداة بناء البوكس]: كارت لكل نكهة بعداد قطع مستقل (يبدأ من صفر)،
+            // بدل كارت "عرض التفاصيل" اللي كان بيودّي لصفحة منتج منفصلة لكل نكهة. كل
+            // تغيير في أي عداد بيحدّث boxSelections والشريط الثابت تحت فوراً.
+            function renderBoxBuilderCards() {
+                productsGrid.innerHTML = "";
+                const esc = typeof window.escapeBoseHTML === 'function' ? window.escapeBoseHTML : (s => String(s || ''));
+
                 globalFilteredProducts.forEach(product => {
-                    const cardNode = productsGrid.querySelector(`[data-slug="${product.slug}"]`);
-                    if (!cardNode) return;
+                    const price = typeof window.calculateProductFinalPrice === 'function'
+                        ? window.calculateProductFinalPrice(product, {}) : (product.price || 0);
+                    const safeTitle = esc(product.flavorName || product.title);
+                    const cardImageUrl = product.image || (product.images ? product.images[0] : '');
+                    const hasFillings = catOrderRules.fillings.length > 0;
+                    const defaultFilling = hasFillings ? catOrderRules.fillings[0] : '';
 
-                    const priceDisplay = cardNode.querySelector('.product-card-price');
+                    const card = document.createElement('div');
+                    card.className = 'product-card-unified bose-box-card';
+                    card.dataset.productId = product.id;
 
-                    const currentSize = (categoryId !== "taswaq-cupcake" && product.prices) ? activeSizeTab : (product.defaultSize || "triangle");
+                    const fillingsHtml = hasFillings ? `
+                        <div class="bose-box-fillings" role="radiogroup" aria-label="اختيار الحشو">
+                            ${catOrderRules.fillings.map((f, i) => `<button type="button" class="bose-box-filling-chip${i === 0 ? ' active' : ''}" data-filling="${esc(f)}">${esc(f)}</button>`).join('')}
+                        </div>
+                    ` : '';
 
-                    const newUnitPrice = typeof window.calculateProductFinalPrice === 'function' ? 
-                        window.calculateProductFinalPrice(product, {size: currentSize}) : (product.price || 0);
-                    
-                    priceDisplay.setAttribute('data-base-unit-price', newUnitPrice);
-                    updateCardPriceDisplay(priceDisplay, 1);
+                    card.innerHTML = `
+                        <img src="${window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(cardImageUrl, 400) : cardImageUrl}" alt="${safeTitle}" class="product-card-img" loading="lazy">
+                        <h3 class="product-card-title">${safeTitle}</h3>
+                        <div class="product-card-price"><span>${Math.round(price)} ${globalStoreCurrency}</span></div>
+                        ${fillingsHtml}
+                        <div class="bose-box-qty-row">
+                            <button type="button" class="bose-internal-qty-btn bose-box-minus" aria-label="تقليل">−</button>
+                            <span class="bose-box-qty-value">0</span>
+                            <button type="button" class="bose-internal-qty-btn bose-box-plus" aria-label="زيادة">+</button>
+                        </div>
+                    `;
 
-                    // 🛡️🛡️ [إصلاح جذري - الصورة مش بتتغيّر مع الحجم]: كانت الصورة هنا ثابتة
-                    // دايماً حتى لو المنتج عنده صورة مختلفة مسجلة لكل حجم (product.sizeImages
-                    // - نفس البيانات اللي صفحة المنتج بتستخدمها بالفعل). دلوقتي بتتبدّل فوراً
-                    // مع أي تبديل تبويب حجم، بدون ما تحتاج العميلة تفتح صفحة المنتج لتشوف الفرق.
-                    const imgNode = cardNode.querySelector('.product-card-img[data-size-img]');
-                    if (imgNode && product.sizeImages && product.sizeImages[currentSize]) {
-                        const newImgUrl = product.sizeImages[currentSize];
-                        const optimizedUrl = window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(newImgUrl, 450) : newImgUrl;
-                        if (!imgNode.src.includes(encodeURI(newImgUrl)) && imgNode.getAttribute('src') !== optimizedUrl) {
-                            imgNode.style.opacity = '0.4';
-                            setTimeout(() => {
-                                imgNode.src = optimizedUrl;
-                                imgNode.style.opacity = '1';
-                            }, 120);
+                    let selectedFilling = defaultFilling;
+                    const qtyValueEl = card.querySelector('.bose-box-qty-value');
+
+                    function currentKey() { return `${product.id}::${selectedFilling}`; }
+                    function currentQty() { return (boxSelections[currentKey()] && boxSelections[currentKey()].qty) || 0; }
+                    function setQty(next) {
+                        const qty = Math.max(0, Math.min(50, next));
+                        if (qty === 0) {
+                            delete boxSelections[currentKey()];
+                        } else {
+                            boxSelections[currentKey()] = { productId: product.id, filling: selectedFilling, qty };
                         }
+                        qtyValueEl.textContent = String(qty);
+                        card.classList.toggle('has-selection', qty > 0);
+                        updateBoseBoxSummaryBar();
+                    }
+
+                    card.querySelector('.bose-box-plus').addEventListener('click', () => setQty(currentQty() + 1));
+                    card.querySelector('.bose-box-minus').addEventListener('click', () => setQty(currentQty() - 1));
+
+                    if (hasFillings) {
+                        card.querySelectorAll('.bose-box-filling-chip').forEach(chip => {
+                            chip.addEventListener('click', () => {
+                                // 🧁 لو غيّرت الحشو وكان فيه عدد مختار على الحشو القديم، بننقله
+                                // للحشو الجديد (نفس النكهة، حشو مختلف = سطر مختلف في السلة).
+                                const existingQty = currentQty();
+                                if (existingQty > 0) delete boxSelections[currentKey()];
+                                card.querySelectorAll('.bose-box-filling-chip').forEach(c => c.classList.remove('active'));
+                                chip.classList.add('active');
+                                selectedFilling = chip.getAttribute('data-filling');
+                                if (existingQty > 0) setQty(existingQty); else qtyValueEl.textContent = String(currentQty());
+                            });
+                        });
+                    }
+
+                    // عرض تفاصيل النكهة (وصف/مراجعات) اختياري - رابط صغير تحت الصورة.
+                    const detailLink = document.createElement('a');
+                    detailLink.href = `product.html?slug=${encodeURIComponent(product.slug)}`;
+                    detailLink.className = 'bose-desc-toggle-btn';
+                    detailLink.style.marginTop = '2px';
+                    detailLink.textContent = 'تفاصيل ومراجعات النكهة دي';
+                    detailLink.addEventListener('click', (e) => { e.preventDefault(); window.openBoseProductDetailModal(product.slug); });
+                    card.querySelector('.product-card-price').after(detailLink);
+
+                    productsGrid.appendChild(card);
+                });
+
+                updateBoseBoxSummaryBar();
+            }
+
+            // 🧺 [الشريط الثابت السفلي]: بيجمع كل النكهات المختارة (مهما كان عددها)
+            // ويوضح فورًا كام قطعة من أصل الحد الأدنى، ويفعّل الزرار بس لو الحد اتحقق.
+            function updateBoseBoxSummaryBar() {
+                let totalQty = 0, totalPrice = 0;
+                Object.values(boxSelections).forEach(sel => {
+                    const product = globalFilteredProducts.find(p => p.id === sel.productId);
+                    if (!product) return;
+                    const unitPrice = typeof window.calculateProductFinalPrice === 'function'
+                        ? window.calculateProductFinalPrice(product, {}) : (product.price || 0);
+                    totalQty += sel.qty;
+                    totalPrice += unitPrice * sel.qty;
+                });
+
+                const min = catOrderRules.minQty;
+                const isComplete = totalQty >= min;
+                boxStickyBar.classList.toggle('is-visible', totalQty > 0);
+                boxStickyText.textContent = isComplete
+                    ? `اخترتِ ${totalQty} قطعة - ${Math.round(totalPrice)} ${globalStoreCurrency} 🎉`
+                    : `اخترتِ ${totalQty} من ${min} قطع`;
+                boxStickyFill.style.width = `${Math.min(100, (totalQty / min) * 100)}%`;
+                boxStickyFill.classList.toggle('is-complete', isComplete);
+                boxStickyCta.disabled = !isComplete;
+                boxStickyCta.textContent = isComplete ? `أضيفي البوكس للسلة (${totalQty} قطعة)` : 'كمّلي الاختيار أولاً';
+            }
+
+            // 🧺👑 [إضافة البوكس بالكامل للسلة بضغطة واحدة]: بيلف على كل النكهات
+            // المختارة (كل نكهة+حشو سطر منفصل، بالظبط نفس منطق/تنسيق cartLineId
+            // المستخدم في window.handleBoseDirectAddToCart بـ core-engine.js) وبيكتبهم
+            // للسلة في عملية واحدة، عشان صفحة السلة/الشيك أوت/فاتورة الواتساب كلهم
+            // يشتغلوا معاها من غير أي تعديل إضافي - هي بالظبط نفس بيانات أي سطر سلة عادي.
+            boxStickyCta.addEventListener('click', function () {
+                const selections = Object.values(boxSelections);
+                if (!selections.length || typeof window.createCartItem !== 'function') return;
+
+                let cart = [];
+                try {
+                    const raw = localStorage.getItem('bose_cart');
+                    cart = raw ? JSON.parse(raw) : [];
+                    if (!Array.isArray(cart)) cart = [];
+                } catch (e) { cart = []; }
+
+                selections.forEach(sel => {
+                    const product = globalFilteredProducts.find(p => p.id === sel.productId);
+                    if (!product) return;
+                    const opts = sel.filling ? { filling: sel.filling } : {};
+                    const cartLineId = [product.slug, null, sel.filling ? `fill-${encodeURIComponent(sel.filling)}` : null].filter(Boolean).join('-');
+                    const existingItem = cart.find(item => item.id === cartLineId);
+                    if (existingItem) {
+                        existingItem.quantity = Math.min(existingItem.quantity + sel.qty, 50);
+                    } else {
+                        const newItem = window.createCartItem(product, opts, sel.qty);
+                        if (newItem) { newItem.id = cartLineId; cart.push(newItem); }
                     }
                 });
-            }
+
+                localStorage.setItem('bose_cart', JSON.stringify(cart));
+                if (typeof window.updateGlobalCartCounter === 'function') window.updateGlobalCartCounter();
+
+                let promptMessage = 'تمت إضافة البوكس للسلة بنجاح 🎉';
+                if (typeof window.getBoseCartMinQtyStatus === 'function') {
+                    const status = window.getBoseCartMinQtyStatus(cart).find(st => st.categoryId === categoryId);
+                    if (status && status.ok) {
+                        promptMessage = `تمت الإضافة 🎉 - عندك ${status.pieces} قطع ${status.title}، والحد الأدنى اتحقق ✅`;
+                    }
+                }
+                if (typeof window.showBosePostAddToCartPrompt === 'function') {
+                    window.showBosePostAddToCartPrompt({ message: promptMessage, blockCheckout: false });
+                }
+
+                // تصفير الاختيارات عشان تقدر تبني بوكس تاني لو حابة، والكروت ترجع صفر.
+                Object.keys(boxSelections).forEach(k => delete boxSelections[k]);
+                renderBoxBuilderCards();
+            });
 
             function renderEmptyState(message) {
                 productsGrid.className = "category-products-grid layout-full-card";
