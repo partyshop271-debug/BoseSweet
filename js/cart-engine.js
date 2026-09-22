@@ -881,8 +881,8 @@ function renderBoseCheckoutPage(storeData) {
         }
         if (submitNote) {
             submitNote.textContent = method === "cod"
-                ? "بعد التأكيد طلبك بيتسجل عندنا فورًا، وبنتواصل معاكي لتأكيده. والدفع بيكون كاش عند الاستلام."
-                : "بعد التأكيد طلبك بيتسجل عندنا فورًا، وبنراجع التحويل ونتواصل معاكي لتأكيده.";
+                ? "طلبك هيتسجل وهنتواصل معاكي لتأكيده."
+                : "طلبك هيتسجل وهنتواصل معاكي بعد ما نراجع التحويل.";
         }
         document.querySelectorAll("#bose-payment-method-picker .bose-pm-option").forEach((label) => {
             const radio = label.querySelector('input[type="radio"]');
@@ -964,7 +964,7 @@ function updateBoseFullPaymentBox(storeData, grandTotal) {
     amountEl.innerHTML = (Math.round((parseFloat(grandTotal) || 0) * 100) / 100).toFixed(2) + " <small>EGP</small>";
     // 🐛 قبل كده الكود ده كان بيكتب على textContent للعنوان كله، وده كان بيمسح زرار ⓘ (الشرح) اللي جواه
     // كل مرة الفاتورة تتحدث. دلوقتي العنوان span لوحده والزرار برّاه فمش بيتمسح.
-    if (labelEl) labelEl.textContent = "المبلغ الكامل المطلوب تحويله الآن لتأكيد الحجز";
+    if (labelEl) labelEl.textContent = "المبلغ المطلوب تحويله";
     // 💵 نفس المبلغ بيتعرض كمان في صندوق "الدفع عند الاستلام" (المطلوب تحصيله وقت التسليم)
     const codAmountEl = document.getElementById("bose-cod-amount");
     if (codAmountEl) codAmountEl.innerHTML = (Math.round((parseFloat(grandTotal) || 0) * 100) / 100).toFixed(2) + " <small>EGP</small>";
