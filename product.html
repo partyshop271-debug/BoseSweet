@@ -49,7 +49,7 @@
         .bose-product-page-skeleton .skeleton-pulse-node { border-radius: var(--bose-radius-md); }
     </style>
 
-    <script src="js/supabase-client.js?v=2027_production_v43.0" defer></script>
+    <script src="js/supabase-client.js?v=2027_production_v43.1" defer></script>
     <script src="js/push-notifications.js?v=1.0" defer></script>
     <script src="js/favorites-engine.js?v=2026_production_v38.0" defer></script>
     <script src="js/season-dates.js?v=2026_production_v1.0" defer></script>
@@ -124,22 +124,54 @@ document.addEventListener("DOMContentLoaded", function () {
         notFoundEl.style.display = 'block';
     }
 
-    // 🛡️👑 [إصلاح جذري - "الصنف ده مش متوفر" غلط لصنف موجود فعلاً]: الموقع بيخزّن
-    // نسخة كاملة من الكتالوج في localStorage لسرعة العرض (لحد ساعتين)، وصفحة
-    // المنتج بتقرأها مباشرة زي أي صفحة تانية. المشكلة: لو النسخة المحفوظة دي مش
-    // شايفة الصنف لأي سبب (كانت لسه مبتزامنتش مع آخر تحديث، أو مشكلة شبكة لحظية
-    // وقت أول تحميل)، الصفحة كانت بتستسلم فورًا وتقول "الصنف مش متوفر" من غير ما
-    // تتأكد من قاعدة البيانات الحية نفسها أولاً - فعميلة بتضغط "تفاصيل" لصنف
-    // شغال فعليًا وتتفاجئ برسالة خطأ غلط. دلوقتي قبل ما نستسلم، بنجرب مرة واحدة
-    // نجيب أحدث نسخة حقيقية من قاعدة البيانات (نفس آلية ?refresh=1) ونتأكد تاني
-    // قبل ما نعرض "مش متوفر" فعلاً.
+    // 🛡️👑👑 [إصلاح جذري نهائي - "الصنف ده مش متوفر" غلط لصنف موجود وشغال فعلاً]:
+    // الموقع بيخزّن نسخة كاملة من الكتالوج في localStorage لسرعة العرض (لحد
+    // ساعتين)، وصفحة المنتج بتقرأها مباشرة زي أي صفحة تانية. المشكلة: لو النسخة
+    // المحفوظة دي مش شايفة الصنف لأي سبب (كانت لسه مبتزامنتش مع آخر تحديث، أو
+    // مشكلة شبكة لحظية وقت أول تحميل)، الصفحة كانت بتستسلم فورًا وتقول "الصنف
+    // مش متوفر" من غير ما تتأكد من قاعدة البيانات الحية نفسها أولاً - فعميلة
+    // بتضغط "تفاصيل" لصنف شغال فعليًا (زي "تفاصيل ومراجعات النكهة دي" في صفحة
+    // فئة السينابون/الدوناتس) وتتفاجئ برسالة خطأ غلط، وباستمرار لأن أول محاولة
+    // إصلاح (تحميل بيانات المتجر *الكاملة* من جديد - كتالوج + فئات + عروض +
+    // مناطق شحن مع بعض) كانت هي نفسها بطيئة/معرّضة للفشل الجزئي، فكانت بترجع
+    // بنفس النتيجة الغلط غالبًا.
+    //
+    // 🎯 الإصلاح الحقيقي: أول محاولة إنقاذ دلوقتي طلب *خفيف ومباشر* لنفس الصنف
+    // بس (loadBoseSingleProductBySlug - عمود واحد id=eq.<slug>)، مش الكتالوج
+    // كله - أسرع بكتير وأقل عرضة للفشل. لو نجحت، بندمج الصنف في أي بيانات متجر
+    // عندنا فعلاً ونعرض الصفحة فورًا. لو فشلت (مشكلة شبكة حقيقية مثلاً)، بنرجع
+    // للخطة البديلة القديمة (تحميل الكتالوج كامل) كشبكة أمان أخيرة قبل ما نعرض
+    // "مش متوفر" فعلاً.
     let didRetryFresh = false;
     async function tryFreshReloadThenNotFound() {
-        if (didRetryFresh || !window.BoseSupabase || typeof window.BoseSupabase.loadBoseStoreDataFromSupabase !== 'function') {
+        if (didRetryFresh) { showNotFound(); return; }
+        didRetryFresh = true;
+
+        // 🎯 المحاولة الأولى (سريعة وخفيفة): الصنف المطلوب بس مباشرة.
+        try {
+            if (window.BoseSupabase && typeof window.BoseSupabase.loadBoseSingleProductBySlug === 'function') {
+                const freshProduct = await window.BoseSupabase.loadBoseSingleProductBySlug(slug);
+                if (freshProduct) {
+                    const baseData = (window.BoseStoreData && window.BoseStoreData.products)
+                        ? window.BoseStoreData
+                        : { products: [], categories: [], store: {} };
+                    const mergedProducts = (baseData.products || []).filter(function (p) { return p.id !== freshProduct.id; });
+                    mergedProducts.push(freshProduct);
+                    const mergedData = Object.assign({}, baseData, { products: mergedProducts });
+                    window.BoseStoreData = mergedData;
+                    init(mergedData);
+                    return;
+                }
+            }
+        } catch (e) { /* الطلب الخفيف فشل (شبكة مثلاً) - نجرب الخطة البديلة تحت */ }
+
+        // 🛡️ المحاولة الثانية (شبكة أمان أخيرة): تحميل بيانات المتجر كاملة،
+        // زي ما كان قبل كده - بتفيد لو الصنف اتحذف فعلاً (هتتأكد بشكل نهائي)
+        // أو لو في تعديل تاني (فئة/سعر) محتاج يتزامن مع الصفحة برضه.
+        if (!window.BoseSupabase || typeof window.BoseSupabase.loadBoseStoreDataFromSupabase !== 'function') {
             showNotFound();
             return;
         }
-        didRetryFresh = true;
         try {
             const freshData = await window.BoseSupabase.loadBoseStoreDataFromSupabase();
             if (freshData && freshData.products) {
