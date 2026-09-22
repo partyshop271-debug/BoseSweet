@@ -806,13 +806,18 @@
             }
 
             // الاستماع والربط الآمن مع قاعدة البيانات المركزية
+            // 🛡️👑 [إصلاح - الصفحة ممكن تفضل واقفة على نسخة قديمة]: لو البيانات
+            // كانت جاهزة فورًا من الكاش المحلي (bose_cached_store_data)، core-engine.js
+            // بيتحقق بهدوء في الخلفية من وجود تحديث حقيقي وبيبعت BoseDatabaseLoaded
+            // تاني لو لقى نسخة أحدث - لكن قبل كده كان مستمع الحدث ده بيتسجل بس لو
+            // البيانات مكنتش جاهزة من الأصل، فأي تحديث خلفي صامت كان بيضيع تمامًا
+            // ومفيش أي إعادة رسم تحصل. دلوقتي بنسجل المستمع دايمًا.
             if (window.BoseStoreData) {
                 initCategoryRendering(window.BoseStoreData);
-            } else {
-                document.addEventListener("BoseDatabaseLoaded", function(e) {
-                    initCategoryRendering(e.detail);
-                });
             }
+            document.addEventListener("BoseDatabaseLoaded", function(e) {
+                initCategoryRendering(e.detail);
+            });
 
             function initCategoryRendering(siteData) {
                 if (!siteData || !siteData.homepage || !siteData.products) {
@@ -1219,6 +1224,22 @@
 
                     let selectedFilling = defaultFilling;
                     const qtyValueEl = card.querySelector('.bose-box-qty-value');
+
+                    // 🛡️ [استرجاع الاختيار عند إعادة الرسم]: renderBoxBuilderCards ممكن
+                    // تتنادى تاني (تحديث بيانات هادئ في الخلفية - راجع مستمع BoseDatabaseLoaded)
+                    // من غير ما تفقد العميلة اختياراتها اللي عملتها بالفعل في boxSelections.
+                    const existingSelectionKeys = Object.keys(boxSelections).filter(k => k.startsWith(`${product.id}::`));
+                    if (existingSelectionKeys.length) {
+                        const restored = boxSelections[existingSelectionKeys[0]];
+                        selectedFilling = restored.filling || defaultFilling;
+                        qtyValueEl.textContent = String(restored.qty);
+                        card.classList.add('has-selection');
+                        if (hasFillings) {
+                            card.querySelectorAll('.bose-box-filling-chip').forEach(c => {
+                                c.classList.toggle('active', c.getAttribute('data-filling') === selectedFilling);
+                            });
+                        }
+                    }
 
                     function currentKey() { return `${product.id}::${selectedFilling}`; }
                     function currentQty() { return (boxSelections[currentKey()] && boxSelections[currentKey()].qty) || 0; }

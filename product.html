@@ -124,10 +124,41 @@ document.addEventListener("DOMContentLoaded", function () {
         notFoundEl.style.display = 'block';
     }
 
+    // 🛡️👑 [إصلاح جذري - "الصنف ده مش متوفر" غلط لصنف موجود فعلاً]: الموقع بيخزّن
+    // نسخة كاملة من الكتالوج في localStorage لسرعة العرض (لحد ساعتين)، وصفحة
+    // المنتج بتقرأها مباشرة زي أي صفحة تانية. المشكلة: لو النسخة المحفوظة دي مش
+    // شايفة الصنف لأي سبب (كانت لسه مبتزامنتش مع آخر تحديث، أو مشكلة شبكة لحظية
+    // وقت أول تحميل)، الصفحة كانت بتستسلم فورًا وتقول "الصنف مش متوفر" من غير ما
+    // تتأكد من قاعدة البيانات الحية نفسها أولاً - فعميلة بتضغط "تفاصيل" لصنف
+    // شغال فعليًا وتتفاجئ برسالة خطأ غلط. دلوقتي قبل ما نستسلم، بنجرب مرة واحدة
+    // نجيب أحدث نسخة حقيقية من قاعدة البيانات (نفس آلية ?refresh=1) ونتأكد تاني
+    // قبل ما نعرض "مش متوفر" فعلاً.
+    let didRetryFresh = false;
+    async function tryFreshReloadThenNotFound() {
+        if (didRetryFresh || !window.BoseSupabase || typeof window.BoseSupabase.loadBoseStoreDataFromSupabase !== 'function') {
+            showNotFound();
+            return;
+        }
+        didRetryFresh = true;
+        try {
+            const freshData = await window.BoseSupabase.loadBoseStoreDataFromSupabase();
+            if (freshData && freshData.products) {
+                window.BoseStoreData = freshData;
+                try {
+                    localStorage.setItem('bose_cached_store_data', JSON.stringify(freshData));
+                    localStorage.setItem('bose_cached_store_time', String(Date.now()));
+                } catch (e) { /* مساحة التخزين ممتلئة أو محظورة - مش حرج، الصفحة هتشتغل بالبيانات الطازة برضه */ }
+                init(freshData);
+                return;
+            }
+        } catch (e) { /* الفحص الحي فشل هو كمان - نعرض "مش متوفر" فعلاً تحت */ }
+        showNotFound();
+    }
+
     function init(siteData) {
-        if (!slug || !siteData || !siteData.products) { showNotFound(); return; }
+        if (!slug || !siteData || !siteData.products) { tryFreshReloadThenNotFound(); return; }
         const product = siteData.products.find(function (p) { return p.slug === slug || p.id === slug; });
-        if (!product) { showNotFound(); return; }
+        if (!product) { tryFreshReloadThenNotFound(); return; }
 
         // 🛡️ منتجات المحاكي (تورت/ورد مخصص) معندهاش سعر أو تفاصيل ثابتة أصلاً -
         // بتوديها لمحاكيها المخصص مباشرة، مش لصفحة تفاصيل عادية (نفس القاعدة
