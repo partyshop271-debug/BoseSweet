@@ -508,6 +508,72 @@
         });
     }
 
+    /* ==================== فيديوهات احتياطية للتدوير التلقائي ==================== */
+    // 🔄 [تحديث تلقائي - 2026-09]: كل قسم فيديو بقى ليه "مجموعة" فيديوهات مرشّحة
+    // (homepage.videoPool.<key>) - نظام التدوير الشغال على السيرفر (Edge Function
+    // rotate-homepage-content) بيختار واحد منها عشوائي كل 3-4 أيام ويحطه في
+    // videoSections.<key> (نفس الحقل اللي الفورم فوق بيعدّل عليه يدوي). الفيديو
+    // المعروض حالياً بيتحسب تلقائيًا كمان جزء من مجموعة الاختيار، فمفيش داعي
+    // تتكرر إضافته يدوي هنا.
+
+    let videoPoolState = { symphony: [], excellence: [] };
+
+    function renderVideoPool(section) {
+        const e = window.BoseAdminUI.escapeHtml;
+        const container = document.getElementById(`video-${section.key}-pool-list`);
+        const items = videoPoolState[section.key] || [];
+
+        if (!items.length) {
+            container.innerHTML = `<p class="adm-order-item-meta" style="padding: 6px 2px;">مفيش فيديوهات احتياطية مضافة لسه - التدوير التلقائي هيفضل يعرض الفيديو الحالي بس لحد ما تضيفي غيره.</p>`;
+        } else {
+            container.innerHTML = items.map((item, idx) => `
+                <div class="adm-curated-item" data-idx="${idx}">
+                    <span class="adm-curated-item-thumb" style="display:flex;align-items:center;justify-content:center;background:var(--adm-bg-hover);"><i class="fa-solid fa-clapperboard"></i></span>
+                    <span class="adm-curated-item-title">${e(item.title)}</span>
+                    <div class="adm-curated-item-actions">
+                        <button type="button" class="adm-btn adm-btn-ghost adm-btn-icon" data-action="remove" title="إزالة من المجموعة">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                </div>`).join("");
+        }
+
+        container.querySelectorAll("[data-action='remove']").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                const idx = Number(btn.closest("[data-idx]").getAttribute("data-idx"));
+                videoPoolState[section.key].splice(idx, 1);
+                renderVideoPool(section);
+            });
+        });
+    }
+
+    function wireVideoPoolUpload(section) {
+        document.getElementById(`video-${section.key}-pool-input`).addEventListener("change", async (evt) => {
+            const file = evt.target.files && evt.target.files[0];
+            if (!file) return;
+            const label = document.getElementById(`video-${section.key}-pool-upload-label`);
+            const originalLabel = label.textContent;
+            try {
+                const publicId = await window.BoseAdminUI.uploadVideoToCloudinary(file, (percent) => {
+                    label.textContent = `جاري الرفع... ${percent}%`;
+                });
+                // بناخد العنوان والوصف الحاليين في الفورم كنسخة مبدئية للفيديو الجديد
+                // في المجموعة - تقدري تعدّليها بعدين لو حابة كل فيديو بعنوان مختلف
+                // بالتواصل المباشر مع الدعم الفني.
+                const title = document.getElementById(`video-${section.key}-title`).value.trim() || section.defaultTitle;
+                const description = document.getElementById(`video-${section.key}-description`).value.trim() || section.defaultDescription;
+                videoPoolState[section.key].push({ publicId, title, description });
+                renderVideoPool(section);
+                window.BoseAdminUI.showToast("تم إضافة الفيديو لمجموعة التدوير - متنسيش تحفظي التغييرات", "success");
+            } catch (err) {
+                window.BoseAdminUI.showToast("تعذر رفع الفيديو، تأكدي من الاتصال بالإنترنت وحاولي تاني", "error");
+            } finally {
+                label.textContent = originalLabel;
+                evt.target.value = "";
+            }
+        });
+    }
+
     /* ============================= الحفظ ============================= */
 
     /** بيبني سلايدر الفئات تلقائياً من جدول categories - مصدر وحيد، مفيش تكرار يدوي */
@@ -548,6 +614,11 @@
                     enabled: waterfallEnabled,
                 },
                 videoSections: Object.fromEntries(VIDEO_SECTIONS.map((section) => [section.key, readVideoForm(section)])),
+                videoPool: { ...videoPoolState },
+                rotation: {
+                    ...(homepageData.rotation || {}),
+                    enabled: document.getElementById("rotation-enabled").checked,
+                },
             };
 
             const updatedNavigation = {
@@ -613,6 +684,29 @@
             fillVideoForm(section);
             wireVideoUpload(section);
         });
+
+        // مجموعات الفيديوهات الاحتياطية للتدوير التلقائي
+        videoPoolState = {
+            symphony: [...(homepageData.videoPool?.symphony || [])],
+            excellence: [...(homepageData.videoPool?.excellence || [])],
+        };
+        VIDEO_SECTIONS.forEach((section) => {
+            renderVideoPool(section);
+            wireVideoPoolUpload(section);
+        });
+
+        // مفتاح تشغيل/إيقاف التحديث التلقائي العام
+        document.getElementById("rotation-enabled").checked = homepageData.rotation?.enabled !== false;
+        const lastRunEl = document.getElementById("rotation-last-run");
+        const formatAr = (iso) => new Date(iso).toLocaleString("ar-EG", { dateStyle: "medium", timeStyle: "short" });
+        const lastRunParts = [];
+        lastRunParts.push(homepageData.rotation?.lastRunAt
+            ? `آخر تحديث لأقسام الصفحة الرئيسية: ${formatAr(homepageData.rotation.lastRunAt)}`
+            : "لسه مفيش تحديث تلقائي لأقسام الصفحة الرئيسية اتنفّذ.");
+        lastRunParts.push(homepageData.rotation?.lastProductPhotoRotationAt
+            ? `آخر تدوير لصور المنتجات: ${formatAr(homepageData.rotation.lastProductPhotoRotationAt)}`
+            : "لسه مفيش تدوير لصور المنتجات اتنفّذ.");
+        lastRunEl.innerHTML = lastRunParts.join("<br>");
 
         // الشريط العلوي المتحرك
         // 🐛👑 [الافتراضي بقى 88 بدل 44 - أبطأ 50%]: لو الخانة دي شايلة رقم
