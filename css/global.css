@@ -891,7 +891,7 @@ img {
 
 .bose-toast-message[data-type="success"] { --bose-toast-accent: #D4AF37; --bose-toast-accent-dark: #7A5A16; --bose-toast-icon: '\2713'; }
 .bose-toast-message[data-type="error"]   { --bose-toast-accent: #A13A4A; --bose-toast-accent-dark: #6E2431; --bose-toast-icon: '\2715'; }
-.bose-toast-message[data-type="warning"] { --bose-toast-accent: #B9722E; --bose-toast-accent-dark: #7A4A1B; --bose-toast-icon: '!';     }
+.bose-toast-message[data-type="warning"] { --bose-toast-accent: #C88A76; --bose-toast-accent-dark: #8B4A3A; --bose-toast-icon: '!';     }
 .bose-toast-message[data-type="info"]    { --bose-toast-accent: #7A3355; --bose-toast-accent-dark: #4E1F37; --bose-toast-icon: '\24D8'; }
 
 .bose-toast-message.is-visible {
