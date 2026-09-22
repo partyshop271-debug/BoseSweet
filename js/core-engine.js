@@ -1050,7 +1050,7 @@
         const defaultSizeKey = (product.defaultSize && availableSizes.includes(product.defaultSize)) ? product.defaultSize : (availableSizes[0] || null);
 
         let sizeTabsHtml = '';
-        if (hasMultipleSizes) {
+        if (hasMultipleSizes && isDetailView) {
             sizeTabsHtml = `
                 <div class="bose-mini-size-note"><i class="fa-solid fa-circle-info"></i> متاح بأحجام متعددة، اختار اللي يناسبك:</div>
                 <div class="bose-card-size-tabs" role="group" aria-label="اختيار الحجم">
@@ -1081,7 +1081,15 @@
         // من لوحة التحكم (مثال: "دستة كاملة = 12 قطعة")، بيتعرض هنا دايماً وبشكل
         // واضح جنب السعر - مش مخفي جوه ⓘ اختياري - عشان دي حقيقة أساسية لازم كل
         // عميل يشوفها من غير ما يحتاج يكتشفها بنفسه.
-        const quantityNoteHtml = product.quantityNote
+        // 🍩🆕 [تبسيط كروت التصفح - سبتمبر 2026]: الملاحظة دي (وباقي التفاصيل تحت)
+        // كانت بتتعرض في كل مكان بيستخدم الكارت الموحد (الرئيسية/العروض/المفضلة/
+        // مقترحات السلة)، وده كان بيخلي ارتفاع الكروت يختلف بشكل كبير وغير منظم
+        // من منتج لمنتج (خصوصاً بعد إضافة اختيار الحشو للسينابون وملاحظة أقل حجز
+        // للدوناتس). دلوقتي التفاصيل دي كلها (حجم/حشو/كمية أقل/ملاحظة الكمية)
+        // بتتعرض بس في صفحة المنتج المستقلة (isDetailView) - كروت التصفح في أي
+        // مكان تاني بسيطة وموحدة الشكل دايماً: صورة + اسم + سعر + زرار عرض
+        // التفاصيل بس، وكل حاجة تانية تتحسم هناك.
+        const quantityNoteHtml = (product.quantityNote && isDetailView)
             ? `<div class="bose-qty-clarity-note"><i class="fa-solid fa-circle-info"></i><span>${window.escapeBoseHTML(product.quantityNote)}</span></div>`
             : '';
 
@@ -1092,7 +1100,7 @@
         // بتظهر على البوكسات اللي لوحدها بتحقق الحد (6 قطع في الوحدة).
         const orderRules = window.getBoseCategoryOrderRules(product.category);
         const piecesPerUnit = window.getBoseProductPiecesPerUnit(product);
-        const minQtyNoteHtml = (orderRules.minQty > 1 && piecesPerUnit < orderRules.minQty && !isUnavailable)
+        const minQtyNoteHtml = (orderRules.minQty > 1 && piecesPerUnit < orderRules.minQty && !isUnavailable && isDetailView)
             ? `<div class="bose-min-qty-note" role="note">
                    <strong>أقل حجز ${orderRules.minQty} قطع</strong>
                    <small>لازم تطلبي ${orderRules.minQty} قطع أو أكتر من ${window.escapeBoseHTML(orderRules.title)} عشان الطلب يكمل.</small>
@@ -1102,7 +1110,7 @@
         // 🧁 نفس شكل اختيار طريقة الدفع في الشيك أوت: كروت كبيرة، خط واضح، والمختار بيتلوّن.
         window.__boseFillingSeq = (window.__boseFillingSeq || 0) + 1;
         const fillingGroupName = `bose-filling-${window.__boseFillingSeq}`;
-        const fillingPickerHtml = defaultFilling
+        const fillingPickerHtml = (defaultFilling && isDetailView)
             ? `<div class="bose-filling-picker" role="radiogroup" aria-label="اختيار الحشو">
                    <div class="bose-filling-title">اختاري الحشو</div>
                    ${orderRules.fillings.map((/** @type {string} */ f) => `
@@ -1137,6 +1145,35 @@
         // بتتقرأ فوراً من localStorage عبر window.isBoseFavorite لو محرك المفضلة
         // متحمّل، وبتتحدّث حياً لحظة الضغط عبر window.toggleBoseFavorite.
         const favBtnHtml = buildBoseFavButtonHTML(product.id);
+
+        // 🍩🆕 [تبسيط كروت التصفح]: في وضع التصفح (مش صفحة المنتج) الكارت بيوّدي
+        // دايماً لصفحة المنتج المستقلة بدل أي تفاعل مباشر (زي كارت الميكس/المحاكي
+        // بالظبط) - عشان كل الكروت تفضل بنفس الارتفاع والشكل مهما كان المنتج.
+        const browseDetailUrl = `/product.html?slug=${encodeURIComponent(product.slug)}${defaultSizeKey ? '&size=' + encodeURIComponent(defaultSizeKey) : ''}`;
+
+        if (!isDetailView) {
+            return `
+                <div class="product-card-unified${hasDiscount ? ' bose-offer-card' : ''}${isUnavailable ? ' bose-unavailable-card' : ''}" data-id="${product.id}" data-slug="${encodeURIComponent(product.slug)}" data-selected-size="${defaultSizeKey || ''}" data-nav-url="${browseDetailUrl}" style="cursor:pointer;">
+                    ${discountBadgeHtml}
+                    ${isUnavailable ? `<div class="bose-offer-badge bose-stock-badge">نفدت الكمية</div>` : ''}
+                    ${favBtnHtml}
+                    ${buildBoseSeasonBadgeHTML(product)}
+                    <img src="${cardImg}" alt="${safeFlavor ? safeTitle + ' - ' + safeFlavor : safeTitle} | حلويات بوسي" class="product-card-img" width="300" height="300" loading="lazy" style="${isUnavailable ? 'filter:grayscale(60%); opacity:0.75;' : ''}" />
+                    <h3 class="product-card-title">${safeTitle}</h3>
+                    <span class="product-card-flavor-name">${safeFlavor}</span>
+                    <p class="product-card-desc">${safeDesc}</p>
+                    <button type="button" class="bose-desc-toggle-btn" hidden aria-expanded="false">اظهار المزيد</button>
+                    <div class="product-card-price">
+                        ${oldPriceHtml}
+                        <span>${hasMultipleSizes ? 'يبدأ من ' : ''}${Math.round(calculatedPrice)} جنيه</span>
+                        ${savingsHtml}
+                    </div>
+                    ${isUnavailable
+                        ? `<button class="btn-add-to-cart" disabled style="opacity:0.6; cursor:not-allowed;"><i class="fa-solid fa-ban"></i> نفدت الكمية حالياً</button>`
+                        : `<button class="btn-add-to-cart"><i class="fa-solid fa-eye"></i> عرض التفاصيل</button>`}
+                </div>
+            `;
+        }
 
         return `
             <div class="product-card-unified${hasDiscount ? ' bose-offer-card' : ''}${isUnavailable ? ' bose-unavailable-card' : ''}" data-id="${product.id}" data-slug="${encodeURIComponent(product.slug)}" data-selected-size="${defaultSizeKey || ''}" data-selected-filling="${window.escapeBoseHTML(defaultFilling)}" style="cursor:pointer;">
