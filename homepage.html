@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الواجهة الرئيسية | لوحة تحكم حلويات بوسي</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="manifest" href="/admin/admin.webmanifest">
+    <meta name="theme-color" content="#FF91A4">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="stylesheet" href="../vendor/fonts/cairo/cairo.css?v=2026_local_v1.0">
+    <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css?v=2026_local_v1.0" fetchpriority="high">
+
+    <link rel="stylesheet" href="css/admin-theme.css">
+    <link rel="stylesheet" href="css/admin-layout.css">
+</head>
+<body data-page="homepage">
+
+    <!-- شاشة تحميل تظهر لحد ما يتأكد من الجلسة -->
+    <div class="adm-auth-gate"><div class="adm-loading-spinner"></div></div>
+
+    <div class="adm-shell">
+        <div id="adm-shell-target"></div>
+
+        <main class="adm-main">
+            <div id="adm-topbar-target"></div>
+
+            <div class="adm-content" id="adm-page-content">
+
+                <div class="adm-card">
+                    <div class="adm-homepage-save-bar">
+                        <div>
+                            <h2>الواجهة الرئيسية</h2>
+                            <p>القوائم دي بتتحدّث على الموقع فور الحفظ. سلايدر الفئات بيتحدّث تلقائياً من صفحة الفئات.</p>
+                        </div>
+                        <button class="adm-btn adm-btn-primary" id="homepage-save-btn">
+                            <i class="fa-solid fa-floppy-disk"></i> حفظ كل التغييرات
+                        </button>
+                    </div>
+                </div>
+
+                <div id="homepage-loading" class="adm-card adm-mt-16"><div class="adm-loading-spinner"></div></div>
+
+                <div id="homepage-content" style="display: none;">
+
+                    <!-- 🔄 [تحديث تلقائي للصفحة الرئيسية]: مفتاح تشغيل/إيقاف عام لنظام التدوير
+                         التلقائي الشغال من طرف السيرفر كل 3-4 أيام (شلال المنتجات، الأكثر مبيعاً،
+                         وصل حديثاً، الفيديوهات، رسائل الشريط العلوي). القوائم والصور تحت في الصفحة
+                         دي بتفضل هي "الحالة المعروضة دلوقتي" وبتتغيّر لوحدها لو المفتاح مفعّل - مش
+                         محتاجة تعدّليها يدوي إلا لو حابة تتحكمي شخصياً في اختيار معيّن. -->
+                    <div class="adm-card adm-mt-16" style="border-inline-start:4px solid var(--adm-pink);">
+                        <div class="adm-card-header">
+                            <div>
+                                <h2><i class="fa-solid fa-rotate"></i> التحديث التلقائي للصفحة الرئيسية</h2>
+                                <p>لما المفتاح ده مفعّل، السيرفر بيغيّر شلال المنتجات والأكثر مبيعاً ووصل حديثاً والفيديوهات ورسائل الشريط العلوي لوحده تلقائياً كل 3-4 أيام، من غير أي تدخل منك.</p>
+                            </div>
+                            <label class="adm-checkbox-label">
+                                <input type="checkbox" id="rotation-enabled">
+                                التحديث التلقائي مفعّل
+                            </label>
+                        </div>
+                        <p class="adm-hint" id="rotation-last-run"></p>
+                    </div>
+
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header">
+                            <div><h2>الأكثر مبيعاً</h2><p>المنتجات اللي بتظهر في قسم "الأكثر مبيعاً" بالصفحة الرئيسية</p></div>
+                        </div>
+                        <div class="adm-curated-list" id="list-most-selling"></div>
+                        <div class="adm-curated-add-row">
+                            <select class="adm-select" id="select-most-selling"></select>
+                        </div>
+                    </div>
+
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header">
+                            <div><h2>وصل حديثاً</h2><p>المنتجات الجديدة اللي بتتعرض في قسم "وصل حديثاً"</p></div>
+                        </div>
+                        <div class="adm-curated-list" id="list-new-arrivals"></div>
+                        <div class="adm-curated-add-row">
+                            <select class="adm-select" id="select-new-arrivals"></select>
+                        </div>
+                    </div>
+
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header">
+                            <div><h2>منتجاتنا</h2><p>قسم "منتجاتنا" العام بالصفحة الرئيسية</p></div>
+                        </div>
+                        <div class="adm-curated-list" id="list-our-products"></div>
+                        <div class="adm-curated-add-row">
+                            <select class="adm-select" id="select-our-products"></select>
+                        </div>
+                    </div>
+
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header">
+                            <div><h2>بانر محاكي التورت</h2><p>الكارت اللي بيوجّه العميل لمحاكي التورت</p></div>
+                        </div>
+                        <div class="adm-form-grid">
+                            <div class="adm-field">
+                                <label for="cake-title">العنوان</label>
+                                <input type="text" class="adm-input" id="cake-title">
+                            </div>
+                            <div class="adm-field">
+                                <label for="cake-cta">نص الزرار</label>
+                                <input type="text" class="adm-input" id="cake-cta">
+                            </div>
+                        </div>
+                        <div class="adm-field">
+                            <label for="cake-description">الوصف</label>
+                            <textarea class="adm-textarea" id="cake-description"></textarea>
+                        </div>
+                        <div class="adm-field">
+                            <label for="cake-target">رابط الوجهة (target)</label>
+                            <input type="text" class="adm-input" id="cake-target" placeholder="cake-builder.html">
+                        </div>
+                        <div class="adm-field">
+                            <label>الصورة</label>
+                            <div class="adm-images-grid">
+                                <div class="adm-image-thumb-wrap">
+                                    <img id="cake-image-preview" alt="" style="display:none;">
+                                </div>
+                            </div>
+                            <label class="adm-image-upload-btn" for="cake-image-input">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                                <span id="cake-upload-label">استبدال الصورة</span>
+                            </label>
+                            <input type="file" id="cake-image-input" accept="image/*" hidden>
+                        </div>
+                    </div>
+
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header">
+                            <div><h2>بانر محاكي الورد</h2><p>الكارت اللي بيوجّه العميل لمحاكي الورد</p></div>
+                        </div>
+                        <div class="adm-form-grid">
+                            <div class="adm-field">
+                                <label for="flower-title">العنوان</label>
+                                <input type="text" class="adm-input" id="flower-title">
+                            </div>
+                            <div class="adm-field">
+                                <label for="flower-cta">نص الزرار</label>
+                                <input type="text" class="adm-input" id="flower-cta">
+                            </div>
+                        </div>
+                        <div class="adm-field">
+                            <label for="flower-description">الوصف</label>
+                            <textarea class="adm-textarea" id="flower-description"></textarea>
+                        </div>
+                        <div class="adm-field">
+                            <label for="flower-target">رابط الوجهة (target)</label>
+                            <input type="text" class="adm-input" id="flower-target" placeholder="flower-builder.html">
+                        </div>
+                        <div class="adm-field">
+                            <label>الصورة</label>
+                            <div class="adm-images-grid">
+                                <div class="adm-image-thumb-wrap">
+                                    <img id="flower-image-preview" alt="" style="display:none;">
+                                </div>
+                            </div>
+                            <label class="adm-image-upload-btn" for="flower-image-input">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                                <span id="flower-upload-label">استبدال الصورة</span>
+                            </label>
+                            <input type="file" id="flower-image-input" accept="image/*" hidden>
+                        </div>
+                    </div>
+
+                    <!-- ============================= شلال المنتجات المتحرك ============================= -->
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header">
+                            <div><h2><i class="fa-solid fa-water"></i> شلال المنتجات المتحرك</h2><p>عمودا الصور اللي بيتحركوا باستمرار في الصفحة الرئيسية (فوق وتحت)</p></div>
+                            <label class="adm-checkbox-label">
+                                <input type="checkbox" id="waterfall-enabled">
+                                الحركة شغالة
+                            </label>
+                        </div>
+                        <div class="adm-field">
+                            <label for="waterfall-speed">سرعة الحركة (بالثانية)</label>
+                            <p class="adm-hint" style="margin-bottom:8px;">رقم أصغر = حركة أسرع. الافتراضي 57.2 ثانية.</p>
+                            <input type="number" step="0.1" min="10" max="200" class="adm-input" id="waterfall-speed" style="max-width:160px;">
+                        </div>
+
+                        <div class="adm-form-grid">
+                            <div>
+                                <h3 class="adm-sub-heading">العمود الأيمن (لأعلى)</h3>
+                                <div class="adm-curated-list" id="list-waterfall-left"></div>
+                                <!-- 🛡️ [إصلاح - الصور بقت روابط لصفحات المنتجات]: قبل كده كان فيه طريقة واحدة
+                                     بس لإضافة صورة (رابط مباشر أو رفع ملف)، ومفيهاش أي ربط بمنتج حقيقي - فكل
+                                     صور الشلال كانت بتظهر في الرئيسية من غير أي رابط تضغطي عليه. دلوقتي أول
+                                     وأهم طريقة هي اختيار منتج من القائمة: بتاخد صورته الحقيقية تلقائيًا وتربطها
+                                     بصفحته في نفس الوقت - مفيش احتمال إن الصورة والرابط يبقوا متعارضين. -->
+                                <div class="adm-curated-add-row">
+                                    <select class="adm-select" id="waterfall-left-product-select"></select>
+                                    <button type="button" class="adm-btn adm-btn-primary adm-btn-sm" id="waterfall-left-add-product-btn">
+                                        <i class="fa-solid fa-link"></i> إضافة كرابط منتج
+                                    </button>
+                                </div>
+                                <!-- 🧹 [2.2 تبسيط]: طريقتا الرابط المباشر والرفع من الجهاز نادرتا الاستخدام
+                                     (الطريقة الموصى بها هي اختيار منتج فوق) - اتلمّوا جوه قائمة قابلة للطي
+                                     بدل ما يظهروا مفتوحين طول الوقت جنب بعض. -->
+                                <details class="adm-collapsible-methods">
+                                    <summary>طرق إضافة أخرى (رابط صورة مباشر أو رفع من الجهاز)</summary>
+                                    <p class="adm-hint" style="margin: 10px 0 4px;">أضيفي صورة تزيينية من غير رابط (مش هتبقى قابلة للضغط):</p>
+                                    <div class="adm-curated-add-row">
+                                        <input type="text" class="adm-input" id="waterfall-left-url-input" placeholder="الصقي رابط صورة مباشر هنا...">
+                                        <button type="button" class="adm-btn adm-btn-outline adm-btn-sm" id="waterfall-left-add-url-btn">
+                                            <i class="fa-solid fa-plus"></i> إضافة
+                                        </button>
+                                    </div>
+                                    <label class="adm-image-upload-btn adm-mt-8" for="waterfall-left-image-input">
+                                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                                        <span id="waterfall-left-upload-label">أو ارفعي صورة من جهازك</span>
+                                    </label>
+                                    <input type="file" id="waterfall-left-image-input" accept="image/*" hidden>
+                                </details>
+                            </div>
+                            <div>
+                                <h3 class="adm-sub-heading">العمود الأيسر (لأسفل)</h3>
+                                <div class="adm-curated-list" id="list-waterfall-right"></div>
+                                <div class="adm-curated-add-row">
+                                    <select class="adm-select" id="waterfall-right-product-select"></select>
+                                    <button type="button" class="adm-btn adm-btn-primary adm-btn-sm" id="waterfall-right-add-product-btn">
+                                        <i class="fa-solid fa-link"></i> إضافة كرابط منتج
+                                    </button>
+                                </div>
+                                <details class="adm-collapsible-methods">
+                                    <summary>طرق إضافة أخرى (رابط صورة مباشر أو رفع من الجهاز)</summary>
+                                    <p class="adm-hint" style="margin: 10px 0 4px;">أضيفي صورة تزيينية من غير رابط (مش هتبقى قابلة للضغط):</p>
+                                    <div class="adm-curated-add-row">
+                                        <input type="text" class="adm-input" id="waterfall-right-url-input" placeholder="الصقي رابط صورة مباشر هنا...">
+                                        <button type="button" class="adm-btn adm-btn-outline adm-btn-sm" id="waterfall-right-add-url-btn">
+                                            <i class="fa-solid fa-plus"></i> إضافة
+                                        </button>
+                                    </div>
+                                    <label class="adm-image-upload-btn adm-mt-8" for="waterfall-right-image-input">
+                                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                                        <span id="waterfall-right-upload-label">أو ارفعي صورة من جهازك</span>
+                                    </label>
+                                    <input type="file" id="waterfall-right-image-input" accept="image/*" hidden>
+                                </details>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ============================= الأقسام اللي فيها فيديوهات ============================= -->
+                    <!-- 🎥 [2026-08-23]: قسمي فيديو الصفحة الرئيسية ("سيمفونية الطعم" و"عقد من
+                         الإتقان") كانا Hardcoded بالكامل في كود الموقع (الفيديو والعنوان والوصف)
+                         - محتاجة تدخلي الكود عشان تغيّري أي فيديو. دلوقتي بيتاداروا زي الصور
+                         بالظبط من هنا: رفع مباشر من جهازك أو الكاميرا، مع تحسين تلقائي للجودة
+                         واستهلاك البيانات وقت العرض (نفس مبدأ الصور بالظبط: أعلى جودة ممكنة بأقل
+                         حجم نقل، عن طريق معايير Cloudinary الرسمية q_auto/f_auto). -->
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header">
+                            <div><h2><i class="fa-solid fa-video"></i> الأقسام اللي فيها فيديوهات</h2><p>فيديوهات الصفحة الرئيسية - بترفع بنفس سهولة الصور، وبتتحسّن تلقائيًا وقت العرض (أعلى جودة بأقل استهلاك بيانات ممكن)</p></div>
+                        </div>
+
+                        <div class="adm-field">
+                            <h3 class="adm-sub-heading">سيمفونية الطعم</h3>
+                            <div class="adm-form-grid">
+                                <div class="adm-field">
+                                    <label for="video-symphony-title">العنوان</label>
+                                    <input type="text" class="adm-input" id="video-symphony-title">
+                                </div>
+                            </div>
+                            <div class="adm-field">
+                                <label for="video-symphony-description">الوصف</label>
+                                <textarea class="adm-textarea" id="video-symphony-description"></textarea>
+                            </div>
+                            <div class="adm-field">
+                                <label>الفيديو الحالي</label>
+                                <video id="video-symphony-preview" class="adm-video-preview-thumb" muted loop playsinline></video>
+                                <label class="adm-image-upload-btn adm-mt-8" for="video-symphony-input">
+                                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                                    <span id="video-symphony-upload-label">استبدال الفيديو</span>
+                                </label>
+                                <input type="file" id="video-symphony-input" accept="video/*" hidden>
+                            </div>
+
+                            <!-- 🔄 [تدوير تلقائي - فيديوهات احتياطية]: أي فيديو هنا بينضم لمجموعة
+                                 القسم ده، ونظام التحديث التلقائي (كل 3-4 أيام) بيختار واحد منها عشوائي
+                                 بدل ما يفضل الفيديو المعروض فوق ثابت للأبد. -->
+                            <div class="adm-field adm-mt-16" style="border-top:1px dashed var(--adm-border); padding-top:16px;">
+                                <label>فيديوهات احتياطية للتدوير التلقائي</label>
+                                <p class="adm-hint">أي فيديو ترفعيه هنا بينضم لمجموعة قسم "سيمفونية الطعم"، والتحديث التلقائي هيختار واحد منهم عشوائي كل دورة (الفيديو المعروض فوق دلوقتي بيدخل هو كمان ضمن الاختيار تلقائي).</p>
+                                <div class="adm-curated-list" id="video-symphony-pool-list"></div>
+                                <label class="adm-image-upload-btn adm-mt-8" for="video-symphony-pool-input">
+                                    <i class="fa-solid fa-plus"></i>
+                                    <span id="video-symphony-pool-upload-label">إضافة فيديو للمجموعة</span>
+                                </label>
+                                <input type="file" id="video-symphony-pool-input" accept="video/*" hidden>
+                            </div>
+                        </div>
+
+                        <div class="adm-field adm-mt-16" style="border-top:1px solid var(--adm-border); padding-top:16px;">
+                            <h3 class="adm-sub-heading">عقد من الإتقان</h3>
+                            <div class="adm-form-grid">
+                                <div class="adm-field">
+                                    <label for="video-excellence-title">العنوان</label>
+                                    <input type="text" class="adm-input" id="video-excellence-title">
+                                </div>
+                            </div>
+                            <div class="adm-field">
+                                <label for="video-excellence-description">الوصف</label>
+                                <textarea class="adm-textarea" id="video-excellence-description"></textarea>
+                            </div>
+                            <div class="adm-field">
+                                <label>الفيديو الحالي</label>
+                                <video id="video-excellence-preview" class="adm-video-preview-thumb" muted loop playsinline></video>
+                                <label class="adm-image-upload-btn adm-mt-8" for="video-excellence-input">
+                                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                                    <span id="video-excellence-upload-label">استبدال الفيديو</span>
+                                </label>
+                                <input type="file" id="video-excellence-input" accept="video/*" hidden>
+                            </div>
+
+                            <div class="adm-field adm-mt-16" style="border-top:1px dashed var(--adm-border); padding-top:16px;">
+                                <label>فيديوهات احتياطية للتدوير التلقائي</label>
+                                <p class="adm-hint">أي فيديو ترفعيه هنا بينضم لمجموعة قسم "عقد من الإتقان"، والتحديث التلقائي هيختار واحد منهم عشوائي كل دورة (الفيديو المعروض فوق دلوقتي بيدخل هو كمان ضمن الاختيار تلقائي).</p>
+                                <div class="adm-curated-list" id="video-excellence-pool-list"></div>
+                                <label class="adm-image-upload-btn adm-mt-8" for="video-excellence-pool-input">
+                                    <i class="fa-solid fa-plus"></i>
+                                    <span id="video-excellence-pool-upload-label">إضافة فيديو للمجموعة</span>
+                                </label>
+                                <input type="file" id="video-excellence-pool-input" accept="video/*" hidden>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ============================= الشريط العلوي المتحرك ============================= -->
+                    <div class="adm-card adm-mt-16">
+                        <div class="adm-card-header">
+                            <div><h2><i class="fa-solid fa-bullhorn"></i> الشريط العلوي المتحرك (الإعلانات)</h2><p>الشريط اللي بيظهر أعلى الهيدر في كل صفحات الموقع</p></div>
+                            <label class="adm-checkbox-label">
+                                <input type="checkbox" id="topbar-enabled">
+                                الشريط ظاهر ومُفعّل
+                            </label>
+                        </div>
+                        <p class="adm-hint" style="margin:-6px 0 12px;">لو اتقفل، الشريط بيختفي بالكامل من كل صفحات الموقع (مش بس بيوقف عن الحركة) والهيدر بيرتفع يملأ المكان تلقائيًا.</p>
+                        <div class="adm-field">
+                            <label for="topbar-speed">سرعة الحركة (بالثانية)</label>
+                            <p class="adm-hint" style="margin-bottom:8px;">رقم أصغر = حركة أسرع. الافتراضي 88 ثانية.</p>
+                            <input type="number" step="0.5" min="10" max="120" class="adm-input" id="topbar-speed" style="max-width:160px;">
+                        </div>
+
+                        <div class="adm-field">
+                            <label for="topbar-font-size">حجم خط الشريط (بكسل)</label>
+                            <p class="adm-hint" style="margin-bottom:8px;">حجم نص الرسائل، وارتفاع الشريط نفسه بيتظبط تلقائيًا معاه. الافتراضي 18px.</p>
+                            <input type="number" step="1" min="12" max="26" class="adm-input" id="topbar-font-size" style="max-width:160px;">
+                        </div>
+
+                        <div class="adm-field">
+                            <label>الرسائل الحالية في الشريط</label>
+                            <div class="adm-curated-list" id="list-topbar-messages"></div>
+                            <div class="adm-curated-add-row">
+                                <input type="text" class="adm-input" id="topbar-new-message" placeholder="اكتبي رسالة جديدة هنا...">
+                                <button type="button" class="adm-btn adm-btn-outline adm-btn-sm" id="topbar-add-message-btn">
+                                    <i class="fa-solid fa-plus"></i> إضافة
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="adm-field">
+                            <label>نصوص مقترحة (اضغطي لإضافة أي نص للشريط)</label>
+                            <p class="adm-hint" style="margin-bottom:10px;">مجموعة رسائل جاهزة مرتبطة بمنتجات وخدمات الموقع فعلاً.</p>
+                            <div class="adm-suggestion-chips" id="topbar-suggestions"></div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="../vendor/supabase-js/supabase.js"></script>
+    <script src="../js/phone-utils.js"></script>
+    <script src="js/admin-data.js"></script>
+    <script src="js/admin-auth-guard.js"></script>
+    <script src="js/admin-ui-utils.js"></script>
+    <script src="js/admin-shell.js"></script>
+    <script src="js/pages/homepage-page.js"></script>
+</body>
+</html>
