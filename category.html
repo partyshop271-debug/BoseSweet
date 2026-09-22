@@ -1203,6 +1203,37 @@
                     const card = document.createElement('div');
                     card.className = 'product-card-unified bose-box-card';
                     card.dataset.productId = product.id;
+                    // 🛡️👑 [إصلاح جذري - "الصنف مش متوفر" بيظهر مع كل ضغطة في كروت البوكس]:
+                    // كارت .product-card-unified مربوط بمستمع عام واحد على مستوى الصفحة
+                    // كلها (core-engine.js، البند رقم 8: "الكارت الموحد القياسي") بيودّي
+                    // لصفحة تفاصيل المنتج (product.html) لو ضغطتِ في أي حتة من الكارت مش
+                    // مستثناة صراحة (زرار الإضافة/عداد الكمية/تبويب الحجم/منتقي الحشو
+                    // القديم/زرار المفضلة). كروت البوكس دي (السينابون/الدوناتس بالحد
+                    // الأدنى) نوع جديد كليًا اتبني في جلسة تانية، وبتستخدم أسماء كلاسات
+                    // مختلفة تمامًا (bose-box-qty-row / bose-box-plus / bose-box-minus /
+                    // bose-box-fillings / bose-box-filling-chip) - مفيش ولا واحد منهم في
+                    // قائمة الاستثناءات القديمة دي، وأزرارها (+/-/الحشو) كمان مكنتش بتوقف
+                    // انتشار الحدث (event.stopPropagation) بنفسها. النتيجة: أي ضغطة جوه
+                    // الكارت (حتى + العادي) كانت بتتسرب لغاية المستمع العام، يلاقي الكارت
+                    // ده "كارت قياسي" ويحاول يوديك لصفحة تفاصيله - لكن الكارت ده أصلاً
+                    // معندوش data-slug (بس data-productId)، فبيبني رابط ناقص
+                    // "product.html?slug=" فاضي، وده بالظبط اللي بيطلع منه "الصنف ده مش
+                    // متوفر حالياً أو الرابط قديم". على الشبكة البطيئة، الملاحظة بتفضل
+                    // متأخرة شوية (لحد ما المتصفح يجيب الصفحة الجديدة فعليًا) فكانت بتبان
+                    // للعميلة إنها بتضغط عادي كذا مرة قبل ما الخطأ يظهر فجأة - مش حادثة
+                    // منفصلة، هو نفس الخطأ بيتراكم مع كل ضغطة من غير ما حد يلاحظه فورًا.
+                    // الحل الجذري (مش مجرد ترقيع الاستثناءات - عشان مفيش ضمان إن حد
+                    // معدلش المستمع العام تاني في المستقبل من غير ما يفتكر الكارت ده):
+                    // (1) وقف انتشار أي ضغطة جوه الكارت ده *من مصدرها* بمرحلة الالتقاط
+                    // (capture) قبل ما توصل حتى لعنصر الكارت نفسه - الكارت ده بيدير كل
+                    // تفاعلاته بنفسه بالكامل (زرار+/-/الحشو كل واحد عنده مستمعه الخاص)
+                    // فمش محتاج يوصل لأي حد بره نفسه أصلاً. (2) شبكة أمان إضافية: حطينا
+                    // data-slug صح برضه (نفس الحقل اللي أي كارت قياسي تاني بيعتمد عليه)
+                    // عشان لو حد ضاف مستقبلاً عنصر جديد جوه الكارت ده من غير ما يربط له
+                    // مستمع خاص، أسوأ سيناريو هيحصل هو التنقل الصحيح لصفحة المنتج الحقيقي
+                    // - مش رسالة "غير متوفر" مكسورة.
+                    card.dataset.slug = encodeURIComponent(product.slug);
+                    card.addEventListener('click', function (e) { e.stopPropagation(); }, true);
 
                     const fillingsHtml = hasFillings ? `
                         <div class="bose-box-fillings" role="radiogroup" aria-label="اختيار الحشو">
@@ -1216,9 +1247,9 @@
                         <div class="product-card-price"><span>${Math.round(price)} ${globalStoreCurrency}</span></div>
                         ${fillingsHtml}
                         <div class="bose-box-qty-row">
-                            <button type="button" class="bose-internal-qty-btn bose-box-minus" aria-label="تقليل">−</button>
-                            <span class="bose-box-qty-value">0</span>
                             <button type="button" class="bose-internal-qty-btn bose-box-plus" aria-label="زيادة">+</button>
+                            <span class="bose-box-qty-value">0</span>
+                            <button type="button" class="bose-internal-qty-btn bose-box-minus" aria-label="تقليل">−</button>
                         </div>
                     `;
 
