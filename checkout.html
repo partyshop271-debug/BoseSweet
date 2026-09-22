@@ -505,20 +505,20 @@
                      القيمة بتتبعت للقاعدة كـ p_payment_method ('cod' | 'online') وبتتفحص هناك كمان. -->
                 <style>
                     #bose-payment-method-picker { margin-top: 18px; direction: rtl; text-align: right; font-family: 'Cairo'; color: #111111; }
-                    #bose-payment-method-picker .bose-pm-title { font-size: 1.15rem; font-weight: 800; margin: 0 0 10px; }
+                    #bose-payment-method-picker .bose-pm-title { font-size: 0.95rem; font-weight: 800; margin: 0 0 10px; }
                     #bose-payment-method-picker .bose-pm-option { display: flex; align-items: center; gap: 12px; padding: 14px 14px; margin: 0 0 10px; border: 1.5px solid rgba(var(--bose-pink-rgb), 0.55); border-radius: 14px; background: #FFFFFF; cursor: pointer; min-height: 64px; }
                     #bose-payment-method-picker .bose-pm-option.is-selected { border-color: #111111; box-shadow: 0 0 0 3px rgba(var(--bose-pink-rgb), 0.25); background: rgba(var(--bose-pink-rgb), 0.07); }
                     #bose-payment-method-picker .bose-pm-option input[type="radio"] { flex: 0 0 22px; width: 22px; height: 22px; margin: 0; accent-color: #111111; cursor: pointer; }
                     #bose-payment-method-picker .bose-pm-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-                    #bose-payment-method-picker .bose-pm-text strong { font-size: 1.05rem; font-weight: 800; line-height: 1.6; }
-                    #bose-payment-method-picker .bose-pm-text small { font-size: 0.9rem; line-height: 1.7; opacity: 0.85; }
+                    #bose-payment-method-picker .bose-pm-text strong { font-size: 0.9rem; font-weight: 800; line-height: 1.6; }
+                    #bose-payment-method-picker .bose-pm-text small { font-size: 0.8rem; line-height: 1.7; opacity: 0.85; }
                     #bose-cod-info-box { display: none; margin-top: 4px; padding: 16px; border-radius: 16px; background: rgba(var(--bose-pink-rgb), 0.07); border: 1.5px solid var(--bose-pink); direction: rtl; text-align: right; font-family: 'Cairo'; color: #111111; }
-                    #bose-cod-info-box .bose-cod-head { font-size: 1.1rem; font-weight: 800; margin: 0 0 8px; }
+                    #bose-cod-info-box .bose-cod-head { font-size: 0.92rem; font-weight: 800; margin: 0 0 8px; }
                     #bose-cod-info-box .bose-cod-amount-card { background: #FFFFFF; border: 2px dashed var(--bose-pink); border-radius: 14px; padding: 10px 14px; text-align: center; margin: 8px 0; }
-                    #bose-cod-info-box .bose-cod-amount-label { display: block; font-size: 0.95rem; font-weight: 700; }
-                    #bose-cod-info-box #bose-cod-amount { display: block; font-size: 2rem; font-weight: 800; line-height: 1.4; direction: ltr; }
-                    #bose-cod-info-box #bose-cod-amount small { font-size: 1rem; font-weight: 700; margin-inline-start: 6px; }
-                    #bose-cod-info-box ol { margin: 8px 0 0; padding: 0 22px 0 0; font-size: 0.95rem; line-height: 1.95; }
+                    #bose-cod-info-box .bose-cod-amount-label { display: block; font-size: 0.85rem; font-weight: 700; }
+                    #bose-cod-info-box #bose-cod-amount { display: block; font-size: 1.4rem; font-weight: 800; line-height: 1.4; direction: ltr; }
+                    #bose-cod-info-box #bose-cod-amount small { font-size: 0.85rem; font-weight: 700; margin-inline-start: 6px; }
+                    #bose-cod-info-box ol { margin: 8px 0 0; padding: 0 22px 0 0; font-size: 0.85rem; line-height: 1.95; }
                 </style>
                 <div id="bose-payment-method-picker" role="radiogroup" aria-label="طريقة الدفع">
                     <div class="bose-pm-title">طريقة الدفع</div>
@@ -546,9 +546,8 @@
                         <span id="bose-cod-amount">0 EGP</span>
                     </div>
                     <ol>
-                        <li>مفيش أي تحويل مطلوب منك دلوقتي، وكمّلي طلبك عادي.</li>
-                        <li>بعد ما تدوسي "تأكيد الطلب" طلبك بيتسجل عندنا <strong>فورًا</strong>، وبنتواصل معاكي لتأكيده.</li>
-                        <li>هتدفعي المبلغ كاش وقت ما تستلمي طلبك، من الفرع أو للمندوب عند التوصيل.</li>
+                        <li>مفيش أي تحويل مطلوب، كمّلي طلبك عادي.</li>
+                        <li>هتدفعي كاش وقت الاستلام، من الفرع أو للمندوب.</li>
                     </ol>
                 </div>
 
@@ -560,47 +559,46 @@
                      checkout-payment-sender-phone / err-...) اتحافظ عليها زي ما هي عشان cart-engine.js والجولة الإرشادية. -->
                 <style>
                     #bose-deposit-payment-box { margin-top: 16px; padding: 18px 16px; border-radius: 16px; background: rgba(var(--bose-pink-rgb), 0.07); border: 1.5px solid var(--bose-pink); direction: rtl; text-align: right; font-family: 'Cairo'; color: #111111; }
-                    #bose-deposit-payment-box .bose-pay-head { display: flex; align-items: center; gap: 8px; font-size: 1.15rem; font-weight: 800; margin: 0 0 4px; }
-                    #bose-deposit-payment-box .bose-pay-intro { margin: 0 0 16px; font-size: 0.95rem; line-height: 1.8; }
+                    #bose-deposit-payment-box .bose-pay-head { display: flex; align-items: center; gap: 8px; font-size: 0.95rem; font-weight: 800; margin: 0 0 4px; }
+                    #bose-deposit-payment-box .bose-pay-intro { margin: 0 0 16px; font-size: 0.85rem; line-height: 1.8; }
                     #bose-deposit-payment-box .bose-pay-step { display: flex; gap: 12px; align-items: flex-start; padding: 14px 0; border-top: 1px dashed rgba(var(--bose-pink-rgb), 0.55); }
-                    #bose-deposit-payment-box .bose-pay-num { flex: 0 0 34px; width: 34px; height: 34px; border-radius: 50%; background: #111111; color: #FFFFFF; font-weight: 800; font-size: 1.05rem; display: flex; align-items: center; justify-content: center; margin-top: 2px; }
+                    #bose-deposit-payment-box .bose-pay-num { flex: 0 0 30px; width: 30px; height: 30px; border-radius: 50%; background: #111111; color: #FFFFFF; font-weight: 800; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; margin-top: 2px; }
                     #bose-deposit-payment-box .bose-pay-body { flex: 1 1 auto; min-width: 0; }
-                    #bose-deposit-payment-box .bose-pay-step-title { font-size: 1.05rem; font-weight: 800; line-height: 1.7; margin: 0 0 8px; display: block; }
-                    #bose-deposit-payment-box .bose-pay-hint { font-size: 0.92rem; line-height: 1.85; margin: 8px 0 0; }
+                    #bose-deposit-payment-box .bose-pay-step-title { font-size: 0.9rem; font-weight: 800; line-height: 1.7; margin: 0 0 8px; display: block; }
+                    #bose-deposit-payment-box .bose-pay-hint { font-size: 0.8rem; line-height: 1.85; margin: 8px 0 0; }
                     #bose-deposit-payment-box .bose-pay-value-card { background: #FFFFFF; border: 2px dashed var(--bose-pink); border-radius: 14px; padding: 12px 14px; text-align: center; }
-                    #bose-deposit-payment-box #bose-deposit-amount { display: block; font-size: 2rem; font-weight: 800; line-height: 1.3; color: #111111; direction: ltr; }
-                    #bose-deposit-payment-box #bose-deposit-amount small { font-size: 1rem; font-weight: 700; margin-inline-start: 6px; }
-                    #bose-deposit-payment-box #bose-deposit-phone-number { display: block; font-size: 2rem; font-weight: 800; line-height: 1.4; letter-spacing: 1.5px; color: #111111; direction: ltr; user-select: all; -webkit-user-select: all; word-break: keep-all; }
-                    #bose-deposit-payment-box #bose-copy-deposit-phone { width: 100%; margin-top: 10px; min-height: 48px; border: none; border-radius: 12px; background: #111111; color: #FFFFFF; font-family: 'Cairo'; font-size: 1.05rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+                    #bose-deposit-payment-box #bose-deposit-amount { display: block; font-size: 1.4rem; font-weight: 800; line-height: 1.3; color: #111111; direction: ltr; }
+                    #bose-deposit-payment-box #bose-deposit-amount small { font-size: 0.85rem; font-weight: 700; margin-inline-start: 6px; }
+                    #bose-deposit-payment-box #bose-deposit-phone-number { display: block; font-size: 1.4rem; font-weight: 800; line-height: 1.4; letter-spacing: 1.5px; color: #111111; direction: ltr; user-select: all; -webkit-user-select: all; word-break: keep-all; }
+                    #bose-deposit-payment-box #bose-copy-deposit-phone { width: 100%; margin-top: 10px; min-height: 48px; border: none; border-radius: 12px; background: #111111; color: #FFFFFF; font-family: 'Cairo'; font-size: 0.9rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
                     #bose-deposit-payment-box #bose-copy-deposit-phone.is-copied { background: #1E7B3A; }
                     #bose-deposit-payment-box .bose-pay-methods { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 10px; }
-                    #bose-deposit-payment-box .bose-pay-chip { background: #FFFFFF; border: 1.5px solid var(--bose-pink); border-radius: 999px; padding: 4px 14px; font-size: 0.95rem; font-weight: 800; }
-                    #bose-deposit-payment-box .input-group-node label { font-size: 1.05rem; font-weight: 800; line-height: 1.7; display: block; }
-                    #bose-deposit-payment-box #checkout-payment-sender-phone { height: 56px; font-size: 1.25rem; font-weight: 700; letter-spacing: 1px; border-width: 2px; }
+                    #bose-deposit-payment-box .bose-pay-chip { background: #FFFFFF; border: 1.5px solid var(--bose-pink); border-radius: 999px; padding: 4px 14px; font-size: 0.85rem; font-weight: 800; }
+                    #bose-deposit-payment-box .input-group-node label { font-size: 0.9rem; font-weight: 800; line-height: 1.7; display: block; }
+                    #bose-deposit-payment-box #checkout-payment-sender-phone { height: 50px; font-size: 1rem; font-weight: 700; letter-spacing: 1px; border-width: 2px; }
                     #bose-deposit-payment-box .bose-pay-next { margin-top: 6px; padding: 14px; border-radius: 14px; background: #FFFFFF; border: 1.5px solid rgba(var(--bose-pink-rgb), 0.7); }
-                    #bose-deposit-payment-box .bose-pay-next-title { font-size: 1rem; font-weight: 800; margin: 0 0 8px; }
-                    #bose-deposit-payment-box .bose-pay-next ol { margin: 0; padding: 0 22px 0 0; font-size: 0.95rem; line-height: 1.95; }
-                    #bose-deposit-payment-box .bose-pay-next li { margin-bottom: 2px; }
-                    #bose-deposit-payment-box .bose-pay-warn { margin: 12px 0 0; padding: 10px 12px; border-radius: 12px; background: #FFF6DA; border: 1px solid #F0D27A; font-size: 0.92rem; font-weight: 700; line-height: 1.85; }
+                    #bose-deposit-payment-box .bose-pay-next-title { font-size: 0.88rem; font-weight: 800; margin: 0 0 8px; }
+                    #bose-deposit-payment-box .bose-pay-next p { margin: 0; font-size: 0.85rem; line-height: 1.85; }
+                    #bose-deposit-payment-box .bose-pay-warn { margin: 12px 0 0; padding: 10px 12px; border-radius: 12px; background: #FFF6DA; border: 1px solid #F0D27A; font-size: 0.8rem; font-weight: 700; line-height: 1.85; }
                 </style>
                 <div id="bose-deposit-payment-box">
                     <div class="bose-pay-head">💳 إزاي أدفع؟ (3 خطوات بسيطة)</div>
-                    <p class="bose-pay-intro">الدفع بالتحويل، والمبلغ كله بيتحوّل قبل ما نبدأ نحضّر طلبك. اتبعي الخطوات دي بالترتيب:</p>
+                    <p class="bose-pay-intro">حوّلي المبلغ كامل قبل التحضير:</p>
 
                     <!-- الخطوة 1: المبلغ -->
                     <div class="bose-pay-step">
                         <span class="bose-pay-num" aria-hidden="true">1</span>
                         <div class="bose-pay-body">
                             <div class="bose-pay-step-title">
-                                <span id="bose-deposit-label">المبلغ الكامل المطلوب تحويله الآن لتأكيد الحجز</span>
+                                <span id="bose-deposit-label">المبلغ المطلوب تحويله</span>
                                 <button type="button" class="bose-info-badge-inline"
                                         data-bose-info-title="ليه لازم أحوّل المبلغ كله الآن؟"
-                                        data-bose-info-text="الدفع بالتحويل كامل قبل التحضير: حوّلي المبلغ الموضح كاش أو InstaPay على رقمنا، وبعدها اكتبي رقم المحفظة أو الهاتف اللي حوّلتي منه في الخانة اللي تحت، واضغطي تأكيد الطلب. طلبك بيتسجل فورًا بحالة (بانتظار مراجعة التحويل)، وأول ما نتأكد من وصول المبلغ بنتواصل معاكي لتأكيد الطلب وبنبدأ التحضير.">ⓘ</button>
+                                        data-bose-info-text="بنبدأ نحضّر طلبك بعد ما نتأكد إن المبلغ وصل.">ⓘ</button>
                             </div>
                             <div class="bose-pay-value-card">
                                 <span id="bose-deposit-amount">0 EGP</span>
                             </div>
-                            <p class="bose-pay-hint">حوّلي <strong>نفس المبلغ بالظبط</strong> (بما فيه الشحن لو موجود)، عشان نقدر نطابق التحويل بطلبك بسرعة.</p>
+                            <p class="bose-pay-hint">حوّلي <strong>نفس المبلغ بالظبط</strong>.</p>
                         </div>
                     </div>
 
@@ -617,7 +615,7 @@
                                 <span id="bose-deposit-phone-number">—</span>
                             </div>
                             <button type="button" id="bose-copy-deposit-phone" title="نسخ الرقم" aria-label="نسخ رقم التحويل"><i class="far fa-copy"></i> انسخي الرقم</button>
-                            <p class="bose-pay-hint">تقدري تحوّلي <strong>كاش</strong> أو عن طريق <strong>InstaPay</strong> على نفس الرقم. اضغطي "انسخي الرقم" وبعدين الصقيه في تطبيق التحويل بتاعك.</p>
+                            <p class="bose-pay-hint">كاش أو InstaPay على نفس الرقم.</p>
                         </div>
                     </div>
 
@@ -630,20 +628,16 @@
                                 <label for="checkout-payment-sender-phone">اكتبي رقم المحفظة أو الهاتف اللي حوّلتي منه <span class="required-indicator">*</span></label>
                                 <input type="tel" inputmode="numeric" id="checkout-payment-sender-phone" class="bose-field-capture" maxlength="20" autocomplete="off" placeholder="مثال: 01012345678" required aria-describedby="err-checkout-payment-sender-phone">
                                 <span class="bose-field-error-msg" id="err-checkout-payment-sender-phone"><i class="fa-solid fa-circle-exclamation"></i><span></span></span>
-                                <p class="bose-pay-hint" style="margin: 0;">اكتبي الرقم اللي عملتي منه التحويل فعلًا (رقم مصري بيبدأ بـ 01)، عشان نعرف نوصّل تحويلك بطلبك ونأكده.</p>
+                                <p class="bose-pay-hint" style="margin: 0;">الرقم اللي حوّلتي منه فعلًا.</p>
                             </div>
                         </div>
                     </div>
 
                     <!-- إيه اللي هيحصل بعد التأكيد -->
                     <div class="bose-pay-next">
-                        <p class="bose-pay-next-title">📌 بعد ما تدوسي "تأكيد الطلب" هيحصل إيه؟</p>
-                        <ol>
-                            <li>طلبك بيتسجل عندنا <strong>فورًا</strong> بحالة "بانتظار مراجعة التحويل".</li>
-                            <li>بنراجع ونتأكد إن المبلغ وصل لحسابنا.</li>
-                            <li>بنتواصل معاكي لتأكيد الطلب وبنبدأ التحضير، وتقدري تتابعي حالته من صفحة تتبع الطلب.</li>
-                        </ol>
-                        <p class="bose-pay-warn">⚠️ حوّلي المبلغ الأول، وبعدها اضغطي "تأكيد الطلب". وخلّي معاكي لقطة شاشة من التحويل لحد ما نأكد طلبك.</p>
+                        <p class="bose-pay-next-title">📌 بعد التأكيد</p>
+                        <p>طلبك اتسجل، وهنتواصل معاكي لتأكيده وبدء التحضير.</p>
+                        <p class="bose-pay-warn">⚠️ حوّلي المبلغ الأول، وبعدها اضغطي "تأكيد الطلب".</p>
                     </div>
                 </div>
 
