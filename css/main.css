@@ -3107,6 +3107,27 @@
 .bose-product-page-layout .product-card-unified .product-card-price span {
     font-size: 1.5rem;
 }
+/* 🛡️👑 [إصلاح - فراغ غريب بين الكمية والسعر في صفحة المنتج المستقلة]:
+   .product-card-qty-wrapper عندها margin-top:auto (مقصودة ومفيدة بس جوه شبكة
+   كروت متعددة بارتفاع متساوٍ، عشان تدفع العداد لتحت الكارت الطويل - راجع main.css
+   الأصلي). هنا في صفحة المنتج المستقلة الكارت لوحده (مفيش كروت جنبه تتساوى معاه)،
+   فالخاصية دي كانت بتاخد أي مساحة فاضية محسوبة من المتصفح (خصوصاً بعد إضافة
+   بلوك "أقل حجز" و/أو اختيار الحشو للفئات زي الدوناتس/السينابون) وتحطها كلها فوق
+   العداد كفراغ واحد كبير غير منتظم - نفس المشكلة مبينتش بوضوح في المنتجات التانية
+   لأنها مالهاش البلوكات الإضافية دي. الحل: تفضيل بسيط وثابت بدل "auto" هنا تحديداً.
+   وبالمناسبة بنوحّد كمان تباعد كل البلوكات الإضافية (الحشو/أقل حجز/الملاحظة) على
+   نفس الإيقاع (14px) بدل قيم متفرقة (4/6/8px) عشان الصفحة تبان متسقة ومرتبة. */
+.bose-product-page-layout .product-card-unified .product-card-qty-wrapper {
+    margin-top: 14px;
+}
+.bose-product-page-layout .product-card-unified .bose-min-qty-note,
+.bose-product-page-layout .product-card-unified .bose-filling-picker,
+.bose-product-page-layout .product-card-unified .bose-qty-clarity-note {
+    margin: 14px 0;
+}
+.bose-product-page-layout .product-card-unified .product-card-desc {
+    margin-bottom: 14px;
+}
 .bose-product-page-section-divider {
     border: none;
     border-top: 1px dashed var(--bose-pink);
