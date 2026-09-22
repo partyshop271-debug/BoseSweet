@@ -122,6 +122,12 @@
             highlights: p.highlights || [],
             builderType: p.builder_type,
             customBuilderUrl: p.custom_builder_url,
+            // 🔗 [تفعيل عمود موجود بقاعدة البيانات لكن كان غير مستخدم خالص]: variant_group_id
+            // بيربط أحجام/نسخ نفس الصنف ببعض (زي الديسباسيتو: مثلث/طاجن/حجم عائلي لنفس
+            // النكهة) - كان موجود كعمود جاهز بس محدش كان بيقرأه هنا فمفيش أي صفحة قدرت
+            // تستخدمه. دلوقتي بيوصل للواجهة عشان تبويبات الحجم في صفحة الفئة تقدر
+            // تجمّع/تفلتر صح (راجع category.html).
+            variantGroupId: p.variant_group_id || null,
             searchTerms: p.search_terms || [],
             featured: p.is_featured,
             rating: p.rating,
