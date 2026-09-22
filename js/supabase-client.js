@@ -65,6 +65,72 @@
     }
 
     /**
+     * 🧩 [استُخرجت من loadBoseStoreDataFromSupabase - راجع loadBoseSingleProductBySlug
+     * تحت لسبب الفصل]: بتحوّل صف منتج خام من جدول products (شكل قاعدة البيانات:
+     * category_id/flavor_name/old_price/...) لنفس شكل الكائن المستخدم في كل
+     * الواجهة (category/product.js/core-engine.js: category/flavorName/oldPrice/...).
+     * 🛡️ [أمان الشكل]: oldPrice/reviews/layout مضافين هنا دفاعياً - لو الأعمدة دي
+     * مش موجودة في جدول products لسه، بترجع undefined عادي زي ما كانت، ومفيش
+     * أي كسر. اللي بيحصل فعلياً هو إن قسم العروض (offers) هيفضل فاضي لحد ما
+     * الأعمدة دي تتضاف وتتملى من لوحة التحكم - مش هيحصل خطأ في الكونسول.
+     * @param {Object} p - صف خام من جدول products
+     */
+    function mapBoseProductRow(p) {
+        return {
+            id: p.id,
+            slug: p.id,
+            category: p.category_id,
+            title: p.title,
+            flavorName: p.flavor_name,
+            flavorDesc: p.flavor_desc,
+            description: p.description,
+            layout: p.layout || "grid-card",
+            images: p.images || [],
+            price: p.price,
+            oldPrice: p.old_price || null,
+            basePrice: p.base_price,
+            prices: p.prices || {},
+            defaultSize: p.default_size,
+            sizeDescriptions: p.size_descriptions || {},
+            sizeImages: p.size_images || {},
+            quantityNote: p.quantity_note || null,
+            highlights: p.highlights || [],
+            builderType: p.builder_type,
+            customBuilderUrl: p.custom_builder_url,
+            variantGroupId: p.variant_group_id || null,
+            searchTerms: p.search_terms || [],
+            featured: p.is_featured,
+            rating: p.rating,
+            reviews: p.seed_reviews || [],
+            isAvailable: p.is_available !== false,
+            faqs: p.faqs || [],
+            options: p.options || {},
+        };
+    }
+
+    /**
+     * 🎯🛡️👑 [إصلاح جذري - "الصنف ده مش متوفر" غلط لصنف موجود وشغال فعلاً]:
+     * صفحة المنتج (product.html) كانت بتعتمد بالكامل على تحميل بيانات المتجر
+     * *الكاملة* (كل المنتجات + الفئات + العروض + مناطق الشحن مع بعض في نفس
+     * الطلب - راجع loadBoseStoreDataFromSupabase) قبل ما تقدر تلاقي صنف واحد
+     * بس عايزة تعرضه. طلب بالحجم ده (خصوصاً مع كتالوج بيكبر) أبطأ وأكتر عرضة
+     * لأي تعطل جزئي (شبكة، تايم آوت، إلخ) من طلب صف واحد بسيط - ولو أي جزء
+     * منه اتعطل، الصفحة كلها كانت بترجع "الصنف ده مش متوفر أو الرابط قديم"
+     * حتى لو الصنف نفسه موجود ١٠٠٪ في القاعدة وشغال عادي في صفحة الفئة.
+     * الحل: طلب مباشر وخفيف جداً - عمود واحد بس (id=eq.<slug>) - بيرجع
+     * بالمنتج المطلوب بس، من غير ما يحتاج أي بيانات تانية من المتجر خالص.
+     * @param {string} slug - قيمة id/slug المنتج المطلوب (نفس القيمة)
+     * @returns {Promise<Object|null>} كائن المنتج بنفس شكل rebuiltProducts، أو null لو مش موجود
+     */
+    async function loadBoseSingleProductBySlug(slug) {
+        if (!slug) return null;
+        const safeSlug = encodeURIComponent(String(slug));
+        const rows = await boseSupabaseFetch(`/products?id=eq.${safeSlug}&select=*&limit=1`);
+        if (!rows || !rows[0]) return null;
+        return mapBoseProductRow(rows[0]);
+    }
+
+    /**
      * 🏬 تحميل كل بيانات المتجر (يحل محل fetch لـ site-data-final.json).
      * يبني نفس شكل window.BoseStoreData المستخدم في core-engine.js حاليًا
      * حتى لا يحتاج أي كود تاني في الموقع للتغيير.
@@ -81,66 +147,9 @@
         const settings = (settingsRows && settingsRows[0]) || {};
 
         // إعادة تجميع كل منتج بنفس المفاتيح المستخدمة حالياً في core-engine.js
-        // 🛡️ [أمان الشكل]: oldPrice/reviews/layout مضافين هنا دفاعياً - لو الأعمدة دي
-        // مش موجودة في جدول products لسه، بترجع undefined عادي زي ما كانت، ومفيش
-        // أي كسر. اللي بيحصل فعلياً هو إن قسم العروض (offers) هيفضل فاضي لحد ما
-        // الأعمدة دي تتضاف وتتملى من لوحة التحكم - مش هيحصل خطأ في الكونسول.
-        const rebuiltProducts = (products || []).map((p) => ({
-            id: p.id,
-            slug: p.id,
-            category: p.category_id,
-            title: p.title,
-            flavorName: p.flavor_name,
-            flavorDesc: p.flavor_desc,
-            description: p.description,
-            layout: p.layout || "grid-card",
-            images: p.images || [],
-            price: p.price,
-            oldPrice: p.old_price || null,
-            basePrice: p.base_price,
-            prices: p.prices || {},
-            defaultSize: p.default_size,
-            // 🚨 [تفعيل عمود موجود فعلاً بقاعدة البيانات لكن كان غير مستخدم]: size_descriptions
-            // موجود جاهز في جدول products (لوصف مخصص لكل حجم زي الديسباسيتو) بس مكنش بيتحط
-            // في كائن المنتج هنا أصلاً، فمفيش أي صفحة كانت تقدر تستخدمه حتى لو اتكتب من
-            // لوحة التحكم. دلوقتي بيوصل للواجهة عشان صفحة المنتج تقدر تغيّر الوصف تلقائياً
-            // مع تغيير الحجم المختار.
-            sizeDescriptions: p.size_descriptions || {},
-            // 🖼️ [صور الأحجام المتعددة]: خريطة اختيارية { triangle: "url", medium: "url", ... }
-            // بتديك صورة مختلفة لكل حجم بدل ما كل الأحجام تشترك في نفس صورة images[0].
-            // لو الحجم مالوش صورة مخصصة، صفحة المنتج بترجع تلقائياً للصورة الافتراضية.
-            sizeImages: p.size_images || {},
-            // 🚨 [حل جذري لمشكلة "العميل مش فاهم الكمية"]: quantity_note عمود جديد
-            // بيوضح بالظبط إيه اللي السعر بيغطيه (مثال: "دستة كاملة = 12 قطعة").
-            // بيوصل هنا فاضي (null) لأي منتج لسه متعرفش الوصف بتاعه، فمفيش أي كسر
-            // أو نص فاضي بيتعرض غلط - الواجهة (createProductCardHTML وصفحة المنتج)
-            // بترسم البادچ ده بس لو فيه نص فعلي.
-            quantityNote: p.quantity_note || null,
-            // ✨ [مميزات المنتج]: مصفوفة اختيارية [{icon, text}] بتتحط من قاعدة البيانات
-            // لكل منتج على حدة - بتوصل فاضية ([]) لأي منتج لسه معندهوش بيانات، فمفيش
-            // أي كسر في صفحة المنتج (renderProductHighlights بيتأكد منها قبل ما يعرضها).
-            highlights: p.highlights || [],
-            builderType: p.builder_type,
-            customBuilderUrl: p.custom_builder_url,
-            // 🔗 [تفعيل عمود موجود بقاعدة البيانات لكن كان غير مستخدم خالص]: variant_group_id
-            // بيربط أحجام/نسخ نفس الصنف ببعض (زي الديسباسيتو: مثلث/طاجن/حجم عائلي لنفس
-            // النكهة) - كان موجود كعمود جاهز بس محدش كان بيقرأه هنا فمفيش أي صفحة قدرت
-            // تستخدمه. دلوقتي بيوصل للواجهة عشان تبويبات الحجم في صفحة الفئة تقدر
-            // تجمّع/تفلتر صح (راجع category.html).
-            variantGroupId: p.variant_group_id || null,
-            searchTerms: p.search_terms || [],
-            featured: p.is_featured,
-            rating: p.rating,
-            reviews: p.seed_reviews || [],
-            isAvailable: p.is_available !== false,
-            // 🐛 [إصلاح حرج]: faqs كان معمول له عمود في قاعدة البيانات وواجهة عرض
-            // في صفحة المنتج (renderProductFaqs) بس متسبش أي مسار وصول هنا - يعني
-            // أي أسئلة شائعة تتكتب من لوحة التحكم كانت بتفضل مدفونة ومتوصلش للعميل
-            // خالص. نفس الكلام لـ is_gift_card/options اللازمين لبطاقة الهدية
-            // بالمبلغ الحر (حد أدنى/أقصى قادمين من هنا للواجهة).
-            faqs: p.faqs || [],
-            options: p.options || {},
-        }));
+        // (راجع mapBoseProductRow تحت - المنطق ده اتفصل في دالة مشتركة عشان
+        // loadBoseSingleProductBySlug تقدر تستخدم بالظبط نفس الشكل من غير تكرار كود).
+        const rebuiltProducts = (products || []).map(mapBoseProductRow);
 
         return {
             store: settings.store || {},
@@ -706,6 +715,7 @@
 
     window.BoseSupabase = {
         loadBoseStoreDataFromSupabase,
+        loadBoseSingleProductBySlug,
         getBoseDataVersion,
         submitBoseOrderToDatabase,
         submitBoseReview,
