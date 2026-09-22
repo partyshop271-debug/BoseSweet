@@ -1233,7 +1233,18 @@
                     // مستمع خاص، أسوأ سيناريو هيحصل هو التنقل الصحيح لصفحة المنتج الحقيقي
                     // - مش رسالة "غير متوفر" مكسورة.
                     card.dataset.slug = encodeURIComponent(product.slug);
-                    card.addEventListener('click', function (e) { e.stopPropagation(); }, true);
+                    // 🛡️👑 [إصلاح حرج - زرار +/- والحشو مشلول ومش بيستجيب في كروت البوكس]:
+                    // كان هذا المستمع مسجّل في مرحلة الـ capture (`true` كباراميتر تالت) -
+                    // ده معناه إنه بيشتغل *قبل* ما الحدث يوصل أصلاً لأي زرار جوه الكارت
+                    // (bose-box-plus/bose-box-minus/bose-box-filling-chip)، وبما إنه بينادي
+                    // stopPropagation() فورًا، الحدث كان بيتوقف قبل ما يوصل لمستمعات الأزرار
+                    // دي خالص - فمكانتش بتستجيب للضغط نهائيًا (لا بتزود ولا بتقلل). الإصلاح:
+                    // نسيب المستمع يشتغل في مرحلة الـ bubble العادية (الافتراضية) بدل الـ
+                    // capture - كده الزرار الداخلي ياخد فرصته الأول ويشتغل عادي، وبعدين
+                    // لما الحدث يطلع (يـbubble) لفوق للكارت، هو ده اللي بيوقفه قبل ما يوصل
+                    // للمستمع العام في core-engine.js - نفس الحماية الأصلية المقصودة بالظبط،
+                    // من غير ما تكسر أي زرار داخلي.
+                    card.addEventListener('click', function (e) { e.stopPropagation(); });
 
                     const fillingsHtml = hasFillings ? `
                         <div class="bose-box-fillings" role="radiogroup" aria-label="اختيار الحشو">
