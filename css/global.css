@@ -869,11 +869,11 @@ img {
 }
 
 .bose-toast-message {
-    background-color: var(--bose-white);
-    color: var(--bose-toast-accent-dark);
+    background-color: #A8D8EA;
+    color: #111111;
     padding: 12px 16px;
-    border-radius: 4px 16px 16px 4px; /* 🆕 حافة يمين شبه مربعة (مكان الشريط الملوّن) وباقي الكبسولة ناعمة */
-    border-right: 4px solid var(--bose-toast-accent);
+    border-radius: 16px;
+    border: 2px solid var(--bose-pink);
     font-weight: 700;
     font-size: 15px;
     line-height: 1.6;
