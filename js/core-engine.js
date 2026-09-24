@@ -1324,12 +1324,22 @@
      */
     window.renderBoseMixToppingPicker = function(product, cardEl) {
         const allProducts = (window.BoseStoreData && window.BoseStoreData.products) || [];
+        // 🐛✅ [إصلاح - "كل النكهات في كل الأحجام مكدسة مع بعض"]: كانت التوبينجات
+        // بتتفلتر بس على أساس نفس القسم (category)، من غير أي اعتبار للحجم -
+        // فمنتج زي "ديسباسيتو - طاجن" (sizeKey: medium) كان بيجيب توبينجات
+        // المثلث والطاجن والحجم العائلي كلهم مع بعض (نفس النكهة 3 مرات بـ3
+        // أسعار مختلفة). دلوقتي لو المنتج الحالي عنده sizeKey، بنقصر التوبينجات
+        // على نفس الـ sizeKey بالظبط - العميلة بتشوف بس النكهات المتوفرة في
+        // الحجم اللي هي فعلاً واقفة عليه. لو المنتج مالوش sizeKey أصلاً (قسم
+        // تاني من غير نظام أحجام)، السلوك القديم فاضل زي ما هو (من غير فلترة حجم).
+        const currentSizeKey = product.options && product.options.sizeKey;
         const pool = allProducts.filter(function (p) {
             return p.category === product.category &&
                 p.slug !== product.slug &&
                 !String(p.id).startsWith('promo-') &&
                 !(p.options && p.options.mixFlavor === true) &&
-                p.isAvailable !== false;
+                p.isAvailable !== false &&
+                (!currentSizeKey || (p.options && p.options.sizeKey === currentSizeKey));
         });
 
         // 🍧 مفيش توبينجات كفاية للاختيار منها حالياً - بنسيب الكارت زي ما هو
