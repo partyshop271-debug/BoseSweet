@@ -41,7 +41,7 @@ function launchSignup() {
       showStatus('تم إلغاء العملية أو رفضت الموافقة.', false);
     }
   }, {
-    config_id: '1630007755244155',
+    config_id: '2152270525671872',
     response_type: 'code',
     override_default_response_type: true,
     extras: { setup: {}, featureType: '', sessionInfoVersion: '3' }
