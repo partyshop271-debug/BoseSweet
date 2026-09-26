@@ -11,7 +11,7 @@
   p{color:#666;font-size:14px;line-height:1.7;margin-bottom:24px}
   button{background:#1877F2;color:#fff;border:none;border-radius:8px;padding:14px 24px;font-size:16px;font-weight:bold;cursor:pointer;width:100%}
   button:disabled{opacity:.6;cursor:not-allowed}
-  #status{margin-top:20px;font-size:14px;padding:12px;border-radius:8px;display:none}
+  #status{margin-top:20px;font-size:14px;padding:12px;border-radius:8px;display:none;line-height:1.6;word-break:break-all}
   .ok{background:#e6f7e9;color:#1a7a32;display:block!important}
   .err{background:#fdeaea;color:#a11;display:block!important}
 </style>
@@ -20,44 +20,11 @@
 <div class="card">
   <h1>ربط رقم واتساب بالنظام</h1>
   <p>اضغطي الزر تحت وسجّلي دخول بحساب فيسبوك بتاعك، وهيفتح خطوات ربط رقم واتساب بيزنس مع الحفاظ عليه شغال في موبايلك.</p>
-  <button id="loginBtn" onclick="launchSignup()">الاستمرار بحساب فيسبوك</button>
+  <button id="loginBtn">الاستمرار بحساب فيسبوك</button>
   <div id="status"></div>
 </div>
 
-<script>
-window.fbAsyncInit = function() {
-  FB.init({ appId: '1288727083218595', autoLogAppEvents: true, xfbml: true, version: 'v21.0' });
-};
-</script>
+<script src="/js/whatsapp-connect.js"></script>
 <script async defer crossorigin="anonymous" src="https://connect.facebook.net/ar_AR/sdk.js"></script>
-
-<script>
-function showStatus(msg, ok){
-  var el = document.getElementById('status');
-  el.textContent = msg;
-  el.className = ok ? 'ok' : 'err';
-}
-function launchSignup(){
-  var btn = document.getElementById('loginBtn');
-  if (typeof FB === 'undefined') {
-    showStatus('لسه بيحمّل، استني ثانية واضغطي تاني.', false);
-    return;
-  }
-  btn.disabled = true;
-  FB.login(function(response){
-    btn.disabled = false;
-    if (response.authResponse) {
-      showStatus('تم بنجاح! الكود: ' + response.authResponse.code + ' — ابعتيه لمن يتابع معاكِ الإعداد.', true);
-    } else {
-      showStatus('تم إلغاء العملية أو لم تكتمل الموافقة.', false);
-    }
-  }, {
-    config_id: '1630007755244155',
-    response_type: 'code',
-    override_default_response_type: true,
-    extras: { setup: {}, featureType: '', sessionInfoVersion: '3' }
-  });
-}
-</script>
 </body>
 </html>
