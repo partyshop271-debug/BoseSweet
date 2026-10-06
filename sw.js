@@ -81,7 +81,9 @@ self.addEventListener("notificationclick", (event) => {
 
   event.waitUntil(
     self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((clientsList) => {
-      const target = new URL(targetUrl, self.location.origin);
+      let target = new URL(targetUrl, self.location.origin);
+      // 🛡️ لو الرابط الجاي في الـ payload لموقع تاني (مش نفس الـ origin) نرجّعه للرئيسية بدل ما نفتحه
+      if (target.origin !== self.location.origin) target = new URL("/", self.location.origin);
       const goTo = (client) =>
         client.focus().then((focused) => {
           const c = focused || client;
