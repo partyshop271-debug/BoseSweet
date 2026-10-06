@@ -3977,7 +3977,7 @@
                             <i class="fa-solid fa-bars-staggered"></i>
                         </button>
                         <a href="/index.html" class="brand-logo-container">
-                            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="لوجو حلويات بوسي" class="brand-logo-img" width="80" height="80" />
+                            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/f_auto,q_auto/v1780054759/logo_igggsb.png" alt="لوجو حلويات بوسي" class="brand-logo-img" width="80" height="80" />
                             <span class="brand-name-display">حلويات بوسي</span>
                         </a>
                     </div>
