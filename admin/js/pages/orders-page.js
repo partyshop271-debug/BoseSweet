@@ -191,64 +191,79 @@
 
         const isCake = item.item_type === "custom-cake" || item.item_type === "mini-cake";
         const isFlower = item.item_type === "custom-flower";
+        // كل صف: [العنوان، القيمة، تحذير؟] - التحذير (زي الحساسية) بيظهر بلون وإطار مميز
         const rows = [];
 
         if (isCake) {
             if (cd.occasionLabel) rows.push(["المناسبة", e(cd.occasionLabel)]);
             if (cd.cakeType && cd.cakeType !== "none") rows.push(["طعم الكيك", e(cd.cakeType)]);
             if (cd.shape) rows.push(["الشكل", SHAPE_LABELS[cd.shape] || e(cd.shape)]);
-            if (cd.persons) rows.push(["عدد الأفراد", `${cd.persons} فرد`]);
+            if (cd.persons) rows.push(["عدد الأفراد", `${e(cd.persons)} فرد`]);
             if (cd.printingType && cd.printingType !== "none") rows.push(["الطباعة", PRINTING_LABELS[cd.printingType] || e(cd.printingType)]);
-            if (cd.customMessage) rows.push(["الرسالة المكتوبة", `"${e(cd.customMessage)}"`]);
-            if (cd.allergyNote) rows.push(["⚠️ ملاحظة حساسية", e(cd.allergyNote)]);
+            if (cd.customMessage) rows.push(["الرسالة المكتوبة على التورتة", `"${e(cd.customMessage)}"`]);
+            if (cd.allergyNote) rows.push(["⚠️ ملاحظة حساسية", e(cd.allergyNote), true]);
             if (cd.hasGiftCard && cd.giftCardText) rows.push(["كارت إهداء مطبوع", `"${e(cd.giftCardText)}"`]);
         } else if (isFlower) {
             if (cd.moodLabel) rows.push(["الإحساس المطلوب", e(cd.moodLabel)]);
             if (cd.flowerType && cd.flowerType !== "none") rows.push(["نوع الورد", FLOWER_TYPE_LABELS[cd.flowerType] || e(cd.flowerType)]);
-            if (cd.flowerCount) rows.push(["عدد الورد", `${cd.flowerCount} وردة`]);
-            if (cd.cashAmount) rows.push(["الكاش المدمج", `+${cd.cashAmount} ج.م`]);
-            if (cd.hasChocolate && cd.chocolateBudget) rows.push(["ميزانية الشوكولاتة", `+${cd.chocolateBudget} ج.م`]);
+            if (cd.flowerCount) rows.push(["عدد الورد", `${e(cd.flowerCount)} وردة`]);
+            if (cd.cashAmount) rows.push(["الكاش المدمج", `+${e(cd.cashAmount)} ج.م`]);
+            if (cd.hasChocolate && cd.chocolateBudget) rows.push(["ميزانية الشوكولاتة", `+${e(cd.chocolateBudget)} ج.م`]);
             if (cd.hasGiftCard && cd.giftCardText) rows.push(["كارت الإهداء", `"${e(cd.giftCardText)}"`]);
         } else if (cd.sizeLabel) {
             rows.push(["الحجم", e(cd.sizeLabel)]);
         }
 
-        const photoLinks = [];
-        if (cd.printImageUrl) photoLinks.push(`<a href="${e(cd.printImageUrl)}" target="_blank" rel="noopener"><img src="${e(cd.printImageUrl)}" alt="صورة الطباعة" loading="lazy" style="width:52px;height:52px;border-radius:8px;object-fit:cover;"></a>`);
-        if (cd.replicaImageUrl) photoLinks.push(`<a href="${e(cd.replicaImageUrl)}" target="_blank" rel="noopener"><img src="${e(cd.replicaImageUrl)}" alt="صورة التصميم المرجعي" loading="lazy" style="width:52px;height:52px;border-radius:8px;object-fit:cover;"></a>`);
+        // كل صورة بتاخد عنوان واضح تحتها عشان نعرف هي إيه (طباعة / تصميم مرجعي / مرجعية)
+        const photos = [];
+        const addPhoto = (url, caption) => photos.push(
+            `<a class="adm-oi-photo" href="${e(url)}" target="_blank" rel="noopener" title="افتح الصورة بحجمها الكامل"><img src="${e(url)}" alt="${e(caption)}" loading="lazy"><span>${e(caption)}</span></a>`
+        );
+        if (cd.printImageUrl) addPhoto(cd.printImageUrl, "صورة الطباعة");
+        if (cd.replicaImageUrl) addPhoto(cd.replicaImageUrl, "التصميم المرجعي");
         if (item.reference_images && item.reference_images.length) {
-            item.reference_images.forEach((url) => {
-                photoLinks.push(`<a href="${e(url)}" target="_blank" rel="noopener"><img src="${e(url)}" alt="صورة مرجعية" loading="lazy" style="width:52px;height:52px;border-radius:8px;object-fit:cover;"></a>`);
-            });
+            item.reference_images.forEach((url, i) => addPhoto(url, `صورة مرجعية ${item.reference_images.length > 1 ? i + 1 : ""}`.trim()));
         }
 
-        if (rows.length === 0 && photoLinks.length === 0) return "";
+        if (rows.length === 0 && photos.length === 0) return "";
 
         return `
-            <div class="adm-order-item-custom-details" style="font-size:12.5px; color:#111; background:rgba(255,145,164,0.05); padding:8px 10px; border-radius:10px; margin-top:6px; border-right:3px solid #FF91A4; display:flex; flex-direction:column; gap:3px;">
-                ${rows.map(([label, val]) => `<div><strong>${label}:</strong> ${val}</div>`).join("")}
-                ${photoLinks.length ? `<div style="display:flex; gap:6px; margin-top:4px; flex-wrap:wrap;">${photoLinks.join("")}</div>` : ""}
+            <div class="adm-oi-details">
+                ${rows.length ? `<dl class="adm-oi-spec">${rows.map(([label, val, warn]) => `
+                    <div class="adm-oi-spec-row${warn ? " is-warn" : ""}"><dt>${label}</dt><dd>${val}</dd></div>`).join("")}
+                </dl>` : ""}
+                ${photos.length ? `<div class="adm-oi-photos">${photos.join("")}</div>` : ""}
             </div>`;
     }
 
     function orderItemRowHTML(item) {
         const e = window.BoseAdminUI.escapeHtml;
         const isCustom = item.custom_details && Object.keys(item.custom_details).length > 0;
+        const metaParts = [];
+        if (item.flavor_name) metaParts.push(e(item.flavor_name));
+        if (isCustom) metaParts.push("طلب مخصص (محاكي)");
         return `
-            <div class="adm-order-item-row" style="flex-direction: column; align-items: stretch;">
-                <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
-                    <div>
+            <div class="adm-oi">
+                <div class="adm-oi-head">
+                    <div class="adm-oi-title">
+                        <span class="adm-oi-qty" title="الكمية">×${e(item.quantity)}</span>
                         <strong>${e(item.title)}</strong>
-                        <span class="adm-order-item-meta">
-                            ${item.flavor_name ? e(item.flavor_name) + " · " : ""}الكمية: ${item.quantity}
-                            ${isCustom ? " · طلب مخصص (محاكي)" : ""}
-                            ${item.reference_images && item.reference_images.length ? ` · ${item.reference_images.length} صورة مرجعية` : ""}
-                        </span>
                     </div>
-                    <div>${money(item.line_total)}</div>
+                    <div class="adm-oi-price">${money(item.line_total)}</div>
                 </div>
+                ${metaParts.length ? `<div class="adm-oi-meta">${metaParts.join(" · ")}</div>` : ""}
                 ${customDetailsBlockHTML(item)}
             </div>`;
+    }
+
+    // تاريخ مقروء بالعربي (الجمعة ٩ أكتوبر) مع الاحتفاظ بالتاريخ الأصلي لو فشل التحويل
+    function niceDate(iso) {
+        if (!iso) return "—";
+        try {
+            const d = new Date(`${iso}T00:00:00`);
+            if (isNaN(d.getTime())) return String(iso);
+            return d.toLocaleDateString("ar-EG", { weekday: "long", day: "numeric", month: "long" });
+        } catch (_) { return String(iso); }
     }
 
     /**
@@ -273,13 +288,27 @@
         const hasPrev = idx > 0;
         const hasNext = idx >= 0 && idx < currentOrders.length - 1;
 
+        // ⚠️ ملاحظات مهمة تتعرض فوق كل حاجة: حساسية أي صنف + ملاحظات العميل العامة
+        const importantNotes = [];
+        items.forEach((it) => {
+            const cd = it.custom_details || {};
+            if (cd.allergyNote) importantNotes.push(`<b>حساسية (${e(it.title)}):</b> ${e(cd.allergyNote)}`);
+        });
+        if (notesWithoutRef) importantNotes.push(`<b>ملاحظات العميل:</b> ${e(notesWithoutRef)}`);
+
         const overlay = document.createElement("div");
         overlay.className = "adm-modal-overlay";
         overlay.innerHTML = `
-            <div class="adm-modal" style="max-width: 560px;">
+            <div class="adm-modal adm-order-modal" style="max-width: 700px;">
                 <div class="adm-modal-header">
-                    <h3>طلب #${e(order.order_number || order.id)}</h3>
+                    <div class="adm-om-title">
+                        <h3>طلب #${e(order.order_number || order.id)}</h3>
+                        ${window.BoseAdminUI.orderStatusBadgeHTML(order.status)}
+                    </div>
                     <div class="adm-modal-nav-btns">
+                        <button class="adm-modal-nav-btn adm-om-theme-btn" id="order-theme-toggle" type="button" title="تبديل الخلفية (فاتحة / غامقة)">
+                            <i class="fa-solid fa-circle-half-stroke"></i>
+                        </button>
                         <button class="adm-modal-nav-btn" id="order-nav-prev" ${hasPrev ? "" : "disabled"} title="الطلب السابق (←)">
                             <i class="fa-solid fa-chevron-right"></i>
                         </button>
@@ -290,30 +319,43 @@
                     </div>
                 </div>
 
-                <!-- 🧾 [أداة داخلية]: صورة فاتورة مرجعية للفريق وقت التجهيز - مرجع
-                     بصري بس (صور المنتجات/التصميم المرفق)، العميلة لا تراها. -->
+                ${importantNotes.length ? `
+                <div class="adm-om-alert" role="alert">
+                    <div class="adm-om-alert-title">⚠️ انتبهي - ملاحظات مهمة على الطلب</div>
+                    <ul>${importantNotes.map((n) => `<li>${n}</li>`).join("")}</ul>
+                </div>` : ""}
+
+                <div class="adm-om-key">
+                    <div class="adm-om-key-main">
+                        <span>الموعد المطلوب</span>
+                        <strong>${niceDate(order.scheduled_date)}${order.scheduled_time ? " · " + e(window.BoseAdminUI.formatTime12(order.scheduled_time)) : ""}</strong>
+                        <em>${e(DELIVERY_LABELS[order.delivery_method] || order.delivery_method || "—")}</em>
+                    </div>
+                    <div class="adm-om-key-main">
+                        <span>${isCodOrder ? "المطلوب تحصيله كاش" : "الإجمالي"}</span>
+                        <strong>${money(order.grand_total)}</strong>
+                        <em>${isCodOrder ? "💵 الدفع عند الاستلام" : "دفع أونلاين (تحويل)"}</em>
+                    </div>
+                </div>
+
+                <div class="adm-om-info">
+                    <div><span>اسم العميل</span><strong>${e(order.customer_name || "—")}</strong></div>
+                    <div><span>الهاتف</span><strong dir="ltr" style="text-align:right;">${order.phone1 ? `<a class="adm-om-tel" href="tel:${e(order.phone1)}">${e(order.phone1)}</a>` : "—"}${order.phone2 ? ` / <a class="adm-om-tel" href="tel:${e(order.phone2)}">${e(order.phone2)}</a>` : ""}</strong></div>
+                    ${order.delivery_method === "delivery" ? `
+                    <div class="adm-om-full"><span>العنوان</span><strong>${e(order.address || "—")}</strong></div>
+                    ` : ""}
+                </div>
+
+                <div class="adm-om-section-title">الأصناف المطلوبة <b>${items.length}</b></div>
+                <div class="adm-order-items-list" style="margin-top:0;">
+                    ${items.length ? items.map(orderItemRowHTML).join("") : `<p style="text-align:center; padding: 10px 0;">مفيش عناصر مسجلة لهذا الطلب</p>`}
+                </div>
+
+                <!-- 🧾 [أداة داخلية]: صورة فاتورة مرجعية للفريق وقت التجهيز - مرجع بصري بس، العميلة لا تراها. -->
                 <div class="adm-mt-16">
                     <button type="button" class="adm-btn adm-btn-outline" id="order-download-invoice-btn" style="width:100%;">
                         <i class="fa-solid fa-file-image"></i> تحميل صورة الفاتورة (للفريق فقط)
                     </button>
-                </div>
-
-                <div class="adm-order-detail-grid">
-                    <div><span>اسم العميل</span><strong>${e(order.customer_name || "—")}</strong></div>
-                    <div><span>الهاتف</span><strong>${e(order.phone1 || "—")}${order.phone2 ? " / " + e(order.phone2) : ""}</strong></div>
-                    <div><span>طريقة الاستلام</span><strong>${e(DELIVERY_LABELS[order.delivery_method] || order.delivery_method || "—")}</strong></div>
-                    <div><span>الموعد</span><strong>${order.scheduled_date ? e(order.scheduled_date) : "—"}${order.scheduled_time ? " - " + e(window.BoseAdminUI.formatTime12(order.scheduled_time)) : ""}</strong></div>
-                    ${order.delivery_method === "delivery" ? `
-                    <div class="adm-order-detail-full"><span>العنوان</span><strong>${e(order.address || "—")}</strong></div>
-                    ` : ""}
-                    ${notesWithoutRef ? `
-                    <div class="adm-order-detail-full"><span>ملاحظات العميل</span><strong>${e(notesWithoutRef)}</strong></div>
-                    ` : ""}
-
-                </div>
-
-                <div class="adm-order-items-list">
-                    ${items.length ? items.map(orderItemRowHTML).join("") : `<p style="text-align:center; padding: 10px 0;">مفيش عناصر مسجلة لهذا الطلب</p>`}
                 </div>
 
                 <div class="adm-order-totals">
@@ -325,7 +367,7 @@
 
                 <!-- 💵 [طريقة الدفع]: الدفع عند الاستلام (تحصيل كاش وقت التسليم) أو أونلاين (تحويل مقدم) -->
                 ${isCodOrder ? `
-                <div class="adm-order-totals" style="margin-top: 10px; border-top: 1px dashed #eee; padding-top: 10px;">
+                <div class="adm-order-totals adm-om-pay">
                     <div>
                         <span>طريقة الدفع</span>
                         <span><span class="adm-badge warning">💵 الدفع عند الاستلام</span></span>
@@ -336,7 +378,7 @@
                     </div>
                 </div>
                 ` : `
-                <div class="adm-order-totals" style="margin-top: 10px; border-top: 1px dashed #eee; padding-top: 10px;">
+                <div class="adm-order-totals adm-om-pay">
                     <div>
                         <span>طريقة الدفع</span>
                         <span><span class="adm-badge info">دفع أونلاين (تحويل)</span></span>
@@ -383,6 +425,20 @@
                 </div>
             </div>`;
         document.body.appendChild(overlay);
+
+        // 🌗 خلفية فاتحة/غامقة لمودال الطلب (اختيارها بيتحفظ على الجهاز) - للراحة في القراءة
+        (function setupOrderThemeToggle() {
+            const modalEl = overlay.querySelector(".adm-order-modal");
+            const btn = overlay.querySelector("#order-theme-toggle");
+            if (!modalEl || !btn) return;
+            let light = false;
+            try { light = localStorage.getItem("bose_admin_order_modal_light") === "1"; } catch (_) {}
+            modalEl.classList.toggle("adm-light", light);
+            btn.addEventListener("click", () => {
+                const on = modalEl.classList.toggle("adm-light");
+                try { localStorage.setItem("bose_admin_order_modal_light", on ? "1" : "0"); } catch (_) {}
+            });
+        })();
 
         function close() {
             overlay.remove();
