@@ -1156,3 +1156,154 @@ html.adm-ready .adm-auth-gate { display: none; }
     .adm-curated-add-row button { width: 100%; }
     .adm-homepage-save-bar #homepage-save-btn { width: 100%; justify-content: center; }
         }
+
+/* =====================================================================
+   🧾 مودال تفاصيل الطلب - نسخة مقروءة (خط أكبر، تباين عالي، ترتيب بالأهمية)
+   السبب: النسخة القديمة كانت بتستخدم رمادي خافت (#6F6C7A) وأحجام خط 12-13px،
+   وتفاصيل الطلب المخصص كان لونها #111 (أسود) على خلفية غامقة فمكانتش بتبان.
+   كل الألوان هنا معمولة بتعديل متغيرات --adm-* جوه المودال بس، فمفيش أي
+   صفحة تانية بتتأثر. وضع "فاتح" بيتفعّل بزرار ◐ في الهيدر.
+   ===================================================================== */
+.adm-order-modal {
+    font-size: 1rem;
+    line-height: 1.7;
+    /* وضع غامق بتباين أعلى */
+    --adm-bg-surface: #1B1A21;
+    --adm-text-primary: #FFFFFF;
+    --adm-text-secondary: #D9D5E3;
+    --adm-text-muted: #BDB9CA;
+    --adm-border: #3F3C4A;
+    --adm-border-soft: #34313E;
+}
+.adm-order-modal.adm-light {
+    --adm-bg-surface-raised: #FFFFFF;
+    --adm-bg-surface: #F6F4F8;
+    --adm-bg-input: #FFFFFF;
+    --adm-bg-hover: #ECE8F1;
+    --adm-border: #C9C4D2;
+    --adm-border-soft: #DAD6E1;
+    --adm-text-primary: #17151C;
+    --adm-text-secondary: #38343F;
+    --adm-text-muted: #55515F;
+    --adm-warning: #7A4F00;  --adm-warning-bg: #FFEFC2;
+    --adm-success: #11693A;  --adm-success-bg: #D9F3E3;
+    --adm-danger: #B42318;   --adm-danger-bg: #FDE2DF;
+    --adm-info: #1D4ED8;     --adm-info-bg: #DBE7FE;
+    --adm-shadow-raised: 0 12px 40px rgba(0, 0, 0, 0.35);
+}
+.adm-order-modal .adm-badge { font-size: 0.85rem; padding: 5px 14px; }
+.adm-order-modal .adm-modal-nav-btn,
+.adm-order-modal .adm-modal-close { width: 36px; height: 36px; font-size: 0.95rem; color: var(--adm-text-primary); }
+.adm-order-modal .adm-modal-header h3 { font-size: 1.35rem; color: var(--adm-text-primary); margin: 0; }
+.adm-om-title { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+
+/* ⚠️ ملاحظات مهمة (حساسية / ملاحظات العميل) */
+.adm-om-alert {
+    background: var(--adm-warning-bg);
+    border: 2px solid var(--adm-warning);
+    border-radius: var(--adm-radius-md);
+    padding: 12px 16px;
+    margin-bottom: 14px;
+    color: var(--adm-text-primary);
+}
+.adm-om-alert-title { font-weight: 800; font-size: 1.05rem; color: var(--adm-warning); margin-bottom: 4px; }
+.adm-om-alert ul { margin: 0; padding: 0 18px 0 0; font-size: 1rem; }
+.adm-om-alert li { margin: 2px 0; }
+
+/* أهم حاجتين: الموعد + المبلغ */
+.adm-om-key { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+.adm-om-key-main {
+    display: flex; flex-direction: column; gap: 2px;
+    padding: 14px 16px;
+    background: var(--adm-bg-surface);
+    border: 2px solid var(--adm-pink);
+    border-radius: var(--adm-radius-md);
+}
+.adm-om-key-main span { font-size: 0.9rem; color: var(--adm-text-muted); font-weight: 700; }
+.adm-om-key-main strong { font-size: 1.3rem; color: var(--adm-text-primary); font-weight: 800; line-height: 1.4; }
+.adm-om-key-main em { font-style: normal; font-size: 0.95rem; color: var(--adm-text-secondary); font-weight: 700; }
+
+/* بيانات العميل */
+.adm-om-info {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px 18px;
+    padding: 14px 16px;
+    background: var(--adm-bg-surface);
+    border: 1px solid var(--adm-border);
+    border-radius: var(--adm-radius-md);
+}
+.adm-om-info > div { display: flex; flex-direction: column; gap: 2px; }
+.adm-om-info span { font-size: 0.9rem; color: var(--adm-text-muted); font-weight: 600; }
+.adm-om-info strong { font-size: 1.1rem; color: var(--adm-text-primary); font-weight: 700; overflow-wrap: anywhere; }
+.adm-om-full { grid-column: 1 / -1; }
+.adm-om-tel { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+
+.adm-om-section-title {
+    margin: 20px 0 10px;
+    font-size: 1.1rem; font-weight: 800; color: var(--adm-text-primary);
+    display: flex; align-items: center; gap: 8px;
+}
+.adm-om-section-title b {
+    background: var(--adm-pink); color: var(--adm-text-on-accent);
+    border-radius: 999px; padding: 0 10px; font-size: 0.9rem; line-height: 1.7;
+}
+
+/* كارت كل صنف */
+.adm-oi {
+    background: var(--adm-bg-surface);
+    border: 1px solid var(--adm-border);
+    border-radius: var(--adm-radius-md);
+    padding: 14px 16px;
+}
+.adm-oi-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.adm-oi-title { display: flex; align-items: flex-start; gap: 10px; min-width: 0; }
+.adm-oi-title strong { font-size: 1.15rem; color: var(--adm-text-primary); font-weight: 800; line-height: 1.5; }
+.adm-oi-qty {
+    flex: none;
+    background: var(--adm-pink); color: var(--adm-text-on-accent);
+    border-radius: 10px; padding: 1px 10px; font-weight: 800; font-size: 1.05rem; line-height: 1.7;
+}
+.adm-oi-price { font-size: 1.1rem; font-weight: 800; color: var(--adm-text-primary); white-space: nowrap; }
+.adm-oi-meta { margin-top: 2px; font-size: 0.95rem; color: var(--adm-text-secondary); }
+
+.adm-oi-details { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--adm-border); display: flex; flex-direction: column; gap: 10px; }
+.adm-oi-spec { margin: 0; display: flex; flex-direction: column; gap: 6px; }
+.adm-oi-spec-row {
+    display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap;
+    padding: 6px 10px; border-radius: 8px;
+    background: var(--adm-bg-hover);
+}
+.adm-oi-spec-row dt { margin: 0; font-size: 0.95rem; font-weight: 700; color: var(--adm-text-muted); flex: none; }
+.adm-oi-spec-row dt::after { content: ":"; }
+.adm-oi-spec-row dd { margin: 0; font-size: 1.05rem; font-weight: 700; color: var(--adm-text-primary); overflow-wrap: anywhere; }
+.adm-oi-spec-row.is-warn { background: var(--adm-warning-bg); border: 1px solid var(--adm-warning); }
+.adm-oi-spec-row.is-warn dt, .adm-oi-spec-row.is-warn dd { color: var(--adm-warning); }
+
+.adm-oi-photos { display: flex; gap: 10px; flex-wrap: wrap; }
+.adm-oi-photo {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    text-decoration: none; width: 96px;
+}
+.adm-oi-photo img { width: 96px; height: 96px; object-fit: cover; border-radius: 10px; border: 1px solid var(--adm-border); background: #fff; }
+.adm-oi-photo span { font-size: 0.82rem; color: var(--adm-text-secondary); font-weight: 600; text-align: center; line-height: 1.3; }
+
+/* الإجماليات والدفع */
+.adm-order-modal .adm-order-totals { font-size: 1.05rem; }
+.adm-order-modal .adm-order-totals > div { color: var(--adm-text-primary); }
+.adm-order-modal .adm-order-grand-total { font-size: 1.25rem; }
+.adm-order-modal .adm-om-pay { border-top: 1px dashed var(--adm-border) !important; }
+.adm-order-modal .adm-field label { font-size: 1rem; font-weight: 700; color: var(--adm-text-primary); }
+.adm-order-modal .adm-select { font-size: 1.05rem; min-height: 46px; color: var(--adm-text-primary); }
+
+/* زراير الحفظ تفضل ظاهرة تحت حتى مع طلب طويل */
+.adm-order-modal .adm-modal-actions {
+    position: sticky; bottom: -26px;
+    background: var(--adm-bg-surface-raised);
+    padding-bottom: 14px; margin-bottom: -10px;
+    z-index: 2;
+}
+.adm-order-modal .adm-modal-actions .adm-btn { font-size: 1rem; min-height: 44px; }
+
+@media (max-width: 560px) {
+    .adm-om-key, .adm-om-info { grid-template-columns: 1fr; }
+    .adm-oi-head { flex-direction: column; gap: 4px; }
+}
