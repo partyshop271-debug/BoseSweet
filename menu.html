@@ -43,6 +43,7 @@
     <script src="js/season-theme-engine.js?v=2026_production_v1.0" defer></script>
     <script src="js/phone-utils.js?v=1" defer></script>
     <script src="js/core-engine.js?v=2028_production_v61.0" defer></script>
+    <script src="js/user-interest.js?v=1" defer></script>
     <script src="js/guided-tour.js?v=3.3" defer></script>
     <script src="js/cart-reminder.js?v=1" defer></script>
 
@@ -144,6 +145,13 @@
         @media (min-width: 768px) { .bose-menu-img-wrap { height: 330px; } }
         @media (min-width: 1024px) { .bose-menu-img-wrap { height: 420px; } }
         
+        /* الفئة اللي العميلة مهتمة بيها أكتر: كارت كامل العرض في أول المنيو */
+        .bose-menu-custom-card.bose-menu-featured { grid-column: 1 / -1; }
+        .bose-menu-featured .bose-menu-img-wrap { position: relative; height: 300px; }
+        @media (min-width: 768px) { .bose-menu-featured .bose-menu-img-wrap { height: 380px; } }
+        @media (min-width: 1024px) { .bose-menu-featured .bose-menu-img-wrap { height: 460px; } }
+        .bose-menu-featured-badge { position: absolute; top: 12px; right: 12px; z-index: 2; background: var(--bose-pink); color: #fff; font-weight: 800; font-size: 13px; padding: 6px 14px; border-radius: 999px; }
+
         .bose-menu-img-wrap img {
             width: 100%;
             height: 100%;
@@ -283,33 +291,18 @@
             const grid = document.getElementById("bose-menu-categories-grid");
             if (!grid || !categoriesList || categoriesList.length === 0) return;
 
-            // 👑 [التخصيص السلوكي الفاخر للمنيو الشامل] 👑
+            // 👑 [ترتيب المنيو حسب اهتمام العميلة نفسها - js/user-interest.js] 👑
+            // أكتر فئة العميلة مهتمة بيها بتتصدر المنيو وبتاخد كارت كامل العرض؛ لو مفيش
+            // اهتمام مسجّل لسه (عميلة جديدة) المنيو بيفضل بالترتيب الأصلي من لوحة التحكم.
+            let boseFeaturedCatId = null;
             try {
-                const behaviorData = localStorage.getItem('bose_user_behavior');
-                const behaviorLog = behaviorData ? JSON.parse(behaviorData) : {};
-                const dbProducts = window.BoseStoreData?.products || [];
-
-                categoriesList.sort((a, b) => {
-                    let scoreA = 0, scoreB = 0;
-                    let lastTimeA = 0, lastTimeB = 0;
-
-                    if (dbProducts.length > 0) {
-                        dbProducts.forEach(p => {
-                            if (p.category === a.id && behaviorLog[p.slug]) {
-                                scoreA += behaviorLog[p.slug].score || 0;
-                                lastTimeA = Math.max(lastTimeA, behaviorLog[p.slug].lastVisited || 0);
-                            }
-                            if (p.category === b.id && behaviorLog[p.slug]) {
-                                scoreB += behaviorLog[p.slug].score || 0;
-                                lastTimeB = Math.max(lastTimeB, behaviorLog[p.slug].lastVisited || 0);
-                            }
-                        });
-                    }
-                    if (scoreB === scoreA) return lastTimeB - lastTimeA;
-                    return scoreB - scoreA;
-                });
+                if (window.BoseInterest) {
+                    const ranked = window.BoseInterest.rankCategories(categoriesList);
+                    categoriesList = ranked.list;
+                    if (ranked.hasSignal) boseFeaturedCatId = ranked.topId;
+                }
             } catch (err) {
-                console.warn("⚠️ فشل فرز فئات المنيو سلوكياً.");
+                console.warn("⚠️ فشل ترتيب فئات المنيو حسب الاهتمام.");
             }
 
             grid.innerHTML = "";
@@ -319,11 +312,12 @@
                                 : `category.html?category=${cat.id}`);
 
                 const card = document.createElement("div");
-                card.className = "bose-menu-custom-card";
+                card.className = "bose-menu-custom-card" + (cat.id === boseFeaturedCatId ? " bose-menu-featured" : "");
                 const escMenu = window.escapeBoseHTML || (s => s);
                 const safeCatTitle = escMenu(cat.title);
                 card.innerHTML = `
                     <a href="${targetUrl}" class="bose-menu-img-wrap" aria-label="استعراض فئة ${safeCatTitle}">
+                        ${cat.id === boseFeaturedCatId ? '<span class="bose-menu-featured-badge">مختارة ليكِ ✨</span>' : ''}
                         <img src="${window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(cat.image, 450) : cat.image}" alt="${safeCatTitle}" loading="lazy">
                     </a>
                     <a href="${targetUrl}" style="text-decoration:none;">
