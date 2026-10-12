@@ -1302,9 +1302,18 @@
      */
     window.boseRenderRelatedProductsInto = function(container, currentProduct) {
         if (!container || !window.BoseStoreData || !window.BoseStoreData.products) return;
-        const suggestionsList = window.BoseStoreData.products.filter(function(p) {
-            return p.slug !== currentProduct.slug && !(p.customBuilderUrl && p.builderType && p.builderType !== 'standard');
-        }).slice(0, 8);
+        // 🎯 [اقتراحات مخصصة لكل عميلة - js/user-interest.js]: بتترتب حسب اللي هي نفسها
+        // اتصفحته/ضافته للسلة/فضّلته، مش أول 8 منتجات ثابتة للكل. لو الملف مش محمّل لأي
+        // سبب، بنرجع للسلوك القديم بالظبط.
+        let suggestionsList;
+        try {
+            suggestionsList = window.BoseInterest ? window.BoseInterest.recommend(currentProduct, 8) : null;
+        } catch (e) { suggestionsList = null; }
+        if (!suggestionsList) {
+            suggestionsList = window.BoseStoreData.products.filter(function(p) {
+                return p.slug !== currentProduct.slug && !(p.customBuilderUrl && p.builderType && p.builderType !== 'standard');
+            }).slice(0, 8);
+        }
 
         if (suggestionsList.length === 0) {
             container.innerHTML = '<p style="width:100%; text-align:center; opacity:0.6; font-weight:600; padding:20px;">استكشف المزيد من المفاجآت والأصناف الفاخرة بداخل المنيو الشامل 🌸</p>';

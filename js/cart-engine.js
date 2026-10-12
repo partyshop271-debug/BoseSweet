@@ -1592,6 +1592,9 @@ function renderBoseSuccessPage(storeData) {
         }).catch((e) => console.warn("⚠️ تعذر إرسال نسخة الطلب الاحتياطية.", e));
     }
 
+    // 🎯 الشراء الفعلي: المنتج يتصفّر والفئة بتاخد دفعة اهتمام (js/user-interest.js)
+    try { if (window.BoseInterest) window.BoseInterest.markPurchased(Array.from(purchasedSlugs)); } catch (e) { /* مش حرج */ }
+
     // 🧹 تطهير الذاكرة السلوكية لكسر تكرار المنتجات التي تم شراؤها فعلياً
     try {
         const behaviorData = localStorage.getItem('bose_user_behavior');
