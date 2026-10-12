@@ -9,7 +9,7 @@
     "csp:update": "node scripts/csp-hashes.js update"
   },
   "engines": {
-    "node": "22.x"
+    "node": "24.x"
   },
   "devDependencies": {
     "esbuild": "^0.28.2"
