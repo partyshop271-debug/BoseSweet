@@ -136,7 +136,7 @@
      * حتى لا يحتاج أي كود تاني في الموقع للتغيير.
      */
     async function loadBoseStoreDataFromSupabase() {
-        const [settingsRows, categories, products, offers, shippingZones, quantityPromos] = await Promise.all([
+        const [settingsRows, categories, products, offers, shippingZones, quantityPromos, promoCampaigns] = await Promise.all([
             boseSupabaseFetch("/store_settings?id=eq.1&select=*"),
             boseSupabaseFetch("/categories?select=*&order=sort_order.asc"),
             boseSupabaseFetch("/products?select=*&order=sort_order.asc"),
@@ -144,6 +144,8 @@
             boseSupabaseFetch("/shipping_zones?select=*"),
             // 🎁 [عروض الكمية]: لو فشل جلبها ما نكسرش الموقع كله - بنرجع مصفوفة فاضية والسيرفر برضه هو اللي بيحسم الخصم الحقيقي
             boseSupabaseFetch("/quantity_promos?select=*&order=sort_order.asc").catch(() => []),
+            // 🏷️ [إعدادات حملات العروض]: اسم التبويب/العنوان/إظهار العدّاد... لكل حملة - لو فشل جلبها بنرجع فاضي وصفحة العروض بتستخدم قيم افتراضية
+            boseSupabaseFetch("/promo_campaigns?select=*&order=sort_order.asc").catch(() => []),
         ]);
 
         const settings = (settingsRows && settingsRows[0]) || {};
@@ -198,6 +200,7 @@
             offers: offers || [],
             shippingZones: shippingZones || [],
             quantityPromos: quantityPromos || [],
+            promoCampaigns: promoCampaigns || [],
         };
     }
 
