@@ -541,8 +541,53 @@ function updateCartSummary(cart, storeData) {
     // تكرار مربك بلا فايدة. نقطة الدخول الوحيدة دلوقتي في صفحة إتمام الطلب.
     // "الخصم المطبق" فوق (invoice.discount) بيفضل يعكس أي كود شغال زي ما هو.
 
+    // 🎁 [عروض الكمية]: صف العرض المطبّق + تلميحات "ناقص كام قطعة" في السلة
+    renderBoseCartPromoUi(cart, invoice);
+
     // 🧁 [أقل كمية للحجز]: شريط تقدم لكل فئة ليها حد أدنى + قفل زرار إتمام الطلب لحد ما يتحقق.
     renderBoseMinQtyPanel(cart);
+}
+
+/**
+ * 🎁 [عروض الكمية - صفحة السلة]: بيعرض (1) صف العرض المطبّق وقيمته في ملخص السلة،
+ * (2) رسالة "ناقص X قطع وتاخدي كذا" للعروض اللي العميلة قربت منها. الحساب الحقيقي على السيرفر.
+ */
+window.getBoseCartPromoPieces = function(cart, rule) {
+    const products = (window.BoseStoreData && Array.isArray(window.BoseStoreData.products)) ? window.BoseStoreData.products : [];
+    const ids = Array.isArray(rule.scope_ids) ? rule.scope_ids : [];
+    let pieces = 0;
+    (cart || []).forEach((item) => {
+        if (!item || item.type === "custom-cake" || item.type === "custom-flower" || item.type === "mini-cake" || item.type === "gift-card") return;
+        const product = products.find((p) => p.slug === item.productSlug);
+        if (!product) return;
+        const inScope = rule.scope_type === "category" ? ids.indexOf(product.category) !== -1 : ids.indexOf(product.slug) !== -1;
+        if (inScope) pieces += (parseInt(item.quantity, 10) || 1) * window.getBoseProductPiecesPerUnit(product);
+    });
+    return pieces;
+};
+
+function renderBoseCartPromoUi(cart, invoice) {
+    const table = document.querySelector(".summary-pricing-table");
+    if (!table) return;
+
+    let rowsBox = document.getElementById("bose-cart-promo-rows");
+    if (!rowsBox) {
+        rowsBox = document.createElement("div");
+        rowsBox.id = "bose-cart-promo-rows";
+        const grandRow = table.querySelector(".summary-grand-total-row");
+        if (grandRow) table.insertBefore(rowsBox, grandRow); else table.appendChild(rowsBox);
+    }
+    let html = "";
+    if (invoice.promoDiscountAmount > 0) {
+        html += `<div class="pricing-row-node" style="display:flex; justify-content:space-between; gap:8px;">
+            <span class="pricing-label-text"><i class="fa-solid fa-gift" style="color:var(--bose-pink);"></i> ${window.escapeBoseHTML ? window.escapeBoseHTML(invoice.promoTitle) : invoice.promoTitle}</span>
+            <span style="font-weight:700; color:#2e9e5b; white-space:nowrap;">- ${invoice.promoDiscountAmount.toFixed(2)} EGP</span>
+        </div>`;
+    }
+    // عرض الشحن المجاني: قيمته مش معروفة في السلة (منطقة الشحن بتتحدد في الدفع) - فبنوضّحه كرسالة
+    rowsBox.innerHTML = html;
+
+    // العروض بتظهر في صفحة العروض بس - هنا بس صف الخصم المطبّق في الملخص (بدون تلميحات ترويجية)
 }
 
 /**
@@ -1007,6 +1052,18 @@ function renderBoseLoyaltyDiscountRows(invoice) {
     }
 
     let rowsHtml = "";
+    // 🎁 [عروض الكمية]: صف العرض (خصم / قطعة هدية / شحن مجاني)
+    if (invoice.promoDiscountAmount > 0) {
+        rowsHtml += `<div class="pricing-row-node" style="display: flex; justify-content: space-between; gap:8px;">
+            <span class="pricing-label-text"><i class="fa-solid fa-gift" style="color:var(--bose-pink);"></i> ${window.escapeBoseHTML ? window.escapeBoseHTML(invoice.promoTitle) : invoice.promoTitle}:</span>
+            <span style="font-weight: 700; color: #2e9e5b; white-space:nowrap;">- ${invoice.promoDiscountAmount.toFixed(2)} EGP</span>
+        </div>`;
+    } else if (invoice.promoShippingWaived > 0) {
+        rowsHtml += `<div class="pricing-row-node" style="display: flex; justify-content: space-between; gap:8px;">
+            <span class="pricing-label-text"><i class="fa-solid fa-truck-fast" style="color:var(--bose-pink);"></i> ${window.escapeBoseHTML ? window.escapeBoseHTML(invoice.promoTitle) : invoice.promoTitle}:</span>
+            <span style="font-weight: 700; color: #2e9e5b; white-space:nowrap;">شحن مجاني (وفّرتِ ${invoice.promoShippingWaived.toFixed(2)} EGP)</span>
+        </div>`;
+    }
     if (invoice.loyaltyDiscountAmount > 0) {
         rowsHtml += `<div class="pricing-row-node" style="display: flex; justify-content: space-between;">
             <span class="pricing-label-text"><i class="fa-solid fa-star" style="color:var(--bose-pink);"></i> خصم الولاء التلقائي:</span>
@@ -1199,6 +1256,9 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee) {
         subtotal: invoice.subtotal,
         discountAmount: invoice.discount,
         loyaltyDiscountAmount: invoice.loyaltyDiscountAmount || 0,
+        promoTitle: invoice.promoTitle || "",
+        promoDiscountAmount: invoice.promoDiscountAmount || 0,
+        promoShippingWaived: invoice.promoShippingWaived || 0,
         grandTotal: finalGrandTotalCalculated,
         // 💳 رقم المحفظة/الهاتف اللي حوّلت منه العميلة + رقم المتجر اللي حوّلت عليه (بيتحفظوا في القاعدة)
         paymentMethod: boseSelectedPaymentMethod, // "online" | "cod"
@@ -1293,6 +1353,13 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee) {
     completedBoseOrderObject.loyaltyDiscountAmount = dbResult.loyaltyDiscountAmount || 0;
     completedBoseOrderObject.loyaltyOrderSequence = dbResult.loyaltyOrderSequence || null;
     completedBoseOrderObject.isLoyaltyMilestone = !!dbResult.isLoyaltyMilestone;
+    // 🎁 [عروض الكمية]: القيم المؤكدة من السيرفر
+    completedBoseOrderObject.promoTitle = dbResult.promoTitle || "";
+    completedBoseOrderObject.promoDiscountAmount = dbResult.promoDiscountAmount || 0;
+    completedBoseOrderObject.promoShippingWaived = dbResult.promoShippingWaived || 0;
+    if (dbResult.confirmedShippingFee !== undefined && dbResult.confirmedShippingFee !== null) {
+        completedBoseOrderObject.shippingFee = dbResult.confirmedShippingFee;
+    }
 
     // 🛡️🔧👑 [مصدر الحقيقة المالي]: نستبدل كل الأرقام المالية بالقيم المؤكدة الراجعة من
     // create_order_with_items، ونعيد حساب العربون/الباقي على أساسها، عشان صفحة النجاح
@@ -1470,6 +1537,16 @@ function renderBoseSuccessPage(storeData) {
         const cardBaseStyle = "margin: 16px 0 0 0; padding: 16px 18px; border-radius: 14px; direction: rtl; text-align: right; font-family: 'Cairo'; font-size: 0.9rem; font-weight: 700; display:flex; align-items:center; gap:10px;";
         let cardHtml = "";
 
+        const promoTitleOk = String(order.promoTitle || "");
+        const promoDisc = parseFloat(order.promoDiscountAmount) || 0;
+        const promoShip = parseFloat(order.promoShippingWaived) || 0;
+        if (promoTitleOk && (promoDisc > 0 || promoShip > 0)) {
+            const worth = promoDisc > 0 ? `بقيمة ${promoDisc.toFixed(2)} جنيه` : `وفّرتِ ${promoShip.toFixed(2)} جنيه شحن`;
+            cardHtml += `<div style="${cardBaseStyle} background: rgba(46,158,91,0.08); border: 1px solid rgba(46,158,91,0.3); color:#2e9e5b;">
+                <i class="fa-solid fa-gift" style="font-size:1.2rem;"></i>
+                <span>استفدتِ من عرض "${window.escapeBoseHTML ? window.escapeBoseHTML(promoTitleOk) : promoTitleOk}" ${worth} 🎉</span>
+            </div>`;
+        }
         if (loyaltyDiscountAmount > 0) {
             cardHtml += `<div style="${cardBaseStyle} background: rgba(46,158,91,0.08); border: 1px solid rgba(46,158,91,0.3); color:#2e9e5b;">
                 <i class="fa-solid fa-star" style="font-size:1.2rem;"></i>

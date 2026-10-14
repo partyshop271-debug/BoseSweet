@@ -710,7 +710,13 @@
             try {
                 // نعرض فوراً من الكاش المحلي - مفيش أي استنى لأي طلب شبكة قبل ما
                 // تشوف العميلة الهيدر/القائمة/المنتجات.
-                window.BoseStoreData = JSON.parse(cachedData);
+                const parsedCached = JSON.parse(cachedData);
+                // 🎁 [عروض الكمية]: نسخة كاش قديمة من قبل إضافة العروض (مفيهاش مفتاح quantityPromos)
+                // مينفعش نكمل بيها - بنرميها ونجيب نسخة جديدة فورًا عشان العرض يظهر من أول زيارة.
+                if (!parsedCached || !Array.isArray(parsedCached.quantityPromos)) {
+                    throw new Error("stale-cache-without-quantity-promos");
+                }
+                window.BoseStoreData = parsedCached;
                 initCoreFlow();
 
                 // التحقق من وجود تحديث بيحصل دلوقتي بهدوء في الخلفية - مش بيأخر
@@ -1862,7 +1868,18 @@
         const cats = (window.BoseStoreData && Array.isArray(window.BoseStoreData.categories)) ? window.BoseStoreData.categories : [];
         const cat = cats.find((/** @type {any} */ c) => c && c.id === categoryId);
         if (!cat) return { minQty: 0, fillings: [], title: '' };
-        const min = parseInt(cat.min_order_qty, 10) || 0;
+        let min = parseInt(cat.min_order_qty, 10) || 0;
+        // 🎁 [عروض الكمية]: لو فيه عرض شغال حاليًا على الفئة دي ومفعّل عليه "يخفّض الحد الأدنى"،
+        // الحد الأدنى بينزل لأقل عدد قطع يبدأ عنده أي عرض (نفس معادلة bose_effective_min_qty في السيرفر).
+        if (min > 1 && typeof window.getBoseActiveQuantityPromos === 'function') {
+            window.getBoseActiveQuantityPromos().forEach((/** @type {any} */ r) => {
+                if (r.lowers_min_order && r.scope_type === 'category' && Array.isArray(r.scope_ids)
+                    && r.scope_ids.indexOf(categoryId) !== -1) {
+                    const mp = parseInt(r.min_pieces, 10) || 0;
+                    if (mp > 0 && mp < min) min = mp;
+                }
+            });
+        }
         const fillings = Array.isArray(cat.filling_options)
             ? cat.filling_options.map((/** @type {any} */ f) => String(f == null ? '' : f).trim()).filter(Boolean)
             : [];
@@ -2101,9 +2118,128 @@
 
     
     /**
-     * 🧾 [فاتورة السلة]: الإجمالي = (المجموع الفرعي - خصم الولاء التلقائي) + الشحن، ومقرّب لأقرب
-     * جنيه بنفس معادلة دالة الطلب في القاعدة (create_order_with_items) - القاعدة هي مصدر
-     * الحقيقة وبتعيد الحساب بنفسها. مفيش كوبونات ولا قسائم ولا بطاقات هدايا.
+     * 🎁 [عروض الكمية]: العروض الشغالة دلوقتي (مفعّلة + جوه نافذة التاريخ) من جدول quantity_promos.
+     * السيرفر (create_order_with_items) هو اللي بيحسم الخصم الحقيقي - ده للعرض والمعاينة بس.
+     * @returns {Array<any>}
+     */
+    window.getBoseActiveQuantityPromos = function() {
+        const d = window.BoseStoreData;
+        const list = (d && Array.isArray(d.quantityPromos)) ? d.quantityPromos : [];
+        const now = Date.now();
+        return list.filter((/** @type {any} */ r) => {
+            if (!r || r.is_active === false) return false;
+            if (r.starts_at && new Date(r.starts_at).getTime() > now) return false;
+            if (r.ends_at && new Date(r.ends_at).getTime() <= now) return false;
+            return true;
+        });
+    };
+
+    /**
+     * أسطر السلة اللي ينفع تدخل في عروض الكمية (منتجات جاهزة بس - مفيش تورت/ورد مخصص/ميني/بطاقة هدية).
+     * @param {Array<any>} cart
+     */
+    function getBosePromoLines(cart) {
+        const products = (window.BoseStoreData && Array.isArray(window.BoseStoreData.products)) ? window.BoseStoreData.products : [];
+        /** @type {Array<any>} */
+        const lines = [];
+        (Array.isArray(cart) ? cart : []).forEach((/** @type {any} */ item) => {
+            if (!item) return;
+            if (item.type === 'custom-cake' || item.type === 'custom-flower' || item.type === 'mini-cake' || item.type === 'gift-card') return;
+            const product = products.find((/** @type {any} */ p) => p.slug === item.productSlug);
+            if (!product) return;
+            const ppu = window.getBoseProductPiecesPerUnit(product);
+            const qty = Math.max(1, parseInt(item.quantity, 10) || 1);
+            const unit = parseFloat(item.finalPrice) || 0;
+            lines.push({ productId: product.slug, categoryId: product.category, pieces: qty * ppu, lineTotal: unit * qty, piecePrice: unit / ppu });
+        });
+        return lines;
+    }
+
+    /**
+     * @param {any} rule
+     * @param {Array<any>} lines
+     */
+    function evalBosePromoRule(rule, lines) {
+        const ids = Array.isArray(rule.scope_ids) ? rule.scope_ids : [];
+        let pieces = 0, subtotal = 0, minPiece = Infinity;
+        lines.forEach((l) => {
+            const inScope = rule.scope_type === 'category' ? ids.indexOf(l.categoryId) !== -1
+                : (rule.scope_type === 'product' ? ids.indexOf(l.productId) !== -1 : false);
+            if (!inScope) return;
+            pieces += l.pieces; subtotal += l.lineTotal;
+            if (l.piecePrice < minPiece) minPiece = l.piecePrice;
+        });
+        return { pieces, subtotal, minPiece: isFinite(minPiece) ? minPiece : 0 };
+    }
+
+    /**
+     * بتختار أفضل عرض كمية واحد للسلة (الأكبر توفيرًا) - نفس منطق bose_best_quantity_promo في السيرفر بالظبط.
+     * @param {Array<any>} cart
+     * @param {number} shippingFee رسوم الشحن قبل أي تخفيض
+     * @returns {{id:string,title:string,discount:number,shippingWaived:number,allowLoyaltyStack:boolean,rewardType:string}|null}
+     */
+    window.computeBoseQuantityPromo = function(cart, shippingFee) {
+        const rules = window.getBoseActiveQuantityPromos();
+        if (!rules.length) return null;
+        const lines = getBosePromoLines(cart);
+        if (!lines.length) return null;
+        const ship = Math.max(0, parseFloat(String(shippingFee)) || 0);
+        /** @type {any} */
+        let best = null;
+        rules.forEach((/** @type {any} */ r) => {
+            const ev = evalBosePromoRule(r, lines);
+            const rmin = parseInt(r.min_pieces, 10) || 0;
+            if (ev.pieces < rmin) return;
+            let disc = 0, waived = 0;
+            if (r.reward_type === 'percent_off') {
+                disc = Math.round(ev.subtotal * (parseFloat(r.percent) || 0) / 100);
+            } else if (r.reward_type === 'free_piece') {
+                const every = Math.max(2, parseInt(r.free_every, 10) || rmin);
+                disc = Math.round(Math.floor(ev.pieces / every) * ev.minPiece);
+            } else if (r.reward_type === 'free_shipping') {
+                waived = ship;
+            }
+            disc = Math.min(disc, ev.subtotal);
+            if (disc + waived <= 0) return;
+            const cand = { id: r.id, title: r.title, discount: disc, shippingWaived: waived,
+                allowLoyaltyStack: r.allow_loyalty_stack !== false, rewardType: r.reward_type,
+                _rmin: rmin, _sort: parseInt(r.sort_order, 10) || 0 };
+            if (!best
+                || (cand.discount + cand.shippingWaived) > (best.discount + best.shippingWaived)
+                || ((cand.discount + cand.shippingWaived) === (best.discount + best.shippingWaived)
+                    && (cand._rmin < best._rmin || (cand._rmin === best._rmin && cand._sort < best._sort)))) {
+                best = cand;
+            }
+        });
+        return best;
+    };
+
+    /**
+     * تلميحات "ناقص كام قطعة وتاخدي العرض" للعروض اللي العميلة بدأت تقرّب منها (عندها قطع من نطاق العرض
+     * لكن لسه تحت الحد الأدنى). مرتبة الأقرب أولاً.
+     * @param {Array<any>} cart
+     * @returns {Array<{title:string,missing:number,minPieces:number,rewardType:string}>}
+     */
+    window.getBoseQuantityPromoHints = function(cart) {
+        const rules = window.getBoseActiveQuantityPromos();
+        if (!rules.length) return [];
+        const lines = getBosePromoLines(cart);
+        /** @type {Array<any>} */
+        const hints = [];
+        rules.forEach((/** @type {any} */ r) => {
+            const ev = evalBosePromoRule(r, lines);
+            const rmin = parseInt(r.min_pieces, 10) || 0;
+            if (ev.pieces > 0 && ev.pieces < rmin) {
+                hints.push({ title: r.title, missing: rmin - ev.pieces, minPieces: rmin, rewardType: r.reward_type });
+            }
+        });
+        return hints.sort((a, b) => a.missing - b.missing);
+    };
+
+    /**
+     * 🧾 [فاتورة السلة]: الإجمالي = (المجموع الفرعي - خصم الولاء التلقائي - خصم عرض الكمية) + الشحن (بعد تخفيض
+     * عرض الشحن المجاني)، ومقرّب لأقرب جنيه بنفس معادلة دالة الطلب في القاعدة (create_order_with_items) - القاعدة
+     * هي مصدر الحقيقة وبتعيد الحساب بنفسها. مفيش كوبونات ولا قسائم ولا بطاقات هدايا.
      * @param {Array} cart
      * @param {Object} storeData
      * @param {number} shippingFee
@@ -2123,17 +2259,30 @@
         });
         subtotal = parseFloat(subtotal.toFixed(4));
 
+        // 🎁 عرض الكمية (لو فيه) - لو العرض مش بيتجمع مع الولاء، خصم الولاء بيتلغي (نفس السيرفر)
+        const promo = (typeof window.computeBoseQuantityPromo === 'function')
+            ? window.computeBoseQuantityPromo(safeCart, safeShippingFee) : null;
+
         // الخصم مايتخطاش المجموع الفرعي أبداً
-        const safeLoyaltyDiscount = Math.min(Math.max(0, parseFloat(String(loyaltyDiscountAmount)) || 0), subtotal);
-        const grandTotal = Math.round(Math.max(0, subtotal - safeLoyaltyDiscount) + safeShippingFee);
+        let safeLoyaltyDiscount = Math.min(Math.max(0, parseFloat(String(loyaltyDiscountAmount)) || 0), subtotal);
+        if (promo && !promo.allowLoyaltyStack) safeLoyaltyDiscount = 0;
+        const promoDiscount = promo ? Math.min(promo.discount, Math.max(0, subtotal - safeLoyaltyDiscount)) : 0;
+        const shippingWaived = promo ? Math.min(promo.shippingWaived, safeShippingFee) : 0;
+        const shippingAfterPromo = Math.max(0, safeShippingFee - shippingWaived);
+        const grandTotal = Math.round(Math.max(0, subtotal - safeLoyaltyDiscount - promoDiscount) + shippingAfterPromo);
 
         return {
             subtotal: subtotal,
             discount: safeLoyaltyDiscount,
             loyaltyDiscountAmount: safeLoyaltyDiscount,
-            shippingFee: safeShippingFee,
+            shippingFee: shippingAfterPromo,
+            shippingFeeOriginal: safeShippingFee,
             grandTotal: grandTotal,
-            itemsCount: itemsCount
+            itemsCount: itemsCount,
+            promoTitle: promo ? promo.title : "",
+            promoDiscountAmount: promoDiscount,
+            promoShippingWaived: shippingWaived,
+            promoRewardType: promo ? promo.rewardType : ""
         };
     };
 
@@ -3400,9 +3549,10 @@
             // علوي، بتتحط أول الدوران - على مستوى العرض بس، من غير ما تلمس أو
             // تستبدل رسائل navigation.topBarMessages المحفوظة فعليًا.
             const activeSeasonForMarquee = window.getActiveBoseSeason ? window.getActiveBoseSeason() : null;
-            const effectiveMarqueeMessages = (activeSeasonForMarquee && activeSeasonForMarquee.banner && activeSeasonForMarquee.banner.title)
+            const seasonAwareMessages = (activeSeasonForMarquee && activeSeasonForMarquee.banner && activeSeasonForMarquee.banner.title)
                 ? [`🎉 ${activeSeasonForMarquee.banner.title}`, ...marqueeMessages]
                 : marqueeMessages;
+            const effectiveMarqueeMessages = seasonAwareMessages;
             let marqueeItemsHtml = '';
             // 🛡️ [تحصين إضافي - دفاع في العمق]: رسائل الشريط المتحرك بتيجي من لوحة
             // التحكم (store_settings.navigation) وبتتحقن هنا لكل زائر في كل صفحة بالموقع

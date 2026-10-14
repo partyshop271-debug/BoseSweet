@@ -136,12 +136,14 @@
      * حتى لا يحتاج أي كود تاني في الموقع للتغيير.
      */
     async function loadBoseStoreDataFromSupabase() {
-        const [settingsRows, categories, products, offers, shippingZones] = await Promise.all([
+        const [settingsRows, categories, products, offers, shippingZones, quantityPromos] = await Promise.all([
             boseSupabaseFetch("/store_settings?id=eq.1&select=*"),
             boseSupabaseFetch("/categories?select=*&order=sort_order.asc"),
             boseSupabaseFetch("/products?select=*&order=sort_order.asc"),
             boseSupabaseFetch("/offers?select=*&order=sort_order.asc"),
             boseSupabaseFetch("/shipping_zones?select=*"),
+            // 🎁 [عروض الكمية]: لو فشل جلبها ما نكسرش الموقع كله - بنرجع مصفوفة فاضية والسيرفر برضه هو اللي بيحسم الخصم الحقيقي
+            boseSupabaseFetch("/quantity_promos?select=*&order=sort_order.asc").catch(() => []),
         ]);
 
         const settings = (settingsRows && settingsRows[0]) || {};
@@ -195,6 +197,7 @@
             products: rebuiltProducts,
             offers: offers || [],
             shippingZones: shippingZones || [],
+            quantityPromos: quantityPromos || [],
         };
     }
 
@@ -288,6 +291,10 @@
             confirmedSubtotal: row.subtotal,
             confirmedShippingFee: row.shipping_fee,
             confirmedDiscountAmount: row.discount_amount,
+            // 🎁 [عروض الكمية]: القيم المؤكدة من السيرفر
+            promoTitle: row.promo_title || "",
+            promoDiscountAmount: parseFloat(row.promo_discount_amount) || 0,
+            promoShippingWaived: parseFloat(row.promo_shipping_waived) || 0,
         };
     }
 
