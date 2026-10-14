@@ -349,6 +349,103 @@
         });
     }
 
+
+    /* ============================= شكل الحملات في صفحة العروض ============================= */
+    // كل "حملة" = مجموعة عروض ليها نفس اسم الحملة. هنا بتتحكمي في اسم تبويبها وعنوانها
+    // وإيه اللي يظهر للعميلة فيها (العدّاد التنازلي، عدّاد القطع، شريط التقدم، النكهات، الصور).
+
+    const CAMPAIGN_TOGGLES = [
+        { key: "show_timer", label: "العدّاد التنازلي (باقي كام ساعة ودقيقة على نهاية العرض)" },
+        { key: "show_counter", label: "أزرار + و − لكل نكهة (عدّاد القطع)" },
+        { key: "show_progress", label: "شريط التقدم (ناقص كام قطعة وتاخدي العرض)" },
+        { key: "show_flavors", label: "قائمة النكهات/المنتجات بأسعارها" },
+        { key: "show_images", label: "صور المنتجات" },
+    ];
+
+    async function openCampaignSettings() {
+        const e = window.BoseAdminUI.escapeHtml;
+        const saved = await window.BoseAdmin.getAllPromoCampaigns();
+        const names = [];
+        allPromos.forEach((p) => { const n = p.campaign || ""; if (names.indexOf(n) === -1) names.push(n); });
+        saved.forEach((s) => { if (names.indexOf(s.campaign) === -1) names.push(s.campaign); });
+
+        if (!names.length) {
+            window.BoseAdminUI.showToast("اعملي عرض كمية الأول، وبعدها اظبطي شكل حملته.", "info");
+            return;
+        }
+
+        const rows = names.map((n, i) => {
+            const s = saved.find((x) => x.campaign === n) || {};
+            const val = (k, d) => (s[k] === undefined || s[k] === null ? d : s[k]);
+            const tog = CAMPAIGN_TOGGLES.map((t) => `
+                <label style="display:flex; align-items:center; gap:10px; padding:6px 0; cursor:pointer;">
+                    <input type="checkbox" data-k="${t.key}" ${val(t.key, true) ? "checked" : ""}>
+                    <span>${e(t.label)}</span>
+                </label>`).join("");
+            return `
+            <div class="adm-card" data-campaign="${e(n)}" style="margin:0 0 16px 0; padding:16px; border:1px solid #e5e5e5; border-radius:14px;">
+                <h4 style="margin:0 0 12px 0;">${e(n || "(عروض من غير اسم حملة)")}</h4>
+                <div class="adm-field"><label>اسم التبويب (قصير وواضح - بيظهر في الشريط أعلى صفحة العروض)</label>
+                    <input class="adm-input" data-k="tab_title" value="${e(val("tab_title", ""))}" placeholder="مثال: عروض الدوناتس"></div>
+                <div class="adm-field"><label>العنوان الكبير في قسم الحملة</label>
+                    <input class="adm-input" data-k="hero_title" value="${e(val("hero_title", ""))}" placeholder="مثال: خصم على الدوناتس بكل النكهات"></div>
+                <div class="adm-field"><label>جملة بسيطة تحت العنوان</label>
+                    <input class="adm-input" data-k="hero_sub" value="${e(val("hero_sub", ""))}" placeholder="مثال: اختاري نكهاتك والخصم بيتحسب لوحده في السلة"></div>
+                <div class="adm-field"><label>كلمة صغيرة فوق العنوان (اختياري)</label>
+                    <input class="adm-input" data-k="badge_text" value="${e(val("badge_text", ""))}" placeholder="مثال: ليوم واحد بس"></div>
+                <div class="adm-field"><label>رابط صورة التبويب (اختياري - لو سبتيه فاضي بنستخدم صورة من منتجات العرض)</label>
+                    <input class="adm-input" data-k="image_url" dir="ltr" value="${e(val("image_url", ""))}" placeholder="https://..."></div>
+                <div class="adm-field"><label>الترتيب (الأصغر يظهر الأول)</label>
+                    <input class="adm-input" type="number" data-k="sort_order" value="${e(val("sort_order", i + 1))}"></div>
+                <div style="margin-top:8px;">${tog}</div>
+            </div>`;
+        }).join("");
+
+        const overlay = document.createElement("div");
+        overlay.className = "adm-modal-overlay";
+        overlay.innerHTML = `
+            <div class="adm-modal" style="max-width:620px; max-height:92vh; overflow-y:auto;">
+                <div class="adm-modal-header">
+                    <h3>شكل الحملات في صفحة العروض</h3>
+                    <button class="adm-modal-close" data-role="close" type="button"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="adm-hint" style="margin-bottom:14px;"><i class="fa-solid fa-circle-info"></i>
+                    كل حملة بتظهر في صفحة العروض كقسم مستقل، وفوق الصفحة شريط تبويبات بأسماء الحملات (بيختفي لوحده لو في حملة واحدة بس).
+                    أي خانة تسيبيها فاضية بنكتب مكانها كلام افتراضي.</div>
+                ${rows}
+                <div style="display:flex; gap:10px; justify-content:flex-end;">
+                    <button class="adm-btn adm-btn-ghost" data-role="close" type="button">إلغاء</button>
+                    <button class="adm-btn adm-btn-primary" id="campaign-save-btn" type="button">حفظ</button>
+                </div>
+            </div>`;
+        document.body.appendChild(overlay);
+        const close = () => overlay.remove();
+        overlay.querySelectorAll("[data-role='close']").forEach((b) => b.addEventListener("click", close));
+
+        overlay.querySelector("#campaign-save-btn").addEventListener("click", async (ev) => {
+            const btn = ev.currentTarget;
+            btn.disabled = true; btn.textContent = "جاري الحفظ...";
+            try {
+                const payloads = Array.prototype.map.call(overlay.querySelectorAll("[data-campaign]"), (card) => {
+                    const o = { campaign: card.getAttribute("data-campaign") };
+                    card.querySelectorAll("[data-k]").forEach((el) => {
+                        const k = el.getAttribute("data-k");
+                        if (el.type === "checkbox") o[k] = el.checked;
+                        else if (k === "sort_order") o[k] = parseInt(el.value, 10) || 0;
+                        else o[k] = String(el.value || "").trim();
+                    });
+                    return o;
+                });
+                for (const p of payloads) { await window.BoseAdmin.savePromoCampaign(p); }
+                window.BoseAdminUI.showToast("تم حفظ شكل الحملات", "success");
+                close();
+            } catch (err) {
+                window.BoseAdminUI.showToast("تعذر حفظ شكل الحملات", "error");
+                btn.disabled = false; btn.textContent = "حفظ";
+            }
+        });
+    }
+
     /* ============================= التحميل ============================= */
 
     async function loadPromos() {
@@ -359,6 +456,8 @@
 
     document.addEventListener("BoseAdminReady", async () => {
         document.getElementById("add-promo-btn").addEventListener("click", () => openModal(null, false));
+        const cs = document.getElementById("campaign-settings-btn");
+        if (cs) cs.addEventListener("click", openCampaignSettings);
         [allPromos, allCategories, allProducts] = await Promise.all([
             window.BoseAdmin.getAllQuantityPromos(),
             window.BoseAdmin.getAllCategories(),
