@@ -7,10 +7,10 @@
     <link rel="apple-touch-icon" href="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#FF91A4">
-    <title>عرض اليوم الواحد على الدوناتس | حلويات بوسي</title>
+    <title>العروض والخصومات | حلويات بوسي</title>
 
     <!-- 🔍 إعدادات تحسين محركات البحث والأرشفة الفاخرة SEO -->
-    <meta name="description" content="عرض لمدة 24 ساعة فقط على الدوناتس بكل النكهات - خصم 10% أو شحن مجاني أو قطعة هدية. حلويات بوسي.">
+    <meta name="description" content="كل عروض حلويات بوسي في صفحة واحدة: عروض الكمية على الدوناتس (خصم أو شحن مجاني أو قطعة هدية) وخصومات الأسعار على المنتجات.">
     <meta name="robots" content="index, follow">
 
     <!-- ⚡ preconnect لتسريع أول اتصال بمصادر الخط والصور والأيقونات -->
@@ -35,7 +35,7 @@
     <script src="js/phone-utils.js?v=1" defer></script>
     <script src="js/core-engine.js?v=2028_production_v62.0" defer></script>
     <script src="js/user-interest.js?v=1" defer></script>
-    <script src="js/homepage-engine.js?v=2026_production_v1.0" defer></script>
+    <script src="js/homepage-engine.js?v=2026_production_v1.1" defer></script>
     <script src="js/cart-reminder.js?v=1" defer></script>
 
     <style>
@@ -100,6 +100,68 @@
         .op-state h2 { margin:0 0 8px; font-size:22px; font-weight:900; color:#111; }
         .op-state p { margin:0 0 18px; color:#111; opacity:.7; line-height:1.8; }
         .op-state .op-btn { width:auto; padding:14px 28px; }
+
+        /* ===== تطوير صفحة العروض: صور + سلّم العروض + شريط السلة الثابت ===== */
+        .op-collage { display:flex; justify-content:center; align-items:center; margin: 0 auto 14px; direction:ltr; min-height:84px; }
+        .op-collage img { width:78px; height:78px; border-radius:50%; object-fit:cover; border:4px solid #fff; background:rgba(var(--bose-pink-rgb),.12);
+            box-shadow:0 8px 20px rgba(var(--bose-pink-rgb),.35); margin-inline:-8px; }
+        .op-collage img:nth-child(odd) { transform: translateY(6px) rotate(-6deg); }
+        .op-collage img:nth-child(even) { transform: translateY(-6px) rotate(6deg); }
+        @media (min-width:640px) { .op-collage img { width:104px; height:104px; margin-inline:-10px; } }
+
+        .op-timer-wrap.urgent { border-color:#d93a3a; box-shadow:0 14px 34px rgba(217,58,58,.25); }
+        .op-timer-wrap.urgent .op-box { background:#c62828; }
+        .op-timer-wrap.urgent .op-timer-label .op-dot { background:#d93a3a; }
+
+        .op-steps { display:flex; align-items:center; justify-content:center; gap:0; margin: 0 auto 20px; max-width:520px; }
+        .op-step { flex:0 0 auto; text-align:center; width:84px; }
+        .op-step b { width:46px; height:46px; margin:0 auto 6px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:21px; font-weight:900;
+            background:#fff; color:#111; border:3px solid rgba(var(--bose-pink-rgb),.5); transition:all .25s; }
+        .op-step span { display:block; font-size:12px; font-weight:800; color:#111; opacity:.75; line-height:1.4; }
+        .op-step.is-reached b { background:var(--bose-pink); color:#fff; border-color:var(--bose-pink); box-shadow:0 6px 14px rgba(var(--bose-pink-rgb),.45); }
+        .op-step-line { flex:1 1 20px; min-width:16px; max-width:70px; height:3px; border-radius:3px; background:rgba(var(--bose-pink-rgb),.35); margin-bottom:26px; }
+
+        .op-card .op-best { position:absolute; top:14px; left:-34px; transform:rotate(-38deg); width:130px; text-align:center; padding:4px 0; font-size:11.5px; font-weight:900;
+            background:#111; color:#fff; letter-spacing:.2px; }
+        .op-card.is-best { border-color:var(--bose-pink); box-shadow:0 14px 34px rgba(var(--bose-pink-rgb),.28); }
+        .op-card.is-reached::after { content:"\2713  اتفعّل"; position:absolute; top:12px; right:12px; padding:3px 10px; border-radius:50px; background:#2e9e5b; color:#fff; font-size:11.5px; font-weight:900; }
+        .op-thumbs { display:flex; flex-wrap:wrap; justify-content:center; gap:6px; margin:4px auto 14px; max-width:260px; direction:ltr; }
+        .op-thumbs img, .op-thumbs .op-gift { width:var(--s,44px); height:var(--s,44px); border-radius:50%; object-fit:cover; border:2px solid #fff; background:rgba(var(--bose-pink-rgb),.12);
+            box-shadow:0 3px 10px rgba(0,0,0,.15); }
+        .op-thumbs .op-gift { display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,var(--bose-pink),#ff6f8e); color:#fff; font-size:calc(var(--s,44px) * .42); border:2px dashed #fff; }
+        .op-card .op-num-sm { display:inline-block; font-size:13px; font-weight:900; color:#111; opacity:.6; margin-bottom:6px; }
+        .op-rule-note { margin:14px auto 0; max-width:640px; text-align:center; font-size:13px; font-weight:700; color:#111; opacity:.75; line-height:1.9; }
+
+        #op-flavors-section { scroll-margin-top:140px; }
+        .op-fl { position:relative; text-decoration:none; }
+        .op-fl .op-fl-img { display:block; }
+        .op-fl .op-ctl { padding:0 10px 12px; text-align:center; }
+        .op-fl.has-qty { border-color:var(--bose-pink); box-shadow:0 8px 20px rgba(var(--bose-pink-rgb),.3); }
+        .op-add { width:100%; border:0; cursor:pointer; font-family:inherit; font-weight:900; font-size:14px; padding:10px 8px; border-radius:12px; background:#111; color:#fff; }
+        .op-add:active { transform:scale(.97); }
+        .op-stepper { display:flex; align-items:center; justify-content:space-between; gap:6px; background:rgba(var(--bose-pink-rgb),.14); border-radius:12px; padding:4px; }
+        .op-stepper button { width:38px; height:38px; border:0; border-radius:10px; cursor:pointer; font-size:20px; font-weight:900; font-family:inherit; background:#fff; color:#111; box-shadow:0 2px 6px rgba(0,0,0,.12); }
+        .op-stepper button:disabled { opacity:.4; cursor:not-allowed; }
+        .op-stepper b { flex:1; text-align:center; font-size:18px; font-weight:900; color:#111; }
+
+        .op-bar { position:fixed; left:0; right:0; bottom:calc(62px + env(safe-area-inset-bottom, 0px)); z-index:600; background:#fff; box-sizing:border-box;
+            border-top:2px solid rgba(var(--bose-pink-rgb),.55); box-shadow:0 -8px 24px rgba(0,0,0,.12); padding:10px 14px 12px; transform:translateY(130%); transition:transform .3s ease; }
+        .op-bar.is-on { transform:none; }
+        .op-bar-main { display:flex; align-items:center; gap:12px; max-width:760px; margin:0 auto; }
+        .op-bar-info { flex:1; min-width:0; }
+        .op-bar-msg { font-size:13.5px; font-weight:800; line-height:1.6; color:#111; }
+        .op-bar-msg.ok { color:#1f7a45; }
+        .op-prog { position:relative; height:8px; border-radius:8px; background:rgba(var(--bose-pink-rgb),.2); margin-top:9px; }
+        .op-prog i { position:absolute; top:0; bottom:0; inset-inline-start:0; border-radius:8px; background:linear-gradient(90deg,var(--bose-pink),#ff6f8e); transition:width .3s ease; }
+        .op-prog u { position:absolute; top:-3px; width:14px; height:14px; margin-inline-start:-7px; border-radius:50%; background:#fff; border:3px solid rgba(var(--bose-pink-rgb),.6); box-sizing:border-box; text-decoration:none; }
+        .op-prog u.on { background:var(--bose-pink); border-color:var(--bose-pink); }
+        .op-bar-side { display:flex; flex-direction:column; gap:6px; align-items:stretch; flex:0 0 auto; }
+        .op-bar-timer { text-align:center; font-size:12px; font-weight:900; color:#111; background:rgba(var(--bose-pink-rgb),.14); border-radius:50px; padding:3px 10px; direction:ltr; font-variant-numeric:tabular-nums; white-space:nowrap; }
+        .op-bar.urgent .op-bar-timer { background:#c62828; color:#fff; }
+        .op-bar-btn { display:inline-flex; align-items:center; justify-content:center; gap:6px; text-decoration:none; padding:10px 16px; border-radius:14px; background:#111; color:#fff; font-weight:900; font-size:14px; white-space:nowrap; }
+        .op-bar-btn.disabled { background:#d9d9d9; color:#666; pointer-events:none; }
+        .op-fl .op-stepper { padding:4px; }
+        body.op-has-bar .op-wrap { padding-bottom:190px; }
     </style>
 </head>
 <body>
@@ -108,7 +170,8 @@
 
     <main>
         <section class="op-hero" id="op-hero" style="display:none;">
-            <span class="op-chip"><i class="fa-solid fa-bolt"></i> عرض ليوم واحد فقط</span>
+            <div class="op-collage" id="op-collage" aria-hidden="true"></div>
+            <span class="op-chip"><i class="fa-solid fa-bolt"></i> <span id="op-chip-text">عرض لفترة محدودة</span></span>
             <h1 id="op-heading">خصم على <em>الدوناتس</em> بكل النكهات</h1>
             <p id="op-sub">اختاري العرض اللي يناسبك والنكهات اللي تحبيها، والخصم بيتحسب تلقائيًا في السلة.</p>
 
@@ -129,118 +192,407 @@
                     <h2>اختاري العرض اللي يناسبك</h2>
                     <p>عرض واحد بس بيتطبق على الطلب - الأكبر توفيرًا ليكي تلقائيًا</p>
                 </div>
+                <div class="op-steps" id="op-steps" aria-hidden="true"></div>
                 <div class="op-offers" id="op-offers"></div>
-                <div class="op-note"><i class="fa-solid fa-circle-info"></i>العرض ساري يوم واحد فقط. الشحن المجاني بيتطبق على التوصيل لمنطقتك، ومش متاح مع الاستلام من الفرع. بعد ما تختاري نكهاتك هتلاقي الخصم ظاهر في السلة وصفحة الدفع.</div>
+                <div class="op-rule-note" id="op-rule-note">العروض مش بتتجمع على بعض: السلة بتاخد لوحدها العرض الأكبر توفيرًا ليكي تلقائيًا.</div>
+                <div class="op-note"><i class="fa-solid fa-circle-info"></i><span id="op-note-text">العرض ساري لفترة محدودة. الشحن المجاني بيتطبق على التوصيل لمنطقتك، ومش متاح مع الاستلام من الفرع. بعد ما تختاري نكهاتك هتلاقي الخصم ظاهر في السلة وصفحة الدفع.</span></div>
             </div>
 
             <div id="op-flavors-section" style="display:none;">
                 <div class="op-section-title">
                     <h2>نكهات الدوناتس والأسعار</h2>
-                    <p>كل النكهات داخلة في العرض - اضغطي على أي نكهة عشان تضيفيها</p>
+                    <p>كل النكهات داخلة في العرض - ضيفي من هنا مباشرة بزرار + وزرار −، من غير ما تسيبي الصفحة</p>
                 </div>
                 <div class="op-flavors" id="op-flavors"></div>
+            </div>
+
+            <div id="op-products-section" style="display:none;">
+                <div class="op-section-title">
+                    <h2>خصومات على أسعار المنتجات</h2>
+                    <p>منتجات سعرها نزل لفترة - السعر القديم مشطوب جنب السعر الجديد</p>
+                </div>
+                <div id="all-offers-grid" class="bose-products-grid products-grid"></div>
+                <div id="all-offers-empty-state" style="display:none;"></div>
             </div>
 
             <div id="op-empty" class="op-state" style="display:none;">
                 <i class="fa-solid fa-hourglass-end"></i>
                 <h2 id="op-empty-title">مفيش عروض شغالة دلوقتي</h2>
                 <p id="op-empty-text">العرض خلص، تابعينا عشان عروضنا الجاية.</p>
-                <a class="op-btn" href="/category.html?category=taswaq-donuts">شوفي الدوناتس</a>
+                <a class="op-btn" href="/menu.html">شوفي المنيو</a>
             </div>
         </div>
     </main>
+
+    <!-- 🛒 شريط ثابت بيتابع السلة: قطع العرض + التقدم + التايمر -->
+    <div class="op-bar" id="op-bar" role="region" aria-label="متابعة السلة والعرض">
+        <div class="op-bar-main">
+            <div class="op-bar-info">
+                <div class="op-bar-msg" id="op-bar-msg"></div>
+                <div class="op-prog" id="op-prog"><i id="op-prog-fill" style="width:0%"></i></div>
+            </div>
+            <div class="op-bar-side">
+                <div class="op-bar-timer" id="op-bar-timer" aria-hidden="true">00:00:00</div>
+                <a class="op-bar-btn" id="op-bar-btn" href="/cart.html"><i class="fa-solid fa-bag-shopping"></i> <span id="op-bar-btn-text">إتمام الطلب</span></a>
+            </div>
+        </div>
+    </div>
 
     <div id="bose-footer-injector"></div>
 
     <script>
     (function () {
         "use strict";
-        var DONUTS = "taswaq-donuts";
+        var CART_KEY = "bose_cart";
+        var MAX_QTY = 20; // نفس الحد الأقصى المطبّق في كروت المنتجات وصفحة السلة
+        var SKIP_TYPES = ["custom-cake", "custom-flower", "mini-cake", "gift-card"];
         var esc = function (v) { return (window.escapeBoseHTML ? window.escapeBoseHTML(String(v == null ? "" : v)) : String(v == null ? "" : v).replace(/[&<>"']/g, function (c) { return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]; })); };
         var pad = function (n) { return String(n).padStart(2, "0"); };
         var tick = null;
+        var state = { promos: [], flavors: [], target: 0, upcoming: false, retried: false };
 
+        /* ---------- أدوات صغيرة ---------- */
         function fmtDay(ms) {
             try { return new Date(ms).toLocaleString("ar-EG", { timeZone: "Africa/Cairo", weekday: "long", day: "numeric", month: "long", hour: "numeric", minute: "2-digit" }); }
             catch (e) { return ""; }
+        }
+        // صور Cloudinary مصغّرة ومضغوطة (أقل استهلاك بيانات) - أي رابط تاني بيفضل زي ما هو
+        function thumb(u, w) {
+            u = String(u || "");
+            if (u.indexOf("res.cloudinary.com") > -1 && u.indexOf("/upload/") > -1 && !/\/upload\/[a-z]+_/.test(u)) {
+                return u.replace("/upload/", "/upload/f_auto,q_auto,c_fill,ar_1:1,w_" + w + "/");
+            }
+            return u;
         }
         function rewardChip(r) {
             if (r.reward_type === "percent_off") return '<i class="fa-solid fa-percent"></i> خصم ' + (Number(r.percent) || 0) + '%';
             if (r.reward_type === "free_shipping") return '<i class="fa-solid fa-truck-fast"></i> شحن مجاني';
             return '<i class="fa-solid fa-gift"></i> قطعة هدية';
         }
-
+        function rewardShort(r) {
+            if (r.reward_type === "percent_off") return "خصم " + (Number(r.percent) || 0) + "%";
+            if (r.reward_type === "free_shipping") return "شحن مجاني";
+            return "قطعة هدية";
+        }
+        function $(id) { return document.getElementById(id); }
+        function show(id, on) { var el = $(id); if (el) el.style.display = on ? "" : "none"; }
         function stop() { if (tick) { clearInterval(tick); tick = null; } }
 
-        function show(id, on) { var el = document.getElementById(id); if (el) el.style.display = on ? "" : "none"; }
+        /* ---------- السلة (نفس مفتاح وبنية باقي الموقع) ---------- */
+        function readCart() {
+            try { var c = JSON.parse(localStorage.getItem(CART_KEY) || "[]"); return Array.isArray(c) ? c : []; }
+            catch (e) { return []; }
+        }
+        function writeCart(c) {
+            try { localStorage.setItem(CART_KEY, JSON.stringify(c)); } catch (e) { /* التخزين ممنوع */ }
+            if (typeof window.updateGlobalCartCounter === "function") window.updateGlobalCartCounter();
+        }
+        function findProduct(slug) {
+            var ps = (window.BoseStoreData && window.BoseStoreData.products) || [];
+            for (var i = 0; i < ps.length; i++) { if (ps[i].slug === slug || ps[i].id === slug) return ps[i]; }
+            return null;
+        }
+        function fillingFor(product) {
+            if (typeof window.getBoseCategoryOrderRules !== "function") return null;
+            var f = window.getBoseCategoryOrderRules(product.category).fillings;
+            return (f && f.length) ? f[0] : null;
+        }
+        function lineIdFor(product) {
+            var f = fillingFor(product);
+            return [product.slug, f ? "fill-" + encodeURIComponent(f) : null].filter(Boolean).join("-");
+        }
+        function qtyOf(cart, slug) {
+            var n = 0;
+            cart.forEach(function (it) { if (it && it.productSlug === slug) n += parseInt(it.quantity, 10) || 0; });
+            return n;
+        }
 
+        /* ---------- نطاق العروض وعدّ القطع ---------- */
+        function inScope(rule, product) {
+            var ids = Array.isArray(rule.scope_ids) ? rule.scope_ids : [];
+            return rule.scope_type === "category" ? ids.indexOf(product.category) !== -1 : ids.indexOf(product.slug) !== -1;
+        }
+        function piecesFor(rule, cart) {
+            var n = 0;
+            cart.forEach(function (it) {
+                if (!it || SKIP_TYPES.indexOf(it.type) !== -1) return;
+                var p = findProduct(it.productSlug);
+                if (!p || !inScope(rule, p)) return;
+                var ppu = typeof window.getBoseProductPiecesPerUnit === "function" ? window.getBoseProductPiecesPerUnit(p) : 1;
+                n += (parseInt(it.quantity, 10) || 1) * ppu;
+            });
+            return n;
+        }
+        function isLive(r, now) { return !r.starts_at || new Date(r.starts_at).getTime() <= now; }
+
+        /* ---------- الحركة: إضافة/إنقاص من نفس الصفحة ---------- */
+        function change(slug, delta) {
+            var product = findProduct(slug);
+            if (!product || product.isAvailable === false) return;
+            var cart = readCart();
+            var lid = lineIdFor(product);
+            var line = null, i;
+            for (i = 0; i < cart.length; i++) { if (cart[i] && cart[i].id === lid) { line = cart[i]; break; } }
+            if (!line) { for (i = 0; i < cart.length; i++) { if (cart[i] && cart[i].productSlug === slug) { line = cart[i]; break; } } }
+
+            if (delta > 0) {
+                if (line) {
+                    if ((parseInt(line.quantity, 10) || 0) >= MAX_QTY) {
+                        if (typeof window.showBoseGlobalToast === "function") window.showBoseGlobalToast("وصلتي للحد الأقصى (" + MAX_QTY + " قطعة) للنكهة دي.", { type: "warning" });
+                        return;
+                    }
+                    line.quantity = (parseInt(line.quantity, 10) || 0) + 1;
+                } else {
+                    var opts = {}; var f = fillingFor(product); if (f) opts.filling = f;
+                    var item = typeof window.createCartItem === "function" ? window.createCartItem(product, opts, 1) : null;
+                    if (!item) return;
+                    item.id = lid;
+                    cart.push(item);
+                }
+                if (typeof window.fireBoseCommerceEvent === "function") {
+                    try {
+                        var unit = typeof window.calculateProductFinalPrice === "function" ? window.calculateProductFinalPrice(product, {}) : Number(product.price) || 0;
+                        window.fireBoseCommerceEvent("add_to_cart", { value: unit, currency: (window.BoseStoreData && window.BoseStoreData.store && window.BoseStoreData.store.currency) || "EGP", contentId: product.id || product.slug, contentName: product.title, quantity: 1 });
+                    } catch (e) { /* التتبع مش لازم يكسر الإضافة */ }
+                }
+            } else if (line) {
+                line.quantity = (parseInt(line.quantity, 10) || 1) - 1;
+                if (line.quantity <= 0) cart.splice(cart.indexOf(line), 1);
+            }
+            writeCart(cart);
+            refresh();
+        }
+
+        /* ---------- تحديث الأزرار والشريط والسلّم (بدون إعادة رسم الصور) ---------- */
+        function ctlHTML(qty) {
+            if (qty <= 0) return '<button type="button" class="op-add" data-op="inc"><i class="fa-solid fa-plus"></i> أضيفي</button>';
+            return '<div class="op-stepper"><button type="button" data-op="dec" aria-label="تقليل">&minus;</button><b>' + qty + '</b>' +
+                '<button type="button" data-op="inc" aria-label="زيادة"' + (qty >= MAX_QTY ? " disabled" : "") + '>+</button></div>';
+        }
+
+        function refresh() {
+            var cart = readCart();
+            var now = Date.now();
+
+            // أزرار + / − على كل نكهة
+            Array.prototype.forEach.call(document.querySelectorAll("#op-flavors .op-fl"), function (tile) {
+                var q = qtyOf(cart, tile.getAttribute("data-slug"));
+                var ctl = tile.querySelector(".op-ctl");
+                if (ctl) ctl.innerHTML = ctlHTML(q);
+                tile.classList.toggle("has-qty", q > 0);
+            });
+
+            var live = state.promos.filter(function (r) { return isLive(r, now); }).sort(function (a, b) { return (parseInt(a.min_pieces, 10) || 0) - (parseInt(b.min_pieces, 10) || 0); });
+            var bar = $("op-bar");
+            if (!state.promos.length) { if (bar) bar.classList.remove("is-on"); document.body.classList.remove("op-has-bar"); return; }
+
+            var reached = [], next = null, total = 0, maxMin = 0;
+            live.forEach(function (r) {
+                var min = parseInt(r.min_pieces, 10) || 0;
+                var p = piecesFor(r, cart);
+                if (p > total) total = p;
+                if (min > maxMin) maxMin = min;
+                if (p >= min) { reached.push(r); } else if (!next || min < (parseInt(next.min_pieces, 10) || 0)) { next = r; }
+            });
+
+            // السلّم + الكروت: اللي اتفعّل بيتلوّن
+            Array.prototype.forEach.call(document.querySelectorAll("[data-op-min]"), function (el) {
+                var min = parseInt(el.getAttribute("data-op-min"), 10) || 0;
+                var on = live.some(function (r) { return (parseInt(r.min_pieces, 10) || 0) === min && piecesFor(r, cart) >= min; });
+                el.classList.toggle("is-reached", on);
+            });
+
+            // رسالة الشريط
+            var msg = $("op-bar-msg");
+            var ok = false, text;
+            if (!live.length) {
+                text = "العرض لسه ما بدأش - تقدري تجهّزي نكهاتك من دلوقتي.";
+            } else if (total === 0) {
+                text = "اختاري نكهاتك وابدأي - أول عرض عند " + (parseInt(live[0].min_pieces, 10) || 0) + " قطع.";
+            } else if (!reached.length) {
+                text = "عندك " + total + " قطع - ناقص " + ((parseInt(next.min_pieces, 10) || 0) - piecesFor(next, cart)) + " وتاخدي " + rewardShort(next) + ".";
+            } else {
+                ok = true;
+                text = "✅ عندك " + total + " قطع - فعّلتي: " + reached.map(rewardShort).join(" أو ");
+                if (next) text += " · ناقص " + ((parseInt(next.min_pieces, 10) || 0) - piecesFor(next, cart)) + " وتاخدي " + rewardShort(next) + ".";
+            }
+            if (msg) { msg.textContent = text; msg.className = "op-bar-msg" + (ok ? " ok" : ""); }
+
+            // شريط التقدم + علامات الشرائح
+            var prog = $("op-prog");
+            if (prog) {
+                var pct = maxMin ? Math.min(100, Math.round(total / maxMin * 100)) : 0;
+                prog.innerHTML = '<i style="width:' + pct + '%"></i>' + live.map(function (r) {
+                    var min = parseInt(r.min_pieces, 10) || 0;
+                    return '<u class="' + (total >= min ? "on" : "") + '" style="inset-inline-start:' + (maxMin ? Math.round(min / maxMin * 100) : 0) + '%"></u>';
+                }).join("");
+            }
+
+            // زرار إتمام الطلب: بيتقفل لو فئة العروض لسه تحت الحد الأدنى
+            var btn = $("op-bar-btn"), btnText = $("op-bar-btn-text");
+            var blocked = null;
+            if (typeof window.getBoseCartMinQtyStatus === "function") {
+                var cats = {};
+                state.flavors.forEach(function (p) { cats[p.category] = true; });
+                (window.getBoseCartMinQtyStatus(cart) || []).forEach(function (st) { if (cats[st.categoryId] && !st.ok && !blocked) blocked = st; });
+            }
+            if (btn && btnText) {
+                btn.classList.toggle("disabled", !!blocked);
+                btnText.textContent = blocked ? ("كمّلي " + blocked.missing + " قطع") : (total > 0 ? "إتمام الطلب" : "السلة");
+            }
+
+            if (bar) bar.classList.add("is-on");
+            document.body.classList.add("op-has-bar");
+        }
+
+        /* ---------- رسم الصفحة ---------- */
         function render() {
             var data = window.BoseStoreData;
             if (!data) return;
             var now = Date.now();
-            // العروض اللي لسه ماخلصتش (شغالة دلوقتي أو مجدولة)
             var promos = (Array.isArray(data.quantityPromos) ? data.quantityPromos : []).filter(function (r) {
                 return r && r.is_active !== false && (!r.ends_at || new Date(r.ends_at).getTime() > now);
             }).sort(function (a, b) { return (a.sort_order || 0) - (b.sort_order || 0); });
 
+            // عروض الأسعار على المنتجات (old_price) - بيرسمها homepage-engine.js في #all-offers-grid
+            if (typeof window.getAllOfferProducts !== "function" && !state.retried) { state.retried = true; setTimeout(render, 400); }
+            var prodOffers = typeof window.getAllOfferProducts === "function" ? window.getAllOfferProducts() : [];
+
             stop();
+            state.promos = promos;
+            show("op-products-section", prodOffers.length > 0);
+
             if (!promos.length) {
-                show("op-hero", false); show("op-offers-section", false); show("op-flavors-section", false); show("op-empty", true);
+                show("op-hero", false); show("op-offers-section", false); show("op-flavors-section", false);
+                var bar0 = $("op-bar"); if (bar0) bar0.classList.remove("is-on");
+                document.body.classList.remove("op-has-bar");
+                show("op-empty", prodOffers.length === 0);
                 return;
             }
             show("op-empty", false); show("op-hero", true); show("op-offers-section", true);
 
-            var catParam = "/category.html?category=" + encodeURIComponent(DONUTS);
+            // النكهات المشمولة (القطع المفردة بس - مش البوكسات ولا المنتجات المخصصة)
+            var seen = {};
+            var flavors = (Array.isArray(data.products) ? data.products : []).filter(function (p) {
+                var ppu = p.options && parseInt(p.options.piecesPerUnit, 10);
+                if (p.isAvailable === false || (ppu && ppu > 1) || (p.customBuilderUrl && p.builderType && p.builderType !== "standard")) return false;
+                if (seen[p.slug]) return false;
+                var inAny = promos.some(function (r) { return inScope(r, p); });
+                if (inAny) seen[p.slug] = true;
+                return inAny;
+            });
+            state.flavors = flavors;
+            var imgs = flavors.map(function (p) { return (p.images && p.images[0]) || ""; }).filter(Boolean);
+
+            // الهيرو: صور حقيقية + عنوان + نص حسب مدة العرض
+            $("op-collage").style.display = imgs.length ? "" : "none";
+            $("op-collage").innerHTML = imgs.slice(0, 4).map(function (u) { return '<img src="' + esc(thumb(u, 220)) + '" alt="" width="104" height="104" decoding="async">'; }).join("");
             var starts = promos.map(function (r) { return r.starts_at ? new Date(r.starts_at).getTime() : 0; });
             var minStart = Math.min.apply(null, starts);
             var upcoming = minStart > now;
-            var ends = promos.map(function (r) { return r.ends_at ? new Date(r.ends_at).getTime() : 0; }).filter(Boolean);
-            var target = upcoming ? minStart : (ends.length ? Math.min.apply(null, ends) : 0);
+            var endsArr = promos.map(function (r) { return r.ends_at ? new Date(r.ends_at).getTime() : 0; }).filter(Boolean);
+            var target = upcoming ? minStart : (endsArr.length ? Math.min.apply(null, endsArr) : 0);
+            state.target = target; state.upcoming = upcoming;
+            var maxEnd = endsArr.length ? Math.max.apply(null, endsArr) : 0;
+            var oneDay = maxEnd && Math.max.apply(null, endsArr) - (minStart || now) <= 26 * 3600 * 1000;
+            $("op-chip-text").textContent = oneDay ? "عرض ليوم واحد فقط" : "عروض لفترة محدودة";
+            var noteTxt = $("op-note-text");
+            if (noteTxt) noteTxt.textContent = (oneDay ? "العرض ساري يوم واحد فقط. " : "العروض سارية لفترة محدودة وبتنتهي في الموعد اللي فوق. ") +
+                "الشحن المجاني بيتطبق على التوصيل لمنطقتك، ومش متاح مع الاستلام من الفرع. بعد ما تختاري نكهاتك هتلاقي الخصم ظاهر في السلة وصفحة الدفع.";
 
-            // الكروت - بنفس نص العرض اللي في الداتابيز
-            document.getElementById("op-offers").innerHTML = promos.map(function (r) {
-                var live = !r.starts_at || new Date(r.starts_at).getTime() <= now;
-                return '<div class="op-card">' +
-                    '<div class="op-num">' + esc(r.min_pieces) + '</div>' +
+            var catIds = []; promos.forEach(function (r) { if (r.scope_type === "category" && Array.isArray(r.scope_ids)) r.scope_ids.forEach(function (id) { if (catIds.indexOf(id) === -1) catIds.push(id); }); });
+            var cats = Array.isArray(data.categories) ? data.categories : [];
+            var catTitle = "";
+            if (catIds.length === 1) { for (var ci = 0; ci < cats.length; ci++) { if (cats[ci] && cats[ci].id === catIds[0]) { catTitle = cats[ci].title || ""; break; } } }
+            $("op-heading").innerHTML = catTitle ? ('خصم على <em>' + esc(catTitle) + '</em> بكل النكهات') : 'عروضنا <em>الحالية</em>';
+
+            // سلّم 3 ← 5 ← 8
+            var bestMin = 0; promos.forEach(function (r) { var m = parseInt(r.min_pieces, 10) || 0; if (m > bestMin) bestMin = m; });
+            $("op-steps").innerHTML = promos.map(function (r, i) {
+                var m = parseInt(r.min_pieces, 10) || 0;
+                return (i ? '<div class="op-step-line"></div>' : '') +
+                    '<div class="op-step" data-op-min="' + m + '"><b>' + esc(m) + '</b><span>' + esc(rewardShort(r)) + '</span></div>';
+            }).join("");
+            $("op-steps").style.display = promos.length > 1 ? "" : "none";
+
+            // الكروت: صور بعدد القطع + شارة "الأكتر توفيرًا" على أعلى شريحة
+            $("op-offers").innerHTML = promos.map(function (r) {
+                var live = isLive(r, now);
+                var m = parseInt(r.min_pieces, 10) || 0;
+                var n = Math.min(m, 8);
+                var size = n <= 3 ? 58 : (n <= 5 ? 50 : 42);
+                var thumbs = "";
+                for (var k = 0; k < n; k++) {
+                    thumbs += imgs.length ? '<img src="' + esc(thumb(imgs[k % imgs.length], 120)) + '" alt="" width="' + size + '" height="' + size + '" loading="lazy" decoding="async">' : "";
+                }
+                if (r.reward_type === "free_piece") thumbs += '<span class="op-gift" aria-hidden="true"><i class="fa-solid fa-gift"></i></span>';
+                var best = promos.length > 1 && m === bestMin;
+                return '<div class="op-card' + (best ? " is-best" : "") + '" data-op-min="' + m + '">' +
+                    (best ? '<div class="op-best">الأكتر توفيرًا</div>' : "") +
+                    '<div class="op-thumbs" style="--s:' + size + 'px">' + thumbs + '</div>' +
+                    '<div class="op-num-sm">أي ' + esc(m) + ' قطع</div>' +
                     '<div class="op-reward">' + rewardChip(r) + '</div>' +
                     '<h3>' + esc(r.title) + '</h3>' +
-                    (live ? '<a class="op-btn" href="' + catParam + '"><i class="fa-solid fa-cart-plus"></i> اختاري نكهاتك</a>'
+                    (live ? '<button type="button" class="op-btn" data-op-go="1"><i class="fa-solid fa-cart-plus"></i> اختاري نكهاتك</button>'
                           : '<span class="op-btn disabled"><i class="fa-regular fa-clock"></i> يبدأ ' + esc(fmtDay(new Date(r.starts_at).getTime())) + '</span>') +
                     '</div>';
             }).join("");
 
-            // النكهات والأسعار (القطع المفردة بس - مش البوكسات)
-            var flavors = (Array.isArray(data.products) ? data.products : []).filter(function (p) {
-                var ppu = p.options && parseInt(p.options.piecesPerUnit, 10);
-                return p.category === DONUTS && p.isAvailable !== false && !(ppu && ppu > 1);
-            });
-            document.getElementById("op-flavors").innerHTML = flavors.map(function (p) {
+            // النكهات: كل نكهة بزراري + و − (الكميات بتتحدّث في refresh)
+            $("op-flavors").innerHTML = flavors.map(function (p) {
                 var img = (p.images && p.images[0]) || "";
                 var name = p.flavorName || p.title;
-                return '<a class="op-fl" href="/product.html?slug=' + encodeURIComponent(p.slug) + '">' +
-                    (img ? '<img loading="lazy" src="' + esc(img) + '" alt="' + esc(name) + '">' : '<img alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">') +
-                    '<div><strong>' + esc(name) + '</strong><span>' + esc(Number(p.price).toFixed(0)) + ' جنيه / قطعة</span></div></a>';
+                return '<div class="op-fl" data-slug="' + esc(p.slug) + '">' +
+                    '<a class="op-fl-img" href="/product.html?slug=' + encodeURIComponent(p.slug) + '" aria-label="تفاصيل ' + esc(name) + '">' +
+                    (img ? '<img loading="lazy" decoding="async" width="240" height="240" src="' + esc(thumb(img, 360)) + '" alt="' + esc(name) + '">' : '<img alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">') +
+                    '</a><div><strong>' + esc(name) + '</strong><span>' + esc(Number(p.price).toFixed(0)) + ' جنيه / قطعة</span></div>' +
+                    '<div class="op-ctl"></div></div>';
             }).join("");
             show("op-flavors-section", flavors.length > 0);
 
-            // التايمر
-            var label = document.getElementById("op-timer-label");
-            document.getElementById("op-timer-text").textContent = upcoming ? "العرض يبدأ بعد" : "العرض ينتهي خلال";
+            // التايمر (الهيرو + الشريط الثابت) - أحمر في آخر ساعة
+            var label = $("op-timer-label");
+            $("op-timer-text").textContent = upcoming ? "العرض يبدأ بعد" : "العرض ينتهي خلال";
             label.className = "op-timer-label" + (upcoming ? " upcoming" : "");
-            var dateEl = document.getElementById("op-date");
+            var dateEl = $("op-date");
             dateEl.textContent = target ? ((upcoming ? "يبدأ: " : "ينتهي: ") + fmtDay(target)) : "";
             show("op-timer", !!target); show("op-timer-label", !!target); dateEl.style.display = target ? "" : "none";
+            var barTimer = $("op-bar-timer");
+            if (barTimer) barTimer.style.display = target ? "" : "none";
 
             function update() {
                 var left = Math.max(0, target - Date.now());
                 var total = Math.floor(left / 1000);
-                document.getElementById("op-h").textContent = pad(Math.floor(total / 3600));
-                document.getElementById("op-m").textContent = pad(Math.floor((total % 3600) / 60));
-                document.getElementById("op-s").textContent = pad(total % 60);
+                var h = pad(Math.floor(total / 3600)), m = pad(Math.floor((total % 3600) / 60)), s = pad(total % 60);
+                $("op-h").textContent = h; $("op-m").textContent = m; $("op-s").textContent = s;
+                if (barTimer) barTimer.textContent = h + ":" + m + ":" + s;
+                var urgent = !upcoming && left > 0 && left <= 3600 * 1000;
+                var wrap = document.querySelector(".op-timer-wrap"); if (wrap) wrap.classList.toggle("urgent", urgent);
+                var bar = $("op-bar"); if (bar) bar.classList.toggle("urgent", urgent);
                 if (left <= 0) { render(); } // بدأ أو خلص: نعيد رسم الصفحة بالحالة الجديدة
             }
             if (target) { update(); tick = setInterval(update, 1000); }
+            refresh();
         }
+
+        /* ---------- أحداث (مرة واحدة) ---------- */
+        document.addEventListener("click", function (e) {
+            var t = e.target;
+            if (!t || !t.closest) return;
+            var b = t.closest("#op-flavors [data-op]");
+            if (b) {
+                var tile = b.closest(".op-fl");
+                if (tile) change(tile.getAttribute("data-slug"), b.getAttribute("data-op") === "dec" ? -1 : 1);
+                return;
+            }
+            if (t.closest("[data-op-go]")) {
+                var sec = $("op-flavors-section");
+                if (sec) sec.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+        });
+        // لو السلة اتغيّرت من تبويب تاني أو بعد الرجوع بزرار "رجوع" في المتصفح
+        window.addEventListener("storage", function (e) { if (e.key === CART_KEY) refresh(); });
+        window.addEventListener("pageshow", function (e) { if (e.persisted) refresh(); });
 
         document.addEventListener("BoseDatabaseLoaded", render);
         if (window.BoseStoreData) render();

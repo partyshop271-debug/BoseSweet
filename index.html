@@ -125,9 +125,32 @@
     <script src="js/core-engine.js?v=2028_production_v62.0" defer></script>
     <script src="js/user-interest.js?v=1" defer></script>
     <script src="js/guided-tour.js?v=3.3" defer></script>
-    <script src="js/homepage-engine.js?v=2026_production_v1.0" defer></script>
+    <script src="js/homepage-engine.js?v=2026_production_v1.1" defer></script>
     <script src="js/seasons-engine.js?v=2026_production_v1.0" defer></script>
     <script src="js/cart-reminder.js?v=1" defer></script>
+    <style>
+        /* بلوك دخول العروض بالرئيسية: كبير وهادي - صور + عنوان + زرار واحد */
+        .bose-offers-entrance { padding: 26px 16px; }
+        .boe-card { display:flex; flex-direction:column; align-items:center; text-align:center; gap:18px; box-sizing:border-box; width:100%; max-width:1100px; margin:0 auto;
+            min-height:300px; padding:30px 20px 28px; border-radius:30px; text-decoration:none; color:#fff; position:relative; overflow:hidden;
+            background: radial-gradient(circle at 15% 0%, rgba(255,255,255,.28), transparent 55%), linear-gradient(135deg, var(--bose-pink), #e0456b 70%, #b82a53);
+            box-shadow:0 18px 44px rgba(var(--bose-pink-rgb),.45); transition:transform .2s; }
+        .boe-card:active { transform:scale(.985); }
+        .boe-media { display:flex; justify-content:center; direction:ltr; min-height:96px; }
+        .boe-media img { width:92px; height:92px; border-radius:50%; object-fit:cover; border:4px solid #fff; background:rgba(255,255,255,.3); margin-inline:-9px; box-shadow:0 10px 24px rgba(0,0,0,.25); }
+        .boe-media img:nth-child(2) { transform:translateY(-10px); width:108px; height:108px; z-index:2; }
+        .boe-badge { display:inline-flex; align-items:center; gap:8px; padding:7px 16px; border-radius:50px; background:rgba(0,0,0,.28); font-weight:800; font-size:13px; }
+        .boe-card .boe-title { color:#fff !important; margin:12px 0 8px; font-size:clamp(24px, 6.4vw, 40px); line-height:1.4; font-weight:900; }
+        .boe-card .boe-sub { color:#fff !important; margin:0 auto 18px; max-width:520px; font-size:15px; line-height:1.9; opacity:.92; }
+        .boe-card .boe-btn { color:#111 !important; display:inline-flex; align-items:center; justify-content:center; gap:10px; padding:16px 34px; border-radius:50px; background:#fff; color:#111; font-weight:900; font-size:17px; box-shadow:0 10px 24px rgba(0,0,0,.22); }
+        @media (min-width:820px) {
+            .boe-card { flex-direction:row-reverse; justify-content:space-between; text-align:right; padding:40px 56px; min-height:320px; }
+            .boe-media img { width:130px; height:130px; margin-inline:-14px; }
+            .boe-media img:nth-child(2) { width:156px; height:156px; }
+            .boe-body { flex:1; }
+            .boe-sub { margin-inline:0; }
+        }
+    </style>
 </head>
 <body class="bose-hardware-accelerated">
 
@@ -197,23 +220,18 @@
             <div id="categories-dots-container" class="categories-slider-dots"></div>
         </section>
 
-        <!-- 🏷️ SECTION 04: قسم العروض والخصومات الفاخرة المنسق أفقياً بسلايدر تلقائي -->
-        <section id="offers-carousel-section" class="bose-section-container bose-offers-section bose-offers-slider-section" aria-labelledby="offers-main-heading">
-            <div class="bose-section-header">
-                <div class="bose-section-badge"><i class="fas fa-percentage"></i> عروض حصريّة</div>
-                <h2 id="offers-main-heading" class="bose-section-title">عروض وتخفيضات حلويات بوسي</h2>
-                <p id="offers-description" class="bose-section-subtitle bose-arabic-text">اخترنا لكم تشكيلة مميزة بأسعار استثنائية، لفترة محدودة.</p>
-                <a href="offers.html" class="bose-view-all-offers-link">شوفي كل العروض <i class="fa-solid fa-arrow-left"></i></a>
-            </div>
-            
-            <div class="bose-offers-slider-viewport" id="offers-slider-viewport">
-                <button class="offers-nav-btn offers-nav-prev" id="offers-prev-btn" aria-label="العرض السابق"><i class="fas fa-chevron-right"></i></button>
-                <div class="bose-offers-track bose-offers-slider-container" id="offers-slider-track">
-                    <!-- سيتم حقن كروت العروض تلقائياً عبر المحرك المركزي ببيانات الخصوم والأسعار -->
+        <!-- 🏷️ SECTION 04: بلوك دخول العروض - مفيش أي عروض بتتعرض هنا، البلوك ده بس بيوصّل لصفحة العروض (المكان الوحيد للعروض).
+             الـ id متسيّب زي ما هو (offers-carousel-section) عشان جولة الموقع الإرشادية بتعتمد عليه. بيظهر بس لو فيه عروض فعلاً. -->
+        <section id="offers-carousel-section" class="bose-section-container bose-offers-entrance" aria-labelledby="offers-main-heading" style="display:none;">
+            <a href="offers.html" class="boe-card" id="offers-entrance-link">
+                <div class="boe-media" id="offers-entrance-media" aria-hidden="true"></div>
+                <div class="boe-body">
+                    <span class="boe-badge"><i class="fas fa-percentage"></i> <span id="offers-entrance-badge">عروض حصريّة</span></span>
+                    <h2 id="offers-main-heading" class="boe-title">كل عروض حلويات بوسي في مكان واحد</h2>
+                    <p id="offers-description" class="boe-sub bose-arabic-text">ادخلي صفحة العروض وشوفي كل حاجة.</p>
+                    <span class="boe-btn">شوفي كل العروض <i class="fa-solid fa-arrow-left"></i></span>
                 </div>
-                <button class="offers-nav-btn offers-nav-next" id="offers-next-btn" aria-label="العرض التالي"><i class="fas fa-chevron-left"></i></button>
-            </div>
-            <div id="offers-dots-container" class="bose-dots-container"></div>
+            </a>
         </section>
 
         <!-- SECTION 05: الأكثر مبيعاً (شبكة مستقرة وموزعة بدقة هندسية كاملة) -->
