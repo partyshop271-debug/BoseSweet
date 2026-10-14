@@ -26,7 +26,7 @@
     <link rel="stylesheet" href="css/season-themes.css?v=2026_production_v39.0">
 
     <!-- 👑 المحرك المركزي العالمي - نفس المصدر اللي بيغذي كارت العروض بالرئيسية بالظبط -->
-    <script src="js/supabase-client.js?v=2027_production_v47.0" defer></script>
+    <script src="js/supabase-client.js?v=2027_production_v48.0" defer></script>
     <script src="js/push-notifications.js?v=1.0" defer></script>
     <script src="js/favorites-engine.js?v=2026_production_v38.0" defer></script>
     <script src="js/season-dates.js?v=2026_production_v1.0" defer></script>
@@ -48,6 +48,8 @@
             background:#111; color:#fff; letter-spacing:.2px; }
         .op-chip i { color: var(--bose-pink); }
         .op-hero h1 { margin:16px 0 8px; font-size: clamp(26px, 6.2vw, 40px); line-height:1.35; color:#111; font-weight:900; }
+        .op-hero .op-h { margin:16px 0 8px; font-size: clamp(26px, 6.2vw, 40px); line-height:1.35; color:#111; font-weight:900; }
+        .op-hero .op-h em { font-style:normal; color: var(--bose-pink); }
         .op-hero h1 em { font-style:normal; color: var(--bose-pink); }
         .op-hero p { margin:0 auto; max-width:560px; font-size:15px; line-height:1.9; color:#111; opacity:.78; }
 
@@ -132,7 +134,6 @@
         .op-card .op-num-sm { display:inline-block; font-size:13px; font-weight:900; color:#111; opacity:.6; margin-bottom:6px; }
         .op-rule-note { margin:14px auto 0; max-width:640px; text-align:center; font-size:13px; font-weight:700; color:#111; opacity:.75; line-height:1.9; }
 
-        #op-flavors-section { scroll-margin-top:140px; }
         .op-fl { position:relative; text-decoration:none; }
         .op-fl .op-fl-img { display:block; }
         .op-fl .op-ctl { padding:0 10px 12px; text-align:center; }
@@ -162,6 +163,30 @@
         .op-bar-btn.disabled { background:#d9d9d9; color:#666; pointer-events:none; }
         .op-fl .op-stepper { padding:4px; }
         body.op-has-bar .op-wrap { padding-bottom:190px; }
+    
+        /* ===== حملات متعددة: شريط تبويبات كبير + قسم لكل حملة ===== */
+        .op-tabs { position:sticky; top:calc(var(--bose-topbar-height, 44px) + 76px); z-index:500; background:#fff; border-bottom:3px solid rgba(var(--bose-pink-rgb),.45);
+            box-shadow:0 8px 22px rgba(0,0,0,.08); }
+        .op-tabs-inner { display:flex; gap:12px; overflow-x:auto; padding:12px 14px; max-width:1100px; margin:0 auto; box-sizing:border-box; scroll-snap-type:x proximity; -webkit-overflow-scrolling:touch; }
+        .op-tab { flex:1 0 auto; min-width:150px; min-height:68px; display:flex; align-items:center; gap:12px; padding:8px 16px 8px 14px; border-radius:20px; cursor:pointer; text-align:right;
+            background:#fff; color:#111; border:3px solid rgba(var(--bose-pink-rgb),.4); font-family:inherit; scroll-snap-align:center; transition:background .2s, border-color .2s, transform .15s; }
+        .op-tab:active { transform:scale(.97); }
+        .op-tab img, .op-tab .op-tab-ph { width:48px; height:48px; border-radius:50%; object-fit:cover; flex:0 0 auto; background:rgba(var(--bose-pink-rgb),.15); border:2px solid #fff; box-shadow:0 3px 8px rgba(0,0,0,.18); }
+        .op-tab .op-tab-ph { display:flex; align-items:center; justify-content:center; color:var(--bose-pink); font-size:20px; }
+        .op-tab strong { display:block; font-size:18px; line-height:1.4; font-weight:900; }
+        .op-tab small { display:block; font-size:14px; font-weight:800; opacity:.8; line-height:1.4; }
+        .op-tab.is-active { background:#111; color:#fff; border-color:#111; box-shadow:0 8px 20px rgba(0,0,0,.25); }
+        .op-tab:focus-visible { outline:4px solid var(--bose-pink); outline-offset:2px; }
+
+        .op-camp { scroll-margin-top:calc(var(--bose-topbar-height, 44px) + 76px + 96px); }
+        .op-camp + .op-camp { border-top:10px solid rgba(var(--bose-pink-rgb),.12); margin-top:8px; }
+        .op-wrap-camp { padding-bottom:24px; }
+        body.op-has-bar .op-wrap-camp { padding-bottom:24px; }
+        .op-wrap-last { padding-top:0; }
+        .op-fl .op-hint { display:block; margin-top:6px; font-size:13px; font-weight:800; color:#1f7a45; }
+        .op-camp .op-hero p { font-size:17px; }
+        .op-camp .op-section-title p { font-size:15.5px; opacity:.8; }
+        @media (min-width:760px) { .op-tab { min-width:220px; } }
     </style>
 </head>
 <body>
@@ -169,43 +194,15 @@
     <div id="bose-header-injector"></div>
 
     <main>
-        <section class="op-hero" id="op-hero" style="display:none;">
-            <div class="op-collage" id="op-collage" aria-hidden="true"></div>
-            <span class="op-chip"><i class="fa-solid fa-bolt"></i> <span id="op-chip-text">عرض لفترة محدودة</span></span>
-            <h1 id="op-heading">خصم على <em>الدوناتس</em> بكل النكهات</h1>
-            <p id="op-sub">اختاري العرض اللي يناسبك والنكهات اللي تحبيها، والخصم بيتحسب تلقائيًا في السلة.</p>
+        <!-- 🏷️ شريط تبويبات الحملات: كبير وواضح، بيظهر بس لو فيه أكتر من حملة -->
+        <nav class="op-tabs" id="op-tabs" aria-label="حملات العروض" style="display:none;">
+            <div class="op-tabs-inner" id="op-tabs-inner"></div>
+        </nav>
 
-            <div class="op-timer-wrap">
-                <div class="op-timer-label" id="op-timer-label"><span class="op-dot"></span><span id="op-timer-text">العرض ينتهي خلال</span></div>
-                <div class="op-timer" id="op-timer" aria-live="off">
-                    <div class="op-box"><b id="op-h">00</b><span>ساعة</span></div>
-                    <div class="op-box"><b id="op-m">00</b><span>دقيقة</span></div>
-                    <div class="op-box"><b id="op-s">00</b><span>ثانية</span></div>
-                </div>
-                <div class="op-date" id="op-date"></div>
-            </div>
-        </section>
+        <!-- أقسام الحملات بتتبني من الجافاسكريبت (قسم لكل حملة) -->
+        <div id="op-campaigns"></div>
 
-        <div class="op-wrap">
-            <div id="op-offers-section" style="display:none;">
-                <div class="op-section-title">
-                    <h2>اختاري العرض اللي يناسبك</h2>
-                    <p>عرض واحد بس بيتطبق على الطلب - الأكبر توفيرًا ليكي تلقائيًا</p>
-                </div>
-                <div class="op-steps" id="op-steps" aria-hidden="true"></div>
-                <div class="op-offers" id="op-offers"></div>
-                <div class="op-rule-note" id="op-rule-note">العروض مش بتتجمع على بعض: السلة بتاخد لوحدها العرض الأكبر توفيرًا ليكي تلقائيًا.</div>
-                <div class="op-note"><i class="fa-solid fa-circle-info"></i><span id="op-note-text">العرض ساري لفترة محدودة. الشحن المجاني بيتطبق على التوصيل لمنطقتك، ومش متاح مع الاستلام من الفرع. بعد ما تختاري نكهاتك هتلاقي الخصم ظاهر في السلة وصفحة الدفع.</span></div>
-            </div>
-
-            <div id="op-flavors-section" style="display:none;">
-                <div class="op-section-title">
-                    <h2>نكهات الدوناتس والأسعار</h2>
-                    <p>كل النكهات داخلة في العرض - ضيفي من هنا مباشرة بزرار + وزرار −، من غير ما تسيبي الصفحة</p>
-                </div>
-                <div class="op-flavors" id="op-flavors"></div>
-            </div>
-
+        <div class="op-wrap op-wrap-last">
             <div id="op-products-section" style="display:none;">
                 <div class="op-section-title">
                     <h2>خصومات على أسعار المنتجات</h2>
@@ -249,7 +246,8 @@
         var esc = function (v) { return (window.escapeBoseHTML ? window.escapeBoseHTML(String(v == null ? "" : v)) : String(v == null ? "" : v).replace(/[&<>"']/g, function (c) { return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]; })); };
         var pad = function (n) { return String(n).padStart(2, "0"); };
         var tick = null;
-        var state = { promos: [], flavors: [], target: 0, upcoming: false, retried: false };
+        // camps = الحملات (قسم + تبويب لكل واحدة). active = الحملة اللي واقفة عندها دلوقتي (الشريط الثابت بيتابعها)
+        var state = { camps: [], active: 0, retried: false };
 
         /* ---------- أدوات صغيرة ---------- */
         function fmtDay(ms) {
@@ -274,6 +272,7 @@
             if (r.reward_type === "free_shipping") return "شحن مجاني";
             return "قطعة هدية";
         }
+        function minOf(r) { return parseInt(r.min_pieces, 10) || 0; }
         function $(id) { return document.getElementById(id); }
         function show(id, on) { var el = $(id); if (el) el.style.display = on ? "" : "none"; }
         function stop() { if (tick) { clearInterval(tick); tick = null; } }
@@ -364,85 +363,185 @@
         }
 
         /* ---------- تحديث الأزرار والشريط والسلّم (بدون إعادة رسم الصور) ---------- */
-        function ctlHTML(qty) {
+        function ctlHTML(qty, counter) {
+            if (!counter) {
+                return '<button type="button" class="op-add" data-op="inc"><i class="fa-solid fa-plus"></i> أضيفي للسلة</button>' +
+                    (qty > 0 ? '<span class="op-hint">✓ في السلة: ' + qty + '</span>' : "");
+            }
             if (qty <= 0) return '<button type="button" class="op-add" data-op="inc"><i class="fa-solid fa-plus"></i> أضيفي</button>';
             return '<div class="op-stepper"><button type="button" data-op="dec" aria-label="تقليل">&minus;</button><b>' + qty + '</b>' +
                 '<button type="button" data-op="inc" aria-label="زيادة"' + (qty >= MAX_QTY ? " disabled" : "") + '>+</button></div>';
         }
 
-        function refresh() {
-            var cart = readCart();
-            var now = Date.now();
-
-            // أزرار + / − على كل نكهة
-            Array.prototype.forEach.call(document.querySelectorAll("#op-flavors .op-fl"), function (tile) {
-                var q = qtyOf(cart, tile.getAttribute("data-slug"));
-                var ctl = tile.querySelector(".op-ctl");
-                if (ctl) ctl.innerHTML = ctlHTML(q);
-                tile.classList.toggle("has-qty", q > 0);
-            });
-
-            var live = state.promos.filter(function (r) { return isLive(r, now); }).sort(function (a, b) { return (parseInt(a.min_pieces, 10) || 0) - (parseInt(b.min_pieces, 10) || 0); });
-            var bar = $("op-bar");
-            if (!state.promos.length) { if (bar) bar.classList.remove("is-on"); document.body.classList.remove("op-has-bar"); return; }
-
+        function campStatus(c, cart, now) {
+            var live = c.promos.filter(function (r) { return isLive(r, now); }).sort(function (a, b) { return minOf(a) - minOf(b); });
             var reached = [], next = null, total = 0, maxMin = 0;
             live.forEach(function (r) {
-                var min = parseInt(r.min_pieces, 10) || 0;
+                var min = minOf(r);
                 var p = piecesFor(r, cart);
                 if (p > total) total = p;
                 if (min > maxMin) maxMin = min;
-                if (p >= min) { reached.push(r); } else if (!next || min < (parseInt(next.min_pieces, 10) || 0)) { next = r; }
+                if (p >= min) { reached.push(r); } else if (!next || min < minOf(next)) { next = r; }
+            });
+            return { live: live, reached: reached, next: next, total: total, maxMin: maxMin };
+        }
+
+        function refresh() {
+            var cart = readCart();
+            var now = Date.now();
+            var bar = $("op-bar");
+            if (!state.camps.length) { if (bar) bar.classList.remove("is-on"); document.body.classList.remove("op-has-bar"); return; }
+
+            state.camps.forEach(function (c) {
+                var sec = $("camp-" + c.i);
+                if (!sec) return;
+                // أزرار + / − على كل نكهة
+                Array.prototype.forEach.call(sec.querySelectorAll(".op-fl"), function (tile) {
+                    var q = qtyOf(cart, tile.getAttribute("data-slug"));
+                    var ctl = tile.querySelector(".op-ctl");
+                    if (ctl) ctl.innerHTML = ctlHTML(q, c.showCounter);
+                    tile.classList.toggle("has-qty", q > 0);
+                });
+                // السلّم + الكروت: اللي اتفعّل بيتلوّن
+                var st = campStatus(c, cart, now);
+                Array.prototype.forEach.call(sec.querySelectorAll("[data-op-min]"), function (el) {
+                    var min = parseInt(el.getAttribute("data-op-min"), 10) || 0;
+                    var on = st.live.some(function (r) { return minOf(r) === min && piecesFor(r, cart) >= min; });
+                    el.classList.toggle("is-reached", on);
+                });
             });
 
-            // السلّم + الكروت: اللي اتفعّل بيتلوّن
-            Array.prototype.forEach.call(document.querySelectorAll("[data-op-min]"), function (el) {
-                var min = parseInt(el.getAttribute("data-op-min"), 10) || 0;
-                var on = live.some(function (r) { return (parseInt(r.min_pieces, 10) || 0) === min && piecesFor(r, cart) >= min; });
-                el.classList.toggle("is-reached", on);
-            });
-
-            // رسالة الشريط
+            // الشريط الثابت: بيتابع الحملة اللي واقفة عندها
+            var c0 = state.camps[Math.min(state.active, state.camps.length - 1)];
+            var s0 = campStatus(c0, cart, now);
             var msg = $("op-bar-msg");
             var ok = false, text;
-            if (!live.length) {
+            if (!s0.live.length) {
                 text = "العرض لسه ما بدأش - تقدري تجهّزي نكهاتك من دلوقتي.";
-            } else if (total === 0) {
-                text = "اختاري نكهاتك وابدأي - أول عرض عند " + (parseInt(live[0].min_pieces, 10) || 0) + " قطع.";
-            } else if (!reached.length) {
-                text = "عندك " + total + " قطع - ناقص " + ((parseInt(next.min_pieces, 10) || 0) - piecesFor(next, cart)) + " وتاخدي " + rewardShort(next) + ".";
+            } else if (s0.total === 0) {
+                text = "اختاري نكهاتك وابدأي - أول عرض عند " + minOf(s0.live[0]) + " قطع.";
+            } else if (!s0.reached.length) {
+                text = "عندك " + s0.total + " قطع - ناقص " + (minOf(s0.next) - piecesFor(s0.next, cart)) + " وتاخدي " + rewardShort(s0.next) + ".";
             } else {
                 ok = true;
-                text = "✅ عندك " + total + " قطع - فعّلتي: " + reached.map(rewardShort).join(" أو ");
-                if (next) text += " · ناقص " + ((parseInt(next.min_pieces, 10) || 0) - piecesFor(next, cart)) + " وتاخدي " + rewardShort(next) + ".";
+                text = "✅ عندك " + s0.total + " قطع - فعّلتي: " + s0.reached.map(rewardShort).join(" أو ");
+                if (s0.next) text += " · ناقص " + (minOf(s0.next) - piecesFor(s0.next, cart)) + " وتاخدي " + rewardShort(s0.next) + ".";
             }
             if (msg) { msg.textContent = text; msg.className = "op-bar-msg" + (ok ? " ok" : ""); }
 
-            // شريط التقدم + علامات الشرائح
+            // شريط التقدم + علامات الشرائح (لو الحملة مفعّلاه)
             var prog = $("op-prog");
             if (prog) {
-                var pct = maxMin ? Math.min(100, Math.round(total / maxMin * 100)) : 0;
-                prog.innerHTML = '<i style="width:' + pct + '%"></i>' + live.map(function (r) {
-                    var min = parseInt(r.min_pieces, 10) || 0;
-                    return '<u class="' + (total >= min ? "on" : "") + '" style="inset-inline-start:' + (maxMin ? Math.round(min / maxMin * 100) : 0) + '%"></u>';
+                prog.style.display = c0.showProgress ? "" : "none";
+                var pct = s0.maxMin ? Math.min(100, Math.round(s0.total / s0.maxMin * 100)) : 0;
+                prog.innerHTML = '<i style="width:' + pct + '%"></i>' + s0.live.map(function (r) {
+                    var min = minOf(r);
+                    return '<u class="' + (s0.total >= min ? "on" : "") + '" style="inset-inline-start:' + (s0.maxMin ? Math.round(min / s0.maxMin * 100) : 0) + '%"></u>';
                 }).join("");
             }
+
+            // عدّاد الشريط الثابت
+            var barTimer = $("op-bar-timer");
+            if (barTimer) barTimer.style.display = (c0.showTimer && c0.target) ? "" : "none";
 
             // زرار إتمام الطلب: بيتقفل لو فئة العروض لسه تحت الحد الأدنى
             var btn = $("op-bar-btn"), btnText = $("op-bar-btn-text");
             var blocked = null;
             if (typeof window.getBoseCartMinQtyStatus === "function") {
                 var cats = {};
-                state.flavors.forEach(function (p) { cats[p.category] = true; });
+                c0.flavors.forEach(function (p) { cats[p.category] = true; });
                 (window.getBoseCartMinQtyStatus(cart) || []).forEach(function (st) { if (cats[st.categoryId] && !st.ok && !blocked) blocked = st; });
             }
             if (btn && btnText) {
                 btn.classList.toggle("disabled", !!blocked);
-                btnText.textContent = blocked ? ("كمّلي " + blocked.missing + " قطع") : (total > 0 ? "إتمام الطلب" : "السلة");
+                btnText.textContent = blocked ? ("كمّلي " + blocked.missing + " قطع") : (s0.total > 0 ? "إتمام الطلب" : "السلة");
             }
 
             if (bar) bar.classList.add("is-on");
             document.body.classList.add("op-has-bar");
+        }
+
+        /* ---------- التبويبات: تحديد الحملة النشطة ---------- */
+        function setActive(i) {
+            if (i === state.active && document.querySelector(".op-tab.is-active")) return;
+            state.active = i;
+            Array.prototype.forEach.call(document.querySelectorAll(".op-tab"), function (t) {
+                var on = parseInt(t.getAttribute("data-tab"), 10) === i;
+                t.classList.toggle("is-active", on);
+                if (on) { t.setAttribute("aria-current", "true"); try { t.scrollIntoView({ block: "nearest", inline: "center" }); } catch (e) { /* قديم */ } }
+                else t.removeAttribute("aria-current");
+            });
+            refresh();
+        }
+        var scrollQueued = false;
+        function onScroll() {
+            if (scrollQueued || state.camps.length < 2) return;
+            scrollQueued = true;
+            requestAnimationFrame(function () {
+                scrollQueued = false;
+                var line = (window.innerHeight || 700) * 0.35, best = 0;
+                state.camps.forEach(function (c) {
+                    var sec = $("camp-" + c.i);
+                    if (sec && sec.getBoundingClientRect().top <= line) best = c.i;
+                });
+                setActive(best);
+            });
+        }
+
+        /* ---------- رسم قسم حملة ---------- */
+        function buildCamp(c, data) {
+            var imgsOn = c.showImages && c.imgs.length;
+            var collage = imgsOn ? '<div class="op-collage" aria-hidden="true">' + c.imgs.slice(0, 4).map(function (u) { return '<img src="' + esc(thumb(u, 220)) + '" alt="" width="104" height="104" decoding="async">'; }).join("") + '</div>' : "";
+            var timer = "";
+            if (c.showTimer && c.target) {
+                timer = '<div class="op-timer-wrap"><div class="op-timer-label' + (c.upcoming ? " upcoming" : "") + '"><span class="op-dot"></span><span>' + (c.upcoming ? "العرض يبدأ بعد" : "العرض ينتهي خلال") + '</span></div>' +
+                    '<div class="op-timer" aria-live="off"><div class="op-box"><b class="t-h">00</b><span>ساعة</span></div><div class="op-box"><b class="t-m">00</b><span>دقيقة</span></div><div class="op-box"><b class="t-s">00</b><span>ثانية</span></div></div>' +
+                    '<div class="op-date">' + (c.upcoming ? "يبدأ: " : "ينتهي: ") + esc(fmtDay(c.target)) + '</div></div>';
+            }
+            var hero = '<div class="op-hero">' + collage + '<span class="op-chip"><i class="fa-solid fa-bolt"></i> <span>' + esc(c.chip) + '</span></span>' +
+                '<h2 class="op-h" id="camp-' + c.i + '-h">' + c.headingHtml + '</h2><p>' + esc(c.sub) + '</p>' + timer + '</div>';
+
+            var bestMin = 0; c.promos.forEach(function (r) { if (minOf(r) > bestMin) bestMin = minOf(r); });
+            var now = Date.now();
+            var steps = c.promos.length > 1 ? '<div class="op-steps" aria-hidden="true">' + c.promos.map(function (r, i) {
+                return (i ? '<div class="op-step-line"></div>' : '') + '<div class="op-step" data-op-min="' + minOf(r) + '"><b>' + esc(minOf(r)) + '</b><span>' + esc(rewardShort(r)) + '</span></div>';
+            }).join("") + '</div>' : "";
+            var canPick = c.showFlavors && c.flavors.length > 0;
+            var cards = c.promos.map(function (r) {
+                var live = isLive(r, now), m = minOf(r), n = Math.min(m, 8);
+                var size = n <= 3 ? 58 : (n <= 5 ? 50 : 42);
+                var thumbs = "";
+                if (c.showImages) { for (var k = 0; k < n; k++) { thumbs += c.imgs.length ? '<img src="' + esc(thumb(c.imgs[k % c.imgs.length], 120)) + '" alt="" width="' + size + '" height="' + size + '" loading="lazy" decoding="async">' : ""; } }
+                if (r.reward_type === "free_piece") thumbs += '<span class="op-gift" aria-hidden="true"><i class="fa-solid fa-gift"></i></span>';
+                var best = c.promos.length > 1 && m === bestMin;
+                var action;
+                if (!live) action = '<span class="op-btn disabled"><i class="fa-regular fa-clock"></i> يبدأ ' + esc(fmtDay(new Date(r.starts_at).getTime())) + '</span>';
+                else if (canPick) action = '<button type="button" class="op-btn" data-op-go="' + c.i + '"><i class="fa-solid fa-cart-plus"></i> اختاري نكهاتك</button>';
+                else action = '<a class="op-btn" href="/menu.html"><i class="fa-solid fa-bag-shopping"></i> تسوّقي المنتجات</a>';
+                return '<div class="op-card' + (best ? " is-best" : "") + '" data-op-min="' + m + '">' + (best ? '<div class="op-best">الأكتر توفيرًا</div>' : "") +
+                    (thumbs ? '<div class="op-thumbs" style="--s:' + size + 'px">' + thumbs + '</div>' : "") +
+                    '<div class="op-num-sm">أي ' + esc(m) + ' قطع</div><div class="op-reward">' + rewardChip(r) + '</div><h3>' + esc(r.title) + '</h3>' + action + '</div>';
+            }).join("");
+            var note = (c.oneDay ? "العرض ساري يوم واحد فقط. " : "العروض سارية لفترة محدودة. ") +
+                "الشحن المجاني بيتطبق على التوصيل لمنطقتك، ومش متاح مع الاستلام من الفرع. بعد ما تختاري نكهاتك هتلاقي الخصم ظاهر في السلة وصفحة الدفع.";
+            var offersSec = '<div class="op-section-title"><h2>اختاري العرض اللي يناسبك</h2>' +
+                (c.promos.length > 1 ? '<p>عرض واحد بس بيتطبق على الطلب - الأكبر توفيرًا ليكي تلقائيًا</p>' : '') + '</div>' + steps +
+                '<div class="op-offers">' + cards + '</div>' +
+                '<div class="op-note"><i class="fa-solid fa-circle-info"></i><span>' + esc(note) + '</span></div>';
+
+            var flSec = "";
+            if (canPick) {
+                flSec = '<div class="op-flv-sec" id="camp-' + c.i + '-fl"><div class="op-section-title"><h2>' + esc(c.flavorsTitle) + '</h2>' +
+                    '<p>كل النكهات داخلة في العرض - ضيفي من هنا مباشرة، من غير ما تسيبي الصفحة</p></div><div class="op-flavors">' +
+                    c.flavors.map(function (p) {
+                        var img = (p.images && p.images[0]) || "";
+                        var name = p.flavorName || p.title;
+                        var pic = c.showImages ? ('<a class="op-fl-img" href="/product.html?slug=' + encodeURIComponent(p.slug) + '" aria-label="تفاصيل ' + esc(name) + '">' +
+                            (img ? '<img loading="lazy" decoding="async" width="240" height="240" src="' + esc(thumb(img, 360)) + '" alt="' + esc(name) + '">' : '<img alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">') + '</a>') : "";
+                        return '<div class="op-fl" data-slug="' + esc(p.slug) + '">' + pic + '<div><strong>' + esc(name) + '</strong><span>' + esc(Number(p.price).toFixed(0)) + ' جنيه / قطعة</span></div><div class="op-ctl"></div></div>';
+                    }).join("") + '</div></div>';
+            }
+            return '<section class="op-camp" id="camp-' + c.i + '" aria-labelledby="camp-' + c.i + '-h">' + hero + '<div class="op-wrap op-wrap-camp">' + offersSec + flSec + '</div></section>';
         }
 
         /* ---------- رسم الصفحة ---------- */
@@ -459,119 +558,123 @@
             var prodOffers = typeof window.getAllOfferProducts === "function" ? window.getAllOfferProducts() : [];
 
             stop();
-            state.promos = promos;
             show("op-products-section", prodOffers.length > 0);
+            var holder = $("op-campaigns");
 
             if (!promos.length) {
-                show("op-hero", false); show("op-offers-section", false); show("op-flavors-section", false);
+                state.camps = [];
+                if (holder) holder.innerHTML = "";
+                show("op-tabs", false);
                 var bar0 = $("op-bar"); if (bar0) bar0.classList.remove("is-on");
                 document.body.classList.remove("op-has-bar");
                 show("op-empty", prodOffers.length === 0);
                 return;
             }
-            show("op-empty", false); show("op-hero", true); show("op-offers-section", true);
+            show("op-empty", false);
 
-            // النكهات المشمولة (القطع المفردة بس - مش البوكسات ولا المنتجات المخصصة)
-            var seen = {};
-            var flavors = (Array.isArray(data.products) ? data.products : []).filter(function (p) {
-                var ppu = p.options && parseInt(p.options.piecesPerUnit, 10);
-                if (p.isAvailable === false || (ppu && ppu > 1) || (p.customBuilderUrl && p.builderType && p.builderType !== "standard")) return false;
-                if (seen[p.slug]) return false;
-                var inAny = promos.some(function (r) { return inScope(r, p); });
-                if (inAny) seen[p.slug] = true;
-                return inAny;
+            // تجميع العروض في حملات (بنفس اسم الحملة) + إعدادات كل حملة من لوحة التحكم
+            var settingsList = Array.isArray(data.promoCampaigns) ? data.promoCampaigns : [];
+            var groups = {}, order = [];
+            promos.forEach(function (r) {
+                var key = String(r.campaign || "").trim();
+                if (!groups[key]) { groups[key] = []; order.push(key); }
+                groups[key].push(r);
             });
-            state.flavors = flavors;
-            var imgs = flavors.map(function (p) { return (p.images && p.images[0]) || ""; }).filter(Boolean);
-
-            // الهيرو: صور حقيقية + عنوان + نص حسب مدة العرض
-            $("op-collage").style.display = imgs.length ? "" : "none";
-            $("op-collage").innerHTML = imgs.slice(0, 4).map(function (u) { return '<img src="' + esc(thumb(u, 220)) + '" alt="" width="104" height="104" decoding="async">'; }).join("");
-            var starts = promos.map(function (r) { return r.starts_at ? new Date(r.starts_at).getTime() : 0; });
-            var minStart = Math.min.apply(null, starts);
-            var upcoming = minStart > now;
-            var endsArr = promos.map(function (r) { return r.ends_at ? new Date(r.ends_at).getTime() : 0; }).filter(Boolean);
-            var target = upcoming ? minStart : (endsArr.length ? Math.min.apply(null, endsArr) : 0);
-            state.target = target; state.upcoming = upcoming;
-            var maxEnd = endsArr.length ? Math.max.apply(null, endsArr) : 0;
-            var oneDay = maxEnd && Math.max.apply(null, endsArr) - (minStart || now) <= 26 * 3600 * 1000;
-            $("op-chip-text").textContent = oneDay ? "عرض ليوم واحد فقط" : "عروض لفترة محدودة";
-            var noteTxt = $("op-note-text");
-            if (noteTxt) noteTxt.textContent = (oneDay ? "العرض ساري يوم واحد فقط. " : "العروض سارية لفترة محدودة وبتنتهي في الموعد اللي فوق. ") +
-                "الشحن المجاني بيتطبق على التوصيل لمنطقتك، ومش متاح مع الاستلام من الفرع. بعد ما تختاري نكهاتك هتلاقي الخصم ظاهر في السلة وصفحة الدفع.";
-
-            var catIds = []; promos.forEach(function (r) { if (r.scope_type === "category" && Array.isArray(r.scope_ids)) r.scope_ids.forEach(function (id) { if (catIds.indexOf(id) === -1) catIds.push(id); }); });
-            var cats = Array.isArray(data.categories) ? data.categories : [];
-            var catTitle = "";
-            if (catIds.length === 1) { for (var ci = 0; ci < cats.length; ci++) { if (cats[ci] && cats[ci].id === catIds[0]) { catTitle = cats[ci].title || ""; break; } } }
-            $("op-heading").innerHTML = catTitle ? ('خصم على <em>' + esc(catTitle) + '</em> بكل النكهات') : 'عروضنا <em>الحالية</em>';
-
-            // سلّم 3 ← 5 ← 8
-            var bestMin = 0; promos.forEach(function (r) { var m = parseInt(r.min_pieces, 10) || 0; if (m > bestMin) bestMin = m; });
-            $("op-steps").innerHTML = promos.map(function (r, i) {
-                var m = parseInt(r.min_pieces, 10) || 0;
-                return (i ? '<div class="op-step-line"></div>' : '') +
-                    '<div class="op-step" data-op-min="' + m + '"><b>' + esc(m) + '</b><span>' + esc(rewardShort(r)) + '</span></div>';
-            }).join("");
-            $("op-steps").style.display = promos.length > 1 ? "" : "none";
-
-            // الكروت: صور بعدد القطع + شارة "الأكتر توفيرًا" على أعلى شريحة
-            $("op-offers").innerHTML = promos.map(function (r) {
-                var live = isLive(r, now);
-                var m = parseInt(r.min_pieces, 10) || 0;
-                var n = Math.min(m, 8);
-                var size = n <= 3 ? 58 : (n <= 5 ? 50 : 42);
-                var thumbs = "";
-                for (var k = 0; k < n; k++) {
-                    thumbs += imgs.length ? '<img src="' + esc(thumb(imgs[k % imgs.length], 120)) + '" alt="" width="' + size + '" height="' + size + '" loading="lazy" decoding="async">' : "";
-                }
-                if (r.reward_type === "free_piece") thumbs += '<span class="op-gift" aria-hidden="true"><i class="fa-solid fa-gift"></i></span>';
-                var best = promos.length > 1 && m === bestMin;
-                return '<div class="op-card' + (best ? " is-best" : "") + '" data-op-min="' + m + '">' +
-                    (best ? '<div class="op-best">الأكتر توفيرًا</div>' : "") +
-                    '<div class="op-thumbs" style="--s:' + size + 'px">' + thumbs + '</div>' +
-                    '<div class="op-num-sm">أي ' + esc(m) + ' قطع</div>' +
-                    '<div class="op-reward">' + rewardChip(r) + '</div>' +
-                    '<h3>' + esc(r.title) + '</h3>' +
-                    (live ? '<button type="button" class="op-btn" data-op-go="1"><i class="fa-solid fa-cart-plus"></i> اختاري نكهاتك</button>'
-                          : '<span class="op-btn disabled"><i class="fa-regular fa-clock"></i> يبدأ ' + esc(fmtDay(new Date(r.starts_at).getTime())) + '</span>') +
-                    '</div>';
-            }).join("");
-
-            // النكهات: كل نكهة بزراري + و − (الكميات بتتحدّث في refresh)
-            $("op-flavors").innerHTML = flavors.map(function (p) {
-                var img = (p.images && p.images[0]) || "";
-                var name = p.flavorName || p.title;
-                return '<div class="op-fl" data-slug="' + esc(p.slug) + '">' +
-                    '<a class="op-fl-img" href="/product.html?slug=' + encodeURIComponent(p.slug) + '" aria-label="تفاصيل ' + esc(name) + '">' +
-                    (img ? '<img loading="lazy" decoding="async" width="240" height="240" src="' + esc(thumb(img, 360)) + '" alt="' + esc(name) + '">' : '<img alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">') +
-                    '</a><div><strong>' + esc(name) + '</strong><span>' + esc(Number(p.price).toFixed(0)) + ' جنيه / قطعة</span></div>' +
-                    '<div class="op-ctl"></div></div>';
-            }).join("");
-            show("op-flavors-section", flavors.length > 0);
-
-            // التايمر (الهيرو + الشريط الثابت) - أحمر في آخر ساعة
-            var label = $("op-timer-label");
-            $("op-timer-text").textContent = upcoming ? "العرض يبدأ بعد" : "العرض ينتهي خلال";
-            label.className = "op-timer-label" + (upcoming ? " upcoming" : "");
-            var dateEl = $("op-date");
-            dateEl.textContent = target ? ((upcoming ? "يبدأ: " : "ينتهي: ") + fmtDay(target)) : "";
-            show("op-timer", !!target); show("op-timer-label", !!target); dateEl.style.display = target ? "" : "none";
-            var barTimer = $("op-bar-timer");
-            if (barTimer) barTimer.style.display = target ? "" : "none";
-
-            function update() {
-                var left = Math.max(0, target - Date.now());
-                var total = Math.floor(left / 1000);
-                var h = pad(Math.floor(total / 3600)), m = pad(Math.floor((total % 3600) / 60)), s = pad(total % 60);
-                $("op-h").textContent = h; $("op-m").textContent = m; $("op-s").textContent = s;
-                if (barTimer) barTimer.textContent = h + ":" + m + ":" + s;
-                var urgent = !upcoming && left > 0 && left <= 3600 * 1000;
-                var wrap = document.querySelector(".op-timer-wrap"); if (wrap) wrap.classList.toggle("urgent", urgent);
-                var bar = $("op-bar"); if (bar) bar.classList.toggle("urgent", urgent);
-                if (left <= 0) { render(); } // بدأ أو خلص: نعيد رسم الصفحة بالحالة الجديدة
+            function settingsFor(key) {
+                for (var i = 0; i < settingsList.length; i++) { if (String(settingsList[i].campaign || "").trim() === key) return settingsList[i]; }
+                return null;
             }
-            if (target) { update(); tick = setInterval(update, 1000); }
+            order.sort(function (a, b) {
+                var sa = settingsFor(a), sb = settingsFor(b);
+                var oa = sa ? (sa.sort_order || 0) : 1e6, ob = sb ? (sb.sort_order || 0) : 1e6;
+                return oa - ob;
+            });
+
+            var cats = Array.isArray(data.categories) ? data.categories : [];
+            var allProducts = Array.isArray(data.products) ? data.products : [];
+            var camps = order.map(function (key, i) {
+                var ps = groups[key];
+                var s = settingsFor(key) || {};
+                var flag = function (k) { return s[k] === undefined || s[k] === null ? true : !!s[k]; };
+                // النكهات المشمولة (القطع المفردة بس - مش البوكسات ولا المنتجات المخصصة)
+                var seen = {};
+                var flavors = allProducts.filter(function (p) {
+                    var ppu = p.options && parseInt(p.options.piecesPerUnit, 10);
+                    if (p.isAvailable === false || (ppu && ppu > 1) || (p.customBuilderUrl && p.builderType && p.builderType !== "standard")) return false;
+                    if (seen[p.slug]) return false;
+                    var inAny = ps.some(function (r) { return inScope(r, p); });
+                    if (inAny) seen[p.slug] = true;
+                    return inAny;
+                });
+                var imgs = flavors.map(function (p) { return (p.images && p.images[0]) || ""; }).filter(Boolean);
+                var starts = ps.map(function (r) { return r.starts_at ? new Date(r.starts_at).getTime() : 0; });
+                var minStart = Math.min.apply(null, starts);
+                var upcoming = minStart > now;
+                var endsArr = ps.map(function (r) { return r.ends_at ? new Date(r.ends_at).getTime() : 0; }).filter(Boolean);
+                var target = upcoming ? minStart : (endsArr.length ? Math.min.apply(null, endsArr) : 0);
+                var maxEnd = endsArr.length ? Math.max.apply(null, endsArr) : 0;
+                var oneDay = !!maxEnd && (maxEnd - (minStart || now) <= 26 * 3600 * 1000);
+
+                var catIds = []; ps.forEach(function (r) { if (r.scope_type === "category" && Array.isArray(r.scope_ids)) r.scope_ids.forEach(function (id) { if (catIds.indexOf(id) === -1) catIds.push(id); }); });
+                var catTitle = "";
+                if (catIds.length === 1) { for (var ci = 0; ci < cats.length; ci++) { if (cats[ci] && cats[ci].id === catIds[0]) { catTitle = cats[ci].title || ""; break; } } }
+                var headingHtml = s.hero_title ? esc(s.hero_title) : (catTitle ? ('خصم على <em>' + esc(catTitle) + '</em> بكل النكهات') : (key ? esc(key) : 'عروضنا <em>الحالية</em>'));
+                var best = ps.slice().sort(function (a, b) { return minOf(b) - minOf(a); })[0];
+                var tabSub = (ps.length > 1 && best.reward_type === "percent_off" ? "حتى " : "") + rewardShort(best);
+                return {
+                    i: i, key: key, promos: ps, flavors: flavors, imgs: imgs, target: target, upcoming: upcoming, oneDay: oneDay,
+                    headingHtml: headingHtml,
+                    chip: s.badge_text || (oneDay ? "عرض ليوم واحد فقط" : "عروض لفترة محدودة"),
+                    sub: s.hero_sub || "اختاري العرض اللي يناسبك والنكهات اللي تحبيها، والخصم بيتحسب تلقائيًا في السلة.",
+                    flavorsTitle: catTitle ? ("نكهات " + catTitle + " والأسعار") : "النكهات والأسعار",
+                    tabTitle: s.tab_title || key || (catTitle ? ("عروض " + catTitle) : "العروض"),
+                    tabSub: tabSub,
+                    tabImg: s.image_url || imgs[0] || "",
+                    showTimer: flag("show_timer"), showCounter: flag("show_counter"), showProgress: flag("show_progress"),
+                    showFlavors: flag("show_flavors"), showImages: flag("show_images")
+                };
+            });
+            state.camps = camps;
+            if (state.active >= camps.length) state.active = 0;
+
+            if (holder) holder.innerHTML = camps.map(function (c) { return buildCamp(c, data); }).join("");
+
+            // شريط التبويبات (بيظهر بس لو أكتر من حملة)
+            var tabsEl = $("op-tabs-inner");
+            if (tabsEl) {
+                tabsEl.innerHTML = camps.map(function (c) {
+                    var pic = c.tabImg ? '<img src="' + esc(thumb(c.tabImg, 96)) + '" alt="" width="48" height="48" decoding="async">' : '<span class="op-tab-ph" aria-hidden="true"><i class="fa-solid fa-gift"></i></span>';
+                    return '<button type="button" class="op-tab' + (c.i === state.active ? " is-active" : "") + '" data-tab="' + c.i + '" aria-controls="camp-' + c.i + '">' + pic +
+                        '<span><strong>' + esc(c.tabTitle) + '</strong><small>' + esc(c.tabSub) + '</small></span></button>';
+                }).join("");
+            }
+            show("op-tabs", camps.length > 1);
+
+            // العدّادات التنازلية (كل حملة بوقتها) - أحمر في آخر ساعة
+            var anyTarget = camps.some(function (c) { return !!c.target; });
+            function update() {
+                var expired = false;
+                camps.forEach(function (c) {
+                    if (!c.target) return;
+                    var left = Math.max(0, c.target - Date.now());
+                    var total = Math.floor(left / 1000);
+                    var h = pad(Math.floor(total / 3600)), m = pad(Math.floor((total % 3600) / 60)), s2 = pad(total % 60);
+                    var sec = $("camp-" + c.i);
+                    var urgent = !c.upcoming && left > 0 && left <= 3600 * 1000;
+                    if (sec) {
+                        var eh = sec.querySelector(".t-h"), em = sec.querySelector(".t-m"), es = sec.querySelector(".t-s");
+                        if (eh) eh.textContent = h; if (em) em.textContent = m; if (es) es.textContent = s2;
+                        var wrap = sec.querySelector(".op-timer-wrap"); if (wrap) wrap.classList.toggle("urgent", urgent);
+                    }
+                    if (c.i === Math.min(state.active, camps.length - 1)) {
+                        var bt = $("op-bar-timer"); if (bt) bt.textContent = h + ":" + m + ":" + s2;
+                        var bar = $("op-bar"); if (bar) bar.classList.toggle("urgent", urgent);
+                    }
+                    if (left <= 0) expired = true;
+                });
+                if (expired) render(); // بدأ أو خلص: نعيد رسم الصفحة بالحالة الجديدة
+            }
+            if (anyTarget) { update(); tick = setInterval(update, 1000); }
             refresh();
         }
 
@@ -579,17 +682,27 @@
         document.addEventListener("click", function (e) {
             var t = e.target;
             if (!t || !t.closest) return;
-            var b = t.closest("#op-flavors [data-op]");
+            var b = t.closest("#op-campaigns [data-op]");
             if (b) {
                 var tile = b.closest(".op-fl");
                 if (tile) change(tile.getAttribute("data-slug"), b.getAttribute("data-op") === "dec" ? -1 : 1);
                 return;
             }
-            if (t.closest("[data-op-go]")) {
-                var sec = $("op-flavors-section");
+            var go = t.closest("[data-op-go]");
+            if (go) {
+                var sec = $("camp-" + go.getAttribute("data-op-go") + "-fl");
                 if (sec) sec.scrollIntoView({ behavior: "smooth", block: "start" });
+                return;
+            }
+            var tab = t.closest(".op-tab");
+            if (tab) {
+                var idx = parseInt(tab.getAttribute("data-tab"), 10) || 0;
+                var target = $("camp-" + idx);
+                setActive(idx);
+                if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
             }
         });
+        window.addEventListener("scroll", onScroll, { passive: true });
         // لو السلة اتغيّرت من تبويب تاني أو بعد الرجوع بزرار "رجوع" في المتصفح
         window.addEventListener("storage", function (e) { if (e.key === CART_KEY) refresh(); });
         window.addEventListener("pageshow", function (e) { if (e.persisted) refresh(); });
