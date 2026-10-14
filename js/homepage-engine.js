@@ -112,20 +112,62 @@
     }
     window.getAllOfferProducts = getAllOfferProducts;
 
+    /**
+     * 🏷️ بلوك دخول العروض بالرئيسية: مفيش أي عرض بيتعرض هنا (صفحة العروض offers.html هي المكان الوحيد).
+     * البلوك بيظهر بس لو فيه عروض فعلاً (عروض كمية شغالة/مجدولة أو خصومات أسعار)، وبيعرض
+     * صور حقيقية من المنتجات المشمولة + عنوان + زرار واحد بيودّي لصفحة العروض.
+     */
     function renderOffersSection() {
-        const offersTrack = document.getElementById('offers-slider-track');
-        const offersSection = document.getElementById('offers-carousel-section');
-        if (!offersTrack) return;
+        const section = document.getElementById('offers-carousel-section');
+        if (!section) return;
+        const data = window.BoseStoreData || {};
+        const now = Date.now();
+        const promos = (Array.isArray(data.quantityPromos) ? data.quantityPromos : []).filter(/** @param {any} r */ (r) =>
+            r && r.is_active !== false && (!r.ends_at || new Date(r.ends_at).getTime() > now));
+        const productOffers = getAllOfferProducts();
 
-        const offersData = getAllOfferProducts();
+        if (!promos.length && !productOffers.length) { section.style.display = 'none'; return; }
 
-        // مفيش عروض حالياً؟ القسم بالكامل يتخفي بدل ما يفضل فاضي قدام العميل
-        if (offersData.length === 0) {
-            if (offersSection) offersSection.style.display = 'none';
-            return;
+        /** @param {string} u @param {number} w */
+        const thumb = (u, w) => (u.indexOf('res.cloudinary.com') > -1 && u.indexOf('/upload/') > -1 && !/\/upload\/[a-z]+_/.test(u))
+            ? u.replace('/upload/', '/upload/f_auto,q_auto,c_fill,ar_1:1,w_' + w + '/') : u;
+
+        // صور حقيقية: منتجات نطاق عروض الكمية الأول، وبعدها منتجات خصومات الأسعار
+        /** @type {string[]} */
+        const imgs = [];
+        const pushImg = /** @param {any} p */ (p) => {
+            const u = p && p.images && p.images[0];
+            if (u && p.isAvailable !== false && imgs.indexOf(u) === -1 && imgs.length < 3) imgs.push(u);
+        };
+        const products = Array.isArray(data.products) ? data.products : [];
+        promos.forEach(/** @param {any} r */ (r) => {
+            const ids = Array.isArray(r.scope_ids) ? r.scope_ids : [];
+            products.forEach(/** @param {any} p */ (p) => {
+                const ppu = p.options && parseInt(p.options.piecesPerUnit, 10);
+                if (ppu && ppu > 1) return;
+                if (r.scope_type === 'category' ? ids.indexOf(p.category) !== -1 : ids.indexOf(p.slug) !== -1) pushImg(p);
+            });
+        });
+        productOffers.forEach(pushImg);
+        const media = document.getElementById('offers-entrance-media');
+        if (media) {
+            media.style.display = imgs.length ? '' : 'none';
+            const esc = window.escapeBoseHTML || ((/** @type {string} */ v) => v);
+            media.innerHTML = imgs.map((u) => `<img src="${esc(thumb(u, 260))}" alt="" width="108" height="108" loading="lazy" decoding="async">`).join('');
         }
 
-        offersTrack.innerHTML = offersData.map(/** @param {Object} offer */ (offer) => window.createProductCardHTML(offer)).join('');
+        // نص هادي: بيذكر أنواع المكافآت الشغالة بس، من غير أي تفاصيل عرض
+        const live = promos.filter(/** @param {any} r */ (r) => !r.starts_at || new Date(r.starts_at).getTime() <= now);
+        const rewards = [];
+        if (promos.some(/** @param {any} r */ (r) => r.reward_type === 'percent_off')) rewards.push('خصومات');
+        if (promos.some(/** @param {any} r */ (r) => r.reward_type === 'free_shipping')) rewards.push('شحن مجاني');
+        if (promos.some(/** @param {any} r */ (r) => r.reward_type === 'free_piece')) rewards.push('قطع هدية');
+        if (productOffers.length) rewards.push('أسعار مخفّضة');
+        const desc = document.getElementById('offers-description');
+        if (desc) desc.textContent = rewards.length ? ('ادخلي صفحة العروض: ' + rewards.join(' و') + ' - كل حاجة قدامك في مكان واحد.') : 'ادخلي صفحة العروض وشوفي كل حاجة.';
+        const badge = document.getElementById('offers-entrance-badge');
+        if (badge) badge.textContent = (promos.length && !live.length) ? 'عروض قريبًا' : 'عروض شغالة دلوقتي';
+        section.style.display = '';
     }
 
     /**
@@ -816,7 +858,6 @@
 
         requestAnimationFrame(() => {
             requestAnimationFrame(() => {
-                setupBoseUnifiedSliderEngine('offers-slider-track', 'offers-dots-container', 'offers-carousel-section');
                 setupBoseUnifiedSliderEngine('categories-track', 'categories-dots-container', 'categories-slider-section');
                 setupBoseUnifiedSliderEngine('most-selling-grid', 'most-selling-dots-container', 'most-selling-section');
                 setupBoseUnifiedSliderEngine('new-arrivals-grid', 'new-arrivals-dots-container', 'new-arrivals-section');
