@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>عروض الكمية | لوحة تحكم حلويات بوسي</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="manifest" href="/admin/admin.webmanifest">
+    <meta name="theme-color" content="#FF91A4">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="stylesheet" href="../vendor/fonts/cairo/cairo.css?v=2026_local_v1.0">
+    <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css?v=2026_local_v1.0" fetchpriority="high">
+
+    <link rel="stylesheet" href="css/admin-theme.css">
+    <link rel="stylesheet" href="css/admin-layout.css">
+</head>
+<body data-page="quantity-promos">
+
+    <!-- شاشة تحميل تظهر لحد ما يتأكد من الجلسة -->
+    <div class="adm-auth-gate"><div class="adm-loading-spinner"></div></div>
+
+    <div class="adm-shell">
+        <div id="adm-shell-target"></div>
+
+        <main class="adm-main">
+            <div id="adm-topbar-target"></div>
+
+            <div class="adm-content" id="adm-page-content">
+
+                <div class="adm-card">
+                    <div class="adm-card-header">
+                        <div>
+                            <h2>عروض الكمية</h2>
+                            <p>عروض بتتحسب تلقائيًا في السلة حسب عدد القطع من فئة أو منتجات معينة، من غير كود. بتشتغل وتقفل لوحدها في التاريخ اللي تحدديه (بتوقيت مصر).</p>
+                        </div>
+                        <button class="adm-btn adm-btn-primary" id="add-promo-btn">
+                            <i class="fa-solid fa-plus"></i> إضافة عرض كمية
+                        </button>
+                    </div>
+                    <div class="adm-hint" style="padding: 0 20px 16px 20px;">
+                        <i class="fa-solid fa-circle-info"></i>
+                        لو أكتر من عرض اتحققت شروطه في نفس السلة، الموقع بيطبّق <strong>عرض واحد بس: الأكبر توفيرًا للعميلة</strong>. الحساب النهائي بيتم على السيرفر وقت تسجيل الطلب، فالمبلغ اللي بيوصلك في الطلب هو الصح دايمًا.
+                    </div>
+                    <div class="adm-table-wrapper">
+                        <table class="adm-table" id="promos-table">
+                            <thead>
+                                <tr>
+                                    <th>الحالة</th>
+                                    <th>العرض</th>
+                                    <th>الشرط والمكافأة</th>
+                                    <th>النطاق</th>
+                                    <th>المدة</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="promos-tbody">
+                                <tr><td colspan="6"><div class="adm-loading-spinner"></div></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="../vendor/supabase-js/supabase.js"></script>
+    <script src="../js/phone-utils.js"></script>
+    <script src="js/admin-data.js"></script>
+    <script src="js/admin-auth-guard.js"></script>
+    <script src="js/admin-ui-utils.js"></script>
+    <script src="js/admin-shell.js"></script>
+    <script src="js/pages/quantity-promos-page.js"></script>
+</body>
+</html>
