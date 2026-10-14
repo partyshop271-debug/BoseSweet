@@ -853,6 +853,23 @@
         if (error) throw error;
     }
 
+    /** إعدادات ظهور كل حملة عروض (promo_campaigns) - الاسم هو المفتاح (نفس عمود campaign في quantity_promos) */
+    async function getAllPromoCampaigns() {
+        try {
+            const { data, error } = await client.from("promo_campaigns").select("*").order("sort_order", { ascending: true });
+            if (error) throw error;
+            return data || [];
+        } catch (e) {
+            console.warn("تعذر جلب إعدادات الحملات:", e.message);
+            return [];
+        }
+    }
+
+    async function savePromoCampaign(settings) {
+        const { error } = await client.from("promo_campaigns").upsert(settings, { onConflict: "campaign" });
+        if (error) throw error;
+    }
+
     /* ============================= المنتجات والفئات (صفحة products.html) ============================= */
 
     /** كل الفئات مرتبة زي ما بتتعرض في الموقع */
@@ -1721,6 +1738,8 @@
         createQuantityPromo,
         updateQuantityPromo,
         deleteQuantityPromo,
+        getAllPromoCampaigns,
+        savePromoCampaign,
         getAllProducts,
         createProduct,
         updateProduct,
