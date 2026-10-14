@@ -383,21 +383,21 @@
                          مفعّلة من لوحة التحكم) - مخفية افتراضيًا، بتتملى من نفس منطق
                          window.getActiveBoseSeason() المستخدم في شارة المنتجات وبانر
                          الرئيسية، بنفس أسلوب بانر وقت التحضير تحت. -->
-                    <div id="checkout-season-message-notice" style="display:none; align-items:flex-start; gap:10px; background: rgba(var(--bose-pink-rgb),0.1); border: 1px solid rgba(var(--bose-pink-rgb),0.4); border-radius: 14px; padding: 14px 16px; margin-bottom: 14px; direction: rtl;">
-                        <i class="fas fa-sparkles" style="color:var(--bose-pink); margin-top:2px; font-size: 1rem;"></i>
+                    <div id="checkout-season-message-notice" style="display:none; align-items:flex-start; gap:10px; background: rgba(var(--bose-notify-green-rgb),0.1); border: 1px solid rgba(var(--bose-notify-green-rgb),0.4); border-radius: 14px; padding: 14px 16px; margin-bottom: 14px; direction: rtl;">
+                        <i class="fas fa-sparkles" style="color:var(--bose-notify-green-dark); margin-top:2px; font-size: 1rem;"></i>
                         <p id="checkout-season-message-text" style="margin:0; font-size:0.85rem; font-weight:600; color:#111111; line-height:1.7; text-align: right;"></p>
                     </div>
 
                     <!-- ⏰ [مواعيد الاستلام والتوصيل - واضحة وبخط كبير]: الساعات بتتملى تلقائي من إعدادات
                          المتجر (boseFillBusinessHoursNotices في cart-engine.js)، والنص الافتراضي هنا 9 الصبح - 10 بالليل. -->
-                    <div id="checkout-business-hours-notice" class="bose-hours-notice" role="note" style="text-align:center; direction:rtl; background: rgba(var(--bose-pink-rgb),0.12); border: 2.5px solid var(--bose-pink, #FF91A4); border-radius: 18px; padding: 18px 14px; margin: 0 0 14px 0;">
-    <div style="font-size:1.05rem; font-weight:800; color:#111111; margin-bottom:6px;"><i class="fas fa-clock" style="color:var(--bose-pink, #FF91A4);"></i> مواعيد الاستلام والتوصيل</div>
-    <div class="bose-hours-range-text" style="font-size:1.75rem; font-weight:900; color:var(--bose-pink, #FF91A4); line-height:1.4; margin-bottom:8px;">من 9:00 الصبح لحد 10:00 بالليل</div>
+                    <div id="checkout-business-hours-notice" class="bose-hours-notice" role="note" style="text-align:center; direction:rtl; background: rgba(var(--bose-notify-green-rgb),0.12); border: 2.5px solid var(--bose-notify-green); border-radius: 18px; padding: 18px 14px; margin: 0 0 14px 0;">
+    <div style="font-size:1.05rem; font-weight:800; color:#111111; margin-bottom:6px;"><i class="fas fa-clock" style="color:var(--bose-notify-green-dark);"></i> مواعيد الاستلام والتوصيل</div>
+    <div class="bose-hours-range-text" style="font-size:1.75rem; font-weight:900; color:var(--bose-notify-green-dark); line-height:1.4; margin-bottom:8px;">من 9:00 الصبح لحد 10:00 بالليل</div>
     <div style="font-size:1rem; font-weight:800; color:#111111; line-height:1.8;">مفيش استلام ولا توصيل قبل <span class="bose-hours-start-text">9:00 الصبح</span> ولا بعد <span class="bose-hours-end-text">10:00 بالليل</span> - بدون أي استثناء.</div>
 </div>
 
-                    <div id="checkout-prep-time-notice" style="display:flex; align-items:flex-start; gap:10px; background: rgba(var(--bose-pink-rgb),0.1); border: 1px solid rgba(var(--bose-pink-rgb),0.4); border-radius: 14px; padding: 14px 16px; margin-bottom: 14px; direction: rtl;">
-                        <i class="fas fa-clock" style="color:var(--bose-pink); margin-top:2px; font-size: 1rem;"></i>
+                    <div id="checkout-prep-time-notice" style="display:flex; align-items:flex-start; gap:10px; background: rgba(var(--bose-notify-green-rgb),0.1); border: 1px solid rgba(var(--bose-notify-green-rgb),0.4); border-radius: 14px; padding: 14px 16px; margin-bottom: 14px; direction: rtl;">
+                        <i class="fas fa-clock" style="color:var(--bose-notify-green-dark); margin-top:2px; font-size: 1rem;"></i>
                         <div>
                             <p id="checkout-preparation-message" style="margin:0; font-size:0.85rem; font-weight:600; color:#111111; line-height:1.7; text-align: right;"></p>
                         </div>
@@ -449,7 +449,7 @@
                     <!-- 🆘 [اقتراح أقرب مواعيد]: بيظهر بس لما الموعد المختار فعليًا مرفوض
                          (قبل مدة التحضير الثابتة أو اليوم مكتمل) - بيقترح أقرب 3 أيام
                          متاحة. مفيش استثناءات ومفيش تواصل واتساب لتظبيط موعد أقرب. -->
-                    <div id="checkout-schedule-alert" style="display:none; margin-top:10px; background: rgba(var(--bose-pink-rgb),0.08); border: 1px dashed var(--bose-pink, var(--bose-pink)); border-radius: 14px; padding: 14px 16px; direction: rtl;">
+                    <div id="checkout-schedule-alert" style="display:none; margin-top:10px; background: rgba(var(--bose-notify-green-rgb),0.08); border: 1px dashed var(--bose-notify-green); border-radius: 14px; padding: 14px 16px; direction: rtl;">
                         <p id="checkout-schedule-alert-text" style="margin:0 0 10px; font-size:0.92rem; font-weight:700; color:#111111; line-height:1.7;"></p>
                         <div id="checkout-schedule-suggestions" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px;"></div>
                     </div>
@@ -457,8 +457,8 @@
 
                     <!-- ⚠️ تنبيه العزل بين المنتجات المخصصة (تورت/ورد محاكي) والمنتجات العادية:
                          يظهر تلقائيًا بس لو السلة فيها الاتنين مع بعض. -->
-                    <div id="checkout-mixed-order-warning-banner" style="display:none; align-items:flex-start; gap:10px; background: rgba(var(--bose-pink-rgb),0.1); border: 1px solid rgba(var(--bose-pink-rgb),0.4); border-radius: 14px; padding: 14px 16px; margin-top: 4px; direction: rtl;">
-                        <i class="fas fa-triangle-exclamation" style="color:var(--bose-pink); margin-top:2px;"></i>
+                    <div id="checkout-mixed-order-warning-banner" style="display:none; align-items:flex-start; gap:10px; background: rgba(var(--bose-notify-green-rgb),0.1); border: 1px solid rgba(var(--bose-notify-green-rgb),0.4); border-radius: 14px; padding: 14px 16px; margin-top: 4px; direction: rtl;">
+                        <i class="fas fa-triangle-exclamation" style="color:var(--bose-notify-green-dark); margin-top:2px;"></i>
                         <p style="margin:0; font-size:0.85rem; font-weight:600; color:#111111; line-height:1.6;">
                             طلبك فيه صنف تورت أو ورد مخصص من المحاكي، وده محتاج وقت تحضير أطول (<strong id="checkout-custom-lead-label">3 أيام</strong>). المنتجات العادية الموجودة معاه في نفس الطلب هتتسلّم <strong>مع</strong> المخصص في نفس الموعد المتأخر، مش هتوصلك لوحدها بدري.
                         </p>

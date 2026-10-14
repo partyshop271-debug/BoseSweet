@@ -125,30 +125,90 @@
     <script src="js/core-engine.js?v=2028_production_v62.0" defer></script>
     <script src="js/user-interest.js?v=1" defer></script>
     <script src="js/guided-tour.js?v=3.3" defer></script>
-    <script src="js/homepage-engine.js?v=2026_production_v1.1" defer></script>
+    <script src="js/homepage-engine.js?v=2026_production_v1.2" defer></script>
     <script src="js/seasons-engine.js?v=2026_production_v1.0" defer></script>
     <script src="js/cart-reminder.js?v=1" defer></script>
     <style>
-        /* بلوك دخول العروض بالرئيسية: كبير وهادي - صور + عنوان + زرار واحد */
-        .bose-offers-entrance { padding: 26px 16px; }
-        .boe-card { display:flex; flex-direction:column; align-items:center; text-align:center; gap:18px; box-sizing:border-box; width:100%; max-width:1100px; margin:0 auto;
-            min-height:300px; padding:30px 20px 28px; border-radius:30px; text-decoration:none; color:#fff; position:relative; overflow:hidden;
-            background: radial-gradient(circle at 15% 0%, rgba(255,255,255,.28), transparent 55%), linear-gradient(135deg, var(--bose-pink), #e0456b 70%, #b82a53);
-            box-shadow:0 18px 44px rgba(var(--bose-pink-rgb),.45); transition:transform .2s; }
+        /* بلوك دخول العروض بالرئيسية - كبير وفخم ومتحرك (نفس لغة حركة بلوك التطبيق: أيقونات عايمة + توهّج) */
+        .bose-offers-entrance { padding: 30px 14px 22px; }
+        .boe-card { display:flex; flex-direction:column; align-items:center; text-align:center; gap:26px; box-sizing:border-box; width:100%; max-width:1200px; margin:0 auto;
+            min-height:440px; padding:44px 20px 38px; border-radius:36px; text-decoration:none; color:#fff; position:relative; overflow:hidden; isolation:isolate;
+            background: radial-gradient(circle at 12% 0%, rgba(255,255,255,.34), transparent 52%), radial-gradient(circle at 92% 100%, rgba(0,0,0,.22), transparent 55%), linear-gradient(135deg, var(--bose-pink), #e0456b 62%, #a8264b);
+            box-shadow:0 26px 60px rgba(var(--bose-pink-rgb),.5), inset 0 0 0 1.5px rgba(255,255,255,.22);
+            transition:transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s ease; }
+        .boe-card:hover { transform:translateY(-4px); box-shadow:0 34px 74px rgba(var(--bose-pink-rgb),.58), inset 0 0 0 1.5px rgba(255,255,255,.3); }
         .boe-card:active { transform:scale(.985); }
-        .boe-media { display:flex; justify-content:center; direction:ltr; min-height:96px; }
-        .boe-media img { width:92px; height:92px; border-radius:50%; object-fit:cover; border:4px solid #fff; background:rgba(255,255,255,.3); margin-inline:-9px; box-shadow:0 10px 24px rgba(0,0,0,.25); }
-        .boe-media img:nth-child(2) { transform:translateY(-10px); width:108px; height:108px; z-index:2; }
-        .boe-badge { display:inline-flex; align-items:center; gap:8px; padding:7px 16px; border-radius:50px; background:rgba(0,0,0,.28); font-weight:800; font-size:13px; }
-        .boe-card .boe-title { color:#fff !important; margin:12px 0 8px; font-size:clamp(24px, 6.4vw, 40px); line-height:1.4; font-weight:900; }
-        .boe-card .boe-sub { color:#fff !important; margin:0 auto 18px; max-width:520px; font-size:15px; line-height:1.9; opacity:.92; }
-        .boe-card .boe-btn { color:#111 !important; display:inline-flex; align-items:center; justify-content:center; gap:10px; padding:16px 34px; border-radius:50px; background:#fff; color:#111; font-weight:900; font-size:17px; box-shadow:0 10px 24px rgba(0,0,0,.22); }
+        .boe-card > .boe-media, .boe-card > .boe-body { position:relative; z-index:2; }
+
+        /* طبقة الحركة الزخرفية */
+        .boe-shine { position:absolute; inset:0; z-index:1; pointer-events:none; overflow:hidden; border-radius:inherit; }
+        .boe-shine::before { content:""; position:absolute; top:-30%; bottom:-30%; width:42%; left:-60%; transform:skewX(-18deg);
+            background:linear-gradient(90deg, transparent, rgba(255,255,255,.28), transparent); animation:boeShine 5.5s ease-in-out infinite; }
+        .boe-orb { position:absolute; z-index:0; border-radius:50%; pointer-events:none; background:rgba(255,255,255,.1); animation:boeOrb 9s ease-in-out infinite; }
+        .boe-orb-1 { width:260px; height:260px; top:-90px; right:-70px; }
+        .boe-orb-2 { width:300px; height:300px; bottom:-130px; left:-90px; background:rgba(0,0,0,.08); animation-delay:-4s; }
+        .boe-float { position:absolute; z-index:1; width:50px; height:50px; border-radius:50%; background:#fff; color:var(--bose-pink-text, var(--bose-pink));
+            display:flex; align-items:center; justify-content:center; font-size:19px; box-shadow:0 12px 26px rgba(0,0,0,.2);
+            animation:boseFloatBadgeBounce 3.4s ease-in-out infinite; pointer-events:none; }
+        .boe-float-1 { top:7%; right:6%; animation-delay:0s; }
+        .boe-float-2 { top:34%; left:4%; animation-delay:.6s; }
+        .boe-float-3 { bottom:9%; right:8%; animation-delay:1.2s; width:44px; height:44px; font-size:17px; }
+        .boe-float-4 { top:9%; left:14%; animation-delay:1.8s; width:40px; height:40px; font-size:15px; }
+        .boe-float-5 { bottom:14%; left:8%; animation-delay:2.4s; width:44px; height:44px; font-size:17px; }
+
+        /* الصور: دايرة كبيرة بتطفو بالتتابع + هالة نابضة */
+        .boe-media { display:flex; justify-content:center; align-items:center; direction:ltr; min-height:130px; }
+        .boe-media img { width:112px; height:112px; border-radius:50%; object-fit:cover; border:5px solid #fff; background:rgba(255,255,255,.3); margin-inline:-12px;
+            box-shadow:0 14px 30px rgba(0,0,0,.28); animation:boseFloatBadgeBounce 4s ease-in-out infinite; }
+        .boe-media img:nth-child(1) { animation-delay:.3s; }
+        .boe-media img:nth-child(2) { width:136px; height:136px; z-index:2; animation-delay:0s; animation-name:boeHero; }
+        .boe-media img:nth-child(3) { animation-delay:.9s; }
+
+        /* النص */
+        .boe-badge { display:inline-flex; align-items:center; gap:9px; padding:9px 20px; border-radius:50px; background:rgba(0,0,0,.3); font-weight:800; font-size:14px; backdrop-filter:blur(4px); }
+        .boe-live-dot { width:9px; height:9px; border-radius:50%; background:#fff; box-shadow:0 0 0 0 rgba(255,255,255,.7); animation:boePulse 1.8s ease-out infinite; }
+        .boe-card .boe-title { color:#fff !important; margin:14px 0 10px; font-size:clamp(28px, 7.4vw, 52px); line-height:1.35; font-weight:900; text-shadow:0 4px 18px rgba(0,0,0,.18); }
+        .boe-card .boe-sub { color:#fff !important; margin:0 auto 16px; max-width:560px; font-size:16px; line-height:1.9; opacity:.95; }
+        .boe-chips { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin:0 0 22px; }
+        .boe-chips:empty { display:none; }
+        .boe-chip { display:inline-flex; align-items:center; gap:7px; padding:7px 15px; border-radius:50px; background:rgba(255,255,255,.2); border:1px solid rgba(255,255,255,.45); font-weight:800; font-size:13px; animation:boeChipIn .6s cubic-bezier(.2,.8,.2,1) both; }
+        .boe-chip:nth-child(2) { animation-delay:.12s; } .boe-chip:nth-child(3) { animation-delay:.24s; } .boe-chip:nth-child(4) { animation-delay:.36s; }
+        .boe-card .boe-btn { color:#111 !important; position:relative; overflow:hidden; display:inline-flex; align-items:center; justify-content:center; gap:12px; padding:18px 42px; border-radius:50px; background:#fff; font-weight:900; font-size:18px;
+            box-shadow:0 14px 30px rgba(0,0,0,.26); animation:boeBtnPulse 2.6s ease-in-out infinite; }
+        .boe-card .boe-btn::after { content:""; position:absolute; top:0; bottom:0; width:40%; left:-60%; transform:skewX(-18deg); background:linear-gradient(90deg, transparent, rgba(var(--bose-pink-rgb),.28), transparent); animation:boeShine 3.8s ease-in-out infinite; }
+        .boe-card .boe-btn i { animation:boeArrow 1.4s ease-in-out infinite; }
+
+        @keyframes boeShine { 0%, 35% { left:-60%; } 75%, 100% { left:130%; } }
+        @keyframes boeOrb { 0%, 100% { transform:translate(0,0) scale(1); } 50% { transform:translate(-14px,12px) scale(1.07); } }
+        @keyframes boeHero { 0%, 100% { transform:translateY(-10px) scale(1); } 50% { transform:translateY(-22px) scale(1.04); } }
+        @keyframes boePulse { 0% { box-shadow:0 0 0 0 rgba(255,255,255,.7); } 70%, 100% { box-shadow:0 0 0 10px rgba(255,255,255,0); } }
+        @keyframes boeChipIn { from { opacity:0; transform:translateY(12px) scale(.92); } to { opacity:1; transform:none; } }
+        @keyframes boeBtnPulse { 0%, 100% { transform:scale(1); } 50% { transform:scale(1.045); } }
+        @keyframes boeArrow { 0%, 100% { transform:translateX(0); } 50% { transform:translateX(-6px); } }
+
+        @media (max-width:520px) {
+            .boe-card { min-height:0; padding:38px 16px 32px; border-radius:30px; gap:22px; }
+            .boe-float { width:38px; height:38px; font-size:14px; }
+            .boe-float-3, .boe-float-5 { width:34px; height:34px; font-size:13px; }
+            .boe-float-4 { display:none; }
+            .boe-media img { width:96px; height:96px; }
+            .boe-media img:nth-child(2) { width:118px; height:118px; }
+            .boe-card .boe-btn { padding:16px 34px; font-size:17px; }
+        }
         @media (min-width:820px) {
-            .boe-card { flex-direction:row-reverse; justify-content:space-between; text-align:right; padding:40px 56px; min-height:320px; }
-            .boe-media img { width:130px; height:130px; margin-inline:-14px; }
-            .boe-media img:nth-child(2) { width:156px; height:156px; }
+            .bose-offers-entrance { padding:40px 20px 28px; }
+            .boe-card { flex-direction:row-reverse; justify-content:space-between; text-align:right; padding:56px 72px; min-height:480px; gap:40px; }
+            .boe-media { min-height:200px; }
+            .boe-media img { width:170px; height:170px; margin-inline:-18px; border-width:6px; }
+            .boe-media img:nth-child(2) { width:204px; height:204px; }
             .boe-body { flex:1; }
             .boe-sub { margin-inline:0; }
+            .boe-chips { justify-content:flex-start; }
+            .boe-float { width:58px; height:58px; font-size:22px; }
+            .boe-float-1 { top:9%; right:auto; left:46%; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .boe-shine::before, .boe-orb, .boe-float, .boe-media img, .boe-live-dot, .boe-chip, .boe-card .boe-btn, .boe-card .boe-btn::after, .boe-card .boe-btn i { animation:none !important; }
         }
     </style>
 </head>
@@ -207,6 +267,30 @@
             <div class="waterfall-overlay-bottom"></div>
         </section>
 
+        <!-- 🏷️ بلوك دخول العروض (فخم + متحرك) - متنقل ليبقى أول حاجة بعد الشلال وقبل "تسوق حسب الفئة".
+             مفيش أي عروض بتتعرض هنا، البلوك بس بيوصّل لصفحة العروض (المكان الوحيد للعروض).
+             الـ id متسيّب زي ما هو (offers-carousel-section) عشان جولة الموقع الإرشادية بتعتمد عليه. بيظهر بس لو فيه عروض فعلاً. -->
+        <section id="offers-carousel-section" class="bose-section-container bose-offers-entrance" aria-labelledby="offers-main-heading" style="display:none;">
+            <a href="offers.html" class="boe-card" id="offers-entrance-link">
+                <span class="boe-shine" aria-hidden="true"></span>
+                <span class="boe-orb boe-orb-1" aria-hidden="true"></span>
+                <span class="boe-orb boe-orb-2" aria-hidden="true"></span>
+                <span class="boe-float boe-float-1" aria-hidden="true"><i class="fa-solid fa-percent"></i></span>
+                <span class="boe-float boe-float-2" aria-hidden="true"><i class="fa-solid fa-gift"></i></span>
+                <span class="boe-float boe-float-3" aria-hidden="true"><i class="fa-solid fa-truck-fast"></i></span>
+                <span class="boe-float boe-float-4" aria-hidden="true"><i class="fa-solid fa-star"></i></span>
+                <span class="boe-float boe-float-5" aria-hidden="true"><i class="fa-solid fa-tag"></i></span>
+                <div class="boe-media" id="offers-entrance-media" aria-hidden="true"></div>
+                <div class="boe-body">
+                    <span class="boe-badge"><span class="boe-live-dot" aria-hidden="true"></span><i class="fas fa-percentage"></i> <span id="offers-entrance-badge">عروض حصريّة</span></span>
+                    <h2 id="offers-main-heading" class="boe-title">كل عروض حلويات بوسي في مكان واحد</h2>
+                    <p id="offers-description" class="boe-sub bose-arabic-text">ادخلي صفحة العروض وشوفي كل حاجة.</p>
+                    <div class="boe-chips" id="offers-entrance-chips"></div>
+                    <span class="boe-btn">شوفي كل العروض <i class="fa-solid fa-arrow-left"></i></span>
+                </div>
+            </a>
+        </section>
+
         <!-- SECTION 03: تسوق حسب الفئة الملوكي المطور (نقلناه هنا قريب من الأول عشان يساعد العميل يتوجه بسرعة - إيماءات السحب واللمس المرنة لعملاء الهواتف) -->
         <section id="categories-slider-section" class="bose-section-container bose-categories-slider-section" aria-labelledby="categories-section-title">
             <div class="bose-section-header">
@@ -218,20 +302,6 @@
                 <div id="categories-track" class="categories-track-slider"></div>
             </div>
             <div id="categories-dots-container" class="categories-slider-dots"></div>
-        </section>
-
-        <!-- 🏷️ SECTION 04: بلوك دخول العروض - مفيش أي عروض بتتعرض هنا، البلوك ده بس بيوصّل لصفحة العروض (المكان الوحيد للعروض).
-             الـ id متسيّب زي ما هو (offers-carousel-section) عشان جولة الموقع الإرشادية بتعتمد عليه. بيظهر بس لو فيه عروض فعلاً. -->
-        <section id="offers-carousel-section" class="bose-section-container bose-offers-entrance" aria-labelledby="offers-main-heading" style="display:none;">
-            <a href="offers.html" class="boe-card" id="offers-entrance-link">
-                <div class="boe-media" id="offers-entrance-media" aria-hidden="true"></div>
-                <div class="boe-body">
-                    <span class="boe-badge"><i class="fas fa-percentage"></i> <span id="offers-entrance-badge">عروض حصريّة</span></span>
-                    <h2 id="offers-main-heading" class="boe-title">كل عروض حلويات بوسي في مكان واحد</h2>
-                    <p id="offers-description" class="boe-sub bose-arabic-text">ادخلي صفحة العروض وشوفي كل حاجة.</p>
-                    <span class="boe-btn">شوفي كل العروض <i class="fa-solid fa-arrow-left"></i></span>
-                </div>
-            </a>
         </section>
 
         <!-- SECTION 05: الأكثر مبيعاً (شبكة مستقرة وموزعة بدقة هندسية كاملة) -->
