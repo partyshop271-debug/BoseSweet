@@ -805,7 +805,7 @@ function renderBoseCheckoutPage(storeData) {
             const styleBase = "border-radius:12px; padding:12px 14px; font-size:0.88rem; font-weight:700; margin-bottom:16px; display:flex; align-items:center; gap:8px;";
             if (row && row.found) {
                 if (pct > 0) {
-                    bannerHtml = `<div style="${styleBase} background:rgba(46,158,91,0.1); color:#2e9e5b; border:1px solid rgba(46,158,91,0.3);">
+                    bannerHtml = `<div style="${styleBase} background:rgba(var(--bose-notify-green-rgb),0.15); color:var(--bose-notify-green-dark); border:1px solid rgba(var(--bose-notify-green-rgb),0.5);">
                         <i class="fa-solid fa-star"></i> مبروك! ده طلبك رقم ${nextSeq}، وهياخد خصم ولاء تلقائي ${pct}% 🎉</div>`;
                 } else {
                     // أقرب شريحة خصم جاية: الترتيب جوه الدورة + مفاتيح الشرايح
@@ -817,7 +817,7 @@ function renderBoseCheckoutPage(storeData) {
                         const targetKey = upcoming !== undefined ? upcoming : tierKeys[0];
                         const targetSeq = upcoming !== undefined ? nextSeq + (upcoming - pos) : nextSeq + (cycle - pos) + tierKeys[0];
                         const targetPct = row.tiers[String(targetKey)];
-                        bannerHtml = `<div style="${styleBase} background:rgba(var(--bose-pink-rgb),0.08); color:var(--bose-pink); border:1px solid rgba(var(--bose-pink-rgb),0.3);">
+                        bannerHtml = `<div style="${styleBase} background:rgba(var(--bose-notify-green-rgb),0.15); color:var(--bose-notify-green-dark); border:1px solid rgba(var(--bose-notify-green-rgb),0.5);">
                             <i class="fa-solid fa-heart"></i> ده طلبك رقم ${nextSeq}، وخصم الولاء الجاي (${targetPct}%) هيكون على طلبك رقم ${targetSeq}</div>`;
                     }
                 }
@@ -1703,11 +1703,11 @@ function injectBoseCustomModalStyles() {
     styleEl.textContent = `
         .bose-custom-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(17, 17, 17, 0.4); display: flex; align-items: center; justify-content: center; z-index: 100000; direction: rtl; opacity: 0; transition: opacity 0.25s ease; pointer-events: none; padding: 20px; box-sizing: border-box; }
         .bose-custom-modal-overlay.active { opacity: 1; pointer-events: auto; }
-        .bose-custom-modal-card { background: #FFFFFF; border: 1px solid rgba(var(--bose-pink-rgb), 0.3); border-radius: 24px; padding: 24px; width: 100%; max-width: 400px; box-shadow: 0 12px 40px rgba(var(--bose-pink-rgb), 0.15); text-align: center; box-sizing: border-box; }
+        .bose-custom-modal-card { background: #FFFFFF; border: 1px solid rgba(var(--bose-notify-green-rgb), 0.5); border-radius: 24px; padding: 24px; width: 100%; max-width: 400px; box-shadow: 0 12px 40px rgba(var(--bose-notify-green-rgb), 0.25); text-align: center; box-sizing: border-box; }
         .bose-modal-text { font-family: 'Cairo'; font-size: 16px; font-weight: 700; color: #111111; margin: 0 0 20px 0; line-height: 1.5; }
         .bose-modal-actions-wrapper { display: flex; gap: 12px; justify-content: center; }
         .bose-modal-btn { font-family: 'Cairo'; font-size: 14px; font-weight: 700; padding: 10px 24px; border-radius: 12px; cursor: pointer; border: none; box-sizing: border-box; }
-        .bose-modal-btn-confirm { background: var(--bose-pink); color: #FFFFFF; }
+        .bose-modal-btn-confirm { background: var(--bose-notify-green); color: #111111; }
         .bose-modal-btn-cancel { background: #FFFFFF; color: #111111; border: 1px solid rgba(17,17,17,0.15); }
     `;
     document.head.appendChild(styleEl);

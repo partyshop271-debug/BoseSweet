@@ -163,6 +163,11 @@
         if (promos.some(/** @param {any} r */ (r) => r.reward_type === 'free_shipping')) rewards.push('شحن مجاني');
         if (promos.some(/** @param {any} r */ (r) => r.reward_type === 'free_piece')) rewards.push('قطع هدية');
         if (productOffers.length) rewards.push('أسعار مخفّضة');
+        const chipsEl = document.getElementById('offers-entrance-chips');
+        if (chipsEl) {
+            const chipIcons = { 'خصومات': 'fa-percent', 'شحن مجاني': 'fa-truck-fast', 'قطع هدية': 'fa-gift', 'أسعار مخفّضة': 'fa-tag' };
+            chipsEl.innerHTML = rewards.map((r) => `<span class="boe-chip"><i class="fa-solid ${chipIcons[r] || 'fa-star'}"></i> ${r}</span>`).join('');
+        }
         const desc = document.getElementById('offers-description');
         if (desc) desc.textContent = rewards.length ? ('ادخلي صفحة العروض: ' + rewards.join(' و') + ' - كل حاجة قدامك في مكان واحد.') : 'ادخلي صفحة العروض وشوفي كل حاجة.';
         const badge = document.getElementById('offers-entrance-badge');

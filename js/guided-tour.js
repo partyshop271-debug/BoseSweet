@@ -82,8 +82,8 @@
             { page: ['index.html'], mode: 'info', selector: '.nav-cart-icon-wrapper[href="/favorites.html"]', title: 'المفضلة', text: 'أي منتج يعجبك تقدري تحفظيه هنا بدوسة قلب واحدة، وترجعيله بعدين بسهولة من غير ما تدوري عليه تاني.', section: 'nav' },
             { page: ['index.html'], mode: 'info', selector: '.nav-cart-icon-wrapper[href="/cart.html"]', title: 'دي سلتك', text: 'هتلاقيها هنا فوق في أي صفحة بالموقع دايمًا، وبتتحدث تلقائي أول ما تضيفي أي منتج.', section: 'nav' },
             { page: ['index.html'], mode: 'info', selector: '#hero-section', title: 'الواجهة الرئيسية', text: 'زرار "اطلب الآن" هنا بيوديكي على المنيو الشامل على طول.', section: 'sections' },
-            { page: ['index.html'], mode: 'info', selector: '#categories-slider-section', title: 'تصفحي حسب الفئة', text: 'نفس الفئات اللي في القائمة الجانبية، بس هنا بصور واضحة تقدري تتصفحيها بحرية.', section: 'sections' },
             { page: ['index.html'], mode: 'info', selector: '#offers-carousel-section', title: 'استفيدي من عروضنا', text: 'دي كل العروض والتخفيضات النشطة دلوقتي - لو نفسك تستفيدي بسعر مميز، ابدأي من هنا.', section: 'sections' },
+            { page: ['index.html'], mode: 'info', selector: '#categories-slider-section', title: 'تصفحي حسب الفئة', text: 'نفس الفئات اللي في القائمة الجانبية، بس هنا بصور واضحة تقدري تتصفحيها بحرية.', section: 'sections' },
             { page: ['index.html'], mode: 'info', selector: '#most-selling-section', title: 'الأكثر مبيعاً', text: 'كل كارت هنا فيه صورة المنتج وسعره، وزرار زيادة/تقليل الكمية، وزرار إضافة للسلة مباشرة.', section: 'sections' },
             { page: ['index.html'], mode: 'info', selector: '#cake-preview-section', title: 'محاكي التورت', text: 'لو عايزة تصممي تورتة مناسبتك بنفسك، من هنا تدخلي المحاكي - وليها جولة مستقلة لوحدها لو حبيتي.', section: 'sections' },
             { page: ['index.html'], mode: 'info', selector: '#new-arrivals-section', title: 'وصل حديثاً', text: 'وهنا آخر الأصناف الجديدة اللي ضفناها للمنيو.', section: 'sections' },
@@ -367,12 +367,12 @@
             .bose-tour-skipsection-btn{background:none;border:none;color:var(--bose-pink);font-size:.76rem;font-weight:700;cursor:pointer;padding:0;font-family:'Cairo',sans-serif;}
             .bose-tour-skip-btn{background:none;border:none;color:#999;font-size:.76rem;cursor:pointer;text-decoration:underline;padding:0;font-family:'Cairo',sans-serif;}
             @media (max-width:480px){.bose-tour-tooltip{max-width:85vw;}}
-            .bose-tour-intro-toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(24px);background:#fff;color:#111;padding:16px 18px;border-radius:16px;box-shadow:0 10px 34px rgba(0,0,0,.22);z-index:100000;opacity:0;transition:opacity .35s ease,transform .35s ease;max-width:340px;width:88vw;font-family:'Cairo',sans-serif;direction:rtl;text-align:right;}
+            .bose-tour-intro-toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(24px);background:#fff;color:#111;border:2px solid var(--bose-notify-green);padding:16px 18px;border-radius:16px;box-shadow:0 10px 34px rgba(0,0,0,.22);z-index:100000;opacity:0;transition:opacity .35s ease,transform .35s ease;max-width:340px;width:88vw;font-family:'Cairo',sans-serif;direction:rtl;text-align:right;}
             .bose-tour-intro-toast-show{opacity:1;transform:translateX(-50%) translateY(0);}
             .bose-tour-intro-toast-title{font-weight:800;font-size:.95rem;margin-bottom:4px;display:flex;align-items:center;gap:6px;}
             .bose-tour-intro-toast-text{font-size:.84rem;color:#555;line-height:1.55;margin:0 0 12px 0;}
             .bose-tour-intro-toast-row{display:flex;gap:8px;}
-            .bose-tour-intro-accept-btn{flex:1;background:var(--bose-pink);color:#fff;border:none;border-radius:11px;padding:9px 10px;font-family:'Cairo',sans-serif;font-size:.82rem;font-weight:800;cursor:pointer;}
+            .bose-tour-intro-accept-btn{flex:1;background:var(--bose-notify-green);color:#111;border:none;border-radius:11px;padding:9px 10px;font-family:'Cairo',sans-serif;font-size:.82rem;font-weight:800;cursor:pointer;}
             .bose-tour-intro-dismiss-btn{background:none;border:none;color:#999;font-size:.82rem;cursor:pointer;font-family:'Cairo',sans-serif;padding:9px 10px;}
 
             /* 🆕 [زرار المساعدة العائم + قايمة اختيار الجولة] - شكل تاب عمودي
