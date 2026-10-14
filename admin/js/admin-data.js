@@ -821,6 +821,38 @@
         if (error) throw error;
     }
 
+    /* ============================= عروض الكمية (quantity-promos.html) ============================= */
+
+    /** كل عروض الكمية (شغالة/مجدولة/منتهية/مقفولة) - الأدمن بيشوفها كلها بسياسة quantity_promos_admin_select */
+    async function getAllQuantityPromos() {
+        try {
+            const { data, error } = await client
+                .from("quantity_promos")
+                .select("*")
+                .order("sort_order", { ascending: true });
+            if (error) throw error;
+            return data || [];
+        } catch (e) {
+            console.warn("تعذر جلب عروض الكمية:", e.message);
+            return [];
+        }
+    }
+
+    async function createQuantityPromo(promo) {
+        const { error } = await client.from("quantity_promos").insert(promo);
+        if (error) throw error;
+    }
+
+    async function updateQuantityPromo(id, updates) {
+        const { error } = await client.from("quantity_promos").update(updates).eq("id", id);
+        if (error) throw error;
+    }
+
+    async function deleteQuantityPromo(id) {
+        const { error } = await client.from("quantity_promos").delete().eq("id", id);
+        if (error) throw error;
+    }
+
     /* ============================= المنتجات والفئات (صفحة products.html) ============================= */
 
     /** كل الفئات مرتبة زي ما بتتعرض في الموقع */
@@ -1685,6 +1717,10 @@
         createOffer,
         updateOffer,
         deleteOffer,
+        getAllQuantityPromos,
+        createQuantityPromo,
+        updateQuantityPromo,
+        deleteQuantityPromo,
         getAllProducts,
         createProduct,
         updateProduct,
