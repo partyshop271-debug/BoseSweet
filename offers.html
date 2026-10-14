@@ -7,10 +7,10 @@
     <link rel="apple-touch-icon" href="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#FF91A4">
-    <title>كل العروض والتخفيضات | حلويات بوسي</title>
+    <title>عرض اليوم الواحد على الدوناتس | حلويات بوسي</title>
 
     <!-- 🔍 إعدادات تحسين محركات البحث والأرشفة الفاخرة SEO -->
-    <meta name="description" content="كل عروض وتخفيضات حلويات بوسي في مكان واحد - أسعار استثنائية لفترة محدودة على تشكيلة مختارة بعناية.">
+    <meta name="description" content="عرض لمدة 24 ساعة فقط على الدوناتس بكل النكهات - خصم 10% أو شحن مجاني أو قطعة هدية. حلويات بوسي.">
     <meta name="robots" content="index, follow">
 
     <!-- ⚡ preconnect لتسريع أول اتصال بمصادر الخط والصور والأيقونات -->
@@ -26,82 +26,80 @@
     <link rel="stylesheet" href="css/season-themes.css?v=2026_production_v39.0">
 
     <!-- 👑 المحرك المركزي العالمي - نفس المصدر اللي بيغذي كارت العروض بالرئيسية بالظبط -->
-    <script src="js/supabase-client.js?v=2027_production_v43.1" defer></script>
+    <script src="js/supabase-client.js?v=2027_production_v47.0" defer></script>
     <script src="js/push-notifications.js?v=1.0" defer></script>
     <script src="js/favorites-engine.js?v=2026_production_v38.0" defer></script>
     <script src="js/season-dates.js?v=2026_production_v1.0" defer></script>
     <script src="js/season-themes.js?v=2026_production_v1.0" defer></script>
     <script src="js/season-theme-engine.js?v=2026_production_v1.0" defer></script>
     <script src="js/phone-utils.js?v=1" defer></script>
-    <script src="js/core-engine.js?v=2028_production_v61.0" defer></script>
+    <script src="js/core-engine.js?v=2028_production_v62.0" defer></script>
     <script src="js/user-interest.js?v=1" defer></script>
     <script src="js/homepage-engine.js?v=2026_production_v1.0" defer></script>
     <script src="js/cart-reminder.js?v=1" defer></script>
 
     <style>
-        /* 🎨 هوية بصرية مخصصة لصفحة العروض - المكان الشرعي الوحيد لعرض كل الخصومات */
-        .offers-page-hero {
-            padding: 50px 20px 30px 20px;
-            text-align: center;
-            background: linear-gradient(rgba(var(--bose-pink-rgb), 0.06), rgba(var(--bose-pink-rgb), 0.01));
-        }
-        .offers-page-hero .offers-page-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background-color: rgba(var(--bose-pink-rgb), 0.1);
-            color: var(--bose-pink);
-            padding: 8px 18px;
-            border-radius: 50px;
-            font-size: 14px;
-            font-weight: 700;
-            margin-bottom: 16px;
-            border: 1px solid rgba(var(--bose-pink-rgb), 0.2);
-        }
-        .offers-page-hero h1 {
-            font-size: 30px;
-            color: var(--bose-black);
-            margin: 0 0 12px 0;
-        }
-        .offers-page-hero p {
-            font-size: 15px;
-            color: var(--bose-black);
-            opacity: 0.8;
-            max-width: 600px;
-            margin: 0 auto;
-            line-height: 1.8;
-        }
-        .offers-page-wrapper {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 30px 16px 70px 16px;
-            box-sizing: border-box;
-        }
-        #all-offers-grid.products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 16px;
-        }
-        @media (min-width: 640px) {
-            #all-offers-grid.products-grid {
-                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-                gap: 22px;
-            }
-        }
-        #all-offers-empty-state {
-            display: none;
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--bose-black);
-            opacity: 0.7;
-        }
-        #all-offers-empty-state i {
-            font-size: 2.5rem;
-            color: var(--bose-pink);
-            margin-bottom: 16px;
-            display: block;
-        }
+        /* 🎁 صفحة العروض = المكان الوحيد لعروض الكمية. تصميم موبايل أولاً. */
+        .op-hero { position: relative; overflow: hidden; text-align: center; padding: 44px 18px 34px;
+            background: radial-gradient(circle at 20% 0%, rgba(var(--bose-pink-rgb),0.30), transparent 55%),
+                        radial-gradient(circle at 90% 30%, rgba(var(--bose-pink-rgb),0.18), transparent 50%),
+                        linear-gradient(180deg, rgba(var(--bose-pink-rgb),0.10), rgba(var(--bose-pink-rgb),0)); }
+        .op-chip { display:inline-flex; align-items:center; gap:8px; padding:8px 18px; border-radius:50px; font-weight:800; font-size:13.5px;
+            background:#111; color:#fff; letter-spacing:.2px; }
+        .op-chip i { color: var(--bose-pink); }
+        .op-hero h1 { margin:16px 0 8px; font-size: clamp(26px, 6.2vw, 40px); line-height:1.35; color:#111; font-weight:900; }
+        .op-hero h1 em { font-style:normal; color: var(--bose-pink); }
+        .op-hero p { margin:0 auto; max-width:560px; font-size:15px; line-height:1.9; color:#111; opacity:.78; }
+
+        .op-timer-wrap { margin: 24px auto 0; max-width: 460px; background:#fff; border-radius: 22px; padding: 18px 16px 16px;
+            border: 2px solid rgba(var(--bose-pink-rgb),0.45); box-shadow: 0 14px 34px rgba(var(--bose-pink-rgb),0.22); }
+        .op-timer-label { font-weight:800; font-size:14px; color:#111; margin-bottom:12px; display:flex; align-items:center; justify-content:center; gap:8px; }
+        .op-timer-label .op-dot { width:9px; height:9px; border-radius:50%; background:#2e9e5b; box-shadow:0 0 0 0 rgba(46,158,91,.6); animation: opPulse 1.6s infinite; }
+        .op-timer-label.upcoming .op-dot { background:#e0a100; animation:none; }
+        @keyframes opPulse { 70% { box-shadow:0 0 0 10px rgba(46,158,91,0);} 100% { box-shadow:0 0 0 0 rgba(46,158,91,0);} }
+        .op-timer { display:flex; justify-content:center; gap:10px; direction:ltr; }
+        .op-box { flex:1; max-width:92px; background:#111; color:#fff; border-radius:16px; padding:12px 4px 9px; }
+        .op-box b { display:block; font-size: clamp(28px, 8vw, 38px); line-height:1; font-weight:900; font-variant-numeric: tabular-nums; }
+        .op-box span { display:block; margin-top:6px; font-size:11.5px; font-weight:700; opacity:.75; direction:rtl; }
+        .op-date { margin-top:12px; font-size:12.5px; font-weight:700; color:#111; opacity:.65; }
+
+        .op-wrap { width:100%; max-width:1100px; margin:0 auto; padding: 8px 16px 70px; box-sizing:border-box; }
+        .op-section-title { text-align:center; margin: 34px 0 18px; }
+        .op-section-title h2 { margin:0 0 6px; font-size: clamp(20px, 5vw, 26px); font-weight:900; color:#111; }
+        .op-section-title p { margin:0; font-size:14px; color:#111; opacity:.7; }
+
+        .op-offers { display:grid; grid-template-columns: 1fr; gap:16px; }
+        @media (min-width: 760px) { .op-offers { grid-template-columns: repeat(3, 1fr); gap:20px; } }
+        .op-card { position:relative; background:#fff; border-radius:24px; padding: 26px 20px 22px; text-align:center; overflow:hidden;
+            border:2px solid rgba(var(--bose-pink-rgb),0.35); box-shadow: 0 10px 28px rgba(0,0,0,.06); display:flex; flex-direction:column; align-items:center; }
+        .op-card::before { content:""; position:absolute; inset:0 0 auto 0; height:6px; background:linear-gradient(90deg, var(--bose-pink), rgba(var(--bose-pink-rgb),.4)); }
+        .op-num { width:84px; height:84px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin: 4px auto 12px;
+            font-size:44px; font-weight:900; color:#fff; background: linear-gradient(135deg, var(--bose-pink), #ff6f8e); box-shadow: 0 10px 22px rgba(var(--bose-pink-rgb),.45); }
+        .op-reward { display:inline-flex; align-items:center; gap:7px; padding:7px 15px; border-radius:50px; font-weight:900; font-size:14px;
+            background: rgba(var(--bose-pink-rgb),.14); color:#c2325a; margin-bottom:12px; }
+        .op-card h3 { margin:0 0 16px; font-size:16.5px; line-height:1.85; font-weight:800; color:#111; flex:1; }
+        .op-btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; width:100%; box-sizing:border-box; text-decoration:none; cursor:pointer; border:0;
+            padding:14px 18px; border-radius:16px; font-weight:900; font-size:15px; font-family:inherit; background:#111; color:#fff; transition: transform .15s; }
+        .op-btn:active { transform: scale(.97); }
+        .op-btn.disabled { background:#d9d9d9; color:#666; pointer-events:none; }
+        .op-note { margin: 18px auto 0; max-width:640px; background: rgba(var(--bose-pink-rgb),.08); border:1px dashed rgba(var(--bose-pink-rgb),.55);
+            border-radius:16px; padding:14px 16px; font-size:13.5px; line-height:1.9; color:#111; font-weight:600; }
+        .op-note i { color: var(--bose-pink); margin-left:6px; }
+
+        .op-flavors { display:grid; grid-template-columns: repeat(2, 1fr); gap:12px; }
+        @media (min-width: 640px) { .op-flavors { grid-template-columns: repeat(3, 1fr); gap:16px; } }
+        @media (min-width: 960px) { .op-flavors { grid-template-columns: repeat(4, 1fr); } }
+        .op-fl { display:block; text-decoration:none; background:#fff; border-radius:18px; overflow:hidden; border:1px solid rgba(0,0,0,.08); box-shadow:0 6px 16px rgba(0,0,0,.05); }
+        .op-fl img { width:100%; aspect-ratio:1/1; object-fit:cover; display:block; background:rgba(var(--bose-pink-rgb),.08); }
+        .op-fl div { padding:10px 10px 12px; text-align:center; }
+        .op-fl strong { display:block; font-size:13.5px; color:#111; font-weight:800; line-height:1.5; min-height:40px; }
+        .op-fl span { display:block; margin-top:4px; font-weight:900; color:var(--bose-pink); font-size:15px; }
+
+        .op-state { text-align:center; padding: 50px 18px; }
+        .op-state i { font-size:44px; color:var(--bose-pink); margin-bottom:14px; display:block; }
+        .op-state h2 { margin:0 0 8px; font-size:22px; font-weight:900; color:#111; }
+        .op-state p { margin:0 0 18px; color:#111; opacity:.7; line-height:1.8; }
+        .op-state .op-btn { width:auto; padding:14px 28px; }
     </style>
 </head>
 <body>
@@ -109,22 +107,144 @@
     <div id="bose-header-injector"></div>
 
     <main>
-        <section class="offers-page-hero">
-            <span class="offers-page-badge"><i class="fas fa-percentage"></i> عروض حصريّة لفترة محدودة</span>
-            <h1>كل عروض وتخفيضات حلويات بوسي</h1>
-            <p>تجميعة كاملة وصادقة لكل المنتجات المخفضة عندنا دلوقتي في مكان واحد، من غير ما تدور عليها متفرقة جوه الفئات - أسعار واضحة ونسبة الخصم والتوفير مكتوبة على كل كارت بكل شفافية.</p>
+        <section class="op-hero" id="op-hero" style="display:none;">
+            <span class="op-chip"><i class="fa-solid fa-bolt"></i> عرض ليوم واحد فقط</span>
+            <h1 id="op-heading">خصم على <em>الدوناتس</em> بكل النكهات</h1>
+            <p id="op-sub">اختاري العرض اللي يناسبك والنكهات اللي تحبيها، والخصم بيتحسب تلقائيًا في السلة.</p>
+
+            <div class="op-timer-wrap">
+                <div class="op-timer-label" id="op-timer-label"><span class="op-dot"></span><span id="op-timer-text">العرض ينتهي خلال</span></div>
+                <div class="op-timer" id="op-timer" aria-live="off">
+                    <div class="op-box"><b id="op-h">00</b><span>ساعة</span></div>
+                    <div class="op-box"><b id="op-m">00</b><span>دقيقة</span></div>
+                    <div class="op-box"><b id="op-s">00</b><span>ثانية</span></div>
+                </div>
+                <div class="op-date" id="op-date"></div>
+            </div>
         </section>
 
-        <div class="offers-page-wrapper">
-            <div id="all-offers-grid" class="bose-products-grid products-grid"></div>
-            <div id="all-offers-empty-state">
-                <i class="fa-solid fa-tags"></i>
-                <p>مفيش عروض متاحة دلوقتي، تابعونا قريب هيبقى في تشكيلة جديدة من العروض الحصرية.</p>
+        <div class="op-wrap">
+            <div id="op-offers-section" style="display:none;">
+                <div class="op-section-title">
+                    <h2>اختاري العرض اللي يناسبك</h2>
+                    <p>عرض واحد بس بيتطبق على الطلب - الأكبر توفيرًا ليكي تلقائيًا</p>
+                </div>
+                <div class="op-offers" id="op-offers"></div>
+                <div class="op-note"><i class="fa-solid fa-circle-info"></i>العرض ساري يوم واحد فقط. الشحن المجاني بيتطبق على التوصيل لمنطقتك، ومش متاح مع الاستلام من الفرع. بعد ما تختاري نكهاتك هتلاقي الخصم ظاهر في السلة وصفحة الدفع.</div>
+            </div>
+
+            <div id="op-flavors-section" style="display:none;">
+                <div class="op-section-title">
+                    <h2>نكهات الدوناتس والأسعار</h2>
+                    <p>كل النكهات داخلة في العرض - اضغطي على أي نكهة عشان تضيفيها</p>
+                </div>
+                <div class="op-flavors" id="op-flavors"></div>
+            </div>
+
+            <div id="op-empty" class="op-state" style="display:none;">
+                <i class="fa-solid fa-hourglass-end"></i>
+                <h2 id="op-empty-title">مفيش عروض شغالة دلوقتي</h2>
+                <p id="op-empty-text">العرض خلص، تابعينا عشان عروضنا الجاية.</p>
+                <a class="op-btn" href="/category.html?category=taswaq-donuts">شوفي الدوناتس</a>
             </div>
         </div>
     </main>
 
     <div id="bose-footer-injector"></div>
 
+    <script>
+    (function () {
+        "use strict";
+        var DONUTS = "taswaq-donuts";
+        var esc = function (v) { return (window.escapeBoseHTML ? window.escapeBoseHTML(String(v == null ? "" : v)) : String(v == null ? "" : v).replace(/[&<>"']/g, function (c) { return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]; })); };
+        var pad = function (n) { return String(n).padStart(2, "0"); };
+        var tick = null;
+
+        function fmtDay(ms) {
+            try { return new Date(ms).toLocaleString("ar-EG", { timeZone: "Africa/Cairo", weekday: "long", day: "numeric", month: "long", hour: "numeric", minute: "2-digit" }); }
+            catch (e) { return ""; }
+        }
+        function rewardChip(r) {
+            if (r.reward_type === "percent_off") return '<i class="fa-solid fa-percent"></i> خصم ' + (Number(r.percent) || 0) + '%';
+            if (r.reward_type === "free_shipping") return '<i class="fa-solid fa-truck-fast"></i> شحن مجاني';
+            return '<i class="fa-solid fa-gift"></i> قطعة هدية';
+        }
+
+        function stop() { if (tick) { clearInterval(tick); tick = null; } }
+
+        function show(id, on) { var el = document.getElementById(id); if (el) el.style.display = on ? "" : "none"; }
+
+        function render() {
+            var data = window.BoseStoreData;
+            if (!data) return;
+            var now = Date.now();
+            // العروض اللي لسه ماخلصتش (شغالة دلوقتي أو مجدولة)
+            var promos = (Array.isArray(data.quantityPromos) ? data.quantityPromos : []).filter(function (r) {
+                return r && r.is_active !== false && (!r.ends_at || new Date(r.ends_at).getTime() > now);
+            }).sort(function (a, b) { return (a.sort_order || 0) - (b.sort_order || 0); });
+
+            stop();
+            if (!promos.length) {
+                show("op-hero", false); show("op-offers-section", false); show("op-flavors-section", false); show("op-empty", true);
+                return;
+            }
+            show("op-empty", false); show("op-hero", true); show("op-offers-section", true);
+
+            var catParam = "/category.html?category=" + encodeURIComponent(DONUTS);
+            var starts = promos.map(function (r) { return r.starts_at ? new Date(r.starts_at).getTime() : 0; });
+            var minStart = Math.min.apply(null, starts);
+            var upcoming = minStart > now;
+            var ends = promos.map(function (r) { return r.ends_at ? new Date(r.ends_at).getTime() : 0; }).filter(Boolean);
+            var target = upcoming ? minStart : (ends.length ? Math.min.apply(null, ends) : 0);
+
+            // الكروت - بنفس نص العرض اللي في الداتابيز
+            document.getElementById("op-offers").innerHTML = promos.map(function (r) {
+                var live = !r.starts_at || new Date(r.starts_at).getTime() <= now;
+                return '<div class="op-card">' +
+                    '<div class="op-num">' + esc(r.min_pieces) + '</div>' +
+                    '<div class="op-reward">' + rewardChip(r) + '</div>' +
+                    '<h3>' + esc(r.title) + '</h3>' +
+                    (live ? '<a class="op-btn" href="' + catParam + '"><i class="fa-solid fa-cart-plus"></i> اختاري نكهاتك</a>'
+                          : '<span class="op-btn disabled"><i class="fa-regular fa-clock"></i> يبدأ ' + esc(fmtDay(new Date(r.starts_at).getTime())) + '</span>') +
+                    '</div>';
+            }).join("");
+
+            // النكهات والأسعار (القطع المفردة بس - مش البوكسات)
+            var flavors = (Array.isArray(data.products) ? data.products : []).filter(function (p) {
+                var ppu = p.options && parseInt(p.options.piecesPerUnit, 10);
+                return p.category === DONUTS && p.isAvailable !== false && !(ppu && ppu > 1);
+            });
+            document.getElementById("op-flavors").innerHTML = flavors.map(function (p) {
+                var img = (p.images && p.images[0]) || "";
+                var name = p.flavorName || p.title;
+                return '<a class="op-fl" href="/product.html?slug=' + encodeURIComponent(p.slug) + '">' +
+                    (img ? '<img loading="lazy" src="' + esc(img) + '" alt="' + esc(name) + '">' : '<img alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">') +
+                    '<div><strong>' + esc(name) + '</strong><span>' + esc(Number(p.price).toFixed(0)) + ' جنيه / قطعة</span></div></a>';
+            }).join("");
+            show("op-flavors-section", flavors.length > 0);
+
+            // التايمر
+            var label = document.getElementById("op-timer-label");
+            document.getElementById("op-timer-text").textContent = upcoming ? "العرض يبدأ بعد" : "العرض ينتهي خلال";
+            label.className = "op-timer-label" + (upcoming ? " upcoming" : "");
+            var dateEl = document.getElementById("op-date");
+            dateEl.textContent = target ? ((upcoming ? "يبدأ: " : "ينتهي: ") + fmtDay(target)) : "";
+            show("op-timer", !!target); show("op-timer-label", !!target); dateEl.style.display = target ? "" : "none";
+
+            function update() {
+                var left = Math.max(0, target - Date.now());
+                var total = Math.floor(left / 1000);
+                document.getElementById("op-h").textContent = pad(Math.floor(total / 3600));
+                document.getElementById("op-m").textContent = pad(Math.floor((total % 3600) / 60));
+                document.getElementById("op-s").textContent = pad(total % 60);
+                if (left <= 0) { render(); } // بدأ أو خلص: نعيد رسم الصفحة بالحالة الجديدة
+            }
+            if (target) { update(); tick = setInterval(update, 1000); }
+        }
+
+        document.addEventListener("BoseDatabaseLoaded", render);
+        if (window.BoseStoreData) render();
+    })();
+    </script>
 </body>
 </html>
