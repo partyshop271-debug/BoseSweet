@@ -33,7 +33,7 @@
     <script src="js/season-themes.js?v=2026_production_v1.0" defer></script>
     <script src="js/season-theme-engine.js?v=2026_production_v1.0" defer></script>
     <script src="js/phone-utils.js?v=1" defer></script>
-    <script src="js/core-engine.js?v=2028_production_v62.0" defer></script>
+    <script src="js/core-engine.js?v=2028_production_v63.0" defer></script>
     <script src="js/user-interest.js?v=1" defer></script>
     <script src="js/homepage-engine.js?v=2026_production_v1.1" defer></script>
     <script src="js/cart-reminder.js?v=1" defer></script>
@@ -189,6 +189,7 @@
         .op-camp .op-hero p { font-size:17px; }
         .op-camp .op-section-title p { font-size:15.5px; opacity:.8; }
         @media (min-width:760px) { .op-tab { max-width:320px; } }
+        .op-instead { margin:0 0 12px; font-size:12.5px; font-weight:800; color:#8a6d00; background:#fff6d6; padding:5px 12px; border-radius:10px; display:inline-block; }
     </style>
 </head>
 <body>
@@ -361,7 +362,7 @@
                 if (line.quantity <= 0) cart.splice(cart.indexOf(line), 1);
             }
             writeCart(cart);
-            refresh();
+            refresh(delta > 0);
         }
 
         /* ---------- تحديث الأزرار والشريط والسلّم (بدون إعادة رسم الصور) ---------- */
@@ -388,7 +389,7 @@
             return { live: live, reached: reached, next: next, total: total, maxMin: maxMin };
         }
 
-        function refresh() {
+        function refresh(celebrate) {
             var cart = readCart();
             var now = Date.now();
             var bar = $("op-bar");
@@ -406,10 +407,12 @@
                 });
                 // السلّم + الكروت: اللي اتفعّل بيتلوّن
                 var st = campStatus(c, cart, now);
+                // المرحلة الأعلى اللي اتحققت هي اللي بتتطبق فعلاً: الكروت بتتلوّن للأعلى بس، والسلّم (الخطوات) بيوضّح كل اللي عدّته
+                var topMin = 0; st.reached.forEach(function (r) { if (minOf(r) > topMin) topMin = minOf(r); });
                 Array.prototype.forEach.call(sec.querySelectorAll("[data-op-min]"), function (el) {
                     var min = parseInt(el.getAttribute("data-op-min"), 10) || 0;
                     var on = st.live.some(function (r) { return minOf(r) === min && piecesFor(r, cart) >= min; });
-                    el.classList.toggle("is-reached", on);
+                    el.classList.toggle("is-reached", el.classList.contains("op-card") ? (on && min === topMin) : on);
                 });
             });
 
@@ -426,8 +429,15 @@
                 text = "عندك " + s0.total + " قطع - ناقص " + (minOf(s0.next) - piecesFor(s0.next, cart)) + " وتاخدي " + rewardShort(s0.next) + ".";
             } else {
                 ok = true;
-                text = "✅ عندك " + s0.total + " قطع - فعّلتي: " + s0.reached.map(rewardShort).join(" أو ");
-                if (s0.next) text += " · ناقص " + (minOf(s0.next) - piecesFor(s0.next, cart)) + " وتاخدي " + rewardShort(s0.next) + ".";
+                var top = s0.reached.slice().sort(function (a, b) { return minOf(b) - minOf(a); })[0];
+                if (top.reward_type === "free_piece") {
+                    var every = parseInt(top.free_every, 10) || minOf(top);
+                    var gifts = Math.floor(piecesFor(top, cart) / every);
+                    text = "🎁 كسبتي " + (gifts > 1 ? gifts + " قطع هدية" : "قطعة هدية") + " - وكل " + every + " قطع زيادة بتكسبي هدية جديدة.";
+                } else {
+                    text = "✅ عندك " + s0.total + " قطع - كسبتي " + rewardShort(top);
+                    if (s0.next) text += " · ناقص " + (minOf(s0.next) - piecesFor(s0.next, cart)) + " وتاخدي " + rewardShort(s0.next) + " بدله.";
+                }
             }
             if (msg) { msg.textContent = text; msg.className = "op-bar-msg" + (ok ? " ok" : ""); }
 
@@ -461,6 +471,12 @@
 
             if (bar) bar.classList.add("is-on");
             document.body.classList.add("op-has-bar");
+
+            // 🎉 احتفالية لما تكسب مرحلة جديدة بإضافة منها هنا (مرة لكل عرض في الجلسة)
+            if (celebrate && s0.live.length && typeof window.computeBoseQuantityPromo === "function" && typeof window.celebrateBosePromo === "function") {
+                var promoNow = window.computeBoseQuantityPromo(cart, 0, true);
+                if (promoNow) window.celebrateBosePromo(promoNow);
+            }
         }
 
         /* ---------- التبويبات: تحديد الحملة النشطة ---------- */
@@ -534,7 +550,8 @@
                 return (i ? '<div class="op-step-line"></div>' : '') + '<div class="op-step" data-op-min="' + minOf(r) + '"><b>' + esc(minOf(r)) + '</b><span>' + esc(rewardShort(r)) + '</span></div>';
             }).join("") + '</div>' : "";
             var canPick = c.showFlavors && c.flavors.length > 0;
-            var cards = c.promos.map(function (r) {
+            var sortedPromos = c.promos.slice().sort(function (a, b) { return minOf(a) - minOf(b); });
+            var cards = sortedPromos.map(function (r, idxR) {
                 var live = isLive(r, now), m = minOf(r), n = Math.min(m, 8);
                 var size = n <= 3 ? 58 : (n <= 5 ? 50 : 42);
                 var thumbs = "";
@@ -547,12 +564,16 @@
                 else action = '<a class="op-btn" href="/menu.html"><i class="fa-solid fa-bag-shopping"></i> تسوّقي المنتجات</a>';
                 return '<div class="op-card' + (best ? " is-best" : "") + '" data-op-min="' + m + '">' + (best ? '<div class="op-best">الأكتر توفيرًا</div>' : "") +
                     (thumbs ? '<div class="op-thumbs" style="--s:' + size + 'px">' + thumbs + '</div>' : "") +
-                    '<div class="op-num-sm">أي ' + esc(m) + ' قطع</div><div class="op-reward">' + rewardChip(r) + '</div><h3>' + esc(r.title) + '</h3>' + action + '</div>';
+                    '<div class="op-num-sm">أي ' + esc(m) + ' قطع</div><div class="op-reward">' + rewardChip(r) + '</div><h3>' + esc(r.title) + '</h3>' +
+                    (idxR > 0 ? '<div class="op-instead">بتحلّ مكان ' + esc(rewardShort(sortedPromos[idxR - 1])) + '</div>' : '') + action + '</div>';
             }).join("");
             var note = (c.oneDay ? "العرض ساري يوم واحد فقط. " : "العروض سارية لفترة محدودة. ") +
                 "الشحن المجاني بيتطبق على التوصيل لمنطقتك، ومش متاح مع الاستلام من الفرع. بعد ما تختاري نكهاتك هتلاقي الخصم ظاهر في السلة وصفحة الدفع.";
+            if (c.promos.some(function (r) { return r.reward_type === "free_piece"; })) {
+                note += " في عرض القطعة الهدية: بتدفعي تمن القطع اللي طلبتيها كاملة، والقطعة الهدية بتتضاف لطلبك من غير مقابل.";
+            }
             var offersSec = '<div class="op-section-title"><h2>اختاري العرض اللي يناسبك</h2>' +
-                (c.promos.length > 1 ? '<p>عرض واحد بس بيتطبق على الطلب - الأكبر توفيرًا ليكي تلقائيًا</p>' : '') + '</div>' + steps +
+                (c.promos.length > 1 ? '<p>كل ما تزودي القطع بتطلعي لمرحلة أعلى - المرحلة الأعلى بتحلّ مكان اللي قبلها، ومش بيتجمعوا مع بعض.</p>' : '') + '</div>' + steps +
                 '<div class="op-offers">' + cards + '</div>' +
                 '<div class="op-note"><i class="fa-solid fa-circle-info"></i><span>' + esc(note) + '</span></div>';
 
