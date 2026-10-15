@@ -50,7 +50,7 @@
                 <td class="adm-orders-checkbox-cell">
                     <input type="checkbox" class="adm-order-row-checkbox" data-id="${e(o.id)}" ${selectedIds.has(o.id) ? "checked" : ""}>
                 </td>
-                <td>#${e(o.order_number || o.id)}${o.payment_method === "cod" ? ' <span class="adm-badge warning" style="font-size:0.7rem;">💵 عند الاستلام</span>' : ""}${o.promo_title ? ' <span class="adm-badge success" style="font-size:0.7rem;" title="' + e(o.promo_title) + '">🎁 عرض</span>' : ""}</td>
+                <td>#${e(o.order_number || o.id)}${o.payment_method === "cod" ? ' <span class="adm-badge warning" style="font-size:0.7rem;">💵 عند الاستلام</span>' : ""}${o.promo_title ? ' <span class="adm-badge success" style="font-size:0.7rem;" title="' + e(o.promo_title) + '">🎁 ' + (Number(o.promo_gift_pieces) > 0 ? ('+' + Number(o.promo_gift_pieces) + ' هدية') : 'عرض') + '</span>' : ""}</td>
                 <td>${e(o.customer_name || "—")}</td>
                 <td>${e(o.phone1 || "—")}</td>
                 <td>${money(o.grand_total)}</td>
@@ -361,6 +361,7 @@
                 <div class="adm-order-totals">
                     <div><span>الإجمالي الفرعي</span><span>${money(order.subtotal)}</span></div>
                     <div><span>الشحن</span><span>${money(order.shipping_fee)}</span></div>
+                    ${order.promo_title && Number(order.promo_gift_pieces) > 0 ? `<div style="color:#2e9e5b; font-weight:800;"><span>🎁 ${e(order.promo_title)}</span><span>+ ${Number(order.promo_gift_pieces)} قطعة دوناتس هدية (زيادة على الطلب)</span></div>` : ""}
                     ${order.promo_title && Number(order.promo_discount_amount) > 0 ? `<div style="color:#2e9e5b;"><span>🎁 ${e(order.promo_title)}</span><span>-${money(order.promo_discount_amount)}</span></div>` : ""}
                     ${order.promo_title && Number(order.promo_shipping_waived) > 0 ? `<div style="color:#2e9e5b;"><span>🎁 ${e(order.promo_title)}</span><span>شحن مجاني (وفّرت العميلة ${money(order.promo_shipping_waived)})</span></div>` : ""}
                     ${order.discount_amount ? `<div><span>خصم الولاء</span><span>-${money(order.discount_amount)}</span></div>` : ""}
@@ -725,7 +726,7 @@
             o.payment_method === "cod" ? "عند الاستلام" : "أونلاين",
             o.grand_total || 0,
             o.promo_title || "",
-            (Number(o.promo_discount_amount) || 0) + (Number(o.promo_shipping_waived) || 0),
+            (Number(o.promo_gift_pieces) > 0) ? (o.promo_gift_pieces + " قطعة هدية") : ((Number(o.promo_discount_amount) || 0) + (Number(o.promo_shipping_waived) || 0)),
             o.created_at ? new Date(o.created_at).toLocaleString("ar-EG") : "",
         ]);
 
