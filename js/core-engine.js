@@ -2173,12 +2173,12 @@
     }
 
     /**
-     * بتختار أفضل عرض كمية واحد للسلة (الأكبر توفيرًا) - نفس منطق bose_best_quantity_promo في السيرفر بالظبط.
+     * بتختار عرض الكمية الواحد للسلة: أعلى مرحلة اتحققت (أكبر عدد قطع) - نفس منطق bose_best_quantity_promo في السيرفر بالظبط.
      * @param {Array<any>} cart
      * @param {number} shippingFee رسوم الشحن قبل أي تخفيض
-     * @returns {{id:string,title:string,discount:number,shippingWaived:number,allowLoyaltyStack:boolean,rewardType:string}|null}
+     * @returns {{id:string,title:string,discount:number,shippingWaived:number,giftPieces:number,allowLoyaltyStack:boolean,rewardType:string}|null}
      */
-    window.computeBoseQuantityPromo = function(cart, shippingFee) {
+    window.computeBoseQuantityPromo = function(cart, shippingFee, shippingUnknown) {
         const rules = window.getBoseActiveQuantityPromos();
         if (!rules.length) return null;
         const lines = getBosePromoLines(cart);
@@ -2190,24 +2190,27 @@
             const ev = evalBosePromoRule(r, lines);
             const rmin = parseInt(r.min_pieces, 10) || 0;
             if (ev.pieces < rmin) return;
-            let disc = 0, waived = 0;
+            let disc = 0, waived = 0, gifts = 0;
             if (r.reward_type === 'percent_off') {
                 disc = Math.round(ev.subtotal * (parseFloat(r.percent) || 0) / 100);
             } else if (r.reward_type === 'free_piece') {
+                // 🎁 قطعة هدية: العميلة بتدفع تمن اللي طلبته كله، والقطعة الهدية بتتضاف زيادة (مش خصم)
                 const every = Math.max(2, parseInt(r.free_every, 10) || rmin);
-                disc = Math.round(Math.floor(ev.pieces / every) * ev.minPiece);
+                gifts = Math.floor(ev.pieces / every);
             } else if (r.reward_type === 'free_shipping') {
                 waived = ship;
             }
             disc = Math.min(disc, ev.subtotal);
-            if (disc + waived <= 0) return;
-            const cand = { id: r.id, title: r.title, discount: disc, shippingWaived: waived,
+            // في السلة الشحن لسه مش معروف (بيتحدد في الدفع): عرض الشحن المجاني بيتحسب مستحَق بقيمة 0 لحد الدفع
+            if (disc + waived + gifts <= 0 && !(shippingUnknown && r.reward_type === 'free_shipping')) return;
+            const cand = { id: r.id, title: r.title, discount: disc, shippingWaived: waived, giftPieces: gifts,
                 allowLoyaltyStack: r.allow_loyalty_stack !== false, rewardType: r.reward_type,
                 _rmin: rmin, _sort: parseInt(r.sort_order, 10) || 0 };
+            // مراحل ثابتة: أعلى مرحلة (أكبر عدد قطع) اتحققت هي اللي بتتطبق - نفس ترتيب السيرفر بالظبط
             if (!best
-                || (cand.discount + cand.shippingWaived) > (best.discount + best.shippingWaived)
-                || ((cand.discount + cand.shippingWaived) === (best.discount + best.shippingWaived)
-                    && (cand._rmin < best._rmin || (cand._rmin === best._rmin && cand._sort < best._sort)))) {
+                || cand._rmin > best._rmin
+                || (cand._rmin === best._rmin && (cand.discount + cand.shippingWaived + cand.giftPieces) > (best.discount + best.shippingWaived + best.giftPieces))
+                || (cand._rmin === best._rmin && (cand.discount + cand.shippingWaived + cand.giftPieces) === (best.discount + best.shippingWaived + best.giftPieces) && cand._sort < best._sort)) {
                 best = cand;
             }
         });
@@ -2236,6 +2239,91 @@
         return hints.sort((a, b) => a.missing - b.missing);
     };
 
+
+    /**
+     * 🎉 [احتفالية العروض]: قصاقيص ورق ملونة متطايرة + رسالة كبيرة في نص الشاشة لما العميلة تكسب عرض.
+     * بتتكرر مع كل عرض (خصم / شحن مجاني / قطعة هدية). بتظهر مرة واحدة لكل عرض في الجلسة، وتتقفل لوحدها
+     * بعد ~4.5 ثانية أو بلمسة. بتحترم "تقليل الحركة" عند الأجهزة اللي مفعّلاه (بدون قصاقيص، الرسالة بس).
+     * @param {{id?:string,title?:string,rewardType?:string,discount?:number,shippingWaived?:number,giftPieces?:number}} promo
+     */
+    window.celebrateBosePromo = function(promo) {
+        try {
+            if (!promo || !promo.id) return;
+            const key = 'bose_promo_celebrated_' + promo.id;
+            if (sessionStorage.getItem(key)) return;
+            sessionStorage.setItem(key, '1');
+            if (document.getElementById('bose-celebrate-overlay')) return;
+
+            let headline = 'مبروك! كسبتي عرض على الأوردر 🎉';
+            let sub = promo.title || '';
+            if (promo.rewardType === 'free_piece') {
+                const n = promo.giftPieces || 1;
+                headline = n > 1 ? `مبروك! كسبتي ${n} قطع هدية على الأوردر 🎁` : 'مبروك! كسبتي قطعة هدية على الأوردر 🎁';
+                sub = 'القطعة الهدية هتتضاف لطلبك من غير ما تدفعي فيها جنيه';
+            } else if (promo.rewardType === 'free_shipping') {
+                headline = 'مبروك! كسبتي شحن مجاني على الأوردر 🚚';
+                sub = 'الشحن المجاني بيتطبق على التوصيل لمنطقتك';
+            } else if (promo.rewardType === 'percent_off') {
+                headline = 'مبروك! كسبتي خصم على الأوردر 🎉';
+                sub = (promo.discount ? ('وفّرتِ ' + Math.round(promo.discount) + ' جنيه على طلبك') : (promo.title || ''));
+            }
+
+            const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const overlay = document.createElement('div');
+            overlay.id = 'bose-celebrate-overlay';
+            overlay.setAttribute('role', 'status');
+            overlay.style.cssText = 'position:fixed; inset:0; z-index:2147483000; display:flex; align-items:center; justify-content:center; background:rgba(17,17,17,0.45); direction:rtl; opacity:0; transition:opacity .25s;';
+            overlay.innerHTML = '<canvas id="bose-confetti" style="position:absolute; inset:0; width:100%; height:100%; pointer-events:none;"></canvas>' +
+                '<div style="position:relative; max-width:88vw; width:420px; text-align:center; background:#fff; border-radius:26px; padding:30px 22px 26px; box-shadow:0 24px 70px rgba(0,0,0,.35); border:3px solid var(--bose-pink, #FF91A4); transform:scale(.85); transition:transform .35s cubic-bezier(.2,1.4,.4,1);" id="bose-celebrate-card">' +
+                '<div style="font-size:clamp(26px,7.4vw,36px); line-height:1.5; font-weight:900; color:#111;">' + (window.escapeBoseHTML ? window.escapeBoseHTML(headline) : headline) + '</div>' +
+                '<div style="margin-top:12px; font-size:15px; font-weight:700; line-height:1.8; color:#111; opacity:.75;">' + (window.escapeBoseHTML ? window.escapeBoseHTML(sub) : sub) + '</div>' +
+                '<div style="margin-top:18px; font-size:12.5px; font-weight:700; opacity:.5;">المس الشاشة للمتابعة</div></div>';
+            document.body.appendChild(overlay);
+            requestAnimationFrame(function () {
+                overlay.style.opacity = '1';
+                const card = document.getElementById('bose-celebrate-card');
+                if (card) card.style.transform = 'scale(1)';
+            });
+
+            let raf = 0;
+            const close = function () {
+                if (raf) cancelAnimationFrame(raf);
+                overlay.style.opacity = '0';
+                setTimeout(function () { overlay.remove(); }, 260);
+            };
+            overlay.addEventListener('click', close);
+            setTimeout(close, 4500);
+
+            if (reduce) return;
+            const canvas = /** @type {HTMLCanvasElement} */ (document.getElementById('bose-confetti'));
+            const ctx = canvas.getContext('2d');
+            const dpr = window.devicePixelRatio || 1;
+            const W = canvas.width = Math.floor(window.innerWidth * dpr);
+            const H = canvas.height = Math.floor(window.innerHeight * dpr);
+            const colors = ['#FF91A4', '#FFD166', '#06D6A0', '#118AB0', '#EF476F', '#FFFFFF', '#9B5DE5'];
+            const pieces = [];
+            for (let i = 0; i < 150; i++) {
+                pieces.push({
+                    x: Math.random() * W, y: -Math.random() * H * 0.6,
+                    w: (6 + Math.random() * 8) * dpr, h: (10 + Math.random() * 10) * dpr,
+                    c: colors[i % colors.length], vy: (2 + Math.random() * 3.5) * dpr, vx: (Math.random() - 0.5) * 2.4 * dpr,
+                    r: Math.random() * Math.PI * 2, vr: (Math.random() - 0.5) * 0.3, sway: Math.random() * Math.PI * 2
+                });
+            }
+            const start = performance.now();
+            const frame = function (t) {
+                ctx.clearRect(0, 0, W, H);
+                pieces.forEach(function (p) {
+                    p.y += p.vy; p.x += p.vx + Math.sin(p.sway + t / 400) * 0.8 * dpr; p.r += p.vr;
+                    ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r);
+                    ctx.fillStyle = p.c; ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); ctx.restore();
+                });
+                if (t - start < 4400) raf = requestAnimationFrame(frame);
+            };
+            raf = requestAnimationFrame(frame);
+        } catch (e) { /* الاحتفالية زينة بس - مفيش حاجة تكسر الطلب */ }
+    };
+
     /**
      * 🧾 [فاتورة السلة]: الإجمالي = (المجموع الفرعي - خصم الولاء التلقائي - خصم عرض الكمية) + الشحن (بعد تخفيض
      * عرض الشحن المجاني)، ومقرّب لأقرب جنيه بنفس معادلة دالة الطلب في القاعدة (create_order_with_items) - القاعدة
@@ -2244,8 +2332,9 @@
      * @param {Object} storeData
      * @param {number} shippingFee
      * @param {number} [loyaltyDiscountAmount] خصم الولاء التلقائي المتوقع (معاينة فقط)
+     * @param {boolean} [shippingUnknown] true في صفحة السلة (الشحن لسه متحددش)
      */
-    window.calculateBoseInvoice = function(cart, storeData, shippingFee, loyaltyDiscountAmount) {
+    window.calculateBoseInvoice = function(cart, storeData, shippingFee, loyaltyDiscountAmount, shippingUnknown) {
         const safeCart = Array.isArray(cart) ? cart : [];
         const safeShippingFee = parseFloat(String(shippingFee)) || 0;
 
@@ -2261,7 +2350,7 @@
 
         // 🎁 عرض الكمية (لو فيه) - لو العرض مش بيتجمع مع الولاء، خصم الولاء بيتلغي (نفس السيرفر)
         const promo = (typeof window.computeBoseQuantityPromo === 'function')
-            ? window.computeBoseQuantityPromo(safeCart, safeShippingFee) : null;
+            ? window.computeBoseQuantityPromo(safeCart, safeShippingFee, !!shippingUnknown) : null;
 
         // الخصم مايتخطاش المجموع الفرعي أبداً
         let safeLoyaltyDiscount = Math.min(Math.max(0, parseFloat(String(loyaltyDiscountAmount)) || 0), subtotal);
@@ -2282,6 +2371,8 @@
             promoTitle: promo ? promo.title : "",
             promoDiscountAmount: promoDiscount,
             promoShippingWaived: shippingWaived,
+            promoGiftPieces: promo ? (promo.giftPieces || 0) : 0,
+            promoId: promo ? promo.id : "",
             promoRewardType: promo ? promo.rewardType : ""
         };
     };

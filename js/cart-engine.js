@@ -518,7 +518,7 @@ function updateCartSummary(cart, storeData) {
     
     // 🧮 [توحيد حسابي]: استخدام calculateBoseInvoice الموحدة بدل تكرار
     // نفس المعادلة محلياً هنا (كانت بتفرق فعلياً عن checkout عند أي تعديل مستقبلي).
-    const invoice = window.calculateBoseInvoice(cart, storeData, 0);
+    const invoice = window.calculateBoseInvoice(cart, storeData, 0, 0, true);
     
     if (subtotalDisplay) subtotalDisplay.textContent = invoice.subtotal.toFixed(2) + " EGP";
     if (itemsCountDisplay) itemsCountDisplay.textContent = invoice.itemsCount;
@@ -578,6 +578,18 @@ function renderBoseCartPromoUi(cart, invoice) {
         if (grandRow) table.insertBefore(rowsBox, grandRow); else table.appendChild(rowsBox);
     }
     let html = "";
+    if (invoice.promoGiftPieces > 0) {
+        html += `<div class="pricing-row-node" style="display:flex; justify-content:space-between; gap:8px;">
+            <span class="pricing-label-text"><i class="fa-solid fa-gift" style="color:var(--bose-pink);"></i> هدية من بوسي</span>
+            <span style="font-weight:700; color:#2e9e5b; white-space:nowrap;">+ ${invoice.promoGiftPieces} ${invoice.promoGiftPieces === 1 ? "قطعة" : "قطع"} دوناتس مجانًا</span>
+        </div>`;
+    }
+    if (invoice.promoRewardType === "free_shipping" && !(invoice.promoShippingWaived > 0)) {
+        html += `<div class="pricing-row-node" style="display:flex; justify-content:space-between; gap:8px;">
+            <span class="pricing-label-text"><i class="fa-solid fa-truck-fast" style="color:var(--bose-pink);"></i> شحن مجاني</span>
+            <span style="font-weight:700; color:#2e9e5b; white-space:nowrap;">هيتطبق في الدفع (للتوصيل)</span>
+        </div>`;
+    }
     if (invoice.promoDiscountAmount > 0) {
         html += `<div class="pricing-row-node" style="display:flex; justify-content:space-between; gap:8px;">
             <span class="pricing-label-text"><i class="fa-solid fa-gift" style="color:var(--bose-pink);"></i> ${window.escapeBoseHTML ? window.escapeBoseHTML(invoice.promoTitle) : invoice.promoTitle}</span>
@@ -588,6 +600,14 @@ function renderBoseCartPromoUi(cart, invoice) {
     rowsBox.innerHTML = html;
 
     // العروض بتظهر في صفحة العروض بس - هنا بس صف الخصم المطبّق في الملخص (بدون تلميحات ترويجية)
+
+    // 🎉 احتفالية لما العميلة تكسب عرض (مرة لكل عرض في الجلسة)
+    if (invoice.promoTitle && typeof window.celebrateBosePromo === "function") {
+        window.celebrateBosePromo({
+            id: invoice.promoId, title: invoice.promoTitle, rewardType: invoice.promoRewardType,
+            discount: invoice.promoDiscountAmount, shippingWaived: invoice.promoShippingWaived, giftPieces: invoice.promoGiftPieces
+        });
+    }
 }
 
 /**
@@ -1053,6 +1073,12 @@ function renderBoseLoyaltyDiscountRows(invoice) {
 
     let rowsHtml = "";
     // 🎁 [عروض الكمية]: صف العرض (خصم / قطعة هدية / شحن مجاني)
+    if (invoice.promoGiftPieces > 0) {
+        rowsHtml += `<div class="pricing-row-node" style="display: flex; justify-content: space-between; gap:8px;">
+            <span class="pricing-label-text"><i class="fa-solid fa-gift" style="color:var(--bose-pink);"></i> هدية من بوسي:</span>
+            <span style="font-weight: 700; color: #2e9e5b; white-space:nowrap;">+ ${invoice.promoGiftPieces} ${invoice.promoGiftPieces === 1 ? "قطعة" : "قطع"} دوناتس مجانًا</span>
+        </div>`;
+    }
     if (invoice.promoDiscountAmount > 0) {
         rowsHtml += `<div class="pricing-row-node" style="display: flex; justify-content: space-between; gap:8px;">
             <span class="pricing-label-text"><i class="fa-solid fa-gift" style="color:var(--bose-pink);"></i> ${window.escapeBoseHTML ? window.escapeBoseHTML(invoice.promoTitle) : invoice.promoTitle}:</span>
@@ -1259,6 +1285,7 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee) {
         promoTitle: invoice.promoTitle || "",
         promoDiscountAmount: invoice.promoDiscountAmount || 0,
         promoShippingWaived: invoice.promoShippingWaived || 0,
+        promoGiftPieces: invoice.promoGiftPieces || 0,
         grandTotal: finalGrandTotalCalculated,
         // 💳 رقم المحفظة/الهاتف اللي حوّلت منه العميلة + رقم المتجر اللي حوّلت عليه (بيتحفظوا في القاعدة)
         paymentMethod: boseSelectedPaymentMethod, // "online" | "cod"
@@ -1540,6 +1567,13 @@ function renderBoseSuccessPage(storeData) {
         const promoTitleOk = String(order.promoTitle || "");
         const promoDisc = parseFloat(order.promoDiscountAmount) || 0;
         const promoShip = parseFloat(order.promoShippingWaived) || 0;
+        const promoGift = parseInt(order.promoGiftPieces, 10) || 0;
+        if (promoTitleOk && promoGift > 0) {
+            cardHtml += `<div style="${cardBaseStyle} background: rgba(46,158,91,0.08); border: 1px solid rgba(46,158,91,0.3); color:#2e9e5b;">
+                <i class="fa-solid fa-gift" style="font-size:1.2rem;"></i>
+                <span>مبروك! كسبتي ${promoGift} ${promoGift === 1 ? "قطعة" : "قطع"} دوناتس هدية على الأوردر 🎉</span>
+            </div>`;
+        }
         if (promoTitleOk && (promoDisc > 0 || promoShip > 0)) {
             const worth = promoDisc > 0 ? `بقيمة ${promoDisc.toFixed(2)} جنيه` : `وفّرتِ ${promoShip.toFixed(2)} جنيه شحن`;
             cardHtml += `<div style="${cardBaseStyle} background: rgba(46,158,91,0.08); border: 1px solid rgba(46,158,91,0.3); color:#2e9e5b;">

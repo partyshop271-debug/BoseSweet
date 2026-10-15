@@ -319,7 +319,7 @@
         const HEADER_HEIGHT = 210; // شعار + اسم المتجر + شارة رقم الطلب
         const META_BLOCK_TOP_PAD = 20;
         const SECTION_TITLE_H = 46;
-        const PROMO_LINE_H = (order.promoTitle && ((parseFloat(order.promoDiscountAmount) || 0) > 0 || (parseFloat(order.promoShippingWaived) || 0) > 0)) ? 34 : 0;
+        const PROMO_LINE_H = (order.promoTitle && ((parseFloat(order.promoDiscountAmount) || 0) > 0 || (parseFloat(order.promoShippingWaived) || 0) > 0 || (parseInt(order.promoGiftPieces, 10) || 0) > 0)) ? 34 : 0;
         const TOTALS_BLOCK_H = (order.depositAmount !== undefined ? 150 : 70) + PROMO_LINE_H;
         const NOTES_H = notesLines.length ? notesLines.length * LINE_H + 20 : 0;
         const STAMP_FOOTER_H = 190;
@@ -527,11 +527,13 @@
         y += 34;
 
         // 🎁 [عروض الكمية]: سطر العرض المطبّق (لو فيه) قبل الإجمالي
-        if (order.promoTitle && ((parseFloat(order.promoDiscountAmount) || 0) > 0 || (parseFloat(order.promoShippingWaived) || 0) > 0)) {
+        if (order.promoTitle && ((parseFloat(order.promoDiscountAmount) || 0) > 0 || (parseFloat(order.promoShippingWaived) || 0) > 0 || (parseInt(order.promoGiftPieces, 10) || 0) > 0)) {
             ctx.textAlign = "center";
             ctx.font = FONT_VALUE;
             ctx.fillStyle = BRAND_BLACK;
-            const promoWorth = (parseFloat(order.promoDiscountAmount) || 0) > 0
+            const giftN = parseInt(order.promoGiftPieces, 10) || 0;
+            const promoWorth = giftN > 0 ? `+ ${giftN} ${giftN === 1 ? "قطعة" : "قطع"} هدية`
+                : (parseFloat(order.promoDiscountAmount) || 0) > 0
                 ? `- ${(parseFloat(order.promoDiscountAmount) || 0).toFixed(0)} EGP`
                 : `شحن مجاني (- ${(parseFloat(order.promoShippingWaived) || 0).toFixed(0)} EGP)`;
             ctx.fillText(`🎁 عرض: ${order.promoTitle} (${promoWorth})`, centerX, y);
