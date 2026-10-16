@@ -272,17 +272,18 @@
         const isEdit = !!gift;
         const p = isEdit ? (productOf(gift.product_id) || {}) : {};
         let imgs = Array.isArray(p.images) ? p.images.slice() : [];
-        let items = isEdit ? bundle.filter((b) => b.bundle_product_id === gift.product_id).map((b) => ({ label: b.label, qty: b.qty, alone_price: b.alone_price, item_product_id: b.item_product_id, image: b.image })) : [];
+        let items = isEdit ? bundle.filter((b) => b.bundle_product_id === gift.product_id).map((b) => ({ label: b.label, qty: b.qty, alone_price: b.alone_price, item_product_id: b.item_product_id, image: b.image, description: b.description || "", sell_alone: !!b.sell_alone })) : [];
         const picked = new Set(isEdit ? ptags.filter((x) => x.product_id === gift.product_id).map((x) => x.tag_id) : []);
 
         const body = `
             ${field("القسم", `<select class="adm-select" id="gf-section">${sections.map((s) => `<option value="${e(s.id)}" ${gift && gift.section_id === s.id ? "selected" : ""}>${e(s.title)}</option>`).join("")}</select>`)}
             ${field("اسم الهدية", `<input class="adm-input" id="gf-title" required value="${e(p.title || "")}" placeholder="مثال: هدية عيد جوازكم">`)}
-            ${field("سطر واحد يقول اللي جوّاها", `<input class="adm-input" id="gf-summary" value="${e(gift ? gift.summary : "")}" placeholder="علبة شرقي + فانوس + كارت إهداء">`)}
+            ${field("سطر واحد يقول اللي جوّاها (اختياري)", `<input class="adm-input" id="gf-summary" value="${e(gift ? gift.summary : "")}" placeholder="لو سبتيه فاضي هيتكتب لوحده من أسماء القطع">`)}
             ${field("السعر (ج)", `<input type="number" min="0" step="1" class="adm-input" id="gf-price" required value="${p.price != null ? Number(p.price) : ""}">`)}
             <div class="adm-field"><label><input type="checkbox" id="gf-bundle" ${gift && gift.is_bundle ? "checked" : ""}> دي هدية كاملة فيها أكتر من قطعة</label></div>
             <div id="gf-bundle-wrap" class="adm-field">
-                <label>اللي جوّه الهدية، وسعر كل قطعة لوحدها</label>
+                <label>اللي جوّه الهدية: كل قطعة بصورتها واسمها وسعرها لوحدها</label>
+                <div class="adm-hint" style="margin-bottom:8px;">العميل هيشوف كل قطعة في صفحة الهدية. لو علّمتي \"تتباع لوحدها\" هيظهر له زرار يشتريها لوحدها بسعرها.</div>
                 <div id="gf-items"></div>
                 <button type="button" class="adm-btn adm-btn-ghost" id="gf-add-item"><i class="fa-solid fa-plus"></i> إضافة قطعة</button>
                 <div id="gf-savings" class="adm-hint" style="margin-top:8px;"></div>
@@ -305,6 +306,8 @@
             const isBundle = form.querySelector("#gf-bundle").checked;
             const cleanItems = items.filter((i) => i.label && i.label.trim());
             if (isBundle && !cleanItems.length) { toast("اكتبي القطع اللي جوّه الهدية", "warning"); return false; }
+            const badAlone = cleanItems.find((i) => i.sell_alone && !(Number(i.alone_price) > 0));
+            if (isBundle && badAlone) { toast("القطعة \"" + badAlone.label + "\" معلّمة تتباع لوحدها، اكتبي سعرها", "warning"); return false; }
 
             const pid = isEdit ? gift.product_id : newId("gift");
             const tagIds = Array.from(picked);
@@ -331,7 +334,7 @@
             const { error: gErr } = await T("gift_products").upsert({
                 product_id: pid,
                 section_id: form.querySelector("#gf-section").value,
-                summary: form.querySelector("#gf-summary").value.trim() || null,
+                summary: form.querySelector("#gf-summary").value.trim() || (isBundle ? cleanItems.map((i) => i.label.trim()).join(" + ") : null),
                 delivery_note: form.querySelector("#gf-note").value.trim() || null,
                 is_bundle: isBundle,
                 is_listed: isEdit ? gift.is_listed : true,
@@ -348,11 +351,32 @@
             const d2 = await T("gift_bundle_items").delete().eq("bundle_product_id", pid);
             if (d2.error) throw d2.error;
             if (isBundle && cleanItems.length) {
+                const sectionId = form.querySelector("#gf-section").value;
+                // القطعة اللي تتباع لوحدها بتبقى منتج حقيقي (مش ظاهر في الشبكة) عشان السلة والدفع يشتغلوا عادي
+                for (const i of cleanItems) {
+                    const alonePrice = i.alone_price === "" || i.alone_price == null ? null : Math.max(0, Number(i.alone_price));
+                    if (i.sell_alone) {
+                        const sid = i.item_product_id || newId("gift");
+                        const sp = { title: i.label.trim(), description: (i.description || "").trim() || null, price: alonePrice, images: i.image ? [i.image] : [], search_terms: [i.label.trim()], is_available: true };
+                        if (i.item_product_id && productOf(i.item_product_id)) {
+                            await A().updateProduct(sid, sp);
+                        } else {
+                            await A().createProduct({ id: sid, category_id: null, builder_type: "standard", layout: "grid-card", prices: {}, size_descriptions: {}, size_images: {}, faqs: [], stock_quantity: null, is_featured: false, sort_order: 0, ...sp });
+                        }
+                        i.item_product_id = sid;
+                        const up = await T("gift_products").upsert({ product_id: sid, section_id: sectionId, summary: null, delivery_note: null, is_bundle: false, is_listed: false, updated_at: new Date().toISOString() }, { onConflict: "product_id" });
+                        if (up.error) throw up.error;
+                    } else if (i.item_product_id && productOf(i.item_product_id)) {
+                        // اتشالت علامة "تتباع لوحدها": نقفل المنتج المنفصل بدل ما نمسحه
+                        await A().updateProduct(i.item_product_id, { is_available: false });
+                        i.item_product_id = null;
+                    }
+                }
                 const ins2 = await T("gift_bundle_items").insert(cleanItems.map((i, idx) => ({
-                    bundle_product_id: pid, item_product_id: i.item_product_id || null, label: i.label.trim(),
+                    bundle_product_id: pid, item_product_id: i.sell_alone ? (i.item_product_id || null) : null, label: i.label.trim(),
                     qty: Math.max(1, parseInt(i.qty, 10) || 1),
                     alone_price: i.alone_price === "" || i.alone_price == null ? null : Math.max(0, Number(i.alone_price)),
-                    image: i.image || null, sort_order: idx,
+                    image: i.image || null, description: (i.description || "").trim() || null, sell_alone: !!i.sell_alone, sort_order: idx,
                 })));
                 if (ins2.error) throw ins2.error;
             }
@@ -411,14 +435,35 @@
             }
             function drawItems() {
                 $("#gf-items").innerHTML = items.map((it, i) => `
-                    <div style="display:flex;gap:6px;margin-bottom:6px;align-items:center;">
-                        <input class="adm-input" data-f="label" data-i="${i}" placeholder="القطعة" value="${e(it.label)}" style="flex:3;">
-                        <input class="adm-input" data-f="qty" data-i="${i}" type="number" min="1" value="${e(it.qty || 1)}" style="flex:1;" title="العدد">
-                        <input class="adm-input" data-f="alone_price" data-i="${i}" type="number" min="0" placeholder="سعرها لوحدها" value="${it.alone_price == null ? "" : e(it.alone_price)}" style="flex:2;">
-                        <button type="button" class="adm-btn adm-btn-ghost adm-btn-icon" data-rmi="${i}"><i class="fa-solid fa-trash"></i></button>
+                    <div style="border:1px solid rgba(0,0,0,.1);border-radius:14px;padding:10px;margin-bottom:10px;background:#fff;">
+                        <div style="display:flex;gap:10px;align-items:flex-start;">
+                            <div style="flex:0 0 74px;text-align:center;">
+                                ${it.image ? `<img src="${e(it.image)}" alt="" style="width:74px;height:74px;border-radius:10px;object-fit:cover;display:block;">` : `<div style="width:74px;height:74px;border-radius:10px;background:#f3eef0;display:flex;align-items:center;justify-content:center;font-size:11px;opacity:.6;">بدون صورة</div>`}
+                                <label class="adm-btn adm-btn-ghost" style="display:block;margin-top:4px;font-size:11px;padding:4px;cursor:pointer;">صورة<input type="file" accept="image/*" data-itemfile="${i}" style="display:none;"></label>
+                            </div>
+                            <div style="flex:1;display:grid;gap:6px;min-width:0;">
+                                <input class="adm-input" data-f="label" data-i="${i}" placeholder="اسم القطعة (مثال: دبدوب استيتش)" value="${e(it.label)}">
+                                <input class="adm-input" data-f="description" data-i="${i}" placeholder="سطر عنها (مثال: ناعم، ارتفاع 30 سم)" value="${e(it.description || "")}">
+                                <div style="display:flex;gap:6px;">
+                                    <input class="adm-input" data-f="qty" data-i="${i}" type="number" min="1" value="${e(it.qty || 1)}" style="flex:1;" title="العدد">
+                                    <input class="adm-input" data-f="alone_price" data-i="${i}" type="number" min="0" placeholder="سعرها لوحدها" value="${it.alone_price == null ? "" : e(it.alone_price)}" style="flex:2;">
+                                </div>
+                                <label style="font-size:13px;"><input type="checkbox" data-sell="${i}" ${it.sell_alone ? "checked" : ""}> تتباع لوحدها (يظهر للعميل زرار شراء للقطعة دي)</label>
+                            </div>
+                            <button type="button" class="adm-btn adm-btn-ghost adm-btn-icon" data-rmi="${i}" title="حذف القطعة"><i class="fa-solid fa-trash"></i></button>
+                        </div>
                     </div>`).join("");
                 savings();
             }
+            $("#gf-items").addEventListener("change", async (evt) => {
+                const sell = evt.target.closest("[data-sell]");
+                if (sell) { items[Number(sell.dataset.sell)].sell_alone = sell.checked; return; }
+                const fi = evt.target.closest("[data-itemfile]");
+                if (fi) {
+                    const urls = await pickAndUpload(fi, false);
+                    if (urls[0]) { items[Number(fi.dataset.itemfile)].image = urls[0]; drawItems(); }
+                }
+            });
             $("#gf-items").addEventListener("input", (evt) => {
                 const f = evt.target.dataset.f;
                 if (!f) return;
