@@ -94,3 +94,40 @@ body.gf-sheet-open { overflow: hidden; }
 .gf-btn-ghost { display: inline-block; margin-top: 14px; border: 1px solid rgba(var(--bose-pink-rgb), .5); color: var(--bose-pink); background: #fff; font: 800 14px inherit; font-family: inherit; padding: 11px 22px; border-radius: 999px; cursor: pointer; text-decoration: none; }
 .gf-more { display: block; margin: 22px auto 0; }
 [hidden] { display: none !important; }
+
+/* ===== كارت الهدية: اللي جوّاها بشكل واضح ===== */
+.gf-contents { margin: 8px 0 6px; padding: 10px; border-radius: 14px; background: rgba(var(--bose-pink-rgb), .09); text-align: start; }
+.gf-contents__t { display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: 14px; font-weight: 800; color: var(--bose-black); margin-bottom: 8px; }
+.gf-contents__t small { font-size: 12.5px; font-weight: 700; color: var(--bose-pink); }
+.gf-contents__row { display: flex; gap: 6px; margin-bottom: 8px; }
+.gf-contents__row img, .gf-contents__more { width: 38px; height: 38px; border-radius: 10px; object-fit: cover; background: #fff; border: 1px solid rgba(0,0,0,.08); flex: 0 0 auto; }
+.gf-contents__more { display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; color: var(--bose-pink); }
+.gf-contents__names { margin: 0; font-size: 13.5px; line-height: 1.7; color: var(--bose-black); font-weight: 600; }
+.gf-contents--plain .gf-contents__names { font-size: 14px; }
+
+/* ===== صفحة الهدية: اللي جوّاها قطعة قطعة ===== */
+.bose-gift-contents { max-width: 760px; margin: 22px auto; padding: 0 14px; }
+.gd-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.gd-head h3 { margin: 0; font-size: 20px; color: var(--bose-black); }
+.gd-head span { font-size: 14px; font-weight: 800; color: var(--bose-pink); }
+.gd-sub { margin: 6px 0 14px; font-size: 14px; line-height: 1.8; opacity: .8; }
+.gd-plain { margin: 8px 0 0; font-size: 15px; line-height: 1.9; }
+.gd-list { list-style: none; margin: 0 0 14px; padding: 0; display: grid; gap: 12px; }
+.gd-item { display: flex; gap: 12px; background: #fff; border: 1px solid rgba(0,0,0,.08); border-radius: 18px; padding: 12px; align-items: flex-start; }
+.gd-item__img { flex: 0 0 96px; width: 96px; height: 96px; border-radius: 14px; object-fit: cover; background: #f3eef0; }
+.gd-item__img--none { display: flex; align-items: center; justify-content: center; font-size: 28px; color: var(--bose-pink); }
+.gd-item__body { flex: 1; min-width: 0; }
+.gd-item__name { margin: 0 0 4px; font-size: 17px; line-height: 1.5; color: var(--bose-black); }
+.gd-qty { color: var(--bose-pink); font-size: 14px; }
+.gd-item__desc { margin: 0 0 6px; font-size: 14px; line-height: 1.7; opacity: .8; }
+.gd-item__price { margin: 0 0 8px; font-size: 14.5px; }
+.gd-item__price strong { font-size: 16px; }
+.gd-buy { border: 1.5px solid var(--bose-pink); background: #fff; color: var(--bose-pink); font: 800 14px inherit; font-family: inherit; padding: 10px 14px; border-radius: 999px; cursor: pointer; width: 100%; }
+.gd-buy:hover { background: rgba(var(--bose-pink-rgb), .1); }
+.gd-buy.is-added { background: var(--bose-pink); color: #fff; }
+.gd-only { display: inline-block; font-size: 13px; font-weight: 700; opacity: .6; }
+.gd-sum { display: grid; gap: 8px; background: rgba(var(--bose-pink-rgb), .09); border-radius: 18px; padding: 14px 16px; margin-bottom: 12px; }
+.gd-sum > div { display: flex; justify-content: space-between; align-items: center; font-size: 15px; }
+.gd-sum__old { text-decoration: line-through; opacity: .6; }
+.gd-sum__save { border-top: 1px dashed rgba(0,0,0,.18); padding-top: 8px; color: #2e8b57; font-weight: 800; font-size: 16px !important; }
+.gd-note { margin: 0; font-size: 14px; line-height: 1.8; opacity: .8; }
