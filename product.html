@@ -36,6 +36,7 @@
     <link rel="stylesheet" href="css/main.css?v=2026_production_v42.0">
     <link rel="stylesheet" href="css/season-themes.css?v=2026_production_v40.0">
     <link rel="stylesheet" href="css/reviews-widget.css?v=2026_production_v1.1">
+    <link rel="stylesheet" href="css/gifts.css?v=2">
 
     <style>
         body { font-family: 'Cairo', sans-serif !important; }
@@ -58,6 +59,7 @@
     <script src="js/phone-utils.js?v=1" defer></script>
     <script src="js/core-engine.js?v=2028_production_v63.1" defer></script>
     <script src="js/user-interest.js?v=2" defer></script>
+    <script src="js/gift-detail.js?v=1" defer></script>
     <script src="js/reviews-widget.js?v=2026_production_v1.2" defer></script>
     <script src="js/guided-tour.js?v=3.4" defer></script>
 </head>
@@ -221,32 +223,8 @@ document.addEventListener("DOMContentLoaded", function () {
         rootEl.style.display = '';
         belowEl.style.display = 'block';
 
-        // 🎁 [قسم الهدايا]: لو المنتج هدية كاملة، نعرض "اللي جواها" وتوفيرها ومدة الحجز تحت الكارت
-        if (product.isGift && window.BoseSupabase && window.BoseSupabase.loadBoseGiftsData) {
-            window.BoseSupabase.loadBoseGiftsData().then(function (g) {
-                const items = (g.bundleItems || []).filter(function (b) { return b.bundle_product_id === product.id; });
-                const meta = (g.giftProducts || []).filter(function (x) { return x.product_id === product.id; })[0] || {};
-                const esc = window.escapeBoseHTML || function (v) { return v; };
-                let alone = 0;
-                items.forEach(function (b) { alone += (Number(b.alone_price) || 0) * (parseInt(b.qty, 10) || 1); });
-                const saving = alone > product.price ? Math.round(alone - product.price) : 0;
-                let html = '';
-                if (items.length) {
-                    html += '<h3 style="margin:0 0 10px;font-size:17px;">اللي جوه الهدية</h3><ul style="list-style:none;padding:0;margin:0 0 10px;display:grid;gap:8px;">' +
-                        items.map(function (b) {
-                            return '<li style="display:flex;justify-content:space-between;gap:10px;background:#fff;border-radius:12px;padding:10px 14px;border:1px solid rgba(0,0,0,.07);"><span>' +
-                                esc(b.label || '') + (b.qty > 1 ? ' × ' + esc(String(b.qty)) : '') + '</span><span style="opacity:.6;">' + (b.alone_price ? esc(String(Math.round(b.alone_price))) + ' ج' : '') + '</span></li>';
-                        }).join('') + '</ul>';
-                    if (saving > 0) html += '<p style="margin:0 0 10px;font-weight:800;color:#2e8b57;">لو اتشرت لوحدها: ' + Math.round(alone) + ' ج - بتوفري ' + saving + ' ج</p>';
-                }
-                html += '<p style="margin:0;font-size:13px;opacity:.75;"><i class="fa-regular fa-clock"></i> ' + esc(meta.delivery_note || 'الهدايا بتتجهز مخصوص لطلبك، فلازم الحجز قبل ميعاد التسليم بـ 3 أيام على الأقل.') + '</p>';
-                const box = document.createElement('section');
-                box.className = 'bose-gift-contents';
-                box.style.cssText = 'max-width:760px;margin:18px auto;padding:0 14px;';
-                box.innerHTML = html;
-                rootEl.insertAdjacentElement('afterend', box);
-            }).catch(function () { /* الصفحة تفضل شغالة من غير القسم ده */ });
-        }
+        // 🎁 [قسم الهدايا]: اللي جوه الهدية قطعة قطعة (js/gift-detail.js)
+        if (product.isGift && window.BoseGiftDetail) window.BoseGiftDetail.render(product, rootEl);
 
         if (window.boseRenderRelatedProductsInto) {
             window.boseRenderRelatedProductsInto(document.getElementById('bose-product-related-grid'), product);
@@ -265,8 +243,8 @@ document.addEventListener("DOMContentLoaded", function () {
         // فوري "أنا فين دلوقتي" من غير ما تحتاج تدور.
         const liveCatList = (typeof window.getBoseCategoriesList === 'function') ? window.getBoseCategoriesList() : [];
         const categoryObj = liveCatList.find(function (c) { return c.id === product.category; });
-        let breadcrumbHtml = '<a href="/menu.html">المنيو</a><span>/</span>';
-        if (categoryObj) {
+        let breadcrumbHtml = product.isGift ? '<a href="/gifts.html">الهدايا</a><span>/</span>' : '<a href="/menu.html">المنيو</a><span>/</span>';
+        if (categoryObj && !product.isGift) {
             breadcrumbHtml += '<a href="/category.html?category=' + encodeURIComponent(categoryObj.id) + '">' + window.escapeBoseHTML(categoryObj.title) + '</a><span>/</span>';
         }
         breadcrumbHtml += '<span aria-current="page">' + window.escapeBoseHTML(product.title) + '</span>';
