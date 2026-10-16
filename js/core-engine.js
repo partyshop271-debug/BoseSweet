@@ -1317,7 +1317,7 @@
         } catch (e) { suggestionsList = null; }
         if (!suggestionsList) {
             suggestionsList = window.BoseStoreData.products.filter(function(p) {
-                return p.slug !== currentProduct.slug && !(p.customBuilderUrl && p.builderType && p.builderType !== 'standard');
+                return p.slug !== currentProduct.slug && !!p.isGift === !!currentProduct.isGift && !(p.customBuilderUrl && p.builderType && p.builderType !== 'standard');
             }).slice(0, 8);
         }
 
@@ -1350,6 +1350,7 @@
         const currentSizeKey = product.options && product.options.sizeKey;
         const pool = allProducts.filter(function (p) {
             return p.category === product.category &&
+                !!p.isGift === !!product.isGift &&
                 p.slug !== product.slug &&
                 !String(p.id).startsWith('promo-') &&
                 !(p.options && p.options.mixFlavor === true) &&
@@ -2658,7 +2659,16 @@
     // 🛡️ [إصلاح - المرحلة 2]: دالة مشتركة موحّدة لتحديد هل السلة فيها منتج مخصص
     // (تورت محاكي / ورد محاكي) يستوجب قاعدة الأسبوع، بدل تكرار نفس الشرط في أكتر
     // من ملف (cart-engine.js وcheckout.html) بشكل منفصل وعرضة للتعارض مستقبلاً.
-    window.boseCartHasCustomItem = function(cart) {
+    // 🎁 [قسم الهدايا]: الهدايا والزينة والورد بتتجهز حسب الطلب، فبتاخد نفس مدة
+    // تحضير التورت المخصص (3 أيام) - السيرفر بيفرضها برضه في create_order_with_items.
+    window.boseIsGiftCartItem = function(item) {
+        return !!item && typeof item.productSlug === "string" && item.productSlug.indexOf("gift-") === 0;
+    };
+    window.boseCartHasGiftItem = function(cart) {
+        return Array.isArray(cart) && cart.some(window.boseIsGiftCartItem);
+    };
+    // التورت/الورد المخصص الحقيقي فقط (من غير الهدايا) - بيتستخدم لحدود السعة اليومية للمخصص.
+    window.boseCartHasTrueCustomItem = function(cart) {
         if (!Array.isArray(cart)) return false;
         return cart.some(item =>
             item.type === "custom-cake" ||
@@ -2667,6 +2677,9 @@
             item.productSlug === "toort-custom-master" ||
             item.productSlug === "flowers-master"
         );
+    };
+    window.boseCartHasCustomItem = function(cart) {
+        return window.boseCartHasTrueCustomItem(cart) || window.boseCartHasGiftItem(cart);
     };
 
     // 🛡️🎂 [عزل الطلبات المختلطة]: السلة اللي فيها تورت/ورد مخصص (بيتحجز على
@@ -2683,7 +2696,8 @@
             item.type !== "mini-cake" &&
             item.type !== "custom-flower" &&
             item.productSlug !== "toort-custom-master" &&
-            item.productSlug !== "flowers-master"
+            item.productSlug !== "flowers-master" &&
+            !window.boseIsGiftCartItem(item)
         );
     };
 
@@ -4119,7 +4133,7 @@
                     if (!query) { resultsContainer.innerHTML = ''; return; }
 
                     const allProducts = window.BoseStoreData?.products || [];
-                    const filtered = allProducts.filter((/** @type {any} */ p) => p.title?.toLowerCase().includes(query) || p.flavorName?.toLowerCase().includes(query));
+                    const filtered = allProducts.filter((/** @type {any} */ p) => !p.isGift && (p.title?.toLowerCase().includes(query) || p.flavorName?.toLowerCase().includes(query)));
 
                     let html = '';
                     filtered.forEach((/** @type {any} */ p) => {

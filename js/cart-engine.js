@@ -1202,10 +1202,14 @@ async function processFinalBoseOrder(cart, storeData, method, shippingFee) {
     if (orderDate && orderTime && typeof window.validateBoseDeliverySchedule === "function") {
         const isScheduleValid = window.validateBoseDeliverySchedule(orderDate, orderTime, cartHasCustomItem);
         if (!isScheduleValid) {
-            const fallbackMsg = cartHasCustomItem
+            const giftOnly = cartHasCustomItem && typeof window.boseCartHasTrueCustomItem === "function" && !window.boseCartHasTrueCustomItem(cart);
+            const fallbackMsg = giftOnly
+                ? "الهدايا والزينة بتتجهز مخصوص لطلبك، فلازم الحجز قبل ميعاد التسليم بـ 3 أيام على الأقل."
+                : cartHasCustomItem
                 ? "التورت والورد المخصص عبر المحاكي بيحتاج حجز قبل موعد التسليم بـ 3 أيام على الأقل، عشان نقدر نجهزه بهدوء ونتأكد إن كل تفصيلة فيه طلعت مظبوطة."
                 : "محتاجين وقت كافٍ عشان نجهز طلبك بأفضل جودة - لا يمكن اختيار موعد قبل 24 ساعة من دلوقتي.";
-            const msg = cartHasCustomItem
+            const msg = giftOnly ? fallbackMsg
+                : cartHasCustomItem
                 ? (storeData.orderRules?.customPreparationTimeMessage || fallbackMsg)
                 : (storeData.orderRules?.preparationTimeMessage || fallbackMsg);
             addValidationError(deliveryTimeInput, msg);

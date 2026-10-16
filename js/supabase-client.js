@@ -105,6 +105,11 @@
             isAvailable: p.is_available !== false,
             faqs: p.faqs || [],
             options: p.options || {},
+            // 🎁 [قسم الهدايا]: منتجات الهدايا بتتخزن في نفس جدول products (id بيبدأ بـ gift-)
+            // عشان السلة والدفع يشتغلوا من غير تغيير، لكن لازم ما تظهرش وسط الحلويات
+            // (المنيو/البحث/المقترحات) - بس في صفحة الهدايا. العلامة دي هي الفاصل.
+            isGift: String(p.id || "").indexOf("gift-") === 0,
+            createdAt: p.created_at || null,
         };
     }
 
@@ -723,7 +728,28 @@
      * هيرمي error فوراً، فمُسحت بالكامل بدل ما تتسيب معطلة.
      */
 
+    /**
+     * 🎁 [قسم الهدايا والزينة]: بيجيب كل بيانات صفحة الهدايا (الأقسام/العلامات/ربط المنتجات/
+     * محتويات الهدية الكاملة/الواجهات/الرفوف) في طلبات متوازية. كل طلب لو فشل بيرجع مصفوفة
+     * فاضية (الصفحة تفضل شغالة) - وRLS في القاعدة بيرجّع للعامة المنشور/المفعّل بس.
+     */
+    async function loadBoseGiftsData() {
+        const get = (q) => boseSupabaseFetch(q).then((r) => r || []).catch(() => []);
+        const [sections, tags, giftProducts, productTags, bundleItems, heroes, shelves, shelfItems] = await Promise.all([
+            get("/gift_sections?select=*&order=sort_order.asc"),
+            get("/gift_tags?select=*&order=sort_order.asc"),
+            get("/gift_products?select=*"),
+            get("/gift_product_tags?select=*&order=sort_order.asc"),
+            get("/gift_bundle_items?select=*&order=sort_order.asc"),
+            get("/gift_heroes?select=*&order=sort_order.asc"),
+            get("/gift_shelves?select=*&order=sort_order.asc"),
+            get("/gift_shelf_items?select=*&order=sort_order.asc"),
+        ]);
+        return { sections, tags, giftProducts, productTags, bundleItems, heroes, shelves, shelfItems };
+    }
+
     window.BoseSupabase = {
+        loadBoseGiftsData,
         loadBoseStoreDataFromSupabase,
         loadBoseSingleProductBySlug,
         getBoseDataVersion,

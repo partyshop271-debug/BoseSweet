@@ -130,7 +130,7 @@
         var s = load();
         var mostSelling = (window.BoseStoreData && window.BoseStoreData.homepage && window.BoseStoreData.homepage.mostSelling) || [];
         var all = products().filter(function (p) {
-            return p.slug !== current.slug && p.isAvailable !== false && !isBuilderMaster(p) && String(p.id).indexOf("promo-") !== 0 &&
+            return p.slug !== current.slug && !!p.isGift === !!current.isGift && p.isAvailable !== false && !isBuilderMaster(p) && String(p.id).indexOf("promo-") !== 0 &&
                 !(current.variantGroupId && p.variantGroupId === current.variantGroupId);
         });
         // منتجات الأحجام (زي الديسباسيتو) كل حجم صف منفصل - بنعرض نكهة واحدة بس مرة واحدة (أرخص حجم)

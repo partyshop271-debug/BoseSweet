@@ -113,6 +113,27 @@
     window.getAllOfferProducts = getAllOfferProducts;
 
     /**
+     * 🎁 بلوك دخول الهدايا والزينة بالرئيسية: صور حقيقية من الهدايا المنشورة + زرار واحد لـ gifts.html.
+     * مفيش هدايا → البلوك مخفي (مفيش حاجة فاضية تظهر للعميلة).
+     */
+    function renderGiftsEntrance() {
+        const section = document.getElementById('gifts-entrance-section');
+        if (!section) return;
+        const data = window.BoseStoreData || {};
+        const gifts = (Array.isArray(data.products) ? data.products : []).filter(/** @param {any} p */ (p) => p.isGift && p.isAvailable !== false && p.images && p.images[0]);
+        if (!gifts.length) { section.style.display = 'none'; return; }
+        /** @param {string} u @param {number} w */
+        const thumb = (u, w) => (u.indexOf('res.cloudinary.com') > -1 && u.indexOf('/upload/') > -1 && !/\/upload\/[a-z]+_/.test(u))
+            ? u.replace('/upload/', '/upload/f_auto,q_auto,c_fill,ar_1:1,w_' + w + '/') : u;
+        const esc = window.escapeBoseHTML || ((/** @type {string} */ v) => v);
+        const media = document.getElementById('gifts-entrance-media');
+        if (media) {
+            media.innerHTML = gifts.slice(0, 3).map(/** @param {any} p */ (p) => `<img src="${esc(thumb(p.images[0], 260))}" alt="" width="108" height="108" loading="lazy" decoding="async">`).join('');
+        }
+        section.style.display = '';
+    }
+
+    /**
      * 🏷️ بلوك دخول العروض بالرئيسية: مفيش أي عرض بيتعرض هنا (صفحة العروض offers.html هي المكان الوحيد).
      * البلوك بيظهر بس لو فيه عروض فعلاً (عروض كمية شغالة/مجدولة أو خصومات أسعار)، وبيعرض
      * صور حقيقية من المنتجات المشمولة + عنوان + زرار واحد بيودّي لصفحة العروض.
@@ -807,7 +828,7 @@
             .filter(Boolean);
 
         // 🛡️ لو مفيش عناصر متربطة في لوحة التحكم لسه، منسيبش الصناديق فاضية بلا داعي - نرجع لأول منتجات حقيقية موجودة في القاعدة
-        const products = (items.length ? items : data.products).slice(0, 4);
+        const products = (items.length ? items : data.products.filter((/** @type {any} */ p) => !p.isGift)).slice(0, 4);
         if (!products.length) return;
 
         const gridEl = document.getElementById('app-promo-product-grid');
@@ -849,6 +870,7 @@
         injectHomepageSectionMeta();
         renderDynamicWaterfall();
         renderOffersSection();
+        renderGiftsEntrance();
         renderAllOffersPage();
         renderBoseFavoritesPage();
         renderHomepageProductGrids();
