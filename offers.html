@@ -26,16 +26,16 @@
     <link rel="stylesheet" href="css/season-themes.css?v=2026_production_v39.0">
 
     <!-- 👑 المحرك المركزي العالمي - نفس المصدر اللي بيغذي كارت العروض بالرئيسية بالظبط -->
-    <script src="js/supabase-client.js?v=2027_production_v48.0" defer></script>
+    <script src="js/supabase-client.js?v=2027_production_v48.1" defer></script>
     <script src="js/push-notifications.js?v=1.0" defer></script>
     <script src="js/favorites-engine.js?v=2026_production_v38.0" defer></script>
     <script src="js/season-dates.js?v=2026_production_v1.0" defer></script>
     <script src="js/season-themes.js?v=2026_production_v1.0" defer></script>
     <script src="js/season-theme-engine.js?v=2026_production_v1.0" defer></script>
     <script src="js/phone-utils.js?v=1" defer></script>
-    <script src="js/core-engine.js?v=2028_production_v63.0" defer></script>
-    <script src="js/user-interest.js?v=1" defer></script>
-    <script src="js/homepage-engine.js?v=2026_production_v1.1" defer></script>
+    <script src="js/core-engine.js?v=2028_production_v63.1" defer></script>
+    <script src="js/user-interest.js?v=2" defer></script>
+    <script src="js/homepage-engine.js?v=2026_production_v1.3" defer></script>
     <script src="js/cart-reminder.js?v=1" defer></script>
 
     <style>
@@ -648,7 +648,7 @@
                 var seen = {};
                 var flavors = allProducts.filter(function (p) {
                     var ppu = p.options && parseInt(p.options.piecesPerUnit, 10);
-                    if (p.isAvailable === false || (ppu && ppu > 1) || (p.customBuilderUrl && p.builderType && p.builderType !== "standard")) return false;
+                    if (p.isGift || p.isAvailable === false || (ppu && ppu > 1) || (p.customBuilderUrl && p.builderType && p.builderType !== "standard")) return false;
                     if (seen[p.slug]) return false;
                     var inAny = ps.some(function (r) { return inScope(r, p); });
                     if (inAny) seen[p.slug] = true;

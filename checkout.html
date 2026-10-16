@@ -272,15 +272,15 @@
     </style>
 
     <!-- المحرك العام (يُستدعى أولاً في رأس كل الصفحات لقراءة قاعدة البيانات) -->
-    <script src="js/supabase-client.js?v=2027_production_v48.0" defer></script>
+    <script src="js/supabase-client.js?v=2027_production_v48.1" defer></script>
     <script src="js/push-notifications.js?v=1.0" defer></script>
     <script src="js/favorites-engine.js?v=2026_production_v38.0" defer></script>
     <script src="js/season-dates.js?v=2026_production_v1.0" defer></script>
     <script src="js/season-themes.js?v=2026_production_v1.0" defer></script>
     <script src="js/season-theme-engine.js?v=2026_production_v1.0" defer></script>
     <script src="js/phone-utils.js?v=1" defer></script>
-    <script src="js/core-engine.js?v=2028_production_v63.0" defer></script>
-    <script src="js/user-interest.js?v=1" defer></script>
+    <script src="js/core-engine.js?v=2028_production_v63.1" defer></script>
+    <script src="js/user-interest.js?v=2" defer></script>
     <script src="js/guided-tour.js?v=3.3" defer></script>
 </head>
 <body class="bose-hardware-accelerated Pw-checkout-view">
@@ -662,7 +662,7 @@
     <div id="bose-footer-injector"></div>
 
     <!-- ⚡ استدعاء محرك السلة وإتمام عمليات الحساب والدفع والربط اللوجستي المركزي (js/cart-engine.js) ⚡ -->
-    <script src="js/cart-engine.js?v=2029_production_v56.0" defer></script>
+    <script src="js/cart-engine.js?v=2029_production_v56.1" defer></script>
 
     <!-- 🔮 سكريبت التزامن الدفاعي المحلي لربط وحقن الواجهات وضمان فك شلل حقول الصفحة دون تعارض خارجي 🔮 -->
     <script>
@@ -906,11 +906,18 @@
                     capacityMap = await window.BoseSupabase.getBoseDailyOrderCapacity(toDateStr(todayForCapacity), toDateStr(rangeEnd));
                 }
 
+                // 🎁 الهدايا ليها نفس مدة التحضير (3 أيام) لكن مش بتتحسب في سعة التورت/الورد المخصص اليومية
+                let hasTrueCustomItemForCapacity = hasCustomItem;
+                try {
+                    const _cartForCap = JSON.parse(localStorage.getItem("bose_cart") || "[]");
+                    if (typeof window.boseCartHasTrueCustomItem === "function") hasTrueCustomItemForCapacity = window.boseCartHasTrueCustomItem(_cartForCap);
+                } catch (e) { /* نسيب القيمة الافتراضية */ }
+
                 function isDayFull(dateStr) {
                     if (!capacityFeatureOn) return false;
                     const counts = capacityMap[dateStr] || { orderCount: 0, customOrderCount: 0 };
                     if (maxOrdersPerDay > 0 && counts.orderCount >= maxOrdersPerDay) return true;
-                    if (hasCustomItem && maxCustomOrdersPerDay > 0 && counts.customOrderCount >= maxCustomOrdersPerDay) return true;
+                    if (hasCustomItem && hasTrueCustomItemForCapacity && maxCustomOrdersPerDay > 0 && counts.customOrderCount >= maxCustomOrdersPerDay) return true;
                     return false;
                 }
 
@@ -1181,7 +1188,10 @@
 
                 // سحب نص حارس الوقت الصحيح المطابق لنوع الطلب لتعريف العميل برحلة الإتقان الصادقة للبراند
                 if (prepMsgNode) {
-                    prepMsgNode.textContent = hasCustomItemForDate
+                    const _giftOnlyLead = hasCustomItemForDate && typeof window.boseCartHasTrueCustomItem === "function" && !window.boseCartHasTrueCustomItem(cartArrForDate);
+                    prepMsgNode.textContent = _giftOnlyLead
+                        ? `الهدايا والزينة بتتجهز مخصوص لطلبك، فأقرب موعد استلام أو توصيل بعد ${fmtLeadAr(customLeadHours)} من وقت تأكيد الطلب. يفضّل تطلبي قبل المناسبة بأسبوع.`
+                        : hasCustomItemForDate
                         ? `مواعيدنا ثابتة لكل العملاء: التورت والورد المخصص من المحاكي بيحتاج تحضير أطول، فأقرب موعد استلام أو توصيل ليه بعد ${fmtLeadAr(customLeadHours)} من وقت تأكيد الطلب.`
                         : `مواعيدنا ثابتة لكل العملاء: أقرب موعد استلام أو توصيل للمنتجات العادية بعد ${fmtLeadAr(regularLeadHours)} من وقت تأكيد الطلب، عشان نجهز طلبك طازة وبأفضل جودة.`;
                 }

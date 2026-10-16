@@ -114,7 +114,7 @@
         الصفحة، امسحي الكاش من localStorage (أو زوري الرابط بـ ?refresh=1)،
         وشوفي هل قسم "نادي المكافآت" بيتحدث بالأرقام الصح ولا لأ.
     -->
-    <script src="js/supabase-client.js?v=2027_production_v48.0" defer></script>
+    <script src="js/supabase-client.js?v=2027_production_v48.1" defer></script>
     <script src="js/push-notifications.js?v=1.0" defer></script>
     <script src="js/favorites-engine.js?v=2026_production_v38.0" defer></script>
     <script src="js/loyalty-config.js?v=2026_production_v3.0" defer></script>
@@ -122,10 +122,10 @@
     <script src="js/season-themes.js?v=2026_production_v1.0" defer></script>
     <script src="js/season-theme-engine.js?v=2026_production_v1.0" defer></script>
     <script src="js/phone-utils.js?v=1" defer></script>
-    <script src="js/core-engine.js?v=2028_production_v63.0" defer></script>
-    <script src="js/user-interest.js?v=1" defer></script>
+    <script src="js/core-engine.js?v=2028_production_v63.1" defer></script>
+    <script src="js/user-interest.js?v=2" defer></script>
     <script src="js/guided-tour.js?v=3.3" defer></script>
-    <script src="js/homepage-engine.js?v=2026_production_v1.2" defer></script>
+    <script src="js/homepage-engine.js?v=2026_production_v1.3" defer></script>
     <script src="js/seasons-engine.js?v=2026_production_v1.0" defer></script>
     <script src="js/cart-reminder.js?v=1" defer></script>
     <style>
@@ -287,6 +287,26 @@
                     <p id="offers-description" class="boe-sub bose-arabic-text">ادخلي صفحة العروض وشوفي كل حاجة.</p>
                     <div class="boe-chips" id="offers-entrance-chips"></div>
                     <span class="boe-btn">شوفي كل العروض <i class="fa-solid fa-arrow-left"></i></span>
+                </div>
+            </a>
+        </section>
+
+        <!-- 🎁 بلوك دخول الهدايا والزينة: صور كبيرة وجملة قصيرة وزرار واحد لصفحة gifts.html.
+             بيظهر بس لو فيه هدايا فعلاً في القسم (راجع renderGiftsEntrance في homepage-engine.js). -->
+        <section id="gifts-entrance-section" class="bose-section-container bose-offers-entrance" aria-labelledby="gifts-entrance-heading" style="display:none;">
+            <a href="gifts.html" class="boe-card" id="gifts-entrance-link">
+                <span class="boe-shine" aria-hidden="true"></span>
+                <span class="boe-orb boe-orb-1" aria-hidden="true"></span>
+                <span class="boe-orb boe-orb-2" aria-hidden="true"></span>
+                <span class="boe-float boe-float-1" aria-hidden="true"><i class="fa-solid fa-gift"></i></span>
+                <span class="boe-float boe-float-2" aria-hidden="true"><i class="fa-solid fa-heart"></i></span>
+                <span class="boe-float boe-float-3" aria-hidden="true"><i class="fa-solid fa-star"></i></span>
+                <div class="boe-media" id="gifts-entrance-media" aria-hidden="true"></div>
+                <div class="boe-body">
+                    <span class="boe-badge"><i class="fa-solid fa-gift"></i> هدايا وزينة</span>
+                    <h2 id="gifts-entrance-heading" class="boe-title">هدايا جاهزة لكل مناسبة</h2>
+                    <p class="boe-sub bose-arabic-text">شوفي التشكيلة واختاري اللي يعجبك.</p>
+                    <span class="boe-btn">شوفي الهدايا <i class="fa-solid fa-arrow-left"></i></span>
                 </div>
             </a>
         </section>

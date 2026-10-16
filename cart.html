@@ -105,15 +105,15 @@ body {
 }
 </style>
 <!-- استدعاء المحرك المركزي الموحد حارس الحسابات وحاقن الهيدر والفوتر آلياً أولاً -->
-<script src="js/supabase-client.js?v=2027_production_v48.0" defer></script>
+<script src="js/supabase-client.js?v=2027_production_v48.1" defer></script>
     <script src="js/push-notifications.js?v=1.0" defer></script>
 <script src="js/favorites-engine.js?v=2026_production_v38.0" defer></script>
 <script src="js/season-dates.js?v=2026_production_v1.0" defer></script>
 <script src="js/season-themes.js?v=2026_production_v1.0" defer></script>
 <script src="js/season-theme-engine.js?v=2026_production_v1.0" defer></script>
 <script src="js/phone-utils.js?v=1" defer></script>
-    <script src="js/core-engine.js?v=2028_production_v63.0" defer></script>
-    <script src="js/user-interest.js?v=1" defer></script>
+    <script src="js/core-engine.js?v=2028_production_v63.1" defer></script>
+    <script src="js/user-interest.js?v=2" defer></script>
 <script src="js/guided-tour.js?v=3.3" defer></script>
 </head>
 <body class="bose-hardware-accelerated">
@@ -238,7 +238,7 @@ body {
 <div id="bose-footer-injector"></div>
 
 <!-- استدعاء محرك العمليات والحسابات الموحد للطلب والسلة -->
-<script src="js/cart-engine.js?v=2029_production_v56.0" defer></script>
+<script src="js/cart-engine.js?v=2029_production_v56.1" defer></script>
 
 <!-- كود حقن صور المقترحات المطور وتأمين تجربة الإضافة واللمس دون Full Refresh للبيانات -->
 <script>
@@ -268,6 +268,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // كمان داخل createProductCardHTML كحماية إضافية (دفاع في العمق).
         const finalSuggestions = dbData.products.filter(p =>
             !cartSlugs.includes(p.slug) &&
+            !p.isGift &&
             !(p.customBuilderUrl && p.builderType && p.builderType !== 'standard')
         ).slice(0, 5);
 

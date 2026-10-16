@@ -24,15 +24,15 @@
     <link rel="stylesheet" href="css/main.css?v=2026_production_v42.0">
     <link rel="stylesheet" href="css/season-themes.css?v=2026_production_v39.0">
 
-    <script src="js/supabase-client.js?v=2027_production_v48.0" defer></script>
+    <script src="js/supabase-client.js?v=2027_production_v48.1" defer></script>
     <script src="js/push-notifications.js?v=1.0" defer></script>
     <script src="js/favorites-engine.js?v=2026_production_v38.0" defer></script>
     <script src="js/season-dates.js?v=2026_production_v1.0" defer></script>
     <script src="js/season-themes.js?v=2026_production_v1.0" defer></script>
     <script src="js/season-theme-engine.js?v=2026_production_v1.0" defer></script>
     <script src="js/phone-utils.js?v=1" defer></script>
-    <script src="js/core-engine.js?v=2028_production_v63.0" defer></script>
-    <script src="js/user-interest.js?v=1" defer></script>
+    <script src="js/core-engine.js?v=2028_production_v63.1" defer></script>
+    <script src="js/user-interest.js?v=2" defer></script>
     <script src="js/cart-reminder.js?v=1" defer></script>
 
     <style>
@@ -165,6 +165,7 @@
 
                 const hasSpecificLinks = (season.linkedProductIds && season.linkedProductIds.length) || (season.linkedCategoryIds && season.linkedCategoryIds.length);
                 const products = (siteData.products || []).filter((p) => {
+                    if (p.isGift) return false;
                     if (!hasSpecificLinks) return true;
                     return (season.linkedProductIds || []).includes(p.id) || (season.linkedCategoryIds || []).includes(p.category);
                 });

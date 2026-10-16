@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+    <link rel="apple-touch-icon" href="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#FF91A4">
+    <title>هدايا وزينة المناسبات | حلويات بوسي</title>
+    <meta name="description" content="هدايا جاهزة، بوكسات شيكولاتة وحلويات، دباديب، بالونات وزينة، وورد طبيعي لكل مناسبة من حلويات بوسي.">
+    <link rel="canonical" href="https://bose-sweet.vercel.app/gifts.html">
+    <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
+
+    <link rel="stylesheet" href="vendor/fonts/cairo/cairo.css?v=2026_local_v1.0">
+    <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css?v=2026_local_v1.0" fetchpriority="high">
+    <link rel="stylesheet" href="css/global.css?v=2026_production_v44.1">
+    <link rel="stylesheet" href="css/main.css?v=2026_production_v42.0">
+    <link rel="stylesheet" href="css/gifts.css?v=1">
+
+    <script src="js/supabase-client.js?v=2027_production_v48.1" defer></script>
+    <script src="js/push-notifications.js?v=1.0" defer></script>
+    <script src="js/favorites-engine.js?v=2026_production_v38.0" defer></script>
+    <script src="js/season-dates.js?v=2026_production_v1.0" defer></script>
+    <script src="js/season-themes.js?v=2026_production_v1.0" defer></script>
+    <script src="js/season-theme-engine.js?v=2026_production_v1.0" defer></script>
+    <script src="js/phone-utils.js?v=1" defer></script>
+    <script src="js/core-engine.js?v=2028_production_v63.1" defer></script>
+    <script src="js/user-interest.js?v=2" defer></script>
+    <script src="js/cart-reminder.js?v=1" defer></script>
+    <script src="js/gifts-engine.js?v=1" defer></script>
+</head>
+<body>
+    <div id="bose-header-injector"></div>
+
+    <main class="gf-main">
+        <nav class="gf-sections" id="gf-sections" aria-label="أقسام الهدايا" hidden></nav>
+
+        <div id="gf-top">
+            <header class="gf-hero" id="gf-hero" hidden></header>
+            <nav class="gf-stories" id="gf-stories" aria-label="المناسبات" hidden></nav>
+            <div id="gf-shelves"></div>
+        </div>
+
+        <section id="gf-results" class="gf-results">
+            <div class="gf-tools">
+                <input type="search" id="gf-search" class="gf-search" placeholder="دوّري: عروسة، ماما، دبدوب..." aria-label="بحث في الهدايا" autocomplete="off">
+                <select id="gf-sort" class="gf-sort" aria-label="ترتيب">
+                    <option value="default">الترتيب</option>
+                    <option value="price-asc">الأرخص</option>
+                    <option value="price-desc">الأغلى</option>
+                    <option value="popular">الأكثر طلبًا</option>
+                    <option value="newest">الأحدث</option>
+                </select>
+                <button type="button" id="gf-open-filter" class="gf-open-filter"><i class="fa-solid fa-sliders"></i> تصفية <span id="gf-filter-count" hidden></span></button>
+            </div>
+            <div id="gf-chips" class="gf-chips" hidden></div>
+
+            <div class="gf-layout">
+                <aside id="gf-filters" class="gf-filters" aria-label="تصفية الهدايا">
+                    <div class="gf-filters__head"><h3>تصفية</h3><button type="button" id="gf-close-filter" class="gf-close" aria-label="إغلاق"><i class="fa-solid fa-xmark"></i></button></div>
+                    <div id="gf-filter-body"></div>
+                    <button type="button" id="gf-apply-filter" class="gf-apply">عرض الهدايا</button>
+                </aside>
+                <div>
+                    <div id="gf-results-head" class="gf-results__head"></div>
+                    <div id="gf-grid" class="gf-grid gf-grid--results"></div>
+                    <div id="gf-empty" class="gf-empty" hidden></div>
+                    <button type="button" id="gf-more" class="gf-btn-ghost gf-more" hidden>عرض المزيد</button>
+                </div>
+            </div>
+        </section>
+    </main>
+    <div id="gf-backdrop" class="gf-backdrop" hidden></div>
+
+    <div id="bose-footer-injector"></div>
+</body>
+</html>

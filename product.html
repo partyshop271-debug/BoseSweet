@@ -49,15 +49,15 @@
         .bose-product-page-skeleton .skeleton-pulse-node { border-radius: var(--bose-radius-md); }
     </style>
 
-    <script src="js/supabase-client.js?v=2027_production_v48.0" defer></script>
+    <script src="js/supabase-client.js?v=2027_production_v48.1" defer></script>
     <script src="js/push-notifications.js?v=1.0" defer></script>
     <script src="js/favorites-engine.js?v=2026_production_v38.0" defer></script>
     <script src="js/season-dates.js?v=2026_production_v1.0" defer></script>
     <script src="js/season-themes.js?v=2026_production_v1.0" defer></script>
     <script src="js/season-theme-engine.js?v=2026_production_v1.0" defer></script>
     <script src="js/phone-utils.js?v=1" defer></script>
-    <script src="js/core-engine.js?v=2028_production_v63.0" defer></script>
-    <script src="js/user-interest.js?v=1" defer></script>
+    <script src="js/core-engine.js?v=2028_production_v63.1" defer></script>
+    <script src="js/user-interest.js?v=2" defer></script>
     <script src="js/reviews-widget.js?v=2026_production_v1.2" defer></script>
     <script src="js/guided-tour.js?v=3.4" defer></script>
 </head>
@@ -220,6 +220,33 @@ document.addEventListener("DOMContentLoaded", function () {
         skeletonEl.style.display = 'none';
         rootEl.style.display = '';
         belowEl.style.display = 'block';
+
+        // 🎁 [قسم الهدايا]: لو المنتج هدية كاملة، نعرض "اللي جواها" وتوفيرها ومدة الحجز تحت الكارت
+        if (product.isGift && window.BoseSupabase && window.BoseSupabase.loadBoseGiftsData) {
+            window.BoseSupabase.loadBoseGiftsData().then(function (g) {
+                const items = (g.bundleItems || []).filter(function (b) { return b.bundle_product_id === product.id; });
+                const meta = (g.giftProducts || []).filter(function (x) { return x.product_id === product.id; })[0] || {};
+                const esc = window.escapeBoseHTML || function (v) { return v; };
+                let alone = 0;
+                items.forEach(function (b) { alone += (Number(b.alone_price) || 0) * (parseInt(b.qty, 10) || 1); });
+                const saving = alone > product.price ? Math.round(alone - product.price) : 0;
+                let html = '';
+                if (items.length) {
+                    html += '<h3 style="margin:0 0 10px;font-size:17px;">اللي جوه الهدية</h3><ul style="list-style:none;padding:0;margin:0 0 10px;display:grid;gap:8px;">' +
+                        items.map(function (b) {
+                            return '<li style="display:flex;justify-content:space-between;gap:10px;background:#fff;border-radius:12px;padding:10px 14px;border:1px solid rgba(0,0,0,.07);"><span>' +
+                                esc(b.label || '') + (b.qty > 1 ? ' × ' + esc(String(b.qty)) : '') + '</span><span style="opacity:.6;">' + (b.alone_price ? esc(String(Math.round(b.alone_price))) + ' ج' : '') + '</span></li>';
+                        }).join('') + '</ul>';
+                    if (saving > 0) html += '<p style="margin:0 0 10px;font-weight:800;color:#2e8b57;">لو اتشرت لوحدها: ' + Math.round(alone) + ' ج - بتوفري ' + saving + ' ج</p>';
+                }
+                html += '<p style="margin:0;font-size:13px;opacity:.75;"><i class="fa-regular fa-clock"></i> ' + esc(meta.delivery_note || 'الهدايا بتتجهز مخصوص لطلبك، فلازم الحجز قبل ميعاد التسليم بـ 3 أيام على الأقل.') + '</p>';
+                const box = document.createElement('section');
+                box.className = 'bose-gift-contents';
+                box.style.cssText = 'max-width:760px;margin:18px auto;padding:0 14px;';
+                box.innerHTML = html;
+                rootEl.insertAdjacentElement('afterend', box);
+            }).catch(function () { /* الصفحة تفضل شغالة من غير القسم ده */ });
+        }
 
         if (window.boseRenderRelatedProductsInto) {
             window.boseRenderRelatedProductsInto(document.getElementById('bose-product-related-grid'), product);
