@@ -821,6 +821,15 @@
         if (error) throw error;
     }
 
+    /* ============================= الهدايا والزينة (gifts.html) ============================= */
+
+    /** بوابة موحدة لجداول الهدايا (gift_*) - مسموح بس الجداول دي عشان الصفحة متلمسش جداول تانية بالغلط */
+    const GIFT_TABLES = ["gift_sections", "gift_tags", "gift_products", "gift_product_tags", "gift_bundle_items", "gift_heroes", "gift_shelves", "gift_shelf_items"];
+    function giftTable(name) {
+        if (!GIFT_TABLES.includes(name)) throw new Error("جدول غير مسموح: " + name);
+        return client.from(name);
+    }
+
     /* ============================= عروض الكمية (quantity-promos.html) ============================= */
 
     /** كل عروض الكمية (شغالة/مجدولة/منتهية/مقفولة) - الأدمن بيشوفها كلها بسياسة quantity_promos_admin_select */
@@ -1734,6 +1743,7 @@
         createOffer,
         updateOffer,
         deleteOffer,
+        giftTable,
         getAllQuantityPromos,
         createQuantityPromo,
         updateQuantityPromo,
