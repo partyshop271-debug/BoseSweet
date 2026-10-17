@@ -215,6 +215,9 @@ document.addEventListener("DOMContentLoaded", function () {
         rootEl.innerHTML = window.createProductCardHTML(product, 'detail');
         const cardEl = rootEl.querySelector('.product-card-unified');
         if (cardEl) cardEl.removeAttribute('onclick');
+        // 📖 الوصف كامل دايمًا في صفحة التفاصيل (من غير قص "...")، بغض النظر عن نسخة core-engine.js
+        const fullDescEl = rootEl.querySelector('.product-card-desc');
+        if (fullDescEl && product.description && !product.flavorDesc) fullDescEl.textContent = product.description;
 
         if (isMixFlavorProduct && cardEl && window.renderBoseMixToppingPicker) {
             window.renderBoseMixToppingPicker(product, cardEl);
@@ -284,5 +287,222 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 
+<script>
+/**
+ * 🔍 عارض صور الهدايا (منبثق بملء الشاشة)
+ * - أي صورة هدية (في كروت صفحة الهدايا، صورة صفحة الهدية، صور القطع) لما العميل يضغط عليها تتفتح كبيرة.
+ * - جوه العارض نفسه يقدر يتنقل بين كل صور الهدية وقطعها (سحب بالإصبع، أسهم، صور مصغرة تحت) من غير ما يقفل.
+ * - زرار الرجوع في الموبايل بيقفل العارض بس (مش بيطلّع العميل من الصفحة).
+ * مفيش inline scripts ولا onclick (الـ CSP صارم): كله مستمعات هنا.
+ */
+(function () {
+    "use strict";
+    if (window.BoseGiftLightbox) return;
+    var REG = {};
+    var st = { list: [], i: 0, open: false, zoom: false };
+    var root, imgEl, capEl, cntEl, thumbsEl, prevBtn, nextBtn;
+
+    function esc(v) {
+        v = v == null ? "" : String(v);
+        return v.replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; });
+    }
+    function big(u) { return window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(u, 1400) : u; }
+    function small(u) { return window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(u, 160) : u; }
+    function money(n) { return Math.round(Number(n) || 0).toLocaleString("ar-EG") + " ج"; }
+    function okUrl(u) { return /^https:\/\//i.test(String(u || "")); }
+
+    /* بنبني قايمة الصور: صور الهدية الأساسية + صور القطع (من غير تكرار) ومعاها اسم القطعة وسعرها */
+    function registerGift(product, bundleItems) {
+        if (!product || !product.id) return;
+        injectCss();
+        var list = [], seen = {};
+        var byUrl = {};
+        (bundleItems || []).forEach(function (b) { if (b && b.image) byUrl[b.image] = b; });
+        (product.images || []).forEach(function (u, idx) {
+            if (!okUrl(u) || seen[u]) return;
+            seen[u] = 1;
+            var b = byUrl[u];
+            list.push(b ? { src: u, title: b.label, sub: b.description, price: b.alone_price }
+                        : { src: u, title: idx === 0 ? product.title : "", sub: "", price: null });
+        });
+        (bundleItems || []).forEach(function (b) {
+            if (!b || !okUrl(b.image) || seen[b.image]) return;
+            seen[b.image] = 1;
+            list.push({ src: b.image, title: b.label, sub: b.description, price: b.alone_price });
+        });
+        REG[product.id] = list;
+    }
+
+    var LB_CSS = "/* ===== عارض الصور المنبثق ===== */\n.gf-card .product-card-img, .bose-product-page-layout .product-card-unified > .product-card-img, .gf-contents__row img, .gd-item__img { cursor: zoom-in; }\nhtml.gl-lock, html.gl-lock body { overflow: hidden; }\n.gl-root { position: fixed; inset: 0; z-index: 100000; background: rgba(10,8,9,.96); display: flex; flex-direction: column; align-items: center; justify-content: center; direction: rtl; }\n.gl-root[hidden] { display: none; }\n.gl-stage { flex: 1; width: 100%; min-height: 0; display: flex; align-items: center; justify-content: center; overflow: auto; touch-action: pan-y; padding: 56px 12px 8px; box-sizing: border-box; }\n.gl-img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 12px; cursor: zoom-in; transition: transform .2s ease; user-select: none; -webkit-user-drag: none; }\n.gl-img.is-zoomed { transform: scale(2); cursor: zoom-out; }\n.gl-close { position: absolute; top: max(12px, env(safe-area-inset-top)); inset-inline-start: 12px; width: 46px; height: 46px; border-radius: 50%; border: 0; background: rgba(255,255,255,.16); color: #fff; font-size: 20px; cursor: pointer; z-index: 3; }\n.gl-count { position: absolute; top: max(22px, calc(env(safe-area-inset-top) + 10px)); inset-inline-end: 16px; color: #fff; font-weight: 800; font-size: 15px; background: rgba(255,255,255,.14); padding: 4px 12px; border-radius: 999px; z-index: 3; }\n.gl-nav { position: absolute; top: 45%; width: 46px; height: 46px; border-radius: 50%; border: 0; background: rgba(255,255,255,.18); color: #fff; font-size: 18px; cursor: pointer; z-index: 3; }\n.gl-prev { right: 10px; }\n.gl-next { left: 10px; }\n.gl-cap { width: 100%; max-width: 640px; color: #fff; text-align: center; padding: 6px 16px; display: grid; gap: 2px; box-sizing: border-box; }\n.gl-cap strong { font-size: 18px; }\n.gl-cap span { font-size: 14.5px; opacity: .85; line-height: 1.7; }\n.gl-cap em { font-style: normal; font-weight: 800; font-size: 15px; color: #ffb3c6; }\n.gl-thumbs { display: flex; gap: 8px; overflow-x: auto; max-width: 100%; padding: 8px 14px calc(14px + env(safe-area-inset-bottom)); box-sizing: border-box; }\n.gl-th { flex: 0 0 auto; width: 58px; height: 58px; border-radius: 12px; border: 2px solid transparent; padding: 0; overflow: hidden; background: #222; cursor: pointer; opacity: .6; }\n.gl-th img { width: 100%; height: 100%; object-fit: cover; display: block; }\n.gl-th.is-on { border-color: #ff8fab; opacity: 1; }\n@media (max-width: 600px) { .gl-nav { width: 40px; height: 40px; top: 40%; } }\n\n/* ===== كروت الهدايا بنفس المقاس: صورة + اسم + (جواها N قطع) + سعر + زرار ===== */\n.gf-grid { align-items: stretch; }\n.gf-card { display: flex; }\n.gf-card .product-card-unified { height: 100%; width: 100%; display: flex; flex-direction: column; }\n.gf-card .product-card-desc,\n.gf-card .bose-desc-toggle-btn,\n.gf-card .product-card-flavor-name,\n.gf-card .bose-card-size-pill,\n.gf-card .bose-mini-size-note { display: none !important; }\n.gf-card .product-card-title { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.5; min-height: 3em; margin-bottom: 6px; }\n.gf-card .product-card-price { margin-top: auto; }\n.gf-contents--mini { margin: 0 0 8px; padding: 6px 10px; font-size: 13px; font-weight: 800; color: var(--bose-pink); background: rgba(var(--bose-pink-rgb), .1); border-radius: 999px; width: fit-content; }\n\n";
+    function injectCss() {
+        if (document.getElementById("gl-style")) return;
+        var s = document.createElement("style");
+        s.id = "gl-style";
+        s.textContent = LB_CSS;
+        document.head.appendChild(s);
+    }
+
+    function build() {
+        if (root) return;
+        injectCss();
+        root = document.createElement("div");
+        root.className = "gl-root";
+        root.setAttribute("role", "dialog");
+        root.setAttribute("aria-modal", "true");
+        root.setAttribute("aria-label", "عرض صور الهدية");
+        root.hidden = true;
+        root.innerHTML =
+            '<button type="button" class="gl-close" data-gl="close" aria-label="إغلاق"><i class="fa-solid fa-xmark"></i></button>' +
+            '<div class="gl-count" id="gl-count"></div>' +
+            '<button type="button" class="gl-nav gl-prev" data-gl="prev" aria-label="الصورة السابقة"><i class="fa-solid fa-chevron-right"></i></button>' +
+            '<div class="gl-stage" id="gl-stage"><img class="gl-img" id="gl-img" alt="" draggable="false"></div>' +
+            '<button type="button" class="gl-nav gl-next" data-gl="next" aria-label="الصورة التالية"><i class="fa-solid fa-chevron-left"></i></button>' +
+            '<div class="gl-cap" id="gl-cap"></div>' +
+            '<div class="gl-thumbs" id="gl-thumbs"></div>';
+        document.body.appendChild(root);
+        imgEl = root.querySelector("#gl-img");
+        capEl = root.querySelector("#gl-cap");
+        cntEl = root.querySelector("#gl-count");
+        thumbsEl = root.querySelector("#gl-thumbs");
+        prevBtn = root.querySelector(".gl-prev");
+        nextBtn = root.querySelector(".gl-next");
+
+        root.addEventListener("click", function (e) {
+            var a = e.target.closest("[data-gl]");
+            if (a) {
+                var k = a.getAttribute("data-gl");
+                if (k === "close") close(true);
+                else if (k === "prev") go(-1);
+                else if (k === "next") go(1);
+                return;
+            }
+            var th = e.target.closest("[data-gl-i]");
+            if (th) { show(Number(th.getAttribute("data-gl-i"))); return; }
+            if (e.target === imgEl) { toggleZoom(); return; }
+            if (e.target.id === "gl-stage" || e.target === root) close(true);
+        });
+
+        /* سحب بالإصبع يمين/شمال */
+        var sx = null, sy = null;
+        var stage = root.querySelector("#gl-stage");
+        stage.addEventListener("touchstart", function (e) {
+            if (st.zoom || e.touches.length !== 1) { sx = null; return; }
+            sx = e.touches[0].clientX; sy = e.touches[0].clientY;
+        }, { passive: true });
+        stage.addEventListener("touchend", function (e) {
+            if (sx == null) return;
+            var t = e.changedTouches[0], dx = t.clientX - sx, dy = t.clientY - sy;
+            sx = null;
+            if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.3) go(dx < 0 ? 1 : -1);
+        }, { passive: true });
+    }
+
+    function toggleZoom() {
+        st.zoom = !st.zoom;
+        imgEl.classList.toggle("is-zoomed", st.zoom);
+    }
+
+    function preload(i) {
+        var it = st.list[i];
+        if (it) { var im = new Image(); im.src = big(it.src); }
+    }
+
+    function show(i) {
+        var n = st.list.length;
+        if (!n) return;
+        st.i = (i + n) % n;
+        st.zoom = false;
+        imgEl.classList.remove("is-zoomed");
+        var it = st.list[st.i];
+        imgEl.src = big(it.src);
+        imgEl.alt = it.title || "صورة الهدية";
+        cntEl.textContent = (st.i + 1) + " / " + n;
+        var cap = "";
+        if (it.title) cap += '<strong>' + esc(it.title) + "</strong>";
+        if (it.sub) cap += "<span>" + esc(it.sub) + "</span>";
+        if (Number(it.price) > 0) cap += '<em>لوحدها: ' + esc(money(it.price)) + "</em>";
+        capEl.innerHTML = cap;
+        capEl.style.display = cap ? "" : "none";
+        prevBtn.style.display = nextBtn.style.display = n > 1 ? "" : "none";
+        thumbsEl.style.display = n > 1 ? "" : "none";
+        Array.prototype.forEach.call(thumbsEl.children, function (c, idx) { c.classList.toggle("is-on", idx === st.i); });
+        var active = thumbsEl.children[st.i];
+        if (active && active.scrollIntoView) { try { active.scrollIntoView({ block: "nearest", inline: "center" }); } catch (e) { /* مش حرج */ } }
+        preload(st.i + 1); preload(st.i - 1);
+    }
+    function go(d) { show(st.i + d); }
+
+    function open(id, src) {
+        var list = REG[id];
+        if (!list || !list.length) return false;
+        build();
+        st.list = list;
+        thumbsEl.innerHTML = list.map(function (it, i) {
+            return '<button type="button" class="gl-th" data-gl-i="' + i + '" aria-label="صورة ' + (i + 1) + '"><img src="' + esc(small(it.src)) + '" alt="" loading="lazy"></button>';
+        }).join("");
+        var start = 0;
+        if (src) { for (var k = 0; k < list.length; k++) if (list[k].src === src) { start = k; break; } }
+        root.hidden = false;
+        document.documentElement.classList.add("gl-lock");
+        st.open = true;
+        show(start);
+        try { history.pushState({ glOpen: 1 }, ""); } catch (e) { /* مش حرج */ }
+        var cb = root.querySelector(".gl-close");
+        if (cb) cb.focus();
+        return true;
+    }
+
+    function close(fromUi) {
+        if (!st.open) return;
+        st.open = false;
+        root.hidden = true;
+        imgEl.removeAttribute("src");
+        document.documentElement.classList.remove("gl-lock");
+        if (fromUi && history.state && history.state.glOpen) { try { history.back(); } catch (e) { /* مش حرج */ } }
+    }
+
+    window.addEventListener("popstate", function () { if (st.open) close(false); });
+    document.addEventListener("keydown", function (e) {
+        if (!st.open) return;
+        if (e.key === "Escape") close(true);
+        else if (e.key === "ArrowLeft") go(1);   /* الصفحة RTL: الشمال = التالي */
+        else if (e.key === "ArrowRight") go(-1);
+    });
+
+    /* لو الصور لسه ماتسجلتش (مثلاً سكربت الصفحة اتأخر) بنجيبها لحظة الضغط من بيانات الموقع نفسها */
+    function lazyOpen(id, src) {
+        var prod = null, list = (window.BoseStoreData && window.BoseStoreData.products) || [];
+        for (var i = 0; i < list.length; i++) if (list[i].id === id) { prod = list[i]; break; }
+        if (!prod || !window.BoseSupabase || !window.BoseSupabase.loadBoseGiftsData) return false;
+        window.BoseSupabase.loadBoseGiftsData().then(function (g) {
+            registerGift(prod, (g.bundleItems || []).filter(function (b) { return b.bundle_product_id === id; }));
+            open(id, src);
+        }).catch(function () { registerGift(prod, []); open(id, src); });
+        return true;
+    }
+    function tryOpen(id, src) { return REG[id] ? open(id, src) : lazyOpen(id, src); }
+
+    /* التقاط الضغطة قبل ما كارت الهدية يودّي لصفحة التفاصيل */
+    document.addEventListener("click", function (e) {
+        var t = e.target;
+        if (!t || !t.closest || st.open) return;
+        var ex = t.closest("[data-lb-id]");
+        if (ex) {
+            if (tryOpen(ex.getAttribute("data-lb-id"), ex.getAttribute("data-lb-src"))) { e.preventDefault(); e.stopPropagation(); }
+            return;
+        }
+        var img = t.closest("img.product-card-img");
+        if (!img) return;
+        var card = img.closest(".product-card-unified");
+        var id = card && card.getAttribute("data-id");
+        if (!id || String(id).indexOf("gift-") !== 0) return;
+        if (!img.closest(".gf-card") && !img.closest(".bose-product-page-layout")) return;
+        if (tryOpen(id, null)) { e.preventDefault(); e.stopPropagation(); }
+    }, true);
+
+    window.BoseGiftLightbox = { registerGift: registerGift, open: open, close: function () { close(true); } };
+})();
+
+</script>
 </body>
 </html>
