@@ -133,6 +133,15 @@ body.gf-sheet-open { overflow: hidden; }
 .gd-note { margin: 0; font-size: 14px; line-height: 1.8; opacity: .8; }
 
 /* ===== عارض الصور المنبثق ===== */
+/* 🛡️ [إصلاح جذري - الصور مش بتتكبّر]: global.css فيه `img { pointer-events: none }` لكل صور الموقع،
+   فالضغطة على أي صورة كانت بتعدّي من خلالها وتقع على اللي وراها (الـ li / الكارت / الخلفية)، والعارض
+   بيدوّر على الصورة نفسها (data-lb-id / img.product-card-img) فمبيلاقيهاش وميفتحش. هنا بنرجّع
+   الضغط لصور الهدايا القابلة للتكبير + صورة العارض نفسها (عشان الضغط عليها يعمل zoom بدل ما يقفل). */
+.gf-card .product-card-img,
+.bose-product-page-layout .product-card-unified > .product-card-img,
+.gf-contents__row img,
+.gd-item__img,
+.gl-img { pointer-events: auto; }
 .gf-card .product-card-img, .bose-product-page-layout .product-card-unified > .product-card-img, .gf-contents__row img, .gd-item__img { cursor: zoom-in; }
 html.gl-lock, html.gl-lock body { overflow: hidden; }
 .gl-root { position: fixed; inset: 0; z-index: 100000; background: rgba(10,8,9,.96); display: flex; flex-direction: column; align-items: center; justify-content: center; direction: rtl; }
