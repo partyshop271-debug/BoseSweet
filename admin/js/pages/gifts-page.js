@@ -346,13 +346,13 @@
             ${field("السعر بتاع الهدية كلها (ج)", `<input type="number" min="0" step="1" class="adm-input" id="gf-price" required value="${p.price != null ? Number(p.price) : ""}">`)}
             <div id="gf-bundle-wrap" class="adm-field">
                 <label style="font-size:16px;font-weight:800;">اللي جوّه الهدية (قطعة قطعة)</label>
-                <div class="adm-hint" style="margin-bottom:8px;">كل قطعة بتظهر للعميل بصورتها وسعرها. لو علّمتي "تتباع لوحدها" هيظهر له زرار يشتريها لوحدها.</div>
+                <div style="margin-bottom:10px;font-size:.95rem;line-height:1.8;color:var(--adm-text-secondary);">كل قطعة بتظهر للعميل بصورتها وسعرها. لو علّمتي "تتباع لوحدها" هيظهر له زرار يشتريها لوحدها.</div>
                 <div id="gf-items"></div>
                 <div style="display:flex;gap:8px;flex-wrap:wrap;">
                     <button type="button" class="adm-btn adm-btn-ghost" id="gf-add-item"><i class="fa-solid fa-plus"></i> إضافة قطعة</button>
                     <button type="button" class="adm-btn adm-btn-ghost" id="gf-items-from-imgs"><i class="fa-solid fa-images"></i> اعمل قطعة من كل صورة (غير الأولى)</button>
                 </div>
-                <div id="gf-savings" class="adm-hint" style="margin-top:8px;"></div>
+                <div id="gf-savings" style="margin-top:10px;font-size:.95rem;line-height:1.8;color:var(--adm-text-secondary);"></div>
             </div>
             ${field("التسليم بيتم ازاي؟", `<select class="adm-select" id="gf-note">${(() => { const cur = gift && gift.delivery_note ? gift.delivery_note : ""; const list = DELIVERY_NOTES.slice(); if (cur && !list.some((x) => x[0] === cur)) list.push([cur, cur]); return list.map((x) => `<option value="${e(x[0])}" ${x[0] === cur ? "selected" : ""}>${e(x[1])}</option>`).join(""); })()}</select>`, "بتظهر للعميل في صفحة الهدية.")}
             ${field("وصف الهدية (اختياري)", `<textarea class="adm-input" id="gf-desc" rows="3">${e(p.description || "")}</textarea>`)}
@@ -601,28 +601,45 @@
                     : "سعر الهدية مش أقل من القطع لوحدها، فمفيش توفير هيظهر للعميل.";
             }
             function drawItems() {
-                $("#gf-items").innerHTML = items.map((it, i) => `
-                    <div style="border:1px solid rgba(0,0,0,.1);border-radius:14px;padding:10px;margin-bottom:10px;background:#fff;">
-                        <div style="display:flex;gap:10px;align-items:flex-start;">
-                            <div style="flex:0 0 74px;text-align:center;">
-                                ${it.image ? `<img src="${e(it.image)}" alt="" style="width:74px;height:74px;border-radius:10px;object-fit:cover;display:block;">` : `<div style="width:74px;height:74px;border-radius:10px;background:#f3eef0;display:flex;align-items:center;justify-content:center;font-size:11px;opacity:.6;">بدون صورة</div>`}
-                                <label class="adm-btn adm-btn-ghost" style="display:block;margin-top:4px;font-size:11px;padding:4px;cursor:pointer;">صورة<input type="file" accept="image/*" data-itemfile="${i}" style="display:none;"></label>
-                            </div>
-                            <div style="flex:1;display:grid;gap:6px;min-width:0;">
-                                <select class="adm-select" data-namesel="${i}"><option value="">— اختاري اسم القطعة —</option>${ITEM_NAMES.map((n) => `<option value="${e(n)}" ${it.label === n ? "selected" : ""}>${e(n)}</option>`).join("")}<option value="__other" ${it.label && !ITEM_NAMES.includes(it.label) ? "selected" : ""}>حاجة تانية (هكتبها)</option></select>
-                                <input class="adm-input" data-f="label" data-i="${i}" placeholder="اكتبي اسم القطعة (مثال: دبدوب استيتش وردي)" value="${e(it.label || "")}" style="${it.label && !ITEM_NAMES.includes(it.label) || it.__other ? "" : "display:none;"}">
-                                <input class="adm-input" data-f="description" data-i="${i}" placeholder="سطر عنها (مثال: ناعم، ارتفاع 30 سم)" value="${e(it.description || "")}">
-                                <div style="display:flex;gap:6px;">
-                                    <input class="adm-input" data-f="qty" data-i="${i}" type="number" min="1" value="${e(it.qty || 1)}" style="flex:1;" title="العدد">
-                                    <input class="adm-input" data-f="alone_price" data-i="${i}" type="number" min="0" placeholder="سعرها لوحدها" value="${it.alone_price == null ? "" : e(it.alone_price)}" style="flex:2;">
-                                </div>
-                                <label style="font-size:13px;"><input type="checkbox" data-sell="${i}" ${it.sell_alone ? "checked" : ""}> تتباع لوحدها (يظهر للعميل زرار شراء للقطعة دي)</label>
-                            </div>
+                const lbl = 'display:block;font-size:.9rem;font-weight:700;color:var(--adm-text-secondary);margin:0 0 4px;';
+                $("#gf-items").innerHTML = items.map((it, i) => {
+                    const isOther = it.__other || (it.label && !ITEM_NAMES.includes(it.label));
+                    const gallery = imgs.length ? `<div style="margin-top:8px;"><span style="${lbl}">أو اختاري من صور الهدية اللي رفعتيها:</span><div style="display:flex;gap:6px;flex-wrap:wrap;">${imgs.map((u) => `<button type="button" data-pickimg="${i}" data-url="${e(u)}" style="padding:0;border:2px solid ${it.image === u ? "var(--adm-pink)" : "var(--adm-border)"};border-radius:10px;background:none;cursor:pointer;"><img src="${e(u)}" alt="" style="width:56px;height:56px;border-radius:8px;object-fit:cover;display:block;"></button>`).join("")}</div></div>` : "";
+                    return `
+                    <div style="background:var(--adm-bg-surface-raised);border:1px solid var(--adm-border);border-radius:16px;padding:14px;margin-bottom:14px;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                            <b style="color:var(--adm-pink);font-size:1.05rem;">قطعة ${i + 1}</b>
                             <button type="button" class="adm-btn adm-btn-ghost adm-btn-icon" data-rmi="${i}" title="حذف القطعة"><i class="fa-solid fa-trash"></i></button>
                         </div>
-                    </div>`).join("");
+                        <div style="display:flex;gap:12px;align-items:center;margin-bottom:12px;">
+                            ${it.image ? `<img src="${e(it.image)}" alt="" style="width:92px;height:92px;border-radius:12px;object-fit:cover;flex:0 0 auto;border:2px solid var(--adm-pink);">` : `<div style="width:92px;height:92px;border-radius:12px;border:2px dashed var(--adm-pink);display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex:0 0 auto;">📷</div>`}
+                            <label class="adm-btn adm-btn-primary" style="position:relative;overflow:hidden;cursor:pointer;flex:1;justify-content:center;padding:14px 10px;font-size:1rem;">
+                                ${it.image ? "غيّري الصورة" : "📷 ارفعي صورة القطعة"}
+                                <input type="file" accept="image/*" data-itemfile="${i}" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;font-size:100px;">
+                            </label>
+                        </div>
+                        ${gallery}
+                        <div style="display:grid;gap:12px;margin-top:12px;">
+                            <div><span style="${lbl}">اسم القطعة</span>
+                                <select class="adm-select" data-namesel="${i}"><option value="">— اختاري اسم القطعة —</option>${ITEM_NAMES.map((n) => `<option value="${e(n)}" ${it.label === n ? "selected" : ""}>${e(n)}</option>`).join("")}<option value="__other" ${isOther ? "selected" : ""}>حاجة تانية (هكتبها)</option></select>
+                                <input class="adm-input" data-f="label" data-i="${i}" placeholder="اكتبي اسم القطعة" value="${e(it.label || "")}" style="margin-top:6px;${isOther ? "" : "display:none;"}">
+                            </div>
+                            <div><span style="${lbl}">سطر عن القطعة (اختياري)</span>
+                                <input class="adm-input" data-f="description" data-i="${i}" placeholder="مثال: ناعم، ارتفاع 30 سم" value="${e(it.description || "")}"></div>
+                            <div style="display:flex;gap:10px;">
+                                <div style="flex:1;"><span style="${lbl}">العدد</span><input class="adm-input" data-f="qty" data-i="${i}" type="number" min="1" value="${e(it.qty || 1)}"></div>
+                                <div style="flex:2;"><span style="${lbl}">سعرها لوحدها (ج)</span><input class="adm-input" data-f="alone_price" data-i="${i}" type="number" min="0" placeholder="مثال: 150" value="${it.alone_price == null ? "" : e(it.alone_price)}"></div>
+                            </div>
+                            <label style="display:flex;gap:10px;align-items:center;font-size:1rem;color:var(--adm-text-primary);padding:10px;border-radius:12px;background:var(--adm-bg-hover);"><input type="checkbox" data-sell="${i}" ${it.sell_alone ? "checked" : ""} style="width:22px;height:22px;"> تتباع لوحدها (العميل يشتريها منفصلة)</label>
+                        </div>
+                    </div>`;
+                }).join("");
                 savings();
             }
+            $("#gf-items").addEventListener("click", (evt) => {
+                const pk = evt.target.closest("[data-pickimg]");
+                if (pk) { items[Number(pk.dataset.pickimg)].image = pk.dataset.url; drawItems(); }
+            });
             $("#gf-items").addEventListener("change", async (evt) => {
                 const ns = evt.target.closest("[data-namesel]");
                 if (ns) {
@@ -634,8 +651,9 @@
                 if (sell) { items[Number(sell.dataset.sell)].sell_alone = sell.checked; return; }
                 const fi = evt.target.closest("[data-itemfile]");
                 if (fi) {
+                    toast("بترفع الصورة... ثواني", "info");
                     const urls = await pickAndUpload(fi, false);
-                    if (urls[0]) { items[Number(fi.dataset.itemfile)].image = urls[0]; drawItems(); }
+                    if (urls[0]) { items[Number(fi.dataset.itemfile)].image = urls[0]; drawItems(); toast("اترفعت الصورة ✓", "success"); }
                 }
             });
             $("#gf-items").addEventListener("input", (evt) => {
