@@ -1479,6 +1479,30 @@
         return data.text;
     }
 
+    /**
+     * 🎁✨ اقتراح تفاصيل هدية من صورتها (وصف + اسم + قطع + علامات) عبر Edge Function
+     * suggest-gift-details بتوكن جلسة الأدمن. بترجع اقتراحات بس، الحفظ بيتم بعد موافقة الأدمن.
+     */
+    async function suggestGiftDetails(payload) {
+        const session = await getSession();
+        if (!session) throw new Error("لا توجد جلسة دخول صالحة");
+        const res = await fetch(`${SUPABASE_URL}/functions/v1/suggest-gift-details`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${session.access_token}`,
+                "apikey": SUPABASE_PUBLISHABLE_KEY,
+            },
+            body: JSON.stringify(payload),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+            const msgs = { rate_limit: "الذكاء الاصطناعي مشغول دلوقتي، جرّبي بعد دقيقة", bad_image_url: "الصورة لازم تكون مرفوعة من لوحة التحكم الأول", no_key: "مفتاح الذكاء الاصطناعي مش متسجل", forbidden: "الحساب ده مش أدمن" };
+            throw new Error(msgs[data.error] || "تعذر اقتراح التفاصيل، جرّبي مرة تانية");
+        }
+        return data.result;
+    }
+
     /* ============================= الإشعارات (Push Notifications) ============================= */
     /**
      * عدد أجهزة العملاء المشتركة حاليًا في الإشعارات (disabled_at is null).
@@ -1701,6 +1725,7 @@
     window.BoseAdmin = {
         saveAdminPushSubscription,
         sendTestOrderAlert,
+        suggestGiftDetails,
         getPendingOrdersSnapshot,
         getAdminAlertStatus,
         connectTelegramAlerts,
