@@ -987,7 +987,10 @@
         const safeImg = window.optimizeBoseImageUrl(rawImg, 400);
         const safeTitle = window.escapeBoseHTML(product.title);
         const safeFlavor = window.escapeBoseHTML(product.flavorName || '');
-        const safeDesc = window.escapeBoseHTML(product.flavorDesc || (product.description ? product.description.substring(0, 80) + '...' : ''));
+        // 🛡️ [إصلاح - الوصف كان بيتقص عند 80 حرف حتى في صفحة التفاصيل]: في عرض التفاصيل الوصف كامل،
+        // وفي الكروت المصغّرة بنقص بس لو أطول من 80 حرف (من غير "..." لو قصير أصلاً).
+        const fullDescText = product.description || '';
+        const safeDesc = window.escapeBoseHTML(product.flavorDesc || (isDetailView ? fullDescText : (fullDescText.length > 80 ? fullDescText.substring(0, 80) + '...' : fullDescText)));
 
         // 🛡️ [إصلاح جذري]: أي منتج "رئيسي" مرتبط بمحاكي تفاعلي (تورت مخصص / بوكيه ورد)
         // معندوش سعر أو تفاصيل ثابتة أصلاً — سعره وتفاصيله بيتحددوا داخل المحاكي فقط.
