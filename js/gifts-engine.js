@@ -179,22 +179,35 @@
         else if (e.key === "ArrowRight") go(-1);
     });
 
+    /* لو الصور لسه ماتسجلتش (مثلاً سكربت الصفحة اتأخر) بنجيبها لحظة الضغط من بيانات الموقع نفسها */
+    function lazyOpen(id, src) {
+        var prod = null, list = (window.BoseStoreData && window.BoseStoreData.products) || [];
+        for (var i = 0; i < list.length; i++) if (list[i].id === id) { prod = list[i]; break; }
+        if (!prod || !window.BoseSupabase || !window.BoseSupabase.loadBoseGiftsData) return false;
+        window.BoseSupabase.loadBoseGiftsData().then(function (g) {
+            registerGift(prod, (g.bundleItems || []).filter(function (b) { return b.bundle_product_id === id; }));
+            open(id, src);
+        }).catch(function () { registerGift(prod, []); open(id, src); });
+        return true;
+    }
+    function tryOpen(id, src) { return REG[id] ? open(id, src) : lazyOpen(id, src); }
+
     /* التقاط الضغطة قبل ما كارت الهدية يودّي لصفحة التفاصيل */
     document.addEventListener("click", function (e) {
         var t = e.target;
         if (!t || !t.closest || st.open) return;
         var ex = t.closest("[data-lb-id]");
         if (ex) {
-            if (open(ex.getAttribute("data-lb-id"), ex.getAttribute("data-lb-src"))) { e.preventDefault(); e.stopPropagation(); }
+            if (tryOpen(ex.getAttribute("data-lb-id"), ex.getAttribute("data-lb-src"))) { e.preventDefault(); e.stopPropagation(); }
             return;
         }
         var img = t.closest("img.product-card-img");
         if (!img) return;
         var card = img.closest(".product-card-unified");
         var id = card && card.getAttribute("data-id");
-        if (!id || !REG[id]) return;
+        if (!id || String(id).indexOf("gift-") !== 0) return;
         if (!img.closest(".gf-card") && !img.closest(".bose-product-page-layout")) return;
-        if (open(id, null)) { e.preventDefault(); e.stopPropagation(); }
+        if (tryOpen(id, null)) { e.preventDefault(); e.stopPropagation(); }
     }, true);
 
     window.BoseGiftLightbox = { registerGift: registerGift, open: open, close: function () { close(true); } };
