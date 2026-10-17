@@ -26,6 +26,61 @@
         ["بتتجهز مخصوص، احجزي قبل التسليم بـ 5 أيام", "بتتجهز مخصوص، احجزي قبل التسليم بـ 5 أيام"],
     ];
 
+    /* 🧠 اقتراحات ذكية: بنقرا اسم الهدية ووصفها ونقترح العلامات المناسبة (مناسبة / لمين / نوع / فيه إيه) */
+    function norm(t) {
+        return String(t || "").toLowerCase().replace(/[\u064B-\u0652\u0640]/g, "").replace(/[أإآ]/g, "ا").replace(/ى/g, "ي").replace(/ة/g, "ه").replace(/\s+/g, " ").trim();
+    }
+    const SMART_RULES = [
+        [/عيد ميلاد|ميلاد|birthday/, ["عيد ميلاد"]],
+        [/عيد الام|ماما|امي|للام|ام /, ["عيد الام"]],
+        [/عيد الاب|بابا|للاب/, ["عيد الاب"]],
+        [/خطوب|خطبه/, ["الخطوبه"]],
+        [/فاتحه/, ["الفاتحه"]],
+        [/كتب الكتاب/, ["كتب الكتاب"]],
+        [/جواز|زفاف|فرح|عروس/, ["الفرح"]],
+        [/حنه/, ["الحنه"]],
+        [/تخرج/, ["التخرج"]],
+        [/نجاح|تفوق/, ["نجاح"]],
+        [/مولود|سبوع|بيبي/, ["السبوع"]],
+        [/رمضان/, ["رمضان"]],
+        [/عيد الفطر/, ["عيد الفطر"]],
+        [/عيد الاضحي/, ["عيد الاضحي"]],
+        [/سلامه|سلامتك/, ["سلامتك"]],
+        [/بيت جديد/, ["بيت جديد"]],
+        [/شغل جديد|وظيفه/, ["شغل جديد"]],
+        [/شكر|تقدير/, ["شكر"]],
+        [/اعتذار|ازعل|زعل/, ["اعتذار"]],
+        [/اطفال|طفل|اولاد|ولاد|بنوته/, ["اطفال"]],
+        [/عروس/, ["عروسه"]],
+        [/لها|حبيبتي|بنت|صاحبتي|اختي|ستات|حريمي|ريحان/, ["لها"]],
+        [/رجال|رجالي|لزوجي|جوزي|صاحبي|اخويا/, ["له"]],
+        [/دبدوب|دببه|استيتش|ستيتش|دب |بطه|محشي|بلش/, ["دباديب", "فيه دبدوب"]],
+        [/بوكيه|ورد|زهور|ورده/, ["بوكيهات", "فيه ورد"]],
+        [/شوكولات|شيكولات/, ["شيكولاته", "فيه شيكولاته"]],
+        [/حلويات|تورته|كيك|كوكيز|كب كيك/, ["فيه حلويات"]],
+        [/مج |كوب|ماج|مج$/, ["مجات"]],
+        [/بوكس|علبه|صندوق|هديه كامله/, ["بوكسات هدايا"]],
+        [/بالون/, ["بالونات"]],
+        [/شمع|ارقام/, ["شمع"]],
+        [/بشره|كريم|لوشن|سكن/, ["عنايه بالبشره"]],
+        [/شعر|شامبو/, ["عنايه بالشعر"]],
+    ];
+    function smartTagIds(text, allTags) {
+        const t = norm(text) + " ";
+        const out = [];
+        SMART_RULES.forEach(([re, targets]) => {
+            if (!re.test(t)) return;
+            targets.forEach((target) => {
+                const hit = allTags.find((x) => x.is_active !== false && norm(x.title).includes(target));
+                if (hit && !out.includes(hit.id)) out.push(hit.id);
+            });
+        });
+        return out;
+    }
+    function splitParts(text) {
+        return String(text || "").split(/\s*[+،,\n]\s*|\s+و\s+/).map((x) => x.trim()).filter((x) => x.length > 1 && x.length < 40);
+    }
+
     let tab = "gifts";
     let sections = [], tags = [], gp = [], ptags = [], bundle = [], shelves = [], shelfItems = [], heroes = [], products = [];
 
@@ -286,6 +341,7 @@
         const body = `
             ${field("القسم", `<select class="adm-select" id="gf-section">${sections.map((s) => `<option value="${e(s.id)}" ${gift && gift.section_id === s.id ? "selected" : ""}>${e(s.title)}</option>`).join("")}</select>`)}
             ${field("اسم الهدية", `<input class="adm-input" id="gf-title" required value="${e(p.title || "")}" placeholder="مثال: هدية عيد جوازكم">`)}
+            <div id="gf-smart" class="adm-field"></div>
             ${field("السعر بتاع الهدية كلها (ج)", `<input type="number" min="0" step="1" class="adm-input" id="gf-price" required value="${p.price != null ? Number(p.price) : ""}">`)}
             <div id="gf-bundle-wrap" class="adm-field">
                 <label style="font-size:16px;font-weight:800;">اللي جوّه الهدية (قطعة قطعة)</label>
@@ -427,8 +483,53 @@
                 const id = b.dataset.tag;
                 if (picked.has(id)) picked.delete(id); else picked.add(id);
                 drawTags();
+                smart();
             });
             drawTags();
+
+            function smart() {
+                const box = $("#gf-smart");
+                if (!box) return;
+                const title = $("#gf-title").value, desc = $("#gf-desc").value;
+                if (!norm(title + desc)) { box.innerHTML = ""; return; }
+                const allSuggested = smartTagIds(title + " " + desc + " " + items.map((i) => i.label).join(" "), tags);
+                const ids = allSuggested.filter((id) => !picked.has(id));
+                const parts = items.length ? [] : splitParts(desc);
+                const canParts = parts.length >= 2;
+                const tooMany = picked.size > 8;
+                if (!ids.length && !canParts && !tooMany) { box.innerHTML = ""; return; }
+                let html = '<div style="border:1px dashed rgba(255,143,171,.7);border-radius:14px;padding:12px;"><div style="font-weight:800;margin-bottom:8px;">✨ اقتراحات من اسم الهدية ووصفها</div>';
+                if (tooMany) {
+                    html += `<div style="background:rgba(255,180,0,.12);border-radius:10px;padding:10px;margin-bottom:10px;line-height:1.9;">⚠️ مختارة <b>${picked.size}</b> علامة، وده كتير. كل علامة بتخلي الهدية تظهر لما العميل يفلتر بيها، فلو اتحطت في حاجات مش مناسبة ليها العميل بيتلخبط وبيفقد ثقته. الأنسب من <b>3 لـ 6 علامات</b> بس: مناسبة أو اتنين، ولمين، ونوع الهدية، وفيها إيه.` +
+                        (allSuggested.length ? `<br><button type="button" class="adm-btn adm-btn-ghost" data-smart-only style="margin-top:8px;">سيبي المقترح بس (${allSuggested.length})</button>` : "") + `<button type="button" class="adm-btn adm-btn-ghost" data-smart-clear style="margin-top:8px;margin-inline-start:6px;">شيلي الكل وأختار من جديد</button></div>`;
+                }
+                if (ids.length) {
+                    html += '<div style="font-size:.85rem;opacity:.8;margin-bottom:6px;">ينفع تتحط في (اضغطي على اللي يعجبك):</div><div style="display:flex;gap:6px;flex-wrap:wrap;">' +
+                        ids.map((id) => `<button type="button" class="adm-chip" data-smart-tag="${e(id)}">+ ${e(tagTitle(id))}</button>`).join("") +
+                        `</div><button type="button" class="adm-btn adm-btn-ghost" data-smart-all style="margin-top:8px;">ضيفي كل الاقتراحات</button>`;
+                }
+                if (canParts) {
+                    html += `<div style="margin-top:10px;font-size:.85rem;opacity:.8;">الوصف فيه ${parts.length} حاجات، تحبي أعملها قطع جوه الهدية؟</div><button type="button" class="adm-btn adm-btn-ghost" data-smart-parts style="margin-top:6px;">اعملي قطع: ${e(parts.slice(0, 4).join(" · "))}${parts.length > 4 ? "…" : ""}</button>`;
+                }
+                box.innerHTML = html + "</div>";
+                box._ids = ids; box._parts = parts; box._all = allSuggested;
+            }
+            $("#gf-smart").addEventListener("click", (evt) => {
+                const box = $("#gf-smart");
+                const one = evt.target.closest("[data-smart-tag]");
+                if (one) { picked.add(one.dataset.smartTag); drawTags(); smart(); return; }
+                if (evt.target.closest("[data-smart-only]")) { picked.clear(); (box._all || []).forEach((id) => picked.add(id)); drawTags(); smart(); return; }
+                if (evt.target.closest("[data-smart-clear]")) { picked.clear(); drawTags(); smart(); return; }
+                if (evt.target.closest("[data-smart-all]")) { (box._ids || []).forEach((id) => picked.add(id)); drawTags(); smart(); return; }
+                if (evt.target.closest("[data-smart-parts]")) {
+                    (box._parts || []).forEach((l) => items.push({ label: l, qty: 1, alone_price: "", image: "", description: "", sell_alone: false }));
+                    drawItems(); smart();
+                }
+            });
+            let smartT = null;
+            const smartLater = () => { clearTimeout(smartT); smartT = setTimeout(smart, 350); };
+            $("#gf-title").addEventListener("input", smartLater);
+            $("#gf-desc").addEventListener("input", smartLater);
 
             function savings() {
                 const price = parseFloat($("#gf-price").value) || 0;
@@ -501,6 +602,7 @@
                 drawItems();
             });
             drawItems();
+            smart();
         });
     }
 
