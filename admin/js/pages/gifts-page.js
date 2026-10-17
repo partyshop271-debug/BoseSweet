@@ -341,6 +341,7 @@
         const body = `
             ${field("القسم", `<select class="adm-select" id="gf-section">${sections.map((s) => `<option value="${e(s.id)}" ${gift && gift.section_id === s.id ? "selected" : ""}>${e(s.title)}</option>`).join("")}</select>`)}
             ${field("اسم الهدية", `<input class="adm-input" id="gf-title" required value="${e(p.title || "")}" placeholder="مثال: هدية عيد جوازكم">`)}
+            <div id="gf-ai" class="adm-field"></div>
             <div id="gf-smart" class="adm-field"></div>
             ${field("السعر بتاع الهدية كلها (ج)", `<input type="number" min="0" step="1" class="adm-input" id="gf-price" required value="${p.price != null ? Number(p.price) : ""}">`)}
             <div id="gf-bundle-wrap" class="adm-field">
@@ -454,6 +455,8 @@
                         <button type="button" data-rm="${i}" class="adm-btn adm-btn-ghost adm-btn-icon" style="position:absolute;top:-8px;inset-inline-start:-8px;" title="حذف"><i class="fa-solid fa-xmark"></i></button>
                         ${i > 0 ? `<button type="button" data-first="${i}" class="adm-btn adm-btn-ghost adm-btn-icon" style="position:absolute;bottom:-8px;inset-inline-start:-8px;" title="خليها الأساسية"><i class="fa-solid fa-star"></i></button>` : ""}
                     </div>`).join("");
+                const aiBox = $("#gf-ai");
+                if (aiBox && typeof drawAi === "function" && !aiBox._res) drawAi("idle");
             }
             $("#gf-imgs").addEventListener("click", (evt) => {
                 const rm = evt.target.closest("[data-rm]"), fs = evt.target.closest("[data-first]");
@@ -486,6 +489,61 @@
                 smart();
             });
             drawTags();
+
+            /* ✨ اقتراح من الصورة: بيبص على أول صورة ويقترح اسم + وصف + قطع + علامات (أنتِ اللي بتوافقي) */
+            function drawAi(state, res, err) {
+                const box = $("#gf-ai");
+                if (!box) return;
+                const hasImg = imgs.length > 0;
+                let html = '<div style="border:1px solid rgba(255,143,171,.5);border-radius:14px;padding:12px;">';
+                html += `<button type="button" class="adm-btn adm-btn-primary" data-ai-run ${state === "loading" || !hasImg ? "disabled" : ""}>${state === "loading" ? "⏳ بقرا الصورة..." : "✨ اقترحي من الصورة"}</button>`;
+                if (!hasImg) html += '<div class="adm-hint" style="margin-top:6px;">ارفعي صورة الهدية الأول (تحت)، وبعدين اضغطي هنا.</div>';
+                else if (state === "idle") html += '<div class="adm-hint" style="margin-top:6px;">هبص على أول صورة وأقترح اسم ووصف وقطع وعلامات. إنتي اللي بتوافقي على كل حاجة قبل ما تتسجل.</div>';
+                if (err) html += `<div style="margin-top:8px;color:#ff8a8a;">${e(err)}</div>`;
+                if (res) {
+                    box._res = res;
+                    html += '<div style="margin-top:10px;display:grid;gap:10px;">';
+                    if (res.suggested_title) html += `<div><b>الاسم المقترح:</b> ${e(res.suggested_title)} <button type="button" class="adm-btn adm-btn-ghost" data-ai-apply="title">استخدميه</button></div>`;
+                    html += `<div><b>الوصف المقترح:</b><div style="margin:4px 0;line-height:1.9;">${e(res.description)}</div><button type="button" class="adm-btn adm-btn-ghost" data-ai-apply="desc">استخدمي الوصف</button></div>`;
+                    if ((res.tag_ids || []).length) html += `<div><b>العلامات المقترحة:</b><div style="display:flex;gap:6px;flex-wrap:wrap;margin:4px 0;">${res.tag_ids.map((id) => `<span class="adm-chip is-on">${e(tagTitle(id))}</span>`).join("")}</div><button type="button" class="adm-btn adm-btn-ghost" data-ai-apply="tags">استخدمي دي بس (وشيلي الباقي)</button></div>`;
+                    if ((res.items || []).length) html += `<div><b>القطع اللي شايفاها:</b> ${res.items.map((i) => e(i.label)).join(" · ")}<br><button type="button" class="adm-btn adm-btn-ghost" data-ai-apply="items" style="margin-top:4px;">${items.length ? "ضيفيهم للقطع الحالية" : "اعمليهم قطع"}</button></div>`;
+                    html += '<button type="button" class="adm-btn adm-btn-primary" data-ai-apply="all">طبّقي كل الاقتراحات</button></div>';
+                }
+                box.innerHTML = html + "</div>";
+            }
+            async function runAi() {
+                drawAi("loading");
+                try {
+                    const result = await A().suggestGiftDetails({
+                        image_url: imgs[0],
+                        title: $("#gf-title").value.trim(),
+                        description: $("#gf-desc").value.trim(),
+                        tags: tags.filter((t) => t.is_active !== false).map((t) => ({ id: t.id, kind: t.kind, title: t.title })),
+                    });
+                    drawAi("done", result);
+                } catch (err) { drawAi("idle", null, err.message); }
+            }
+            function applyAi(what) {
+                const res = $("#gf-ai")._res;
+                if (!res) return;
+                if ((what === "title" || what === "all") && res.suggested_title && !$("#gf-title").value.trim()) $("#gf-title").value = res.suggested_title;
+                if (what === "title") $("#gf-title").value = res.suggested_title;
+                if (what === "desc" || what === "all") $("#gf-desc").value = res.description;
+                if ((what === "tags" || what === "all") && (res.tag_ids || []).length) { picked.clear(); res.tag_ids.forEach((id) => picked.add(id)); drawTags(); }
+                if ((what === "items" || what === "all") && (res.items || []).length) {
+                    const have = new Set(items.map((i) => norm(i.label)));
+                    res.items.forEach((i) => { if (!have.has(norm(i.label))) items.push({ label: i.label, qty: 1, alone_price: "", image: "", description: i.description || "", sell_alone: false }); });
+                    drawItems();
+                }
+                smart();
+                toast("اتطبّق. راجعيه قبل الحفظ", "success");
+            }
+            $("#gf-ai").addEventListener("click", (evt) => {
+                if (evt.target.closest("[data-ai-run]")) { runAi(); return; }
+                const ap = evt.target.closest("[data-ai-apply]");
+                if (ap) applyAi(ap.dataset.aiApply);
+            });
+            drawAi("idle");
 
             function smart() {
                 const box = $("#gf-smart");
