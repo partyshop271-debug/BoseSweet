@@ -16,7 +16,15 @@
 
     const KIND_LABELS = { occasion: "مناسبات", recipient: "لمين", type: "نوع الهدية", contains: "فيه إيه" };
     const KIND_ORDER = ["occasion", "recipient", "type", "contains"];
-    const MODE_LABELS = { manual: "اخترتيها بإيدك", tag: "تلقائي من مناسبة/نوع", newest: "الأحدث" };
+    const MODE_LABELS = { manual: "أنا هختار الهدايا بنفسي", tag: "تلقائي: كل هدايا مناسبة أو نوع معين", newest: "تلقائي: أحدث الهدايا" };
+    const ITEM_NAMES = ["دبدوب", "بطة محشية", "مج", "مج حراري", "كوب", "بوكس الهدية", "تزيين وإضاءة", "كارت إهداء", "شوكولاتة", "ورد", "عطر", "شمعة", "عناية بالبشرة", "عناية بالشعر", "حلويات"];
+    const SHELF_TITLES = ["أحلى هدايانا", "فكرة لعيد ميلاد", "هدايا للأم", "هدايا للخطوبة والفرح", "هدايا بدبدوب", "هدايا بالورد", "هدايا للأطفال", "هدايا للأب"];
+    const DELIVERY_NOTES = [
+        ["", "العادي: بتتجهز مخصوص، احجزي قبل التسليم بـ 3 أيام"],
+        ["جاهزة للتسليم في نفس اليوم", "جاهزة للتسليم في نفس اليوم"],
+        ["بتتجهز خلال يوم واحد من الطلب", "بتتجهز خلال يوم واحد من الطلب"],
+        ["بتتجهز مخصوص، احجزي قبل التسليم بـ 5 أيام", "بتتجهز مخصوص، احجزي قبل التسليم بـ 5 أيام"],
+    ];
 
     let tab = "gifts";
     let sections = [], tags = [], gp = [], ptags = [], bundle = [], shelves = [], shelfItems = [], heroes = [], products = [];
@@ -278,34 +286,34 @@
         const body = `
             ${field("القسم", `<select class="adm-select" id="gf-section">${sections.map((s) => `<option value="${e(s.id)}" ${gift && gift.section_id === s.id ? "selected" : ""}>${e(s.title)}</option>`).join("")}</select>`)}
             ${field("اسم الهدية", `<input class="adm-input" id="gf-title" required value="${e(p.title || "")}" placeholder="مثال: هدية عيد جوازكم">`)}
-            ${field("سطر واحد يقول اللي جوّاها (اختياري)", `<input class="adm-input" id="gf-summary" value="${e(gift ? gift.summary : "")}" placeholder="لو سبتيه فاضي هيتكتب لوحده من أسماء القطع">`)}
-            ${field("السعر (ج)", `<input type="number" min="0" step="1" class="adm-input" id="gf-price" required value="${p.price != null ? Number(p.price) : ""}">`)}
-            <div class="adm-field"><label><input type="checkbox" id="gf-bundle" ${gift && gift.is_bundle ? "checked" : ""}> دي هدية كاملة فيها أكتر من قطعة</label></div>
+            ${field("السعر بتاع الهدية كلها (ج)", `<input type="number" min="0" step="1" class="adm-input" id="gf-price" required value="${p.price != null ? Number(p.price) : ""}">`)}
             <div id="gf-bundle-wrap" class="adm-field">
-                <label>اللي جوّه الهدية: كل قطعة بصورتها واسمها وسعرها لوحدها</label>
-                <div class="adm-hint" style="margin-bottom:8px;">العميل هيشوف كل قطعة في صفحة الهدية. لو علّمتي \"تتباع لوحدها\" هيظهر له زرار يشتريها لوحدها بسعرها.</div>
+                <label style="font-size:16px;font-weight:800;">اللي جوّه الهدية (قطعة قطعة)</label>
+                <div class="adm-hint" style="margin-bottom:8px;">كل قطعة بتظهر للعميل بصورتها وسعرها. لو علّمتي "تتباع لوحدها" هيظهر له زرار يشتريها لوحدها.</div>
                 <div id="gf-items"></div>
-                <button type="button" class="adm-btn adm-btn-ghost" id="gf-add-item"><i class="fa-solid fa-plus"></i> إضافة قطعة</button>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <button type="button" class="adm-btn adm-btn-ghost" id="gf-add-item"><i class="fa-solid fa-plus"></i> إضافة قطعة</button>
+                    <button type="button" class="adm-btn adm-btn-ghost" id="gf-items-from-imgs"><i class="fa-solid fa-images"></i> اعمل قطعة من كل صورة (غير الأولى)</button>
+                </div>
                 <div id="gf-savings" class="adm-hint" style="margin-top:8px;"></div>
             </div>
-            ${field("ملاحظة التوصيل (اختياري)", `<input class="adm-input" id="gf-note" value="${e(gift ? gift.delivery_note : "")}" placeholder="مثال: بتوصل غير منفوخة">`, "بتظهر للعميل في صفحة الهدية.")}
-            ${field("وصف قصير (اختياري)", `<textarea class="adm-input" id="gf-desc" rows="3">${e(p.description || "")}</textarea>`)}
+            ${field("التسليم بيتم ازاي؟", `<select class="adm-select" id="gf-note">${(() => { const cur = gift && gift.delivery_note ? gift.delivery_note : ""; const list = DELIVERY_NOTES.slice(); if (cur && !list.some((x) => x[0] === cur)) list.push([cur, cur]); return list.map((x) => `<option value="${e(x[0])}" ${x[0] === cur ? "selected" : ""}>${e(x[1])}</option>`).join(""); })()}</select>`, "بتظهر للعميل في صفحة الهدية.")}
+            ${field("وصف الهدية (اختياري)", `<textarea class="adm-input" id="gf-desc" rows="3">${e(p.description || "")}</textarea>`)}
             <div class="adm-field"><label>الصور (أول صورة هي الأساسية)</label>
                 <div id="gf-imgs" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;"></div>
                 <input type="file" id="gf-file" accept="image/*" multiple></div>
             <div class="adm-field"><label>العلامات (المناسبات ولمين والنوع)</label><div id="gf-tags"></div></div>
             <div class="adm-field"><label><input type="checkbox" id="gf-avail" ${p.is_available === false ? "" : "checked"}> الهدية متاحة للطلب</label></div>
             <div class="adm-field"><label><input type="checkbox" id="gf-featured" ${p.is_featured ? "checked" : ""}> من أحلى هدايانا (بتظهر في المميزة)</label></div>
-            ${field("الترتيب", `<input type="number" class="adm-input" id="gf-sort" value="${p.sort_order != null ? p.sort_order : 0}">`)}`;
+            <details class="adm-field"><summary style="cursor:pointer;opacity:.8;">خيارات إضافية (مش لازم)</summary>${field("ترتيب الهدية (الأصغر يظهر الأول)", `<input type="number" class="adm-input" id="gf-sort" value="${p.sort_order != null ? p.sort_order : 0}">`)}</details>`;
 
         openModal(isEdit ? "تعديل هدية" : "إضافة هدية", body, async (form) => {
             const title = form.querySelector("#gf-title").value.trim();
             const price = parseFloat(form.querySelector("#gf-price").value);
             if (!title || !(price >= 0)) { toast("اكتبي الاسم والسعر", "warning"); return false; }
             if (!imgs.length) { toast("ضيفي صورة واحدة على الأقل", "warning"); return false; }
-            const isBundle = form.querySelector("#gf-bundle").checked;
             const cleanItems = items.filter((i) => i.label && i.label.trim());
-            if (isBundle && !cleanItems.length) { toast("اكتبي القطع اللي جوّه الهدية", "warning"); return false; }
+            const isBundle = cleanItems.length > 0;
             const badAlone = cleanItems.find((i) => i.sell_alone && !(Number(i.alone_price) > 0));
             if (isBundle && badAlone) { toast("القطعة \"" + badAlone.label + "\" معلّمة تتباع لوحدها، اكتبي سعرها", "warning"); return false; }
 
@@ -334,7 +342,7 @@
             const { error: gErr } = await T("gift_products").upsert({
                 product_id: pid,
                 section_id: form.querySelector("#gf-section").value,
-                summary: form.querySelector("#gf-summary").value.trim() || (isBundle ? cleanItems.map((i) => i.label.trim()).join(" + ") : null),
+                summary: isBundle ? cleanItems.map((i) => i.label.trim()).join(" + ") : (gift ? gift.summary : null),
                 delivery_note: form.querySelector("#gf-note").value.trim() || null,
                 is_bundle: isBundle,
                 is_listed: isEdit ? gift.is_listed : true,
@@ -442,7 +450,8 @@
                                 <label class="adm-btn adm-btn-ghost" style="display:block;margin-top:4px;font-size:11px;padding:4px;cursor:pointer;">صورة<input type="file" accept="image/*" data-itemfile="${i}" style="display:none;"></label>
                             </div>
                             <div style="flex:1;display:grid;gap:6px;min-width:0;">
-                                <input class="adm-input" data-f="label" data-i="${i}" placeholder="اسم القطعة (مثال: دبدوب استيتش)" value="${e(it.label)}">
+                                <select class="adm-select" data-namesel="${i}"><option value="">— اختاري اسم القطعة —</option>${ITEM_NAMES.map((n) => `<option value="${e(n)}" ${it.label === n ? "selected" : ""}>${e(n)}</option>`).join("")}<option value="__other" ${it.label && !ITEM_NAMES.includes(it.label) ? "selected" : ""}>حاجة تانية (هكتبها)</option></select>
+                                <input class="adm-input" data-f="label" data-i="${i}" placeholder="اكتبي اسم القطعة (مثال: دبدوب استيتش وردي)" value="${e(it.label || "")}" style="${it.label && !ITEM_NAMES.includes(it.label) || it.__other ? "" : "display:none;"}">
                                 <input class="adm-input" data-f="description" data-i="${i}" placeholder="سطر عنها (مثال: ناعم، ارتفاع 30 سم)" value="${e(it.description || "")}">
                                 <div style="display:flex;gap:6px;">
                                     <input class="adm-input" data-f="qty" data-i="${i}" type="number" min="1" value="${e(it.qty || 1)}" style="flex:1;" title="العدد">
@@ -456,6 +465,12 @@
                 savings();
             }
             $("#gf-items").addEventListener("change", async (evt) => {
+                const ns = evt.target.closest("[data-namesel]");
+                if (ns) {
+                    const it = items[Number(ns.dataset.namesel)];
+                    if (ns.value === "__other") { it.label = ""; it.__other = true; } else { it.label = ns.value; it.__other = false; }
+                    drawItems(); return;
+                }
                 const sell = evt.target.closest("[data-sell]");
                 if (sell) { items[Number(sell.dataset.sell)].sell_alone = sell.checked; return; }
                 const fi = evt.target.closest("[data-itemfile]");
@@ -478,11 +493,14 @@
             });
             $("#gf-add-item").addEventListener("click", () => { items.push({ label: "", qty: 1, alone_price: "" }); drawItems(); });
             $("#gf-price").addEventListener("input", savings);
-            const wrap = $("#gf-bundle-wrap");
-            function syncBundle() { wrap.style.display = $("#gf-bundle").checked ? "" : "none"; if ($("#gf-bundle").checked && !items.length) { items.push({ label: "", qty: 1, alone_price: "" }); drawItems(); } }
-            $("#gf-bundle").addEventListener("change", syncBundle);
+            $("#gf-items-from-imgs").addEventListener("click", () => {
+                const used = new Set(items.map((i) => i.image).filter(Boolean));
+                const extra = imgs.slice(1).filter((u) => !used.has(u));
+                if (!extra.length) { toast("مفيش صور جديدة تتحول لقطع. ضيفي صور فوق الأول", "warning"); return; }
+                extra.forEach((u) => items.push({ label: "", qty: 1, alone_price: "", image: u, description: "", sell_alone: false }));
+                drawItems();
+            });
             drawItems();
-            wrap.style.display = $("#gf-bundle").checked ? "" : "none";
         });
     }
 
@@ -519,24 +537,28 @@
         const sel = new Set(shelf ? shelfItems.filter((x) => x.shelf_id === shelf.id).map((x) => x.product_id) : []);
         const body = `
             ${field("القسم", `<select class="adm-select" id="sh-section">${sections.map((s) => `<option value="${e(s.id)}" ${base.section_id === s.id ? "selected" : ""}>${e(s.title)}</option>`).join("")}</select>`)}
-            ${field("عنوان الرف (جملة قصيرة)", `<input class="adm-input" id="sh-title" required value="${e(base.title)}" placeholder="فكرة لعيد جوازكم">`)}
-            ${field("سطر صغير تحته (اختياري)", `<input class="adm-input" id="sh-sub" value="${e(base.subtitle || "")}">`)}
+            <div class="adm-hint" style="margin-bottom:10px;">الرف = صف هدايا بعنوان في صفحة الهدايا، زي "فكرة لعيد ميلاد". اختاري العنوان واختاري الهدايا اللي جواه.</div>
+            ${field("عنوان الرف", `<select class="adm-select" id="sh-title-sel"><option value="">— اختاري عنوان —</option>${SHELF_TITLES.map((t) => `<option value="${e(t)}" ${base.title === t ? "selected" : ""}>${e(t)}</option>`).join("")}<option value="__other" ${base.title && !SHELF_TITLES.includes(base.title) ? "selected" : ""}>عنوان تاني (هكتبه)</option></select><input class="adm-input" id="sh-title" value="${e(base.title)}" placeholder="اكتبي عنوان الرف" style="margin-top:6px;${base.title && !SHELF_TITLES.includes(base.title) ? "" : "display:none;"}">`)}
             ${field("الرف بيتملّى ازاي؟", `<select class="adm-select" id="sh-mode">${Object.keys(MODE_LABELS).map((m) => `<option value="${m}" ${base.mode === m ? "selected" : ""}>${MODE_LABELS[m]}</option>`).join("")}</select>`)}
             <div id="sh-tag-wrap">${field("المناسبة أو النوع", `<select class="adm-select" id="sh-tag"><option value="">— اختاري —</option>${tagOptions(base.tag_id)}</select>`)}</div>
-            <div id="sh-manual-wrap" class="adm-field"><label>اختاري الهدايا (ترتيبها حسب ترتيب الهدية)</label>
-                <select class="adm-select" id="sh-items" multiple size="7" style="height:auto;">
-                    ${gp.map((g) => { const p = productOf(g.product_id) || {}; return `<option value="${e(g.product_id)}" ${sel.has(g.product_id) ? "selected" : ""}>${e(p.title || g.product_id)}</option>`; }).join("")}
-                </select><span class="adm-hint">اضغطي Ctrl/Cmd لاختيار أكتر من واحدة.</span></div>
-            ${field("أقصى عدد هدايا في الرف", `<input type="number" min="1" max="12" class="adm-input" id="sh-max" value="${Number(base.max_items) || 4}">`, "3 أو 4 أحسن عشان العميل ما يتوهش.")}
-            ${field("يبدأ", `<input type="datetime-local" class="adm-input" id="sh-start" value="${toLocalInput(base.starts_at)}">`)}
-            ${field("ينتهي", `<input type="datetime-local" class="adm-input" id="sh-end" value="${toLocalInput(base.ends_at)}">`, "سيبيهم فاضيين لو الرف دايم.")}
-            <div class="adm-field"><label><input type="checkbox" id="sh-active" ${base.is_active ? "checked" : ""}> الرف مفعّل</label></div>
-            ${field("الترتيب", `<input type="number" class="adm-input" id="sh-sort" value="${base.sort_order ?? 0}">`)}`;
+            <div id="sh-manual-wrap" class="adm-field"><label>علّمي على الهدايا اللي عايزاها في الرف</label>
+                <div id="sh-items" style="display:grid;gap:8px;">
+                    ${gp.map((g) => { const p = productOf(g.product_id) || {}; return `<label style="display:flex;gap:10px;align-items:center;padding:10px;border:1px solid rgba(255,255,255,.12);border-radius:12px;"><input type="checkbox" value="${e(g.product_id)}" ${sel.has(g.product_id) ? "checked" : ""}> <span>${e(p.title || g.product_id)}</span></label>`; }).join("")}
+                </div></div>
+            <div class="adm-field"><label><input type="checkbox" id="sh-active" ${base.is_active ? "checked" : ""}> الرف شغّال (يظهر للعميل)</label></div>
+            <details class="adm-field"><summary style="cursor:pointer;opacity:.8;">خيارات إضافية (مش لازم)</summary>
+                ${field("سطر صغير تحت العنوان", `<input class="adm-input" id="sh-sub" value="${e(base.subtitle || "")}">`)}
+                ${field("أقصى عدد هدايا في الرف", `<input type="number" min="1" max="12" class="adm-input" id="sh-max" value="${Number(base.max_items) || 4}">`, "3 أو 4 أحسن عشان العميل ما يتوهش.")}
+                ${field("يبدأ يظهر من", `<input type="datetime-local" class="adm-input" id="sh-start" value="${toLocalInput(base.starts_at)}">`)}
+                ${field("يخلص ظهوره في", `<input type="datetime-local" class="adm-input" id="sh-end" value="${toLocalInput(base.ends_at)}">`, "سيبيهم فاضيين لو الرف دايم.")}
+                ${field("الترتيب (الأصغر يظهر الأول)", `<input type="number" class="adm-input" id="sh-sort" value="${base.sort_order ?? 0}">`)}
+            </details>`;
 
         openModal(isEdit ? "تعديل رف" : (asCopy ? "نسخ رف" : "إضافة رف"), body, async (form) => {
             const mode = form.querySelector("#sh-mode").value;
             const tagId = form.querySelector("#sh-tag").value || null;
             if (mode === "tag" && !tagId) { toast("اختاري المناسبة أو النوع", "warning"); return false; }
+            if (!form.querySelector("#sh-title").value.trim()) { toast("اختاري عنوان للرف", "warning"); return false; }
             const startsAt = fromLocalInput(form.querySelector("#sh-start").value);
             const endsAt = fromLocalInput(form.querySelector("#sh-end").value);
             if (startsAt && endsAt && new Date(endsAt) <= new Date(startsAt)) { toast("تاريخ النهاية لازم يكون بعد البداية", "warning"); return false; }
@@ -563,7 +585,7 @@
             const del = await T("gift_shelf_items").delete().eq("shelf_id", shelfId);
             if (del.error) throw del.error;
             if (mode === "manual") {
-                const chosen = Array.from(form.querySelector("#sh-items").selectedOptions).map((o) => o.value);
+                const chosen = Array.from(form.querySelectorAll("#sh-items input:checked")).map((o) => o.value);
                 if (chosen.length) {
                     const ins = await T("gift_shelf_items").insert(chosen.map((pid, i) => ({ shelf_id: shelfId, product_id: pid, sort_order: i })));
                     if (ins.error) throw ins.error;
@@ -572,6 +594,11 @@
             toast("تم حفظ الرف");
         }, (overlay) => {
             const modeEl = overlay.querySelector("#sh-mode");
+            const titleSel = overlay.querySelector("#sh-title-sel"), titleIn = overlay.querySelector("#sh-title");
+            titleSel.addEventListener("change", () => {
+                if (titleSel.value === "__other") { titleIn.style.display = ""; titleIn.value = ""; titleIn.focus(); }
+                else { titleIn.style.display = "none"; titleIn.value = titleSel.value; }
+            });
             function sync() {
                 overlay.querySelector("#sh-tag-wrap").style.display = modeEl.value === "tag" ? "" : "none";
                 overlay.querySelector("#sh-manual-wrap").style.display = modeEl.value === "manual" ? "" : "none";
