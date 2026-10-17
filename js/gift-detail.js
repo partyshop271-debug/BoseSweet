@@ -31,8 +31,9 @@
         var price = canBuy ? Number(alone.price) : Number(b.alone_price);
         var src = img(b.image || (alone && alone.images && alone.images[0]), 240);
         var qty = parseInt(b.qty, 10) || 1;
+        var rawSrc = b.image || (alone && alone.images && alone.images[0]) || "";
         var picture = src
-            ? '<img class="gd-item__img" src="' + esc(src) + '" alt="' + esc(b.label) + '" width="96" height="96" loading="lazy">'
+            ? '<img class="gd-item__img" src="' + esc(src) + '" alt="' + esc(b.label) + '" width="96" height="96" loading="lazy" data-lb-id="' + esc(b.bundle_product_id) + '" data-lb-src="' + esc(rawSrc) + '">'
             : '<div class="gd-item__img gd-item__img--none"><i class="fa-solid fa-gift"></i></div>';
         var action = canBuy
             ? '<button type="button" class="gd-buy" data-gift-add="' + esc(alone.id) + '"><i class="fa-solid fa-basket-shopping"></i> اشتريها لوحدها بـ ' + esc(money(price)) + "</button>"
@@ -53,6 +54,7 @@
             var meta = (g.giftProducts || []).filter(function (x) { return x.product_id === product.id; })[0] || {};
             var price = Number(product.price) || 0;
             var html = "";
+            if (window.BoseGiftLightbox) window.BoseGiftLightbox.registerGift(product, items);
 
             if (items.length) {
                 var total = 0, allKnown = true, pieces = 0;
@@ -63,7 +65,7 @@
                     else total += Number(b.alone_price) * q;
                 });
                 html += '<header class="gd-head"><h3>اللي جوه الهدية</h3><span>' + esc(items.length) + (items.length === 1 ? " قطعة" : " قطع") + "</span></header>";
-                html += '<p class="gd-sub">دي كل حاجة هتوصلك في البوكس. وأي قطعة عليها زرار تقدري تشتريها لوحدها.</p>';
+                html += '<p class="gd-sub">دي كل حاجة هتوصلك في البوكس. اضغطي على أي صورة تكبّريها وتتصفحي باقي الصور. وأي قطعة عليها زرار تقدري تشتريها لوحدها.</p>';
                 html += '<ul class="gd-list">' + items.map(itemHTML).join("") + "</ul>";
                 if (allKnown && total > price) {
                     html += '<div class="gd-sum"><div><span>لو اشتريتيهم لوحدهم</span><b class="gd-sum__old">' + esc(money(total)) + "</b></div>" +

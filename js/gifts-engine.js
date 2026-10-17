@@ -214,7 +214,7 @@
             var n = it.bundle.length;
             var thumbs = it.bundle.slice(0, 4).map(function (b) {
                 var u = safeUrl(b.image);
-                return u ? '<img src="' + esc(thumb(u, 80)) + '" alt="" loading="lazy" width="38" height="38">' : "";
+                return u ? '<img src="' + esc(thumb(u, 80)) + '" alt="" loading="lazy" width="38" height="38" data-lb-id="' + esc(it.p.id) + '" data-lb-src="' + esc(b.image) + '">' : "";
             }).join("");
             var more = n > 4 ? '<span class="gf-contents__more">+' + (n - 4) + "</span>" : "";
             var names = it.bundle.map(function (b) { return esc(b.label || ""); }).join(" · ");
@@ -230,6 +230,7 @@
         var inner = typeof window.createProductCardHTML === "function" ? window.createProductCardHTML(it.p) : "";
         var badge = "";
         if (it.bundle.length || it.meta.is_bundle) badge = '<span class="gf-badge"><i class="fa-solid fa-gift"></i> هدية كاملة</span>';
+        if (window.BoseGiftLightbox) window.BoseGiftLightbox.registerGift(it.p, it.bundle);
         var contents = contentsHTML(it);
         if (contents && inner.indexOf('<div class="product-card-price"') !== -1) inner = inner.replace('<div class="product-card-price"', contents + '<div class="product-card-price"');
         else if (contents) inner += contents;
