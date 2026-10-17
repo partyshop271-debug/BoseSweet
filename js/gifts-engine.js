@@ -210,20 +210,10 @@
     /* ---------- الكروت ---------- */
     /* اللي جوّا الهدية: صور صغيرة + أسماء بخط واضح جوه الكارت نفسه */
     function contentsHTML(it) {
-        if (it.bundle.length) {
-            var n = it.bundle.length;
-            var thumbs = it.bundle.slice(0, 4).map(function (b) {
-                var u = safeUrl(b.image);
-                return u ? '<img src="' + esc(thumb(u, 80)) + '" alt="" loading="lazy" width="38" height="38" data-lb-id="' + esc(it.p.id) + '" data-lb-src="' + esc(b.image) + '">' : "";
-            }).join("");
-            var more = n > 4 ? '<span class="gf-contents__more">+' + (n - 4) + "</span>" : "";
-            var names = it.bundle.map(function (b) { return esc(b.label || ""); }).join(" · ");
-            return '<div class="gf-contents"><div class="gf-contents__t"><span>جواها ' + n + (n === 1 ? " قطعة" : " قطع") + "</span></div>" +
-                (thumbs ? '<div class="gf-contents__row">' + thumbs + more + "</div>" : "") +
-                '<p class="gf-contents__names">' + names + "</p></div>";
-        }
-        if (it.meta.summary) return '<div class="gf-contents gf-contents--plain"><p class="gf-contents__names">' + esc(it.meta.summary) + "</p></div>";
-        return "";
+        /* في الكارت سطر واحد بس (عشان كل الكروت بنفس المقاس). التفاصيل كلها في صفحة الهدية. */
+        var n = it.bundle.length;
+        if (!n) return "";
+        return '<div class="gf-contents gf-contents--mini"><i class="fa-solid fa-gift"></i> جواها ' + n + (n === 1 ? " قطعة" : " قطع") + "</div>";
     }
     function cardHTML(it, opts) {
         opts = opts || {};
@@ -235,8 +225,7 @@
         if (contents && inner.indexOf('<div class="product-card-price"') !== -1) inner = inner.replace('<div class="product-card-price"', contents + '<div class="product-card-price"');
         else if (contents) inner += contents;
         var inside = "";
-        var save = it.saving > 0 ? '<p class="gf-save"><i class="fa-solid fa-tag"></i> بتوفري ' + money(it.saving) + "</p>" : "";
-        var note = it.meta.delivery_note ? '<p class="gf-note">' + esc(it.meta.delivery_note) + "</p>" : "";
+        var save = "", note = "";
         return '<div class="gf-card' + (opts.compact ? " gf-card--compact" : "") + '" data-gift-id="' + esc(it.p.id) + '">' + badge + inner + inside + save + note + "</div>";
     }
     function skeleton(n) {
