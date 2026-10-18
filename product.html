@@ -36,7 +36,7 @@
     <link rel="stylesheet" href="css/main.css?v=2026_production_v42.1">
     <link rel="stylesheet" href="css/season-themes.css?v=2026_production_v40.0">
     <link rel="stylesheet" href="css/reviews-widget.css?v=2026_production_v1.1">
-    <link rel="stylesheet" href="css/gifts.css?v=6">
+    <link rel="stylesheet" href="css/gifts.css?v=5">
 
     <style>
         body { font-family: 'Cairo', sans-serif !important; }
@@ -121,6 +121,8 @@
 document.addEventListener("DOMContentLoaded", function () {
     const urlParams = new URLSearchParams(window.location.search);
     const slug = urlParams.get('slug');
+    // ⚡ [قسم الفوري]: أصناف الفوري ملهاش صفحة تفاصيل - بتتعرض وبتتطلب من صفحة الفوري بس.
+    if (slug && slug.indexOf('fawri-') === 0) { window.location.replace('/fawri.html'); }
     const preferredSize = urlParams.get('size');
 
     const skeletonEl = document.getElementById('bose-product-page-skeleton');
