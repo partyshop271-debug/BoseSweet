@@ -3793,6 +3793,12 @@
                                     </a>
                                 </li>
                                 <li class="sidebar-link-item">
+                                    <a href="/fawri.html" id="sidebar-link-fawri" class="sidebar-link-fawri">
+                                        <span class="link-main-side"><i class="fa-solid fa-bolt main-icon"></i>فوري دلوقتي</span>
+                                        <i class="fa-solid fa-chevron-left arrow-icon"></i>
+                                    </a>
+                                </li>
+                                <li class="sidebar-link-item">
                                     <a href="#" data-start-bose-tour="1">
                                         <span class="link-main-side"><i class="fa-solid fa-circle-question main-icon"></i>جولة تعريفية بالموقع</span>
                                         <i class="fa-solid fa-chevron-left arrow-icon"></i>
@@ -3995,6 +4001,7 @@
             const isHome = currentPage === '' || currentPage === 'index.html';
             const isOffers = currentPage === 'offers.html';
             const isMenu = currentPage === 'menu.html';
+            const isFawri = currentPage === 'fawri.html';
 
             const bottomNav = document.createElement('nav');
             bottomNav.className = 'bose-bottom-nav bose-bottom-nav-bar';
@@ -4011,6 +4018,10 @@
                 <a href="/offers.html" class="bottom-nav-item bose-bottom-nav-item${isOffers ? ' active' : ''}">
                     <i class="fas fa-tags"></i>
                     <span>العروض</span>
+                </a>
+                <a href="/fawri.html" class="bottom-nav-item bose-bottom-nav-item bose-bottom-nav-fawri${isFawri ? ' active' : ''}">
+                    <i class="fas fa-bolt"></i>
+                    <span>فوري</span>
                 </a>
                 <a href="${window.buildWhatsappLink(data.social?.whatsapp || '201097238441', '')}" target="_blank" rel="noopener noreferrer" class="bottom-nav-item bose-bottom-nav-item whatsapp-item">
                     <i class="fab fa-whatsapp"></i>

@@ -14,7 +14,7 @@
     var POLL_MS = 25000;
     var MAX_LINE_QTY = 20; // نفس سقف السلة في باقي الموقع
 
-    var gridEl, stateEl, infoEl, heroEl, titleEl, subtitleEl;
+    var gridEl, stateEl, perksEl, heroEl, titleEl, subtitleEl, statsEl, liveEl, liveTextEl;
     var data = { settings: { isOpen: true, heroImage: "", heroTitle: "", heroSubtitle: "" }, products: [] };
     var sel = {};          // اختيارات العميلة لكل صنف: { [id]: { topping, qty } }
     var lastSig = "";
@@ -67,17 +67,36 @@
         return hours === 1 ? "ساعة" : hours + " ساعة";
     }
 
-    function renderInfo() {
-        if (!infoEl) return;
+    function renderPerks() {
+        if (!perksEl) return;
         var rules = (window.BoseStoreData && window.BoseStoreData.orderRules) || {};
         var raw = Number(rules.minPreparationTimeHoursFawri);
         var lead = isFinite(raw) && raw >= 0 ? raw : 1;
         var start = rules.businessHoursStart || "09:00";
         var end = rules.businessHoursEnd || "22:00";
-        infoEl.innerHTML = '<i class="fa-solid fa-clock"></i>' +
-            "الاستلام أو التوصيل بعد " + esc(leadLabel(lead)) + " من تأكيد الطلب، وخلال مواعيد الشغل (من " +
-            esc(fmtHour(start)) + " لحد " + esc(fmtHour(end)) + "). الطلب هنا بيتسجل بنفس طريقة الموقع (التحويل أو الدفع عند الاستلام من الفرع) وأسعار الشحن نفسها.";
-        infoEl.hidden = false;
+        function perk(icon, title, sub) {
+            return '<div class="fw-perk"><span class="fw-perk-ic"><i class="fa-solid ' + icon + '"></i></span>' +
+                '<strong>' + esc(title) + '</strong><small>' + esc(sub) + "</small></div>";
+        }
+        perksEl.innerHTML =
+            perk("fa-bolt", "جاهز خلال " + leadLabel(lead), "من تأكيد طلبك") +
+            perk("fa-clock", "كل يوم", "من " + fmtHour(start) + " لحد " + fmtHour(end)) +
+            perk("fa-store", "استلام أو توصيل", "اختاري اللي يناسبك");
+        perksEl.hidden = false;
+    }
+
+    function renderHeroStats() {
+        if (!statsEl) return;
+        var open = data.settings.isOpen !== false;
+        var items = data.products.length;
+        var pieces = data.products.reduce(function (n, p) { return n + (Number(p.stockQuantity) || 0); }, 0);
+        if (liveTextEl) liveTextEl.textContent = !open ? "واقف دلوقتي" : (items ? "متاح دلوقتي" : "خلص دلوقتي");
+        if (liveEl) liveEl.classList.toggle("is-off", !open || !items);
+        if (!open || !items) { statsEl.hidden = true; return; }
+        statsEl.innerHTML =
+            '<span><i class="fa-solid fa-cake-candles"></i> ' + items + (items === 1 ? " صنف جاهز" : " أصناف جاهزة") + "</span>" +
+            '<span><i class="fa-solid fa-box-open"></i> باقي ' + pieces + (pieces === 1 ? " قطعة" : " قطع") + " بس</span>";
+        statsEl.hidden = false;
     }
 
     function showState(icon, title, text, withMenuBtn) {
@@ -143,8 +162,9 @@
     function render(force) {
         var s = data.settings;
         applyHero();
-        if (s.isOpen === false) { lastSig = "closed"; showState("fa-moon", "الفوري واقف دلوقتي", "هنرجع نفتح الفوري قريب. تقدري تحجزي من المنيو الكامل بنفس الأسعار والمواعيد العادية.", true); return; }
-        if (!data.products.length) { lastSig = "empty"; showState("fa-box-open", "مفيش قطع فورية دلوقتي", "الكميات الفورية خلصت أو لسه منزّلناش النهاردة. تقدري تحجزي من المنيو الكامل.", true); return; }
+        renderHeroStats();
+        if (s.isOpen === false) { lastSig = "closed"; showState("fa-moon", "الفوري واقف دلوقتي", "هنفتحه تاني قريب. لحد وقتها تقدري تطلبي من المنيو الكامل.", true); return; }
+        if (!data.products.length) { lastSig = "empty"; showState("fa-box-open", "القطع الفورية خلصت دلوقتي", "كل اللي جهزناه اتباع 💗 رجعي بعد شوية تلحقي الدفعة الجديدة، أو اطلبي من المنيو الكامل.", true); return; }
 
         var sig = data.products.map(function (p) { return p.id + ":" + p.stockQuantity + ":" + p.price; }).join("|");
         if (!force && sig === lastSig && gridEl.children.length) return; // مفيش تغيير = مفيش إعادة رسم (عشان ما نبوّظش اختيار العميلة)
@@ -202,7 +222,7 @@
             }
         } catch (e) { /* التتبع مش لازم يوقف الإضافة */ }
         if (typeof window.showBosePostAddToCartPrompt === "function") {
-            window.showBosePostAddToCartPrompt({ message: "تمت الإضافة ⚡ - الفوري بالكمية المتاحة، كمّلي طلبك بسرعة قبل ما يخلص." });
+            window.showBosePostAddToCartPrompt({ message: "تمت الإضافة ⚡ كمّلي طلبك قبل ما الكمية تخلص." });
         }
         st.qty = 1;
         refreshCard(p.id);
@@ -244,15 +264,18 @@
     function init() {
         gridEl = document.getElementById("fw-grid");
         stateEl = document.getElementById("fw-state");
-        infoEl = document.getElementById("fw-info");
+        perksEl = document.getElementById("fw-perks");
+        statsEl = document.getElementById("fw-hero-stats");
+        liveEl = document.getElementById("fw-live");
+        liveTextEl = document.getElementById("fw-live-text");
         heroEl = document.getElementById("fw-hero");
         titleEl = document.getElementById("fw-title");
         subtitleEl = document.getElementById("fw-subtitle");
         if (!gridEl) return;
 
         gridEl.addEventListener("click", onClick);
-        renderInfo();
-        window.addEventListener("BoseDatabaseLoaded", function () { renderInfo(); render(true); });
+        renderPerks();
+        window.addEventListener("BoseDatabaseLoaded", function () { renderPerks(); render(true); });
         window.addEventListener("storage", function (ev) { if (ev.key === "bose_cart" && loadedOnce) render(true); });
 
         load(true);

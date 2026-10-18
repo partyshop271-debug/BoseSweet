@@ -134,6 +134,49 @@
     }
 
     /**
+     * ⚡ بلوك دخول "فوري دلوقتي" بالرئيسية: بيجيب حالة الفوري لايف (الكمية بتتغير) من غير كاش،
+     * وبيظهر بس لو الفوري شغال وفيه قطع متاحة فعلاً. مفيش حاجة تتعرض لو خلص أو اتقفل.
+     * الدخول لقسم الفوري برضه متاح دايمًا من القائمة الجانبية والشريط السفلي.
+     */
+    let fawriEntranceTimer = null;
+    function renderFawriEntrance() {
+        const section = document.getElementById('fawri-entrance-section');
+        if (!section) return;
+        const api = window.BoseSupabase;
+        if (!api || typeof api.loadBoseFawriData !== 'function') return;
+        /** @param {string} u @param {number} w */
+        const thumb = (u, w) => (u.indexOf('res.cloudinary.com') > -1 && u.indexOf('/upload/') > -1 && !/\/upload\/[a-z]+_/.test(u))
+            ? u.replace('/upload/', '/upload/f_auto,q_auto,c_fill,ar_1:1,w_' + w + '/') : u;
+        const esc = window.escapeBoseHTML || ((/** @type {string} */ v) => v);
+        api.loadBoseFawriData().then(/** @param {any} d */ (d) => {
+            const items = (d && Array.isArray(d.products)) ? d.products : [];
+            if (!d || !d.settings || d.settings.isOpen === false || !items.length) { section.style.display = 'none'; return; }
+            const pieces = items.reduce(/** @param {number} n @param {any} p */ (n, p) => n + (Number(p.stockQuantity) || 0), 0);
+            const media = document.getElementById('fawri-entrance-media');
+            if (media) {
+                const imgs = items.map(/** @param {any} p */ (p) => p.images && p.images[0]).filter(Boolean).filter(/** @param {string} u @param {number} i @param {string[]} a */ (u, i, a) => a.indexOf(u) === i).slice(0, 3);
+                media.style.display = imgs.length ? '' : 'none';
+                media.innerHTML = imgs.map(/** @param {string} u */ (u) => `<img src="${esc(thumb(u, 260))}" alt="" width="108" height="108" loading="lazy" decoding="async">`).join('');
+            }
+            const rules = (window.BoseStoreData && window.BoseStoreData.orderRules) || {};
+            const rawLead = Number(rules.minPreparationTimeHoursFawri);
+            const lead = isFinite(rawLead) && rawLead >= 0 ? rawLead : 1;
+            const leadTxt = typeof window.formatBoseLeadTimeAr === 'function' ? window.formatBoseLeadTimeAr(lead) : (lead === 1 ? 'ساعة' : lead + ' ساعة');
+            const chips = [
+                `<span class="boe-chip"><i class="fa-solid fa-cake-candles"></i> ${items.length} ${items.length === 1 ? 'صنف جاهز' : 'أصناف جاهزة'}</span>`,
+                `<span class="boe-chip${pieces <= 5 ? ' is-urgent' : ''}"><i class="fa-solid fa-box-open"></i> ${pieces <= 5 ? 'كمية محدودة - ' : ''}باقي ${pieces} ${pieces === 1 ? 'قطعة' : 'قطع'}</span>`,
+                `<span class="boe-chip"><i class="fa-solid fa-bolt"></i> جاهز خلال ${esc(leadTxt)}</span>`
+            ];
+            const chipsEl = document.getElementById('fawri-entrance-chips');
+            if (chipsEl) chipsEl.innerHTML = chips.join('');
+            section.style.display = '';
+        }).catch(() => { /* لو فشل التحميل نسيب البلوك على حاله (مخفي لو أول مرة) */ });
+        if (!fawriEntranceTimer) {
+            fawriEntranceTimer = window.setInterval(() => { if (!document.hidden) renderFawriEntrance(); }, 60000);
+        }
+    }
+
+    /**
      * 🏷️ بلوك دخول العروض بالرئيسية: مفيش أي عرض بيتعرض هنا (صفحة العروض offers.html هي المكان الوحيد).
      * البلوك بيظهر بس لو فيه عروض فعلاً (عروض كمية شغالة/مجدولة أو خصومات أسعار)، وبيعرض
      * صور حقيقية من المنتجات المشمولة + عنوان + زرار واحد بيودّي لصفحة العروض.
@@ -871,6 +914,7 @@
         renderDynamicWaterfall();
         renderOffersSection();
         renderGiftsEntrance();
+        renderFawriEntrance();
         renderAllOffersPage();
         renderBoseFavoritesPage();
         renderHomepageProductGrids();
