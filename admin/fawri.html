@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الفوري | لوحة تحكم حلويات بوسي</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="manifest" href="/admin/admin.webmanifest">
+    <meta name="theme-color" content="#FF91A4">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="stylesheet" href="../vendor/fonts/cairo/cairo.css?v=2026_local_v1.0">
+    <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css?v=2026_local_v1.0" fetchpriority="high">
+
+    <link rel="stylesheet" href="css/admin-theme.css">
+    <link rel="stylesheet" href="css/admin-layout.css">
+</head>
+<body data-page="fawri">
+
+    <div class="adm-auth-gate"><div class="adm-loading-spinner"></div></div>
+
+    <div class="adm-shell">
+        <div id="adm-shell-target"></div>
+
+        <main class="adm-main">
+            <div id="adm-topbar-target"></div>
+
+            <div class="adm-content" id="adm-page-content">
+
+                <!-- إعدادات صفحة الفوري -->
+                <div class="adm-card">
+                    <div class="adm-card-header">
+                        <div>
+                            <h2><i class="fa-solid fa-bolt"></i> إعدادات صفحة الفوري</h2>
+                            <p>لينك الصفحة للسوشيال: <strong dir="ltr">/fawri.html</strong> - مش بتظهر في المنيو ولا الرئيسية ولا القوائم</p>
+                        </div>
+                        <button type="button" class="adm-btn adm-btn-primary" id="fw-save-settings">
+                            <i class="fa-solid fa-floppy-disk"></i> حفظ الإعدادات
+                        </button>
+                    </div>
+                    <div class="adm-form-grid">
+                        <div class="adm-field">
+                            <label class="adm-checkbox-label">
+                                <input type="checkbox" id="fw-is-open"> الفوري شغال دلوقتي
+                            </label>
+                            <small>لو قفلتيه الصفحة بتقول "الفوري واقف" حتى لو فيه قطع.</small>
+                        </div>
+                        <div class="adm-field">
+                            <label for="fw-lead-hours">وقت التجهيز للطلب الفوري (بالساعات)</label>
+                            <input type="number" min="0" step="0.5" class="adm-input" id="fw-lead-hours" style="max-width:160px;">
+                            <small>بيتطبّق بس لو السلة كلها فوري. أي منتج عادي معاها بيرجّعها للمواعيد العادية.</small>
+                        </div>
+                        <div class="adm-field">
+                            <label for="fw-hero-title">العنوان</label>
+                            <input type="text" class="adm-input" id="fw-hero-title" maxlength="60">
+                        </div>
+                        <div class="adm-field">
+                            <label for="fw-hero-subtitle">السطر التاني</label>
+                            <input type="text" class="adm-input" id="fw-hero-subtitle" maxlength="120">
+                        </div>
+                        <div class="adm-field">
+                            <label>صورة البنر (اختياري)</label>
+                            <div class="adm-images-grid">
+                                <div class="adm-image-thumb-wrap"><img id="fw-hero-preview" alt="" style="display:none;"></div>
+                            </div>
+                            <label class="adm-image-upload-btn" for="fw-hero-input">
+                                <i class="fa-solid fa-cloud-arrow-up"></i> رفع صورة
+                            </label>
+                            <input type="file" id="fw-hero-input" accept="image/*" hidden>
+                            <button type="button" class="adm-btn adm-btn-ghost adm-btn-sm" id="fw-hero-clear" style="display:none;">شيل الصورة</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- القطع الفورية -->
+                <div class="adm-card adm-mt-16">
+                    <div class="adm-card-header">
+                        <div>
+                            <h2><i class="fa-solid fa-cake-candles"></i> القطع الفورية النهاردة</h2>
+                            <p>السيرفر بيخصم الكمية لوحده مع كل طلب، والصنف بيتقفل أول ما يوصل صفر</p>
+                        </div>
+                        <button type="button" class="adm-btn adm-btn-primary" id="fw-new-btn">
+                            <i class="fa-solid fa-plus"></i> إضافة قطعة فورية
+                        </button>
+                    </div>
+                    <div id="fw-list"></div>
+                </div>
+
+                <!-- نموذج إضافة/تعديل -->
+                <div class="adm-card adm-mt-16" id="fw-form-card" style="display:none;">
+                    <div class="adm-card-header">
+                        <div><h2 id="fw-form-title">قطعة فورية جديدة</h2></div>
+                    </div>
+                    <div class="adm-form-grid">
+                        <div class="adm-field">
+                            <label for="fw-f-title">الاسم</label>
+                            <input type="text" class="adm-input" id="fw-f-title" maxlength="80" placeholder="مثال: ميني تورتة فراولة">
+                        </div>
+                        <div class="adm-field">
+                            <label for="fw-f-flavor">النكهة / وصف قصير (اختياري)</label>
+                            <input type="text" class="adm-input" id="fw-f-flavor" maxlength="80">
+                        </div>
+                        <div class="adm-field">
+                            <label for="fw-f-price">السعر (جنيه)</label>
+                            <input type="number" min="1" step="1" class="adm-input" id="fw-f-price">
+                        </div>
+                        <div class="adm-field">
+                            <label for="fw-f-stock">الكمية المتاحة دلوقتي</label>
+                            <input type="number" min="0" step="1" class="adm-input" id="fw-f-stock">
+                        </div>
+                        <div class="adm-field">
+                            <label for="fw-f-toppings">التوبينج (اختياري - اسم في كل سطر)</label>
+                            <textarea class="adm-textarea" id="fw-f-toppings" rows="4" placeholder="شوكولاتة&#10;فراولة&#10;لوتس"></textarea>
+                            <small>لو كتبتي توبينج، العميلة لازم تختار واحد قبل الإضافة للسلة. التوبينج مش بيغيّر السعر.</small>
+                        </div>
+                        <div class="adm-field">
+                            <label>صورة القطعة</label>
+                            <div class="adm-images-grid">
+                                <div class="adm-image-thumb-wrap"><img id="fw-f-preview" alt="" style="display:none;"></div>
+                            </div>
+                            <label class="adm-image-upload-btn" for="fw-f-image">
+                                <i class="fa-solid fa-cloud-arrow-up"></i> رفع صورة
+                            </label>
+                            <input type="file" id="fw-f-image" accept="image/*" hidden>
+                        </div>
+                    </div>
+                    <div class="adm-modal-actions" style="display:flex; gap:10px; margin-top:16px;">
+                        <button type="button" class="adm-btn adm-btn-primary" id="fw-f-save"><i class="fa-solid fa-floppy-disk"></i> حفظ</button>
+                        <button type="button" class="adm-btn adm-btn-ghost" id="fw-f-cancel">إلغاء</button>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="../vendor/supabase-js/supabase.js"></script>
+    <script src="../js/phone-utils.js"></script>
+    <script src="js/admin-data.js"></script>
+    <script src="js/admin-auth-guard.js"></script>
+    <script src="js/admin-ui-utils.js"></script>
+    <script src="js/admin-shell.js"></script>
+    <script src="js/pages/fawri-page.js"></script>
+</body>
+</html>
