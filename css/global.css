@@ -552,6 +552,11 @@ img {
     transform: translateY(-2px);
 }
 
+/* ⚡ زرار "فوري" في الشريط السفلي: أيقونة البرق بتنبض بهدوء عشان تلفت النظر من غير ما تزعج */
+.bose-bottom-nav-fawri i { animation: boseFawriNavPulse 1.8s ease-in-out infinite; }
+@keyframes boseFawriNavPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.18); } }
+@media (prefers-reduced-motion: reduce) { .bose-bottom-nav-fawri i { animation: none; } }
+
 .bose-bottom-nav-badge {
     position: absolute;
     top: -2px;
