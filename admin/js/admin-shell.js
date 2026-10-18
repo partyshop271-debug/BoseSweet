@@ -52,6 +52,7 @@
             items: [
                 { key: "orders", label: "الطلبات", icon: "fa-receipt", href: "orders.html", badgeKey: "ordersToday" },
                 { key: "products", label: "المنتجات", icon: "fa-cake-candles", href: "products.html" },
+                { key: "fawri", label: "الفوري", icon: "fa-bolt", href: "fawri.html" },
                 { key: "review-followups", label: "تذكير المراجعات", icon: "fa-comment-dots", href: "review-followups.html", badgeKey: "reviewFollowupsDue" },
                 { key: "order-alerts", label: "تنبيهات الطلبات", icon: "fa-bell-concierge", href: "order-alerts.html" },
                 { key: "push-notifications", label: "إشعارات العميلات", icon: "fa-bell", href: "push-notifications.html" },
