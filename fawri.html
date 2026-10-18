@@ -15,10 +15,10 @@
 
     <link rel="stylesheet" href="vendor/fonts/cairo/cairo.css?v=2026_local_v1.0">
     <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css?v=2026_local_v1.0" fetchpriority="high">
-    <link rel="stylesheet" href="css/global.css?v=2026_production_v44.1">
+    <link rel="stylesheet" href="css/global.css?v=2026_production_v44.2">
     <link rel="stylesheet" href="css/main.css?v=2026_production_v42.0">
     <link rel="stylesheet" href="css/season-themes.css?v=2026_production_v1.0">
-    <link rel="stylesheet" href="css/fawri.css?v=1">
+    <link rel="stylesheet" href="css/fawri.css?v=2">
 
     <script src="js/supabase-client.js?v=2027_production_v48.1" defer></script>
     <script src="js/push-notifications.js?v=1.0" defer></script>
@@ -28,23 +28,25 @@
     <script src="js/season-decorations.js?v=2026_production_v1.0" defer></script>
     <script src="js/season-theme-engine.js?v=2026_production_v1.0" defer></script>
     <script src="js/phone-utils.js?v=1" defer></script>
-    <script src="js/core-engine.js?v=2028_production_v63.2" defer></script>
+    <script src="js/core-engine.js?v=2028_production_v63.3" defer></script>
     <script src="js/cart-reminder.js?v=1" defer></script>
-    <script src="js/fawri-engine.js?v=1" defer></script>
+    <script src="js/fawri-engine.js?v=2" defer></script>
 </head>
 <body>
     <div id="bose-header-injector"></div>
 
     <main class="fw-main">
         <header class="fw-hero" id="fw-hero">
+            <span class="fw-hero-bolt" aria-hidden="true"><i class="fa-solid fa-bolt"></i></span>
             <div class="fw-hero-text">
-                <span class="fw-live"><i class="fa-solid fa-bolt"></i> فوري</span>
+                <span class="fw-live" id="fw-live"><span class="fw-dot" aria-hidden="true"></span> <span id="fw-live-text">متاح دلوقتي</span></span>
                 <h1 id="fw-title">فوري دلوقتي</h1>
                 <p id="fw-subtitle">اطلبي دلوقتي واستلمي دلوقتي</p>
+                <div class="fw-hero-stats" id="fw-hero-stats" hidden></div>
             </div>
         </header>
 
-        <div class="fw-info" id="fw-info" hidden></div>
+        <div class="fw-perks" id="fw-perks" hidden></div>
 
         <div id="fw-state" class="fw-state" hidden></div>
         <section id="fw-grid" class="fw-grid" aria-live="polite"></section>

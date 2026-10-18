@@ -34,7 +34,7 @@
     <!-- [إصلاح جذري نهائي]: الأيقونات بقت مُستضافة محليًا داخل الموقع نفسه (vendor/fontawesome)
          بدل الاعتماد على أي CDN خارجي (cdnjs/jsdelivr/unpkg) - مفيش نقطة فشل خارجية تانية خالص. -->
     <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css?v=2026_local_v1.0" fetchpriority="high">
-    <link rel="stylesheet" href="css/global.css?v=2026_production_v44.1">
+    <link rel="stylesheet" href="css/global.css?v=2026_production_v44.2">
     <link rel="stylesheet" href="css/main.css?v=2026_production_v42.0">
     <link rel="stylesheet" href="css/season-themes.css?v=2026_production_v40.0">
     <link rel="stylesheet" href="css/simulators.css?v=2026_production_v38.0">
@@ -122,10 +122,10 @@
     <script src="js/season-themes.js?v=2026_production_v1.0" defer></script>
     <script src="js/season-theme-engine.js?v=2026_production_v1.0" defer></script>
     <script src="js/phone-utils.js?v=1" defer></script>
-    <script src="js/core-engine.js?v=2028_production_v63.1" defer></script>
+    <script src="js/core-engine.js?v=2028_production_v63.3" defer></script>
     <script src="js/user-interest.js?v=2" defer></script>
     <script src="js/guided-tour.js?v=3.3" defer></script>
-    <script src="js/homepage-engine.js?v=2026_production_v1.3" defer></script>
+    <script src="js/homepage-engine.js?v=2026_production_v1.4" defer></script>
     <script src="js/seasons-engine.js?v=2026_production_v1.0" defer></script>
     <script src="js/cart-reminder.js?v=1" defer></script>
     <style>
@@ -185,6 +185,21 @@
         @keyframes boeChipIn { from { opacity:0; transform:translateY(12px) scale(.92); } to { opacity:1; transform:none; } }
         @keyframes boeBtnPulse { 0%, 100% { transform:scale(1); } 50% { transform:scale(1.045); } }
         @keyframes boeArrow { 0%, 100% { transform:translateX(0); } 50% { transform:translateX(-6px); } }
+
+
+        /* ⚡ نسخة "فوري": كارت داكن بتوهّج وردي عشان يتميّز عن بلوكات العروض/الهدايا الوردي - النص أبيض على أسود، الزرار وردي بنص أسود */
+        .boe-card.boe-fawri { background: radial-gradient(circle at 88% 0%, rgba(var(--bose-pink-rgb),.55), transparent 55%), radial-gradient(circle at 5% 100%, rgba(var(--bose-pink-rgb),.28), transparent 52%), linear-gradient(135deg, #1b1014, #111 58%, #2a1019);
+            box-shadow:0 26px 60px rgba(0,0,0,.35), 0 0 0 1.5px rgba(var(--bose-pink-rgb),.55), 0 0 38px rgba(var(--bose-pink-rgb),.28); }
+        .boe-card.boe-fawri:hover { box-shadow:0 34px 74px rgba(0,0,0,.42), 0 0 0 1.5px rgba(var(--bose-pink-rgb),.8), 0 0 52px rgba(var(--bose-pink-rgb),.4); }
+        .boe-fawri .boe-badge { background:var(--bose-pink); color:#111; }
+        .boe-fawri .boe-live-dot { background:#111; box-shadow:0 0 0 0 rgba(0,0,0,.5); }
+        .boe-fawri .boe-float { background:rgba(var(--bose-pink-rgb),.95); color:#111; }
+        .boe-fawri .boe-media img { border-color:var(--bose-pink); }
+        .boe-fawri .boe-chip { background:rgba(255,255,255,.1); border-color:rgba(255,255,255,.35); }
+        .boe-fawri .boe-chip i { color:var(--bose-pink); }
+        .boe-card.boe-fawri .boe-btn { background:var(--bose-pink); color:#111 !important; }
+        .boe-fawri .boe-chip.is-urgent { background:#B3261E; border-color:#B3261E; }
+        .boe-fawri .boe-chip.is-urgent i { color:#fff; }
 
         @media (max-width:520px) {
             .boe-card { min-height:0; padding:38px 16px 32px; border-radius:30px; gap:22px; }
@@ -265,6 +280,27 @@
                 <div id="waterfall-right-col" class="waterfall-col waterfall-down"></div>
             </div>
             <div class="waterfall-overlay-bottom"></div>
+        </section>
+
+        <!-- ⚡ بلوك دخول "فوري دلوقتي": قطع جاهزة بكمية محدودة - بيوصّل لـ fawri.html.
+             بيظهر بس لو الفوري شغال وفيه قطع متاحة فعلاً (راجع renderFawriEntrance في homepage-engine.js). بيتحدّث لايف. -->
+        <section id="fawri-entrance-section" class="bose-section-container bose-offers-entrance" aria-labelledby="fawri-entrance-heading" style="display:none;">
+            <a href="fawri.html" class="boe-card boe-fawri" id="fawri-entrance-link">
+                <span class="boe-shine" aria-hidden="true"></span>
+                <span class="boe-orb boe-orb-1" aria-hidden="true"></span>
+                <span class="boe-orb boe-orb-2" aria-hidden="true"></span>
+                <span class="boe-float boe-float-1" aria-hidden="true"><i class="fa-solid fa-bolt"></i></span>
+                <span class="boe-float boe-float-3" aria-hidden="true"><i class="fa-solid fa-clock"></i></span>
+                <span class="boe-float boe-float-5" aria-hidden="true"><i class="fa-solid fa-cake-candles"></i></span>
+                <div class="boe-media" id="fawri-entrance-media" aria-hidden="true"></div>
+                <div class="boe-body">
+                    <span class="boe-badge"><span class="boe-live-dot" aria-hidden="true"></span><i class="fa-solid fa-bolt"></i> فوري • متاح دلوقتي</span>
+                    <h2 id="fawri-entrance-heading" class="boe-title">اطلبي دلوقتي واستلمي دلوقتي</h2>
+                    <p class="boe-sub bose-arabic-text">قطع جاهزة وطازة من حلويات بوسي، بالكمية المتاحة بس.</p>
+                    <div class="boe-chips" id="fawri-entrance-chips"></div>
+                    <span class="boe-btn">شوفي الفوري <i class="fa-solid fa-arrow-left"></i></span>
+                </div>
+            </a>
         </section>
 
         <!-- 🏷️ بلوك دخول العروض (فخم + متحرك) - متنقل ليبقى أول حاجة بعد الشلال وقبل "تسوق حسب الفئة".
