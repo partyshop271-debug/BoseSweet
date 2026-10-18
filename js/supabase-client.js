@@ -109,6 +109,11 @@
             // عشان السلة والدفع يشتغلوا من غير تغيير، لكن لازم ما تظهرش وسط الحلويات
             // (المنيو/البحث/المقترحات) - بس في صفحة الهدايا. العلامة دي هي الفاصل.
             isGift: String(p.id || "").indexOf("gift-") === 0,
+            // ⚡ [قسم الفوري]: منتجات id بيبدأ بـ fawri- كمية محدودة جاهزة دلوقتي. السيرفر بيخصم
+            // الكمية لوحده (create_order_with_items) ويقفل الصنف لما تخلص. مش بتظهر في المنيو/البحث -
+            // بتتفلتر برا قائمة المنتجات العامة تحت، وبتتحمل لايف من loadBoseFawriData بس.
+            isFawri: String(p.id || "").indexOf("fawri-") === 0,
+            stockQuantity: (p.stock_quantity === null || p.stock_quantity === undefined) ? null : Number(p.stock_quantity),
             createdAt: p.created_at || null,
         };
     }
@@ -158,7 +163,11 @@
         // إعادة تجميع كل منتج بنفس المفاتيح المستخدمة حالياً في core-engine.js
         // (راجع mapBoseProductRow تحت - المنطق ده اتفصل في دالة مشتركة عشان
         // loadBoseSingleProductBySlug تقدر تستخدم بالظبط نفس الشكل من غير تكرار كود).
-        const rebuiltProducts = (products || []).map(mapBoseProductRow);
+        // ⚡ [قسم الفوري]: منتجات الفوري بتتشال من القائمة العامة (المنيو/البحث/المقترحات/الكاش) -
+        // كميتها بتتغير كل دقيقة فمينفعش تتخزن في الكاش، وبتتحمل لايف من loadBoseFawriData.
+        const rebuiltProducts = (products || [])
+            .filter((p) => String((p && p.id) || "").indexOf("fawri-") !== 0)
+            .map(mapBoseProductRow);
 
         return {
             store: settings.store || {},
@@ -206,6 +215,31 @@
             shippingZones: shippingZones || [],
             quantityPromos: quantityPromos || [],
             promoCampaigns: promoCampaigns || [],
+        };
+    }
+
+    /**
+     * ⚡ [قسم الفوري]: بيانات صفحة الفوري - دايمًا لايف من السيرفر (من غير كاش) لأن الكمية بتتغير.
+     * بترجع { settings, products } - products = الأصناف المتاحة فعلاً (is_available + كمية > 0) بس.
+     * لو جدول الإعدادات فشل جلبه بنرجع قيم افتراضية بدل ما نكسر الصفحة.
+     */
+    async function loadBoseFawriData() {
+        const [settingsRows, rows] = await Promise.all([
+            boseSupabaseFetch("/fawri_settings?id=eq.1&select=*").catch(() => []),
+            boseSupabaseFetch("/products?id=like.fawri-*&select=*&order=sort_order.asc"),
+        ]);
+        const s = (settingsRows && settingsRows[0]) || {};
+        const products = (rows || [])
+            .map(mapBoseProductRow)
+            .filter((p) => p.isAvailable !== false && Number(p.stockQuantity) > 0);
+        return {
+            settings: {
+                isOpen: s.is_open !== false,
+                heroImage: s.hero_image || "",
+                heroTitle: s.hero_title || "فوري دلوقتي",
+                heroSubtitle: s.hero_subtitle || "اطلبي دلوقتي واستلمي دلوقتي",
+            },
+            products: products,
         };
     }
 
@@ -752,6 +786,7 @@
         loadBoseGiftsData,
         loadBoseStoreDataFromSupabase,
         loadBoseSingleProductBySlug,
+        loadBoseFawriData,
         getBoseDataVersion,
         submitBoseOrderToDatabase,
         submitBoseReview,

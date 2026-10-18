@@ -2582,7 +2582,12 @@
         const currentDateTime = new Date(Date.now() + (window.boseServerTimeOffset || 0));
         if (selectedDateTime <= currentDateTime) return false;
         const rules = window.BoseStoreData?.orderRules || {};
-        const requiredHours = isCustomOrder
+        // ⚡ [قسم الفوري]: isCustomOrder بقت "وضع جدولة": true = مخصص، "fawri" = سلة كلها فوري
+        // (وقت تجهيز قصير - نفس رقم السيرفر minPreparationTimeHoursFawri، الافتراضي ساعة)، أي حاجة تانية = عادي.
+        const fawriHours = Number(rules.minPreparationTimeHoursFawri);
+        const requiredHours = isCustomOrder === "fawri"
+            ? ((Number.isFinite(fawriHours) && fawriHours >= 0 ? fawriHours : 1) - 0.05)
+            : isCustomOrder
             ? (rules.minPreparationTimeHoursCustom || 72) - 0.05
             : (rules.minPreparationTimeHours || 24) - 0.05;
         return (selectedDateTime.getTime() - currentDateTime.getTime()) / (1000 * 60 * 60) >= requiredHours;
@@ -2683,6 +2688,19 @@
     };
     window.boseCartHasCustomItem = function(cart) {
         return window.boseCartHasTrueCustomItem(cart) || window.boseCartHasGiftItem(cart);
+    };
+    // ⚡ [قسم الفوري]: منتجات id بيبدأ بـ fawri- (كمية محدودة جاهزة دلوقتي).
+    window.boseIsFawriCartItem = function(item) {
+        return !!item && typeof item.productSlug === "string" && item.productSlug.indexOf("fawri-") === 0;
+    };
+    // السلة "فوري بس" = كل عناصرها فوري (أي منتج عادي معاها بيرجّعها للقواعد العادية - نفس قاعدة السيرفر).
+    window.boseCartIsFawriOnly = function(cart) {
+        return Array.isArray(cart) && cart.length > 0 && cart.every(window.boseIsFawriCartItem);
+    };
+    // وضع الجدولة اللي بيتمرر لـ validateBoseDeliverySchedule وباقي دوال المواعيد: true | "fawri" | false
+    window.boseCartScheduleMode = function(cart) {
+        if (window.boseCartHasCustomItem(cart)) return true;
+        return window.boseCartIsFawriOnly(cart) ? "fawri" : false;
     };
 
     // 🛡️🎂 [عزل الطلبات المختلطة]: السلة اللي فيها تورت/ورد مخصص (بيتحجز على
