@@ -17,93 +17,85 @@
          نقدر نقرأ social.whatsapp الحقيقي من store_settings ونحدّث بيه رابط
          الواتساب تحت - بدل الرقم الثابت اللي كان مكتوب يدوياً. -->
     <script src="js/supabase-client.js?v=2027_production_v48.1"></script>
+    <link rel="stylesheet" href="vendor/fontawesome/css/all.min.css">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: 'Cairo', sans-serif;
-            background: linear-gradient(180deg, #FFF5F7 0%, #FFFFFF 45%);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 32px 18px 40px;
-        }
-        .lib-logo { width: 92px; height: 92px; border-radius: 50%; object-fit: cover; box-shadow: 0 6px 18px rgba(255,145,164,0.35); margin-bottom: 14px; }
-        .lib-title { font-size: 1.3rem; font-weight: 800; color: #111; }
-        .lib-tagline { font-size: 0.85rem; color: #7a2e40; opacity: 0.85; margin-top: 4px; margin-bottom: 26px; text-align: center; }
-        .lib-links { width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 12px; }
-        .lib-link {
-            display: flex; align-items: center; gap: 12px;
-            background: #fff; border: 1.5px solid #FFD9E1; border-radius: 16px;
-            padding: 16px 18px; text-decoration: none; color: #111;
-            font-weight: 700; font-size: 0.98rem;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.04);
-            transition: transform 0.15s ease, box-shadow 0.15s ease;
-        }
-        .lib-link:active { transform: scale(0.98); }
-        .lib-link .lib-icon { font-size: 1.3rem; width: 28px; text-align: center; flex-shrink: 0; }
-        .lib-link.lib-primary { background: #FF91A4; color: #fff; border-color: #FF91A4; }
-        .lib-link.lib-google { background: #fff; border-color: #4285F4; }
-        .lib-link.lib-google .lib-icon { color: #4285F4; }
-        .lib-link .lib-icon svg { width: 22px; height: 22px; display: block; }
-        .lib-link.lib-facebook .lib-icon { color: #1877F2; }
-        .lib-link.lib-instagram .lib-icon { color: #d6249f; }
-        .lib-link.lib-tiktok .lib-icon { color: #000; }
-        .lib-footer { margin-top: 24px; font-size: 0.72rem; color: #999; }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Cairo', sans-serif; background: #fff; color: #111; min-height: 100vh; }
+        .lib-wrap { width: 100%; max-width: 480px; margin: 0 auto; padding-bottom: 36px; }
+
+        /* الغلاف: تدرج وردي بيدوب في الأبيض + اللوجو */
+        .lib-cover { position: relative; height: 210px; display: flex; align-items: center; justify-content: center; padding-bottom: 26px;
+            background: radial-gradient(circle at 20% 15%, rgba(255,255,255,.55), transparent 55%), linear-gradient(160deg, #FF91A4, #F9B5C2 70%, #fff);
+            -webkit-mask-image: linear-gradient(#000 62%, transparent); mask-image: linear-gradient(#000 62%, transparent); }
+        .lib-logo { width: 108px; height: 108px; border-radius: 50%; object-fit: cover; border: 4px solid #fff; box-shadow: 0 8px 22px rgba(168,38,75,.28); }
+
+        .lib-head { text-align: center; padding: 0 22px; margin-top: -6px; }
+        .lib-title { font-size: 1.55rem; font-weight: 800; }
+        .lib-role { font-size: .95rem; color: #7a2e40; font-weight: 700; margin-top: 2px; }
+        .lib-desc { font-size: .88rem; color: #777; margin-top: 6px; line-height: 1.8; }
+
+        .lib-quick { display: flex; justify-content: center; gap: 12px; padding: 0 22px; margin-top: 18px; }
+        .lib-quick a { flex: 1; max-width: 120px; height: 58px; border-radius: 999px; border: 1.5px solid #E8E8E8; background: #fff; color: #111; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; text-decoration: none; box-shadow: 0 2px 8px rgba(0,0,0,.04); }
+        .lib-quick a:active { transform: scale(.97); }
+
+        .lib-save { display: block; margin: 18px 22px 0; padding: 17px 20px; border-radius: 999px; background: #FF91A4; color: #111; text-align: center; text-decoration: none; font-weight: 800; font-size: 1.05rem; box-shadow: 0 8px 20px rgba(255,145,164,.45); }
+        .lib-save i { margin-inline-start: 8px; }
+        .lib-save:active { transform: scale(.98); }
+
+        .lib-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 0 22px; margin-top: 26px; }
+        .lib-card { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 10px; padding: 14px 6px 12px; min-height: 118px; background: #fff; border: 1.5px solid #FFD9E1; border-radius: 20px; text-decoration: none; color: #111; text-align: center; font-weight: 700; font-size: .84rem; line-height: 1.5; box-shadow: 0 3px 10px rgba(0,0,0,.03); transition: transform .15s ease; }
+        .lib-card:active { transform: scale(.97); }
+        .lib-ic { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #fff; flex-shrink: 0; }
+        .ic-pink { background: #FF91A4; color: #111; }
+        .ic-soft { background: #FFE3E9; color: #a8264b; }
+        .ic-wa { background: #25D366; }
+        .ic-fb { background: #1877F2; }
+        .ic-ig { background: linear-gradient(45deg, #f9a03f, #e1306c 55%, #833ab4); }
+        .ic-tt { background: #111; }
+        .ic-gg { background: #fff; color: #4285F4; border: 1.5px solid #E3E3E3; }
+        .lib-footer { margin-top: 26px; text-align: center; font-size: .75rem; color: #999; }
     </style>
 </head>
 <body>
-    <img class="lib-logo" id="lib-logo-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="حلويات بوسي">
-    <div class="lib-title">حلويات بوسي</div>
-    <div class="lib-tagline">صنعناها بحب لتهديها لمن تحب 🌸</div>
+    <main class="lib-wrap">
+        <div class="lib-cover">
+            <img class="lib-logo" id="lib-logo-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="حلويات بوسي">
+        </div>
 
-    <div class="lib-links">
-        <a class="lib-link lib-primary" href="/menu.html">
-            <span class="lib-icon">🍰</span> تصفحي المنيو الكامل
-        </a>
-        <a class="lib-link" href="/offers.html">
-            <span class="lib-icon">🎁</span> العروض الحالية
-        </a>
-        <a class="lib-link" href="/cake-builder.html">
-            <span class="lib-icon">🎂</span> صممي تورتتك بنفسك
-        </a>
-        <a class="lib-link" href="/flower-builder.html">
-            <span class="lib-icon">💐</span> صممي بوكيه ورد مخصص
-        </a>
-        <a class="lib-link" id="lib-whatsapp-link" href="https://wa.me/201097238441" target="_blank" rel="noopener">
-            <span class="lib-icon">💬</span> اطلبي على واتساب مباشرة
-        </a>
-        <a class="lib-link" href="https://whatsapp.com/channel/0029VaetfNSFy72K6MAXhs17" target="_blank" rel="noopener">
-            <span class="lib-icon">📢</span> اشتركي في قناة واتساب
-        </a>
-        <a class="lib-link lib-google" href="https://g.page/r/Ca7yD4O1cGT3EBI/review" target="_blank" rel="noopener">
-            <span class="lib-icon">⭐</span> قيّمينا على جوجل
-        </a>
-        <a class="lib-link lib-facebook" href="https://www.facebook.com/BoseSweets1/reviews/?id=100063760044066&amp;sk=reviews&amp;locale=ar_AR" target="_blank" rel="noopener">
-            <span class="lib-icon">⭐</span> قيّمينا على فيسبوك
-        </a>
-        <a class="lib-link" href="/index.html">
-            <span class="lib-icon">🌐</span> زوري موقعنا الإلكتروني
-        </a>
-        <a class="lib-link lib-facebook" href="https://www.facebook.com/share/1H1vVMHyu9/" target="_blank" rel="noopener">
-            <span class="lib-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-8h2.7l.4-3.1h-3.1V8c0-.9.25-1.5 1.55-1.5H16.7V3.7C16.4 3.65 15.4 3.55 14.2 3.55c-2.5 0-4.2 1.5-4.2 4.35V9.9H7.3V13h2.7v8h3.5z"/></svg></span>
-            تابعينا على فيسبوك
-        </a>
-        <a class="lib-link lib-facebook" href="https://www.facebook.com/share/g/19CCED64hM/" target="_blank" rel="noopener">
-            <span class="lib-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.03 2 11c0 2.83 1.44 5.35 3.7 7-.13.72-.5 2-1.42 3.2 0 0 1.72-.1 3.5-1.3.85.28 1.77.43 2.72.5-.15-.55-.5-1.3-.5-2.4 0-4.42 4.03-8 9-8-.4-4.5-4.98-8-10.5-8z"/></svg></span>
-            انضمي لجروب فيسبوك
-        </a>
-        <a class="lib-link lib-instagram" href="https://www.instagram.com/bose_sweets" target="_blank" rel="noopener">
-            <span class="lib-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none"/></svg></span>
-            تابعينا على إنستجرام
-        </a>
-        <a class="lib-link lib-tiktok" href="https://www.tiktok.com/@bosesweets1" target="_blank" rel="noopener">
-            <span class="lib-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 3c.35 2.1 1.7 3.6 3.9 3.8v3.1c-1.4 0-2.7-.45-3.9-1.25v6.15c0 3.15-2.55 5.7-5.7 5.7S5.1 17.95 5.1 14.8s2.55-5.7 5.7-5.7c.35 0 .7.03 1.03.1v3.2a2.6 2.6 0 0 0-1.03-.21 2.6 2.6 0 1 0 2.6 2.6V3h3.1z"/></svg></span>
-            تابعينا على تيك توك
-        </a>
-    </div>
+        <div class="lib-head">
+            <h1 class="lib-title">حلويات بوسي</h1>
+            <div class="lib-role">دوناتس وحلويات طازة</div>
+            <p class="lib-desc">صنعناها بحب لتهديها لمن تحب 🌸</p>
+        </div>
 
-    <div class="lib-footer">حلويات بوسي - الفرافرة، الوادي الجديد</div>
+        <div class="lib-quick">
+            <a id="lib-call-link" href="tel:+201097238441" aria-label="اتصال"><i class="fa-solid fa-phone-volume"></i></a>
+            <a href="https://maps.app.goo.gl/nAg4Y7vQ7hACvKGc8?g_st=ac" target="_blank" rel="noopener" aria-label="موقعنا على الخريطة"><i class="fa-solid fa-location-dot"></i></a>
+            <a href="/index.html" aria-label="موقعنا الإلكتروني"><i class="fa-solid fa-globe"></i></a>
+        </div>
+
+        <a class="lib-save" href="/bosesweets.vcf" download="bosesweets.vcf"><i class="fa-solid fa-user-plus"></i>احفظي رقمنا</a>
+
+        <div class="lib-grid">
+            <a class="lib-card" href="/menu.html"><span class="lib-ic ic-pink"><i class="fa-solid fa-book-open"></i></span>المنيو</a>
+            <a class="lib-card" href="/offers.html"><span class="lib-ic ic-pink"><i class="fa-solid fa-tags"></i></span>العروض</a>
+            <a class="lib-card" href="/cake-builder.html"><span class="lib-ic ic-soft"><i class="fa-solid fa-cake-candles"></i></span>صممي تورتتك</a>
+
+            <a class="lib-card" href="/flower-builder.html"><span class="lib-ic ic-soft"><i class="fa-solid fa-seedling"></i></span>بوكيه ورد</a>
+            <a class="lib-card" id="lib-whatsapp-link" href="https://wa.me/201097238441" target="_blank" rel="noopener"><span class="lib-ic ic-wa"><i class="fa-brands fa-whatsapp"></i></span>اطلبي واتساب</a>
+            <a class="lib-card" href="https://whatsapp.com/channel/0029VaetfNSFy72K6MAXhs17" target="_blank" rel="noopener"><span class="lib-ic ic-wa"><i class="fa-solid fa-bullhorn"></i></span>قناة واتساب</a>
+
+            <a class="lib-card" href="https://www.facebook.com/share/1H1vVMHyu9/" target="_blank" rel="noopener"><span class="lib-ic ic-fb"><i class="fa-brands fa-facebook-f"></i></span>فيسبوك</a>
+            <a class="lib-card" href="https://www.instagram.com/bose_sweets" target="_blank" rel="noopener"><span class="lib-ic ic-ig"><i class="fa-brands fa-instagram"></i></span>إنستجرام</a>
+            <a class="lib-card" href="https://www.tiktok.com/@bosesweets1" target="_blank" rel="noopener"><span class="lib-ic ic-tt"><i class="fa-brands fa-tiktok"></i></span>تيك توك</a>
+
+            <a class="lib-card" href="https://www.facebook.com/share/g/19CCED64hM/" target="_blank" rel="noopener"><span class="lib-ic ic-fb"><i class="fa-solid fa-user-group"></i></span>جروب فيسبوك</a>
+            <a class="lib-card" href="https://g.page/r/Ca7yD4O1cGT3EBI/review" target="_blank" rel="noopener"><span class="lib-ic ic-gg"><i class="fa-brands fa-google"></i></span>قيّمينا على جوجل</a>
+            <a class="lib-card" href="https://www.facebook.com/BoseSweets1/reviews/?id=100063760044066&amp;sk=reviews&amp;locale=ar_AR" target="_blank" rel="noopener"><span class="lib-ic ic-fb"><i class="fa-solid fa-star"></i></span>قيّمينا على فيسبوك</a>
+        </div>
+
+        <div class="lib-footer">حلويات بوسي - الفرافرة، الوادي الجديد</div>
+    </main>
 
     <script>
         (function () {
@@ -134,6 +126,8 @@
                     const data = await window.BoseSupabase.loadBoseStoreDataFromSupabase();
                     const number = (data && data.social && data.social.whatsapp) || "201097238441";
                     link.href = buildLinkinbioWhatsappUrl(toIntl(number));
+                    const callLink = document.getElementById("lib-call-link");
+                    if (callLink) callLink.href = "tel:+" + toIntl(number);
                 } catch (e) { /* الصفحة تفضل شغالة بالرقم الافتراضي لو فشل الاتصال بالقاعدة */ }
             }
 
