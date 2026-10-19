@@ -510,20 +510,22 @@
             // الكائن كله كـ src وتظهر مكسورة. دلوقتي بنستخرج image صح في الحالتين.
             const isObject = item && typeof item === 'object';
             const imgSrc = isObject ? item.image : item;
-            const isLinked = isObject && !!item.slug;
-            const imgTag = `<img src="${window.optimizeBoseImageUrl(imgSrc, 300)}" alt="منتج فاخر حلويات بوسي" class="waterfall-img" width="220" height="220" loading="lazy" />`;
-            // 🆕👑 [دمج صفحة المنتج جوه صفحة الفئة]: بدل رابط product.html المستقل،
-            // بنوديها لصفحة فئة المنتج نفسه مع فتح تفاصيله تلقائياً هناك.
-            let waterfallLinkUrl = '/category.html';
-            if (isLinked) {
-                const linkedProduct = (window.BoseStoreData && window.BoseStoreData.products)
-                    ? window.BoseStoreData.products.find((p) => p.slug === item.slug)
-                    : null;
-                const params = new URLSearchParams();
-                if (linkedProduct && linkedProduct.category) params.set('category', linkedProduct.category);
-                params.set('product', item.slug);
-                waterfallLinkUrl = `/category.html?${params.toString()}`;
+            // 🛠️ الصور المرفوعة/المضافة برابط (من غير ربط يدوي) بنحاول نلاقي منتجها
+            // الحقيقي (هدية أو غيرها) بمطابقة رابط الصورة مع صور المنتجات، عشان الضغط
+            // عليها يوصّل لصفحة المنتج بدل ما ميعملش حاجة.
+            let itemSlug = isObject && item.slug ? item.slug : '';
+            if (!itemSlug && imgSrc && window.BoseStoreData && Array.isArray(window.BoseStoreData.products)) {
+                const matched = window.BoseStoreData.products.find((p) => Array.isArray(p.images) && p.images.indexOf(imgSrc) > -1);
+                if (matched && matched.slug) itemSlug = matched.slug;
             }
+            const isLinked = !!itemSlug;
+            const imgTag = `<img src="${window.optimizeBoseImageUrl(imgSrc, 300)}" alt="منتج فاخر حلويات بوسي" class="waterfall-img" width="220" height="220" loading="lazy" />`;
+            // 🛠️ [إصلاح - أكتوبر 2026]: صفحة المنتج رجعت مستقلة (product.html?slug=) - ودي
+            // اللي بتفتح كل أنواع المنتجات بما فيها الهدايا (gift-...). الرابط القديم
+            // (category.html?category=..&product=..) كان بيضيع مع الهدايا لأنها ملهاش فئة عادية.
+            const waterfallLinkUrl = isLinked
+                ? `/product.html?slug=${encodeURIComponent(itemSlug)}`
+                : '/category.html';
             return isLinked
                 ? `<a href="${waterfallLinkUrl}" class="waterfall-img-link" aria-label="عرض تفاصيل المنتج">${imgTag}</a>`
                 : imgTag;

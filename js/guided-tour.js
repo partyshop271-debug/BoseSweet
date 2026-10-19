@@ -34,7 +34,7 @@
 
     const STORAGE_KEY = 'bose_guided_tour_state_v4';
     const TOAST_SEEN_KEY_PREFIX = 'bose_tour_first_visit_toast_seen_v2_';
-    const STEPS_SESSION_CACHE_KEY = 'bose_tour_steps_cache_v2';
+    const STEPS_SESSION_CACHE_KEY = 'bose_tour_steps_cache_v3';
 
     // 🧭 [تعريف الجولات المتاحة]: القايمة اللي بتظهر في زرار المساعدة
     // العائم - كل جولة عندها مفتاح فريد (نفس tour_key في قاعدة البيانات)،
@@ -55,6 +55,10 @@
         // بنفس شكل باقي الجولات.
         { key: 'rewards', label: 'نادي المكافآت', icon: 'fa-crown', toastTitle: 'أول مرة تدخلي صفحة المكافآت؟', toastText: 'تحبي جولة سريعة نوريكي فيها إزاي تعرفي رصيدك ونظام النقاط بالتفصيل؟' },
         { key: 'track_order', label: 'تتبع الطلب', icon: 'fa-truck-fast', toastTitle: 'أول مرة تتبعي طلب؟', toastText: 'تحبي جولة سريعة نوريكي فيها إزاي تعرفي حالة طلبك؟' },
+        // 🧭 [توسعة الجولة - أكتوبر 2026]: جولات الصفحات اللي كانت ناقصة (العروض/الهدايا/فوري).
+        { key: 'offers', label: 'العروض والخصومات', icon: 'fa-tags', toastTitle: 'أول مرة تدخلي صفحة العروض؟', toastText: 'تحبي جولة سريعة نوريكي فيها إزاي تستفيدي من العروض والخصومات؟' },
+        { key: 'gifts', label: 'الهدايا والزينة', icon: 'fa-gifts', toastTitle: 'أول مرة تدخلي قسم الهدايا؟', toastText: 'تحبي جولة سريعة نوريكي فيها إزاي تختاري هدية مناسبتك؟' },
+        { key: 'fawri', label: 'فوري دلوقتي', icon: 'fa-bolt', toastTitle: 'أول مرة تشوفي فوري دلوقتي؟', toastText: 'تحبي نوريكي إزاي تطلبي وتستلمي في خلال ساعة؟' },
     ];
 
     // 🛡️ [نسخة احتياطية]: نفس محتوى جدول tour_steps بالظبط وقت آخر تحديث،
@@ -164,7 +168,67 @@
             { page: ['track-order.html'], mode: 'info', selector: '#track-order-phone', title: 'رقم الهاتف', text: 'نفس رقم الهاتف اللي استخدمتيه وانتي بتطلبي.' },
             { page: ['track-order.html'], mode: 'click', selector: '#track-submit-btn', hint: 'دوسي على زرار "اعرضي حالة الطلب" بعد ما تكتبي بياناتك', title: 'اعرضي حالة الطلب', text: 'دوسي هنا وهتشوفي فورًا حالة طلبك دلوقتي (بتحضير، جاهز، في الطريق، أو اتسلم) مع كل تفاصيله.' },
         ],
+        offers: [
+            { page: ['offers.html'], mode: 'info', selector: '#op-campaigns', title: 'عروضنا الشغالة دلوقتي', text: 'هنا كل عروض الكمية الشغالة - خصم أو شحن مجاني أو قطعة هدية - ومعاها العدّاد اللي بيوريكي الوقت المتبقي على العرض.' },
+            { page: ['offers.html'], mode: 'info', optional: true, selector: '#op-campaigns .op-flavors', title: 'اختاري نكهاتك', text: 'ضيفي النكهات اللي تعجبك من هنا مباشرة، والسعر بعد الخصم بيظهر قدام كل نكهة.' },
+            { page: ['offers.html'], mode: 'info', optional: true, selector: '#op-bar', title: 'شريط تقدّمك', text: 'الشريط ده تحت بيوريكي لسه فاضل كام قطعة عشان العرض يتفعّل، ومنه تقدري تروحي للسلة على طول.' },
+            { page: ['offers.html'], mode: 'info', optional: true, selector: '#op-products-section', title: 'خصومات على أصناف معينة', text: 'وهنا أصناف عليها تخفيض في السعر - السعر القديم مشطوب والجديد قدامه.' },
+        ],
+        gifts: [
+            { page: ['gifts.html'], mode: 'info', selector: '#gf-hero', title: 'هدايا وزينة المناسبات', text: 'هنا هتلاقي هدايا جاهزة وبوكسات وزينة لكل مناسبة - عيد ميلاد، خطوبة، نجاح وغيرهم.' },
+            { page: ['gifts.html'], mode: 'info', selector: '#gf-search', title: 'دوري على هديتك', text: 'اكتبي اسم الهدية أو المناسبة اللي بتدوري عليها وهتلاقي النتايج فورًا.' },
+            { page: ['gifts.html'], mode: 'info', selector: '#gf-open-filter', title: 'رتّبي حسب مناسبتك وميزانيتك', text: 'من هنا تفلتري الهدايا حسب المناسبة أو نوع الهدية، عشان توصلي للمناسب بسرعة.' },
+            { page: ['gifts.html'], mode: 'info', selector: '#gf-grid', title: 'اختاري هديتك', text: 'دوسي على أي هدية تشوفي صورها وإيه اللي جواها بالتفصيل وتضيفيها لسلتك. الهدايا بتتجهز حسب الطلب، فاطلبيها بدري شوية.' },
+        ],
+        fawri: [
+            { page: ['fawri.html'], mode: 'info', selector: '#fw-hero', title: 'فوري دلوقتي', text: 'أصناف جاهزة تطلبيها وتستلميها بسرعة - وكل صنف بيبان معاه عدد القطع اللي متاحة فعلاً.' },
+            { page: ['fawri.html'], mode: 'info', optional: true, selector: '#fw-perks', title: 'مميزات فوري', text: 'هنا بتشوفي مدة التجهيز ومواعيد الشغل وطرق الاستلام أو التوصيل المتاحة.' },
+            { page: ['fawri.html'], mode: 'info', selector: '#fw-grid', title: 'الأصناف المتاحة دلوقتي', text: 'دي الأصناف الجاهزة حاليًا - ضيفي اللي يعجبك لسلتك، والكميات محدودة فبتخلص بسرعة.' },
+        ],
     };
+
+
+    // 🧩 [إضافات الجولة]: خطوات جديدة بتتحط في مكانها جوه جولات القاعدة (sidebar/homepage) لو
+    // لسه مش موجودة (بالـ selector)، من غير ما نحتاج نعدّل جدول tour_steps. لو الخطوة اتضافت
+    // من لوحة التحكم بنفس الـ selector، مبنكرّرهاش.
+    const TOUR_ADDITIONS = {
+        sidebar: [
+            { before: '#sidebar-link-offers', steps: [
+                { page: ['index.html'], mode: 'info', optional: true, selector: '#sidebar-link-fawri', title: 'فوري دلوقتي', text: 'أصناف جاهزة تطلبيها وتستلميها بسرعة في خلال ساعة - بتظهر هنا لما الخدمة تكون شغالة.', section: 'links' },
+                { page: ['index.html'], mode: 'info', selector: '#sidebar-link-menu', title: 'المنيو الشامل', text: 'كل أصنافنا في مكان واحد، مقسّمة بالفئات.', section: 'links' },
+            ] },
+            { after: '#sidebar-link-flower-builder', steps: [
+                { page: ['index.html'], mode: 'info', optional: true, selector: '#sidebar-link-quick-order', title: 'اطلبي تورتتك في خطوة', text: 'لو مستعجلة، اطلبي تورتة بسرعة من غير ما تمري بكل خطوات المحاكي.', section: 'links' },
+                { page: ['index.html'], mode: 'info', optional: true, selector: '#sidebar-link-gifts', title: 'الهدايا والزينة', text: 'بوكسات هدايا وزينة ومستلزمات لكل مناسبة، تقدري تختاريها وتضيفيها لسلتك.', section: 'links' },
+            ] },
+        ],
+        homepage: [
+            { after: '#hero-section', steps: [
+                { page: ['index.html'], mode: 'info', optional: true, selector: '#waterfall-section', title: 'صور من منتجاتنا', text: 'الصور دي بتتحرك لوحدها - دوسي على أي صورة تفتحلك صفحة المنتج على طول.', section: 'sections' },
+                { page: ['index.html'], mode: 'info', optional: true, selector: '#fawri-entrance-section', title: 'فوري دلوقتي', text: 'أصناف جاهزة للاستلام أو التوصيل في خلال ساعة - البلوك ده بيظهر بس لما الخدمة تكون شغالة.', section: 'sections' },
+            ] },
+            { after: '#offers-carousel-section', steps: [
+                { page: ['index.html'], mode: 'info', optional: true, selector: '#gifts-entrance-section', title: 'الهدايا والزينة', text: 'هدايا وبوكسات وزينة لكل مناسبة - دوسي على الزرار تدخلي القسم كله.', section: 'sections' },
+            ] },
+        ],
+    };
+    function applyTourAdditions(grouped) {
+        Object.keys(TOUR_ADDITIONS).forEach((tourKey) => {
+            const list = grouped[tourKey];
+            if (!Array.isArray(list) || !list.length) return;
+            const merged = list.slice();
+            TOUR_ADDITIONS[tourKey].forEach((rule) => {
+                const anchorSel = rule.after || rule.before;
+                const at = merged.findIndex((st) => st && st.selector === anchorSel);
+                if (at === -1) return;
+                const fresh = rule.steps.filter((ns) => !merged.some((st) => st && st.selector === ns.selector));
+                if (!fresh.length) return;
+                merged.splice(rule.after ? at + 1 : at, 0, ...fresh);
+            });
+            grouped[tourKey] = merged;
+        });
+        return grouped;
+    }
 
     /* ============================= تحميل الخطوات (قاعدة البيانات + كاش الجلسة) ============================= */
 
@@ -209,6 +273,7 @@
             if (!grouped[key] || !grouped[key].length) grouped[key] = BOSE_TOUR_STEPS_FALLBACK[key];
         });
 
+        applyTourAdditions(grouped);
         RESOLVED_TOURS = grouped;
         writeStepsSessionCache(RESOLVED_TOURS);
         return RESOLVED_TOURS;
@@ -415,6 +480,18 @@
         })();
     }
 
+    // 👁️ [خطوات اختيارية]: للعناصر اللي ممكن تكون مخفية أو مش موجودة أصلاً (زي بلوك فوري
+    // لما الخدمة مقفولة) - لو مظهرتش في وقت قصير بنتخطاها بهدوء من غير رسالة تحذير.
+    function waitForVisibleElement(selector, cb, onTimeout, timeoutMs) {
+        const start = Date.now();
+        (function tick() {
+            const el = document.querySelector(selector);
+            if (el && el.getClientRects().length > 0 && el.getBoundingClientRect().height > 0) { cb(el); return; }
+            if (Date.now() - start > (timeoutMs || 2500)) { if (onTimeout) onTimeout(); return; }
+            waitTimer = setTimeout(tick, 200);
+        })();
+    }
+
     function waitForStableRect(el, cb, maxWaitMs) {
         const start = Date.now();
         let lastKey = null;
@@ -464,13 +541,13 @@
         const steps = RESOLVED_TOURS[tourKey];
         const step = steps && steps[stepIndex];
         if (!step) { endTour(true); return; }
-        const proceed = () => waitForElement(
+        const proceed = () => (step.optional ? waitForVisibleElement : waitForElement)(
             step.selector,
             el => renderSpotlight(el, step, tourKey, stepIndex),
             () => {
                 logTourEvent('tour_auto_skip', tourKey, { stepIndex, selector: step.selector, title: step.title });
-                showToast('معلش، خطوة في الجولة اتخطّت تلقائيًا 🙏', 'warning');
-                handleAdvance(tourKey, stepIndex, stepIndex + 1);
+                if (!step.optional) showToast('معلش، خطوة في الجولة اتخطّت تلقائيًا 🙏', 'warning');
+                handleAdvance(tourKey, stepIndex, stepIndex + 1, !!step.optional);
             },
             step.timeoutMs
         );
@@ -586,7 +663,7 @@
         }, step.mode === 'info' ? 900 : 1500);
     }
 
-    function handleAdvance(tourKey, fromIndex, toIndex) {
+    function handleAdvance(tourKey, fromIndex, toIndex, skipHistory) {
         const steps = RESOLVED_TOURS[tourKey];
         const fromStep = steps[fromIndex];
         currentStepAdvanced = true;
@@ -599,7 +676,9 @@
             return;
         }
         const state = getState();
-        const history = (state && state.history) ? state.history.concat([fromIndex]) : [fromIndex];
+        // الخطوة الاختيارية اللي اتخطّت بهدوء متتسجلش في السجل، عشان زرار "السابق" ميرجعش لها.
+        const prevHistory = (state && state.history) ? state.history : [];
+        const history = skipHistory ? prevHistory : prevHistory.concat([fromIndex]);
         setState({ active: true, tourKey, stepIndex: toIndex, history, sessionId: state ? state.sessionId : makeSessionId() });
         const nextStep = steps[toIndex];
         const page = currentPageFile();
@@ -847,6 +926,9 @@
             'checkout.html': 'checkout',
             'cake-builder.html': 'cake_simulator',
             'flower-builder.html': 'flower_simulator',
+            'offers.html': 'offers',
+            'gifts.html': 'gifts',
+            'fawri.html': 'fawri',
         };
         const autoTourKey = pageTourMap[currentPageFile()];
         if (autoTourKey) maybeShowFirstVisitToastForTour(autoTourKey);

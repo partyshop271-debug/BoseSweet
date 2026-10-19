@@ -3805,7 +3805,7 @@
                                     </a>
                                 </li>
                                 <li class="sidebar-link-item">
-                                    <a href="/menu.html">
+                                    <a href="/menu.html" id="sidebar-link-menu">
                                         <span class="link-main-side"><i class="fa-solid fa-utensils main-icon"></i>المنيو الشامل</span>
                                         <i class="fa-solid fa-chevron-left arrow-icon"></i>
                                     </a>
@@ -3825,6 +3825,18 @@
                                 <li class="sidebar-link-item">
                                     <a href="/flower-builder.html" id="sidebar-link-flower-builder">
                                         <span class="link-main-side"><i class="fa-solid fa-seedling main-icon"></i>محاكي الورد الخاص</span>
+                                        <i class="fa-solid fa-chevron-left arrow-icon"></i>
+                                    </a>
+                                </li>
+                                <li class="sidebar-link-item">
+                                    <a href="/cake-quick-order.html" id="sidebar-link-quick-order">
+                                        <span class="link-main-side"><i class="fa-solid fa-wand-magic-sparkles main-icon"></i>اطلبي تورتتك في خطوة</span>
+                                        <i class="fa-solid fa-chevron-left arrow-icon"></i>
+                                    </a>
+                                </li>
+                                <li class="sidebar-link-item">
+                                    <a href="/gifts.html" id="sidebar-link-gifts">
+                                        <span class="link-main-side"><i class="fa-solid fa-gifts main-icon"></i>الهدايا والزينة</span>
                                         <i class="fa-solid fa-chevron-left arrow-icon"></i>
                                     </a>
                                 </li>
