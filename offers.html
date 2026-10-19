@@ -584,11 +584,16 @@
                     '<div class="op-num-sm">أي ' + esc(m) + ' قطع</div><div class="op-reward">' + rewardChip(r) + '</div><h3>' + esc(r.title) + '</h3>' +
                     (idxR > 0 ? '<div class="op-instead">بتحلّ مكان ' + esc(rewardShort(sortedPromos[idxR - 1])) + '</div>' : '') + action + '</div>';
             }).join("");
-            var note = (c.oneDay ? "العرض ساري يوم واحد فقط. " : "العروض سارية لفترة محدودة. ") +
-                "الشحن المجاني بيتطبق على التوصيل لمنطقتك، ومش متاح مع الاستلام من الفرع. بعد ما تختاري نكهاتك هتلاقي الخصم ظاهر في السلة وصفحة الدفع.";
-            if (c.promos.some(function (r) { return r.reward_type === "free_piece"; })) {
-                note += " في عرض القطعة الهدية: بتدفعي تمن القطع اللي طلبتيها كاملة، والقطعة الهدية بتتضاف لطلبك من غير مقابل.";
+            /* الملاحظة بتتبني من أنواع العروض الموجودة فعلاً في الحملة (مفيش ذكر للشحن المجاني إلا لو فيه عرض شحن) */
+            var hasType = function (t) { return c.promos.some(function (r) { return r.reward_type === t; }); };
+            var note = (c.oneDay ? "العرض ساري يوم واحد فقط. " : (c.promos.length > 1 ? "العروض سارية لفترة محدودة. " : "العرض ساري لفترة محدودة. "));
+            if (hasType("free_shipping")) {
+                note += "الشحن المجاني بيتطبق على التوصيل لمنطقتك، ومش متاح مع الاستلام من الفرع. ";
             }
+            if (hasType("free_piece")) {
+                note += "في عرض القطعة الهدية: بتدفعي تمن القطع اللي طلبتيها كاملة، والقطعة الهدية بتتضاف لطلبك من غير مقابل. ";
+            }
+            note += "بعد ما تختاري نكهاتك هتلاقي " + (hasType("percent_off") || hasType("free_shipping") ? "العرض" : "الهدية") + " ظاهر في السلة وصفحة الدفع.";
             var offersSec = '<div class="op-section-title"><h2>اختاري العرض اللي يناسبك</h2>' +
                 (c.promos.length > 1 ? '<p>كل ما تزودي القطع بتطلعي لمرحلة أعلى - المرحلة الأعلى بتحلّ مكان اللي قبلها، ومش بيتجمعوا مع بعض.</p>' : '') + '</div>' + steps +
                 '<div class="op-offers">' + cards + '</div>' +
