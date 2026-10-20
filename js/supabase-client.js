@@ -167,6 +167,9 @@
         // كميتها بتتغير كل دقيقة فمينفعش تتخزن في الكاش، وبتتحمل لايف من loadBoseFawriData.
         const rebuiltProducts = (products || [])
             .filter((p) => String((p && p.id) || "").indexOf("fawri-") !== 0)
+            // 🗄️ [أرشفة صنف]: صنف عنده options.archived = true بيتخفي من الموقع كله (قوائم/بحث/اقتراحات)
+            // من غير ما يتمسح من قاعدة البيانات - عشان الأوردرات القديمة تفضل سليمة.
+            .filter((p) => !(p && p.options && p.options.archived === true))
             .map(mapBoseProductRow);
 
         return {

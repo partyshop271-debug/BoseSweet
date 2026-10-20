@@ -1057,11 +1057,13 @@
         const distinctSizePrices = new Set(availableSizes.map(s => product.prices[s]));
         const hasMultipleSizes = availableSizes.length > 1 && distinctSizePrices.size > 1;
         const defaultSizeKey = (product.defaultSize && availableSizes.includes(product.defaultSize)) ? product.defaultSize : (availableSizes[0] || null);
+        // 🧁 [اختيار نوع الكيك داخل الدستة]: منتج بـ options.flavorChoice بيعرض تبويب اختيار حتى لو الأسعار متساوية.
+        const isFlavorChoice = !!(product.options && product.options.flavorChoice === true) && availableSizes.length > 1;
 
         let sizeTabsHtml = '';
-        if (hasMultipleSizes && isDetailView) {
+        if ((hasMultipleSizes || isFlavorChoice) && isDetailView) {
             sizeTabsHtml = `
-                <div class="bose-mini-size-note"><i class="fa-solid fa-circle-info"></i> متاح بأحجام متعددة، اختار اللي يناسبك:</div>
+                <div class="bose-mini-size-note"><i class="fa-solid fa-circle-info"></i> ${isFlavorChoice ? 'اختار نوع الكيك:' : 'متاح بأحجام متعددة، اختار اللي يناسبك:'}</div>
                 <div class="bose-card-size-tabs" role="group" aria-label="اختيار الحجم">
                     ${availableSizes.map(sizeKey => `
                         <button type="button" class="bose-card-size-pill${sizeKey === defaultSizeKey ? ' active' : ''}"
@@ -1968,6 +1970,9 @@
         // وبيتخزن كمان لوحده في customDetails.filling كبيانات منظمة.
         const fillingLabel = (typeof opts.filling === "string") ? opts.filling.trim() : "";
         if (fillingLabel) correctFlavor = `${correctFlavor} • حشو ${fillingLabel}`;
+        // 🧁 [نوع الكيك داخل الدستة]: الاختيار بيظهر في السلة/الفاتورة/لوحة الطلبات كجزء من اسم النكهة.
+        const isFlavorChoiceItem = !!(product.options && product.options.flavorChoice === true);
+        if (isFlavorChoiceItem && opts.size) correctFlavor = `${correctFlavor} • نوع الكيك: ${opts.size}`;
 
         return {
             id: finalId,
@@ -2027,7 +2032,7 @@
                 // صفحة السلة وفي فاتورة الواتساب - بدل ما يختفي تماماً ويفضل السعر
                 // هو الفرق الوحيد الصامت بين حجم وحجم.
                 size: opts.size || null,
-                sizeLabel: opts.size ? (window.BOSE_SIZE_LABELS[opts.size] || opts.size) : "",
+                sizeLabel: (opts.size && !isFlavorChoiceItem) ? (window.BOSE_SIZE_LABELS[opts.size] || opts.size) : "",
                 filling: fillingLabel,
                 // 🍧 [حل مشكلة "مش عارف يختار من خلاله" - منتجات الميكس]: التوبينجين
                 // اللي اختارتهم العميلة فعلياً لمنتج ميكس (زي قشطوطة ميكس)، مخزّنين هنا
@@ -3125,8 +3130,12 @@
         // تبويب الحجم المصغر جوه الكارت (لو المنتج بيدعم أكتر من حجم) بدل ما نضيفه
         // دايماً بأرخص حجم افتراضي زي ما كان بيحصل قبل كده في أي كارت خارج صفحة الفئة.
         const selectedSize = cardContainer ? (cardContainer.dataset.selectedSize || null) : null;
-        /** @type {{size?: string, filling?: string}} */
+        /** @type {{size?: string, filling?: string, allergyNote?: string}} */
         const addOpts = selectedSize ? { size: selectedSize } : {};
+        // ⚠️ [خانة الحساسية - صفحة الكب كيك]: لو العميل كتب مشكلة صحية مع أي أكل، بتتسجل مع السطر ده بالذات.
+        const allergyEl = cardContainer ? cardContainer.querySelector('.bose-allergy-input') : null;
+        const allergyText = allergyEl ? String(/** @type {HTMLTextAreaElement} */ (allergyEl).value || '').trim().slice(0, 300) : '';
+        if (allergyText) addOpts.allergyNote = allergyText;
 
         // 🧁 [اختيار الحشو - السينابون]: لو فئة المنتج ليها خيارات حشو، لازم يتسجل حشو
         // صالح دايماً (اللي العميلة اختارته من الكارت، أو الأول كافتراضي لو الكارت
@@ -3151,7 +3160,7 @@
             cart = [];
         }
         // السطر بيتميّز بالحجم والحشو معاً: نفس النكهة بحشو مختلف = سطر منفصل في السلة.
-        const cartLineId = [product.slug, selectedSize, selectedFilling ? `fill-${encodeURIComponent(selectedFilling)}` : null].filter(Boolean).join('-');
+        const cartLineId = [product.slug, selectedSize, selectedFilling ? `fill-${encodeURIComponent(selectedFilling)}` : null, allergyText ? `note-${Date.now()}` : null].filter(Boolean).join('-');
         // 🛡️ [إصلاح]: نفس الحد الأقصى المنطقي المطبّق في صفحة السلة (20 قطعة)،
         // عشان العميلة متقدرش تتخطاه حتى وهي لسه في صفحة المنتج/الفئة.
         const MAX_QTY_FROM_PRODUCT_CARD = 20;

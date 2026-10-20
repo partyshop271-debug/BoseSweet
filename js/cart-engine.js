@@ -346,6 +346,10 @@ function renderBoseCartPage(storeData) {
                 if (!isCakeBespoke && !isFlowerBespoke && cd.sizeLabel) {
                     specs.push(`<span><strong>الحجم:</strong> ${esc(cd.sizeLabel)}</span>`);
                 }
+                // ⚠️ [خانة الحساسية - منتجات عادية زي الكب كيك]: لازم تظهر للعميل في السلة وتوصلنا مع الأوردر.
+                if (!isCakeBespoke && !isFlowerBespoke && cd.allergyNote && cd.allergyNote.trim() !== "") {
+                    specs.push(`<span style="color:var(--bose-pink);"><strong>ملاحظة الحساسية:</strong> ${esc(cd.allergyNote.trim())}</span>`);
+                }
 
                 if (specs.length > 0) {
                     customDetailsHTML = `<div class="cart-item-customizations-panel" style="font-size: 13px; color: #111111; background: rgba(var(--bose-pink-rgb),0.04); padding: 10px; border-radius: 12px; margin: 6px 0; border-right: 3px solid var(--bose-pink); display: flex; flex-direction: column; gap: 4px; width: 100%; box-sizing: border-box; font-family: 'Cairo';">${specs.join("")}</div>`;
