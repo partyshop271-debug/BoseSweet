@@ -57,14 +57,14 @@
         .bose-product-page-skeleton .skeleton-pulse-node { border-radius: var(--bose-radius-md); }
     </style>
 
-    <script src="js/supabase-client.js?v=2027_production_v48.1" defer></script>
+    <script src="js/supabase-client.js?v=2027_production_v48.2" defer></script>
     <script src="js/push-notifications.js?v=1.0" defer></script>
     <script src="js/favorites-engine.js?v=2026_production_v38.0" defer></script>
     <script src="js/season-dates.js?v=2026_production_v1.0" defer></script>
     <script src="js/season-themes.js?v=2026_production_v1.0" defer></script>
     <script src="js/season-theme-engine.js?v=2026_production_v1.0" defer></script>
     <script src="js/phone-utils.js?v=1" defer></script>
-    <script src="js/core-engine.js?v=2028_production_v63.4" defer></script>
+    <script src="js/core-engine.js?v=2028_production_v63.5" defer></script>
     <script src="js/user-interest.js?v=2" defer></script>
     <script src="js/gift-detail.js?v=3" defer></script>
     <script src="js/reviews-widget.js?v=2026_production_v1.2" defer></script>
@@ -199,6 +199,64 @@ document.addEventListener("DOMContentLoaded", function () {
         showNotFound();
     }
 
+    // 🧁 [صفحة الكب كيك]: معرض صور قابل للتكبير بملء الشاشة + خانة الحساسية الكبيرة.
+    // بتشتغل بس لمنتج عنده options.flavorChoice (أصناف الكب كيك الجديدة).
+    function boseSetupCupcakeDetail(product, cardEl) {
+        if (!document.getElementById('bose-cupcake-detail-css')) {
+            var st = document.createElement('style');
+            st.id = 'bose-cupcake-detail-css';
+            st.textContent = '.bose-cc-thumbs{display:flex;gap:8px;overflow-x:auto;padding:8px 2px 4px;margin:0 0 6px;scrollbar-width:thin}'
+                + '.bose-cc-thumb{flex:0 0 auto;width:68px;height:68px;border-radius:12px;border:2px solid rgba(var(--bose-pink-rgb),.25);padding:0;overflow:hidden;background:#fff;cursor:zoom-in}'
+                + '.bose-cc-thumb img{width:100%;height:100%;object-fit:cover;display:block}'
+                + '.bose-cc-hint{font-size:.85rem;opacity:.75;margin:0 0 8px;text-align:center}'
+                + '.bose-allergy-box{margin:14px 0;padding:16px;border-radius:16px;border:2px solid var(--bose-pink);background:rgba(var(--bose-pink-rgb),.06);text-align:right}'
+                + '.bose-allergy-title{display:block;font-size:1.15rem;font-weight:800;color:var(--bose-pink);margin-bottom:6px}'
+                + '.bose-allergy-text{font-size:1rem;line-height:1.9;margin:0 0 10px;font-weight:600}'
+                + '.bose-allergy-input{width:100%;box-sizing:border-box;min-height:84px;padding:12px;border-radius:12px;border:1.5px solid rgba(var(--bose-pink-rgb),.5);font:inherit;font-size:1rem;resize:vertical;background:#fff;color:#111}';
+            document.head.appendChild(st);
+        }
+        var imgs = (product.images || []).filter(function (u) { return typeof u === 'string' && /^https?:\/\//.test(u); });
+        var mainImg = cardEl.querySelector('img.product-card-img');
+        if (window.BoseGiftLightbox) window.BoseGiftLightbox.registerGift(product, []);
+        if (mainImg && imgs.length) {
+            mainImg.setAttribute('data-lb-id', product.id);
+            mainImg.setAttribute('data-lb-src', imgs[0]);
+            mainImg.style.cursor = 'zoom-in';
+            var strip = document.createElement('div');
+            strip.className = 'bose-cc-thumbs';
+            strip.setAttribute('aria-label', 'صور المنتج');
+            imgs.forEach(function (u, i) {
+                var b = document.createElement('button');
+                b.type = 'button';
+                b.className = 'bose-cc-thumb';
+                b.setAttribute('data-lb-id', product.id);
+                b.setAttribute('data-lb-src', u);
+                b.setAttribute('aria-label', 'تكبير الصورة ' + (i + 1));
+                var im = document.createElement('img');
+                im.src = (typeof window.optimizeBoseImageUrl === 'function') ? window.optimizeBoseImageUrl(u, 160) : u;
+                im.alt = product.title + ' - صورة ' + (i + 1);
+                im.loading = 'lazy';
+                b.appendChild(im);
+                strip.appendChild(b);
+            });
+            if (imgs.length > 1) {
+                mainImg.insertAdjacentElement('afterend', strip);
+                var hint = document.createElement('p');
+                hint.className = 'bose-cc-hint';
+                hint.textContent = 'دوس على أي صورة تكبرها على الشاشة كلها';
+                strip.insertAdjacentElement('afterend', hint);
+            }
+        }
+        var box = document.createElement('div');
+        box.className = 'bose-allergy-box';
+        box.innerHTML = '<label for="bose-allergy-input" class="bose-allergy-title">عندك حساسية من أي أكل؟</label>'
+            + '<p class="bose-allergy-text">قولنا لو عندك أي مشكلة صحية مع أي نوع أكل (مكسرات، لاكتوز، جلوتين، أو غيرهم)، وهنتجنبه في طلبك. والباقي سيبه لنا، الحشوات هتفضل مفاجأة.</p>'
+            + '<textarea id="bose-allergy-input" class="bose-allergy-input" maxlength="300" rows="3" placeholder="اكتب اللي بيتعبك هنا، أو سيبها فاضية لو مفيش"></textarea>';
+        var qtyWrap = cardEl.querySelector('.product-card-qty-wrapper');
+        if (qtyWrap) qtyWrap.insertAdjacentElement('beforebegin', box);
+        else cardEl.appendChild(box);
+    }
+
     function init(siteData) {
         if (!slug || !siteData || !siteData.products) { tryFreshReloadThenNotFound(); return; }
         const product = siteData.products.find(function (p) { return p.slug === slug || p.id === slug; });
@@ -220,6 +278,8 @@ document.addEventListener("DOMContentLoaded", function () {
         // 📖 الوصف كامل دايمًا في صفحة التفاصيل (من غير قص "...")، بغض النظر عن نسخة core-engine.js
         const fullDescEl = rootEl.querySelector('.product-card-desc');
         if (fullDescEl && product.description && !product.flavorDesc) fullDescEl.textContent = product.description;
+
+        if (product.options && (product.options.flavorChoice === true || product.options.richDetail === true) && cardEl) boseSetupCupcakeDetail(product, cardEl);
 
         if (isMixFlavorProduct && cardEl && window.renderBoseMixToppingPicker) {
             window.renderBoseMixToppingPicker(product, cardEl);

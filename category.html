@@ -57,14 +57,14 @@
     
     <!-- 👑 استدعاء المحرك المركزي العالمي في رأس الصفحة لتأمين الـ DOM ومنع وميض الألوان -->
     <!-- ⚡ [إصلاح أداء]: defer عشان السكريبت متوقفش رسم الصفحة -->
-    <script src="js/supabase-client.js?v=2027_production_v48.1" defer></script>
+    <script src="js/supabase-client.js?v=2027_production_v48.2" defer></script>
     <script src="js/push-notifications.js?v=1.0" defer></script>
     <script src="js/favorites-engine.js?v=2026_production_v38.0" defer></script>
     <script src="js/season-dates.js?v=2026_production_v1.0" defer></script>
     <script src="js/season-themes.js?v=2026_production_v1.0" defer></script>
     <script src="js/season-theme-engine.js?v=2026_production_v1.0" defer></script>
     <script src="js/phone-utils.js?v=1" defer></script>
-    <script src="js/core-engine.js?v=2028_production_v63.4" defer></script>
+    <script src="js/core-engine.js?v=2028_production_v63.5" defer></script>
     <script src="js/user-interest.js?v=2" defer></script>
     <script src="js/reviews-widget.js?v=2026_production_v1.2" defer></script>
     <script src="js/guided-tour.js?v=3.5" defer></script>
@@ -820,6 +820,83 @@
                 initCategoryRendering(e.detail);
             });
 
+
+            // 🧁 [صفحة الكب كيك - بنر + أرفف]: أي فئة عندها صورة بنر (hero_image) من لوحة التحكم، أو فئة الكب كيك نفسها،
+            // بتتعرض بتصميم بنر كبير + أرفف + شريط خطوات، وتحتهم شبكة كل الأصناف زي ما هي.
+            function renderCategoryLanding(cat, products) {
+                if (!cat || !(cat.hero_image || cat.id === 'taswaq-cupcake' || cat.id === 'taswaq-mini-cake') || !products || !products.length) return;
+                var isMini = cat.id === 'taswaq-mini-cake';
+                var esc = typeof window.escapeBoseHTML === 'function' ? window.escapeBoseHTML : function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]; }); };
+                var okUrl = function (u) { return typeof u === 'string' && /^https?:\/\//.test(u); };
+                var opt = function (u, w) { return (typeof window.optimizeBoseImageUrl === 'function') ? window.optimizeBoseImageUrl(u, w) : u; };
+                if (!document.getElementById('bose-cc-landing-css')) {
+                    var st = document.createElement('style');
+                    st.id = 'bose-cc-landing-css';
+                    st.textContent = '.bose-cc-hero{position:relative;border-radius:22px;overflow:hidden;margin:0 0 22px;min-height:260px;display:flex;align-items:flex-end;background:linear-gradient(135deg,rgba(var(--bose-pink-rgb),.28),rgba(var(--bose-pink-rgb),.08))}'
+                        + '.bose-cc-hero__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}'
+                        + '.bose-cc-hero__shade{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.62),rgba(0,0,0,.05) 70%)}'
+                        + '.bose-cc-hero__body{position:relative;padding:22px 20px;color:#fff;max-width:640px;text-align:right}'
+                        + '.bose-cc-hero__title{font-size:1.9rem;font-weight:800;margin:0 0 6px;line-height:1.4}'
+                        + '.bose-cc-hero__sub{font-size:1.05rem;margin:0 0 14px;line-height:1.8;opacity:.95}'
+                        + '.bose-cc-hero__cta{display:inline-block;background:var(--bose-pink);color:#fff;border:0;border-radius:999px;padding:11px 26px;font:inherit;font-weight:800;cursor:pointer}'
+                        + '.bose-cc-no-img .bose-cc-hero__body{color:inherit}'
+                        + '.bose-cc-shelf{margin:0 0 22px}'
+                        + '.bose-cc-shelf__title{font-size:1.25rem;font-weight:800;margin:0 0 10px;color:var(--bose-pink)}'
+                        + '.bose-cc-shelf__row{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 2px 10px;scrollbar-width:thin}'
+                        + '.bose-cc-card{flex:0 0 220px;scroll-snap-align:start;border-radius:18px;background:#fff;border:1px solid rgba(var(--bose-pink-rgb),.25);overflow:hidden;text-decoration:none;color:inherit;display:block}'
+                        + '.bose-cc-card img{width:100%;height:170px;object-fit:cover;display:block}'
+                        + '.bose-cc-card__b{padding:10px 12px;text-align:right}'
+                        + '.bose-cc-card__t{font-weight:800;font-size:1.02rem;margin:0 0 4px}'
+                        + '.bose-cc-card__p{color:var(--bose-pink);font-weight:800}'
+                        + '.bose-cc-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 22px}'
+                        + '.bose-cc-step{border-radius:16px;padding:14px 8px;text-align:center;background:rgba(var(--bose-pink-rgb),.07);border:1px solid rgba(var(--bose-pink-rgb),.25);font-weight:700;line-height:1.7}'
+                        + '.bose-cc-step b{display:block;font-size:1.3rem;color:var(--bose-pink)}'
+                        + '.bose-cc-all-title{font-size:1.3rem;font-weight:800;margin:6px 0 12px}'
+                        + '@media (max-width:600px){.bose-cc-hero{min-height:220px}.bose-cc-hero__title{font-size:1.5rem}.bose-cc-card{flex-basis:180px}.bose-cc-card img{height:140px}.bose-cc-steps{grid-template-columns:1fr}}';
+                    document.head.appendChild(st);
+                }
+                var heroImg = okUrl(cat.hero_image) ? cat.hero_image : (okUrl(cat.image) ? cat.image : '');
+                var heroTitle = (cat.hero_title && String(cat.hero_title).trim()) || cat.title || '';
+                var heroSub = (cat.hero_subtitle && String(cat.hero_subtitle).trim()) || cat.description || '';
+                var wrap = document.createElement('div');
+                wrap.id = 'bose-cc-landing';
+                var html = '<section class="bose-cc-hero' + (heroImg ? '' : ' bose-cc-no-img') + '">'
+                    + (heroImg ? '<img class="bose-cc-hero__img" src="' + esc(opt(heroImg, 1200)) + '" alt="' + esc(heroTitle) + '" fetchpriority="high"><div class="bose-cc-hero__shade"></div>' : '')
+                    + '<div class="bose-cc-hero__body"><div class="bose-cc-hero__title">' + esc(heroTitle) + '</div>'
+                    + (heroSub ? '<p class="bose-cc-hero__sub">' + esc(heroSub) + '</p>' : '')
+                    + '<button type="button" class="bose-cc-hero__cta" id="bose-cc-cta">' + (isMini ? 'اختار حجمك' : 'اطلب دستتك') + '</button></div></section>';
+                var byId = {};
+                products.forEach(function (pr) { byId[pr.id] = pr; });
+                var shelves = isMini ? [] : [
+                    { title: 'الأكتر طلباً', ids: ['cupcake-rawaan', 'cupcake-dalaa', 'cupcake-lammet-el-ayla'] },
+                    { title: 'صورتك على الكب كيك', ids: ['cupcake-farha', 'cupcake-dalaa'] },
+                    { title: 'للمناسبات الكبيرة', ids: ['cupcake-lammet-el-ayla', 'cupcake-shyaka'] }
+                ];
+                shelves.forEach(function (sh) {
+                    var list = sh.ids.map(function (id) { return byId[id]; }).filter(Boolean);
+                    if (!list.length) return;
+                    html += '<section class="bose-cc-shelf"><h2 class="bose-cc-shelf__title">' + esc(sh.title) + '</h2><div class="bose-cc-shelf__row">';
+                    list.forEach(function (pr) {
+                        var img = (pr.images && pr.images[0]) || '';
+                        var price = typeof window.calculateProductFinalPrice === 'function' ? window.calculateProductFinalPrice(pr, { size: pr.defaultSize }) : (pr.price || 0);
+                        html += '<a class="bose-cc-card" href="product.html?slug=' + encodeURIComponent(pr.slug) + '">'
+                            + (okUrl(img) ? '<img src="' + esc(opt(img, 450)) + '" alt="' + esc(pr.title) + '" loading="lazy">' : '')
+                            + '<div class="bose-cc-card__b"><div class="bose-cc-card__t">' + esc(pr.title) + '</div><div class="bose-cc-card__p">' + esc(price) + ' ' + esc(globalStoreCurrency) + '</div></div></a>';
+                    });
+                    html += '</div></section>';
+                });
+                html += (isMini
+                    ? '<div class="bose-cc-steps"><div class="bose-cc-step"><b>١</b>اختار الحجم اللي يناسب لمّتك</div><div class="bose-cc-step"><b>٢</b>اكتب لنا لو عندك حساسية من أي أكل</div><div class="bose-cc-step"><b>٣</b>واستنى الميني تورتة توصلك جاهزة</div></div><h2 class="bose-cc-all-title">اختار حجمك</h2>'
+                    : '<div class="bose-cc-steps"><div class="bose-cc-step"><b>١</b>اختار دستتك ونوع الكيك</div><div class="bose-cc-step"><b>٢</b>اكتب لنا لو عندك حساسية من أي أكل</div><div class="bose-cc-step"><b>٣</b>واستنى المفاجأة</div></div>'
+                    + '<h2 class="bose-cc-all-title">كل الدستات</h2>');
+                wrap.innerHTML = html;
+                var hdr = document.querySelector('.category-hero-header');
+                if (hdr) hdr.style.display = 'none';
+                productsGrid.insertAdjacentElement('beforebegin', wrap);
+                var cta = wrap.querySelector('#bose-cc-cta');
+                if (cta) cta.addEventListener('click', function () { productsGrid.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+            }
+
             function initCategoryRendering(siteData) {
                 if (!siteData || !siteData.homepage || !siteData.products) {
                     renderEmptyState("عذراً، حدث خطأ أثناء تحميل بيانات المتجر.");
@@ -886,6 +963,7 @@
                     !(p.customBuilderUrl && p.builderType && p.builderType !== 'standard')
                 );
                 globalStoreCurrency = siteData.store.currency || "EGP";
+                renderCategoryLanding(categoryObj, globalFilteredProducts);
 
                 // 🧺 [حد أدنى القطع + خيارات الحشو - من لوحة التحكم]: نفس القاعدة الحقيقية
                 // المستخدمة في كارت المنتج العادي (window.getBoseCategoryOrderRules) - لو
