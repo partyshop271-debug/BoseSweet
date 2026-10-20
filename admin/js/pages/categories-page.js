@@ -84,6 +84,7 @@
         const isEdit = !!category;
         const e = window.BoseAdminUI.escapeHtml;
         let image = isEdit ? (category.image || "") : "";
+        let heroImage = isEdit ? (category.hero_image || "") : "";
 
         const overlay = document.createElement("div");
         overlay.className = "adm-modal-overlay";
@@ -149,6 +150,27 @@
                         <input type="file" id="cf-image-input" accept="image/*" hidden>
                     </div>
 
+                    <div class="adm-field">
+                        <label>صورة البنر الكبير (اختياري)</label>
+                        <div class="adm-images-grid" id="cf-hero-grid"></div>
+                        <label class="adm-image-upload-btn" for="cf-hero-input">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                            <span id="cf-hero-label">إضافة صورة بنر</span>
+                        </label>
+                        <input type="file" id="cf-hero-input" accept="image/*" hidden>
+                        <span class="adm-hint">بتظهر فوق صفحة الفئة بشكل بنر عريض. لو مفيش، الموقع بيستخدم صورة الفئة العادية.</span>
+                    </div>
+
+                    <div class="adm-field">
+                        <label for="cf-hero-title">عنوان البنر (اختياري)</label>
+                        <input type="text" class="adm-input" id="cf-hero-title" maxlength="80" value="${isEdit ? e(category.hero_title || "") : ""}" placeholder="لو فاضي بيظهر اسم الفئة">
+                    </div>
+
+                    <div class="adm-field">
+                        <label for="cf-hero-subtitle">السطر اللي تحت عنوان البنر (اختياري)</label>
+                        <input type="text" class="adm-input" id="cf-hero-subtitle" maxlength="160" value="${isEdit ? e(category.hero_subtitle || "") : ""}" placeholder="لو فاضي بيظهر وصف الفئة">
+                    </div>
+
                     <div class="adm-modal-actions">
                         <button type="button" class="adm-btn adm-btn-ghost" data-role="close">إلغاء</button>
                         <button type="submit" class="adm-btn adm-btn-primary" id="cf-save-btn">حفظ الفئة</button>
@@ -169,6 +191,33 @@
             if (removeBtn) removeBtn.addEventListener("click", () => { image = ""; refreshImageGrid(); });
         }
         refreshImageGrid();
+
+        function refreshHeroGrid() {
+            const grid = document.getElementById("cf-hero-grid");
+            grid.innerHTML = heroImage
+                ? `<div class="adm-image-thumb-wrap"><img src="${e(heroImage)}" alt=""><button type="button" class="adm-image-remove-btn" id="cf-hero-remove"><i class="fa-solid fa-xmark"></i></button></div>`
+                : "";
+            document.getElementById("cf-hero-label").textContent = heroImage ? "استبدال صورة البنر" : "إضافة صورة بنر";
+            const rm = document.getElementById("cf-hero-remove");
+            if (rm) rm.addEventListener("click", () => { heroImage = ""; refreshHeroGrid(); });
+        }
+        refreshHeroGrid();
+
+        document.getElementById("cf-hero-input").addEventListener("change", async (evt) => {
+            const file = evt.target.files && evt.target.files[0];
+            if (!file) return;
+            const label = document.getElementById("cf-hero-label");
+            label.textContent = "جاري الرفع...";
+            try {
+                heroImage = await window.BoseAdminUI.uploadImageToCloudinary(file);
+                refreshHeroGrid();
+            } catch (err) {
+                window.BoseAdminUI.showToast("تعذر رفع الصورة", "error");
+                refreshHeroGrid();
+            } finally {
+                evt.target.value = "";
+            }
+        });
 
         overlay.addEventListener("click", (evt) => {
             if (evt.target === overlay) close();
@@ -202,6 +251,9 @@
                 builder_type: document.getElementById("cf-builder-type").value,
                 sort_order: parseInt(document.getElementById("cf-sort-order").value, 10) || 0,
                 image: image || null,
+                hero_image: heroImage || null,
+                hero_title: document.getElementById("cf-hero-title").value.trim() || null,
+                hero_subtitle: document.getElementById("cf-hero-subtitle").value.trim() || null,
                 min_order_qty: (() => {
                     const n = parseInt(document.getElementById("cf-min-qty").value, 10);
                     return n > 1 ? Math.min(n, 200) : null;
