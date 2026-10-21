@@ -179,7 +179,7 @@
         if (!isFinite(stock) || stock < 0) { UI.showToast("اكتبي الكمية المتاحة (0 أو أكتر)", "error"); return; }
         if (!formImage) { UI.showToast("ارفعي صورة للقطعة - من غير صورة مش هتظهر كويس", "error"); return; }
 
-        var tops = $("fw-f-toppings").value.split(/\r?\n/).map(function (t) { return t.trim(); }).filter(Boolean);
+        var tops = $("fw-f-toppings").value.split(/\r?\n|\s*[\/،,|]\s*/).map(function (t) { return t.trim(); }).filter(Boolean);
         // نفس الاسم مرتين = توبينج واحد
         tops = tops.filter(function (t, i) { return tops.indexOf(t) === i; });
 
