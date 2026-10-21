@@ -47,7 +47,17 @@
     }
     function toppingsOf(p) {
         var t = p.options && p.options.toppings;
-        return Array.isArray(t) ? t.map(function (x) { return String(x || "").trim(); }).filter(Boolean) : [];
+        if (!Array.isArray(t)) return [];
+        // 🛡️ لو الأدمن كتب كذا توبينج في سطر واحد (مفصولين بـ / أو ، أو -) نفصلهم لخيارات مستقلة،
+        // عشان ضغطة واحدة ماتختارش كل النكهات مع بعض.
+        var out = [];
+        t.forEach(function (x) {
+            String(x || "").split(/\s*[\/،,|]\s*/).forEach(function (part) {
+                part = part.trim();
+                if (part && out.indexOf(part) === -1) out.push(part);
+            });
+        });
+        return out;
     }
     function maxQtyFor(p) {
         var left = Math.max(0, Number(p.stockQuantity) - inCartQty(p.id));

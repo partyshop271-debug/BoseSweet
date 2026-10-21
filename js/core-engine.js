@@ -1970,6 +1970,9 @@
         // وبيتخزن كمان لوحده في customDetails.filling كبيانات منظمة.
         const fillingLabel = (typeof opts.filling === "string") ? opts.filling.trim() : "";
         if (fillingLabel) correctFlavor = `${correctFlavor} • حشو ${fillingLabel}`;
+        // 🍓 [نكهات الميني تورتة]: النكهة/النكهتين المختارين بيتضافوا لاسم النكهة نفسه (بيظهروا في السلة والفاتورة ولوحة الطلبات).
+        const pickedFlavors = Array.isArray(opts.flavors) ? opts.flavors.map((/** @type {any} */ f) => String(f).trim()).filter(Boolean) : [];
+        if (pickedFlavors.length) correctFlavor = `${correctFlavor} • النكهة: ${pickedFlavors.join(' + ')}`;
         // 🧁 [نوع الكيك داخل الدستة]: الاختيار بيظهر في السلة/الفاتورة/لوحة الطلبات كجزء من اسم النكهة.
         const isFlavorChoiceItem = !!(product.options && product.options.flavorChoice === true);
         if (isFlavorChoiceItem && opts.size) correctFlavor = `${correctFlavor} • نوع الكيك: ${opts.size}`;
@@ -3130,12 +3133,30 @@
         // تبويب الحجم المصغر جوه الكارت (لو المنتج بيدعم أكتر من حجم) بدل ما نضيفه
         // دايماً بأرخص حجم افتراضي زي ما كان بيحصل قبل كده في أي كارت خارج صفحة الفئة.
         const selectedSize = cardContainer ? (cardContainer.dataset.selectedSize || null) : null;
-        /** @type {{size?: string, filling?: string, allergyNote?: string}} */
+        /** @type {{size?: string, filling?: string, allergyNote?: string, flavors?: string[]}} */
         const addOpts = selectedSize ? { size: selectedSize } : {};
         // ⚠️ [خانة الحساسية - صفحة الكب كيك]: لو العميل كتب مشكلة صحية مع أي أكل، بتتسجل مع السطر ده بالذات.
         const allergyEl = cardContainer ? cardContainer.querySelector('.bose-allergy-input') : null;
         const allergyText = allergyEl ? String(/** @type {HTMLTextAreaElement} */ (allergyEl).value || '').trim().slice(0, 300) : '';
         if (allergyText) addOpts.allergyNote = allergyText;
+
+        // 🍓 [اختيار نكهات الميني تورتة]: نكهة واحدة على الأقل ولحد أقصى (نكهتين) من القايمة المسموحة للمنتج بس.
+        const pickWrap = cardContainer ? cardContainer.querySelector('.bose-pick-wrap') : null;
+        if (pickWrap) {
+            const pickCfg = (product.options && product.options.flavorPick) || {};
+            const allowed = Array.isArray(pickCfg.items) ? pickCfg.items : [];
+            const maxPick = parseInt(pickCfg.max, 10) || 2;
+            const picked = Array.from(pickWrap.querySelectorAll('.bose-pick-chip.is-on'))
+                .map((c) => String(c.getAttribute('data-flavor') || '').trim())
+                .filter((f) => f && allowed.includes(f))
+                .slice(0, maxPick);
+            if (!picked.length) {
+                window.showBoseToast('اختار نكهة واحدة على الأقل للميني تورتة 🍓', { type: 'error', duration: 4500 });
+                pickWrap.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+            addOpts.flavors = picked;
+        }
 
         // 🧁 [اختيار الحشو - السينابون]: لو فئة المنتج ليها خيارات حشو، لازم يتسجل حشو
         // صالح دايماً (اللي العميلة اختارته من الكارت، أو الأول كافتراضي لو الكارت
@@ -3160,7 +3181,7 @@
             cart = [];
         }
         // السطر بيتميّز بالحجم والحشو معاً: نفس النكهة بحشو مختلف = سطر منفصل في السلة.
-        const cartLineId = [product.slug, selectedSize, selectedFilling ? `fill-${encodeURIComponent(selectedFilling)}` : null, allergyText ? `note-${Date.now()}` : null].filter(Boolean).join('-');
+        const cartLineId = [product.slug, selectedSize, selectedFilling ? `fill-${encodeURIComponent(selectedFilling)}` : null, allergyText ? `note-${Date.now()}` : null, addOpts.flavors ? `pick-${encodeURIComponent(addOpts.flavors.join('+'))}` : null].filter(Boolean).join('-');
         // 🛡️ [إصلاح]: نفس الحد الأقصى المنطقي المطبّق في صفحة السلة (20 قطعة)،
         // عشان العميلة متقدرش تتخطاه حتى وهي لسه في صفحة المنتج/الفئة.
         const MAX_QTY_FROM_PRODUCT_CARD = 20;
@@ -3261,6 +3282,10 @@
             mixToppingBName: sel.mixToppingBName,
             flavorName: `${sel.mixToppingAName} + ${sel.mixToppingBName}`,
         };
+        // ⚠️ [خانة الحساسية]: بتتسجل مع سطر الميكس لو العميل كتب حاجة.
+        const mixAllergyEl = cardContainer ? cardContainer.querySelector('.bose-allergy-input') : null;
+        const mixAllergyText = mixAllergyEl ? String(/** @type {HTMLTextAreaElement} */ (mixAllergyEl).value || '').trim().slice(0, 300) : '';
+        if (mixAllergyText) /** @type {any} */ (addOpts).allergyNote = mixAllergyText;
 
         let cart = [];
         try {
@@ -3276,8 +3301,8 @@
         // توبينجين معين (مش أي مزيج) هو اللي بيحدد لو ده "نفس المنتج" لغرض جمع
         // الكمية - مزيج مختلف (توبينجات مختلفة) لازم ياخد سطر منفصل في السلة.
         const MAX_QTY_FROM_PRODUCT_CARD = 20;
-        const existingItem = cart.find((/** @type {any} */ item) =>
-            item.productSlug === product.slug && item.flavorName === addOpts.flavorName);
+        const existingItem = mixAllergyText ? null : cart.find((/** @type {any} */ item) =>
+            item.productSlug === product.slug && item.flavorName === addOpts.flavorName && !(item.customDetails && item.customDetails.allergyNote));
         if (existingItem) {
             existingItem.quantity = Math.min(existingItem.quantity + qty, MAX_QTY_FROM_PRODUCT_CARD);
         } else {
@@ -3788,7 +3813,7 @@
                                 <li class="sidebar-link-item"><a href="/category.html?category=taswaq-mini-cake"><span class="link-main-side"><i class="fa-solid fa-cubes main-icon"></i>الميني تورت</span></a></li>
                                 <li class="sidebar-link-item"><a href="/flower-builder.html"><span class="link-main-side"><i class="fa-solid fa-spa main-icon"></i>بوكيهات الورد</span></a></li>
                                 <li class="sidebar-link-item"><a href="/category.html?category=taswaq-happiness-cups"><span class="link-main-side"><i class="fa-solid fa-ice-cream main-icon"></i>كبات السعادة</span></a></li>
-                                <li class="sidebar-link-item"><a href="/category.html?category=taswaq-relax-box"><span class="link-main-side"><i class="fa-solid fa-gift main-icon"></i>بوكس الروقان</span></a></li>
+                                <li class="sidebar-link-item"><a href="/category.html?category=taswaq-relax-box"><span class="link-main-side"><i class="fa-solid fa-gift main-icon"></i>البوكسات</span></a></li>
                             </ul>
                         </div>
 
