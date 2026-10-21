@@ -45,6 +45,10 @@
         .bose-product-page-layout .product-card-unified .product-card-title { font-size: 1.7rem !important; font-weight: 800 !important; line-height: 1.6; color: #111; }
         .bose-product-page-layout .product-card-unified .product-card-desc { max-height: none !important; min-height: 0 !important; overflow: visible !important; display: block !important; -webkit-line-clamp: unset !important; opacity: 1 !important; color: #111 !important; font-size: 1.2rem !important; font-weight: 600 !important; line-height: 2.1 !important; }
         .bose-product-page-layout .product-card-unified .bose-desc-toggle-btn { display: none !important; }
+        /* 🛡️ كروت "قد يعجبك أيضاً": ماتاخدش مقاس ووصف الكارت الرئيسي الكبير - وصف مقصوص سطرين واسم بحجم مناسب */
+        .bose-product-page-layout .bose-horizontal-suggestions-slider .product-card-unified .product-card-title { font-size: 1.05rem !important; line-height: 1.5 !important; }
+        .bose-product-page-layout .bose-horizontal-suggestions-slider .product-card-unified .product-card-flavor-name { font-size: .85rem !important; }
+        .bose-product-page-layout .bose-horizontal-suggestions-slider .product-card-unified .product-card-desc { font-size: .8rem !important; line-height: 1.55 !important; min-height: 0 !important; max-height: calc(1.55em * 2) !important; overflow: hidden !important; display: -webkit-box !important; -webkit-line-clamp: 2 !important; -webkit-box-orient: vertical !important; }
         .bose-product-page-layout .product-card-unified .product-card-flavor-name { font-size: 1.1rem; font-weight: 700; }
         .bose-product-page-breadcrumb { font-size: 1rem !important; opacity: .8 !important; }
         .bose-product-page-skeleton {
@@ -64,7 +68,7 @@
     <script src="js/season-themes.js?v=2026_production_v1.0" defer></script>
     <script src="js/season-theme-engine.js?v=2026_production_v1.0" defer></script>
     <script src="js/phone-utils.js?v=1" defer></script>
-    <script src="js/core-engine.js?v=2028_production_v63.5" defer></script>
+    <script src="js/core-engine.js?v=2028_production_v63.8" defer></script>
     <script src="js/user-interest.js?v=2" defer></script>
     <script src="js/gift-detail.js?v=3" defer></script>
     <script src="js/reviews-widget.js?v=2026_production_v1.2" defer></script>
@@ -209,6 +213,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 + '.bose-cc-thumb{flex:0 0 auto;width:68px;height:68px;border-radius:12px;border:2px solid rgba(var(--bose-pink-rgb),.25);padding:0;overflow:hidden;background:#fff;cursor:zoom-in}'
                 + '.bose-cc-thumb img{width:100%;height:100%;object-fit:cover;display:block}'
                 + '.bose-cc-hint{font-size:.85rem;opacity:.75;margin:0 0 8px;text-align:center}'
+                + '.bose-pick-wrap{margin:14px 0;padding:14px;border-radius:16px;border:2px solid rgba(var(--bose-pink-rgb),.5);background:rgba(var(--bose-pink-rgb),.04);text-align:right}'
+                + '.bose-pick-title{display:block;font-size:1.1rem;font-weight:800;color:var(--bose-pink);margin-bottom:4px}'
+                + '.bose-pick-sub{font-size:.92rem;opacity:.85;margin:0 0 10px}'
+                + '.bose-pick-chips{display:flex;flex-wrap:wrap;gap:8px}'
+                + '.bose-pick-chip{border:1.5px solid rgba(var(--bose-pink-rgb),.5);background:#fff;color:#222;border-radius:999px;padding:8px 16px;font:inherit;font-weight:700;cursor:pointer}'
+                + '.bose-pick-chip.is-on{background:var(--bose-pink);border-color:var(--bose-pink);color:#fff}'
+                + '.bose-pick-msg{min-height:1.3em;margin:8px 0 0;font-size:.9rem;font-weight:700;color:var(--bose-pink)}'
                 + '.bose-allergy-box{margin:14px 0;padding:16px;border-radius:16px;border:2px solid var(--bose-pink);background:rgba(var(--bose-pink-rgb),.06);text-align:right}'
                 + '.bose-allergy-title{display:block;font-size:1.15rem;font-weight:800;color:var(--bose-pink);margin-bottom:6px}'
                 + '.bose-allergy-text{font-size:1rem;line-height:1.9;margin:0 0 10px;font-weight:600}'
@@ -247,6 +258,34 @@ document.addEventListener("DOMContentLoaded", function () {
                 strip.insertAdjacentElement('afterend', hint);
             }
         }
+        var pickCfg = product.options && product.options.flavorPick;
+        var qtyWrap0 = cardEl.querySelector('.product-card-qty-wrapper');
+        if (pickCfg && Array.isArray(pickCfg.items) && pickCfg.items.length) {
+            var maxPick = parseInt(pickCfg.max, 10) || 2;
+            var pw = document.createElement('div');
+            pw.className = 'bose-pick-wrap';
+            pw.setAttribute('data-max', String(maxPick));
+            var h = '<span class="bose-pick-title">اختار نكهتك</span><p class="bose-pick-sub">نكهة واحدة أو لحد ' + (maxPick === 2 ? 'نكهتين' : maxPick + ' نكهات') + '</p><div class="bose-pick-chips" role="group" aria-label="اختيار النكهة">';
+            pickCfg.items.forEach(function (f) {
+                var s = document.createElement('span'); s.textContent = f;
+                h += '<button type="button" class="bose-pick-chip" aria-pressed="false" data-flavor="' + s.innerHTML.replace(/"/g, '&quot;') + '">' + s.innerHTML + '</button>';
+            });
+            h += '</div><p class="bose-pick-msg" role="status" aria-live="polite"></p>';
+            pw.innerHTML = h;
+            pw.addEventListener('click', function (ev) {
+                var chip = ev.target.closest && ev.target.closest('.bose-pick-chip');
+                if (!chip) return;
+                var msg = pw.querySelector('.bose-pick-msg');
+                if (!chip.classList.contains('is-on') && pw.querySelectorAll('.bose-pick-chip.is-on').length >= maxPick) {
+                    msg.textContent = 'ينفع لحد ' + (maxPick === 2 ? 'نكهتين' : maxPick + ' نكهات') + ' بس، شيل واحدة الأول';
+                    return;
+                }
+                msg.textContent = '';
+                chip.classList.toggle('is-on');
+                chip.setAttribute('aria-pressed', chip.classList.contains('is-on') ? 'true' : 'false');
+            });
+            if (qtyWrap0) qtyWrap0.insertAdjacentElement('beforebegin', pw); else cardEl.appendChild(pw);
+        }
         var box = document.createElement('div');
         box.className = 'bose-allergy-box';
         box.innerHTML = '<label for="bose-allergy-input" class="bose-allergy-title">عندك حساسية من أي أكل؟</label>'
@@ -279,7 +318,9 @@ document.addEventListener("DOMContentLoaded", function () {
         const fullDescEl = rootEl.querySelector('.product-card-desc');
         if (fullDescEl && product.description && !product.flavorDesc) fullDescEl.textContent = product.description;
 
-        if (product.options && (product.options.flavorChoice === true || product.options.richDetail === true) && cardEl) boseSetupCupcakeDetail(product, cardEl);
+        // 🧁 [توحيد صفحات المنتجات]: كل المنتجات العادية (مش هدايا ولا فوري) بتاخد معرض الصور القابل للتكبير + خانة الحساسية.
+        var boseIsRegularProduct = !product.isGift && String(product.id || '').indexOf('fawri-') !== 0 && !product.customBuilderUrl;
+        if (boseIsRegularProduct && cardEl) boseSetupCupcakeDetail(product, cardEl);
 
         if (isMixFlavorProduct && cardEl && window.renderBoseMixToppingPicker) {
             window.renderBoseMixToppingPicker(product, cardEl);

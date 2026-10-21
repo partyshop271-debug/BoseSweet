@@ -64,7 +64,7 @@
     <script src="js/season-themes.js?v=2026_production_v1.0" defer></script>
     <script src="js/season-theme-engine.js?v=2026_production_v1.0" defer></script>
     <script src="js/phone-utils.js?v=1" defer></script>
-    <script src="js/core-engine.js?v=2028_production_v63.5" defer></script>
+    <script src="js/core-engine.js?v=2028_production_v63.8" defer></script>
     <script src="js/user-interest.js?v=2" defer></script>
     <script src="js/reviews-widget.js?v=2026_production_v1.2" defer></script>
     <script src="js/guided-tour.js?v=3.5" defer></script>
@@ -824,8 +824,9 @@
             // 🧁 [صفحة الكب كيك - بنر + أرفف]: أي فئة عندها صورة بنر (hero_image) من لوحة التحكم، أو فئة الكب كيك نفسها،
             // بتتعرض بتصميم بنر كبير + أرفف + شريط خطوات، وتحتهم شبكة كل الأصناف زي ما هي.
             function renderCategoryLanding(cat, products) {
-                if (!cat || !(cat.hero_image || cat.id === 'taswaq-cupcake' || cat.id === 'taswaq-mini-cake') || !products || !products.length) return;
+                if (!cat || !products || !products.length) return;
                 var isMini = cat.id === 'taswaq-mini-cake';
+                var isCupcake = cat.id === 'taswaq-cupcake';
                 var esc = typeof window.escapeBoseHTML === 'function' ? window.escapeBoseHTML : function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]; }); };
                 var okUrl = function (u) { return typeof u === 'string' && /^https?:\/\//.test(u); };
                 var opt = function (u, w) { return (typeof window.optimizeBoseImageUrl === 'function') ? window.optimizeBoseImageUrl(u, w) : u; };
@@ -864,14 +865,21 @@
                     + (heroImg ? '<img class="bose-cc-hero__img" src="' + esc(opt(heroImg, 1200)) + '" alt="' + esc(heroTitle) + '" fetchpriority="high"><div class="bose-cc-hero__shade"></div>' : '')
                     + '<div class="bose-cc-hero__body"><div class="bose-cc-hero__title">' + esc(heroTitle) + '</div>'
                     + (heroSub ? '<p class="bose-cc-hero__sub">' + esc(heroSub) + '</p>' : '')
-                    + '<button type="button" class="bose-cc-hero__cta" id="bose-cc-cta">' + (isMini ? 'اختار حجمك' : 'اطلب دستتك') + '</button></div></section>';
+                    + '<button type="button" class="bose-cc-hero__cta" id="bose-cc-cta">' + (isMini ? 'اختار حجمك' : (isCupcake ? 'اطلب دستتك' : 'شوف الأصناف')) + '</button></div></section>';
                 var byId = {};
                 products.forEach(function (pr) { byId[pr.id] = pr; });
-                var shelves = isMini ? [] : [
-                    { title: 'الأكتر طلباً', ids: ['cupcake-rawaan', 'cupcake-dalaa', 'cupcake-lammet-el-ayla'] },
-                    { title: 'صورتك على الكب كيك', ids: ['cupcake-farha', 'cupcake-dalaa'] },
-                    { title: 'للمناسبات الكبيرة', ids: ['cupcake-lammet-el-ayla', 'cupcake-shyaka'] }
-                ];
+                var shelves = [];
+                if (isCupcake) {
+                    shelves = [
+                        { title: 'الأكتر طلباً', ids: ['cupcake-rawaan', 'cupcake-dalaa', 'cupcake-lammet-el-ayla'] },
+                        { title: 'صورتك على الكب كيك', ids: ['cupcake-farha', 'cupcake-dalaa'] },
+                        { title: 'للمناسبات الكبيرة', ids: ['cupcake-lammet-el-ayla', 'cupcake-shyaka'] }
+                    ];
+                } else if (!isMini) {
+                    // باقي الأقسام: رف "الأكتر طلباً" تلقائي من المنتجات اللي عليها علامة "مميز" (لو القسم فيه أكتر من 4 منتجات)
+                    var featuredIds = products.filter(function (pr) { return pr.featured; }).slice(0, 6).map(function (pr) { return pr.id; });
+                    if (featuredIds.length && products.length > 4) shelves = [{ title: 'الأكتر طلباً', ids: featuredIds }];
+                }
                 shelves.forEach(function (sh) {
                     var list = sh.ids.map(function (id) { return byId[id]; }).filter(Boolean);
                     if (!list.length) return;
@@ -887,8 +895,9 @@
                 });
                 html += (isMini
                     ? '<div class="bose-cc-steps"><div class="bose-cc-step"><b>١</b>اختار الحجم اللي يناسب لمّتك</div><div class="bose-cc-step"><b>٢</b>اكتب لنا لو عندك حساسية من أي أكل</div><div class="bose-cc-step"><b>٣</b>واستنى الميني تورتة توصلك جاهزة</div></div><h2 class="bose-cc-all-title">اختار حجمك</h2>'
-                    : '<div class="bose-cc-steps"><div class="bose-cc-step"><b>١</b>اختار دستتك ونوع الكيك</div><div class="bose-cc-step"><b>٢</b>اكتب لنا لو عندك حساسية من أي أكل</div><div class="bose-cc-step"><b>٣</b>واستنى المفاجأة</div></div>'
-                    + '<h2 class="bose-cc-all-title">كل الدستات</h2>');
+                    : (isCupcake
+                        ? '<div class="bose-cc-steps"><div class="bose-cc-step"><b>١</b>اختار دستتك ونوع الكيك</div><div class="bose-cc-step"><b>٢</b>اكتب لنا لو عندك حساسية من أي أكل</div><div class="bose-cc-step"><b>٣</b>واستنى المفاجأة</div></div><h2 class="bose-cc-all-title">كل الدستات</h2>'
+                        : '<div class="bose-cc-steps"><div class="bose-cc-step"><b>١</b>اختار الصنف اللي نفسك فيه</div><div class="bose-cc-step"><b>٢</b>اكتب لنا لو عندك حساسية من أي أكل</div><div class="bose-cc-step"><b>٣</b>واستنى طلبك يوصلك طازة</div></div><h2 class="bose-cc-all-title">كل الأصناف</h2>'));
                 wrap.innerHTML = html;
                 var hdr = document.querySelector('.category-hero-header');
                 if (hdr) hdr.style.display = 'none';
