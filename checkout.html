@@ -1206,6 +1206,8 @@
                         ? `طلبك كله من قسم الفوري (جاهز دلوقتي)، فأقرب موعد استلام أو توصيل بعد ${fmtLeadAr(fawriLeadHours)} من وقت تأكيد الطلب، وبس خلال مواعيد الشغل.`
                         : _giftOnlyLead
                         ? `الهدايا والزينة بتتجهز مخصوص لطلبك، فأقرب موعد استلام أو توصيل بعد ${fmtLeadAr(customLeadHours)} من وقت تأكيد الطلب. يفضّل تطلبي قبل المناسبة بأسبوع.`
+                        : (!hasCustomItemForDate && typeof window.boseIsFawriCartItem === "function" && cartArrForDate.some(window.boseIsFawriCartItem))
+                        ? `سلتك فيها منتجات من الفوري ومعاها منتجات عادية (${cartArrForDate.filter((it) => !window.boseIsFawriCartItem(it)).map((it) => it.title).join("، ")})، والمنتجات العادية بتحتاج ${fmtLeadAr(regularLeadHours)} تحضير، فأقرب موعد للطلب كله بعد ${fmtLeadAr(regularLeadHours)}. لو عايزة تستلمي خلال ${fmtLeadAr(fawriLeadHours)}، شيلي المنتجات العادية من السلة واطلبي الفوري لوحده.`
                         : hasCustomItemForDate
                         ? `مواعيدنا ثابتة لكل العملاء: التورت والورد المخصص من المحاكي بيحتاج تحضير أطول، فأقرب موعد استلام أو توصيل ليه بعد ${fmtLeadAr(customLeadHours)} من وقت تأكيد الطلب.`
                         : `مواعيدنا ثابتة لكل العملاء: أقرب موعد استلام أو توصيل للمنتجات العادية بعد ${fmtLeadAr(regularLeadHours)} من وقت تأكيد الطلب، عشان نجهز طلبك طازة وبأفضل جودة.`;
