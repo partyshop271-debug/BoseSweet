@@ -119,3 +119,12 @@
 .fw-price-old { font-size: 1.15rem; font-weight: 700; color: #B3261E; }
 .fw-price-old s { text-decoration-thickness: 2px; text-decoration-color: #B3261E; }
 .fw-price-save { padding: 3px 10px; border-radius: 999px; background: rgba(var(--bose-pink-rgb), 0.22); font-size: 0.85rem; font-weight: 800; color: var(--bose-black); }
+
+/* اختيار أكتر من نكهة */
+.fw-opt-hint { font-weight: 600; font-size: 0.82rem; color: rgba(17,17,17,0.65); }
+.fw-flavors { display: grid; gap: 8px; }
+.fw-flavor { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 6px 6px 6px 12px; border: 1.5px solid rgba(var(--bose-pink-rgb), 0.45); border-radius: 14px; background: #fff; }
+.fw-flavor.is-picked { background: rgba(var(--bose-pink-rgb), 0.22); border-color: var(--bose-pink); }
+.fw-flavor-name { font-weight: 800; }
+.fw-qty-sm button { width: 42px; height: 42px; }
+.fw-pick-total { margin: 2px 0 0; font-weight: 800; }
