@@ -112,3 +112,10 @@
 .fw-shifa-list { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
 .fw-shifa-list li { position: relative; padding-inline-start: 22px; font-weight: 700; line-height: 1.7; }
 .fw-shifa-list li::before { content: "\2713"; position: absolute; inset-inline-start: 0; color: var(--bose-pink); font-weight: 900; }
+
+/* السعر الأصلي المشطوب جنب السعر الحالي */
+.fw-price-row { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 12px; }
+.fw-price-row .fw-price { font-size: 1.6rem; font-weight: 900; color: var(--bose-black); }
+.fw-price-old { font-size: 1.15rem; font-weight: 700; color: #B3261E; }
+.fw-price-old s { text-decoration-thickness: 2px; text-decoration-color: #B3261E; }
+.fw-price-save { padding: 3px 10px; border-radius: 999px; background: rgba(var(--bose-pink-rgb), 0.22); font-size: 0.85rem; font-weight: 800; color: var(--bose-black); }
