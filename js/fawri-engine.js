@@ -168,6 +168,7 @@
         var left = Number(p.stockQuantity) || 0;
         var img = safeUrl(p.images && p.images[0]) || "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png";
         var price = Math.round(unitPrice(p));
+        var oldPrice = Math.round(Number(p.oldPrice) || 0);
         var id = esc(p.id);
 
         var topsHTML = "";
@@ -185,7 +186,10 @@
             '<div class="fw-card-body">' +
             '<h2 class="fw-card-title">' + esc(p.title) + "</h2>" +
             (p.flavorName ? '<p class="fw-card-flavor">' + esc(p.flavorName) + "</p>" : "") +
+            '<div class="fw-price-row">' +
+            (oldPrice > price ? '<span class="fw-price-old" aria-label="السعر الأصلي ' + oldPrice + ' جنيه"><s>' + oldPrice + ' جنيه</s></span>' : "") +
             '<div class="fw-price">' + price + "<small>جنيه</small></div>" +
+            (oldPrice > price ? '<span class="fw-price-save">وفّرتي ' + (oldPrice - price) + ' جنيه</span>' : "") + "</div>" +
             topsHTML +
             '<div class="fw-row">' +
             '<div class="fw-qty"><button type="button" data-fw-act="minus" aria-label="نقّصي"' + (st.qty <= 1 ? " disabled" : "") + '>−</button>' +
