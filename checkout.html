@@ -1202,7 +1202,13 @@
                 // سحب نص حارس الوقت الصحيح المطابق لنوع الطلب لتعريف العميل برحلة الإتقان الصادقة للبراند
                 if (prepMsgNode) {
                     const _giftOnlyLead = hasCustomItemForDate && typeof window.boseCartHasTrueCustomItem === "function" && !window.boseCartHasTrueCustomItem(cartArrForDate);
-                    prepMsgNode.textContent = isFawriCart
+                    const _earliestPickupForMsg = typeof window.boseCartEarliestPickup === "function" ? window.boseCartEarliestPickup(cartArrForDate) : null;
+                    const _earliestMsg = _earliestPickupForMsg
+                        ? `طلبك ده بيتسلّم بداية من ${_earliestPickupForMsg.toLocaleDateString("ar-EG", { weekday: "long", day: "numeric", month: "long" })} الساعة ${_earliestPickupForMsg.getHours() % 12 || 12} ${_earliestPickupForMsg.getHours() < 12 ? "صباحًا" : "مساءً"} بإذن الله، فاختاري ميعاد من وقتها (وبس خلال مواعيد الشغل).`
+                        : "";
+                    prepMsgNode.textContent = (isFawriCart && _earliestMsg)
+                        ? _earliestMsg
+                        : isFawriCart
                         ? `طلبك كله من قسم الفوري (جاهز دلوقتي)، فأقرب موعد استلام أو توصيل بعد ${fmtLeadAr(fawriLeadHours)} من وقت تأكيد الطلب، وبس خلال مواعيد الشغل.`
                         : _giftOnlyLead
                         ? `الهدايا والزينة بتتجهز مخصوص لطلبك، فأقرب موعد استلام أو توصيل بعد ${fmtLeadAr(customLeadHours)} من وقت تأكيد الطلب. يفضّل تطلبي قبل المناسبة بأسبوع.`
