@@ -2589,6 +2589,15 @@
         const selectedDateTime = new Date(`${dateStr}T${timeStr}`);
         const currentDateTime = new Date(Date.now() + (window.boseServerTimeOffset || 0));
         if (selectedDateTime <= currentDateTime) return false;
+        // 🤍 [أقرب استلام لصنف معيّن]: صنف فوري ممكن يحدد options.earliestPickup (مثال: عرض القشطوطة بنية الشفاء بيتسلّم بكرة 9 صباحًا).
+        // نقطة الفحص دي هي اللي بتغذّي أقرب تاريخ في الشيك أوت والساعات المتاحة وفحص الإرسال، فمستحيل العميلة تختار ميعاد أقرب منه.
+        try {
+            if (typeof window.boseCartEarliestPickup === "function") {
+                const _cartForEarliest = JSON.parse(localStorage.getItem("bose_cart") || "[]");
+                const _earliestPickup = window.boseCartEarliestPickup(_cartForEarliest);
+                if (_earliestPickup && selectedDateTime < _earliestPickup) return false;
+            }
+        } catch (e) { /* نكمّل بالقواعد العادية */ }
         const rules = window.BoseStoreData?.orderRules || {};
         // ⚡ [قسم الفوري]: isCustomOrder بقت "وضع جدولة": true = مخصص، "fawri" = سلة كلها فوري
         // (وقت تجهيز قصير - نفس رقم السيرفر minPreparationTimeHoursFawri، الافتراضي ساعة)، أي حاجة تانية = عادي.
@@ -2704,6 +2713,19 @@
     // السلة "فوري بس" = كل عناصرها فوري (أي منتج عادي معاها بيرجّعها للقواعد العادية - نفس قاعدة السيرفر).
     window.boseCartIsFawriOnly = function(cart) {
         return Array.isArray(cart) && cart.length > 0 && cart.every(window.boseIsFawriCartItem);
+    };
+    // 🤍 أبعد "أقرب موعد استلام" بين أصناف السلة الفورية (customDetails.earliestPickup، تاريخ+وقت محلي) أو null لو مفيش.
+    window.boseCartEarliestPickup = function(cart) {
+        if (!Array.isArray(cart)) return null;
+        let latest = null;
+        cart.forEach(function(item) {
+            if (!window.boseIsFawriCartItem(item)) return;
+            const raw = item.customDetails && item.customDetails.earliestPickup;
+            if (!raw) return;
+            const d = new Date(String(raw));
+            if (!isNaN(d.getTime()) && (!latest || d > latest)) latest = d;
+        });
+        return latest;
     };
     // وضع الجدولة اللي بيتمرر لـ validateBoseDeliverySchedule وباقي دوال المواعيد: true | "fawri" | false
     window.boseCartScheduleMode = function(cart) {
@@ -4477,4 +4499,64 @@
         showSlide(0);
         start();
     };
+})();
+
+/* 🤍 [إعلان "بنية شفاء" - بوب-أب بالدعاء لكل زائر مرة في الجلسة]
+   بيتفعّل تلقائيًا بس لو فيه صنف فوري متاح فيه options.shifa (من الداتابيز)، وبيختفي لوحده لما الكمية تخلص
+   أو الفوري يتقفل. مبيظهرش في السلة/الدفع/تتبع الطلب/صفحة الفوري نفسها (فيها الصندوق الخاص بيه). */
+(function () {
+    "use strict";
+    var SKIP = ["checkout.html", "cart.html", "order-success.html", "fawri.html", "track-order.html"];
+    var page = (location.pathname.split("/").pop() || "index.html").toLowerCase();
+    if (SKIP.indexOf(page) !== -1 || location.pathname.indexOf("/admin") === 0) return;
+
+    function esc(s) {
+        return String(s === null || s === undefined ? "" : s)
+            .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+
+    function show(p) {
+        var n = p.options.shifa || {};
+        var key = "bose_shifa_seen_" + p.id;
+        try { if (sessionStorage.getItem(key)) return; sessionStorage.setItem(key, "1"); } catch (e) { /* نكمّل */ }
+        if (document.getElementById("bose-shifa-backdrop")) return;
+
+        var details = Array.isArray(n.details) ? n.details : [];
+        var wrap = document.createElement("div");
+        wrap.id = "bose-shifa-backdrop";
+        wrap.className = "bose-shifa-backdrop";
+        wrap.innerHTML =
+            '<div class="bose-shifa-box" role="dialog" aria-modal="true" aria-labelledby="bose-shifa-title">' +
+            '<button type="button" class="bose-shifa-x" data-shifa-close aria-label="إغلاق">&times;</button>' +
+            '<div class="bose-shifa-ic" aria-hidden="true">🤍</div>' +
+            '<h2 id="bose-shifa-title">' + esc(n.title || "") + '</h2>' +
+            '<p class="bose-shifa-dua">' + esc(n.dua || "") + '</p>' +
+            (details.length ? '<ul class="bose-shifa-list">' + details.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>" : "") +
+            '<a class="bose-shifa-btn" href="/fawri.html">آمين 🤲 شوفي العرض واطلبي</a>' +
+            '<button type="button" class="bose-shifa-skip" data-shifa-close>إغلاق</button>' +
+            '</div>';
+        function close() {
+            document.removeEventListener("keydown", onKey);
+            if (wrap.parentNode) wrap.parentNode.removeChild(wrap);
+        }
+        function onKey(e) { if (e.key === "Escape") close(); }
+        wrap.addEventListener("click", function (e) {
+            if (e.target === wrap || (e.target.closest && e.target.closest("[data-shifa-close]"))) close();
+        });
+        document.addEventListener("keydown", onKey);
+        document.body.appendChild(wrap);
+    }
+
+    function run() {
+        if (!window.BoseSupabase || typeof window.BoseSupabase.loadBoseFawriData !== "function") return;
+        window.BoseSupabase.loadBoseFawriData().then(function (d) {
+            if (!d || !d.settings || d.settings.isOpen === false) return;
+            var list = (d.products || []).filter(function (x) { return x && x.options && x.options.shifa; });
+            if (list.length) show(list[0]);
+        }).catch(function () { /* الإعلان اختياري - نتجاهل أي فشل */ });
+    }
+
+    if (document.readyState === "complete") setTimeout(run, 800);
+    else window.addEventListener("load", function () { setTimeout(run, 800); });
 })();

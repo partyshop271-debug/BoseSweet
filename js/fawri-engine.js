@@ -77,6 +77,17 @@
         return hours === 1 ? "ساعة" : hours + " ساعة";
     }
 
+    function earliestOf(products) {
+        var best = null;
+        (products || []).forEach(function (p) {
+            var raw = p && p.options && p.options.earliestPickup;
+            if (!raw) return;
+            var d = new Date(String(raw));
+            if (!isNaN(d.getTime()) && (!best || d > best)) best = d;
+        });
+        return best;
+    }
+
     function renderPerks() {
         if (!perksEl) return;
         var rules = (window.BoseStoreData && window.BoseStoreData.orderRules) || {};
@@ -84,12 +95,15 @@
         var lead = isFinite(raw) && raw >= 0 ? raw : 1;
         var start = rules.businessHoursStart || "09:00";
         var end = rules.businessHoursEnd || "22:00";
+        var earliest = earliestOf(data.products);
         function perk(icon, title, sub) {
             return '<div class="fw-perk"><span class="fw-perk-ic"><i class="fa-solid ' + icon + '"></i></span>' +
                 '<strong>' + esc(title) + '</strong><small>' + esc(sub) + "</small></div>";
         }
         perksEl.innerHTML =
-            perk("fa-bolt", "جاهز خلال " + leadLabel(lead), "من تأكيد طلبك") +
+            (earliest
+                ? perk("fa-calendar-check", "الاستلام " + earliest.toLocaleDateString("ar-EG", { weekday: "long", day: "numeric", month: "long" }), "ابتداءً من " + fmtHour(("0" + earliest.getHours()).slice(-2) + ":" + ("0" + earliest.getMinutes()).slice(-2)))
+                : perk("fa-bolt", "جاهز خلال " + leadLabel(lead), "من تأكيد طلبك")) +
             perk("fa-clock", "كل يوم", "من " + fmtHour(start) + " لحد " + fmtHour(end)) +
             perk("fa-store", "استلام أو توصيل", "اختاري اللي يناسبك");
         perksEl.hidden = false;
@@ -107,6 +121,19 @@
             '<span><i class="fa-solid fa-cake-candles"></i> ' + items + (items === 1 ? " صنف جاهز" : " أصناف جاهزة") + "</span>" +
             '<span><i class="fa-solid fa-box-open"></i> باقي ' + pieces + (pieces === 1 ? " قطعة" : " قطع") + " بس</span>";
         statsEl.hidden = false;
+    }
+
+    function renderShifa() {
+        var el = document.getElementById("fw-shifa");
+        if (!el) return;
+        var p = data.products.filter(function (x) { return x && x.options && x.options.shifa; })[0];
+        if (!p || data.settings.isOpen === false) { el.hidden = true; el.innerHTML = ""; return; }
+        var n = p.options.shifa;
+        var details = Array.isArray(n.details) ? n.details : [];
+        el.innerHTML = '<div class="fw-shifa-ic" aria-hidden="true">🤍</div>' +
+            '<div class="fw-shifa-body"><h2>' + esc(n.title || "") + '</h2><p class="fw-shifa-dua">' + esc(n.dua || "") + '</p>' +
+            (details.length ? '<ul class="fw-shifa-list">' + details.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>" : "") + "</div>";
+        el.hidden = false;
     }
 
     function showState(icon, title, text, withMenuBtn) {
@@ -173,6 +200,7 @@
         var s = data.settings;
         applyHero();
         renderHeroStats();
+        renderShifa();
         if (s.isOpen === false) { lastSig = "closed"; showState("fa-moon", "الفوري واقف دلوقتي", "هنفتحه تاني قريب. لحد وقتها تقدري تطلبي من المنيو الكامل.", true); return; }
         if (!data.products.length) { lastSig = "empty"; showState("fa-box-open", "القطع الفورية خلصت دلوقتي", "كل اللي جهزناه اتباع 💗 رجعي بعد شوية تلحقي الدفعة الجديدة، أو اطلبي من المنيو الكامل.", true); return; }
 
@@ -221,6 +249,7 @@
             item.id = lineId;
             item.customDetails = item.customDetails || {};
             item.customDetails.fawri = true;
+            if (p.options && p.options.earliestPickup) item.customDetails.earliestPickup = String(p.options.earliestPickup);
             if (st.topping) item.customDetails.fawriTopping = st.topping;
             cart.push(item);
         }
@@ -264,6 +293,7 @@
         return window.BoseSupabase.loadBoseFawriData().then(function (d) {
             data = d;
             loadedOnce = true;
+            renderPerks();
             render(!!force);
         }).catch(function (err) {
             console.warn("تعذر تحميل بيانات الفوري:", err);
