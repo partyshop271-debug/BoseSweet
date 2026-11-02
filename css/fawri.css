@@ -102,3 +102,13 @@
     .fw-perk small { font-size: 0.74rem; }
 }
 @media (prefers-reduced-motion: reduce) { .fw-dot { animation: none; } .fw-btn { transition: none; } }
+
+/* صندوق الدعاء - عرض "بنية شفاء" */
+.fw-shifa { display: flex; gap: 14px; align-items: flex-start; margin-top: 14px; padding: 18px 16px; border-radius: 20px; background: #fff; border: 1.5px solid rgba(var(--bose-pink-rgb), 0.55); }
+.fw-shifa[hidden] { display: none; }
+.fw-shifa-ic { font-size: 2rem; line-height: 1; flex-shrink: 0; }
+.fw-shifa-body h2 { margin: 0 0 8px; font-size: 1.2rem; font-weight: 900; }
+.fw-shifa-dua { margin: 0 0 12px; font-size: 1.05rem; line-height: 2; color: var(--bose-black); }
+.fw-shifa-list { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.fw-shifa-list li { position: relative; padding-inline-start: 22px; font-weight: 700; line-height: 1.7; }
+.fw-shifa-list li::before { content: "\2713"; position: absolute; inset-inline-start: 0; color: var(--bose-pink); font-weight: 900; }
