@@ -221,7 +221,10 @@
         );
         if (cd.printImageUrl) addPhoto(cd.printImageUrl, "صورة الطباعة");
         if (cd.replicaImageUrl) addPhoto(cd.replicaImageUrl, "التصميم المرجعي");
-        if (item.reference_images && item.reference_images.length) {
+        // 🖼️ الأصناف الجاهزة (قشطوطة/كيك/...) كانت بتحفظ صورة المنتج نفسها كـ"مرجعية" - مش صورة العميلة،
+        // فنخفيها (حتى في الأوردرات القديمة). الصور المرفوعة فعلًا من المحاكيات بتفضل ظاهرة.
+        const isReadyMade = !item.item_type || item.item_type === "standard" || item.item_type === "ready-made";
+        if (!isReadyMade && item.reference_images && item.reference_images.length) {
             item.reference_images.forEach((url, i) => addPhoto(url, `صورة مرجعية ${item.reference_images.length > 1 ? i + 1 : ""}`.trim()));
         }
 
