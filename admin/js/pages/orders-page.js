@@ -221,10 +221,8 @@
         );
         if (cd.printImageUrl) addPhoto(cd.printImageUrl, "صورة الطباعة");
         if (cd.replicaImageUrl) addPhoto(cd.replicaImageUrl, "التصميم المرجعي");
-        // 🖼️ الأصناف الجاهزة (قشطوطة/كيك/...) كانت بتحفظ صورة المنتج نفسها كـ"مرجعية" - مش صورة العميلة،
-        // فنخفيها (حتى في الأوردرات القديمة). الصور المرفوعة فعلًا من المحاكيات بتفضل ظاهرة.
-        const isReadyMade = !item.item_type || item.item_type === "standard" || item.item_type === "ready-made";
-        if (!isReadyMade && item.reference_images && item.reference_images.length) {
+        // طلبات قديمة اتسجّل فيها صورة كتالوج المنتج كـ"مرجعية" (فوري) فكانت بتضلل - مش بنعرضها
+        if (item.reference_images && item.reference_images.length && !cd.fawri) {
             item.reference_images.forEach((url, i) => addPhoto(url, `صورة مرجعية ${item.reference_images.length > 1 ? i + 1 : ""}`.trim()));
         }
 
@@ -241,12 +239,13 @@
 
     function orderItemRowHTML(item) {
         const e = window.BoseAdminUI.escapeHtml;
-        const isCustom = item.custom_details && Object.keys(item.custom_details).length > 0;
+        // "طلب مخصص (محاكي)" للتورت/الورد المخصص بس - مش لأي صنف custom_details بتاعه فيه بيانات (زي الفوري)
+        const isCustom = ["custom-cake", "mini-cake", "custom-flower"].indexOf(item.item_type) !== -1;
         const metaParts = [];
         if (item.flavor_name) metaParts.push(e(item.flavor_name));
         if (isCustom) metaParts.push("طلب مخصص (محاكي)");
         return `
-            <div class="adm-oi">
+            <div class="adm-oi"${item.product_id ? ` data-product-id="${e(item.product_id)}"` : ""}>
                 <div class="adm-oi-head">
                     <div class="adm-oi-title">
                         <span class="adm-oi-qty" title="الكمية">×${e(item.quantity)}</span>
@@ -255,6 +254,7 @@
                     <div class="adm-oi-price">${money(item.line_total)}</div>
                 </div>
                 ${metaParts.length ? `<div class="adm-oi-meta">${metaParts.join(" · ")}</div>` : ""}
+                <div class="adm-oi-product-img" hidden></div>
                 ${customDetailsBlockHTML(item)}
             </div>`;
     }
@@ -431,6 +431,32 @@
                 </div>
             </div>`;
         document.body.appendChild(overlay);
+
+        // 🖼️ صورة المنتج الحقيقية لكل صنف في الطلب (من جدول المنتجات) - عشان الفرع يتأكد من الصنف المطلوب بالنظر
+        (async function hydrateProductImages() {
+            try {
+                const rows = [...overlay.querySelectorAll(".adm-oi[data-product-id]")];
+                if (!rows.length || !window.BoseAdmin || !window.BoseAdmin.getProductImagesByIds) return;
+                const map = await window.BoseAdmin.getProductImagesByIds(rows.map((r) => r.getAttribute("data-product-id")));
+                rows.forEach((r) => {
+                    const url = map[r.getAttribute("data-product-id")];
+                    const box = r.querySelector(".adm-oi-product-img");
+                    if (!url || !box) return;
+                    const isFawri = String(r.getAttribute("data-product-id")).indexOf("fawri-") === 0;
+                    const a = document.createElement("a");
+                    a.className = "adm-oi-photo";
+                    a.href = url; a.target = "_blank"; a.rel = "noopener";
+                    a.title = "افتح الصورة بحجمها الكامل";
+                    const img = document.createElement("img");
+                    img.src = url; img.alt = "صورة المنتج"; img.loading = "lazy";
+                    const cap = document.createElement("span");
+                    cap.textContent = isFawri ? "صورة المنتج (النكهة المطلوبة مكتوبة فوق)" : "صورة المنتج";
+                    a.appendChild(img); a.appendChild(cap);
+                    box.appendChild(a);
+                    box.hidden = false;
+                });
+            } catch (_) { /* الصورة إضافية - مش لازم توقف عرض الطلب */ }
+        })();
 
         // 🌗 خلفية فاتحة/غامقة لمودال الطلب (اختيارها بيتحفظ على الجهاز) - للراحة في القراءة
         (function setupOrderThemeToggle() {
