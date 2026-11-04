@@ -1278,6 +1278,8 @@ html.adm-ready .adm-auth-gate { display: none; }
 .adm-oi-spec-row.is-warn { background: var(--adm-warning-bg); border: 1px solid var(--adm-warning); }
 .adm-oi-spec-row.is-warn dt, .adm-oi-spec-row.is-warn dd { color: var(--adm-warning); }
 
+.adm-oi-product-img { margin-top: 8px; }
+.adm-oi-product-img[hidden] { display: none; }
 .adm-oi-photos { display: flex; gap: 10px; flex-wrap: wrap; }
 .adm-oi-photo {
     display: flex; flex-direction: column; align-items: center; gap: 4px;
