@@ -292,7 +292,12 @@
             custom_details: item.customDetails || {},
             // 🛡️ هنا بالتحديد رابط الصورة المرفوعة (Cloudinary) بيتسجل فعلياً
             // مربوطاً بالطلب في قاعدة البيانات، بدل ما يضيع بعد الإرسال
-            reference_images: item.image && item.image.startsWith("http")
+            // 🖼️ [إصلاح - صور مرجعية مضللة]: صورة المنتج الجاهز (كتالوج) مش "صورة مرجعية من العميلة".
+            // قبل كده كانت بتتسجل مع أي صنف (حتى الفوري/الجاهز) فكل نكهات القشطوطة كانت بتظهر للفرع بنفس صورة المانجا
+            // مهما كانت النكهة المطلوبة. دلوقتي صورة التصميم بتتسجل بس للتورت/الورد المخصص، وباقي الأصناف بتسجّل
+            // اللي العميلة رفعته فعلاً (referenceImages) لو فيه.
+            reference_images: (["custom-cake", "mini-cake", "custom-flower"].indexOf(item.type) !== -1
+                && item.image && item.image.startsWith("http"))
                 ? [item.image]
                 : (item.referenceImages || []),
         }));
