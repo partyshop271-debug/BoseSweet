@@ -572,6 +572,25 @@
         return digits.slice(-10);
     }
 
+    /**
+     * 🖼️ صور المنتجات اللي في طلب (أول صورة لكل product_id) - بتتجاب لحظة فتح الطلب من جدول products
+     * نفسه، فتظهر صورة المنتج الحقيقية حتى للطلبات القديمة. {productId: imageUrl}
+     */
+    async function getProductImagesByIds(ids) {
+        const list = [...new Set((ids || []).filter(Boolean))];
+        if (!list.length) return {};
+        try {
+            const { data, error } = await client.from("products").select("id, images").in("id", list);
+            if (error) throw error;
+            const map = {};
+            (data || []).forEach((p) => { const img = (p.images || [])[0]; if (img) map[p.id] = img; });
+            return map;
+        } catch (e) {
+            console.warn("تعذر جلب صور منتجات الطلب:", e.message);
+            return {};
+        }
+    }
+
     async function getReviewFollowups() {
         try {
             const { data, error } = await client
@@ -1758,6 +1777,7 @@
         confirmOrderDeposit,
         getAwaitingDepositCount,
         getReviewFollowups,
+        getProductImagesByIds,
         markReviewReminderSent,
         markCustomerGoogleReviewed,
         getAllCategories,
