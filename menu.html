@@ -10,7 +10,7 @@
     <title>المنيو الشامل | حلويات بوسي</title>
     
     <!-- 🔍 إعدادات تحسين محركات البحث والأرشفة الفاخرة SEO -->
-    <meta name="description" content="منصة بيع إلكترونية متكاملة لعلامة حلويات بوسي الفاخرة. استمتع بتجربة تسوق فريدة وتصفح المنيو الشامل المكون من 12 فئة معتمدة.">
+    <meta name="description" content="منصة بيع إلكترونية متكاملة لعلامة حلويات بوسي الفاخرة. استمتع بتجربة تسوق فريدة وتصفح المنيو الشامل المكون من 13 فئة معتمدة.">
     <meta name="keywords" content="حلويات, تورت, بوكس هدايا, كاب كيك, سينابون, ورد, دوناتس, حلويات بوسي, منيو">
     
     <!-- 📱 علامات Open Graph الكاملة لمشاركات فخمة وااحترافية -->
@@ -265,9 +265,9 @@
     <script>
         // 1. مصفوفة البيانات الثابتة والاحتياطية المطابقة حرفياً للـ JSON لمنع شلل الصفحة
         // 🐛 [إصلاح - كل الفئات بنفس صورة اللوجو]: النسخة القديمة كانت بتحط نفس رابط
-        // اللوجو الافتراضي كصورة لكل الـ 12 فئة، فأول ما الصفحة تفتح على نت بطيء (قبل
+        // اللوجو الافتراضي كصورة لكل الـ 13 فئة، فأول ما الصفحة تفتح على نت بطيء (قبل
         // ما بيانات القاعدة توصل)، العميلة كانت تشوف 12 كارت بنفس الصورة بالظبط - يضرب
-        // بالظبط الوعد اللي بنقوله في وصف الصفحة ("12 فئة واضحة بالصور"). دلوقتي كل
+        // بالظبط الوعد اللي بنقوله في وصف الصفحة ("13 فئة واضحة بالصور"). دلوقتي كل
         // فئة معاها صورة الغلاف الحقيقية الحالية بتاعتها (لقطة من قاعدة البيانات وقت
         // الإصلاح) - لو الأدمن غيّرت صورة فئة بعدين، القيمة الحية من القاعدة هتاخد
         // الأولوية فورًا زي العادة، والقيمة هنا تفضل بس احتياطية لثواني التحميل الأولى.
@@ -280,13 +280,14 @@
             { "id": "taswaq-donuts", "title": "الدوناتس", "builderType": "standard", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1786538804/jvrsonhvs4krscdeufqe.jpg" },
             { "id": "taswaq-red-velvet", "title": "الريدڤيلڤت", "builderType": "standard", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1786558102/k356h2nth4etqulwp1ve.jpg" },
             { "id": "taswaq-cupcake", "title": "الكب كيك", "builderType": "standard", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1786535145/bqdmgckrwf9fkk6l8t3y.jpg" },
+            { "id": "taswaq-cake-pops", "title": "كيك بوبس", "builderType": "standard", "image": "/images/cake-pops/cp-category.jpg" },
             { "id": "taswaq-mini-cake", "title": "الميني تورت", "builderType": "standard", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1786550787/fmlydrm06aouejbzqmop.jpg" },
             { "id": "taswaq-flowers", "title": "الورد", "builderType": "flower-customizer", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1786534388/uwfvmw3v1kvgmjrt0glp.jpg" },
             { "id": "taswaq-happiness-cups", "title": "كبات السعادة", "builderType": "standard", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1786532150/gx3hmliy2p6kksej4izz.jpg" },
             { "id": "taswaq-relax-box", "title": "البوكسات", "builderType": "standard", "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1786531957/oetxazx8wvpa4jrss7zs.jpg" }
         ];
 
-        // 2. دالة بناء وحقن الكروت بالوزن البصري المطلوب والأبعاد الصارمة للـ 12 فئة معتمدة
+        // 2. دالة بناء وحقن الكروت بالوزن البصري المطلوب والأبعاد الصارمة للـ 13 فئة معتمدة
         function renderBoseMenuGrid(categoriesList) {
             const grid = document.getElementById("bose-menu-categories-grid");
             if (!grid || !categoriesList || categoriesList.length === 0) return;

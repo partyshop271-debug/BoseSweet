@@ -78,7 +78,7 @@
 
         <div class="lib-grid">
             <a class="lib-card" href="/menu.html"><span class="lib-ic ic-pink"><i class="fa-solid fa-book-open"></i></span>المنيو</a>
-            <a class="lib-card" href="/offers.html"><span class="lib-ic ic-pink"><i class="fa-solid fa-tags"></i></span>العروض</a>
+            <a class="lib-card" id="lib-offers-link" href="/offers.html" style="display:none;"><span class="lib-ic ic-pink"><i class="fa-solid fa-tags"></i></span>العروض</a>
             <a class="lib-card" href="/cake-builder.html"><span class="lib-ic ic-soft"><i class="fa-solid fa-cake-candles"></i></span>صممي تورتتك</a>
 
             <a class="lib-card" href="/flower-builder.html"><span class="lib-ic ic-soft"><i class="fa-solid fa-seedling"></i></span>بوكيه ورد</a>
@@ -128,6 +128,16 @@
                     link.href = buildLinkinbioWhatsappUrl(toIntl(number));
                     const callLink = document.getElementById("lib-call-link");
                     if (callLink) callLink.href = "tel:+" + toIntl(number);
+
+                    // 🏷️ كارت العروض: بيظهر بس وقت وجود عرض شغال (نفس شرط الرئيسية)
+                    const offersLink = document.getElementById("lib-offers-link");
+                    if (offersLink && data) {
+                        const now = Date.now();
+                        const promos = (data.quantityPromos || []).some((r) => r && r.is_active !== false && (!r.ends_at || new Date(r.ends_at).getTime() > now));
+                        const offerIds = new Set((data.offers || []).map((o) => o.product_id));
+                        const priced = (data.products || []).some((p) => offerIds.has(p.id) && p.oldPrice && p.oldPrice > p.price && p.isAvailable !== false);
+                        if (promos || priced) offersLink.style.display = "";
+                    }
                 } catch (e) { /* الصفحة تفضل شغالة بالرقم الافتراضي لو فشل الاتصال بالقاعدة */ }
             }
 

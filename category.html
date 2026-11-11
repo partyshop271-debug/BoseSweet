@@ -827,6 +827,8 @@
                 if (!cat || !products || !products.length) return;
                 var isMini = cat.id === 'taswaq-mini-cake';
                 var isCupcake = cat.id === 'taswaq-cupcake';
+                var isBoxes = cat.id === 'taswaq-relax-box';
+                var isCakePops = cat.id === 'taswaq-cake-pops';
                 var esc = typeof window.escapeBoseHTML === 'function' ? window.escapeBoseHTML : function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]; }); };
                 var okUrl = function (u) { return typeof u === 'string' && /^https?:\/\//.test(u); };
                 var opt = function (u, w) { return (typeof window.optimizeBoseImageUrl === 'function') ? window.optimizeBoseImageUrl(u, w) : u; };
@@ -866,7 +868,7 @@
                     + (heroImg ? '<div class="bose-cc-hero__media"><img class="bose-cc-hero__img" src="' + esc(opt(heroImg, 1200)) + '" alt="' + esc(heroTitle) + '" fetchpriority="high"></div>' : '')
                     + '<div class="bose-cc-hero__body"><div class="bose-cc-hero__title">' + esc(heroTitle) + '</div>'
                     + (heroSub ? '<p class="bose-cc-hero__sub" id="bose-cc-sub">' + esc(heroSub) + '</p><button type="button" class="bose-cc-hero__more" id="bose-cc-more">اقرأ المزيد</button>' : '')
-                    + '<button type="button" class="bose-cc-hero__cta" id="bose-cc-cta">' + (isMini ? 'اختار حجمك' : (isCupcake ? 'اطلب دستتك' : 'شوف الأصناف')) + '</button></div></section>';
+                    + '<button type="button" class="bose-cc-hero__cta" id="bose-cc-cta">' + (isMini ? 'اختار حجمك' : (isCupcake ? 'اطلب دستتك' : (isBoxes ? 'اختاري بوكسك' : (isCakePops ? 'اختاري نوعك' : 'شوف الأصناف')))) + '</button></div></section>';
                 var byId = {};
                 products.forEach(function (pr) { byId[pr.id] = pr; });
                 var shelves = [];
@@ -875,6 +877,22 @@
                         { title: 'الأكتر طلباً', ids: ['cupcake-rawaan', 'cupcake-dalaa', 'cupcake-lammet-el-ayla'] },
                         { title: 'صورتك على الكب كيك', ids: ['cupcake-farha', 'cupcake-dalaa'] },
                         { title: 'للمناسبات الكبيرة', ids: ['cupcake-lammet-el-ayla', 'cupcake-shyaka'] }
+                    ];
+                } else if (isCakePops) {
+                    // 🍡 [أرفف الكيك بوبس]: مقسمة حسب نوع الطباعة (اللي هي أول قرار عند العميلة)، وكل صنف دستة 12 قطعة
+                    shelves = [
+                        { title: 'توزيعات المناسبات', ids: ['cakepop-bulk-24', 'cakepop-bulk-36', 'cakepop-bulk-48'] },
+                        { title: 'بصور قابلة للأكل', ids: ['cakepop-fudge-edible', 'cakepop-fudge-nuts-edible', 'cakepop-vanilla-edible', 'cakepop-vanilla-nuts-edible'] },
+                        { title: 'بدون طباعة', ids: ['cakepop-fudge', 'cakepop-fudge-nuts', 'cakepop-vanilla', 'cakepop-vanilla-nuts'] },
+                        { title: 'بطباعة غير قابلة للأكل', ids: ['cakepop-fudge-print', 'cakepop-fudge-nuts-print', 'cakepop-vanilla-print', 'cakepop-vanilla-nuts-print'] }
+                    ];
+                } else if (isBoxes) {
+                    // 🎁 [أرفف البوكسات]: مقسمة حسب حاجة العميلة (مناسبة / ذوق / مجموعات من أقسام مختلفة / من نوع واحد) مش حسب ادعاء مبيعات
+                    shelves = [
+                        { title: 'حسب مناسبتك', ids: ['box-family-12', 'box-friends-12', 'box-share-6', 'box-celebration-7', 'box-hospitality-12', 'box-meeting-24'] },
+                        { title: 'حسب ذوقك', ids: ['box-chocolate-6', 'box-light-6', 'box-fruit-8', 'box-luxury-5', 'box-donuts-nutella-6'] },
+                        { title: 'تجمع أكتر من صنف', ids: ['box-dessert-6', 'box-warmth-12', 'box-family-12'] },
+                        { title: 'من نوع واحد', ids: ['box-donuts-6', 'box-cinabon-6', 'box-qashtota-6', 'box-hc-6', 'box-despacito-tri-6'] }
                     ];
                 } else if (!isMini) {
                     // باقي الأقسام: رف "الأكتر طلباً" تلقائي من المنتجات اللي عليها علامة "مميز" (لو القسم فيه أكتر من 4 منتجات)

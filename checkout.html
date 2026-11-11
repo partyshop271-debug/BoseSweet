@@ -472,6 +472,7 @@
                         <label for="checkout-order-notes-textarea" id="bose-order-notes-label-node">ملاحظات عن الطلب أو التوصيل (سكر خفيف، حساسية، علامة مميزة على المنزل...) - اختياري</label>
                         <textarea id="checkout-order-notes-textarea" class="bose-field-capture" placeholder="مثال: سكر خفيف، أو عندي حساسية من المكسرات، أو الدور التالت شقة يمين..."></textarea>
                     </div>
+                
                 </form>
             </div>
 
@@ -521,6 +522,14 @@
                     #bose-cod-info-box #bose-cod-amount small { font-size: 0.85rem; font-weight: 700; margin-inline-start: 6px; }
                     #bose-cod-info-box ol { margin: 8px 0 0; padding: 0 22px 0 0; font-size: 0.85rem; line-height: 1.95; }
                 </style>
+                <!-- 🎁 [مزايا الطلب من الموقع]: بتتملى ديناميكياً من إعدادات الولاء الحية -->
+                <style>
+                    #bose-site-perks { margin: 18px 0 0; padding: 14px 16px; border-radius: 16px; background: rgba(var(--bose-pink-rgb), 0.07); border: 1.5px dashed var(--bose-pink); direction: rtl; text-align: right; font-family: 'Cairo'; color: #111111; line-height: 1.9; font-size: 0.88rem; }
+                    #bose-site-perks strong { display: block; font-size: 0.95rem; margin-bottom: 4px; }
+                    #bose-site-perks a { color: #111111; font-weight: 800; text-decoration: underline; }
+                </style>
+                <div id="bose-site-perks" hidden></div>
+
                 <div id="bose-payment-method-picker" role="radiogroup" aria-label="طريقة الدفع">
                     <div class="bose-pm-title">طريقة الدفع</div>
                     <label class="bose-pm-option" for="bose-pm-cod">
@@ -585,6 +594,7 @@
                 <div id="bose-deposit-payment-box">
                     <div class="bose-pay-head">💳 إزاي أدفع؟ (3 خطوات بسيطة)</div>
                     <p class="bose-pay-intro">حوّلي المبلغ كامل قبل التحضير:</p>
+                    <p class="bose-pay-hint">⏱️ عشان موعدك يفضل محجوز ليكي، حوّلي المبلغ وأكدي الطلب خلال <strong>ساعة</strong>.</p>
 
                     <!-- الخطوة 1: المبلغ -->
                     <div class="bose-pay-step">
@@ -1202,13 +1212,7 @@
                 // سحب نص حارس الوقت الصحيح المطابق لنوع الطلب لتعريف العميل برحلة الإتقان الصادقة للبراند
                 if (prepMsgNode) {
                     const _giftOnlyLead = hasCustomItemForDate && typeof window.boseCartHasTrueCustomItem === "function" && !window.boseCartHasTrueCustomItem(cartArrForDate);
-                    const _earliestPickupForMsg = typeof window.boseCartEarliestPickup === "function" ? window.boseCartEarliestPickup(cartArrForDate) : null;
-                    const _earliestMsg = _earliestPickupForMsg
-                        ? `طلبك ده بيتسلّم بداية من ${_earliestPickupForMsg.toLocaleDateString("ar-EG", { weekday: "long", day: "numeric", month: "long" })} الساعة ${_earliestPickupForMsg.getHours() % 12 || 12} ${_earliestPickupForMsg.getHours() < 12 ? "صباحًا" : "مساءً"} بإذن الله، فاختاري ميعاد من وقتها (وبس خلال مواعيد الشغل).`
-                        : "";
-                    prepMsgNode.textContent = (isFawriCart && _earliestMsg)
-                        ? _earliestMsg
-                        : isFawriCart
+                    prepMsgNode.textContent = isFawriCart
                         ? `طلبك كله من قسم الفوري (جاهز دلوقتي)، فأقرب موعد استلام أو توصيل بعد ${fmtLeadAr(fawriLeadHours)} من وقت تأكيد الطلب، وبس خلال مواعيد الشغل.`
                         : _giftOnlyLead
                         ? `الهدايا والزينة بتتجهز مخصوص لطلبك، فأقرب موعد استلام أو توصيل بعد ${fmtLeadAr(customLeadHours)} من وقت تأكيد الطلب. يفضّل تطلبي قبل المناسبة بأسبوع.`
@@ -1315,6 +1319,104 @@
                 });
             }
         });
+    </script>
+
+    <script>
+    /* 🧠 [تسهيل الطلب المتكرر + مزايا الموقع] - ملف واحد مستقل، أي خطأ فيه ما بيعطّلش الدفع */
+    (function () {
+        "use strict";
+        var KEY = "bose_checkout_profile_v1";
+        // 🔁 نسخة من السلة وقت فتح صفحة الدفع: بعد ما الطلب يتم بنحوّلها لـ "طلبك الأخير" عشان تتكرر بضغطة
+        try { var _rc = localStorage.getItem("bose_cart"); if (_rc && JSON.parse(_rc).length) localStorage.setItem("bose_pending_order_cart", _rc); } catch (e) {}
+
+        function $(id) { return document.getElementById(id); }
+        function load() { try { return JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) { return null; } }
+        function fire(el, type) { try { el.dispatchEvent(new Event(type, { bubbles: true })); } catch (e) {} }
+
+        // ---------- 1) حفظ بيانات العميلة على جهازها بس ----------
+        var saveTimer = null;
+        function save() {
+            clearTimeout(saveTimer);
+            saveTimer = setTimeout(function () {
+                try {
+                    var name = $("checkout-customer-name"), phone = $("checkout-customer-phone"), zone = $("checkout-zone-select"), addr = $("checkout-address-details");
+                    var pickupBtn = $("method-pickup");
+                    var pm = document.querySelector('input[name="bose-payment-method"]:checked');
+                    var profile = {
+                        name: name ? name.value.trim() : "",
+                        phone: phone ? phone.value.trim() : "",
+                        zone: zone ? zone.value : "",
+                        address: addr ? addr.value.trim() : "",
+                        method: (pickupBtn && pickupBtn.classList.contains("active")) ? "pickup" : "delivery",
+                        pm: pm ? pm.value : ""
+                    };
+                    if (profile.name || profile.phone) localStorage.setItem(KEY, JSON.stringify(profile));
+                } catch (e) {}
+            }, 600);
+        }
+        ["checkout-customer-name", "checkout-customer-phone", "checkout-zone-select", "checkout-address-details"].forEach(function (id) {
+            var el = $(id); if (!el) return;
+            el.addEventListener("input", save); el.addEventListener("change", save);
+        });
+        document.addEventListener("click", function (e) {
+            if (e.target.closest && e.target.closest("#method-pickup, #method-delivery, .bose-pm-option")) save();
+        });
+
+        // ---------- 2) تعبئة تلقائية (بس للخانات الفاضية) ----------
+        function prefill() {
+            var p = load(); if (!p) return;
+            var name = $("checkout-customer-name"), phone = $("checkout-customer-phone"), zone = $("checkout-zone-select"), addr = $("checkout-address-details");
+            if (p.method === "pickup") { var pb = $("method-pickup"); if (pb && !pb.classList.contains("active")) pb.click(); }
+            if (name && !name.value && p.name) { name.value = p.name; fire(name, "input"); }
+            if (phone && !phone.value && p.phone) { phone.value = p.phone; fire(phone, "input"); fire(phone, "change"); fire(phone, "blur"); }
+            if (addr && !addr.value && p.address) { addr.value = p.address; fire(addr, "input"); }
+            if (p.pm) { var r = document.querySelector('input[name="bose-payment-method"][value="' + p.pm + '"]'); if (r && !r.checked) r.click(); }
+            // المنطقة بتتحمّل بعد ما البيانات توصل، فبنحاول كذا مرة
+            var tries = 0;
+            (function trySetZone() {
+                if (!zone || !p.zone || zone.value === p.zone) return;
+                var has = Array.prototype.some.call(zone.options, function (o) { return o.value === p.zone; });
+                if (has) { zone.value = p.zone; fire(zone, "change"); return; }
+                if (++tries < 12) setTimeout(trySetZone, 500);
+            })();
+            // رسالة صغيرة تعرّف العميلة وتديها خيار المسح
+            var host = name && name.closest ? name.closest(".input-group-node") : null;
+            if (host && !$("bose-profile-note")) {
+                var note = document.createElement("div");
+                note.id = "bose-profile-note";
+                note.style.cssText = "font-size:0.78rem;opacity:.8;margin-top:6px;direction:rtl;text-align:right;";
+                note.innerHTML = "بياناتك محفوظة على جهازك بس عشان طلبك الجاي أسرع. <a href=\"#\" id=\"bose-profile-clear\" style=\"color:inherit;text-decoration:underline;\">امسحيها</a>";
+                host.appendChild(note);
+                $("bose-profile-clear").addEventListener("click", function (ev) {
+                    ev.preventDefault();
+                    try { localStorage.removeItem(KEY); } catch (e) {}
+                    if (name) name.value = ""; if (phone) phone.value = ""; if (addr) addr.value = "";
+                    note.remove();
+                });
+            }
+        }
+        if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", function () { setTimeout(prefill, 300); });
+        else setTimeout(prefill, 300);
+
+        // ---------- 3) بانر مزايا الموقع (من إعدادات الولاء الحية) ----------
+        function renderPerks() {
+            var box = $("bose-site-perks"); if (!box) return;
+            var d = window.BoseStoreData || {};
+            var loy = d.loyalty || {};
+            if (loy.enabled === false) return;
+            var tiers = (loy.tiers && Object.keys(loy.tiers).length) ? loy.tiers : { "4": 5, "8": 10, "12": 15 };
+            var parts = Object.keys(tiers).map(function (k) { return { n: parseInt(k, 10), p: tiers[k] }; })
+                .filter(function (t) { return !isNaN(t.n); }).sort(function (a, b) { return a.n - b.n; })
+                .map(function (t) { return "خصم " + t.p + "% في طلبك رقم " + t.n; });
+            if (!parts.length) return;
+            box.innerHTML = "<strong>🌸 ليه تطلبي من الموقع؟</strong>" +
+                "موعدك بيتحجز بعد التحويل وتأكيد الطلب، وبتتابعي طلبك خطوة بخطوة. وطلبك بيتحسب في نادي المكافآت: " + parts.join("، ") +
+                " (تلقائي، من غير أكواد، وبرقم موبايلك). <a href=\"/rewards.html\">اعرفي أكتر</a>";
+            box.hidden = false;
+        }
+        if (window.BoseStoreData) renderPerks(); else document.addEventListener("BoseDatabaseLoaded", renderPerks);
+
+    })();
     </script>
 </body>
 </html>
