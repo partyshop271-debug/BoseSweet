@@ -43,7 +43,7 @@
             const descEl = document.getElementById('categories-section-subtitle') || categoriesSection.querySelector('.bose-section-subtitle');
             
             if (titleEl) titleEl.textContent = "تسوق حسب الفئة";
-            if (descEl) descEl.textContent = "قسمنا منيو حلويات بوسي لـ 12 فئة واضحة بالصور، عشان تلاقوا اللي بتحبوه من غير حيرة.";
+            if (descEl) descEl.textContent = "قسمنا منيو حلويات بوسي لـ 13 فئة واضحة بالصور، عشان تلاقوا اللي بتحبوه من غير حيرة.";
             
             const track = document.getElementById('categories-track') || categoriesSection.querySelector('.categories-track-slider') || categoriesSection.querySelector('[id*="track"]');
             if (track) {

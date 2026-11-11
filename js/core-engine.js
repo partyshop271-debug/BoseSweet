@@ -2589,15 +2589,6 @@
         const selectedDateTime = new Date(`${dateStr}T${timeStr}`);
         const currentDateTime = new Date(Date.now() + (window.boseServerTimeOffset || 0));
         if (selectedDateTime <= currentDateTime) return false;
-        // 🤍 [أقرب استلام لصنف معيّن]: صنف فوري ممكن يحدد options.earliestPickup (مثال: عرض القشطوطة بنية الشفاء بيتسلّم بكرة 9 صباحًا).
-        // نقطة الفحص دي هي اللي بتغذّي أقرب تاريخ في الشيك أوت والساعات المتاحة وفحص الإرسال، فمستحيل العميلة تختار ميعاد أقرب منه.
-        try {
-            if (typeof window.boseCartEarliestPickup === "function") {
-                const _cartForEarliest = JSON.parse(localStorage.getItem("bose_cart") || "[]");
-                const _earliestPickup = window.boseCartEarliestPickup(_cartForEarliest);
-                if (_earliestPickup && selectedDateTime < _earliestPickup) return false;
-            }
-        } catch (e) { /* نكمّل بالقواعد العادية */ }
         const rules = window.BoseStoreData?.orderRules || {};
         // ⚡ [قسم الفوري]: isCustomOrder بقت "وضع جدولة": true = مخصص، "fawri" = سلة كلها فوري
         // (وقت تجهيز قصير - نفس رقم السيرفر minPreparationTimeHoursFawri، الافتراضي ساعة)، أي حاجة تانية = عادي.
@@ -2713,19 +2704,6 @@
     // السلة "فوري بس" = كل عناصرها فوري (أي منتج عادي معاها بيرجّعها للقواعد العادية - نفس قاعدة السيرفر).
     window.boseCartIsFawriOnly = function(cart) {
         return Array.isArray(cart) && cart.length > 0 && cart.every(window.boseIsFawriCartItem);
-    };
-    // 🤍 أبعد "أقرب موعد استلام" بين أصناف السلة الفورية (customDetails.earliestPickup، تاريخ+وقت محلي) أو null لو مفيش.
-    window.boseCartEarliestPickup = function(cart) {
-        if (!Array.isArray(cart)) return null;
-        let latest = null;
-        cart.forEach(function(item) {
-            if (!window.boseIsFawriCartItem(item)) return;
-            const raw = item.customDetails && item.customDetails.earliestPickup;
-            if (!raw) return;
-            const d = new Date(String(raw));
-            if (!isNaN(d.getTime()) && (!latest || d > latest)) latest = d;
-        });
-        return latest;
     };
     // وضع الجدولة اللي بيتمرر لـ validateBoseDeliverySchedule وباقي دوال المواعيد: true | "fawri" | false
     window.boseCartScheduleMode = function(cart) {
@@ -3724,6 +3702,21 @@
         const data = window.BoseStoreData;
         if (!data) return;
 
+        // 🏷️ [العروض زي الفوري]: روابط العروض (القائمة الجانبية + الشريط السفلي) بتظهر بس وقت
+        // وجود عرض شغال فعلاً، وبتختفي لوحدها لما العروض تخلص. نفس شرط بلوك العروض بالرئيسية
+        // (renderOffersSection): عرض كمية مفعّل ومخلصش، أو منتج مضاف في جدول offers وسعره
+        // القديم أكبر من الحالي ومتاح. صفحة offers.html نفسها بتفضل موجودة وشغالة.
+        const boseHasLiveOffers = (() => {
+            const now = Date.now();
+            const promos = (Array.isArray(data.quantityPromos) ? data.quantityPromos : []).some((r) =>
+                r && r.is_active !== false && (!r.ends_at || new Date(r.ends_at).getTime() > now));
+            if (promos) return true;
+            const offerIds = new Set((Array.isArray(data.offers) ? data.offers : []).map((o) => o.product_id));
+            if (!offerIds.size) return false;
+            return (Array.isArray(data.products) ? data.products : []).some((p) =>
+                offerIds.has(p.id) && p.oldPrice && p.oldPrice > p.price && p.isAvailable !== false);
+        })();
+
         const headerInjector = document.getElementById('bose-header-injector');
         if (headerInjector) {
             const marqueeMessages = data.navigation?.topBarMessages || ["صنعناها بحب لتهديها لمن تحب", "توصيل طازج يومياً لجميع المناطق"];
@@ -3832,6 +3825,7 @@
                                 <li class="sidebar-link-item"><a href="/category.html?category=taswaq-donuts"><span class="link-main-side"><i class="fa-solid fa-ring main-icon"></i>الدوناتس الهشة</span></a></li>
                                 <li class="sidebar-link-item"><a href="/category.html?category=taswaq-red-velvet"><span class="link-main-side"><i class="fa-solid fa-heart main-icon"></i>الريدڤيلڤت</span></a></li>
                                 <li class="sidebar-link-item"><a href="/category.html?category=taswaq-cupcake"><span class="link-main-side"><i class="fa-solid fa-cookie-bite main-icon"></i>الكب كيك</span></a></li>
+                                <li class="sidebar-link-item"><a href="/category.html?category=taswaq-cake-pops"><span class="link-main-side"><i class="fa-solid fa-birthday-cake main-icon"></i>كيك بوبس</span></a></li>
                                 <li class="sidebar-link-item"><a href="/category.html?category=taswaq-mini-cake"><span class="link-main-side"><i class="fa-solid fa-cubes main-icon"></i>الميني تورت</span></a></li>
                                 <li class="sidebar-link-item"><a href="/flower-builder.html"><span class="link-main-side"><i class="fa-solid fa-spa main-icon"></i>بوكيهات الورد</span></a></li>
                                 <li class="sidebar-link-item"><a href="/category.html?category=taswaq-happiness-cups"><span class="link-main-side"><i class="fa-solid fa-ice-cream main-icon"></i>كبات السعادة</span></a></li>
@@ -3866,12 +3860,12 @@
                                         <i class="fa-solid fa-chevron-left arrow-icon"></i>
                                     </a>
                                 </li>
-                                <li class="sidebar-link-item">
+                                ${boseHasLiveOffers ? `<li class="sidebar-link-item">
                                     <a href="/offers.html" id="sidebar-link-offers">
                                         <span class="link-main-side"><i class="fa-solid fa-tags main-icon"></i>العروض والخصومات</span>
                                         <i class="fa-solid fa-chevron-left arrow-icon"></i>
                                     </a>
-                                </li>
+                                </li>` : ''}
                                 <li class="sidebar-link-item">
                                     <a href="/cake-builder.html" id="sidebar-link-cake-builder">
                                         <span class="link-main-side"><i class="fa-solid fa-cake-candles main-icon"></i>محاكي التورت التفاعلي</span>
@@ -4083,10 +4077,10 @@
                     <i class="fas fa-book-open"></i>
                     <span>المنيو</span>
                 </a>
-                <a href="/offers.html" class="bottom-nav-item bose-bottom-nav-item${isOffers ? ' active' : ''}">
+                ${(boseHasLiveOffers || isOffers) ? `<a href="/offers.html" class="bottom-nav-item bose-bottom-nav-item${isOffers ? ' active' : ''}">
                     <i class="fas fa-tags"></i>
                     <span>العروض</span>
-                </a>
+                </a>` : ''}
                 <a href="/fawri.html" class="bottom-nav-item bose-bottom-nav-item bose-bottom-nav-fawri${isFawri ? ' active' : ''}">
                     <i class="fas fa-bolt"></i>
                     <span>فوري</span>
@@ -4501,62 +4495,177 @@
     };
 })();
 
-/* 🤍 [إعلان "بنية شفاء" - بوب-أب بالدعاء لكل زائر مرة في الجلسة]
-   بيتفعّل تلقائيًا بس لو فيه صنف فوري متاح فيه options.shifa (من الداتابيز)، وبيختفي لوحده لما الكمية تخلص
-   أو الفوري يتقفل. مبيظهرش في السلة/الدفع/تتبع الطلب/صفحة الفوري نفسها (فيها الصندوق الخاص بيه). */
+/* ============================================================================
+ * 🔗 لينك الطلب الجاهز (?add=) + 📊 قياس ضغطات الواتساب
+ * - أي لينك زي  https://bose-sweet.vercel.app/cart.html?add=box-family-12  بيضيف البوكس للسلة
+ *   ويفتح السلة. ممكن أكتر من صنف: ?add=box-family-12:1,box-share-6:2  (الرقم بعد : هو الكمية).
+ *   الأصناف اللي محتاجة اختيار (حجم/حشو/نكهات) بتفتح صفحة الصنف نفسه بدل ما تتضاف غلط.
+ * - كل ضغطة على أي لينك واتساب بتتسجل كحدث whatsapp_click في GA4 وفيسبوك وتيك توك.
+ * ============================================================================ */
 (function () {
     "use strict";
-    var SKIP = ["checkout.html", "cart.html", "order-success.html", "fawri.html", "track-order.html"];
-    var page = (location.pathname.split("/").pop() || "index.html").toLowerCase();
-    if (SKIP.indexOf(page) !== -1 || location.pathname.indexOf("/admin") === 0) return;
 
-    function esc(s) {
-        return String(s === null || s === undefined ? "" : s)
-            .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-    }
+    function runCartLink() {
+        try {
+            var params = new URLSearchParams(window.location.search);
+            var raw = params.get("add");
+            if (!raw || window.__boseCartLinkDone) return;
+            var data = window.BoseStoreData;
+            if (!data || !Array.isArray(data.products) || typeof window.createCartItem !== "function") return;
+            window.__boseCartLinkDone = true;
 
-    function show(p) {
-        var n = p.options.shifa || {};
-        var key = "bose_shifa_seen_" + p.id;
-        try { if (sessionStorage.getItem(key)) return; sessionStorage.setItem(key, "1"); } catch (e) { /* نكمّل */ }
-        if (document.getElementById("bose-shifa-backdrop")) return;
+            var cart = [];
+            try {
+                cart = JSON.parse(localStorage.getItem("bose_cart") || "[]");
+                if (!Array.isArray(cart)) cart = [];
+            } catch (e) { cart = []; }
 
-        var details = Array.isArray(n.details) ? n.details : [];
-        var wrap = document.createElement("div");
-        wrap.id = "bose-shifa-backdrop";
-        wrap.className = "bose-shifa-backdrop";
-        wrap.innerHTML =
-            '<div class="bose-shifa-box" role="dialog" aria-modal="true" aria-labelledby="bose-shifa-title">' +
-            '<button type="button" class="bose-shifa-x" data-shifa-close aria-label="إغلاق">&times;</button>' +
-            '<div class="bose-shifa-ic" aria-hidden="true">🤍</div>' +
-            '<h2 id="bose-shifa-title">' + esc(n.title || "") + '</h2>' +
-            '<p class="bose-shifa-dua">' + esc(n.dua || "") + '</p>' +
-            (details.length ? '<ul class="bose-shifa-list">' + details.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>" : "") +
-            '<a class="bose-shifa-btn" href="/fawri.html">آمين 🤲 شوفي العرض واطلبي</a>' +
-            '<button type="button" class="bose-shifa-skip" data-shifa-close>إغلاق</button>' +
-            '</div>';
-        function close() {
-            document.removeEventListener("keydown", onKey);
-            if (wrap.parentNode) wrap.parentNode.removeChild(wrap);
+            var MAX_QTY = 20;
+            var added = 0;
+            var needsChoiceProduct = null;
+            var unavailable = 0;
+
+            raw.split(",").forEach(function (part) {
+                var bits = part.split(":");
+                var key = "";
+                try { key = decodeURIComponent((bits[0] || "").trim()); } catch (e) { key = (bits[0] || "").trim(); }
+                if (!key) return;
+                var qty = Math.max(1, Math.min(MAX_QTY, parseInt(bits[1], 10) || 1));
+                var p = data.products.find(function (x) { return x.id === key || x.slug === key; });
+                if (!p) return;
+                if (p.isAvailable === false) { unavailable++; return; }
+
+                var fillings = (typeof window.getBoseCategoryOrderRules === "function")
+                    ? (window.getBoseCategoryOrderRules(p.category).fillings || []) : [];
+                var sizePrices = (p.prices && typeof p.prices === "object") ? Object.keys(p.prices).map(function (k) { return p.prices[k]; }) : [];
+                var multiSize = sizePrices.length > 1 && new Set(sizePrices).size > 1;
+                var needsChoice = (p.options && (p.options.mixFlavor === true || p.options.flavorPick)) || fillings.length > 0 || multiSize
+                    || (p.customBuilderUrl && p.builderType && p.builderType !== "standard");
+                if (needsChoice) { needsChoiceProduct = needsChoiceProduct || p; return; }
+
+                var lineId = p.slug;
+                var existing = cart.find(function (i) { return i.id === lineId; });
+                if (existing) {
+                    existing.quantity = Math.min(existing.quantity + qty, MAX_QTY);
+                } else {
+                    var item = window.createCartItem(p, {}, qty);
+                    if (item) { item.id = lineId; cart.push(item); } else { return; }
+                }
+                added++;
+                try {
+                    var unit = typeof window.calculateProductFinalPrice === "function" ? window.calculateProductFinalPrice(p, {}) : (p.price || 0);
+                    if (typeof window.fireBoseCommerceEvent === "function") {
+                        window.fireBoseCommerceEvent("add_to_cart", { value: unit * qty, currency: (data.store && data.store.currency) || "EGP", contentId: p.id || p.slug, contentName: p.title, quantity: qty });
+                    }
+                } catch (e) {}
+            });
+
+            // نشيل باراميتر add من اللينك عشان ما يتكررش لو العميلة عملت ريفريش
+            params.delete("add");
+            var cleanQs = params.toString();
+            var cleanUrl = window.location.pathname + (cleanQs ? "?" + cleanQs : "") + window.location.hash;
+            try { window.history.replaceState(null, "", cleanUrl); } catch (e) {}
+
+            if (added) {
+                localStorage.setItem("bose_cart", JSON.stringify(cart));
+                if (typeof window.updateGlobalCartCounter === "function") window.updateGlobalCartCounter();
+                if (typeof window.showBoseGlobalToast === "function") window.showBoseGlobalToast("اتضاف طلبك للسلة 🎁", { type: "success" });
+                if (!/\/cart(\.html)?$/.test(window.location.pathname)) {
+                    window.location.replace("/cart.html");
+                } else if (typeof window.renderFullCart === "function") {
+                    try { window.renderFullCart(); } catch (e) { window.location.reload(); }
+                } else {
+                    window.location.reload();
+                }
+            } else if (needsChoiceProduct) {
+                window.location.replace("/product.html?slug=" + encodeURIComponent(needsChoiceProduct.slug));
+            } else if (unavailable && typeof window.showBoseGlobalToast === "function") {
+                window.showBoseGlobalToast("معلش، الصنف ده خلص من المخزن دلوقتي.", { type: "warning" });
+            }
+        } catch (err) {
+            try { console.warn("cart link failed", err); } catch (e) {}
         }
-        function onKey(e) { if (e.key === "Escape") close(); }
-        wrap.addEventListener("click", function (e) {
-            if (e.target === wrap || (e.target.closest && e.target.closest("[data-shifa-close]"))) close();
-        });
-        document.addEventListener("keydown", onKey);
-        document.body.appendChild(wrap);
     }
 
-    function run() {
-        if (!window.BoseSupabase || typeof window.BoseSupabase.loadBoseFawriData !== "function") return;
-        window.BoseSupabase.loadBoseFawriData().then(function (d) {
-            if (!d || !d.settings || d.settings.isOpen === false) return;
-            var list = (d.products || []).filter(function (x) { return x && x.options && x.options.shifa; });
-            if (list.length) show(list[0]);
-        }).catch(function () { /* الإعلان اختياري - نتجاهل أي فشل */ });
+    if (window.BoseStoreData && window.BoseStoreData.products) {
+        runCartLink();
+    } else {
+        document.addEventListener("BoseDatabaseLoaded", runCartLink);
     }
 
-    if (document.readyState === "complete") setTimeout(run, 800);
-    else window.addEventListener("load", function () { setTimeout(run, 800); });
+    // 📊 قياس ضغطات الواتساب: نعرف كام عميلة بتهرب للواتساب، ومن أنهي مكان، وهل كان في سلتها حاجة
+    document.addEventListener("click", function (e) {
+        try {
+            var t = e.target;
+            var a = t && t.closest ? t.closest('a[href*="wa.me"], a[href*="api.whatsapp.com"], a[href^="whatsapp:"]') : null;
+            if (!a) return;
+            var place = "other";
+            if (a.closest("#bose-bottom-nav, .bottom-nav, .bose-bottom-nav")) place = "bottom_nav";
+            else if (a.closest(".sidebar, #bose-sidebar, aside")) place = "sidebar";
+            else if (/floating|fab|float/i.test(a.className || "")) place = "floating_button";
+            var cartCount = 0;
+            try {
+                var c = JSON.parse(localStorage.getItem("bose_cart") || "[]");
+                if (Array.isArray(c)) cartCount = c.reduce(function (n, i) { return n + (i.quantity || 1); }, 0);
+            } catch (e2) {}
+            var payload = { page_path: window.location.pathname, link_location: place, cart_items: cartCount, on_checkout: /checkout/.test(window.location.pathname) };
+            if (typeof window.gtag === "function") window.gtag("event", "whatsapp_click", payload);
+            if (typeof window.fbq === "function") window.fbq("trackCustom", "WhatsAppClick", payload);
+            if (window.ttq && typeof window.ttq.track === "function") window.ttq.track("Contact", payload);
+        } catch (err) { /* تتبع اختياري - ما ينفعش يعطّل الضغطة */ }
+    }, true);
+})();
+
+/* ============================================================================
+ * 🔁 "اطلبي طلبك الأخير تاني": بعد ما أي طلب يتم، نحفظ سلته، ولما العميلة ترجع (والسلة فاضية)
+ * بنعرض لها شريط صغير بضغطة واحدة يرجّع نفس الأصناف للسلة. مفيش أي تكلفة ولا خصم فيه.
+ * ============================================================================ */
+(function () {
+    "use strict";
+    try {
+        var path = window.location.pathname;
+        // 1) صفحة نجاح الطلب: ننقل نسخة سلة صفحة الدفع إلى "آخر طلب"
+        if (/order-success/.test(path)) {
+            var pending = localStorage.getItem("bose_pending_order_cart");
+            if (pending) {
+                localStorage.setItem("bose_last_order_cart", pending);
+                localStorage.removeItem("bose_pending_order_cart");
+            }
+            return;
+        }
+        // 2) الشريط بيظهر في الرئيسية والسلة والفئات بس لو السلة فاضية وفي آخر طلب محفوظ
+        if (!/(^\/$|\/index(\.html)?$|\/cart(\.html)?$|\/category(\.html)?$)/.test(path)) return;
+        if (sessionStorage.getItem("bose_reorder_dismissed") === "1") return;
+        var last = localStorage.getItem("bose_last_order_cart");
+        if (!last) return;
+        var lastItems; try { lastItems = JSON.parse(last); } catch (e) { return; }
+        if (!Array.isArray(lastItems) || !lastItems.length) return;
+        var current = []; try { current = JSON.parse(localStorage.getItem("bose_cart") || "[]"); } catch (e) { current = []; }
+        if (Array.isArray(current) && current.length) return;
+
+        function show() {
+            if (document.getElementById("bose-reorder-bar")) return;
+            var bar = document.createElement("div");
+            bar.id = "bose-reorder-bar";
+            bar.setAttribute("dir", "rtl");
+            bar.style.cssText = "position:fixed;left:12px;right:12px;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:9990;display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:16px;background:#fff;border:1.5px solid var(--bose-pink,#e91e8c);box-shadow:0 8px 24px rgba(0,0,0,.14);font-family:'Cairo',sans-serif;color:#111;";
+            bar.innerHTML = '<span style="flex:1;font-weight:700;font-size:.9rem;line-height:1.6;">🔁 عايزة تكرري طلبك الأخير؟</span>'
+                + '<button type="button" id="bose-reorder-go" style="border:0;border-radius:12px;padding:9px 14px;font-weight:800;font-family:inherit;background:var(--bose-pink,#e91e8c);color:#fff;cursor:pointer;">اطلبيه تاني</button>'
+                + '<button type="button" id="bose-reorder-x" aria-label="إغلاق" style="border:0;background:transparent;font-size:1.3rem;line-height:1;cursor:pointer;color:#111;">×</button>';
+            document.body.appendChild(bar);
+            document.getElementById("bose-reorder-x").addEventListener("click", function () {
+                try { sessionStorage.setItem("bose_reorder_dismissed", "1"); } catch (e) {}
+                bar.remove();
+            });
+            document.getElementById("bose-reorder-go").addEventListener("click", function () {
+                try {
+                    localStorage.setItem("bose_cart", last);
+                    if (typeof window.updateGlobalCartCounter === "function") window.updateGlobalCartCounter();
+                } catch (e) {}
+                window.location.href = "/cart.html";
+            });
+        }
+        if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", function () { setTimeout(show, 1200); });
+        else setTimeout(show, 1200);
+    } catch (e) { /* ميزة اختيارية - ما ينفعش تعطّل الصفحة */ }
 })();
