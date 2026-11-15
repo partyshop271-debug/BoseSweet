@@ -168,9 +168,9 @@
 
         // الألوان
         fillField("store-theme-primary", store.theme.primary || "#FF91A4");
-        fillField("store-theme-secondary", store.theme.secondary || "#D4AF37");
-        fillField("store-theme-text", store.theme.text || "#111111");
-        fillField("store-theme-background", store.theme.background || "#FFFFFF");
+        fillField("store-theme-secondary", store.theme.secondary || "#D49A45");
+        fillField("store-theme-text", store.theme.text || "#603524");
+        fillField("store-theme-background", store.theme.background || "#FFF5ED");
 
         // الاستلام من الفرع
         fillField("store-pickup-address", store.pickup.address);
