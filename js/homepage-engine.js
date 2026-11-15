@@ -519,7 +519,11 @@
                 if (matched && matched.slug) itemSlug = matched.slug;
             }
             const isLinked = !!itemSlug;
-            const imgTag = `<img src="${window.optimizeBoseImageUrl(imgSrc, 300)}" alt="منتج فاخر حلويات بوسي" class="waterfall-img" width="220" height="220" loading="lazy" />`;
+            // 🖥️ [إصلاح شكل سطح المكتب]: كنا بنطلب الصورة بعرض 300px ثابت حتى على الكمبيوتر، وعمود الشلال هناك كان
+            // عرضه 600-700px، فالصورة كانت بتتمدد لضعف حجمها وتطلع مغبّشة/مضغوطة. دلوقتي العرض المطلوب
+            // بيتحدد حسب الشاشة (وعمود الكمبيوتر بقى أضيق أصلاً - 4 أعمدة بدل 2).
+            const wfImgWidth = (window.innerWidth >= 1024) ? 460 : 300;
+            const imgTag = `<img src="${window.optimizeBoseImageUrl(imgSrc, wfImgWidth)}" alt="منتج فاخر حلويات بوسي" class="waterfall-img" width="360" height="450" loading="lazy" />`;
             // 🛠️ [إصلاح - أكتوبر 2026]: صفحة المنتج رجعت مستقلة (product.html?slug=) - ودي
             // اللي بتفتح كل أنواع المنتجات بما فيها الهدايا (gift-...). الرابط القديم
             // (category.html?category=..&product=..) كان بيضيع مع الهدايا لأنها ملهاش فئة عادية.
@@ -541,12 +545,38 @@
             rightCol.innerHTML = `<div class="waterfall-down">${rightHtml} ${rightHtml}</div>`;
         }
 
+        // 🖥️ [إصلاح شكل سطح المكتب]: عمودين بس على شاشة 1440px معناهم كل عمود ~700px عرض، فكل صورة بقت
+        // شريط عريض مقصوص (330px ارتفاع بس). على الكمبيوتر بنضيف عمودين زيادة (بنفس الصور بترتيب مختلف)
+        // عشان الشلال يبقى 4 أعمدة بنسبة صورة طبيعية 4:5. الأعمدة الزيادة مخفية بـ CSS تحت 1024px
+        // فمفيش أي تأثير على الموبايل. لو العمودين الأساسيين فاضيين مبنضيفش حاجة.
+        const wfContainer = leftCol && leftCol.parentElement;
+        if (wfContainer && !wfContainer.querySelector('.waterfall-col-extra')) {
+            const leftImgs = Array.isArray(waterfallData.leftColumnImages) ? waterfallData.leftColumnImages : [];
+            const rightImgs = Array.isArray(waterfallData.rightColumnImages) ? waterfallData.rightColumnImages : [];
+            const rotate = (arr, n) => arr.length ? arr.slice(n % arr.length).concat(arr.slice(0, n % arr.length)) : arr;
+            const extraDefs = [
+                { cls: 'waterfall-up', imgs: rotate(rightImgs, 3) },
+                { cls: 'waterfall-down', imgs: rotate(leftImgs, 3) }
+            ];
+            extraDefs.forEach((def) => {
+                if (!def.imgs.length) return;
+                const html = buildWaterfallItemsHtml(def.imgs);
+                const col = document.createElement('div');
+                col.className = 'waterfall-col waterfall-col-extra';
+                col.setAttribute('aria-hidden', 'true');
+                col.innerHTML = `<div class="${def.cls}">${html} ${html}</div>`;
+                wfContainer.appendChild(col);
+            });
+        }
+
         // ⚙️ [تحكم في سرعة الشلال وتشغيله/إيقافه من لوحة التحكم]: بيتقرا من
         // homepage.waterfall.speedSeconds و homepage.waterfall.enabled. الإيقاف
         // بيجمّد الحركة مكانها (بيفضل المحتوى ظاهر) بدل ما يخفي القسم بالكامل.
         const waterfallSpeed = Number(waterfallData.speedSeconds) > 0 ? Number(waterfallData.speedSeconds) : 57.2;
         const waterfallEnabled = waterfallData.enabled !== false;
-        [leftCol?.querySelector('.waterfall-up'), rightCol?.querySelector('.waterfall-down')].forEach((track) => {
+        [leftCol?.querySelector('.waterfall-up'), rightCol?.querySelector('.waterfall-down')]
+            .concat(Array.from(document.querySelectorAll('.waterfall-col-extra > div')))
+            .forEach((track) => {
             if (!track) return;
             // ملحوظة: لازم !important هنا لأن قاعدة الـ CSS الأصلية لـ .waterfall-up/.waterfall-down
             // نفسها !important، وأي inline style عادي (من غير important) هيتجاهله المتصفح.

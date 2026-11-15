@@ -2420,7 +2420,9 @@
         // صور ضخمة بلا داعي وإهدار بيانات). كمان رفعنا q_auto العادي لـ
         // q_auto:good كأرضية جودة أعلى تفادياً لأي ضغط عدواني زيادة عن اللزوم
         // من وضع q_auto الافتراضي على صور فيها تفاصيل دقيقة (كريمة/زهور/تزيين).
-        const dpr = (typeof window !== "undefined" && window.devicePixelRatio) ? Math.min(window.devicePixelRatio, 3) : 2;
+        // 🖥️ [إصلاح شكل سطح المكتب]: شاشات الكمبيوتر العادية DPR=1 فكانت الصورة بتتطلب بالعرض الحرفي (مثلاً 400px)
+        // وبتتعرض أحياناً في كارت أعرض منها فتتمدد وتبان مضغوطة. حد أدنى 1.5 بيدي هامش أمان للجودة من غير تضخيم مبالغ فيه.
+        const dpr = (typeof window !== "undefined" && window.devicePixelRatio) ? Math.min(Math.max(window.devicePixelRatio, 1.5), 3) : 2;
         const targetWidth = Math.round(safeWidth * dpr);
         const transform = `f_auto,q_auto:good,w_${targetWidth},c_limit`;
         if (url.includes("/upload/f_auto") || url.includes("/upload/q_auto")) return url;
