@@ -317,7 +317,7 @@
             const marker = "logo_igggsb";
             return (data || []).filter((p) => {
                 const img = (p.images && p.images[0]) || "";
-                return !img || img.includes(marker) || img.includes("images/brand/logo");
+                return !img || img.includes(marker) || img.includes("images/logo");
             }).length;
         } catch (e) {
             console.warn("تعذر جلب عدد المنتجات بدون صورة حقيقية:", e.message);
