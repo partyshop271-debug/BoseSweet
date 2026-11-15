@@ -574,6 +574,57 @@
         });
     }
 
+    /* ============================= صور الفرافرة (بانر الهيرو + بلوك القصة) ============================= */
+
+    const FARAFRA_IMAGES = [
+        { key: "hero", field: "heroImage" },
+        { key: "story", field: "storyImage" },
+    ];
+
+    function setFarafraPreview(key, url) {
+        const preview = document.getElementById(`farafra-${key}-preview`);
+        if (!preview) return;
+        preview.src = url || "";
+        preview.style.display = url ? "block" : "none";
+        preview.setAttribute("data-image", url || "");
+    }
+
+    function wireFarafraImages() {
+        FARAFRA_IMAGES.forEach(({ key, field }) => {
+            setFarafraPreview(key, homepageData.farafra?.[field] || "");
+            const input = document.getElementById(`farafra-${key}-input`);
+            const label = document.getElementById(`farafra-${key}-label`);
+            const resetBtn = document.getElementById(`farafra-${key}-reset`);
+            if (!input || !label) return;
+            input.addEventListener("change", async (evt) => {
+                const file = evt.target.files && evt.target.files[0];
+                if (!file) return;
+                const originalLabel = label.textContent;
+                label.textContent = "جاري الرفع...";
+                try {
+                    const url = await window.BoseAdminUI.uploadImageToCloudinary(file);
+                    setFarafraPreview(key, url);
+                    window.BoseAdminUI.showToast("اترفعت الصورة - اضغطي \"حفظ كل التغييرات\" عشان تظهر في الموقع", "success");
+                } catch (err) {
+                    window.BoseAdminUI.showToast("تعذر رفع الصورة", "error");
+                } finally {
+                    label.textContent = originalLabel;
+                    evt.target.value = "";
+                }
+            });
+            if (resetBtn) resetBtn.addEventListener("click", () => setFarafraPreview(key, ""));
+        });
+    }
+
+    function readFarafraImages() {
+        const out = { ...(homepageData.farafra || {}) };
+        FARAFRA_IMAGES.forEach(({ key, field }) => {
+            const el = document.getElementById(`farafra-${key}-preview`);
+            out[field] = (el && el.getAttribute("data-image")) || "";
+        });
+        return out;
+    }
+
     /* ============================= الحفظ ============================= */
 
     /** بيبني سلايدر الفئات تلقائياً من جدول categories - مصدر وحيد، مفيش تكرار يدوي */
@@ -603,6 +654,7 @@
                 mostSelling: curatedState.mostSelling,
                 newArrivals: curatedState.newArrivals,
                 ourProducts: curatedState.ourProducts,
+                farafra: readFarafraImages(),
                 cakePreview: { ...readBannerForm("cake", cakePreviewImg), image: cakePreviewImg },
                 flowerPreview: { ...readBannerForm("flower", flowerPreviewImg), image: flowerPreviewImg },
                 categoriesSlider: buildCategoriesSliderFromCategories(),
@@ -667,6 +719,7 @@
         fillBannerForm("flower", homepageData.flowerPreview);
         wireBannerImageUpload("cake");
         wireBannerImageUpload("flower");
+        wireFarafraImages();
 
         // شلال المنتجات المتحرك
         waterfallState = {
