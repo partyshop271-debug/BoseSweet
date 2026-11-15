@@ -879,7 +879,7 @@
         const gridEl = document.getElementById('app-promo-product-grid');
         if (gridEl) {
             gridEl.innerHTML = products.slice(0, 4).map((/** @type {any} */ p) => {
-                const img = window.optimizeBoseImageUrl((p.images && p.images.length > 0 && p.images[0]) ? p.images[0] : 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', 200);
+                const img = window.optimizeBoseImageUrl((p.images && p.images.length > 0 && p.images[0]) ? p.images[0] : '/images/brand/logo-512.png', 200);
                 const title = window.escapeBoseHTML(p.title || '');
                 return `<div class="mock-product-card"><img src="${img}" alt="${title}" loading="lazy" /><span class="mock-product-name">${title}</span></div>`;
             }).join('');
@@ -888,7 +888,7 @@
         const cartRowsEl = document.getElementById('app-promo-cart-rows');
         if (cartRowsEl) {
             cartRowsEl.innerHTML = products.slice(0, 2).map((/** @type {any} */ p) => {
-                const img = window.optimizeBoseImageUrl((p.images && p.images.length > 0 && p.images[0]) ? p.images[0] : 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', 100);
+                const img = window.optimizeBoseImageUrl((p.images && p.images.length > 0 && p.images[0]) ? p.images[0] : '/images/brand/logo-512.png', 100);
                 const title = window.escapeBoseHTML(p.title || '');
                 const price = Math.round(p.basePrice || p.price || 0);
                 return `

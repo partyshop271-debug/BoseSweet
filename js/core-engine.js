@@ -1,6 +1,6 @@
 /**
  * core-engine.js - المحرك المركزي العالمي وحارس البيانات والحسابات المالية
- * موقع حلويات بوسي (BoseSweets) - النسخة الاحترافية الملوكية المطورة V14.0
+ * موقع حلويات بوسي (Boosy Sweets) - النسخة الاحترافية الملوكية المطورة V14.0
  * [تحديث V14.0]: تفعيل الكاش الذكي بالتحقق من بصمة الإصدار (get_bose_data_version)
  * بدل الاعتماد على صلاحية زمنية عمياء (15 دقيقة) فقط - راجع loadStoreDatabase().
  * محظور الحذف، الاختصار، الدمج، أو التبسيط نهائياً تماشياً مع فلسفة العلامة الفاخرة.
@@ -148,10 +148,10 @@
                 // ظهروا في نفس اللحظة (تنبيه عادي + رسالة الطوارئ دي) ميتصادموش بصرياً.
                 const banner = document.createElement("div");
                 banner.setAttribute("dir", "rtl");
-                banner.style.cssText = "position:fixed;left:50%;transform:translateX(-50%);top:calc(var(--bose-topbar-height, 44px) + 86px);z-index:2147483647;background:#FFFFFF;color:#111111;font-family:'Cairo',Tahoma,Arial,sans-serif;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 10px 34px rgba(0,0,0,0.18);flex-wrap:wrap;width:min(92vw, 460px);border-radius:16px;border:1px solid rgba(var(--bose-pink-rgb),0.4);";
+                banner.style.cssText = "position:fixed;left:50%;transform:translateX(-50%);top:calc(var(--bose-topbar-height, 44px) + 86px);z-index:2147483647;background:#FFFFFF;color:#603524;font-family:'Cairo',Tahoma,Arial,sans-serif;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 10px 34px rgba(0,0,0,0.18);flex-wrap:wrap;width:min(92vw, 460px);border-radius:16px;border:1px solid rgba(var(--bose-pink-rgb),0.4);";
 
                 const msg = document.createElement("span");
-                msg.style.cssText = "font-size:14px;line-height:1.5;flex:1;min-width:200px;color:#111111;";
+                msg.style.cssText = "font-size:14px;line-height:1.5;flex:1;min-width:200px;color:#603524;";
                 msg.textContent = isNonOrderingPage
                     ? "حصل عندنا خطأ غير متوقع في الصفحة 🙏 ماتقلقيش، لو محتاجة أي مساعدة تقدري تتواصلي معانا على واتساب مباشرة."
                     : "حصل عندنا خطأ غير متوقع في الصفحة 🙏 ماتقلقيش، تقدري تكملي طلبك بسهولة على واتساب مباشرة.";
@@ -166,7 +166,7 @@
                 const closeBtn = document.createElement("button");
                 closeBtn.textContent = "✕";
                 closeBtn.setAttribute("aria-label", "إغلاق");
-                closeBtn.style.cssText = "background:transparent;border:none;color:#111111;opacity:0.55;font-size:16px;cursor:pointer;padding:4px 8px;";
+                closeBtn.style.cssText = "background:transparent;border:none;color:#603524;opacity:0.55;font-size:16px;cursor:pointer;padding:4px 8px;";
                 closeBtn.onclick = function() { banner.remove(); };
 
                 banner.appendChild(msg);
@@ -983,7 +983,7 @@
         // التوبينجين + زرار إضافة شغال (راجع renderBoseMixToppingPickerInModal في
         // category.html اللي بتضيف أداة الاختيار دي تحت الكارت ده مباشرة).
         const isDetailView = renderMode === 'detail';
-        const rawImg = (product.images && product.images.length > 0 && product.images[0]) ? product.images[0] : 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png';
+        const rawImg = (product.images && product.images.length > 0 && product.images[0]) ? product.images[0] : '/images/brand/logo-512.png';
         const safeImg = window.optimizeBoseImageUrl(rawImg, 400);
         const safeTitle = window.escapeBoseHTML(product.title);
         const safeFlavor = window.escapeBoseHTML(product.flavorName || '');
@@ -1985,7 +1985,7 @@
             basePrice: parseFloat((product.price || product.basePrice || 0).toFixed(4)),
             finalPrice: parseFloat(finalUnitPrice.toFixed(4)),
             quantity: parseInt(String(quantity), 10) || 1,
-            image: (product.images && product.images[0]) || product.image || "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
+            image: (product.images && product.images[0]) || product.image || "/images/brand/logo-512.png",
             // 🎁 [بطاقة هدية بمبلغ حر]: item_type = "gift-card" هو اللي بيخلي
             // create_order_with_items على السيرفر يعامل السطر ده كمبلغ حر
             // (يتحقق منه ضد الحد الأدنى/الأقصى) بدل ما يدور عليه في جدول
@@ -2284,11 +2284,11 @@
             const overlay = document.createElement('div');
             overlay.id = 'bose-celebrate-overlay';
             overlay.setAttribute('role', 'status');
-            overlay.style.cssText = 'position:fixed; inset:0; z-index:2147483000; display:flex; align-items:center; justify-content:center; background:rgba(17,17,17,0.45); direction:rtl; opacity:0; transition:opacity .25s;';
+            overlay.style.cssText = 'position:fixed; inset:0; z-index:2147483000; display:flex; align-items:center; justify-content:center; background:rgba(96, 53, 36,0.45); direction:rtl; opacity:0; transition:opacity .25s;';
             overlay.innerHTML = '<canvas id="bose-confetti" style="position:absolute; inset:0; width:100%; height:100%; pointer-events:none;"></canvas>' +
                 '<div style="position:relative; max-width:88vw; width:420px; text-align:center; background:#fff; border-radius:26px; padding:30px 22px 26px; box-shadow:0 24px 70px rgba(0,0,0,.35); border:3px solid var(--bose-pink, #FF91A4); transform:scale(.85); transition:transform .35s cubic-bezier(.2,1.4,.4,1);" id="bose-celebrate-card">' +
-                '<div style="font-size:clamp(26px,7.4vw,36px); line-height:1.5; font-weight:900; color:#111;">' + (window.escapeBoseHTML ? window.escapeBoseHTML(headline) : headline) + '</div>' +
-                '<div style="margin-top:12px; font-size:15px; font-weight:700; line-height:1.8; color:#111; opacity:.75;">' + (window.escapeBoseHTML ? window.escapeBoseHTML(sub) : sub) + '</div>' +
+                '<div style="font-size:clamp(26px,7.4vw,36px); line-height:1.5; font-weight:900; color:#603524;">' + (window.escapeBoseHTML ? window.escapeBoseHTML(headline) : headline) + '</div>' +
+                '<div style="margin-top:12px; font-size:15px; font-weight:700; line-height:1.8; color:#603524; opacity:.75;">' + (window.escapeBoseHTML ? window.escapeBoseHTML(sub) : sub) + '</div>' +
                 '<div style="margin-top:18px; font-size:12.5px; font-weight:700; opacity:.5;">المس الشاشة للمتابعة</div></div>';
             document.body.appendChild(overlay);
             requestAnimationFrame(function () {
@@ -3394,7 +3394,7 @@
             const social = data.social || {};
             const seo = data.seo || {};
             const pageUrl = window.location.origin + window.location.pathname;
-            const logoUrl = store.logo || "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png";
+            const logoUrl = store.logo || "/images/brand/logo-512.png";
             const storeName = store.name || "حلويات بوسي";
 
             const sameAs = [social.facebook, social.instagram, social.tiktok].filter(Boolean);
@@ -3780,7 +3780,7 @@
                             <i class="fa-solid fa-bars-staggered"></i>
                         </button>
                         <a href="/index.html" class="brand-logo-container">
-                            <img id="bose-store-logo" src="${window.optimizeBoseImageUrl(data.store?.logo || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', 150)}" alt="لوجو ${window.escapeBoseHTML(data.store?.name || 'حلويات بوسي')} الفاخرة" class="brand-logo-img" width="80" height="80" />
+                            <img id="bose-store-logo" src="${window.optimizeBoseImageUrl(data.store?.logo || '/images/brand/logo-512.png', 150)}" alt="لوجو ${window.escapeBoseHTML(data.store?.name || 'حلويات بوسي')} الفاخرة" class="brand-logo-img" width="80" height="80" />
                             <span class="brand-name-display" title="${window.escapeBoseHTML(data.store?.name || 'حلويات بوسي')}">${window.escapeBoseHTML(data.store?.name || 'حلويات بوسي')}</span>
                         </a>
                     </div>
@@ -3802,7 +3802,7 @@
                 <div id="bose-sidebar-drawer" class="bose-sidebar-drawer" aria-hidden="true">
                     <div class="sidebar-header">
                         <div class="sidebar-logo-container">
-                            <img src="${window.optimizeBoseImageUrl(data.store?.logo || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', 150)}" alt="لوجو ${window.escapeBoseHTML(data.store?.name || 'حلويات بوسي')}" class="sidebar-logo" width="80" height="80" />
+                            <img src="${window.optimizeBoseImageUrl(data.store?.logo || '/images/brand/logo-512.png', 150)}" alt="لوجو ${window.escapeBoseHTML(data.store?.name || 'حلويات بوسي')}" class="sidebar-logo" width="80" height="80" />
                             <span class="sidebar-brand-name">${window.escapeBoseHTML(data.store?.name || 'حلويات بوسي')}</span>
                         </div>
                         <button id="sidebar-close-btn" class="sidebar-close-btn" aria-label="إغلاق القائمة">
@@ -4104,10 +4104,11 @@
                     <div class="footer-grid-layout">
                         <div class="footer-column-block">
                             <div class="footer-brand-meta">
-                                <img src="${window.optimizeBoseImageUrl(data.store?.logo || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', 150)}" alt="${window.escapeBoseHTML(data.store?.name || 'حلويات بوسي')} الفاخرة" class="footer-logo" width="80" height="80" />
+                                <img src="${window.optimizeBoseImageUrl(data.store?.logo || '/images/brand/logo-512.png', 150)}" alt="${window.escapeBoseHTML(data.store?.name || 'حلويات بوسي')} الفاخرة" class="footer-logo" width="80" height="80" />
                                 <span class="footer-title">${window.escapeBoseHTML(data.store?.name || 'حلويات بوسي')}</span>
                             </div>
                             <p id="footer-about-text" class="footer-about-paragraph">${window.escapeBoseHTML(data.footer?.about || 'صنعناها بحب لتهديها لمن تحب')}</p>
+                            <p class="footer-location-line"><i class="fas fa-location-dot" aria-hidden="true"></i> الفرافرة - الوادي الجديد</p>
                             <div id="footer-social-links" class="footer-social-wrapper">
                                 <a href="${data.social?.facebook || '#'}" target="_blank" rel="noopener noreferrer" class="footer-social-icon-btn"><i class="fa-brands fa-facebook-f"></i></a>
                                 <a href="${data.social?.instagram || '#'}" target="_blank" rel="noopener noreferrer" class="footer-social-icon-btn"><i class="fa-brands fa-instagram"></i></a>
@@ -4132,7 +4133,7 @@
                                 <li><a href="/policies/refund-policy.html">سياسة الاسترجاع المالي</a></li>
                                 <li><a href="/policies/shipping-policy.html">سياسة الشحن والتوصيل</a></li>
                                 <li><a href="/policies/terms.html">الشروط والأحكام</a></li>
-                                <li class="footer-contact-item" style="margin-top: 15px; display: flex; align-items: center; gap: 8px; font-size: 14px; color: #111111;">
+                                <li class="footer-contact-item" style="margin-top: 15px; display: flex; align-items: center; gap: 8px; font-size: 14px; color: #603524;">
                                     <i class="fa-solid fa-location-dot" style="color: var(--bose-pink);"></i>
                                     <span>${window.escapeBoseHTML(data.store?.pickup?.address || 'العنوان الرئيسي')}</span>
                                 </li>
@@ -4233,7 +4234,7 @@
                     filtered.forEach((/** @type {any} */ p) => {
                         let targetUrl = (p.id === 'toort-custom-master' || p.slug === 'toort-custom-master') ? 'cake-builder.html' : 
                                         ((p.id === 'flowers-master' || p.slug === 'flowers-master') ? 'flower-builder.html' : `product.html?slug=${encodeURIComponent(p.slug)}`);
-                        const safeImg = window.optimizeBoseImageUrl((p.images && p.images.length > 0 && p.images[0]) ? p.images[0] : 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', 120);
+                        const safeImg = window.optimizeBoseImageUrl((p.images && p.images.length > 0 && p.images[0]) ? p.images[0] : '/images/brand/logo-512.png', 120);
                         const safeTitle = window.escapeBoseHTML(p.title);
                         const safeFlavor = window.escapeBoseHTML(p.flavorName || '');
                         html += `
@@ -4275,7 +4276,7 @@
 
             const title = document.createElement("h2");
             title.textContent = "في صعوبة بسيطة في الاتصال";
-            title.style.cssText = "font-size:19px;font-weight:800;color:#111111;margin:0 0 10px;";
+            title.style.cssText = "font-size:19px;font-weight:800;color:#603524;margin:0 0 10px;";
 
             const msg = document.createElement("p");
             msg.textContent = "معلش، شكلنا مش قادرين نوصل لبيانات المتجر دلوقتي - غالباً بسبب ضعف مؤقت في الاتصال بالنت. جربي إعادة المحاولة، أو كلمينا على واتساب ونساعدك فوراً.";
@@ -4335,7 +4336,7 @@
                             <i class="fa-solid fa-bars-staggered"></i>
                         </button>
                         <a href="/index.html" class="brand-logo-container">
-                            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/f_auto,q_auto/v1780054759/logo_igggsb.png" alt="لوجو حلويات بوسي" class="brand-logo-img" width="80" height="80" />
+                            <img src="/images/brand/logo-512.png" alt="لوجو حلويات بوسي" class="brand-logo-img" width="80" height="80" />
                             <span class="brand-name-display">حلويات بوسي</span>
                         </a>
                     </div>
@@ -4353,7 +4354,7 @@
         const footerInjector = document.getElementById('bose-footer-injector');
         if (footerInjector && !footerInjector.hasChildNodes()) {
             footerInjector.innerHTML = `
-                <footer class="bose-footer-fallback" role="contentinfo" style="text-align:center;padding:32px 16px;font-family:'Cairo',sans-serif;color:var(--bose-black,#111111);opacity:0.65;font-size:0.85rem;">
+                <footer class="bose-footer-fallback" role="contentinfo" style="text-align:center;padding:32px 16px;font-family:'Cairo',sans-serif;color:var(--bose-black,#603524);opacity:0.65;font-size:0.85rem;">
                     <p style="margin:0;">© ${new Date().getFullYear()} حلويات بوسي</p>
                 </footer>
             `;
@@ -4648,10 +4649,10 @@
             var bar = document.createElement("div");
             bar.id = "bose-reorder-bar";
             bar.setAttribute("dir", "rtl");
-            bar.style.cssText = "position:fixed;left:12px;right:12px;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:9990;display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:16px;background:#fff;border:1.5px solid var(--bose-pink,#e91e8c);box-shadow:0 8px 24px rgba(0,0,0,.14);font-family:'Cairo',sans-serif;color:#111;";
+            bar.style.cssText = "position:fixed;left:12px;right:12px;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:9990;display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:16px;background:#fff;border:1.5px solid var(--bose-pink,#e91e8c);box-shadow:0 8px 24px rgba(0,0,0,.14);font-family:'Cairo',sans-serif;color:#603524;";
             bar.innerHTML = '<span style="flex:1;font-weight:700;font-size:.9rem;line-height:1.6;">🔁 عايزة تكرري طلبك الأخير؟</span>'
                 + '<button type="button" id="bose-reorder-go" style="border:0;border-radius:12px;padding:9px 14px;font-weight:800;font-family:inherit;background:var(--bose-pink,#e91e8c);color:#fff;cursor:pointer;">اطلبيه تاني</button>'
-                + '<button type="button" id="bose-reorder-x" aria-label="إغلاق" style="border:0;background:transparent;font-size:1.3rem;line-height:1;cursor:pointer;color:#111;">×</button>';
+                + '<button type="button" id="bose-reorder-x" aria-label="إغلاق" style="border:0;background:transparent;font-size:1.3rem;line-height:1;cursor:pointer;color:#603524;">×</button>';
             document.body.appendChild(bar);
             document.getElementById("bose-reorder-x").addEventListener("click", function () {
                 try { sessionStorage.setItem("bose_reorder_dismissed", "1"); } catch (e) {}

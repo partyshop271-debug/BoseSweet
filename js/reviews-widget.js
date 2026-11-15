@@ -58,7 +58,7 @@
 
                 <div id="bose-simreview-step-rating">
                     <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 14px;">إيه رأيك في التجربة؟</h3>
-                    <div id="bose-simreview-stars-picker" style="display:flex; gap:12px; flex-direction:row-reverse; justify-content:flex-end; font-size:2rem; color:#111111;">
+                    <div id="bose-simreview-stars-picker" style="display:flex; gap:12px; flex-direction:row-reverse; justify-content:flex-end; font-size:2rem; color:#603524;">
                         <input type="radio" id="simst5" name="bose-simreview-star-rating" value="5" style="display:none;"><label for="simst5" style="cursor:pointer;"><i class="fas fa-star"></i></label>
                         <input type="radio" id="simst4" name="bose-simreview-star-rating" value="4" style="display:none;"><label for="simst4" style="cursor:pointer;"><i class="fas fa-star"></i></label>
                         <input type="radio" id="simst3" name="bose-simreview-star-rating" value="3" style="display:none;"><label for="simst3" style="cursor:pointer;"><i class="fas fa-star"></i></label>
@@ -67,7 +67,7 @@
                     </div>
                 </div>
 
-                <div id="bose-simreview-lowrating-branch" style="display:none; margin-top:18px; background:#fff; border:1px solid rgba(17,17,17,0.08); border-radius:16px; padding:18px;">
+                <div id="bose-simreview-lowrating-branch" style="display:none; margin-top:18px; background:#fff; border:1px solid rgba(96, 53, 36,0.08); border-radius:16px; padding:18px;">
                     <p style="font-size:0.92rem; font-weight:700; margin:0 0 8px 0;">آسفين إن التجربة متكنتش زي ما توقعتي 💔</p>
                     <p style="font-size:0.85rem; opacity:0.75; margin:0 0 14px 0; line-height:1.6;">قوليلنا المشكلة كانت في إيه وهنحلها بسرعة معاكي مباشرة، وفي نفس الوقت تقدري كمان تكتبي مراجعتك هنا لو حابة تشاركيها مع باقي الزوار.</p>
                     <a id="bose-simreview-lowrating-whatsapp" href="#" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; gap:8px; background:#25D366; color:#fff; padding:10px 20px; border-radius:50px; text-decoration:none; font-weight:700; font-size:0.88rem;">
@@ -81,23 +81,23 @@
                     <div style="display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 16px;">
                         <div>
                             <label style="display:block; font-size:0.88rem; font-weight:700; margin-bottom:6px;">اسمك المحترم</label>
-                            <input id="bose-simreview-user-name" type="text" placeholder="يمكنك كتابة اسمك هنا..." style="width:100%; padding:12px; border-radius:12px; border:1px solid rgba(17,17,17,0.12); font-family:'Cairo'; box-sizing:border-box;">
+                            <input id="bose-simreview-user-name" type="text" placeholder="يمكنك كتابة اسمك هنا..." style="width:100%; padding:12px; border-radius:12px; border:1px solid rgba(96, 53, 36,0.12); font-family:'Cairo'; box-sizing:border-box;">
                         </div>
                     </div>
                     <div style="margin-bottom: 16px;">
                         <label style="display:block; font-size:0.88rem; font-weight:700; margin-bottom:6px;">قوليلنا تجربتك بالتفصيل</label>
-                        <textarea id="bose-simreview-comment" placeholder="اضغطي على الاقتراحات فوق للبدء، أو اكتبي رأيك بنفسك - قوليلنا أي حاجة حابة تشاركيها، قد ما حبيتي 🌸" style="width:100%; height:110px; padding:12px; border-radius:12px; border:1px solid rgba(17,17,17,0.12); font-family:'Cairo'; resize:vertical; box-sizing:border-box;"></textarea>
+                        <textarea id="bose-simreview-comment" placeholder="اضغطي على الاقتراحات فوق للبدء، أو اكتبي رأيك بنفسك - قوليلنا أي حاجة حابة تشاركيها، قد ما حبيتي 🌸" style="width:100%; height:110px; padding:12px; border-radius:12px; border:1px solid rgba(96, 53, 36,0.12); font-family:'Cairo'; resize:vertical; box-sizing:border-box;"></textarea>
                     </div>
 
                     <div style="margin-bottom: 20px;">
                         <label style="display:block; font-size:0.88rem; font-weight:700; margin-bottom:6px;"><i class="fas fa-camera"></i> أضيفي صوراً حقيقية للتصميم النهائي (اختياري)</label>
                         <input id="bose-simreview-images-picker" type="file" accept="image/*" multiple style="display: none;">
-                        <button id="btn-trigger-simreview-images" type="button" style="background:#fff; border:1px solid rgba(17,17,17,0.15); padding:8px 16px; border-radius:10px; cursor:pointer; font-size:0.85rem; font-weight:700;"><i class="fas fa-images" style="color:var(--bose-pink);"></i> اختيار الصور من جهازك</button>
+                        <button id="btn-trigger-simreview-images" type="button" style="background:#fff; border:1px solid rgba(96, 53, 36,0.15); padding:8px 16px; border-radius:10px; cursor:pointer; font-size:0.85rem; font-weight:700;"><i class="fas fa-images" style="color:var(--bose-pink);"></i> اختيار الصور من جهازك</button>
                         <div id="bose-simreview-images-preview-zone" style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;"></div>
                     </div>
 
                     <button id="btn-submit-simreview" type="button" style="background:var(--bose-pink); color:#fff; border:none; padding:12px 30px; border-radius:50px; font-weight:700; cursor:pointer; box-shadow:0 4px 12px rgba(var(--bose-pink-rgb),0.2);">نشر مراجعتي</button>
-                    <p style="font-size:0.78rem; color:#111111; opacity:0.6; margin:10px 0 0 0; line-height:1.5;">
+                    <p style="font-size:0.78rem; color:#603524; opacity:0.6; margin:10px 0 0 0; line-height:1.5;">
                         <i class="fas fa-circle-info"></i> بتتراجع من فريقنا أولاً لضمان الجودة، وبعد اعتمادها هتساعد عملاء تانيين يختاروا صح 🌸
                     </p>
                 </div>
@@ -159,7 +159,7 @@
             let starsHTML = "";
             const safeRating = parseInt(rev.rating, 10) || 0;
             for (let i = 1; i <= 5; i++) {
-                starsHTML += `<i class="fas fa-star" style="color:${i <= safeRating ? "var(--bose-gold)" : "#111111"}"></i>`;
+                starsHTML += `<i class="fas fa-star" style="color:${i <= safeRating ? "var(--bose-gold)" : "#603524"}"></i>`;
             }
             let imagesHTML = "";
             if (rev.images && rev.images.length > 0) {
@@ -228,7 +228,7 @@
         function updateStarVisuals(selectedValue) {
             starRatingInputs.forEach((inp) => {
                 const icon = inp.nextElementSibling ? inp.nextElementSibling.querySelector("i") : null;
-                if (icon) icon.style.color = parseInt(inp.value, 10) <= selectedValue ? "var(--bose-gold)" : "#111111";
+                if (icon) icon.style.color = parseInt(inp.value, 10) <= selectedValue ? "var(--bose-gold)" : "#603524";
             });
         }
         starRatingInputs.forEach((inp) => {

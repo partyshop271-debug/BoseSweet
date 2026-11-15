@@ -186,7 +186,7 @@
         if (st.qty < 1) st.qty = 1;
 
         var left = Number(p.stockQuantity) || 0;
-        var img = safeUrl(p.images && p.images[0]) || "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png";
+        var img = safeUrl(p.images && p.images[0]) || "/images/brand/logo-512.png";
         var price = Math.round(unitPrice(p));
         var oldPrice = Math.round(Number(p.oldPrice) || 0);
         var id = esc(p.id);

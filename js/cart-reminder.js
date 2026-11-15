@@ -77,15 +77,15 @@
                 display: flex; align-items: center; justify-content: center; font-size: 1.15rem;
             }
             #${BANNER_ID} .bcr-text { flex: 1; min-width: 0; }
-            #${BANNER_ID} .bcr-title { font-size: 0.86rem; font-weight: 800; color: #111; margin: 0 0 2px; }
-            #${BANNER_ID} .bcr-sub { font-size: 0.74rem; color: #111; opacity: 0.65; margin: 0; }
+            #${BANNER_ID} .bcr-title { font-size: 0.86rem; font-weight: 800; color: #603524; margin: 0 0 2px; }
+            #${BANNER_ID} .bcr-sub { font-size: 0.74rem; color: #603524; opacity: 0.65; margin: 0; }
             #${BANNER_ID} .bcr-cta {
-                flex-shrink: 0; background: var(--bose-notify-green); color: #111; border: none;
+                flex-shrink: 0; background: var(--bose-notify-green); color: #603524; border: none;
                 border-radius: 10px; padding: 9px 14px; font-family: 'Cairo', sans-serif; font-weight: 800; font-size: 0.78rem;
                 cursor: pointer; text-decoration: none; display: inline-block; white-space: nowrap;
             }
             #${BANNER_ID} .bcr-close {
-                flex-shrink: 0; background: none; border: none; color: #111; opacity: 0.4; font-size: 1rem; cursor: pointer; padding: 4px;
+                flex-shrink: 0; background: none; border: none; color: #603524; opacity: 0.4; font-size: 1rem; cursor: pointer; padding: 4px;
             }
             @media (max-width: 380px) {
                 #${BANNER_ID} { flex-wrap: wrap; }

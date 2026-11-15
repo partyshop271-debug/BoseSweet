@@ -217,12 +217,12 @@
                 font-size: 18px;
             }
             .bose-push-prompt-body { flex: 1; min-width: 0; }
-            .bose-push-prompt-title { font-weight: 700; font-size: 15px; color: #111; margin: 0 0 4px; }
+            .bose-push-prompt-title { font-weight: 700; font-size: 15px; color: #603524; margin: 0 0 4px; }
             .bose-push-prompt-desc { font-size: 13px; color: #555; margin: 0 0 12px; line-height: 1.5; }
             .bose-push-prompt-actions { display: flex; gap: 8px; }
             .bose-push-prompt-cta {
                 background: var(--bose-notify-green, #8FB37B);
-                color: #111;
+                color: #603524;
                 border: none;
                 border-radius: 10px;
                 padding: 8px 14px;

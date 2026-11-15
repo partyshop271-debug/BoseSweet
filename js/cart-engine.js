@@ -256,7 +256,7 @@ function renderBoseCartPage(storeData) {
             cartWrapper.innerHTML = `
                 <div class="empty-cart-message-block" style="text-align: center; padding: 60px 20px; background: #FFFFFF;">
                     <i class="fas fa-shopping-bag" style="font-size: 48px; color: var(--bose-pink); margin-bottom: 20px; display: block; opacity: 0.6;"></i>
-                    <p style="font-size: 18px; font-weight: 700; color: #111111; font-family: 'Cairo'; margin-bottom: 20px;">سلة المشتريات فارغة حالياً</p>
+                    <p style="font-size: 18px; font-weight: 700; color: #603524; font-family: 'Cairo'; margin-bottom: 20px;">سلة المشتريات فارغة حالياً</p>
                     <a href="/menu.html" class="bose-btn-primary" style="display: inline-block; background: var(--bose-pink); color: #FFFFFF; padding: 12px 30px; border-radius: 12px; text-decoration: none; font-weight: 700; font-family: 'Cairo'; box-shadow: 0 8px 32px rgba(var(--bose-pink-rgb), 0.15);">تصفح المنيو الشامل</a>
                 </div>
             `;
@@ -352,7 +352,7 @@ function renderBoseCartPage(storeData) {
                 }
 
                 if (specs.length > 0) {
-                    customDetailsHTML = `<div class="cart-item-customizations-panel" style="font-size: 13px; color: #111111; background: rgba(var(--bose-pink-rgb),0.04); padding: 10px; border-radius: 12px; margin: 6px 0; border-right: 3px solid var(--bose-pink); display: flex; flex-direction: column; gap: 4px; width: 100%; box-sizing: border-box; font-family: 'Cairo';">${specs.join("")}</div>`;
+                    customDetailsHTML = `<div class="cart-item-customizations-panel" style="font-size: 13px; color: #603524; background: rgba(var(--bose-pink-rgb),0.04); padding: 10px; border-radius: 12px; margin: 6px 0; border-right: 3px solid var(--bose-pink); display: flex; flex-direction: column; gap: 4px; width: 100%; box-sizing: border-box; font-family: 'Cairo';">${specs.join("")}</div>`;
                 }
             }
 
@@ -371,7 +371,7 @@ function renderBoseCartPage(storeData) {
             cartCard.setAttribute("data-item-id", item.id);
             cartCard.setAttribute("data-index", index);
             
-            const safeCartImg = (window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(item.image, 240) : item.image) || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png';
+            const safeCartImg = (window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(item.image, 240) : item.image) || '/images/brand/logo-512.png';
             const safeTitle = esc(item.title || "");
             const safeFlavorName = esc(cleanFlavorName || "");
 
@@ -391,33 +391,33 @@ function renderBoseCartPage(storeData) {
                     ${linkStart}
                     <img src="${safeCartImg}" class="cart-item-image" alt="${safeTitle}" style="width: 120px; height: 120px; border-radius: 20px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(var(--bose-pink-rgb),0.3); cursor: ${linkStart ? 'pointer' : 'default'};" loading="lazy">
                     <div style="display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 0; text-align: right;">
-                        <h3 class="cart-item-title" style="margin: 0; font-size: 16px; font-weight: 700; color: #111111; font-family: 'Cairo'; line-height: 1.4; cursor: ${linkStart ? 'pointer' : 'default'};">${safeTitle}</h3>
+                        <h3 class="cart-item-title" style="margin: 0; font-size: 16px; font-weight: 700; color: #603524; font-family: 'Cairo'; line-height: 1.4; cursor: ${linkStart ? 'pointer' : 'default'};">${safeTitle}</h3>
                         <span class="cart-item-flavor-name" style="font-size: 13.5px; color: var(--bose-pink); font-weight: 700; font-family: 'Cairo';">${safeFlavorName}</span>
                         ${linkEnd}
                         ${customDetailsHTML}
                         
                         <div class="bose-qty-controller-box" style="display: flex; align-items: center; border: 1px solid rgba(var(--bose-pink-rgb), 0.3); border-radius: 12px; width: max-content; margin-top: 8px; background: #FFFFFF; height: 38px; padding: 2px;">
-                            <button class="btn-qty-plus" data-index="${index}" style="border: none; background: transparent; width: 36px; height: 100%; font-weight: 700; font-size: 16px; color: #111111; cursor: pointer;">+</button>
-                            <input type="text" readonly class="qty-numerical-display" value="${item.quantity}" style="width: 36px; text-align: center; border: none; font-size: 15px; font-weight: 700; color: #111111; background: transparent; font-family: 'Cairo';">
-                            <button class="btn-qty-minus" data-index="${index}" style="border: none; background: transparent; width: 36px; height: 100%; font-weight: 700; font-size: 16px; color: #111111; cursor: pointer;">-</button>
+                            <button class="btn-qty-plus" data-index="${index}" style="border: none; background: transparent; width: 36px; height: 100%; font-weight: 700; font-size: 16px; color: #603524; cursor: pointer;">+</button>
+                            <input type="text" readonly class="qty-numerical-display" value="${item.quantity}" style="width: 36px; text-align: center; border: none; font-size: 15px; font-weight: 700; color: #603524; background: transparent; font-family: 'Cairo';">
+                            <button class="btn-qty-minus" data-index="${index}" style="border: none; background: transparent; width: 36px; height: 100%; font-weight: 700; font-size: 16px; color: #603524; cursor: pointer;">-</button>
                         </div>
                     </div>
                 </div>
                 
                 <div style="display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; min-height: 100px; flex-shrink: 0; text-align: left;">
-                    <button class="btn-remove-item" data-index="${index}" aria-label="حذف الصنف" style="background: transparent; border: none; color: rgba(17,17,17,0.3); font-size: 16px; cursor: pointer; padding: 6px; transition: color 0.2s;">
+                    <button class="btn-remove-item" data-index="${index}" aria-label="حذف الصنف" style="background: transparent; border: none; color: rgba(96, 53, 36,0.3); font-size: 16px; cursor: pointer; padding: 6px; transition: color 0.2s;">
                         <i class="fas fa-trash-alt"></i>
                     </button>
                     
                     <div style="text-align: left; font-family: 'Cairo';">
-                        <span class="qty-multiplication-label" style="display: ${item.quantity > 1 ? 'block' : 'none'}; font-size: 12px; color: #111111; opacity: 0.6; direction: ltr;">${finalProductPrice.toFixed(2)} × ${item.quantity}</span>
-                        <div class="cart-item-total-price" style="font-size: 18px; font-weight: 700; color: var(--bose-pink); white-space: nowrap;">${totalItemCost.toFixed(2)} <span style="font-size: 12px; font-weight: 700; color: #111111;">EGP</span></div>
+                        <span class="qty-multiplication-label" style="display: ${item.quantity > 1 ? 'block' : 'none'}; font-size: 12px; color: #603524; opacity: 0.6; direction: ltr;">${finalProductPrice.toFixed(2)} × ${item.quantity}</span>
+                        <div class="cart-item-total-price" style="font-size: 18px; font-weight: 700; color: var(--bose-pink); white-space: nowrap;">${totalItemCost.toFixed(2)} <span style="font-size: 12px; font-weight: 700; color: #603524;">EGP</span></div>
                     </div>
                 </div>
 
                 <div class="cart-item-completion-hint" style="grid-column: 1 / -1; display: flex; align-items: flex-start; gap: 8px; margin-top: 4px; padding: 10px 14px; background: rgba(var(--bose-pink-rgb),0.06); border: 1px dashed rgba(var(--bose-pink-rgb),0.35); border-radius: 12px; font-family: 'Cairo';">
                     <i class="fa-solid fa-circle-info" style="color: var(--bose-pink); font-size: 13px; margin-top: 2px;"></i>
-                    <span style="font-size: 12.5px; line-height: 1.6; color: #111111; opacity: 0.85;">الصنف ده اتحفظ في سلتك، بس طلبك لسه ما بعتش. كمّلي لآخر الصفحة ودوسي على "الانتقال لإتمام الطلب"، وبعدين زرار تأكيد الطلب في صفحة الدفع، وحوّلي المبلغ واكتبي رقم العملية، عشان طلبك يتسجل عندنا فورًا ونراجع التحويل ونبدأ نجهزهولك.</span>
+                    <span style="font-size: 12.5px; line-height: 1.6; color: #603524; opacity: 0.85;">الصنف ده اتحفظ في سلتك، بس طلبك لسه ما بعتش. كمّلي لآخر الصفحة ودوسي على "الانتقال لإتمام الطلب"، وبعدين زرار تأكيد الطلب في صفحة الدفع، وحوّلي المبلغ واكتبي رقم العملية، عشان طلبك يتسجل عندنا فورًا ونراجع التحويل ونبدأ نجهزهولك.</span>
                 </div>
             `;
             
@@ -440,7 +440,7 @@ function renderBoseCartPage(storeData) {
             multiLabel.style.display = item.quantity > 1 ? "block" : "none";
         }
         if (totalDisplay) {
-            totalDisplay.innerHTML = `${totalItemCost.toFixed(2)} <span style="font-size: 12px; font-weight: 700; color: #111111;">EGP</span>`;
+            totalDisplay.innerHTML = `${totalItemCost.toFixed(2)} <span style="font-size: 12px; font-weight: 700; color: #603524;">EGP</span>`;
         }
     }
     
@@ -1011,9 +1011,9 @@ function injectBoseBranchBlock(storeData) {
     const escBranch = window.escapeBoseHTML || (s => s);
 
     branchDiv.innerHTML = `
-        <h4 style="margin: 0 0 6px 0; font-size: 15px; color: #111111; font-weight: 700; font-family: 'Cairo';"><i class="fas fa-building" style="color: var(--bose-pink); margin-left: 6px;"></i> مقر الاستلام الرسمي للبراند:</h4>
-        <p style="margin: 0 0 12px 0; font-size: 13.5px; color: #111111; opacity: 0.8; line-height: 1.6; font-family: 'Cairo';">${escBranch(addressText)}</p>
-        <a href="${mapLink}" target="_blank" rel="noopener noreferrer" class="success-action-secondary-btn" style="padding: 8px 16px; font-size: 13px; font-weight: 700; border-radius: 8px; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; background: #FFFFFF; border: 1px solid var(--bose-pink); color: #111111; font-family: 'Cairo';">
+        <h4 style="margin: 0 0 6px 0; font-size: 15px; color: #603524; font-weight: 700; font-family: 'Cairo';"><i class="fas fa-building" style="color: var(--bose-pink); margin-left: 6px;"></i> مقر الاستلام الرسمي للبراند:</h4>
+        <p style="margin: 0 0 12px 0; font-size: 13.5px; color: #603524; opacity: 0.8; line-height: 1.6; font-family: 'Cairo';">${escBranch(addressText)}</p>
+        <a href="${mapLink}" target="_blank" rel="noopener noreferrer" class="success-action-secondary-btn" style="padding: 8px 16px; font-size: 13px; font-weight: 700; border-radius: 8px; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; background: #FFFFFF; border: 1px solid var(--bose-pink); color: #603524; font-family: 'Cairo';">
             <i class="fas fa-map-marked-alt" style="color: var(--bose-pink);"></i> عرض الموقع على خرائط جوجل
         </a>
     `;
@@ -1750,14 +1750,14 @@ function injectBoseCustomModalStyles() {
     const styleEl = document.createElement("style");
     styleEl.id = "bose-modal-styles-block";
     styleEl.textContent = `
-        .bose-custom-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(17, 17, 17, 0.4); display: flex; align-items: center; justify-content: center; z-index: 100000; direction: rtl; opacity: 0; transition: opacity 0.25s ease; pointer-events: none; padding: 20px; box-sizing: border-box; }
+        .bose-custom-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(96, 53, 36, 0.4); display: flex; align-items: center; justify-content: center; z-index: 100000; direction: rtl; opacity: 0; transition: opacity 0.25s ease; pointer-events: none; padding: 20px; box-sizing: border-box; }
         .bose-custom-modal-overlay.active { opacity: 1; pointer-events: auto; }
         .bose-custom-modal-card { background: #FFFFFF; border: 1px solid rgba(var(--bose-notify-green-rgb), 0.5); border-radius: 24px; padding: 24px; width: 100%; max-width: 400px; box-shadow: 0 12px 40px rgba(var(--bose-notify-green-rgb), 0.25); text-align: center; box-sizing: border-box; }
-        .bose-modal-text { font-family: 'Cairo'; font-size: 16px; font-weight: 700; color: #111111; margin: 0 0 20px 0; line-height: 1.5; }
+        .bose-modal-text { font-family: 'Cairo'; font-size: 16px; font-weight: 700; color: #603524; margin: 0 0 20px 0; line-height: 1.5; }
         .bose-modal-actions-wrapper { display: flex; gap: 12px; justify-content: center; }
         .bose-modal-btn { font-family: 'Cairo'; font-size: 14px; font-weight: 700; padding: 10px 24px; border-radius: 12px; cursor: pointer; border: none; box-sizing: border-box; }
-        .bose-modal-btn-confirm { background: var(--bose-notify-green); color: #111111; }
-        .bose-modal-btn-cancel { background: #FFFFFF; color: #111111; border: 1px solid rgba(17,17,17,0.15); }
+        .bose-modal-btn-confirm { background: var(--bose-notify-green); color: #603524; }
+        .bose-modal-btn-cancel { background: #FFFFFF; color: #603524; border: 1px solid rgba(96, 53, 36,0.15); }
     `;
     document.head.appendChild(styleEl);
 }

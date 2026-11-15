@@ -1,5 +1,5 @@
 /**
- * 🧾 مولّد صورة الفاتورة - حلويات بوسي (BoseSweets)
+ * 🧾 مولّد صورة الفاتورة - حلويات بوسي (Boosy Sweets)
  * ==========================================================
  * الهدف: بناء صورة PNG منسّقة (بشعار الماركة وألوانها وختم رسمي) من بيانات
  * الطلب نفسها اللي بتتبني منها رسالة الواتساب النصية، عشان تتبعت للعميل
@@ -50,9 +50,9 @@
         } catch (e) { /* تجاهل - نرجع للّون الافتراضي تحت */ }
         return `rgba(255,145,164,${alpha})`;
     }
-    const BRAND_BLACK = "#111111";
+    const BRAND_BLACK = "#603524";
     const BRAND_GOLD = "#D4AF37";
-    const BRAND_LOGO_FALLBACK = "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png";
+    const BRAND_LOGO_FALLBACK = "/images/brand/logo-512.png";
     const CANVAS_WIDTH = 760;
     const RENDER_SCALE = 3; // دقة أعلى (Retina+) عشان الكلام يفضل واضح بعد ضغط واتساب
 
@@ -157,7 +157,7 @@
             return specs;
         }
 
-        if (item.image && typeof item.image === "string" && item.image.startsWith("http") && !item.image.includes("logo_igggsb")) {
+        if (item.image && typeof item.image === "string" && item.image.startsWith("http") && !item.image.includes("logo_igggsb") && !item.image.includes("images/brand/logo")) {
             return [{ label: null, url: item.image }];
         }
         return [];
@@ -193,7 +193,7 @@
         ctx.fillText("ختم معتمد", 0, -radius * 0.02);
         ctx.font = "700 13px Cairo, Arial, sans-serif";
         ctx.fillStyle = BRAND_GOLD;
-        ctx.fillText("BoseSweets", 0, radius * 0.26);
+        ctx.fillText("Boosy Sweets", 0, radius * 0.26);
         ctx.font = "500 11px Cairo, Arial, sans-serif";
         ctx.fillStyle = getBrandPink();
         ctx.fillText("حلويات بوسي", 0, radius * 0.5);
@@ -371,7 +371,7 @@
         y += 22;
         ctx.font = "700 13px Cairo, Arial, sans-serif";
         ctx.fillStyle = getBrandPink();
-        ctx.fillText("BoseSweets ✨ فاتورة حجز طلبية", centerX, y);
+        ctx.fillText("Boosy Sweets ✨ فاتورة حجز طلبية", centerX, y);
         y += 30;
 
         // 🏷️ [شارة رقم الطلب]: بارزة ومنفصلة عشان تتلاقط بسرعة في أي مراجعة -
