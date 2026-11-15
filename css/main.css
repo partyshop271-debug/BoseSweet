@@ -3239,3 +3239,40 @@
 }
 .footer-location-line { margin: 8px 0 12px; font-size: 0.92rem; display: flex; align-items: center; gap: 6px; }
 .footer-location-line i { color: var(--bose-pink); }
+
+/* ==========================================================================
+   🏜️ [الهوية v1 - نوفمبر 2026] بانر الفرافرة في الهيرو + صورة قسم "من قلب الفرافرة"
+   - الهيرو كان بياخد ارتفاع 65% من الشاشة والمحتوى في النص، فبيسيب مساحة فاضية كبيرة
+     فوق على الكمبيوتر. دلوقتي البانر بيبدأ من فوق والارتفاع على قد المحتوى.
+   ========================================================================== */
+.bose-hero-section { min-height: 0; }
+.bose-hero-slide-overlay {
+    min-height: 0;
+    justify-content: flex-start;
+    padding: 16px 16px 32px;
+}
+.bose-hero-banner {
+    display: block;
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto 24px;
+}
+.bose-hero-banner img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: var(--bose-radius-md);
+    box-shadow: var(--bose-shadow-glow);
+}
+@media (min-width: 900px) {
+    .bose-hero-slide-overlay { padding: 24px 24px 40px; }
+    .bose-hero-banner { margin-bottom: 32px; }
+}
+/* صورة قسم الفرافرة: عمودية، فتتعرض جنب النص على الكمبيوتر وفوقه على الموبايل */
+.bose-farafra-media img { aspect-ratio: 16 / 10; object-fit: cover; object-position: 65% 50%; }
+@media (min-width: 900px) {
+    .bose-farafra-card { grid-template-columns: minmax(260px, 36%) 1fr; }
+    .bose-farafra-media, .bose-farafra-media img { height: 100%; }
+    .bose-farafra-media img { aspect-ratio: auto; min-height: 320px; object-position: 50% 50%; }
+    .bose-farafra-text { align-self: center; }
+}
