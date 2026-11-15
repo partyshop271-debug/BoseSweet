@@ -3276,3 +3276,126 @@
     .bose-farafra-media img { aspect-ratio: auto; min-height: 320px; object-position: 50% 50%; }
     .bose-farafra-text { align-self: center; }
 }
+
+/* ==========================================================================
+   🖥️ [إصلاح شكل سطح المكتب - نوفمبر 2026]
+   المشكلة: التصميم كان مبني على الموبايل بس، وعلى الكمبيوتر (1024px+) كل مقاس كان بيتكبّر بس
+   من غير ما عدد الأعمدة يزيد، فطلع:
+   (1) الشلال عمودين عرض كل واحد ~700px بصور مقصوصة 330px ارتفاع = صور مضغوطة/مبططة.
+   (2) "الأكثر مبيعاً" و"وصل حديثاً" كارت واحد بعرض الصفحة كلها (width:100% على كل كارت في سلايدر).
+   (3) كروت الفئات 420x520px - 3 كروت بس في الشاشة.
+   (4) فيديو عمودي (520px) في نص صفحة بيضاء عريضة = مساحات فاضية يمين وشمال.
+   كل القواعد هنا جوه @media (min-width:1024px) - الموبايل والتابلت مش متأثرين نهائياً.
+   ========================================================================== */
+
+/* أعمدة الشلال الزيادة (بتتضاف من homepage-engine.js) - مخفية خارج الكمبيوتر */
+.waterfall-col-extra { display: none !important; }
+
+@media (min-width: 1024px) {
+    /* ---- (1) الشلال: 4 أعمدة بنسبة صورة 4:5 جوه عرض محتوى مريح ---- */
+    .waterfall-container {
+        max-width: 1240px;
+        margin: 0 auto;
+        height: 780px;
+        gap: 20px !important;
+        padding: 0 20px;
+    }
+    .waterfall-col {
+        flex: 0 0 calc((100% - 60px) / 4) !important;
+        width: calc((100% - 60px) / 4) !important;
+        max-width: calc((100% - 60px) / 4) !important;
+        gap: 20px !important;
+    }
+    .waterfall-col-extra { display: flex !important; }
+    .waterfall-col img {
+        aspect-ratio: 4 / 5;
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
+    }
+
+    /* ---- (2) الأكثر مبيعاً / وصل حديثاً: شبكة 4 أعمدة بدل كارت واحد عملاق ---- */
+    #most-selling-grid.bose-products-grid,
+    #new-arrivals-grid.bose-products-grid {
+        display: grid !important;
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+        gap: 20px !important;
+        overflow: visible !important;
+        scroll-snap-type: none !important;
+        padding: 4px !important;
+    }
+    #most-selling-section .products-grid .product-card-unified,
+    #new-arrivals-section .products-grid .product-card-unified {
+        width: 100% !important;
+        scroll-snap-align: none !important;
+    }
+    /* الدوتس كانت بتمثل "كارت = صفحة" - مالهاش معنى مع الشبكة */
+    #most-selling-dots-container,
+    #new-arrivals-dots-container { display: none !important; }
+
+    /* ---- (3) تسوق حسب الفئة: خلفية بعرض الصفحة + 5 كروت بحجم معقول ---- */
+    #categories-slider-section {
+        max-width: none;
+        padding-left: max(20px, calc((100% - 1160px) / 2));
+        padding-right: max(20px, calc((100% - 1160px) / 2));
+    }
+    .categories-track-slider { gap: 20px !important; padding: 12px 20px 20px !important; }
+    .category-card-unified {
+        flex: 0 0 calc((100% - 80px) / 5) !important;
+        width: calc((100% - 80px) / 5) !important;
+        height: auto !important;
+    }
+    .category-card-img {
+        height: auto !important;
+        aspect-ratio: 1 / 1;
+    }
+    .category-card-name {
+        margin-top: 0;
+        padding: 14px 10px 18px;
+        font-size: 17px !important;
+    }
+
+    /* ---- (4) أقسام الفيديو: نص جنب الفيديو بدل فيديو عمودي في نص صفحة فاضية ---- */
+    .bose-video-showcase-section {
+        display: grid !important;
+        grid-template-columns: minmax(0, 520px) 440px !important;
+        justify-content: center;
+        column-gap: 90px;
+        align-items: center;
+        flex-direction: unset !important;
+        padding: 80px max(20px, calc((100% - 1160px) / 2)) !important;
+    }
+    #excellence-video-section { grid-template-columns: 440px minmax(0, 520px) !important; }
+    #excellence-video-section .bose-video-player-frame { order: -1; }
+    .bose-video-showcase-section .bose-section-header {
+        text-align: start;
+        margin: 0;
+    }
+    .bose-video-showcase-section .bose-section-title {
+        font-size: 2.5rem;
+        line-height: 1.35;
+    }
+    .bose-video-showcase-section .bose-section-title::after {
+        left: auto;
+        right: 0;
+        transform: none;
+    }
+    .bose-video-showcase-section .bose-section-subtitle {
+        font-size: 1.15rem;
+        line-height: 2;
+        max-width: 520px;
+        margin-top: 14px;
+    }
+    .bose-video-showcase-section .bose-video-player-frame {
+        justify-self: center;
+        max-width: 440px !important;
+        height: 620px !important;
+    }
+
+    /* ---- (5) كروت محاكي التورت/الورد: كانت ممتدة حافة لحافة (width:100%) - دلوقتي نفس عرض باقي المحتوى ---- */
+    .preview-builder-block,
+    .bose-isolated-simulator-card {
+        width: min(1200px, calc(100% - 40px)) !important;
+        margin: 56px auto !important;
+    }
+}
