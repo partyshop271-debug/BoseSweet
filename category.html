@@ -65,7 +65,7 @@
     <script src="js/season-themes.js?v=2026_production_v1.0" defer></script>
     <script src="js/season-theme-engine.js?v=2026_production_v1.0" defer></script>
     <script src="js/phone-utils.js?v=1" defer></script>
-    <script src="js/core-engine.js?v=2028_production_v63.8" defer></script>
+    <script src="js/core-engine.js?v=2028_production_v63.9" defer></script>
     <script src="js/user-interest.js?v=2" defer></script>
     <script src="js/reviews-widget.js?v=2026_production_v1.2" defer></script>
     <script src="js/guided-tour.js?v=3.5" defer></script>
@@ -213,6 +213,16 @@
                 grid-template-columns: repeat(3, 1fr);
                 gap: 24px;
             }
+        }
+
+        /* 🖥️ [إصلاح شكل سطح المكتب]: layout-grid-card (الافتراضي لأغلب المنتجات) مكانش له أي قاعدة أعمدة،
+           فكان بيعرض كارت واحد بعرض الصفحة كلها (صور 1130x320 مقصوصة) على التابلت والكمبيوتر.
+           الموبايل (تحت 768px) مفيش فيه تغيير. */
+        @media (min-width: 768px) {
+            .category-products-grid.layout-grid-card { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+        @media (min-width: 1024px) {
+            .category-products-grid.layout-grid-card { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
         }
 
         /* 📐 المقاسات الإلزامية الصارمة لكارت المنتج الموحد لمنع تضخم الكود والـ Overflow */
