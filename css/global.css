@@ -1,12 +1,12 @@
 /* ==========================================================================
-   BoseSweets - global.css (Critical / Above-the-fold CSS)
+   Boosy Sweets - global.css (Critical / Above-the-fold CSS)
    يحتوي فقط على: المتغيرات، الـ Reset، الخطوط، الهيدر، الشريط العلوي،
    التبويب السفلي الثابت، وقسم الهيرو - يُحمَّل Blocking في <head> بدون defer
    لأنه يحدد شكل أول ما يظهر للعميل ويمنع أي وميض (FOUC).
    ========================================================================== */
 
 /* ==========================================================================
-   👑 BoseSweets Strict Production Global Stylesheet (css/global.css) V18.0 👑
+   👑 Boosy Sweets Strict Production Global Stylesheet (css/global.css) V18.0 👑
    الملف الملوكي الشامل والنهائي المطوّر - شامل تبويب الأقسام السريع،
    قسم العروض والخصومات، والتصفح السفلي الثابت للاتصال والسلة
    ========================================================================== */
@@ -29,8 +29,21 @@
        لتباين 8.85:1 من غير ما نغيّر درجة الوردي خالص. --bose-pink-text باقي
        موجود للتوافق مع الكود القديم بس قيمته نفس --bose-pink بالظبط دلوقتي. */
     --bose-pink-text: var(--bose-pink);
+
+    /* 🔤 [الهوية v1] Cairo Bold = العناوين، Tajawal = النصوص، Poppins = الإنجليزي والأرقام (Poppins الأول للحروف اللاتينية، والعربي بيكمّل بـTajawal/Cairo) */
+    --bose-font-heading: 'Poppins', 'Cairo', sans-serif;
+    --bose-font-body: 'Poppins', 'Tajawal', 'Cairo', sans-serif;
+    /* 🎨 [دليل الهوية - Boosy Sweets Identity System v1]: باقي الباليت الرسمية كمتغيرات. --bose-pink (Signature Pink) و --bose-black (Cocoa Brown) هم الأساس. */
+    --bose-ivory: #FFF5ED;          /* Warm Ivory - الخلفيات الدافئة */
+    --bose-ivory-rgb: 255, 245, 237;
+    --bose-sand: #EAC7A4;           /* Desert Sand - الكثبان الرملية: خلفيات وحدود ناعمة */
+    --bose-earth: #AC713F;          /* Oasis Earth - النخيل والتفاصيل (تباينه 4.05 مع الأبيض: للعناصر الكبيرة والزخرفة) */
+    --bose-gold-accent: #D49A45;    /* Sunlit Gold - فواصل ولمسات محدودة (زخرفة فقط، مش للنصوص الصغيرة) */
+    --bose-deep-rose: #A63855;      /* Deep Rose - لون مساعد محدود، تباينه 6.33 مع الأبيض */
+    --bose-deep-rose-rgb: 166, 56, 85;
+    --bose-cocoa-rgb: 96, 53, 36;
     --bose-white: #FFFFFF;       /* المسيطر تماماً: لخلق تنفس بصري ومنع التكديس نهائياً لراحة العميل النفسية */
-    --bose-black: #111111;       /* النصوص والعناوين فقط لضمان وضوح كامل للعين وحظر استخدامه في ظلال أو خلفيات */
+    --bose-black: #603524;       /* 🎨 [الهوية v1] Cocoa Brown - للنصوص والعناوين فقط (كان #111111) */
     /* 🛡️🆕 [إصلاح إتاحة - سبتمبر 2026]: القيمة القديمة هنا كانت var(--bose-pink) -
        نفس لون الوردي بالظبط، يعني "الدهبي" في نجوم التقييم وشارات النقاط
        كان عملياً وردي مش دهبي. القيمة الجديدة دهبي حقيقي (نفس درجة النجاح في
@@ -78,10 +91,10 @@
     --bose-season-accent: var(--bose-pink);
     --bose-season-dark: var(--bose-black);
     --bose-season-light: var(--bose-white);
-    --bose-season-bg: var(--bose-white);
+    --bose-season-bg: var(--bose-ivory);
     --bose-season-surface: var(--bose-white);
     --bose-season-text: var(--bose-black);
-    --bose-season-muted-text: rgba(17, 17, 17, 0.62);
+    --bose-season-muted-text: rgba(96, 53, 36, 0.72);
     --bose-season-border-color: var(--bose-pink);
     --bose-season-shadow-color: rgba(var(--bose-pink-rgb), 0.12);
     --bose-season-deep: var(--bose-pink);
@@ -183,9 +196,9 @@ body {
     direction: rtl;
     overflow-x: hidden;
     line-height: 1.8 !important;
-    background-color: var(--bose-white) !important;
+    background-color: var(--bose-ivory) !important;
     color: var(--bose-black) !important;
-    font-family: 'Cairo', sans-serif !important;
+    font-family: var(--bose-font-body) !important;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     padding-top: calc(var(--bose-topbar-height, 44px) + 76px) !important; 
@@ -218,20 +231,20 @@ h1, h2, h3, h4, h5, h6, p, span, a, button, input, select, textarea, li {
 }
 
 h1, h2 {
-    font-family: 'Cairo', sans-serif !important;
-    font-weight: 700 !important;
+    font-family: var(--bose-font-heading) !important;
+    font-weight: 800 !important;
     color: var(--bose-black) !important;
     letter-spacing: -0.5px;
 }
 
 h3, h4, h5, h6 {
-    font-family: 'Cairo', sans-serif !important;
-    font-weight: 600 !important;
+    font-family: var(--bose-font-heading) !important;
+    font-weight: 700 !important;
     color: var(--bose-black) !important;
 }
 
 p, span, a, button, input, select, textarea, li {
-    font-family: 'Cairo', sans-serif !important;
+    font-family: var(--bose-font-body) !important;
     font-weight: 400;
 }
 
@@ -246,7 +259,7 @@ button {
     outline: none;
     background: none;
     cursor: pointer;
-    font-family: 'Cairo', sans-serif !important;
+    font-family: var(--bose-font-body) !important;
 }
 
 /* 🛡️🛡️ [إصلاح إتاحة حرج]: `button { outline: none; }` فوق كان بيلغي مؤشر
@@ -755,7 +768,7 @@ img {
 .bose-post-add-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(17, 17, 17, 0.45);
+    background: rgba(96, 53, 36, 0.45);
     z-index: var(--bose-z-post-add-prompt);
     display: flex;
     align-items: flex-end;
@@ -884,7 +897,7 @@ img {
 
 .bose-toast-message {
     background-color: var(--bose-notify-green);
-    color: #111111;
+    color: #603524;
     padding: 12px 16px;
     border-radius: 16px;
     border: 2px solid var(--bose-notify-green-dark);
@@ -968,7 +981,7 @@ img {
     flex-shrink: 0;
     background: none;
     border: none;
-    color: rgba(17, 17, 17, 0.35);
+    color: rgba(96, 53, 36, 0.35);
     font-size: 20px;
     line-height: 1;
     cursor: pointer;
@@ -977,7 +990,7 @@ img {
 }
 .bose-toast-close:hover,
 .bose-toast-close:focus-visible {
-    color: rgba(17, 17, 17, 0.7);
+    color: rgba(96, 53, 36, 0.7);
 }
 
 /* 🆕 احترام تفضيل "تقليل الحركة" لو العميل مفعّله في جهازه - الإشعار لسه
@@ -998,7 +1011,7 @@ img {
 .bose-app-install-popup-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(17, 17, 17, 0.55);
+    background: rgba(96, 53, 36, 0.55);
     z-index: var(--bose-z-app-install-popup);
     display: flex;
     align-items: flex-end;
@@ -1025,7 +1038,7 @@ img {
     border-radius: var(--bose-radius-md) var(--bose-radius-md) 0 0; /* 🛡️ حاوية/مودال = زاوية متوسطة حسب المقياس الموحّد */
     padding: 28px 24px 30px 24px;
     text-align: center;
-    font-family: 'Cairo', sans-serif;
+    font-family: var(--bose-font-body);
     direction: rtl;
     box-shadow: 0 -10px 40px rgba(0,0,0,0.2);
     animation: boseAppPopupSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -1044,8 +1057,8 @@ img {
     height: 34px;
     border-radius: 50%;
     border: none;
-    background: rgba(17,17,17,0.06);
-    color: var(--bose-black, #111111);
+    background: rgba(96, 53, 36,0.06);
+    color: var(--bose-black, #603524);
     font-size: 15px;
     display: flex;
     align-items: center;
@@ -1053,7 +1066,7 @@ img {
     cursor: pointer;
     transition: var(--bose-transition-fast, all 0.25s ease);
 }
-.bose-app-install-close-btn:hover { background: rgba(17,17,17,0.12); }
+.bose-app-install-close-btn:hover { background: rgba(96, 53, 36,0.12); }
 
 /* 🎨 [تحسين احترافية صورة الماسكوت - طلب صاحبة المتجر]: الصورة كانت صغيرة
    ومحسوسة وحيدة/تايهة في مساحة بيضاء فاضية كبيرة. الحل: كبّرنا الصورة نفسها
@@ -1083,19 +1096,19 @@ img {
     height: 180px;
     object-fit: contain;
     display: block;
-    filter: drop-shadow(0 10px 18px rgba(17, 17, 17, 0.14));
+    filter: drop-shadow(0 10px 18px rgba(96, 53, 36, 0.14));
 }
 
 .bose-app-install-title {
     font-size: 22px;
     font-weight: 800;
-    color: var(--bose-black, #111111);
+    color: var(--bose-black, #603524);
     margin: 6px 0 8px 0;
 }
 
 .bose-app-install-desc {
     font-size: 14px;
-    color: #111111;
+    color: #603524;
     line-height: 1.7;
     margin: 0 auto 22px auto;
     max-width: 320px;
@@ -1108,7 +1121,7 @@ img {
     border: none;
     border-radius: var(--bose-radius-pill);
     padding: 15px 20px;
-    font-family: 'Cairo', sans-serif;
+    font-family: var(--bose-font-body);
     font-weight: 800;
     font-size: 15.5px;
     cursor: pointer;
@@ -1123,7 +1136,7 @@ img {
 
 .bose-app-install-ios-note {
     background: rgba(var(--bose-notify-green-rgb), 0.08);
-    color: var(--bose-black, #111111);
+    color: var(--bose-black, #603524);
     border-radius: var(--bose-radius-md);
     padding: 14px 16px;
     font-size: 13px;
@@ -1137,8 +1150,8 @@ img {
 .bose-app-install-secondary-link {
     background: none;
     border: none;
-    color: #111111;
-    font-family: 'Cairo', sans-serif;
+    color: #603524;
+    font-family: var(--bose-font-body);
     font-weight: 600;
     font-size: 13px;
     margin-top: 14px;
@@ -1157,7 +1170,7 @@ img {
     margin-top: 10px;
     cursor: pointer;
     color: #6b6b6b;
-    font-family: 'Cairo', sans-serif;
+    font-family: var(--bose-font-body);
     font-size: 12.5px;
     font-weight: 600;
     user-select: none;
@@ -1178,7 +1191,7 @@ img {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(17, 17, 17, 0.55);
+    background: rgba(96, 53, 36, 0.55);
     backdrop-filter: blur(3px);
     z-index: var(--bose-z-search-modal);
     align-items: center;
@@ -1346,7 +1359,7 @@ img {
     padding: 14px;
     background: var(--bose-white, #FFFFFF);
     border-radius: var(--bose-radius-md, 16px);
-    border: 1px solid rgba(17, 17, 17, 0.05);
+    border: 1px solid rgba(96, 53, 36, 0.05);
 }
 
 .bose-skeleton-card-img {

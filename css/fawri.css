@@ -43,12 +43,12 @@
 }
 .fw-perk-ic { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: rgba(var(--bose-pink-rgb), 0.22); color: var(--bose-black); margin-bottom: 4px; }
 .fw-perk strong { font-size: 0.95rem; font-weight: 800; color: var(--bose-black); line-height: 1.4; }
-.fw-perk small { font-size: 0.8rem; color: rgba(17,17,17,0.7); line-height: 1.5; }
+.fw-perk small { font-size: 0.8rem; color: rgba(96, 53, 36,0.7); line-height: 1.5; }
 
 .fw-state { margin: 28px 0; padding: 34px 18px; text-align: center; border-radius: 18px; border: 1.5px solid rgba(var(--bose-pink-rgb), 0.4); background: #fff; }
 .fw-state i { font-size: 2.2rem; color: var(--bose-pink); margin-bottom: 10px; }
 .fw-state h2 { margin: 6px 0; font-size: 1.3rem; }
-.fw-state p { margin: 4px 0 16px; color: rgba(17,17,17,0.7); line-height: 1.8; }
+.fw-state p { margin: 4px 0 16px; color: rgba(96, 53, 36,0.7); line-height: 1.8; }
 .fw-btn {
     display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 22px;
     border: 0; border-radius: 14px; background: var(--bose-pink); color: var(--bose-black); font-family: inherit; font-size: 1rem; font-weight: 800;
@@ -71,7 +71,7 @@
 .fw-left.is-low { background: #B3261E; color: #fff; border-color: #B3261E; }
 .fw-card-body { display: flex; flex-direction: column; gap: 10px; padding: 14px; flex: 1; }
 .fw-card-title { margin: 0; font-size: 1.1rem; font-weight: 800; line-height: 1.5; }
-.fw-card-flavor { margin: -6px 0 0; font-size: 0.9rem; color: rgba(17,17,17,0.65); }
+.fw-card-flavor { margin: -6px 0 0; font-size: 0.9rem; color: rgba(96, 53, 36,0.65); }
 .fw-price { font-size: 1.25rem; font-weight: 800; }
 .fw-price small { font-size: .85rem; font-weight: 600; margin-inline-start: 4px; }
 
@@ -121,7 +121,7 @@
 .fw-price-save { padding: 3px 10px; border-radius: 999px; background: rgba(var(--bose-pink-rgb), 0.22); font-size: 0.85rem; font-weight: 800; color: var(--bose-black); }
 
 /* اختيار أكتر من نكهة */
-.fw-opt-hint { font-weight: 600; font-size: 0.82rem; color: rgba(17,17,17,0.65); }
+.fw-opt-hint { font-weight: 600; font-size: 0.82rem; color: rgba(96, 53, 36,0.65); }
 .fw-flavors { display: grid; gap: 8px; }
 .fw-flavor { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 6px 6px 6px 12px; border: 1.5px solid rgba(var(--bose-pink-rgb), 0.45); border-radius: 14px; background: #fff; }
 .fw-flavor.is-picked { background: rgba(var(--bose-pink-rgb), 0.22); border-color: var(--bose-pink); }

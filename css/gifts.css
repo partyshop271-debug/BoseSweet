@@ -180,9 +180,9 @@ html.gl-lock, html.gl-lock body { overflow: hidden; }
 /* ===== خط أكبر لصفحة الهدية (لضعاف النظر) ===== */
 .gd-head h3 { font-size: 24px; }
 .gd-head span { font-size: 16px; }
-.gd-sub, .gd-note, .gd-plain { font-size: 16.5px; line-height: 2; opacity: 1; color: #222; }
+.gd-sub, .gd-note, .gd-plain { font-size: 16.5px; line-height: 2; opacity: 1; color: #603524; }
 .gd-item__name { font-size: 19px; }
-.gd-item__desc { font-size: 16px; line-height: 1.9; opacity: 1; color: #222; }
+.gd-item__desc { font-size: 16px; line-height: 1.9; opacity: 1; color: #603524; }
 .gd-item__price { font-size: 16.5px; }
 .gd-item__price strong { font-size: 18px; }
 .gd-buy { font-size: 16px; padding: 12px 14px; }

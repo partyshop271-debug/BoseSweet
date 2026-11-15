@@ -1,5 +1,5 @@
 /* ==========================================================================
-   BoseSweets - main.css (Non-Critical / Below-the-fold + Components)
+   Boosy Sweets - main.css (Non-Critical / Below-the-fold + Components)
    يحتوي على: السلايدرات، المودالات، القائمة الجانبية، الشلال، شبكات المنتجات،
    المحاكيات، الفئات، قسم الفخر، الفوتر، والـ Dots.
    يُحمَّل بعد global.css ويُفضَّل استدعاؤه بـ defer.
@@ -49,13 +49,13 @@
 }
 
 .bose-filter-tab-pill {
-    font-family: 'Cairo', sans-serif;
+    font-family: var(--bose-font-body);
     font-weight: 700 !important;
     font-size: 0.85rem;
     padding: 10px 20px;
     border: 1px solid rgba(var(--bose-pink-rgb), 0.3);
     background: #FFFFFF;
-    color: #111111;
+    color: #603524;
     border-radius: var(--bose-radius-pill);
     cursor: pointer;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
@@ -201,8 +201,8 @@
 }
 
 .bose-offer-badge.bose-stock-badge {
-    background: rgba(17, 17, 17, 0.78);
-    box-shadow: 0 4px 12px rgba(17, 17, 17, 0.25);
+    background: rgba(96, 53, 36, 0.78);
+    box-shadow: 0 4px 12px rgba(96, 53, 36, 0.25);
 }
 
 .bose-offer-badge.bose-stock-badge::before {
@@ -496,7 +496,7 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    background-color: rgba(17, 17, 17, 0.05);
+    background-color: rgba(96, 53, 36, 0.05);
     transition: var(--bose-transition-fast);
 }
 
@@ -531,7 +531,7 @@
 }
 
 .bose-search-field::placeholder {
-    color: rgba(17, 17, 17, 0.4);
+    color: rgba(96, 53, 36, 0.4);
     font-weight: 500;
 }
 
@@ -605,7 +605,7 @@
 .search-result-flavor {
     font-size: 13px;
     font-weight: 500;
-    color: rgba(17, 17, 17, 0.5);
+    color: rgba(96, 53, 36, 0.5);
     margin-top: 2px;
     white-space: nowrap;
     overflow: hidden;
@@ -625,7 +625,7 @@
 
 .search-no-results-msg {
     text-align: center;
-    color: rgba(17, 17, 17, 0.45);
+    color: rgba(96, 53, 36, 0.45);
     font-size: 15px;
     font-weight: 600;
     padding: 60px 20px;
@@ -776,7 +776,7 @@
     align-items: center;
     justify-content: space-between;
     cursor: pointer;
-    font-family: 'Cairo', sans-serif;
+    font-family: var(--bose-font-body);
 }
 .sidebar-expand-toggle .toggle-chevron {
     font-size: 11px;
@@ -902,7 +902,7 @@
     left: 0 !important;
     width: 100vw !important;
     height: 100vh !important;
-    background-color: rgba(17, 17, 17, 0.35) !important;
+    background-color: rgba(96, 53, 36, 0.35) !important;
     z-index: var(--bose-z-sidebar-overlay) !important;
     opacity: 0 !important;
     visibility: hidden !important;
@@ -1269,7 +1269,7 @@
     border-radius: 50%;
     border: none;
     background-color: rgba(255, 255, 255, 0.92);
-    box-shadow: 0 3px 10px rgba(17, 17, 17, 0.15);
+    box-shadow: 0 3px 10px rgba(96, 53, 36, 0.15);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1428,13 +1428,13 @@
 }
 
 .bose-card-size-pill {
-    font-family: 'Cairo', sans-serif;
+    font-family: var(--bose-font-body);
     font-weight: 700;
     font-size: 10.5px;
     padding: 5px 10px;
     border: 1px solid rgba(var(--bose-pink-rgb), 0.35);
     background: #FFFFFF;
-    color: var(--bose-black, #111111);
+    color: var(--bose-black, #603524);
     border-radius: var(--bose-radius-pill);
     cursor: pointer;
     transition: var(--bose-transition-fast);
@@ -1456,8 +1456,8 @@
 .bose-min-qty-note {
     direction: rtl;
     text-align: right;
-    font-family: 'Cairo', sans-serif;
-    color: #111111;
+    font-family: var(--bose-font-body);
+    color: #603524;
     background: rgba(var(--bose-pink-rgb), 0.07);
     border: 1.5px solid var(--bose-pink);
     border-radius: 16px;
@@ -1472,8 +1472,8 @@
 .bose-filling-picker {
     direction: rtl;
     text-align: right;
-    font-family: 'Cairo', sans-serif;
-    color: #111111;
+    font-family: var(--bose-font-body);
+    color: #603524;
     margin: 8px 0;
 }
 .bose-filling-title { font-size: 1.15rem; font-weight: 800; margin: 0 0 8px; }
@@ -1490,7 +1490,7 @@
     cursor: pointer;
 }
 .bose-filling-option.is-selected {
-    border-color: #111111;
+    border-color: #603524;
     box-shadow: 0 0 0 3px rgba(var(--bose-pink-rgb), 0.25);
     background: rgba(var(--bose-pink-rgb), 0.07);
 }
@@ -1499,7 +1499,7 @@
     width: 22px;
     height: 22px;
     margin: 0;
-    accent-color: #111111;
+    accent-color: #603524;
     cursor: pointer;
 }
 .bose-filling-text strong { font-size: 1.05rem; font-weight: 800; line-height: 1.6; }
@@ -2549,7 +2549,7 @@
     color: var(--bose-pink-text, var(--bose-pink));
     font-weight: 700;
     font-size: 13.5px;
-    font-family: 'Cairo', sans-serif;
+    font-family: var(--bose-font-body);
     border-radius: var(--bose-radius-sm);
     padding: 10px 16px;
     margin: 0 auto 14px auto;
@@ -2605,7 +2605,7 @@
 
 .bose-app-promo-text-col {
     text-align: center;
-    font-family: 'Cairo', sans-serif;
+    font-family: var(--bose-font-body);
     color: #FFFFFF;
     direction: rtl;
 }
@@ -2685,7 +2685,7 @@
     background: transparent;
     border: 1.5px solid #FFFFFF;
     color: #FFFFFF;
-    font-family: 'Cairo', sans-serif;
+    font-family: var(--bose-font-body);
     border-radius: var(--bose-radius-pill);
     padding: 11px 22px;
     cursor: pointer;
@@ -2710,7 +2710,7 @@
     position: relative;
     width: 240px;
     height: 490px;
-    background: #111111;
+    background: #603524;
     border-radius: 38px;
     padding: 12px 10px;
     box-shadow: 0 30px 60px rgba(0,0,0,0.35), 0 0 0 3px rgba(255,255,255,0.15);
@@ -2720,7 +2720,7 @@
     position: absolute;
     top: 12px; left: 50%; transform: translateX(-50%);
     width: 90px; height: 20px;
-    background: #111111;
+    background: #603524;
     border-radius: 0 0 14px 14px;
     z-index: 3;
 }
@@ -2732,7 +2732,7 @@
     border-radius: 28px;
     overflow: hidden;
     padding: 16px 12px;
-    font-family: 'Cairo', sans-serif;
+    font-family: var(--bose-font-body);
     direction: rtl;
     opacity: 0;
     animation: boseAppScreenCycle 12s infinite;
@@ -2747,21 +2747,21 @@
     34%, 100% { opacity: 0; }
 }
 
-.mock-status-bar { display: flex; justify-content: space-between; font-size: 10px; color: #111111; margin-bottom: 10px; }
+.mock-status-bar { display: flex; justify-content: space-between; font-size: 10px; color: #603524; margin-bottom: 10px; }
 .mock-app-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
 .mock-app-header img { width: 26px; height: 26px; border-radius: 50%; }
-.mock-app-header strong { font-size: 13px; color: var(--bose-black, #111); }
+.mock-app-header strong { font-size: 13px; color: var(--bose-black, #603524); }
 .mock-hero-strip { background: rgba(var(--bose-pink-rgb),0.12); color: var(--bose-pink-text, var(--bose-pink)); font-size: 11px; font-weight: 700; text-align: center; padding: 10px; border-radius: var(--bose-radius-sm); margin-bottom: 12px; }
 .mock-product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .mock-product-card { background: #FFFFFF; border: 1px solid rgba(var(--bose-pink-rgb),0.15); border-radius: var(--bose-radius-sm); height: 78px; overflow: hidden; position: relative; }
 .mock-product-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .mock-product-card .mock-product-name { position: absolute; inset: auto 0 0 0; background: linear-gradient(0deg, rgba(0,0,0,0.55), transparent); color: #fff; font-size: 8.5px; font-weight: 700; padding: 3px 6px 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-.mock-rewards-title { font-size: 15px; font-weight: 800; color: var(--bose-black, #111); margin-bottom: 12px; }
+.mock-rewards-title { font-size: 15px; font-weight: 800; color: var(--bose-black, #603524); margin-bottom: 12px; }
 .mock-points-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--bose-gold, var(--bose-pink)); color: #fff; font-size: 12px; font-weight: 800; padding: 6px 14px; border-radius: var(--bose-radius-pill); margin-bottom: 14px; }
 .mock-progress-track { width: 100%; height: 8px; background: #FFFFFF; border-radius: var(--bose-radius-pill); margin-bottom: 16px; overflow: hidden; }
 .mock-progress-fill { width: 62%; height: 100%; background: var(--bose-pink, var(--bose-pink)); border-radius: var(--bose-radius-pill); }
-.mock-reward-row { display: flex; align-items: center; gap: 8px; font-size: 11px; color: #111111; background: rgba(var(--bose-pink-rgb), 0.08); padding: 10px; border-radius: var(--bose-radius-sm); margin-bottom: 8px; }
+.mock-reward-row { display: flex; align-items: center; gap: 8px; font-size: 11px; color: #603524; background: rgba(var(--bose-pink-rgb), 0.08); padding: 10px; border-radius: var(--bose-radius-sm); margin-bottom: 8px; }
 .mock-reward-row i { color: var(--bose-pink-text, var(--bose-pink)); }
 
 .mock-cart-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
@@ -2770,9 +2770,9 @@
 .mock-cart-lines { display: flex; flex-direction: column; gap: 6px; flex: 1; }
 .mock-cart-lines span { display: block; height: 8px; background: #FFFFFF; border-radius: 4px; }
 .mock-cart-lines span:last-child { width: 50%; }
-.mock-cart-lines .mock-cart-name { height: auto; background: none; font-size: 11px; font-weight: 700; color: var(--bose-black, #111); border-radius: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mock-cart-lines .mock-cart-name { height: auto; background: none; font-size: 11px; font-weight: 700; color: var(--bose-black, #603524); border-radius: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .mock-cart-lines .mock-cart-price { height: auto; background: none; font-size: 10px; font-weight: 700; color: var(--bose-pink-text, var(--bose-pink)); border-radius: 0; width: auto !important; }
-.mock-checkout-btn { width: 100%; background: var(--bose-pink-text, var(--bose-pink)); color: var(--bose-black); border: none; border-radius: var(--bose-radius-pill); padding: 12px; font-family: 'Cairo', sans-serif; font-weight: 800; font-size: 12.5px; margin-top: 10px; }
+.mock-checkout-btn { width: 100%; background: var(--bose-pink-text, var(--bose-pink)); color: var(--bose-black); border: none; border-radius: var(--bose-radius-pill); padding: 12px; font-family: var(--bose-font-body); font-weight: 800; font-size: 12.5px; margin-top: 10px; }
 
 /* ---------- أيقونات عائمة حوالين الموبايل ---------- */
 .bose-app-promo-float-badge {
@@ -2852,7 +2852,7 @@
     gap: 10px;
     background: var(--bose-pink-text, var(--bose-pink));
     color: var(--bose-black);
-    font-family: 'Cairo', sans-serif;
+    font-family: var(--bose-font-body);
     font-weight: 800;
     font-size: 1rem;
     border: none;
@@ -3136,7 +3136,7 @@
 .bose-product-page-layout .bose-related-products-heading {
     font-size: 1.3rem;
     font-weight: 700;
-    color: #111111;
+    color: #603524;
     margin: 34px 0 16px;
 }
 .bose-product-page-layout .bose-horizontal-suggestions-slider {
@@ -3166,7 +3166,7 @@
 .bose-product-page-breadcrumb {
     font-size: 0.85rem;
     font-weight: 600;
-    color: #111111;
+    color: #603524;
     opacity: 0.65;
     margin: 0 0 18px;
     display: flex;
@@ -3181,10 +3181,10 @@
    المنتج تحديداً: هامش جانبي، الوصف يظهر كامل من غير قص (فمفيش داعي لزرار
    اظهار المزيد)، وخط أتخن وأوضح. كروت الشبكة في باقي الصفحات ملمسوهاش. */
 .bose-product-page-layout { padding: 8px 16px 40px; box-sizing: border-box; overflow-wrap: anywhere; }
-.bose-product-page-layout .product-card-unified .product-card-title { font-weight: 800; font-size: 1.55rem; line-height: 1.6; color: #111; }
+.bose-product-page-layout .product-card-unified .product-card-title { font-weight: 800; font-size: 1.55rem; line-height: 1.6; color: #603524; }
 .bose-product-page-layout .product-card-unified .product-card-desc {
     max-height: none; min-height: 0; overflow: visible; display: block;
-    -webkit-line-clamp: unset; opacity: 1; color: #222;
+    -webkit-line-clamp: unset; opacity: 1; color: #603524;
     font-size: 1.05rem; font-weight: 600; line-height: 2;
 }
 .bose-product-page-layout .product-card-unified .bose-desc-toggle-btn { display: none !important; }
@@ -3193,10 +3193,49 @@
 /* بوب-أب "بنية شفاء" (core-engine.js) */
 .bose-shifa-backdrop { position: fixed; inset: 0; z-index: 100000; display: flex; align-items: center; justify-content: center; padding: 16px; background: rgba(0,0,0,0.55); }
 .bose-shifa-box { position: relative; width: 100%; max-width: 440px; max-height: 90vh; overflow-y: auto; box-sizing: border-box; padding: 26px 20px 18px; border-radius: 24px; background: #fff; text-align: center; box-shadow: 0 24px 60px rgba(0,0,0,0.35); }
-.bose-shifa-x { position: absolute; top: 8px; inset-inline-start: 10px; width: 40px; height: 40px; border: 0; background: transparent; font-size: 1.8rem; line-height: 1; cursor: pointer; color: rgba(17,17,17,0.6); }
+.bose-shifa-x { position: absolute; top: 8px; inset-inline-start: 10px; width: 40px; height: 40px; border: 0; background: transparent; font-size: 1.8rem; line-height: 1; cursor: pointer; color: rgba(96, 53, 36,0.6); }
 .bose-shifa-ic { font-size: 2.4rem; line-height: 1; }
 .bose-shifa-box h2 { margin: 8px 0 10px; font-size: 1.35rem; font-weight: 900; }
 .bose-shifa-dua { margin: 0 0 14px; font-size: 1.05rem; line-height: 2; }
 .bose-shifa-list { margin: 0 0 16px; padding: 12px 14px; list-style: none; text-align: right; display: grid; gap: 6px; border-radius: 14px; background: rgba(var(--bose-pink-rgb), 0.18); font-weight: 700; line-height: 1.7; }
 .bose-shifa-btn { display: flex; align-items: center; justify-content: center; min-height: 50px; border-radius: 14px; background: var(--bose-pink); color: var(--bose-black); font-weight: 900; text-decoration: none; }
-.bose-shifa-skip { margin-top: 8px; min-height: 44px; padding: 0 18px; border: 0; background: transparent; font-family: inherit; font-size: 0.95rem; cursor: pointer; color: rgba(17,17,17,0.65); }
+.bose-shifa-skip { margin-top: 8px; min-height: 44px; padding: 0 18px; border: 0; background: transparent; font-family: inherit; font-size: 0.95rem; cursor: pointer; color: rgba(96, 53, 36,0.65); }
+
+
+/* ==========================================================================
+   🏜️ [الهوية v1] قسم "من قلب الفرافرة" + سطر الموقع في الفوتر
+   ========================================================================== */
+.bose-farafra-section { padding-top: 8px; padding-bottom: 8px; }
+.bose-farafra-card {
+    display: grid; grid-template-columns: 1fr; gap: 0; overflow: hidden;
+    background: var(--bose-white); border: 1px solid var(--bose-sand);
+    border-radius: var(--bose-radius-md); box-shadow: var(--bose-shadow-glow);
+}
+.bose-farafra-media { display: block; background: var(--bose-ivory); }
+.bose-farafra-media img { display: block; width: 100%; height: auto; }
+.bose-farafra-text { padding: 22px 20px 24px; text-align: right; }
+.bose-farafra-tag {
+    display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; font-weight: 700;
+    color: var(--bose-deep-rose); background: var(--bose-ivory); border: 1px solid var(--bose-sand);
+    border-radius: var(--bose-radius-pill); padding: 4px 12px; margin-bottom: 10px;
+}
+.bose-farafra-text h2 { margin: 6px 0 10px; font-size: 1.45rem; line-height: 1.5; }
+.bose-farafra-text p { margin: 0 0 10px; line-height: 2; }
+.bose-farafra-text .bose-farafra-motto {
+    color: var(--bose-earth); font-weight: 800; font-size: 1.02rem;
+    border-right: 3px solid var(--bose-gold-accent); padding-right: 10px; margin: 6px 0 16px;
+}
+.bose-farafra-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.bose-farafra-btn {
+    display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 22px;
+    border-radius: var(--bose-radius-pill); border: 1.5px solid var(--bose-pink);
+    color: var(--bose-black); font-weight: 700; text-decoration: none; background: var(--bose-white);
+}
+.bose-farafra-btn--primary { background: var(--bose-pink); }
+@media (min-width: 900px) {
+    .bose-farafra-text { padding: 28px 36px 32px; }
+    .bose-farafra-text h2 { font-size: 1.7rem; }
+    .bose-farafra-text p { max-width: 760px; }
+}
+.footer-location-line { margin: 8px 0 12px; font-size: 0.92rem; display: flex; align-items: center; gap: 6px; }
+.footer-location-line i { color: var(--bose-pink); }
