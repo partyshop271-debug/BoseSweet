@@ -28,7 +28,7 @@
      */
     function hasPlaceholderImage(product) {
         const img = (product.images && product.images[0]) || "";
-        return !img || img.includes(window.BoseAdminUI.PLACEHOLDER_IMAGE_MARKER) || img.includes("images/brand/logo");
+        return !img || img.includes(window.BoseAdminUI.PLACEHOLDER_IMAGE_MARKER) || img.includes("images/logo");
     }
 
     function getFilteredProducts() {

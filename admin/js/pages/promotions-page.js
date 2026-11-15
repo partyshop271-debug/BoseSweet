@@ -264,7 +264,7 @@
                 document.getElementById("pf-title").value = product.flavor_name ? `${product.title} - ${product.flavor_name}` : (product.title || "");
                 document.getElementById("pf-category").value = product.category_id || "";
                 document.getElementById("pf-old-price").value = product.price || "";
-                const productImage = Array.isArray(product.images) ? product.images.find((u) => typeof u === "string" && u.startsWith("http") && !u.includes("logo_igggsb") && !u.includes("images/brand/logo")) : null;
+                const productImage = Array.isArray(product.images) ? product.images.find((u) => typeof u === "string" && u.startsWith("http") && !u.includes("logo_igggsb") && !u.includes("images/logo")) : null;
                 if (productImage) {
                     image = productImage;
                     refreshImageGrid();
